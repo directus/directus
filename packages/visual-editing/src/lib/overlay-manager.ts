@@ -1,3 +1,5 @@
+import { DirectusFrame } from './directus-frame.ts';
+
 export class OverlayManager {
 	private static readonly CSS_VAR_Z_INDEX = '--directus-visual-editing--overlay--z-index';
 	private static readonly CSS_VAR_BORDER_SPACING = '--directus-visual-editing--rect--border-spacing';
@@ -7,13 +9,19 @@ export class OverlayManager {
 	private static readonly CSS_VAR_HOVER_OPACITY = '--directus-visual-editing--rect-hover--opacity';
 	private static readonly CSS_VAR_HIGHLIGHT_OPACITY = '--directus-visual-editing--rect-highlight--opacity';
 	private static readonly CSS_VAR_ACTIONS_GAP = '--directus-visual-editing--actions--gap';
+	private static readonly CSS_VAR_ACTIONS_OFFSET = '--directus-visual-editing--actions--offset';
+	private static readonly CSS_VAR_FOCUS_RING_COLOR = '--directus-visual-editing--actions--focus-ring-color';
+	private static readonly CSS_VAR_FOCUS_RING_WIDTH = '--directus-visual-editing--actions--focus-ring-width';
+	private static readonly CSS_VAR_FOCUS_RING_OFFSET = '--directus-visual-editing--actions--focus-ring-offset';
 	private static readonly CSS_VAR_BUTTON_WIDTH = '--directus-visual-editing--edit-btn--width';
 	private static readonly CSS_VAR_BUTTON_HEIGHT = '--directus-visual-editing--edit-btn--height';
 	private static readonly CSS_VAR_BUTTON_RADIUS = '--directus-visual-editing--edit-btn--radius';
 	private static readonly CSS_VAR_EDIT_BUTTON_BG_COLOR = '--directus-visual-editing--edit-btn--bg-color';
+	private static readonly CSS_VAR_EDIT_BUTTON_HOVER_BG_COLOR = '--directus-visual-editing--edit-btn-hover--bg-color';
 	private static readonly CSS_VAR_EDIT_BUTTON_ICON_BG_IMAGE = '--directus-visual-editing--edit-btn--icon-bg-image';
 	private static readonly CSS_VAR_EDIT_BUTTON_ICON_BG_SIZE = '--directus-visual-editing--edit-btn--icon-bg-size';
 	private static readonly CSS_VAR_AI_BUTTON_BG_COLOR = '--directus-visual-editing--ai-btn--bg-color';
+	private static readonly CSS_VAR_AI_BUTTON_HOVER_BG_COLOR = '--directus-visual-editing--ai-btn-hover--bg-color';
 	private static readonly CSS_VAR_AI_BUTTON_ICON_BG_IMAGE = '--directus-visual-editing--ai-btn--icon-bg-image';
 	private static readonly CSS_VAR_AI_BUTTON_ICON_BG_SIZE = '--directus-visual-editing--ai-btn--icon-bg-size';
 
@@ -34,6 +42,7 @@ export class OverlayManager {
 	static readonly RECT_BUTTON_CLASS_NAME = 'directus-visual-editing-button';
 	static readonly RECT_EDIT_BUTTON_CLASS_NAME = 'directus-visual-editing-edit-button';
 	static readonly RECT_AI_BUTTON_CLASS_NAME = 'directus-visual-editing-ai-button';
+	static readonly RECT_ACTIONS_FLIPPED_CLASS_NAME = 'directus-visual-editing-actions-flipped';
 
 	static getGlobalOverlay(): HTMLElement {
 		const existingOverlay = document.getElementById(OverlayManager.OVERLAY_ID);
@@ -53,14 +62,33 @@ export class OverlayManager {
 		const style = document.createElement('style');
 		style.id = OverlayManager.STYLE_ID;
 
-		const buttonSize = 28;
-		const buttonWidth = `var(${OverlayManager.CSS_VAR_BUTTON_WIDTH}, ${buttonSize}px)`;
-		const buttonGap = 4;
-		const editButtonBgColor = `var(${OverlayManager.CSS_VAR_EDIT_BUTTON_BG_COLOR}, #6644ff)`;
-		const aiButtonBgColor = `var(${OverlayManager.CSS_VAR_AI_BUTTON_BG_COLOR}, ${editButtonBgColor})`;
-		const buttonBgColorMix = '#2e3C43 25%';
-		const borderSpacing = `var(${OverlayManager.CSS_VAR_BORDER_SPACING}, ${Math.round(buttonSize * 0.333)}px)`;
-		const borderWidth = `var(${OverlayManager.CSS_VAR_BORDER_WIDTH}, 2px)`;
+		const theme = new DirectusFrame().getTheme();
+
+		const t = {
+			primaryColor: theme?.primaryColor?.trim() || '#6644ff',
+			primaryAccentColor: theme?.primaryAccentColor?.trim() || 'color-mix(in srgb, #6644ff, #2e3C43 25%)',
+			borderRadius: theme?.borderRadius?.trim() || '6px',
+			buttonSize: theme?.buttonSize?.trim() || '24px',
+			focusRingWidth: theme?.focusRingWidth?.trim() || '2px',
+			focusRingOffset: theme?.focusRingOffset?.trim() || '2px',
+		};
+
+		const actionsGap = `var(${OverlayManager.CSS_VAR_ACTIONS_GAP}, 4px)`;
+		const actionsOffset = `var(${OverlayManager.CSS_VAR_ACTIONS_OFFSET}, 4px)`;
+		const editButtonBgColor = `var(${OverlayManager.CSS_VAR_EDIT_BUTTON_BG_COLOR}, ${t.primaryColor})`;
+		const aiButtonBgColor = `var(${OverlayManager.CSS_VAR_AI_BUTTON_BG_COLOR}, ${t.primaryColor})`;
+		const editButtonHoverBgColor = `var(${OverlayManager.CSS_VAR_EDIT_BUTTON_HOVER_BG_COLOR}, ${t.primaryAccentColor})`;
+		const aiButtonHoverBgColor = `var(${OverlayManager.CSS_VAR_AI_BUTTON_HOVER_BG_COLOR}, ${t.primaryAccentColor})`;
+		const buttonWidth = `var(${OverlayManager.CSS_VAR_BUTTON_WIDTH}, ${t.buttonSize})`;
+		const buttonHeight = `var(${OverlayManager.CSS_VAR_BUTTON_HEIGHT}, ${t.buttonSize})`;
+		const buttonRadius = `var(${OverlayManager.CSS_VAR_BUTTON_RADIUS}, ${t.borderRadius})`;
+		const borderSpacing = `var(${OverlayManager.CSS_VAR_BORDER_SPACING}, 8px)`;
+		const borderWidth = `var(${OverlayManager.CSS_VAR_BORDER_WIDTH}, ${t.focusRingWidth})`;
+		const borderColor = `var(${OverlayManager.CSS_VAR_BORDER_COLOR}, ${t.primaryColor})`;
+		const borderRadius = `var(${OverlayManager.CSS_VAR_BORDER_RADIUS}, ${t.borderRadius})`;
+		const focusRingColor = `var(${OverlayManager.CSS_VAR_FOCUS_RING_COLOR}, ${t.primaryColor})`;
+		const focusRingWidth = `var(${OverlayManager.CSS_VAR_FOCUS_RING_WIDTH}, ${t.focusRingWidth})`;
+		const focusRingOffset = `var(${OverlayManager.CSS_VAR_FOCUS_RING_OFFSET}, ${t.focusRingOffset})`;
 
 		style.appendChild(
 			document.createTextNode(`
@@ -70,24 +98,24 @@ export class OverlayManager {
 				.${OverlayManager.CONTAINER_RECT_CLASS_NAME} {
 					pointer-events: none;
 					position: fixed;
-					top: 0;
-					left: 0;
-					right: 0;
-					bottom: 0;
+					inset: 0;
 					z-index: var(${OverlayManager.CSS_VAR_Z_INDEX}, 999999999);
 				}
 				.${OverlayManager.RECT_CLASS_NAME} {
 					position: absolute;
+					/* Use non-logical properties to correctly position the rect with transform translate in RTL mode */
+					top: 0;
+					left: 0;
 				}
 				.${OverlayManager.RECT_INNER_CLASS_NAME} {
 					position: absolute;
 					box-sizing: border-box;
-					top: calc(-1 * ${borderSpacing});
-					left: calc(-1 * ${borderSpacing});
-					right: calc(-1 * ${borderSpacing});
-					bottom: calc(-1 * ${borderSpacing});
-					border: ${borderWidth} solid var(${OverlayManager.CSS_VAR_BORDER_COLOR}, #6644ff);
-					border-radius: var(${OverlayManager.CSS_VAR_BORDER_RADIUS}, 6px);
+					inset-block-start: calc(-1 * ${borderSpacing});
+					inset-inline-start: calc(-1 * ${borderSpacing});
+					inset-inline-end: calc(-1 * ${borderSpacing});
+					inset-block-end: calc(-1 * ${borderSpacing});
+					border: ${borderWidth} solid ${borderColor};
+					border-radius: ${borderRadius};
 					opacity: 0;
 				}
 				.${OverlayManager.RECT_CLASS_NAME}.${OverlayManager.RECT_HOVER_CLASS_NAME} .${OverlayManager.RECT_INNER_CLASS_NAME} {
@@ -114,23 +142,30 @@ export class OverlayManager {
 					cursor: pointer;
 					position: absolute;
 					z-index: 1;
-					top: calc(-1 * ${borderSpacing} + ${borderWidth} / 2);
-					transform: translate(-50%, -50%);
-					width: ${buttonWidth};
-					height: var(${OverlayManager.CSS_VAR_BUTTON_HEIGHT}, ${buttonSize}px);
-					border-radius: var(${OverlayManager.CSS_VAR_BUTTON_RADIUS}, 50%);
+					inset-block-end: 100%;
+					margin-block-end: calc((${borderSpacing} + ${actionsOffset}));
+					inline-size: ${buttonWidth};
+					block-size: ${buttonHeight};
+					border-radius: ${buttonRadius};
 					background-position: center;
 					background-repeat: no-repeat;
 					opacity: 0;
 				}
+				.${OverlayManager.RECT_BUTTON_CLASS_NAME}::after {
+					content: '';
+					position: absolute;
+					inset-inline: calc(-1 * ${actionsGap} / 2);
+					inset-block-start: 0;
+					inset-block-end: calc(-1 * ${actionsOffset});
+				}
 				.${OverlayManager.RECT_BUTTON_CLASS_NAME}.${OverlayManager.RECT_EDIT_BUTTON_CLASS_NAME} {
-					left: calc(-1 * ${borderSpacing} + ${borderWidth} / 2);
+					inset-inline-start: calc(-1 * ${borderSpacing});
 					background-color: ${editButtonBgColor};
 					background-image: var(${OverlayManager.CSS_VAR_EDIT_BUTTON_ICON_BG_IMAGE}, ${OverlayManager.ICON_EDIT});
 					background-size: var(${OverlayManager.CSS_VAR_EDIT_BUTTON_ICON_BG_SIZE}, 66.6%);
 				}
 				.${OverlayManager.RECT_BUTTON_CLASS_NAME}.${OverlayManager.RECT_AI_BUTTON_CLASS_NAME} {
-					left: calc(-1 * ${borderSpacing} + ${borderWidth} / 2 + ${buttonWidth} + var(${OverlayManager.CSS_VAR_ACTIONS_GAP}, ${buttonGap}px));
+					inset-inline-start: calc(-1 * ${borderSpacing} + ${buttonWidth} + ${actionsGap});
 					background-color: ${aiButtonBgColor};
 					background-image: var(${OverlayManager.CSS_VAR_AI_BUTTON_ICON_BG_IMAGE}, ${OverlayManager.ICON_AI});
 					background-size: var(${OverlayManager.CSS_VAR_AI_BUTTON_ICON_BG_SIZE}, 66.6%);
@@ -141,14 +176,32 @@ export class OverlayManager {
 				.${OverlayManager.RECT_BUTTON_CLASS_NAME}:hover,
 				.${OverlayManager.RECT_BUTTON_CLASS_NAME}:hover ~ .${OverlayManager.RECT_INNER_CLASS_NAME},
 				.${OverlayManager.RECT_HIGHLIGHT_CLASS_NAME}:hover .${OverlayManager.RECT_INNER_CLASS_NAME},
-				.${OverlayManager.RECT_CLASS_NAME}:has(.${OverlayManager.RECT_BUTTON_CLASS_NAME}:hover) .${OverlayManager.RECT_BUTTON_CLASS_NAME}  {
+				.${OverlayManager.RECT_CLASS_NAME}:has(.${OverlayManager.RECT_BUTTON_CLASS_NAME}:hover) .${OverlayManager.RECT_BUTTON_CLASS_NAME},
+				.${OverlayManager.RECT_HIGHLIGHT_CLASS_NAME}:focus-within .${OverlayManager.RECT_BUTTON_CLASS_NAME},
+				.${OverlayManager.RECT_BUTTON_CLASS_NAME}:focus-visible,
+				.${OverlayManager.RECT_BUTTON_CLASS_NAME}:focus-visible ~ .${OverlayManager.RECT_INNER_CLASS_NAME},
+				.${OverlayManager.RECT_HIGHLIGHT_CLASS_NAME}:focus-within .${OverlayManager.RECT_INNER_CLASS_NAME},
+				.${OverlayManager.RECT_CLASS_NAME}:has(.${OverlayManager.RECT_BUTTON_CLASS_NAME}:focus-within) .${OverlayManager.RECT_BUTTON_CLASS_NAME}  {
 					opacity: 1;
 				}
 				.${OverlayManager.RECT_BUTTON_CLASS_NAME}.${OverlayManager.RECT_EDIT_BUTTON_CLASS_NAME}:hover {
-					background-color: color-mix(in srgb, ${editButtonBgColor}, ${buttonBgColorMix});
+					background-color: ${editButtonHoverBgColor};
 				}
 				.${OverlayManager.RECT_BUTTON_CLASS_NAME}.${OverlayManager.RECT_AI_BUTTON_CLASS_NAME}:hover {
-					background-color: color-mix(in srgb, ${aiButtonBgColor}, ${buttonBgColorMix});
+					background-color: ${aiButtonHoverBgColor};
+				}
+				.${OverlayManager.RECT_CLASS_NAME}.${OverlayManager.RECT_ACTIONS_FLIPPED_CLASS_NAME} .${OverlayManager.RECT_BUTTON_CLASS_NAME} {
+					inset-block-end: auto;
+					inset-block-start: 100%;
+					margin-block-start: calc(${borderSpacing} + ${actionsOffset});
+				}
+				.${OverlayManager.RECT_CLASS_NAME}.${OverlayManager.RECT_ACTIONS_FLIPPED_CLASS_NAME} .${OverlayManager.RECT_BUTTON_CLASS_NAME}::after {
+					inset-block-start: calc(-1 * ${actionsOffset});
+					inset-block-end: 0;
+				}
+				.${OverlayManager.RECT_BUTTON_CLASS_NAME}:focus-visible {
+					outline: ${focusRingWidth} solid ${focusRingColor};
+					outline-offset: ${focusRingOffset};
 				}
 			`),
 		);

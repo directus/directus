@@ -1,19 +1,15 @@
 <script setup lang="ts">
-import { translateShortcut } from '@directus/composables';
-import { useScroll } from '@vueuse/core';
-import { computed, provide, ref, useTemplateRef } from 'vue';
+import { useBreakpoints } from '@vueuse/core';
+import { computed, provide, ref, useId, useTemplateRef } from 'vue';
 import { type ApplyShortcut } from './v-dialog.vue';
-import VResizeable from './v-resizeable.vue';
-import VButton from '@/components/v-button.vue';
 import VDetail from '@/components/v-detail.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VDrawerHeader from '@/components/v-drawer-header.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import VOverlay from '@/components/v-overlay.vue';
+import { BREAKPOINTS } from '@/constants';
 
 export interface Props {
 	title: string;
-	subtitle?: string | null;
 	modelValue?: boolean;
 	persistent?: boolean;
 	icon?: string;
@@ -21,14 +17,32 @@ export interface Props {
 	 * Color of the icon displayed in the drawer header.
 	 */
 	iconColor?: string;
-	sidebarResizeable?: boolean;
 	sidebarLabel?: string;
 	cancelable?: boolean;
 	applyShortcut?: ApplyShortcut;
+	/** @deprecated Use the `title` prop instead */
+	subtitle?: string | null;
 }
 
+defineSlots<{
+	activator(props: { on: () => void }): any;
+	'title-outer:prepend'(): any;
+	title(): any;
+	'title-outer:append'(): any;
+	'actions:prepend'(): any;
+	actions(): any;
+	'actions:primary'(): any;
+	sidebar(): any;
+	default(): any;
+	/** @deprecated Use the default `actions` slot for secondary actions, or `actions:primary` for primary CTAs. */
+	'actions:append'(): any;
+	/** @deprecated The `subtitle` slot is deprecated. */
+	subtitle(): any;
+	/** @deprecated The `header:append` slot is deprecated. */
+	'header:append'(): any;
+}>();
+
 const props = withDefaults(defineProps<Props>(), {
-	subtitle: null,
 	modelValue: undefined,
 	persistent: false,
 	icon: 'box',
@@ -39,13 +53,11 @@ const emit = defineEmits(['cancel', 'apply', 'update:modelValue']);
 
 const localActive = ref(false);
 
+const { mobileSidebarOpen, mobileOutletId, desktopOutletId, teleportTarget } = useSidebar();
+
 const scrollContainer = useTemplateRef('scroll-container');
 
 provide('main-element', scrollContainer);
-
-const sidebarWidth = 198;
-// Half of the space of the drawer (770 / 2 = 385)
-const sidebarMaxWidth = 385;
 
 const internalActive = computed({
 	get() {
@@ -57,9 +69,25 @@ const internalActive = computed({
 	},
 });
 
-const { y } = useScroll(scrollContainer);
+function useSidebar() {
+	const mobileSidebarOpen = ref(false);
+	const breakpoints = useBreakpoints(BREAKPOINTS);
+	const isMobile = breakpoints.smallerOrEqual('lg');
+	const sidebarId = useId();
+	const mobileOutletId = `v-drawer-sidebar-mobile-${sidebarId}`;
+	const desktopOutletId = `v-drawer-sidebar-desktop-${sidebarId}`;
 
-const showHeaderShadow = computed(() => y.value > 0);
+	const teleportTarget = computed(() =>
+		isMobile.value && mobileSidebarOpen.value ? `#${mobileOutletId}` : `#${desktopOutletId}`,
+	);
+
+	return {
+		mobileSidebarOpen,
+		mobileOutletId,
+		desktopOutletId,
+		teleportTarget,
+	};
+}
 </script>
 
 <template>
@@ -76,92 +104,82 @@ const showHeaderShadow = computed(() => y.value > 0);
 		</template>
 
 		<article class="v-drawer">
-			<VButton
-				v-if="cancelable"
-				v-tooltip.bottom="`${$t('cancel')} (${translateShortcut(['esc'])})`"
-				class="cancel"
-				icon
-				rounded
-				secondary
-				small
-				@click="$emit('cancel')"
-			>
-				<VIcon name="close" small />
-			</VButton>
+			<VDrawerHeader :title :icon :icon-color :has-sidebar="!!$slots.sidebar" :cancelable @cancel="$emit('cancel')">
+				<template #title-outer:prepend>
+					<slot name="title-outer:prepend" />
+				</template>
+
+				<template v-if="!!$slots.subtitle || subtitle" #title:prepend>
+					<slot name="subtitle">{{ subtitle }}</slot>
+				</template>
+				<template #title><slot name="title" /></template>
+				<template v-if="!!$slots['header:append']" #title:append>
+					<slot name="header:append" />
+				</template>
+
+				<template #title-outer:append>
+					<slot name="title-outer:append" />
+				</template>
+
+				<template #actions:prepend><slot name="actions:prepend" /></template>
+				<template #actions>
+					<slot name="actions" />
+					<slot name="actions:append" />
+				</template>
+				<template #actions:primary><slot name="actions:primary" /></template>
+			</VDrawerHeader>
+
+			<div v-if="$slots.sidebar" class="mobile-sidebar">
+				<VDetail v-model="mobileSidebarOpen" :label="sidebarLabel || $t('sidebar')">
+					<nav class="sidebar-content" @click="mobileSidebarOpen = false">
+						<div :id="mobileOutletId" />
+					</nav>
+				</VDetail>
+			</div>
+
+			<Teleport v-if="$slots.sidebar" defer :to="teleportTarget">
+				<slot name="sidebar" />
+			</Teleport>
 
 			<div class="content">
-				<VOverlay v-if="$slots.sidebar" absolute />
+				<nav v-if="$slots.sidebar" class="sidebar">
+					<div :id="desktopOutletId" class="sidebar-content" />
+				</nav>
 
-				<VResizeable
-					v-if="$slots.sidebar"
-					:disabled="!sidebarResizeable"
-					:width="sidebarWidth"
-					:max-width="sidebarMaxWidth"
+				<main
+					ref="scroll-container"
+					class="main"
+					:class="{ 'has-sidebar': $slots.sidebar, 'sidebar-open': mobileSidebarOpen }"
 				>
-					<nav class="sidebar">
-						<div class="sidebar-content">
-							<slot name="sidebar" />
-						</div>
-					</nav>
-				</VResizeable>
-
-				<main ref="scroll-container" :class="{ main: true, 'small-search-input': $slots.sidebar }">
-					<VDrawerHeader :title :shadow="showHeaderShadow" :icon :icon-color @cancel="$emit('cancel')">
-						<template #title><slot name="title" /></template>
-						<template #headline>
-							<slot name="subtitle">
-								<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
-							</slot>
-						</template>
-
-						<template #title-outer:prepend>
-							<slot name="title-outer:prepend" />
-						</template>
-
-						<template #actions:prepend><slot name="actions:prepend" /></template>
-						<template #actions><slot name="actions" /></template>
-						<template #actions:append><slot name="actions:append" /></template>
-						<template #title:append><slot name="header:append" /></template>
-					</VDrawerHeader>
-
-					<VDetail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel || $t('sidebar')">
-						<nav>
-							<slot name="sidebar" />
-						</nav>
-					</VDetail>
-
 					<slot />
 				</main>
+
+				<VOverlay
+					v-if="$slots.sidebar"
+					absolute
+					:active="mobileSidebarOpen"
+					class="mobile-sidebar-overlay"
+					@click="mobileSidebarOpen = false"
+				/>
 			</div>
 		</article>
 	</VDialog>
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .v-drawer {
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	inline-size: 100%;
-	max-inline-size: 48.125rem;
+	max-inline-size: calc(var(--content-padding) * 2 + var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
 	block-size: 100%;
-	background-color: var(--theme--background);
+	background-color: var(--theme--shell--background);
 
-	.cancel {
-		--focus-ring-color: var(--theme--primary-subdued);
-
-		display: none;
-		position: absolute;
-		inset-block-start: 0.6875rem;
-		inset-inline-start: -3.125rem;
-
-		@media (width >= 54rem) {
-			display: inline-flex;
-		}
-	}
-
-	.spacer {
-		flex-grow: 1;
+	@include mixins.breakpoint-up('lg') {
+		inline-size: calc(100% - 3.625rem);
 	}
 
 	.header-icon {
@@ -172,8 +190,6 @@ const showHeaderShadow = computed(() => y.value > 0);
 	}
 
 	.content {
-		--theme--form--row-gap: 2.9375rem;
-
 		container-type: size;
 		position: relative;
 		display: flex;
@@ -190,14 +206,14 @@ const showHeaderShadow = computed(() => y.value > 0);
 
 			display: none;
 
-			@media (width >= 54rem) {
+			@include mixins.breakpoint-up('lg') {
 				position: relative;
 				display: block;
 				flex-shrink: 0;
 				inline-size: 12.375rem;
 				block-size: 100%;
-				background: var(--theme--navigation--background);
-				border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
+
+				/* background is set on .v-drawer, border is set on .main */
 			}
 
 			.sidebar-content {
@@ -218,44 +234,53 @@ const showHeaderShadow = computed(() => y.value > 0);
 			}
 		}
 
-		.v-overlay {
-			--v-overlay-z-index: 1;
-
-			@media (width >= 54rem) {
-				--v-overlay-z-index: none;
-
-				display: none;
-			}
-		}
-
 		.main {
 			position: relative;
 			flex-grow: 1;
 			overflow: auto;
 			scroll-padding-block-start: 5.625rem;
-		}
+			background-color: var(--theme--background);
+			border-block-start: var(--theme--shell--border-width) solid var(--theme--shell--border-color);
 
-		.main.small-search-input:deep(.search-input.filter-active) {
-			inline-size: 16.875rem !important;
-		}
-	}
+			&.has-sidebar {
+				@include mixins.breakpoint-up('lg') {
+					border-inline-start: var(--theme--shell--border-width) solid var(--theme--shell--border-color);
+					border-start-start-radius: var(--theme--border-radius);
+				}
+			}
 
-	@media (width >= 54rem) {
-		inline-size: calc(100% - 3.625rem);
+			&.sidebar-open {
+				@include mixins.breakpoint-down('lg') {
+					border-color: transparent;
+				}
+			}
+		}
 	}
 }
 
 .mobile-sidebar {
-	position: relative;
-	z-index: 2;
-	margin: var(--content-padding);
+	display: none;
+	padding-inline: var(--content-padding);
+	padding-block: 0.625rem;
+	background-color: var(--theme--shell--background);
 
-	nav {
-		background-color: var(--theme--background-subdued);
-		border-radius: var(--theme--border-radius);
+	@include mixins.breakpoint-up('sm') {
+		padding-inline: calc(var(--content-padding) - 1.5rem);
 	}
 
-	@media (width >= 54rem) {
+	@include mixins.breakpoint-down('lg') {
+		display: block;
+	}
+
+	.sidebar-content :deep(.v-list) {
+		--v-list-padding: 0;
+	}
+}
+
+.mobile-sidebar-overlay {
+	--v-overlay-color: color-mix(in srgb, var(--overlay-color) 85%, transparent);
+
+	@include mixins.breakpoint-up('lg') {
 		display: none;
 	}
 }
