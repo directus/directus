@@ -14,7 +14,6 @@ import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
-import ms from 'ms';
 import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../constants.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
 import { getEntitlementManager, getLicenseManager } from '../license/index.js';
@@ -31,9 +30,10 @@ import { SettingsService } from './settings.js';
 
 const env = useEnv();
 const logger = useLogger();
+const HEALTHCHECK_CACHE_TTL = getMilliseconds(env['HEALTHCHECK_CACHE_TTL'], 300_000); // default 5 minute
 
 const store = useStore<{ health: ServerHealth }>((env['HEALTHCHECK_NAMESPACE'] as string) ?? 'directus:healthcheck', {
-	ttl: getMilliseconds(env['HEALTHCHECK_CACHE_TTL'], ms('5m')),
+	ttl: HEALTHCHECK_CACHE_TTL,
 });
 
 export class ServerService {
@@ -330,7 +330,7 @@ export class ServerService {
 				type: 'redis',
 				redis: useRedis(),
 				namespace: (env['HEALTHCHECK_NAMESPACE'] as string) ?? 'directus:healthcheck',
-				ttl: getMilliseconds(env['HEALTHCHECK_CACHE_TTL'], ms('5m')),
+				ttl: HEALTHCHECK_CACHE_TTL,
 			});
 
 			const checks: Record<string, ServerHealthCheck[]> = {
