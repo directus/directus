@@ -7,7 +7,6 @@ import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardTitle from '@/components/v-card-title.vue';
@@ -26,17 +25,33 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vue';
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
+import { useLicenseStore } from '@/stores/license';
+import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
+import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
+import EntitlementRemaining from '@/views/private/components/license/entitlement-remaining.vue';
+import MaxCapacityAlert from '@/views/private/components/license/max-capacity-alert.vue';
 
 const { t } = useI18n();
 
 const { createAllowed } = useCollectionPermissions('directus_flows');
+const licenseStore = useLicenseStore();
 
 const confirmDelete = ref<FlowRaw | null>(null);
 const deletingFlow = ref(false);
 const editFlow = ref<string | undefined>();
+const flowsLimitModalOpen = ref(false);
+
+function openCreateFlow() {
+	if (!licenseStore.limits.flows.hasRemaining) {
+		flowsLimitModalOpen.value = true;
+		return;
+	}
+
+	editFlow.value = '+';
+}
 
 const conditionalFormatting = ref([
 	{
@@ -95,7 +110,8 @@ const internalSort = ref<Sort>({ by: 'name', desc: false });
 const flowsStore = useFlowsStore();
 
 const flows = computed(() => {
-	const sortedFlows = sortBy(flowsStore.flows, [internalSort.value.by]);
+	const translatedFlows = flowsStore.flows.map((flow) => ({ ...flow, name: translate(flow.name) }));
+	const sortedFlows = sortBy(translatedFlows, [internalSort.value.by]);
 	return internalSort.value.desc ? sortedFlows.reverse() : sortedFlows;
 });
 
@@ -121,6 +137,7 @@ async function deleteFlow() {
 	try {
 		await api.delete(`/flows/${confirmDelete.value.id}`);
 		await flowsStore.hydrate();
+		licenseStore.hydrate();
 		confirmDelete.value = null;
 	} catch (error) {
 		unexpectedError(error);
@@ -136,6 +153,7 @@ async function toggleFlowStatusById(id: string, value: string) {
 		});
 
 		await flowsStore.hydrate();
+		licenseStore.hydrate();
 	} catch (error) {
 		unexpectedError(error);
 	}
@@ -152,20 +170,21 @@ function onFlowDrawerCompletion(id: string) {
 
 <template>
 	<PrivateView :title="$t('flows')" icon="bolt">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
-		</template>
-
 		<template #navigation>
 			<SettingsNavigation />
 		</template>
 
-		<template #actions>
+		<template #actions:prepend>
+			<EntitlementRemaining entitlement-key="flows" />
+		</template>
+
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="createAllowed ? $t('create_flow') : $t('not_allowed')"
+				:tooltip="createAllowed ? undefined : $t('not_allowed')"
+				:label="$t('create')"
 				:disabled="createAllowed === false"
 				icon="add"
-				@click="editFlow = '+'"
+				@click="openCreateFlow"
 			/>
 		</template>
 
@@ -173,72 +192,75 @@ function onFlowDrawerCompletion(id: string) {
 			{{ $t('no_flows_copy') }}
 
 			<template v-if="createAllowed" #append>
-				<VButton @click="editFlow = '+'">{{ $t('create_flow') }}</VButton>
+				<VButton @click="openCreateFlow">{{ $t('create_flow') }}</VButton>
 			</template>
 		</VInfo>
 
-		<VTable
-			v-else
-			v-model:headers="tableHeaders"
-			:items="flows"
-			:sort="internalSort"
-			show-resize
-			fixed-header
-			@click:row="navigateToFlow"
-			@update:sort="updateSort($event)"
-		>
-			<template #[`item.icon`]="{ item }">
-				<VIcon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--theme--primary)'" />
-			</template>
+		<div v-else class="padding-box">
+			<MaxCapacityAlert v-if="!licenseStore.limits.flows.hasRemaining" entitlement-key="flows" />
 
-			<template #[`item.status`]="{ item }">
-				<DisplayFormattedValue
-					type="string"
-					:item="item"
-					:value="item.status"
-					:conditional-formatting="conditionalFormatting"
-				/>
-			</template>
+			<VTable
+				v-model:headers="tableHeaders"
+				:items="flows"
+				:sort="internalSort"
+				show-resize
+				fixed-header
+				@click:row="navigateToFlow"
+				@update:sort="updateSort($event)"
+			>
+				<template #[`item.icon`]="{ item }">
+					<VIcon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--theme--primary)'" />
+				</template>
 
-			<template #item-append="{ item }">
-				<VMenu placement="left-start" show-arrow>
-					<template #activator="{ toggle }">
-						<VIcon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
-					</template>
+				<template #[`item.status`]="{ item }">
+					<DisplayFormattedValue
+						type="string"
+						:item="item"
+						:value="item.status"
+						:conditional-formatting="conditionalFormatting"
+					/>
+				</template>
 
-					<VList>
-						<VListItem clickable @click="toggleFlowStatusById(item.id, item.status)">
-							<template v-if="item.status === 'active'">
-								<VListItemIcon><VIcon name="block" /></VListItemIcon>
-								<VListItemContent>{{ $t('set_flow_inactive') }}</VListItemContent>
-							</template>
-							<template v-else>
-								<VListItemIcon><VIcon name="check" /></VListItemIcon>
-								<VListItemContent>{{ $t('set_flow_active') }}</VListItemContent>
-							</template>
-						</VListItem>
+				<template #item-append="{ item }">
+					<VMenu placement="left-start" show-arrow>
+						<template #activator="{ toggle }">
+							<VIcon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
+						</template>
 
-						<VListItem clickable @click="editFlow = item.id">
-							<VListItemIcon>
-								<VIcon name="edit" outline />
-							</VListItemIcon>
-							<VListItemContent>
-								{{ $t('edit_flow') }}
-							</VListItemContent>
-						</VListItem>
+						<VList>
+							<VListItem clickable @click="toggleFlowStatusById(item.id, item.status)">
+								<template v-if="item.status === 'active'">
+									<VListItemIcon><VIcon name="block" /></VListItemIcon>
+									<VListItemContent>{{ $t('set_flow_inactive') }}</VListItemContent>
+								</template>
+								<template v-else>
+									<VListItemIcon><VIcon name="check" /></VListItemIcon>
+									<VListItemContent>{{ $t('set_flow_active') }}</VListItemContent>
+								</template>
+							</VListItem>
 
-						<VListItem class="danger" clickable @click="confirmDelete = item">
-							<VListItemIcon>
-								<VIcon name="delete" outline />
-							</VListItemIcon>
-							<VListItemContent>
-								{{ $t('delete_flow') }}
-							</VListItemContent>
-						</VListItem>
-					</VList>
-				</VMenu>
-			</template>
-		</VTable>
+							<VListItem clickable @click="editFlow = item.id">
+								<VListItemIcon>
+									<VIcon name="edit" outline />
+								</VListItemIcon>
+								<VListItemContent>
+									{{ $t('edit_flow') }}
+								</VListItemContent>
+							</VListItem>
+
+							<VListItem class="danger" clickable @click="confirmDelete = item">
+								<VListItemIcon>
+									<VIcon name="delete" outline />
+								</VListItemIcon>
+								<VListItemContent>
+									{{ $t('delete_flow') }}
+								</VListItemContent>
+							</VListItem>
+						</VList>
+					</VMenu>
+				</template>
+			</VTable>
+		</div>
 
 		<VDialog :model-value="!!confirmDelete" @esc="confirmDelete = null" @apply="deleteFlow">
 			<VCard>
@@ -263,12 +285,15 @@ function onFlowDrawerCompletion(id: string) {
 		/>
 
 		<RouterView name="add" />
+
+		<EntitlementLimitModal v-model="flowsLimitModalOpen" entitlement-key="flows" is-admin />
 	</PrivateView>
 </template>
 
 <style scoped>
-.v-table {
+.padding-box {
 	padding: var(--content-padding);
+	padding-block-start: var(--content-padding-top-table);
 }
 
 .ctx-toggle {

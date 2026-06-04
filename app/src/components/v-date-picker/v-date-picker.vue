@@ -453,7 +453,7 @@ function setToNow() {
 		position: relative;
 		justify-content: center;
 		align-items: center;
-		border-width: 2px;
+		border-width: var(--theme--border-width);
 		border-style: solid;
 		border-color: transparent;
 		font-size: 0.8125rem;
@@ -540,7 +540,6 @@ function setToNow() {
 		align-items: center;
 		border-radius: 0.1875rem;
 		gap: 0.1875rem;
-		border-width: 1px;
 		text-align: center;
 		user-select: none;
 	}

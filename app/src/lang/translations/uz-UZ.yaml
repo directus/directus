@@ -1,1 +1,514 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Haqida
+setup_welcome: Directusga xush kelibsiz
+setup_info: Keling, admin hisobingizni yarating va loyihangizni ishga tushiring.
+setup_marketing_emails: Menga mahsulot yangiliklari va reliz eslatmalarini yuboring
+setup_launch: Directusni ishga tushirish
+setup_project: Loyihani sozlash
+first_name: Ism
+last_name: Familiya
+admin_email: Admin elektron pochta manzili
+owner_email: Egasining elektron pochta manzili
+email_address: Elektron pochta manzili
+identifier: Identifikator
+avatar: Avatar
+application: IlovaUsul
+default_provider: StandartE'lon qilingan
+method: Usul
+published: E'lon qilingan
+draft: Qoralama
+archived: Arxivlangan
+marketplace: Bozor
+extensions: Kengaytmalar
+skip_link_nav: Navigatsiyaga o'tish
+skip_link_module_nav: Modul navigatsiyasiga o'tish
+skip_link_main: Asosiy kontentga o'tishModullar
+skip_link_sidebar: Yon panelga o'tishModul paneli
+modules: Modullar
+module_bar: Modul paneli
+logs: Jurnallar
+unknown: Noma'lum
+reset_width: Kenglikni qayta tiklash
+tile_size: Katak o'lchami
+edit_field: Maydonni tahrirlash
+conditions: Shartlar
+location: Joylashuv
+collection_names_are_case_sensitive: Kolleksiya nomlari katta-kichik harflarga sezgir
+condition_rules: Shart qoidalari
+invalid_input: Noto'g'ri kiritilgan ma'lumot
+invalid_file_type: Noto'g'ri fayl turi
+extension_hook: Hook
+extension_modules: Modullar
+extension_panels: Panellar
+extension_themes: Mavzular
+extension_hooks: KanchalaklarOperatsiyalar
+extension_endpoints: Endpoint-larTo'plamlar
+extension_operations: Mavjud emas
+extension_bundles: To'plamlar
+extension_missing: Mavjud emas
+extension_reload_required: Sahifani qayta yuklash talab qilinadiHozir qayta yuklash
+extension_reload_required_copy: O'zgarishlarni ko'rish uchun sahifani qayta yuklash talab qilinadi.
+compatible_with_your_project: Loyihangizga mos
+n_files: '{n} ta faylTasdiqlanganBoOmborxonash sahifa'
+verified: Tasdiqlandi
+homepage: Bosh sahifa
+repository: Repozitoriy
+reload_page: Sahifani qayta yuklash
+reload_required: Qayta yuklash talab qilinadi
+report_an_issue: Muammo haqida xabar bering
+website: Veb-sayt
+github: GitHub
+beta: Beta
+collab_collision: Element tahrirlash jarayonida o'zgartirildi. Qaysi o'zgarishlarni saqlashni tanlang.
+collab_disconnected: Hamkorlikda tahrirlash uzilib qoldi
+collab_editing_field: '"{field}" maydonini tahrirlash'
+collab_currently_viewing: Hozir ko'rilmoqda
+you: siz
+n_downloads: '{n} ta yuklab olish'
+downloads: Yuklamalar
+compatibility_not_guaranteed: Moslik kafolatlanmagan
+compatibility_not_guaranteed_copy: Muallif ushbu kengaytmaning {hostVersion} versiyasi bilan mosligini ko'rsatgan, ammo bu sizning loyihangiz versiyasiga ({currentVersion}) mos kelmaydi
+enable: Yoqish
+disable: O'chirish
+custom: Maxsus
+hook: Hook
+fill_width: Kenglikni to'ldirish
+field_name_translations: Maydon nomi tarjimalari
+enter_password_to_enable_tfa: Ikki faktorli autentifikatsiyani yoqish uchun parolingizni kiriting
+sso_tfa_setup_notice: Hisobingizdan chiqasiz va qayta kirishingiz talab qilinadi. Saqlanmagan barcha o'zgarishlar yo'qotiladi.
+enable_tfa: 2FA ni yoqish
+cancel_tfa_setup: 2FA sozlashini bekor qilish
+cancel_tfa_setup_notice: 2FA sozlashini bekor qilishni xohlaysizmi?
+keep_setup: Sozlashni saqlash
+cancel_setup: Sozlashni bekor qilish
+add_field: Maydon qo'shish
+role_name: Rol nomi
+policy_name: Siyosat nomi
+branch: Tarmoq
+switch_version_copy: '"{version}" versiyasiga o''tishni xohlaysizmi? Saqlanmagan o''zgarishlar yo''qoladi.'
+create_version: Versiya yaratish
+rename_version: Versiyani qayta nomlash
+reserved_version_key: '"{key}" versiya kaliti zahiralangan va undan foydalanib bo''lmaydi.'
+compare_version: Versiyani solishtirish
+save_version: Versiyani saqlash
+apply: Tatbiq qilish
+discard: Bekor qilish
+select_all_differences: Barcha farqlarni tanlash
+show_differences_only: Faqat farqlarni ko'rsatish
+delete_version: Versiyani o'chirish
+delete_version_copy: >-
+  "{version}" versiyasini o'chirishni xohlaysizmi? Bu amal qaytarib bo'lmaydi.
+content_edited: Kontent tahrirlandi
+reset_bookmark: Xatcho'pni tiklash
+update_bookmark: Xatcho'pni yangilash
+delete_bookmark: Xatcho'pni o'chirish
+delete_bookmark_copy: >-
+  "{bookmark}" xatcho'pini o'chirishni xohlaysizmi? Bu amal qaytarib bo'lmaydi.
+delete_personal_bookmark: Shaxsiy xatcho'pni o'chirish
+delete_role_bookmark: Rol xatcho'pini o'chirish
+delete_global_bookmark: Global xatcho'pni o'chirish
+logoutReason:
+  SIGN_OUT: Tizimdan chiqildi
+  SESSION_EXPIRED: Sessiya eskirgan
+public_label: Hammaga ochiq
+public_description: Autentifikatsiyasiz qanday API ma'lumotlari mavjudligini boshqaradi.
+public_role_info: >-
+  Ommaviy rol autentifikatsiyasiz foydalanuvchilar yoki roli bo'lmaganlar uchun qanday API ma'lumotlari mavjudligini boshqaradi. Ommaviy rol ilova yoki admin kirish huquqiga ega bo'la olmaydi. Agar ilova yoki admin kirish ruxsatlari ommaviy rolga berilgan bo'lsa, ular e'tiborga olinmaydi.
+admin_description: Cheklanmagan ilova/API kirishiga ega boshlang'ich administrator roli.
+admin_policy_description: Cheklanmagan ilova/API kirishiga ega boshlang'ich administrator siyosati.
+no_description: Tavsif yo'q...
+reached_maximum_number_of_extensions: Siz ushbu loyiha uchun kengaytmalarning maksimal soniga ({n}) yetdingiz. Qo'shimcha ma'lumot uchun tizim administratoriga murojaat qiling.
+not_allowed: Ruxsat etilmagan
+archive: Arxivlash
+archive_confirm: Ushbu elementni arxivlashni xohlaysizmi?
+archive_confirm_count: >-
+  Hech bir element tanlanmagan | Ushbu elementni arxivlashni xohlaysizmi? | Ushbu {count} ta elementni arxivlashni xohlaysizmi?
+reset_system_permissions_to: 'Tizim ruxsatlarini tiklash:'
+reset_system_permissions_copy: Bu amal tizim to'plamlariga qo'llagan maxsus ruxsatlaringizni ustiga yozadi. Ishonchingiz komilmi?
+the_following_are_minimum_permissions: Quyidagi minimal ruxsatlar "Ilova kirishi" yoqilganda avtomatik ravishda beriladi. Zarur bo'lsa qo'shimcha ruxsatlar berish mumkin, ammo ushbu darajadan pastga tushira olmaysiz.
+app_access_minimum: Ilova kirishi uchun minimal ruxsatlar
+recommended_defaults: Tavsiya etilgan standartlar
+unarchive: Arxivdan chiqarish
+unarchive_confirm: Ushbu elementni arxivdan chiqarishni xohlaysizmi?
+nested_files_folders_will_be_moved: Ichki fayllar va papkalar bir daraja yuqoriga ko'chiriladi.
+delete_folder_dialog:
+  move_content: Kontentni bir daraja yuqoriga ko'chirish
+  delete_content: Barcha kontentni o'chirish
+  content_behavior: Papka kontent bilan nima qilish kerak?
+validation_errors_notice: 'Quyidagi maydonlarda noto''g''ri qiymatlar mavjud:'
+validation_value_is_invalid: Qiymat noto'g'ri
+validationError:
+  eq: Qiymat {valid} bo'lishi kerak
+field_presentation: Taqdimot va taxalluslar
+field_file: Bitta fayl
+field_files: Ko'p fayllar
+field_translations: Tarjimalar
+permissions_for_policy: '{policy} siyosati {action} qila oladigan elementlar.'
+fields_for_role: '{role} roli {action} qila oladigan maydonlar.'
+fields_for_policy: '{policy} siyosati {action} qila oladigan maydonlar.'
+validation_for_role: '{role} roli bajarishi kerak bo''lgan {action} amalidagi maydon qoidalari.'
+validation_for_policy: '{policy} siyosati bajarishi kerak bo''lgan {action} amalidagi maydon qoidalari.'
+presets_for_role: '{role} roli uchun maydon qiymati standartlari.'
+presets_for_policy: '{policy} siyosati uchun maydon qiymati standartlari.'
+presets_field_warning: '"{field}" maydoni uchun relyatsion standartlar "batafsil" sintaksisida sozlanishi kerak.'
+presentation_and_aliases: Taqdimot va taxalluslar
+revision_post_create: Bu element yaratilgandagi ko'rinishi.
+revision_post_update: Bu element yangilanganidan keyingi ko'rinishi.
+changes_made: Quyida ushbu tahrirda kiritilgan aniq o'zgarishlar keltirilgan.
+no_relational_data: Esda tutingki, relyatsion ma'lumotlar bu yerda ko'rsatilmagan.
+junction_field_location: O'tkazuvchi maydonlar joylashuvi
+top: Yuqori
+bottom: Pastki
+hide_field: Maydonni yashirish
+hide_field_on_detail: Batafsil sahifada maydonni yashirish
+show_field_on_detail: Batafsil sahifada maydonni ko'rsatish
+delete_field: Maydonni o'chirish
+fields_and_layout: Maydonlar va joylashma
+field_create_success: '"{field}" maydoni yaratildi'
+field_update_success: '"{field}" maydoni yangilandi'
+duplicate_where_to: Bu maydonni qayerga nusxalashni xohlaysiz?
+language: Til
+language_placeholder: Tilni tanlang...
+aggregate_function: Agregat funksiya
+aggregate_precision: Agregat aniqlik
+group_aggregation: Guruh agregatsiyasi
+group_precision: Guruh aniqligi
+global: Global
+admins_have_all_permissions: Administratorlar barcha ruxsatlarga ega
+camera: Kamera
+show_zero: Nolni ko'rsatish
+create_in_advanced_field_creation_mode: Maydonni kengaytirilgan rejimda yaratish
+continue_in_advanced_field_creation_mode: Maydon yaratishni kengaytirilgan rejimda davom ettirish
+validation: Tekshirish
+sum: Yig'indi
+sum_distinct: Noyob yig'indi
+avg: O'rtacha
+avg_distinct: Noyob o'rtacha
+count: Soni
+count_distinct: Noyob soni
+min: Minimal
+max: Maksimal
+exposure: Ekspozitsiya
+shutter: Zatvor
+iso: ISO
+focal_length: Fokus masofasi
+schema_setup_key: Bu maydonning ma'lumotlar bazasi ustun nomi va API kaliti
+refresh_interval_minutes: Har daqiqada | Har {minutes} daqiqada
+auto_generate: Avtomatik yaratish
+this_will_auto_setup_fields_relations: Bu barcha talab qilinadigan maydonlar va munosabatlarni avtomatik sozlaydi.
+click_here: Bu yerga bosing
+to_manually_setup_translations: tarjimalarni qo'lda sozlash uchun.
+manage: Boshqarish
+click_to_manage_translated_fields: >-
+  Hali tarjima qilingan maydon yo'q. Yaratish uchun bu yerga bosing. | Bitta tarjima qilingan maydon bor. Boshqarish uchun bu yerga bosing. | {count} ta tarjima qilingan maydon bor. Boshqarish uchun bu yerga bosing.
+fields_group: Maydonlar guruhi
+no_collections_found: Hech qanday to'plam topilmadi.
+new_data_alert: 'Quyidagilar sizning Ma''lumotlar modelingizda yaratiladi:'
+search_collection: To'plam izlash...
+search_role: Rol izlash...
+search_policy: Siyosat izlash...
+search_field: Maydon izlash...
+new_field: 'Yangi maydon'
+new_collection: 'Yangi to''plam'
+add_m2o_to_collection: '"{collection}" ga M2O qo''shish'
+add_o2m_to_collection: '"{collection}" ga O2M qo''shish'
+add_m2m_to_collection: '"{collection}" ga M2M qo''shish'
+choose_a_type: Turni tanlang...
+determined_by_relationship: Munosabat tomonidan aniqlanadi
+add_note: Foydalanuvchilar uchun foydali eslatma qo'shing...
+add_link: Havola qo'shish
+custom_link: Maxsus havola
+default_value: Standart qiymat
+standard_field: Standart maydon
+single_file: Bitta fayl
+multiple_files: Ko'p fayllar
+m2o_relationship: Ko'pdan birga munosabat
+o2m_relationship: Birdan ko'pga munosabat
+m2m_relationship: Ko'pdan ko'pga munosabat
+m2a_relationship: Ko'pdan istalganiga munosabat
+invalid_item: Noto'g'ri element
+require_confirmation: Tasdiqlashni talab qilish
+dialog: Dialog
+modal: Modal
+confirmation_dialog: Tasdiqlash dialogi
+confirmation_description: Tasdiqlash tavsifi
+confirmation_input_fields: Tasdiqlash kiritish maydonlari
+next: Keyingi
+field_name: Maydon nomi
+translations: Tarjimalar
+no_translations: Tarjima yo'q
+left_to_right: Chapdan o'ngga
+right_to_left: O'ngdan chapga
+note: Izoh
+enter_a_value: Qiymat kiriting...
+enter_a_placeholder: To'ldiruvchi kiriting...
+length: Uzunligi
+soft_length: Yumshoq chegara
+download_page_as_csv_unsupported: Bu tartib joriy sahifani yuklab olishni qo'llab-quvvatlamaydi.
+private_user: Shaxsiy foydalanuvchi
+creation_preview: Yaratish ko'rinishi
+revision_preview: Tahrirlash ko'rinishi
+updates_made: Yangilanishlar amalga oshirildi
+leave_comment: Izoh qoldiring...
+post_comment_success: Izoh joylashtirildi
+post_comment_updated: Fikr yangilandi
+item_create_success: Element yaratildi | Elementlar yaratildi
+item_update_success: Element yangilandi | Elementlar yangilandi
+item_delete_success: Element o'chirildi | Elementlar o'chirildi
+this_collection: Ushbu to'plam
+related_collection: Bog'liq to'plam
+related_collections: Bog'liq to'plamlar
+translations_collection: Tarjima to'plami
+languages_collection: Tillar to'plami
+enable_translations: Tarjimalarni yoqish
+manage_translation_fields: Tarjima maydonlarini qo'shish
+fields_to_translate: Tarjima qilinadigan maydonlar
+fields_to_add_to_translations: Tarjimalarga qo'shish uchun maydonlar
+translations_collection_name: Tarjimalar to'plami nomi
+translations_already_enabled: Tarjimalar yoqilgan
+translations_manage_helper_description: Ushbu to'plamdan tarjima qilish uchun ko'proq maydonlar qo'shishingiz mumkin.
+translations_copy_data_note: Maydonlar tarjimalar to'plamiga ko'chiriladi. Mavjud ma'lumotlar ko'chirilmaydi.
+add_fields: Maydonlar qo'shish
+show_advanced_options: Munosabat tafsilotlarini ko'rsatish
+hide_advanced_options: Munosabat tafsilotlarini yashirish
+translations_field_name_required: Barcha tarjima maydon nomlari talab qilinadi.
+translations_foreign_key_name_conflict: Ota va til tashqi kalit nomlari har xil bo'lishi kerak.
+translations_duplicate_field_names: Tarjima maydon nomlari noyob bo'lishi kerak.
+translation_configuration: Tarjima konfiguratsiyasi
+translations_invalid_config_warning: '{count} ta tarjima konfiguratsiyasi hal qilinmadi va faqat o''qish uchun qoladi | {count} ta tarjima konfiguratsiyalari hal qilinmadi va faqat o''qish uchun qoladi'
+translations_collection_already_exists: Bu tarjimalar to'plami allaqachon mavjud va qayta ishlatiladi
+translations_fields_up_to_date: Barcha mos maydonlar tarjimalar to'plamida allaqachon mavjud.
+translations_preview_collections: To'plamlar
+translations_preview_fields: Maydonlar
+translations_preview_relations: Munosabatlar
+ungrouped: Guruhdan chiqqan
+translations_enable_helper_description: Kontentni bir nechta tillarga tarjima qiling.
+import_data_input_placeholder: CSV yoki JSON...
+import_data_button: Import qilishni boshlash
+import_background: Fonda import qilish
+import_data_indeterminate: Ma'lumotlar import qilinmoqda...
+import_data_success: Ma'lumotlar {filename} dan muvaffaqiyatli import qilindi
+import_upload_success: '{filename} muvaffaqiyatli yuklandi. Ma''lumotlar fonda import qilinmoqda.'
+import_data_errors: Import Xatosi
+import_data_error: Ushbu faylning ma'lumotlar strukturasi to'plamga mos kelmaydi.
+import_data_validation_errors_notice: 'Quyidagi qatorlarda noto''g''ri qiymatlar mavjud:'
+import_data_error_row: 'Qator {rows}{field}:'
+snapshot:
+  export: Sxemani eksport qilish
+label_import: Import
+functions:
+  count: Soni
+months:
+  january: Yanvar
+  february: Fevral
+  march: Mart
+  april: Aprel
+  may: May
+  june: Iyun
+  july: Iyul
+  august: Avgust
+  september: Sentabr
+  october: Oktabr
+  november: Noyabr
+  december: Dekabr
+drag_mode: Sudrab ko'chirish rejimi
+move_tool: Ko'chirish vositasi
+crop_tool: Qirqish vositasi
+focal_point_tool: Fokus nuqtasi vositasi
+cancel_crop: Qirqishni bekor qilish
+cancel_selection: Tanlovni bekor qilish
+original: Asl nuxsasi
+url: URL
+import_label: Import
+file_details: Fayl tafsilotlari
+copy_id: IDni nusxalash
+copy_id_success: ID nusxalandi
+copy_id_fail: ID nusxalanmadi
+dimensions: O'lchamlar
+size: Hajm
+created: Yaratilgan
+uploaded: Yuklandi
+modified: O'zgartirilgan
+owner: Egasi
+edited_by: Tomonidan tahrirlangan
+folder: Papka
+folders: Papkalar
+zoom: Yaqinlashtirish
+download: Yuklab olish
+open: Ochish
+open_in_new_window: Yangi oynada ochish
+open_folder: '"{folder}" papkasini ochish'
+foreground_color: Old fon rangi
+background_color: Fon rangi
+upload_from_device: Qurilmadan fayl yuklash
+choose_from_library: Kutubxonadan fayl tanlash
+import_from_url: URL dan fayl import qilish
+replace_from_device: Qurilmadan fayl almashtirish
+replace_from_library: Kutubxonadan fayl almashtirish
+replace_from_url: URL dan fayl almashtirish
+no_image_selected: Hech qanday rasm tanlanmagan
+no_file_selected: Hech qanday fayl tanlanmagan
+download_file: Faylni yuklab olish
+operation_not_found: '"{operation}" operatsiyasi topilmadi.'
+reset_interface: Interfeysni tiklash
+display_not_found: '"{display}" ko''rinishi topilmadi.'
+reset_display: Ko'rinishni tiklash
+list-m2a: Yaratuvchi (M2A)
+item_count: 'Elementlar yo''q | Bitta element | {count} ta element'
+filtered_item_count: 'Filtr bo''yicha elementlar yo''q | Bitta filtr elementi | {count} ta filtr elementi'
+no_items_copy: Bu to'plamda hali hech qanday element yo'q.
+file_count: 'Fayllar yo''q | Bitta fayl | {count} ta fayl'
+no_files_copy: Bu yerda fayllar yo'q.
+user_count: 'Foydalanuvchilar yo''q | Bitta foydalanuvchi | {count} ta foydalanuvchi'
+no_users_copy: Bu rolda hali hech qanday foydalanuvchi yo'q.
+no_active_users: Faol foydalanuvchilar yo'q
+no_suspended_users: To'xtatilgan foydalanuvchilar yo'q
+no_invited_users: Taklif qilingan foydalanuvchilar yo'q
+no_status_users_copy: '{status} holatidagi foydalanuvchilar yo''q.'
+no_notifications: Bildirishnomalar yo'q
+no_notifications_copy: Hamma narsa yangilangan!
+activity_log: Faoliyat jurnali
+all_items: Barcha elementlar
+any: Istalgan
+csv: CSV
+csv_utf8: CSV Excel (UTF-8)
+no_collections: To'plamlar yo'q
+create_collection: To'plam yaratish
+no_collections_copy_admin: Hali hech qanday to'plamingiz yo'q. Boshlash uchun tugmani bosing.
+no_collections_copy: Hali hech qanday to'plamingiz yo'q. Iltimos, administratoringizga murojaat qiling.
+relationship_not_setup: Munosabat to'g'ri sozlanmagan yoki unga kirish uchun ruxsatingiz yo'q
+no_singleton_relations: Yagona ob'ektlarga munosabatlar qo'llab-quvvatlanmaydi
+display_template_not_setup: Ko'rsatish shabloni parametri noto'g'ri sozlangan
+collection_field_not_setup: To'plam maydoni parametri noto'g'ri sozlangan
+select_a_collection: To'plam tanlang
+select_a_field: Maydon tanlang
+active: Faol
+move_to: Ko'chirish...
+copy: Nusxalash
+copy_to: Nusxalab ko'chirish...
+inactive: Faol emas
+users: Foydalanuvchilar
+roles: Rollar
+activity: Faoliyat
+activity_item: Faoliyat elementi
+action: Harakat
+ip_address: IP manzil
+user_agent: Foydalanuvchi agenti
+origin: Manba
+decimals: Kasrlar
+value_decimals: Qiymat kasrlari
+min_value: Minimal qiymat
+errors:
+  GRAPHQL_VALIDATION: GraphQL tekshiruvi
+  ILLEGAL_ASSET_TRANSFORMATION: Tasvir manbasi ko'rish uchun juda katta
+  INTERNAL_SERVER_ERROR: Kutilmagan xato
+  INVALID_CONFIG: Noto'g'ri konfiguratsiya
+  INVALID_CREDENTIALS: Noto'g'ri foydalanuvchi nomi yoki parol
+  INVALID_FOREIGN_KEY: Noto'g'ri tashqi kalit
+  INVALID_INVITE: Bu taklif endi amal qilmaydi
+  INVALID_IP: IP manzilga ruxsat berilmagan
+  INVALID_OTP: Noto'g'ri bir martalik parol
+  INVALID_PAYLOAD: Noto'g'ri ma'lumot
+  INVALID_PROVIDER: Foydalanuvchi boshqa autentifikatsiya provayderiga tegishli
+  INVALID_PROVIDER_CONFIG: Noto'g'ri provayder konfiguratsiyasi
+  INVALID_QUERY: Noto'g'ri so'rov
+  INVALID_TOKEN: Noto'g'ri token
+  INVALID_USER: Foydalanuvchini autentifikatsiya qilishda xatolik
+  ITEM_LIMIT_REACHED: Element limiti cheklandi
+  ITEM_NOT_FOUND: Element topilmadi
+  LIMIT_EXCEEDED: 'Limit oshib ketdi'
+  METHOD_NOT_ALLOWED: Metod ruxsat etilmagan
+  NOT_NULL_VIOLATION: Qiymat null bo'lishi mumkin emas
+  RANGE_NOT_SATISFIABLE: Yaroqsiz oraliq
+  RECORD_NOT_UNIQUE: Takroriy qiymat aniqlandi
+  REQUESTS_EXCEEDED: So'rovlar limiti cheklandi
+  ROUTE_NOT_FOUND: Topilmadi
+  SERVICE_UNAVAILABLE: Xizmat mavjud emas
+wysiwyg_options:
+  forecolor: Old fon rangi
+  backcolor: Fon rangi
+licensing:
+  addon_manage: Boshqarish
+  resolve_sso_admin_email: Elektron pochta manzili
+settings_translations: Tarjimalar
+source_registry: Bozor
+fields:
+  directus_activity:
+    origin: Manba
+  directus_collections:
+    note: Izoh
+  directus_files:
+    folder: Papka
+  directus_users:
+    language: Til
+    status_active: Faol
+  directus_settings:
+    module_bar: Modul paneli
+  directus_fields:
+    note: Izoh
+    translation: Maydon nomi tarjimalari
+  directus_roles:
+    name: Rol nomi
+  directus_policies:
+    name: Siyosat nomi
+field_options:
+  directus_collections:
+    language: Til
+    archive_divider: Arxivlash
+  directus_users:
+    status_dropdown_active: Faol
+live_preview:
+  new_window: Yangi oynada ochish
+ai:
+  unknown: Noma'lum
+  ask_user_next: Keyingi
+ai_tools:
+  folders: Papkalar
+  operations: Mavjud emas
+discard_label: Bekor qilish
+interfaces:
+  filter:
+    any: Istalgan
+  group-tabs:
+    fill_width: Kenglikni to'ldirish
+  system-fields:
+    select_a_collection: To'plam tanlang
+  system-display-template:
+    collection_field_not_setup: To'plam maydoni parametri noto'g'ri sozlangan
+    select_a_collection: To'plam tanlang
+  select-dropdown:
+    choices_value_placeholder: Qiymat kiriting...
+  map:
+    zoom: Yaqinlashtirish
+displays:
+  translations:
+    translations: Tarjimalar
+  labels:
+    choices_value_placeholder: Qiymat kiriting...
+triggers:
+  webhook:
+    method: Usul
+operations:
+  request:
+    url: URL
+    method: Usul
