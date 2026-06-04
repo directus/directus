@@ -259,9 +259,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 
 	const env = useEnv();
 
-	const effectiveLimit = query.limit ?? Number(env['QUERY_LIMIT_DEFAULT']);
-
-	if (effectiveLimit === -1 || results.length < effectiveLimit) {
+	if (query.limit === -1 || results.length < (query.limit ?? Number(env['QUERY_LIMIT_DEFAULT']))) {
 		results.push(
 			...itemlessErrors.map((errorMeta) => {
 				let item = { $meta: errorMeta };
