@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Hakkında
+continue: Devam
 first_name: Ad
 last_name: Soyad
 identifier: Tanımlayıcı
@@ -1108,6 +1109,17 @@ settings_data_model: Veri Modeli
 settings_roles: Kullanıcı Rolleri
 settings_permissions: Politikalara Eriş
 settings_project: Ayarlar
+licensing:
+  unlimited: Limitsiz
+  addon_manage: Yönet
+  addon_update: Güncelle
+  resolve_continue: Devam
+  resolve_show_n_more: '{count} öğe daha göster'
+  resolve_section_flows: Akışlar
+  resolve_sso_admin_password: Parola
+  entitlements:
+    collections: Koleksiyonlar
+    flows: Akışlar
 settings_appearance: Görünüş
 settings_flows: Akışlar
 settings_system_logs: Sistem Geçmişleri
@@ -1951,7 +1963,9 @@ interfaces:
     value_securely_saved: Değer Güvenli Bir Şekilde Kaydedildi
     generate: Erişim Anahtarı Üret
     regenerate: Yeniden Erişim Anahtarı Üret
+    regenerate_confirm_title: Yeniden Erişim Anahtarı Üret
     remove_token: Belirteci kaldır
+    remove_confirm_title: Belirteci kaldır
   system-raw-editor:
     system-raw-editor: Ham Düzenleyici
     description: Ham veya bıyık şablon değerlerinin girilmesine izin ver
@@ -2382,4 +2396,6 @@ search_flow: Akış ara...
 percent: Yüzde
 show_password: Şifreyi Göster
 hide_password: Şi̇freyi Gizle
+license_grace_key_modal:
+  optional: İsteğe Bağlı
 set_to_now: Şimdiye Ayarla

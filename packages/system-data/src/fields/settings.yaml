@@ -899,6 +899,17 @@ fields:
     width: full
     group: ai_group
 
+  - field: ai_translations_notice
+    interface: presentation-notice
+    options:
+      icon: diamond
+      text: $t:fields.directus_settings.ai_translations_notice
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
   - field: ai_translation_default_model
     interface: select-dropdown
     note: $t:fields.directus_settings.ai_translation_default_model_note
@@ -957,6 +968,17 @@ fields:
       inlineTitle: true
       color: 'var(--theme--foreground-subdued)'
       title: $t:fields.directus_settings.ai_openai_compatible
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: ai_openai_compatible_notice
+    interface: presentation-notice
+    options:
+      icon: diamond
+      text: $t:fields.directus_settings.ai_openai_compatible_notice
     special:
       - alias
       - no-data
@@ -1304,3 +1326,16 @@ fields:
           mcp_system_prompt_enabled:
             _neq: true
         readonly: true
+
+  ### Licensing fields ###
+  - field: license_key
+    group: license_group
+    hidden: true
+    special:
+      - encrypt
+
+  - field: license_token
+    group: license_group
+    hidden: true
+    special:
+      - encrypt

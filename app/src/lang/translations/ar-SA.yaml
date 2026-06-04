@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: حول
+continue: متابعة
 first_name: الاسم الأول
 last_name: الاسم الأخير
 identifier: المعرِّف
@@ -1089,6 +1090,17 @@ settings_data_model: نموذج البيانات
 settings_roles: أدوار المستخدم
 settings_permissions: سياسات الوصول
 settings_project: إعدادات
+licensing:
+  unlimited: غير محدود
+  addon_manage: إدارة
+  addon_update: تحديث
+  resolve_continue: متابعة
+  resolve_show_n_more: 'أظهر {count} أكثر'
+  resolve_section_flows: التدفقات
+  resolve_sso_admin_password: كلمة المرور
+  entitlements:
+    collections: مجموعات
+    flows: التدفقات
 settings_appearance: المظهر
 settings_flows: التدفقات
 settings_system_logs: سجلات النظام

@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Относно
+continue: Продължаване
 first_name: Име
 last_name: Фамилия
 identifier: Идентификатор
@@ -1059,6 +1060,17 @@ editing_in_batch: 'Множествено редактиране на {count} з
 no_options_available: Не са налични настройки
 settings_data_model: Модел на данните
 settings_project: Настройки
+licensing:
+  unlimited: Неограничен
+  addon_manage: Управление
+  addon_update: Обновяване
+  resolve_continue: Продължаване
+  resolve_show_n_more: 'Показване на още {count}'
+  resolve_section_flows: Автоматизирани процеси
+  resolve_sso_admin_password: Парола
+  entitlements:
+    collections: Колекции
+    flows: Автоматизирани процеси
 settings_appearance: Външен вид
 settings_flows: Автоматизирани процеси
 settings_presets: Отметки
@@ -1901,7 +1913,9 @@ interfaces:
     value_securely_saved: Стойността е запазена подсигурено
     generate: Генериране на токен
     regenerate: Регенериране на токен
+    regenerate_confirm_title: Регенериране на токен
     remove_token: Изтриване на токен
+    remove_confirm_title: Изтриване на токен
   system-raw-editor:
     system-raw-editor: Редактор в суров вид
     description: Позволява въвеждане на сурови стойности или mustache шаблони
@@ -2350,4 +2364,6 @@ search_flow: Поток на търсене...
 percent: Процент
 show_password: Показване на паролата
 hide_password: Скриване на паролата
+license_grace_key_modal:
+  optional: По желание
 set_to_now: Сегашно време

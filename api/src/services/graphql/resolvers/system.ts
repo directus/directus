@@ -64,6 +64,24 @@ export function injectSystemResolvers(
 					},
 				}),
 			},
+			license: {
+				type: new GraphQLObjectType({
+					name: 'server_info_license',
+					fields: {
+						source: { type: GraphQLString },
+						entitlements: {
+							type: new GraphQLObjectType({
+								name: 'server_info_license_entitlements',
+								fields: {
+									production_enabled: { type: new GraphQLNonNull(GraphQLBoolean) },
+									ai_translations_enabled: { type: new GraphQLNonNull(GraphQLBoolean) },
+									display_powered_by: { type: new GraphQLNonNull(GraphQLString) },
+								},
+							}),
+						},
+					},
+				}),
+			},
 		},
 	});
 
