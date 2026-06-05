@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, RouteNotFoundError } from '@directus/errors';
+import { toBoolean } from '@directus/utils';
 import { format } from 'date-fns';
 import { Router } from 'express';
 import z from 'zod';
@@ -74,25 +75,27 @@ router.get(
 	respond,
 );
 
-router.get(
-	'/health',
-	asyncHandler(async (req, res, next) => {
-		const service = new ServerService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+if (toBoolean(env['HEALTHCHECK_ENABLED']) !== false) {
+	router.get(
+		'/health',
+		asyncHandler(async (req, res, next) => {
+			const service = new ServerService({
+				accountability: req.accountability,
+				schema: req.schema,
+			});
 
-		const data = await service.health();
+			const data = await service.health();
 
-		res.setHeader('Content-Type', 'application/health+json');
+			res.setHeader('Content-Type', 'application/health+json');
 
-		if (data['status'] === 'error') res.status(503);
-		res.locals['payload'] = data;
-		res.locals['cache'] = false;
-		return next();
-	}),
-	respond,
-);
+			if (data['status'] === 'error') res.status(503);
+			res.locals['payload'] = data;
+			res.locals['cache'] = false;
+			return next();
+		}),
+		respond,
+	);
+}
 
 const SetupSchema = z.object({
 	admin: z.object({
