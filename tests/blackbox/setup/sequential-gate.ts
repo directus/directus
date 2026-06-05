@@ -13,7 +13,15 @@ import { getReversedTestIndex } from './sequential-tests';
  * now runs as a `setupFiles` hook. `beforeAll` exposes the current file via its
  * context, and the project name comes from the `TEST_PROJECT` env set per project
  * in `vitest.config.ts`.
+ *
+ * Unlike the old environment setup (which was not bound by `hookTimeout`), this
+ * hook can legitimately block for the better part of the suite while it waits for
+ * its preceding sequential files to complete, so it needs a timeout well above the
+ * 10s default. The wait is at most the full suite wall-clock, so 10 minutes leaves
+ * generous headroom on slower CI runners while still bounding a genuine deadlock.
  */
+const GATE_TIMEOUT = 10 * 60 * 1000;
+
 // eslint-disable-next-line no-empty-pattern
 beforeAll(async ({}, suite) => {
 	const { totalTestsCount } = JSON.parse(await fs.readFile('sequencer-data.json', 'utf8'));
@@ -64,4 +72,4 @@ beforeAll(async ({}, suite) => {
 			},
 		);
 	};
-});
+}, GATE_TIMEOUT);
