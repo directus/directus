@@ -14,7 +14,8 @@ import { getReversedTestIndex } from './sequential-tests';
  * context, and the project name comes from the `TEST_PROJECT` env set per project
  * in `vitest.config.ts`.
  */
-beforeAll(async (_context, suite) => {
+// eslint-disable-next-line no-empty-pattern
+beforeAll(async ({}, suite) => {
 	const { totalTestsCount } = JSON.parse(await fs.readFile('sequencer-data.json', 'utf8'));
 	const testFilePath = suite.file?.filepath.split('blackbox')[1];
 	const serverUrl = process.env['serverUrl'];
