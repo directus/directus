@@ -29,10 +29,21 @@ export const defaultAdminPolicy: Partial<Policy> = {
 
 export async function createAdmin(
 	schema: SchemaOverview,
-	admin?: { email?: string; password?: string; first_name?: string; last_name?: string },
+	admin?: {
+		email?: string | undefined;
+		password?: string | undefined;
+		first_name?: string | undefined;
+		last_name?: string | undefined;
+	},
 ): Promise<void> {
 	const logger = useLogger();
 	const env = useEnv();
+
+	const adminEmail = admin?.email ?? env['ADMIN_EMAIL'];
+	const adminPassword = admin?.password ?? env['ADMIN_PASSWORD'];
+
+	// Without credentials there's no admin user to create. Will happen in onboarding flow.
+	if (!adminEmail || !adminPassword) return;
 
 	logger.info('Setting up first admin role...');
 	const accessService = new AccessService({ schema });
@@ -45,11 +56,6 @@ export async function createAdmin(
 	await accessService.createOne({ policy, role });
 
 	const usersService = new UsersService({ schema });
-
-	const adminEmail = admin?.email ?? env['ADMIN_EMAIL'];
-	const adminPassword = admin?.password ?? env['ADMIN_PASSWORD'];
-
-	if (!adminEmail || !adminPassword) return;
 
 	const token = env['ADMIN_TOKEN'] ?? null;
 

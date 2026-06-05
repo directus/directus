@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: माहिती
+continue: चालू ठेवा
 first_name: पहिले नाव
 last_name: आडनाव
 identifier: ओळखकर्ता
@@ -157,7 +158,7 @@ keep: ठेवा
 version: आवृत्ती
 version_key: व्हर्जन की
 version_name: व्हर्जन चे नाव
-switch_version: व्हर्जन स्विच करा
+switch_version: व्हर्जन स्विच करा 
 switch_version_copy: तुम्हाला खात्री आहे की तुम्ही "{version}" व्हर्जन वरती स्विच करू इच्छिता? जतन केले नाहीत असे बदल गमावले जातील.
 create_version: व्हर्जन तयार करा
 rename_version: व्हर्जन नाव बदला
@@ -1109,6 +1110,17 @@ settings_data_model: डेटा मॉडेल
 settings_roles: वापरकर्ता भूमिका
 settings_permissions: प्रवेश धोरणे
 settings_project: सेटिंग्ज
+licensing:
+  unlimited: अमर्याद
+  addon_manage: मॅनेज
+  addon_update: अपडेट करा
+  resolve_continue: चालू ठेवा
+  resolve_show_n_more: 'आणखी {count} दाखवा'
+  resolve_section_flows: फ्लोव
+  resolve_sso_admin_password: पासवर्ड
+  entitlements:
+    collections: कलेक्शन्स
+    flows: फ्लोव
 settings_appearance: देखावा
 settings_flows: फ्लोव
 settings_system_logs: सिस्टम लॉग
@@ -1996,7 +2008,9 @@ interfaces:
     value_securely_saved: मूल्य सुरक्षितपणे जतन केले
     generate: टोकन जनरेट करा
     regenerate: टोकन पुन्हा जनरेट करा
+    regenerate_confirm_title: टोकन पुन्हा जनरेट करा
     remove_token: टोकन काढा
+    remove_confirm_title: टोकन काढा
   system-raw-editor:
     system-raw-editor: raw एडिटर
     description: कच्च्या किंवा मिश्या टेम्प्लेटिंग मूल्ये प्रविष्ट करण्यास अनुमती द्या
@@ -2448,4 +2462,6 @@ search_flow: शोध प्रवाह...
 percent: टक्के
 show_password: पासवर्ड दाखवा
 hide_password: पासवर्ड लपवा
+license_grace_key_modal:
+  optional: पर्यायी
 set_to_now: आता वर सेट करा

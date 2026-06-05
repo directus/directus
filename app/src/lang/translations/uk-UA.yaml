@@ -20,7 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Інформація про
-directus_bsl: Directus BSL 1,1
+directus_mscl: Directus MSCL 1.0
 privacy_policy: Політика конфіденційності
 contact_our_team: Звʼязок із нашою командою
 setup_welcome: Ласкаво просимо до Directus
@@ -30,11 +30,12 @@ setup_license_notice: >
 setup_license_follow_up: >
   Об’єкти, що перевищують цей поріг, потребують платної ліцензії. Ви можете продовжити оцінку Directus зараз і {contactOurTeam}, коли будете готові обговорити використання у виробництві.
 setup_save_accept_license: >
-  Натискаючи «Зберегти», ви погоджуєтесь з умовами {directusBsl} та {privacyPolicy}.
-setup_accept_license: Я погоджуюсь з умовами {directusBsl} та {privacyPolicy}
+  Натискаючи «Зберегти», ви погоджуєтесь з умовами {directusMscl} та {privacyPolicy}.
+setup_accept_license: Я погоджуюсь з умовами {directusMscl} та {privacyPolicy}
 setup_marketing_emails: Надіслати мені оновлення продукту та нотатки про випуск
 setup_launch: Запустити Directus
 setup_project: Запустити проєкт
+continue: Продовжити
 first_name: Ім'я
 last_name: Прізвище
 admin_email: Email адміністратора
@@ -1188,6 +1189,18 @@ settings_data_model: Модель даних
 settings_roles: Ролі користувачів
 settings_permissions: Правила доступу
 settings_project: Налаштування
+licensing:
+  unlimited: Необмежено
+  addon_manage: Керування
+  addon_update: Оновити
+  resolve_continue: Продовжити
+  resolve_show_n_more: 'Показати ще {count}'
+  resolve_section_flows: Автоматизація
+  resolve_sso_admin_email: Адреса електронної пошти
+  resolve_sso_admin_password: Пароль
+  entitlements:
+    collections: Колекції
+    flows: Автоматизація
 settings_appearance: Вигляд
 settings_ai: ШІ
 model_context_protocol: Протокол контексту моделі
@@ -2131,7 +2144,9 @@ interfaces:
     value_securely_saved: Значення надійно збережено
     generate: Генерувати токен
     regenerate: Оновити токен
+    regenerate_confirm_title: Оновити токен
     remove_token: Видалити токен
+    remove_confirm_title: Видалити токен
   system-raw-editor:
     system-raw-editor: Редактор Raw
     description: Дозволити введення необроблених або шаблонізованих даних
@@ -2607,12 +2622,14 @@ search_flow: Пошуковий потік...
 percent: Відсоток
 show_password: Показати пароль
 hide_password: Приховати пароль
-bsl_banner:
+license_banner:
   title: Ви не встановили власника проєкту.
-  license: Нам потрібно це, щоб забезпечити дотримання нашої BSL 1.1 ліцензії. Це має бути основний контакт з відповіддю за ваш проєкт.
+  license: Нам потрібно це, щоб забезпечити дотримання нашої MSCL 1.0 ліцензії. Це має бути основний контакт з відповіддю за ваш проєкт.
   set_owner: Встановити власника
   remind_later: Нагадати пізніше
   remind_next_login: Ми нагадаємо вам про це під час наступного входу.
+license_grace_key_modal:
+  optional: Необов'язковий
 accepted: Схвалено
 text_direction_auto: Автоматично (відповідно до мови)
 text_direction_ltr: Зліва направо (LTR)

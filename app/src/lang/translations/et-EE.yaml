@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Info
+continue: Jätka
 first_name: Eesnimi
 last_name: Perekonnanimi
 identifier: Identifikaator
@@ -835,6 +836,15 @@ editing_in_batch: '{count} kirje hulgi muutmine'
 no_options_available: Valikud puuduvad
 settings_data_model: Andmemudel
 settings_project: Seaded
+licensing:
+  unlimited: Piiramatu
+  addon_manage: Halda
+  addon_update: Uuenda
+  resolve_continue: Jätka
+  resolve_show_n_more: 'Näita veel {count}'
+  resolve_sso_admin_password: Parool
+  entitlements:
+    collections: Kogud
 settings_presets: Järjehoidjad
 settings_translations: Tõlked
 one_or_more_options_are_missing: Üks või mitu valikut puuduvad

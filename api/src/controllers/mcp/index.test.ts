@@ -25,6 +25,10 @@ vi.mock('../../ai/mcp/index.js', () => ({
 	})),
 }));
 
+vi.mock('../../middleware/is-locked.js', () => ({
+	default: vi.fn(() => (_req: unknown, _res: unknown, next: () => void) => next()),
+}));
+
 const { default: router } = await import('./index.js');
 const { DirectusMCP } = await import('../../ai/mcp/index.js');
 

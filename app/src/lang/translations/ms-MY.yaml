@@ -136,6 +136,11 @@ wysiwyg_options:
   remove: Buang
 editing_in_batch: 'Menyunting Secara Kumpulan Sebanyak {count} Benda'
 settings_project: Tetapan
+licensing:
+  addon_update: Kemaskini
+  resolve_sso_admin_password: Katalaluan
+  entitlements:
+    collections: Koleksi-koleksi
 settings_presets: Penandabuku
 discard_changes: Buang Perubahan
 keep_editing: Terus Menyunting

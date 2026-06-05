@@ -32,6 +32,7 @@ import flowsRouter from './controllers/flows.js';
 import foldersRouter from './controllers/folders.js';
 import graphqlRouter from './controllers/graphql.js';
 import itemsRouter from './controllers/items.js';
+import licenseRouter from './controllers/license.js';
 import mcpRouter from './controllers/mcp/index.js';
 import mcpOAuthClientsRouter from './controllers/mcp/oauth-clients.js';
 import { mcpOAuthProtectedRouter, mcpOAuthPublicRouter } from './controllers/mcp/oauth.js';
@@ -65,6 +66,7 @@ import { ensureDeploymentWebhooks, registerDeploymentDrivers } from './deploymen
 import emitter from './emitter.js';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
+import { getEntitlementManager, getLicenseManager } from './license/index.js';
 import { createExpressLogger, useLogger } from './logger/index.js';
 import authenticate from './middleware/authenticate.js';
 import cache from './middleware/cache.js';
@@ -77,6 +79,7 @@ import rateLimiter from './middleware/rate-limiter-ip.js';
 import requestCounter from './middleware/request-counter.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
+import licenseSchedule from './schedules/license.js';
 import metricsSchedule from './schedules/metrics.js';
 import scheduleOAuthCleanup from './schedules/oauth-cleanup.js';
 import projectSchedule from './schedules/project.js';
@@ -130,6 +133,9 @@ export default async function createApp(): Promise<express.Application> {
 
 	await validateDatabaseExtensions();
 	await validateStorage();
+
+	await getLicenseManager().initialize();
+	getEntitlementManager().initialize();
 
 	await registerAuthProviders();
 	registerDeploymentDrivers();
@@ -360,6 +366,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/flows', flowsRouter);
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
+	app.use('/license', licenseRouter);
 
 	if (toBoolean(env['MCP_ENABLED']) === true) {
 		app.use('/mcp', mcpRouter);
@@ -414,6 +421,7 @@ export default async function createApp(): Promise<express.Application> {
 	await tusSchedule();
 	await metricsSchedule();
 	await projectSchedule();
+	await licenseSchedule();
 
 	if (env['MCP_OAUTH_ENABLED'] === true) {
 		await scheduleOAuthCleanup();

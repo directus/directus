@@ -7,6 +7,7 @@ type AiTranslateAvailabilityOptions = {
 	availableProviderCount: number;
 	availableModelCount: number;
 	disabled?: boolean;
+	licenseEntitlement: boolean;
 	nonEditable?: boolean;
 };
 
@@ -32,9 +33,17 @@ export function isAiTranslateAvailable({
 	availableProviderCount,
 	availableModelCount,
 	disabled = false,
+	licenseEntitlement,
 	nonEditable = false,
 }: AiTranslateAvailabilityOptions): boolean {
-	return aiEnabled && availableProviderCount > 0 && availableModelCount > 0 && !disabled && !nonEditable;
+	return (
+		aiEnabled &&
+		availableProviderCount > 0 &&
+		availableModelCount > 0 &&
+		!disabled &&
+		licenseEntitlement &&
+		!nonEditable
+	);
 }
 
 export function buildAiTranslationDraft(

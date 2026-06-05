@@ -20,8 +20,17 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Acerca de
+privacy_policy: Política de Privacidad
+setup_welcome: Bienvenido a Directus
+setup_marketing_emails: Envíame actualizaciones de producto y notas de publicaciones
+setup_launch: Iniciar Directus
+setup_project: Configurar Proyecto
+continue: Continuar
 first_name: Nombre
 last_name: Apellido
+admin_email: Email del Administrador
+owner_email: Email del Dueño
+email_address: Dirección de Email
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
@@ -49,6 +58,7 @@ collection_names_are_case_sensitive: Los nombres de las colecciones son sensible
 condition_rules: Reglas condicionales
 input: Entrada
 invalid_input: Entrada no válida
+invalid_file_type: Tipo de Archivo Inválido
 not_a_number: No es un número
 maps: Mapas
 switch_user: Cambiar de usuario
@@ -1132,6 +1142,18 @@ settings_data_model: Modelo de datos
 settings_roles: Roles de usuario
 settings_permissions: Políticas de acceso
 settings_project: Ajustes
+licensing:
+  unlimited: Ilimitado
+  addon_manage: Administrar
+  addon_update: Actualización
+  resolve_continue: Continuar
+  resolve_show_n_more: 'Mostrar {count} más'
+  resolve_section_flows: Flujos
+  resolve_sso_admin_email: Dirección de Email
+  resolve_sso_admin_password: Contraseña
+  entitlements:
+    collections: Colecciones
+    flows: Flujos
 settings_appearance: Apariencia
 settings_flows: Flujos
 settings_system_logs: Registros del sistema
@@ -2025,7 +2047,9 @@ interfaces:
     value_securely_saved: Valor guardado de forma segura
     generate: Generar token
     regenerate: Regenerar token
+    regenerate_confirm_title: Regenerar token
     remove_token: Remover token
+    remove_confirm_title: Remover token
   system-raw-editor:
     system-raw-editor: Editor raw
     description: Permitir la introducción de valores de plantillas en raw o mustache
@@ -2495,6 +2519,8 @@ search_flow: Buscar Flujo...
 percent: Porcentaje
 show_password: Mostrar contraseña
 hide_password: Ocultar contraseña
+license_grace_key_modal:
+  optional: Opcional
 accepted: Aceptado
 text_direction_auto: Automático (coincidir idioma)
 text_direction_ltr: Izquierda a derecha (LTR)
