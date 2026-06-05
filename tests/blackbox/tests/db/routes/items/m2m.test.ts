@@ -2882,9 +2882,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
-		test('Auto Increment Tests', (ctx) => {
-			if (pkType !== 'integer') ctx.skip();
-
+		describe.runIf(pkType === 'integer')('Auto Increment Tests', () => {
 			describe('updates the auto increment value correctly', () => {
 				it.each(without(vendors, 'cockroachdb', 'mssql', 'oracle'))('%s', async (vendor) => {
 					// Setup
