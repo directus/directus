@@ -1704,6 +1704,10 @@ directus_collection:
   directus_translations: Custom translations
   directus_versions: Content Versions for items
   directus_extensions: Configuration of extensions
+  directus_oauth_clients: Registered OAuth client applications
+  directus_oauth_codes: Authorization codes for OAuth flows
+  directus_oauth_consents: User consent grants for OAuth clients
+  directus_oauth_tokens: Access and refresh tokens for OAuth clients
 fields:
   directus_activity:
     item: Item Primary Key
