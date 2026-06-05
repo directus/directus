@@ -130,6 +130,11 @@ router.post(
 		const licenseManager = getLicenseManager();
 
 		try {
+			// If provided ensure the license key is valid before proceeding with setup
+			if (data.license_key) {
+				await licenseManager.activate(data.license_key);
+			}
+
 			await createAdmin(req.schema, {
 				email: data.admin.email,
 				password: data.admin.password,
@@ -138,14 +143,6 @@ router.post(
 			});
 
 			const settingsService = new SettingsService({ schema: req.schema });
-
-			if (data.license_key) {
-				try {
-					await licenseManager.activate(data.license_key);
-				} catch {
-					// ignore
-				}
-			}
 
 			if (data.owner) {
 				settingsService.setOwner(data.owner);
