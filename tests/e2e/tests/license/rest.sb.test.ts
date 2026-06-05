@@ -5,6 +5,7 @@ import {
 	CORE_LICENSE,
 	deactivateLicense,
 	generateLicensePendingResolution,
+	type LicensePendingResolutionOutput,
 	previewLicense,
 	readLicense,
 	readLicenseAddons,
@@ -468,6 +469,8 @@ describe('POST /license/pending-resolution', () => {
 
 		describe('sso_enabled', () => {
 			test('reports gate with empty blockers when admin has email and password', async () => {
+				await api.request(activateLicense({ license_key: unlimitedLicenses.key }));
+
 				const adminMe = await api.request(readMe());
 
 				const ssoUser = await api.request(
@@ -481,7 +484,7 @@ describe('POST /license/pending-resolution', () => {
 					}),
 				);
 
-				await api.request(activateLicense({ license_key: ssoDisabledLicense.key }));
+				await api.request(updateLicense({ license_key: ssoDisabledLicense.key }));
 
 				const result = await api.request(withToken('1234', generateLicensePendingResolution()));
 
@@ -493,6 +496,8 @@ describe('POST /license/pending-resolution', () => {
 			});
 
 			test('reports ADMIN_MISSING_EMAIL when caller has no email', async () => {
+				await api.request(activateLicense({ license_key: unlimitedLicenses.key }));
+
 				const adminMe = await api.request(readMe());
 
 				const ssoUser = await api.request(
@@ -505,7 +510,7 @@ describe('POST /license/pending-resolution', () => {
 					}),
 				);
 
-				await api.request(activateLicense({ license_key: ssoDisabledLicense.key }));
+				await api.request(updateLicense({ license_key: ssoDisabledLicense.key }));
 
 				const result = await api.request(withToken('1234', generateLicensePendingResolution()));
 
@@ -517,6 +522,8 @@ describe('POST /license/pending-resolution', () => {
 			});
 
 			test('reports ADMIN_MISSING_PASSWORD when caller has no password', async () => {
+				await api.request(activateLicense({ license_key: unlimitedLicenses.key }));
+
 				const adminMe = await api.request(readMe());
 
 				const ssoUser = await api.request(
@@ -529,7 +536,7 @@ describe('POST /license/pending-resolution', () => {
 					}),
 				);
 
-				await api.request(activateLicense({ license_key: ssoDisabledLicense.key }));
+				await api.request(updateLicense({ license_key: ssoDisabledLicense.key }));
 
 				const result = await api.request(withToken('1234', generateLicensePendingResolution()));
 
@@ -541,6 +548,8 @@ describe('POST /license/pending-resolution', () => {
 			});
 
 			test('reports both blockers when caller has neither', async () => {
+				await api.request(activateLicense({ license_key: unlimitedLicenses.key }));
+
 				const adminMe = await api.request(readMe());
 
 				const ssoUser = await api.request(
@@ -552,9 +561,11 @@ describe('POST /license/pending-resolution', () => {
 					}),
 				);
 
-				await api.request(activateLicense({ license_key: ssoDisabledLicense.key }));
+				await api.request(updateLicense({ license_key: ssoDisabledLicense.key }));
 
-				const result = await api.request(withToken('1234', generateLicensePendingResolution()));
+				const result = (await api.request(
+					withToken('1234', generateLicensePendingResolution()),
+				)) as LicensePendingResolutionOutput;
 
 				expect(result).toMatchObject([{ key: 'sso_enabled', kind: 'feature_gate' }]);
 				expect((result[0] as any).blockers).toEqual(['ADMIN_MISSING_EMAIL', 'ADMIN_MISSING_PASSWORD']);
@@ -612,7 +623,7 @@ describe('POST /license/pending-resolution', () => {
 
 			await api.request(updateLicense({ license_key: restrictedLicense.key }));
 
-			const result = await api.request(generateLicensePendingResolution());
+			const result = (await api.request(generateLicensePendingResolution())) as LicensePendingResolutionOutput;
 
 			const limitKeys = result.filter((r) => r.kind === 'limit').map((r) => r.key);
 			const gateKeys = result.filter((r) => r.kind === 'feature_gate').map((r) => r.key);
@@ -702,7 +713,7 @@ describe('POST /license/resolve', () => {
 		await api.request(updateSettings({ ai_openai_compatible_name: 'lorem' } as any));
 		await api.request(updateLicense({ license_key: restrictedLicense.key }));
 
-		const before = await api.request(generateLicensePendingResolution());
+		const before = (await api.request(generateLicensePendingResolution())) as LicensePendingResolutionOutput;
 		expect(before.length).toBeGreaterThan(0);
 
 		// action
