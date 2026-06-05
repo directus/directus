@@ -242,5 +242,29 @@ describe('Integration Tests', () => {
 				expect(RevisionsService.prototype.createOne).not.toHaveBeenCalled();
 			});
 		});
+
+		describe('createMany duplicate-key check', () => {
+			test('allows multiple itemless versions sharing the same key + collection', async () => {
+				await expect(
+					service.createMany([
+						{ key: 'draft', name: 'bulk A', collection: 'articles_track_all' },
+						{ key: 'draft', name: 'bulk B', collection: 'articles_track_all' },
+					]),
+				).resolves.toBeDefined();
+
+				expect(ItemsService.prototype.createMany).toHaveBeenCalledTimes(1);
+			});
+
+			test('still rejects duplicate key + collection + item within the batch', async () => {
+				await expect(
+					service.createMany([
+						{ key: 'draft', collection: 'articles_track_all', item: '1' },
+						{ key: 'draft', collection: 'articles_track_all', item: '1' },
+					]),
+				).rejects.toThrow(/Cannot create multiple versions/);
+
+				expect(ItemsService.prototype.createMany).not.toHaveBeenCalled();
+			});
+		});
 	});
 });

@@ -198,6 +198,9 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		const keyCombos = new Set();
 
 		for (const item of data) {
+			// Itemless versions are allowed to share a key within a collection
+			if (isNil(item['item'])) continue;
+
 			const keyCombo = `${item['key']}-${item['collection']}-${item['item']}`;
 
 			if (keyCombos.has(keyCombo)) {
