@@ -1,6 +1,5 @@
 import { randomUUID } from 'node:crypto';
 import {
-	compareContentVersion,
 	createContentVersion,
 	createDirectus,
 	createItem,
