@@ -97,8 +97,17 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			});
 		}
 
-		// Skip checking for existing versions if the version is itemless.
-		if (itemLess) return;
+		const isSingleton = !!this.schema.collections[data['collection']]?.singleton;
+
+		// singleton collections should only allow one item-less version,
+		// regular collections can have unlimited
+		if (itemLess) {
+			if (isSingleton) {
+				await this.assertSingletonEmpty(data['collection']);
+			} else {
+				return;
+			}
+		}
 
 		const sudoService = new VersionsService({
 			knex: this.knex,
@@ -107,12 +116,18 @@ export class VersionsService extends ItemsService<ContentVersion> {
 
 		const existingVersions = (await sudoService.readByQuery({
 			aggregate: { count: ['*'] },
-			filter: { key: { _eq: data['key'] }, collection: { _eq: data['collection'] }, item: { _eq: data['item'] } },
+			filter: {
+				key: { _eq: data['key'] },
+				collection: { _eq: data['collection'] },
+				item: itemLess ? { _null: true } : { _eq: data['item'] },
+			},
 		})) as any[];
 
 		if (existingVersions[0]['count'] > 0) {
 			throw new UnprocessableContentError({
-				reason: `Version "${data['key']}" already exists for item "${data['item']}" in collection "${data['collection']}"`,
+				reason: itemLess
+					? `Singleton collection "${data['collection']}" already has an item-less version`
+					: `Version "${data['key']}" already exists for item "${data['item']}" in collection "${data['collection']}"`,
 			});
 		}
 	}
@@ -245,8 +260,28 @@ export class VersionsService extends ItemsService<ContentVersion> {
 				});
 			}
 
-			// Skip checking for existing versions or duplicates if the version is itemless.
-			if (item === null) continue;
+			if (item === null) {
+				if (this.schema.collections[collection]?.singleton) {
+					await this.assertSingletonEmpty(collection);
+
+					const existingItemless = (await super.readByQuery({
+						aggregate: { count: ['*'] },
+						filter: {
+							id: { _neq: pk },
+							collection: { _eq: collection },
+							item: { _null: true },
+						},
+					})) as any[];
+
+					if (existingItemless[0]['count'] > 0) {
+						throw new UnprocessableContentError({
+							reason: `Singleton collection "${collection}" already has an item-less version`,
+						});
+					}
+				}
+
+				continue;
+			}
 
 			const keyCombo = `${key}-${collection}-${item}`;
 
@@ -475,6 +510,8 @@ export class VersionsService extends ItemsService<ContentVersion> {
 				overwriteDefaults: defaultOverwrites as any,
 			});
 		} else {
+			await this.assertSingletonEmpty(collection);
+
 			updatedItemKey = await itemsService.createOne(payloadAfterHooks, {
 				overwriteDefaults: defaultOverwrites as any,
 			});
@@ -498,6 +535,20 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		);
 
 		return updatedItemKey;
+	}
+
+	private async assertSingletonEmpty(collection: string): Promise<void> {
+		const collectionMeta = this.schema.collections[collection];
+
+		if (!collectionMeta?.singleton) return;
+
+		const existingRow = await this.knex(collection).first(collectionMeta.primary);
+
+		if (existingRow) {
+			throw new UnprocessableContentError({
+				reason: `Singleton collection "${collection}" already contains an item`,
+			});
+		}
 	}
 
 	private mapDelta(version: ContentVersion) {
