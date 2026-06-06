@@ -28,7 +28,7 @@ get:
               data:
                 type: array
                 items:
-                  type: object
+                  $ref: '../../openapi.yaml#/components/schemas/Items'
               meta:
                 $ref: '../../openapi.yaml#/components/schemas/x-metadata'
     '401':
@@ -85,7 +85,7 @@ patch:
               data:
                 type: array
                 items:
-                  type: object
+                  $ref: '../../openapi.yaml#/components/schemas/Items'
               meta:
                 $ref: '../../openapi.yaml#/components/schemas/x-metadata'
     '401':
