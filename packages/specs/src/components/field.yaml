@@ -141,7 +141,7 @@ properties:
         example: null
         type: string
         nullable: true
-        enum: [half, half-left, half-right, full, fill, null]
+        enum: [half, half-left, half-right, full, fill]
       group:
         description: What field group this field is part of.
         example: null
