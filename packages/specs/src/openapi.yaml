@@ -1,16 +1,21 @@
 openapi: 3.0.1
+# This info block applies to the static spec only. The dynamic spec served at
+# /server/specs/oas generates its own info block (title, version, contact, license
+# are all omitted) because it describes a customer instance, not Directus itself.
+# See api/src/services/specifications.ts for the dynamic spec's info generation.
 info:
   title: Directus
   description: A real-time API and App dashboard for managing SQL database content.
   contact:
-    email: contact@directus.io
+    email: contact@directus.com
   license:
     name: MSCL-1.0-GPL
-    url: 'https://directus.com/mscl'
-  version: '10'
+    url: 'https://directus.com/license'
+  version: '12'
+# This externalDocs block applies to the static spec only. It is omitted from dynamic spec
 externalDocs:
   description: Directus Docs
-  url: 'https://docs.directus.io'
+  url: 'https://directus.com/docs/'
 tags:
   - name: Activity
     description:
