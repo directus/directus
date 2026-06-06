@@ -2,10 +2,13 @@ import type { MergeCoreCollection } from '../index.js';
 
 export type DirectusExtension<Schema = any> = {
 	id: string;
-	name: string;
 	bundle: string | null;
 	schema: ExtensionSchema | null;
-	meta: MergeCoreCollection<Schema, 'directus_extensions', { enabled: boolean }>;
+	meta: MergeCoreCollection<
+		Schema,
+		'directus_extensions',
+		{ id: string; source: 'module' | 'registry' | 'local'; enabled: boolean; bundle: string | null; folder: string }
+	>;
 };
 
 export type ExtensionSchema = {
