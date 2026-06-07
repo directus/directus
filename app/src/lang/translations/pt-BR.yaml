@@ -20,18 +20,9 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Sobre
-directus_mscl: Directus MSCL 1.0
 privacy_policy: Política de Privacidade
-contact_our_team: Contate nosso Time
 setup_welcome: Bem-Vindo ao Directus
 setup_info: Vamos criar sua conta de administrador e começar seu projeto.
-setup_license_notice: >
-  Directus é gratuito para ser usado por entidades com lucro, doação ou orçamento de operação anual inferior a 5 milhões de dólares.
-setup_license_follow_up: >
-  Entidades acima deste limite requerem uma licença paga. Você pode continuar a avaliar a Directus agora e {contactOurTeam} quando estiver pronto para discutir o uso em produção.
-setup_save_accept_license: >
-  Clicando em salvar você aceita os termos de {directusMscl} e {privacyPolicy}.
-setup_accept_license: Eu aceito os termos de {directusMscl} e {privacyPolicy}
 setup_marketing_emails: Receber novidades do produto e notas de lançamento
 setup_launch: Iniciar Directus
 setup_project: Configurar Projeto
@@ -41,11 +32,6 @@ last_name: Sobrenome
 admin_email: Email de Administrador
 owner_email: Email de Proprietário
 email_address: Endereço de Email
-organization_name: Nome da Organização
-how_do_you_use_directus: Para quê você está usando o Directus?
-usage_personal: Pessoal / Aprendizagem
-usage_commercial: Empresarial / Comercial
-usage_community: Código Aberto / Comunitário
 identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
@@ -156,7 +142,7 @@ keep_setup: Manter Configuração
 cancel_setup: Cancelar Configuração
 add_field: Adicionar Campo
 role_name: Nome do Cargo
-policy_name: Nome da política
+policy_name: Nome da política 
 branch: Branch
 leaf: Folha
 indeterminate: Indeterminado
