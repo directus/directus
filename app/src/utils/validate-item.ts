@@ -28,7 +28,9 @@ export function validateItem(
 		return conditionedField;
 	});
 
-	const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
+	const requiredFields = fieldsWithConditions.filter(
+		(field) => field.meta?.required === true && !isPresentationField(field),
+	);
 
 	requiredFields.forEach((field) => {
 		applyRulesForRequiredFields(field.field, field, isNew);
@@ -75,5 +77,9 @@ export function validateItem(
 		(field.meta?.validation as LogicalFilterAND)?._and?.forEach((validation: any) => {
 			validationRules._and.push(parseFilter(validation));
 		});
+	}
+
+	function isPresentationField(field: Field): boolean {
+		return Array.isArray(field.meta?.special) && field.meta.special.includes('no-data');
 	}
 }
