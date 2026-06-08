@@ -356,7 +356,7 @@ function emitValue(value?: Record<string, unknown>[]) {
 .v-list {
 	@include mixins.list-interface;
 
-	--v-list-padding: 0 0 4px;
+	--v-list-padding: 0 0 0.25rem;
 
 	&.dragging {
 		user-select: none;
@@ -368,7 +368,7 @@ function emitValue(value?: Record<string, unknown>[]) {
 	--v-list-item-padding: 0;
 
 	inline-size: 100%;
-	margin-block-end: 8px;
+	margin-block-end: 0.5rem;
 
 	&:has(.list-item-trigger:focus-visible):not(:has(.item-actions :focus-visible)) {
 		border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus)) !important;
@@ -389,7 +389,7 @@ function emitValue(value?: Record<string, unknown>[]) {
 	position: relative;
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.5rem;
 	padding-inline: var(--list-item-header-padding-inline);
 }
 
@@ -399,7 +399,7 @@ function emitValue(value?: Record<string, unknown>[]) {
 	align-items: center;
 	align-self: stretch;
 	block-size: 100%;
-	gap: 8px;
+	gap: 0.5rem;
 	min-inline-size: 0;
 	cursor: pointer;
 	border: none;
@@ -416,7 +416,7 @@ function emitValue(value?: Record<string, unknown>[]) {
 .list-item-header-controls {
 	display: flex;
 	align-items: center;
-	gap: 4px;
+	gap: 0.25rem;
 }
 
 .list-item-content {
@@ -458,9 +458,9 @@ function emitValue(value?: Record<string, unknown>[]) {
 }
 
 .action-bar {
-	margin-block-start: 8px;
+	margin-block-start: 0.5rem;
 	display: flex;
-	gap: 8px;
+	gap: 0.5rem;
 
 	&.justify-between {
 		justify-content: space-between;
