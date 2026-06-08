@@ -90,6 +90,7 @@ catalog:
   '@tinymce/tinymce-vue': 6.3.0
   '@tresjs/cientos': ^5.7.0
   '@tresjs/core': ^5.8.0
+  '@tresjs/leches': ^1.2.1
   '@turf/meta': 7.2.0
   '@tus/server': 2.3.0
   '@tus/utils': 0.6.0

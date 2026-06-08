@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { TresCanvas, type TresRendererSetupContext } from '@tresjs/core';
+import { TresLeches, useControls } from '@tresjs/leches';
 import { Color } from 'three';
 import { WebGPURenderer } from 'three/webgpu';
-import { computed, toValue } from 'vue';
+import { computed, provide, toValue, watch } from 'vue';
 import DotGridShader from './dot-grid-shader.vue';
 import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 
@@ -16,6 +17,11 @@ const { darkMode } = useThemeConfiguration();
 
 const DEFAULT_CLEAR = '#6644ff';
 
+const uuid = 'shader-background';
+provide('uuid', uuid);
+
+useControls('fpsgraph', { uuid })
+
 const clearColor = computed(() => {
 	if (!props.projectColor) return DEFAULT_CLEAR;
 
@@ -28,6 +34,15 @@ const clearColor = computed(() => {
 	}
 });
 
+const { canvasClearColor } = useControls('🎨 canvas', {
+  clearColor: {
+	value: new Color(clearColor.value),
+	type: 'color',
+  },
+}, {
+  uuid,
+})
+
 // TSL node materials require the WebGPU renderer (falls back to WebGL2 internally).
 function createRenderer({ canvas }: TresRendererSetupContext) {
 	return new WebGPURenderer({ canvas: toValue(canvas), antialias: true });
@@ -35,7 +50,8 @@ function createRenderer({ canvas }: TresRendererSetupContext) {
 </script>
 
 <template>
-	<TresCanvas :renderer="createRenderer" :clear-color="clearColor" :dpr="[1, 2]" class="public-shader-background">
+	<TresLeches :uuid />
+	<TresCanvas :renderer="createRenderer" :clear-color="canvasClearColor" :dpr="[1, 2]" class="public-shader-background">
 		<TresPerspectiveCamera :position="[0, 0, 10]" :look-at="[0, 0, 0]" />
 		<!-- Shader scene goes here -->
 		<DotGridShader :project-color="projectColor" />

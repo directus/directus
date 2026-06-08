@@ -88,6 +88,8 @@
 		"@rollup/plugin-yaml": "catalog:",
 		"@sindresorhus/slugify": "catalog:",
 		"@tinymce/tinymce-vue": "catalog:",
+		"@tresjs/core": "catalog:",
+		"@tresjs/leches": "catalog:",
 		"@turf/meta": "catalog:",
 		"@types/base-64": "catalog:",
 		"@types/chroma-js": "catalog:",
@@ -102,6 +104,7 @@
 		"@types/mapbox__mapbox-gl-geocoder": "catalog:",
 		"@types/qrcode": "catalog:",
 		"@types/semver": "catalog:",
+		"@types/three": "catalog:",
 		"@types/wellknown": "catalog:",
 		"@unhead/addons": "catalog:",
 		"@unhead/vue": "catalog:",
@@ -113,9 +116,6 @@
 		"@vueuse/core": "catalog:",
 		"@vueuse/integrations": "catalog:",
 		"@vueuse/router": "catalog:",
-		"@tresjs/core": "catalog:",
-		"three": "catalog:",
-		"@types/three": "catalog:",
 		"ai": "catalog:",
 		"apexcharts": "catalog:",
 		"axios": "catalog:",
@@ -156,6 +156,7 @@
 		"sass-embedded": "catalog:",
 		"semver": "catalog:",
 		"string-width": "catalog:",
+		"three": "catalog:",
 		"tinymce": "catalog:",
 		"tus-js-client": "catalog:",
 		"typescript": "catalog:",
@@ -174,6 +175,7 @@
 		"zod": "catalog:"
 	},
 	"dependencies": {
-		"@tresjs/cientos": "catalog:"
+		"@tresjs/cientos": "catalog:",
+		"@tresjs/leches": "catalog:"
 	}
 }

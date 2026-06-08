@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useTresContext } from '@tresjs/core';
+import { useControls } from '@tresjs/leches';
 import { Color } from 'three';
 import {
 	cos,
@@ -18,7 +19,7 @@ import {
 	vec3,
 } from 'three/tsl';
 import { MeshBasicNodeMaterial } from 'three/webgpu';
-import { onBeforeUnmount, watch } from 'vue';
+import { inject, onBeforeUnmount, watch } from 'vue';
 
 interface Props {
 	projectColor?: string | null;
@@ -56,6 +57,11 @@ function resolveColor(input?: string | null): Color {
 
 const uColor = uniform(resolveColor(props.projectColor));
 const uPixelRatio = uniform(sizes.pixelRatio.value);
+const uMinRadius = uniform(DOT_RADIUS_MIN_PX);
+const uMaxRadius = uniform(DOT_RADIUS_MAX_PX);
+const uNoiseScale = uniform(NOISE_SCALE);
+const uNoiseSpeed = uniform(NOISE_SPEED);
+const uInflate = uniform(INFLATE_PX);
 
 watch(
 	() => props.projectColor,
@@ -72,20 +78,20 @@ const cssCoord = screenCoordinate.div(uPixelRatio);
 // Arc warp: the original rotates each dot by noise·45° around a pivot (INFLATE_PX, INFLATE_PX) away.
 // Inverted here as a domain warp — for rotation θ around that pivot the displacement works out to
 // (f·(1 − cosθ + sinθ), f·(1 − cosθ − sinθ)); subtracting it from the coordinate recovers the source cell.
-const warpAngle = mx_noise_float(vec3(cssCoord.div(CELL_SIZE_PX).mul(NOISE_SCALE), time.mul(NOISE_SPEED))).mul(
+const warpAngle = mx_noise_float(vec3(cssCoord.div(CELL_SIZE_PX).mul(uNoiseScale), time.mul(uNoiseSpeed))).mul(
 	Math.PI * 0.25,
 );
 
-const warpX = float(1).sub(cos(warpAngle)).add(sin(warpAngle)).mul(INFLATE_PX);
-const warpY = float(1).sub(cos(warpAngle)).sub(sin(warpAngle)).mul(INFLATE_PX);
+const warpX = float(1).sub(cos(warpAngle)).add(sin(warpAngle)).mul(uInflate);
+const warpY = float(1).sub(cos(warpAngle)).sub(sin(warpAngle)).mul(uInflate);
 const warped = cssCoord.sub(vec2(warpX, warpY));
 
 // 3D noise sampled per cell (so dots stay round), drifting through the third dimension over time.
 // Dots shrink and fade with the noise value, floored so dark regions keep faint dots.
 const cell = floor(warped.div(CELL_SIZE_PX));
-const noise = mx_noise_float(vec3(cell.mul(NOISE_SCALE), time.mul(NOISE_SPEED)));
+const noise = mx_noise_float(vec3(cell.mul(uNoiseScale), time.mul(uNoiseSpeed)));
 const intensity = noise.max(0);
-const radius = mix(float(DOT_RADIUS_MIN_PX), float(DOT_RADIUS_MAX_PX), intensity);
+const radius = mix(uMinRadius, uMaxRadius, intensity);
 
 const cellUv = fract(warped.div(CELL_SIZE_PX));
 // Distance from cell center, back in pixel units for a crisp 1px anti-aliased edge.
@@ -103,6 +109,101 @@ material.opacityNode = dot;
 onBeforeUnmount(() => {
 	material.dispose();
 });
+
+const uuid = inject<string>('uuid');
+
+const { particlesColor, particlesMinSize, particlesMaxSize } = useControls(
+	'particles',
+	{
+		color: {
+			value: new Color(uColor.value),
+			type: 'color',
+		},
+		minSize: {
+			value: DOT_RADIUS_MIN_PX,
+			min: 0,
+			max: 10,
+			step: 0.1,
+		},
+		maxSize: {
+			value: DOT_RADIUS_MAX_PX,
+			min: 0,
+			max: 20,
+			step: 0.1,
+		},
+	},
+	{ uuid },
+);
+
+// Drive the existing uColor uniform instead of swapping colorNode (which forces a material recompile).
+// The control mutates its Color in place, so deep-watch; .set() accepts a Color, hex, or CSS string.
+watch(
+	() => particlesColor?.value,
+	(value) => {
+		if (value) uColor.value.set(value);
+	},
+	{ deep: true },
+);
+
+watch(
+	() => particlesMinSize?.value,
+	(value) => {
+		if (value != null) uMinRadius.value = value;
+	},
+);
+
+watch(
+	() => particlesMaxSize?.value,
+	(value) => {
+		if (value != null) uMaxRadius.value = value;
+	},
+);
+
+const { motionSpeed, motionSweep, motionScale } = useControls(
+	'motion',
+	{
+		speed: {
+			value: NOISE_SPEED,
+			min: 0,
+			max: 1,
+			step: 0.01,
+		},
+		sweep: {
+			value: INFLATE_PX,
+			min: 0,
+			max: 400,
+			step: 10,
+		},
+		scale: {
+			value: NOISE_SCALE,
+			min: 0,
+			max: 0.2,
+			step: 0.001,
+		},
+	},
+	{ uuid },
+);
+
+watch(
+	() => motionSpeed?.value,
+	(value) => {
+		if (value != null) uNoiseSpeed.value = value;
+	},
+);
+
+watch(
+	() => motionSweep?.value,
+	(value) => {
+		if (value != null) uInflate.value = value;
+	},
+);
+
+watch(
+	() => motionScale?.value,
+	(value) => {
+		if (value != null) uNoiseScale.value = value;
+	},
+);
 </script>
 
 <template>
