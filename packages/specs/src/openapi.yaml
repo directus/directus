@@ -28,11 +28,6 @@ tags:
     description:
       All data within the platform is private by default. The public role can be configured to expose data without
       authentication, or you can pass an access token to the API to access private data.
-  - name: Presets
-    description:
-      Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom
-      item listings for users of the app.
-    x-collection: directus_presets
   - name: Collections
     description:
       Collections are the individual collections of items, similar to tables in a database. Changes to collections will
@@ -63,12 +58,23 @@ tags:
   - name: Items
     description:
       Items are individual pieces of data in your database. They can be anything, from articles, to IoT status checks.
+  - name: Metrics
+    description: |
+      Prometheus-compatible metrics endpoint for monitoring your Directus instance.
+      Access requires an admin token or a dedicated metrics token (Authorization: Metrics <token>).
+      Only available when METRICS_ENABLED=true.
+    x-enabled-env: METRICS_ENABLED
   - name: Operations
     description: Operations are the building blocks within Data Flows.
     x-collection: directus_operations
   - name: Permissions
     description: Permissions control who has access to what and when.
     x-collection: directus_permissions
+  - name: Presets
+    description:
+      Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom
+      item listings for users of the app.
+    x-collection: directus_presets
   - name: Relations
     description:
       What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever
@@ -106,12 +112,6 @@ tags:
       - Folders
       - Users
       - Roles
-  - name: Metrics
-    description: |
-      Prometheus-compatible metrics endpoint for monitoring your Directus instance.
-      Access requires an admin token or a dedicated metrics token (Authorization: Metrics <token>).
-      Only available when METRICS_ENABLED=true.
-    x-enabled-env: METRICS_ENABLED
   - name: Versions
     description:
       Enables users to create unpublished copies of an item, modify them independently from the main version, and
@@ -131,30 +131,18 @@ paths:
   # Authentication
   /auth/login:
     $ref: './paths/auth/login.yaml'
-  /auth/refresh:
-    $ref: './paths/auth/refresh.yaml'
   /auth/logout:
     $ref: './paths/auth/logout.yaml'
-  /auth/password/request:
-    $ref: './paths/auth/password-request.yaml'
-  /auth/password/reset:
-    $ref: './paths/auth/password-reset.yaml'
   /auth/oauth:
     $ref: './paths/auth/oauth.yaml'
   /auth/oauth/{provider}:
     $ref: './paths/auth/oauth-provider.yaml'
-
-  # Items
-  /items/{collection}:
-    $ref: './paths/items/items.yaml'
-  /items/{collection}/{id}:
-    $ref: './paths/items/item.yaml'
-
-  # Presets
-  /presets:
-    $ref: './paths/presets/presets.yaml'
-  /presets/{id}:
-    $ref: './paths/presets/preset.yaml'
+  /auth/password/request:
+    $ref: './paths/auth/password-request.yaml'
+  /auth/password/reset:
+    $ref: './paths/auth/password-reset.yaml'
+  /auth/refresh:
+    $ref: './paths/auth/refresh.yaml'
 
   # Collections
   /collections:
@@ -202,6 +190,16 @@ paths:
   /folders/{id}:
     $ref: './paths/folders/folder.yaml'
 
+  # Items
+  /items/{collection}:
+    $ref: './paths/items/items.yaml'
+  /items/{collection}/{id}:
+    $ref: './paths/items/item.yaml'
+
+  # Metrics
+  /metrics:
+    $ref: './paths/metrics/metrics.yaml'
+
   # Operations
   /operations:
     $ref: './paths/operations/operations.yaml'
@@ -215,6 +213,12 @@ paths:
     $ref: './paths/permissions/permissions-me.yaml'
   /permissions/{id}:
     $ref: './paths/permissions/permission.yaml'
+
+  # Presets
+  /presets:
+    $ref: './paths/presets/presets.yaml'
+  /presets/{id}:
+    $ref: './paths/presets/preset.yaml'
 
   # Relations
   /relations:
@@ -235,12 +239,12 @@ paths:
     $ref: './paths/roles/role.yaml'
 
   # Schema
-  /schema/snapshot:
-    $ref: './paths/schema/snapshot.yaml'
   /schema/apply:
     $ref: './paths/schema/apply.yaml'
   /schema/diff:
     $ref: './paths/schema/diff.yaml'
+  /schema/snapshot:
+    $ref: './paths/schema/snapshot.yaml'
 
   # Server
   /server/info:
@@ -271,24 +275,20 @@ paths:
     $ref: './paths/users/me-tfa-disable.yaml'
 
   # Utils
+  /utils/cache/clear:
+    $ref: './paths/utils/cache-clear.yaml'
+  /utils/export/{collection}:
+    $ref: './paths/utils/export.yaml'
   /utils/hash/generate:
     $ref: './paths/utils/hash-generate.yaml'
   /utils/hash/verify:
     $ref: './paths/utils/hash-verify.yaml'
-  /utils/sort/{collection}:
-    $ref: './paths/utils/sort.yaml'
   /utils/import/{collection}:
     $ref: './paths/utils/import.yaml'
-  /utils/export/{collection}:
-    $ref: './paths/utils/export.yaml'
-  /utils/cache/clear:
-    $ref: './paths/utils/cache-clear.yaml'
   /utils/random/string:
     $ref: './paths/utils/random.yaml'
-
-  # Metrics
-  /metrics:
-    $ref: './paths/metrics/metrics.yaml'
+  /utils/sort/{collection}:
+    $ref: './paths/utils/sort.yaml'
 
   # Versions
   /versions:
@@ -304,18 +304,16 @@ paths:
 
 components:
   schemas:
-    Error:
-      $ref: './components/error.yaml'
     Activity:
       $ref: './components/activity.yaml'
-    Presets:
-      $ref: './components/preset.yaml'
     Collections:
       $ref: './components/collection.yaml'
     Comments:
       $ref: './components/comment.yaml'
     Diff:
       $ref: './components/diff.yaml'
+    Error:
+      $ref: './components/error.yaml'
     Extensions:
       $ref: './components/extension.yaml'
     Fields:
@@ -332,6 +330,10 @@ components:
       $ref: './components/operation.yaml'
     Permissions:
       $ref: './components/permissions.yaml'
+    Presets:
+      $ref: './components/preset.yaml'
+    Query:
+      $ref: './definitions/query.yaml'
     Relations:
       $ref: './components/relation.yaml'
     Revisions:
@@ -344,8 +346,6 @@ components:
       $ref: './components/setting.yaml'
     Users:
       $ref: './components/user.yaml'
-    Query:
-      $ref: './definitions/query.yaml'
     Versions:
       $ref: './components/version.yaml'
     x-metadata:

@@ -171,8 +171,8 @@ class OASSpecsService implements SpecificationSubService {
 			}
 		}
 
-		// Filter out the generic Items information
-		return tags.filter((tag) => tag.name !== 'Items');
+		// Filter out the generic Items information, then sort alphabetically for consistent output
+		return tags.filter((tag) => tag.name !== 'Items').sort((a, b) => a.name.localeCompare(b.name));
 	}
 
 	private async generatePaths(
@@ -434,6 +434,8 @@ class OASSpecsService implements SpecificationSubService {
 				components.schemas[tag.name] = schemaComponent;
 			}
 		}
+
+		components.schemas = Object.fromEntries(Object.entries(components.schemas).sort(([a], [b]) => a.localeCompare(b)));
 
 		return components;
 	}
