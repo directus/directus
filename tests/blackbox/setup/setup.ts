@@ -57,18 +57,22 @@ export async function setup() {
 							title: config.names[vendor],
 							task: async () => {
 								if (vendor === 'mssql') {
-									// READ_COMMITTED_SNAPSHOT switches reads to row-versioning (MVCC-like), matching how pg/mysql already behave.
-									const rcsiDb = knex({
+									const adminDb = knex({
 										client: 'mssql',
-										connection: config.knexConfig.mssql.connection!,
+										connection: { ...(config.knexConfig.mssql.connection as object), database: 'master' } as never,
 										pool: { min: 1, max: 1 },
 									});
 
 									try {
-										await awaitDatabaseConnection(rcsiDb, config.knexConfig.mssql.waitTestSQL);
-										await rcsiDb.raw('ALTER DATABASE CURRENT SET READ_COMMITTED_SNAPSHOT ON WITH ROLLBACK IMMEDIATE');
+										await awaitDatabaseConnection(adminDb, config.knexConfig.mssql.waitTestSQL);
+										await adminDb.raw("IF DB_ID('directus') IS NULL CREATE DATABASE [directus]");
+										await adminDb.raw('ALTER DATABASE [directus] SET RECOVERY SIMPLE');
+
+										await adminDb.raw(
+											'ALTER DATABASE [directus] SET READ_COMMITTED_SNAPSHOT ON WITH ROLLBACK IMMEDIATE',
+										);
 									} finally {
-										await rcsiDb.destroy();
+										await adminDb.destroy();
 									}
 								}
 
