@@ -569,14 +569,13 @@ function setToNow() {
 	.date-field {
 		display: flex;
 		align-items: center;
-		border-radius: 0.1875rem;
 		gap: 0.1875rem;
-		text-align: center;
-		user-select: none;
 	}
 
 	.date-field-segment {
 		padding: 0.5rem 0.625rem;
+		border-radius: var(--theme--border-radius);
+		text-align: center;
 		background: var(--theme--form--field--input--background-subdued);
 	}
 
