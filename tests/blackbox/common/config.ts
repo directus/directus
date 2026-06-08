@@ -310,6 +310,12 @@ const config: Config = {
 			DB_USER: 'sa',
 			DB_PASSWORD: 'Test@123',
 			DB_DATABASE: 'model',
+			// Match the 60s requestTimeout the test harness's own knex uses (see knexConfig.mssql).
+			// Without it the server falls back to tedious's 15s default; under load a query that
+			// crosses 15s is aborted and the connection is returned to the pool in SentClientRequest
+			// state, so every later transaction on it fails instantly ("Requests can only be made in
+			// the LoggedIn state") and cascades across the suite.
+			DB_REQUEST_TIMEOUT: '60000',
 			PORT: '59157',
 		},
 		oracle: {

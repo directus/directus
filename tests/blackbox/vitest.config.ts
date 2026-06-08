@@ -8,7 +8,10 @@ export default defineConfig({
 		poolOptions: {
 			forks: {
 				minForks: 1,
-				maxForks: 6,
+				// Reduced from 6: under higher parallelism the single mssql instance saturates, making
+				// server queries cross their request timeout and poison pooled connections, which
+				// cascades into suite-wide failures. Lower this further (2/1) if mssql still saturates.
+				maxForks: 3,
 			},
 		},
 		environment: './setup/environment.ts',
