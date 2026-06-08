@@ -1,7 +1,9 @@
 post:
   security: []
-  summary: Log Out
-  description: Log Out
+  summary: Logout
+  description: >
+    Log out the current user by invalidating their refresh token or session. The token is read from the request body, a
+    httpOnly cookie, or the session cookie depending on the mode used at login.
   tags:
     - Authentication
   operationId: logout
@@ -15,12 +17,16 @@ post:
               type: string
               example: eyJ0eXAiOiJKV...
               description:
-                The refresh token to invalidate. If you have the refresh token in a cookie through /auth/login, you
-                don't have to submit it here.
+                The refresh token to invalidate. Required in `json` mode; omit for `cookie` or `session` mode.
             mode:
               type: string
               enum: [json, cookie, session]
-              description: Whether the refresh token is submitted in the JSON response, or in a httpOnly cookie.
+              default: cookie
+              description: |
+                Controls how the refresh token is read.
+                `json` reads the refresh token from the request body.
+                `cookie` reads the refresh token from a httpOnly cookie.
+                `session` reads the session ID from the session cookie.
   responses:
     '200':
-      description: Request successful
+      description: Successful request

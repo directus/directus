@@ -189,6 +189,8 @@ class OASSpecsService implements SpecificationSubService {
 
 			if (isSystem) {
 				for (const [path, pathItem] of Object.entries<PathItemObject>(spec.paths)) {
+					if ((pathItem as any)['x-enabled-env'] && !env[(pathItem as any)['x-enabled-env']]) continue;
+
 					for (const [method, operation] of Object.entries(pathItem)) {
 						if (operation.tags?.includes(tag.name)) {
 							if (!paths[path]) {

@@ -145,14 +145,14 @@ paths:
     $ref: './paths/assets/files.yaml'
 
   # Authentication
+  /auth:
+    $ref: './paths/auth/oauth.yaml'
   /auth/login:
     $ref: './paths/auth/login.yaml'
+  /auth/login/{provider}:
+    $ref: './paths/auth/provider.yaml'
   /auth/logout:
     $ref: './paths/auth/logout.yaml'
-  /auth/oauth:
-    $ref: './paths/auth/oauth.yaml'
-  /auth/oauth/{provider}:
-    $ref: './paths/auth/oauth-provider.yaml'
   /auth/password/request:
     $ref: './paths/auth/password-request.yaml'
   /auth/password/reset:

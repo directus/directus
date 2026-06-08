@@ -2,9 +2,16 @@ get:
   security: []
   tags:
     - Authentication
-  operationId: oauth
-  summary: List OAuth Providers
-  description: List configured OAuth providers.
+  operationId: listAuthProviders
+  summary: List Auth Providers
+  description: List all configured auth providers.
+  parameters:
+    - name: sessionOnly
+      in: query
+      required: false
+      description: Only return providers that support session-based authentication.
+      schema:
+        type: boolean
   responses:
     '200':
       description: Successful request
@@ -13,12 +20,25 @@ get:
           schema:
             type: object
             properties:
-              public:
-                type: boolean
               data:
                 type: array
-                example: ['github', 'facebook']
                 items:
-                  type: string
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Unique key of the provider.
+                    driver:
+                      type: string
+                      description: Driver type (local, oauth2, openid, ldap, saml).
+                    icon:
+                      type: string
+                      nullable: true
+                      description: Icon shown in the app login screen.
+                    label:
+                      type: string
+                      nullable: true
+                      description: Display label shown in the app login screen.
+              disableDefault:
+                type: boolean
+                description: Whether the default local login form is hidden.

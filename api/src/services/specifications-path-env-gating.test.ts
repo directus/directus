@@ -25,6 +25,21 @@ vi.mock('@directus/specs', () => ({
 					responses: { '200': { description: 'Successful login' } },
 				},
 			},
+			'/auth/login/{provider}': {
+				'x-enabled-env': 'AUTH_PROVIDERS',
+				get: {
+					tags: ['Authentication'],
+					operationId: 'loginProvider',
+					parameters: [{ name: 'provider', in: 'path', required: true, schema: { type: 'string' } }],
+					responses: { '302': { description: 'Redirect to provider' } },
+				},
+				post: {
+					tags: ['Authentication'],
+					operationId: 'loginProviderCredentials',
+					parameters: [{ name: 'provider', in: 'path', required: true, schema: { type: 'string' } }],
+					responses: { '200': { description: 'Successful login' } },
+				},
+			},
 			'/metrics': {
 				get: {
 					tags: ['Metrics'],
@@ -57,6 +72,44 @@ describe('Services / Specifications / x-enabled-env gating', () => {
 	afterEach(() => {
 		tracker.reset();
 		vi.clearAllMocks();
+	});
+
+	describe('path-level', () => {
+		it('excludes a path with x-enabled-env when the env var is not set', async () => {
+			const { useEnv } = await import('@directus/env');
+			vi.mocked(useEnv).mockReturnValue(mockEnv().useEnv() as any);
+
+			const { SpecificationService } = await import('./index.js');
+
+			const service = new SpecificationService({
+				knex: db,
+				schema,
+				accountability: { role: 'admin', admin: true } as Accountability,
+			});
+
+			const spec = await service.oas.generate();
+
+			expect(spec.paths).toHaveProperty('/auth/login');
+			expect(spec.paths).not.toHaveProperty('/auth/login/{provider}');
+		});
+
+		it('includes a path with x-enabled-env when the env var is set', async () => {
+			const { useEnv } = await import('@directus/env');
+			vi.mocked(useEnv).mockReturnValue(mockEnv({ AUTH_PROVIDERS: 'google' }).useEnv() as any);
+
+			const { SpecificationService } = await import('./index.js');
+
+			const service = new SpecificationService({
+				knex: db,
+				schema,
+				accountability: { role: 'admin', admin: true } as Accountability,
+			});
+
+			const spec = await service.oas.generate();
+
+			expect(spec.paths).toHaveProperty('/auth/login');
+			expect(spec.paths).toHaveProperty('/auth/login/{provider}');
+		});
 	});
 
 	describe('tag-level', () => {
