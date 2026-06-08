@@ -1,4 +1,5 @@
 post:
+  security: []
   summary: Log Out
   description: Log Out
   tags:

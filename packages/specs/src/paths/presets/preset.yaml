@@ -6,6 +6,7 @@ get:
   description: Retrieve a single preset by unique identifier.
   security:
     - Auth: []
+    - KeyAuth: []
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
     - $ref: '../../openapi.yaml#/components/parameters/Meta'
@@ -106,6 +107,7 @@ delete:
   description: Delete an existing preset.
   security:
     - Auth: []
+    - KeyAuth: []
   responses:
     '200':
       description: Successful request

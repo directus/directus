@@ -6,6 +6,7 @@ get:
   description: List the comments.
   security:
     - Auth: []
+    - KeyAuth: []
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
     - $ref: '../../openapi.yaml#/components/parameters/Limit'
