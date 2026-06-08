@@ -1,10 +1,12 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { createMockRequest, createMockResponse, getRouteHandler } from '../test-utils/controllers.js';
 
 const readSingleton = vi.fn();
 const readByQuery = vi.fn();
+const loggerWarn = vi.fn();
+let performanceNowSpy: ReturnType<typeof vi.spyOn> | null = null;
 
 vi.mock('../services/settings.js', () => ({
 	SettingsService: vi.fn().mockImplementation(() => ({
@@ -56,6 +58,7 @@ vi.mock('../cache.js', () => ({
 vi.mock('../logger/index.js', () => ({
 	useLogger: vi.fn(() => ({
 		error: vi.fn(),
+		warn: loggerWarn,
 	})),
 }));
 
@@ -109,6 +112,11 @@ describe('utils global search controller', () => {
 		readByQuery.mockResolvedValue([]);
 	});
 
+	afterEach(() => {
+		performanceNowSpy?.mockRestore();
+		performanceNowSpy = null;
+	});
+
 	test('returns empty results below the minimum query length', async () => {
 		const req = createMockRequest({
 			method: 'POST',
@@ -143,5 +151,37 @@ describe('utils global search controller', () => {
 		expect(next).toHaveBeenCalledWith(expect.any(ForbiddenError));
 		expect(res.json).not.toHaveBeenCalled();
 		expect(readSingleton).not.toHaveBeenCalled();
+	});
+
+	test('logs slow global search requests without the search query', async () => {
+		performanceNowSpy = vi.spyOn(performance, 'now').mockReturnValueOnce(0).mockReturnValueOnce(1_001);
+		readSingleton.mockResolvedValue({ global_search_config: null });
+
+		const req = createMockRequest({
+			method: 'POST',
+			body: { query: 'private search' },
+			accountability: makeAccountability(),
+		});
+
+		const res = createMockResponse();
+		const next = vi.fn();
+
+		const [handler] = getRouteHandler(router, 'POST', '/global-search');
+		await handler!.handle(req, res, next);
+
+		expect(next).not.toHaveBeenCalled();
+
+		expect(loggerWarn).toHaveBeenCalledWith(
+			expect.objectContaining({
+				durationMs: 1001,
+				thresholdMs: 1000,
+				configuredCollections: [],
+				resultCounts: {},
+				slowestCollection: null,
+			}),
+			'Slow global search request',
+		);
+
+		expect(JSON.stringify(loggerWarn.mock.calls[0])).not.toContain('private search');
 	});
 });

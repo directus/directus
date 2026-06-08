@@ -258,6 +258,7 @@ router.post(
 const MAX_SEARCH_COLLECTIONS = 20;
 const DEFAULT_SEARCH_LIMIT = 5;
 const MAX_SEARCH_LIMIT = 25;
+const SLOW_GLOBAL_SEARCH_THRESHOLD_MS = 1_000;
 const TEXT_SEARCH_FIELD_TYPES = new Set<Type>(['string', 'text', 'csv']);
 const DECIMAL_SEARCH_FIELD_TYPES = new Set<Type>(['decimal', 'float']);
 const EXACT_SEARCH_FIELD_TYPES = new Set<Type>(['hash']);
@@ -265,6 +266,11 @@ const EXACT_SEARCH_FIELD_TYPES = new Set<Type>(['hash']);
 type ResolvedFieldPath = {
 	field: FieldOverview;
 	segments: { collection: string; field: string }[];
+};
+
+type GlobalSearchCollectionTiming = {
+	collection: string;
+	durationMs: number;
 };
 
 function normalizeSearchLimit(limit: number | null | undefined) {
@@ -407,6 +413,38 @@ function createFieldAccessChecker(accountability: Accountability | undefined, sc
 	};
 }
 
+function logSlowGlobalSearchRequest(
+	durationMs: number,
+	configuredCollections: string[],
+	results: Record<string, any[]>,
+	collectionTimings: GlobalSearchCollectionTiming[],
+) {
+	if (durationMs < SLOW_GLOBAL_SEARCH_THRESHOLD_MS) return;
+
+	const slowestCollection = collectionTimings.reduce<GlobalSearchCollectionTiming | null>((slowest, timing) => {
+		if (!slowest || timing.durationMs > slowest.durationMs) return timing;
+		return slowest;
+	}, null);
+
+	useLogger().warn(
+		{
+			durationMs: Math.round(durationMs),
+			thresholdMs: SLOW_GLOBAL_SEARCH_THRESHOLD_MS,
+			configuredCollections,
+			resultCounts: Object.fromEntries(
+				Object.entries(results).map(([collection, items]) => [collection, items.length]),
+			),
+			slowestCollection: slowestCollection
+				? {
+						collection: slowestCollection.collection,
+						durationMs: Math.round(slowestCollection.durationMs),
+					}
+				: null,
+		},
+		'Slow global search request',
+	);
+}
+
 const globalSearchHandler = asyncHandler(async (req, res) => {
 	if (!req.accountability?.user || !req.accountability.app) {
 		throw new ForbiddenError();
@@ -424,21 +462,24 @@ const globalSearchHandler = asyncHandler(async (req, res) => {
 		return res.json({ data: {} });
 	}
 
+	const startedAt = performance.now();
 	const settingsService = new SettingsService({ schema: req.schema });
 	const settings = await settingsService.readSingleton({});
 	const config = settings['global_search_config'] as GlobalSearchCollectionConfig[] | null;
+	const collections = config?.slice(0, MAX_SEARCH_COLLECTIONS) ?? [];
 
 	if (!config?.length) {
+		logSlowGlobalSearchRequest(performance.now() - startedAt, [], {}, []);
 		return res.json({ data: {} });
 	}
 
-	const collections = config.slice(0, MAX_SEARCH_COLLECTIONS);
 	const collectionsService = new CollectionsService({ accountability: req.accountability, schema: req.schema });
 	const collectionMeta = await collectionsService.readByQuery();
 	const collectionMetaByName = new Map(collectionMeta.map((collection) => [collection.collection, collection.meta]));
 	const canReadFieldPath = createFieldAccessChecker(req.accountability, req.schema);
 
 	const results: Record<string, any[]> = {};
+	const collectionTimings: GlobalSearchCollectionTiming[] = [];
 
 	await Promise.allSettled(
 		collections.map(async (collectionConfig) => {
@@ -499,6 +540,7 @@ const globalSearchHandler = asyncHandler(async (req, res) => {
 				const sortField = getSortFieldPath(collectionConfig.sort);
 				const canSort = sortField ? await canReadFieldPath(collectionConfig.collection, sortField) : false;
 				const sort = canSort && collectionConfig.sort ? [collectionConfig.sort] : null;
+				const collectionStartedAt = performance.now();
 
 				const items = await service.readByQuery({
 					filter,
@@ -507,11 +549,23 @@ const globalSearchHandler = asyncHandler(async (req, res) => {
 					sort,
 				});
 
+				collectionTimings.push({
+					collection: collectionConfig.collection,
+					durationMs: performance.now() - collectionStartedAt,
+				});
+
 				results[collectionConfig.collection] = items;
 			} catch {
 				// Skip collections the user can't access
 			}
 		}),
+	);
+
+	logSlowGlobalSearchRequest(
+		performance.now() - startedAt,
+		collections.map((collection) => collection.collection),
+		results,
+		collectionTimings,
 	);
 
 	return res.json({ data: results });
