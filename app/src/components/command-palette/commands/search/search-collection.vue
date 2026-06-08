@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { useApi } from '@directus/composables';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
-import { useFieldsStore } from '@/stores/fields';
-import { getItemRoute } from '@/utils/get-route';
-import { renderPlainStringTemplate } from '@/utils/render-string-template';
-import { unexpectedError } from '@/utils/unexpected-error';
 import CommandPaletteEmpty from '../../command-palette-empty.vue';
 import CommandPaletteGroup from '../../command-palette-group.vue';
 import CommandPaletteItem from '../../command-palette-item.vue';
@@ -16,8 +12,12 @@ import { useCommandPalette } from '../../composables/use-command-palette';
 import { useRecentItems } from '../../composables/use-recent-items';
 import { getRoutePrimaryKey } from '../../utils/get-route-primary-key';
 import { useAiStore } from '@/ai/stores/use-ai';
+import { useFieldsStore } from '@/stores/fields';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import { getItemRoute } from '@/utils/get-route';
+import { renderPlainStringTemplate } from '@/utils/render-string-template';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 const props = defineProps<{
 	collection: string;
@@ -25,6 +25,13 @@ const props = defineProps<{
 	collectionIcon: string;
 	displayTemplate: string | null;
 }>();
+
+type SearchResult = {
+	pk: string;
+	displayValue: string;
+	versionKey?: string;
+	versionId?: string;
+};
 
 const { t } = useI18n();
 const api = useApi();
@@ -47,12 +54,22 @@ function askAi() {
 
 const currentPk = computed(() => {
 	if (!route.path.startsWith(`/content/${props.collection}/`)) return null;
+	if (route.params.primaryKey === '+') return '+';
 	return getRoutePrimaryKey(route.params.primaryKey) ?? null;
 });
 
-const results = ref<{ pk: string; displayValue: string }[]>([]);
+const currentVersionKey = computed(() => getQueryValue(route.query.version));
+const currentVersionId = computed(() => getQueryValue(route.query.versionId));
+const currentRouteCollection = computed(() => getQueryValue(route.params.collection));
+
+const searchVersionKey = computed(() => {
+	if (currentRouteCollection.value !== props.collection) return undefined;
+	return currentVersionKey.value;
+});
+
+const results = ref<SearchResult[]>([]);
 const { items: rawRecentItems, add: addRecentItem } = useRecentItems(props.collection);
-const recentItems = computed(() => rawRecentItems.value.filter((item) => item.pk !== currentPk.value));
+const recentItems = computed(() => rawRecentItems.value.filter((item) => isCurrentItem(item) === false));
 
 const primaryKeyField = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field ?? 'id');
 
@@ -100,17 +117,33 @@ async function fetchItems(query: string, currentRequest: number) {
 				search: query,
 				fields: fieldsToFetch.value,
 				limit: 25,
+				...(searchVersionKey.value ? { version: searchVersionKey.value } : {}),
 			},
 		});
 
 		if (currentRequest !== requestId) return;
 
-		results.value = (response.data.data ?? [])
-			.map((item: Record<string, any>) => ({
-				pk: String(item[primaryKeyField.value]),
-				displayValue: renderPlainStringTemplate(template.value, item) ?? String(item[primaryKeyField.value]),
-			}))
-			.filter((item: { pk: string }) => item.pk !== currentPk.value);
+		const fetchedItems = (response.data.data ?? []) as Record<string, any>[];
+		const nextResults: SearchResult[] = [];
+
+		for (const item of fetchedItems) {
+			const pk = item[primaryKeyField.value];
+			const versionId = getItemVersionId(item);
+			const isItemlessDraft = searchVersionKey.value && pk === null && versionId;
+
+			if (pk === null && !isItemlessDraft) continue;
+
+			const result: SearchResult = {
+				pk: isItemlessDraft ? '+' : String(pk),
+				displayValue: renderPlainStringTemplate(template.value, item) ?? String(pk ?? versionId),
+			};
+
+			if (searchVersionKey.value) result.versionKey = searchVersionKey.value;
+			if (isItemlessDraft) result.versionId = versionId;
+			if (isCurrentItem(result) === false) nextResults.push(result);
+		}
+
+		results.value = nextResults;
 	} catch (error) {
 		if (currentRequest !== requestId) return;
 		unexpectedError(error);
@@ -120,10 +153,30 @@ async function fetchItems(query: string, currentRequest: number) {
 	}
 }
 
-function selectItem(pk: string, displayValue: string) {
-	addRecentItem({ collection: props.collection, pk, displayValue });
-	router.push(getItemRoute(props.collection, pk));
+function selectItem(item: SearchResult) {
+	addRecentItem({ collection: props.collection, ...item });
+	router.push(getItemRoute(props.collection, item.pk, item.versionKey, item.versionId));
 	close();
+}
+
+function getQueryValue(value: unknown) {
+	if (Array.isArray(value)) return typeof value[0] === 'string' && value[0] ? value[0] : undefined;
+	return typeof value === 'string' && value ? value : undefined;
+}
+
+function getItemVersionId(item: Record<string, any>) {
+	const versionId = item.$meta?.version_id;
+	if (versionId === null || versionId === undefined) return undefined;
+	return String(versionId);
+}
+
+function isCurrentItem(item: { pk: string; versionKey?: string; versionId?: string }) {
+	if (item.pk !== currentPk.value) return false;
+	return item.versionKey === currentVersionKey.value && item.versionId === currentVersionId.value;
+}
+
+function getItemValue(item: { pk: string; versionKey?: string; versionId?: string }) {
+	return [item.pk, item.versionKey, item.versionId].filter(Boolean).join(':');
 }
 </script>
 
@@ -132,10 +185,10 @@ function selectItem(pk: string, displayValue: string) {
 		<CommandPaletteGroup v-if="showRecents" :heading="t('recent')">
 			<CommandPaletteItem
 				v-for="item in recentItems"
-				:key="item.pk"
-				:value="item.pk"
+				:key="getItemValue(item)"
+				:value="getItemValue(item)"
 				:icon="collectionIcon"
-				@select="selectItem(item.pk, item.displayValue)"
+				@select="selectItem(item)"
 			>
 				{{ item.displayValue }}
 			</CommandPaletteItem>
@@ -151,10 +204,10 @@ function selectItem(pk: string, displayValue: string) {
 		</CommandPaletteItem>
 		<CommandPaletteItem
 			v-for="item in results"
-			:key="item.pk"
-			:value="item.pk"
+			:key="getItemValue(item)"
+			:value="getItemValue(item)"
 			:icon="collectionIcon"
-			@select="selectItem(item.pk, item.displayValue)"
+			@select="selectItem(item)"
 		>
 			{{ item.displayValue }}
 		</CommandPaletteItem>

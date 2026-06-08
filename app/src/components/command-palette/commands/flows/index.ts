@@ -1,15 +1,16 @@
+import { triggerFlow } from '@directus/sdk';
 import type { FlowRaw } from '@directus/types';
 import type { CommandActionContext, CommandConfig } from '../../composables/use-command-registry';
-import { triggerFlow } from '@directus/sdk';
+import { defineCommands } from '../../composables/use-command-registry';
+import { getRoutePrimaryKey } from '../../utils/get-route-primary-key';
+import { getRouteVersionContext } from '../../utils/get-route-version-context';
+import RunFlow from './run-flow.vue';
 import { i18n } from '@/lang';
 import sdk from '@/sdk';
 import { useFlowsStore } from '@/stores/flows';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { defineCommands } from '../../composables/use-command-registry';
-import { getRoutePrimaryKey } from '../../utils/get-route-primary-key';
-import RunFlow from './run-flow.vue';
 
 export const flowCommands = defineCommands({
 	groups: [
@@ -58,6 +59,7 @@ export const collectionItemFlowCommands = defineCommands({
 		};
 
 		if (!collection || !route.path.startsWith(`/content/${collection}`)) return [];
+		if (getRouteVersionContext(route).isVersionContext) return [];
 
 		const itemPrimaryKey = getRoutePrimaryKey(primaryKey);
 		const location = itemPrimaryKey ? 'item' : 'collection';

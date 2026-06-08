@@ -1,9 +1,11 @@
 import type { CommandActionContext } from '../composables/use-command-registry';
+import { defineCommands } from '../composables/use-command-registry';
+import { getCollectionName } from '../utils/get-collection-name';
+import { getRouteVersionContext } from '../utils/get-route-version-context';
 import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePermissionsStore } from '@/stores/permissions';
-import { defineCommands } from '../composables/use-command-registry';
-import { getCollectionName } from '../utils/get-collection-name';
+import { getItemRoute } from '@/utils/get-route';
 
 export const contentCommands = defineCommands({
 	groups: () => {
@@ -23,6 +25,8 @@ export const contentCommands = defineCommands({
 		const permissionsStore = usePermissionsStore();
 		const t = i18n.global.t;
 		const currentPath = route.path;
+		const routeCollection = typeof route.params.collection === 'string' ? route.params.collection : undefined;
+		const versionContext = getRouteVersionContext(route);
 
 		const readCollections = collectionsStore.visibleCollections.filter(
 			({ collection, type }) => type !== 'alias' && permissionsStore.hasPermission(collection, 'read'),
@@ -56,7 +60,12 @@ export const contentCommands = defineCommands({
 					group: `collection:${collection.collection}`,
 					priority: currentPath.startsWith(`/content/${collection.collection}`) ? 21 : 20,
 					action: ({ router }: CommandActionContext) => {
-						router.push(`/content/${collection.collection}/+`);
+						const versionKey =
+							routeCollection === collection.collection && versionContext.isVersionContext
+								? versionContext.versionKey
+								: undefined;
+
+						router.push(getItemRoute(collection.collection, '+', versionKey));
 					},
 				})),
 		];

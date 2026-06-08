@@ -5,6 +5,8 @@ interface RecentItem {
 	collection: string;
 	pk: string;
 	displayValue: string;
+	versionKey?: string;
+	versionId?: string;
 }
 
 const STORAGE_KEY = 'command-palette:recent-items';
@@ -20,7 +22,13 @@ export function useRecentItems(collection?: string) {
 	});
 
 	function add(item: RecentItem) {
-		const index = recentItems.value.findIndex((i) => i.collection === item.collection && i.pk === item.pk);
+		const index = recentItems.value.findIndex(
+			(i) =>
+				i.collection === item.collection &&
+				i.pk === item.pk &&
+				i.versionKey === item.versionKey &&
+				i.versionId === item.versionId,
+		);
 
 		if (index !== -1) {
 			recentItems.value.splice(index, 1);
