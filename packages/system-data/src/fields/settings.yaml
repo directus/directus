@@ -1379,6 +1379,7 @@ fields:
     options:
       template: '{{collection}}'
       addLabel: $t:fields.directus_settings.global_search_add_collection
+      limit: 20
       fields:
         - field: collection
           name: $t:collection
@@ -1411,8 +1412,17 @@ fields:
         - field: fields
           name: $t:fields.directus_settings.global_search_fields_to_search
           type: json
+          schema:
+            is_nullable: false
           meta:
             interface: system-field-tree
+            required: true
+            validation:
+              _and:
+                - fields:
+                    _nnull: true
+                - fields:
+                    _nempty: true
             options:
               collectionField: collection
             note: $t:fields.directus_settings.global_search_fields_note
@@ -1434,6 +1444,10 @@ fields:
           meta:
             interface: input
             width: half
+            options:
+              min: 1
+              max: 25
+              step: 1
             note: $t:fields.directus_settings.global_search_limit_note
         - field: sort
           name: $t:sort_by

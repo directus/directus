@@ -382,10 +382,9 @@ function createFieldAccessChecker(accountability: Accountability | undefined, sc
 		if (!allowedFieldsByCollection.has(collection)) {
 			allowedFieldsByCollection.set(
 				collection,
-				fetchAllowedFields(
-					{ collection, action: 'read', accountability },
-					{ schema, knex: getDatabase() },
-				).then((fields) => (fields.includes('*') ? null : new Set(fields))),
+				fetchAllowedFields({ collection, action: 'read', accountability }, { schema, knex: getDatabase() }).then(
+					(fields) => (fields.includes('*') ? null : new Set(fields)),
+				),
 			);
 		}
 
@@ -408,106 +407,116 @@ function createFieldAccessChecker(accountability: Accountability | undefined, sc
 	};
 }
 
-router.post(
-	'/search',
-	asyncHandler(async (req, res) => {
-		const { query } = req.body;
+const globalSearchHandler = asyncHandler(async (req, res) => {
+	if (!req.accountability?.user || !req.accountability.app) {
+		throw new ForbiddenError();
+	}
 
-		if (!query || typeof query !== 'string') {
-			throw new InvalidPayloadError({ reason: `"query" is required and must be a string` });
-		}
+	const { query } = req.body;
 
-		const settingsService = new SettingsService({ schema: req.schema });
-		const settings = await settingsService.readSingleton({});
-		const config = settings['global_search_config'] as GlobalSearchCollectionConfig[] | null;
+	if (typeof query !== 'string') {
+		throw new InvalidPayloadError({ reason: `"query" is required and must be a string` });
+	}
 
-		if (!config?.length) {
-			return res.json({ data: {} });
-		}
+	const searchQuery = query.trim();
 
-		const collections = config.slice(0, MAX_SEARCH_COLLECTIONS);
-		const collectionsService = new CollectionsService({ accountability: req.accountability, schema: req.schema });
-		const collectionMeta = await collectionsService.readByQuery();
-		const collectionMetaByName = new Map(collectionMeta.map((collection) => [collection.collection, collection.meta]));
-		const canReadFieldPath = createFieldAccessChecker(req.accountability, req.schema);
+	if (searchQuery.length < 2) {
+		return res.json({ data: {} });
+	}
 
-		const results: Record<string, any[]> = {};
+	const settingsService = new SettingsService({ schema: req.schema });
+	const settings = await settingsService.readSingleton({});
+	const config = settings['global_search_config'] as GlobalSearchCollectionConfig[] | null;
 
-		await Promise.allSettled(
-			collections.map(async (collectionConfig) => {
-				try {
-					if (!collectionConfig.fields?.length) return;
-					if (!req.schema.collections[collectionConfig.collection]) return;
+	if (!config?.length) {
+		return res.json({ data: {} });
+	}
 
-					const searchFilters: Record<string, any>[] = [];
+	const collections = config.slice(0, MAX_SEARCH_COLLECTIONS);
+	const collectionsService = new CollectionsService({ accountability: req.accountability, schema: req.schema });
+	const collectionMeta = await collectionsService.readByQuery();
+	const collectionMetaByName = new Map(collectionMeta.map((collection) => [collection.collection, collection.meta]));
+	const canReadFieldPath = createFieldAccessChecker(req.accountability, req.schema);
 
-					for (const field of collectionConfig.fields) {
-						const resolvedField = resolveFieldPath(req.schema, collectionConfig.collection, field);
-						if (!resolvedField) continue;
+	const results: Record<string, any[]> = {};
 
-						if ((await canReadFieldPath(collectionConfig.collection, field)) === false) continue;
+	await Promise.allSettled(
+		collections.map(async (collectionConfig) => {
+			try {
+				if (!collectionConfig.fields?.length) return;
+				if (!req.schema.collections[collectionConfig.collection]) return;
 
-						const searchFilterForField = getSearchFilterForField(field, resolvedField.field.type, query);
-						if (searchFilterForField) searchFilters.push(searchFilterForField);
-					}
+				const searchFilters: Record<string, any>[] = [];
 
-					if (searchFilters.length === 0) return;
+				for (const field of collectionConfig.fields) {
+					const resolvedField = resolveFieldPath(req.schema, collectionConfig.collection, field);
+					if (!resolvedField) continue;
 
-					const service = new ItemsService(collectionConfig.collection, {
-						accountability: req.accountability,
-						schema: req.schema,
-					});
+					if ((await canReadFieldPath(collectionConfig.collection, field)) === false) continue;
 
-					const searchFilter = {
-						_or: searchFilters,
-					};
-
-					const filter = collectionConfig.filter ? mergeFilters(collectionConfig.filter, searchFilter) : searchFilter;
-
-					const displayTemplate =
-						collectionConfig.display_template ??
-						collectionMetaByName.get(collectionConfig.collection)?.display_template ??
-						null;
-
-					const templateFields = displayTemplate ? getFieldsFromTemplate(displayTemplate) : [];
-
-					const primaryKeyField = req.schema.collections[collectionConfig.collection]?.primary;
-					const fieldsToFetch = [
-						...(primaryKeyField ? [primaryKeyField] : []),
-						...templateFields,
-						...(collectionConfig.description_field ? [collectionConfig.description_field] : []),
-					];
-
-					const readableFieldsToFetch: string[] = [];
-
-					for (const field of fieldsToFetch) {
-						if (await canReadFieldPath(collectionConfig.collection, field)) {
-							readableFieldsToFetch.push(field);
-						}
-					}
-
-					if (primaryKeyField && !readableFieldsToFetch.includes(primaryKeyField)) return;
-
-					const sortField = getSortFieldPath(collectionConfig.sort);
-					const canSort = sortField ? await canReadFieldPath(collectionConfig.collection, sortField) : false;
-					const sort = canSort && collectionConfig.sort ? [collectionConfig.sort] : null;
-
-					const items = await service.readByQuery({
-						filter,
-						fields: [...new Set(readableFieldsToFetch)],
-						limit: normalizeSearchLimit(collectionConfig.limit),
-						sort,
-					});
-
-					results[collectionConfig.collection] = items;
-				} catch {
-					// Skip collections the user can't access
+					const searchFilterForField = getSearchFilterForField(field, resolvedField.field.type, searchQuery);
+					if (searchFilterForField) searchFilters.push(searchFilterForField);
 				}
-			}),
-		);
 
-		return res.json({ data: results });
-	}),
-);
+				if (searchFilters.length === 0) return;
+
+				const service = new ItemsService(collectionConfig.collection, {
+					accountability: req.accountability,
+					schema: req.schema,
+				});
+
+				const searchFilter = {
+					_or: searchFilters,
+				};
+
+				const filter = collectionConfig.filter ? mergeFilters(collectionConfig.filter, searchFilter) : searchFilter;
+
+				const displayTemplate =
+					collectionConfig.display_template ??
+					collectionMetaByName.get(collectionConfig.collection)?.display_template ??
+					null;
+
+				const templateFields = displayTemplate ? getFieldsFromTemplate(displayTemplate) : [];
+
+				const primaryKeyField = req.schema.collections[collectionConfig.collection]?.primary;
+
+				const fieldsToFetch = [
+					...(primaryKeyField ? [primaryKeyField] : []),
+					...templateFields,
+					...(collectionConfig.description_field ? [collectionConfig.description_field] : []),
+				];
+
+				const readableFieldsToFetch: string[] = [];
+
+				for (const field of fieldsToFetch) {
+					if (await canReadFieldPath(collectionConfig.collection, field)) {
+						readableFieldsToFetch.push(field);
+					}
+				}
+
+				if (primaryKeyField && !readableFieldsToFetch.includes(primaryKeyField)) return;
+
+				const sortField = getSortFieldPath(collectionConfig.sort);
+				const canSort = sortField ? await canReadFieldPath(collectionConfig.collection, sortField) : false;
+				const sort = canSort && collectionConfig.sort ? [collectionConfig.sort] : null;
+
+				const items = await service.readByQuery({
+					filter,
+					fields: [...new Set(readableFieldsToFetch)],
+					limit: normalizeSearchLimit(collectionConfig.limit),
+					sort,
+				});
+
+				results[collectionConfig.collection] = items;
+			} catch {
+				// Skip collections the user can't access
+			}
+		}),
+	);
+
+	return res.json({ data: results });
+});
+
+router.post('/global-search', globalSearchHandler);
 
 export default router;

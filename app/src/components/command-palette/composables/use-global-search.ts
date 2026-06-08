@@ -42,7 +42,9 @@ export function useGlobalSearch(search: Ref<string>) {
 		if (searchTimeout) clearTimeout(searchTimeout);
 		const currentRequest = ++requestId;
 
-		if (!value || !hasConfig.value) {
+		const query = value.trim();
+
+		if (query.length < 2 || !hasConfig.value) {
 			results.value = [];
 			loading.value = false;
 			return;
@@ -51,7 +53,7 @@ export function useGlobalSearch(search: Ref<string>) {
 		loading.value = true;
 
 		searchTimeout = setTimeout(() => {
-			fetchResults(value, currentRequest);
+			fetchResults(query, currentRequest);
 		}, 300);
 	});
 
@@ -62,7 +64,7 @@ export function useGlobalSearch(search: Ref<string>) {
 
 	async function fetchResults(query: string, currentRequest: number) {
 		try {
-			const response = await api.post('/utils/search', { query });
+			const response = await api.post('/utils/global-search', { query });
 
 			if (currentRequest !== requestId) return;
 

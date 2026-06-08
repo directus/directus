@@ -5,4 +5,4 @@
 '@directus/types': minor
 ---
 
-Added a command palette with configurable global search.
+Added a command palette with configurable global search and a settings page for searchable collections.

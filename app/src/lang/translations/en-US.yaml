@@ -1552,6 +1552,10 @@ danger_zone: Danger Zone
 settings_appearance: Appearance
 settings_ai: AI
 global_search: Global Search
+global_search_config_invalid: Global search config is invalid.
+global_search_missing_collection: Each global search collection needs a collection.
+global_search_missing_fields: Each global search collection needs at least one field to search.
+global_search_invalid_limit: Number of Results must be a whole number from 1 to 25.
 model_context_protocol: Model Context Protocol
 ai_assistant: AI Assistant
 ai_disabled_by_env: AI Assistant features have been disabled via environment variable.
@@ -1944,15 +1948,18 @@ fields:
     ai_provider_options_note: Provider-specific options passed to AI endpoints.
     ai_header_name: Header
     global_search_notice:
-      'Configure which collections are searchable from the command palette. Each collection can have its own display
-      template, search fields, and filters.'
+      'Configure which collections appear in command palette global search. Global search searches published content
+      only. Draft/version results are available through collection search while viewing a versioned collection. Up to 20
+      configured collections are searched.'
     global_search_add_collection: Add Collection
     global_search_description_field: Description Field
     global_search_fields_to_search: Fields to Search
-    global_search_fields_note: Select the fields to search through.
+    global_search_fields_note:
+      'Text fields use contains search. Numeric, boolean, UUID, and hash fields use exact match. Unsupported field types
+      are skipped. Relational fields can be expensive.'
     global_search_filter_note: Add a filter to limit the search results.
     global_search_limit: Number of Results
-    global_search_limit_note: The maximum number of search results per collection.
+    global_search_limit_note: Defaults to 5. Maximum 25 results per collection.
 
   directus_shares:
     name: Name
