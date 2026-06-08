@@ -154,6 +154,29 @@ const TimeFieldInput = {
 	props: ['part'],
 };
 
+const DateFieldRoot = {
+	name: 'DateFieldRoot',
+	template: `
+		<div class="date-field-stub">
+			<slot :segments="[
+				{ part: 'month', value: '01' },
+				{ part: 'literal', value: '/' },
+				{ part: 'day', value: '15' },
+				{ part: 'literal', value: '/' },
+				{ part: 'year', value: '2024' }
+			]" />
+		</div>
+	`,
+	props: ['modelValue', 'granularity', 'locale', 'dir', 'disabled'],
+	emits: ['update:modelValue'],
+};
+
+const DateFieldInput = {
+	name: 'DateFieldInput',
+	template: '<span class="date-field-input-stub">{{ part }}</span>',
+	props: ['part'],
+};
+
 describe('v-date-picker', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -185,6 +208,8 @@ describe('v-date-picker', () => {
 					CalendarCellTrigger,
 					TimeFieldRoot,
 					TimeFieldInput,
+					DateFieldRoot,
+					DateFieldInput,
 					VIcon,
 					VSelect,
 					VInput,
@@ -1049,6 +1074,95 @@ describe('v-date-picker', () => {
 			await nextTick();
 
 			expect(wrapper.emitted('close')).toBeFalsy();
+		});
+	});
+
+	describe('date field keyboard input', () => {
+		it.each(['date', 'dateTime', 'timestamp'] as const)('renders the date field for type: %s', (type) => {
+			const wrapper = createWrapper({ type });
+
+			expect(wrapper.findComponent(DateFieldRoot).exists()).toBe(true);
+		});
+
+		it('does not render the date field for type: time', () => {
+			const wrapper = createWrapper({ type: 'time' });
+
+			expect(wrapper.findComponent(DateFieldRoot).exists()).toBe(false);
+		});
+
+		it('emits update:modelValue when a complete date is typed', async () => {
+			vi.mocked(formatDatePickerModelValue).mockReturnValue('2024-03-09');
+
+			const wrapper = createWrapper({ type: 'date' });
+
+			const dateField = wrapper.findComponent(DateFieldRoot);
+			await dateField.vm.$emit('update:modelValue', new CalendarDate(2024, 3, 9));
+			await nextTick();
+
+			expect(wrapper.emitted('update:modelValue')).toEqual([['2024-03-09']]);
+		});
+
+		it('does not emit close when a date is typed for type: date', async () => {
+			vi.mocked(formatDatePickerModelValue).mockReturnValue('2024-03-09');
+
+			const wrapper = createWrapper({ type: 'date' });
+
+			const dateField = wrapper.findComponent(DateFieldRoot);
+			await dateField.vm.$emit('update:modelValue', new CalendarDate(2024, 3, 9));
+			await nextTick();
+
+			expect(wrapper.emitted('close')).toBeFalsy();
+		});
+
+		it('updates the date field when a calendar date is selected', async () => {
+			const wrapper = createWrapper({ type: 'date' });
+
+			const calendarRoot = wrapper.findComponent(CalendarRoot);
+			const newDate = new CalendarDate(2024, 5, 20);
+			await calendarRoot.vm.$emit('update:modelValue', newDate);
+			await nextTick();
+
+			const dateField = wrapper.findComponent(DateFieldRoot);
+			expect(dateField.props('modelValue')).toEqual(newDate);
+		});
+
+		it('passes undefined modelValue to the date field when no value is set', () => {
+			const wrapper = createWrapper({ type: 'date' });
+
+			const dateField = wrapper.findComponent(DateFieldRoot);
+			expect(dateField.props('modelValue')).toBeUndefined();
+		});
+
+		it('passes day granularity to the date field', () => {
+			const wrapper = createWrapper({ type: 'dateTime' });
+
+			const dateField = wrapper.findComponent(DateFieldRoot);
+			expect(dateField.props('granularity')).toBe('day');
+		});
+
+		it('passes the user language as locale to the date field', () => {
+			mockUserStore.language = 'en-GB';
+
+			const wrapper = createWrapper({ type: 'date' });
+
+			const dateField = wrapper.findComponent(DateFieldRoot);
+			expect(dateField.props('locale')).toBe('en-GB');
+		});
+
+		it('passes disabled prop to the date field', () => {
+			const wrapper = createWrapper({ type: 'date', disabled: true });
+
+			const dateField = wrapper.findComponent(DateFieldRoot);
+			expect(dateField.props('disabled')).toBe(true);
+		});
+
+		it('passes RTL direction to the date field when textDirection is rtl', () => {
+			mockUserStore.textDirection = 'rtl';
+
+			const wrapper = createWrapper({ type: 'date' });
+
+			const dateField = wrapper.findComponent(DateFieldRoot);
+			expect(dateField.props('dir')).toBe('rtl');
 		});
 	});
 

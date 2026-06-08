@@ -25,6 +25,8 @@ import {
 	CalendarNext,
 	CalendarPrev,
 	CalendarRoot,
+	DateFieldInput,
+	DateFieldRoot,
 	TimeFieldInput,
 	TimeFieldRoot,
 } from 'reka-ui';
@@ -192,13 +194,21 @@ function emitValue(): void {
 	emit('update:modelValue', value);
 }
 
-function handleDateChange(value: DateValue | undefined) {
+function applyDate(value: DateValue | undefined) {
 	calendarValue.value = value;
 	emitValue();
+}
+
+function handleDateChange(value: DateValue | undefined) {
+	applyDate(value);
 
 	if (props.type === 'date') {
 		emit('close');
 	}
+}
+
+function handleDateFieldChange(value: DateValue | undefined) {
+	applyDate(value);
 }
 
 /**
@@ -305,6 +315,27 @@ function setToNow() {
 				</CalendarNext>
 			</CalendarHeader>
 			<div class="calendar-wrapper">
+				<div v-if="showCalendar" class="date-picker-field">
+					<DateFieldRoot
+						v-slot="{ segments }"
+						:model-value="calendarValue"
+						granularity="day"
+						:locale="userStore.language"
+						:disabled="disabled"
+						:dir="isRTL ? 'rtl' : 'ltr'"
+						class="date-field"
+						@update:model-value="handleDateFieldChange"
+					>
+						<template v-for="item in segments" :key="item.part">
+							<DateFieldInput v-if="item.part === 'literal'" :part="item.part" class="date-field-literal">
+								{{ item.value }}
+							</DateFieldInput>
+							<DateFieldInput v-else :part="item.part" class="date-field-segment">
+								{{ item.value }}
+							</DateFieldInput>
+						</template>
+					</DateFieldRoot>
+				</div>
 				<template v-if="showCalendar">
 					<CalendarGrid v-for="month in grid" :key="month.value.toString()" class="calendar-grid">
 						<CalendarGridHead class="calendar-grid-head">
@@ -525,6 +556,39 @@ function setToNow() {
 			border-color: transparent;
 			background-color: transparent;
 		}
+	}
+
+	.date-picker-field {
+		display: flex;
+		justify-content: center;
+		inline-size: 100%;
+		padding: 0.375rem;
+		border-block-end: 1px solid var(--theme--border-color);
+	}
+
+	.date-field {
+		display: flex;
+		align-items: center;
+		border-radius: 0.1875rem;
+		gap: 0.1875rem;
+		text-align: center;
+		user-select: none;
+	}
+
+	.date-field-segment {
+		padding: 0.5rem 0.625rem;
+		background: var(--theme--form--field--input--background-subdued);
+	}
+
+	.date-field-segment[data-placeholder] {
+		color: var(--theme--foreground-subdued);
+	}
+
+	.date-field-segment:focus,
+	.date-field-segment:focus-visible {
+		outline: var(--focus-ring-width) solid var(--focus-ring-color);
+		outline-offset: var(--focus-ring-offset);
+		border-radius: var(--focus-ring-radius);
 	}
 
 	.time-picker {
