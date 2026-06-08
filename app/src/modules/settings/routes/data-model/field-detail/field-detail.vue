@@ -76,7 +76,7 @@ const showAdvanced = computed(() => {
 });
 
 async function cancel() {
-	await router.push(`/settings/data-model/${props.collection}`);
+	await router.push({ name: 'settings-fields', params: { collection: props.collection } });
 	fieldDetail.$reset();
 }
 
@@ -88,7 +88,7 @@ async function save() {
 		return;
 	}
 
-	router.push(`/settings/data-model/${props.collection}`);
+	router.push({ name: 'settings-fields', params: { collection: props.collection } });
 	fieldDetail.$reset();
 }
 </script>
@@ -141,7 +141,6 @@ async function save() {
 }
 
 .v-input.search {
-	--v-input-border-radius: calc(2.5rem / 2);
 	inline-size: 11.25rem;
 	margin-inline-start: auto;
 

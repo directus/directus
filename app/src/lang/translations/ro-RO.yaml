@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Despre
+continue: Continuă
 first_name: Prenume
 last_name: Nume
 identifier: Identificator
@@ -145,14 +146,12 @@ keep: Păstrează
 version: Versiune
 version_key: Cheie de versiune
 version_name: Nume Versiune
-main_version: Principal
 switch_version: Schimbă versiunea
 switch_version_copy: Ești sigur că vrei să treci la versiunea “{version}”? Modificările nesalvate vor fi pierdute.
 create_version: Creați versiune
 rename_version: Redenumiți versiunea
 compare_version: Comparați versiunile
 save_version: Salvează versiunea
-promote_version: Promovați versiunea
 delete_version: Ștergeți versiunea
 delete_version_copy: >-
   Ești sigur că vrei să ștergi versiunea "{version}"? Această acțiune nu poate fi anulată.
@@ -896,6 +895,14 @@ editing_in_batch: 'Editare lot de {count} elemente'
 no_options_available: Nicio opțiune disponibilă
 settings_data_model: Model de date
 settings_project: Setări
+licensing:
+  unlimited: Nelimitat
+  addon_update: Actualizare
+  resolve_continue: Continuă
+  resolve_show_n_more: 'Arată încă {count}'
+  resolve_sso_admin_password: Parolă
+  entitlements:
+    collections: Colecții
 settings_presets: Semne de carte
 settings_translations: Traduceri
 one_or_more_options_are_missing: Una sau mai multe opțiuni lipsesc
@@ -1839,4 +1846,6 @@ fonts:
   black: Negru
   italic: Cursiv
   auto: Automat
+license_grace_key_modal:
+  optional: Opţional
 set_to_now: Setează acum

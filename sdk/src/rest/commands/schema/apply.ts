@@ -7,9 +7,10 @@ import type { SchemaDiffOutput } from './diff.js';
  * @returns Empty body.
  */
 export const schemaApply =
-	<Schema>(diff: SchemaDiffOutput): RestCommand<void, Schema> =>
+	<Schema>(diff: SchemaDiffOutput, force = false): RestCommand<void, Schema> =>
 	() => ({
 		method: 'POST',
 		path: '/schema/apply',
+		params: force ? { force } : {},
 		body: JSON.stringify(diff),
 	});

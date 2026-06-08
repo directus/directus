@@ -14,24 +14,26 @@ import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
-import ms, { type StringValue } from 'ms';
 import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../constants.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
+import { getEntitlementManager, getLicenseManager } from '../license/index.js';
 import { useLogger } from '../logger/index.js';
 import getMailer from '../mailer.js';
 import { redisConfigAvailable, useRedis } from '../redis/index.js';
 import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import { getAllowedLogLevels } from '../utils/get-allowed-log-levels.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isUnauthenticated } from '../utils/is-unauthenticated.js';
 import { useStore } from '../utils/store.js';
 import { SettingsService } from './settings.js';
 
 const env = useEnv();
 const logger = useLogger();
+const HEALTHCHECK_CACHE_TTL = getMilliseconds(env['HEALTHCHECK_CACHE_TTL'], 300_000); // default 5 minute
 
 const store = useStore<{ health: ServerHealth }>((env['HEALTHCHECK_NAMESPACE'] as string) ?? 'directus:healthcheck', {
-	ttl: ms((env['HEALTHCHECK_CACHE_TTL'] as StringValue) ?? '5m'),
+	ttl: HEALTHCHECK_CACHE_TTL,
 });
 
 export class ServerService {
@@ -53,11 +55,13 @@ export class ServerService {
 
 	async serverInfo(): Promise<Record<string, any>> {
 		const info: Record<string, any> = {};
-		const setupComplete = await this.isSetupCompleted();
+		const licenseManager = getLicenseManager();
+		const isSetupCompleted = await this.isSetupCompleted();
 
-		const projectInfo = await this.settingsService.readSingleton({
+		const { project_owner, ...projectInfo } = await this.settingsService.readSingleton({
 			fields: [
 				'project_name',
+				'project_owner',
 				'project_descriptor',
 				'project_logo',
 				'project_color',
@@ -80,11 +84,23 @@ export class ServerService {
 
 		info['project'] = projectInfo;
 
-		info['setupCompleted'] = setupComplete;
+		if (!isSetupCompleted) {
+			info['setup'] = {
+				license_complete: licenseManager.getSource() !== null,
+				owner_complete: Boolean(project_owner),
+			};
+		}
 
 		if (this.accountability?.user) {
 			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
+			info['mcp_oauth_enabled'] = toBoolean(env['MCP_OAUTH_ENABLED'] ?? false);
+			info['mcp_oauth_dcr_enabled'] = toBoolean(env['MCP_OAUTH_DCR_ENABLED'] ?? false);
+			info['mcp_oauth_cimd_enabled'] = toBoolean(env['MCP_OAUTH_CIMD_ENABLED'] ?? false);
+
+			info['autoSave'] = {
+				revisionInterval: Number(env['AUTOSAVE_REVISION_INTERVAL']),
+			};
 
 			info['files'] = {
 				mimeTypeAllowList: toArray(env['FILES_MIME_TYPE_ALLOW_LIST']),
@@ -165,7 +181,14 @@ export class ServerService {
 			}
 		}
 
-		if (this.accountability?.user || !setupComplete) info['version'] = version;
+		if (this.accountability?.user || !isSetupCompleted) {
+			info['version'] = version;
+		}
+
+		info['license'] = {
+			source: licenseManager.getSource(),
+			entitlements: getEntitlementManager().getAppEntitlements(),
+		};
 
 		return info;
 	}
@@ -307,7 +330,7 @@ export class ServerService {
 				type: 'redis',
 				redis: useRedis(),
 				namespace: (env['HEALTHCHECK_NAMESPACE'] as string) ?? 'directus:healthcheck',
-				ttl: ms((env['HEALTHCHECK_CACHE_TTL'] as StringValue) ?? '5m'),
+				ttl: HEALTHCHECK_CACHE_TTL,
 			});
 
 			const checks: Record<string, ServerHealthCheck[]> = {
@@ -393,7 +416,7 @@ export class ServerService {
 		}
 
 		async function testEmail(): Promise<Record<string, ServerHealthCheck[]>> {
-			if (enabledServices.includes('email') === false) {
+			if (enabledServices.includes('email') === false || toBoolean(env['EMAIL_VERIFY_SETUP']) === false) {
 				return {};
 			}
 

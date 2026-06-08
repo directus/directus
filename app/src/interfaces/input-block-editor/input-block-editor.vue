@@ -108,7 +108,10 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-	editorjsRef.value?.destroy();
+	if (typeof editorjsRef.value?.destroy === 'function') {
+		editorjsRef.value.destroy();
+	}
+
 	bus.reset();
 });
 
@@ -253,7 +256,8 @@ const menuActive = computed(() => fileHandler.value !== null);
 		}
 
 		&:focus-within {
-			border-color: var(--theme--form--field--input--border-color-focus);
+			outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+			outline-offset: var(--focus-ring-offset-invert);
 		}
 	}
 }

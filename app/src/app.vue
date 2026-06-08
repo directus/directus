@@ -2,10 +2,13 @@
 import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
 import { useHead } from '@unhead/vue';
-import { computed, onMounted, onUnmounted, toRefs } from 'vue';
-import { RouterView } from 'vue-router';
+import { storeToRefs } from 'pinia';
+import { computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
+import { RouterView, useRouter } from 'vue-router';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
+import { ALLOWED_WHILE_LOCKED } from './router';
+import { useLicenseStore } from './stores/license';
 import { useUserStore } from './stores/user';
 import VButton from '@/components/v-button.vue';
 import VError from '@/components/v-error.vue';
@@ -14,10 +17,24 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useServerStore } from '@/stores/server';
 import { generateFavicon } from '@/utils/generate-favicon';
 import { getAssetUrl } from '@/utils/get-asset-url';
+import { getRootPath } from '@/utils/get-root-path';
 
 const appStore = useAppStore();
 const serverStore = useServerStore();
 const userStore = useUserStore();
+const licenseStore = useLicenseStore();
+const router = useRouter();
+
+const { isLocked } = storeToRefs(licenseStore);
+
+// React to the license becoming locked while the admin is browsing —
+// the router guard only fires on navigation, so we need a reactive watch here.
+watch(isLocked, (locked) => {
+	if (!locked || !userStore.isAdmin) return;
+	const currentPath = router.currentRoute.value.path;
+	if (ALLOWED_WHILE_LOCKED.includes(currentPath)) return;
+	router.push('/license-recovery');
+});
 
 const { darkMode, themeDark, themeDarkOverrides, themeLight, themeLightOverrides } = useThemeConfiguration();
 
@@ -60,7 +77,7 @@ useHead({
 		} else if (serverStore.info?.project?.project_color) {
 			href = generateFavicon(serverStore.info.project.project_color, !!serverStore.info.project.project_logo === false);
 		} else {
-			href = '/favicon.ico';
+			href = `${getRootPath()}favicon.ico`;
 		}
 
 		return [

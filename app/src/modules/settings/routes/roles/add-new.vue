@@ -21,7 +21,7 @@ const { saving, save } = useSave({ name });
 </script>
 
 <template>
-	<VDialog :model-value="isOpen" persistent @esc="router.push('/settings/roles')" @apply="save">
+	<VDialog :model-value="isOpen" persistent @esc="router.push({ name: 'settings-roles-collection' })" @apply="save">
 		<VCard>
 			<VCardTitle>
 				{{ $t('create_role') }}
@@ -34,7 +34,7 @@ const { saving, save } = useSave({ name });
 				</div>
 			</VCardText>
 			<VCardActions>
-				<VButton to="/settings/roles" secondary>{{ $t('cancel') }}</VButton>
+				<VButton :to="{ name: 'settings-roles-collection' }" secondary>{{ $t('cancel') }}</VButton>
 				<VButton :disabled="name === null" :loading="saving" @click="save">{{ $t('save') }}</VButton>
 			</VCardActions>
 		</VCard>

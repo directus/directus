@@ -197,7 +197,10 @@ async function openFieldDetail() {
 		}
 	}
 
-	router.push(`/settings/data-model/${props.field.collection}/${props.field.field}`);
+	router.push({
+		name: 'settings-fields-field',
+		params: { collection: props.field.collection, field: props.field.field },
+	});
 }
 
 async function onGroupSortChange(fields: Field[]) {
@@ -313,7 +316,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 						<RouterLink
 							v-if="showRelatedCollectionLink"
-							:to="`/settings/data-model/${relatedCollectionInfo!.relatedCollection}`"
+							:to="{ name: 'settings-fields', params: { collection: relatedCollectionInfo!.relatedCollection } }"
 						>
 							<VIcon name="open_in_new" class="link-icon" small />
 						</RouterLink>
@@ -572,8 +575,9 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 }
 
 .sortable-ghost {
+	/* Not a focus ring, so using --theme--border-width for outline width */
+	outline: var(--theme--border-width) dashed var(--theme--primary);
 	border-radius: var(--theme--border-radius);
-	outline: 2px dashed var(--theme--primary);
 
 	> * {
 		opacity: 0;

@@ -7,6 +7,7 @@ import VInput from '@/components/v-input.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { FIELD_TYPES_SELECT } from '@/constants';
 import InterfaceSystemInputTranslatedString from '@/interfaces/_system/system-input-translated-string/input-translated-string.vue';
+import { useUserStore } from '@/stores/user';
 import { translate } from '@/utils/translate-object-values';
 
 const props = defineProps<{
@@ -19,6 +20,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+const userStore = useUserStore();
 
 const repeaterValue = computed({
 	get() {
@@ -118,6 +120,52 @@ const repeaterFields: DeepPartial<Field>[] = [
 		},
 	},
 	{
+		name: t('field_name_translations'),
+		field: 'translations',
+		type: 'json',
+		meta: {
+			interface: 'list',
+			width: 'full',
+			sort: 7,
+			options: {
+				template: '[{{ language }}] {{ translation }}',
+				fields: [
+					{
+						field: 'language',
+						type: 'string',
+						name: t('language'),
+						meta: {
+							interface: 'system-language',
+							width: 'full',
+							required: true,
+							display: 'formatted-value',
+							display_options: {
+								font: 'monospace',
+								color: 'var(--theme--foreground-subdued)',
+							},
+						},
+						schema: {
+							default_value: userStore.language,
+						},
+					},
+					{
+						field: 'translation',
+						type: 'string',
+						name: t('translation'),
+						meta: {
+							interface: 'input-multiline',
+							width: 'full',
+							required: true,
+							options: {
+								placeholder: t('translation_placeholder'),
+							},
+						},
+					},
+				],
+			},
+		},
+	},
+	{
 		name: t('interfaces.list.interface_group'),
 		field: 'group-interface',
 		type: 'alias',
@@ -125,7 +173,7 @@ const repeaterFields: DeepPartial<Field>[] = [
 			interface: 'group-detail',
 			field: 'group-interface',
 			width: 'full',
-			sort: 7,
+			sort: 8,
 			options: {
 				start: 'open',
 			},
@@ -140,7 +188,7 @@ const repeaterFields: DeepPartial<Field>[] = [
 		meta: {
 			interface: 'system-interface',
 			width: 'half',
-			sort: 8,
+			sort: 9,
 			group: 'group-interface',
 			options: {
 				typeField: 'type',
@@ -154,7 +202,7 @@ const repeaterFields: DeepPartial<Field>[] = [
 		meta: {
 			interface: 'system-interface-options',
 			width: 'full',
-			sort: 9,
+			sort: 10,
 			group: 'group-interface',
 			options: {
 				interfaceField: 'interface',
@@ -169,7 +217,7 @@ const repeaterFields: DeepPartial<Field>[] = [
 			interface: 'group-detail',
 			field: 'group-display',
 			width: 'full',
-			sort: 10,
+			sort: 11,
 			options: {
 				start: 'closed',
 			},
@@ -185,7 +233,7 @@ const repeaterFields: DeepPartial<Field>[] = [
 			interface: 'system-display',
 			width: 'half',
 			group: 'group-display',
-			sort: 11,
+			sort: 12,
 			options: {
 				typeField: 'type',
 			},
@@ -199,7 +247,7 @@ const repeaterFields: DeepPartial<Field>[] = [
 			interface: 'system-display-options',
 			width: 'full',
 			group: 'group-display',
-			sort: 12,
+			sort: 13,
 			options: {
 				displayField: 'display',
 			},

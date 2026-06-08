@@ -1,0 +1,45 @@
+{
+	"name": "e2e",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"test": "vitest --project sqlite",
+		"test:dev": "FORCE_COLOR=true NODE_ENV=development vitest --project sqlite",
+		"test:all": "ALL=true vitest"
+	},
+	"keywords": [],
+	"author": "Nils Twelker (nils@directus.io)",
+	"type": "module",
+	"license": "MIT",
+	"packageManager": "pnpm@10.14.0",
+	"dependencies": {
+		"@directus/license": "catalog:",
+		"@directus/mock-license-server": "workspace:*",
+		"@directus/sandbox": "workspace:*",
+		"@directus/sdk": "workspace:*",
+		"@directus/utils": "workspace:*",
+		"async-mutex": "catalog:",
+		"chalk": "catalog:",
+		"commander": "catalog:",
+		"get-port": "catalog:",
+		"date-fns": "catalog:",
+		"jose": "catalog:",
+		"zod": "catalog:",
+		"knex": "catalog:",
+		"lodash-es": "catalog:"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "catalog:",
+		"@directus/types": "workspace:*",
+		"@types/lodash-es": "catalog:",
+		"@types/node": "catalog:",
+		"tsx": "catalog:",
+		"typescript": "catalog:",
+		"vite-tsconfig-paths": "catalog:",
+		"vitest": "catalog:"
+	},
+	"engines": {
+		"node": ">=22",
+		"pnpm": ">=10"
+	}
+}

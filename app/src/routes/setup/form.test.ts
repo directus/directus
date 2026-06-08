@@ -1,6 +1,5 @@
-import { expect, test, vi } from 'vitest';
-import { ref } from 'vue';
-import { defaultValues, useFormFields, validate } from './form';
+import { describe, expect, test, vi } from 'vitest';
+import { buildSetupPayload, defaultValues, useKycFields, useSetupFields, validate } from './form';
 
 vi.mock('@/stores/relations', () => ({
 	useRelationsStore: () => ({
@@ -16,7 +15,7 @@ vi.mock('vue-i18n', () => ({
 }));
 
 test('useFormFields for setup', () => {
-	const result = useFormFields(true, ref(defaultValues));
+	const result = useSetupFields(true);
 
 	expect(result.value.map((field) => field.field)).toEqual([
 		'first_name',
@@ -24,31 +23,24 @@ test('useFormFields for setup', () => {
 		'project_owner',
 		'password',
 		'password_confirm',
-		'project_usage',
 	]);
 });
 
 test('useFormFields for modal/edit', () => {
-	const result = useFormFields(false, ref(defaultValues));
+	const result = useSetupFields(false);
 
-	expect(result.value.map((field) => field.field)).toEqual(['project_owner', 'project_usage']);
-});
-
-test('useFormFields with project_usage = commercial', () => {
-	const result = useFormFields(false, ref({ ...defaultValues, project_usage: 'commercial' }));
-
-	expect(result.value.map((field) => field.field)).toEqual(['project_owner', 'project_usage', 'org_name']);
+	expect(result.value.map((field) => field.field)).toEqual(['project_owner']);
 });
 
 test('validate on invalid setup form', () => {
-	const fields = useFormFields(false, ref(defaultValues));
+	const fields = useSetupFields(false);
 	const result = validate({}, fields);
 
 	expect(result.length).toBeGreaterThan(0);
 });
 
 test('validate on valid setup form', () => {
-	const fields = useFormFields(true, ref(defaultValues));
+	const fields = useSetupFields(true);
 
 	const result = validate(
 		{
@@ -57,7 +49,6 @@ test('validate on valid setup form', () => {
 			project_owner: 'admin@example.com',
 			password: 'pw',
 			password_confirm: 'pw',
-			project_usage: null,
 			license: true,
 			product_updates: false,
 		},
@@ -69,7 +60,7 @@ test('validate on valid setup form', () => {
 });
 
 test('validate with unequal password', () => {
-	const fields = useFormFields(true, ref(defaultValues));
+	const fields = useSetupFields(true);
 
 	const result = validate(
 		{
@@ -78,7 +69,6 @@ test('validate with unequal password', () => {
 			project_owner: 'admin@example.com',
 			password: 'pw',
 			password_confirm: 'invalid',
-			project_usage: null,
 			license: false,
 			product_updates: false,
 		},
@@ -92,4 +82,105 @@ test('validate with unequal password', () => {
 			type: 'confirm_password',
 		},
 	]);
+});
+
+test('useKycFields returns usage and org_name fields', () => {
+	const result = useKycFields();
+	expect(result.value.map((f) => f.field)).toEqual(['project_usage', 'org_name']);
+});
+
+test('useKycFields project_usage choices match API enum (personal, commercial, community)', () => {
+	const result = useKycFields();
+	const usageField = result.value.find((f) => f.field === 'project_usage');
+	const choiceValues = usageField?.meta?.options?.choices?.map((c: any) => c.value);
+	expect(choiceValues).toEqual(['personal', 'commercial', 'community']);
+});
+
+describe('buildSetupPayload', () => {
+	test('nests admin fields under admin key when showAdminStep is true', () => {
+		const form = {
+			...defaultValues,
+			admin: {
+				email: 'alice@example.com',
+				password: 'secret',
+				first_name: 'Alice',
+				last_name: 'Smith',
+			},
+			password_confirm: 'secret',
+		};
+
+		const result = buildSetupPayload(form, true);
+
+		expect(result.admin).toEqual({
+			email: 'alice@example.com',
+			password: 'secret',
+			first_name: 'Alice',
+			last_name: 'Smith',
+		});
+	});
+
+	test('omits admin when showAdminStep is false', () => {
+		const result = buildSetupPayload(defaultValues, false);
+		expect(result).not.toHaveProperty('admin');
+	});
+
+	test('omits license_key when not set', () => {
+		const result = buildSetupPayload(defaultValues, false);
+		expect(result).not.toHaveProperty('license_key');
+	});
+
+	test('includes license_key when set', () => {
+		const form = { ...defaultValues, license_key: 'ABCD-1234-EFGH-5678-IJKL' };
+		const result = buildSetupPayload(form, false);
+		expect(result.license_key).toBe('ABCD-1234-EFGH-5678-IJKL');
+	});
+
+	test('always includes owner with project_owner, project_usage, org_name, product_updates', () => {
+		const form = {
+			...defaultValues,
+			owner: {
+				project_owner: 'alice@example.com',
+				project_usage: 'commercial' as const,
+				org_name: 'Acme',
+				product_updates: true,
+			},
+		};
+
+		const result = buildSetupPayload(form, false);
+
+		expect(result.owner).toEqual({
+			project_owner: 'alice@example.com',
+			project_usage: 'commercial',
+			org_name: 'Acme',
+			product_updates: true,
+		});
+	});
+
+	test('mirrors admin email into owner.project_owner when owner.project_owner is unset', () => {
+		const form = {
+			...defaultValues,
+			admin: { ...defaultValues.admin, email: 'alice@example.com' },
+		};
+
+		const result = buildSetupPayload(form, true);
+
+		expect(result.owner.project_owner).toBe('alice@example.com');
+	});
+
+	test('omits first_name and last_name from admin when blank', () => {
+		const form = {
+			...defaultValues,
+			admin: {
+				email: 'alice@example.com',
+				password: 'secret',
+				first_name: null,
+				last_name: null,
+			},
+		};
+
+		const result = buildSetupPayload(form, true);
+
+		expect(result.admin).not.toHaveProperty('first_name');
+		expect(result.admin).not.toHaveProperty('last_name');
+	});
 });

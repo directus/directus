@@ -7,6 +7,7 @@ import type {
 	AbstractServiceOptions,
 	Accountability,
 	ActionEventParams,
+	DeepPartial,
 	FieldMeta,
 	FieldMutationOptions,
 	MutationOptions,
@@ -24,6 +25,7 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
+import { getEntitlementManager } from '../license/index.js';
 import { fetchAllowedCollections } from '../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { Collection } from '../types/index.js';
@@ -73,6 +75,14 @@ export class CollectionsService {
 
 		if (payload.collection.startsWith('directus_')) {
 			throw new InvalidPayloadError({ reason: `Collections can't start with "directus_"` });
+		}
+
+		if (payload.collection.includes('/')) {
+			throw new InvalidPayloadError({ reason: `Collection name can't contain "/"` });
+		}
+
+		if (payload.schema && payload.meta && (!('status' in payload.meta) || payload.meta.status === 'active')) {
+			await getEntitlementManager().assert('collections', { adding: 1, knex: this.knex });
 		}
 
 		payload.collection = await this.helpers.schema.parseCollectionName(payload.collection);
@@ -242,6 +252,7 @@ export class CollectionsService {
 
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+				await getEntitlementManager().clearCache('collections');
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -293,6 +304,7 @@ export class CollectionsService {
 
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+				await getEntitlementManager().clearCache('collections');
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -437,7 +449,7 @@ export class CollectionsService {
 	/**
 	 * Update a single collection by name
 	 */
-	async updateOne(collectionKey: string, data: Partial<Collection>, opts?: MutationOptions): Promise<string> {
+	async updateOne(collectionKey: string, payload: DeepPartial<Collection>, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -451,10 +463,12 @@ export class CollectionsService {
 				schema: this.schema,
 			});
 
-			const payload = data as Partial<Collection>;
-
 			if (!payload.meta) {
 				return collectionKey;
+			}
+
+			if (payload.meta?.status === 'active') {
+				await getEntitlementManager().assert('collections', { adding: 1, knex: this.knex });
 			}
 
 			const exists = !!(await this.knex
@@ -488,6 +502,7 @@ export class CollectionsService {
 
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+				await getEntitlementManager().clearCache('collections');
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -504,7 +519,7 @@ export class CollectionsService {
 	/**
 	 * Update multiple collections in a single transaction
 	 */
-	async updateBatch(data: Partial<Collection>[], opts?: MutationOptions): Promise<string[]> {
+	async updateBatch(data: DeepPartial<Collection>[], opts?: MutationOptions): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -547,6 +562,7 @@ export class CollectionsService {
 
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+				await getEntitlementManager().clearCache('collections');
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -565,7 +581,7 @@ export class CollectionsService {
 	/**
 	 * Update multiple collections by name
 	 */
-	async updateMany(collectionKeys: string[], data: Partial<Collection>, opts?: MutationOptions): Promise<string[]> {
+	async updateMany(collectionKeys: string[], data: DeepPartial<Collection>, opts?: MutationOptions): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -597,6 +613,7 @@ export class CollectionsService {
 
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+				await getEntitlementManager().clearCache('collections');
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -781,6 +798,7 @@ export class CollectionsService {
 
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+				await getEntitlementManager().clearCache('collections');
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -829,6 +847,7 @@ export class CollectionsService {
 
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+				await getEntitlementManager().clearCache('collections');
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {

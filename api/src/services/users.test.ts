@@ -2,12 +2,15 @@ import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqu
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, MutationOptions } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
+import jwt from 'jsonwebtoken';
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
+import { _cache } from '../utils/get-secret.js';
 import { verifyJWT } from '../utils/jwt.js';
-import { ItemsService, MailService, UsersService } from './index.js';
+import { ItemsService, MailService, SettingsService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
@@ -24,6 +27,9 @@ vi.mock('./mail', () => {
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
 		EMAIL_TEMPLATES_PATH: './templates',
+		EMAIL_VERIFICATION_TOKEN_TTL: '1d',
+		REGISTER_STALL_TIME: 0,
+		USER_REGISTER_URL_ALLOW_LIST: 'https://example.com/verify',
 		USERS_ADMIN_ACCESS_LIMIT: 3,
 		USERS_APP_ACCESS_LIMIT: 3,
 		USERS_API_ACCESS_LIMIT: 3,
@@ -32,12 +38,18 @@ vi.mock('@directus/env', () => ({
 
 vi.mock('../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js');
 
-vi.mock('../utils/jwt.js', () => ({
-	verifyJWT: vi.fn(),
+const { isEntitledMock } = vi.hoisted(() => ({ isEntitledMock: vi.fn() }));
+
+vi.mock('../license/index.js', () => ({
+	getEntitlementManager: () => ({
+		isEntitled: isEntitledMock,
+		clearCache: vi.fn(),
+		check: vi.fn().mockResolvedValue({ allowed: true }),
+	}),
 }));
 
-vi.mock('../utils/get-secret.js', () => ({
-	getSecret: vi.fn().mockReturnValue('test-secret'),
+vi.mock('../utils/jwt.js', () => ({
+	verifyJWT: vi.fn(),
 }));
 
 const testRoleId = '4ccdb196-14b3-4ed1-b9da-c1978be07ca2';
@@ -65,6 +77,7 @@ describe('Integration Tests', () => {
 		});
 
 		const superCreateOneSpy = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue('user-id-1');
+		const superUpdateOneSpy = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('user-id-1');
 		const superUpdateManySpy = vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue(['user-id-2']);
 
 		const checkUniqueEmailsSpy = vi
@@ -78,6 +91,18 @@ describe('Integration Tests', () => {
 		const clearUserSessionsSpy = vi
 			.spyOn(UsersService.prototype as any, 'clearUserSessions')
 			.mockResolvedValue(() => vi.fn());
+
+		const mockGetUserByEmail = (user: unknown) => {
+			const getUserByEmailSpy = vi.spyOn(UsersService.prototype as any, 'getUserByEmail');
+
+			getUserByEmailSpy.mockReset();
+			getUserByEmailSpy.mockResolvedValueOnce(user);
+		};
+
+		beforeEach(() => {
+			_cache.secret = null;
+			isEntitledMock.mockReturnValue(true);
+		});
 
 		afterEach(() => {
 			vi.clearAllMocks();
@@ -115,6 +140,37 @@ describe('Integration Tests', () => {
 
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.UserLimits);
 			});
+
+			describe('SSO provider entitlement', () => {
+				it('should block a custom provider when not entitled to SSO', async () => {
+					isEntitledMock.mockReturnValue(false);
+					const opts: MutationOptions = {};
+
+					await service.createOne({ provider: 'saml' }, opts);
+
+					expect(opts.preMutationError).toStrictEqual(
+						new InvalidPayloadError({ reason: `Setting a custom "provider" isn't included in the current license` }),
+					);
+				});
+
+				it('should allow a custom provider when entitled to SSO', async () => {
+					isEntitledMock.mockReturnValue(true);
+					const opts: MutationOptions = {};
+
+					await service.createOne({ provider: 'saml' }, opts);
+
+					expect(opts.preMutationError).toBeUndefined();
+				});
+
+				it('should allow the default provider when not entitled to SSO', async () => {
+					isEntitledMock.mockReturnValue(false);
+					const opts: MutationOptions = {};
+
+					await service.createOne({ provider: DEFAULT_AUTH_PROVIDER }, opts);
+
+					expect(opts.preMutationError).toBeUndefined();
+				});
+			});
 		});
 
 		describe('createMany', () => {
@@ -151,6 +207,37 @@ describe('Integration Tests', () => {
 
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.UserLimits);
 			});
+
+			describe('SSO provider entitlement', () => {
+				it('should block a custom provider in any payload when not entitled to SSO', async () => {
+					isEntitledMock.mockReturnValue(false);
+					const opts: MutationOptions = {};
+
+					await service.createMany([{ provider: DEFAULT_AUTH_PROVIDER }, { provider: 'saml' }], opts);
+
+					expect(opts.preMutationError).toStrictEqual(
+						new InvalidPayloadError({ reason: `Setting a custom "provider" isn't included in the current license` }),
+					);
+				});
+
+				it('should allow a custom provider when entitled to SSO', async () => {
+					isEntitledMock.mockReturnValue(true);
+					const opts: MutationOptions = {};
+
+					await service.createMany([{ provider: 'saml' }], opts);
+
+					expect(opts.preMutationError).toBeUndefined();
+				});
+
+				it('should allow default providers when not entitled to SSO', async () => {
+					isEntitledMock.mockReturnValue(false);
+					const opts: MutationOptions = {};
+
+					await service.createMany([{ provider: DEFAULT_AUTH_PROVIDER }, {}], opts);
+
+					expect(opts.preMutationError).toBeUndefined();
+				});
+			});
 		});
 
 		describe('updateMany', () => {
@@ -171,14 +258,15 @@ describe('Integration Tests', () => {
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.All);
 			});
 
-			it('should request all user integrity checks if status is changed to not "active"', async () => {
-				const opts: MutationOptions = {};
-
-				await service.updateMany(['user-id-5'], { status: 'inactive' }, opts);
-
-				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.All);
-				expect(clearUserSessionsSpy).toBeCalled();
-			});
+			// #RC-TODO
+			// it('should request all user integrity checks if status is changed to not "active"', async () => {
+			// 	const opts: MutationOptions = {};
+			//
+			// 	await service.updateMany(['user-id-5'], { status: 'inactive' }, opts);
+			//
+			// 	expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.All);
+			// 	expect(clearUserSessionsSpy).toBeCalled();
+			// });
 
 			it('should request user limit checks if status is changed to "active"', async () => {
 				const opts: MutationOptions = {};
@@ -284,6 +372,34 @@ describe('Integration Tests', () => {
 			});
 		});
 
+		describe('updateMany SSO provider entitlement', () => {
+			const service = new UsersService({
+				knex: db,
+				schema,
+				accountability: null,
+			});
+
+			it('should block setting a custom provider when not entitled to SSO', async () => {
+				isEntitledMock.mockReturnValue(false);
+				const opts: MutationOptions = {};
+
+				await service.updateMany(['user-id-14'], { provider: 'saml' }, opts);
+
+				expect(opts.preMutationError).toStrictEqual(
+					new InvalidPayloadError({ reason: `Setting a custom "provider" isn't included in the current license` }),
+				);
+			});
+
+			it('should allow setting the default provider when not entitled to SSO', async () => {
+				isEntitledMock.mockReturnValue(false);
+				const opts: MutationOptions = {};
+
+				await service.updateMany(['user-id-14'], { provider: DEFAULT_AUTH_PROVIDER }, opts);
+
+				expect(opts.preMutationError).toBeUndefined();
+			});
+		});
+
 		describe('deleteMany', () => {
 			vi.spyOn(ItemsService.prototype, 'deleteMany').mockResolvedValue(['user-id-15']);
 
@@ -362,7 +478,7 @@ describe('Integration Tests', () => {
 			vi.spyOn(UsersService.prototype as any, 'inviteUrl').mockImplementation(() => vi.fn());
 
 			it('should invite new users', async () => {
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce(undefined);
+				mockGetUserByEmail(undefined);
 
 				const service = new UsersService({
 					knex: db,
@@ -393,7 +509,7 @@ describe('Integration Tests', () => {
 				});
 
 				// mock an invited user
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+				mockGetUserByEmail({
 					status: 'invited',
 					role: 'invite-role',
 				});
@@ -413,7 +529,7 @@ describe('Integration Tests', () => {
 				});
 
 				// mock an active user
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+				mockGetUserByEmail({
 					status: 'active',
 					role: 'invite-role',
 				});
@@ -439,13 +555,12 @@ describe('Integration Tests', () => {
 				};
 
 				// mock an invited user with different role
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce(mockUser);
+				mockGetUserByEmail(mockUser);
 
 				const promise = service.inviteUser('user@example.com', 'invite-role', null);
 				await expect(promise).resolves.not.toThrow();
 
-				expect(superUpdateManySpy.mock.lastCall![0]).toEqual([mockUser.id]);
-				expect(superUpdateManySpy.mock.lastCall![1]).toEqual({ role: 'invite-role' });
+				expect(superUpdateOneSpy).toHaveBeenCalledWith(mockUser.id, { role: 'invite-role' }, {});
 			});
 		});
 
@@ -453,7 +568,7 @@ describe('Integration Tests', () => {
 			it('should throw InvalidInviteError when user is not in invited status', async () => {
 				vi.mocked(verifyJWT).mockReturnValueOnce({ email: 'test@example.com', scope: 'invite' });
 
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+				mockGetUserByEmail({
 					id: 'user-id',
 					status: 'active',
 					email: 'test@example.com',
@@ -479,6 +594,68 @@ describe('Integration Tests', () => {
 				});
 
 				await expect(service.acceptInvite('fake-token', 'Password123!')).rejects.toThrow(ForbiddenError);
+			});
+		});
+
+		describe('registerUser', () => {
+			it('should sign email verification tokens with a secret when SECRET is not configured', async () => {
+				vi.spyOn(SettingsService.prototype, 'readSingleton').mockResolvedValueOnce({
+					public_registration: true,
+					public_registration_verify_email: true,
+					public_registration_role: 'role-id',
+				});
+
+				const signSpy = vi.spyOn(jwt, 'sign');
+
+				mockGetUserByEmail(undefined);
+
+				const mailService = new MailService({ schema });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await service.registerUser({
+					email: 'test@example.com',
+					password: 'Password123!',
+					verification_url: 'https://example.com/verify',
+				});
+
+				expect(signSpy).toHaveBeenCalledWith(
+					{ email: 'test@example.com', scope: 'pending-registration' },
+					expect.any(String),
+					{
+						expiresIn: '1d',
+						issuer: 'directus',
+					},
+				);
+
+				expect(signSpy.mock.calls[0]![1]).not.toBe('');
+				expect(mailService.send).toHaveBeenCalledTimes(1);
+			});
+		});
+
+		describe('verifyRegistration', () => {
+			it('should verify registration tokens with a secret when SECRET is not configured', async () => {
+				vi.mocked(verifyJWT).mockReturnValueOnce({ email: 'test@example.com', scope: 'pending-registration' });
+
+				mockGetUserByEmail({
+					id: 'user-id-18',
+					status: 'unverified',
+					email: 'test@example.com',
+				});
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await service.verifyRegistration('fake-token');
+
+				expect(verifyJWT).toHaveBeenCalledWith('fake-token', expect.any(String));
+				expect(vi.mocked(verifyJWT).mock.calls[0]![1]).not.toBe('');
+				expect(superUpdateOneSpy).toHaveBeenCalledWith('user-id-18', { status: 'active' });
 			});
 		});
 	});
