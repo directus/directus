@@ -1,0 +1,45 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the policy.
+    type: string
+  name:
+    description: Name of the policy.
+    type: string
+  icon:
+    description: The policy's icon.
+    type: string
+  description:
+    description: Description of the policy.
+    type: string
+    nullable: true
+  app_access:
+    description: Whether users with this policy have access to the app.
+    type: boolean
+  admin_access:
+    description: Whether users with this policy have admin access.
+    type: boolean
+  ip_access:
+    description: Array of IP addresses allowed to connect to the API as a user of this policy.
+    type: array
+    items:
+      type: string
+    nullable: true
+  enforce_tfa:
+    description: Whether to enforce two-factor authentication for users with this policy.
+    type: boolean
+  permissions:
+    description: List of permissions associated with this policy.
+    type: array
+    items:
+      type: string
+  users:
+    description: List of direct user assignments for this policy.
+    type: array
+    items:
+      type: string
+  roles:
+    description: List of role assignments for this policy.
+    type: array
+    items:
+      type: string

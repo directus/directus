@@ -17,6 +17,9 @@ externalDocs:
   description: Directus Docs
   url: 'https://directus.com/docs/'
 tags:
+  - name: Access
+    description: Access records define which policies are assigned to users and roles.
+    x-collection: directus_access
   - name: Activity
     description:
       All events that happen within Directus are tracked and stored in the activities collection. This gives you full
@@ -70,6 +73,9 @@ tags:
   - name: Permissions
     description: Permissions control who has access to what and when.
     x-collection: directus_permissions
+  - name: Policies
+    description: Policies hold a set of permissions and can be assigned to users and roles via access records.
+    x-collection: directus_policies
   - name: Presets
     description:
       Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom
@@ -118,6 +124,12 @@ tags:
       promote them to become the new main version when ready.
     x-collection: directus_versions
 paths:
+  # Access
+  /access:
+    $ref: './paths/access/accesses.yaml'
+  /access/{id}:
+    $ref: './paths/access/access.yaml'
+
   # Activity
   /activity:
     $ref: './paths/activity/activities.yaml'
@@ -214,6 +226,14 @@ paths:
   /permissions/{id}:
     $ref: './paths/permissions/permission.yaml'
 
+  # Policies
+  /policies:
+    $ref: './paths/policies/policies.yaml'
+  /policies/me/globals:
+    $ref: './paths/policies/me-globals.yaml'
+  /policies/{id}:
+    $ref: './paths/policies/policy.yaml'
+
   # Presets
   /presets:
     $ref: './paths/presets/presets.yaml'
@@ -304,6 +324,8 @@ paths:
 
 components:
   schemas:
+    Access:
+      $ref: './components/access.yaml'
     Activity:
       $ref: './components/activity.yaml'
     Collections:
@@ -330,6 +352,8 @@ components:
       $ref: './components/operation.yaml'
     Permissions:
       $ref: './components/permissions.yaml'
+    Policies:
+      $ref: './components/policy.yaml'
     Presets:
       $ref: './components/preset.yaml'
     Query:
