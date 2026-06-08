@@ -48,6 +48,8 @@ import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
+import { useAutoSave } from '@/modules/content/composables/use-auto-save';
+import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -97,14 +99,9 @@ onBeforeRouteUpdate((to, from) => {
 const { collectionRoute, backRoute } = useItemNavigation();
 
 const userStore = useUserStore();
+const notificationsStore = useNotificationsStore();
 
 const isCurrentVersionNew = computed(() => currentVersion.value?.id === '+');
-
-const isPublishAllowed = computed(() => {
-	if (currentVersion.value === null) return false;
-	if (isCurrentVersionNew.value) return false;
-	return isItemlessVersion.value ? createAllowed.value : updateAllowed.value;
-});
 
 const form = ref<ComponentPublicInstance>();
 
@@ -122,12 +119,10 @@ const {
 	createVersionsAllowed,
 	currentVersion,
 	versions,
-	loading: versionsLoading,
 	addVersion,
 	updateVersion,
 	deleteVersion,
 	deleteVersionLoading,
-	saveVersionLoading,
 	saveVersion,
 	validationErrors: versionValidationErrors,
 	publishVersionLoading,
@@ -287,7 +282,11 @@ useShortcut(
 		if (currentVersion.value === null) {
 			saveAndStay();
 		} else {
-			saveVersionAction();
+			notificationsStore.add({
+				title: t('auto_save_enabled'),
+				type: 'info',
+				icon: 'cloud_done',
+			});
 		}
 	},
 	form,
@@ -367,6 +366,23 @@ const { updateAllowed: updateVersionsAllowed } = useItemPermissions(
 
 const { applyAutoSwitchPendingEdits, canAutoSwitchToDraft, draftVersion } = useAutoSwitchToDraft();
 
+const {
+	autoSaveError,
+	resetOpenRevision,
+	flush: flushAutoSave,
+} = useAutoSave(edits, autoSave, {
+	currentVersion,
+	updateVersionsAllowed,
+	collection,
+});
+
+const isPublishAllowed = computed(() => {
+	if (currentVersion.value === null) return false;
+	if (isCurrentVersionNew.value) return false;
+	if (autoSaveError.value !== null) return false;
+	return isItemlessVersion.value ? createAllowed.value : updateAllowed.value;
+});
+
 const isFormDisabled = computed(() => {
 	if (isNew.value) return false;
 	if (updateAllowed.value) return false;
@@ -389,7 +405,10 @@ const disabledOptions = computed(() => {
 	return [];
 });
 
-watch(currentVersion, async () => {
+const currentVersionId = computed(() => currentVersion.value?.id ?? null);
+
+watch(currentVersionId, async () => {
+	resetOpenRevision();
 	const autoSwitchPendingEdits = applyAutoSwitchPendingEdits();
 	edits.value = autoSwitchPendingEdits ?? {};
 	await refreshLivePreview();
@@ -551,29 +570,23 @@ watch(saving, async (newVal, oldVal) => {
 	await refreshLivePreview();
 });
 
-watch(saveVersionLoading, async (newVal, oldVal) => {
-	if (newVal === true || oldVal === false) return;
-
-	await refreshLivePreview();
-});
-
 onBeforeUnmount(() => {
 	if (popupWindow) popupWindow.close();
 });
 
-async function saveVersionAction() {
-	if (isSavable.value === false) return;
-
+async function autoSave(forceNewRevision: boolean) {
 	try {
-		await saveVersion(edits, item);
-		edits.value = {};
-
-		if (!isNew.value) {
-			refresh();
-			revisionsSidebarDetailRef.value?.refresh?.();
+		if (forceNewRevision) {
+			await saveVersion(edits, item);
+			if (!isNew.value) revisionsSidebarDetailRef.value?.refresh?.();
+		} else {
+			await saveVersion(edits, item, { patchRevision: true });
 		}
+
+		await refreshLivePreview();
 	} catch (error) {
-		handleVersionGone(error);
+		// Throw anyway if not a `versionGone` error
+		if (!handleVersionGone(error)) throw error;
 	}
 }
 
@@ -706,7 +719,6 @@ function revert(values: Record<string, any>) {
 
 const shouldShowVersioning = computed(() => {
 	if (!collectionInfo.value?.meta?.versioning) return false;
-	if (versionsLoading.value) return false;
 	return true;
 });
 
@@ -783,6 +795,8 @@ function usePublishActions() {
 	});
 
 	async function onVersionPublishCompare(quit = false) {
+		if (!(await flushAutoSave())) return;
+
 		quitAfterPublish.value = quit;
 
 		if (isItemlessVersion.value) {
@@ -841,6 +855,7 @@ function usePublishActions() {
 	async function onVersionPublishWithoutReview() {
 		if (publishVersionLoading.value) return;
 		if (!currentVersion.value || currentVersion.value.id === '+') return;
+		if (!(await flushAutoSave())) return;
 		if (!runClientValidation()) return;
 
 		const version = currentVersion.value as ContentVersionWithType;
@@ -930,6 +945,7 @@ function usePublishActions() {
 function useAutoSwitchToDraft() {
 	const autoSwitchPendingEdits = ref<Item>({});
 	const draftVersion = computed(() => versions.value.find((version) => version.key === VERSION_KEY_DRAFT)!);
+	const notificationsStore = useNotificationsStore();
 
 	const canAutoSwitchToDraft = computed(() => {
 		if (isNew.value) return false;
@@ -941,16 +957,23 @@ function useAutoSwitchToDraft() {
 		return updateVersionsAllowed.value || createVersionsAllowed.value;
 	});
 
-	watch(hasEdits, (newHasEdits, oldHasEdits) => {
+	watch(hasEdits, async (newHasEdits, oldHasEdits) => {
 		if (!newHasEdits || oldHasEdits) return;
 		if (!canAutoSwitchToDraft.value) return;
 		if (!draftVersion.value) return;
 
 		stashAutoSwitchPendingEdits();
 
-		router.replace({
+		const navigationFailure = await router.replace({
 			...route,
 			query: { ...route.query, version: VERSION_KEY_DRAFT },
+		});
+
+		if (navigationFailure) return;
+
+		notificationsStore.add({
+			title: t('editing_draft_version'),
+			icon: 'edit',
 		});
 	});
 
@@ -1123,25 +1146,19 @@ function useAutoSwitchToDraft() {
 
 				<template v-else>
 					<PrivateViewHeaderBarActionButton
-						:label="$t('save')"
-						:tooltip="translateShortcut(['meta', 's'])"
-						icon="beenhere"
-						secondary
-						:loading="saveVersionLoading"
-						:disabled="!isSavable"
-						@click="saveVersionAction()"
-					/>
-
-					<PrivateViewHeaderBarActionButton
 						:label="$t('publish')"
 						:tooltip="translateShortcut(['meta', 'alt', 'p'])"
 						icon="public"
 						:disabled="!isPublishAllowed"
 						@click="onVersionPublishCompare()"
 					>
-						<template v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true" #split-menu>
+						<template v-if="collectionInfo.meta" #split-menu>
 							<VList>
-								<VListItem clickable @click="onVersionPublishCompare(true)">
+								<VListItem
+									v-if="collectionInfo.meta.singleton !== true"
+									clickable
+									@click="onVersionPublishCompare(true)"
+								>
 									<VListItemIcon><VIcon name="public" /></VListItemIcon>
 									<VListItemContent>{{ $t('publish_and_quit') }}</VListItemContent>
 									<VListItemHint>{{ translateShortcut(['meta', 'alt', 'shift', 'p']) }}</VListItemHint>
@@ -1155,7 +1172,12 @@ function useAutoSwitchToDraft() {
 									<VListItemContent>{{ $t('publish_without_review') }}</VListItemContent>
 									<VListItemHint>{{ translateShortcut(['meta', 'alt', 'shift', 'enter']) }}</VListItemHint>
 								</VListItem>
-								<VListItem clickable :disabled="!canCreateNew" @click="createNewItem()">
+								<VListItem
+									v-if="collectionInfo.meta.singleton !== true"
+									clickable
+									:disabled="!canCreateNew"
+									@click="createNewItem()"
+								>
 									<VListItemIcon><VIcon name="add" /></VListItemIcon>
 									<VListItemContent>{{ $t('create_new') }}</VListItemContent>
 									<VListItemHint>{{ translateShortcut(['meta', 'alt', 'n']) }}</VListItemHint>

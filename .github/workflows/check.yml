@@ -37,7 +37,12 @@ jobs:
           build: false
 
       - name: Run Linter
-        run: pnpm exec eslint ${{ steps.changed-files.outputs.all_changed_files }}
+        run: |
+          pnpm exec eslint \
+            ${{ steps.changed-files.outputs.added_files }} \
+            ${{ steps.changed-files.outputs.modified_files }} \
+            ${{ steps.changed-files.outputs.renamed_files }} \
+            ${{ steps.changed-files.outputs.copied_files }}
 
   stylelint:
     name: Stylelint

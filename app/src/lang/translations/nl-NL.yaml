@@ -20,31 +20,18 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Over
-directus_bsl: Directus BSL 1.1
 privacy_policy: Privacybeleid
-contact_our_team: Contacteer ons Team
 setup_welcome: Welkom bij Directus
 setup_info: Laten we je beheerdersaccount aanmaken en je project opstarten
-setup_license_notice: >
-  Directus is gratis te gebruiken voor entiteiten met een jaarlijkse omzet, financiering of operationeel budget onder de $ 5 miljoen.
-setup_license_follow_up: >
-  Voor entiteiten die deze grens overschrijden is een betaalde licentie vereist. Je kunt Directus blijven proberen en {contactOurTeam} wanneer je klaar bent om het productiegebruik te bespreken.
-setup_save_accept_license: >
-  Door op te slaan accepteer je de algemene voorwaarden van de {directusBsl} en {privacyPolicy}.
-setup_accept_license: Ik accepteer de voorwaarden van de {directusBsl} en {privacyPolicy}
 setup_marketing_emails: Stuur mij productupdates en release-info
 setup_launch: Start Directus
 setup_project: Project Setup
+continue: Doorgaan
 first_name: Voornaam
 last_name: Achternaam
 admin_email: E-mailadres Beheerder
 owner_email: E-mailadres Eigenaar
 email_address: E-mailadres
-organization_name: Naam Organisatie
-how_do_you_use_directus: Waar gebruik je Directus voor?
-usage_personal: Persoonlijk / Leren
-usage_commercial: Zakelijk / Commercieel
-usage_community: Open Source / Community
 identifier: ID
 avatar: Profielafbeelding
 application: Applicatie
@@ -1194,6 +1181,18 @@ settings_data_model: Datamodel
 settings_roles: Gebruikersrollen
 settings_permissions: Toegangsbeleid
 settings_project: Instellingen
+licensing:
+  unlimited: Onbeperkt
+  addon_manage: Beheren
+  addon_update: Updaten
+  resolve_continue: Doorgaan
+  resolve_show_n_more: 'Toon {count} meer'
+  resolve_section_flows: Flows
+  resolve_sso_admin_email: E-mailadres
+  resolve_sso_admin_password: Wachtwoord
+  entitlements:
+    collections: Collecties
+    flows: Flows
 settings_appearance: Uiterlijk
 settings_ai: AI
 model_context_protocol: Model Context Protocol
@@ -1616,7 +1615,6 @@ ai:
   always_allow: Altijd Toestaan
   deny: Weigeren
   approve_tool_execution: Uitvoering Tool goedkeuren?
-  retry: Probeer Opnieuw
   prompt_input_placeholder: Typ je bericht hier...
   clear_conversation: Gesprek Wissen
   responses_may_be_inaccurate: AI--reacties zijn mogelijk onjuist
@@ -2176,7 +2174,9 @@ interfaces:
     value_securely_saved: Waarde veilig opgeslagen
     generate: Genereer Token
     regenerate: Token opnieuw genereren
+    regenerate_confirm_title: Token opnieuw genereren
     remove_token: Verwijder Token
+    remove_confirm_title: Verwijder Token
   system-raw-editor:
     system-raw-editor: Ruwe Editor
     description: Sta invoer van ruwe of mustache sjabloonwaarden toe
@@ -2652,6 +2652,8 @@ search_flow: Zoek Flow...
 percent: Procent
 show_password: Toon wachtwoord
 hide_password: Verberg wachtwoord
+license_grace_key_modal:
+  optional: Optioneel
 accepted: Geaccepteerd
 text_direction_auto: Automatisch (gelijk aan taal)
 text_direction_ltr: Links naar rechts (LTR)
