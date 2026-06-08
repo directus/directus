@@ -19,18 +19,16 @@ beforeEach(() => {
 	isInCoreGracePeriod.mockReset();
 });
 
-describe('locked', () => {
-	test('bypasses regardless of source or grace period', async () => {
-		getStatus.mockResolvedValue('locked');
-		getSource.mockReturnValue('settings');
+test('locked status regardless of source or grace period returns true', async () => {
+	getStatus.mockResolvedValue('locked');
+	getSource.mockReturnValue('settings');
 
-		await expect(isSSOBypassAllowed()).resolves.toBe(true);
-		expect(isInCoreGracePeriod).not.toHaveBeenCalled();
-	});
+	await expect(isSSOBypassAllowed()).resolves.toBe(true);
+	expect(isInCoreGracePeriod).not.toHaveBeenCalled();
 });
 
-describe('grace', () => {
-	test('core install (no license) within core grace period -> bypass', async () => {
+describe('grace status', () => {
+	test('core plan within grace period returns true', async () => {
 		getStatus.mockResolvedValue('grace');
 		getSource.mockReturnValue(null);
 		isInCoreGracePeriod.mockResolvedValue(true);
@@ -38,15 +36,7 @@ describe('grace', () => {
 		await expect(isSSOBypassAllowed()).resolves.toBe(true);
 	});
 
-	test('core install (no license) outside core grace period -> no bypass', async () => {
-		getStatus.mockResolvedValue('grace');
-		getSource.mockReturnValue(null);
-		isInCoreGracePeriod.mockResolvedValue(false);
-
-		await expect(isSSOBypassAllowed()).resolves.toBe(false);
-	});
-
-	test('licensed expiry-grace does not qualify (source not null)', async () => {
+	test('non-core plan within grace returns false', async () => {
 		getStatus.mockResolvedValue('grace');
 		getSource.mockReturnValue('settings');
 
@@ -55,12 +45,10 @@ describe('grace', () => {
 	});
 });
 
-describe('active', () => {
-	test('no bypass', async () => {
-		getStatus.mockResolvedValue('active');
-		getSource.mockReturnValue(null);
+test('active status regardless of source returns false', async () => {
+	getStatus.mockResolvedValue('active');
+	getSource.mockReturnValue(null);
 
-		await expect(isSSOBypassAllowed()).resolves.toBe(false);
-		expect(isInCoreGracePeriod).not.toHaveBeenCalled();
-	});
+	await expect(isSSOBypassAllowed()).resolves.toBe(false);
+	expect(isInCoreGracePeriod).not.toHaveBeenCalled();
 });
