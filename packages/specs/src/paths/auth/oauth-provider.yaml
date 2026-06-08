@@ -1,4 +1,5 @@
 get:
+  security: []
   summary: Authenticated using an OAuth provider
   description: Start OAuth flow using the specified provider
   tags:
