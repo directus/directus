@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { TresCanvas } from '@tresjs/core';
+import { TresCanvas, type TresRendererSetupContext } from '@tresjs/core';
 import { Color } from 'three';
-import { computed } from 'vue';
-import ShaderExperience from './shader-experience.vue';
+import { WebGPURenderer } from 'three/webgpu';
+import { computed, toValue } from 'vue';
+import DotGridShader from './dot-grid-shader.vue';
 import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 
 interface Props {
@@ -26,13 +27,18 @@ const clearColor = computed(() => {
 		return DEFAULT_CLEAR;
 	}
 });
+
+// TSL node materials require the WebGPU renderer (falls back to WebGL2 internally).
+function createRenderer({ canvas }: TresRendererSetupContext) {
+	return new WebGPURenderer({ canvas: toValue(canvas), antialias: true });
+}
 </script>
 
 <template>
-	<TresCanvas :clear-color="clearColor" :dpr="[1, 2]" class="public-shader-background">
+	<TresCanvas :renderer="createRenderer" :clear-color="clearColor" :dpr="[1, 2]" class="public-shader-background">
 		<TresPerspectiveCamera :position="[0, 0, 10]" :look-at="[0, 0, 0]" />
 		<!-- Shader scene goes here -->
-		<ShaderExperience :project-color="projectColor" />
+		<DotGridShader :project-color="projectColor" />
 	</TresCanvas>
 </template>
 
