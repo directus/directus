@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Knex } from 'knex';
+import { Knex } from 'knex';
 import { sleep } from './sleep';
 
 export async function awaitDatabaseConnection(database: Knex, checkSQL: string): Promise<void | null> {
