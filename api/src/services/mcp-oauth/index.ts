@@ -1775,7 +1775,7 @@ export class McpOAuthService {
 			return row;
 		} catch (err: unknown) {
 			// Concurrent INSERT: catch unique constraint violation, SELECT existing
-			const translated = await translateDatabaseError(err, row);
+			const translated = await translateDatabaseError(err, row, this.schema);
 
 			if (translated instanceof RecordNotUniqueError) {
 				logger.debug({ client_id: clientId }, 'CIMD concurrent insert, selecting existing');

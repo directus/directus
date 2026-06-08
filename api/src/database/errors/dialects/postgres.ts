@@ -6,7 +6,7 @@ import {
 	ValueOutOfRangeError,
 	ValueTooLongError,
 } from '@directus/errors';
-import type { Item } from '@directus/types';
+import type { Item, SchemaOverview } from '@directus/types';
 import type { PostgresError } from './types.js';
 
 enum PostgresErrorCodes {
@@ -17,7 +17,11 @@ enum PostgresErrorCodes {
 	VALUE_LIMIT_VIOLATION = '22001',
 }
 
-export function extractError(error: PostgresError, data: Partial<Item>): PostgresError | Error {
+export function extractError(
+	error: PostgresError,
+	data: Partial<Item>,
+	schema?: SchemaOverview,
+): PostgresError | Error {
 	switch (error.code) {
 		case PostgresErrorCodes.UNIQUE_VIOLATION:
 			return uniqueViolation();
@@ -58,12 +62,33 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		if (!matches) return error;
 
 		const collection = matches[0].slice(1, -1);
-		const field = matches[1]?.slice(1, -1) ?? null;
+
+		let field = matches[1]?.slice(1, -1) ?? null;
+		let inputValue = field ? data[field] : null;
+
+		if (collection && schema && schema.collections[collection]) {
+			for (const [key, value] of Object.entries(data)) {
+				const fieldInfo = schema.collections[collection].fields[key];
+
+				if (fieldInfo?.dbType !== 'numeric' || typeof value !== 'string') continue;
+
+				const [integerPart = '', decimalPart = ''] = value.split('.');
+
+				if (
+					(fieldInfo.precision && integerPart.length > (fieldInfo.precision ?? 0) - (fieldInfo.scale ?? 0)) ||
+					(fieldInfo.scale && decimalPart.length > (fieldInfo.scale ?? 0))
+				) {
+					field = key;
+					inputValue = value;
+					break;
+				}
+			}
+		}
 
 		return new ValueOutOfRangeError({
 			collection,
-			field,
-			value: field ? data[field] : null,
+			field: field,
+			value: inputValue,
 		});
 	}
 
@@ -77,7 +102,6 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		const matches = error.message.match(regex);
 
 		if (!matches) return error;
-
 		const collection = matches[0].slice(1, -1);
 		const field = matches[1]?.slice(1, -1) ?? null;
 

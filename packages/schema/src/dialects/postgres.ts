@@ -93,6 +93,8 @@ export default class Postgres implements SchemaInspector {
 			is_identity: boolean;
 			is_nullable: boolean;
 			is_generated: boolean;
+			numeric_precision: number | null;
+			numeric_scale: number | null;
 		};
 
 		type RawGeometryColumn = {
@@ -110,6 +112,8 @@ export default class Postgres implements SchemaInspector {
 				`
         SELECT c.table_name
           , c.column_name
+		  ,c.numeric_precision
+		  ,c.numeric_scale
           , c.column_default as default_value
           , c.data_type
 			 		, c.character_maximum_length as max_length

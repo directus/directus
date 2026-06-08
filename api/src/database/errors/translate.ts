@@ -1,4 +1,4 @@
-import type { Item } from '@directus/types';
+import type { Item, SchemaOverview } from '@directus/types';
 import emitter from '../../emitter.js';
 import getDatabase, { getDatabaseClient } from '../index.js';
 import { extractError as mssql } from './dialects/mssql.js';
@@ -17,7 +17,11 @@ import type { SQLError } from './dialects/types.js';
  * - Value Out of Range
  * - Value Too Long
  */
-export async function translateDatabaseError(error: SQLError, data: Partial<Item>): Promise<any> {
+export async function translateDatabaseError(
+	error: SQLError,
+	data: Partial<Item>,
+	schema?: SchemaOverview,
+): Promise<any> {
 	const client = getDatabaseClient();
 	let defaultError: any;
 
@@ -27,7 +31,7 @@ export async function translateDatabaseError(error: SQLError, data: Partial<Item
 			break;
 		case 'cockroachdb':
 		case 'postgres':
-			defaultError = postgres(error, data);
+			defaultError = postgres(error, data, schema);
 			break;
 		case 'sqlite':
 			defaultError = sqlite(error, data);
