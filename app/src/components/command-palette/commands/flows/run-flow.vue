@@ -9,6 +9,7 @@ import { useNotificationsStore } from '@/stores/notifications';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCommandPalette } from '../../composables/use-command-palette';
 import { useCommandRouter } from '../../composables/use-command-router';
+import { getRoutePrimaryKey } from '../../utils/get-route-primary-key';
 
 const props = defineProps<{
 	flow: FlowRaw;
@@ -26,7 +27,7 @@ const selection = ref<PrimaryKey[]>([]);
 const confirmValues = ref<Record<string, any> | null>();
 
 const collection = computed(() => route.params.collection);
-const primaryKey = computed(() => route.params.primaryKey);
+const primaryKey = computed(() => getRoutePrimaryKey(route.params.primaryKey));
 
 async function runFlow() {
 	const flow = props.flow;
@@ -104,7 +105,7 @@ function resetConfirm() {
 	<v-dialog :model-value="displayCustomConfirmDialog" @esc="resetConfirm">
 		<v-card class="allow-drawer">
 			<v-card-title>
-				{{ confirmDetails!.description ?? t("run_flow_confirm") }}
+				{{ confirmDetails!.description ?? t('run_flow_confirm') }}
 			</v-card-title>
 			<v-card-text class="confirm-form">
 				<v-form
@@ -119,7 +120,7 @@ function resetConfirm() {
 
 			<v-card-actions>
 				<v-button secondary @click="resetConfirm">
-					{{ t("cancel") }}
+					{{ t('cancel') }}
 				</v-button>
 				<v-button :disabled="isConfirmButtonDisabled" @click="runFlow">
 					{{ confirmButtonCTA }}

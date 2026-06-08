@@ -8,6 +8,7 @@ import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { defineCommands } from '../../composables/use-command-registry';
+import { getRoutePrimaryKey } from '../../utils/get-route-primary-key';
 import RunFlow from './run-flow.vue';
 
 export const flowCommands = defineCommands({
@@ -56,9 +57,10 @@ export const collectionItemFlowCommands = defineCommands({
 			primaryKey: string | undefined;
 		};
 
-		if (!collection) return [];
+		if (!collection || !route.path.startsWith(`/content/${collection}`)) return [];
 
-		const location = primaryKey ? 'item' : 'collection';
+		const itemPrimaryKey = getRoutePrimaryKey(primaryKey);
+		const location = itemPrimaryKey ? 'item' : 'collection';
 
 		const flowsStore = useFlowsStore();
 		const notificationsStore = useNotificationsStore();
@@ -66,8 +68,7 @@ export const collectionItemFlowCommands = defineCommands({
 		const flows = flowsStore
 			.getManualFlowsForCollection(collection)
 			.filter(
-				(flow) =>
-					!flow.options?.location || flow.options?.location === 'both' || flow.options?.location === location,
+				(flow) => !flow.options?.location || flow.options?.location === 'both' || flow.options?.location === location,
 			)
 			.filter((flow) => location === 'item' || flow.options?.requireSelection === false);
 
@@ -82,32 +83,38 @@ export const collectionItemFlowCommands = defineCommands({
 				group: 'context',
 			};
 
-			return !flow.options?.requireConfirmation
-				? {
-						...common,
-						action: async () => {
-							try {
-								await sdk.request(triggerFlow('POST', flow.id, {
+			if (!flow.options?.requireConfirmation) {
+				return {
+					...common,
+					action: async () => {
+						try {
+							await sdk.request(
+								triggerFlow('POST', flow.id, {
 									collection,
-									...(flow.options?.requireSelection === false ? {} : { keys: [primaryKey] }),
-								} as Record<string, any>));
+									...(location === 'collection' && flow.options?.requireSelection === false
+										? {}
+										: { keys: [itemPrimaryKey] }),
+								} as Record<string, any>),
+							);
 
-								notificationsStore.add({
-									title: t('run_flow_success', { flow: flow.name }),
-								});
-							} catch (error) {
-								unexpectedError(error);
-							}
-						},
-					}
-				: {
-						...common,
-						component: RunFlow,
-						props: {
-							flow,
-							location,
-						},
-					};
+							notificationsStore.add({
+								title: t('run_flow_success', { flow: flow.name }),
+							});
+						} catch (error) {
+							unexpectedError(error);
+						}
+					},
+				};
+			}
+
+			return {
+				...common,
+				component: RunFlow,
+				props: {
+					flow,
+					location,
+				},
+			};
 		}
 	},
 });

@@ -40,6 +40,7 @@ export function useGlobalSearch(search: Ref<string>) {
 
 	watch(search, (value) => {
 		if (searchTimeout) clearTimeout(searchTimeout);
+		const currentRequest = ++requestId;
 
 		if (!value || !hasConfig.value) {
 			results.value = [];
@@ -50,17 +51,16 @@ export function useGlobalSearch(search: Ref<string>) {
 		loading.value = true;
 
 		searchTimeout = setTimeout(() => {
-			fetchResults(value);
+			fetchResults(value, currentRequest);
 		}, 300);
 	});
 
 	onBeforeUnmount(() => {
+		requestId++;
 		if (searchTimeout) clearTimeout(searchTimeout);
 	});
 
-	async function fetchResults(query: string) {
-		const currentRequest = ++requestId;
-
+	async function fetchResults(query: string, currentRequest: number) {
 		try {
 			const response = await api.post('/utils/search', { query });
 

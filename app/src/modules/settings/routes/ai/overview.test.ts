@@ -75,10 +75,6 @@ vi.mock('@/composables/use-edits-guard', () => ({
 	}),
 }));
 
-vi.mock('@/composables/use-shortcut', () => ({
-	useShortcut: vi.fn(),
-}));
-
 function mountOverview() {
 	const pinia = createTestingPinia({
 		createSpy: vi.fn,

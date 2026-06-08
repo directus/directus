@@ -14,6 +14,7 @@ import CommandPaletteItem from '../../command-palette-item.vue';
 import CommandPaletteList from '../../command-palette-list.vue';
 import { useCommandPalette } from '../../composables/use-command-palette';
 import { useRecentItems } from '../../composables/use-recent-items';
+import { getRoutePrimaryKey } from '../../utils/get-route-primary-key';
 import { useAiStore } from '@/ai/stores/use-ai';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
@@ -46,16 +47,14 @@ function askAi() {
 
 const currentPk = computed(() => {
 	if (!route.path.startsWith(`/content/${props.collection}/`)) return null;
-	return String(route.params.primaryKey ?? '');
+	return getRoutePrimaryKey(route.params.primaryKey) ?? null;
 });
 
 const results = ref<{ pk: string; displayValue: string }[]>([]);
 const { items: rawRecentItems, add: addRecentItem } = useRecentItems(props.collection);
 const recentItems = computed(() => rawRecentItems.value.filter((item) => item.pk !== currentPk.value));
 
-const primaryKeyField = computed(
-	() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field ?? 'id',
-);
+const primaryKeyField = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field ?? 'id');
 
 const template = computed(() => props.displayTemplate ?? `{{${primaryKeyField.value}}}`);
 
@@ -73,6 +72,7 @@ let requestId = 0;
 
 watch(search, (value) => {
 	if (searchTimeout) clearTimeout(searchTimeout);
+	const currentRequest = ++requestId;
 
 	if (!value) {
 		results.value = [];
@@ -83,18 +83,17 @@ watch(search, (value) => {
 	loading.value = true;
 
 	searchTimeout = setTimeout(() => {
-		fetchItems(value);
+		fetchItems(value, currentRequest);
 	}, 300);
 });
 
 onBeforeUnmount(() => {
+	requestId++;
 	if (searchTimeout) clearTimeout(searchTimeout);
 	loading.value = false;
 });
 
-async function fetchItems(query: string) {
-	const currentRequest = ++requestId;
-
+async function fetchItems(query: string, currentRequest: number) {
 	try {
 		const response = await api.get(getEndpoint(props.collection), {
 			params: {

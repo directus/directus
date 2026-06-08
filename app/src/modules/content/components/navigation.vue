@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { isNil, orderBy } from 'lodash';
-import { computed, ref, toRefs } from 'vue';
+import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useNavigation } from '../composables/use-navigation';
 import NavigationItem from './NavigationItem.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import VInput from '@/components/v-input.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
@@ -30,7 +29,7 @@ const props = defineProps<{
 const { currentCollection } = toRefs(props);
 const { activeGroups, showHidden } = useNavigation(currentCollection);
 
-const search = ref('');
+const search = '';
 
 const collectionsStore = useCollectionsStore();
 const userStore = useUserStore();
@@ -45,8 +44,7 @@ const rootItems = computed(() => {
 	);
 });
 
-const showSearch = computed(() => collectionsStore.visibleCollections.length > 20);
-
+const dense = computed(() => collectionsStore.visibleCollections.length > 5);
 const hasHiddenCollections = computed(
 	() => collectionsStore.allCollections.length > collectionsStore.visibleCollections.length,
 );
@@ -62,10 +60,6 @@ const hasHiddenCollections = computed(
 			</span>
 		</div>
 
-		<!-- <div v-if="showSearch" class="search-input">
-			<VInput v-model="search" type="search" :placeholder="$t('search_collection')" />
-		</div> -->
-
 		<VList
 			v-model="activeGroups"
 			v-context-menu="'contextMenu'"
@@ -74,14 +68,14 @@ const hasHiddenCollections = computed(
 			tabindex="-1"
 			nav
 			:mandatory="false"
-			dense
+			:dense="dense"
 		>
 			<VButton
 				v-if="userStore.isAdmin && collectionsStore.allCollections.length === 0"
 				full-width
 				outlined
 				dashed
-				:to="{ name: 'settings-add-new' }"
+				to="/settings/data-model/+"
 			>
 				{{ $t('create_collection') }}
 			</VButton>
@@ -112,7 +106,7 @@ const hasHiddenCollections = computed(
 
 <style lang="scss" scoped>
 .group-name {
-	padding-inline-start: 0.4375rem;
+	padding-inline-start: 8px;
 	font-weight: 600;
 }
 
@@ -131,26 +125,9 @@ const hasHiddenCollections = computed(
 }
 
 .content-navigation {
-	--v-list-min-height: calc(100% - 3.625rem);
-	--v-list-padding: 0.75rem;
+	--v-list-min-height: calc(100% - 64px);
 
 	flex-grow: 1;
-
-	&.nav:deep(.v-list-item:not(.dense)) {
-		padding: 0 0.5rem;
-	}
-
-	:deep(.v-list-item-icon) {
-		margin-block: 0;
-	}
-
-	:deep(.v-list-item-icon:not(:only-child):first-child) {
-		margin-inline-end: 0.5rem;
-	}
-
-	:deep(.v-list-item-content) {
-		padding: 0;
-	}
 
 	.v-detail {
 		:deep(.v-divider) {
@@ -158,11 +135,11 @@ const hasHiddenCollections = computed(
 		}
 
 		&:not(:first-child) :deep(.v-divider) {
-			margin-block-start: 0.4375rem;
+			margin-block-start: 8px;
 		}
 
 		&.empty :deep(.v-divider) {
-			margin-block-end: 0.4375rem;
+			margin-block-end: 8px;
 		}
 	}
 }
@@ -199,14 +176,13 @@ const hasHiddenCollections = computed(
 }
 
 .search-input {
-	--theme--form--field--input--height: 2rem;
-	--theme--form--field--input--padding: 0.5rem;
+	--theme--form--field--input--height: 40px;
 
 	position: sticky;
 	inset-block-start: 0;
 	z-index: 1;
-	padding: 0.6875rem;
+	padding: 12px;
 	padding-block-end: 0;
-	background-color: var(--theme--shell--background);
+	background-color: var(--theme--navigation--background);
 }
 </style>

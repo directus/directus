@@ -7,7 +7,6 @@ import { registerBuiltInCommands } from './commands';
 import { provideCommandPalette } from './composables/use-command-palette';
 import { createCommandRouter, provideCommandRouter } from './composables/use-command-router';
 import RootCommands from './root-commands.vue';
-import { useShortcut } from '@/composables/use-shortcut';
 
 let commandsRegistered = false;
 
@@ -36,7 +35,13 @@ onMounted(() => {
 	}
 });
 
-useShortcut('meta+k', () => {
+useEventListener(document, 'keydown', (event) => {
+	const target = event.target as HTMLElement | null;
+
+	if (target?.closest('input, textarea, [contenteditable="true"], .cm-editor')) return;
+	if ((event.metaKey === false && event.ctrlKey === false) || event.key.toLowerCase() !== 'k') return;
+
+	event.preventDefault();
 	active.value = !active.value;
 });
 
@@ -139,7 +144,7 @@ function clear() {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	z-index: 700;
+	z-index: 550;
 }
 
 .overlay-backdrop {

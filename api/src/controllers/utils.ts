@@ -1,6 +1,12 @@
 import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
-import type { GlobalSearchCollectionConfig } from '@directus/types';
-import { getFieldsFromTemplate, mergeFilters, toBoolean } from '@directus/utils';
+import type {
+	Accountability,
+	FieldOverview,
+	GlobalSearchCollectionConfig,
+	SchemaOverview,
+	Type,
+} from '@directus/types';
+import { getFieldsFromTemplate, getRelationInfo, mergeFilters, toBoolean } from '@directus/utils';
 import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
@@ -11,6 +17,7 @@ import { getDatabase } from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
+import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { CollectionsService } from '../services/collections.js';
 import { ExportService, ImportService } from '../services/import-export.js';
 import { ItemsService } from '../services/items.js';
@@ -21,6 +28,7 @@ import asyncHandler from '../utils/async-handler.js';
 import { createDeepObject } from '../utils/create-deep-object.js';
 import { generateHash } from '../utils/generate-hash.js';
 import { generateTranslations } from '../utils/generate-translations.js';
+import { isValidUuid } from '../utils/is-valid-uuid.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = Router();
@@ -248,6 +256,157 @@ router.post(
 );
 
 const MAX_SEARCH_COLLECTIONS = 20;
+const DEFAULT_SEARCH_LIMIT = 5;
+const MAX_SEARCH_LIMIT = 25;
+const TEXT_SEARCH_FIELD_TYPES = new Set<Type>(['string', 'text', 'csv']);
+const DECIMAL_SEARCH_FIELD_TYPES = new Set<Type>(['decimal', 'float']);
+const EXACT_SEARCH_FIELD_TYPES = new Set<Type>(['hash']);
+
+type ResolvedFieldPath = {
+	field: FieldOverview;
+	segments: { collection: string; field: string }[];
+};
+
+function normalizeSearchLimit(limit: number | null | undefined) {
+	if (typeof limit !== 'number' || !Number.isInteger(limit) || limit <= 0) {
+		return DEFAULT_SEARCH_LIMIT;
+	}
+
+	return Math.min(limit, MAX_SEARCH_LIMIT);
+}
+
+function getSortFieldPath(sort: string | null | undefined) {
+	return sort?.startsWith('-') ? sort.slice(1) : sort;
+}
+
+function getSearchFilterForField(path: string, type: Type, query: string) {
+	if (TEXT_SEARCH_FIELD_TYPES.has(type)) {
+		return createDeepObject(path, { _icontains: query });
+	}
+
+	const normalizedQuery = query.trim();
+	if (normalizedQuery.length === 0) return null;
+
+	if (type === 'integer') {
+		if (/^-?\d+$/.test(normalizedQuery) === false) return null;
+		const number = Number(normalizedQuery);
+		if (Number.isSafeInteger(number) === false) return null;
+		return createDeepObject(path, { _eq: number });
+	}
+
+	if (type === 'bigInteger') {
+		if (/^-?\d+$/.test(normalizedQuery) === false) return null;
+		return createDeepObject(path, { _eq: normalizedQuery });
+	}
+
+	if (DECIMAL_SEARCH_FIELD_TYPES.has(type)) {
+		if (/^-?(?:\d+|\d*\.\d+)$/.test(normalizedQuery) === false) return null;
+		const number = Number(normalizedQuery);
+		if (!Number.isFinite(number)) return null;
+		return createDeepObject(path, { _eq: number });
+	}
+
+	if (type === 'boolean') {
+		const normalizedBooleanQuery = normalizedQuery.toLowerCase();
+
+		if (['true', '1', 'yes'].includes(normalizedBooleanQuery)) {
+			return createDeepObject(path, { _eq: true });
+		}
+
+		if (['false', '0', 'no'].includes(normalizedBooleanQuery)) {
+			return createDeepObject(path, { _eq: false });
+		}
+
+		return null;
+	}
+
+	if (type === 'uuid') {
+		if (!isValidUuid(normalizedQuery)) return null;
+		return createDeepObject(path, { _eq: normalizedQuery });
+	}
+
+	if (EXACT_SEARCH_FIELD_TYPES.has(type)) {
+		return createDeepObject(path, { _eq: normalizedQuery });
+	}
+
+	return null;
+}
+
+function resolveFieldPath(schema: SchemaOverview, collection: string, path: string): ResolvedFieldPath | null {
+	let currentCollection = collection;
+	const segments: ResolvedFieldPath['segments'] = [];
+	const parts = path.split('.');
+
+	for (const [index, part] of parts.entries()) {
+		if (!part) return null;
+
+		const [fieldName, collectionScope] = part.split(':');
+		if (!fieldName) return null;
+
+		const collectionInfo = schema.collections[currentCollection];
+		const field = collectionInfo?.fields[fieldName];
+		if (!field) return null;
+
+		segments.push({ collection: currentCollection, field: fieldName });
+
+		if (index === parts.length - 1) {
+			return { field, segments };
+		}
+
+		const { relation, relationType } = getRelationInfo(schema.relations, currentCollection, fieldName);
+
+		if (!relation) return null;
+
+		if (relationType === 'a2o') {
+			if (!collectionScope) return null;
+			currentCollection = collectionScope;
+		} else if (relationType === 'm2o') {
+			if (!relation.related_collection) return null;
+			currentCollection = relation.related_collection;
+		} else {
+			currentCollection = relation.collection;
+		}
+	}
+
+	return null;
+}
+
+function createFieldAccessChecker(accountability: Accountability | undefined, schema: SchemaOverview) {
+	const allowedFieldsByCollection = new Map<string, Promise<Set<string> | null>>();
+
+	async function getAllowedFields(collection: string) {
+		if (!accountability || accountability.admin === true) {
+			return null;
+		}
+
+		if (!allowedFieldsByCollection.has(collection)) {
+			allowedFieldsByCollection.set(
+				collection,
+				fetchAllowedFields(
+					{ collection, action: 'read', accountability },
+					{ schema, knex: getDatabase() },
+				).then((fields) => (fields.includes('*') ? null : new Set(fields))),
+			);
+		}
+
+		return allowedFieldsByCollection.get(collection)!;
+	}
+
+	return async function canReadFieldPath(collection: string, path: string) {
+		const resolved = resolveFieldPath(schema, collection, path);
+		if (!resolved) return false;
+
+		for (const segment of resolved.segments) {
+			const allowedFields = await getAllowedFields(segment.collection);
+
+			if (allowedFields && !allowedFields.has(segment.field)) {
+				return false;
+			}
+		}
+
+		return true;
+	};
+}
 
 router.post(
 	'/search',
@@ -270,19 +429,37 @@ router.post(
 		const collectionsService = new CollectionsService({ accountability: req.accountability, schema: req.schema });
 		const collectionMeta = await collectionsService.readByQuery();
 		const collectionMetaByName = new Map(collectionMeta.map((collection) => [collection.collection, collection.meta]));
+		const canReadFieldPath = createFieldAccessChecker(req.accountability, req.schema);
 
 		const results: Record<string, any[]> = {};
 
 		await Promise.allSettled(
 			collections.map(async (collectionConfig) => {
 				try {
+					if (!collectionConfig.fields?.length) return;
+					if (!req.schema.collections[collectionConfig.collection]) return;
+
+					const searchFilters: Record<string, any>[] = [];
+
+					for (const field of collectionConfig.fields) {
+						const resolvedField = resolveFieldPath(req.schema, collectionConfig.collection, field);
+						if (!resolvedField) continue;
+
+						if ((await canReadFieldPath(collectionConfig.collection, field)) === false) continue;
+
+						const searchFilterForField = getSearchFilterForField(field, resolvedField.field.type, query);
+						if (searchFilterForField) searchFilters.push(searchFilterForField);
+					}
+
+					if (searchFilters.length === 0) return;
+
 					const service = new ItemsService(collectionConfig.collection, {
 						accountability: req.accountability,
 						schema: req.schema,
 					});
 
 					const searchFilter = {
-						_or: collectionConfig.fields.map((field) => createDeepObject(field, { _icontains: query })),
+						_or: searchFilters,
 					};
 
 					const filter = collectionConfig.filter ? mergeFilters(collectionConfig.filter, searchFilter) : searchFilter;
@@ -298,15 +475,28 @@ router.post(
 					const fieldsToFetch = [
 						...(primaryKeyField ? [primaryKeyField] : []),
 						...templateFields,
-						...collectionConfig.fields,
 						...(collectionConfig.description_field ? [collectionConfig.description_field] : []),
 					];
 
+					const readableFieldsToFetch: string[] = [];
+
+					for (const field of fieldsToFetch) {
+						if (await canReadFieldPath(collectionConfig.collection, field)) {
+							readableFieldsToFetch.push(field);
+						}
+					}
+
+					if (primaryKeyField && !readableFieldsToFetch.includes(primaryKeyField)) return;
+
+					const sortField = getSortFieldPath(collectionConfig.sort);
+					const canSort = sortField ? await canReadFieldPath(collectionConfig.collection, sortField) : false;
+					const sort = canSort && collectionConfig.sort ? [collectionConfig.sort] : null;
+
 					const items = await service.readByQuery({
 						filter,
-						fields: [...new Set(fieldsToFetch)],
-						limit: collectionConfig.limit ?? 5,
-						sort: collectionConfig.sort ? [collectionConfig.sort] : null,
+						fields: [...new Set(readableFieldsToFetch)],
+						limit: normalizeSearchLimit(collectionConfig.limit),
+						sort,
 					});
 
 					results[collectionConfig.collection] = items;
