@@ -45,6 +45,41 @@ export class FilesService extends ItemsService<File> {
 		super('directus_files', options);
 	}
 
+	private assertValidPath(filepath: string, storage?: string) {
+		const location = storage || toArray(env['STORAGE_LOCATIONS'] as string[])[0]!;
+		const storageRoot = (env[`STORAGE_${location.toUpperCase()}_ROOT`] as string | undefined) ?? '';
+		const storageDriver = env[`STORAGE_${location.toUpperCase()}_DRIVER`] as string | undefined;
+		const extensionsRoot = (env['EXTENSIONS_PATH'] as string | undefined) ?? '';
+		const tmpRoot = (env['TEMP_PATH'] as string | undefined) ?? '';
+
+		const extensionPath = this.generateFilenamePath(extensionsRoot);
+		const tmpPath = this.generateFilenamePath(tmpRoot);
+		const storagePath = this.generateFilenamePath(storageRoot);
+		const normalizedFilePath = this.generateFilenamePath(filepath);
+
+		// Resolve the file to its real location for comparison: under the storage root for the local
+		// driver, or the bucket-root-relative key for remote drivers.
+		const filePath =
+			storageDriver === 'local'
+				? this.generateFilenamePath(path.join(storagePath, normalizedFilePath))
+				: normalizedFilePath;
+
+		// A write can only reach extensions from the location that backs them
+		const isExtensionStore = env['EXTENSIONS_LOCATION']
+			? env['EXTENSIONS_LOCATION'] === location
+			: storageDriver === 'local';
+
+		// Block writes that land inside the extension path.
+		if (isExtensionStore && extensionPath && filePath.startsWith(extensionPath + '/')) {
+			throw new ForbiddenError();
+		}
+
+		// TEMP_PATH is used for extension sync and upload chunks; only the local driver writes there.
+		if (storageDriver === 'local' && tmpPath && filePath.startsWith(tmpPath + '/')) {
+			throw new ForbiddenError();
+		}
+	}
+
 	/**
 	 * Generates the relative path for the filename_disk
 	 *
@@ -346,6 +381,7 @@ export class FilesService extends ItemsService<File> {
 			data.filename_disk = this.generateFilenamePath(data.filename_disk);
 
 			try {
+				this.assertValidPath(data.filename_disk, data.storage);
 				await this.checkUniqueFilename(data.filename_disk);
 			} catch (err: any) {
 				// Defer the error to be thrown until after permission checks
@@ -369,6 +405,7 @@ export class FilesService extends ItemsService<File> {
 			data.filename_disk = this.generateFilenamePath(data.filename_disk);
 
 			try {
+				this.assertValidPath(data.filename_disk, data.storage);
 				await this.checkUniqueFilename(data.filename_disk, keys[0]);
 			} catch (err: any) {
 				// Defer the error to be thrown until after permission checks
