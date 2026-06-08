@@ -1,0 +1,35 @@
+post:
+  tags:
+    - Assets
+  operationId: getAssetFolder
+  summary: Download Folder as ZIP
+  description: >
+    Stream all files in a folder (and its subfolders) as a ZIP archive. The archive is streamed directly; no temporary
+    file is created on the server.
+  parameters:
+    - name: id
+      in: path
+      description: UUID of the folder to archive.
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: ZIP archive of the folder contents.
+      headers:
+        Content-Type:
+          schema:
+            type: string
+            enum: [application/zip]
+        Content-Disposition:
+          schema:
+            type: string
+          description: 'Attachment filename, e.g. `attachment; filename="folder-My Folder-20240101-120000.zip"`.'
+      content:
+        application/zip:
+          schema:
+            type: string
+            format: binary
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'

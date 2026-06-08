@@ -1,0 +1,51 @@
+post:
+  tags:
+    - Assets
+  operationId: getAssetFiles
+  summary: Download Files as ZIP
+  description: >
+    Stream a ZIP archive containing the specified files. The archive is streamed directly; no temporary file is created
+    on the server.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [ids]
+          properties:
+            ids:
+              type: array
+              minItems: 1
+              items:
+                type: string
+                format: uuid
+              description: UUIDs of the files to include in the archive.
+  responses:
+    '200':
+      description: ZIP archive of the requested files.
+      headers:
+        Content-Type:
+          schema:
+            type: string
+            enum: [application/zip]
+        Content-Disposition:
+          schema:
+            type: string
+          description: 'Attachment filename, e.g. `attachment; filename="files-20240101-120000.zip"`.'
+      content:
+        application/zip:
+          schema:
+            type: string
+            format: binary
+    '400':
+      description: 'Error: Invalid payload.'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Error'

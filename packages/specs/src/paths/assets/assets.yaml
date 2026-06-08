@@ -3,7 +3,17 @@ get:
     - Assets
   operationId: getAsset
   summary: Get an Asset
-  description: Image typed files can be dynamically resized and transformed to fit any need.
+  description: >
+    Retrieve a file by its ID. Image files can be dynamically resized and transformed using query parameters.
+    Transformations apply only to supported image MIME types (JPEG, PNG, WebP, TIFF, AVIF); other file types are served
+    as-is.
+
+
+    Use the `key` parameter to apply a named preset from your project settings. When `key` is provided alongside
+    individual transform parameters, the preset values are used as a base and individual parameters take precedence.
+
+
+    Byte-range requests (`Range` header) are supported for non-transformed assets.
   parameters:
     - name: id
       in: path
@@ -11,27 +21,164 @@ get:
       required: true
       schema:
         type: string
+        format: uuid
     - name: key
       in: query
-      description: The key of the asset size configured in settings.
+      description: Key of a named asset size preset configured in project settings.
       schema:
         type: string
     - name: transforms
       in: query
-      description: A JSON array of image transformations
+      description: >
+        A JSON array of raw Sharp transformation operations. Each entry is a tuple of `[method, ...args]`. Only valid
+        Sharp method names are accepted. Mutually exclusive with `key` when using custom transforms.
       schema:
         type: string
-    - name: download
+    - name: width
       in: query
-      description: Download the asset to your computer
+      description: Resize the image to this width in pixels. Applies to images only.
+      schema:
+        type: integer
+        minimum: 1
+    - name: height
+      in: query
+      description: Resize the image to this height in pixels. Applies to images only.
+      schema:
+        type: integer
+        minimum: 1
+    - name: format
+      in: query
+      description: >
+        Convert the image to the specified format. Use `auto` to negotiate the best supported format from the client's
+        `Accept` header (prefers AVIF, then WebP). Applies to images only.
+      schema:
+        type: string
+        enum: [jpg, jpeg, png, webp, tiff, avif, auto]
+    - name: fit
+      in: query
+      description: >
+        How the image should be resized to fit the target `width` and `height`. Applies to images only.
+      schema:
+        type: string
+        enum: [contain, cover, inside, outside]
+    - name: quality
+      in: query
+      description: Quality of the output image (0–100). Applies to JPEG, WebP, and AVIF. Applies to images only.
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 100
+    - name: withoutEnlargement
+      in: query
+      description: Prevent the image from being enlarged beyond its original dimensions. Applies to images only.
       schema:
         type: boolean
+    - name: focal_point_x
+      in: query
+      description: >
+        Horizontal focal point (0.0 = left, 1.0 = right) used for smart cropping when `fit=cover`. Applies to images
+        only.
+      schema:
+        type: number
+        minimum: 0
+        maximum: 1
+    - name: focal_point_y
+      in: query
+      description: >
+        Vertical focal point (0.0 = top, 1.0 = bottom) used for smart cropping when `fit=cover`. Applies to images only.
+      schema:
+        type: number
+        minimum: 0
+        maximum: 1
+    - name: download
+      in: query
+      description: >
+        When present, sets `Content-Disposition` to `attachment` so the browser downloads the file instead of displaying
+        it inline.
+      schema:
+        type: boolean
+    - name: Range
+      in: header
+      description: >
+        HTTP byte range to request a partial response. Only honoured when no image transformation parameters are
+        present.
+      schema:
+        type: string
+        example: bytes=0-1023
+    - name: If-None-Match
+      in: header
+      description: ETag value for conditional requests. Returns 304 if the asset has not changed.
+      schema:
+        type: string
+    - name: If-Modified-Since
+      in: header
+      description: >
+        Date for conditional requests. Returns 304 if the asset has not been modified since this date.
+      schema:
+        type: string
+        format: date-time
   responses:
     '200':
-      description: Successful request
-      content:
-        text/plain:
+      description: Successful request. Returns the file content with appropriate MIME type.
+      headers:
+        Content-Type:
           schema:
             type: string
+          description: MIME type of the file, or the transformed image format.
+        Content-Length:
+          schema:
+            type: integer
+          description: Size of the response body in bytes.
+        Content-Disposition:
+          schema:
+            type: string
+          description: >
+            `inline; filename=...` by default, or `attachment; filename=...` when `?download` is present.
+        Accept-Ranges:
+          schema:
+            type: string
+            enum: [bytes]
+          description: Indicates that byte-range requests are supported.
+        ETag:
+          schema:
+            type: string
+          description: Opaque identifier based on the file's last-modified timestamp.
+        Last-Modified:
+          schema:
+            type: string
+          description: RFC 7231 date of the file's last modification.
+        Cache-Control:
+          schema:
+            type: string
+          description: >
+            Caching directive derived from `ASSETS_CACHE_TTL` and `ASSETS_CACHE_REVALIDATE` environment variables.
+        Vary:
+          schema:
+            type: string
+          description: >
+            `Origin, Cache-Control` for most assets; also includes `Accept` when `format=auto`.
+      content:
+        '*/*':
+          schema:
+            type: string
+            format: binary
+    '206':
+      description: Partial content — byte-range request was satisfied.
+      headers:
+        Content-Range:
+          schema:
+            type: string
+          description: 'Byte range returned, e.g. `bytes 0-1023/4096`.'
+        Content-Length:
+          schema:
+            type: integer
+          description: Number of bytes in this partial response.
+      content:
+        '*/*':
+          schema:
+            type: string
+            format: binary
+    '304':
+      description: Not modified — the asset has not changed since the conditional request headers were set.
     '404':
       $ref: '../../openapi.yaml#/components/responses/NotFoundError'
