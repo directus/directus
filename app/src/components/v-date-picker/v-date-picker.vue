@@ -208,6 +208,9 @@ function handleDateChange(value: DateValue | undefined) {
 }
 
 function handleDateFieldChange(value: DateValue | undefined) {
+	// enforce 4 digit year
+	if (value && value.year < 1000) return;
+
 	applyDate(value);
 }
 

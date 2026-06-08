@@ -1114,6 +1114,16 @@ describe('v-date-picker', () => {
 			expect(wrapper.emitted('close')).toBeFalsy();
 		});
 
+		it('does not emit update:modelValue when a typed year has fewer than four digits', async () => {
+			const wrapper = createWrapper({ type: 'date' });
+
+			const dateField = wrapper.findComponent(DateFieldRoot);
+			await dateField.vm.$emit('update:modelValue', new CalendarDate(123, 3, 9));
+			await nextTick();
+
+			expect(wrapper.emitted('update:modelValue')).toBeFalsy();
+		});
+
 		it('updates the date field when a calendar date is selected', async () => {
 			const wrapper = createWrapper({ type: 'date' });
 
