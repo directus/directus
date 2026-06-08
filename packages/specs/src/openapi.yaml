@@ -106,6 +106,12 @@ tags:
       - Folders
       - Users
       - Roles
+  - name: Metrics
+    description: |
+      Prometheus-compatible metrics endpoint for monitoring your Directus instance.
+      Access requires an admin token or a dedicated metrics token (Authorization: Metrics <token>).
+      Only available when METRICS_ENABLED=true.
+    x-enabled-env: METRICS_ENABLED
   - name: Versions
     description:
       Enables users to create unpublished copies of an item, modify them independently from the main version, and
@@ -280,6 +286,10 @@ paths:
   /utils/random/string:
     $ref: './paths/utils/random.yaml'
 
+  # Metrics
+  /metrics:
+    $ref: './paths/metrics/metrics.yaml'
+
   # Versions
   /versions:
     $ref: './paths/versions/versions.yaml'
@@ -393,6 +403,13 @@ components:
       type: apiKey
       in: header
       name: 'Authorization'
+    MetricsAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: >
+        Static token for the /metrics endpoint. Pass as 'Authorization: Metrics <token>' where the token is one of the
+        values in the METRICS_TOKENS environment variable.
 security:
   - Auth: []
   - KeyAuth: []

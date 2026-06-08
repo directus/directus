@@ -1,0 +1,25 @@
+get:
+  summary: List Metrics
+  description: |
+    Returns Prometheus-format metrics for monitoring your Directus instance.
+
+    Requires either an admin access token (via `Auth` or `KeyAuth`) or a dedicated
+    metrics token passed as `Authorization: Metrics <token>`, where the token value
+    is one of the entries in the `METRICS_TOKENS` environment variable.
+
+    This endpoint is only available when `METRICS_ENABLED=true`.
+  operationId: getMetrics
+  security:
+    - MetricsAuth: []
+  responses:
+    '200':
+      description: Successful request
+      content:
+        text/plain:
+          schema:
+            type: string
+            description: Prometheus exposition format metrics text.
+    '403':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+  tags:
+    - Metrics
