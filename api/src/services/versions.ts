@@ -97,8 +97,17 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			});
 		}
 
-		// Skip checking for existing versions if the version is itemless.
-		if (itemLess) return;
+		const isSingleton = !!this.schema.collections[data['collection']]?.singleton;
+
+		// singleton collections should only allow one item-less version,
+		// regular collections can have unlimited
+		if (itemLess) {
+			if (isSingleton) {
+				await this.assertSingletonEmpty(data['collection']);
+			} else {
+				return;
+			}
+		}
 
 		const sudoService = new VersionsService({
 			knex: this.knex,
@@ -107,12 +116,18 @@ export class VersionsService extends ItemsService<ContentVersion> {
 
 		const existingVersions = (await sudoService.readByQuery({
 			aggregate: { count: ['*'] },
-			filter: { key: { _eq: data['key'] }, collection: { _eq: data['collection'] }, item: { _eq: data['item'] } },
+			filter: {
+				key: { _eq: data['key'] },
+				collection: { _eq: data['collection'] },
+				item: itemLess ? { _null: true } : { _eq: data['item'] },
+			},
 		})) as any[];
 
 		if (existingVersions[0]['count'] > 0) {
 			throw new UnprocessableContentError({
-				reason: `Version "${data['key']}" already exists for item "${data['item']}" in collection "${data['collection']}"`,
+				reason: itemLess
+					? `Singleton collection "${data['collection']}" already has an item-less version`
+					: `Version "${data['key']}" already exists for item "${data['item']}" in collection "${data['collection']}"`,
 			});
 		}
 	}
@@ -198,6 +213,9 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		const keyCombos = new Set();
 
 		for (const item of data) {
+			// Itemless versions are allowed to share a key within a collection
+			if (isNil(item['item'])) continue;
+
 			const keyCombo = `${item['key']}-${item['collection']}-${item['item']}`;
 
 			if (keyCombos.has(keyCombo)) {
@@ -242,8 +260,28 @@ export class VersionsService extends ItemsService<ContentVersion> {
 				});
 			}
 
-			// Skip checking for existing versions or duplicates if the version is itemless.
-			if (item === null) continue;
+			if (item === null) {
+				if (this.schema.collections[collection]?.singleton) {
+					await this.assertSingletonEmpty(collection);
+
+					const existingItemless = (await super.readByQuery({
+						aggregate: { count: ['*'] },
+						filter: {
+							id: { _neq: pk },
+							collection: { _eq: collection },
+							item: { _null: true },
+						},
+					})) as any[];
+
+					if (existingItemless[0]['count'] > 0) {
+						throw new UnprocessableContentError({
+							reason: `Singleton collection "${collection}" already has an item-less version`,
+						});
+					}
+				}
+
+				continue;
+			}
 
 			const keyCombo = `${key}-${collection}-${item}`;
 
@@ -275,7 +313,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		return super.updateMany(keys, data, opts);
 	}
 
-	async save(key: PrimaryKey, delta: Partial<Item>): Promise<Partial<Item>> {
+	async save(key: PrimaryKey, delta: Partial<Item>, opts?: { patchRevision?: boolean }): Promise<Partial<Item>> {
 		const version = await super.readOne(key);
 
 		const payloadService = new PayloadService(this.collection, {
@@ -294,35 +332,69 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			const trackingAccountability = this.schema.collections[collection]?.accountability ?? null;
 
 			if (trackingAccountability !== null) {
-				const activityService = new ActivityService({
+				const revisionsService = new RevisionsService({
 					knex: this.knex,
 					schema: this.schema,
 				});
 
-				const activity = await activityService.createOne({
-					action: Action.VERSION_SAVE,
-					user: this.accountability?.user ?? null,
-					collection,
-					ip: this.accountability?.ip ?? null,
-					user_agent: this.accountability?.userAgent ?? null,
-					origin: this.accountability?.origin ?? null,
-					item,
-				});
+				// In patch mode, try to coalesce into the most recent revision for this version
+				// instead of appending a new activity + revision pair.
+				let patchedExistingRevision = false;
 
-				if (trackingAccountability === 'all') {
-					const revisionsService = new RevisionsService({
+				if (opts?.patchRevision && trackingAccountability === 'all') {
+					const [latestRevision] = await revisionsService.readByQuery({
+						filter: { version: { _eq: key } },
+						sort: ['-activity.timestamp'],
+						limit: 1,
+						fields: ['id', 'data', 'delta', 'activity.user'],
+					});
+
+					// Only coalesce when the latest revision was authored by the current user.
+					// Otherwise we'd silently rewrite another user's revision with our content while
+					// leaving the linked activity attributed to the original author — breaking the audit trail.
+					const currentUser = this.accountability?.user ?? null;
+					const latestRevisionUser = (latestRevision?.['activity'] as { user?: string | null })?.user ?? null;
+
+					if (latestRevision && latestRevisionUser === currentUser) {
+						const mergedRevisionData = assign({}, latestRevision['data'], revisionDelta);
+						const mergedRevisionDelta = assign({}, latestRevision['delta'], revisionDelta);
+
+						await revisionsService.updateOne(latestRevision['id'], {
+							data: mergedRevisionData,
+							delta: mergedRevisionDelta,
+						});
+
+						patchedExistingRevision = true;
+					}
+				}
+
+				// Fall through to create-new path when not patching, or when patching had nothing to coalesce.
+				if (!patchedExistingRevision) {
+					const activityService = new ActivityService({
 						knex: this.knex,
 						schema: this.schema,
 					});
 
-					await revisionsService.createOne({
-						activity,
-						version: key,
+					const activity = await activityService.createOne({
+						action: Action.VERSION_SAVE,
+						user: this.accountability?.user ?? null,
 						collection,
+						ip: this.accountability?.ip ?? null,
+						user_agent: this.accountability?.userAgent ?? null,
+						origin: this.accountability?.origin ?? null,
 						item,
-						data: revisionDelta,
-						delta: revisionDelta,
 					});
+
+					if (trackingAccountability === 'all') {
+						await revisionsService.createOne({
+							activity,
+							version: key,
+							collection,
+							item,
+							data: revisionDelta,
+							delta: revisionDelta,
+						});
+					}
 				}
 			}
 		}
@@ -438,6 +510,8 @@ export class VersionsService extends ItemsService<ContentVersion> {
 				overwriteDefaults: defaultOverwrites as any,
 			});
 		} else {
+			await this.assertSingletonEmpty(collection);
+
 			updatedItemKey = await itemsService.createOne(payloadAfterHooks, {
 				overwriteDefaults: defaultOverwrites as any,
 			});
@@ -461,6 +535,20 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		);
 
 		return updatedItemKey;
+	}
+
+	private async assertSingletonEmpty(collection: string): Promise<void> {
+		const collectionMeta = this.schema.collections[collection];
+
+		if (!collectionMeta?.singleton) return;
+
+		const existingRow = await this.knex(collection).first(collectionMeta.primary);
+
+		if (existingRow) {
+			throw new UnprocessableContentError({
+				reason: `Singleton collection "${collection}" already contains an item`,
+			});
+		}
 	}
 
 	private mapDelta(version: ContentVersion) {

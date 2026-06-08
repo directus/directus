@@ -45,7 +45,7 @@ type UsableItem<T extends Item> = {
 	isArchived: ComputedRef<boolean | null>;
 	archiving: Ref<boolean>;
 	saveAsCopy: () => Promise<PrimaryKey | null>;
-	getItem: () => Promise<void>;
+	getItem: (opts?: { silent?: boolean }) => Promise<void>;
 	validationErrors: Ref<any[]>;
 };
 
@@ -61,6 +61,7 @@ export function useItem<T extends Item>(
 	currentVersion: Ref<ContentVersionMaybeNew | null> | null = null,
 	isItemlessVersion: ComputedRef<boolean> = computed(() => false),
 	extraQuery: MaybeRef<Omit<Query, 'version' | 'versionRaw'>> = {},
+	saveOptions: { onSaveError?: (error: APIError) => boolean } = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
@@ -110,7 +111,14 @@ export function useItem<T extends Item>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey, query], refresh);
+	watch([collection, primaryKey], refresh);
+
+	watch(query, () => {
+		const canRefetchSilently = item.value !== null;
+
+		if (canRefetchSilently) getItem({ silent: true });
+		else refresh();
+	});
 
 	refreshItem();
 
@@ -137,8 +145,8 @@ export function useItem<T extends Item>(
 		validationErrors,
 	};
 
-	async function getItem() {
-		loadingItem.value = true;
+	async function getItem(opts?: { silent?: boolean }) {
+		if (!opts?.silent) loadingItem.value = true;
 		error.value = null;
 
 		try {
@@ -450,10 +458,16 @@ export function useItem<T extends Item>(
 			const otherErrors = error.errors.filter((err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code));
 
 			if (otherErrors.length > 0) {
-				otherErrors.forEach(unexpectedError);
+				otherErrors.forEach((err: APIError) => {
+					if (!saveOptions.onSaveError?.(err)) {
+						unexpectedError(err);
+					}
+				});
 			}
 		} else {
-			unexpectedError(error);
+			if (!saveOptions.onSaveError?.(error)) {
+				unexpectedError(error);
+			}
 		}
 
 		throw error;

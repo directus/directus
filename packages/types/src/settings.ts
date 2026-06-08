@@ -81,24 +81,32 @@ export type Settings = {
 	ai_translation_glossary: Array<{ term: string; translation_note?: string }> | null;
 	ai_translation_style_guide: string | null;
 	mcp_enabled: boolean;
+	mcp_oauth_enabled: boolean;
 	mcp_allow_deletes: boolean;
 	mcp_prompts_collection: string | null;
 	mcp_system_prompt_enabled: boolean;
 	mcp_system_prompt: string | null;
 	collaborative_editing_enabled: boolean;
+	license_key: string | null;
+	license_token: string | null;
 } & OwnerInformation;
 
 export type OwnerInformation = {
 	project_owner: string | null;
+	product_updates: boolean;
 	project_usage: 'personal' | 'commercial' | 'community' | null;
 	org_name: string | null;
-	product_updates: boolean;
 };
 
 export type SetupForm = {
-	first_name: string | null;
-	last_name: string | null;
-	password: string | null;
+	admin: {
+		email: string | null;
+		password: string | null;
+		first_name: string | null;
+		last_name: string | null;
+	};
 	password_confirm: string | null;
 	license: boolean;
-} & OwnerInformation;
+	license_key: string | null;
+	owner: OwnerInformation;
+};

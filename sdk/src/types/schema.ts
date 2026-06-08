@@ -24,11 +24,14 @@ export type CollectionType<Schema, Collection> = IfAny<
 >;
 
 /**
- * Returns a list of singleton collections in the schema
+ * Returns a list of regular singleton collections in the schema (CoreSchema singleton collections excluded)
  */
-export type SingletonCollections<Schema> = {
-	[Key in keyof Schema]: Schema[Key] extends any[] ? never : Key;
-}[keyof Schema];
+export type SingletonCollections<Schema> = Exclude<
+	{
+		[Key in keyof Schema]: Schema[Key] extends any[] ? never : Key;
+	}[keyof Schema],
+	keyof CoreSchema<Schema>
+>;
 
 /**
  * Returns a list of regular collections in the schema

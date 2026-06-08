@@ -1,6 +1,7 @@
 import { VERSION_KEY_DRAFT } from '@directus/constants';
 import type { ContentVersion, Filter, Item, PrimaryKey } from '@directus/types';
 import { useRouteQuery } from '@vueuse/router';
+import { isEqual } from 'lodash';
 import { computed, ref, type Ref, watch } from 'vue';
 import { useCollectionPermissions } from './use-permissions';
 import api from '@/api';
@@ -17,9 +18,7 @@ export interface PublishVersionOptions {
 export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<PrimaryKey | null>) {
 	const currentVersion = ref<ContentVersionMaybeNew | null>(null);
 	const rawVersions = ref<ContentVersion[] | null>(null);
-	const loading = ref(false);
 	const deleteVersionLoading = ref(false);
-	const saveVersionLoading = ref(false);
 	const publishVersionLoading = ref(false);
 	const validationErrors = ref<any[]>([]);
 
@@ -77,9 +76,15 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 			const previouslySelectedKey = currentVersion.value?.key;
 
-			currentVersion.value = newQueryVersion
+			const newSelected = newQueryVersion
 				? (newVersions.find((version) => version.key === newQueryVersion && isVersionSelectable(version)) ?? null)
 				: null;
+
+			if (newSelected && currentVersion.value && newSelected.id === currentVersion.value.id) {
+				Object.assign(currentVersion.value, newSelected);
+			} else {
+				currentVersion.value = newSelected;
+			}
 
 			if (currentVersion.value?.key !== previouslySelectedKey) {
 				validationErrors.value = [];
@@ -117,8 +122,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			return;
 		}
 
-		loading.value = true;
-
 		try {
 			const filterConditions: Filter[] = [{ collection: { _eq: collection.value } }];
 
@@ -144,8 +147,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			rawVersions.value = response.data;
 		} catch (error) {
 			unexpectedError(error);
-		} finally {
-			loading.value = false;
 		}
 	}
 
@@ -183,7 +184,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	function versionErrorHandler(error: any) {
+	function versionErrorHandler(error: any, opts: { silent?: boolean } = {}) {
 		if (currentVersion.value && currentVersion.value.id !== '+' && error?.response?.status === 403) {
 			throw Object.assign(error, { versionGone: true });
 		}
@@ -217,20 +218,23 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				(err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code),
 			);
 
-			if (otherErrors.length > 0) {
+			if (otherErrors.length > 0 && !opts.silent) {
 				otherErrors.forEach(unexpectedError);
 			}
-		} else {
+		} else if (!opts.silent) {
 			unexpectedError(error);
 		}
 
 		throw error;
 	}
 
-	async function saveVersion(edits: Ref<Record<string, any>>, item: Ref<Item | null>) {
+	async function saveVersion(
+		edits: Ref<Record<string, any>>,
+		item: Ref<Item | null>,
+		opts?: { patchRevision?: boolean },
+	) {
 		if (!currentVersion.value || !primaryKey.value) return;
 
-		saveVersionLoading.value = true;
 		validationErrors.value = [];
 
 		try {
@@ -250,13 +254,21 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				versionId = currentVersion.value.id;
 			}
 
+			// New versions have no prior revision to coalesce into
+			const shouldPatchRevision = opts?.patchRevision === true && currentVersion.value.id !== '+';
+
+			const endpoint = shouldPatchRevision
+				? `/versions/${versionId}/save?patchRevision`
+				: `/versions/${versionId}/save`;
+
+			const editsToSave = { ...edits.value };
+
 			const {
 				data: { data: savedData },
-			} = await api.post(`/versions/${versionId}/save`, edits.value);
+			} = await api.post(endpoint, editsToSave);
 
-			// Update local item with the saved changes
 			item.value = item.value ? Object.assign(item.value, savedData) : savedData;
-			edits.value = {};
+			clearSavedEditKeys(edits, editsToSave);
 
 			if (isNewItem.value) queryVersionId.value = versionId;
 
@@ -264,9 +276,13 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 			return savedData;
 		} catch (error) {
-			versionErrorHandler(error);
-		} finally {
-			saveVersionLoading.value = false;
+			versionErrorHandler(error, { silent: true });
+		}
+	}
+
+	function clearSavedEditKeys(edits: Ref<Record<string, any>>, savedEdits: Record<string, any>) {
+		for (const key of Object.keys(savedEdits)) {
+			if (isEqual(edits.value[key], savedEdits[key])) delete edits.value[key];
 		}
 	}
 
@@ -304,13 +320,11 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		createVersionsAllowed,
 		currentVersion,
 		versions,
-		loading,
 		getVersions,
 		addVersion,
 		updateVersion,
 		deleteVersion,
 		deleteVersionLoading,
-		saveVersionLoading,
 		saveVersion,
 		validationErrors,
 		publishVersionLoading,

@@ -49,6 +49,7 @@ import VOverlay from './v-overlay.vue';
 import VPagination from './v-pagination.vue';
 import VProgressCircular from './v-progress-circular.vue';
 import VProgressLinear from './v-progress-linear.vue';
+import VRadioCards from './v-radio-cards.vue';
 import VRadio from './v-radio.vue';
 import VRemove from './v-remove.vue';
 import VSelect from './v-select/v-select.vue';
@@ -123,6 +124,7 @@ export function registerComponents(app: App): void {
 	app.component('VProgressCircular', VProgressCircular);
 	app.component('VProgressLinear', VProgressLinear);
 	app.component('VRadio', VRadio);
+	app.component('VRadioCards', VRadioCards);
 	app.component('VResizeable', VResizeable);
 	app.component('VSelect', VSelect);
 	app.component('VSheet', VSheet);
