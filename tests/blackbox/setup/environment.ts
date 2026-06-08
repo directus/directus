@@ -11,7 +11,6 @@ export default <Environment>{
 
 	async setup(global) {
 		const { totalTestsCount } = JSON.parse(await fs.readFile('sequencer-data.json', 'utf8'));
-		// vitest 3.2 changed `ctx.files` from string paths to spec objects, so read `.filepath`.
 		const testFilePath = global.__vitest_worker__.ctx.files[0].filepath.split('blackbox')[1];
 		const serverUrl = process.env['serverUrl'];
 
