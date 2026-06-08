@@ -8,6 +8,7 @@ import { computed, nextTick, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import { resolveFieldName } from './resolve-field-name';
+import TransitionExpand from '@/components/transition/expand.vue';
 import VButton from '@/components/v-button.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
