@@ -37,7 +37,11 @@ describe('/assets', () => {
 						function spawnAutoCannon() {
 							const url = `${getUrl(vendor)}/assets/${insertResponse.body.data.id}?access_token=${USER.ADMIN.TOKEN}`;
 
-							const options = ['exec', 'autocannon', '-j', '-c', '100', url];
+							// `-t 60` raises autocannon's per-request timeout from the 10s default. Under `-c 100`
+							// the requests queue on the DB connection pool (sqlite serializes through a single
+							// connection), so a request can legitimately succeed while waiting >10s. Without this,
+							// that queueing delay is miscounted as a timeout and flakes the run depending on machine load.
+							const options = ['exec', 'autocannon', '-j', '-c', '100', '-t', '60', url];
 							const child = spawn('pnpm', options);
 
 							isSpawnRunning = true;

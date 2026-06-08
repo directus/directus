@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import axios from 'axios';
-import { beforeAll } from 'vitest';
+import { beforeAll, test } from 'vitest';
 import { USER } from '../common/variables';
 import { sleep } from '../utils/sleep';
 import { getReversedTestIndex } from './sequential-tests';
@@ -21,6 +21,18 @@ import { getReversedTestIndex } from './sequential-tests';
  * generous headroom on slower CI runners while still bounding a genuine deadlock.
  */
 const GATE_TIMEOUT = 10 * 60 * 1000;
+
+/**
+ * Vitest skips `beforeAll`/`afterAll` for a file whose tests are all skipped (e.g.
+ * a vendor like mssql that's excluded from every `it.each`). The old custom
+ * environment posted completion unconditionally per file; without that, skipped
+ * files never increment the counter and the `after` files wait forever for a total
+ * that can never be reached. This always-running no-op test guarantees the gate's
+ * hooks fire for every file so completion is posted exactly once per file.
+ */
+test('sequential gate', () => {
+	// Intentionally empty, see comment above.
+});
 
 // eslint-disable-next-line no-empty-pattern
 beforeAll(async ({}, suite) => {
