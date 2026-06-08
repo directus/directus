@@ -465,22 +465,22 @@ describe('Collaborative Editing: Core', () => {
 
 			await Promise.all([focusPromise1, focusPromise2]);
 
-			await sleep(500);
-
 			// Assert
-			const ws1Msgs = (await ws1.getMessages(ws1.getUnreadMessageCount())) || [];
-			const ws2Msgs = (await ws2.getMessages(ws2.getUnreadMessageCount())) || [];
+			// Exactly one client (whichever lost the race) should receive a rejection. Wait for it to
+			// arrive rather than snapshotting after a fixed delay: under load the FORBIDDEN round-trip
+			// can exceed a few hundred ms, which made the previous static sleep(500) intermittently see
+			// zero errors. The winning client receives no error, so its wait times out and is filtered out.
+			const [ws1Error, ws2Error] = await Promise.all([
+				waitForMatchingMessage<WebSocketCollabResponse>(ws1, (msg) => msg.action === 'error', 5000).catch(() => null),
+				waitForMatchingMessage<WebSocketCollabResponse>(ws2, (msg) => msg.action === 'error', 5000).catch(() => null),
+			]);
 
-			// Exactly one client should have received an error
-			const ws1Errors = ws1Msgs.filter((msg) => msg.action === 'error');
-			const ws2Errors = ws2Msgs.filter((msg) => msg.action === 'error');
+			const errors = [ws1Error, ws2Error].filter((msg): msg is WebSocketCollabResponse => msg !== null);
+			expect(errors).toHaveLength(1);
 
-			const totalErrors = ws1Errors.length + ws2Errors.length;
-			expect(totalErrors).toBe(1);
-
-			const errorMsg = [...ws1Errors, ...ws2Errors][0] as WebSocketCollabResponse;
-			expect(errorMsg?.code).toBe('FORBIDDEN');
-			expect(errorMsg?.message).toContain('already focused');
+			const errorMsg = errors[0]!;
+			expect(errorMsg.code).toBe('FORBIDDEN');
+			expect(errorMsg.message).toContain('already focused');
 
 			ws1.conn.close();
 			ws2.conn.close();
