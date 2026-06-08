@@ -1,5 +1,5 @@
-import type { RouteLocationNormalizedLoaded } from 'vue-router';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import type { RouteLocationNormalizedLoaded } from 'vue-router';
 
 describe('useCommandRegistry', () => {
 	beforeEach(() => {
@@ -29,9 +29,7 @@ describe('useCommandRegistry', () => {
 			],
 		});
 
-		const { commands } = useRegisteredCommands(
-			ref({ route: {} as RouteLocationNormalizedLoaded, search: '' }),
-		);
+		const { commands } = useRegisteredCommands(ref({ route: {} as RouteLocationNormalizedLoaded, search: '' }));
 
 		await flushPromises();
 
@@ -57,9 +55,7 @@ describe('useCommandRegistry', () => {
 			],
 		});
 
-		const { groups } = useRegisteredCommands(
-			ref({ route: {} as RouteLocationNormalizedLoaded, search: '' }),
-		);
+		const { groups } = useRegisteredCommands(ref({ route: {} as RouteLocationNormalizedLoaded, search: '' }));
 
 		await flushPromises();
 
