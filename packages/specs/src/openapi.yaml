@@ -436,8 +436,8 @@ components:
       in: header
       name: Authorization
       description: >
-        Static token for the /metrics endpoint. Pass as 'Authorization: Metrics <token>' where the token is one of the
-        values in the METRICS_TOKENS environment variable.
+        Static token for the /metrics endpoint. Enter the full header value as `Metrics <token>`, where `<token>` is one
+        of the values in the METRICS_TOKENS environment variable.
 security:
   - Auth: []
   - KeyAuth: []
