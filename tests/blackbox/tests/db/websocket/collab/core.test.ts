@@ -174,6 +174,24 @@ describe('Collaborative Editing: Core', () => {
 				await ws2.getMessages(1); // Drain LEAVE
 			}
 
+			// An observer client lets us wait for the update to actually land in shared room state
+			// rather than guessing with a fixed delay. room.update writes the change to the store
+			// before broadcasting it, so once the observer receives the broadcast the change is
+			// committed and a rejoining client's init is guaranteed to include it. The previous
+			// sleep(200) raced the update's server-side work (schema/permission/validation + store
+			// write) and intermittently joined before V2 was committed on slower vendors.
+			const wsObserver = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
+
+			await wsObserver.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollabCore,
+				item: itemId,
+				version: null,
+			});
+
+			await waitForMatchingMessage(wsObserver, (msg) => msg.type === 'collab' && msg.action === 'init');
+
 			await ws2.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
 
 			await ws2.sendMessage({
@@ -184,7 +202,10 @@ describe('Collaborative Editing: Core', () => {
 				changes: 'V2',
 			});
 
-			await sleep(200);
+			await waitForMatchingMessage(
+				wsObserver,
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.changes === 'V2',
+			);
 
 			// Action
 			const wsRec = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
@@ -204,6 +225,7 @@ describe('Collaborative Editing: Core', () => {
 			expect(init2Msg?.changes).toMatchObject({ title: 'V2' });
 
 			wsRec.conn.close();
+			wsObserver.conn.close();
 			ws2.conn.close();
 		});
 	});
