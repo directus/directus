@@ -8,7 +8,7 @@ import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { findIndex, without } from 'lodash-es';
 import request from 'supertest';
-import { beforeAll, describe, expect, it, test } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { type CachedTestsSchema, CheckQueryFilters, type TestsSchemaVendorValues } from '../../query/filter';
 import {
 	type Circle,
@@ -2168,107 +2168,110 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
-		describe.runIf(pkType === 'integer')('Auto Increment Tests', () => {
-			describe('updates the auto increment value correctly', () => {
-				it.each(without(vendors, 'cockroachdb', 'mssql', 'oracle'))('%s', async (vendor) => {
-					// Setup
-					const name = 'test-auto-increment-m2a';
-					const largeIdShape = 112222;
-					const largeIdCircle = 113333;
-					const largeIdSquare = 114444;
-					const shape = createShape(pkType);
-					const shape2 = createShape(pkType);
-					const shapes = [];
-					const shapes2 = [];
-					const circle = createCircle(pkType);
-					const circle2 = createCircle(pkType);
-					const square = createSquare(pkType);
-					const square2 = createSquare(pkType);
+		describe.runIf(pkType === 'integer' && without(vendors, 'cockroachdb', 'mssql', 'oracle').length > 0)(
+			'Auto Increment Tests',
+			() => {
+				describe('updates the auto increment value correctly', () => {
+					it.each(without(vendors, 'cockroachdb', 'mssql', 'oracle'))('%s', async (vendor) => {
+						// Setup
+						const name = 'test-auto-increment-m2a';
+						const largeIdShape = 112222;
+						const largeIdCircle = 113333;
+						const largeIdSquare = 114444;
+						const shape = createShape(pkType);
+						const shape2 = createShape(pkType);
+						const shapes = [];
+						const shapes2 = [];
+						const circle = createCircle(pkType);
+						const circle2 = createCircle(pkType);
+						const square = createSquare(pkType);
+						const square2 = createSquare(pkType);
 
-					shape.name = name;
-					shape2.name = name;
-					circle.name = name;
-					circle2.name = name;
-					square.name = name;
-					square2.name = name;
-					shape.id = largeIdShape;
-					circle.id = largeIdCircle;
-					square.id = largeIdSquare;
+						shape.name = name;
+						shape2.name = name;
+						circle.name = name;
+						circle2.name = name;
+						square.name = name;
+						square2.name = name;
+						shape.id = largeIdShape;
+						circle.id = largeIdCircle;
+						square.id = largeIdSquare;
 
-					shapes.push(circle);
-					shapes2.push(circle2);
-					shapes.push(square);
-					shapes2.push(square2);
+						shapes.push(circle);
+						shapes2.push(circle2);
+						shapes.push(square);
+						shapes2.push(square2);
 
-					await CreateItem(vendor, {
-						collection: localCollectionShapes,
-						item: [
-							{
-								...shape,
-								children: {
-									create: [
-										{ collection: localCollectionCircles, item: circle },
-										{ collection: localCollectionSquares, item: square },
-									],
-									update: [],
-									delete: [],
+						await CreateItem(vendor, {
+							collection: localCollectionShapes,
+							item: [
+								{
+									...shape,
+									children: {
+										create: [
+											{ collection: localCollectionCircles, item: circle },
+											{ collection: localCollectionSquares, item: square },
+										],
+										update: [],
+										delete: [],
+									},
 								},
-							},
-							{
-								...shape2,
-								children: {
-									create: [
-										{ collection: localCollectionCircles, item: circle2 },
-										{ collection: localCollectionSquares, item: square2 },
-									],
-									update: [],
-									delete: [],
+								{
+									...shape2,
+									children: {
+										create: [
+											{ collection: localCollectionCircles, item: circle2 },
+											{ collection: localCollectionSquares, item: square2 },
+										],
+										update: [],
+										delete: [],
+									},
 								},
-							},
-						],
-					});
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionShapes}`)
-						.query({
-							filter: JSON.stringify({
-								name: { _eq: name },
-							}),
-							fields: [
-								'id',
-								`children.item:${localCollectionCircles}.id`,
-								`children.item:${localCollectionSquares}.id`,
-								`children.collection`,
 							],
-						})
-						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+						});
 
-					// Assert
-					expect(response.statusCode).toBe(200);
-					expect(response.body.data.length).toBe(2);
+						// Action
+						const response = await request(getUrl(vendor))
+							.get(`/items/${localCollectionShapes}`)
+							.query({
+								filter: JSON.stringify({
+									name: { _eq: name },
+								}),
+								fields: [
+									'id',
+									`children.item:${localCollectionCircles}.id`,
+									`children.item:${localCollectionSquares}.id`,
+									`children.collection`,
+								],
+							})
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					expect(response.body.data.map((shape: any) => shape.id)).toEqual(
-						Array.from({ length: 2 }, (_, index) => largeIdShape + index),
-					);
+						// Assert
+						expect(response.statusCode).toBe(200);
+						expect(response.body.data.length).toBe(2);
 
-					expect(
-						response.body.data.flatMap((shape: any) =>
-							shape.children
-								.filter((child: any) => child.collection === localCollectionCircles)
-								.map((circle: any) => circle.item.id),
-						),
-					).toEqual(Array.from({ length: 2 }, (_, index) => largeIdCircle + index));
+						expect(response.body.data.map((shape: any) => shape.id)).toEqual(
+							Array.from({ length: 2 }, (_, index) => largeIdShape + index),
+						);
 
-					expect(
-						response.body.data.flatMap((shape: any) =>
-							shape.children
-								.filter((child: any) => child.collection === localCollectionSquares)
-								.map((circle: any) => circle.item.id),
-						),
-					).toEqual(Array.from({ length: 2 }, (_, index) => largeIdSquare + index));
+						expect(
+							response.body.data.flatMap((shape: any) =>
+								shape.children
+									.filter((child: any) => child.collection === localCollectionCircles)
+									.map((circle: any) => circle.item.id),
+							),
+						).toEqual(Array.from({ length: 2 }, (_, index) => largeIdCircle + index));
+
+						expect(
+							response.body.data.flatMap((shape: any) =>
+								shape.children
+									.filter((child: any) => child.collection === localCollectionSquares)
+									.map((circle: any) => circle.item.id),
+							),
+						).toEqual(Array.from({ length: 2 }, (_, index) => largeIdSquare + index));
+					});
 				});
-			});
-		});
+			},
+		);
 	});
 });

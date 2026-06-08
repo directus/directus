@@ -7,7 +7,7 @@ import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { findIndex, without } from 'lodash-es';
 import request from 'supertest';
-import { beforeAll, describe, expect, it, test } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { type CachedTestsSchema, CheckQueryFilters, type TestsSchemaVendorValues } from '../../query/filter';
 import {
 	type City,
@@ -2855,117 +2855,120 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
-		describe.runIf(pkType === 'integer')('Auto Increment Tests', () => {
-			describe('updates the auto increment value correctly', () => {
-				it.each(without(vendors, 'cockroachdb', 'mssql', 'oracle'))('%s', async (vendor) => {
-					// Setup
-					const name = 'test-auto-increment-o2m';
-					const largeIdCountry = 105555;
-					const largeIdState = 106666;
-					const largeIdCity = 107777;
-					const country = createCountry(pkType);
-					const country2 = createCountry(pkType);
-					const states: State[] = [];
-					const states2: State[] = [];
-					const cities: City[] = [];
-					const cities2: City[] = [];
+		describe.runIf(pkType === 'integer' && without(vendors, 'cockroachdb', 'mssql', 'oracle').length > 0)(
+			'Auto Increment Tests',
+			() => {
+				describe('updates the auto increment value correctly', () => {
+					it.each(without(vendors, 'cockroachdb', 'mssql', 'oracle'))('%s', async (vendor) => {
+						// Setup
+						const name = 'test-auto-increment-o2m';
+						const largeIdCountry = 105555;
+						const largeIdState = 106666;
+						const largeIdCity = 107777;
+						const country = createCountry(pkType);
+						const country2 = createCountry(pkType);
+						const states: State[] = [];
+						const states2: State[] = [];
+						const cities: City[] = [];
+						const cities2: City[] = [];
 
-					country.id = largeIdCountry;
-					country.name = name;
-					country2.name = name;
+						country.id = largeIdCountry;
+						country.name = name;
+						country2.name = name;
 
-					for (let count = 0; count < 2; count++) {
-						const state = createState(pkType);
-						const state2 = createState(pkType);
-						const city = createCity(pkType);
-						const city2 = createCity(pkType);
+						for (let count = 0; count < 2; count++) {
+							const state = createState(pkType);
+							const state2 = createState(pkType);
+							const city = createCity(pkType);
+							const city2 = createCity(pkType);
 
-						if (count === 0) {
-							state.id = largeIdState;
-							city.id = largeIdCity;
+							if (count === 0) {
+								state.id = largeIdState;
+								city.id = largeIdCity;
+							}
+
+							state.name = name;
+							state2.name = name;
+							states.push(state);
+							states2.push(state2);
+
+							city.name = name;
+							city2.name = name;
+							cities.push(city);
+							cities2.push(city2);
 						}
 
-						state.name = name;
-						state2.name = name;
-						states.push(state);
-						states2.push(state2);
-
-						city.name = name;
-						city2.name = name;
-						cities.push(city);
-						cities2.push(city2);
-					}
-
-					await CreateItem(vendor, {
-						collection: localCollectionCountries,
-						item: [
-							{
-								...country,
-								states: {
-									create: states.map((state, index) => {
-										return {
-											...state,
-											cities: {
-												create: index === 0 ? cities : cities2,
-												update: [],
-												delete: [],
-											},
-										};
-									}),
-									update: [],
-									delete: [],
+						await CreateItem(vendor, {
+							collection: localCollectionCountries,
+							item: [
+								{
+									...country,
+									states: {
+										create: states.map((state, index) => {
+											return {
+												...state,
+												cities: {
+													create: index === 0 ? cities : cities2,
+													update: [],
+													delete: [],
+												},
+											};
+										}),
+										update: [],
+										delete: [],
+									},
 								},
-							},
-							{
-								...country2,
-								states: {
-									create: states2.map((state) => {
-										return {
-											...state,
-											cities: {
-												create: cities2,
-												update: [],
-												delete: [],
-											},
-										};
-									}),
-									update: [],
-									delete: [],
+								{
+									...country2,
+									states: {
+										create: states2.map((state) => {
+											return {
+												...state,
+												cities: {
+													create: cities2,
+													update: [],
+													delete: [],
+												},
+											};
+										}),
+										update: [],
+										delete: [],
+									},
 								},
-							},
-						],
+							],
+						});
+
+						// Action
+						const response = await request(getUrl(vendor))
+							.get(`/items/${localCollectionCountries}`)
+							.query({
+								filter: JSON.stringify({
+									name: { _eq: name },
+								}),
+								fields: 'id,states.id,states.cities.id',
+							})
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+						// Assert
+						expect(response.statusCode).toBe(200);
+						expect(response.body.data.length).toBe(2);
+
+						expect(response.body.data.map((country: any) => country.id)).toEqual(
+							Array.from({ length: 2 }, (_, index) => largeIdCountry + index),
+						);
+
+						expect(
+							response.body.data.flatMap((country: any) => country.states.flatMap((state: any) => state.id)),
+						).toEqual(Array.from({ length: 4 }, (_, index) => largeIdState + index));
+
+						expect(
+							response.body.data.flatMap((country: any) =>
+								country.states.flatMap((state: any) => state.cities.map((city: any) => city.id)),
+							),
+						).toEqual(Array.from({ length: 8 }, (_, index) => largeIdCity + index));
 					});
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionCountries}`)
-						.query({
-							filter: JSON.stringify({
-								name: { _eq: name },
-							}),
-							fields: 'id,states.id,states.cities.id',
-						})
-						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toBe(200);
-					expect(response.body.data.length).toBe(2);
-
-					expect(response.body.data.map((country: any) => country.id)).toEqual(
-						Array.from({ length: 2 }, (_, index) => largeIdCountry + index),
-					);
-
-					expect(
-						response.body.data.flatMap((country: any) => country.states.flatMap((state: any) => state.id)),
-					).toEqual(Array.from({ length: 4 }, (_, index) => largeIdState + index));
-
-					expect(
-						response.body.data.flatMap((country: any) =>
-							country.states.flatMap((state: any) => state.cities.map((city: any) => city.id)),
-						),
-					).toEqual(Array.from({ length: 8 }, (_, index) => largeIdCity + index));
 				});
-			});
-		});
+			},
+		);
 	});
 });

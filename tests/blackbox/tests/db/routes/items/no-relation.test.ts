@@ -7,7 +7,7 @@ import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { without } from 'lodash-es';
 import request from 'supertest';
-import { describe, expect, it, test } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { collectionArtists } from './no-relation.seed';
 
 type Artist = {
@@ -2768,43 +2768,46 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
-		describe.runIf(pkType === 'integer')('Auto Increment Tests', () => {
-			describe('updates the auto increment value correctly', () => {
-				it.each(without(vendors, 'cockroachdb', 'mssql', 'oracle'))('%s', async (vendor) => {
-					// Setup
-					const name = 'test-auto-increment';
-					const largeIdArtist = 101111;
-					const artist = createArtist(pkType);
-					const artist2 = createArtist(pkType);
+		describe.runIf(pkType === 'integer' && without(vendors, 'cockroachdb', 'mssql', 'oracle').length > 0)(
+			'Auto Increment Tests',
+			() => {
+				describe('updates the auto increment value correctly', () => {
+					it.each(without(vendors, 'cockroachdb', 'mssql', 'oracle'))('%s', async (vendor) => {
+						// Setup
+						const name = 'test-auto-increment';
+						const largeIdArtist = 101111;
+						const artist = createArtist(pkType);
+						const artist2 = createArtist(pkType);
 
-					artist.id = largeIdArtist;
-					artist.name = name;
-					artist2.name = name;
+						artist.id = largeIdArtist;
+						artist.name = name;
+						artist2.name = name;
 
-					await CreateItem(vendor, {
-						collection: localCollectionArtists,
-						item: [artist, artist2],
+						await CreateItem(vendor, {
+							collection: localCollectionArtists,
+							item: [artist, artist2],
+						});
+
+						// Action
+						const response = await request(getUrl(vendor))
+							.get(`/items/${localCollectionArtists}`)
+							.query({
+								filter: JSON.stringify({
+									name: { _eq: name },
+								}),
+							})
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+						// Assert
+						expect(response.statusCode).toBe(200);
+						expect(response.body.data.length).toBe(2);
+
+						expect(response.body.data.map((v: any) => v.id)).toEqual(
+							Array.from({ length: 2 }, (_, index) => largeIdArtist + index),
+						);
 					});
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionArtists}`)
-						.query({
-							filter: JSON.stringify({
-								name: { _eq: name },
-							}),
-						})
-						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toBe(200);
-					expect(response.body.data.length).toBe(2);
-
-					expect(response.body.data.map((v: any) => v.id)).toEqual(
-						Array.from({ length: 2 }, (_, index) => largeIdArtist + index),
-					);
 				});
-			});
-		});
+			},
+		);
 	});
 });

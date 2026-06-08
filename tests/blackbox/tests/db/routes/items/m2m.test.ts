@@ -7,7 +7,7 @@ import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { findIndex, without } from 'lodash-es';
 import request from 'supertest';
-import { beforeAll, describe, expect, it, test } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { type CachedTestsSchema, CheckQueryFilters, type TestsSchemaVendorValues } from '../../query/filter';
 import {
 	collectionFoods,
@@ -2882,135 +2882,138 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
-		describe.runIf(pkType === 'integer')('Auto Increment Tests', () => {
-			describe('updates the auto increment value correctly', () => {
-				it.each(without(vendors, 'cockroachdb', 'mssql', 'oracle'))('%s', async (vendor) => {
-					// Setup
-					const name = 'test-auto-increment-m2m';
-					const largeIdFood = 108888;
-					const largeIdIngredient = 109999;
-					const largeIdSupplier = 111111;
-					const food = createFood(pkType);
-					const food2 = createFood(pkType);
-					const ingredients = [];
-					const ingredients2 = [];
-					const suppliers = [];
-					const suppliers2 = [];
+		describe.runIf(pkType === 'integer' && without(vendors, 'cockroachdb', 'mssql', 'oracle').length > 0)(
+			'Auto Increment Tests',
+			() => {
+				describe('updates the auto increment value correctly', () => {
+					it.each(without(vendors, 'cockroachdb', 'mssql', 'oracle'))('%s', async (vendor) => {
+						// Setup
+						const name = 'test-auto-increment-m2m';
+						const largeIdFood = 108888;
+						const largeIdIngredient = 109999;
+						const largeIdSupplier = 111111;
+						const food = createFood(pkType);
+						const food2 = createFood(pkType);
+						const ingredients = [];
+						const ingredients2 = [];
+						const suppliers = [];
+						const suppliers2 = [];
 
-					food.id = largeIdFood;
-					food.name = name;
-					food2.name = name;
+						food.id = largeIdFood;
+						food.name = name;
+						food2.name = name;
 
-					for (let count = 0; count < 2; count++) {
-						const ingredient = createIngredient(pkType);
-						const ingredient2 = createIngredient(pkType);
-						const supplier = createSupplier(pkType);
-						const supplier2 = createSupplier(pkType);
+						for (let count = 0; count < 2; count++) {
+							const ingredient = createIngredient(pkType);
+							const ingredient2 = createIngredient(pkType);
+							const supplier = createSupplier(pkType);
+							const supplier2 = createSupplier(pkType);
 
-						if (count === 0) {
-							ingredient.id = largeIdIngredient;
-							supplier.id = largeIdSupplier;
+							if (count === 0) {
+								ingredient.id = largeIdIngredient;
+								supplier.id = largeIdSupplier;
+							}
+
+							ingredient.name = name;
+							ingredient2.name = name;
+							ingredients.push(ingredient);
+							ingredients2.push(ingredient2);
+
+							supplier.name = name;
+							supplier2.name = name;
+							suppliers.push(supplier);
+							suppliers2.push(supplier2);
 						}
 
-						ingredient.name = name;
-						ingredient2.name = name;
-						ingredients.push(ingredient);
-						ingredients2.push(ingredient2);
+						for (let count = 0; count < 2; count++) {
+							ingredients[count].suppliers = {
+								create: [
+									{ [`${localCollectionSuppliers}_id`]: count === 0 ? suppliers[0] : suppliers2[0] },
+									{ [`${localCollectionSuppliers}_id`]: suppliers[1] },
+								],
+								update: [],
+								delete: [],
+							} as any;
 
-						supplier.name = name;
-						supplier2.name = name;
-						suppliers.push(supplier);
-						suppliers2.push(supplier2);
-					}
+							ingredients2[count].suppliers = {
+								create: [
+									{ [`${localCollectionSuppliers}_id`]: suppliers2[0] },
+									{ [`${localCollectionSuppliers}_id`]: suppliers2[1] },
+								],
+								update: [],
+								delete: [],
+							} as any;
+						}
 
-					for (let count = 0; count < 2; count++) {
-						ingredients[count].suppliers = {
-							create: [
-								{ [`${localCollectionSuppliers}_id`]: count === 0 ? suppliers[0] : suppliers2[0] },
-								{ [`${localCollectionSuppliers}_id`]: suppliers[1] },
-							],
-							update: [],
-							delete: [],
-						} as any;
-
-						ingredients2[count].suppliers = {
-							create: [
-								{ [`${localCollectionSuppliers}_id`]: suppliers2[0] },
-								{ [`${localCollectionSuppliers}_id`]: suppliers2[1] },
-							],
-							update: [],
-							delete: [],
-						} as any;
-					}
-
-					await CreateItem(vendor, {
-						collection: localCollectionFoods,
-						item: [
-							{
-								...food,
-								ingredients: {
-									create: [
-										{ [`${localCollectionIngredients}_id`]: ingredients[0] },
-										{ [`${localCollectionIngredients}_id`]: ingredients[1] },
-									],
-									update: [],
-									delete: [],
+						await CreateItem(vendor, {
+							collection: localCollectionFoods,
+							item: [
+								{
+									...food,
+									ingredients: {
+										create: [
+											{ [`${localCollectionIngredients}_id`]: ingredients[0] },
+											{ [`${localCollectionIngredients}_id`]: ingredients[1] },
+										],
+										update: [],
+										delete: [],
+									},
 								},
-							},
-							{
-								...food2,
-								ingredients: {
-									create: [
-										{ [`${localCollectionIngredients}_id`]: ingredients2[0] },
-										{ [`${localCollectionIngredients}_id`]: ingredients2[1] },
-									],
-									update: [],
-									delete: [],
+								{
+									...food2,
+									ingredients: {
+										create: [
+											{ [`${localCollectionIngredients}_id`]: ingredients2[0] },
+											{ [`${localCollectionIngredients}_id`]: ingredients2[1] },
+										],
+										update: [],
+										delete: [],
+									},
 								},
-							},
-						],
-					});
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionFoods}`)
-						.query({
-							filter: JSON.stringify({
-								name: { _eq: name },
-							}),
-							fields: [
-								'id',
-								`ingredients.${localCollectionIngredients}_id.id`,
-								`ingredients.${localCollectionIngredients}_id.suppliers.${localCollectionSuppliers}_id.id`,
 							],
-						})
-						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+						});
 
-					// Assert
-					expect(response.statusCode).toBe(200);
-					expect(response.body.data.length).toBe(2);
+						// Action
+						const response = await request(getUrl(vendor))
+							.get(`/items/${localCollectionFoods}`)
+							.query({
+								filter: JSON.stringify({
+									name: { _eq: name },
+								}),
+								fields: [
+									'id',
+									`ingredients.${localCollectionIngredients}_id.id`,
+									`ingredients.${localCollectionIngredients}_id.suppliers.${localCollectionSuppliers}_id.id`,
+								],
+							})
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					expect(response.body.data.map((food: any) => food.id)).toEqual(
-						Array.from({ length: 2 }, (_, index) => largeIdFood + index),
-					);
+						// Assert
+						expect(response.statusCode).toBe(200);
+						expect(response.body.data.length).toBe(2);
 
-					expect(
-						response.body.data.flatMap((food: any) =>
-							food.ingredients.flatMap((ingredient: any) => ingredient[`${localCollectionIngredients}_id`].id),
-						),
-					).toEqual(Array.from({ length: 4 }, (_, index) => largeIdIngredient + index));
+						expect(response.body.data.map((food: any) => food.id)).toEqual(
+							Array.from({ length: 2 }, (_, index) => largeIdFood + index),
+						);
 
-					expect(
-						response.body.data.flatMap((food: any) =>
-							food.ingredients.flatMap((ingredient: any) =>
-								ingredient[`${localCollectionIngredients}_id`].suppliers.map(
-									(supplier: any) => supplier[`${localCollectionSuppliers}_id`].id,
+						expect(
+							response.body.data.flatMap((food: any) =>
+								food.ingredients.flatMap((ingredient: any) => ingredient[`${localCollectionIngredients}_id`].id),
+							),
+						).toEqual(Array.from({ length: 4 }, (_, index) => largeIdIngredient + index));
+
+						expect(
+							response.body.data.flatMap((food: any) =>
+								food.ingredients.flatMap((ingredient: any) =>
+									ingredient[`${localCollectionIngredients}_id`].suppliers.map(
+										(supplier: any) => supplier[`${localCollectionSuppliers}_id`].id,
+									),
 								),
 							),
-						),
-					).toEqual(Array.from({ length: 8 }, (_, index) => largeIdSupplier + index));
+						).toEqual(Array.from({ length: 8 }, (_, index) => largeIdSupplier + index));
+					});
 				});
-			});
-		});
+			},
+		);
 	});
 });
