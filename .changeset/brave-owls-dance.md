@@ -2,4 +2,9 @@
 '@directus/sdk': major
 ---
 
-Breaking: `updateExtension` now accepts a UUID `id` instead of `bundle` and `name` to match the API
+Fixed the outdated `updateExtension` command and added missing `deleteExtension` and extension registry commands
+
+
+::notice
+- `updateExtension` now accepts an `id` instead of `bundle` and `name`
+:::
