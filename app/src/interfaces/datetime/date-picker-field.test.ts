@@ -1,4 +1,4 @@
-import { CalendarDate } from '@internationalized/date';
+import { CalendarDate, Time } from '@internationalized/date';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { nextTick } from 'vue';
@@ -37,6 +37,28 @@ const DateFieldInput = {
 	props: ['part'],
 };
 
+// Reka UI TimeField stub mirroring the DateField stub: drives `update:modelValue` and renders segments.
+const TimeFieldRoot = {
+	name: 'TimeFieldRoot',
+	template: `
+		<div class="time-field-stub">
+			<slot :segments="[
+				{ part: 'hour', value: '02' },
+				{ part: 'literal', value: ':' },
+				{ part: 'minute', value: '30' }
+			]" />
+		</div>
+	`,
+	props: ['modelValue', 'granularity', 'hourCycle', 'dir', 'disabled'],
+	emits: ['update:modelValue'],
+};
+
+const TimeFieldInput = {
+	name: 'TimeFieldInput',
+	template: '<span class="time-field-input-stub"><slot /></span>',
+	props: ['part'],
+};
+
 const createWrapper = (props = {}) => {
 	return mount(DatePickerField, {
 		props: {
@@ -44,7 +66,7 @@ const createWrapper = (props = {}) => {
 			...props,
 		},
 		global: {
-			stubs: { DateFieldRoot, DateFieldInput },
+			stubs: { DateFieldRoot, DateFieldInput, TimeFieldRoot, TimeFieldInput },
 			mocks: { $t: (key: string) => key },
 		},
 	});
@@ -112,5 +134,63 @@ describe('date-picker-field', () => {
 		const wrapper = createWrapper({ modelValue: '2024-01-15', disabled: true });
 
 		expect(wrapper.findComponent(DateFieldRoot).props('disabled')).toBe(true);
+	});
+
+	describe('inline time field', () => {
+		it('renders a time field for dateTime and timestamp', () => {
+			const dateTime = createWrapper({ type: 'dateTime', modelValue: '2024-01-15T14:30:00' });
+			expect(dateTime.findComponent(TimeFieldRoot).exists()).toBe(true);
+
+			const timestamp = createWrapper({ type: 'timestamp', modelValue: '2024-01-15T14:30:00.000Z' });
+			expect(timestamp.findComponent(TimeFieldRoot).exists()).toBe(true);
+		});
+
+		it('does not render a time field for the date type', () => {
+			const wrapper = createWrapper({ type: 'date', modelValue: '2024-01-15' });
+
+			expect(wrapper.findComponent(TimeFieldRoot).exists()).toBe(false);
+		});
+
+		it('emits the combined value preserving the date when only the time is edited (dateTime)', async () => {
+			const wrapper = createWrapper({ type: 'dateTime', modelValue: '2024-01-15T14:30:00' });
+
+			await wrapper.findComponent(TimeFieldRoot).vm.$emit('update:modelValue', new Time(9, 0, 0));
+			await nextTick();
+
+			expect(wrapper.emitted('update:modelValue')).toEqual([['2024-01-15T09:00:00']]);
+		});
+
+		it('emits the combined value preserving the date when only the time is edited (timestamp)', async () => {
+			vi.stubEnv('TZ', 'UTC');
+
+			const wrapper = createWrapper({ type: 'timestamp', modelValue: '2024-01-15T14:30:00.000Z' });
+
+			await wrapper.findComponent(TimeFieldRoot).vm.$emit('update:modelValue', new Time(9, 0, 0));
+			await nextTick();
+
+			expect(wrapper.emitted('update:modelValue')).toEqual([['2024-01-15T09:00:00.000Z']]);
+
+			vi.unstubAllEnvs();
+		});
+
+		it('uses minute granularity and a 24-hour cycle by default', () => {
+			const wrapper = createWrapper({ type: 'dateTime', modelValue: '2024-01-15T14:30:00' });
+
+			const field = wrapper.findComponent(TimeFieldRoot);
+			expect(field.props('granularity')).toBe('minute');
+			expect(field.props('hourCycle')).toBe(24);
+		});
+
+		it('uses second granularity when includeSeconds is set', () => {
+			const wrapper = createWrapper({ type: 'dateTime', modelValue: '2024-01-15T14:30:00', includeSeconds: true });
+
+			expect(wrapper.findComponent(TimeFieldRoot).props('granularity')).toBe('second');
+		});
+
+		it('omits the hour cycle when use24 is false (12-hour day period)', () => {
+			const wrapper = createWrapper({ type: 'dateTime', modelValue: '2024-01-15T14:30:00', use24: false });
+
+			expect(wrapper.findComponent(TimeFieldRoot).props('hourCycle')).toBeUndefined();
+		});
 	});
 });

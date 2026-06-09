@@ -126,6 +126,7 @@ const tzValue = computed({
 						:type="type"
 						:model-value="tzValue"
 						:include-seconds="includeSeconds"
+						:use-24="use24"
 						:disabled="disabled"
 						autofocus
 						@update:model-value="tzValue = $event"
