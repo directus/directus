@@ -35,7 +35,7 @@ const emit = defineEmits<{
 const menuActive = ref(false);
 const dateTimeMenu = useTemplateRef('dateTimeMenu');
 
-// Whether the trigger is currently in inline keyboard-edit mode (segments shown instead of the template).
+// Inline keyboard-edit mode: editable segments shown instead of the formatted value.
 const isEditing = ref(false);
 
 const isValidValue = computed(() => (props.value ? isValid(parseDate(props.value, props.type)) : false));
@@ -44,10 +44,13 @@ const isDynamic = computed(() => !!props.value && isDynamicVariable(props.value)
 
 const isInteractive = computed(() => !props.disabled && !props.nonEditable);
 
-// Inline editing covers the date for date/dateTime/timestamp. The `time` type stays popup-only,
+// `time` has no date to edit inline, so it stays popup-only.
 const canEditInline = computed(() => props.type !== 'time' && isInteractive.value && !isDynamic.value);
 
-const valueTabindex = computed(() => (isInteractive.value && !isEditing.value ? 0 : undefined));
+// Show the inline segments while editing, and as a placeholder when there's no value yet.
+const showInlineField = computed(() => isEditing.value || (canEditInline.value && !isValidValue.value));
+
+const valueTabindex = computed(() => (isInteractive.value && !showInlineField.value ? 0 : undefined));
 
 function unsetValue(e: Event) {
 	e.preventDefault();
@@ -71,11 +74,8 @@ function onValueClick() {
 	}
 }
 
-/**
- * Keyboard entry into inline edit mode. Enter/Space on the value region behaves like a click, so
- * keyboard users edit the date inline rather than opening the picker — the calendar icon (a separate
- * tab stop) remains the way to open the popup. Ignores events bubbling up from the segments while editing.
- */
+// Enter/Space on the value region acts like a click; the calendar icon stays the way to open the
+// popup. The target guard ignores events bubbling up from the segments while editing.
 function onValueKeydown(event: KeyboardEvent) {
 	if (event.target !== event.currentTarget) return;
 	if (event.key !== 'Enter' && event.key !== ' ') return;
@@ -83,6 +83,12 @@ function onValueKeydown(event: KeyboardEvent) {
 
 	event.preventDefault();
 	onValueClick();
+}
+
+// Focusing a placeholder segment counts as editing, so typing holds the field open as the value becomes valid.
+function onValueFocusin(event: FocusEvent) {
+	if (event.target === event.currentTarget) return;
+	if (canEditInline.value) isEditing.value = true;
 }
 
 /** Leave edit mode once focus moves outside the inline field (segment-to-segment moves stay in edit mode). */
@@ -141,15 +147,16 @@ const tzValue = computed({
 					:aria-label="valueTabindex !== undefined ? $t('interfaces.datetime.datetime') : undefined"
 					@click="onValueClick"
 					@keydown="onValueKeydown"
+					@focusin="onValueFocusin"
 				>
 					<DatePickerField
-						v-if="isEditing"
+						v-if="showInlineField"
 						:type="type"
 						:model-value="tzValue"
 						:include-seconds="includeSeconds"
 						:use-24="use24"
 						:disabled="disabled"
-						autofocus
+						:autofocus="isEditing"
 						@update:model-value="tzValue = $event"
 						@focusout="onFieldFocusout"
 					/>
@@ -215,8 +222,7 @@ const tzValue = computed({
 	min-block-size: var(--theme--form--field--input--height, 1.5rem);
 	cursor: text;
 
-	// The list item's :focus-within already renders the focus ring, so suppress the
-	// default outline on the focusable value region to avoid a doubled (dotted) outline.
+	// Suppress the default outline; the list item's :focus-within already shows the focus ring.
 	&:focus,
 	&:focus-visible {
 		outline: none;

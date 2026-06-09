@@ -87,7 +87,11 @@ describe('Interface', () => {
 			...global,
 			stubs: {
 				...global.stubs,
-				DatePickerField: { name: 'DatePickerField', template: '<div class="date-picker-field-stub" />' },
+				DatePickerField: {
+					name: 'DatePickerField',
+					props: ['type', 'modelValue', 'includeSeconds', 'use24', 'disabled', 'autofocus'],
+					template: '<div class="date-picker-field-stub" />',
+				},
 				VMenu: {
 					name: 'VMenu',
 					template: '<div><slot name="activator" :toggle="() => {}" :active="false" /><slot /></div>',
@@ -178,6 +182,44 @@ describe('Interface', () => {
 			});
 
 			expect(wrapper.find('.value').attributes('tabindex')).toBeUndefined();
+		});
+
+		it('shows the inline field as a placeholder when there is no value', () => {
+			const wrapper = mount(Datetime, {
+				props: { value: null, type: 'dateTime' },
+				global: editGlobal,
+			});
+
+			expect(field(wrapper).exists()).toBe(true);
+			// The placeholder field owns focus, so the value region itself is not a tab stop.
+			expect(wrapper.find('.value').attributes('tabindex')).toBeUndefined();
+		});
+
+		it('does not show a placeholder field when empty and disabled', () => {
+			const wrapper = mount(Datetime, {
+				props: { value: null, type: 'dateTime', disabled: true },
+				global: editGlobal,
+			});
+
+			expect(field(wrapper).exists()).toBe(false);
+		});
+
+		it('does not show a placeholder field when empty for the time type (popup only)', () => {
+			const wrapper = mount(Datetime, {
+				props: { value: null, type: 'time' },
+				global: editGlobal,
+			});
+
+			expect(field(wrapper).exists()).toBe(false);
+		});
+
+		it('does not autofocus the placeholder field', () => {
+			const wrapper = mount(Datetime, {
+				props: { value: null, type: 'dateTime' },
+				global: editGlobal,
+			});
+
+			expect(field(wrapper).props('autofocus')).toBe(false);
 		});
 	});
 

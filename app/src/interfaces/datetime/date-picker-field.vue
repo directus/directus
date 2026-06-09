@@ -30,8 +30,7 @@ const userStore = useUserStore();
 
 const dir = computed<'ltr' | 'rtl'>(() => (userStore.textDirection === 'rtl' ? 'rtl' : 'ltr'));
 
-// Reuse the picker's value logic so this inline field and the popup calendar parse/format the
-// same string identically. Editing only the date (or only the time) preserves the other component.
+// Shared with the popup calendar so both parse/format the same string identically.
 const { calendarValue, timeValue, hasTime, applyDate, applyTime } = useDatePickerValue({
 	type: () => props.type,
 	modelValue: () => props.modelValue,
@@ -39,8 +38,7 @@ const { calendarValue, timeValue, hasTime, applyDate, applyTime } = useDatePicke
 	onUpdate: (value) => emit('update:modelValue', value),
 });
 
-// Time field config, mirroring the popup (v-date-picker.vue):
-// undefined hour cycle lets Reka show the 12h day-period segment.
+// undefined hour cycle lets Reka show the 12h day-period segment (mirrors v-date-picker.vue).
 const hourCycle = computed(() => (props.use24 ? 24 : undefined));
 const granularity = computed(() => (props.includeSeconds ? 'second' : 'minute'));
 

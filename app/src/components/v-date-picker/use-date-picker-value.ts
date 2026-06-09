@@ -25,45 +25,27 @@ interface UseDatePickerValueOptions {
 }
 
 /**
- * Shared value logic for the date picker and its inline trigger field.
- *
- * Keeps the `modelValue` string as the single source of truth and converts it to/from the
- * `@internationalized/date` types used by Reka UI. By sharing this composable, the popup
- * calendar and the inline trigger field parse and format the same string identically — so
- * they stay in sync without any extra wiring, and editing only the date preserves an existing
- * time component.
+ * Shared value logic for the popup picker and the inline trigger field. Keeps the `modelValue`
+ * string as the single source of truth, converting to/from the `@internationalized/date` types
+ * Reka UI uses so both views parse and format identically and editing only the date preserves
+ * an existing time.
  */
 export function useDatePickerValue(options: UseDatePickerValueOptions) {
 	const type = computed(() => toValue(options.type));
 	const includeSeconds = computed(() => toValue(options.includeSeconds));
 	const hasTime = computed(() => ['time', 'dateTime', 'timestamp'].includes(type.value));
 
-	// Internal state using @internationalized/date types
 	const calendarValue = ref<DateValue | undefined>();
 
-	/**
-	 * Default time (12:00) when the picker supports time.
-	 *
-	 * Why 12:00:
-	 * - It’s a neutral default (avoids implicit "start of day" midnight)
-	 * - Prevents emitting `00:00:00` unless the user explicitly selects it
-	 */
+	// Noon, not midnight: a neutral default applied at emit time once a date exists but no time was entered.
 	function getDefaultTimeValue(): Time {
 		return new Time(12, 0, 0);
 	}
 
-	/**
-	 * Internal time value state.
-	 * Initialized with a default time (12:00) when the picker type supports time.
-	 */
-	const internalTimeValue = ref<Time | CalendarDateTime | ZonedDateTime | null | undefined>(
-		hasTime.value ? getDefaultTimeValue() : undefined,
-	);
+	// Left empty until a value is parsed or the user types, so the time segments render as placeholders.
+	const internalTimeValue = ref<Time | CalendarDateTime | ZonedDateTime | null | undefined>();
 
-	/**
-	 * Computed property that provides proper type compatibility for the TimeFieldRoot component.
-	 * This works around nominal typing issues with @internationalized/date classes that have private fields.
-	 */
+	// Cast around the nominal typing of @internationalized/date classes (private fields) for TimeFieldRoot.
 	const timeValue = computed<TimeValue | null | undefined>({
 		get() {
 			return internalTimeValue.value as TimeValue | null | undefined;
@@ -78,15 +60,12 @@ export function useDatePickerValue(options: UseDatePickerValueOptions) {
 		(newValue) => {
 			if (!newValue) {
 				calendarValue.value = undefined;
-
-				// Reset time to a sensible default when the picker supports time.
-				internalTimeValue.value = hasTime.value ? getDefaultTimeValue() : undefined;
+				internalTimeValue.value = undefined;
 
 				return;
 			}
 
-			// Resolve $NOW variables to a selection.
-			// Other dynamic variable paths (e.g. $CURRENT_USER.date_created) can't be displayed in the picker, so leave it in the default empty state.
+			// Only $NOW can map to a selection; other dynamic paths (e.g. $CURRENT_USER.date_created) stay empty.
 			if (isDynamicVariable(newValue)) {
 				if (newValue.startsWith('$NOW')) {
 					const dt = parseNow(newValue);
@@ -103,7 +82,7 @@ export function useDatePickerValue(options: UseDatePickerValueOptions) {
 				return;
 			}
 
-			// Parse based on type. Fall back to the empty state instead of letting the throw crash the component during setup.
+			// Fall back to empty on a parse failure rather than crashing the component during setup.
 			try {
 				switch (type.value) {
 					case 'date':
@@ -129,13 +108,18 @@ export function useDatePickerValue(options: UseDatePickerValueOptions) {
 				}
 			} catch {
 				calendarValue.value = undefined;
-				internalTimeValue.value = hasTime.value ? getDefaultTimeValue() : undefined;
+				internalTimeValue.value = undefined;
 			}
 		},
 		{ immediate: true },
 	);
 
 	function emitValue(): void {
+		// A date with no time entered yet defaults to noon; the emitted value round-trips back to a real time.
+		if (hasTime.value && calendarValue.value && !internalTimeValue.value) {
+			internalTimeValue.value = getDefaultTimeValue();
+		}
+
 		const value = formatDatePickerModelValue(type.value, {
 			calendarValue: calendarValue.value,
 			timeValue: internalTimeValue.value,
@@ -155,15 +139,10 @@ export function useDatePickerValue(options: UseDatePickerValueOptions) {
 		emitValue();
 	}
 
-	/**
-	 * Sets the picker to the current date and time.
-	 * If the picker supports time, also sets the current time value.
-	 */
 	function setToNow() {
 		const now = new Date();
 		calendarValue.value = new CalendarDate(now.getFullYear(), now.getMonth() + 1, now.getDate());
 
-		// If the picker supports time, also set the current time
 		if (hasTime.value) {
 			internalTimeValue.value = new Time(now.getHours(), now.getMinutes(), now.getSeconds());
 		}

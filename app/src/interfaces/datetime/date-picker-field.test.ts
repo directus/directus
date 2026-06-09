@@ -179,4 +179,22 @@ describe('date-picker-field', () => {
 			expect(wrapper.findComponent(TimeFieldRoot).props('hourCycle')).toBeUndefined();
 		});
 	});
+
+	describe('empty placeholder', () => {
+		it('leaves both fields empty so the segments render as placeholders', () => {
+			const wrapper = createWrapper({ type: 'dateTime', modelValue: null });
+
+			expect(wrapper.findComponent(DateFieldRoot).props('modelValue')).toBeUndefined();
+			expect(wrapper.findComponent(TimeFieldRoot).props('modelValue')).toBeFalsy();
+		});
+
+		it('defaults the time to noon when a date is picked without a time', async () => {
+			const wrapper = createWrapper({ type: 'dateTime', modelValue: null });
+
+			await wrapper.findComponent(DateFieldRoot).vm.$emit('update:modelValue', new CalendarDate(2024, 3, 9));
+			await nextTick();
+
+			expect(wrapper.emitted('update:modelValue')).toEqual([['2024-03-09T12:00:00']]);
+		});
+	});
 });

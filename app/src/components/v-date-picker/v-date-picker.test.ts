@@ -312,9 +312,7 @@ describe('v-date-picker', () => {
 			expect(formatDatePickerModelValue).toHaveBeenCalledWith('time', expect.any(Object));
 		});
 
-		it('resets to default time (12:00) when modelValue is null', async () => {
-			let capturedTimeValue: { hour?: number; minute?: number } | undefined;
-
+		it('clears the time to a placeholder when modelValue is null', async () => {
 			const wrapper = createWrapper({
 				type: 'time',
 				modelValue: '14:30:00',
@@ -325,22 +323,8 @@ describe('v-date-picker', () => {
 			await wrapper.setProps({ modelValue: null });
 			await nextTick();
 
-			vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
-				if (options.timeValue && 'hour' in options.timeValue) {
-					capturedTimeValue = options.timeValue as { hour: number; minute: number };
-				}
-
-				return '12:00:00';
-			});
-
-			// Trigger time field emission to check reset value (not setToNow which uses current time)
-			const timeField = wrapper.findComponent(TimeFieldRoot);
-			await timeField.vm.$emit('update:modelValue', new Time(12, 0, 0));
-			await nextTick();
-
-			expect(capturedTimeValue).toBeDefined();
-			expect(capturedTimeValue?.hour).toBe(12);
-			expect(capturedTimeValue?.minute).toBe(0);
+			// Empty (not seeded to 12:00) so the time segments render as placeholders.
+			expect(wrapper.findComponent(TimeFieldRoot).props('modelValue')).toBeFalsy();
 		});
 	});
 
