@@ -1,12 +1,13 @@
 <script setup lang="ts">
 defineOptions({ inheritAttrs: false });
 
-import { DeepPartial, Field, FieldMeta } from '@directus/types';
+import type { Field } from '@directus/types';
 import { isEqual, sortBy } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import { resolveFieldName } from './resolve-field-name';
+import type { RepeaterEmits, RepeaterProps } from './types';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -24,28 +25,13 @@ import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import RenderTemplate from '@/views/private/components/render-template.vue';
 
 const props = withDefaults(
-	defineProps<{
-		value: Record<string, unknown>[] | null;
-		fields?: DeepPartial<Field>[];
-		template?: string;
-		addLabel?: string;
-		sort?: string;
-		limit?: number;
-		disabled?: boolean;
-		nonEditable?: boolean;
-		headerPlaceholder?: string;
-		collection?: string;
-		placeholder?: string;
-		direction?: string;
-	}>(),
+	defineProps<RepeaterProps>(),
 	{
 		fields: () => [],
 	},
 );
 
-const emit = defineEmits<{
-	(e: 'input', value: FieldMeta[] | null): void;
-}>();
+const emit = defineEmits<RepeaterEmits>();
 
 const active = ref<number | null>(null);
 const drawerOpen = computed(() => active.value !== null);
@@ -102,7 +88,7 @@ const fieldsWithNames = computed(() =>
 			...field,
 			name: resolveFieldName(field, locale.value),
 		};
-	}),
+	}) as Field[],
 );
 
 const internalValue = computed({
@@ -292,7 +278,7 @@ const menuActive = computed(() => drawerOpen.value || confirmDiscard.value);
 		>
 			<template #title>
 				<h1 class="type-title">
-					<RenderTemplate :fields="fields" :item="activeItem" :template="templateWithDefaults" />
+					<RenderTemplate :fields="fields" :item="activeItem || undefined" :template="templateWithDefaults" />
 				</h1>
 			</template>
 

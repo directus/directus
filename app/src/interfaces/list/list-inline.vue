@@ -1,13 +1,14 @@
 <script setup lang="ts">
 defineOptions({ inheritAttrs: false });
 
-import { DeepPartial, Field } from '@directus/types';
+import type { Field } from '@directus/types';
 import { sortBy } from 'lodash';
 import { AccordionContent, AccordionItem, AccordionRoot, AccordionTrigger } from 'reka-ui';
-import { computed, nextTick, ref, toRefs, watch } from 'vue';
+import { computed, nextTick, ref, toRefs, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import { resolveFieldName } from './resolve-field-name';
+import type { RepeaterEmits, RepeaterProps } from './types';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VButton from '@/components/v-button.vue';
 import VForm from '@/components/v-form/v-form.vue';
@@ -19,34 +20,18 @@ import { useInjectNestedValidation } from '@/composables/use-nested-validation';
 import RenderTemplate from '@/views/private/components/render-template.vue';
 
 const props = withDefaults(
-	defineProps<{
-		value: Record<string, unknown>[] | null;
-		field?: string;
-		fields?: DeepPartial<Field>[];
-		template?: string;
-		addLabel?: string;
-		sort?: string;
-		limit?: number;
-		disabled?: boolean;
-		nonEditable?: boolean;
-		headerPlaceholder?: string;
-		collection?: string;
-		placeholder?: string;
-		direction?: string;
-		showConfirmDiscard?: boolean;
-	}>(),
+	defineProps<RepeaterProps>(),
 	{
 		fields: () => [],
 		showConfirmDiscard: true,
 	},
 );
 
-const emit = defineEmits<{
-	(e: 'input', value: Record<string, unknown>[] | null): void;
-}>();
+const emit = defineEmits<RepeaterEmits>();
 
 const { value } = toRefs(props);
 const { locale } = useI18n();
+const listItemForms = useTemplateRef<HTMLDivElement[]>('list-item-form');
 
 const templateWithDefaults = computed(() =>
 	props.fields?.[0]?.field ? props.template || `{{${props.fields[0].field}}}` : '',
@@ -60,7 +45,7 @@ const fieldsWithNames = computed(() =>
 				...field,
 				name: resolveFieldName(field, locale.value),
 			};
-		}),
+		}) as Field[],
 );
 
 const showAddNew = computed(() => {
@@ -72,7 +57,7 @@ const showAddNew = computed(() => {
 });
 
 const defaults = computed(() => {
-	const values: Record<string, any> = {};
+	const values: Record<string, unknown> = {};
 
 	for (const field of props.fields) {
 		if (field.schema?.default_value !== undefined && field.schema?.default_value !== null) {
@@ -201,7 +186,7 @@ function performRemoval(index: number) {
 }
 
 function addNew() {
-	const newDefaults: any = {};
+	const newDefaults: Record<string, unknown> = {};
 
 	for (const field of props.fields) {
 		newDefaults[field.field!] = field.schema?.default_value;
@@ -218,8 +203,7 @@ function addNew() {
 	}
 
 	nextTick(() => {
-		const forms = document.querySelectorAll('.list-item-form');
-		const lastForm = Array.from(forms).at(-1);
+		const lastForm = listItemForms.value?.at(-1);
 		const firstInput = lastForm?.querySelector('input, select, textarea');
 
 		if (firstInput instanceof HTMLElement) {
@@ -239,14 +223,14 @@ function emitValue(value?: Record<string, unknown>[]) {
 
 <template>
 	<div class="repeater">
-		<VNotice v-if="fieldsWithNames.length === 0" type="warning">
-			{{ $t('no_visible_fields_copy') }}
+		<VNotice v-if="(Array.isArray(internalValue) && internalValue.length === 0) || internalValue == null">
+			{{ placeholder || $t('no_items') }}
 		</VNotice>
-		<VNotice v-else-if="internalValue != null && !Array.isArray(internalValue)" type="warning">
+		<VNotice v-else-if="!Array.isArray(internalValue)" type="warning">
 			{{ $t('interfaces.list.incompatible_data') }}
 		</VNotice>
-		<VNotice v-else-if="!internalValue?.length">
-			{{ placeholder || $t('no_items') }}
+		<VNotice v-else-if="fieldsWithNames.length === 0" type="warning">
+			{{ $t('no_visible_fields_copy') }}
 		</VNotice>
 
 		<AccordionRoot v-else v-model="expandedItems" type="multiple">
@@ -277,7 +261,7 @@ function emitValue(value?: Record<string, unknown>[]) {
 												class="drag-handle"
 												@click.stop
 											/>
-											<VIcon :name="isExpanded(element.id) ? 'expand_less' : 'chevron_right'" class="expand-icon" />
+											<VIcon :name="isExpanded(element.id) ? 'expand_more' : 'chevron_right'" class="expand-icon" />
 										</div>
 										<RenderTemplate
 											:fields="fields"
@@ -294,7 +278,7 @@ function emitValue(value?: Record<string, unknown>[]) {
 								</div>
 								<TransitionExpand>
 									<AccordionContent as-child>
-										<div class="list-item-form">
+										<div ref="list-item-form" class="list-item-form">
 											<VForm
 												:disabled="disabled"
 												:non-editable="nonEditable"
@@ -330,7 +314,7 @@ function emitValue(value?: Record<string, unknown>[]) {
 					v-tooltip="$t('collapse_all')"
 					:disabled="expandedItems.length === 0"
 					icon
-					kind="secondary"
+					secondary
 					@click="expandedItems = []"
 				>
 					<VIcon name="unfold_less" />
@@ -340,7 +324,7 @@ function emitValue(value?: Record<string, unknown>[]) {
 					v-tooltip="$t('expand_all')"
 					:disabled="expandedItems.length === internalValue.length"
 					icon
-					kind="secondary"
+					secondary
 					@click="expandedItems = [...rowIds]"
 				>
 					<VIcon name="unfold_more" />

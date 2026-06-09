@@ -1,27 +1,11 @@
 <script setup lang="ts">
-import { DeepPartial, Field } from '@directus/types';
 import { computed } from 'vue';
 import ListDrawer from './list-drawer.vue';
 import ListInline from './list-inline.vue';
+import type { RepeaterEmits, RepeaterProps } from './types';
 
 const props = withDefaults(
-	defineProps<{
-		value: Record<string, unknown>[] | null;
-		field?: string;
-		fields?: DeepPartial<Field>[];
-		template?: string;
-		addLabel?: string;
-		sort?: string;
-		limit?: number;
-		disabled?: boolean;
-		nonEditable?: boolean;
-		headerPlaceholder?: string;
-		collection?: string;
-		placeholder?: string;
-		direction?: string;
-		editMode?: 'drawer' | 'inline';
-		showConfirmDiscard?: boolean;
-	}>(),
+	defineProps<RepeaterProps & { editMode?: 'drawer' | 'inline' }>(),
 	{
 		fields: () => [],
 		editMode: 'drawer',
@@ -29,9 +13,7 @@ const props = withDefaults(
 	},
 );
 
-defineEmits<{
-	(e: 'input', value: Record<string, unknown>[] | null): void;
-}>();
+defineEmits<RepeaterEmits>();
 
 const activeComponent = computed(() => (props.editMode === 'inline' ? ListInline : ListDrawer));
 </script>
