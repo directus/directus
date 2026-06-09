@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { isDynamicVariable } from '@directus/utils';
 import { isValid, parseISO } from 'date-fns';
 import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 import { computed, ref, useTemplateRef } from 'vue';
+import DatePickerField from './date-picker-field.vue';
 import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
 import VDatePicker from '@/components/v-date-picker/v-date-picker.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -33,16 +35,47 @@ const emit = defineEmits<{
 const menuActive = ref(false);
 const dateTimeMenu = useTemplateRef('dateTimeMenu');
 
+// Whether the trigger is currently in inline keyboard-edit mode (segments shown instead of the template).
+const isEditing = ref(false);
+
 const isValidValue = computed(() => (props.value ? isValid(parseDate(props.value, props.type)) : false));
+
+// Dynamic variables (e.g. $NOW, $CURRENT_USER.date_created) can't be shown as editable segments.
+const isDynamic = computed(() => !!props.value && isDynamicVariable(props.value));
+
+// Inline editing covers the date for date/dateTime/timestamp. The `time` type stays popup-only,
+// and dynamic-variable values fall back to opening the popup (segments can't represent them).
+const canEditInline = computed(
+	() => props.type !== 'time' && !props.disabled && !props.nonEditable && !isDynamic.value,
+);
 
 function unsetValue(e: Event) {
 	e.preventDefault();
 	e.stopPropagation();
+	isEditing.value = false;
 	emit('input', null);
 }
 
 function closeDatePicker() {
 	dateTimeMenu.value?.deactivate();
+}
+
+/** Clicking the value region enters inline edit mode, or opens the popup when inline edit isn't possible. */
+function onValueClick() {
+	if (props.disabled || props.nonEditable) return;
+
+	if (canEditInline.value) {
+		isEditing.value = true;
+	} else {
+		dateTimeMenu.value?.activate?.();
+	}
+}
+
+/** Leave edit mode once focus moves outside the inline field (segment-to-segment moves stay in edit mode). */
+function onFieldFocusout(event: FocusEvent) {
+	const next = event.relatedTarget as Node | null;
+	if (next && event.currentTarget instanceof Node && event.currentTarget.contains(next)) return;
+	isEditing.value = false;
 }
 
 // Computed property for date-picker value with timezone conversion
@@ -86,19 +119,34 @@ const tzValue = computed({
 		seamless
 	>
 		<template #activator="{ toggle, active }">
-			<VListItem block clickable :disabled :non-editable :active @click="toggle">
-				<template v-if="isValidValue">
-					<UseDatetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
+			<VListItem block activator :disabled :non-editable :active>
+				<div class="value" @click="onValueClick">
+					<DatePickerField
+						v-if="isEditing"
+						:type="type"
+						:model-value="tzValue"
+						:include-seconds="includeSeconds"
+						:disabled="disabled"
+						autofocus
+						@update:model-value="tzValue = $event"
+						@focusout="onFieldFocusout"
+					/>
+					<UseDatetime v-else-if="isValidValue" v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
 						{{ datetime }}
 					</UseDatetime>
-				</template>
-
-				<div class="spacer" />
+				</div>
 
 				<div v-if="!nonEditable" class="item-actions">
 					<VIcon v-if="tz" v-tooltip="tz" name="schedule" class="timezone-icon" :class="{ active, disabled }" />
 					<VRemove v-if="value" :disabled deselect class="clear-icon" @action="unsetValue($event)" />
-					<VIcon v-else name="today" class="today-icon" :class="{ active, disabled }" />
+					<VIcon
+						v-tooltip="$t('interfaces.datetime.datetime')"
+						name="today"
+						class="today-icon"
+						:class="{ active, disabled }"
+						clickable
+						@click.stop="toggle"
+					/>
 				</div>
 			</VListItem>
 		</template>
@@ -135,6 +183,20 @@ const tzValue = computed({
 		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
 		outline-offset: var(--focus-ring-offset-invert);
 	}
+}
+
+.value {
+	display: flex;
+	flex: 1 1 auto;
+	align-items: center;
+	min-inline-size: 0;
+	min-block-size: var(--theme--form--field--input--height, 1.5rem);
+	cursor: text;
+}
+
+.v-list-item.disabled .value,
+.v-list-item.non-editable .value {
+	cursor: default;
 }
 
 .today-icon:not(.disabled) {

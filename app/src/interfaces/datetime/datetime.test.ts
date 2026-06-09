@@ -30,6 +30,9 @@ const global: GlobalMountOptions = {
 		VRemove: true,
 		VListItem: { template: '<div class="v-list-item-stub"><slot /></div>' },
 	},
+	mocks: {
+		$t: (key: string) => key,
+	},
 	directives: {
 		'click-outside': ClickOutside,
 		focus: Focus,
@@ -77,6 +80,72 @@ describe('Interface', () => {
 		});
 
 		expect(wrapper.find('.item-actions v-remove-stub').exists()).toBe(true);
+	});
+
+	describe('inline editing', () => {
+		const editGlobal: GlobalMountOptions = {
+			...global,
+			stubs: {
+				...global.stubs,
+				DatePickerField: { name: 'DatePickerField', template: '<div class="date-picker-field-stub" />' },
+				VMenu: {
+					name: 'VMenu',
+					template: '<div><slot name="activator" :toggle="() => {}" :active="false" /><slot /></div>',
+					methods: { activate: vi.fn(), deactivate: vi.fn() },
+				},
+				VDatePicker: { name: 'VDatePicker', template: '<div />' },
+			},
+		};
+
+		function field(wrapper: ReturnType<typeof mount<typeof Datetime>>) {
+			return wrapper.findComponent({ name: 'DatePickerField' });
+		}
+
+		it('swaps the template for the inline date field when the value region is clicked (type date)', async () => {
+			const wrapper = mount(Datetime, {
+				props: { value: '2024-01-15', type: 'date' },
+				global: editGlobal,
+			});
+
+			expect(field(wrapper).exists()).toBe(false);
+
+			await wrapper.find('.value').trigger('click');
+
+			expect(field(wrapper).exists()).toBe(true);
+		});
+
+		it('does not enter inline edit for the time type (popup only)', async () => {
+			const wrapper = mount(Datetime, {
+				props: { value: '14:30:00', type: 'time' },
+				global: editGlobal,
+			});
+
+			await wrapper.find('.value').trigger('click');
+
+			expect(field(wrapper).exists()).toBe(false);
+		});
+
+		it('does not enter inline edit for dynamic-variable values', async () => {
+			const wrapper = mount(Datetime, {
+				props: { value: '$NOW', type: 'date' },
+				global: editGlobal,
+			});
+
+			await wrapper.find('.value').trigger('click');
+
+			expect(field(wrapper).exists()).toBe(false);
+		});
+
+		it('does not enter inline edit when disabled', async () => {
+			const wrapper = mount(Datetime, {
+				props: { value: '2024-01-15', type: 'date', disabled: true },
+				global: editGlobal,
+			});
+
+			await wrapper.find('.value').trigger('click');
+
+			expect(field(wrapper).exists()).toBe(false);
+		});
 	});
 
 	it('should hide action buttons when nonEditable is true', () => {

@@ -1,17 +1,5 @@
 <script setup lang="ts">
-import { isDynamicVariable, parseNow } from '@directus/utils';
-import {
-	CalendarDate,
-	CalendarDateTime,
-	DateFormatter,
-	DateValue,
-	parseAbsoluteToLocal,
-	parseDate,
-	parseDateTime,
-	parseTime,
-	Time,
-	ZonedDateTime,
-} from '@internationalized/date';
+import { CalendarDate, DateFormatter, DateValue } from '@internationalized/date';
 import {
 	CalendarCell,
 	CalendarCellTrigger,
@@ -25,18 +13,16 @@ import {
 	CalendarNext,
 	CalendarPrev,
 	CalendarRoot,
-	DateFieldInput,
-	DateFieldRoot,
 	TimeFieldInput,
 	TimeFieldRoot,
 } from 'reka-ui';
-import { computed, ref, watch } from 'vue';
+import { computed } from 'vue';
 import { TimeValue } from './types';
+import { useDatePickerValue } from './use-date-picker-value';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { useUserStore } from '@/stores/user';
-import { formatDatePickerModelValue } from '@/utils/format-date-picker-model-value';
 
 interface Props {
 	type: 'date' | 'time' | 'dateTime' | 'timestamp';
@@ -58,9 +44,6 @@ const emit = defineEmits<{
 	close: [];
 }>();
 
-// Internal state using @internationalized/date types
-const calendarValue = ref<DateValue | undefined>();
-
 const userStore = useUserStore();
 
 const isRTL = computed(() => userStore.textDirection === 'rtl');
@@ -70,38 +53,20 @@ const isRTL = computed(() => userStore.textDirection === 'rtl');
 const hourCycle = computed(() => (props.use24 ? 24 : undefined));
 const granularity = computed(() => (props.includeSeconds ? 'second' : 'minute'));
 const showCalendar = computed(() => props.type !== 'time');
-const hasTime = computed(() => ['time', 'dateTime', 'timestamp'].includes(props.type));
 
-/**
- * Default time (12:00) when the picker supports time.
- *
- * Why 12:00:
- * - It’s a neutral default (avoids implicit "start of day" midnight)
- * - Prevents emitting `00:00:00` unless the user explicitly selects it
- */
-function getDefaultTimeValue(): Time {
-	return new Time(12, 0, 0);
-}
-
-/**
- * Internal time value state.
- * Initialized with a default time (12:00) when the picker type supports time.
- */
-const internalTimeValue = ref<Time | CalendarDateTime | ZonedDateTime | null | undefined>(
-	['time', 'dateTime', 'timestamp'].includes(props.type) ? getDefaultTimeValue() : undefined,
-);
-
-/**
- * Computed property that provides proper type compatibility for the TimeFieldRoot component.
- * This works around nominal typing issues with @internationalized/date classes that have private fields.
- */
-const timeValue = computed<TimeValue | null | undefined>({
-	get() {
-		return internalTimeValue.value as TimeValue | null | undefined;
-	},
-	set(value: TimeValue | null | undefined) {
-		internalTimeValue.value = value;
-	},
+// Shared value logic (string <-> @internationalized/date) — also used by the inline trigger field.
+const {
+	calendarValue,
+	timeValue,
+	hasTime,
+	applyTime,
+	emitValue,
+	setToNow: applyNow,
+} = useDatePickerValue({
+	type: () => props.type,
+	modelValue: () => props.modelValue,
+	includeSeconds: () => props.includeSeconds,
+	onUpdate: (value) => emit('update:modelValue', value),
 });
 
 const monthFormatter = computed(() => {
@@ -123,95 +88,13 @@ const monthOptions = computed(() => {
 	});
 });
 
-watch(
-	() => props.modelValue,
-	(newValue) => {
-		if (!newValue) {
-			calendarValue.value = undefined;
-
-			// Reset time to a sensible default when the picker supports time.
-			internalTimeValue.value = hasTime.value ? getDefaultTimeValue() : undefined;
-
-			return;
-		}
-
-		// Resolve $NOW variables to a selection.
-		// Other dynamic variable paths (e.g. $CURRENT_USER.date_created) can't be displayed in the picker, so leave it in the default empty state.
-		if (isDynamicVariable(newValue)) {
-			if (newValue.startsWith('$NOW')) {
-				const dt = parseNow(newValue);
-
-				if (props.type !== 'time') {
-					calendarValue.value = new CalendarDate(dt.getFullYear(), dt.getMonth() + 1, dt.getDate());
-				}
-
-				if (hasTime.value) {
-					internalTimeValue.value = new Time(dt.getHours(), dt.getMinutes(), dt.getSeconds());
-				}
-			}
-
-			return;
-		}
-
-		// Parse based on type
-		switch (props.type) {
-			case 'date':
-				calendarValue.value = parseDate(newValue);
-				break;
-			case 'time':
-				internalTimeValue.value = parseTime(newValue);
-				break;
-
-			case 'dateTime': {
-				// Matches legacy Flatpickr format: "yyyy-MM-dd'T'HH:mm:ss"
-				const dt = parseDateTime(newValue);
-				calendarValue.value = new CalendarDate(dt.year, dt.month, dt.day);
-				internalTimeValue.value = new Time(dt.hour, dt.minute, dt.second);
-				break;
-			}
-
-			case 'timestamp': {
-				// Matches legacy Flatpickr format: Date.toISOString() (absolute timestamp)
-				const dt = parseAbsoluteToLocal(newValue);
-				calendarValue.value = new CalendarDate(dt.year, dt.month, dt.day);
-				internalTimeValue.value = new Time(dt.hour, dt.minute, dt.second);
-				break;
-			}
-		}
-	},
-	{ immediate: true },
-);
-
-// Data binding to the model value and emitting the value to the parent component
-
-function emitValue(): void {
-	const value = formatDatePickerModelValue(props.type, {
-		calendarValue: calendarValue.value,
-		timeValue: internalTimeValue.value,
-		includeSeconds: props.includeSeconds,
-	});
-
-	emit('update:modelValue', value);
-}
-
-function applyDate(value: DateValue | undefined) {
+function handleDateChange(value: DateValue | undefined) {
 	calendarValue.value = value;
 	emitValue();
-}
-
-function handleDateChange(value: DateValue | undefined) {
-	applyDate(value);
 
 	if (props.type === 'date') {
 		emit('close');
 	}
-}
-
-function handleDateFieldChange(value: DateValue | undefined) {
-	// enforce 4 digit year
-	if (value && value.year < 1000) return;
-
-	applyDate(value);
 }
 
 /**
@@ -221,8 +104,7 @@ function handleDateFieldChange(value: DateValue | undefined) {
  * @param value - The new time value from the TimeFieldRoot component
  */
 function handleTimeChange(value: TimeValue | undefined) {
-	internalTimeValue.value = value ?? null;
-	emitValue();
+	applyTime(value);
 }
 
 function setCalendarMonth(month: number): void {
@@ -260,19 +142,10 @@ function handleYearChange(value: number | string | undefined): void {
 }
 
 /**
- * Sets the picker to the current date and time.
- * If the picker supports time, also sets the current time value.
+ * Sets the picker to the current date and time, then closes the popup.
  */
 function setToNow() {
-	const now = new Date();
-	calendarValue.value = new CalendarDate(now.getFullYear(), now.getMonth() + 1, now.getDate());
-
-	// If the picker supports time, also set the current time
-	if (hasTime.value) {
-		internalTimeValue.value = new Time(now.getHours(), now.getMinutes(), now.getSeconds());
-	}
-
-	emitValue();
+	applyNow();
 	emit('close');
 }
 </script>
@@ -318,27 +191,6 @@ function setToNow() {
 				</CalendarNext>
 			</CalendarHeader>
 			<div class="calendar-wrapper">
-				<div v-if="showCalendar" class="date-picker-field">
-					<DateFieldRoot
-						v-slot="{ segments }"
-						:model-value="calendarValue"
-						granularity="day"
-						:locale="userStore.language"
-						:disabled="disabled"
-						:dir="isRTL ? 'rtl' : 'ltr'"
-						class="date-field"
-						@update:model-value="handleDateFieldChange"
-					>
-						<template v-for="item in segments" :key="item.part">
-							<DateFieldInput v-if="item.part === 'literal'" :part="item.part" class="date-field-literal">
-								{{ item.value }}
-							</DateFieldInput>
-							<DateFieldInput v-else :part="item.part" class="date-field-segment">
-								{{ item.value }}
-							</DateFieldInput>
-						</template>
-					</DateFieldRoot>
-				</div>
 				<template v-if="showCalendar">
 					<CalendarGrid v-for="month in grid" :key="month.value.toString()" class="calendar-grid">
 						<CalendarGridHead class="calendar-grid-head">
@@ -559,38 +411,6 @@ function setToNow() {
 			border-color: transparent;
 			background-color: transparent;
 		}
-	}
-
-	.date-picker-field {
-		display: flex;
-		justify-content: center;
-		inline-size: 100%;
-		padding: 0.375rem;
-		border-block-end: 1px solid var(--theme--border-color);
-	}
-
-	.date-field {
-		display: flex;
-		align-items: center;
-		gap: 0.1875rem;
-	}
-
-	.date-field-segment {
-		padding: 0.5rem 0.625rem;
-		border-radius: var(--theme--border-radius);
-		text-align: center;
-		background: var(--theme--form--field--input--background-subdued);
-	}
-
-	.date-field-segment[data-placeholder] {
-		color: var(--theme--foreground-subdued);
-	}
-
-	.date-field-segment:focus,
-	.date-field-segment:focus-visible {
-		outline: var(--focus-ring-width) solid var(--focus-ring-color);
-		outline-offset: var(--focus-ring-offset);
-		border-radius: var(--focus-ring-radius);
 	}
 
 	.time-picker {
