@@ -1,11 +1,14 @@
 import {
+	createCollection,
 	createDirectus,
 	createField,
 	createItems,
 	createRelation,
+	deleteCollection,
 	deleteField,
 	readField,
 	readItems,
+	readMe,
 	rest,
 	staticToken,
 	updateField,
@@ -33,6 +36,11 @@ afterAll(async () => {
 	await api.request(deleteField(collections.country, 'flag_image'));
 	await api.request(deleteField(collections.country, 'test_divider'));
 	await api.request(deleteField(collections.country, 'to_be_deleted'));
+
+	// Created (as a sanitized plain geometry column) by the SQL injection regression test
+	await api.request(deleteCollection('geom_injection')).catch(() => {
+		// Collection may not exist if the request was rejected
+	});
 });
 
 await api.request(
@@ -136,6 +144,44 @@ describe('/fields', () => {
 					collection: collections.country,
 				}),
 			);
+		});
+
+		test('invalid geometry subtype does not execute', async () => {
+			// Setup
+			const admin = await api.request(readMe({ fields: ['email'] }));
+			const subtype = `Point, 4326)); UPDATE "${collections.country}" SET name = (SELECT email FROM directus_users LIMIT 1); --`;
+
+			const countriesBefore = await api.request(readItems(collections.country));
+
+			// Action - attempt to create a collection whose geometry field subtype carries an injected statement
+			await api
+				.request(
+					createCollection({
+						collection: 'geom_injection',
+						fields: [
+							{
+								field: 'id',
+								type: 'integer',
+								schema: { is_primary_key: true, has_auto_increment: true },
+							},
+							{
+								field: 'geom',
+								type: `geometry.${subtype}`,
+								schema: {},
+							},
+						],
+						schema: {},
+					}),
+				)
+				.catch(() => {
+					// A rejected request is fine - we only care that the injected statement never ran
+				});
+
+			const countriesAfter = await api.request(readItems(collections.country));
+
+			// Assert - no admin data was exfiltrated and existing data is untouched
+			expect(countriesAfter.map((country) => country.name)).not.toContain(admin.email);
+			expect(countriesAfter).toStrictEqual(countriesBefore);
 		});
 	});
 
