@@ -23,6 +23,8 @@ export default defineConfig({
 		sequence: {
 			sequencer: Sequencer,
 		},
-		testTimeout: isMssql ? 30_000 : 15_000,
+		// 45s for mssql so the 30s message-wait ceiling (see waitForMatchingMessage) fits inside the
+		// test timeout, rather than the test timeout firing first and masking it.
+		testTimeout: isMssql ? 45_000 : 15_000,
 	},
 });

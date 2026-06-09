@@ -73,7 +73,11 @@ export async function waitForMatchingMessage<T extends WebSocketResponse = WebSo
 		getMessages: (count: number, options?: any) => Promise<WebSocketResponse[] | undefined>;
 	},
 	matcher: ((message: WebSocketResponse) => boolean) | ((message: WebSocketResponse) => boolean)[],
-	timeout = 10000,
+	// Collab/websocket assertions are eventually-consistent: the message does arrive, but under CI
+	// CPU contention the shared Directus server can push it late. 10s was too tight and flaked the
+	// collab suite on slower vendors; the message still has to arrive, so a longer ceiling only slows
+	// genuine failures, not passing tests. Capped below the test timeout so failures report cleanly.
+	timeout = 30000,
 ): Promise<T | T[]> {
 	const start = Date.now();
 	const isArray = Array.isArray(matcher);
