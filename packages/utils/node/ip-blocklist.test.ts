@@ -38,6 +38,34 @@ describe('IpBlocklist', () => {
 		});
 	});
 
+	describe('embedded IPv4 in IPv6 transition forms', () => {
+		test('blocks IPv4-mapped / IPv4-compatible / NAT64 / 6to4 forms of a denied IPv4', () => {
+			blocklist.parseAddress('169.254.169.254');
+
+			expect(blocklist.checkAddress('169.254.169.254')).toBe(true);
+			expect(blocklist.checkAddress('::ffff:169.254.169.254')).toBe(true); // IPv4-mapped
+			expect(blocklist.checkAddress('::a9fe:a9fe')).toBe(true); // IPv4-compatible
+			expect(blocklist.checkAddress('64:ff9b::a9fe:a9fe')).toBe(true); // NAT64
+			expect(blocklist.checkAddress('2002:a9fe:a9fe::')).toBe(true); // 6to4
+		});
+
+		test('blocks transition forms of a denied IPv4 subnet', () => {
+			blocklist.parseSubnet('10.0.0.0/8');
+
+			expect(blocklist.checkAddress('::a00:5')).toBe(true); // ::10.0.0.5
+			expect(blocklist.checkAddress('64:ff9b::a00:5')).toBe(true); // NAT64 10.0.0.5
+			expect(blocklist.checkAddress('2002:a00:5::')).toBe(true); // 6to4 10.0.0.5
+		});
+
+		test('does not block transition forms of a public IPv4', () => {
+			blocklist.parseAddress('169.254.169.254');
+
+			expect(blocklist.checkAddress('::ffff:8.8.8.8')).toBe(false);
+			expect(blocklist.checkAddress('::808:808')).toBe(false); // ::8.8.8.8
+			expect(blocklist.checkAddress('2002:808:808::')).toBe(false); // 6to4 8.8.8.8
+		});
+	});
+
 	describe('parseSubnet', () => {
 		test('adds IPv4 subnet to blocklist', () => {
 			blocklist.parseSubnet('192.168.1.0/24');
