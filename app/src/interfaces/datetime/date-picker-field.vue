@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { DateValue } from '@internationalized/date';
 import { DateFieldInput, DateFieldRoot, TimeFieldInput, TimeFieldRoot } from 'reka-ui';
 import { computed, nextTick, onMounted, useTemplateRef } from 'vue';
 import { type PickerType, useDatePickerValue } from '@/components/v-date-picker/use-date-picker-value';
@@ -41,6 +42,15 @@ const { calendarValue, timeValue, hasTime, applyDate, applyTime } = useDatePicke
 // undefined hour cycle lets Reka show the 12h day-period segment (mirrors v-date-picker.vue).
 const hourCycle = computed(() => (props.use24 ? 24 : undefined));
 const granularity = computed(() => (props.includeSeconds ? 'second' : 'minute'));
+const showCalendar = computed(() => props.type !== 'time');
+
+// Reka emits on every keystroke while editing the year, so a populated year passes through partial
+// values (e.g. 2 → 0002) mid-edit. Ignore years under 1000 until all four digits are entered,
+// otherwise they format to nonsense (timestamps land near 1900).
+function onDateUpdate(value: DateValue | undefined) {
+	if (value && value.year < 1000) return;
+	applyDate(value);
+}
 
 const root = useTemplateRef('root');
 
@@ -48,7 +58,7 @@ onMounted(() => {
 	if (!props.autofocus || props.disabled) return;
 
 	nextTick(() => {
-		const segment = root.value?.querySelector('.date-field-segment');
+		const segment = root.value?.querySelector('.date-field-segment, .time-field-segment');
 		if (segment instanceof HTMLElement) segment.focus();
 	});
 });
@@ -57,6 +67,7 @@ onMounted(() => {
 <template>
 	<div ref="root" class="date-time-field">
 		<DateFieldRoot
+			v-if="showCalendar"
 			v-slot="{ segments }"
 			:model-value="calendarValue"
 			granularity="day"
@@ -65,7 +76,7 @@ onMounted(() => {
 			:dir="dir"
 			:aria-label="$t('interfaces.datetime.datetime')"
 			class="date-field"
-			@update:model-value="applyDate"
+			@update:model-value="onDateUpdate"
 		>
 			<template v-for="item in segments" :key="item.part">
 				<DateFieldInput v-if="item.part === 'literal'" :part="item.part" class="date-field-literal">

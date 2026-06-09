@@ -825,6 +825,53 @@ describe('v-date-picker', () => {
 			expect(finalCallCount).toBe(initialCallCount);
 		});
 
+		it('ignores partial years (under 1000) while the year is being typed', async () => {
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: '2024-01-15',
+			});
+
+			await nextTick();
+
+			const yearInput = wrapper.find('.calendar-year-input');
+			const initialCallCount = vi.mocked(formatDatePickerModelValue).mock.calls.length;
+
+			// The input emits on each keystroke, so partial years must not be applied.
+			await yearInput.setValue('2');
+			await yearInput.setValue('202');
+			await nextTick();
+
+			expect(vi.mocked(formatDatePickerModelValue).mock.calls.length).toBe(initialCallCount);
+
+			// Once all four digits are entered the value is applied.
+			await yearInput.setValue('2025');
+			await nextTick();
+
+			expect(formatDatePickerModelValue).toHaveBeenLastCalledWith(
+				'date',
+				expect.objectContaining({
+					calendarValue: expect.objectContaining({ year: 2025 }),
+				}),
+			);
+		});
+
+		it('ignores years beyond four digits', async () => {
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: '2024-01-15',
+			});
+
+			await nextTick();
+
+			const yearInput = wrapper.find('.calendar-year-input');
+			const initialCallCount = vi.mocked(formatDatePickerModelValue).mock.calls.length;
+
+			await yearInput.setValue('20245');
+			await nextTick();
+
+			expect(vi.mocked(formatDatePickerModelValue).mock.calls.length).toBe(initialCallCount);
+		});
+
 		it('clamps day when changing to month with fewer days', async () => {
 			let capturedDay: number | undefined;
 

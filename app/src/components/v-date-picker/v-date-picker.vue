@@ -137,7 +137,9 @@ function handleMonthChange(value: number | null): void {
 
 function handleYearChange(value: number | string | undefined): void {
 	const numValue = typeof value === 'string' ? Number.parseInt(value, 10) : value;
-	if (numValue === undefined || !Number.isFinite(numValue) || numValue < 1) return;
+	// The input emits on every keystroke; only apply complete four-digit years. Below 1000 a partial
+	// value like 2 would format to nonsense (near 1900); above 9999 it exceeds a valid four-digit year.
+	if (numValue === undefined || !Number.isFinite(numValue) || numValue < 1000 || numValue > 9999) return;
 	setCalendarYear(numValue);
 }
 
@@ -177,11 +179,12 @@ function setToNow() {
 							@update:model-value="handleMonthChange"
 						/>
 						<VInput
-							type="number"
+							type="text"
+							inputmode="numeric"
+							:max-length="4"
 							:model-value="date?.year"
 							class="calendar-year-input"
 							:full-width="false"
-							hide-arrows
 							@update:model-value="handleYearChange"
 						/>
 					</div>

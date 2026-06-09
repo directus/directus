@@ -118,7 +118,7 @@ describe('Interface', () => {
 			expect(field(wrapper).exists()).toBe(true);
 		});
 
-		it('does not enter inline edit for the time type (popup only)', async () => {
+		it('enters inline edit for the time type', async () => {
 			const wrapper = mount(Datetime, {
 				props: { value: '14:30:00', type: 'time' },
 				global: editGlobal,
@@ -126,7 +126,7 @@ describe('Interface', () => {
 
 			await wrapper.find('.value').trigger('click');
 
-			expect(field(wrapper).exists()).toBe(false);
+			expect(field(wrapper).exists()).toBe(true);
 		});
 
 		it('does not enter inline edit for dynamic-variable values', async () => {
@@ -204,13 +204,13 @@ describe('Interface', () => {
 			expect(field(wrapper).exists()).toBe(false);
 		});
 
-		it('does not show a placeholder field when empty for the time type (popup only)', () => {
+		it('shows a placeholder field when empty for the time type', () => {
 			const wrapper = mount(Datetime, {
 				props: { value: null, type: 'time' },
 				global: editGlobal,
 			});
 
-			expect(field(wrapper).exists()).toBe(false);
+			expect(field(wrapper).exists()).toBe(true);
 		});
 
 		it('does not autofocus the placeholder field', () => {

@@ -44,8 +44,7 @@ const isDynamic = computed(() => !!props.value && isDynamicVariable(props.value)
 
 const isInteractive = computed(() => !props.disabled && !props.nonEditable);
 
-// `time` has no date to edit inline, so it stays popup-only.
-const canEditInline = computed(() => props.type !== 'time' && isInteractive.value && !isDynamic.value);
+const canEditInline = computed(() => isInteractive.value && !isDynamic.value);
 
 // Show the inline segments while editing, and as a placeholder when there's no value yet.
 const showInlineField = computed(() => isEditing.value || (canEditInline.value && !isValidValue.value));

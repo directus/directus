@@ -100,6 +100,23 @@ describe('date-picker-field', () => {
 		expect(wrapper.emitted('update:modelValue')).toEqual([['2024-03-09T14:30:00']]);
 	});
 
+	it('ignores partial years (under 1000) while the year segment is being typed', async () => {
+		const wrapper = createWrapper({ type: 'dateTime', modelValue: '2024-01-15T14:30:00' });
+
+		// Reka emits these intermediate values as the user types "2025" over the year.
+		await wrapper.findComponent(DateFieldRoot).vm.$emit('update:modelValue', new CalendarDate(2, 1, 15));
+		await wrapper.findComponent(DateFieldRoot).vm.$emit('update:modelValue', new CalendarDate(202, 1, 15));
+		await nextTick();
+
+		expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+
+		// Once all four digits are entered the value is applied.
+		await wrapper.findComponent(DateFieldRoot).vm.$emit('update:modelValue', new CalendarDate(2025, 1, 15));
+		await nextTick();
+
+		expect(wrapper.emitted('update:modelValue')).toEqual([['2025-01-15T14:30:00']]);
+	});
+
 	it('passes the user locale to the field', () => {
 		mockUserStore.language = 'en-GB';
 
@@ -135,6 +152,22 @@ describe('date-picker-field', () => {
 			const wrapper = createWrapper({ type: 'date', modelValue: '2024-01-15' });
 
 			expect(wrapper.findComponent(TimeFieldRoot).exists()).toBe(false);
+		});
+
+		it('renders only the time field for the time type', () => {
+			const wrapper = createWrapper({ type: 'time', modelValue: '14:30:00' });
+
+			expect(wrapper.findComponent(TimeFieldRoot).exists()).toBe(true);
+			expect(wrapper.findComponent(DateFieldRoot).exists()).toBe(false);
+		});
+
+		it('emits the time when only the time is edited (time type)', async () => {
+			const wrapper = createWrapper({ type: 'time', modelValue: '14:30:00' });
+
+			await wrapper.findComponent(TimeFieldRoot).vm.$emit('update:modelValue', new Time(9, 15, 0));
+			await nextTick();
+
+			expect(wrapper.emitted('update:modelValue')).toEqual([['09:15:00']]);
 		});
 
 		it('emits the combined value preserving the date when only the time is edited (dateTime)', async () => {
