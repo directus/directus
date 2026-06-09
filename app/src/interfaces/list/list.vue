@@ -4,14 +4,11 @@ import ListDrawer from './list-drawer.vue';
 import ListInline from './list-inline.vue';
 import type { RepeaterEmits, RepeaterProps } from './types';
 
-const props = withDefaults(
-	defineProps<RepeaterProps & { editMode?: 'drawer' | 'inline' }>(),
-	{
-		fields: () => [],
-		editMode: 'drawer',
-		showConfirmDiscard: true,
-	},
-);
+const props = withDefaults(defineProps<RepeaterProps & { editMode?: 'drawer' | 'inline' }>(), {
+	fields: () => [],
+	editMode: 'drawer',
+	showConfirmDiscard: true,
+});
 
 defineEmits<RepeaterEmits>();
 

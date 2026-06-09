@@ -24,12 +24,9 @@ import { renderStringTemplate } from '@/utils/render-string-template';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import RenderTemplate from '@/views/private/components/render-template.vue';
 
-const props = withDefaults(
-	defineProps<RepeaterProps>(),
-	{
-		fields: () => [],
-	},
-);
+const props = withDefaults(defineProps<RepeaterProps>(), {
+	fields: () => [],
+});
 
 const emit = defineEmits<RepeaterEmits>();
 
@@ -82,13 +79,14 @@ const defaults = computed(() => {
 
 const { locale } = useI18n();
 
-const fieldsWithNames = computed(() =>
-	props.fields?.map((field) => {
-		return {
-			...field,
-			name: resolveFieldName(field, locale.value),
-		};
-	}) as Field[],
+const fieldsWithNames = computed(
+	() =>
+		props.fields?.map((field) => {
+			return {
+				...field,
+				name: resolveFieldName(field, locale.value),
+			};
+		}) as Field[],
 );
 
 const internalValue = computed({

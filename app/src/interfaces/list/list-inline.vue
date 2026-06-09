@@ -19,13 +19,10 @@ import VRemove from '@/components/v-remove.vue';
 import { useInjectNestedValidation } from '@/composables/use-nested-validation';
 import RenderTemplate from '@/views/private/components/render-template.vue';
 
-const props = withDefaults(
-	defineProps<RepeaterProps>(),
-	{
-		fields: () => [],
-		showConfirmDiscard: true,
-	},
-);
+const props = withDefaults(defineProps<RepeaterProps>(), {
+	fields: () => [],
+	showConfirmDiscard: true,
+});
 
 const emit = defineEmits<RepeaterEmits>();
 
@@ -37,15 +34,16 @@ const templateWithDefaults = computed(() =>
 	props.fields?.[0]?.field ? props.template || `{{${props.fields[0].field}}}` : '',
 );
 
-const fieldsWithNames = computed(() =>
-	props.fields
-		.filter((field) => field?.field)
-		.map((field) => {
-			return {
-				...field,
-				name: resolveFieldName(field, locale.value),
-			};
-		}) as Field[],
+const fieldsWithNames = computed(
+	() =>
+		props.fields
+			.filter((field) => field?.field)
+			.map((field) => {
+				return {
+					...field,
+					name: resolveFieldName(field, locale.value),
+				};
+			}) as Field[],
 );
 
 const showAddNew = computed(() => {
