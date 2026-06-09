@@ -487,11 +487,7 @@ describe('Collaborative Editing: Core', () => {
 
 			await Promise.all([focusPromise1, focusPromise2]);
 
-			// Assert
-			// Exactly one client (whichever lost the race) should receive a rejection. Wait for it to
-			// arrive rather than snapshotting after a fixed delay: under load the FORBIDDEN round-trip
-			// can exceed a few hundred ms, which made the previous static sleep(500) intermittently see
-			// zero errors. The winning client receives no error, so its wait times out and is filtered out.
+			// Exactly one client (whichever lost the race) should receive a rejection.
 			const [ws1Error, ws2Error] = await Promise.all([
 				waitForMatchingMessage<WebSocketCollabResponse>(ws1, (msg) => msg.action === 'error', 5000).catch(() => null),
 				waitForMatchingMessage<WebSocketCollabResponse>(ws2, (msg) => msg.action === 'error', 5000).catch(() => null),
