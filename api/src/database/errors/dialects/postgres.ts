@@ -54,10 +54,11 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 	function numericValueOutOfRange() {
 		/**
 		 * NOTE:
-		 * Postgres doesn't return the offending column for a numeric overflow, so the
-		 * field can't be reliably determined. The previous logic took the first quoted
-		 * identifier in the statement as the field, which misattributed the error to an
-		 * unrelated column (e.g. an m2o uuid field) instead of the numeric one.
+		 * PostgreSQL does not return the offending column, and we cannot reliably
+		 * infer it.
+		 *
+		 * When a single field is provided, the error must be from it.
+		 * For multi-field inserts, attribution would be speculative, and therefor omit it
 		 */
 
 		const regex = /"(.*?)"/g;
@@ -66,11 +67,13 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		if (!matches) return error;
 
 		const collection = matches[0].slice(1, -1);
+		const fields = Object.keys(data);
+		const field = fields.length === 1 ? fields[0]! : null;
 
 		return new ValueOutOfRangeError({
 			collection,
-			field: null,
-			value: null,
+			field,
+			value: field ? data[field] : null,
 		});
 	}
 
