@@ -23,6 +23,7 @@ export type ExtensionTypes =
 	| 'layout'
 	| 'module'
 	| 'panel'
+	| 'theme'
 	| 'hook'
 	| 'endpoint'
 	| 'operation'

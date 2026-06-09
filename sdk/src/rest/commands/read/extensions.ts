@@ -1,5 +1,4 @@
-import type { DirectusExtension } from '../../../schema/extension.js';
-import type { ExtensionTypes } from '../../../schema/extension.js';
+import type { DirectusExtension, ExtensionTypes } from '../../../schema/extension.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
@@ -21,6 +20,58 @@ export type DirectusExtensionRegistry = {
 	sandbox: boolean;
 	license: string | null;
 	publisher: DirectusExtensionRegistryPublisher;
+};
+
+export type DirectusExtensionRegistryAccount = {
+	id: string;
+	username: string;
+	verified: boolean;
+	github_username: string | null;
+	github_avatar_url: string | null;
+	github_name: string | null;
+	github_company: string | null;
+	github_blog: string | null;
+	github_location: string | null;
+	github_bio: string | null;
+};
+
+export type DirectusExtensionRegistryVersionPublisher = {
+	id: string;
+	username: string;
+	verified: boolean;
+	github_name: string | null;
+	github_avatar_url: string | null;
+};
+
+export type DirectusExtensionRegistryVersion = {
+	id: string;
+	version: string;
+	verified: boolean;
+	type: ExtensionTypes;
+	host_version: string;
+	publish_date: string;
+	unpacked_size: number;
+	file_count: number;
+	url_bugs: string | null;
+	url_homepage: string | null;
+	url_repository: string | null;
+	license: string | null;
+	publisher: DirectusExtensionRegistryVersionPublisher;
+	bundled: { name: string; type: string }[];
+	maintainers: { accounts_id: DirectusExtensionRegistryVersionPublisher }[] | null;
+};
+
+export type DirectusExtensionRegistryDetail = {
+	id: string;
+	name: string;
+	description: string | null;
+	total_downloads: number;
+	downloads: { date: string; count: number }[] | null;
+	verified: boolean;
+	readme: string | null;
+	type: ExtensionTypes;
+	license: string | null;
+	versions: DirectusExtensionRegistryVersion[];
 };
 
 export type DirectusExtensionRegistryQuery = {
@@ -65,7 +116,7 @@ export const readRegistryExtensions =
  * @throws Will throw if pk is empty
  */
 export const readRegistryAccount =
-	<Schema>(pk: string): RestCommand<DirectusExtensionRegistryPublisher, Schema> =>
+	<Schema>(pk: string): RestCommand<DirectusExtensionRegistryAccount, Schema> =>
 	() => {
 		throwIfEmpty(pk, 'Publisher key cannot be empty');
 
@@ -82,7 +133,7 @@ export const readRegistryAccount =
  * @throws Will throw if pk is empty
  */
 export const readRegistryExtension =
-	<Schema>(pk: string): RestCommand<DirectusExtensionRegistry, Schema> =>
+	<Schema>(pk: string): RestCommand<DirectusExtensionRegistryDetail, Schema> =>
 	() => {
 		throwIfEmpty(pk, 'Extension key cannot be empty');
 
