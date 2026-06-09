@@ -33,17 +33,21 @@ const DEFAULT_PRIMARY = '#6644ff';
 
 // Grid spacing and dot radius range in CSS pixels — dots never vanish below the min.
 const CELL_SIZE_PX = 30;
-const DOT_RADIUS_MIN_PX = 0.5;
-const DOT_RADIUS_MAX_PX = 2;
+const DOT_RADIUS_MIN_PX = 0.0;
+const DOT_RADIUS_MAX_PX = 2.0;
 const DOT_ALPHA_MIN = 0.25;
 
 // 3D noise field: scale is noise-space step per cell, speed is noise-space drift per second.
-const NOISE_SCALE = 0.045;
-const NOISE_SPEED = 0.24;
+const NOISE_SCALE = 0.038;
+const NOISE_SPEED = 0.05;
 
 // Each dot swings on an arc around a pivot offset by this distance (the original's "inflate") —
 // as the noise drifts, dots sweep along curves like fabric instead of pulsing in place.
-const INFLATE_PX = 160;
+const INFLATE_PX = 200;
+
+// Second gradient stop: faint dots fade toward this color. Defaults to a darkened primary so the
+// noise-driven fade is visible out of the box while staying derived from the theme.
+const COLOR_B_LIGHTNESS = 0.35;
 
 function resolveColor(input?: string | null): Color {
 	if (!input) return new Color(DEFAULT_PRIMARY);
@@ -55,7 +59,14 @@ function resolveColor(input?: string | null): Color {
 	}
 }
 
+function darkenColor(color: Color): Color {
+	const hsl = { h: 0, s: 0, l: 0 };
+	color.getHSL(hsl);
+	return new Color().setHSL(hsl.h, hsl.s, COLOR_B_LIGHTNESS);
+}
+
 const uColor = uniform(resolveColor(props.projectColor));
+const uColorB = uniform(darkenColor(resolveColor(props.projectColor)));
 const uPixelRatio = uniform(sizes.pixelRatio.value);
 const uMinRadius = uniform(DOT_RADIUS_MIN_PX);
 const uMaxRadius = uniform(DOT_RADIUS_MAX_PX);
@@ -65,7 +76,11 @@ const uInflate = uniform(INFLATE_PX);
 
 watch(
 	() => props.projectColor,
-	(value) => uColor.value.copy(resolveColor(value)),
+	(value) => {
+		const base = resolveColor(value);
+		uColor.value.copy(base);
+		uColorB.value.copy(darkenColor(base));
+	},
 );
 
 watch(sizes.pixelRatio, (value) => {
@@ -103,7 +118,8 @@ const material = new MeshBasicNodeMaterial({
 	depthWrite: false,
 });
 
-material.colorNode = uColor;
+// Big/bright dots read as the primary; faint ones fade toward uColorB, riding the existing noise drift.
+material.colorNode = mix(uColorB, uColor, intensity);
 material.opacityNode = dot;
 
 onBeforeUnmount(() => {
@@ -112,11 +128,15 @@ onBeforeUnmount(() => {
 
 const uuid = inject<string>('uuid');
 
-const { particlesColor, particlesMinSize, particlesMaxSize } = useControls(
+const { particlesColor, particlesColorB, particlesMinSize, particlesMaxSize } = useControls(
 	'particles',
 	{
 		color: {
 			value: new Color(uColor.value),
+			type: 'color',
+		},
+		colorB: {
+			value: new Color(uColorB.value),
 			type: 'color',
 		},
 		minSize: {
@@ -141,6 +161,14 @@ watch(
 	() => particlesColor?.value,
 	(value) => {
 		if (value) uColor.value.set(value);
+	},
+	{ deep: true },
+);
+
+watch(
+	() => particlesColorB?.value,
+	(value) => {
+		if (value) uColorB.value.set(value);
 	},
 	{ deep: true },
 );
