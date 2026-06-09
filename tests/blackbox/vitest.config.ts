@@ -13,7 +13,10 @@ export default defineConfig({
 		poolOptions: {
 			forks: {
 				minForks: 1,
-				maxForks: isMssql ? 3 : 6,
+				// 2 for mssql: on a 4-vCPU runner the vitest workers compete with two Directus servers +
+				// mssql + redis/minio for cores, and the timing-sensitive websocket collab tests get
+				// starved and miss their message-wait deadlines. Fewer workers leaves CPU for the server.
+				maxForks: isMssql ? 2 : 6,
 			},
 		},
 		environment: './setup/environment.ts',

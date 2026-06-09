@@ -66,6 +66,7 @@ export async function setup() {
 									try {
 										await awaitDatabaseConnection(adminDb, config.knexConfig.mssql.waitTestSQL);
 										await adminDb.raw("IF DB_ID('directus') IS NULL CREATE DATABASE [directus]");
+										await adminDb.raw('ALTER DATABASE [directus] SET COMPATIBILITY_LEVEL = 150');
 										await adminDb.raw('ALTER DATABASE [directus] SET RECOVERY SIMPLE');
 
 										await adminDb.raw(
