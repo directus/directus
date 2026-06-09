@@ -31,18 +31,15 @@ const userStore = useUserStore();
 
 const dir = computed<'ltr' | 'rtl'>(() => (userStore.textDirection === 'rtl' ? 'rtl' : 'ltr'));
 
-// Shared with the popup calendar so both parse/format the same string identically.
-const { calendarValue, timeValue, hasTime, applyDate, applyTime } = useDatePickerValue({
-	type: () => props.type,
-	modelValue: () => props.modelValue,
-	includeSeconds: () => props.includeSeconds,
-	onUpdate: (value) => emit('update:modelValue', value),
-});
-
-// undefined hour cycle lets Reka show the 12h day-period segment (mirrors v-date-picker.vue).
-const hourCycle = computed(() => (props.use24 ? 24 : undefined));
-const granularity = computed(() => (props.includeSeconds ? 'second' : 'minute'));
-const showCalendar = computed(() => props.type !== 'time');
+// Shared with the popup calendar so both parse/format the same string and configure their segments identically.
+const { calendarValue, timeValue, hasTime, hourCycle, granularity, showCalendar, applyDate, applyTime } =
+	useDatePickerValue({
+		type: () => props.type,
+		modelValue: () => props.modelValue,
+		includeSeconds: () => props.includeSeconds,
+		use24: () => props.use24,
+		onUpdate: (value) => emit('update:modelValue', value),
+	});
 
 function onDateUpdate(value: DateValue | undefined) {
 	if (value && value.year < 1000) return;
@@ -91,6 +88,7 @@ onMounted(() => {
 			:model-value="timeValue"
 			:granularity="granularity"
 			:hour-cycle="hourCycle"
+			:locale="userStore.language"
 			:disabled="disabled"
 			:dir="dir"
 			:class="['time-field', { 'is-empty': !timeValue }]"

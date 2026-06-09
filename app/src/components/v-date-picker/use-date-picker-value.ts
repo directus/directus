@@ -20,20 +20,20 @@ interface UseDatePickerValueOptions {
 	type: MaybeRefOrGetter<PickerType>;
 	modelValue: MaybeRefOrGetter<string | null | undefined>;
 	includeSeconds: MaybeRefOrGetter<boolean>;
+	use24: MaybeRefOrGetter<boolean>;
 	/** Called with the formatted model value string whenever the selection changes. */
 	onUpdate: (value: string | null) => void;
 }
 
-/**
- * Shared value logic for the popup picker and the inline trigger field. Keeps the `modelValue`
- * string as the single source of truth, converting to/from the `@internationalized/date` types
- * Reka UI uses so both views parse and format identically and editing only the date preserves
- * an existing time.
- */
+// Shared value logic for the popup picker and the inline trigger field.
 export function useDatePickerValue(options: UseDatePickerValueOptions) {
 	const type = computed(() => toValue(options.type));
 	const includeSeconds = computed(() => toValue(options.includeSeconds));
 	const hasTime = computed(() => ['time', 'dateTime', 'timestamp'].includes(type.value));
+
+	const hourCycle = computed(() => (toValue(options.use24) ? 24 : undefined));
+	const granularity = computed(() => (includeSeconds.value ? 'second' : 'minute'));
+	const showCalendar = computed(() => type.value !== 'time');
 
 	const calendarValue = ref<DateValue | undefined>();
 
@@ -155,6 +155,9 @@ export function useDatePickerValue(options: UseDatePickerValueOptions) {
 		internalTimeValue,
 		timeValue,
 		hasTime,
+		hourCycle,
+		granularity,
+		showCalendar,
 		emitValue,
 		applyDate,
 		applyTime,

@@ -17,7 +17,6 @@ import {
 	TimeFieldRoot,
 } from 'reka-ui';
 import { computed } from 'vue';
-import { TimeValue } from './types';
 import { useDatePickerValue } from './use-date-picker-value';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
@@ -48,17 +47,14 @@ const userStore = useUserStore();
 
 const isRTL = computed(() => userStore.textDirection === 'rtl');
 
-// Computed props for Reka UI
-// We set undefined instead of 12 to avoid the default value of 12:00 PM goes 0:00 PM
-const hourCycle = computed(() => (props.use24 ? 24 : undefined));
-const granularity = computed(() => (props.includeSeconds ? 'second' : 'minute'));
-const showCalendar = computed(() => props.type !== 'time');
-
-// Shared value logic (string <-> @internationalized/date) — also used by the inline trigger field.
 const {
 	calendarValue,
 	timeValue,
 	hasTime,
+	hourCycle,
+	granularity,
+	showCalendar,
+	applyDate,
 	applyTime,
 	emitValue,
 	setToNow: applyNow,
@@ -66,6 +62,7 @@ const {
 	type: () => props.type,
 	modelValue: () => props.modelValue,
 	includeSeconds: () => props.includeSeconds,
+	use24: () => props.use24,
 	onUpdate: (value) => emit('update:modelValue', value),
 });
 
@@ -89,22 +86,11 @@ const monthOptions = computed(() => {
 });
 
 function handleDateChange(value: DateValue | undefined) {
-	calendarValue.value = value;
-	emitValue();
+	applyDate(value);
 
 	if (props.type === 'date') {
 		emit('close');
 	}
-}
-
-/**
- * Handle time field changes and emit the updated value.
- * Reka UI's TimeFieldRoot emits TimeValue which is Time | CalendarDateTime | ZonedDateTime.
- *
- * @param value - The new time value from the TimeFieldRoot component
- */
-function handleTimeChange(value: TimeValue | undefined) {
-	applyTime(value);
 }
 
 function setCalendarMonth(month: number): void {
@@ -230,7 +216,7 @@ function setToNow() {
 						:hour-cycle
 						:dir="isRTL ? 'rtl' : 'ltr'"
 						class="time-field"
-						@update:model-value="handleTimeChange"
+						@update:model-value="applyTime"
 					>
 						<template v-for="item in segments" :key="item.part">
 							<TimeFieldInput v-if="item.part === 'literal'" :part="item.part" class="time-field-literal">
