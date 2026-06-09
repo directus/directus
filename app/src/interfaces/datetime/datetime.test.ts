@@ -146,6 +146,39 @@ describe('Interface', () => {
 
 			expect(field(wrapper).exists()).toBe(false);
 		});
+
+		it('enters inline edit mode when Enter is pressed on the focused value region', async () => {
+			const wrapper = mount(Datetime, {
+				props: { value: '2024-01-15', type: 'date' },
+				global: editGlobal,
+			});
+
+			expect(field(wrapper).exists()).toBe(false);
+
+			await wrapper.find('.value').trigger('keydown', { key: 'Enter' });
+
+			expect(field(wrapper).exists()).toBe(true);
+		});
+
+		it('makes the value region a focusable button when interactive', () => {
+			const wrapper = mount(Datetime, {
+				props: { value: '2024-01-15', type: 'date' },
+				global: editGlobal,
+			});
+
+			const value = wrapper.find('.value');
+			expect(value.attributes('tabindex')).toBe('0');
+			expect(value.attributes('role')).toBe('button');
+		});
+
+		it('is not a tab stop when disabled', () => {
+			const wrapper = mount(Datetime, {
+				props: { value: '2024-01-15', type: 'date', disabled: true },
+				global: editGlobal,
+			});
+
+			expect(wrapper.find('.value').attributes('tabindex')).toBeUndefined();
+		});
 	});
 
 	it('should hide action buttons when nonEditable is true', () => {

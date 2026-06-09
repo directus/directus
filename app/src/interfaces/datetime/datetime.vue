@@ -40,14 +40,14 @@ const isEditing = ref(false);
 
 const isValidValue = computed(() => (props.value ? isValid(parseDate(props.value, props.type)) : false));
 
-// Dynamic variables (e.g. $NOW, $CURRENT_USER.date_created) can't be shown as editable segments.
 const isDynamic = computed(() => !!props.value && isDynamicVariable(props.value));
 
+const isInteractive = computed(() => !props.disabled && !props.nonEditable);
+
 // Inline editing covers the date for date/dateTime/timestamp. The `time` type stays popup-only,
-// and dynamic-variable values fall back to opening the popup (segments can't represent them).
-const canEditInline = computed(
-	() => props.type !== 'time' && !props.disabled && !props.nonEditable && !isDynamic.value,
-);
+const canEditInline = computed(() => props.type !== 'time' && isInteractive.value && !isDynamic.value);
+
+const valueTabindex = computed(() => (isInteractive.value && !isEditing.value ? 0 : undefined));
 
 function unsetValue(e: Event) {
 	e.preventDefault();
@@ -62,13 +62,27 @@ function closeDatePicker() {
 
 /** Clicking the value region enters inline edit mode, or opens the popup when inline edit isn't possible. */
 function onValueClick() {
-	if (props.disabled || props.nonEditable) return;
+	if (!isInteractive.value) return;
 
 	if (canEditInline.value) {
 		isEditing.value = true;
 	} else {
 		dateTimeMenu.value?.activate?.();
 	}
+}
+
+/**
+ * Keyboard entry into inline edit mode. Enter/Space on the value region behaves like a click, so
+ * keyboard users edit the date inline rather than opening the picker — the calendar icon (a separate
+ * tab stop) remains the way to open the popup. Ignores events bubbling up from the segments while editing.
+ */
+function onValueKeydown(event: KeyboardEvent) {
+	if (event.target !== event.currentTarget) return;
+	if (event.key !== 'Enter' && event.key !== ' ') return;
+	if (!isInteractive.value) return;
+
+	event.preventDefault();
+	onValueClick();
 }
 
 /** Leave edit mode once focus moves outside the inline field (segment-to-segment moves stay in edit mode). */
@@ -120,7 +134,14 @@ const tzValue = computed({
 	>
 		<template #activator="{ toggle, active }">
 			<VListItem block activator :disabled :non-editable :active>
-				<div class="value" @click="onValueClick">
+				<div
+					class="value"
+					:tabindex="valueTabindex"
+					:role="valueTabindex !== undefined ? 'button' : undefined"
+					:aria-label="valueTabindex !== undefined ? $t('interfaces.datetime.datetime') : undefined"
+					@click="onValueClick"
+					@keydown="onValueKeydown"
+				>
 					<DatePickerField
 						v-if="isEditing"
 						:type="type"
@@ -193,6 +214,13 @@ const tzValue = computed({
 	min-inline-size: 0;
 	min-block-size: var(--theme--form--field--input--height, 1.5rem);
 	cursor: text;
+
+	// The list item's :focus-within already renders the focus ring, so suppress the
+	// default outline on the focusable value region to avoid a doubled (dotted) outline.
+	&:focus,
+	&:focus-visible {
+		outline: none;
+	}
 }
 
 .v-list-item.disabled .value,
