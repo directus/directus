@@ -64,6 +64,14 @@ describe('IpBlocklist', () => {
 			expect(blocklist.checkAddress('::808:808')).toBe(false); // ::8.8.8.8
 			expect(blocklist.checkAddress('2002:808:808::')).toBe(false); // 6to4 8.8.8.8
 		});
+
+		test('does not treat :: / ::1 as an embedded IPv4 of a denied 0.0.0.0/8', () => {
+			blocklist.parseSubnet('0.0.0.0/8');
+
+			// ::1 and :: must not be classified as ::0.0.0.1 / ::0.0.0.0 and matched against the IPv4 rule
+			expect(blocklist.checkAddress('::1')).toBe(false);
+			expect(blocklist.checkAddress('::')).toBe(false);
+		});
 	});
 
 	describe('parseSubnet', () => {

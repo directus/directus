@@ -1,51 +1,21 @@
 import { BlockList, type IPVersion, isIP, isIPv6 } from 'node:net';
 import os from 'node:os';
+import ipaddr from 'ipaddr.js';
 
 /**
- * Expand an IPv6 address string to its 16 bytes. Handles "::" compression and a
- * trailing embedded IPv4 literal (e.g. "::ffff:1.2.3.4"). Returns null if the
- * input is not a valid IPv6 address.
+ * Parses an IPv6 address string into its 16 bytes using `ipaddr.js`, which
+ * handles "::" compression and a trailing embedded IPv4 literal (e.g.
+ * "::ffff:1.2.3.4"). Returns null if the input is not a valid IPv6 address.
  */
-function expandIpv6(address: string): number[] | null {
-	const input = address.split('%')[0];
+function ipv6ToBytes(address: string): number[] | null {
+	const input = address.split('%')[0]; // drop any zone identifier, e.g. fe80::1%eth0
 
-	if (!isIPv6(input)) return null;
+	if (!ipaddr.isValid(input)) return null;
 
-	const halves = input.split('::');
-	if (halves.length > 2) return null;
+	const parsed = ipaddr.parse(input);
+	if (parsed.kind() !== 'ipv6') return null;
 
-	const toWords = (part: string) => (part === '' ? [] : part.split(':'));
-
-	const expandTrailingV4 = (words: string[]): string[] | null => {
-		const last = words[words.length - 1];
-
-		if (last && last.includes('.')) {
-			words.pop();
-			const v4 = last.split('.').map((octet) => Number.parseInt(octet, 10));
-			if (v4.length !== 4 || v4.some((octet) => Number.isNaN(octet) || octet < 0 || octet > 255)) return null;
-			words.push(((v4[0] << 8) | v4[1]).toString(16), ((v4[2] << 8) | v4[3]).toString(16));
-		}
-
-		return words;
-	};
-
-	const head = expandTrailingV4(toWords(halves[0]));
-	const tail = expandTrailingV4(halves.length === 2 ? toWords(halves[1]) : []);
-	if (!head || !tail) return null;
-
-	const missing = 8 - (head.length + tail.length);
-	if (missing < 0 || (halves.length === 1 && missing !== 0)) return null;
-
-	const words = [...head, ...new Array(missing).fill('0'), ...tail];
-	const bytes: number[] = [];
-
-	for (const word of words) {
-		const value = Number.parseInt(word, 16);
-		if (word === '' || Number.isNaN(value) || value < 0 || value > 0xffff) return null;
-		bytes.push((value >> 8) & 0xff, value & 0xff);
-	}
-
-	return bytes.length === 16 ? bytes : null;
+	return parsed.toByteArray();
 }
 
 /**
@@ -72,15 +42,16 @@ export class IpBlocklist extends BlockList {
 	 * @param address - An IPv6 address string
 	 */
 	private embeddedIpv4(address: string): string[] {
-		const bytes = expandIpv6(address);
+		const bytes = ipv6ToBytes(address);
 		if (!bytes) return [];
 
 		const toV4 = (octets: number[]) => octets.join('.');
 		const isZero = (start: number, end: number) => bytes.slice(start, end).every((byte) => byte === 0);
 		const candidates: string[] = [];
 
-		// IPv4-compatible ::/96 (deprecated, RFC 4291): ::a.b.c.d. Excludes :: and ::1.
-		if (isZero(0, 12) && bytes.slice(12).some((byte) => byte !== 0)) candidates.push(toV4(bytes.slice(12, 16)));
+		// IPv4-compatible ::/96 (deprecated, RFC 4291): ::a.b.c.d. Excludes ::, ::1 and
+		// other ::0.0.0.0/8 forms, which are not routable embedded IPv4 targets.
+		if (isZero(0, 12) && bytes[12] !== 0) candidates.push(toV4(bytes.slice(12, 16)));
 
 		// NAT64 well-known prefix 64:ff9b::/96 (RFC 6052)
 		if (bytes[0] === 0x00 && bytes[1] === 0x64 && bytes[2] === 0xff && bytes[3] === 0x9b && isZero(4, 12)) {

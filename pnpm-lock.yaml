@@ -627,6 +627,9 @@ catalogs:
     ip-matching:
       specifier: 2.1.2
       version: 2.1.2
+    ipaddr.js:
+      specifier: 2.4.0
+      version: 2.4.0
     isolated-vm:
       specifier: 5.0.3
       version: 5.0.3
@@ -3091,6 +3094,9 @@ importers:
       fs-extra:
         specifier: 'catalog:'
         version: 11.3.2
+      ipaddr.js:
+        specifier: 'catalog:'
+        version: 2.4.0
       joi:
         specifier: 'catalog:'
         version: 18.0.1

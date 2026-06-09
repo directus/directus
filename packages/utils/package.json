@@ -37,6 +37,7 @@
 		"@directus/system-data": "workspace:*",
 		"date-fns": "catalog:",
 		"fs-extra": "catalog:",
+		"ipaddr.js": "catalog:",
 		"joi": "catalog:",
 		"zod": "catalog:",
 		"js-yaml": "catalog:",
