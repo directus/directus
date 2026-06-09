@@ -188,7 +188,7 @@ const config: Config = {
 		mssql: {
 			client: 'mssql',
 			connection: {
-				database: 'model',
+				database: 'directus',
 				user: 'sa',
 				password: 'Test@123',
 				host: '127.0.0.1',
@@ -309,7 +309,10 @@ const config: Config = {
 			DB_PORT: '6105',
 			DB_USER: 'sa',
 			DB_PASSWORD: 'Test@123',
-			DB_DATABASE: 'model',
+			DB_DATABASE: 'directus',
+			// Match the 60s requestTimeout the test harness's own knex uses (see knexConfig.mssql).
+			// Without it the server falls back to tedious's 15s default;
+			DB_REQUEST_TIMEOUT: '60000',
 			PORT: '59157',
 		},
 		oracle: {

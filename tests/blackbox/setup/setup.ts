@@ -56,6 +56,26 @@ export async function setup() {
 						return {
 							title: config.names[vendor],
 							task: async () => {
+								if (vendor === 'mssql') {
+									const adminDb = knex({
+										client: 'mssql',
+										connection: { ...(config.knexConfig.mssql.connection as object), database: 'master' } as never,
+										pool: { min: 1, max: 1 },
+									});
+
+									try {
+										await awaitDatabaseConnection(adminDb, config.knexConfig.mssql.waitTestSQL);
+										await adminDb.raw("IF DB_ID('directus') IS NULL CREATE DATABASE [directus]");
+										await adminDb.raw('ALTER DATABASE [directus] SET RECOVERY SIMPLE');
+
+										await adminDb.raw(
+											'ALTER DATABASE [directus] SET READ_COMMITTED_SNAPSHOT ON WITH ROLLBACK IMMEDIATE',
+										);
+									} finally {
+										await adminDb.destroy();
+									}
+								}
+
 								const database = knex(config.knexConfig[vendor]);
 								await awaitDatabaseConnection(database, config.knexConfig[vendor].waitTestSQL);
 
