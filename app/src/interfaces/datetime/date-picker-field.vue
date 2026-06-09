@@ -44,9 +44,6 @@ const hourCycle = computed(() => (props.use24 ? 24 : undefined));
 const granularity = computed(() => (props.includeSeconds ? 'second' : 'minute'));
 const showCalendar = computed(() => props.type !== 'time');
 
-// Reka emits on every keystroke while editing the year, so a populated year passes through partial
-// values (e.g. 2 → 0002) mid-edit. Ignore years under 1000 until all four digits are entered,
-// otherwise they format to nonsense (timestamps land near 1900).
 function onDateUpdate(value: DateValue | undefined) {
 	if (value && value.year < 1000) return;
 	applyDate(value);
@@ -96,7 +93,7 @@ onMounted(() => {
 			:hour-cycle="hourCycle"
 			:disabled="disabled"
 			:dir="dir"
-			class="time-field"
+			:class="['time-field', { 'is-empty': !timeValue }]"
 			@update:model-value="applyTime"
 		>
 			<template v-for="item in segments" :key="item.part">
@@ -135,6 +132,11 @@ onMounted(() => {
 
 .date-field-segment[data-placeholder],
 .time-field-segment[data-placeholder] {
+	color: var(--theme--foreground-subdued);
+}
+
+// Placeholder for the time field when empty
+.time-field.is-empty [data-reka-time-field-segment='dayPeriod'] {
 	color: var(--theme--foreground-subdued);
 }
 
