@@ -4,7 +4,7 @@ import Type, { type Static } from 'typebox';
 import { forbiddenError, notFoundError } from '../errors.js';
 import { licenseStore } from '../store.js';
 import type { MockLicense } from '../types.js';
-import { createNewToken } from '../utils.js';
+import { createToken } from '../utils.js';
 
 export const ActivateRequestSchema = Type.Object({
 	license_key: Type.String({ minLength: 1 }),
@@ -56,7 +56,7 @@ export async function activateRoute(app: FastifyInstance) {
 				license.projects.push({ id: new_project_id, url: public_url });
 
 				return res.status(200).send({
-					token: await createNewToken(license),
+					token: await createToken(license),
 					new_project_id,
 				});
 			}
@@ -64,7 +64,7 @@ export async function activateRoute(app: FastifyInstance) {
 			license.projects.push({ id: project_id, url: public_url });
 
 			return res.status(200).send({
-				token: await createNewToken(license),
+				token: await createToken(license),
 			});
 		},
 	);
