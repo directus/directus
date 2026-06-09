@@ -790,16 +790,28 @@ fields:
           value: gpt-5-mini
         - text: GPT-5
           value: gpt-5
+        - text: GPT-5.1
+          value: gpt-5.1
+        - text: GPT-5.1 Chat
+          value: gpt-5.1-chat-latest
         - text: GPT-5.2
           value: gpt-5.2
         - text: GPT-5.2 Chat
           value: gpt-5.2-chat-latest
         - text: GPT-5.2 Pro
           value: gpt-5.2-pro
+        - text: GPT-5.4 Nano
+          value: gpt-5.4-nano
+        - text: GPT-5.4 Mini
+          value: gpt-5.4-mini
         - text: GPT-5.4
           value: gpt-5.4
         - text: GPT-5.4 Pro
           value: gpt-5.4-pro
+        - text: GPT-5.5
+          value: gpt-5.5
+        - text: GPT-5.5 Pro
+          value: gpt-5.5-pro
     width: half
     group: ai_group
 
@@ -823,12 +835,10 @@ fields:
       choices:
         - text: Claude Haiku 4.5
           value: claude-haiku-4-5
-        - text: Claude Sonnet 4.5
-          value: claude-sonnet-4-5
-        - text: Claude Opus 4.5
-          value: claude-opus-4-5
         - text: Claude Sonnet 4.6
           value: claude-sonnet-4-6
+        - text: Claude Opus 4.7
+          value: claude-opus-4-7
         - text: Claude Opus 4.6
           value: claude-opus-4-6
     width: half
@@ -877,12 +887,98 @@ fields:
     options:
       label: $t:fields.directus_settings.ai_system_prompt
 
+  - field: ai_translation_divider
+    interface: presentation-divider
+    options:
+      inlineTitle: true
+      color: 'var(--theme--foreground-subdued)'
+      title: $t:translation
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: ai_translations_notice
+    interface: presentation-notice
+    options:
+      icon: diamond
+      text: $t:fields.directus_settings.ai_translations_notice
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: ai_translation_default_model
+    interface: select-dropdown
+    note: $t:fields.directus_settings.ai_translation_default_model_note
+    group: ai_group
+    width: half
+    options:
+      allowNone: true
+      choices: []
+
+  - field: ai_translation_glossary
+    interface: list
+    special:
+      - cast-json
+    note: $t:fields.directus_settings.ai_translation_glossary_note
+    options:
+      template: '{{term}}'
+      limit: 200
+      fields:
+        - field: term
+          name: $t:fields.directus_settings.ai_glossary_term
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: input
+            required: true
+            width: half
+            options:
+              placeholder: $t:fields.directus_settings.ai_glossary_term_placeholder
+        - field: translation_note
+          name: $t:fields.directus_settings.ai_glossary_note
+          type: string
+          schema:
+            is_nullable: true
+          meta:
+            interface: input
+            required: false
+            width: half
+            options:
+              placeholder: $t:fields.directus_settings.ai_glossary_note_placeholder
+    width: full
+    group: ai_group
+
+  - field: ai_translation_style_guide
+    interface: input-rich-text-md
+    note: $t:fields.directus_settings.ai_translation_style_guide_note
+    group: ai_group
+    width: full
+    options:
+      label: $t:fields.directus_settings.ai_translation_style_guide
+      placeholder: $t:fields.directus_settings.ai_translation_style_guide_placeholder
+
   - field: ai_openai_compatible_divider
     interface: presentation-divider
     options:
       inlineTitle: true
       color: 'var(--theme--foreground-subdued)'
       title: $t:fields.directus_settings.ai_openai_compatible
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: ai_openai_compatible_notice
+    interface: presentation-notice
+    options:
+      icon: diamond
+      text: $t:fields.directus_settings.ai_openai_compatible_notice
     special:
       - alias
       - no-data
@@ -1112,6 +1208,78 @@ fields:
             _neq: true
         hidden: true
 
+  - field: mcp_oauth_enabled
+    interface: boolean
+    group: mcp_group
+    special:
+      - cast-boolean
+    note: $t:fields.directus_settings.mcp_oauth_enabled_note
+    width: half
+    options:
+      label: $t:fields.directus_settings.mcp_oauth_enabled
+    conditions:
+      - name: mcp_enabled
+        rule:
+          mcp_enabled:
+            _neq: true
+        readonly: true
+
+  - field: mcp_oauth_dcr_enabled
+    interface: boolean
+    group: mcp_group
+    special:
+      - cast-boolean
+    note:
+      'Allow MCP clients to register automatically using the OAuth 2.0 Dynamic Client Registration protocol (RFC 7591).'
+    width: half
+    options:
+      label: $t:fields.directus_settings.mcp_oauth_dcr_enabled
+    conditions:
+      - name: mcp_oauth_disabled
+        rule:
+          mcp_oauth_enabled:
+            _neq: true
+        hidden: true
+
+  - field: mcp_oauth_cimd_enabled
+    interface: boolean
+    group: mcp_group
+    special:
+      - cast-boolean
+    note:
+      'Allow MCP clients to identify themselves using an HTTPS URL that hosts their metadata (IETF
+      draft-oauth-client-id-metadata-document).'
+    width: half
+    options:
+      label: $t:fields.directus_settings.mcp_oauth_cimd_enabled
+    conditions:
+      - name: mcp_oauth_disabled
+        rule:
+          mcp_oauth_enabled:
+            _neq: true
+        hidden: true
+
+  - field: mcp_oauth_clients_link
+    interface: presentation-links
+    group: mcp_group
+    width: half
+    special:
+      - alias
+      - no-data
+    options:
+      links:
+        - label: $t:manage_registered_clients
+          icon: key
+          type: normal
+          actionType: url
+          url: /settings/mcp-oauth-clients
+    conditions:
+      - name: mcp_oauth_disabled
+        rule:
+          mcp_oauth_enabled:
+            _neq: true
+        hidden: true
+
   - field: mcp_system_prompt_divider
     interface: presentation-divider
     options:
@@ -1158,3 +1326,16 @@ fields:
           mcp_system_prompt_enabled:
             _neq: true
         readonly: true
+
+  ### Licensing fields ###
+  - field: license_key
+    group: license_group
+    hidden: true
+    special:
+      - encrypt
+
+  - field: license_token
+    group: license_group
+    hidden: true
+    special:
+      - encrypt

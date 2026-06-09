@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import { _cache } from '../utils/get-secret.js';
 import { verifyJWT } from '../utils/jwt.js';
@@ -37,6 +38,16 @@ vi.mock('@directus/env', () => ({
 }));
 
 vi.mock('../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js');
+
+const { isEntitledMock } = vi.hoisted(() => ({ isEntitledMock: vi.fn() }));
+
+vi.mock('../license/index.js', () => ({
+	getEntitlementManager: () => ({
+		isEntitled: isEntitledMock,
+		clearCache: vi.fn(),
+		check: vi.fn().mockResolvedValue({ allowed: true }),
+	}),
+}));
 
 vi.mock('../utils/jwt.js', () => ({
 	verifyJWT: vi.fn(),
@@ -92,6 +103,7 @@ describe('Integration Tests', () => {
 
 		beforeEach(() => {
 			_cache.secret = null;
+			isEntitledMock.mockReturnValue(true);
 		});
 
 		afterEach(() => {
@@ -189,6 +201,37 @@ describe('Integration Tests', () => {
 
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.All);
 				expect(onRequireUserIntegrityCheck).toHaveBeenCalledWith(UserIntegrityCheckFlag.All);
+			});
+
+			describe('SSO provider entitlement', () => {
+				it('should block a custom provider when not entitled to SSO', async () => {
+					isEntitledMock.mockReturnValue(false);
+					const opts: MutationOptions = {};
+
+					await service.createOne({ provider: 'saml' }, opts);
+
+					expect(opts.preMutationError).toStrictEqual(
+						new InvalidPayloadError({ reason: `Setting a custom "provider" isn't included in the current license` }),
+					);
+				});
+
+				it('should allow a custom provider when entitled to SSO', async () => {
+					isEntitledMock.mockReturnValue(true);
+					const opts: MutationOptions = {};
+
+					await service.createOne({ provider: 'saml' }, opts);
+
+					expect(opts.preMutationError).toBeUndefined();
+				});
+
+				it('should allow the default provider when not entitled to SSO', async () => {
+					isEntitledMock.mockReturnValue(false);
+					const opts: MutationOptions = {};
+
+					await service.createOne({ provider: DEFAULT_AUTH_PROVIDER }, opts);
+
+					expect(opts.preMutationError).toBeUndefined();
+				});
 			});
 		});
 
@@ -290,6 +333,37 @@ describe('Integration Tests', () => {
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.All);
 				expect(onRequireUserIntegrityCheck).toHaveBeenCalledWith(UserIntegrityCheckFlag.All);
 			});
+
+			describe('SSO provider entitlement', () => {
+				it('should block a custom provider in any payload when not entitled to SSO', async () => {
+					isEntitledMock.mockReturnValue(false);
+					const opts: MutationOptions = {};
+
+					await service.createMany([{ provider: DEFAULT_AUTH_PROVIDER }, { provider: 'saml' }], opts);
+
+					expect(opts.preMutationError).toStrictEqual(
+						new InvalidPayloadError({ reason: `Setting a custom "provider" isn't included in the current license` }),
+					);
+				});
+
+				it('should allow a custom provider when entitled to SSO', async () => {
+					isEntitledMock.mockReturnValue(true);
+					const opts: MutationOptions = {};
+
+					await service.createMany([{ provider: 'saml' }], opts);
+
+					expect(opts.preMutationError).toBeUndefined();
+				});
+
+				it('should allow default providers when not entitled to SSO', async () => {
+					isEntitledMock.mockReturnValue(false);
+					const opts: MutationOptions = {};
+
+					await service.createMany([{ provider: DEFAULT_AUTH_PROVIDER }, {}], opts);
+
+					expect(opts.preMutationError).toBeUndefined();
+				});
+			});
 		});
 
 		describe('updateMany', () => {
@@ -315,7 +389,7 @@ describe('Integration Tests', () => {
 
 				await service.updateMany(['user-id-5'], { status: 'inactive' }, opts);
 
-				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.All);
+				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.RemainingAdmins);
 				expect(clearUserSessionsSpy).toBeCalled();
 			});
 
@@ -420,6 +494,34 @@ describe('Integration Tests', () => {
 						);
 					});
 				});
+			});
+		});
+
+		describe('updateMany SSO provider entitlement', () => {
+			const service = new UsersService({
+				knex: db,
+				schema,
+				accountability: null,
+			});
+
+			it('should block setting a custom provider when not entitled to SSO', async () => {
+				isEntitledMock.mockReturnValue(false);
+				const opts: MutationOptions = {};
+
+				await service.updateMany(['user-id-14'], { provider: 'saml' }, opts);
+
+				expect(opts.preMutationError).toStrictEqual(
+					new InvalidPayloadError({ reason: `Setting a custom "provider" isn't included in the current license` }),
+				);
+			});
+
+			it('should allow setting the default provider when not entitled to SSO', async () => {
+				isEntitledMock.mockReturnValue(false);
+				const opts: MutationOptions = {};
+
+				await service.updateMany(['user-id-14'], { provider: DEFAULT_AUTH_PROVIDER }, opts);
+
+				expect(opts.preMutationError).toBeUndefined();
 			});
 		});
 

@@ -1,25 +1,40 @@
 import { Readable } from 'node:stream';
 import { performance } from 'perf_hooks';
 import { useEnv } from '@directus/env';
-import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
+import { ForbiddenError } from '@directus/errors';
+import { createKv } from '@directus/memory';
+import type {
+	AbstractServiceOptions,
+	Accountability,
+	SchemaOverview,
+	ServerHealth,
+	ServerHealthCheck,
+} from '@directus/types';
 import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
-import { getCache } from '../cache.js';
 import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../constants.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
+import { getEntitlementManager, getLicenseManager } from '../license/index.js';
 import { useLogger } from '../logger/index.js';
 import getMailer from '../mailer.js';
-import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
-import { rateLimiter } from '../middleware/rate-limiter-ip.js';
+import { redisConfigAvailable, useRedis } from '../redis/index.js';
 import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import { getAllowedLogLevels } from '../utils/get-allowed-log-levels.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { isUnauthenticated } from '../utils/is-unauthenticated.js';
+import { useStore } from '../utils/store.js';
 import { SettingsService } from './settings.js';
 
 const env = useEnv();
 const logger = useLogger();
+const HEALTHCHECK_CACHE_TTL = getMilliseconds(env['HEALTHCHECK_CACHE_TTL'], 300_000); // default 5 minute
+
+const store = useStore<{ health: ServerHealth }>((env['HEALTHCHECK_NAMESPACE'] as string) ?? 'directus:healthcheck', {
+	ttl: HEALTHCHECK_CACHE_TTL,
+});
 
 export class ServerService {
 	knex: Knex;
@@ -40,11 +55,13 @@ export class ServerService {
 
 	async serverInfo(): Promise<Record<string, any>> {
 		const info: Record<string, any> = {};
-		const setupComplete = await this.isSetupCompleted();
+		const licenseManager = getLicenseManager();
+		const isSetupCompleted = await this.isSetupCompleted();
 
-		const projectInfo = await this.settingsService.readSingleton({
+		const { project_owner, ...projectInfo } = await this.settingsService.readSingleton({
 			fields: [
 				'project_name',
+				'project_owner',
 				'project_descriptor',
 				'project_logo',
 				'project_color',
@@ -67,11 +84,23 @@ export class ServerService {
 
 		info['project'] = projectInfo;
 
-		info['setupCompleted'] = setupComplete;
+		if (!isSetupCompleted) {
+			info['setup'] = {
+				license_complete: licenseManager.getSource() !== null,
+				owner_complete: Boolean(project_owner),
+			};
+		}
 
 		if (this.accountability?.user) {
 			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
+			info['mcp_oauth_enabled'] = toBoolean(env['MCP_OAUTH_ENABLED'] ?? false);
+			info['mcp_oauth_dcr_enabled'] = toBoolean(env['MCP_OAUTH_DCR_ENABLED'] ?? false);
+			info['mcp_oauth_cimd_enabled'] = toBoolean(env['MCP_OAUTH_CIMD_ENABLED'] ?? false);
+
+			info['autoSave'] = {
+				revisionInterval: Number(env['AUTOSAVE_REVISION_INTERVAL']),
+			};
 
 			info['files'] = {
 				mimeTypeAllowList: toArray(env['FILES_MIME_TYPE_ALLOW_LIST']),
@@ -152,49 +181,48 @@ export class ServerService {
 			}
 		}
 
-		if (this.accountability?.user || !setupComplete) info['version'] = version;
+		if (this.accountability?.user || !isSetupCompleted) {
+			info['version'] = version;
+		}
+
+		info['license'] = {
+			source: licenseManager.getSource(),
+			entitlements: getEntitlementManager().getAppEntitlements(),
+		};
 
 		return info;
 	}
 
-	async health(): Promise<Record<string, any>> {
+	async health(): Promise<ServerHealth | Pick<ServerHealth, 'status'>> {
+		if (isUnauthenticated(this.accountability)) {
+			throw new ForbiddenError();
+		}
+
+		const healthResult = await store(async (store) => {
+			try {
+				return await store.get('health');
+			} catch (err) {
+				logger.warn(err, 'Failed to read health check cache');
+			}
+
+			return;
+		});
+
+		if (healthResult) {
+			return this.accountability?.admin === true ? healthResult : { status: healthResult['status'] };
+		}
+
 		const { nanoid } = await import('nanoid');
 
 		const checkID = nanoid(5);
 
-		// Based on https://tools.ietf.org/id/draft-inadarei-api-health-check-05.html#name-componenttype
-		type HealthData = {
-			status: 'ok' | 'warn' | 'error';
-			releaseId: string;
-			serviceId: string;
-			checks: {
-				[service: string]: HealthCheck[];
-			};
-		};
+		const enabledServices = toArray(env['HEALTHCHECK_SERVICES'] as string[]);
 
-		type HealthCheck = {
-			componentType: 'system' | 'datastore' | 'objectstore' | 'email' | 'cache' | 'ratelimiter';
-			observedValue?: number | string | boolean;
-			observedUnit?: string;
-			status: 'ok' | 'warn' | 'error';
-			output?: any;
-			threshold?: number;
-		};
-
-		const data: HealthData = {
+		const data: ServerHealth = {
 			status: 'ok',
 			releaseId: version,
 			serviceId: env['PUBLIC_URL'] as string,
-			checks: merge(
-				...(await Promise.all([
-					testDatabase(),
-					testCache(),
-					testRateLimiter(),
-					testRateLimiterGlobal(),
-					testStorage(),
-					testEmail(),
-				])),
-			),
+			checks: merge(...(await Promise.all([testDatabase(), testRedis(), testStorage(), testEmail()]))),
 		};
 
 		if (SERVER_ONLINE === false) {
@@ -223,17 +251,23 @@ export class ServerService {
 			if (data.status === 'error') break;
 		}
 
-		if (this.accountability?.admin !== true) {
-			return { status: data.status };
-		} else {
-			return data;
-		}
+		await store(async (store) => {
+			await store.set('health', data).catch((err) => {
+				logger.warn(err, 'Failed to write health check cache');
+			});
+		});
 
-		async function testDatabase(): Promise<Record<string, HealthCheck[]>> {
+		return this.accountability?.admin === true ? data : { status: data.status };
+
+		async function testDatabase(): Promise<Record<string, ServerHealthCheck[]>> {
+			if (enabledServices.includes('database') === false) {
+				return {};
+			}
+
 			const database = getDatabase();
 			const client = env['DB_CLIENT'];
 
-			const checks: Record<string, HealthCheck[]> = {};
+			const checks: Record<string, ServerHealthCheck[]> = {};
 
 			// Response time
 			// ----------------------------------------------------------------------------------------
@@ -286,15 +320,21 @@ export class ServerService {
 			return checks;
 		}
 
-		async function testCache(): Promise<Record<string, HealthCheck[]>> {
-			if (env['CACHE_ENABLED'] !== true) {
+		async function testRedis(): Promise<Record<string, ServerHealthCheck[]>> {
+			if (enabledServices.includes('redis') === false || redisConfigAvailable() !== true) {
 				return {};
 			}
 
-			const { cache } = getCache();
+			// Use createKV as redis check to avoid using redlock specific commands
+			const redis = createKv({
+				type: 'redis',
+				redis: useRedis(),
+				namespace: (env['HEALTHCHECK_NAMESPACE'] as string) ?? 'directus:healthcheck',
+				ttl: HEALTHCHECK_CACHE_TTL,
+			});
 
-			const checks: Record<string, HealthCheck[]> = {
-				'cache:responseTime': [
+			const checks: Record<string, ServerHealthCheck[]> = {
+				'redis:responseTime': [
 					{
 						status: 'ok',
 						componentType: 'cache',
@@ -308,113 +348,34 @@ export class ServerService {
 			const startTime = performance.now();
 
 			try {
-				await cache!.set(`directus-health-${checkID}`, true, 5);
-				await cache!.delete(`directus-health-${checkID}`);
+				await redis.set(`directus-health-${checkID}`, 1);
+				await redis.delete(`directus-health-${checkID}`);
 			} catch (err: any) {
-				checks['cache:responseTime']![0]!.status = 'error';
-				checks['cache:responseTime']![0]!.output = err;
+				checks['redis:responseTime']![0]!.status = 'error';
+				checks['redis:responseTime']![0]!.output = err;
 			} finally {
 				const endTime = performance.now();
-				checks['cache:responseTime']![0]!.observedValue = +(endTime - startTime).toFixed(3);
+				checks['redis:responseTime']![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 				if (
-					checks['cache:responseTime']![0]!.observedValue > checks['cache:responseTime']![0]!.threshold! &&
-					checks['cache:responseTime']![0]!.status !== 'error'
+					checks['redis:responseTime']![0]!.observedValue > checks['redis:responseTime']![0]!.threshold! &&
+					checks['redis:responseTime']![0]!.status !== 'error'
 				) {
-					checks['cache:responseTime']![0]!.status = 'warn';
+					checks['redis:responseTime']![0]!.status = 'warn';
 				}
 			}
 
 			return checks;
 		}
 
-		async function testRateLimiter(): Promise<Record<string, HealthCheck[]>> {
-			if (env['RATE_LIMITER_ENABLED'] !== true) {
+		async function testStorage(): Promise<Record<string, ServerHealthCheck[]>> {
+			if (enabledServices.includes('storage') === false) {
 				return {};
 			}
 
-			const checks: Record<string, HealthCheck[]> = {
-				'rateLimiter:responseTime': [
-					{
-						status: 'ok',
-						componentType: 'ratelimiter',
-						observedValue: 0,
-						observedUnit: 'ms',
-						threshold: env['RATE_LIMITER_HEALTHCHECK_THRESHOLD'] ? +env['RATE_LIMITER_HEALTHCHECK_THRESHOLD'] : 150,
-					},
-				],
-			};
-
-			const startTime = performance.now();
-
-			try {
-				await rateLimiter.consume(`directus-health-${checkID}`, 1);
-				await rateLimiter.delete(`directus-health-${checkID}`);
-			} catch (err: any) {
-				checks['rateLimiter:responseTime']![0]!.status = 'error';
-				checks['rateLimiter:responseTime']![0]!.output = err;
-			} finally {
-				const endTime = performance.now();
-				checks['rateLimiter:responseTime']![0]!.observedValue = +(endTime - startTime).toFixed(3);
-
-				if (
-					checks['rateLimiter:responseTime']![0]!.observedValue > checks['rateLimiter:responseTime']![0]!.threshold! &&
-					checks['rateLimiter:responseTime']![0]!.status !== 'error'
-				) {
-					checks['rateLimiter:responseTime']![0]!.status = 'warn';
-				}
-			}
-
-			return checks;
-		}
-
-		async function testRateLimiterGlobal(): Promise<Record<string, HealthCheck[]>> {
-			if (env['RATE_LIMITER_GLOBAL_ENABLED'] !== true) {
-				return {};
-			}
-
-			const checks: Record<string, HealthCheck[]> = {
-				'rateLimiterGlobal:responseTime': [
-					{
-						status: 'ok',
-						componentType: 'ratelimiter',
-						observedValue: 0,
-						observedUnit: 'ms',
-						threshold: env['RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD']
-							? +env['RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD']
-							: 150,
-					},
-				],
-			};
-
-			const startTime = performance.now();
-
-			try {
-				await rateLimiterGlobal.consume(`directus-health-${checkID}`, 1);
-				await rateLimiterGlobal.delete(`directus-health-${checkID}`);
-			} catch (err: any) {
-				checks['rateLimiterGlobal:responseTime']![0]!.status = 'error';
-				checks['rateLimiterGlobal:responseTime']![0]!.output = err;
-			} finally {
-				const endTime = performance.now();
-				checks['rateLimiterGlobal:responseTime']![0]!.observedValue = +(endTime - startTime).toFixed(3);
-
-				if (
-					checks['rateLimiterGlobal:responseTime']![0]!.observedValue >
-						checks['rateLimiterGlobal:responseTime']![0]!.threshold! &&
-					checks['rateLimiterGlobal:responseTime']![0]!.status !== 'error'
-				) {
-					checks['rateLimiterGlobal:responseTime']![0]!.status = 'warn';
-				}
-			}
-
-			return checks;
-		}
-
-		async function testStorage(): Promise<Record<string, HealthCheck[]>> {
 			const storage = await getStorage();
 
-			const checks: Record<string, HealthCheck[]> = {};
+			const checks: Record<string, ServerHealthCheck[]> = {};
 
 			for (const location of toArray(env['STORAGE_LOCATIONS'] as string)) {
 				const disk = storage.location(location);
@@ -454,8 +415,12 @@ export class ServerService {
 			return checks;
 		}
 
-		async function testEmail(): Promise<Record<string, HealthCheck[]>> {
-			const checks: Record<string, HealthCheck[]> = {
+		async function testEmail(): Promise<Record<string, ServerHealthCheck[]>> {
+			if (enabledServices.includes('email') === false || toBoolean(env['EMAIL_VERIFY_SETUP']) === false) {
+				return {};
+			}
+
+			const checks: Record<string, ServerHealthCheck[]> = {
 				'email:connection': [
 					{
 						status: 'ok',

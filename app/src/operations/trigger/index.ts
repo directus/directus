@@ -1,5 +1,6 @@
 import { defineOperationApp } from '@directus/extensions';
 import { useFlowsStore } from '@/stores/flows';
+import { translate } from '@/utils/translate-literal';
 
 export default defineOperationApp({
 	id: 'trigger',
@@ -18,7 +19,7 @@ export default defineOperationApp({
 		const flowChoices = flowStore.flows
 			.filter((flow) => flow.trigger === 'operation')
 			.map((flow) => {
-				return { text: flow.name, value: flow.id };
+				return { text: translate(flow.name), value: flow.id };
 			});
 
 		return [

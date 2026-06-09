@@ -20,31 +20,18 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Over
-directus_bsl: Directus BSL 1.1
 privacy_policy: Privacybeleid
-contact_our_team: Contacteer ons Team
 setup_welcome: Welkom bij Directus
 setup_info: Laten we je beheerdersaccount aanmaken en je project opstarten
-setup_license_notice: >
-  Directus is gratis te gebruiken voor entiteiten met een jaarlijkse omzet, financiering of operationeel budget onder de $ 5 miljoen.
-setup_license_follow_up: >
-  Voor entiteiten die deze grens overschrijden is een betaalde licentie vereist. Je kunt Directus blijven proberen en {contactOurTeam} wanneer je klaar bent om het productiegebruik te bespreken.
-setup_save_accept_license: >
-  Door op te slaan accepteer je de algemene voorwaarden van de {directusBsl} en {privacyPolicy}.
-setup_accept_license: Ik accepteer de voorwaarden van de {directusBsl} en {privacyPolicy}
 setup_marketing_emails: Stuur mij productupdates en release-info
 setup_launch: Start Directus
 setup_project: Project Setup
+continue: Doorgaan
 first_name: Voornaam
 last_name: Achternaam
 admin_email: E-mailadres Beheerder
 owner_email: E-mailadres Eigenaar
 email_address: E-mailadres
-organization_name: Naam Organisatie
-how_do_you_use_directus: Waar gebruik je Directus voor?
-usage_personal: Persoonlijk / Leren
-usage_commercial: Zakelijk / Commercieel
-usage_community: Open Source / Community
 identifier: ID
 avatar: Profielafbeelding
 application: Applicatie
@@ -197,22 +184,17 @@ keep: Behouden
 version: Versie
 version_key: Versie sleutel
 version_name: Versienaam
-main_version: Hoofd
 switch_version: Versie wisselen
 switch_version_copy: Weet u zeker dat u wilt overschakelen naar de "{version}" versie? Niet-opgeslagen wijzigingen gaan verloren.
 create_version: Versie aanmaken
 rename_version: Versie hernoemen
 compare_version: Versies vergelijken
 save_version: Versie opslaan
-promote_version: Versie promoveren
 apply: Toepassen
 select_all_differences: Selecteer Alle Verschillen
-main_updated_notice: Het hoofditem is bijgewerkt sinds deze versie is aangemaakt.
 delete_version: Versie verwijderen
 delete_version_copy: >-
   Weet je zeker dat je de versie "{version}" wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
-delete_on_apply_copy: >-
-  Je staat op het punt "{version}" te promoten naar Main. Wat moet er gebeuren met "{version}" na promotie?
 reset_bookmark: Reset Bladwijzer
 update_bookmark: Update Bladwijzer
 delete_bookmark: Verwijder Bladwijzer
@@ -661,7 +643,6 @@ manual_string: Handmatig ingevoerde tekst
 save_and_create_new: Opslaan en nieuwe aanmaken
 save_and_stay: Sla op en blijf bewerken
 save_and_quit: Opslaan en Afsluiten
-save_and_return_to_main: Opslaan en Terug naar Hoofdscherm
 save_as_copy: Sla op als een kopie
 add_existing: Bestaande toevoegen
 creating_items: Items aanmaken
@@ -1200,6 +1181,18 @@ settings_data_model: Datamodel
 settings_roles: Gebruikersrollen
 settings_permissions: Toegangsbeleid
 settings_project: Instellingen
+licensing:
+  unlimited: Onbeperkt
+  addon_manage: Beheren
+  addon_update: Updaten
+  resolve_continue: Doorgaan
+  resolve_show_n_more: 'Toon {count} meer'
+  resolve_section_flows: Flows
+  resolve_sso_admin_email: E-mailadres
+  resolve_sso_admin_password: Wachtwoord
+  entitlements:
+    collections: Collecties
+    flows: Flows
 settings_appearance: Uiterlijk
 settings_ai: AI
 model_context_protocol: Model Context Protocol
@@ -1622,7 +1615,6 @@ ai:
   always_allow: Altijd Toestaan
   deny: Weigeren
   approve_tool_execution: Uitvoering Tool goedkeuren?
-  retry: Probeer Opnieuw
   prompt_input_placeholder: Typ je bericht hier...
   clear_conversation: Gesprek Wissen
   responses_may_be_inaccurate: AI--reacties zijn mogelijk onjuist
@@ -2182,7 +2174,9 @@ interfaces:
     value_securely_saved: Waarde veilig opgeslagen
     generate: Genereer Token
     regenerate: Token opnieuw genereren
+    regenerate_confirm_title: Token opnieuw genereren
     remove_token: Verwijder Token
+    remove_confirm_title: Verwijder Token
   system-raw-editor:
     system-raw-editor: Ruwe Editor
     description: Sta invoer van ruwe of mustache sjabloonwaarden toe
@@ -2658,6 +2652,8 @@ search_flow: Zoek Flow...
 percent: Procent
 show_password: Toon wachtwoord
 hide_password: Verberg wachtwoord
+license_grace_key_modal:
+  optional: Optioneel
 accepted: Geaccepteerd
 text_direction_auto: Automatisch (gelijk aan taal)
 text_direction_ltr: Links naar rechts (LTR)

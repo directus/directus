@@ -1,4 +1,5 @@
 ---
+continue: ดำเนินการต่อ
 first_name: ชื่อ
 last_name: นามสกุล
 identifier: ตัวบ่งชี้
@@ -747,6 +748,14 @@ editing_in_batch: 'กำลังแก้ไข {count} ไอเท็ม'
 no_options_available: ไม่มีตัวเลือกให้ใช้
 settings_data_model: รูปแบบข้อมูล
 settings_project: การตั้งค่า
+licensing:
+  unlimited: ไม่จำกัด
+  addon_update: แก้ไข
+  resolve_continue: ดำเนินการต่อ
+  resolve_show_n_more: 'แสดงเพิ่มอีก {count}'
+  resolve_sso_admin_password: รหัสผ่าน
+  entitlements:
+    collections: คอลเลกชัน
 settings_presets: บุ๊กมาร์ก
 settings_translations: การแปลภาษา
 one_or_more_options_are_missing: ไม่พบตัวเลือกรายการ

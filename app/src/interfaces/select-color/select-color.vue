@@ -485,7 +485,6 @@ function useColor() {
 				:key="preset.color"
 				v-tooltip="preset.name"
 				class="preset"
-				rounded
 				icon
 				:class="{ 'low-contrast': getPresetContrast(preset.color) }"
 				:style="{ '--v-button-background-color': preset.color }"
@@ -538,11 +537,13 @@ function useColor() {
 	--v-button-height: 1.125rem;
 	--v-button-width: 1.125rem;
 
-	margin: 0 0.25rem;
+	margin-inline: 0.25rem;
 
-	&.low-contrast {
-		--v-button-height: 1rem;
-		--v-button-width: 1rem;
+	:deep(.button) {
+		border-radius: var(--v-button-width);
+	}
+
+	&.low-contrast :deep(.button) {
 		border: 1px solid var(--theme--form--field--input--border-color-hover);
 	}
 }

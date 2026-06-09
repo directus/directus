@@ -20,31 +20,18 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Інформація про
-directus_bsl: Directus BSL 1,1
 privacy_policy: Політика конфіденційності
-contact_our_team: Звʼязок із нашою командою
 setup_welcome: Ласкаво просимо до Directus
 setup_info: Створімо ваш обліковий запис адміністратора та запустімо ваш проєкт.
-setup_license_notice: >
-  Directus безплатний для використання з об’єктами, чий річний дохід, фінансування або операційний бюджет становить менше ніж $5 мільйонів.
-setup_license_follow_up: >
-  Об’єкти, що перевищують цей поріг, потребують платної ліцензії. Ви можете продовжити оцінку Directus зараз і {contactOurTeam}, коли будете готові обговорити використання у виробництві.
-setup_save_accept_license: >
-  Натискаючи «Зберегти», ви погоджуєтесь з умовами {directusBsl} та {privacyPolicy}.
-setup_accept_license: Я погоджуюсь з умовами {directusBsl} та {privacyPolicy}
 setup_marketing_emails: Надіслати мені оновлення продукту та нотатки про випуск
 setup_launch: Запустити Directus
 setup_project: Запустити проєкт
+continue: Продовжити
 first_name: Ім'я
 last_name: Прізвище
 admin_email: Email адміністратора
 owner_email: Email власника
 email_address: Адреса електронної пошти
-organization_name: Назва організації
-how_do_you_use_directus: Для чого ви використовуєте Directus?
-usage_personal: Особисте / Навчання
-usage_commercial: Бізнес / Комерційне використання
-usage_community: Відкрите програмне забезпечення / Спільнота
 identifier: Ідентифікатор
 avatar: Аватар
 application: Додаток
@@ -196,22 +183,17 @@ keep: Тримати
 version: Версія
 version_key: Ключ версії
 version_name: Назва версії
-main_version: Головна
 switch_version: Змінити версію
 switch_version_copy: Ви впевнені, що бажаєте перейти на версію "{version}"? Незбережені зміни буде втрачено.
 create_version: Створити версію
 rename_version: Перейменувати версію
 compare_version: Порівняти версію
 save_version: Зберегти версію
-promote_version: Просування версії
 apply: Застосувати
 select_all_differences: Вибрати всі відмінності
-main_updated_notice: Основний елемент був оновлений з моменту створення цієї версії.
 delete_version: Видалити версію
 delete_version_copy: >-
   Ви впевнені, що хочете видалити версію "{version}"? Цю дію не можна скасувати.
-delete_on_apply_copy: >-
-  Ви збираєтесь просувати версію “{version}” до основної. Що повинно статися з версією “{version}” після її просування?
 reset_bookmark: Скинути закладку
 update_bookmark: Оновити закладку
 delete_bookmark: Видалити закладку
@@ -659,7 +641,6 @@ manual_string: Введений вручну рядок
 save_and_create_new: Зберігти і створити новий
 save_and_stay: Зберегти і Залишитись
 save_and_quit: Зберегти та Вийти
-save_and_return_to_main: Зберегти та повернутися на головну
 save_as_copy: Зберегти копію
 add_existing: Додати наявний
 creating_items: Створення об'єктів
@@ -1194,6 +1175,18 @@ settings_data_model: Модель даних
 settings_roles: Ролі користувачів
 settings_permissions: Правила доступу
 settings_project: Налаштування
+licensing:
+  unlimited: Необмежено
+  addon_manage: Керування
+  addon_update: Оновити
+  resolve_continue: Продовжити
+  resolve_show_n_more: 'Показати ще {count}'
+  resolve_section_flows: Автоматизація
+  resolve_sso_admin_email: Адреса електронної пошти
+  resolve_sso_admin_password: Пароль
+  entitlements:
+    collections: Колекції
+    flows: Автоматизація
 settings_appearance: Вигляд
 settings_ai: ШІ
 model_context_protocol: Протокол контексту моделі
@@ -2137,7 +2130,9 @@ interfaces:
     value_securely_saved: Значення надійно збережено
     generate: Генерувати токен
     regenerate: Оновити токен
+    regenerate_confirm_title: Оновити токен
     remove_token: Видалити токен
+    remove_confirm_title: Видалити токен
   system-raw-editor:
     system-raw-editor: Редактор Raw
     description: Дозволити введення необроблених або шаблонізованих даних
@@ -2613,12 +2608,8 @@ search_flow: Пошуковий потік...
 percent: Відсоток
 show_password: Показати пароль
 hide_password: Приховати пароль
-bsl_banner:
-  title: Ви не встановили власника проєкту.
-  license: Нам потрібно це, щоб забезпечити дотримання нашої BSL 1.1 ліцензії. Це має бути основний контакт з відповіддю за ваш проєкт.
-  set_owner: Встановити власника
-  remind_later: Нагадати пізніше
-  remind_next_login: Ми нагадаємо вам про це під час наступного входу.
+license_grace_key_modal:
+  optional: Необов'язковий
 accepted: Схвалено
 text_direction_auto: Автоматично (відповідно до мови)
 text_direction_ltr: Зліва направо (LTR)

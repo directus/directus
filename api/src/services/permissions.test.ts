@@ -2,12 +2,22 @@ import { SchemaBuilder } from '@directus/schema-builder';
 import type { MutationOptions } from '@directus/types';
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ItemsService, PermissionsService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+}));
+
+const { isEntitledMock } = vi.hoisted(() => ({ isEntitledMock: vi.fn() }));
+
+vi.mock('../license/index.js', () => ({
+	getEntitlementManager: () => ({
+		isEntitled: isEntitledMock,
+		clearCache: vi.fn(),
+		check: vi.fn().mockResolvedValue({ allowed: true }),
+	}),
 }));
 
 const schema = new SchemaBuilder()
@@ -33,6 +43,10 @@ describe('Integration Tests', () => {
 		vi.spyOn(ItemsService.prototype, 'deleteMany').mockResolvedValue(['perm-id-5']);
 
 		const clearCacheSpy = vi.spyOn(PermissionsService.prototype as any, 'clearCaches').mockResolvedValue(undefined);
+
+		beforeEach(() => {
+			isEntitledMock.mockReturnValue(true);
+		});
 
 		afterEach(() => {
 			vi.clearAllMocks();

@@ -11,12 +11,18 @@ import { defineConfig } from 'vitest/config';
 
 const API_PATH = path.join('..', 'api');
 
-/*
- * @TODO This extension path is hardcoded to the env default (./extensions). This won't work
- * as expected when extensions are read from a different location locally through the
- * EXTENSIONS_LOCATION env var
- */
-const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
+// api/.env is not loaded automatically when running `pnpm --filter app dev`
+const apiEnvFile = path.join(API_PATH, '.env');
+if (fs.existsSync(apiEnvFile)) process.loadEnvFile(apiEnvFile);
+
+// Mirror the API's getExtensionsPath() resolution so the dev server reads from
+// the same location. In remote mode (EXTENSIONS_LOCATION) the API syncs remote
+// extensions into TEMP_PATH/extensions at boot, and EXTENSIONS_PATH is ignored.
+// The './node_modules/.directus' and './extensions' fallbacks mirror the
+// TEMP_PATH and EXTENSIONS_PATH defaults from @directus/env's DEFAULTS
+const EXTENSIONS_PATH = process.env.EXTENSIONS_LOCATION
+	? path.resolve(API_PATH, process.env.TEMP_PATH ?? './node_modules/.directus', 'extensions')
+	: path.resolve(API_PATH, process.env.EXTENSIONS_PATH ?? './extensions');
 
 const extensionsPathExists = fs.existsSync(EXTENSIONS_PATH);
 

@@ -152,14 +152,12 @@ keep: שמור
 version: גרסה
 version_key: מזהה גרסה
 version_name: שם הגרסה
-main_version: ראשי
 switch_version: החלפת גרסה
 switch_version_copy: האם את/ה רוצה להחליף לגרסה {version}? שינויים שלא נשמרו יאבדו.
 create_version: צור גרסה
 rename_version: לשנות שם גרסה
 compare_version: השווה גירסאות
 save_version: לשמור גרסה
-promote_version: לקדם גרסה
 delete_version: מחיקת גרסא
 delete_version_copy: >-
   האם ברצונך למחוק את גרסה {version}? הפעולה אינה ניתנת לביטול.
@@ -369,6 +367,8 @@ width: רוחב
 height: גובה
 wysiwyg_options:
   backcolor: צבע רקע
+licensing:
+  resolve_sso_admin_password: סיסמה
 settings_translations: תרגומים
 source_registry: חנות
 collection: מאגר

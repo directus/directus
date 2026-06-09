@@ -2,6 +2,7 @@
 import { useGroupable } from '@directus/composables';
 import { PrimaryKey } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
+import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
@@ -9,9 +10,11 @@ import { useSidebarStore } from '../private-view/stores/sidebar';
 import RevisionsDateGroup from './revisions-date-group.vue';
 import SidebarDetail from './sidebar-detail.vue';
 import VDivider from '@/components/v-divider.vue';
+import VNotice from '@/components/v-notice.vue';
 import VPagination from '@/components/v-pagination.vue';
 import VProgressLinear from '@/components/v-progress-linear.vue';
 import { useRevisions } from '@/composables/use-revisions';
+import { useLicenseStore } from '@/stores/license';
 import type { Revision } from '@/types/revisions';
 import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
@@ -36,11 +39,14 @@ const { active: open } = useGroupable({
 const { collection, primaryKey, version } = toRefs(props);
 
 const sidebarStore = useSidebarStore();
+const { revisionHistoryTimeframe } = storeToRefs(useLicenseStore());
 const route = useRoute();
 
 const comparisonModalActive = ref(false);
 const currentRevision = ref<Revision | null>(null);
 const page = ref<number>(1);
+
+const isNewUnsavedVersion = computed(() => version.value?.id === '+');
 
 const comparableVersion = computed(() => {
 	if (version.value === undefined || version.value === null) return version.value;
@@ -59,9 +65,11 @@ const {
 	getRevisions,
 	loadingCount,
 	getRevisionsCount,
-} = useRevisions(collection, primaryKey, comparableVersion, { full: true });
+} = useRevisions(collection, primaryKey, comparableVersion, { full: true, disabled: isNewUnsavedVersion });
 
 onMounted(() => {
+	if (isNewUnsavedVersion.value) return;
+
 	getRevisionsCount();
 
 	if (open.value || sidebarStore.activeAccordionItem === 'revisions') {
@@ -126,13 +134,16 @@ defineExpose({
 			<VPagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
 		</template>
 
+		<VNotice v-if="revisionHistoryTimeframe !== null" type="info" icon="diamond" class="history-notice">
+			{{ $t('license.revisions_history_notice', { timeframe: revisionHistoryTimeframe }) }}
+		</VNotice>
+
 		<ComparisonModal
 			v-model="comparisonModalActive"
 			v-model:current-revision="currentRevision"
-			:delete-versions-allowed="false"
+			mode="revision"
 			:collection
 			:primary-key
-			mode="revision"
 			:current-version="comparableVersion"
 			:revisions="revisions as Revision[]"
 			@confirm="$emit('revert', $event)"
@@ -178,5 +189,11 @@ defineExpose({
 .v-pagination {
 	justify-content: center;
 	margin-block-start: 1.375rem;
+}
+
+.history-notice {
+	--v-notice-background-color: var(--theme--background-subdued);
+
+	margin-block-start: 0.875rem;
 }
 </style>
