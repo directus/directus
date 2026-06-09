@@ -32,7 +32,7 @@ const dir = computed<'ltr' | 'rtl'>(() => (userStore.textDirection === 'rtl' ? '
 
 // Reuse the picker's value logic so this inline field and the popup calendar parse/format the
 // same string identically. Editing only the date (or only the time) preserves the other component.
-const { calendarValue, timeValue, hasTime, handleDateFieldChange, applyTime } = useDatePickerValue({
+const { calendarValue, timeValue, hasTime, applyDate, applyTime } = useDatePickerValue({
 	type: () => props.type,
 	modelValue: () => props.modelValue,
 	includeSeconds: () => props.includeSeconds,
@@ -67,7 +67,7 @@ onMounted(() => {
 			:dir="dir"
 			:aria-label="$t('interfaces.datetime.datetime')"
 			class="date-field"
-			@update:model-value="handleDateFieldChange"
+			@update:model-value="applyDate"
 		>
 			<template v-for="item in segments" :key="item.part">
 				<DateFieldInput v-if="item.part === 'literal'" :part="item.part" class="date-field-literal">

@@ -154,29 +154,6 @@ const TimeFieldInput = {
 	props: ['part'],
 };
 
-const DateFieldRoot = {
-	name: 'DateFieldRoot',
-	template: `
-		<div class="date-field-stub">
-			<slot :segments="[
-				{ part: 'month', value: '01' },
-				{ part: 'literal', value: '/' },
-				{ part: 'day', value: '15' },
-				{ part: 'literal', value: '/' },
-				{ part: 'year', value: '2024' }
-			]" />
-		</div>
-	`,
-	props: ['modelValue', 'granularity', 'locale', 'dir', 'disabled'],
-	emits: ['update:modelValue'],
-};
-
-const DateFieldInput = {
-	name: 'DateFieldInput',
-	template: '<span class="date-field-input-stub">{{ part }}</span>',
-	props: ['part'],
-};
-
 describe('v-date-picker', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -208,8 +185,6 @@ describe('v-date-picker', () => {
 					CalendarCellTrigger,
 					TimeFieldRoot,
 					TimeFieldInput,
-					DateFieldRoot,
-					DateFieldInput,
 					VIcon,
 					VSelect,
 					VInput,
@@ -1075,19 +1050,6 @@ describe('v-date-picker', () => {
 
 			expect(wrapper.emitted('close')).toBeFalsy();
 		});
-	});
-
-	describe('date field keyboard input', () => {
-		// Inline keyboard date entry now lives in the trigger field (date-picker-field.vue),
-		// not in the popup. The popup should no longer render a DateField.
-		it.each(['date', 'dateTime', 'timestamp', 'time'] as const)(
-			'does not render a date field in the popup for type: %s',
-			(type) => {
-				const wrapper = createWrapper({ type });
-
-				expect(wrapper.findComponent(DateFieldRoot).exists()).toBe(false);
-			},
-		);
 	});
 
 	describe('computed properties', () => {

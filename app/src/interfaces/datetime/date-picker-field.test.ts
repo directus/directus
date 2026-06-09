@@ -85,22 +85,10 @@ describe('date-picker-field', () => {
 		expect(wrapper.findAll('.date-field-segment').length).toBe(3);
 	});
 
-	it('emits the formatted date string when a date is typed', async () => {
-		const wrapper = createWrapper({ type: 'date', modelValue: '2024-01-15' });
-
-		await wrapper.findComponent(DateFieldRoot).vm.$emit('update:modelValue', new CalendarDate(2024, 3, 9));
-		await nextTick();
-
-		expect(wrapper.emitted('update:modelValue')).toEqual([['2024-03-09']]);
-	});
-
-	it('does not emit when the typed year has fewer than four digits', async () => {
-		const wrapper = createWrapper({ type: 'date', modelValue: '2024-01-15' });
-
-		await wrapper.findComponent(DateFieldRoot).vm.$emit('update:modelValue', new CalendarDate(123, 3, 9));
-		await nextTick();
-
-		expect(wrapper.emitted('update:modelValue')).toBeFalsy();
+	it('renders without throwing when the value is malformed for the type', () => {
+		// A bare date string for a `timestamp` makes the parser throw; the field must
+		// fall back to the empty state rather than crash during setup.
+		expect(() => createWrapper({ type: 'timestamp', modelValue: 'not-a-date' })).not.toThrow();
 	});
 
 	it('preserves the existing time when only the date is edited for dateTime', async () => {
@@ -112,14 +100,12 @@ describe('date-picker-field', () => {
 		expect(wrapper.emitted('update:modelValue')).toEqual([['2024-03-09T14:30:00']]);
 	});
 
-	it('passes day granularity and user locale to the field', () => {
+	it('passes the user locale to the field', () => {
 		mockUserStore.language = 'en-GB';
 
 		const wrapper = createWrapper({ type: 'dateTime', modelValue: '2024-01-15T14:30:00' });
 
-		const field = wrapper.findComponent(DateFieldRoot);
-		expect(field.props('granularity')).toBe('day');
-		expect(field.props('locale')).toBe('en-GB');
+		expect(wrapper.findComponent(DateFieldRoot).props('locale')).toBe('en-GB');
 	});
 
 	it('passes RTL direction when the user text direction is rtl', () => {

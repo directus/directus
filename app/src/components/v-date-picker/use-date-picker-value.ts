@@ -73,18 +73,6 @@ export function useDatePickerValue(options: UseDatePickerValueOptions) {
 		},
 	});
 
-	/** True when the value is a dynamic variable (e.g. `$NOW`, `$CURRENT_USER.date_created`). */
-	const isDynamic = computed(() => {
-		const value = toValue(options.modelValue);
-		return !!value && isDynamicVariable(value);
-	});
-
-	/** True when there is no value set. */
-	const isEmpty = computed(() => {
-		const value = toValue(options.modelValue);
-		return value === null || value === undefined || value === '';
-	});
-
 	watch(
 		() => toValue(options.modelValue),
 		(newValue) => {
@@ -115,30 +103,33 @@ export function useDatePickerValue(options: UseDatePickerValueOptions) {
 				return;
 			}
 
-			// Parse based on type
-			switch (type.value) {
-				case 'date':
-					calendarValue.value = parseDate(newValue);
-					break;
-				case 'time':
-					internalTimeValue.value = parseTime(newValue);
-					break;
+			// Parse based on type. Fall back to the empty state instead of letting the throw crash the component during setup.
+			try {
+				switch (type.value) {
+					case 'date':
+						calendarValue.value = parseDate(newValue);
+						break;
+					case 'time':
+						internalTimeValue.value = parseTime(newValue);
+						break;
 
-				case 'dateTime': {
-					// Matches legacy Flatpickr format: "yyyy-MM-dd'T'HH:mm:ss"
-					const dt = parseDateTime(newValue);
-					calendarValue.value = new CalendarDate(dt.year, dt.month, dt.day);
-					internalTimeValue.value = new Time(dt.hour, dt.minute, dt.second);
-					break;
-				}
+					case 'dateTime': {
+						const dt = parseDateTime(newValue);
+						calendarValue.value = new CalendarDate(dt.year, dt.month, dt.day);
+						internalTimeValue.value = new Time(dt.hour, dt.minute, dt.second);
+						break;
+					}
 
-				case 'timestamp': {
-					// Matches legacy Flatpickr format: Date.toISOString() (absolute timestamp)
-					const dt = parseAbsoluteToLocal(newValue);
-					calendarValue.value = new CalendarDate(dt.year, dt.month, dt.day);
-					internalTimeValue.value = new Time(dt.hour, dt.minute, dt.second);
-					break;
+					case 'timestamp': {
+						const dt = parseAbsoluteToLocal(newValue);
+						calendarValue.value = new CalendarDate(dt.year, dt.month, dt.day);
+						internalTimeValue.value = new Time(dt.hour, dt.minute, dt.second);
+						break;
+					}
 				}
+			} catch {
+				calendarValue.value = undefined;
+				internalTimeValue.value = hasTime.value ? getDefaultTimeValue() : undefined;
 			}
 		},
 		{ immediate: true },
@@ -157,14 +148,6 @@ export function useDatePickerValue(options: UseDatePickerValueOptions) {
 	function applyDate(value: DateValue | undefined) {
 		calendarValue.value = value;
 		emitValue();
-	}
-
-	/** Apply a date from a Reka DateField, enforcing a 4-digit year before committing. */
-	function handleDateFieldChange(value: DateValue | undefined) {
-		// enforce 4 digit year
-		if (value && value.year < 1000) return;
-
-		applyDate(value);
 	}
 
 	function applyTime(value: TimeValue | null | undefined) {
@@ -193,12 +176,9 @@ export function useDatePickerValue(options: UseDatePickerValueOptions) {
 		internalTimeValue,
 		timeValue,
 		hasTime,
-		isDynamic,
-		isEmpty,
 		emitValue,
 		applyDate,
 		applyTime,
-		handleDateFieldChange,
 		setToNow,
 	};
 }
