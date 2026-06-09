@@ -8,6 +8,9 @@ import { omit } from 'lodash-es';
 import { extension } from 'mime-types';
 import getDatabase from '../../database/index.js';
 import { useLogger } from '../../logger/index.js';
+import { assertUniqueFilename } from '../files/lib/assert-unique-filename.js';
+import { assertValidStoragePath } from '../files/lib/assert-valid-storage-path.js';
+import { sanitizeFilepath } from '../files/lib/sanitize-filepath.js';
 import { ItemsService } from '../items.js';
 
 export type TusDataStoreConfig = {
@@ -93,6 +96,12 @@ export class TusDataStore extends DataStore {
 			filesize: upload.size,
 			storage: this.location,
 		};
+
+		if (fileData.filename_disk) {
+			fileData.filename_disk = sanitizeFilepath(fileData.filename_disk);
+			assertValidStoragePath(fileData.filename_disk, this.location);
+			await assertUniqueFilename(knex, fileData.filename_disk, upload.metadata['id']);
+		}
 
 		// If no folder is specified, we'll use the default folder from the settings if it exists
 		if ('folder' in fileData === false) {

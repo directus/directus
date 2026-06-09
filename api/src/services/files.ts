@@ -6,7 +6,6 @@ import url from 'url';
 import { useEnv } from '@directus/env';
 import {
 	ContentTooLargeError,
-	ForbiddenError,
 	InternalServerError,
 	InvalidPayloadError,
 	ServiceUnavailableError,
@@ -34,7 +33,10 @@ import { validateAccess } from '../permissions/modules/validate-access/validate-
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import { transaction } from '../utils/transaction.js';
+import { assertUniqueFilename } from './files/lib/assert-unique-filename.js';
+import { assertValidStoragePath } from './files/lib/assert-valid-storage-path.js';
 import { extractMetadata } from './files/lib/extract-metadata.js';
+import { sanitizeFilepath } from './files/lib/sanitize-filepath.js';
 import { ItemsService } from './items.js';
 
 const env = useEnv();
@@ -43,71 +45,6 @@ const logger = useLogger();
 export class FilesService extends ItemsService<File> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_files', options);
-	}
-
-	private assertValidPath(filepath: string, storage?: string) {
-		const location = storage || toArray(env['STORAGE_LOCATIONS'] as string[])[0]!;
-		const storageRoot = (env[`STORAGE_${location.toUpperCase()}_ROOT`] as string | undefined) ?? '';
-		const storageDriver = env[`STORAGE_${location.toUpperCase()}_DRIVER`] as string | undefined;
-		const extensionsRoot = (env['EXTENSIONS_PATH'] as string | undefined) ?? '';
-		const tmpRoot = (env['TEMP_PATH'] as string | undefined) ?? '';
-
-		const extensionPath = this.generateFilenamePath(extensionsRoot);
-		const tmpPath = this.generateFilenamePath(tmpRoot);
-		const storagePath = this.generateFilenamePath(storageRoot);
-		const normalizedFilePath = this.generateFilenamePath(filepath);
-
-		// Resolve the file to its real location for comparison: under the storage root for the local
-		// driver, or the bucket-root-relative key for remote drivers.
-		const filePath =
-			storageDriver === 'local'
-				? this.generateFilenamePath(path.join(storagePath, normalizedFilePath))
-				: normalizedFilePath;
-
-		// A write can only reach extensions from the location that backs them
-		const isExtensionStore = env['EXTENSIONS_LOCATION']
-			? env['EXTENSIONS_LOCATION'] === location
-			: storageDriver === 'local';
-
-		// Block writes that land inside the extension path.
-		if (isExtensionStore && extensionPath && filePath.startsWith(extensionPath + '/')) {
-			throw new ForbiddenError();
-		}
-
-		// TEMP_PATH is used for extension sync and upload chunks; only the local driver writes there.
-		if (storageDriver === 'local' && tmpPath && filePath.startsWith(tmpPath + '/')) {
-			throw new ForbiddenError();
-		}
-	}
-
-	/**
-	 * Generates the relative path for the filename_disk
-	 *
-	 * @param filenameDisk - The filepath
-	 */
-	private generateFilenamePath(filepath: string) {
-		return normalizePath(path.relative(path.sep, path.resolve(path.sep, filepath)));
-	}
-
-	/**
-	 * Check whether a filename is unique.
-	 *
-	 * @param filename - The filename
-	 * @param excludeId - The id of the existing file to exclude from the check
-	 * @throws ForbiddenError if a match is found
-	 */
-	private async checkUniqueFilename(filename: string, excludeId?: PrimaryKey) {
-		const query = this.knex.select('filename_disk').from('directus_files').where({ filename_disk: filename });
-
-		if (excludeId) {
-			query.whereNot('id', excludeId);
-		}
-
-		const existingFile = await query.first();
-
-		if (existingFile) {
-			throw new ForbiddenError();
-		}
 	}
 
 	/**
@@ -378,11 +315,11 @@ export class FilesService extends ItemsService<File> {
 		}
 
 		if (data.filename_disk) {
-			data.filename_disk = this.generateFilenamePath(data.filename_disk);
+			data.filename_disk = sanitizeFilepath(data.filename_disk);
 
 			try {
-				this.assertValidPath(data.filename_disk, data.storage);
-				await this.checkUniqueFilename(data.filename_disk);
+				assertValidStoragePath(data.filename_disk, data.storage);
+				await assertUniqueFilename(this.knex, data.filename_disk);
 			} catch (err: any) {
 				// Defer the error to be thrown until after permission checks
 				opts.preMutationError = err;
@@ -402,11 +339,11 @@ export class FilesService extends ItemsService<File> {
 		opts: MutationOptions = {},
 	): Promise<PrimaryKey[]> {
 		if (keys.length === 1 && data.filename_disk) {
-			data.filename_disk = this.generateFilenamePath(data.filename_disk);
+			data.filename_disk = sanitizeFilepath(data.filename_disk);
 
 			try {
-				this.assertValidPath(data.filename_disk, data.storage);
-				await this.checkUniqueFilename(data.filename_disk, keys[0]);
+				assertValidStoragePath(data.filename_disk, data.storage);
+				await assertUniqueFilename(this.knex, data.filename_disk, keys[0]);
 			} catch (err: any) {
 				// Defer the error to be thrown until after permission checks
 				opts.preMutationError = err;
@@ -447,14 +384,14 @@ export class FilesService extends ItemsService<File> {
 						if (!file || !file.filename_disk) return;
 
 						// For backwards compatibility it must be resolved first to ensure consistent path
-						const existingFilePath = this.generateFilenamePath(file.filename_disk);
+						const existingFilePath = sanitizeFilepath(file.filename_disk);
 
 						if (existingFilePath === data.filename_disk) return;
 
 						const disk = storage.location(file['storage']);
 
 						const { name: filePrefix, dir: fileDir } = path.parse(existingFilePath);
-						const updatedFilePath = this.generateFilenamePath(data.filename_disk);
+						const updatedFilePath = sanitizeFilepath(data.filename_disk);
 
 						const remoteFileExists = await disk.exists(data.filename_disk);
 
