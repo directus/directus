@@ -267,7 +267,7 @@ async function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, a
 				// Collect all sub query parameters without the leading underscore
 				subQuery[key.substring(1)] = value;
 			} else if (isPlainObject(value)) {
-				parse(value, [...path, key]);
+				await parse(value, [...path, key]);
 			}
 		}
 

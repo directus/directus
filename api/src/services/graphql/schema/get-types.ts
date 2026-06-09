@@ -212,7 +212,7 @@ export function getTypes(
 				[relation.field]: {
 					type: CollectionTypes[relation.related_collection]!,
 					resolve: (obj: Record<string, any>, _, __, info) => {
-						return obj[info?.path?.key ?? relation.field];
+						return obj[info?.path?.key] ?? obj[info?.fieldName ?? relation.field];
 					},
 				},
 			});
@@ -221,7 +221,7 @@ export function getTypes(
 				[relation.field]: {
 					type: GraphQLJSON,
 					resolve: (obj: Record<string, any>, _, __, info) => {
-						return obj[info?.path?.key ?? relation.field];
+						return obj[info?.path?.key] ?? obj[info?.fieldName ?? relation.field];
 					},
 				},
 			});
@@ -231,7 +231,7 @@ export function getTypes(
 					[relation.meta.one_field]: {
 						type: [CollectionTypes[relation.collection]!],
 						resolve: (obj: Record<string, any>, _, __, info) => {
-							return obj[info?.path?.key ?? relation.meta!.one_field];
+							return obj[info?.path?.key] ?? obj[info?.fieldName ?? relation.meta!.one_field];
 						},
 					},
 				});
@@ -241,7 +241,7 @@ export function getTypes(
 						[relation.meta.one_field]: {
 							type: GraphQLJSON,
 							resolve: (obj: Record<string, any>, _, __, info) => {
-								return obj[info?.path?.key ?? relation.meta!.one_field];
+								return obj[info?.path?.key] ?? obj[info?.fieldName ?? relation.meta!.one_field];
 							},
 						},
 					});
@@ -276,7 +276,7 @@ export function getTypes(
 						},
 					}),
 					resolve: (obj: Record<string, any>, _, __, info) => {
-						return obj[info?.path?.key ?? relation.field];
+						return obj[info?.path?.key] ?? obj[info?.fieldName ?? relation.field];
 					},
 				},
 			});
