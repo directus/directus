@@ -72,17 +72,11 @@ export class TusDataStore extends DataStore {
 			upload.metadata['title'] = formatTitle(upload.metadata['filename_download']);
 		}
 
-		let existingFile: Record<string, any> | null = null;
+		let existingFile: Record<string, unknown> | undefined;
 
-		// If the payload contains a primary key, we'll check if the file already exists
+		// If the payload contains a primary key, we'll check if the file already exists for replacement
 		if (upload.metadata['id']) {
-			// If the file you're uploading already exists, we'll consider this upload a replace so we'll fetch the existing file's folder and filename_download
-			existingFile =
-				(await knex
-					.select('folder', 'filename_download', 'filename_disk', 'title', 'description', 'metadata', 'tus_id')
-					.from('directus_files')
-					.andWhere({ id: upload.metadata['id'] })
-					.first()) ?? null;
+			existingFile = await knex.select('tus_id').from('directus_files').andWhere({ id: upload.metadata['id'] }).first();
 
 			if (existingFile && existingFile['tus_id'] !== null) {
 				throw ERRORS.INVALID_METADATA;
@@ -115,8 +109,8 @@ export class TusDataStore extends DataStore {
 		// Generate a placeholder record for the upload (to be upgrade/deleted on complete depending on new/replacement)
 		const primaryKey = await filesItemsService.createOne(fileData, { emitEvents: false });
 
-		// Set the file id if not a replacement ensuring it is always available as a header on upload creation / resume
-		if (!upload.metadata['id']) {
+		// Point metadata.id at the placeholder record unless this is a valid replacement
+		if (!existingFile) {
 			upload.metadata['id'] = primaryKey as string;
 		}
 

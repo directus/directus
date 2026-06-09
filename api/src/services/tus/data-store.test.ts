@@ -89,7 +89,6 @@ describe('TusDataStore.create', () => {
 	test('passes a sanitized, unique filename_disk through to the upload', async () => {
 		const store = makeStore();
 
-		// Redundant traversal segments that resolve to a safe relative path
 		await store.create(makeUpload({ filename_disk: './subdir/../photo.jpg' }));
 
 		expect(ItemsService.prototype.createOne).toHaveBeenCalledWith(
@@ -103,7 +102,14 @@ describe('TusDataStore.create', () => {
 
 		await store.create(makeUpload({}));
 
-		// Falls back to the generated primary key + extension
 		expect(mockDriver.createChunkedUpload).toHaveBeenCalledWith('generated-pk.jpg', expect.anything());
+	});
+
+	test('treat invalid id as create instead of replace', async () => {
+		const store = makeStore();
+
+		const result = await store.create(makeUpload({ id: 'unknown-id' }));
+
+		expect(result.metadata!['id']).toBe('generated-pk');
 	});
 });
