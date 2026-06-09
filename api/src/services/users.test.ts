@@ -258,15 +258,14 @@ describe('Integration Tests', () => {
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.All);
 			});
 
-			// #RC-TODO
-			// it('should request all user integrity checks if status is changed to not "active"', async () => {
-			// 	const opts: MutationOptions = {};
-			//
-			// 	await service.updateMany(['user-id-5'], { status: 'inactive' }, opts);
-			//
-			// 	expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.All);
-			// 	expect(clearUserSessionsSpy).toBeCalled();
-			// });
+			it('should request all user integrity checks if status is changed to not "active"', async () => {
+				const opts: MutationOptions = {};
+
+				await service.updateMany(['user-id-5'], { status: 'inactive' }, opts);
+
+				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.RemainingAdmins);
+				expect(clearUserSessionsSpy).toBeCalled();
+			});
 
 			it('should request user limit checks if status is changed to "active"', async () => {
 				const opts: MutationOptions = {};

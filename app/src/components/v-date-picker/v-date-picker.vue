@@ -121,11 +121,21 @@ function handleMonthChange(value: number | null): void {
 	setCalendarMonth(value);
 }
 
+/**
+ * Largest year the picker accepts.
+ *
+ * Bounded to a 4-digit ISO 8601 year.
+ * Without this cap, typing many digits yields a year
+ * beyond JS Date's representable range, making `new Date(year, month, 0).getDate()` return NaN
+ * in `setCalendarYear` and emitting an invalid string like "9999-06-NaN".
+ */
+const MAX_YEAR = 9999;
+
 function handleYearChange(value: number | string | undefined): void {
 	const numValue = typeof value === 'string' ? Number.parseInt(value, 10) : value;
 	// The input emits on every keystroke; only apply complete four-digit years. Below 1000 a partial
-	// value like 2 would format to nonsense (near 1900); above 9999 it exceeds a valid four-digit year.
-	if (numValue === undefined || !Number.isFinite(numValue) || numValue < 1000 || numValue > 9999) return;
+	// value like 2 would format to nonsense (near 1900); above MAX_YEAR it exceeds a valid four-digit year.
+	if (numValue === undefined || !Number.isFinite(numValue) || numValue < 1000 || numValue > MAX_YEAR) return;
 	setCalendarYear(numValue);
 }
 
@@ -167,8 +177,8 @@ function setToNow() {
 						<VInput
 							type="text"
 							inputmode="numeric"
-							:max-length="4"
 							:model-value="date?.year"
+							:max-length="4"
 							class="calendar-year-input"
 							:full-width="false"
 							@update:model-value="handleYearChange"

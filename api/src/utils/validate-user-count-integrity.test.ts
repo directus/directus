@@ -58,18 +58,9 @@ describe('flag gating', () => {
 });
 
 describe('seats entitlement enforcement', () => {
-	// #RC-TODO
-	// test('reads cached count and limit for the seats entitlement when UserLimits is set', async () => {
-	// 	await validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.UserLimits, knex });
-	//
-	// 	expect(getCached).toHaveBeenCalledWith('seats');
-	// 	expect(getEntitlementLimit).toHaveBeenCalledWith('seats');
-	// });
-
 	test('does not read seats entitlement when UserLimits flag is unset', async () => {
 		await validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.RemainingAdmins, knex });
 
-		expect(getCached).not.toHaveBeenCalled();
 		expect(getEntitlementLimit).not.toHaveBeenCalled();
 	});
 
@@ -93,7 +84,6 @@ describe('seats entitlement enforcement', () => {
 
 	test('throws when over the limit and no cached count exists', async () => {
 		getEntitlementLimit.mockReturnValue(5);
-		getCached.mockReturnValue(undefined);
 		vi.mocked(fetchUserCount).mockResolvedValue({ admin: 3, app: 3, api: 0 });
 
 		await expect(validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.UserLimits, knex })).rejects.toBeInstanceOf(
@@ -103,24 +93,30 @@ describe('seats entitlement enforcement', () => {
 
 	test('throws when over the limit and adding a seat', async () => {
 		getEntitlementLimit.mockReturnValue(5);
-		getCached.mockReturnValue(6);
 		vi.mocked(fetchUserCount).mockResolvedValue({ admin: 3, app: 4, api: 0 });
 
-		await expect(validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.UserLimits, knex })).rejects.toBeInstanceOf(
-			LimitExceededError,
-		);
+		await expect(
+			validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.UserLimits, previousSeatCount: 6, knex }),
+		).rejects.toBeInstanceOf(LimitExceededError);
 	});
 
-	// #RC-TODO
-	// test('allows removing/editing when over the limit', async () => {
-	// 	getEntitlementLimit.mockReturnValue(5);
-	// 	getCached.mockReturnValue(10);
-	// 	vi.mocked(fetchUserCount).mockResolvedValue({ admin: 5, app: 5, api: 0 });
-	//
-	// 	await expect(
-	// 		validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.UserLimits, knex }),
-	// 	).resolves.toBeUndefined();
-	// });
+	test('allows removing/editing when over the limit but with no limit change', async () => {
+		getEntitlementLimit.mockReturnValue(5);
+		vi.mocked(fetchUserCount).mockResolvedValue({ admin: 5, app: 5, api: 0 });
+
+		await expect(
+			validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.UserLimits, previousSeatCount: 10, knex }),
+		).resolves.toBeUndefined();
+	});
+
+	test('clear cache after validating user limit and count has changed', async () => {
+		getEntitlementLimit.mockReturnValue(11);
+		vi.mocked(fetchUserCount).mockResolvedValue({ admin: 5, app: 5, api: 0 });
+
+		await validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.UserLimits, previousSeatCount: 11, knex });
+
+		expect(clearCache).toHaveBeenCalled();
+	});
 });
 
 describe('env-var user limits', () => {
