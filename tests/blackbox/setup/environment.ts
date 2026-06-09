@@ -10,6 +10,14 @@ export default <Environment>{
 	transformMode: 'ssr',
 
 	async setup(global) {
+		// Local debugging escape hatch: skip the sequential gate entirely so a single file can be run
+		// in isolation. The gate only exists to serialize schema-mutating files when many run
+		// concurrently; a lone file has no such races, so the gate is pure deadlock waiting for
+		// predecessor files that never run. Never set in CI.
+		if (process.env['BLACKBOX_NO_GATE']) {
+			return { teardown() {} };
+		}
+
 		const { totalTestsCount } = JSON.parse(await fs.readFile('sequencer-data.json', 'utf8'));
 		const testFilePath = global.__vitest_worker__.ctx.files[0].filepath.split('blackbox')[1];
 		const serverUrl = process.env['serverUrl'];
@@ -35,11 +43,14 @@ export default <Environment>{
 
 				if (testIndex >= 0) {
 					if (completedCount >= testIndex) break;
-				} else if (totalTestsCount + testIndex === completedCount) {
+				} else if (completedCount >= totalTestsCount + testIndex) {
+					// `>=` (not `===`): under parallel completion the count can step past this file's slot
+					// between polls, and an exact match would then wait out the whole run.
 					break;
 				}
 			} catch {
-				continue;
+				// Server momentarily unreachable/busy. Fall through to the back-off below rather than
+				// `continue`-ing, which would skip the sleep and hot-loop requests onto a busy server.
 			}
 
 			await sleep(1000);
@@ -51,12 +62,23 @@ export default <Environment>{
 					test_file_path: testFilePath,
 				};
 
-				await axios.post(`${serverUrl}/items/tests_flow_completed`, body, {
-					headers: {
-						Authorization: `Bearer ${USER.TESTS_FLOW.TOKEN}`,
-						'Content-Type': 'application/json',
-					},
-				});
+				// A lost completion post stalls every file gated behind this one for the rest of the run,
+				// cascading into mass skips. Retry a few times before giving up so a transient hiccup
+				// (likely on a loaded mssql) doesn't drop this file out of the count.
+				for (let attempt = 0; attempt < 5; attempt++) {
+					try {
+						await axios.post(`${serverUrl}/items/tests_flow_completed`, body, {
+							headers: {
+								Authorization: `Bearer ${USER.TESTS_FLOW.TOKEN}`,
+								'Content-Type': 'application/json',
+							},
+						});
+
+						return;
+					} catch {
+						await sleep(1000);
+					}
+				}
 			},
 		};
 	},
