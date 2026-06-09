@@ -3,7 +3,7 @@ import Type, { type Static } from 'typebox';
 import { forbiddenError, notFoundError } from '../errors.js';
 import { requireLicense } from '../hooks/require-license.js';
 import { LicenseAuthHeaders, type LicenseAuthHeadersType } from '../types.js';
-import { createNewToken } from '../utils.js';
+import { createToken } from '../utils.js';
 
 export const UpdateAddonsRequestSchema = Type.Object(
 	{
@@ -76,7 +76,7 @@ export async function addonsRoute(app: FastifyInstance) {
 			}
 
 			return res.status(200).send({
-				token: await createNewToken(req.license),
+				token: await createToken(req.license),
 			});
 		},
 	);
