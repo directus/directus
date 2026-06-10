@@ -1,20 +1,20 @@
 import fs from 'node:fs/promises';
 import { findIndex } from 'lodash-es';
-import { BaseSequencer, type WorkspaceSpec } from 'vitest/node';
+import { BaseSequencer, type TestSpecification } from 'vitest/node';
 import { sequentialTestsList } from './sequential-tests';
 
 export default class CustomSequencer extends BaseSequencer {
-	override async sort(files: WorkspaceSpec[]) {
+	override async sort(files: TestSpecification[]) {
 		if (files.length > 1) {
-			const list = sequentialTestsList[files[0]![0].config.name as 'db' | 'common'];
+			const list = sequentialTestsList[files[0]!.project.config.name as 'db' | 'common'];
 
 			// If specified, only run these tests sequentially
 			if (list.only.length > 0) {
 				const onlyTests = [];
 
 				for (const sequentialTest of list.only) {
-					const testIndex = findIndex(files, ([_, testFile]) => {
-						return testFile.endsWith(sequentialTest);
+					const testIndex = findIndex(files, (spec) => {
+						return spec.moduleId.endsWith(sequentialTest);
 					});
 
 					if (testIndex !== -1) {
@@ -31,8 +31,8 @@ export default class CustomSequencer extends BaseSequencer {
 				files = onlyTests;
 			} else {
 				for (const sequentialTest of list.before.slice().reverse()) {
-					const testIndex = findIndex(files, ([_, testFile]) => {
-						return testFile.endsWith(sequentialTest);
+					const testIndex = findIndex(files, (spec) => {
+						return spec.moduleId.endsWith(sequentialTest);
 					});
 
 					if (testIndex !== -1) {
@@ -47,8 +47,8 @@ export default class CustomSequencer extends BaseSequencer {
 				}
 
 				for (const sequentialTest of list.after) {
-					const testIndex = findIndex(files, ([_, testFile]) => {
-						return testFile.endsWith(sequentialTest);
+					const testIndex = findIndex(files, (spec) => {
+						return spec.moduleId.endsWith(sequentialTest);
 					});
 
 					if (testIndex !== -1) {
