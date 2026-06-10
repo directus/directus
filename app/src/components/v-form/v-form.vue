@@ -14,7 +14,7 @@ import { getFormFields } from './utils/get-form-fields';
 import { selectiveClone } from './utils/selective-clone';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
-import { CollabContext } from '@/composables/use-collab';
+import type { CollabContext } from '@/composables/use-collab';
 import { useFieldsStore } from '@/stores/fields';
 import type { ContentVersionMaybeNew } from '@/types/versions';
 import { applyConditions } from '@/utils/apply-conditions';

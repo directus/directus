@@ -6,7 +6,7 @@ import { z } from 'zod';
 import type { FieldValues } from '../types';
 import { useInputSchema } from './use-input-schema';
 import { defineTool } from '@/ai/composables/define-tool';
-import { CollabContext } from '@/composables/use-collab';
+import type { CollabContext } from '@/composables/use-collab';
 
 interface UseAiToolsOptions {
 	finalFields: Ref<Field[]>;
