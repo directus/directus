@@ -54,6 +54,12 @@ export type VisualEditingMessages = {
 	addToContext: string;
 };
 
-export type ReceiveAction = 'connect' | 'checkFieldAccess' | 'edit' | 'navigation' | 'addToContext';
+export type ReceiveAction =
+	| 'connect'
+	| 'checkFieldAccess'
+	| 'edit'
+	| 'navigation'
+	| 'addToContext'
+	| 'openCommandPalette';
 
 export type SendAction = 'confirm' | 'activateElements' | 'showEditableElements' | 'saved' | 'highlightElement';

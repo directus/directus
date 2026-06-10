@@ -107,6 +107,35 @@ describe('DirectusFrame', () => {
 		});
 	});
 
+	describe('keyboard shortcuts', () => {
+		it('sends openCommandPalette on Command+K', () => {
+			const frame = new DirectusFrame();
+			frame.connect(ORIGIN);
+			postMessageSpy.mockClear();
+
+			const event = new KeyboardEvent('keydown', { key: 'k', metaKey: true, cancelable: true });
+			(frame as any).handleKeydown(event);
+
+			expect(event.defaultPrevented).toBe(true);
+			expect(postMessageSpy).toHaveBeenCalledWith({ action: 'openCommandPalette', data: undefined }, ORIGIN);
+		});
+
+		it('ignores Command+K inside editable fields', () => {
+			const frame = new DirectusFrame();
+			frame.connect(ORIGIN);
+			postMessageSpy.mockClear();
+
+			const input = document.createElement('input');
+			const event = new KeyboardEvent('keydown', { key: 'k', metaKey: true, cancelable: true });
+			Object.defineProperty(event, 'target', { value: input });
+
+			(frame as any).handleKeydown(event);
+
+			expect(event.defaultPrevented).toBe(false);
+			expect(postMessageSpy).not.toHaveBeenCalled();
+		});
+	});
+
 	describe('receive() ', () => {
 		it('ignores messages from a different origin', () => {
 			const frame = new DirectusFrame();

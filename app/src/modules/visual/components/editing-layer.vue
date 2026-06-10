@@ -111,6 +111,10 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 		if (action === 'edit') onClickEdit(data);
 
 		if (action === 'addToContext') receiveAddToContext(data);
+
+		if (action === 'openCommandPalette') {
+			window.dispatchEvent(new CustomEvent('open-command-palette'));
+		}
 	});
 
 	watch(

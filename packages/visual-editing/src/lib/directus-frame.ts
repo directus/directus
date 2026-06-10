@@ -29,6 +29,7 @@ export class DirectusFrame {
 		DirectusFrame.SINGLETON = this;
 
 		window?.addEventListener('message', this.receive.bind(this));
+		window?.addEventListener('keydown', this.handleKeydown.bind(this));
 	}
 
 	isAiEnabled() {
@@ -72,6 +73,17 @@ export class DirectusFrame {
 		if (action === 'showEditableElements') this.receiveShowEditableElements(data);
 		if (action === 'saved') this.receiveSaved(data);
 		if (action === 'highlightElement') this.receiveHighlightElement(data);
+	}
+
+	private handleKeydown(event: KeyboardEvent) {
+		const target = event.target as HTMLElement | null;
+
+		if (!this.origin) return;
+		if (target?.closest('input, textarea, select, [contenteditable="true"], .cm-editor')) return;
+		if ((event.metaKey === false && event.ctrlKey === false) || event.key.toLowerCase() !== 'k') return;
+
+		event.preventDefault();
+		this.send('openCommandPalette');
 	}
 
 	receiveConfirm() {

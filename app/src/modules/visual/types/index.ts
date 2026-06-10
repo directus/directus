@@ -10,4 +10,5 @@ export type ReceiveData =
 	| { action: 'navigation'; data: NavigationData }
 	| { action: 'addToContext'; data: AddToContextData }
 	| { action: 'checkFieldAccess'; data: CheckFieldAccessData[] }
+	| { action: 'openCommandPalette'; data: null }
 	| { action: null; data: null };

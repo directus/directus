@@ -172,6 +172,24 @@ function setupNonAdmin() {
 }
 
 describe('checkFieldAccess', () => {
+	it('opens command palette when requested by the website frame', () => {
+		const open = vi.fn();
+		window.addEventListener('open-command-palette', open);
+
+		mountEditingLayer();
+
+		window.dispatchEvent(
+			new MessageEvent('message', {
+				origin: FRAME_SRC,
+				data: { action: 'openCommandPalette', data: null },
+			}),
+		);
+
+		expect(open).toHaveBeenCalled();
+
+		window.removeEventListener('open-command-palette', open);
+	});
+
 	it.each([null, ''])('filters out elements with item=%j', (item) => {
 		mountEditingLayer();
 		sendCheckFieldAccess(createElements({ item }));
