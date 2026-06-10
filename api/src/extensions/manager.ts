@@ -36,6 +36,7 @@ import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import ivm from 'isolated-vm';
 import { clone, debounce, isPlainObject } from 'lodash-es';
+import PQueue from 'p-queue';
 import { rolldown } from 'rolldown';
 import { rollup } from 'rollup';
 import { useBus } from '../bus/index.js';
@@ -48,7 +49,6 @@ import { deleteFromRequireCache } from '../utils/delete-from-require-cache.js';
 import getModuleDefault from '../utils/get-module-default.js';
 import { getSchema } from '../utils/get-schema.js';
 import { importFileUrl } from '../utils/import-file-url.js';
-import { JobQueue } from '../utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 import { getExtensionsPath } from './lib/get-extensions-path.js';
 import { getExtensionsSettings } from './lib/get-extensions-settings.js';
@@ -135,7 +135,7 @@ export class ExtensionManager {
 	 * Used to prevent race conditions when reloading extensions. Forces each reload to happen in
 	 * sequence.
 	 */
-	private reloadQueue: JobQueue = new JobQueue();
+	private reloadQueue: PQueue = new PQueue({ concurrency: 1 });
 
 	/**
 	 * Used to prevent race condition when reading extension data while reloading extensions
@@ -351,7 +351,7 @@ export class ExtensionManager {
 			reject = rej;
 		});
 
-		this.reloadQueue.enqueue(async () => {
+		this.reloadQueue.add(async () => {
 			if (this.isLoaded) {
 				const prevExtensions = clone(this.extensions);
 

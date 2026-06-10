@@ -38,7 +38,7 @@ properties:
     type: string
   origin:
     description: Origin of the request when the action took place.
-    example: https://directus.io
+    example: https://directus.com
     type: string
   collection:
     description: Collection identifier in which the item resides.
