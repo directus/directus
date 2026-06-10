@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Apie
+continue: Tęsti
 first_name: Vardas
 last_name: Pavardė
 identifier: Identifikatorius
@@ -157,14 +158,12 @@ keep: Pasilikti
 version: Versija
 version_key: Versijos identifikatorius
 version_name: Versijos pavadinimas
-main_version: Pagrindinė
 switch_version: Perjungti versiją
 switch_version_copy: Ar tikrai norite persijungti į "{version}" versiją? Neišsaugoti pakeitimai bus prarasti.
 create_version: Sukurti versiją
 rename_version: Pervadinti versiją
 compare_version: Palyginti versijas
 save_version: Išsaugoti versiją
-promote_version: Pakelti versiją
 delete_version: Pašalinti versiją
 delete_version_copy: >-
   Ar tikrai norite pašalinti "{version}" versiją? Šio veiksmo nebus galima atšaukti.
@@ -1113,6 +1112,17 @@ settings_data_model: Duomenų modelis
 settings_roles: Naudotojo rolės
 settings_permissions: Prieigos polisai
 settings_project: Nustatymai
+licensing:
+  unlimited: Neribojamas
+  addon_manage: Tvarkyti
+  addon_update: Atnaujinti
+  resolve_continue: Tęsti
+  resolve_show_n_more: 'Rodyti {count} daugiau'
+  resolve_section_flows: Procesai
+  resolve_sso_admin_password: Slaptažodis
+  entitlements:
+    collections: Kolekcijos
+    flows: Procesai
 settings_appearance: Atvaizdavimas
 settings_flows: Procesai
 settings_system_logs: Sistemos žurnalas
@@ -2000,7 +2010,9 @@ interfaces:
     value_securely_saved: Reikšmė saugiai išsaugota
     generate: Generuoti prieigos raktą
     regenerate: Generuoti raktą iš naujo
+    regenerate_confirm_title: Generuoti raktą iš naujo
     remove_token: Pašalinti prieigos raktą
+    remove_confirm_title: Pašalinti prieigos raktą
   system-raw-editor:
     system-raw-editor: Redaguoti neformatuotą
     description: Leisti įvesti neapdorotą arba dinaminę reikšmę
@@ -2462,4 +2474,6 @@ search_flow: Ieškoti proceso...
 percent: Procentai
 show_password: Rodyti slaptažodį
 hide_password: Nerodyti slaptažodžio
+license_grace_key_modal:
+  optional: Neprivalomas
 set_to_now: Nustatyti į dabartinį laiką

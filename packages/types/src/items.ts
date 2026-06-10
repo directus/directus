@@ -28,6 +28,7 @@ export type QueryOptions = {
 	stripNonRequested?: boolean;
 	permissionsAction?: PermissionsAction;
 	emitEvents?: boolean;
+	key?: PrimaryKey | null;
 };
 
 export type DefaultOverwrite = {

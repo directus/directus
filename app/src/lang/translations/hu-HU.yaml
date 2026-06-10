@@ -20,31 +20,18 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Rólunk
-directus_bsl: Directus BSL 1.1
 privacy_policy: Adatvédelmi irányelvek
-contact_our_team: Lépjen kapcsolatba velünk
 setup_welcome: Üdvözöljük a Directusnál
 setup_info: Hozza létre rendszergazda fiókját, és indítsa el projektjét
-setup_license_notice: >
-  A Directus ingyenes az 5 millió dollár alatti forgalmú cégeknek, valamint alapítványoknak és költségvetési szervezetnek.
-setup_license_follow_up: >
-  A küszöbértéket meghaladó cégek kötelesek licencet vásárolni. Folytassa bátran a Directus tesztelését; és amint készen áll a bevezetésre, lépjen kapcsolatba {contactOurTeam}-mel.
-setup_save_accept_license: >
-  A mentés gombra kattintva elfogadja a {directusBsl} és a {privacyPolicy} feltételeit.
-setup_accept_license: Elfogadom a {directusBsl} és a {privacyPolicy} feltételeit.
 setup_marketing_emails: Küldjenek részemre információkat a termék frissítéséről és az új verziók módosításairól
 setup_launch: Directus indítása
 setup_project: Projekt beállítása
+continue: Folytatás
 first_name: Keresztnév
 last_name: Vezetéknév
 admin_email: Adminisztrátor e-mail címe
 owner_email: Tulajdonos e-mail címe
 email_address: E-mail cím
-organization_name: Szervezet neve
-how_do_you_use_directus: Mire használja a Directust?
-usage_personal: Egyéni használat / Tanulás
-usage_commercial: Üzleti / Kereskedelmi
-usage_community: Nyílt forráskódú / Közösségi
 identifier: Azonosító
 avatar: Profilkép
 application: Alkalmazás
@@ -197,22 +184,17 @@ keep: Megtart
 version: Verzió
 version_key: Verzió kulcs
 version_name: Verzió név
-main_version: Fő
 switch_version: Verzióváltás
 switch_version_copy: Biztosan át szeretne váltani a(z) „{version}” verzióra? A nem mentett módosítások elvesznek.
 create_version: Verzió készítés
 rename_version: Verzió átnevezés
 compare_version: Verzió összehasonlítás
 save_version: Verzió mentés
-promote_version: Verzió előléptetés
 apply: Alkalmaz
 select_all_differences: Összes különbség kijelölése
-main_updated_notice: A fő elem megváltozott a jelenlegi verzió létrehozása óta.
 delete_version: Verzió törlése
 delete_version_copy: >-
   Biztosan törölni szeretné a(z) „{version}” verziót? Ez a művelet nem vonható vissza.
-delete_on_apply_copy: >-
-  A(z) „{version}” verziót készül előléptetni a fő verzióra. Mi történjen a(z) „{version}” verzióval az előléptetés után?
 reset_bookmark: Könyvjelző visszaállítása
 update_bookmark: Könyvjelző frissítése
 delete_bookmark: Könyvjelző törlése
@@ -1075,6 +1057,18 @@ editing_in_batch: '{count} elem szerkesztése'
 no_options_available: Nincs választási lehetőség
 settings_data_model: Adatmodell
 settings_project: Beállítások
+licensing:
+  unlimited: Korlátlan
+  addon_manage: Kezelés
+  addon_update: Frissítés
+  resolve_continue: Folytatás
+  resolve_show_n_more: 'További {count} mutatása'
+  resolve_section_flows: Folyamatok
+  resolve_sso_admin_email: E-mail cím
+  resolve_sso_admin_password: Jelszó
+  entitlements:
+    collections: Gyűjtemények
+    flows: Folyamatok
 settings_flows: Folyamatok
 settings_presets: Könyvjelzők
 settings_translations: Fordítások
@@ -1854,7 +1848,9 @@ interfaces:
     value_securely_saved: Érték biztonságosan mentve
     generate: Token generálása
     regenerate: Token újragenerálása
+    regenerate_confirm_title: Token újragenerálása
     remove_token: Token eltávolítása
+    remove_confirm_title: Token eltávolítása
   system-raw-editor:
     system-raw-editor: Nyers szerkesztő
     description: Lehetővé teszi a nyers vagy kapcsos zárójeles sablonértékek megadását
@@ -2255,4 +2251,6 @@ fonts:
   black: Fekete
   italic: Dőlt
   auto: Automatikus
+license_grace_key_modal:
+  optional: Opcionális
 set_to_now: Mai nap

@@ -1,8 +1,8 @@
 {
 	"name": "@directus/memory",
-	"version": "3.1.8",
+	"version": "4.0.0",
 	"description": "Memory / Redis abstraction for Directus",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",

@@ -1,15 +1,15 @@
 {
 	"name": "@directus/storage-driver-supabase",
-	"version": "3.0.22",
+	"version": "4.0.0",
 	"description": "Supabase file storage abstraction for `@directus/storage`",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
 		"directory": "packages/storage-driver-supabase"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "BUSL-1.1",
+	"license": "SEE LICENSE IN license",
 	"author": "Matthew Rollinson <matt@rolley.io>",
 	"type": "module",
 	"exports": {

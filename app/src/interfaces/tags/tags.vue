@@ -247,19 +247,10 @@ function clearVariable() {
 			--v-chip-background-color: var(--theme--primary);
 			--v-chip-color: var(--foreground-inverted);
 			--v-chip-background-color-hover: var(--theme--danger);
+			--v-chip-color-hover: var(--foreground-inverted);
 			--v-chip-border-color-hover: var(--v-chip-background-color-hover);
-			--v-chip-close-color: var(--v-chip-background-color, var(--theme--background-normal));
-			--v-chip-close-color-hover: var(--white);
 
 			transition: all var(--fast) var(--transition);
-
-			&:hover {
-				--v-chip-close-color: var(--white);
-
-				:deep(.chip-content .close-outline .close:hover) {
-					--v-icon-color: var(--theme--danger);
-				}
-			}
 		}
 	}
 	.presets,
