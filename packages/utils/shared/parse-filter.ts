@@ -45,6 +45,16 @@ export function parseFilter(
 const logicalFilterOperators = ['_and', '_or'];
 const bypassOperators = ['_none', '_some'];
 
+function containsRelationalQuantifier(filter: any): boolean {
+	if (!isObjectLike(filter)) return false;
+
+	return Object.entries(filter).some(([key, value]) => {
+		if (bypassOperators.includes(key)) return true;
+		if (Array.isArray(value)) return value.some(containsRelationalQuantifier);
+		return containsRelationalQuantifier(value);
+	});
+}
+
 function shiftLogicalOperatorsUp(filter: any): any {
 	const key = Object.keys(filter)[0];
 	if (!key) return filter;
@@ -62,6 +72,10 @@ function shiftLogicalOperatorsUp(filter: any): any {
 		if (!childKey) return { [key]: childResult };
 
 		if (logicalFilterOperators.includes(childKey)) {
+			if (containsRelationalQuantifier(childResult[childKey])) {
+				return { [key]: childResult };
+			}
+
 			return shiftLogicalOperatorsUp({
 				[childKey]: childResult[childKey].map((nestedFilter: any) => ({
 					[key]: nestedFilter,

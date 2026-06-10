@@ -341,6 +341,63 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						expect(gqlResponse.body.data).toEqual(gqlResponse2.body.data);
 					});
 				});
+
+				describe('with nested _some filters on the same related item', () => {
+					it.each(vendors)('%s', async (vendor) => {
+						const values = vendorSchemaValues[vendor] as Record<string, { id: (number | string)[] }>;
+						const foodId = values[localCollectionFoods]!.id[0];
+						const supplierIds = values[localCollectionSuppliers]!.id;
+
+						const createFilter = (firstSupplierId: number | string, secondSupplierId: number | string) => ({
+							id: { _eq: foodId },
+							ingredients: {
+								_and: [
+									{
+										[`${localCollectionIngredients}_id`]: {
+											suppliers: {
+												_some: {
+													[`${localCollectionSuppliers}_id`]: {
+														id: { _eq: firstSupplierId },
+													},
+												},
+											},
+										},
+									},
+									{
+										[`${localCollectionIngredients}_id`]: {
+											suppliers: {
+												_some: {
+													[`${localCollectionSuppliers}_id`]: {
+														id: { _eq: secondSupplierId },
+													},
+												},
+											},
+										},
+									},
+								],
+							},
+						});
+
+						const sameIngredientResponse = await request(getUrl(vendor))
+							.get(`/items/${localCollectionFoods}`)
+							.query({
+								filter: JSON.stringify(createFilter(supplierIds[0]!, supplierIds[1]!)),
+							})
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+						const differentIngredientsResponse = await request(getUrl(vendor))
+							.get(`/items/${localCollectionFoods}`)
+							.query({
+								filter: JSON.stringify(createFilter(supplierIds[0]!, supplierIds[2]!)),
+							})
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+						expect(sameIngredientResponse.statusCode).toBe(200);
+						expect(sameIngredientResponse.body.data).toMatchObject([{ id: foodId }]);
+						expect(differentIngredientsResponse.statusCode).toBe(200);
+						expect(differentIngredientsResponse.body.data).toHaveLength(0);
+					});
+				});
 			});
 
 			describe('filters with functions', () => {

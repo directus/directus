@@ -119,18 +119,10 @@ export function applyFilter(
 
 			const { relation, relationType } = getRelationInfo(relations, collection, pathRoot);
 
-			const operation = getOperation(key, value);
-
-			if (!operation) continue;
-
-			const { operator: filterOperator, value: filterValue } = operation;
-
 			if (
 				filterPath.length > 1 ||
 				(!(key.includes('(') && key.includes(')')) && schema.collections[collection]?.fields[key]?.type === 'alias')
 			) {
-				if (!relation) continue;
-
 				if (relationType === 'o2m' || relationType === 'o2a') {
 					let pkField: Knex.Raw<any> | string = `${collection}.${
 						schema.collections[relation!.related_collection!]!.primary
@@ -142,7 +134,10 @@ export function applyFilter(
 
 					const childKey = Object.keys(value)?.[0];
 
-					if (childKey === '_none' || childKey === '_some') {
+					const hasNestedQuantifier =
+						(childKey === '_and' || childKey === '_or') && containsRelationalQuantifier(value[childKey]);
+
+					if (childKey === '_none' || childKey === '_some' || hasNestedQuantifier) {
 						const subQueryBuilder =
 							(filter: Filter, cases: Filter[]) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
 								const field = relation!.field;
@@ -166,8 +161,9 @@ export function applyFilter(
 							);
 
 							continue;
-						} else if (childKey === '_some') {
-							dbQuery[logical].whereIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter, subCases));
+						} else {
+							const subFilter = childKey === '_some' ? (Object.values(value)[0] as Filter) : value;
+							dbQuery[logical].whereIn(pkField as string, subQueryBuilder(subFilter, subCases));
 							continue;
 						}
 					}
@@ -180,6 +176,14 @@ export function applyFilter(
 						}" can only be used with top level relational alias field`,
 					});
 				}
+
+				const operation = getOperation(key, value);
+
+				if (!operation) continue;
+
+				const { operator: filterOperator, value: filterValue } = operation;
+
+				if (!relation) continue;
 
 				const { columnPath, targetCollection, addNestedPkField } = getColumnPath({
 					path: filterPath,
@@ -205,6 +209,11 @@ export function applyFilter(
 
 				applyOperator(knex, dbQuery, schema, columnPath, filterOperator, filterValue, logical, targetCollection);
 			} else {
+				const operation = getOperation(key, value);
+
+				if (!operation) continue;
+
+				const { operator: filterOperator, value: filterValue } = operation;
 				const { type, special } = getFilterType(schema.collections[collection]!.fields, filterPath[0]!, collection)!;
 
 				validateOperator(type, filterOperator, special);
@@ -223,5 +232,15 @@ export function applyFilter(
 				);
 			}
 		}
+	}
+
+	function containsRelationalQuantifier(filter: Filter): boolean {
+		for (const [key, value] of Object.entries(filter)) {
+			if (key === '_none' || key === '_some') return true;
+			if (Array.isArray(value) && value.some(containsRelationalQuantifier)) return true;
+			if (value && typeof value === 'object' && containsRelationalQuantifier(value)) return true;
+		}
+
+		return false;
 	}
 }
