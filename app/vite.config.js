@@ -7,7 +7,6 @@ import { templateCompilerOptions } from '@tresjs/core';
 import UnheadVite from '@unhead/addons/vite';
 import vue from '@vitejs/plugin-vue';
 import { searchForWorkspaceRoot } from 'vite';
-import glsl from 'vite-plugin-glsl';
 import vueDevtools from 'vite-plugin-vue-devtools';
 import { defineConfig } from 'vitest/config';
 
@@ -42,7 +41,6 @@ export default defineConfig({
 		vue({
 			...templateCompilerOptions,
 		}),
-		glsl(),
 		UnheadVite(),
 		yaml({
 			transform(data) {

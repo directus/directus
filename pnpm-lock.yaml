@@ -6,9 +6,51 @@ settings:
 
 catalogs:
   default:
+    '@ai-sdk/anthropic':
+      specifier: 3.0.58
+      version: 3.0.58
+    '@ai-sdk/devtools':
+      specifier: 0.0.15
+      version: 0.0.15
+    '@ai-sdk/google':
+      specifier: 3.0.43
+      version: 3.0.43
+    '@ai-sdk/openai':
+      specifier: 3.0.41
+      version: 3.0.41
+    '@ai-sdk/openai-compatible':
+      specifier: 2.0.35
+      version: 2.0.35
     '@ai-sdk/vue':
       specifier: 3.0.116
       version: 3.0.116
+    '@authenio/samlify-node-xmllint':
+      specifier: 2.0.0
+      version: 2.0.0
+    '@aws-sdk/client-s3':
+      specifier: 3.928.0
+      version: 3.928.0
+    '@aws-sdk/client-sesv2':
+      specifier: 3.928.0
+      version: 3.928.0
+    '@aws-sdk/lib-storage':
+      specifier: 3.928.0
+      version: 3.928.0
+    '@azure/storage-blob':
+      specifier: 12.29.1
+      version: 12.29.1
+    '@braintrust/otel':
+      specifier: 0.2.0
+      version: 0.2.0
+    '@changesets/cli':
+      specifier: 2.29.7
+      version: 2.29.7
+    '@changesets/get-github-info':
+      specifier: 0.6.0
+      version: 0.6.0
+    '@changesets/types':
+      specifier: 6.1.0
+      version: 6.1.0
     '@directus/license':
       specifier: 0.2.0
       version: 0.2.0
@@ -63,6 +105,12 @@ catalogs:
     '@editorjs/underline':
       specifier: 1.2.1
       version: 1.2.1
+    '@eslint/js':
+      specifier: 9.39.1
+      version: 9.39.1
+    '@fastify/type-provider-typebox':
+      specifier: 6.1.0
+      version: 6.1.0
     '@fortawesome/fontawesome-svg-core':
       specifier: 6.7.2
       version: 6.7.2
@@ -84,6 +132,12 @@ catalogs:
     '@fullcalendar/timegrid':
       specifier: 6.1.19
       version: 6.1.19
+    '@godaddy/terminus':
+      specifier: 4.12.1
+      version: 4.12.1
+    '@google-cloud/storage':
+      specifier: 7.18.0
+      version: 7.18.0
     '@histoire/plugin-vue':
       specifier: 0.17.17
       version: 0.17.17
@@ -96,6 +150,12 @@ catalogs:
     '@json2csv/plainjs':
       specifier: 7.0.6
       version: 7.0.6
+    '@keyv/redis':
+      specifier: 3.0.1
+      version: 3.0.1
+    '@langfuse/otel':
+      specifier: 4.0.0
+      version: 4.0.0
     '@mapbox/mapbox-gl-draw':
       specifier: 1.5.1
       version: 1.5.1
@@ -105,78 +165,228 @@ catalogs:
     '@mapbox/mapbox-gl-geocoder':
       specifier: 5.1.2
       version: 5.1.2
+    '@modelcontextprotocol/sdk':
+      specifier: 1.29.0
+      version: 1.29.0
+    '@netlify/api':
+      specifier: 14.0.14
+      version: 14.0.14
     '@ngneat/falso':
       specifier: 8.0.2
       version: 8.0.2
+    '@npm/types':
+      specifier: 2.1.0
+      version: 2.1.0
+    '@opentelemetry/sdk-trace-node':
+      specifier: 2.1.0
+      version: 2.1.0
     '@pinia/testing':
       specifier: 1.0.3
       version: 1.0.3
+    '@pnpm/logger':
+      specifier: 1001.0.1
+      version: 1001.0.1
+    '@pnpm/workspace.find-packages':
+      specifier: 1000.0.43
+      version: 1000.0.43
+    '@pnpm/workspace.pkgs-graph':
+      specifier: 1000.0.25
+      version: 1000.0.25
     '@popperjs/core':
       specifier: 2.11.8
       version: 2.11.8
+    '@reach/observe-rect':
+      specifier: 1.2.0
+      version: 1.2.0
+    '@rollup/plugin-alias':
+      specifier: 5.1.1
+      version: 5.1.1
+    '@rollup/plugin-commonjs':
+      specifier: 28.0.9
+      version: 28.0.9
+    '@rollup/plugin-json':
+      specifier: 6.1.0
+      version: 6.1.0
+    '@rollup/plugin-node-resolve':
+      specifier: 16.0.3
+      version: 16.0.3
+    '@rollup/plugin-replace':
+      specifier: 6.0.3
+      version: 6.0.3
+    '@rollup/plugin-terser':
+      specifier: 1.0.0
+      version: 1.0.0
+    '@rollup/plugin-virtual':
+      specifier: 3.0.2
+      version: 3.0.2
     '@rollup/plugin-yaml':
       specifier: 4.1.2
       version: 4.1.2
+    '@sesamecare-oss/redlock':
+      specifier: 1.4.0
+      version: 1.4.0
+    '@shopify/semaphore':
+      specifier: 3.1.0
+      version: 3.1.0
     '@sindresorhus/slugify':
       specifier: 2.2.1
       version: 2.2.1
+    '@smithy/node-http-handler':
+      specifier: 4.4.5
+      version: 4.4.5
+    '@supabase/storage-js':
+      specifier: 2.81.0
+      version: 2.81.0
     '@tinymce/tinymce-vue':
       specifier: 6.3.0
       version: 6.3.0
-    '@tresjs/cientos':
-      specifier: ^5.7.0
-      version: 5.7.1
     '@tresjs/core':
       specifier: ^5.8.0
       version: 5.8.1
     '@turf/meta':
       specifier: 7.2.0
       version: 7.2.0
+    '@tus/server':
+      specifier: 2.3.0
+      version: 2.3.0
+    '@tus/utils':
+      specifier: 0.6.0
+      version: 0.6.0
+    '@types/archiver':
+      specifier: 7.0.0
+      version: 7.0.0
+    '@types/async':
+      specifier: 3.2.25
+      version: 3.2.25
     '@types/base-64':
       specifier: 1.0.2
       version: 1.0.2
+    '@types/busboy':
+      specifier: 1.5.4
+      version: 1.5.4
+    '@types/bytes':
+      specifier: 3.1.5
+      version: 3.1.5
     '@types/chroma-js':
       specifier: 3.1.2
       version: 3.1.2
     '@types/codemirror':
       specifier: 5.60.16
       version: 5.60.16
+    '@types/content-disposition':
+      specifier: 0.5.9
+      version: 0.5.9
+    '@types/cookie-parser':
+      specifier: 1.4.10
+      version: 1.4.10
+    '@types/cors':
+      specifier: 2.8.19
+      version: 2.8.19
+    '@types/deep-diff':
+      specifier: 1.0.5
+      version: 1.0.5
     '@types/diacritics':
       specifier: 1.3.3
       version: 1.3.3
     '@types/diff':
       specifier: 7.0.1
       version: 7.0.1
+    '@types/encodeurl':
+      specifier: 1.0.3
+      version: 1.0.3
+    '@types/express':
+      specifier: 4.17.21
+      version: 4.17.21
+    '@types/express-serve-static-core':
+      specifier: 4.19.6
+      version: 4.19.6
     '@types/file-saver':
       specifier: 2.0.7
       version: 2.0.7
+    '@types/fs-extra':
+      specifier: 11.0.4
+      version: 11.0.4
     '@types/geojson':
       specifier: 7946.0.16
       version: 7946.0.16
+    '@types/glob-to-regexp':
+      specifier: 0.4.4
+      version: 0.4.4
+    '@types/inquirer':
+      specifier: 9.0.9
+      version: 9.0.9
+    '@types/js-yaml':
+      specifier: 4.0.9
+      version: 4.0.9
     '@types/json-schema':
       specifier: 7.0.15
       version: 7.0.15
+    '@types/json2csv':
+      specifier: 5.0.7
+      version: 5.0.7
+    '@types/jsonwebtoken':
+      specifier: 9.0.10
+      version: 9.0.10
     '@types/lodash':
       specifier: 4.17.20
       version: 4.17.20
+    '@types/lodash-es':
+      specifier: 4.17.12
+      version: 4.17.12
     '@types/mapbox__mapbox-gl-draw':
       specifier: 1.4.9
       version: 1.4.9
     '@types/mapbox__mapbox-gl-geocoder':
       specifier: 5.1.0
       version: 5.1.0
+    '@types/mime-types':
+      specifier: 3.0.1
+      version: 3.0.1
+    '@types/ms':
+      specifier: 2.1.0
+      version: 2.1.0
+    '@types/node':
+      specifier: 22.13.14
+      version: 22.13.14
+    '@types/nodemailer':
+      specifier: 7.0.3
+      version: 7.0.3
+    '@types/object-hash':
+      specifier: 3.0.6
+      version: 3.0.6
+    '@types/papaparse':
+      specifier: 5.5.0
+      version: 5.5.0
+    '@types/proxy-addr':
+      specifier: 2.0.3
+      version: 2.0.3
     '@types/qrcode':
       specifier: 1.5.6
       version: 1.5.6
+    '@types/qs':
+      specifier: 6.14.0
+      version: 6.14.0
+    '@types/sanitize-html':
+      specifier: 2.16.0
+      version: 2.16.0
     '@types/semver':
       specifier: 7.7.1
       version: 7.7.1
+    '@types/stream-json':
+      specifier: 1.7.8
+      version: 1.7.8
     '@types/three':
       specifier: ^0.184.0
       version: 0.184.1
+    '@types/tmp':
+      specifier: 0.2.6
+      version: 0.2.6
     '@types/wellknown':
       specifier: 0.5.8
       version: 0.5.8
+    '@types/ws':
+      specifier: 8.18.1
+      version: 8.18.1
     '@unhead/addons':
       specifier: 1.11.20
       version: 1.11.20
@@ -213,15 +423,48 @@ catalogs:
     apexcharts:
       specifier: 4.7.0
       version: 4.7.0
+    archiver:
+      specifier: 7.0.1
+      version: 7.0.1
+    argon2:
+      specifier: 0.44.0
+      version: 0.44.0
+    async:
+      specifier: 3.2.6
+      version: 3.2.6
+    async-mutex:
+      specifier: 0.5.0
+      version: 0.5.0
     axios:
       specifier: 1.16.1
       version: 1.16.1
+    axios-cache-interceptor:
+      specifier: 1.11.1
+      version: 1.11.1
     base-64:
       specifier: 1.0.0
       version: 1.0.0
+    boxen:
+      specifier: 8.0.1
+      version: 8.0.1
+    busboy:
+      specifier: 1.6.0
+      version: 1.6.0
+    bytes:
+      specifier: 3.1.2
+      version: 3.1.2
+    camelcase:
+      specifier: 8.0.0
+      version: 8.0.0
     caret-pos:
       specifier: 2.0.0
       version: 2.0.0
+    chalk:
+      specifier: 5.6.2
+      version: 5.6.2
+    chokidar:
+      specifier: 5.0.0
+      version: 5.0.0
     chroma-js:
       specifier: 3.1.2
       version: 3.1.2
@@ -231,6 +474,27 @@ catalogs:
     color:
       specifier: 5.0.2
       version: 5.0.2
+    commander:
+      specifier: 14.0.2
+      version: 14.0.2
+    content-disposition:
+      specifier: 0.5.4
+      version: 0.5.4
+    cookie:
+      specifier: 1.0.2
+      version: 1.0.2
+    cookie-parser:
+      specifier: 1.4.7
+      version: 1.4.7
+    copyfiles:
+      specifier: 2.4.1
+      version: 2.4.1
+    cors:
+      specifier: 2.8.5
+      version: 2.8.5
+    cron:
+      specifier: 4.3.4
+      version: 4.3.4
     cropperjs:
       specifier: 1.6.2
       version: 1.6.2
@@ -240,6 +504,15 @@ catalogs:
     date-fns-tz:
       specifier: 3.2.0
       version: 3.2.0
+    decamelize:
+      specifier: 6.0.1
+      version: 6.0.1
+    deep-diff:
+      specifier: 1.0.2
+      version: 1.0.2
+    detect-port:
+      specifier: 2.1.0
+      version: 2.1.0
     diacritics:
       specifier: 1.3.0
       version: 1.3.0
@@ -249,39 +522,174 @@ catalogs:
     dompurify:
       specifier: 3.3.2
       version: 3.3.2
+    dotenv:
+      specifier: 17.2.3
+      version: 17.2.3
     editorjs-toggle-block:
       specifier: 0.3.16
       version: 0.3.16
+    encodeurl:
+      specifier: 2.0.0
+      version: 2.0.0
+    esbuild:
+      specifier: 0.26.0
+      version: 0.26.0
+    esbuild-plugin-replace:
+      specifier: 1.4.0
+      version: 1.4.0
     escape-string-regexp:
       specifier: 5.0.0
       version: 5.0.0
+    eslint:
+      specifier: 9.39.1
+      version: 9.39.1
+    eslint-config-prettier:
+      specifier: 10.1.8
+      version: 10.1.8
+    eslint-plugin-import:
+      specifier: 2.32.0
+      version: 2.32.0
+    eslint-plugin-vue:
+      specifier: 10.5.1
+      version: 10.5.1
+    eventemitter2:
+      specifier: 6.4.9
+      version: 6.4.9
+    execa:
+      specifier: 9.6.0
+      version: 9.6.0
+    exif-reader:
+      specifier: 2.0.2
+      version: 2.0.2
+    express:
+      specifier: 4.21.2
+      version: 4.21.2
+    fastify:
+      specifier: 5.8.5
+      version: 5.8.5
+    fastify-type-provider-zod:
+      specifier: 6.1.0
+      version: 6.1.0
     file-saver:
       specifier: 2.0.5
       version: 2.0.5
+    find-cache-directory:
+      specifier: 6.0.0
+      version: 6.0.0
+    flat:
+      specifier: 6.0.1
+      version: 6.0.1
     focus-trap:
       specifier: 7.6.6
       version: 7.6.6
+    form-data:
+      specifier: 4.0.4
+      version: 4.0.4
+    fs-extra:
+      specifier: 11.3.2
+      version: 11.3.2
     geojson:
       specifier: 0.5.0
       version: 0.5.0
+    get-port:
+      specifier: 7.1.0
+      version: 7.1.0
+    glob-to-regexp:
+      specifier: 0.4.1
+      version: 0.4.1
+    globals:
+      specifier: 16.5.0
+      version: 16.5.0
+    graphql:
+      specifier: 16.12.0
+      version: 16.12.0
+    graphql-compose:
+      specifier: 9.1.0
+      version: 9.1.0
+    graphql-ws:
+      specifier: 6.0.6
+      version: 6.0.6
     happy-dom:
       specifier: 20.8.9
       version: 20.8.9
+    helmet:
+      specifier: 8.1.0
+      version: 8.1.0
     histoire:
       specifier: 0.17.17
       version: 0.17.17
     html-entities:
       specifier: 2.6.0
       version: 2.6.0
+    icc:
+      specifier: 3.0.0
+      version: 3.0.0
+    inquirer:
+      specifier: 12.11.0
+      version: 12.11.0
+    ioredis:
+      specifier: 5.8.2
+      version: 5.8.2
+    ip-matching:
+      specifier: 2.1.2
+      version: 2.1.2
+    isolated-vm:
+      specifier: 5.0.3
+      version: 5.0.3
+    joi:
+      specifier: 18.0.1
+      version: 18.0.1
+    jose:
+      specifier: 6.2.3
+      version: 6.2.3
+    js-yaml:
+      specifier: 4.1.1
+      version: 4.1.1
+    js2xmlparser:
+      specifier: 5.0.0
+      version: 5.0.0
     json-to-graphql-query:
       specifier: 2.3.0
       version: 2.3.0
+    json2csv:
+      specifier: 5.0.7
+      version: 5.0.7
     jsonlint-mod:
       specifier: 1.7.6
       version: 1.7.6
+    jsonwebtoken:
+      specifier: 9.0.3
+      version: 9.0.3
+    keyv:
+      specifier: 5.5.3
+      version: 5.5.3
+    knex:
+      specifier: 3.1.0
+      version: 3.1.0
+    knex-mock-client:
+      specifier: 3.0.2
+      version: 3.0.2
+    ky:
+      specifier: 1.14.0
+      version: 1.14.0
+    ldapts:
+      specifier: 8.1.3
+      version: 8.1.3
+    liquidjs:
+      specifier: 10.26.0
+      version: 10.26.0
     lodash:
       specifier: 4.18.1
       version: 4.18.1
+    lodash-es:
+      specifier: 4.18.1
+      version: 4.18.1
+    log-symbols:
+      specifier: 7.0.1
+      version: 7.0.1
+    lru-cache:
+      specifier: 11.2.2
+      version: 11.2.2
     mapbox-gl:
       specifier: 1.13.3
       version: 1.13.3
@@ -297,60 +705,240 @@ catalogs:
     mime:
       specifier: 4.1.0
       version: 4.1.0
+    mime-types:
+      specifier: 3.0.1
+      version: 3.0.1
+    minimatch:
+      specifier: 10.2.5
+      version: 10.2.5
     mitt:
       specifier: 3.0.1
       version: 3.0.1
+    mnemonist:
+      specifier: 0.40.3
+      version: 0.40.3
+    ms:
+      specifier: 2.1.3
+      version: 2.1.3
+    mysql2:
+      specifier: 3.15.3
+      version: 3.15.3
     nanoid:
       specifier: 5.1.6
       version: 5.1.6
+    node-machine-id:
+      specifier: 1.1.12
+      version: 1.1.12
+    nodemailer:
+      specifier: 8.0.5
+      version: 8.0.5
+    nodemailer-mailgun-transport:
+      specifier: 2.1.5
+      version: 2.1.5
+    npm-watch:
+      specifier: 0.13.0
+      version: 0.13.0
+    object-hash:
+      specifier: 3.0.0
+      version: 3.0.0
     ofetch:
       specifier: 1.5.1
       version: 1.5.1
+    openapi3-ts:
+      specifier: 4.5.0
+      version: 4.5.0
+    openid-client:
+      specifier: 5.7.1
+      version: 5.7.1
+    ora:
+      specifier: 8.2.0
+      version: 8.2.0
+    oracledb:
+      specifier: 6.10.0
+      version: 6.10.0
+    otplib:
+      specifier: 12.0.1
+      version: 12.0.1
+    p-limit:
+      specifier: 7.2.0
+      version: 7.2.0
     p-queue:
       specifier: 8.1.0
       version: 8.1.0
+    papaparse:
+      specifier: 5.5.3
+      version: 5.5.3
+    pg:
+      specifier: 8.16.3
+      version: 8.16.3
     pinia:
       specifier: 2.3.1
       version: 2.3.1
+    pino:
+      specifier: 9.7.0
+      version: 9.7.0
+    pino-http:
+      specifier: 10.5.0
+      version: 10.5.0
+    pino-http-print:
+      specifier: 3.1.0
+      version: 3.1.0
+    pino-pretty:
+      specifier: 13.1.2
+      version: 13.1.2
+    pm2:
+      specifier: 6.0.14
+      version: 6.0.14
+    postcss-html:
+      specifier: 1.8.0
+      version: 1.8.0
+    prettier:
+      specifier: 3.6.2
+      version: 3.6.2
+    prom-client:
+      specifier: 15.1.3
+      version: 15.1.3
+    proxy-addr:
+      specifier: 2.0.7
+      version: 2.0.7
     qrcode:
       specifier: 1.5.4
       version: 1.5.4
+    rate-limiter-flexible:
+      specifier: 7.2.0
+      version: 7.2.0
     reka-ui:
       specifier: 2.8.2
       version: 2.8.2
+    rimraf:
+      specifier: 6.1.0
+      version: 6.1.0
+    rolldown:
+      specifier: 1.0.0-beta.31
+      version: 1.0.0-beta.31
+    rollup:
+      specifier: 4.59.0
+      version: 4.59.0
+    rollup-plugin-esbuild:
+      specifier: 6.2.1
+      version: 6.2.1
+    rollup-plugin-styler:
+      specifier: 2.0.0
+      version: 2.0.0
+    samlify:
+      specifier: 2.13.1
+      version: 2.13.1
+    sanitize-filename:
+      specifier: 1.6.3
+      version: 1.6.3
+    sanitize-html:
+      specifier: 2.17.0
+      version: 2.17.0
     sass-embedded:
       specifier: 1.93.3
       version: 1.93.3
     semver:
       specifier: 7.7.3
       version: 7.7.3
+    sharp:
+      specifier: 0.34.5
+      version: 0.34.5
+    snappy:
+      specifier: 7.3.3
+      version: 7.3.3
+    sqlite3:
+      specifier: 5.1.7
+      version: 5.1.7
+    stream-json:
+      specifier: 1.9.1
+      version: 1.9.1
     string-width:
       specifier: 7.2.0
       version: 7.2.0
+    strip-ansi:
+      specifier: 7.1.2
+      version: 7.1.2
+    stylelint:
+      specifier: 16.26.1
+      version: 16.26.1
+    stylelint-config-standard:
+      specifier: 39.0.1
+      version: 39.0.1
+    stylelint-config-standard-scss:
+      specifier: 15.0.1
+      version: 15.0.1
+    stylelint-config-standard-vue:
+      specifier: 1.0.0
+      version: 1.0.0
+    stylelint-use-logical:
+      specifier: 2.1.2
+      version: 2.1.2
+    swagger-cli:
+      specifier: 4.0.4
+      version: 4.0.4
+    tedious:
+      specifier: 18.6.1
+      version: 18.6.1
     three:
       specifier: ^0.184.0
       version: 0.184.0
     tinymce:
       specifier: 6.8.6
       version: 6.8.6
+    tmp:
+      specifier: 0.2.6
+      version: 0.2.6
+    tsdown:
+      specifier: 0.15.11
+      version: 0.15.11
+    tsx:
+      specifier: 4.20.6
+      version: 4.20.6
     tus-js-client:
       specifier: 4.3.1
       version: 4.3.1
+    typebox:
+      specifier: 1.1.37
+      version: 1.1.37
+    typedoc:
+      specifier: 0.28.12
+      version: 0.28.12
+    typedoc-plugin-markdown:
+      specifier: 4.8.1
+      version: 4.8.1
     typescript:
       specifier: 5.9.3
       version: 5.9.3
+    typescript-eslint:
+      specifier: 8.46.4
+      version: 8.46.4
+    undici:
+      specifier: 7.24.5
+      version: 7.24.5
     universal-cookie:
       specifier: 8.0.1
       version: 8.0.1
+    unplugin-vue:
+      specifier: 7.1.1
+      version: 7.1.1
+    unplugin-yaml:
+      specifier: 3.0.7
+      version: 3.0.7
+    update-check:
+      specifier: 1.5.4
+      version: 1.5.4
+    uuid:
+      specifier: 11.1.0
+      version: 11.1.0
     vite:
       specifier: 8.0.8
       version: 8.0.8
-    vite-plugin-glsl:
-      specifier: 1.6.0
-      version: 1.6.0
     vite-plugin-vue-devtools:
       specifier: 7.7.2
       version: 7.7.2
+    vite-tsconfig-paths:
+      specifier: 5.1.4
+      version: 5.1.4
     vitest:
       specifier: 3.2.4
       version: 3.2.4
@@ -375,9 +963,15 @@ catalogs:
     wellknown:
       specifier: 0.5.0
       version: 0.5.0
+    ws:
+      specifier: 8.18.3
+      version: 8.18.3
     zod:
       specifier: 4.1.12
       version: 4.1.12
+    zod-validation-error:
+      specifier: 4.0.2
+      version: 4.0.2
 
 overrides:
   '@directus/license>@directus/types': workspace:*
@@ -1008,10 +1602,6 @@ importers:
         version: 18.6.1
 
   app:
-    dependencies:
-      '@tresjs/cientos':
-        specifier: 'catalog:'
-        version: 5.7.1(@tresjs/core@5.8.1(three@0.184.0)(vue@3.5.24(typescript@5.9.3)))(@types/three@0.184.1)(three@0.184.0)(vue@3.5.24(typescript@5.9.3))
     devDependencies:
       '@ai-sdk/vue':
         specifier: 'catalog:'
@@ -1042,7 +1632,7 @@ importers:
         version: link:../packages/format-title
       '@directus/license':
         specifier: 'catalog:'
-        version: 0.2.0(@directus/types@packages+types)
+        version: 0.2.0(@directus/types@packages+types)(mysql2@3.15.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
       '@directus/sdk':
         specifier: workspace:*
         version: link:../sdk
@@ -1397,9 +1987,6 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 8.0.8(@types/node@24.9.1)(esbuild@0.27.3)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
-      vite-plugin-glsl:
-        specifier: 'catalog:'
-        version: 1.6.0(@rollup/pluginutils@5.3.0(rollup@4.59.0))(esbuild@0.27.3)(vite@8.0.8(@types/node@24.9.1)(esbuild@0.27.3)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       vite-plugin-vue-devtools:
         specifier: 'catalog:'
         version: 7.7.2(rollup@4.59.0)(vite@8.0.8(@types/node@24.9.1)(esbuild@0.27.3)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))(vue@3.5.24(typescript@5.9.3))
@@ -6994,13 +7581,6 @@ packages:
   '@tootallnate/quickjs-emscripten@0.23.0':
     resolution: {integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==}
 
-  '@tresjs/cientos@5.7.1':
-    resolution: {integrity: sha512-6XdOvL2VN2Dmaok2PIJYSheIVRrpDXlZD0/A7WXAvBLQ6oov70dDTVofphbrzgVRuqLfTLOs4tPjHkYJOmqQ2g==}
-    peerDependencies:
-      '@tresjs/core': 5.8.1
-      three: '>=0.133'
-      vue: '>=3.5.17'
-
   '@tresjs/core@5.8.1':
     resolution: {integrity: sha512-Lg0S8ZY3PLMIDDh+VN21QQBSC6afITAAWJ41gOYz9L0Et5RPAqDNCR/OncQxH4CXrNe/c5GB2wqGgRT3tHPoCg==}
     peerDependencies:
@@ -7094,9 +7674,6 @@ packages:
 
   '@types/diff@7.0.1':
     resolution: {integrity: sha512-R/BHQFripuhW6XPXy05hIvXJQdQ4540KnTvEFHSLjXfHYM41liOLKgIJEyYYiQe796xpaMHfe4Uj/p7Uvng2vA==}
-
-  '@types/draco3d@1.4.10':
-    resolution: {integrity: sha512-AX22jp8Y7wwaBgAixaSvkoG4M/+PlAcm3Qs4OW8yT9DM4xUpWKeFhLueTAyZF39pviAdcDdeJoACapiAceqNcw==}
 
   '@types/encodeurl@1.0.3':
     resolution: {integrity: sha512-s10aRcePnVw+iUr5GtTQdzf1GC2jQqkLef2bBUFSX3E52RYnuQ4a7KFHifCFdi4QECiSbyFj7eO9CvZeCnvVkA==}
@@ -7224,9 +7801,6 @@ packages:
 
   '@types/object-hash@3.0.6':
     resolution: {integrity: sha512-fOBV8C1FIu2ELinoILQ+ApxcUKz4ngq+IWUYrxSGjXzzjUALijilampwkMgEtJ+h2njAW3pi853QpzNVCHB73w==}
-
-  '@types/offscreencanvas@2019.7.3':
-    resolution: {integrity: sha512-ieXiYmgSRXUDeOntE1InxjWyvEelZGP63M+cGuquuRLuIKKT1osnkXjxev9B7d1nXSug5vpunx+gNlbVxMlC9A==}
 
   '@types/papaparse@5.5.0':
     resolution: {integrity: sha512-GVs5iMQmUr54BAZYYkByv8zPofFxmyxUpISPb2oh8sayR3+1zbxasrOvoKiHJ/nnoq/uULuPsu1Lze1EkagVFg==}
@@ -8301,11 +8875,6 @@ packages:
     resolution: {integrity: sha512-8WB3Jcas3swSvjIeA2yvCJ+Miyz5l1ZmB6HFb9R1317dt9LCQoswg/BGrmAmkWVEszSrrg4RwmO46qIm2OEnSA==}
     engines: {node: '>=16'}
 
-  camera-controls@2.10.1:
-    resolution: {integrity: sha512-KnaKdcvkBJ1Irbrzl8XD6WtZltkRjp869Jx8c0ujs9K+9WD+1D7ryBsCiVqJYUqt6i/HR5FxT7RLASieUD+Q5w==}
-    peerDependencies:
-      three: '>=0.126.1'
-
   can-link@2.0.0:
     resolution: {integrity: sha512-2W2yAdkQQrrL0WM6BrGqkrLkWlVon8riZch0EBNklid2CZsOzZnqR5HE7W3Q3BrMWUop+9I2dpjyZqhSOYh6Yg==}
     engines: {node: '>=10'}
@@ -9261,9 +9830,6 @@ packages:
     resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
     engines: {node: '>=12'}
 
-  draco3d@1.5.7:
-    resolution: {integrity: sha512-m6WCKt/erDXcw+70IJXnG7M3awwQPAsZvJGX5zY7beBqpELw6RDGkYVU0W43AFxye4pDZ5i2Lbyc/NNGqwjUVQ==}
-
   dts-resolver@2.1.3:
     resolution: {integrity: sha512-bihc7jPC90VrosXNzK0LTE2cuLP6jr0Ro8jk+kMugHReJVLIpHz/xadeq3MhuwyO4TD4OA3L1Q8pBBFRc08Tsw==}
     engines: {node: '>=20.19.0'}
@@ -9769,9 +10335,6 @@ packages:
     resolution: {integrity: sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==}
     engines: {node: ^12.20 || >= 14.13}
 
-  fflate@0.6.10:
-    resolution: {integrity: sha512-IQrh3lEPM93wVCEczc9SaAOvkmcoQn/G8Bo1e8ZPlY3X3bnAxWaBdvTdvM1hP62iZp0BXWDy4vTAy4fF0+Dlpg==}
-
   fflate@0.8.2:
     resolution: {integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==}
 
@@ -10156,15 +10719,6 @@ packages:
 
   globrex@0.1.2:
     resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
-
-  glsl-token-functions@1.0.1:
-    resolution: {integrity: sha512-EigGhp1g+aUVeUNY7H1o5tL/bnwIB3/FcRREPr2E7Du+/UDXN24hDkaZ3e4aWHDjHr9lJ6YHXMISkwhUYg9UOg==}
-
-  glsl-token-string@1.0.1:
-    resolution: {integrity: sha512-1mtQ47Uxd47wrovl+T6RshKGkRRCYWhnELmkEcUAPALWGTFe2XZpH3r45XAwL2B6v+l0KNsCnoaZCSnhzKEksg==}
-
-  glsl-tokenizer@2.1.5:
-    resolution: {integrity: sha512-XSZEJ/i4dmz3Pmbnpsy3cKh7cotvFlBiZnDOwnj/05EwNp2XrhQ4XKJxT7/pDt4kp4YcpRSKz8eTV7S+mwV6MA==}
 
   google-auth-library@9.15.1:
     resolution: {integrity: sha512-Jb6Z0+nvECVz+2lzSMt9u98UsoakXxA2HGHMCxh+so3n90XgYWkq5dur19JAJV7ONiJY22yBTyJB1TSkvPq9Ng==}
@@ -10797,10 +11351,6 @@ packages:
 
   jiti@1.21.7:
     resolution: {integrity: sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==}
-    hasBin: true
-
-  jiti@2.6.1:
-    resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
     hasBin: true
 
   jiti@2.7.0:
@@ -13687,15 +14237,6 @@ packages:
   standard-as-callback@2.1.0:
     resolution: {integrity: sha512-qoRRSyROncaz1z0mvYqIE4lCd9p2R90i6GxW3uZv5ucSu8tU7B5HXUP1gG8pVZsYNVaXjk8ClXHPttLyxAL48A==}
 
-  stats-gl@2.4.2:
-    resolution: {integrity: sha512-g5O9B0hm9CvnM36+v7SFl39T7hmAlv541tU81ME8YeSb3i1CIP5/QdDeSB3A0la0bKNHpxpwxOVRo2wFTYEosQ==}
-    peerDependencies:
-      '@types/three': '*'
-      three: '*'
-
-  stats.js@0.17.0:
-    resolution: {integrity: sha512-hNKz8phvYLPEcRkeG1rsGmV5ChMjKDAWU7/OJJdDErPBNChQXxCo3WZurGpnWc6gZhAzEPFad1aVgyOANH1sMw==}
-
   statuses@1.5.0:
     resolution: {integrity: sha512-OpZ3zP+jT1PI7I8nemJX4AKmAX070ZkYPVWV/AaKTJl+tXCTGyVdC1a4SL8RUQYEwk/f34ZX8UTykN68FwrqAA==}
     engines: {node: '>= 0.6'}
@@ -14106,33 +14647,8 @@ packages:
     resolution: {integrity: sha512-4iMVL6HAINXWf1ZKZjIPcz5wYaOdPhtO8ATvZ+Xqp3BTdaqtAwQkNmKORqcIo5YkQqGXq5cwfswDwMqqQNrpJA==}
     engines: {node: '>=20'}
 
-  three-custom-shader-material@5.4.0:
-    resolution: {integrity: sha512-Yn1lFlKOk3Vul3npEGAmbbFUZ5S2+yjPgM2XqJEZEYRSUUH2vk+WVYrtTB6Bcq15wa7hLUXAKoctAvbRmBmbYA==}
-    peerDependencies:
-      '@react-three/fiber': '>=8.0'
-      react: '>=18.0'
-      three: '>=0.154'
-    peerDependenciesMeta:
-      '@react-three/fiber':
-        optional: true
-      react:
-        optional: true
-
-  three-mesh-bvh@0.9.10:
-    resolution: {integrity: sha512-UOlTgPIeqUURcwaG8knxvBaruwZlC4X3/WSHEFO7rYvMVv/YNUrkfFEszvfj36pXV88dCHoHNnIp0PifkirnTQ==}
-    peerDependencies:
-      three: '>= 0.159.0'
-
-  three-stdlib@2.36.1:
-    resolution: {integrity: sha512-XyGQrFmNQ5O/IoKm556ftwKsBg11TIb301MB5dWNicziQBEs2g3gtOYIf7pFiLa0zI2gUwhtCjv9fmjnxKZ1Cg==}
-    peerDependencies:
-      three: '>=0.128.0'
-
   three@0.184.0:
     resolution: {integrity: sha512-wtTRjG92pM5eUg/KuUnHsqSAlPM296brTOcLgMRqEeylYTh/CdtvKUvCyyCQTzFuStieWxvZb8mVTMvdPyUpxg==}
-
-  through2@0.6.5:
-    resolution: {integrity: sha512-RkK/CCESdTKQZHdmKICijdKKsCRVHs5KsLZ6pACAmF/1GPUQhonHSXWNERctxEp7RmvjdNbZTL5z9V7nSCXKcg==}
 
   through2@2.0.5:
     resolution: {integrity: sha512-/mrRod8xqpA+IHSLyGCQ2s8SPHiCDEeQJSep1jqLYeEUClOFG2Qsh+4FU6G9VeqpZnGW/Su8LQGc4YKni5rYSQ==}
@@ -14670,19 +15186,6 @@ packages:
     resolution: {integrity: sha512-EbKSKh+bh1E1IFxeO0pg1n4dvoOTt0UDiXMd/qn++r98+jPO1xtJilvXldeuQ8giIB5IkpjCgMleHMNEsGH6pg==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
-
-  vite-plugin-glsl@1.6.0:
-    resolution: {integrity: sha512-3i3ZvIVb13LhTcAXEHGTOW+cNG2jbJ++XsDFyCWUpnoFN1NPXvdtC4j66pig+i0QjDnmusOK/YCpiDWizxBY0A==}
-    engines: {node: '>= 20.17.0', npm: '>= 10.8.3'}
-    peerDependencies:
-      '@rollup/pluginutils': ^5.x
-      esbuild: '>= 0.25'
-      vite: '>= 3.x'
-    peerDependenciesMeta:
-      '@rollup/pluginutils':
-        optional: true
-      esbuild:
-        optional: true
 
   vite-plugin-inspect@0.8.9:
     resolution: {integrity: sha512-22/8qn+LYonzibb1VeFZmISdVao5kC22jmEKm24vfFE8siEn47EpVcCLYMv6iKOYMJfjSvSJfueOwcFCkUnV3A==}
@@ -16142,7 +16645,7 @@ snapshots:
       '@babel/types': 7.28.5
       '@jridgewell/remapping': 2.3.5
       convert-source-map: 2.0.0
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@5.5.0)
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -16305,7 +16808,7 @@ snapshots:
       '@babel/parser': 7.28.5
       '@babel/template': 7.27.2
       '@babel/types': 7.28.5
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -16352,7 +16855,7 @@ snapshots:
       outdent: 0.5.0
       prettier: 2.8.8
       resolve-from: 5.0.0
-      semver: 7.7.3
+      semver: 7.8.2
 
   '@changesets/assemble-release-plan@6.0.9':
     dependencies:
@@ -16361,7 +16864,7 @@ snapshots:
       '@changesets/should-skip-package': 0.1.2
       '@changesets/types': 6.1.0
       '@manypkg/get-packages': 1.1.3
-      semver: 7.7.3
+      semver: 7.8.2
 
   '@changesets/changelog-git@0.2.1':
     dependencies:
@@ -16394,7 +16897,7 @@ snapshots:
       package-manager-detector: 0.2.11
       picocolors: 1.1.1
       resolve-from: 5.0.0
-      semver: 7.7.3
+      semver: 7.8.2
       spawndamnit: 3.0.1
       term-size: 2.2.1
     transitivePeerDependencies:
@@ -16420,7 +16923,7 @@ snapshots:
       '@changesets/types': 6.1.0
       '@manypkg/get-packages': 1.1.3
       picocolors: 1.1.1
-      semver: 7.7.3
+      semver: 7.8.2
 
   '@changesets/get-github-info@0.6.0(encoding@0.1.13)':
     dependencies:
@@ -16575,25 +17078,6 @@ snapshots:
     dependencies:
       '@directus/storage': 12.0.4
       ms: 2.1.3
-
-  '@directus/license@0.2.0(@directus/types@packages+types)':
-    dependencies:
-      '@directus/errors': 2.3.1
-      '@directus/sdk': 21.3.0
-      '@directus/types': link:packages/types
-      jose: 6.2.3
-      knex: 3.1.0
-      lodash-es: 4.18.1
-      zod: 4.1.1
-    transitivePeerDependencies:
-      - better-sqlite3
-      - mysql
-      - mysql2
-      - pg
-      - pg-native
-      - sqlite3
-      - supports-color
-      - tedious
 
   '@directus/license@0.2.0(@directus/types@packages+types)(mysql2@3.15.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)':
     dependencies:
@@ -18042,12 +18526,12 @@ snapshots:
   '@npmcli/fs@1.1.1':
     dependencies:
       '@gar/promisify': 1.1.3
-      semver: 7.7.3
+      semver: 7.8.2
     optional: true
 
   '@npmcli/fs@4.0.0':
     dependencies:
-      semver: 7.7.3
+      semver: 7.8.2
 
   '@npmcli/move-file@1.1.2':
     dependencies:
@@ -18555,7 +19039,7 @@ snapshots:
       pretty-ms: 7.0.1
       ramda: '@pnpm/ramda@0.28.1'
       rxjs: 7.8.2
-      semver: 7.7.3
+      semver: 7.8.2
       stacktracey: 2.1.8
       string-length: 4.0.2
 
@@ -18582,7 +19066,7 @@ snapshots:
     dependencies:
       '@pnpm/crypto.hash': 1000.2.1
       '@pnpm/types': 1000.9.0
-      semver: 7.7.3
+      semver: 7.8.2
 
   '@pnpm/directory-fetcher@1000.1.14(@pnpm/logger@1001.0.1)':
     dependencies:
@@ -18732,7 +19216,7 @@ snapshots:
       '@pnpm/resolver-base': 1005.1.0
       graceful-git: 4.0.0
       hosted-git-info: '@pnpm/hosted-git-info@1.0.0'
-      semver: 7.7.3
+      semver: 7.8.2
     transitivePeerDependencies:
       - '@pnpm/logger'
       - domexception
@@ -18796,7 +19280,7 @@ snapshots:
       is-windows: 1.0.2
       normalize-path: 3.0.0
       ramda: '@pnpm/ramda@0.28.1'
-      semver: 7.7.3
+      semver: 7.8.2
       symlink-dir: 6.0.5
 
   '@pnpm/local-resolver@1002.1.4(@pnpm/logger@1001.0.1)':
@@ -18897,7 +19381,7 @@ snapshots:
       '@pnpm/fetching-types': 1000.2.0
       '@pnpm/resolver-base': 1005.1.0
       '@pnpm/types': 1000.9.0
-      semver: 7.7.3
+      semver: 7.8.2
       version-selector-type: 3.0.0
     transitivePeerDependencies:
       - '@pnpm/logger'
@@ -18928,7 +19412,7 @@ snapshots:
   '@pnpm/npm-package-arg@2.0.0':
     dependencies:
       hosted-git-info: 4.1.0
-      semver: 7.7.3
+      semver: 7.8.2
       validate-npm-package-name: 4.0.0
 
   '@pnpm/npm-resolver@1004.4.1(@pnpm/logger@1001.0.1)':
@@ -18959,7 +19443,7 @@ snapshots:
       path-temp: 2.1.0
       ramda: '@pnpm/ramda@0.28.1'
       rename-overwrite: 6.0.3
-      semver: 7.7.3
+      semver: 7.8.2
       semver-utils: 1.1.4
       ssri: 10.0.5
       version-selector-type: 3.0.0
@@ -18988,7 +19472,7 @@ snapshots:
       detect-libc: 2.1.2
       execa: safe-execa@0.1.2
       mem: 8.1.1
-      semver: 7.7.3
+      semver: 7.8.2
 
   '@pnpm/package-requester@1008.0.0(@pnpm/logger@1001.0.1)(@pnpm/worker@1000.1.11(@pnpm/logger@1001.0.1)(@types/node@22.13.14))':
     dependencies:
@@ -19012,7 +19496,7 @@ snapshots:
       p-queue: 6.6.2
       promise-share: 1.0.0
       ramda: '@pnpm/ramda@0.28.1'
-      semver: 7.7.3
+      semver: 7.8.2
       ssri: 10.0.5
 
   '@pnpm/package-store@1004.0.0(@pnpm/logger@1001.0.1)(@pnpm/worker@1000.1.11(@pnpm/logger@1001.0.1)(@types/node@22.13.14))':
@@ -19104,7 +19588,7 @@ snapshots:
     dependencies:
       '@pnpm/logger': 1001.0.1
       '@pnpm/registry.types': 1000.0.1
-      semver: 7.7.3
+      semver: 7.8.2
 
   '@pnpm/registry.types@1000.0.1':
     dependencies:
@@ -19120,7 +19604,7 @@ snapshots:
 
   '@pnpm/resolve-workspace-range@1000.0.0':
     dependencies:
-      semver: 7.7.3
+      semver: 7.8.2
 
   '@pnpm/resolver-base@1005.0.0':
     dependencies:
@@ -19144,7 +19628,7 @@ snapshots:
       '@pnpm/types': 1000.9.0
       '@pnpm/util.lex-comparator': 3.0.2
       '@pnpm/worker': 1000.1.11(@pnpm/logger@1001.0.1)(@types/node@22.13.14)
-      semver: 7.7.3
+      semver: 7.8.2
     transitivePeerDependencies:
       - '@pnpm/logger'
       - domexception
@@ -19165,7 +19649,7 @@ snapshots:
       '@pnpm/types': 1000.9.0
       '@pnpm/util.lex-comparator': 3.0.2
       '@pnpm/worker': 1000.1.11(@pnpm/logger@1001.0.1)(@types/node@22.13.14)
-      semver: 7.7.3
+      semver: 7.8.2
     transitivePeerDependencies:
       - '@pnpm/logger'
       - domexception
@@ -20252,23 +20736,6 @@ snapshots:
 
   '@tootallnate/quickjs-emscripten@0.23.0': {}
 
-  '@tresjs/cientos@5.7.1(@tresjs/core@5.8.1(three@0.184.0)(vue@3.5.24(typescript@5.9.3)))(@types/three@0.184.1)(three@0.184.0)(vue@3.5.24(typescript@5.9.3))':
-    dependencies:
-      '@tresjs/core': 5.8.1(three@0.184.0)(vue@3.5.24(typescript@5.9.3))
-      '@vueuse/core': 13.9.0(vue@3.5.24(typescript@5.9.3))
-      camera-controls: 2.10.1(three@0.184.0)
-      stats-gl: 2.4.2(@types/three@0.184.1)(three@0.184.0)
-      stats.js: 0.17.0
-      three: 0.184.0
-      three-custom-shader-material: 5.4.0(three@0.184.0)
-      three-mesh-bvh: 0.9.10(three@0.184.0)
-      three-stdlib: 2.36.1(three@0.184.0)
-      vue: 3.5.24(typescript@5.9.3)
-    transitivePeerDependencies:
-      - '@react-three/fiber'
-      - '@types/three'
-      - react
-
   '@tresjs/core@5.8.1(three@0.184.0)(vue@3.5.24(typescript@5.9.3))':
     dependencies:
       '@pmndrs/pointer-events': 6.6.29
@@ -20386,8 +20853,6 @@ snapshots:
   '@types/diacritics@1.3.3': {}
 
   '@types/diff@7.0.1': {}
-
-  '@types/draco3d@1.4.10': {}
 
   '@types/encodeurl@1.0.3': {}
 
@@ -20528,8 +20993,6 @@ snapshots:
   '@types/normalize-package-data@2.4.4': {}
 
   '@types/object-hash@3.0.6': {}
-
-  '@types/offscreencanvas@2019.7.3': {}
 
   '@types/papaparse@5.5.0':
     dependencies:
@@ -20735,7 +21198,7 @@ snapshots:
       fast-glob: 3.3.3
       is-glob: 4.0.3
       minimatch: 9.0.9
-      semver: 7.7.3
+      semver: 7.8.2
       ts-api-utils: 2.5.0(typescript@5.9.3)
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -20825,7 +21288,7 @@ snapshots:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
       ast-v8-to-istanbul: 0.3.7
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@5.5.0)
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
       istanbul-lib-source-maps: 5.0.6
@@ -21245,9 +21708,9 @@ snapshots:
       acorn: 8.15.0
       acorn-walk: 8.3.4
 
-  acorn-jsx@5.3.2(acorn@8.15.0):
+  acorn-jsx@5.3.2(acorn@8.16.0):
     dependencies:
-      acorn: 8.15.0
+      acorn: 8.16.0
 
   acorn-walk@8.3.4:
     dependencies:
@@ -21263,7 +21726,7 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -21592,7 +22055,7 @@ snapshots:
 
   axios@1.16.1:
     dependencies:
-      follow-redirects: 1.16.0
+      follow-redirects: 1.16.0(debug@4.3.7)
       form-data: 4.0.5
       https-proxy-agent: 5.0.1
       proxy-from-env: 2.1.0
@@ -21760,7 +22223,7 @@ snapshots:
       simple-git: 3.36.0
       source-map: 0.7.6
       termi-link: 1.1.0
-      unplugin: 2.3.10
+      unplugin: 2.3.11
       uuid: 9.0.1
       zod: 4.1.12
       zod-to-json-schema: 3.25.1(zod@4.1.12)
@@ -21801,7 +22264,7 @@ snapshots:
 
   builtins@5.1.0:
     dependencies:
-      semver: 7.7.3
+      semver: 7.8.2
 
   bundle-name@4.1.0:
     dependencies:
@@ -21933,10 +22396,6 @@ snapshots:
   camelcase@6.3.0: {}
 
   camelcase@8.0.0: {}
-
-  camera-controls@2.10.1(three@0.184.0):
-    dependencies:
-      three: 0.184.0
 
   can-link@2.0.0: {}
 
@@ -22515,10 +22974,6 @@ snapshots:
     dependencies:
       ms: 2.1.3
 
-  debug@4.4.3:
-    dependencies:
-      ms: 2.1.3
-
   debug@4.4.3(supports-color@5.5.0):
     dependencies:
       ms: 2.1.3
@@ -22695,8 +23150,6 @@ snapshots:
   dotenv@17.4.2:
     optional: true
 
-  draco3d@1.5.7: {}
-
   dts-resolver@2.1.3: {}
 
   dunder-proto@1.0.1:
@@ -22725,7 +23178,7 @@ snapshots:
       '@one-ini/wasm': 0.1.1
       commander: 10.0.1
       minimatch: 9.0.9
-      semver: 7.7.3
+      semver: 7.8.2
 
   editorjs-toggle-block@0.3.16:
     dependencies:
@@ -23071,7 +23524,7 @@ snapshots:
       natural-compare: 1.4.0
       nth-check: 2.1.1
       postcss-selector-parser: 6.1.2
-      semver: 7.7.3
+      semver: 7.8.2
       vue-eslint-parser: 10.2.0(eslint@9.39.1(jiti@2.7.0))
       xml-name-validator: 4.0.0
     optionalDependencies:
@@ -23131,8 +23584,8 @@ snapshots:
 
   espree@10.4.0:
     dependencies:
-      acorn: 8.15.0
-      acorn-jsx: 5.3.2(acorn@8.15.0)
+      acorn: 8.16.0
+      acorn-jsx: 5.3.2(acorn@8.16.0)
       eslint-visitor-keys: 4.2.1
 
   esprima@4.0.1: {}
@@ -23442,7 +23895,7 @@ snapshots:
       process-warning: 5.0.0
       rfdc: 1.4.1
       secure-json-parse: 4.1.0
-      semver: 7.7.3
+      semver: 7.8.2
       toad-cache: 3.7.0
 
   fastq@1.19.1:
@@ -23461,8 +23914,6 @@ snapshots:
     dependencies:
       node-domexception: 1.0.0
       web-streams-polyfill: 3.3.3
-
-  fflate@0.6.10: {}
 
   fflate@0.8.2: {}
 
@@ -23577,8 +24028,6 @@ snapshots:
   focus-trap@7.6.6:
     dependencies:
       tabbable: 6.3.0
-
-  follow-redirects@1.16.0: {}
 
   follow-redirects@1.16.0(debug@4.3.7):
     optionalDependencies:
@@ -23928,14 +24377,6 @@ snapshots:
 
   globrex@0.1.2: {}
 
-  glsl-token-functions@1.0.1: {}
-
-  glsl-token-string@1.0.1: {}
-
-  glsl-tokenizer@2.1.5:
-    dependencies:
-      through2: 0.6.5
-
   google-auth-library@9.15.1(encoding@0.1.13):
     dependencies:
       base64-js: 1.5.1
@@ -24193,7 +24634,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 2.0.0
       agent-base: 6.0.2
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -24214,7 +24655,7 @@ snapshots:
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -24567,7 +25008,7 @@ snapshots:
   istanbul-lib-source-maps@5.0.6:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@5.5.0)
       istanbul-lib-coverage: 3.2.2
     transitivePeerDependencies:
       - supports-color
@@ -24589,10 +25030,7 @@ snapshots:
 
   jiti@1.21.7: {}
 
-  jiti@2.6.1: {}
-
-  jiti@2.7.0:
-    optional: true
+  jiti@2.7.0: {}
 
   joi@18.0.1:
     dependencies:
@@ -24765,7 +25203,7 @@ snapshots:
       lodash.isstring: 4.0.1
       lodash.once: 4.1.1
       ms: 2.1.3
-      semver: 7.7.3
+      semver: 7.8.2
 
   jwa@2.0.1:
     dependencies:
@@ -24801,25 +25239,6 @@ snapshots:
     dependencies:
       knex: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
       lodash.clonedeep: 4.5.0
-
-  knex@3.1.0:
-    dependencies:
-      colorette: 2.0.19
-      commander: 10.0.1
-      debug: 4.3.4
-      escalade: 3.2.0
-      esm: 3.2.25
-      get-package-type: 0.1.0
-      getopts: 2.3.0
-      interpret: 2.2.0
-      lodash: 4.18.1
-      pg-connection-string: 2.6.2
-      rechoir: 0.8.0
-      resolve-from: 5.0.0
-      tarn: 3.0.2
-      tildify: 2.0.0
-    transitivePeerDependencies:
-      - supports-color
 
   knex@3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1):
     dependencies:
@@ -25174,7 +25593,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.7.3
+      semver: 7.8.2
 
   make-empty-dir@3.0.2:
     dependencies:
@@ -25604,7 +26023,7 @@ snapshots:
 
   node-abi@3.78.0:
     dependencies:
-      semver: 7.7.3
+      semver: 7.8.2
 
   node-addon-api@7.1.1:
     optional: true
@@ -25637,7 +26056,7 @@ snapshots:
       make-fetch-happen: 14.0.3
       nopt: 8.1.0
       proc-log: 5.0.0
-      semver: 7.7.3
+      semver: 7.8.2
       tar: 7.5.15
       tinyglobby: 0.2.16
       which: 5.0.0
@@ -25653,7 +26072,7 @@ snapshots:
       nopt: 5.0.0
       npmlog: 6.0.2
       rimraf: 3.0.2
-      semver: 7.7.3
+      semver: 7.8.2
       tar: 7.5.15
       which: 2.0.2
     transitivePeerDependencies:
@@ -25743,7 +26162,7 @@ snapshots:
       ignore-by-default: 1.0.1
       minimatch: 3.1.5
       pstree.remy: 1.1.8
-      semver: 7.7.3
+      semver: 7.8.2
       simple-update-notifier: 2.0.0
       supports-color: 5.5.0
       touch: 3.1.1
@@ -25782,13 +26201,13 @@ snapshots:
     dependencies:
       hosted-git-info: 4.1.0
       is-core-module: 2.16.1
-      semver: 7.7.3
+      semver: 7.8.2
       validate-npm-package-license: 3.0.4
 
   normalize-package-data@7.0.1:
     dependencies:
       hosted-git-info: 8.1.0
-      semver: 7.7.3
+      semver: 7.8.2
       validate-npm-package-license: 3.0.4
 
   normalize-path@3.0.0: {}
@@ -27574,8 +27993,7 @@ snapshots:
 
   semver@7.7.3: {}
 
-  semver@7.8.2:
-    optional: true
+  semver@7.8.2: {}
 
   send@0.19.0:
     dependencies:
@@ -27672,7 +28090,7 @@ snapshots:
     dependencies:
       '@img/colour': 1.0.0
       detect-libc: 2.1.2
-      semver: 7.7.3
+      semver: 7.8.2
     optionalDependencies:
       '@img/sharp-darwin-arm64': 0.34.5
       '@img/sharp-darwin-x64': 0.34.5
@@ -27767,7 +28185,7 @@ snapshots:
 
   simple-update-notifier@2.0.0:
     dependencies:
-      semver: 7.7.3
+      semver: 7.8.2
 
   sirv@2.0.4:
     dependencies:
@@ -27974,13 +28392,6 @@ snapshots:
 
   standard-as-callback@2.1.0: {}
 
-  stats-gl@2.4.2(@types/three@0.184.1)(three@0.184.0):
-    dependencies:
-      '@types/three': 0.184.1
-      three: 0.184.0
-
-  stats.js@0.17.0: {}
-
   statuses@1.5.0: {}
 
   statuses@2.0.1: {}
@@ -28158,7 +28569,7 @@ snapshots:
   stylelint-config-recommended-vue@1.6.1(postcss-html@1.8.0)(stylelint@16.26.1(typescript@5.9.3)):
     dependencies:
       postcss-html: 1.8.0
-      semver: 7.7.3
+      semver: 7.8.2
       stylelint: 16.26.1(typescript@5.9.3)
       stylelint-config-html: 1.1.0(postcss-html@1.8.0)(stylelint@16.26.1(typescript@5.9.3))
       stylelint-config-recommended: 17.0.0(stylelint@16.26.1(typescript@5.9.3))
@@ -28475,34 +28886,7 @@ snapshots:
     dependencies:
       real-require: 0.2.0
 
-  three-custom-shader-material@5.4.0(three@0.184.0):
-    dependencies:
-      glsl-token-functions: 1.0.1
-      glsl-token-string: 1.0.1
-      glsl-tokenizer: 2.1.5
-      object-hash: 3.0.0
-      three: 0.184.0
-
-  three-mesh-bvh@0.9.10(three@0.184.0):
-    dependencies:
-      three: 0.184.0
-
-  three-stdlib@2.36.1(three@0.184.0):
-    dependencies:
-      '@types/draco3d': 1.4.10
-      '@types/offscreencanvas': 2019.7.3
-      '@types/webxr': 0.5.24
-      draco3d: 1.5.7
-      fflate: 0.6.10
-      potpack: 1.0.2
-      three: 0.184.0
-
   three@0.184.0: {}
-
-  through2@0.6.5:
-    dependencies:
-      readable-stream: 1.0.34
-      xtend: 4.0.2
 
   through2@2.0.5:
     dependencies:
@@ -28619,7 +29003,7 @@ snapshots:
       hookable: 5.5.3
       rolldown: 1.0.0-beta.45(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
       rolldown-plugin-dts: 0.17.8(rolldown@1.0.0-beta.45(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
-      semver: 7.7.3
+      semver: 7.8.2
       tinyexec: 1.0.1
       tinyglobby: 0.2.16
       tree-kill: 1.2.2
@@ -28795,12 +29179,12 @@ snapshots:
     dependencies:
       '@quansync/fs': 0.1.5
       defu: 6.1.7
-      jiti: 2.6.1
+      jiti: 2.7.0
       quansync: 0.2.11
 
   unctx@2.5.0:
     dependencies:
-      acorn: 8.15.0
+      acorn: 8.16.0
       estree-walker: 3.0.3
       magic-string: 0.30.21
       unplugin: 2.3.11
@@ -28918,10 +29302,9 @@ snapshots:
   unplugin@2.3.11:
     dependencies:
       '@jridgewell/remapping': 2.3.5
-      acorn: 8.15.0
+      acorn: 8.16.0
       picomatch: 4.0.4
       webpack-virtual-modules: 0.6.2
-    optional: true
 
   unplugin@3.0.0:
     dependencies:
@@ -29013,7 +29396,7 @@ snapshots:
 
   version-selector-type@3.0.0:
     dependencies:
-      semver: 7.7.3
+      semver: 7.8.2
 
   vite-hot-client@2.1.0(vite@8.0.8(@types/node@24.9.1)(esbuild@0.27.3)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)):
     dependencies:
@@ -29022,7 +29405,7 @@ snapshots:
   vite-node@0.34.7(@types/node@24.9.1)(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0):
     dependencies:
       cac: 6.7.14
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@5.5.0)
       mlly: 1.8.0
       pathe: 1.1.2
       picocolors: 1.1.1
@@ -29080,7 +29463,7 @@ snapshots:
   vite-node@3.2.4(@types/node@24.9.1)(jiti@2.7.0)(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1):
     dependencies:
       cac: 6.7.14
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@5.5.0)
       es-module-lexer: 1.7.0
       pathe: 2.0.3
       vite: 7.3.2(@types/node@24.9.1)(jiti@2.7.0)(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
@@ -29098,18 +29481,11 @@ snapshots:
       - tsx
       - yaml
 
-  vite-plugin-glsl@1.6.0(@rollup/pluginutils@5.3.0(rollup@4.59.0))(esbuild@0.27.3)(vite@8.0.8(@types/node@24.9.1)(esbuild@0.27.3)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)):
-    dependencies:
-      vite: 8.0.8(@types/node@24.9.1)(esbuild@0.27.3)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
-    optionalDependencies:
-      '@rollup/pluginutils': 5.3.0(rollup@4.59.0)
-      esbuild: 0.27.3
-
   vite-plugin-inspect@0.8.9(rollup@4.59.0)(vite@8.0.8(@types/node@24.9.1)(esbuild@0.27.3)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)):
     dependencies:
       '@antfu/utils': 0.7.10
       '@rollup/pluginutils': 5.3.0(rollup@4.59.0)
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@5.5.0)
       error-stack-parser-es: 0.1.5
       fs-extra: 11.3.2
       open: 10.2.0
@@ -29408,7 +29784,7 @@ snapshots:
       '@vitest/spy': 3.2.4
       '@vitest/utils': 3.2.4
       chai: 5.3.3
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@5.5.0)
       expect-type: 1.2.2
       magic-string: 0.30.21
       pathe: 2.0.3
@@ -29470,7 +29846,7 @@ snapshots:
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
       esquery: 1.6.0
-      semver: 7.7.3
+      semver: 7.8.2
     transitivePeerDependencies:
       - supports-color
 

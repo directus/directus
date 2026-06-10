@@ -161,7 +161,6 @@
 		"typescript": "catalog:",
 		"universal-cookie": "catalog:",
 		"vite": "catalog:",
-		"vite-plugin-glsl": "catalog:",
 		"vite-plugin-vue-devtools": "catalog:",
 		"vitest": "catalog:",
 		"vue": "catalog:",
@@ -172,8 +171,5 @@
 		"vuedraggable": "catalog:",
 		"wellknown": "catalog:",
 		"zod": "catalog:"
-	},
-	"dependencies": {
-		"@tresjs/cientos": "catalog:"
 	}
 }
