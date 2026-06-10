@@ -90,6 +90,31 @@ describe('useDeploymentNavigation', () => {
 			expect(mockSdkRequest).toHaveBeenCalledOnce();
 		});
 
+		it('should reuse an in-flight fetch', async () => {
+			const mockData = [{ provider: 'vercel', projects: [{ id: 'proj-1', name: 'Project 1' }] }];
+			let resolvePromise: (value: unknown) => void;
+
+			const pendingPromise = new Promise((resolve) => {
+				resolvePromise = resolve;
+			});
+
+			mockSdkRequest.mockReturnValueOnce(pendingPromise);
+
+			const wrapper = mount(createTestComponent());
+
+			const firstFetch = wrapper.vm.fetch();
+			const secondFetch = wrapper.vm.fetch();
+
+			expect(mockSdkRequest).toHaveBeenCalledOnce();
+
+			resolvePromise!(mockData);
+			await Promise.all([firstFetch, secondFetch]);
+			await flushPromises();
+
+			expect(wrapper.vm.providers).toEqual(mockData);
+			expect(wrapper.vm.loading).toBe(false);
+		});
+
 		it('should force fetch when force=true', async () => {
 			const mockData1 = [{ provider: 'vercel', projects: [] }];
 			const mockData2 = [{ provider: 'vercel', projects: [{ id: 'new', name: 'New' }] }];

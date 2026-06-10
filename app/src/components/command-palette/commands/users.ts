@@ -1,30 +1,31 @@
 import type { CommandActionContext, CommandConfig } from '../composables/use-command-registry';
+import { defineCommands } from '../composables/use-command-registry';
+import SearchCollection from './search/search-collection.vue';
 import { i18n } from '@/lang';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
-import { defineCommands } from '../composables/use-command-registry';
 
 export const usersCommands = defineCommands({
-	groups: [
-		{
-			id: 'collection:directus_users',
-			name: 'Users',
-		},
-	],
+	groups: () => {
+		if (!canReadUsers()) return [];
+
+		return [
+			{
+				id: 'collection:directus_users',
+				name: 'Users',
+			},
+		];
+	},
 	commands({ route }): CommandConfig[] {
-		const permissionsStore = usePermissionsStore();
-		const userStore = useUserStore();
-		const isAdmin = userStore.currentUser?.admin_access ?? false;
 		const t = i18n.global.t;
+		const isAdmin = isUserAdmin();
 
-		const hasUserReadPermissions = isAdmin || permissionsStore.hasPermission('directus_users', 'read');
-
-		if (!hasUserReadPermissions) return [];
+		if (!canReadUsers()) return [];
 
 		const currentPath = route.path;
 
 		return [
-			hasUserReadPermissions && currentPath !== '/users'
+			currentPath !== '/users'
 				? {
 						id: 'view-users',
 						name: t('command_view_users'),
@@ -35,6 +36,21 @@ export const usersCommands = defineCommands({
 						},
 					}
 				: null,
+			{
+				id: 'search-users',
+				name: t('command_search_users'),
+				icon: 'search',
+				group: 'collection:directus_users',
+				keywords: ['search', 'find', 'people'],
+				priority: 40,
+				component: SearchCollection,
+				props: {
+					collection: 'directus_users',
+					collectionName: t('user_directory'),
+					collectionIcon: 'people_alt',
+					displayTemplate: '{{first_name}} {{last_name}} {{email}}',
+				},
+			},
 			isAdmin
 				? {
 						id: 'create-user',
@@ -49,3 +65,11 @@ export const usersCommands = defineCommands({
 		].filter((cmd) => cmd !== null) as CommandConfig[];
 	},
 });
+
+function canReadUsers() {
+	return isUserAdmin() || usePermissionsStore().hasPermission('directus_users', 'read');
+}
+
+function isUserAdmin() {
+	return useUserStore().currentUser?.admin_access ?? false;
+}

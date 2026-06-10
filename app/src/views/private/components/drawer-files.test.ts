@@ -36,6 +36,7 @@ const FilesNavigationStub = defineComponent({
 		rootFolder: { type: String, default: undefined },
 		localOpenFolders: { type: Boolean, default: false },
 		actionsDisabled: { type: Boolean, default: false },
+		showCommandPaletteTrigger: { type: Boolean, default: false },
 	},
 	template: '<div class="files-nav-stub"></div>',
 });
@@ -67,6 +68,20 @@ beforeEach(() => {
 });
 
 describe('DrawerFiles', () => {
+	test('does not show the global command palette trigger in file drawers', async () => {
+		const wrapper = mount(DrawerFiles, {
+			props: {},
+			global,
+		});
+
+		await flushPromises();
+
+		const nav = wrapper.findComponent(FilesNavigationStub);
+		expect(nav.props('showCommandPaletteTrigger')).toBe(false);
+
+		wrapper.unmount();
+	});
+
 	test('persists folder state across unmount/remount cycles', async () => {
 		const wrapper = mount(DrawerFiles, {
 			props: {},

@@ -7,7 +7,7 @@ import FilesNavigation from '@/views/private/components/files-navigation.vue';
 <template>
 	<PrivateView :title="$t('page_not_found')">
 		<template #navigation>
-			<FilesNavigation />
+			<FilesNavigation show-command-palette-trigger />
 		</template>
 
 		<div class="not-found">

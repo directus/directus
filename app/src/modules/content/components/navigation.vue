@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { isNil, orderBy } from 'lodash';
 import { computed, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useNavigation } from '../composables/use-navigation';
 import NavigationItem from './NavigationItem.vue';
+import CommandPaletteTrigger from '@/components/command-palette/command-palette-trigger.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
@@ -15,21 +15,12 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useUserStore } from '@/stores/user';
 
-const { t } = useI18n();
-const isMacOS = navigator.platform.toUpperCase().includes('MAC');
-
-function openCommandPalette() {
-	window.dispatchEvent(new CustomEvent('open-command-palette'));
-}
-
 const props = defineProps<{
 	currentCollection?: string;
 }>();
 
 const { currentCollection } = toRefs(props);
 const { activeGroups, showHidden } = useNavigation(currentCollection);
-
-const search = '';
 
 const collectionsStore = useCollectionsStore();
 const userStore = useUserStore();
@@ -45,6 +36,7 @@ const rootItems = computed(() => {
 });
 
 const dense = computed(() => collectionsStore.visibleCollections.length > 5);
+
 const hasHiddenCollections = computed(
 	() => collectionsStore.allCollections.length > collectionsStore.visibleCollections.length,
 );
@@ -52,13 +44,7 @@ const hasHiddenCollections = computed(
 
 <template>
 	<div class="content-navigation-wrapper">
-		<div class="command-palette-trigger" @click="openCommandPalette">
-			<span>{{ t('search') }}...</span>
-			<span class="keys">
-				<kbd>{{ isMacOS ? '⌘' : 'Ctrl+' }}</kbd>
-				<kbd>K</kbd>
-			</span>
-		</div>
+		<CommandPaletteTrigger />
 
 		<VList
 			v-model="activeGroups"
@@ -85,7 +71,6 @@ const hasHiddenCollections = computed(
 				:key="collection.collection"
 				:show-hidden="showHidden"
 				:collection="collection"
-				:search="search"
 			/>
 
 			<VMenu v-if="hasHiddenCollections" ref="contextMenu" show-arrow placement="bottom-start">
@@ -148,41 +133,4 @@ const hasHiddenCollections = computed(
 	--v-list-item-color: var(--theme--foreground-subdued);
 }
 
-.command-palette-trigger {
-	cursor: pointer;
-	display: flex;
-	background-color: var(--theme--background);
-	gap: 8px;
-	justify-content: center;
-	align-items: center;
-	border: 1px solid var(--theme--border-color);
-	padding: 6px 12px;
-	border-radius: var(--theme--border-radius);
-	color: var(--theme--foreground-subdued);
-	margin: 12px 12px 0;
-	transition: all var(--fast) var(--transition);
-
-	&:hover {
-		border-color: var(--theme--primary);
-		color: var(--theme--foreground-accent);
-	}
-
-	.keys {
-		border: 1px solid var(--theme--border-color);
-		padding: 0 6px;
-		border-radius: 4px;
-		font-size: 87.5%;
-	}
-}
-
-.search-input {
-	--theme--form--field--input--height: 40px;
-
-	position: sticky;
-	inset-block-start: 0;
-	z-index: 1;
-	padding: 12px;
-	padding-block-end: 0;
-	background-color: var(--theme--navigation--background);
-}
 </style>

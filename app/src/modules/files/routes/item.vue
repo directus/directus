@@ -377,7 +377,7 @@ function revert(values: Record<string, any>) {
 		</template>
 
 		<template #navigation>
-			<FilesNavigation :current-folder="item?.folder ?? undefined" />
+			<FilesNavigation :current-folder="item?.folder ?? undefined" show-command-palette-trigger />
 		</template>
 
 		<div class="file-item">

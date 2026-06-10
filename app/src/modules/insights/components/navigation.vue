@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import CommandPaletteTrigger from '@/components/command-palette/command-palette-trigger.vue';
 import VButton from '@/components/v-button.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -28,6 +29,8 @@ const navItems = computed(() =>
 </script>
 
 <template>
+	<CommandPaletteTrigger />
+
 	<VList nav>
 		<VButton v-if="navItems.length === 0 && createAllowed" full-width outlined dashed @click="$emit('create')">
 			{{ $t('create_dashboard') }}

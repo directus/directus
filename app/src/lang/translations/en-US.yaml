@@ -1553,9 +1553,9 @@ settings_appearance: Appearance
 settings_ai: AI
 global_search: Global Search
 global_search_config_invalid: Global search config is invalid.
-global_search_missing_collection: Each global search collection needs a collection.
-global_search_missing_fields: Each global search collection needs at least one field to search.
-global_search_invalid_limit: Number of Results must be a whole number from 1 to 25.
+global_search_missing_collection: Each global search entry needs a collection.
+global_search_missing_fields: Each global search entry needs at least one field to search.
+global_search_invalid_limit: Results per Collection must be a whole number from 1 to 25.
 model_context_protocol: Model Context Protocol
 ai_assistant: AI Assistant
 ai_disabled_by_env: AI Assistant features have been disabled via environment variable.
@@ -1948,17 +1948,19 @@ fields:
     ai_provider_options_note: Provider-specific options passed to AI endpoints.
     ai_header_name: Header
     global_search_notice:
-      'Configure which collections appear in command palette global search. Global search searches published content
+      'Choose which collections can show item results in the command palette. This only affects the main command palette
+      search; users can still search individual collections they have access to. Global search shows published content
       only. Draft/version results are available through collection search while viewing a versioned collection. Up to 20
-      configured collections are searched.'
+      configured collections can appear.'
     global_search_add_collection: Add Collection
     global_search_description_field: Description Field
     global_search_fields_to_search: Fields to Search
     global_search_fields_note:
-      'Text fields use contains search. Numeric, boolean, UUID, and hash fields use exact match. Unsupported field types
-      are skipped. Relational fields can be expensive.'
-    global_search_filter_note: Add a filter to limit the search results.
-    global_search_limit: Number of Results
+      'Choose the fields used to match item results for this collection in the main command palette search. Text fields
+      use contains search. Numeric, boolean, UUID, and hash fields use exact match. Unsupported field types are skipped.
+      Relational fields can be expensive.'
+    global_search_filter_note: Limit which items from this collection can appear in command palette results.
+    global_search_limit: Results per Collection
     global_search_limit_note: Defaults to 5. Maximum 25 results per collection.
 
   directus_shares:
@@ -3334,11 +3336,19 @@ aria:
 command_create_item: 'Create {collection}'
 command_go_to_collection: 'Go to {collection}'
 command_search_collection: 'Search {collection}'
-command_configure_collection: 'Configure {collection}'
 command_create_collection: Create Collection
 command_create_flow: Create Flow
 command_view_users: View Users
 command_create_user: Create User
+command_search_users: Search Users
+command_go_to_file_library: Go to File Library
+command_search_files: Search Files
+command_go_to_insights: Go to Insights
+command_search_dashboards: Search Dashboards
+command_go_to_deployments: Go to Deployments
+command_go_to_deployment_provider: 'Go to {provider} Deployments'
+command_go_to_deployment_project: 'Go to {project} Deployment Runs'
+command_deployment_provider_settings: '{provider} Deployment Settings'
 command_copy_api_url: Copy API URL
 command_type_to_search: 'Type to search {collection}...'
 command_ask_ai: 'Ask AI: "{query}"'

@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import CommandPaletteTrigger from '@/components/command-palette/command-palette-trigger.vue';
 import VChip from '@/components/v-chip.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -125,6 +126,8 @@ const links = computed<Link[][]>(() => [
 </script>
 
 <template>
+	<CommandPaletteTrigger />
+
 	<VList nav>
 		<template v-for="(group, index) in links">
 			<VListItem v-for="item in group" :key="item.to ?? item.href" :to="item.to" :href="item.href">

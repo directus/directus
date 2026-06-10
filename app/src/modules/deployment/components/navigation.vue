@@ -2,6 +2,7 @@
 import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDeploymentNavigation } from '../composables/use-deployment-navigation';
+import CommandPaletteTrigger from '@/components/command-palette/command-palette-trigger.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VItemGroup from '@/components/v-item-group.vue';
@@ -55,6 +56,8 @@ onMounted(async () => {
 </script>
 
 <template>
+	<CommandPaletteTrigger />
+
 	<VList nav>
 		<VListItem :to="{ name: 'deployments-overview' }" exact>
 			<VListItemIcon>

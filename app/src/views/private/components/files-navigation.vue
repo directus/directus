@@ -3,6 +3,7 @@ import { isEqual } from 'lodash';
 import { computed, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import NavigationFolder from './files-navigation-folder.vue';
+import CommandPaletteTrigger from '@/components/command-palette/command-palette-trigger.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VItemGroup from '@/components/v-item-group.vue';
@@ -25,6 +26,7 @@ const props = defineProps<{
 	customTargetHandler?: (target: FolderTarget) => void;
 	localOpenFolders?: boolean;
 	actionsDisabled?: boolean;
+	showCommandPaletteTrigger?: boolean;
 }>();
 
 const { rootFolder, localOpenFolders } = toRefs(props);
@@ -89,6 +91,8 @@ function setOpenFolders() {
 </script>
 
 <template>
+	<CommandPaletteTrigger v-if="showCommandPaletteTrigger" />
+
 	<VList nav>
 		<template v-if="loading && (nestedFolders === null || nestedFolders.length === 0)">
 			<VListItem v-for="n in 4" :key="n">

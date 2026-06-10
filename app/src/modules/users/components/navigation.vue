@@ -3,6 +3,7 @@ import { toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import useNavigation from '../composables/use-navigation';
 import NavigationRole from './NavigationRole.vue';
+import CommandPaletteTrigger from '@/components/command-palette/command-palette-trigger.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VItemGroup from '@/components/v-item-group.vue';
@@ -28,6 +29,8 @@ function handleClick({ role }: { role: string }) {
 </script>
 
 <template>
+	<CommandPaletteTrigger />
+
 	<VList nav>
 		<VListItem :to="{ name: 'users-active' }" exact>
 			<VListItemIcon><VIcon name="group" /></VListItemIcon>

@@ -548,7 +548,7 @@ async function downloadFiles() {
 			</template>
 
 			<template #navigation>
-				<FilesNavigation :current-folder="folder" :current-special="special" />
+				<FilesNavigation :current-folder="folder" :current-special="special" show-command-palette-trigger />
 			</template>
 
 			<component

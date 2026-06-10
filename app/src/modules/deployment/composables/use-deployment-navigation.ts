@@ -8,27 +8,40 @@ import { unexpectedError } from '@/utils/unexpected-error';
 const cache = ref<DeploymentConfig[]>([]);
 const loading = ref(false);
 const openProviders = ref<string[]>([]);
+let fetchPromise: Promise<void> | null = null;
 
 export function useDeploymentNavigation() {
 	const route = useRoute();
 
 	async function fetch(force = false) {
 		if (!force && cache.value.length > 0) return;
+		if (!force && fetchPromise) return fetchPromise;
 
 		loading.value = true;
 
-		try {
-			const data = await sdk.request<DeploymentConfig[]>(
-				readDeployments({
-					fields: ['provider', 'options', { projects: ['id', 'name'] }],
-				}),
-			);
+		const pending = (async () => {
+			try {
+				const data = await sdk.request<DeploymentConfig[]>(
+					readDeployments({
+						fields: ['provider', 'options', { projects: ['id', 'name'] }],
+					}),
+				);
 
-			cache.value = data;
-		} catch (error) {
-			unexpectedError(error);
+				cache.value = data;
+			} catch (error) {
+				unexpectedError(error);
+			}
+		})();
+
+		fetchPromise = pending;
+
+		try {
+			await pending;
 		} finally {
-			loading.value = false;
+			if (fetchPromise === pending) {
+				fetchPromise = null;
+				loading.value = false;
+			}
 		}
 	}
 
