@@ -13,6 +13,7 @@ const mocks = vi.hoisted(() => ({
 	modules: [] as any[],
 	settings: {} as any,
 	deploymentProviders: [] as any[],
+	deploymentProvidersLoaded: false,
 	fetchDeployments: vi.fn(),
 	refreshRegisteredCommands: vi.fn(),
 }));
@@ -87,6 +88,11 @@ vi.mock('@/modules/deployment/composables/use-deployment-navigation', () => ({
 				return mocks.deploymentProviders;
 			},
 		},
+		loaded: {
+			get value() {
+				return mocks.deploymentProvidersLoaded;
+			},
+		},
 		fetch: mocks.fetchDeployments,
 	}),
 }));
@@ -100,6 +106,7 @@ describe('module route commands', () => {
 		mocks.modules = [{ id: 'deployments' }];
 		mocks.settings = { module_bar: [{ type: 'module', id: 'deployments', enabled: true }] };
 		mocks.deploymentProviders = [];
+		mocks.deploymentProvidersLoaded = false;
 		mocks.fetchDeployments.mockReset();
 		mocks.refreshRegisteredCommands.mockReset();
 	});
@@ -191,6 +198,7 @@ describe('module route commands', () => {
 
 		mocks.fetchDeployments.mockImplementation(() => {
 			mocks.deploymentProviders = [{ provider: 'vercel', projects: [] }];
+			mocks.deploymentProvidersLoaded = true;
 			return Promise.resolve();
 		});
 
@@ -201,6 +209,19 @@ describe('module route commands', () => {
 		await Promise.resolve();
 
 		expect(mocks.refreshRegisteredCommands).toHaveBeenCalledOnce();
+	});
+
+	test('does not refetch deployment providers after an empty provider list loaded', () => {
+		mocks.hasPermission.mockImplementation((collection, action) => {
+			return collection === 'directus_deployments' && action === 'read';
+		});
+
+		mocks.deploymentProvidersLoaded = true;
+
+		deploymentsCommands.commands!({ route: route(), search: '' });
+		deploymentsCommands.commands!({ route: route(), search: 'deploy' });
+
+		expect(mocks.fetchDeployments).not.toHaveBeenCalled();
 	});
 
 	test('gates deployment provider, project, and settings commands', async () => {
@@ -217,6 +238,7 @@ describe('module route commands', () => {
 				projects: [{ id: 'site', name: 'Site' }],
 			},
 		];
+		mocks.deploymentProvidersLoaded = true;
 
 		const commands = await getCommands(deploymentsCommands);
 

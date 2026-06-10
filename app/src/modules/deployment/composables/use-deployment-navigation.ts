@@ -7,6 +7,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 
 const cache = ref<DeploymentConfig[]>([]);
 const loading = ref(false);
+const loaded = ref(false);
 const openProviders = ref<string[]>([]);
 let fetchPromise: Promise<void> | null = null;
 
@@ -14,7 +15,7 @@ export function useDeploymentNavigation() {
 	const route = useRoute();
 
 	async function fetch(force = false) {
-		if (!force && cache.value.length > 0) return;
+		if (!force && loaded.value) return;
 		if (!force && fetchPromise) return fetchPromise;
 
 		loading.value = true;
@@ -30,6 +31,8 @@ export function useDeploymentNavigation() {
 				cache.value = data;
 			} catch (error) {
 				unexpectedError(error);
+			} finally {
+				loaded.value = true;
 			}
 		})();
 
@@ -46,6 +49,7 @@ export function useDeploymentNavigation() {
 	}
 
 	function refresh() {
+		loaded.value = false;
 		return fetch(true);
 	}
 
@@ -61,6 +65,7 @@ export function useDeploymentNavigation() {
 	return {
 		providers: cache,
 		loading,
+		loaded,
 		openProviders,
 		fetch,
 		refresh,

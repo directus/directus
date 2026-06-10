@@ -43,11 +43,9 @@ describe('useDeploymentNavigation', () => {
 	});
 
 	afterEach(async () => {
-		// Reset the shared cache by fetching empty data
-		mockSdkRequest.mockResolvedValueOnce([]);
 		const wrapper = mount(createTestComponent());
-		await wrapper.vm.fetch(true);
-		await flushPromises();
+		wrapper.vm.providers = [];
+		wrapper.vm.loaded = false;
 		wrapper.unmount();
 	});
 
@@ -68,9 +66,10 @@ describe('useDeploymentNavigation', () => {
 			expect(mockSdkRequest).toHaveBeenCalledOnce();
 			expect(wrapper.vm.providers).toEqual(mockData);
 			expect(wrapper.vm.loading).toBe(false);
+			expect(wrapper.vm.loaded).toBe(true);
 		});
 
-		it('should skip fetch when cache exists', async () => {
+		it('should skip fetch when deployments are loaded', async () => {
 			const mockData = [{ provider: 'vercel', projects: [] }];
 
 			mockSdkRequest.mockResolvedValueOnce(mockData);
@@ -84,6 +83,24 @@ describe('useDeploymentNavigation', () => {
 			expect(mockSdkRequest).toHaveBeenCalledOnce();
 
 			// Second fetch should skip
+			await wrapper.vm.fetch();
+			await flushPromises();
+
+			expect(mockSdkRequest).toHaveBeenCalledOnce();
+		});
+
+		it('should skip fetch after loading an empty provider list', async () => {
+			mockSdkRequest.mockResolvedValueOnce([]);
+
+			const wrapper = mount(createTestComponent());
+
+			await wrapper.vm.fetch();
+			await flushPromises();
+
+			expect(mockSdkRequest).toHaveBeenCalledOnce();
+			expect(wrapper.vm.providers).toEqual([]);
+			expect(wrapper.vm.loaded).toBe(true);
+
 			await wrapper.vm.fetch();
 			await flushPromises();
 

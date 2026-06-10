@@ -31,12 +31,12 @@ export const deploymentsCommands = defineCommands({
 		const isAdmin = userStore.isAdmin;
 		const canReadRuns = permissionsStore.hasPermission('directus_deployment_runs', 'read');
 		const canManageSettings = canManageDeploymentSettings();
-		const { providers, fetch } = useDeploymentNavigation();
+		const { providers, loaded, fetch } = useDeploymentNavigation();
 		const t = i18n.global.t;
 
-		if (providers.value.length === 0) {
+		if (!loaded.value) {
 			void fetch().then(() => {
-				if (providers.value.length > 0) refreshRegisteredCommands();
+				refreshRegisteredCommands();
 			});
 		}
 
