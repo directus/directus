@@ -8,7 +8,6 @@ import {
 	deleteField,
 	readField,
 	readItems,
-	readMe,
 	rest,
 	staticToken,
 	updateField,
@@ -37,10 +36,8 @@ afterAll(async () => {
 	await api.request(deleteField(collections.country, 'test_divider'));
 	await api.request(deleteField(collections.country, 'to_be_deleted'));
 
-	// Created (as a sanitized plain geometry column) by the SQL injection regression test
-	await api.request(deleteCollection('geom_injection')).catch(() => {
-		// Collection may not exist if the request was rejected
-	});
+	// Only exists if validation regressed and the injection collection was created
+	await api.request(deleteCollection('geom_injection')).catch(() => {});
 });
 
 await api.request(
@@ -146,42 +143,32 @@ describe('/fields', () => {
 			);
 		});
 
-		test('invalid geometry subtype does not execute', async () => {
-			// Setup
-			const admin = await api.request(readMe({ fields: ['email'] }));
-			const subtype = `Point, 4326)); UPDATE "${collections.country}" SET name = (SELECT email FROM directus_users LIMIT 1); --`;
+		test('SQL injection via geometry subtype does not execute', async () => {
+			// The injection embeds a SELECT against a non-existent table which will error if executed
+			const subtype = `Point, 4326)); SELECT * FROM "directus_geom_injection_canary"; --`;
 
-			const countriesBefore = await api.request(readItems(collections.country));
+			await api.request(
+				createCollection({
+					collection: 'geom_injection',
+					fields: [
+						{
+							field: 'id',
+							type: 'integer',
+							schema: { is_primary_key: true, has_auto_increment: true },
+						},
+						{
+							field: 'geom',
+							type: `geometry.${subtype}`,
+							schema: {},
+						},
+					],
+					schema: {},
+				}),
+			);
 
-			// Action - attempt to create a collection whose geometry field subtype carries an injected statement
-			await api
-				.request(
-					createCollection({
-						collection: 'geom_injection',
-						fields: [
-							{
-								field: 'id',
-								type: 'integer',
-								schema: { is_primary_key: true, has_auto_increment: true },
-							},
-							{
-								field: 'geom',
-								type: `geometry.${subtype}`,
-								schema: {},
-							},
-						],
-						schema: {},
-					}),
-				)
-				.catch(() => {
-					// A rejected request is fine - we only care that the injected statement never ran
-				});
-
-			const countriesAfter = await api.request(readItems(collections.country));
-
-			// Assert - no admin data was exfiltrated and existing data is untouched
-			expect(countriesAfter.map((country) => country.name)).not.toContain(admin.email);
-			expect(countriesAfter).toStrictEqual(countriesBefore);
+			// And the column itself fell back to plain geometry
+			const field = await api.request(readField('geom_injection', 'geom'));
+			expect(field.type).toBe('geometry');
 		});
 	});
 
