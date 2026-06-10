@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed batch update revision snapshots being assigned to the wrong items when read order differed from update order
+Fixed revision snapshots being assigned to the wrong items during batch updates when read order differs
