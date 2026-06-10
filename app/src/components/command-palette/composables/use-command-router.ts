@@ -48,7 +48,7 @@ export function createCommandRouter(options: CommandRouterOptions): CommandRoute
 	});
 
 	function push(location: CommandLocation) {
-		const name = 'name' in location ? location.name : location.component.name ?? 'unnamed';
+		const name = 'name' in location ? location.name : (location.component.name ?? 'unnamed');
 
 		stack.value.push({
 			name,

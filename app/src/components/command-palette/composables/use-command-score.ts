@@ -50,136 +50,136 @@ const IS_SPACE_REGEXP = /[\s-]/;
 const COUNT_SPACE_REGEXP = /[\s-]/g;
 
 function commandScoreInner(
-  string: string,
-  abbreviation: string,
-  lowerString: string,
-  lowerAbbreviation: string,
-  stringIndex: number,
-  abbreviationIndex: number,
-  memoizedResults: Record<string, number>,
+	string: string,
+	abbreviation: string,
+	lowerString: string,
+	lowerAbbreviation: string,
+	stringIndex: number,
+	abbreviationIndex: number,
+	memoizedResults: Record<string, number>,
 ) {
-  if (abbreviationIndex === abbreviation.length) {
-    if (stringIndex === string.length) {
-      return SCORE_CONTINUE_MATCH;
-    }
+	if (abbreviationIndex === abbreviation.length) {
+		if (stringIndex === string.length) {
+			return SCORE_CONTINUE_MATCH;
+		}
 
-    return PENALTY_NOT_COMPLETE;
-  }
+		return PENALTY_NOT_COMPLETE;
+	}
 
-  const memoizeKey = `${stringIndex},${abbreviationIndex}`;
+	const memoizeKey = `${stringIndex},${abbreviationIndex}`;
 
-  if (memoizedResults[memoizeKey] !== undefined) {
-    return memoizedResults[memoizeKey]!;
-  }
+	if (memoizedResults[memoizeKey] !== undefined) {
+		return memoizedResults[memoizeKey]!;
+	}
 
-  const abbreviationChar = lowerAbbreviation.charAt(abbreviationIndex);
-  let index = lowerString.indexOf(abbreviationChar, stringIndex);
-  let highScore = 0;
+	const abbreviationChar = lowerAbbreviation.charAt(abbreviationIndex);
+	let index = lowerString.indexOf(abbreviationChar, stringIndex);
+	let highScore = 0;
 
-  let score, transposedScore, wordBreaks, spaceBreaks;
+	let score, transposedScore, wordBreaks, spaceBreaks;
 
-  while (index >= 0) {
-    score = commandScoreInner(
-      string,
-      abbreviation,
-      lowerString,
-      lowerAbbreviation,
-      index + 1,
-      abbreviationIndex + 1,
-      memoizedResults,
-    );
+	while (index >= 0) {
+		score = commandScoreInner(
+			string,
+			abbreviation,
+			lowerString,
+			lowerAbbreviation,
+			index + 1,
+			abbreviationIndex + 1,
+			memoizedResults,
+		);
 
-    if (score > highScore) {
-      if (index === stringIndex) {
-        score *= SCORE_CONTINUE_MATCH;
-      } else if (IS_GAP_REGEXP.test(string.charAt(index - 1))) {
-        score *= SCORE_NON_SPACE_WORD_JUMP;
+		if (score > highScore) {
+			if (index === stringIndex) {
+				score *= SCORE_CONTINUE_MATCH;
+			} else if (IS_GAP_REGEXP.test(string.charAt(index - 1))) {
+				score *= SCORE_NON_SPACE_WORD_JUMP;
 
-        wordBreaks = string.slice(stringIndex, index - 1).match(COUNT_GAPS_REGEXP);
+				wordBreaks = string.slice(stringIndex, index - 1).match(COUNT_GAPS_REGEXP);
 
-        if (wordBreaks && stringIndex > 0) {
-          score *= PENALTY_SKIPPED ** wordBreaks.length;
-        }
-      } else if (IS_SPACE_REGEXP.test(string.charAt(index - 1))) {
-        score *= SCORE_SPACE_WORD_JUMP;
+				if (wordBreaks && stringIndex > 0) {
+					score *= PENALTY_SKIPPED ** wordBreaks.length;
+				}
+			} else if (IS_SPACE_REGEXP.test(string.charAt(index - 1))) {
+				score *= SCORE_SPACE_WORD_JUMP;
 
-        spaceBreaks = string.slice(stringIndex, index - 1).match(COUNT_SPACE_REGEXP);
+				spaceBreaks = string.slice(stringIndex, index - 1).match(COUNT_SPACE_REGEXP);
 
-        if (spaceBreaks && stringIndex > 0) {
-          score *= PENALTY_SKIPPED ** spaceBreaks.length;
-        }
-      } else {
-        score *= SCORE_CHARACTER_JUMP;
+				if (spaceBreaks && stringIndex > 0) {
+					score *= PENALTY_SKIPPED ** spaceBreaks.length;
+				}
+			} else {
+				score *= SCORE_CHARACTER_JUMP;
 
-        if (stringIndex > 0) {
-          score *= PENALTY_SKIPPED ** (index - stringIndex);
-        }
-      }
+				if (stringIndex > 0) {
+					score *= PENALTY_SKIPPED ** (index - stringIndex);
+				}
+			}
 
-      if (string.charAt(index) !== abbreviation.charAt(abbreviationIndex)) {
-        score *= PENALTY_CASE_MISMATCH;
-      }
-    }
+			if (string.charAt(index) !== abbreviation.charAt(abbreviationIndex)) {
+				score *= PENALTY_CASE_MISMATCH;
+			}
+		}
 
-    if (
-      (score < SCORE_TRANSPOSITION &&
-        lowerString.charAt(index - 1) === lowerAbbreviation.charAt(abbreviationIndex + 1)) ||
-      (lowerAbbreviation.charAt(abbreviationIndex + 1) === lowerAbbreviation.charAt(abbreviationIndex) &&
-        lowerString.charAt(index - 1) !== lowerAbbreviation.charAt(abbreviationIndex))
-    ) {
-      transposedScore = commandScoreInner(
-        string,
-        abbreviation,
-        lowerString,
-        lowerAbbreviation,
-        index + 1,
-        abbreviationIndex + 2,
-        memoizedResults,
-      );
+		if (
+			(score < SCORE_TRANSPOSITION &&
+				lowerString.charAt(index - 1) === lowerAbbreviation.charAt(abbreviationIndex + 1)) ||
+			(lowerAbbreviation.charAt(abbreviationIndex + 1) === lowerAbbreviation.charAt(abbreviationIndex) &&
+				lowerString.charAt(index - 1) !== lowerAbbreviation.charAt(abbreviationIndex))
+		) {
+			transposedScore = commandScoreInner(
+				string,
+				abbreviation,
+				lowerString,
+				lowerAbbreviation,
+				index + 1,
+				abbreviationIndex + 2,
+				memoizedResults,
+			);
 
-      if (transposedScore * SCORE_TRANSPOSITION > score) {
-        score = transposedScore * SCORE_TRANSPOSITION;
-      }
-    }
+			if (transposedScore * SCORE_TRANSPOSITION > score) {
+				score = transposedScore * SCORE_TRANSPOSITION;
+			}
+		}
 
-    if (score > highScore) {
-      highScore = score;
-    }
+		if (score > highScore) {
+			highScore = score;
+		}
 
-    index = lowerString.indexOf(abbreviationChar, index + 1);
-  }
+		index = lowerString.indexOf(abbreviationChar, index + 1);
+	}
 
-  memoizedResults[memoizeKey] = highScore;
-  return highScore;
+	memoizedResults[memoizeKey] = highScore;
+	return highScore;
 }
 
 function formatInput(string: string) {
-  return string.toLowerCase().replaceAll(COUNT_SPACE_REGEXP, ' ');
+	return string.toLowerCase().replaceAll(COUNT_SPACE_REGEXP, ' ');
 }
 
 export function commandScore(string: string, abbreviation: string, aliases: string[]): number {
-  const nameScore = commandScoreInner(string, abbreviation, formatInput(string), formatInput(abbreviation), 0, 0, {});
+	const nameScore = commandScoreInner(string, abbreviation, formatInput(string), formatInput(abbreviation), 0, 0, {});
 
-  if (!aliases || aliases.length === 0) {
-    return nameScore;
-  }
+	if (!aliases || aliases.length === 0) {
+		return nameScore;
+	}
 
-  const combinedString = `${string} ${aliases.join(' ')}`;
+	const combinedString = `${string} ${aliases.join(' ')}`;
 
-  const combinedScore = commandScoreInner(
-    combinedString,
-    abbreviation,
-    formatInput(combinedString),
-    formatInput(abbreviation),
-    0,
-    0,
-    {},
-  );
+	const combinedScore = commandScoreInner(
+		combinedString,
+		abbreviation,
+		formatInput(combinedString),
+		formatInput(abbreviation),
+		0,
+		0,
+		{},
+	);
 
-  const aliasScore = aliases.reduce((highestScore, alias) => {
-    const score = commandScoreInner(alias, abbreviation, formatInput(alias), formatInput(abbreviation), 0, 0, {});
-    return Math.max(highestScore, score);
-  }, 0);
+	const aliasScore = aliases.reduce((highestScore, alias) => {
+		const score = commandScoreInner(alias, abbreviation, formatInput(alias), formatInput(abbreviation), 0, 0, {});
+		return Math.max(highestScore, score);
+	}, 0);
 
-  return Math.max(nameScore, combinedScore, aliasScore);
+	return Math.max(nameScore, combinedScore, aliasScore);
 }

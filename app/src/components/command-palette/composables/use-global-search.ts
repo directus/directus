@@ -60,6 +60,7 @@ export function useGlobalSearch(search: Ref<string>) {
 	onBeforeUnmount(() => {
 		requestId++;
 		if (searchTimeout) clearTimeout(searchTimeout);
+		loading.value = false;
 	});
 
 	async function fetchResults(query: string, currentRequest: number) {

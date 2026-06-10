@@ -1,6 +1,6 @@
 import type { InjectionKey, Ref } from 'vue';
-import type { CommandRouter } from './use-command-router';
 import { inject, provide } from 'vue';
+import type { CommandRouter } from './use-command-router';
 
 export interface CommandPaletteContext {
 	search: Ref<string>;

@@ -61,4 +61,36 @@ describe('useCommandRegistry', () => {
 
 		expect(groups.value.map(({ id }) => id)).toEqual(['content', 'settings']);
 	});
+
+	test('refreshes registered commands on demand', async () => {
+		const { refreshRegisteredCommands, registerCommands, useRegisteredCommands } = await import(
+			'./use-command-registry'
+		);
+		const { flushPromises } = await import('@vue/test-utils');
+		const { ref } = await import('vue');
+
+		let commandName = 'Open';
+
+		registerCommands({
+			commands: () => [
+				{
+					id: 'open',
+					name: commandName,
+					icon: 'open_in_new',
+					action: vi.fn(),
+				},
+			],
+		});
+
+		const { commands } = useRegisteredCommands(ref({ route: {} as RouteLocationNormalizedLoaded, search: '' }));
+
+		await flushPromises();
+		expect(commands.value[0]?.name).toBe('Open');
+
+		commandName = 'Open Updated';
+		refreshRegisteredCommands();
+		await flushPromises();
+
+		expect(commands.value[0]?.name).toBe('Open Updated');
+	});
 });

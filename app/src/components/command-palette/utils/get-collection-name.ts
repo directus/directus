@@ -1,5 +1,5 @@
-import type { Collection } from '@directus/types';
 import formatTitle from '@directus/format-title';
+import type { Collection } from '@directus/types';
 import { i18n } from '@/lang';
 
 export function getCollectionName(collection: Collection): string {

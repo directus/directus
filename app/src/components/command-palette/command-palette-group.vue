@@ -8,10 +8,9 @@ defineProps<{
 </script>
 
 <template>
-	<ListboxGroup>
+	<ListboxGroup class="command-group">
 		<ListboxGroupLabel v-if="heading" class="group-heading">
 			<slot name="heading">
-				<v-icon v-if="icon" class="group-icon" :name="icon" />
 				{{ heading }}
 			</slot>
 		</ListboxGroupLabel>
@@ -20,18 +19,25 @@ defineProps<{
 </template>
 
 <style scoped lang="scss">
+.command-group + .command-group {
+	margin-block-start: 0.375rem;
+}
+
+.command-group + .command-group::before {
+	display: block;
+	margin: 0 0.75rem 0.375rem 0.5rem;
+	border-block-start: 1px solid var(--theme--border-color-subdued);
+	content: '';
+}
+
 .group-heading {
 	display: flex;
 	align-items: center;
-	padding: 0 12px 0 8px;
-	font-size: 13px;
+	padding: 0 0.75rem 0 0.5rem;
+	font-size: 0.75rem;
+	font-weight: 600;
 	color: var(--theme--foreground-subdued);
-	height: 36px;
-	gap: 6px;
-
-	.group-icon {
-		--v-icon-size: 16px;
-		--v-icon-color: var(--theme--foreground-subdued);
-	}
+	block-size: 2rem;
+	gap: 0.375rem;
 }
 </style>

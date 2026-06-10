@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { CommandConfig, GroupConfig } from '../composables/use-command-registry';
 import { computed, toRefs } from 'vue';
 import CommandPaletteItem from '../command-palette-item.vue';
+import type { CommandConfig, GroupConfig } from '../composables/use-command-registry';
 
 const props = defineProps<{
 	command: CommandConfig;

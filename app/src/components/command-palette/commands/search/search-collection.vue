@@ -8,13 +8,13 @@ import CommandPaletteEmpty from '../../command-palette-empty.vue';
 import CommandPaletteGroup from '../../command-palette-group.vue';
 import CommandPaletteItem from '../../command-palette-item.vue';
 import CommandPaletteList from '../../command-palette-list.vue';
+import { useAskAi } from '../../composables/use-ask-ai';
 import { useCommandPalette } from '../../composables/use-command-palette';
 import { useRecentItems } from '../../composables/use-recent-items';
 import { getRoutePrimaryKey } from '../../utils/get-route-primary-key';
-import { useAiStore } from '@/ai/stores/use-ai';
+import AiMagicButton from '@/ai/components/ai-magic-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useFieldsStore } from '@/stores/fields';
-import { useServerStore } from '@/stores/server';
-import { useSettingsStore } from '@/stores/settings';
 import { getItemRoute } from '@/utils/get-route';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -39,18 +39,8 @@ const route = useRoute();
 const router = useRouter();
 const fieldsStore = useFieldsStore();
 const { search, close, loading } = useCommandPalette();
-const serverStore = useServerStore();
-const settingsStore = useSettingsStore();
-
-const aiAvailable = computed(() => serverStore.info.ai_enabled && settingsStore.availableAiProviders.length > 0);
-
-function askAi() {
-	const aiStore = useAiStore();
-	aiStore.input = search.value;
-	aiStore.chatOpen = true;
-	aiStore.submit();
-	close();
-}
+const { aiAvailable, askAi, askAiShortcutModifierIcon } = useAskAi();
+const askAiHovering = ref(false);
 
 const currentPk = computed(() => {
 	if (!route.path.startsWith(`/content/${props.collection}/`)) return null;
@@ -199,17 +189,61 @@ function getItemValue(item: { pk: string; versionKey?: string; versionId?: strin
 		<CommandPaletteEmpty :show="isEmpty && !aiAvailable">
 			{{ t('no_results') }}
 		</CommandPaletteEmpty>
-		<CommandPaletteItem v-if="isEmpty && aiAvailable" value="ask-ai" icon="auto_awesome" @select="askAi">
-			{{ t('command_ask_ai', { query: search }) }}
-		</CommandPaletteItem>
-		<CommandPaletteItem
-			v-for="item in results"
-			:key="getItemValue(item)"
-			:value="getItemValue(item)"
-			:icon="collectionIcon"
-			@select="selectItem(item)"
-		>
-			{{ item.displayValue }}
-		</CommandPaletteItem>
+		<CommandPaletteGroup v-if="results.length > 0">
+			<CommandPaletteItem
+				v-for="item in results"
+				:key="getItemValue(item)"
+				:value="getItemValue(item)"
+				:icon="collectionIcon"
+				@select="selectItem(item)"
+			>
+				{{ item.displayValue }}
+			</CommandPaletteItem>
+		</CommandPaletteGroup>
+		<CommandPaletteGroup v-if="search && aiAvailable">
+			<CommandPaletteItem
+				value="ask-ai"
+				@mouseenter="askAiHovering = true"
+				@mouseleave="askAiHovering = false"
+				@select="askAi(search)"
+			>
+				<template #icon>
+					<AiMagicButton :animate="askAiHovering" class="ask-ai-icon" />
+				</template>
+				<span class="ask-ai-title">
+					<span>{{ t('command_ask_ai', { query: search }) }}</span>
+					<span class="ask-ai-shortcut">
+						<VIcon :name="askAiShortcutModifierIcon" />
+						<VIcon name="keyboard_return" />
+					</span>
+				</span>
+			</CommandPaletteItem>
+		</CommandPaletteGroup>
 	</CommandPaletteList>
 </template>
+
+<style scoped lang="scss">
+.ask-ai-title {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	min-inline-size: 0;
+	inline-size: 100%;
+}
+
+.ask-ai-shortcut {
+	--v-icon-size: 1rem;
+
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	gap: 0.25rem;
+	color: var(--theme--foreground-subdued);
+}
+
+.ask-ai-icon {
+	inline-size: 1.25rem;
+	block-size: 1.25rem;
+}
+</style>

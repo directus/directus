@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { CommandConfig, GroupConfig } from '../composables/use-command-registry';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CommandPaletteGroup from '../command-palette-group.vue';
+import type { CommandConfig, GroupConfig } from '../composables/use-command-registry';
 import { useRecentCommands } from '../composables/use-recent-commands';
 import RecentItem from './recent-item.vue';
 
@@ -20,9 +20,7 @@ defineEmits<{
 const { commands: commandIds } = useRecentCommands();
 
 const commands = computed(() =>
-	commandIds.value
-		.map((id) => props.availableCommands.find((cmd) => cmd.id === id))
-		.filter(Boolean),
+	commandIds.value.map((id) => props.availableCommands.find((cmd) => cmd.id === id)).filter(Boolean),
 );
 </script>
 

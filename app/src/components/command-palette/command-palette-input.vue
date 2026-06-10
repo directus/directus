@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ListboxFilter } from 'reka-ui';
-import { ref } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 
 defineProps<{
 	loading?: boolean;
@@ -13,26 +14,23 @@ defineEmits<{
 }>();
 
 const search = defineModel<string>({ default: '' });
-
-const input = ref<InstanceType<typeof ListboxFilter> | null>(null);
 </script>
 
 <template>
 	<div class="search-input">
 		<span v-if="showBack" class="back" @click="$emit('back')">
-			<v-icon name="keyboard_backspace" />
+			<VIcon name="keyboard_backspace" />
 		</span>
 		<span v-else class="back-placeholder" />
 		<ListboxFilter
-			ref="input"
 			:model-value="search"
 			:placeholder="placeholder"
 			auto-focus
 			class="input"
-			@update:model-value="search = ($event as string)"
+			@update:model-value="search = $event as string"
 		/>
-		<v-progress-circular v-if="loading === true" indeterminate />
-		<v-icon v-else-if="search" clickable name="close" @click="search = ''" />
+		<VProgressCircular v-if="loading === true" indeterminate />
+		<VIcon v-else-if="search" clickable name="close" @click="search = ''" />
 	</div>
 </template>
 
@@ -42,12 +40,12 @@ const input = ref<InstanceType<typeof ListboxFilter> | null>(null);
 	position: relative;
 	align-items: center;
 	padding: 8px 12px;
-	height: 54px;
-	border-bottom: 1px solid var(--theme--primary);
+	block-size: 54px;
+	border-block-end: 1px solid var(--theme--primary);
 
 	.back,
 	.back-placeholder {
-		margin-right: 10px;
+		margin-inline-end: 10px;
 	}
 
 	.back {
@@ -69,15 +67,15 @@ const input = ref<InstanceType<typeof ListboxFilter> | null>(null);
 		outline: none;
 		padding: 20px 20px 20px 0;
 		margin: 0;
-		width: 100%;
-		height: 100%;
+		inline-size: 100%;
+		block-size: 100%;
 		line-height: 48px;
 		font-size: 18px;
 	}
 
 	.v-progress-circular {
 		position: absolute;
-		right: 12px;
+		inset-inline-end: 12px;
 	}
 }
 </style>

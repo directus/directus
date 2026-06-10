@@ -1,15 +1,22 @@
 <script setup lang="ts">
-import type { FlowRaw, PrimaryKey } from '@directus/types';
 import { useApi } from '@directus/composables';
 import formatTitle from '@directus/format-title';
+import type { FlowRaw, PrimaryKey } from '@directus/types';
 import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
-import { useNotificationsStore } from '@/stores/notifications';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { useCommandPalette } from '../../composables/use-command-palette';
 import { useCommandRouter } from '../../composables/use-command-router';
 import { getRoutePrimaryKey } from '../../utils/get-route-primary-key';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import { useNotificationsStore } from '@/stores/notifications';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 const props = defineProps<{
 	flow: FlowRaw;
@@ -102,13 +109,13 @@ function resetConfirm() {
 </script>
 
 <template>
-	<v-dialog :model-value="displayCustomConfirmDialog" @esc="resetConfirm">
-		<v-card class="allow-drawer">
-			<v-card-title>
+	<VDialog :model-value="displayCustomConfirmDialog" @esc="resetConfirm">
+		<VCard class="allow-drawer">
+			<VCardTitle>
 				{{ confirmDetails!.description ?? t('run_flow_confirm') }}
-			</v-card-title>
-			<v-card-text class="confirm-form">
-				<v-form
+			</VCardTitle>
+			<VCardText class="confirm-form">
+				<VForm
 					v-if="confirmDetails!.fields && confirmDetails!.fields.length > 0"
 					:fields="confirmDetails!.fields"
 					:model-value="confirmValues"
@@ -116,16 +123,16 @@ function resetConfirm() {
 					primary-key="+"
 					@update:model-value="confirmValues = $event"
 				/>
-			</v-card-text>
+			</VCardText>
 
-			<v-card-actions>
-				<v-button secondary @click="resetConfirm">
+			<VCardActions>
+				<VButton secondary @click="resetConfirm">
 					{{ t('cancel') }}
-				</v-button>
-				<v-button :disabled="isConfirmButtonDisabled" @click="runFlow">
+				</VButton>
+				<VButton :disabled="isConfirmButtonDisabled" @click="runFlow">
 					{{ confirmButtonCTA }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+				</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 </template>

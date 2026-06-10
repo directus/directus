@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import { useEventListener } from '@vueuse/core';
 import { ListboxRoot } from 'reka-ui';
 import { nextTick, onMounted, ref, watch } from 'vue';
@@ -12,7 +13,7 @@ let commandsRegistered = false;
 
 const active = ref(false);
 const search = ref('');
-const commandPalette = ref<InstanceType<typeof ListboxRoot> | null>(null);
+const commandPalette = ref<{ $el: HTMLElement; highlightFirstItem: () => void } | null>(null);
 
 const commandRouter = createCommandRouter({
 	root: RootCommands,
@@ -49,13 +50,17 @@ useEventListener(window, 'open-command-palette', () => {
 	active.value = true;
 });
 
-useEventListener(() => commandPalette.value?.$el, 'keydown', (e: KeyboardEvent) => {
-	if (e.defaultPrevented) return;
+useEventListener(
+	() => commandPalette.value?.$el,
+	'keydown',
+	(e: KeyboardEvent) => {
+		if (e.defaultPrevented) return;
 
-	if (e.key === 'Backspace' && search.value === '' && commandRouter.pop()) {
-		e.preventDefault();
-	}
-});
+		if (e.key === 'Backspace' && search.value === '' && commandRouter.pop()) {
+			e.preventDefault();
+		}
+	},
+);
 
 // Block native pointerleave so reka-ui doesn't clear highlightedElement on open.
 useEventListener(
@@ -125,12 +130,7 @@ function clear() {
 	<Teleport to="#dialog-outlet">
 		<div v-if="active" class="command-palette-overlay">
 			<div class="overlay-backdrop" @click="close" />
-			<ListboxRoot
-				ref="commandPalette"
-				class="command-palette"
-				model-value=""
-				highlight-on-hover
-			>
+			<ListboxRoot ref="commandPalette" class="command-palette" model-value="" highlight-on-hover>
 				<CommandRouterView />
 			</ListboxRoot>
 		</div>

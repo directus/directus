@@ -21,6 +21,11 @@ const router = useRouter();
 const serverStore = useServerStore();
 const { search, close } = useCommandPalette();
 
+function websocketLogsEnabled() {
+	const websocket = serverStore.info.websocket;
+	return typeof websocket === 'object' && !!websocket.logs;
+}
+
 const sections = computed<SettingsSection[]>(() => {
 	const items: SettingsSection[] = [
 		{ id: 'flows', name: t('settings_flows'), icon: 'bolt', to: '/settings/flows' },
@@ -42,7 +47,7 @@ const sections = computed<SettingsSection[]>(() => {
 		{ id: 'extensions', name: t('extensions'), icon: 'category', to: '/settings/extensions' },
 	);
 
-	if (serverStore.info.websocket?.logs) {
+	if (websocketLogsEnabled()) {
 		items.push({ id: 'system-logs', name: t('settings_system_logs'), icon: 'terminal', to: '/settings/system-logs' });
 	}
 

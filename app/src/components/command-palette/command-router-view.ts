@@ -1,5 +1,5 @@
-import type { Slot } from 'vue';
 import { assign } from 'lodash';
+import type { Slot } from 'vue';
 import { defineComponent, h } from 'vue';
 import { useCommandRouter } from './composables/use-command-router';
 

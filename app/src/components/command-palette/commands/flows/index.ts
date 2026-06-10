@@ -83,6 +83,7 @@ export const collectionItemFlowCommands = defineCommands({
 				icon: (flow.icon ?? 'bolt') as string,
 				keywords: ['context'],
 				group: 'context',
+				endLabel: t('settings_flows'),
 			};
 
 			if (!flow.options?.requireConfirmation) {

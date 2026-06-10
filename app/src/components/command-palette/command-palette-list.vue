@@ -2,8 +2,10 @@
 import { ListboxContent } from 'reka-ui';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useCommandPalette } from './composables/use-command-palette';
 import CommandPaletteInput from './command-palette-input.vue';
+import { useAskAi } from './composables/use-ask-ai';
+import { useCommandPalette } from './composables/use-command-palette';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 const { t } = useI18n();
 
@@ -14,10 +16,31 @@ const props = defineProps<{
 const { loading, search, router } = useCommandPalette();
 const showBack = computed(() => router.stack.value.length > 1);
 const placeholder = computed(() => props.searchBarPlaceholder ?? `${t('search')}...`);
+
+const { aiAvailable, askAi } = useAskAi();
+
+// Handle the Ask AI chord in capture phase so it runs before reka-ui's ListboxFilter
+// Enter handler (which stops propagation to select the highlighted item). Only swallow
+// the keystroke when AI is actually available — otherwise let it fall through to reka.
+function onChordKeydown(event: KeyboardEvent) {
+	if (!aiAvailable.value || !search.value) return;
+	if (event.key !== 'Enter' || (!event.metaKey && !event.ctrlKey)) return;
+
+	event.stopPropagation();
+	event.preventDefault();
+	askAi(search.value);
+}
 </script>
 
 <template>
-	<CommandPaletteInput v-model="search" :loading="loading" :placeholder="placeholder" :show-back="showBack" @back="router.pop()" />
+	<CommandPaletteInput
+		v-model="search"
+		:loading="loading"
+		:placeholder="placeholder"
+		:show-back="showBack"
+		@back="router.pop()"
+		@keydown.capture="onChordKeydown"
+	/>
 	<ListboxContent class="command-list">
 		<div class="command-list-viewport">
 			<slot />
@@ -25,15 +48,15 @@ const placeholder = computed(() => props.searchBarPlaceholder ?? `${t('search')}
 	</ListboxContent>
 	<div class="command-footer">
 		<span>
-			<v-icon name="sync_alt" />
+			<VIcon name="sync_alt" />
 			<span>{{ t('navigate') }}</span>
 		</span>
 		<span>
-			<v-icon name="keyboard_return" />
+			<VIcon name="keyboard_return" />
 			<span>{{ t('command_palette_select') }}</span>
 		</span>
 		<span>
-			<v-icon name="keyboard_backspace" />
+			<VIcon name="keyboard_backspace" />
 			<span>{{ t('back') }}</span>
 		</span>
 	</div>
@@ -41,7 +64,7 @@ const placeholder = computed(() => props.searchBarPlaceholder ?? `${t('search')}
 
 <style scoped lang="scss">
 .command-list {
-	max-height: 50vh;
+	max-block-size: 50vh;
 	overflow-y: auto;
 }
 
@@ -58,7 +81,7 @@ const placeholder = computed(() => props.searchBarPlaceholder ?? `${t('search')}
 	gap: 12px;
 	padding: 8px 12px;
 	color: var(--theme--foreground-subdued);
-	border-top: solid 1px var(--theme--border-color);
+	border-block-start: solid 1px var(--theme--border-color);
 
 	:deep([data-icon='sync_alt']) {
 		transform: rotate(90deg);

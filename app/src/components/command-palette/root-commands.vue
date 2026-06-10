@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { groupBy } from 'lodash';
-import { computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import CommandPaletteCommandItem from './command-palette-command-item.vue';
@@ -8,6 +8,7 @@ import CommandPaletteEmpty from './command-palette-empty.vue';
 import CommandPaletteGroup from './command-palette-group.vue';
 import CommandPaletteItem from './command-palette-item.vue';
 import CommandPaletteList from './command-palette-list.vue';
+import { useAskAi } from './composables/use-ask-ai';
 import { useCommandPalette } from './composables/use-command-palette';
 import type { CommandConfig } from './composables/use-command-registry';
 import { useRegisteredCommands } from './composables/use-command-registry';
@@ -18,18 +19,18 @@ import { useGlobalSearch } from './composables/use-global-search';
 import { useRecentCommands } from './composables/use-recent-commands';
 import RecentItems from './recents/recent-items.vue';
 import SearchHighlight from './search-highlight.vue';
-import { useAiStore } from '@/ai/stores/use-ai';
-import { useServerStore } from '@/stores/server';
-import { useSettingsStore } from '@/stores/settings';
+import AiMagicButton from '@/ai/components/ai-magic-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { getItemRoute } from '@/utils/get-route';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const context = useCommandPalette();
 const commandRouter = useCommandRouter();
-const serverStore = useServerStore();
-const settingsStore = useSettingsStore();
+const { aiAvailable, askAi, askAiShortcutModifierIcon } = useAskAi();
+const askAiHovering = ref(false);
 
 const commandContext = computed(() => ({
 	route,
@@ -84,16 +85,6 @@ const isEmpty = computed(
 	() => !!search.value && filteredCommands.value.length === 0 && !globalSearch.loading.value && !hasSearchResults.value,
 );
 
-const aiAvailable = computed(() => serverStore.info.ai_enabled && settingsStore.availableAiProviders.length > 0);
-
-function askAi() {
-	const aiStore = useAiStore();
-	aiStore.input = search.value;
-	aiStore.chatOpen = true;
-	aiStore.submit();
-	context.close();
-}
-
 function navigateToItem(item: GlobalSearchResultItem) {
 	router.push(getItemRoute(item.collection, item.pk));
 	context.close();
@@ -103,10 +94,14 @@ async function onSelect(command: CommandConfig) {
 	addToRecents(command.id);
 
 	if (command.action) {
-		const result = await command.action({ router });
+		try {
+			const result = await command.action({ router });
 
-		if (result !== false) {
-			context.close();
+			if (result !== false) {
+				context.close();
+			}
+		} catch (error) {
+			unexpectedError(error);
 		}
 	} else if (command.component) {
 		commandRouter.push({ component: command.component, props: command.props });
@@ -118,9 +113,6 @@ async function onSelect(command: CommandConfig) {
 <template>
 	<CommandPaletteList>
 		<CommandPaletteEmpty :show="isEmpty && !aiAvailable" />
-		<CommandPaletteItem v-if="isEmpty && aiAvailable" value="ask-ai" icon="auto_awesome" @select="askAi">
-			{{ t('command_ask_ai', { query: search }) }}
-		</CommandPaletteItem>
 		<RecentItems
 			v-if="!search"
 			:available-commands="commands"
@@ -132,15 +124,18 @@ async function onSelect(command: CommandConfig) {
 				v-for="command in groupedCommands[group.id]"
 				:key="command.id"
 				:command="command"
+				icon-placement="start"
 				@select="onSelect(command)"
 			/>
 		</CommandPaletteGroup>
-		<CommandPaletteCommandItem
-			v-for="command in groupedCommands[ungrouped]"
-			:key="command.id"
-			:command="command"
-			@select="onSelect(command)"
-		/>
+		<CommandPaletteGroup v-if="groupedCommands[ungrouped]?.length">
+			<CommandPaletteCommandItem
+				v-for="command in groupedCommands[ungrouped]"
+				:key="command.id"
+				:command="command"
+				@select="onSelect(command)"
+			/>
+		</CommandPaletteGroup>
 		<template v-if="search && hasSearchResults">
 			<CommandPaletteGroup
 				v-for="group in globalSearch.results.value"
@@ -162,5 +157,50 @@ async function onSelect(command: CommandConfig) {
 				</CommandPaletteItem>
 			</CommandPaletteGroup>
 		</template>
+		<CommandPaletteGroup v-if="search && aiAvailable">
+			<CommandPaletteItem
+				value="ask-ai"
+				@mouseenter="askAiHovering = true"
+				@mouseleave="askAiHovering = false"
+				@select="askAi(search)"
+			>
+				<template #icon>
+					<AiMagicButton :animate="askAiHovering" class="ask-ai-icon" />
+				</template>
+				<span class="ask-ai-title">
+					<span>{{ t('command_ask_ai', { query: search }) }}</span>
+					<span class="ask-ai-shortcut">
+						<VIcon :name="askAiShortcutModifierIcon" />
+						<VIcon name="keyboard_return" />
+					</span>
+				</span>
+			</CommandPaletteItem>
+		</CommandPaletteGroup>
 	</CommandPaletteList>
 </template>
+
+<style scoped lang="scss">
+.ask-ai-title {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	min-inline-size: 0;
+	inline-size: 100%;
+}
+
+.ask-ai-shortcut {
+	--v-icon-size: 1rem;
+
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	gap: 0.25rem;
+	color: var(--theme--foreground-subdued);
+}
+
+.ask-ai-icon {
+	inline-size: 1.25rem;
+	block-size: 1.25rem;
+}
+</style>

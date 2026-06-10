@@ -1,10 +1,10 @@
 import type { CommandActionContext, CommandConfig } from '../../composables/use-command-registry';
-import { i18n } from '@/lang';
-import { useServerStore } from '@/stores/server';
-import { useUserStore } from '@/stores/user';
 import { defineCommands } from '../../composables/use-command-registry';
 import DataModelCollections from './data-model-collections.vue';
 import SettingsList from './settings-list.vue';
+import { i18n } from '@/lang';
+import { useServerStore } from '@/stores/server';
+import { useUserStore } from '@/stores/user';
 
 interface SettingsSection {
 	id: string;
@@ -12,6 +12,11 @@ interface SettingsSection {
 	icon: string;
 	to: string;
 	condition?: () => boolean;
+}
+
+function websocketLogsEnabled() {
+	const websocket = useServerStore().info.websocket;
+	return typeof websocket === 'object' && !!websocket.logs;
 }
 
 const sections: SettingsSection[] = [
@@ -40,10 +45,7 @@ const sections: SettingsSection[] = [
 		nameKey: 'settings_system_logs',
 		icon: 'terminal',
 		to: '/settings/system-logs',
-		condition: () => {
-			const serverStore = useServerStore();
-			return !!(serverStore.info.websocket?.logs);
-		},
+		condition: websocketLogsEnabled,
 	},
 ];
 

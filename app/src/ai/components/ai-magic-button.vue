@@ -1,23 +1,26 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 
-const { animate = false } = defineProps<{ animate?: boolean }>();
+const props = withDefaults(defineProps<{ animate?: boolean }>(), {
+	animate: false,
+});
 
 const leftAnimating = ref(false);
 const rightAnimating = ref(false);
 
 watch(
-	() => animate,
+	() => props.animate,
 	(newAnimate) => {
 		if (newAnimate) {
 			leftAnimating.value = true;
 			rightAnimating.value = true;
 		}
 	},
+	{ immediate: true },
 );
 
 const onAnimationIteration = (star: 'left' | 'right') => {
-	if (animate === false) {
+	if (props.animate === false) {
 		if (star === 'left') leftAnimating.value = false;
 		if (star === 'right') rightAnimating.value = false;
 	}
@@ -62,7 +65,10 @@ const onAnimationIteration = (star: 'left' | 'right') => {
 			'M12 15.175L13 13L15.175 12L13 11L12 8.825L11 11L8.825 12L11 13L12 15.175ZM12 20L9.5 14.5L4 12L9.5 9.5L12 4L14.5 9.5L20 12L14.5 14.5L12 20Z'
 		);
 		translate: -0.125rem -0.0625rem;
-		animation-name: sparkle-left;
+
+		&.animate {
+			animation-name: sparkle-left;
+		}
 	}
 
 	.right {
@@ -70,7 +76,10 @@ const onAnimationIteration = (star: 'left' | 'right') => {
 			'M12 12L12 12L12 12L12 12L12 12L12 12L12 12L12 12L12 12ZM12 16L10.75 13.25L8 12L10.75 10.75L12 8L13.25 10.75L16 12L13.25 13.25L12 16Z'
 		);
 		translate: 0.3125rem 0.3125rem;
-		animation-name: sparkle-right;
+
+		&.animate {
+			animation-name: sparkle-right;
+		}
 	}
 }
 

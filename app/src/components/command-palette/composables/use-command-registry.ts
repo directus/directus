@@ -1,8 +1,8 @@
+import { uniqBy } from 'lodash';
 import type { Component, MaybeRef, Raw, Ref, VNode } from 'vue';
+import { computed, markRaw, ref, unref, watch } from 'vue';
 import type { RouteLocationNormalizedLoaded, Router } from 'vue-router';
 import type { CommandRouteProps } from './use-command-router';
-import { uniqBy } from 'lodash';
-import { computed, markRaw, ref, unref, watch } from 'vue';
 
 // Re-export for convenience
 export type { CommandRouteProps } from './use-command-router';
@@ -15,6 +15,7 @@ interface CommandConfigCommon {
 	icon: string | (() => VNode);
 	render?: () => VNode | VNode[];
 	description?: string;
+	endLabel?: string;
 	group?: string;
 	keywords?: string[];
 	priority?: number;
@@ -73,7 +74,9 @@ export interface CommandAvailableContext {
 	search: string;
 }
 
-export type CommandsAvailableCallback = (context: CommandAvailableContext) => Promise<CommandConfig[]> | CommandConfig[];
+export type CommandsAvailableCallback = (
+	context: CommandAvailableContext,
+) => Promise<CommandConfig[]> | CommandConfig[];
 export type GroupsAvailableCallback = (context: CommandAvailableContext) => Promise<GroupConfig[]> | GroupConfig[];
 
 function hasBefore(config: { before?: string }): config is { before: string } {
@@ -93,6 +96,7 @@ function matchesPositionTarget(target: string, id: string) {
 
 const groupCallbacks: Ref<GroupsAvailableCallback[]> = ref([]);
 const commandCallbacks: Ref<Raw<CommandsAvailableCallback>[]> = ref([]);
+const registryRefresh = ref(0);
 
 // --- Public API ---
 
@@ -109,15 +113,17 @@ export function registerCommands(...options: RegisterCommandsOptions[]) {
 	for (const opt of options) {
 		const { groups: newGroups = [], commands: newCommands = [] } = opt;
 
-		const commandsCb = markRaw(
-			typeof newCommands === 'function' ? newCommands : () => newCommands as CommandConfig[],
-		);
+		const commandsCb = markRaw(typeof newCommands === 'function' ? newCommands : () => newCommands as CommandConfig[]);
 
 		const groupsCb = markRaw(typeof newGroups === 'function' ? newGroups : () => newGroups as GroupConfig[]);
 
 		groupCallbacks.value.push(groupsCb);
 		commandCallbacks.value.push(commandsCb);
 	}
+}
+
+export function refreshRegisteredCommands() {
+	registryRefresh.value++;
 }
 
 export function useRegisteredCommands(context: MaybeRef<CommandAvailableContext>) {
@@ -127,14 +133,18 @@ export function useRegisteredCommands(context: MaybeRef<CommandAvailableContext>
 	let groupRequestId = 0;
 
 	watch(
-		[context, commandCallbacks],
+		[context, commandCallbacks, registryRefresh],
 		async () => {
 			const requestId = ++commandRequestId;
-			const commands = await collect<CommandConfig>(unref(context), unref(commandCallbacks), (command) =>
-				({
-					...command,
-					...(command.component ? { component: markRaw(command.component) } : {}),
-				}) as CommandConfig,
+
+			const commands = await collect<CommandConfig>(
+				unref(context),
+				unref(commandCallbacks),
+				(command) =>
+					({
+						...command,
+						...(command.component ? { component: markRaw(command.component) } : {}),
+					}) as CommandConfig,
 			);
 
 			if (requestId === commandRequestId) {
@@ -145,7 +155,7 @@ export function useRegisteredCommands(context: MaybeRef<CommandAvailableContext>
 	);
 
 	watch(
-		[context, groupCallbacks],
+		[context, groupCallbacks, registryRefresh],
 		async () => {
 			const requestId = ++groupRequestId;
 			const groups = await collect(unref(context), unref(groupCallbacks));

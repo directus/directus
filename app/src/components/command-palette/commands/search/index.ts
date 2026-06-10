@@ -1,8 +1,8 @@
+import { defineCommands } from '../../composables/use-command-registry';
+import SearchCollection from './search-collection.vue';
 import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePermissionsStore } from '@/stores/permissions';
-import { defineCommands } from '../../composables/use-command-registry';
-import SearchCollection from './search-collection.vue';
 
 export const searchCommands = defineCommands({
 	commands: ({ route }) => {

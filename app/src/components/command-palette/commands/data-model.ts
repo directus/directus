@@ -1,7 +1,7 @@
 import type { CommandActionContext } from '../composables/use-command-registry';
+import { defineCommands } from '../composables/use-command-registry';
 import { i18n } from '@/lang';
 import { useUserStore } from '@/stores/user';
-import { defineCommands } from '../composables/use-command-registry';
 
 export const dataModelCommands = defineCommands({
 	groups: [
