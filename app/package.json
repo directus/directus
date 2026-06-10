@@ -89,7 +89,6 @@
 		"@sindresorhus/slugify": "catalog:",
 		"@tinymce/tinymce-vue": "catalog:",
 		"@tresjs/core": "catalog:",
-		"@tresjs/leches": "catalog:",
 		"@turf/meta": "catalog:",
 		"@types/base-64": "catalog:",
 		"@types/chroma-js": "catalog:",
@@ -175,7 +174,6 @@
 		"zod": "catalog:"
 	},
 	"dependencies": {
-		"@tresjs/cientos": "catalog:",
-		"@tresjs/leches": "catalog:"
+		"@tresjs/cientos": "catalog:"
 	}
 }

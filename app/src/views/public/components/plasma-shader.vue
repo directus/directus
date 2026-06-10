@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { useLoop, useTresContext } from '@tresjs/core';
-import { useControls } from '@tresjs/leches';
 import { Color, DataTexture, PlaneGeometry, ShaderMaterial, Uniform, Vector2, Vector3 } from 'three';
-import { computed, inject, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue';
 import fragmentShader from '../shaders/fragment.glsl';
 import vertexShader from '../shaders/vertex.glsl';
 

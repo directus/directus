@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useTresContext } from '@tresjs/core';
-import { useControls } from '@tresjs/leches';
 import { Color } from 'three';
 import {
 	cos,
@@ -19,7 +18,7 @@ import {
 	vec3,
 } from 'three/tsl';
 import { MeshBasicNodeMaterial } from 'three/webgpu';
-import { inject, onBeforeUnmount, watch } from 'vue';
+import { onBeforeUnmount, watch } from 'vue';
 
 interface Props {
 	projectColor?: string | null;
@@ -45,9 +44,8 @@ const NOISE_SPEED = 0.05;
 // as the noise drifts, dots sweep along curves like fabric instead of pulsing in place.
 const INFLATE_PX = 200;
 
-// Second gradient stop: faint dots fade toward this color. Defaults to a darkened primary so the
-// noise-driven fade is visible out of the box while staying derived from the theme.
-const COLOR_B_LIGHTNESS = 0.35;
+// Second gradient stop: faint dots fade toward this fixed gray in both dark and light mode.
+const COLOR_B = '#BBBBBB';
 
 function resolveColor(input?: string | null): Color {
 	if (!input) return new Color(DEFAULT_PRIMARY);
@@ -59,27 +57,14 @@ function resolveColor(input?: string | null): Color {
 	}
 }
 
-function darkenColor(color: Color): Color {
-	const hsl = { h: 0, s: 0, l: 0 };
-	color.getHSL(hsl);
-	return new Color().setHSL(hsl.h, hsl.s, COLOR_B_LIGHTNESS);
-}
-
 const uColor = uniform(resolveColor(props.projectColor));
-const uColorB = uniform(darkenColor(resolveColor(props.projectColor)));
+const uColorB = uniform(new Color(COLOR_B));
 const uPixelRatio = uniform(sizes.pixelRatio.value);
-const uMinRadius = uniform(DOT_RADIUS_MIN_PX);
-const uMaxRadius = uniform(DOT_RADIUS_MAX_PX);
-const uNoiseScale = uniform(NOISE_SCALE);
-const uNoiseSpeed = uniform(NOISE_SPEED);
-const uInflate = uniform(INFLATE_PX);
 
 watch(
 	() => props.projectColor,
 	(value) => {
-		const base = resolveColor(value);
-		uColor.value.copy(base);
-		uColorB.value.copy(darkenColor(base));
+		uColor.value.copy(resolveColor(value));
 	},
 );
 
@@ -93,20 +78,20 @@ const cssCoord = screenCoordinate.div(uPixelRatio);
 // Arc warp: the original rotates each dot by noise·45° around a pivot (INFLATE_PX, INFLATE_PX) away.
 // Inverted here as a domain warp — for rotation θ around that pivot the displacement works out to
 // (f·(1 − cosθ + sinθ), f·(1 − cosθ − sinθ)); subtracting it from the coordinate recovers the source cell.
-const warpAngle = mx_noise_float(vec3(cssCoord.div(CELL_SIZE_PX).mul(uNoiseScale), time.mul(uNoiseSpeed))).mul(
+const warpAngle = mx_noise_float(vec3(cssCoord.div(CELL_SIZE_PX).mul(NOISE_SCALE), time.mul(NOISE_SPEED))).mul(
 	Math.PI * 0.25,
 );
 
-const warpX = float(1).sub(cos(warpAngle)).add(sin(warpAngle)).mul(uInflate);
-const warpY = float(1).sub(cos(warpAngle)).sub(sin(warpAngle)).mul(uInflate);
+const warpX = float(1).sub(cos(warpAngle)).add(sin(warpAngle)).mul(INFLATE_PX);
+const warpY = float(1).sub(cos(warpAngle)).sub(sin(warpAngle)).mul(INFLATE_PX);
 const warped = cssCoord.sub(vec2(warpX, warpY));
 
 // 3D noise sampled per cell (so dots stay round), drifting through the third dimension over time.
 // Dots shrink and fade with the noise value, floored so dark regions keep faint dots.
 const cell = floor(warped.div(CELL_SIZE_PX));
-const noise = mx_noise_float(vec3(cell.mul(uNoiseScale), time.mul(uNoiseSpeed)));
+const noise = mx_noise_float(vec3(cell.mul(NOISE_SCALE), time.mul(NOISE_SPEED)));
 const intensity = noise.max(0);
-const radius = mix(uMinRadius, uMaxRadius, intensity);
+const radius = mix(float(DOT_RADIUS_MIN_PX), float(DOT_RADIUS_MAX_PX), intensity);
 
 const cellUv = fract(warped.div(CELL_SIZE_PX));
 // Distance from cell center, back in pixel units for a crisp 1px anti-aliased edge.
@@ -125,113 +110,6 @@ material.opacityNode = dot;
 onBeforeUnmount(() => {
 	material.dispose();
 });
-
-const uuid = inject<string>('uuid');
-
-const { particlesColor, particlesColorB, particlesMinSize, particlesMaxSize } = useControls(
-	'particles',
-	{
-		color: {
-			value: new Color(uColor.value),
-			type: 'color',
-		},
-		colorB: {
-			value: new Color(uColorB.value),
-			type: 'color',
-		},
-		minSize: {
-			value: DOT_RADIUS_MIN_PX,
-			min: 0,
-			max: 10,
-			step: 0.1,
-		},
-		maxSize: {
-			value: DOT_RADIUS_MAX_PX,
-			min: 0,
-			max: 20,
-			step: 0.1,
-		},
-	},
-	{ uuid },
-);
-
-// Drive the existing uColor uniform instead of swapping colorNode (which forces a material recompile).
-// The control mutates its Color in place, so deep-watch; .set() accepts a Color, hex, or CSS string.
-watch(
-	() => particlesColor?.value,
-	(value) => {
-		if (value) uColor.value.set(value);
-	},
-	{ deep: true },
-);
-
-watch(
-	() => particlesColorB?.value,
-	(value) => {
-		if (value) uColorB.value.set(value);
-	},
-	{ deep: true },
-);
-
-watch(
-	() => particlesMinSize?.value,
-	(value) => {
-		if (value != null) uMinRadius.value = value;
-	},
-);
-
-watch(
-	() => particlesMaxSize?.value,
-	(value) => {
-		if (value != null) uMaxRadius.value = value;
-	},
-);
-
-const { motionSpeed, motionSweep, motionScale } = useControls(
-	'motion',
-	{
-		speed: {
-			value: NOISE_SPEED,
-			min: 0,
-			max: 1,
-			step: 0.01,
-		},
-		sweep: {
-			value: INFLATE_PX,
-			min: 0,
-			max: 400,
-			step: 10,
-		},
-		scale: {
-			value: NOISE_SCALE,
-			min: 0,
-			max: 0.2,
-			step: 0.001,
-		},
-	},
-	{ uuid },
-);
-
-watch(
-	() => motionSpeed?.value,
-	(value) => {
-		if (value != null) uNoiseSpeed.value = value;
-	},
-);
-
-watch(
-	() => motionSweep?.value,
-	(value) => {
-		if (value != null) uInflate.value = value;
-	},
-);
-
-watch(
-	() => motionScale?.value,
-	(value) => {
-		if (value != null) uNoiseScale.value = value;
-	},
-);
 </script>
 
 <template>
