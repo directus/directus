@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useTresContext } from '@tresjs/core';
+import { useLoop, useTresContext } from '@tresjs/core';
+import { usePreferredReducedMotion } from '@vueuse/core';
 import { Color } from 'three';
 import {
 	cos,
@@ -109,6 +110,18 @@ material.opacityNode = dot;
 
 onBeforeUnmount(() => {
 	material.dispose();
+});
+
+const { start, stop, onRender } = useLoop();
+const reducedMotion = usePreferredReducedMotion();
+
+// prefers-reduced-motion: stop the loop right after a frame renders so the static grid stays visible.
+onRender(() => {
+	if (reducedMotion.value === 'reduce') stop();
+});
+
+watch(reducedMotion, (value) => {
+	if (value !== 'reduce') start();
 });
 </script>
 
