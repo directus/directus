@@ -4,6 +4,7 @@ import { UserIntegrityCheckFlag } from '@directus/types';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, test, vi } from 'vitest';
+import { SchemaHelperMSSQL } from '../database/helpers/schema/dialects/mssql.js';
 import { getDatabaseClient } from '../database/index.js';
 import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { handleVersion } from '../utils/versioning/handle-version.js';
@@ -125,8 +126,9 @@ describe('Integration Tests', () => {
 				expect(validateUserCountIntegrity).toHaveBeenCalled();
 			});
 
-			it('should use includeTriggerModifications for MS SQL', async () => {
+			it('should use includeTriggerModifications for MS SQL tables that have triggers', async () => {
 				vi.mocked(getDatabaseClient).mockReturnValue('mssql');
+				const hasTriggersSpy = vi.spyOn(SchemaHelperMSSQL.prototype, 'hasTriggers').mockResolvedValue(true);
 
 				const mockReturning = vi.fn().mockResolvedValue([{ id: 1 }]);
 
@@ -146,6 +148,32 @@ describe('Integration Tests', () => {
 				expect(mockReturning).toHaveBeenCalledWith('id', { includeTriggerModifications: true });
 
 				transactionSpy.mockRestore();
+				hasTriggersSpy.mockRestore();
+			});
+
+			it('should not use includeTriggerModifications for MS SQL tables without triggers', async () => {
+				vi.mocked(getDatabaseClient).mockReturnValue('mssql');
+				const hasTriggersSpy = vi.spyOn(SchemaHelperMSSQL.prototype, 'hasTriggers').mockResolvedValue(false);
+
+				const mockReturning = vi.fn().mockResolvedValue([{ id: 1 }]);
+
+				const mockQuery = {
+					insert: vi.fn().mockReturnThis(),
+					into: vi.fn().mockReturnThis(),
+					returning: mockReturning,
+				};
+
+				const transactionSpy = vi.spyOn(db, 'transaction').mockImplementation(async (callback) => {
+					const trx = { ...db, ...mockQuery };
+					return await callback(trx as any);
+				});
+
+				await service.createOne({ name: 'Test' });
+
+				expect(mockReturning).toHaveBeenCalledWith('id', undefined);
+
+				transactionSpy.mockRestore();
+				hasTriggersSpy.mockRestore();
 			});
 
 			it('should not use includeTriggerModifications for non-MS SQL', async () => {

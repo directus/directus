@@ -253,8 +253,12 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			try {
 				let returningOptions = undefined;
 
-				// Support MSSQL tables that have triggers.
-				if (getDatabaseClient(trx) === 'mssql') {
+				// Support MSSQL tables that have triggers — but only when they actually have one. knex's
+				// trigger-compatible RETURNING path uses a session-scoped `#out` temp table that is dropped
+				// only at the end of the batch, so a failing insert leaks it and poisons the pooled
+				// connection ("Requests can only be made in the LoggedIn state, not the SentClientRequest
+				// state"). Trigger-less tables keep the plain OUTPUT path and avoid that hazard entirely.
+				if (getDatabaseClient(trx) === 'mssql' && (await getHelpers(trx).schema.hasTriggers(this.collection))) {
 					returningOptions = { includeTriggerModifications: true };
 				}
 

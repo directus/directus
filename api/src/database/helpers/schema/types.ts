@@ -44,6 +44,15 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return getDefaultIndexName(type, collection, fields);
 	}
 
+	/**
+	 * Whether the given collection has database triggers. Only meaningful for MS SQL, where the
+	 * `OUTPUT` clause used for RETURNING is incompatible with triggers and forces knex onto a slower,
+	 * leak-prone temp-table (`#out`) workaround. Defaults to false for every other dialect.
+	 */
+	async hasTriggers(_collection: string): Promise<boolean> {
+		return false;
+	}
+
 	async changeToType(
 		table: string,
 		column: string,
