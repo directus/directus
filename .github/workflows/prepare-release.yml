@@ -38,12 +38,11 @@ jobs:
           fi
 
           # Check for tag existence
-          # Temporarily disabled as it will throw for rc release
-          # if gh api repos/$REPO/git/refs/tags/$TAG \
-          #      --silent >/dev/null 2>&1; then
-          #   echo "❌ Tag '$TAG' already exists"
-          #   exit 1
-          # fi
+          if gh api repos/$REPO/git/ref/tags/$TAG \
+               --silent >/dev/null 2>&1; then
+            echo "❌ Tag '$TAG' already exists"
+            exit 1
+          fi
 
           echo "✅ Version '$VERSION' is valid and available"
 
