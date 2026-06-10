@@ -11,6 +11,7 @@ import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
+import pLimit from 'p-limit';
 import { resolveLoginRedirect } from '../auth/utils/resolve-login-redirect.js';
 import { clearSystemCache } from '../cache.js';
 import { getDatabase } from '../database/index.js';
@@ -256,6 +257,7 @@ router.post(
 );
 
 const MAX_SEARCH_COLLECTIONS = 20;
+const MAX_SEARCH_CONCURRENCY = 5;
 const DEFAULT_SEARCH_LIMIT = 5;
 const MAX_SEARCH_LIMIT = 25;
 const SLOW_GLOBAL_SEARCH_THRESHOLD_MS = 1_000;
@@ -481,84 +483,91 @@ const globalSearchHandler = asyncHandler(async (req, res) => {
 	const results: Record<string, any[]> = {};
 	const collectionTimings: GlobalSearchCollectionTiming[] = [];
 
+	const limit = pLimit(MAX_SEARCH_CONCURRENCY);
+
 	await Promise.allSettled(
-		collections.map(async (collectionConfig) => {
-			try {
-				if (!collectionConfig.fields?.length) return;
-				if (!req.schema.collections[collectionConfig.collection]) return;
+		collections.map((collectionConfig) =>
+			limit(async () => {
+				try {
+					if (!collectionConfig.fields?.length) return;
+					if (!req.schema.collections[collectionConfig.collection]) return;
 
-				const searchFilters: Record<string, any>[] = [];
+					const searchFilters: Record<string, any>[] = [];
 
-				for (const field of collectionConfig.fields) {
-					const resolvedField = resolveFieldPath(req.schema, collectionConfig.collection, field);
-					if (!resolvedField) continue;
+					for (const field of collectionConfig.fields) {
+						const resolvedField = resolveFieldPath(req.schema, collectionConfig.collection, field);
+						if (!resolvedField) continue;
 
-					if ((await canReadFieldPath(collectionConfig.collection, field)) === false) continue;
+						if ((await canReadFieldPath(collectionConfig.collection, field)) === false) continue;
 
-					const searchFilterForField = getSearchFilterForField(field, resolvedField.field.type, searchQuery);
-					if (searchFilterForField) searchFilters.push(searchFilterForField);
-				}
-
-				if (searchFilters.length === 0) return;
-
-				const service = new ItemsService(collectionConfig.collection, {
-					accountability: req.accountability,
-					schema: req.schema,
-				});
-
-				const searchFilter = {
-					_or: searchFilters,
-				};
-
-				const filter = collectionConfig.filter ? mergeFilters(collectionConfig.filter, searchFilter) : searchFilter;
-
-				const displayTemplate =
-					collectionConfig.display_template ??
-					collectionMetaByName.get(collectionConfig.collection)?.display_template ??
-					null;
-
-				const templateFields = displayTemplate ? getFieldsFromTemplate(displayTemplate) : [];
-
-				const primaryKeyField = req.schema.collections[collectionConfig.collection]?.primary;
-
-				const fieldsToFetch = [
-					...(primaryKeyField ? [primaryKeyField] : []),
-					...templateFields,
-					...(collectionConfig.description_field ? [collectionConfig.description_field] : []),
-				];
-
-				const readableFieldsToFetch: string[] = [];
-
-				for (const field of fieldsToFetch) {
-					if (await canReadFieldPath(collectionConfig.collection, field)) {
-						readableFieldsToFetch.push(field);
+						const searchFilterForField = getSearchFilterForField(field, resolvedField.field.type, searchQuery);
+						if (searchFilterForField) searchFilters.push(searchFilterForField);
 					}
+
+					if (searchFilters.length === 0) return;
+
+					const service = new ItemsService(collectionConfig.collection, {
+						accountability: req.accountability,
+						schema: req.schema,
+					});
+
+					const searchFilter = {
+						_or: searchFilters,
+					};
+
+					const filter = collectionConfig.filter ? mergeFilters(collectionConfig.filter, searchFilter) : searchFilter;
+
+					const displayTemplate =
+						collectionConfig.display_template ??
+						collectionMetaByName.get(collectionConfig.collection)?.display_template ??
+						null;
+
+					const templateFields = displayTemplate ? getFieldsFromTemplate(displayTemplate) : [];
+
+					const primaryKeyField = req.schema.collections[collectionConfig.collection]?.primary;
+
+					const fieldsToFetch = [
+						...(primaryKeyField ? [primaryKeyField] : []),
+						...templateFields,
+						...(collectionConfig.description_field ? [collectionConfig.description_field] : []),
+					];
+
+					const readableFieldsToFetch: string[] = [];
+
+					for (const field of fieldsToFetch) {
+						if (await canReadFieldPath(collectionConfig.collection, field)) {
+							readableFieldsToFetch.push(field);
+						}
+					}
+
+					if (primaryKeyField && !readableFieldsToFetch.includes(primaryKeyField)) return;
+
+					const sortField = getSortFieldPath(collectionConfig.sort);
+					const canSort = sortField ? await canReadFieldPath(collectionConfig.collection, sortField) : false;
+					const sort = canSort && collectionConfig.sort ? [collectionConfig.sort] : null;
+					const collectionStartedAt = performance.now();
+
+					const items = await service.readByQuery({
+						filter,
+						fields: [...new Set(readableFieldsToFetch)],
+						limit: normalizeSearchLimit(collectionConfig.limit),
+						sort,
+					});
+
+					collectionTimings.push({
+						collection: collectionConfig.collection,
+						durationMs: performance.now() - collectionStartedAt,
+					});
+
+					results[collectionConfig.collection] = items;
+				} catch (error) {
+					// A collection the user can't read throws here and is expected — skip it. Anything
+					// else (bad config filter, query error) is worth surfacing for debugging since the
+					// collection silently drops out of the results otherwise.
+					useLogger().debug(error, `Global search skipped collection "${collectionConfig.collection}"`);
 				}
-
-				if (primaryKeyField && !readableFieldsToFetch.includes(primaryKeyField)) return;
-
-				const sortField = getSortFieldPath(collectionConfig.sort);
-				const canSort = sortField ? await canReadFieldPath(collectionConfig.collection, sortField) : false;
-				const sort = canSort && collectionConfig.sort ? [collectionConfig.sort] : null;
-				const collectionStartedAt = performance.now();
-
-				const items = await service.readByQuery({
-					filter,
-					fields: [...new Set(readableFieldsToFetch)],
-					limit: normalizeSearchLimit(collectionConfig.limit),
-					sort,
-				});
-
-				collectionTimings.push({
-					collection: collectionConfig.collection,
-					durationMs: performance.now() - collectionStartedAt,
-				});
-
-				results[collectionConfig.collection] = items;
-			} catch {
-				// Skip collections the user can't access
-			}
-		}),
+			}),
+		),
 	);
 
 	logSlowGlobalSearchRequest(
