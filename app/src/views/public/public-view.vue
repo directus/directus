@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
-import ShaderBackground from './components/shader-background.vue';
+import { computed, defineAsyncComponent } from 'vue';
 import VImage from '@/components/v-image.vue';
 import VLicenseBadge from '@/components/v-license-badge.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useServerStore } from '@/stores/server';
 import { getAssetUrl } from '@/utils/get-asset-url';
+
+// Lazy-loaded so three.js/TresJS split into their own chunk instead of the eager router bundle.
+const ShaderBackground = defineAsyncComponent(() => import('./components/shader-background.vue'));
 
 interface Props {
 	wide?: boolean;
