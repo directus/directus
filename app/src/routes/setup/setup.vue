@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { DIRECTUS_DOMAIN } from '@directus/constants';
+import { DIRECTUS_SUPPORT_URL } from '@directus/constants';
 import { SetupForm as Form } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { storeToRefs } from 'pinia';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { buildSetupPayload, defaultValues, SetupValidator, useSetupFields, validate, ValidationError } from './form';
@@ -13,8 +13,8 @@ import api from '@/api';
 import { login } from '@/auth';
 import VButton from '@/components/v-button.vue';
 import VNotice from '@/components/v-notice.vue';
-import { translateAPIError } from '@/lang';
 import { useServerStore } from '@/stores/server';
+import { getDirectusUrlWithUtm } from '@/utils/directus-url';
 import PublicView from '@/views/public';
 
 const { t } = useI18n();
@@ -34,6 +34,15 @@ const errors = ref<ValidationError[]>([]);
 const error = ref<any>(null);
 const isSaving = ref(false);
 const page = ref<'setup' | 'license'>('setup');
+
+watch(
+	form,
+	() => {
+		// Clear error on any form change
+		error.value = null;
+	},
+	{ deep: true },
+);
 
 const showAdminStep = computed(() => !info.value.setupCompleted);
 
@@ -91,8 +100,14 @@ async function launch() {
 	}
 }
 
-const errorMessage = computed(() => {
-	return error.value?.response?.data?.errors?.[0]?.message || error.value?.message || t('unexpected_error');
+const errorFormatted = computed(() => {
+	let message = error.value?.response?.data?.errors?.[0]?.message || error.value?.message || t('unexpected_error');
+
+	if (message.length > 200) {
+		message = message.substring(0, 197) + '...';
+	}
+
+	return message;
 });
 
 const setupComplete = computed(() => SetupValidator.safeParse(form.value).success);
@@ -113,7 +128,7 @@ const setupComplete = computed(() => SetupValidator.safeParse(form.value).succes
 			<I18nT keypath="setup_license_key_notice" tag="p">
 				<template #oig>
 					<a
-						:href="`https://${DIRECTUS_DOMAIN}/support?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=onboarding_contact_our_team_link`"
+						:href="getDirectusUrlWithUtm(DIRECTUS_SUPPORT_URL, info.version, 'onboarding_contact_our_team_link')"
 						target="_blank"
 					>
 						{{ $t('open_innovation_grant') }}
@@ -122,6 +137,9 @@ const setupComplete = computed(() => SetupValidator.safeParse(form.value).succes
 			</I18nT>
 
 			<LicenseForm ref="licenseFormRef" v-model="form" :errors="errors"></LicenseForm>
+			<VNotice v-if="error" type="danger">
+				{{ errorFormatted }}
+			</VNotice>
 			<div class="actions">
 				<VButton v-if="showAdminStep" secondary @click="page = 'setup'">
 					{{ $t('back') }}
@@ -131,15 +149,6 @@ const setupComplete = computed(() => SetupValidator.safeParse(form.value).succes
 				</VButton>
 			</div>
 		</template>
-
-		<VNotice v-if="error" type="danger">
-			<p class="error-code">
-				{{ translateAPIError(error) }}
-			</p>
-			<p>
-				{{ errorMessage }}
-			</p>
-		</VNotice>
 	</PublicView>
 </template>
 
@@ -162,11 +171,6 @@ p {
 
 .v-notice {
 	margin-block-start: 1.375rem;
-}
-
-.error-code {
-	font-weight: 700;
-	margin-block-end: 0.25rem;
 }
 
 .actions {

@@ -1650,8 +1650,9 @@ license:
       'You have {daysLeft} in your grace period — until {date}. After that, Core tier resource limits will apply.
       {retrieveLicenseKey} or {upgrade} to increase your limits.'
     grace_days_left: '{days} day left | {days} days left'
-    retrieve_license_key: Retrieve license key
+    retrieve_license_key: Retrieve license key
     upgrade: Upgrade
+    oig_eligible: 'You might be eligible for our {oig}. Apply and get full access to Directus for free.'
   locked_status_notice: 'Your Directus instance is locked. Manage license or {contactSupport} to resolve.'
   pinned_status_notice:
     grace_period_title: 'Grace Period ({days}d left)'
@@ -1703,6 +1704,10 @@ directus_collection:
   directus_translations: Custom translations
   directus_versions: Content Versions for items
   directus_extensions: Configuration of extensions
+  directus_oauth_clients: Registered OAuth client applications
+  directus_oauth_codes: Authorization codes for OAuth flows
+  directus_oauth_consents: User consent grants for OAuth clients
+  directus_oauth_tokens: Access and refresh tokens for OAuth clients
 fields:
   directus_activity:
     item: Item Primary Key

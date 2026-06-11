@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DIRECTUS_DOMAIN } from '@directus/constants';
+import { DIRECTUS_HOME_URL, DIRECTUS_OIG_URL } from '@directus/constants';
 import { computed } from 'vue';
 import VIcon from './v-icon/v-icon.vue';
 import { useServerStore } from '@/stores/server';
@@ -11,27 +11,31 @@ const serverStore = useServerStore();
 const displayPoweredBy = computed(() => serverStore.info?.license?.entitlements?.display_powered_by);
 
 const link = computed(() => {
-	if (displayPoweredBy.value === 'DIRECTUS') return `https://${DIRECTUS_DOMAIN}/`;
-
-	if (displayPoweredBy.value === 'OIG') return `https://${DIRECTUS_DOMAIN}/oig`;
-
+	if (displayPoweredBy.value === 'DIRECTUS') return DIRECTUS_HOME_URL;
+	if (displayPoweredBy.value === 'OIG') return DIRECTUS_OIG_URL;
 	return '';
 });
 </script>
 
 <template>
-	<template v-if="displayPoweredBy === 'DIRECTUS' || displayPoweredBy === 'OIG'">
+	<div v-if="displayPoweredBy === 'DIRECTUS' || displayPoweredBy === 'OIG'" class="license-badge">
 		<hr v-if="isPrivate" class="badge-divider" />
-		<a :href="link" class="license-badge" :class="{ private: isPrivate }" target="_blank" rel="noopener noreferrer">
+		<a :href="link" :class="{ private: isPrivate }" target="_blank" rel="noopener noreferrer">
 			<div class="link-inner">
 				<VIcon name="directus" class="directus-logo" />
 				{{ displayPoweredBy === 'DIRECTUS' ? $t('licensing.badge.directus') : $t('licensing.badge.oig') }}
 			</div>
 		</a>
-	</template>
+	</div>
 </template>
 
 <style lang="scss" scoped>
+.license-badge {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6565rem;
+}
+
 .badge-divider {
 	inline-size: calc(100% - 0.875rem);
 	align-self: center;
