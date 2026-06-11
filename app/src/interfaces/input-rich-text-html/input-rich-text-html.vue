@@ -1,5 +1,321 @@
 <script setup lang="ts">
 import type { SettingsStorageAssetPreset } from '@directus/types';
+import StarterKit from '@tiptap/starter-kit';
+import { Editor, EditorContent, useEditor } from '@tiptap/vue-3';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import useImage from './composables/use-image';
+import { DirectusImage } from './extensions/image';
+import VButton from '@/components/v-button.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VUpload from '@/components/v-upload.vue';
+import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+
+const props = defineProps<{
+	value: string | null;
+	disabled?: boolean;
+	imageToken?: string;
+	folder?: string;
+}>();
+
+const emit = defineEmits<{ input: [value: string | null] }>();
+
+const { t } = useI18n();
+
+const editor = useEditor({
+	extensions: [StarterKit, DirectusImage],
+	content: props.value ?? '',
+	editable: !props.disabled,
+	onUpdate: ({ editor }) => {
+		emit('input', editor.isEmpty ? null : editor.getHTML());
+	},
+});
+
+// external value changes (revert, version switch) — guard against echo loops
+watch(
+	() => props.value,
+	(value) => {
+		if (!editor.value) return;
+		if (editor.value.getHTML() === value) return;
+		editor.value.commands.setContent(value ?? '', { emitUpdate: false });
+	},
+);
+
+const { imageToken } = toRefs(props);
+const settingsStore = useSettingsStore();
+const { info } = useServerStore();
+const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
+
+const storageAssetTransform = ref('all');
+const storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
+
+if (settingsStore.settings?.storage_asset_transform) {
+	storageAssetTransform.value = settingsStore.settings.storage_asset_transform;
+	storageAssetPresets.value = settingsStore.settings.storage_asset_presets ?? [];
+}
+
+const { imageDrawerOpen, imageSelection, openImageDrawer, closeImageDrawer, onImageSelect, saveImage } = useImage(
+	editor,
+	imageToken,
+	{ storageAssetTransform, storageAssetPresets },
+);
+
+type ToolbarButton = {
+	key: string;
+	icon: string;
+	label: string;
+	command: (editor: Editor) => void;
+	isActive?: (editor: Editor) => boolean;
+};
+
+const buttons: ToolbarButton[] = [
+	{ key: 'undo', icon: 'undo', label: t('wysiwyg_options.undo'), command: (e) => e.chain().focus().undo().run() },
+	{ key: 'redo', icon: 'redo', label: t('wysiwyg_options.redo'), command: (e) => e.chain().focus().redo().run() },
+	...([1, 2, 3] as const).map((level) => ({
+		key: `h${level}`,
+		icon: `format_h${level}`,
+		label: t(`wysiwyg_options.h${level}`),
+		command: (e: Editor) => e.chain().focus().toggleHeading({ level }).run(),
+		isActive: (e: Editor) => e.isActive('heading', { level }),
+	})),
+	{
+		key: 'bold',
+		icon: 'format_bold',
+		label: t('wysiwyg_options.bold'),
+		command: (e) => e.chain().focus().toggleBold().run(),
+		isActive: (e) => e.isActive('bold'),
+	},
+	{
+		key: 'italic',
+		icon: 'format_italic',
+		label: t('wysiwyg_options.italic'),
+		command: (e) => e.chain().focus().toggleItalic().run(),
+		isActive: (e) => e.isActive('italic'),
+	},
+	{
+		key: 'underline',
+		icon: 'format_underlined',
+		label: t('wysiwyg_options.underline'),
+		command: (e) => e.chain().focus().toggleUnderline().run(),
+		isActive: (e) => e.isActive('underline'),
+	},
+	{
+		key: 'strikethrough',
+		icon: 'strikethrough_s',
+		label: t('wysiwyg_options.strikethrough'),
+		command: (e) => e.chain().focus().toggleStrike().run(),
+		isActive: (e) => e.isActive('strike'),
+	},
+	{
+		key: 'codeblock',
+		icon: 'code',
+		label: t('wysiwyg_options.codeblock'),
+		command: (e) => e.chain().focus().toggleCodeBlock().run(),
+		isActive: (e) => e.isActive('codeBlock'),
+	},
+	{
+		key: 'bullist',
+		icon: 'format_list_bulleted',
+		label: t('wysiwyg_options.bullist'),
+		command: (e) => e.chain().focus().toggleBulletList().run(),
+		isActive: (e) => e.isActive('bulletList'),
+	},
+	{
+		key: 'numlist',
+		icon: 'format_list_numbered',
+		label: t('wysiwyg_options.numlist'),
+		command: (e) => e.chain().focus().toggleOrderedList().run(),
+		isActive: (e) => e.isActive('orderedList'),
+	},
+	{
+		key: 'blockquote',
+		icon: 'format_quote',
+		label: t('wysiwyg_options.blockquote'),
+		command: (e) => e.chain().focus().toggleBlockquote().run(),
+		isActive: (e) => e.isActive('blockquote'),
+	},
+	{
+		key: 'hr',
+		icon: 'horizontal_rule',
+		label: t('wysiwyg_options.hr'),
+		command: (e) => e.chain().focus().setHorizontalRule().run(),
+	},
+	{
+		key: 'removeformat',
+		icon: 'format_clear',
+		label: t('wysiwyg_options.removeformat'),
+		command: (e) => e.chain().focus().unsetAllMarks().clearNodes().run(),
+	},
+	{
+		key: 'image',
+		icon: 'image',
+		label: t('wysiwyg_options.image'),
+		command: () => openImageDrawer(),
+		isActive: (e) => e.isActive('image'),
+	},
+];
+</script>
+
+<template>
+	<div v-prevent-focusout="imageDrawerOpen" class="wysiwyg" :class="{ disabled }">
+		<div class="toolbar">
+			<VButton
+				v-for="button in buttons"
+				:key="button.key"
+				v-tooltip="button.label"
+				:class="{ active: editor && button.isActive?.(editor) }"
+				:disabled="disabled"
+				small
+				icon
+				@click="editor && button.command(editor)"
+			>
+				<VIcon :name="button.icon" />
+			</VButton>
+		</div>
+		<EditorContent :editor="editor" />
+
+		<VDrawer
+			v-model="imageDrawerOpen"
+			:title="$t('wysiwyg_options.image')"
+			icon="image"
+			@cancel="closeImageDrawer"
+			@apply="saveImage"
+		>
+			<div class="content">
+				<template v-if="imageSelection">
+					<img class="image-preview" :src="imageSelection.previewUrl" />
+					<div class="grid">
+						<div class="field half">
+							<div class="type-label">{{ $t('image_url') }}</div>
+							<VInput v-model="imageSelection.imageUrl" />
+						</div>
+						<div class="field half-right">
+							<div class="type-label">{{ $t('alt_text') }}</div>
+							<VInput v-model="imageSelection.alt" :nullable="false" />
+						</div>
+						<template v-if="storageAssetTransform === 'all'">
+							<div class="field half">
+								<div class="type-label">{{ $t('width') }}</div>
+								<VInput v-model="imageSelection.width" :disabled="!!imageSelection.transformationKey" />
+							</div>
+							<div class="field half-right">
+								<div class="type-label">{{ $t('height') }}</div>
+								<VInput v-model="imageSelection.height" :disabled="!!imageSelection.transformationKey" />
+							</div>
+						</template>
+						<div class="field half">
+							<div class="type-label">{{ $t('wysiwyg_options.lazy_loading') }}</div>
+							<VCheckbox v-model="imageSelection.lazy" block :label="$t('wysiwyg_options.lazy_loading_label')" />
+						</div>
+						<div v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0" class="field half">
+							<div class="type-label">{{ $t('transformation_preset_key') }}</div>
+							<VSelect
+								v-model="imageSelection.transformationKey"
+								:items="storageAssetPresets.map((preset) => ({ text: preset.key, value: preset.key }))"
+								show-deselect
+							/>
+						</div>
+					</div>
+				</template>
+				<VUpload
+					v-else
+					:multiple="false"
+					from-library
+					from-url
+					:folder="folder"
+					:accept="allowedMimeTypes"
+					@input="onImageSelect"
+				/>
+			</div>
+
+			<template #actions:primary>
+				<PrivateViewHeaderBarActionButton :label="$t('save_image')" icon="check" @click="saveImage" />
+			</template>
+		</VDrawer>
+	</div>
+</template>
+
+<style lang="scss" scoped>
+@use '@/styles/mixins';
+
+.grid {
+	@include mixins.form-grid;
+}
+
+.content {
+	padding: var(--content-padding);
+	padding-block-end: var(--content-padding);
+}
+
+.image-preview {
+	inline-size: 100%;
+	block-size: var(--input-height-md);
+	margin-block-end: 1.375rem;
+	object-fit: cover;
+	border-radius: var(--theme--border-radius);
+}
+
+.wysiwyg {
+	--v-button-background-color: transparent;
+	--v-button-color: var(--theme--form--field--input--foreground);
+	--v-button-background-color-hover: var(--theme--form--field--input--border-color);
+	--v-button-color-hover: var(--theme--form--field--input--foreground);
+
+	background-color: var(--theme--form--field--input--background);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
+	transition: border-color var(--fast) var(--transition);
+
+	&:not(.disabled):hover {
+		border-color: var(--theme--form--field--input--border-color-hover);
+	}
+
+	&:not(.disabled):focus-within {
+		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+		outline-offset: var(--focus-ring-offset-invert);
+	}
+}
+
+.toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.125rem;
+	padding: 0.25rem;
+	background-color: var(--theme--form--field--input--background-subdued);
+	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+
+	.v-button.active {
+		--v-button-background-color: var(--theme--form--field--input--border-color);
+	}
+}
+
+.wysiwyg :deep(.ProseMirror) {
+	min-block-size: var(--input-height-tall);
+	padding: 1rem;
+	outline: none;
+	font-family: var(--theme--fonts--sans--font-family);
+
+	img {
+		max-inline-size: 100%;
+		block-size: auto;
+	}
+
+	img.ProseMirror-selectednode {
+		outline: 2px solid var(--theme--primary);
+	}
+}
+</style>
+
+<!-- <script setup lang="ts">
+import type { SettingsStorageAssetPreset } from '@directus/types';
 import Editor from '@tinymce/tinymce-vue';
 import { cloneDeep, isEqual } from 'lodash';
 import tinymce from 'tinymce/tinymce';
@@ -756,3 +1072,4 @@ function useEditorMounted() {
 	padding-block-end: var(--content-padding);
 }
 </style>
+ -->
