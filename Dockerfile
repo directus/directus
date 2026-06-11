@@ -71,7 +71,8 @@ ENV \
 	DB_FILENAME="/directus/database/database.sqlite" \
 	NODE_ENV="production" \
 	NPM_CONFIG_UPDATE_NOTIFIER="false" \
-	PM2_HOME="/directus/.pm2"
+	PM2_HOME="/directus/.pm2" \
+	PIDUSAGE_SILENT="true"
 
 COPY --from=builder --chown=node:node /usr/local/lib/node_modules/pm2 /directus/pm2
 COPY --from=builder --chown=node:node /directus/ecosystem.config.cjs .
