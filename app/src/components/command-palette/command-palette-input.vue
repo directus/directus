@@ -39,23 +39,23 @@ const search = defineModel<string>({ default: '' });
 	display: flex;
 	position: relative;
 	align-items: center;
-	padding: 8px 12px;
-	block-size: 54px;
-	border-block-end: 1px solid var(--theme--primary);
+	padding: 0.5rem 0.75rem;
+	block-size: 3.375rem;
+	border-block-end: 0.0625rem solid var(--theme--primary);
 
 	.back,
 	.back-placeholder {
-		margin-inline-end: 10px;
+		margin-inline-end: 0.625rem;
 	}
 
 	.back {
-		--v-icon-size: 18px;
+		--v-icon-size: 1.125rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 3px;
+		padding: 0.1875rem;
 		background: var(--theme--background-normal);
-		border-radius: 4px;
+		border-radius: 0.25rem;
 		cursor: pointer;
 	}
 
@@ -65,17 +65,17 @@ const search = defineModel<string>({ default: '' });
 		border: none;
 		color: var(--theme--foreground);
 		outline: none;
-		padding: 20px 20px 20px 0;
+		padding: 1.25rem 1.25rem 1.25rem 0;
 		margin: 0;
 		inline-size: 100%;
 		block-size: 100%;
-		line-height: 48px;
-		font-size: 18px;
+		line-height: 3rem;
+		font-size: 1.125rem;
 	}
 
 	.v-progress-circular {
 		position: absolute;
-		inset-inline-end: 12px;
+		inset-inline-end: 0.75rem;
 	}
 }
 </style>

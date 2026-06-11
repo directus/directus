@@ -69,19 +69,19 @@ function onChordKeydown(event: KeyboardEvent) {
 }
 
 .command-list-viewport {
-	padding: 4px;
+	padding: 0.25rem;
 }
 
 .command-footer {
-	--v-icon-size: 18px;
+	--v-icon-size: 1.125rem;
 	--v-icon-color: var(--theme--foreground-subdued);
 
 	display: flex;
 	justify-content: end;
-	gap: 12px;
-	padding: 8px 12px;
+	gap: 0.75rem;
+	padding: 0.5rem 0.75rem;
 	color: var(--theme--foreground-subdued);
-	border-block-start: solid 1px var(--theme--border-color);
+	border-block-start: solid 0.0625rem var(--theme--border-color);
 
 	:deep([data-icon='sync_alt']) {
 		transform: rotate(90deg);
@@ -90,7 +90,7 @@ function onChordKeydown(event: KeyboardEvent) {
 	& > span {
 		display: flex;
 		align-items: center;
-		gap: 6px;
+		gap: 0.375rem;
 	}
 }
 </style>

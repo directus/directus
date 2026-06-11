@@ -34,12 +34,12 @@ const RenderedCommand = computed(() => command.value.render);
 .title-wrapper {
 	display: flex;
 	justify-content: space-between;
-	gap: 12px;
+	gap: 0.75rem;
 	overflow-x: hidden;
 	text-overflow: ellipsis;
 
 	.group {
-		font-size: 12px;
+		font-size: 0.75rem;
 		color: var(--theme--foreground-subdued);
 	}
 }

@@ -154,9 +154,9 @@ function clear() {
 .command-palette {
 	position: relative;
 	margin: 10vh auto auto;
-	max-inline-size: 560px;
+	max-inline-size: 35rem;
 	background-color: var(--theme--background);
-	border-radius: 8px;
+	border-radius: 0.5rem;
 	box-shadow: var(--theme--shadow);
 	padding: var(--theme--spacing);
 }

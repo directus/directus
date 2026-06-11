@@ -26,7 +26,7 @@ defineProps<{
 .command-group + .command-group::before {
 	display: block;
 	margin: 0 0.75rem 0.375rem 0.5rem;
-	border-block-start: 1px solid var(--theme--border-color-subdued);
+	border-block-start: 0.0625rem solid var(--theme--border-color-subdued);
 	content: '';
 }
 

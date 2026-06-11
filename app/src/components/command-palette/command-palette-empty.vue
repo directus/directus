@@ -28,14 +28,14 @@ const { t } = useI18n();
 
 	display: flex;
 	align-items: center;
-	padding: 6px 12px 6px 8px;
-	border-radius: 6px;
-	min-block-size: 40px;
+	padding: 0.375rem 0.75rem 0.375rem 0.5rem;
+	border-radius: 0.375rem;
+	min-block-size: 2.5rem;
 
 	.icon {
-		margin-inline-end: 12px;
-		inline-size: 24px;
-		block-size: 24px;
+		margin-inline-end: 0.75rem;
+		inline-size: 1.5rem;
+		block-size: 1.5rem;
 	}
 
 	.content {
