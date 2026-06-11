@@ -2650,6 +2650,10 @@ interfaces:
       repeater
     interface_group: Interface Options
     display_group: Display Options
+    edit_mode: Edit Mode
+    edit_mode_drawer: Drawer
+    edit_mode_inline: Inline
+    confirm_remove: Confirm Item Removal
 
   slider:
     slider: Slider

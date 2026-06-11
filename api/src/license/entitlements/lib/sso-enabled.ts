@@ -1,6 +1,7 @@
 import { USER_INACTIVE_LICENSE_STATUS } from '@directus/constants';
 import type { ResolveInput } from '@directus/license';
 import type { Accountability } from '@directus/types';
+import { isObject } from '@directus/utils';
 import type { Knex } from 'knex';
 import { DEFAULT_AUTH_PROVIDER } from '../../../constants.js';
 import getDatabase from '../../../database/index.js';
@@ -48,7 +49,7 @@ export async function resolveSSOUsers(
 		{ status: USER_INACTIVE_LICENSE_STATUS },
 	);
 
-	if (typeof resolution === 'object' && Object.keys(resolution.admin).length) {
+	if (isObject(resolution) && Object.keys(resolution.admin ?? {}).length) {
 		const payload: { email?: string | undefined; password?: string; provider: string } = {
 			provider: DEFAULT_AUTH_PROVIDER,
 		};
