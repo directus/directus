@@ -73,8 +73,8 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 	}
 
 	appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
-	cookies.remove('license-banner-dismissed');
-	cookies.remove('license-login-modal-dismissed');
+	cookies.remove('license-banner-dismissed', { path: '/' });
+	cookies.remove('license-login-modal-dismissed', { path: '/' });
 	appStore.authenticated = true;
 
 	// Reload server store to get authenticated data
