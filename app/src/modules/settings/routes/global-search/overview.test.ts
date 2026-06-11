@@ -136,11 +136,13 @@ describe('settings global search overview', () => {
 		const nestedFields = collectionsField.meta.options.fields;
 
 		expect(fields.map((field) => field.field)).toEqual(['triggerRate', 'collections']);
+
 		expect(fields.find((field) => field.field === 'triggerRate').meta.options).toMatchObject({
 			min: 50,
 			max: 2000,
 			placeholder: '150',
 		});
+
 		expect(nestedFields.find((field: any) => field.field === 'collection').meta.required).toBe(true);
 		expect(nestedFields.find((field: any) => field.field === 'fields').meta.required).toBe(true);
 

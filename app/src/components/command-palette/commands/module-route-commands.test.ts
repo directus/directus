@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import type { RouteLocationNormalizedLoaded } from 'vue-router';
+import type { CommandConfig, GroupConfig } from '../composables/use-command-registry';
 import { deploymentsCommands } from './deployments';
 import { filesCommands } from './files';
 import { insightsCommands } from './insights';
 import { usersCommands } from './users';
-import type { CommandConfig, GroupConfig } from '../composables/use-command-registry';
 
 const mocks = vi.hoisted(() => ({
 	hasPermission: vi.fn(),
@@ -238,6 +238,7 @@ describe('module route commands', () => {
 				projects: [{ id: 'site', name: 'Site' }],
 			},
 		];
+
 		mocks.deploymentProvidersLoaded = true;
 
 		const commands = await getCommands(deploymentsCommands);

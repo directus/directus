@@ -66,6 +66,7 @@ describe('useCommandRegistry', () => {
 		const { refreshRegisteredCommands, registerCommands, useRegisteredCommands } = await import(
 			'./use-command-registry'
 		);
+
 		const { flushPromises } = await import('@vue/test-utils');
 		const { ref } = await import('vue');
 

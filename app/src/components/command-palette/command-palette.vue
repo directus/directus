@@ -140,19 +140,13 @@ function clear() {
 <style lang="scss" scoped>
 .command-palette-overlay {
 	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
+	inset: 0;
 	z-index: 550;
 }
 
 .overlay-backdrop {
 	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
+	inset: 0;
 	background-color: var(--theme--foreground-subdued);
 	opacity: 0.2;
 }
@@ -160,7 +154,7 @@ function clear() {
 .command-palette {
 	position: relative;
 	margin: 10vh auto auto;
-	max-width: 560px;
+	max-inline-size: 560px;
 	background-color: var(--theme--background);
 	border-radius: 8px;
 	box-shadow: var(--theme--shadow);

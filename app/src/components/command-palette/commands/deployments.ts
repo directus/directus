@@ -128,6 +128,7 @@ function isDeploymentsEnabled() {
 	if (!modules.value.some((module) => module.id === 'deployments')) return false;
 
 	const moduleBar = settingsStore.settings?.module_bar ?? MODULE_BAR_DEFAULT;
+
 	const deploymentsModule = moduleBar.find(
 		(modulePart) => modulePart.type === 'module' && modulePart.id === 'deployments',
 	);

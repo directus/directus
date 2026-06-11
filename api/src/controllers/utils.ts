@@ -1,11 +1,5 @@
 import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
-import type {
-	Accountability,
-	FieldOverview,
-	GlobalSearchConfig,
-	SchemaOverview,
-	Type,
-} from '@directus/types';
+import type { Accountability, FieldOverview, GlobalSearchConfig, SchemaOverview, Type } from '@directus/types';
 import { getFieldsFromTemplate, getRelationInfo, mergeFilters, toBoolean } from '@directus/utils';
 import argon2 from 'argon2';
 import Busboy from 'busboy';

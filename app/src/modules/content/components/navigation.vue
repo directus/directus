@@ -132,5 +132,4 @@ const hasHiddenCollections = computed(
 .hidden-collection {
 	--v-list-item-color: var(--theme--foreground-subdued);
 }
-
 </style>

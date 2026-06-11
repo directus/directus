@@ -1,10 +1,10 @@
 import { useApi } from '@directus/composables';
 import { computed, onBeforeUnmount, type Ref, ref, watch } from 'vue';
+import { getGlobalSearchCollections, getGlobalSearchTriggerRate } from '../utils/global-search-config';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useSettingsStore } from '@/stores/settings';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
-import { getGlobalSearchCollections, getGlobalSearchTriggerRate } from '../utils/global-search-config';
 
 export interface GlobalSearchResultItem {
 	collection: string;

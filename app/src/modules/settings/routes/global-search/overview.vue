@@ -6,6 +6,13 @@ import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
+import {
+	DEFAULT_GLOBAL_SEARCH_TRIGGER_RATE,
+	getGlobalSearchCollections,
+	getGlobalSearchTriggerRate,
+	MAX_GLOBAL_SEARCH_TRIGGER_RATE,
+	MIN_GLOBAL_SEARCH_TRIGGER_RATE,
+} from '@/components/command-palette/utils/global-search-config';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -14,13 +21,6 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
-import {
-	DEFAULT_GLOBAL_SEARCH_TRIGGER_RATE,
-	MAX_GLOBAL_SEARCH_TRIGGER_RATE,
-	MIN_GLOBAL_SEARCH_TRIGGER_RATE,
-	getGlobalSearchCollections,
-	getGlobalSearchTriggerRate,
-} from '@/components/command-palette/utils/global-search-config';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
@@ -123,6 +123,7 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 async function save() {
 	if (!edits.value || Object.keys(edits.value).length === 0) return;
+
 	const values = {
 		...initialValues.value,
 		...edits.value,
