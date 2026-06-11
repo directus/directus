@@ -72,6 +72,8 @@ export class GraphQLSubscriptionController extends SocketController {
 											},
 											{
 												ip: client.accountability?.ip ?? null,
+												userAgent: client.accountability?.userAgent,
+												origin: client.accountability?.origin,
 											},
 										);
 
