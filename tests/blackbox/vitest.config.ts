@@ -10,10 +10,6 @@ const isMssql = (process.env['TEST_DB']?.split(',').map((v) => v.trim()) ?? []).
 export default defineConfig({
 	plugins: [tsconfigPaths()],
 	test: {
-		// 'default' keeps the normal console output; the second reporter posts each module's completion
-		// to drive the sequential gate from the main process (see setup/reporter.ts), which is immune to
-		// the worker-side completion losses that could hang the suite to the CI timeout.
-		reporters: ['default', './setup/reporter.ts'],
 		poolOptions: {
 			forks: {
 				minForks: 1,
