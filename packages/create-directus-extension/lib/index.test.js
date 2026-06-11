@@ -155,6 +155,28 @@ describe('run', () => {
 		});
 	});
 
+	it('should treat a positional argument as the name when the type is provided via option', async () => {
+		await runCli(['hello', '-t', 'bundle']);
+
+		expect(mockInquirerPrompt).not.toHaveBeenCalled();
+
+		expect(mockCreate).toHaveBeenCalledWith('bundle', 'hello', {
+			language: undefined,
+			install: true,
+		});
+	});
+
+	it('should treat a positional argument as the type when the name is provided via option', async () => {
+		await runCli(['panel', '-n', 'hello']);
+
+		expect(mockInquirerPrompt).not.toHaveBeenCalled();
+
+		expect(mockCreate).toHaveBeenCalledWith('panel', 'hello', {
+			language: 'javascript',
+			install: true,
+		});
+	});
+
 	it('should pass install false when --no-install is used', async () => {
 		await runCli(['interface', 'my-interface', '--no-install']);
 

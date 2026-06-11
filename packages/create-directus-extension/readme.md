@@ -33,3 +33,9 @@ You can also use options:
 ```
 npx create-directus-extension --type hook --name my-hook --language typescript --no-install
 ```
+
+Positional arguments and options can be mixed; positional values fill in whatever the options don't specify:
+
+```
+npx create-directus-extension my-interface --type interface
+```

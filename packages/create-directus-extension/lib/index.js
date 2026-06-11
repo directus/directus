@@ -23,9 +23,15 @@ export async function run(argv = process.argv) {
 	program.parse(argv);
 
 	const options = program.opts();
+<<<<<<< Updated upstream
 	const [positionalType, positionalName] = program.args;
 	const type = options.type ?? positionalType;
 	const name = options.name ?? positionalName;
+=======
+	const positionals = [...program.args];
+	const type = options.type ?? positionals.shift();
+	const name = options.name ?? positionals.shift();
+>>>>>>> Stashed changes
 	const install = options.install;
 
 	if (type && name) {
