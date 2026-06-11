@@ -26,7 +26,7 @@ export async function run(argv = process.argv) {
 	const [positionalType, positionalName] = program.args;
 	const type = options.type ?? positionalType;
 	const name = options.name ?? positionalName;
-	const install = options.install ?? true;
+	const install = options.install;
 
 	if (type && name) {
 		const language = BUNDLE_EXTENSION_TYPES.includes(type) ? undefined : (options.language ?? 'javascript');
