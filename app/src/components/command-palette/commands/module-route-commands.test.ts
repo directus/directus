@@ -81,8 +81,8 @@ vi.mock('@/extensions', () => ({
 	}),
 }));
 
-vi.mock('@/modules/deployment/composables/use-deployment-navigation', () => ({
-	useDeploymentNavigation: () => ({
+vi.mock('@/modules/deployment/composables/use-deployment-providers', () => ({
+	useDeploymentProviders: () => ({
 		providers: {
 			get value() {
 				return mocks.deploymentProviders;

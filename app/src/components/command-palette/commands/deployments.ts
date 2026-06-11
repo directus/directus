@@ -3,7 +3,7 @@ import { defineCommands, refreshRegisteredCommands } from '../composables/use-co
 import { MODULE_BAR_DEFAULT } from '@/constants';
 import { useExtensions } from '@/extensions';
 import { i18n } from '@/lang';
-import { useDeploymentNavigation } from '@/modules/deployment/composables/use-deployment-navigation';
+import { useDeploymentProviders } from '@/modules/deployment/composables/use-deployment-providers';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
@@ -31,7 +31,7 @@ export const deploymentsCommands = defineCommands({
 		const isAdmin = userStore.isAdmin;
 		const canReadRuns = permissionsStore.hasPermission('directus_deployment_runs', 'read');
 		const canManageSettings = canManageDeploymentSettings();
-		const { providers, loaded, fetch } = useDeploymentNavigation();
+		const { providers, loaded, fetch } = useDeploymentProviders();
 		const t = i18n.global.t;
 
 		if (!loaded.value) {

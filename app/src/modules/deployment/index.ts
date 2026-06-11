@@ -1,5 +1,5 @@
 import { defineModule } from '@directus/extensions';
-import { useDeploymentNavigation } from './composables/use-deployment-navigation';
+import { useDeploymentProviders } from './composables/use-deployment-providers';
 import DeploymentOverview from './routes/overview.vue';
 import DeploymentProviderDashboard from './routes/provider/dashboard.vue';
 import DeploymentProviderRun from './routes/provider/run.vue';
@@ -7,7 +7,7 @@ import DeploymentProviderRuns from './routes/provider/runs.vue';
 import DeploymentProviderSettings from './routes/provider/settings.vue';
 
 function ensureNavLoaded() {
-	return useDeploymentNavigation().fetch();
+	return useDeploymentProviders().fetch();
 }
 
 export default defineModule({

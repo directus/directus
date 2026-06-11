@@ -1,73 +1,25 @@
-import { readDeployments } from '@directus/sdk';
-import type { DeploymentConfig } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { sdk } from '@/sdk';
-import { unexpectedError } from '@/utils/unexpected-error';
+import { useDeploymentProviders } from './use-deployment-providers';
 
-const cache = ref<DeploymentConfig[]>([]);
-const loading = ref(false);
-const loaded = ref(false);
 const openProviders = ref<string[]>([]);
-let fetchPromise: Promise<void> | null = null;
 
 export function useDeploymentNavigation() {
 	const route = useRoute();
-
-	async function fetch(force = false) {
-		if (!force && loaded.value) return;
-		if (!force && fetchPromise) return fetchPromise;
-
-		loading.value = true;
-
-		const pending = (async () => {
-			try {
-				const data = await sdk.request<DeploymentConfig[]>(
-					readDeployments({
-						fields: ['provider', 'options', { projects: ['id', 'name'] }],
-					}),
-				);
-
-				cache.value = data;
-				loaded.value = true;
-			} catch (error) {
-				unexpectedError(error);
-			}
-		})();
-
-		fetchPromise = pending;
-
-		try {
-			await pending;
-		} finally {
-			if (fetchPromise === pending) {
-				fetchPromise = null;
-				loading.value = false;
-			}
-		}
-	}
-
-	function refresh() {
-		loaded.value = false;
-		return fetch(true);
-	}
+	const providers = useDeploymentProviders();
 
 	const currentProviderKey = computed(() => route.params.provider as string | undefined);
 	const currentProjectId = computed(() => route.params.projectId as string | undefined);
 
 	const currentProject = computed(() => {
 		if (!currentProviderKey.value || !currentProjectId.value) return null;
-		const provider = cache.value.find((p) => p.provider === currentProviderKey.value);
+		const provider = providers.providers.value.find((p) => p.provider === currentProviderKey.value);
 		return provider?.projects?.find((p) => p.id === currentProjectId.value) || null;
 	});
 
 	return {
-		providers: cache,
-		loading,
-		loaded,
+		...providers,
 		openProviders,
-		fetch,
-		refresh,
 		currentProviderKey,
 		currentProjectId,
 		currentProject,
