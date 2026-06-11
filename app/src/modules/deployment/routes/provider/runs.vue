@@ -60,7 +60,6 @@ const canTriggerDeploy = computed(() => canDeploy && currentProject.value?.deplo
 const capabilitiesFromApi = ref<DeploymentProviderCapabilities | null>(null);
 const mergedCapabilities = computed(() => resolveDeploymentCapabilities(props.provider, capabilitiesFromApi.value));
 
-
 const deployHooks = computed(() => {
 	if (!mergedCapabilities.value.supportsDeployHookUrl) return [];
 
@@ -381,7 +380,7 @@ onUnmounted(() => {
 				:disabled="!canTriggerDeploy"
 				@click="deploy()"
 			>
-			<template #split-menu>
+				<template #split-menu>
 					<VList>
 						<VListItem
 							v-for="action in deployToolbarActions"
@@ -393,11 +392,7 @@ onUnmounted(() => {
 							<VListItemIcon>
 								<VIcon
 									:name="
-										action.kind === 'refresh'
-											? 'refresh'
-											: action.kind === 'deploy_hook'
-												? 'webhook'
-												: 'rocket_launch'
+										action.kind === 'refresh' ? 'refresh' : action.kind === 'deploy_hook' ? 'webhook' : 'rocket_launch'
 									"
 								/>
 							</VListItemIcon>
