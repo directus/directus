@@ -122,9 +122,12 @@ export class GraphQLSubscriptionController extends SocketController {
 		}, this.authentication.timeout);
 	}
 
-	protected override async handleHandshakeUpgrade({ request, socket, head }: UpgradeContext) {
+	protected override async handleHandshakeUpgrade({ request, socket, head, accountabilityOverrides }: UpgradeContext) {
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
-			this.server.emit('connection', ws, { accountability: createDefaultAccountability(), expires_at: null });
+			this.server.emit('connection', ws, {
+				accountability: createDefaultAccountability(accountabilityOverrides),
+				expires_at: null,
+			});
 			// actual enforcement is handled by the setTokenExpireTimer function
 		});
 	}
