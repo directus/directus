@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { InvalidPayloadError, InvalidProviderConfigError } from '@directus/errors';
+import { HitRateLimitError, InvalidPayloadError, InvalidProviderConfigError, ServiceUnavailableError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	CachedResult,
@@ -620,7 +620,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 			const missingTrigger =
 				typeof reason === 'string' &&
-				reason.includes('trigger is not configured') &&
+				reason.includes('no build trigger configured') &&
 				capabilities.eventsTransport === 'poll';
 
 			if (!missingTrigger) {
@@ -708,7 +708,9 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 				}
 
 				return { ...run, logs: details.logs ?? [] };
-			} catch {
+			} catch (error) {
+				if (error instanceof HitRateLimitError || error instanceof ServiceUnavailableError) throw error;
+
 				const update: Partial<DeploymentRun> = {
 					status: 'error',
 					completed_at: run.completed_at ?? new Date().toISOString(),
@@ -775,7 +777,9 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 						await runsService.updateOne(run.id, update);
 						refreshedRuns[index] = { ...run, ...update };
 					}
-				} catch {
+				} catch (error) {
+					if (error instanceof HitRateLimitError || error instanceof ServiceUnavailableError) return;
+
 					const update: Partial<DeploymentRun> = {
 						status: 'error',
 						completed_at: run.completed_at ?? new Date().toISOString(),
