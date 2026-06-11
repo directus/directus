@@ -14,10 +14,6 @@ ARG DHI_RUNTIME=dhi.io/node:${NODE_VERSION}-alpine${ALPINE_VERSION}
 
 FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS builder
 
-# Remove again once corepack >= 0.31 made it into base image
-# (see https://github.com/directus/directus/issues/24514)
-RUN npm install --global corepack@latest
-
 RUN apk --no-cache add python3 py3-setuptools build-base
 
 # Install pm2 here so the hardened runtime image can copy it
