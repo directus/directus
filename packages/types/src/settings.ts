@@ -36,12 +36,17 @@ export type CustomAspectRatio = {
 
 export type GlobalSearchCollectionConfig = {
 	collection: string;
-	display_template: string | null;
-	description_field: string | null;
+	displayTemplate: string | null;
+	descriptionField: string | null;
 	fields: string[];
 	filter: Filter | null;
 	sort: string | null;
 	limit: number | null;
+};
+
+export type GlobalSearchConfig = {
+	triggerRate: number | null;
+	collections: GlobalSearchCollectionConfig[];
 };
 
 export type Settings = {
@@ -100,7 +105,7 @@ export type Settings = {
 	collaborative_editing_enabled: boolean;
 	license_key: string | null;
 	license_token: string | null;
-	global_search_config: GlobalSearchCollectionConfig[] | null;
+	global_search_config: GlobalSearchConfig | null;
 } & OwnerInformation;
 
 export type OwnerInformation = {

@@ -11,10 +11,12 @@ import CommandPaletteList from '../../command-palette-list.vue';
 import { useAskAi } from '../../composables/use-ask-ai';
 import { useCommandPalette } from '../../composables/use-command-palette';
 import { useRecentItems } from '../../composables/use-recent-items';
+import { getGlobalSearchTriggerRate } from '../../utils/global-search-config';
 import { getRoutePrimaryKey } from '../../utils/get-route-primary-key';
 import AiMagicButton from '@/ai/components/ai-magic-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useFieldsStore } from '@/stores/fields';
+import { useSettingsStore } from '@/stores/settings';
 import { getItemRoute } from '@/utils/get-route';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -38,9 +40,11 @@ const api = useApi();
 const route = useRoute();
 const router = useRouter();
 const fieldsStore = useFieldsStore();
+const settingsStore = useSettingsStore();
 const { search, close, loading } = useCommandPalette();
 const { aiAvailable, askAi, askAiShortcutModifierIcon } = useAskAi();
 const askAiHovering = ref(false);
+const triggerRate = computed(() => getGlobalSearchTriggerRate(settingsStore.settings?.global_search_config));
 
 const currentPk = computed(() => {
 	if (!route.path.startsWith(`/content/${props.collection}/`)) return null;
@@ -91,7 +95,7 @@ watch(search, (value) => {
 
 	searchTimeout = setTimeout(() => {
 		fetchItems(value, currentRequest);
-	}, 300);
+	}, triggerRate.value);
 });
 
 onBeforeUnmount(() => {

@@ -85,12 +85,15 @@ function mountOverview() {
 		initialState: {
 			settingsStore: {
 				settings: {
-					global_search_config: [
-						{
-							collection: 'articles',
-							fields: ['title'],
-						},
-					],
+					global_search_config: {
+						triggerRate: 150,
+						collections: [
+							{
+								collection: 'articles',
+								fields: ['title'],
+							},
+						],
+					},
 				},
 			},
 		},
@@ -129,10 +132,15 @@ describe('settings global search overview', () => {
 		const { wrapper } = mountOverview();
 		const form = wrapper.findComponent(VFormStub);
 		const fields = form.props('fields') as any[];
-		const configField = fields[0];
-		const nestedFields = configField.meta.options.fields;
+		const collectionsField = fields.find((field) => field.field === 'collections');
+		const nestedFields = collectionsField.meta.options.fields;
 
-		expect(fields.map((field) => field.field)).toEqual(['global_search_config']);
+		expect(fields.map((field) => field.field)).toEqual(['triggerRate', 'collections']);
+		expect(fields.find((field) => field.field === 'triggerRate').meta.options).toMatchObject({
+			min: 50,
+			max: 2000,
+			placeholder: '150',
+		});
 		expect(nestedFields.find((field: any) => field.field === 'collection').meta.required).toBe(true);
 		expect(nestedFields.find((field: any) => field.field === 'fields').meta.required).toBe(true);
 
@@ -147,7 +155,8 @@ describe('settings global search overview', () => {
 		const { wrapper, settingsStore } = mountOverview();
 
 		await wrapper.findComponent(VFormStub).vm.$emit('update:modelValue', {
-			global_search_config: [
+			triggerRate: 250,
+			collections: [
 				{
 					collection: 'articles',
 					fields: ['title', 'summary'],
@@ -159,12 +168,15 @@ describe('settings global search overview', () => {
 		await wrapper.findComponent({ name: 'PrivateViewHeaderBarActionButton' }).trigger('click');
 
 		expect(settingsStore.updateSettings).toHaveBeenCalledWith({
-			global_search_config: [
-				{
-					collection: 'articles',
-					fields: ['title', 'summary'],
-				},
-			],
+			global_search_config: {
+				triggerRate: 250,
+				collections: [
+					{
+						collection: 'articles',
+						fields: ['title', 'summary'],
+					},
+				],
+			},
 		});
 	});
 
@@ -173,12 +185,32 @@ describe('settings global search overview', () => {
 		const { wrapper, settingsStore } = mountOverview();
 
 		await wrapper.findComponent(VFormStub).vm.$emit('update:modelValue', {
-			global_search_config: [
+			collections: [
 				{
 					collection: 'articles',
 					fields: [],
 				},
 			],
+		});
+
+		await wrapper.vm.$nextTick();
+		await wrapper.findComponent({ name: 'PrivateViewHeaderBarActionButton' }).trigger('click');
+
+		expect(settingsStore.updateSettings).not.toHaveBeenCalled();
+
+		expect(notify).toHaveBeenCalledWith(
+			expect.objectContaining({
+				type: 'error',
+			}),
+		);
+	});
+
+	test('blocks saving invalid trigger rates', async () => {
+		const { notify } = await import('@/utils/notify');
+		const { wrapper, settingsStore } = mountOverview();
+
+		await wrapper.findComponent(VFormStub).vm.$emit('update:modelValue', {
+			triggerRate: 10,
 		});
 
 		await wrapper.vm.$nextTick();

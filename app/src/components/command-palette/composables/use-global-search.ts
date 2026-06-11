@@ -4,6 +4,7 @@ import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useSettingsStore } from '@/stores/settings';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
+import { getGlobalSearchCollections, getGlobalSearchTriggerRate } from '../utils/global-search-config';
 
 export interface GlobalSearchResultItem {
 	collection: string;
@@ -31,9 +32,10 @@ export function useGlobalSearch(search: Ref<string>) {
 	const loading = ref(false);
 
 	const hasConfig = computed(() => {
-		const config = settingsStore.settings?.global_search_config;
-		return !!config?.length;
+		return getGlobalSearchCollections(settingsStore.settings?.global_search_config).length > 0;
 	});
+
+	const triggerRate = computed(() => getGlobalSearchTriggerRate(settingsStore.settings?.global_search_config));
 
 	let searchTimeout: ReturnType<typeof setTimeout> | null = null;
 	let requestId = 0;
@@ -54,7 +56,7 @@ export function useGlobalSearch(search: Ref<string>) {
 
 		searchTimeout = setTimeout(() => {
 			fetchResults(query, currentRequest);
-		}, 300);
+		}, triggerRate.value);
 	});
 
 	onBeforeUnmount(() => {
@@ -69,7 +71,7 @@ export function useGlobalSearch(search: Ref<string>) {
 
 			if (currentRequest !== requestId) return;
 
-			const config = settingsStore.settings!.global_search_config!;
+			const config = getGlobalSearchCollections(settingsStore.settings?.global_search_config);
 			const mapped: GlobalSearchCollectionResult[] = [];
 
 			for (const collectionConfig of config) {
@@ -83,7 +85,7 @@ export function useGlobalSearch(search: Ref<string>) {
 				const icon = (collection?.meta?.icon ?? 'box') as string;
 				const collectionName = collection?.name ?? coll;
 
-				const template = collectionConfig.display_template ?? collection?.meta?.display_template ?? `{{${pkField}}}`;
+				const template = collectionConfig.displayTemplate ?? collection?.meta?.display_template ?? `{{${pkField}}}`;
 
 				mapped.push({
 					collection: coll,
@@ -93,8 +95,8 @@ export function useGlobalSearch(search: Ref<string>) {
 						collection: coll,
 						pk: String(item[pkField]),
 						displayValue: renderPlainStringTemplate(template, item) ?? String(item[pkField]),
-						descriptionValue: collectionConfig.description_field
-							? ((item[collectionConfig.description_field] as string | null) ?? null)
+						descriptionValue: collectionConfig.descriptionField
+							? ((item[collectionConfig.descriptionField] as string | null) ?? null)
 							: null,
 						icon,
 						collectionName,

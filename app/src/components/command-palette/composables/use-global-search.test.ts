@@ -19,14 +19,17 @@ function setupSearch() {
 		initialState: {
 			settingsStore: {
 				settings: {
-					global_search_config: [
-						{
-							collection: 'articles',
-							display_template: '{{title}}',
-							description_field: 'summary',
-							fields: ['title'],
-						},
-					],
+					global_search_config: {
+						triggerRate: 150,
+						collections: [
+							{
+								collection: 'articles',
+								displayTemplate: '{{title}}',
+								descriptionField: 'summary',
+								fields: ['title'],
+							},
+						],
+					},
 				},
 			},
 			collectionsStore: {
@@ -103,7 +106,7 @@ describe('useGlobalSearch', () => {
 
 		search.value = 'al';
 		await nextTick();
-		await vi.advanceTimersByTimeAsync(300);
+		await vi.advanceTimersByTimeAsync(150);
 		await flushPromises();
 
 		expect(post).toHaveBeenCalledWith('/utils/global-search', { query: 'al' });
@@ -121,7 +124,7 @@ describe('useGlobalSearch', () => {
 
 		search.value = 'a';
 		await nextTick();
-		await vi.advanceTimersByTimeAsync(300);
+		await vi.advanceTimersByTimeAsync(150);
 		await flushPromises();
 
 		expect(post).not.toHaveBeenCalled();
@@ -152,11 +155,11 @@ describe('useGlobalSearch', () => {
 
 		search.value = 'ol';
 		await nextTick();
-		await vi.advanceTimersByTimeAsync(300);
+		await vi.advanceTimersByTimeAsync(150);
 
 		search.value = 'ne';
 		await nextTick();
-		await vi.advanceTimersByTimeAsync(300);
+		await vi.advanceTimersByTimeAsync(150);
 		await flushPromises();
 
 		expect(results.value[0]?.items).toEqual([

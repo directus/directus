@@ -2,7 +2,7 @@ import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMedi
 import type {
 	Accountability,
 	FieldOverview,
-	GlobalSearchCollectionConfig,
+	GlobalSearchConfig,
 	SchemaOverview,
 	Type,
 } from '@directus/types';
@@ -467,10 +467,10 @@ const globalSearchHandler = asyncHandler(async (req, res) => {
 	const startedAt = performance.now();
 	const settingsService = new SettingsService({ schema: req.schema });
 	const settings = await settingsService.readSingleton({});
-	const config = settings['global_search_config'] as GlobalSearchCollectionConfig[] | null;
-	const collections = config?.slice(0, MAX_SEARCH_COLLECTIONS) ?? [];
+	const config = settings['global_search_config'] as GlobalSearchConfig | null;
+	const collections = Array.isArray(config?.collections) ? config.collections.slice(0, MAX_SEARCH_COLLECTIONS) : [];
 
-	if (!config?.length) {
+	if (collections.length === 0) {
 		logSlowGlobalSearchRequest(performance.now() - startedAt, [], {}, []);
 		return res.json({ data: {} });
 	}
@@ -518,7 +518,7 @@ const globalSearchHandler = asyncHandler(async (req, res) => {
 					const filter = collectionConfig.filter ? mergeFilters(collectionConfig.filter, searchFilter) : searchFilter;
 
 					const displayTemplate =
-						collectionConfig.display_template ??
+						collectionConfig.displayTemplate ??
 						collectionMetaByName.get(collectionConfig.collection)?.display_template ??
 						null;
 
@@ -529,7 +529,7 @@ const globalSearchHandler = asyncHandler(async (req, res) => {
 					const fieldsToFetch = [
 						...(primaryKeyField ? [primaryKeyField] : []),
 						...templateFields,
-						...(collectionConfig.description_field ? [collectionConfig.description_field] : []),
+						...(collectionConfig.descriptionField ? [collectionConfig.descriptionField] : []),
 					];
 
 					const readableFieldsToFetch: string[] = [];

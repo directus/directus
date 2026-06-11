@@ -1556,6 +1556,7 @@ global_search_config_invalid: Global search config is invalid.
 global_search_missing_collection: Each global search entry needs a collection.
 global_search_missing_fields: Each global search entry needs at least one field to search.
 global_search_invalid_limit: Results per Collection must be a whole number from 1 to 25.
+global_search_invalid_trigger_rate: Trigger Rate must be a whole number from 50 to 2000.
 model_context_protocol: Model Context Protocol
 ai_assistant: AI Assistant
 ai_disabled_by_env: AI Assistant features have been disabled via environment variable.
@@ -1953,6 +1954,10 @@ fields:
       only. Draft/version results are available through collection search while viewing a versioned collection. Up to 20
       configured collections can appear.'
     global_search_add_collection: Add Collection
+    global_search_collections: Collections
+    global_search_trigger_rate: Trigger Rate
+    global_search_trigger_rate_note:
+      'Search is debounced for performance. Lower values search more often. In milliseconds. Defaults to 150.'
     global_search_description_field: Description Field
     global_search_fields_to_search: Fields to Search
     global_search_fields_note:

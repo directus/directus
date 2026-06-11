@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCollection, useShortcut } from '@directus/composables';
-import type { Field } from '@directus/types';
+import type { Field, GlobalSearchConfig } from '@directus/types';
 import { clone } from 'lodash';
 import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -14,6 +14,13 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
+import {
+	DEFAULT_GLOBAL_SEARCH_TRIGGER_RATE,
+	MAX_GLOBAL_SEARCH_TRIGGER_RATE,
+	MIN_GLOBAL_SEARCH_TRIGGER_RATE,
+	getGlobalSearchCollections,
+	getGlobalSearchTriggerRate,
+} from '@/components/command-palette/utils/global-search-config';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
@@ -26,68 +33,82 @@ const settingsStore = useSettingsStore();
 
 const { fields: allFields } = useCollection('directus_settings');
 
-const globalSearchFields = computed(() =>
-	unref(allFields)
-		.filter(
-			(field) =>
-				(field.meta?.group === 'global_search_group' || field.field === 'global_search_group') &&
-				field.field !== 'global_search_group' &&
-				field.field !== 'global_search_divider' &&
-				field.field !== 'global_search_notice',
-		)
-		.map((field) => {
-			if (field.field !== 'global_search_config') return field;
+const globalSearchFields = computed<Field[]>(() => {
+	const configField = unref(allFields).find((field) => field.field === 'global_search_config');
+	const options = configField?.meta?.options ?? {};
 
-			const options = field.meta?.options ?? {};
+	const collectionsField = {
+		...configField,
+		field: 'collections',
+		name: t('fields.directus_settings.global_search_collections'),
+		meta: {
+			...configField?.meta,
+			group: null,
+			options: {
+				...options,
+				fields: (options.fields ?? []).map((nestedField: Field) => {
+					if (nestedField.field === 'collection') {
+						return { ...nestedField, meta: { ...nestedField.meta, required: true } };
+					}
 
-			return {
-				...field,
-				meta: {
-					...field.meta,
-					group: null,
-					options: {
-						...options,
-						fields: (options.fields ?? []).map((nestedField: Field) => {
-							if (nestedField.field === 'collection') {
-								return { ...nestedField, meta: { ...nestedField.meta, required: true } };
-							}
+					if (nestedField.field === 'fields') {
+						return {
+							...nestedField,
+							meta: {
+								...nestedField.meta,
+								required: true,
+								note: '$t:fields.directus_settings.global_search_fields_note',
+							},
+						};
+					}
 
-							if (nestedField.field === 'fields') {
-								return {
-									...nestedField,
-									meta: {
-										...nestedField.meta,
-										required: true,
-										note: '$t:fields.directus_settings.global_search_fields_note',
-									},
-								};
-							}
+					if (nestedField.field === 'limit') {
+						return {
+							...nestedField,
+							meta: {
+								...nestedField.meta,
+								note: '$t:fields.directus_settings.global_search_limit_note',
+								options: {
+									...(nestedField.meta?.options ?? {}),
+									min: 1,
+									max: 25,
+									placeholder: '5',
+								},
+							},
+						};
+					}
 
-							if (nestedField.field === 'limit') {
-								return {
-									...nestedField,
-									meta: {
-										...nestedField.meta,
-										note: '$t:fields.directus_settings.global_search_limit_note',
-										options: {
-											...(nestedField.meta?.options ?? {}),
-											min: 1,
-											max: 25,
-											placeholder: '5',
-										},
-									},
-								};
-							}
+					return nestedField;
+				}),
+			},
+		},
+	} as Field;
 
-							return nestedField;
-						}),
-					},
+	return [
+		{
+			field: 'triggerRate',
+			name: t('fields.directus_settings.global_search_trigger_rate'),
+			type: 'integer',
+			schema: {
+				default_value: DEFAULT_GLOBAL_SEARCH_TRIGGER_RATE,
+			},
+			meta: {
+				interface: 'input',
+				width: 'half',
+				options: {
+					min: MIN_GLOBAL_SEARCH_TRIGGER_RATE,
+					max: MAX_GLOBAL_SEARCH_TRIGGER_RATE,
+					step: 10,
+					placeholder: String(DEFAULT_GLOBAL_SEARCH_TRIGGER_RATE),
 				},
-			} as Field;
-		}),
-);
+				note: '$t:fields.directus_settings.global_search_trigger_rate_note',
+			},
+		} as unknown as Field,
+		collectionsField,
+	];
+});
 
-const initialValues = ref(clone(settingsStore.settings));
+const initialValues = ref(getGlobalSearchFormValues(settingsStore.settings?.global_search_config));
 const edits = ref<Record<string, any> | null>(null);
 
 const hasEdits = computed(() => edits.value !== null && Object.keys(edits.value).length > 0);
@@ -102,7 +123,13 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 async function save() {
 	if (!edits.value || Object.keys(edits.value).length === 0) return;
-	const invalidConfig = getInvalidConfig(edits.value.global_search_config);
+	const values = {
+		...initialValues.value,
+		...edits.value,
+	};
+
+	const nextConfig = getGlobalSearchConfigFromFormValues(values);
+	const invalidConfig = getInvalidConfig(nextConfig);
 
 	if (invalidConfig) {
 		notify({
@@ -115,16 +142,29 @@ async function save() {
 	}
 
 	saving.value = true;
-	await settingsStore.updateSettings(edits.value);
+	await settingsStore.updateSettings({ global_search_config: nextConfig });
 	edits.value = null;
 	saving.value = false;
-	initialValues.value = clone(settingsStore.settings);
+	initialValues.value = getGlobalSearchFormValues(settingsStore.settings?.global_search_config);
 }
 
 function getInvalidConfig(config: unknown) {
-	if (!Array.isArray(config)) return null;
+	if (!config || typeof config !== 'object' || Array.isArray(config)) return 'global_search_config_invalid';
 
-	for (const collectionConfig of config) {
+	const { triggerRate: triggerRateValue, collections } = config as GlobalSearchConfig;
+	const triggerRate = Number(triggerRateValue);
+
+	if (
+		!Number.isInteger(triggerRate) ||
+		triggerRate < MIN_GLOBAL_SEARCH_TRIGGER_RATE ||
+		triggerRate > MAX_GLOBAL_SEARCH_TRIGGER_RATE
+	) {
+		return 'global_search_invalid_trigger_rate';
+	}
+
+	if (!Array.isArray(collections)) return 'global_search_config_invalid';
+
+	for (const collectionConfig of collections) {
 		if (!collectionConfig || typeof collectionConfig !== 'object') return 'global_search_config_invalid';
 
 		const { collection, fields, limit } = collectionConfig as {
@@ -144,6 +184,20 @@ function getInvalidConfig(config: unknown) {
 	}
 
 	return null;
+}
+
+function getGlobalSearchFormValues(config: GlobalSearchConfig | null | undefined) {
+	return {
+		triggerRate: getGlobalSearchTriggerRate(config),
+		collections: clone(getGlobalSearchCollections(config)),
+	};
+}
+
+function getGlobalSearchConfigFromFormValues(values: Record<string, any>): GlobalSearchConfig {
+	return {
+		triggerRate: Number(values.triggerRate),
+		collections: Array.isArray(values.collections) ? values.collections : [],
+	};
 }
 
 function discardAndLeave() {

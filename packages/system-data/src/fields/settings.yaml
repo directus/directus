@@ -1393,7 +1393,7 @@ fields:
             options:
               includeSingleton: false
               includeSystem: true
-        - field: display_template
+        - field: displayTemplate
           name: $t:display_template
           type: string
           meta:
@@ -1401,7 +1401,7 @@ fields:
             options:
               collectionField: collection
             width: full
-        - field: description_field
+        - field: descriptionField
           name: $t:fields.directus_settings.global_search_description_field
           type: string
           meta:

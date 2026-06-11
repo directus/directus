@@ -148,12 +148,15 @@ describe('utils global search controller', () => {
 		fetchAllowedFields.mockResolvedValue(['*']);
 
 		readSingleton.mockResolvedValue({
-			global_search_config: [
-				{
-					collection: 'articles',
-					fields: ['title'],
-				},
-			],
+			global_search_config: {
+				triggerRate: 150,
+				collections: [
+					{
+						collection: 'articles',
+						fields: ['title'],
+					},
+				],
+			},
 		});
 
 		readByQuery.mockResolvedValue([{ collection: 'articles', meta: { display_template: '{{title}}' } }]);
@@ -235,16 +238,19 @@ describe('utils global search controller', () => {
 
 	test('builds bounded item queries from readable searchable fields', async () => {
 		readSingleton.mockResolvedValue({
-			global_search_config: [
-				{
-					collection: 'articles',
-					fields: ['title', 'published', 'metadata'],
-					description_field: 'summary',
-					filter: { status: { _eq: 'published' } },
-					sort: '-created_at',
-					limit: 50,
-				},
-			],
+			global_search_config: {
+				triggerRate: 150,
+				collections: [
+					{
+						collection: 'articles',
+						fields: ['title', 'published', 'metadata'],
+						descriptionField: 'summary',
+						filter: { status: { _eq: 'published' } },
+						sort: '-created_at',
+						limit: 50,
+					},
+				],
+			},
 		});
 
 		fetchAllowedFields.mockResolvedValue(['id', 'title', 'published', 'summary', 'created_at']);
@@ -288,12 +294,15 @@ describe('utils global search controller', () => {
 		const owner = '550e8400-e29b-41d4-a716-446655440000';
 
 		readSingleton.mockResolvedValue({
-			global_search_config: [
-				{
-					collection: 'articles',
-					fields: ['views', 'owner'],
-				},
-			],
+			global_search_config: {
+				triggerRate: 150,
+				collections: [
+					{
+						collection: 'articles',
+						fields: ['views', 'owner'],
+					},
+				],
+			},
 		});
 
 		await callGlobalSearch({ body: { query: owner } });
@@ -323,16 +332,19 @@ describe('utils global search controller', () => {
 
 	test('returns partial results when one configured collection fails', async () => {
 		readSingleton.mockResolvedValue({
-			global_search_config: [
-				{
-					collection: 'articles',
-					fields: ['title'],
-				},
-				{
-					collection: 'pages',
-					fields: ['title'],
-				},
-			],
+			global_search_config: {
+				triggerRate: 150,
+				collections: [
+					{
+						collection: 'articles',
+						fields: ['title'],
+					},
+					{
+						collection: 'pages',
+						fields: ['title'],
+					},
+				],
+			},
 		});
 
 		readByQuery.mockResolvedValue([
