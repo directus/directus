@@ -1,8 +1,8 @@
 {
 	"name": "@directus/visual-editing",
-	"version": "2.0.1",
+	"version": "2.1.0",
 	"description": "Visual editing library to enable in-place editing of your website’s frontend from within the Visual Editor in Directus",
-	"homepage": "https://directus.io/docs/guides/content/visual-editor",
+	"homepage": "https://directus.com/docs/guides/content/visual-editor",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -71,8 +71,8 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
-		"@directus/types": "workspace:",
-		"@directus/utils": "workspace:",
+		"@directus/types": "workspace:*",
+		"@directus/utils": "workspace:*",
 		"happy-dom": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",

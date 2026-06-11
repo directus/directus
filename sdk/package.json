@@ -1,8 +1,8 @@
 {
 	"name": "@directus/sdk",
-	"version": "21.3.0",
+	"version": "22.0.0",
 	"description": "Directus JavaScript SDK",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",

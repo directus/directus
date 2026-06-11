@@ -1,7 +1,7 @@
 import { GENERATE_SPECIAL } from '@directus/constants';
 import type { GQLScope } from '@directus/types';
 import type { GraphQLNullableType } from 'graphql';
-import { GraphQLID, GraphQLInt, GraphQLNonNull, GraphQLScalarType, GraphQLUnionType } from 'graphql';
+import { GraphQLID, GraphQLInt, GraphQLNonNull, GraphQLScalarType, GraphQLString, GraphQLUnionType } from 'graphql';
 import type {
 	ObjectTypeComposerFieldConfigAsObjectDefinition,
 	ObjectTypeComposerFieldConfigDefinition,
@@ -9,6 +9,7 @@ import type {
 } from 'graphql-compose';
 import { GraphQLJSON, ObjectTypeComposer } from 'graphql-compose';
 import { mapKeys, pick } from 'lodash-es';
+import { applyFunctionToColumnName } from '../../../database/run-ast/utils/apply-function-to-column-name.js';
 import { getGraphQLType } from '../../../utils/get-graphql-type.js';
 import { type InconsistentFields, type Schema, SYSTEM_DENY_LIST } from './index.js';
 
@@ -151,19 +152,41 @@ export function getTypes(
 								type: DateTimeFunctions,
 								resolve: (obj: Record<string, any>) => {
 									const funcFields = Object.keys(DateTimeFunctions.getFields()).map((key) => `${field.field}_${key}`);
-
 									return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
 								},
 							};
 						}
 
-						if (field.type === 'json' || field.type === 'alias') {
+						if (field.type === 'alias') {
 							acc[`${field.field}_func`] = {
 								type: CountFunctions,
 								resolve: (obj: Record<string, any>) => {
 									const funcFields = Object.keys(CountFunctions.getFields()).map((key) => `${field.field}_${key}`);
 									return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
 								},
+							};
+						}
+
+						if (field.type === 'json') {
+							const JsonFieldFunctions = schemaComposer.createObjectTC({
+								name: `${collection.collection}_${field.field}_func`,
+								fields: {
+									count: {
+										type: GraphQLInt,
+										resolve: (obj: Record<string, any>) => obj[`${field.field}_count`],
+									},
+									json: {
+										type: GraphQLJSON,
+										args: { path: { type: new GraphQLNonNull(GraphQLString) } },
+										resolve: (obj: Record<string, any>, { path }: { path: string }) =>
+											obj[applyFunctionToColumnName(`json(${field.field}, ${path})`)],
+									},
+								},
+							});
+
+							acc[`${field.field}_func`] = {
+								type: JsonFieldFunctions,
+								resolve: (obj: Record<string, any>) => obj,
 							};
 						}
 					}
@@ -189,7 +212,7 @@ export function getTypes(
 				[relation.field]: {
 					type: CollectionTypes[relation.related_collection]!,
 					resolve: (obj: Record<string, any>, _, __, info) => {
-						return obj[info?.path?.key ?? relation.field];
+						return obj[info?.path?.key] ?? obj[info?.fieldName ?? relation.field];
 					},
 				},
 			});
@@ -198,7 +221,7 @@ export function getTypes(
 				[relation.field]: {
 					type: GraphQLJSON,
 					resolve: (obj: Record<string, any>, _, __, info) => {
-						return obj[info?.path?.key ?? relation.field];
+						return obj[info?.path?.key] ?? obj[info?.fieldName ?? relation.field];
 					},
 				},
 			});
@@ -208,7 +231,7 @@ export function getTypes(
 					[relation.meta.one_field]: {
 						type: [CollectionTypes[relation.collection]!],
 						resolve: (obj: Record<string, any>, _, __, info) => {
-							return obj[info?.path?.key ?? relation.meta!.one_field];
+							return obj[info?.path?.key] ?? obj[info?.fieldName ?? relation.meta!.one_field];
 						},
 					},
 				});
@@ -218,7 +241,7 @@ export function getTypes(
 						[relation.meta.one_field]: {
 							type: GraphQLJSON,
 							resolve: (obj: Record<string, any>, _, __, info) => {
-								return obj[info?.path?.key ?? relation.meta!.one_field];
+								return obj[info?.path?.key] ?? obj[info?.fieldName ?? relation.meta!.one_field];
 							},
 						},
 					});
@@ -253,7 +276,7 @@ export function getTypes(
 						},
 					}),
 					resolve: (obj: Record<string, any>, _, __, info) => {
-						return obj[info?.path?.key ?? relation.field];
+						return obj[info?.path?.key] ?? obj[info?.fieldName ?? relation.field];
 					},
 				},
 			});

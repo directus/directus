@@ -9,7 +9,6 @@ import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
 import { useProviderConfigs } from '../../config/providers';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardTitle from '@/components/v-card-title.vue';
@@ -270,10 +269,6 @@ onUnmounted(() => {
 
 <template>
 	<PrivateView :title="pageTitle" show-back :back-to="`/deployments/${provider}/${projectId}/runs`">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t(`deployment.provider.${provider}.name`), to: `/deployments/${provider}` }]" />
-		</template>
-
 		<template #navigation>
 			<DeploymentNavigation />
 		</template>
@@ -288,8 +283,8 @@ onUnmounted(() => {
 					v-if="isBuilding && canCancel"
 					v-tooltip.bottom="$t('deployment.provider.run.stop')"
 					icon="dangerous"
-					secondary
-					class="action-cancel"
+					kind="danger"
+					variant="ghost"
 					:loading="canceling"
 					@click="confirmCancel = true"
 				/>
@@ -297,7 +292,7 @@ onUnmounted(() => {
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('deployment.provider.run.download_logs')"
 					icon="download"
-					secondary
+					variant="ghost"
 					@click="downloadLogs"
 				/>
 
@@ -305,7 +300,7 @@ onUnmounted(() => {
 					v-if="run?.url"
 					v-tooltip.bottom="$t('deployment.provider.run.open_deployment')"
 					icon="open_in_new"
-					secondary
+					variant="ghost"
 					@click="openDeployment"
 				/>
 			</div>
@@ -409,11 +404,6 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
-.action-cancel {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
 .spinner {
 	margin: 6.75rem auto;
 }
