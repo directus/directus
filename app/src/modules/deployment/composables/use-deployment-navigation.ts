@@ -29,10 +29,9 @@ export function useDeploymentNavigation() {
 				);
 
 				cache.value = data;
+				loaded.value = true;
 			} catch (error) {
 				unexpectedError(error);
-			} finally {
-				loaded.value = true;
 			}
 		})();
 

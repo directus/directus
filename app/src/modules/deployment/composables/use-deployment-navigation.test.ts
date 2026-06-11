@@ -107,6 +107,28 @@ describe('useDeploymentNavigation', () => {
 			expect(mockSdkRequest).toHaveBeenCalledOnce();
 		});
 
+		it('should retry after a failed fetch', async () => {
+			const mockData = [{ provider: 'vercel', projects: [] }];
+
+			mockSdkRequest.mockRejectedValueOnce(new Error('failed'));
+			mockSdkRequest.mockResolvedValueOnce(mockData);
+
+			const wrapper = mount(createTestComponent());
+
+			await wrapper.vm.fetch();
+			await flushPromises();
+
+			expect(mockSdkRequest).toHaveBeenCalledOnce();
+			expect(wrapper.vm.loaded).toBe(false);
+
+			await wrapper.vm.fetch();
+			await flushPromises();
+
+			expect(mockSdkRequest).toHaveBeenCalledTimes(2);
+			expect(wrapper.vm.providers).toEqual(mockData);
+			expect(wrapper.vm.loaded).toBe(true);
+		});
+
 		it('should reuse an in-flight fetch', async () => {
 			const mockData = [{ provider: 'vercel', projects: [{ id: 'proj-1', name: 'Project 1' }] }];
 			let resolvePromise: (value: unknown) => void;

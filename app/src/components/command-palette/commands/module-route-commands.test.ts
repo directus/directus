@@ -184,7 +184,7 @@ describe('module route commands', () => {
 
 		mocks.fetchDeployments.mockReturnValue(new Promise(() => {}));
 
-		const commands = deploymentsCommands.commands!({ route: route(), search: '' });
+		const commands = getCommandConfigs(deploymentsCommands);
 
 		expect(Array.isArray(commands)).toBe(true);
 		expect((commands as CommandConfig[]).map(({ id }) => id)).toContain('view-deployments');
@@ -202,7 +202,7 @@ describe('module route commands', () => {
 			return Promise.resolve();
 		});
 
-		deploymentsCommands.commands!({ route: route(), search: '' });
+		getCommandConfigs(deploymentsCommands);
 
 		expect(mocks.refreshRegisteredCommands).not.toHaveBeenCalled();
 
@@ -218,8 +218,8 @@ describe('module route commands', () => {
 
 		mocks.deploymentProvidersLoaded = true;
 
-		deploymentsCommands.commands!({ route: route(), search: '' });
-		deploymentsCommands.commands!({ route: route(), search: 'deploy' });
+		getCommandConfigs(deploymentsCommands);
+		getCommandConfigs(deploymentsCommands, { path: 'deploy' });
 
 		expect(mocks.fetchDeployments).not.toHaveBeenCalled();
 	});
@@ -266,6 +266,17 @@ async function getCommands(
 	commands: { commands?: any },
 	routeOverrides: Partial<RouteLocationNormalizedLoaded> = {},
 ): Promise<CommandConfig[]> {
+	if (typeof commands.commands === 'function') {
+		return commands.commands({ route: route(routeOverrides), search: '' });
+	}
+
+	return commands.commands ?? [];
+}
+
+function getCommandConfigs(
+	commands: { commands?: any },
+	routeOverrides: Partial<RouteLocationNormalizedLoaded> = {},
+): CommandConfig[] {
 	if (typeof commands.commands === 'function') {
 		return commands.commands({ route: route(routeOverrides), search: '' });
 	}
