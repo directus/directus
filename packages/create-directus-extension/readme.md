@@ -28,14 +28,8 @@ Pass the extension type and name to create an extension non-interactively:
 npx create-directus-extension interface my-interface
 ```
 
-You can also use options:
+You can also use the `--language` and `--no-install` options:
 
 ```
-npx create-directus-extension --type hook --name my-hook --language typescript --no-install
-```
-
-Positional arguments and options can be mixed; positional values fill in whatever the options don't specify:
-
-```
-npx create-directus-extension my-interface --type interface
+npx create-directus-extension hook my-hook --language typescript --no-install
 ```

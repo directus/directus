@@ -15,18 +15,20 @@ export async function run(argv = process.argv) {
 		.description('Scaffold a Directus extension')
 		.argument('[type]', 'extension type')
 		.argument('[name]', 'extension name')
-		.option('-t, --type <type>', 'specify the extension type')
-		.option('-n, --name <name>', 'specify the extension name')
 		.option('-l, --language <language>', 'specify the language to use')
 		.option('--no-install', 'skip dependency installation after creating extension');
 
 	program.parse(argv);
 
 	const options = program.opts();
-	const positionals = [...program.args];
-	const type = options.type ?? positionals.shift();
-	const name = options.name ?? positionals.shift();
+	const [type, name] = program.args;
 	const install = options.install;
+
+	// Both arguments are required for non-interactive mode; only a bare
+	// invocation falls through to the interactive walkthrough
+	if (type !== undefined && name === undefined) {
+		program.error("error: missing required argument 'name'");
+	}
 
 	if (type && name) {
 		const language = BUNDLE_EXTENSION_TYPES.includes(type) ? undefined : (options.language ?? 'javascript');
@@ -44,13 +46,11 @@ export async function run(argv = process.argv) {
 			name: 'type',
 			message: 'Choose the extension type',
 			choices: EXTENSION_TYPES,
-			default: type,
 		},
 		{
 			type: 'input',
 			name: 'name',
 			message: 'Choose a name for the extension',
-			default: name,
 		},
 		{
 			type: 'list',

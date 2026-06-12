@@ -96,12 +96,10 @@ describe('run', () => {
 			install: false,
 		});
 
-		await runCli(['--type', 'interface', '--language', 'typescript', '--no-install']);
+		await runCli(['--language', 'typescript', '--no-install']);
 
 		const calledWith = mockInquirerPrompt.mock.calls[0][0];
 
-		expect(calledWith[0]).toMatchObject({ default: 'interface' });
-		expect(calledWith[1]).toMatchObject({ default: undefined });
 		expect(calledWith[2]).toMatchObject({ default: 'typescript' });
 		expect(calledWith[3]).toMatchObject({ default: false });
 
@@ -122,8 +120,8 @@ describe('run', () => {
 		});
 	});
 
-	it('should create from long options without prompting', async () => {
-		await runCli(['--type', 'hook', '--name', 'my-hook', '--language', 'typescript']);
+	it('should create with the language option without prompting', async () => {
+		await runCli(['hook', 'my-hook', '--language', 'typescript']);
 
 		expect(mockInquirerPrompt).not.toHaveBeenCalled();
 
@@ -133,48 +131,35 @@ describe('run', () => {
 		});
 	});
 
-	it('should create from short options without prompting', async () => {
-		await runCli(['-l', 'typescript', '-n', 'my-display', '-t', 'display']);
+	it('should error when only the type argument is provided', async () => {
+		const exitError = new Error('process.exit');
 
-		expect(mockInquirerPrompt).not.toHaveBeenCalled();
-
-		expect(mockCreate).toHaveBeenCalledWith('display', 'my-display', {
-			language: 'typescript',
-			install: true,
+		vi.spyOn(process, 'exit').mockImplementation(() => {
+			throw exitError;
 		});
+
+		const stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+
+		await expect(runCli(['interface'])).rejects.toThrow(exitError);
+
+		expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining("missing required argument 'name'"));
+		expect(mockInquirerPrompt).not.toHaveBeenCalled();
+		expect(mockCreate).not.toHaveBeenCalled();
 	});
 
-	it('should let options override positional arguments', async () => {
-		await runCli(['interface', 'positional-name', '--type', 'hook', '--name', 'flag-name']);
+	it('should error on unsupported type and name options', async () => {
+		const exitError = new Error('process.exit');
 
-		expect(mockInquirerPrompt).not.toHaveBeenCalled();
-
-		expect(mockCreate).toHaveBeenCalledWith('hook', 'flag-name', {
-			language: 'javascript',
-			install: true,
+		vi.spyOn(process, 'exit').mockImplementation(() => {
+			throw exitError;
 		});
-	});
 
-	it('should treat a positional argument as the name when the type is provided via option', async () => {
-		await runCli(['hello', '-t', 'bundle']);
+		const stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
 
-		expect(mockInquirerPrompt).not.toHaveBeenCalled();
+		await expect(runCli(['bundle', 'hello', '-t', 'interface'])).rejects.toThrow(exitError);
 
-		expect(mockCreate).toHaveBeenCalledWith('bundle', 'hello', {
-			language: undefined,
-			install: true,
-		});
-	});
-
-	it('should treat a positional argument as the type when the name is provided via option', async () => {
-		await runCli(['panel', '-n', 'hello']);
-
-		expect(mockInquirerPrompt).not.toHaveBeenCalled();
-
-		expect(mockCreate).toHaveBeenCalledWith('panel', 'hello', {
-			language: 'javascript',
-			install: true,
-		});
+		expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining("unknown option '-t'"));
+		expect(mockCreate).not.toHaveBeenCalled();
 	});
 
 	it('should pass install false when --no-install is used', async () => {
