@@ -176,6 +176,44 @@ describe('useDeploymentNavigation', () => {
 			expect(wrapper.vm.providers).toEqual(mockData2);
 		});
 
+		it('should ignore stale force fetch results', async () => {
+			const staleData = [{ provider: 'vercel', projects: [{ id: 'old', name: 'Old' }] }];
+			const latestData = [{ provider: 'vercel', projects: [{ id: 'new', name: 'New' }] }];
+			let resolveStaleFetch: (value: unknown) => void;
+			let resolveLatestFetch: (value: unknown) => void;
+
+			mockSdkRequest
+				.mockReturnValueOnce(
+					new Promise((resolve) => {
+						resolveStaleFetch = resolve;
+					}),
+				)
+				.mockReturnValueOnce(
+					new Promise((resolve) => {
+						resolveLatestFetch = resolve;
+					}),
+				);
+
+			const wrapper = mount(createTestComponent());
+
+			const staleFetch = wrapper.vm.fetch();
+			const latestFetch = wrapper.vm.fetch(true);
+
+			resolveStaleFetch!(staleData);
+			await staleFetch;
+			await flushPromises();
+
+			expect(wrapper.vm.providers).toEqual([]);
+			expect(wrapper.vm.loading).toBe(true);
+
+			resolveLatestFetch!(latestData);
+			await latestFetch;
+			await flushPromises();
+
+			expect(wrapper.vm.providers).toEqual(latestData);
+			expect(wrapper.vm.loading).toBe(false);
+		});
+
 		it('should set loading state during fetch', async () => {
 			let resolvePromise: (value: unknown) => void;
 

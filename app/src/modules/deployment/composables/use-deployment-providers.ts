@@ -8,6 +8,7 @@ const cache = ref<DeploymentConfig[]>([]);
 const loading = ref(false);
 const loaded = ref(false);
 let fetchPromise: Promise<void> | null = null;
+let fetchRequestId = 0;
 
 export function useDeploymentProviders() {
 	async function fetch(force = false) {
@@ -16,31 +17,10 @@ export function useDeploymentProviders() {
 
 		loading.value = true;
 
-		const pending = (async () => {
-			try {
-				const data = await sdk.request<DeploymentConfig[]>(
-					readDeployments({
-						fields: ['provider', 'options', { projects: ['id', 'name'] }],
-					}),
-				);
+		const requestId = ++fetchRequestId;
+		fetchPromise = fetchProviders(requestId);
 
-				cache.value = data;
-				loaded.value = true;
-			} catch (error) {
-				unexpectedError(error);
-			}
-		})();
-
-		fetchPromise = pending;
-
-		try {
-			await pending;
-		} finally {
-			if (fetchPromise === pending) {
-				fetchPromise = null;
-				loading.value = false;
-			}
-		}
+		return fetchPromise;
 	}
 
 	function refresh() {
@@ -55,4 +35,26 @@ export function useDeploymentProviders() {
 		fetch,
 		refresh,
 	};
+}
+
+async function fetchProviders(requestId: number) {
+	try {
+		const data = await sdk.request<DeploymentConfig[]>(
+			readDeployments({
+				fields: ['provider', 'options', { projects: ['id', 'name'] }],
+			}),
+		);
+
+		if (requestId !== fetchRequestId) return;
+
+		cache.value = data;
+		loaded.value = true;
+	} catch (error) {
+		if (requestId === fetchRequestId) unexpectedError(error);
+	} finally {
+		if (requestId === fetchRequestId) {
+			fetchPromise = null;
+			loading.value = false;
+		}
+	}
 }
