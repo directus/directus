@@ -181,12 +181,24 @@ export function getDatabase(): Knex {
 	if (client === 'mssql') {
 		const mssqlClient = database.client as any;
 		const lastOp = new Map<unknown, string>();
+		const inFlight = new Map<unknown, string>();
 
 		const origQuery = mssqlClient.query.bind(mssqlClient);
 
 		mssqlClient.query = async (connection: any, obj: any) => {
 			const uid = connection?.__knexUid;
-			const sql = String(obj?.sql ?? obj?.method ?? obj ?? '').slice(0, 200);
+			const sql = String(obj?.sql ?? obj?.method ?? obj ?? '').slice(0, 160);
+
+			// The smoking gun: a second query starting on a connection that already has one running means
+			// the connection is being used concurrently — exactly what leaves it in SentClientRequest.
+			if (inFlight.has(uid)) {
+				// eslint-disable-next-line no-console
+				console.error(
+					`[poison] CONCURRENT use of conn=${uid}: starting "${sql}" while still running "${inFlight.get(uid)}"`,
+				);
+			}
+
+			inFlight.set(uid, sql);
 			lastOp.set(uid, sql);
 
 			try {
@@ -200,6 +212,8 @@ export function getDatabase(): Knex {
 				}
 
 				throw err;
+			} finally {
+				inFlight.delete(uid);
 			}
 		};
 
