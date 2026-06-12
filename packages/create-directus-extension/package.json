@@ -39,6 +39,7 @@
 	"dependencies": {
 		"@directus/extensions": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
+		"commander": "catalog:",
 		"inquirer": "catalog:"
 	},
 	"devDependencies": {
