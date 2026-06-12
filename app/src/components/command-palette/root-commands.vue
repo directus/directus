@@ -3,6 +3,7 @@ import { groupBy } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
+import { getCommandContext } from './command-context';
 import CommandPaletteCommandItem from './command-palette-command-item.vue';
 import CommandPaletteEmpty from './command-palette-empty.vue';
 import CommandPaletteGroup from './command-palette-group.vue';
@@ -32,10 +33,7 @@ const commandRouter = useCommandRouter();
 const { aiAvailable, askAi, askAiShortcutModifierIcon } = useAskAi();
 const askAiHovering = ref(false);
 
-const commandContext = computed(() => ({
-	route,
-	search: context.search.value,
-}));
+const commandContext = computed(() => getCommandContext(route, context.search.value));
 
 const { search, clearSearch } = context;
 
