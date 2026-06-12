@@ -181,7 +181,7 @@ export function getDatabase(): Knex {
 	if (client === 'mssql') {
 		const mssqlClient = database.client as any;
 		const lastOp = new Map<unknown, string>();
-		const inFlight = new Map<unknown, string>();
+		const inFlight = new Map<unknown, { sql: string; stack: string }>();
 
 		const origQuery = mssqlClient.query.bind(mssqlClient);
 
@@ -189,16 +189,19 @@ export function getDatabase(): Knex {
 			const uid = connection?.__knexUid;
 			const sql = String(obj?.sql ?? obj?.method ?? obj ?? '').slice(0, 160);
 
-			// The smoking gun: a second query starting on a connection that already has one running means
-			// the connection is being used concurrently — exactly what leaves it in SentClientRequest.
-			if (inFlight.has(uid)) {
+			// A second query starting while one is already running on the same connection = concurrent use.
+			const prior = inFlight.get(uid);
+
+			if (prior) {
 				// eslint-disable-next-line no-console
 				console.error(
-					`[poison] CONCURRENT use of conn=${uid}: starting "${sql}" while still running "${inFlight.get(uid)}"`,
+					`[poison] CONCURRENT use of conn=${uid}: starting "${sql}" while still running "${prior.sql}"\n  in-flight origin:${prior.stack}`,
 				);
 			}
 
-			inFlight.set(uid, sql);
+			// Capture where this query was issued, so if the connection is released/re-acquired while the
+			// query is still in flight we can print the Directus call site that left it running.
+			inFlight.set(uid, { sql, stack: String(new Error('origin').stack).split('\n').slice(2, 10).join('\n') });
 			lastOp.set(uid, sql);
 
 			try {
@@ -220,12 +223,18 @@ export function getDatabase(): Knex {
 		const baseValidate = mssqlClient.validateConnection.bind(mssqlClient);
 
 		mssqlClient.validateConnection = (connection: any) => {
+			const uid = connection?.__knexUid;
 			const state = connection?.state?.name;
+			const stillRunning = inFlight.get(uid);
 
-			if (state && state !== 'LoggedIn') {
-				const uid = connection?.__knexUid;
+			// stillRunning = the connection is being acquired while a query it issued hasn't finished, i.e.
+			// it was released mid-query. The origin stack points at the Directus code that left it running.
+			if (stillRunning || (state && state !== 'LoggedIn')) {
 				// eslint-disable-next-line no-console
-				console.error(`[poison] acquiring conn=${uid} in state=${state} | last op: ${lastOp.get(uid)}`);
+				console.error(
+					`[poison] acquiring conn=${uid} state=${state} | in-flight: ${stillRunning?.sql ?? 'none'} | last op: ${lastOp.get(uid)}` +
+						(stillRunning ? `\n  in-flight origin:${stillRunning.stack}` : ''),
+				);
 			}
 
 			return baseValidate(connection);
