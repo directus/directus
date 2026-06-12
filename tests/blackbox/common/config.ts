@@ -97,6 +97,10 @@ const directusConfig = {
 	ADMIN_PASSWORD: 'password',
 	SECRET: 'directus-test',
 	TELEMETRY: 'false',
+	// Non-routable on purpose: unlicensed instances fall back to the core
+	// license, whose telemetry_required entitlement force-enables telemetry
+	TELEMETRY_URL: 'http://127.0.0.1:1',
+	COMPLIANCE_URL: 'http://127.0.0.1:1',
 	CACHE_SCHEMA: 'true',
 	CACHE_SCHEMA_MAX_ITERATIONS: '100',
 	CACHE_ENABLED: 'false',
