@@ -66,6 +66,7 @@ export async function run(argv = process.argv) {
 			type: 'confirm',
 			name: 'install',
 			message: 'Auto install dependencies?',
+			default: true,
 		},
 	]);
 

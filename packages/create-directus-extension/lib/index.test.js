@@ -64,6 +64,7 @@ describe('run', () => {
 			type: 'confirm',
 			name: 'install',
 			message: 'Auto install dependencies?',
+			default: true,
 		});
 	});
 
