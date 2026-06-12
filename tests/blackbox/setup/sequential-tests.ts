@@ -18,12 +18,24 @@ export const sequentialTestsList: Record<'db' | 'common', SequentialTestsList> =
 			'/tests/db/routes/fields/crud.test.ts',
 		],
 		after: [
+			// Websocket/collab tests are timing-sensitive: they assert that messages arrive within a
+			// deadline. Run on the contended mssql runner CONCURRENTLY with each other (and the
+			// instance-spawning auth/multi-instance/schema-cache tests), the shared Directus server gets
+			// starved and can't deliver messages — or even complete the WS handshake — in time, causing
+			// "Timeout waiting for matching message" / "WebSocket failed to achieve the OPEN state". The
+			// gate serializes `after` files (one at a time), so listing every websocket/collab file here
+			// keeps only one WS-heavy file running at once, leaving the server enough CPU. (Each file is
+			// also far quicker alone — the multi-minute durations were mostly timeout waits.)
+			'/tests/db/websocket/collab/core.test.ts',
+			'/tests/db/websocket/collab/relational.test.ts',
+			'/tests/db/websocket/collab/singleton.test.ts',
+			'/tests/db/websocket/collab/permissions.test.ts',
 			'/tests/db/websocket/collab/multi-instance.test.ts',
+			'/tests/db/websocket/auth.test.ts',
+			'/tests/db/websocket/general.test.ts',
 			'/tests/db/schema/timezone/timezone.test.ts',
 			'/tests/db/schema/timezone/timezone-changed-node-tz-america.test.ts',
 			'/tests/db/schema/timezone/timezone-changed-node-tz-asia.test.ts',
-			'/tests/db/websocket/auth.test.ts',
-			'/tests/db/websocket/general.test.ts',
 			'/tests/db/routes/permissions/cache-purge.test.ts',
 			'/tests/db/routes/flows/webhook.test.ts',
 			'/tests/db/app/cache.test.ts',
