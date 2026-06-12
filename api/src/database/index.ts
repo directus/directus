@@ -172,6 +172,52 @@ export function getDatabase(): Knex {
 	database = knex.default(knexConfig);
 	validateDatabaseCharset(database);
 
+	// TEMP DEBUG (strip after diagnosing): trace the mssql "SentClientRequest" connection poisoning.
+	// Records the last SQL run on each pooled connection, logs when a query leaves its connection in a
+	// non-LoggedIn state (the poisoning moment), and logs when such a poisoned connection is later
+	// handed out of the pool (the victim) with the op that poisoned it. Uses console.error (→ server
+	// stderr → blackbox "[MAIN]" echo) since LOG_LEVEL=error swallows warn. Observe-only:
+	// validateConnection still returns the original verdict (no rejection/churn).
+	if (client === 'mssql') {
+		const mssqlClient = database.client as any;
+		const lastOp = new Map<unknown, string>();
+
+		const origQuery = mssqlClient.query.bind(mssqlClient);
+
+		mssqlClient.query = async (connection: any, obj: any) => {
+			const uid = connection?.__knexUid;
+			const sql = String(obj?.sql ?? obj?.method ?? obj ?? '').slice(0, 200);
+			lastOp.set(uid, sql);
+
+			try {
+				return await origQuery(connection, obj);
+			} catch (err: any) {
+				const state = connection?.state?.name;
+
+				if (state && state !== 'LoggedIn') {
+					// eslint-disable-next-line no-console
+					console.error(`[poison] query left conn=${uid} in state=${state} | sql: ${sql} | err: ${err?.message}`);
+				}
+
+				throw err;
+			}
+		};
+
+		const baseValidate = mssqlClient.validateConnection.bind(mssqlClient);
+
+		mssqlClient.validateConnection = (connection: any) => {
+			const state = connection?.state?.name;
+
+			if (state && state !== 'LoggedIn') {
+				const uid = connection?.__knexUid;
+				// eslint-disable-next-line no-console
+				console.error(`[poison] acquiring conn=${uid} in state=${state} | last op: ${lastOp.get(uid)}`);
+			}
+
+			return baseValidate(connection);
+		};
+	}
+
 	const times = new Map<string, number>();
 
 	database
