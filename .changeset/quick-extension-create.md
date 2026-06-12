@@ -2,4 +2,4 @@
 'create-directus-extension': minor
 ---
 
-Added non-interactive extension creation options.
+Added support for non-interactive mode
