@@ -172,6 +172,24 @@ export function getDatabase(): Knex {
 	database = knex.default(knexConfig);
 	validateDatabaseCharset(database);
 
+	if (client === 'mssql') {
+		// knex's mssql `validateConnection` only checks `connection.connected`, so a pooled connection left
+		// in the tedious `SentClientRequest` state — a prior request that errored, timed out, or was
+		// cancelled mid-flight (likely under load) — is still "connected" and gets handed back out. The
+		// next operation's `beginTransaction` then throws "Requests can only be made in the LoggedIn state,
+		// not the SentClientRequest state", poisoning unrelated queries. Tighten the pool's validation to
+		// also require the connection to be back in `LoggedIn`, so a poisoned connection is discarded and a
+		// fresh one created instead of being reused.
+		const mssqlClient = database.client as any;
+		const baseValidateConnection = mssqlClient.validateConnection.bind(mssqlClient);
+
+		mssqlClient.validateConnection = (connection: any) => {
+			const state = connection?.state?.name;
+			if (state && state !== 'LoggedIn') return false;
+			return baseValidateConnection(connection);
+		};
+	}
+
 	const times = new Map<string, number>();
 
 	database
