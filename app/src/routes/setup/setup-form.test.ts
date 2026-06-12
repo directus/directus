@@ -2,7 +2,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
 import { expect, test, vi } from 'vitest';
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, type PropType } from 'vue';
 import { createI18n } from 'vue-i18n';
 import SetupForm from './form.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
@@ -18,7 +18,14 @@ vi.mock('@/directives/markdown', () => ({ default: {} }));
 
 /** Stub for VForm that exposes a method to trigger update:modelValue from tests */
 const VFormStub = defineComponent({
-	props: ['modelValue', 'fields', 'initialValues', 'validationErrors', 'showValidationErrors', 'disabledMenu'],
+	props: {
+		modelValue: { type: Object as PropType<Record<string, any>>, required: true },
+		fields: { type: Array, required: true },
+		initialValues: { type: Object as PropType<Record<string, any>>, required: true },
+		validationErrors: { type: Array, required: true },
+		showValidationErrors: { type: Boolean, required: true },
+		disabledMenu: { type: Boolean, required: true },
+	},
 	emits: ['update:modelValue'],
 	setup(_, { emit }) {
 		return { triggerUpdate: (val: any) => emit('update:modelValue', val) };
