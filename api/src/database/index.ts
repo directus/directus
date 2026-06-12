@@ -216,13 +216,68 @@ export function getDatabase(): Knex {
 
 				throw err;
 			} finally {
+				// If a query finished (resolved) but left its connection non-LoggedIn, the query itself is
+				// the poisoner (its result wasn't drained). If this never fires, the poisoner is a txn op.
+				const after = connection?.state?.name;
+
+				if (after && after !== 'LoggedIn') {
+					// eslint-disable-next-line no-console
+					console.error(`[poison] query FINISHED but left conn=${uid} in state=${after} | sql: ${sql}`);
+				}
+
 				inFlight.delete(uid);
+			}
+		};
+
+		// Wrap the tedious transaction methods (knex calls these, not client.query) so we catch a txn op
+		// that's started while a query is in flight, or that leaves the connection in a non-LoggedIn state.
+		const wrappedConns = new WeakSet<object>();
+
+		const wrapTxnMethods = (connection: any) => {
+			if (!connection || wrappedConns.has(connection)) return;
+			wrappedConns.add(connection);
+			const uid = connection.__knexUid;
+
+			for (const method of ['beginTransaction', 'commitTransaction', 'rollbackTransaction']) {
+				const orig = connection[method];
+				if (typeof orig !== 'function') continue;
+
+				connection[method] = function (this: any, callback: any, ...rest: any[]) {
+					const priorQuery = inFlight.get(uid);
+
+					if (priorQuery) {
+						// eslint-disable-next-line no-console
+						console.error(
+							`[poison] ${method} on conn=${uid} while query in flight "${priorQuery.sql}"\n  query origin:${priorQuery.stack}`,
+						);
+					}
+
+					const wrappedCallback =
+						typeof callback === 'function'
+							? function (this: any, err: any) {
+									const st = connection.state?.name;
+
+									if (st && st !== 'LoggedIn') {
+										// eslint-disable-next-line no-console
+										console.error(
+											`[poison] ${method} left conn=${uid} in state=${st}${err ? ` | err: ${err.message}` : ''}`,
+										);
+									}
+
+									// eslint-disable-next-line prefer-rest-params
+									return callback.apply(this, arguments);
+								}
+							: callback;
+
+					return orig.call(this, wrappedCallback, ...rest);
+				};
 			}
 		};
 
 		const baseValidate = mssqlClient.validateConnection.bind(mssqlClient);
 
 		mssqlClient.validateConnection = (connection: any) => {
+			wrapTxnMethods(connection);
 			const uid = connection?.__knexUid;
 			const state = connection?.state?.name;
 			const stillRunning = inFlight.get(uid);
