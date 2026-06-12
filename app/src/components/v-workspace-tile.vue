@@ -391,7 +391,6 @@ function useDragDrop() {
 			z-index: 3 !important;
 			border-color: var(--theme--primary);
 			box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--primary);
-			-webkit-user-select: none;
 			user-select: none;
 		}
 
