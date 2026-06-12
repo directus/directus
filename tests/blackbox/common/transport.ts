@@ -76,8 +76,10 @@ export async function waitForMatchingMessage<T extends WebSocketResponse = WebSo
 	// Collab/websocket assertions are eventually-consistent: the message does arrive, but under CI
 	// CPU contention the shared Directus server can push it late. 10s was too tight and flaked the
 	// collab suite on slower vendors; the message still has to arrive, so a longer ceiling only slows
-	// genuine failures, not passing tests. Capped below the test timeout so failures report cleanly.
-	timeout = 30000,
+	// genuine failures, not passing tests. mssql is the most starved (one slow instance on a 4-vCPU
+	// runner), so give it 60s; other vendors keep 30s. Each is capped below that vendor's test timeout
+	// (see vitest.config.ts) so failures report as a message timeout rather than the test timing out.
+	timeout = (process.env['TEST_DB']?.split(',').map((v) => v.trim()) ?? []).includes('mssql') ? 60000 : 30000,
 ): Promise<T | T[]> {
 	const start = Date.now();
 	const isArray = Array.isArray(matcher);

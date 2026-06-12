@@ -23,8 +23,10 @@ export default defineConfig({
 		sequence: {
 			sequencer: Sequencer,
 		},
-		// 45s for mssql so the 30s message-wait ceiling (see waitForMatchingMessage) fits inside the
-		// test timeout, rather than the test timeout firing first and masking it.
-		testTimeout: isMssql ? 45_000 : 15_000,
+		// 75s for mssql so the 60s message-wait ceiling (see waitForMatchingMessage) fits inside the test
+		// timeout with room for the heavy collab tests' own setup (permission/relation queries) before the
+		// wait even starts — otherwise the test timeout fires first (as the singleton Reactive Invalidation
+		// case did at 45s). Generous because the message does arrive; this only slows genuine failures.
+		testTimeout: isMssql ? 75_000 : 15_000,
 	},
 });
