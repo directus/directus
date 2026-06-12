@@ -8,6 +8,62 @@ import { AccessService, UsersService } from '../../../services/index.js';
 import { fetchAccessRoles } from '../../../utils/fetch-user-count/fetch-access-roles.js';
 import { getSchema } from '../../../utils/get-schema.js';
 
+/**
+ * Group access rows to the admin/app users and roles that occupy a seat.
+ */
+export function getSeatUsersAndRoles(accessRows: Record<string, any>[]) {
+	const adminRoles = new Set<string>();
+	const appRoles = new Set<string>();
+	const adminUsers = new Set<string>();
+	const appUsers = new Set<string>();
+
+	// Track app users who role may be marked as admin from later acess row
+	const appUsersByRole = new Map<string, Set<string>>();
+
+	for (const accessRow of accessRows) {
+		const { admin_access, app_access } = accessRow['policy'] || {};
+
+		const isAdmin = toBoolean(admin_access);
+		const isApp = !isAdmin && toBoolean(app_access);
+
+		if (!isAdmin && !isApp) continue;
+
+		if (accessRow['user'] && accessRow['user'].status === 'active') {
+			const { id, role } = accessRow['user'];
+
+			if (isAdmin) {
+				adminUsers.add(id);
+
+				// remove if previously marked as app user from previous access/policy
+				appUsers.delete(id);
+			} else if (adminUsers.has(id) === false && (!role || adminRoles.has(role) === false)) {
+				appUsers.add(id);
+
+				if (role) {
+					const roleUsers = appUsersByRole.get(role) ?? new Set<string>();
+
+					appUsersByRole.set(role, roleUsers.add(id));
+				}
+			}
+		}
+
+		if (accessRow['role']) {
+			if (isAdmin) {
+				adminRoles.add(accessRow['role']);
+
+				// remove any app user whose role was admin
+				for (const id of appUsersByRole.get(accessRow['role']) ?? []) {
+					appUsers.delete(id);
+				}
+			} else {
+				appRoles.add(accessRow['role']);
+			}
+		}
+	}
+
+	return { adminUsers, appUsers, adminRoles, appRoles };
+}
+
 export async function getActiveSeats(opts?: {
 	adminId?: string;
 	knex?: Knex | undefined;
@@ -22,33 +78,7 @@ export async function getActiveSeats(opts?: {
 		limit: -1,
 	});
 
-	const adminRoles = new Set<string>();
-	const appRoles = new Set<string>();
-	const adminUsers = new Set<string>();
-	const appUsers = new Set<string>();
-
-	for (const accessRow of accessRows) {
-		const isAdmin = toBoolean(accessRow['policy']?.['admin_access']);
-		const isApp = !isAdmin && toBoolean(accessRow['policy']?.['app_access']);
-
-		if (!isAdmin && !isApp) continue;
-
-		if (accessRow['user'] && accessRow['user'].status === 'active') {
-			if (isAdmin) {
-				adminUsers.add(accessRow['user'].id);
-			} else if (adminUsers.has(accessRow['user'].id) === false && adminRoles.has(accessRow['user']?.role) === false) {
-				appUsers.add(accessRow['user'].id);
-			}
-		}
-
-		if (accessRow['role']) {
-			if (isAdmin) {
-				adminRoles.add(accessRow['role']);
-			} else {
-				appRoles.add(accessRow['role']);
-			}
-		}
-	}
+	const { adminUsers, appUsers, adminRoles, appRoles } = getSeatUsersAndRoles(accessRows);
 
 	const { adminRoles: allAdminRoles, appRoles: allAppRoles } = await fetchAccessRoles(
 		{
@@ -88,13 +118,31 @@ export async function getActiveSeats(opts?: {
 				{
 					id: {
 						_in: Array.from(appUsers),
-						_nin: Array.from(adminUsers),
 					},
 				},
 				{
 					role: {
 						_in: Array.from(allAppRoles),
+					},
+				},
+			],
+		},
+		{
+			id: {
+				_nin: Array.from(adminUsers),
+			},
+		},
+		{
+			_or: [
+				{
+					role: {
 						_nin: Array.from(allAdminRoles),
+					},
+				},
+				// Dont exclude users marked as app via direct policy
+				{
+					role: {
+						_null: true,
 					},
 				},
 			],
