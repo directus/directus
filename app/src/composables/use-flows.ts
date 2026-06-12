@@ -1,8 +1,12 @@
 import { useCollection } from '@directus/composables';
-import formatTitle from '@directus/format-title';
 import { FlowRaw, Item, PrimaryKey } from '@directus/types';
 import { computed, inject, provide, type Ref, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import {
+	getManualFlowConfirmDetails,
+	isManualFlowConfirmButtonDisabled,
+	triggerManualFlow,
+} from './use-flows/lib/manual-flow';
 import api from '@/api';
 import { useFlowsStore } from '@/stores/flows';
 import { useNotificationsStore } from '@/stores/notifications';
@@ -79,19 +83,7 @@ export function useFlows(options: UseFlowsOptions) {
 		return t('run_flow_on_selected', selection.value.length);
 	});
 
-	const confirmDialogDetails = computed(() => {
-		if (!currentFlow.value) return null;
-
-		if (!currentFlow.value.options?.requireConfirmation) return null;
-
-		return {
-			description: currentFlow.value.options.confirmationDescription,
-			fields: (currentFlow.value.options.fields ?? []).map((field: Record<string, any>) => ({
-				...field,
-				name: !field.name && field.field ? formatTitle(field.field) : field.name,
-			})),
-		};
-	});
+	const confirmDialogDetails = computed(() => getManualFlowConfirmDetails(currentFlow.value));
 
 	const displayCustomConfirmDialog = computed(
 		() =>
@@ -109,22 +101,9 @@ export function useFlows(options: UseFlowsOptions) {
 			!currentFlowConfirmations.value?.isUnsavedChangesConfirmed,
 	);
 
-	const isConfirmButtonDisabled = computed(() => {
-		if (!currentFlowId.value) return true;
-
-		for (const field of confirmDialogDetails.value?.fields || []) {
-			if (
-				field.meta?.required &&
-				(!confirmValues.value ||
-					confirmValues.value[field.field] === null ||
-					confirmValues.value[field.field] === undefined)
-			) {
-				return true;
-			}
-		}
-
-		return false;
-	});
+	const isConfirmButtonDisabled = computed(() =>
+		isManualFlowConfirmButtonDisabled(currentFlowId.value, confirmDialogDetails.value, confirmValues.value),
+	);
 
 	const manualFlows = computed<ManualFlow[]>(() => {
 		const manualFlows = flowsStore
@@ -223,25 +202,15 @@ export function useFlows(options: UseFlowsOptions) {
 		runningFlows.value = [...runningFlows.value, flowId];
 
 		try {
-			if (
-				location === 'collection' &&
-				currentFlow.value.options?.requireSelection === false &&
-				selection.value.length === 0
-			) {
-				await api.post(`/flows/trigger/${flowId}`, {
-					...(confirmValues.value ?? {}),
-					collection: collection.value,
-				});
-			} else {
-				const pk = unref(primaryKey);
-				const keys = pk ? [pk] : selection.value || [];
-
-				await api.post(`/flows/trigger/${flowId}`, {
-					...confirmValues.value,
-					collection: collection.value,
-					keys,
-				});
-			}
+			await triggerManualFlow({
+				api,
+				flow: currentFlow.value,
+				collection: collection.value,
+				location,
+				primaryKey,
+				selection,
+				values: confirmValues.value,
+			});
 
 			selection.value = [];
 			onRefreshCallback();

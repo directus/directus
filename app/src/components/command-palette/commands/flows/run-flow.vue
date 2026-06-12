@@ -1,22 +1,21 @@
 <script setup lang="ts">
 import { useApi } from '@directus/composables';
-import formatTitle from '@directus/format-title';
-import type { FlowRaw, PrimaryKey } from '@directus/types';
-import { computed, ref, unref } from 'vue';
+import type { FlowRaw, Item } from '@directus/types';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { useCommandPalette } from '../../composables/use-command-palette';
 import { useCommandRouter } from '../../composables/use-command-router';
 import { getRoutePrimaryKey } from '../../utils/get-route-primary-key';
-import VButton from '@/components/v-button.vue';
-import VCardActions from '@/components/v-card-actions.vue';
-import VCardText from '@/components/v-card-text.vue';
-import VCardTitle from '@/components/v-card-title.vue';
-import VCard from '@/components/v-card.vue';
-import VDialog from '@/components/v-dialog.vue';
-import VForm from '@/components/v-form/v-form.vue';
+import {
+	getManualFlowConfirmDetails,
+	isManualFlowConfirmButtonDisabled,
+	triggerManualFlow,
+} from '@/composables/use-flows/lib/manual-flow';
 import { useNotificationsStore } from '@/stores/notifications';
+import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 
 const props = defineProps<{
 	flow: FlowRaw;
@@ -30,78 +29,71 @@ const notificationsStore = useNotificationsStore();
 const { close } = useCommandPalette();
 const { pop: goBack } = useCommandRouter();
 
-const selection = ref<PrimaryKey[]>([]);
-const confirmValues = ref<Record<string, any> | null>();
+const selection = ref<Item[]>([]);
+const confirmValues = ref<Record<string, any> | null>(null);
 
-const collection = computed(() => route.params.collection);
-const primaryKey = computed(() => getRoutePrimaryKey(route.params.primaryKey));
+const collection = computed(() => (typeof route.params.collection === 'string' ? route.params.collection : ''));
+const primaryKey = computed(() => getRoutePrimaryKey(route.params.primaryKey) ?? null);
 
 async function runFlow() {
-	const flow = props.flow;
-
 	try {
-		if (props.location === 'collection' && flow.options?.requireSelection === false && selection.value.length === 0) {
-			await api.post(`/flows/trigger/${flow.id}`, {
-				...unref(confirmValues),
-				collection: collection.value,
-			});
-		} else {
-			const keys = primaryKey.value ? [primaryKey.value] : selection.value;
-
-			await api.post(`/flows/trigger/${flow.id}`, {
-				...unref(confirmValues),
-				collection: collection.value,
-				keys,
-			});
-		}
-
-		notificationsStore.add({
-			title: t('run_flow_success', { flow: flow.name }),
+		await triggerManualFlow({
+			api,
+			flow: props.flow,
+			collection: collection.value,
+			location: props.location,
+			primaryKey,
+			selection,
+			values: confirmValues.value,
 		});
 
-		resetConfirm();
+		notify({
+			title: t('trigger_flow_success', { flow: props.flow.name }),
+		});
+
+		await notificationsStore.refreshUnreadCount();
 		close();
 	} catch (error) {
 		unexpectedError(error);
 	}
 }
 
-const confirmDetails = computed(() => {
-	const flow = props.flow;
+function confirmCustomDialog() {
+	if (isConfirmButtonDisabled.value) return;
 
-	if (!flow.options?.requireConfirmation) return null;
+	runFlow();
+}
 
-	return {
-		description: flow.options.confirmationDescription,
-		fields: (flow.options.fields ?? []).map((field: Record<string, any>) => ({
-			...field,
-			name: !field.name && field.field ? formatTitle(field.field) : field.name,
-		})),
-	};
-});
+const confirmDetails = computed(() => getManualFlowConfirmDetails(props.flow));
+const currentFlowId = computed(() => props.flow.id);
 
-const isConfirmButtonDisabled = computed(() => {
-	for (const field of confirmDetails.value?.fields || []) {
-		if (
-			field.meta?.required &&
-			(!confirmValues.value ||
-				confirmValues.value[field.field] === null ||
-				confirmValues.value[field.field] === undefined)
-		) {
-			return true;
-		}
-	}
-
-	return false;
-});
+const isConfirmButtonDisabled = computed(() =>
+	isManualFlowConfirmButtonDisabled(currentFlowId.value, confirmDetails.value, confirmValues.value),
+);
 
 const confirmButtonCTA = computed(() => {
 	if (props.location === 'item') return t('run_flow_on_current');
-	if (unref(selection).length === 0) return t('run_flow');
-	return t('run_flow_on_selected', unref(selection).length);
+	if (selection.value.length === 0) return t('run_flow');
+	return t('run_flow_on_selected', selection.value.length);
 });
 
 const displayCustomConfirmDialog = computed(() => !!confirmDetails.value);
+
+const flowDialogsContext = computed(() => ({
+	confirmButtonCTA: confirmButtonCTA.value,
+	confirmDialogDetails: confirmDetails.value,
+	confirmUnsavedChanges: () => {},
+	confirmCustomDialog,
+	confirmValues: confirmValues.value,
+	currentFlowId: currentFlowId.value,
+	displayCustomConfirmDialog: displayCustomConfirmDialog.value,
+	displayUnsavedChangesDialog: false,
+	isConfirmButtonDisabled: isConfirmButtonDisabled.value,
+	resetConfirm,
+	updateFieldValues: (values: Record<string, any>) => {
+		confirmValues.value = values;
+	},
+}));
 
 function resetConfirm() {
 	goBack();
@@ -109,30 +101,5 @@ function resetConfirm() {
 </script>
 
 <template>
-	<VDialog :model-value="displayCustomConfirmDialog" @esc="resetConfirm">
-		<VCard class="allow-drawer">
-			<VCardTitle>
-				{{ confirmDetails!.description ?? t('run_flow_confirm') }}
-			</VCardTitle>
-			<VCardText class="confirm-form">
-				<VForm
-					v-if="confirmDetails!.fields && confirmDetails!.fields.length > 0"
-					:fields="confirmDetails!.fields"
-					:model-value="confirmValues"
-					autofocus
-					primary-key="+"
-					@update:model-value="confirmValues = $event"
-				/>
-			</VCardText>
-
-			<VCardActions>
-				<VButton secondary @click="resetConfirm">
-					{{ t('cancel') }}
-				</VButton>
-				<VButton :disabled="isConfirmButtonDisabled" @click="runFlow">
-					{{ confirmButtonCTA }}
-				</VButton>
-			</VCardActions>
-		</VCard>
-	</VDialog>
+	<FlowDialogs v-bind="flowDialogsContext" :keep-behind="false" />
 </template>

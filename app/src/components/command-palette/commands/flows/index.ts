@@ -1,15 +1,17 @@
-import { triggerFlow } from '@directus/sdk';
-import type { FlowRaw } from '@directus/types';
+import type { FlowRaw, Item } from '@directus/types';
+import { ref } from 'vue';
 import type { CommandActionContext, CommandConfig } from '../../composables/use-command-registry';
 import { defineCommands } from '../../composables/use-command-registry';
 import { getRoutePrimaryKey } from '../../utils/get-route-primary-key';
 import { getRouteVersionContext } from '../../utils/get-route-version-context';
 import RunFlow from './run-flow.vue';
+import api from '@/api';
+import { canRunManualFlowFromCommandPalette, triggerManualFlow } from '@/composables/use-flows/lib/manual-flow';
 import { i18n } from '@/lang';
-import sdk from '@/sdk';
 import { useFlowsStore } from '@/stores/flows';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
+import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export const flowCommands = defineCommands({
@@ -61,6 +63,7 @@ export const collectionItemFlowCommands = defineCommands({
 		if (!collection || !route.path.startsWith(`/content/${collection}`)) return [];
 		if (getRouteVersionContext(route).isVersionContext) return [];
 
+		const currentCollection = collection;
 		const itemPrimaryKey = getRoutePrimaryKey(primaryKey);
 		const location = itemPrimaryKey ? 'item' : 'collection';
 
@@ -68,11 +71,11 @@ export const collectionItemFlowCommands = defineCommands({
 		const notificationsStore = useNotificationsStore();
 
 		const flows = flowsStore
-			.getManualFlowsForCollection(collection)
+			.getManualFlowsForCollection(currentCollection)
 			.filter(
 				(flow) => !flow.options?.location || flow.options?.location === 'both' || flow.options?.location === location,
 			)
-			.filter((flow) => location === 'item' || flow.options?.requireSelection === false);
+			.filter((flow) => canRunManualFlowFromCommandPalette(flow, location));
 
 		return flows.map(flowCommand);
 
@@ -91,18 +94,21 @@ export const collectionItemFlowCommands = defineCommands({
 					...common,
 					action: async () => {
 						try {
-							await sdk.request(
-								triggerFlow('POST', flow.id, {
-									collection,
-									...(location === 'collection' && flow.options?.requireSelection === false
-										? {}
-										: { keys: [itemPrimaryKey] }),
-								} as Record<string, any>),
-							);
-
-							notificationsStore.add({
-								title: t('run_flow_success', { flow: flow.name }),
+							await triggerManualFlow({
+								api,
+								flow,
+								collection: currentCollection,
+								location,
+								primaryKey: ref(itemPrimaryKey ?? null),
+								selection: ref<Item[]>([]),
+								values: null,
 							});
+
+							notify({
+								title: t('trigger_flow_success', { flow: flow.name }),
+							});
+
+							await notificationsStore.refreshUnreadCount();
 						} catch (error) {
 							unexpectedError(error);
 						}

@@ -55,8 +55,11 @@ vi.mock('@/stores/flows', () => ({
 vi.mock('@/stores/notifications', () => ({
 	useNotificationsStore: () => ({
 		add: vi.fn(),
+		refreshUnreadCount: vi.fn(),
 	}),
 }));
+
+vi.mock('@/utils/notify');
 
 vi.mock('@/stores/user', () => ({
 	useUserStore: () => ({
@@ -159,6 +162,35 @@ describe('command version policies', () => {
 
 		expect(commands).toEqual([]);
 		expect(mocks.getManualFlowsForCollection).not.toHaveBeenCalled();
+	});
+
+	test('hides selection-required collection flow commands without selected rows', () => {
+		mocks.getManualFlowsForCollection.mockReturnValue([
+			{
+				id: 'flow-selection',
+				name: 'Bulk Publish',
+				trigger: 'manual',
+				status: 'active',
+				options: { collections: ['posts'], location: 'collection', requireSelection: true },
+			},
+			{
+				id: 'flow-collection',
+				name: 'Publish Collection',
+				trigger: 'manual',
+				status: 'active',
+				options: { collections: ['posts'], location: 'collection', requireSelection: false },
+			},
+		]);
+
+		const commands = getCommands(
+			collectionItemFlowCommands,
+			route({
+				path: '/content/posts',
+				params: { collection: 'posts' },
+			}),
+		);
+
+		expect(commands.map((command: any) => command.id)).toEqual(['run-flow-flow-collection']);
 	});
 
 	test('copies versioned item API URLs with version query', () => {

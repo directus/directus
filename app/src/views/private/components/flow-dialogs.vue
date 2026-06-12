@@ -24,13 +24,15 @@ interface FlowDialogsContext {
 	updateFieldValues: (event: Record<string, any>) => void;
 }
 
-defineProps<FlowDialogsContext>();
+withDefaults(defineProps<FlowDialogsContext & { keepBehind?: boolean }>(), {
+	keepBehind: true,
+});
 </script>
 
 <template>
 	<VDialog
 		:model-value="displayUnsavedChangesDialog"
-		keep-behind
+		:keep-behind="keepBehind"
 		@esc="resetConfirm"
 		@apply="confirmUnsavedChanges(currentFlowId!)"
 	>
@@ -51,7 +53,7 @@ defineProps<FlowDialogsContext>();
 
 	<VDialog
 		:model-value="displayCustomConfirmDialog"
-		keep-behind
+		:keep-behind="keepBehind"
 		@esc="resetConfirm"
 		@apply="confirmCustomDialog(currentFlowId!)"
 	>
