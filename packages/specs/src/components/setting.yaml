@@ -125,3 +125,72 @@ properties:
                       type: string
     example: null
     nullable: true
+  global_search_config:
+    description: Global search configuration for the command palette.
+    type: object
+    nullable: true
+    properties:
+      triggerRate:
+        description: Debounce delay in milliseconds before a global search request is sent.
+        type: integer
+        nullable: true
+        example: 150
+      collections:
+        description: Collections and fields included in global search.
+        type: array
+        items:
+          type: object
+          properties:
+            collection:
+              description: Collection identifier.
+              type: string
+              example: articles
+            displayTemplate:
+              description: Display template used to render each result.
+              type: string
+              nullable: true
+              example: '{{title}}'
+            descriptionField:
+              description: Field shown as secondary result text.
+              type: string
+              nullable: true
+              example: summary
+            fields:
+              description: Field paths searched for matching values.
+              type: array
+              items:
+                type: string
+              example:
+                - title
+                - author.name
+            filter:
+              description: Optional item filter applied to this collection.
+              type: object
+              nullable: true
+              example:
+                status:
+                  _eq: published
+            sort:
+              description: Optional sort field used for result ordering.
+              type: string
+              nullable: true
+              example: -created_at
+            limit:
+              description: Maximum number of results returned for this collection.
+              type: integer
+              nullable: true
+              example: 25
+    example:
+      triggerRate: 150
+      collections:
+        - collection: articles
+          displayTemplate: '{{title}}'
+          descriptionField: summary
+          fields:
+            - title
+            - author.name
+          filter:
+            status:
+              _eq: published
+          sort: -created_at
+          limit: 25

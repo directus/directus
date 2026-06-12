@@ -1,0 +1,43 @@
+post:
+  summary: Search Configured Collections
+  description: Search across the collections configured in the global search settings.
+  operationId: globalSearch
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            query:
+              description: Search query. Queries shorter than two characters return no results.
+              type: string
+              example: article
+          required:
+            - query
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                description: Results keyed by collection name.
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: object
+            example:
+              data:
+                articles:
+                  - id: 1
+                    title: Alpha
+                    summary: Published article
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '403':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+  tags:
+    - Utilities
