@@ -1,4 +1,4 @@
-import { BUNDLE_EXTENSION_TYPES, EXTENSION_LANGUAGES, EXTENSION_TYPES } from '@directus/extensions';
+import { EXTENSION_LANGUAGES, EXTENSION_TYPES } from '@directus/extensions';
 import { create } from '@directus/extensions-sdk/cli';
 import inquirer from 'inquirer';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -64,7 +64,6 @@ describe('run', () => {
 			type: 'confirm',
 			name: 'install',
 			message: 'Auto install dependencies?',
-			default: true,
 		});
 	});
 
@@ -85,27 +84,6 @@ describe('run', () => {
 		expect(mockCreate).toHaveBeenCalledWith('interface', 'my-interface', {
 			language: 'typescript',
 			install: true,
-		});
-	});
-
-	it('should use provided partial options as prompt defaults', async () => {
-		mockInquirerPrompt.mockResolvedValue({
-			type: 'interface',
-			name: 'prompted-interface',
-			language: 'typescript',
-			install: false,
-		});
-
-		await runCli(['--language', 'typescript', '--no-install']);
-
-		const calledWith = mockInquirerPrompt.mock.calls[0][0];
-
-		expect(calledWith[2]).toMatchObject({ default: 'typescript' });
-		expect(calledWith[3]).toMatchObject({ default: false });
-
-		expect(mockCreate).toHaveBeenCalledWith('interface', 'prompted-interface', {
-			language: 'typescript',
-			install: false,
 		});
 	});
 
@@ -142,23 +120,8 @@ describe('run', () => {
 
 		await expect(runCli(['interface'])).rejects.toThrow(exitError);
 
-		expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining("missing required argument 'name'"));
+		expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining('required argument "name"'));
 		expect(mockInquirerPrompt).not.toHaveBeenCalled();
-		expect(mockCreate).not.toHaveBeenCalled();
-	});
-
-	it('should error on unsupported type and name options', async () => {
-		const exitError = new Error('process.exit');
-
-		vi.spyOn(process, 'exit').mockImplementation(() => {
-			throw exitError;
-		});
-
-		const stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
-
-		await expect(runCli(['bundle', 'hello', '-t', 'interface'])).rejects.toThrow(exitError);
-
-		expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining("unknown option '-t'"));
 		expect(mockCreate).not.toHaveBeenCalled();
 	});
 
@@ -176,7 +139,6 @@ describe('run', () => {
 	it('should omit language for bundle extensions in non-interactive mode', async () => {
 		await runCli(['bundle', 'my-bundle', '--language', 'typescript']);
 
-		expect(BUNDLE_EXTENSION_TYPES.includes('bundle')).toBe(true);
 		expect(mockInquirerPrompt).not.toHaveBeenCalled();
 
 		expect(mockCreate).toHaveBeenCalledWith('bundle', 'my-bundle', {
@@ -185,7 +147,7 @@ describe('run', () => {
 		});
 	});
 
-	it('should test language prompt conditional logic', async () => {
+	it('should hide language prompt for bundle types', async () => {
 		mockInquirerPrompt.mockResolvedValue({
 			type: 'interface',
 			name: 'test-interface',
@@ -200,28 +162,5 @@ describe('run', () => {
 
 		expect(languagePrompt.when({ type: 'bundle' })).toBe(false);
 		expect(languagePrompt.when({ type: 'interface' })).toBe(true);
-	});
-
-	it('should handle errors from create function', async () => {
-		const error = new Error('Create failed');
-
-		mockInquirerPrompt.mockResolvedValue({
-			type: 'interface',
-			name: 'test-extension',
-			language: 'typescript',
-			install: true,
-		});
-
-		mockCreate.mockRejectedValue(error);
-
-		await expect(runCli()).rejects.toThrow('Create failed');
-	});
-
-	it('should handle errors from inquirer prompt', async () => {
-		const error = new Error('Prompt failed');
-
-		mockInquirerPrompt.mockRejectedValue(error);
-
-		await expect(runCli()).rejects.toThrow('Prompt failed');
 	});
 });

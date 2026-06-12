@@ -14,7 +14,7 @@ export async function run(argv = process.argv) {
 	const program = new Command('create-directus-extension')
 		.description('Scaffold a Directus extension')
 		.argument('[type]', 'extension type')
-		.argument('[name]', 'extension name')
+		.argument('[name]', 'extension name (required when type is provided)')
 		.option('-l, --language <language>', 'specify the language to use')
 		.option('--no-install', 'skip dependency installation after creating extension');
 
@@ -22,18 +22,21 @@ export async function run(argv = process.argv) {
 
 	const options = program.opts();
 	const [type, name] = program.args;
-	const install = options.install;
 
-	// Both arguments are required for non-interactive mode; only a bare
-	// invocation falls through to the interactive walkthrough
-	if (type !== undefined && name === undefined) {
-		program.error("error: missing required argument 'name'");
-	}
+	if (type) {
+		// Both arguments are required for non-interactive mode.
+		if (!name) {
+			program.error('Missing required argument "name". Run without arguments for interactive mode.');
+			return;
+		}
 
-	if (type && name) {
-		const language = BUNDLE_EXTENSION_TYPES.includes(type) ? undefined : (options.language ?? 'javascript');
+		let language;
 
-		await create(type, name, { language, install });
+		if (BUNDLE_EXTENSION_TYPES.includes(type) === false) {
+			language = options.language ?? 'javascript';
+		}
+
+		await create(type, name, { language, install: options.install });
 		return;
 	}
 
@@ -57,14 +60,12 @@ export async function run(argv = process.argv) {
 			name: 'language',
 			message: 'Choose the language to use',
 			choices: EXTENSION_LANGUAGES,
-			default: options.language,
 			when: ({ type }) => BUNDLE_EXTENSION_TYPES.includes(type) === false,
 		},
 		{
 			type: 'confirm',
 			name: 'install',
 			message: 'Auto install dependencies?',
-			default: install,
 		},
 	]);
 
