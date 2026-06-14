@@ -47,6 +47,7 @@ describe('IpBlocklist', () => {
 			expect(blocklist.checkAddress('::a9fe:a9fe')).toBe(true); // IPv4-compatible
 			expect(blocklist.checkAddress('64:ff9b::a9fe:a9fe')).toBe(true); // NAT64
 			expect(blocklist.checkAddress('2002:a9fe:a9fe::')).toBe(true); // 6to4
+			expect(blocklist.checkAddress('2002:a9fe:a9fe:abcd:1:2:3:4')).toBe(true);
 		});
 
 		test('blocks transition forms of a denied IPv4 subnet', () => {
@@ -63,6 +64,7 @@ describe('IpBlocklist', () => {
 			expect(blocklist.checkAddress('::ffff:8.8.8.8')).toBe(false);
 			expect(blocklist.checkAddress('::808:808')).toBe(false); // ::8.8.8.8
 			expect(blocklist.checkAddress('2002:808:808::')).toBe(false); // 6to4 8.8.8.8
+			expect(blocklist.checkAddress('64:ff9b::808:808')).toBe(false); // NAT64 8.8.8.8
 		});
 
 		test('does not treat :: / ::1 as an embedded IPv4 of a denied 0.0.0.0/8', () => {
