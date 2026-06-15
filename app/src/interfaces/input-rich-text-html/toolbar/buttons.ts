@@ -1,10 +1,19 @@
 import type { Editor } from '@tiptap/vue-3';
 
+/** Handlers for buttons whose commands need more than the editor (instantiated in setup scope). */
+export interface ToolbarContext {
+	clipboard: {
+		copy: (editor: Editor) => void;
+		cut: (editor: Editor) => void;
+		paste: (editor: Editor) => void;
+	};
+}
+
 export interface ToolbarButton {
 	icon: string;
 	/** i18n key, resolved with `t()` at render time */
 	label: string;
-	command: (editor: Editor) => void;
+	command: (editor: Editor, ctx: ToolbarContext) => void;
 	isActive?: (editor: Editor) => boolean;
 	disabled?: (editor: Editor) => boolean;
 }
@@ -103,5 +112,22 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		icon: 'format_clear',
 		label: 'wysiwyg_options.removeformat',
 		command: (e) => e.chain().focus().unsetAllMarks().clearNodes().run(),
+	},
+	cut: {
+		icon: 'content_cut',
+		label: 'wysiwyg_options.cut',
+		command: (e, ctx) => ctx.clipboard.cut(e),
+		disabled: (e) => e.state.selection.empty,
+	},
+	copy: {
+		icon: 'content_copy',
+		label: 'wysiwyg_options.copy',
+		command: (e, ctx) => ctx.clipboard.copy(e),
+		disabled: (e) => e.state.selection.empty,
+	},
+	paste: {
+		icon: 'content_paste',
+		label: 'wysiwyg_options.paste',
+		command: (e, ctx) => ctx.clipboard.paste(e),
 	},
 };

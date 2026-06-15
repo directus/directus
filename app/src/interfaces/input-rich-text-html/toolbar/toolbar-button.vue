@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3';
 import { useI18n } from 'vue-i18n';
-import type { ToolbarButton } from './buttons';
+import type { ToolbarButton, ToolbarContext } from './buttons';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 
 defineProps<{
 	button: ToolbarButton;
 	editor: Editor | undefined;
+	context: ToolbarContext;
 	disabled?: boolean;
 }>();
 
@@ -22,7 +23,7 @@ const { t } = useI18n();
 		:disabled="disabled || (editor ? button.disabled?.(editor) : true)"
 		small
 		icon
-		@click="editor && button.command(editor)"
+		@click="editor && button.command(editor, context)"
 	>
 		<VIcon :name="button.icon" />
 	</VButton>

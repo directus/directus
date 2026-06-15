@@ -3,8 +3,9 @@ import type { Editor } from '@tiptap/vue-3';
 import { useResizeObserver } from '@vueuse/core';
 import { computed, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { type ToolbarButton, toolbarButtons } from './buttons';
+import { type ToolbarButton, toolbarButtons, type ToolbarContext } from './buttons';
 import ToolbarButtonComp from './toolbar-button.vue';
+import { useClipboardActions } from './use-clipboard-actions';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
@@ -16,6 +17,16 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
+
+const clipboard = useClipboardActions();
+
+const context: ToolbarContext = {
+	clipboard: {
+		copy: clipboard.copySelection,
+		cut: clipboard.cutSelection,
+		paste: clipboard.paste,
+	},
+};
 
 // small icon button = 2rem square; keep in sync with the CSS gap below
 const BUTTON_WIDTH = 32;
@@ -58,6 +69,7 @@ const overflowItems = computed(() => items.value.slice(visibleCount.value));
 			:key="item.key"
 			:button="item.button"
 			:editor="editor"
+			:context="context"
 			:disabled="disabled"
 		/>
 
@@ -73,6 +85,7 @@ const overflowItems = computed(() => items.value.slice(visibleCount.value));
 					:key="item.key"
 					:button="item.button"
 					:editor="editor"
+					:context="context"
 					:disabled="disabled"
 				/>
 			</div>
