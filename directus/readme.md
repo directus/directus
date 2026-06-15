@@ -1,102 +1,111 @@
-<p align="center"><img alt="Directus Logo" src="https://user-images.githubusercontent.com/522079/158864859-0fbeae62-9d7a-4619-b35e-f8fa5f68e0c8.png"></p>
+![Directus](https://marketing.directus.app/assets/42a4a005-e1cd-42ed-9dac-4d174619fc66)
 
-## 🐰 Introduction
+# The collaborative backend for applications & AI.
 
-Directus is a real-time API and App dashboard for managing SQL database content.
+Connect any SQL database and get instant REST and GraphQL APIs, a visual management Studio, and a native MCP server for
+AI agents.
 
-- **REST & GraphQL API.** Instantly layers a blazingly fast Node.js API on top of any SQL database.
-- **Manage Pure SQL.** Works with new or existing SQL databases, no migration required.
-- **Choose your Database.** Supports PostgreSQL, MySQL, SQLite, OracleDB, CockroachDB, MariaDB, and MS-SQL.
-- **On-Prem or Cloud.** Run locally, install on-premises, or use our
-  [self-service Cloud service](https://directus.com/pricing).
-- **Completely Extensible.** Built to white-label, it is easy to customize our modular platform.
-- **A Modern Dashboard.** Our no-code Vue.js app is safe and intuitive for non-technical users, no training required.
+[![npm downloads](https://img.shields.io/npm/dm/directus)](https://www.npmjs.com/package/directus)
+[![GitHub stars](https://img.shields.io/github/stars/directus/directus)](https://github.com/directus/directus/stargazers)
+[![Discord](https://img.shields.io/discord/480066023584497664)](https://discord.com/invite/directus)
 
-**[Learn more about Directus](https://directus.com)** • **[Documentation](https://directus.com/docs)**
+45M+ downloads · 35K+ GitHub stars · 500K+ projects deployed
 
-<br />
+**Free for most organizations.** Under $5M annual revenue and 50 employees? Directus is completely free.
+[Apply for an Open Innovation Grant license](https://directus.io/open-innovation-grant) and get a key in minutes.
+[Learn more about our license.](#-license)
+
+---
+
+## 🐇 Introduction
+
+Directus wraps any SQL database with a REST and GraphQL API layer and a visual Studio. Engineers control schema and
+access. Non-technical teammates and AI agents work directly with live data. No tickets, no boilerplate.
+
+- **REST & GraphQL APIs.** Automatically generated from your database schema. No configuration required.
+- **Visual Studio.** A full management interface for non-technical teammates.
+- **AI Assistant.** Embedded in the Studio. Creates, translates, and takes direct action on your content.
+- **Native MCP Server.** Connect Claude, Cursor, ChatGPT, or any MCP-compatible tool directly to your data.
+- **Policy-based Access Control.** Granular permissions down to the field level, for humans and AI agents alike.
+- **Bring your own database.** Postgres, MySQL, MariaDB, MS SQL, SQLite, OracleDB, CockroachDB, and more.
+- **Fully extensible.** Custom endpoints, hooks, interfaces, and modules.
+- **Self-host or cloud.** Run locally, on your own infrastructure, or on Directus Cloud.
+
+[Learn more about Directus](https://directus.io) · [Documentation](https://docs.directus.io)
+
+---
+
+## 🤖 AI & MCP
+
+Directus includes a built-in AI Assistant and a native MCP server. AI works with your live data, not a copy of it.
+
+- **AI Assistant.** Creates content, runs translations, and triggers workflows directly from the Studio.
+- **Native MCP Server.** Any MCP-compatible agent or tool can connect to Directus. Same access policies that apply to
+  your team apply to AI.
+- **Governed by default.** AI agents operate under the same role-based permissions as human users. No special cases, no
+  workarounds.
+
+[Read the AI & MCP docs](https://docs.directus.io/guides/ai-mcp)
+
+---
 
 ## 🚀 Directus Cloud
 
-[Directus Cloud](https://directus.com/pricing) allows you to create projects, hosted by the Directus team, from
-$15/month.
+[Directus Cloud](https://directus.cloud) provisions a fully managed project in under 90 seconds.
 
-- A self-service dashboard to create and monitor all your projects in one place.
-- Everything you need: Directus, database, storage, auto-scaling, and a global CDN.
-- Select your desired region and provision a new project in ~90 seconds.
+- Self-service dashboard to create and monitor all your projects in one place
+- Database, storage, and auto-scaling included with a global CDN
+- Select a region and get a running instance immediately
 
-**[Create a Directus Cloud Project](https://directus.cloud)**
+[Create a Directus Cloud Project](https://directus.cloud)
 
-<br />
+---
 
 ## ⚡ One-Click Deployment Options
 
-Deploy Directus with a single click via Railway—complete infrastructure without the complexity.
-
 ### Deploy on Railway
 
-Fully provisioned — one click to deploy Directus with PostgreSQL database, Redis cache, and S3-compatible bucket
-storage, all connected via Railway's private network for secure, zero-egress communication.
+One click. Fully provisioned with PostgreSQL, Redis, and S3-compatible storage, connected via Railway's private network
+(zero-egress).
 
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/directus-official?referralCode=b2RDZT&utm_medium=integration&utm_source=template&utm_campaign=generic)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/2fy9v3)
 
-<br />
+---
 
-## 🤔 Community Help
+## 🙋 Community Help
 
-[The Directus Documentation](https://directus.com/docs) is a great place to start, or explore these other channels:
+[The Directus Documentation](https://docs.directus.io) is a great place to start, or explore these other channels:
 
-- [Community](https://community.directus.io) (Questions, Discussions)
-- [Discord](https://directus.chat) (Live Chat)
+- [Community Forum](https://community.directus.io) (Questions, Discussions)
+- [Discord](https://discord.com/invite/directus) (Live Chat)
 - [GitHub Issues](https://github.com/directus/directus/issues) (Report Bugs)
-- [Roadmap](https://roadmap.directus.io/) (Roadmap & Feature Requests)
-- [Twitter](https://twitter.com/directus) (Latest News)
-- [YouTube](https://www.youtube.com/c/DirectusVideos/featured) (Video Tutorials)
+- [Roadmap](https://github.com/orgs/directus/projects) (Roadmap & Feature Requests)
+- [X](https://x.com/directus) (Latest News)
+- [YouTube](https://www.youtube.com/c/DirectusVideos) (Video Tutorials)
 
-<br />
+---
 
-## ❤️ Contributing & Sponsoring
+## ❤️ Contributing
 
-Please read our [Contributing Guide](./contributing.md) before submitting Pull Requests.
+Read our [Contributing Guide](https://github.com/directus/directus/blob/main/.github/CONTRIBUTING.md) before submitting
+pull requests.
 
-All security vulnerabilities should be reported in accordance with our
-[Security Policy](https://docs.directus.com/contributing/introduction/#reporting-security-vulnerabilities).
+Report security vulnerabilities per our [Security Policy](https://github.com/directus/directus/security/policy).
 
-Directus is made possible with support from our passionate core team, talented contributors, and amazing
-[GitHub Sponsors](https://github.com/sponsors/directus). Thank you all!
+Built by our core team and contributors. Thank you.
 
-<br />
+---
 
-## 📄 Understanding Our License
+## 📄 License
 
-Directus is licensed under the [Monospace Sustainable Core License (MSCL) 1.0](./license), a source-available license
-derived from the [Fair Core License](https://fcl.dev/).
+Directus is licensed under the
+[Monospace Sustainable Core License (MSCL) 1.0](https://github.com/directus/directus/blob/main/LICENSE), a
+source-available license derived from the [Fair Core License](https://fcl.dev).
 
-Read about our [evolving our license](https://directus.io/blog/directus-v12-license-change) from BSL to MSCL for
-long-term sustainability.
+**Free for most builders.** Organizations under $5M in annual revenue and 50 employees can use Directus for free under
+the [Open Innovation Grant](https://directus.io/open-innovation-grant).
 
-### Free for Most Builders
+**Free Core Tier.** A free tier is available to everyone to explore and build on Directus without a commercial license.
 
-Organizations under **$5M in annual revenue and 50 employees** can use the Directus platform for free under the
-[Open Innovation Grant](https://directus.com/oig)— no strings attached.
-
-### Free Core Tier
-
-Even above those thresholds, a free Core tier is available to explore and build on Directus without a commercial
-license.
-
-### Commercial License
-
-Larger organizations using advanced or enterprise features require a commercial license. See
-[our pricing](https://directus.io/pricing) for details. This model helps us maintain a sustainable balance: keeping
-Directus free for the majority of our community while ensuring larger organizations who benefit from the platform
-contribute to its continued development.
-
-### Why This Approach?
-
-We believe in making powerful data tools accessible to everyone. This license lets us:
-
-- Keep Directus free for individuals, startups, and smaller companies
-- Maintain active development and strong support
-- Continue improving the platform for everyone
-- Stay sustainable as an independent project
+**Commercial License.** Organizations above those thresholds using advanced or enterprise features require a commercial
+license. [See pricing](https://directus.io/pricing) for details.
