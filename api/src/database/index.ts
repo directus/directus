@@ -183,6 +183,99 @@ export function getDatabase(): Knex {
 		const lastOp = new Map<unknown, string>();
 		const inFlight = new Map<unknown, { sql: string; stack: string }>();
 
+		// Monotonic seq + relative timestamp so the [poison] lines can be ordered across connections.
+		let seq = 0;
+		const t0 = performance.now();
+		const ts = () => (performance.now() - t0).toFixed(1);
+		const uidOf = (c: any) => c?.__knexUid ?? '?';
+
+		// ---- knex shared-requestQueue instrumentation (the suspected seed of the poisoning) ----
+		// knex's Client_MSSQL keeps `requestQueue` on the PROTOTYPE (shared across all pooled
+		// connections) and `_chomp(connection)` runs a popped request on whatever connection is
+		// passed in, guarded only by `connection.state === 'LoggedIn'`. `_enqueueRequest` chomps
+		// synchronously on the connection it was given; if that connection isn't LoggedIn the request
+		// is left stranded in the shared queue and later gets execSql'd on a DIFFERENT connection by a
+		// nextTick `_chomp` (which bypasses our client.query wrapper -> matches "in-flight: none").
+		// We tag each request with the connection it was enqueued for and flag the three anomalies that
+		// would decouple a request from its connection. Observe-only.
+		const origEnqueue =
+			typeof mssqlClient._enqueueRequest === 'function' ? mssqlClient._enqueueRequest.bind(mssqlClient) : null;
+
+		const origChomp = typeof mssqlClient._chomp === 'function' ? mssqlClient._chomp.bind(mssqlClient) : null;
+
+		if (origEnqueue && origChomp) {
+			mssqlClient._enqueueRequest = function (request: any, connection: any) {
+				const uid = uidOf(connection);
+				const state = connection?.state?.name;
+
+				request.__forUid = uid;
+				request.__seq = ++seq;
+				request.__sql = String(request?.sqlTextOrProcedure ?? '').slice(0, 120);
+
+				// SEED CANDIDATE: enqueueing a request on a connection that isn't ready to run it. In
+				// normal operation knex only hands _query a freshly-acquired LoggedIn connection, so this
+				// should never fire -- if it does, it's the moment a request gets decoupled.
+				if (state !== 'LoggedIn') {
+					// eslint-disable-next-line no-console
+					console.error(
+						`[poison] ENQUEUE on non-LoggedIn conn=${uid} state=${state} seq=${request.__seq} qlen=${mssqlClient.requestQueue.length} sql=${request.__sql} | last op: ${lastOp.get(uid)} @${ts()}`,
+					);
+				}
+
+				origEnqueue(request, connection);
+
+				// If the synchronous _chomp didn't drain it, the request is stranded in the shared queue
+				// waiting for some other connection's nextTick _chomp -> cross-connection execution risk.
+				if (mssqlClient.requestQueue.includes(request)) {
+					// eslint-disable-next-line no-console
+					console.error(
+						`[poison] STRANDED req seq=${request.__seq} forConn=${uid} state=${state} qlen=${mssqlClient.requestQueue.length} sql=${request.__sql} | last op: ${lastOp.get(uid)} @${ts()}`,
+					);
+				}
+			};
+
+			mssqlClient._chomp = function (connection: any) {
+				const uid = uidOf(connection);
+				const state = connection?.state?.name;
+				// _chomp pops from the end (LIFO); peek what it's about to run.
+				const next = mssqlClient.requestQueue[mssqlClient.requestQueue.length - 1];
+
+				// SMOKING GUN: a request enqueued for one connection is about to run on another.
+				if (state === 'LoggedIn' && next && next.__forUid !== undefined && next.__forUid !== uid) {
+					// eslint-disable-next-line no-console
+					console.error(
+						`[poison] CROSS-CONN chomp: req seq=${next.__seq} enqueued-for=${next.__forUid} now running on conn=${uid} state=${state} sql=${next.__sql} @${ts()}`,
+					);
+				}
+
+				return origChomp(connection);
+			};
+		}
+
+		// The DIRECT poisoning event: a connection handed back to the pool while tedious still has it
+		// mid-request. knex's mssql validateConnection only checks `.connected` (not `.state`), so this
+		// connection will pass validation and be dealt out to the next acquirer, whose beginTransaction
+		// then 500s with "Requests can only be made in the LoggedIn state". Low-noise: a healthy runner
+		// only releases a connection after its query/txn has settled (-> LoggedIn).
+		const origRelease =
+			typeof mssqlClient.releaseConnection === 'function' ? mssqlClient.releaseConnection.bind(mssqlClient) : null;
+
+		if (origRelease) {
+			mssqlClient.releaseConnection = function (connection: any) {
+				const uid = uidOf(connection);
+				const state = connection?.state?.name;
+
+				if (state && state !== 'LoggedIn') {
+					// eslint-disable-next-line no-console
+					console.error(
+						`[poison] RELEASE to pool conn=${uid} in state=${state} | in-flight: ${inFlight.get(uid)?.sql ?? 'none'} | last op: ${lastOp.get(uid)} @${ts()}`,
+					);
+				}
+
+				return origRelease(connection);
+			};
+		}
+
 		const origQuery = mssqlClient.query.bind(mssqlClient);
 
 		mssqlClient.query = async (connection: any, obj: any) => {
