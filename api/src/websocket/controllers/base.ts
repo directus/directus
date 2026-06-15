@@ -430,11 +430,6 @@ export default abstract class SocketController {
 		if (expiresIn > TOKEN_CHECK_INTERVAL) return;
 
 		client.auth_timer = setTimeout(() => {
-			/**
-			 * As with a failed auth request, never fall back to a `null` accountability when the token
-			 * expires (that would bypass permission checks in the service layer). Drop back to the
-			 * public-role accountability instead; non-public modes close the socket below.
-			 */
 			client.accountability = createDefaultAccountability(this.getAccountabilityOverrides(client));
 			client.expires_at = null;
 			handleWebSocketError(client, new TokenExpiredError(), 'auth');
