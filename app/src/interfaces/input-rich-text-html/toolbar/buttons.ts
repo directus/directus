@@ -134,6 +134,17 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		label: 'wysiwyg_options.paste',
 		command: (e, ctx) => ctx.clipboard.paste(e),
 	},
+	remove: {
+		icon: 'delete',
+		label: 'wysiwyg_options.remove',
+		command: (e) => e.chain().focus().deleteSelection().run(),
+		disabled: (e) => e.state.selection.empty,
+	},
+	selectall: {
+		icon: 'select_all',
+		label: 'wysiwyg_options.selectall',
+		command: (e) => e.chain().focus().selectAll().run(),
+	},
 	fullscreen: {
 		icon: 'zoom_out_map',
 		label: 'wysiwyg_options.fullscreen',
