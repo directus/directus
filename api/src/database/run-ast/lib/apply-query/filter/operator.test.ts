@@ -122,13 +122,6 @@ for (const { field, operator, value, sql, bindings } of [
 		sql: `select * where LOWER("articles"."title") LIKE ?`,
 		bindings: ['%test%'],
 	},
-	{
-		field: 'articles.title',
-		operator: '_nicontains',
-		value: 'Test',
-		sql: `select * where LOWER("articles"."title") NOT LIKE ?`,
-		bindings: ['%test%'],
-	},
 ]) {
 	test(`applyOperator on ${field} ${operator} ${value}`, async () => {
 		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));

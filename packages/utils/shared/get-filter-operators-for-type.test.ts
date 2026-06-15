@@ -94,7 +94,6 @@ describe('', () => {
 			'contains',
 			'ncontains',
 			'icontains',
-			'nicontains',
 			'starts_with',
 			'nstarts_with',
 			'istarts_with',

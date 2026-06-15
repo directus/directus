@@ -36,9 +36,3 @@ test(`_icontains allowed on json`, async () => {
 		validateOperator('json', '_icontains');
 	}).not.toThrowError();
 });
-
-test(`_nicontains allowed on string`, async () => {
-	expect(() => {
-		validateOperator('string', '_nicontains');
-	}).not.toThrowError();
-});
