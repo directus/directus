@@ -40,7 +40,6 @@ const { t } = useI18n();
 const selectedValues = ref<string[]>([...(props.value ?? [])]);
 const searchQuery = ref('');
 const showSearch = computed(() => (props.choices?.length ?? 0) > 10 || searchQuery.value.length > 0);
-const cardMinWidth = computed(() => getCardMinWidth(props.size));
 
 watch(
 	() => props.value,
@@ -60,25 +59,13 @@ const filteredChoices = computed(() => {
 	return props.choices.filter((choice) => (choice.text ?? '').toLowerCase().includes(searchQuery.value.toLowerCase()));
 });
 
-function getCardMinWidth(size: 'small' | 'medium' | 'large' | undefined) {
-	switch (size) {
-		case 'small':
-			return '9rem';
-		case 'large':
-			return '16rem';
-		case 'medium':
-		default:
-			return '12rem';
-	}
-}
-
 function clearSearch() {
 	searchQuery.value = '';
 }
 </script>
 
 <template>
-	<div class="card-select-interface content">
+	<div class="card-select-interface content" :class="`size-${size}`">
 		<VInput v-if="showSearch" v-model="searchQuery" :placeholder="t('search')" small type="search">
 			<template #prepend>
 				<VIcon name="search" />
@@ -127,10 +114,19 @@ function clearSearch() {
 
 <style scoped>
 .card-select-interface {
+	--card-min-width: 12rem;
+
 	padding: 0;
 
+	&.size-small {
+		--card-min-width: 9rem;
+	}
+
+	&.size-large {
+		--card-min-width: 16rem;
+	}
+
 	.grid {
-		--card-min-width: v-bind(cardMinWidth);
 		--card-track-min-width: min(var(--card-min-width), 100%);
 		--focus-ring-space: calc(var(--focus-ring-width) + var(--focus-ring-offset));
 		--card-select-focus-ring-color: var(--theme--primary-subdued);
