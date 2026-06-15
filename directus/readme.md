@@ -2,7 +2,8 @@
 
 # The Collaborative Backend for Builders & AI
 
-Connect any SQL database and get instant REST and GraphQL APIs, a visual management Studio, and a native MCP server for AI agents.
+Connect any SQL database and get instant REST and GraphQL APIs, a visual management Studio, and a native MCP server for
+AI agents.
 
 45M+ downloads · 500K+ projects deployed
 
@@ -35,8 +36,10 @@ access. Non-technical teammates and AI agents work directly with live data. No t
 Directus includes a built-in AI Assistant and a native MCP server. AI works with your live data, not a copy of it.
 
 - **AI Assistant:** Creates content, runs translations, and triggers workflows directly from the Studio.
-- **Native MCP Server:** Any MCP-compatible agent or tool can connect to Directus. Same access policies that apply to your team apply to AI.
-- **Governed by default:** AI agents operate under the same role-based permissions as human users. No special cases, no workarounds.
+- **Native MCP Server:** Any MCP-compatible agent or tool can connect to Directus. Same access policies that apply to
+  your team apply to AI.
+- **Governed by default:** AI agents operate under the same role-based permissions as human users. No special cases, no
+  workarounds.
 
 [Read the AI & MCP docs](https://directus.com/docs/guides/ai#inside-directus-ai-assistant)
 
