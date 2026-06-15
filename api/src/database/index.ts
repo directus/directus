@@ -189,6 +189,36 @@ export function getDatabase(): Knex {
 		const ts = () => (performance.now() - t0).toFixed(1);
 		const uidOf = (c: any) => c?.__knexUid ?? '?';
 
+		// Per-connection ring buffer of tedious state transitions, dumped only when that connection hits a
+		// poison event. The first run proved this is NOT the shared-requestQueue (ENQUEUE/STRANDED/CROSS-CONN
+		// never fired) and NOT a concurrent client.query (CONCURRENT never fired) -- yet a connection whose
+		// last client.query was the permission lookup ends up in SentClientRequest at commit time. So some
+		// request the client.query wrapper can't see (a `client.stream` -> _stream, or a txn-manager
+		// begin/commit) strands it. Wrapping `transitionTo` captures EVERY request type, since each drives a
+		// LoggedIn<->SentClientRequest transition. Observe-only.
+		const HISTORY = new Map<string, string[]>();
+		const RING = 32;
+
+		const recordEvent = (uid: string, label: string) => {
+			let buf = HISTORY.get(uid);
+
+			if (!buf) {
+				buf = [];
+				HISTORY.set(uid, buf);
+			}
+
+			buf.push(`${ts()} ${label}`);
+			if (buf.length > RING) buf.shift();
+		};
+
+		const recordTransition = (connection: any, newState: any) => {
+			const req = connection?.request;
+			const reqSql = String(req?.sqlTextOrProcedure ?? req?.constructor?.name ?? '').slice(0, 80);
+			recordEvent(uidOf(connection), `${connection?.state?.name}->${newState?.name ?? newState} req="${reqSql}"`);
+		};
+
+		const dumpHistory = (uid: any) => `\n  history:\n    ${(HISTORY.get(uid) ?? ['<none>']).join('\n    ')}`;
+
 		// ---- knex shared-requestQueue instrumentation (the suspected seed of the poisoning) ----
 		// knex's Client_MSSQL keeps `requestQueue` on the PROTOTYPE (shared across all pooled
 		// connections) and `_chomp(connection)` runs a popped request on whatever connection is
@@ -268,7 +298,7 @@ export function getDatabase(): Knex {
 				if (state && state !== 'LoggedIn') {
 					// eslint-disable-next-line no-console
 					console.error(
-						`[poison] RELEASE to pool conn=${uid} in state=${state} | in-flight: ${inFlight.get(uid)?.sql ?? 'none'} | last op: ${lastOp.get(uid)} @${ts()}`,
+						`[poison] RELEASE to pool conn=${uid} in state=${state} | in-flight: ${inFlight.get(uid)?.sql ?? 'none'} | last op: ${lastOp.get(uid)} @${ts()}${dumpHistory(uid)}`,
 					);
 				}
 
@@ -317,7 +347,9 @@ export function getDatabase(): Knex {
 
 				if (after && after !== 'LoggedIn') {
 					// eslint-disable-next-line no-console
-					console.error(`[poison] query FINISHED but left conn=${uid} in state=${after} | sql: ${sql}`);
+					console.error(
+						`[poison] query FINISHED but left conn=${uid} in state=${after} | sql: ${sql}${dumpHistory(uid)}`,
+					);
 				}
 
 				inFlight.delete(uid);
@@ -333,12 +365,25 @@ export function getDatabase(): Knex {
 			wrappedConns.add(connection);
 			const uid = connection.__knexUid;
 
-			for (const method of ['beginTransaction', 'commitTransaction', 'rollbackTransaction']) {
+			// Record every state transition on this connection into its ring buffer.
+			if (typeof connection.transitionTo === 'function') {
+				const origTransition = connection.transitionTo.bind(connection);
+
+				connection.transitionTo = function (newState: any) {
+					recordTransition(connection, newState);
+					return origTransition(newState);
+				};
+			}
+
+			// Includes saveTransaction (mssql SAVEPOINT) -- knex uses it for nested transactions, which
+			// Directus leans on during relational mutations, and our client.query wrapper never sees it.
+			for (const method of ['beginTransaction', 'saveTransaction', 'commitTransaction', 'rollbackTransaction']) {
 				const orig = connection[method];
 				if (typeof orig !== 'function') continue;
 
 				connection[method] = function (this: any, callback: any, ...rest: any[]) {
 					const priorQuery = inFlight.get(uid);
+					recordEvent(uid, `${method} issued state=${connection.state?.name} inflight="${priorQuery?.sql ?? 'none'}"`);
 
 					if (priorQuery) {
 						// eslint-disable-next-line no-console
@@ -351,11 +396,12 @@ export function getDatabase(): Knex {
 						typeof callback === 'function'
 							? function (this: any, err: any) {
 									const st = connection.state?.name;
+									recordEvent(uid, `${method} cb state=${st}${err ? ` err="${err.message}"` : ''}`);
 
 									if (st && st !== 'LoggedIn') {
 										// eslint-disable-next-line no-console
 										console.error(
-											`[poison] ${method} left conn=${uid} in state=${st}${err ? ` | err: ${err.message}` : ''}`,
+											`[poison] ${method} left conn=${uid} in state=${st}${err ? ` | err: ${err.message}` : ''}${dumpHistory(uid)}`,
 										);
 									}
 
