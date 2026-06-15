@@ -350,21 +350,13 @@ export default abstract class SocketController {
 	}
 
 	protected async handleAuthRequest(client: WebSocketClient, message: WebSocketAuthMessage) {
+		/**
+		 * Re-use the existing ip, userAgent and origin accountability properties.
+		 * They are only sent in the original connection request
+		 */
+		const accountabilityOverrides = this.getAccountabilityOverrides(client);
+
 		try {
-			let accountabilityOverrides = {};
-
-			/**
-			 * Re-use the existing ip, userAgent and origin accountability properties.
-			 * They are only sent in the original connection request
-			 */
-			if (client.accountability) {
-				accountabilityOverrides = {
-					ip: client.accountability.ip,
-					userAgent: client.accountability.userAgent,
-					origin: client.accountability.origin,
-				};
-			}
-
 			const { accountability, expires_at, refresh_token } = await authenticateConnection(
 				message,
 				accountabilityOverrides,
@@ -382,7 +374,7 @@ export default abstract class SocketController {
 			logger.trace(`WebSocket#${client.uid} failed authentication`);
 			emitter.emitAction('websocket.auth.failure', { client });
 
-			client.accountability = null;
+			client.accountability = createDefaultAccountability(accountabilityOverrides);
 			client.expires_at = null;
 
 			const _error =
@@ -396,6 +388,28 @@ export default abstract class SocketController {
 				client.close();
 			}
 		}
+	}
+
+	/**
+	 * Build the accountability overrides (ip, userAgent, origin) from an existing client connection.
+	 * These properties are only available on the original connection request.
+	 */
+	private getAccountabilityOverrides(client: WebSocketClient): Partial<Accountability> {
+		if (!client.accountability) return {};
+
+		const result: Partial<Accountability> = {
+			ip: client.accountability.ip,
+		};
+
+		if (client.accountability.userAgent) {
+			result.userAgent = client.accountability.userAgent;
+		}
+
+		if (client.accountability.origin) {
+			result.origin = client.accountability.origin;
+		}
+
+		return result;
 	}
 
 	protected checkUserRequirements(_accountability: Accountability | null) {
@@ -416,7 +430,12 @@ export default abstract class SocketController {
 		if (expiresIn > TOKEN_CHECK_INTERVAL) return;
 
 		client.auth_timer = setTimeout(() => {
-			client.accountability = null;
+			/**
+			 * As with a failed auth request, never fall back to a `null` accountability when the token
+			 * expires (that would bypass permission checks in the service layer). Drop back to the
+			 * public-role accountability instead; non-public modes close the socket below.
+			 */
+			client.accountability = createDefaultAccountability(this.getAccountabilityOverrides(client));
 			client.expires_at = null;
 			handleWebSocketError(client, new TokenExpiredError(), 'auth');
 
