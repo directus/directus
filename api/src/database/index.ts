@@ -216,18 +216,15 @@ export function getDatabase(): Knex {
 
 				throw err;
 			} finally {
-				// FIX: a resolved query that left its connection non-LoggedIn has stranded it mid-request
-				// (its result wasn't fully drained). Reusing it 500s the next beginTransaction with
-				// "Requests can only be made in the LoggedIn state". Mark it disposed so knex's pool
-				// validate (which checks __knex__disposed first) discards THIS connection and creates a
-				// fresh one, instead of reusing the poisoned one. Only fires for the rare stranding query,
-				// so it doesn't churn the pool the way rejecting every non-LoggedIn acquire did.
+				// Observe-only: a resolved query leaving its connection non-LoggedIn. NOTE: this also fires
+				// for queries INSIDE a transaction (the connection is legitimately busy then), so do NOT act
+				// on it — disposing such a connection tears down an active transaction ("Connection closed
+				// before request completed" + FK violations). Logging only.
 				const after = connection?.state?.name;
 
 				if (after && after !== 'LoggedIn') {
 					// eslint-disable-next-line no-console
-					console.error(`[poison] query left conn=${uid} in state=${after}; disposing it | sql: ${sql}`);
-					connection.__knex__disposed = `left in ${after} state after query (mssql connection guard)`;
+					console.error(`[poison] query FINISHED but left conn=${uid} in state=${after} | sql: ${sql}`);
 				}
 
 				inFlight.delete(uid);
