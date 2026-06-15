@@ -2,6 +2,11 @@
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import VUpload from '@/components/v-upload.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -14,7 +19,7 @@ interface FileInfo {
 
 const props = withDefaults(
 	defineProps<{
-		value: string | null;
+		value?: string | null;
 		disabled?: boolean;
 		folder?: string;
 	}>(),
@@ -32,6 +37,8 @@ const { t } = useI18n();
 
 const loading = ref(false);
 const file = ref<FileInfo | null>(null);
+const imageAccept = 'image/*';
+const imageFilter = { type: { _starts_with: 'image/' } };
 
 const src = computed(() => {
 	if (!file.value) return null;
@@ -47,27 +54,33 @@ const src = computed(() => {
 	return null;
 });
 
-async function fetchFile() {
-	if (!props.value) return;
+async function fetchFile(id: string) {
+	if (!id) return;
 
 	loading.value = true;
 
 	try {
-		const response = await api.get(`/files/${props.value}`, {
+		const response = await api.get(`/files/${id}`, {
 			params: {
 				fields: ['id', 'title', 'type', 'filename_download'],
 			},
 		});
 
-		file.value = response.data.data;
+		if (props.value === id) {
+			file.value = response.data.data;
+		}
 	} catch (error: any) {
+		if (props.value !== id) return;
+
 		file.value = null;
 
 		if (error.response?.status !== 403 && error.response?.status !== 404) {
 			unexpectedError(error);
 		}
 	} finally {
-		loading.value = false;
+		if (props.value === id) {
+			loading.value = false;
+		}
 	}
 }
 
@@ -92,9 +105,10 @@ watch(
 		if (newValue === oldValue) return;
 
 		if (newValue) {
-			fetchFile();
+			fetchFile(newValue);
 		} else {
 			file.value = null;
+			loading.value = false;
 		}
 	},
 	{ immediate: true },
@@ -115,39 +129,47 @@ watch(
 			</div>
 		</div>
 
-		<VUpload v-else :disabled="disabled" from-library :folder="folder" @input="setFile" />
+		<VUpload
+			v-else
+			:disabled="disabled"
+			from-library
+			:folder="folder"
+			:accept="imageAccept"
+			:filter="imageFilter"
+			@input="setFile"
+		/>
 	</div>
 </template>
 
 <style lang="scss" scoped>
 .system-file-image {
-	width: 100%;
+	inline-size: 100%;
 }
 
 .image-preview {
 	position: relative;
-	width: 100%;
-	height: var(--input-height-md);
+	inline-size: 100%;
+	block-size: var(--input-height-md);
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 
 	img {
-		width: 100%;
-		height: 100%;
+		inline-size: 100%;
+		block-size: 100%;
 		object-fit: contain;
 	}
 }
 
 .actions {
 	position: absolute;
-	top: 8px;
-	right: 8px;
+	inset-block-start: 0.5rem;
+	inset-inline-end: 0.5rem;
 
 	--v-button-color: var(--theme--foreground-subdued);
-	--v-button-background-color: var(--white);
+	--v-button-background-color: var(--theme--background);
 	--v-button-color-hover: var(--theme--foreground);
-	--v-button-background-color-hover: var(--white);
+	--v-button-background-color-hover: var(--theme--background);
 
 	opacity: 0;
 	transition: opacity var(--fast) var(--transition);

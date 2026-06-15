@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import dompurify from 'dompurify';
 import { computed, ref } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
 
 type Choice = {
 	text: string;
 	value: string | number;
 	description?: string;
-	icon_type?: 'icon' | 'svg' | 'image';
+	icon_type?: 'icon' | 'image';
 	icon?: string;
-	svg_icon?: string;
 	image?: string;
 };
 
@@ -34,15 +35,6 @@ const iconName = computed(() => {
 
 const imageError = ref(false);
 
-const sanitizedSvg = computed(() => {
-	if (!props.choice.svg_icon) return '';
-	return dompurify.sanitize(props.choice.svg_icon);
-});
-
-function isSVG(value: string | undefined): value is string {
-	return value?.startsWith('<svg') ?? false;
-}
-
 function getImageSrc(imageId: string): string {
 	return getAssetUrl(imageId, { imageKey: 'system-medium-contain' });
 }
@@ -50,21 +42,17 @@ function getImageSrc(imageId: string): string {
 
 <template>
 	<div class="preview" :aria-checked="isSelected" :aria-disabled="disabled">
-		<template v-if="(choice.icon_type === 'image' || choice.icon_type === 'svg') && !imageError">
-			<!-- eslint-disable-next-line vue/no-v-html -->
-			<span v-if="isSVG(choice.svg_icon)" class="svg" v-html="sanitizedSvg" />
-			<div v-else-if="choice.image" class="image">
-				<v-image :src="getImageSrc(choice.image)" :alt="choice.text" @error="imageError = true" />
-			</div>
-		</template>
+		<div v-if="choice.icon_type === 'image' && choice.image && !imageError" class="image">
+			<VImage :src="getImageSrc(choice.image)" :alt="choice.text" @error="imageError = true" />
+		</div>
 		<span v-else class="fallback">
-			<v-icon :name="choice.icon || 'box'" x-large />
+			<VIcon :name="choice.icon || 'box'" x-large />
 		</span>
 
 		<div class="check-indicator">
-			<v-icon
+			<VIcon
 				:name="iconName"
-				:color="isSelected ? 'var(--theme--primary)' : 'var(--theme--border-color)'"
+				:color="isSelected ? 'var(--theme--primary)' : 'var(--theme--form--field--input--border-color)'"
 				class="icon"
 				:class="{
 					radio: selectionType === 'radio',
@@ -73,33 +61,36 @@ function getImageSrc(imageId: string): string {
 			/>
 		</div>
 	</div>
-	<v-text-overflow :text="choice.text" class="name" />
-	<span v-if="choice.description" class="description">
+	<VTextOverflow :text="choice.text" class="name type-label" />
+	<span v-if="choice.description" class="description type-text">
 		{{ choice.description }}
 	</span>
 </template>
 
 <style scoped>
 .preview {
-	--preview-padding: 16px;
-	--preview-small-padding: 8px;
+	--preview-padding: 1rem;
+	--preview-small-padding: 0.5rem;
 	position: relative;
-	width: 100%;
+	inline-size: 100%;
 	aspect-ratio: 16/10;
-	margin-bottom: var(--preview-small-padding);
-	background: var(--theme--background--subdued);
+	margin-block-end: var(--preview-small-padding);
+	background: var(--theme--form--field--input--background-subdued);
 	border: var(--theme--border-width) solid var(--border-color);
 	border-radius: var(--theme--border-radius);
+	box-shadow: inset 0 0 0 0 var(--theme--primary);
 	overflow: hidden;
-	transition: all var(--fast) var(--transition);
+	transition:
+		border-color var(--fast) var(--transition),
+		box-shadow var(--fast) var(--transition),
+		background-color var(--fast) var(--transition);
 
-	.svg,
 	.fallback {
 		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
+		inset-block-start: 0;
+		inset-inline-start: 0;
+		inline-size: 100%;
+		block-size: 100%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -110,10 +101,10 @@ function getImageSrc(imageId: string): string {
 
 	img {
 		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
+		inset-block-start: 0;
+		inset-inline-start: 0;
+		inline-size: 100%;
+		block-size: 100%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -125,49 +116,54 @@ function getImageSrc(imageId: string): string {
 
 	.fallback {
 		color: var(--theme--primary);
-		font-size: 24px;
+		font-size: 1.5rem;
 
 		.v-icon {
-			font-size: 48px;
+			font-size: 3rem;
 		}
 	}
 }
 
+.preview[aria-checked='true'] {
+	border-color: var(--theme--primary);
+	box-shadow: inset 0 0 0 var(--theme--border-width) var(--theme--primary);
+}
+
 .check-indicator {
 	position: absolute;
-	top: var(--preview-small-padding);
-	left: var(--preview-small-padding);
+	inset-block-start: var(--preview-small-padding);
+	inset-inline-start: var(--preview-small-padding);
 	z-index: 1;
 	padding: 0;
 
 	.icon {
 		display: block;
 		background: var(--theme--background);
+		transition:
+			color var(--fast) var(--transition),
+			background-color var(--fast) var(--transition);
 
 		&.radio {
-			border-radius: 9999px;
+			border-radius: 50%;
 		}
 
 		&.checkbox {
-			border-radius: 4px;
+			border-radius: var(--theme--border-radius);
 		}
 	}
 }
 
 .name {
-	color: var(--theme--foreground);
-	font-size: 15px;
-	text-align: left;
-	padding: 0 4px;
+	color: var(--theme--form--field--input--foreground);
+	text-align: start;
+	padding: 0 0.25rem;
 }
 
 .description {
-	color: var(--theme--foreground-subdued);
-	font-size: 13px;
-	margin-block-start: 4px;
-	line-height: 1.2;
-	text-align: left;
-	padding: 0 4px;
+	color: var(--theme--form--field--input--foreground-subdued);
+	margin-block-start: 0.25rem;
+	text-align: start;
+	padding: 0 0.25rem;
 	display: -webkit-box;
 	-webkit-line-clamp: 2;
 	-webkit-box-orient: vertical;

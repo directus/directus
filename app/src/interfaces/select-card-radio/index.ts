@@ -67,7 +67,6 @@ export default defineInterface({
 									choices: [
 										{ text: '$t:icon', value: 'icon' },
 										{ text: '$t:image', value: 'image' },
-										{ text: 'SVG', value: 'svg' },
 									],
 								},
 							},
@@ -88,27 +87,6 @@ export default defineInterface({
 										hidden: false,
 										rule: {
 											_and: [{ icon_type: { _eq: 'icon' } }],
-										},
-									},
-								],
-							},
-						},
-						{
-							field: 'svg_icon',
-							type: 'text',
-							name: 'SVG',
-							meta: {
-								width: 'full',
-								interface: 'input-code',
-								options: {
-									language: 'htmlmixed',
-								},
-								hidden: true,
-								conditions: [
-									{
-										hidden: false,
-										rule: {
-											_and: [{ icon_type: { _eq: 'svg' } }],
 										},
 									},
 								],
@@ -137,39 +115,22 @@ export default defineInterface({
 			},
 		},
 		{
-			field: 'enableSearch',
-			type: 'boolean',
-			name: '$t:interfaces.select-card-radio.enable_search',
-			meta: {
-				width: 'half',
-				interface: 'boolean',
-				options: {
-					label: '$t:interfaces.select-card-radio.enable_search',
-				},
-			},
-			schema: {
-				default_value: false,
-			},
-		},
-		{
-			field: 'gridSize',
-			type: 'integer',
-			name: '$t:interfaces.select-card-radio.grid_size',
+			field: 'size',
+			type: 'string',
+			name: '$t:card_size',
 			meta: {
 				width: 'half',
 				interface: 'select-dropdown',
 				options: {
 					choices: [
-						{ text: '2', value: 2 },
-						{ text: '3', value: 3 },
-						{ text: '4', value: 4 },
-						{ text: '5', value: 5 },
-						{ text: '6', value: 6 },
+						{ text: '$t:small', value: 'small' },
+						{ text: '$t:medium', value: 'medium' },
+						{ text: '$t:large', value: 'large' },
 					],
 				},
 			},
 			schema: {
-				default_value: 4,
+				default_value: 'medium',
 			},
 		},
 	],

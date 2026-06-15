@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { useIntersectionObserver } from '@vueuse/core';
 import { omit } from 'lodash';
-import { computed, onMounted, onUnmounted, ref, useAttrs, watch } from 'vue';
+import { computed, ref, useAttrs, watch } from 'vue';
 import { requestQueue } from '@/api';
 
 defineOptions({
@@ -21,16 +22,18 @@ const emptyPixel =
 
 const srcData = ref<string>(emptyPixel);
 
-const observer = new IntersectionObserver((entries, observer) => {
-	if (entries.length === 0) return;
+let stopObserver = () => {};
 
-	const isIntersecting = entries.at(-1)!.isIntersecting;
+const observer = useIntersectionObserver(imageElement, (entries) => {
+	const isIntersecting = entries.at(-1)?.isIntersecting ?? false;
 
 	if (isIntersecting && props.src) {
-		observer.disconnect();
+		stopObserver();
 		loadImage();
 	}
 });
+
+stopObserver = observer.stop;
 
 watch(
 	() => props.src,
@@ -42,15 +45,6 @@ function loadImage() {
 		srcData.value = props.src;
 	});
 }
-
-onMounted(() => {
-	if (!imageElement.value) return;
-	observer.observe(imageElement.value);
-});
-
-onUnmounted(() => {
-	observer.disconnect();
-});
 
 const attrsWithoutSrc = computed(() => omit(attrs, ['src']));
 </script>
