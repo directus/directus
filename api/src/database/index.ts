@@ -189,6 +189,10 @@ export function getDatabase(): Knex {
 		const ts = () => (performance.now() - t0).toFixed(1);
 		const uidOf = (c: any) => c?.__knexUid ?? '?';
 
+		// Transaction-control ops that issue a TM request and 500 if fired on a non-LoggedIn connection.
+		// rollbackTransaction is excluded -- knex pre-checks its state and rejects cleanly on its own.
+		const WAIT_TXN_OPS = new Set(['beginTransaction', 'saveTransaction', 'commitTransaction']);
+
 		// Per-connection ring buffer of tedious state transitions, dumped only when that connection hits a
 		// poison event. The first run proved this is NOT the shared-requestQueue (ENQUEUE/STRANDED/CROSS-CONN
 		// never fired) and NOT a concurrent client.query (CONCURRENT never fired) -- yet a connection whose
@@ -218,6 +222,18 @@ export function getDatabase(): Knex {
 		};
 
 		const dumpHistory = (uid: any) => `\n  history:\n    ${(HISTORY.get(uid) ?? ['<none>']).join('\n    ')}`;
+
+		// Describe the request currently occupying a connection (tedious sets connection.request while a
+		// request is in flight). Each request is tagged in _enqueueRequest with __forUid (the connection it
+		// was enqueued for) + __seq. If __forUid !== this connection's uid the request belongs to a FOREIGN
+		// flow sharing the connection -- the key signal for the inflight="none" mystery.
+		const blockerInfo = (connection: any) => {
+			const r = connection?.request;
+			if (!r) return 'blocker=none';
+			const forUid = r.__forUid;
+			const foreign = forUid !== undefined && forUid !== connection?.__knexUid;
+			return `blocker: seq=${r.__seq ?? '?'} forUid=${forUid ?? '?'}${foreign ? ' FOREIGN' : ''} sql="${String(r.sqlTextOrProcedure ?? r.constructor?.name ?? '').slice(0, 80)}"`;
+		};
 
 		// ---- knex shared-requestQueue instrumentation (the suspected seed of the poisoning) ----
 		// knex's Client_MSSQL keeps `requestQueue` on the PROTOTYPE (shared across all pooled
@@ -383,7 +399,6 @@ export function getDatabase(): Knex {
 
 				connection[method] = function (this: any, callback: any, ...rest: any[]) {
 					const priorQuery = inFlight.get(uid);
-					recordEvent(uid, `${method} issued state=${connection.state?.name} inflight="${priorQuery?.sql ?? 'none'}"`);
 
 					if (priorQuery) {
 						// eslint-disable-next-line no-console
@@ -410,6 +425,50 @@ export function getDatabase(): Knex {
 								}
 							: callback;
 
+					// REAL FIX (mssql txn control): tedious permits one request per connection. If the
+					// connection is mid-request when knex issues begin/savepoint/commit, knex fires the TM
+					// request blindly and 500s with "Requests can only be made in the LoggedIn state" (only
+					// rollback pre-checks). Instead briefly wait for the in-flight request to drain, then
+					// issue. Bounded -> a genuinely stuck request still falls through to the original
+					// behaviour. Does NOT dispose/reject/churn the connection (cf. reverted attempts #3/#4),
+					// so it can't tear down a live transaction. WAIT lines are logged so we keep diagnosing.
+					if (WAIT_TXN_OPS.has(method) && connection.state?.name !== 'LoggedIn') {
+						const MAX_WAIT_MS = 2000;
+						const STEP_MS = 10;
+						let waited = 0;
+
+						// eslint-disable-next-line no-console
+						console.error(
+							`[poison] ${method} WAIT conn=${uid} state=${connection.state?.name} ${blockerInfo(connection)} @${ts()}`,
+						);
+
+						recordEvent(uid, `${method} WAIT-start state=${connection.state?.name}`);
+
+						const issueWhenReady = () => {
+							if (connection.state?.name === 'LoggedIn' || waited >= MAX_WAIT_MS) {
+								recordEvent(uid, `${method} WAIT-end state=${connection.state?.name} waited=${waited}ms`);
+
+								if (connection.state?.name !== 'LoggedIn') {
+									// eslint-disable-next-line no-console
+									console.error(
+										`[poison] ${method} WAIT TIMEOUT conn=${uid} state=${connection.state?.name} waited=${waited}ms ${blockerInfo(connection)}${dumpHistory(uid)}`,
+									);
+								}
+
+								orig.call(connection, wrappedCallback, ...rest);
+								return;
+							}
+
+							waited += STEP_MS;
+							setTimeout(issueWhenReady, STEP_MS);
+						};
+
+						issueWhenReady();
+						// knex ignores the return value of begin/commit/savepoint (callback-based), so deferring is safe.
+						return undefined;
+					}
+
+					recordEvent(uid, `${method} issued state=${connection.state?.name} inflight="${priorQuery?.sql ?? 'none'}"`);
 					return orig.call(this, wrappedCallback, ...rest);
 				};
 			}
