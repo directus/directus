@@ -48,6 +48,11 @@ function emitValue(newValue: string) {
 	emit('input', newValue);
 	localValue.value = newValue;
 }
+
+function clearValue() {
+	localValue.value = null;
+	emit('input', null);
+}
 </script>
 
 <template>
@@ -57,11 +62,19 @@ function emitValue(newValue: string) {
 		:non-editable
 		:type="masked ? 'password' : 'text'"
 		:autocomplete
-		:model-value="localValue"
+		:model-value="localValue ?? ''"
 		:class="{ hashed: isHashed && !localValue, 'non-editable': nonEditable }"
 		@update:model-value="emitValue"
 	>
 		<template #append>
+			<VIcon
+				v-if="(isHashed || localValue) && !disabled && !nonEditable"
+				v-tooltip="t('clear_value')"
+				class="clear"
+				name="close"
+				clickable
+				@click.stop="clearValue"
+			/>
 			<VIcon class="lock" :class="{ disabled }" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
 		</template>
 	</VInput>
@@ -75,6 +88,12 @@ function emitValue(newValue: string) {
 	&.hashed {
 		--v-icon-color: var(--theme--primary);
 	}
+}
+
+.clear {
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
+
+	margin-inline-end: var(--theme--form--field--input--padding);
 }
 
 .lock {

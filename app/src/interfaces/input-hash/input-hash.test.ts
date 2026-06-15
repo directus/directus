@@ -55,4 +55,43 @@ describe('Interface', () => {
 		expect(wrapper.find('input').attributes('type')).toBe('password');
 		expect(wrapper.find('input').attributes('autocomplete')).toBe('off');
 	});
+
+	it('should not show the clear icon when there is no value', () => {
+		const wrapper = mount(InputHash, {
+			props: {
+				value: null,
+			},
+			global,
+		});
+
+		expect(wrapper.find('[name="close"]').exists()).toBe(false);
+	});
+
+	it('should show the clear icon and emit null when a stored value is cleared', async () => {
+		const wrapper = mount(InputHash, {
+			props: {
+				value: 'stored-secret',
+			},
+			global,
+		});
+
+		const clearIcon = wrapper.find('[name="close"]');
+		expect(clearIcon.exists()).toBe(true);
+
+		await clearIcon.trigger('click');
+
+		expect(wrapper.emitted('input')).toEqual([[null]]);
+	});
+
+	it('should not show the clear icon when disabled', () => {
+		const wrapper = mount(InputHash, {
+			props: {
+				value: 'stored-secret',
+				disabled: true,
+			},
+			global,
+		});
+
+		expect(wrapper.find('[name="close"]').exists()).toBe(false);
+	});
 });
