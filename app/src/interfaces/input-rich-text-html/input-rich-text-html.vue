@@ -12,6 +12,7 @@ const props = withDefaults(
 		toolbar?: string[];
 		font?: 'sans-serif' | 'serif' | 'monospace';
 		disabled?: boolean;
+		nonEditable?: boolean;
 		imageToken?: string;
 		folder?: string;
 	}>(),
@@ -29,14 +30,20 @@ const fontFamily = computed(() => {
 	return `var(--theme--fonts--${token}--font-family)`;
 });
 
+// both states are read-only; `nonEditable` keeps the normal look, `disabled` dims (see styles)
+const isEditable = computed(() => !props.disabled && !props.nonEditable);
+
 const editor = useEditor({
 	extensions: [StarterKit],
 	content: props.value ?? '',
-	editable: !props.disabled,
+	editable: isEditable.value,
 	onUpdate: ({ editor }) => {
 		emit('input', editor.isEmpty ? null : editor.getHTML());
 	},
 });
+
+// `editable` is only read at init, so keep it in sync when the prop flips
+watch(isEditable, (editable) => editor.value?.setEditable(editable));
 
 // external value changes (revert, version switch) — guard against echo loops
 watch(
@@ -56,8 +63,13 @@ onKeyStroke('Escape', () => {
 </script>
 
 <template>
-	<div class="wysiwyg" :class="{ disabled, fullscreen }" :style="{ '--editor-font-family': fontFamily }">
+	<div
+		class="wysiwyg"
+		:class="{ disabled, 'non-editable': nonEditable, fullscreen }"
+		:style="{ '--editor-font-family': fontFamily }"
+	>
 		<Toolbar
+			v-if="!nonEditable"
 			:editor="editor"
 			:toolbar="toolbar"
 			:disabled="disabled"
@@ -99,13 +111,22 @@ onKeyStroke('Escape', () => {
 	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 
-	&:not(.disabled):hover {
+	&:not(.disabled):not(.non-editable):hover {
 		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 
-	&:not(.disabled):focus-within {
+	&:not(.disabled):not(.non-editable):focus-within {
 		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
 		outline-offset: var(--focus-ring-offset-invert);
+	}
+
+	// `non-editable` stays visually normal (read-only display); only `disabled` dims
+	&.disabled:not(.non-editable) {
+		background-color: var(--theme--form--field--input--background-subdued);
+
+		:deep(.ProseMirror) {
+			color: var(--theme--foreground-subdued);
+		}
 	}
 
 	&.fullscreen {
