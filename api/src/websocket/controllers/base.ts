@@ -21,6 +21,7 @@ import { authenticateConnection, authenticationSuccess } from '../authenticate.j
 import { handleWebSocketError, WebSocketError } from '../errors.js';
 import { AuthMode, WebSocketAuthMessage } from '../messages.js';
 import type { AuthenticationState, UpgradeContext, WebSocketAuthentication, WebSocketClient } from '../types.js';
+import { isOriginAllowed } from '../utils/is-origin-allowed.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
 
@@ -132,7 +133,15 @@ export default abstract class SocketController {
 			return;
 		}
 
+		if (!isOriginAllowed(request)) {
+			logger.debug(`WebSocket upgrade denied - disallowed Origin: ${request.headers['origin']}`);
+			socket.write('HTTP/1.1 403 Forbidden\r\n\r\n');
+			socket.destroy();
+			return;
+		}
+
 		const env = useEnv();
+		const origin = request.headers['origin'];
 		const cookies = request.headers.cookie ? cookie.parse(request.headers.cookie) : {};
 		const sessionCookieName = env['SESSION_COOKIE_NAME'] as string;
 
@@ -143,7 +152,6 @@ export default abstract class SocketController {
 		const userAgent = request.headers['user-agent']?.substring(0, 1024);
 		if (userAgent) accountabilityOverrides.userAgent = userAgent;
 
-		const origin = request.headers['origin'];
 		if (origin) accountabilityOverrides.origin = origin;
 		const context: UpgradeContext = { request, socket, head, accountabilityOverrides };
 
