@@ -95,8 +95,14 @@ function getImageSrc(imageId: string): string {
 		align-items: center;
 		justify-content: center;
 		padding: var(--preview-padding);
+		color: var(--theme--primary);
+		font-size: 1.5rem;
 		user-select: none;
 		-webkit-user-drag: none;
+
+		.v-icon {
+			font-size: 3rem;
+		}
 	}
 
 	img {
@@ -112,15 +118,6 @@ function getImageSrc(imageId: string): string {
 		padding: var(--preview-small-padding);
 		user-select: none;
 		-webkit-user-drag: none;
-	}
-
-	.fallback {
-		color: var(--theme--primary);
-		font-size: 1.5rem;
-
-		.v-icon {
-			font-size: 3rem;
-		}
 	}
 }
 

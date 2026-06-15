@@ -2,7 +2,7 @@
 import { CheckboxGroupRoot, CheckboxRoot } from 'reka-ui';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import CardPreview from './card-preview.vue';
+import CardPreview from '../select-card/card-preview.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VNotice from '@/components/v-notice.vue';
