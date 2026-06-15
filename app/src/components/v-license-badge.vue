@@ -30,6 +30,12 @@ const link = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+.license-badge {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6565rem;
+}
+
 .badge-divider {
 	inline-size: calc(100% - 0.875rem);
 	align-self: center;

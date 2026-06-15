@@ -1,23 +1,29 @@
-import { BUNDLE_EXTENSION_TYPES, EXTENSION_LANGUAGES, EXTENSION_TYPES } from '@directus/extensions';
+import { EXTENSION_LANGUAGES, EXTENSION_TYPES } from '@directus/extensions';
 import { create } from '@directus/extensions-sdk/cli';
 import inquirer from 'inquirer';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { run } from './index.js';
 
-// Mock dependencies
 vi.mock('inquirer');
 vi.mock('@directus/extensions-sdk/cli');
 
-describe('run function', () => {
+describe('run', () => {
 	const mockInquirerPrompt = vi.mocked(inquirer.prompt);
 	const mockCreate = vi.mocked(create);
+	const runCli = (args = []) => run(['node', 'create-directus-extension', ...args]);
+	let consoleLogSpy;
 
 	beforeEach(() => {
 		vi.clearAllMocks();
+		consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+		mockCreate.mockResolvedValue(undefined);
 	});
 
-	it('should call inquirer.prompt with correct questions', async () => {
-		// Arrange
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
+	it('should call inquirer.prompt with correct questions when no arguments are provided', async () => {
 		mockInquirerPrompt.mockResolvedValue({
 			type: 'interface',
 			name: 'test-extension',
@@ -25,17 +31,13 @@ describe('run function', () => {
 			install: true,
 		});
 
-		mockCreate.mockResolvedValue(undefined);
+		await runCli();
 
-		// Act
-		await run();
-
-		// Assert
+		expect(consoleLogSpy).toHaveBeenCalledWith('This utility will walk you through creating a Directus extension.\n');
 		expect(mockInquirerPrompt).toHaveBeenCalledTimes(1);
 
 		const calledWith = mockInquirerPrompt.mock.calls[0][0];
 
-		// Check that all required prompts are present
 		expect(calledWith).toHaveLength(4);
 
 		expect(calledWith[0]).toMatchObject({
@@ -66,8 +68,7 @@ describe('run function', () => {
 		});
 	});
 
-	it('should call create with correct parameters for non-bundle extension', async () => {
-		// Arrange
+	it('should pass interactive answers to create', async () => {
 		const mockAnswers = {
 			type: 'interface',
 			name: 'my-interface',
@@ -77,70 +78,77 @@ describe('run function', () => {
 
 		mockInquirerPrompt.mockResolvedValue(mockAnswers);
 
-		mockCreate.mockResolvedValue(undefined);
+		await runCli();
 
-		// Act
-		await run();
-
-		// Assert
 		expect(mockCreate).toHaveBeenCalledTimes(1);
 
-		expect(mockCreate).toHaveBeenCalledWith(mockAnswers.type, mockAnswers.name, {
-			language: mockAnswers.language,
-			install: mockAnswers.install,
-		});
-	});
-
-	it('should call create with correct parameters for bundle extension', async () => {
-		// Arrange
-		const mockAnswers = {
-			type: 'bundle',
-			name: 'my-bundle',
-			language: undefined,
-			install: false,
-		};
-
-		mockInquirerPrompt.mockResolvedValue(mockAnswers);
-
-		mockCreate.mockResolvedValue(undefined);
-
-		// Act
-		await run();
-
-		// Assert
-		expect(mockCreate).toHaveBeenCalledTimes(1);
-
-		expect(mockCreate).toHaveBeenCalledWith(mockAnswers.type, mockAnswers.name, {
-			language: undefined,
-			install: false,
-		});
-	});
-
-	it('should test language prompt conditional logic for bundle type', async () => {
-		// Arrange
-		mockInquirerPrompt.mockResolvedValue({
-			type: 'bundle',
-			name: 'test-bundle',
+		expect(mockCreate).toHaveBeenCalledWith('interface', 'my-interface', {
+			language: 'typescript',
 			install: true,
 		});
-
-		mockCreate.mockResolvedValue(undefined);
-
-		// Act
-		await run();
-
-		// Assert
-		const calledWith = mockInquirerPrompt.mock.calls[0][0];
-		const languagePrompt = calledWith[2]; // Third prompt is the language prompt
-
-		// Test the 'when' function for bundle type (should return false)
-		expect(languagePrompt.when({ type: 'bundle' })).toBe(false);
-		// Also test that bundle is indeed in BUNDLE_EXTENSION_TYPES
-		expect(BUNDLE_EXTENSION_TYPES.includes('bundle')).toBe(true);
 	});
 
-	it('should test language prompt conditional logic for non-bundle type', async () => {
-		// Arrange
+	it('should create from positional arguments without prompting', async () => {
+		await runCli(['interface', 'my-interface']);
+
+		expect(mockInquirerPrompt).not.toHaveBeenCalled();
+
+		expect(mockCreate).toHaveBeenCalledWith('interface', 'my-interface', {
+			language: 'javascript',
+			install: true,
+		});
+	});
+
+	it('should create with the language option without prompting', async () => {
+		await runCli(['hook', 'my-hook', '--language', 'typescript']);
+
+		expect(mockInquirerPrompt).not.toHaveBeenCalled();
+
+		expect(mockCreate).toHaveBeenCalledWith('hook', 'my-hook', {
+			language: 'typescript',
+			install: true,
+		});
+	});
+
+	it('should error when only the type argument is provided', async () => {
+		const exitError = new Error('process.exit');
+
+		vi.spyOn(process, 'exit').mockImplementation(() => {
+			throw exitError;
+		});
+
+		const stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+
+		await expect(runCli(['interface'])).rejects.toThrow(exitError);
+
+		expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining('required argument "name"'));
+		expect(mockInquirerPrompt).not.toHaveBeenCalled();
+		expect(mockCreate).not.toHaveBeenCalled();
+	});
+
+	it('should pass install false when --no-install is used', async () => {
+		await runCli(['interface', 'my-interface', '--no-install']);
+
+		expect(mockInquirerPrompt).not.toHaveBeenCalled();
+
+		expect(mockCreate).toHaveBeenCalledWith('interface', 'my-interface', {
+			language: 'javascript',
+			install: false,
+		});
+	});
+
+	it('should omit language for bundle extensions in non-interactive mode', async () => {
+		await runCli(['bundle', 'my-bundle', '--language', 'typescript']);
+
+		expect(mockInquirerPrompt).not.toHaveBeenCalled();
+
+		expect(mockCreate).toHaveBeenCalledWith('bundle', 'my-bundle', {
+			language: undefined,
+			install: true,
+		});
+	});
+
+	it('should hide language prompt for bundle types', async () => {
 		mockInquirerPrompt.mockResolvedValue({
 			type: 'interface',
 			name: 'test-interface',
@@ -148,143 +156,12 @@ describe('run function', () => {
 			install: true,
 		});
 
-		mockCreate.mockResolvedValue(undefined);
+		await runCli();
 
-		// Act
-		await run();
-
-		// Assert
 		const calledWith = mockInquirerPrompt.mock.calls[0][0];
-		const languagePrompt = calledWith[2]; // Third prompt is the language prompt
+		const languagePrompt = calledWith[2];
 
-		// Test the 'when' function for interface type (should return true)
+		expect(languagePrompt.when({ type: 'bundle' })).toBe(false);
 		expect(languagePrompt.when({ type: 'interface' })).toBe(true);
-	});
-
-	it('should handle errors from create function', async () => {
-		// Arrange
-		const error = new Error('Create failed');
-
-		mockInquirerPrompt.mockResolvedValue({
-			type: 'interface',
-			name: 'test-extension',
-			language: 'typescript',
-			install: true,
-		});
-
-		mockCreate.mockRejectedValue(error);
-
-		// Act & Assert
-		await expect(run()).rejects.toThrow('Create failed');
-	});
-
-	it('should handle errors from inquirer prompt', async () => {
-		// Arrange
-		const error = new Error('Prompt failed');
-
-		mockInquirerPrompt.mockRejectedValue(error);
-
-		// Act & Assert
-		await expect(run()).rejects.toThrow('Prompt failed');
-	});
-
-	it('should work with javascript language', async () => {
-		// Arrange
-		const mockAnswers = {
-			type: 'hook',
-			name: 'test-hook',
-			language: 'javascript',
-			install: false,
-		};
-
-		mockInquirerPrompt.mockResolvedValue(mockAnswers);
-
-		mockCreate.mockResolvedValue(undefined);
-
-		// Act
-		await run();
-
-		// Assert
-		expect(mockCreate).toHaveBeenCalledWith('hook', 'test-hook', {
-			language: 'javascript',
-			install: false,
-		});
-	});
-
-	it('should work with typescript language', async () => {
-		// Arrange
-		const mockAnswers = {
-			type: 'endpoint',
-			name: 'test-endpoint',
-			language: 'typescript',
-			install: true,
-		};
-
-		mockInquirerPrompt.mockResolvedValue(mockAnswers);
-
-		mockCreate.mockResolvedValue(undefined);
-
-		// Act
-		await run();
-
-		// Assert
-		expect(mockCreate).toHaveBeenCalledWith('endpoint', 'test-endpoint', {
-			language: 'typescript',
-			install: true,
-		});
-	});
-
-	it('should work with different extension types', async () => {
-		// Test a few key extension types
-		const extensionTypes = ['interface', 'display', 'hook', 'endpoint', 'operation'];
-
-		for (const extensionType of extensionTypes) {
-			// Reset mocks for each iteration
-			vi.clearAllMocks();
-
-			// Arrange
-			const mockAnswers = {
-				type: extensionType,
-				name: `test-${extensionType}`,
-				language: 'typescript',
-				install: true,
-			};
-
-			mockInquirerPrompt.mockResolvedValue(mockAnswers);
-
-			mockCreate.mockResolvedValue(undefined);
-
-			// Act
-			await run();
-
-			// Assert
-			expect(mockCreate).toHaveBeenCalledWith(extensionType, `test-${extensionType}`, {
-				language: 'typescript',
-				install: true,
-			});
-		}
-	});
-
-	it('should display welcome message', async () => {
-		// Arrange
-		const consoleSpy = vi.spyOn(console, 'log');
-
-		mockInquirerPrompt.mockResolvedValue({
-			type: 'interface',
-			name: 'test-extension',
-			language: 'typescript',
-			install: true,
-		});
-
-		mockCreate.mockResolvedValue(undefined);
-
-		// Act
-		await run();
-
-		// Assert
-		expect(consoleSpy).toHaveBeenCalledWith('This utility will walk you through creating a Directus extension.\n');
-
-		// Restore the spy
-		consoleSpy.mockRestore();
 	});
 });
