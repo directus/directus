@@ -88,6 +88,9 @@ catalog:
   '@smithy/node-http-handler': 4.4.5
   '@supabase/storage-js': 2.81.0
   '@tinymce/tinymce-vue': 6.3.0
+  '@tiptap/pm': ^3.26.1
+  '@tiptap/starter-kit': ^3.26.1
+  '@tiptap/vue-3': ^3.26.1
   '@tresjs/core': ^5.8.0
   '@turf/meta': 7.2.0
   '@tus/server': 2.3.0
