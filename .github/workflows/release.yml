@@ -167,6 +167,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # DHI base image lives behind an entitled registry; reuse the Docker Hub
+      # publishing credentials (that account must hold the DHI entitlement).
+      # Gated to the dhi variant so the standard build never attempts this login.
+      - name: Login to DHI registry
+        uses: docker/login-action@v3
+        if: matrix.variant.name == 'dhi'
+        with:
+          registry: dhi.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
       - name: Build and push by digest
         uses: docker/build-push-action@v6
         id: build
