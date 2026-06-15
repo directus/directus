@@ -1,7 +1,9 @@
 import { InvalidPayloadError } from '@directus/errors';
 import { type Bus } from '@directus/memory';
 import { useBus } from '../../bus/index.js';
+import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
+import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { handleWebSocketError, WebSocketError } from '../errors.js';
@@ -172,6 +174,20 @@ export class SubscribeHandler {
 					subscription.uid = String(message.uid);
 					// remove the subscription if it already exists
 					this.unsubscribe(client, subscription.uid);
+				}
+
+				if (accountability) {
+					await validateAccess(
+						{
+							accountability,
+							action: 'read',
+							collection,
+						},
+						{
+							knex: getDatabase(),
+							schema,
+						},
+					);
 				}
 
 				const data =

@@ -1,6 +1,7 @@
-import type { CollectionsOverview, Relation } from '@directus/types';
+import type { Accountability, CollectionsOverview, Relation } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../../emitter.js';
+import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { WebSocketClient } from '../types.js';
 import { SubscribeHandler } from './subscribe.js';
@@ -23,16 +24,32 @@ vi.mock('../../services', () => ({
 	MetaService: vi.fn(),
 }));
 
+vi.mock('../../permissions/modules/validate-access/validate-access.js', () => ({
+	validateAccess: vi.fn(),
+}));
+
 vi.mock('../../database/index');
 
-function mockClient() {
+function mockClient(accountability: Accountability | null = null) {
 	return {
 		on: vi.fn(),
 		off: vi.fn(),
 		send: vi.fn(),
 		close: vi.fn(),
-		accountability: null,
+		accountability,
 	} as unknown as WebSocketClient;
+}
+
+function mockAccountability(overrides: Partial<Accountability> = {}): Accountability {
+	return {
+		role: null,
+		user: null,
+		roles: [],
+		admin: false,
+		app: false,
+		ip: null,
+		...overrides,
+	};
 }
 
 function delay(ms: number) {
@@ -278,5 +295,127 @@ describe('WebSocket heartbeat handler', () => {
 		expect(unsubscribe).toBeCalled();
 		expect(handler.subscriptions['test_collection']?.size).toBe(0);
 		expect(handler.subscriptions['other_collection']?.size).toBe(0);
+	});
+
+	test('should reject subscription when the user lacks read access', async () => {
+		const client = mockClient(mockAccountability());
+
+		vi.mocked(getSchema).mockImplementation(async () => ({
+			collections: {
+				test_collection: {
+					collection: 'test_collection',
+					primary: 'id',
+					singleton: false,
+					sortField: null,
+					note: null,
+					accountability: null,
+					fields: {},
+				},
+			} as CollectionsOverview,
+			relations: [] as Relation[],
+		}));
+
+		// simulate a user without permission to read the collection
+		vi.mocked(validateAccess).mockRejectedValueOnce(new Error('FORBIDDEN'));
+
+		const subscribe = vi.spyOn(handler, 'subscribe');
+
+		emitter.emitAction('websocket.message', {
+			client,
+			message: {
+				type: 'subscribe',
+				collection: 'test_collection',
+				uid: '123',
+			},
+		});
+
+		await delay(10);
+
+		// the access check ran and the subscription was not registered
+		expect(validateAccess).toBeCalled();
+		expect(subscribe).not.toBeCalled();
+		expect(handler.subscriptions['test_collection']?.size).toBeFalsy();
+	});
+
+	test('should reject event subscription bypass when the user lacks read access', async () => {
+		const client = mockClient(mockAccountability());
+
+		vi.mocked(getSchema).mockImplementation(async () => ({
+			collections: {
+				test_collection: {
+					collection: 'test_collection',
+					primary: 'id',
+					singleton: false,
+					sortField: null,
+					note: null,
+					accountability: null,
+					fields: {},
+				},
+			} as CollectionsOverview,
+			relations: [] as Relation[],
+		}));
+
+		// simulate a user without permission to read the collection
+		vi.mocked(validateAccess).mockRejectedValueOnce(new Error('FORBIDDEN'));
+
+		const subscribe = vi.spyOn(handler, 'subscribe');
+
+		// the "event" field previously skipped the permission probe entirely
+		emitter.emitAction('websocket.message', {
+			client,
+			message: {
+				type: 'subscribe',
+				collection: 'test_collection',
+				event: 'delete',
+				uid: '123',
+			},
+		});
+
+		await delay(10);
+
+		// the access check still ran and the subscription was not registered
+		expect(validateAccess).toBeCalled();
+		expect(subscribe).not.toBeCalled();
+		expect(handler.subscriptions['test_collection']?.size).toBeFalsy();
+	});
+
+	test('should allow event subscription when the user has read access', async () => {
+		const client = mockClient(mockAccountability());
+
+		vi.mocked(getSchema).mockImplementation(async () => ({
+			collections: {
+				test_collection: {
+					collection: 'test_collection',
+					primary: 'id',
+					singleton: false,
+					sortField: null,
+					note: null,
+					accountability: null,
+					fields: {},
+				},
+			} as CollectionsOverview,
+			relations: [] as Relation[],
+		}));
+
+		// user has permission to read the collection
+		vi.mocked(validateAccess).mockResolvedValueOnce(undefined);
+
+		const subscribe = vi.spyOn(handler, 'subscribe');
+
+		emitter.emitAction('websocket.message', {
+			client,
+			message: {
+				type: 'subscribe',
+				collection: 'test_collection',
+				event: 'delete',
+				uid: '123',
+			},
+		});
+
+		await delay(10);
+
+		expect(validateAccess).toBeCalled();
+		expect(subscribe).toBeCalled();
+		expect(handler.subscriptions['test_collection']?.size).toBe(1);
 	});
 });
