@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Lazy loaded social icons on v-button
+Added lazy loading of social icons on v-button
