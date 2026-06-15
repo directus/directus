@@ -314,4 +314,119 @@ describe('parseFields', () => {
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['parent.child.grandchild']);
 	});
+
+	test('should parse aliased relational field (alias only, no non-aliased sibling)', async () => {
+		const schema = {
+			relations: [
+				{
+					collection: 'posts',
+					field: 'author',
+					related_collection: 'authors',
+					meta: { one_field: null, one_collection_field: null, one_allowed_collections: null },
+				},
+			],
+		} as any;
+
+		const selections = [field('author', { alias: 'a', children: [field('name')] })];
+
+		const query = await getQuery({}, schema, selections, mockVariableValues, mockAccountability, 'posts');
+
+		expect(query.fields).toContain('a.name');
+		expect(query.alias).toEqual({ a: 'author' });
+	});
+
+	test('should parse aliased M2O relational field at top level', async () => {
+		const schema = {
+			relations: [
+				{
+					collection: 'posts',
+					field: 'author',
+					related_collection: 'authors',
+					meta: { one_field: null, one_collection_field: null, one_allowed_collections: null },
+				},
+			],
+		} as any;
+
+		const selections = [
+			field('author', { children: [field('name')] }),
+			field('author', { alias: 'a', children: [field('name')] }),
+		];
+
+		const query = await getQuery({}, schema, selections, mockVariableValues, mockAccountability, 'posts');
+
+		expect(query.fields).toContain('author.name');
+		expect(query.fields).toContain('a.name');
+		expect(query.alias).toEqual({ a: 'author' });
+	});
+
+	test('should parse aliased relational field inside non-M2A InlineFragment', async () => {
+		const schema = {
+			relations: [
+				{
+					collection: 'blog_post',
+					field: 'author',
+					related_collection: 'author',
+					meta: { one_field: null, one_collection_field: null, one_allowed_collections: null },
+				},
+			],
+		} as any;
+
+		const selections = [
+			inlineFragment('blog_post', [
+				field('author', { children: [field('id')] }),
+				field('author', { alias: 'authorAlias', children: [field('id')] }),
+			]),
+		];
+
+		const query = await getQuery({}, schema, selections, mockVariableValues, mockAccountability, 'blog_post');
+
+		expect(query.fields).toContain('author.id');
+		expect(query.fields).toContain('authorAlias.id');
+	});
+
+	test('should parse aliased O2M relational field inside non-M2A InlineFragment', async () => {
+		const schema = {
+			relations: [
+				{
+					collection: 'blog_post',
+					field: 'author_id',
+					related_collection: 'author',
+					meta: { one_field: 'posts', one_collection_field: null, one_allowed_collections: null },
+				},
+			],
+		} as any;
+
+		const selections = [
+			field('author', {
+				children: [
+					inlineFragment('author', [
+						field('posts', { children: [field('id')] }),
+						field('posts', { alias: 'recentPosts', children: [field('id')] }),
+					]),
+				],
+			}),
+		];
+
+		const query = await getQuery({}, schema, selections, mockVariableValues, mockAccountability, 'blog_post');
+
+		expect(query.fields).toContain('author.posts.id');
+		expect(query.fields).toContain('author.recentPosts.id');
+	});
+
+	test('should parse aliased M2A relational field at top level', async () => {
+		const selections = [
+			field('parent', {
+				children: [inlineFragment('child', [field('id')])],
+			}),
+			field('parent', {
+				alias: 'parentAlias',
+				children: [inlineFragment('child', [field('id')])],
+			}),
+		];
+
+		const query = await getQuery({}, m2aSchema, selections, mockVariableValues, mockAccountability, 'test_collection');
+
+		expect(query.fields).toContain('parent:child.id');
+		expect(query.fields).toContain('parentAlias:child.id');
+	});
 });

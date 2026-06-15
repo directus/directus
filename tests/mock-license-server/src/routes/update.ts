@@ -4,7 +4,7 @@ import { forbiddenError } from '../errors.js';
 import { requireLicense } from '../hooks/require-license.js';
 import { licenseStore } from '../store.js';
 import { LicenseAuthHeaders, type LicenseAuthHeadersType } from '../types.js';
-import { createNewToken } from '../utils.js';
+import { createToken } from '../utils.js';
 
 export const UpdateRequestSchema = Type.Object({
 	license_key: Type.String({
@@ -44,7 +44,7 @@ export async function updateRoute(app: FastifyInstance) {
 			new_license.projects.push({ id: project_id, url: public_url });
 
 			return res.status(200).send({
-				token: await createNewToken(new_license),
+				token: await createToken(new_license),
 			});
 		},
 	);

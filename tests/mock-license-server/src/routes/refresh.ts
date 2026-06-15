@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import Type, { type Static } from 'typebox';
 import { requireLicense } from '../hooks/require-license.js';
 import { LicenseAuthHeaders, type LicenseAuthHeadersType } from '../types.js';
-import { createNewToken } from '../utils.js';
+import { createToken } from '../utils.js';
 
 export const RefreshRequestBody = Type.Object(
 	{
@@ -36,7 +36,7 @@ export async function refreshRoute(app: FastifyInstance) {
 		},
 		async (req, res) => {
 			return res.status(200).send({
-				token: await createNewToken(req.license),
+				token: await createToken(req.license),
 			});
 		},
 	);
