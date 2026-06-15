@@ -1,4 +1,4 @@
-![Directus](https://marketing.directus.app/assets/42a4a005-e1cd-42ed-9dac-4d174619fc66)
+![Directus](https://github.com/user-attachments/assets/2e60d36e-079b-4ad1-a246-bcbc000d1700)
 
 # The collaborative backend for applications & AI.
 
