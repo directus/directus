@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import StarterKit from '@tiptap/starter-kit';
-import { Editor, EditorContent, useEditor } from '@tiptap/vue-3';
+import { EditorContent, useEditor } from '@tiptap/vue-3';
 import { watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import VButton from '@/components/v-button.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
+import Toolbar from './toolbar/toolbar.vue';
+import toolbarDefault from './toolbar-default';
 
-const props = defineProps<{
-	value: string | null;
-	disabled?: boolean;
-	imageToken?: string;
-	folder?: string;
-}>();
+const props = withDefaults(
+	defineProps<{
+		value: string | null;
+		toolbar?: string[];
+		disabled?: boolean;
+		imageToken?: string;
+		folder?: string;
+	}>(),
+	{
+		toolbar: () => toolbarDefault,
+	},
+);
 
 const emit = defineEmits<{ input: [value: string | null] }>();
-
-const { t } = useI18n();
 
 const editor = useEditor({
 	extensions: [StarterKit],
@@ -35,112 +38,11 @@ watch(
 		editor.value.commands.setContent(value ?? '', { emitUpdate: false });
 	},
 );
-
-type ToolbarButton = {
-	key: string;
-	icon: string;
-	label: string;
-	command: (editor: Editor) => void;
-	isActive?: (editor: Editor) => boolean;
-};
-
-const buttons: ToolbarButton[] = [
-	{ key: 'undo', icon: 'undo', label: t('wysiwyg_options.undo'), command: (e) => e.chain().focus().undo().run() },
-	{ key: 'redo', icon: 'redo', label: t('wysiwyg_options.redo'), command: (e) => e.chain().focus().redo().run() },
-	...([1, 2, 3] as const).map((level) => ({
-		key: `h${level}`,
-		icon: `format_h${level}`,
-		label: t(`wysiwyg_options.h${level}`),
-		command: (e: Editor) => e.chain().focus().toggleHeading({ level }).run(),
-		isActive: (e: Editor) => e.isActive('heading', { level }),
-	})),
-	{
-		key: 'bold',
-		icon: 'format_bold',
-		label: t('wysiwyg_options.bold'),
-		command: (e) => e.chain().focus().toggleBold().run(),
-		isActive: (e) => e.isActive('bold'),
-	},
-	{
-		key: 'italic',
-		icon: 'format_italic',
-		label: t('wysiwyg_options.italic'),
-		command: (e) => e.chain().focus().toggleItalic().run(),
-		isActive: (e) => e.isActive('italic'),
-	},
-	{
-		key: 'underline',
-		icon: 'format_underlined',
-		label: t('wysiwyg_options.underline'),
-		command: (e) => e.chain().focus().toggleUnderline().run(),
-		isActive: (e) => e.isActive('underline'),
-	},
-	{
-		key: 'strikethrough',
-		icon: 'strikethrough_s',
-		label: t('wysiwyg_options.strikethrough'),
-		command: (e) => e.chain().focus().toggleStrike().run(),
-		isActive: (e) => e.isActive('strike'),
-	},
-	{
-		key: 'codeblock',
-		icon: 'code',
-		label: t('wysiwyg_options.codeblock'),
-		command: (e) => e.chain().focus().toggleCodeBlock().run(),
-		isActive: (e) => e.isActive('codeBlock'),
-	},
-	{
-		key: 'bullist',
-		icon: 'format_list_bulleted',
-		label: t('wysiwyg_options.bullist'),
-		command: (e) => e.chain().focus().toggleBulletList().run(),
-		isActive: (e) => e.isActive('bulletList'),
-	},
-	{
-		key: 'numlist',
-		icon: 'format_list_numbered',
-		label: t('wysiwyg_options.numlist'),
-		command: (e) => e.chain().focus().toggleOrderedList().run(),
-		isActive: (e) => e.isActive('orderedList'),
-	},
-	{
-		key: 'blockquote',
-		icon: 'format_quote',
-		label: t('wysiwyg_options.blockquote'),
-		command: (e) => e.chain().focus().toggleBlockquote().run(),
-		isActive: (e) => e.isActive('blockquote'),
-	},
-	{
-		key: 'hr',
-		icon: 'horizontal_rule',
-		label: t('wysiwyg_options.hr'),
-		command: (e) => e.chain().focus().setHorizontalRule().run(),
-	},
-	{
-		key: 'removeformat',
-		icon: 'format_clear',
-		label: t('wysiwyg_options.removeformat'),
-		command: (e) => e.chain().focus().unsetAllMarks().clearNodes().run(),
-	},
-];
 </script>
 
 <template>
 	<div class="wysiwyg" :class="{ disabled }">
-		<div class="toolbar">
-			<VButton
-				v-for="button in buttons"
-				:key="button.key"
-				v-tooltip="button.label"
-				:class="{ active: editor && button.isActive?.(editor) }"
-				:disabled="disabled"
-				small
-				icon
-				@click="editor && button.command(editor)"
-			>
-				<VIcon :name="button.icon" />
-			</VButton>
-		</div>
+		<Toolbar :editor="editor" :toolbar="toolbar" :disabled="disabled" />
 		<EditorContent :editor="editor" />
 	</div>
 </template>
@@ -183,20 +85,6 @@ const buttons: ToolbarButton[] = [
 	&:not(.disabled):focus-within {
 		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
 		outline-offset: var(--focus-ring-offset-invert);
-	}
-}
-
-.toolbar {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 0.125rem;
-	padding: 0.25rem;
-	background-color: var(--theme--form--field--input--background-subdued);
-	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-
-	.v-button.active {
-		--v-button-background-color: var(--theme--form--field--input--border-color);
 	}
 }
 
