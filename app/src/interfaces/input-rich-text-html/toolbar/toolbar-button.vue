@@ -19,7 +19,7 @@ const { t } = useI18n();
 	<VButton
 		v-tooltip="t(button.label)"
 		class="toolbar-button"
-		:class="{ active: editor && button.isActive?.(editor) }"
+		:class="{ active: editor && button.isActive?.(editor, context) }"
 		:disabled="disabled || (editor ? button.disabled?.(editor) : true)"
 		small
 		icon

@@ -14,7 +14,10 @@ const props = defineProps<{
 	editor: Editor | undefined;
 	toolbar: string[];
 	disabled?: boolean;
+	fullscreen?: boolean;
 }>();
+
+const emit = defineEmits<{ 'toggle-fullscreen': [] }>();
 
 const { t } = useI18n();
 
@@ -25,6 +28,10 @@ const context: ToolbarContext = {
 		copy: clipboard.copySelection,
 		cut: clipboard.cutSelection,
 		paste: clipboard.paste,
+	},
+	fullscreen: {
+		active: () => props.fullscreen ?? false,
+		toggle: () => emit('toggle-fullscreen'),
 	},
 };
 

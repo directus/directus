@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import StarterKit from '@tiptap/starter-kit';
 import { EditorContent, useEditor } from '@tiptap/vue-3';
-import { computed, watch } from 'vue';
+import { onKeyStroke } from '@vueuse/core';
+import { computed, ref, watch } from 'vue';
 import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
 
@@ -46,12 +47,24 @@ watch(
 		editor.value.commands.setContent(value ?? '', { emitUpdate: false });
 	},
 );
+
+const fullscreen = ref(false);
+
+onKeyStroke('Escape', () => {
+	if (fullscreen.value) fullscreen.value = false;
+});
 </script>
 
 <template>
-	<div class="wysiwyg" :class="{ disabled }" :style="{ '--editor-font-family': fontFamily }">
-		<Toolbar :editor="editor" :toolbar="toolbar" :disabled="disabled" />
-		<EditorContent :editor="editor" />
+	<div class="wysiwyg" :class="{ disabled, fullscreen }" :style="{ '--editor-font-family': fontFamily }">
+		<Toolbar
+			:editor="editor"
+			:toolbar="toolbar"
+			:disabled="disabled"
+			:fullscreen="fullscreen"
+			@toggle-fullscreen="fullscreen = !fullscreen"
+		/>
+		<EditorContent class="editor-content" :editor="editor" />
 	</div>
 </template>
 
@@ -93,6 +106,21 @@ watch(
 	&:not(.disabled):focus-within {
 		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
 		outline-offset: var(--focus-ring-offset-invert);
+	}
+
+	&.fullscreen {
+		position: fixed;
+		inset: 0;
+		z-index: 490; // below drawers/dialogs (500+) so image/link drawers stay on top
+		display: flex;
+		flex-direction: column;
+		border-radius: 0;
+
+		.editor-content {
+			flex: 1;
+			min-block-size: 0;
+			overflow: auto;
+		}
 	}
 }
 

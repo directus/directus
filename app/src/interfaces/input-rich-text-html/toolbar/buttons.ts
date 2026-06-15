@@ -7,6 +7,10 @@ export interface ToolbarContext {
 		cut: (editor: Editor) => void;
 		paste: (editor: Editor) => void;
 	};
+	fullscreen: {
+		active: () => boolean;
+		toggle: () => void;
+	};
 }
 
 export interface ToolbarButton {
@@ -14,7 +18,7 @@ export interface ToolbarButton {
 	/** i18n key, resolved with `t()` at render time */
 	label: string;
 	command: (editor: Editor, ctx: ToolbarContext) => void;
-	isActive?: (editor: Editor) => boolean;
+	isActive?: (editor: Editor, ctx: ToolbarContext) => boolean;
 	disabled?: (editor: Editor) => boolean;
 }
 
@@ -129,5 +133,11 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		icon: 'content_paste',
 		label: 'wysiwyg_options.paste',
 		command: (e, ctx) => ctx.clipboard.paste(e),
+	},
+	fullscreen: {
+		icon: 'zoom_out_map',
+		label: 'wysiwyg_options.fullscreen',
+		command: (_e, ctx) => ctx.fullscreen.toggle(),
+		isActive: (_e, ctx) => ctx.fullscreen.active(),
 	},
 };
