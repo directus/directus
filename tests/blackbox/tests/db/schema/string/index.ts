@@ -15,7 +15,6 @@ export const generateFilterForDataType = (filter: ClientFilterOperator, possible
 		case 'contains':
 		case 'icontains':
 		case 'ncontains':
-		case 'nicontains':
 		case 'starts_with':
 		case 'istarts_with':
 		case 'nstarts_with':
@@ -114,8 +113,6 @@ export const getValidatorFunction = (filter: ClientFilterOperator): FilterValida
 			return _ncontains;
 		case 'icontains':
 			return _icontains;
-		case 'nicontains':
-			return _nicontains;
 		case 'starts_with':
 			return _starts_with;
 		case 'istarts_with':
@@ -171,14 +168,6 @@ const _ncontains = (inputValue: any, possibleValues: any): boolean => {
 
 const _icontains = (inputValue: any, possibleValues: any): boolean => {
 	if (inputValue.toLowerCase().includes(possibleValues.toLowerCase())) {
-		return true;
-	}
-
-	return false;
-};
-
-const _nicontains = (inputValue: any, possibleValues: any): boolean => {
-	if (!inputValue.toLowerCase().includes(possibleValues.toLowerCase())) {
 		return true;
 	}
 

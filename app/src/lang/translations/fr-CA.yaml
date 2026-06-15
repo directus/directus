@@ -21,12 +21,10 @@
 #'Proxy', 'Intl'
 about: À propos
 privacy_policy: Politique de confidentialité
-contact_our_team: Contactez notre équipe
 setup_welcome: Bienvenue sur Directus
-setup_license_notice: >
-  Directus est gratuit à l'usage pour les entités des moins de 5 millions de dollars de revenue annuel, de financement ou de budget opérationnel.
 setup_launch: Lancer Directus
 setup_project: Configurer un projet
+continue: Continuer
 first_name: Prénom
 last_name: Nom
 identifier: Identifiant
@@ -56,11 +54,15 @@ collection_names_are_case_sensitive: Le nom des collections est sensible à la c
 condition_rules: Règles de conditions
 input: Texte simple
 invalid_input: Saisie invalide
+invalid_file_type: Type de fichier invalide
 not_a_number: Pas un nombre
 maps: Cartes
 switch_user: Changer d'utilisateur
+item_deleted: L'élément que vous étiez en train de modifier a été supprimé.
 item_creation: Création d'article
 item_revision: Historique de l'article
+latest_revision: Dernière révision
+compare_to_latest_to_restore: Comparer à la dernière fois pour envisager de restaurer cette révision
 enter_a_name: Saisir un nom...
 duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
@@ -68,6 +70,8 @@ full_width: Toute la largeur
 group: Groupe
 popular: Popularité
 recent: Récent
+previous: Précédent
+latest: Dernière version
 export_items: Exporter
 and: Et
 or: Ou
@@ -112,6 +116,10 @@ report_an_issue: Signaler un problème
 website: Site internet
 github: GitHub
 beta: Bêta
+collab_collision: L'élément a été modifié pendant que vous étiez en cours d'édition. Sélectionnez les changements à garder.
+collab_disconnected: Édition collaborative déconnectée
+collab_currently_viewing: En train de consulter
+you: vous
 n_downloads: '{n} Téléchargements'
 downloads: Téléchargements
 compatibility_not_guaranteed: Compatibilité non garantie
@@ -168,6 +176,7 @@ connection_good: Bonne connexion
 connection_fair: Connexion moyenne
 connection_poor: Mauvaise connexion
 primary: Primaire
+download_folder: Télécharger le dossier
 rename_folder: Renommer le fichier
 delete_folder: Supprimer le fichier
 prefix: Préfixe
@@ -175,15 +184,19 @@ suffix: Suffixe
 keep: Conserver
 version: Version
 version_key: Identifiant de la version
-version_name: Nom De la Version
-main_version: Principal
+version_name: Nom de la version
+your_version: Votre version
 switch_version: Changer de version
 switch_version_copy: Êtes-vous sûr de vouloir basculer vers la version "{version}" ? Les modifications non enregistrées seront perdues.
 create_version: Créer une version
 rename_version: Renommer la version
+reserved_version_key: 'L''identifiant de version "{key}" est réservé et ne peut pas être utilisé.'
 compare_version: Comparer la version
 save_version: Enregistrer la version
-promote_version: Promouvoir la version
+apply: Appliquer
+discard: Abandonner
+select_all_differences: Sélectionner toutes les différences
+show_differences_only: Afficher uniquement les différences
 delete_version: Supprimer la version
 delete_version_copy: >-
   Êtes-vous sûr de vouloir supprimer la version "{version}"? Cette action est irréversible.
@@ -219,7 +232,10 @@ recommended_defaults: Valeurs par défaut recommandées
 unarchive: Restaurer
 unarchive_confirm: Êtes-vous sûr de vouloir restaurer cet élément ?
 nested_files_folders_will_be_moved: Le contenu du dossier sera déplacé vers le dossier parent.
+delete_folder_dialog:
+  delete_content: Supprimer tout le contenu
 validation_errors_notice: 'Les champs suivants contiennent des valeurs invalides:'
+validation_value_is_invalid: La valeur est invalide
 validationError:
   eq: La valeur doit être {valid}
   neq: La valeur ne peut pas être {invalid}
@@ -424,6 +440,8 @@ precision_scale: Précision et échelle
 readonly: Lecture seule
 unique: Unique
 index: Index
+searchable: Indexable
+field_searchable: Inclure le champ dans les requêtes de recherche
 updated_on: Modifié le
 updated_by: Modifié par
 primary_key: Clef primaire
@@ -467,6 +485,7 @@ revision_delta_reverted: Restauré
 revision_delta_update_message: Ce champ a été mis à jour, mais sa valeur a été cachée pour des raisons de sécurité.
 revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
+differences_count: 'Pas de différence | 1 Différence | {count} Différences'
 presentation_text_values_cannot_be_reimported: 'Utilise le texte de présentation, les valeurs ne peuvent pas être réimportées.'
 download_page_as_csv: 'Télécharger la page au format CSV'
 download_page_as_csv_unsupported: Cette mise en page ne prend pas en charge le téléchargement de la page actuelle.
@@ -485,12 +504,18 @@ related_collection: Collection associée
 related_collections: Collections associées
 translations_collection: Collection de traduction
 languages_collection: Collection de langues
+enable_translations: Activer les traductions
+manage_translation_fields: Ajouter des champs de traduction
+add_fields: Ajouter des champs
 translations_preview_collections: Collections
 translations_preview_fields: Champs
 import_data_input_placeholder: CSV ou JSON...
 import_data_button: Commencer l'import
+import_background: Importer en arrière-plan
 import_data_indeterminate: Import des données...
 import_data_success: Données importées avec succès depuis {filename}
+import_upload_success: '{filename} a été téléchargé avec succès. Importation des données en arrière-plan.'
+import_data_errors: Erreur d'importation
 import_data_error: La structure des données de ce fichier ne correspond pas à la collection.
 snapshot:
   export: Exporter le schéma
@@ -620,8 +645,8 @@ manual_string: Chaîne de caractère saisie manuellement
 save_and_create_new: Enregistrer et en créer un nouveau
 save_and_stay: Enregistrer et rester
 save_and_quit: Enregistrer et quitter
-save_and_return_to_main: Enregistrer et revenir au menu principal
 save_as_copy: Enregistrer une copie
+save_as_new_file: Enregistrer comme nouveau fichier
 add_existing: Sélectionner
 creating_items: Création d'éléments
 enable_create_button: Activer le bouton de création
@@ -657,12 +682,17 @@ file_count: 'Aucun fichier | Un fichier | {count} fichiers'
 no_files_copy: Il n'y a aucun fichier ici.
 user_count: 'Aucun utilisateur | Un seul utilisateur | {count} utilisateurs'
 no_users_copy: Il n'y a pas encore d'utilisateurs avec ce rôle.
+no_active_users: Aucun utilisateur actif
+no_suspended_users: Aucun utilisateur suspendu
+no_invited_users: Aucun utilisateur invité
+no_status_users_copy: 'Il n''y a aucun utilisateur avec le statut {status}.'
 no_notifications: Aucune notification
 no_notifications_copy: Vous êtes à jour !
 activity_log: Journal d’activité
 all_items: Tous les éléments
 any: N'importe quel
 csv: CSV
+csv_utf8: Excel CSV (UTF-8)
 no_collections: Aucune collection
 create_collection: Créer une collection
 no_collections_copy_admin: Vous n'avez pas encore de collection. Cliquez sur le bouton ci-dessous pour commencer.
@@ -745,6 +775,7 @@ errors:
   INVALID_CONFIG: Configuration non valide
   INVALID_CREDENTIALS: Mauvais nom d'utilisateur ou mot de passe
   INVALID_FOREIGN_KEY: Clé étrangère invalide
+  INVALID_INVITE: Cette invitation n'est plus valide
   INVALID_IP: Adresse IP non autorisée
   INVALID_OTP: Mauvais mot de passe unique
   INVALID_PAYLOAD: Payload invalide
@@ -798,6 +829,9 @@ flip_vertical: Miroir vertical
 aspect_ratio: Rapport de forme
 rotate: Faire pivoter
 all_users: Tous les utilisateurs
+active_users: Utilisateurs actifs
+suspended_users: Utilisateurs Suspendus
+invited_users: Utilisateurs invités
 delete_collection: Supprimer la collection
 update_collection_success: Collection mise à jour
 delete_collection_success: Collection supprimée
@@ -986,17 +1020,24 @@ operation_key_unique_error: Les clés d'Opération doivent être uniques dans un
 operation_handle_resolve: 'Résoudre : Cliquez pour Ajouter ou faites Glisser pour Réacheminer'
 operation_handle_reject: 'Refuser : Cliquez pour Ajouter ou faites Glisser pour Réacheminer'
 visual_editor: Éditeur visuel
-toggle_navigation: Activer/désactiver la navigation
+toggle_navigation: Afficher/cacher la navigation
+toggle_sidebar: Afficher/masquer la barre latérale
 toggle_editable_elements: Activer/désactiver les éléments modifiables
 no_url: Aucune URL fournie
 no_url_copy: Veuillez ajouter une URL dans les paramètres.
 invalid_url: URL invalide
 insights: Analyses
 deployment:
+  deployment: Déploiement
   provider:
     settings:
       delete_confirm: Cette action est définitive et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
+    vercel:
+      name: Vercel
+      account_type:
+        team: Équipe
     run:
+      currently_deploying: En cours de déploiement...
       cancel_confirm: Cette action est définitive et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
       log_all: Tous les niveaux de log
   target_value:
@@ -1146,6 +1187,17 @@ settings_data_model: Modèle de données
 settings_roles: Rôles Utilisateur
 settings_permissions: Règles d'accès
 settings_project: Réglages
+licensing:
+  unlimited: Illimité
+  addon_manage: Gérer
+  addon_update: Mettre à jour
+  resolve_continue: Continuer
+  resolve_show_n_more: 'Afficher {count} de plus'
+  resolve_section_flows: Flux
+  resolve_sso_admin_password: Mot de passe
+  entitlements:
+    collections: Collections
+    flows: Flux
 settings_appearance: Personnalisation du Thème
 settings_ai: IA
 settings_flows: Flux
@@ -1169,9 +1221,12 @@ data: Données
 theme-overrides: Éditeur de thème
 unsaved_changes: Modifications non enregistrées
 unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
+unsaved_changes_collab: Modifications collaboratives non enregistrées
+unsaved_changes_copy_collab: Vous éditez cet objet avec d'autres. Vos modifications resteront dans la session collaborative pour l'instant, mais peuvent être perdues si personne ne les enregistre.
 discard_changes: Annuler les modifications
 discard_all_changes: Ignorer toutes les modifications
 discard_changes_copy: Êtes-vous sûr de vouloir annuler vos modifications ?
+discard_changes_copy_collab: Vous éditez cet élément avec d'autres. Annuler les modifications effacera toutes les modifications non enregistrées pour tous les participants à cette session collaborative.
 show_x_axis: Afficher l'axe X
 show_y_axis: Afficher l'axe Y
 keep_editing: Continuer l’édition
@@ -1372,6 +1427,9 @@ fields:
     public_registration_email_filter_note: Seules les adresses e-mail correspondant à ce filtre peuvent s'inscrire.
     public_registration_verify_email: Vérifier l'adresse e-mail
     public_registration_verify_email_note: Envoie un e-mail à l'utilisateur qui vient de s'inscrire, lui demandant de cliquer sur un lien de vérification avant de pouvoir se connecter.
+    collaborative_editing: Édition collaborative
+    collaborative_editing_enabled: Activer l'édition collaborative
+    collaborative_editing_note: Les WebSockets sont nécessaires pour que l'édition collaborative puisse fonctionner.
     ai_header_name: En-tête
   directus_shares:
     name: Nom
@@ -1589,6 +1647,7 @@ no_permissions: Aucune Permission
 permission_add_collection: Ajouter une collection
 default_label: Défaut
 delete_label: Supprimer
+discard_label: Abandonner
 delete_are_you_sure: >-
   Cette action est définitive et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
 delete_field_are_you_sure: >-
@@ -2036,7 +2095,9 @@ interfaces:
     value_securely_saved: Valeur enregistrée en toute sécurité
     generate: Générer un jeton
     regenerate: Régénérer le jeton
+    regenerate_confirm_title: Régénérer le jeton
     remove_token: Supprimer le jeton
+    remove_confirm_title: Supprimer le jeton
   system-raw-editor:
     system-raw-editor: Éditeur brut
     description: Permettre la saisie de valeurs brutes ou de modèles en moustache
@@ -2494,4 +2555,6 @@ search_flow: Rechercher le flux...
 percent: Pourcent
 show_password: Afficher le mot de passe
 hide_password: Masquer le mot de passe
+license_grace_key_modal:
+  optional: Facultatif
 set_to_now: Configurer à maintenant

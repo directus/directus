@@ -1,4 +1,5 @@
 ---
+continue: Nadaljuj
 first_name: Ime
 last_name: Priimek
 identifier: Identifikator
@@ -704,6 +705,14 @@ editing_in_batch: 'Masovno urejanje {count} zapisov'
 no_options_available: Ni opcij
 settings_data_model: Podatkovni model
 settings_project: Nastavitve
+licensing:
+  unlimited: Neomejeno
+  addon_update: Posodobi
+  resolve_continue: Nadaljuj
+  resolve_show_n_more: 'Pokaži še {count}'
+  resolve_sso_admin_password: Geslo
+  entitlements:
+    collections: Zbirke
 settings_presets: Zaznamki
 settings_translations: Prevodi
 one_or_more_options_are_missing: Manjka ena ali več opcij

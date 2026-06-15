@@ -151,7 +151,7 @@ const renderBlocks = computed<RenderBlock[]>(() => {
 	}
 
 	&[data-role='user'] {
-		--ai-message-background: var(--theme--background);
+		--ai-message-background: var(--theme--background-subdued);
 		--ai-message-color: var(--theme--foreground);
 
 		justify-content: flex-end;

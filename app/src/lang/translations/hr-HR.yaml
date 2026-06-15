@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: O aplikaciji
+continue: Nastavi
 first_name: Ime
 last_name: Prezime
 identifier: Identifikator
@@ -157,14 +158,12 @@ keep: Zadrži
 version: Verzija
 version_key: Ključ Verzije
 version_name: Naziv Verzije
-main_version: Glavna
 switch_version: Promijeni Verziju
 switch_version_copy: Jeste li sigurni da želite preći na verziju "{version}"? Nespremljene promjene bit će izgubljene.
 create_version: Kreiraj Verziju
 rename_version: Preimenuj Verziju
 compare_version: Usporedi Verziju
 save_version: Spasi Verziju
-promote_version: Promoviraj Verziju
 delete_version: Obriši Verziju
 delete_version_copy: >-
   Jeste li sigurni da želite izbrisati verziju "{version}"? Ova se radnja ne može poništiti.
@@ -1110,6 +1109,17 @@ editing_in_batch: 'Skupno uređivanje {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model podataka
 settings_project: Postavke
+licensing:
+  unlimited: Neograničeno
+  addon_manage: Upravljaj
+  addon_update: Ažuriraj
+  resolve_continue: Nastavi
+  resolve_show_n_more: 'Prikaži još {count}'
+  resolve_section_flows: Tokovi
+  resolve_sso_admin_password: Lozinka
+  entitlements:
+    collections: Zbirke
+    flows: Tokovi
 settings_appearance: Izgled
 settings_flows: Tokovi
 settings_presets: Oznake
@@ -1960,7 +1970,9 @@ interfaces:
     value_securely_saved: Vrijednost sigurno spremljena
     generate: Generiraj token
     regenerate: Ponovno generiraj token
+    regenerate_confirm_title: Ponovno generiraj token
     remove_token: Ukloni token
+    remove_confirm_title: Ukloni token
   system-raw-editor:
     system-raw-editor: Uređivač sirovog sadržaja
     description: Omogućuje unos neobrađenih ili "mustache" predložaka
@@ -2407,4 +2419,6 @@ duplicate_dashboard: Dupliciraj nadzornu ploču
 search_dashboard: Pretraži nadzornu ploču...
 search_flow: Pretraži Tok...
 percent: Postotak
+license_grace_key_modal:
+  optional: Opcionalno
 set_to_now: Postavi na sad

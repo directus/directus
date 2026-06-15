@@ -1,8 +1,8 @@
 {
 	"name": "@directus/constants",
-	"version": "14.3.0",
+	"version": "14.4.0",
 	"description": "Shared constants for Directus",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -23,11 +23,15 @@
 	],
 	"scripts": {
 		"build": "tsdown src/index.ts --dts",
-		"dev": "tsdown src/index.ts --dts --watch"
+		"dev": "tsdown src/index.ts --dts --watch",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
+		"@vitest/coverage-v8": "catalog:",
 		"tsdown": "catalog:",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	}
 }

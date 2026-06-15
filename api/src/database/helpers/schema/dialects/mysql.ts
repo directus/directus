@@ -121,6 +121,10 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		return blockingQuery;
 	}
 
+	override castToText(): string {
+		return 'CAST(?? AS CHAR)';
+	}
+
 	override async parseCollectionName(collection: string): Promise<string> {
 		if (lowerCaseTableNames === undefined) {
 			const result = await this.knex.raw('SELECT @@lower_case_table_names AS lctn');

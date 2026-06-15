@@ -11,7 +11,7 @@ const { saving, readyToSave } = storeToRefs(fieldDetailStore);
 
 <template>
 	<PrivateViewHeaderBarActionButton
-		v-tooltip.bottom="$t('save')"
+		:label="$t('save')"
 		:disabled="readyToSave === false"
 		:loading="saving"
 		icon="check"

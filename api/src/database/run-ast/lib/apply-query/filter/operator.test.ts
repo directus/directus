@@ -98,14 +98,14 @@ for (const { field, operator, value, sql, bindings } of [
 		field: 'articles.content',
 		operator: '_contains',
 		value: 'Test',
-		sql: `select * where CAST("articles"."content" AS text) LIKE ?`,
+		sql: `select * where CAST("articles"."content" AS text) like ?`,
 		bindings: ['%Test%'],
 	},
 	{
 		field: 'articles.content',
 		operator: '_ncontains',
 		value: 'Test',
-		sql: `select * where CAST("articles"."content" AS text) NOT LIKE ?`,
+		sql: `select * where not CAST("articles"."content" AS text) like ?`,
 		bindings: ['%Test%'],
 	},
 	{
@@ -113,13 +113,6 @@ for (const { field, operator, value, sql, bindings } of [
 		operator: '_icontains',
 		value: 'Test',
 		sql: `select * where LOWER(CAST("articles"."content" AS text)) LIKE ?`,
-		bindings: ['%test%'],
-	},
-	{
-		field: 'articles.content',
-		operator: '_nicontains',
-		value: 'Test',
-		sql: `select * where LOWER(CAST("articles"."content" AS text)) NOT LIKE ?`,
 		bindings: ['%test%'],
 	},
 	{

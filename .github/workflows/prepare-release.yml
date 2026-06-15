@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version (eg: 11.12.0)'
+        description: 'Release version (eg: 11.12.0 or 12.0.0-rc.1)'
         required: true
         type: string
 
@@ -25,19 +25,20 @@ jobs:
       - name: Validate version format and existence
         env:
           GH_TOKEN: ${{ github.token }}
+          VERSION_INPUT: ${{ github.event.inputs.version }}
         run: |
-          VERSION=${{ github.event.inputs.version }}
+          VERSION="$VERSION_INPUT"
           TAG="v$VERSION"
           REPO="${{ github.repository }}"
 
-          # Check for semver format
-          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
-            echo "❌ Invalid version format for '$VERSION'. Expected: x.y.z or x.y.z-prerelease"
+          # Check for stable or RC semver format
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-rc\.(0|[1-9][0-9]*))?$ ]]; then
+            echo "❌ Invalid version format for '$VERSION'. Expected: x.y.z or x.y.z-rc.N"
             exit 1
           fi
 
           # Check for tag existence
-          if gh api repos/$REPO/git/refs/tags/$TAG \
+          if gh api repos/$REPO/git/ref/tags/$TAG \
                --silent >/dev/null 2>&1; then
             echo "❌ Tag '$TAG' already exists"
             exit 1
@@ -97,7 +98,46 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           DIRECTUS_VERSION: ${{ github.event.inputs.version }}
         run: |
+          VERSION="$DIRECTUS_VERSION"
+
           echo "🔄 Running changeset version..."
+
+          if [[ "$VERSION" == *"-"* ]]; then
+            IS_PRERELEASE=true
+
+            if [ -f .changeset/pre.json ]; then
+              PRE_MODE=$(node -p "require('./.changeset/pre.json').mode")
+              PRE_TAG=$(node -p "require('./.changeset/pre.json').tag")
+
+              if [ "$PRE_MODE" != "pre" ] || [ "$PRE_TAG" != "rc" ]; then
+                echo "❌ Expected existing prerelease mode for rc, found mode '$PRE_MODE' and tag '$PRE_TAG'"
+                exit 1
+              fi
+
+              echo "➡️ Continuing existing rc prerelease mode..."
+            else
+              echo "➡️ Entering rc prerelease mode..."
+              pnpm changeset pre enter rc
+            fi
+          else
+            IS_PRERELEASE=false
+
+            if [ -f .changeset/pre.json ]; then
+              PRE_MODE=$(node -p "require('./.changeset/pre.json').mode")
+
+              if [ "$PRE_MODE" = "pre" ]; then
+                echo "➡️ Exiting prerelease mode..."
+                pnpm changeset pre exit
+              elif [ "$PRE_MODE" = "exit" ]; then
+                echo "➡️ Prerelease mode already marked for exit..."
+              else
+                echo "❌ Unexpected changeset prerelease mode '$PRE_MODE'"
+                exit 1
+              fi
+            fi
+          fi
+
+          echo "is_prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
 
           # Capture the changeset version output
           OUTPUT=$(pnpm changeset version 2>&1)
@@ -116,14 +156,15 @@ jobs:
 
           # Verify version was updated in main package
           PACKAGE_VERSION=$(node -p "require('./directus/package.json').version")
-          if [ "$PACKAGE_VERSION" != "${{ github.event.inputs.version }}" ]; then
-            echo "❌ Version mismatch: package.json shows $PACKAGE_VERSION, expected ${{ github.event.inputs.version }}"
+          if [ "$PACKAGE_VERSION" != "$VERSION" ]; then
+            echo "❌ Version mismatch: package.json shows $PACKAGE_VERSION, expected $VERSION"
             exit 1
           fi
 
-          echo "✅ Version updated successfully to ${{ github.event.inputs.version }}"
+          echo "✅ Version updated successfully to $VERSION"
 
       - name: Verify changeset cleanup
+        if: steps.changeset-version.outputs.is_prerelease != 'true'
         run: |
           # Count remaining changeset files (excluding config)
           CHANGESET_COUNT=$(find .changeset -name "*.md" -not -name "config.json" | wc -l)
@@ -132,14 +173,21 @@ jobs:
             find .changeset -name "*.md" -not -name "config.json"
             exit 1
           fi
+
+          if [ -f .changeset/pre.json ]; then
+            echo "❌ Prerelease state was not cleared"
+            exit 1
+          fi
+
           echo "✅ Changesets cleared successfully"
 
       - name: Create release PR
         id: create-pr
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PAT }}
+          VERSION_INPUT: ${{ github.event.inputs.version }}
         run: |
-          VERSION=${{ github.event.inputs.version }}
+          VERSION="$VERSION_INPUT"
           TAG="v$VERSION"
           BRANCH_NAME="release-$VERSION"
           PR_TITLE="Release $VERSION"
@@ -147,12 +195,13 @@ jobs:
           # Build the PR body content
           PR_BODY=$(cat <<'EOF'
           ### ✅ Release Checklist
-          - [x] Changesets processed and cleared
+          - [x] Changesets processed
           - [x] Package versions updated
           - [x] Release notes generated
           ${{ steps.crowdin-check.outputs.crowdin_task }}
           - [ ] PR reviewed and approved
           - [ ] Blackbox tests passed
+          - [ ] E2E tests passed
 
           ### 🚀 Release Notes
           ```md
@@ -190,6 +239,7 @@ jobs:
               --body "$PR_BODY" \
               --label "Release" \
               --label "Run Blackbox" \
+              --label "Run E2E" \
               --label "No Changeset" \
               --head "$BRANCH_NAME" \
               --base "main" \

@@ -83,9 +83,9 @@ describe('', () => {
 			'contains',
 			'ncontains',
 			'icontains',
-			'nicontains',
 			'null',
 			'nnull',
+			'json',
 		]);
 	});
 
