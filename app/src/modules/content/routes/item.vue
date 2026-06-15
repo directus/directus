@@ -33,6 +33,7 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VKbdShortcut from '@/components/v-kbd-shortcut.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemHint from '@/components/v-list-item-hint.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
