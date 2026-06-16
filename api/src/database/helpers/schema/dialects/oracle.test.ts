@@ -13,6 +13,11 @@ describe('SchemaHelperOracle', () => {
 		return { helper, mockKnex };
 	}
 
+	test('castToText returns the Oracle text cast template', () => {
+		const { helper } = createHelper();
+		expect(helper.castToText()).toBe('TO_CHAR(??)');
+	});
+
 	test('createIndex creates a standard index without options', async () => {
 		const { helper, mockKnex } = createHelper();
 		await helper.createIndex('users', 'email');

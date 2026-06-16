@@ -17,6 +17,11 @@ describe('SchemaHelperMySQL', () => {
 		return { helper, mockRaw };
 	}
 
+	test('castToText returns the MySQL text cast template', () => {
+		const { helper } = createHelper();
+		expect(helper.castToText()).toBe('CAST(?? AS CHAR)');
+	});
+
 	test('createIndex creates a standard index without options', async () => {
 		const { helper, mockRaw } = createHelper();
 		await helper.createIndex('users', 'email');
