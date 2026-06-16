@@ -1,7 +1,26 @@
+import { useEnv } from '@directus/env';
 import type { FragmentDefinitionNode, OperationDefinitionNode } from 'graphql';
 import { buildSchema, Kind, parse, validate } from 'graphql';
-import { describe, expect, test } from 'vitest';
-import { findExcessiveSensitiveMutation, limitSensitiveMutations } from './limit-sensitive-mutations.js';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { checkSensitiveMutationLimit, limitSensitiveMutations } from './limit-sensitive-mutations.js';
+
+vi.mock('@directus/env', () => ({ useEnv: vi.fn() }));
+
+const DEFAULT_SENSITIVE_MUTATIONS = [
+	'auth_login',
+	'auth_refresh',
+	'auth_password_request',
+	'auth_password_reset',
+	'users_register',
+	'users_register_verify',
+	'users_invite_accept',
+];
+
+const SENSITIVE_MUTATIONS = new Set(DEFAULT_SENSITIVE_MUTATIONS);
+
+beforeEach(() => {
+	vi.mocked(useEnv).mockReturnValue({ GRAPHQL_SINGLE_USE_MUTATIONS: DEFAULT_SENSITIVE_MUTATIONS });
+});
 
 const schema = buildSchema(`
 	type Query {
@@ -195,16 +214,37 @@ describe('limitSensitiveMutations', () => {
 		expect(errors).toHaveLength(1);
 		expect(errors[0]!.message).toContain('"auth_login" can only be used once per request');
 	});
+
+	test('guards only the mutations configured via GRAPHQL_SINGLE_USE_MUTATIONS', () => {
+		vi.mocked(useEnv).mockReturnValue({ GRAPHQL_SINGLE_USE_MUTATIONS: ['users_register'] });
+
+		// auth_login is no longer in the configured set, so aliased duplicates are allowed.
+		expect(
+			validateQuery(`mutation {
+				a: auth_login(email: "a@b.c", password: "1") { access_token }
+				b: auth_login(email: "a@b.c", password: "2") { access_token }
+			}`),
+		).toHaveLength(0);
+
+		// users_register is now guarded, so its duplicates are rejected.
+		const errors = validateQuery(`mutation {
+			a: users_register(email: "a@b.c", password: "1")
+			b: users_register(email: "a@b.c", password: "2")
+		}`);
+
+		expect(errors).toHaveLength(1);
+		expect(errors[0]!.message).toContain('"users_register" can only be used once per request');
+	});
 });
 
-describe('findExcessiveSensitiveMutation', () => {
+describe('checkSensitiveMutationLimit', () => {
 	test('returns undefined when every sensitive mutation stays within the limit', () => {
 		const { operation, getFragment } = parseOperation(`mutation {
 			auth_login(email: "a@b.c", password: "1") { access_token }
 			auth_password_request(email: "a@b.c")
 		}`);
 
-		expect(findExcessiveSensitiveMutation(operation, getFragment)).toBeUndefined();
+		expect(checkSensitiveMutationLimit(operation, getFragment, SENSITIVE_MUTATIONS)).toBeUndefined();
 	});
 
 	test('returns the first invocation that exceeds the limit', () => {
@@ -214,11 +254,10 @@ describe('findExcessiveSensitiveMutation', () => {
 			c: auth_login(email: "a@b.c", password: "3") { access_token }
 		}`);
 
-		const excess = findExcessiveSensitiveMutation(operation, getFragment);
+		const error = checkSensitiveMutationLimit(operation, getFragment, SENSITIVE_MUTATIONS);
 
-		expect(excess?.fieldName).toBe('auth_login');
-		expect(excess?.count).toBe(2);
-		expect(excess?.node.alias?.value).toBe('b');
+		expect(error?.fieldName).toBe('auth_login');
+		expect(error?.node.alias?.value).toBe('b');
 	});
 
 	test('stops walking once the limit is exceeded', () => {
@@ -233,10 +272,14 @@ describe('findExcessiveSensitiveMutation', () => {
 
 		const seen: string[] = [];
 
-		findExcessiveSensitiveMutation(operation, (name) => {
-			seen.push(name);
-			return getFragment(name);
-		});
+		checkSensitiveMutationLimit(
+			operation,
+			(name: string) => {
+				seen.push(name);
+				return getFragment(name);
+			},
+			SENSITIVE_MUTATIONS,
+		);
 
 		// Fragment A trips the limit, so the sibling spread B is never resolved.
 		expect(seen).toEqual(['A']);
@@ -248,16 +291,16 @@ describe('findExcessiveSensitiveMutation', () => {
 			b: auth_logout
 		}`);
 
-		expect(findExcessiveSensitiveMutation(operation, getFragment)).toBeUndefined();
+		expect(checkSensitiveMutationLimit(operation, getFragment, SENSITIVE_MUTATIONS)).toBeUndefined();
 	});
 
-	test('counts the same fragment spread more than once', () => {
+	test('flags the same fragment spread more than once', () => {
 		const { operation, getFragment } = parseOperation(`
 			mutation { ...Once ...Once }
 			fragment Once on Mutation { auth_login(email: "a@b.c", password: "1") { access_token } }
 		`);
 
-		expect(findExcessiveSensitiveMutation(operation, getFragment)?.count).toBe(2);
+		expect(checkSensitiveMutationLimit(operation, getFragment, SENSITIVE_MUTATIONS)?.fieldName).toBe('auth_login');
 	});
 
 	test('resolves inline fragments', () => {
@@ -268,7 +311,7 @@ describe('findExcessiveSensitiveMutation', () => {
 			}
 		}`);
 
-		expect(findExcessiveSensitiveMutation(operation, getFragment)?.fieldName).toBe('auth_login');
+		expect(checkSensitiveMutationLimit(operation, getFragment, SENSITIVE_MUTATIONS)?.fieldName).toBe('auth_login');
 	});
 
 	test('scopes counting to the given operation', () => {
@@ -279,7 +322,7 @@ describe('findExcessiveSensitiveMutation', () => {
 
 		for (const name of ['Login1', 'Login2']) {
 			const { operation, getFragment } = parseOperation(query, name);
-			expect(findExcessiveSensitiveMutation(operation, getFragment)).toBeUndefined();
+			expect(checkSensitiveMutationLimit(operation, getFragment, SENSITIVE_MUTATIONS)).toBeUndefined();
 		}
 	});
 
@@ -290,21 +333,22 @@ describe('findExcessiveSensitiveMutation', () => {
 			fragment B on Mutation { auth_password_request(email: "a@b.c") ...A }
 		`);
 
-		expect(findExcessiveSensitiveMutation(operation, getFragment)).toBeUndefined();
+		expect(checkSensitiveMutationLimit(operation, getFragment, SENSITIVE_MUTATIONS)).toBeUndefined();
 	});
 
 	test('ignores unresolvable fragment spreads', () => {
 		const { operation, getFragment } = parseOperation(`mutation { ...Missing }`);
 
-		expect(findExcessiveSensitiveMutation(operation, getFragment)).toBeUndefined();
+		expect(checkSensitiveMutationLimit(operation, getFragment, SENSITIVE_MUTATIONS)).toBeUndefined();
 	});
 
-	test('honours a custom max', () => {
+	test('only guards the field names in the provided set', () => {
 		const { operation, getFragment } = parseOperation(`mutation {
 			a: auth_login(email: "a@b.c", password: "1") { access_token }
 			b: auth_login(email: "a@b.c", password: "2") { access_token }
 		}`);
 
-		expect(findExcessiveSensitiveMutation(operation, getFragment, 2)).toBeUndefined();
+		// auth_login is not in this custom set, so the duplicates are allowed.
+		expect(checkSensitiveMutationLimit(operation, getFragment, new Set(['users_register']))).toBeUndefined();
 	});
 });

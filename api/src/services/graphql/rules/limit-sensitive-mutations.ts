@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import type {
 	FieldNode,
 	FragmentDefinitionNode,
@@ -6,16 +7,6 @@ import type {
 	ValidationRule,
 } from 'graphql';
 import { GraphQLError, Kind } from 'graphql';
-
-/**
- * System mutations that perform expensive or sensitive side effects and are reachable anonymously.
- */
-export const SINGLE_USE_SYSTEM_MUTATIONS = new Set([
-	'auth_login',
-	'auth_password_request',
-	'auth_password_reset',
-	'users_register',
-]);
 
 const MAX_INVOCATIONS_PER_OPERATION = 1;
 
@@ -26,13 +17,17 @@ export interface SensitiveMutationLimitError {
 
 /**
  * Walk a mutation operation's selection set, resolving fragment spreads and
- * inline fragments, and return the first {@link SINGLE_USE_SYSTEM_MUTATIONS}
- * invocation whose running per-operation count exceeds `max`, or `undefined`
- * if every sensitive mutation stays within the limit.
+ * inline fragments, and return the first invocation of a `sensitiveMutations`
+ * field whose running per-operation count exceeds `MAX_INVOCATIONS_PER_OPERATION`,
+ * or `undefined` if every sensitive mutation stays within the limit.
+ *
+ * `sensitiveMutations` is the configured set of guarded field names (see
+ * `GRAPHQL_SINGLE_USE_MUTATIONS`).
  */
 export function checkSensitiveMutationLimit(
 	operation: OperationDefinitionNode,
 	getFragment: (name: string) => FragmentDefinitionNode | null | undefined,
+	sensitiveMutations: ReadonlySet<string>,
 ): SensitiveMutationLimitError | undefined {
 	const counts = new Map<string, number>();
 
@@ -40,12 +35,12 @@ export function checkSensitiveMutationLimit(
 		for (const selection of selectionSet.selections) {
 			if (selection.kind === Kind.FIELD) {
 				const fieldName = selection.name.value;
-				if (!SINGLE_USE_SYSTEM_MUTATIONS.has(fieldName)) continue;
+				if (!sensitiveMutations.has(fieldName)) continue;
 
 				const count = (counts.get(fieldName) ?? 0) + 1;
 				counts.set(fieldName, count);
 
-				if (count > MAX_INVOCATIONS_PER_OPERATION)  {
+				if (count > MAX_INVOCATIONS_PER_OPERATION) {
 					return { fieldName, node: selection };
 				}
 			} else if (selection.kind === Kind.INLINE_FRAGMENT) {
@@ -72,11 +67,16 @@ export function checkSensitiveMutationLimit(
 }
 
 /**
- * GraphQL validation rule that rejects operations invoking any
- * {@link SINGLE_USE_SYSTEM_MUTATIONS} field more than
- * `MAX_INVOCATIONS_PER_OPERATION` times (aliases included).
+ * GraphQL validation rule that rejects operations invoking any mutation listed in
+ * `GRAPHQL_SINGLE_USE_MUTATIONS` more than `MAX_INVOCATIONS_PER_OPERATION` times
+ * (aliases included). These are system mutations that perform expensive or
+ * sensitive side effects (account lockout counters, outbound email, user
+ * creation) and are reachable anonymously.
  */
 export function limitSensitiveMutations(operationName?: string | null): ValidationRule {
+	const env = useEnv();
+	const sensitiveMutations = new Set(env['GRAPHQL_SINGLE_USE_MUTATIONS'] as string[]);
+
 	return (context) => {
 		const mutationType = context.getSchema().getMutationType();
 
@@ -87,7 +87,7 @@ export function limitSensitiveMutations(operationName?: string | null): Validati
 				// Only validate the operation that will be executed.
 				if (operationName != null && operation.name?.value !== operationName) return;
 
-				const error = checkSensitiveMutationLimit(operation, (name) => context.getFragment(name));
+				const error = checkSensitiveMutationLimit(operation, (name) => context.getFragment(name), sensitiveMutations);
 
 				if (error) {
 					context.reportError(

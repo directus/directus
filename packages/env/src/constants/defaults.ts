@@ -164,6 +164,15 @@ export const DEFAULTS: Env = {
 	GRAPHQL_INTROSPECTION: true,
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 5,
 	GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
+	GRAPHQL_SINGLE_USE_MUTATIONS: [
+		'auth_login',
+		'auth_refresh',
+		'auth_password_request',
+		'auth_password_reset',
+		'users_register',
+		'users_register_verify',
+		'users_invite_accept',
+	],
 
 	WEBSOCKETS_ENABLED: false,
 	WEBSOCKETS_REST_ENABLED: true,
