@@ -34,6 +34,19 @@ const headings: Record<string, ToolbarButton> = Object.fromEntries(
 	]),
 );
 
+// text-align directions; `alignnone` (unset) is registered separately below
+const align: Record<string, ToolbarButton> = Object.fromEntries(
+	(['left', 'center', 'right', 'justify'] as const).map((value) => [
+		`align${value}`,
+		{
+			icon: `format_align_${value}`,
+			label: `wysiwyg_options.align${value}`,
+			command: (e: Editor) => e.chain().focus().setTextAlign(value).run(),
+			isActive: (e: Editor) => e.isActive({ textAlign: value }),
+		} satisfies ToolbarButton,
+	]),
+);
+
 /**
  * Toolbar registry keyed by the toolbar option values stored in field meta.
  * Keys not present here (legacy/unsupported) are ignored gracefully by the toolbar.
@@ -75,6 +88,12 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		label: 'wysiwyg_options.strikethrough',
 		command: (e) => e.chain().focus().toggleStrike().run(),
 		isActive: (e) => e.isActive('strike'),
+	},
+	...align,
+	alignnone: {
+		icon: 'format_clear',
+		label: 'wysiwyg_options.alignnone',
+		command: (e) => e.chain().focus().unsetTextAlign().run(),
 	},
 	numlist: {
 		icon: 'format_list_numbered',

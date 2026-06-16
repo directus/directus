@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import TextAlign from '@tiptap/extension-text-align';
 import StarterKit from '@tiptap/starter-kit';
 import { EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
@@ -34,7 +35,7 @@ const fontFamily = computed(() => {
 const isEditable = computed(() => !props.disabled && !props.nonEditable);
 
 const editor = useEditor({
-	extensions: [StarterKit],
+	extensions: [StarterKit, TextAlign.configure({ types: ['heading', 'paragraph'] })],
 	content: props.value ?? '',
 	editable: isEditable.value,
 	onUpdate: ({ editor }) => {
