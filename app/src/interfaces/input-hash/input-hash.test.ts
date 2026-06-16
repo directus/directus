@@ -94,4 +94,21 @@ describe('Interface', () => {
 
 		expect(wrapper.find('[name="close"]').exists()).toBe(false);
 	});
+
+	it('should reflect the hashed state once an entered value is persisted', async () => {
+		const wrapper = mount(InputHash, {
+			props: {
+				value: null,
+			},
+			global,
+		});
+
+		// User types a value; the plaintext is held locally, so the field is not yet hashed.
+		await wrapper.find('input').setValue('plaintext');
+		expect(wrapper.find('.v-input').classes()).not.toContain('hashed');
+
+		// Saving persists the value, so props.value becomes the stored hash.
+		await wrapper.setProps({ value: 'stored-hash' });
+		expect(wrapper.find('.v-input').classes()).toContain('hashed');
+	});
 });

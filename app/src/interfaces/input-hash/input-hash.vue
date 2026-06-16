@@ -38,8 +38,14 @@ const internalPlaceholder = computed(() => {
 
 watch(
 	() => props.value,
-	() => {
-		isHashed.value = !!(props.value && props.value.length > 0);
+	(newValue) => {
+		isHashed.value = !!(newValue && newValue.length > 0);
+
+		// Once an entered value is persisted, props.value becomes the stored hash,
+		// Reset localValue so the field reflects the securely-stored (hashed) state.
+		if (newValue !== localValue.value) {
+			localValue.value = null;
+		}
 	},
 	{ immediate: true },
 );
