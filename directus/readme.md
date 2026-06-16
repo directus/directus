@@ -7,9 +7,9 @@ AI agents.
 
 45M+ downloads · 500K+ projects deployed
 
-**Free for most organizations.** Under $5M annual revenue and 50 employees? Directus is completely free.
-[Apply for an Open Innovation Grant license](https://directus.com/oig) and get a key in minutes.
-[Learn more about our license.](#-license)
+> [!NOTE] **Free for most organizations.** Under $5M annual revenue and 50 employees? Directus is completely free.
+> [Apply for an Open Innovation Grant license](https://directus.com/oig) and get a key in minutes.
+> [Learn more about our license.](#-license)
 
 ---
 
@@ -63,7 +63,7 @@ Directus includes a built-in AI Assistant and a native MCP server. AI works with
 
 One click. Fully provisioned with PostgreSQL, Redis, and S3-compatible storage, connected via Railway's private network.
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/2fy9v3)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.com/deploy/directus-official?referralCode=b2RDZT)
 
 ---
 
@@ -93,8 +93,7 @@ Built by our core team and contributors. Thank you.
 
 ## 📄 License
 
-Directus is licensed under the
-[Monospace Sustainable Core License (MSCL) 1.0](https://github.com/directus/directus/blob/main/LICENSE), a
+Directus is licensed under the [Monospace Sustainable Core License (MSCL) 1.0](https://directus.com/license), a
 source-available license derived from the [Fair Core License](https://fcl.dev).
 
 **Free for most builders.** Organizations under $5M in annual revenue and 50 employees can use Directus for free under
