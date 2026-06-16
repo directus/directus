@@ -29,6 +29,67 @@ import { registerWebSocketEvents } from './hooks.js';
 
 const logger = useLogger();
 
+/**
+ * Handle the `onSubscribe` phase of the GraphQL WebSocket protocol.
+ *
+ * - `GRAPHQL_QUERY_TOKEN_LIMIT` is applied as `maxTokens` when parsing, matching the HTTP endpoint.
+ * - Only `subscription` operations are accepted; `query` and `mutation` payloads are rejected.
+ * - `GRAPHQL_INTROSPECTION=false` is honoured via `NoSchemaIntrospectionCustomRule`.
+ *
+ * @see https://github.com/directus/directus/security/advisories/GHSA-ff8w-8crv-9rcf
+ */
+export async function onSubscribe(
+	ctx: Context<ConnectionParams, GraphQLSocket>,
+	_id: string,
+	payload: SubscribePayload,
+) {
+	const env = useEnv();
+
+	let document;
+
+	try {
+		document = parse(payload.query, { maxTokens: Number(env['GRAPHQL_QUERY_TOKEN_LIMIT']) });
+	} catch {
+		return [new GraphQLError('Failed to parse GraphQL document.')];
+	}
+
+	const operation = getOperationAST(document, payload.operationName);
+
+	if (operation?.operation !== OperationTypeNode.SUBSCRIPTION) {
+		return [new GraphQLError('Only subscription operations are supported over WebSocket.')];
+	}
+
+	const accountability = ctx.extra.client.accountability;
+
+	// for now only the items will be watched, system events tbd
+	const service = new GraphQLService({
+		schema: await getSchema(),
+		scope: 'items',
+		accountability,
+	});
+
+	const schema = await service.getSchema();
+
+	const rules = Array.from(specifiedRules);
+
+	if (env['GRAPHQL_INTROSPECTION'] === false) {
+		rules.push(NoSchemaIntrospectionCustomRule);
+	}
+
+	const errors = validate(schema, document, rules);
+
+	if (errors.length > 0) {
+		return errors;
+	}
+
+	return {
+		schema,
+		document,
+		variableValues: payload.variables ?? undefined,
+		operationName: payload.operationName ?? undefined,
+	};
+}
+
 export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<GraphQLSocket>;
 	constructor(httpServer: httpServer) {
@@ -40,53 +101,7 @@ export class GraphQLSubscriptionController extends SocketController {
 		});
 
 		this.gql = makeServer<ConnectionParams, GraphQLSocket>({
-			onSubscribe: async (ctx: Context<ConnectionParams, GraphQLSocket>, _id: string, payload: SubscribePayload) => {
-				const env = useEnv();
-
-				let document;
-
-				try {
-					document = parse(payload.query, { maxTokens: Number(env['GRAPHQL_QUERY_TOKEN_LIMIT']) });
-				} catch {
-					return [new GraphQLError('Failed to parse GraphQL document.')];
-				}
-
-				const operation = getOperationAST(document, payload.operationName);
-
-				if (operation?.operation !== OperationTypeNode.SUBSCRIPTION) {
-					return [new GraphQLError('Only subscription operations are supported over WebSocket.')];
-				}
-
-				const accountability = ctx.extra.client.accountability;
-
-				// for now only the items will be watched, system events tbd
-				const service = new GraphQLService({
-					schema: await getSchema(),
-					scope: 'items',
-					accountability,
-				});
-
-				const schema = await service.getSchema();
-
-				const rules = Array.from(specifiedRules);
-
-				if (env['GRAPHQL_INTROSPECTION'] === false) {
-					rules.push(NoSchemaIntrospectionCustomRule);
-				}
-
-				const errors = validate(schema, document, rules);
-
-				if (errors.length > 0) {
-					return errors;
-				}
-
-				return {
-					schema,
-					document,
-					variableValues: payload.variables ?? undefined,
-					operationName: payload.operationName ?? undefined,
-				};
-			},
+			onSubscribe,
 		});
 
 		bindPubSub();
