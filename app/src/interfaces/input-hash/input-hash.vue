@@ -67,6 +67,7 @@ function clearValue() {
 		@update:model-value="emitValue"
 	>
 		<template #append>
+			<VIcon class="lock" :class="{ disabled }" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
 			<VIcon
 				v-if="(isHashed || localValue) && !disabled && !nonEditable"
 				v-tooltip="t('clear_value')"
@@ -75,7 +76,6 @@ function clearValue() {
 				clickable
 				@click.stop="clearValue"
 			/>
-			<VIcon class="lock" :class="{ disabled }" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
 		</template>
 	</VInput>
 </template>
@@ -92,12 +92,12 @@ function clearValue() {
 
 .clear {
 	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
-
-	margin-inline-end: var(--theme--form--field--input--padding);
 }
 
 .lock {
 	--v-icon-color: var(--theme--warning);
+
+	margin-inline-end: 0.25rem;
 
 	&.disabled {
 		--v-icon-color: var(--theme--form--field--input--foreground-subdued);
