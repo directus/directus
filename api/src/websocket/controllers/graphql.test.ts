@@ -93,16 +93,18 @@ describe('GraphQL WebSocket onSubscribe', () => {
 		expect(result).toMatchObject({ operationName: 'Foo', variableValues: { a: 1 } });
 	});
 
-	test('rejects query operations', async () => {
+	test('accepts query operations', async () => {
 		const result = await onSubscribe(mockContext(), '1', payload({ query: 'query { foo }' }));
 
-		expect(result).toEqual([new GraphQLError('Only subscription operations are supported over WebSocket.')]);
+		expect(Array.isArray(result)).toBe(false);
+		expect(result).toHaveProperty('document');
 	});
 
-	test('rejects mutation operations', async () => {
+	test('accepts mutation operations', async () => {
 		const result = await onSubscribe(mockContext(), '1', payload({ query: 'mutation { foo }' }));
 
-		expect(result).toEqual([new GraphQLError('Only subscription operations are supported over WebSocket.')]);
+		expect(Array.isArray(result)).toBe(false);
+		expect(result).toHaveProperty('document');
 	});
 
 	test('applies GRAPHQL_QUERY_TOKEN_LIMIT as maxTokens when parsing', async () => {

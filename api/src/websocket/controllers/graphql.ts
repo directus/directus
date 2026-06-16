@@ -1,15 +1,7 @@
 import type { Server as httpServer } from 'http';
 import { useEnv } from '@directus/env';
 import type { WebSocketMessage } from '@directus/types';
-import {
-	getOperationAST,
-	GraphQLError,
-	NoSchemaIntrospectionCustomRule,
-	OperationTypeNode,
-	parse,
-	specifiedRules,
-	validate,
-} from 'graphql';
+import { GraphQLError, NoSchemaIntrospectionCustomRule, parse, specifiedRules, validate } from 'graphql';
 import type { Context, Server, SubscribePayload } from 'graphql-ws';
 import { CloseCode, makeServer, MessageType } from 'graphql-ws';
 import type { WebSocket } from 'ws';
@@ -32,8 +24,8 @@ const logger = useLogger();
 /**
  * Handle the `onSubscribe` phase of the GraphQL WebSocket protocol.
  *
- * - `GRAPHQL_QUERY_TOKEN_LIMIT` is applied as `maxTokens` when parsing, matching the HTTP endpoint.
- * - Only `subscription` operations are accepted; `query` and `mutation` payloads are rejected.
+ * - `GRAPHQL_QUERY_TOKEN_LIMIT` is applied as `maxTokens` when parsing.
+ * - Documents are validated against the standard GraphQL `specifiedRules`.
  * - `GRAPHQL_INTROSPECTION=false` is honoured via `NoSchemaIntrospectionCustomRule`.
  *
  * @see https://github.com/directus/directus/security/advisories/GHSA-ff8w-8crv-9rcf
@@ -51,12 +43,6 @@ export async function onSubscribe(
 		document = parse(payload.query, { maxTokens: Number(env['GRAPHQL_QUERY_TOKEN_LIMIT']) });
 	} catch {
 		return [new GraphQLError('Failed to parse GraphQL document.')];
-	}
-
-	const operation = getOperationAST(document, payload.operationName);
-
-	if (operation?.operation !== OperationTypeNode.SUBSCRIPTION) {
-		return [new GraphQLError('Only subscription operations are supported over WebSocket.')];
 	}
 
 	const accountability = ctx.extra.client.accountability;
