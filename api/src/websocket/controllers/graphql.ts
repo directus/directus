@@ -1,8 +1,16 @@
 import type { Server as httpServer } from 'http';
 import { useEnv } from '@directus/env';
 import type { WebSocketMessage } from '@directus/types';
-import { getOperationAST, GraphQLError, NoSchemaIntrospectionCustomRule, OperationTypeNode, parse, specifiedRules, validate } from 'graphql';
-import type { Context, Server, SubscribeMessage } from 'graphql-ws';
+import {
+	getOperationAST,
+	GraphQLError,
+	NoSchemaIntrospectionCustomRule,
+	OperationTypeNode,
+	parse,
+	specifiedRules,
+	validate,
+} from 'graphql';
+import type { Context, Server, SubscribePayload } from 'graphql-ws';
 import { CloseCode, makeServer, MessageType } from 'graphql-ws';
 import type { WebSocket } from 'ws';
 import { useLogger } from '../../logger/index.js';
@@ -32,18 +40,18 @@ export class GraphQLSubscriptionController extends SocketController {
 		});
 
 		this.gql = makeServer<ConnectionParams, GraphQLSocket>({
-			onSubscribe: async (ctx: Context<ConnectionParams, GraphQLSocket>, message: SubscribeMessage) => {
+			onSubscribe: async (ctx: Context<ConnectionParams, GraphQLSocket>, _id: string, payload: SubscribePayload) => {
 				const env = useEnv();
 
 				let document;
 
 				try {
-					document = parse(message.payload.query, { maxTokens: Number(env['GRAPHQL_QUERY_TOKEN_LIMIT']) });
+					document = parse(payload.query, { maxTokens: Number(env['GRAPHQL_QUERY_TOKEN_LIMIT']) });
 				} catch {
 					return [new GraphQLError('Failed to parse GraphQL document.')];
 				}
 
-				const operation = getOperationAST(document, message.payload.operationName);
+				const operation = getOperationAST(document, payload.operationName);
 
 				if (operation?.operation !== OperationTypeNode.SUBSCRIPTION) {
 					return [new GraphQLError('Only subscription operations are supported over WebSocket.')];
@@ -75,8 +83,8 @@ export class GraphQLSubscriptionController extends SocketController {
 				return {
 					schema,
 					document,
-					variableValues: message.payload.variables ?? undefined,
-					operationName: message.payload.operationName ?? undefined,
+					variableValues: payload.variables ?? undefined,
+					operationName: payload.operationName ?? undefined,
 				};
 			},
 		});
