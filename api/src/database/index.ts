@@ -363,6 +363,13 @@ export function getDatabase(): Knex {
 					console.error(`[poison] query left conn=${uid} in state=${state} | sql: ${sql} | err: ${err?.message}`);
 				}
 
+				// The remaining failure is a 60s request timeout (DB_REQUEST_TIMEOUT). Dump the connection
+				// history so we can see what it was doing for the whole 60s and what stranded this request.
+				if (err?.code === 'ETIMEOUT' || /Request failed to complete/i.test(String(err?.message))) {
+					// eslint-disable-next-line no-console
+					console.error(`[poison] query TIMEOUT conn=${uid} state=${state} | sql: ${sql}${dumpHistory(uid)}`);
+				}
+
 				throw err;
 			} finally {
 				// Observe-only: a resolved query leaving its connection non-LoggedIn. NOTE: this also fires
@@ -407,6 +414,28 @@ export function getDatabase(): Knex {
 				connection.transitionTo = function (newState: any) {
 					recordTransition(connection, newState);
 					return origTransition(newState);
+				};
+			}
+
+			// Catch any request that reaches the connection WITHOUT going through our _enqueueRequest
+			// (it would carry no __seq/__forUid -> the "blocker: seq=? forUid=?" we saw on commit WAITs).
+			// Tag it and log the first time, so we can find the untracked execSql path.
+			if (typeof connection.execSql === 'function') {
+				const origExecSql = connection.execSql.bind(connection);
+
+				connection.execSql = function (request: any, ...rest: any[]) {
+					if (request && request.__seq === undefined) {
+						request.__seq = ++seq;
+						request.__forUid = uid;
+						request.__execSqlDirect = true;
+
+						// eslint-disable-next-line no-console
+						console.error(
+							`[poison] execSql DIRECT (bypassed _enqueueRequest) conn=${uid} state=${connection.state?.name} sql="${String(request.sqlTextOrProcedure ?? '').slice(0, 100)}" @${ts()}`,
+						);
+					}
+
+					return origExecSql(request, ...rest);
 				};
 			}
 
@@ -458,7 +487,7 @@ export function getDatabase(): Knex {
 
 						// eslint-disable-next-line no-console
 						console.error(
-							`[poison] ${method} WAIT conn=${uid} state=${connection.state?.name} ${blockerInfo(connection)} @${ts()}`,
+							`[poison] ${method} WAIT conn=${uid} state=${connection.state?.name} ${blockerInfo(connection)} @${ts()}${dumpHistory(uid)}`,
 						);
 
 						recordEvent(uid, `${method} WAIT-start state=${connection.state?.name}`);
