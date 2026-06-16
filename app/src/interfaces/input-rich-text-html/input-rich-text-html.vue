@@ -45,13 +45,20 @@ const editor = useEditor({
 // `editable` is only read at init, so keep it in sync when the prop flips
 watch(isEditable, (editable) => editor.value?.setEditable(editable));
 
-// external value changes (revert, version switch) — guard against echo loops
+// external value changes (async load, revert, version switch) — guard against echo loops.
+// `addToHistory: false` keeps these programmatic syncs out of the undo stack, otherwise the
+// first value load registers a phantom "empty → content" step and undo wipes the content.
 watch(
 	() => props.value,
 	(value) => {
 		if (!editor.value) return;
 		if (editor.value.getHTML() === value) return;
-		editor.value.commands.setContent(value ?? '', { emitUpdate: false });
+
+		editor.value
+			.chain()
+			.setMeta('addToHistory', false)
+			.setContent(value ?? '', { emitUpdate: false })
+			.run();
 	},
 );
 
