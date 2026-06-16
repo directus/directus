@@ -181,7 +181,7 @@ export default abstract class SocketController {
 		{ request, socket, head, accountabilityOverrides }: UpgradeContext,
 		token: string | null,
 	) {
-		let accountability: Accountability | null = null;
+		let accountability: Accountability = createDefaultAccountability(accountabilityOverrides);
 		let expires_at: number | null = null;
 
 		if (token) {
@@ -190,13 +190,13 @@ export default abstract class SocketController {
 				accountability = state.accountability;
 				expires_at = state.expires_at;
 			} catch {
-				accountability = null;
+				accountability = createDefaultAccountability(accountabilityOverrides);
 				expires_at = null;
 			}
 		}
 
-		if (!token || !accountability || !accountability.user) {
-			logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability || 'invalid'));
+		if (!token || !accountability.user) {
+			logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability));
 			socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
 			socket.destroy();
 			return;
