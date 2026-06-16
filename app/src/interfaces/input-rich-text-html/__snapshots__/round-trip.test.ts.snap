@@ -40,8 +40,6 @@ exports[`round-trip: lossy (restored by later issues / accepted regression) > 'f
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'iframe' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;
 
-exports[`round-trip: lossy (restored by later issues / accepted regression) > 'image' is dropped today (→ 'CMS-2641') 1`] = `"<p></p>"`;
-
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'pagebreak' is dropped today (→ 'CMS-2647') 1`] = `"<p>a</p><p>b</p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'rtl direction' is dropped today (→ 'CMS-2646') 1`] = `"<p>شسي</p>"`;

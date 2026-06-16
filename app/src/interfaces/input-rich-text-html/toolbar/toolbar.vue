@@ -17,7 +17,7 @@ const props = defineProps<{
 	fullscreen?: boolean;
 }>();
 
-const emit = defineEmits<{ 'toggle-fullscreen': [] }>();
+const emit = defineEmits<{ 'toggle-fullscreen': []; 'open-image': [] }>();
 
 const { t } = useI18n();
 
@@ -32,6 +32,9 @@ const context: ToolbarContext = {
 	fullscreen: {
 		active: () => props.fullscreen ?? false,
 		toggle: () => emit('toggle-fullscreen'),
+	},
+	image: {
+		open: () => emit('open-image'),
 	},
 };
 
