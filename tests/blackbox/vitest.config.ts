@@ -23,10 +23,12 @@ export default defineConfig({
 		sequence: {
 			sequencer: Sequencer,
 		},
-		// 75s for mssql so the 60s message-wait ceiling (see waitForMatchingMessage) fits inside the test
-		// timeout with room for the heavy collab tests' own setup (permission/relation queries) before the
-		// wait even starts — otherwise the test timeout fires first (as the singleton Reactive Invalidation
-		// case did at 45s). Generous because the message does arrive; this only slows genuine failures.
-		testTimeout: isMssql ? 75_000 : 15_000,
+		// The test timeout must sit ABOVE the websocket message-wait ceiling (see waitForMatchingMessage:
+		// 60s on mssql, 30s elsewhere) plus headroom for the heavy collab tests' own setup (permission/
+		// relation queries) before the wait even starts — otherwise the test timeout fires first and the
+		// failure reports as a generic test timeout instead of a message timeout. The collab message does
+		// arrive under CI contention, just late, so this only slows genuine failures. mssql gets the most
+		// (single starved instance on a 4-vCPU runner); other vendors clear their 30s ceiling with room.
+		testTimeout: isMssql ? 75_000 : 45_000,
 	},
 });
