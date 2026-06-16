@@ -19,6 +19,7 @@ import { GraphQLExecutionError, GraphQLValidationError } from './errors/index.js
 import { generateSchema } from './schema/index.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import { BlockFieldSuggestionsRule } from './utils/block-field-suggestions.js';
+import { limitSensitiveMutations } from './utils/limit-sensitive-mutations.js';
 import processError from './utils/process-error.js';
 
 const env = useEnv();
@@ -55,9 +56,10 @@ export class GraphQLService {
 	}: GraphQLParams): Promise<FormattedExecutionResult> {
 		const schema = await this.getSchema();
 
-		const validationErrors = validate(schema, document, validationRules).map((validationError) =>
-			addPathToValidationError(validationError),
-		);
+		const validationErrors = validate(schema, document, [
+			...validationRules,
+			limitSensitiveMutations(operationName),
+		]).map((validationError) => addPathToValidationError(validationError));
 
 		if (validationErrors.length > 0) {
 			throw new GraphQLValidationError({ errors: validationErrors });
