@@ -5,9 +5,6 @@ import { GraphQLError } from 'graphql';
  * graphql-js appends `Did you mean "…"?` hints to validation errors for unknown fields, types,
  * arguments and enum values. Those hints leak schema details even when introspection is disabled,
  * allowing a client to reconstruct the schema by probing for near-miss names.
- *
- * This validation rule strips the suggestion clause from any reported error so the schema stays
- * hidden, while leaving the rest of the error message (and its location) intact.
  */
 const SUGGESTION_REGEX = / ?Did you mean .+$/;
 
@@ -30,6 +27,6 @@ export function BlockFieldSuggestionsRule(context: ValidationContext): ASTVisito
 		reportError(error);
 	};
 
-	// No AST visiting is needed; the rule's only job is to wrap the error reporter above.
+	// No hooks needed, this rule only intercepts errors.
 	return {};
 }
