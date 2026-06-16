@@ -1,14 +1,14 @@
 import type { Server as httpServer } from 'http';
 import { useEnv } from '@directus/env';
 import type { WebSocketMessage } from '@directus/types';
-import { GraphQLError, NoSchemaIntrospectionCustomRule, parse, specifiedRules, validate } from 'graphql';
+import { GraphQLError, parse, validate } from 'graphql';
 import type { Context, Server, SubscribePayload } from 'graphql-ws';
 import { CloseCode, makeServer, MessageType } from 'graphql-ws';
 import type { WebSocket } from 'ws';
 import { useLogger } from '../../logger/index.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
+import { getValidationRules } from '../../services/graphql/rules/index.js';
 import { bindPubSub } from '../../services/graphql/subscription.js';
-import { BlockFieldSuggestionsRule } from '../../services/graphql/utils/block-field-suggestions.js';
 import { GraphQLService } from '../../services/index.js';
 import { getAddress } from '../../utils/get-address.js';
 import { getSchema } from '../../utils/get-schema.js';
@@ -24,11 +24,8 @@ const logger = useLogger();
 
 /**
  * Handle the `onSubscribe` phase of the GraphQL WebSocket protocol.
- *
- * - `GRAPHQL_QUERY_TOKEN_LIMIT` is applied as `maxTokens` when parsing.
- * - Documents are validated against the standard GraphQL `specifiedRules`.
- * - `GRAPHQL_INTROSPECTION=false` is honoured via `NoSchemaIntrospectionCustomRule`, and field
- *   suggestions are stripped via `BlockFieldSuggestionsRule`.
+ * The document is validated against the shared `getValidationRules`, so the WebSocket transport
+ *   enforces the same protections as the HTTP GraphQL endpoint.
  *
  * @see https://github.com/directus/directus/security/advisories/GHSA-ff8w-8crv-9rcf
  */
@@ -58,14 +55,7 @@ export async function onSubscribe(
 
 	const schema = await service.getSchema();
 
-	const rules = Array.from(specifiedRules);
-
-	if (env['GRAPHQL_INTROSPECTION'] === false) {
-		rules.push(NoSchemaIntrospectionCustomRule);
-		rules.push(BlockFieldSuggestionsRule);
-	}
-
-	const errors = validate(schema, document, rules);
+	const errors = validate(schema, document, getValidationRules({ operationName: payload.operationName }));
 
 	if (errors.length > 0) {
 		return errors;
