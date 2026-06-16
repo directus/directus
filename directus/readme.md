@@ -7,6 +7,7 @@ AI agents.
 
 45M+ downloads · 500K+ projects deployed
 
+<!-- prettier-ignore -->
 > [!NOTE] 
 > **Free for most organizations.** Under $5M annual revenue and 50 employees? Directus is completely free.
 > [Apply for an Open Innovation Grant license](https://directus.com/oig) and get a key in minutes.
