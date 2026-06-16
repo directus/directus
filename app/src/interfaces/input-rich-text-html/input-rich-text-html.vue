@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import StarterKit from '@tiptap/starter-kit';
-import { EditorContent, useEditor } from '@tiptap/vue-3';
+import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
 import { computed, ref, watch } from 'vue';
 import Toolbar from './toolbar/toolbar.vue';
@@ -33,10 +33,27 @@ const fontFamily = computed(() => {
 // both states are read-only; `nonEditable` keeps the normal look, `disabled` dims (see styles)
 const isEditable = computed(() => !props.disabled && !props.nonEditable);
 
+// Sync an external value into the editor without polluting undo history or emitting an update.
+// `addToHistory: false` keeps these programmatic syncs out of the undo stack, otherwise the
+// first value load registers a phantom "empty → content" step and undo wipes the content.
+// The initial load also routes through here (not the constructor's `content`) so StarterKit's
+// TrailingNode normalization — appending a trailing paragraph after content that ends in a
+// non-paragraph block — runs now, inside this suppressed transaction. Set at construction it
+// would instead be deferred to the user's first click, emitting a phantom edit that marks the
+// field dirty (only for non-Tiptap-authored HTML, e.g. legacy TinyMCE content). See dirty-on-click.test.ts.
+function syncValue(instance: Editor, value: string | null) {
+	instance
+		.chain()
+		.setMeta('addToHistory', false)
+		.setContent(value ?? '', { emitUpdate: false })
+		.run();
+}
+
 const editor = useEditor({
 	extensions: [StarterKit],
-	content: props.value ?? '',
+	content: '',
 	editable: isEditable.value,
+	onCreate: ({ editor }) => syncValue(editor as Editor, props.value),
 	onUpdate: ({ editor }) => {
 		emit('input', editor.isEmpty ? null : editor.getHTML());
 	},
@@ -45,20 +62,13 @@ const editor = useEditor({
 // `editable` is only read at init, so keep it in sync when the prop flips
 watch(isEditable, (editable) => editor.value?.setEditable(editable));
 
-// external value changes (async load, revert, version switch) — guard against echo loops.
-// `addToHistory: false` keeps these programmatic syncs out of the undo stack, otherwise the
-// first value load registers a phantom "empty → content" step and undo wipes the content.
+// external value changes (async load, revert, version switch) — guard against echo loops
 watch(
 	() => props.value,
 	(value) => {
 		if (!editor.value) return;
 		if (editor.value.getHTML() === value) return;
-
-		editor.value
-			.chain()
-			.setMeta('addToHistory', false)
-			.setContent(value ?? '', { emitUpdate: false })
-			.run();
+		syncValue(editor.value, value);
 	},
 );
 
