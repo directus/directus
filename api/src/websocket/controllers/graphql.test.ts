@@ -139,6 +139,22 @@ describe('GraphQL WebSocket onSubscribe', () => {
 		expect(rules).not.toContain(NoSchemaIntrospectionCustomRule);
 	});
 
+	test('strips field suggestions from validation errors when introspection is disabled', async () => {
+		vi.mocked(useEnv).mockReturnValue({
+			GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
+			GRAPHQL_INTROSPECTION: false,
+		});
+
+		// `fool` is a near-miss for the schema's `foo` field, which would normally be suggested back.
+		const result = await onSubscribe(mockContext(), '1', payload({ query: 'subscription { fool }' }));
+
+		expect(Array.isArray(result)).toBe(true);
+		const errors = result as readonly GraphQLError[];
+		expect(errors.length).toBeGreaterThan(0);
+		expect(errors.some((error) => /Did you mean/.test(error.message))).toBe(false);
+		expect(errors.some((error) => /"foo"/.test(error.message))).toBe(false);
+	});
+
 	test('returns validation errors from the resolved schema', async () => {
 		const result = await onSubscribe(mockContext(), '1', payload({ query: 'subscription { nonExistentField }' }));
 

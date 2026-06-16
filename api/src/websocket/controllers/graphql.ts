@@ -8,6 +8,7 @@ import type { WebSocket } from 'ws';
 import { useLogger } from '../../logger/index.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { bindPubSub } from '../../services/graphql/subscription.js';
+import { BlockFieldSuggestionsRule } from '../../services/graphql/utils/block-field-suggestions.js';
 import { GraphQLService } from '../../services/index.js';
 import { getAddress } from '../../utils/get-address.js';
 import { getSchema } from '../../utils/get-schema.js';
@@ -26,7 +27,8 @@ const logger = useLogger();
  *
  * - `GRAPHQL_QUERY_TOKEN_LIMIT` is applied as `maxTokens` when parsing.
  * - Documents are validated against the standard GraphQL `specifiedRules`.
- * - `GRAPHQL_INTROSPECTION=false` is honoured via `NoSchemaIntrospectionCustomRule`.
+ * - `GRAPHQL_INTROSPECTION=false` is honoured via `NoSchemaIntrospectionCustomRule`, and field
+ *   suggestions are stripped via `BlockFieldSuggestionsRule`.
  *
  * @see https://github.com/directus/directus/security/advisories/GHSA-ff8w-8crv-9rcf
  */
@@ -60,6 +62,7 @@ export async function onSubscribe(
 
 	if (env['GRAPHQL_INTROSPECTION'] === false) {
 		rules.push(NoSchemaIntrospectionCustomRule);
+		rules.push(BlockFieldSuggestionsRule);
 	}
 
 	const errors = validate(schema, document, rules);

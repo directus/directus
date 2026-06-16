@@ -18,6 +18,7 @@ import { formatError } from './errors/format.js';
 import { GraphQLExecutionError, GraphQLValidationError } from './errors/index.js';
 import { generateSchema } from './schema/index.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
+import { BlockFieldSuggestionsRule } from './utils/block-field-suggestions.js';
 import processError from './utils/process-error.js';
 
 const env = useEnv();
@@ -26,6 +27,8 @@ const validationRules = Array.from(specifiedRules);
 
 if (env['GRAPHQL_INTROSPECTION'] === false) {
 	validationRules.push(NoSchemaIntrospectionCustomRule);
+	// Strip "Did you mean …?" hints so a disabled schema can't be reconstructed by probing
+	validationRules.push(BlockFieldSuggestionsRule);
 }
 
 export class GraphQLService {
