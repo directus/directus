@@ -10,14 +10,6 @@ export default <Environment>{
 	transformMode: 'ssr',
 
 	async setup(global) {
-		// Local debugging escape hatch: skip the sequential gate entirely so a single file can be run
-		// in isolation. The gate only exists to serialize schema-mutating files when many run
-		// concurrently; a lone file has no such races, so the gate is pure deadlock waiting for
-		// predecessor files that never run. Never set in CI.
-		if (process.env['BLACKBOX_NO_GATE']) {
-			return { teardown() {} };
-		}
-
 		const { totalTestsCount } = JSON.parse(await fs.readFile('sequencer-data.json', 'utf8'));
 		const testFilePath = global.__vitest_worker__.ctx.files[0].filepath.split('blackbox')[1];
 		const serverUrl = process.env['serverUrl'];

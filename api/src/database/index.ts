@@ -172,352 +172,92 @@ export function getDatabase(): Knex {
 	database = knex.default(knexConfig);
 	validateDatabaseCharset(database);
 
-	// TEMP DEBUG (strip after diagnosing): trace the mssql "SentClientRequest" connection poisoning.
-	// Records the last SQL run on each pooled connection, logs when a query leaves its connection in a
-	// non-LoggedIn state (the poisoning moment), and logs when such a poisoned connection is later
-	// handed out of the pool (the victim) with the op that poisoned it. Uses console.error (→ server
-	// stderr → blackbox "[MAIN]" echo) since LOG_LEVEL=error swallows warn. Observe-only:
-	// validateConnection still returns the original verdict (no rejection/churn).
+	// MSSQL connection-management fixes. MS SQL Server (via tedious) permits only one request per
+	// connection at a time, which exposes two latent knex bugs under heavy/concurrent load. Both are
+	// gated to mssql and leave every other vendor untouched.
 	if (client === 'mssql') {
 		const mssqlClient = database.client as any;
-		const lastOp = new Map<unknown, string>();
-		const inFlight = new Map<unknown, { sql: string; stack: string }>();
 
-		// Monotonic seq + relative timestamp so the [poison] lines can be ordered across connections.
-		let seq = 0;
-		const t0 = performance.now();
-		const ts = () => (performance.now() - t0).toFixed(1);
-		const uidOf = (c: any) => c?.__knexUid ?? '?';
-
-		// Transaction-control ops that issue a TM request and 500 if fired on a non-LoggedIn connection.
-		// rollbackTransaction is excluded -- knex pre-checks its state and rejects cleanly on its own.
-		const WAIT_TXN_OPS = new Set(['beginTransaction', 'saveTransaction', 'commitTransaction']);
-
-		// Per-connection ring buffer of tedious state transitions, dumped only when that connection hits a
-		// poison event. The first run proved this is NOT the shared-requestQueue (ENQUEUE/STRANDED/CROSS-CONN
-		// never fired) and NOT a concurrent client.query (CONCURRENT never fired) -- yet a connection whose
-		// last client.query was the permission lookup ends up in SentClientRequest at commit time. So some
-		// request the client.query wrapper can't see (a `client.stream` -> _stream, or a txn-manager
-		// begin/commit) strands it. Wrapping `transitionTo` captures EVERY request type, since each drives a
-		// LoggedIn<->SentClientRequest transition. Observe-only.
-		const HISTORY = new Map<string, string[]>();
-		const RING = 32;
-
-		const recordEvent = (uid: string, label: string) => {
-			let buf = HISTORY.get(uid);
-
-			if (!buf) {
-				buf = [];
-				HISTORY.set(uid, buf);
-			}
-
-			buf.push(`${ts()} ${label}`);
-			if (buf.length > RING) buf.shift();
-		};
-
-		const recordTransition = (connection: any, newState: any) => {
-			const req = connection?.request;
-			const reqSql = String(req?.sqlTextOrProcedure ?? req?.constructor?.name ?? '').slice(0, 80);
-			recordEvent(uidOf(connection), `${connection?.state?.name}->${newState?.name ?? newState} req="${reqSql}"`);
-		};
-
-		const dumpHistory = (uid: any) => `\n  history:\n    ${(HISTORY.get(uid) ?? ['<none>']).join('\n    ')}`;
-
-		// Describe the request currently occupying a connection (tedious sets connection.request while a
-		// request is in flight). Each request is tagged in _enqueueRequest with __forUid (the connection it
-		// was enqueued for) + __seq. If __forUid !== this connection's uid the request belongs to a FOREIGN
-		// flow sharing the connection -- the key signal for the inflight="none" mystery.
-		const blockerInfo = (connection: any) => {
-			const r = connection?.request;
-			if (!r) return 'blocker=none';
-			const forUid = r.__forUid;
-			const foreign = forUid !== undefined && forUid !== connection?.__knexUid;
-			return `blocker: seq=${r.__seq ?? '?'} forUid=${forUid ?? '?'}${foreign ? ' FOREIGN' : ''} sql="${String(r.sqlTextOrProcedure ?? r.constructor?.name ?? '').slice(0, 80)}"`;
-		};
-
-		// ---- REAL FIX: per-connection request queue (replaces knex's shared prototype `requestQueue`) ----
-		// knex's Client_MSSQL keeps `requestQueue` on the PROTOTYPE (shared across all pooled connections)
-		// and `_chomp(connection)` pops from it and runs the request on whatever connection is passed in,
-		// guarded only by `connection.state === 'LoggedIn'`. CI proved (`[poison] CROSS-CONN chomp`) that a
-		// request enqueued for one connection -- after being stranded because its own connection was busy --
-		// gets popped by another connection's nextTick `_chomp` and executed on the WRONG connection,
-		// poisoning pooled connections in a self-sustaining cascade. Fix: give each connection its OWN queue
-		// (`connection.__poisonQueue`) so a request can only ever run on the connection it was enqueued for.
-		// We still tag/log so CROSS-CONN must now NEVER fire (if it does, the fix is wrong). `requestQueue`
-		// on the prototype is left unused after this override.
-		const origEnqueue =
-			typeof mssqlClient._enqueueRequest === 'function' ? mssqlClient._enqueueRequest.bind(mssqlClient) : null;
-
-		const origChomp = typeof mssqlClient._chomp === 'function' ? mssqlClient._chomp.bind(mssqlClient) : null;
-
-		if (origEnqueue && origChomp) {
+		// Fix 1: per-connection request queue. knex's Client_MSSQL keeps `requestQueue` on the PROTOTYPE,
+		// shared across every pooled connection, and `_chomp(connection)` pops from it and runs the request
+		// on whatever connection is passed in. Under load a request enqueued for a busy connection gets
+		// popped by ANOTHER connection's nextTick `_chomp` and executed on the wrong connection, corrupting
+		// pooled connections and surfacing as "Requests can only be made in the LoggedIn state". Giving each
+		// connection its own queue means a request can only ever run on the connection it was enqueued for.
+		// (Upstream knex bug: `requestQueue` should be per-connection, not on the prototype.)
+		if (typeof mssqlClient._chomp === 'function' && typeof mssqlClient._enqueueRequest === 'function') {
 			mssqlClient._enqueueRequest = function (request: any, connection: any) {
-				const uid = uidOf(connection);
-				const state = connection?.state?.name;
-
-				request.__forUid = uid;
-				request.__seq = ++seq;
-				request.__sql = String(request?.sqlTextOrProcedure ?? '').slice(0, 120);
-
-				if (!connection.__poisonQueue) connection.__poisonQueue = [];
-				connection.__poisonQueue.push(request);
-
-				// A request enqueued while its own connection is busy is fine now -- it waits in THIS
-				// connection's queue and is chomped when this connection next reaches LoggedIn. Logged so we
-				// can still see how often it happens and correlate with timeouts.
-				if (state !== 'LoggedIn') {
-					// eslint-disable-next-line no-console
-					console.error(
-						`[poison] ENQUEUE on non-LoggedIn conn=${uid} state=${state} seq=${request.__seq} qlen=${connection.__poisonQueue.length} sql=${request.__sql} | last op: ${lastOp.get(uid)} @${ts()}`,
-					);
-				}
-
+				if (!connection.__mssqlQueue) connection.__mssqlQueue = [];
+				connection.__mssqlQueue.push(request);
 				this._chomp(connection);
-
-				if (connection.__poisonQueue.includes(request)) {
-					// eslint-disable-next-line no-console
-					console.error(
-						`[poison] STRANDED req seq=${request.__seq} forConn=${uid} state=${state} qlen=${connection.__poisonQueue.length} sql=${request.__sql} | last op: ${lastOp.get(uid)} @${ts()}`,
-					);
-				}
 			};
 
 			mssqlClient._chomp = function (connection: any) {
 				if (connection?.state?.name !== 'LoggedIn') return;
 
-				const queue = connection.__poisonQueue;
-				if (!queue || queue.length === 0) return;
+				const queue = connection.__mssqlQueue;
+				const nextRequest = queue && queue.length > 0 ? queue.pop() : undefined;
 
-				// Pop from the end (matches knex's LIFO). By construction every request in this queue was
-				// enqueued for THIS connection, so cross-connection execution is now impossible.
-				const nextRequest = queue.pop();
-
-				if (nextRequest) {
-					const uid = uidOf(connection);
-
-					// Safety net: this must never be true now. If it ever fires, the per-connection queue is leaking.
-					if (nextRequest.__forUid !== undefined && nextRequest.__forUid !== uid) {
-						// eslint-disable-next-line no-console
-						console.error(
-							`[poison] CROSS-CONN chomp (UNEXPECTED): req seq=${nextRequest.__seq} enqueued-for=${nextRequest.__forUid} now running on conn=${uid} sql=${nextRequest.__sql} @${ts()}`,
-						);
-					}
-
-					connection.execSql(nextRequest);
-				}
+				if (nextRequest) connection.execSql(nextRequest);
 			};
-		}
 
-		// The DIRECT poisoning event: a connection handed back to the pool while tedious still has it
-		// mid-request. knex's mssql validateConnection only checks `.connected` (not `.state`), so this
-		// connection will pass validation and be dealt out to the next acquirer, whose beginTransaction
-		// then 500s with "Requests can only be made in the LoggedIn state". Low-noise: a healthy runner
-		// only releases a connection after its query/txn has settled (-> LoggedIn).
-		const origRelease =
-			typeof mssqlClient.releaseConnection === 'function' ? mssqlClient.releaseConnection.bind(mssqlClient) : null;
+			// knex's `_query` only re-chomps after a SUCCESSFUL request; cover the error/timeout path too so
+			// a request queued behind a failed one on the same connection still drains once it frees.
+			// `_chomp` is a no-op unless the connection is LoggedIn, so this is safe.
+			const origQuery = mssqlClient.query.bind(mssqlClient);
 
-		if (origRelease) {
-			mssqlClient.releaseConnection = function (connection: any) {
-				const uid = uidOf(connection);
-				const state = connection?.state?.name;
-
-				if (state && state !== 'LoggedIn') {
-					// eslint-disable-next-line no-console
-					console.error(
-						`[poison] RELEASE to pool conn=${uid} in state=${state} | in-flight: ${inFlight.get(uid)?.sql ?? 'none'} | last op: ${lastOp.get(uid)} @${ts()}${dumpHistory(uid)}`,
-					);
-				}
-
-				return origRelease(connection);
-			};
-		}
-
-		const origQuery = mssqlClient.query.bind(mssqlClient);
-
-		mssqlClient.query = async (connection: any, obj: any) => {
-			const uid = connection?.__knexUid;
-			const sql = String(obj?.sql ?? obj?.method ?? obj ?? '').slice(0, 160);
-
-			// A second query starting while one is already running on the same connection = concurrent use.
-			const prior = inFlight.get(uid);
-
-			if (prior) {
-				// eslint-disable-next-line no-console
-				console.error(
-					`[poison] CONCURRENT use of conn=${uid}: starting "${sql}" while still running "${prior.sql}"\n  in-flight origin:${prior.stack}`,
-				);
-			}
-
-			// Capture where this query was issued, so if the connection is released/re-acquired while the
-			// query is still in flight we can print the Directus call site that left it running.
-			inFlight.set(uid, { sql, stack: String(new Error('origin').stack).split('\n').slice(2, 10).join('\n') });
-			lastOp.set(uid, sql);
-
-			try {
-				return await origQuery(connection, obj);
-			} catch (err: any) {
-				const state = connection?.state?.name;
-
-				if (state && state !== 'LoggedIn') {
-					// eslint-disable-next-line no-console
-					console.error(`[poison] query left conn=${uid} in state=${state} | sql: ${sql} | err: ${err?.message}`);
-				}
-
-				// The remaining failure is a 60s request timeout (DB_REQUEST_TIMEOUT). Dump the connection
-				// history so we can see what it was doing for the whole 60s and what stranded this request.
-				if (err?.code === 'ETIMEOUT' || /Request failed to complete/i.test(String(err?.message))) {
-					// eslint-disable-next-line no-console
-					console.error(`[poison] query TIMEOUT conn=${uid} state=${state} | sql: ${sql}${dumpHistory(uid)}`);
-				}
-
-				throw err;
-			} finally {
-				// Observe-only: a resolved query leaving its connection non-LoggedIn. NOTE: this also fires
-				// for queries INSIDE a transaction (the connection is legitimately busy then), so do NOT act
-				// on it — disposing such a connection tears down an active transaction ("Connection closed
-				// before request completed" + FK violations). Logging only.
-				const after = connection?.state?.name;
-
-				if (after && after !== 'LoggedIn') {
-					// eslint-disable-next-line no-console
-					console.error(
-						`[poison] query FINISHED but left conn=${uid} in state=${after} | sql: ${sql}${dumpHistory(uid)}`,
-					);
-				}
-
-				inFlight.delete(uid);
-
-				// knex's _query only re-chomps on success; cover the error/timeout path too so a request
-				// queued behind a failed one on this connection still drains once the connection is free.
-				// _chomp is a no-op unless the connection is LoggedIn, so this is safe.
+			mssqlClient.query = async (connection: any, obj: any) => {
 				try {
-					mssqlClient._chomp(connection);
-				} catch {
-					// ignore -- diagnostic safety net only
+					return await origQuery(connection, obj);
+				} finally {
+					try {
+						mssqlClient._chomp(connection);
+					} catch {
+						// ignore
+					}
 				}
-			}
-		};
+			};
+		}
 
-		// Wrap the tedious transaction methods (knex calls these, not client.query) so we catch a txn op
-		// that's started while a query is in flight, or that leaves the connection in a non-LoggedIn state.
+		// Fix 2: wait for the connection to drain before issuing a transaction-control request. If the
+		// connection is still mid-request when knex issues begin/savepoint/commit, knex fires it blindly and
+		// 500s ("Requests can only be made in the LoggedIn state" -- only rollback pre-checks state). Briefly
+		// wait for the in-flight request to drain, then issue; bounded, so a genuinely stuck request still
+		// falls through to knex's original behaviour. This never disposes/rejects the connection, so it
+		// cannot tear down a live transaction.
+		const WAIT_TXN_OPS = ['beginTransaction', 'saveTransaction', 'commitTransaction'];
 		const wrappedConns = new WeakSet<object>();
 
 		const wrapTxnMethods = (connection: any) => {
 			if (!connection || wrappedConns.has(connection)) return;
 			wrappedConns.add(connection);
-			const uid = connection.__knexUid;
 
-			// Record every state transition on this connection into its ring buffer.
-			if (typeof connection.transitionTo === 'function') {
-				const origTransition = connection.transitionTo.bind(connection);
-
-				connection.transitionTo = function (newState: any) {
-					recordTransition(connection, newState);
-					return origTransition(newState);
-				};
-			}
-
-			// Catch any request that reaches the connection WITHOUT going through our _enqueueRequest
-			// (it would carry no __seq/__forUid -> the "blocker: seq=? forUid=?" we saw on commit WAITs).
-			// Tag it and log the first time, so we can find the untracked execSql path.
-			if (typeof connection.execSql === 'function') {
-				const origExecSql = connection.execSql.bind(connection);
-
-				connection.execSql = function (request: any, ...rest: any[]) {
-					if (request && request.__seq === undefined) {
-						request.__seq = ++seq;
-						request.__forUid = uid;
-						request.__execSqlDirect = true;
-
-						// eslint-disable-next-line no-console
-						console.error(
-							`[poison] execSql DIRECT (bypassed _enqueueRequest) conn=${uid} state=${connection.state?.name} sql="${String(request.sqlTextOrProcedure ?? '').slice(0, 100)}" @${ts()}`,
-						);
-					}
-
-					return origExecSql(request, ...rest);
-				};
-			}
-
-			// Includes saveTransaction (mssql SAVEPOINT) -- knex uses it for nested transactions, which
-			// Directus leans on during relational mutations, and our client.query wrapper never sees it.
-			for (const method of ['beginTransaction', 'saveTransaction', 'commitTransaction', 'rollbackTransaction']) {
+			for (const method of WAIT_TXN_OPS) {
 				const orig = connection[method];
 				if (typeof orig !== 'function') continue;
 
 				connection[method] = function (this: any, callback: any, ...rest: any[]) {
-					const priorQuery = inFlight.get(uid);
-
-					if (priorQuery) {
-						// eslint-disable-next-line no-console
-						console.error(
-							`[poison] ${method} on conn=${uid} while query in flight "${priorQuery.sql}"\n  query origin:${priorQuery.stack}`,
-						);
+					if (connection.state?.name === 'LoggedIn') {
+						return orig.call(this, callback, ...rest);
 					}
 
-					const wrappedCallback =
-						typeof callback === 'function'
-							? function (this: any, err: any) {
-									const st = connection.state?.name;
-									recordEvent(uid, `${method} cb state=${st}${err ? ` err="${err.message}"` : ''}`);
+					const MAX_WAIT_MS = 2000;
+					const STEP_MS = 10;
+					let waited = 0;
 
-									if (st && st !== 'LoggedIn') {
-										// eslint-disable-next-line no-console
-										console.error(
-											`[poison] ${method} left conn=${uid} in state=${st}${err ? ` | err: ${err.message}` : ''}${dumpHistory(uid)}`,
-										);
-									}
+					const issueWhenReady = () => {
+						if (connection.state?.name === 'LoggedIn' || waited >= MAX_WAIT_MS) {
+							orig.call(connection, callback, ...rest);
+							return;
+						}
 
-									// eslint-disable-next-line prefer-rest-params
-									return callback.apply(this, arguments);
-								}
-							: callback;
+						waited += STEP_MS;
+						setTimeout(issueWhenReady, STEP_MS);
+					};
 
-					// REAL FIX (mssql txn control): tedious permits one request per connection. If the
-					// connection is mid-request when knex issues begin/savepoint/commit, knex fires the TM
-					// request blindly and 500s with "Requests can only be made in the LoggedIn state" (only
-					// rollback pre-checks). Instead briefly wait for the in-flight request to drain, then
-					// issue. Bounded -> a genuinely stuck request still falls through to the original
-					// behaviour. Does NOT dispose/reject/churn the connection (cf. reverted attempts #3/#4),
-					// so it can't tear down a live transaction. WAIT lines are logged so we keep diagnosing.
-					if (WAIT_TXN_OPS.has(method) && connection.state?.name !== 'LoggedIn') {
-						const MAX_WAIT_MS = 2000;
-						const STEP_MS = 10;
-						let waited = 0;
-
-						// eslint-disable-next-line no-console
-						console.error(
-							`[poison] ${method} WAIT conn=${uid} state=${connection.state?.name} ${blockerInfo(connection)} @${ts()}${dumpHistory(uid)}`,
-						);
-
-						recordEvent(uid, `${method} WAIT-start state=${connection.state?.name}`);
-
-						const issueWhenReady = () => {
-							if (connection.state?.name === 'LoggedIn' || waited >= MAX_WAIT_MS) {
-								recordEvent(uid, `${method} WAIT-end state=${connection.state?.name} waited=${waited}ms`);
-
-								if (connection.state?.name !== 'LoggedIn') {
-									// eslint-disable-next-line no-console
-									console.error(
-										`[poison] ${method} WAIT TIMEOUT conn=${uid} state=${connection.state?.name} waited=${waited}ms ${blockerInfo(connection)}${dumpHistory(uid)}`,
-									);
-								}
-
-								orig.call(connection, wrappedCallback, ...rest);
-								return;
-							}
-
-							waited += STEP_MS;
-							setTimeout(issueWhenReady, STEP_MS);
-						};
-
-						issueWhenReady();
-						// knex ignores the return value of begin/commit/savepoint (callback-based), so deferring is safe.
-						return undefined;
-					}
-
-					recordEvent(uid, `${method} issued state=${connection.state?.name} inflight="${priorQuery?.sql ?? 'none'}"`);
-					return orig.call(this, wrappedCallback, ...rest);
+					issueWhenReady();
+					// knex ignores the return value of begin/commit/savepoint (callback-based), so deferring is safe.
+					return undefined;
 				};
 			}
 		};
@@ -526,20 +266,6 @@ export function getDatabase(): Knex {
 
 		mssqlClient.validateConnection = (connection: any) => {
 			wrapTxnMethods(connection);
-			const uid = connection?.__knexUid;
-			const state = connection?.state?.name;
-			const stillRunning = inFlight.get(uid);
-
-			// stillRunning = the connection is being acquired while a query it issued hasn't finished, i.e.
-			// it was released mid-query. The origin stack points at the Directus code that left it running.
-			if (stillRunning || (state && state !== 'LoggedIn')) {
-				// eslint-disable-next-line no-console
-				console.error(
-					`[poison] acquiring conn=${uid} state=${state} | in-flight: ${stillRunning?.sql ?? 'none'} | last op: ${lastOp.get(uid)}` +
-						(stillRunning ? `\n  in-flight origin:${stillRunning.stack}` : ''),
-				);
-			}
-
 			return baseValidate(connection);
 		};
 	}
