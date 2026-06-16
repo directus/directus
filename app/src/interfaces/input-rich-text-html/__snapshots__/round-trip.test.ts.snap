@@ -1,0 +1,59 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`round-trip: faithful (StarterKit schema) > blockquote survives round-trip 1`] = `"<blockquote><p>quote</p></blockquote>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > bold survives round-trip 1`] = `"<p><strong>bold</strong></p>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > bullet list survives round-trip 1`] = `"<ul><li><p>one</p></li><li><p>two</p></li></ul>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > code block survives round-trip 1`] = `"<pre><code>const x = 1;</code></pre>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > hard break survives round-trip 1`] = `"<p>line one<br>line two</p>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > headings survives round-trip 1`] = `"<h1>H1</h1><h2>H2</h2><h3>H3</h3><h4>H4</h4><h5>H5</h5><h6>H6</h6>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > horizontal rule survives round-trip 1`] = `"<p>before</p><hr><p>after</p>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > inline code survives round-trip 1`] = `"<p><code>inline()</code></p>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > italic survives round-trip 1`] = `"<p><em>italic</em></p>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > link survives round-trip 1`] = `"<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://directus.io">link</a></p>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > nested list survives round-trip 1`] = `"<ul><li><p>parent</p><ul><li><p>child</p></li></ul></li></ul>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > nested marks survives round-trip 1`] = `"<p><strong>bold <em>and italic</em></strong></p>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > ordered list survives round-trip 1`] = `"<ol><li><p>first</p></li><li><p>second</p></li></ol>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > paragraph survives round-trip 1`] = `"<p>Just a paragraph.</p>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > strike survives round-trip 1`] = `"<p><s>strike</s></p>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > underline survives round-trip 1`] = `"<p><u>underline</u></p>"`;
+
+exports[`round-trip: lossy (restored by later issues / accepted regression) > 'audio' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;
+
+exports[`round-trip: lossy (restored by later issues / accepted regression) > 'custom format span' is dropped today (→ 'CMS-2648') 1`] = `"<p>text</p>"`;
+
+exports[`round-trip: lossy (restored by later issues / accepted regression) > 'font family' is dropped today (→ 'CMS-2637') 1`] = `"<p>text</p>"`;
+
+exports[`round-trip: lossy (restored by later issues / accepted regression) > 'iframe' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;
+
+exports[`round-trip: lossy (restored by later issues / accepted regression) > 'image' is dropped today (→ 'CMS-2641') 1`] = `"<p></p>"`;
+
+exports[`round-trip: lossy (restored by later issues / accepted regression) > 'pagebreak' is dropped today (→ 'CMS-2647') 1`] = `"<p>a</p><p>b</p>"`;
+
+exports[`round-trip: lossy (restored by later issues / accepted regression) > 'rtl direction' is dropped today (→ 'CMS-2646') 1`] = `"<p>شسي</p>"`;
+
+exports[`round-trip: lossy (restored by later issues / accepted regression) > 'subscript' is dropped today (→ 'CMS-2638') 1`] = `"<p>H2O</p>"`;
+
+exports[`round-trip: lossy (restored by later issues / accepted regression) > 'superscript' is dropped today (→ 'CMS-2638') 1`] = `"<p>x2</p>"`;
+
+exports[`round-trip: lossy (restored by later issues / accepted regression) > 'table' is dropped today (→ 'CMS-2639') 1`] = `"<p>ab</p>"`;
+
+exports[`round-trip: lossy (restored by later issues / accepted regression) > 'text align' is dropped today (→ 'CMS-2636') 1`] = `"<p>centered</p>"`;
+
+exports[`round-trip: lossy (restored by later issues / accepted regression) > 'text color' is dropped today (→ 'CMS-2637') 1`] = `"<p>text</p>"`;
+
+exports[`round-trip: lossy (restored by later issues / accepted regression) > 'video' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;

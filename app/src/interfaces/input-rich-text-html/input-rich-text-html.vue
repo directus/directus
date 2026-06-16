@@ -1,749 +1,115 @@
 <script setup lang="ts">
-import type { SettingsStorageAssetPreset } from '@directus/types';
-import Editor from '@tinymce/tinymce-vue';
-import { cloneDeep, isEqual } from 'lodash';
-import tinymce from 'tinymce/tinymce';
-import { ComponentPublicInstance, computed, nextTick, onMounted, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import getEditorStyles from './get-editor-styles';
+import StarterKit from '@tiptap/starter-kit';
+import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
+import { onKeyStroke } from '@vueuse/core';
+import { computed, ref, watch } from 'vue';
+import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
-import useImage from './useImage';
-import useInlineCode from './useInlineCode';
-import useLink from './useLink';
-import useMedia from './useMedia';
-import usePre from './usePre';
-import useSourceCode from './useSourceCode';
-import VButton from '@/components/v-button.vue';
-import VCardActions from '@/components/v-card-actions.vue';
-import VCardText from '@/components/v-card-text.vue';
-import VCardTitle from '@/components/v-card-title.vue';
-import VCard from '@/components/v-card.vue';
-import VCheckbox from '@/components/v-checkbox.vue';
-import VDialog from '@/components/v-dialog.vue';
-import VDrawer from '@/components/v-drawer.vue';
-import VInput from '@/components/v-input.vue';
-import VSelect from '@/components/v-select/v-select.vue';
-import VTabItem from '@/components/v-tab-item.vue';
-import VTab from '@/components/v-tab.vue';
-import VTabsItems from '@/components/v-tabs-items.vue';
-import VTabs from '@/components/v-tabs.vue';
-import VTextarea from '@/components/v-textarea.vue';
-import VUpload from '@/components/v-upload.vue';
-import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
-import { useFocusin } from '@/composables/use-focusin';
-import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
-import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
-import { i18n } from '@/lang';
-import { useServerStore } from '@/stores/server';
-import { useSettingsStore } from '@/stores/settings';
-import { percentage } from '@/utils/percentage';
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import 'tinymce/skins/ui/oxide/skin.css';
-import './tinymce-overrides.css';
-import 'tinymce/tinymce';
-import 'tinymce/icons/default';
-import 'tinymce/models/dom';
-import 'tinymce/plugins/autoresize/plugin';
-import 'tinymce/plugins/code/plugin';
-import 'tinymce/plugins/directionality/plugin';
-import 'tinymce/plugins/fullscreen/plugin';
-import 'tinymce/plugins/image/plugin';
-import 'tinymce/plugins/insertdatetime/plugin';
-import 'tinymce/plugins/link/plugin';
-import 'tinymce/plugins/lists/plugin';
-import 'tinymce/plugins/media/plugin';
-import 'tinymce/plugins/pagebreak/plugin';
-import 'tinymce/plugins/preview/plugin';
-import 'tinymce/plugins/table/plugin';
-import 'tinymce/themes/silver';
-
-type CustomFormat = {
-	title: string;
-	inline: string;
-	classes: string;
-	styles: Record<string, string>;
-	attributes: Record<string, string>;
-};
 
 const props = withDefaults(
 	defineProps<{
 		value: string | null;
 		toolbar?: string[];
 		font?: 'sans-serif' | 'serif' | 'monospace';
-		customFormats?: CustomFormat[];
-		tinymceOverrides?: Record<string, unknown>;
 		disabled?: boolean;
 		nonEditable?: boolean;
 		imageToken?: string;
 		folder?: string;
-		softLength?: number;
-		direction?: string;
-		comparisonMode?: boolean;
-		comparisonSide?: 'base' | 'incoming';
-		fieldData?: any;
 	}>(),
 	{
 		toolbar: () => toolbarDefault,
 		font: 'sans-serif',
-		customFormats: () => [],
 	},
 );
 
-const emit = defineEmits(['input']);
+const emit = defineEmits<{ input: [value: string | null] }>();
 
-const { t } = useI18n();
-const editorRef = ref<any | null>(null);
-const editorElement = ref<ComponentPublicInstance | null>(null);
-const readonlyEditorRef = ref<any | null>(null);
-const readonlyEditorInitialized = ref(false);
-const editorKey = ref(0);
-const readonlyEditorKey = ref(0);
+// base content font, driven by the `font` option; theme tokens use `sans` (not `sans-serif`)
+const fontFamily = computed(() => {
+	const token = props.font === 'sans-serif' ? 'sans' : props.font;
+	return `var(--theme--fonts--${token}--font-family)`;
+});
 
-const { imageToken } = toRefs(props);
-const settingsStore = useSettingsStore();
-const { info } = useServerStore();
-const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
+// both states are read-only; `nonEditable` keeps the normal look, `disabled` dims (see styles)
+const isEditable = computed(() => !props.disabled && !props.nonEditable);
 
-const storageAssetTransform = ref('all');
-const storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
-
-if (settingsStore.settings?.storage_asset_transform) {
-	storageAssetTransform.value = settingsStore.settings.storage_asset_transform;
-	storageAssetPresets.value = settingsStore.settings.storage_asset_presets ?? [];
+// Sync an external value into the editor without polluting undo history or emitting an update.
+// `addToHistory: false` keeps these programmatic syncs out of the undo stack, otherwise the
+// first value load registers a phantom "empty → content" step and undo wipes the content.
+// The initial load also routes through here (not the constructor's `content`) so StarterKit's
+// TrailingNode normalization — appending a trailing paragraph after content that ends in a
+// non-paragraph block — runs now, inside this suppressed transaction. Set at construction it
+// would instead be deferred to the user's first click, emitting a phantom edit that marks the
+// field dirty (only for non-Tiptap-authored HTML, e.g. legacy TinyMCE content). See dirty-on-click.test.ts.
+function syncValue(instance: Editor, value: string | null) {
+	instance
+		.chain()
+		.setMeta('addToHistory', false)
+		.setContent(value ?? '', { emitUpdate: false })
+		.run();
 }
 
-const count = ref(0);
-
-const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
-	editorRef,
-	imageToken!,
-	{
-		storageAssetTransform,
-		storageAssetPresets,
-	},
-);
-
-const {
-	mediaDrawerOpen,
-	mediaSelection,
-	closeMediaDrawer,
-	openMediaTab,
-	onMediaSelect,
-	embed,
-	saveMedia,
-	mediaHeight,
-	mediaWidth,
-	mediaSource,
-	mediaButton,
-} = useMedia(editorRef, imageToken!);
-
-const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, isLinkSaveable } = useLink(editorRef);
-
-const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
-
-const { preButton } = usePre(editorRef);
-const { inlineCodeButton } = useInlineCode(editorRef);
-
-const internalValue = computed({
-	get() {
-		return props.value || '';
-	},
-	set(value) {
-		if (props.value !== value) {
-			contentUpdated();
-		}
+const editor = useEditor({
+	extensions: [StarterKit],
+	content: '',
+	editable: isEditable.value,
+	onCreate: ({ editor }) => syncValue(editor as Editor, props.value),
+	onUpdate: ({ editor }) => {
+		emit('input', editor.isEmpty ? null : editor.getHTML());
 	},
 });
 
-const editorInitialized = ref(false);
-const { isEditorMounted } = useEditorMounted();
+// `editable` is only read at init, so keep it in sync when the prop flips
+watch(isEditable, (editable) => editor.value?.setEditable(editable));
 
-const editorDisabled = computed(() => {
-	if (!editorInitialized.value) return false;
-
-	return props.disabled;
-});
-
+// external value changes (async load, revert, version switch) — guard against echo loops
 watch(
-	() => [props.direction, editorRef],
-	() => {
-		if (editorRef.value) {
-			if (props.direction === 'rtl') {
-				editorRef.value.editorCommands?.commands?.exec?.mcedirectionrtl();
-			} else {
-				editorRef.value.editorCommands?.commands?.exec?.mcedirectionltr();
-			}
-		}
+	() => props.value,
+	(value) => {
+		if (!editor.value) return;
+		if (editor.value.getHTML() === value) return;
+		syncValue(editor.value, value);
 	},
 );
 
-watch(
-	() => [props.toolbar, props.font, props.customFormats, props.tinymceOverrides],
-	(newOptions, oldOptions) => {
-		if (isEqual(newOptions, oldOptions)) return;
+const fullscreen = ref(false);
 
-		editorRef.value?.remove?.();
-
-		editorInitialized.value = false;
-		editorKey.value++;
-	},
-);
-
-watch(
-	() => [props.value, props.font, props.direction, props.comparisonSide],
-	() => {
-		if (readonlyEditorRef.value && readonlyEditorInitialized.value) {
-			readonlyEditorRef.value.setContent(props.value || '');
-		}
-	},
-);
-
-watch(
-	() => props.comparisonSide,
-	() => {
-		readonlyEditorInitialized.value = false;
-		readonlyEditorKey.value++;
-	},
-);
-
-function getBaseEditorOptions() {
-	return {
-		skin: false,
-		body_class: props.nonEditable ? 'non-editable' : '',
-		content_css: false,
-		branding: false,
-		max_height: 1000,
-		elementpath: false,
-		statusbar: false,
-		menubar: false,
-		convert_urls: false,
-		directionality: props.direction,
-		language: i18n.global.locale.value,
-	};
-}
-
-function mapToolbarButton(button: string): string {
-	const buttonMap: Record<string, string> = {
-		link: 'customLink',
-		media: 'customMedia',
-		code: 'customCode',
-		image: 'customImage',
-		pre: 'customPre',
-		inlinecode: 'customInlineCode',
-	};
-
-	return buttonMap[button] || button;
-}
-
-const editorOptions = computed(() => {
-	const styleFormats =
-		Array.isArray(props.customFormats) && props.customFormats.length > 0 ? cloneDeep(props.customFormats) : null;
-
-	let toolbarString = (props.toolbar ?? []).map(mapToolbarButton).join(' ');
-
-	if (styleFormats) {
-		toolbarString += ' styles';
-	}
-
-	return {
-		...getBaseEditorOptions(),
-		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace'),
-		plugins: [
-			'media',
-			'table',
-			'lists',
-			'image',
-			'link',
-			'pagebreak',
-			'code',
-			'insertdatetime',
-			'autoresize',
-			'preview',
-			'fullscreen',
-			'directionality',
-		],
-		image_dimensions: false,
-		extended_valid_elements: 'audio[loop|controls],source[src|type]',
-		toolbar: toolbarString ? toolbarString : false,
-		style_formats: styleFormats,
-		file_picker_types: 'customImage customMedia image media',
-		link_default_protocol: 'https',
-		browser_spellcheck: true,
-		paste_data_images: false,
-		setup,
-		ui_mode: 'split',
-		...(props.tinymceOverrides && cloneDeep(props.tinymceOverrides)),
-	};
+onKeyStroke('Escape', () => {
+	if (fullscreen.value) fullscreen.value = false;
 });
-
-const readonlyEditorOptions = computed(() => {
-	return {
-		...getBaseEditorOptions(),
-		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', true),
-		plugins: ['autoresize', 'directionality'],
-		toolbar: false,
-		readonly: true,
-		setup: (editor: any) => {
-			readonlyEditorRef.value = editor;
-
-			editor.on('init', () => {
-				readonlyEditorInitialized.value = true;
-				editor.setContent(props.value || '');
-			});
-		},
-	};
-});
-
-const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
-
-let observer: MutationObserver;
-let emittedValue: any;
-
-function setCount() {
-	const iframeContents = editorRef.value?.contentWindow.document.getElementById('tinymce');
-	count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
-}
-
-function contentUpdated() {
-	setCount();
-
-	if (!observer) return;
-
-	const newValue = editorRef.value.getContent() || null;
-
-	if (newValue === emittedValue) return;
-
-	emittedValue = newValue;
-	emit('input', newValue);
-}
-
-function setupContentWatcher() {
-	if (observer) return;
-
-	const iframeContents = editorRef.value.contentWindow.document.getElementById('tinymce');
-
-	observer = new MutationObserver((_mutations) => {
-		contentUpdated();
-	});
-
-	const config = { characterData: true, childList: true, subtree: true };
-	observer.observe(iframeContents, config);
-}
-
-function setup(editor: any) {
-	editorRef.value = editor;
-
-	const linkShortcut = 'meta+k';
-
-	editor.ui.registry.addToggleButton('customPre', preButton);
-	editor.ui.registry.addToggleButton('customImage', imageButton);
-	editor.ui.registry.addToggleButton('customMedia', mediaButton);
-	editor.ui.registry.addToggleButton('customLink', { ...linkButton, shortcut: linkShortcut });
-
-	editor.ui.registry.addToggleButton('customInlineCode', inlineCodeButton);
-	editor.ui.registry.addButton('customCode', sourceCodeButton);
-
-	editor.on('init', function () {
-		editor.shortcuts.remove(linkShortcut);
-
-		editor.addShortcut(linkShortcut, 'Insert Link', () => {
-			editor.ui.registry.getAll().buttons.customlink.onAction();
-		});
-
-		setCount();
-
-		editorInitialized.value = true;
-	});
-
-	editor.on('OpenWindow', function (e: any) {
-		if (e.dialog?.getData) {
-			const data = e.dialog?.getData();
-
-			if (data) {
-				if (data.url) {
-					e.dialog.close();
-					editor.ui.registry.getAll().buttons.customlink.onAction();
-				}
-
-				if (data.src) {
-					e.dialog.close();
-					editor.ui.registry.getAll().buttons.customimage.onAction(true);
-				}
-			}
-		}
-	});
-
-	let pausedFocusTrap = false;
-	editor.on('OpenWindow', onOpenWindow);
-	editor.on('CloseWindow', onCloseWindow);
-
-	const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
-
-	function onOpenWindow() {
-		const toxDialogEl = document.querySelector('.tox-dialog') as HTMLElement | null;
-		if (toxDialogEl === null) return;
-
-		const firstFocusableElement = getFirstFocusableElement(toxDialogEl);
-		if (!firstFocusableElement) return;
-
-		pausedFocusTrap = true;
-		pauseFocusTrap();
-		firstFocusableElement.focus();
-	}
-
-	function getFirstFocusableElement(toxDialogEl: HTMLElement) {
-		// TinyMCE adds tabindex="-1" to all focusable elements in the dialog
-		const findElement = toxDialogEl.querySelector('[tabindex="-1"]') as HTMLElement | null;
-		if (!findElement) return;
-
-		// To shift the focus to this dialog, we need to make this element focusable
-		findElement.tabIndex = 0;
-		return findElement;
-	}
-
-	function onCloseWindow() {
-		if (!pausedFocusTrap) return;
-
-		pausedFocusTrap = false;
-		unpauseFocusTrap();
-	}
-}
-
-function setFocus(val: boolean) {
-	if (editorElement.value == null) return;
-	const body = editorElement.value.$el.parentElement?.querySelector('.tox-tinymce');
-
-	const { focus, blur } = useFocusin(body);
-
-	if (body == null) return;
-
-	if (val) {
-		focus();
-		body.classList.add('focus');
-	} else {
-		blur();
-		body.classList.remove('focus');
-	}
-}
-
-onMounted(() => {
-	tinymce.addI18n(i18n.global.locale.value, {
-		Undo: t('wysiwyg_options.undo'),
-		Redo: t('wysiwyg_options.redo'),
-		Bold: t('wysiwyg_options.bold'),
-		Italic: t('wysiwyg_options.italic'),
-		Underline: t('wysiwyg_options.underline'),
-		Strikethrough: t('wysiwyg_options.strikethrough'),
-		Subscript: t('wysiwyg_options.subscript'),
-		Superscript: t('wysiwyg_options.superscript'),
-		'Font {0}': `${t('wysiwyg_options.fontselect')} {0}`,
-		'Font size {0}': `${t('wysiwyg_options.fontsizeselect')} {0}`,
-		'Heading 1': t('wysiwyg_options.h1'),
-		'Heading 2': t('wysiwyg_options.h2'),
-		'Heading 3': t('wysiwyg_options.h3'),
-		'Heading 4': t('wysiwyg_options.h4'),
-		'Heading 5': t('wysiwyg_options.h5'),
-		'Heading 6': t('wysiwyg_options.h6'),
-		'Align center': t('wysiwyg_options.aligncenter'),
-		'Align left': t('wysiwyg_options.alignleft'),
-		'Align right': t('wysiwyg_options.alignright'),
-		Justify: t('wysiwyg_options.alignjustify'),
-		'No alignment': t('wysiwyg_options.alignnone'),
-		'Increase indent': t('wysiwyg_options.indent'),
-		'Decrease indent': t('wysiwyg_options.outdent'),
-		'Numbered list': t('wysiwyg_options.numlist'),
-		'Bullet list': t('wysiwyg_options.bullist'),
-		'Text color {0}': `${t('wysiwyg_options.forecolor')} {0}`,
-		'Background color {0}': `${t('wysiwyg_options.backcolor')} {0}`,
-		'Clear formatting': t('wysiwyg_options.removeformat'),
-		Cut: t('wysiwyg_options.cut'),
-		Copy: t('wysiwyg_options.copy'),
-		Paste: t('wysiwyg_options.paste'),
-		Remove: t('wysiwyg_options.remove'),
-		'Select all': t('wysiwyg_options.selectall'),
-		Blockquote: t('wysiwyg_options.blockquote'),
-		Fullscreen: t('wysiwyg_options.fullscreen'),
-		Table: t('wysiwyg_options.table'),
-		'Horizontal line': t('wysiwyg_options.hr'),
-		'Visual aids': t('wysiwyg_options.visualaid'),
-		'Left to right': t('left_to_right'),
-		'Right to left': t('right_to_left'),
-	});
-});
-
-const menuActive = computed(
-	() => codeDrawerOpen.value || imageDrawerOpen.value || mediaDrawerOpen.value || linkDrawerOpen.value,
-);
-
-function useEditorMounted() {
-	const isEditorMounted = ref(true);
-
-	watch(() => props.nonEditable, reMountEditor);
-
-	return { isEditorMounted };
-
-	async function reMountEditor() {
-		isEditorMounted.value = false;
-		await nextTick();
-		isEditorMounted.value = true;
-	}
-}
 </script>
 
 <template>
-	<div v-prevent-focusout="menuActive" class="wysiwyg" :class="{ disabled }">
-		<template v-if="isEditorMounted">
-			<Editor
-				v-if="comparisonMode"
-				:key="`comparison-${comparisonSide ?? ''}-${readonlyEditorKey}`"
-				:value="value"
-				:init="readonlyEditorOptions"
-				disabled
-			/>
-			<Editor
-				v-else-if="nonEditable"
-				:key="`readonly-${readonlyEditorKey}`"
-				:value="value"
-				:init="readonlyEditorOptions"
-				disabled
-			/>
-			<Editor
-				v-else
-				:key="editorKey"
-				ref="editorElement"
-				v-model="internalValue"
-				:init="editorOptions"
-				:disabled="editorDisabled"
-				model-events="change keydown blur focus paste ExecCommand SetContent"
-				@focusin="setFocus(true)"
-				@focusout="setFocus(false)"
-				@focus="setupContentWatcher"
-				@set-content="contentUpdated"
-			/>
-		</template>
-		<template v-if="softLength">
-			<span
-				class="remaining"
-				:class="{
-					warning: percRemaining < 10,
-					danger: percRemaining < 5,
-				}"
-			>
-				{{ softLength - count }}
-			</span>
-		</template>
-		<VDialog v-model="linkDrawerOpen" @esc="closeLinkDrawer" @apply="saveLink">
-			<VCard>
-				<VCardTitle>{{ $t('wysiwyg_options.link') }}</VCardTitle>
-				<VCardText>
-					<div class="grid">
-						<div class="field">
-							<div class="type-label">{{ $t('url') }}</div>
-							<VInput v-model="linkSelection.url" :placeholder="$t('url_placeholder')" autofocus></VInput>
-						</div>
-						<div class="field">
-							<div class="type-label">{{ $t('display_text') }}</div>
-							<VInput v-model="linkSelection.displayText" :placeholder="$t('display_text_placeholder')"></VInput>
-						</div>
-						<div class="field half">
-							<div class="type-label">{{ $t('tooltip') }}</div>
-							<VInput v-model="linkSelection.title" :placeholder="$t('tooltip_placeholder')"></VInput>
-						</div>
-						<div class="field half-right">
-							<div class="type-label">{{ $t('open_link_in') }}</div>
-							<VCheckbox v-model="linkSelection.newTab" block :label="$t('new_tab')"></VCheckbox>
-						</div>
-					</div>
-				</VCardText>
-				<VCardActions>
-					<VButton secondary @click="closeLinkDrawer">{{ $t('cancel') }}</VButton>
-					<VButton :disabled="!isLinkSaveable" @click="saveLink">{{ $t('save') }}</VButton>
-				</VCardActions>
-			</VCard>
-		</VDialog>
-
-		<VDrawer
-			v-model="codeDrawerOpen"
-			:title="$t('wysiwyg_options.source_code')"
-			icon="code"
-			@cancel="closeCodeDrawer"
-			@apply="saveCode"
-		>
-			<div class="content">
-				<InterfaceInputCode
-					:value="code"
-					language="htmlmixed"
-					line-wrapping
-					@input="code = $event"
-				></InterfaceInputCode>
-			</div>
-
-			<template #actions:primary>
-				<PrivateViewHeaderBarActionButton :label="$t('save')" icon="check" @click="saveCode" />
-			</template>
-		</VDrawer>
-
-		<VDrawer
-			v-model="imageDrawerOpen"
-			:title="$t('wysiwyg_options.image')"
-			icon="image"
-			@cancel="closeImageDrawer"
-			@apply="saveImage"
-		>
-			<div class="content">
-				<template v-if="imageSelection">
-					<img class="image-preview" :src="imageSelection.previewUrl" />
-					<div class="grid">
-						<div class="field half">
-							<div class="type-label">{{ $t('image_url') }}</div>
-							<VInput v-model="imageSelection.imageUrl" />
-						</div>
-						<div class="field half-right">
-							<div class="type-label">{{ $t('alt_text') }}</div>
-							<VInput v-model="imageSelection.alt" :nullable="false" />
-						</div>
-						<template v-if="storageAssetTransform === 'all'">
-							<div class="field half">
-								<div class="type-label">{{ $t('width') }}</div>
-								<VInput v-model="imageSelection.width" :disabled="!!imageSelection.transformationKey" />
-							</div>
-							<div class="field half-right">
-								<div class="type-label">{{ $t('height') }}</div>
-								<VInput v-model="imageSelection.height" :disabled="!!imageSelection.transformationKey" />
-							</div>
-						</template>
-						<div class="field half">
-							<div class="type-label">{{ $t('wysiwyg_options.lazy_loading') }}</div>
-							<VCheckbox v-model="imageSelection.lazy" block :label="$t('wysiwyg_options.lazy_loading_label')" />
-						</div>
-						<div v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0" class="field half">
-							<div class="type-label">{{ $t('transformation_preset_key') }}</div>
-							<VSelect
-								v-model="imageSelection.transformationKey"
-								:items="storageAssetPresets.map((preset) => ({ text: preset.key, value: preset.key }))"
-								show-deselect
-							/>
-						</div>
-					</div>
-				</template>
-				<VUpload
-					v-else
-					:multiple="false"
-					from-library
-					from-url
-					:folder="folder"
-					:accept="allowedMimeTypes"
-					@input="onImageSelect"
-				/>
-			</div>
-
-			<template #actions:primary>
-				<PrivateViewHeaderBarActionButton :label="$t('save_image')" icon="check" @click="saveImage" />
-			</template>
-		</VDrawer>
-
-		<VDrawer
-			v-model="mediaDrawerOpen"
-			:title="$t('wysiwyg_options.media')"
-			icon="slideshow"
-			@cancel="closeMediaDrawer"
-			@apply="saveMedia"
-		>
-			<template #sidebar>
-				<VTabs v-model="openMediaTab" vertical>
-					<VTab value="video">{{ $t('media') }}</VTab>
-					<VTab value="embed">{{ $t('embed') }}</VTab>
-				</VTabs>
-			</template>
-
-			<div class="content">
-				<VTabsItems v-model="openMediaTab">
-					<VTabItem value="video">
-						<template v-if="mediaSelection">
-							<video v-if="mediaSelection.tag !== 'iframe'" class="media-preview" controls="true">
-								<source :src="mediaSelection.previewUrl" />
-							</video>
-							<iframe
-								v-if="mediaSelection.tag === 'iframe'"
-								:title="$t('interfaces.input-rich-text-html.media_preview_iframe_title')"
-								class="media-preview"
-								:src="mediaSelection.previewUrl"
-							></iframe>
-							<div class="grid">
-								<div class="field">
-									<div class="type-label">{{ $t('source') }}</div>
-									<VInput v-model="mediaSource" />
-								</div>
-								<div class="field half">
-									<div class="type-label">{{ $t('width') }}</div>
-									<VInput v-model="mediaWidth" />
-								</div>
-								<div class="field half-right">
-									<div class="type-label">{{ $t('height') }}</div>
-									<VInput v-model="mediaHeight" />
-								</div>
-							</div>
-						</template>
-						<VUpload
-							v-else
-							:multiple="false"
-							from-library
-							from-url
-							:folder="folder"
-							:accept="allowedMimeTypes"
-							@input="onMediaSelect"
-						/>
-					</VTabItem>
-					<VTabItem value="embed">
-						<div class="grid">
-							<div class="field">
-								<div class="type-label">{{ $t('embed') }}</div>
-								<VTextarea v-model="embed" :nullable="false" />
-							</div>
-						</div>
-					</VTabItem>
-				</VTabsItems>
-			</div>
-
-			<template #actions:primary>
-				<PrivateViewHeaderBarActionButton :label="$t('save_media')" icon="check" @click="saveMedia" />
-			</template>
-		</VDrawer>
+	<div
+		class="wysiwyg"
+		:class="{ disabled, 'non-editable': nonEditable, fullscreen }"
+		:style="{ '--editor-font-family': fontFamily }"
+	>
+		<Toolbar
+			v-if="!nonEditable"
+			:editor="editor"
+			:toolbar="toolbar"
+			:disabled="disabled"
+			:fullscreen="fullscreen"
+			@toggle-fullscreen="fullscreen = !fullscreen"
+		/>
+		<EditorContent class="editor-content" :editor="editor" />
 	</div>
 </template>
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
 
-.body {
-	padding: 1.125rem;
-}
-
 .grid {
 	@include mixins.form-grid;
 }
 
-.remaining {
-	position: absolute;
-	inset-inline-end: 0.5625rem;
-	inset-block-end: 0.3125rem;
-	color: var(--theme--form--field--input--foreground-subdued);
-	font-weight: 600;
-	text-align: end;
-	vertical-align: middle;
-	font-feature-settings: 'tnum';
+.content {
+	padding: var(--content-padding);
+	padding-block-end: var(--content-padding);
 }
 
-.warning {
-	color: var(--theme--warning);
-}
-
-.danger {
-	color: var(--theme--danger);
-}
-
-.image-preview,
-.media-preview {
+.image-preview {
 	inline-size: 100%;
 	block-size: var(--input-height-md);
 	margin-block-end: 1.375rem;
@@ -751,8 +117,215 @@ function useEditorMounted() {
 	border-radius: var(--theme--border-radius);
 }
 
-.content {
-	padding: var(--content-padding);
-	padding-block-end: var(--content-padding);
+.wysiwyg {
+	--v-button-background-color: transparent;
+	--v-button-color: var(--theme--form--field--input--foreground);
+	--v-button-background-color-hover: var(--theme--form--field--input--border-color);
+	--v-button-color-hover: var(--theme--form--field--input--foreground);
+
+	background-color: var(--theme--form--field--input--background);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
+	transition: border-color var(--fast) var(--transition);
+
+	&:not(.disabled):not(.non-editable):hover {
+		border-color: var(--theme--form--field--input--border-color-hover);
+	}
+
+	&:not(.disabled):not(.non-editable):focus-within {
+		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+		outline-offset: var(--focus-ring-offset-invert);
+	}
+
+	// `non-editable` stays visually normal (read-only display); only `disabled` dims
+	&.disabled:not(.non-editable) {
+		background-color: var(--theme--form--field--input--background-subdued);
+
+		:deep(.ProseMirror) {
+			color: var(--theme--foreground-subdued);
+		}
+	}
+
+	&.fullscreen {
+		position: fixed;
+		inset: 0;
+		z-index: 490; // below drawers/dialogs (500+) so image/link drawers stay on top
+		display: flex;
+		flex-direction: column;
+		border-radius: 0;
+
+		.editor-content {
+			flex: 1;
+			min-block-size: 0;
+			overflow: auto;
+		}
+	}
+}
+
+/* Content styles, scoped to the ProseMirror container so they neither leak into the app nor inherit app styles.
+   Ported from the former iframe `get-editor-styles.ts`, using live theme tokens instead of snapshotted values. */
+.wysiwyg :deep(.ProseMirror) {
+	min-block-size: var(--input-height-tall);
+	padding: 1.125rem;
+	outline: none;
+	color: var(--theme--form--field--input--foreground);
+	font-family: var(--editor-font-family);
+	font-size: 0.875rem;
+	line-height: 1.5714;
+	font-weight: 500;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		font-family: var(--editor-font-family);
+		color: var(--theme--form--field--input--foreground-accent);
+		font-weight: 700;
+		margin-block-end: 0;
+	}
+
+	:is(h1, h2, h3, h4, h5, h6) + p {
+		margin-block-start: 0.5em;
+	}
+
+	h1 {
+		font-size: 2rem;
+		line-height: 1.2813;
+		margin-block-start: 1em;
+	}
+
+	h2 {
+		font-size: 1.375rem;
+		line-height: 1.4091;
+		margin-block-start: 1.25em;
+	}
+
+	h3 {
+		font-size: 1.0625rem;
+		line-height: 1.5294;
+		margin-block-start: 1.25em;
+	}
+
+	h4 {
+		font-size: 0.875rem;
+		line-height: 1.6429;
+		margin-block-start: 1.5em;
+	}
+
+	h5 {
+		font-size: 0.8125rem;
+		line-height: 1.6923;
+		margin-block-start: 2em;
+	}
+
+	h6 {
+		font-size: 0.6875rem;
+		line-height: 1.8182;
+		margin-block-start: 2em;
+	}
+
+	p,
+	ul,
+	ol {
+		font-family: var(--editor-font-family);
+		margin: 1.5em 0;
+	}
+
+	:is(ul, ol) :is(ul, ol) {
+		margin: 0;
+	}
+
+	li,
+	li > p {
+		margin: 0;
+	}
+
+	a {
+		color: var(--theme--primary-accent);
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
+	b,
+	strong {
+		font-weight: 700;
+	}
+
+	code {
+		padding: 0.125rem 0.25rem;
+		font-family: var(--theme--fonts--monospace--font-family), monospace;
+		background-color: var(--theme--background-normal);
+		border-radius: var(--theme--border-radius);
+		overflow-wrap: break-word;
+	}
+
+	pre {
+		padding: 1em;
+		font-family: var(--theme--fonts--monospace--font-family), monospace;
+		background-color: var(--theme--background-normal);
+		border-radius: var(--theme--border-radius);
+		overflow: auto;
+
+		code {
+			padding: 0;
+			background: none;
+		}
+	}
+
+	blockquote {
+		font-family: var(--editor-font-family);
+		border-inline-start: 2px solid var(--theme--form--field--input--border-color);
+		padding-inline-start: 1em;
+		margin-inline-start: 0;
+	}
+
+	img,
+	video {
+		max-inline-size: 100%;
+		block-size: auto;
+		border-radius: var(--theme--border-radius);
+	}
+
+	iframe {
+		max-inline-size: 100%;
+		border-radius: var(--theme--border-radius);
+	}
+
+	:is(img, hr).ProseMirror-selectednode {
+		outline: 2px solid var(--theme--primary);
+	}
+
+	hr {
+		background-color: var(--theme--form--field--input--border-color);
+		block-size: 0.0625rem;
+		border: none;
+		margin-block: 2em;
+	}
+
+	table {
+		border-collapse: collapse;
+	}
+
+	table :is(th, td) {
+		border: 1px solid var(--theme--form--field--input--border-color);
+		padding: 0.3125rem;
+	}
+
+	figure {
+		display: table;
+		margin: 0.8125rem auto;
+	}
+
+	figure figcaption {
+		color: var(--theme--foreground-subdued);
+		display: block;
+		margin-block-start: 0.1875rem;
+		text-align: center;
+	}
 }
 </style>
