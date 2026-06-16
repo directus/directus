@@ -235,15 +235,16 @@ export function getDatabase(): Knex {
 			return `blocker: seq=${r.__seq ?? '?'} forUid=${forUid ?? '?'}${foreign ? ' FOREIGN' : ''} sql="${String(r.sqlTextOrProcedure ?? r.constructor?.name ?? '').slice(0, 80)}"`;
 		};
 
-		// ---- knex shared-requestQueue instrumentation (the suspected seed of the poisoning) ----
-		// knex's Client_MSSQL keeps `requestQueue` on the PROTOTYPE (shared across all pooled
-		// connections) and `_chomp(connection)` runs a popped request on whatever connection is
-		// passed in, guarded only by `connection.state === 'LoggedIn'`. `_enqueueRequest` chomps
-		// synchronously on the connection it was given; if that connection isn't LoggedIn the request
-		// is left stranded in the shared queue and later gets execSql'd on a DIFFERENT connection by a
-		// nextTick `_chomp` (which bypasses our client.query wrapper -> matches "in-flight: none").
-		// We tag each request with the connection it was enqueued for and flag the three anomalies that
-		// would decouple a request from its connection. Observe-only.
+		// ---- REAL FIX: per-connection request queue (replaces knex's shared prototype `requestQueue`) ----
+		// knex's Client_MSSQL keeps `requestQueue` on the PROTOTYPE (shared across all pooled connections)
+		// and `_chomp(connection)` pops from it and runs the request on whatever connection is passed in,
+		// guarded only by `connection.state === 'LoggedIn'`. CI proved (`[poison] CROSS-CONN chomp`) that a
+		// request enqueued for one connection -- after being stranded because its own connection was busy --
+		// gets popped by another connection's nextTick `_chomp` and executed on the WRONG connection,
+		// poisoning pooled connections in a self-sustaining cascade. Fix: give each connection its OWN queue
+		// (`connection.__poisonQueue`) so a request can only ever run on the connection it was enqueued for.
+		// We still tag/log so CROSS-CONN must now NEVER fire (if it does, the fix is wrong). `requestQueue`
+		// on the prototype is left unused after this override.
 		const origEnqueue =
 			typeof mssqlClient._enqueueRequest === 'function' ? mssqlClient._enqueueRequest.bind(mssqlClient) : null;
 
@@ -258,43 +259,52 @@ export function getDatabase(): Knex {
 				request.__seq = ++seq;
 				request.__sql = String(request?.sqlTextOrProcedure ?? '').slice(0, 120);
 
-				// SEED CANDIDATE: enqueueing a request on a connection that isn't ready to run it. In
-				// normal operation knex only hands _query a freshly-acquired LoggedIn connection, so this
-				// should never fire -- if it does, it's the moment a request gets decoupled.
+				if (!connection.__poisonQueue) connection.__poisonQueue = [];
+				connection.__poisonQueue.push(request);
+
+				// A request enqueued while its own connection is busy is fine now -- it waits in THIS
+				// connection's queue and is chomped when this connection next reaches LoggedIn. Logged so we
+				// can still see how often it happens and correlate with timeouts.
 				if (state !== 'LoggedIn') {
 					// eslint-disable-next-line no-console
 					console.error(
-						`[poison] ENQUEUE on non-LoggedIn conn=${uid} state=${state} seq=${request.__seq} qlen=${mssqlClient.requestQueue.length} sql=${request.__sql} | last op: ${lastOp.get(uid)} @${ts()}`,
+						`[poison] ENQUEUE on non-LoggedIn conn=${uid} state=${state} seq=${request.__seq} qlen=${connection.__poisonQueue.length} sql=${request.__sql} | last op: ${lastOp.get(uid)} @${ts()}`,
 					);
 				}
 
-				origEnqueue(request, connection);
+				this._chomp(connection);
 
-				// If the synchronous _chomp didn't drain it, the request is stranded in the shared queue
-				// waiting for some other connection's nextTick _chomp -> cross-connection execution risk.
-				if (mssqlClient.requestQueue.includes(request)) {
+				if (connection.__poisonQueue.includes(request)) {
 					// eslint-disable-next-line no-console
 					console.error(
-						`[poison] STRANDED req seq=${request.__seq} forConn=${uid} state=${state} qlen=${mssqlClient.requestQueue.length} sql=${request.__sql} | last op: ${lastOp.get(uid)} @${ts()}`,
+						`[poison] STRANDED req seq=${request.__seq} forConn=${uid} state=${state} qlen=${connection.__poisonQueue.length} sql=${request.__sql} | last op: ${lastOp.get(uid)} @${ts()}`,
 					);
 				}
 			};
 
 			mssqlClient._chomp = function (connection: any) {
-				const uid = uidOf(connection);
-				const state = connection?.state?.name;
-				// _chomp pops from the end (LIFO); peek what it's about to run.
-				const next = mssqlClient.requestQueue[mssqlClient.requestQueue.length - 1];
+				if (connection?.state?.name !== 'LoggedIn') return;
 
-				// SMOKING GUN: a request enqueued for one connection is about to run on another.
-				if (state === 'LoggedIn' && next && next.__forUid !== undefined && next.__forUid !== uid) {
-					// eslint-disable-next-line no-console
-					console.error(
-						`[poison] CROSS-CONN chomp: req seq=${next.__seq} enqueued-for=${next.__forUid} now running on conn=${uid} state=${state} sql=${next.__sql} @${ts()}`,
-					);
+				const queue = connection.__poisonQueue;
+				if (!queue || queue.length === 0) return;
+
+				// Pop from the end (matches knex's LIFO). By construction every request in this queue was
+				// enqueued for THIS connection, so cross-connection execution is now impossible.
+				const nextRequest = queue.pop();
+
+				if (nextRequest) {
+					const uid = uidOf(connection);
+
+					// Safety net: this must never be true now. If it ever fires, the per-connection queue is leaking.
+					if (nextRequest.__forUid !== undefined && nextRequest.__forUid !== uid) {
+						// eslint-disable-next-line no-console
+						console.error(
+							`[poison] CROSS-CONN chomp (UNEXPECTED): req seq=${nextRequest.__seq} enqueued-for=${nextRequest.__forUid} now running on conn=${uid} sql=${nextRequest.__sql} @${ts()}`,
+						);
+					}
+
+					connection.execSql(nextRequest);
 				}
-
-				return origChomp(connection);
 			};
 		}
 
@@ -369,6 +379,15 @@ export function getDatabase(): Knex {
 				}
 
 				inFlight.delete(uid);
+
+				// knex's _query only re-chomps on success; cover the error/timeout path too so a request
+				// queued behind a failed one on this connection still drains once the connection is free.
+				// _chomp is a no-op unless the connection is LoggedIn, so this is safe.
+				try {
+					mssqlClient._chomp(connection);
+				} catch {
+					// ignore -- diagnostic safety net only
+				}
 			}
 		};
 
