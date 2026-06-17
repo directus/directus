@@ -1,5 +1,6 @@
 import type { Editor } from '@tiptap/vue-3';
 import type { Component } from 'vue';
+import ColorMenu from './menus/color-menu.vue';
 import StyleListMenu from './menus/style-list-menu.vue';
 
 /** Handlers for buttons whose commands need more than the editor (instantiated in setup scope). */
@@ -97,6 +98,18 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 			attr: 'fontSize',
 			items: FONT_SIZES,
 		},
+	},
+	forecolor: {
+		icon: 'format_color_text',
+		label: 'wysiwyg_options.forecolor',
+		component: ColorMenu,
+		componentProps: { icon: 'format_color_text', label: 'wysiwyg_options.forecolor', mode: 'text' },
+	},
+	backcolor: {
+		icon: 'format_color_fill',
+		label: 'wysiwyg_options.backcolor',
+		component: ColorMenu,
+		componentProps: { icon: 'format_color_fill', label: 'wysiwyg_options.backcolor', mode: 'background' },
 	},
 	bold: {
 		icon: 'format_bold',
