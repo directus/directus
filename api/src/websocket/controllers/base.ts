@@ -17,6 +17,7 @@ import { useLogger } from '../../logger/index.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { isUnauthenticated } from '../../utils/is-unauthenticated.js';
 import { authenticateConnection, authenticationSuccess } from '../authenticate.js';
 import { handleWebSocketError, WebSocketError } from '../errors.js';
 import { AuthMode, WebSocketAuthMessage } from '../messages.js';
@@ -184,19 +185,21 @@ export default abstract class SocketController {
 		let accountability: Accountability = createDefaultAccountability(accountabilityOverrides);
 		let expires_at: number | null = null;
 
-		if (!token) {
-			logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability));
-			socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-			socket.destroy();
-			return;
+		if (token) {
+			try {
+				const state = await authenticateConnection({ access_token: token }, accountabilityOverrides);
+				this.checkUserRequirements(state.accountability);
+				accountability = state.accountability;
+				expires_at = state.expires_at;
+			} catch {
+				logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability));
+				socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+				socket.destroy();
+				return;
+			}
 		}
 
-		try {
-			const state = await authenticateConnection({ access_token: token }, accountabilityOverrides);
-			this.checkUserRequirements(state.accountability);
-			accountability = state.accountability;
-			expires_at = state.expires_at;
-		} catch {
+		if (!token || !isUnauthenticated(accountability)) {
 			logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability));
 			socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
 			socket.destroy();
