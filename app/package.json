@@ -88,6 +88,7 @@
 		"@rollup/plugin-yaml": "catalog:",
 		"@sindresorhus/slugify": "catalog:",
 		"@tinymce/tinymce-vue": "catalog:",
+		"@tiptap/extension-text-style": "catalog:",
 		"@tiptap/pm": "catalog:",
 		"@tiptap/starter-kit": "catalog:",
 		"@tiptap/vue-3": "catalog:",
