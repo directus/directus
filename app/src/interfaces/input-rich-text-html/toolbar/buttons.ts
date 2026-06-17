@@ -1,5 +1,6 @@
 import type { Editor } from '@tiptap/vue-3';
 import type { Component } from 'vue';
+import StyleListMenu from './menus/style-list-menu.vue';
 
 /** Handlers for buttons whose commands need more than the editor (instantiated in setup scope). */
 export interface ToolbarContext {
@@ -40,6 +41,23 @@ const headings: Record<string, ToolbarButton> = Object.fromEntries(
 	]),
 );
 
+const FONT_FAMILIES: { label: string; value: string | null }[] = [
+	{ label: 'wysiwyg_options.default', value: null },
+	{ label: 'Arial', value: 'Arial, Helvetica, sans-serif' },
+	{ label: 'Georgia', value: 'Georgia, serif' },
+	{ label: 'Courier New', value: '"Courier New", Courier, monospace' },
+	{ label: 'Times New Roman', value: '"Times New Roman", Times, serif' },
+	{ label: 'Verdana', value: 'Verdana, Geneva, sans-serif' },
+	{ label: 'Tahoma', value: 'Tahoma, Geneva, sans-serif' },
+	{ label: 'Trebuchet MS', value: '"Trebuchet MS", Helvetica, sans-serif' },
+	{ label: 'Comic Sans MS', value: '"Comic Sans MS", cursive' },
+];
+
+const FONT_SIZES: { label: string; value: string | null }[] = [
+	{ label: 'wysiwyg_options.default', value: null },
+	...[12, 14, 16, 18, 24, 30, 36, 48].map((px) => ({ label: String(px), value: `${px}px` })),
+];
+
 /**
  * Toolbar registry keyed by the toolbar option values stored in field meta.
  * Keys not present here (legacy/unsupported) are ignored gracefully by the toolbar.
@@ -58,6 +76,28 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		disabled: (e) => !e.can().redo(),
 	},
 	...headings,
+	fontfamily: {
+		icon: 'font_download',
+		label: 'wysiwyg_options.fontselect',
+		component: StyleListMenu,
+		componentProps: {
+			icon: 'font_download',
+			label: 'wysiwyg_options.fontselect',
+			attr: 'fontFamily',
+			items: FONT_FAMILIES,
+		},
+	},
+	fontsize: {
+		icon: 'format_size',
+		label: 'wysiwyg_options.fontsizeselect',
+		component: StyleListMenu,
+		componentProps: {
+			icon: 'format_size',
+			label: 'wysiwyg_options.fontsizeselect',
+			attr: 'fontSize',
+			items: FONT_SIZES,
+		},
+	},
 	bold: {
 		icon: 'format_bold',
 		label: 'wysiwyg_options.bold',

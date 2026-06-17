@@ -1375,6 +1375,7 @@ wysiwyg_options:
   image: Add/Edit Image
   copy: Copy
   cut: Cut
+  default: Default
   paste: Paste
   heading: Heading
   h1: Heading 1
