@@ -48,7 +48,7 @@
 		"typescript": "catalog:"
 	},
 	"engines": {
-		"node": ">=22"
+		"node": ">=24"
 	},
 	"optionalDependencies": {
 		"mysql2": "catalog:",
