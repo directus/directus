@@ -15,7 +15,7 @@ import getDatabase from '../../database/index.js';
 import { getService } from '../../utils/get-service.js';
 import { formatError } from './errors/format.js';
 import { GraphQLExecutionError, GraphQLValidationError } from './errors/index.js';
-import { getValidationRules } from './rules/index.js'
+import { getValidationRules } from './rules/index.js';
 import { generateSchema } from './schema/index.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
