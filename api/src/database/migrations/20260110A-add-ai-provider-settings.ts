@@ -1,7 +1,7 @@
 import type { Knex } from 'knex';
 
-const DEFAULT_OPENAI_MODELS = ['gpt-5-nano', 'gpt-5-mini', 'gpt-5'];
-const DEFAULT_ANTHROPIC_MODELS = ['claude-haiku-4-5', 'claude-sonnet-4-5'];
+const DEFAULT_OPENAI_MODELS = ['gpt-5.4-nano', 'gpt-5.4-mini', 'gpt-5.4'];
+const DEFAULT_ANTHROPIC_MODELS = ['claude-haiku-4-5', 'claude-sonnet-4-6'];
 const DEFAULT_GOOGLE_MODELS = ['gemini-3-pro-preview', 'gemini-3-flash-preview', 'gemini-2.5-pro', 'gemini-2.5-flash'];
 
 export async function up(knex: Knex): Promise<void> {

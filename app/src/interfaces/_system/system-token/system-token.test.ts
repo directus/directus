@@ -313,12 +313,10 @@ describe('closeRemoveConfirm', () => {
 });
 
 describe('props.value watcher', () => {
-	test('clears localValue, tokenSavedInline, and generateError when value changes to a masked string', async () => {
+	test('clears state when value changes to a masked string and no local token is being displayed', async () => {
 		const wrapper = mountComponent({ primaryKey: 'abc-123', value: null });
 		const vm = wrapper.vm as any;
 
-		vm.localValue = 'freshly-generated-token';
-		vm.tokenSavedInline = true;
 		vm.generateError = new Error('previous error');
 
 		await wrapper.setProps({ value: '********************' });
@@ -326,6 +324,21 @@ describe('props.value watcher', () => {
 		expect(vm.localValue).toBeNull();
 		expect(vm.tokenSavedInline).toBe(false);
 		expect(vm.generateError).toBeNull();
+	});
+
+	test('does not reset state when value changes to a masked string while a local token is being displayed', async () => {
+		// Simulates collab's receiveSave → getItem() refreshing props.value to the masked value
+		// after the user has just generated a token and is seeing it for the first time.
+		const wrapper = mountComponent({ primaryKey: 'abc-123', value: null });
+		const vm = wrapper.vm as any;
+
+		vm.localValue = 'freshly-generated-token';
+		vm.tokenSavedInline = true;
+
+		await wrapper.setProps({ value: '********************' });
+
+		expect(vm.localValue).toBe('freshly-generated-token');
+		expect(vm.tokenSavedInline).toBe(true);
 	});
 
 	test('clears localValue, tokenSavedInline, and generateError when value changes to null', async () => {

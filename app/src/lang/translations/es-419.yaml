@@ -20,31 +20,19 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Acerca de
-directus_bsl: BSL de Directus 1.1
 privacy_policy: Política de Privacidad
-contact_our_team: Contacta con nuestro equipo
 setup_welcome: Bienvenido a Directus
 setup_info: Creemos tu cuenta de administrador y pongamos tu proyecto en funcionamiento.
-setup_license_notice: >
-  Directus es de uso gratuito para entidades con ingresos, financiación o presupuesto operativo anuales inferiores a 5 millones de dólares.
-setup_license_follow_up: >
-  Las entidades que superan este umbral requieren una licencia de pago. Puede continuar evaluando Directus ahora y contactarnos cuando esté listo para hablar sobre el uso en producción.
-setup_save_accept_license: >
-  Al hacer clic en Guardar, acepta los términos de {directusBsl} y {privacyPolicy}.
-setup_accept_license: Acepto los términos de {directusBsl} y {privacyPolicy}
 setup_marketing_emails: Envíame actualizaciones de productos y notas de lanzamiento
 setup_launch: Iniciar Directus
 setup_project: Configurar Proyecto
+production: Producción
+continue: Continuar
 first_name: Nombre
 last_name: Apellido
 admin_email: Email del Administrador
 owner_email: E-Mail del propietario
 email_address: Dirección de correo electrónico
-organization_name: Nombre de la organización
-how_do_you_use_directus: '¿Para qué utilizas Directus?'
-usage_personal: Personal / Aprendizaje
-usage_commercial: Negocios / Comercial
-usage_community: Código abierto / Comunidad
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
@@ -72,6 +60,7 @@ collection_names_are_case_sensitive: Los nombres de las Colecciones distinguen e
 condition_rules: Reglas de Condición
 input: Entrada
 invalid_input: Entrada no válida
+invalid_file_type: Tipo de Archivo Inválido
 not_a_number: No es un número
 invalid_range_min: El valor está por debajo del mínimo de {value}
 invalid_range_max: El valor excede el máximo de {value}
@@ -79,6 +68,8 @@ maps: Mapas
 switch_user: Cambiar usuario
 item_creation: Creación de Elemento
 item_revision: Revisión de Elemento
+previous_revision: Revisión Previa
+latest_revision: Última Revisión
 enter_a_name: Ingresa un Nombre...
 duplicate_field: Duplicar Campo
 half_width: Ancho a la Mitad
@@ -86,6 +77,7 @@ full_width: Ancho completo
 group: Grupo
 popular: Popular
 recent: Reciente
+previous: Previo
 latest: Último
 updated: Actualizado
 export_items: Exportar Elementos
@@ -132,6 +124,8 @@ report_an_issue: Reportar un Problema
 website: Sitio Web
 github: GitHub
 beta: Beta
+collab_disconnected: Edición Colaborativa Desconectada
+you: tú
 n_downloads: '{n} Descargas'
 downloads: Descargas
 compatibility_not_guaranteed: Compatibilidad no garantizada
@@ -188,6 +182,7 @@ connection_good: Conexión buena
 connection_fair: Conexión debil
 connection_poor: Conexión pobre
 primary: Primario
+download_folder: Descargar Carpeta
 rename_folder: Renombrar carpeta
 delete_folder: Eliminar carpeta
 prefix: Prefijo
@@ -196,22 +191,20 @@ keep: Mantener
 version: Versión
 version_key: Clave de Versión
 version_name: Nombre de Versión
-main_version: Principal
 switch_version: Cambiar Versión
 switch_version_copy: '¿Está seguro de que desea cambiar a la versión "{version}"? Los cambios no guardados se perderán.'
 create_version: Crear Versión
 rename_version: Renombrar Versión
 compare_version: Comparar Versión
 save_version: Guardar Versión
-promote_version: Promover Versión
 apply: Aplicar
+discard: Descartar
 select_all_differences: Seleccionar todas las diferencias
-main_updated_notice: El elemento principal se ha actualizado desde que se creó esta versión.
+show_differences_only: Solo Mostrar Diferencias
 delete_version: Eliminar Versión
 delete_version_copy: >-
   ¿Está seguro de que desea eliminar la versión "{version}"? Esta acción no se puede deshacer.
-delete_on_apply_copy: >-
-  Estás a punto de establecer “{version}” como Principal. ¿Qué debería suceder con “{version}” después de la promoción?
+content_edited: Contenido Editado
 reset_bookmark: Restablecer marcador
 update_bookmark: Actualizar marcador
 delete_bookmark: Eliminar Marcador
@@ -244,7 +237,11 @@ recommended_defaults: Recomendado preestablecidos
 unarchive: Desarchivar
 unarchive_confirm: '¿Está seguro que desea desarchivar este elemento?'
 nested_files_folders_will_be_moved: Los archivos y directorios anidados serán movidos a un nivel superior.
+delete_folder_dialog:
+  move_content: Mover contenido un nivel arriba
+  delete_content: Eliminar todo el contenido
 validation_errors_notice: 'Los siguientes campos tienen valores no válidos:'
+validation_value_is_invalid: Valor inválido
 validationError:
   eq: El valor debe de ser {valid}
   neq: El valor no puede ser {invalid}
@@ -519,10 +516,14 @@ related_collection: Colección Relacionada
 related_collections: Colecciones Relacionadas
 translations_collection: Traducción de la Colección
 languages_collection: Coleccion de Idiomas
+enable_translations: Hábilitar Traducciones
 translations_preview_collections: Colecciones
 translations_preview_fields: Campos
+translations_preview_relations: Relaciones
+ungrouped: Sin agrupar
 import_data_input_placeholder: CSV o JSON...
 import_data_button: Empezar Importación
+import_background: Importar en segundo plano
 import_data_indeterminate: Importando Datos...
 import_data_success: Datos importados con éxito desde {filename}
 import_data_errors: Error de importación
@@ -659,8 +660,8 @@ manual_string: Texto introducido manualmente
 save_and_create_new: Guardar y Crear Nuevo
 save_and_stay: Guardar y Permanecer
 save_and_quit: Guardar y Salir
-save_and_return_to_main: Guardar y volver al principio
 save_as_copy: Guardar como Copia
+save_as_new_file: Guardar como Nuevo Archivo
 add_existing: Seleccionar
 creating_items: Registros Creados
 enable_create_button: Habilitar Botón de Crear
@@ -696,6 +697,9 @@ file_count: 'Sin Archivos | Un Archivo | {count} Archivos'
 no_files_copy: Aquí no hay archivos.
 user_count: 'Sin Usuarios | Un Usuario | {count} Usuarios'
 no_users_copy: No hay usuarios con este Rol aún.
+no_active_users: Sin Usuarios Activos
+no_suspended_users: Sin Usuarios Suspendidos
+no_invited_users: Sin Usuarios Invitados
 no_notifications: Sin notificaciones
 no_notifications_copy: '¡Estás al día!'
 activity_log: Registro de actividad
@@ -785,6 +789,7 @@ errors:
   INVALID_CONFIG: Configuración invalida
   INVALID_CREDENTIALS: Usuario o clave incorrectos
   INVALID_FOREIGN_KEY: Clave externa no válida
+  INVALID_INVITE: La invitación ya no es válida
   INVALID_IP: Dirección IP no permitida
   INVALID_OTP: Clave incorrecta
   INVALID_PAYLOAD: Carga inválida
@@ -838,6 +843,9 @@ flip_vertical: Voltear Verticalmente
 aspect_ratio: Relación de Aspecto
 rotate: Rotar
 all_users: Todos los Usuarios
+active_users: Usuarios Activos
+suspended_users: Usuarios Suspendidos
+invited_users: Usuarios Invitados
 delete_collection: Eliminar Colección
 update_collection_success: Colección Actualizada
 delete_collection_success: Colección Eliminada
@@ -1037,15 +1045,57 @@ no_url_copy: Por favor, agregue una URL en la configuración.
 invalid_url: URL no válida
 invalid_url_copy: La URL especificada no coincide con ninguna de las URL definidas en la configuración.
 insights: Informes
+overview: Vista previa
 deployment:
+  deployment: Despliegue
+  overview:
+    overview: Vista previa
+    providers: Proveedores
+    configure: Configurar
   provider:
+    setup_title: 'Configuración de {provider}'
+    credentials:
+      link: Abrir Configuración de {provider}
+    token:
+      label: Token de Acceso Personal
     settings:
+      edit_configuration: Editar Configuración
+      delete: Eliminar Configuración
       delete_confirm: Esta acción es permanente y no puede ser revertida. ¿Realmente le gustaría proceder?
+    vercel:
+      name: Vercel
+      account_type:
+        label: Tipo de Cuenta
+        team: Equipo
+        personal: Cuenta personal
+      team_id:
+        label: ID de Equipo
+      username:
+        label: Nombre de usuario
+    netlify:
+      name: Netlify
+    projects: Proyectos
+    select_projects: Seleccionar Proyectos
+    runs:
+      author: Autor
+      refresh: Refrescar
+      external_user: Usuario Externo
     run:
       cancel_confirm: Esta acción es permanente y no puede ser revertida. ¿Realmente le gustaría proceder?
       log_all: Todos los niveles de registro
+  no_projects: Sin Predefinidos
+  deploy: Desplegar
   target_value:
+    production: Producción
     preview: Vista previa
+  runs_status:
+    ready: Listo
+  dashboard:
+    active_deployments: 'Despliegue Activo: {count} | Despliegues Activos: {count}'
+  range:
+    1d: Últimas 24 Horas
+    7d: Últimos 7 Días
+    30d: Últimos 30 Días
 dashboard: Tablero
 panel: Tablero
 panel_options: Opciones del Panel
@@ -1180,6 +1230,7 @@ appearance_light: Claro
 appearance_dark: Oscuro
 other: Otro...
 adding_user: Agregando Usuario
+more_users: Clic para ver más
 unknown_user: Usuario Desconocido
 unknown_version: Versión Desconocida
 unknown_revision: Revisión Desconocida
@@ -1194,9 +1245,24 @@ settings_data_model: Modelo de Datos
 settings_roles: Roles de Usuario
 settings_permissions: Reglas de Acceso
 settings_project: Ajustes
+licensing:
+  unlimited: Ilimitado
+  addon_manage: Administrar
+  addon_update: Actualizar
+  resolve_continue: Continuar
+  resolve_show_n_more: 'Mostrar {count} más'
+  resolve_section_flows: Flujos
+  resolve_sso_admin_email: Dirección de correo electrónico
+  resolve_sso_admin_password: Contraseña
+  entitlements:
+    collections: Colecciones
+    flows: Flujos
+    production_enabled: Producción
 settings_appearance: Apariencia
 settings_ai: IA
 model_context_protocol: Model Context Protocol
+ai_assistant: Asistente de IA
+ai_disabled_by_env: Las funciones de Asistente de IA han sido deshabilitadas desde las variables de entorno.
 settings_flows: Flujos
 settings_system_logs: Registros del Sistema
 settings_presets: Marcadores
@@ -1391,6 +1457,7 @@ fields:
     project_color: Color del Proyecto
     project_logo: Logo del Proyecto
     default_language: Idioma predeterminado
+    project_owner: Dueño del Proyecto
     branding: Imagen de marca
     public_foreground: Superficie Pública
     public_background: Fondo Público
@@ -1424,6 +1491,7 @@ fields:
     public_registration_verify_email: Verificar E-mail
     public_registration_verify_email_note: Envía un correo electrónico al usuario registrado pidiéndole que haga clic en un enlace de verificación antes de poder iniciar sesión.
     visual_editor_urls: URLs del Editor Visual
+    collaborative_editing_enabled: Habilitar Edición Colaborativa
     mcp_enabled: Servidor de MCP
     mcp_enabled_note: 'Conecta herramientas de IA/LLM a tu proyecto de Directus mediante el <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. Esto permite que los asistentes de IA lean e interactúen con tus datos de Directus de forma segura.'
     mcp_notice: 'Model Context Protocol es un estándar para conectar LLMs con aplicaciones como Directus. Una vez habilitado, el servidor MCP de Directus estará disponible en `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Más información sobre MCP y cómo realizar la conexión.</a>'
@@ -1597,8 +1665,16 @@ unlimited_usage: Uso ilimitado
 uses_left: Sin usos restantes | Un uso restante | {n} usos restantes
 no_shares: No hay acciones para mostrar
 new_share: Nueva parte
+show_more: Mostrar Más
+show_less: Mostrar Menos
 ai:
+  thinking: Pensando...
   input: Entrada
+  output: Salida
+  ready: Listo
+  complete: Completado
+  error: Error
+  error_message: Ocurrio un error
   unknown: Desconocido
   items: Ítems
   content: Contenido
@@ -1607,6 +1683,7 @@ ai:
     disabled: Deshabilitado
   ask_user_submit: Enviar
   ask_user_next: Siguiente
+  ask_user_type_answer: Escribe tu respuesta...
 ai_tools:
   items: Ítems
   files: Archivos
@@ -1678,6 +1755,7 @@ no_permissions: Sin permisos
 permission_add_collection: Añadir Colección
 default_label: Por defecto
 delete_label: Eliminar
+discard_label: Descartar
 delete_are_you_sure: >-
   Esta acción es permanente y no puede ser revertida. ¿Realmente le gustaría proceder?
 delete_field_are_you_sure: >-
@@ -2137,7 +2215,9 @@ interfaces:
     value_securely_saved: Valor guardado de forma segura
     generate: Generar token
     regenerate: Regenerar token
+    regenerate_confirm_title: Regenerar token
     remove_token: Remover token
+    remove_confirm_title: Remover token
   system-raw-editor:
     system-raw-editor: Editor bruto
     description: Permitir la introducción de valores de plantillas en crudo o en mostacho
@@ -2613,12 +2693,8 @@ search_flow: Buscar Flujo...
 percent: Porciento
 show_password: Mostrar Contraseña
 hide_password: Ocultar Contraseña
-bsl_banner:
-  title: Aún no has establecido un propietario del proyecto.
-  license: Necesitamos esta información para garantizar el cumplimiento de nuestra licencia BSL 1.1. Esta persona debe ser el contacto principal responsable de tu proyecto.
-  set_owner: Asignar Propietario
-  remind_later: Recordar más tarde
-  remind_next_login: Te lo recordaremos nuevamente en tu próximo inicio de sesión.
+license_grace_key_modal:
+  optional: Opcional
 accepted: Aceptado
 text_direction_auto: Automático (coincidir idioma)
 text_direction_ltr: Izquierda a derecha (LTR)

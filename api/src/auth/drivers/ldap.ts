@@ -31,6 +31,7 @@ import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { AuthDriver } from '../auth.js';
+import { checkSsoEnabled } from '../utils/check-sso-enabled.js';
 
 interface UserInfo {
 	dn: string;
@@ -432,6 +433,8 @@ export function createLDAPAuthRouter(provider: string): Router {
 		mode: Joi.string().valid('cookie', 'json', 'session'),
 		otp: Joi.string(),
 	}).unknown();
+
+	router.use(checkSsoEnabled);
 
 	router.post(
 		'/',

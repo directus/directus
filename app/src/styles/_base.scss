@@ -26,15 +26,14 @@
 html {
 	/* font-size: left at browser default (typically 16px) for WCAG compliance — do not set a px value */
 	-webkit-tap-highlight-color: rgb(0 0 0 / 0);
+	overflow: hidden;
 }
 
 body {
-	color: var(--theme--foreground);
-	font-weight: 500;
-	font-size: 0.8125rem;
-	font-family: var(--theme--fonts--sans--font-family);
-	font-style: normal;
-	line-height: 1.5385;
+	@include mixins.type-text;
+
+	position: relative;
+	overflow: hidden;
 	background-color: var(--theme--background);
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
@@ -155,7 +154,7 @@ input[type='search']::-webkit-search-decoration,
 input[type='search']::-webkit-search-cancel-button,
 input[type='search']::-webkit-search-results-button,
 input[type='search']::-webkit-search-results-decoration {
-	-webkit-appearance: none;
+	appearance: none;
 }
 
 // Disable pointer events on iframes during split panel drag to prevent jank
