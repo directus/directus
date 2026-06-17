@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import StarterKit from '@tiptap/starter-kit';
 import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
 import { computed, ref, watch } from 'vue';
+import { editorExtensions } from './editor-extensions';
 import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
 
@@ -50,7 +50,7 @@ function syncValue(instance: Editor, value: string | null) {
 }
 
 const editor = useEditor({
-	extensions: [StarterKit],
+	extensions: editorExtensions,
 	content: '',
 	editable: isEditable.value,
 	onCreate: ({ editor }) => syncValue(editor as Editor, props.value),
