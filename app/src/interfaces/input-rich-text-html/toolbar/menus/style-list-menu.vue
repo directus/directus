@@ -49,7 +49,7 @@ defineExpose({ select });
 </script>
 
 <template>
-	<VMenu placement="bottom-start" show-arrow :close-on-content-click="true">
+	<VMenu placement="bottom-start" show-arrow close-on-content-click>
 		<template #activator="{ toggle, active }">
 			<VButton
 				v-tooltip="t(label)"
