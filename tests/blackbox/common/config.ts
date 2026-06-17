@@ -314,8 +314,6 @@ const config: Config = {
 			DB_USER: 'sa',
 			DB_PASSWORD: 'Test@123',
 			DB_DATABASE: 'directus',
-			// Match the 60s requestTimeout the test harness's own knex uses (see knexConfig.mssql).
-			// Without it the server falls back to tedious's 15s default;
 			DB_REQUEST_TIMEOUT: '60000',
 			PORT: '59157',
 		},

@@ -4,8 +4,7 @@ import { type CreateIndexOptions, SchemaHelper, type SortRecord, type Sql } from
 import { prepQueryParams } from '../utils/prep-query-params.js';
 
 // Triggers rarely change at runtime and aren't managed by Directus, so cache the per-collection
-// lookup to avoid an extra round-trip on every insert (e.g. a 100-row batch would otherwise issue
-// 100 trigger checks). Module-scoped, mirroring the `lower_case_table_names` cache in this dialect.
+// lookup to avoid an extra round-trip on every insert
 const triggerCache = new Map<string, boolean>();
 
 export class SchemaHelperMSSQL extends SchemaHelper {

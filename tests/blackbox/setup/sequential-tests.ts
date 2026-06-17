@@ -19,13 +19,7 @@ export const sequentialTestsList: Record<'db' | 'common', SequentialTestsList> =
 		],
 		after: [
 			// Websocket/collab tests are timing-sensitive: they assert that messages arrive within a
-			// deadline. Run on the contended mssql runner CONCURRENTLY with each other (and the
-			// instance-spawning auth/multi-instance/schema-cache tests), the shared Directus server gets
-			// starved and can't deliver messages — or even complete the WS handshake — in time, causing
-			// "Timeout waiting for matching message" / "WebSocket failed to achieve the OPEN state". The
-			// gate serializes `after` files (one at a time), so listing every websocket/collab file here
-			// keeps only one WS-heavy file running at once, leaving the server enough CPU. (Each file is
-			// also far quicker alone — the multi-minute durations were mostly timeout waits.)
+			// deadline. Putting the websocket/collab files here keeps only one WS-heavy file running at once.
 			'/tests/db/websocket/collab/core.test.ts',
 			'/tests/db/websocket/collab/relational.test.ts',
 			'/tests/db/websocket/collab/singleton.test.ts',

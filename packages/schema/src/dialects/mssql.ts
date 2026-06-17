@@ -117,10 +117,7 @@ export default class MSSQL implements SchemaInspector {
 		// Sourced from the `sys.*` catalog views rather than INFORMATION_SCHEMA + per-row
 		// COLUMNPROPERTY(OBJECT_ID(...)) scalar calls and the slow KEY_COLUMN_USAGE view. The previous
 		// query cost ~9s per call on mssql, and because the schema cache reintrospects on every DDL
-		// change it dominated blackbox seeding. Catalog views are set-based and effectively sub-second.
-		// Output shape is kept identical to before: `is_nullable` as 'YES'/'NO', `max_length` as the
-		// character length (n-types halved, -1 for MAX, null for non-string types), and `column_key`
-		// set to 'PRIMARY' only for single-column primary keys (the old PK_COUNT = 1 behavior).
+		// change it delayed blackbox seeding significantly.
 		const columns = await this.knex.raw(
 			`
 			SELECT
@@ -156,7 +153,6 @@ export default class MSSQL implements SchemaInspector {
 
 		const overview: SchemaOverview = {};
 
-		// Resolve each table's single-column primary key in one pass, rather than an O(n²) `find` per column.
 		const primaryByTable: Record<string, string> = {};
 
 		for (const column of columns) {
