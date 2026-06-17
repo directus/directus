@@ -96,6 +96,11 @@ export function useRelationMultiple(
 				('delete' in oldValue && Array.isArray(oldValue.delete) && oldValue.delete.length > 0))
 		) {
 			updateFetchedItems();
+		} else if (Array.isArray(newValue) && oldValue === null) {
+			// Refetch when the value transitions from null to an array, which happens
+			// when a refresh (e.g. after running a manual flow) nulls the item then
+			// re-fetches it with updated relation data.
+			updateFetchedItems();
 		}
 	});
 
