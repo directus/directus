@@ -712,5 +712,31 @@ describe('Integration Tests', () => {
 
 			await expect((service as any).checkPasswordPolicy(['anything'])).resolves.toBeUndefined();
 		});
+
+		it('should throw InvalidPasswordError when unwrapped policy regex fails', async () => {
+			vi.spyOn(SettingsService.prototype, 'readSingleton').mockResolvedValueOnce({
+				auth_password_policy: '^.{8,}$',
+			} as any);
+
+			const service = new UsersService({
+				knex: db,
+				schema,
+			});
+
+			await expect((service as any).checkPasswordPolicy(['short'])).rejects.toBeInstanceOf(InvalidPasswordError);
+		});
+
+		it('should not throw when password meets policy regex', async () => {
+			vi.spyOn(SettingsService.prototype, 'readSingleton').mockResolvedValueOnce({
+				auth_password_policy: '/^.{8,}$/',
+			} as any);
+
+			const service = new UsersService({
+				knex: db,
+				schema,
+			});
+
+			await expect((service as any).checkPasswordPolicy(['longpassword'])).resolves.toBeUndefined();
+		});
 	});
 });
