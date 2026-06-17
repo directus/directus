@@ -221,7 +221,7 @@ export function getDatabase(): Knex {
 
 		// Fix 2: wait for the connection to drain before issuing a transaction-control request. If the
 		// connection is still mid-request when knex issues begin/savepoint/commit, knex fires it blindly and
-		// 500s. Briefly wait for the in-flight request to drain, then issue; bounded, so a genuinely stuck 
+		// 500s. Briefly wait for the in-flight request to drain, then issue; bounded, so a genuinely stuck
 		// request still falls through to knex's original behaviour.
 		const WAIT_TXN_OPS = ['beginTransaction', 'saveTransaction', 'commitTransaction'];
 		const wrappedConns = new WeakSet<object>();
