@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Prevented anonymous GraphQL alias amplification of sensitive system mutations.
+Limited sensitive system mutations defined by GRAPHQL_SINGLE_USE_MUTATIONS to single use
