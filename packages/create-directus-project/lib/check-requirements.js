@@ -14,7 +14,7 @@ export default function checkRequirements() {
 	const nodeVersion = process.versions.node;
 	const currentMajor = +nodeVersion.split('.')[0];
 
-	const expectedMajor = 22;
+	const expectedMajor = 24;
 
 	if (currentMajor !== expectedMajor) {
 		console.error(`You are running ${chalk.red(`Node.js ${nodeVersion}`)}.`);
