@@ -1,6 +1,6 @@
-import StarterKit from '@tiptap/starter-kit';
 import { Editor } from '@tiptap/vue-3';
 import { describe, expect, test } from 'vitest';
+import { editorExtensions } from './editor-extensions';
 
 /**
  * HTML corpus round-trip tests.
@@ -16,16 +16,16 @@ import { describe, expect, test } from 'vitest';
  *   documented accepted regression. `LOSSY` below is the ledger of those cases; when an
  *   extension lands, its sample moves from LOSSY → FAITHFUL and the snapshot updates.
  *
- * The editor here uses StarterKit only (matches input-rich-text-html.vue today).
+ * The editor here uses the shared editorExtensions (StarterKit + TextStyleKit), matching input-rich-text-html.vue.
  */
 function roundTrip(html: string): string {
-	const editor = new Editor({ extensions: [StarterKit], content: html });
+	const editor = new Editor({ extensions: editorExtensions, content: html });
 	const out = editor.getHTML();
 	editor.destroy();
 	return out;
 }
 
-/** Constructs StarterKit models — these must survive round-trip without structural loss. */
+/** Constructs the schema models — these must survive round-trip without structural loss. */
 const FAITHFUL: Record<string, string> = {
 	paragraph: '<p>Just a paragraph.</p>',
 	headings: '<h1>H1</h1><h2>H2</h2><h3>H3</h3><h4>H4</h4><h5>H5</h5><h6>H6</h6>',
@@ -43,6 +43,12 @@ const FAITHFUL: Record<string, string> = {
 	'code block': '<pre><code>const x = 1;</code></pre>',
 	link: '<p><a href="https://directus.io">link</a></p>',
 	'hard break': '<p>line one<br>line two</p>',
+	'font family (named)': '<p><span style="font-family: Arial, Helvetica, sans-serif;">text</span></p>',
+	'font family (legacy keyword)': '<p><span style="font-family: serif;">text</span></p>',
+	'font size (px)': '<p><span style="font-size: 24px;">text</span></p>',
+	'font size (legacy pt)': '<p><span style="font-size: 18pt;">text</span></p>',
+	'text color': '<p><span style="color: #ff0000;">text</span></p>',
+	'background color': '<p><span style="background-color: #ffff00;">text</span></p>',
 };
 
 /**
@@ -76,13 +82,6 @@ const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }
 		issue: 'CMS-2643',
 	},
 	{ name: 'iframe', html: '<iframe src="about:blank"></iframe>', absent: '<iframe', issue: 'CMS-2643' },
-	{
-		name: 'font family',
-		html: '<p><span style="font-family: serif;">text</span></p>',
-		absent: 'font-family',
-		issue: 'CMS-2637',
-	},
-	{ name: 'text color', html: '<p><span style="color: #ff0000;">text</span></p>', absent: 'color:', issue: 'CMS-2637' },
 	{ name: 'subscript', html: '<p>H<sub>2</sub>O</p>', absent: '<sub', issue: 'CMS-2638' },
 	{ name: 'superscript', html: '<p>x<sup>2</sup></p>', absent: '<sup', issue: 'CMS-2638' },
 	{ name: 'text align', html: '<p style="text-align: center;">centered</p>', absent: 'text-align', issue: 'CMS-2636' },
@@ -96,7 +95,7 @@ const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }
 	},
 ];
 
-describe('round-trip: faithful (StarterKit schema)', () => {
+describe('round-trip: faithful (StarterKit + TextStyleKit schema)', () => {
 	test.each(Object.entries(FAITHFUL))('%s survives round-trip', (_name, html) => {
 		expect(roundTrip(html)).toMatchSnapshot();
 	});
