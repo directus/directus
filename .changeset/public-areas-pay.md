@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Enforced the same query token limit and introspection restrictions on the GraphQL WebSocket as on the HTTP endpoint, and block validation hints when introspection is disabled.
+Updated GraphQL WebSocket restrictions to match the HTTP endpoint and hid validation hints when introspection is disabled
