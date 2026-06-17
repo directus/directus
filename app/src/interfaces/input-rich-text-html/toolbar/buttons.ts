@@ -1,4 +1,5 @@
 import type { Editor } from '@tiptap/vue-3';
+import type { Component } from 'vue';
 
 /** Handlers for buttons whose commands need more than the editor (instantiated in setup scope). */
 export interface ToolbarContext {
@@ -17,9 +18,14 @@ export interface ToolbarButton {
 	icon: string;
 	/** i18n key, resolved with `t()` at render time */
 	label: string;
-	command: (editor: Editor, ctx: ToolbarContext) => void;
+	/** Click-command buttons set this. Menu buttons (`component`) omit it. */
+	command?: (editor: Editor, ctx: ToolbarContext) => void;
 	isActive?: (editor: Editor, ctx: ToolbarContext) => boolean;
 	disabled?: (editor: Editor) => boolean;
+	/** When set, the toolbar renders this dropdown component instead of a click button. */
+	component?: Component;
+	/** Extra props passed to `component` (e.g. picker config). */
+	componentProps?: Record<string, unknown>;
 }
 
 const headings: Record<string, ToolbarButton> = Object.fromEntries(
