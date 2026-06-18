@@ -30,6 +30,13 @@ const { t } = useI18n();
 </template>
 
 <style lang="scss" scoped>
+.toolbar-button {
+	--v-button-background-color: transparent;
+	--v-button-background-color-hover: var(--theme--background-normal);
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--theme--foreground);
+}
+
 .toolbar-button.active {
 	--v-button-background-color: var(--theme--form--field--input--border-color);
 }
