@@ -9,7 +9,8 @@ describe('toolbar groups', () => {
 		}
 	});
 
-	test('format and view groups are pinned', () => {
+	test('history, format and view groups are pinned', () => {
+		expect(toolbarGroups.find((g) => g.id === 'history')?.pinned).toBe(true);
 		expect(toolbarGroups.find((g) => g.id === 'format')?.pinned).toBe(true);
 		expect(toolbarGroups.find((g) => g.id === 'view')?.pinned).toBe(true);
 	});
