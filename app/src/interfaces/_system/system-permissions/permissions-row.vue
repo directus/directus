@@ -125,6 +125,11 @@ const emit = defineEmits<{
 	}
 
 	.null {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		inline-size: 1.125rem;
+		block-size: 1.125rem;
 		cursor: not-allowed;
 	}
 
