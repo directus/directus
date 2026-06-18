@@ -5,6 +5,7 @@ import { queryToParams } from '../utils/query-to-params.js';
 import { auth } from './commands/auth.js';
 import { pong } from './commands/pong.js';
 import type {
+	CloseEvent,
 	ConnectionState,
 	ReconnectState,
 	SubscribeOptions,

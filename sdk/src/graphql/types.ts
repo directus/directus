@@ -1,3 +1,5 @@
+type RequestCredentials = 'omit' | 'same-origin' | 'include';
+
 export interface GraphqlClient<_Schema> {
 	query<Output extends object = Record<string, any>>(
 		query: string,

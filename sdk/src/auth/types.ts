@@ -1,3 +1,5 @@
+type RequestCredentials = 'omit' | 'same-origin' | 'include';
+
 export type AuthenticationMode = 'json' | 'cookie' | 'session';
 
 export type LocalLoginPayload = { email: string; password: string };

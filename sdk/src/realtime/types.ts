@@ -27,6 +27,12 @@ export interface SubscribeOptions<Schema, Collection extends keyof Schema> {
 	uid?: string;
 }
 
+export interface CloseEvent extends Event {
+	readonly code: number;
+	readonly reason: string;
+	readonly wasClean: boolean;
+}
+
 export type WebSocketEvents = 'open' | 'close' | 'error' | 'message';
 export type RemoveEventHandler = () => void;
 export type WebSocketEventHandler = (this: WebSocketInterface, ev: Event | CloseEvent | any) => any;
