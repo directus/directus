@@ -1,39 +1,32 @@
-import { File, SettingsStorageAssetPreset } from '@directus/types';
+import type { File, SettingsStorageAssetPreset } from '@directus/types';
+import type { Editor } from '@tiptap/vue-3';
 import mime from 'mime/lite';
 import { Ref, ref, watch } from 'vue';
-import { i18n } from '@/lang';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';
 
-type ImageSelection = {
+export type ImageSelection = {
 	imageUrl: string;
 	alt: string;
 	lazy?: boolean;
-	width?: number | null;
-	height?: number | null;
+	width?: number;
+	height?: number;
 	transformationKey?: string | null;
 	previewUrl?: string;
-};
-
-type ImageButton = {
-	icon: string;
-	tooltip: string;
-	onAction: (buttonApi: any) => void;
-	onSetup: (buttonApi: any) => () => void;
 };
 
 type UsableImage = {
 	imageDrawerOpen: Ref<boolean>;
 	imageSelection: Ref<ImageSelection | null>;
+	openImageDrawer: () => void;
 	closeImageDrawer: () => void;
 	onImageSelect: (image: File) => void;
 	saveImage: () => void;
-	imageButton: ImageButton;
 };
 
-export default function useImage(
-	editor: Ref<any>,
+export function useImage(
+	editor: Ref<Editor>,
 	imageToken: Ref<string | undefined>,
 	options: {
 		storageAssetTransform: Ref<string>;
@@ -58,59 +51,48 @@ export default function useImage(
 		},
 	);
 
-	const imageButton = {
-		icon: 'image',
-		tooltip: i18n.global.t('wysiwyg_options.image'),
-		onAction: (buttonApi: any) => {
-			imageDrawerOpen.value = true;
+	return { imageDrawerOpen, imageSelection, openImageDrawer, closeImageDrawer, onImageSelect, saveImage };
 
-			if (buttonApi === true || buttonApi.isActive()) {
-				const node = editor.value.selection.getNode() as HTMLImageElement;
-				const imageUrl = node.getAttribute('src');
-				const imageUrlParams = imageUrl ? new URL(imageUrl).searchParams : undefined;
-				const alt = node.getAttribute('alt');
-				const lazy = node.getAttribute('loading') === 'lazy';
-				const width = Number(imageUrlParams?.get('width') || undefined) || undefined;
-				const height = Number(imageUrlParams?.get('height') || undefined) || undefined;
-				const transformationKey = imageUrlParams?.get('key') || undefined;
+	// Opens the drawer; when an image node is selected, prefill the form from its attributes for editing.
+	function openImageDrawer() {
+		imageDrawerOpen.value = true;
 
-				if (imageUrl === null || alt === null) {
-					return;
-				}
+		if (!editor.value.isActive('image')) {
+			imageSelection.value = null;
+			return;
+		}
 
-				if (transformationKey) {
-					selectedPreset.value = options.storageAssetPresets.value.find(
-						(preset: SettingsStorageAssetPreset) => preset.key === transformationKey,
-					);
-				}
+		const attrs = editor.value.getAttributes('image');
+		const imageUrl = attrs.src ?? null;
+		const alt = attrs.alt ?? null;
 
-				imageSelection.value = {
-					imageUrl,
-					alt,
-					lazy,
-					width: selectedPreset.value ? (selectedPreset.value.width ?? undefined) : width,
-					height: selectedPreset.value ? (selectedPreset.value.height ?? undefined) : height,
-					transformationKey,
-					previewUrl: replaceUrlAccessToken(imageUrl, imageToken.value),
-				};
-			} else {
-				imageSelection.value = null;
-			}
-		},
-		onSetup: (buttonApi: any) => {
-			const onImageNodeSelect = (eventApi: any) => {
-				buttonApi.setActive(eventApi.element.tagName === 'IMG');
-			};
+		if (imageUrl === null || alt === null) {
+			imageSelection.value = null;
+			return;
+		}
 
-			editor.value.on('NodeChange', onImageNodeSelect);
+		const imageUrlParams = safeUrlParams(imageUrl);
+		const lazy = attrs.loading === 'lazy';
+		const width = Number(imageUrlParams?.get('width') || undefined) || undefined;
+		const height = Number(imageUrlParams?.get('height') || undefined) || undefined;
+		const transformationKey = imageUrlParams?.get('key') || undefined;
 
-			return function () {
-				editor.value.off('NodeChange', onImageNodeSelect);
-			};
-		},
-	};
+		if (transformationKey) {
+			selectedPreset.value = options.storageAssetPresets.value.find(
+				(preset: SettingsStorageAssetPreset) => preset.key === transformationKey,
+			);
+		}
 
-	return { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton };
+		imageSelection.value = {
+			imageUrl,
+			alt,
+			lazy,
+			width: selectedPreset.value ? (selectedPreset.value.width ?? undefined) : width,
+			height: selectedPreset.value ? (selectedPreset.value.height ?? undefined) : height,
+			transformationKey,
+			previewUrl: replaceUrlAccessToken(imageUrl, imageToken.value),
+		};
+	}
 
 	function closeImageDrawer() {
 		imageSelection.value = null;
@@ -132,15 +114,13 @@ export default function useImage(
 			imageUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
 			alt: image.title!,
 			lazy: false,
-			width: image.width,
-			height: image.height,
+			width: image.width ?? undefined,
+			height: image.height ?? undefined,
 			previewUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
 		};
 	}
 
 	function saveImage() {
-		editor.value.fire('focus');
-
 		const img = imageSelection.value;
 		if (img === null) return;
 
@@ -165,10 +145,21 @@ export default function useImage(
 		}
 
 		const resizedImageUrl = addQueryToPath(newURL.toString().replace('file://', ''), queries);
-		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" ${img.lazy ? 'loading="lazy" ' : ''}/>`;
-		editor.value.selection.setContent(imageHtml);
-		editor.value.undoManager.add();
+
+		// `loading` is added by the extended Image node (extensions/image.ts), beyond SetImageOptions' base type
+		const attrs = { src: resizedImageUrl, alt: img.alt, loading: img.lazy ? 'lazy' : null };
+
+		editor.value.chain().focus().setImage(attrs).run();
+
 		closeImageDrawer();
+	}
+
+	function safeUrlParams(url: string): URLSearchParams | undefined {
+		try {
+			return new URL(url, 'file://').searchParams;
+		} catch {
+			return undefined;
+		}
 	}
 
 	function replaceUrlAccessToken(url: string, token: string | null | undefined): string {
