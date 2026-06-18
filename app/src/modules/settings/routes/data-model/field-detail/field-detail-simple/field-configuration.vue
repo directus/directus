@@ -120,7 +120,7 @@ const options = computed({
 						<VInput v-else v-model="defaultValue" class="monospace" placeholder="NULL" />
 					</div>
 
-					<div class="field half-right">
+					<div v-if="localType !== 'presentation'" class="field half-right">
 						<div class="label type-label">
 							{{ $t('required') }}
 						</div>

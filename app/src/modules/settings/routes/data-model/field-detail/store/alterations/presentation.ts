@@ -8,7 +8,13 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 		removeSchema(updates);
 		setTypeToAlias(updates);
 		setSpecialToNoData(updates);
+		removeRequiredAndReadonly(updates);
 	}
+}
+
+export function removeRequiredAndReadonly(updates: StateUpdates) {
+	set(updates, 'field.meta.required', false);
+	set(updates, 'field.meta.readonly', false);
 }
 
 export function removeSchema(updates: StateUpdates) {
