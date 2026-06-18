@@ -21,7 +21,6 @@ const { t } = useI18n();
 		class="toolbar-button"
 		:class="{ active: editor && button.isActive?.(editor, context) }"
 		:disabled="disabled || (editor ? button.disabled?.(editor) : true)"
-		ghost
 		small
 		icon
 		@click="editor && button.command(editor, context)"
@@ -31,8 +30,18 @@ const { t } = useI18n();
 </template>
 
 <style lang="scss" scoped>
-// `ghost` (transparent + dimmed-primary hover/active) comes from VButton; the active
-// state here marks an applied format, so it persists the dimmed-primary fill at rest.
+// Ghost styling scoped to the toolbar: transparent at rest, dimmed-primary fill on
+// hover/active. Overrides VButton's CSS variables rather than adding a shared variant.
+.toolbar-button {
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--primary-ondimmed);
+	--v-button-color-active: var(--primary-ondimmed);
+	--v-button-background-color: transparent;
+	--v-button-background-color-hover: var(--primary-dimmed);
+	--v-button-background-color-active: var(--primary-dimmed);
+}
+
+// The active state marks an applied format, so it persists the dimmed-primary fill at rest.
 .toolbar-button.active {
 	--v-button-background-color: var(--primary-dimmed);
 	--v-button-color: var(--primary-ondimmed);

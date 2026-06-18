@@ -142,13 +142,21 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 }
 
 .toolbar-overflow {
+	--overflow-rows: 2;
+	--overflow-gap: 0.125rem;
+	--overflow-padding: 0.25rem;
+	--overflow-button-size: 2rem;
+
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: 0.125rem;
-	padding: 0.25rem;
+	gap: var(--overflow-gap);
+	padding: var(--overflow-padding);
 	max-inline-size: var(--toolbar-width, 12rem);
-	max-block-size: calc(2 * 2rem + 0.125rem + 0.5rem); // 2 button rows + row gap + padding
+	max-block-size: calc(
+		var(--overflow-rows) * var(--overflow-button-size) + (var(--overflow-rows) - 1) * var(--overflow-gap) + 2 *
+			var(--overflow-padding)
+	);
 	overflow-y: auto;
 }
 </style>
