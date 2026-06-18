@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DIRECTUS_DOMAIN } from '@directus/constants';
+import { DIRECTUS_OIG_URL } from '@directus/constants';
 import { LICENSE_KEY } from '@directus/license';
 import { useCookies } from '@vueuse/integrations/useCookies';
 import { computed, ref, watch } from 'vue';
@@ -19,6 +19,7 @@ import SystemLicenseKey from '@/interfaces/_system/system-license-key/system-lic
 import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import { getDirectusUrlWithUtm } from '@/utils/directus-url';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 const model = defineModel<boolean>();
@@ -92,6 +93,7 @@ async function save() {
 
 function dismiss() {
 	cookies.set('license-onboarding-dismissed', 'true', {
+		path: '/',
 		expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10),
 	});
 
@@ -108,7 +110,13 @@ function dismiss() {
 					<I18nT keypath="license_onboarding_desc" tag="p">
 						<template #oig>
 							<a
-								:href="`https://${DIRECTUS_DOMAIN}/oig?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=license_onboarding_open_innovation_grant_link`"
+								:href="
+									getDirectusUrlWithUtm(
+										DIRECTUS_OIG_URL,
+										serverStore.info.version,
+										'license_onboarding_open_innovation_grant_link',
+									)
+								"
 								target="_blank"
 							>
 								{{ $t('open_innovation_grant') }}

@@ -49,7 +49,7 @@ org_name: Organization Name
 org_name_placeholder: Acme Inc.
 license_key_option: I have a license key
 license_key_option_desc: 'OIG, Team, or Enterprise plan'
-core_option: I'm using Core
+core_option: I'm using Core plan
 core_option_desc: Free, no key required
 remind_later: Remind Later
 remind_next_login: We'll remind you next time you log in
@@ -57,6 +57,7 @@ open_innovation_grant: Open Innovation Grant
 setup_project: Setup Project
 enter_license_key: Enter Your License Key
 license_valid: License Valid
+plan_prefix: 'Plan: {plan}'
 license_key: License Key
 no_license_key: Don't have a license key?
 get_license_key: Get License Key
@@ -1649,8 +1650,9 @@ license:
       'You have {daysLeft} in your grace period — until {date}. After that, Core tier resource limits will apply.
       {retrieveLicenseKey} or {upgrade} to increase your limits.'
     grace_days_left: '{days} day left | {days} days left'
-    retrieve_license_key: Retrieve license key
+    retrieve_license_key: Retrieve license key
     upgrade: Upgrade
+    oig_eligible: 'You might be eligible for our {oig}. Apply and get full access to Directus for free.'
   locked_status_notice: 'Your Directus instance is locked. Manage license or {contactSupport} to resolve.'
   pinned_status_notice:
     grace_period_title: 'Grace Period ({days}d left)'
@@ -1702,6 +1704,10 @@ directus_collection:
   directus_translations: Custom translations
   directus_versions: Content Versions for items
   directus_extensions: Configuration of extensions
+  directus_oauth_clients: Registered OAuth client applications
+  directus_oauth_codes: Authorization codes for OAuth flows
+  directus_oauth_consents: User consent grants for OAuth clients
+  directus_oauth_tokens: Access and refresh tokens for OAuth clients
 fields:
   directus_activity:
     item: Item Primary Key
@@ -2619,6 +2625,10 @@ interfaces:
       repeater
     interface_group: Interface Options
     display_group: Display Options
+    edit_mode: Edit Mode
+    edit_mode_drawer: Drawer
+    edit_mode_inline: Inline
+    confirm_remove: Confirm Item Removal
 
   slider:
     slider: Slider

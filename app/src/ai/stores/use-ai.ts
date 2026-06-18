@@ -442,6 +442,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	};
 
 	const reset = () => {
+		chat.stop();
 		chat.clearError();
 		chat.messages.splice(0, chat.messages.length);
 		storedMessages.value = [];
