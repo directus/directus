@@ -36,6 +36,15 @@ test('Mount component', () => {
 	expect(wrapper.html()).toMatchSnapshot();
 });
 
+test('applies the ghost class when the ghost prop is set', () => {
+	const wrapper = mount(VButton, {
+		props: { ghost: true },
+		global,
+	});
+
+	expect(wrapper.find('.v-button').classes()).toContain('ghost');
+});
+
 const splitMenuGlobal = () => ({
 	...global,
 	mocks: {

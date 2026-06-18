@@ -40,6 +40,8 @@ export interface VButtonProps {
 	query?: boolean;
 	/** Renders the button in a less important styling */
 	secondary?: boolean;
+	/** Renders a transparent button that fills with a dimmed primary on hover/active */
+	ghost?: boolean;
 	/** @deprecated The `kind` prop should be used instead */
 	warning?: boolean;
 	/** @deprecated The `kind` prop should be used instead */
@@ -143,7 +145,7 @@ async function onClick(event: MouseEvent) {
 </script>
 
 <template>
-	<div class="v-button" :class="{ secondary, warning, danger, 'full-width': fullWidth }">
+	<div class="v-button" :class="{ secondary, ghost, warning, danger, 'full-width': fullWidth }">
 		<slot name="prepend-outer" />
 
 		<component
@@ -277,6 +279,15 @@ async function onClick(event: MouseEvent) {
 	--v-button-background-color: var(--theme--background-normal);
 	--v-button-background-color-hover: var(--theme--background-accent);
 	--v-button-background-color-active: var(--theme--background-accent);
+}
+
+.ghost {
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--primary-ondimmed);
+	--v-button-color-active: var(--primary-ondimmed);
+	--v-button-background-color: transparent;
+	--v-button-background-color-hover: var(--primary-dimmed);
+	--v-button-background-color-active: var(--primary-dimmed);
 }
 
 .v-button {
