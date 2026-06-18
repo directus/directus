@@ -55,11 +55,15 @@ const selectedKeys = computed(() => props.toolbar.filter((key) => Boolean(toolba
 const container = useTemplateRef<HTMLElement>('container');
 const availableWidth = ref(Infinity);
 
+// open state of the "Show More" menu — closed on resize so it can't show a stale/mispositioned overflow set
+const overflowMenuActive = ref(false);
+
 useResizeObserver(container, ([entry]) => {
 	if (!entry) return;
 	// borderBoxSize includes padding; fall back to contentRect minus padding when unavailable
 	const box = entry.borderBoxSize?.[0];
 	availableWidth.value = box ? box.inlineSize : entry.contentRect.width;
+	overflowMenuActive.value = false;
 });
 
 const layout = computed(() =>
@@ -93,7 +97,9 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 			/>
 		</template>
 
-		<VMenu v-if="hasOverflow" placement="bottom-end" show-arrow>
+		<div v-if="hasOverflow" class="toolbar-separator" />
+
+		<VMenu v-if="hasOverflow" v-model="overflowMenuActive" placement="bottom-end" show-arrow>
 			<template #activator="{ toggle }">
 				<VButton v-tooltip="t('show_more')" class="toolbar-button toolbar-more" small icon @click="toggle">
 					<VIcon name="more_horiz" />

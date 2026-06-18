@@ -9,18 +9,18 @@ export interface ToolbarGroup {
 }
 
 export const toolbarGroups: ToolbarGroup[] = [
+	{ id: 'history', priority: 100, keys: ['undo', 'redo'] },
 	{
 		id: 'format',
-		priority: 100,
+		priority: 90,
 		pinned: true,
 		keys: ['bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript'],
 	},
-	{ id: 'heading', priority: 90, keys: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] },
-	{ id: 'list', priority: 80, keys: ['numlist', 'bullist', 'indent', 'outdent'] },
-	{ id: 'block', priority: 70, keys: ['blockquote', 'hr'] },
-	{ id: 'insert', priority: 60, keys: ['customLink', 'customImage', 'customMedia'] },
-	{ id: 'code', priority: 50, keys: ['code', 'customPre'] },
-	{ id: 'history', priority: 40, keys: ['undo', 'redo'] },
+	{ id: 'heading', priority: 80, keys: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] },
+	{ id: 'list', priority: 70, keys: ['numlist', 'bullist', 'indent', 'outdent'] },
+	{ id: 'block', priority: 60, keys: ['blockquote', 'hr'] },
+	{ id: 'insert', priority: 50, keys: ['customLink', 'customImage', 'customMedia'] },
+	{ id: 'code', priority: 40, keys: ['code', 'customPre'] },
 	{ id: 'clipboard', priority: 30, keys: ['cut', 'copy', 'paste', 'remove', 'selectall'] },
 	{ id: 'tools', priority: 20, keys: ['removeformat'] },
 	{ id: 'view', priority: 10, pinned: true, keys: ['fullscreen'] },
