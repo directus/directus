@@ -1026,13 +1026,16 @@ function useAutoSwitchToDraft() {
 		<template v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template" #title>
 			<VSkeletonLoader v-if="loading" class="title-loader" type="text" />
 
-			<h1 v-else class="type-title">
-				<RenderTemplate
-					:collection="collectionInfo.collection"
-					:item="templateData"
-					:template="collectionInfo.meta!.display_template"
-				/>
-			</h1>
+			<div v-else class="display-template-header">
+				<span class="collection-label">{{ collectionInfo.name }}</span>
+				<h1 class="type-title">
+					<RenderTemplate
+						:collection="collectionInfo.collection"
+						:item="templateData"
+						:template="collectionInfo.meta!.display_template"
+					/>
+				</h1>
+			</div>
 		</template>
 
 		<template v-if="shouldShowVersioning" #title-outer:append>
@@ -1399,6 +1402,18 @@ function useAutoSwitchToDraft() {
 
 :deep(.type-title) {
 	min-inline-size: 0;
+}
+
+.display-template-header {
+	.collection-label {
+		display: block;
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: var(--theme--foreground-subdued);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		margin-block-end: 0.25rem;
+	}
 }
 
 .content-split {
