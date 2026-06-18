@@ -7,18 +7,20 @@ import { createI18n } from 'vue-i18n';
 import { createMemoryHistory, createRouter } from 'vue-router';
 import Toolbar from './toolbar.vue';
 
-const i18n = createI18n({ legacy: false, locale: 'en-US', messages: { 'en-US': {} } });
-
-const router = createRouter({
-	history: createMemoryHistory(),
-	routes: [{ path: '/', component: { template: '<div />' } }],
-});
-
 let editor: Editor;
 
 function mountToolbar(toolbar: string[]) {
 	editor = new Editor({ extensions: [StarterKit], content: '<p>x</p>' });
-	return mount(Toolbar, { props: { editor, toolbar }, global: { plugins: [createPinia(), i18n, router] } });
+
+	const pinia = createPinia();
+	const i18n = createI18n({ legacy: false, locale: 'en-US', messages: { 'en-US': {} } });
+
+	const router = createRouter({
+		history: createMemoryHistory(),
+		routes: [{ path: '/', component: { template: '<div />' } }],
+	});
+
+	return mount(Toolbar, { props: { editor, toolbar }, global: { plugins: [pinia, i18n, router] } });
 }
 
 afterEach(() => editor?.destroy());
@@ -36,8 +38,11 @@ describe('Toolbar', () => {
 		expect(wrapper.find('.toolbar-more').exists()).toBe(false);
 	});
 
-	test('applies the ghost button class', () => {
-		const wrapper = mountToolbar(['bold']);
-		expect(wrapper.find('.toolbar-button').exists()).toBe(true);
+	test('renders one button per selected key when everything fits', () => {
+		const keys = ['bold', 'italic', 'numlist', 'fullscreen'];
+		const wrapper = mountToolbar(keys);
+		// no overflow at Infinity width => no "Show More" activator
+		expect(wrapper.find('.toolbar-more').exists()).toBe(false);
+		expect(wrapper.findAll('.toolbar-button')).toHaveLength(keys.length);
 	});
 });
