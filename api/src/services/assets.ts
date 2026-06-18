@@ -33,6 +33,7 @@ import { getStorage } from '../storage/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
+import { assertTransformsAllowed } from './assets/assert-transforms-allowed.js';
 import { NameDeduper } from './assets/name-deduper.js';
 import { getSharpInstance } from './files/lib/get-sharp-instance.js';
 import { FilesService } from './files.js';
@@ -339,6 +340,9 @@ export class AssetsService {
 				throw new IllegalAssetTransformationError({ invalidTransformations: ['width', 'height'] });
 			}
 
+			// Ensure transforms are within output limits
+			assertTransformsAllowed(width, height, transforms);
+
 			const { queue, process } = sharp.counters();
 
 			if (queue + process > (env['ASSETS_TRANSFORM_MAX_CONCURRENT'] as number)) {
@@ -386,9 +390,9 @@ export class AssetsService {
 
 				if ((error as Error)?.message?.includes('timeout')) {
 					throw new ServiceUnavailableError({ service: 'assets', reason: `Transformation timed out` });
-				} else {
-					throw error;
 				}
+
+				throw error;
 			}
 
 			const assetStream = () => storage.location(file.storage).read(assetFilename, { range, version });
