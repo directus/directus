@@ -114,7 +114,7 @@ function useSplitView() {
 	});
 
 	const { width } = useWindowSize();
-	const splitViewAvailable = computed(() => width.value > 960 && languageOptions.value.length > 1);
+	const splitViewAvailable = computed(() => width.value > 720 && languageOptions.value.length > 1);
 	const splitViewEnabled = computed(() => splitViewAvailable.value && splitView.value);
 
 	return {
