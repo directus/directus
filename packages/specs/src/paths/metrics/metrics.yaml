@@ -4,7 +4,7 @@ get:
     Returns Prometheus-format metrics for monitoring your Directus instance.
 
     Requires either an admin access token (via `Auth` or `KeyAuth`) or a dedicated
-    metrics token passed as `Authorization: Metrics <token>`, where the token value
+    metrics token passed as `Authorization: Metrics {token}`, where the token value
     is one of the entries in the `METRICS_TOKENS` environment variable.
 
     This endpoint is only available when `METRICS_ENABLED=true`.
