@@ -9,7 +9,7 @@ export interface ToolbarGroup {
 }
 
 export const toolbarGroups: ToolbarGroup[] = [
-	{ id: 'history', priority: 100, keys: ['undo', 'redo'] },
+	{ id: 'history', priority: 100, pinned: true, keys: ['undo', 'redo'] },
 	{
 		id: 'format',
 		priority: 90,
