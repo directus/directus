@@ -227,6 +227,16 @@ function emitValue(event: InputEvent) {
 	}
 
 	if (props.type === 'number') {
+		// Keep float values as strings to preserve trailing zeros during editing
+		if (props.float === true) {
+			value = value.replace(',', '.');
+			if (props.modelValue !== value) {
+				emit('update:modelValue', value);
+			}
+
+			return;
+		}
+
 		const parsedNumber = Number(value);
 
 		if (props.integer === true && !Number.isInteger(parsedNumber) && Number.isNaN(parsedNumber) === false) {
