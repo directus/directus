@@ -94,7 +94,7 @@ function useOverlayFocusTrap() {
 
 	const focusTrap = useFocusTrap(overlayEl, {
 		escapeDeactivates: false,
-		initialFocus: false,
+		initialFocus: true,
 		setReturnFocus: () => (returnFocusTarget && document.contains(returnFocusTarget) ? returnFocusTarget : false),
 	});
 
