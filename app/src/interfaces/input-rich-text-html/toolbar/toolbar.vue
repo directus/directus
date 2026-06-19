@@ -115,6 +115,7 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 						:editor="editor"
 						:context="context"
 						:disabled="disabled"
+						tooltip-placement="bottom"
 					/>
 				</template>
 			</div>

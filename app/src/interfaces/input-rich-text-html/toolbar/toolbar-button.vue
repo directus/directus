@@ -1,23 +1,27 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { ToolbarButton, ToolbarContext } from './buttons';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 
-defineProps<{
+const props = defineProps<{
 	button: ToolbarButton;
 	editor: Editor | undefined;
 	context: ToolbarContext;
 	disabled?: boolean;
+	tooltipPlacement?: 'top' | 'bottom' | 'left' | 'right';
 }>();
 
 const { t } = useI18n();
+
+const placement = computed(() => props.tooltipPlacement ?? 'top');
 </script>
 
 <template>
 	<VButton
-		v-tooltip="t(button.label)"
+		v-tooltip:[placement]="t(button.label)"
 		class="toolbar-button"
 		:class="{ active: editor && button.isActive?.(editor, context) }"
 		:disabled="disabled || (editor ? button.disabled?.(editor) : true)"
