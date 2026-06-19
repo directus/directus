@@ -14,6 +14,11 @@ describe('SchemaHelperMSSQL', () => {
 		return { helper, mockRaw };
 	}
 
+	test('castToText returns the MSSQL text cast template', () => {
+		const { helper } = createHelper();
+		expect(helper.castToText()).toBe('CAST(?? AS NVARCHAR(MAX))');
+	});
+
 	test('createIndex creates a standard index without options when edition check succeeds', async () => {
 		const { helper, mockRaw } = createHelper();
 		mockRaw.mockResolvedValueOnce([{ edition: 'Standard Edition' }]);

@@ -31,6 +31,10 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		return uuid.toUpperCase();
 	}
 
+	override castToText(): string {
+		return 'CAST(?? AS NVARCHAR(MAX))';
+	}
+
 	override async getDatabaseSize(): Promise<number | null> {
 		try {
 			const result = await this.knex.raw('SELECT SUM(size) * 8192 AS size FROM sys.database_files;');

@@ -107,7 +107,7 @@ export function applyOperator(
 	}
 
 	// Is processed through Knex.Raw, so should be safe to string-inject into these where queries
-	const selectionRaw = getColumn(knex, table!, column!, false, schema, { originalCollectionName }) as any;
+	let selectionRaw = getColumn(knex, table!, column!, false, schema, { originalCollectionName }) as any;
 
 	// Knex supports "raw" in the columnName parameter, but isn't typed as such. Too bad..
 	// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated
@@ -186,6 +186,13 @@ export function applyOperator(
 
 		if (['integer', 'float', 'decimal'].includes(type)) {
 			compareValue = castToNumber(compareValue);
+		}
+
+		// JSON fields can only be matched with text-based operators (e.g. `_icontains`) once cast
+		// to a comparable text type. Casting the column once here keeps the operator translation
+		// dialect-agnostic and free of per-operator branching.
+		if (type === 'json') {
+			selectionRaw = knex.raw(helpers.schema.castToText(), [selectionRaw]);
 		}
 	}
 

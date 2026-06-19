@@ -46,7 +46,7 @@ export function getFilterOperatorsForType(
 			return ['eq', 'neq', 'null', 'nnull', 'in', 'nin'];
 
 		case 'json':
-			return ['null', 'nnull', 'json'];
+			return ['contains', 'ncontains', 'icontains', 'null', 'nnull', 'json'];
 
 		case 'boolean':
 			return ['eq', 'neq', 'null', 'nnull'];

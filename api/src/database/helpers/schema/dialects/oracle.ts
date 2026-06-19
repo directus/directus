@@ -40,6 +40,10 @@ export class SchemaHelperOracle extends SchemaHelper {
 		return 'CAST(?? AS VARCHAR2(255))';
 	}
 
+	override castToText(): string {
+		return 'TO_CHAR(??)';
+	}
+
 	override preRelationChange(relation: Partial<Relation>): void {
 		if (relation.collection === relation.related_collection) {
 			// Constraints are not allowed on self referencing relationships

@@ -177,6 +177,15 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return 'CAST(?? AS CHAR(255))';
 	}
 
+	/**
+	 * Returns a SQL fragment (with a single `??` identifier placeholder) that casts a column to a
+	 * comparable text type for the current dialect. Used to enable text-based filter operators
+	 * (e.g. `_contains`/`_icontains`) on JSON columns.
+	 */
+	castToText(): string {
+		return 'CAST(?? AS text)';
+	}
+
 	formatUUID(uuid: string): string {
 		return uuid; // no-op by default
 	}

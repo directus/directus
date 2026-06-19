@@ -145,6 +145,56 @@ const getSuccessGroups = (localCollectionSuppliers: string): Record<string, Succ
 			expectedNames: ['Beta'],
 		},
 	],
+	'Standalone string operators (matched against the whole JSON value)': [
+		{
+			// Applied directly on the JSON field (no `_json` path), the operator matches against the
+			// entire serialized JSON value. 'BrandX' is the brand of Alpha and Gamma.
+			description: '_contains: matches a substring anywhere in the serialized JSON value',
+			filter: { metadata: { _contains: 'BrandX' } },
+			expectedLength: 2,
+			expectedNames: ['Alpha', 'Gamma'],
+		},
+		{
+			description: '_icontains: case-insensitive substring match against the whole JSON value',
+			filter: { metadata: { _icontains: 'brandx' } },
+			expectedLength: 2,
+			expectedNames: ['Alpha', 'Gamma'],
+		},
+		{
+			// Beta (BrandY), Delta (BrandZ) and Epsilon (no brand) do not contain 'BrandX'.
+			description: '_ncontains: excludes items whose serialized JSON value contains the substring',
+			filter: { metadata: { _ncontains: 'BrandX' } },
+			expectedLength: 3,
+			expectedNames: ['Beta', 'Delta', 'Epsilon'],
+		},
+	],
+	'String operators on a specific nested object within _json': [
+		{
+			// `settings` is a nested object ({ theme: 'dark' | 'light' | 'auto' }). Targeting the
+			// specific nested field (as opposed to the entire metadata value) matches the operator
+			// against the serialized nested object text. 'dark' is the theme of Alpha and Gamma.
+			description: '_contains: matches a substring within a specific nested object field',
+			filter: { metadata: { _json: { settings: { _contains: 'dark' } } } },
+			expectedLength: 2,
+			expectedNames: ['Alpha', 'Gamma'],
+		},
+		{
+			description: '_icontains: case-insensitive substring match within a specific nested object field',
+			filter: { metadata: { _json: { settings: { _icontains: 'DARK' } } } },
+			expectedLength: 2,
+			expectedNames: ['Alpha', 'Gamma'],
+		},
+		{
+			// Mirrors combining an equality on one path with a substring match on a different
+			// (nested object) path: color='red' (Alpha) AND settings contains 'dark' (Alpha, Gamma).
+			description: '_and: combines _eq on one path with _contains on a nested object path',
+			filter: {
+				metadata: { _json: { _and: [{ color: { _eq: 'red' } }, { settings: { _contains: 'dark' } }] } },
+			},
+			expectedLength: 1,
+			expectedNames: ['Alpha'],
+		},
+	],
 	'Numeric operators': [
 		{
 			description: '_gt: filters to items with value greater than threshold',
