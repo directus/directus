@@ -101,7 +101,14 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 
 		<VMenu v-if="hasOverflow" v-model="overflowMenuActive" placement="bottom-end" show-arrow>
 			<template #activator="{ toggle }">
-				<VButton v-tooltip="t('show_more')" class="toolbar-button toolbar-more" small icon @click="toggle">
+				<VButton
+					v-tooltip="t('show_more')"
+					class="toolbar-button toolbar-more"
+					:class="{ active: overflowMenuActive }"
+					small
+					icon
+					@click="toggle"
+				>
 					<VIcon name="more_horiz" />
 				</VButton>
 			</template>
@@ -140,6 +147,22 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 	block-size: 1.25rem;
 	margin-inline: 0.125rem;
 	border-inline-end: var(--theme--border-width) solid var(--theme--border-color-accent);
+}
+
+// Match the ghost styling of the inner toolbar buttons (scoped to toolbar-button.vue, so replicated here).
+.toolbar-more {
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--primary-ondimmed);
+	--v-button-color-active: var(--primary-ondimmed);
+	--v-button-background-color: transparent;
+	--v-button-background-color-hover: var(--primary-dimmed);
+	--v-button-background-color-active: var(--primary-dimmed);
+}
+
+// Open menu = active: persist the dimmed-primary fill like an applied format button.
+.toolbar-more.active {
+	--v-button-background-color: var(--primary-dimmed);
+	--v-button-color: var(--primary-ondimmed);
 }
 
 .toolbar-overflow {
