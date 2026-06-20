@@ -267,6 +267,100 @@ for (const quantifier of ['_some', '_none']) {
 	});
 }
 
+test(`filtering nested o2m relations with _some on the same related item`, async () => {
+	const schema = new SchemaBuilder()
+		.collection('meetings', (c) => {
+			c.field('id').id();
+			c.field('agenda_items').o2m('agenda_items', 'meeting_id');
+		})
+		.collection('agenda_items', (c) => {
+			c.field('id').id();
+			c.field('topic_matches').o2m('topic_matches', 'agenda_item_id');
+		})
+		.collection('topic_matches', (c) => {
+			c.field('id').id();
+			c.field('topic_id').string();
+		})
+		.build();
+
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applyFilter(
+		db,
+		schema,
+		queryBuilder,
+		{
+			agenda_items: {
+				_and: [
+					{
+						topic_matches: {
+							_some: {
+								topic_id: {
+									_eq: 'topic1',
+								},
+							},
+						},
+					},
+					{
+						topic_matches: {
+							_some: {
+								topic_id: {
+									_eq: 'topic2',
+								},
+							},
+						},
+					},
+				],
+			},
+		},
+		'meetings',
+		{},
+		[],
+		[],
+	);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(
+		`where "meetings"."id" in (select "agenda_items"."meeting_id" as "meeting_id" from "agenda_items"`,
+	);
+
+	expect(rawQuery.sql.match(/"agenda_items"\."id" in \(select "topic_matches"\."agenda_item_id"/g)).toHaveLength(2);
+	expect(rawQuery.bindings).toEqual(['topic1', 'topic2']);
+});
+
+test(`rejecting _some on a scalar field`, async () => {
+	const schema = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('title').string();
+		})
+		.build();
+
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	expect(() =>
+		applyFilter(
+			db,
+			schema,
+			queryBuilder,
+			{
+				title: {
+					_some: {
+						_eq: 'Test',
+					},
+				},
+			},
+			'articles',
+			{},
+			[],
+			[],
+		),
+	).toThrowError('"_some" can only be used with top level relational alias field');
+});
+
 test(`filtering a2o relation`, async () => {
 	const schema = new SchemaBuilder()
 		.collection('article', (c) => {
