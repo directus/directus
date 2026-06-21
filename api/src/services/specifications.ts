@@ -102,6 +102,14 @@ class OASSpecsService implements SpecificationSubService {
 		const paths = await this.generatePaths(schemaForSpec, permissions, publicPermissions, tags);
 		const components = await this.generateComponents(schemaForSpec, tags);
 
+		// Ensure all schemas referenced by the included paths are present in components.
+		// The second call resolves transitive dependencies introduced by schemas pulled
+		// in during the first pass.
+		if (components?.schemas) {
+			this.resolveSchemaRefs(paths, components.schemas);
+			this.resolveSchemaRefs(components.schemas, components.schemas);
+		}
+
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
 		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
 
@@ -447,6 +455,10 @@ class OASSpecsService implements SpecificationSubService {
 				components.schemas[tag.name] = schemaComponent;
 			}
 		}
+
+		// Resolve transitive schema-to-schema dependencies (e.g. Files → Folders/Users when
+		// the public role has no access to those collections).
+		this.resolveSchemaRefs(components.schemas, components.schemas);
 
 		components.schemas = Object.fromEntries(Object.entries(components.schemas).sort(([a], [b]) => a.localeCompare(b)));
 
