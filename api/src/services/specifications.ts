@@ -310,11 +310,7 @@ class OASSpecsService implements SpecificationSubService {
 										},
 									},
 								},
-								(obj, src, key) => {
-									if (key === 'security') return src;
-									if (Array.isArray(obj)) return obj.concat(src);
-									return undefined;
-								},
+								this.mergePathItemCustomizer,
 							);
 						}
 
@@ -357,10 +353,7 @@ class OASSpecsService implements SpecificationSubService {
 										},
 									},
 								},
-								(obj, src) => {
-									if (Array.isArray(obj)) return obj.concat(src);
-									return undefined;
-								},
+								this.mergePathItemCustomizer,
 							);
 						}
 					}
@@ -458,6 +451,33 @@ class OASSpecsService implements SpecificationSubService {
 		components.schemas = Object.fromEntries(Object.entries(components.schemas).sort(([a], [b]) => a.localeCompare(b)));
 
 		return components;
+	}
+
+	private resolveSchemaRefs(source: unknown, schemas: NonNullable<OpenAPIObject['components']>['schemas']): void {
+		const staticSchemas = staticSpec.components?.schemas ?? {};
+		let changed = true;
+
+		while (changed) {
+			changed = false;
+
+			const refs: string[] = JSON.stringify(source).match(/"\$ref":"#\/components\/schemas\/([^"]+)"/g) ?? [];
+
+			for (const ref of refs) {
+				const name = ref.slice('"$ref":"#/components/schemas/'.length, -1);
+
+				if (!(name in schemas!) && name in staticSchemas) {
+					schemas![name] = cloneDeep(staticSchemas[name]!);
+					changed = true;
+				}
+			}
+		}
+	}
+
+	private mergePathItemCustomizer(obj: unknown, src: unknown, key: string): unknown {
+		if (key === 'security') return src;
+		if (src !== null && typeof src === 'object' && !Array.isArray(src) && '$ref' in src) return src;
+		if (Array.isArray(obj)) return obj.concat(src);
+		return undefined;
 	}
 
 	private filterCollectionFromParams(
