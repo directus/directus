@@ -27,6 +27,7 @@ import getDatabase from '../database/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
 
@@ -89,8 +90,16 @@ class OASSpecsService implements SpecificationSubService {
 			);
 		}
 
+		const publicAccountability = createDefaultAccountability();
+		const publicPolicies = await fetchPolicies(publicAccountability, { schema: this.schema, knex: this.knex });
+
+		const publicPermissions = await fetchPermissions(
+			{ policies: publicPolicies, accountability: publicAccountability },
+			{ schema: this.schema, knex: this.knex },
+		);
+
 		const tags = await this.generateTags(schemaForSpec);
-		const paths = await this.generatePaths(schemaForSpec, permissions, tags);
+		const paths = await this.generatePaths(schemaForSpec, permissions, publicPermissions, tags);
 		const components = await this.generateComponents(schemaForSpec, tags);
 
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
@@ -178,6 +187,7 @@ class OASSpecsService implements SpecificationSubService {
 	private async generatePaths(
 		schema: SchemaOverview,
 		permissions: Permission[],
+		publicPermissions: Permission[],
 		tags: OpenAPIObject['tags'],
 	): Promise<OpenAPIObject['paths']> {
 		const paths: OpenAPIObject['paths'] = {};
@@ -234,6 +244,11 @@ class OASSpecsService implements SpecificationSubService {
 								permission.collection === collection && permission.action === this.getActionForMethod(method),
 						);
 
+					const isPubliclyAccessible = !!publicPermissions.find(
+						(permission) =>
+							permission.collection === collection && permission.action === this.getActionForMethod(method),
+					);
+
 					if (hasPermission) {
 						if (!paths[`/items/${collection}`]) paths[`/items/${collection}`] = {};
 						if (!paths[`/items/${collection}/{id}`]) paths[`/items/${collection}/{id}`] = {};
@@ -243,6 +258,7 @@ class OASSpecsService implements SpecificationSubService {
 								cloneDeep(listBase[method]),
 								{
 									description: listBase[method].description.replace('item', collection + ' item'),
+									...(isPubliclyAccessible && { security: [] }),
 									tags: [tag.name],
 									parameters: 'parameters' in listBase ? this.filterCollectionFromParams(listBase.parameters) : [],
 									operationId: `${this.getActionForMethod(method)}${tag.name}`,
@@ -294,7 +310,8 @@ class OASSpecsService implements SpecificationSubService {
 										},
 									},
 								},
-								(obj, src) => {
+								(obj, src, key) => {
+									if (key === 'security') return src;
 									if (Array.isArray(obj)) return obj.concat(src);
 									return undefined;
 								},
@@ -306,6 +323,7 @@ class OASSpecsService implements SpecificationSubService {
 								cloneDeep(detailBase[method]),
 								{
 									description: detailBase[method].description.replace('item', collection + ' item'),
+									...(isPubliclyAccessible && { security: [] }),
 									tags: [tag.name],
 									operationId: `${this.getActionForMethod(method)}Single${tag.name}`,
 									parameters: 'parameters' in detailBase ? this.filterCollectionFromParams(detailBase.parameters) : [],

@@ -12,6 +12,14 @@ vi.mock('@directus/env', async () => {
 	return mockEnv();
 });
 
+vi.mock('../permissions/lib/fetch-policies.js', () => ({
+	fetchPolicies: vi.fn().mockResolvedValue([]),
+}));
+
+vi.mock('../permissions/lib/fetch-permissions.js', () => ({
+	fetchPermissions: vi.fn().mockResolvedValue([]),
+}));
+
 vi.mock('@directus/specs', () => ({
 	spec: {
 		openapi: '3.0.1',
