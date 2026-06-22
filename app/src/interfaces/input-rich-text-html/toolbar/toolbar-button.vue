@@ -28,6 +28,7 @@ const placement = computed(() => props.tooltipPlacement ?? 'top');
 		v-bind="button.componentProps"
 	/>
 	<VButton
+		v-else
 		v-tooltip:[placement]="t(button.label)"
 		class="toolbar-button"
 		:class="{ active: editor && button.isActive?.(editor, context) }"
@@ -41,15 +42,10 @@ const placement = computed(() => props.tooltipPlacement ?? 'top');
 </template>
 
 <style lang="scss" scoped>
-// Ghost styling scoped to the toolbar: transparent at rest, dimmed-primary fill on
-// hover/active. Overrides VButton's CSS variables rather than adding a shared variant.
+@use './ghost-button' as *;
+
 .toolbar-button {
-	--v-button-color: var(--theme--foreground);
-	--v-button-color-hover: var(--primary-ondimmed);
-	--v-button-color-active: var(--primary-ondimmed);
-	--v-button-background-color: transparent;
-	--v-button-background-color-hover: var(--primary-dimmed);
-	--v-button-background-color-active: var(--primary-dimmed);
+	@include ghost-toolbar-button;
 }
 
 // The active state marks an applied format, so it persists the dimmed-primary fill at rest.

@@ -11,6 +11,8 @@ export interface LayoutMeasurements {
 	moreWidth: number;
 	separatorWidth: number;
 	minItems: number;
+	/** Per-key width overrides for non-square buttons (e.g. labeled dropdowns); defaults to buttonWidth. */
+	keyWidths?: Record<string, number>;
 }
 
 export interface ToolbarLayout {
@@ -55,7 +57,13 @@ function measure(groups: { keys: string[] }[], hasOverflow: boolean, m: LayoutMe
 	const moreButtons = hasOverflow ? 1 : 0;
 	const children = items + separators + moreButtons;
 	if (children === 0) return 0;
-	const widths = items * m.buttonWidth + separators * m.separatorWidth + moreButtons * m.moreWidth;
+
+	const buttonsWidth = groups.reduce(
+		(sum, g) => sum + g.keys.reduce((w, k) => w + (m.keyWidths?.[k] ?? m.buttonWidth), 0),
+		0,
+	);
+
+	const widths = buttonsWidth + separators * m.separatorWidth + moreButtons * m.moreWidth;
 	return widths + (children - 1) * m.gap;
 }
 

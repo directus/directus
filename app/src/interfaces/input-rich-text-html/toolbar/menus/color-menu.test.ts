@@ -2,7 +2,7 @@ import { Editor } from '@tiptap/vue-3';
 import { mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { createI18n } from 'vue-i18n';
-import { editorExtensions } from '../../editor-extensions';
+import { editorExtensions } from '../../extensions';
 import ColorMenu from './color-menu.vue';
 import { readStyle } from './text-style';
 

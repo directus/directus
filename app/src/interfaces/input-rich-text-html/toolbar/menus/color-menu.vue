@@ -54,6 +54,12 @@ defineExpose({ apply });
 </template>
 
 <style lang="scss" scoped>
+@use '../ghost-button' as *;
+
+.toolbar-button {
+	@include ghost-toolbar-button;
+}
+
 .toolbar-button.active {
 	--v-button-background-color: var(--theme--form--field--input--border-color);
 }

@@ -1,6 +1,6 @@
 import { Editor } from '@tiptap/vue-3';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
-import { editorExtensions } from '../../editor-extensions';
+import { editorExtensions } from '../../extensions';
 import { applyStyle, readStyle } from './text-style';
 
 let editor: Editor;

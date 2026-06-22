@@ -18,6 +18,7 @@ export const toolbarGroups: ToolbarGroup[] = [
 	},
 	{ id: 'heading', priority: 80, keys: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] },
 	{ id: 'list', priority: 70, keys: ['numlist', 'bullist', 'indent', 'outdent'] },
+	{ id: 'style', priority: 70, pinned: true, keys: ['fontfamily', 'fontsize', 'forecolor', 'backcolor'] },
 	{ id: 'block', priority: 60, keys: ['blockquote', 'hr'] },
 	{ id: 'insert', priority: 50, keys: ['customLink', 'customImage', 'customMedia'] },
 	{ id: 'code', priority: 40, keys: ['code', 'customPre'] },

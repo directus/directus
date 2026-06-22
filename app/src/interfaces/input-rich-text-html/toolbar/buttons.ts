@@ -31,6 +31,8 @@ export interface ToolbarButton {
 	component?: Component;
 	/** Extra props passed to `component` (e.g. picker config). */
 	componentProps?: Record<string, unknown>;
+	/** Layout width in px; defaults to the square icon-button width. Set for labeled dropdowns. */
+	width?: number;
 }
 
 const headings: Record<string, ToolbarButton> = Object.fromEntries(
@@ -45,22 +47,35 @@ const headings: Record<string, ToolbarButton> = Object.fromEntries(
 	]),
 );
 
+// Mirrors TinyMCE's default `font_family_formats` so existing content maps to the same names.
 const FONT_FAMILIES: { label: string; value: string | null }[] = [
-	{ label: 'wysiwyg_options.default', value: null },
+	{ label: 'Andale Mono', value: "'Andale Mono', monospace" },
 	{ label: 'Arial', value: 'Arial, Helvetica, sans-serif' },
-	{ label: 'Georgia', value: 'Georgia, serif' },
-	{ label: 'Courier New', value: '"Courier New", Courier, monospace' },
-	{ label: 'Times New Roman', value: '"Times New Roman", Times, serif' },
+	{ label: 'Arial Black', value: "'Arial Black', sans-serif" },
+	{ label: 'Book Antiqua', value: "'Book Antiqua', Palatino, serif" },
+	{ label: 'Comic Sans MS', value: "'Comic Sans MS', sans-serif" },
+	{ label: 'Courier New', value: "'Courier New', Courier, monospace" },
+	{ label: 'Georgia', value: 'Georgia, Palatino, serif' },
+	{ label: 'Helvetica', value: 'Helvetica, Arial, sans-serif' },
+	{ label: 'Impact', value: 'Impact, sans-serif' },
+	{ label: 'Symbol', value: 'Symbol' },
+	{ label: 'Tahoma', value: 'Tahoma, Arial, Helvetica, sans-serif' },
+	{ label: 'Terminal', value: 'Terminal, Monaco, monospace' },
+	{ label: 'Times New Roman', value: "'Times New Roman', Times, serif" },
+	{ label: 'Trebuchet MS', value: "'Trebuchet MS', Geneva, sans-serif" },
 	{ label: 'Verdana', value: 'Verdana, Geneva, sans-serif' },
-	{ label: 'Tahoma', value: 'Tahoma, Geneva, sans-serif' },
-	{ label: 'Trebuchet MS', value: '"Trebuchet MS", Helvetica, sans-serif' },
-	{ label: 'Comic Sans MS', value: '"Comic Sans MS", cursive' },
+	{ label: 'Webdings', value: 'Webdings' },
+	{ label: 'Wingdings', value: "'Wingdings', 'Zapf Dingbats'" },
 ];
 
-const FONT_SIZES: { label: string; value: string | null }[] = [
-	{ label: 'wysiwyg_options.default', value: null },
-	...[12, 14, 16, 18, 24, 30, 36, 48].map((px) => ({ label: String(px), value: `${px}px` })),
-];
+const FONT_SIZES: { label: string; value: string | null }[] = [12, 14, 16, 18, 24, 30, 36, 48].map((px) => ({
+	label: String(px),
+	value: `${px}px`,
+}));
+
+// Labeled dropdowns are wider than icon buttons; the layout needs the real width to avoid clipping.
+const FONT_FAMILY_WIDTH = 132;
+const FONT_SIZE_WIDTH = 80;
 
 /**
  * Toolbar registry keyed by the toolbar option values stored in field meta.
@@ -84,22 +99,28 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		icon: 'font_download',
 		label: 'wysiwyg_options.fontselect',
 		component: StyleListMenu,
+		width: FONT_FAMILY_WIDTH,
 		componentProps: {
-			icon: 'font_download',
 			label: 'wysiwyg_options.fontselect',
 			attr: 'fontFamily',
 			items: FONT_FAMILIES,
+			width: FONT_FAMILY_WIDTH,
+			previewFont: true,
+			defaultLabel: 'Inter, system-ui',
 		},
 	},
 	fontsize: {
 		icon: 'format_size',
 		label: 'wysiwyg_options.fontsizeselect',
 		component: StyleListMenu,
+		width: FONT_SIZE_WIDTH,
 		componentProps: {
-			icon: 'format_size',
 			label: 'wysiwyg_options.fontsizeselect',
 			attr: 'fontSize',
 			items: FONT_SIZES,
+			width: FONT_SIZE_WIDTH,
+			defaultLabel: '24',
+			defaultValue: '24px',
 		},
 	},
 	forecolor: {

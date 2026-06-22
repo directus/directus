@@ -40,6 +40,13 @@ const context: ToolbarContext = {
 	},
 };
 
+// labeled dropdowns (font family/size) declare their own width; the rest are 2rem squares
+const keyWidths = Object.fromEntries(
+	Object.entries(toolbarButtons)
+		.filter(([, button]) => button.width !== undefined)
+		.map(([key, button]) => [key, button.width!]),
+);
+
 // small icon button = 2rem square; separator ~1px rule + side margins; keep in sync with CSS below
 const MEASUREMENTS: LayoutMeasurements = {
 	buttonWidth: 32,
@@ -47,6 +54,7 @@ const MEASUREMENTS: LayoutMeasurements = {
 	moreWidth: 32,
 	separatorWidth: 9,
 	minItems: 5,
+	keyWidths,
 };
 
 // keys present in the field config AND in the registry, preserving field order for the `other` bucket
@@ -131,6 +139,8 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 </template>
 
 <style lang="scss" scoped>
+@use './ghost-button' as *;
+
 .toolbar {
 	display: flex;
 	align-items: center;
@@ -149,14 +159,8 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 	border-inline-end: var(--theme--border-width) solid var(--theme--border-color-accent);
 }
 
-// Match the ghost styling of the inner toolbar buttons (scoped to toolbar-button.vue, so replicated here).
 .toolbar-more {
-	--v-button-color: var(--theme--foreground);
-	--v-button-color-hover: var(--primary-ondimmed);
-	--v-button-color-active: var(--primary-ondimmed);
-	--v-button-background-color: transparent;
-	--v-button-background-color-hover: var(--primary-dimmed);
-	--v-button-background-color-active: var(--primary-dimmed);
+	@include ghost-toolbar-button;
 }
 
 // Open menu = active: persist the dimmed-primary fill like an applied format button.
@@ -166,20 +170,18 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 }
 
 .toolbar-overflow {
-	--overflow-rows: 2;
-	--overflow-gap: 0.125rem;
-	--overflow-padding: 0.25rem;
-	--overflow-button-size: 2rem;
+	--ov-rows: 2;
+	--ov-gap: 0.125rem;
+	--ov-pad: 0.25rem;
+	--ov-btn: 2rem;
 
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: var(--overflow-gap);
-	padding: var(--overflow-padding);
+	gap: var(--ov-gap);
+	padding: var(--ov-pad);
 	max-inline-size: var(--toolbar-width, 12rem);
-	max-block-size: calc(
-		var(--overflow-rows) * var(--overflow-button-size) + (var(--overflow-rows) - 1) * var(--overflow-gap) + 2 * var(--overflow-padding)
-	);
+	max-block-size: calc(var(--ov-rows) * var(--ov-btn) + (var(--ov-rows) - 1) * var(--ov-gap) + 2 * var(--ov-pad));
 	overflow-y: auto;
 }
 </style>

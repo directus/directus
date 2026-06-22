@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { applyStyle, readStyle, type StyleAttr } from './text-style';
 import VButton from '@/components/v-button.vue';
@@ -15,14 +16,24 @@ interface Item {
 	value: string | null;
 }
 
-const props = defineProps<{
-	editor: Editor | undefined;
-	icon: string;
-	label: string;
-	attr: Extract<StyleAttr, 'fontFamily' | 'fontSize'>;
-	items: Item[];
-	disabled?: boolean;
-}>();
+const props = withDefaults(
+	defineProps<{
+		editor: Editor | undefined;
+		label: string;
+		attr: Extract<StyleAttr, 'fontFamily' | 'fontSize'>;
+		items: Item[];
+		/** Activator width in px; keep in sync with the layout width hint in buttons.ts. */
+		width?: number;
+		/** Render each label (and the activator) in its own font — for the font-family picker. */
+		previewFont?: boolean;
+		/** Activator text when nothing is applied — the editor's effective default (e.g. the base font/size). */
+		defaultLabel?: string;
+		/** Item value to highlight as active while nothing is applied — the editor's effective default. */
+		defaultValue?: string;
+		disabled?: boolean;
+	}>(),
+	{ width: 132, previewFont: false, defaultLabel: undefined, defaultValue: undefined },
+);
 
 const { t } = useI18n();
 
@@ -32,13 +43,27 @@ function current(): string | null {
 }
 
 function isActive(item: Item): boolean {
-	return item.value !== null && current() === item.value;
+	const value = current();
+	// Nothing applied → highlight the default item, so the menu reflects the editor's effective value.
+	if (value === null) return props.defaultValue !== undefined && item.value === props.defaultValue;
+	return item.value !== null && value === item.value;
 }
 
 /** Item labels that are i18n keys (the "Default" entry) are translated; literal names shown as-is. */
 function displayLabel(item: Item): string {
 	return item.label.startsWith('wysiwyg_options.') ? t(item.label) : item.label;
 }
+
+/** The label shown on the activator: the matched item, the raw value as a fallback, or "Default". */
+const currentLabel = computed(() => {
+	const value = current();
+	if (value === null) return props.defaultLabel ?? t('wysiwyg_options.default');
+	const match = props.items.find((item) => item.value === value);
+	return match ? displayLabel(match) : value;
+});
+
+/** Preview font for the activator label; only the font-family picker has a meaningful value. */
+const currentFont = computed(() => (props.previewFont ? current() : null));
 
 /** Apply an item value. Exposed for unit testing without opening the teleported menu. */
 function select(value: string | null): void {
@@ -53,20 +78,23 @@ defineExpose({ select });
 		<template #activator="{ toggle, active }">
 			<VButton
 				v-tooltip="t(label)"
-				class="toolbar-button"
+				class="style-list-button toolbar-button"
 				:class="{ active: active || current() !== null }"
+				:style="{ '--style-list-width': `${width}px` }"
 				:disabled="disabled || !editor"
 				small
-				icon
 				@click="toggle"
 			>
-				<VIcon :name="icon" />
+				<span class="style-list-label" :style="currentFont ? { fontFamily: currentFont } : undefined">
+					{{ currentLabel }}
+				</span>
+				<VIcon class="style-list-caret" name="expand_more" small />
 			</VButton>
 		</template>
 		<VList class="style-list">
 			<VListItem v-for="item in items" :key="item.label" clickable :active="isActive(item)" @click="select(item.value)">
 				<VListItemContent>
-					<span :style="attr === 'fontFamily' && item.value ? { fontFamily: item.value } : undefined">
+					<span :style="previewFont && item.value ? { fontFamily: item.value } : undefined">
 						{{ displayLabel(item) }}
 					</span>
 				</VListItemContent>
@@ -76,6 +104,40 @@ defineExpose({ select });
 </template>
 
 <style lang="scss" scoped>
+@use '../ghost-button' as *;
+
+.style-list-button {
+	@include ghost-toolbar-button;
+}
+
+// Set width on the inner `.button` directly — `small` redefines `--v-button-min-width` there, so an
+// ancestor-level var override would lose.
+.style-list-button :deep(.button) {
+	inline-size: var(--style-list-width);
+	min-inline-size: var(--style-list-width);
+	padding-inline: 0.5rem;
+}
+
+// `.content` wraps the slot; make it fill the button so the caret is pinned to the end.
+.style-list-button :deep(.content) {
+	inline-size: 100%;
+	justify-content: space-between;
+}
+
+.style-list-label {
+	flex: 1 1 auto;
+	min-inline-size: 0;
+	overflow: hidden;
+	text-align: start;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.style-list-caret {
+	flex: 0 0 auto;
+	margin-inline-start: 0.25rem;
+}
+
 .toolbar-button.active {
 	--v-button-background-color: var(--theme--form--field--input--border-color);
 }
@@ -83,6 +145,6 @@ defineExpose({ select });
 .style-list {
 	min-inline-size: 10rem;
 	max-block-size: 18rem;
-	overflow-y: auto;
+	overflow-y: scroll;
 }
 </style>
