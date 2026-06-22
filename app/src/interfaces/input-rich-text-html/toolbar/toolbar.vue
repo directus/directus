@@ -119,8 +119,16 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 			<div class="toolbar-overflow" :style="{ '--toolbar-width': overflowMaxWidth }">
 				<template v-for="(group, index) in overflowGroups" :key="group.id">
 					<div v-if="index > 0" class="toolbar-separator" />
+					<ToolbarPopover
+						v-if="group.popover"
+						:group="group"
+						:editor="editor"
+						:context="context"
+						:disabled="disabled"
+					/>
 					<ToolbarButtonComp
 						v-for="item in resolve(group)"
+						v-else
 						:key="item.key"
 						:button="item.button"
 						:editor="editor"
@@ -174,6 +182,9 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 	--overflow-gap: 0.125rem;
 	--overflow-padding: 0.25rem;
 	--overflow-button-size: 2rem;
+	--overflow-rows-size: calc(var(--overflow-rows) * var(--overflow-button-size));
+	--overflow-gaps-size: calc((var(--overflow-rows) - 1) * var(--overflow-gap));
+	--overflow-pad-size: calc(2 * var(--overflow-padding));
 
 	display: flex;
 	flex-wrap: wrap;
@@ -181,10 +192,7 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 	gap: var(--overflow-gap);
 	padding: var(--overflow-padding);
 	max-inline-size: var(--toolbar-width, 12rem);
-	max-block-size: calc(
-		var(--overflow-rows) * var(--overflow-button-size) + (var(--overflow-rows) - 1) * var(--overflow-gap) + 2 *
-			var(--overflow-padding)
-	);
+	max-block-size: calc(var(--overflow-rows-size) + var(--overflow-gaps-size) + var(--overflow-pad-size));
 	overflow-y: auto;
 }
 </style>

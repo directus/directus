@@ -43,6 +43,7 @@ const triggerLabel = computed(() => {
 <template>
 	<VMenu v-model="active" placement="bottom-start" show-arrow>
 		<template #activator="{ toggle }">
+			<!-- .stop keeps a parent menu (the "Show More" overflow panel) open when this lives inside it -->
 			<VButton
 				v-tooltip="triggerLabel"
 				class="toolbar-button toolbar-popover"
@@ -50,7 +51,7 @@ const triggerLabel = computed(() => {
 				:disabled="disabled || !editor"
 				small
 				icon
-				@click="toggle"
+				@click.stop="toggle"
 			>
 				<VIcon :name="triggerIcon" />
 				<VIcon class="toolbar-popover-caret" name="expand_more" small />
