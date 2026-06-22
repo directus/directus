@@ -14,6 +14,9 @@ export interface ToolbarContext {
 	image: {
 		open: () => void;
 	};
+	link: {
+		open: () => void;
+	};
 }
 
 export interface ToolbarButton {
@@ -109,6 +112,18 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		label: 'wysiwyg_options.blockquote',
 		command: (e) => e.chain().focus().toggleBlockquote().run(),
 		isActive: (e) => e.isActive('blockquote'),
+	},
+	customLink: {
+		icon: 'link',
+		label: 'wysiwyg_options.link',
+		command: (_e, ctx) => ctx.link.open(),
+		isActive: (e) => e.isActive('link'),
+	},
+	unlink: {
+		icon: 'link_off',
+		label: 'wysiwyg_options.unlink',
+		command: (e) => e.chain().focus().extendMarkRange('link').unsetLink().run(),
+		disabled: (e) => !e.isActive('link'),
 	},
 	customImage: {
 		icon: 'image',

@@ -42,6 +42,8 @@ const FAITHFUL: Record<string, string> = {
 	'horizontal rule': '<p>before</p><hr><p>after</p>',
 	'code block': '<pre><code>const x = 1;</code></pre>',
 	link: '<p><a href="https://directus.io">link</a></p>',
+	'link with title': '<p><a href="https://directus.io" title="Home">link</a></p>',
+	'link new tab': '<p><a href="https://directus.io" target="_blank" rel="noopener">link</a></p>',
 	'hard break': '<p>line one<br>line two</p>',
 };
 
