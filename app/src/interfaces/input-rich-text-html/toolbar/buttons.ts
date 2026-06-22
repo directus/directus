@@ -106,7 +106,6 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 			items: FONT_FAMILIES,
 			width: FONT_FAMILY_WIDTH,
 			previewFont: true,
-			defaultLabel: 'Inter, system-ui',
 		},
 	},
 	fontsize: {
@@ -119,8 +118,6 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 			attr: 'fontSize',
 			items: FONT_SIZES,
 			width: FONT_SIZE_WIDTH,
-			defaultLabel: '24',
-			defaultValue: '24px',
 		},
 	},
 	forecolor: {
