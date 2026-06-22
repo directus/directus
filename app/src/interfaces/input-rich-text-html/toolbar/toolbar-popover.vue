@@ -24,30 +24,20 @@ const buttons = computed(() =>
 	props.group.keys.map((key) => ({ key, button: toolbarButtons[key]! })).filter((b) => b.button),
 );
 
-// the active child (first whose isActive is true), used for the collapsed trigger glyph + tooltip
-const current = computed(() => {
+const firstChild = computed(() => buttons.value[0]?.button);
+
+const activeChild = computed(() => {
 	const e = props.editor;
-
-	if (e) {
-		const found = buttons.value.find(({ button }) => button.isActive?.(e, props.context));
-		if (found) return found.button;
-	}
-
-	return buttons.value[0]?.button;
+	if (e) return buttons.value.find(({ button }) => button.isActive?.(e, props.context))?.button;
+	return undefined;
 });
 
-const triggerIcon = computed(() => {
-	const e = props.editor;
+const triggerIcon = computed(() => activeChild.value?.icon ?? props.group.icon ?? firstChild.value?.icon);
 
-	if (e) {
-		const found = buttons.value.find(({ button }) => button.isActive?.(e, props.context));
-		if (found) return found.button.icon;
-	}
-
-	return props.group.icon ?? buttons.value[0]?.button.icon ?? 'format_align_left';
+const triggerLabel = computed(() => {
+	const btn = activeChild.value ?? firstChild.value;
+	return btn ? t(btn.label) : '';
 });
-
-const triggerLabel = computed(() => (current.value ? t(current.value.label) : ''));
 </script>
 
 <template>

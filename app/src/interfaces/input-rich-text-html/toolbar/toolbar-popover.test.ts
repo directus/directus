@@ -16,7 +16,7 @@ let editor: Editor;
 const ALIGN_GROUP: RenderGroup = {
 	id: 'align',
 	popover: true,
-	icon: 'format_align_left',
+	icon: 'segment', // distinct from any child icon to genuinely test the group.icon branch
 	keys: ['alignleft', 'aligncenter', 'alignright', 'alignjustify'],
 };
 
@@ -49,13 +49,11 @@ function mountPopover() {
 afterEach(() => editor?.destroy());
 
 describe('ToolbarPopover', () => {
-	test('trigger shows the group fallback icon when no child is active', () => {
+	test('trigger shows group.icon when no child is active', () => {
 		makeEditor();
 		const wrapper = mountPopover();
 
-		expect(wrapper.find('.toolbar-popover .v-icon').attributes('data-icon') ?? wrapper.html()).toContain(
-			'format_align_left',
-		);
+		expect(wrapper.find('.toolbar-popover .v-icon').attributes('data-icon') ?? wrapper.html()).toContain('segment');
 	});
 
 	test('trigger reflects the active alignment', async () => {
