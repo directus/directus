@@ -37,6 +37,7 @@ import VInfo from './v-info.vue';
 import VInput from './v-input.vue';
 import VItemGroup from './v-item-group.vue';
 import VItem from './v-item.vue';
+import VKbd from './v-kbd.vue';
 import VListGroup from './v-list-group.vue';
 import VListItemContent from './v-list-item-content.vue';
 import VListItemHint from './v-list-item-hint.vue';
@@ -102,6 +103,7 @@ export function registerComponents(app: App): void {
 	app.component('VForm', VForm);
 	app.component('VHover', VHover);
 	app.component('VHighlight', VHighlight);
+	app.component('VKbd', VKbd);
 	app.component('VIcon', VIcon);
 	app.component('VImage', VImage);
 	app.component('VIconFile', VIconFile);

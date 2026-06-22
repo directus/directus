@@ -1,6 +1,7 @@
 import { TextSelection } from '@tiptap/pm/state';
 import { type Editor, EditorContent } from '@tiptap/vue-3';
 import { flushPromises, mount } from '@vue/test-utils';
+import { createPinia } from 'pinia';
 import { describe, expect, test } from 'vitest';
 import { nextTick } from 'vue';
 import Interface from './input-rich-text-html.vue';
@@ -17,7 +18,7 @@ import Interface from './input-rich-text-html.vue';
 async function mountWithValue(value: string) {
 	const wrapper = mount(Interface, {
 		props: { value },
-		global: { stubs: { Toolbar: true } },
+		global: { plugins: [createPinia()], stubs: { Toolbar: true, ImageDrawer: true } },
 	});
 
 	await flushPromises();

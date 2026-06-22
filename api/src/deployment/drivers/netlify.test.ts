@@ -31,6 +31,15 @@ describe('NetlifyDriver', () => {
 		vi.restoreAllMocks();
 	});
 
+	it('should declare webhook transport without preview or deploy-hook triggers', () => {
+		expect(driver.capabilities).toEqual({
+			eventsTransport: 'webhook',
+			supportsPreviewDeploy: false,
+			supportsDeployHookUrl: false,
+			needsRunStatusPolling: false,
+		});
+	});
+
 	describe('authentication', () => {
 		it('should instantiate NetlifyAPI with access token', async () => {
 			mockNetlifyAPI.listSites.mockResolvedValueOnce([]);
@@ -118,7 +127,7 @@ describe('NetlifyDriver', () => {
 				created_at: '2024-01-01T00:00:00Z',
 			});
 
-			const deployment = await driver.getDeployment('deploy-1');
+			const deployment = await driver.getRun('deploy-1');
 
 			expect(deployment.status).toBe(expected);
 		});
@@ -258,62 +267,7 @@ describe('NetlifyDriver', () => {
 		});
 	});
 
-	describe('listDeployments', () => {
-		it('should return list of deployments', async () => {
-			const mockDeploys = [
-				{
-					id: 'deploy-1',
-					site_id: 'site-1',
-					state: 'ready',
-					ssl_url: 'https://deploy-1.netlify.app',
-					created_at: '2024-01-01T00:00:00Z',
-					published_at: '2024-01-01T00:05:00Z',
-				},
-				{
-					id: 'deploy-2',
-					site_id: 'site-1',
-					state: 'building',
-					deploy_ssl_url: 'https://deploy-2.netlify.app',
-					created_at: '2024-01-02T00:00:00Z',
-				},
-			];
-
-			mockNetlifyAPI.listSiteDeploys.mockResolvedValueOnce(mockDeploys);
-
-			const deployments = await driver.listDeployments('site-1', 20);
-
-			expect(deployments).toHaveLength(2);
-
-			expect(deployments[0]).toMatchObject({
-				id: 'deploy-1',
-				project_id: 'site-1',
-				status: 'ready',
-				url: 'https://deploy-1.netlify.app',
-				created_at: new Date('2024-01-01T00:00:00Z'),
-				finished_at: new Date('2024-01-01T00:05:00Z'),
-			});
-		});
-
-		it('should include error messages when present', async () => {
-			const mockDeploys = [
-				{
-					id: 'deploy-1',
-					site_id: 'site-1',
-					state: 'error',
-					created_at: '2024-01-01T00:00:00Z',
-					error_message: 'Build failed: Command exited with code 1',
-				},
-			];
-
-			mockNetlifyAPI.listSiteDeploys.mockResolvedValueOnce(mockDeploys);
-
-			const deployments = await driver.listDeployments('site-1');
-
-			expect(deployments[0]!.error_message).toBe('Build failed: Command exited with code 1');
-		});
-	});
-
-	describe('getDeployment', () => {
+	describe('getRun', () => {
 		it('should return deployment details', async () => {
 			const mockDeploy = {
 				id: 'deploy-1',
@@ -326,7 +280,7 @@ describe('NetlifyDriver', () => {
 
 			mockNetlifyAPI.getDeploy.mockResolvedValueOnce(mockDeploy);
 
-			const deployment = await driver.getDeployment('deploy-1');
+			const deployment = await driver.getRun('deploy-1');
 
 			expect(deployment).toMatchObject({
 				id: 'deploy-1',
@@ -339,7 +293,7 @@ describe('NetlifyDriver', () => {
 		});
 	});
 
-	describe('triggerDeployment', () => {
+	describe('triggerRun', () => {
 		it('should trigger a new deployment', async () => {
 			const mockBuildResponse = {
 				id: 'build-1',
@@ -361,7 +315,7 @@ describe('NetlifyDriver', () => {
 			mockNetlifyAPI.createSiteBuild.mockResolvedValueOnce(mockBuildResponse);
 			mockNetlifyAPI.getDeploy.mockResolvedValueOnce(mockDeployState);
 
-			const result = await driver.triggerDeployment('site-1');
+			const result = await driver.triggerRun('site-1');
 
 			expect(result).toMatchObject({
 				deployment_id: 'deploy-new',
@@ -390,7 +344,7 @@ describe('NetlifyDriver', () => {
 			mockNetlifyAPI.createSiteBuild.mockResolvedValueOnce(mockBuildResponse);
 			mockNetlifyAPI.getDeploy.mockResolvedValueOnce(mockDeployState);
 
-			await driver.triggerDeployment('site-1', { clearCache: true });
+			await driver.triggerRun('site-1', { clearCache: true });
 
 			expect(mockNetlifyAPI.createSiteBuild).toHaveBeenCalledWith({
 				site_id: 'site-1',
@@ -399,11 +353,11 @@ describe('NetlifyDriver', () => {
 		});
 	});
 
-	describe('cancelDeployment', () => {
+	describe('cancelRun', () => {
 		it('should cancel a deployment and return canceled', async () => {
 			mockNetlifyAPI.cancelSiteDeploy.mockResolvedValueOnce(undefined);
 
-			const status = await driver.cancelDeployment('deploy-1');
+			const status = await driver.cancelRun('deploy-1');
 
 			expect(mockNetlifyAPI.cancelSiteDeploy).toHaveBeenCalledWith({ deployId: 'deploy-1' });
 			expect(status).toBe('canceled');
@@ -419,7 +373,7 @@ describe('NetlifyDriver', () => {
 				created_at: new Date().toISOString(),
 			});
 
-			const status = await driver.cancelDeployment('deploy-1');
+			const status = await driver.cancelRun('deploy-1');
 
 			expect(status).toBe('ready');
 		});
@@ -434,11 +388,11 @@ describe('NetlifyDriver', () => {
 				created_at: new Date().toISOString(),
 			});
 
-			await expect(driver.cancelDeployment('deploy-1')).rejects.toThrow(ServiceUnavailableError);
+			await expect(driver.cancelRun('deploy-1')).rejects.toThrow(ServiceUnavailableError);
 		});
 	});
 
-	describe('getDeploymentLogs', () => {
+	describe('getRunLogs', () => {
 		let mockWebSocket: {
 			send: ReturnType<typeof vi.fn>;
 			close: ReturnType<typeof vi.fn>;
@@ -466,7 +420,7 @@ describe('NetlifyDriver', () => {
 
 		it('should return all logs for a completed build', async () => {
 			mockNetlifyAPI.getDeploy.mockResolvedValueOnce({ state: 'ready' });
-			const logsPromise = driver.getDeploymentLogs('deploy-1');
+			const logsPromise = driver.getRunLogs('deploy-1');
 
 			await flushMicrotasks();
 
@@ -532,7 +486,7 @@ describe('NetlifyDriver', () => {
 
 		it('should return current logs for an in-progress build', async () => {
 			mockNetlifyAPI.getDeploy.mockResolvedValueOnce({ state: 'building' });
-			const logsPromise = driver.getDeploymentLogs('deploy-building');
+			const logsPromise = driver.getRunLogs('deploy-building');
 
 			await flushMicrotasks();
 
@@ -552,7 +506,7 @@ describe('NetlifyDriver', () => {
 
 		it('should throw ServiceUnavailableError on WebSocket error', async () => {
 			mockNetlifyAPI.getDeploy.mockResolvedValueOnce({ state: 'building' });
-			const logsPromise = driver.getDeploymentLogs('deploy-err');
+			const logsPromise = driver.getRunLogs('deploy-err');
 
 			await flushMicrotasks();
 
@@ -567,7 +521,7 @@ describe('NetlifyDriver', () => {
 			vi.useFakeTimers();
 
 			mockNetlifyAPI.getDeploy.mockResolvedValueOnce({ state: 'building' });
-			const logsPromise = driver.getDeploymentLogs('deploy-timeout');
+			const logsPromise = driver.getRunLogs('deploy-timeout');
 
 			// Attach rejection handler before advancing timers to prevent unhandled rejection
 			const expectation = expect(logsPromise).rejects.toThrow(ServiceUnavailableError);
@@ -582,7 +536,7 @@ describe('NetlifyDriver', () => {
 			const sinceDate = new Date('2024-01-01T00:00:05Z');
 
 			mockNetlifyAPI.getDeploy.mockResolvedValueOnce({ state: 'ready' });
-			const logsPromise = driver.getDeploymentLogs('deploy-2', { since: sinceDate });
+			const logsPromise = driver.getRunLogs('deploy-2', { since: sinceDate });
 
 			await flushMicrotasks();
 

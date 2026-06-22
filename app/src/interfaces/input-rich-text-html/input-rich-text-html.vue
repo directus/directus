@@ -1,10 +1,17 @@
 <script setup lang="ts">
+import type { SettingsStorageAssetPreset } from '@directus/types';
 import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
-import { computed, ref, watch } from 'vue';
-import { editorExtensions } from './editor-extensions';
+import { computed, ref, type Ref, toRefs, watch } from 'vue';
+import { useImage } from './composables/use-image';
+import ImageDrawer from './drawers/image-drawer.vue';
+import { editorExtensions } from './extensions';
 import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
+import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
+import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
 
 const props = withDefaults(
 	defineProps<{
@@ -23,6 +30,8 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{ input: [value: string | null] }>();
+
+const { imageToken, folder } = toRefs(props);
 
 // base content font, driven by the `font` option; theme tokens use `sans` (not `sans-serif`)
 const fontFamily = computed(() => {
@@ -53,11 +62,44 @@ const editor = useEditor({
 	extensions: editorExtensions,
 	content: '',
 	editable: isEditable.value,
+	editorProps: {
+		// double-click an image to edit it in the drawer; single click just selects the node
+		handleDoubleClickOn: (_view, _pos, node, nodePos) => {
+			if (node.type.name !== 'image') return false;
+			editor.value?.commands.setNodeSelection(nodePos);
+			openImageDrawer();
+			return true;
+		},
+	},
 	onCreate: ({ editor }) => syncValue(editor as Editor, props.value),
 	onUpdate: ({ editor }) => {
 		emit('input', editor.isEmpty ? null : editor.getHTML());
 	},
 });
+
+const settingsStore = useSettingsStore();
+const { info } = useServerStore();
+
+const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
+
+const storageAssetTransform = ref('all');
+const storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
+
+if (settingsStore.settings?.storage_asset_transform) {
+	storageAssetTransform.value = settingsStore.settings.storage_asset_transform;
+	storageAssetPresets.value = settingsStore.settings.storage_asset_presets ?? [];
+}
+
+const { imageDrawerOpen, imageSelection, openImageDrawer, closeImageDrawer, onImageSelect, saveImage } = useImage(
+	editor as Ref<Editor>,
+	imageToken,
+	{ storageAssetTransform, storageAssetPresets },
+);
+
+// First drawer in the new editor: pause the surrounding view's focus trap while it's open so the
+// drawer's inputs are reachable; resume on close. Reused by the link/media/source drawers later.
+const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
+watch(imageDrawerOpen, (open) => (open ? pauseFocusTrap() : unpauseFocusTrap()));
 
 // `editable` is only read at init, so keep it in sync when the prop flips
 watch(isEditable, (editable) => editor.value?.setEditable(editable));
@@ -92,31 +134,25 @@ onKeyStroke('Escape', () => {
 			:disabled="disabled"
 			:fullscreen="fullscreen"
 			@toggle-fullscreen="fullscreen = !fullscreen"
+			@open-image="openImageDrawer"
 		/>
 		<EditorContent class="editor-content" :editor="editor" />
+
+		<ImageDrawer
+			v-model="imageDrawerOpen"
+			v-model:image-selection="imageSelection"
+			:storage-asset-transform="storageAssetTransform"
+			:storage-asset-presets="storageAssetPresets"
+			:folder="folder"
+			:allowed-mime-types="allowedMimeTypes"
+			@select="onImageSelect"
+			@save="saveImage"
+			@cancel="closeImageDrawer"
+		/>
 	</div>
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins';
-
-.grid {
-	@include mixins.form-grid;
-}
-
-.content {
-	padding: var(--content-padding);
-	padding-block-end: var(--content-padding);
-}
-
-.image-preview {
-	inline-size: 100%;
-	block-size: var(--input-height-md);
-	margin-block-end: 1.375rem;
-	object-fit: cover;
-	border-radius: var(--theme--border-radius);
-}
-
 .wysiwyg {
 	--v-button-background-color: transparent;
 	--v-button-color: var(--theme--form--field--input--foreground);
