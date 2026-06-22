@@ -1,3 +1,4 @@
+import TextAlign from '@tiptap/extension-text-align';
 import StarterKit from '@tiptap/starter-kit';
 import { Editor } from '@tiptap/vue-3';
 import { mount } from '@vue/test-utils';
@@ -10,7 +11,10 @@ import Toolbar from './toolbar.vue';
 let editor: Editor;
 
 function mountToolbar(toolbar: string[]) {
-	editor = new Editor({ extensions: [StarterKit], content: '<p>x</p>' });
+	editor = new Editor({
+		extensions: [StarterKit, TextAlign.configure({ types: ['heading', 'paragraph'] })],
+		content: '<p>x</p>',
+	});
 
 	const pinia = createPinia();
 	const i18n = createI18n({ legacy: false, locale: 'en-US', messages: { 'en-US': {} } });
@@ -44,5 +48,20 @@ describe('Toolbar', () => {
 		// no overflow at Infinity width => no "Show More" activator
 		expect(wrapper.find('.toolbar-more').exists()).toBe(false);
 		expect(wrapper.findAll('.toolbar-button')).toHaveLength(keys.length);
+	});
+
+	test('renders an alignment group as a single popover trigger, not flat buttons', () => {
+		const wrapper = mountToolbar(['alignleft', 'aligncenter', 'alignright', 'alignjustify']);
+		// one collapsed popover trigger...
+		expect(wrapper.findAll('.toolbar-popover')).toHaveLength(1);
+		// ...and the four align icons are NOT in the visible row (they live inside the closed popover)
+		expect(wrapper.find('.toolbar-more').exists()).toBe(false);
+	});
+
+	test('popover trigger sits alongside other groups', () => {
+		const wrapper = mountToolbar(['bold', 'aligncenter', 'fullscreen']);
+		expect(wrapper.findAll('.toolbar-popover')).toHaveLength(1);
+		// format(bold) + align(popover) + view(fullscreen) => 2 separators
+		expect(wrapper.findAll('.toolbar-separator')).toHaveLength(2);
 	});
 });
