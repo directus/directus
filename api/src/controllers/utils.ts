@@ -37,39 +37,6 @@ router.get(
 	}),
 );
 
-router.post(
-	'/hash/generate',
-	asyncHandler(async (req, res) => {
-		if (!req.body?.string) {
-			throw new InvalidPayloadError({ reason: `"string" is required` });
-		}
-
-		const hash = await generateHash(req.body.string);
-
-		return res.json({ data: hash });
-	}),
-);
-
-router.post(
-	'/hash/verify',
-	asyncHandler(async (req, res) => {
-		if (!req.body?.string) {
-			throw new InvalidPayloadError({ reason: `"string" is required` });
-		}
-
-		if (!req.body?.hash) {
-			throw new InvalidPayloadError({ reason: `"hash" is required` });
-		}
-
-		try {
-			const result = await argon2.verify(req.body.hash, req.body.string);
-			return res.json({ data: result });
-		} catch {
-			throw new InvalidPayloadError({ reason: `Invalid "hash" or "string"` });
-		}
-	}),
-);
-
 const SortSchema = Joi.object({
 	item: Joi.alternatives(Joi.string(), Joi.number()).required(),
 	to: Joi.alternatives(Joi.string(), Joi.number()).required(),
