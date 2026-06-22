@@ -39,6 +39,9 @@ exports[`round-trip: faithful (StarterKit schema) > text align justify survives 
 exports[`round-trip: faithful (StarterKit schema) > text align left survives round-trip 1`] = `"<p style="text-align: left;">left</p>"`;
 
 exports[`round-trip: faithful (StarterKit schema) > text align right survives round-trip 1`] = `"<p style="text-align: right;">right</p>"`;
+exports[`round-trip: faithful (StarterKit schema) > subscript survives round-trip 1`] = `"<p>H<sub>2</sub>O</p>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > superscript survives round-trip 1`] = `"<p>x<sup>2</sup></p>"`;
 
 exports[`round-trip: faithful (StarterKit schema) > underline survives round-trip 1`] = `"<p><u>underline</u></p>"`;
 
@@ -53,10 +56,6 @@ exports[`round-trip: lossy (restored by later issues / accepted regression) > 'i
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'pagebreak' is dropped today (→ 'CMS-2647') 1`] = `"<p>a</p><p>b</p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'rtl direction' is dropped today (→ 'CMS-2646') 1`] = `"<p>شسي</p>"`;
-
-exports[`round-trip: lossy (restored by later issues / accepted regression) > 'subscript' is dropped today (→ 'CMS-2638') 1`] = `"<p>H2O</p>"`;
-
-exports[`round-trip: lossy (restored by later issues / accepted regression) > 'superscript' is dropped today (→ 'CMS-2638') 1`] = `"<p>x2</p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'table' is dropped today (→ 'CMS-2639') 1`] = `"<p>ab</p>"`;
 
