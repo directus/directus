@@ -8,7 +8,19 @@ import { scheduleSynchronizedJob } from '../utils/schedule.js';
 
 const env = useEnv();
 
+let runningJob: { stop(): Promise<void> } | null = null;
+
+export async function stopCloudflareQueueConsumer(): Promise<void> {
+	if (runningJob) {
+		await runningJob.stop();
+		runningJob = null;
+	}
+}
+
 export default async function scheduleCloudflareQueueConsumer() {
+	// Guard against double-registration on startup. On config updates use stopCloudflareQueueConsumer()
+	// first so the schedule restarts with fresh credentials and options.
+	if (runningJob) return;
 	const logger = useLogger();
 	const schema = await getSchema();
 	const knex = getDatabase();
@@ -43,7 +55,7 @@ export default async function scheduleCloudflareQueueConsumer() {
 	const schedule = ((env['DEPLOYMENT_CLOUDFLARE_QUEUE_POLL_SCHEDULE'] as string | undefined)?.trim() ||
 		'*/5 * * * *') as string;
 
-	scheduleSynchronizedJob('deployment-cloudflare-queue-consumer', schedule, async () => {
+	runningJob = scheduleSynchronizedJob('deployment-cloudflare-queue-consumer', schedule, async () => {
 		try {
 			await consumeCloudflareQueueEvents(deploymentId, credentials, options);
 		} catch (error) {

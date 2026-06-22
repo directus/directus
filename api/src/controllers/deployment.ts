@@ -7,6 +7,7 @@ import { useLogger } from '../logger/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
+import scheduleCloudflareQueueConsumer, { stopCloudflareQueueConsumer } from '../schedules/cloudflare-queue-consumer.js';
 import { DeploymentProjectsService } from '../services/deployment-projects.js';
 import { DeploymentRunsService } from '../services/deployment-runs.js';
 import { DeploymentService } from '../services/deployment.js';
@@ -67,6 +68,10 @@ router.post(
 		});
 
 		res.locals['payload'] = { data: item };
+
+		if (req.body.provider === 'cloudflare-workers') {
+			scheduleCloudflareQueueConsumer().catch(() => {});
+		}
 
 		return next();
 	}),
@@ -379,6 +384,12 @@ router.patch(
 		});
 
 		res.locals['payload'] = { data: item };
+
+		if (provider === 'cloudflare-workers') {
+			stopCloudflareQueueConsumer()
+				.then(() => scheduleCloudflareQueueConsumer())
+				.catch(() => {});
+		}
 
 		return next();
 	}),
