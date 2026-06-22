@@ -47,7 +47,8 @@ const triggerLabel = computed(() => {
 			<VButton
 				v-tooltip="triggerLabel"
 				class="toolbar-button toolbar-popover"
-				:class="{ active }"
+				ghost
+				:active="active"
 				:disabled="disabled || !editor"
 				small
 				icon
@@ -72,22 +73,6 @@ const triggerLabel = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-// Match the ghost styling of the inner toolbar buttons (scoped to toolbar-button.vue, so replicated here).
-.toolbar-popover {
-	--v-button-color: var(--theme--foreground);
-	--v-button-color-hover: var(--primary-ondimmed);
-	--v-button-color-active: var(--primary-ondimmed);
-	--v-button-background-color: transparent;
-	--v-button-background-color-hover: var(--primary-dimmed);
-	--v-button-background-color-active: var(--primary-dimmed);
-}
-
-// Open popover = active: persist the dimmed-primary fill like the "Show More" button.
-.toolbar-popover.active {
-	--v-button-background-color: var(--primary-dimmed);
-	--v-button-color: var(--primary-ondimmed);
-}
-
 .toolbar-popover-caret {
 	margin-inline-start: -0.125rem;
 

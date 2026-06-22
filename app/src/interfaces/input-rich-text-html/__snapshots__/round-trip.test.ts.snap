@@ -32,6 +32,10 @@ exports[`round-trip: faithful (StarterKit schema) > paragraph survives round-tri
 
 exports[`round-trip: faithful (StarterKit schema) > strike survives round-trip 1`] = `"<p><s>strike</s></p>"`;
 
+exports[`round-trip: faithful (StarterKit schema) > subscript survives round-trip 1`] = `"<p>H<sub>2</sub>O</p>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > superscript survives round-trip 1`] = `"<p>x<sup>2</sup></p>"`;
+
 exports[`round-trip: faithful (StarterKit schema) > text align center survives round-trip 1`] = `"<p style="text-align: center;">centered</p>"`;
 
 exports[`round-trip: faithful (StarterKit schema) > text align justify survives round-trip 1`] = `"<p style="text-align: justify;">justified</p>"`;
@@ -39,9 +43,6 @@ exports[`round-trip: faithful (StarterKit schema) > text align justify survives 
 exports[`round-trip: faithful (StarterKit schema) > text align left survives round-trip 1`] = `"<p style="text-align: left;">left</p>"`;
 
 exports[`round-trip: faithful (StarterKit schema) > text align right survives round-trip 1`] = `"<p style="text-align: right;">right</p>"`;
-exports[`round-trip: faithful (StarterKit schema) > subscript survives round-trip 1`] = `"<p>H<sub>2</sub>O</p>"`;
-
-exports[`round-trip: faithful (StarterKit schema) > superscript survives round-trip 1`] = `"<p>x<sup>2</sup></p>"`;
 
 exports[`round-trip: faithful (StarterKit schema) > underline survives round-trip 1`] = `"<p><u>underline</u></p>"`;
 
