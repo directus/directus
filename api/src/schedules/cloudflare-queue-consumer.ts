@@ -11,9 +11,28 @@ const env = useEnv();
 let runningJob: { stop(): Promise<void> } | null = null;
 
 export async function stopCloudflareQueueConsumer(): Promise<void> {
-	if (runningJob) {
-		await runningJob.stop();
-		runningJob = null;
+	const job = runningJob;
+	runningJob = null;
+
+	if (job) {
+		await job.stop();
+	}
+}
+
+/** Stop any running job and register again from current DB config (no API restart required). */
+export async function restartCloudflareQueueConsumer(): Promise<void> {
+	const logger = useLogger();
+
+	try {
+		await stopCloudflareQueueConsumer();
+	} catch (error) {
+		logger.warn(`[cloudflare-workers:queue] Failed to stop queue consumer: ${String(error)}`);
+	}
+
+	try {
+		await scheduleCloudflareQueueConsumer();
+	} catch (error) {
+		logger.warn(`[cloudflare-workers:queue] Failed to refresh queue consumer schedule: ${String(error)}`);
 	}
 }
 
