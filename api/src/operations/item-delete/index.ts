@@ -2,6 +2,7 @@ import { InvalidPayloadError } from '@directus/errors';
 import { defineOperationApi } from '@directus/extensions';
 import type { Accountability, PrimaryKey } from '@directus/types';
 import { optionToObject, toArray } from '@directus/utils';
+import { isNil } from 'lodash-es';
 import { z } from 'zod';
 import { ItemsService } from '../../services/items.js';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role.js';
@@ -24,7 +25,7 @@ export default defineOperationApi<Options>({
 	id: 'item-delete',
 	handler: async ({ collection, key, query, emitEvents, permissions }, { accountability, database, getSchema }) => {
 		const queryObject = query ? optionToObject(query) : null;
-		const keys = key == null ? null : toArray(key);
+		const keys = isNil(key) ? null : toArray(key);
 
 		const validation = inputSchema.safeParse({ keys, query: queryObject });
 
