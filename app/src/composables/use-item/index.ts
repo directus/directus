@@ -175,7 +175,7 @@ export function useItem<T extends Item>(
 
 		const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, editsWithClearedValues);
 
-		const errors = validateItem(payloadToValidate, fields, isNew.value);
+		const errors = validateItem(payloadToValidate, fields, isNew.value, false, null, item.value);
 		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
 
 		if (errors.length > 0) {
