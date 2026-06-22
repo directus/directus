@@ -31,6 +31,7 @@ describe('toolbar groups', () => {
 		expect(align?.popover).toBe(true);
 		expect(align?.icon).toBe('format_align_left');
 		expect(align?.keys).toEqual(['alignleft', 'aligncenter', 'alignright', 'alignjustify', 'alignnone']);
+		expect(align?.priority).toBe(75);
 	});
 
 	test('groupForKey resolves alignment keys to the align group', () => {

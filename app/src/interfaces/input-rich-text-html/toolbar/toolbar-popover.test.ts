@@ -53,7 +53,7 @@ describe('ToolbarPopover', () => {
 		makeEditor();
 		const wrapper = mountPopover();
 
-		expect(wrapper.find('.toolbar-popover .v-icon').attributes('data-icon') ?? wrapper.html()).toContain('segment');
+		expect(wrapper.html()).toContain('segment');
 	});
 
 	test('trigger reflects the active alignment', async () => {

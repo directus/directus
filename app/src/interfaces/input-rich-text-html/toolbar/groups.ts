@@ -28,7 +28,7 @@ export const toolbarGroups: ToolbarGroup[] = [
 		icon: 'format_align_left',
 		keys: ['alignleft', 'aligncenter', 'alignright', 'alignjustify', 'alignnone'],
 	},
-	{ id: 'list', priority: 70, keys: ['numlist', 'bullist', 'indent', 'outdent'] },
+	{ id: 'list', priority: 70, pinned: true, keys: ['numlist', 'bullist', 'indent', 'outdent'] },
 	{ id: 'block', priority: 60, keys: ['blockquote', 'hr'] },
 	{ id: 'insert', priority: 50, keys: ['customLink', 'customImage', 'customMedia'] },
 	{ id: 'code', priority: 40, keys: ['code', 'customPre'] },
