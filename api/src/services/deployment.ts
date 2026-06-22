@@ -336,16 +336,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			return;
 		}
 
-		// Unregister existing webhooks before re-registering
-		if (config.webhook_ids && config.webhook_ids.length > 0) {
-			logger.debug(`[webhook:${provider}] Unregistering ${config.webhook_ids.length} existing webhook(s)`);
-
-			try {
-				await driver.unregisterWebhook(config.webhook_ids);
-			} catch (err) {
-				logger.warn(`[webhook:${provider}] Failed to unregister: ${err}`);
-			}
-		}
+		const previousWebhookIds = config.webhook_ids?.length ? config.webhook_ids : null;
 
 		const publicUrl = env['PUBLIC_URL'] as string;
 		const webhookUrl = `${publicUrl}/deployments/webhooks/${provider}`;
@@ -354,6 +345,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			`[webhook:${provider}] Registering webhook → ${webhookUrl} for ${projectExternalIds.length} project(s)`,
 		);
 
+		// Register new webhooks before touching the old ones so there's no gap in coverage.
 		const result = await driver.registerWebhook(webhookUrl, projectExternalIds);
 
 		await super.updateOne(config.id, {
@@ -364,6 +356,17 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		logger.info(
 			`[webhook:${provider}] Registered ${result.webhook_ids.length} webhook(s): [${result.webhook_ids.join(', ')}]`,
 		);
+
+		// Clean up old webhooks after the new ones are live and persisted.
+		if (previousWebhookIds) {
+			logger.debug(`[webhook:${provider}] Unregistering ${previousWebhookIds.length} old webhook(s)`);
+
+			try {
+				await driver.unregisterWebhook(previousWebhookIds);
+			} catch (err) {
+				logger.warn(`[webhook:${provider}] Failed to unregister old webhook(s): ${err}`);
+			}
+		}
 	}
 
 	/**
@@ -453,18 +456,12 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		const projectIds = selectedProjects.map((p) => p.id);
 
 		// Latest run per project + aggregated stats
-		const [latestRuns, activeResult, statusCounts] = await Promise.all([
-			Promise.all(
-				projectIds.map(async (projectId) => {
-					const runs = await runsService.readByQuery({
-						filter: { project: { _eq: projectId } },
-						sort: ['-date_created'],
-						limit: 1,
-					});
-
-					return { projectId, run: runs?.[0] ?? null };
-				}),
-			),
+		const [allRuns, activeResult, statusCounts] = await Promise.all([
+			runsService.readByQuery({
+				filter: { project: { _in: projectIds } },
+				sort: ['-date_created'],
+				limit: -1,
+			}),
 			runsService.readByQuery({
 				filter: { project: { _in: projectIds }, status: { _eq: 'building' } },
 				aggregate: { count: ['*'] },
@@ -482,7 +479,15 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			}) as Promise<any[]>,
 		]);
 
-		const latestRunMap = new Map(latestRuns.map((r) => [r.projectId, r.run]));
+		// Runs are sorted newest-first; pick the first seen per project.
+		const latestRunMap = new Map<string, DeploymentRun>();
+
+		for (const run of allRuns) {
+			if (!latestRunMap.has(run.project)) {
+				latestRunMap.set(run.project, run);
+				if (latestRunMap.size === projectIds.length) break;
+			}
+		}
 
 		const countByStatus = (status: string) =>
 			Number(statusCounts.find((r: any) => r['status'] === status)?.['count'] ?? 0);
@@ -721,7 +726,12 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 					completed_at: run.completed_at ?? new Date().toISOString(),
 				};
 
-				await runsService.updateOne(run.id, update);
+				try {
+					await runsService.updateOne(run.id, update);
+				} catch (updateError) {
+					useLogger().warn(`[deployment:${provider}] Failed to mark run as error: ${String(updateError)}`);
+				}
+
 				return { ...run, ...update, logs: [] };
 			}
 		}
@@ -790,7 +800,12 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 						completed_at: run.completed_at ?? new Date().toISOString(),
 					};
 
-					await runsService.updateOne(run.id, update);
+					try {
+						await runsService.updateOne(run.id, update);
+					} catch (updateError) {
+						useLogger().warn(`[deployment:${provider}] Failed to mark run as error: ${String(updateError)}`);
+					}
+
 					refreshedRuns[index] = { ...run, ...update };
 				}
 			}),
