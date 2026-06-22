@@ -1,13 +1,13 @@
 import type { DeploymentWebhookEvent } from '@directus/types';
 import getDatabase from '../database/index.js';
-import { CloudflareDriver } from '../deployment/drivers/cloudflare.js';
 import { getDeploymentDriver } from '../deployment.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
+import { DeploymentProjectsService } from '../services/deployment-projects.js';
+import { DeploymentRunsService } from '../services/deployment-runs.js';
+import { DeploymentService } from '../services/deployment.js';
 import { getSchema } from '../utils/get-schema.js';
-import { DeploymentProjectsService } from './deployment-projects.js';
-import { DeploymentRunsService } from './deployment-runs.js';
-import { DeploymentService } from './deployment.js';
+import { CloudflareDriver } from './drivers/cloudflare.js';
 
 export async function consumeCloudflareQueueEvents(): Promise<void> {
 	const logger = useLogger();
@@ -28,8 +28,7 @@ export async function consumeCloudflareQueueEvents(): Promise<void> {
 		const deploymentRow = await deploymentService.readByProvider('cloudflare-workers');
 		deploymentId = deploymentRow.id;
 		webhookConfig = await deploymentService.getWebhookConfig('cloudflare-workers');
-	} catch (error) {
-		logger.debug(`[cloudflare-workers:queue] Not running: no cloudflare-workers deployment config (${String(error)})`);
+	} catch {
 		return;
 	}
 
@@ -143,5 +142,13 @@ export async function consumeCloudflareQueueEvents(): Promise<void> {
 		}
 	}
 
-	await driver.ackQueueMessages(ackLeaseIds, retryLeaseIds);
+	try {
+		await driver.ackQueueMessages(ackLeaseIds, retryLeaseIds);
+	} catch (error) {
+		logger.error(
+			`[cloudflare-workers:queue] Failed to ack ${ackLeaseIds.length} message(s) — they will be redelivered: ${String(error)}`,
+		);
+
+		throw error;
+	}
 }

@@ -11,7 +11,6 @@ const {
 	mockProjectsReadByQuery,
 	mockProcessWebhookEvent,
 	mockEmitAction,
-	mockLoggerDebug,
 	mockLoggerInfo,
 	mockLoggerWarn,
 } = vi.hoisted(() => {
@@ -36,7 +35,6 @@ const {
 		mockProjectsReadByQuery: vi.fn(),
 		mockProcessWebhookEvent: vi.fn(),
 		mockEmitAction: vi.fn(),
-		mockLoggerDebug: vi.fn(),
 		mockLoggerInfo: vi.fn(),
 		mockLoggerWarn: vi.fn(),
 	};
@@ -45,7 +43,7 @@ const {
 vi.mock('../database/index.js', () => ({ default: vi.fn(() => ({})) }));
 vi.mock('../utils/get-schema.js', () => ({ getSchema: vi.fn().mockResolvedValue({}) }));
 
-vi.mock('../deployment/drivers/cloudflare.js', () => ({
+vi.mock('./drivers/cloudflare.js', () => ({
 	CloudflareDriver: MockCloudflareDriverCtor,
 }));
 
@@ -59,26 +57,25 @@ vi.mock('../emitter.js', () => ({
 
 vi.mock('../logger/index.js', () => ({
 	useLogger: vi.fn(() => ({
-		debug: mockLoggerDebug,
 		info: mockLoggerInfo,
 		warn: mockLoggerWarn,
 	})),
 }));
 
-vi.mock('./deployment.js', () => ({
+vi.mock('../services/deployment.js', () => ({
 	DeploymentService: vi.fn().mockImplementation(() => ({
 		readByProvider: mockReadByProvider,
 		getWebhookConfig: mockGetWebhookConfig,
 	})),
 }));
 
-vi.mock('./deployment-projects.js', () => ({
+vi.mock('../services/deployment-projects.js', () => ({
 	DeploymentProjectsService: vi.fn().mockImplementation(() => ({
 		readByQuery: mockProjectsReadByQuery,
 	})),
 }));
 
-vi.mock('./deployment-runs.js', () => ({
+vi.mock('../services/deployment-runs.js', () => ({
 	DeploymentRunsService: vi.fn().mockImplementation(() => ({
 		processWebhookEvent: mockProcessWebhookEvent,
 	})),
@@ -117,13 +114,12 @@ describe('consumeCloudflareQueueEvents', () => {
 		mockAckQueueMessages.mockResolvedValue(undefined);
 	});
 
-	it('should return early and log when no cloudflare-workers deployment config exists', async () => {
+	it('should return early when no cloudflare-workers deployment config exists', async () => {
 		mockReadByProvider.mockRejectedValueOnce(new Error('Deployment config not found'));
 
 		await expect(consumeCloudflareQueueEvents()).resolves.toBeUndefined();
 
 		expect(mockPullQueueMessages).not.toHaveBeenCalled();
-		expect(mockLoggerDebug).toHaveBeenCalledWith(expect.stringContaining('Not running'));
 	});
 
 	it('should return early when events_queue_id is not set', async () => {
