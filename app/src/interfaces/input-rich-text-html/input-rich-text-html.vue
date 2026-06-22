@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SettingsStorageAssetPreset } from '@directus/types';
+import type { SettingsStorageAssetPreset } from '@directus/types';
 import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
 import { computed, ref, type Ref, toRefs, watch } from 'vue';
