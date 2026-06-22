@@ -56,6 +56,7 @@ describe('Toolbar', () => {
 		expect(wrapper.findAll('.toolbar-popover')).toHaveLength(1);
 		// ...and the four align icons are NOT in the visible row (they live inside the closed popover)
 		expect(wrapper.find('.toolbar-more').exists()).toBe(false);
+		expect(wrapper.findAll('.toolbar-button')).toHaveLength(1);
 	});
 
 	test('popover trigger sits alongside other groups', () => {
