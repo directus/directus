@@ -86,6 +86,7 @@ vi.mock('./deployment.js', () => ({
 	ensureDeploymentWebhooks: vi.fn(),
 }));
 
+vi.mock('./utils/get-schema.js', () => ({ getSchema: vi.fn().mockResolvedValue({}) }));
 vi.mock('./utils/validate-env.js');
 
 function mockAppEnv(overrides: Partial<ReturnType<typeof useEnv>> = {}) {
