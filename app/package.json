@@ -89,6 +89,8 @@
 		"@sindresorhus/slugify": "catalog:",
 		"@tinymce/tinymce-vue": "catalog:",
 		"@tiptap/extension-image": "catalog:",
+		"@tiptap/extension-subscript": "catalog:",
+		"@tiptap/extension-superscript": "catalog:",
 		"@tiptap/pm": "catalog:",
 		"@tiptap/starter-kit": "catalog:",
 		"@tiptap/vue-3": "catalog:",
