@@ -178,8 +178,7 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 	padding: var(--overflow-padding);
 	max-inline-size: var(--toolbar-width, 12rem);
 	max-block-size: calc(
-		var(--overflow-rows) * var(--overflow-button-size) + (var(--overflow-rows) - 1) * var(--overflow-gap) + 2 *
-			var(--overflow-padding)
+		var(--overflow-rows) * var(--overflow-button-size) + (var(--overflow-rows) - 1) * var(--overflow-gap) + 2 * var(--overflow-padding)
 	);
 	overflow-y: auto;
 }
