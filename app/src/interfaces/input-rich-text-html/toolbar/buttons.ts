@@ -11,6 +11,9 @@ export interface ToolbarContext {
 		active: () => boolean;
 		toggle: () => void;
 	};
+	image: {
+		open: () => void;
+	};
 }
 
 export interface ToolbarButton {
@@ -125,6 +128,12 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		label: 'wysiwyg_options.blockquote',
 		command: (e) => e.chain().focus().toggleBlockquote().run(),
 		isActive: (e) => e.isActive('blockquote'),
+	},
+	customImage: {
+		icon: 'image',
+		label: 'wysiwyg_options.image',
+		command: (_e, ctx) => ctx.image.open(),
+		isActive: (e) => e.isActive('image'),
 	},
 	hr: {
 		icon: 'horizontal_rule',

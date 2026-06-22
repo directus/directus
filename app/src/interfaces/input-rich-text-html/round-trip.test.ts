@@ -1,7 +1,6 @@
-import TextAlign from '@tiptap/extension-text-align';
-import StarterKit from '@tiptap/starter-kit';
 import { Editor } from '@tiptap/vue-3';
 import { describe, expect, test } from 'vitest';
+import { editorExtensions } from './extensions';
 
 /**
  * HTML corpus round-trip tests.
@@ -17,14 +16,10 @@ import { describe, expect, test } from 'vitest';
  *   documented accepted regression. `LOSSY` below is the ledger of those cases; when an
  *   extension lands, its sample moves from LOSSY → FAITHFUL and the snapshot updates.
  *
- * The editor here mirrors input-rich-text-html.vue's extension set (StarterKit + TextAlign).
+ * The editor here uses the same extension set as input-rich-text-html.vue (see ./extensions).
  */
 function roundTrip(html: string): string {
-	const editor = new Editor({
-		extensions: [StarterKit, TextAlign.configure({ types: ['heading', 'paragraph'] })],
-		content: html,
-	});
-
+	const editor = new Editor({ extensions: editorExtensions, content: html });
 	const out = editor.getHTML();
 	editor.destroy();
 	return out;
@@ -68,12 +63,6 @@ const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }
 		issue: 'CMS-2639',
 	},
 	{
-		name: 'image',
-		html: '<img src="/assets/abc?width=100&access_token=x" loading="lazy" width="100" height="80" alt="alt">',
-		absent: '<img',
-		issue: 'CMS-2641',
-	},
-	{
 		name: 'video',
 		html: '<video controls><source src="/v.mp4" type="video/mp4"></video>',
 		absent: '<video',
@@ -108,6 +97,32 @@ const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }
 describe('round-trip: faithful (StarterKit schema)', () => {
 	test.each(Object.entries(FAITHFUL))('%s survives round-trip', (_name, html) => {
 		expect(roundTrip(html)).toMatchSnapshot();
+	});
+});
+
+describe('round-trip: image (CMS-2641)', () => {
+	test('preserves src with query params, alt, and loading="lazy"', () => {
+		const out = roundTrip('<img src="/assets/abc?width=100&access_token=x" loading="lazy" alt="alt">');
+
+		expect(out).toContain('<img');
+		// `&` serializes to the HTML entity `&amp;` (browsers decode it back) — URL is preserved.
+		expect(out).toContain('src="/assets/abc?width=100&amp;access_token=x"');
+		expect(out).toContain('alt="alt"');
+		expect(out).toContain('loading="lazy"');
+	});
+
+	test('omits loading when not lazy', () => {
+		const out = roundTrip('<img src="/assets/abc" alt="alt">');
+
+		expect(out).toContain('<img');
+		expect(out).not.toContain('loading');
+	});
+
+	test('preserves explicit width/height attributes when present', () => {
+		const out = roundTrip('<img src="/assets/abc" width="100" height="80" alt="alt">');
+
+		expect(out).toContain('width="100"');
+		expect(out).toContain('height="80"');
 	});
 });
 
