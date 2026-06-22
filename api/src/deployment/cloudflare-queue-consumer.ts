@@ -5,38 +5,19 @@ import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { DeploymentProjectsService } from '../services/deployment-projects.js';
 import { DeploymentRunsService } from '../services/deployment-runs.js';
-import { DeploymentService } from '../services/deployment.js';
 import { getSchema } from '../utils/get-schema.js';
 import { CloudflareDriver } from './drivers/cloudflare.js';
 
-export async function consumeCloudflareQueueEvents(): Promise<void> {
+export async function consumeCloudflareQueueEvents(
+	deploymentId: string,
+	credentials: Record<string, any>,
+	options: Record<string, any>,
+): Promise<void> {
 	const logger = useLogger();
 	const schema = await getSchema();
 	const knex = getDatabase();
 
-	const deploymentService = new DeploymentService({
-		accountability: null,
-		schema,
-		knex,
-	});
-
-	let webhookConfig: { credentials: Record<string, any>; options: Record<string, any> };
-
-	let deploymentId: string;
-
-	try {
-		const deploymentRow = await deploymentService.readByProvider('cloudflare-workers');
-		deploymentId = deploymentRow.id;
-		webhookConfig = await deploymentService.getWebhookConfig('cloudflare-workers');
-	} catch {
-		return;
-	}
-
-	if (!String(webhookConfig.options?.['events_queue_id'] ?? '').trim()) {
-		return;
-	}
-
-	const driver = getDeploymentDriver('cloudflare-workers', webhookConfig.credentials, webhookConfig.options);
+	const driver = getDeploymentDriver('cloudflare-workers', credentials, options);
 	if (!(driver instanceof CloudflareDriver)) return;
 
 	let messages;

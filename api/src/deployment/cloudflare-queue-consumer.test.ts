@@ -6,8 +6,6 @@ const {
 	mockPullQueueMessages,
 	mockAckQueueMessages,
 	mockParseQueueMessage,
-	mockReadByProvider,
-	mockGetWebhookConfig,
 	mockProjectsReadByQuery,
 	mockProcessWebhookEvent,
 	mockEmitAction,
@@ -30,8 +28,6 @@ const {
 		mockPullQueueMessages,
 		mockAckQueueMessages,
 		mockParseQueueMessage,
-		mockReadByProvider: vi.fn(),
-		mockGetWebhookConfig: vi.fn(),
 		mockProjectsReadByQuery: vi.fn(),
 		mockProcessWebhookEvent: vi.fn(),
 		mockEmitAction: vi.fn(),
@@ -62,13 +58,6 @@ vi.mock('../logger/index.js', () => ({
 	})),
 }));
 
-vi.mock('../services/deployment.js', () => ({
-	DeploymentService: vi.fn().mockImplementation(() => ({
-		readByProvider: mockReadByProvider,
-		getWebhookConfig: mockGetWebhookConfig,
-	})),
-}));
-
 vi.mock('../services/deployment-projects.js', () => ({
 	DeploymentProjectsService: vi.fn().mockImplementation(() => ({
 		readByQuery: mockProjectsReadByQuery,
@@ -81,13 +70,11 @@ vi.mock('../services/deployment-runs.js', () => ({
 	})),
 }));
 
-const defaultDeploymentRow = { id: 'deploy-1' };
+const defaultCredentials = { api_token: 'test-token' };
+const defaultOptions = { account_id: 'account-1', events_queue_id: 'queue-1' };
+const defaultDeploymentId = 'deploy-1';
 
-const defaultWebhookConfig = {
-	credentials: { api_token: 'test-token' },
-	options: { account_id: 'account-1', events_queue_id: 'queue-1' },
-	webhook_secret: null,
-};
+const call = () => consumeCloudflareQueueEvents(defaultDeploymentId, defaultCredentials, defaultOptions);
 
 const makeMessage = (leaseId: string, body: any = { type: 'cf.workersBuilds.worker.build.succeeded' }) => ({
 	id: `msg-${leaseId}`,
@@ -108,46 +95,14 @@ const makeEvent = (overrides: Record<string, any> = {}): any => ({
 describe('consumeCloudflareQueueEvents', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
-		mockReadByProvider.mockResolvedValue(defaultDeploymentRow);
-		mockGetWebhookConfig.mockResolvedValue(defaultWebhookConfig);
 		mockPullQueueMessages.mockResolvedValue([]);
 		mockAckQueueMessages.mockResolvedValue(undefined);
-	});
-
-	it('should return early when no cloudflare-workers deployment config exists', async () => {
-		mockReadByProvider.mockRejectedValueOnce(new Error('Deployment config not found'));
-
-		await expect(consumeCloudflareQueueEvents()).resolves.toBeUndefined();
-
-		expect(mockPullQueueMessages).not.toHaveBeenCalled();
-	});
-
-	it('should return early when events_queue_id is not set', async () => {
-		mockGetWebhookConfig.mockResolvedValueOnce({
-			...defaultWebhookConfig,
-			options: { account_id: 'account-1' },
-		});
-
-		await consumeCloudflareQueueEvents();
-
-		expect(mockPullQueueMessages).not.toHaveBeenCalled();
-	});
-
-	it('should return early when events_queue_id is whitespace-only', async () => {
-		mockGetWebhookConfig.mockResolvedValueOnce({
-			...defaultWebhookConfig,
-			options: { account_id: 'account-1', events_queue_id: '   ' },
-		});
-
-		await consumeCloudflareQueueEvents();
-
-		expect(mockPullQueueMessages).not.toHaveBeenCalled();
 	});
 
 	it('should return early without acking when queue is empty', async () => {
 		mockPullQueueMessages.mockResolvedValueOnce([]);
 
-		await consumeCloudflareQueueEvents();
+		await call();
 
 		expect(mockProjectsReadByQuery).not.toHaveBeenCalled();
 		expect(mockAckQueueMessages).not.toHaveBeenCalled();
@@ -156,7 +111,7 @@ describe('consumeCloudflareQueueEvents', () => {
 	it('should warn and rethrow when pullQueueMessages fails', async () => {
 		mockPullQueueMessages.mockRejectedValueOnce(new Error('Queue API error'));
 
-		await expect(consumeCloudflareQueueEvents()).rejects.toThrow('Queue API error');
+		await expect(call()).rejects.toThrow('Queue API error');
 
 		expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('Queues API pull failed'));
 	});
@@ -166,7 +121,7 @@ describe('consumeCloudflareQueueEvents', () => {
 		mockPullQueueMessages.mockResolvedValueOnce([msg]);
 		mockParseQueueMessage.mockReturnValueOnce(null);
 
-		await consumeCloudflareQueueEvents();
+		await call();
 
 		expect(mockAckQueueMessages).toHaveBeenCalledWith(['lease-1'], []);
 		expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('Dropping message'));
@@ -180,7 +135,7 @@ describe('consumeCloudflareQueueEvents', () => {
 			throw new Error('parse error');
 		});
 
-		await consumeCloudflareQueueEvents();
+		await call();
 
 		expect(mockAckQueueMessages).toHaveBeenCalledWith([], ['lease-1']);
 		expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('Failed to parse event'));
@@ -192,7 +147,7 @@ describe('consumeCloudflareQueueEvents', () => {
 		mockParseQueueMessage.mockReturnValueOnce(makeEvent());
 		mockProjectsReadByQuery.mockResolvedValueOnce([]);
 
-		await consumeCloudflareQueueEvents();
+		await call();
 
 		expect(mockProcessWebhookEvent).not.toHaveBeenCalled();
 		expect(mockAckQueueMessages).toHaveBeenCalledWith(['lease-1'], []);
@@ -209,7 +164,7 @@ describe('consumeCloudflareQueueEvents', () => {
 		mockProjectsReadByQuery.mockResolvedValueOnce([project]);
 		mockProcessWebhookEvent.mockResolvedValueOnce('run-1');
 
-		await consumeCloudflareQueueEvents();
+		await call();
 
 		expect(mockProcessWebhookEvent).toHaveBeenCalledWith('project-1', event);
 
@@ -229,7 +184,7 @@ describe('consumeCloudflareQueueEvents', () => {
 		mockProjectsReadByQuery.mockResolvedValueOnce([{ id: 'project-1' }]);
 		mockProcessWebhookEvent.mockRejectedValueOnce(new Error('DB error'));
 
-		await consumeCloudflareQueueEvents();
+		await call();
 
 		expect(mockAckQueueMessages).toHaveBeenCalledWith([], ['lease-1']);
 		expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('Failed to process event'));
@@ -241,7 +196,7 @@ describe('consumeCloudflareQueueEvents', () => {
 		mockPullQueueMessages.mockResolvedValueOnce(messages);
 		mockParseQueueMessage.mockReturnValue(null);
 
-		await consumeCloudflareQueueEvents();
+		await call();
 
 		expect(mockLoggerInfo).toHaveBeenCalledWith(expect.stringContaining('2 message(s)'));
 	});
@@ -262,7 +217,7 @@ describe('consumeCloudflareQueueEvents', () => {
 		mockProjectsReadByQuery.mockResolvedValueOnce([project]);
 		mockProcessWebhookEvent.mockResolvedValueOnce('run-1');
 
-		await consumeCloudflareQueueEvents();
+		await call();
 
 		expect(mockAckQueueMessages).toHaveBeenCalledWith(expect.arrayContaining(['lease-1', 'lease-2']), ['lease-3']);
 	});
