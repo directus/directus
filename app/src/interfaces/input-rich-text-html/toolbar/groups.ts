@@ -4,6 +4,10 @@ export interface ToolbarGroup {
 	priority: number;
 	/** pinned groups never move into the "Show More" menu */
 	pinned?: boolean;
+	/** render the whole group as a single popover button + caret */
+	popover?: boolean;
+	/** collapsed-state fallback icon for a popover group when no child is active */
+	icon?: string;
 	/** member button keys, in render order */
 	keys: string[];
 }
@@ -17,6 +21,13 @@ export const toolbarGroups: ToolbarGroup[] = [
 		keys: ['bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript'],
 	},
 	{ id: 'heading', priority: 80, keys: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] },
+	{
+		id: 'align',
+		priority: 75,
+		popover: true,
+		icon: 'format_align_left',
+		keys: ['alignleft', 'aligncenter', 'alignright', 'alignjustify', 'alignnone'],
+	},
 	{ id: 'list', priority: 70, keys: ['numlist', 'bullist', 'indent', 'outdent'] },
 	{ id: 'block', priority: 60, keys: ['blockquote', 'hr'] },
 	{ id: 'insert', priority: 50, keys: ['customLink', 'customImage', 'customMedia'] },
