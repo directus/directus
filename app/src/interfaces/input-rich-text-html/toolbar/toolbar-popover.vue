@@ -32,7 +32,7 @@ const activeChild = computed(() => {
 	return undefined;
 });
 
-const triggerIcon = computed(() => activeChild.value?.icon ?? props.group.icon ?? firstChild.value?.icon);
+const triggerIcon = computed(() => activeChild.value?.icon ?? props.group.icon ?? firstChild.value?.icon ?? '');
 
 const triggerLabel = computed(() => {
 	const btn = activeChild.value ?? firstChild.value;
