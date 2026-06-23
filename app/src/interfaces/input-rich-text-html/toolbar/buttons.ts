@@ -82,6 +82,18 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		command: (e) => e.chain().focus().toggleStrike().run(),
 		isActive: (e) => e.isActive('strike'),
 	},
+	subscript: {
+		icon: 'subscript',
+		label: 'wysiwyg_options.subscript',
+		command: (e) => e.chain().focus().toggleSubscript().run(),
+		isActive: (e) => e.isActive('subscript'),
+	},
+	superscript: {
+		icon: 'superscript',
+		label: 'wysiwyg_options.superscript',
+		command: (e) => e.chain().focus().toggleSuperscript().run(),
+		isActive: (e) => e.isActive('superscript'),
+	},
 	numlist: {
 		icon: 'format_list_numbered',
 		label: 'wysiwyg_options.numlist',

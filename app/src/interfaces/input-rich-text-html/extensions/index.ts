@@ -1,5 +1,6 @@
 import StarterKit from '@tiptap/starter-kit';
 import { CustomImage } from './image';
+import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
 
 /**
  * The editor's extension set. Shared by input-rich-text-html.vue and the round-trip tests so the
@@ -18,4 +19,6 @@ export const editorExtensions = [
 		},
 	}),
 	CustomImage,
+	CustomSubscript,
+	CustomSuperscript,
 ];
