@@ -76,20 +76,19 @@ get:
     - name: focal_point_x
       in: query
       description: >
-        Horizontal focal point (0.0 = left, 1.0 = right) used for smart cropping when `fit=cover`. Applies to images
-        only.
+        Horizontal focal point in pixels from the left edge of the original image, used for smart cropping when
+        `fit=cover`. Applies to images only.
       schema:
-        type: number
+        type: integer
         minimum: 0
-        maximum: 1
     - name: focal_point_y
       in: query
       description: >
-        Vertical focal point (0.0 = top, 1.0 = bottom) used for smart cropping when `fit=cover`. Applies to images only.
+        Vertical focal point in pixels from the top edge of the original image, used for smart cropping when
+        `fit=cover`. Applies to images only.
       schema:
-        type: number
+        type: integer
         minimum: 0
-        maximum: 1
     - name: download
       in: query
       description: >
