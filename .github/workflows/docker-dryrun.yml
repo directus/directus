@@ -1,0 +1,229 @@
+name: Docker Dry-Run
+
+# Manual, live dry-run of the Docker build + multi-arch publish path from
+# release.yml, WITHOUT publishing to NPM, creating a GitHub release, or touching
+# the real image. Images are pushed to a SEPARATE GHCR package
+# (ghcr.io/<repo>-dryrun) with an experimental tag, so nothing public on Docker
+# Hub is affected and cleanup is just deleting that package.
+
+on:
+  workflow_dispatch:
+    inputs:
+      variant:
+        description: 'Which image variant(s) to build'
+        type: choice
+        options:
+          - both
+          - standard
+          - dhi
+        default: both
+      tag:
+        description: 'Experimental image tag (default: dryrun-<short-sha>)'
+        type: string
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write # OIDC token used to sign build provenance attestations
+  attestations: write # write the provenance attestation back to the registry
+
+env:
+  # Separate package name: new GHCR packages are private by default and the real
+  # ghcr.io/<repo> image is never touched.
+  GHCR_IMAGE: ghcr.io/${{ github.repository }}-dryrun
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    outputs:
+      variants: ${{ steps.variants.outputs.variants }}
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - name: Resolve variant matrix
+        id: variants
+        env:
+          VARIANT: ${{ inputs.variant }}
+        run: |
+          standard='{"name":"standard","suffix":"","file":"./Dockerfile"}'
+          dhi='{"name":"dhi","suffix":"-dhi","file":"./Dockerfile.dhi"}'
+          case "$VARIANT" in
+            standard) variants="[$standard]" ;;
+            dhi)      variants="[$dhi]" ;;
+            *)        variants="[$standard,$dhi]" ;;
+          esac
+          echo "variants=$variants" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve experimental tag
+        id: tag
+        env:
+          TAG_INPUT: ${{ inputs.tag }}
+        run: |
+          if [ -n "$TAG_INPUT" ]; then
+            tag="$TAG_INPUT"
+          else
+            tag="dryrun-${GITHUB_SHA::12}"
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "ℹ️ Dry-run images will be tagged '$tag' on ${GHCR_IMAGE}"
+
+  build-images:
+    name: Build Images
+    needs: setup
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: ${{ fromJSON(needs.setup.outputs.variants) }}
+        platform:
+          - linux/amd64
+          - linux/arm64
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-latest
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+    steps:
+      - name: Prepare
+        run: |
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_SLUG=${platform//\//-}" >> $GITHUB_ENV
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v5
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-${{ env.PLATFORM_SLUG }}-${{ matrix.variant.name }}-dryrun-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.PLATFORM_SLUG }}-${{ matrix.variant.name }}-dryrun-buildx-
+
+      - name: Extract metadata for Docker image
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          flavor: |
+            suffix=${{ matrix.variant.suffix }}
+          images: |
+            ${{ env.GHCR_IMAGE }}
+          tags: |
+            type=raw,value=${{ needs.setup.outputs.tag }}
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # DHI base image lives behind an entitled registry; reuse the Docker Hub
+      # publishing credentials (that account must hold the DHI entitlement).
+      # Gated to the dhi variant so the standard build never attempts this login.
+      - name: Login to DHI registry
+        uses: docker/login-action@v3
+        if: matrix.variant.name == 'dhi'
+        with:
+          registry: dhi.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and push by digest
+        uses: docker/build-push-action@v6
+        id: build
+        with:
+          context: .
+          file: ${{ matrix.variant.file }}
+          platforms: ${{ matrix.platform }}
+          labels: ${{ steps.meta.outputs.labels }}
+          provenance: true
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          # prettier-ignore
+          outputs: type=image,"name=${{ env.GHCR_IMAGE }}",push-by-digest=true,name-canonical=true,push=true
+
+      - name: Export digest
+        run: |
+          mkdir -p ${{ runner.temp }}/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "${{ runner.temp }}/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v6
+        with:
+          name: digests-${{ matrix.variant.name }}-${{ env.PLATFORM_SLUG }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+      # Temp fix for cache growth:
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  publish-docker-images:
+    name: Publish Docker Images
+    runs-on: ubuntu-latest
+    needs:
+      - setup
+      - build-images
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: ${{ fromJSON(needs.setup.outputs.variants) }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Download digests
+        uses: actions/download-artifact@v6
+        with:
+          path: ${{ runner.temp }}/digests
+          pattern: digests-${{ matrix.variant.name }}-*
+          merge-multiple: true
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract metadata for Docker image
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          flavor: |
+            suffix=${{ matrix.variant.suffix }}
+          images: |
+            ${{ env.GHCR_IMAGE }}
+          tags: |
+            type=raw,value=${{ needs.setup.outputs.tag }}
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create manifest list and push to GHCR
+        working-directory: ${{ runner.temp }}/digests
+        run: |
+          docker buildx imagetools create \
+            $(jq -cr '.tags | map(select(startswith("ghcr.io"))) | map("-t " + .) | join(" ")' <<< '${{ steps.meta.outputs.json }}') \
+            $(printf '${{ env.GHCR_IMAGE }}@sha256:%s ' *)
+
+      - name: Inspect GHCR image
+        run: |
+          docker buildx imagetools inspect ${{ env.GHCR_IMAGE }}:${{ steps.meta.outputs.version }}
