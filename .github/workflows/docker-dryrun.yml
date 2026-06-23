@@ -1,10 +1,10 @@
 name: Docker Dry-Run
 
 # Manual, live dry-run of the Docker build + multi-arch publish path from
-# release.yml, WITHOUT publishing to NPM, creating a GitHub release, or touching
-# the real image. Images are pushed to a SEPARATE GHCR package
-# (ghcr.io/<repo>-dryrun) with an experimental tag, so nothing public on Docker
-# Hub is affected and cleanup is just deleting that package.
+# release.yml, WITHOUT publishing to NPM, creating a GitHub release, or signing
+# with cosign. Images are pushed to a SEPARATE Docker Hub repository
+# (docker.io/<repo>-dryrun) with an experimental tag, so the real
+# docker.io/<repo> image is never touched and cleanup is just deleting that repo.
 
 on:
   workflow_dispatch:
@@ -25,14 +25,14 @@ on:
 
 permissions:
   contents: read
-  packages: write
   id-token: write # OIDC token used to sign build provenance attestations
   attestations: write # write the provenance attestation back to the registry
 
 env:
-  # Separate package name: new GHCR packages are private by default and the real
-  # ghcr.io/<repo> image is never touched.
-  GHCR_IMAGE: ghcr.io/${{ github.repository }}-dryrun
+  # Separate repository so the real docker.io/<repo> image is never touched.
+  # NOTE: Docker Hub repos default to PUBLIC; pre-create and set this repo to
+  # private on Docker Hub if the dry-run images should not be publicly visible.
+  DOCKERHUB_IMAGE: docker.io/${{ github.repository }}-dryrun
 
 jobs:
   setup:
@@ -67,7 +67,7 @@ jobs:
             tag="dryrun-${GITHUB_SHA::12}"
           fi
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
-          echo "ℹ️ Dry-run images will be tagged '$tag' on ${GHCR_IMAGE}"
+          echo "ℹ️ Dry-run images will be tagged '$tag' on ${DOCKERHUB_IMAGE}"
 
   build-images:
     name: Build Images
@@ -87,7 +87,6 @@ jobs:
     runs-on: ${{ matrix.runner }}
     permissions:
       contents: read
-      packages: write
       id-token: write
       attestations: write
     steps:
@@ -117,16 +116,16 @@ jobs:
           flavor: |
             suffix=${{ matrix.variant.suffix }}
           images: |
-            ${{ env.GHCR_IMAGE }}
+            ${{ env.DOCKERHUB_IMAGE }}
           tags: |
             type=raw,value=${{ needs.setup.outputs.tag }}
 
-      - name: Login to GHCR
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       # DHI base image lives behind an entitled registry; reuse the Docker Hub
       # publishing credentials (that account must hold the DHI entitlement).
@@ -151,7 +150,7 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
           # prettier-ignore
-          outputs: type=image,"name=${{ env.GHCR_IMAGE }}",push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,"name=${{ env.DOCKERHUB_IMAGE }}",push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
         run: |
@@ -185,9 +184,6 @@ jobs:
       fail-fast: false
       matrix:
         variant: ${{ fromJSON(needs.setup.outputs.variants) }}
-    permissions:
-      contents: read
-      packages: write
     steps:
       - name: Download digests
         uses: actions/download-artifact@v6
@@ -206,24 +202,24 @@ jobs:
           flavor: |
             suffix=${{ matrix.variant.suffix }}
           images: |
-            ${{ env.GHCR_IMAGE }}
+            ${{ env.DOCKERHUB_IMAGE }}
           tags: |
             type=raw,value=${{ needs.setup.outputs.tag }}
 
-      - name: Login to GHCR
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Create manifest list and push to GHCR
+      - name: Create manifest list and push to Docker Hub
         working-directory: ${{ runner.temp }}/digests
         run: |
           docker buildx imagetools create \
-            $(jq -cr '.tags | map(select(startswith("ghcr.io"))) | map("-t " + .) | join(" ")' <<< '${{ steps.meta.outputs.json }}') \
-            $(printf '${{ env.GHCR_IMAGE }}@sha256:%s ' *)
+            $(jq -cr '.tags | map(select(startswith("docker.io"))) | map("-t " + .) | join(" ")' <<< '${{ steps.meta.outputs.json }}') \
+            $(printf '${{ env.DOCKERHUB_IMAGE }}@sha256:%s ' *)
 
-      - name: Inspect GHCR image
+      - name: Inspect Docker Hub image
         run: |
-          docker buildx imagetools inspect ${{ env.GHCR_IMAGE }}:${{ steps.meta.outputs.version }}
+          docker buildx imagetools inspect ${{ env.DOCKERHUB_IMAGE }}:${{ steps.meta.outputs.version }}
