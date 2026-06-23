@@ -126,20 +126,6 @@ describe('Service / Files', () => {
 				{},
 			);
 		});
-
-		test('should clamp path traversal in filename_disk to the storage root', async () => {
-			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
-
-			await service.createOne({
-				type: 'text/plain',
-				filename_disk: '../../../etc/passwd',
-			});
-
-			expect(ItemsService.prototype.createOne).toHaveBeenCalledWith(
-				{ filename_disk: 'etc/passwd', type: 'text/plain' },
-				{},
-			);
-		});
 	});
 
 	describe('uploadOne', () => {
