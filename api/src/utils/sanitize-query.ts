@@ -12,6 +12,7 @@ import { extractRequiredDynamicVariableContext } from '../permissions/utils/extr
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { Meta } from '../types/index.js';
 import { splitFields } from './split-fields.js';
+import { stripFieldArrayIndex } from './strip-field-array-index.js';
 
 /**
  * Sanitize the query parameters and parse them where necessary.
@@ -126,6 +127,10 @@ function sanitizeFields(rawFields: any) {
 	fields = flatten(fields.map((field) => (field.includes(',') ? splitFields(field) : field)));
 
 	fields = fields.map((field) => field.trim());
+
+	// Array index access (e.g. `relation[0].field`) is only meaningful when rendering a value, not
+	// when selecting fields, so strip it here to select the full relation.
+	fields = fields.map(stripFieldArrayIndex);
 
 	return fields;
 }

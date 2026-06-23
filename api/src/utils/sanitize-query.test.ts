@@ -128,6 +128,21 @@ describe('fields', () => {
 
 		expect(sanitizedQuery.fields).toEqual(['field_a']);
 	});
+
+	test.each([
+		{ value: 'locale[0].name', type: 'bracket' },
+		{ value: 'locale.0.name', type: 'dot' },
+	])('should strip $type array index access so the relation resolves', async ({ value: fields }) => {
+		const sanitizedQuery = await sanitizeQuery({ fields }, null as any);
+
+		expect(sanitizedQuery.fields).toEqual(['locale.name']);
+	});
+
+	test('should preserve brackets inside function arguments', async () => {
+		const sanitizedQuery = await sanitizeQuery({ fields: 'id,json(data,items[0]),locale[0].name' }, null as any);
+
+		expect(sanitizedQuery.fields).toEqual(['id', 'json(data,items[0])', 'locale.name']);
+	});
 });
 
 describe('group', () => {
