@@ -57,8 +57,6 @@ post:
                 $ref: '../../openapi.yaml#/components/schemas/Roles'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
     - Roles
 

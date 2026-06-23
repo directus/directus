@@ -23,7 +23,5 @@ get:
                   enforce_tfa:
                     type: boolean
                     description: Whether two-factor authentication is enforced for the current user.
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
   tags:
     - Policies
