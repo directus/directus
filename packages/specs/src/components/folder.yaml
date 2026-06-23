@@ -11,7 +11,7 @@ properties:
   parent:
     description: Unique identifier of the parent folder. This allows for nested folders.
     example: null
+    nullable: true
     oneOf:
       - type: string
-        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Folders'

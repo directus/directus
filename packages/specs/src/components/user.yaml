@@ -45,9 +45,9 @@ properties:
   avatar:
     description: The user's avatar.
     example: null
+    nullable: true
     oneOf:
       - type: string
-        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Files'
   language:
     description: The user's language used in Directus.

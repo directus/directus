@@ -29,9 +29,9 @@ properties:
   folder:
     description: Virtual folder where this file resides in.
     example: null
+    nullable: true
     oneOf:
       - type: string
-        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Folders'
   created_on:
     description: When the file was created.
