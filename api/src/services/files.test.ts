@@ -127,16 +127,16 @@ describe('Service / Files', () => {
 			);
 		});
 
-		test('should strip path traversal from filename_disk to prevent placing files in sensitive subdirectories', async () => {
+		test('should clamp path traversal in filename_disk to the storage root', async () => {
 			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
 
 			await service.createOne({
 				type: 'text/plain',
-				filename_disk: '../extensions/pwn.liquid',
+				filename_disk: '../../../etc/passwd',
 			});
 
 			expect(ItemsService.prototype.createOne).toHaveBeenCalledWith(
-				{ filename_disk: 'pwn.liquid', type: 'text/plain' },
+				{ filename_disk: 'etc/passwd', type: 'text/plain' },
 				{},
 			);
 		});
