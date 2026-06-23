@@ -1,6 +1,5 @@
 import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
 import { toBoolean } from '@directus/utils';
-import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
@@ -14,7 +13,6 @@ import { ExportService, ImportService } from '../services/import-export.js';
 import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
-import { generateHash } from '../utils/generate-hash.js';
 import { generateTranslations } from '../utils/generate-translations.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
