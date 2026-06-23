@@ -134,10 +134,7 @@ export function getDatabase(): Knex {
 		poolConfig.afterCreate = (conn: any, callback: any) => {
 			logger.trace('Setting CRDB serial_normalization and default_int_size');
 
-			Promise.all([
-				conn.query('SET serial_normalization = "sql_sequence"'),
-				conn.query('SET default_int_size = 4'),
-			])
+			Promise.all([conn.query('SET serial_normalization = "sql_sequence"'), conn.query('SET default_int_size = 4')])
 				.then(() => callback(null, conn))
 				.catch((err: any) => callback(err, conn));
 		};
