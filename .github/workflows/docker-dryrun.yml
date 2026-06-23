@@ -7,6 +7,7 @@ name: Docker Dry-Run
 # docker.io/<repo> image is never touched and cleanup is just deleting that repo.
 
 on:
+  # Manual button (only available once this file is on the default branch).
   workflow_dispatch:
     inputs:
       variant:
@@ -22,6 +23,12 @@ on:
         type: string
         required: false
         default: ''
+  # Label gate: add the "dryrun" label to a PR to trigger a run from that PR's
+  # branch (no merge to the default branch required). Uses default settings
+  # (variant=both, tag=dryrun-<short-sha>) since label events carry no inputs.
+  # Same-repo PRs only have access to the required secrets; fork PRs do not.
+  pull_request:
+    types: [labeled]
 
 permissions:
   contents: read
@@ -37,6 +44,9 @@ env:
 jobs:
   setup:
     name: Setup
+    # Run for the manual button, or when a PR is labeled exactly "dryrun".
+    # Downstream jobs depend on this one, so gating here gates the whole run.
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'dryrun'
     runs-on: ubuntu-latest
     outputs:
       variants: ${{ steps.variants.outputs.variants }}
@@ -45,7 +55,7 @@ jobs:
       - name: Resolve variant matrix
         id: variants
         env:
-          VARIANT: ${{ inputs.variant }}
+          VARIANT: ${{ inputs.variant || 'both' }}
         run: |
           standard='{"name":"standard","suffix":"","file":"./Dockerfile"}'
           dhi='{"name":"dhi","suffix":"-dhi","file":"./Dockerfile.dhi"}'
@@ -60,11 +70,14 @@ jobs:
         id: tag
         env:
           TAG_INPUT: ${{ inputs.tag }}
+          # Empty on workflow_dispatch; the PR head sha on a label event.
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           if [ -n "$TAG_INPUT" ]; then
             tag="$TAG_INPUT"
           else
-            tag="dryrun-${GITHUB_SHA::12}"
+            sha="${HEAD_SHA:-$GITHUB_SHA}"
+            tag="dryrun-${sha::12}"
           fi
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           echo "ℹ️ Dry-run images will be tagged '$tag' on ${DOCKERHUB_IMAGE}"
