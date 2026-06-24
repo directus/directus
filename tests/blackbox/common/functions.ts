@@ -98,6 +98,12 @@ export async function CreateRole(vendor: Vendor, options: OptionsCreateRole) {
 		})
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
+	if (!Array.isArray(roleResponse.body?.data)) {
+		throw new Error(
+			`CreateRole "${options.name}" lookup failed on ${vendor}: ${roleResponse.status} ${JSON.stringify(roleResponse.body)}`,
+		);
+	}
+
 	if (roleResponse.body.data.length > 0) {
 		return roleResponse.body.data[0];
 	}
@@ -106,6 +112,12 @@ export async function CreateRole(vendor: Vendor, options: OptionsCreateRole) {
 		.post(`/roles`)
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 		.send({ name: options.name });
+
+	if (response.status !== 200 || !response.body?.data) {
+		throw new Error(
+			`CreateRole "${options.name}" failed on ${vendor}: ${response.status} ${JSON.stringify(response.body)}`,
+		);
+	}
 
 	return response.body.data;
 }
@@ -152,6 +164,12 @@ export async function CreateUser(vendor: Vendor, options: Partial<OptionsCreateU
 		.post(`/users`)
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 		.send(options);
+
+	if (response.status !== 200 || !response.body?.data) {
+		throw new Error(
+			`CreateUser "${options.email}" failed on ${vendor}: ${response.status} ${JSON.stringify(response.body)}`,
+		);
+	}
 
 	return response.body.data;
 }
@@ -812,6 +830,12 @@ export async function CreatePolicy(vendor: Vendor, options: OptionsCreatePolicy)
 
 	const policy = response.body?.data;
 
+	if (response.status !== 200 || !policy) {
+		throw new Error(
+			`CreatePolicy "${options.name}" failed on ${vendor}: ${response.status} ${JSON.stringify(response.body)}`,
+		);
+	}
+
 	if (actualRoleId) {
 		await request(getUrl(vendor)).post(`/access`).set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`).send({
 			role: actualRoleId,
@@ -865,6 +889,12 @@ export async function CreatePermission(vendor: Vendor, options: OptionsCreatePer
 				delete: [],
 			},
 		});
+
+	if (response.status !== 200 || !response.body?.data) {
+		throw new Error(
+			`CreatePermission for policy "${policyId}" failed on ${vendor}: ${response.status} ${JSON.stringify(response.body)}`,
+		);
+	}
 
 	return response.body.data;
 }
