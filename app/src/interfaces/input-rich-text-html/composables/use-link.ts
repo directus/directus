@@ -21,12 +21,17 @@ type UsableLink = {
 
 const defaultLinkSelection = (): LinkSelection => ({ url: null, displayText: null, title: null, newTab: true });
 
+// tokens on an edited link are treated as author-set and preserved.
+const SECURITY_REL = ['noopener', 'noreferrer'];
+
 export function useLink(editor: Ref<Editor>): UsableLink {
 	const linkDrawerOpen = ref(false);
 	const isEditingLink = ref(false);
 	const linkSelection = ref<LinkSelection>(defaultLinkSelection());
 	// the link's text when the drawer opened, so saveLink knows whether the display text changed
 	const originalText = ref('');
+	// the link's rel when the drawer opened, so saveLink can preserve author tokens (nofollow, etc.)
+	const originalRel = ref('');
 
 	const isLinkSaveable = computed(() => Boolean(linkSelection.value.url));
 
@@ -51,6 +56,7 @@ export function useLink(editor: Ref<Editor>): UsableLink {
 			const attrs = editor.value.getAttributes('link');
 			const text = linkText();
 			originalText.value = text;
+			originalRel.value = attrs.rel ?? '';
 
 			linkSelection.value = {
 				url: attrs.href ?? null,
@@ -64,6 +70,7 @@ export function useLink(editor: Ref<Editor>): UsableLink {
 
 		const selectedText = selectionText();
 		originalText.value = selectedText;
+		originalRel.value = '';
 		linkSelection.value = defaultLinkSelection();
 
 		if (isUrl(selectedText)) {
@@ -77,6 +84,7 @@ export function useLink(editor: Ref<Editor>): UsableLink {
 		linkSelection.value = defaultLinkSelection();
 		isEditingLink.value = false;
 		originalText.value = '';
+		originalRel.value = '';
 		linkDrawerOpen.value = false;
 	}
 
@@ -86,7 +94,8 @@ export function useLink(editor: Ref<Editor>): UsableLink {
 		const { url, displayText, title, newTab } = linkSelection.value;
 		const href = url!;
 		const text = displayText || href;
-		const attrs = { href, target: newTab ? '_blank' : null, title: title || null };
+		const rel = buildRel(newTab);
+		const attrs = { href, target: newTab ? '_blank' : null, rel, title: title || null };
 
 		const chain = editor.value.chain().focus();
 		if (isEditingLink.value) chain.extendMarkRange('link');
@@ -105,6 +114,14 @@ export function useLink(editor: Ref<Editor>): UsableLink {
 	function unlink() {
 		editor.value.chain().focus().extendMarkRange('link').unsetLink().run();
 		closeLinkDrawer();
+	}
+
+	// Author tokens like nofollow/sponsored/ugc on the edited link are preserved.
+	// Returns null when no tokens remain so we don't emit an empty rel.
+	function buildRel(newTab: boolean): string | null {
+		const authorTokens = originalRel.value.split(/\s+/).filter((token) => token && !SECURITY_REL.includes(token));
+		const tokens = newTab ? [...SECURITY_REL, ...authorTokens] : authorTokens;
+		return tokens.length ? tokens.join(' ') : null;
 	}
 
 	// Full text of the link under the cursor, regardless of where in it the selection sits.

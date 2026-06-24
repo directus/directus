@@ -89,6 +89,7 @@ test('saveLink inserts an anchor with href, title and target when creating a new
 	expect(html).toContain('href="https://directus.io"');
 	expect(html).toContain('title="Home"');
 	expect(html).toContain('target="_blank"');
+	expect(html).toContain('rel="noopener noreferrer"');
 	expect(html).toContain('>Directus</a>');
 });
 
@@ -109,7 +110,9 @@ test('saveLink omits target when newTab is false', () => {
 
 	saveLink();
 
-	expect(editor.value.getHTML()).not.toContain('target=');
+	const html = editor.value.getHTML();
+	expect(html).not.toContain('target=');
+	expect(html).not.toContain('rel=');
 });
 
 test('saveLink updates the display text of an existing link', () => {
@@ -129,6 +132,40 @@ test('saveLink updates the display text of an existing link', () => {
 	expect(html).toContain('href="https://directus.io/new"');
 	expect(html).toContain('>new</a>');
 	expect(html).not.toContain('old');
+});
+
+test('saveLink preserves author rel tokens while keeping noopener/noreferrer for a new-tab link', () => {
+	const { editor, linkSelection, openLinkDrawer, saveLink } = setup(
+		'<p><a href="https://directus.io" target="_blank" rel="noopener noreferrer nofollow">hello</a></p>',
+	);
+
+	editor.value.commands.setTextSelection(3);
+	openLinkDrawer();
+
+	// edit only the title, leave new-tab on
+	linkSelection.value = { ...linkSelection.value, title: 'Home' };
+
+	saveLink();
+
+	expect(editor.value.getHTML()).toContain('rel="noopener noreferrer nofollow"');
+});
+
+test('saveLink keeps author rel tokens but drops noopener/noreferrer when switching to same-tab', () => {
+	const { editor, linkSelection, openLinkDrawer, saveLink } = setup(
+		'<p><a href="https://directus.io" target="_blank" rel="noopener noreferrer nofollow">hello</a></p>',
+	);
+
+	editor.value.commands.setTextSelection(3);
+	openLinkDrawer();
+
+	linkSelection.value = { ...linkSelection.value, newTab: false };
+
+	saveLink();
+
+	const html = editor.value.getHTML();
+	expect(html).toContain('rel="nofollow"');
+	expect(html).not.toContain('noopener');
+	expect(html).not.toContain('target=');
 });
 
 test('saveLink does nothing when the url is empty', () => {
