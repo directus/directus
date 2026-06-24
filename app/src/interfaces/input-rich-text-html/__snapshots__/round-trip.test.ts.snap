@@ -1,5 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`round-trip: faithful (StarterKit schema) > aligned heading survives round-trip 1`] = `"<h2 style="text-align: center;">centered</h2>"`;
+
 exports[`round-trip: faithful (StarterKit schema) > blockquote survives round-trip 1`] = `"<blockquote><p>quote</p></blockquote>"`;
 
 exports[`round-trip: faithful (StarterKit schema) > bold survives round-trip 1`] = `"<p><strong>bold</strong></p>"`;
@@ -38,6 +40,14 @@ exports[`round-trip: faithful (StarterKit schema) > subscript survives round-tri
 
 exports[`round-trip: faithful (StarterKit schema) > superscript survives round-trip 1`] = `"<p>x<sup>2</sup></p>"`;
 
+exports[`round-trip: faithful (StarterKit schema) > text align center survives round-trip 1`] = `"<p style="text-align: center;">centered</p>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > text align justify survives round-trip 1`] = `"<p style="text-align: justify;">justified</p>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > text align left survives round-trip 1`] = `"<p style="text-align: left;">left</p>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > text align right survives round-trip 1`] = `"<p style="text-align: right;">right</p>"`;
+
 exports[`round-trip: faithful (StarterKit schema) > underline survives round-trip 1`] = `"<p><u>underline</u></p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'audio' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;
@@ -53,8 +63,6 @@ exports[`round-trip: lossy (restored by later issues / accepted regression) > 'p
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'rtl direction' is dropped today (→ 'CMS-2646') 1`] = `"<p>شسي</p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'table' is dropped today (→ 'CMS-2639') 1`] = `"<p>ab</p>"`;
-
-exports[`round-trip: lossy (restored by later issues / accepted regression) > 'text align' is dropped today (→ 'CMS-2636') 1`] = `"<p>centered</p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'text color' is dropped today (→ 'CMS-2637') 1`] = `"<p>text</p>"`;
 

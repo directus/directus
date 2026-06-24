@@ -7,6 +7,7 @@ import { type ToolbarButton, toolbarButtons, type ToolbarContext } from './butto
 import { computeToolbarLayout, type LayoutMeasurements, type RenderGroup } from './compute-toolbar-layout';
 import { toolbarGroups } from './groups';
 import ToolbarButtonComp from './toolbar-button.vue';
+import ToolbarPopover from './toolbar-popover.vue';
 import { useClipboardActions } from './use-clipboard-actions';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -50,6 +51,7 @@ const MEASUREMENTS: LayoutMeasurements = {
 	moreWidth: 32,
 	separatorWidth: 9,
 	minItems: 5,
+	popoverWidth: 44,
 };
 
 // keys present in the field config AND in the registry, preserving field order for the `other` bucket
@@ -90,8 +92,10 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 	<div ref="container" class="toolbar">
 		<template v-for="(group, index) in visibleGroups" :key="group.id">
 			<div v-if="index > 0" class="toolbar-separator" />
+			<ToolbarPopover v-if="group.popover" :group="group" :editor="editor" :context="context" :disabled="disabled" />
 			<ToolbarButtonComp
 				v-for="item in resolve(group)"
+				v-else
 				:key="item.key"
 				:button="item.button"
 				:editor="editor"
@@ -107,7 +111,8 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 				<VButton
 					v-tooltip="t('show_more')"
 					class="toolbar-button toolbar-more"
-					:class="{ active: overflowMenuActive }"
+					ghost
+					:active="overflowMenuActive"
 					small
 					icon
 					@click="toggle"
@@ -118,8 +123,16 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 			<div class="toolbar-overflow" :style="{ '--toolbar-width': overflowMaxWidth }">
 				<template v-for="(group, index) in overflowGroups" :key="group.id">
 					<div v-if="index > 0" class="toolbar-separator" />
+					<ToolbarPopover
+						v-if="group.popover"
+						:group="group"
+						:editor="editor"
+						:context="context"
+						:disabled="disabled"
+					/>
 					<ToolbarButtonComp
 						v-for="item in resolve(group)"
+						v-else
 						:key="item.key"
 						:button="item.button"
 						:editor="editor"
@@ -152,27 +165,14 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 	border-inline-end: var(--theme--border-width) solid var(--theme--border-color-accent);
 }
 
-// Match the ghost styling of the inner toolbar buttons (scoped to toolbar-button.vue, so replicated here).
-.toolbar-more {
-	--v-button-color: var(--theme--foreground);
-	--v-button-color-hover: var(--primary-ondimmed);
-	--v-button-color-active: var(--primary-ondimmed);
-	--v-button-background-color: transparent;
-	--v-button-background-color-hover: var(--primary-dimmed);
-	--v-button-background-color-active: var(--primary-dimmed);
-}
-
-// Open menu = active: persist the dimmed-primary fill like an applied format button.
-.toolbar-more.active {
-	--v-button-background-color: var(--primary-dimmed);
-	--v-button-color: var(--primary-ondimmed);
-}
-
 .toolbar-overflow {
 	--overflow-rows: 2;
 	--overflow-gap: 0.125rem;
 	--overflow-padding: 0.25rem;
 	--overflow-button-size: 2rem;
+	--overflow-rows-size: calc(var(--overflow-rows) * var(--overflow-button-size));
+	--overflow-gaps-size: calc((var(--overflow-rows) - 1) * var(--overflow-gap));
+	--overflow-pad-size: calc(2 * var(--overflow-padding));
 
 	display: flex;
 	flex-wrap: wrap;
@@ -180,10 +180,7 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 	gap: var(--overflow-gap);
 	padding: var(--overflow-padding);
 	max-inline-size: var(--toolbar-width, 12rem);
-	max-block-size: calc(
-		var(--overflow-rows) * var(--overflow-button-size) + (var(--overflow-rows) - 1) * var(--overflow-gap) + 2 *
-			var(--overflow-padding)
-	);
+	max-block-size: calc(var(--overflow-rows-size) + var(--overflow-gaps-size) + var(--overflow-pad-size));
 	overflow-y: auto;
 }
 </style>

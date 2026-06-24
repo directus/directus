@@ -1,6 +1,7 @@
 import StarterKit from '@tiptap/starter-kit';
 import { CustomImage } from './image';
 import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
+import { TextAlignment } from './text-alignment';
 
 /**
  * The editor's extension set. Shared by input-rich-text-html.vue and the round-trip tests so the
@@ -19,6 +20,7 @@ export const editorExtensions = [
 		},
 	}),
 	CustomImage,
+	TextAlignment,
 	CustomSubscript,
 	CustomSuperscript,
 ];
