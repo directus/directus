@@ -42,11 +42,17 @@ function current(): string | null {
 	return props.editor ? readStyle(props.editor, props.attr) : null;
 }
 
+// font-family values round-trip through the DOM, which rewrites single quotes (our item values) to double;
+// strip quotes so e.g. `'Arial Black', sans-serif` still matches the reparsed `"Arial Black", sans-serif`.
+function normalize(value: string | null): string | null {
+	return value === null ? null : value.replace(/['"]/g, '');
+}
+
 function isActive(item: Item): boolean {
 	const value = current();
 	// Nothing applied → highlight the default item, so the menu reflects the editor's effective value.
 	if (value === null) return props.defaultValue !== undefined && item.value === props.defaultValue;
-	return item.value !== null && value === item.value;
+	return item.value !== null && normalize(value) === normalize(item.value);
 }
 
 /** Item labels that are i18n keys (the "Default" entry) are translated; literal names shown as-is. */
@@ -58,7 +64,7 @@ function displayLabel(item: Item): string {
 const currentLabel = computed(() => {
 	const value = current();
 	if (value === null) return props.defaultLabel ?? t('wysiwyg_options.default');
-	const match = props.items.find((item) => item.value === value);
+	const match = props.items.find((item) => normalize(item.value) === normalize(value));
 	return match ? displayLabel(match) : value;
 });
 
@@ -70,7 +76,7 @@ function select(value: string | null): void {
 	if (props.editor) applyStyle(props.editor, props.attr, value);
 }
 
-defineExpose({ select });
+defineExpose({ select, currentLabel });
 </script>
 
 <template>
