@@ -74,6 +74,14 @@ const editor = useEditor({
 			openImageDrawer();
 			return true;
 		},
+		// Cmd/Ctrl+click a link opens it in a new tab (matches the legacy TinyMCE editor).
+		handleClick: (_view, _pos, event) => {
+			if (event.button !== 0 || !(event.metaKey || event.ctrlKey)) return false;
+			const link = (event.target as HTMLElement | null)?.closest('a');
+			if (!link?.href) return false;
+			window.open(link.href, '_blank', 'noopener,noreferrer');
+			return true;
+		},
 	},
 	onCreate: ({ editor }) => syncValue(editor as Editor, props.value),
 	onUpdate: ({ editor }) => {
