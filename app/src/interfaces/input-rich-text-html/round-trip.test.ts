@@ -45,6 +45,11 @@ const FAITHFUL: Record<string, string> = {
 	'code block': '<pre><code>const x = 1;</code></pre>',
 	link: '<p><a href="https://directus.io">link</a></p>',
 	'hard break': '<p>line one<br>line two</p>',
+	'text align left': '<p style="text-align: left;">left</p>',
+	'text align center': '<p style="text-align: center;">centered</p>',
+	'text align right': '<p style="text-align: right;">right</p>',
+	'text align justify': '<p style="text-align: justify;">justified</p>',
+	'aligned heading': '<h2 style="text-align: center;">centered</h2>',
 };
 
 /**
@@ -79,6 +84,8 @@ const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }
 		issue: 'CMS-2637',
 	},
 	{ name: 'text color', html: '<p><span style="color: #ff0000;">text</span></p>', absent: 'color:', issue: 'CMS-2637' },
+	{ name: 'subscript', html: '<p>H<sub>2</sub>O</p>', absent: '<sub', issue: 'CMS-2638' },
+	{ name: 'superscript', html: '<p>x<sup>2</sup></p>', absent: '<sup', issue: 'CMS-2638' },
 	{ name: 'text align', html: '<p style="text-align: center;">centered</p>', absent: 'text-align', issue: 'CMS-2636' },
 	{ name: 'rtl direction', html: '<p dir="rtl">شسي</p>', absent: 'dir=', issue: 'CMS-2646' },
 	{ name: 'pagebreak', html: '<p>a</p><!-- pagebreak --><p>b</p>', absent: 'pagebreak', issue: 'CMS-2647' },
