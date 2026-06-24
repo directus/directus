@@ -1,5 +1,4 @@
 ---
-'@directus/utils': patch
 '@directus/app': patch
 ---
 
