@@ -44,6 +44,8 @@ const FAITHFUL: Record<string, string> = {
 	'horizontal rule': '<p>before</p><hr><p>after</p>',
 	'code block': '<pre><code>const x = 1;</code></pre>',
 	link: '<p><a href="https://directus.io">link</a></p>',
+	'link with title': '<p><a href="https://directus.io" title="Home">link</a></p>',
+	'link new tab': '<p><a href="https://directus.io" target="_blank" rel="noopener">link</a></p>',
 	'hard break': '<p>line one<br>line two</p>',
 	'font family (named)': '<p><span style="font-family: Arial, Helvetica, sans-serif;">text</span></p>',
 	'font family (legacy keyword)': '<p><span style="font-family: serif;">text</span></p>',
@@ -51,6 +53,11 @@ const FAITHFUL: Record<string, string> = {
 	'font size (legacy pt)': '<p><span style="font-size: 18pt;">text</span></p>',
 	'text color': '<p><span style="color: #ff0000;">text</span></p>',
 	'background color': '<p><span style="background-color: #ffff00;">text</span></p>',
+	'text align left': '<p style="text-align: left;">left</p>',
+	'text align center': '<p style="text-align: center;">centered</p>',
+	'text align right': '<p style="text-align: right;">right</p>',
+	'text align justify': '<p style="text-align: justify;">justified</p>',
+	'aligned heading': '<h2 style="text-align: center;">centered</h2>',
 };
 
 /**
@@ -78,7 +85,6 @@ const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }
 		issue: 'CMS-2643',
 	},
 	{ name: 'iframe', html: '<iframe src="about:blank"></iframe>', absent: '<iframe', issue: 'CMS-2643' },
-	{ name: 'text align', html: '<p style="text-align: center;">centered</p>', absent: 'text-align', issue: 'CMS-2636' },
 	{ name: 'rtl direction', html: '<p dir="rtl">شسي</p>', absent: 'dir=', issue: 'CMS-2646' },
 	{ name: 'pagebreak', html: '<p>a</p><!-- pagebreak --><p>b</p>', absent: 'pagebreak', issue: 'CMS-2647' },
 	{

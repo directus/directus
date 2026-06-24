@@ -17,6 +17,9 @@ export interface ToolbarContext {
 	image: {
 		open: () => void;
 	};
+	link: {
+		open: () => void;
+	};
 }
 
 export interface ToolbarButton {
@@ -76,6 +79,19 @@ const FONT_SIZES: { label: string; value: string | null }[] = [12, 14, 16, 18, 2
 // Labeled dropdowns are wider than icon buttons; the layout needs the real width to avoid clipping.
 const FONT_FAMILY_WIDTH = 132;
 const FONT_SIZE_WIDTH = 80;
+
+// text-align directions; `alignnone` (unset) is registered separately below
+const align: Record<string, ToolbarButton> = Object.fromEntries(
+	(['left', 'center', 'right', 'justify'] as const).map((value) => [
+		`align${value}`,
+		{
+			icon: `format_align_${value}`,
+			label: `wysiwyg_options.align${value}`,
+			command: (e: Editor) => e.chain().focus().setTextAlign(value).run(),
+			isActive: (e: Editor) => e.isActive({ textAlign: value }),
+		} satisfies ToolbarButton,
+	]),
+);
 
 /**
  * Toolbar registry keyed by the toolbar option values stored in field meta.
@@ -156,6 +172,12 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		command: (e) => e.chain().focus().toggleStrike().run(),
 		isActive: (e) => e.isActive('strike'),
 	},
+	...align,
+	alignnone: {
+		icon: 'format_clear',
+		label: 'wysiwyg_options.alignnone',
+		command: (e) => e.chain().focus().unsetTextAlign().run(),
+	},
 	subscript: {
 		icon: 'subscript',
 		label: 'wysiwyg_options.subscript',
@@ -198,6 +220,18 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		label: 'wysiwyg_options.blockquote',
 		command: (e) => e.chain().focus().toggleBlockquote().run(),
 		isActive: (e) => e.isActive('blockquote'),
+	},
+	customLink: {
+		icon: 'link',
+		label: 'wysiwyg_options.link',
+		command: (_e, ctx) => ctx.link.open(),
+		isActive: (e) => e.isActive('link'),
+	},
+	unlink: {
+		icon: 'link_off',
+		label: 'wysiwyg_options.unlink',
+		command: (e) => e.chain().focus().extendMarkRange('link').unsetLink().run(),
+		disabled: (e) => !e.isActive('link'),
 	},
 	customImage: {
 		icon: 'image',

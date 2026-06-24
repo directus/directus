@@ -85,7 +85,8 @@ defineExpose({ select, currentLabel });
 			<VButton
 				v-tooltip="t(label)"
 				class="style-list-button toolbar-button"
-				:class="{ active: active || current() !== null }"
+				ghost
+				:active="active || current() !== null"
 				:style="{ '--style-list-width': `${width}px` }"
 				:disabled="disabled || !editor"
 				small
@@ -110,12 +111,6 @@ defineExpose({ select, currentLabel });
 </template>
 
 <style lang="scss" scoped>
-@use '../ghost-button' as *;
-
-.style-list-button {
-	@include ghost-toolbar-button;
-}
-
 // Set width on the inner `.button` directly — `small` redefines `--v-button-min-width` there, so an
 // ancestor-level var override would lose.
 .style-list-button :deep(.button) {
@@ -144,8 +139,11 @@ defineExpose({ select, currentLabel });
 	margin-inline-start: 0.25rem;
 }
 
-.toolbar-button.active {
+// Active (a font applied, or the menu open) uses a neutral fill instead of the ghost primary tint.
+// `.ghost` in the selector raises specificity above VButton's own `.ghost.active` rule.
+.toolbar-button.ghost.active {
 	--v-button-background-color: var(--theme--form--field--input--border-color);
+	--v-button-color: var(--theme--foreground);
 }
 
 .style-list {

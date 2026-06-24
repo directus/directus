@@ -3,6 +3,8 @@ import type { ToolbarGroup } from './groups';
 export interface RenderGroup {
 	id: string;
 	keys: string[];
+	popover?: boolean;
+	icon?: string;
 }
 
 export interface LayoutMeasurements {
@@ -11,6 +13,7 @@ export interface LayoutMeasurements {
 	moreWidth: number;
 	separatorWidth: number;
 	minItems: number;
+	popoverWidth: number;
 	/** Per-key width overrides for non-square buttons (e.g. labeled dropdowns); defaults to buttonWidth. */
 	keyWidths?: Record<string, number>;
 }
@@ -24,10 +27,23 @@ interface Candidate {
 	id: string;
 	priority: number;
 	pinned: boolean;
+	popover: boolean;
+	icon?: string;
 	keys: string[];
 }
 
 const OTHER_GROUP_ID = 'other';
+
+// a popover group collapses to a single button; everything else is one slot per key
+function slotsOf(g: { popover?: boolean; keys: string[] }): number {
+	return g.popover ? 1 : g.keys.length;
+}
+
+function widthOf(g: { popover?: boolean; keys: string[] }, m: LayoutMeasurements): number {
+	// popover groups collapse to one fixed-width button; otherwise sum per-key widths (labeled dropdowns
+	// are wider than square buttons), falling back to the default button width.
+	return g.popover ? m.popoverWidth : g.keys.reduce((w, k) => w + (m.keyWidths?.[k] ?? m.buttonWidth), 0);
+}
 
 function partition(selectedKeys: string[], groups: ToolbarGroup[]): Candidate[] {
 	const known = new Set<string>();
@@ -38,32 +54,38 @@ function partition(selectedKeys: string[], groups: ToolbarGroup[]): Candidate[] 
 
 	for (const g of groups) {
 		const keys = g.keys.filter((k) => selected.has(k));
-		if (keys.length) candidates.push({ id: g.id, priority: g.priority, pinned: Boolean(g.pinned), keys });
+		if (keys.length)
+			candidates.push({
+				id: g.id,
+				priority: g.priority,
+				pinned: Boolean(g.pinned),
+				popover: Boolean(g.popover),
+				icon: g.icon,
+				keys,
+			});
 	}
 
 	const orphans = selectedKeys.filter((k) => !known.has(k));
-	if (orphans.length) candidates.push({ id: OTHER_GROUP_ID, priority: -Infinity, pinned: false, keys: orphans });
+	if (orphans.length)
+		candidates.push({ id: OTHER_GROUP_ID, priority: -Infinity, pinned: false, popover: false, keys: orphans });
 
 	return candidates.sort((a, b) => b.priority - a.priority);
 }
 
-function itemCount(groups: { keys: string[] }[]): number {
-	return groups.reduce((n, g) => n + g.keys.length, 0);
+function slotCount(groups: { popover?: boolean; keys: string[] }[]): number {
+	return groups.reduce((n, g) => n + slotsOf(g), 0);
 }
 
-function measure(groups: { keys: string[] }[], hasOverflow: boolean, m: LayoutMeasurements): number {
-	const items = itemCount(groups);
+function measure(groups: { popover?: boolean; keys: string[] }[], hasOverflow: boolean, m: LayoutMeasurements): number {
+	const slots = slotCount(groups);
 	const separators = Math.max(0, groups.length - 1);
 	const moreButtons = hasOverflow ? 1 : 0;
-	const children = items + separators + moreButtons;
+	const children = slots + separators + moreButtons;
 	if (children === 0) return 0;
 
-	const buttonsWidth = groups.reduce(
-		(sum, g) => sum + g.keys.reduce((w, k) => w + (m.keyWidths?.[k] ?? m.buttonWidth), 0),
-		0,
-	);
+	const widths =
+		groups.reduce((w, g) => w + widthOf(g, m), 0) + separators * m.separatorWidth + moreButtons * m.moreWidth;
 
-	const widths = buttonsWidth + separators * m.separatorWidth + moreButtons * m.moreWidth;
 	return widths + (children - 1) * m.gap;
 }
 
@@ -74,11 +96,17 @@ export function computeToolbarLayout(
 	m: LayoutMeasurements,
 ): ToolbarLayout {
 	const candidates = partition(selectedKeys, groups);
-	const totalItems = itemCount(candidates);
-	const toRender = (cs: Candidate[]): RenderGroup[] => cs.map((c) => ({ id: c.id, keys: [...c.keys] }));
+	const totalSlots = slotCount(candidates);
 
-	if (totalItems === 0 || measure(candidates, false, m) <= availableWidth) {
-		return { visible: toRender(candidates), overflow: [] };
+	const render = (c: Candidate, keys: string[] = c.keys): RenderGroup => ({
+		id: c.id,
+		keys: [...keys],
+		popover: c.popover,
+		icon: c.icon,
+	});
+
+	if (totalSlots === 0 || measure(candidates, false, m) <= availableWidth) {
+		return { visible: candidates.map((c) => render(c)), overflow: [] };
 	}
 
 	// greedy: pinned always visible; add non-pinned high->low while they fit
@@ -92,33 +120,32 @@ export function computeToolbarLayout(
 		else break; // lowest-priority groups stay in overflow
 	}
 
-	// floor: pull highest-priority overflow groups back until >= minVisible items
-	const minVisible = Math.min(m.minItems, totalItems);
+	// floor: pull highest-priority overflow groups back until >= minVisible slots
+	const minVisible = Math.min(m.minItems, totalSlots);
 	const prio = new Map(candidates.map((c) => [c.id, c.priority]));
 
-	const visible: RenderGroup[] = candidates
-		.filter((c) => visibleIds.has(c.id))
-		.map((c) => ({ id: c.id, keys: [...c.keys] }));
+	const visible: RenderGroup[] = candidates.filter((c) => visibleIds.has(c.id)).map((c) => render(c));
 
 	const overflow: RenderGroup[] = [];
-	let visibleCount = itemCount(visible);
+	let visibleCount = slotCount(visible);
 
 	for (const c of candidates) {
 		if (visibleIds.has(c.id)) continue; // already visible
 
 		if (visibleCount >= minVisible) {
-			overflow.push({ id: c.id, keys: [...c.keys] });
+			overflow.push(render(c));
 			continue;
 		}
 
 		const need = minVisible - visibleCount;
 
-		if (c.keys.length <= need) {
-			visible.push({ id: c.id, keys: [...c.keys] });
-			visibleCount += c.keys.length;
+		// popover groups are atomic: pull the whole thing as one slot, never slice
+		if (c.popover || c.keys.length <= need) {
+			visible.push(render(c));
+			visibleCount += slotsOf(c);
 		} else {
-			visible.push({ id: c.id, keys: c.keys.slice(0, need) });
-			overflow.push({ id: c.id, keys: c.keys.slice(need) });
+			visible.push(render(c, c.keys.slice(0, need)));
+			overflow.push(render(c, c.keys.slice(need)));
 			visibleCount += need;
 		}
 	}

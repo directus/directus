@@ -38,7 +38,8 @@ defineExpose({ apply });
 			<VButton
 				v-tooltip="t(label)"
 				class="toolbar-button"
-				:class="{ active: active || current() !== null }"
+				ghost
+				:active="active || current() !== null"
 				:disabled="disabled || !editor"
 				small
 				icon
@@ -54,14 +55,11 @@ defineExpose({ apply });
 </template>
 
 <style lang="scss" scoped>
-@use '../ghost-button' as *;
-
-.toolbar-button {
-	@include ghost-toolbar-button;
-}
-
-.toolbar-button.active {
+// Active (a color applied, or the menu open) uses a neutral fill instead of the ghost primary tint.
+// `.ghost` in the selector raises specificity above VButton's own `.ghost.active` rule.
+.toolbar-button.ghost.active {
 	--v-button-background-color: var(--theme--form--field--input--border-color);
+	--v-button-color: var(--theme--foreground);
 }
 
 .color-menu {

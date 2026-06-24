@@ -25,4 +25,17 @@ describe('toolbar groups', () => {
 			}
 		}
 	});
+
+	test('align is a popover group containing the alignment keys', () => {
+		const align = toolbarGroups.find((g) => g.id === 'align');
+		expect(align?.popover).toBe(true);
+		expect(align?.icon).toBe('format_align_left');
+		expect(align?.keys).toEqual(['alignleft', 'aligncenter', 'alignright', 'alignjustify', 'alignnone']);
+		expect(align?.priority).toBe(75);
+	});
+
+	test('groupForKey resolves alignment keys to the align group', () => {
+		expect(groupForKey('aligncenter')?.id).toBe('align');
+		expect(groupForKey('alignnone')?.id).toBe('align');
+	});
 });

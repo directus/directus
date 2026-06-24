@@ -249,6 +249,9 @@ catalogs:
     '@tiptap/extension-superscript':
       specifier: ^3.26.1
       version: 3.27.1
+    '@tiptap/extension-text-align':
+      specifier: ^3.26.1
+      version: 3.27.1
     '@tiptap/extension-text-style':
       specifier: ^3.26.1
       version: 3.27.0
@@ -1799,6 +1802,9 @@ importers:
       '@tiptap/extension-superscript':
         specifier: 'catalog:'
         version: 3.27.1(@tiptap/core@3.26.1(@tiptap/pm@3.26.1))(@tiptap/pm@3.26.1)
+      '@tiptap/extension-text-align':
+        specifier: 'catalog:'
+        version: 3.27.1(@tiptap/core@3.26.1(@tiptap/pm@3.26.1))
       '@tiptap/extension-text-style':
         specifier: 'catalog:'
         version: 3.27.0(@tiptap/core@3.26.1(@tiptap/pm@3.26.1))
@@ -7748,6 +7754,11 @@ packages:
     peerDependencies:
       '@tiptap/core': 3.27.1
       '@tiptap/pm': 3.27.1
+
+  '@tiptap/extension-text-align@3.27.1':
+    resolution: {integrity: sha512-EXawuJBO55wd8WcTbHTMoPhv0CGQxza4yCCPB5Hqz4ZPQwahIr3ej+8yp/kimIl0xokabwZ0/Fu8STQ4AkZv5g==}
+    peerDependencies:
+      '@tiptap/core': 3.27.1
 
   '@tiptap/extension-text-style@3.27.0':
     resolution: {integrity: sha512-R4Paicrf8vG46RvSi5RljacJjNClwj280Xei81QyEAJYNE2Vfxmw+pvdg8XMBFPUhGwNJiBQhcdPhhH81mBcng==}
@@ -14869,6 +14880,7 @@ packages:
   tsconfck@3.1.6:
     resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
     engines: {node: ^18 || >=20}
+    deprecated: unmaintained
     hasBin: true
     peerDependencies:
       typescript: ^5.0.0
@@ -20864,6 +20876,10 @@ snapshots:
     dependencies:
       '@tiptap/core': 3.26.1(@tiptap/pm@3.26.1)
       '@tiptap/pm': 3.26.1
+
+  '@tiptap/extension-text-align@3.27.1(@tiptap/core@3.26.1(@tiptap/pm@3.26.1))':
+    dependencies:
+      '@tiptap/core': 3.26.1(@tiptap/pm@3.26.1)
 
   '@tiptap/extension-text-style@3.27.0(@tiptap/core@3.26.1(@tiptap/pm@3.26.1))':
     dependencies:

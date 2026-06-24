@@ -31,7 +31,8 @@ const placement = computed(() => props.tooltipPlacement ?? 'top');
 		v-else
 		v-tooltip:[placement]="t(button.label)"
 		class="toolbar-button"
-		:class="{ active: editor && button.isActive?.(editor, context) }"
+		ghost
+		:active="!!(editor && button.isActive?.(editor, context))"
 		:disabled="disabled || (editor ? button.disabled?.(editor) : true)"
 		small
 		icon
@@ -40,17 +41,3 @@ const placement = computed(() => props.tooltipPlacement ?? 'top');
 		<VIcon :name="button.icon" />
 	</VButton>
 </template>
-
-<style lang="scss" scoped>
-@use './ghost-button' as *;
-
-.toolbar-button {
-	@include ghost-toolbar-button;
-}
-
-// The active state marks an applied format, so it persists the dimmed-primary fill at rest.
-.toolbar-button.active {
-	--v-button-background-color: var(--primary-dimmed);
-	--v-button-color: var(--primary-ondimmed);
-}
-</style>
