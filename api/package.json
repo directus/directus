@@ -149,6 +149,7 @@
 		"joi": "catalog:",
 		"js-yaml": "catalog:",
 		"js2xmlparser": "catalog:",
+		"jose": "catalog:",
 		"json2csv": "catalog:",
 		"jsonwebtoken": "catalog:",
 		"keyv": "catalog:",

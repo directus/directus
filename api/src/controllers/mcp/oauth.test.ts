@@ -13,6 +13,7 @@ import { expectMcpBearerChallenge } from '../../test-utils/mcp-oauth.js';
 // ---------------------------------------------------------------------------
 
 const createdRateLimiters = vi.hoisted(() => [] as string[]);
+const createdRateLimiterConsumes = vi.hoisted(() => new Map<string, ReturnType<typeof vi.fn>[]>());
 
 const mockLogger = vi.hoisted(() => ({
 	debug: vi.fn(),
@@ -108,10 +109,13 @@ vi.mock('../../utils/get-schema.js', () => ({
 
 vi.mock('../../rate-limiter.js', () => ({
 	createRateLimiter: vi.fn().mockImplementation((prefix: string) => {
+		const consume = vi.fn().mockResolvedValue({});
+
 		createdRateLimiters.push(prefix);
+		createdRateLimiterConsumes.set(prefix, [...(createdRateLimiterConsumes.get(prefix) ?? []), consume]);
 
 		return {
-			consume: vi.fn().mockResolvedValue({}),
+			consume,
 		};
 	}),
 	RateLimiterRes: class RateLimiterRes {
@@ -361,6 +365,25 @@ describe('mcp-oauth controller', () => {
 		expect(getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/register')).toHaveLength(6);
 		expect(getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/token')).toHaveLength(7);
 		expect(getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/revoke')).toHaveLength(6);
+	});
+
+	test('RATE_LIMITER_MCP_OAUTH middleware is first on token and revoke routes', async () => {
+		const oauthConsumes = createdRateLimiterConsumes.get('RATE_LIMITER_MCP_OAUTH') ?? [];
+		const initialConsumeCalls = oauthConsumes.reduce((count, consume) => count + consume.mock.calls.length, 0);
+
+		for (const path of ['/mcp-oauth/token', '/mcp-oauth/revoke']) {
+			const handlers = getRouteHandler(mcpOAuthPublicRouter, 'POST', path);
+			const req = createMockRequest({ method: 'POST', body: {}, ip: '127.0.0.1' });
+			const res = createMockResponse();
+			const next = vi.fn();
+
+			await handlers[0]!.handle(req, res, next);
+
+			expect(next).toHaveBeenCalledTimes(1);
+		}
+
+		const finalConsumeCalls = oauthConsumes.reduce((count, consume) => count + consume.mock.calls.length, 0);
+		expect(finalConsumeCalls - initialConsumeCalls).toBe(2);
 	});
 
 	// -----------------------------------------------------------------------

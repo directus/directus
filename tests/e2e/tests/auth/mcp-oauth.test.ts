@@ -67,7 +67,7 @@ describe('/mcp-oauth discovery endpoints', () => {
 			response_types_supported: ['code'],
 			grant_types_supported: ['authorization_code', 'refresh_token'],
 			code_challenge_methods_supported: ['S256'],
-			token_endpoint_auth_methods_supported: ['none', 'client_secret_basic', 'client_secret_post'],
+			token_endpoint_auth_methods_supported: ['none', 'client_secret_basic', 'client_secret_post', 'private_key_jwt'],
 			scopes_supported: ['mcp:access'],
 		});
 	});

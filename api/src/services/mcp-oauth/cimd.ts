@@ -1,11 +1,19 @@
 import { isIP } from 'node:net';
 import { performance } from 'node:perf_hooks';
 import { useEnv } from '@directus/env';
-import type { AxiosRequestConfig } from 'axios';
 import { useLogger } from '../../logger/index.js';
-import { getAxios } from '../../request/index.js';
 import { OAuthError } from './types/error.js';
-import { CimdEgressError, createCimdLookup } from './utils/cimd-egress.js';
+import { type ExternalJsonResult, fetchExternalJson } from './utils/external-json.js';
+import {
+	JwksUriValidationError,
+	type JwksUriValidationErrorReason,
+	validateJwksUri as validateJwksUriPolicy,
+} from './utils/jwks-uri.js';
+import {
+	createMcpOAuthEgressLookup,
+	McpOAuthEgressError,
+	validateMcpOAuthHostnameEgress,
+} from './utils/mcp-oauth-egress.js';
 import { validateRedirectUri } from './utils/redirect.js';
 
 const MIN_TTL_MS = 300_000; // 5 minutes
@@ -22,6 +30,8 @@ const DEFAULT_BLOCKED_TLDS = ['test', 'localhost', 'invalid', 'example', 'local'
  * client_secret_jwt, or any other method based around a shared symmetric secret."
  */
 const FORBIDDEN_AUTH_METHODS = new Set(['client_secret_basic', 'client_secret_post', 'client_secret_jwt']);
+const PRIVATE_KEY_JWT_AUTH_METHOD = 'private_key_jwt';
+const PRIVATE_KEY_JWT_SIGNING_ALG = 'RS256';
 
 export interface CimdMetadata {
 	client_id: string;
@@ -30,6 +40,8 @@ export interface CimdMetadata {
 	grant_types: string[];
 	response_types?: string[];
 	token_endpoint_auth_method: string;
+	jwks_uri?: string;
+	token_endpoint_auth_signing_alg?: string;
 	client_uri?: string;
 	logo_uri?: string;
 	tos_uri?: string;
@@ -227,7 +239,60 @@ function validateOptionalHttpsUri(value: unknown, field: string): void {
 	}
 }
 
-const CONTENT_TYPE_JSON_RE = /^application\/(?:json|[\w.-]+\+json)(?:\s*;|$)/i;
+function validateJwksUri(value: unknown, clientId: string): string {
+	try {
+		// CIMD registration and runtime assertion verification share the same JWKS URI rules so valid metadata
+		// does not depend on two subtly different interpretations of the key URL.
+		return validateJwksUriPolicy(value, clientId, {
+			allowedDomains: getAllowedDomains(),
+			maxLength: MAX_URL_LENGTH,
+		});
+	} catch (err) {
+		if (err instanceof JwksUriValidationError) {
+			throw new OAuthError(400, 'invalid_client_metadata', jwksUriErrorDescription(err.reason));
+		}
+
+		throw err;
+	}
+}
+
+function jwksUriErrorDescription(reason: JwksUriValidationErrorReason): string {
+	switch (reason) {
+		case 'required':
+			return 'jwks_uri is required for private_key_jwt';
+		case 'too_long':
+			return 'jwks_uri is too long';
+		case 'invalid_url':
+			return 'jwks_uri is not a valid URL';
+		case 'invalid_scheme':
+			return 'jwks_uri must use HTTPS';
+		case 'credentials':
+			return 'jwks_uri must not contain credentials';
+		case 'fragment':
+			return 'jwks_uri must not contain a fragment';
+		case 'dot_segments':
+			return 'jwks_uri must not contain dot segments';
+		case 'ip_literal':
+			return 'jwks_uri must not use an IP address';
+		case 'cross_origin':
+			return 'jwks_uri must share the client_id origin';
+		case 'non_canonical':
+			return 'jwks_uri must be canonical';
+		case 'disallowed_domain':
+			return 'jwks_uri domain is not allowed';
+	}
+}
+
+function metadataFetchError(): OAuthError {
+	return new OAuthError(400, 'invalid_client_metadata', 'Failed to fetch client metadata document');
+}
+
+function cacheHeadersFromExternalJson(result: Pick<ExternalJsonResult<unknown>, 'cacheControl' | 'expires'>) {
+	return {
+		...(result.cacheControl !== undefined && { 'cache-control': result.cacheControl }),
+		...(result.expires !== undefined && { expires: result.expires }),
+	};
+}
 
 /**
  * Fetch and validate a CIMD metadata document.
@@ -235,7 +300,7 @@ const CONTENT_TYPE_JSON_RE = /^application\/(?:json|[\w.-]+\+json)(?:\s*;|$)/i;
  */
 export async function fetchCimdMetadata(clientId: string, etag?: string): Promise<FetchResult> {
 	const logger = useLogger();
-	const axios = await getAxios();
+	const env = useEnv();
 	let url: URL;
 
 	try {
@@ -249,34 +314,15 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 
 	if (isIP(bareHost)) {
 		logger.debug({ client_id: clientId, reason: 'IP address hostname' }, 'CIMD metadata fetch rejected');
-		throw new OAuthError(400, 'invalid_client_metadata', 'Failed to fetch client metadata document');
+		throw metadataFetchError();
 	}
 
-	const headers: Record<string, string> = {};
-
-	if (etag) {
-		headers['If-None-Match'] = etag;
-	}
-
-	let response;
+	let result: ExternalJsonResult<unknown>;
 
 	try {
-		const deadlineAt = performance.now() + 3000;
-
-		const requestConfig: AxiosRequestConfig = {
-			headers,
-			lookup: createCimdLookup({ deadlineAt }),
-			maxRedirects: 0,
-			maxContentLength: 5120,
-			proxy: false,
-			timeout: 3000,
-			responseType: 'json',
-			validateStatus: (s) => s === 200 || (etag ? s === 304 : false),
-		};
-
-		response = await axios.get(clientId, requestConfig);
-	} catch (err: any) {
-		if (err instanceof CimdEgressError) {
+		await validateMcpOAuthHostnameEgress(url.hostname);
+	} catch (err) {
+		if (err instanceof McpOAuthEgressError) {
 			const reason = (err as { reason?: unknown }).reason;
 
 			logger.debug(
@@ -284,46 +330,76 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 				'CIMD metadata fetch rejected',
 			);
 
-			throw new OAuthError(400, 'invalid_client_metadata', 'Failed to fetch client metadata document');
+			throw metadataFetchError();
 		}
 
-		logger.debug({ client_id: clientId, error: err?.message }, 'CIMD metadata fetch failed');
-		throw new OAuthError(400, 'invalid_client_metadata', 'Failed to fetch client metadata document');
+		logger.debug(
+			{ client_id: clientId, error: err instanceof Error ? err.message : err },
+			'CIMD metadata fetch failed',
+		);
+
+		throw metadataFetchError();
+	}
+
+	try {
+		// MCP OAuth uses its own special-use egress policy here instead of the shared import/request denylist.
+		const deadlineAt = performance.now() + 3_000;
+
+		result = await fetchExternalJson(clientId, {
+			...(etag && { headers: { 'If-None-Match': etag } }),
+			allowHttp: env['MCP_OAUTH_CIMD_ALLOW_HTTP'] as boolean,
+			allowLoopbackForLocalDevelopment: false,
+			allowNotModified: Boolean(etag),
+			lookup: createMcpOAuthEgressLookup({ deadlineAt }),
+			redactionContext: 'CIMD metadata',
+		});
+	} catch (err) {
+		logger.debug(
+			{ client_id: clientId, error: err instanceof Error ? err.message : err },
+			'CIMD metadata fetch failed',
+		);
+
+		throw metadataFetchError();
 	}
 
 	// 304 Not Modified
-	if (response.status === 304) {
-		const respHeaders = response.headers as Record<string, string>;
-		const hasCacheControl = !!respHeaders['cache-control'];
-		return { notModified: true, ttlMs: hasCacheControl ? resolveCacheTtl(respHeaders) : null };
+	if (result.status === 304) {
+		const responseHeaders = cacheHeadersFromExternalJson(result);
+		const hasCacheHeaders = !!responseHeaders['cache-control'] || !!responseHeaders['expires'];
+
+		return {
+			notModified: true,
+			etag: result.etag,
+			ttlMs: hasCacheHeaders ? resolveCacheTtl(responseHeaders) : null,
+		};
 	}
 
-	// Content-Type validation
-	const contentType = response.headers['content-type'] as string | undefined;
-
-	if (!contentType || !CONTENT_TYPE_JSON_RE.test(contentType)) {
-		throw new OAuthError(400, 'invalid_client_metadata', 'Client metadata document must be JSON');
-	}
-
-	const doc = response.data;
+	const responseHeaders = cacheHeadersFromExternalJson(result);
+	const doc = result.data;
 
 	if (!doc || typeof doc !== 'object') {
 		throw new OAuthError(400, 'invalid_client_metadata', 'Client metadata document must be a JSON object');
 	}
 
+	const metadataDocument = doc as Record<string, any>;
+
 	// client_id must match fetch URL exactly
-	if (doc.client_id !== clientId) {
-		logger.debug({ client_id: clientId, doc_client_id: doc.client_id }, 'CIMD client_id mismatch');
+	if (metadataDocument['client_id'] !== clientId) {
+		logger.debug({ client_id: clientId }, 'CIMD client_id mismatch');
 
 		throw new OAuthError(400, 'invalid_client_metadata', 'client_id in document does not match fetch URL');
 	}
 
 	// client_name: present, non-empty, max length
-	if (!doc.client_name || typeof doc.client_name !== 'string' || doc.client_name.trim().length === 0) {
+	if (
+		!metadataDocument['client_name'] ||
+		typeof metadataDocument['client_name'] !== 'string' ||
+		metadataDocument['client_name'].trim().length === 0
+	) {
 		throw new OAuthError(400, 'invalid_client_metadata', 'client_name is required');
 	}
 
-	if (doc.client_name.length > MAX_CLIENT_NAME_LENGTH) {
+	if (metadataDocument['client_name'].length > MAX_CLIENT_NAME_LENGTH) {
 		throw new OAuthError(
 			400,
 			'invalid_client_metadata',
@@ -332,11 +408,11 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 	}
 
 	// redirect_uris: present, non-empty array, each validated
-	if (!Array.isArray(doc.redirect_uris) || doc.redirect_uris.length === 0) {
+	if (!Array.isArray(metadataDocument['redirect_uris']) || metadataDocument['redirect_uris'].length === 0) {
 		throw new OAuthError(400, 'invalid_client_metadata', 'redirect_uris is required and must be a non-empty array');
 	}
 
-	for (const uri of doc.redirect_uris) {
+	for (const uri of metadataDocument['redirect_uris']) {
 		try {
 			validateRedirectUri(uri);
 		} catch (err) {
@@ -346,73 +422,103 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 	}
 
 	// client_secret / client_secret_expires_at must NOT be present
-	if ('client_secret' in doc) {
+	if ('client_secret' in metadataDocument) {
 		throw new OAuthError(400, 'invalid_client_metadata', 'CIMD documents must not contain client_secret');
 	}
 
-	if ('client_secret_expires_at' in doc) {
+	if ('client_secret_expires_at' in metadataDocument) {
 		throw new OAuthError(400, 'invalid_client_metadata', 'CIMD documents must not contain client_secret_expires_at');
 	}
 
 	// grant_types: default to authorization_code, must include it
-	if (doc.grant_types !== undefined && !Array.isArray(doc.grant_types)) {
+	if (metadataDocument['grant_types'] !== undefined && !Array.isArray(metadataDocument['grant_types'])) {
 		throw new OAuthError(400, 'invalid_client_metadata', 'grant_types must be an array');
 	}
 
-	const grantTypes: string[] = doc.grant_types ?? ['authorization_code'];
+	const grantTypes: string[] = metadataDocument['grant_types'] ?? ['authorization_code'];
 
 	if (!grantTypes.includes('authorization_code')) {
 		throw new OAuthError(400, 'invalid_client_metadata', 'grant_types must include authorization_code');
 	}
 
 	// response_types: if present, must be ["code"]
-	if (doc.response_types !== undefined) {
-		if (!Array.isArray(doc.response_types) || doc.response_types.length !== 1 || doc.response_types[0] !== 'code') {
+	if (metadataDocument['response_types'] !== undefined) {
+		if (
+			!Array.isArray(metadataDocument['response_types']) ||
+			metadataDocument['response_types'].length !== 1 ||
+			metadataDocument['response_types'][0] !== 'code'
+		) {
 			throw new OAuthError(400, 'invalid_client_metadata', 'response_types must be ["code"] if present');
 		}
 	}
 
-	// token_endpoint_auth_method: default to "none", only "none" accepted
-	if (doc.token_endpoint_auth_method !== undefined && typeof doc.token_endpoint_auth_method !== 'string') {
+	// token_endpoint_auth_method defaults to "none"; shared-secret methods are forbidden, and private_key_jwt
+	// is accepted only with HTTPS JWKS metadata.
+	if (
+		metadataDocument['token_endpoint_auth_method'] !== undefined &&
+		typeof metadataDocument['token_endpoint_auth_method'] !== 'string'
+	) {
 		throw new OAuthError(400, 'invalid_client_metadata', 'token_endpoint_auth_method must be a string');
 	}
 
-	const authMethod = doc.token_endpoint_auth_method ?? 'none';
+	const authMethod = metadataDocument['token_endpoint_auth_method'] ?? 'none';
 
 	if (FORBIDDEN_AUTH_METHODS.has(authMethod)) {
 		throw new OAuthError(400, 'invalid_client_metadata', 'Shared-secret authentication methods are forbidden for CIMD');
 	}
 
-	if (authMethod !== 'none') {
+	let jwksUri: string | undefined;
+	let signingAlg: string | undefined;
+
+	if (authMethod === PRIVATE_KEY_JWT_AUTH_METHOD) {
+		jwksUri = validateJwksUri(metadataDocument['jwks_uri'], clientId);
+
+		if (
+			typeof metadataDocument['token_endpoint_auth_signing_alg'] !== 'string' ||
+			metadataDocument['token_endpoint_auth_signing_alg'].length === 0
+		) {
+			throw new OAuthError(
+				400,
+				'invalid_client_metadata',
+				'token_endpoint_auth_signing_alg is required for private_key_jwt',
+			);
+		}
+
+		if (metadataDocument['token_endpoint_auth_signing_alg'] !== PRIVATE_KEY_JWT_SIGNING_ALG) {
+			throw new OAuthError(400, 'invalid_client_metadata', 'Unsupported token_endpoint_auth_signing_alg');
+		}
+
+		signingAlg = metadataDocument['token_endpoint_auth_signing_alg'];
+	} else if (authMethod !== 'none') {
 		throw new OAuthError(400, 'invalid_client_metadata', `Unsupported token_endpoint_auth_method: ${authMethod}`);
 	}
 
 	// Optional URI fields
 	for (const field of ['client_uri', 'logo_uri', 'tos_uri', 'policy_uri'] as const) {
-		if (doc[field] !== undefined) {
-			validateOptionalHttpsUri(doc[field], field);
+		if (metadataDocument[field] !== undefined) {
+			validateOptionalHttpsUri(metadataDocument[field], field);
 		}
 	}
 
-	const responseHeaders = response.headers as Record<string, string>;
-
 	const metadata: CimdMetadata = {
-		client_id: doc.client_id,
-		client_name: doc.client_name,
-		redirect_uris: doc.redirect_uris,
+		client_id: metadataDocument['client_id'],
+		client_name: metadataDocument['client_name'],
+		redirect_uris: metadataDocument['redirect_uris'],
 		grant_types: grantTypes,
-		response_types: doc.response_types,
+		response_types: metadataDocument['response_types'],
 		token_endpoint_auth_method: authMethod,
-		...(doc.client_uri && { client_uri: doc.client_uri }),
-		...(doc.logo_uri && { logo_uri: doc.logo_uri }),
-		...(doc.tos_uri && { tos_uri: doc.tos_uri }),
-		...(doc.policy_uri && { policy_uri: doc.policy_uri }),
+		...(jwksUri && { jwks_uri: jwksUri }),
+		...(signingAlg && { token_endpoint_auth_signing_alg: signingAlg }),
+		...(metadataDocument['client_uri'] && { client_uri: metadataDocument['client_uri'] }),
+		...(metadataDocument['logo_uri'] && { logo_uri: metadataDocument['logo_uri'] }),
+		...(metadataDocument['tos_uri'] && { tos_uri: metadataDocument['tos_uri'] }),
+		...(metadataDocument['policy_uri'] && { policy_uri: metadataDocument['policy_uri'] }),
 	};
 
 	return {
 		notModified: false,
 		metadata,
-		etag: (responseHeaders['etag'] as string) ?? null,
+		etag: result.etag,
 		ttlMs: resolveCacheTtl(responseHeaders),
 	};
 }

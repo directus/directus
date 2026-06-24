@@ -31,6 +31,12 @@ fields:
     special:
       - conceal
     hidden: true
+  - field: jwks_uri
+    readonly: true
+    width: half
+  - field: token_endpoint_auth_signing_alg
+    hidden: true
+    width: half
   - field: tokens
     interface: list-o2m
     special:
