@@ -41,6 +41,7 @@ const serverStore = useServerStore();
 const { info: license, addons, loading, boundary, isLicensed } = storeToRefs(licenseStore);
 
 const isEnvManaged = computed(() => license.value?.source === 'env');
+const isLicenseManageLinkEnabled = computed(() => serverStore.info?.license_manage_link_enabled);
 
 const boundaryDate = computed(() => {
 	if (!boundary.value || !Number.isFinite(boundary.value.timestamp) || boundary.value.timestamp === -1) return null;
@@ -58,6 +59,12 @@ onMounted(async () => {
 });
 
 const planDisplayName = computed(() => license.value?.name ?? null);
+
+const upgradePlanLink = computed(() =>
+	isLicensed.value
+		? `${getRootPath()}license/portal`
+		: getDirectusUrlWithUtm(DIRECTUS_PRICING_URL, serverStore.info.version, 'settings_license_upgrade_plan_link'),
+);
 
 const addLicenseDrawer = ref(false);
 const licenseKey = ref('');
@@ -264,45 +271,19 @@ async function handleDeactivateConfirm() {
 						</div>
 					</div>
 					<div class="plan-actions">
-						<template v-if="!isLicensed">
-							<VButton
-								v-tooltip.bottom="isEnvManaged ? t('licensing.env_managed') : null"
-								secondary
-								small
-								:disabled="isEnvManaged"
-								@click="addLicenseDrawer = true"
-							>
-								{{ t('licensing.add') }}
-							</VButton>
-							<VButton
-								small
-								:href="
-									getDirectusUrlWithUtm(
-										DIRECTUS_PRICING_URL,
-										serverStore.info.version,
-										'settings_license_upgrade_plan_link',
-									)
-								"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								{{ t('licensing.upgrade_plan') }}
-							</VButton>
-						</template>
-						<template v-else>
-							<VButton
-								v-tooltip.bottom="isEnvManaged ? t('licensing.env_managed') : null"
-								secondary
-								small
-								:disabled="isEnvManaged"
-								@click="addLicenseDrawer = true"
-							>
-								{{ t('licensing.manage') }}
-							</VButton>
-							<VButton small :href="`${getRootPath()}license/portal`" target="_blank" rel="noopener noreferrer">
-								{{ t('licensing.upgrade_plan') }}
-							</VButton>
-						</template>
+						<VButton
+							v-if="isLicenseManageLinkEnabled"
+							v-tooltip.bottom="isEnvManaged ? t('licensing.env_managed') : null"
+							secondary
+							small
+							:disabled="isEnvManaged"
+							@click="addLicenseDrawer = true"
+						>
+							{{ isLicensed ? t('licensing.manage') : t('licensing.add') }}
+						</VButton>
+						<VButton small :href="upgradePlanLink" target="_blank" rel="noopener noreferrer">
+							{{ t('licensing.upgrade_plan') }}
+						</VButton>
 					</div>
 				</div>
 				<VDivider />
