@@ -190,6 +190,9 @@ export class ServerService {
 			entitlements: getEntitlementManager().getAppEntitlements(),
 		};
 
+		// Exposed outside the authenticated block so it's available during the pre-auth setup flow
+		info['license_manage_link_enabled'] = toBoolean(env['LICENSE_MANAGE_LINK_ENABLED'] ?? true);
+
 		return info;
 	}
 
