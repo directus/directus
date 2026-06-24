@@ -4,8 +4,11 @@ import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
 import { computed, ref, type Ref, toRefs, watch } from 'vue';
 import { useImage } from './composables/use-image';
+import { useLink } from './composables/use-link';
 import ImageDrawer from './drawers/image-drawer.vue';
+import LinkDrawer from './drawers/link-drawer.vue';
 import { editorExtensions } from './extensions';
+import { LinkShortcut } from './extensions/link-shortcut';
 import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
@@ -59,7 +62,8 @@ function syncValue(instance: Editor, value: string | null) {
 }
 
 const editor = useEditor({
-	extensions: editorExtensions,
+	// LinkShortcut lives here, not in the shared set, so its Mod-K handler can call this instance's opener
+	extensions: [...editorExtensions, LinkShortcut.configure({ onTrigger: () => openLinkDrawer() })],
 	content: '',
 	editable: isEditable.value,
 	editorProps: {
@@ -68,6 +72,14 @@ const editor = useEditor({
 			if (node.type.name !== 'image') return false;
 			editor.value?.commands.setNodeSelection(nodePos);
 			openImageDrawer();
+			return true;
+		},
+		// Cmd/Ctrl+click a link opens it in a new tab (matches the legacy TinyMCE editor).
+		handleClick: (_view, _pos, event) => {
+			if (event.button !== 0 || !(event.metaKey || event.ctrlKey)) return false;
+			const link = (event.target as HTMLElement | null)?.closest('a');
+			if (!link?.href) return false;
+			window.open(link.href, '_blank', 'noopener,noreferrer');
 			return true;
 		},
 	},
@@ -96,10 +108,21 @@ const { imageDrawerOpen, imageSelection, openImageDrawer, closeImageDrawer, onIm
 	{ storageAssetTransform, storageAssetPresets },
 );
 
+const {
+	linkDrawerOpen,
+	linkSelection,
+	isEditingLink,
+	isLinkSaveable,
+	openLinkDrawer,
+	closeLinkDrawer,
+	saveLink,
+	unlink,
+} = useLink(editor as Ref<Editor>);
+
 // First drawer in the new editor: pause the surrounding view's focus trap while it's open so the
 // drawer's inputs are reachable; resume on close. Reused by the link/media/source drawers later.
 const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
-watch(imageDrawerOpen, (open) => (open ? pauseFocusTrap() : unpauseFocusTrap()));
+watch([imageDrawerOpen, linkDrawerOpen], ([image, link]) => (image || link ? pauseFocusTrap() : unpauseFocusTrap()));
 
 // `editable` is only read at init, so keep it in sync when the prop flips
 watch(isEditable, (editable) => editor.value?.setEditable(editable));
@@ -135,6 +158,7 @@ onKeyStroke('Escape', () => {
 			:fullscreen="fullscreen"
 			@toggle-fullscreen="fullscreen = !fullscreen"
 			@open-image="openImageDrawer"
+			@open-link="openLinkDrawer"
 		/>
 		<EditorContent class="editor-content" :editor="editor" />
 
@@ -148,6 +172,16 @@ onKeyStroke('Escape', () => {
 			@select="onImageSelect"
 			@save="saveImage"
 			@cancel="closeImageDrawer"
+		/>
+
+		<LinkDrawer
+			v-model="linkDrawerOpen"
+			v-model:link-selection="linkSelection"
+			:editing="isEditingLink"
+			:saveable="isLinkSaveable"
+			@save="saveLink"
+			@unlink="unlink"
+			@cancel="closeLinkDrawer"
 		/>
 	</div>
 </template>

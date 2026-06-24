@@ -20,7 +20,7 @@ const props = defineProps<{
 	fullscreen?: boolean;
 }>();
 
-const emit = defineEmits<{ 'toggle-fullscreen': []; 'open-image': [] }>();
+const emit = defineEmits<{ 'toggle-fullscreen': []; 'open-image': []; 'open-link': [] }>();
 
 const { t } = useI18n();
 
@@ -38,6 +38,9 @@ const context: ToolbarContext = {
 	},
 	image: {
 		open: () => emit('open-image'),
+	},
+	link: {
+		open: () => emit('open-link'),
 	},
 };
 

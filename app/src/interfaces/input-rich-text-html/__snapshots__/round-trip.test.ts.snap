@@ -20,7 +20,11 @@ exports[`round-trip: faithful (StarterKit schema) > inline code survives round-t
 
 exports[`round-trip: faithful (StarterKit schema) > italic survives round-trip 1`] = `"<p><em>italic</em></p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > link survives round-trip 1`] = `"<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://directus.io">link</a></p>"`;
+exports[`round-trip: faithful (StarterKit schema) > link new tab survives round-trip 1`] = `"<p><a target="_blank" rel="noopener" href="https://directus.io">link</a></p>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > link survives round-trip 1`] = `"<p><a href="https://directus.io">link</a></p>"`;
+
+exports[`round-trip: faithful (StarterKit schema) > link with title survives round-trip 1`] = `"<p><a href="https://directus.io" title="Home">link</a></p>"`;
 
 exports[`round-trip: faithful (StarterKit schema) > nested list survives round-trip 1`] = `"<ul><li><p>parent</p><ul><li><p>child</p></li></ul></li></ul>"`;
 
