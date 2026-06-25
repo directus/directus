@@ -1,8 +1,8 @@
 {
 	"name": "@directus/utils",
-	"version": "13.4.1",
+	"version": "13.5.0",
 	"description": "Utilities shared between the Directus packages",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -37,6 +37,7 @@
 		"@directus/system-data": "workspace:*",
 		"date-fns": "catalog:",
 		"fs-extra": "catalog:",
+		"ipaddr.js": "catalog:",
 		"joi": "catalog:",
 		"zod": "catalog:",
 		"js-yaml": "catalog:",

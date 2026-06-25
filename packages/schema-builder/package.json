@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema-builder",
-	"version": "0.0.20",
+	"version": "1.0.0",
 	"description": "Directus SchemaBuilder for mocking/constructing a database schema based on code.",
 	"keywords": [
 		"sql",
@@ -12,14 +12,14 @@
 		"sqlite3",
 		"javascript"
 	],
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
 		"directory": "packages/schema-builder"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "BUSL-1.1",
+	"license": "SEE LICENSE IN license",
 	"author": "Nils Twelker <nils@directus.io>",
 	"type": "module",
 	"exports": {

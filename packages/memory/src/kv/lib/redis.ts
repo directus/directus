@@ -46,7 +46,7 @@ export class KvRedis implements Kv {
 	private redlock;
 	private ttl: number | undefined;
 
-	constructor(config: Omit<KvConfigRedis, 'type'> & { ttl?: number }) {
+	constructor(config: Omit<KvConfigRedis, 'type'>) {
 		if ('setMax' in config.redis === false) {
 			config.redis.defineCommand('setMax', {
 				numberOfKeys: 1,

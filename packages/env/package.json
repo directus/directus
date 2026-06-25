@@ -1,8 +1,8 @@
 {
 	"name": "@directus/env",
-	"version": "5.8.0",
+	"version": "6.0.0",
 	"description": "Utilities around using global env configuration",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",

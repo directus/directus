@@ -20,31 +20,23 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: О программе
-directus_bsl: Directus BSL 1.1
 privacy_policy: Политика конфиденциальности
-contact_our_team: Связаться с нами
+contact_support: свяжитесь со службой поддержки
 setup_welcome: Добро пожаловать в Directus
 setup_info: Давайте создадим учетную запись администратора и запустим ваш проект.
-setup_license_notice: >
-  Directus бесплатный для организаций с годовым доходом, финансированием или бюджетом менее 5 миллионов долларов.
-setup_license_follow_up: >
-  Лица выше данного предела обязаны получить платную лицензию. Теперь вы можете продолжить анализ Directus и {contactOurTeam}, когда вы готовы обсудить использование продукции.
 setup_save_accept_license: >
-  Нажав сохранить, вы принимаете условия [{directusBsl} и {privacyPolicy}.
-setup_accept_license: Я принимаю условия {directusBsl} и {privacyPolicy}
+  Нажав сохранить, вы принимаете условия [{directusMscl} и {privacyPolicy}.
 setup_marketing_emails: Присылать мне обновления и заметки к выпуску
 setup_launch: Запустить Directus
+remind_next_login: Мы напомним вам при следующем входе
 setup_project: Организовать проект
+skip: Пропустить
+continue: Продолжить
 first_name: Имя
 last_name: Фамилия
 admin_email: Почта админа
 owner_email: Почта владельца
 email_address: Адрес электронной почты
-organization_name: Название организации
-how_do_you_use_directus: Для чего вы используете Directus?
-usage_personal: Личный/Обучение
-usage_commercial: Бизнес / Коммерческое
-usage_community: Исходный код / Сообщество
 identifier: Индентификатор
 avatar: Аватар
 application: Приложение
@@ -205,7 +197,6 @@ keep: Оставить
 version: Версия
 version_key: Ключ Версии
 version_name: Название Версии
-main_version: Основная
 your_version: Ваша версия
 switch_version: Сменить Версию
 switch_version_copy: Вы уверены, что хотите переключиться на версию "{version}"? Несохраненные изменения будут потеряны.
@@ -213,8 +204,8 @@ create_version: Создать Версию
 rename_version: Переименовать Версию
 compare_version: Сравнить Версии
 save_version: Сохранить Версию
-promote_version: Повысить версию
 apply: Применить
+discard: Отменить
 select_all_differences: Выбрать все различия
 delete_version: Удалить версию
 delete_version_copy: >-
@@ -522,10 +513,15 @@ related_collection: Связанная коллекция
 related_collections: Связанные коллекции
 translations_collection: Коллекция переводов
 languages_collection: Коллекция языков
+fields_to_translate: Поля для перевода
+add_fields: Добавление полей
 translations_preview_collections: Коллекции
 translations_preview_fields: Поля
+translations_preview_relations: Отношения
+ungrouped: Без группировки
 import_data_input_placeholder: CSV или JSON...
 import_data_button: Начать импорт
+import_background: Импорт в фоновом режиме
 import_data_indeterminate: Импорт данных...
 import_data_success: Данные успешно импортированы из {filename}
 import_data_errors: Ошибка импорта
@@ -658,7 +654,6 @@ manual_string: Введённая вручную строка
 save_and_create_new: Сохранить и создать новый
 save_and_stay: Сохранить и остаться
 save_and_quit: Сохранить и выйти
-save_and_return_to_main: Сохранить и вернуться на главную
 save_as_copy: Сохранить и копировать
 add_existing: Добавить существующий
 creating_items: Создание элементов
@@ -837,7 +832,11 @@ flip_vertical: Отразить по вертикали
 aspect_ratio: Пропорции
 rotate: Повернуть
 all_users: Все пользователи
+invited_users: Приглашенные Пользователи
 delete_collection: Удалить коллекцию
+activate_collection: Активировать коллекцию
+deactivate_collection: Деактивировать коллекцию
+deactivated_collections: Деактивированные коллекции
 update_collection_success: Коллекция обновлена
 delete_collection_success: Коллекция удалена
 make_collection_visible: Сделать коллекцию видимой
@@ -984,6 +983,7 @@ label: Описание
 flows: Процессы
 flow: Процесс
 select_a_flow: Выберите процесс
+run_flow_confirm: Вы уверены, что хотите выполнить этот поток?
 run_flow_anyway: Запустить Flow всё равно
 run_flow_on_current_collection: Запустить процесс с текущей коллекцией
 run_flow_on_current: Запустить процесс с текущим элементом
@@ -1034,7 +1034,9 @@ no_url_copy: Пожалуйста, добавьте URL в настройках.
 invalid_url: Недопустимый URL
 invalid_url_copy: Указанный URL не совпадает ни с одним URL, указанным в настройках.
 insights: Аналитика
+overview: Обзор
 deployment:
+  deployment: Развёртывание
   overview:
     overview: Обзор
     providers: Провайдеры
@@ -1215,6 +1217,18 @@ settings_data_model: Модель данных
 settings_roles: Роли пользователей
 settings_permissions: Политики доступа
 settings_project: Настройки
+licensing:
+  unlimited: Не ограничено
+  addon_manage: Управлять
+  addon_update: Обновить
+  resolve_continue: Продолжить
+  resolve_show_n_more: 'Показать еще {count}'
+  resolve_section_flows: Процессы
+  resolve_sso_admin_email: Адрес электронной почты
+  resolve_sso_admin_password: Пароль
+  entitlements:
+    collections: Коллекции
+    flows: Процессы
 settings_appearance: Внешний вид
 settings_ai: ИИ
 model_context_protocol: Model Context Protocol
@@ -1670,6 +1684,7 @@ no_permissions: Нет прав доступа
 permission_add_collection: Добавить коллекцию
 default_label: По умолчанию
 delete_label: Удалить
+discard_label: Отменить
 delete_are_you_sure: >-
   Это действие является необратимым и не может быть отменено. Вы уверены, что хотите продолжить?
 delete_field_are_you_sure: >-
@@ -2117,7 +2132,9 @@ interfaces:
     value_securely_saved: Значение сохранено безопасным способом
     generate: Сгенерировать Токен
     regenerate: Перевыпустить Токен
+    regenerate_confirm_title: Перевыпустить Токен
     remove_token: Удалить ключ доступа
+    remove_confirm_title: Удалить ключ доступа
   system-raw-editor:
     system-raw-editor: Редактор сырых данных
     description: Разрешить ввод простых или шаблонных значений без логики
@@ -2582,5 +2599,7 @@ search_flow: Последовательность поиска...
 percent: Процент
 show_password: Показать пароль
 hide_password: Скрыть пароль
+license_grace_key_modal:
+  optional: Необязательно
 accepted: Принято
 set_to_now: Установить Сейчас

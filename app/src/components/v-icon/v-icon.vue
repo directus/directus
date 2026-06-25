@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { useSizeClass } from '@directus/composables';
 import { isIn } from '@directus/utils';
-import { IconName } from '@fortawesome/fontawesome-svg-core';
+import type { IconName } from '@fortawesome/fontawesome-svg-core';
 import { camelCase, upperFirst } from 'lodash';
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import { RTL_REVERSE_ICONS } from '../../constants/text-direction';
 import { components } from './custom-icons';
-import SocialIcon from './social-icon.vue';
 import { socialIcons } from './social-icons';
 import { useUserStore } from '@/stores/user';
+
+const SocialIcon = defineAsyncComponent(() => import('./social-icon.vue'));
 
 const props = withDefaults(
 	defineProps<{
@@ -101,16 +102,16 @@ function emitClick(event: MouseEvent) {
 
 		--v-icon-color        [currentColor]
 		--v-icon-color-hover  [currentColor]
-		--v-icon-size         [1.375rem]
+		--v-icon-size         [var(--icon-size-default)]
 
 */
 
 .v-icon {
 	position: relative;
 	display: inline-block;
-	inline-size: var(--v-icon-size, 1.375rem);
-	min-inline-size: var(--v-icon-size, 1.375rem);
-	block-size: var(--v-icon-size, 1.375rem);
+	inline-size: var(--v-icon-size, var(--icon-size-default));
+	min-inline-size: var(--v-icon-size, var(--icon-size-default));
+	block-size: var(--v-icon-size, var(--icon-size-default));
 	color: var(--v-icon-color, currentColor);
 	font-size: 0;
 	vertical-align: middle;
@@ -119,7 +120,7 @@ function emitClick(event: MouseEvent) {
 		display: block;
 		font-family: 'Material Symbols';
 		font-weight: normal;
-		font-size: var(--v-icon-size, 1.375rem);
+		font-size: var(--v-icon-size, var(--icon-size-default));
 		font-style: normal;
 		line-height: 1;
 		letter-spacing: normal;

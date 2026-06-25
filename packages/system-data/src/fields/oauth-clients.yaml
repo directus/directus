@@ -1,0 +1,90 @@
+table: directus_oauth_clients
+
+fields:
+  - field: client_name
+    width: half
+  - field: redirect_uris
+    special:
+      - cast-json
+    display: labels
+    display_options:
+      format: false
+    width: full
+  - field: grant_types
+    special:
+      - cast-json
+    display: labels
+    display_options:
+      format: false
+    width: full
+  - field: date_created
+    special:
+      - date-created
+      - cast-timestamp
+    width: half
+  - field: client_id
+    width: half
+    hidden: true
+  - field: token_endpoint_auth_method
+    width: half
+  - field: client_secret_hash
+    special:
+      - conceal
+    hidden: true
+  - field: tokens
+    interface: list-o2m
+    special:
+      - o2m
+    hidden: true
+    options:
+      fields:
+        - user
+        - expires_at
+        - date_created
+    width: full
+
+  - field: registration_type
+    display: labels
+    display_options:
+      choices:
+        - text: $t:field_options.directus_oauth_clients.registration_type_dcr
+          value: dcr
+          foreground: 'var(--theme--primary)'
+          background: 'var(--theme--primary-subdued)'
+        - text: $t:field_options.directus_oauth_clients.registration_type_cimd
+          value: cimd
+          foreground: 'var(--blue)'
+          background: 'var(--blue-25)'
+    width: half
+
+  - field: client_uri
+    readonly: true
+    width: half
+
+  - field: logo_uri
+    readonly: true
+    width: half
+
+  - field: tos_uri
+    readonly: true
+    width: half
+
+  - field: policy_uri
+    readonly: true
+    width: half
+
+  - field: metadata_fetched_at
+    hidden: true
+    special:
+      - cast-timestamp
+    width: half
+
+  - field: metadata_expires_at
+    hidden: true
+    special:
+      - cast-timestamp
+    width: half
+
+  - field: metadata_etag
+    hidden: true
+    width: half

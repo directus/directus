@@ -2,17 +2,24 @@
 import {
 	type DeploymentRunsOutput,
 	type DeploymentRunStatsOutput,
+	readDeployment,
 	readDeploymentRunStats,
 	triggerDeployment,
 } from '@directus/sdk';
-import { computed, ref, watch } from 'vue';
+import type { DeploymentProviderCapabilities } from '@directus/types';
+import { computed, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
+import {
+	buildDeployToolbarActions,
+	type DeployToolbarAction,
+	formatDeploymentTargetLabel,
+	resolveDeploymentCapabilities,
+} from '../../config/providers';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
@@ -20,7 +27,6 @@ import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
-import VMenu from '@/components/v-menu.vue';
 import VPagination from '@/components/v-pagination.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
@@ -32,10 +38,13 @@ import { formatDurationMs } from '@/utils/format-duration-ms';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
-import { PrivateView } from '@/views/private';
+import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
 import SearchInput from '@/views/private/components/search-input.vue';
 
 type Run = DeploymentRunsOutput;
+
+/** Same cadence as run detail polling; list must re-fetch so statuses refresh (poll providers + webhook-updated rows). */
+const RUNS_LIST_POLL_INTERVAL_MS = 3000;
 
 const props = defineProps<{
 	provider: string;
@@ -46,12 +55,35 @@ const router = useRouter();
 const { t } = useI18n();
 const { currentProject } = useDeploymentNavigation();
 const canDeploy = usePermissionsStore().hasPermission('directus_deployment_runs', 'create');
+const canTriggerDeploy = computed(() => canDeploy && currentProject.value?.deployable !== false);
+
+const capabilitiesFromApi = ref<DeploymentProviderCapabilities | null>(null);
+const mergedCapabilities = computed(() => resolveDeploymentCapabilities(props.provider, capabilitiesFromApi.value));
+
+const deployHooks = computed(() => {
+	if (!mergedCapabilities.value.supportsDeployHookUrl) return [];
+
+	const projectExternalId = currentProjectExternalId.value;
+	if (!projectExternalId) return [];
+
+	const hooks = hooksByProject.value[projectExternalId];
+	if (!Array.isArray(hooks)) return [];
+
+	return hooks.filter((hook) => typeof hook?.name === 'string' && typeof hook?.url === 'string') as Array<{
+		name: string;
+		url: string;
+	}>;
+});
+
+const deployToolbarActions = computed(() => buildDeployToolbarActions(mergedCapabilities.value, deployHooks.value));
 
 const loading = ref(true);
 const deploying = ref(false);
 const runs = ref<Run[]>([]);
 const search = ref<string | null>(null);
 const totalCount = ref(0);
+const hooksByProject = ref<Record<string, Array<{ name: string; url: string }>>>({});
+const currentProjectExternalId = ref<string | null>(null);
 
 const stats = ref<DeploymentRunStatsOutput>({
 	total_deployments: 0,
@@ -83,6 +115,8 @@ watch(page, (newPage, oldPage) => {
 });
 
 const pageTitle = computed(() => currentProject.value?.name || t('deployment.provider.runs.runs'));
+
+const deploymentTargetLabel = (target: string) => formatDeploymentTargetLabel(target, t);
 
 const tableHeaders = ref<Header[]>([
 	{
@@ -171,22 +205,114 @@ async function loadStats() {
 	}
 }
 
+const hasActiveDeployment = computed(() => runs.value.some((r) => r.status === 'building'));
+
+let runsListPollTimer: ReturnType<typeof setInterval> | null = null;
+
+function stopRunsListPolling() {
+	if (runsListPollTimer) {
+		clearInterval(runsListPollTimer);
+		runsListPollTimer = null;
+	}
+}
+
+async function pollRunsListWhileBuilding() {
+	await loadRuns();
+	await loadStats();
+
+	if (!runs.value.some((r) => r.status === 'building')) {
+		stopRunsListPolling();
+	}
+}
+
+function startRunsListPolling() {
+	if (runsListPollTimer) return;
+
+	// One immediate refresh when builds become active (e.g. navigating back to this page).
+	void pollRunsListWhileBuilding();
+
+	runsListPollTimer = setInterval(() => {
+		void pollRunsListWhileBuilding();
+	}, RUNS_LIST_POLL_INTERVAL_MS);
+}
+
+async function loadDeployHookConfig() {
+	try {
+		const deployment = await sdk.request(
+			readDeployment(props.provider, {
+				fields: ['options', { projects: ['id', 'external_id'] }],
+			} as Parameters<typeof readDeployment>[1]),
+		);
+
+		capabilitiesFromApi.value =
+			(deployment as { capabilities?: DeploymentProviderCapabilities | null }).capabilities ?? null;
+
+		const projects = (deployment as any)?.projects;
+		const options = (deployment as any)?.options as Record<string, unknown> | null;
+
+		if (Array.isArray(projects)) {
+			const project = projects.find((entry: any) => entry?.id === props.projectId);
+			currentProjectExternalId.value = project?.external_id ?? null;
+		} else {
+			currentProjectExternalId.value = (currentProject.value as any)?.external_id ?? null;
+		}
+
+		const hookMap = options?.deploy_hooks_by_project;
+
+		hooksByProject.value =
+			hookMap && typeof hookMap === 'object' ? (hookMap as Record<string, Array<{ name: string; url: string }>>) : {};
+	} catch {
+		capabilitiesFromApi.value = null;
+		currentProjectExternalId.value = (currentProject.value as any)?.external_id ?? null;
+		hooksByProject.value = {};
+	}
+}
+
 async function refresh() {
 	loading.value = true;
 
 	try {
-		await Promise.all([loadRuns(), loadStats()]);
+		await Promise.all([loadRuns(), loadStats(), loadDeployHookConfig()]);
 	} finally {
 		loading.value = false;
 	}
 }
 
-async function deploy(preview = false) {
+function onDeployToolbarAction(action: DeployToolbarAction) {
+	if (action.kind === 'refresh') {
+		void refresh();
+		return;
+	}
+
+	if (action.kind === 'default') {
+		void deploy();
+		return;
+	}
+
+	if (action.kind === 'preview') {
+		void deploy({ preview: true });
+		return;
+	}
+
+	if (action.kind === 'deploy_hook') {
+		void deploy({ deployHookUrl: action.url });
+	}
+}
+
+async function deploy(options?: { preview?: boolean; deployHookUrl?: string }) {
 	deploying.value = true;
 
 	try {
+		const requestOptions: Record<string, any> = {};
+		if (options?.preview) requestOptions.preview = true;
+		if (options?.deployHookUrl) requestOptions.deploy_hook_url = options.deployHookUrl;
+
 		const result = await sdk.request(
-			triggerDeployment(props.provider, props.projectId, preview ? { preview: true } : undefined),
+			triggerDeployment(
+				props.provider,
+				props.projectId,
+				Object.keys(requestOptions).length > 0 ? requestOptions : undefined,
+			),
 		);
 
 		router.push({
@@ -218,51 +344,72 @@ watch(
 );
 
 watch(statsRange, loadStats);
+
+watch(
+	hasActiveDeployment,
+	(active) => {
+		if (active) {
+			startRunsListPolling();
+		} else {
+			stopRunsListPolling();
+		}
+	},
+	{ immediate: true },
+);
+
+onUnmounted(() => {
+	stopRunsListPolling();
+});
 </script>
 
 <template>
 	<PrivateView :title="pageTitle" show-back :back-to="`/deployments/${provider}`">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t(`deployment.provider.${provider}.name`), to: `/deployments/${provider}` }]" />
-		</template>
-
 		<template #navigation>
 			<DeploymentNavigation />
 		</template>
 
 		<template #actions>
 			<SearchInput v-if="totalCount > 0 || search" v-model="search" :show-filter="false" small />
+		</template>
 
-			<VButton
-				:tooltip="$t('deployment.deploy')"
-				rounded
-				icon
-				small
+		<template #actions:primary>
+			<PrivateViewHeaderBarActionButton
+				:label="$t('deployment.deploy')"
+				icon="rocket_launch"
 				:loading="deploying"
-				:disabled="!canDeploy"
+				:disabled="!canTriggerDeploy"
 				@click="deploy()"
 			>
-				<VIcon name="rocket_launch" small />
-
-				<template #append-outer>
-					<VMenu show-arrow>
-						<template #activator="{ toggle }">
-							<VIcon class="more-options" name="more_vert" clickable @click="toggle" />
-						</template>
-
-						<VList>
-							<VListItem clickable :disabled="deploying || !canDeploy" @click="deploy(true)">
-								<VListItemIcon><VIcon name="rocket_launch" /></VListItemIcon>
-								<VListItemContent>{{ $t('deployment.provider.runs.deploy_preview') }}</VListItemContent>
-							</VListItem>
-							<VListItem clickable @click="refresh">
-								<VListItemIcon><VIcon name="refresh" /></VListItemIcon>
-								<VListItemContent>{{ $t('deployment.provider.runs.refresh') }}</VListItemContent>
-							</VListItem>
-						</VList>
-					</VMenu>
+				<template #split-menu>
+					<VList>
+						<VListItem
+							v-for="action in deployToolbarActions"
+							:key="action.id"
+							clickable
+							:disabled="action.kind === 'refresh' ? false : deploying || !canTriggerDeploy"
+							@click="onDeployToolbarAction(action)"
+						>
+							<VListItemIcon>
+								<VIcon
+									:name="
+										action.kind === 'refresh' ? 'refresh' : action.kind === 'deploy_hook' ? 'webhook' : 'rocket_launch'
+									"
+								/>
+							</VListItemIcon>
+							<VListItemContent>
+								<template v-if="action.kind === 'default'">{{ $t('deployment.deploy') }}</template>
+								<template v-else-if="action.kind === 'preview'">
+									{{ $t('deployment.provider.runs.deploy_preview') }}
+								</template>
+								<template v-else-if="action.kind === 'deploy_hook'">
+									{{ $t('deployment.provider.cloudflare-workers.deploy_hooks.deploy_via', { name: action.name }) }}
+								</template>
+								<template v-else>{{ $t('deployment.provider.runs.refresh') }}</template>
+							</VListItemContent>
+						</VListItem>
+					</VList>
 				</template>
-			</VButton>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 
 		<VProgressCircular v-if="loading" class="spinner" indeterminate />
@@ -339,7 +486,7 @@ watch(statsRange, loadStats);
 					</template>
 
 					<template #[`item.target`]="{ item }">
-						{{ $t(`deployment.target_value.${item.target}`) }}
+						{{ deploymentTargetLabel(item.target) }}
 					</template>
 
 					<template #[`item.date_created`]="{ item }">
@@ -445,15 +592,5 @@ watch(statsRange, loadStats);
 	display: flex;
 	justify-content: center;
 	margin-block-start: 1.375rem;
-}
-
-.more-options.v-icon {
-	--focus-ring-offset: var(--focus-ring-offset-invert);
-
-	color: var(--theme--foreground-subdued);
-
-	&:hover {
-		color: var(--theme--foreground);
-	}
 }
 </style>

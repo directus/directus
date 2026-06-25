@@ -1,8 +1,8 @@
 {
 	"name": "@directus/extensions-sdk",
-	"version": "17.1.4",
+	"version": "18.0.0",
 	"description": "A toolkit to develop extensions to extend Directus",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Field } from '@directus/types';
+import type { DeepPartial, Field } from '@directus/types';
 import { get } from '@directus/utils';
 import { computed } from 'vue';
 import ValueNull from './value-null.vue';
@@ -14,7 +14,7 @@ const props = withDefaults(
 	defineProps<{
 		template: string;
 		collection?: string;
-		fields?: Field[];
+		fields?: DeepPartial<Field>[];
 		item?: Record<string, any>;
 		direction?: string;
 	}>(),
@@ -76,7 +76,7 @@ const parts = computed(() =>
 			// Try getting the value from the item
 			let value = getNestedValues(props.item, fieldKey);
 
-			let field: Field | null = props.fields?.find((field) => field.field === fieldKey) ?? null;
+			let field: DeepPartial<Field> | null = props.fields?.find((field) => field.field === fieldKey) ?? null;
 
 			if (props.collection) {
 				field = fieldsStore.getField(props.collection, fieldKey);
@@ -88,7 +88,7 @@ const parts = computed(() =>
 				value = value.map(translate);
 			}
 
-			const component = field?.meta?.display || getDefaultDisplayForType(field.type);
+			const component = field?.meta?.display || (field.type ? getDefaultDisplayForType(field.type) : null);
 			const options = field?.meta?.display_options;
 
 			// No need to render the empty display overhead in this case
@@ -177,7 +177,6 @@ const parts = computed(() =>
 	block-size: 100%;
 	position: relative;
 	max-inline-size: 100%;
-	padding-inline-end: 0.4375rem;
 	@include mixins.no-wrap;
 
 	.vertical-aligner {

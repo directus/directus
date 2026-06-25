@@ -1,7 +1,7 @@
 {
 	"name": "directus-monorepo",
 	"private": true,
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"type": "module",
 	"scripts": {
 		"build": "pnpm --recursive run build",
@@ -34,13 +34,14 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"fast-xml-parser": "5.7.2",
+			"@directus/license>@directus/types": "workspace:*",
+			"fast-xml-parser": "5.8.0",
 			"@yarnpkg/shell>cross-spawn": "7.0.6",
-			"tar": "7.5.13",
-			"qs": "6.15.1",
+			"tar": "7.5.15",
+			"qs": "6.15.2",
 			"minimatch@10": "10.2.5",
 			"minimatch@9": "9.0.9",
-			"basic-ftp": "5.3.0",
+			"basic-ftp": "5.3.1",
 			"underscore": "1.13.8",
 			"flatted": "3.4.2",
 			"express@4>path-to-regexp": "0.1.13",
@@ -48,10 +49,14 @@
 			"anymatch>picomatch": "2.3.2",
 			"picomatch": "4.0.4",
 			"defu": "6.1.7",
-			"unplugin-vue>vite": "8.0.10",
-			"@xmldom/xmldom": "0.8.13",
+			"unplugin-vue>vite": "8.0.14",
 			"vitest@3>vite": "7.3.2",
-			"protobufjs": "7.5.6"
+			"protobufjs": "7.5.6",
+			"js-beautify>js-cookie": "3.0.7",
+			"pm2-sysmonit>systeminformation": "5.31.6",
+			"ajv>fast-uri": "3.1.2",
+			"braintrust>simple-git": "3.36.0",
+			"launch-editor>shell-quote": "1.8.4"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",

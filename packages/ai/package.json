@@ -1,8 +1,8 @@
 {
 	"name": "@directus/ai",
-	"version": "1.3.1",
+	"version": "1.3.2",
 	"description": "Shared AI types and model definitions for Directus AI",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",

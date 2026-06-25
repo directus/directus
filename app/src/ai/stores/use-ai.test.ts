@@ -326,6 +326,19 @@ describe('useAiStore', () => {
 		});
 	});
 
+	describe('reset', () => {
+		test('aborts any in-flight request before clearing the conversation', () => {
+			const aiStore = useAiStore();
+
+			aiStore.chat.messages.push({ id: '1', role: 'user', parts: [{ type: 'text', text: 'Hello' }] });
+
+			aiStore.reset();
+
+			expect(aiStore.chat.stop).toHaveBeenCalledTimes(1);
+			expect(aiStore.chat.messages.length).toBe(0);
+		});
+	});
+
 	describe('dehydrate', () => {
 		test('should clear all messages', async () => {
 			const aiStore = useAiStore();
