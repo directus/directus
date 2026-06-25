@@ -383,11 +383,17 @@ onKeyStroke('Escape', () => {
 		margin-block: 2em;
 	}
 
+	// prevent table from extending beyond the editor itself
+	.tableWrapper {
+		overflow-x: auto;
+		margin: 1.5em 0;
+	}
+
 	table {
 		border-collapse: collapse;
 		table-layout: fixed; // honor the resizable extension's colwidth
 		inline-size: 100%;
-		margin: 1.5em 0;
+		margin: 0; // vertical spacing lives on `.tableWrapper`
 		overflow: hidden;
 	}
 
