@@ -28,9 +28,9 @@ fields:
     interface: select-dropdown
     options:
       choices:
-        - text: $t:field_options.directus_collections.status_active
+        - text: $t:active
           value: active
-        - text: $t:field_options.directus_collections.status_inactive
+        - text: $t:inactive
           value: inactive
     width: half
 

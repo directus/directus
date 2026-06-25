@@ -2056,8 +2056,6 @@ field_options:
     only_track_activity: Only Track Activity
     do_not_track_anything: Do Not Track Anything
     collection_setup: Collection Setup
-    status_active: Active
-    status_inactive: Inactive
     collection_naming_translations_note:
       "Override the collection's display name in the app based on the user's language."
     note_placeholder: A description of this collection...
