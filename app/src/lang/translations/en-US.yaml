@@ -1431,6 +1431,15 @@ wysiwyg_options:
   removeformat: Remove Format
   selectall: Select All
   table: Table
+  table_insert: Insert Table
+  table_add_row_before: Add Row Above
+  table_add_row_after: Add Row Below
+  table_add_column_before: Add Column Left
+  table_add_column_after: Add Column Right
+  table_delete_row: Delete Row
+  table_delete_column: Delete Column
+  table_toggle_header_row: Toggle Header Row
+  table_delete: Delete Table
   visualaid: View invisible elements
   source_code: Edit Source Code
   fullscreen: Full Screen

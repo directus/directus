@@ -50,6 +50,14 @@ exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > subscript sur
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > superscript survives round-trip 1`] = `"<p>x<sup>2</sup></p>"`;
 
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > table survives round-trip 1`] = `"<table style="min-width: 50px;"><colgroup><col style="min-width: 25px;"><col style="min-width: 25px;"></colgroup><tbody><tr><td colspan="1" rowspan="1"><p>a</p></td><td colspan="1" rowspan="1"><p>b</p></td></tr><tr><td colspan="1" rowspan="1"><p>c</p></td><td colspan="1" rowspan="1"><p>d</p></td></tr></tbody></table>"`;
+
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > table with cell colwidth survives round-trip 1`] = `"<table style="width: 360px;"><colgroup><col style="width: 120px;"><col style="width: 240px;"></colgroup><tbody><tr><td colspan="1" rowspan="1" colwidth="120"><p>a</p></td><td colspan="1" rowspan="1" colwidth="240"><p>b</p></td></tr></tbody></table>"`;
+
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > table with header row survives round-trip 1`] = `"<table style="min-width: 50px;"><colgroup><col style="min-width: 25px;"><col style="min-width: 25px;"></colgroup><tbody><tr><th colspan="1" rowspan="1"><p>Name</p></th><th colspan="1" rowspan="1"><p>Role</p></th></tr><tr><td colspan="1" rowspan="1"><p>Ada</p></td><td colspan="1" rowspan="1"><p>Engineer</p></td></tr></tbody></table>"`;
+
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > table with legacy colgroup widths survives round-trip 1`] = `"<table style="min-width: 50px;"><colgroup><col style="min-width: 25px;"><col style="min-width: 25px;"></colgroup><tbody><tr><td colspan="1" rowspan="1"><p>a</p></td><td colspan="1" rowspan="1"><p>b</p></td></tr></tbody></table>"`;
+
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > text align center survives round-trip 1`] = `"<p style="text-align: center;">centered</p>"`;
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > text align justify survives round-trip 1`] = `"<p style="text-align: justify;">justified</p>"`;
@@ -71,7 +79,5 @@ exports[`round-trip: lossy (restored by later issues / accepted regression) > 'i
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'pagebreak' is dropped today (→ 'CMS-2647') 1`] = `"<p>a</p><p>b</p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'rtl direction' is dropped today (→ 'CMS-2646') 1`] = `"<p>شسي</p>"`;
-
-exports[`round-trip: lossy (restored by later issues / accepted regression) > 'table' is dropped today (→ 'CMS-2639') 1`] = `"<p>ab</p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'video' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;

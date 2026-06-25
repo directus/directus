@@ -139,6 +139,9 @@ watch(
 
 const fullscreen = ref(false);
 
+// Container-class toggle revealing dashed guides on borderless tables — same pattern as `fullscreen`.
+const visualaid = ref(false);
+
 onKeyStroke('Escape', () => {
 	if (fullscreen.value) fullscreen.value = false;
 });
@@ -147,7 +150,7 @@ onKeyStroke('Escape', () => {
 <template>
 	<div
 		class="wysiwyg"
-		:class="{ disabled, 'non-editable': nonEditable, fullscreen }"
+		:class="{ disabled, 'non-editable': nonEditable, fullscreen, visualaid }"
 		:style="{ '--editor-font-family': fontFamily }"
 	>
 		<Toolbar
@@ -157,7 +160,9 @@ onKeyStroke('Escape', () => {
 			:font="font"
 			:disabled="disabled"
 			:fullscreen="fullscreen"
+			:visualaid="visualaid"
 			@toggle-fullscreen="fullscreen = !fullscreen"
+			@toggle-visualaid="visualaid = !visualaid"
 			@open-image="openImageDrawer"
 			@open-link="openLinkDrawer"
 		/>
@@ -380,11 +385,49 @@ onKeyStroke('Escape', () => {
 
 	table {
 		border-collapse: collapse;
+		table-layout: fixed; // honor the resizable extension's colwidth
+		inline-size: 100%;
+		margin: 1.5em 0;
+		overflow: hidden;
 	}
 
 	table :is(th, td) {
+		position: relative; // anchors the resize handle
 		border: 1px solid var(--theme--form--field--input--border-color);
 		padding: 0.3125rem;
+		vertical-align: top;
+		box-sizing: border-box;
+	}
+
+	table th {
+		font-weight: 700;
+		text-align: start;
+		background-color: var(--theme--background-subdued);
+	}
+
+	// tiptap adds `.selectedCell` to the active cell selection
+	table .selectedCell::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: var(--theme--primary);
+		opacity: 0.1;
+		pointer-events: none;
+	}
+
+	// tiptap adds `.column-resize-handle` while resizing
+	.column-resize-handle {
+		position: absolute;
+		inset-block: 0;
+		inset-inline-end: -2px;
+		inline-size: 4px;
+		background-color: var(--theme--primary);
+		cursor: col-resize;
+		pointer-events: none;
+	}
+
+	&.resize-cursor {
+		cursor: col-resize;
 	}
 
 	figure {
@@ -398,5 +441,10 @@ onKeyStroke('Escape', () => {
 		margin-block-start: 0.1875rem;
 		text-align: center;
 	}
+}
+
+/* `visualaid` toggle: dashed guides so borderless tables stay visible while editing. */
+.wysiwyg.visualaid :deep(.ProseMirror) table :is(th, td) {
+	border: 1px dashed var(--theme--primary);
 }
 </style>

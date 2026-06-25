@@ -58,6 +58,15 @@ const FAITHFUL: Record<string, string> = {
 	'text align right': '<p style="text-align: right;">right</p>',
 	'text align justify': '<p style="text-align: justify;">justified</p>',
 	'aligned heading': '<h2 style="text-align: center;">centered</h2>',
+	// Tables (CMS-2639). Structure round-trips losslessly. Column widths survive only as a cell
+	// `colwidth`; legacy `<colgroup><col style="width…">` widths are normalized away (see snapshots).
+	table: '<table><tbody><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></tbody></table>',
+	'table with header row':
+		'<table><tbody><tr><th>Name</th><th>Role</th></tr><tr><td>Ada</td><td>Engineer</td></tr></tbody></table>',
+	'table with cell colwidth':
+		'<table><tbody><tr><td colwidth="120"><p>a</p></td><td colwidth="240"><p>b</p></td></tr></tbody></table>',
+	'table with legacy colgroup widths':
+		'<table><colgroup><col style="width: 120px;"><col style="width: 240px;"></colgroup><tbody><tr><td>a</td><td>b</td></tr></tbody></table>',
 };
 
 /**
@@ -66,12 +75,6 @@ const FAITHFUL: Record<string, string> = {
  * actual lossy output; the assertions document precisely what is lost today.
  */
 const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }> = [
-	{
-		name: 'table',
-		html: '<table><tbody><tr><td>a</td><td>b</td></tr></tbody></table>',
-		absent: '<table',
-		issue: 'CMS-2639',
-	},
 	{
 		name: 'video',
 		html: '<video controls><source src="/v.mp4" type="video/mp4"></video>',
