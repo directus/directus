@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+const MAX_TICK_COUNT = 101;
+
 interface Props {
 	/** Disables the slider */
 	disabled?: boolean;
@@ -57,6 +59,8 @@ const styles = computed(() => {
 	return { '--_v-slider-percentage': percentage };
 });
 
+const tickCount = computed(() => Math.floor((props.max - props.min) / props.step) + 1);
+
 function onChange(event: Event) {
 	const target = event.target as HTMLInputElement;
 	emit('change', Number(target.value));
@@ -88,8 +92,8 @@ function onInput(event: Event) {
 				@input="onInput"
 			/>
 			<div class="fill" />
-			<div v-if="showTicks" class="ticks">
-				<span v-for="i in Math.floor((max - min) / step) + 1" :key="i" class="tick" />
+			<div v-if="showTicks && tickCount <= MAX_TICK_COUNT" class="ticks">
+				<span v-for="i in tickCount" :key="i" class="tick" />
 			</div>
 			<div v-if="showThumbLabel" class="thumb-label-wrapper">
 				<div class="thumb-label" :class="{ visible: alwaysShowValue || nonEditable }">

@@ -1,4 +1,4 @@
-import { appAccessMinimalPermissions, appRecommendedPermissions } from '@directus/system-data';
+import { appRecommendedPermissions } from '@directus/system-data';
 import type { Permission } from '@directus/types';
 import type { Knex } from 'knex';
 import { isEqual } from 'lodash-es';
@@ -30,22 +30,6 @@ export function isRecommendedAppPermission(permission: Partial<Permission>): boo
 	return (
 		isEqual(foundPermission.fields ?? null, permission.fields ?? null) &&
 		isEqual(foundPermission.permissions ?? null, permission.permissions ?? null)
-	);
-}
-
-// because of legacy bug
-export function isMinimumAppPermission(permission: Partial<Permission>): boolean {
-	const foundPermission = appAccessMinimalPermissions.find(
-		(p) => p.action === permission.action && p.collection === permission.collection,
-	);
-
-	if (!foundPermission) return false;
-
-	return (
-		isEqual(foundPermission.fields ?? null, permission.fields ?? null) &&
-		isEqual(foundPermission.permissions ?? null, permission.permissions ?? null) &&
-		isEqual(foundPermission.validation ?? null, permission.validation ?? null) &&
-		isEqual(foundPermission.presets ?? null, permission.presets ?? null)
 	);
 }
 
