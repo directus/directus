@@ -1,4 +1,7 @@
 import type { Editor } from '@tiptap/vue-3';
+import type { Component } from 'vue';
+import ColorMenu from './menus/color-menu.vue';
+import StyleListMenu from './menus/style-list-menu.vue';
 
 /** Handlers for buttons whose commands need more than the editor (instantiated in setup scope). */
 export interface ToolbarContext {
@@ -23,9 +26,16 @@ export interface ToolbarButton {
 	icon: string;
 	/** i18n key, resolved with `t()` at render time */
 	label: string;
-	command: (editor: Editor, ctx: ToolbarContext) => void;
+	/** Click-command buttons set this. Menu buttons (`component`) omit it. */
+	command?: (editor: Editor, ctx: ToolbarContext) => void;
 	isActive?: (editor: Editor, ctx: ToolbarContext) => boolean;
 	disabled?: (editor: Editor) => boolean;
+	/** When set, the toolbar renders this dropdown component instead of a click button. */
+	component?: Component;
+	/** Extra props passed to `component` (e.g. picker config). */
+	componentProps?: Record<string, unknown>;
+	/** Layout width in px; defaults to the square icon-button width. Set for labeled dropdowns. */
+	width?: number;
 }
 
 const headings: Record<string, ToolbarButton> = Object.fromEntries(
@@ -39,6 +49,36 @@ const headings: Record<string, ToolbarButton> = Object.fromEntries(
 		} satisfies ToolbarButton,
 	]),
 );
+
+// Mirrors TinyMCE's default `font_family_formats` so existing content maps to the same names.
+const FONT_FAMILIES: { label: string; value: string | null }[] = [
+	{ label: 'Andale Mono', value: "'Andale Mono', monospace" },
+	{ label: 'Arial', value: 'Arial, Helvetica, sans-serif' },
+	{ label: 'Arial Black', value: "'Arial Black', sans-serif" },
+	{ label: 'Book Antiqua', value: "'Book Antiqua', Palatino, serif" },
+	{ label: 'Comic Sans MS', value: "'Comic Sans MS', sans-serif" },
+	{ label: 'Courier New', value: "'Courier New', Courier, monospace" },
+	{ label: 'Georgia', value: 'Georgia, Palatino, serif' },
+	{ label: 'Helvetica', value: 'Helvetica, Arial, sans-serif' },
+	{ label: 'Impact', value: 'Impact, sans-serif' },
+	{ label: 'Symbol', value: 'Symbol' },
+	{ label: 'Tahoma', value: 'Tahoma, Arial, Helvetica, sans-serif' },
+	{ label: 'Terminal', value: 'Terminal, Monaco, monospace' },
+	{ label: 'Times New Roman', value: "'Times New Roman', Times, serif" },
+	{ label: 'Trebuchet MS', value: "'Trebuchet MS', Geneva, sans-serif" },
+	{ label: 'Verdana', value: 'Verdana, Geneva, sans-serif' },
+	{ label: 'Webdings', value: 'Webdings' },
+	{ label: 'Wingdings', value: "'Wingdings', 'Zapf Dingbats'" },
+];
+
+const FONT_SIZES: { label: string; value: string | null }[] = [12, 14, 16, 18, 24, 30, 36, 48].map((px) => ({
+	label: String(px),
+	value: `${px}px`,
+}));
+
+// Labeled dropdowns are wider than icon buttons; the layout needs the real width to avoid clipping.
+const FONT_FAMILY_WIDTH = 132;
+const FONT_SIZE_WIDTH = 80;
 
 // text-align directions; `alignnone` (unset) is registered separately below
 const align: Record<string, ToolbarButton> = Object.fromEntries(
@@ -71,6 +111,43 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		disabled: (e) => !e.can().redo(),
 	},
 	...headings,
+	fontfamily: {
+		icon: 'font_download',
+		label: 'wysiwyg_options.fontselect',
+		component: StyleListMenu,
+		width: FONT_FAMILY_WIDTH,
+		componentProps: {
+			label: 'wysiwyg_options.fontselect',
+			attr: 'fontFamily',
+			items: FONT_FAMILIES,
+			width: FONT_FAMILY_WIDTH,
+			previewFont: true,
+		},
+	},
+	fontsize: {
+		icon: 'format_size',
+		label: 'wysiwyg_options.fontsizeselect',
+		component: StyleListMenu,
+		width: FONT_SIZE_WIDTH,
+		componentProps: {
+			label: 'wysiwyg_options.fontsizeselect',
+			attr: 'fontSize',
+			items: FONT_SIZES,
+			width: FONT_SIZE_WIDTH,
+		},
+	},
+	forecolor: {
+		icon: 'format_color_text',
+		label: 'wysiwyg_options.forecolor',
+		component: ColorMenu,
+		componentProps: { icon: 'format_color_text', label: 'wysiwyg_options.forecolor', mode: 'text' },
+	},
+	backcolor: {
+		icon: 'format_color_fill',
+		label: 'wysiwyg_options.backcolor',
+		component: ColorMenu,
+		componentProps: { icon: 'format_color_fill', label: 'wysiwyg_options.backcolor', mode: 'background' },
+	},
 	bold: {
 		icon: 'format_bold',
 		label: 'wysiwyg_options.bold',
@@ -100,7 +177,6 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		icon: 'format_clear',
 		label: 'wysiwyg_options.alignnone',
 		command: (e) => e.chain().focus().unsetTextAlign().run(),
-
 	},
 	subscript: {
 		icon: 'subscript',

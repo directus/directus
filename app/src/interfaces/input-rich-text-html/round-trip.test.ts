@@ -25,7 +25,7 @@ function roundTrip(html: string): string {
 	return out;
 }
 
-/** Constructs StarterKit models — these must survive round-trip without structural loss. */
+/** Constructs the schema models — these must survive round-trip without structural loss. */
 const FAITHFUL: Record<string, string> = {
 	paragraph: '<p>Just a paragraph.</p>',
 	headings: '<h1>H1</h1><h2>H2</h2><h3>H3</h3><h4>H4</h4><h5>H5</h5><h6>H6</h6>',
@@ -47,6 +47,12 @@ const FAITHFUL: Record<string, string> = {
 	'link with title': '<p><a href="https://directus.io" title="Home">link</a></p>',
 	'link new tab': '<p><a href="https://directus.io" target="_blank" rel="noopener">link</a></p>',
 	'hard break': '<p>line one<br>line two</p>',
+	'font family (named)': '<p><span style="font-family: Arial, Helvetica, sans-serif;">text</span></p>',
+	'font family (legacy keyword)': '<p><span style="font-family: serif;">text</span></p>',
+	'font size (px)': '<p><span style="font-size: 24px;">text</span></p>',
+	'font size (legacy pt)': '<p><span style="font-size: 18pt;">text</span></p>',
+	'text color': '<p><span style="color: #ff0000;">text</span></p>',
+	'background color': '<p><span style="background-color: #ffff00;">text</span></p>',
 	'text align left': '<p style="text-align: left;">left</p>',
 	'text align center': '<p style="text-align: center;">centered</p>',
 	'text align right': '<p style="text-align: right;">right</p>',
@@ -79,16 +85,6 @@ const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }
 		issue: 'CMS-2643',
 	},
 	{ name: 'iframe', html: '<iframe src="about:blank"></iframe>', absent: '<iframe', issue: 'CMS-2643' },
-	{
-		name: 'font family',
-		html: '<p><span style="font-family: serif;">text</span></p>',
-		absent: 'font-family',
-		issue: 'CMS-2637',
-	},
-	{ name: 'text color', html: '<p><span style="color: #ff0000;">text</span></p>', absent: 'color:', issue: 'CMS-2637' },
-	{ name: 'subscript', html: '<p>H<sub>2</sub>O</p>', absent: '<sub', issue: 'CMS-2638' },
-	{ name: 'superscript', html: '<p>x<sup>2</sup></p>', absent: '<sup', issue: 'CMS-2638' },
-	{ name: 'text align', html: '<p style="text-align: center;">centered</p>', absent: 'text-align', issue: 'CMS-2636' },
 	{ name: 'rtl direction', html: '<p dir="rtl">شسي</p>', absent: 'dir=', issue: 'CMS-2646' },
 	{ name: 'pagebreak', html: '<p>a</p><!-- pagebreak --><p>b</p>', absent: 'pagebreak', issue: 'CMS-2647' },
 	{
@@ -99,7 +95,7 @@ const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }
 	},
 ];
 
-describe('round-trip: faithful (StarterKit schema)', () => {
+describe('round-trip: faithful (StarterKit + TextStyleKit schema)', () => {
 	test.each(Object.entries(FAITHFUL))('%s survives round-trip', (_name, html) => {
 		expect(roundTrip(html)).toMatchSnapshot();
 	});

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { cssVar } from '@directus/utils/browser';
 import type { Editor } from '@tiptap/vue-3';
 import { useResizeObserver } from '@vueuse/core';
 import { computed, ref, useTemplateRef } from 'vue';
@@ -13,12 +14,17 @@ import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
 
-const props = defineProps<{
-	editor: Editor | undefined;
-	toolbar: string[];
-	disabled?: boolean;
-	fullscreen?: boolean;
-}>();
+const props = withDefaults(
+	defineProps<{
+		editor: Editor | undefined;
+		toolbar: string[];
+		/** Field `font` option — drives the editor's base font, and thus the font-family dropdown default. */
+		font?: 'sans-serif' | 'serif' | 'monospace';
+		disabled?: boolean;
+		fullscreen?: boolean;
+	}>(),
+	{ font: 'sans-serif' },
+);
 
 const emit = defineEmits<{ 'toggle-fullscreen': []; 'open-image': []; 'open-link': [] }>();
 
@@ -44,6 +50,13 @@ const context: ToolbarContext = {
 	},
 };
 
+// labeled dropdowns (font family/size) declare their own width; the rest are 2rem squares
+const keyWidths = Object.fromEntries(
+	Object.entries(toolbarButtons)
+		.filter(([, button]) => button.width !== undefined)
+		.map(([key, button]) => [key, button.width!]),
+);
+
 // small icon button = 2rem square; separator ~1px rule + side margins; keep in sync with CSS below
 const MEASUREMENTS: LayoutMeasurements = {
 	buttonWidth: 32,
@@ -52,10 +65,26 @@ const MEASUREMENTS: LayoutMeasurements = {
 	separatorWidth: 9,
 	minItems: 5,
 	popoverWidth: 44,
+	keyWidths,
 };
 
 // keys present in the field config AND in the registry, preserving field order for the `other` bucket
 const selectedKeys = computed(() => props.toolbar.filter((key) => Boolean(toolbarButtons[key])));
+
+// editor base font-size — mirrors `.ProseMirror { font-size: 0.875rem }` (14px) in input-rich-text-html.vue
+const BASE_FONT_SIZE_PX = 14;
+
+// Defaults the style dropdowns show when nothing is applied: the family resolves the active theme's
+// font token for the field's `font` option; the size mirrors the editor's fixed base size.
+const styleDefaults = computed<Record<string, Partial<Record<'defaultLabel' | 'defaultValue', string>>>>(() => {
+	const token = props.font === 'sans-serif' ? 'sans' : props.font;
+	const family = cssVar(`--theme--fonts--${token}--font-family`).replace(/["']/g, '');
+
+	return {
+		fontfamily: { defaultLabel: family },
+		fontsize: { defaultLabel: String(BASE_FONT_SIZE_PX), defaultValue: `${BASE_FONT_SIZE_PX}px` },
+	};
+});
 
 const container = useTemplateRef<HTMLElement>('container');
 const availableWidth = ref(Infinity);
@@ -79,9 +108,14 @@ const visibleGroups = computed(() => layout.value.visible);
 const overflowGroups = computed(() => layout.value.overflow);
 const hasOverflow = computed(() => overflowGroups.value.length > 0);
 
-// resolve a render group's keys to button definitions
+// resolve a render group's keys to button definitions, injecting the derived style defaults
 function resolve(group: RenderGroup): { key: string; button: ToolbarButton }[] {
-	return group.keys.map((key) => ({ key, button: toolbarButtons[key]! }));
+	return group.keys.map((key) => {
+		const button = toolbarButtons[key]!;
+		const defaults = styleDefaults.value[key];
+		if (!defaults) return { key, button };
+		return { key, button: { ...button, componentProps: { ...button.componentProps, ...defaults } } };
+	});
 }
 
 // max width of the "Show More" panel = current toolbar width
@@ -166,21 +200,18 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 }
 
 .toolbar-overflow {
-	--overflow-rows: 2;
-	--overflow-gap: 0.125rem;
-	--overflow-padding: 0.25rem;
-	--overflow-button-size: 2rem;
-	--overflow-rows-size: calc(var(--overflow-rows) * var(--overflow-button-size));
-	--overflow-gaps-size: calc((var(--overflow-rows) - 1) * var(--overflow-gap));
-	--overflow-pad-size: calc(2 * var(--overflow-padding));
+	--ov-rows: 2;
+	--ov-gap: 0.125rem;
+	--ov-pad: 0.25rem;
+	--ov-btn: 2rem;
 
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: var(--overflow-gap);
-	padding: var(--overflow-padding);
+	gap: var(--ov-gap);
+	padding: var(--ov-pad);
 	max-inline-size: var(--toolbar-width, 12rem);
-	max-block-size: calc(var(--overflow-rows-size) + var(--overflow-gaps-size) + var(--overflow-pad-size));
+	max-block-size: calc(var(--ov-rows) * var(--ov-btn) + (var(--ov-rows) - 1) * var(--ov-gap) + 2 * var(--ov-pad));
 	overflow-y: auto;
 }
 </style>

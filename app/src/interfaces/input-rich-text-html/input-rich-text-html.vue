@@ -154,6 +154,7 @@ onKeyStroke('Escape', () => {
 			v-if="!nonEditable"
 			:editor="editor"
 			:toolbar="toolbar"
+			:font="font"
 			:disabled="disabled"
 			:fullscreen="fullscreen"
 			@toggle-fullscreen="fullscreen = !fullscreen"

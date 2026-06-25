@@ -14,6 +14,8 @@ export interface LayoutMeasurements {
 	separatorWidth: number;
 	minItems: number;
 	popoverWidth: number;
+	/** Per-key width overrides for non-square buttons (e.g. labeled dropdowns); defaults to buttonWidth. */
+	keyWidths?: Record<string, number>;
 }
 
 export interface ToolbarLayout {
@@ -38,7 +40,9 @@ function slotsOf(g: { popover?: boolean; keys: string[] }): number {
 }
 
 function widthOf(g: { popover?: boolean; keys: string[] }, m: LayoutMeasurements): number {
-	return g.popover ? m.popoverWidth : g.keys.length * m.buttonWidth;
+	// popover groups collapse to one fixed-width button; otherwise sum per-key widths (labeled dropdowns
+	// are wider than square buttons), falling back to the default button width.
+	return g.popover ? m.popoverWidth : g.keys.reduce((w, k) => w + (m.keyWidths?.[k] ?? m.buttonWidth), 0);
 }
 
 function partition(selectedKeys: string[], groups: ToolbarGroup[]): Candidate[] {

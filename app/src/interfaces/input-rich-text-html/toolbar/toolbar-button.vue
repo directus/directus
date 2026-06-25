@@ -20,7 +20,15 @@ const placement = computed(() => props.tooltipPlacement ?? 'top');
 </script>
 
 <template>
+	<component
+		:is="button.component"
+		v-if="button.component"
+		:editor="editor"
+		:disabled="disabled"
+		v-bind="button.componentProps"
+	/>
 	<VButton
+		v-else
 		v-tooltip:[placement]="t(button.label)"
 		class="toolbar-button"
 		ghost
@@ -28,7 +36,7 @@ const placement = computed(() => props.tooltipPlacement ?? 'top');
 		:disabled="disabled || (editor ? button.disabled?.(editor) : true)"
 		small
 		icon
-		@click="editor && button.command(editor, context)"
+		@click="editor && button.command?.(editor, context)"
 	>
 		<VIcon :name="button.icon" />
 	</VButton>

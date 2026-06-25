@@ -1,60 +1,70 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`round-trip: faithful (StarterKit schema) > aligned heading survives round-trip 1`] = `"<h2 style="text-align: center;">centered</h2>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > aligned heading survives round-trip 1`] = `"<h2 style="text-align: center;">centered</h2>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > blockquote survives round-trip 1`] = `"<blockquote><p>quote</p></blockquote>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > background color survives round-trip 1`] = `"<p><span style="background-color: #ffff00;">text</span></p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > bold survives round-trip 1`] = `"<p><strong>bold</strong></p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > blockquote survives round-trip 1`] = `"<blockquote><p>quote</p></blockquote>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > bullet list survives round-trip 1`] = `"<ul><li><p>one</p></li><li><p>two</p></li></ul>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > bold survives round-trip 1`] = `"<p><strong>bold</strong></p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > code block survives round-trip 1`] = `"<pre><code>const x = 1;</code></pre>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > bullet list survives round-trip 1`] = `"<ul><li><p>one</p></li><li><p>two</p></li></ul>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > hard break survives round-trip 1`] = `"<p>line one<br>line two</p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > code block survives round-trip 1`] = `"<pre><code>const x = 1;</code></pre>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > headings survives round-trip 1`] = `"<h1>H1</h1><h2>H2</h2><h3>H3</h3><h4>H4</h4><h5>H5</h5><h6>H6</h6>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > font family (legacy keyword) survives round-trip 1`] = `"<p><span style="font-family: serif;">text</span></p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > horizontal rule survives round-trip 1`] = `"<p>before</p><hr><p>after</p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > font family (named) survives round-trip 1`] = `"<p><span style="font-family: Arial, Helvetica, sans-serif;">text</span></p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > inline code survives round-trip 1`] = `"<p><code>inline()</code></p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > font size (legacy pt) survives round-trip 1`] = `"<p><span style="font-size: 18pt;">text</span></p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > italic survives round-trip 1`] = `"<p><em>italic</em></p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > font size (px) survives round-trip 1`] = `"<p><span style="font-size: 24px;">text</span></p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > link new tab survives round-trip 1`] = `"<p><a target="_blank" rel="noopener" href="https://directus.io">link</a></p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > hard break survives round-trip 1`] = `"<p>line one<br>line two</p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > link survives round-trip 1`] = `"<p><a href="https://directus.io">link</a></p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > headings survives round-trip 1`] = `"<h1>H1</h1><h2>H2</h2><h3>H3</h3><h4>H4</h4><h5>H5</h5><h6>H6</h6>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > link with title survives round-trip 1`] = `"<p><a href="https://directus.io" title="Home">link</a></p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > horizontal rule survives round-trip 1`] = `"<p>before</p><hr><p>after</p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > nested list survives round-trip 1`] = `"<ul><li><p>parent</p><ul><li><p>child</p></li></ul></li></ul>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > inline code survives round-trip 1`] = `"<p><code>inline()</code></p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > nested marks survives round-trip 1`] = `"<p><strong>bold <em>and italic</em></strong></p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > italic survives round-trip 1`] = `"<p><em>italic</em></p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > ordered list survives round-trip 1`] = `"<ol><li><p>first</p></li><li><p>second</p></li></ol>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > link new tab survives round-trip 1`] = `"<p><a target="_blank" rel="noopener" href="https://directus.io">link</a></p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > paragraph survives round-trip 1`] = `"<p>Just a paragraph.</p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > link survives round-trip 1`] = `"<p><a href="https://directus.io">link</a></p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > strike survives round-trip 1`] = `"<p><s>strike</s></p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > link with title survives round-trip 1`] = `"<p><a href="https://directus.io" title="Home">link</a></p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > subscript survives round-trip 1`] = `"<p>H<sub>2</sub>O</p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > nested list survives round-trip 1`] = `"<ul><li><p>parent</p><ul><li><p>child</p></li></ul></li></ul>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > superscript survives round-trip 1`] = `"<p>x<sup>2</sup></p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > nested marks survives round-trip 1`] = `"<p><strong>bold <em>and italic</em></strong></p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > text align center survives round-trip 1`] = `"<p style="text-align: center;">centered</p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > ordered list survives round-trip 1`] = `"<ol><li><p>first</p></li><li><p>second</p></li></ol>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > text align justify survives round-trip 1`] = `"<p style="text-align: justify;">justified</p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > paragraph survives round-trip 1`] = `"<p>Just a paragraph.</p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > text align left survives round-trip 1`] = `"<p style="text-align: left;">left</p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > strike survives round-trip 1`] = `"<p><s>strike</s></p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > text align right survives round-trip 1`] = `"<p style="text-align: right;">right</p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > subscript survives round-trip 1`] = `"<p>H<sub>2</sub>O</p>"`;
 
-exports[`round-trip: faithful (StarterKit schema) > underline survives round-trip 1`] = `"<p><u>underline</u></p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > superscript survives round-trip 1`] = `"<p>x<sup>2</sup></p>"`;
+
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > text align center survives round-trip 1`] = `"<p style="text-align: center;">centered</p>"`;
+
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > text align justify survives round-trip 1`] = `"<p style="text-align: justify;">justified</p>"`;
+
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > text align left survives round-trip 1`] = `"<p style="text-align: left;">left</p>"`;
+
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > text align right survives round-trip 1`] = `"<p style="text-align: right;">right</p>"`;
+
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > text color survives round-trip 1`] = `"<p><span style="color: #ff0000;">text</span></p>"`;
+
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > underline survives round-trip 1`] = `"<p><u>underline</u></p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'audio' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'custom format span' is dropped today (→ 'CMS-2648') 1`] = `"<p>text</p>"`;
-
-exports[`round-trip: lossy (restored by later issues / accepted regression) > 'font family' is dropped today (→ 'CMS-2637') 1`] = `"<p>text</p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'iframe' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;
 
@@ -63,7 +73,5 @@ exports[`round-trip: lossy (restored by later issues / accepted regression) > 'p
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'rtl direction' is dropped today (→ 'CMS-2646') 1`] = `"<p>شسي</p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'table' is dropped today (→ 'CMS-2639') 1`] = `"<p>ab</p>"`;
-
-exports[`round-trip: lossy (restored by later issues / accepted regression) > 'text color' is dropped today (→ 'CMS-2637') 1`] = `"<p>text</p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'video' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;
