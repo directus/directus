@@ -17,12 +17,13 @@ const global = {
 		VListItemContent: true,
 		VListItemIcon: true,
 		VDivider: true,
+		TableGridPicker: true,
 	},
 };
 
 type Chain = ReturnType<Editor['chain']>;
 interface Vm {
-	insertTable: () => void;
+	insertTable: (rows?: number, cols?: number) => void;
 	run: (command: (chain: Chain) => Chain) => void;
 }
 
@@ -50,6 +51,47 @@ describe('table-menu', () => {
 		expect(html).toContain('<table');
 		expect(html).toContain('<th');
 		expect((html.match(/<tr/g) ?? []).length).toBe(3); // 1 header + 2 body
+	});
+
+	test('clicking a grid cell inserts a table of that size', async () => {
+		// Rendering the full menu evaluates the edit items' `editor.can()` bindings, which need a
+		// mounted ProseMirror view (absent in jsdom). Neutralize `can()` so those bindings don't throw.
+		const mountedEditor = editor;
+		mountedEditor.can = () => ({ mergeCells: () => false, splitCell: () => false }) as never;
+
+		// Render the real picker (and slot-rendering menu stubs) to exercise the @select wiring.
+		const wrapper = mount(TableMenu, {
+			props: { editor: mountedEditor },
+			global: {
+				...global,
+				stubs: {
+					...global.stubs,
+					VMenu: { template: '<div><slot /></div>' },
+					VList: { template: '<div><slot /></div>' },
+					TableGridPicker: false,
+				},
+			},
+		});
+
+		// 6th cell (index 5) in the default 10-col grid is row 1, col 6
+		await wrapper.findAll('.cell')[5]!.trigger('click');
+
+		const html = mountedEditor.getHTML();
+		expect((html.match(/<tr/g) ?? []).length).toBe(1);
+		const firstRow = html.match(/<tr[^>]*>.*?<\/tr>/s)?.[0] ?? '';
+		expect((firstRow.match(/<t[hd]/g) ?? []).length).toBe(6);
+	});
+
+	test('insertTable honors picker dimensions', () => {
+		const vm = mountMenu();
+		vm.insertTable(2, 4); // 2 rows × 4 cols
+
+		expect(editor.isActive('table')).toBe(true);
+
+		const html = editor.getHTML();
+		expect((html.match(/<tr/g) ?? []).length).toBe(2);
+		const firstRow = html.match(/<tr[^>]*>.*?<\/tr>/s)?.[0] ?? '';
+		expect((firstRow.match(/<t[hd]/g) ?? []).length).toBe(4);
 	});
 
 	test('addRowAfter / addColumnAfter grow the table', () => {

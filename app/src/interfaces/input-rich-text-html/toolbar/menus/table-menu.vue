@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3';
 import { useI18n } from 'vue-i18n';
+import TableGridPicker from './table-grid-picker.vue';
 import VButton from '@/components/v-button.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -23,8 +24,12 @@ function run(command: (chain: ReturnType<Editor['chain']>) => ReturnType<Editor[
 	if (editor) command(editor.chain().focus()).run();
 }
 
-function insertTable(): void {
-	run((c) => c.insertTable({ rows: 3, cols: 3, withHeaderRow: true }));
+function insertTable(rows = 3, cols = 3): void {
+	run((c) => c.insertTable({ rows, cols, withHeaderRow: true }));
+}
+
+function onPickSize({ rows, cols }: { rows: number; cols: number }): void {
+	insertTable(rows, cols);
 }
 
 function inTable(): boolean {
@@ -60,10 +65,7 @@ defineExpose({ run, insertTable });
 			</VButton>
 		</template>
 		<VList>
-			<VListItem clickable @click="insertTable">
-				<VListItemIcon><VIcon name="grid_on" /></VListItemIcon>
-				<VListItemContent>{{ t('wysiwyg_options.table_insert') }}</VListItemContent>
-			</VListItem>
+			<TableGridPicker @select="onPickSize" />
 
 			<VDivider />
 

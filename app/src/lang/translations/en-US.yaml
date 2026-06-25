@@ -1432,6 +1432,7 @@ wysiwyg_options:
   selectall: Select All
   table: Table
   table_insert: Insert Table
+  table_insert_size: '{cols} × {rows}'
   table_add_row_before: Add Row Above
   table_add_row_after: Add Row Below
   table_add_column_before: Add Column Left
