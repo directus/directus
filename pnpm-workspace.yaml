@@ -232,6 +232,7 @@ catalog:
   inquirer: 12.11.0
   ioredis: 5.8.2
   ip-matching: 2.1.2
+  ipaddr.js: 2.4.0
   isolated-vm: 5.0.3
   joi: 18.0.1
   jose: 6.2.3
