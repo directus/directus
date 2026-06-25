@@ -405,6 +405,14 @@ onKeyStroke('Escape', () => {
 		box-sizing: border-box;
 	}
 
+	table :is(th, td) > * {
+		margin-block: 0;
+	}
+
+	table :is(th, td) > * + * {
+		margin-block-start: 1.5em;
+	}
+
 	table th {
 		font-weight: 700;
 		text-align: start;
