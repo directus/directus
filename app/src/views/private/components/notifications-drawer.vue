@@ -36,6 +36,7 @@ import { useUserStore } from '@/stores/user';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import SearchInput from '@/views/private/components/search-input.vue';
+import SubHeader from '@/views/private/components/sub-header.vue';
 
 type LocalNotification = Notification & {
 	to?: string;
@@ -250,8 +251,8 @@ function clearFilters() {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('delete_label')"
-						class="action-delete"
-						secondary
+						kind="danger"
+						variant="ghost"
 						:disabled="selection.length === 0"
 						icon="delete"
 						@click="on"
@@ -275,7 +276,7 @@ function clearFilters() {
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="tab[0] === 'inbox' ? $t('archive') : $t('unarchive')"
 				:disabled="selection.length === 0"
-				secondary
+				variant="ghost"
 				:icon="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'"
 				@click="toggleArchive"
 			/>
@@ -341,18 +342,16 @@ function clearFilters() {
 			</VList>
 
 			<div v-else class="notifications-block">
-				<VDivider class="select-all-divider" :class="{ dense: totalPages > 1 }" />
-
-				<VCheckbox
-					class="select-all"
-					:class="{ dense: totalPages > 1 }"
-					:label="!allItemsSelected ? $t('select_all') : $t('deselect_all')"
-					:model-value="allItemsSelected"
-					:indeterminate="someItemsSelected"
-					@update:model-value="selectAll"
-				/>
-
-				<VDivider class="select-all-divider" :class="{ dense: totalPages > 1 }" />
+				<SubHeader class="sub-header">
+					<template #start>
+						<VCheckbox
+							:label="!allItemsSelected ? $t('select_all') : $t('deselect_all')"
+							:model-value="allItemsSelected"
+							:indeterminate="someItemsSelected"
+							@update:model-value="selectAll"
+						/>
+					</template>
+				</SubHeader>
 
 				<VList class="notifications">
 					<VListItem
@@ -423,6 +422,10 @@ function clearFilters() {
 	padding: 0 var(--content-padding) var(--content-padding-bottom) var(--content-padding);
 }
 
+.sub-header {
+	margin-block-end: var(--content-padding);
+}
+
 .notifications {
 	margin-block-end: 0.875rem;
 
@@ -473,31 +476,6 @@ function clearFilters() {
 	}
 }
 
-.select-all {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	block-size: 1.375rem;
-	margin: 0 calc(var(--theme--form--field--input--padding) + var(--theme--border-width));
-
-	&.dense {
-		margin: 0 calc(0.4375rem + var(--theme--border-width)) 0.6875rem;
-	}
-}
-
-.select-all-divider {
-	margin: 0.4375rem 0;
-
-	&.dense {
-		margin: 0.25rem 0;
-	}
-}
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
 .fade-enter-active,
 .fade-leave-active {
 	transition: opacity var(--medium) var(--transition);
@@ -509,6 +487,7 @@ function clearFilters() {
 }
 
 .nav-divider {
-	margin-inline: 0.6875rem;
+	margin-inline: 0.4375rem;
+	padding-block: 0.25rem;
 }
 </style>

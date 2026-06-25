@@ -10,7 +10,7 @@ your website.
 ## Documentation
 
 Documentation covering the setup and functionality for both the frontend library and the studio module can be found in
-the [Directus documentation](https://directus.io/docs/guides/content/visual-editor).
+the [Directus documentation](https://directus.com/docs/guides/content/visual-editor).
 
 ## Test Website
 
@@ -26,5 +26,5 @@ This package is licensed under the MIT License. See the LICENSE file for more in
 
 ## Additional Resources
 
-- [Directus Website](https://directus.io)
+- [Directus Website](https://directus.com)
 - [Directus GitHub Repository](https://github.com/directus/directus)

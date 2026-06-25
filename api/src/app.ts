@@ -32,7 +32,10 @@ import flowsRouter from './controllers/flows.js';
 import foldersRouter from './controllers/folders.js';
 import graphqlRouter from './controllers/graphql.js';
 import itemsRouter from './controllers/items.js';
-import mcpRouter from './controllers/mcp.js';
+import licenseRouter from './controllers/license.js';
+import mcpRouter from './controllers/mcp/index.js';
+import mcpOAuthClientsRouter from './controllers/mcp/oauth-clients.js';
+import { mcpOAuthProtectedRouter, mcpOAuthPublicRouter } from './controllers/mcp/oauth.js';
 import metricsRouter from './controllers/metrics.js';
 import notFoundHandler from './controllers/not-found.js';
 import notificationsRouter from './controllers/notifications.js';
@@ -63,18 +66,23 @@ import { ensureDeploymentWebhooks, registerDeploymentDrivers } from './deploymen
 import emitter from './emitter.js';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
+import { getEntitlementManager, getLicenseManager } from './license/index.js';
 import { createExpressLogger, useLogger } from './logger/index.js';
 import authenticate from './middleware/authenticate.js';
 import cache from './middleware/cache.js';
 import cors from './middleware/cors.js';
 import { errorHandler } from './middleware/error-handler.js';
 import extractToken from './middleware/extract-token.js';
+import mcpOAuthGuard from './middleware/mcp-oauth-guard.js';
 import rateLimiterGlobal from './middleware/rate-limiter-global.js';
 import rateLimiter from './middleware/rate-limiter-ip.js';
 import requestCounter from './middleware/request-counter.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
+import cloudflareQueueConsumerSchedule from './schedules/cloudflare-queue-consumer.js';
+import licenseSchedule from './schedules/license.js';
 import metricsSchedule from './schedules/metrics.js';
+import scheduleOAuthCleanup from './schedules/oauth-cleanup.js';
 import projectSchedule from './schedules/project.js';
 import retentionSchedule from './schedules/retention.js';
 import telemetrySchedule from './schedules/telemetry.js';
@@ -117,8 +125,18 @@ export default async function createApp(): Promise<express.Application> {
 		logger.warn('"PUBLIC_URL" should be a full URL');
 	}
 
+	if (env['MCP_OAUTH_ENABLED'] === true) {
+		if (toBoolean(env['MCP_ENABLED']) !== true) {
+			logger.warn('MCP_OAUTH_ENABLED requires MCP_ENABLED=true. OAuth disabled.');
+			env['MCP_OAUTH_ENABLED'] = false;
+		}
+	}
+
 	await validateDatabaseExtensions();
 	await validateStorage();
+
+	await getLicenseManager().initialize();
+	getEntitlementManager().initialize();
 
 	await registerAuthProviders();
 	registerDeploymentDrivers();
@@ -304,7 +322,16 @@ export default async function createApp(): Promise<express.Application> {
 	// Public webhook endpoint (signature-verified by the provider)
 	app.use('/deployments/webhooks', deploymentWebhookRouter);
 
+	if (env['MCP_OAUTH_ENABLED'] === true) {
+		app.use(mcpOAuthPublicRouter);
+	}
+
 	app.use(authenticate);
+	app.use(mcpOAuthGuard);
+
+	if (env['MCP_OAUTH_ENABLED'] === true) {
+		app.use(mcpOAuthProtectedRouter);
+	}
 
 	app.use(schema);
 
@@ -340,6 +367,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/flows', flowsRouter);
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
+	app.use('/license', licenseRouter);
 
 	if (toBoolean(env['MCP_ENABLED']) === true) {
 		app.use('/mcp', mcpRouter);
@@ -366,6 +394,11 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/relations', relationsRouter);
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);
+
+	if (toBoolean(env['MCP_OAUTH_ENABLED']) === true) {
+		app.use('/mcp-oauth/clients', mcpOAuthClientsRouter);
+	}
+
 	app.use('/schema', schemaRouter);
 	app.use('/server', serverRouter);
 	app.use('/settings', settingsRouter);
@@ -389,6 +422,12 @@ export default async function createApp(): Promise<express.Application> {
 	await tusSchedule();
 	await metricsSchedule();
 	await projectSchedule();
+	await cloudflareQueueConsumerSchedule();
+	await licenseSchedule();
+
+	if (env['MCP_OAUTH_ENABLED'] === true) {
+		await scheduleOAuthCleanup();
+	}
 
 	await emitter.emitInit('app.after', { app });
 

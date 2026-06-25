@@ -34,6 +34,7 @@ function onClick(event: MouseEvent) {
 	Available Variables:
 
 		--v-overlay-z-index  [600]
+		--v-overlay-color    [var(--overlay-color)]
 
 */
 
@@ -63,7 +64,7 @@ function onClick(event: MouseEvent) {
 		inset-inline-start: 0;
 		inline-size: 100%;
 		block-size: 100%;
-		background-color: var(--overlay-color);
+		background-color: var(--v-overlay-color, var(--overlay-color));
 		opacity: 0;
 		transition: opacity var(--slow) var(--transition);
 	}
