@@ -76,6 +76,38 @@ describe('table-menu', () => {
 		expect(editor.getHTML()).not.toContain('<th');
 	});
 
+	test('mergeCells / splitCell collapse and restore a 2-cell selection', () => {
+		const vm = mountMenu();
+		vm.insertTable();
+
+		// positions of the first two cells (the leading header-row cells)
+		const cellPositions: number[] = [];
+
+		editor.state.doc.descendants((node, pos) => {
+			if (node.type.name === 'tableHeader' || node.type.name === 'tableCell') cellPositions.push(pos);
+		});
+
+		vm.run((c) => c.setCellSelection({ anchorCell: cellPositions[0]!, headCell: cellPositions[1]! }));
+		const cellsBefore = (editor.getHTML().match(/<t[hd]/g) ?? []).length;
+
+		vm.run((c) => c.mergeCells());
+		const merged = editor.getHTML();
+		expect((merged.match(/<t[hd]/g) ?? []).length).toBe(cellsBefore - 1);
+		expect(merged).toContain('colspan="2"');
+
+		vm.run((c) => c.splitCell());
+		expect((editor.getHTML().match(/<t[hd]/g) ?? []).length).toBe(cellsBefore);
+	});
+
+	test('toggleHeaderColumn converts the first column to header cells', () => {
+		const vm = mountMenu();
+		vm.insertTable();
+
+		const headersBefore = (editor.getHTML().match(/<th/g) ?? []).length;
+		vm.run((c) => c.toggleHeaderColumn());
+		expect((editor.getHTML().match(/<th/g) ?? []).length).toBeGreaterThan(headersBefore);
+	});
+
 	test('deleteTable removes the table', () => {
 		const vm = mountMenu();
 		vm.insertTable();

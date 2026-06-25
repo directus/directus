@@ -1439,6 +1439,9 @@ wysiwyg_options:
   table_delete_row: Delete Row
   table_delete_column: Delete Column
   table_toggle_header_row: Toggle Header Row
+  table_toggle_header_column: Toggle Header Column
+  table_merge_cells: Merge Cells
+  table_split_cell: Split Cell
   table_delete: Delete Table
   visualaid: View invisible elements
   source_code: Edit Source Code

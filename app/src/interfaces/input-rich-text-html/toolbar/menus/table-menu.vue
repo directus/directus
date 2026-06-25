@@ -31,6 +31,14 @@ function inTable(): boolean {
 	return props.editor?.isActive('table') ?? false;
 }
 
+function canMerge(): boolean {
+	return props.editor?.can().mergeCells() ?? false;
+}
+
+function canSplit(): boolean {
+	return props.editor?.can().splitCell() ?? false;
+}
+
 defineExpose({ run, insertTable });
 </script>
 
@@ -78,6 +86,25 @@ defineExpose({ run, insertTable });
 
 			<VDivider />
 
+			<VListItem clickable :disabled="!inTable()" @click="run((c) => c.toggleHeaderRow())">
+				<VListItemIcon><VIcon name="table_rows" /></VListItemIcon>
+				<VListItemContent>{{ t('wysiwyg_options.table_toggle_header_row') }}</VListItemContent>
+			</VListItem>
+			<VListItem clickable :disabled="!inTable()" @click="run((c) => c.toggleHeaderColumn())">
+				<VListItemIcon><VIcon name="view_column" /></VListItemIcon>
+				<VListItemContent>{{ t('wysiwyg_options.table_toggle_header_column') }}</VListItemContent>
+			</VListItem>
+			<VListItem clickable :disabled="!canMerge()" @click="run((c) => c.mergeCells())">
+				<VListItemIcon><VIcon name="cell_merge" /></VListItemIcon>
+				<VListItemContent>{{ t('wysiwyg_options.table_merge_cells') }}</VListItemContent>
+			</VListItem>
+			<VListItem clickable :disabled="!canSplit()" @click="run((c) => c.splitCell())">
+				<VListItemIcon><VIcon name="splitscreen" /></VListItemIcon>
+				<VListItemContent>{{ t('wysiwyg_options.table_split_cell') }}</VListItemContent>
+			</VListItem>
+
+			<VDivider />
+
 			<VListItem clickable :disabled="!inTable()" @click="run((c) => c.deleteRow())">
 				<VListItemIcon><VIcon name="delete" /></VListItemIcon>
 				<VListItemContent>{{ t('wysiwyg_options.table_delete_row') }}</VListItemContent>
@@ -86,13 +113,6 @@ defineExpose({ run, insertTable });
 				<VListItemIcon><VIcon name="delete" /></VListItemIcon>
 				<VListItemContent>{{ t('wysiwyg_options.table_delete_column') }}</VListItemContent>
 			</VListItem>
-			<VListItem clickable :disabled="!inTable()" @click="run((c) => c.toggleHeaderRow())">
-				<VListItemIcon><VIcon name="table_rows" /></VListItemIcon>
-				<VListItemContent>{{ t('wysiwyg_options.table_toggle_header_row') }}</VListItemContent>
-			</VListItem>
-
-			<VDivider />
-
 			<VListItem clickable :disabled="!inTable()" @click="run((c) => c.deleteTable())">
 				<VListItemIcon><VIcon name="grid_off" /></VListItemIcon>
 				<VListItemContent>{{ t('wysiwyg_options.table_delete') }}</VListItemContent>
