@@ -188,7 +188,7 @@ export class LicenseManager {
 	}
 
 	public getEditable(): boolean {
-		return toBoolean(env['LICENSE_MANAGE_LINK_ENABLED'] ?? true)
+		return toBoolean(env['LICENSE_MANAGE_LINK_ENABLED'] ?? true) && this.getSource() !== 'env';
 	}
 
 	public async getLicense(options?: { database?: Knex }): Promise<License> {
@@ -227,10 +227,10 @@ export class LicenseManager {
 	/**
 	 * Throw if the current license cannot have its key changed (activate / update / deactivate).
 	 *
-	 * License management is only allowed for setting-based licenses
+	 * License management is only allowed for setting-based licenses and whether env's LICENSE_MANAGE_LINK_ENABLED !== false
 	 */
 	private assertCanManageLicense() {
-		if (this.initialized && this.source !== 'settings' && this.getEditable() === false) {
+		if (this.initialized && this.getEditable() === false) {
 			throw new ForbiddenError({
 				reason: `You cannot manage license for the current license.`,
 			});
