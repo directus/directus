@@ -17,7 +17,7 @@ defineProps<{
 </script>
 
 <template>
-	<VMenu placement="right-start" trigger="hover" :disabled="disabled" :close-on-content-click="false">
+	<VMenu placement="right-start" trigger="hover" :offset-y="0" :disabled="disabled" :close-on-content-click="false">
 		<template #activator="{ active, toggle }">
 			<!-- .stop keeps the parent menu open while this row toggles its own flyout -->
 			<VListItem clickable :active="active" :disabled="disabled" @click.stop="toggle">
