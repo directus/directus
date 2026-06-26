@@ -3,4 +3,4 @@
 '@directus/app': patch
 ---
 
-Fixed API error when validating numbers outside the JavaScript safe range, now returning a proper validation message
+Fixed an internal server error when validating out-of-range integer values
