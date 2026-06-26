@@ -1,5 +1,5 @@
 ---
-'@directus/api': patch
+'@directus/api': major
 ---
 
 Limited sensitive system mutations defined by GRAPHQL_SINGLE_USE_MUTATIONS to single use
