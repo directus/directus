@@ -172,6 +172,10 @@ export const DEFAULTS: Env = {
 		'users_register',
 		'users_register_verify',
 		'users_invite_accept',
+		'users_me_tfa_generate',
+		'users_me_tfa_enable',
+		'users_me_tfa_disable',
+		'utils_cache_clear',
 	],
 
 	WEBSOCKETS_ENABLED: false,
