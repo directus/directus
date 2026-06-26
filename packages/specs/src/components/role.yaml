@@ -23,15 +23,3 @@ properties:
     type: array
     items:
       type: string
-  enforce_tfa:
-    description: Whether or not this role enforces the use of 2FA.
-    example: false
-    type: boolean
-  admin_access:
-    description: Admin role. If true, skips all permission checks.
-    example: false
-    type: boolean
-  app_access:
-    description: The users in the role are allowed to use the app.
-    example: true
-    type: boolean

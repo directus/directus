@@ -1,6 +1,9 @@
 post:
-  summary: Retrieve a Temporary Access Token
-  description: Retrieve a Temporary Access Token
+  security: []
+  summary: Login
+  description: >
+    Authenticate with email and password. Issues an access token, refresh token, or session cookie depending on the
+    selected mode. Also supports two-factor authentication via the otp field.
   tags:
     - Authentication
   operationId: login
@@ -14,7 +17,7 @@ post:
             email:
               type: string
               example: admin@example.com
-              description: Email address of the user you're retrieving the access token for.
+              description: Email address of the user.
             password:
               type: string
               description: Password of the user.
@@ -24,13 +27,17 @@ post:
               type: string
               enum: [json, cookie, session]
               default: json
-              description: Whether to retrieve the refresh token in the JSON response, or in a httpOnly cookie.
+              description: |
+                Controls how tokens are returned.
+                `json` returns the access token and refresh token in the response body.
+                `cookie` returns the access token in the body and sets the refresh token in a httpOnly cookie.
+                `session` sets the access token as a session cookie (no tokens in the response body).
             otp:
               type: string
               description: The user's one-time-password (if MFA is enabled).
   responses:
     '200':
-      description: Successful authentification
+      description: Successful authentication
       content:
         application/json:
           schema:
@@ -42,9 +49,14 @@ post:
                   access_token:
                     type: string
                     example: eyJhbGciOiJI...
+                    description: Temporary access token. Absent in `session` mode (set as a session cookie instead).
                   expires:
                     type: integer
                     example: 900
+                    description: Expiry time of the access token in milliseconds.
                   refresh_token:
                     type: string
                     example: yuOJkjdPXMd...
+                    description: Refresh token. Only present in `json` mode.
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

@@ -1,0 +1,113 @@
+get:
+  summary: List Policies
+  description: List all policies.
+  operationId: getPolicies
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
+    - $ref: '../../openapi.yaml#/components/parameters/Page'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Policies'
+              meta:
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+  tags:
+    - Policies
+
+post:
+  summary: Create a Policy
+  description: Create a new policy.
+  operationId: createPolicy
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yaml#/components/schemas/Policies'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Policies'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+  tags:
+    - Policies
+
+patch:
+  summary: Update Multiple Policies
+  description: Update multiple policies at the same time.
+  operationId: updatePolicies
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            keys:
+              type: array
+              items:
+                type: string
+            data:
+              $ref: '../../openapi.yaml#/components/schemas/Policies'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Policies'
+              meta:
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+  tags:
+    - Policies
+
+delete:
+  summary: Delete Multiple Policies
+  description: Delete multiple existing policies.
+  operationId: deletePolicies
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+  tags:
+    - Policies

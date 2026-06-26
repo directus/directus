@@ -1,0 +1,27 @@
+get:
+  summary: Retrieve Current User Global Permissions
+  description:
+    Returns the global policy settings (app access, admin access, TFA enforcement) for the currently authenticated user.
+  operationId: getPolicyMeGlobals
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  app_access:
+                    type: boolean
+                    description: Whether the current user has app access.
+                  admin_access:
+                    type: boolean
+                    description: Whether the current user has admin access.
+                  enforce_tfa:
+                    type: boolean
+                    description: Whether two-factor authentication is enforced for the current user.
+  tags:
+    - Policies

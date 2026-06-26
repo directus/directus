@@ -1,0 +1,20 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the access record.
+    type: string
+  role:
+    description: Unique identifier of the role this access record applies to.
+    type: string
+    nullable: true
+  user:
+    description: Unique identifier of the user this access record applies to.
+    type: string
+    nullable: true
+  policy:
+    description: Unique identifier of the policy assigned by this access record.
+    type: string
+  sort:
+    description: Sort order of the access record.
+    type: integer
+    nullable: true

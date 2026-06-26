@@ -1,0 +1,114 @@
+x-enabled-env: AUTH_PROVIDERS
+get:
+  security: []
+  summary: Start SSO Provider Flow
+  description: >
+    Initiate login via a configured SSO provider. Applies to OAuth2, OpenID Connect, and SAML drivers. Always redirects
+    to the provider's authorization page. After the provider authenticates the user, it redirects back to the Directus
+    callback URL which sets auth tokens in cookies (or redirects to the URL supplied in the redirect query parameter).
+  tags:
+    - Authentication
+  operationId: loginProvider
+  parameters:
+    - name: provider
+      in: path
+      description: Key of the configured SSO provider.
+      required: true
+      schema:
+        type: string
+    - name: redirect
+      in: query
+      required: false
+      description: URL to redirect to after successful authentication.
+      schema:
+        type: string
+    - name: prompt
+      in: query
+      required: false
+      description: Force the provider to show the account selection/login prompt.
+      schema:
+        type: boolean
+    - name: otp
+      in: query
+      required: false
+      description: One-time-password for MFA, passed through to Directus after SSO authentication.
+      schema:
+        type: string
+  responses:
+    '302':
+      description: Redirect to the provider's authorization page.
+      headers:
+        Location:
+          schema:
+            type: string
+          description: URL of the provider's authorization endpoint.
+
+post:
+  security: []
+  summary: Login with LDAP Credentials
+  description: >
+    Authenticate using LDAP credentials. Applies to LDAP driver only. Accepts an identifier (username or DN) and
+    password, and returns tokens in the same way as local login.
+  tags:
+    - Authentication
+  operationId: loginProviderCredentials
+  parameters:
+    - name: provider
+      in: path
+      description: Key of the configured LDAP provider.
+      required: true
+      schema:
+        type: string
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [identifier, password]
+          properties:
+            identifier:
+              type: string
+              description: LDAP username or DN of the user.
+              example: CN=John Doe,OU=Users,DC=example,DC=com
+            password:
+              type: string
+              format: password
+              description: Password of the user.
+              example: password
+            mode:
+              type: string
+              enum: [json, cookie, session]
+              default: json
+              description: |
+                Controls how tokens are returned.
+                `json` returns the access token and refresh token in the response body.
+                `cookie` returns the access token in the body and sets the refresh token in a httpOnly cookie.
+                `session` sets the access token as a session cookie (no tokens in the response body).
+            otp:
+              type: string
+              description: The user's one-time-password (if MFA is enabled).
+  responses:
+    '200':
+      description: Successful authentication
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    example: eyJhbGciOiJI...
+                    description: Temporary access token.
+                  expires:
+                    type: integer
+                    example: 900
+                    description: Expiry time of the access token in milliseconds.
+                  refresh_token:
+                    type: string
+                    example: yuOJkjdPXMd...
+                    description: Refresh token. Only present in `json` mode.
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

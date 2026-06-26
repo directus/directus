@@ -2,6 +2,15 @@ get:
   summary: List Operations
   description: Get all operations.
   operationId: getOperations
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+    - $ref: '../../openapi.yaml#/components/parameters/Page'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
   responses:
     '200':
       description: Successful request

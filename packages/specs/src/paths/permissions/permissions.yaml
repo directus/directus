@@ -43,59 +43,7 @@ post:
     content:
       application/json:
         schema:
-          properties:
-            collection:
-              description: What collection this permission applies to.
-              type: string
-              example: customers
-            comment:
-              description: If the user can post comments.
-              type: string
-              enum: [none, create, update, full]
-            create:
-              description: If the user can create items.
-              type: string
-              enum: [none, full]
-            delete:
-              description: If the user can update items.
-              type: string
-              enum: [none, mine, role, full]
-            explain:
-              description: If the user is required to leave a comment explaining what was changed.
-              type: string
-              enum: [none, create, update, always]
-            read:
-              description: If the user can read items.
-              type: string
-              enum: [none, mine, role, full]
-            role:
-              description: Unique identifier of the role this permission applies to.
-              type: integer
-              example: 3
-            read_field_blacklist:
-              description: Explicitly denies read access for specific fields.
-              type: array
-              items:
-                type: string
-              example: ['featured_image']
-            status:
-              description: What status this permission applies to.
-              type: string
-            status_blacklist:
-              description: Explicitly denies specific statuses to be used.
-              type: array
-              items:
-                type: string
-            update:
-              description: If the user can update items.
-              type: string
-              enum: [none, mine, role, full]
-            write_field_blacklist:
-              description: Explicitly denies write access for specific fields.
-              type: array
-              items:
-                type: string
-          type: object
+          $ref: '../../openapi.yaml#/components/schemas/Permissions'
   responses:
     '200':
       description: Successful request
@@ -139,59 +87,7 @@ patch:
               items:
                 type: string
             data:
-              properties:
-                collection:
-                  description: What collection this permission applies to.
-                  type: string
-                  example: customers
-                comment:
-                  description: If the user can post comments.
-                  type: string
-                  enum: [none, create, update, full]
-                create:
-                  description: If the user can create items.
-                  type: string
-                  enum: [none, full]
-                delete:
-                  description: If the user can update items.
-                  type: string
-                  enum: [none, mine, role, full]
-                explain:
-                  description: If the user is required to leave a comment explaining what was changed.
-                  type: string
-                  enum: [none, create, update, always]
-                read:
-                  description: If the user can read items.
-                  type: string
-                  enum: [none, mine, role, full]
-                role:
-                  description: Unique identifier of the role this permission applies to.
-                  type: integer
-                  example: 3
-                read_field_blacklist:
-                  description: Explicitly denies read access for specific fields.
-                  type: array
-                  items:
-                    type: string
-                  example: ['featured_image']
-                status:
-                  description: What status this permission applies to.
-                  type: string
-                status_blacklist:
-                  description: Explicitly denies specific statuses to be used.
-                  type: array
-                  items:
-                    type: string
-                update:
-                  description: If the user can update items.
-                  type: string
-                  enum: [none, mine, role, full]
-                write_field_blacklist:
-                  description: Explicitly denies write access for specific fields.
-                  type: array
-                  items:
-                    type: string
-              type: object
+              $ref: '../../openapi.yaml#/components/schemas/Permissions'
   responses:
     '200':
       description: Successful request

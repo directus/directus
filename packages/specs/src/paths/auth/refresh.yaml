@@ -1,4 +1,5 @@
 post:
+  security: []
   summary: Refresh Token
   description: Refresh a Temporary Access Token.
   tags:
@@ -13,13 +14,17 @@ post:
             refresh_token:
               type: string
               example: eyJ0eXAiOiJKV...
-              description: JWT access token you want to refresh. This token can't be expired.
+              description:
+                The refresh token to use. Required in `json` mode; omit when using `cookie` or `session` mode.
             mode:
               type: string
               enum: [json, cookie, session]
-              default: json
-              description:
-                Whether to submit and retrieve the refresh token in the JSON response, or in a httpOnly cookie.
+              default: cookie
+              description: |
+                Controls how tokens are submitted and returned.
+                `json` reads the refresh token from the request body and returns new tokens in the response.
+                `cookie` reads and sets the refresh token via httpOnly cookie.
+                `session` reads and sets the access token via session cookie (no tokens in the response body).
   responses:
     '200':
       description: Successful request
@@ -34,11 +39,14 @@ post:
                   access_token:
                     type: string
                     example: eyJhbGciOiJI...
+                    description: New access token. Absent in session mode (set as a session cookie instead).
                   expires:
                     type: integer
                     example: 900
+                    description: Expiry time of the access token in milliseconds.
                   refresh_token:
                     type: string
                     example: Gy-caJMpmGTA...
+                    description: New refresh token. Only present in json mode.
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

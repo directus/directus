@@ -17,7 +17,7 @@ get:
             type: object
             properties:
               data:
-                type: object
+                $ref: '../../openapi.yaml#/components/schemas/Items'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':
@@ -36,7 +36,7 @@ patch:
     content:
       application/json:
         schema:
-          type: object
+          $ref: '../../openapi.yaml#/components/schemas/Items'
   responses:
     '200':
       description: Successful request
@@ -46,7 +46,7 @@ patch:
             type: object
             properties:
               data:
-                type: object
+                $ref: '../../openapi.yaml#/components/schemas/Items'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':
