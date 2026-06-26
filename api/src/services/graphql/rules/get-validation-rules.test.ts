@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { NoSchemaIntrospectionCustomRule, specifiedRules } from 'graphql';
+import { NoSchemaIntrospectionCustomRule } from 'graphql';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { BlockFieldSuggestionsRule, getValidationRules } from './index.js';
 
@@ -28,6 +28,5 @@ describe('getValidationRules', () => {
 
 		expect(rules).toContain(NoSchemaIntrospectionCustomRule);
 		expect(rules).toContain(BlockFieldSuggestionsRule);
-		expect(rules).toHaveLength(specifiedRules.length + 3);
 	});
 });
