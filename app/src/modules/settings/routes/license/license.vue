@@ -66,7 +66,7 @@ const upgradePlanLink = computed(() =>
 		: getDirectusUrlWithUtm(DIRECTUS_PRICING_URL, serverStore.info.version, 'settings_license_upgrade_plan_link'),
 );
 
-const manageLicenseTooltip = computed(() => {
+const manageLicenseDisabledMessage = computed(() => {
 	if (!isLicenseManageLinkEnabled.value) {
 		if (isEnvManaged.value) return t('licensing.env_managed');
 
@@ -282,7 +282,7 @@ async function handleDeactivateConfirm() {
 					</div>
 					<div class="plan-actions">
 						<VButton
-							v-tooltip.bottom="manageLicenseTooltip"
+							v-tooltip.bottom="manageLicenseDisabledMessage"
 							secondary
 							small
 							:disabled="isLicenseManageLinkEnabled === false"
@@ -328,10 +328,15 @@ async function handleDeactivateConfirm() {
 
 				<LicenseSection v-if="license.source !== null" icon="emergency_home" :title="t('danger_zone')" kind="danger">
 					<div class="danger-zone-content">
-						<VNotice v-if="isEnvManaged" type="info" class="danger-zone-notice">
-							{{ t('licensing.env_managed') }}
+						<VNotice v-if="isLicenseManageLinkEnabled === false" type="info" class="danger-zone-notice">
+							{{ manageLicenseDisabledMessage }}
 						</VNotice>
-						<VButton :disabled="isEnvManaged" :loading="deactivateLoading" danger @click="handleDeactivateClick">
+						<VButton
+							:disabled="isLicenseManageLinkEnabled === false"
+							:loading="deactivateLoading"
+							danger
+							@click="handleDeactivateClick"
+						>
 							{{ t('licensing.deactivate') }}
 						</VButton>
 					</div>
