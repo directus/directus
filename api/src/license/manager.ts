@@ -27,6 +27,7 @@ import {
 	verifyLicense,
 } from '@directus/license';
 import type { Accountability } from '@directus/types';
+import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { useLogger } from '../logger/index.js';
 import { clearCache as clearPermissionCache } from '../permissions/cache.js';
@@ -186,6 +187,10 @@ export class LicenseManager {
 		}
 	}
 
+	public getEditable(): boolean {
+		return toBoolean(env['LICENSE_MANAGE_LINK_ENABLED'] ?? true)
+	}
+
 	public async getLicense(options?: { database?: Knex }): Promise<License> {
 		if (licenseCache) return licenseCache;
 
@@ -225,7 +230,7 @@ export class LicenseManager {
 	 * License management is only allowed for setting-based licenses
 	 */
 	private assertCanManageLicense() {
-		if (this.initialized && this.source !== 'settings') {
+		if (this.initialized && this.source !== 'settings' && this.getEditable() === false) {
 			throw new ForbiddenError({
 				reason: `You cannot manage license for the current license.`,
 			});
