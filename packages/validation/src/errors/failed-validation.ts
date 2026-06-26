@@ -64,9 +64,6 @@ export const messageConstructor = (extensions: FailedValidationErrorExtensions):
 					.join(', ')}.`;
 
 				break;
-			case 'unsafe':
-				message += ` Value is not a safe number "${extensions.invalid}".`;
-				break;
 		}
 	}
 
@@ -103,6 +100,9 @@ export const messageConstructor = (extensions: FailedValidationErrorExtensions):
 			break;
 		case 'email':
 			message += ` Value has to be a valid email address.`;
+			break;
+		case 'unsafe':
+			message += ` Value is not a safe number.`;
 			break;
 	}
 

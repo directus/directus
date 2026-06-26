@@ -80,7 +80,6 @@ describe('Unsafe number', () => {
 		const message = messageConstructor({
 			field,
 			type: 'unsafe',
-			invalid: 10000000000,
 			path,
 		});
 
