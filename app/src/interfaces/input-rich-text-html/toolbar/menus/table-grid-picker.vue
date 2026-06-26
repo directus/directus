@@ -114,7 +114,7 @@ defineExpose({ select });
 .grid {
 	display: grid;
 	grid-template-columns: repeat(v-bind(maxCols), 1fr);
-	gap: 2px;
+	gap: 0.125rem;
 	outline: none;
 }
 
@@ -122,8 +122,8 @@ defineExpose({ select });
 	inline-size: 1rem;
 	block-size: 1rem;
 	padding: 0;
-	border: 1px solid var(--theme--form--field--input--border-color);
-	border-radius: 1px;
+	border: 0.0625rem solid var(--theme--form--field--input--border-color);
+	border-radius: 0.0625rem;
 	background-color: var(--theme--background-subdued);
 	cursor: pointer;
 

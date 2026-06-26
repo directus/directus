@@ -399,7 +399,7 @@ onKeyStroke('Escape', () => {
 
 	table :is(th, td) {
 		position: relative; // anchors the resize handle
-		border: 1px solid var(--theme--form--field--input--border-color);
+		border: 0.0625rem solid var(--theme--form--field--input--border-color);
 		padding: 0.3125rem;
 		vertical-align: top;
 		box-sizing: border-box;
@@ -407,10 +407,6 @@ onKeyStroke('Escape', () => {
 
 	table :is(th, td) > * {
 		margin-block: 0;
-	}
-
-	table :is(th, td) > * + * {
-		margin-block-start: 1.5em;
 	}
 
 	table th {
@@ -433,8 +429,8 @@ onKeyStroke('Escape', () => {
 	.column-resize-handle {
 		position: absolute;
 		inset-block: 0;
-		inset-inline-end: -2px;
-		inline-size: 4px;
+		inset-inline-end: -0.125rem;
+		inline-size: 0.25rem;
 		background-color: var(--theme--primary);
 		cursor: col-resize;
 		pointer-events: none;
@@ -459,6 +455,6 @@ onKeyStroke('Escape', () => {
 
 /* `visualaid` toggle: dashed guides so borderless tables stay visible while editing. */
 .wysiwyg.visualaid :deep(.ProseMirror) table :is(th, td) {
-	border: 1px dashed var(--theme--primary);
+	border: 0.0625rem dashed var(--theme--primary);
 }
 </style>
