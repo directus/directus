@@ -399,6 +399,28 @@ describe('deep', () => {
 
 		expect(sanitizedQuery.deep).toEqual({ deep: { relational_field_a: { _limit: 100, _sort: ['name'] } } });
 	});
+
+	test('should convert nested filters with dynamic variables to corresponding values', async () => {
+		const deep = {
+			deep: {
+				relational_field: {
+					_filter: { name: { _eq: '$CURRENT_USER.something' } },
+				},
+			},
+		};
+
+		vi.mocked(fetchDynamicVariableData).mockResolvedValue({ $CURRENT_USER: { something: 'test' } });
+
+		const sanitizedQuery = await sanitizeQuery({ deep }, null as any, {} as any);
+
+		expect(sanitizedQuery.deep).toEqual({
+			deep: {
+				relational_field: {
+					_filter: { name: { _eq: 'test' } },
+				},
+			},
+		});
+	});
 });
 
 describe('alias', () => {

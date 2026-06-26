@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VSelect from '@/components/v-select/v-select.vue';
 import { useFlowsStore } from '@/stores/flows';
+import { translate } from '@/utils/translate-literal';
 
 const props = defineProps<{ value: Record<string, unknown> | null; collectionName: string }>();
 defineEmits<{ input: [value: string | null] }>();
@@ -24,7 +25,7 @@ const flows = computed(() =>
 		)
 		.map((flow: FlowRaw) => ({
 			value: flow.id,
-			text: `${flow.name}${(flow.description && ': ' + flow.description) || ''}${flow.status === 'inactive' ? ` (${t('inactive')})` : ''}`,
+			text: `${translate(flow.name)}${(flow.description && ': ' + flow.description) || ''}${flow.status === 'inactive' ? ` (${t('inactive')})` : ''}`,
 			icon: flow.icon,
 			color: flow.color,
 		})),

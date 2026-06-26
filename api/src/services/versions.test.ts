@@ -47,6 +47,16 @@ vi.mock('./activity.js', async () => {
 	return mockActivityService();
 });
 
+vi.mock('./collections.js', () => {
+	const CollectionsService = vi.fn(function (this: any) {
+		return this;
+	});
+
+	CollectionsService.prototype.readOne = vi.fn().mockResolvedValue({ meta: { versioning: true } });
+
+	return { CollectionsService };
+});
+
 const schema = new SchemaBuilder()
 	.collection('articles_track_all', (c) => {
 		c.field('id').id();
@@ -63,6 +73,11 @@ const schema = new SchemaBuilder()
 		c.field('title').string();
 	})
 	.options({ accountability: null })
+	.collection('singleton_collection', (c) => {
+		c.field('id').id();
+		c.field('title').string();
+	})
+	.options({ singleton: true })
 	.build();
 
 describe('Integration Tests', () => {
@@ -240,6 +255,179 @@ describe('Integration Tests', () => {
 
 				expect(ActivityService.prototype.createOne).not.toHaveBeenCalled();
 				expect(RevisionsService.prototype.createOne).not.toHaveBeenCalled();
+			});
+		});
+
+		describe('createOne item-less on singleton', () => {
+			test('throws when the singleton already contains a published item', async () => {
+				tracker.on.select('singleton_collection').response([{ id: 1 }]);
+
+				await expect(
+					service.createOne({ key: 'draft', collection: 'singleton_collection', item: null }),
+				).rejects.toThrowError(/already contains an item/);
+			});
+
+			test('throws when the singleton already has an item-less version', async () => {
+				tracker.on.select('singleton_collection').response([]);
+
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([{ count: 1 }] as any);
+
+				await expect(
+					service.createOne({ key: 'draft', collection: 'singleton_collection', item: null }),
+				).rejects.toThrowError(/already has an item-less version/);
+			});
+
+			test('succeeds when the singleton is empty and has no prior item-less version', async () => {
+				tracker.on.select('singleton_collection').response([]);
+
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([{ count: 0 }] as any);
+
+				await expect(
+					service.createOne({ key: 'draft', collection: 'singleton_collection', item: null }),
+				).resolves.not.toThrow();
+			});
+
+			test('succeeds on a non-singleton collection without consulting singleton state', async () => {
+				const selectSpy = vi.fn();
+
+				tracker.on.select('articles_track_all').response((q) => {
+					selectSpy(q);
+					return [];
+				});
+
+				await expect(
+					service.createOne({ key: 'draft', collection: 'articles_track_all', item: null }),
+				).resolves.not.toThrow();
+
+				expect(selectSpy).not.toHaveBeenCalled();
+			});
+		});
+
+		describe('updateMany to item-less on singleton', () => {
+			test('throws when the singleton already contains a published item', async () => {
+				vi.spyOn(VersionsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'singleton_collection',
+					item: '1',
+					key: 'draft',
+				} as any);
+
+				tracker.on.select('singleton_collection').response([{ id: 1 }]);
+
+				await expect(service.updateMany(['version-id'], { item: null })).rejects.toThrowError(
+					/already contains an item/,
+				);
+			});
+
+			test('throws when another item-less version already exists', async () => {
+				vi.spyOn(VersionsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'singleton_collection',
+					item: '1',
+					key: 'draft',
+				} as any);
+
+				tracker.on.select('singleton_collection').response([]);
+
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([{ count: 1 }] as any);
+
+				await expect(service.updateMany(['version-id'], { item: null })).rejects.toThrowError(
+					/already has an item-less version/,
+				);
+			});
+
+			test('succeeds when the singleton is empty and has no other item-less version', async () => {
+				vi.spyOn(VersionsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'singleton_collection',
+					item: '1',
+					key: 'draft',
+				} as any);
+
+				tracker.on.select('singleton_collection').response([]);
+
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([{ count: 0 }] as any);
+
+				await expect(service.updateMany(['version-id'], { item: null })).resolves.not.toThrow();
+			});
+
+			test('renaming an existing item-less version does not count itself as a conflict', async () => {
+				vi.spyOn(VersionsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'singleton_collection',
+					item: null,
+					key: 'draft',
+				} as any);
+
+				tracker.on.select('singleton_collection').response([]);
+
+				const readByQuerySpy = vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([{ count: 0 }] as any);
+
+				await expect(service.updateMany(['version-id'], { name: 'Renamed' })).resolves.not.toThrow();
+
+				expect(readByQuerySpy).toHaveBeenCalledWith(
+					expect.objectContaining({
+						filter: expect.objectContaining({ id: { _neq: 'version-id' } }),
+					}),
+				);
+			});
+		});
+
+		describe('promote item-less version on singleton', () => {
+			test('throws when the singleton already contains a published item', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'singleton_collection',
+					item: null,
+					delta: { title: 'Promoted' },
+				});
+
+				tracker.on.select('singleton_collection').response([{ id: 1 }]);
+
+				await expect(service.promote('version-id')).rejects.toThrowError(/already contains an item/);
+
+				expect(ItemsService.prototype.createOne).not.toHaveBeenCalled();
+			});
+
+			test('creates the singleton item when empty', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'singleton_collection',
+					item: null,
+					delta: { title: 'Promoted' },
+				});
+
+				tracker.on.select('singleton_collection').response([]);
+
+				vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue('new-item-id');
+				vi.spyOn(VersionsService.prototype, 'updateOne').mockResolvedValue('version-id');
+
+				await expect(service.promote('version-id')).resolves.toBe('new-item-id');
+
+				expect(ItemsService.prototype.createOne).toHaveBeenCalledWith(
+					expect.objectContaining({ title: 'Promoted' }),
+					expect.any(Object),
+				);
+
+				expect(VersionsService.prototype.updateOne).toHaveBeenCalledWith('version-id', { item: 'new-item-id' });
+			});
+		});
+
+		describe('createMany duplicate-key check', () => {
+			test('allows multiple itemless versions sharing the same key + collection', async () => {
+				await expect(
+					service.createMany([
+						{ key: 'draft', name: 'bulk A', collection: 'articles_track_all' },
+						{ key: 'draft', name: 'bulk B', collection: 'articles_track_all' },
+					]),
+				).resolves.toBeDefined();
+
+				expect(ItemsService.prototype.createMany).toHaveBeenCalledTimes(1);
+			});
+
+			test('still rejects duplicate key + collection + item within the batch', async () => {
+				await expect(
+					service.createMany([
+						{ key: 'draft', collection: 'articles_track_all', item: '1' },
+						{ key: 'draft', collection: 'articles_track_all', item: '1' },
+					]),
+				).rejects.toThrow(/Cannot create multiple versions/);
+
+				expect(ItemsService.prototype.createMany).not.toHaveBeenCalled();
 			});
 		});
 	});
