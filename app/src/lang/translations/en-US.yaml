@@ -1759,6 +1759,7 @@ fields:
     collection: Collection
     icon: Icon
     note: Note
+    status: Status
     color: Color
     display_template: Display Template
     hidden: Hidden
