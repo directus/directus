@@ -190,8 +190,6 @@ export class ServerService {
 			entitlements: getEntitlementManager().getAppEntitlements(),
 		};
 
-		info['license_manage_link_enabled'] = toBoolean(env['LICENSE_MANAGE_LINK_ENABLED'] ?? true);
-
 		return info;
 	}
 

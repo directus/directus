@@ -43,7 +43,6 @@ export type Info = {
 		source: string | null;
 		entitlements: Record<string, unknown>;
 	} | null;
-	license_manage_link_enabled: boolean;
 	rateLimit?:
 		| false
 		| {
@@ -114,7 +113,6 @@ export const useServerStore = defineStore('serverStore', () => {
 		setupCompleted: false,
 		setup: null,
 		license: null,
-		license_manage_link_enabled: true,
 		extensions: undefined,
 		rateLimit: undefined,
 		queryLimit: undefined,
@@ -160,7 +158,6 @@ export const useServerStore = defineStore('serverStore', () => {
 		info.setup = serverInfoResponse.data.data?.setup ?? null;
 		info.setupCompleted = !info.setup;
 		info.license = serverInfoResponse.data.data?.license ?? null;
-		info.license_manage_link_enabled = serverInfoResponse.data.data?.license_manage_link_enabled ?? true;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 		info.extensions = serverInfoResponse.data.data?.extensions;
 		info.websocket = serverInfoResponse.data.data?.websocket;
