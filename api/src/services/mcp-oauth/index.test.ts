@@ -1953,6 +1953,24 @@ describe('McpOAuthService', () => {
 			expect(decoded['iss']).toBe('directus');
 		});
 
+		it("JWT role claim is the user's own role, not the roles tree root", async () => {
+			mockClientLookup(clientId);
+			mockCodeLookup();
+			tracker.on.update('directus_oauth_codes').response(1);
+
+			mockUserLookup({ role: 'own-role' });
+			tracker.on.select('directus_oauth_tokens').response([]);
+			tracker.on.insert('directus_sessions').response([]);
+			tracker.on.insert('directus_oauth_tokens').response([]);
+
+			mockFetchRolesTree.mockResolvedValue(['root-role', 'parent-role', 'own-role']);
+
+			const result = await service.exchangeCode(validParams(), context);
+			const decoded = decodeAccessToken(result.access_token);
+
+			expect(decoded['role']).toBe('own-role');
+		});
+
 		it('refresh_token omitted if client did not register refresh_token grant type', async () => {
 			mockCodeLookup();
 			tracker.on.update('directus_oauth_codes').response(1);
