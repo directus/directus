@@ -98,6 +98,82 @@ test('Required fields', () => {
 	expect(result.length).toEqual(1);
 });
 
+test('Required relational field cleared on update via staged changes', () => {
+	// When editing an existing item and removing all related items, the relational
+	// interface stages the change as a `{ create, update, delete }` object rather
+	// than an empty array. This must still be treated as an empty value so the
+	// required validation fires (see directus/directus#27695).
+	let result = validateItem(
+		{
+			id: 1,
+			name: 'test',
+			email: 'test@test.com',
+			role: { create: [], update: [], delete: [1, 2] },
+		},
+		fields as Field[],
+		false,
+		false,
+		null,
+		// Two related items existed and both are being deleted -> nets to empty.
+		{ role: [1, 2] },
+	);
+
+	expect(result.length).toEqual(1);
+
+	// A staged change that still results in related items (a create) must pass.
+	result = validateItem(
+		{
+			id: 1,
+			name: 'test',
+			email: 'test@test.com',
+			role: { create: [{ some: 'value' }], update: [], delete: [1] },
+		},
+		fields as Field[],
+		false,
+		false,
+		null,
+		{ role: [1] },
+	);
+
+	expect(result.length).toEqual(0);
+
+	// A partial removal that leaves related items behind must not be flagged.
+	result = validateItem(
+		{
+			id: 1,
+			name: 'test',
+			email: 'test@test.com',
+			role: { create: [], update: [], delete: [1] },
+		},
+		fields as Field[],
+		false,
+		false,
+		null,
+		// Three related items existed, only one is being deleted -> two remain.
+		{ role: [1, 2, 3] },
+	);
+
+	expect(result.length).toEqual(0);
+
+	// A staged update with no creates/deletes (e.g. editing an existing relation)
+	// must not be treated as empty.
+	result = validateItem(
+		{
+			id: 1,
+			name: 'test',
+			email: 'test@test.com',
+			role: { create: [], update: [{ id: 1, some: 'value' }], delete: [] },
+		},
+		fields as Field[],
+		false,
+		false,
+		null,
+		{ role: [1] },
+	);
+
+	expect(result.length).toEqual(0);
+});
+
 test('Custom validation with $NOW dynamic variable does not throw', () => {
 	const fieldsWithValidation: DeepPartial<Field>[] = [
 		{

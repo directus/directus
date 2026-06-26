@@ -910,7 +910,16 @@ function usePublishActions() {
 		const defaultValues = getDefaultValuesFromFields(fields);
 		const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
 		const fieldsToValidate = pushGroupOptionsDown(fields.value);
-		const clientErrors = validateItem(payloadToValidate, fieldsToValidate, false, false, currentVersion.value);
+
+		const clientErrors = validateItem(
+			payloadToValidate,
+			fieldsToValidate,
+			false,
+			false,
+			currentVersion.value,
+			item.value,
+		);
+
 		versionValidationErrors.value = clientErrors;
 		return clientErrors.length === 0;
 	}

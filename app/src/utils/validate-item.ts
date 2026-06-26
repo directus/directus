@@ -5,7 +5,7 @@ import {
 	FailedValidationErrorExtensions,
 	joiValidationErrorItemToErrorExtensions,
 } from '@directus/validation';
-import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';
+import { cloneDeep, flatten, isEmpty, isNil, isPlainObject } from 'lodash';
 import { applyConditions } from './apply-conditions';
 import { parseFilter } from './parse-filter';
 import { useRelationsStore } from '@/stores/relations';
@@ -17,6 +17,7 @@ export function validateItem(
 	isNew: boolean,
 	includeCustomValidations = false,
 	currentVersion: ContentVersionMaybeNew | null = null,
+	originalItem: Record<string, any> | null = null,
 ): FailedValidationErrorExtensions[] {
 	const relationsStore = useRelationsStore();
 	const validationRules: LogicalFilterAND = { _and: [] };
@@ -36,7 +37,22 @@ export function validateItem(
 		const relation = relationsStore.getRelationsForField(field.collection, field.field);
 		if (!relation.length) return;
 
-		const isEmptyArray = Array.isArray(updatedItem[field.field]) && isEmpty(updatedItem[field.field]);
+		const value = updatedItem[field.field];
+
+		// On update, relational interfaces stage their changes as a
+		// `{ create, update, delete }` object rather than a plain array. When every
+		// existing related item is removed (and nothing new is created) the field is
+		// effectively empty, so normalize it to `null` to trigger required validation
+		// (see directus/directus#27695).
+		if (isStagedRelationalChanges(value)) {
+			const existingCount = Array.isArray(originalItem?.[field.field]) ? originalItem![field.field].length : 0;
+			const netCount = Math.max(existingCount - value.delete.length, 0) + value.create.length;
+
+			if (netCount === 0) updatedItem[field.field] = null;
+			return;
+		}
+
+		const isEmptyArray = Array.isArray(value) && isEmpty(value);
 		if (isEmptyArray) updatedItem[field.field] = null;
 	});
 
@@ -76,4 +92,23 @@ export function validateItem(
 			validationRules._and.push(parseFilter(validation));
 		});
 	}
+}
+
+type StagedRelationalChanges = {
+	create: unknown[];
+	update: unknown[];
+	delete: unknown[];
+};
+
+/**
+ * Relational interfaces (o2m/m2m/m2a) stage their edits as a
+ * `{ create, update, delete }` object instead of a plain array of related items.
+ */
+function isStagedRelationalChanges(value: unknown): value is StagedRelationalChanges {
+	return (
+		isPlainObject(value) &&
+		Array.isArray((value as Record<string, unknown>)['create']) &&
+		Array.isArray((value as Record<string, unknown>)['update']) &&
+		Array.isArray((value as Record<string, unknown>)['delete'])
+	);
 }
