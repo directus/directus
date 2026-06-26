@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import SubmenuListItem from './submenu-list-item.vue';
 import TableGridPicker from './table-grid-picker.vue';
 import VButton from '@/components/v-button.vue';
 import VDivider from '@/components/v-divider.vue';
@@ -18,6 +20,8 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
+const menuOpen = ref(false);
+
 /** Exposed for unit testing without opening the menu. */
 function run(command: (chain: ReturnType<Editor['chain']>) => ReturnType<Editor['chain']>): void {
 	const editor = props.editor;
@@ -30,6 +34,8 @@ function insertTable(rows = 3, cols = 3): void {
 
 function onPickSize({ rows, cols }: { rows: number; cols: number }): void {
 	insertTable(rows, cols);
+	// The picker lives in a teleported flyout, so close-on-content-click can't reach it.
+	menuOpen.value = false;
 }
 
 function inTable(): boolean {
@@ -44,11 +50,11 @@ function canSplit(): boolean {
 	return props.editor?.can().splitCell() ?? false;
 }
 
-defineExpose({ run, insertTable });
+defineExpose({ run, insertTable, menuOpen });
 </script>
 
 <template>
-	<VMenu placement="bottom-start" show-arrow close-on-content-click>
+	<VMenu v-model="menuOpen" placement="bottom-start" show-arrow close-on-content-click>
 		<template #activator="{ toggle, active }">
 			<!-- .stop keeps a parent menu (the "Show More" overflow panel) open when this lives inside it -->
 			<VButton
@@ -65,7 +71,9 @@ defineExpose({ run, insertTable });
 			</VButton>
 		</template>
 		<VList>
-			<TableGridPicker @select="onPickSize" />
+			<SubmenuListItem icon="grid_on" :label="t('wysiwyg_options.table')">
+				<TableGridPicker @select="onPickSize" />
+			</SubmenuListItem>
 
 			<VDivider />
 

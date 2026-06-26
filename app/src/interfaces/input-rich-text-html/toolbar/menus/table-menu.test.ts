@@ -18,6 +18,8 @@ const global = {
 		VListItemIcon: true,
 		VDivider: true,
 		TableGridPicker: true,
+		// Render only the default slot so the slotted picker still mounts.
+		SubmenuListItem: { template: '<div><slot /></div>' },
 	},
 };
 
@@ -73,6 +75,9 @@ describe('table-menu', () => {
 			},
 		});
 
+		// The menu is open while the picker is visible.
+		(wrapper.vm as unknown as { menuOpen: boolean }).menuOpen = true;
+
 		// 6th cell (index 5) in the default 10-col grid is row 1, col 6
 		await wrapper.findAll('.cell')[5]!.trigger('click');
 
@@ -80,6 +85,9 @@ describe('table-menu', () => {
 		expect((html.match(/<tr/g) ?? []).length).toBe(1);
 		const firstRow = html.match(/<tr[^>]*>.*?<\/tr>/s)?.[0] ?? '';
 		expect((firstRow.match(/<t[hd]/g) ?? []).length).toBe(6);
+
+		// Picking a size closes the menu (the picker lives in a teleported flyout).
+		expect((wrapper.vm as unknown as { menuOpen: boolean }).menuOpen).toBe(false);
 	});
 
 	test('insertTable honors picker dimensions', () => {
