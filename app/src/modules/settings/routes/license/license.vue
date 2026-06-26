@@ -24,7 +24,7 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import SystemLicenseKey from '@/interfaces/_system/system-license-key/system-license-key.vue';
 import sdk from '@/sdk';
 import { useLicenseStore } from '@/stores/license';
-import { useServerStore } from '@/stores/server';
+import { useServerStore } from '@/stores/server.js';
 import { getDirectusUrlWithUtm } from '@/utils/directus-url';
 import { formatDate } from '@/utils/format-date';
 import { formatTimeframe } from '@/utils/format-timeframe';
@@ -41,7 +41,7 @@ const serverStore = useServerStore();
 const { info: license, addons, loading, boundary, isLicensed } = storeToRefs(licenseStore);
 
 const isEnvManaged = computed(() => license.value?.source === 'env');
-const isLicenseManageLinkEnabled = computed(() => serverStore.info?.license_manage_link_enabled);
+const isLicenseManageLinkEnabled = computed(() => licenseStore.info?.editable);
 
 const boundaryDate = computed(() => {
 	if (!boundary.value || !Number.isFinite(boundary.value.timestamp) || boundary.value.timestamp === -1) return null;
@@ -65,6 +65,16 @@ const upgradePlanLink = computed(() =>
 		? `${getRootPath()}license/portal`
 		: getDirectusUrlWithUtm(DIRECTUS_PRICING_URL, serverStore.info.version, 'settings_license_upgrade_plan_link'),
 );
+
+const manageLicenseTooltip = computed(() => {
+	if (!isLicenseManageLinkEnabled.value) {
+		if (isEnvManaged.value) return t('licensing.env_managed');
+
+		return t('licensing.manage_license_disabled');
+	}
+
+	return null;
+});
 
 const addLicenseDrawer = ref(false);
 const licenseKey = ref('');
@@ -272,11 +282,10 @@ async function handleDeactivateConfirm() {
 					</div>
 					<div class="plan-actions">
 						<VButton
-							v-if="isLicenseManageLinkEnabled"
-							v-tooltip.bottom="isEnvManaged ? t('licensing.env_managed') : null"
+							v-tooltip.bottom="manageLicenseTooltip"
 							secondary
 							small
-							:disabled="isEnvManaged"
+							:disabled="isLicenseManageLinkEnabled === false"
 							@click="addLicenseDrawer = true"
 						>
 							{{ isLicensed ? t('licensing.manage') : t('licensing.add') }}
