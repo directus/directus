@@ -127,10 +127,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 
 	const allCollections = await database.select('*').from('directus_collections');
 
-	const collections: BaseCollectionMeta[] = [
-		...allCollections,
-		...systemCollectionRows,
-	];
+	const collections: BaseCollectionMeta[] = [...allCollections, ...systemCollectionRows];
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
 		if (toArray(env['DB_EXCLUDE_TABLES']).includes(collection)) {
