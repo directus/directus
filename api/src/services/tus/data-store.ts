@@ -1,14 +1,22 @@
 import { extname } from 'node:path';
 import stream from 'node:stream';
+import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
 import type { TusDriver } from '@directus/storage';
 import type { Accountability, ChunkedUploadContext, File, SchemaOverview } from '@directus/types';
+import { toArray } from '@directus/utils';
 import { DataStore, ERRORS, Upload } from '@tus/utils';
 import { omit } from 'lodash-es';
 import { extension } from 'mime-types';
+import { minimatch } from 'minimatch';
 import getDatabase from '../../database/index.js';
 import { useLogger } from '../../logger/index.js';
 import { ItemsService } from '../items.js';
+
+const INVALID_MIME_TYPE = {
+	status_code: 403,
+	body: 'File is of invalid content type\n',
+} as const;
 
 export type TusDataStoreConfig = {
 	constants: {
@@ -63,6 +71,15 @@ export class TusDataStore extends DataStore {
 
 		if (!upload.metadata['type']) {
 			upload.metadata['type'] = 'application/octet-stream';
+		}
+
+		const mimeType = upload.metadata['type'] || 'application/octet-stream';
+		const env = useEnv();
+		const allowedPatterns = toArray(env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]);
+		const mimeTypeAllowed = allowedPatterns.some((pattern) => minimatch(mimeType, pattern));
+
+		if (mimeTypeAllowed === false) {
+			throw INVALID_MIME_TYPE;
 		}
 
 		if (!upload.metadata['title']) {
