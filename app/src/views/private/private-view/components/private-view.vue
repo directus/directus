@@ -74,6 +74,7 @@ const licenseStore = useLicenseStore();
 const showLicenseBanner = computed({
 	get: () =>
 		userStore.isAdmin &&
+		serverStore.info.project_owner_enabled &&
 		!settingsStore.settings?.project_owner &&
 		!showLicenseOnboarding.value &&
 		!licenseStore.isCoreGrace &&
