@@ -1,5 +1,10 @@
 import { useEnv } from '@directus/env';
-import { InvalidPayloadError, InvalidProviderConfigError } from '@directus/errors';
+import {
+	HitRateLimitError,
+	InvalidPayloadError,
+	InvalidProviderConfigError,
+	ServiceUnavailableError,
+} from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	CachedResult,
@@ -10,6 +15,8 @@ import type {
 	Project,
 	ProviderType,
 	Query,
+	Status,
+	TriggerResult,
 } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { has, isEmpty } from 'lodash-es';
@@ -29,9 +36,61 @@ const env = useEnv();
 const DEPLOYMENT_CACHE_TTL = getMilliseconds(env['CACHE_DEPLOYMENT_TTL']) || 5000; // Default 5s
 const SYNC_THRESHOLD_MS = 60 * 60 * 1000; // 1 hour
 
+function resolveDeployHookLabelFromOptions(
+	deploymentOptions: Options | null | undefined,
+	projectExternalId: string,
+	deployHookUrl: string,
+): string | undefined {
+	const hooks = (
+		(deploymentOptions as Record<string, unknown>)?.['deploy_hooks_by_project'] as Record<string, unknown>
+	)?.[projectExternalId];
+
+	if (!Array.isArray(hooks)) return undefined;
+
+	for (const entry of hooks) {
+		const { url, name } = (entry ?? {}) as { url?: unknown; name?: unknown };
+		if (typeof url !== 'string' || url.trim() !== deployHookUrl.trim()) continue;
+		if (typeof name === 'string' && name.trim()) return name.trim().slice(0, 200);
+	}
+
+	return undefined;
+}
+
+/** Stored in `directus_deployment_runs.target` */
+function deploymentRunTargetValue(
+	preview: boolean,
+	deployHookUrl: string | undefined,
+	hookLabel: string | undefined,
+): string {
+	if (preview) return 'preview';
+
+	if (deployHookUrl) {
+		const label = (hookLabel && hookLabel.trim()) || 'Deploy hook';
+		return `hook:${encodeURIComponent(label.slice(0, 200))}`;
+	}
+
+	return 'production';
+}
+
 export class DeploymentService extends ItemsService<DeploymentConfig> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_deployments', options);
+	}
+
+	private getProviderErrorReason(error: unknown): string {
+		if (error && typeof error === 'object' && 'extensions' in error) {
+			const extensions = (error as { extensions?: { reason?: unknown } }).extensions;
+
+			if (typeof extensions?.reason === 'string' && extensions.reason.length > 0) {
+				return extensions.reason;
+			}
+		}
+
+		if (error instanceof Error && error.message.length > 0) {
+			return error.message;
+		}
+
+		return 'Invalid config connection';
 	}
 
 	override async createOne(data: Partial<DeploymentConfig>, opts?: any): Promise<PrimaryKey> {
@@ -66,8 +125,8 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 		try {
 			await driver.testConnection();
-		} catch {
-			throw new InvalidProviderConfigError({ provider, reason: 'Invalid config connection' });
+		} catch (error) {
+			throw new InvalidProviderConfigError({ provider, reason: this.getProviderErrorReason(error) });
 		}
 
 		const payload: Partial<DeploymentConfig> = {
@@ -125,8 +184,8 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 		try {
 			await driver.testConnection();
-		} catch {
-			throw new InvalidProviderConfigError({ provider, reason: 'Invalid config connection' });
+		} catch (error) {
+			throw new InvalidProviderConfigError({ provider, reason: this.getProviderErrorReason(error) });
 		}
 
 		return super.updateOne(
@@ -227,7 +286,11 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	async getDriver(provider: ProviderType): Promise<DeploymentDriver> {
 		const deployment = await this.readConfig(provider);
 		const credentials = parseValue<Credentials>(deployment.credentials, {});
-		const options = parseValue<Options>(deployment.options, {});
+
+		const options = {
+			...parseValue<Options>(deployment.options, {}),
+			_webhookIds: deployment.webhook_ids ?? [],
+		};
 
 		return getDeploymentDriver(deployment.provider, credentials, options);
 	}
@@ -520,7 +583,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	async triggerDeployment(
 		provider: ProviderType,
 		projectId: string,
-		options: { preview: boolean; clearCache: boolean },
+		options: { preview: boolean; clearCache: boolean; deployHookUrl?: string },
 	): Promise<DeploymentRun> {
 		const projectsService = new DeploymentProjectsService({
 			accountability: this.accountability,
@@ -533,17 +596,59 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		});
 
 		const project = await projectsService.readOne(projectId);
-		const driver = await this.getDriver(provider);
+		let driver = await this.getDriver(provider);
+		const capabilities = driver.capabilities;
 
-		const result = await driver.triggerDeployment(project.external_id, {
+		if (options.preview && !capabilities.supportsPreviewDeploy) {
+			throw new InvalidPayloadError({ reason: 'Preview deployments are not supported for this provider' });
+		}
+
+		if (options.deployHookUrl && !capabilities.supportsDeployHookUrl) {
+			throw new InvalidPayloadError({ reason: 'Deploy hook deployments are not supported for this provider' });
+		}
+
+		let result: TriggerResult;
+
+		const driverOptions = {
 			preview: options.preview,
 			clearCache: options.clearCache,
-		});
+			...(options.deployHookUrl ? { deployHookUrl: options.deployHookUrl } : {}),
+		};
+
+		try {
+			result = await driver.triggerRun(project.external_id, driverOptions);
+		} catch (error) {
+			const reason =
+				error && typeof error === 'object' && 'extensions' in error
+					? (error as { extensions?: { reason?: string } }).extensions?.reason
+					: undefined;
+
+			const missingTrigger =
+				typeof reason === 'string' &&
+				reason.includes('no build trigger configured') &&
+				capabilities.eventsTransport === 'poll';
+
+			if (!missingTrigger) {
+				throw error;
+			}
+
+			// Sync trigger metadata on demand for poll-only providers (eg. Cloudflare) and retry once.
+			await this.syncWebhook(provider);
+			driver = await this.getDriver(provider);
+			result = await driver.triggerRun(project.external_id, driverOptions);
+		}
+
+		const deploymentRow = await this.readConfig(provider);
+		const deploymentOptions = parseValue<Options>(deploymentRow.options, {});
+
+		const hookLabel = options.deployHookUrl
+			? resolveDeployHookLabelFromOptions(deploymentOptions, project.external_id, options.deployHookUrl)
+			: undefined;
 
 		const runId = await runsService.createOne({
 			project: projectId,
 			external_id: result.deployment_id,
-			target: options.preview ? 'preview' : 'production',
+			target: deploymentRunTargetValue(options.preview, options.deployHookUrl, hookLabel),
 			status: result.status,
 			started_at: result.created_at.toISOString(),
 			...(result.url ? { url: result.url } : {}),
@@ -564,7 +669,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		const run = await runsService.readOne(runId);
 		const driver = await this.getDriver(provider);
 
-		const status = await driver.cancelDeployment(run.external_id);
+		const status = await driver.cancelRun(run.external_id);
 		await runsService.updateOne(runId, { status });
 
 		return runsService.readOne(runId);
@@ -581,8 +686,116 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 		const run = await runsService.readOne(runId);
 		const driver = await this.getDriver(provider);
-		const logs = await driver.getDeploymentLogs(run.external_id, since ? { since } : undefined);
+		const terminalStatuses = new Set<Status>(['ready', 'error', 'canceled']);
 
-		return { ...run, logs };
+		if (driver.capabilities.needsRunStatusPolling && !terminalStatuses.has(run.status as Status)) {
+			try {
+				// getRun fetches status and logs in one combined call — don't also call getRunLogs.
+				const details = await driver.getRun(run.external_id);
+				const nextStatus = details.status;
+				const update: Partial<DeploymentRun> = {};
+
+				if (nextStatus !== run.status) {
+					update.status = nextStatus;
+				}
+
+				if (details.url && details.url !== run.url) {
+					update.url = details.url;
+				}
+
+				if (terminalStatuses.has(nextStatus) && !run.completed_at) {
+					update.completed_at = new Date().toISOString();
+				}
+
+				if (Object.keys(update).length > 0) {
+					await runsService.updateOne(run.id, update);
+					return { ...run, ...update, logs: details.logs ?? [] };
+				}
+
+				return { ...run, logs: details.logs ?? [] };
+			} catch (error) {
+				if (error instanceof HitRateLimitError || error instanceof ServiceUnavailableError) throw error;
+
+				const update: Partial<DeploymentRun> = {
+					status: 'error',
+					completed_at: run.completed_at ?? new Date().toISOString(),
+				};
+
+				await runsService.updateOne(run.id, update);
+				return { ...run, ...update, logs: [] };
+			}
+		}
+
+		try {
+			const logs = await driver.getRunLogs(run.external_id, since ? { since } : undefined);
+			return { ...run, logs };
+		} catch (error) {
+			const logger = useLogger();
+
+			logger.warn(
+				`[deployment:${provider}] Failed to fetch logs for run "${run.external_id}", returning run without logs: ${String(error)}`,
+			);
+
+			return { ...run, logs: [] };
+		}
+	}
+
+	/**
+	 * Refresh non-terminal run statuses for poll-based providers.
+	 */
+	async refreshRunsStatuses(provider: ProviderType, runs: DeploymentRun[]): Promise<DeploymentRun[]> {
+		if (runs.length === 0) return runs;
+
+		const driver = await this.getDriver(provider);
+		if (!driver.capabilities.needsRunStatusPolling) return runs;
+
+		const runsService = new DeploymentRunsService({
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		const terminalStatuses = new Set<Status>(['ready', 'error', 'canceled']);
+		const refreshedRuns = [...runs];
+
+		await Promise.all(
+			runs.map(async (run, index) => {
+				if (terminalStatuses.has(run.status as Status)) return;
+
+				try {
+					const details = await driver.getRun(run.external_id);
+					const nextStatus = details.status;
+					const update: Partial<DeploymentRun> = {};
+
+					if (nextStatus !== run.status) {
+						update.status = nextStatus;
+					}
+
+					if (details.url && details.url !== run.url) {
+						update.url = details.url;
+					}
+
+					if (terminalStatuses.has(nextStatus) && !run.completed_at) {
+						update.completed_at = new Date().toISOString();
+					}
+
+					if (Object.keys(update).length > 0) {
+						await runsService.updateOne(run.id, update);
+						refreshedRuns[index] = { ...run, ...update };
+					}
+				} catch (error) {
+					if (error instanceof HitRateLimitError || error instanceof ServiceUnavailableError) return;
+
+					const update: Partial<DeploymentRun> = {
+						status: 'error',
+						completed_at: run.completed_at ?? new Date().toISOString(),
+					};
+
+					await runsService.updateOne(run.id, update);
+					refreshedRuns[index] = { ...run, ...update };
+				}
+			}),
+		);
+
+		return refreshedRuns;
 	}
 }
