@@ -260,10 +260,6 @@ paths:
     $ref: './paths/users/me-tfa-disable.yaml'
 
   # Utils
-  /utils/hash/generate:
-    $ref: './paths/utils/hash-generate.yaml'
-  /utils/hash/verify:
-    $ref: './paths/utils/hash-verify.yaml'
   /utils/sort/{collection}:
     $ref: './paths/utils/sort.yaml'
   /utils/import/{collection}:
