@@ -1,6 +1,5 @@
 import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
 import { toBoolean } from '@directus/utils';
-import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
@@ -14,7 +13,6 @@ import { ExportService, ImportService } from '../services/import-export.js';
 import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
-import { generateHash } from '../utils/generate-hash.js';
 import { generateTranslations } from '../utils/generate-translations.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
@@ -34,39 +32,6 @@ router.get(
 		if (error) throw new InvalidQueryError({ reason: error.message });
 
 		return res.json({ data: nanoid(value.length) });
-	}),
-);
-
-router.post(
-	'/hash/generate',
-	asyncHandler(async (req, res) => {
-		if (!req.body?.string) {
-			throw new InvalidPayloadError({ reason: `"string" is required` });
-		}
-
-		const hash = await generateHash(req.body.string);
-
-		return res.json({ data: hash });
-	}),
-);
-
-router.post(
-	'/hash/verify',
-	asyncHandler(async (req, res) => {
-		if (!req.body?.string) {
-			throw new InvalidPayloadError({ reason: `"string" is required` });
-		}
-
-		if (!req.body?.hash) {
-			throw new InvalidPayloadError({ reason: `"hash" is required` });
-		}
-
-		try {
-			const result = await argon2.verify(req.body.hash, req.body.string);
-			return res.json({ data: result });
-		} catch {
-			throw new InvalidPayloadError({ reason: `Invalid "hash" or "string"` });
-		}
 	}),
 );
 
