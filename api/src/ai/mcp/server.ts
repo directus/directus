@@ -1,6 +1,4 @@
-import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
-import { isObject, toArray } from '@directus/utils';
+import { isDirectusError } from '@directus/errors';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import {
 	type CallToolRequest,
@@ -20,12 +18,10 @@ import {
 import type { Request, Response } from 'express';
 import { render, tokenize } from 'micromustache';
 import { z } from 'zod';
-import { fromZodError } from 'zod-validation-error';
 import { ItemsService } from '../../services/index.js';
-import { Url } from '../../utils/url.js';
-import { findMcpTool, getAllMcpTools } from '../tools/index.js';
+import type { RegistryError, RegistryExecuteResult } from '../tools/index.js';
+import { ALL_TOOLS, ToolRegistry } from '../tools/index.js';
 import type { ToolConfig, ToolResult } from '../tools/types.js';
-import { coerceJsonFields } from '../tools/utils.js';
 import { DirectusTransport } from './transport.js';
 import type { MCPOptions, Prompt } from './types.js';
 import { buildMcpWWWAuthenticateHeader, getMcpUrls, MCP_ACCESS_SCOPE } from './utils.js';
@@ -241,79 +237,26 @@ export class DirectusMCP {
 			});
 		});
 
+		const mountedRegistry = new ToolRegistry(ALL_TOOLS).mount({
+			accountability: req.accountability,
+			allowDeletes: this.allowDeletes,
+			isToolCallApproved: () => true,
+			schema: req.schema,
+			systemPrompt: this.systemPrompt,
+			systemPromptEnabled: this.systemPromptEnabled,
+		});
+
 		// listing tools
 		this.server.setRequestHandler(ListToolsRequestSchema, () => {
-			const tools = [];
-
-			for (const tool of getAllMcpTools()) {
-				if (req.accountability?.admin !== true && tool.admin === true) continue;
-				if (tool.name === 'system-prompt' && this.systemPromptEnabled === false) continue;
-
-				tools.push({
-					name: tool.name,
-					description: tool.description,
-					inputSchema: z.toJSONSchema(tool.inputSchema),
-					annotations: tool.annotations,
-				});
-			}
-
-			return { tools };
+			return {
+				tools: mountedRegistry.getRootTools().map((tool) => this.toMcpTool(tool)),
+			};
 		});
 
 		// calling tools
 		this.server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest) => {
-			const tool = findMcpTool(request.params.name);
-
 			try {
-				if (!tool || (tool.name === 'system-prompt' && this.systemPromptEnabled === false)) {
-					throw new InvalidPayloadError({ reason: `"${request.params.name}" doesn't exist in the toolset` });
-				}
-
-				if (req.accountability?.admin !== true && tool.admin === true) {
-					throw new ForbiddenError({ reason: 'You must be an admin to access this tool' });
-				}
-
-				if (tool.name === 'system-prompt') {
-					request.params.arguments = { promptOverride: this.systemPrompt };
-				}
-
-				const coercedArgs = request.params.arguments
-					? coerceJsonFields(request.params.arguments as Record<string, unknown>)
-					: request.params.arguments;
-
-				const { error, data: args } = tool.validateSchema?.safeParse(coercedArgs) ?? {
-					data: coercedArgs,
-				};
-
-				if (error) {
-					throw new InvalidPayloadError({ reason: fromZodError(error).message });
-				}
-
-				if (!isObject(args)) {
-					throw new InvalidPayloadError({ reason: '"arguments" must be an object' });
-				}
-
-				if (this.allowDeletes === false && 'action' in args && args['action'] === 'delete') {
-					throw new InvalidPayloadError({ reason: 'Delete actions are disabled' });
-				}
-
-				const result = await tool.handler({
-					args,
-					schema: req.schema,
-					accountability: req.accountability,
-				});
-
-				// if single item and create/read/update/import add url
-				const data = toArray(result?.data);
-
-				if (
-					'action' in args &&
-					['create', 'update', 'read', 'import'].includes(args['action'] as string) &&
-					result?.data &&
-					data.length === 1
-				) {
-					result.url = this.buildURL(tool, args, data[0]);
-				}
+				const result = await mountedRegistry.executeRoot(request.params.name, request.params.arguments);
 
 				return this.toToolResponse(result);
 			} catch (error) {
@@ -335,22 +278,6 @@ export class DirectusMCP {
 		}
 	}
 
-	buildURL(tool: ToolConfig<unknown>, input: unknown, data: unknown) {
-		const env = useEnv();
-
-		const publicURL = env['PUBLIC_URL'] as string | undefined;
-
-		if (!publicURL) return;
-
-		if (!tool.endpoint) return;
-
-		const path = tool.endpoint({ input, data });
-
-		if (!path) return;
-
-		return new Url(env['PUBLIC_URL'] as string).addPath('admin', ...path).toString();
-	}
-
 	toPromptResponse(result: {
 		description?: string | undefined;
 		messages: GetPromptResult['messages'];
@@ -366,23 +293,86 @@ export class DirectusMCP {
 		return response;
 	}
 
-	toToolResponse(result?: ToolResult) {
+	toMcpTool(tool: ToolConfig<any>) {
+		const mcpTool: {
+			annotations?: ToolConfig<any>['annotations'];
+			description: string;
+			inputSchema: unknown;
+			name: string;
+			outputSchema?: unknown;
+		} = {
+			name: tool.name,
+			description: tool.description,
+			inputSchema: z.toJSONSchema(tool.inputSchema),
+			annotations: tool.annotations,
+		};
+
+		if (tool.output) {
+			mcpTool.outputSchema = z.toJSONSchema(tool.output);
+		}
+
+		return mcpTool;
+	}
+
+	toToolResponse(executeResult: RegistryExecuteResult): CallToolResult {
+		if (!executeResult.ok) {
+			return this.toRegistryErrorResponse(executeResult.error);
+		}
+
+		return this.toResultResponse(executeResult.result, executeResult.structuredContent);
+	}
+
+	toResultResponse(result?: ToolResult, structuredContent?: unknown): CallToolResult {
 		const response: CallToolResult = {
 			content: [],
 		};
 
 		if (!result || typeof result.data === 'undefined' || result.data === null) return response;
 
+		if (structuredContent !== undefined) {
+			response.structuredContent = structuredContent as CallToolResult['structuredContent'];
+		}
+
 		if (result.type === 'text') {
+			const textPayload =
+				structuredContent !== undefined
+					? {
+							...(structuredContent as Record<string, unknown>),
+							...(result.url && { url: result.url }),
+						}
+					: {
+							data: result.data,
+							...(result.url && { url: result.url }),
+						};
+
 			response.content.push({
 				type: 'text',
-				text: JSON.stringify({ raw: result.data, url: result.url }),
+				text: JSON.stringify(textPayload),
 			});
 		} else {
 			response.content.push(result);
 		}
 
 		return response;
+	}
+
+	toRegistryErrorResponse(error: RegistryError): CallToolResult {
+		return {
+			isError: true,
+			content: [
+				{
+					type: 'text',
+					text: JSON.stringify([
+						{
+							error: error.message,
+							code: error.code,
+							recoverable: error.recoverable,
+							...(error.next && { next: error.next }),
+						},
+					]),
+				},
+			],
+		};
 	}
 
 	toExecutionError(err: unknown) {
