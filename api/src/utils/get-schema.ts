@@ -147,6 +147,8 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 
 		const collectionMeta = collections.find((collectionMeta) => collectionMeta.collection === collection);
 
+		// db-only tables will not have a collectionMeta
+		// system collections will not have the `status` field set
 		if (collectionMeta && 'status' in collectionMeta && collectionMeta?.status !== 'active') {
 			continue;
 		}
