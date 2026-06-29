@@ -9,9 +9,10 @@ import { CollectionsService } from './collections.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({}),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockEnv } = await import('../test-utils/env.js');
+	return mockEnv();
+});
 
 vi.mock('../../src/database/index', async () => {
 	const { mockDatabase } = await import('../test-utils/database.js');
@@ -122,6 +123,7 @@ describe('Integration Tests', () => {
 				[{}, 'collection name is missing'],
 				[{ collection: '' }, 'collection name is empty'],
 				[{ collection: 'directus_test' }, 'collection names start with "directus_"'],
+				[{ collection: 'Folder/Test' }, 'collection name contains "/"'],
 			];
 
 			test.each(invalidPayloads)('should throw InvalidPayloadError when %s', async (payload, _description) => {

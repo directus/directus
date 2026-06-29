@@ -78,6 +78,9 @@ vi.mock('../utils/should-clear-cache.js', () => ({
 
 const mockCreateIndexSpy = vi.fn().mockResolvedValue(undefined);
 
+// Expose a mutable flag so individual tests can toggle the MSSQL client simulation
+let mockIsOneOfClientsMSSQL = false;
+
 vi.mock('../database/helpers/index.js', () => ({
 	getHelpers: vi.fn(() => ({
 		schema: {
@@ -87,6 +90,7 @@ vi.mock('../database/helpers/index.js', () => ({
 			postColumnChange: vi.fn().mockResolvedValue(undefined),
 			setNullable: vi.fn(),
 			generateIndexName: vi.fn((type, collection, field) => `${collection}_${field}_${type}`),
+			isOneOfClients: vi.fn(() => mockIsOneOfClientsMSSQL),
 		},
 		date: {
 			fieldFlagForField: vi.fn().mockReturnValue(null),
@@ -1309,6 +1313,121 @@ describe('Integration Tests', () => {
 				service.addColumnToTable(table as any, 'test_collection', field);
 
 				expect(table.string).toHaveBeenCalledWith('name', 255);
+			});
+
+			test('should use string column with null max_length on non-MSSQL (falls to undefined)', () => {
+				// Ensure we're NOT in MSSQL mode
+				mockIsOneOfClientsMSSQL = false;
+
+				const service = new FieldsService({
+					knex: db,
+					schema,
+				});
+
+				const columnBuilder = {
+					defaultTo: vi.fn().mockReturnThis(),
+					notNullable: vi.fn().mockReturnThis(),
+					nullable: vi.fn().mockReturnThis(),
+					unique: vi.fn().mockReturnThis(),
+					index: vi.fn().mockReturnThis(),
+					primary: vi.fn().mockReturnThis(),
+				};
+
+				const table = {
+					string: vi.fn().mockReturnValue(columnBuilder),
+					text: vi.fn().mockReturnValue(columnBuilder),
+				};
+
+				const field: Field = {
+					collection: 'test_collection',
+					field: 'description',
+					type: 'string',
+					schema: {
+						name: 'description',
+						table: 'test_collection',
+						data_type: 'text',
+						default_value: null,
+						max_length: null,
+						numeric_precision: null,
+						numeric_scale: null,
+						is_generated: false,
+						generation_expression: null,
+						is_nullable: true,
+						is_unique: false,
+						is_indexed: false,
+						is_primary_key: false,
+						has_auto_increment: false,
+						foreign_key_column: null,
+						foreign_key_table: null,
+					},
+					meta: null,
+					name: '',
+				};
+
+				service.addColumnToTable(table as any, 'test_collection', field);
+
+				// Non-MSSQL: uses table.string with undefined length (not table.text)
+				expect(table.text).not.toHaveBeenCalled();
+				expect(table.string).toHaveBeenCalledWith('description', undefined);
+			});
+
+			test('should use text column for null max_length on MSSQL to emit nvarchar(max)', () => {
+				// Simulate MSSQL client
+				mockIsOneOfClientsMSSQL = true;
+
+				const service = new FieldsService({
+					knex: db,
+					schema,
+				});
+
+				const columnBuilder = {
+					defaultTo: vi.fn().mockReturnThis(),
+					notNullable: vi.fn().mockReturnThis(),
+					nullable: vi.fn().mockReturnThis(),
+					unique: vi.fn().mockReturnThis(),
+					index: vi.fn().mockReturnThis(),
+					primary: vi.fn().mockReturnThis(),
+				};
+
+				const table = {
+					string: vi.fn().mockReturnValue(columnBuilder),
+					text: vi.fn().mockReturnValue(columnBuilder),
+				};
+
+				const field: Field = {
+					collection: 'test_collection',
+					field: 'description',
+					type: 'string',
+					schema: {
+						name: 'description',
+						table: 'test_collection',
+						data_type: 'nvarchar',
+						default_value: null,
+						max_length: null,
+						numeric_precision: null,
+						numeric_scale: null,
+						is_generated: false,
+						generation_expression: null,
+						is_nullable: true,
+						is_unique: false,
+						is_indexed: false,
+						is_primary_key: false,
+						has_auto_increment: false,
+						foreign_key_column: null,
+						foreign_key_table: null,
+					},
+					meta: null,
+					name: '',
+				};
+
+				service.addColumnToTable(table as any, 'test_collection', field);
+
+				// MSSQL with null max_length must use table.text() to produce nvarchar(max)
+				expect(table.text).toHaveBeenCalledWith('description');
+				expect(table.string).not.toHaveBeenCalled();
+
+				// Reset flag so other tests are unaffected
+				mockIsOneOfClientsMSSQL = false;
 			});
 
 			test('should add integer column with auto increment', () => {

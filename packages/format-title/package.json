@@ -1,6 +1,6 @@
 {
 	"name": "@directus/format-title",
-	"version": "12.1.2",
+	"version": "13.0.0",
 	"description": "Custom formatter that converts any string into Title Case",
 	"keywords": [
 		"title-case",
@@ -13,7 +13,7 @@
 		"conjunctions",
 		"prepositions"
 	],
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",

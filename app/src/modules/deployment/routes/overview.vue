@@ -5,7 +5,6 @@ import DeploymentNavigation from '../components/navigation.vue';
 import ProviderSetupDrawer from '../components/provider-setup-drawer.vue';
 import { useDeploymentNavigation } from '../composables/use-deployment-navigation';
 import { availableProviders } from '../config/providers';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
@@ -59,9 +58,9 @@ const providersList = computed(() => {
 function onProviderClick(provider: (typeof providersList.value)[number]) {
 	if (provider.configured) {
 		if (provider.projectsCount === 0) {
-			router.push(`/deployments/${provider.type}/settings`);
+			router.push({ name: 'deployments-provider-settings', params: { provider: provider.type } });
 		} else {
-			router.push(`/deployments/${provider.type}`);
+			router.push({ name: 'deployments-provider-dashboard', params: { provider: provider.type } });
 		}
 	} else {
 		selectedProvider.value = provider.type;
@@ -73,16 +72,12 @@ function onSetupComplete() {
 	selectedProvider.value = null;
 	fetch(true);
 	// Navigate to settings to select projects (no projects after initial setup)
-	if (provider) router.push(`/deployments/${provider}/settings`);
+	if (provider) router.push({ name: 'deployments-provider-settings', params: { provider } });
 }
 </script>
 
 <template>
 	<PrivateView :title="$t('deployment.overview.overview')" icon="rocket_launch">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployments' }]" />
-		</template>
-
 		<template #navigation>
 			<DeploymentNavigation />
 		</template>

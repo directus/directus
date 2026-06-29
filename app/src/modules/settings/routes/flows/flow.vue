@@ -14,7 +14,6 @@ import Operation, { ArrowInfo, Target } from './components/operation.vue';
 import { ATTACHMENT_OFFSET, GRID_SIZE, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
 import FlowDrawer from './flow-drawer.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -31,6 +30,8 @@ import DisplayColor from '@/displays/color/color.vue';
 import { useExtensions } from '@/extensions';
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
+import { useLicenseStore } from '@/stores/license';
+import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Vector2 } from '@/utils/vector2';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -62,6 +63,7 @@ useShortcut('meta+s', () => {
 // ------------- Manage Current Flow ------------- //
 
 const flowsStore = useFlowsStore();
+const licenseStore = useLicenseStore();
 const stagedFlow = ref<Partial<FlowRaw>>({});
 
 const flow = computed<FlowRaw | undefined>({
@@ -96,11 +98,12 @@ async function deleteFlow() {
 	try {
 		await api.delete(`/flows/${flow.value.id}`);
 		await flowsStore.hydrate();
+		licenseStore.hydrate();
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
 		deleting.value = false;
-		router.push('/settings/flows');
+		router.push({ name: 'settings-flows-collection' });
 	}
 }
 
@@ -298,13 +301,13 @@ function stageOperation(edits: Partial<OperationRaw>) {
 	stageOperationEdits({ edits });
 	parentId = undefined;
 	attachType = undefined;
-	router.replace(`/settings/flows/${props.primaryKey}`);
+	router.replace({ name: 'settings-flows-item', params: { primaryKey: props.primaryKey } });
 }
 
 function cancelOperation() {
 	parentId = undefined;
 	attachType = undefined;
-	router.replace(`/settings/flows/${props.primaryKey}`);
+	router.replace({ name: 'settings-flows-item', params: { primaryKey: props.primaryKey } });
 }
 
 async function saveChanges() {
@@ -449,7 +452,7 @@ async function deletePanel(id: string) {
 function createPanel(parent: string, type: 'resolve' | 'reject') {
 	parentId = parent;
 	attachType = type;
-	router.push(`/settings/flows/${props.primaryKey}/+`);
+	router.push({ name: 'settings-flows-operation', params: { primaryKey: props.primaryKey, operationId: '+' } });
 }
 
 function duplicatePanel(panel: OperationRaw) {
@@ -463,7 +466,8 @@ function duplicatePanel(panel: OperationRaw) {
 
 function editPanel(panel: AppTile) {
 	if (panel.id === '$trigger') triggerDetailOpen.value = true;
-	else router.push(`/settings/flows/${props.primaryKey}/${panel.id}`);
+	else
+		router.push({ name: 'settings-flows-operation', params: { primaryKey: props.primaryKey, operationId: panel.id } });
 }
 
 // ------------- Copy Panel To ------------- //
@@ -608,11 +612,7 @@ function discardAndLeave() {
 
 <template>
 	<SettingsNotFound v-if="!flow && !loading" />
-	<PrivateView v-else :title="flow?.name ?? $t('loading')" show-back back-to="/settings/flows">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('flows'), to: '/settings/flows' }]" />
-		</template>
-
+	<PrivateView v-else :title="flow?.name ? translate(flow.name) : $t('loading')" show-back back-to="/settings/flows">
 		<template #title:append>
 			<DisplayColor
 				v-tooltip="flow?.status === 'active' ? $t('active') : $t('inactive')"
@@ -625,36 +625,34 @@ function discardAndLeave() {
 			<template v-if="editMode">
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('clear_changes')"
-					class="clear-changes"
-					icon="clear"
-					outlined
+					icon="undo"
+					kind="danger"
+					variant="ghost"
 					@click="attemptCancelChanges"
-				/>
-
-				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="$t('save')"
-					:loading="saving"
-					icon="check"
-					@click="saveChanges"
 				/>
 			</template>
 
 			<template v-else>
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('delete_flow')"
-					class="delete-flow"
-					secondary
+					kind="danger"
+					variant="ghost"
 					icon="delete"
 					@click="confirmDelete = true"
 				/>
-
-				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="$t('edit_flow')"
-					outlined
-					icon="edit"
-					@click="editMode = !editMode"
-				/>
 			</template>
+		</template>
+
+		<template #actions:primary>
+			<PrivateViewHeaderBarActionButton
+				v-if="editMode"
+				:label="$t('save')"
+				:loading="saving"
+				icon="check"
+				@click="saveChanges"
+			/>
+
+			<PrivateViewHeaderBarActionButton v-else :label="$t('edit_flow')" icon="edit" @click="editMode = !editMode" />
 		</template>
 
 		<template #sidebar>
@@ -738,7 +736,7 @@ function discardAndLeave() {
 
 		<VDialog :model-value="confirmDelete" @esc="confirmDelete = false" @apply="deleteFlow">
 			<VCard>
-				<VCardTitle>{{ $t('flow_delete_confirm', { flow: flow?.name }) }}</VCardTitle>
+				<VCardTitle>{{ $t('flow_delete_confirm', { flow: flow?.name ? translate(flow.name) : '' }) }}</VCardTitle>
 
 				<VCardActions>
 					<VButton secondary @click="confirmDelete = false">{{ $t('cancel') }}</VButton>
@@ -801,23 +799,13 @@ function discardAndLeave() {
 	--row-size: 5.625rem;
 	--gap-size: 2.25rem;
 
-	padding-block-start: calc(var(--content-padding) / 2);
+	padding-block-start: var(--content-padding);
 
 	&.center {
 		block-size: calc(100% - 2.6875rem - var(--header-bar-height));
 		display: grid;
 		place-items: center;
 	}
-}
-
-.clear-changes {
-	--v-button-background-color: var(--theme--foreground-subdued);
-	--v-button-background-color-hover: var(--theme--foreground);
-}
-
-.delete-flow {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
 }
 
 .grid {

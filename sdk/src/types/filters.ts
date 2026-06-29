@@ -75,6 +75,7 @@ export type FilterOperators<
 	_nempty: boolean;
 	_nnull: IsNullable<FieldType, boolean, never>;
 	_null: IsNullable<FieldType, boolean, never>;
+	_json: Record<string, FilterOperators<string | number | boolean | null>>;
 	_intersects: T;
 	_nintersects: T;
 	_intersects_bbox: T;

@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Về chúng tôi
+continue: Tiếp tục
 first_name: Tên
 last_name: Họ
 identifier: Định danh
@@ -825,6 +826,14 @@ no_options_available: Không có tùy chọn sẵn có
 settings_data_model: Mô Hình Dữ Liệu
 settings_roles: Vai trò người dùng
 settings_project: Cài đặt
+licensing:
+  unlimited: Không giới hạn
+  addon_update: Cập nhật
+  resolve_continue: Tiếp tục
+  resolve_show_n_more: 'Hiển thị thêm {count}'
+  resolve_sso_admin_password: Mật khẩu
+  entitlements:
+    collections: Danh mục
 settings_presets: Đánh dấu
 settings_translations: Các Bản Dịch
 one_or_more_options_are_missing: Một hoặc nhiều tùy chọn còn thiếu
