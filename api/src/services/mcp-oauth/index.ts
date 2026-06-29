@@ -1920,7 +1920,7 @@ export class McpOAuthService {
 		return jwt.sign(
 			{
 				id: opts.userId,
-				role: rolesTree[0] ?? null,
+				role: opts.role,
 				app_access: globalAccess.app,
 				admin_access: globalAccess.admin,
 				session: opts.sessionHash,
