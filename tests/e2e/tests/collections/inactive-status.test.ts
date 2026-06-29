@@ -19,16 +19,9 @@ const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticT
 
 const collectionName = `inactive_status_${randomUUID()}`;
 
-// The SDK throws the parsed error body, which carries an `errors` array. A collection that is
-// absent from the schema (e.g. because it's inactive) is reported as a FORBIDDEN error by the
-// `collectionExists` middleware.
 const forbidden = {
 	errors: [expect.objectContaining({ extensions: expect.objectContaining({ code: 'FORBIDDEN' }) })],
 };
-
-// An item created while the collection is still active, used to assert that read/update/delete are
-// blocked once the collection becomes inactive.
-let seedItemId: number;
 
 beforeAll(async () => {
 	await api.request(
@@ -50,9 +43,6 @@ beforeAll(async () => {
 			meta: { singleton: false },
 		}),
 	);
-
-	const seed = await api.request(createItem(collectionName, { title: 'Seed' }));
-	seedItemId = seed.id;
 });
 
 afterAll(async () => {
@@ -62,6 +52,9 @@ afterAll(async () => {
 });
 
 test('permits item crud while the collection is active', async () => {
+	const seed = await api.request(createItem(collectionName, { title: 'Seed' }));
+	const seedItemId = seed['id'];
+
 	const created = await api.request(createItem(collectionName, { title: 'Active' }));
 	expect(created).toMatchObject({ title: 'Active' });
 
@@ -79,6 +72,11 @@ test('permits item crud while the collection is active', async () => {
 });
 
 test('blocks item crud once the collection is set to inactive', async () => {
+	// Create an item while the collection is still active so we can assert read/update/delete are
+	// blocked once it becomes inactive.
+	const seed = await api.request(createItem(collectionName, { title: 'Seed' }));
+	const seedItemId = seed['id'];
+
 	// Toggling the collection status is a collection-meta operation and should still succeed.
 	const updated = await api.request(updateCollection(collectionName, { meta: { status: 'inactive' } }));
 	expect(updated.meta).toMatchObject({ status: 'inactive' });
