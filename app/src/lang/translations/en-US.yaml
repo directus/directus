@@ -343,6 +343,7 @@ validationError:
   niends_with: Value can't end with {substring}
   confirm_password: Passwords do not match
   org_name: Please include an organization name
+  unsafe: Value is not a safe number
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
@@ -1761,6 +1762,7 @@ fields:
     collection: Collection
     icon: Icon
     note: Note
+    status: Status
     color: Color
     display_template: Display Template
     hidden: Hidden
