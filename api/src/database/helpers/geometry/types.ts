@@ -20,7 +20,7 @@ export abstract class GeometryHelper extends DatabaseHelper {
 
 		if (!subtype) return null;
 
-		const type = GEOMETRY_TYPES.find((value) => value === subtype);
+		const type = GEOMETRY_TYPES.find((value) => value.toLowerCase() === subtype.toLowerCase());
 
 		return type || null;
 	}
