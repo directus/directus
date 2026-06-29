@@ -44,6 +44,12 @@ exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > ordered list 
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > paragraph survives round-trip 1`] = `"<p>Just a paragraph.</p>"`;
 
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > rtl heading survives round-trip 1`] = `"<h2 dir="rtl">عنوان</h2>"`;
+
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > rtl list survives round-trip 1`] = `"<ul dir="rtl"><li><p>عنصر</p></li></ul>"`;
+
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > rtl paragraph survives round-trip 1`] = `"<p dir="rtl">شسي</p>"`;
+
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > strike survives round-trip 1`] = `"<p><s>strike</s></p>"`;
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > subscript survives round-trip 1`] = `"<p>H<sub>2</sub>O</p>"`;
@@ -69,8 +75,6 @@ exports[`round-trip: lossy (restored by later issues / accepted regression) > 'c
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'iframe' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'pagebreak' is dropped today (→ 'CMS-2647') 1`] = `"<p>a</p><p>b</p>"`;
-
-exports[`round-trip: lossy (restored by later issues / accepted regression) > 'rtl direction' is dropped today (→ 'CMS-2646') 1`] = `"<p>شسي</p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'table' is dropped today (→ 'CMS-2639') 1`] = `"<p>ab</p>"`;
 

@@ -28,6 +28,13 @@ export const toolbarGroups: ToolbarGroup[] = [
 		icon: 'format_align_left',
 		keys: ['alignleft', 'aligncenter', 'alignright', 'alignjustify', 'alignnone'],
 	},
+	{
+		id: 'direction',
+		priority: 74,
+		popover: true,
+		icon: 'format_textdirection_l_to_r',
+		keys: ['ltr', 'rtl'],
+	},
 	{ id: 'list', priority: 70, pinned: true, keys: ['numlist', 'bullist', 'indent', 'outdent'] },
 	{ id: 'style', priority: 70, pinned: true, keys: ['fontfamily', 'fontsize', 'forecolor', 'backcolor'] },
 	{ id: 'block', priority: 60, keys: ['blockquote', 'hr'] },

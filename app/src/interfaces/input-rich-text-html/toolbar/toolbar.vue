@@ -68,8 +68,14 @@ const MEASUREMENTS: LayoutMeasurements = {
 	keyWidths,
 };
 
+// Legacy TinyMCE tokens that map to more than one button key. `ltr rtl` (directionality) is stored
+// as a single option value but renders as the two direction buttons.
+const TOOLBAR_ALIASES: Record<string, string[]> = { 'ltr rtl': ['ltr', 'rtl'] };
+
 // keys present in the field config AND in the registry, preserving field order for the `other` bucket
-const selectedKeys = computed(() => props.toolbar.filter((key) => Boolean(toolbarButtons[key])));
+const selectedKeys = computed(() =>
+	props.toolbar.flatMap((key) => TOOLBAR_ALIASES[key] ?? [key]).filter((key) => Boolean(toolbarButtons[key])),
+);
 
 // editor base font-size — mirrors `.ProseMirror { font-size: 0.875rem }` (14px) in input-rich-text-html.vue
 const BASE_FONT_SIZE_PX = 14;
