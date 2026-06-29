@@ -8,17 +8,41 @@ import { DeploymentService } from './deployment.js';
 import { ItemsService } from './items.js';
 
 const {
+	mockDriver,
 	mockTestConnection,
 	mockListProjects,
 	mockGetProject,
+	mockGetRunLogs,
+	mockGetRun,
+	mockTriggerRun,
+	mockCancelRun,
 	mockGetCacheValueWithTTL,
 	mockSetCacheValueWithExpiry,
 	mockLoggerDebug,
 	mockLoggerError,
 } = vi.hoisted(() => ({
+	mockDriver: {
+		capabilities: {
+			eventsTransport: 'webhook' as 'webhook' | 'poll',
+			supportsPreviewDeploy: true,
+			supportsDeployHookUrl: false,
+			needsRunStatusPolling: false,
+		},
+		testConnection: vi.fn(),
+		listProjects: vi.fn(),
+		getProject: vi.fn(),
+		getRunLogs: vi.fn(),
+		getRun: vi.fn(),
+		triggerRun: vi.fn(),
+		cancelRun: vi.fn(),
+	},
 	mockTestConnection: vi.fn(),
 	mockListProjects: vi.fn(),
 	mockGetProject: vi.fn(),
+	mockGetRunLogs: vi.fn(),
+	mockGetRun: vi.fn(),
+	mockTriggerRun: vi.fn(),
+	mockCancelRun: vi.fn(),
 	mockGetCacheValueWithTTL: vi.fn(),
 	mockSetCacheValueWithExpiry: vi.fn(),
 	mockLoggerDebug: vi.fn(),
@@ -26,11 +50,7 @@ const {
 }));
 
 vi.mock('../deployment.js', () => ({
-	getDeploymentDriver: vi.fn(() => ({
-		testConnection: mockTestConnection,
-		listProjects: mockListProjects,
-		getProject: mockGetProject,
-	})),
+	getDeploymentDriver: vi.fn(() => mockDriver),
 }));
 
 vi.mock('../cache.js', () => ({
@@ -49,6 +69,7 @@ vi.mock('../logger/index.js', () => ({
 	useLogger: vi.fn(() => ({
 		debug: mockLoggerDebug,
 		error: mockLoggerError,
+		warn: vi.fn(),
 	})),
 }));
 
@@ -68,6 +89,23 @@ const schema = new SchemaBuilder()
 
 describe('DeploymentService', () => {
 	const { db, tracker, mockSchemaBuilder } = createMockKnex();
+
+	beforeEach(() => {
+		mockDriver.capabilities = {
+			eventsTransport: 'webhook',
+			supportsPreviewDeploy: true,
+			supportsDeployHookUrl: false,
+			needsRunStatusPolling: false,
+		};
+
+		mockDriver.testConnection = mockTestConnection;
+		mockDriver.listProjects = mockListProjects;
+		mockDriver.getProject = mockGetProject;
+		mockDriver.getRunLogs = mockGetRunLogs;
+		mockDriver.getRun = mockGetRun;
+		mockDriver.triggerRun = mockTriggerRun;
+		mockDriver.cancelRun = mockCancelRun;
+	});
 
 	afterEach(() => {
 		resetKnexMocks(tracker, mockSchemaBuilder);
@@ -513,6 +551,423 @@ describe('DeploymentService', () => {
 
 			expect(result.projects).toHaveLength(1);
 			expect(mockLoggerError).toHaveBeenCalled();
+		});
+	});
+
+	describe('getDriver / getRunWithLogs', () => {
+		let service: DeploymentService;
+
+		const deployment = {
+			id: 1,
+			provider: 'cloudflare-workers',
+			credentials: JSON.stringify({ api_token: 'token' }),
+			options: JSON.stringify({ account_id: 'account-123' }),
+			webhook_ids: ['trigger-123'],
+		};
+
+		beforeEach(() => {
+			service = new DeploymentService({
+				knex: db,
+				schema,
+			});
+
+			vi.spyOn(service as any, 'readConfig').mockResolvedValue(deployment);
+		});
+
+		it('should merge webhook_ids into driver options', async () => {
+			const getDeploymentDriverModule = await import('../deployment.js');
+			const getDeploymentDriverSpy = vi.spyOn(getDeploymentDriverModule, 'getDeploymentDriver');
+
+			await service.getDriver('cloudflare-workers');
+
+			expect(getDeploymentDriverSpy).toHaveBeenCalledWith(
+				'cloudflare-workers',
+				{ api_token: 'token' },
+				expect.objectContaining({
+					account_id: 'account-123',
+					_webhookIds: ['trigger-123'],
+				}),
+			);
+		});
+
+		it('should refresh non-webhook run status in getRunWithLogs', async () => {
+			mockDriver.capabilities = {
+				eventsTransport: 'poll',
+				supportsPreviewDeploy: false,
+				supportsDeployHookUrl: true,
+				needsRunStatusPolling: true,
+			};
+
+			mockGetRun.mockResolvedValueOnce({
+				id: 'build-1',
+				project_id: 'worker-1',
+				status: 'ready',
+				url: 'https://example.com',
+				created_at: new Date(),
+				logs: [{ type: 'info', message: 'Build started', timestamp: new Date() }],
+			});
+
+			vi.spyOn(DeploymentRunsService.prototype, 'readOne').mockResolvedValue({
+				id: 'run-1',
+				project: 'project-1',
+				external_id: 'build-1',
+				status: 'building',
+				target: 'production',
+				date_created: '2026-01-01T00:00:00.000Z',
+				url: null,
+				started_at: '2026-01-01T00:00:00.000Z',
+				completed_at: null,
+			} as any);
+
+			const updateSpy = vi.spyOn(DeploymentRunsService.prototype, 'updateOne').mockResolvedValue('run-1');
+
+			const result = await service.getRunWithLogs('cloudflare-workers', 'run-1');
+
+			expect(updateSpy).toHaveBeenCalledWith(
+				'run-1',
+				expect.objectContaining({
+					status: 'ready',
+					url: 'https://example.com',
+				}),
+			);
+
+			expect(result.status).toBe('ready');
+			expect(result.logs).toHaveLength(1);
+		});
+
+		it('should skip refresh for webhook providers in getRunWithLogs', async () => {
+			mockDriver.capabilities = {
+				eventsTransport: 'webhook',
+				supportsPreviewDeploy: true,
+				supportsDeployHookUrl: false,
+				needsRunStatusPolling: false,
+			};
+
+			mockGetRunLogs.mockResolvedValueOnce([{ type: 'info', message: 'Build started', timestamp: new Date() }]);
+
+			vi.spyOn(DeploymentRunsService.prototype, 'readOne').mockResolvedValue({
+				id: 'run-1',
+				project: 'project-1',
+				external_id: 'build-1',
+				status: 'building',
+				target: 'production',
+				date_created: '2026-01-01T00:00:00.000Z',
+				url: null,
+				started_at: '2026-01-01T00:00:00.000Z',
+				completed_at: null,
+			} as any);
+
+			const updateSpy = vi.spyOn(DeploymentRunsService.prototype, 'updateOne').mockResolvedValue('run-1');
+
+			await service.getRunWithLogs('vercel', 'run-1');
+
+			expect(updateSpy).not.toHaveBeenCalled();
+			expect(mockGetRun).not.toHaveBeenCalled();
+		});
+
+		it('should mark run as error and return empty logs when getRun throws during polling', async () => {
+			mockDriver.capabilities = {
+				eventsTransport: 'poll',
+				supportsPreviewDeploy: false,
+				supportsDeployHookUrl: true,
+				needsRunStatusPolling: true,
+			};
+
+			mockGetRun.mockRejectedValueOnce(new Error('API down'));
+
+			vi.spyOn(DeploymentRunsService.prototype, 'readOne').mockResolvedValue({
+				id: 'run-1',
+				project: 'project-1',
+				external_id: 'build-1',
+				status: 'building',
+				target: 'production',
+				date_created: '2026-01-01T00:00:00.000Z',
+				url: null,
+				started_at: null,
+				completed_at: null,
+			} as any);
+
+			const updateSpy = vi.spyOn(DeploymentRunsService.prototype, 'updateOne').mockResolvedValue('run-1');
+
+			const result = await service.getRunWithLogs('cloudflare-workers', 'run-1');
+
+			expect(result.status).toBe('error');
+			expect(result.logs).toEqual([]);
+			expect(updateSpy).toHaveBeenCalledWith('run-1', expect.objectContaining({ status: 'error' }));
+		});
+
+		it('should skip polling for already-terminal runs and fall through to getRunLogs', async () => {
+			mockDriver.capabilities = {
+				eventsTransport: 'poll',
+				supportsPreviewDeploy: false,
+				supportsDeployHookUrl: true,
+				needsRunStatusPolling: true,
+			};
+
+			mockGetRunLogs.mockResolvedValueOnce([{ type: 'info', message: 'Done', timestamp: new Date() }]);
+
+			vi.spyOn(DeploymentRunsService.prototype, 'readOne').mockResolvedValue({
+				id: 'run-1',
+				project: 'project-1',
+				external_id: 'build-1',
+				status: 'ready',
+				target: 'production',
+				date_created: '2026-01-01T00:00:00.000Z',
+				url: 'https://example.com',
+				started_at: null,
+				completed_at: '2026-01-01T00:05:00.000Z',
+			} as any);
+
+			const result = await service.getRunWithLogs('cloudflare-workers', 'run-1');
+
+			expect(mockGetRun).not.toHaveBeenCalled();
+			expect(result.logs).toHaveLength(1);
+		});
+
+		it('should return empty logs when getRunLogs throws for webhook provider', async () => {
+			mockDriver.capabilities = {
+				eventsTransport: 'webhook',
+				supportsPreviewDeploy: true,
+				supportsDeployHookUrl: false,
+				needsRunStatusPolling: false,
+			};
+
+			mockGetRunLogs.mockRejectedValueOnce(new Error('Logs API down'));
+
+			vi.spyOn(DeploymentRunsService.prototype, 'readOne').mockResolvedValue({
+				id: 'run-1',
+				project: 'project-1',
+				external_id: 'build-1',
+				status: 'building',
+				target: 'production',
+				date_created: '2026-01-01T00:00:00.000Z',
+				url: null,
+				started_at: null,
+				completed_at: null,
+			} as any);
+
+			const result = await service.getRunWithLogs('vercel', 'run-1');
+
+			expect(result.logs).toEqual([]);
+		});
+	});
+
+	describe('triggerDeployment', () => {
+		let service: DeploymentService;
+
+		const project = {
+			id: 'project-1',
+			external_id: 'worker-tag-1',
+			name: 'My Worker',
+			deployable: true,
+		};
+
+		const deployment = {
+			id: 'deploy-1',
+			provider: 'cloudflare-workers',
+			credentials: JSON.stringify({ api_token: 'token' }),
+			options: JSON.stringify({ account_id: 'account-1' }),
+			webhook_ids: null,
+		};
+
+		beforeEach(() => {
+			service = new DeploymentService({ knex: db, schema });
+
+			mockDriver.capabilities = {
+				eventsTransport: 'poll',
+				supportsPreviewDeploy: false,
+				supportsDeployHookUrl: true,
+				needsRunStatusPolling: true,
+			};
+
+			vi.spyOn(service, 'getDriver').mockResolvedValue(mockDriver as any);
+			vi.spyOn(service as any, 'readConfig').mockResolvedValue(deployment);
+			vi.spyOn(DeploymentProjectsService.prototype, 'readOne').mockResolvedValue(project as any);
+			vi.spyOn(DeploymentRunsService.prototype, 'createOne').mockResolvedValue('run-1');
+
+			vi.spyOn(DeploymentRunsService.prototype, 'readOne').mockResolvedValue({
+				id: 'run-1',
+				external_id: 'build-123',
+				status: 'building',
+				project: 'project-1',
+				target: 'production',
+				date_created: '2026-01-01T00:00:00.000Z',
+			} as any);
+
+			mockTriggerRun.mockResolvedValue({
+				deployment_id: 'build-123',
+				status: 'building',
+				created_at: new Date('2026-01-01T00:00:00.000Z'),
+			});
+		});
+
+		it('should trigger a production deployment and store the run', async () => {
+			const result = await service.triggerDeployment('cloudflare-workers', 'project-1', {
+				preview: false,
+				clearCache: false,
+			});
+
+			expect(mockTriggerRun).toHaveBeenCalledWith(
+				'worker-tag-1',
+				expect.objectContaining({ preview: false, clearCache: false }),
+			);
+
+			expect(DeploymentRunsService.prototype.createOne).toHaveBeenCalledWith(
+				expect.objectContaining({ external_id: 'build-123', status: 'building' }),
+			);
+
+			expect(result).toBeDefined();
+		});
+
+		it('should throw InvalidPayloadError when preview is not supported', async () => {
+			await expect(
+				service.triggerDeployment('cloudflare-workers', 'project-1', { preview: true, clearCache: false }),
+			).rejects.toThrow(InvalidPayloadError);
+
+			expect(mockTriggerRun).not.toHaveBeenCalled();
+		});
+
+		it('should throw InvalidPayloadError when deploy hook is not supported', async () => {
+			mockDriver.capabilities = { ...mockDriver.capabilities, supportsDeployHookUrl: false };
+
+			await expect(
+				service.triggerDeployment('cloudflare-workers', 'project-1', {
+					preview: false,
+					clearCache: false,
+					deployHookUrl: 'https://example.com/hook',
+				}),
+			).rejects.toThrow(InvalidPayloadError);
+		});
+
+		it('should use hook: target when a deploy hook URL is provided', async () => {
+			mockTriggerRun.mockResolvedValue({
+				deployment_id: 'hook-build-1',
+				status: 'building',
+				created_at: new Date(),
+			});
+
+			await service.triggerDeployment('cloudflare-workers', 'project-1', {
+				preview: false,
+				clearCache: false,
+				deployHookUrl: 'https://example.com/hook',
+			});
+
+			expect(DeploymentRunsService.prototype.createOne).toHaveBeenCalledWith(
+				expect.objectContaining({ target: expect.stringContaining('hook:') }),
+			);
+		});
+	});
+
+	describe('cancelDeployment', () => {
+		let service: DeploymentService;
+
+		beforeEach(() => {
+			service = new DeploymentService({ knex: db, schema });
+
+			vi.spyOn(service, 'getDriver').mockResolvedValue(mockDriver as any);
+
+			mockCancelRun.mockResolvedValue('canceled');
+
+			vi.spyOn(DeploymentRunsService.prototype, 'readOne')
+				.mockResolvedValueOnce({ id: 'run-1', external_id: 'build-123', status: 'building' } as any)
+				.mockResolvedValueOnce({ id: 'run-1', external_id: 'build-123', status: 'canceled' } as any);
+
+			vi.spyOn(DeploymentRunsService.prototype, 'updateOne').mockResolvedValue('run-1');
+		});
+
+		it('should call cancelRun and persist the updated status', async () => {
+			const result = await service.cancelDeployment('cloudflare-workers', 'run-1');
+
+			expect(mockCancelRun).toHaveBeenCalledWith('build-123');
+
+			expect(DeploymentRunsService.prototype.updateOne).toHaveBeenCalledWith('run-1', { status: 'canceled' });
+
+			expect(result.status).toBe('canceled');
+		});
+	});
+
+	describe('refreshRunsStatuses', () => {
+		let service: DeploymentService;
+
+		const buildingRun = {
+			id: 'run-1',
+			project: 'project-1',
+			external_id: 'build-123',
+			status: 'building',
+			target: 'production',
+			date_created: '2026-01-01T00:00:00.000Z',
+			url: null,
+			started_at: null,
+			completed_at: null,
+		};
+
+		beforeEach(() => {
+			service = new DeploymentService({ knex: db, schema });
+
+			mockDriver.capabilities = {
+				eventsTransport: 'poll',
+				supportsPreviewDeploy: false,
+				supportsDeployHookUrl: true,
+				needsRunStatusPolling: true,
+			};
+
+			vi.spyOn(service, 'getDriver').mockResolvedValue(mockDriver as any);
+			vi.spyOn(DeploymentRunsService.prototype, 'updateOne').mockResolvedValue('run-1');
+		});
+
+		it('should return empty array immediately without calling the driver', async () => {
+			const result = await service.refreshRunsStatuses('cloudflare-workers', []);
+			expect(result).toEqual([]);
+			expect(mockGetRun).not.toHaveBeenCalled();
+		});
+
+		it('should return runs unchanged when needsRunStatusPolling is false', async () => {
+			mockDriver.capabilities = { ...mockDriver.capabilities, needsRunStatusPolling: false };
+
+			const result = await service.refreshRunsStatuses('cloudflare-workers', [buildingRun as any]);
+
+			expect(mockGetRun).not.toHaveBeenCalled();
+			expect(result).toEqual([buildingRun]);
+		});
+
+		it('should skip already-terminal runs', async () => {
+			const doneRun = { ...buildingRun, status: 'ready' };
+			const result = await service.refreshRunsStatuses('cloudflare-workers', [doneRun as any]);
+
+			expect(mockGetRun).not.toHaveBeenCalled();
+			expect(result[0]?.status).toBe('ready');
+		});
+
+		it('should update status when a building run becomes ready', async () => {
+			mockGetRun.mockResolvedValueOnce({
+				id: 'build-123',
+				project_id: 'project-1',
+				status: 'ready',
+				url: 'https://example.com',
+				created_at: new Date(),
+			});
+
+			const result = await service.refreshRunsStatuses('cloudflare-workers', [buildingRun as any]);
+
+			expect(DeploymentRunsService.prototype.updateOne).toHaveBeenCalledWith(
+				'run-1',
+				expect.objectContaining({ status: 'ready', url: 'https://example.com' }),
+			);
+
+			expect(result[0]?.status).toBe('ready');
+		});
+
+		it('should mark run as error when getRun throws', async () => {
+			mockGetRun.mockRejectedValueOnce(new Error('API down'));
+
+			const result = await service.refreshRunsStatuses('cloudflare-workers', [buildingRun as any]);
+
+			expect(result[0]?.status).toBe('error');
+
+			expect(DeploymentRunsService.prototype.updateOne).toHaveBeenCalledWith(
+				'run-1',
+				expect.objectContaining({ status: 'error' }),
+			);
 		});
 	});
 });
