@@ -14,8 +14,27 @@ const props = defineProps<{
 	part: DynamicToolUIPart;
 }>();
 
-const toolName = computed(() => {
-	return props.part.type.replace('tool-', '');
+const isExecute = computed(() => props.part.type === 'tool-execute');
+
+// Directus tools run through the root `execute` tool, so the real identity (and the
+// key approvals are stored under) lives in `input.name`, not the `tool-execute` part type.
+const innerToolName = computed(() => {
+	const input = props.part.input as { name?: unknown } | undefined;
+	return isExecute.value && typeof input?.name === 'string' ? input.name : undefined;
+});
+
+const toolName = computed(() => innerToolName.value ?? props.part.type.replace('tool-', ''));
+
+// Unwrap the inner args for execute calls so the card shows the actual input instead of
+// the `{ name, input }` wrapper.
+const displayInput = computed(() => {
+	const input = (props.part as { input?: unknown }).input;
+
+	if (isExecute.value && input && typeof input === 'object' && 'input' in input) {
+		return (input as { input?: unknown }).input;
+	}
+
+	return input;
 });
 
 const toolDisplayName = computed(() => {
@@ -67,9 +86,9 @@ const isAskUser = computed(() => toolName.value === 'ask_user');
 			</VNotice>
 		</template>
 		<template #content>
-			<div v-if="'input' in part && part.input" class="tool-input">
+			<div v-if="displayInput" class="tool-input">
 				<p class="label">{{ $t('ai.input') }}</p>
-				<code>{{ part.input }}</code>
+				<code>{{ displayInput }}</code>
 			</div>
 			<div v-if="'output' in part && part.output && part.state === 'output-available'" class="tool-output">
 				<p class="label">{{ $t('ai.output') }}</p>

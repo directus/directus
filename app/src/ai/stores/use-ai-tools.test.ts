@@ -75,7 +75,13 @@ describe('useAiToolsStore', () => {
 
 			expect(store.enabledSystemTools).not.toContain('items');
 			expect(store.enabledSystemTools).not.toContain('files');
-			expect(store.enabledSystemTools).toContain('schema');
+		});
+
+		test('does not expose schema as a configurable tool', () => {
+			const store = useAiToolsStore();
+
+			expect(store.systemTools).not.toContain('schema');
+			expect(store.enabledSystemTools).not.toContain('schema');
 		});
 	});
 
@@ -151,7 +157,6 @@ describe('useAiToolsStore', () => {
 
 			expect(store.isSystemTool('items')).toBe(true);
 			expect(store.isSystemTool('files')).toBe(true);
-			expect(store.isSystemTool('schema')).toBe(true);
 		});
 
 		test('returns false for non-system tools', () => {
@@ -159,6 +164,32 @@ describe('useAiToolsStore', () => {
 
 			expect(store.isSystemTool('custom-tool')).toBe(false);
 			expect(store.isSystemTool('random')).toBe(false);
+		});
+	});
+
+	describe('isServerTool', () => {
+		test('returns true for root registry tools without exposing them as configurable system tools', () => {
+			const store = useAiToolsStore();
+
+			expect(store.isServerTool('search')).toBe(true);
+			expect(store.isServerTool('execute')).toBe(true);
+			expect(store.isServerTool('schema')).toBe(true);
+
+			expect(store.systemTools).not.toContain('search');
+			expect(store.systemTools).not.toContain('execute');
+			expect(store.systemTools).not.toContain('schema');
+		});
+
+		test('returns true for system tools', () => {
+			const store = useAiToolsStore();
+
+			expect(store.isServerTool('items')).toBe(true);
+		});
+
+		test('returns false for unknown client tools', () => {
+			const store = useAiToolsStore();
+
+			expect(store.isServerTool('custom-tool')).toBe(false);
 		});
 	});
 
