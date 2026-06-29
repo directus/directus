@@ -312,9 +312,7 @@ describe('v-date-picker', () => {
 			expect(formatDatePickerModelValue).toHaveBeenCalledWith('time', expect.any(Object));
 		});
 
-		it('resets to default time (12:00) when modelValue is null', async () => {
-			let capturedTimeValue: { hour?: number; minute?: number } | undefined;
-
+		it('clears the time to a placeholder when modelValue is null', async () => {
 			const wrapper = createWrapper({
 				type: 'time',
 				modelValue: '14:30:00',
@@ -325,22 +323,8 @@ describe('v-date-picker', () => {
 			await wrapper.setProps({ modelValue: null });
 			await nextTick();
 
-			vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
-				if (options.timeValue && 'hour' in options.timeValue) {
-					capturedTimeValue = options.timeValue as { hour: number; minute: number };
-				}
-
-				return '12:00:00';
-			});
-
-			// Trigger time field emission to check reset value (not setToNow which uses current time)
-			const timeField = wrapper.findComponent(TimeFieldRoot);
-			await timeField.vm.$emit('update:modelValue', new Time(12, 0, 0));
-			await nextTick();
-
-			expect(capturedTimeValue).toBeDefined();
-			expect(capturedTimeValue?.hour).toBe(12);
-			expect(capturedTimeValue?.minute).toBe(0);
+			// Empty (not seeded to 12:00) so the time segments render as placeholders.
+			expect(wrapper.findComponent(TimeFieldRoot).props('modelValue')).toBeFalsy();
 		});
 	});
 
@@ -839,6 +823,88 @@ describe('v-date-picker', () => {
 			const finalCallCount = vi.mocked(formatDatePickerModelValue).mock.calls.length;
 
 			expect(finalCallCount).toBe(initialCallCount);
+		});
+
+		it('ignores partial years (under 1000) while the year is being typed', async () => {
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: '2024-01-15',
+			});
+
+			await nextTick();
+
+			const yearInput = wrapper.find('.calendar-year-input');
+			const initialCallCount = vi.mocked(formatDatePickerModelValue).mock.calls.length;
+
+			// The input emits on each keystroke, so partial years must not be applied.
+			await yearInput.setValue('2');
+			await yearInput.setValue('202');
+			await nextTick();
+
+			expect(vi.mocked(formatDatePickerModelValue).mock.calls.length).toBe(initialCallCount);
+
+			// Once all four digits are entered the value is applied.
+			await yearInput.setValue('2025');
+			await nextTick();
+
+			expect(formatDatePickerModelValue).toHaveBeenLastCalledWith(
+				'date',
+				expect.objectContaining({
+					calendarValue: expect.objectContaining({ year: 2025 }),
+				}),
+			);
+		});
+
+		it('ignores years beyond four digits', async () => {
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: '2024-01-15',
+			});
+
+			await nextTick();
+
+			const yearInput = wrapper.find('.calendar-year-input');
+			const initialCallCount = vi.mocked(formatDatePickerModelValue).mock.calls.length;
+
+			await yearInput.setValue('20245');
+			await nextTick();
+
+			expect(vi.mocked(formatDatePickerModelValue).mock.calls.length).toBe(initialCallCount);
+		});
+
+		it('ignores out-of-range year values (too large) to avoid NaN day', async () => {
+			let capturedCalendarValue: { year?: number; month?: number; day?: number } | undefined;
+
+			vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
+				if (options.calendarValue && 'year' in options.calendarValue) {
+					capturedCalendarValue = options.calendarValue as { year: number; month: number; day: number };
+				}
+
+				return '2024-01-15';
+			});
+
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: '2024-01-15',
+			});
+
+			await nextTick();
+
+			const initialCallCount = vi.mocked(formatDatePickerModelValue).mock.calls.length;
+
+			const yearInput = wrapper.find('.calendar-year-input');
+
+			// Entering many digits produces a year beyond what JS Date can represent,
+			// which previously made `new Date(year, month, 0).getDate()` return NaN and
+			// emitted an invalid ISO string like "9999-06-NaN".
+			await yearInput.setValue('999999999');
+			await nextTick();
+
+			// The out-of-range year must be ignored: no emission happens, so no invalid value
+			// (and no NaN day) can leak through.
+			const finalCallCount = vi.mocked(formatDatePickerModelValue).mock.calls.length;
+			expect(finalCallCount).toBe(initialCallCount);
+			expect(capturedCalendarValue).toBeUndefined();
 		});
 
 		it('clamps day when changing to month with fewer days', async () => {

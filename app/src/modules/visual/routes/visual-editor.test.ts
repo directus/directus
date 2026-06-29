@@ -1,3 +1,4 @@
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
@@ -9,11 +10,11 @@ import { generateRouter } from '@/__utils__/router';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { useCollectionPermissions } from '@/composables/use-permissions';
-import { DRAFT_VERSION_KEY } from '@/constants';
 import { i18n } from '@/lang';
 import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { analyzeTemplate, replaceVersion } from '@/modules/visual/utils/version-url';
 import { useSettingsStore } from '@/stores/settings';
+import { SIDEBAR_DEFAULT_SIZE, SIDEBAR_MIN_SIZE } from '@/views/private/private-view/stores/sidebar';
 
 vi.mock('@unhead/vue', () => ({ useHead: vi.fn() }));
 vi.mock('@directus/format-title', () => ({ default: (str: string) => str ?? '' }));
@@ -40,8 +41,9 @@ const mockSettingsUrls = (templates: string[]) => {
 
 const LivePreviewStub = {
 	name: 'LivePreview',
+	props: ['sidebarSize', 'sidebarCollapsed', 'sidebarDisabled'],
 	template: '<div class="live-preview"><slot name="append-url" /></div>',
-	emits: ['select-url'],
+	emits: ['select-url', 'update:sidebarSize', 'update:sidebarCollapsed'],
 };
 
 const stubs = {
@@ -73,6 +75,8 @@ let router: Router;
 let global: GlobalMountOptions;
 
 beforeEach(() => {
+	localStorage.clear();
+
 	const pinia = createTestingPinia({
 		createSpy: vi.fn,
 		initialState: {
@@ -108,7 +112,7 @@ describe('Version selector', () => {
 			props: { dynamicUrl: 'https://example.com/preview' },
 		});
 
-		expect(wrapper.find('.version-select-activator').exists()).toBe(false);
+		expect(wrapper.find('.version-chip').exists()).toBe(false);
 	});
 
 	it('is not rendered when user lacks read permission on directus_versions', () => {
@@ -119,7 +123,7 @@ describe('Version selector', () => {
 			props: { dynamicUrl: 'https://example.com/?version=v1' },
 		});
 
-		expect(wrapper.find('.version-select-activator').exists()).toBe(false);
+		expect(wrapper.find('.version-chip').exists()).toBe(false);
 	});
 
 	it('is rendered when the URL matches a version template and user can read versions', () => {
@@ -131,7 +135,7 @@ describe('Version selector', () => {
 			props: { dynamicUrl: 'https://example.com/?version=v1' },
 		});
 
-		expect(wrapper.find('.version-select-activator').exists()).toBe(true);
+		expect(wrapper.find('.version-chip').exists()).toBe(true);
 	});
 
 	it('adds a new version to the list when the URL contains a custom version key', async () => {
@@ -140,7 +144,7 @@ describe('Version selector', () => {
 
 		const wrapper = mount(VisualEditor, {
 			global,
-			props: { dynamicUrl: `https://example.com/?version=${DRAFT_VERSION_KEY}` },
+			props: { dynamicUrl: `https://example.com/?version=${VERSION_KEY_DRAFT}` },
 		});
 
 		const initialCount = wrapper.findAll('.v-list-item').length;
@@ -166,8 +170,92 @@ describe('Version selector', () => {
 		await wrapper.findAll('.v-list-item')[1]!.trigger('click');
 
 		const placement = analyzeTemplate(template);
-		const newUrl = replaceVersion(currentUrl, placement, DRAFT_VERSION_KEY);
+		const newUrl = replaceVersion(currentUrl, placement, VERSION_KEY_DRAFT);
 		expect(replaceSpy).toHaveBeenCalledWith(getUrlRoute(newUrl));
+	});
+});
+
+describe('AI sidebar enforce-default on expand', () => {
+	function mountEditor() {
+		mockSettingsUrls([]);
+
+		const wrapper = mount(VisualEditor, {
+			global,
+			props: { dynamicUrl: 'https://example.com' },
+		});
+
+		return { wrapper, lp: wrapper.findComponent({ name: 'LivePreview' }) };
+	}
+
+	it('initializes with the AI sidebar default size', () => {
+		const { lp } = mountEditor();
+		expect(lp.props('sidebarSize')).toBe(SIDEBAR_DEFAULT_SIZE);
+	});
+
+	it('returns default size when expanding after size drops below min', async () => {
+		const { lp } = mountEditor();
+
+		lp.vm.$emit('update:sidebarSize', 50);
+		await nextTick();
+		lp.vm.$emit('update:sidebarCollapsed', true);
+		await nextTick();
+		lp.vm.$emit('update:sidebarCollapsed', false);
+		await nextTick();
+
+		expect(lp.props('sidebarSize')).toBe(SIDEBAR_DEFAULT_SIZE);
+	});
+
+	it('returns default size when expanding after size equals min', async () => {
+		const { lp } = mountEditor();
+
+		lp.vm.$emit('update:sidebarSize', SIDEBAR_MIN_SIZE);
+		await nextTick();
+		lp.vm.$emit('update:sidebarCollapsed', true);
+		await nextTick();
+		lp.vm.$emit('update:sidebarCollapsed', false);
+		await nextTick();
+
+		expect(lp.props('sidebarSize')).toBe(SIDEBAR_DEFAULT_SIZE);
+	});
+
+	it('preserves stored size when expanding if size is above min', async () => {
+		const { lp } = mountEditor();
+
+		lp.vm.$emit('update:sidebarSize', 400);
+		await nextTick();
+		lp.vm.$emit('update:sidebarCollapsed', true);
+		await nextTick();
+		lp.vm.$emit('update:sidebarCollapsed', false);
+		await nextTick();
+
+		expect(lp.props('sidebarSize')).toBe(400);
+	});
+
+	it('clears enforce-default once size is dragged above min after expand', async () => {
+		const { lp } = mountEditor();
+
+		lp.vm.$emit('update:sidebarSize', 50);
+		await nextTick();
+		lp.vm.$emit('update:sidebarCollapsed', true);
+		await nextTick();
+		lp.vm.$emit('update:sidebarCollapsed', false);
+		await nextTick();
+		expect(lp.props('sidebarSize')).toBe(SIDEBAR_DEFAULT_SIZE); // enforce-default active
+
+		lp.vm.$emit('update:sidebarSize', 300); // user drags above SIDEBAR_MIN_SIZE
+		await nextTick();
+		expect(lp.props('sidebarSize')).toBe(300); // enforce-default cleared
+	});
+
+	it('does not enforce default on collapse alone', async () => {
+		const { lp } = mountEditor();
+
+		lp.vm.$emit('update:sidebarSize', 400);
+		await nextTick();
+		lp.vm.$emit('update:sidebarCollapsed', true);
+		await nextTick();
+
+		expect(lp.props('sidebarSize')).toBe(400);
 	});
 });
 

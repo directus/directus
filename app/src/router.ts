@@ -4,6 +4,7 @@ import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, R
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
 import AcceptInviteRoute from '@/routes/accept-invite.vue';
+import LicenseRecoveryRoute from '@/routes/license-recovery.vue';
 import LoginRoute from '@/routes/login/login.vue';
 import LogoutRoute from '@/routes/logout.vue';
 import PrivateNotFoundRoute from '@/routes/private-not-found.vue';
@@ -12,9 +13,13 @@ import ResetPasswordRoute from '@/routes/reset-password/reset-password.vue';
 import Setup from '@/routes/setup/setup.vue';
 import ShareRoute from '@/routes/shared/shared.vue';
 import TFASetup from '@/routes/tfa-setup.vue';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getRootPath } from '@/utils/get-root-path';
+
+/** Routes an admin can still reach while the license is locked. */
+export const ALLOWED_WHILE_LOCKED: string[] = ['/license-recovery', '/logout', '/settings/license'];
 
 export const defaultRoutes: RouteRecordRaw[] = [
 	{
@@ -105,6 +110,11 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		meta: {
 			public: true,
 		},
+	},
+	{
+		name: 'license-recovery',
+		path: '/license-recovery',
+		component: LicenseRecoveryRoute,
 	},
 	{
 		name: 'private-404',
@@ -206,6 +216,15 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 				}
 			} else if (userStore.currentUser.tfa_secret !== null) {
 				return userStore.currentUser.last_page || '/login';
+			}
+		}
+
+		// License lockdown: admin must resolve before accessing the app.
+		if (!ALLOWED_WHILE_LOCKED.includes(to.path)) {
+			const licenseStore = useLicenseStore();
+
+			if (userStore.isAdmin && licenseStore.isLocked) {
+				return '/license-recovery';
 			}
 		}
 	}

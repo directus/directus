@@ -39,7 +39,7 @@
 		"typescript": "catalog:",
 		"uuid": "catalog:",
 		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "1.6.1",
+		"vitest": "catalog:",
 		"ws": "catalog:"
 	}
 }

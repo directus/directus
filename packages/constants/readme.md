@@ -6,7 +6,7 @@ Shared Constants for Directus use
 
 This package exports shared constants for use within Directus, an open-source headless CMS.
 
-For more information about Directus, visit the [official website](https://directus.io).
+For more information about Directus, visit the [official website](https://directus.com).
 
 ## Installation
 
@@ -21,5 +21,5 @@ This package is licensed under the MIT License. See the
 
 ## Additional Resources
 
-- [Directus Website](https://directus.io)
+- [Directus Website](https://directus.com)
 - [Directus GitHub Repository](https://github.com/directus/directus)

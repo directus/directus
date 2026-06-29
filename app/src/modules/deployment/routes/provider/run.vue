@@ -8,8 +8,7 @@ import { useI18n } from 'vue-i18n';
 import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
-import { useProviderConfigs } from '../../config/providers';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import { formatDeploymentTargetLabel, useProviderConfigs } from '../../config/providers';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardTitle from '@/components/v-card-title.vue';
@@ -36,6 +35,9 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const { currentProject, providers } = useDeploymentNavigation();
+
+const deploymentTargetLabel = (target: string) => formatDeploymentTargetLabel(target, t);
+
 const { providerConfigs } = useProviderConfigs();
 
 const canCancel = usePermissionsStore().hasPermission('directus_deployment_runs', 'update');
@@ -270,10 +272,6 @@ onUnmounted(() => {
 
 <template>
 	<PrivateView :title="pageTitle" show-back :back-to="`/deployments/${provider}/${projectId}/runs`">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t(`deployment.provider.${provider}.name`), to: `/deployments/${provider}` }]" />
-		</template>
-
 		<template #navigation>
 			<DeploymentNavigation />
 		</template>
@@ -288,8 +286,8 @@ onUnmounted(() => {
 					v-if="isBuilding && canCancel"
 					v-tooltip.bottom="$t('deployment.provider.run.stop')"
 					icon="dangerous"
-					secondary
-					class="action-cancel"
+					kind="danger"
+					variant="ghost"
 					:loading="canceling"
 					@click="confirmCancel = true"
 				/>
@@ -297,7 +295,7 @@ onUnmounted(() => {
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('deployment.provider.run.download_logs')"
 					icon="download"
-					secondary
+					variant="ghost"
 					@click="downloadLogs"
 				/>
 
@@ -305,7 +303,7 @@ onUnmounted(() => {
 					v-if="run?.url"
 					v-tooltip.bottom="$t('deployment.provider.run.open_deployment')"
 					icon="open_in_new"
-					secondary
+					variant="ghost"
 					@click="openDeployment"
 				/>
 			</div>
@@ -355,7 +353,7 @@ onUnmounted(() => {
 				<div class="stat-card">
 					<VIcon name="assignment" class="stat-icon" />
 					<span class="stat-label">{{ $t('deployment.target') }}</span>
-					<span class="stat-value">{{ $t(`deployment.target_value.${run.target}`) }}</span>
+					<span class="stat-value">{{ deploymentTargetLabel(run.target) }}</span>
 				</div>
 			</div>
 
@@ -409,11 +407,6 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
-.action-cancel {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
 .spinner {
 	margin: 6.75rem auto;
 }

@@ -15,6 +15,12 @@ export type DirectusDeployment<Schema = any> = MergeCoreCollection<
 		date_created: 'datetime' | null;
 		user_created: DirectusUser<Schema> | string | null;
 		projects: DirectusDeploymentProject<Schema>[] | string[];
+		capabilities?: {
+			eventsTransport: 'webhook' | 'poll';
+			supportsPreviewDeploy: boolean;
+			supportsDeployHookUrl: boolean;
+			needsRunStatusPolling: boolean;
+		};
 	}
 >;
 
@@ -29,6 +35,7 @@ export type DirectusDeploymentProject<Schema = any> = MergeCoreCollection<
 		deployment: DirectusDeployment<Schema> | string;
 		external_id: string;
 		name: string;
+		deployable: boolean;
 		date_created: 'datetime' | null;
 		user_created: DirectusUser<Schema> | string | null;
 	}

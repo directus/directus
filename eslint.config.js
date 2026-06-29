@@ -161,8 +161,8 @@ export default typescriptEslint.config(
 			'vue/no-undef-components': [
 				'error',
 				{
-					// Histoire components in *.story.vue files
-					ignorePatterns: ['Story', 'Variant', 'Hst*'],
+					// Histoire components in *.story.vue files; TresJS custom-renderer elements
+					ignorePatterns: ['Story', 'Variant', 'Hst*', 'Tres*'],
 				},
 			],
 			// Require <PascalCase /> components in templates

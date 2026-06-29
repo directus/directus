@@ -1,29 +1,44 @@
 import { createEventHook, useBreakpoints, useLocalStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
-import { computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { BREAKPOINTS } from '@/constants';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
+export const NAV_BAR_DEFAULT_SIZE = 225;
+export const NAV_BAR_MIN_SIZE = 198;
+
 export const useNavBarStore = defineStore('nav-bar-store', () => {
 	const collapsed = useLocalStorage('nav-bar-collapsed', false);
 
-	const DEFAULT_SIZE = 225;
-	const storedSize = useLocalStorage('nav-bar-size', DEFAULT_SIZE);
+	const storedSize = useLocalStorage('nav-bar-size', NAV_BAR_DEFAULT_SIZE);
+	const enforceDefault = ref(false);
 
 	const size = computed({
 		get() {
 			const val = storedSize.value;
 
 			if (!Number.isFinite(val)) {
-				storedSize.value = DEFAULT_SIZE;
-				return DEFAULT_SIZE;
+				storedSize.value = NAV_BAR_DEFAULT_SIZE;
+				return NAV_BAR_DEFAULT_SIZE;
+			}
+
+			// Enforce default size when the nav bar is below the minimum size
+			if (enforceDefault.value && val <= NAV_BAR_MIN_SIZE) {
+				return NAV_BAR_DEFAULT_SIZE;
 			}
 
 			return val;
 		},
 		set(val: number) {
-			if (Number.isFinite(val)) storedSize.value = val;
+			if (Number.isFinite(val)) {
+				// Remove default size enforcement once the nav bar is larger than the minimum size
+				if (enforceDefault.value && val > NAV_BAR_MIN_SIZE) {
+					enforceDefault.value = false;
+				}
+
+				storedSize.value = val;
+			}
 		},
 	});
 
@@ -53,6 +68,7 @@ export const useNavBarStore = defineStore('nav-bar-store', () => {
 
 	const expand = () => {
 		if (collapsed.value === false) return;
+		enforceDefault.value = true;
 		collapsed.value = false;
 		expandHook.trigger();
 	};
