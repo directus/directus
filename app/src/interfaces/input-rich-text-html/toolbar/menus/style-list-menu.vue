@@ -2,9 +2,9 @@
 import type { Editor } from '@tiptap/vue-3';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ToolbarCaret from '../toolbar-caret.vue';
 import { applyStyle, readStyle, type StyleAttr } from './text-style';
 import VButton from '@/components/v-button.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
@@ -95,7 +95,7 @@ defineExpose({ select, currentLabel });
 				<span class="style-list-label" :style="currentFont ? { fontFamily: currentFont } : undefined">
 					{{ currentLabel }}
 				</span>
-				<VIcon class="style-list-caret" name="expand_more" small />
+				<ToolbarCaret class="style-list-caret" />
 			</VButton>
 		</template>
 		<VList class="style-list">
