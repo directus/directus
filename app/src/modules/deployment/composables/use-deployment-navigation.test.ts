@@ -250,4 +250,40 @@ describe('useDeploymentNavigation', () => {
 			expect(wrapper.vm.currentProject).toBeNull();
 		});
 	});
+
+	describe('currentProvider', () => {
+		it('should return null when no provider key in route', () => {
+			const wrapper = mount(createTestComponent());
+			expect(wrapper.vm.currentProvider).toBeNull();
+		});
+
+		it('should return matching provider from cache', async () => {
+			const mockData = [
+				{ provider: 'vercel', projects: [] },
+				{ provider: 'cloudflare-workers', projects: [] },
+			];
+
+			mockSdkRequest.mockResolvedValueOnce(mockData);
+			mockRouteParams.provider = 'cloudflare-workers';
+
+			const wrapper = mount(createTestComponent());
+
+			await wrapper.vm.fetch();
+			await flushPromises();
+
+			expect(wrapper.vm.currentProvider).toEqual({ provider: 'cloudflare-workers', projects: [] });
+		});
+
+		it('should return null when provider key does not match any cached provider', async () => {
+			mockSdkRequest.mockResolvedValueOnce([{ provider: 'vercel', projects: [] }]);
+			mockRouteParams.provider = 'netlify';
+
+			const wrapper = mount(createTestComponent());
+
+			await wrapper.vm.fetch();
+			await flushPromises();
+
+			expect(wrapper.vm.currentProvider).toBeNull();
+		});
+	});
 });
