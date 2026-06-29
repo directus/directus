@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
+import { toolbarButtons } from './buttons';
 import { computeToolbarLayout, type LayoutMeasurements } from './compute-toolbar-layout';
-import type { ToolbarGroup } from './groups';
+import { type ToolbarGroup, toolbarGroups } from './groups';
 
 const GROUPS: ToolbarGroup[] = [
 	{ id: 'format', priority: 100, pinned: true, keys: ['bold', 'italic', 'underline'] },
@@ -61,12 +62,11 @@ describe('computeToolbarLayout', () => {
 		expect(computeToolbarLayout([], GROUPS, 100, M)).toEqual({ visible: [], overflow: [] });
 	});
 
-	test('pinned groups never overflow and floor keeps >=5 items at width 0', () => {
+	test('floor keeps >=5 items at width 0, restoring highest keep-priority (pinned first)', () => {
 		const { visible, overflow } = computeToolbarLayout(ALL, GROUPS, 0, M);
-		// pinned always present in visible
+		// floor pulls back in keep-priority order, so the pinned groups are restored first
 		expect(ids(visible)).toContain('format');
 		expect(ids(visible)).toContain('view');
-		// pinned never in overflow
 		expect(ids(overflow)).not.toContain('format');
 		expect(ids(overflow)).not.toContain('view');
 		// floor: exactly 5 items visible (format 3 + view 1 + one pulled-back item)
@@ -75,6 +75,23 @@ describe('computeToolbarLayout', () => {
 		expect(ids(visible).at(-1)).toBe('view');
 		// the split group's remainder lives in overflow
 		expect(count(visible) + count(overflow)).toBe(ALL.length);
+	});
+
+	test('pinned groups collapse last: a low-priority pinned group stays while a higher-priority non-pinned one overflows', () => {
+		// pinned slots (p1:3 + p2:3 = 6) already exceed minItems, so the floor never interferes here
+		const groups: ToolbarGroup[] = [
+			{ id: 'p1', priority: 100, pinned: true, keys: ['a', 'b', 'c'] },
+			{ id: 'mid', priority: 80, keys: ['d', 'e'] },
+			{ id: 'p2', priority: 10, pinned: true, keys: ['f', 'g', 'h'] },
+		];
+
+		const sel = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+		// width 230 fits both pinned groups (6 slots) but not the non-pinned 'mid'
+		const { visible, overflow } = computeToolbarLayout(sel, groups, 230, M);
+		expect(ids(visible)).toContain('p1'); // pinned, highest keep
+		expect(ids(visible)).toContain('p2'); // pinned, priority 10 — kept over higher-priority non-pinned
+		expect(ids(visible)).not.toContain('mid'); // non-pinned, priority 80 — collapsed first
+		expect(ids(overflow)).toContain('mid');
 	});
 
 	test('floor is capped at total items when only pinned are selected', () => {
@@ -115,5 +132,89 @@ describe('computeToolbarLayout', () => {
 		expect(align?.keys).toEqual(['alignleft', 'aligncenter', 'alignright', 'alignjustify']); // whole, not a slice
 		// it must not appear in both visible and overflow
 		expect(overflow.find((g) => g.id === 'align')).toBeUndefined();
+	});
+
+	// Regression suite against the REAL toolbar config: a wide pinned group (font family/size) must
+	// collapse into "Show More" rather than overflow the toolbar and clip the button.
+	describe('real config never clips the visible row (CMS-2637 regression)', () => {
+		// mirror the component's MEASUREMENTS, deriving the labeled-dropdown widths from the registry
+		const keyWidths = Object.fromEntries(
+			Object.entries(toolbarButtons)
+				.filter(([, button]) => button.width !== undefined)
+				.map(([key, button]) => [key, button.width!]),
+		);
+
+		const REAL_M: LayoutMeasurements = {
+			buttonWidth: 32,
+			gap: 2,
+			moreWidth: 32,
+			separatorWidth: 9,
+			minItems: 5,
+			popoverWidth: 44,
+			keyWidths,
+		};
+
+		// the full set including the wide font/color dropdowns
+		const FONT_TOOLBAR = [
+			'bold',
+			'italic',
+			'underline',
+			'fontfamily',
+			'fontsize',
+			'forecolor',
+			'backcolor',
+			'h1',
+			'h2',
+			'h3',
+			'numlist',
+			'bullist',
+			'removeformat',
+			'blockquote',
+			'customLink',
+			'customImage',
+			'customMedia',
+			'hr',
+			'code',
+			'fullscreen',
+		];
+
+		// rendered width of a set of groups, mirroring the private `measure()`
+		const renderedWidth = (groups: { popover?: boolean; keys: string[] }[], hasOverflow: boolean) => {
+			const widthOf = (g: { popover?: boolean; keys: string[] }) =>
+				g.popover ? REAL_M.popoverWidth : g.keys.reduce((w, k) => w + (keyWidths[k] ?? REAL_M.buttonWidth), 0);
+
+			const slots = groups.reduce((n, g) => n + (g.popover ? 1 : g.keys.length), 0);
+			const seps = Math.max(0, groups.length - 1) + (hasOverflow ? 1 : 0);
+			const more = hasOverflow ? 1 : 0;
+			const width = groups.reduce((w, g) => w + widthOf(g), 0) + seps * REAL_M.separatorWidth + more * REAL_M.moreWidth;
+			return width + Math.max(0, slots + seps + more - 1) * REAL_M.gap;
+		};
+
+		test('a wide pinned group collapses instead of forcing the visible row to overflow', () => {
+			// priority-independent: a 300px-wide pinned group can't fit, so it falls into Show More
+			// rather than staying visible and clipping the toolbar
+			const groups: ToolbarGroup[] = [
+				{ id: 'narrow', priority: 100, pinned: true, keys: ['a', 'b'] },
+				{ id: 'wide', priority: 50, pinned: true, keys: ['w'] },
+				{ id: 'extra', priority: 10, keys: ['c', 'd', 'e'] },
+			];
+
+			const m: LayoutMeasurements = { ...M, minItems: 2, keyWidths: { w: 300 } };
+			const { visible, overflow } = computeToolbarLayout(['a', 'b', 'w', 'c', 'd', 'e'], groups, 120, m);
+			expect(ids(visible)).not.toContain('wide');
+			expect(ids(overflow)).toContain('wide');
+		});
+
+		test('the visible row never exceeds the toolbar width (except when the min-items floor applies)', () => {
+			for (let width = 300; width <= 900; width += 25) {
+				const { visible, overflow } = computeToolbarLayout(FONT_TOOLBAR, toolbarGroups, width, REAL_M);
+				const visibleSlots = visible.reduce((n, g) => n + (g.popover ? 1 : g.keys.length), 0);
+
+				// the floor (minItems) is the only thing allowed to push past the width
+				if (overflow.length > 0 && visibleSlots > REAL_M.minItems) {
+					expect(renderedWidth(visible, true)).toBeLessThanOrEqual(width);
+				}
+			}
+		});
 	});
 });
