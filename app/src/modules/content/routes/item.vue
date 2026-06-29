@@ -779,7 +779,13 @@ function useItemNavigation() {
 		}).fullPath;
 	});
 
-	const backRoute = computed(() => collectionRoute.value);
+	// If there's in-app navigation history, use browser back so the user returns to where they
+	// came from (e.g. the parent item when navigating via a relation). Otherwise fall back to the
+	// collection listing (direct URL landing / refresh).
+	const backRoute = computed(() => {
+		if (history.state?.back) return undefined;
+		return collectionRoute.value;
+	});
 
 	return { collectionRoute, backRoute };
 }
