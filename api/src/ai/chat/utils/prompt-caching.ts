@@ -55,6 +55,10 @@ export function applyAnthropicConversationCaching(
 
 	const lastIndex = messages.length - 1;
 
+	// Always place the breakpoint on the last message, including tool results. In the tool-search
+	// flow most steps end in a tool result, and the bulk of the prefix (tool instructions, schema
+	// dumps, search results) lives in the message history — so skipping tool-terminated steps
+	// leaves the large prefix uncached and writes nothing.
 	const messagesWithCache = messages.map((message, index) =>
 		index === lastIndex
 			? {

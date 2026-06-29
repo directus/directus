@@ -5,7 +5,7 @@ import type { RequestHandler } from 'express';
 import { fromZodError } from 'zod-validation-error';
 import { createUiStream } from '../lib/create-ui-stream.js';
 import { ChatRequest } from '../models/chat-request.js';
-import { chatRequestToolToAiSdkTool } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
+import { chatRequestToolsToAiSdkTools } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
 import { fixErrorToolCalls } from '../utils/fix-error-tool-calls.js';
 
 export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
@@ -43,22 +43,16 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 		throw new InvalidPayloadError({ reason: `"messages" must not be empty` });
 	}
 
-	const tools = requestedTools.reduce<{ [x: string]: Tool<unknown, unknown> }>((acc, t) => {
-		const name = typeof t === 'string' ? t : t.name;
-
-		const aiTool = chatRequestToolToAiSdkTool({
-			chatRequestTool: t,
-			accountability: req.accountability!,
-			schema: req.schema,
-			...(toolApprovals && { toolApprovals }),
-		}) as Tool<unknown, unknown>;
-
-		acc[name] = aiTool;
-
-		return acc;
-	}, {});
-
 	const fixedMessages = fixErrorToolCalls(rawMessages);
+
+	const tools = chatRequestToolsToAiSdkTools({
+		chatRequestTools: requestedTools,
+		accountability: req.accountability!,
+		schema: req.schema,
+		systemPrompt: res.locals['ai'].systemPrompt,
+		...(toolApprovals && { toolApprovals }),
+	}) as { [x: string]: Tool<unknown, unknown> };
+
 	const validationResult = await safeValidateUIMessages({ messages: fixedMessages });
 
 	if (validationResult.success === false) {

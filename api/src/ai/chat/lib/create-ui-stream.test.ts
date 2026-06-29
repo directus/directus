@@ -12,11 +12,6 @@ vi.mock('@ai-sdk/openai', () => ({
 
 vi.mock('@ai-sdk/anthropic', () => ({
 	createAnthropic: vi.fn(() => (model: string) => ({ id: `anthropic:${model}` })),
-	anthropic: {
-		tools: {
-			toolSearchBm25_20251119: vi.fn(() => ({})),
-		},
-	},
 }));
 
 vi.mock('@ai-sdk/google', () => ({
@@ -314,7 +309,7 @@ describe('createUiStream', () => {
 		expect(Object.keys(call?.tools ?? {})).toEqual(['alpha', 'zeta']);
 	});
 
-	it('sorts Anthropic deferred tools and tool search by name', async () => {
+	it('sorts Anthropic tools by name without provider-specific tool search', async () => {
 		await createUiStream(messages, {
 			provider: 'anthropic',
 			model: 'claude-sonnet-4-5',
@@ -327,7 +322,7 @@ describe('createUiStream', () => {
 
 		const call = vi.mocked(streamText).mock.calls[0]?.[0];
 
-		expect(Object.keys(call?.tools ?? {})).toEqual(['alpha', 'toolSearch', 'zeta']);
+		expect(Object.keys(call?.tools ?? {})).toEqual(['alpha', 'zeta']);
 	});
 
 	it('passes onUsage callback to streamText onFinish', async () => {

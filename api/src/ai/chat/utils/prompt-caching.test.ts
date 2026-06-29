@@ -80,7 +80,7 @@ describe('applyAnthropicConversationCaching', () => {
 		});
 	});
 
-	test('does not append context after a tool-result continuation', () => {
+	test('caches a tool-result continuation but does not append context after it', () => {
 		const continuationMessages: ModelMessage[] = [
 			{ role: 'user', content: 'Run the tool' },
 			{
@@ -106,6 +106,9 @@ describe('applyAnthropicConversationCaching', () => {
 			'<user_context>page</user_context>',
 		);
 
+		// Context is only appended after a user turn, but the breakpoint must still cache the
+		// tool-result continuation — these are the bulk of agentic-loop steps, and skipping them
+		// leaves the large prefix uncached.
 		expect(result).toHaveLength(3);
 		expect(result.at(-1)?.role).toBe('tool');
 
