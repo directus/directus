@@ -70,14 +70,68 @@ export const SchemaInputSchema = z.object({
 		),
 });
 
-export const schema = defineTool<z.infer<typeof SchemaValidateSchema>>({
+const FieldOverviewOutputSchema = z.object({
+	type: z.string(),
+	primary_key: z.boolean().optional(),
+	required: z.boolean().optional(),
+	readonly: z.boolean().optional(),
+	note: z.string().optional(),
+	interface: z
+		.object({
+			type: z.string(),
+			choices: z.array(z.union([z.string(), z.number(), z.record(z.string(), z.unknown())])).optional(),
+		})
+		.optional(),
+	relation: z
+		.object({
+			type: z.string(),
+			collection: z.string().optional(),
+			related_collection: z.string().optional(),
+			many_collection: z.string().optional(),
+			many_field: z.string().optional(),
+			one_allowed_collections: z.array(z.string()).optional(),
+			junction: z
+				.object({
+					collection: z.string(),
+					many_field: z.string(),
+					junction_field: z.string(),
+					one_collection_field: z.string().optional(),
+					sort_field: z.string().optional(),
+				})
+				.optional(),
+		})
+		.optional(),
+	fields: z.record(z.string(), z.unknown()).optional(),
+	value: z.string().optional(),
+});
+
+const LightweightOverviewOutputSchema = z.object({
+	collections: z.array(z.string()),
+	collection_folders: z.array(z.string()),
+	notes: z.record(z.string(), z.string()),
+});
+
+const SchemaOutputSchema = z.object({
+	data: z.union([
+		LightweightOverviewOutputSchema,
+		z.record(z.string(), z.record(z.string(), FieldOverviewOutputSchema)),
+	]),
+});
+
+export const schema = defineTool<z.infer<typeof SchemaValidateSchema>, z.infer<typeof SchemaOutputSchema>>({
 	name: 'schema',
-	description: requireText(resolve(__dirname, './prompt.md')),
+	description:
+		'Reads a compact Directus schema overview. Use first to discover collections, fields, relationships, and field semantics before reading or changing data.',
+	instructions: requireText(resolve(__dirname, './prompt.md')),
+	keywords: ['data model', 'collections', 'fields', 'relationships', 'structure', 'discovery'],
 	annotations: {
 		title: 'Directus - Schema',
 	},
 	inputSchema: SchemaInputSchema,
 	validateSchema: SchemaValidateSchema,
+	output: SchemaOutputSchema,
+	readOnly: true,
+	exposure: 'root',
 	async handler({ args, accountability, schema }) {
 		const serviceOptions = {
 			schema,

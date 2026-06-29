@@ -42,12 +42,16 @@ export const FlowsInputSchema = z.object({
 export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 	name: 'flows',
 	admin: true,
-	description: requireText(resolve(__dirname, './prompt.md')),
+	description:
+		'Reads and changes Directus automation flows. Use for event, schedule, webhook, operation, or manual flow definitions.',
+	instructions: requireText(resolve(__dirname, './prompt.md')),
+	keywords: ['automation', 'workflow', 'webhook', 'schedule', 'event hook', 'manual flow'],
 	annotations: {
 		title: 'Directus - Flows',
 	},
 	inputSchema: FlowsInputSchema,
 	validateSchema: FlowsValidateSchema,
+	readOnly: (input) => input.action === 'read',
 	endpoint({ data }) {
 		if (!isObject(data) || !('id' in data)) {
 			return;

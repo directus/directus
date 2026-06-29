@@ -32,3 +32,8 @@ export const getAllMcpTools = () => ALL_TOOLS;
 export const findMcpTool = (name: string) => ALL_TOOLS.find((tool) => tool.name === name);
 
 export { collections, fields, files, flows, items, operations, relations, schema, system, triggerFlow };
+export { createExecuteTool, createSearchTool, MountedToolRegistry, ToolRegistry } from './registry.js';
+export type { RegistryError, RegistryExecuteResult, ToolDetail, ToolRegistryMountContext } from './registry.js';
+export { createSearchIndex } from './search-index.js';
+export type { SearchIndex, ToolSearchMatch, ToolSearchResults } from './search-index.js';
+export { getToolTypeStrings, schemaToTypeString } from './schema-to-type-string.js';
