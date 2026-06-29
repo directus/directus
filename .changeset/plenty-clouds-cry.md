@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed filtering inactive collections on the schema
+Fixed inactive collections being accessible
