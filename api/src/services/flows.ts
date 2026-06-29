@@ -1,7 +1,7 @@
 import type { AbstractServiceOptions, FlowRaw, Item, MutationOptions, PrimaryKey } from '@directus/types';
 import { getFlowManager } from '../flows.js';
-import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getEntitlementManager } from '../license/entitlements/manager.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { ItemsService } from './items.js';
 
 export class FlowsService extends ItemsService<FlowRaw> {
