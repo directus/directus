@@ -112,7 +112,14 @@ router.get(
 		});
 
 		const record = await service.readByProvider(provider, req.sanitizedQuery);
-		res.locals['payload'] = { data: record || null };
+
+		if (record) {
+			const driver = await service.getDriver(provider);
+			res.locals['payload'] = { data: { ...record, capabilities: driver.capabilities } };
+		} else {
+			res.locals['payload'] = { data: null };
+		}
+
 		return next();
 	}),
 	respond,
@@ -294,7 +301,10 @@ router.get(
 // Trigger deployment for a project
 const triggerDeploySchema = Joi.object({
 	preview: Joi.boolean().default(false),
-	clear_cache: Joi.boolean().default(true), // Default at true (matches Vercel UI behavior)
+	clear_cache: Joi.boolean().default(true),
+	deploy_hook_url: Joi.string()
+		.uri({ scheme: ['https'] })
+		.optional(),
 });
 
 router.post(
@@ -321,6 +331,7 @@ router.post(
 		const run = await service.triggerDeployment(provider, projectId, {
 			preview: value.preview,
 			clearCache: value.clear_cache,
+			...(value.deploy_hook_url ? { deployHookUrl: value.deploy_hook_url } : {}),
 		});
 
 		res.locals['payload'] = { data: run };
@@ -417,6 +428,11 @@ router.get(
 			schema: req.schema,
 		});
 
+		const service = new DeploymentService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
 		// Validate project exists
 		await projectsService.readOne(projectId);
 
@@ -429,6 +445,8 @@ router.get(
 		};
 
 		const runs = await runsService.readByQuery(query);
+		// Poll-based providers (e.g. Cloudflare): re-fetch non-terminal runs from the API so the list isn’t stale DB-only rows.
+		const refreshedRuns = await service.refreshRunsStatuses(provider, runs);
 
 		const metaService = new MetaService({
 			accountability: req.accountability,
@@ -437,7 +455,7 @@ router.get(
 
 		const meta = await metaService.getMetaForQuery('directus_deployment_runs', query);
 
-		res.locals['payload'] = { data: runs, meta };
+		res.locals['payload'] = { data: refreshedRuns, meta };
 		return next();
 	}),
 	respond,
