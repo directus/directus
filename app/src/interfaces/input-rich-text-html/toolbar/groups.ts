@@ -33,7 +33,7 @@ export const toolbarGroups: ToolbarGroup[] = [
 	{ id: 'style', priority: 70, pinned: true, keys: ['fontfamily', 'fontsize', 'forecolor', 'backcolor'] },
 	{ id: 'block', priority: 60, keys: ['blockquote', 'hr'] },
 	{ id: 'insert', priority: 50, keys: ['customLink', 'unlink', 'customImage', 'customMedia'] },
-	{ id: 'code', priority: 40, keys: ['code', 'customPre'] },
+	{ id: 'code', priority: 40, keys: ['customInlineCode', 'code', 'customPre'] },
 	{ id: 'clipboard', priority: 30, keys: ['cut', 'copy', 'paste', 'remove', 'selectall'] },
 	{ id: 'tools', priority: 20, keys: ['removeformat'] },
 	{ id: 'view', priority: 10, pinned: true, keys: ['fullscreen'] },

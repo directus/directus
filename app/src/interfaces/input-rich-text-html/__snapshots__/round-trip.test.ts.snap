@@ -10,6 +10,13 @@ exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > bold survives
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > bullet list survives round-trip 1`] = `"<ul><li><p>one</p></li><li><p>two</p></li></ul>"`;
 
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > code block (multiline) survives round-trip 1`] = `
+"<pre><code>line 1
+line 2</code></pre>"
+`;
+
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > code block (with language) survives round-trip 1`] = `"<pre><code class="language-js">const x = 1;</code></pre>"`;
+
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > code block survives round-trip 1`] = `"<pre><code>const x = 1;</code></pre>"`;
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > font family (legacy keyword) survives round-trip 1`] = `"<p><span style="font-family: serif;">text</span></p>"`;
@@ -27,6 +34,8 @@ exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > headings surv
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > horizontal rule survives round-trip 1`] = `"<p>before</p><hr><p>after</p>"`;
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > inline code survives round-trip 1`] = `"<p><code>inline()</code></p>"`;
+
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > inline code within text survives round-trip 1`] = `"<p>run <code>npm install</code> to start</p>"`;
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > italic survives round-trip 1`] = `"<p><em>italic</em></p>"`;
 
