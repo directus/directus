@@ -1,13 +1,13 @@
 import type { Credentials, Options, ProviderType } from '@directus/types';
 import getDatabase from './database/index.js';
 import type { DeploymentDriver } from './deployment/deployment.js';
-import { NetlifyDriver, VercelDriver } from './deployment/drivers/index.js';
+import { CloudflareDriver, NetlifyDriver, VercelDriver } from './deployment/drivers/index.js';
 import { useLogger } from './logger/index.js';
 import { DeploymentService } from './services/deployment.js';
 import { getSchema } from './utils/get-schema.js';
 
-// Driver constructor type - uses any for credentials to allow provider-specific types
-type DriverConstructor = new (credentials: any, options?: Options) => DeploymentDriver;
+// Driver constructor type — `any` for credentials/options so provider-specific subclasses (e.g. required CloudflareOptions) are assignable
+type DriverConstructor = new (credentials: any, options?: any) => DeploymentDriver;
 
 /**
  * Registry of deployment driver constructors
@@ -20,6 +20,7 @@ const drivers: Map<ProviderType, DriverConstructor> = new Map();
 export function registerDeploymentDrivers(): void {
 	drivers.set('vercel', VercelDriver);
 	drivers.set('netlify', NetlifyDriver);
+	drivers.set('cloudflare-workers', CloudflareDriver);
 }
 
 /**
