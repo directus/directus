@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
 import { useShortcut } from '@directus/composables';
+import { isPublishedVersionKey } from '@directus/constants';
 import type { Field, Filter, Item, ShowSelect } from '@directus/types';
-import { ComponentPublicInstance, inject, ref, Ref, toRefs, watch } from 'vue';
+import { ComponentPublicInstance, computed, inject, ref, Ref, toRefs, watch } from 'vue';
 import VDivider from '@/components/v-divider.vue';
 import VFieldList from '@/components/v-field-list/v-field-list.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -55,6 +56,7 @@ interface Props {
 	aliasedKeys: string[];
 	onSortChange: (newSort: { by: string; desc: boolean }) => void;
 	onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
+	versionKey?: string | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -69,6 +71,7 @@ const props = withDefaults(defineProps<Props>(), {
 	filterUser: undefined,
 	search: undefined,
 	onAlignChange: () => undefined,
+	versionKey: null,
 });
 
 const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
@@ -76,6 +79,7 @@ const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:lim
 const { collection } = toRefs(props);
 
 const { sortAllowed } = useCollectionPermissions(collection);
+const manualSortAllowed = computed(() => sortAllowed.value && !props.versionKey);
 
 const selectionWritable = useSync(props, 'selection', emit);
 const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
@@ -122,161 +126,162 @@ function removeField(fieldKey: string) {
 </script>
 
 <template>
-	<div class="layout-tabular">
-		<VTable
-			v-if="loading || (items.length > 0 && !error)"
-			ref="table"
-			v-model="selectionWritable"
-			v-model:headers="tableHeadersWritable"
-			class="table"
-			fixed-header
-			:show-select="showSelect ? showSelect : selection !== undefined"
-			show-resize
-			must-sort
-			:sort="tableSort"
-			:items="items"
-			:loading="loading"
-			:row-height="tableRowHeight"
-			:item-key="primaryKeyField?.field"
-			:show-manual-sort="sortAllowed"
-			:manual-sort-key="sortField"
-			allow-header-reorder
-			selection-use-keys
-			@click:row="onRowClick"
-			@update:sort="onSortChange"
-			@manual-sort="changeManualSort"
-		>
-			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
-				<RenderDisplay
-					:value="getFromAliasedItem(item, header.value)"
-					:display="header.field.display"
-					:options="header.field.displayOptions"
-					:interface="header.field.interface"
-					:interface-options="header.field.interfaceOptions"
-					:type="header.field.type"
-					:collection="header.field.collection"
-					:field="header.field.field"
-				/>
-			</template>
-
-			<template #header-context-menu="{ header }">
-				<VList>
-					<VListItem
-						:disabled="!header.sortable"
-						:active="tableSort?.by === header.value && tableSort?.desc === false"
-						clickable
-						@click="onSortChange({ by: header.value, desc: false })"
-					>
-						<VListItemIcon>
-							<VIcon name="sort" class="flip" />
-						</VListItemIcon>
-						<VListItemContent>
-							{{ $t('sort_asc') }}
-						</VListItemContent>
-					</VListItem>
-
-					<VListItem
-						:active="tableSort?.by === header.value && tableSort?.desc === true"
-						:disabled="!header.sortable"
-						clickable
-						@click="onSortChange({ by: header.value, desc: true })"
-					>
-						<VListItemIcon>
-							<VIcon name="sort" />
-						</VListItemIcon>
-						<VListItemContent>
-							{{ $t('sort_desc') }}
-						</VListItemContent>
-					</VListItem>
-
-					<VDivider />
-
-					<VListItem :active="header.align === 'left'" clickable @click="onAlignChange?.(header.value, 'left')">
-						<VListItemIcon>
-							<VIcon name="format_align_left" />
-						</VListItemIcon>
-						<VListItemContent>
-							{{ $t('left_align') }}
-						</VListItemContent>
-					</VListItem>
-					<VListItem :active="header.align === 'center'" clickable @click="onAlignChange?.(header.value, 'center')">
-						<VListItemIcon>
-							<VIcon name="format_align_center" />
-						</VListItemIcon>
-						<VListItemContent>
-							{{ $t('center_align') }}
-						</VListItemContent>
-					</VListItem>
-					<VListItem :active="header.align === 'right'" clickable @click="onAlignChange?.(header.value, 'right')">
-						<VListItemIcon>
-							<VIcon name="format_align_right" />
-						</VListItemIcon>
-						<VListItemContent>
-							{{ $t('right_align') }}
-						</VListItemContent>
-					</VListItem>
-
-					<VDivider />
-
-					<VListItem :active="header.align === 'right'" clickable @click="removeField(header.value)">
-						<VListItemIcon>
-							<VIcon name="remove" />
-						</VListItemIcon>
-						<VListItemContent>
-							{{ $t('hide_field') }}
-						</VListItemContent>
-					</VListItem>
-				</VList>
-			</template>
-
-			<template #header-append>
-				<VMenu placement="bottom-end" show-arrow :close-on-content-click="false">
-					<template #activator="{ toggle, active }">
-						<VIcon
-							v-tooltip="$t('add_field')"
-							class="add-field"
-							name="add"
-							:class="{ active }"
-							clickable
-							@click="toggle"
-						/>
-					</template>
-
-					<VFieldList
-						:collection="collection"
-						:disabled-fields="fields"
-						:allow-select-all="false"
-						@add="addField($event[0])"
+	<div class="layout-tabular-container">
+		<div v-if="loading || (items.length > 0 && !error)" class="layout-tabular">
+			<VTable
+				ref="table"
+				v-model="selectionWritable"
+				v-model:headers="tableHeadersWritable"
+				class="table"
+				fixed-header
+				:show-select="showSelect ? showSelect : selection !== undefined"
+				show-resize
+				must-sort
+				:sort="tableSort"
+				:items="items"
+				:loading="loading"
+				:row-height="tableRowHeight"
+				:item-key="versionKey && !isPublishedVersionKey(versionKey) ? '_versionId' : primaryKeyField?.field"
+				:show-manual-sort="manualSortAllowed"
+				:manual-sort-key="sortField"
+				allow-header-reorder
+				selection-use-keys
+				@click:row="onRowClick"
+				@update:sort="onSortChange"
+				@manual-sort="changeManualSort"
+			>
+				<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
+					<RenderDisplay
+						:value="getFromAliasedItem(item, header.value)"
+						:display="header.field.display"
+						:options="header.field.displayOptions"
+						:interface="header.field.interface"
+						:interface-options="header.field.interfaceOptions"
+						:type="header.field.type"
+						:collection="header.field.collection"
+						:field="header.field.field"
 					/>
-				</VMenu>
-			</template>
+				</template>
 
-			<template #footer>
-				<div class="footer">
-					<div class="pagination">
-						<VSkeletonLoader v-if="!loading && loadingItemCount && items.length === limit" type="pagination" />
-						<VPagination
-							v-else-if="totalPages > 1"
-							:length="totalPages"
-							:total-visible="7"
-							show-first-last
-							:model-value="page"
-							@update:model-value="toPage"
-						/>
-					</div>
+				<template #header-context-menu="{ header }">
+					<VList>
+						<VListItem
+							:disabled="!header.sortable"
+							:active="tableSort?.by === header.value && tableSort?.desc === false"
+							clickable
+							@click="onSortChange({ by: header.value, desc: false })"
+						>
+							<VListItemIcon>
+								<VIcon name="sort" class="flip" />
+							</VListItemIcon>
+							<VListItemContent>
+								{{ $t('sort_asc') }}
+							</VListItemContent>
+						</VListItem>
 
-					<div v-if="loading === false && (items.length >= 25 || limit < 25)" class="per-page">
-						<span>{{ $t('per_page') }}</span>
-						<VSelect
-							:model-value="`${limit}`"
-							:items="pageSizes"
-							inline
-							@update:model-value="limitWritable = +$event"
+						<VListItem
+							:active="tableSort?.by === header.value && tableSort?.desc === true"
+							:disabled="!header.sortable"
+							clickable
+							@click="onSortChange({ by: header.value, desc: true })"
+						>
+							<VListItemIcon>
+								<VIcon name="sort" />
+							</VListItemIcon>
+							<VListItemContent>
+								{{ $t('sort_desc') }}
+							</VListItemContent>
+						</VListItem>
+
+						<VDivider />
+
+						<VListItem :active="header.align === 'left'" clickable @click="onAlignChange?.(header.value, 'left')">
+							<VListItemIcon>
+								<VIcon name="format_align_left" />
+							</VListItemIcon>
+							<VListItemContent>
+								{{ $t('left_align') }}
+							</VListItemContent>
+						</VListItem>
+						<VListItem :active="header.align === 'center'" clickable @click="onAlignChange?.(header.value, 'center')">
+							<VListItemIcon>
+								<VIcon name="format_align_center" />
+							</VListItemIcon>
+							<VListItemContent>
+								{{ $t('center_align') }}
+							</VListItemContent>
+						</VListItem>
+						<VListItem :active="header.align === 'right'" clickable @click="onAlignChange?.(header.value, 'right')">
+							<VListItemIcon>
+								<VIcon name="format_align_right" />
+							</VListItemIcon>
+							<VListItemContent>
+								{{ $t('right_align') }}
+							</VListItemContent>
+						</VListItem>
+
+						<VDivider />
+
+						<VListItem :active="header.align === 'right'" clickable @click="removeField(header.value)">
+							<VListItemIcon>
+								<VIcon name="remove" />
+							</VListItemIcon>
+							<VListItemContent>
+								{{ $t('hide_field') }}
+							</VListItemContent>
+						</VListItem>
+					</VList>
+				</template>
+
+				<template #header-append>
+					<VMenu placement="bottom-end" show-arrow :close-on-content-click="false">
+						<template #activator="{ toggle, active }">
+							<VIcon
+								v-tooltip="$t('add_field')"
+								class="add-field"
+								name="add"
+								:class="{ active }"
+								clickable
+								@click="toggle"
+							/>
+						</template>
+
+						<VFieldList
+							:collection="collection"
+							:disabled-fields="fields"
+							:allow-select-all="false"
+							@add="addField($event[0])"
 						/>
+					</VMenu>
+				</template>
+
+				<template #footer>
+					<div class="footer">
+						<div class="pagination">
+							<VSkeletonLoader v-if="!loading && loadingItemCount && items.length === limit" type="pagination" />
+							<VPagination
+								v-else-if="totalPages > 1"
+								:length="totalPages"
+								:total-visible="7"
+								show-first-last
+								:model-value="page"
+								@update:model-value="toPage"
+							/>
+						</div>
+
+						<div v-if="loading === false && (items.length >= 25 || limit < 25)" class="per-page">
+							<span>{{ $t('per_page') }}</span>
+							<VSelect
+								:model-value="`${limit}`"
+								:items="pageSizes"
+								inline
+								@update:model-value="limitWritable = +$event"
+							/>
+						</div>
 					</div>
-				</div>
-			</template>
-		</VTable>
+				</template>
+			</VTable>
+		</div>
 
 		<slot v-else-if="error" name="error" :error="error" :reset="resetPresetAndRefresh" />
 		<slot v-else-if="itemCount === 0 && (filterUser || search)" name="no-results" />
@@ -285,15 +290,23 @@ function removeField(fieldKey: string) {
 </template>
 
 <style lang="scss" scoped>
-.v-table {
-	--v-table-sticky-offset-top: var(--layout-offset-top);
+.layout-tabular-container {
+	// scrollport reference for cqi unit inline-size in the footer
+	container-type: inline-size;
+}
 
+.layout-tabular {
+	padding-block-start: var(--content-padding-top-table);
+	inline-size: max-content;
+	min-inline-size: 100%;
+}
+
+.v-table {
 	display: contents;
 
 	& > :deep(table) {
 		min-inline-size: calc(100% - var(--content-padding)) !important;
 		margin-inline-start: var(--content-padding);
-
 		tr {
 			margin-inline-end: var(--content-padding);
 		}
@@ -304,9 +317,11 @@ function removeField(fieldKey: string) {
 	position: sticky;
 	inset-inline-start: 0;
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	justify-content: space-between;
-	inline-size: 100%;
+	gap: 1rem;
+	inline-size: 100cqi;
 	padding: 1.8125rem var(--content-padding);
 
 	.pagination:not(.v-skeleton-loader) {
@@ -317,7 +332,6 @@ function removeField(fieldKey: string) {
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		inline-size: 13.5rem;
 		color: var(--theme--foreground-subdued);
 
 		span {

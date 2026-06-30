@@ -15,11 +15,13 @@ interface Props {
 	collectionName: string;
 	value?: string[] | null;
 	allowSelectAll?: boolean;
+	fieldFilter?: (field: Field) => boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	value: null,
 	allowSelectAll: false,
+	fieldFilter: undefined,
 });
 
 const emit = defineEmits(['input']);
@@ -127,6 +129,7 @@ const removeField = (field: string) => {
 				:disabled-fields="value"
 				:collection="collectionName"
 				:allow-select-all="allowSelectAll"
+				:field-filter="fieldFilter"
 				@add="addFields"
 			/>
 		</VMenu>

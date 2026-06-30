@@ -27,7 +27,9 @@ const allowedMimeTypes = computed(() => {
 });
 
 function close() {
-	router.push(props.folder ? { path: `/files/folders/${props.folder}` } : { path: '/files' });
+	router.push(
+		props.folder ? { name: 'folders-collection', params: { folder: props.folder } } : { name: 'files-collection' },
+	);
 }
 </script>
 

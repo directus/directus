@@ -261,4 +261,5 @@ pnpm dev
 
 ## License
 
-Directus is licensed under BUSL-1.1 (Business Source License). Review the license file before contributing.
+Directus is licensed under MSCL-1.0-GPL (Monospace Sustainable Core License). Review the license file before
+contributing.

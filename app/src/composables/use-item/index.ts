@@ -3,7 +3,7 @@ import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
 import { getEndpoint, isObject } from '@directus/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { cloneDeep, mergeWith } from 'lodash';
+import { cloneDeep, isEqual, mergeWith } from 'lodash';
 import { computed, ComputedRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
@@ -45,15 +45,23 @@ type UsableItem<T extends Item> = {
 	isArchived: ComputedRef<boolean | null>;
 	archiving: Ref<boolean>;
 	saveAsCopy: () => Promise<PrimaryKey | null>;
-	getItem: () => Promise<void>;
+	getItem: (opts?: { silent?: boolean }) => Promise<void>;
 	validationErrors: Ref<any[]>;
 };
+
+function coerceArchiveValue(value: string | null): string | boolean | null {
+	if (value === 'true') return true;
+	if (value === 'false') return false;
+	return value;
+}
 
 export function useItem<T extends Item>(
 	collection: Ref<string>,
 	primaryKey: Ref<PrimaryKey | null>,
 	currentVersion: Ref<ContentVersionMaybeNew | null> | null = null,
+	isItemlessVersion: ComputedRef<boolean> = computed(() => false),
 	extraQuery: MaybeRef<Omit<Query, 'version' | 'versionRaw'>> = {},
+	saveOptions: { onSaveError?: (error: APIError) => boolean } = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
@@ -71,18 +79,20 @@ export function useItem<T extends Item>(
 	const isArchived = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return null;
 
-		if (collectionInfo.value.meta.archive_value === 'true') {
-			return item.value?.[collectionInfo.value.meta.archive_field] === true;
-		}
+		const { archive_field, archive_value } = collectionInfo.value.meta;
 
-		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
+		return item.value?.[archive_field] === coerceArchiveValue(archive_value);
 	});
 
-	const query = computed<Query>(() => {
+	const query = computed<Query>((prev) => {
 		const version = unref(currentVersion);
 		const extra = unref(extraQuery);
-		if (!version || version.id === '+') return { ...extra };
-		return { ...extra, version: version.key, versionRaw: true };
+
+		const next: Query =
+			!version || version.id === '+' ? { ...extra } : { ...extra, version: version.key, versionRaw: true };
+
+		// Preserve reference on equivalent shapes; otherwise the auto-switch to a new ('+') draft would refetch and disable form fields mid-edit.
+		return prev && isEqual(prev, next) ? prev : next;
 	});
 
 	const isVersion = computed(() => unref(currentVersion) !== null);
@@ -101,7 +111,14 @@ export function useItem<T extends Item>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey, query], refresh);
+	watch([collection, primaryKey], refresh);
+
+	watch(query, () => {
+		const canRefetchSilently = item.value !== null;
+
+		if (canRefetchSilently) getItem({ silent: true });
+		else refresh();
+	});
 
 	refreshItem();
 
@@ -128,13 +145,18 @@ export function useItem<T extends Item>(
 		validationErrors,
 	};
 
-	async function getItem() {
-		loadingItem.value = true;
+	async function getItem(opts?: { silent?: boolean }) {
+		if (!opts?.silent) loadingItem.value = true;
 		error.value = null;
 
 		try {
-			const item = await sdk.request<T>(requestEndpoint(itemEndpoint.value, { params: unref(query) }));
+			if (isItemlessVersion.value) {
+				const { delta } = await sdk.request<T>(() => ({ path: `versions/${currentVersion!.value!.id}` }));
+				setItemValueToResponse(delta);
+				return;
+			}
 
+			const item = await sdk.request<T>(requestEndpoint(itemEndpoint.value, { params: unref(query) }));
 			setItemValueToResponse(item);
 		} catch (err) {
 			error.value = err;
@@ -436,10 +458,16 @@ export function useItem<T extends Item>(
 			const otherErrors = error.errors.filter((err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code));
 
 			if (otherErrors.length > 0) {
-				otherErrors.forEach(unexpectedError);
+				otherErrors.forEach((err: APIError) => {
+					if (!saveOptions.onSaveError?.(err)) {
+						unexpectedError(err);
+					}
+				});
 			}
 		} else {
-			unexpectedError(error);
+			if (!saveOptions.onSaveError?.(error)) {
+				unexpectedError(error);
+			}
 		}
 
 		throw error;
@@ -451,20 +479,11 @@ export function useItem<T extends Item>(
 		archiving.value = true;
 
 		const field = collectionInfo.value.meta.archive_field;
-
-		let archiveValue: any = collectionInfo.value.meta.archive_value;
-		if (archiveValue === 'true') archiveValue = true;
-		if (archiveValue === 'false') archiveValue = false;
-
-		let unarchiveValue: any = collectionInfo.value.meta.unarchive_value;
-		if (unarchiveValue === 'true') unarchiveValue = true;
-		if (unarchiveValue === 'false') unarchiveValue = false;
+		const archiveValue = coerceArchiveValue(collectionInfo.value.meta.archive_value);
+		const unarchiveValue = coerceArchiveValue(collectionInfo.value.meta.unarchive_value);
 
 		try {
-			let value: any = item.value && item.value[field] === archiveValue ? unarchiveValue : archiveValue;
-
-			if (value === 'true') value = true;
-			if (value === 'false') value = false;
+			const value = item.value && item.value[field] === archiveValue ? unarchiveValue : archiveValue;
 
 			await sdk.request(
 				requestEndpoint(itemEndpoint.value, {
@@ -526,7 +545,7 @@ export function useItem<T extends Item>(
 	}
 
 	function refreshItem() {
-		if (isNew.value) {
+		if (isNew.value && !isItemlessVersion.value) {
 			item.value = null;
 		} else {
 			getItem();

@@ -66,6 +66,7 @@ beforeEach(async () => {
 			component: { template: '<div>Flows Overview</div>' },
 		},
 		{
+			name: 'settings-flows-item',
 			path: '/settings/flows/:primaryKey',
 			component: { template: '<div>Flow Detail</div>' },
 		},
@@ -88,7 +89,6 @@ beforeEach(async () => {
 			'private-view',
 			'v-button',
 			'v-icon',
-			'v-breadcrumb',
 			'settings-navigation',
 			'sidebar-detail',
 			'v-info',
@@ -140,7 +140,7 @@ describe('FlowsOverview - navigateToFlow', () => {
 		const vm = wrapper.vm as any;
 		vm.navigateToFlow({ item: mockFlow, event: mockEvent });
 
-		expect(routerPushSpy).toHaveBeenCalledWith('/settings/flows/flow-1');
+		expect(routerPushSpy).toHaveBeenCalledWith({ name: 'settings-flows-item', params: { primaryKey: 'flow-1' } });
 		expect(windowOpenSpy).not.toHaveBeenCalled();
 	});
 

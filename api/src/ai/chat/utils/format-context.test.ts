@@ -33,6 +33,14 @@ describe('formatContextForSystemPrompt', () => {
 		expect(result).toContain('</user_context>');
 	});
 
+	test('places current date after other user context', () => {
+		const result = formatContextForSystemPrompt({
+			page: { path: '/content/posts/123' },
+		});
+
+		expect(result.indexOf('## Current Page')).toBeLessThan(result.indexOf('## Current Date'));
+	});
+
 	test('formats prompt attachments in custom_instructions block', () => {
 		const result = formatContextForSystemPrompt({
 			attachments: [

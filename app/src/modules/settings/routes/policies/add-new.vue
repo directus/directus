@@ -24,7 +24,7 @@ const { saving, save } = useSave({ name, appAccess, adminAccess });
 </script>
 
 <template>
-	<VDialog :model-value="isOpen" persistent @esc="router.push('/settings/policies')" @apply="save">
+	<VDialog :model-value="isOpen" persistent @esc="router.push({ name: 'settings-policies-collection' })" @apply="save">
 		<VCard>
 			<VCardTitle>
 				{{ $t('create_policy') }}
@@ -47,7 +47,7 @@ const { saving, save } = useSave({ name, appAccess, adminAccess });
 				</div>
 			</VCardText>
 			<VCardActions>
-				<VButton to="/settings/policies" secondary>{{ $t('cancel') }}</VButton>
+				<VButton :to="{ name: 'settings-policies-collection' }" secondary>{{ $t('cancel') }}</VButton>
 				<VButton :disabled="name === null" :loading="saving" @click="save">{{ $t('save') }}</VButton>
 			</VCardActions>
 		</VCard>

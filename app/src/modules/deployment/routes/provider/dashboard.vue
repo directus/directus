@@ -6,7 +6,6 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
@@ -42,7 +41,7 @@ const rangeOptions = [
 const projectItems = computed(() =>
 	projects.value.map((project) => ({
 		...project,
-		to: `/deployments/${props.provider}/${project.id}/runs`,
+		to: { name: 'deployments-provider-runs', params: { provider: props.provider, projectId: project.id } },
 		formattedDeployTime: project.latest_deployment?.created_at
 			? formatDistanceToNow(new Date(project.latest_deployment.created_at), { addSuffix: true })
 			: '',
@@ -72,10 +71,6 @@ watch(range, loadDashboard);
 
 <template>
 	<PrivateView :title="$t(`deployment.provider.${provider}.name`)" :icon="provider">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployments' }]" />
-		</template>
-
 		<template #navigation>
 			<DeploymentNavigation />
 		</template>

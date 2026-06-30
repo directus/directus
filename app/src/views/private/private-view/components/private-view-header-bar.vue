@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { useBreakpoints } from '@vueuse/core';
 import { computed } from 'vue';
 import { useNavBarStore } from '../stores/nav-bar';
 import { useSidebarStore } from '../stores/sidebar';
+import PrivateViewHeaderBarActionButton from './private-view-header-bar-action-button.vue';
 import PrivateViewHeaderBarActions from './private-view-header-bar-actions.vue';
 import PrivateViewHeaderBarIcon from './private-view-header-bar-icon.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
-import { BREAKPOINTS } from '@/constants';
 
 const props = defineProps<{
 	title?: string;
-	shadow: boolean;
 	inlineNav: boolean;
 	icon?: string;
 	iconColor?: string;
@@ -22,9 +19,6 @@ const props = defineProps<{
 const navBarStore = useNavBarStore();
 const sidebarStore = useSidebarStore();
 
-const breakpoints = useBreakpoints(BREAKPOINTS);
-const isMobile = breakpoints.smallerOrEqual('sm');
-
 const showNavToggle = computed(() => {
 	if (props.inlineNav) {
 		return navBarStore.collapsed;
@@ -32,38 +26,31 @@ const showNavToggle = computed(() => {
 
 	return true;
 });
-
-const showSidebarToggle = computed(() => {
-	return !sidebarStore.collapsed || isMobile.value;
-});
 </script>
 
 <template>
-	<header class="header-bar" :class="{ shadow }">
-		<div class="primary">
-			<VIcon
+	<header class="header-bar">
+		<div class="cell start">
+			<PrivateViewHeaderBarActionButton
 				v-if="showNavToggle"
 				v-tooltip.bottom="$t('toggle_navigation')"
-				small
 				class="nav-toggle"
-				name="left_panel_open"
-				clickable
+				icon="left_panel_open"
+				variant="ghost"
 				@click="navBarStore.expand"
 			/>
 
-			<div class="title-outer-prepend">
-				<PrivateViewHeaderBarIcon v-if="showBack" v-tooltip.bottom="$t('back')" class="icon" show-back :back-to />
+			<div v-if="showNavToggle" class="nav-toggle-separator" />
 
-				<PrivateViewHeaderBarIcon v-else-if="icon" class="icon" :icon :icon-color />
+			<div class="title-outer-prepend">
+				<PrivateViewHeaderBarIcon v-if="showBack" v-tooltip.bottom="$t('back')" :back-to />
+
+				<PrivateViewHeaderBarIcon v-else-if="icon" class="title-icon" :icon :icon-color />
 
 				<slot v-else name="title-outer:prepend" />
 			</div>
 
 			<div class="title-container">
-				<div class="headline">
-					<slot name="headline" />
-				</div>
-
 				<div class="title">
 					<slot name="title">
 						<slot name="title:prepend" />
@@ -80,25 +67,23 @@ const showSidebarToggle = computed(() => {
 			<div class="title-outer-append">
 				<slot name="title-outer:append" />
 			</div>
+		</div>
 
-			<div class="spacer" />
+		<div class="cell end">
+			<PrivateViewHeaderBarActions>
+				<template #prepend><slot name="actions:prepend" /></template>
+				<slot name="actions" />
+				<template #primary><slot name="actions:primary" /></template>
+			</PrivateViewHeaderBarActions>
 
-			<VIcon
-				v-if="showSidebarToggle"
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('toggle_sidebar')"
 				class="sidebar-toggle"
-				small
-				:name="sidebarStore.collapsed ? 'right_panel_open' : 'right_panel_close'"
-				clickable
+				:icon="sidebarStore.collapsed ? 'right_panel_open' : 'right_panel_close'"
+				variant="ghost"
 				@click="sidebarStore.toggle"
 			/>
 		</div>
-
-		<PrivateViewHeaderBarActions>
-			<template #prepend><slot name="actions:prepend" /></template>
-			<slot name="actions" />
-			<template #append><slot name="actions:append" /></template>
-		</PrivateViewHeaderBarActions>
 	</header>
 </template>
 
@@ -106,52 +91,108 @@ const showSidebarToggle = computed(() => {
 @use '@/styles/mixins';
 
 .header-bar {
-	position: sticky;
-	inset-block-start: 0;
-	inset-inline-start: 0;
-	z-index: 5;
-	background-color: var(--theme--header--background);
-	inline-size: 100%;
-	padding-inline: var(--content-padding);
-	box-shadow: none;
-	border-block-end: var(--theme--header--border-width) solid var(--theme--header--border-color);
-	block-size: var(--header-bar-height);
-	grid-template-rows: repeat(2, 1fr);
+	--separator-size: 1.5rem;
+	--separator-border: var(--theme--border-width) solid var(--theme--border-color-accent);
 
-	&.shadow {
-		z-index: 7;
-		box-shadow: var(--theme--header--box-shadow);
-		transition: box-shadow var(--fast) var(--transition);
+	position: relative;
+	block-size: calc(var(--header-bar-height) * 2 + var(--theme--shell--border-width));
+
+	/* background is set in .root-split, border is set on .main-split */
+
+	&:not(:has(.nav-toggle))::before {
+		content: '';
+		position: absolute;
+		transform: translate(0, -50%);
+		inset-block-start: 50%;
+		inset-inline-start: 0;
+		block-size: var(--separator-size);
+		border-inline-end: var(--separator-border);
 	}
-
-	@media (width > 22.5rem) {
-		display: flex;
-		align-items: center;
-		gap: 0.6875rem;
-	}
-}
-
-.primary {
-	display: flex;
-	align-items: center;
-	gap: 0.6875rem;
-	padding-block: 0.6875rem;
-
-	@media (width > 22.5rem) {
-		display: contents;
-	}
-}
-
-.icon {
-	display: none;
 
 	@include mixins.breakpoint-up('sm') {
 		display: flex;
+		block-size: var(--header-bar-height);
+		align-items: center;
+		gap: var(--header-bar-gap);
+		padding-inline: var(--content-padding) var(--sidebar-collapsed-width);
+	}
+}
+
+.cell {
+	position: relative;
+	display: flex;
+	align-items: center;
+	block-size: var(--header-bar-height);
+	padding-inline: 0.75rem;
+
+	@include mixins.breakpoint-up('sm') {
+		padding-inline: 0;
+		block-size: 100%;
+	}
+
+	&.start {
+		flex-grow: 1;
+		min-inline-size: 0;
+		block-size: calc(var(--header-bar-height) + var(--theme--shell--border-width));
+		border-block-end: var(--theme--shell--border-width) solid var(--theme--shell--border-color);
+
+		@include mixins.breakpoint-up('sm') {
+			border-block-end: none;
+		}
+	}
+
+	&.end {
+		justify-content: flex-end;
+		flex-shrink: 0;
+
+		@include mixins.breakpoint-up('sm') {
+			max-inline-size: calc(100vw - var(--sidebar-collapsed-width) * 3 - var(--header-bar-gap));
+		}
+	}
+}
+
+.nav-toggle-separator {
+	block-size: var(--separator-size);
+	border-inline-end: var(--separator-border);
+	margin-inline-end: 0.25rem;
+
+	+ .title-outer-prepend:has(.title-icon) {
+		margin-inline-start: 0.375rem;
 	}
 }
 
 :is(.title-outer-prepend, .title-outer-append):empty {
 	display: contents;
+}
+
+.nav-toggle,
+.header-bar:not(:has(.nav-toggle)) .title-outer-prepend {
+	@include mixins.breakpoint-up('sm') {
+		position: absolute;
+		inset-inline-end: 100%;
+	}
+}
+
+.nav-toggle,
+.title-outer-prepend {
+	margin-inline-end: 0.25rem;
+}
+
+.header-bar:has(.nav-toggle) .title-outer-prepend:empty + .title-container {
+	margin-inline-start: 0.5rem;
+}
+
+.title-outer-append {
+	margin-inline-start: 0.5rem;
+}
+
+.sidebar-toggle {
+	margin-inline-start: 0.6875rem;
+
+	@include mixins.breakpoint-up('sm') {
+		position: absolute;
+		inset-inline-start: 100%;
+	}
 }
 
 .title-container {
@@ -163,33 +204,14 @@ const showSidebarToggle = computed(() => {
 	display: flex;
 
 	&:deep(.type-title) {
-		line-height: 1.2;
+		--title-block-size: 1.375rem;
+
+		font-family: var(--theme--header--title--font-family);
+		font-weight: var(--theme--header--title--font-weight);
+		color: var(--theme--header--title--foreground);
 		max-inline-size: 100%;
-
-		.render-template img,
-		.render-template .preview {
-			block-size: 1.2em;
-			vertical-align: middle;
-		}
+		block-size: var(--title-block-size);
+		line-height: var(--title-block-size);
 	}
-}
-
-.headline {
-	--v-breadcrumb-color: var(--theme--header--headline--foreground);
-
-	font-weight: 600;
-	font-size: 0.6875rem;
-	line-height: 1;
-	white-space: nowrap;
-	font-family: var(--theme--header--headline--font-family);
-}
-
-.spacer {
-	flex-basis: 0;
-	flex-grow: 1;
-}
-
-.sidebar-toggle {
-	order: 1;
 }
 </style>

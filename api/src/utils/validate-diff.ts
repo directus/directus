@@ -63,9 +63,17 @@ const applyJoiSchema = Joi.object({
 /**
  * Validates the diff against the current schema snapshot.
  *
+ * @param applyDiff The diff to validate with the expected hash
+ * @param currentSnapshotWithHash The current snapshot with hash to validate against
+ * @param force When true bypass hash validation. Use with caution as this can lead to unintended consequences, only use when the diff can be applied irrespective of the current schema.
+ *
  * @returns True if the diff can be applied (valid & not empty).
  */
-export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapshotWithHash: SnapshotWithHash) {
+export function validateApplyDiff(
+	applyDiff: SnapshotDiffWithHash,
+	currentSnapshotWithHash: SnapshotWithHash,
+	force: boolean = false,
+) {
 	const { error } = applyJoiSchema.validate(applyDiff);
 	if (error) throw new InvalidPayloadError({ reason: error.message });
 
@@ -80,7 +88,7 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 	}
 
 	// Diff can be applied due to matching hash
-	if (applyDiff.hash === currentSnapshotWithHash.hash) return true;
+	if (applyDiff.hash === currentSnapshotWithHash.hash || force) return true;
 
 	for (const diffCollection of applyDiff.diff.collections) {
 		const collection = diffCollection.collection;
@@ -190,6 +198,6 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 	}
 
 	throw new InvalidPayloadError({
-		reason: `Provided hash does not match the current instance's schema hash, indicating the schema has changed after this diff was generated. Please generate a new diff and try again`,
+		reason: `Provided hash does not match the current instance's schema hash, indicating the schema has changed after this diff was generated. Please generate a new diff and try again or use the "force" query parameter to bypass this check`,
 	});
 }

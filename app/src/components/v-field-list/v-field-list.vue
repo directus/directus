@@ -19,6 +19,7 @@ const collectionsStore = useCollectionsStore();
 
 const props = withDefaults(
 	defineProps<{
+		attached?: boolean;
 		collection: string;
 		field?: string;
 		disabledFields?: string[];
@@ -28,6 +29,7 @@ const props = withDefaults(
 		relationalFieldSelectable?: boolean;
 		allowSelectAll?: boolean;
 		rawFieldNames?: boolean;
+		fieldFilter?: (field: Field) => boolean;
 	}>(),
 	{
 		field: undefined,
@@ -38,6 +40,7 @@ const props = withDefaults(
 		relationalFieldSelectable: true,
 		allowSelectAll: false,
 		rawFieldNames: false,
+		fieldFilter: undefined,
 	},
 );
 
@@ -112,6 +115,10 @@ const addAll = () => {
 };
 
 function filter(field: Field, parent?: FieldNode): boolean {
+	if (props.fieldFilter && props.fieldFilter(field) === false) {
+		return false;
+	}
+
 	if (
 		!includeRelations.value &&
 		(field.collection !== collection.value || (field.type === 'alias' && !field.meta?.special?.includes('group')))
@@ -151,12 +158,12 @@ function filter(field: Field, parent?: FieldNode): boolean {
 </script>
 
 <template>
-	<VList :mandatory="false" @toggle="loadFieldRelations($event.value)">
+	<VList :class="{ attached }" :mandatory="false" @toggle="loadFieldRelations($event.value)">
 		<slot name="prepend" />
 		<VListItem v-if="showSearch">
 			<VListItemContent>
 				<VInput v-model="search" autofocus small :placeholder="$t('search')" @click.stop>
-					<template #append>
+					<template #prepend>
 						<VIcon small name="search" />
 					</template>
 				</VInput>
@@ -187,6 +194,10 @@ function filter(field: Field, parent?: FieldNode): boolean {
 
 <style lang="scss" scoped>
 .v-list {
-	--v-list-min-width: 16.875rem;
+	--v-list-min-width: var(--form-column-width);
+
+	&.attached {
+		--v-list-min-width: var(--form-column-min-width);
+	}
 }
 </style>
