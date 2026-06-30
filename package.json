@@ -37,7 +37,6 @@
 			"fast-xml-parser": "5.9.3",
 			"@yarnpkg/shell>cross-spawn": "7.0.6",
 			"tar": "7.5.19",
-			"minimatch@10": "10.2.5",
 			"minimatch@9": "9.0.9",
 			"basic-ftp": "5.3.1",
 			"underscore": "1.13.8",
