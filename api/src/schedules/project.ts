@@ -14,7 +14,7 @@ import { scheduleSynchronizedJob } from '../utils/schedule.js';
 export default async function schedule(): Promise<boolean> {
 	const env = useEnv();
 
-	if (!toBoolean(env['PROJECT_OWNER_ENABLED'] ?? true)) {
+	if (toBoolean(env['PROJECT_OWNER_ENABLED']) === false) {
 		return false;
 	}
 
