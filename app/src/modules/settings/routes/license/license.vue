@@ -40,7 +40,7 @@ const serverStore = useServerStore();
 
 const { info: license, addons, loading, boundary, isLicensed } = storeToRefs(licenseStore);
 
-const isEnvManaged = computed(() => license.value?.source === 'env');
+const isLicenseSourceEnv = computed(() => license.value?.source === 'env');
 const isLicenseKeyManagementEnabled = computed(() => licenseStore.info?.editable);
 
 const boundaryDate = computed(() => {
@@ -67,11 +67,9 @@ const upgradePlanLink = computed(() =>
 );
 
 const manageLicenseDisabledMessage = computed(() => {
-	if (!isLicenseKeyManagementEnabled.value) {
-		if (isEnvManaged.value) return t('licensing.env_managed');
+	if (isLicenseSourceEnv.value) return t('licensing.env_managed');
 
-		return t('licensing.manage_license_disabled');
-	}
+	if (!isLicenseKeyManagementEnabled.value) return t('licensing.manage_license_disabled');
 
 	return null;
 });
