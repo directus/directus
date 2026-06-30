@@ -1,5 +1,6 @@
 import StarterKit from '@tiptap/starter-kit';
 import { CustomImage } from './image';
+import { PageBreak } from './page-break';
 import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
 import { TextAlignment } from './text-alignment';
 import { TextStyle } from './text-style';
@@ -25,4 +26,5 @@ export const editorExtensions = [
 	CustomSubscript,
 	CustomSuperscript,
 	TextStyle,
+	PageBreak,
 ];

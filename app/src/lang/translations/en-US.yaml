@@ -1406,6 +1406,12 @@ wysiwyg_options:
   bullist: Bullet List
   numlist: Numbered List
   hr: Horizontal Rule
+  pagebreak: Page Break
+  insertdatetime: Insert Date/Time
+  insertdatetime_date: Date
+  insertdatetime_time: Time
+  insertdatetime_datetime: Date & Time
+  insertdatetime_locale: Localized
   link: Add/Edit Link
   unlink: Remove Link
   media: Add/Edit Media

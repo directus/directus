@@ -3,12 +3,14 @@ import type { SettingsStorageAssetPreset } from '@directus/types';
 import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
 import { computed, ref, type Ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
 import ImageDrawer from './drawers/image-drawer.vue';
 import LinkDrawer from './drawers/link-drawer.vue';
 import { editorExtensions } from './extensions';
 import { LinkShortcut } from './extensions/link-shortcut';
+import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
@@ -34,7 +36,12 @@ const props = withDefaults(
 
 const emit = defineEmits<{ input: [value: string | null] }>();
 
+const { t } = useI18n();
+
 const { imageToken, folder } = toRefs(props);
+
+// CSS-var label for the in-editor page-break marker (rendered via ::after), translated.
+const pageBreakLabel = computed(() => `"${t('wysiwyg_options.pagebreak')}"`);
 
 // base content font, driven by the `font` option; theme tokens use `sans` (not `sans-serif`)
 const fontFamily = computed(() => {
@@ -57,7 +64,8 @@ function syncValue(instance: Editor, value: string | null) {
 	instance
 		.chain()
 		.setMeta('addToHistory', false)
-		.setContent(value ?? '', { emitUpdate: false })
+		// decode `<!-- pagebreak -->` markers to the editor element ProseMirror can parse (see page-break.ts)
+		.setContent(decodePageBreaks(value ?? ''), { emitUpdate: false })
 		.run();
 }
 
@@ -85,7 +93,8 @@ const editor = useEditor({
 	},
 	onCreate: ({ editor }) => syncValue(editor as Editor, props.value),
 	onUpdate: ({ editor }) => {
-		emit('input', editor.isEmpty ? null : editor.getHTML());
+		// re-encode the page-break element back to the stored `<!-- pagebreak -->` marker
+		emit('input', editor.isEmpty ? null : encodePageBreaks(editor.getHTML()));
 	},
 });
 
@@ -132,7 +141,8 @@ watch(
 	() => props.value,
 	(value) => {
 		if (!editor.value) return;
-		if (editor.value.getHTML() === value) return;
+		// compare the encoded (stored) form so a re-emitted page-break marker doesn't look like a change
+		if (encodePageBreaks(editor.value.getHTML()) === value) return;
 		syncValue(editor.value, value);
 	},
 );
@@ -148,7 +158,7 @@ onKeyStroke('Escape', () => {
 	<div
 		class="wysiwyg"
 		:class="{ disabled, 'non-editable': nonEditable, fullscreen }"
-		:style="{ '--editor-font-family': fontFamily }"
+		:style="{ '--editor-font-family': fontFamily, '--page-break-label': pageBreakLabel }"
 	>
 		<Toolbar
 			v-if="!nonEditable"
@@ -367,8 +377,32 @@ onKeyStroke('Escape', () => {
 		border-radius: var(--theme--border-radius);
 	}
 
-	:is(img, hr).ProseMirror-selectednode {
+	:is(img, hr, .page-break).ProseMirror-selectednode {
 		outline: 2px solid var(--theme--primary);
+	}
+
+	// non-editable page-break marker; renders as a labeled dashed rule, serialized as `<!-- pagebreak -->`
+	.page-break {
+		position: relative;
+		block-size: 0;
+		border: none;
+		border-block-start: 2px dashed var(--theme--form--field--input--border-color);
+		margin-block: 2em;
+		user-select: none;
+
+		&::after {
+			content: var(--page-break-label, 'Page Break');
+			position: absolute;
+			inset-block-start: -0.75em;
+			inset-inline-start: 50%;
+			transform: translateX(-50%);
+			padding-inline: 0.5em;
+			background-color: var(--theme--form--field--input--background);
+			color: var(--theme--foreground-subdued);
+			font-size: 0.6875rem;
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+		}
 	}
 
 	hr {
