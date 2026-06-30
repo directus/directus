@@ -162,7 +162,7 @@ export default typescriptEslint.config(
 				'error',
 				{
 					// TresJS custom-renderer elements
-					ignorePatterns: ['Hst*', 'Tres*'],
+					ignorePatterns: ['Tres*'],
 				},
 			],
 			// Require <PascalCase /> components in templates
