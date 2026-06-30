@@ -56,7 +56,9 @@
 			"ajv>fast-uri": "3.1.2",
 			"braintrust>simple-git": "3.36.0",
 			"launch-editor>shell-quote": "1.8.4",
-			"vitest>jsdom>ws": "8.21.0"
+			"jsdom>ws": "8.21.0",
+			"@pm2/agent>ws": "7.5.11",
+			"@pm2/js-api>ws": "7.5.11"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",
