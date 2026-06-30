@@ -807,6 +807,9 @@ catalogs:
     qrcode:
       specifier: 1.5.4
       version: 1.5.4
+    qs:
+      specifier: 6.14.2
+      version: 6.14.2
     rate-limiter-flexible:
       specifier: 7.2.0
       version: 7.2.0
@@ -980,7 +983,6 @@ overrides:
   fast-xml-parser: 5.9.3
   '@yarnpkg/shell>cross-spawn': 7.0.6
   tar: 7.5.19
-  qs: 6.15.2
   minimatch@10: 10.2.5
   minimatch@9: 9.0.9
   basic-ftp: 5.3.1
@@ -1412,8 +1414,8 @@ importers:
         specifier: 'catalog:'
         version: 2.0.7
       qs:
-        specifier: 6.15.2
-        version: 6.15.2
+        specifier: 'catalog:'
+        version: 6.14.2
       rate-limiter-flexible:
         specifier: 'catalog:'
         version: 7.2.0
@@ -13297,6 +13299,14 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
 
+  qs@6.13.0:
+    resolution: {integrity: sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==}
+    engines: {node: '>=0.6'}
+
+  qs@6.14.2:
+    resolution: {integrity: sha512-V/yCWTTF7VJ9hIh18Ugr2zhJMP01MY7c5kh4J870L7imm6/DIzBsNLTXzMwUA3yZ5b/KBqLx8Kp3uRvd7xSe3Q==}
+    engines: {node: '>=0.6'}
+
   qs@6.15.2:
     resolution: {integrity: sha512-Rzq0KEyX/w/tEybncDgdkZrJgVUsUMk3xjh3t5bv3S1HTAtg+uOYt72+ZfwiQwKdysThkTBdL/rTi6HDmX9Ddw==}
     engines: {node: '>=0.6'}
@@ -21935,7 +21945,7 @@ snapshots:
       http-errors: 2.0.0
       iconv-lite: 0.4.24
       on-finished: 2.4.1
-      qs: 6.15.2
+      qs: 6.13.0
       raw-body: 2.5.2
       type-is: 1.6.18
       unpipe: 1.0.0
@@ -21950,7 +21960,7 @@ snapshots:
       http-errors: 2.0.0
       iconv-lite: 0.7.2
       on-finished: 2.4.1
-      qs: 6.15.2
+      qs: 6.14.2
       raw-body: 3.0.1
       type-is: 2.0.1
     transitivePeerDependencies:
@@ -23449,7 +23459,7 @@ snapshots:
       parseurl: 1.3.3
       path-to-regexp: 0.1.13
       proxy-addr: 2.0.7
-      qs: 6.15.2
+      qs: 6.13.0
       range-parser: 1.2.1
       safe-buffer: 5.2.1
       send: 0.19.0
@@ -23485,7 +23495,7 @@ snapshots:
       parseurl: 1.3.3
       path-to-regexp: 0.1.13
       proxy-addr: 2.0.7
-      qs: 6.15.2
+      qs: 6.14.2
       range-parser: 1.2.1
       safe-buffer: 5.2.1
       send: 0.19.0
@@ -23520,7 +23530,7 @@ snapshots:
       once: 1.4.0
       parseurl: 1.3.3
       proxy-addr: 2.0.7
-      qs: 6.15.2
+      qs: 6.14.2
       range-parser: 1.2.1
       router: 2.2.0
       send: 1.2.0
@@ -26967,6 +26977,14 @@ snapshots:
       dijkstrajs: 1.0.3
       pngjs: 5.0.0
       yargs: 15.4.1
+
+  qs@6.13.0:
+    dependencies:
+      side-channel: 1.1.0
+
+  qs@6.14.2:
+    dependencies:
+      side-channel: 1.1.0
 
   qs@6.15.2:
     dependencies:
