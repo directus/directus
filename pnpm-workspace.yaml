@@ -326,7 +326,7 @@ catalog:
   typedoc-plugin-markdown: 4.8.1
   typescript: 5.9.3
   typescript-eslint: 8.46.4
-  undici: 7.24.5
+  undici: 7.28.0
   universal-cookie: 8.0.1
   unplugin-vue: 7.1.1
   unplugin-yaml: 3.0.7
