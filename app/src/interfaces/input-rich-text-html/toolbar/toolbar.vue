@@ -69,7 +69,7 @@ const MEASUREMENTS: LayoutMeasurements = {
 	moreWidth: 32,
 	separatorWidth: 9,
 	minItems: 5,
-	popoverWidth: 44,
+	popoverWidth: 40,
 	keyWidths,
 };
 

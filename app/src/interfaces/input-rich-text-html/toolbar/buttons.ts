@@ -85,6 +85,10 @@ const FONT_SIZES: { label: string; value: string | null }[] = [12, 14, 16, 18, 2
 const FONT_FAMILY_WIDTH = 132;
 const FONT_SIZE_WIDTH = 80;
 
+// Icon + caret dropdowns (color pickers) are wider than a plain icon button; keep in sync with the
+// `2.5rem` activator width in color-menu.vue and `popoverWidth` in toolbar.vue.
+const CARET_BUTTON_WIDTH = 40;
+
 // text-align directions; `alignnone` (unset) is registered separately below
 const align: Record<string, ToolbarButton> = Object.fromEntries(
 	(['left', 'center', 'right', 'justify'] as const).map((value) => [
@@ -145,12 +149,14 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		icon: 'format_color_text',
 		label: 'wysiwyg_options.forecolor',
 		component: ColorMenu,
+		width: CARET_BUTTON_WIDTH,
 		componentProps: { icon: 'format_color_text', label: 'wysiwyg_options.forecolor', mode: 'text' },
 	},
 	backcolor: {
 		icon: 'format_color_fill',
 		label: 'wysiwyg_options.backcolor',
 		component: ColorMenu,
+		width: CARET_BUTTON_WIDTH,
 		componentProps: { icon: 'format_color_fill', label: 'wysiwyg_options.backcolor', mode: 'background' },
 	},
 	bold: {

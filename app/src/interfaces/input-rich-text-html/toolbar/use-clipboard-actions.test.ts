@@ -3,8 +3,12 @@ import { Editor } from '@tiptap/vue-3';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useClipboardActions } from './use-clipboard-actions';
 
+const editors: Editor[] = [];
+
 function makeEditor(content = '<p>hello world</p>') {
-	return new Editor({ extensions: [StarterKit], content });
+	const editor = new Editor({ extensions: [StarterKit], content });
+	editors.push(editor);
+	return editor;
 }
 
 let write: ReturnType<typeof vi.fn>;
@@ -22,7 +26,11 @@ beforeEach(() => {
 	});
 });
 
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => {
+	// Destroy editors so ProseMirror's DOMObserver timers don't fire after teardown
+	while (editors.length) editors.pop()!.destroy();
+	vi.restoreAllMocks();
+});
 
 describe('copy', () => {
 	test('writes the selected HTML + plain text to the clipboard', async () => {

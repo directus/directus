@@ -2,6 +2,7 @@
 import type { Editor } from '@tiptap/vue-3';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ToolbarCaret from '../toolbar-caret.vue';
 import { applyStyle, readStyle, type StyleAttr } from './text-style';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -46,6 +47,7 @@ defineExpose({ apply });
 				@click="toggle"
 			>
 				<VIcon :name="icon" :style="current() ? { color: current()! } : undefined" />
+				<ToolbarCaret class="color-menu-caret" />
 			</VButton>
 		</template>
 		<div class="color-menu">
@@ -60,6 +62,17 @@ defineExpose({ apply });
 .toolbar-button.ghost.active {
 	--v-button-background-color: var(--theme--form--field--input--border-color);
 	--v-button-color: var(--theme--foreground);
+}
+
+// `icon` makes VButton a tight square with no padding; icon + caret need more room. Widen to fit both
+// (keep in sync with `CARET_BUTTON_WIDTH` in buttons.ts, `2.5rem` = 40px) and center the content.
+.toolbar-button :deep(.button.icon) {
+	inline-size: 2.5rem;
+	justify-content: center;
+}
+
+.color-menu-caret {
+	margin-inline-start: -0.125rem;
 }
 
 .color-menu {

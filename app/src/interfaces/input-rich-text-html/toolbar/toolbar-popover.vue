@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { toolbarButtons, type ToolbarContext } from './buttons';
 import type { RenderGroup } from './compute-toolbar-layout';
 import ToolbarButtonComp from './toolbar-button.vue';
+import ToolbarCaret from './toolbar-caret.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
@@ -55,7 +56,7 @@ const triggerLabel = computed(() => {
 				@click.stop="toggle"
 			>
 				<VIcon :name="triggerIcon" />
-				<VIcon class="toolbar-popover-caret" name="expand_more" small />
+				<ToolbarCaret class="toolbar-popover-caret" />
 			</VButton>
 		</template>
 		<div class="toolbar-popover-items">
@@ -73,10 +74,15 @@ const triggerLabel = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+// `icon` makes VButton a tight square with no padding; icon + caret need more room. Widen to fit both
+// (matches `popoverWidth` in toolbar.vue) and center the content.
+.toolbar-popover :deep(.button.icon) {
+	inline-size: 2.5rem;
+	justify-content: center;
+}
+
 .toolbar-popover-caret {
 	margin-inline-start: -0.125rem;
-
-	--v-icon-size: 1rem;
 }
 
 .toolbar-popover-items {
