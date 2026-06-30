@@ -19,6 +19,7 @@ import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { Upload } from 'tus-js-client';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
+import { LICENSE_KEYS } from '../../license/__fixtures__/licenses.js';
 
 let directus: Awaited<ReturnType<typeof sandbox>>;
 let api: DirectusClient<unknown> & RestClient<unknown>;
@@ -110,7 +111,9 @@ beforeAll(async () => {
 			EXTENSIONS_PATH: './uploads/extensions',
 			TEMP_PATH: './uploads/temp',
 			DB_FILENAME: `directus_test_${getUID()}.db`,
+			LICENSE_KEY: LICENSE_KEYS.UNLIMITED,
 		},
+		extras: { license: true },
 		docker: {
 			suffix: getUID(),
 		},
