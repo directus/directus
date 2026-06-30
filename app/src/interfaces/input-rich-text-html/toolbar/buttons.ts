@@ -292,6 +292,8 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		icon: 'grid_on',
 		label: 'wysiwyg_options.table',
 		component: TableMenu,
+		// wider than a square button: it carries a dropdown caret (see toolbar-popover's popoverWidth)
+		width: 40,
 	},
 	visualaid: {
 		icon: 'border_clear',

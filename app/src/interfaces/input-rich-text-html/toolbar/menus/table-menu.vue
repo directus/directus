@@ -2,6 +2,7 @@
 import type { Editor } from '@tiptap/vue-3';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ToolbarCaret from '../toolbar-caret.vue';
 import SubmenuListItem from './submenu-list-item.vue';
 import { run as runTableCommand } from './table-actions';
 import TableGridPicker from './table-grid-picker.vue';
@@ -59,7 +60,7 @@ defineExpose({ run, insertTable, menuOpen });
 			<!-- .stop keeps a parent menu (the "Show More" overflow panel) open when this lives inside it -->
 			<VButton
 				v-tooltip="t('wysiwyg_options.table')"
-				class="toolbar-button"
+				class="toolbar-button toolbar-popover"
 				ghost
 				:active="active || inTable()"
 				:disabled="disabled || !editor"
@@ -68,6 +69,7 @@ defineExpose({ run, insertTable, menuOpen });
 				@click.stop="toggle"
 			>
 				<VIcon name="grid_on" />
+				<ToolbarCaret class="toolbar-popover-caret" />
 			</VButton>
 		</template>
 		<VList>
@@ -136,5 +138,16 @@ defineExpose({ run, insertTable, menuOpen });
 .toolbar-button.ghost.active {
 	--v-button-background-color: var(--theme--form--field--input--border-color);
 	--v-button-color: var(--theme--foreground);
+}
+
+// `icon` makes VButton a tight square with no padding; icon + caret need more room. Widen to fit both
+// (matches `popoverWidth` in toolbar.vue / the table button's `width` in buttons.ts) and center it.
+.toolbar-popover :deep(.button.icon) {
+	inline-size: 2.5rem;
+	justify-content: center;
+}
+
+.toolbar-popover-caret {
+	margin-inline-start: -0.125rem;
 }
 </style>
