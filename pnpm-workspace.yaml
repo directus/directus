@@ -216,7 +216,7 @@ catalog:
   graphql: 16.12.0
   graphql-compose: 9.1.0
   graphql-ws: 6.0.6
-  happy-dom: 20.8.9
+  happy-dom: 20.10.6
   helmet: 8.1.0
   histoire: 0.17.17
   html-entities: 2.6.0
@@ -317,7 +317,7 @@ catalog:
   tedious: 18.6.1
   three: ^0.184.0
   tinymce: 6.8.6
-  tmp: 0.2.6
+  tmp: 0.2.7
   tsdown: 0.15.11
   tsx: 4.20.6
   tus-js-client: 4.3.1
@@ -344,7 +344,7 @@ catalog:
   vue-virtual-scroller: 2.0.0-beta.8
   vuedraggable: 4.1.0
   wellknown: 0.5.0
-  ws: 8.18.3
+  ws: 8.21.0
   zod: 4.1.12
   zod-validation-error: 4.0.2
 
