@@ -41,7 +41,7 @@ export function assertSensitiveMutationLimit(
 				counts.set(fieldName, count);
 
 				if (count > MAX_INVOCATIONS_PER_OPERATION) {
-					throw new GraphQLError(`"${fieldName}" can only be used once per request`, { nodes: selection })
+					throw new GraphQLError(`"${fieldName}" can only be used once per request`, { nodes: selection });
 				}
 			} else if (selection.kind === Kind.INLINE_FRAGMENT) {
 				walk(selection.selectionSet, visiting);
