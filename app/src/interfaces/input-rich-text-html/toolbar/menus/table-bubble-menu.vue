@@ -3,7 +3,7 @@ import type { Editor } from '@tiptap/vue-3';
 import { BubbleMenu } from '@tiptap/vue-3/menus';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { run, type TableAction, tableActionGroups } from './table-actions';
+import { runContextCommand, type TableAction, tableActionGroups } from './table-actions';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 
@@ -86,7 +86,7 @@ defineExpose({ shouldShow, getReferencedVirtualElement });
 					small
 					icon
 					:disabled="!isEnabled(action)"
-					@click="run(editor, action.command)"
+					@click="runContextCommand(editor, action.command)"
 				>
 					<VIcon :name="action.icon" />
 				</VButton>
@@ -116,6 +116,7 @@ defineExpose({ shouldShow, getReferencedVirtualElement });
 		block-size: 0.625rem;
 		background-color: var(--theme--popover--menu--background);
 		transform: translateX(-50%) rotate(45deg);
+		pointer-events: none; // never intercept clicks/hover on the button it overlaps
 	}
 
 	&.placement-top::after {

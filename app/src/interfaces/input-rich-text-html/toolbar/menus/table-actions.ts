@@ -1,3 +1,4 @@
+import { CellSelection } from '@tiptap/pm/tables';
 import type { Editor } from '@tiptap/vue-3';
 
 type Chain = ReturnType<Editor['chain']>;
@@ -5,6 +6,18 @@ type Chain = ReturnType<Editor['chain']>;
 /** Run a table command on the editor, focusing first — shared by the table toolbar menu and the bubble menu. */
 export function run(editor: Editor | undefined, command: (chain: Chain) => Chain): void {
 	if (editor) command(editor.chain().focus()).run();
+}
+
+/**
+ * Run a single-target table command from the context popup.
+ *
+ */
+export function runContextCommand(editor: Editor | undefined, command: (chain: Chain) => Chain): void {
+	if (!editor) return;
+	const chain = editor.chain().focus();
+	const { selection } = editor.state;
+	if (selection instanceof CellSelection) chain.setTextSelection(selection.$headCell.pos + 1);
+	command(chain).run();
 }
 
 export interface TableAction {
