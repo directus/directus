@@ -3,6 +3,7 @@ import type { Editor } from '@tiptap/vue-3';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SubmenuListItem from './submenu-list-item.vue';
+import { run as runTableCommand } from './table-actions';
 import TableGridPicker from './table-grid-picker.vue';
 import VButton from '@/components/v-button.vue';
 import VDivider from '@/components/v-divider.vue';
@@ -24,8 +25,7 @@ const menuOpen = ref(false);
 
 /** Exposed for unit testing without opening the menu. */
 function run(command: (chain: ReturnType<Editor['chain']>) => ReturnType<Editor['chain']>): void {
-	const editor = props.editor;
-	if (editor) command(editor.chain().focus()).run();
+	runTableCommand(props.editor, command);
 }
 
 function insertTable(rows = 3, cols = 3): void {

@@ -9,6 +9,7 @@ import ImageDrawer from './drawers/image-drawer.vue';
 import LinkDrawer from './drawers/link-drawer.vue';
 import { editorExtensions } from './extensions';
 import { LinkShortcut } from './extensions/link-shortcut';
+import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
 import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
@@ -167,6 +168,8 @@ onKeyStroke('Escape', () => {
 			@open-link="openLinkDrawer"
 		/>
 		<EditorContent class="editor-content" :editor="editor" />
+
+		<TableBubbleMenu v-if="!nonEditable" :editor="editor" />
 
 		<ImageDrawer
 			v-model="imageDrawerOpen"
