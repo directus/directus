@@ -246,17 +246,23 @@ export class DirectusMCP {
 			systemPromptEnabled: this.systemPromptEnabled,
 		});
 
+		const useRegistryTools = req.query?.['tool_mode'] === 'registry';
+
 		// listing tools
 		this.server.setRequestHandler(ListToolsRequestSchema, () => {
 			return {
-				tools: mountedRegistry.getRootTools().map((tool) => this.toMcpTool(tool)),
+				tools: (useRegistryTools ? mountedRegistry.getRootTools() : mountedRegistry.tools).map((tool) =>
+					this.toMcpTool(tool),
+				),
 			};
 		});
 
 		// calling tools
 		this.server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest) => {
 			try {
-				const result = await mountedRegistry.executeRoot(request.params.name, request.params.arguments);
+				const result = useRegistryTools
+					? await mountedRegistry.executeRoot(request.params.name, request.params.arguments)
+					: await mountedRegistry.execute(request.params.name, request.params.arguments);
 
 				return this.toToolResponse(result);
 			} catch (error) {

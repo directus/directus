@@ -229,8 +229,27 @@ describe('mcp server', () => {
 			};
 		});
 
-		test('should list only MCP root tools', async () => {
+		test('should list individual MCP tools by default', async () => {
 			mockReq.accountability = { admin: false, user: 'user' } as Accountability;
+
+			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
+
+			await awaitJsonResponse(directusMCP);
+
+			const result = vi.mocked(mockRes.json).mock.calls[0]![0] as any;
+
+			expect(result.result.tools.map((tool: { name: string }) => tool.name)).toEqual([
+				'test-tool',
+				'delete-tool',
+				'validation-tool',
+				'system-prompt',
+				'schema',
+			]);
+		});
+
+		test('should list only MCP root tools in registry mode', async () => {
+			mockReq.accountability = { admin: false, user: 'user' } as Accountability;
+			mockReq.query = { tool_mode: 'registry' };
 
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
 
@@ -294,8 +313,8 @@ describe('mcp server', () => {
 					id: 1,
 					method: 'tools/call',
 					params: {
-						name: 'execute',
-						arguments: { name: 'test-tool', input: { test: 'value' } },
+						name: 'test-tool',
+						arguments: { test: 'value' },
 					},
 				},
 				accountability: { user: 'user', admin: false },
@@ -323,6 +342,80 @@ describe('mcp server', () => {
 			);
 		});
 
+		test('should execute tools through the registry root execute tool in registry mode', async () => {
+			const mockReq = {
+				accepts: vi.fn(() => 'application/json'),
+				body: {
+					jsonrpc: '2.0',
+					id: 1,
+					method: 'tools/call',
+					params: {
+						name: 'execute',
+						arguments: { name: 'test-tool', input: { test: 'value' } },
+					},
+				},
+				query: { tool_mode: 'registry' },
+				accountability: { user: 'user', admin: false },
+				schema: {},
+			} as unknown as Request;
+
+			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
+
+			await awaitJsonResponse(directusMCP);
+
+			expect(mockRes.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					jsonrpc: '2.0',
+					id: 1,
+					result: expect.objectContaining({
+						content: expect.arrayContaining([
+							expect.objectContaining({
+								type: 'text',
+								text: JSON.stringify({ data: 'test result' }),
+							}),
+						]),
+					}),
+				}),
+			);
+		});
+
+		test('should not accept the registry root execute tool by default', async () => {
+			const mockReq = {
+				accepts: vi.fn(() => 'application/json'),
+				body: {
+					jsonrpc: '2.0',
+					id: 1,
+					method: 'tools/call',
+					params: {
+						name: 'execute',
+						arguments: { name: 'test-tool', input: { test: 'value' } },
+					},
+				},
+				accountability: { user: 'user', admin: false },
+				schema: {},
+			} as unknown as Request;
+
+			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
+
+			await awaitJsonResponse(directusMCP);
+
+			expect(mockRes.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					jsonrpc: '2.0',
+					id: 1,
+					result: expect.objectContaining({
+						isError: true,
+						content: expect.arrayContaining([
+							expect.objectContaining({
+								type: 'text',
+								text: expect.stringContaining('UNKNOWN_TOOL'),
+							}),
+						]),
+					}),
+				}),
+			);
+		});
+
 		test('should search mounted tools through the MCP root search tool', async () => {
 			const mockReq = {
 				accepts: vi.fn(() => 'application/json'),
@@ -335,6 +428,7 @@ describe('mcp server', () => {
 						arguments: { query: 'test' },
 					},
 				},
+				query: { tool_mode: 'registry' },
 				accountability: { user: 'user', admin: false },
 				schema: {},
 			} as unknown as Request;
@@ -365,8 +459,8 @@ describe('mcp server', () => {
 					id: 1,
 					method: 'tools/call',
 					params: {
-						name: 'execute',
-						arguments: { name: 'test-tool', input: { data: '[{"name":"Test"}]', collection: 'brands' } },
+						name: 'test-tool',
+						arguments: { data: '[{"name":"Test"}]', collection: 'brands' },
 					},
 				},
 				accountability: { user: 'user', admin: false },
@@ -390,8 +484,8 @@ describe('mcp server', () => {
 					id: 1,
 					method: 'tools/call',
 					params: {
-						name: 'execute',
-						arguments: { name: 'non-existent-tool', input: {} },
+						name: 'non-existent-tool',
+						arguments: {},
 					},
 				},
 				accountability: { user: 'user', admin: false },
@@ -427,8 +521,8 @@ describe('mcp server', () => {
 					id: 1,
 					method: 'tools/call',
 					params: {
-						name: 'execute',
-						arguments: { name: 'system-prompt', input: {} },
+						name: 'system-prompt',
+						arguments: {},
 					},
 				},
 				accountability: { user: 'user', admin: false },
@@ -466,8 +560,8 @@ describe('mcp server', () => {
 					id: 1,
 					method: 'tools/call',
 					params: {
-						name: 'execute',
-						arguments: { name: 'admin-tool', input: {} },
+						name: 'admin-tool',
+						arguments: {},
 					},
 				},
 				accountability: { user: 'user', admin: false }, // Non-admin user
@@ -503,8 +597,8 @@ describe('mcp server', () => {
 					id: 1,
 					method: 'tools/call',
 					params: {
-						name: 'execute',
-						arguments: { name: 'admin-tool', input: {} },
+						name: 'admin-tool',
+						arguments: {},
 					},
 				},
 				accountability: { admin: true, user: 'user' }, // Admin user
@@ -543,8 +637,8 @@ describe('mcp server', () => {
 					id: 1,
 					method: 'tools/call',
 					params: {
-						name: 'execute',
-						arguments: { name: 'validation-tool', input: { invalid: 'data' } },
+						name: 'validation-tool',
+						arguments: { invalid: 'data' },
 					},
 				},
 				accountability: { user: 'user', admin: false },
@@ -580,8 +674,8 @@ describe('mcp server', () => {
 					id: 1,
 					method: 'tools/call',
 					params: {
-						name: 'execute',
-						arguments: { name: 'delete-tool', input: { action: 'delete' } },
+						name: 'delete-tool',
+						arguments: { action: 'delete' },
 					},
 				},
 				accountability: { user: 'user', admin: false },
