@@ -84,8 +84,8 @@ One click. Fully provisioned with PostgreSQL, Redis, and S3-compatible storage, 
 
 ## ❤️ Contributing
 
-Read our [Contributing Guide](https://github.com/directus/directus/blob/main/.github/CONTRIBUTING.md) before submitting
-pull requests.
+Read our [Contributing Guide](https://github.com/directus/directus/blob/main/contributing.md) before submitting pull
+requests.
 
 Report security vulnerabilities per our [Security Policy](https://github.com/directus/directus/security/policy).
 
