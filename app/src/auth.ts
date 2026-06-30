@@ -31,11 +31,10 @@ type LoginParams = {
 	share?: boolean;
 };
 
-const cookies = useCookies(['license-banner-dismissed', 'license-login-modal-dismissed']);
-
 export async function login({ credentials, provider, share }: LoginParams): Promise<void> {
 	const appStore = useAppStore();
 	const serverStore = useServerStore();
+	const cookies = useCookies(['license-banner-dismissed', 'license-login-modal-dismissed']);
 
 	let response: AuthenticationData;
 
