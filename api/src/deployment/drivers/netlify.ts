@@ -2,7 +2,6 @@ import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
 import type {
 	Credentials,
-	Deployment,
 	DeploymentWebhookEvent,
 	DeploymentWebhookEventType,
 	Details,
@@ -65,7 +64,7 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 	private api: NetlifyAPI;
 
 	constructor(credentials: NetlifyCredentials, options: NetlifyOptions = {}) {
-		super(credentials, options);
+		super(credentials, options, { supportsPreviewDeploy: false });
 		this.api = new NetlifyAPI(this.credentials.access_token);
 	}
 
@@ -179,34 +178,8 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 		return deploy['ssl_url'] ?? deploy['deploy_ssl_url'] ?? deploy['deploy_url'] ?? deploy['url'];
 	}
 
-	async listDeployments(projectId: string, limit = 20): Promise<Deployment[]> {
-		const response = await this.handleApiError((api) => api.listSiteDeploys({ site_id: projectId, per_page: limit }));
-
-		return response.map((deploy) => {
-			const result: Deployment = {
-				id: deploy.id!,
-				project_id: deploy.site_id!,
-				status: this.mapStatus(deploy.state),
-				created_at: new Date(deploy.created_at!),
-			};
-
-			const url = this.mapDeployUrl(deploy);
-			if (url) result.url = url;
-
-			if (deploy.published_at) {
-				result.finished_at = new Date(deploy.published_at);
-			}
-
-			if (deploy.error_message) {
-				result.error_message = deploy.error_message;
-			}
-
-			return result;
-		});
-	}
-
-	async getDeployment(deploymentId: string): Promise<Details> {
-		const deploy = await this.handleApiError((api) => api.getDeploy({ deployId: deploymentId }));
+	async getRun(runId: string): Promise<Details> {
+		const deploy = await this.handleApiError((api) => api.getDeploy({ deployId: runId }));
 
 		const result: Details = {
 			id: deploy.id!,
@@ -229,10 +202,7 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 		return result;
 	}
 
-	async triggerDeployment(
-		projectId: string,
-		options?: { preview?: boolean; clearCache?: boolean },
-	): Promise<TriggerResult> {
+	async triggerRun(projectId: string, options?: { preview?: boolean; clearCache?: boolean }): Promise<TriggerResult> {
 		// Netlify builds endpoint returns a Build object with deploy_id and deploy_state
 		const buildResponse = await this.handleApiError((api) =>
 			api.createSiteBuild({
@@ -252,23 +222,23 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 		return triggerResult;
 	}
 
-	async cancelDeployment(deploymentId: string): Promise<Status> {
+	async cancelRun(runId: string): Promise<Status> {
 		try {
-			await this.handleApiError((api) => api.cancelSiteDeploy({ deployId: deploymentId }));
-			this.closeWsConnection(deploymentId);
+			await this.handleApiError((api) => api.cancelSiteDeploy({ deployId: runId }));
+			this.closeWsConnection(runId);
 
 			return 'canceled';
 		} catch {
-			const details = await this.getDeployment(deploymentId);
+			const details = await this.getRun(runId);
 
 			if (details.status !== 'building') {
-				this.closeWsConnection(deploymentId);
+				this.closeWsConnection(runId);
 				return details.status;
 			}
 
 			throw new ServiceUnavailableError({
 				service: 'netlify',
-				reason: `Could not cancel the deployment: ${deploymentId}`,
+				reason: `Could not cancel the run: ${runId}`,
 			});
 		}
 	}
@@ -485,9 +455,9 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 		};
 	}
 
-	async getDeploymentLogs(deploymentId: string, options?: { since?: Date }): Promise<Log[]> {
-		const deploy = await this.handleApiError((api) => api.getDeploy({ deployId: deploymentId }));
-		const connection = await this.getWsConnection(deploymentId);
+	async getRunLogs(runId: string, options?: { since?: Date }): Promise<Log[]> {
+		const deploy = await this.handleApiError((api) => api.getDeploy({ deployId: runId }));
+		const connection = await this.getWsConnection(runId);
 
 		// Build already finished — WS is replaying logs, wait for all of them
 		if (this.mapStatus(deploy.state) !== 'building') {
