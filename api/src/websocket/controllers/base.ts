@@ -199,7 +199,7 @@ export default abstract class SocketController {
 			}
 		}
 
-		if (!token || !isUnauthenticated(accountability)) {
+		if (!token || isUnauthenticated(accountability)) {
 			logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability));
 			socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
 			socket.destroy();
