@@ -1432,6 +1432,9 @@ wysiwyg_options:
   removeformat: Remove Format
   selectall: Select All
   table: Table
+  table_cell: Cell
+  table_row: Row
+  table_column: Column
   table_insert: Insert Table
   table_insert_size: '{cols} × {rows}'
   table_add_row_before: Add Row Above

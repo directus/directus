@@ -24,9 +24,9 @@ const { t } = useI18n();
 
 const menuOpen = ref(false);
 
-/** Exposed for unit testing without opening the menu. */
 function run(command: (chain: ReturnType<Editor['chain']>) => ReturnType<Editor['chain']>): void {
 	runTableCommand(props.editor, command);
+	menuOpen.value = false;
 }
 
 function insertTable(rows = 3, cols = 3): void {
@@ -35,7 +35,6 @@ function insertTable(rows = 3, cols = 3): void {
 
 function onPickSize({ rows, cols }: { rows: number; cols: number }): void {
 	insertTable(rows, cols);
-	// The picker lives in a teleported flyout, so close-on-content-click can't reach it.
 	menuOpen.value = false;
 }
 
@@ -57,7 +56,6 @@ defineExpose({ run, insertTable, menuOpen });
 <template>
 	<VMenu v-model="menuOpen" placement="bottom-start" show-arrow close-on-content-click>
 		<template #activator="{ toggle, active }">
-			<!-- .stop keeps a parent menu (the "Show More" overflow panel) open when this lives inside it -->
 			<VButton
 				v-tooltip="t('wysiwyg_options.table')"
 				class="toolbar-button toolbar-popover"
@@ -79,52 +77,69 @@ defineExpose({ run, insertTable, menuOpen });
 
 			<VDivider />
 
-			<VListItem clickable :disabled="!inTable()" @click="run((c) => c.addRowBefore())">
-				<VListItemIcon><VIcon name="add_row_above" /></VListItemIcon>
-				<VListItemContent>{{ t('wysiwyg_options.table_add_row_before') }}</VListItemContent>
-			</VListItem>
-			<VListItem clickable :disabled="!inTable()" @click="run((c) => c.addRowAfter())">
-				<VListItemIcon><VIcon name="add_row_below" /></VListItemIcon>
-				<VListItemContent>{{ t('wysiwyg_options.table_add_row_after') }}</VListItemContent>
-			</VListItem>
-			<VListItem clickable :disabled="!inTable()" @click="run((c) => c.addColumnBefore())">
-				<VListItemIcon><VIcon name="add_column_left" /></VListItemIcon>
-				<VListItemContent>{{ t('wysiwyg_options.table_add_column_before') }}</VListItemContent>
-			</VListItem>
-			<VListItem clickable :disabled="!inTable()" @click="run((c) => c.addColumnAfter())">
-				<VListItemIcon><VIcon name="add_column_right" /></VListItemIcon>
-				<VListItemContent>{{ t('wysiwyg_options.table_add_column_after') }}</VListItemContent>
-			</VListItem>
+			<SubmenuListItem icon="grid_3x3" :label="t('wysiwyg_options.table_cell')" :disabled="!inTable()">
+				<VListItem clickable :disabled="!canMerge()" @click="run((c) => c.mergeCells())">
+					<VListItemIcon><VIcon name="cell_merge" /></VListItemIcon>
+					<VListItemContent>{{ t('wysiwyg_options.table_merge_cells') }}</VListItemContent>
+				</VListItem>
+				<VListItem clickable :disabled="!canSplit()" @click="run((c) => c.splitCell())">
+					<VListItemIcon><VIcon name="splitscreen" /></VListItemIcon>
+					<VListItemContent>{{ t('wysiwyg_options.table_split_cell') }}</VListItemContent>
+				</VListItem>
+			</SubmenuListItem>
+
+			<SubmenuListItem icon="table_rows" :label="t('wysiwyg_options.table_row')" :disabled="!inTable()">
+				<VListItem clickable :disabled="!inTable()" @click="run((c) => c.addRowBefore())">
+					<VListItemIcon><VIcon name="add_row_above" /></VListItemIcon>
+					<VListItemContent>{{ t('wysiwyg_options.table_add_row_before') }}</VListItemContent>
+				</VListItem>
+				<VListItem clickable :disabled="!inTable()" @click="run((c) => c.addRowAfter())">
+					<VListItemIcon><VIcon name="add_row_below" /></VListItemIcon>
+					<VListItemContent>{{ t('wysiwyg_options.table_add_row_after') }}</VListItemContent>
+				</VListItem>
+
+				<VDivider />
+
+				<VListItem clickable :disabled="!inTable()" @click="run((c) => c.toggleHeaderRow())">
+					<VListItemIcon><VIcon name="table_rows" /></VListItemIcon>
+					<VListItemContent>{{ t('wysiwyg_options.table_toggle_header_row') }}</VListItemContent>
+				</VListItem>
+
+				<VDivider />
+
+				<VListItem clickable :disabled="!inTable()" @click="run((c) => c.deleteRow())">
+					<VListItemIcon><VIcon name="delete" /></VListItemIcon>
+					<VListItemContent>{{ t('wysiwyg_options.table_delete_row') }}</VListItemContent>
+				</VListItem>
+			</SubmenuListItem>
+
+			<SubmenuListItem icon="view_column" :label="t('wysiwyg_options.table_column')" :disabled="!inTable()">
+				<VListItem clickable :disabled="!inTable()" @click="run((c) => c.addColumnBefore())">
+					<VListItemIcon><VIcon name="add_column_left" /></VListItemIcon>
+					<VListItemContent>{{ t('wysiwyg_options.table_add_column_before') }}</VListItemContent>
+				</VListItem>
+				<VListItem clickable :disabled="!inTable()" @click="run((c) => c.addColumnAfter())">
+					<VListItemIcon><VIcon name="add_column_right" /></VListItemIcon>
+					<VListItemContent>{{ t('wysiwyg_options.table_add_column_after') }}</VListItemContent>
+				</VListItem>
+
+				<VDivider />
+
+				<VListItem clickable :disabled="!inTable()" @click="run((c) => c.toggleHeaderColumn())">
+					<VListItemIcon><VIcon name="view_column" /></VListItemIcon>
+					<VListItemContent>{{ t('wysiwyg_options.table_toggle_header_column') }}</VListItemContent>
+				</VListItem>
+
+				<VDivider />
+
+				<VListItem clickable :disabled="!inTable()" @click="run((c) => c.deleteColumn())">
+					<VListItemIcon><VIcon name="delete" /></VListItemIcon>
+					<VListItemContent>{{ t('wysiwyg_options.table_delete_column') }}</VListItemContent>
+				</VListItem>
+			</SubmenuListItem>
 
 			<VDivider />
 
-			<VListItem clickable :disabled="!inTable()" @click="run((c) => c.toggleHeaderRow())">
-				<VListItemIcon><VIcon name="table_rows" /></VListItemIcon>
-				<VListItemContent>{{ t('wysiwyg_options.table_toggle_header_row') }}</VListItemContent>
-			</VListItem>
-			<VListItem clickable :disabled="!inTable()" @click="run((c) => c.toggleHeaderColumn())">
-				<VListItemIcon><VIcon name="view_column" /></VListItemIcon>
-				<VListItemContent>{{ t('wysiwyg_options.table_toggle_header_column') }}</VListItemContent>
-			</VListItem>
-			<VListItem clickable :disabled="!canMerge()" @click="run((c) => c.mergeCells())">
-				<VListItemIcon><VIcon name="cell_merge" /></VListItemIcon>
-				<VListItemContent>{{ t('wysiwyg_options.table_merge_cells') }}</VListItemContent>
-			</VListItem>
-			<VListItem clickable :disabled="!canSplit()" @click="run((c) => c.splitCell())">
-				<VListItemIcon><VIcon name="splitscreen" /></VListItemIcon>
-				<VListItemContent>{{ t('wysiwyg_options.table_split_cell') }}</VListItemContent>
-			</VListItem>
-
-			<VDivider />
-
-			<VListItem clickable :disabled="!inTable()" @click="run((c) => c.deleteRow())">
-				<VListItemIcon><VIcon name="delete" /></VListItemIcon>
-				<VListItemContent>{{ t('wysiwyg_options.table_delete_row') }}</VListItemContent>
-			</VListItem>
-			<VListItem clickable :disabled="!inTable()" @click="run((c) => c.deleteColumn())">
-				<VListItemIcon><VIcon name="delete" /></VListItemIcon>
-				<VListItemContent>{{ t('wysiwyg_options.table_delete_column') }}</VListItemContent>
-			</VListItem>
 			<VListItem clickable :disabled="!inTable()" @click="run((c) => c.deleteTable())">
 				<VListItemIcon><VIcon name="grid_off" /></VListItemIcon>
 				<VListItemContent>{{ t('wysiwyg_options.table_delete') }}</VListItemContent>
@@ -134,14 +149,11 @@ defineExpose({ run, insertTable, menuOpen });
 </template>
 
 <style lang="scss" scoped>
-// `.ghost` raises specificity above VButton's own `.ghost.active` rule. Mirrors style-list-menu.
 .toolbar-button.ghost.active {
 	--v-button-background-color: var(--theme--form--field--input--border-color);
 	--v-button-color: var(--theme--foreground);
 }
 
-// `icon` makes VButton a tight square with no padding; icon + caret need more room. Widen to fit both
-// (matches `popoverWidth` in toolbar.vue / the table button's `width` in buttons.ts) and center it.
 .toolbar-popover :deep(.button.icon) {
 	inline-size: 2.5rem;
 	justify-content: center;
