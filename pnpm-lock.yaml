@@ -349,8 +349,8 @@ catalogs:
       specifier: 22.13.14
       version: 22.13.14
     '@types/nodemailer':
-      specifier: 7.0.3
-      version: 7.0.3
+      specifier: 8.0.1
+      version: 8.0.1
     '@types/object-hash':
       specifier: 3.0.6
       version: 3.0.6
@@ -733,8 +733,8 @@ catalogs:
       specifier: 1.1.12
       version: 1.1.12
     nodemailer:
-      specifier: 8.0.5
-      version: 8.0.5
+      specifier: 9.0.3
+      version: 9.0.3
     nodemailer-mailgun-transport:
       specifier: 2.1.5
       version: 2.1.5
@@ -1360,7 +1360,7 @@ importers:
         version: 1.1.12
       nodemailer:
         specifier: 'catalog:'
-        version: 8.0.5
+        version: 9.0.3
       object-hash:
         specifier: 'catalog:'
         version: 3.0.0
@@ -1538,7 +1538,7 @@ importers:
         version: 22.13.14
       '@types/nodemailer':
         specifier: 'catalog:'
-        version: 7.0.3
+        version: 8.0.1
       '@types/object-hash':
         specifier: 'catalog:'
         version: 3.0.6
@@ -3001,7 +3001,7 @@ importers:
         version: 7946.0.16
       '@types/nodemailer':
         specifier: 'catalog:'
-        version: 7.0.3
+        version: 8.0.1
       '@types/ws':
         specifier: 'catalog:'
         version: 8.18.1
@@ -3016,7 +3016,7 @@ importers:
         version: 16.12.0
       nodemailer:
         specifier: 'catalog:'
-        version: 8.0.5
+        version: 9.0.3
       openapi3-ts:
         specifier: 'catalog:'
         version: 4.5.0
@@ -3296,8 +3296,8 @@ importers:
         specifier: 3.0.8
         version: 3.0.8
       '@types/smtp-server':
-        specifier: 3.5.12
-        version: 3.5.12
+        specifier: 3.5.13
+        version: 3.5.13
       '@types/supertest':
         specifier: 6.0.2
         version: 6.0.2
@@ -3350,8 +3350,8 @@ importers:
         specifier: 3.0.5
         version: 3.0.5
       smtp-server:
-        specifier: 3.18.4
-        version: 3.18.4
+        specifier: 3.19.1
+        version: 3.19.1
       supertest:
         specifier: 7.1.4
         version: 7.1.4
@@ -7804,8 +7804,8 @@ packages:
   '@types/node@24.9.1':
     resolution: {integrity: sha512-QoiaXANRkSXK6p0Duvt56W208du4P9Uye9hWLWgGMDTEoKPhuenzNcC4vGUmrNkiOKTlIrBoyNQYNpSwfEZXSg==}
 
-  '@types/nodemailer@7.0.3':
-    resolution: {integrity: sha512-fC8w49YQ868IuPWRXqPfLf+MuTRex5Z1qxMoG8rr70riqqbOp2F5xgOKE9fODEBPzpnvjkJXFgK6IL2xgMSTnA==}
+  '@types/nodemailer@8.0.1':
+    resolution: {integrity: sha512-PxpaInm8V1JQDd4j0ds5HfvWQk8JupS1C0Picb96QJsrrRDjBH+DlK7L4ZdNSqNULhiZRQHc40nLVShaGxXAMw==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -7861,8 +7861,8 @@ packages:
   '@types/serve-static@1.15.9':
     resolution: {integrity: sha512-dOTIuqpWLyl3BBXU3maNQsS4A3zuuoYRNIvYSxxhebPfXg2mzWQEPne/nlJ37yOse6uGgR386uTpdsx4D0QZWA==}
 
-  '@types/smtp-server@3.5.12':
-    resolution: {integrity: sha512-IBemrqI6nzvbgwE41Lnd4v4Yf1Kc7F1UHjk1GFBLNhLcI/Zop1ggHQ8g7Y8QYc6jGVgzWQcsa0MBNcGnDY9UGw==}
+  '@types/smtp-server@3.5.13':
+    resolution: {integrity: sha512-S3rGl2KbViH+98/CgHipPIWgtAFnjxLsppxIRbgJHNuZL7Y+py+7kZjT7xS+wOmCxYTn4O7IqLqkvekg99MDVQ==}
 
   '@types/ssri@7.1.5':
     resolution: {integrity: sha512-odD/56S3B51liILSk5aXJlnYt99S6Rt9EFDDqGtJM26rKHApHcwyU/UoYHrzKkdkHMAIquGWCuHtQTbes+FRQw==}
@@ -12268,12 +12268,12 @@ packages:
   nodemailer-mailgun-transport@2.1.5:
     resolution: {integrity: sha512-hF7POkaxFgMvYEd5aHLaQJI2511ld+aQlQi7JH6bGjhjlZ33cIbTB9PimlIrLu5XC3z76Kde6e65OIwL9lOdTA==}
 
-  nodemailer@8.0.5:
-    resolution: {integrity: sha512-0PF8Yb1yZuQfQbq+5/pZJrtF6WQcjTd5/S4JOHs9PGFxuTqoB/icwuB44pOdURHJbRKX1PPoJZtY7R4VUoCC8w==}
-    engines: {node: '>=6.0.0'}
-
   nodemailer@9.0.1:
     resolution: {integrity: sha512-Gwv8SQewT616ZM/URn0H54b8PWo/Wum7md3EW2aWy1lO27+WZCX+Xyak3J+NlmHUjDh5ME+uesJUDRbR3Ye8Bw==}
+    engines: {node: '>=6.0.0'}
+
+  nodemailer@9.0.3:
+    resolution: {integrity: sha512-n+YP+NKwR5zRWa60k3GiQ6Q3B4KXCoAw40dAKeCtYn020iNN74aWK2liXIC3ZEATeGql7we3tE3t8QwhY0eskw==}
     engines: {node: '>=6.0.0'}
 
   nodemon@3.1.10:
@@ -13994,8 +13994,8 @@ packages:
   smob@1.5.0:
     resolution: {integrity: sha512-g6T+p7QO8npa+/hNx9ohv1E5pVCmWrVCUzUXJyLdMmftX6ER0oiWY/w9knEonLpnOp6b6FenKnMfR8gqwWdwig==}
 
-  smtp-server@3.18.4:
-    resolution: {integrity: sha512-9EnXPG4Tv+2P/TSEUdFTduYn9IxtxNRsOq/ryVj8ZlT+6MU2um9gn2Td2hHlgH1n+saagMWtici3hn5J5PhU+g==}
+  smtp-server@3.19.1:
+    resolution: {integrity: sha512-2IeTkoLkmRm9LiG3vlws3OddCgp+sDXAVEUXJeBMoW1fpBYUU5iPOxp3hLWGt/D3a+YfT/NrIdRAUjKapy4dhQ==}
     engines: {node: '>=18.18.0'}
 
   snake-case@3.0.4:
@@ -20796,12 +20796,9 @@ snapshots:
     dependencies:
       undici-types: 7.16.0
 
-  '@types/nodemailer@7.0.3':
+  '@types/nodemailer@8.0.1':
     dependencies:
-      '@aws-sdk/client-sesv2': 3.928.0
       '@types/node': 24.9.1
-    transitivePeerDependencies:
-      - aws-crt
 
   '@types/normalize-package-data@2.4.4': {}
 
@@ -20868,12 +20865,10 @@ snapshots:
       '@types/node': 24.9.1
       '@types/send': 0.17.5
 
-  '@types/smtp-server@3.5.12':
+  '@types/smtp-server@3.5.13':
     dependencies:
       '@types/node': 24.9.1
-      '@types/nodemailer': 7.0.3
-    transitivePeerDependencies:
-      - aws-crt
+      '@types/nodemailer': 8.0.1
 
   '@types/ssri@7.1.5':
     dependencies:
@@ -25853,9 +25848,9 @@ snapshots:
       - whiskers
     optional: true
 
-  nodemailer@8.0.5: {}
-
   nodemailer@9.0.1: {}
+
+  nodemailer@9.0.3: {}
 
   nodemon@3.1.10:
     dependencies:
@@ -27892,10 +27887,10 @@ snapshots:
 
   smob@1.5.0: {}
 
-  smtp-server@3.18.4:
+  smtp-server@3.19.1:
     dependencies:
       ipv6-normalize: 1.0.1
-      nodemailer: 8.0.5
+      nodemailer: 9.0.1
       punycode.js: 2.3.1
 
   snake-case@3.0.4:

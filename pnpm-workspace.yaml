@@ -126,7 +126,7 @@ catalog:
   '@types/mime-types': 3.0.1
   '@types/ms': 2.1.0
   '@types/node': 22.13.14
-  '@types/nodemailer': 7.0.3
+  '@types/nodemailer': 8.0.1
   '@types/object-hash': 3.0.6
   '@types/papaparse': 5.5.0
   '@types/proxy-addr': 2.0.3
@@ -259,7 +259,7 @@ catalog:
   mysql2: 3.15.3
   nanoid: 5.1.6
   node-machine-id: 1.1.12
-  nodemailer: 8.0.5
+  nodemailer: 9.0.3
   nodemailer-mailgun-transport: 2.1.5
   npm-watch: 0.13.0
   object-hash: 3.0.0
