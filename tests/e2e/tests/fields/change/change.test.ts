@@ -12,7 +12,7 @@ import {
 	staticToken,
 	updateField,
 } from '@directus/sdk';
-import { port } from '@utils/constants.js';
+import { database, port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { afterAll, describe, expect, test } from 'vitest';
 import type { Schema } from './schema.js';
@@ -143,7 +143,8 @@ describe('/fields', () => {
 			);
 		});
 
-		test('SQL injection via geometry subtype does not execute', async () => {
+		// Skip if oracle as CI option lacks spatial support
+		test.skipIf(database === 'oracle')('SQL injection via geometry subtype does not execute', async () => {
 			// The injection embeds a SELECT against a non-existent table which will error if executed
 			const subtype = `Point, 4326)); SELECT * FROM "directus_geom_injection_canary"; --`;
 
