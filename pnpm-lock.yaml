@@ -985,9 +985,6 @@ overrides:
   tar: 7.5.19
   minimatch@9: 9.0.9
   express@4>path-to-regexp: 0.1.13
-  micromatch>picomatch: 2.3.2
-  anymatch>picomatch: 2.3.2
-  picomatch: 4.0.4
   defu: 6.1.7
   unplugin-vue>vite: 8.0.14
   vitest@3>vite: 7.3.2
@@ -10271,7 +10268,7 @@ packages:
     resolution: {integrity: sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
-      picomatch: 4.0.4
+      picomatch: ^3 || ^4
     peerDependenciesMeta:
       picomatch:
         optional: true
@@ -27115,7 +27112,7 @@ snapshots:
 
   readdirp@3.6.0:
     dependencies:
-      picomatch: 4.0.4
+      picomatch: 2.3.2
 
   readdirp@4.1.2: {}
 
