@@ -9,8 +9,10 @@ import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
 import {
 	CollectionItemInputSchema,
+	CollectionItemOutputSchema,
 	CollectionItemValidateCreateSchema,
 	CollectionItemValidateUpdateSchema,
+	PrimaryKeyOutputSchema,
 } from '../schema.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -40,15 +42,27 @@ export const CollectionsInputSchema = z.object({
 	data: z.array(CollectionItemInputSchema).optional(),
 });
 
-export const collections = defineTool<z.infer<typeof CollectionsValidateSchema>>({
+const CollectionsOutputSchema = z.object({
+	data: z.union([z.array(CollectionItemOutputSchema), z.array(PrimaryKeyOutputSchema), z.null()]),
+});
+
+export const collections = defineTool<
+	z.infer<typeof CollectionsValidateSchema>,
+	z.infer<typeof CollectionsOutputSchema>
+>({
 	name: 'collections',
 	admin: true,
-	description: requireText(resolve(__dirname, './prompt.md')),
+	description:
+		'Reads and changes Directus collections. Use to create content models, folders, collection metadata, or inspect existing collections.',
+	instructions: requireText(resolve(__dirname, './prompt.md')),
+	keywords: ['data model', 'content model', 'tables', 'schema folders', 'collection metadata'],
 	annotations: {
 		title: 'Directus - Collections',
 	},
 	inputSchema: CollectionsInputSchema,
 	validateSchema: CollectionsValidateSchema,
+	output: CollectionsOutputSchema,
+	readOnly: (input) => input.action === 'read',
 	endpoint({ data }) {
 		if (!isObject(data) || !('collection' in data)) {
 			return;

@@ -46,12 +46,16 @@ export const OperationsInputSchema = z.object({
 export const operations = defineTool<z.infer<typeof OperationsValidationSchema>>({
 	name: 'operations',
 	admin: true,
-	description: requireText(resolve(__dirname, './prompt.md')),
+	description:
+		'Reads and changes Directus flow operations. Use to build or inspect operation chains inside automation flows.',
+	instructions: requireText(resolve(__dirname, './prompt.md')),
+	keywords: ['flow steps', 'automation steps', 'data chain', 'resolve', 'reject', 'operation key'],
 	annotations: {
 		title: 'Directus - Operations',
 	},
 	inputSchema: OperationsInputSchema,
 	validateSchema: OperationsValidationSchema,
+	readOnly: (input) => input.action === 'read',
 	async handler({ args, schema, accountability }) {
 		const operationService = new OperationsService({
 			schema,

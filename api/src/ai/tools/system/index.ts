@@ -14,12 +14,16 @@ const SystemPromptValidateSchema = z.object({
 
 export const system = defineTool<z.infer<typeof SystemPromptValidateSchema>>({
 	name: 'system-prompt',
-	description: requireText(resolve(__dirname, './prompt-description.md')),
+	description:
+		'Returns the Directus Assistant system instructions. Use first to load role, behavior, and tool guidance.',
+	instructions: requireText(resolve(__dirname, './prompt.md')),
+	keywords: ['instructions', 'role', 'assistant prompt', 'system instructions'],
 	annotations: {
 		title: 'Directus - System Prompt',
 	},
 	inputSchema: SystemPromptInputSchema,
 	validateSchema: SystemPromptValidateSchema,
+	readOnly: true,
 	async handler({ args }) {
 		return {
 			type: 'text',

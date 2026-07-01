@@ -32,13 +32,22 @@ export type ToolEndpoint<T> = {
 	(options: { input: T; data: unknown }): string[] | undefined;
 };
 
-export interface ToolConfig<T> {
+export type ToolExposure = 'root' | 'search';
+
+export type ToolReadOnly<T> = boolean | ((input: T) => boolean);
+
+export interface ToolConfig<Input, Output = unknown> {
 	name: string;
 	description: string;
-	endpoint?: ToolEndpoint<T>;
+	keywords?: string[];
+	instructions?: string;
+	endpoint?: ToolEndpoint<Input>;
 	admin?: boolean;
 	inputSchema: ZodType<any>;
-	validateSchema?: ZodType<T>;
+	validateSchema?: ZodType<Input>;
+	output?: ZodType<Output>;
+	readOnly?: ToolReadOnly<Input>;
+	exposure?: ToolExposure;
 	annotations?: ToolAnnotations;
-	handler: ToolHandler<T>;
+	handler: ToolHandler<Input>;
 }

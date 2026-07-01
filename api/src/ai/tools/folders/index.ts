@@ -8,8 +8,10 @@ import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
 import {
 	FolderItemInputSchema,
+	FolderItemOutputSchema,
 	FolderItemValidateSchema,
 	PrimaryKeyInputSchema,
+	PrimaryKeyOutputSchema,
 	PrimaryKeyValidateSchema,
 	QueryInputSchema,
 	QueryValidateSchema,
@@ -48,14 +50,23 @@ const FoldersInputSchema = z.object({
 	data: z.array(FolderItemInputSchema).optional(),
 });
 
-export const folders = defineTool<z.infer<typeof FoldersValidateSchema>>({
+const FoldersOutputSchema = z.object({
+	data: z.union([z.array(FolderItemOutputSchema), z.array(PrimaryKeyOutputSchema), z.null()]),
+});
+
+export const folders = defineTool<z.infer<typeof FoldersValidateSchema>, z.infer<typeof FoldersOutputSchema>>({
 	name: 'folders',
-	description: requireText(resolve(__dirname, './prompt.md')),
+	description:
+		'Reads and changes Directus file folders. Use to organize files into folder hierarchies or inspect existing folder records.',
+	instructions: requireText(resolve(__dirname, './prompt.md')),
+	keywords: ['directories', 'media folders', 'file organization', 'parent folder'],
 	annotations: {
 		title: 'Directus - Folders',
 	},
 	inputSchema: FoldersInputSchema,
 	validateSchema: FoldersValidateSchema,
+	output: FoldersOutputSchema,
+	readOnly: (input) => input.action === 'read',
 	async handler({ args, schema, accountability }) {
 		const service = new FoldersService({
 			schema,
