@@ -1,4 +1,5 @@
-import { Node } from '@tiptap/vue-3';
+import { Node, VueNodeViewRenderer } from '@tiptap/vue-3';
+import MediaNodeView from './media-node-view.vue';
 
 export type MediaTag = 'video' | 'audio' | 'iframe';
 
@@ -47,6 +48,10 @@ export const Media = Node.create({
 	atom: true,
 	selectable: true,
 	draggable: true,
+
+	addStorage() {
+		return { onOpenDrawer: null as null | (() => void) };
+	},
 
 	addAttributes() {
 		return {
@@ -101,5 +106,9 @@ export const Media = Node.create({
 				({ commands }) =>
 					commands.insertContent({ type: this.name, attrs }),
 		};
+	},
+
+	addNodeView() {
+		return VueNodeViewRenderer(MediaNodeView);
 	},
 });

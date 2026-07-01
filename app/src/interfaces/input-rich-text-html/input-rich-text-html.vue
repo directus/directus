@@ -94,7 +94,10 @@ const editor = useEditor({
 			return true;
 		},
 	},
-	onCreate: ({ editor }) => syncValue(editor as Editor, props.value),
+	onCreate: ({ editor }) => {
+		syncValue(editor as Editor, props.value);
+		((editor as Editor).storage as Record<string, any>).media.onOpenDrawer = openMediaDrawer;
+	},
 	onUpdate: ({ editor }) => {
 		emit('input', editor.isEmpty ? null : editor.getHTML());
 	},
