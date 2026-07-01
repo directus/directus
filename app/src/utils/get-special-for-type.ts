@@ -8,9 +8,11 @@ export function getSpecialForType(type: Type): string[] | null {
 			return ['cast-' + type];
 		case 'uuid':
 		case 'hash':
-		case 'geometry':
 			return [type];
 		default:
+			// geometry types carry their subtype in the type (e.g. `geometry.Point`); keep it in
+			// `special` so the column doesn't collapse to a generic `geometry` on the next schema change
+			if (type.startsWith('geometry')) return [type];
 			return null;
 	}
 }
