@@ -119,4 +119,36 @@ describe('DeploymentProjectsService', () => {
 			);
 		});
 	});
+
+	describe('readByExternalIdForDeployment', () => {
+		let service: DeploymentProjectsService;
+
+		beforeEach(() => {
+			service = new DeploymentProjectsService({ knex: db, schema });
+		});
+
+		it('scopes the lookup to the given deployment and external ID', async () => {
+			const project = { id: 'proj-A', deployment: 'deploy-A', external_id: 'shared', name: 'A' };
+			const readByQuery = vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([project] as any);
+
+			const result = await service.readByExternalIdForDeployment('deploy-A', 'shared');
+
+			// The same external_id can exist under another deployment, so the query
+			// must be scoped to BOTH the deployment and the external_id.
+			expect(readByQuery.mock.calls[0]?.[0]?.filter).toEqual({
+				deployment: { _eq: 'deploy-A' },
+				external_id: { _eq: 'shared' },
+			});
+
+			expect(result).toEqual(project);
+		});
+
+		it('returns null when no project matches the deployment', async () => {
+			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([] as any);
+
+			const result = await service.readByExternalIdForDeployment('deploy-A', 'shared');
+
+			expect(result).toBeNull();
+		});
+	});
 });
