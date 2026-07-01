@@ -113,8 +113,9 @@ defineExpose({ select });
 
 .grid {
 	display: grid;
-	grid-template-columns: repeat(v-bind(maxCols), 1fr);
-	gap: 0.125rem;
+	grid-template-columns: repeat(v-bind(maxCols), 1rem);
+	padding-block-start: 0.0625rem;
+	padding-inline-start: 0.0625rem;
 	outline: none;
 }
 
@@ -122,20 +123,23 @@ defineExpose({ select });
 	inline-size: 1rem;
 	block-size: 1rem;
 	padding: 0;
+	margin-block-start: -0.0625rem;
+	margin-inline-start: -0.0625rem;
 	border: 0.0625rem solid var(--theme--form--field--input--border-color);
-	border-radius: 0.0625rem;
 	background-color: var(--theme--background-subdued);
 	cursor: pointer;
 
 	&.active {
-		border-color: var(--primary-dimmed);
+		position: relative;
+		z-index: 1;
+		border-color: var(--theme--foreground);
 		background-color: var(--primary-dimmed);
 	}
 }
 
 .caption {
 	margin-block-start: 0.5rem;
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--foreground);
 	font-size: 0.8125rem;
 	text-align: center;
 }
