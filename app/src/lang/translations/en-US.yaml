@@ -2778,6 +2778,7 @@ interfaces:
     imageToken_label: Static access token is appended to the assets' URL
     media_preview_iframe_title: Media Preview
     embed_invalid: The embed markup could not be parsed as media (video, audio, or iframe)
+    auto_height: Auto height
   input-block-editor:
     input-block-editor: Block Editor
     description: Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js

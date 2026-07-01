@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { File } from '@directus/types';
+import { computed } from 'vue';
 import type { MediaSelection } from '../composables/use-media';
+import VCheckbox from '@/components/v-checkbox.vue';
 import VDrawer from '@/components/v-drawer.vue';
 import VInput from '@/components/v-input.vue';
 import VTabItem from '@/components/v-tab-item.vue';
@@ -19,6 +21,21 @@ const open = defineModel<boolean>({ required: true });
 const selection = defineModel<MediaSelection | null>('mediaSelection', { required: true });
 const embed = defineModel<string>('embed', { required: true });
 const activeTab = defineModel<string[]>('activeTab', { required: true });
+
+// Auto height = no stored height; renderHTML then omits the attribute so the front-end/CSS sizes it.
+// Toggling off seeds a 16:9 height from the current width (falling back to 150) since the value was cleared.
+const autoHeight = computed({
+	get: () => selection.value?.height == null,
+	set: (checked: boolean) => {
+		if (!selection.value) return;
+
+		selection.value.height = checked
+			? null
+			: selection.value.width
+				? Math.round((selection.value.width * 9) / 16)
+				: 150;
+	},
+});
 </script>
 
 <template>
@@ -70,7 +87,13 @@ const activeTab = defineModel<string[]>('activeTab', { required: true });
 								<VInput
 									:model-value="selection.height ?? undefined"
 									type="number"
+									:disabled="autoHeight"
 									@update:model-value="selection.height = $event ? Number($event) : null"
+								/>
+								<VCheckbox
+									v-model="autoHeight"
+									class="auto-height"
+									:label="$t('interfaces.input-rich-text-html.auto_height')"
 								/>
 							</div>
 						</div>
@@ -112,6 +135,10 @@ const activeTab = defineModel<string[]>('activeTab', { required: true });
 .content {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding);
+}
+
+.auto-height {
+	margin-block-start: 0.5rem;
 }
 
 .media-preview {
