@@ -28,6 +28,7 @@ export default typescriptEslint.config(
 			'packages/extensions-sdk/templates/',
 			'api/extensions/',
 			'packages/visual-editing/test-website/**',
+			'docker-entrypoint.cjs'
 		],
 	},
 
