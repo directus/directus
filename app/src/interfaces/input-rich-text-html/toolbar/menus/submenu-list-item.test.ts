@@ -26,14 +26,14 @@ const global = {
 describe('submenu-list-item', () => {
 	test('renders the label, leading icon and trailing chevron', () => {
 		const wrapper = mount(SubmenuListItem, {
-			props: { label: 'Table', icon: 'grid_on' },
+			props: { label: 'Table', icon: 'table' },
 			global,
 		});
 
 		expect(wrapper.find('.content').text()).toBe('Table');
 
 		const iconNames = wrapper.findAll('.v-icon').map((i) => i.attributes('data-name'));
-		expect(iconNames).toContain('grid_on');
+		expect(iconNames).toContain('table');
 		expect(iconNames).toContain('chevron_right');
 	});
 

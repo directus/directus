@@ -289,7 +289,7 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		command: (e) => e.chain().focus().selectAll().run(),
 	},
 	table: {
-		icon: 'grid_on',
+		icon: 'table',
 		label: 'wysiwyg_options.table',
 		component: TableMenu,
 		// wider than a square button: it carries a dropdown caret (see toolbar-popover's popoverWidth)

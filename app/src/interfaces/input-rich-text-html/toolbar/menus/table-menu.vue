@@ -66,12 +66,12 @@ defineExpose({ run, insertTable, menuOpen });
 				icon
 				@click.stop="toggle"
 			>
-				<VIcon name="grid_on" />
+				<VIcon name="table" />
 				<ToolbarCaret class="toolbar-popover-caret" />
 			</VButton>
 		</template>
 		<VList>
-			<SubmenuListItem icon="grid_on" :label="t('wysiwyg_options.table')">
+			<SubmenuListItem icon="table" :label="t('wysiwyg_options.table')">
 				<TableGridPicker @select="onPickSize" />
 			</SubmenuListItem>
 
