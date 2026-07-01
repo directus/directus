@@ -21,10 +21,24 @@ function edit() {
 
 <template>
 	<NodeViewWrapper as="div" class="media-node" :class="{ selected }" @dblclick="edit">
-		<video v-if="attrs.tag === 'video'" :src="attrs.src ?? undefined" controls />
-		<audio v-else-if="attrs.tag === 'audio'" :src="attrs.src ?? undefined" controls />
+		<video
+			v-if="attrs.tag === 'video'"
+			:src="attrs.src ?? undefined"
+			:width="attrs.width ?? undefined"
+			:height="attrs.height ?? undefined"
+			:loop="attrs.loop"
+			controls
+		/>
+		<audio v-else-if="attrs.tag === 'audio'" :src="attrs.src ?? undefined" :loop="attrs.loop" controls />
 		<!-- iframe preview is non-interactive so clicks reach the node wrapper for selection/edit -->
-		<iframe v-else class="media-iframe" :src="attrs.src ?? undefined" tabindex="-1"></iframe>
+		<iframe
+			v-else
+			class="media-iframe"
+			:src="attrs.src ?? undefined"
+			:width="attrs.width ?? undefined"
+			:height="attrs.height ?? undefined"
+			tabindex="-1"
+		></iframe>
 	</NodeViewWrapper>
 </template>
 
