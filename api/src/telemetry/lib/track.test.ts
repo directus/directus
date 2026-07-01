@@ -1,6 +1,6 @@
 import { setTimeout } from 'timers/promises';
 import { getNodeEnv } from '@directus/utils/node';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useLogger } from '../../logger/index.js';
 import type { TelemetryReport } from '../types/report.js';
 import { getRandomWaitTime } from '../utils/get-random-wait-time.js';
@@ -25,45 +25,47 @@ vi.mock('@directus/env', () => ({
 
 let mockLogger: any;
 
-beforeEach(() => {
-	mockLogger = { error: vi.fn() };
+describe('track', () => {
+	beforeEach(() => {
+		mockLogger = { error: vi.fn() };
 
-	vi.mocked(useLogger).mockReturnValue(mockLogger as any);
-});
+		vi.mocked(useLogger).mockReturnValue(mockLogger as any);
+	});
 
-afterEach(() => {
-	vi.clearAllMocks();
-});
+	afterEach(() => {
+		vi.clearAllMocks();
+	});
 
-test('Generates and sends report', async () => {
-	const mockReport = {} as TelemetryReport;
-	vi.mocked(getReport).mockResolvedValue(mockReport);
+	test('Generates and sends report', async () => {
+		const mockReport = {} as TelemetryReport;
+		vi.mocked(getReport).mockResolvedValue(mockReport);
 
-	const res = await track();
+		const res = await track();
 
-	expect(getReport).toHaveBeenCalledOnce();
-	expect(sendReport).toHaveBeenCalledWith(mockReport);
-	expect(res).toBe(true);
-});
+		expect(getReport).toHaveBeenCalledOnce();
+		expect(sendReport).toHaveBeenCalledWith(mockReport);
+		expect(res).toBe(true);
+	});
 
-test('Waits a random amount of time if wait option is true', async () => {
-	vi.mocked(getRandomWaitTime).mockReturnValue(15);
-	await track();
-	expect(setTimeout).toHaveBeenCalledWith(15);
-});
+	test('Waits a random amount of time if wait option is true', async () => {
+		vi.mocked(getRandomWaitTime).mockReturnValue(15);
+		await track();
+		expect(setTimeout).toHaveBeenCalledWith(15);
+	});
 
-test('Catches errors silently', async () => {
-	vi.mocked(sendReport).mockRejectedValue(false);
-	const res = await track();
-	expect(res).toBe(false);
-});
+	test('Catches errors silently', async () => {
+		vi.mocked(sendReport).mockRejectedValue(false);
+		const res = await track();
+		expect(res).toBe(false);
+	});
 
-test('Logs errors as error when node env is development', async () => {
-	vi.mocked(getNodeEnv).mockReturnValue('development');
-	const mockError = new Error('test');
-	vi.mocked(sendReport).mockRejectedValue(mockError);
+	test('Logs errors as error when node env is development', async () => {
+		vi.mocked(getNodeEnv).mockReturnValue('development');
+		const mockError = new Error('test');
+		vi.mocked(sendReport).mockRejectedValue(mockError);
 
-	await track();
+		await track();
 
-	expect(mockLogger.error).toHaveBeenCalledWith(mockError);
+		expect(mockLogger.error).toHaveBeenCalledWith(mockError);
+	});
 });

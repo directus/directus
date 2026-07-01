@@ -1,91 +1,50 @@
-import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
-import { version } from 'directus/version';
-import { getHelpers } from '../../database/helpers/index.js';
-import { getDatabase, getDatabaseClient } from '../../database/index.js';
-import { fetchUserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
-import { useBufferedCounter } from '../counter/use-buffered-counter.js';
+import { getSystemCache, setSystemCache } from '../../cache.js';
+import { getDatabase } from '../../database/index.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { collectConfig } from '../collectors/config.js';
+import { collectFeatures } from '../collectors/features.js';
+import { collectMetrics } from '../collectors/metrics/index.js';
+import { collectProject } from '../collectors/project.js';
 import type { TelemetryReport } from '../types/report.js';
-import { formatApiRequestCounts, TRACKED_KEYS } from '../utils/format-api-request-counts.js';
-import { getExtensionCount } from '../utils/get-extension-count.js';
-import { getFieldCount } from '../utils/get-field-count.js';
-import { getFilesizeSum } from '../utils/get-filesize-sum.js';
-import { getItemCount } from '../utils/get-item-count.js';
-import { getSettings } from '../utils/get-settings.js';
-import { getUserItemCount } from '../utils/get-user-item-count.js';
 
-const basicCountTasks = [
-	{ collection: 'directus_dashboards' },
-	{ collection: 'directus_files' },
-	{
-		collection: 'directus_flows',
-		where: ['status', '=', 'active'],
-	},
-	{ collection: 'directus_roles' },
-	{ collection: 'directus_shares' },
-] as const;
+const CACHE_KEY = 'telemetry-report';
+const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
 
 /**
- * Create a telemetry report about the anonymous usage of the current installation
+ * Create a telemetry report about the anonymous usage of the current installation.
+ * The expensive data collection is cached for 15 minutes to avoid redundant queries.
+ *
+ * @param trigger What triggered this report ("startup" or "scheduled").
  */
-export const getReport = async (): Promise<TelemetryReport> => {
-	const db = getDatabase();
-	const env = useEnv();
-	const requestCounter = useBufferedCounter('api-requests');
-	const helpers = getHelpers(db);
+export const getReport = async (trigger: TelemetryReport['trigger'] = 'scheduled'): Promise<TelemetryReport> => {
+	const cached = await getSystemCache(CACHE_KEY);
 
-	const [
-		basicCounts,
-		userCounts,
-		userItemCount,
-		fieldsCounts,
-		extensionsCounts,
-		databaseSize,
-		filesizes,
-		settings,
-		requestCounts,
-	] = await Promise.all([
-		getItemCount(db, basicCountTasks),
-		fetchUserCount({ knex: db }),
-		getUserItemCount(db),
-		getFieldCount(db),
-		getExtensionCount(db),
-		helpers.schema.getDatabaseSize(),
-		getFilesizeSum(db),
-		getSettings(db),
-		requestCounter.getAndResetAll([...TRACKED_KEYS]),
+	if (cached) {
+		return { ...cached, trigger } as TelemetryReport;
+	}
+
+	const db = getDatabase();
+	const schema = await getSchema({ database: db });
+
+	const [project, config, features, metrics] = await Promise.all([
+		collectProject(db, schema),
+		collectConfig(db),
+		collectFeatures(db, schema),
+		collectMetrics(db, schema),
 	]);
 
-	return {
-		url: env['PUBLIC_URL'] as string,
-		version: version,
-		database: getDatabaseClient(),
-
-		dashboards: basicCounts.directus_dashboards,
-		files: basicCounts.directus_files,
-		flows: basicCounts.directus_flows,
-		roles: basicCounts.directus_roles,
-		shares: basicCounts.directus_shares,
-
-		admin_users: userCounts.admin,
-		app_users: userCounts.app,
-		api_users: userCounts.api,
-
-		collections: userItemCount.collections,
-		items: userItemCount.items,
-
-		fields_max: fieldsCounts.max,
-		fields_total: fieldsCounts.total,
-
-		extensions: extensionsCounts.totalEnabled,
-
-		database_size: databaseSize ?? 0,
-		files_size_total: filesizes.total,
-
-		websockets_enabled: toBoolean(env['WEBSOCKETS_ENABLED'] ?? false),
-
-		...settings,
-
-		...formatApiRequestCounts(requestCounts),
+	const report: TelemetryReport = {
+		event: 'directus.telemetry.ping.v2',
+		revision: 1,
+		timestamp: new Date().toISOString(),
+		trigger,
+		project,
+		config,
+		features,
+		metrics,
 	};
+
+	await setSystemCache(CACHE_KEY, report, CACHE_TTL_MS);
+
+	return report;
 };
