@@ -58,6 +58,18 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 			return null;
 		}
 
+		// sys.columns reports max_length as the storage size in bytes for every data type, which is only
+		// meaningful as a character count for character/binary types. For all other types (decimal,
+		// numeric, bigint, uniqueidentifier, datetime, ...) it reflects the internal storage size
+		// (e.g. decimal(12,2) => max_length == 9) and must not be reported as a character limit.
+		// This mirrors INFORMATION_SCHEMA.COLUMNS.CHARACTER_MAXIMUM_LENGTH, which is NULL for all
+		// other types.
+		const characterTypes = ['char', 'varchar', 'text', 'nchar', 'nvarchar', 'ntext', 'binary', 'varbinary', 'image'];
+
+		if (characterTypes.includes(rawColumn.data_type) === false) {
+			return null;
+		}
+
 		// n-* columns save every character as 2 bytes, which causes the max_length column to return the
 		// max length in bytes instead of characters. For example:
 		// varchar(100) => max_length == 100
