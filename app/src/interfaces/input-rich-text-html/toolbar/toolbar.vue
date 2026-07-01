@@ -64,7 +64,7 @@ const MEASUREMENTS: LayoutMeasurements = {
 	moreWidth: 32,
 	separatorWidth: 9,
 	minItems: 5,
-	popoverWidth: 44,
+	popoverWidth: 40,
 	keyWidths,
 };
 
@@ -130,59 +130,64 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 
 <template>
 	<div ref="container" class="toolbar">
-		<template v-for="(group, index) in visibleGroups" :key="group.id">
-			<div v-if="index > 0" class="toolbar-separator" />
-			<ToolbarPopover v-if="group.popover" :group="group" :editor="editor" :context="context" :disabled="disabled" />
-			<ToolbarButtonComp
-				v-for="item in resolve(group)"
-				v-else
-				:key="item.key"
-				:button="item.button"
-				:editor="editor"
-				:context="context"
-				:disabled="disabled"
-			/>
-		</template>
-
-		<div v-if="hasOverflow" class="toolbar-separator" />
-
-		<VMenu v-if="hasOverflow" v-model="overflowMenuActive" placement="bottom-end" show-arrow>
-			<template #activator="{ toggle }">
-				<VButton
-					v-tooltip="t('show_more')"
-					class="toolbar-button toolbar-more"
-					ghost
-					:active="overflowMenuActive"
-					small
-					icon
-					@click="toggle"
-				>
-					<VIcon name="more_horiz" />
-				</VButton>
+		<!-- visible groups clip here; the "Show More" block lives outside so it can never be clipped -->
+		<div class="toolbar-main">
+			<template v-for="(group, index) in visibleGroups" :key="group.id">
+				<div v-if="index > 0" class="toolbar-separator" />
+				<ToolbarPopover v-if="group.popover" :group="group" :editor="editor" :context="context" :disabled="disabled" />
+				<ToolbarButtonComp
+					v-for="item in resolve(group)"
+					v-else
+					:key="item.key"
+					:button="item.button"
+					:editor="editor"
+					:context="context"
+					:disabled="disabled"
+				/>
 			</template>
-			<div class="toolbar-overflow" :style="{ '--toolbar-width': overflowMaxWidth }">
-				<template v-for="(group, index) in overflowGroups" :key="group.id">
-					<div v-if="index > 0" class="toolbar-separator" />
-					<ToolbarPopover
-						v-if="group.popover"
-						:group="group"
-						:editor="editor"
-						:context="context"
-						:disabled="disabled"
-					/>
-					<ToolbarButtonComp
-						v-for="item in resolve(group)"
-						v-else
-						:key="item.key"
-						:button="item.button"
-						:editor="editor"
-						:context="context"
-						:disabled="disabled"
-						tooltip-placement="bottom"
-					/>
+		</div>
+
+		<div v-if="hasOverflow" class="toolbar-more-group">
+			<div class="toolbar-separator" />
+
+			<VMenu v-model="overflowMenuActive" placement="bottom-end" show-arrow>
+				<template #activator="{ toggle }">
+					<VButton
+						v-tooltip="t('show_more')"
+						class="toolbar-button toolbar-more"
+						ghost
+						:active="overflowMenuActive"
+						small
+						icon
+						@click="toggle"
+					>
+						<VIcon name="more_horiz" />
+					</VButton>
 				</template>
-			</div>
-		</VMenu>
+				<div class="toolbar-overflow" :style="{ '--toolbar-width': overflowMaxWidth }">
+					<template v-for="(group, index) in overflowGroups" :key="group.id">
+						<div v-if="index > 0" class="toolbar-separator" />
+						<ToolbarPopover
+							v-if="group.popover"
+							:group="group"
+							:editor="editor"
+							:context="context"
+							:disabled="disabled"
+						/>
+						<ToolbarButtonComp
+							v-for="item in resolve(group)"
+							v-else
+							:key="item.key"
+							:button="item.button"
+							:editor="editor"
+							:context="context"
+							:disabled="disabled"
+							tooltip-placement="bottom"
+						/>
+					</template>
+				</div>
+			</VMenu>
+		</div>
 	</div>
 </template>
 
@@ -195,6 +200,26 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 	overflow: hidden;
 	background-color: var(--theme--form--field--input--background-subdued);
 	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+}
+
+// visible groups live here and clip when they don't fit; min-inline-size:0 lets it shrink below content
+.toolbar-main {
+	display: flex;
+	align-items: center;
+	gap: 0.125rem;
+	flex: 0 1 auto;
+	min-inline-size: 0;
+	overflow: hidden;
+}
+
+// the "Show More" control never shrinks, so it stays visible even when the main row clips; the auto
+// inline-start margin anchors it to the end of the toolbar regardless of how many groups are visible
+.toolbar-more-group {
+	display: flex;
+	align-items: center;
+	gap: 0.125rem;
+	flex: 0 0 auto;
+	margin-inline-start: auto;
 }
 
 .toolbar-separator {

@@ -24,6 +24,16 @@ fields:
       placeholder: $t:field_options.directus_collections.note_placeholder
     width: half
 
+  - field: status
+    interface: select-dropdown
+    options:
+      choices:
+        - text: $t:active
+          value: active
+        - text: $t:inactive
+          value: inactive
+    width: half
+
   - field: icon
     interface: select-icon
     options:

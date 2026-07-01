@@ -78,8 +78,9 @@ function slotCount(groups: { popover?: boolean; keys: string[] }[]): number {
 
 function measure(groups: { popover?: boolean; keys: string[] }[], hasOverflow: boolean, m: LayoutMeasurements): number {
 	const slots = slotCount(groups);
-	const separators = Math.max(0, groups.length - 1);
 	const moreButtons = hasOverflow ? 1 : 0;
+	// separators sit between groups, plus one before the Show More button when it's present
+	const separators = Math.max(0, groups.length - 1) + moreButtons;
 	const children = slots + separators + moreButtons;
 	if (children === 0) return 0;
 
@@ -109,18 +110,25 @@ export function computeToolbarLayout(
 		return { visible: candidates.map((c) => render(c)), overflow: [] };
 	}
 
-	// greedy: pinned always visible; add non-pinned high->low while they fit
-	const visibleIds = new Set(candidates.filter((c) => c.pinned).map((c) => c.id));
+	// Keep-priority order: pinned groups collapse LAST (sorted ahead of non-pinned), then by priority desc.
+	// Nothing is force-visible — every group, pinned or not, can fall into "Show More" — so the visible row
+	// never clips the toolbar; pinned just stay accessible the longest. (The min-items floor below is the
+	// only thing that can push past the width, to avoid an almost-empty toolbar on a very narrow field.)
+	const keepRank = (c: Candidate) => (c.pinned ? 1 : 0);
+	const keepOrder = [...candidates].sort((a, b) => keepRank(b) - keepRank(a) || b.priority - a.priority);
 
-	for (const c of candidates) {
-		if (c.pinned || visibleIds.has(c.id)) continue;
+	// greedy: add groups in keep-priority order while the visible row (incl. the Show More button) still fits
+	const visibleIds = new Set<string>();
+
+	for (const c of keepOrder) {
 		const trial = candidates.filter((x) => visibleIds.has(x.id) || x.id === c.id);
 		const hasOverflow = trial.length < candidates.length;
 		if (measure(trial, hasOverflow, m) <= availableWidth) visibleIds.add(c.id);
-		else break; // lowest-priority groups stay in overflow
+		else break; // first group that doesn't fit; everything lower in keep-order stays in overflow
 	}
 
-	// floor: pull highest-priority overflow groups back until >= minVisible slots
+	// floor: guarantee >= minVisible slots even on a very narrow toolbar, pulling groups back in
+	// keep-priority order (so pinned groups are restored first)
 	const minVisible = Math.min(m.minItems, totalSlots);
 	const prio = new Map(candidates.map((c) => [c.id, c.priority]));
 
@@ -129,7 +137,7 @@ export function computeToolbarLayout(
 	const overflow: RenderGroup[] = [];
 	let visibleCount = slotCount(visible);
 
-	for (const c of candidates) {
+	for (const c of keepOrder) {
 		if (visibleIds.has(c.id)) continue; // already visible
 
 		if (visibleCount >= minVisible) {
