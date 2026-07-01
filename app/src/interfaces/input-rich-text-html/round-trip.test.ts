@@ -15,6 +15,8 @@ import { editorExtensions } from './extensions';
  *   the current schema can't represent is EITHER restored by a later extension issue OR a
  *   documented accepted regression. `LOSSY` below is the ledger of those cases; when an
  *   extension lands, its sample moves from LOSSY → FAITHFUL and the snapshot updates.
+ *   Media (CMS-2643): video/audio/iframe now round-trip via the custom `media` node. Bare boolean
+ *   attributes normalize to `controls=""`/`loop=""` (ProseMirror's serializer cannot emit bare attrs).
  *
  * The editor here uses the same extension set as input-rich-text-html.vue (see ./extensions).
  */
@@ -58,6 +60,9 @@ const FAITHFUL: Record<string, string> = {
 	'text align right': '<p style="text-align: right;">right</p>',
 	'text align justify': '<p style="text-align: justify;">justified</p>',
 	'aligned heading': '<h2 style="text-align: center;">centered</h2>',
+	video: '<video width="640" height="360" controls><source src="/assets/v.mp4" type="video/mp4"></video>',
+	'audio with loop': '<audio loop controls><source src="/assets/a.mp3" type="audio/mpeg"></audio>',
+	iframe: '<iframe src="https://example.com/embed" width="560" height="315"></iframe>',
 };
 
 /**
@@ -72,19 +77,6 @@ const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }
 		absent: '<table',
 		issue: 'CMS-2639',
 	},
-	{
-		name: 'video',
-		html: '<video controls><source src="/v.mp4" type="video/mp4"></video>',
-		absent: '<video',
-		issue: 'CMS-2643',
-	},
-	{
-		name: 'audio',
-		html: '<audio controls><source src="/a.mp3" type="audio/mpeg"></audio>',
-		absent: '<audio',
-		issue: 'CMS-2643',
-	},
-	{ name: 'iframe', html: '<iframe src="about:blank"></iframe>', absent: '<iframe', issue: 'CMS-2643' },
 	{ name: 'rtl direction', html: '<p dir="rtl">شسي</p>', absent: 'dir=', issue: 'CMS-2646' },
 	{ name: 'pagebreak', html: '<p>a</p><!-- pagebreak --><p>b</p>', absent: 'pagebreak', issue: 'CMS-2647' },
 	{

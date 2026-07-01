@@ -1,5 +1,6 @@
 import StarterKit from '@tiptap/starter-kit';
 import { CustomImage } from './image';
+import { Media } from './media';
 import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
 import { TextAlignment } from './text-alignment';
 import { TextStyle } from './text-style';
@@ -21,6 +22,7 @@ export const editorExtensions = [
 		},
 	}),
 	CustomImage,
+	Media,
 	TextAlignment,
 	CustomSubscript,
 	CustomSuperscript,
