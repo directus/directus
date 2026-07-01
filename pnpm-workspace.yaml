@@ -54,7 +54,6 @@ catalog:
   '@fullcalendar/timegrid': 6.1.19
   '@godaddy/terminus': 4.12.1
   '@google-cloud/storage': 7.18.0
-  '@histoire/plugin-vue': 0.17.17
   '@internationalized/date': 3.10.1
   '@joeattardi/emoji-button': 4.6.4
   '@json2csv/plainjs': 7.0.6
@@ -189,7 +188,7 @@ catalog:
   dotenv: 17.2.3
   editorjs-toggle-block: 0.3.16
   encodeurl: 2.0.0
-  esbuild: 0.26.0
+  esbuild: 0.28.1
   esbuild-plugin-replace: 1.4.0
   escape-string-regexp: 5.0.0
   eslint: 9.39.1
@@ -218,7 +217,6 @@ catalog:
   graphql-ws: 6.0.6
   happy-dom: 20.8.9
   helmet: 8.1.0
-  histoire: 0.17.17
   html-entities: 2.6.0
   icc: 3.0.0
   inquirer: 12.11.0
@@ -230,6 +228,7 @@ catalog:
   jose: 6.2.3
   js-yaml: 4.1.1
   js2xmlparser: 5.0.0
+  jsdom: 29.1.1
   json-to-graphql-query: 2.3.0
   json2csv: 5.0.7
   jsonlint-mod: 1.7.6
@@ -319,7 +318,7 @@ catalog:
   tinymce: 6.8.6
   tmp: 0.2.6
   tsdown: 0.15.11
-  tsx: 4.20.6
+  tsx: 4.22.4
   tus-js-client: 4.3.1
   typebox: 1.1.37
   typedoc: 0.28.12

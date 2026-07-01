@@ -49,13 +49,13 @@ Directus includes a built-in AI Assistant and a native MCP server. AI works with
 
 ## 🚀 Directus Cloud
 
-[Directus Cloud](https://cloud.directus.com) provisions a fully managed project in under 90 seconds.
+[Directus Cloud](https://directus.cloud) provisions a fully managed project in under 90 seconds.
 
 - **Centrally managed:** Self-service dashboard to create and monitor all your projects in one place
 - **All-in-one solution:** Database, storage, and auto-scaling included with a global CDN
 - **Simple setup:** Select a region and get a running instance immediately
 
-[Create a Directus Cloud Project](https://cloud.directus.com)
+[Create a Directus Cloud Project](https://directus.cloud)
 
 ---
 
