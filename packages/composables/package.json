@@ -43,6 +43,7 @@
 		"@types/lodash-es": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"@vue/test-utils": "catalog:",
+		"jsdom": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
