@@ -176,7 +176,9 @@ export const useFieldDetailStore = defineStore({
 						if (currentType === 'files') targetType = 'm2m';
 					}
 
-					if (currentType !== targetType) {
+					const interfaceAlreadySet = get(this, 'field.meta.interface');
+
+					if (currentType !== targetType && !interfaceAlreadySet) {
 						updates.localType = targetType;
 						alterations.global.switchInterfaceAndDisplay(updates);
 					}
