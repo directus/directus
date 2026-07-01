@@ -77,14 +77,21 @@ router.post(
 			return res.sendStatus(401);
 		}
 
-		// Look up project by external_id
+		// Look up project by external_id, scoped to this provider's deployment.
+		// The same external_id can exist under another provider's deployment, so
+		// the lookup must be scoped to avoid resolving the wrong project.
 		const projectsService = new DeploymentProjectsService({
 			schema,
 			knex,
 			accountability: null,
 		});
 
-		const project = await projectsService.readByExternalId(event.project_external_id);
+		const deployment = await deploymentService.readByProvider(provider as ProviderType);
+
+		const project = await projectsService.readByExternalIdForDeployment(
+			deployment.id,
+			event.project_external_id,
+		);
 
 		if (!project) {
 			// 410 signals the provider this project is no longer tracked
