@@ -11,7 +11,7 @@ import type { ConnectionParams } from '../messages.js';
 import type { GraphQLSocket, UpgradeContext } from '../types.js';
 import { GraphQLSubscriptionController, onSubscribe } from './graphql.js';
 
-vi.mock('@directus/env', () => ({ useEnv: vi.fn() }));
+vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
 
 vi.mock('graphql-ws', async (importOriginal) => {
 	const actual = await importOriginal<typeof import('graphql-ws')>();
