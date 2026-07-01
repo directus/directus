@@ -1,6 +1,6 @@
 {
 	"name": "@directus/system-data",
-	"version": "4.5.0-rc.1",
+	"version": "4.5.0",
 	"description": "Definitions and types for Directus system collections",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -33,7 +33,6 @@
 		"@directus/tsconfig": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"unplugin-yaml": "catalog:",
-		"esbuild": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"

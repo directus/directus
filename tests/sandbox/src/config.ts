@@ -7,6 +7,10 @@ const directusConfig = {
 	TZ: 'UTC',
 	SECRET: 'directus-test',
 	TELEMETRY: 'false',
+	// Non-routable on purpose: unlicensed instances fall back to the core
+	// license, whose telemetry_required entitlement force-enables telemetry
+	TELEMETRY_URL: 'http://127.0.0.1:1',
+	COMPLIANCE_URL: 'http://127.0.0.1:1',
 	CONFIG_PATH: join(directusFolder, '.env'), // Override to non existent file so process envs aren't overwritten by file envs
 	RATE_LIMITER_ENABLED: 'false',
 	PRESSURE_LIMITER_ENABLED: 'false',

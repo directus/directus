@@ -3,6 +3,7 @@ import path from 'node:path';
 import { APP_SHARED_DEPS } from '@directus/extensions';
 import { generateExtensionsEntrypoint, resolveFsExtensions, resolveModuleExtensions } from '@directus/extensions/node';
 import yaml from '@rollup/plugin-yaml';
+import { templateCompilerOptions } from '@tresjs/core';
 import UnheadVite from '@unhead/addons/vite';
 import vue from '@vitejs/plugin-vue';
 import { searchForWorkspaceRoot } from 'vite';
@@ -37,7 +38,9 @@ export default defineConfig({
 	},
 	plugins: [
 		directusExtensions(),
-		vue(),
+		vue({
+			...templateCompilerOptions,
+		}),
 		UnheadVite(),
 		yaml({
 			transform(data) {
@@ -62,28 +65,26 @@ export default defineConfig({
 		alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
 	},
 	base: process.env.NODE_ENV === 'production' ? '' : '/admin',
-	...(!process.env.HISTOIRE && {
-		server: {
-			port: 8080,
-			proxy: {
-				'^/(?!admin)': {
-					target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
-				},
-				'/websocket/logs': {
-					target: process.env.API_URL ? process.env.API_URL : 'ws://127.0.0.1:8055/',
-					changeOrigin: true,
-				},
-				'/websocket': {
-					target: process.env.API_URL ? process.env.API_URL : 'ws://127.0.0.1:8055/',
-					changeOrigin: true,
-					ws: true,
-				},
+	server: {
+		port: 8080,
+		proxy: {
+			'^/(?!admin)': {
+				target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
 			},
-			fs: {
-				allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
+			'/websocket/logs': {
+				target: process.env.API_URL ? process.env.API_URL : 'ws://127.0.0.1:8055/',
+				changeOrigin: true,
+			},
+			'/websocket': {
+				target: process.env.API_URL ? process.env.API_URL : 'ws://127.0.0.1:8055/',
+				changeOrigin: true,
+				ws: true,
 			},
 		},
-	}),
+		fs: {
+			allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
+		},
+	},
 	test: {
 		dir: path.resolve(__dirname, '..'),
 		include: ['app/**/*.test.ts'],

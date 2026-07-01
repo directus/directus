@@ -34,7 +34,6 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"@directus/license>@directus/types": "workspace:*",
 			"fast-xml-parser": "5.8.0",
 			"@yarnpkg/shell>cross-spawn": "7.0.6",
 			"tar": "7.5.15",
@@ -50,12 +49,14 @@
 			"picomatch": "4.0.4",
 			"defu": "6.1.7",
 			"unplugin-vue>vite": "8.0.14",
-			"vitest@3>vite": "7.3.2",
+			"vitest@3>vite": "7.3.5",
 			"protobufjs": "7.5.6",
 			"js-beautify>js-cookie": "3.0.7",
 			"pm2-sysmonit>systeminformation": "5.31.6",
 			"ajv>fast-uri": "3.1.2",
-			"braintrust>simple-git": "3.36.0"
+			"braintrust>simple-git": "3.36.0",
+			"braintrust>esbuild": "0.28.1",
+			"launch-editor>shell-quote": "1.8.4"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",
