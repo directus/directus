@@ -2,12 +2,22 @@
 
 ARG NODE_VERSION=22
 
+# Pin alpine version so libs are in sync between builder and runtime
+ARG ALPINE_VERSION=3.23
+
+# Hardened (distroless) runtime base. Override to point at your mirrored/
+# entitled DHI registry. The tag must track NODE_VERSION/ALPINE_VERSION above.
+ARG DHI_RUNTIME=dhi.io/node:${NODE_VERSION}-alpine${ALPINE_VERSION}
+
 ####################################################################################################
 ## Build Packages
 
-FROM node:${NODE_VERSION}-alpine AS builder
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS builder
 
 RUN apk --no-cache add python3 py3-setuptools build-base
+
+# Install pm2 here so the hardened runtime image can copy it
+RUN npm install --global pm2@6
 
 WORKDIR /directus
 
@@ -31,32 +41,26 @@ RUN <<EOF
 	npm_config_workspace_concurrency=2 pnpm run build
 	pnpm --filter directus deploy --legacy --prod dist
 	cd dist
+	# drop the prebuilds and recompile from source
+	argon2_dir=$(find node_modules -type d -name argon2 -exec test -f '{}/argon2.cjs' ';' -print | head -n1)
+	rm -rf "$argon2_dir/prebuilds"
+	( cd "$argon2_dir" && node "$(npm root -g)/npm/node_modules/node-gyp/bin/node-gyp.js" rebuild )
+	# fail the build if it didnt compile
+	test -f "$argon2_dir/build/Release/argon2.node"
 	# Regenerate package.json file with essential fields only
 	# (see https://github.com/directus/directus/issues/20338)
 	node -e '
 		const f = "package.json", {name, version, type, exports, bin} = require(`./${f}`), {packageManager} = require(`../${f}`);
 		fs.writeFileSync(f, JSON.stringify({name, version, type, exports, bin, packageManager}, null, 2));
 	'
-	mkdir -p database extensions uploads
+	mkdir -p database extensions uploads .pm2
 EOF
 
 ####################################################################################################
 ## Create Production Image
 
-FROM node:${NODE_VERSION}-alpine AS runtime
-
-# Apply outstanding OS-level security patches (openssl, zlib, busybox, ...).
-# Install pm2, then purge npm, npx, corepack, and the npm cache from the
-# final image.
-RUN apk --no-cache upgrade \
-	&& npm install --global pm2@6 \
-	&& rm -rf \
-		/usr/local/lib/node_modules/npm \
-		/usr/local/lib/node_modules/corepack \
-		/usr/local/bin/npm \
-		/usr/local/bin/npx \
-		/usr/local/bin/corepack \
-		/root/.npm
+# Docker Hardened Image (distroless): pre-patched, no shell, no package manager, runs as a non-root user by default
+FROM ${DHI_RUNTIME} AS runtime
 
 USER node
 
@@ -66,14 +70,16 @@ ENV \
 	DB_CLIENT="sqlite3" \
 	DB_FILENAME="/directus/database/database.sqlite" \
 	NODE_ENV="production" \
-	NPM_CONFIG_UPDATE_NOTIFIER="false"
+	NPM_CONFIG_UPDATE_NOTIFIER="false" \
+	PM2_HOME="/directus/.pm2" \
+	PIDUSAGE_SILENT="true"
 
+COPY --from=builder --chown=node:node /usr/local/lib/node_modules/pm2 /directus/pm2
 COPY --from=builder --chown=node:node /directus/ecosystem.config.cjs .
 COPY --from=builder --chown=node:node /directus/dist .
+COPY --chown=node:node docker-entrypoint.cjs .
 
 EXPOSE 8055
 
-CMD : \
-	&& node cli.js bootstrap \
-	&& pm2-runtime start ecosystem.config.cjs \
-	;
+# No shell in the hardened image run node directly
+ENTRYPOINT ["node", "docker-entrypoint.cjs"]
