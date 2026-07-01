@@ -41,7 +41,6 @@ license_onboarding_desc: >
   Geben Sie es unten ein, um Ihr ganzes Paket freizuschalten. Qualifizieren Sie Unternehmen unter 5M Jahreseinnahmen können für unseren {oig} in Betracht gezogen werden.
 project_usage: Wofür benutzen Sie Directus ?
 project_usage_personal: Persönliches / Seitenprojekt
-project_usage_commercial:
 project_usage_community: Open Source / Community
 org_name: Name der Organisation
 org_name_placeholder: Acme Inc.
@@ -51,7 +50,6 @@ core_option: Ich benutze Core Plan
 core_option_desc: Frei, kein Schlüssel erforderlich
 remind_later: Später erinnern
 remind_next_login: Wir erinnern Sie daran, wenn Sie sich das nächste Mal anmelden
-open_innovation_grant:
 setup_project: Projekt einrichten
 enter_license_key: Lizenzschlüssel eingeben
 license_valid: Lizenz gültig
@@ -100,14 +98,12 @@ input: Eingabe
 invalid_input: Ungültige Eingabe
 invalid_file_type: Ungültiger Dateityp
 invalid_files_selected: 'Keine ungültigen Dateien | Ungültige Datei ausgewählt | {count} Ungültige Dateien ausgewählt'
-files_wrong_type: ''
 files_are_empty: 'Die folgenden Dateien sind leer und können nicht hochgeladen werden: {files}'
 not_a_number: Keine Zahl
 invalid_range_min: Wert liegt unter mindestens {value}
 invalid_range_max: Wert überschreitet das Maximum von {value}
 maps: Karten
 switch_user: Benutzer wechseln
-item_deleted:
 item_creation: Element-Erstellung
 item_revision: Element-Überarbeitung
 previous_revision: Vorherige Revision
@@ -577,8 +573,6 @@ enable_translations: Übersetzungen aktivieren
 manage_translation_fields: Übersetzungsfelder hinzufügen
 fields_to_translate: Zu übersetzende Felder
 fields_to_add_to_translations: Zu Übersetzungen hinzuzufügende Felder
-translations_collection_name:
-translations_already_enabled:
 translations_manage_helper_description: Sie können weitere Felder hinzufügen, die aus dieser Sammlung übersetzt werden können.
 translations_copy_data_note: Felder werden in die Übersetzung-Sammlung kopiert. Vorhandene Daten werden nicht migriert.
 add_fields: Feld hinzufügen
@@ -605,7 +599,6 @@ import_upload_success: '{filename} erfolgreich hochgeladen. Daten werden im Hint
 import_data_errors: Fehler beim Import
 import_data_error: Die Datenstruktur der Datei stimmt nicht mit der Sammlung überein.
 import_data_validation_errors_notice: 'Die folgenden Felder sind ungültig:'
-import_data_error_row: ''
 snapshot:
   export: Exportiere Schema
   download: Snapshot herunterladen (JSON)
@@ -627,7 +620,6 @@ system: System
 add_field_related: Feld zur abhängigen Sammlung hinzufügen
 interface_label: Benutzeroberfläche
 display_label: Anzeige
-x_axis_display_field:
 today: Heute
 yesterday: Gestern
 delete_comment: Kommentar löschen
@@ -1183,30 +1175,22 @@ deployment:
         hint: Ihr Vercel-Benutzername für persönliche Konten. Finden Sie ihn in Ihrer Vercel-Konto-URL (vercel.com/username).
         placeholder: Ihr Benutzername
     netlify:
-      name:
       settings_warning: Das Ändern von Zugangsdaten oder Konto-Slug kann sich auf Ihre ausgewählten Projekte auswirken, wenn diese nicht mehr mit der neuen Konfiguration zugänglich sind.
       account_slug:
-        label:
         hint: Optional. Filtern Sie Sites zu einem bestimmten Konto. Lassen Sie leer, um alle zugänglichen Sites anzuzeigen.
-        placeholder:
     projects: Projekte
     select_projects: Projekte auswählen
     select_projects_hint: Wählen Sie aus, welche Projekte Sie über Directus verwalten möchten
     project:
       not_deployable: Projekt kann nicht von Directus bereitgestellt werden. Weitere Informationen finden Sie unter Dokumentation.
     runs:
-      runs:
-      id:
       started: Gestartet
       author: Autor
       refresh: Aktualisieren
       deploy_preview: Deploy-Vorschau
-      empty:
       empty_copy: Dieses Projekt hat noch keinen Bereitstellungsverlauf.
       external_user: Externer Benutzer
     run:
-      title: ''
-      id:
       currently_deploying: Momentane Bereitstellung...
       stop: Stoppe Bereitstellung
       cancel_confirm: Diese Aktion kann nicht rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?
@@ -1223,7 +1207,6 @@ deployment:
   select_provider_copy: Wählen Sie einen Bereitstellungsanbieter aus der Seitenleiste, um Ihre Projekte anzuzeigen.
   no_projects: Keine Projekte
   no_projects_copy: Es wurden keine Projekte für diesen Anbieter ausgewählt.
-  no_runs:
   no_runs_copy: Dieses Projekt hat noch keinen Bereitstellungsverlauf.
   deploy: Bereitstellen
   target: Ziel
@@ -1232,7 +1215,6 @@ deployment:
     preview: Vorschau
   runs_status:
     ready: Bereit
-    building:
     error: Fehlgeschlagen
     canceled: Abgebrochen
   dashboard:
@@ -1438,9 +1420,7 @@ licensing:
   resolve_title_grace: Lizenzbeschränkungen auflösen
   resolve_title_no_resolution: Lizenz inaktiv
   resolve_subtitle: Wenn Sie Ihren Lizenzschlüssel aktualisieren müssen, können Sie ihn in Ihrer Umgebungsvariablen aktualisieren.
-  resolve_notice_grace:
   resolve_countdown: '{days} Tag verbleibend (bis {date}) | {days} Tage verbleibend (bis {date})'
-  resolve_notice_manual:
   resolve_notice_locked: Ihr Projekt überschreitet die Grenzen des Plans und ist gesperrt. Alle Elemente, die die Grenzen überschreiten und Anpassungen erfordern, werden unten angezeigt.
   resolve_notice_env_removed: Ihr Projekt hat keinen aktiven Lizenzschlüssel mehr. Alle Elemente, die die Kerngrenzen überschreiten und Anpassungen erfordern, werden unten angezeigt.
   resolve_notice_no_resolution: Ihre Lizenz ist nicht mehr aktiv und Ihr Projekt wurde auf den Core Plan heruntergestuft. Einige Funktionen sind möglicherweise nicht mehr verfügbar und Elemente außerhalb der Kernplangrenzen bleiben gespeichert, aber in Directus gesperrt. Um den vollen Zugriff wiederherzustellen, fügen Sie einen neuen Lizenzschlüssel hinzu.
@@ -1449,7 +1429,6 @@ licensing:
   resolve_submit: Ausgewählte Elemente deaktivieren
   resolve_show_n_more: 'Zeige {count} mehr'
   resolve_available: Verfügbar
-  resolve_section_collections:
   resolve_section_seats: Benutzersitze
   resolve_section_flows: Flows
   resolve_section_collections_caption: Wähle Sammlung(en) zum Deaktivieren aus
@@ -1494,7 +1473,6 @@ licensing:
     production_enabled: Produktion
   badge:
     directus: Powered by Directus
-    oig:
     non_prod: Nicht-Produktion
 danger_zone: Gefahrenzone
 settings_appearance: Erscheinung
@@ -1585,7 +1563,6 @@ license:
     grace_period: 'Sie haben {daysLeft} verbleibend, bevor das Core tier Ressourcenlimit gilt.'
     grace_days: '{days} Tag | {days} Tage'
   unlicensed_status_notice:
-    grace_period: ''
     grace_days_left: '{days} Tag verbleibend | {days} Tage verbleibend'
     retrieve_license_key: Lizenzschlüssel abrufen
     upgrade: Upgrade
@@ -1823,7 +1800,6 @@ fields:
     ai_system_prompt_note: 'Benutzerdefinierte KI-System-Eingabeaufforderung, um das LLM-Verhalten in den AI-Assistent-Interaktionen zu lenken. Leer lassen um die Standardeinstellung zu verwenden.'
     ai_translation_default_model: Standard-Übersetzungsmodell
     ai_translation_default_model_note: 'Wählen Sie das Standardmodell für KI-Übersetzungen. Hier stehen nur Modelle zur Verfügung, die in den obigen Einstellungen aktiviert sind.'
-    ai_glossary_term:
     ai_glossary_term_placeholder: Directus Flows
     ai_glossary_note: Übersetzungsnotiz
     ai_glossary_note_placeholder: Niemals übersetzen, so lassen wie es ist
@@ -2687,8 +2663,6 @@ interfaces:
   input-password:
     input-password: Passwort eingeben
     description: Passwort-Eingabe mit Schalter zum Verstecken des Wertes
-  flow-select:
-    flow-select:
   header:
     header: Header
     description: Erstellen Sie einen Header mit einem Titel, Untertitel, Hilfsinformationen und/oder Links, um Benutzern zu helfen, Flows zu navigieren oder auszuführen.
