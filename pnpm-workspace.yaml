@@ -326,11 +326,11 @@ catalog:
   typescript-eslint: 8.46.4
   undici: 7.28.0
   universal-cookie: 8.0.1
-  unplugin-vue: 7.1.1
+  unplugin-vue: 7.2.0
   unplugin-yaml: 3.0.7
   update-check: 1.5.4
   uuid: 11.1.0
-  vite: 8.0.8
+  vite: 8.0.16
   vite-plugin-dts: 4.5.4
   vite-plugin-vue-devtools: 7.7.2
   vite-tsconfig-paths: 5.1.4
