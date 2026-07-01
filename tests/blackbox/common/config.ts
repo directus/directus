@@ -222,9 +222,9 @@ const config: Config = {
 			},
 			pool: {
 				afterCreate: (conn: any, callback: any) => {
-					conn.query('SET serial_normalization = "sql_sequence"');
-					conn.query('SET default_int_size = 4');
-					callback(null, conn);
+					Promise.all([conn.query('SET serial_normalization = "sql_sequence"'), conn.query('SET default_int_size = 4')])
+						.then(() => callback(null, conn))
+						.catch((err: any) => callback(err, conn));
 				},
 			},
 			...knexConfig,
