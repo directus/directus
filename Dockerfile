@@ -47,10 +47,7 @@ FROM node:${NODE_VERSION}-alpine AS runtime
 
 # Apply outstanding OS-level security patches (openssl, zlib, busybox, ...).
 # Install pm2, then purge npm, npx, corepack, and the npm cache from the
-# final image. Nothing at runtime invokes npm/pnpm, and the bundled npm
-# tree (notably picomatch) was the main remaining CVE source.
-# pm2@6 is a major bump from the previous pm2@5. Review the changelog
-# before rolling out: https://github.com/Unitech/pm2/blob/master/CHANGELOG.md
+# final image.
 RUN apk --no-cache upgrade \
 	&& npm install --global pm2@6 \
 	&& rm -rf \
