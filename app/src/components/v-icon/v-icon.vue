@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { useSizeClass } from '@directus/composables';
 import { isIn } from '@directus/utils';
-import { IconName } from '@fortawesome/fontawesome-svg-core';
+import type { IconName } from '@fortawesome/fontawesome-svg-core';
 import { camelCase, upperFirst } from 'lodash';
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import { RTL_REVERSE_ICONS } from '../../constants/text-direction';
 import { components } from './custom-icons';
-import SocialIcon from './social-icon.vue';
 import { socialIcons } from './social-icons';
 import { useUserStore } from '@/stores/user';
+
+const SocialIcon = defineAsyncComponent(() => import('./social-icon.vue'));
 
 const props = withDefaults(
 	defineProps<{

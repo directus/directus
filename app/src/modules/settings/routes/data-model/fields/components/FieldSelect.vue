@@ -378,7 +378,6 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 .field-select {
 	--input-height: 2.25rem;
 	--theme--form--field--input--padding: 0.4375rem;
-	-webkit-user-select: none;
 	user-select: none;
 }
 

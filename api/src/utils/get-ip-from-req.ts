@@ -10,7 +10,7 @@ import { useLogger } from '../logger/index.js';
  *
  * Adapted to have feature parity with the express equivalent https://github.com/expressjs/express/blob/9f4dbe3a1332cd883069ba9b73a9eed99234cfc7/lib/utils.js#L192
  */
-function getTrustValue(trust: boolean | number | proxyAddr.Address | proxyAddr.Address[]) {
+export function getTrustValue(trust: boolean | number | proxyAddr.Address | proxyAddr.Address[]) {
 	if (typeof trust === 'boolean') {
 		// Support plain true/false
 		return (_addr: string, _i: number) => trust as boolean;
