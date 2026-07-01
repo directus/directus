@@ -8,7 +8,7 @@ import { useI18n } from 'vue-i18n';
 import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
-import { formatDeploymentTargetLabel, useProviderConfigs } from '../../config/providers';
+import { useProviderConfigs } from '../../config/providers';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardTitle from '@/components/v-card-title.vue';
@@ -35,9 +35,6 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const { currentProject, providers } = useDeploymentNavigation();
-
-const deploymentTargetLabel = (target: string) => formatDeploymentTargetLabel(target, t);
-
 const { providerConfigs } = useProviderConfigs();
 
 const canCancel = usePermissionsStore().hasPermission('directus_deployment_runs', 'update');
@@ -353,7 +350,7 @@ onUnmounted(() => {
 				<div class="stat-card">
 					<VIcon name="assignment" class="stat-icon" />
 					<span class="stat-label">{{ $t('deployment.target') }}</span>
-					<span class="stat-value">{{ deploymentTargetLabel(run.target) }}</span>
+					<span class="stat-value">{{ $t(`deployment.target_value.${run.target}`) }}</span>
 				</div>
 			</div>
 

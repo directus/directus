@@ -32,15 +32,6 @@ describe('VercelDriver', () => {
 		vi.restoreAllMocks();
 	});
 
-	it('should declare webhook transport, preview deploy, and no polling', () => {
-		expect(driver.capabilities).toEqual({
-			eventsTransport: 'webhook',
-			supportsPreviewDeploy: true,
-			supportsDeployHookUrl: false,
-			needsRunStatusPolling: false,
-		});
-	});
-
 	describe('authentication', () => {
 		it('should send Bearer token in Authorization header', async () => {
 			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(200, undefined));
@@ -227,7 +218,55 @@ describe('VercelDriver', () => {
 		});
 	});
 
-	describe('getRun', () => {
+	describe('listDeployments', () => {
+		it('should return mapped deployments', async () => {
+			const mockResponse = {
+				deployments: [
+					{
+						uid: 'dpl-1',
+						id: 'dpl-1',
+						projectId: 'proj-1',
+						state: 'READY',
+						url: 'my-app-abc123.vercel.app',
+						createdAt: 1700000000000,
+						ready: 1700000060000,
+					},
+					{
+						uid: 'dpl-2',
+						id: 'dpl-2',
+						projectId: 'proj-1',
+						state: 'BUILDING',
+						createdAt: 1700001000000,
+					},
+				],
+			};
+
+			const expected = [
+				{
+					id: 'dpl-1',
+					project_id: 'proj-1',
+					status: 'ready',
+					url: 'https://my-app-abc123.vercel.app',
+					created_at: new Date(1700000000000),
+					finished_at: new Date(1700000060000),
+				},
+				{
+					id: 'dpl-2',
+					project_id: 'proj-1',
+					status: 'building',
+					created_at: new Date(1700001000000),
+				},
+			];
+
+			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(200, mockResponse));
+
+			const result = await driver.listDeployments('proj-1');
+
+			expect(result).toEqual(expected);
+		});
+	});
+
+	describe('getDeployment', () => {
 		it('should return deployment details', async () => {
 			const mockResponse = {
 				id: 'dpl-1',
@@ -249,7 +288,7 @@ describe('VercelDriver', () => {
 
 			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(200, mockResponse));
 
-			const result = await driver.getRun('dpl-1');
+			const result = await driver.getDeployment('dpl-1');
 
 			expect(result).toEqual(expected);
 		});
@@ -258,13 +297,13 @@ describe('VercelDriver', () => {
 			const mockResponse = { id: 'dpl-1', state: 'BUILDING', createdAt: 1700000000000 };
 			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(200, mockResponse));
 
-			const result = await driver.getRun('dpl-1');
+			const result = await driver.getDeployment('dpl-1');
 
 			expect(result.status).toBe('building');
 		});
 	});
 
-	describe('triggerRun', () => {
+	describe('triggerDeployment', () => {
 		it('should fetch project then trigger deployment', async () => {
 			const projectResponse = {
 				id: 'proj-1',
@@ -290,7 +329,7 @@ describe('VercelDriver', () => {
 				.mockResolvedValueOnce(createAxiosResponse(200, projectResponse))
 				.mockResolvedValueOnce(createAxiosResponse(200, deployResponse));
 
-			const result = await driver.triggerRun('proj-1');
+			const result = await driver.triggerDeployment('proj-1');
 
 			expect(result).toEqual(expected);
 
@@ -310,7 +349,7 @@ describe('VercelDriver', () => {
 				.mockResolvedValueOnce(createAxiosResponse(200, { id: 'proj-1', name: 'My App' }))
 				.mockResolvedValueOnce(createAxiosResponse(200, { id: 'dpl-new', status: 'BUILDING' }));
 
-			await driver.triggerRun('proj-1', { preview: true });
+			await driver.triggerDeployment('proj-1', { preview: true });
 
 			const body = JSON.parse(mockAxiosRequest.mock.calls[1]![0].data);
 			expect(body.target).toBeUndefined();
@@ -321,18 +360,18 @@ describe('VercelDriver', () => {
 				.mockResolvedValueOnce(createAxiosResponse(200, { id: 'proj-1', name: 'My App' }))
 				.mockResolvedValueOnce(createAxiosResponse(200, { id: 'dpl-new', status: 'BUILDING' }));
 
-			await driver.triggerRun('proj-1', { clearCache: true });
+			await driver.triggerDeployment('proj-1', { clearCache: true });
 
 			const calledUrl = mockAxiosRequest.mock.calls[1]![0].url as string;
 			expect(calledUrl).toContain('forceNew=1');
 		});
 	});
 
-	describe('cancelRun', () => {
+	describe('cancelDeployment', () => {
 		it('should send PATCH to cancel endpoint and return canceled', async () => {
 			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(200, {}));
 
-			const status = await driver.cancelRun('dpl-1');
+			const status = await driver.cancelDeployment('dpl-1');
 
 			const call = mockAxiosRequest.mock.calls[0]![0];
 			expect(call.method).toBe('PATCH');
@@ -347,7 +386,7 @@ describe('VercelDriver', () => {
 				createAxiosResponse(200, { id: 'dpl-1', projectId: 'prj-1', state: 'READY', createdAt: Date.now() }),
 			);
 
-			const status = await driver.cancelRun('dpl-1');
+			const status = await driver.cancelDeployment('dpl-1');
 
 			expect(status).toBe('ready');
 		});
@@ -359,11 +398,11 @@ describe('VercelDriver', () => {
 				createAxiosResponse(200, { id: 'dpl-1', projectId: 'prj-1', state: 'BUILDING', createdAt: Date.now() }),
 			);
 
-			await expect(driver.cancelRun('dpl-1')).rejects.toThrow();
+			await expect(driver.cancelDeployment('dpl-1')).rejects.toThrow();
 		});
 	});
 
-	describe('getRunLogs', () => {
+	describe('getDeploymentLogs', () => {
 		it('should return filtered and mapped logs', async () => {
 			const mockResponse = [
 				{ type: 'stdout', created: 1700000000000, text: 'Building...' },
@@ -380,7 +419,7 @@ describe('VercelDriver', () => {
 
 			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(200, mockResponse));
 
-			const result = await driver.getRunLogs('dpl-1');
+			const result = await driver.getDeploymentLogs('dpl-1');
 
 			expect(result).toEqual(expected);
 		});
@@ -389,7 +428,7 @@ describe('VercelDriver', () => {
 			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(200, []));
 			const since = new Date(1700000000000);
 
-			await driver.getRunLogs('dpl-1', { since });
+			await driver.getDeploymentLogs('dpl-1', { since });
 
 			const calledUrl = mockAxiosRequest.mock.calls[0]![0].url as string;
 			expect(calledUrl).toContain('since=1700000000000');
@@ -412,7 +451,7 @@ describe('VercelDriver', () => {
 				createAxiosResponse(200, { id: 'dpl-1', status: vercelStatus, createdAt: 1700000000000 }),
 			);
 
-			const result = await driver.getRun('dpl-1');
+			const result = await driver.getDeployment('dpl-1');
 
 			expect(result.status).toBe(expected);
 		});
