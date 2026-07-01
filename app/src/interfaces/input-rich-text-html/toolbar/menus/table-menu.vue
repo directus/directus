@@ -30,7 +30,7 @@ function run(command: (chain: ReturnType<Editor['chain']>) => ReturnType<Editor[
 }
 
 function insertTable(rows = 3, cols = 3): void {
-	run((c) => c.insertTable({ rows, cols, withHeaderRow: true }));
+	run((c) => c.insertTable({ rows, cols, withHeaderRow: false }));
 }
 
 function onPickSize({ rows, cols }: { rows: number; cols: number }): void {

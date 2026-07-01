@@ -43,7 +43,7 @@ function mountMenu() {
 }
 
 describe('table-menu', () => {
-	test('insertTable adds a 3×3 table with a header row', () => {
+	test('insertTable adds a 3×3 table without a header row', () => {
 		const vm = mountMenu();
 		vm.insertTable();
 
@@ -51,8 +51,8 @@ describe('table-menu', () => {
 
 		const html = editor.getHTML();
 		expect(html).toContain('<table');
-		expect(html).toContain('<th');
-		expect((html.match(/<tr/g) ?? []).length).toBe(3); // 1 header + 2 body
+		expect(html).not.toContain('<th');
+		expect((html.match(/<tr/g) ?? []).length).toBe(3);
 	});
 
 	test('clicking a grid cell inserts a table of that size', async () => {
@@ -117,9 +117,12 @@ describe('table-menu', () => {
 		expect((firstRowAfter.match(/<t[hd]/g) ?? []).length).toBe(colsBefore + 1);
 	});
 
-	test('toggleHeaderRow removes the header cells', () => {
+	test('toggleHeaderRow adds and removes the header cells', () => {
 		const vm = mountMenu();
 		vm.insertTable();
+		expect(editor.getHTML()).not.toContain('<th');
+
+		vm.run((c) => c.toggleHeaderRow());
 		expect(editor.getHTML()).toContain('<th');
 
 		vm.run((c) => c.toggleHeaderRow());
