@@ -62,9 +62,9 @@ test('saveMedia (file tab) inserts a video node', () => {
 test('saveMedia (embed tab) parses iframe markup into a media node', () => {
 	const { editor, embed, activeTab, saveMedia } = setup();
 	activeTab.value = ['embed'];
-	embed.value = '<iframe src="https://example.com/x" width="560" height="315"></iframe>';
+	embed.value = '<iframe src="about:blank" width="560" height="315"></iframe>';
 	saveMedia();
-	expect(editor.value.getHTML()).toContain('src="https://example.com/x"');
+	expect(editor.value.getHTML()).toContain('src="about:blank"');
 });
 
 test('saveMedia (embed tab) rejects non-representable markup', () => {
