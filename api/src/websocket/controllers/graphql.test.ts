@@ -1,3 +1,6 @@
+import type { Server as httpServer } from 'http';
+import type { IncomingMessage } from 'http';
+import type internal from 'stream';
 import { useEnv } from '@directus/env';
 import { buildSchema, GraphQLError, NoSchemaIntrospectionCustomRule, validate } from 'graphql';
 import type { Context, SubscribePayload } from 'graphql-ws';
@@ -5,32 +8,40 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { GraphQLService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { ConnectionParams } from '../messages.js';
-import type { GraphQLSocket } from '../types.js';
-import { onSubscribe } from './graphql.js';
+import type { GraphQLSocket, UpgradeContext } from '../types.js';
+import { GraphQLSubscriptionController, onSubscribe } from './graphql.js';
 
-// Mock the heavy side-effectful module graph that importing the controller pulls in so the test can
-// exercise the `onSubscribe` security logic in isolation.
-vi.mock('./base.js', () => ({ default: class {} }));
-vi.mock('./hooks.js', () => ({ registerWebSocketEvents: vi.fn() }));
-vi.mock('../../services/graphql/subscription.js', () => ({ bindPubSub: vi.fn() }));
-vi.mock('../authenticate.js', () => ({ authenticateConnection: vi.fn() }));
+vi.mock('@directus/env', () => ({ useEnv: vi.fn() }));
 
-vi.mock('../../permissions/utils/create-default-accountability.js', () => ({
-	createDefaultAccountability: vi.fn(),
-}));
+vi.mock('graphql-ws', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('graphql-ws')>();
+	return {
+		...actual,
+		makeServer: vi.fn().mockReturnValue({ opened: vi.fn().mockReturnValue(vi.fn()) }),
+	};
+});
 
-vi.mock('../../logger/index.js', () => ({ useLogger: vi.fn(() => ({ info: vi.fn() })) }));
-vi.mock('../../utils/get-schema.js', () => ({ getSchema: vi.fn() }));
-vi.mock('../../services/index.js', () => ({ GraphQLService: vi.fn() }));
-
-// Partially mock `graphql` so we keep the real parse/validate behaviour while being able to assert
-// which validation rules are applied (for the introspection toggle).
+// Partially mock `graphql` so we keep the real parse/validate behaviour while being able to
+// assert which validation rules are applied (for the introspection toggle).
 vi.mock('graphql', async (importOriginal) => {
 	const actual = await importOriginal<typeof import('graphql')>();
 	return { ...actual, validate: vi.fn(actual.validate) };
 });
 
-vi.mock('@directus/env', () => ({ useEnv: vi.fn() }));
+vi.mock('./hooks.js', () => ({ registerWebSocketEvents: vi.fn() }));
+vi.mock('../../services/graphql/subscription.js', () => ({ bindPubSub: vi.fn() }));
+vi.mock('../../services/index.js', () => ({ GraphQLService: vi.fn() }));
+vi.mock('../authenticate.js', () => ({ authenticateConnection: vi.fn() }));
+vi.mock('../../utils/get-address.js', () => ({ getAddress: vi.fn().mockReturnValue('') }));
+vi.mock('../../utils/get-schema.js', () => ({ getSchema: vi.fn() }));
+
+vi.mock('../../logger/index.js', () => ({
+	useLogger: vi.fn().mockReturnValue({ info: vi.fn(), debug: vi.fn(), trace: vi.fn() }),
+}));
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
 
 const schema = buildSchema(/* GraphQL */ `
 	type Query {
@@ -54,21 +65,17 @@ function payload(overrides: Partial<SubscribePayload> = {}): SubscribePayload {
 	return { query: 'subscription { foo }', ...overrides };
 }
 
-beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({
-		GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
-		GRAPHQL_INTROSPECTION: true,
+describe('GraphQL WebSocket onSubscribe', () => {
+	beforeEach(() => {
+		vi.mocked(useEnv).mockReturnValue({
+			GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
+			GRAPHQL_INTROSPECTION: true,
+		});
+
+		vi.mocked(getSchema).mockResolvedValue({} as any);
+		vi.mocked(GraphQLService).mockImplementation(() => ({ getSchema: vi.fn().mockResolvedValue(schema) }) as any);
 	});
 
-	vi.mocked(getSchema).mockResolvedValue({} as any);
-	vi.mocked(GraphQLService).mockImplementation(() => ({ getSchema: vi.fn().mockResolvedValue(schema) }) as any);
-});
-
-afterEach(() => {
-	vi.clearAllMocks();
-});
-
-describe('GraphQL WebSocket onSubscribe', () => {
 	// The graphql-ws v6 signature is (ctx, id, payload) - the id and payload are separate arguments,
 	// not a single wrapped SubscribeMessage. Calling with three args guards against regressing it.
 	test('accepts a valid subscription operation', async () => {
@@ -161,5 +168,67 @@ describe('GraphQL WebSocket onSubscribe', () => {
 		expect(Array.isArray(result)).toBe(true);
 		expect((result as readonly GraphQLError[]).length).toBeGreaterThan(0);
 		expect((result as readonly GraphQLError[])[0]).toBeInstanceOf(GraphQLError);
+	});
+});
+
+function getMockServer() {
+	return {
+		on: vi.fn(),
+	} as unknown as httpServer;
+}
+
+describe('GraphQLSubscriptionController handshake upgrade', () => {
+	let controller: InstanceType<typeof GraphQLSubscriptionController>;
+
+	beforeEach(() => {
+		vi.mocked(useEnv).mockReturnValue({
+			WEBSOCKETS_GRAPHQL_PATH: '/graphql',
+			WEBSOCKETS_GRAPHQL_AUTH: 'handshake',
+			WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT: 10,
+			RATE_LIMITER_ENABLED: false,
+		});
+
+		controller = new GraphQLSubscriptionController(getMockServer());
+	});
+
+	test('propagates accountability overrides (ip/userAgent/origin) from the upgrade request', async () => {
+		// Stub handleUpgrade to synchronously invoke its callback with a fake socket
+		const fakeWs = {} as any;
+
+		vi.spyOn(controller.server, 'handleUpgrade').mockImplementation((_req, _socket, _head, cb: any) => {
+			cb(fakeWs);
+		});
+
+		// no-op implementation so the real 'connection' handler doesn't run; we only assert the emitted args
+		const emitSpy = vi.spyOn(controller.server, 'emit').mockReturnValue(true);
+
+		const context: UpgradeContext = {
+			request: {} as IncomingMessage,
+			socket: {} as internal.Duplex,
+			head: Buffer.from(''),
+			accountabilityOverrides: {
+				ip: '203.0.113.5',
+				userAgent: 'regression-test-agent',
+				origin: 'https://example.com',
+			},
+		};
+
+		// handleHandshakeUpgrade is protected; access via index signature for the test
+		await (controller as any).handleHandshakeUpgrade(context);
+
+		expect(emitSpy).toHaveBeenCalledWith(
+			'connection',
+			fakeWs,
+			expect.objectContaining({
+				accountability: expect.objectContaining({
+					ip: '203.0.113.5',
+					userAgent: 'regression-test-agent',
+					origin: 'https://example.com',
+					// regression guard: the IP must NOT be dropped to null (GHSA-jvxj-w2qp-5vmx)
+					admin: false,
+				}),
+				expires_at: null,
+			}),
+		);
 	});
 });
