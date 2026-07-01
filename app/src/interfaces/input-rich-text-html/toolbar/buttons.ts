@@ -17,6 +17,9 @@ export interface ToolbarContext {
 	image: {
 		open: () => void;
 	};
+	media: {
+		open: () => void;
+	};
 	link: {
 		open: () => void;
 	};
@@ -244,6 +247,12 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		label: 'wysiwyg_options.image',
 		command: (_e, ctx) => ctx.image.open(),
 		isActive: (e) => e.isActive('image'),
+	},
+	customMedia: {
+		icon: 'slideshow',
+		label: 'wysiwyg_options.media',
+		command: (_e, ctx) => ctx.media.open(),
+		isActive: (e) => e.isActive('media'),
 	},
 	hr: {
 		icon: 'horizontal_rule',

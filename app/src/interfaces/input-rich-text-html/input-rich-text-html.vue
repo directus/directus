@@ -5,8 +5,10 @@ import { onKeyStroke } from '@vueuse/core';
 import { computed, ref, type Ref, toRefs, watch } from 'vue';
 import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
+import { useMedia } from './composables/use-media';
 import ImageDrawer from './drawers/image-drawer.vue';
 import LinkDrawer from './drawers/link-drawer.vue';
+import MediaDrawer from './drawers/media-drawer.vue';
 import { editorExtensions } from './extensions';
 import { LinkShortcut } from './extensions/link-shortcut';
 import Toolbar from './toolbar/toolbar.vue';
@@ -67,12 +69,21 @@ const editor = useEditor({
 	content: '',
 	editable: isEditable.value,
 	editorProps: {
-		// double-click an image to edit it in the drawer; single click just selects the node
+		// double-click an image or media node to edit it in the drawer; single click just selects
 		handleDoubleClickOn: (_view, _pos, node, nodePos) => {
-			if (node.type.name !== 'image') return false;
-			editor.value?.commands.setNodeSelection(nodePos);
-			openImageDrawer();
-			return true;
+			if (node.type.name === 'image') {
+				editor.value?.commands.setNodeSelection(nodePos);
+				openImageDrawer();
+				return true;
+			}
+
+			if (node.type.name === 'media') {
+				editor.value?.commands.setNodeSelection(nodePos);
+				openMediaDrawer();
+				return true;
+			}
+
+			return false;
 		},
 		// Cmd/Ctrl+click a link opens it in a new tab (matches the legacy TinyMCE editor).
 		handleClick: (_view, _pos, event) => {
@@ -83,7 +94,11 @@ const editor = useEditor({
 			return true;
 		},
 	},
-	onCreate: ({ editor }) => syncValue(editor as Editor, props.value),
+	onCreate: ({ editor }) => {
+		syncValue(editor as Editor, props.value);
+		const storage = (editor as Editor).storage as Record<string, any>;
+		if (storage.media) storage.media.onOpenDrawer = openMediaDrawer;
+	},
 	onUpdate: ({ editor }) => {
 		emit('input', editor.isEmpty ? null : editor.getHTML());
 	},
@@ -119,10 +134,24 @@ const {
 	unlink,
 } = useLink(editor as Ref<Editor>);
 
+const {
+	mediaDrawerOpen,
+	mediaSelection,
+	embed,
+	activeTab,
+	openMediaDrawer,
+	closeMediaDrawer,
+	onMediaSelect,
+	saveMedia,
+} = useMedia(editor as Ref<Editor>, imageToken);
+
 // First drawer in the new editor: pause the surrounding view's focus trap while it's open so the
 // drawer's inputs are reachable; resume on close. Reused by the link/media/source drawers later.
 const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
-watch([imageDrawerOpen, linkDrawerOpen], ([image, link]) => (image || link ? pauseFocusTrap() : unpauseFocusTrap()));
+
+watch([imageDrawerOpen, linkDrawerOpen, mediaDrawerOpen], ([image, link, media]) =>
+	image || link || media ? pauseFocusTrap() : unpauseFocusTrap(),
+);
 
 // `editable` is only read at init, so keep it in sync when the prop flips
 watch(isEditable, (editable) => editor.value?.setEditable(editable));
@@ -159,6 +188,7 @@ onKeyStroke('Escape', () => {
 			:fullscreen="fullscreen"
 			@toggle-fullscreen="fullscreen = !fullscreen"
 			@open-image="openImageDrawer"
+			@open-media="openMediaDrawer"
 			@open-link="openLinkDrawer"
 		/>
 		<EditorContent class="editor-content" :editor="editor" />
@@ -183,6 +213,18 @@ onKeyStroke('Escape', () => {
 			@save="saveLink"
 			@unlink="unlink"
 			@cancel="closeLinkDrawer"
+		/>
+
+		<MediaDrawer
+			v-model="mediaDrawerOpen"
+			v-model:media-selection="mediaSelection"
+			v-model:embed="embed"
+			v-model:active-tab="activeTab"
+			:folder="folder"
+			:allowed-mime-types="allowedMimeTypes"
+			@select="onMediaSelect"
+			@save="saveMedia"
+			@cancel="closeMediaDrawer"
 		/>
 	</div>
 </template>
