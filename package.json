@@ -40,7 +40,6 @@
 			"minimatch@9": "9.0.9",
 			"express@4>path-to-regexp": "0.1.13",
 			"hono": "4.12.25"
-
 		}
 	},
 	"packageManager": "pnpm@10.27.0",
