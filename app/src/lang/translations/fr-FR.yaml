@@ -1299,6 +1299,7 @@ fields:
     collection: Collection
     icon: Icône
     note: Description
+    status: État
     color: Couleur
     display_template: Modèle d'affichage
     hidden: Masqué
@@ -1969,6 +1970,7 @@ interfaces:
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
     interface_group: Options d'interface
     display_group: Options d'affichage
+    edit_mode_inline: En ligne
   slider:
     slider: Curseur
     description: Sélectionner un nombre à l'aide d'un curseur

@@ -125,7 +125,7 @@ catalog:
   '@types/mime-types': 3.0.1
   '@types/ms': 2.1.0
   '@types/node': 22.13.14
-  '@types/nodemailer': 7.0.3
+  '@types/nodemailer': 8.0.1
   '@types/object-hash': 3.0.6
   '@types/papaparse': 5.5.0
   '@types/proxy-addr': 2.0.3
@@ -205,7 +205,7 @@ catalog:
   find-process: 2.0.0
   flat: 6.0.1
   focus-trap: 7.6.6
-  form-data: 4.0.4
+  form-data: 4.0.6
   fs-extra: 11.3.2
   geojson: 0.5.0
   get-port: 7.1.0
@@ -214,7 +214,7 @@ catalog:
   graphql: 16.12.0
   graphql-compose: 9.1.0
   graphql-ws: 6.0.6
-  happy-dom: 20.8.9
+  happy-dom: 20.10.6
   helmet: 8.1.0
   html-entities: 2.6.0
   icc: 3.0.0
@@ -257,7 +257,7 @@ catalog:
   mysql2: 3.15.3
   nanoid: 5.1.6
   node-machine-id: 1.1.12
-  nodemailer: 8.0.5
+  nodemailer: 9.0.3
   nodemailer-mailgun-transport: 2.1.5
   npm-watch: 0.13.0
   object-hash: 3.0.0
@@ -315,16 +315,16 @@ catalog:
   tedious: 18.6.1
   three: ^0.184.0
   tinymce: 6.8.6
-  tmp: 0.2.6
+  tmp: 0.2.7
   tsdown: 0.15.11
   tsx: 4.22.4
   tus-js-client: 4.3.1
   typebox: 1.1.37
-  typedoc: 0.28.12
+  typedoc: 0.28.19
   typedoc-plugin-markdown: 4.8.1
   typescript: 5.9.3
   typescript-eslint: 8.46.4
-  undici: 7.24.5
+  undici: 7.28.0
   universal-cookie: 8.0.1
   unplugin-vue: 7.1.1
   unplugin-yaml: 3.0.7
@@ -342,7 +342,7 @@ catalog:
   vue-virtual-scroller: 2.0.0-beta.8
   vuedraggable: 4.1.0
   wellknown: 0.5.0
-  ws: 8.18.3
+  ws: 8.21.0
   zod: 4.1.12
   zod-validation-error: 4.0.2
 

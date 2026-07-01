@@ -1203,6 +1203,7 @@ fields:
     collection: Kolekcja
     icon: Ikona
     note: Notatka
+    status: Status
     color: Kolor
     display_template: Wyświetl szablon
     hidden: Ukryte
@@ -1855,6 +1856,7 @@ interfaces:
     incompatible_data: Bieżące dane nie są kompatybilne z interfejsem iteratora i zostaną nadpisane podczas dodawania elementów do iteratora
     interface_group: Opcje interfejsu
     display_group: Opcje wyświetlania
+    edit_mode_inline: W lini
   slider:
     slider: Suwak
     description: Wybierz numer używając suwaka
