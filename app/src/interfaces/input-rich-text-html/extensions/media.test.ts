@@ -36,9 +36,9 @@ describe('media node: parse + render', () => {
 	});
 
 	test('iframe preserves src/width/height and has no source child', () => {
-		const out = roundTrip('<iframe src="https://example.com/embed" width="560" height="315"></iframe>');
+		const out = roundTrip('<iframe src="about:blank" width="560" height="315"></iframe>');
 		expect(out).toContain('<iframe');
-		expect(out).toContain('src="https://example.com/embed"');
+		expect(out).toContain('src="about:blank"');
 		expect(out).toContain('width="560"');
 		expect(out).toContain('height="315"');
 		expect(out).not.toContain('<source');

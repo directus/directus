@@ -96,7 +96,8 @@ const editor = useEditor({
 	},
 	onCreate: ({ editor }) => {
 		syncValue(editor as Editor, props.value);
-		((editor as Editor).storage as Record<string, any>).media.onOpenDrawer = openMediaDrawer;
+		const storage = (editor as Editor).storage as Record<string, any>;
+		if (storage.media) storage.media.onOpenDrawer = openMediaDrawer;
 	},
 	onUpdate: ({ editor }) => {
 		emit('input', editor.isEmpty ? null : editor.getHTML());

@@ -62,7 +62,7 @@ const FAITHFUL: Record<string, string> = {
 	'aligned heading': '<h2 style="text-align: center;">centered</h2>',
 	video: '<video width="640" height="360" controls><source src="/assets/v.mp4" type="video/mp4"></video>',
 	'audio with loop': '<audio loop controls><source src="/assets/a.mp3" type="audio/mpeg"></audio>',
-	iframe: '<iframe src="https://example.com/embed" width="560" height="315"></iframe>',
+	iframe: '<iframe src="about:blank" width="560" height="315"></iframe>',
 };
 
 /**

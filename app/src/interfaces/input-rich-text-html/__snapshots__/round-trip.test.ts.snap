@@ -28,7 +28,7 @@ exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > headings surv
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > horizontal rule survives round-trip 1`] = `"<p>before</p><hr><p>after</p>"`;
 
-exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > iframe survives round-trip 1`] = `"<iframe src="https://example.com/embed" width="560" height="315"></iframe>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > iframe survives round-trip 1`] = `"<iframe src="about:blank" width="560" height="315"></iframe>"`;
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > inline code survives round-trip 1`] = `"<p><code>inline()</code></p>"`;
 
