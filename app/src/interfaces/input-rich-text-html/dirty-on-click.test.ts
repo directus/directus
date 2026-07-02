@@ -18,7 +18,10 @@ import Interface from './input-rich-text-html.vue';
 async function mountWithValue(value: string) {
 	const wrapper = mount(Interface, {
 		props: { value },
-		global: { plugins: [createPinia()], stubs: { Toolbar: true, ImageDrawer: true, LinkDrawer: true } },
+		global: {
+			plugins: [createPinia()],
+			stubs: { Toolbar: true, ImageDrawer: true, LinkDrawer: true, SourceCodeDrawer: true },
+		},
 	});
 
 	await flushPromises();
