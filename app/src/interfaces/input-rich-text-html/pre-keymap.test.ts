@@ -2,16 +2,6 @@ import { Editor } from '@tiptap/vue-3';
 import { describe, expect, test } from 'vitest';
 import { editorExtensions } from './extensions';
 
-/**
- * Code block (`<pre>`) + inline `<code>` keymap (CMS-2645), ported from the legacy TinyMCE
- * `usePre.ts` / `useInlineCode.ts`.
- *
- * Triple-enter exit and backspace-removes-empty-block are provided by StarterKit's CodeBlock
- * (exitOnTripleEnter / its Backspace shortcut) — the first two suites are regression guards for
- * that config. The inline-code Enter behavior is the one piece StarterKit lacks: by default the
- * `code` mark is carried into the paragraph created by Enter, so the next line is still code. The
- * `pre-keymap` extension clears it (matching the old editor), which the last suite drives.
- */
 function editorWith(content: string): Editor {
 	return new Editor({ extensions: editorExtensions, content });
 }
