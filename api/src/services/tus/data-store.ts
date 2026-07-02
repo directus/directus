@@ -8,6 +8,9 @@ import { omit } from 'lodash-es';
 import { extension } from 'mime-types';
 import getDatabase from '../../database/index.js';
 import { useLogger } from '../../logger/index.js';
+import { assertUniqueFilename } from '../files/lib/assert-unique-filename.js';
+import { assertValidStoragePath } from '../files/lib/assert-valid-storage-path.js';
+import { sanitizeFilepath } from '../files/lib/sanitize-filepath.js';
 import { ItemsService } from '../items.js';
 
 export type TusDataStoreConfig = {
@@ -69,37 +72,30 @@ export class TusDataStore extends DataStore {
 			upload.metadata['title'] = formatTitle(upload.metadata['filename_download']);
 		}
 
-		let existingFile: Record<string, any> | null = null;
+		let existingFile: Record<string, unknown> | undefined;
 
-		// If the payload contains a primary key, we'll check if the file already exists
+		// If the payload contains a primary key, we'll check if the file already exists for replacement
 		if (upload.metadata['id']) {
-			// If the file you're uploading already exists, we'll consider this upload a replace so we'll fetch the existing file's folder and filename_download
-			existingFile =
-				(await knex
-					.select('folder', 'filename_download', 'filename_disk', 'title', 'description', 'metadata', 'tus_id')
-					.from('directus_files')
-					.andWhere({ id: upload.metadata['id'] })
-					.first()) ?? null;
+			existingFile = await knex.select('tus_id').from('directus_files').andWhere({ id: upload.metadata['id'] }).first();
 
 			if (existingFile && existingFile['tus_id'] !== null) {
 				throw ERRORS.INVALID_METADATA;
 			}
 		}
 
-		// Is this file a replacement? if the file data already exists and we have a primary key
-		const isReplacement = existingFile !== null && !!upload.metadata['id'];
-
-		if (isReplacement === true && upload.metadata['id']) {
-			upload.metadata['replace_id'] = upload.metadata['id'];
-		}
-
 		const fileData: Partial<File> = {
-			...omit(upload.metadata, ['id', 'replace_id']),
+			...omit(upload.metadata, ['id']),
 			tus_id: upload.id,
 			tus_data: upload,
 			filesize: upload.size,
 			storage: this.location,
 		};
+
+		if (fileData.filename_disk) {
+			fileData.filename_disk = sanitizeFilepath(fileData.filename_disk);
+			assertValidStoragePath(fileData.filename_disk, this.location);
+			await assertUniqueFilename(knex, fileData.filename_disk, upload.metadata['id']);
+		}
 
 		// If no folder is specified, we'll use the default folder from the settings if it exists
 		if ('folder' in fileData === false) {
@@ -110,11 +106,11 @@ export class TusDataStore extends DataStore {
 			}
 		}
 
-		// If this is a new file upload, we need to generate a new primary key and DB record
+		// Generate a placeholder record for the upload (to be upgrade/deleted on complete depending on new/replacement)
 		const primaryKey = await filesItemsService.createOne(fileData, { emitEvents: false });
 
-		// Set the file id, so it is available to be sent as a header on upload creation / resume
-		if (!upload.metadata['id']) {
+		// Point metadata.id at the placeholder record unless this is a valid replacement
+		if (!existingFile) {
 			upload.metadata['id'] = primaryKey as string;
 		}
 
@@ -127,7 +123,7 @@ export class TusDataStore extends DataStore {
 		fileData.filename_disk ||= primaryKey + (fileExtension || '');
 
 		try {
-			// If this is a replacement, we'll write the file to a temp location first to ensure we don't overwrite the existing file if something goes wrong
+			// Write the file to a temp location first to avoid possibly overwriting an existing file if something goes wrong
 			upload = (await this.storageDriver.createChunkedUpload(fileData.filename_disk, upload)) as Upload;
 
 			fileData.tus_data = upload;
@@ -139,11 +135,8 @@ export class TusDataStore extends DataStore {
 			logger.warn(`Couldn't create chunked upload for ${fileData.filename_disk}`);
 			logger.warn(err);
 
-			if (isReplacement) {
-				await filesItemsService.updateOne(primaryKey!, { tus_id: null, tus_data: null }, { emitEvents: false });
-			} else {
-				await filesItemsService.deleteOne(primaryKey!, { emitEvents: false });
-			}
+			// Remove the temporary created file
+			await filesItemsService.deleteOne(primaryKey!, { emitEvents: false });
 
 			throw ERRORS.UNKNOWN_ERROR;
 		}
@@ -181,15 +174,15 @@ export class TusDataStore extends DataStore {
 					throw err;
 				}
 
-				const isReplacement = Boolean(fileData.tus_data?.['metadata']?.['replace_id']);
+				const targetId = fileData.tus_data?.['metadata']?.['id'] as string | undefined;
+				const isReplacement = targetId && targetId !== fileData.id;
 
-				// If the file is a replacement, delete the old files, and upgrade the temp file
-				if (isReplacement === true) {
-					const replaceId = fileData.tus_data!['metadata']!['replace_id'] as string;
-					const replaceData = await sudoFilesItemsService.readOne(replaceId, { fields: ['filename_disk'] });
+				// If the file is a replacement, delete the old files, and upgrade the temp file. DB record will be cleanup on in onUploadFinish handler
+				if (isReplacement) {
+					const replaceData = await sudoFilesItemsService.readOne(targetId, { fields: ['filename_disk'] });
 
 					// delete the previously saved file and thumbnails to ensure they're generated fresh
-					for await (const partPath of this.storageDriver.list(replaceId)) {
+					for await (const partPath of this.storageDriver.list(targetId)) {
 						await this.storageDriver.delete(partPath);
 					}
 

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "16.1.1",
+	"version": "16.2.1",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -23,9 +23,6 @@
 	"scripts": {
 		"build": "vite build",
 		"dev": "vite --host",
-		"story:build": "histoire build && echo \"/*  /index.html  200\" >> .histoire/dist/_redirects",
-		"story:dev": "histoire dev",
-		"story:preview": "histoire preview",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",
@@ -75,7 +72,6 @@
 		"@fullcalendar/interaction": "catalog:",
 		"@fullcalendar/list": "catalog:",
 		"@fullcalendar/timegrid": "catalog:",
-		"@histoire/plugin-vue": "catalog:",
 		"@internationalized/date": "catalog:",
 		"@joeattardi/emoji-button": "catalog:",
 		"@json2csv/plainjs": "catalog:",
@@ -144,7 +140,6 @@
 		"focus-trap": "catalog:",
 		"geojson": "catalog:",
 		"happy-dom": "catalog:",
-		"histoire": "catalog:",
 		"html-entities": "catalog:",
 		"json-to-graphql-query": "catalog:",
 		"jsonlint-mod": "catalog:",

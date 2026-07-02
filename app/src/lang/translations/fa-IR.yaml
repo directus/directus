@@ -1462,6 +1462,7 @@ fields:
     collection: کالکشن یا مجموعه
     icon: آیکن
     note: شرح
+    status: وضعیت
     color: رنگ
     display_template: نمایش الگو
     hidden: مخفی
@@ -2284,6 +2285,7 @@ interfaces:
     incompatible_data: داده فعلی با رابط کاربری تکرارشونده سازگار نیست و هنگام افزودن موارد به تکرارشونده، نادیده گرفته خواهد شد
     interface_group: تنظیمات رابط
     display_group: تنظیمات نحوه نمایش
+    edit_mode_inline: درون خطی
   slider:
     slider: اسلایدر
     description: یک عدد را با استفاده از نوار متحرک انتخاب کنید

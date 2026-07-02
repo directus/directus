@@ -1287,6 +1287,7 @@ fields:
     collection: Колекція
     icon: Іконка
     note: Примітка
+    status: Статус
     color: Колір
     display_template: Показати шаблон
     hidden: Приховано
@@ -2003,6 +2004,7 @@ interfaces:
     incompatible_data: Поточні дані не сумісні з інтерфейсом ретранслятора і будуть замінені під час додавання елементів до ретранслятора
     interface_group: Опції інтерфейсу
     display_group: Параметри дисплея
+    edit_mode_inline: У тексті
   slider:
     slider: Слайдер
     description: Виберіть номер за допомогою слайдера
