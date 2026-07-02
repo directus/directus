@@ -1220,6 +1220,7 @@ fields:
     collection: Rinkinys
     icon: Ikona
     note: Pastaba
+    status: Būsena
     color: Spalva
     display_template: Rodymo šablonas
     hidden: Paslėptas
@@ -1884,6 +1885,7 @@ interfaces:
     incompatible_data: Dabartiniai duomenys nesuderinami su pasikartojančia forma ir bus pašalinti pridedant elementus prie jos
     interface_group: Sąsajos nustatymai
     display_group: Atvaizdavimo nustatymai
+    edit_mode_inline: Toje pačioje eilutėje
   slider:
     slider: Slankiklis
     description: Pasirinkti skaičių naudojantis slankikliu

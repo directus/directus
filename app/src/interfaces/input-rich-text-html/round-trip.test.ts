@@ -36,6 +36,7 @@ const FAITHFUL: Record<string, string> = {
 	subscript: '<p>H<sub>2</sub>O</p>',
 	superscript: '<p>x<sup>2</sup></p>',
 	'inline code': '<p><code>inline()</code></p>',
+	'inline code within text': '<p>run <code>npm install</code> to start</p>',
 	'nested marks': '<p><strong>bold <em>and italic</em></strong></p>',
 	'bullet list': '<ul><li><p>one</p></li><li><p>two</p></li></ul>',
 	'ordered list': '<ol><li><p>first</p></li><li><p>second</p></li></ol>',
@@ -43,6 +44,8 @@ const FAITHFUL: Record<string, string> = {
 	blockquote: '<blockquote><p>quote</p></blockquote>',
 	'horizontal rule': '<p>before</p><hr><p>after</p>',
 	'code block': '<pre><code>const x = 1;</code></pre>',
+	'code block (multiline)': '<pre><code>line 1\nline 2</code></pre>',
+	'code block (with language)': '<pre><code class="language-js">const x = 1;</code></pre>',
 	link: '<p><a href="https://directus.io">link</a></p>',
 	'link with title': '<p><a href="https://directus.io" title="Home">link</a></p>',
 	'link new tab': '<p><a href="https://directus.io" target="_blank" rel="noopener">link</a></p>',
@@ -61,6 +64,15 @@ const FAITHFUL: Record<string, string> = {
 	'rtl paragraph': '<p dir="rtl">شسي</p>',
 	'rtl heading': '<h2 dir="rtl">عنوان</h2>',
 	'rtl list': '<ul dir="rtl"><li><p>عنصر</p></li></ul>',
+	// Tables (CMS-2639). Structure round-trips losslessly. Column widths survive only as a cell
+	// `colwidth`; legacy `<colgroup><col style="width…">` widths are normalized away (see snapshots).
+	table: '<table><tbody><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></tbody></table>',
+	'table with header row':
+		'<table><tbody><tr><th>Name</th><th>Role</th></tr><tr><td>Ada</td><td>Engineer</td></tr></tbody></table>',
+	'table with cell colwidth':
+		'<table><tbody><tr><td colwidth="120"><p>a</p></td><td colwidth="240"><p>b</p></td></tr></tbody></table>',
+	'table with legacy colgroup widths':
+		'<table><colgroup><col style="width: 120px;"><col style="width: 240px;"></colgroup><tbody><tr><td>a</td><td>b</td></tr></tbody></table>',
 };
 
 /**
@@ -69,12 +81,6 @@ const FAITHFUL: Record<string, string> = {
  * actual lossy output; the assertions document precisely what is lost today.
  */
 const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }> = [
-	{
-		name: 'table',
-		html: '<table><tbody><tr><td>a</td><td>b</td></tr></tbody></table>',
-		absent: '<table',
-		issue: 'CMS-2639',
-	},
 	{
 		name: 'video',
 		html: '<video controls><source src="/v.mp4" type="video/mp4"></video>',

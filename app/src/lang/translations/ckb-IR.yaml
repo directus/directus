@@ -1226,6 +1226,7 @@ fields:
     collection: کۆمەڵە
     icon: ئایکۆن
     note: تێبینی
+    status: دۆخەکان
     color: ڕەنگ
     display_template: پیشاندانی قاڵب
     hidden: شاراوە
@@ -1891,6 +1892,7 @@ interfaces:
     incompatible_data: داتاکانی ئێستا لەگەڵ ڕووکاری دووبارەکەرەوەدا ناگونجێت و لە کاتی زیادکردنی ماددەکان بۆ دووبارەکەرەوەکە دەسڕدرێنەوە
     interface_group: بژاردەکانی ڕوکار
     display_group: بژاردەکانی نیشاندان
+    edit_mode_inline: ناوهێڵ
   slider:
     slider: سڵایدەر
     description: ژمارەیەک دیاریبکە بەبەکارهێنانی سڵایدەر

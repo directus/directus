@@ -22,11 +22,12 @@ const props = withDefaults(
 		font?: 'sans-serif' | 'serif' | 'monospace';
 		disabled?: boolean;
 		fullscreen?: boolean;
+		visualaid?: boolean;
 	}>(),
 	{ font: 'sans-serif' },
 );
 
-const emit = defineEmits<{ 'toggle-fullscreen': []; 'open-image': []; 'open-link': [] }>();
+const emit = defineEmits<{ 'toggle-fullscreen': []; 'toggle-visualaid': []; 'open-image': []; 'open-link': [] }>();
 
 const { t } = useI18n();
 
@@ -41,6 +42,10 @@ const context: ToolbarContext = {
 	fullscreen: {
 		active: () => props.fullscreen ?? false,
 		toggle: () => emit('toggle-fullscreen'),
+	},
+	visualaid: {
+		active: () => props.visualaid ?? false,
+		toggle: () => emit('toggle-visualaid'),
 	},
 	image: {
 		open: () => emit('open-image'),

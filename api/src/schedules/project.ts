@@ -1,3 +1,5 @@
+import { useEnv } from '@directus/env';
+import { toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import { random } from 'lodash-es';
 import getDatabase from '../database/index.js';
@@ -6,8 +8,16 @@ import { scheduleSynchronizedJob } from '../utils/schedule.js';
 
 /**
  * Schedule the project status job
+ *
+ * @returns Whether or not the project status job has been initialized
  */
-export default async function schedule() {
+export default async function schedule(): Promise<boolean> {
+	const env = useEnv();
+
+	if (toBoolean(env['PROJECT_OWNER_ENABLED']) === false) {
+		return false;
+	}
+
 	const db = getDatabase();
 
 	// Schedules a job at a random time of the day to avoid overloading the telemetry server
@@ -26,4 +36,6 @@ export default async function schedule() {
 			// Empty catch
 		}
 	});
+
+	return true;
 }
