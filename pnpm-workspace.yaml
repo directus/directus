@@ -93,6 +93,7 @@ catalog:
   '@tiptap/extension-image': ^3.26.1
   '@tiptap/extension-subscript': ^3.26.1
   '@tiptap/extension-superscript': ^3.26.1
+  '@tiptap/extension-table': ^3.26.1
   '@tiptap/pm': ^3.26.1
   '@tiptap/starter-kit': ^3.26.1
   '@tiptap/vue-3': ^3.26.1

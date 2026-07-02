@@ -249,6 +249,9 @@ catalogs:
     '@tiptap/extension-superscript':
       specifier: ^3.26.1
       version: 3.27.1
+    '@tiptap/extension-table':
+      specifier: ^3.26.1
+      version: 3.27.1
     '@tiptap/extension-text-align':
       specifier: ^3.26.1
       version: 3.27.1
@@ -1802,6 +1805,9 @@ importers:
         specifier: 'catalog:'
         version: 3.27.1(@tiptap/core@3.26.1(@tiptap/pm@3.26.1))(@tiptap/pm@3.26.1)
       '@tiptap/extension-superscript':
+        specifier: 'catalog:'
+        version: 3.27.1(@tiptap/core@3.26.1(@tiptap/pm@3.26.1))(@tiptap/pm@3.26.1)
+      '@tiptap/extension-table':
         specifier: 'catalog:'
         version: 3.27.1(@tiptap/core@3.26.1(@tiptap/pm@3.26.1))(@tiptap/pm@3.26.1)
       '@tiptap/extension-text-align':
@@ -7754,6 +7760,12 @@ packages:
 
   '@tiptap/extension-superscript@3.27.1':
     resolution: {integrity: sha512-8021uld246dqhtzZdzjvnWcfiJwElPQ50zZe7Fc3QGFiNRDVWQ2ATXGJFmXEopgCU5GuZaytPMtAq4UVDXc6xw==}
+    peerDependencies:
+      '@tiptap/core': 3.27.1
+      '@tiptap/pm': 3.27.1
+
+  '@tiptap/extension-table@3.27.1':
+    resolution: {integrity: sha512-tNB8kjxo0+XPremnWkd6NUikpeJ+JQrss7HntL8GgIxX4t0gkdnLn9yUWb0JzcaYP7Y8iTZZHdkPs0P154DG8Q==}
     peerDependencies:
       '@tiptap/core': 3.27.1
       '@tiptap/pm': 3.27.1
@@ -20875,6 +20887,11 @@ snapshots:
       '@tiptap/pm': 3.26.1
 
   '@tiptap/extension-superscript@3.27.1(@tiptap/core@3.26.1(@tiptap/pm@3.26.1))(@tiptap/pm@3.26.1)':
+    dependencies:
+      '@tiptap/core': 3.26.1(@tiptap/pm@3.26.1)
+      '@tiptap/pm': 3.26.1
+
+  '@tiptap/extension-table@3.27.1(@tiptap/core@3.26.1(@tiptap/pm@3.26.1))(@tiptap/pm@3.26.1)':
     dependencies:
       '@tiptap/core': 3.26.1(@tiptap/pm@3.26.1)
       '@tiptap/pm': 3.26.1
