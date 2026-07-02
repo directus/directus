@@ -73,8 +73,6 @@ const MEASUREMENTS: LayoutMeasurements = {
 	keyWidths,
 };
 
-// Legacy TinyMCE tokens that map to more than one button key. `ltr rtl` (directionality) is stored
-// as a single option value but renders as the two direction buttons.
 const TOOLBAR_ALIASES: Record<string, string[]> = { 'ltr rtl': ['ltr', 'rtl'] };
 
 // keys present in the field config AND in the registry, preserving field order for the `other` bucket

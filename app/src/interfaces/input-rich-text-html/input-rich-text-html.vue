@@ -47,9 +47,6 @@ const fontFamily = computed(() => {
 // both states are read-only; `nonEditable` keeps the normal look, `disabled` dims (see styles)
 const isEditable = computed(() => !props.disabled && !props.nonEditable);
 
-// Editor's default (visual) text direction, from the field/locale-driven `direction` prop. Applied
-// to the container so it cascades to the contenteditable; it never stamps `dir` on stored content
-// (per-block `dir` only comes from the toolbar buttons). Mirrors the markdown interface.
 const editorDir = computed(() => (props.direction === 'rtl' ? 'rtl' : 'ltr'));
 
 // Sync an external value into the editor without polluting undo history or emitting an update.
