@@ -1,11 +1,9 @@
 import assert from 'node:assert';
-import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
 import { type CreateIndexOptions, SchemaHelper, type SortRecord } from '../types.js';
 
-const env = useEnv();
 let lowerCaseTableNames: number | undefined;
 
 export class SchemaHelperMySQL extends SchemaHelper {
@@ -31,6 +29,17 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		]);
 	}
 
+	// https://dev.mysql.com/doc/refman/8.4/en/information-functions.html#function_version
+	// https://mariadb.com/kb/en/version/
+	override async getVersion(): Promise<string | null> {
+		try {
+			const [row] = await this.knex.select(this.knex.raw('version() as version'));
+			return row?.version ?? null;
+		} catch {
+			return null;
+		}
+	}
+
 	override async getDatabaseSize(): Promise<number | null> {
 		try {
 			const result = (await this.knex
@@ -39,7 +48,7 @@ export class SchemaHelperMySQL extends SchemaHelper {
 					this.knex
 						.select(this.knex.raw('data_length + index_length AS size'))
 						.from('information_schema.TABLES')
-						.where('table_schema', '=', String(env['DB_DATABASE']))
+						.where('table_schema', '=', this.knex.raw('DATABASE()'))
 						.as('size'),
 				)) as Record<string, any>[];
 

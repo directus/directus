@@ -182,6 +182,13 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	}
 
 	/**
+	 * @returns The database server version string
+	 */
+	async getVersion(): Promise<string | null> {
+		return null;
+	}
+
+	/**
 	 * @returns Size of the database in bytes
 	 */
 	async getDatabaseSize(): Promise<number | null> {

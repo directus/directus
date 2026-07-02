@@ -1,9 +1,6 @@
-import { useEnv } from '@directus/env';
 import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
 import { type CreateIndexOptions, SchemaHelper, type SortRecord } from '../types.js';
-
-const env = useEnv();
 
 export class SchemaHelperPostgres extends SchemaHelper {
 	override generateIndexName(
@@ -14,9 +11,19 @@ export class SchemaHelperPostgres extends SchemaHelper {
 		return getDefaultIndexName(type, collection, fields, { maxLength: 63 });
 	}
 
+	// https://www.postgresql.org/docs/current/runtime-config-preset.html#GUC-SERVER-VERSION
+	override async getVersion(): Promise<string | null> {
+		try {
+			const [row] = await this.knex.select(this.knex.raw("current_setting('server_version') as version"));
+			return row?.version ?? null;
+		} catch {
+			return null;
+		}
+	}
+
 	override async getDatabaseSize(): Promise<number | null> {
 		try {
-			const result = await this.knex.select(this.knex.raw(`pg_database_size(?) as size;`, [env['DB_DATABASE']]));
+			const result = await this.knex.select(this.knex.raw('pg_database_size(current_database()) as size'));
 
 			return result[0]?.['size'] ? Number(result[0]?.['size']) : null;
 		} catch {

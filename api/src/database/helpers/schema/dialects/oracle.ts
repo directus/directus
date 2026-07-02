@@ -64,6 +64,16 @@ export class SchemaHelperOracle extends SchemaHelper {
 		return field.type;
 	}
 
+	// https://docs.oracle.com/en/database/oracle/oracle-database/19/refrn/V-INSTANCE.html
+	override async getVersion(): Promise<string | null> {
+		try {
+			const [row] = await this.knex.select('version').from('v$instance');
+			return row?.version ?? null;
+		} catch {
+			return null;
+		}
+	}
+
 	override async getDatabaseSize(): Promise<number | null> {
 		try {
 			const result = await this.knex.raw('select SUM(bytes) from dba_segments');
