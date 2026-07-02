@@ -18,6 +18,8 @@ export interface VButtonProps {
 	fullWidth?: boolean;
 	/** No background */
 	outlined?: boolean;
+	/** Transparent at rest, dimmed-primary fill on hover/active. For chrome like toolbars. */
+	ghost?: boolean;
 	/** Remove padding / min-inline-size. Meant to be used with just an icon as content */
 	icon?: boolean;
 	/** Element type to be used */
@@ -159,6 +161,7 @@ async function onClick(event: MouseEvent) {
 					active: isActiveRoute,
 					icon,
 					outlined,
+					ghost,
 					loading,
 					dashed,
 					tile,
@@ -384,6 +387,23 @@ async function onClick(event: MouseEvent) {
 
 .outlined.active {
 	background-color: var(--v-button-background-color, var(--theme--primary));
+}
+
+// Ghost: transparent at rest, dimmed-primary fill on hover/active. Consolidated from the WYSIWYG
+// toolbar, which previously duplicated this CSS-variable override across its button components.
+.ghost {
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--primary-ondimmed);
+	--v-button-color-active: var(--primary-ondimmed);
+	--v-button-background-color: transparent;
+	--v-button-background-color-hover: var(--primary-dimmed);
+	--v-button-background-color-active: var(--primary-dimmed);
+}
+
+// Active marks an applied state, so it persists the dimmed-primary fill at rest.
+.ghost.active {
+	--v-button-background-color: var(--primary-dimmed);
+	--v-button-color: var(--primary-ondimmed);
 }
 
 .dashed {
