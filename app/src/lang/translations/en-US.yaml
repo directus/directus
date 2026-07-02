@@ -1434,6 +1434,7 @@ wysiwyg_options:
   table: Table
   visualaid: View invisible elements
   source_code: Edit Source Code
+  source_code_normalization_notice: Markup that the editor can't represent is normalized when you save.
   fullscreen: Full Screen
   directionality: Directionality
   lazy_loading: Lazy Load Image

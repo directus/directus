@@ -26,7 +26,12 @@ const props = withDefaults(
 	{ font: 'sans-serif' },
 );
 
-const emit = defineEmits<{ 'toggle-fullscreen': []; 'open-image': []; 'open-link': [] }>();
+const emit = defineEmits<{
+	'toggle-fullscreen': [];
+	'open-image': [];
+	'open-link': [];
+	'open-source-code': [];
+}>();
 
 const { t } = useI18n();
 
@@ -47,6 +52,9 @@ const context: ToolbarContext = {
 	},
 	link: {
 		open: () => emit('open-link'),
+	},
+	sourceCode: {
+		open: () => emit('open-source-code'),
 	},
 };
 
