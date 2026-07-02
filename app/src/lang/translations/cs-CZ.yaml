@@ -1224,6 +1224,7 @@ fields:
     collection: Kategorie
     icon: Ikona
     note: Poznámka
+    status: Stav
     color: Barva
     display_template: Šablona zobrazení
     hidden: Skryté
@@ -1886,6 +1887,7 @@ interfaces:
     incompatible_data: Aktuální data nejsou kompatibilní s rozhraním opakovače a budou přepsána při přidávání položek do opakovače
     interface_group: Možnosti rozhraní
     display_group: Volby zobrazení
+    edit_mode_inline: Řádek
   slider:
     slider: Posuvník
     description: Vyberte číslo pomocí posuvníku

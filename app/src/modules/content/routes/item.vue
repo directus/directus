@@ -33,7 +33,6 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import VKbdShortcut from '@/components/v-kbd-shortcut.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemHint from '@/components/v-list-item-hint.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
@@ -779,7 +778,13 @@ function useItemNavigation() {
 		}).fullPath;
 	});
 
-	const backRoute = computed(() => collectionRoute.value);
+	// If there's in-app navigation history, use browser back so the user returns to where they
+	// came from (e.g. the parent item when navigating via a relation). Otherwise fall back to the
+	// collection listing (direct URL landing / refresh).
+	const backRoute = computed(() => {
+		if (history.state?.back) return undefined;
+		return collectionRoute.value;
+	});
 
 	return { collectionRoute, backRoute };
 }

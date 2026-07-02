@@ -1210,6 +1210,7 @@ fields:
     collection: Koleksiyon
     icon: İkon
     note: Not
+    status: Durum
     color: Renk
     display_template: Görüntüleme Şablonu
     hidden: Gizli
@@ -1841,6 +1842,7 @@ interfaces:
     incompatible_data: Mevcut veriler tekrarlayıcı ile uyumlu değildir ve tekrarlayıcıya veri eklenirken üzerine yazılacaktır
     interface_group: Arayüz Seçenekleri
     display_group: Görüntüleme Seçenekleri
+    edit_mode_inline: Hizada
   slider:
     slider: Kaydırgaç
     description: Kaydırgaçı kullanarak bir sayı seçin
