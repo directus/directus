@@ -34,7 +34,7 @@ export class SchemaHelperMySQL extends SchemaHelper {
 	override async getVersion(): Promise<string | null> {
 		try {
 			const [row] = await this.knex.select(this.knex.raw('version() as version'));
-			return row?.version?.split('-')[0] ?? null;
+			return row?.version ?? null;
 		} catch {
 			return null;
 		}

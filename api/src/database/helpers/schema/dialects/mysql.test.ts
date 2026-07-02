@@ -32,14 +32,14 @@ describe('SchemaHelperMySQL', () => {
 			expect(mockSelect).toHaveBeenCalledWith(rawResult);
 		});
 
-		test('strips MariaDB suffix from version', async () => {
+		test('does not strip MariaDB suffix from version', async () => {
 			const mockSelect = vi.fn().mockResolvedValue([{ version: '10.11.6-MariaDB' }]);
 			const mockKnex = { raw: vi.fn(), select: mockSelect } as unknown as Knex;
 			const helper = new SchemaHelperMySQL(mockKnex);
 
 			const result = await helper.getVersion();
 
-			expect(result).toBe('10.11.6');
+			expect(result).toBe('10.11.6-MariaDB');
 		});
 
 		test('returns null when query returns no rows', async () => {
