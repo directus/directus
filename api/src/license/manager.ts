@@ -27,6 +27,7 @@ import {
 	verifyLicense,
 } from '@directus/license';
 import type { Accountability } from '@directus/types';
+import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { useLogger } from '../logger/index.js';
 import { clearCache as clearPermissionCache } from '../permissions/cache.js';
@@ -186,6 +187,10 @@ export class LicenseManager {
 		}
 	}
 
+	public getEditable(): boolean {
+		return toBoolean(env['LICENSE_KEY_MANAGEMENT_ENABLED'] ?? true) && this.source !== 'env';
+	}
+
 	public async getLicense(options?: { database?: Knex }): Promise<License> {
 		if (licenseCache) return licenseCache;
 
@@ -222,10 +227,11 @@ export class LicenseManager {
 	/**
 	 * Throw if the current license cannot have its key changed (activate / update / deactivate).
 	 *
-	 * License management is only allowed for setting-based licenses
+	 * License management is only allowed when the license is editable, i.e. it is not env-sourced
+	 * and env's LICENSE_KEY_MANAGEMENT_ENABLED !== false.
 	 */
 	private assertCanManageLicense() {
-		if (this.initialized && this.source !== 'settings') {
+		if (this.initialized && this.getEditable() === false) {
 			throw new ForbiddenError({
 				reason: `You cannot manage license for the current license.`,
 			});
@@ -268,10 +274,7 @@ export class LicenseManager {
 	 * Activates a new license
 	 */
 	public async activate(key: string) {
-		// bypass case for upgrading from core to another license
-		if (this.source !== null) {
-			this.assertCanManageLicense();
-		}
+		this.assertCanManageLicense();
 
 		// Keys cannot be directly activated if one is already active, must go via update route
 		if (this.licenseKey) {
