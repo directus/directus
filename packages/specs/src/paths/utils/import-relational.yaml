@@ -1,0 +1,85 @@
+post:
+  summary: Import Multiple Collections
+  description: >-
+    Import flat data for multiple related collections in a single request. Relations are resolved from the schema so
+    collections are imported in dependency order and primary keys are remapped.
+  operationId: importRelational
+  parameters:
+    - description: >-
+        `add` inserts new items and remaps conflicting primary keys, `merge` upserts items. Defaults to `add`.
+      in: query
+      name: mode
+      required: false
+      schema:
+        type: string
+        enum:
+          - add
+          - merge
+    - description: When true, no data is persisted; the computed id mappings are still returned.
+      in: query
+      name: dry_run
+      required: false
+      schema:
+        type: boolean
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            type: object
+            required:
+              - collection
+              - items
+            properties:
+              collection:
+                type: string
+              items:
+                type: array
+                items:
+                  type: object
+        example:
+          - collection: authors
+            items:
+              - id: '123'
+                name: Lorem Ipsum
+          - collection: articles
+            items:
+              - id: '123'
+                title: Hello World
+                author: '123'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  mode:
+                    type: string
+                  dry_run:
+                    type: boolean
+                  order:
+                    type: array
+                    items:
+                      type: string
+                  deferred:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        collection:
+                          type: string
+                        field:
+                          type: string
+                  mappings:
+                    type: object
+                    description: Per-collection map of old primary key to new primary key.
+                    additionalProperties:
+                      type: object
+  tags:
+    - Utilities

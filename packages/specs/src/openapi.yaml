@@ -264,6 +264,8 @@ paths:
     $ref: './paths/utils/sort.yaml'
   /utils/import/{collection}:
     $ref: './paths/utils/import.yaml'
+  /utils/import:
+    $ref: './paths/utils/import-relational.yaml'
   /utils/export/{collection}:
     $ref: './paths/utils/export.yaml'
   /utils/cache/clear:
