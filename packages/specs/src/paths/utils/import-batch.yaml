@@ -3,7 +3,7 @@ post:
   description: >-
     Import flat data for multiple related collections in a single request. Relations are resolved from the schema so
     collections are imported in dependency order and primary keys are remapped.
-  operationId: importRelational
+  operationId: importBatch
   parameters:
     - description: >-
         `add` inserts new items and remaps conflicting primary keys, `merge` upserts items. Defaults to `add`.

@@ -6,23 +6,45 @@ import { getCache } from '../cache.js';
 import emitter from '../emitter.js';
 import type { ImportCollectionData } from '../utils/build-import-plan.js';
 import { getService } from '../utils/get-service.js';
-import { RelationalImportService } from './relational-import.js';
+import { ImportService } from './import-export.js';
 
 const holder = vi.hoisted(() => ({ trx: null as any }));
+const cache: { importCount?: number } = {};
 
-vi.mock('../utils/get-service.js', () => ({ getService: vi.fn() }));
-
-vi.mock('../permissions/modules/validate-access/validate-access.js', () => ({ validateAccess: vi.fn() }));
-
-vi.mock('../utils/transaction.js', () => ({
-	transaction: (_knex: any, handler: any) => handler(holder.trx),
+// Mocks required to load import-export.js (mirrors import-export.test.ts)
+vi.mock('../utils/store.js', () => ({
+	useStore: () => (callback: (store: any) => void) =>
+		callback({
+			get: (key: 'importCount') => cache[key],
+			set: (key: 'importCount', value: any) => {
+				cache[key] = value;
+			},
+		}),
 }));
 
-vi.mock('../emitter.js', () => ({ default: { emitAction: vi.fn() } }));
+vi.mock('@directus/env', () => ({
+	useEnv: () => ({
+		MAX_IMPORT_ERRORS: 1000,
+		EMAIL_TEMPLATES_PATH: './templates',
+		EXTENSIONS_PATH: './extensions',
+		IMPORT_TIMEOUT: '1m',
+		IMPORT_MAX_CONCURRENCY: 10,
+	}),
+}));
 
-vi.mock('../cache.js', () => ({ getCache: vi.fn(() => ({ cache: null })) }));
+vi.mock('../stores/notifications.js');
+vi.mock('./users.js');
 
-vi.mock('../database/index.js', () => ({ default: vi.fn() }));
+// Mocks for the importBatch logic
+vi.mock('../utils/get-service.js', () => ({ getService: vi.fn() }));
+vi.mock('../permissions/modules/validate-access/validate-access.js', () => ({ validateAccess: vi.fn() }));
+vi.mock('../utils/transaction.js', () => ({ transaction: (_knex: any, handler: any) => handler(holder.trx) }));
+vi.mock('../database/index.js', () => ({ default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') }));
+
+vi.mock('../cache.js', async (importOriginal) => ({
+	...(await importOriginal<any>()),
+	getCache: vi.fn(() => ({ cache: null })),
+}));
 
 /** Minimal chainable knex stub driven by a map of collection -> set of existing primary keys. */
 function createTrx(existing: Record<string, Set<string>> = {}) {
@@ -107,17 +129,18 @@ async function run(
 ) {
 	holder.trx = createTrx(existing);
 	const ctx = setupServices(schema);
-	const service = new RelationalImportService({ knex: {} as any, schema, accountability: null });
-	const result = await service.import(input, options);
+	const service = new ImportService({ knex: {} as any, schema, accountability: null });
+	const result = await service.importBatch(input, options);
 	return { result, calls: ctx.calls };
 }
 
 beforeEach(() => {
 	vi.clearAllMocks();
 	vi.mocked(getCache).mockReturnValue({ cache: null } as any);
+	vi.spyOn(emitter, 'emitAction').mockImplementation(() => {});
 });
 
-describe('RelationalImportService', () => {
+describe('ImportService.importBatch', () => {
 	test('imports in dependency order and remaps auto-increment PKs + FKs', async () => {
 		const schema = new SchemaBuilder()
 			.collection('authors', (c) => {
@@ -138,11 +161,9 @@ describe('RelationalImportService', () => {
 
 		expect(calls.map((c) => c.collection)).toEqual(['authors', 'articles']);
 
-		// auto-increment PK omitted on insert
 		expect(calls[0]).toMatchObject({ collection: 'authors', method: 'createOne' });
 		expect(calls[0]!.payload).not.toHaveProperty('id');
 
-		// FK remapped from old author id 1 to the newly assigned author id
 		expect(calls[1]!.payload.author).toBe('authors-new-1');
 		expect(calls[1]!.payload).not.toHaveProperty('id');
 
@@ -166,7 +187,7 @@ describe('RelationalImportService', () => {
 
 		expect(calls[0]).toMatchObject({ collection: 'authors', method: 'upsertOne' });
 		expect(calls[0]!.payload.id).toBe('uuid-1');
-		expect(result.mappings.authors).toEqual({ 'uuid-1': 'uuid-1' });
+		expect(result.mappings['authors']).toEqual({ 'uuid-1': 'uuid-1' });
 	});
 
 	test('add mode regenerates a conflicting UUID primary key', async () => {
@@ -187,7 +208,7 @@ describe('RelationalImportService', () => {
 		expect(calls[0]!.method).toBe('createOne');
 		expect(calls[0]!.payload.id).not.toBe('uuid-1');
 		expect(typeof calls[0]!.payload.id).toBe('string');
-		expect(result.mappings.authors!['uuid-1']).toBe(calls[0]!.payload.id);
+		expect(result.mappings['authors']!['uuid-1']).toBe(calls[0]!.payload.id);
 	});
 
 	test('add mode throws on a conflicting non-UUID string primary key', async () => {
@@ -285,7 +306,6 @@ describe('RelationalImportService', () => {
 			{ authors: new Set(['5']) },
 		);
 
-		// author 5 is pre-existing (not in the import), so it's left untouched
 		expect(calls[0]!.payload.author).toBe(5);
 	});
 
@@ -326,7 +346,6 @@ describe('RelationalImportService', () => {
 
 		expect(result.deferred).toEqual([{ collection: 'categories', field: 'parent' }]);
 
-		// parent stripped on insert
 		for (const call of calls.filter((c) => c.method === 'createOne')) {
 			expect(call.payload).not.toHaveProperty('parent');
 		}
@@ -353,7 +372,7 @@ describe('RelationalImportService', () => {
 		});
 
 		expect(result.dryRun).toBe(true);
-		expect(result.mappings.authors).toEqual({ '1': 'authors-new-1' });
+		expect(result.mappings['authors']).toEqual({ '1': 'authors-new-1' });
 		expect(emitter.emitAction).not.toHaveBeenCalled();
 		expect(cacheClear).not.toHaveBeenCalled();
 	});

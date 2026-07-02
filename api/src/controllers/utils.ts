@@ -10,7 +10,6 @@ import { useLogger } from '../logger/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { ExportService, ImportService } from '../services/import-export.js';
-import { RelationalImportService } from '../services/relational-import.js';
 import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -117,7 +116,7 @@ router.post(
 	}),
 );
 
-const RelationalImportSchema = Joi.array()
+const ImportBatchSchema = Joi.array()
 	.items(
 		Joi.object({
 			collection: Joi.string().required(),
@@ -137,21 +136,21 @@ router.post(
 			});
 		}
 
-		const { error, value } = RelationalImportSchema.validate(req.body);
+		const { error, value } = ImportBatchSchema.validate(req.body);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
-
-		const mode = req.query['mode'] === 'merge' ? 'merge' : 'add';
 
 		if (req.query['mode'] !== undefined && ['add', 'merge'].includes(String(req.query['mode'])) === false) {
 			throw new InvalidQueryError({ reason: `"mode" must be one of ["add", "merge"]` });
 		}
 
-		const service = new RelationalImportService({
+		const mode = req.query['mode'] === 'merge' ? 'merge' : 'add';
+
+		const service = new ImportService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const result = await service.import(value, {
+		const result = await service.importBatch(value, {
 			mode,
 			dryRun: toBoolean(req.query['dry_run']),
 		});

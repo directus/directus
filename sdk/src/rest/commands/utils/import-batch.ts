@@ -1,20 +1,20 @@
 import type { RestCommand } from '../../types.js';
 
-export interface RelationalImportInput {
+export interface ImportBatchInput {
 	collection: string;
 	items: Record<string, any>[];
 }
 
-export interface RelationalImportOptions {
+export interface ImportBatchOptions {
 	/** `add` inserts new items (remapping conflicting keys), `merge` upserts. Defaults to `add`. */
 	mode?: 'add' | 'merge';
 	/** When true, no data is persisted; the computed id mappings are still returned. */
 	dry_run?: boolean;
 }
 
-export interface RelationalImportResult {
+export interface ImportBatchResult {
 	mode: 'add' | 'merge';
-	dry_run: boolean;
+	dryRun: boolean;
 	order: string[];
 	deferred: { collection: string; field: string }[];
 	mappings: Record<string, Record<string, string | number>>;
@@ -28,11 +28,8 @@ export interface RelationalImportResult {
  * @param options Import mode and dry-run flag.
  * @returns The import order, deferred fields, and old -> new primary key mappings per collection.
  */
-export const utilsImportRelational =
-	<Schema>(
-		data: RelationalImportInput[],
-		options: RelationalImportOptions = {},
-	): RestCommand<RelationalImportResult, Schema> =>
+export const utilsImportBatch =
+	<Schema>(data: ImportBatchInput[], options: ImportBatchOptions = {}): RestCommand<ImportBatchResult, Schema> =>
 	() => {
 		const params: Record<string, string> = {};
 
