@@ -30,13 +30,13 @@ afterEach(() => {
 describe.each([['ltr'], ['rtl']] as const)('%s', (key) => {
 	test(`sets dir="${key}"`, () => {
 		const editor = makeEditor();
-		toolbarButtons[key]!.command(editor, ctx);
+		toolbarButtons[key]!.command!(editor, ctx);
 		expect(editor.getHTML()).toContain(`dir="${key}"`);
 	});
 
 	test('reports active only for its own direction', () => {
 		const editor = makeEditor();
-		toolbarButtons[key]!.command(editor, ctx);
+		toolbarButtons[key]!.command!(editor, ctx);
 		expect(toolbarButtons[key]!.isActive?.(editor, ctx)).toBe(true);
 
 		const other = key === 'ltr' ? 'rtl' : 'ltr';
@@ -46,7 +46,7 @@ describe.each([['ltr'], ['rtl']] as const)('%s', (key) => {
 	test('sets dir on headings, lists, and blockquote', () => {
 		for (const content of ['<h2>title</h2>', '<ul><li><p>one</p></li></ul>', '<blockquote><p>quote</p></blockquote>']) {
 			const editor = makeEditor(content);
-			toolbarButtons[key]!.command(editor, ctx);
+			toolbarButtons[key]!.command!(editor, ctx);
 			expect(editor.getHTML()).toContain(`dir="${key}"`);
 		}
 	});
@@ -55,10 +55,19 @@ describe.each([['ltr'], ['rtl']] as const)('%s', (key) => {
 describe('unsetDirection', () => {
 	test('removes an existing dir attribute', () => {
 		const editor = makeEditor();
-		toolbarButtons.rtl!.command(editor, ctx);
+		toolbarButtons.rtl!.command!(editor, ctx);
 		expect(editor.getHTML()).toContain('dir=');
 
 		editor.chain().focus().unsetDirection().run();
+		expect(editor.getHTML()).not.toContain('dir=');
+	});
+
+	test('removeformat clears dir', () => {
+		const editor = makeEditor();
+		toolbarButtons.rtl!.command!(editor, ctx);
+		expect(editor.getHTML()).toContain('dir=');
+
+		toolbarButtons.removeformat!.command!(editor, ctx);
 		expect(editor.getHTML()).not.toContain('dir=');
 	});
 });

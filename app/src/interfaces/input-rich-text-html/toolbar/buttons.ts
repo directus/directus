@@ -284,7 +284,7 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 	removeformat: {
 		icon: 'format_clear',
 		label: 'wysiwyg_options.removeformat',
-		command: (e) => e.chain().focus().unsetAllMarks().clearNodes().run(),
+		command: (e) => e.chain().focus().unsetAllMarks().clearNodes().unsetDirection().run(),
 	},
 	cut: {
 		icon: 'content_cut',
