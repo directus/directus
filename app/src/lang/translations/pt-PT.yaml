@@ -1004,6 +1004,7 @@ fields:
   directus_collections:
     collection: Coleção
     note: Nota
+    status: Estado
     color: Cor
     display_template: Templates de Exibição
     sort_field: Campo de ordenação
@@ -1191,6 +1192,7 @@ interfaces:
   list:
     sort: Ordenar
     display_group: Opções de Exibição
+    edit_mode_inline: Em linha
   tags:
     tags: Etiquetas
   input-translated-string:

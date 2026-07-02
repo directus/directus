@@ -876,6 +876,7 @@ fields:
     collection: Danh mục
     icon: Biểu tượng
     note: Ghi chú
+    status: Trạng thái
     color: Màu sắc
     display_template: Mẫu hiển thị
     hidden: Ẩn

@@ -977,6 +977,7 @@ fields:
     collection: Colecție
     icon: Pictogramă
     note: Notă
+    status: Stare
     color: Culoare
     display_template: Afişare şablon
     hidden: Ascuns
@@ -1527,6 +1528,7 @@ interfaces:
     field_note_placeholder: Introduceți nota câmpului...
     incompatible_data: Datele curente nu sunt compatibile cu interfața de repetare și vor fi suprascrise atunci când se adaugă elemente la repetator
     interface_group: Opțiuni interfață
+    edit_mode_inline: Pe aceeași linie
   slider:
     slider: Glisor
     description: Selectați un număr folosind un glisor

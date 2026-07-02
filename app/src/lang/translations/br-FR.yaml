@@ -650,6 +650,7 @@ fields:
     collection: Dastumad
     icon: Arlun
     note: Evezhiadenn
+    status: Stad
     color: Liv
     display_template: Patrom diskwel
     hidden: Kuzhet
@@ -979,6 +980,7 @@ interfaces:
     sort: Rummañ
     field_note_placeholder: Bizskrivit notenn ar vaezienn...
     interface_group: Dibarzhioù an etrefas
+    edit_mode_inline: En linenn
   slider:
     slider: Reti
     description: Dibab un niverenn gant ar reti
