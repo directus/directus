@@ -1,13 +1,18 @@
 <script setup lang="ts">
+import type { Change } from 'diff';
+import SourceCodeNormalizeDialog from './source-code-normalize-dialog.vue';
 import VDrawer from '@/components/v-drawer.vue';
 import VNotice from '@/components/v-notice.vue';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
-const emit = defineEmits<{ save: []; cancel: [] }>();
+defineProps<{ normalizeDiff: Change[] }>();
+
+const emit = defineEmits<{ save: []; cancel: []; 'confirm-save': []; 'cancel-normalize': [] }>();
 
 const open = defineModel<boolean>({ required: true });
 const code = defineModel<string>('code', { required: true });
+const normalizeConfirmOpen = defineModel<boolean>('normalizeConfirmOpen', { required: true });
 </script>
 
 <template>
@@ -27,6 +32,13 @@ const code = defineModel<string>('code', { required: true });
 			<PrivateViewHeaderBarActionButton :label="$t('save')" icon="check" @click="emit('save')" />
 		</template>
 	</VDrawer>
+
+	<SourceCodeNormalizeDialog
+		v-model="normalizeConfirmOpen"
+		:diff="normalizeDiff"
+		@confirm="emit('confirm-save')"
+		@cancel="emit('cancel-normalize')"
+	/>
 </template>
 
 <style lang="scss" scoped>

@@ -121,9 +121,17 @@ const {
 	unlink,
 } = useLink(editor as Ref<Editor>);
 
-const { sourceCodeDrawerOpen, code, openSourceCodeDrawer, closeSourceCodeDrawer, saveSourceCode } = useSourceCode(
-	editor as Ref<Editor>,
-);
+const {
+	sourceCodeDrawerOpen,
+	code,
+	normalizeConfirmOpen,
+	normalizeDiff,
+	openSourceCodeDrawer,
+	closeSourceCodeDrawer,
+	saveSourceCode,
+	confirmSaveSourceCode,
+	cancelNormalize,
+} = useSourceCode(editor as Ref<Editor>);
 
 // First drawer in the new editor: pause the surrounding view's focus trap while it's open so the
 // drawer's inputs are reachable; resume on close. Reused by the link/media/source drawers later.
@@ -198,8 +206,12 @@ onKeyStroke('Escape', () => {
 		<SourceCodeDrawer
 			v-model="sourceCodeDrawerOpen"
 			v-model:code="code"
+			v-model:normalize-confirm-open="normalizeConfirmOpen"
+			:normalize-diff="normalizeDiff"
 			@save="saveSourceCode"
 			@cancel="closeSourceCodeDrawer"
+			@confirm-save="confirmSaveSourceCode"
+			@cancel-normalize="cancelNormalize"
 		/>
 	</div>
 </template>

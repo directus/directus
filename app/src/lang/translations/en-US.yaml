@@ -1435,6 +1435,9 @@ wysiwyg_options:
   visualaid: View invisible elements
   source_code: Edit Source Code
   source_code_normalization_notice: Markup that the editor can't represent is normalized when you save.
+  source_code_normalize_title: Some markup will be removed
+  source_code_normalize_body: The editor can't represent the highlighted markup, so it will be removed when you save.
+  save_anyway: Save Anyway
   fullscreen: Full Screen
   directionality: Directionality
   lazy_loading: Lazy Load Image

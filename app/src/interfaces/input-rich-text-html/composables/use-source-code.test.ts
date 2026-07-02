@@ -78,3 +78,70 @@ test('closeSourceCodeDrawer closes without touching the document', () => {
 	expect(sourceCodeDrawerOpen.value).toBe(false);
 	expect(editor.value.getHTML()).toBe('<p>keep</p>');
 });
+
+const LOSSY = '<table><tbody><tr><td>a</td></tr></tbody></table>';
+
+test('save with unsupported markup opens the confirm dialog instead of applying', () => {
+	const {
+		editor,
+		code,
+		sourceCodeDrawerOpen,
+		normalizeConfirmOpen,
+		normalizeDiff,
+		openSourceCodeDrawer,
+		saveSourceCode,
+	} = setup('<p>keep</p>');
+
+	const before = editor.value.getHTML();
+	openSourceCodeDrawer();
+	code.value = LOSSY;
+	saveSourceCode();
+
+	expect(normalizeConfirmOpen.value).toBe(true);
+	expect(normalizeDiff.value.length).toBeGreaterThan(0);
+	expect(sourceCodeDrawerOpen.value).toBe(true);
+	expect(editor.value.getHTML()).toBe(before);
+});
+
+test('confirmSaveSourceCode applies the edit and closes both drawer and dialog', () => {
+	const {
+		editor,
+		code,
+		sourceCodeDrawerOpen,
+		normalizeConfirmOpen,
+		openSourceCodeDrawer,
+		saveSourceCode,
+		confirmSaveSourceCode,
+	} = setup('<p>keep</p>');
+
+	openSourceCodeDrawer();
+	code.value = LOSSY;
+	saveSourceCode();
+	confirmSaveSourceCode();
+
+	expect(normalizeConfirmOpen.value).toBe(false);
+	expect(sourceCodeDrawerOpen.value).toBe(false);
+	expect(editor.value.getHTML()).not.toContain('<table');
+});
+
+test('cancelNormalize closes the dialog but keeps the drawer open and document untouched', () => {
+	const {
+		editor,
+		code,
+		sourceCodeDrawerOpen,
+		normalizeConfirmOpen,
+		openSourceCodeDrawer,
+		saveSourceCode,
+		cancelNormalize,
+	} = setup('<p>keep</p>');
+
+	const before = editor.value.getHTML();
+	openSourceCodeDrawer();
+	code.value = LOSSY;
+	saveSourceCode();
+	cancelNormalize();
+
+	expect(normalizeConfirmOpen.value).toBe(false);
+	expect(sourceCodeDrawerOpen.value).toBe(true);
+	expect(editor.value.getHTML()).toBe(before);
+});
