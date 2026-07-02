@@ -227,6 +227,18 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		command: (e) => e.chain().focus().toggleBlockquote().run(),
 		isActive: (e) => e.isActive('blockquote'),
 	},
+	customInlineCode: {
+		icon: 'code',
+		label: 'wysiwyg_options.codeblock',
+		command: (e) => e.chain().focus().toggleCode().run(),
+		isActive: (e) => e.isActive('code'),
+	},
+	customPre: {
+		icon: 'code_blocks',
+		label: 'wysiwyg_options.pre',
+		command: (e) => e.chain().focus().toggleCodeBlock().run(),
+		isActive: (e) => e.isActive('codeBlock'),
+	},
 	customLink: {
 		icon: 'link',
 		label: 'wysiwyg_options.link',
