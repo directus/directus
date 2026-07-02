@@ -21,7 +21,10 @@ async function mountWithValue(value: string) {
 
 	const wrapper = mount(Interface, {
 		props: { value },
-		global: { plugins: [createPinia(), i18n], stubs: { Toolbar: true, ImageDrawer: true, LinkDrawer: true } },
+		global: {
+			plugins: [createPinia(), i18n],
+			stubs: { Toolbar: true, TableBubbleMenu: true, ImageDrawer: true, LinkDrawer: true },
+		},
 	});
 
 	await flushPromises();

@@ -4,6 +4,7 @@ import { PAGE_BREAK_NODE } from '../extensions/page-break';
 import ColorMenu from './menus/color-menu.vue';
 import DateTimeMenu from './menus/datetime-menu.vue';
 import StyleListMenu from './menus/style-list-menu.vue';
+import TableMenu from './menus/table-menu.vue';
 
 /** Handlers for buttons whose commands need more than the editor (instantiated in setup scope). */
 export interface ToolbarContext {
@@ -13,6 +14,10 @@ export interface ToolbarContext {
 		paste: (editor: Editor) => void;
 	};
 	fullscreen: {
+		active: () => boolean;
+		toggle: () => void;
+	};
+	visualaid: {
 		active: () => boolean;
 		toggle: () => void;
 	};
@@ -229,6 +234,18 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		command: (e) => e.chain().focus().toggleBlockquote().run(),
 		isActive: (e) => e.isActive('blockquote'),
 	},
+	customInlineCode: {
+		icon: 'code',
+		label: 'wysiwyg_options.codeblock',
+		command: (e) => e.chain().focus().toggleCode().run(),
+		isActive: (e) => e.isActive('code'),
+	},
+	customPre: {
+		icon: 'code_blocks',
+		label: 'wysiwyg_options.pre',
+		command: (e) => e.chain().focus().toggleCodeBlock().run(),
+		isActive: (e) => e.isActive('codeBlock'),
+	},
 	customLink: {
 		icon: 'link',
 		label: 'wysiwyg_options.link',
@@ -295,6 +312,19 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		icon: 'select_all',
 		label: 'wysiwyg_options.selectall',
 		command: (e) => e.chain().focus().selectAll().run(),
+	},
+	table: {
+		icon: 'table',
+		label: 'wysiwyg_options.table',
+		component: TableMenu,
+		// wider than a square button: it carries a dropdown caret (see toolbar-popover's popoverWidth)
+		width: 40,
+	},
+	visualaid: {
+		icon: 'border_clear',
+		label: 'wysiwyg_options.visualaid',
+		command: (_e, ctx) => ctx.visualaid.toggle(),
+		isActive: (_e, ctx) => ctx.visualaid.active(),
 	},
 	fullscreen: {
 		icon: 'zoom_out_map',
