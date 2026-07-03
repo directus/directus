@@ -47,6 +47,12 @@ describe('formatHtml', () => {
 		expect(formatHtml('<pre><code>a\n  b</code></pre>')).toBe('<pre><code>a\n  b</code></pre>');
 	});
 
+	test('preserves HTML comments between blocks', () => {
+		expect(formatHtml('<p>Testing this</p><!-- comment --><p>Check it out</p>')).toBe(
+			['<p>Testing this</p>', '<!-- comment -->', '<p>Check it out</p>'].join('\n'),
+		);
+	});
+
 	// Why it's safe: open drawer → save unchanged must never mutate the value.
 	describe('round-trips: formatted HTML re-parses to the canonical document', () => {
 		test.each(Object.entries(SAMPLES))('%s', (_name, html) => {

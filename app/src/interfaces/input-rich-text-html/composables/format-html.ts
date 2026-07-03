@@ -83,8 +83,17 @@ function serialize(nodes: NodeListOf<ChildNode> | ChildNode[], depth: number): s
 			continue;
 		}
 
-		// text / inline element: skip whitespace-only text between blocks, emit the rest verbatim
-		const html = node.nodeType === Node.TEXT_NODE ? (node.textContent ?? '') : (node as HTMLElement).outerHTML;
+		// text / comment / inline element: skip whitespace-only text between blocks, emit the rest verbatim
+		let html: string;
+
+		if (node.nodeType === Node.TEXT_NODE) {
+			html = node.textContent ?? '';
+		} else if (node.nodeType === Node.COMMENT_NODE) {
+			html = `<!--${(node as Comment).data}-->`;
+		} else {
+			html = (node as HTMLElement).outerHTML ?? '';
+		}
+
 		if (html.trim()) lines.push(pad + html.trim());
 	}
 
@@ -92,6 +101,7 @@ function serialize(nodes: NodeListOf<ChildNode> | ChildNode[], depth: number): s
 }
 
 export function formatHtml(html: string): string {
-	const doc = new DOMParser().parseFromString(html, 'text/html');
-	return serialize(doc.body.childNodes, 0);
+	const root = document.createElement('div');
+	root.innerHTML = html;
+	return serialize(root.childNodes, 0);
 }
