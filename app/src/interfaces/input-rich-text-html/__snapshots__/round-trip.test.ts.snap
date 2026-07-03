@@ -81,7 +81,7 @@ exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > underline sur
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'audio' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;
 
-exports[`round-trip: lossy (restored by later issues / accepted regression) > 'custom format span' is dropped today (→ 'CMS-2648') 1`] = `"<p>text</p>"`;
+exports[`round-trip: lossy (restored by later issues / accepted regression) > 'custom format span (unconfigured)' is dropped today (→ 'CMS-2648 (configured only)') 1`] = `"<p>text</p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'iframe' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;
 

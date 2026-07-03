@@ -21,6 +21,8 @@ export const toolbarGroups: ToolbarGroup[] = [
 		keys: ['bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript'],
 	},
 	{ id: 'heading', priority: 62, keys: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] },
+	// auto-appended when the field's `customFormats` option is set (see toolbar.vue)
+	{ id: 'customFormats', priority: 68, keys: ['styles'] },
 	{
 		id: 'align',
 		priority: 60,

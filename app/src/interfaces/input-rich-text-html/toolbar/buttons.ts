@@ -2,6 +2,7 @@ import type { Editor } from '@tiptap/vue-3';
 import type { Component } from 'vue';
 import ColorMenu from './menus/color-menu.vue';
 import StyleListMenu from './menus/style-list-menu.vue';
+import StylesMenu from './menus/styles-menu.vue';
 import TableMenu from './menus/table-menu.vue';
 
 /** Handlers for buttons whose commands need more than the editor (instantiated in setup scope). */
@@ -84,6 +85,7 @@ const FONT_SIZES: { label: string; value: string | null }[] = [12, 14, 16, 18, 2
 // Labeled dropdowns are wider than icon buttons; the layout needs the real width to avoid clipping.
 const FONT_FAMILY_WIDTH = 132;
 const FONT_SIZE_WIDTH = 80;
+const CUSTOM_FORMATS_WIDTH = 132;
 
 // Icon + caret dropdowns (color pickers) are wider than a plain icon button; keep in sync with the
 // `2.5rem` activator width in color-menu.vue and `popoverWidth` in toolbar.vue.
@@ -143,6 +145,18 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 			attr: 'fontSize',
 			items: FONT_SIZES,
 			width: FONT_SIZE_WIDTH,
+		},
+	},
+	// Auto-appended by the toolbar when the field's `customFormats` option is set; `formats` is
+	// injected at render time (it is per-field-config, not static). See toolbar.vue.
+	styles: {
+		icon: 'format_paint',
+		label: 'wysiwyg_options.styles',
+		component: StylesMenu,
+		width: CUSTOM_FORMATS_WIDTH,
+		componentProps: {
+			label: 'wysiwyg_options.styles',
+			width: CUSTOM_FORMATS_WIDTH,
 		},
 	},
 	forecolor: {

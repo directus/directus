@@ -1389,6 +1389,7 @@ wysiwyg_options:
   pre: Preformatted
   fontselect: Select Font
   fontsizeselect: Select Font Size
+  styles: Formats
   indent: Indent
   outdent: Outdent
   undo: Undo
@@ -2748,8 +2749,9 @@ interfaces:
     toolbar: Toolbar
     custom_formats: Custom Formats
     custom_formats_note:
-      List of TinyMCE Content Formats. See the TinyMCE documentation about [Content
-      Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) for more information.
+      A list of custom inline formats. Each entry needs a `title` and an `inline` tag, with optional `classes`,
+      `styles`, and `attributes`. When set, a Formats dropdown is added to the toolbar. Block-level and nested formats
+      are not supported.
     options_override: Options Override
     options_override_note:
       The TinyMCE User Formatting keys and their values. See the TinyMCE documentation about [User

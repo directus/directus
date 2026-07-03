@@ -8,6 +8,7 @@ import { useLink } from './composables/use-link';
 import ImageDrawer from './drawers/image-drawer.vue';
 import LinkDrawer from './drawers/link-drawer.vue';
 import { editorExtensions } from './extensions';
+import { buildCustomFormats } from './extensions/custom-formats';
 import { LinkShortcut } from './extensions/link-shortcut';
 import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
 import Toolbar from './toolbar/toolbar.vue';
@@ -26,6 +27,8 @@ const props = withDefaults(
 		nonEditable?: boolean;
 		imageToken?: string;
 		folder?: string;
+		/** Legacy TinyMCE `customFormats` option (array or JSON string); see extensions/custom-formats.ts. */
+		customFormats?: unknown;
 	}>(),
 	{
 		toolbar: () => toolbarDefault,
@@ -36,6 +39,10 @@ const props = withDefaults(
 const emit = defineEmits<{ input: [value: string | null] }>();
 
 const { imageToken, folder } = toRefs(props);
+
+// Built once at init from the field's `customFormats` option (design-time config, not reactive edits):
+// dynamic marks go into the editor's schema, the format list drives the toolbar's styles dropdown.
+const { extensions: customFormatExtensions, formats: customFormatList } = buildCustomFormats(props.customFormats);
 
 // base content font, driven by the `font` option; theme tokens use `sans` (not `sans-serif`)
 const fontFamily = computed(() => {
@@ -64,7 +71,11 @@ function syncValue(instance: Editor, value: string | null) {
 
 const editor = useEditor({
 	// LinkShortcut lives here, not in the shared set, so its Mod-K handler can call this instance's opener
-	extensions: [...editorExtensions, LinkShortcut.configure({ onTrigger: () => openLinkDrawer() })],
+	extensions: [
+		...editorExtensions,
+		...customFormatExtensions,
+		LinkShortcut.configure({ onTrigger: () => openLinkDrawer() }),
+	],
 	content: '',
 	editable: isEditable.value,
 	editorProps: {
@@ -159,6 +170,7 @@ onKeyStroke('Escape', () => {
 			:editor="editor"
 			:toolbar="toolbar"
 			:font="font"
+			:custom-formats="customFormatList"
 			:disabled="disabled"
 			:fullscreen="fullscreen"
 			:visualaid="visualaid"
