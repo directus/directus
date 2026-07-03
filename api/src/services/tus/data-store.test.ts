@@ -1,3 +1,4 @@
+import { UnsupportedMediaTypeError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import getDatabase from '../../database/index.js';
@@ -95,9 +96,13 @@ describe('TusDataStore', () => {
 						type: 'text/html',
 					},
 				} as any),
-			).rejects.toEqual({
-				status_code: 403,
-				body: 'File is of invalid content type\n',
+			).rejects.toSatisfy((err: unknown) => {
+				return (
+					err instanceof UnsupportedMediaTypeError &&
+					(err as any).status_code === 415 &&
+					typeof (err as any).body === 'string' &&
+					(err as any).body.includes('text/html')
+				);
 			});
 
 			expect(mockItemsService.createOne).not.toHaveBeenCalled();

@@ -1,6 +1,7 @@
 import { extname } from 'node:path';
 import stream from 'node:stream';
 import { useEnv } from '@directus/env';
+import { UnsupportedMediaTypeError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import type { TusDriver } from '@directus/storage';
 import type { Accountability, ChunkedUploadContext, File, SchemaOverview } from '@directus/types';
@@ -13,10 +14,12 @@ import getDatabase from '../../database/index.js';
 import { useLogger } from '../../logger/index.js';
 import { ItemsService } from '../items.js';
 
-const INVALID_MIME_TYPE = {
-	status_code: 403,
-	body: 'File is of invalid content type\n',
-} as const;
+function toTusError(err: InstanceType<typeof UnsupportedMediaTypeError>) {
+	return Object.assign(err, {
+		status_code: err.status,
+		body: err.message + '\n',
+	});
+}
 
 export type TusDataStoreConfig = {
 	constants: {
@@ -79,7 +82,7 @@ export class TusDataStore extends DataStore {
 		const mimeTypeAllowed = allowedPatterns.some((pattern) => minimatch(mimeType, pattern));
 
 		if (mimeTypeAllowed === false) {
-			throw INVALID_MIME_TYPE;
+			throw toTusError(new UnsupportedMediaTypeError({ mediaType: mimeType, where: 'tus upload' }));
 		}
 
 		if (!upload.metadata['title']) {
