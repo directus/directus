@@ -1,3 +1,4 @@
+import { CharacterCount } from '@tiptap/extensions';
 import StarterKit from '@tiptap/starter-kit';
 import { CustomImage } from './image';
 import { PreKeymap } from './pre-keymap';
@@ -29,4 +30,8 @@ export const editorExtensions = [
 	TextStyle,
 	Table,
 	PreKeymap,
+	// Advisory character count for the `softLength` option. No `limit` — typing past it is not
+	// blocked (soft). Default `textSize` mode counts the doc's text content, matching TinyMCE's
+	// former `textContent.length`.
+	CharacterCount,
 ];

@@ -16,6 +16,7 @@ import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager'
 import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import { percentage } from '@/utils/percentage';
 
 const props = withDefaults(
 	defineProps<{
@@ -26,6 +27,7 @@ const props = withDefaults(
 		nonEditable?: boolean;
 		imageToken?: string;
 		folder?: string;
+		softLength?: number;
 	}>(),
 	{
 		toolbar: () => toolbarDefault,
@@ -60,7 +62,20 @@ function syncValue(instance: Editor, value: string | null) {
 		.setMeta('addToHistory', false)
 		.setContent(value ?? '', { emitUpdate: false })
 		.run();
+
+	// `emitUpdate: false` skips `onUpdate`, so refresh the soft-length count here too
+	updateCount(instance);
 }
+
+// Advisory character count for the `softLength` indicator. Reads the CharacterCount extension's
+// storage (default `textSize` mode → text content length, matching legacy TinyMCE counting).
+const count = ref(0);
+
+function updateCount(instance: Editor) {
+	count.value = instance.storage.characterCount?.characters() ?? 0;
+}
+
+const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
 
 const editor = useEditor({
 	// LinkShortcut lives here, not in the shared set, so its Mod-K handler can call this instance's opener
@@ -86,6 +101,7 @@ const editor = useEditor({
 	},
 	onCreate: ({ editor }) => syncValue(editor as Editor, props.value),
 	onUpdate: ({ editor }) => {
+		updateCount(editor as Editor);
 		emit('input', editor.isEmpty ? null : editor.getHTML());
 	},
 });
@@ -169,6 +185,17 @@ onKeyStroke('Escape', () => {
 		/>
 		<EditorContent class="editor-content" :editor="editor" />
 
+		<span
+			v-if="softLength"
+			class="remaining"
+			:class="{
+				warning: percRemaining < 10,
+				danger: percRemaining < 5,
+			}"
+		>
+			{{ softLength - count }}
+		</span>
+
 		<TableBubbleMenu v-if="!nonEditable" :editor="editor" />
 
 		<ImageDrawer
@@ -202,6 +229,7 @@ onKeyStroke('Escape', () => {
 	--v-button-background-color-hover: var(--theme--form--field--input--border-color);
 	--v-button-color-hover: var(--theme--form--field--input--foreground);
 
+	position: relative; // anchors the soft-length `.remaining` indicator
 	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
@@ -239,6 +267,27 @@ onKeyStroke('Escape', () => {
 			overflow: auto;
 		}
 	}
+}
+
+/* Soft-length remaining-characters indicator, anchored to the editor's bottom-right (ported from
+   the legacy TinyMCE editor). */
+.remaining {
+	position: absolute;
+	inset-inline-end: 0.5625rem;
+	inset-block-end: 0.3125rem;
+	color: var(--theme--form--field--input--foreground-subdued);
+	font-weight: 600;
+	text-align: end;
+	vertical-align: middle;
+	font-feature-settings: 'tnum';
+}
+
+.warning {
+	color: var(--theme--warning);
+}
+
+.danger {
+	color: var(--theme--danger);
 }
 
 /* Content styles, scoped to the ProseMirror container so they neither leak into the app nor inherit app styles.
