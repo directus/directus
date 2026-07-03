@@ -12,6 +12,7 @@ import { isNestedMetaUpdate } from '../../../utils/apply-diff.js';
 import { applySnapshot } from '../../../utils/apply-snapshot.js';
 import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
 import { getSnapshot } from '../../../utils/get-snapshot.js';
+import { getLicenseManager } from '../../../license/index.js';
 
 export function filterSnapshotDiff(snapshot: SnapshotDiff, filters: string[]): SnapshotDiff {
 	const filterSet = new Set(filters);
@@ -43,6 +44,10 @@ export async function apply(
 	const database = getDatabase();
 
 	await validateDatabaseConnection(database);
+
+	// Initialize license manager so CLI uses LICENSE_KEY/LICENSE_TOKEN
+	// and the correct entitlements before applying the snapshot.
+	await getLicenseManager().initialize();
 
 	if ((await isInstalled()) === false) {
 		logger.error(`Directus isn't installed on this database. Please run "directus bootstrap" first.`);
