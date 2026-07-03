@@ -97,4 +97,24 @@ describe('WebSocket heartbeat handler', () => {
 		emitter.emitAction('websocket.message', { client: mockClient, message: { type: 'ping' } }, {} as EventContext);
 		expect(mockClient.send).toBeCalled();
 	});
+
+	test('should clean up websocket.message listener after heartbeat timeout', () => {
+		const onSpy = vi.spyOn(emitter, 'onAction');
+		const offSpy = vi.spyOn(emitter, 'offAction');
+
+		new HeartbeatHandler(controller);
+
+		controller.clients.add(mockClient);
+
+		emitter.emitAction('websocket.connect', {}, {} as EventContext);
+
+		// First heartbeat starts
+		vi.advanceTimersByTime(1000);
+
+		// Timeout expires
+		vi.advanceTimersByTime(1000);
+
+		expect(onSpy).toHaveBeenCalledWith('websocket.message', expect.any(Function));
+		expect(offSpy).toHaveBeenCalledWith('websocket.message', expect.any(Function));
+	});
 });

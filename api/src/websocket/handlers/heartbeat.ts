@@ -66,15 +66,7 @@ export class HeartbeatHandler {
 		const pendingClients = new Set<WebSocketClient>(this.controller.clients);
 		const activeClients = new Set<WebSocketClient>();
 
-		let timeout: NodeJS.Timeout;
-		let messageWatcher: ActionHandler;
-
-		const cleanup = () => {
-			clearTimeout(timeout);
-			emitter.offAction('websocket.message', messageWatcher);
-		};
-
-		messageWatcher = ({ client }) => {
+		const messageWatcher: ActionHandler = ({ client }) => {
 			// any message means this connection is still open
 			if (!activeClients.has(client)) {
 				pendingClients.delete(client);
@@ -82,21 +74,22 @@ export class HeartbeatHandler {
 			}
 
 			if (pendingClients.size === 0) {
-				cleanup();
+				clearTimeout(timeout);
+				emitter.offAction('websocket.message', messageWatcher);
 			}
 		};
 
-		timeout = setTimeout(() => {
-			// Remove the listener before closing idle clients
-			cleanup();
+		emitter.onAction('websocket.message', messageWatcher);
+
+		const timeout = setTimeout(() => {
+			// Remove listener before closing idle clients
+			emitter.offAction('websocket.message', messageWatcher);
 
 			// close connections that haven't responded
 			for (const client of pendingClients) {
 				client.close();
 			}
 		}, HEARTBEAT_FREQUENCY);
-
-		emitter.onAction('websocket.message', messageWatcher);
 
 		// ping all the clients
 		for (const client of pendingClients) {
