@@ -7,18 +7,17 @@ import { validateAccess, type ValidateAccessOptions } from '../permissions/modul
 import { createTusServer } from '../services/tus/index.js';
 import asyncHandler from '../utils/async-handler.js';
 
-const mapAction = (method: string): PermissionsAction => {
-	switch (method) {
-		case 'POST':
-			return 'create';
-		case 'PATCH':
-			return 'update';
-		case 'DELETE':
-			return 'delete';
-		default:
-			return 'read';
-	}
-};
+	const mapAction = (method: string): PermissionsAction => {
+		switch (method) {
+			case 'POST':
+			case 'PATCH':
+				return 'create';
+			case 'DELETE':
+				return 'delete';
+			default:
+				return 'read';
+		}
+	};
 
 const checkFileAccess = asyncHandler(async (req, _res, next) => {
 	if (req.accountability) {

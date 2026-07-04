@@ -50,7 +50,6 @@ export class TusDataStore extends DataStore {
 		const knex = getDatabase();
 
 		const filesItemsService = new ItemsService<File>('directus_files', {
-			accountability: this.accountability,
 			schema: this.schema,
 			knex,
 		});
