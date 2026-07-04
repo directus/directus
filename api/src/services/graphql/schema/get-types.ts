@@ -97,12 +97,15 @@ export function getTypes(
 					// submitted on updates
 					if (
 						field.nullable === false &&
-						!field.defaultValue &&
 						!GENERATE_SPECIAL.some((flag) => field.special.includes(flag)) &&
 						fieldIsInconsistent === false &&
 						action !== 'update'
 					) {
-						type = new GraphQLNonNull(type);
+						if (action === 'create' && field.defaultValue) {
+							// Fields with a default value are optional during create but non-null in read
+						} else {
+							type = new GraphQLNonNull(type);
+						}
 					}
 
 					if (collection.primary === field.field && fieldIsInconsistent === false) {
