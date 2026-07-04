@@ -277,6 +277,50 @@ describe('#toFormUrlEncoded', () => {
 	});
 });
 
+describe('#toSignatureString', () => {
+	let mockProps: [string, string, string];
+	let mockValues: [string, string, string];
+
+	beforeEach(() => {
+		driver = new DriverCloudinary({
+			apiKey: sample.config.apiKey,
+			apiSecret: sample.config.apiSecret,
+			cloudName: sample.config.cloudName,
+			accessMode: sample.config.accessMode,
+		});
+
+		mockProps = Array.from(Array(3), () => randAlphaNumeric({ length: randNumber({ min: 2, max: 15 }) }).join('')) as [
+			string,
+			string,
+			string,
+		];
+
+		mockValues = randWord({ length: 3 }) as [string, string, string];
+	});
+
+	test('Sorts the properties alphabetically', () => {
+		mockProps[0] = `b_${mockProps[0]}`;
+		mockProps[1] = `c_${mockProps[1]}`;
+		mockProps[2] = `a_${mockProps[2]}`;
+
+		expect(
+			driver['toSignatureString']({
+				[mockProps[0]]: mockValues[0],
+				[mockProps[1]]: mockValues[1],
+				[mockProps[2]]: mockValues[2],
+			}),
+		).toBe(`${mockProps[2]}=${mockValues[2]}&${mockProps[0]}=${mockValues[0]}&${mockProps[1]}=${mockValues[1]}`);
+	});
+
+	test('Preserves spaces in values', () => {
+		expect(
+			driver['toSignatureString']({
+				asset_folder: 'my folder',
+			}),
+		).toBe('asset_folder=my folder');
+	});
+});
+
 describe('#getFullSignature', () => {
 	let mockPayload: Record<string, string>;
 
@@ -300,7 +344,7 @@ describe('#getFullSignature', () => {
 
 		vi.mocked(createHash).mockReturnValue(mockCreateHash as unknown as Hash);
 
-		driver['toFormUrlEncoded'] = vi.fn();
+		driver['toSignatureString'] = vi.fn();
 
 		const randLength = randNumber({ min: 1, max: 10 });
 
@@ -323,7 +367,7 @@ describe('#getFullSignature', () => {
 
 		driver['getFullSignature'](payload);
 
-		expect(driver['toFormUrlEncoded']).toHaveBeenCalledWith(mockPayload, { sort: true });
+		expect(driver['toSignatureString']).toHaveBeenCalledWith(mockPayload);
 	});
 
 	test('Creates sha256 hash', () => {
@@ -332,12 +376,26 @@ describe('#getFullSignature', () => {
 	});
 
 	test('Updates sha256 hash with signature payload + api secret', () => {
-		const mockFormUrlEncoded = randWord();
-		vi.mocked(driver['toFormUrlEncoded']).mockReturnValue(mockFormUrlEncoded);
+		const mockSignatureString = randWord();
+		vi.mocked(driver['toSignatureString']).mockReturnValue(mockSignatureString);
 
 		driver['getFullSignature'](mockPayload);
 
-		expect(mockCreateHash.update).toHaveBeenCalledWith(mockFormUrlEncoded + sample.config.apiSecret);
+		expect(mockCreateHash.update).toHaveBeenCalledWith(mockSignatureString + sample.config.apiSecret);
+	});
+
+	test('Preserves spaces in asset_folder when updating the hash', () => {
+		const signatureStringSpy = vi.spyOn(driver as any, 'toSignatureString');
+		signatureStringSpy.mockImplementation(DriverCloudinary.prototype['toSignatureString']);
+
+		driver['getFullSignature']({
+			asset_folder: 'my folder',
+			timestamp: sample.timestamp,
+		});
+
+		expect(mockCreateHash.update).toHaveBeenCalledWith(
+			`asset_folder=my folder&timestamp=${sample.timestamp}${sample.config.apiSecret}`,
+		);
 	});
 
 	test('Digests hash as hex', () => {

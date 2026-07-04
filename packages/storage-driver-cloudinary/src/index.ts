@@ -56,6 +56,13 @@ export class DriverCloudinary implements TusDriver {
 		return decodeURIComponent(new URLSearchParams(entries).toString());
 	}
 
+	private toSignatureString(obj: Record<string, string>) {
+		return Object.entries(obj)
+			.sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
+			.map(([key, value]) => `${key}=${value}`)
+			.join('&');
+	}
+
 	/**
 	 * Generate the Cloudinary sha256 signature for the given payload
 	 * @see https://cloudinary.com/documentation/signatures
@@ -67,7 +74,7 @@ export class DriverCloudinary implements TusDriver {
 			Object.entries(payload).filter(([key]) => denylist.includes(key) === false),
 		);
 
-		const signaturePayloadString = this.toFormUrlEncoded(signaturePayload, { sort: true });
+		const signaturePayloadString = this.toSignatureString(signaturePayload);
 
 		return createHash('sha256')
 			.update(signaturePayloadString + this.apiSecret)
