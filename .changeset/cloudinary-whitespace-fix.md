@@ -1,5 +1,5 @@
 ---
-'@directus/storage-cloudinary': patch
+'@directus/storage-driver-cloudinary': patch
 ---
 
-Fix signature generation when STORAGE_CLOUDINARY_ROOT contains whitespace
+Fixed signature generation when STORAGE_CLOUDINARY_ROOT contains whitespace
