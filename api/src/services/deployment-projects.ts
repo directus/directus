@@ -51,10 +51,7 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 	 * acting on behalf of one provider must scope the lookup to that provider's
 	 * deployment to avoid resolving a project that belongs to another provider.
 	 */
-	async readByExternalIdForDeployment(
-		deploymentId: string,
-		externalId: string,
-	): Promise<DeploymentProject | null> {
+	async readByExternalIdForDeployment(deploymentId: string, externalId: string): Promise<DeploymentProject | null> {
 		const results = await this.readByQuery({
 			filter: { deployment: { _eq: deploymentId }, external_id: { _eq: externalId } },
 			limit: 1,
