@@ -8,6 +8,10 @@ import { omit } from 'lodash-es';
 import { extension } from 'mime-types';
 import getDatabase from '../../database/index.js';
 import { useLogger } from '../../logger/index.js';
+import { useEnv } from '@directus/env';
+import { toArray } from '@directus/utils';
+import { minimatch } from 'minimatch';
+import { InvalidPayloadError } from '@directus/errors';
 import { assertUniqueFilename } from '../files/lib/assert-unique-filename.js';
 import { assertValidStoragePath } from '../files/lib/assert-valid-storage-path.js';
 import { sanitizeFilepath } from '../files/lib/sanitize-filepath.js';
@@ -64,11 +68,20 @@ export class TusDataStore extends DataStore {
 			throw ERRORS.INVALID_METADATA;
 		}
 
-		if (!upload.metadata['type']) {
-			upload.metadata['type'] = 'application/octet-stream';
-		}
+	if (!upload.metadata['type']) {
+		upload.metadata['type'] = 'application/octet-stream';
+	}
 
-		if (!upload.metadata['title']) {
+	const env = useEnv();
+	const allowedPatterns = toArray(env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]);
+	if (allowedPatterns.length > 0) {
+		const mimeTypeAllowed = allowedPatterns.some((pattern) => minimatch(upload.metadata['type'], pattern));
+		if (mimeTypeAllowed === false) {
+			throw new InvalidPayloadError({ reason: 'Uploaded file mime type is not allowed' });
+		}
+	}
+
+	if (!upload.metadata['title']) {
 			upload.metadata['title'] = formatTitle(upload.metadata['filename_download']);
 		}
 
