@@ -82,10 +82,15 @@ async function importData(
 	const url = new URL(`http://localhost:${port}/utils/import`);
 	for (const [key, value] of Object.entries(params)) url.searchParams.set(key, value);
 
+	// The batch payload is uploaded as a JSON file (bypasses MAX_PAYLOAD_SIZE); let fetch set the
+	// multipart Content-Type + boundary itself
+	const form = new FormData();
+	form.append('file', new Blob([JSON.stringify(body)], { type: 'application/json' }), 'import.json');
+
 	const response = await fetch(url, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json', Authorization: 'Bearer admin' },
-		body: JSON.stringify(body),
+		headers: { Authorization: 'Bearer admin' },
+		body: form,
 	});
 
 	return { status: response.status, body: await response.json().catch(() => null) };

@@ -3,7 +3,6 @@ export * from './deployment.js';
 export * from './export.js';
 export * from './flows.js';
 export * from './import.js';
-export * from './import-batch.js';
 export * from './shares.js';
 export * from './sort.js';
 export * from './users.js';

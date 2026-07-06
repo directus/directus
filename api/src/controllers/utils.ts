@@ -1,6 +1,7 @@
-import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
+import { useEnv } from '@directus/env';
+import { ForbiddenError, InvalidPayloadError, InvalidQueryError } from '@directus/errors';
 import { toBoolean } from '@directus/utils';
-import Busboy from 'busboy';
+import bytes from 'bytes';
 import { Router } from 'express';
 import Joi from 'joi';
 import { resolveLoginRedirect } from '../auth/utils/resolve-login-redirect.js';
@@ -8,15 +9,19 @@ import { clearSystemCache } from '../cache.js';
 import { getDatabase } from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import collectionExists from '../middleware/collection-exists.js';
+import readFileUploadBody from '../middleware/read-file-upload-body.js';
 import { respond } from '../middleware/respond.js';
 import { ExportService, ImportService } from '../services/import-export.js';
 import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
 import { generateTranslations } from '../utils/generate-translations.js';
+import { readMultipartFile } from '../utils/read-multipart-file.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = Router();
+
+const env = useEnv();
 
 const randomStringSchema = Joi.object<{ length: number }>({
 	length: Joi.number().integer().min(1).max(500).default(32),
@@ -75,44 +80,19 @@ router.post(
 router.post(
 	'/import/:collection',
 	collectionExists,
-	asyncHandler(async (req, res, next) => {
-		if (req.is('multipart/form-data') === false) {
-			throw new UnsupportedMediaTypeError({ mediaType: req.headers['content-type']!, where: 'Content-Type header' });
-		}
-
+	asyncHandler(async (req, res) => {
 		const service = new ImportService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		let headers;
+		const { mimetype, stream } = await readMultipartFile(req);
 
-		if (req.headers['content-type']) {
-			headers = req.headers;
-		} else {
-			headers = {
-				...req.headers,
-				'content-type': 'application/octet-stream',
-			};
-		}
-
-		const busboy = Busboy({ headers });
-
-		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
-			try {
-				await service.import(req.params['collection']!, mimeType, fileStream, {
-					background: toBoolean(req.query['background']),
-				});
-			} catch (err: any) {
-				return next(err);
-			}
-
-			return res.status(200).end();
+		await service.import(req.params['collection']!, mimetype, stream, {
+			background: toBoolean(req.query['background']),
 		});
 
-		busboy.on('error', (err: Error) => next(err));
-
-		req.pipe(busboy);
+		return res.status(200).end();
 	}),
 );
 
@@ -128,14 +108,8 @@ const ImportBatchSchema = Joi.array()
 
 router.post(
 	'/import',
+	readFileUploadBody({ maxFileSize: bytes.parse(env['BATCH_IMPORT_FILE_SIZE'] as string) ?? undefined }),
 	asyncHandler(async (req, res, next) => {
-		if (req.is('application/json') === false) {
-			throw new UnsupportedMediaTypeError({
-				mediaType: req.headers['content-type'] ?? 'unknown',
-				where: 'Content-Type header',
-			});
-		}
-
 		const { error, value } = ImportBatchSchema.validate(req.body);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
