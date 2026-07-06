@@ -447,6 +447,14 @@ describe('getSnapshot', () => {
 			expect(systemFieldKeys(snapshot)).toEqual([]);
 		});
 
+		test('drops a relation owned by an out-of-scope collection while keeping the scoped fields', async () => {
+			const snapshot = await getSnapshot({ collections: ['authors'] });
+
+			expect(collectionNames(snapshot)).toEqual(['authors']);
+			expect(fieldKeys(snapshot)).toEqual(['authors.id', 'authors.name', 'authors.articles']);
+			expect(relationKeys(snapshot)).toEqual([]);
+		});
+
 		test('captures the indexed system fields of a scoped system collection', async () => {
 			const snapshot = await getSnapshot({ collections: ['directus_users'] });
 
