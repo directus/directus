@@ -247,6 +247,35 @@ export class ImportService {
 		this.schema = options.schema;
 	}
 
+	
+	private async acquireImportSlot(): Promise<void> {
+		const limitReached = await store(async (store) => {
+			const count = (await store.get('importCount')) ?? 0;
+
+			if (count >= Number(env['IMPORT_MAX_CONCURRENCY'])) return true;
+
+			await store.set('importCount', count + 1);
+			return false;
+		});
+
+		if (limitReached) {
+			throw new LimitExceededError({
+				category: 'Concurrent import',
+			});
+		}
+	}
+	
+	private async releaseImportSlot(): Promise<void> {
+		try {
+			await store(async (store) => {
+				const count = (await store.get('importCount')) ?? 0;
+				await store.set('importCount', count - 1);
+			});
+		} catch (error) {
+			logger.error(error, `Failed to decrement importCount`);
+		}
+	}
+
 	async import(
 		collection: string,
 		mimetype: string,
@@ -285,33 +314,9 @@ export class ImportService {
 			throw new UnsupportedMediaTypeError({ mediaType: mimetype, where: 'file import' });
 		}
 
-		const limitReached = await store(async (store) => {
-			const count = (await store.get('importCount')) ?? 0;
-
-			if (count >= Number(env['IMPORT_MAX_CONCURRENCY'])) return true;
-
-			await store.set('importCount', count + 1);
-			return false;
-		});
-
-		if (limitReached) {
-			throw new LimitExceededError({
-				category: 'Concurrent import',
-			});
-		}
+		await this.acquireImportSlot();
 
 		let promise: Promise<void>;
-
-		const decrementImportCount = async () => {
-			try {
-				await store(async (store) => {
-					const count = (await store.get('importCount')) ?? 0;
-					await store.set('importCount', count - 1);
-				});
-			} catch (error) {
-				logger.error(error, `Failed to decrement importCount`);
-			}
-		};
 
 		if (mimetype === 'application/json') {
 			promise = this.importJSON(collection, stream);
@@ -359,12 +364,12 @@ export class ImportService {
 						`Your import in ${collection} has failed.\n\n${(error as any).message ?? ''}`,
 					);
 				})
-				.finally(async () => await decrementImportCount());
+				.finally(async () => await this.releaseImportSlot());
 		} else {
 			try {
 				await promise;
 			} finally {
-				await decrementImportCount();
+				await this.releaseImportSlot();
 			}
 		}
 	}
@@ -715,6 +720,8 @@ export class ImportService {
 		const collections: Record<string, ImportBatchCollectionResult> = {};
 		for (const collection of plan.order) collections[collection] = { existing: [], new: [], mapped: {} };
 
+		await this.acquireImportSlot();
+
 		try {
 			await transaction(this.knex, async (trx) => {
 				const mutationTracker = getService(plan.order[0]!, {
@@ -833,23 +840,25 @@ export class ImportService {
 
 				if (dryRun) throw new DryRunRollback();
 			});
+
+			// Only emit action events and purge the cache once the data is actually committed
+			for (const nestedActionEvent of nestedActionEvents) {
+				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+			}
+
+			const { cache } = getCache();
+			if (cache) await cache.clear();
+
+			return { applied: true, mode, collections };
 		} catch (error) {
 			if (error instanceof DryRunRollback) {
 				return { applied: false, mode, collections };
 			}
 
 			throw error;
+		} finally {
+			await this.releaseImportSlot();
 		}
-
-		// Only emit action events and purge the cache once the data is actually committed
-		for (const nestedActionEvent of nestedActionEvents) {
-			emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
-		}
-
-		const { cache } = getCache();
-		if (cache) await cache.clear();
-
-		return { applied: true, mode, collections };
 	}
 
 	/**
