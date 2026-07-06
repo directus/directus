@@ -9,7 +9,9 @@ import { validateAccess } from '../permissions/modules/validate-access/validate-
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/ast.js';
 import { getService } from '../utils/get-service.js';
-import { createErrorTracker, getHeadingsForCsvExport, ImportService } from './import-export.js';
+import { createErrorTracker } from './error-tracker.js';
+import { getHeadingsForCsvExport } from './export.js';
+import { ImportService } from './import.js';
 import { NotificationsService } from './notifications.js';
 
 const cache: { importCount?: number } = {};

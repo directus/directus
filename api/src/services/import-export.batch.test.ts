@@ -6,7 +6,7 @@ import { getCache } from '../cache.js';
 import emitter from '../emitter.js';
 import type { ImportCollectionData } from '../utils/build-import-plan.js';
 import { getService } from '../utils/get-service.js';
-import { ImportService } from './import-export.js';
+import { ImportService } from './import.js';
 
 const holder = vi.hoisted(() => ({ trx: null as any }));
 const cache: { importCount?: number } = {};
