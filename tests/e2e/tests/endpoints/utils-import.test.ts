@@ -128,17 +128,18 @@ describe('POST /utils/import', () => {
 		);
 
 		expect(status).toBe(200);
-		expect(body.data.order).toEqual([authors, articles]);
-		expect(body.data.deferred).toEqual([]);
+		expect(body.data.applied).toBe(true);
+		expect(body.data.collections[authors].new).toHaveLength(2);
+		expect(body.data.collections[articles].new).toHaveLength(2);
 
-		const mappedAuthor1 = body.data.mappings[authors]['1'];
-		const mappedAuthor2 = body.data.mappings[authors]['2'];
-
-		const rows = await api.request(readItems(articles as any, { sort: ['title'] as any, fields: ['*'] as any }));
+		// Verify the foreign keys were remapped by reading the linked author name
+		const rows = await api.request(
+			readItems(articles as any, { sort: ['title'] as any, fields: ['title', 'author.name'] as any }),
+		);
 
 		expect(rows).toEqual([
-			expect.objectContaining({ title: 'On Computability', author: mappedAuthor2 }),
-			expect.objectContaining({ title: 'The Analytical Engine', author: mappedAuthor1 }),
+			expect.objectContaining({ title: 'On Computability', author: { name: 'Alan' } }),
+			expect.objectContaining({ title: 'The Analytical Engine', author: { name: 'Ada' } }),
 		]);
 	});
 
@@ -151,11 +152,15 @@ describe('POST /utils/import', () => {
 		const first = await importData([{ collection: people, items: [{ id, name: 'First' }] }], { mode: 'merge' });
 
 		expect(first.status).toBe(200);
-		expect(first.body.data.mappings[people][id]).toBe(id);
+		// New row, key preserved (not remapped)
+		expect(first.body.data.collections[people].new).toEqual([id]);
+		expect(first.body.data.collections[people].mapped).toEqual({});
 
 		const second = await importData([{ collection: people, items: [{ id, name: 'Second' }] }], { mode: 'merge' });
 
 		expect(second.status).toBe(200);
+		// Second import matches the existing row
+		expect(second.body.data.collections[people].existing).toEqual([id]);
 
 		const rows = await api.request(readItems(people as any, { fields: ['*'] as any }));
 
@@ -177,8 +182,9 @@ describe('POST /utils/import', () => {
 
 		expect(status).toBe(200);
 
-		const newId = body.data.mappings[people][id];
+		const newId = body.data.collections[people].mapped[id];
 		expect(newId).not.toBe(id);
+		expect(body.data.collections[people].new).toEqual([newId]);
 
 		const rows = await api.request(readItems(people as any, { sort: ['name'] as any, fields: ['*'] as any }));
 
@@ -203,15 +209,18 @@ describe('POST /utils/import', () => {
 		]);
 
 		expect(status).toBe(200);
-		expect(body.data.deferred).toEqual([{ collection: categories, field: 'parent' }]);
 
-		const map = body.data.mappings[categories];
+		// old id -> final id (remapped when changed, otherwise unchanged)
+		const mapped = body.data.collections[categories].mapped;
+		const resolve = (oldId: number) => mapped[String(oldId)] ?? oldId;
+
 		const rows = await api.request(readItems(categories as any, { sort: ['name'] as any, fields: ['*'] as any }));
 		const byName = Object.fromEntries(rows.map((r: any) => [r.name, r]));
 
+		// Correct parent links prove the deferred second pass ran
 		expect(byName['root'].parent).toBeNull();
-		expect(byName['child'].parent).toBe(map['1']);
-		expect(byName['grandchild'].parent).toBe(map['2']);
+		expect(byName['child'].parent).toBe(resolve(1));
+		expect(byName['grandchild'].parent).toBe(resolve(2));
 	});
 
 	test('breaks a nullable cross-collection cycle', async () => {
@@ -229,10 +238,9 @@ describe('POST /utils/import', () => {
 		]);
 
 		expect(status).toBe(200);
-		expect(body.data.deferred.length).toBeGreaterThanOrEqual(1);
 
-		const countryId = body.data.mappings[countries]['1'];
-		const cityId = body.data.mappings[cities]['10'];
+		const countryId = body.data.collections[countries].mapped['1'] ?? 1;
+		const cityId = body.data.collections[cities].mapped['10'] ?? 10;
 
 		const [country] = (await api.request(readItems(countries as any, { fields: ['*'] as any }))) as any[];
 		const [city] = (await api.request(readItems(cities as any, { fields: ['*'] as any }))) as any[];
@@ -267,8 +275,8 @@ describe('POST /utils/import', () => {
 		});
 
 		expect(status).toBe(200);
-		expect(body.data.dryRun).toBe(true);
-		expect(body.data.mappings[authors]).toBeDefined();
+		expect(body.data.applied).toBe(false);
+		expect(body.data.collections[authors]).toBeDefined();
 
 		const rows = await api.request(readItems(authors as any, { fields: ['*'] as any }));
 		expect(rows).toHaveLength(0);

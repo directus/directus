@@ -217,15 +217,20 @@ export interface ImportBatchOptions {
 	dryRun?: boolean;
 }
 
+export interface ImportBatchCollectionResult {
+	/** Primary keys of pre-existing records that were matched and updated. */
+	existing: PrimaryKey[];
+	/** Primary keys of newly created records. */
+	new: PrimaryKey[];
+	/** Provided primary key -> new primary key, for records whose key was remapped. */
+	mapped: Record<string, PrimaryKey>;
+}
+
 export interface ImportBatchResult {
+	/** Whether the changes were committed. `false` for a dry run. */
+	applied: boolean;
 	mode: ImportBatchMode;
-	dryRun: boolean;
-	/** The order in which collections were imported. */
-	order: string[];
-	/** Fields that were resolved in a second pass to break nullable cycles. */
-	deferred: { collection: string; field: string }[];
-	/** old primary key -> new primary key, per collection. */
-	mappings: Record<string, Record<string, PrimaryKey>>;
+	collections: Record<string, ImportBatchCollectionResult>;
 }
 
 /** Internal sentinel used to force a transaction rollback on dry runs. */
@@ -707,7 +712,8 @@ export class ImportService {
 		this.validateFlatData(plan.relationalFields, dataByCollection);
 
 		const nestedActionEvents: ActionEventParams[] = [];
-		const mappings: Record<string, Record<string, PrimaryKey>> = {};
+		const collections: Record<string, ImportBatchCollectionResult> = {};
+		for (const collection of plan.order) collections[collection] = { existing: [], new: [], mapped: {} };
 
 		try {
 			await transaction(this.knex, async (trx) => {
@@ -756,12 +762,14 @@ export class ImportService {
 						const oldPk = item[pkField] as PrimaryKey | undefined;
 
 						let newPk: PrimaryKey;
+						let matchedExisting = false;
 
 						if (isAutoIncrement) {
 							// Always remap so the sequence keeps advancing naturally
 							delete payload[pkField];
 							newPk = await service.createOne(payload, mutationOptions);
 						} else if (mode === 'merge') {
+							matchedExisting = oldPk != null && (await this.keyExists(trx, collection, pkField, oldPk));
 							newPk = await service.upsertOne(payload, mutationOptions);
 						} else {
 							const conflict = oldPk != null && (await this.keyExists(trx, collection, pkField, oldPk));
@@ -779,7 +787,18 @@ export class ImportService {
 							newPk = await service.createOne(payload, mutationOptions);
 						}
 
-						if (oldPk != null) idMap.set(String(oldPk), newPk);
+						const result = collections[collection]!;
+
+						if (matchedExisting) {
+							result.existing.push(newPk);
+						} else {
+							result.new.push(newPk);
+						}
+
+						if (oldPk != null) {
+							idMap.set(String(oldPk), newPk);
+							if (String(oldPk) !== String(newPk)) result.mapped[String(oldPk)] = newPk;
+						}
 					}
 				}
 
@@ -812,15 +831,11 @@ export class ImportService {
 					}
 				}
 
-				for (const [collection, idMap] of idMaps) {
-					mappings[collection] = Object.fromEntries(idMap);
-				}
-
 				if (dryRun) throw new DryRunRollback();
 			});
 		} catch (error) {
 			if (error instanceof DryRunRollback) {
-				return { mode, dryRun, order: plan.order, deferred: plan.deferred, mappings };
+				return { applied: false, mode, collections };
 			}
 
 			throw error;
@@ -834,7 +849,7 @@ export class ImportService {
 		const { cache } = getCache();
 		if (cache) await cache.clear();
 
-		return { mode, dryRun, order: plan.order, deferred: plan.deferred, mappings };
+		return { applied: true, mode, collections };
 	}
 
 	/**

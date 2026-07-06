@@ -167,13 +167,22 @@ describe('ImportService.importBatch', () => {
 		expect(calls[1]!.payload.author).toBe('authors-new-1');
 		expect(calls[1]!.payload).not.toHaveProperty('id');
 
-		expect(result.mappings).toEqual({
-			authors: { '1': 'authors-new-1' },
-			articles: { '10': 'articles-new-1' },
+		expect(result.applied).toBe(true);
+
+		expect(result.collections['authors']).toEqual({
+			existing: [],
+			new: ['authors-new-1'],
+			mapped: { '1': 'authors-new-1' },
+		});
+
+		expect(result.collections['articles']).toEqual({
+			existing: [],
+			new: ['articles-new-1'],
+			mapped: { '10': 'articles-new-1' },
 		});
 	});
 
-	test('merge mode upserts and preserves UUID primary keys', async () => {
+	test('merge mode upserts a pre-existing UUID row as "existing"', async () => {
 		const schema = new SchemaBuilder()
 			.collection('authors', (c) => {
 				c.field('id').uuid().primary();
@@ -181,13 +190,32 @@ describe('ImportService.importBatch', () => {
 			})
 			.build();
 
-		const { result, calls } = await run(schema, [{ collection: 'authors', items: [{ id: 'uuid-1', name: 'A' }] }], {
-			mode: 'merge',
-		});
+		const { result, calls } = await run(
+			schema,
+			[{ collection: 'authors', items: [{ id: 'uuid-1', name: 'A' }] }],
+			{ mode: 'merge' },
+			{ authors: new Set(['uuid-1']) },
+		);
 
 		expect(calls[0]).toMatchObject({ collection: 'authors', method: 'upsertOne' });
 		expect(calls[0]!.payload.id).toBe('uuid-1');
-		expect(result.mappings['authors']).toEqual({ 'uuid-1': 'uuid-1' });
+		// matched an existing row: reported under existing, no remap
+		expect(result.collections['authors']).toEqual({ existing: ['uuid-1'], new: [], mapped: {} });
+	});
+
+	test('merge mode inserts a new UUID row as "new" (preserving the key)', async () => {
+		const schema = new SchemaBuilder()
+			.collection('authors', (c) => {
+				c.field('id').uuid().primary();
+				c.field('name').string();
+			})
+			.build();
+
+		const { result } = await run(schema, [{ collection: 'authors', items: [{ id: 'uuid-1', name: 'A' }] }], {
+			mode: 'merge',
+		});
+
+		expect(result.collections['authors']).toEqual({ existing: [], new: ['uuid-1'], mapped: {} });
 	});
 
 	test('add mode regenerates a conflicting UUID primary key', async () => {
@@ -208,7 +236,11 @@ describe('ImportService.importBatch', () => {
 		expect(calls[0]!.method).toBe('createOne');
 		expect(calls[0]!.payload.id).not.toBe('uuid-1');
 		expect(typeof calls[0]!.payload.id).toBe('string');
-		expect(result.mappings['authors']!['uuid-1']).toBe(calls[0]!.payload.id);
+
+		const authorsResult = result.collections['authors']!;
+		expect(authorsResult.mapped['uuid-1']).toBe(calls[0]!.payload.id);
+		expect(authorsResult.new).toEqual([calls[0]!.payload.id]);
+		expect(authorsResult.existing).toEqual([]);
 	});
 
 	test('add mode throws on a conflicting non-UUID string primary key', async () => {
@@ -344,8 +376,7 @@ describe('ImportService.importBatch', () => {
 			},
 		]);
 
-		expect(result.deferred).toEqual([{ collection: 'categories', field: 'parent' }]);
-
+		// parent is deferred: stripped on insert, then set in a second-pass update
 		for (const call of calls.filter((c) => c.method === 'createOne')) {
 			expect(call.payload).not.toHaveProperty('parent');
 		}
@@ -353,6 +384,8 @@ describe('ImportService.importBatch', () => {
 		const updates = calls.filter((c) => c.method === 'updateOne');
 		expect(updates).toHaveLength(1);
 		expect(updates[0]).toMatchObject({ pk: 'categories-new-2', data: { parent: 'categories-new-1' } });
+
+		expect(result.collections['categories']!.mapped).toEqual({ '1': 'categories-new-1', '2': 'categories-new-2' });
 	});
 
 	test('dry run computes mappings without emitting actions or clearing cache', async () => {
@@ -371,8 +404,14 @@ describe('ImportService.importBatch', () => {
 			dryRun: true,
 		});
 
-		expect(result.dryRun).toBe(true);
-		expect(result.mappings['authors']).toEqual({ '1': 'authors-new-1' });
+		expect(result.applied).toBe(false);
+
+		expect(result.collections['authors']).toEqual({
+			existing: [],
+			new: ['authors-new-1'],
+			mapped: { '1': 'authors-new-1' },
+		});
+
 		expect(emitter.emitAction).not.toHaveBeenCalled();
 		expect(cacheClear).not.toHaveBeenCalled();
 	});

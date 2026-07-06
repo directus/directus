@@ -59,27 +59,32 @@ post:
               data:
                 type: object
                 properties:
+                  applied:
+                    type: boolean
+                    description: Whether the changes were committed. `false` for a dry run.
                   mode:
                     type: string
-                  dry_run:
-                    type: boolean
-                  order:
-                    type: array
-                    items:
-                      type: string
-                  deferred:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        collection:
-                          type: string
-                        field:
-                          type: string
-                  mappings:
+                    enum:
+                      - add
+                      - merge
+                  collections:
                     type: object
-                    description: Per-collection map of old primary key to new primary key.
+                    description: Per-collection summary of the changes made.
                     additionalProperties:
                       type: object
+                      properties:
+                        existing:
+                          type: array
+                          description: Primary keys of pre-existing records that were matched and updated.
+                          items:
+                            type: string
+                        new:
+                          type: array
+                          description: Primary keys of newly created records.
+                          items:
+                            type: string
+                        mapped:
+                          type: object
+                          description: Provided primary key -> new primary key, for records whose key was remapped.
   tags:
     - Utilities

@@ -12,12 +12,20 @@ export interface ImportBatchOptions {
 	dry_run?: boolean;
 }
 
+export interface ImportBatchCollectionResult {
+	/** Primary keys of pre-existing records that were matched and updated. */
+	existing: (string | number)[];
+	/** Primary keys of newly created records. */
+	new: (string | number)[];
+	/** Provided primary key -> new primary key, for records whose key was remapped. */
+	mapped: Record<string, string | number>;
+}
+
 export interface ImportBatchResult {
+	/** Whether the changes were committed. `false` for a dry run. */
+	applied: boolean;
 	mode: 'add' | 'merge';
-	dryRun: boolean;
-	order: string[];
-	deferred: { collection: string; field: string }[];
-	mappings: Record<string, Record<string, string | number>>;
+	collections: Record<string, ImportBatchCollectionResult>;
 }
 
 /**
