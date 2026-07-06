@@ -7,7 +7,7 @@ import {
 	RestCommand,
 } from '@directus/sdk';
 import { useAppStore } from '@directus/stores';
-import { useCookies } from '@vueuse/integrations/useCookies';
+import Cookies from 'universal-cookie';
 import { RouteLocationRaw } from 'vue-router';
 import { emitter, Events } from './events';
 import { useServerStore } from './stores/server';
@@ -31,7 +31,10 @@ type LoginParams = {
 	share?: boolean;
 };
 
-const cookies = useCookies(['license-banner-dismissed', 'license-login-modal-dismissed']);
+// Plain universal-cookie instance instead of the reactive useCookies() composable: this module
+// scope has no component scope to dispose the composable's change listener, which would leave
+// a document.cookie polling interval running forever.
+const cookies = new Cookies();
 
 export async function login({ credentials, provider, share }: LoginParams): Promise<void> {
 	const appStore = useAppStore();
