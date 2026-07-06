@@ -178,4 +178,13 @@ export abstract class DeploymentDriver<
 		headers: Record<string, string | string[] | undefined>,
 		webhookSecret: string,
 	): DeploymentWebhookEvent | null;
+
+	/** Called after deployment provider config is created. Override to start provider-specific background work. */
+	async onConfigCreated(): Promise<void> {}
+
+	/** Called after deployment provider config is updated. Override to refresh provider-specific background work. */
+	async onConfigUpdated(): Promise<void> {}
+
+	/** Called before deployment provider config is deleted. Override to stop provider-specific background work. */
+	async onConfigDeleted(): Promise<void> {}
 }

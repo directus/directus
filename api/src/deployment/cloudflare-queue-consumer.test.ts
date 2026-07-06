@@ -43,10 +43,6 @@ vi.mock('./drivers/cloudflare.js', () => ({
 	CloudflareDriver: MockCloudflareDriverCtor,
 }));
 
-vi.mock('../deployment.js', () => ({
-	getDeploymentDriver: vi.fn(() => new MockCloudflareDriverCtor()),
-}));
-
 vi.mock('../emitter.js', () => ({
 	default: { emitAction: mockEmitAction },
 }));
@@ -70,11 +66,11 @@ vi.mock('../services/deployment-runs.js', () => ({
 	})),
 }));
 
-const defaultCredentials = { api_token: 'test-token' };
-const defaultOptions = { account_id: 'account-1', events_queue_id: 'queue-1' };
 const defaultDeploymentId = 'deploy-1';
 
-const call = () => consumeCloudflareQueueEvents(defaultDeploymentId, defaultCredentials, defaultOptions);
+const makeDriver = () => new MockCloudflareDriverCtor();
+
+const call = () => consumeCloudflareQueueEvents(defaultDeploymentId, makeDriver());
 
 const makeMessage = (leaseId: string, body: any = { type: 'cf.workersBuilds.worker.build.succeeded' }) => ({
 	id: `msg-${leaseId}`,

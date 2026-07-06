@@ -7,7 +7,6 @@ import { useLogger } from '../logger/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
-import { restartCloudflareQueueConsumer, stopCloudflareQueueConsumer } from '../schedules/cloudflare-queue-consumer.js';
 import { DeploymentProjectsService } from '../services/deployment-projects.js';
 import { DeploymentRunsService } from '../services/deployment-runs.js';
 import { DeploymentService } from '../services/deployment.js';
@@ -69,9 +68,12 @@ router.post(
 
 		res.locals['payload'] = { data: item };
 
-		if (req.body.provider === 'cloudflare-workers') {
-			void restartCloudflareQueueConsumer();
-		}
+		const lifecycleService = new DeploymentService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await lifecycleService.invokeConfigLifecycle(req.body.provider, 'created');
 
 		return next();
 	}),
@@ -385,9 +387,12 @@ router.patch(
 
 		res.locals['payload'] = { data: item };
 
-		if (provider === 'cloudflare-workers') {
-			void restartCloudflareQueueConsumer();
-		}
+		const lifecycleService = new DeploymentService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await lifecycleService.invokeConfigLifecycle(provider, 'updated');
 
 		return next();
 	}),
@@ -410,12 +415,6 @@ router.delete(
 		});
 
 		await service.deleteByProvider(provider);
-
-		if (provider === 'cloudflare-workers') {
-			stopCloudflareQueueConsumer().catch((error) => {
-				useLogger().warn(`[cloudflare-workers:queue] Failed to stop queue consumer: ${String(error)}`);
-			});
-		}
 
 		return next();
 	}),

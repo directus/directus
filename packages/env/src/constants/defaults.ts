@@ -226,6 +226,7 @@ export const DEFAULTS: Env = {
 	METRICS_ENABLED: false,
 	METRICS_SERVICES: 'database,cache,redis,storage',
 	METRICS_SCHEDULE: '*/1 * * * *',
+	DEPLOYMENT_CLOUDFLARE_QUEUE_POLL_SCHEDULE: '*/5 * * * *',
 	METRICS_NAME_PREFIX: 'directus_',
 	METRICS_HEALTH_CHECK_PREFIX: 'directus-metric-',
 

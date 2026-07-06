@@ -6,14 +6,14 @@ const {
 	mockConsume,
 	mockReadByProvider,
 	mockGetWebhookConfig,
-	mockLoggerWarn,
+	mockGetDeploymentDriver,
 } = vi.hoisted(() => {
 	const mockJobStop = vi.fn().mockResolvedValue(undefined);
 	const mockScheduleSynchronizedJob = vi.fn().mockReturnValue({ stop: mockJobStop });
 	const mockConsume = vi.fn().mockResolvedValue(undefined);
 	const mockReadByProvider = vi.fn();
 	const mockGetWebhookConfig = vi.fn();
-	const mockLoggerWarn = vi.fn();
+	const mockGetDeploymentDriver = vi.fn().mockReturnValue({});
 
 	return {
 		mockScheduleSynchronizedJob,
@@ -21,12 +21,14 @@ const {
 		mockConsume,
 		mockReadByProvider,
 		mockGetWebhookConfig,
-		mockLoggerWarn,
+		mockGetDeploymentDriver,
 	};
 });
 
 vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({}),
+	useEnv: vi.fn().mockReturnValue({
+		DEPLOYMENT_CLOUDFLARE_QUEUE_POLL_SCHEDULE: '*/5 * * * *',
+	}),
 }));
 
 vi.mock('../database/index.js', () => ({ default: vi.fn(() => ({})) }));
@@ -34,6 +36,10 @@ vi.mock('../utils/get-schema.js', () => ({ getSchema: vi.fn().mockResolvedValue(
 
 vi.mock('../deployment/cloudflare-queue-consumer.js', () => ({
 	consumeCloudflareQueueEvents: mockConsume,
+}));
+
+vi.mock('../deployment.js', () => ({
+	getDeploymentDriver: mockGetDeploymentDriver,
 }));
 
 vi.mock('../services/deployment.js', () => ({
@@ -48,18 +54,23 @@ vi.mock('../utils/schedule.js', () => ({
 }));
 
 vi.mock('../logger/index.js', () => ({
-	useLogger: vi.fn(() => ({ warn: mockLoggerWarn, info: vi.fn(), error: vi.fn() })),
+	useLogger: vi.fn(() => ({ warn: vi.fn(), info: vi.fn(), error: vi.fn() })),
 }));
 
 describe('cloudflare-queue-consumer schedule', () => {
 	beforeEach(async () => {
 		vi.clearAllMocks();
 		mockReadByProvider.mockRejectedValue(new Error('not configured'));
+
+		const { refreshCloudflareQueueConsumer } = await import('./cloudflare-queue-consumer.js');
+		await refreshCloudflareQueueConsumer();
 	});
 
 	afterEach(async () => {
-		const { stopCloudflareQueueConsumer } = await import('./cloudflare-queue-consumer.js');
-		await stopCloudflareQueueConsumer();
+		mockReadByProvider.mockRejectedValue(new Error('not configured'));
+
+		const { refreshCloudflareQueueConsumer } = await import('./cloudflare-queue-consumer.js');
+		await refreshCloudflareQueueConsumer();
 	});
 
 	it('does not register a job when Cloudflare is not configured', async () => {
@@ -106,7 +117,7 @@ describe('cloudflare-queue-consumer schedule', () => {
 		);
 	});
 
-	it('does not double-register while a job is already running', async () => {
+	it('stops an existing job and re-registers on a second schedule call', async () => {
 		mockReadByProvider.mockResolvedValue({ id: 'deploy-1' });
 
 		mockGetWebhookConfig.mockResolvedValue({
@@ -119,28 +130,11 @@ describe('cloudflare-queue-consumer schedule', () => {
 		await scheduleCloudflareQueueConsumer();
 		await scheduleCloudflareQueueConsumer();
 
-		expect(mockScheduleSynchronizedJob).toHaveBeenCalledTimes(1);
-	});
-
-	it('stopCloudflareQueueConsumer stops the running job', async () => {
-		mockReadByProvider.mockResolvedValueOnce({ id: 'deploy-1' });
-
-		mockGetWebhookConfig.mockResolvedValueOnce({
-			credentials: { api_token: 'token' },
-			options: { account_id: 'abc', events_queue_id: 'queue-123' },
-		});
-
-		const { default: scheduleCloudflareQueueConsumer, stopCloudflareQueueConsumer } = await import(
-			'./cloudflare-queue-consumer.js'
-		);
-
-		await scheduleCloudflareQueueConsumer();
-		await stopCloudflareQueueConsumer();
-
 		expect(mockJobStop).toHaveBeenCalledTimes(1);
+		expect(mockScheduleSynchronizedJob).toHaveBeenCalledTimes(2);
 	});
 
-	it('restartCloudflareQueueConsumer stops then registers again', async () => {
+	it('refreshCloudflareQueueConsumer stops then registers again', async () => {
 		mockReadByProvider.mockResolvedValue({ id: 'deploy-1' });
 
 		mockGetWebhookConfig.mockResolvedValue({
@@ -148,18 +142,16 @@ describe('cloudflare-queue-consumer schedule', () => {
 			options: { account_id: 'abc', events_queue_id: 'queue-123' },
 		});
 
-		const { default: scheduleCloudflareQueueConsumer, restartCloudflareQueueConsumer } = await import(
-			'./cloudflare-queue-consumer.js'
-		);
+		const { refreshCloudflareQueueConsumer } = await import('./cloudflare-queue-consumer.js');
 
-		await scheduleCloudflareQueueConsumer();
-		await restartCloudflareQueueConsumer();
+		await refreshCloudflareQueueConsumer();
+		await refreshCloudflareQueueConsumer();
 
 		expect(mockJobStop).toHaveBeenCalledTimes(1);
 		expect(mockScheduleSynchronizedJob).toHaveBeenCalledTimes(2);
 	});
 
-	it('restartCloudflareQueueConsumer leaves job stopped when queue id is cleared', async () => {
+	it('refreshCloudflareQueueConsumer leaves job stopped when queue id is cleared', async () => {
 		mockReadByProvider.mockResolvedValue({ id: 'deploy-1' });
 
 		mockGetWebhookConfig
@@ -172,53 +164,13 @@ describe('cloudflare-queue-consumer schedule', () => {
 				options: { account_id: 'abc' },
 			});
 
-		const { restartCloudflareQueueConsumer } = await import('./cloudflare-queue-consumer.js');
+		const { refreshCloudflareQueueConsumer } = await import('./cloudflare-queue-consumer.js');
 
-		await restartCloudflareQueueConsumer();
+		await refreshCloudflareQueueConsumer();
 		expect(mockScheduleSynchronizedJob).toHaveBeenCalledTimes(1);
 
-		await restartCloudflareQueueConsumer();
+		await refreshCloudflareQueueConsumer();
 		expect(mockJobStop).toHaveBeenCalledTimes(1);
 		expect(mockScheduleSynchronizedJob).toHaveBeenCalledTimes(1);
-	});
-
-	it('restartCloudflareQueueConsumer logs when scheduling fails', async () => {
-		mockReadByProvider.mockResolvedValue({ id: 'deploy-1' });
-
-		mockGetWebhookConfig.mockResolvedValue({
-			credentials: { api_token: 'token' },
-			options: { account_id: 'abc', events_queue_id: 'queue-123' },
-		});
-
-		mockScheduleSynchronizedJob.mockImplementationOnce(() => {
-			throw new Error('invalid cron');
-		});
-
-		const { restartCloudflareQueueConsumer } = await import('./cloudflare-queue-consumer.js');
-
-		await restartCloudflareQueueConsumer();
-
-		expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('Failed to refresh queue consumer schedule'));
-	});
-
-	it('restartCloudflareQueueConsumer still schedules when stop throws', async () => {
-		mockReadByProvider.mockResolvedValue({ id: 'deploy-1' });
-
-		mockGetWebhookConfig.mockResolvedValue({
-			credentials: { api_token: 'token' },
-			options: { account_id: 'abc', events_queue_id: 'queue-123' },
-		});
-
-		mockJobStop.mockRejectedValueOnce(new Error('clock reset failed'));
-
-		const { default: scheduleCloudflareQueueConsumer, restartCloudflareQueueConsumer } = await import(
-			'./cloudflare-queue-consumer.js'
-		);
-
-		await scheduleCloudflareQueueConsumer();
-		await restartCloudflareQueueConsumer();
-
-		expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('Failed to stop queue consumer'));
-		expect(mockScheduleSynchronizedJob).toHaveBeenCalledTimes(2);
 	});
 });

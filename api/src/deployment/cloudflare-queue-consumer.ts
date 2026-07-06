@@ -1,24 +1,41 @@
 import type { DeploymentWebhookEvent } from '@directus/types';
 import getDatabase from '../database/index.js';
-import { getDeploymentDriver } from '../deployment.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { DeploymentProjectsService } from '../services/deployment-projects.js';
 import { DeploymentRunsService } from '../services/deployment-runs.js';
 import { getSchema } from '../utils/get-schema.js';
-import { CloudflareDriver } from './drivers/cloudflare.js';
+import type { DeploymentDriver } from './deployment.js';
+import type { CloudflareQueuePullMessage } from './drivers/cloudflare.js';
+
+type DeploymentQueueConsumer = DeploymentDriver & {
+	pullQueueMessages(options?: {
+		batch_size?: number;
+		visibility_timeout_ms?: number;
+	}): Promise<CloudflareQueuePullMessage[]>;
+
+	parseQueueMessage(message: CloudflareQueuePullMessage): DeploymentWebhookEvent | null;
+
+	ackQueueMessages(ackLeaseIds: string[], retryLeaseIds: string[]): Promise<void>;
+};
+
+function hasQueueConsumer(driver: DeploymentDriver): driver is DeploymentQueueConsumer {
+	return (
+		typeof (driver as DeploymentQueueConsumer).pullQueueMessages === 'function' &&
+		typeof (driver as DeploymentQueueConsumer).parseQueueMessage === 'function' &&
+		typeof (driver as DeploymentQueueConsumer).ackQueueMessages === 'function'
+	);
+}
 
 export async function consumeCloudflareQueueEvents(
 	deploymentId: string,
-	credentials: Record<string, any>,
-	options: Record<string, any>,
+	driver: DeploymentDriver,
 ): Promise<void> {
+	if (!hasQueueConsumer(driver)) return;
+
 	const logger = useLogger();
 	const schema = await getSchema();
 	const knex = getDatabase();
-
-	const driver = getDeploymentDriver('cloudflare-workers', credentials, options);
-	if (!(driver instanceof CloudflareDriver)) return;
 
 	let messages;
 
@@ -123,13 +140,5 @@ export async function consumeCloudflareQueueEvents(
 		}
 	}
 
-	try {
-		await driver.ackQueueMessages(ackLeaseIds, retryLeaseIds);
-	} catch (error) {
-		logger.error(
-			`[cloudflare-workers:queue] Failed to ack ${ackLeaseIds.length} message(s) — they will be redelivered: ${String(error)}`,
-		);
-
-		throw error;
-	}
+	await driver.ackQueueMessages(ackLeaseIds, retryLeaseIds);
 }

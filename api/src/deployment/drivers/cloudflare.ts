@@ -18,6 +18,7 @@ import type {
 	WebhookRegistrationResult,
 } from '@directus/types';
 import pLimit from 'p-limit';
+import { refreshCloudflareQueueConsumer } from '../../schedules/cloudflare-queue-consumer.js';
 import { DeploymentDriver, type DeploymentRequestOptions } from '../deployment.js';
 
 export interface CloudflareCredentials extends Credentials {
@@ -685,6 +686,18 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 		_webhookSecret: string,
 	): DeploymentWebhookEvent | null {
 		return null;
+	}
+
+	override async onConfigCreated(): Promise<void> {
+		await refreshCloudflareQueueConsumer();
+	}
+
+	override async onConfigUpdated(): Promise<void> {
+		await refreshCloudflareQueueConsumer();
+	}
+
+	override async onConfigDeleted(): Promise<void> {
+		await refreshCloudflareQueueConsumer();
 	}
 
 	/**

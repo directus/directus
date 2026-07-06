@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import getDatabase from '../database/index.js';
 import { consumeCloudflareQueueEvents } from '../deployment/cloudflare-queue-consumer.js';
+import { getDeploymentDriver } from '../deployment.js';
 import { useLogger } from '../logger/index.js';
 import { DeploymentService } from '../services/deployment.js';
 import { getSchema } from '../utils/get-schema.js';
@@ -10,36 +11,19 @@ const env = useEnv();
 
 let runningJob: { stop(): Promise<void> } | null = null;
 
-export async function stopCloudflareQueueConsumer(): Promise<void> {
-	const job = runningJob;
-	runningJob = null;
-
-	if (job) {
-		await job.stop();
-	}
-}
-
-/** Stop any running job and register again from current DB config (no API restart required). */
-export async function restartCloudflareQueueConsumer(): Promise<void> {
-	const logger = useLogger();
-
-	try {
-		await stopCloudflareQueueConsumer();
-	} catch (error) {
-		logger.warn(`[cloudflare-workers:queue] Failed to stop queue consumer: ${String(error)}`);
-	}
-
-	try {
-		await scheduleCloudflareQueueConsumer();
-	} catch (error) {
-		logger.warn(`[cloudflare-workers:queue] Failed to refresh queue consumer schedule: ${String(error)}`);
-	}
+/**
+ * Cloudflare Workers Builds does not push webhooks to Directus — run status is polled via the API.
+ * When `events_queue_id` is configured, this schedule pulls Workers Builds events from a Cloudflare
+ * Queue (event subscriptions) so builds triggered outside Directus (git push, CI) appear in the runs list.
+ */
+export async function refreshCloudflareQueueConsumer(): Promise<void> {
+	await scheduleCloudflareQueueConsumer();
 }
 
 export default async function scheduleCloudflareQueueConsumer() {
-	// Guard against double-registration on startup. On config updates use stopCloudflareQueueConsumer()
-	// first so the schedule restarts with fresh credentials and options.
-	if (runningJob) return;
+	await runningJob?.stop();
+	runningJob = null;
+
 	const logger = useLogger();
 	const schema = await getSchema();
 	const knex = getDatabase();
@@ -66,17 +50,13 @@ export default async function scheduleCloudflareQueueConsumer() {
 		return;
 	}
 
-	// Poll every 5 minutes by default. Workers Builds typically complete in 1–5 min, so 5-minute
-	// polling gives acceptable notification latency without hammering the Queues API on every
-	// instance. Override with DEPLOYMENT_CLOUDFLARE_QUEUE_POLL_SCHEDULE (cron expression) if you
-	// need tighter latency (e.g. "*/1 * * * *" for every minute) or a looser cadence for cost
-	// savings (e.g. "*/15 * * * *" for every 15 minutes).
-	const schedule = ((env['DEPLOYMENT_CLOUDFLARE_QUEUE_POLL_SCHEDULE'] as string | undefined)?.trim() ||
-		'*/5 * * * *') as string;
+	const driver = getDeploymentDriver('cloudflare-workers', credentials, options);
+
+	const schedule = env['DEPLOYMENT_CLOUDFLARE_QUEUE_POLL_SCHEDULE'] as string;
 
 	runningJob = scheduleSynchronizedJob('deployment-cloudflare-queue-consumer', schedule, async () => {
 		try {
-			await consumeCloudflareQueueEvents(deploymentId, credentials, options);
+			await consumeCloudflareQueueEvents(deploymentId, driver);
 		} catch (error) {
 			logger.warn(`[cloudflare-workers:queue] Consumer tick failed: ${String(error)}`);
 		}

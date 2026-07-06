@@ -139,7 +139,9 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			payload.options = JSON.stringify(options) as unknown as Options;
 		}
 
-		return super.createOne(payload, opts);
+		const key = await super.createOne(payload, opts);
+
+		return key;
 	}
 
 	override async updateOne(key: PrimaryKey, data: Partial<DeploymentConfig>, opts?: any): Promise<PrimaryKey> {
@@ -188,7 +190,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			throw new InvalidProviderConfigError({ provider, reason: this.getProviderErrorReason(error) });
 		}
 
-		return super.updateOne(
+		await super.updateOne(
 			key,
 			{
 				credentials: JSON.stringify(credentials) as unknown as Credentials,
@@ -196,6 +198,8 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			},
 			opts,
 		);
+
+		return key;
 	}
 
 	/**
@@ -242,7 +246,31 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			}
 		}
 
+		await this.invokeConfigLifecycle(provider, 'deleted');
+
 		return primaryKey;
+	}
+
+	/**
+	 * Invoke provider-specific config lifecycle hooks after DB changes are committed.
+	 */
+	async invokeConfigLifecycle(provider: ProviderType, event: 'created' | 'updated' | 'deleted'): Promise<void> {
+		if (event === 'deleted') {
+			if (provider === 'cloudflare-workers') {
+				const { refreshCloudflareQueueConsumer } = await import('../schedules/cloudflare-queue-consumer.js');
+				await refreshCloudflareQueueConsumer();
+			}
+
+			return;
+		}
+
+		const driver = await this.getDriver(provider);
+
+		if (event === 'created') {
+			await driver.onConfigCreated();
+		} else {
+			await driver.onConfigUpdated();
+		}
 	}
 
 	/**
@@ -367,6 +395,13 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 				await driver.unregisterWebhook(previousWebhookIds);
 			} catch (err) {
 				logger.warn(`[webhook:${provider}] Failed to unregister old webhook(s): ${err}`);
+
+				// Retain stale IDs so the next sync can retry cleanup.
+				const mergedIds = [...new Set([...result.webhook_ids, ...previousWebhookIds])];
+
+				await super.updateOne(config.id, {
+					webhook_ids: mergedIds,
+				} as Partial<DeploymentConfig>);
 			}
 		}
 	}
@@ -445,6 +480,20 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 		const selectedProjects = await projectsService.readByQuery({
 			filter: { deployment: { _eq: deployment.id } },
+			fields: [
+				'id',
+				'external_id',
+				'name',
+				'url',
+				'framework',
+				'deployable',
+				'runs.id',
+				'runs.status',
+				'runs.date_created',
+				'runs.started_at',
+				'runs.completed_at',
+			],
+			deep: { runs: { _sort: ['-date_created'], _limit: 1 } },
 			limit: -1,
 		});
 
@@ -457,13 +506,8 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 		const projectIds = selectedProjects.map((p) => p.id);
 
-		// Latest run per project + aggregated stats
-		const [allRuns, activeResult, statusCounts] = await Promise.all([
-			runsService.readByQuery({
-				filter: { project: { _in: projectIds } },
-				sort: ['-date_created'],
-				limit: -1,
-			}),
+		// Aggregated stats
+		const [activeResult, statusCounts] = await Promise.all([
 			runsService.readByQuery({
 				filter: { project: { _in: projectIds }, status: { _eq: 'building' } },
 				aggregate: { count: ['*'] },
@@ -481,16 +525,6 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			}) as Promise<any[]>,
 		]);
 
-		// Runs are sorted newest-first; pick the first seen per project.
-		const latestRunMap = new Map<string, DeploymentRun>();
-
-		for (const run of allRuns) {
-			if (!latestRunMap.has(run.project)) {
-				latestRunMap.set(run.project, run);
-				if (latestRunMap.size === projectIds.length) break;
-			}
-		}
-
 		const countByStatus = (status: string) =>
 			Number(statusCounts.find((r: any) => r['status'] === status)?.['count'] ?? 0);
 
@@ -502,7 +536,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 		return {
 			projects: selectedProjects.map((p) => {
-				const latestRun = latestRunMap.get(p.id);
+				const latestRun = Array.isArray(p.runs) ? p.runs[0] : undefined;
 
 				return {
 					id: p.id,
@@ -696,6 +730,8 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		const terminalStatuses = new Set<Status>(['ready', 'error', 'canceled']);
 
 		if (driver.capabilities.needsRunStatusPolling && !terminalStatuses.has(run.status as Status)) {
+			let errorUpdate: Partial<DeploymentRun> | null = null;
+
 			try {
 				// getRun fetches status and logs in one combined call — don't also call getRunLogs.
 				const details = await driver.getRun(run.external_id);
@@ -723,18 +759,20 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			} catch (error) {
 				if (error instanceof HitRateLimitError || error instanceof ServiceUnavailableError) throw error;
 
-				const update: Partial<DeploymentRun> = {
+				errorUpdate = {
 					status: 'error',
 					completed_at: run.completed_at ?? new Date().toISOString(),
 				};
+			}
 
+			if (errorUpdate) {
 				try {
-					await runsService.updateOne(run.id, update);
+					await runsService.updateOne(run.id, errorUpdate);
 				} catch (updateError) {
 					useLogger().warn(`[deployment:${provider}] Failed to mark run as error: ${String(updateError)}`);
 				}
 
-				return { ...run, ...update, logs: [] };
+				return { ...run, ...errorUpdate, logs: [] };
 			}
 		}
 
@@ -773,6 +811,8 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			runs.map(async (run, index) => {
 				if (terminalStatuses.has(run.status as Status)) return;
 
+				let errorUpdate: Partial<DeploymentRun> | null = null;
+
 				try {
 					const details = await driver.getRun(run.external_id);
 					const nextStatus = details.status;
@@ -797,18 +837,20 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 				} catch (error) {
 					if (error instanceof HitRateLimitError || error instanceof ServiceUnavailableError) return;
 
-					const update: Partial<DeploymentRun> = {
+					errorUpdate = {
 						status: 'error',
 						completed_at: run.completed_at ?? new Date().toISOString(),
 					};
+				}
 
+				if (errorUpdate) {
 					try {
-						await runsService.updateOne(run.id, update);
+						await runsService.updateOne(run.id, errorUpdate);
 					} catch (updateError) {
 						useLogger().warn(`[deployment:${provider}] Failed to mark run as error: ${String(updateError)}`);
 					}
 
-					refreshedRuns[index] = { ...run, ...update };
+					refreshedRuns[index] = { ...run, ...errorUpdate };
 				}
 			}),
 		);
