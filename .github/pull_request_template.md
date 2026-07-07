@@ -17,9 +17,9 @@ What's changed:
 
 ## Checklist
 
-> Bold **not required** where it applies, so reviewers can see it was a deliberate choice.
+> Bold "not required" where it applies, so reviewers can see it was a deliberate choice.
 
-- [ ] Tests added, updated or not required
+- [ ] Tests added/updated or not required
 - [ ] Documentation PR created in [directus/docs](https://github.com/directus/docs) — Link: <!-- --> or not required
 - [ ] Update OpenAPI, or not required
   - [ ] Local specs package (`@directus/specs`) updated
