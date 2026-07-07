@@ -18,8 +18,8 @@ post:
               description: One-time-password from the user's authenticator app.
               example: '123456'
   responses:
-    '200':
-      description: Successful request
+    '204':
+      $ref: '../../openapi.yaml#/components/responses/NoContentResponse'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':
