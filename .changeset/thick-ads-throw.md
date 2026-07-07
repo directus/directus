@@ -4,7 +4,7 @@
 '@directus/sdk': major
 ---
 
-Added a `mode` parameter and partial snapshot support to the schema diff endpoint. 
+Added a `mode` parameter and partial snapshot support to the schema diff endpoint
 
 ::: notice
 
