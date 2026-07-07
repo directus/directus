@@ -1,3 +1,4 @@
+import { InvalidPayloadError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
 
 /**
@@ -9,6 +10,7 @@ import type { SchemaOverview } from '@directus/types';
  * @param scope.includeCollections - Restrict the snapshot to exactly these collections.
  * @param scope.excludeCollections - Include every collection except these.
  * @returns The collections to snapshot, or `null` for a full snapshot
+ * @throws {InvalidPayloadError} If both `includeCollections` and `excludeCollections` are provided.
  */
 export function resolveScopedCollections(
 	schema: SchemaOverview,
@@ -18,6 +20,12 @@ export function resolveScopedCollections(
 	},
 ): string[] | null {
 	const { includeCollections, excludeCollections } = scope;
+
+	if (includeCollections && excludeCollections) {
+		throw new InvalidPayloadError({
+			reason: `"includeCollections" and "excludeCollections" parameters cannot be used together`,
+		});
+	}
 
 	if (!includeCollections && !excludeCollections) return null;
 
