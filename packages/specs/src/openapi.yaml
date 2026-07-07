@@ -246,6 +246,8 @@ paths:
     $ref: './paths/users/users.yaml'
   /users/{id}:
     $ref: './paths/users/user.yaml'
+  /users/{id}/tfa/disable:
+    $ref: './paths/users/pk-tfa-disable.yaml'
   /users/invite:
     $ref: './paths/users/invite.yaml'
   /users/invite/accept:
@@ -375,8 +377,16 @@ components:
     Version:
       $ref: './parameters/version.yaml'
   responses:
+    BadRequestError:
+      $ref: './responses/badRequestError.yaml'
+    ForbiddenError:
+      $ref: './responses/forbiddenError.yaml'
+    NoContentResponse:
+      $ref: './responses/noContentResponse.yaml'
     NotFoundError:
       $ref: './responses/notFoundError.yaml'
+    TooManyRequestsError:
+      $ref: './responses/tooManyRequestsError.yaml'
     UnauthorizedError:
       $ref: './responses/unauthorizedError.yaml'
   securitySchemes:
