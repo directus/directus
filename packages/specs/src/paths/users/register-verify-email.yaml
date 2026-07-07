@@ -13,7 +13,9 @@ get:
   responses:
     '302':
       description: Redirects to the admin user page on success.
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '400':
+      $ref: '../../openapi.yaml#/components/responses/BadRequestError'
+    '403':
+      $ref: '../../openapi.yaml#/components/responses/ForbiddenError'
   tags:
     - Users
