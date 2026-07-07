@@ -76,11 +76,16 @@ const MEASUREMENTS: LayoutMeasurements = {
 	keyWidths,
 };
 
+const TOOLBAR_ALIASES: Record<string, string[]> = { 'ltr rtl': ['ltr', 'rtl'] };
+
 // keys present in the field config AND in the registry, preserving field order for the `other` bucket.
 // `styles` is never user-configured: it's auto-appended (and only present) when customFormats exist,
 // matching the legacy TinyMCE behavior (`toolbarString += ' styles'`).
 const selectedKeys = computed(() => {
-	const keys = props.toolbar.filter((key) => key !== 'styles' && Boolean(toolbarButtons[key]));
+	const keys = props.toolbar
+		.flatMap((key) => TOOLBAR_ALIASES[key] ?? [key])
+		.filter((key) => key !== 'styles' && Boolean(toolbarButtons[key]));
+
 	if (props.customFormats.length > 0) keys.push('styles');
 	return keys;
 });

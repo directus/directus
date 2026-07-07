@@ -29,6 +29,7 @@ const props = withDefaults(
 		folder?: string;
 		/** Legacy TinyMCE `customFormats` option (array or JSON string); see extensions/custom-formats.ts. */
 		customFormats?: unknown;
+		direction?: string;
 	}>(),
 	{
 		toolbar: () => toolbarDefault,
@@ -52,6 +53,8 @@ const fontFamily = computed(() => {
 
 // both states are read-only; `nonEditable` keeps the normal look, `disabled` dims (see styles)
 const isEditable = computed(() => !props.disabled && !props.nonEditable);
+
+const editorDir = computed(() => (props.direction === 'rtl' ? 'rtl' : 'ltr'));
 
 // Sync an external value into the editor without polluting undo history or emitting an update.
 // `addToHistory: false` keeps these programmatic syncs out of the undo stack, otherwise the
@@ -179,7 +182,7 @@ onKeyStroke('Escape', () => {
 			@open-image="openImageDrawer"
 			@open-link="openLinkDrawer"
 		/>
-		<EditorContent class="editor-content" :editor="editor" />
+		<EditorContent class="editor-content" :editor="editor" :dir="editorDir" />
 
 		<TableBubbleMenu v-if="!nonEditable" :editor="editor" />
 
