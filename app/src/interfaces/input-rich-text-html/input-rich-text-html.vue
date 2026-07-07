@@ -11,6 +11,7 @@ import ImageDrawer from './drawers/image-drawer.vue';
 import LinkDrawer from './drawers/link-drawer.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
 import { editorExtensions } from './extensions';
+import { ComparisonDiff } from './extensions/comparison-diff';
 import { buildCustomFormats } from './extensions/custom-formats';
 import { LinkShortcut } from './extensions/link-shortcut';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
@@ -36,6 +37,10 @@ const props = withDefaults(
 		customFormats?: unknown;
 		softLength?: number;
 		direction?: string;
+		// comparison view (content versioning / revision diffs): value arrives pre-marked with
+		// comparison-diff spans; `comparisonSide` is API surface only — side switches flow in as value changes
+		comparisonMode?: boolean;
+		comparisonSide?: 'base' | 'incoming';
 	}>(),
 	{
 		toolbar: () => toolbarDefault,
@@ -61,8 +66,8 @@ const fontFamily = computed(() => {
 	return `var(--theme--fonts--${token}--font-family)`;
 });
 
-// both states are read-only; `nonEditable` keeps the normal look, `disabled` dims (see styles)
-const isEditable = computed(() => !props.disabled && !props.nonEditable);
+// all three states are read-only; `nonEditable`/`comparisonMode` keep the normal look, `disabled` dims (see styles)
+const isEditable = computed(() => !props.disabled && !props.nonEditable && !props.comparisonMode);
 
 const editorDir = computed(() => (props.direction === 'rtl' ? 'rtl' : 'ltr'));
 
@@ -96,11 +101,14 @@ function updateCount(instance: Editor) {
 const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
 
 const editor = useEditor({
-	// LinkShortcut lives here, not in the shared set, so its Mod-K handler can call this instance's opener
+	// LinkShortcut lives here, not in the shared set, so its Mod-K handler can call this instance's opener.
+	// ComparisonDiff only joins the schema in comparison mode — the view mounts fresh per comparison,
+	// so deciding at construction is safe, and normal editing keeps stripping diff spans.
 	extensions: [
 		...editorExtensions,
 		...customFormatExtensions,
 		LinkShortcut.configure({ onTrigger: () => openLinkDrawer() }),
+		...(props.comparisonMode ? [ComparisonDiff] : []),
 	],
 	content: '',
 	editable: isEditable.value,
@@ -205,11 +213,11 @@ onKeyStroke('Escape', () => {
 <template>
 	<div
 		class="wysiwyg"
-		:class="{ disabled, 'non-editable': nonEditable, fullscreen, visualaid }"
+		:class="{ disabled, 'non-editable': nonEditable || comparisonMode, fullscreen, visualaid }"
 		:style="{ '--editor-font-family': fontFamily, '--page-break-label': pageBreakLabel }"
 	>
 		<Toolbar
-			v-if="!nonEditable"
+			v-if="!nonEditable && !comparisonMode"
 			:editor="editor"
 			:toolbar="toolbar"
 			:font="font"
@@ -236,7 +244,7 @@ onKeyStroke('Escape', () => {
 			{{ softLength - count }}
 		</span>
 
-		<TableBubbleMenu v-if="!nonEditable" :editor="editor" />
+		<TableBubbleMenu v-if="!nonEditable && !comparisonMode" :editor="editor" />
 
 		<ImageDrawer
 			v-model="imageDrawerOpen"
@@ -576,6 +584,21 @@ onKeyStroke('Escape', () => {
 		display: block;
 		margin-block-start: 0.1875rem;
 		text-align: center;
+	}
+
+	// content versioning / revision diff highlights (comparison mode)
+	.comparison-diff--added {
+		color: var(--theme--success);
+		background-color: var(--theme--success-background);
+		padding: 0.125rem;
+		border-radius: var(--theme--border-radius);
+	}
+
+	.comparison-diff--removed {
+		color: var(--theme--danger);
+		background-color: var(--theme--danger-background);
+		padding: 0.125rem;
+		border-radius: var(--theme--border-radius);
 	}
 }
 
