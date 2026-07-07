@@ -632,14 +632,14 @@ export class ImportService {
 					const isUuid = pkOverview.type === 'uuid';
 
 					for (const item of entry.items) {
-						const payload = this.remapForeignKeys(item, fkFields, idMaps, deferredFields);
+						const payload = remapForeignKeys(item, fkFields, idMaps, deferredFields);
 						const oldPk = item[pkField] as PrimaryKey | undefined;
 
 						let newPk: PrimaryKey;
 						let matchedExisting = false;
 
 						if (mode === 'merge') {
-							matchedExisting = oldPk != null && (await this.keyExists(trx, collection, pkField, oldPk));
+							matchedExisting = oldPk != null && (await keyExists(trx, collection, pkField, oldPk));
 
 							if (!matchedExisting && isAutoIncrement) {
 								// Key doesn't exist: remap so the auto-increment sequence keeps advancing naturally
@@ -654,7 +654,7 @@ export class ImportService {
 							delete payload[pkField];
 							newPk = await service.createOne(payload, mutationOptions);
 						} else {
-							const conflict = oldPk != null && (await this.keyExists(trx, collection, pkField, oldPk));
+							const conflict = oldPk != null && (await keyExists(trx, collection, pkField, oldPk));
 
 							if (conflict) {
 								if (isUuid) {
@@ -707,7 +707,7 @@ export class ImportService {
 						const newPk = idMap.get(String(oldPk));
 						if (newPk === undefined) continue;
 
-						const value = this.remapValue(rawValue, this.resolveTarget(fkInfo, item), idMaps);
+						const value = remapValue(rawValue, resolveTarget(fkInfo, item), idMaps);
 
 						await service.updateOne(newPk, { [field]: value }, mutationOptions);
 					}
@@ -832,7 +832,7 @@ export class ImportService {
 					const value = item[info.field];
 					if (value === undefined || value === null || isObject(value)) continue;
 
-					const target = this.resolveTarget(info, item);
+					const target = resolveTarget(info, item);
 					if (!target || !this.schema.collections[target]) continue;
 
 					if (importedPks.get(target)?.has(String(value))) continue;
@@ -840,7 +840,7 @@ export class ImportService {
 					if (!candidates.has(target)) {
 						candidates.set(target, new Map());
 					}
-					
+
 					candidates.get(target)!.set(String(value), { value, fromCollection: collection, field: info.field });
 				}
 			}
@@ -868,55 +868,55 @@ export class ImportService {
 			}
 		}
 	}
+}
 
-	/** Clone an item, remap its scalar foreign keys through the id maps, and drop deferred fields. */
-	private remapForeignKeys(
-		item: Record<string, unknown>,
-		fkFields: FkFieldInfo[],
-		idMaps: Map<string, Map<string, PrimaryKey>>,
-		deferredFields: Set<string> | undefined,
-	): Record<string, unknown> {
-		const payload: Record<string, unknown> = { ...item };
+/** Clone an item, remap its scalar foreign keys through the id maps, and drop deferred fields. */
+function remapForeignKeys(
+	item: Record<string, unknown>,
+	fkFields: FkFieldInfo[],
+	idMaps: Map<string, Map<string, PrimaryKey>>,
+	deferredFields: Set<string> | undefined,
+): Record<string, unknown> {
+	const payload: Record<string, unknown> = { ...item };
 
-		for (const info of fkFields) {
-			if (deferredFields?.has(info.field)) {
-				delete payload[info.field];
-				continue;
-			}
-
-			const value = payload[info.field];
-			if (value === undefined || value === null || isObject(value)) continue;
-
-			payload[info.field] = this.remapValue(value, this.resolveTarget(info, item), idMaps);
+	for (const info of fkFields) {
+		if (deferredFields?.has(info.field)) {
+			delete payload[info.field];
+			continue;
 		}
 
-		return payload;
+		const value = payload[info.field];
+		if (value === undefined || value === null || isObject(value)) continue;
+
+		payload[info.field] = remapValue(value, resolveTarget(info, item), idMaps);
 	}
 
-	/** Map a single foreign key value through the target collection's id map (identity when unmapped). */
-	private remapValue(value: unknown, target: string | null, idMaps: Map<string, Map<string, PrimaryKey>>): unknown {
-		if (value === null || value === undefined || !target) return value;
+	return payload;
+}
 
-		const mapped = idMaps.get(target)?.get(String(value));
-		return mapped !== undefined ? mapped : value;
-	}
+/** Map a single foreign key value through the target collection's id map (identity when unmapped). */
+function remapValue(value: unknown, target: string | null, idMaps: Map<string, Map<string, PrimaryKey>>): unknown {
+	if (value === null || value === undefined || !target) return value;
 
-	/** Determine the target collection for a foreign key field (static for m2o, per-item for a2o). */
-	private resolveTarget(info: FkFieldInfo, item: Record<string, unknown>): string | null {
-		if (info.target) return info.target;
-		if (!info.collectionField) return null;
+	const mapped = idMaps.get(target)?.get(String(value));
+	return mapped !== undefined ? mapped : value;
+}
 
-		const target = item[info.collectionField];
-		return typeof target === 'string' ? target : null;
-	}
+/** Determine the target collection for a foreign key field (static for m2o, per-item for a2o). */
+function resolveTarget(info: FkFieldInfo, item: Record<string, unknown>): string | null {
+	if (info.target) return info.target;
+	if (!info.collectionField) return null;
 
-	private async keyExists(trx: Knex, collection: string, pkField: string, value: PrimaryKey): Promise<boolean> {
-		const result = await trx
-			.select(pkField)
-			.from(collection)
-			.where({ [pkField]: value })
-			.first();
+	const target = item[info.collectionField];
+	return typeof target === 'string' ? target : null;
+}
 
-		return Boolean(result);
-	}
+async function keyExists(trx: Knex, collection: string, pkField: string, value: PrimaryKey): Promise<boolean> {
+	const result = await trx
+		.select(pkField)
+		.from(collection)
+		.where({ [pkField]: value })
+		.first();
+
+	return Boolean(result);
 }
