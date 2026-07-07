@@ -57,4 +57,10 @@ describe('resolveScopedCollections', () => {
 
 		expect(asSet(result)).toEqual(new Set(['articles', 'directus_users']));
 	});
+
+	test('throws when both includeCollections and excludeCollections are given', () => {
+		expect(() =>
+			resolveScopedCollections(schema, { includeCollections: ['articles'], excludeCollections: ['authors'] }),
+		).toThrow('"includeCollections" and "excludeCollections" parameters cannot be used together');
+	});
 });
