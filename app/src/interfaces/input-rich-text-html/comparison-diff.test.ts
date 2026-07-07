@@ -1,7 +1,12 @@
-import { Editor } from '@tiptap/vue-3';
+import { Editor, EditorContent } from '@tiptap/vue-3';
+import { flushPromises, mount } from '@vue/test-utils';
+import { createPinia } from 'pinia';
 import { describe, expect, test } from 'vitest';
+import { nextTick } from 'vue';
+import { createI18n } from 'vue-i18n';
 import { editorExtensions } from './extensions';
 import { ComparisonDiff } from './extensions/comparison-diff';
+import Interface from './input-rich-text-html.vue';
 
 /**
  * Comparison mode (CMS-2649): the comparison view feeds the editor diff-marked HTML
@@ -39,5 +44,47 @@ describe('without ComparisonDiff (normal editing schema)', () => {
 	test('diff spans are stripped', () => {
 		const html = '<p>Hello <span class="comparison-diff--added">world</span></p>';
 		expect(roundTrip(html, [...editorExtensions])).toBe('<p>Hello world</p>');
+	});
+});
+
+describe('interface wiring', () => {
+	const DIFF_HTML = '<p>Hello <span class="comparison-diff--added">world</span></p>';
+
+	async function mountInterface(props: Record<string, unknown>) {
+		const i18n = createI18n({ legacy: false, locale: 'en-US', messages: { 'en-US': {} } });
+
+		const wrapper = mount(Interface, {
+			props: { value: DIFF_HTML, ...props },
+			global: {
+				plugins: [createPinia(), i18n],
+				stubs: { Toolbar: true, TableBubbleMenu: true, ImageDrawer: true, LinkDrawer: true },
+			},
+		});
+
+		await flushPromises();
+		// tiptap defers `create` (which runs the interface's initial content sync) behind
+		// setTimeout(0); await a later-queued macrotask so the sync has run before assertions
+		await new Promise((resolve) => setTimeout(resolve, 0));
+		await nextTick();
+		const editor = wrapper.findComponent(EditorContent).props('editor') as Editor;
+		return { wrapper, editor };
+	}
+
+	test('comparisonMode renders read-only without editing chrome, diff spans intact', async () => {
+		const { wrapper, editor } = await mountInterface({ comparisonMode: true, comparisonSide: 'incoming' });
+
+		expect(editor.isEditable).toBe(false);
+		expect(wrapper.find('toolbar-stub').exists()).toBe(false);
+		expect(wrapper.find('table-bubble-menu-stub').exists()).toBe(false);
+		expect(wrapper.classes()).toContain('non-editable');
+		expect(editor.getHTML()).toBe(DIFF_HTML);
+	});
+
+	test('normal mode keeps chrome and strips diff spans', async () => {
+		const { wrapper, editor } = await mountInterface({});
+
+		expect(editor.isEditable).toBe(true);
+		expect(wrapper.find('toolbar-stub').exists()).toBe(true);
+		expect(editor.getHTML()).toBe('<p>Hello world</p>');
 	});
 });
