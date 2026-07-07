@@ -34,9 +34,13 @@ post:
               description: Custom URL for the email verification link.
               example: 'https://example.com/verify'
   responses:
-    '200':
-      description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '204':
+      $ref: '../../openapi.yaml#/components/responses/NoContentResponse'
+    '400':
+      $ref: '../../openapi.yaml#/components/responses/BadRequestError'
+    '403':
+      $ref: '../../openapi.yaml#/components/responses/ForbiddenError'
+    '429':
+      $ref: '../../openapi.yaml#/components/responses/TooManyRequestsError'
   tags:
     - Users
