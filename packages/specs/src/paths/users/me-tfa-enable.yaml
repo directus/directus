@@ -2,6 +2,21 @@ post:
   summary: Enable 2FA
   description: Enables two-factor authentication for the currently authenticated user.
   operationId: meTfaEnable
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [secret, otp]
+          properties:
+            secret:
+              type: string
+              description: The secret from the tfa/generate endpoint.
+              example: JBSWY3DPEHPK3PXP
+            otp:
+              type: string
+              description: One-time-password from the user's authenticator app.
+              example: '123456'
   responses:
     '200':
       description: Successful request
