@@ -34,7 +34,5 @@ post:
                     example: 'otpauth://totp/Directus:admin%40example.com?secret=JBSWY3DPEHPK3PXP&issuer=Directus'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
     - Users
