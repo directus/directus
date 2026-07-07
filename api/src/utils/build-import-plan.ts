@@ -1,17 +1,11 @@
 import { InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
 
-/**
- * A single collection worth of data as provided to the relational import endpoint.
- */
 export interface ImportCollectionData {
 	collection: string;
 	items: Record<string, unknown>[];
 }
 
-/**
- * An owning foreign key field (many-to-one or any-to-one) on a collection.
- */
 export interface FkFieldInfo {
 	field: string;
 	/** The related collection for a m2o relation. `null` for a2o (target is dynamic per item). */
@@ -156,8 +150,14 @@ export function buildImportPlan(input: ImportCollectionData[], schema: SchemaOve
  */
 function findCycleComponent(nodes: string[], edges: Edge[]): string[] | null {
 	const adjacency = new Map<string, string[]>();
-	for (const node of nodes) adjacency.set(node, []);
-	for (const edge of edges) adjacency.get(edge.from)!.push(edge.to);
+
+	for (const node of nodes) {
+		adjacency.set(node, []);
+	}
+
+	for (const edge of edges) {
+		adjacency.get(edge.from)!.push(edge.to);
+	}
 
 	const selfLoops = new Set(edges.filter((edge) => edge.from === edge.to).map((edge) => edge.from));
 

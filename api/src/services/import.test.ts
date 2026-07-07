@@ -712,7 +712,10 @@ function createTrx(existing: Record<string, Set<string>> = {}) {
 		const state: any = {};
 
 		const b: any = {
-			select: () => b,
+			select: (field?: string) => {
+				if (field !== undefined) state.selectField = field;
+				return b;
+			},
 			from: (collection: string) => {
 				state.collection = collection;
 				return b;
@@ -733,10 +736,12 @@ function createTrx(existing: Record<string, Set<string>> = {}) {
 			},
 			then: (onFulfilled: any, onRejected: any) => {
 				const set = existing[state.collection] ?? new Set();
+				const field = state.inField ?? state.selectField;
 
-				const rows = (state.inValues ?? [])
-					.filter((v: unknown) => set.has(String(v)))
-					.map((v: unknown) => ({ [state.inField]: v }));
+				// whereIn filters the provided values; a plain select returns every existing key
+				const source = state.inValues ?? [...set];
+
+				const rows = source.filter((v: unknown) => set.has(String(v))).map((v: unknown) => ({ [field]: v }));
 
 				return Promise.resolve(rows).then(onFulfilled, onRejected);
 			},
@@ -745,11 +750,11 @@ function createTrx(existing: Record<string, Set<string>> = {}) {
 		return b;
 	}
 
-	return { select: () => builder().select() } as any;
+	return { select: (field?: string) => builder().select(field) } as any;
 }
 
 interface RunContext {
-	calls: { collection: string; method: string; payload?: any; pk?: any; data?: any }[];
+	calls: { collection: string; method: string; payload?: any; pk?: any; data?: any; keys?: any }[];
 }
 
 function setupServices(schema: SchemaOverview): RunContext {
@@ -775,6 +780,10 @@ function setupServices(schema: SchemaOverview): RunContext {
 				ctx.calls.push({ collection, method: 'updateOne', pk, data });
 				return pk;
 			}),
+			deleteMany: vi.fn(async (keys: any[]) => {
+				ctx.calls.push({ collection, method: 'deleteMany', keys });
+				return keys;
+			}),
 		} as any;
 	});
 
@@ -784,7 +793,7 @@ function setupServices(schema: SchemaOverview): RunContext {
 async function run(
 	schema: SchemaOverview,
 	input: ImportCollectionData[],
-	options: { mode?: 'add' | 'merge'; dryRun?: boolean } = {},
+	options: { mode?: 'add' | 'merge'; dryRun?: boolean; dangerouslyAllowDelete?: boolean } = {},
 	existing: Record<string, Set<string>> = {},
 ) {
 	holder.trx = createTrx(existing);
@@ -832,12 +841,14 @@ describe('ImportService.importBatch', () => {
 		expect(result.collections['authors']).toEqual({
 			existing: [],
 			new: ['authors-new-1'],
+			deleted: [],
 			mapped: { '1': 'authors-new-1' },
 		});
 
 		expect(result.collections['articles']).toEqual({
 			existing: [],
 			new: ['articles-new-1'],
+			deleted: [],
 			mapped: { '10': 'articles-new-1' },
 		});
 	});
@@ -860,7 +871,7 @@ describe('ImportService.importBatch', () => {
 		expect(calls[0]).toMatchObject({ collection: 'authors', method: 'upsertOne' });
 		expect(calls[0]!.payload.id).toBe('uuid-1');
 		// matched an existing row: reported under existing, no remap
-		expect(result.collections['authors']).toEqual({ existing: ['uuid-1'], new: [], mapped: {} });
+		expect(result.collections['authors']).toEqual({ existing: ['uuid-1'], new: [], deleted: [], mapped: {} });
 	});
 
 	test('merge mode inserts a new UUID row as "new" (preserving the key)', async () => {
@@ -875,7 +886,52 @@ describe('ImportService.importBatch', () => {
 			mode: 'merge',
 		});
 
-		expect(result.collections['authors']).toEqual({ existing: [], new: ['uuid-1'], mapped: {} });
+		expect(result.collections['authors']).toEqual({ existing: [], new: ['uuid-1'], deleted: [], mapped: {} });
+	});
+
+	test('merge mode updates a pre-existing auto-increment row in place, keeping its id', async () => {
+		const schema = new SchemaBuilder()
+			.collection('authors', (c) => {
+				c.field('id').id();
+				c.field('name').string();
+			})
+			.build();
+
+		const { result, calls } = await run(
+			schema,
+			[{ collection: 'authors', items: [{ id: 5, name: 'A' }] }],
+			{ mode: 'merge' },
+			{ authors: new Set(['5']) },
+		);
+
+		// Existing key: upsert in place, no remap
+		expect(calls[0]).toMatchObject({ collection: 'authors', method: 'upsertOne' });
+		expect(calls[0]!.payload.id).toBe(5);
+		expect(result.collections['authors']).toEqual({ existing: [5], new: [], deleted: [], mapped: {} });
+	});
+
+	test('merge mode remaps a non-existent auto-increment key to keep the sequence intact', async () => {
+		const schema = new SchemaBuilder()
+			.collection('authors', (c) => {
+				c.field('id').id();
+				c.field('name').string();
+			})
+			.build();
+
+		const { result, calls } = await run(schema, [{ collection: 'authors', items: [{ id: 99, name: 'A' }] }], {
+			mode: 'merge',
+		});
+
+		// Non-existent key: dropped and re-created so the sequence assigns a fresh id
+		expect(calls[0]).toMatchObject({ collection: 'authors', method: 'createOne' });
+		expect(calls[0]!.payload).not.toHaveProperty('id');
+
+		expect(result.collections['authors']).toEqual({
+			existing: [],
+			new: ['authors-new-1'],
+			deleted: [],
+			mapped: { '99': 'authors-new-1' },
+		});
 	});
 
 	test('add mode regenerates a conflicting UUID primary key', async () => {
@@ -1069,6 +1125,7 @@ describe('ImportService.importBatch', () => {
 		expect(result.collections['authors']).toEqual({
 			existing: [],
 			new: ['authors-new-1'],
+			deleted: [],
 			mapped: { '1': 'authors-new-1' },
 		});
 
@@ -1090,5 +1147,110 @@ describe('ImportService.importBatch', () => {
 		await run(schema, [{ collection: 'authors', items: [{ id: 1, name: 'A' }] }], { mode: 'add' });
 
 		expect(cacheClear).toHaveBeenCalledTimes(1);
+	});
+
+	test('dangerouslyAllowDelete removes existing rows absent from a merge import', async () => {
+		const schema = new SchemaBuilder()
+			.collection('authors', (c) => {
+				c.field('id').uuid().primary();
+				c.field('name').string();
+			})
+			.build();
+
+		const { result, calls } = await run(
+			schema,
+			[{ collection: 'authors', items: [{ id: 'uuid-1', name: 'A' }] }],
+			{ mode: 'merge', dangerouslyAllowDelete: true },
+			{ authors: new Set(['uuid-1', 'uuid-2', 'uuid-3']) },
+		);
+
+		// uuid-1 is upserted (kept); uuid-2 and uuid-3 are absent from the import so they're deleted
+		const deleteCall = calls.find((c) => c.method === 'deleteMany');
+		expect(deleteCall).toMatchObject({ collection: 'authors' });
+		expect(new Set(deleteCall!.keys)).toEqual(new Set(['uuid-2', 'uuid-3']));
+		expect(new Set(result.collections['authors']!.deleted)).toEqual(new Set(['uuid-2', 'uuid-3']));
+	});
+
+	test('dangerouslyAllowDelete deletes children before parents (reverse dependency order)', async () => {
+		const schema = new SchemaBuilder()
+			.collection('authors', (c) => {
+				c.field('id').uuid().primary();
+				c.field('name').string();
+			})
+			.collection('articles', (c) => {
+				c.field('id').uuid().primary();
+				c.field('title').string();
+				c.field('author').m2o('authors');
+			})
+			.build();
+
+		const { calls } = await run(
+			schema,
+			[
+				{ collection: 'authors', items: [{ id: 'a1', name: 'A' }] },
+				{ collection: 'articles', items: [{ id: 'art1', title: 'T', author: 'a1' }] },
+			],
+			{ mode: 'merge', dangerouslyAllowDelete: true },
+			{ authors: new Set(['a1', 'a2']), articles: new Set(['art1', 'art2']) },
+		);
+
+		const deleteOrder = calls.filter((c) => c.method === 'deleteMany').map((c) => c.collection);
+		// articles (child) must be deleted before authors (parent) to avoid FK violations
+		expect(deleteOrder).toEqual(['articles', 'authors']);
+	});
+
+	test('dangerouslyAllowDelete performs no deletes when every existing row is kept', async () => {
+		const schema = new SchemaBuilder()
+			.collection('authors', (c) => {
+				c.field('id').uuid().primary();
+				c.field('name').string();
+			})
+			.build();
+
+		const { calls, result } = await run(
+			schema,
+			[{ collection: 'authors', items: [{ id: 'uuid-1', name: 'A' }] }],
+			{ mode: 'merge', dangerouslyAllowDelete: true },
+			{ authors: new Set(['uuid-1']) },
+		);
+
+		expect(calls.some((c) => c.method === 'deleteMany')).toBe(false);
+		expect(result.collections['authors']!.deleted).toEqual([]);
+	});
+
+	test('dangerouslyAllowDelete rolls back deletes on a dry run', async () => {
+		const schema = new SchemaBuilder()
+			.collection('authors', (c) => {
+				c.field('id').uuid().primary();
+				c.field('name').string();
+			})
+			.build();
+
+		const { result, calls } = await run(
+			schema,
+			[{ collection: 'authors', items: [{ id: 'uuid-1', name: 'A' }] }],
+			{ mode: 'merge', dangerouslyAllowDelete: true, dryRun: true },
+			{ authors: new Set(['uuid-1', 'uuid-2']) },
+		);
+
+		// Deletes are still exercised inside the transaction, then rolled back with everything else
+		expect(calls.some((c) => c.method === 'deleteMany')).toBe(true);
+		expect(result.applied).toBe(false);
+	});
+
+	test('dangerouslyAllowDelete is rejected without merge mode', async () => {
+		const schema = new SchemaBuilder()
+			.collection('authors', (c) => {
+				c.field('id').uuid().primary();
+				c.field('name').string();
+			})
+			.build();
+
+		await expect(
+			run(schema, [{ collection: 'authors', items: [{ id: 'uuid-1', name: 'A' }] }], {
+				mode: 'add',
+				dangerouslyAllowDelete: true,
+			}),
+		).rejects.toMatchObject({ code: ErrorCode.InvalidPayload });
 	});
 });

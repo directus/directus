@@ -54,11 +54,17 @@ export type ImportBatchMode = 'add' | 'merge';
 export interface ImportBatchOptions {
 	mode?: ImportBatchMode;
 	dryRun?: boolean;
+	/**
+	 * When combined with `mode: 'merge'`, delete every existing record in an imported collection
+	 * whose primary key is not present in the import (a destructive mirror). No effect on its own.
+	 */
+	dangerouslyAllowDelete?: boolean;
 }
 
 export interface ImportBatchCollectionResult {
 	existing: PrimaryKey[];
 	new: PrimaryKey[];
+	deleted: PrimaryKey[];
 	mapped: Record<string, PrimaryKey>;
 }
 
@@ -115,7 +121,9 @@ export class ImportService {
 		stream: Readable,
 		options?: { background: boolean },
 	): Promise<void> {
-		if (this.accountability?.admin !== true && isSystemCollection(collection)) throw new ForbiddenError();
+		if (this.accountability?.admin !== true && isSystemCollection(collection)) {
+			throw new ForbiddenError();
+		}
 
 		if (this.accountability) {
 			await validateAccess(
@@ -511,16 +519,29 @@ export class ImportService {
 	async importBatch(input: ImportCollectionData[], options: ImportBatchOptions = {}): Promise<ImportBatchResult> {
 		const mode: ImportBatchMode = options.mode ?? 'add';
 		const dryRun = options.dryRun ?? false;
+		const dangerouslyAllowDelete = options.dangerouslyAllowDelete ?? false;
+
+		if (dangerouslyAllowDelete && mode !== 'merge') {
+			throw new InvalidPayloadError({
+				reason: `"dangerouslyAllowDelete" can only be used with mode "merge"`,
+			});
+		}
 
 		const plan = buildImportPlan(input, this.schema);
 
 		const dataByCollection = new Map<string, ImportCollectionData>();
-		for (const entry of input) dataByCollection.set(entry.collection, entry);
+
+		for (const entry of input) {
+			dataByCollection.set(entry.collection, entry);
+		}
 
 		const deferredByCollection = new Map<string, Set<string>>();
 
 		for (const { collection, field } of plan.deferred) {
-			if (!deferredByCollection.has(collection)) deferredByCollection.set(collection, new Set());
+			if (!deferredByCollection.has(collection)) {
+				deferredByCollection.set(collection, new Set());
+			}
+
 			deferredByCollection.get(collection)!.add(field);
 		}
 
@@ -543,6 +564,13 @@ export class ImportService {
 						{ schema: this.schema, knex: this.knex },
 					);
 				}
+
+				if (dangerouslyAllowDelete) {
+					await validateAccess(
+						{ accountability: this.accountability, action: 'delete', collection },
+						{ schema: this.schema, knex: this.knex },
+					);
+				}
 			}
 		}
 
@@ -551,7 +579,10 @@ export class ImportService {
 
 		const nestedActionEvents: ActionEventParams[] = [];
 		const collections: Record<string, ImportBatchCollectionResult> = {};
-		for (const collection of plan.order) collections[collection] = { existing: [], new: [], mapped: {} };
+
+		for (const collection of plan.order) {
+			collections[collection] = { existing: [], new: [], deleted: [], mapped: {} };
+		}
 
 		await this.acquireImportSlot();
 
@@ -572,7 +603,10 @@ export class ImportService {
 
 				// idMaps keyed by String(oldPk) -> new primary key, per collection
 				const idMaps = new Map<string, Map<string, PrimaryKey>>();
-				for (const collection of plan.order) idMaps.set(collection, new Map());
+
+				for (const collection of plan.order) {
+					idMaps.set(collection, new Map());
+				}
 
 				await this.assertReferencesResolvable(trx, plan.fkFields, dataByCollection);
 
@@ -604,13 +638,21 @@ export class ImportService {
 						let newPk: PrimaryKey;
 						let matchedExisting = false;
 
-						if (isAutoIncrement) {
-							// Always remap so the sequence keeps advancing naturally
+						if (mode === 'merge') {
+							matchedExisting = oldPk != null && (await this.keyExists(trx, collection, pkField, oldPk));
+
+							if (!matchedExisting && isAutoIncrement) {
+								// Key doesn't exist: remap so the auto-increment sequence keeps advancing naturally
+								delete payload[pkField];
+								newPk = await service.createOne(payload, mutationOptions);
+							} else {
+								// Existing key -> update in place; explicit new key -> insert preserving it
+								newPk = await service.upsertOne(payload, mutationOptions);
+							}
+						} else if (isAutoIncrement) {
+							// Add mode: always remap so the sequence keeps advancing naturally
 							delete payload[pkField];
 							newPk = await service.createOne(payload, mutationOptions);
-						} else if (mode === 'merge') {
-							matchedExisting = oldPk != null && (await this.keyExists(trx, collection, pkField, oldPk));
-							newPk = await service.upsertOne(payload, mutationOptions);
 						} else {
 							const conflict = oldPk != null && (await this.keyExists(trx, collection, pkField, oldPk));
 
@@ -671,6 +713,36 @@ export class ImportService {
 					}
 				}
 
+				// Destructive mirror: delete every existing record whose primary key survived neither an
+				// insert nor a merge. Reverse dependency order so children go before the parents they
+				// reference, avoiding foreign key violations.
+				if (dangerouslyAllowDelete) {
+					for (const collection of [...plan.order].reverse()) {
+						const result = collections[collection]!;
+
+						const keptKeys = new Set<string>();
+						for (const pk of result.existing) keptKeys.add(String(pk));
+						for (const pk of result.new) keptKeys.add(String(pk));
+
+						const { primary: pkField } = this.schema.collections[collection]!;
+
+						const rows = await trx.select(pkField).from(collection);
+
+						const toDelete = rows.map((row) => row[pkField] as PrimaryKey).filter((pk) => !keptKeys.has(String(pk)));
+
+						if (toDelete.length === 0) continue;
+
+						const service = getService(collection, {
+							knex: trx,
+							schema: this.schema,
+							accountability: this.accountability,
+						});
+
+						await service.deleteMany(toDelete, mutationOptions);
+						result.deleted = toDelete;
+					}
+				}
+
 				if (dryRun) throw new DryRunRollback();
 			});
 
@@ -696,7 +768,7 @@ export class ImportService {
 
 	/**
 	 * Reject nested relational payloads: any relational field (owning FK or o2m/alias) whose value is
-	 * an object, or an array containing an object. Non-relational fields (json, csv, ...) are exempt.
+	 * an object, or an array containing an object. Ignores non-relational fields like json, csv, etc.
 	 */
 	private validateFlatData(
 		relationalFields: Map<string, Set<string>>,
@@ -713,9 +785,8 @@ export class ImportService {
 					const value = item[field];
 					if (value === undefined || value === null) continue;
 
-					const isNested = isObject(value) || (Array.isArray(value) && value.some((entry) => isObject(entry)));
-
-					if (isNested) {
+					// check for nested relational objects
+					if (isObject(value) || (Array.isArray(value) && value.some((entry) => isObject(entry)))) {
 						throw new InvalidPayloadError({
 							reason: `Nested relational data is not supported for "${collection}.${field}"; provide a scalar foreign key reference instead`,
 						});
@@ -727,7 +798,7 @@ export class ImportService {
 
 	/**
 	 * Verify that every scalar foreign key reference points at a primary key that is either part of
-	 * this import or already present in the database. Throws {@link InvalidForeignKeyError} otherwise.
+	 * this import or already present in the database.
 	 */
 	private async assertReferencesResolvable(
 		trx: Knex,
@@ -742,13 +813,15 @@ export class ImportService {
 
 			for (const item of entry.items) {
 				const pk = item[pkField];
-				if (pk !== undefined && pk !== null) set.add(String(pk));
+
+				if (pk !== undefined && pk !== null) {
+					set.add(String(pk));
+				}
 			}
 
 			importedPks.set(collection, set);
 		}
 
-		// candidates[target] = Map<String(value), { value, fromCollection, field }>
 		const candidates = new Map<string, Map<string, { value: unknown; fromCollection: string; field: string }>>();
 
 		for (const [collection, entry] of dataByCollection) {
@@ -764,7 +837,10 @@ export class ImportService {
 
 					if (importedPks.get(target)?.has(String(value))) continue;
 
-					if (!candidates.has(target)) candidates.set(target, new Map());
+					if (!candidates.has(target)) {
+						candidates.set(target, new Map());
+					}
+					
 					candidates.get(target)!.set(String(value), { value, fromCollection: collection, field: info.field });
 				}
 			}
