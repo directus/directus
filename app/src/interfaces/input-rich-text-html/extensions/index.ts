@@ -1,4 +1,5 @@
 import StarterKit from '@tiptap/starter-kit';
+import { Direction } from './direction';
 import { CustomImage } from './image';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
@@ -25,6 +26,7 @@ export const editorExtensions = [
 	}),
 	CustomImage,
 	TextAlignment,
+	Direction,
 	CustomSubscript,
 	CustomSuperscript,
 	TextStyle,

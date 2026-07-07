@@ -104,6 +104,19 @@ const align: Record<string, ToolbarButton> = Object.fromEntries(
 	]),
 );
 
+// text direction; rendered as a popover group, sets a `dir` attribute on the current block(s)
+const direction: Record<string, ToolbarButton> = Object.fromEntries(
+	(['ltr', 'rtl'] as const).map((value) => [
+		value,
+		{
+			icon: value === 'ltr' ? 'format_textdirection_l_to_r' : 'format_textdirection_r_to_l',
+			label: `wysiwyg_options.${value}`,
+			command: (e: Editor) => e.chain().focus().setDirection(value).run(),
+			isActive: (e: Editor) => e.isActive({ dir: value }),
+		} satisfies ToolbarButton,
+	]),
+);
+
 /**
  * Toolbar registry keyed by the toolbar option values stored in field meta.
  * Keys not present here (legacy/unsupported) are ignored gracefully by the toolbar.
@@ -191,6 +204,7 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		label: 'wysiwyg_options.alignnone',
 		command: (e) => e.chain().focus().unsetTextAlign().run(),
 	},
+	...direction,
 	subscript: {
 		icon: 'subscript',
 		label: 'wysiwyg_options.subscript',
@@ -283,7 +297,7 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 	removeformat: {
 		icon: 'format_clear',
 		label: 'wysiwyg_options.removeformat',
-		command: (e) => e.chain().focus().unsetAllMarks().clearNodes().run(),
+		command: (e) => e.chain().focus().unsetAllMarks().clearNodes().unsetDirection().run(),
 	},
 	cut: {
 		icon: 'content_cut',
