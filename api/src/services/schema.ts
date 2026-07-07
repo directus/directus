@@ -48,14 +48,15 @@ export class SchemaService {
 
 	async diff(
 		snapshot: Snapshot,
-		options?: { currentSnapshot?: Snapshot; force?: boolean },
+		options?: { currentSnapshot?: Snapshot; force?: boolean; mode?: 'merge' | 'mirror' },
 	): Promise<SnapshotDiff | null> {
 		if (this.accountability?.admin !== true) throw new ForbiddenError();
 
 		validateSnapshot(snapshot, options?.force);
 
 		const currentSnapshot = options?.currentSnapshot ?? (await getSnapshot({ database: this.knex }));
-		const diff = getSnapshotDiff(currentSnapshot, snapshot);
+
+		const diff = getSnapshotDiff(currentSnapshot, snapshot, { mode: options?.mode });
 
 		if (
 			diff.collections.length === 0 &&

@@ -8,6 +8,7 @@ import { CollectionsService } from '../services/collections.js';
 import { FieldsService } from '../services/fields.js';
 import { RelationsService } from '../services/relations.js';
 import { getSchema } from './get-schema.js';
+import { isInScope } from './is-in-scope.js';
 import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
 export interface GetSnapshotOptions {
@@ -46,18 +47,16 @@ export async function getSnapshot(options?: GetSnapshotOptions): Promise<Snapsho
 	const scope = options?.collections !== undefined ? new Set(options.collections) : null;
 
 	const collectionsFiltered = collectionsRaw.filter(
-		(item) => excludeSystem(item) && excludeUntracked(item) && excludeOutOfScope(item, scope),
+		(item) => isNonSystem(item) && isManaged(item) && isInScope(item, scope),
 	);
 
-	const fieldsFiltered = fieldsRaw.filter(
-		(item) => excludeSystem(item) && excludeUntracked(item) && excludeOutOfScope(item, scope),
-	);
+	const fieldsFiltered = fieldsRaw.filter((item) => isNonSystem(item) && isManaged(item) && isInScope(item, scope));
 
 	const relationsFiltered = relationsRaw.filter(
-		(item) => excludeSystem(item) && excludeUntracked(item) && excludeOutOfScope(item, scope),
+		(item) => isNonSystem(item) && isManaged(item) && isInScope(item, scope),
 	);
 
-	const systemFieldsFiltered = fieldsRaw.filter((item) => systemFieldWithIndex(item) && excludeOutOfScope(item, scope));
+	const systemFieldsFiltered = fieldsRaw.filter((item) => isIndexedSystemField(item) && isInScope(item, scope));
 
 	const collectionsSorted = sortBy(mapValues(collectionsFiltered, sortDeep), ['collection']).map((collection) =>
 		sanitizeCollection(collection),
@@ -86,24 +85,19 @@ export async function getSnapshot(options?: GetSnapshotOptions): Promise<Snapsho
 	};
 }
 
-function excludeSystem(item: { meta: { system?: boolean | null } | null }) {
+function isNonSystem(item: { meta: { system?: boolean | null } | null }) {
 	if (item?.meta?.system === true) return false;
 	return true;
 }
 
-function systemFieldWithIndex(item: {
+function isIndexedSystemField(item: {
 	meta: { system?: boolean | null } | null;
 	schema: { is_indexed: boolean } | null;
 }) {
 	return item.meta?.system === true && item.schema?.is_indexed;
 }
 
-function excludeOutOfScope(item: { collection: string }, scope: Set<string> | null) {
-	if (scope === null) return true;
-	return scope.has(item.collection);
-}
-
-function excludeUntracked(item: { meta: unknown | null } | null) {
+function isManaged(item: { meta: unknown | null } | null) {
 	if (item?.meta === null) return false;
 	return true;
 }

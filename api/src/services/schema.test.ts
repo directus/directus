@@ -195,6 +195,18 @@ describe('Services / Schema', () => {
 
 			await expect(service.diff(testSnapshot, { currentSnapshot: testSnapshot, force: true })).resolves.toBeNull();
 		});
+
+		test('should return null in merge mode when the only change is a deletion', async () => {
+			const service = new SchemaService({ knex: db, accountability: { role: 'admin', admin: true } as Accountability });
+
+			const result = await service.diff(testSnapshot, {
+				currentSnapshot: snapshotToApply,
+				force: true,
+				mode: 'merge',
+			});
+
+			expect(result).toBeNull();
+		});
 	});
 
 	describe('getHashedSnapshot', () => {

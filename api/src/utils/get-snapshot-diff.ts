@@ -1,9 +1,22 @@
 import type { Snapshot, SnapshotDiff, SnapshotSystemField } from '@directus/types';
 import { DiffKind } from '@directus/types';
-import deepDiff from 'deep-diff';
+import deepDiff, { type Diff } from 'deep-diff';
+import { SNAPSHOT_VERSION } from '../constants.js';
+import { isInScope } from './is-in-scope.js';
 import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
-export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDiff {
+export interface GetSnapshotDiffOptions {
+	/** `merge` excludes deletions for an additive diff; `mirror` (default) returns all operations. */
+	mode?: 'merge' | 'mirror' | undefined;
+}
+
+export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: GetSnapshotDiffOptions): SnapshotDiff {
+	// A partial snapshot scopes the diff to its own collections
+	const scope =
+		after.version === SNAPSHOT_VERSION.PARTIAL
+			? new Set(after.collections.map((collection) => collection.collection))
+			: null;
+
 	const diffedSnapshot: SnapshotDiff = {
 		collections: [
 			...current.collections.map((currentCollection) => {
@@ -30,7 +43,9 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					collection: afterCollection.collection,
 					diff: deepDiff.diff(undefined, sanitizeCollection(afterCollection)),
 				})),
-		].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['collections'],
+		].filter(
+			(obj) => isChanged(obj) && isDeleteAllowed(obj, options?.mode) && isInScope(obj, scope),
+		) as SnapshotDiff['collections'],
 		fields: [
 			...current.fields.map((currentField) => {
 				const afterField = after.fields.find(
@@ -84,7 +99,9 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					field: afterField.field,
 					diff: deepDiff.diff(undefined, sanitizeField(afterField)),
 				})),
-		].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['fields'],
+		].filter(
+			(obj) => isChanged(obj) && isDeleteAllowed(obj, options?.mode) && isInScope(obj, scope),
+		) as SnapshotDiff['fields'],
 		systemFields: [
 			...(current.systemFields ?? []).map((currentSystemField) => {
 				const afterSystemField = (after.systemFields ?? []).find(
@@ -132,7 +149,9 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 						diff: deepDiff.diff(currentSystemFieldSanitized, sanitizeSystemField(afterSystemField)),
 					};
 				}),
-		].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['systemFields'],
+		].filter(
+			(obj) => isChanged(obj) && isDeleteAllowed(obj, options?.mode) && isInScope(obj, scope),
+		) as SnapshotDiff['systemFields'],
 		relations: [
 			...current.relations.map((currentRelation) => {
 				const afterRelation = after.relations.find(
@@ -164,7 +183,9 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					related_collection: afterRelation.related_collection,
 					diff: deepDiff.diff(undefined, sanitizeRelation(afterRelation)),
 				})),
-		].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['relations'],
+		].filter(
+			(obj) => isChanged(obj) && isDeleteAllowed(obj, options?.mode) && isInScope(obj, scope),
+		) as SnapshotDiff['relations'],
 	};
 
 	/**
@@ -184,6 +205,21 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 	);
 
 	return diffedSnapshot;
+}
+
+function isChanged(entry: { diff: Diff<any>[] | undefined }) {
+	// `deep-diff` returns `undefined` when the two entities are identical.
+	return Array.isArray(entry.diff);
+}
+
+function isDeleteAllowed(entry: { diff: Diff<any>[] | undefined }, mode: GetSnapshotDiffOptions['mode']) {
+	if (mode !== 'merge') return true;
+
+	const change = entry.diff?.[0];
+	if (change?.kind !== DiffKind.DELETE) return true;
+
+	// `deep-diff` reports a whole-entity deletion as a root-level `D` (i.e. no `path`)
+	return change.path !== undefined;
 }
 
 function invertIndexed(field: SnapshotSystemField): SnapshotSystemField {
