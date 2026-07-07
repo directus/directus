@@ -4,4 +4,4 @@
 '@directus/sdk': minor
 ---
 
-Added support for collection scoping on schema snapshot via new `includeCollections`/`excludeCollections` parameters
+Added support for partial schema snapshot via new `includeCollections`/`excludeCollections` parameters
