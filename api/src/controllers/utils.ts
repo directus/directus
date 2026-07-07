@@ -24,6 +24,8 @@ const router = Router();
 
 const env = useEnv();
 
+const IMPORT_MAX_FILE_SIZE = bytes.parse(env['BATCH_IMPORT_FILE_SIZE'] as string) ?? undefined;
+
 const randomStringSchema = Joi.object<{ length: number }>({
 	length: Joi.number().integer().min(1).max(500).default(32),
 });
@@ -109,7 +111,7 @@ const ImportBatchSchema = Joi.array()
 
 router.post(
 	'/import',
-	readFileUploadBody({ maxFileSize: bytes.parse(env['BATCH_IMPORT_FILE_SIZE'] as string) ?? undefined }),
+	readFileUploadBody({ maxFileSize: IMPORT_MAX_FILE_SIZE }),
 	asyncHandler(async (req, res, next) => {
 		const { error, value } = ImportBatchSchema.validate(req.body);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
@@ -119,16 +121,14 @@ router.post(
 		}
 
 		const mode = req.query['mode'] === 'merge' ? 'merge' : 'add';
+		const dryRun = toBoolean(req.query['dryrun']);
 
 		const service = new ImportService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const result = await service.importBatch(value, {
-			mode,
-			dryRun: toBoolean(req.query['dry_run']),
-		});
+		const result = await service.importBatch(value, { mode, dryRun });
 
 		res.locals['payload'] = { data: result };
 		return next();

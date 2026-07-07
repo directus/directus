@@ -25,13 +25,9 @@ export interface FkFieldInfo {
 }
 
 export interface ImportPlan {
-	/** Collections in the order they should be imported (dependencies first). */
 	order: string[];
-	/** Fields that were stripped to break a nullable cycle and must be set in a second pass. */
 	deferred: { collection: string; field: string }[];
-	/** Owning foreign key fields (m2o + a2o) per input collection. */
 	fkFields: Map<string, FkFieldInfo[]>;
-	/** All relational field names per input collection (owning FKs + o2m/alias fields), used to reject nested payloads. */
 	relationalFields: Map<string, Set<string>>;
 }
 
@@ -47,9 +43,6 @@ interface Edge {
  * order that respects foreign key dependencies, the set of fields that need to be deferred to a
  * second pass to break nullable cycles, and the relational field metadata used for validation and
  * ID remapping.
- *
- * Throws {@link InvalidPayloadError} for unknown or duplicate collections and
- * {@link UnprocessableContentError} when a cycle can't be broken (all edges non-nullable).
  */
 export function buildImportPlan(input: ImportCollectionData[], schema: SchemaOverview): ImportPlan {
 	const nodes = new Set<string>();
