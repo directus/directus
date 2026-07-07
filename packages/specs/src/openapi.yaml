@@ -252,18 +252,18 @@ paths:
     $ref: './paths/users/invite-accept.yaml'
   /users/me:
     $ref: './paths/users/me.yaml'
+  /users/me/tfa/disable:
+    $ref: './paths/users/me-tfa-disable.yaml'
+  /users/me/tfa/enable:
+    $ref: './paths/users/me-tfa-enable.yaml'
+  /users/me/tfa/generate:
+    $ref: './paths/users/me-tfa-generate.yaml'
   /users/me/track/page:
     $ref: './paths/users/me-tracking.yaml'
   /users/register:
     $ref: './paths/users/register.yaml'
   /users/register/verify-email:
     $ref: './paths/users/register-verify-email.yaml'
-  /users/me/tfa/generate:
-    $ref: './paths/users/me-tfa-generate.yaml'
-  /users/me/tfa/enable:
-    $ref: './paths/users/me-tfa-enable.yaml'
-  /users/me/tfa/disable:
-    $ref: './paths/users/me-tfa-disable.yaml'
 
   # Utils
   /utils/sort/{collection}:
