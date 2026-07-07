@@ -1421,6 +1421,8 @@ wysiwyg_options:
   save_anyway: Save Anyway
   fullscreen: Full Screen
   directionality: Directionality
+  ltr: Left to Right
+  rtl: Right to Left
   lazy_loading: Lazy Load Image
   lazy_loading_label: Enable Lazy Loading
 dropdown: Dropdown
