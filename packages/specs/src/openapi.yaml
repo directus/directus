@@ -293,10 +293,6 @@ paths:
     $ref: './paths/utils/cache-clear.yaml'
   /utils/export/{collection}:
     $ref: './paths/utils/export.yaml'
-  /utils/hash/generate:
-    $ref: './paths/utils/hash-generate.yaml'
-  /utils/hash/verify:
-    $ref: './paths/utils/hash-verify.yaml'
   /utils/import/{collection}:
     $ref: './paths/utils/import.yaml'
   /utils/random/string:

@@ -13,7 +13,7 @@ export class GeometryHelperMSSQL extends GeometryHelper {
 	}
 
 	override createColumn(table: Knex.CreateTableBuilder, field: RawField | Field) {
-		if (field.type.split('.')[1]) {
+		if (this.geometrySubtype(field)) {
 			field.meta!.special = [field.type];
 		}
 
