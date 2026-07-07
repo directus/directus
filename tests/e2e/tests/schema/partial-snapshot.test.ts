@@ -1,25 +1,22 @@
-import { randomUUID } from 'node:crypto';
 import { createCollection, createDirectus, deleteCollection, rest, schemaSnapshot, staticToken } from '@directus/sdk';
 import { port } from '@utils/constants.js';
-import { afterAll, describe, expect, test } from 'vitest';
+import { getUID } from '@utils/getUID.js';
+import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 
-const suffix = randomUUID().replace(/-/g, '');
+const suffix = getUID();
 const authors = `authors_${suffix}`;
 const articles = `articles_${suffix}`;
 const tags = `tags_${suffix}`;
 
-const intPrimaryKey = () => ({
-	field: 'id',
-	type: 'integer' as const,
-	meta: { hidden: true },
-	schema: { is_primary_key: true, has_auto_increment: true },
-});
+const createTable = (collection: string) => api.request(createCollection({ collection, schema: {}, meta: {} }));
 
-await api.request(createCollection({ collection: authors, fields: [intPrimaryKey()], schema: {}, meta: {} }));
-await api.request(createCollection({ collection: articles, fields: [intPrimaryKey()], schema: {}, meta: {} }));
-await api.request(createCollection({ collection: tags, fields: [intPrimaryKey()], schema: {}, meta: {} }));
+beforeAll(async () => {
+	await createTable(authors);
+	await createTable(articles);
+	await createTable(tags);
+});
 
 afterAll(async () => {
 	await api.request(deleteCollection(articles)).catch(() => {});
