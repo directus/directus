@@ -61,6 +61,9 @@ const FAITHFUL: Record<string, string> = {
 	'text align right': '<p style="text-align: right;">right</p>',
 	'text align justify': '<p style="text-align: justify;">justified</p>',
 	'aligned heading': '<h2 style="text-align: center;">centered</h2>',
+	'rtl paragraph': '<p dir="rtl">شسي</p>',
+	'rtl heading': '<h2 dir="rtl">عنوان</h2>',
+	'rtl list': '<ul dir="rtl"><li><p>عنصر</p></li></ul>',
 	// Tables (CMS-2639). Structure round-trips losslessly. Column widths survive only as a cell
 	// `colwidth`; legacy `<colgroup><col style="width…">` widths are normalized away (see snapshots).
 	table: '<table><tbody><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></tbody></table>',
@@ -91,7 +94,6 @@ const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }
 		issue: 'CMS-2643',
 	},
 	{ name: 'iframe', html: '<iframe src="about:blank"></iframe>', absent: '<iframe', issue: 'CMS-2643' },
-	{ name: 'rtl direction', html: '<p dir="rtl">شسي</p>', absent: 'dir=', issue: 'CMS-2646' },
 	{ name: 'pagebreak', html: '<p>a</p><!-- pagebreak --><p>b</p>', absent: 'pagebreak', issue: 'CMS-2647' },
 	{
 		name: 'custom format span',
