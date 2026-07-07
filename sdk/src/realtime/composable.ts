@@ -418,12 +418,6 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				type Message = SubscriptionOutput<Schema, Collection, Options['query'], SubscriptionEvents>;
 
-				// Buffer messages from the moment we subscribe. A subscription message is only exposed
-				// to the consumer while it is parked in `next()`; without a buffer, any message that
-				// arrives in the gap between pulls is dropped. That most notably includes the initial
-				// `init` message, which the server always sends before any create/update/delete event,
-				// so relying on the drop made the first message racy (sometimes `init`, sometimes the
-				// first event). The persistent listener below captures every message for this uid.
 				const buffer = createMessageBuffer<Message>();
 
 				const removeMessageListener = this.onWebSocket('message', (message: Record<string, any>) => {
