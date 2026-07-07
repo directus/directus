@@ -17,7 +17,7 @@ What's changed:
 
 ## Checklist
 
-- [ ] Added or updated tests
+- [ ] Added or updated tests or not required
 - [ ] Documentation PR created in [directus/docs](https://github.com/directus/docs) — Link: <!-- --> or not required
 - [ ] Update OpenAPI, or not required
   - [ ] Local specs package (`@directus/specs`) updated
