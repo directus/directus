@@ -4,4 +4,4 @@
 '@directus/env': minor
 ---
 
-Added new LICENSE_KEY_MANAGEMENT_ENABLED env var to enable/disable management buttons on licensing page and api license update logic
+Added LICENSE_KEY_MANAGEMENT_ENABLED to control license key management
