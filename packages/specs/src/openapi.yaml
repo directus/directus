@@ -61,12 +61,6 @@ tags:
   - name: Items
     description:
       Items are individual pieces of data in your database. They can be anything, from articles, to IoT status checks.
-  - name: Metrics
-    description: |
-      Prometheus-compatible metrics endpoint for monitoring your Directus instance.
-      Access requires an admin token or a dedicated metrics token (Authorization: Metrics {token}).
-      Only available when METRICS_ENABLED=true.
-    x-enabled-env: METRICS_ENABLED
   - name: Operations
     description: Operations are the building blocks within Data Flows.
     x-collection: directus_operations
@@ -211,10 +205,6 @@ paths:
     $ref: './paths/items/items.yaml'
   /items/{collection}/{id}:
     $ref: './paths/items/item.yaml'
-
-  # Metrics
-  /metrics:
-    $ref: './paths/metrics/metrics.yaml'
 
   # Operations
   /operations:
@@ -431,13 +421,6 @@ components:
       type: apiKey
       in: header
       name: 'Authorization'
-    MetricsAuth:
-      type: apiKey
-      in: header
-      name: Authorization
-      description: >
-        Static token for the /metrics endpoint. Enter the full header value as `Metrics {token}`, where `{token}` is one
-        of the values in the METRICS_TOKENS environment variable.
 security:
   - Auth: []
   - KeyAuth: []

@@ -1,4 +1,3 @@
-x-enabled-env: AUTH_PROVIDERS
 get:
   security: []
   summary: Start SSO Provider Flow
