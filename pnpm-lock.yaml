@@ -237,6 +237,9 @@ catalogs:
     '@tinymce/tinymce-vue':
       specifier: 6.3.0
       version: 6.3.0
+    '@tiptap/core':
+      specifier: ^3.26.1
+      version: 3.26.1
     '@tiptap/extension-image':
       specifier: ^3.26.1
       version: 3.26.1
@@ -1782,6 +1785,9 @@ importers:
       '@tinymce/tinymce-vue':
         specifier: 'catalog:'
         version: 6.3.0(tinymce@6.8.6)(vue@3.5.24(typescript@5.9.3))
+      '@tiptap/core':
+        specifier: 'catalog:'
+        version: 3.26.1(@tiptap/pm@3.26.1)
       '@tiptap/extension-image':
         specifier: 'catalog:'
         version: 3.26.1(@tiptap/core@3.26.1(@tiptap/pm@3.26.1))

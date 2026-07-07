@@ -84,6 +84,7 @@
 		"@rollup/plugin-yaml": "catalog:",
 		"@sindresorhus/slugify": "catalog:",
 		"@tinymce/tinymce-vue": "catalog:",
+		"@tiptap/core": "catalog:",
 		"@tiptap/extensions": "catalog:",
 		"@tiptap/extension-text-style": "catalog:",
 		"@tiptap/extension-text-align": "catalog:",

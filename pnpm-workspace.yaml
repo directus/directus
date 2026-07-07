@@ -87,6 +87,7 @@ catalog:
   '@smithy/node-http-handler': 4.4.5
   '@supabase/storage-js': 2.81.0
   '@tinymce/tinymce-vue': 6.3.0
+  '@tiptap/core': ^3.26.1
   '@tiptap/extensions': ^3.26.1
   '@tiptap/extension-text-style': ^3.26.1
   '@tiptap/extension-text-align': ^3.26.1
