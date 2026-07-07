@@ -12,10 +12,9 @@ export interface GetSnapshotDiffOptions {
 
 export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: GetSnapshotDiffOptions): SnapshotDiff {
 	// A partial snapshot scopes the diff to its own collections
-	const scope =
-		after.version === SNAPSHOT_VERSION.PARTIAL
-			? new Set(after.collections.map((collection) => collection.collection))
-			: null;
+	const isPartial = after.version === SNAPSHOT_VERSION.PARTIAL;
+	const scope = isPartial ? new Set(after.collections.map((collection) => collection.collection)) : null;
+	const systemFieldScope = isPartial ? new Set((after.systemFields ?? []).map((field) => field.collection)) : null;
 
 	const diffedSnapshot: SnapshotDiff = {
 		collections: [
@@ -150,7 +149,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: Ge
 					};
 				}),
 		].filter(
-			(obj) => isChanged(obj) && isDeleteAllowed(obj, options?.mode) && isInScope(obj, scope),
+			(obj) => isChanged(obj) && isDeleteAllowed(obj, options?.mode) && isInScope(obj, systemFieldScope),
 		) as SnapshotDiff['systemFields'],
 		relations: [
 			...current.relations.map((currentRelation) => {
