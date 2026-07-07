@@ -67,9 +67,9 @@ const upgradePlanLink = computed(() =>
 );
 
 const manageLicenseDisabledMessage = computed(() => {
-	if (isLicenseSourceEnv.value) return t('licensing.env_managed');
-
 	if (!isLicenseKeyManagementEnabled.value) return t('licensing.manage_license_disabled');
+
+	if (isLicenseSourceEnv.value) return t('licensing.env_managed');
 
 	return null;
 });
