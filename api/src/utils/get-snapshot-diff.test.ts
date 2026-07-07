@@ -1019,5 +1019,100 @@ describe('getSnapshotDiff', () => {
 
 			expect(result.fields.find((entry) => entry.field === 'drop')?.diff[0]!.kind).toBe('D');
 		});
+
+		test('should not diff system fields when a partial snapshot is scoped to regular collections', () => {
+			const current = createMockSnapshot({
+				collections: [{ collection: 'articles', meta: null, schema: { name: 'articles' } }],
+				systemFields: [
+					{
+						collection: 'directus_users',
+						field: 'external_identifier',
+						type: 'string',
+						meta: null,
+						schema: { is_indexed: true },
+					},
+				],
+			});
+
+			const after = { collections: [{ collection: 'articles', meta: null, schema: { name: 'articles' } }] };
+
+			expect(getSnapshotDiff(current, createMockSnapshot(after)).systemFields).toHaveLength(1);
+			expect(getSnapshotDiff(current, partial(after)).systemFields).toHaveLength(0);
+		});
+
+		test('should diff system fields carried by a partial snapshot scoped to their system collection', () => {
+			const current = createMockSnapshot({ systemFields: [] });
+
+			const after = partial({
+				systemFields: [
+					{
+						collection: 'directus_users',
+						field: 'external_identifier',
+						type: 'string',
+						meta: null,
+						schema: { is_indexed: true },
+					},
+				],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.systemFields).toHaveLength(1);
+			expect(result.systemFields[0]!.collection).toBe('directus_users');
+		});
+
+		test('should leave out-of-scope system fields alone when a partial snapshot is scoped to a system collection', () => {
+			const current = createMockSnapshot({
+				systemFields: [
+					{
+						collection: 'directus_files',
+						field: 'uploaded_on',
+						type: 'timestamp',
+						meta: null,
+						schema: { is_indexed: true },
+					},
+				],
+			});
+
+			const after = partial({
+				systemFields: [
+					{
+						collection: 'directus_users',
+						field: 'external_identifier',
+						type: 'string',
+						meta: null,
+						schema: { is_indexed: true },
+					},
+				],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.systemFields.find((entry) => entry.collection === 'directus_files')).toBeUndefined();
+			expect(result.systemFields.find((entry) => entry.collection === 'directus_users')).toBeDefined();
+		});
+
+		test('should not let a system-collection scope reach the regular fields diff', () => {
+			const current = createMockSnapshot({
+				fields: [{ collection: 'directus_users', field: 'custom', type: 'string', meta: null, schema: null }],
+			});
+
+			const after = partial({
+				systemFields: [
+					{
+						collection: 'directus_users',
+						field: 'external_identifier',
+						type: 'string',
+						meta: null,
+						schema: { is_indexed: true },
+					},
+				],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.fields).toHaveLength(0);
+			expect(result.systemFields).toHaveLength(1);
+		});
 	});
 });
