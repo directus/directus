@@ -15,22 +15,21 @@
 
 ## Checklist
 
-> Bold "not required" where it applies, so reviewers can see it was a deliberate choice.
+> Leave unchecked where not applicable
 
-- [ ] Tests added/updated or not required
-- [ ] Documentation PR created in [directus/docs](https://github.com/directus/docs) — LINK or not required
-- [ ] OpenAPI updated or not required
+- [ ] Tests added/updated
+- [ ] Documentation PR created in [directus/docs](https://github.com/directus/docs) <!-- LINK -->
+- [ ] OpenAPI updated
   - [ ] Local specs package (`@directus/specs`)
-  - [ ] PR created in [directus/openapi](https://github.com/directus/openapi) — LINK
-- [ ] SDK (`@directus/sdk`) updated to reflect the changes or not required
-- [ ] Types (`@directus/types`) updated to reflect the changes or not required
-- [ ] GraphQL schema updated to reflect the changes or not required
-- [ ] System data (`@directus/system-data`) updated for changes to system collections/fields/relations or not required
-- [ ] Database migration added for schema/system changes or not required
-- [ ] Changeset added ([`pnpm changeset`](https://github.com/changesets/changesets)) or not required
-- [ ] Environment variables documented for new/changed config or not required
-- [ ] App translations added for new user-facing strings or not required
-- [ ] Security implications considered, or none apply
+  - [ ] PR created in [directus/openapi](https://github.com/directus/openapi) <!-- LINK -->
+- [ ] SDK (`@directus/sdk`) updated to reflect the changes
+- [ ] Types (`@directus/types`) updated to reflect the changes
+- [ ] GraphQL schema updated to reflect the changes
+- [ ] System data (`@directus/system-data`) updated for changes to system collections/fields/relations
+- [ ] Database migration added for schema/system changes
+- [ ] Environment variables documented for new/changed config
+- [ ] App translations added for new user-facing strings
+- [ ] Security implications apply
 
 ---
 
