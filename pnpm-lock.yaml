@@ -2075,6 +2075,34 @@ importers:
         specifier: 'catalog:'
         version: 5.9.3
 
+  packages/cli:
+    dependencies:
+      chalk:
+        specifier: 'catalog:'
+        version: 5.6.2
+      zod:
+        specifier: 'catalog:'
+        version: 4.1.12
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 4.0.0
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.13.14
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 3.2.6(vitest@3.2.7(@types/node@22.13.14)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+      tsdown:
+        specifier: 'catalog:'
+        version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.7(@types/node@22.13.14)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
+
   packages/composables:
     dependencies:
       '@directus/constants':
@@ -20521,7 +20549,7 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
 
   '@types/busboy@1.5.4':
     dependencies:
@@ -20533,7 +20561,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
       '@types/responselike': 1.0.3
 
   '@types/caseless@0.12.5': {}
@@ -20551,7 +20579,7 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
 
   '@types/content-disposition@0.5.9': {}
 
@@ -20629,7 +20657,7 @@ snapshots:
 
   '@types/jsonfile@6.1.4':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
 
   '@types/jsonwebtoken@9.0.10':
     dependencies:
@@ -20638,7 +20666,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
 
   '@types/lodash-es@4.17.12':
     dependencies:
@@ -20650,7 +20678,7 @@ snapshots:
 
   '@types/mailparser@3.4.6':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
       iconv-lite: 0.6.3
 
   '@types/mapbox-gl@3.4.1':
@@ -20717,17 +20745,17 @@ snapshots:
 
   '@types/readable-stream@4.0.21':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
     optional: true
 
   '@types/readdir-glob@1.1.5':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
 
   '@types/request@2.48.13':
     dependencies:
       '@types/caseless': 0.12.5
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
       '@types/tough-cookie': 4.0.5
       form-data: 2.5.6
 
@@ -20735,7 +20763,7 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
 
   '@types/sanitize-html@2.16.0':
     dependencies:
@@ -20748,32 +20776,32 @@ snapshots:
   '@types/send@0.17.5':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
 
   '@types/send@1.2.0':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
 
   '@types/serve-static@1.15.9':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
       '@types/send': 0.17.5
 
   '@types/smtp-server@3.5.13':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
       '@types/nodemailer': 8.0.1
 
   '@types/ssri@7.1.5':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
 
   '@types/stats.js@0.17.4': {}
 
   '@types/stream-chain@2.1.0':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
 
   '@types/stream-json@1.7.8':
     dependencies:
@@ -20784,7 +20812,7 @@ snapshots:
     dependencies:
       '@types/cookiejar': 2.1.5
       '@types/methods': 1.1.4
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
       form-data: 4.0.6
 
   '@types/supertest@6.0.2':
@@ -20807,7 +20835,7 @@ snapshots:
 
   '@types/through@0.0.33':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
 
   '@types/tmp@0.2.6': {}
 
@@ -21979,7 +22007,7 @@ snapshots:
 
   buffer-image-size@0.6.4:
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 26.1.2
 
   buffer@5.6.0:
     dependencies:
