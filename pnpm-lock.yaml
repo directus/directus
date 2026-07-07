@@ -2020,6 +2020,34 @@ importers:
         specifier: 'catalog:'
         version: 5.9.3
 
+  packages/cli:
+    dependencies:
+      chalk:
+        specifier: 'catalog:'
+        version: 5.6.2
+      zod:
+        specifier: 'catalog:'
+        version: 4.1.12
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 4.0.0
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.13.14
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 3.2.6(vitest@3.2.6)
+      tsdown:
+        specifier: 'catalog:'
+        version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.6(@types/node@22.13.14)(@vitest/ui@3.2.6)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
+
   packages/composables:
     dependencies:
       '@directus/constants':
@@ -27546,7 +27574,7 @@ snapshots:
       rolldown-plugin-dts: 0.17.8(rolldown@1.0.0-beta.45(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1))(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
       semver: 7.7.3
       tinyexec: 1.0.1
-      tinyglobby: 0.2.16
+      tinyglobby: 0.2.17
       tree-kill: 1.2.2
       unconfig: 7.3.3
       unrun: 0.2.1(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)
@@ -28018,9 +28046,9 @@ snapshots:
       esbuild: 0.27.3
       fdir: 6.5.0(picomatch@4.0.4)
       picomatch: 4.0.4
-      postcss: 8.5.15
+      postcss: 8.5.16
       rollup: 4.59.0
-      tinyglobby: 0.2.16
+      tinyglobby: 0.2.17
     optionalDependencies:
       '@types/node': 22.13.14
       fsevents: 2.3.3
@@ -28037,9 +28065,9 @@ snapshots:
       esbuild: 0.27.3
       fdir: 6.5.0(picomatch@4.0.4)
       picomatch: 4.0.4
-      postcss: 8.5.15
+      postcss: 8.5.16
       rollup: 4.59.0
-      tinyglobby: 0.2.16
+      tinyglobby: 0.2.17
     optionalDependencies:
       '@types/node': 24.9.1
       fsevents: 2.3.3
@@ -28125,7 +28153,7 @@ snapshots:
       std-env: 3.10.0
       tinybench: 2.9.0
       tinyexec: 0.3.2
-      tinyglobby: 0.2.16
+      tinyglobby: 0.2.17
       tinypool: 1.1.1
       tinyrainbow: 2.0.0
       vite: 7.3.2(@types/node@22.13.14)(jiti@2.6.1)(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
@@ -28169,7 +28197,7 @@ snapshots:
       std-env: 3.10.0
       tinybench: 2.9.0
       tinyexec: 0.3.2
-      tinyglobby: 0.2.16
+      tinyglobby: 0.2.17
       tinypool: 1.1.1
       tinyrainbow: 2.0.0
       vite: 7.3.2(@types/node@24.9.1)(jiti@2.6.1)(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
