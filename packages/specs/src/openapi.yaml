@@ -385,6 +385,8 @@ components:
       $ref: './responses/noContentResponse.yaml'
     NotFoundError:
       $ref: './responses/notFoundError.yaml'
+    RedirectResponse:
+      $ref: './responses/redirectResponse.yaml'
     TooManyRequestsError:
       $ref: './responses/tooManyRequestsError.yaml'
     UnauthorizedError:

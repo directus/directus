@@ -20,9 +20,9 @@ post:
   responses:
     '204':
       $ref: '../../openapi.yaml#/components/responses/NoContentResponse'
+    '400':
+      $ref: '../../openapi.yaml#/components/responses/BadRequestError'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
     - Users
