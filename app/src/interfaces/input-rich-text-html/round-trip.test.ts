@@ -66,6 +66,9 @@ const FAITHFUL: Record<string, string> = {
 	video: '<video width="640" height="360" controls><source src="/assets/v.mp4" type="video/mp4"></video>',
 	'audio with loop': '<audio loop controls><source src="/assets/a.mp3" type="audio/mpeg"></audio>',
 	iframe: '<iframe src="about:blank" width="560" height="315"></iframe>',
+	'rtl paragraph': '<p dir="rtl">شسي</p>',
+	'rtl heading': '<h2 dir="rtl">عنوان</h2>',
+	'rtl list': '<ul dir="rtl"><li><p>عنصر</p></li></ul>',
 	// Tables (CMS-2639). Structure round-trips losslessly. Column widths survive only as a cell
 	// `colwidth`; legacy `<colgroup><col style="width…">` widths are normalized away (see snapshots).
 	table: '<table><tbody><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></tbody></table>',
@@ -83,7 +86,6 @@ const FAITHFUL: Record<string, string> = {
  * actual lossy output; the assertions document precisely what is lost today.
  */
 const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }> = [
-	{ name: 'rtl direction', html: '<p dir="rtl">شسي</p>', absent: 'dir=', issue: 'CMS-2646' },
 	{ name: 'pagebreak', html: '<p>a</p><!-- pagebreak --><p>b</p>', absent: 'pagebreak', issue: 'CMS-2647' },
 	{
 		name: 'custom format span',
