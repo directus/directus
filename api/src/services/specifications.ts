@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
-import { spec } from '@directus/specs';
+import { spec as staticSpec } from '@directus/specs';
 import { isSystemCollection } from '@directus/system-data';
 import type {
 	AbstractServiceOptions,
@@ -27,6 +27,7 @@ import getDatabase from '../database/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
 
@@ -89,9 +90,25 @@ class OASSpecsService implements SpecificationSubService {
 			);
 		}
 
+		const publicAccountability = createDefaultAccountability();
+		const publicPolicies = await fetchPolicies(publicAccountability, { schema: this.schema, knex: this.knex });
+
+		const publicPermissions = await fetchPermissions(
+			{ policies: publicPolicies, accountability: publicAccountability },
+			{ schema: this.schema, knex: this.knex },
+		);
+
 		const tags = await this.generateTags(schemaForSpec);
-		const paths = await this.generatePaths(schemaForSpec, permissions, tags);
+		const paths = await this.generatePaths(schemaForSpec, permissions, publicPermissions, tags);
 		const components = await this.generateComponents(schemaForSpec, tags);
+
+		// Ensure all schemas referenced by the included paths are present in components.
+		// The second call resolves transitive dependencies introduced by schemas pulled
+		// in during the first pass.
+		if (components?.schemas) {
+			this.resolveSchemaRefs(paths, components.schemas);
+			this.resolveSchemaRefs(components.schemas, components.schemas);
+		}
 
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
 		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
@@ -127,7 +144,7 @@ class OASSpecsService implements SpecificationSubService {
 	}
 
 	private async generateTags(schema: SchemaOverview): Promise<OpenAPIObject['tags']> {
-		const systemTags = cloneDeep(spec.tags)!;
+		const systemTags = cloneDeep(staticSpec.tags)!;
 
 		const collections = Object.values(schema.collections);
 		const tags: OpenAPIObject['tags'] = [];
@@ -148,7 +165,7 @@ class OASSpecsService implements SpecificationSubService {
 
 			// If the collection is one of the system collections, pull the tag from the static spec
 			if (isSystem) {
-				for (const tag of spec.tags!) {
+				for (const tag of staticSpec.tags!) {
 					if (tag['x-collection'] === collection.collection) {
 						tags.push(tag);
 						break;
@@ -175,6 +192,7 @@ class OASSpecsService implements SpecificationSubService {
 	private async generatePaths(
 		schema: SchemaOverview,
 		permissions: Permission[],
+		publicPermissions: Permission[],
 		tags: OpenAPIObject['tags'],
 	): Promise<OpenAPIObject['paths']> {
 		const paths: OpenAPIObject['paths'] = {};
@@ -185,7 +203,7 @@ class OASSpecsService implements SpecificationSubService {
 			const isSystem = 'x-collection' in tag === false || isSystemCollection(tag['x-collection']);
 
 			if (isSystem) {
-				for (const [path, pathItem] of Object.entries<PathItemObject>(spec.paths)) {
+				for (const [path, pathItem] of Object.entries<PathItemObject>(staticSpec.paths)) {
 					for (const [method, operation] of Object.entries(pathItem)) {
 						if (operation.tags?.includes(tag.name)) {
 							if (!paths[path]) {
@@ -215,8 +233,8 @@ class OASSpecsService implements SpecificationSubService {
 					}
 				}
 			} else {
-				const listBase = cloneDeep(spec.paths['/items/{collection}']);
-				const detailBase = cloneDeep(spec.paths['/items/{collection}/{id}']);
+				const listBase = cloneDeep(staticSpec.paths['/items/{collection}']);
+				const detailBase = cloneDeep(staticSpec.paths['/items/{collection}/{id}']);
 				const collection = tag['x-collection'];
 
 				const methods: (keyof PathItemObject)[] = ['post', 'get', 'patch', 'delete'];
@@ -229,6 +247,11 @@ class OASSpecsService implements SpecificationSubService {
 								permission.collection === collection && permission.action === this.getActionForMethod(method),
 						);
 
+					const isPubliclyAccessible = !!publicPermissions.find(
+						(permission) =>
+							permission.collection === collection && permission.action === this.getActionForMethod(method),
+					);
+
 					if (hasPermission) {
 						if (!paths[`/items/${collection}`]) paths[`/items/${collection}`] = {};
 						if (!paths[`/items/${collection}/{id}`]) paths[`/items/${collection}/{id}`] = {};
@@ -238,6 +261,7 @@ class OASSpecsService implements SpecificationSubService {
 								cloneDeep(listBase[method]),
 								{
 									description: listBase[method].description.replace('item', collection + ' item'),
+									...(isPubliclyAccessible && { security: [] }),
 									tags: [tag.name],
 									parameters: 'parameters' in listBase ? this.filterCollectionFromParams(listBase.parameters) : [],
 									operationId: `${this.getActionForMethod(method)}${tag.name}`,
@@ -289,10 +313,7 @@ class OASSpecsService implements SpecificationSubService {
 										},
 									},
 								},
-								(obj, src) => {
-									if (Array.isArray(obj)) return obj.concat(src);
-									return undefined;
-								},
+								this.mergePathItemCustomizer,
 							);
 						}
 
@@ -301,6 +322,7 @@ class OASSpecsService implements SpecificationSubService {
 								cloneDeep(detailBase[method]),
 								{
 									description: detailBase[method].description.replace('item', collection + ' item'),
+									...(isPubliclyAccessible && { security: [] }),
 									tags: [tag.name],
 									operationId: `${this.getActionForMethod(method)}Single${tag.name}`,
 									parameters: 'parameters' in detailBase ? this.filterCollectionFromParams(detailBase.parameters) : [],
@@ -334,10 +356,7 @@ class OASSpecsService implements SpecificationSubService {
 										},
 									},
 								},
-								(obj, src) => {
-									if (Array.isArray(obj)) return obj.concat(src);
-									return undefined;
-								},
+								this.mergePathItemCustomizer,
 							);
 						}
 					}
@@ -354,7 +373,7 @@ class OASSpecsService implements SpecificationSubService {
 	): Promise<OpenAPIObject['components']> {
 		if (!tags) return;
 
-		let components: OpenAPIObject['components'] = cloneDeep(spec.components);
+		let components: OpenAPIObject['components'] = cloneDeep(staticSpec.components);
 
 		if (!components) components = {};
 
@@ -367,9 +386,9 @@ class OASSpecsService implements SpecificationSubService {
 
 		const requiredSchemas = [...OAS_REQUIRED_SCHEMAS, ...tagSchemas];
 
-		for (const [name, schema] of Object.entries(spec.components?.schemas ?? {})) {
+		for (const [name, schema] of Object.entries(staticSpec.components?.schemas ?? {})) {
 			if (requiredSchemas.includes(name)) {
-				const collection = spec.tags?.find((tag) => tag.name === name)?.['x-collection'];
+				const collection = staticSpec.tags?.find((tag) => tag.name === name)?.['x-collection'];
 
 				components.schemas[name] = {
 					...cloneDeep(schema),
@@ -390,7 +409,7 @@ class OASSpecsService implements SpecificationSubService {
 			const fieldsInCollection = Object.values(collection.fields);
 
 			if (isSystem) {
-				const schemaComponent = cloneDeep(spec.components!.schemas![tag.name]) as SchemaObject;
+				const schemaComponent = cloneDeep(staticSpec.components!.schemas![tag.name]) as SchemaObject;
 
 				schemaComponent.properties = {};
 				schemaComponent['x-collection'] = collection.collection;
@@ -398,7 +417,7 @@ class OASSpecsService implements SpecificationSubService {
 				for (const field of fieldsInCollection) {
 					schemaComponent.properties[field.field] =
 						(cloneDeep(
-							(spec.components!.schemas![tag.name] as SchemaObject).properties![field.field],
+							(staticSpec.components!.schemas![tag.name] as SchemaObject).properties![field.field],
 						) as SchemaObject) || this.generateField(schema, collection.collection, field, tags);
 				}
 
@@ -432,9 +451,40 @@ class OASSpecsService implements SpecificationSubService {
 			}
 		}
 
+		// Resolve transitive schema-to-schema dependencies (e.g. Files → Folders/Users when
+		// the public role has no access to those collections).
+		this.resolveSchemaRefs(components.schemas, components.schemas);
+
 		components.schemas = Object.fromEntries(Object.entries(components.schemas).sort(([a], [b]) => a.localeCompare(b)));
 
 		return components;
+	}
+
+	private resolveSchemaRefs(source: unknown, schemas: NonNullable<OpenAPIObject['components']>['schemas']): void {
+		const staticSchemas = staticSpec.components?.schemas ?? {};
+		let changed = true;
+
+		while (changed) {
+			changed = false;
+
+			const refs: string[] = JSON.stringify(source).match(/"\$ref":"#\/components\/schemas\/([^"]+)"/g) ?? [];
+
+			for (const ref of refs) {
+				const name = ref.slice('"$ref":"#/components/schemas/'.length, -1);
+
+				if (!(name in schemas!) && name in staticSchemas) {
+					schemas![name] = cloneDeep(staticSchemas[name]!);
+					changed = true;
+				}
+			}
+		}
+	}
+
+	private mergePathItemCustomizer(obj: unknown, src: unknown, key: string): unknown {
+		if (key === 'security') return src;
+		if (src !== null && typeof src === 'object' && !Array.isArray(src) && '$ref' in src) return src;
+		if (Array.isArray(obj)) return obj.concat(src);
+		return undefined;
 	}
 
 	private filterCollectionFromParams(
