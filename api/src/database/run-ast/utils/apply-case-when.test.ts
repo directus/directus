@@ -18,16 +18,17 @@ const clients: { dialect: string; client: knex.Knex.Config['client'] }[] = [
 ];
 
 test.each(clients)(
-	'Uses a boolean-valid always-true condition when the case filter compiles to no SQL ($dialect)',
+	'Denies with a boolean-valid always-false condition when the case filter compiles to no SQL ($dialect)',
 	({ client }) => {
 		const db = vi.mocked(knex.default({ client }));
 
 		// Permission rule traversing a relational path that no longer exists in the schema, for example
 		// a rule created before a relation was renamed. applyFilter silently skips relational paths that
 		// match no relation (unknown scalar fields throw instead), so the compiled condition ends up
-		// empty and the case must fall back to an always-true condition. That fallback has to be a valid
-		// boolean expression: PostgreSQL rejects `CASE WHEN 1 THEN ... END` with "argument of CASE/WHEN
-		// must be type boolean", which breaks updates on items gated by such permission rules (CMS-2151).
+		// empty. An invalid rule must not grant unconditional access, so the case falls back to an
+		// always-false condition (the field is hidden). That fallback has to be a valid boolean
+		// expression: PostgreSQL rejects `CASE WHEN 1 THEN ... END` with "argument of CASE/WHEN must be
+		// type boolean", which was breaking updates on items gated by such permission rules (CMS-2151).
 		const cases: Filter[] = [{ _and: [{ country: { code: { _in: ['NL'] } } }] } as unknown as Filter];
 
 		const result = applyCaseWhen(
@@ -43,7 +44,7 @@ test.each(clients)(
 			{ knex: db, schema },
 		);
 
-		expect(result.toQuery()).toBe('(CASE WHEN 1 = 1 THEN 1 END) AS "title"');
+		expect(result.toQuery()).toBe('(CASE WHEN 1 = 0 THEN 1 END) AS "title"');
 	},
 );
 

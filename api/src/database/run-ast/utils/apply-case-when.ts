@@ -45,10 +45,11 @@ export function applyCaseWhen(
 		}
 	}
 
-	// Fall back to an always-true condition when the filter compiled to no SQL (eg. a rule that only
-	// references unknown fields). Needs to be an actual boolean expression, since eg. PostgreSQL
-	// rejects a plain `1` as a CASE/WHEN condition.
-	const sql = sqlParts.length > 0 ? sqlParts.join(' ') : '1 = 1';
+	// The filter had conditions but none compiled to SQL, so the rule is invalid (eg. it references
+	// fields or relations that no longer exist). Deny rather than grant unconditional access: gate the
+	// column behind an always-false condition so the field is hidden. Must be a real boolean expression,
+	// since eg. PostgreSQL rejects a plain integer as a CASE/WHEN condition.
+	const sql = sqlParts.length > 0 ? sqlParts.join(' ') : '1 = 0';
 	const bindings = [...caseQuery.toSQL().bindings, column];
 
 	let rawCase = `(CASE WHEN ${sql} THEN ?? END)`;
