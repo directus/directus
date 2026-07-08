@@ -9,11 +9,6 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 
-/**
- * Insert date/time — parity with TinyMCE's `insertdatetime` plugin. A small popover of
- * formats; each entry drops the current date/time as plain text at the cursor. No extension and no
- * content footprint — the inserted text is just text once it lands.
- */
 const props = defineProps<{
 	editor: Editor | undefined;
 	disabled?: boolean;
@@ -48,20 +43,18 @@ const FORMATS: Format[] = [
 	},
 ];
 
-/** Insert the chosen format's current value. Exposed for unit testing without opening the menu. */
 function insert(format: Format): void {
 	if (!props.editor) return;
 	props.editor.chain().focus().insertContent(format.build(new Date())).run();
 }
 
+// exposed for tests
 defineExpose({ insert, FORMATS });
 </script>
 
 <template>
 	<VMenu placement="bottom-start" show-arrow close-on-content-click>
 		<template #activator="{ toggle, active }">
-			<!-- .stop keeps the "Show More" overflow panel open when this dropdown lives inside it
-			     (insert group is unpinned and overflows) — matches toolbar-popover.vue -->
 			<VButton
 				v-tooltip="t('wysiwyg_options.insertdatetime')"
 				class="datetime-button toolbar-button"
@@ -85,13 +78,11 @@ defineExpose({ insert, FORMATS });
 </template>
 
 <style lang="scss" scoped>
-// Menu-open uses a neutral fill instead of the ghost primary tint (matches color-menu/style-list-menu).
 .toolbar-button.ghost.active {
 	--v-button-background-color: var(--theme--form--field--input--border-color);
 	--v-button-color: var(--theme--foreground);
 }
 
-// Widen the square `icon` button so icon + caret fit (`CARET_BUTTON_WIDTH` in buttons.ts).
 .toolbar-button :deep(.button.icon) {
 	inline-size: 2.5rem;
 	justify-content: center;

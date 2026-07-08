@@ -42,7 +42,6 @@ const { t } = useI18n();
 
 const { imageToken, folder } = toRefs(props);
 
-// CSS-var label for the in-editor page-break marker (rendered via ::after), translated.
 const pageBreakLabel = computed(() => `"${t('wysiwyg_options.pagebreak')}"`);
 
 // base content font, driven by the `font` option; theme tokens use `sans` (not `sans-serif`)
@@ -68,7 +67,6 @@ function syncValue(instance: Editor, value: string | null) {
 	instance
 		.chain()
 		.setMeta('addToHistory', false)
-		// decode `<!-- pagebreak -->` markers to the editor element ProseMirror can parse (see page-break.ts)
 		.setContent(decodePageBreaks(value ?? ''), { emitUpdate: false })
 		.run();
 }
@@ -97,7 +95,6 @@ const editor = useEditor({
 	},
 	onCreate: ({ editor }) => syncValue(editor as Editor, props.value),
 	onUpdate: ({ editor }) => {
-		// re-encode the page-break element back to the stored `<!-- pagebreak -->` marker
 		emit('input', editor.isEmpty ? null : encodePageBreaks(editor.getHTML()));
 	},
 });
@@ -392,7 +389,6 @@ onKeyStroke('Escape', () => {
 		outline: 2px solid var(--theme--primary);
 	}
 
-	// non-editable page-break marker; renders as a labeled dashed rule, serialized as `<!-- pagebreak -->`
 	.page-break {
 		position: relative;
 		block-size: 0;
