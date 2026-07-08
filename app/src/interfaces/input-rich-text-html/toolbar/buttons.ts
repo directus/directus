@@ -25,6 +25,9 @@ export interface ToolbarContext {
 	link: {
 		open: () => void;
 	};
+	sourceCode: {
+		open: () => void;
+	};
 }
 
 export interface ToolbarButton {
@@ -280,6 +283,12 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		icon: 'horizontal_rule',
 		label: 'wysiwyg_options.hr',
 		command: (e) => e.chain().focus().setHorizontalRule().run(),
+	},
+	// icon deliberately not `code` (that's the inline/block code mark); this edits raw HTML source
+	code: {
+		icon: 'html',
+		label: 'wysiwyg_options.source_code',
+		command: (_e, ctx) => ctx.sourceCode.open(),
 	},
 	removeformat: {
 		icon: 'format_clear',

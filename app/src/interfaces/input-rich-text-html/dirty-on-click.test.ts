@@ -20,7 +20,7 @@ async function mountWithValue(value: string) {
 		props: { value },
 		global: {
 			plugins: [createPinia()],
-			stubs: { Toolbar: true, TableBubbleMenu: true, ImageDrawer: true, LinkDrawer: true },
+			stubs: { Toolbar: true, TableBubbleMenu: true, ImageDrawer: true, LinkDrawer: true, SourceCodeDrawer: true },
 		},
 	});
 
