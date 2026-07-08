@@ -1076,6 +1076,7 @@ fields:
     collection: 集合
     icon: 圖示
     note: 備註
+    status: 狀態
     color: 顏色
     display_template: 顯示模板
     hidden: 隱藏
@@ -1665,6 +1666,7 @@ interfaces:
     field_note_placeholder: 輸入欄位備註...
     incompatible_data: 目前的資料與重複器不相容，在將資料加入重複器時將會被覆寫
     interface_group: 介面選項
+    edit_mode_inline: 行內
   slider:
     slider: 滑塊
     description: 使用滑塊選擇一個數字

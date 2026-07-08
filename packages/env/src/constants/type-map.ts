@@ -35,6 +35,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	OPENAPI_ENABLED: 'boolean',
 	GRAPHQL_INTROSPECTION: 'boolean',
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 'number',
+	GRAPHQL_SINGLE_USE_MUTATIONS: 'array',
 
 	MAX_BATCH_MUTATION: 'number',
 	MAX_IMPORT_ERRORS: 'number',
@@ -67,6 +68,8 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	SECRET: 'string',
 
 	EXTENSIONS_ROLLDOWN: 'boolean',
+
+	PROJECT_OWNER_ENABLED: 'boolean',
 
 	MCP_OAUTH_ENABLED: 'boolean',
 	MCP_OAUTH_AUTH_CODE_TTL: 'string',
