@@ -291,8 +291,12 @@ export class ImportService {
 			// the spooled copy instead of the live request body.
 			let tmpFile: TmpFile;
 
+			// Share one IMPORT_TIMEOUT budget across both phases (receive + parse) so a background import
+			// can't run for up to 2x the timeout.
+			const deadline = Date.now() + ms(env['IMPORT_TIMEOUT'] as StringValue);
+
 			try {
-				tmpFile = await this.spoolToTmpFile(stream);
+				tmpFile = await this.spoolToTmpFile(stream, deadline);
 			} catch (error) {
 				await decrementImportCount();
 				throw error;
@@ -300,14 +304,14 @@ export class ImportService {
 
 			if (mimetype === 'application/json') {
 				// importJSON doesn't own the temp file, so clean it up here.
-				promise = this.importJSON(collection, createReadStream(tmpFile.path)).finally(() =>
+				promise = this.importJSON(collection, createReadStream(tmpFile.path), deadline).finally(() =>
 					tmpFile.cleanup().catch(() => {
 						logger.warn(`Failed to cleanup temporary import file (${tmpFile.path})`);
 					}),
 				);
 			} else {
 				// parseCsvFromTmpFile owns and cleans up the spooled file itself.
-				promise = this.parseCsvFromTmpFile(collection, tmpFile);
+				promise = this.parseCsvFromTmpFile(collection, tmpFile, deadline);
 			}
 		} else if (mimetype === 'application/json') {
 			promise = this.importJSON(collection, stream);
@@ -365,7 +369,7 @@ export class ImportService {
 		}
 	}
 
-	async importJSON(collection: string, stream: Readable): Promise<void> {
+	async importJSON(collection: string, stream: Readable, deadline?: number): Promise<void> {
 		const extractJSON = StreamArray.withParser();
 		const nestedActionEvents: ActionEventParams[] = [];
 		const errorTracker = createErrorTracker();
@@ -467,12 +471,13 @@ export class ImportService {
 					});
 
 					const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
+					const delay = deadline !== undefined ? Math.max(0, deadline - Date.now()) : duration;
 
 					timeout = setTimeout(() => {
 						saveQueue.kill();
 						destroyPipedStream(extractJSON, stream);
 						reject(new TimeoutError({ category: 'Import', duration }));
-					}, duration);
+					}, delay);
 				});
 			} catch (error) {
 				if (!error && errorTracker.hasErrors()) {
@@ -491,17 +496,21 @@ export class ImportService {
 	 * received. Used to fully consume the request body within the request lifecycle before a
 	 * background import detaches (see the background branch in `import()`).
 	 */
-	private async spoolToTmpFile(stream: Readable): Promise<TmpFile> {
+	private async spoolToTmpFile(stream: Readable, deadline?: number): Promise<TmpFile> {
+		// Resolve the size cap before allocating anything, so an invalid config throws without leaking a
+		// temp file or timer. Unset means unlimited (a set-but-unparseable value throws).
+		const maxFileSize = getImportMaxFileSize();
+
 		const tmpFile = await createTmpFile().catch(() => null);
 		if (!tmpFile) throw new Error('Failed to create temporary file for import');
 
-		// Bound the receive phase by IMPORT_TIMEOUT so a stalled upload can't hang indefinitely.
+		// Bound the receive phase so a stalled upload can't hang indefinitely. When a shared deadline is
+		// passed the receive and parse phases split a single IMPORT_TIMEOUT budget between them.
 		const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
+		const delay = deadline !== undefined ? Math.max(0, deadline - Date.now()) : duration;
 		const controller = new AbortController();
-		const timeout = setTimeout(() => controller.abort(), duration);
+		const timeout = setTimeout(() => controller.abort(), delay);
 
-		// Cap the spooled file size to stop an unbounded upload filling the disk (unset means unlimited).
-		const maxFileSize = bytes.parse(env['IMPORT_MAX_FILE_SIZE'] as string) ?? undefined;
 		let bytesReceived = 0;
 		let limitExceeded = false;
 
@@ -543,15 +552,18 @@ export class ImportService {
 	}
 
 	async importCSV(collection: string, stream: Readable): Promise<void> {
-		const tmpFile = await this.spoolToTmpFile(stream);
-		return this.parseCsvFromTmpFile(collection, tmpFile);
+		// Share one IMPORT_TIMEOUT budget across the receive and parse phases (see the background branch
+		// in `import()`) so a synchronous CSV import can't run for up to 2x the timeout either.
+		const deadline = Date.now() + ms(env['IMPORT_TIMEOUT'] as StringValue);
+		const tmpFile = await this.spoolToTmpFile(stream, deadline);
+		return this.parseCsvFromTmpFile(collection, tmpFile, deadline);
 	}
 
 	/**
 	 * Parse an already-spooled CSV temp file and upsert its rows. Owns the lifecycle of the passed
 	 * temp file and cleans it up when done.
 	 */
-	private async parseCsvFromTmpFile(collection: string, tmpFile: TmpFile): Promise<void> {
+	private async parseCsvFromTmpFile(collection: string, tmpFile: TmpFile, deadline?: number): Promise<void> {
 		const nestedActionEvents: ActionEventParams[] = [];
 		const errorTracker = createErrorTracker();
 		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
@@ -707,6 +719,7 @@ export class ImportService {
 						});
 
 					const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
+					const delay = deadline !== undefined ? Math.max(0, deadline - Date.now()) : duration;
 
 					timeout = setTimeout(() => {
 						saveQueue.kill();
@@ -714,7 +727,7 @@ export class ImportService {
 						// Destroying via destroyPipedStream skips cleanup(), so remove the spooled file here.
 						cleanup(true);
 						reject(new TimeoutError({ category: 'Import', duration }));
-					}, duration);
+					}, delay);
 				});
 			} catch (error) {
 				if (!error && errorTracker.hasErrors()) {
@@ -1017,4 +1030,21 @@ export function getHeadingsForCsvExport(
 	});
 
 	return fieldNames;
+}
+
+/**
+ * Resolve the configured import file-size cap in bytes. Unset means no cap; a set-but-unparseable
+ * value throws rather than silently disabling the cap (fail open to unlimited).
+ */
+function getImportMaxFileSize(): number | undefined {
+	const raw = env['IMPORT_MAX_FILE_SIZE'];
+	if (raw === undefined || raw === null || String(raw).trim() === '') return undefined;
+
+	const parsed = bytes.parse(String(raw));
+
+	if (parsed === null || Number.isNaN(parsed)) {
+		throw new Error(`Invalid IMPORT_MAX_FILE_SIZE value "${raw}"`);
+	}
+
+	return parsed;
 }

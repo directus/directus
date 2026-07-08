@@ -119,8 +119,7 @@ router.post(
 			}
 
 			if (importSucceeded && closed) {
-				// Background only received the upload here; the parse/insert runs async, hence 202.
-				return finish(() => res.status(background ? 202 : 200).end());
+				return finish(() => res.status(200).end());
 			}
 
 			return undefined;

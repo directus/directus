@@ -28,15 +28,19 @@ vi.mock('../utils/store.js', () => ({
 vi.mock('../stores/notifications.js');
 vi.mock('./users.js');
 
-vi.mock('@directus/env', () => ({
-	useEnv: () => ({
+const { mockEnv } = vi.hoisted(() => ({
+	mockEnv: {
 		MAX_IMPORT_ERRORS: 1000,
 		EMAIL_TEMPLATES_PATH: './templates',
 		EXTENSIONS_PATH: './extensions',
 		IMPORT_TIMEOUT: '1m',
 		IMPORT_MAX_CONCURRENCY: 10,
 		IMPORT_MAX_FILE_SIZE: '1mb',
-	}),
+	} as Record<string, unknown>,
+}));
+
+vi.mock('@directus/env', () => ({
+	useEnv: () => mockEnv,
 }));
 
 vi.mock('../permissions/modules/validate-access/validate-access.js', () => ({
@@ -1083,6 +1087,29 @@ describe('ImportService', () => {
 			).rejects.toMatchObject({ code: ErrorCode.ContentTooLarge });
 
 			expect(cache.importCount).toEqual(0);
+		});
+
+		test('rejects and resets importCount when IMPORT_MAX_FILE_SIZE is set but unparseable', async () => {
+			// An unparseable value must not silently disable the disk-fill cap (fail open to unlimited).
+			mockEnv['IMPORT_MAX_FILE_SIZE'] = 'not-a-size';
+
+			try {
+				service = new ImportService({
+					knex: db,
+					schema: baseSchema,
+					accountability: createDefaultAccountability(),
+				});
+
+				const stream = Readable.from(['title\na']);
+
+				await expect(
+					service.import('test_collection', 'application/json', stream, { background: true }),
+				).rejects.toThrow('Invalid IMPORT_MAX_FILE_SIZE');
+
+				expect(cache.importCount).toEqual(0);
+			} finally {
+				mockEnv['IMPORT_MAX_FILE_SIZE'] = '1mb';
+			}
 		});
 	});
 

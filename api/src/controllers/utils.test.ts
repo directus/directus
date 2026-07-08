@@ -71,7 +71,7 @@ describe('import route', () => {
 		return { res, ended };
 	};
 
-	it('responds 202 for a background import once the upload has been received', async () => {
+	it('responds 200 for a background import once the upload has been received', async () => {
 		const next = vi.fn();
 		const { res, ended } = makeRes();
 
@@ -80,7 +80,7 @@ describe('import route', () => {
 
 		expect(mockImport).toHaveBeenCalledTimes(1);
 		expect(mockImport).toHaveBeenCalledWith('articles', 'application/json', expect.anything(), { background: true });
-		expect(res.status).toHaveBeenCalledWith(202);
+		expect(res.status).toHaveBeenCalledWith(200);
 		expect(res.end).toHaveBeenCalledTimes(1);
 		expect(next).not.toHaveBeenCalled();
 	});
@@ -117,7 +117,7 @@ describe('import route', () => {
 
 		resolveImport!();
 		await new Promise((resolve) => setImmediate(resolve));
-		expect(res.status).toHaveBeenCalledWith(202);
+		expect(res.status).toHaveBeenCalledWith(200);
 		expect(res.end).toHaveBeenCalledTimes(1);
 	});
 
