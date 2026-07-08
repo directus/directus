@@ -14,7 +14,7 @@ const props = defineProps<{
 	disabled?: boolean;
 }>();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const pad = (value: number) => String(value).padStart(2, '0');
 
@@ -39,7 +39,7 @@ const FORMATS: Format[] = [
 	},
 	{
 		labelKey: 'wysiwyg_options.insertdatetime_locale',
-		build: (d) => d.toLocaleString(),
+		build: (d) => d.toLocaleString(locale.value),
 	},
 ];
 

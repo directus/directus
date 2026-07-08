@@ -36,7 +36,7 @@ describe('datetime-menu', () => {
 		['date', 0, '2024-05-15'],
 		['time', 1, '13:45:07'],
 		['datetime', 2, '2024-05-15 13:45:07'],
-		['locale', 3, FIXED_DATE.toLocaleString()],
+		['locale', 3, FIXED_DATE.toLocaleString('en-US')],
 	])('insert drops the %s format into the document', (_label, index, expected) => {
 		const wrapper = mount(DateTimeMenu, { props: { editor }, global });
 		const vm = wrapper.vm as unknown as { insert: (f: Format) => void; FORMATS: Format[] };
@@ -44,5 +44,18 @@ describe('datetime-menu', () => {
 		vm.insert(vm.FORMATS[index]!);
 
 		expect(editor.getText()).toContain(expected);
+	});
+
+	test('locale format follows the app locale rather than the runtime default', () => {
+		const wrapper = mount(DateTimeMenu, {
+			props: { editor },
+			global: { ...global, plugins: [createI18n({ legacy: false, locale: 'de-DE' })] },
+		});
+
+		const vm = wrapper.vm as unknown as { insert: (f: Format) => void; FORMATS: Format[] };
+
+		vm.insert(vm.FORMATS[3]!);
+
+		expect(editor.getText()).toContain(FIXED_DATE.toLocaleString('de-DE'));
 	});
 });
