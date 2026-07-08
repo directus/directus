@@ -38,7 +38,7 @@ describe('createMessageBuffer', () => {
 		await expect(buffer.next()).resolves.toBe(3);
 	});
 
-	test('resolves parked next()\'s in the order they were queued', async () => {
+	test("resolves parked next()'s in the order they were queued", async () => {
 		const buffer = createMessageBuffer<string>();
 
 		// Async generators serialize next() calls, but the buffer should still be
