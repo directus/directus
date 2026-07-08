@@ -97,20 +97,62 @@ router.post(
 		}
 
 		const busboy = Busboy({ headers });
+		const background = toBoolean(req.query['background']);
 
-		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
-			try {
-				await service.import(req.params['collection']!, mimeType, fileStream, {
-					background: toBoolean(req.query['background']),
-				});
-			} catch (err: any) {
-				return next(err);
+		let fileReceived = false;
+		let importSucceeded = false;
+		let closed = false;
+		let settled = false;
+
+		// Dispatch the final response/error exactly once (busboy may emit `close` after an error).
+		const finish = (fn: () => void) => {
+			if (settled) return;
+			settled = true;
+			fn();
+		};
+
+		// Respond only once the body is fully consumed (busboy 'close') AND the import has settled, so the
+		// response never precedes the upload being read.
+		const tryRespond = () => {
+			if (closed && !fileReceived) {
+				return finish(() => next(new InvalidPayloadError({ reason: `No file was included in the body` })));
 			}
 
-			return res.status(200).end();
+			if (importSucceeded && closed) {
+				// Background only received the upload here; the parse/insert runs async, hence 202.
+				return finish(() => res.status(background ? 202 : 200).end());
+			}
+
+			return undefined;
+		};
+
+		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
+			// Only one file is imported per request; drain extras so busboy can still reach 'close'.
+			if (fileReceived) {
+				fileStream.on('error', () => {}).resume();
+				return;
+			}
+
+			fileReceived = true;
+
+			try {
+				await service.import(req.params['collection']!, mimeType, fileStream, { background });
+				importSucceeded = true;
+				tryRespond();
+			} catch (err: any) {
+				// import() can reject before reading the stream (e.g. bad media type); drain it so the client
+				// gets the error rather than a reset connection.
+				fileStream.on('error', () => {}).resume();
+				finish(() => next(err));
+			}
 		});
 
-		busboy.on('error', (err: Error) => next(err));
+		busboy.on('error', (err: Error) => finish(() => next(err)));
+
+		busboy.on('close', () => {
+			closed = true;
+			tryRespond();
+		});
 
 		req.pipe(busboy);
 	}),

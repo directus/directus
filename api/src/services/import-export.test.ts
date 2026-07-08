@@ -35,6 +35,7 @@ vi.mock('@directus/env', () => ({
 		EXTENSIONS_PATH: './extensions',
 		IMPORT_TIMEOUT: '1m',
 		IMPORT_MAX_CONCURRENCY: 10,
+		IMPORT_MAX_FILE_SIZE: '1mb',
 	}),
 }));
 
@@ -938,7 +939,9 @@ describe('ImportService', () => {
 				resolve();
 			});
 
-			service.importCSV = async () => {
+			// Background CSV spools the upload up front, then parses the spooled file in the detached job;
+			// force that detached parse to fail.
+			(service as any).parseCsvFromTmpFile = async () => {
 				throw new Error();
 			};
 
@@ -960,6 +963,119 @@ describe('ImportService', () => {
 				sender: 'fake-user',
 				subject: 'Your import has failed',
 			});
+		});
+
+		// #27854: background import() must finish reading the request body before it resolves (the
+		// controller responds once it resolves). The parse step is mocked so these assert only that ordering.
+		const assertBodyConsumedBeforeResponse = async (
+			mimetype: string,
+			body: string,
+			mockParse: (service: ImportService, finished: () => void) => void,
+		) => {
+			service = new ImportService({
+				knex: db,
+				schema: baseSchema,
+				accountability: {
+					...createDefaultAccountability(),
+					user: 'fake-user',
+				},
+			});
+
+			// Resolves once the detached background job finishes, so we can await it and avoid the
+			// fire-and-forget work leaking into subsequent tests.
+			let importFinished: any;
+			const importDone = new Promise((res) => (importFinished = res));
+			mockParse(service, importFinished);
+			NotificationsService.prototype.createOne = vi.fn().mockResolvedValue({} as any);
+
+			const order: string[] = [];
+
+			// Models the live multipart request body stream handed to the service by busboy.
+			const stream = new PassThrough();
+
+			const bodyConsumed = new Promise<void>((resolve) => {
+				stream.on('end', () => {
+					order.push('request-body-consumed');
+					resolve();
+				});
+			});
+
+			const responseSent = service.import('test_collection', mimetype, stream, { background: true }).then(() => {
+				order.push('http-response-sent');
+			});
+
+			stream.end(body);
+
+			await Promise.all([responseSent, bodyConsumed]);
+
+			expect(order[0]).toBe('request-body-consumed');
+
+			await importDone;
+		};
+
+		test('background JSON import consumes the request body before sending the response', async () => {
+			await assertBodyConsumedBeforeResponse(
+				'application/json',
+				JSON.stringify([{ title: 'a' }]),
+				(service, finished) => {
+					service.importJSON = vi.fn().mockImplementation((_collection, source: Readable) => {
+						source.resume();
+						source.on('end', finished);
+						return Promise.resolve();
+					});
+				},
+			);
+		});
+
+		test('background CSV import consumes the request body before sending the response', async () => {
+			// CSV is spooled to a temp file up front; the detached parse reads that spooled copy. Assert the
+			// upload is fully received before the response regardless.
+			await assertBodyConsumedBeforeResponse('text/csv', 'title\na', (service, finished) => {
+				(service as any).parseCsvFromTmpFile = vi.fn().mockImplementation(async (_collection, tmpFile: any) => {
+					await tmpFile.cleanup().catch(() => {});
+					finished();
+				});
+			});
+		});
+
+		test('background import rejects and resets importCount when the upload stream errors mid-spool', async () => {
+			service = new ImportService({
+				knex: db,
+				schema: baseSchema,
+				accountability: createDefaultAccountability(),
+			});
+
+			const errorStream = new Readable({
+				read() {
+					this.emit('error', new Error('connection reset'));
+				},
+			});
+
+			await expect(
+				service.import('test_collection', 'application/json', errorStream, { background: true }),
+			).rejects.toThrow('Error while retrieving import data');
+
+			// The concurrency slot taken before spooling must be released on failure.
+			expect(cache.importCount).toEqual(0);
+		});
+
+		test('rejects uploads exceeding IMPORT_MAX_FILE_SIZE and resets importCount', async () => {
+			service = new ImportService({
+				knex: db,
+				schema: baseSchema,
+				accountability: createDefaultAccountability(),
+			});
+
+			// IMPORT_MAX_FILE_SIZE is mocked to 1mb; push past it. The spool caps the write so an unbounded
+			// upload can't fill the disk.
+			const oversized = 'x'.repeat(1024 * 1024 + 1024);
+			const stream = Readable.from([oversized]);
+
+			await expect(
+				service.import('test_collection', 'application/json', stream, { background: true }),
+			).rejects.toMatchObject({ code: ErrorCode.ContentTooLarge });
+
+			expect(cache.importCount).toEqual(0);
 		});
 	});
 
