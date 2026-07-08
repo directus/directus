@@ -1,24 +1,11 @@
 import { Chalk } from 'chalk';
-import type { CliError } from './result.js';
+import type { CliError } from './error.js';
 
-// Unicode-aware symbols: fancy glyphs on capable terminals, ASCII on dumb/legacy
-// ones. Detection is inlined (it never changes) rather than adding a dependency.
-function isUnicodeSupported(): boolean {
-	const { env, platform } = process;
-	if (platform !== 'win32') return env['TERM'] !== 'linux';
-
-	return (
-		Boolean(env['WT_SESSION']) ||
-		Boolean(env['TERMINUS_SUBLIME']) ||
-		env['ConEmuTask'] === '{cmd::Cmder}' ||
-		env['TERM_PROGRAM'] === 'vscode' ||
-		env['TERM'] === 'xterm-256color' ||
-		env['TERM'] === 'alacritty' ||
-		env['TERMINAL_EMULATOR'] === 'JetBrains-JediTerm'
-	);
-}
-
-const unicode = isUnicodeSupported();
+// Fancy glyphs on capable terminals; ASCII on legacy Windows consoles that would
+// render them as mojibake. Modern Windows terminals set these vars; elsewhere is
+// assumed capable.
+const unicode =
+	process.platform !== 'win32' || Boolean(process.env['WT_SESSION']) || process.env['TERM_PROGRAM'] === 'vscode';
 
 function glyph(fancy: string, ascii: string): string {
 	return unicode ? fancy : ascii;
@@ -32,19 +19,18 @@ const SYMBOLS = {
 	step: glyph('◆', '>'),
 };
 
+// Two channels kept strictly separate so stdout stays a clean machine channel:
+// requested output (print, data) → stdout; status (info/success/warn/step) →
+// stderr, suppressed under --json. error() renders human on stderr, or structured
+// JSON on stdout under --json.
 export interface Ui {
 	readonly json: boolean;
-	// Requested output — help, version, rendered results — goes to stdout.
 	print(text: string): void;
-	// Status / progress goes to stderr and is suppressed in --json mode, so
-	// stdout stays a clean machine channel.
 	info(message: string): void;
 	success(message: string): void;
 	warn(message: string): void;
 	step(message: string): void;
-	// Errors render human-readable on stderr, or structured on stdout in --json.
 	error(error: CliError): void;
-	// Machine payload → stdout.
 	data(payload: unknown): void;
 }
 

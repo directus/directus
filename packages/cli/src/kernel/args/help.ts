@@ -1,24 +1,24 @@
 import { kebabCase } from 'lodash-es';
-import type { CommandDefinition, PluginDefinition } from '../plugins/define.js';
+import type { CommandDefinition, CommandGroup } from '../command.js';
 import { describeArgs } from './parse.js';
 
 function pad(left: string): string {
 	return `  ${left}`.padEnd(28);
 }
 
-export function renderRootHelp(plugins: readonly PluginDefinition[]): string {
+export function renderRootHelp(groups: readonly CommandGroup[]): string {
 	const lines: string[] = ['Usage: d6s <command> [options]', ''];
 
-	if (plugins.length === 0) {
+	if (groups.length === 0) {
 		lines.push('No commands available yet — kernel scaffolding in progress.');
 		return lines.join('\n');
 	}
 
 	lines.push('Commands:');
 
-	for (const plugin of plugins) {
-		for (const [name, entry] of Object.entries(plugin.commands)) {
-			lines.push(pad(`${plugin.name} ${name}`) + entry.summary);
+	for (const group of groups) {
+		for (const command of Object.values(group.commands)) {
+			lines.push(pad(`${group.name} ${command.name}`) + command.description);
 		}
 	}
 
@@ -26,9 +26,9 @@ export function renderRootHelp(plugins: readonly PluginDefinition[]): string {
 	return lines.join('\n');
 }
 
-export function renderCommandHelp(pluginName: string, command: CommandDefinition): string {
+export function renderCommandHelp(groupName: string, command: CommandDefinition): string {
 	const spec = describeArgs(command.args);
-	const lines: string[] = [command.description, '', `Usage: d6s ${pluginName} ${command.name} [options]`, ''];
+	const lines: string[] = [command.description, '', `Usage: d6s ${groupName} ${command.name} [options]`, ''];
 
 	if (spec.fields.size > 0) {
 		lines.push('Options:');
