@@ -25,9 +25,9 @@ import { fetch, FormData } from 'undici';
 import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
+import * as utils from './utils.js';
 import type { DriverCloudinaryConfig } from './index.js';
 import { DriverCloudinary } from './index.js';
-import * as utils from './utils.js';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');
