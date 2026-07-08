@@ -31,9 +31,8 @@ type LoginParams = {
 	share?: boolean;
 };
 
-// Plain universal-cookie instance instead of the reactive useCookies() composable: this module
-// scope has no component scope to dispose the composable's change listener, which would leave
-// a document.cookie polling interval running forever.
+// Plain universal-cookie instead of the reactive useCookies() composable, whose module-scoped
+// change listener would leak a permanent document.cookie polling interval.
 const cookies = new Cookies();
 
 export async function login({ credentials, provider, share }: LoginParams): Promise<void> {
