@@ -7,7 +7,3 @@ export interface CliContext {
 	readonly json: boolean;
 	readonly ui: Ui;
 }
-
-export function createContext(options: { cwd: string; json: boolean; ui: Ui }): CliContext {
-	return { cwd: options.cwd, json: options.json, ui: options.ui };
-}

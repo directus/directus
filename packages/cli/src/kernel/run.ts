@@ -1,7 +1,7 @@
 import { version } from '../version.js';
 import { renderCommandHelp, renderRootHelp } from './args/help.js';
 import { parseCommandArgs } from './args/parse.js';
-import { createContext } from './context.js';
+import type { CliContext } from './context.js';
 import type { PluginDefinition } from './plugins/define.js';
 import { createRegistry } from './registry.js';
 import { type CliError, cliError, isCliError } from './result.js';
@@ -126,7 +126,7 @@ export async function run(argv: readonly string[], options: RunOptions): Promise
 		const parsed = parseCommandArgs(command.args, rest.slice(2));
 		if (!parsed.ok) return fail(parsed.error);
 
-		const ctx = createContext({ cwd: options.cwd ?? process.cwd(), json: globals.json, ui });
+		const ctx: CliContext = { cwd: options.cwd ?? process.cwd(), json: globals.json, ui };
 
 		const outcome = await command.run({ args: parsed.value.values, positionals: parsed.value.positionals, ctx });
 

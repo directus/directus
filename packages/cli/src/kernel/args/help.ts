@@ -1,5 +1,6 @@
+import { kebabCase } from 'lodash-es';
 import type { CommandDefinition, PluginDefinition } from '../plugins/define.js';
-import { describeArgs, toKebab } from './parse.js';
+import { describeArgs } from './parse.js';
 
 function pad(left: string): string {
 	return `  ${left}`.padEnd(28);
@@ -33,7 +34,7 @@ export function renderCommandHelp(pluginName: string, command: CommandDefinition
 		lines.push('Options:');
 
 		for (const [key, meta] of spec.fields) {
-			const flag = `--${toKebab(key)}`;
+			const flag = `--${kebabCase(key)}`;
 			const suffix = spec.required.includes(key) ? ' (required)' : '';
 			lines.push(pad(flag) + `${meta.description ?? ''}${suffix}`);
 		}

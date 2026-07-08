@@ -1,3 +1,5 @@
+import { isPlainObject } from 'lodash-es';
+
 // Errors as data. Internals return Result<T, CliError> with a tagged code; the
 // single boundary in run.ts unwraps to render + exit. First use of this pattern
 // in the monorepo — the value is the discipline, not a dependency.
@@ -42,12 +44,12 @@ export function cliError(
 }
 
 export function isCliError(value: unknown): value is CliError {
-	if (typeof value !== 'object' || value === null) return false;
+	// isPlainObject rejects arrays and class instances (e.g. a Node SystemError),
+	// then the shape checks reject foreign objects that merely share key names —
+	// nothing that isn't a real CliError should reach the --json error payload.
+	if (!isPlainObject(value)) return false;
 	const candidate = value as Record<string, unknown>;
 
-	// Validate shapes, not just key presence: a foreign thrown object (a Node
-	// SystemError with a string `.code`, say) must not masquerade as a CliError
-	// and leak into the --json error payload.
 	return (
 		typeof candidate['code'] === 'string' &&
 		typeof candidate['message'] === 'string' &&

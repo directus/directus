@@ -1,4 +1,5 @@
 import { parseArgs } from 'node:util';
+import { camelCase, kebabCase } from 'lodash-es';
 import { z } from 'zod';
 import { type CliError, cliError, err, ok, type Result } from '../result.js';
 
@@ -28,14 +29,6 @@ interface ArgSpec {
 	readonly fields: Map<string, FieldMeta>;
 	// camelCase keys the user must supply: required in the schema AND no default.
 	readonly required: string[];
-}
-
-export function toKebab(key: string): string {
-	return key.replace(/[A-Z]/g, (char) => `-${char.toLowerCase()}`);
-}
-
-function toCamel(flag: string): string {
-	return flag.replace(/-([a-z])/g, (_match, char: string) => char.toUpperCase());
 }
 
 function fieldType(jsonType: string | undefined): FieldMeta['type'] {
@@ -101,7 +94,7 @@ export function parseCommandArgs<Schema extends z.ZodObject>(
 	const booleanFlags = new Set<string>();
 
 	for (const [key, meta] of spec.fields) {
-		const flag = toKebab(key);
+		const flag = kebabCase(key);
 		flagToKey.set(flag, key);
 
 		if (meta.type === 'boolean') {
@@ -156,12 +149,12 @@ export function parseCommandArgs<Schema extends z.ZodObject>(
 	const raw: Record<string, unknown> = {};
 
 	for (const [flag, value] of Object.entries(parsed.values)) {
-		const key = flagToKey.get(flag) ?? toCamel(flag);
+		const key = flagToKey.get(flag) ?? camelCase(flag);
 		raw[key] = coerce(value, spec.fields.get(key));
 	}
 
 	for (const flag of negated) {
-		raw[flagToKey.get(flag) ?? toCamel(flag)] = false;
+		raw[flagToKey.get(flag) ?? camelCase(flag)] = false;
 	}
 
 	const result = schema.safeParse(raw);
