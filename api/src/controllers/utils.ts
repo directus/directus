@@ -24,7 +24,7 @@ const router = Router();
 
 const env = useEnv();
 
-const IMPORT_MAX_FILE_SIZE = bytes.parse(env['BATCH_IMPORT_FILE_SIZE'] as string) ?? undefined;
+const IMPORT_MAX_FILE_SIZE = bytes.parse(env['IMPORT_MAX_FILE_SIZE'] as string) ?? undefined;
 
 const randomStringSchema = Joi.object<{ length: number }>({
 	length: Joi.number().integer().min(1).max(500).default(32),
