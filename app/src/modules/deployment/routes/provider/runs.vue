@@ -7,17 +7,20 @@ import {
 	triggerDeployment,
 } from '@directus/sdk';
 import type { DeploymentProviderCapabilities } from '@directus/types';
-import { computed, onUnmounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
+import { useDeploymentCapabilities } from '../../composables/use-deployment-capabilities';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
+import { usePollWhile } from '../../composables/use-poll-while';
 import {
 	buildDeployToolbarActions,
 	type DeployToolbarAction,
 	formatDeploymentTargetLabel,
-	resolveDeploymentCapabilities,
+	getDeploymentRangeOptions,
+	useProviderConfigs,
 } from '../../config/providers';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
@@ -43,7 +46,6 @@ import SearchInput from '@/views/private/components/search-input.vue';
 
 type Run = DeploymentRunsOutput;
 
-/** Same cadence as run detail polling; list must re-fetch so statuses refresh (poll providers + webhook-updated rows). */
 const RUNS_LIST_POLL_INTERVAL_MS = 3000;
 
 const props = defineProps<{
@@ -54,11 +56,18 @@ const props = defineProps<{
 const router = useRouter();
 const { t } = useI18n();
 const { currentProject } = useDeploymentNavigation();
-const canDeploy = usePermissionsStore().hasPermission('directus_deployment_runs', 'create');
-const canTriggerDeploy = computed(() => canDeploy && currentProject.value?.deployable !== false);
+const permissionsStore = usePermissionsStore();
+const canDeploy = computed(() => permissionsStore.hasPermission('directus_deployment_runs', 'create'));
+const canTriggerDeploy = computed(() => canDeploy.value && currentProject.value?.deployable !== false);
 
-const capabilitiesFromApi = ref<DeploymentProviderCapabilities | null>(null);
-const mergedCapabilities = computed(() => resolveDeploymentCapabilities(props.provider, capabilitiesFromApi.value));
+const {
+	capabilities: mergedCapabilities,
+	setFromDeployment: setCapabilitiesFromDeployment,
+	reset: resetCapabilities,
+} = useDeploymentCapabilities(() => props.provider);
+
+const { providerConfigs } = useProviderConfigs();
+const providerConfig = computed(() => providerConfigs.value[props.provider]);
 
 const deployHooks = computed(() => {
 	if (!mergedCapabilities.value.supportsDeployHookUrl) return [];
@@ -94,20 +103,18 @@ const stats = ref<DeploymentRunStatsOutput>({
 
 const statsRange = ref('7d');
 
-const rangeOptions = [
-	{ text: t('deployment.range.1d'), value: '1d' },
-	{ text: t('deployment.range.7d'), value: '7d' },
-	{ text: t('deployment.range.30d'), value: '30d' },
-];
+const rangeOptions = getDeploymentRangeOptions(t);
 
 const page = ref(1);
 const limit = 10;
 const totalPages = computed(() => Math.ceil(totalCount.value / limit) || 1);
 
-// Reset to page 1 on search change
 watch(search, () => {
-	page.value = 1;
-	refresh();
+	if (page.value === 1) {
+		refresh();
+	} else {
+		page.value = 1;
+	}
 });
 
 watch(page, (newPage, oldPage) => {
@@ -115,8 +122,6 @@ watch(page, (newPage, oldPage) => {
 });
 
 const pageTitle = computed(() => currentProject.value?.name || t('deployment.provider.runs.runs'));
-
-const deploymentTargetLabel = (target: string) => formatDeploymentTargetLabel(target, t);
 
 const tableHeaders = ref<Header[]>([
 	{
@@ -207,34 +212,14 @@ async function loadStats() {
 
 const hasActiveDeployment = computed(() => runs.value.some((r) => r.status === 'building'));
 
-let runsListPollTimer: ReturnType<typeof setInterval> | null = null;
-
-function stopRunsListPolling() {
-	if (runsListPollTimer) {
-		clearInterval(runsListPollTimer);
-		runsListPollTimer = null;
-	}
-}
-
-async function pollRunsListWhileBuilding() {
-	await loadRuns();
-	await loadStats();
-
-	if (!runs.value.some((r) => r.status === 'building')) {
-		stopRunsListPolling();
-	}
-}
-
-function startRunsListPolling() {
-	if (runsListPollTimer) return;
-
-	// One immediate refresh when builds become active (e.g. navigating back to this page).
-	void pollRunsListWhileBuilding();
-
-	runsListPollTimer = setInterval(() => {
-		void pollRunsListWhileBuilding();
-	}, RUNS_LIST_POLL_INTERVAL_MS);
-}
+usePollWhile(
+	hasActiveDeployment,
+	async () => {
+		await loadRuns();
+		await loadStats();
+	},
+	{ intervalMs: RUNS_LIST_POLL_INTERVAL_MS },
+);
 
 async function loadDeployHookConfig() {
 	try {
@@ -244,8 +229,7 @@ async function loadDeployHookConfig() {
 			} as Parameters<typeof readDeployment>[1]),
 		);
 
-		capabilitiesFromApi.value =
-			(deployment as { capabilities?: DeploymentProviderCapabilities | null }).capabilities ?? null;
+		setCapabilitiesFromDeployment(deployment as { capabilities?: DeploymentProviderCapabilities | null });
 
 		const projects = (deployment as any)?.projects;
 		const options = (deployment as any)?.options as Record<string, unknown> | null;
@@ -262,7 +246,7 @@ async function loadDeployHookConfig() {
 		hooksByProject.value =
 			hookMap && typeof hookMap === 'object' ? (hookMap as Record<string, Array<{ name: string; url: string }>>) : {};
 	} catch {
-		capabilitiesFromApi.value = null;
+		resetCapabilities();
 		currentProjectExternalId.value = (currentProject.value as any)?.external_id ?? null;
 		hooksByProject.value = {};
 	}
@@ -344,22 +328,6 @@ watch(
 );
 
 watch(statsRange, loadStats);
-
-watch(
-	hasActiveDeployment,
-	(active) => {
-		if (active) {
-			startRunsListPolling();
-		} else {
-			stopRunsListPolling();
-		}
-	},
-	{ immediate: true },
-);
-
-onUnmounted(() => {
-	stopRunsListPolling();
-});
 </script>
 
 <template>
@@ -402,7 +370,11 @@ onUnmounted(() => {
 									{{ $t('deployment.provider.runs.deploy_preview') }}
 								</template>
 								<template v-else-if="action.kind === 'deploy_hook'">
-									{{ $t('deployment.provider.cloudflare-workers.deploy_hooks.deploy_via', { name: action.name }) }}
+									{{
+										providerConfig?.deployHooks
+											? $t(providerConfig.deployHooks.deployViaKey, { name: action.name })
+											: action.name
+									}}
 								</template>
 								<template v-else>{{ $t('deployment.provider.runs.refresh') }}</template>
 							</VListItemContent>
@@ -486,7 +458,7 @@ onUnmounted(() => {
 					</template>
 
 					<template #[`item.target`]="{ item }">
-						{{ deploymentTargetLabel(item.target) }}
+						{{ formatDeploymentTargetLabel(item.target, t) }}
 					</template>
 
 					<template #[`item.date_created`]="{ item }">
@@ -511,7 +483,7 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
-@use '@/styles/mixins';
+@use '../../styles/stat-cards';
 
 .container {
 	padding: var(--content-padding);
@@ -524,55 +496,15 @@ onUnmounted(() => {
 }
 
 .stats-bar {
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	gap: 0.875rem;
-	margin-block-end: 0.875rem;
-
-	@media (width < 85.0625rem) {
-		grid-template-columns: repeat(3, 1fr);
-	}
-
-	@include mixins.breakpoint-down('lg') {
-		grid-template-columns: repeat(2, 1fr);
-	}
-
-	@media (width < 43.1875rem) {
-		grid-template-columns: 1fr;
-	}
+	@include stat-cards.stats-bar;
 }
 
 .stat-card {
-	display: flex;
-	align-items: center;
-	gap: 0.4375rem;
-	padding: 0.3125rem 0.5625rem;
-	background-color: var(--theme--background-subdued);
-	border-radius: var(--theme--border-radius);
-	overflow: hidden;
-
-	&.danger {
-		background-color: var(--danger-10);
-		color: var(--theme--danger);
-
-		.stat-icon {
-			--v-icon-color: var(--theme--danger);
-		}
-	}
-
-	&.success {
-		background-color: var(--success-10);
-		color: var(--theme--success);
-
-		.stat-icon {
-			--v-icon-color: var(--theme--success);
-		}
-	}
+	@include stat-cards.stat-card;
 }
 
 .stat-icon {
-	--v-icon-color: var(--theme--foreground-subdued);
-	flex-shrink: 0;
+	@include stat-cards.stat-icon;
 }
 
 .spinner {

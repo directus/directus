@@ -8,13 +8,14 @@ import {
 	updateDeployment,
 	updateDeploymentProjects,
 } from '@directus/sdk';
-import type { DeploymentConfig, DeploymentProviderCapabilities } from '@directus/types';
+import type { DeploymentConfig } from '@directus/types';
 import { isEmpty, isEqual, isNil, pickBy } from 'lodash';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import DeploymentNavigation from '../../components/navigation.vue';
+import { useDeploymentCapabilities } from '../../composables/use-deployment-capabilities';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
-import { resolveDeploymentCapabilities, useProviderConfigs } from '../../config/providers';
+import { defaultNotDeployableHintKey, useProviderConfigs } from '../../config/providers';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -43,12 +44,14 @@ const router = useRouter();
 const { refresh: refreshNavigation } = useDeploymentNavigation();
 const permissionsStore = usePermissionsStore();
 
-const canManageProjects =
-	permissionsStore.hasPermission('directus_deployment_projects', 'create') ||
-	permissionsStore.hasPermission('directus_deployment_projects', 'delete');
+const canManageProjects = computed(
+	() =>
+		permissionsStore.hasPermission('directus_deployment_projects', 'create') ||
+		permissionsStore.hasPermission('directus_deployment_projects', 'delete'),
+);
 
-const canDelete = permissionsStore.hasPermission('directus_deployments', 'delete');
-const canUpdate = permissionsStore.hasPermission('directus_deployments', 'update');
+const canDelete = computed(() => permissionsStore.hasPermission('directus_deployments', 'delete'));
+const canUpdate = computed(() => permissionsStore.hasPermission('directus_deployments', 'update'));
 const loading = ref(true);
 const saving = ref(false);
 const deleting = ref(false);
@@ -64,12 +67,14 @@ const initialProjectIds = ref<string[]>([]);
 const { providerConfigs } = useProviderConfigs(true, true);
 const providerConfig = computed(() => providerConfigs.value[props.provider]);
 
-// Capabilities drive conditional UI (e.g. deploy hooks section); populated after config loads
-const capabilitiesFromApi = ref<DeploymentProviderCapabilities | null>(null);
-const mergedCapabilities = computed(() => resolveDeploymentCapabilities(props.provider, capabilitiesFromApi.value));
+const {
+	capabilities: mergedCapabilities,
+	setFromDeployment: setCapabilitiesFromDeployment,
+	reset: resetCapabilities,
+} = useDeploymentCapabilities(() => props.provider);
+
 const showDeployHookSetupNotice = computed(() => mergedCapabilities.value.supportsDeployHookUrl);
 
-// Deploy hooks are stored per-project under options[deployHooksOptionKey]
 const deployHooksOptionKey = 'deploy_hooks_by_project';
 type DeployHookEntry = { name: string; url: string };
 const projectDeployHooks = reactive<Record<string, DeployHookEntry[]>>({});
@@ -111,22 +116,11 @@ const optionsFieldNames = computed(
 
 const filterEmpty = (obj: Record<string, any>) => pickBy(obj, (v) => !isNil(v) && v !== '');
 
-// Returns i18n keys — Cloudflare has provider-specific copy pointing users to Workers Builds setup
-function getProjectDeployableHint(provider: string): string {
-	if (provider === 'cloudflare-workers') {
-		return 'deployment.provider.project.not_deployable_cloudflare';
-	}
+const projectDeployableHintKey = computed(
+	() => providerConfig.value?.notDeployableHintKey ?? defaultNotDeployableHintKey,
+);
 
-	return 'deployment.provider.project.not_deployable';
-}
-
-function getProjectDeployableStatus(provider: string): string | null {
-	if (provider === 'cloudflare-workers') {
-		return 'deployment.provider.project.missing_build_trigger';
-	}
-
-	return null;
-}
+const projectDeployableStatusKey = computed(() => providerConfig.value?.notDeployableStatusKey ?? null);
 
 const hasDeployHookEdits = computed(() => {
 	for (const externalId of Object.keys(projectDeployHooks)) {
@@ -188,7 +182,7 @@ async function loadConfig() {
 			}),
 		);
 
-		capabilitiesFromApi.value = (configData as DeploymentConfig).capabilities ?? null;
+		setCapabilitiesFromDeployment(configData as DeploymentConfig);
 
 		config.value = configData as DeploymentConfig;
 
@@ -213,7 +207,7 @@ async function loadConfig() {
 			Object.entries(projectDeployHooks).map(([externalId, hooks]) => [externalId, hooks.map((hook) => ({ ...hook }))]),
 		);
 
-		if (canManageProjects) {
+		if (canManageProjects.value) {
 			// Load all projects from provider
 			const projectsData = await sdk.request(readDeploymentProjects(props.provider));
 			availableProjects.value = projectsData as DeploymentProjectListOutput[];
@@ -224,6 +218,7 @@ async function loadConfig() {
 			initialProjectIds.value = [...storedIds];
 		}
 	} catch (error) {
+		resetCapabilities();
 		unexpectedError(error);
 	} finally {
 		loading.value = false;
@@ -427,8 +422,8 @@ watch(
 				{{ providerConfig.settingsWarning }}
 			</VNotice>
 
-			<VNotice v-if="showDeployHookSetupNotice" type="info" class="field full">
-				<div>{{ $t('deployment.provider.cloudflare-workers.setup_requirements') }}</div>
+			<VNotice v-if="showDeployHookSetupNotice && providerConfig?.deployHooks" type="info" class="field full">
+				<div>{{ $t(providerConfig.deployHooks.setupNoticeKey) }}</div>
 			</VNotice>
 
 			<InterfacePresentationDivider
@@ -465,15 +460,19 @@ watch(
 								@update:model-value="(value) => (selectedProjectIds = value)"
 							>
 								<template v-if="!project.deployable" #append>
-									<span v-if="getProjectDeployableStatus(provider)" class="project-status">
-										{{ $t(getProjectDeployableStatus(provider)!) }}
+									<span v-if="projectDeployableStatusKey" class="project-status">
+										{{ $t(projectDeployableStatusKey) }}
 									</span>
-									<VIcon v-tooltip.left="$t(getProjectDeployableHint(provider))" name="info" />
+									<VIcon v-tooltip.left="$t(projectDeployableHintKey)" name="info" />
 								</template>
 							</VCheckbox>
 
 							<div
-								v-if="showDeployHookSetupNotice && selectedProjectIds.includes(project.external_id)"
+								v-if="
+									showDeployHookSetupNotice &&
+									providerConfig?.deployHooks &&
+									selectedProjectIds.includes(project.external_id)
+								"
 								class="deploy-hooks-section"
 							>
 								<button class="deploy-hooks-toggle" @click="toggleHookExpansion(project.external_id)">
@@ -482,7 +481,7 @@ watch(
 										small
 									/>
 									<span class="type-label">
-										{{ $t('deployment.provider.cloudflare-workers.deploy_hooks.title') }}
+										{{ $t(providerConfig.deployHooks.titleKey) }}
 										<span v-if="(projectDeployHooks[project.external_id] ?? []).length > 0" class="hook-count">
 											({{ (projectDeployHooks[project.external_id] ?? []).length }})
 										</span>
@@ -491,7 +490,7 @@ watch(
 
 								<div v-if="expandedHookProjects.has(project.external_id)" class="deploy-hooks-content">
 									<small class="type-note">
-										{{ $t('deployment.provider.cloudflare-workers.deploy_hooks.hint') }}
+										{{ $t(providerConfig.deployHooks.hintKey) }}
 									</small>
 
 									<div
@@ -501,14 +500,14 @@ watch(
 									>
 										<VInput
 											v-model="hook.name"
-											:placeholder="$t('deployment.provider.cloudflare-workers.deploy_hooks.name_placeholder')"
+											:placeholder="$t(providerConfig.deployHooks.namePlaceholderKey)"
 											small
 											class="hook-name-input"
 										/>
 
 										<VInput
 											v-model="hook.url"
-											:placeholder="$t('deployment.provider.cloudflare-workers.deploy_hooks.url_placeholder')"
+											:placeholder="$t(providerConfig.deployHooks.urlPlaceholderKey)"
 											small
 											class="hook-url-input"
 										/>
@@ -527,7 +526,7 @@ watch(
 
 									<VButton small secondary @click="addDeployHook(project.external_id)">
 										<VIcon name="add" small />
-										{{ $t('deployment.provider.cloudflare-workers.deploy_hooks.add') }}
+										{{ $t(providerConfig.deployHooks.addLabelKey) }}
 									</VButton>
 								</div>
 							</div>

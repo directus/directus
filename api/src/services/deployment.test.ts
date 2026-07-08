@@ -1,4 +1,10 @@
-import { InvalidPayloadError, InvalidProviderConfigError } from '@directus/errors';
+import {
+	ForbiddenError,
+	HitRateLimitError,
+	InvalidCredentialsError,
+	InvalidPayloadError,
+	InvalidProviderConfigError,
+} from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
 import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
@@ -16,10 +22,16 @@ const {
 	mockGetRun,
 	mockTriggerRun,
 	mockCancelRun,
+	mockRegisterWebhook,
+	mockUnregisterWebhook,
+	mockOnConfigCreated,
+	mockOnConfigUpdated,
+	mockOnConfigDeleted,
 	mockGetCacheValueWithTTL,
 	mockSetCacheValueWithExpiry,
 	mockLoggerDebug,
 	mockLoggerError,
+	mockLoggerWarn,
 } = vi.hoisted(() => ({
 	mockDriver: {
 		capabilities: {
@@ -35,6 +47,11 @@ const {
 		getRun: vi.fn(),
 		triggerRun: vi.fn(),
 		cancelRun: vi.fn(),
+		registerWebhook: vi.fn(),
+		unregisterWebhook: vi.fn(),
+		onConfigCreated: vi.fn(),
+		onConfigUpdated: vi.fn(),
+		onConfigDeleted: vi.fn(),
 	},
 	mockTestConnection: vi.fn(),
 	mockListProjects: vi.fn(),
@@ -43,14 +60,31 @@ const {
 	mockGetRun: vi.fn(),
 	mockTriggerRun: vi.fn(),
 	mockCancelRun: vi.fn(),
+	mockRegisterWebhook: vi.fn(),
+	mockUnregisterWebhook: vi.fn(),
+	mockOnConfigCreated: vi.fn(),
+	mockOnConfigUpdated: vi.fn(),
+	mockOnConfigDeleted: vi.fn(),
 	mockGetCacheValueWithTTL: vi.fn(),
 	mockSetCacheValueWithExpiry: vi.fn(),
 	mockLoggerDebug: vi.fn(),
 	mockLoggerError: vi.fn(),
+	mockLoggerWarn: vi.fn(),
 }));
 
 vi.mock('../deployment.js', () => ({
 	getDeploymentDriver: vi.fn(() => mockDriver),
+	buildDriverFromConfig: vi.fn(() => mockDriver),
+	readDeploymentConfig: vi.fn(async (knex: unknown, schema: unknown, provider: string) => {
+		const internalService = new ItemsService('directus_deployments', { knex, schema, accountability: null } as any);
+		const results = await internalService.readByQuery({ filter: { provider: { _eq: provider } }, limit: 1 });
+
+		if (!results || results.length === 0) {
+			throw new ForbiddenError({ reason: `Deployment config for "${provider}" not found` });
+		}
+
+		return results[0];
+	}),
 }));
 
 vi.mock('../cache.js', () => ({
@@ -68,8 +102,9 @@ vi.mock('@directus/env', () => ({
 vi.mock('../logger/index.js', () => ({
 	useLogger: vi.fn(() => ({
 		debug: mockLoggerDebug,
+		info: vi.fn(),
 		error: mockLoggerError,
-		warn: vi.fn(),
+		warn: mockLoggerWarn,
 	})),
 }));
 
@@ -105,6 +140,11 @@ describe('DeploymentService', () => {
 		mockDriver.getRun = mockGetRun;
 		mockDriver.triggerRun = mockTriggerRun;
 		mockDriver.cancelRun = mockCancelRun;
+		mockDriver.registerWebhook = mockRegisterWebhook;
+		mockDriver.unregisterWebhook = mockUnregisterWebhook;
+		mockDriver.onConfigCreated = mockOnConfigCreated;
+		mockDriver.onConfigUpdated = mockOnConfigUpdated;
+		mockDriver.onConfigDeleted = mockOnConfigDeleted;
 	});
 
 	afterEach(() => {
@@ -329,10 +369,17 @@ describe('DeploymentService', () => {
 			expect(result).toEqual(config);
 		});
 
-		it('should throw error when provider not found', async () => {
+		it('should throw ForbiddenError when provider not found', async () => {
 			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([]);
 
 			await expect(service.readByProvider('vercel')).rejects.toThrow('Deployment config for "vercel" not found');
+
+			try {
+				await service.readByProvider('vercel');
+				expect.unreachable();
+			} catch (error) {
+				expect(error).toBeInstanceOf(ForbiddenError);
+			}
 		});
 	});
 
@@ -357,6 +404,192 @@ describe('DeploymentService', () => {
 			await service.deleteByProvider('vercel');
 
 			expect(superDeleteOne).toHaveBeenCalledWith(1);
+		});
+
+		it('should unregister the webhook before deleting the config row', async () => {
+			const config = {
+				id: 1,
+				provider: 'vercel',
+				webhook_ids: ['hook-1', 'hook-2'],
+				credentials: '{}',
+				options: '{}',
+			};
+
+			const callOrder: string[] = [];
+
+			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([config]);
+
+			superDeleteOne.mockImplementation(async () => {
+				callOrder.push('deleteOne');
+				return 1;
+			});
+
+			mockUnregisterWebhook.mockImplementation(async () => {
+				callOrder.push('unregisterWebhook');
+			});
+
+			await service.deleteByProvider('vercel');
+
+			expect(mockUnregisterWebhook).toHaveBeenCalledWith(['hook-1', 'hook-2']);
+			expect(callOrder).toEqual(['unregisterWebhook', 'deleteOne']);
+		});
+
+		it('should not fail the delete if unregistering the webhook throws', async () => {
+			const config = { id: 1, provider: 'vercel', webhook_ids: ['hook-1'], credentials: '{}', options: '{}' };
+
+			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([config]);
+			mockUnregisterWebhook.mockRejectedValueOnce(new Error('provider API down'));
+
+			await expect(service.deleteByProvider('vercel')).resolves.toBe(1);
+
+			expect(superDeleteOne).toHaveBeenCalledWith(1);
+
+			expect(mockLoggerError).toHaveBeenCalledWith(
+				new Error('provider API down'),
+				expect.stringContaining('Failed to unregister webhook'),
+			);
+		});
+
+		it('should call onConfigDeleted after the config row is deleted', async () => {
+			const config = { id: 1, provider: 'cloudflare-workers', credentials: '{}', options: '{}' };
+
+			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([config]);
+
+			await service.deleteByProvider('cloudflare-workers');
+
+			expect(mockOnConfigDeleted).toHaveBeenCalledTimes(1);
+		});
+
+		it('should invoke onConfigDeleted with internal config when readByProvider returns redacted credentials', async () => {
+			const redactedConfig = {
+				id: 1,
+				provider: 'cloudflare-workers',
+				credentials: '**********',
+				options: '{}',
+			};
+
+			const internalConfig = {
+				id: 1,
+				provider: 'cloudflare-workers',
+				credentials: JSON.stringify({ api_token: 'secret' }),
+				options: JSON.stringify({ account_id: 'acct-1' }),
+			};
+
+			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([redactedConfig]);
+			vi.spyOn(service as any, 'readConfig').mockResolvedValueOnce(internalConfig);
+
+			const deploymentModule = await import('../deployment.js');
+			const buildDriverFromConfigSpy = vi.spyOn(deploymentModule, 'buildDriverFromConfig');
+
+			await service.deleteByProvider('cloudflare-workers');
+
+			expect(buildDriverFromConfigSpy).toHaveBeenCalledWith(internalConfig);
+			expect(mockOnConfigDeleted).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	describe('syncWebhook', () => {
+		let service: DeploymentService;
+
+		const config = {
+			id: 1,
+			provider: 'vercel',
+			credentials: JSON.stringify({ access_token: 'token' }),
+			options: JSON.stringify({ team_id: 'team-1' }),
+			webhook_ids: null as string[] | null,
+		};
+
+		beforeEach(() => {
+			service = new DeploymentService({ knex: db, schema });
+		});
+
+		it('should early-return without touching the driver or DB for poll-based providers', async () => {
+			mockDriver.capabilities = { ...mockDriver.capabilities, eventsTransport: 'poll' };
+			const readByQuerySpy = vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([config]);
+
+			await service.syncWebhook('cloudflare-workers');
+
+			// Only the one readByQuery from getDriverAndConfig — poll gate returns before registerWebhook.
+			expect(readByQuerySpy).toHaveBeenCalledTimes(1);
+			expect(mockRegisterWebhook).not.toHaveBeenCalled();
+			expect(mockUnregisterWebhook).not.toHaveBeenCalled();
+		});
+
+		it('should clear legacy webhook_ids/webhook_secret for poll-based providers that still have them', async () => {
+			const staleConfig = { ...config, webhook_ids: ['old-trigger-uuid'], webhook_secret: 'old-secret' };
+			mockDriver.capabilities = { ...mockDriver.capabilities, eventsTransport: 'poll' };
+			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([staleConfig]);
+			const updateOneSpy = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue(1);
+
+			await service.syncWebhook('cloudflare-workers');
+
+			expect(updateOneSpy).toHaveBeenCalledWith(1, { webhook_ids: null, webhook_secret: null });
+			expect(mockRegisterWebhook).not.toHaveBeenCalled();
+		});
+
+		it('should register the webhook and persist the returned ids for webhook-based providers', async () => {
+			vi.spyOn(ItemsService.prototype, 'readByQuery')
+				.mockResolvedValueOnce([config]) // getDriverAndConfig() -> readConfig
+				.mockResolvedValueOnce([{ external_id: 'proj-1' }]); // tracked projects
+
+			const updateOneSpy = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue(1);
+			mockRegisterWebhook.mockResolvedValueOnce({ webhook_ids: ['hook-1'], webhook_secret: 'secret-1' });
+
+			await service.syncWebhook('vercel');
+
+			expect(mockRegisterWebhook).toHaveBeenCalledWith(expect.any(String), ['proj-1']);
+			expect(updateOneSpy).toHaveBeenCalledWith(1, { webhook_ids: ['hook-1'], webhook_secret: 'secret-1' });
+		});
+
+		it('should roll back the newly-registered webhook and rethrow when persisting it fails', async () => {
+			vi.spyOn(ItemsService.prototype, 'readByQuery')
+				.mockResolvedValueOnce([config]) // getDriverAndConfig() -> readConfig
+				.mockResolvedValueOnce([{ external_id: 'proj-1' }]); // tracked projects
+
+			vi.spyOn(ItemsService.prototype, 'updateOne').mockRejectedValueOnce(new Error('DB connection lost'));
+			mockRegisterWebhook.mockResolvedValueOnce({ webhook_ids: ['hook-1'], webhook_secret: 'secret-1' });
+
+			await expect(service.syncWebhook('vercel')).rejects.toThrow('DB connection lost');
+
+			expect(mockUnregisterWebhook).toHaveBeenCalledWith(['hook-1']);
+
+			expect(mockLoggerError).toHaveBeenCalledWith(
+				new Error('DB connection lost'),
+				expect.stringContaining('Failed to persist newly-registered webhook(s) [hook-1]'),
+			);
+		});
+
+		it('should still rethrow the original error and log when the rollback itself fails', async () => {
+			vi.spyOn(ItemsService.prototype, 'readByQuery')
+				.mockResolvedValueOnce([config]) // getDriverAndConfig() -> readConfig
+				.mockResolvedValueOnce([{ external_id: 'proj-1' }]); // tracked projects
+
+			vi.spyOn(ItemsService.prototype, 'updateOne').mockRejectedValueOnce(new Error('DB connection lost'));
+			mockRegisterWebhook.mockResolvedValueOnce({ webhook_ids: ['hook-1'], webhook_secret: 'secret-1' });
+			mockUnregisterWebhook.mockRejectedValueOnce(new Error('provider API down'));
+
+			await expect(service.syncWebhook('vercel')).rejects.toThrow('DB connection lost');
+
+			expect(mockLoggerError).toHaveBeenCalledWith(
+				new Error('provider API down'),
+				expect.stringContaining('Rollback failed — webhook(s) [hook-1] are orphaned'),
+			);
+		});
+
+		it('should unregister and clear webhook_ids when no projects are tracked', async () => {
+			const configWithWebhook = { ...config, webhook_ids: ['hook-1'] };
+
+			vi.spyOn(ItemsService.prototype, 'readByQuery')
+				.mockResolvedValueOnce([configWithWebhook]) // getDriverAndConfig() -> readConfig
+				.mockResolvedValueOnce([]); // no tracked projects
+
+			const updateOneSpy = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue(1);
+
+			await service.syncWebhook('vercel');
+
+			expect(mockUnregisterWebhook).toHaveBeenCalledWith(['hook-1']);
+			expect(updateOneSpy).toHaveBeenCalledWith(1, { webhook_ids: null, webhook_secret: null });
+			expect(mockRegisterWebhook).not.toHaveBeenCalled();
 		});
 	});
 
@@ -552,6 +785,86 @@ describe('DeploymentService', () => {
 			expect(result.projects).toHaveLength(1);
 			expect(mockLoggerError).toHaveBeenCalled();
 		});
+
+		it('should refresh a non-terminal latest run for poll-based providers', async () => {
+			mockDriver.capabilities = {
+				eventsTransport: 'poll',
+				supportsPreviewDeploy: false,
+				supportsDeployHookUrl: true,
+				needsRunStatusPolling: true,
+			};
+
+			const projectWithBuildingRun = {
+				...selectedProject,
+				runs: [
+					{
+						id: 'run-1',
+						project: 'sp-1',
+						external_id: 'build-123',
+						target: 'production',
+						status: 'building',
+						url: null,
+						started_at: '2026-01-01T00:00:00Z',
+						completed_at: null,
+						date_created: '2026-01-01T00:00:00Z',
+						user_created: 'user-1',
+					},
+				],
+			};
+
+			const recentDeployment = { ...deployment, last_synced_at: new Date().toISOString() };
+
+			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([recentDeployment]);
+			vi.spyOn(DeploymentProjectsService.prototype, 'readByQuery').mockResolvedValue([projectWithBuildingRun]);
+			vi.spyOn(DeploymentRunsService.prototype, 'readByQuery').mockResolvedValue([]);
+			vi.spyOn(DeploymentRunsService.prototype, 'updateOne').mockResolvedValue('run-1');
+
+			mockGetRun.mockResolvedValueOnce({
+				id: 'build-123',
+				project_id: 'proj-1',
+				status: 'ready',
+				url: 'https://example.com',
+				created_at: new Date(),
+			});
+
+			const result = await service.getDashboard('vercel', new Date());
+			await new Promise((resolve) => setTimeout(resolve, 0));
+
+			expect(mockGetRun).toHaveBeenCalledWith('build-123');
+			expect(result.projects[0]?.['latest_deployment']?.status).toBe('ready');
+		});
+
+		it('should not poll run status for webhook-based providers', async () => {
+			const projectWithBuildingRun = {
+				...selectedProject,
+				runs: [
+					{
+						id: 'run-1',
+						project: 'sp-1',
+						external_id: 'build-123',
+						target: 'production',
+						status: 'building',
+						url: null,
+						started_at: '2026-01-01T00:00:00Z',
+						completed_at: null,
+						date_created: '2026-01-01T00:00:00Z',
+						user_created: 'user-1',
+					},
+				],
+			};
+
+			const recentDeployment = { ...deployment, last_synced_at: new Date().toISOString() };
+
+			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([recentDeployment]);
+			vi.spyOn(DeploymentProjectsService.prototype, 'readByQuery').mockResolvedValue([projectWithBuildingRun]);
+			vi.spyOn(DeploymentRunsService.prototype, 'readByQuery').mockResolvedValue([]);
+
+			const result = await service.getDashboard('vercel', new Date());
+			await new Promise((resolve) => setTimeout(resolve, 0));
+
+			expect(mockGetRun).not.toHaveBeenCalled();
+			expect(result.projects[0]?.['latest_deployment']?.status).toBe('building');
+		});
 	});
 
 	describe('getDriver / getRunWithLogs', () => {
@@ -574,20 +887,13 @@ describe('DeploymentService', () => {
 			vi.spyOn(service as any, 'readConfig').mockResolvedValue(deployment);
 		});
 
-		it('should merge webhook_ids into driver options', async () => {
-			const getDeploymentDriverModule = await import('../deployment.js');
-			const getDeploymentDriverSpy = vi.spyOn(getDeploymentDriverModule, 'getDeploymentDriver');
+		it('should build the driver from the config returned by readConfig, unmodified', async () => {
+			const deploymentModule = await import('../deployment.js');
+			const buildDriverFromConfigSpy = vi.spyOn(deploymentModule, 'buildDriverFromConfig');
 
 			await service.getDriver('cloudflare-workers');
 
-			expect(getDeploymentDriverSpy).toHaveBeenCalledWith(
-				'cloudflare-workers',
-				{ api_token: 'token' },
-				expect.objectContaining({
-					account_id: 'account-123',
-					_webhookIds: ['trigger-123'],
-				}),
-			);
+			expect(buildDriverFromConfigSpy).toHaveBeenCalledWith(deployment);
 		});
 
 		it('should refresh non-webhook run status in getRunWithLogs', async () => {
@@ -665,7 +971,7 @@ describe('DeploymentService', () => {
 			expect(mockGetRun).not.toHaveBeenCalled();
 		});
 
-		it('should mark run as error and return empty logs when getRun throws during polling', async () => {
+		it('should leave the run unchanged and return empty logs when getRun throws during polling', async () => {
 			mockDriver.capabilities = {
 				eventsTransport: 'poll',
 				supportsPreviewDeploy: false,
@@ -691,9 +997,61 @@ describe('DeploymentService', () => {
 
 			const result = await service.getRunWithLogs('cloudflare-workers', 'run-1');
 
-			expect(result.status).toBe('error');
+			expect(result.status).toBe('building');
 			expect(result.logs).toEqual([]);
-			expect(updateSpy).toHaveBeenCalledWith('run-1', expect.objectContaining({ status: 'error' }));
+			expect(updateSpy).not.toHaveBeenCalled();
+		});
+
+		it('should rethrow InvalidCredentialsError from getRun during polling instead of masking it', async () => {
+			mockDriver.capabilities = {
+				eventsTransport: 'poll',
+				supportsPreviewDeploy: false,
+				supportsDeployHookUrl: true,
+				needsRunStatusPolling: true,
+			};
+
+			mockGetRun.mockRejectedValueOnce(new InvalidCredentialsError());
+
+			vi.spyOn(DeploymentRunsService.prototype, 'readOne').mockResolvedValue({
+				id: 'run-1',
+				project: 'project-1',
+				external_id: 'build-1',
+				status: 'building',
+				target: 'production',
+				date_created: '2026-01-01T00:00:00.000Z',
+				url: null,
+				started_at: null,
+				completed_at: null,
+			} as any);
+
+			await expect(service.getRunWithLogs('cloudflare-workers', 'run-1')).rejects.toBeInstanceOf(
+				InvalidCredentialsError,
+			);
+		});
+
+		it('should rethrow HitRateLimitError from getRun during polling instead of masking it', async () => {
+			mockDriver.capabilities = {
+				eventsTransport: 'poll',
+				supportsPreviewDeploy: false,
+				supportsDeployHookUrl: true,
+				needsRunStatusPolling: true,
+			};
+
+			mockGetRun.mockRejectedValueOnce(new HitRateLimitError({ limit: 100, reset: new Date() }));
+
+			vi.spyOn(DeploymentRunsService.prototype, 'readOne').mockResolvedValue({
+				id: 'run-1',
+				project: 'project-1',
+				external_id: 'build-1',
+				status: 'building',
+				target: 'production',
+				date_created: '2026-01-01T00:00:00.000Z',
+				url: null,
+				started_at: null,
+				completed_at: null,
+			} as any);
+
+			await expect(service.getRunWithLogs('cloudflare-workers', 'run-1')).rejects.toBeInstanceOf(HitRateLimitError);
 		});
 
 		it('should skip polling for already-terminal runs and fall through to getRunLogs', async () => {
@@ -749,6 +1107,31 @@ describe('DeploymentService', () => {
 			const result = await service.getRunWithLogs('vercel', 'run-1');
 
 			expect(result.logs).toEqual([]);
+		});
+
+		it('should rethrow InvalidCredentialsError from getRunLogs instead of masking it as empty logs', async () => {
+			mockDriver.capabilities = {
+				eventsTransport: 'webhook',
+				supportsPreviewDeploy: true,
+				supportsDeployHookUrl: false,
+				needsRunStatusPolling: false,
+			};
+
+			mockGetRunLogs.mockRejectedValueOnce(new InvalidCredentialsError());
+
+			vi.spyOn(DeploymentRunsService.prototype, 'readOne').mockResolvedValue({
+				id: 'run-1',
+				project: 'project-1',
+				external_id: 'build-1',
+				status: 'building',
+				target: 'production',
+				date_created: '2026-01-01T00:00:00.000Z',
+				url: null,
+				started_at: null,
+				completed_at: null,
+			} as any);
+
+			await expect(service.getRunWithLogs('vercel', 'run-1')).rejects.toBeInstanceOf(InvalidCredentialsError);
 		});
 	});
 
@@ -856,6 +1239,33 @@ describe('DeploymentService', () => {
 				expect.objectContaining({ target: expect.stringContaining('hook:') }),
 			);
 		});
+
+		it('should propagate InvalidProviderConfigError from a poll-based provider immediately, without retrying', async () => {
+			mockTriggerRun.mockRejectedValueOnce(
+				new InvalidProviderConfigError({
+					provider: 'cloudflare-workers',
+					reason: 'This Worker has no build trigger configured',
+				}),
+			);
+
+			await expect(
+				service.triggerDeployment('cloudflare-workers', 'project-1', { preview: false, clearCache: false }),
+			).rejects.toThrow(InvalidProviderConfigError);
+
+			// triggerRun already resolves trigger config live against the provider's API on every
+			// call — there's no cached copy to refresh, so a retry can't help.
+			expect(mockTriggerRun).toHaveBeenCalledTimes(1);
+		});
+
+		it('should propagate non-config errors immediately as well', async () => {
+			mockTriggerRun.mockRejectedValueOnce(new Error('network blip'));
+
+			await expect(
+				service.triggerDeployment('cloudflare-workers', 'project-1', { preview: false, clearCache: false }),
+			).rejects.toThrow('network blip');
+
+			expect(mockTriggerRun).toHaveBeenCalledTimes(1);
+		});
 	});
 
 	describe('cancelDeployment', () => {
@@ -957,17 +1367,27 @@ describe('DeploymentService', () => {
 			expect(result[0]?.status).toBe('ready');
 		});
 
-		it('should mark run as error when getRun throws', async () => {
+		it('should leave the run unchanged and log at debug when getRun throws', async () => {
 			mockGetRun.mockRejectedValueOnce(new Error('API down'));
 
 			const result = await service.refreshRunsStatuses('cloudflare-workers', [buildingRun as any]);
 
-			expect(result[0]?.status).toBe('error');
+			expect(result[0]?.status).toBe('building');
+			expect(DeploymentRunsService.prototype.updateOne).not.toHaveBeenCalled();
 
-			expect(DeploymentRunsService.prototype.updateOne).toHaveBeenCalledWith(
-				'run-1',
-				expect.objectContaining({ status: 'error' }),
+			expect(mockLoggerDebug).toHaveBeenCalledWith(
+				new Error('API down'),
+				expect.stringContaining('Failed to poll run "build-123" status'),
 			);
+		});
+
+		it('should leave the run unchanged when getRun throws InvalidCredentialsError', async () => {
+			mockGetRun.mockRejectedValueOnce(new InvalidCredentialsError());
+
+			const result = await service.refreshRunsStatuses('cloudflare-workers', [buildingRun as any]);
+
+			expect(result[0]?.status).toBe('building');
+			expect(DeploymentRunsService.prototype.updateOne).not.toHaveBeenCalled();
 		});
 	});
 });

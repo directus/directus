@@ -6,10 +6,10 @@ const {
 	mockPullQueueMessages,
 	mockAckQueueMessages,
 	mockParseQueueMessage,
-	mockProjectsReadByQuery,
+	mockReadByProviderReference,
 	mockProcessWebhookEvent,
-	mockEmitAction,
 	mockLoggerInfo,
+	mockLoggerDebug,
 	mockLoggerWarn,
 } = vi.hoisted(() => {
 	const mockPullQueueMessages = vi.fn();
@@ -28,10 +28,10 @@ const {
 		mockPullQueueMessages,
 		mockAckQueueMessages,
 		mockParseQueueMessage,
-		mockProjectsReadByQuery: vi.fn(),
+		mockReadByProviderReference: vi.fn(),
 		mockProcessWebhookEvent: vi.fn(),
-		mockEmitAction: vi.fn(),
 		mockLoggerInfo: vi.fn(),
+		mockLoggerDebug: vi.fn(),
 		mockLoggerWarn: vi.fn(),
 	};
 });
@@ -43,20 +43,17 @@ vi.mock('./drivers/cloudflare.js', () => ({
 	CloudflareDriver: MockCloudflareDriverCtor,
 }));
 
-vi.mock('../emitter.js', () => ({
-	default: { emitAction: mockEmitAction },
-}));
-
 vi.mock('../logger/index.js', () => ({
 	useLogger: vi.fn(() => ({
 		info: mockLoggerInfo,
+		debug: mockLoggerDebug,
 		warn: mockLoggerWarn,
 	})),
 }));
 
 vi.mock('../services/deployment-projects.js', () => ({
 	DeploymentProjectsService: vi.fn().mockImplementation(() => ({
-		readByQuery: mockProjectsReadByQuery,
+		readByProviderReference: mockReadByProviderReference,
 	})),
 }));
 
@@ -100,16 +97,21 @@ describe('consumeCloudflareQueueEvents', () => {
 
 		await call();
 
-		expect(mockProjectsReadByQuery).not.toHaveBeenCalled();
+		expect(mockReadByProviderReference).not.toHaveBeenCalled();
 		expect(mockAckQueueMessages).not.toHaveBeenCalled();
 	});
 
-	it('should warn and rethrow when pullQueueMessages fails', async () => {
+	it('should debug and return when pullQueueMessages fails', async () => {
 		mockPullQueueMessages.mockRejectedValueOnce(new Error('Queue API error'));
 
-		await expect(call()).rejects.toThrow('Queue API error');
+		await call();
 
-		expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('Queues API pull failed'));
+		expect(mockLoggerDebug).toHaveBeenCalledWith(
+			new Error('Queue API error'),
+			expect.stringContaining('Queues API pull failed'),
+		);
+
+		expect(mockAckQueueMessages).not.toHaveBeenCalled();
 	});
 
 	it('should ack and warn when parseQueueMessage returns null (unrecognized event)', async () => {
@@ -120,7 +122,7 @@ describe('consumeCloudflareQueueEvents', () => {
 		await call();
 
 		expect(mockAckQueueMessages).toHaveBeenCalledWith(['lease-1'], []);
-		expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('Dropping message'));
+		expect(mockLoggerDebug).toHaveBeenCalledWith(expect.stringContaining('Dropping message'));
 	});
 
 	it('should retry and warn when parseQueueMessage throws', async () => {
@@ -134,42 +136,39 @@ describe('consumeCloudflareQueueEvents', () => {
 		await call();
 
 		expect(mockAckQueueMessages).toHaveBeenCalledWith([], ['lease-1']);
-		expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('Failed to parse event'));
+
+		expect(mockLoggerWarn).toHaveBeenCalledWith(
+			new Error('parse error'),
+			expect.stringContaining('Failed to parse event'),
+		);
 	});
 
 	it('should ack and warn when no matching project is found', async () => {
 		const msg = makeMessage('lease-1');
 		mockPullQueueMessages.mockResolvedValueOnce([msg]);
 		mockParseQueueMessage.mockReturnValueOnce(makeEvent());
-		mockProjectsReadByQuery.mockResolvedValueOnce([]);
+		mockReadByProviderReference.mockResolvedValueOnce(null);
 
 		await call();
 
 		expect(mockProcessWebhookEvent).not.toHaveBeenCalled();
 		expect(mockAckQueueMessages).toHaveBeenCalledWith(['lease-1'], []);
-		expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('No Directus deployment project'));
+		expect(mockLoggerDebug).toHaveBeenCalledWith(expect.stringContaining('No Directus deployment project'));
 	});
 
-	it('should process event, emit action, and ack on success', async () => {
+	it('should process event via the shared run-reconciliation service and ack on success', async () => {
 		const msg = makeMessage('lease-1');
 		const event = makeEvent();
 		const project = { id: 'project-1', name: 'my-worker' };
 
 		mockPullQueueMessages.mockResolvedValueOnce([msg]);
 		mockParseQueueMessage.mockReturnValueOnce(event);
-		mockProjectsReadByQuery.mockResolvedValueOnce([project]);
+		mockReadByProviderReference.mockResolvedValueOnce(project);
 		mockProcessWebhookEvent.mockResolvedValueOnce('run-1');
 
 		await call();
 
 		expect(mockProcessWebhookEvent).toHaveBeenCalledWith('project-1', event);
-
-		expect(mockEmitAction).toHaveBeenCalledWith(
-			['deployment.webhook', `deployment.webhook.${event.type}`],
-			expect.objectContaining({ run_id: 'run-1', project_id: 'project-1' }),
-			null,
-		);
-
 		expect(mockAckQueueMessages).toHaveBeenCalledWith(['lease-1'], []);
 	});
 
@@ -177,16 +176,20 @@ describe('consumeCloudflareQueueEvents', () => {
 		const msg = makeMessage('lease-1');
 		mockPullQueueMessages.mockResolvedValueOnce([msg]);
 		mockParseQueueMessage.mockReturnValueOnce(makeEvent());
-		mockProjectsReadByQuery.mockResolvedValueOnce([{ id: 'project-1' }]);
+		mockReadByProviderReference.mockResolvedValueOnce({ id: 'project-1' });
 		mockProcessWebhookEvent.mockRejectedValueOnce(new Error('DB error'));
 
 		await call();
 
 		expect(mockAckQueueMessages).toHaveBeenCalledWith([], ['lease-1']);
-		expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('Failed to process event'));
+
+		expect(mockLoggerWarn).toHaveBeenCalledWith(
+			new Error('DB error'),
+			expect.stringContaining('Failed to process event'),
+		);
 	});
 
-	it('should log message count when messages are pulled', async () => {
+	it('should log message count at debug when messages are pulled', async () => {
 		const messages = [makeMessage('lease-1'), makeMessage('lease-2')];
 
 		mockPullQueueMessages.mockResolvedValueOnce(messages);
@@ -194,7 +197,8 @@ describe('consumeCloudflareQueueEvents', () => {
 
 		await call();
 
-		expect(mockLoggerInfo).toHaveBeenCalledWith(expect.stringContaining('2 message(s)'));
+		expect(mockLoggerDebug).toHaveBeenCalledWith(expect.stringContaining('2 message(s)'));
+		expect(mockLoggerInfo).not.toHaveBeenCalled();
 	});
 
 	it('should correctly split acks and retries across multiple messages', async () => {
@@ -210,7 +214,7 @@ describe('consumeCloudflareQueueEvents', () => {
 				throw new Error('bad');
 			}); // lease-3: parse error → retry
 
-		mockProjectsReadByQuery.mockResolvedValueOnce([project]);
+		mockReadByProviderReference.mockResolvedValueOnce(project);
 		mockProcessWebhookEvent.mockResolvedValueOnce('run-1');
 
 		await call();

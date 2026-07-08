@@ -2,7 +2,9 @@ import type { DeploymentProviderCapabilities } from '@directus/types';
 import { describe, expect, it, vi } from 'vitest';
 import {
 	buildDeployToolbarActions,
+	defaultNotDeployableHintKey,
 	formatDeploymentTargetLabel,
+	getDeploymentRangeOptions,
 	resolveDeploymentCapabilities,
 	useProviderConfigs,
 } from './providers';
@@ -117,6 +119,18 @@ describe('formatDeploymentTargetLabel', () => {
 	});
 });
 
+describe('getDeploymentRangeOptions', () => {
+	const t = (key: string) => key;
+
+	it('should return the 1d/7d/30d range options', () => {
+		expect(getDeploymentRangeOptions(t)).toEqual([
+			{ text: 'deployment.range.1d', value: '1d' },
+			{ text: 'deployment.range.7d', value: '7d' },
+			{ text: 'deployment.range.30d', value: '30d' },
+		]);
+	});
+});
+
 describe('useProviderConfigs', () => {
 	it('should include cloudflare-workers in the returned config', () => {
 		const { providerConfigs } = useProviderConfigs();
@@ -169,5 +183,47 @@ describe('useProviderConfigs', () => {
 		const { providerConfigs } = useProviderConfigs(true);
 		const field = providerConfigs.value['cloudflare-workers']!.credentialsFields[0]!;
 		expect(field.meta?.required).toBe(false);
+	});
+
+	it('should have Cloudflare-specific not-deployable copy keys for cloudflare-workers', () => {
+		const { providerConfigs } = useProviderConfigs();
+		const config = providerConfigs.value['cloudflare-workers']!;
+		expect(config.notDeployableHintKey).toBe('deployment.provider.project.not_deployable_cloudflare');
+		expect(config.notDeployableStatusKey).toBe('deployment.provider.project.missing_build_trigger');
+	});
+
+	it('should have deploy-hooks i18n keys for cloudflare-workers', () => {
+		const { providerConfigs } = useProviderConfigs();
+		const config = providerConfigs.value['cloudflare-workers']!;
+
+		expect(config.deployHooks).toEqual({
+			setupNoticeKey: 'deployment.provider.cloudflare-workers.setup_requirements',
+			titleKey: 'deployment.provider.cloudflare-workers.deploy_hooks.title',
+			hintKey: 'deployment.provider.cloudflare-workers.deploy_hooks.hint',
+			namePlaceholderKey: 'deployment.provider.cloudflare-workers.deploy_hooks.name_placeholder',
+			urlPlaceholderKey: 'deployment.provider.cloudflare-workers.deploy_hooks.url_placeholder',
+			addLabelKey: 'deployment.provider.cloudflare-workers.deploy_hooks.add',
+			deployViaKey: 'deployment.provider.cloudflare-workers.deploy_hooks.deploy_via',
+		});
+	});
+
+	it('should not have deploy-hooks keys for vercel/netlify (no deploy-hook support)', () => {
+		const { providerConfigs } = useProviderConfigs();
+		expect(providerConfigs.value['vercel']!.deployHooks).toBeUndefined();
+		expect(providerConfigs.value['netlify']!.deployHooks).toBeUndefined();
+	});
+
+	it('should not have not-deployable status copy keys for vercel/netlify (no per-worker trigger concept)', () => {
+		const { providerConfigs } = useProviderConfigs();
+		expect(providerConfigs.value['vercel']!.notDeployableStatusKey).toBeUndefined();
+		expect(providerConfigs.value['netlify']!.notDeployableStatusKey).toBeUndefined();
+	});
+
+	it('vercel/netlify should fall back to the generic not-deployable hint', () => {
+		const { providerConfigs } = useProviderConfigs();
+		const vercelHint = providerConfigs.value['vercel']!.notDeployableHintKey ?? defaultNotDeployableHintKey;
+		const netlifyHint = providerConfigs.value['netlify']!.notDeployableHintKey ?? defaultNotDeployableHintKey;
+		expect(vercelHint).toBe(defaultNotDeployableHintKey);
+		expect(netlifyHint).toBe(defaultNotDeployableHintKey);
 	});
 });

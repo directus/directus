@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
+import { getDeploymentRangeOptions } from '../../config/providers';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
@@ -32,11 +33,7 @@ const projects = ref<Project[]>([]);
 const stats = ref<Stats>({ active_deployments: 0, successful_builds: 0, failed_builds: 0 });
 const range = ref('1d');
 
-const rangeOptions = [
-	{ text: t('deployment.range.1d'), value: '1d' },
-	{ text: t('deployment.range.7d'), value: '7d' },
-	{ text: t('deployment.range.30d'), value: '30d' },
-];
+const rangeOptions = getDeploymentRangeOptions(t);
 
 const projectItems = computed(() =>
 	projects.value.map((project) => ({
@@ -167,7 +164,7 @@ watch(range, loadDashboard);
 </template>
 
 <style scoped lang="scss">
-@use '@/styles/mixins';
+@use '../../styles/stat-cards';
 
 .container {
 	padding: var(--content-padding);
@@ -179,32 +176,11 @@ watch(range, loadDashboard);
 }
 
 .stats-bar {
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	gap: 0.875rem;
-	margin-block-end: 2.25rem;
-
-	@media (width < 85.0625rem) {
-		grid-template-columns: repeat(3, 1fr);
-	}
-
-	@include mixins.breakpoint-down('lg') {
-		grid-template-columns: repeat(2, 1fr);
-	}
-
-	@media (width < 43.1875rem) {
-		grid-template-columns: 1fr;
-	}
+	@include stat-cards.stats-bar(2.25rem);
 }
 
 .stat-card {
-	display: flex;
-	align-items: center;
-	gap: 0.4375rem;
-	padding: 0.3125rem 0.5625rem;
-	background-color: var(--theme--background-subdued);
-	border-radius: var(--theme--border-radius);
-	overflow: hidden;
+	@include stat-cards.stat-card;
 
 	&.warning {
 		background-color: var(--warning-10);
@@ -214,29 +190,10 @@ watch(range, loadDashboard);
 			--v-icon-color: var(--theme--warning);
 		}
 	}
-
-	&.danger {
-		background-color: var(--danger-10);
-		color: var(--theme--danger);
-
-		.stat-icon {
-			--v-icon-color: var(--theme--danger);
-		}
-	}
-
-	&.success {
-		background-color: var(--success-10);
-		color: var(--theme--success);
-
-		.stat-icon {
-			--v-icon-color: var(--theme--success);
-		}
-	}
 }
 
 .stat-icon {
-	--v-icon-color: var(--theme--foreground-subdued);
-	flex-shrink: 0;
+	@include stat-cards.stat-icon;
 }
 
 .range-select {

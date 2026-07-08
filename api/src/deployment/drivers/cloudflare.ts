@@ -27,7 +27,6 @@ export interface CloudflareCredentials extends Credentials {
 
 export interface CloudflareOptions extends Options {
 	account_id: string;
-	_webhookIds?: string[];
 	/** Saved in Directus; keys are worker external IDs (tags) */
 	deploy_hooks_by_project?: Record<string, Array<{ name?: string; url?: string }>>;
 	/**
@@ -69,7 +68,6 @@ interface CloudflareBuild {
 	created_at?: string;
 	created_on?: string;
 	updated_at?: string;
-	modified_on?: string;
 	stopped_on?: string;
 	finished_at?: string;
 	completed_at?: string;
@@ -90,9 +88,6 @@ interface CloudflareTrigger {
 	id?: string;
 	uuid?: string;
 	trigger_uuid?: string;
-	deploy_hook_id?: string;
-	deploy_hook_url?: string;
-	build_token_uuid?: string;
 	name?: string;
 	trigger_name?: string;
 	type?: string;
@@ -100,7 +95,6 @@ interface CloudflareTrigger {
 	target?: string;
 	branch?: string;
 	branch_includes?: string[];
-	branch_excludes?: string[];
 }
 
 /**
@@ -171,16 +165,6 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 			});
 		}
 
-		if (/^[a-f0-9]{32}$/i.test(trimmed)) {
-			return trimmed.toLowerCase();
-		}
-
-		const withoutHyphens = trimmed.replace(/-/g, '');
-
-		if (/^[a-f0-9]{32}$/i.test(withoutHyphens)) {
-			return withoutHyphens.toLowerCase();
-		}
-
 		const hexOnly = trimmed.replace(/[^a-f0-9]/gi, '');
 
 		if (/^[a-f0-9]{32}$/i.test(hexOnly)) {
@@ -195,16 +179,7 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 	}
 
 	private get accountId(): string {
-		const raw = this.options.account_id;
-
-		if (raw === undefined || raw === null || String(raw).trim() === '') {
-			throw new InvalidProviderConfigError({
-				provider: 'cloudflare-workers',
-				reason: 'Missing account_id in deployment options',
-			});
-		}
-
-		return this.normalizeAccountId(String(raw));
+		return this.normalizeAccountId(String(this.options.account_id ?? ''));
 	}
 
 	private get apiToken(): string {
@@ -224,10 +199,7 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 		return response.errors?.[0]?.message || fallback;
 	}
 
-	/**
-	 * Authenticated JSON API request with concurrency control (no webhook retries — use Retry-After on 429).
-	 */
-	private async request<T>(endpoint: string, options: DeploymentRequestOptions = {}): Promise<T> {
+	private async request<T>(endpoint: string, options: DeploymentRequestOptions = {}, retryCount = 0): Promise<T> {
 		const response = await this.requestLimit(async () =>
 			this.axiosRequest<CloudflareApiResponse<T>>(CloudflareDriver.API_URL, endpoint, {
 				...options,
@@ -247,14 +219,16 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 
 		if (response.status === 429) {
 			const resetHeader = response.headers['retry-after'];
+			const waitSeconds = Number.isFinite(Number(resetHeader)) ? Number(resetHeader) : 60;
 
-			const reset = Number.isFinite(Number(resetHeader))
-				? new Date(Date.now() + Number(resetHeader) * 1000)
-				: new Date(Date.now() + 60_000);
+			if (retryCount < 3) {
+				await new Promise((resolve) => setTimeout(resolve, waitSeconds * 1000));
+				return this.request<T>(endpoint, options, retryCount + 1);
+			}
 
 			throw new HitRateLimitError({
 				limit: Number(response.headers['x-ratelimit-limit'] ?? 0),
-				reset,
+				reset: new Date(Date.now() + waitSeconds * 1000),
 			});
 		}
 
@@ -275,59 +249,8 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 		return (body.result ?? {}) as T;
 	}
 
-	/** Queues REST API (pull/ack). */
-	private async queuesRestRequest<T>(endpoint: string, body: object): Promise<T> {
-		const response = await this.requestLimit(async () =>
-			this.axiosRequest<CloudflareApiResponse<T>>(CloudflareDriver.API_URL, endpoint, {
-				method: 'POST',
-				body: JSON.stringify(body),
-				headers: {
-					Authorization: `Bearer ${this.apiToken}`,
-					'Content-Type': 'application/json',
-				},
-			}),
-		);
-
-		const resBody = response.data ?? {};
-
-		if (response.status === 401 || response.status === 403) {
-			throw new InvalidCredentialsError();
-		}
-
-		if (response.status === 429) {
-			const resetHeader = response.headers['retry-after'];
-
-			const reset = Number.isFinite(Number(resetHeader))
-				? new Date(Date.now() + Number(resetHeader) * 1000)
-				: new Date(Date.now() + 60_000);
-
-			throw new HitRateLimitError({
-				limit: Number(response.headers['x-ratelimit-limit'] ?? 0),
-				reset,
-			});
-		}
-
-		if (response.status >= 400) {
-			throw new ServiceUnavailableError({
-				service: 'cloudflare-workers',
-				reason: this.getErrorMessage(resBody, `Cloudflare Queues API error: ${response.status}`),
-			});
-		}
-
-		if (resBody.success === false) {
-			throw new ServiceUnavailableError({
-				service: 'cloudflare-workers',
-				reason: this.getErrorMessage(resBody, 'Cloudflare Queues API request failed'),
-			});
-		}
-
-		return (resBody.result ?? {}) as T;
-	}
-
 	/**
-	 * Workers Builds API documents `status` as queued | initializing | running | stopped; when stopped, use
-	 * `build_outcome` for success vs failure. We also map a few alternate/legacy `status` strings seen in the wild.
-	 * Unknown or missing status is treated as in-progress (`building`) so we never falsely mark a run complete.
+	 * Map Cloudflare build status/outcome to Directus run status. Unknown values stay `building`.
 	 */
 	private mapStatus(cloudflareStatus: string | undefined, buildOutcome?: string | undefined): Status {
 		const status = cloudflareStatus?.toLowerCase();
@@ -337,7 +260,7 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 			if (outcome === 'success' || outcome === 'dce') return 'ready';
 			if (outcome === 'fail' || outcome === 'failed' || outcome === 'failure') return 'error';
 			if (outcome === 'canceled' || outcome === 'cancelled') return 'canceled';
-			return 'ready';
+			return 'building';
 		}
 
 		switch (status) {
@@ -527,40 +450,37 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 		await this.request<CloudflareWorker[]>(`accounts/${this.accountId}/workers/scripts`);
 	}
 
-	async listProjects(): Promise<Project[]> {
+	private async fetchMappedWorkers(): Promise<Project[]> {
 		const result = await this.request<CloudflareWorker[] | { scripts?: CloudflareWorker[] }>(
 			`accounts/${this.accountId}/workers/scripts`,
 		);
 
 		const workers = Array.isArray(result) ? result : (result.scripts ?? []);
 
-		const mappedWorkers = workers
-			.map((worker) => this.mapProject(worker))
-			.filter((project) => project.id && project.name);
+		return workers.map((worker) => this.mapProject(worker)).filter((project) => project.id && project.name);
+	}
 
-		const deployableByTag = new Map<string, boolean>();
+	async listProjects(): Promise<Project[]> {
+		const mappedWorkers = await this.fetchMappedWorkers();
 
-		await Promise.all(
-			mappedWorkers.map(async (worker) => {
-				deployableByTag.set(worker.id, await this.hasBuildTrigger(worker.id));
-			}),
+		return Promise.all(
+			mappedWorkers.map(async (worker) => ({ ...worker, deployable: await this.hasBuildTrigger(worker.id) })),
 		);
-
-		return mappedWorkers.map((worker) => ({ ...worker, deployable: deployableByTag.get(worker.id) ?? false }));
 	}
 
 	async getProject(projectId: string): Promise<Project> {
-		const projects = await this.listProjects();
-		const project = projects.find((item) => item.id === projectId);
+		// Avoid O(workers) trigger lookups on a single-project fetch.
+		const mappedWorkers = await this.fetchMappedWorkers();
+		const worker = mappedWorkers.find((project) => project.id === projectId);
 
-		if (!project) {
+		if (!worker) {
 			throw new ServiceUnavailableError({
 				service: 'cloudflare-workers',
 				reason: `Cloudflare Worker "${projectId}" not found`,
 			});
 		}
 
-		return project;
+		return { ...worker, deployable: await this.hasBuildTrigger(worker.id) };
 	}
 
 	async getRun(runId: string): Promise<Details> {
@@ -571,9 +491,21 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 			),
 		]);
 
+		const run = this.mapBuild(build);
+
 		return {
-			...this.mapBuild({ ...build, id: this.getBuildId(build) || runId }),
+			...run,
+			id: run.id || runId,
 			logs: this.extractLogs(logsPayload),
+		};
+	}
+
+	private mapTriggerResult(build: CloudflareBuild): TriggerResult {
+		return {
+			deployment_id: this.getBuildId(build),
+			status: this.mapStatus(build.status, build.build_outcome),
+			created_at: new Date(build.created_at ?? build.created_on ?? new Date().toISOString()),
+			...(build.url ? { url: build.url } : {}),
 		};
 	}
 
@@ -585,12 +517,7 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 			this.assertDeployHookInProjectAllowlist(projectId, options.deployHookUrl);
 			const response = await this.requestDeployHook(options.deployHookUrl);
 
-			return {
-				deployment_id: this.getBuildId(response),
-				status: this.mapStatus(response.status, response.build_outcome),
-				created_at: new Date(response.created_at ?? response.created_on ?? new Date().toISOString()),
-				...(response.url ? { url: response.url } : {}),
-			};
+			return this.mapTriggerResult(response);
 		}
 
 		const triggers = await this.listTriggers(projectId);
@@ -621,21 +548,29 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 			},
 		);
 
-		return {
-			deployment_id: this.getBuildId(response),
-			status: this.mapStatus(response.status, response.build_outcome),
-			created_at: new Date(response.created_at ?? response.created_on ?? new Date().toISOString()),
-			...(response.url ? { url: response.url } : {}),
-		};
+		return this.mapTriggerResult(response);
 	}
 
 	async cancelRun(runId: string): Promise<Status> {
-		const response = await this.request<CloudflareBuild>(
-			`accounts/${this.accountId}/builds/builds/${encodeURIComponent(runId)}/cancel`,
-			{ method: 'PUT' },
-		);
+		try {
+			const response = await this.request<CloudflareBuild>(
+				`accounts/${this.accountId}/builds/builds/${encodeURIComponent(runId)}/cancel`,
+				{ method: 'PUT' },
+			);
 
-		return this.mapStatus(response.status ?? 'cancelled');
+			return this.mapStatus(response.status ?? 'cancelled', response.build_outcome ?? 'canceled');
+		} catch {
+			const details = await this.getRun(runId);
+
+			if (details.status !== 'building') {
+				return details.status;
+			}
+
+			throw new ServiceUnavailableError({
+				service: 'cloudflare-workers',
+				reason: `Could not cancel the run: ${runId}`,
+			});
+		}
 	}
 
 	async getRunLogs(runId: string, options?: { since?: Date }): Promise<Log[]> {
@@ -652,33 +587,12 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 		return logs;
 	}
 
-	async registerWebhook(_webhookUrl: string, projectIds: string[]): Promise<WebhookRegistrationResult> {
-		const projectId = projectIds[0];
-
-		if (!projectId) {
-			return { webhook_ids: [], webhook_secret: '' };
-		}
-
-		const triggers = await this.listTriggers(projectId);
-		const trigger = triggers.find((entry) => this.isProductionTrigger(entry)) ?? triggers[0];
-		const triggerUuid = this.getTriggerUuid(trigger);
-
-		if (!triggerUuid) {
-			throw new InvalidProviderConfigError({
-				provider: 'cloudflare-workers',
-				reason: 'This Worker has no build trigger configured — configure Workers Builds in Cloudflare first',
-			});
-		}
-
-		return {
-			webhook_ids: [triggerUuid],
-			webhook_secret: '',
-		};
+	/** No-op — Cloudflare has no outbound webhooks; status is polled or queue-pulled. */
+	async registerWebhook(_webhookUrl: string, _projectIds: string[]): Promise<WebhookRegistrationResult> {
+		return { webhook_ids: [], webhook_secret: '' };
 	}
 
-	async unregisterWebhook(_webhookIds: string[]): Promise<void> {
-		// Cloudflare trigger lifecycle is managed by the customer in Cloudflare.
-	}
+	async unregisterWebhook(_webhookIds: string[]): Promise<void> {}
 
 	verifyAndParseWebhook(
 		_rawBody: Buffer,
@@ -713,11 +627,14 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 		const queueId = this.options.events_queue_id?.trim();
 		if (!queueId) return [];
 
-		const result = await this.queuesRestRequest<{ messages?: CloudflareQueuePullMessage[] }>(
+		const result = await this.request<{ messages?: CloudflareQueuePullMessage[] }>(
 			`accounts/${this.accountId}/queues/${encodeURIComponent(queueId)}/messages/pull`,
 			{
-				batch_size: Math.min(100, Math.max(1, options?.batch_size ?? 50)),
-				visibility_timeout_ms: options?.visibility_timeout_ms ?? 60_000,
+				method: 'POST',
+				body: JSON.stringify({
+					batch_size: Math.min(100, Math.max(1, options?.batch_size ?? 50)),
+					visibility_timeout_ms: options?.visibility_timeout_ms ?? 60_000,
+				}),
 			},
 		);
 
@@ -734,13 +651,13 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 
 		if (ackLeaseIds.length === 0 && retryLeaseIds.length === 0) return;
 
-		await this.queuesRestRequest<unknown>(
-			`accounts/${this.accountId}/queues/${encodeURIComponent(queueId)}/messages/ack`,
-			{
+		await this.request<unknown>(`accounts/${this.accountId}/queues/${encodeURIComponent(queueId)}/messages/ack`, {
+			method: 'POST',
+			body: JSON.stringify({
 				acks: ackLeaseIds.map((lease_id) => ({ lease_id })),
 				retries: retryLeaseIds.map((lease_id) => ({ lease_id })),
-			},
-		);
+			}),
+		});
 	}
 
 	private decodeQueueMessageBody(message: CloudflareQueuePullMessage): unknown {

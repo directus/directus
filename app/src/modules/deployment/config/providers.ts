@@ -8,7 +8,20 @@ export interface ProviderConfig {
 	tokenUrl?: string;
 	settingsWarning?: string;
 	getDeploymentUrl?: (options: Record<string, any>, projectName: string, externalId: string) => string | null;
+	notDeployableHintKey?: string;
+	notDeployableStatusKey?: string;
+	deployHooks?: {
+		setupNoticeKey: string;
+		titleKey: string;
+		hintKey: string;
+		namePlaceholderKey: string;
+		urlPlaceholderKey: string;
+		addLabelKey: string;
+		deployViaKey: string;
+	};
 }
+
+export const defaultNotDeployableHintKey = 'deployment.provider.project.not_deployable';
 
 export const availableProviders = ['vercel', 'netlify', 'cloudflare-workers'];
 
@@ -32,9 +45,6 @@ export type DeployToolbarAction =
 	| { id: string; kind: 'deploy_hook'; name: string; url: string }
 	| { id: 'refresh'; kind: 'refresh' };
 
-/**
- * Build deploy menu actions from provider capabilities and optional deploy-hook entries.
- */
 export function buildDeployToolbarActions(
 	capabilities: DeploymentProviderCapabilities,
 	deployHooks: Array<{ name: string; url: string }>,
@@ -76,6 +86,19 @@ export function formatDeploymentTargetLabel(target: string, t: (key: string) => 
 	}
 
 	return target;
+}
+
+export interface DeploymentRangeOption {
+	text: string;
+	value: string;
+}
+
+export function getDeploymentRangeOptions(t: (key: string) => string): DeploymentRangeOption[] {
+	return [
+		{ text: t('deployment.range.1d'), value: '1d' },
+		{ text: t('deployment.range.7d'), value: '7d' },
+		{ text: t('deployment.range.30d'), value: '30d' },
+	];
 }
 
 export function useProviderConfigs(
@@ -246,6 +269,17 @@ export function useProviderConfigs(
 			'cloudflare-workers': {
 				tokenUrl: cloudflareTokenUrl,
 				settingsWarning: t('deployment.provider.cloudflare-workers.settings_warning'),
+				notDeployableHintKey: 'deployment.provider.project.not_deployable_cloudflare',
+				notDeployableStatusKey: 'deployment.provider.project.missing_build_trigger',
+				deployHooks: {
+					setupNoticeKey: 'deployment.provider.cloudflare-workers.setup_requirements',
+					titleKey: 'deployment.provider.cloudflare-workers.deploy_hooks.title',
+					hintKey: 'deployment.provider.cloudflare-workers.deploy_hooks.hint',
+					namePlaceholderKey: 'deployment.provider.cloudflare-workers.deploy_hooks.name_placeholder',
+					urlPlaceholderKey: 'deployment.provider.cloudflare-workers.deploy_hooks.url_placeholder',
+					addLabelKey: 'deployment.provider.cloudflare-workers.deploy_hooks.add',
+					deployViaKey: 'deployment.provider.cloudflare-workers.deploy_hooks.deploy_via',
+				},
 				getDeploymentUrl: (options, projectName, externalId) => {
 					const accountId = options['account_id'];
 					if (!accountId) return null;

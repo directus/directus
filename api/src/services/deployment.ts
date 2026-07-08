@@ -1,6 +1,8 @@
 import { useEnv } from '@directus/env';
 import {
+	ForbiddenError,
 	HitRateLimitError,
+	InvalidCredentialsError,
 	InvalidPayloadError,
 	InvalidProviderConfigError,
 	ServiceUnavailableError,
@@ -10,6 +12,7 @@ import type {
 	CachedResult,
 	Credentials,
 	DeploymentConfig,
+	Details,
 	Options,
 	PrimaryKey,
 	Project,
@@ -22,7 +25,7 @@ import { mergeFilters } from '@directus/utils';
 import { has, isEmpty } from 'lodash-es';
 import { getCache, getCacheValueWithTTL, setCacheValueWithExpiry } from '../cache.js';
 import type { DeploymentDriver } from '../deployment/deployment.js';
-import { getDeploymentDriver } from '../deployment.js';
+import { buildDriverFromConfig, getDeploymentDriver, readDeploymentConfig } from '../deployment.js';
 import { useLogger } from '../logger/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { parseValue } from '../utils/parse-value.js';
@@ -33,8 +36,10 @@ import { DeploymentRunsService } from './deployment-runs.js';
 import { ItemsService } from './items.js';
 
 const env = useEnv();
+const logger = useLogger();
 const DEPLOYMENT_CACHE_TTL = getMilliseconds(env['CACHE_DEPLOYMENT_TTL']) || 5000; // Default 5s
 const SYNC_THRESHOLD_MS = 60 * 60 * 1000; // 1 hour
+const TERMINAL_RUN_STATUSES = new Set<Status>(['ready', 'error', 'canceled']);
 
 function resolveDeployHookLabelFromOptions(
 	deploymentOptions: Options | null | undefined,
@@ -54,6 +59,20 @@ function resolveDeployHookLabelFromOptions(
 	}
 
 	return undefined;
+}
+
+export interface DashboardProject {
+	id: string;
+	external_id: string;
+	name: string;
+	url: string | null;
+	framework: string | null;
+	deployable: boolean;
+	latest_deployment?: {
+		status: string | null;
+		created_at: string;
+		finished_at: string | null;
+	};
 }
 
 /** Stored in `directus_deployment_runs.target` */
@@ -213,10 +232,24 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		});
 
 		if (!results || results.length === 0) {
-			throw new Error(`Deployment config for "${provider}" not found`);
+			throw new ForbiddenError({ reason: `Deployment config for "${provider}" not found` });
 		}
 
 		return results[0]!;
+	}
+
+	/**
+	 * Read deployment config by provider without throwing when none exists — for callers that
+	 * need to distinguish "not configured" from an unexpected lookup failure.
+	 */
+	async tryReadByProvider(provider: ProviderType, query?: Query): Promise<DeploymentConfig | null> {
+		const results = await this.readByQuery({
+			...query,
+			filter: mergeFilters({ provider: { _eq: provider } }, query?.filter ?? null),
+			limit: 1,
+		});
+
+		return results?.[0] ?? null;
 	}
 
 	/**
@@ -233,20 +266,22 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	async deleteByProvider(provider: ProviderType): Promise<PrimaryKey> {
 		const deployment = await this.readByProvider(provider);
 
-		const primaryKey = await this.deleteOne(deployment.id);
-
-		// Webhook cleanup
+		// Unregister before deleteOne — getDriver() needs the config row still in the DB.
 		if (deployment.webhook_ids && deployment.webhook_ids.length > 0) {
 			try {
 				const driver = await this.getDriver(provider);
 				await driver.unregisterWebhook(deployment.webhook_ids);
-			} catch (err) {
-				const logger = useLogger();
-				logger.error(`Failed to unregister webhook for ${provider}: ${err}`);
+			} catch (error) {
+				logger.error(error, `[webhook:${provider}] Failed to unregister webhook`);
 			}
 		}
 
-		await this.invokeConfigLifecycle(provider, 'deleted');
+		// Accountable reads redact encrypted credentials to "**********"; lifecycle hooks need the real values.
+		const internalConfig = await this.readConfig(provider);
+
+		const primaryKey = await this.deleteOne(deployment.id);
+
+		await this.invokeConfigLifecycle(provider, 'deleted', internalConfig);
 
 		return primaryKey;
 	}
@@ -254,12 +289,16 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	/**
 	 * Invoke provider-specific config lifecycle hooks after DB changes are committed.
 	 */
-	async invokeConfigLifecycle(provider: ProviderType, event: 'created' | 'updated' | 'deleted'): Promise<void> {
+	async invokeConfigLifecycle(
+		provider: ProviderType,
+		event: 'created' | 'updated' | 'deleted',
+		deletedConfig?: DeploymentConfig,
+	): Promise<void> {
 		if (event === 'deleted') {
-			if (provider === 'cloudflare-workers') {
-				const { refreshCloudflareQueueConsumer } = await import('../schedules/cloudflare-queue-consumer.js');
-				await refreshCloudflareQueueConsumer();
-			}
+			if (!deletedConfig) return;
+
+			const driver = buildDriverFromConfig(deletedConfig);
+			await driver.onConfigDeleted();
 
 			return;
 		}
@@ -277,22 +316,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	 * Read deployment config with decrypted credentials (internal use)
 	 */
 	private async readConfig(provider: ProviderType): Promise<DeploymentConfig> {
-		const internalService = new ItemsService<DeploymentConfig>('directus_deployments', {
-			knex: this.knex,
-			schema: this.schema,
-			accountability: null,
-		});
-
-		const results = await internalService.readByQuery({
-			filter: { provider: { _eq: provider } },
-			limit: 1,
-		});
-
-		if (!results || results.length === 0) {
-			throw new Error(`Deployment config for "${provider}" not found`);
-		}
-
-		return results[0]!;
+		return readDeploymentConfig(this.knex, this.schema, provider);
 	}
 
 	/**
@@ -314,26 +338,35 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	 * Get a deployment driver instance with decrypted credentials
 	 */
 	async getDriver(provider: ProviderType): Promise<DeploymentDriver> {
-		const deployment = await this.readConfig(provider);
-		const credentials = parseValue<Credentials>(deployment.credentials, {});
+		const config = await this.readConfig(provider);
+		return buildDriverFromConfig(config);
+	}
 
-		const options = {
-			...parseValue<Options>(deployment.options, {}),
-			_webhookIds: deployment.webhook_ids ?? [],
-		};
+	private async getDriverAndConfig(
+		provider: ProviderType,
+	): Promise<{ driver: DeploymentDriver; config: DeploymentConfig }> {
+		const config = await this.readConfig(provider);
+		const driver = buildDriverFromConfig(config);
 
-		return getDeploymentDriver(deployment.provider, credentials, options);
+		return { driver, config };
 	}
 
 	/**
 	 * Sync webhook registration with current tracked projects.
 	 */
 	async syncWebhook(provider: ProviderType): Promise<void> {
-		const logger = useLogger();
+		const { driver, config } = await this.getDriverAndConfig(provider);
+
+		if (driver.capabilities.eventsTransport !== 'webhook') {
+			// Clear stale webhook_ids from configs created before poll-based capabilities.
+			if (config.webhook_ids || config.webhook_secret) {
+				await super.updateOne(config.id, { webhook_ids: null, webhook_secret: null } as Partial<DeploymentConfig>);
+			}
+
+			return;
+		}
 
 		logger.debug(`[webhook:${provider}] Starting webhook sync`);
-
-		const config = await this.readConfig(provider);
 
 		const projectsService = new ItemsService<DeploymentProject>('directus_deployment_projects', {
 			knex: this.knex,
@@ -347,7 +380,6 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		});
 
 		const projectExternalIds = projects.map((p) => p.external_id);
-		const driver = await this.getDriver(provider);
 
 		// No projects → unregister webhooks if any exist
 		if (projectExternalIds.length === 0) {
@@ -356,8 +388,8 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 				try {
 					await driver.unregisterWebhook(config.webhook_ids);
-				} catch (err) {
-					logger.warn(`[webhook:${provider}] Failed to unregister: ${err}`);
+				} catch (error) {
+					logger.warn(error, `[webhook:${provider}] Failed to unregister`);
 				}
 
 				await super.updateOne(config.id, { webhook_ids: null, webhook_secret: null } as Partial<DeploymentConfig>);
@@ -378,10 +410,28 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		// Register new webhooks before touching the old ones so there's no gap in coverage.
 		const result = await driver.registerWebhook(webhookUrl, projectExternalIds);
 
-		await super.updateOne(config.id, {
-			webhook_ids: result.webhook_ids,
-			webhook_secret: result.webhook_secret,
-		} as Partial<DeploymentConfig>);
+		try {
+			await super.updateOne(config.id, {
+				webhook_ids: result.webhook_ids,
+				webhook_secret: result.webhook_secret,
+			} as Partial<DeploymentConfig>);
+		} catch (error) {
+			logger.error(
+				error,
+				`[webhook:${provider}] Failed to persist newly-registered webhook(s) [${result.webhook_ids.join(', ')}] — attempting rollback`,
+			);
+
+			try {
+				await driver.unregisterWebhook(result.webhook_ids);
+			} catch (rollbackError) {
+				logger.error(
+					rollbackError,
+					`[webhook:${provider}] Rollback failed — webhook(s) [${result.webhook_ids.join(', ')}] are orphaned on the provider and must be removed manually`,
+				);
+			}
+
+			throw error;
+		}
 
 		logger.info(
 			`[webhook:${provider}] Registered ${result.webhook_ids.length} webhook(s): [${result.webhook_ids.join(', ')}]`,
@@ -393,8 +443,8 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 			try {
 				await driver.unregisterWebhook(previousWebhookIds);
-			} catch (err) {
-				logger.warn(`[webhook:${provider}] Failed to unregister old webhook(s): ${err}`);
+			} catch (error) {
+				logger.warn(error, `[webhook:${provider}] Failed to unregister old webhook(s)`);
 
 				// Retain stale IDs so the next sync can retry cleanup.
 				const mergedIds = [...new Set([...result.webhook_ids, ...previousWebhookIds])];
@@ -463,7 +513,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		provider: ProviderType,
 		sinceDate: Date,
 	): Promise<{
-		projects: any[];
+		projects: DashboardProject[];
 		stats: { active_deployments: number; successful_builds: number; failed_builds: number };
 	}> {
 		const projectsService = new DeploymentProjectsService({
@@ -477,8 +527,11 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		});
 
 		const deployment = await this.readByProvider(provider);
+		const driver = await this.getDriver(provider);
 
-		const selectedProjects = await projectsService.readByQuery({
+		type ProjectWithLatestRun = DeploymentProject & { runs?: DeploymentRun[] };
+
+		const selectedProjects = (await projectsService.readByQuery({
 			filter: { deployment: { _eq: deployment.id } },
 			fields: [
 				'id',
@@ -488,14 +541,19 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 				'framework',
 				'deployable',
 				'runs.id',
+				'runs.project',
+				'runs.external_id',
+				'runs.target',
 				'runs.status',
-				'runs.date_created',
+				'runs.url',
 				'runs.started_at',
 				'runs.completed_at',
+				'runs.date_created',
+				'runs.user_created',
 			],
 			deep: { runs: { _sort: ['-date_created'], _limit: 1 } },
 			limit: -1,
-		});
+		})) as ProjectWithLatestRun[];
 
 		if (selectedProjects.length === 0) {
 			return {
@@ -528,15 +586,29 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		const countByStatus = (status: string) =>
 			Number(statusCounts.find((r: any) => r['status'] === status)?.['count'] ?? 0);
 
+		// Poll-based providers have no webhooks — refresh stale "building" rows like the runs list does.
+		let refreshedById = new Map<string, DeploymentRun>();
+
+		if (driver.capabilities.needsRunStatusPolling) {
+			const nonTerminalRuns = selectedProjects
+				.map((p) => (Array.isArray(p.runs) ? p.runs[0] : undefined))
+				.filter((run): run is DeploymentRun => !!run && !TERMINAL_RUN_STATUSES.has((run.status ?? '') as Status));
+
+			if (nonTerminalRuns.length > 0) {
+				const refreshed = await this.refreshRunsStatuses(provider, nonTerminalRuns);
+				refreshedById = new Map(refreshed.map((r) => [r.id, r]));
+			}
+		}
+
 		// Background sync of project metadata if stale
-		this.syncProjectMetadataIfStale(provider, deployment).catch((err) => {
-			const logger = useLogger();
-			logger.error(`Failed to sync project metadata for ${provider}: ${err}`);
+		this.syncProjectMetadataIfStale(provider, deployment).catch((error) => {
+			logger.error(error, `[metadata:${provider}] Failed to sync project metadata`);
 		});
 
 		return {
 			projects: selectedProjects.map((p) => {
-				const latestRun = Array.isArray(p.runs) ? p.runs[0] : undefined;
+				const rawLatestRun = Array.isArray(p.runs) ? p.runs[0] : undefined;
+				const latestRun = rawLatestRun ? (refreshedById.get(rawLatestRun.id) ?? rawLatestRun) : undefined;
 
 				return {
 					id: p.id,
@@ -575,7 +647,6 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			if (Date.now() - lastSync < SYNC_THRESHOLD_MS) return;
 		}
 
-		const logger = useLogger();
 		logger.debug(`[metadata:${provider}] Syncing project metadata`);
 
 		const projectsService = new DeploymentProjectsService({
@@ -637,7 +708,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		});
 
 		const project = await projectsService.readOne(projectId);
-		let driver = await this.getDriver(provider);
+		const driver = await this.getDriver(provider);
 		const capabilities = driver.capabilities;
 
 		if (options.preview && !capabilities.supportsPreviewDeploy) {
@@ -648,36 +719,13 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			throw new InvalidPayloadError({ reason: 'Deploy hook deployments are not supported for this provider' });
 		}
 
-		let result: TriggerResult;
-
 		const driverOptions = {
 			preview: options.preview,
 			clearCache: options.clearCache,
 			...(options.deployHookUrl ? { deployHookUrl: options.deployHookUrl } : {}),
 		};
 
-		try {
-			result = await driver.triggerRun(project.external_id, driverOptions);
-		} catch (error) {
-			const reason =
-				error && typeof error === 'object' && 'extensions' in error
-					? (error as { extensions?: { reason?: string } }).extensions?.reason
-					: undefined;
-
-			const missingTrigger =
-				typeof reason === 'string' &&
-				reason.includes('no build trigger configured') &&
-				capabilities.eventsTransport === 'poll';
-
-			if (!missingTrigger) {
-				throw error;
-			}
-
-			// Sync trigger metadata on demand for poll-only providers (eg. Cloudflare) and retry once.
-			await this.syncWebhook(provider);
-			driver = await this.getDriver(provider);
-			result = await driver.triggerRun(project.external_id, driverOptions);
-		}
+		const result: TriggerResult = await driver.triggerRun(project.external_id, driverOptions);
 
 		const deploymentRow = await this.readConfig(provider);
 		const deploymentOptions = parseValue<Options>(deploymentRow.options, {});
@@ -716,6 +764,24 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		return runsService.readOne(runId);
 	}
 
+	private buildRunStatusUpdate(run: DeploymentRun, details: Details): Partial<DeploymentRun> {
+		const update: Partial<DeploymentRun> = {};
+
+		if (details.status !== run.status) {
+			update.status = details.status;
+		}
+
+		if (details.url && details.url !== run.url) {
+			update.url = details.url;
+		}
+
+		if (TERMINAL_RUN_STATUSES.has(details.status) && !run.completed_at) {
+			update.completed_at = new Date().toISOString();
+		}
+
+		return update;
+	}
+
 	/**
 	 * Get a run with its logs from the provider
 	 */
@@ -727,28 +793,11 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 		const run = await runsService.readOne(runId);
 		const driver = await this.getDriver(provider);
-		const terminalStatuses = new Set<Status>(['ready', 'error', 'canceled']);
 
-		if (driver.capabilities.needsRunStatusPolling && !terminalStatuses.has(run.status as Status)) {
-			let errorUpdate: Partial<DeploymentRun> | null = null;
-
+		if (driver.capabilities.needsRunStatusPolling && !TERMINAL_RUN_STATUSES.has(run.status as Status)) {
 			try {
-				// getRun fetches status and logs in one combined call — don't also call getRunLogs.
 				const details = await driver.getRun(run.external_id);
-				const nextStatus = details.status;
-				const update: Partial<DeploymentRun> = {};
-
-				if (nextStatus !== run.status) {
-					update.status = nextStatus;
-				}
-
-				if (details.url && details.url !== run.url) {
-					update.url = details.url;
-				}
-
-				if (terminalStatuses.has(nextStatus) && !run.completed_at) {
-					update.completed_at = new Date().toISOString();
-				}
+				const update = this.buildRunStatusUpdate(run, details);
 
 				if (Object.keys(update).length > 0) {
 					await runsService.updateOne(run.id, update);
@@ -757,22 +806,17 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 				return { ...run, logs: details.logs ?? [] };
 			} catch (error) {
-				if (error instanceof HitRateLimitError || error instanceof ServiceUnavailableError) throw error;
-
-				errorUpdate = {
-					status: 'error',
-					completed_at: run.completed_at ?? new Date().toISOString(),
-				};
-			}
-
-			if (errorUpdate) {
-				try {
-					await runsService.updateOne(run.id, errorUpdate);
-				} catch (updateError) {
-					useLogger().warn(`[deployment:${provider}] Failed to mark run as error: ${String(updateError)}`);
+				if (
+					error instanceof HitRateLimitError ||
+					error instanceof ServiceUnavailableError ||
+					error instanceof InvalidCredentialsError
+				) {
+					throw error;
 				}
 
-				return { ...run, ...errorUpdate, logs: [] };
+				// Poll failures must not mark a run as errored — only a successful fetch may update status.
+				logger.debug(error, `[deployment:${provider}] Failed to poll run "${run.external_id}" status`);
+				return { ...run, logs: [] };
 			}
 		}
 
@@ -780,10 +824,17 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			const logs = await driver.getRunLogs(run.external_id, since ? { since } : undefined);
 			return { ...run, logs };
 		} catch (error) {
-			const logger = useLogger();
+			if (
+				error instanceof HitRateLimitError ||
+				error instanceof ServiceUnavailableError ||
+				error instanceof InvalidCredentialsError
+			) {
+				throw error;
+			}
 
-			logger.warn(
-				`[deployment:${provider}] Failed to fetch logs for run "${run.external_id}", returning run without logs: ${String(error)}`,
+			logger.debug(
+				error,
+				`[deployment:${provider}] Failed to fetch logs for run "${run.external_id}", returning run without logs`,
 			);
 
 			return { ...run, logs: [] };
@@ -804,53 +855,22 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			schema: this.schema,
 		});
 
-		const terminalStatuses = new Set<Status>(['ready', 'error', 'canceled']);
 		const refreshedRuns = [...runs];
 
 		await Promise.all(
 			runs.map(async (run, index) => {
-				if (terminalStatuses.has(run.status as Status)) return;
-
-				let errorUpdate: Partial<DeploymentRun> | null = null;
+				if (TERMINAL_RUN_STATUSES.has(run.status as Status)) return;
 
 				try {
 					const details = await driver.getRun(run.external_id);
-					const nextStatus = details.status;
-					const update: Partial<DeploymentRun> = {};
-
-					if (nextStatus !== run.status) {
-						update.status = nextStatus;
-					}
-
-					if (details.url && details.url !== run.url) {
-						update.url = details.url;
-					}
-
-					if (terminalStatuses.has(nextStatus) && !run.completed_at) {
-						update.completed_at = new Date().toISOString();
-					}
+					const update = this.buildRunStatusUpdate(run, details);
 
 					if (Object.keys(update).length > 0) {
 						await runsService.updateOne(run.id, update);
 						refreshedRuns[index] = { ...run, ...update };
 					}
 				} catch (error) {
-					if (error instanceof HitRateLimitError || error instanceof ServiceUnavailableError) return;
-
-					errorUpdate = {
-						status: 'error',
-						completed_at: run.completed_at ?? new Date().toISOString(),
-					};
-				}
-
-				if (errorUpdate) {
-					try {
-						await runsService.updateOne(run.id, errorUpdate);
-					} catch (updateError) {
-						useLogger().warn(`[deployment:${provider}] Failed to mark run as error: ${String(updateError)}`);
-					}
-
-					refreshedRuns[index] = { ...run, ...errorUpdate };
+					logger.debug(error, `[deployment:${provider}] Failed to poll run "${run.external_id}" status`);
 				}
 			}),
 		);

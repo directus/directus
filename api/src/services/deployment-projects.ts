@@ -1,17 +1,13 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
-	Credentials,
 	DeploymentConfig,
-	Options,
 	PrimaryKey,
 	Project as ProviderProject,
 	ProviderType,
 } from '@directus/types';
 import getDatabase from '../database/index.js';
-import type { DeploymentDriver } from '../deployment/deployment.js';
-import { getDeploymentDriver } from '../deployment.js';
-import { parseValue } from '../utils/parse-value.js';
+import { buildDriverFromConfig, readDeploymentConfig } from '../deployment.js';
 import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
 
@@ -38,6 +34,23 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 	async readByExternalId(externalId: string): Promise<DeploymentProject | null> {
 		const results = await this.readByQuery({
 			filter: { external_id: { _eq: externalId } },
+			limit: 1,
+		});
+
+		return results?.[0] ?? null;
+	}
+
+	/**
+	 * Find a tracked project by external ID or name (Cloudflare queue events use script name; Directus stores tag as external_id).
+	 */
+	async readByProviderReference(deploymentId: string, reference: string): Promise<DeploymentProject | null> {
+		const results = await this.readByQuery({
+			filter: {
+				_and: [
+					{ _or: [{ external_id: { _eq: reference } }, { name: { _eq: reference } }] },
+					{ deployment: { _eq: deploymentId } },
+				],
+			},
 			limit: 1,
 		});
 
@@ -82,6 +95,10 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 		}));
 	}
 
+	private async readConfig(provider: ProviderType): Promise<DeploymentConfig> {
+		return readDeploymentConfig(this.knex, this.schema, provider);
+	}
+
 	/**
 	 * Validate that all projects to create are deployable.
 	 */
@@ -92,7 +109,7 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 		if (projectsToCreate.length === 0) return;
 
 		const config = await this.readConfig(provider);
-		const driver = this.createDriver(config);
+		const driver = buildDriverFromConfig(config);
 		const providerProjects = await driver.listProjects();
 		const projectsMap = new Map(providerProjects.map((p) => [p.id, p]));
 
@@ -117,7 +134,7 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 	): Promise<DeploymentProject[]> {
 		const config = await this.readConfig(provider);
 		const db = getDatabase();
-		const driver = this.createDriver(config);
+		const driver = buildDriverFromConfig(config);
 
 		// Fetch metadata for new projects
 		const enrichedCreate = await Promise.all(
@@ -163,34 +180,5 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 				limit: -1,
 			});
 		});
-	}
-
-	/**
-	 * Read deployment config by provider (null accountability for internal use).
-	 */
-	private async readConfig(provider: ProviderType): Promise<DeploymentConfig> {
-		const internalService = new ItemsService<DeploymentConfig>('directus_deployments', {
-			knex: this.knex,
-			schema: this.schema,
-			accountability: null,
-		});
-
-		const results = await internalService.readByQuery({
-			filter: { provider: { _eq: provider } },
-			limit: 1,
-		});
-
-		if (!results || results.length === 0) {
-			throw new Error(`Deployment config for "${provider}" not found`);
-		}
-
-		return results[0]!;
-	}
-
-	private createDriver(config: DeploymentConfig): DeploymentDriver {
-		const credentials = parseValue<Credentials>(config.credentials, {});
-		const options = parseValue<Options>(config.options, {});
-
-		return getDeploymentDriver(config.provider, credentials, options);
 	}
 }

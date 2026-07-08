@@ -1,10 +1,14 @@
-import type { Credentials, Options, ProviderType } from '@directus/types';
+import { ForbiddenError } from '@directus/errors';
+import type { Credentials, DeploymentConfig, Options, ProviderType, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import getDatabase from './database/index.js';
 import type { DeploymentDriver } from './deployment/deployment.js';
 import { CloudflareDriver, NetlifyDriver, VercelDriver } from './deployment/drivers/index.js';
 import { useLogger } from './logger/index.js';
 import { DeploymentService } from './services/deployment.js';
+import { ItemsService } from './services/items.js';
 import { getSchema } from './utils/get-schema.js';
+import { parseValue } from './utils/parse-value.js';
 
 // Driver constructor type — `any` for credentials/options so provider-specific subclasses (e.g. required CloudflareOptions) are assignable
 type DriverConstructor = new (credentials: any, options?: any) => DeploymentDriver;
@@ -30,7 +34,7 @@ export function registerDeploymentDrivers(): void {
  * @param credentials Provider credentials (decrypted from DB)
  * @param options Additional provider options
  * @returns Deployment driver instance
- * @throws Error if provider is not supported
+ * @throws ForbiddenError if provider is not supported
  */
 export function getDeploymentDriver(
 	provider: ProviderType,
@@ -40,17 +44,10 @@ export function getDeploymentDriver(
 	const Driver = drivers.get(provider);
 
 	if (!Driver) {
-		throw new Error(`Deployment driver "${provider}" is not supported`);
+		throw new ForbiddenError({ reason: `Deployment driver "${provider}" is not supported` });
 	}
 
 	return new Driver(credentials, options);
-}
-
-/**
- * Check if a provider is supported
- */
-export function isValidProviderType(provider: string): provider is ProviderType {
-	return drivers.has(provider as ProviderType);
 }
 
 /**
@@ -58,6 +55,37 @@ export function isValidProviderType(provider: string): provider is ProviderType 
  */
 export function getSupportedProviderTypes(): ProviderType[] {
 	return Array.from(drivers.keys());
+}
+
+export function buildDriverFromConfig(config: DeploymentConfig): DeploymentDriver {
+	const credentials = parseValue<Credentials>(config.credentials, {});
+	const options = parseValue<Options>(config.options, {});
+
+	return getDeploymentDriver(config.provider, credentials, options);
+}
+
+/** Internal read with null accountability so encrypted credentials are decrypted, not redacted. */
+export async function readDeploymentConfig(
+	knex: Knex,
+	schema: SchemaOverview,
+	provider: ProviderType,
+): Promise<DeploymentConfig> {
+	const internalService = new ItemsService<DeploymentConfig>('directus_deployments', {
+		knex,
+		schema,
+		accountability: null,
+	});
+
+	const results = await internalService.readByQuery({
+		filter: { provider: { _eq: provider } },
+		limit: 1,
+	});
+
+	if (!results || results.length === 0) {
+		throw new ForbiddenError({ reason: `Deployment config for "${provider}" not found` });
+	}
+
+	return results[0]!;
 }
 
 /**
@@ -89,8 +117,8 @@ export async function ensureDeploymentWebhooks(): Promise<void> {
 	for (const config of configs) {
 		try {
 			await service.syncWebhook(config.provider);
-		} catch (err) {
-			logger.error(`[webhook] Failed to sync webhook for ${config.provider}: ${err}`);
+		} catch (error) {
+			logger.error(error, `[webhook:${config.provider}] Failed to sync webhook`);
 		}
 	}
 }

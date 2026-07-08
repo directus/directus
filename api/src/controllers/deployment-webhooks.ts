@@ -1,14 +1,13 @@
-import { DEPLOYMENT_PROVIDER_TYPES, type ProviderType } from '@directus/types';
 import express from 'express';
 import getDatabase from '../database/index.js';
 import { getDeploymentDriver } from '../deployment.js';
-import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { DeploymentProjectsService } from '../services/deployment-projects.js';
 import { DeploymentRunsService } from '../services/deployment-runs.js';
 import { DeploymentService } from '../services/deployment.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getSchema } from '../utils/get-schema.js';
+import { validateProvider } from './utils/validate-provider.js';
 
 const router = express.Router();
 
@@ -18,7 +17,7 @@ router.post(
 		const logger = useLogger();
 		const provider = req.params['provider'] as string;
 
-		if (!DEPLOYMENT_PROVIDER_TYPES.includes(provider as ProviderType)) {
+		if (!validateProvider(provider)) {
 			return res.sendStatus(404);
 		}
 
@@ -38,13 +37,19 @@ router.post(
 			accountability: null,
 		});
 
+		const deploymentRow = await deploymentService.tryReadByProvider(provider);
+
+		if (!deploymentRow) {
+			return res.sendStatus(404);
+		}
+
 		let webhookConfig;
 
 		try {
-			webhookConfig = await deploymentService.getWebhookConfig(provider as ProviderType);
-		} catch {
-			logger.warn(`[webhook:${provider}] No webhook config found`);
-			return res.sendStatus(404);
+			webhookConfig = await deploymentService.getWebhookConfig(provider);
+		} catch (error) {
+			logger.warn(error, `[webhook:${provider}] Failed to load webhook config`);
+			return res.sendStatus(500);
 		}
 
 		if (!webhookConfig.webhook_secret) {
@@ -52,7 +57,7 @@ router.post(
 			return res.sendStatus(404);
 		}
 
-		const driver = getDeploymentDriver(provider as ProviderType, webhookConfig.credentials, webhookConfig.options);
+		const driver = getDeploymentDriver(provider, webhookConfig.credentials, webhookConfig.options);
 
 		// Fallback for providers whose API doesn't support webhook signature headers (e.g. Netlify)
 		const headers: Record<string, string | string[] | undefined> = { ...req.headers };
@@ -99,20 +104,6 @@ router.post(
 		});
 
 		const runId = await runsService.processWebhookEvent(project.id, event);
-
-		// Emit action events
-		const eventPayload = {
-			provider,
-			project_id: project.id,
-			run_id: runId,
-			external_id: event.deployment_external_id,
-			status: event.status,
-			url: event.url,
-			target: event.target,
-			timestamp: event.timestamp,
-		};
-
-		emitter.emitAction(['deployment.webhook', `deployment.webhook.${event.type}`], eventPayload, null);
 
 		logger.info(`[webhook:${provider}] Processed: ${event.type} → run ${runId}`);
 

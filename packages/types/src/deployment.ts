@@ -20,7 +20,7 @@ export type Status = 'building' | 'ready' | 'error' | 'canceled';
 /**
  * How the provider delivers deployment status updates to Directus
  */
-export type DeploymentEventsTransport = 'webhook' | 'poll' | 'queue';
+export type DeploymentEventsTransport = 'webhook' | 'poll';
 
 /**
  * Declared features for a deployment provider driver (API + app)
@@ -162,19 +162,4 @@ export interface StoredProject {
 	framework: string | null;
 	deployable: boolean;
 	date_created: string;
-}
-
-/**
- * Stored run
- */
-export interface StoredRun {
-	id: string;
-	project: string;
-	external_id: string;
-	status: Status;
-	target: string;
-	date_created: string;
-	url: string | null;
-	started_at: string | null;
-	completed_at: string | null;
 }

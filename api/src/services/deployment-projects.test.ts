@@ -1,4 +1,4 @@
-import { InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
@@ -13,6 +13,19 @@ vi.mock('../deployment.js', () => ({
 	getDeploymentDriver: vi.fn(() => ({
 		listProjects: mockListProjects,
 	})),
+	buildDriverFromConfig: vi.fn(() => ({
+		listProjects: mockListProjects,
+	})),
+	readDeploymentConfig: vi.fn(async (knex: unknown, schema: unknown, provider: string) => {
+		const internalService = new ItemsService('directus_deployments', { knex, schema, accountability: null } as any);
+		const results = await internalService.readByQuery({ filter: { provider: { _eq: provider } }, limit: 1 });
+
+		if (!results || results.length === 0) {
+			throw new ForbiddenError({ reason: `Deployment config for "${provider}" not found` });
+		}
+
+		return results[0];
+	}),
 }));
 
 vi.mock('../../src/database/index', async () => {
@@ -49,6 +62,44 @@ describe('DeploymentProjectsService', () => {
 	afterEach(() => {
 		resetKnexMocks(tracker, mockSchemaBuilder);
 		vi.clearAllMocks();
+	});
+
+	describe('readByProviderReference', () => {
+		let service: DeploymentProjectsService;
+
+		beforeEach(() => {
+			service = new DeploymentProjectsService({
+				knex: db,
+				schema,
+			});
+		});
+
+		it('should return the project matching either external_id or name, scoped to the deployment', async () => {
+			const project = { id: 'proj-1', external_id: 'worker-tag-1', name: 'my-worker' };
+			const readByQuerySpy = vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([project]);
+
+			const result = await service.readByProviderReference('deploy-1', 'my-worker');
+
+			expect(result).toEqual(project);
+
+			expect(readByQuerySpy).toHaveBeenCalledWith({
+				filter: {
+					_and: [
+						{ _or: [{ external_id: { _eq: 'my-worker' } }, { name: { _eq: 'my-worker' } }] },
+						{ deployment: { _eq: 'deploy-1' } },
+					],
+				},
+				limit: 1,
+			});
+		});
+
+		it('should return null when no project matches', async () => {
+			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([]);
+
+			const result = await service.readByProviderReference('deploy-1', 'unknown-worker');
+
+			expect(result).toBeNull();
+		});
 	});
 
 	describe('validateDeployable', () => {
@@ -111,12 +162,19 @@ describe('DeploymentProjectsService', () => {
 			).rejects.toThrow(/Site A, Site B/);
 		});
 
-		it('should throw when provider config is not found', async () => {
-			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([]);
+		it('should throw ForbiddenError when provider config is not found', async () => {
+			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([]);
 
 			await expect(service.validateDeployable('vercel', [{ external_id: 'proj-1', name: 'Test' }])).rejects.toThrow(
 				'Deployment config for "vercel" not found',
 			);
+
+			try {
+				await service.validateDeployable('vercel', [{ external_id: 'proj-1', name: 'Test' }]);
+				expect.unreachable();
+			} catch (error) {
+				expect(error).toBeInstanceOf(ForbiddenError);
+			}
 		});
 	});
 });

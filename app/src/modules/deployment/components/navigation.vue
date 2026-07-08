@@ -17,13 +17,16 @@ import { useUserStore } from '@/stores/user';
 
 const route = useRoute();
 const isAdmin = useUserStore().isAdmin;
-const canReadRuns = usePermissionsStore().hasPermission('directus_deployment_runs', 'read');
+const permissionsStore = usePermissionsStore();
+const canReadRuns = computed(() => permissionsStore.hasPermission('directus_deployment_runs', 'read'));
 const { providers, loading, openProviders, fetch, currentProviderKey, currentProjectId } = useDeploymentNavigation();
 
 const isSettingsPage = computed(() => route.name === 'deployments-provider-settings');
 
 const providerItems = computed(() => {
-	const items = isAdmin ? providers.value : providers.value.filter((p) => (p.projects?.length ?? 0) > 0 && canReadRuns);
+	const items = isAdmin
+		? providers.value
+		: providers.value.filter((p) => (p.projects?.length ?? 0) > 0 && canReadRuns.value);
 
 	return items.map((provider) => {
 		const hasProjects = (provider.projects?.length ?? 0) > 0;
