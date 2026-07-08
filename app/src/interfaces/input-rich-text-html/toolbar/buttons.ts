@@ -27,6 +27,9 @@ export interface ToolbarContext {
 	link: {
 		open: () => void;
 	};
+	sourceCode: {
+		open: () => void;
+	};
 }
 
 export interface ToolbarButton {
@@ -293,6 +296,12 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		label: 'wysiwyg_options.insertdatetime',
 		component: DateTimeMenu,
 		width: CARET_BUTTON_WIDTH,
+	},
+	// icon deliberately not `code` (that's the inline/block code mark); this edits raw HTML source
+	code: {
+		icon: 'html',
+		label: 'wysiwyg_options.source_code',
+		command: (_e, ctx) => ctx.sourceCode.open(),
 	},
 	removeformat: {
 		icon: 'format_clear',
