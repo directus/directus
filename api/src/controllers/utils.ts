@@ -121,7 +121,7 @@ router.post(
 		}
 
 		const mode = req.query['mode'] === 'merge' ? 'merge' : 'add';
-		const dryRun = toBoolean(req.query['dryrun']);
+		const dryRun = toBoolean(req.query['dryRun']);
 		const dangerouslyAllowDelete = toBoolean(req.query['dangerouslyAllowDelete']);
 
 		if (dangerouslyAllowDelete && mode !== 'merge') {

@@ -276,7 +276,7 @@ describe('POST /utils/import', () => {
 
 		const { status, body } = await importData([{ collection: authors, items: [{ id: 1, name: 'Ghost' }] }], {
 			mode: 'add',
-			dry_run: 'true',
+			dryRun: 'true',
 		});
 
 		expect(status).toBe(200);
