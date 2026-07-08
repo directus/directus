@@ -150,7 +150,7 @@ describe('PATCH /licenses', () => {
 		});
 	});
 
-	test('update from CORE rejects as invalid payload, not forbidden', async () => {
+	test('update from CORE rejects', async () => {
 		await expect(api.request(updateLicense({ license_key: baseLicense.key }))).rejects.toThrowError(
 			'A current license must be provided in order to update',
 		);
@@ -174,7 +174,7 @@ describe('DELETE /licenses', () => {
 		});
 	});
 
-	test('deactivate from CORE rejects as invalid payload, not forbidden', async () => {
+	test('deactivate from CORE rejects', async () => {
 		await expect(api.request(deactivateLicense())).rejects.toThrowError(
 			'"key" has to be defined in order to deactivate',
 		);

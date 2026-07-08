@@ -324,7 +324,7 @@ export class LicenseManager {
     const currentKey = key ?? this.licenseKey;
 
     if (!currentKey) {
-      throw new InvalidPayloadError({ reason: '"key" has to be defined in order to deactivate' });
+      throw new ForbiddenError({ reason: '"key" has to be defined in order to deactivate' });
     }
 
     const settingsService = new SettingsService({ schema: await getSchema() });
@@ -357,7 +357,7 @@ export class LicenseManager {
     const currentKey = options?.oldKey ?? this.licenseKey;
 
     if (!currentKey) {
-      throw new InvalidPayloadError({ reason: 'A current license must be provided in order to update' });
+      throw new ForbiddenError({ reason: 'A current license must be provided in order to update' });
     }
 
     const settingsService = new SettingsService({ schema: await getSchema() });
