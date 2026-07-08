@@ -1,4 +1,4 @@
-description: 'Error: Unauthorized request'
+description: 'Error: Unauthorized request.'
 content:
   application/json:
     schema:

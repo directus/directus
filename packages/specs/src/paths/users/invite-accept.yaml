@@ -20,15 +20,8 @@ post:
               format: password
               example: d1r3ctu5
   responses:
-    '200':
-      description: Successful request
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: '../../openapi.yaml#/components/schemas/Users'
+    '204':
+      $ref: '../../openapi.yaml#/components/responses/NoContentResponse'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':

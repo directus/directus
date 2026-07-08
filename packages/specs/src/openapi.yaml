@@ -275,18 +275,26 @@ paths:
     $ref: './paths/users/users.yaml'
   /users/{id}:
     $ref: './paths/users/user.yaml'
+  /users/{id}/tfa/disable:
+    $ref: './paths/users/pk-tfa-disable.yaml'
   /users/invite:
     $ref: './paths/users/invite.yaml'
   /users/invite/accept:
     $ref: './paths/users/invite-accept.yaml'
   /users/me:
     $ref: './paths/users/me.yaml'
-  /users/me/track/page:
-    $ref: './paths/users/me-tracking.yaml'
-  /users/me/tfa/enable:
-    $ref: './paths/users/me-tfa-enable.yaml'
   /users/me/tfa/disable:
     $ref: './paths/users/me-tfa-disable.yaml'
+  /users/me/tfa/enable:
+    $ref: './paths/users/me-tfa-enable.yaml'
+  /users/me/tfa/generate:
+    $ref: './paths/users/me-tfa-generate.yaml'
+  /users/me/track/page:
+    $ref: './paths/users/me-tracking.yaml'
+  /users/register:
+    $ref: './paths/users/register.yaml'
+  /users/register/verify-email:
+    $ref: './paths/users/register-verify-email.yaml'
 
   # Utils
   /utils/cache/clear:
@@ -404,8 +412,18 @@ components:
     Version:
       $ref: './parameters/version.yaml'
   responses:
+    BadRequestError:
+      $ref: './responses/badRequestError.yaml'
+    ForbiddenError:
+      $ref: './responses/forbiddenError.yaml'
+    NoContentResponse:
+      $ref: './responses/noContentResponse.yaml'
     NotFoundError:
       $ref: './responses/notFoundError.yaml'
+    RedirectResponse:
+      $ref: './responses/redirectResponse.yaml'
+    TooManyRequestsError:
+      $ref: './responses/tooManyRequestsError.yaml'
     UnauthorizedError:
       $ref: './responses/unauthorizedError.yaml'
   securitySchemes:
