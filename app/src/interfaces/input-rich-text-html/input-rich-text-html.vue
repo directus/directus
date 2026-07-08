@@ -142,6 +142,7 @@ const {
 	mediaDrawerOpen,
 	mediaSelection,
 	embed,
+	embedInvalid,
 	activeTab,
 	openMediaDrawer,
 	closeMediaDrawer,
@@ -231,6 +232,7 @@ onKeyStroke('Escape', () => {
 			v-model:media-selection="mediaSelection"
 			v-model:embed="embed"
 			v-model:active-tab="activeTab"
+			:embed-invalid="embedInvalid"
 			:folder="folder"
 			:allowed-mime-types="allowedMimeTypes"
 			@select="onMediaSelect"

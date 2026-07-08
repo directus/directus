@@ -5,6 +5,7 @@ import type { MediaSelection } from '../composables/use-media';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDrawer from '@/components/v-drawer.vue';
 import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
 import VTabItem from '@/components/v-tab-item.vue';
 import VTab from '@/components/v-tab.vue';
 import VTabsItems from '@/components/v-tabs-items.vue';
@@ -13,7 +14,7 @@ import VTextarea from '@/components/v-textarea.vue';
 import VUpload from '@/components/v-upload.vue';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
-defineProps<{ folder?: string; allowedMimeTypes?: string }>();
+defineProps<{ folder?: string; allowedMimeTypes?: string; embedInvalid?: boolean }>();
 
 const emit = defineEmits<{ select: [file: File]; save: []; cancel: [] }>();
 
@@ -29,11 +30,13 @@ const autoHeight = computed({
 	set: (checked: boolean) => {
 		if (!selection.value) return;
 
-		selection.value.height = checked
-			? null
-			: selection.value.width
-				? Math.round((selection.value.width * 9) / 16)
-				: 150;
+		if (checked) {
+			selection.value.height = null;
+			return;
+		}
+
+		const { width } = selection.value;
+		selection.value.height = width ? Math.round((width * 9) / 16) : 150;
 	},
 });
 </script>
@@ -113,6 +116,9 @@ const autoHeight = computed({
 						<div class="field">
 							<div class="type-label">{{ $t('embed') }}</div>
 							<VTextarea v-model="embed" :nullable="false" />
+							<VNotice v-if="embedInvalid" type="danger">
+								{{ $t('interfaces.input-rich-text-html.embed_invalid') }}
+							</VNotice>
 						</div>
 					</div>
 				</VTabItem>
@@ -137,7 +143,8 @@ const autoHeight = computed({
 	padding-block-end: var(--content-padding);
 }
 
-.auto-height {
+.auto-height,
+.v-notice {
 	margin-block-start: 0.5rem;
 }
 

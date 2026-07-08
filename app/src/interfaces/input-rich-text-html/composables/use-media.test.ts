@@ -1,13 +1,9 @@
 import type { File } from '@directus/types';
 import { Editor } from '@tiptap/vue-3';
-import { afterEach, expect, test, vi } from 'vitest';
-import { ref, shallowRef } from 'vue';
+import { afterEach, expect, test } from 'vitest';
+import { nextTick, ref, shallowRef } from 'vue';
 import { editorExtensions } from '../extensions';
 import { useMedia } from './use-media';
-
-vi.mock('@/stores/notifications', () => ({
-	useNotificationsStore: () => ({ add: vi.fn() }),
-}));
 
 const audioFile = { id: 'aud1', type: 'audio/mpeg', width: null, height: null } as unknown as File;
 const videoFile = { id: 'vid1', type: 'video/mp4', width: 640, height: 360 } as unknown as File;
@@ -67,14 +63,47 @@ test('saveMedia (embed tab) parses iframe markup into a media node', () => {
 	expect(editor.value.getHTML()).toContain('src="about:blank"');
 });
 
-test('saveMedia (embed tab) rejects non-representable markup', () => {
-	const { editor, embed, activeTab, saveMedia } = setup();
+test('saveMedia (embed tab) rejects non-representable markup and flags it', () => {
+	const { editor, embed, embedInvalid, mediaDrawerOpen, activeTab, saveMedia } = setup();
+	mediaDrawerOpen.value = true;
 	activeTab.value = ['embed'];
 	embed.value = '<div>not media</div>';
 	saveMedia();
 	const html = editor.value.getHTML();
 	expect(html).not.toContain('<iframe');
 	expect(html).not.toContain('<video');
+	expect(embedInvalid.value).toBe(true);
+	expect(mediaDrawerOpen.value).toBe(true);
+});
+
+test('editing the embed markup clears the invalid flag', async () => {
+	const { embed, embedInvalid, activeTab, saveMedia } = setup();
+	activeTab.value = ['embed'];
+	embed.value = '<div>not media</div>';
+	saveMedia();
+	expect(embedInvalid.value).toBe(true);
+
+	embed.value = '<iframe src="about:blank"></iframe>';
+	await nextTick();
+	expect(embedInvalid.value).toBe(false);
+});
+
+test('closing the drawer clears the invalid flag', () => {
+	const { embed, embedInvalid, activeTab, saveMedia, closeMediaDrawer } = setup();
+	activeTab.value = ['embed'];
+	embed.value = 'broken';
+	saveMedia();
+	expect(embedInvalid.value).toBe(true);
+
+	closeMediaDrawer();
+	expect(embedInvalid.value).toBe(false);
+});
+
+test('saveMedia (embed tab) does not flag an empty embed', () => {
+	const { embedInvalid, activeTab, saveMedia } = setup();
+	activeTab.value = ['embed'];
+	saveMedia();
+	expect(embedInvalid.value).toBe(false);
 });
 
 test('openMediaDrawer prefills the selection from the active media node', () => {

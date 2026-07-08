@@ -20,7 +20,16 @@ function edit() {
 </script>
 
 <template>
-	<NodeViewWrapper as="div" class="media-node" :class="{ selected }" @dblclick="edit">
+	<!-- draggable + data-drag-handle let tiptap run its node-view drag flow; without them the
+	browser copy-drops the node (duplicating it) or the drag is cancelled outright -->
+	<NodeViewWrapper
+		as="div"
+		class="media-node"
+		:class="[attrs.tag, { selected }]"
+		draggable="true"
+		data-drag-handle
+		@dblclick="edit"
+	>
 		<video
 			v-if="attrs.tag === 'video'"
 			:src="attrs.src ?? undefined"
@@ -51,9 +60,15 @@ function edit() {
 		outline: 2px solid var(--theme--primary);
 	}
 
+	// padding gives the small audio player a bigger click/drag target
+	&.audio {
+		padding: 0.5rem;
+	}
+
 	video,
 	audio,
 	.media-iframe {
+		display: block; // avoids the inline baseline gap below the element
 		max-inline-size: 100%;
 	}
 

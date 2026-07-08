@@ -1,10 +1,8 @@
 import type { File } from '@directus/types';
 import { DOMParser as PMDOMParser } from '@tiptap/pm/model';
 import type { Editor } from '@tiptap/vue-3';
-import { Ref, ref } from 'vue';
+import { Ref, ref, watch } from 'vue';
 import type { MediaAttrs, MediaTag } from '../extensions/media';
-import { i18n } from '@/lang';
-import { useNotificationsStore } from '@/stores/notifications';
 import { getPublicURL } from '@/utils/get-root-path';
 
 export type MediaSelection = {
@@ -22,6 +20,7 @@ type UsableMedia = {
 	mediaDrawerOpen: Ref<boolean>;
 	mediaSelection: Ref<MediaSelection | null>;
 	embed: Ref<string>;
+	embedInvalid: Ref<boolean>;
 	activeTab: Ref<string[]>;
 	openMediaDrawer: () => void;
 	closeMediaDrawer: () => void;
@@ -37,12 +36,16 @@ export function useMedia(editor: Ref<Editor>, imageToken: Ref<string | undefined
 	const mediaDrawerOpen = ref(false);
 	const mediaSelection = ref<MediaSelection | null>(null);
 	const embed = ref('');
+	const embedInvalid = ref(false);
 	const activeTab = ref<string[]>(['media']);
+
+	watch(embed, () => (embedInvalid.value = false));
 
 	return {
 		mediaDrawerOpen,
 		mediaSelection,
 		embed,
+		embedInvalid,
 		activeTab,
 		openMediaDrawer,
 		closeMediaDrawer,
@@ -78,6 +81,7 @@ export function useMedia(editor: Ref<Editor>, imageToken: Ref<string | undefined
 	function closeMediaDrawer() {
 		mediaSelection.value = null;
 		embed.value = '';
+		embedInvalid.value = false;
 		activeTab.value = ['media'];
 		mediaDrawerOpen.value = false;
 	}
@@ -102,15 +106,10 @@ export function useMedia(editor: Ref<Editor>, imageToken: Ref<string | undefined
 	function saveMedia() {
 		const attrs = activeTab.value.includes('embed') ? parseEmbed(embed.value) : selectionToAttrs();
 
-		// File tab with no selection is a no-op; embed tab that parsed to nothing is a rejection.
+		// File tab with no selection is a no-op; embed tab that parsed to nothing is a rejection,
+		// surfaced inline in the drawer (a toast would render behind the drawer overlay).
 		if (!attrs || !attrs.src) {
-			if (activeTab.value.includes('embed') && embed.value.trim()) {
-				useNotificationsStore().add({
-					title: i18n.global.t('interfaces.input-rich-text-html.embed_invalid'),
-					type: 'error',
-				});
-			}
-
+			embedInvalid.value = activeTab.value.includes('embed') && !!embed.value.trim();
 			return;
 		}
 

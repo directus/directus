@@ -1,5 +1,7 @@
-import { Editor } from '@tiptap/vue-3';
+import { Editor, EditorContent } from '@tiptap/vue-3';
+import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, test } from 'vitest';
+import { nextTick } from 'vue';
 import { editorExtensions } from './index';
 
 const editors: Editor[] = [];
@@ -49,5 +51,28 @@ describe('media node: parse + render', () => {
 		expect(out).not.toContain('<video');
 		expect(out).not.toContain('<audio');
 		expect(out).not.toContain('<iframe');
+	});
+});
+
+describe('media node view', () => {
+	// Node views need draggable + data-drag-handle on the wrapper, otherwise tiptap cancels the
+	// drag (or the browser copy-drops it, duplicating the node). Images have no node view, so
+	// ProseMirror handles their dragging natively.
+	test('wrapper is draggable via a drag handle', async () => {
+		const editor = new Editor({
+			extensions: editorExtensions,
+			content: '<video><source src="/assets/v.mp4" type="video/mp4"></video>',
+		});
+
+		editors.push(editor);
+		const wrapper = mount(EditorContent, { props: { editor } });
+		await nextTick();
+
+		const nodeView = wrapper.find('[data-node-view-wrapper]');
+		expect(nodeView.exists()).toBe(true);
+		expect(nodeView.attributes('draggable')).toBe('true');
+		expect(nodeView.attributes('data-drag-handle')).toBeDefined();
+
+		wrapper.unmount();
 	});
 });
