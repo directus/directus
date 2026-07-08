@@ -1,7 +1,7 @@
 import { Node } from '@tiptap/vue-3';
 
 /**
- * Page break (CMS-2647) — parity with TinyMCE's `pagebreak` plugin.
+ * Page break — parity with TinyMCE's `pagebreak` plugin.
  *
  * TinyMCE serialized page breaks as the HTML comment `<!-- pagebreak -->`. ProseMirror's DOM parser
  * discards comment nodes, so the node can't parse that marker directly. We mirror TinyMCE's own

@@ -196,8 +196,7 @@ export default defineInterface({
 								value: 'hr',
 								text: '$t:wysiwyg_options.hr',
 							},
-							// CMS-2647: pagebreak + insertdatetime promoted to choices; `preview` dropped
-							// (accepted regression — no content footprint, editor is already live-WYSIWYG).
+							// `preview` intentionally dropped — no content footprint, editor is already live-WYSIWYG.
 							{
 								value: 'pagebreak',
 								text: '$t:wysiwyg_options.pagebreak',

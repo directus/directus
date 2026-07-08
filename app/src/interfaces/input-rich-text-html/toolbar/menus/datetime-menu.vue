@@ -10,7 +10,7 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 
 /**
- * Insert date/time (CMS-2647) — parity with TinyMCE's `insertdatetime` plugin. A small popover of
+ * Insert date/time — parity with TinyMCE's `insertdatetime` plugin. A small popover of
  * formats; each entry drops the current date/time as plain text at the cursor. No extension and no
  * content footprint — the inserted text is just text once it lands.
  */
@@ -91,8 +91,7 @@ defineExpose({ insert, FORMATS });
 	--v-button-color: var(--theme--foreground);
 }
 
-// `icon` makes VButton a tight square; icon + caret need more room. Widen to fit both
-// (keep in sync with `CARET_BUTTON_WIDTH` in buttons.ts, `2.5rem` = 40px) and center the content.
+// Widen the square `icon` button so icon + caret fit (`CARET_BUTTON_WIDTH` in buttons.ts).
 .toolbar-button :deep(.button.icon) {
 	inline-size: 2.5rem;
 	justify-content: center;
