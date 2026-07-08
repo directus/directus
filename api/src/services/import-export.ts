@@ -376,6 +376,17 @@ export class ImportService {
 		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
 		let timeout: NodeJS.Timeout;
 
+		// Cap the upload size on the streaming (non-spooled) path too, so synchronous JSON imports are
+		// bounded like the spooled paths. Sits in the pipe chain to keep backpressure.
+		const limiter = createSizeLimiter(getImportMaxFileSize());
+
+		// Tear down the whole stream chain (source -> limiter -> parser), resuming the source so the
+		// request body is drained.
+		const teardownStreams = () => {
+			destroyPipedStream(extractJSON, limiter);
+			destroyPipedStream(limiter, stream);
+		};
+
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
 				knex: trx,
@@ -412,7 +423,7 @@ export class ImportService {
 							if (errorTracker.shouldStop()) {
 								saveQueue.kill();
 
-								destroyPipedStream(extractJSON, stream);
+								teardownStreams();
 								reject();
 							}
 
@@ -420,20 +431,32 @@ export class ImportService {
 						}
 					});
 
-					stream.pipe(extractJSON);
+					stream.pipe(limiter).pipe(extractJSON);
 
 					// Without a source-stream error handler a read failure would go unhandled and the
 					// import promise would never settle.
 					stream.on('error', (error: Error) => {
 						saveQueue.kill();
-						destroyPipedStream(extractJSON, stream);
+						teardownStreams();
 						reject(new Error('Error while retrieving import data', { cause: error }));
+					});
+
+					// The limiter errors with ContentTooLargeError once the upload exceeds the cap.
+					limiter.on('error', (error: Error) => {
+						saveQueue.kill();
+						teardownStreams();
+
+						reject(
+							error instanceof ContentTooLargeError
+								? error
+								: new Error('Error while retrieving import data', { cause: error }),
+						);
 					});
 
 					extractJSON.on('data', ({ value }: Record<string, any>) => {
 						if (isSingleton && rowNumber > 1) {
 							saveQueue.kill();
-							destroyPipedStream(extractJSON, stream);
+							teardownStreams();
 
 							reject(
 								new InvalidPayloadError({
@@ -448,7 +471,7 @@ export class ImportService {
 					});
 
 					extractJSON.on('error', (err: Error) => {
-						destroyPipedStream(extractJSON, stream);
+						teardownStreams();
 
 						reject(new InvalidPayloadError({ reason: err.message }));
 					});
@@ -475,7 +498,7 @@ export class ImportService {
 
 					timeout = setTimeout(() => {
 						saveQueue.kill();
-						destroyPipedStream(extractJSON, stream);
+						teardownStreams();
 						reject(new TimeoutError({ category: 'Import', duration }));
 					}, delay);
 				});
@@ -511,22 +534,7 @@ export class ImportService {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort(), delay);
 
-		let bytesReceived = 0;
-		let limitExceeded = false;
-
-		const limiter = new Transform({
-			transform(chunk: Buffer, _encoding, callback) {
-				bytesReceived += chunk.length;
-
-				if (maxFileSize !== undefined && bytesReceived > maxFileSize) {
-					limitExceeded = true;
-					callback(new Error('Import file exceeds IMPORT_MAX_FILE_SIZE'));
-					return;
-				}
-
-				callback(null, chunk);
-			},
-		});
+		const limiter = createSizeLimiter(maxFileSize);
 
 		try {
 			await pipeline(stream, limiter, createWriteStream(tmpFile.path), { signal: controller.signal });
@@ -535,8 +543,8 @@ export class ImportService {
 				logger.warn(`Failed to cleanup temporary import file (${tmpFile.path})`);
 			});
 
-			if (limitExceeded) {
-				throw new ContentTooLargeError();
+			if (error instanceof ContentTooLargeError) {
+				throw error;
 			}
 
 			if (controller.signal.aborted) {
@@ -1030,6 +1038,28 @@ export function getHeadingsForCsvExport(
 	});
 
 	return fieldNames;
+}
+
+/**
+ * A pass-through Transform that counts bytes and errors with ContentTooLargeError once maxFileSize is
+ * exceeded. Sits in the pipe chain (rather than a raw `data` listener) so stream backpressure is kept.
+ * A maxFileSize of undefined means no cap.
+ */
+function createSizeLimiter(maxFileSize: number | undefined): Transform {
+	let bytesReceived = 0;
+
+	return new Transform({
+		transform(chunk: Buffer, _encoding, callback) {
+			bytesReceived += chunk.length;
+
+			if (maxFileSize !== undefined && bytesReceived > maxFileSize) {
+				callback(new ContentTooLargeError());
+				return;
+			}
+
+			callback(null, chunk);
+		},
+	});
 }
 
 /**
