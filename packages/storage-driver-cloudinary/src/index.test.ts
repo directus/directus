@@ -25,7 +25,8 @@ import { fetch, FormData } from 'undici';
 import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
-import * as utils from './utils.js';
+import * as toFormUrlEncodedUtil from './utils/to-form-url-encoded.js';
+import * as toSignatureStringUtil from './utils/to-signature-string.js';
 import type { DriverCloudinaryConfig } from './index.js';
 import { DriverCloudinary } from './index.js';
 
@@ -160,7 +161,7 @@ beforeEach(() => {
 	driver['getBasicAuth'] = vi.fn().mockReturnValue(sample.basicAuth);
 	driver['getFullSignature'] = vi.fn().mockReturnValue(sample.fullSignature);
 	driver['getTimestamp'] = vi.fn().mockReturnValue(sample.timestamp);
-	vi.spyOn(utils, 'toFormUrlEncoded').mockReturnValue(sample.formUrlEncoded);
+	vi.spyOn(toFormUrlEncodedUtil, 'toFormUrlEncoded').mockReturnValue(sample.formUrlEncoded);
 });
 
 afterEach(() => {
@@ -247,7 +248,7 @@ describe('#getFullSignature', () => {
 		};
 
 		vi.mocked(createHash).mockReturnValue(mockCreateHash as unknown as Hash);
-		vi.spyOn(utils, 'toSignatureString');
+		vi.spyOn(toSignatureStringUtil, 'toSignatureString');
 
 		const randLength = randNumber({ min: 1, max: 10 });
 
@@ -270,7 +271,7 @@ describe('#getFullSignature', () => {
 
 		driver['getFullSignature'](payload);
 
-		expect(utils.toSignatureString).toHaveBeenCalledWith(mockPayload);
+		expect(toSignatureStringUtil.toSignatureString).toHaveBeenCalledWith(mockPayload);
 	});
 
 	test('Creates sha256 hash', () => {
@@ -280,7 +281,7 @@ describe('#getFullSignature', () => {
 
 	test('Updates sha256 hash with signature payload + api secret', () => {
 		const mockSignatureString = randWord();
-		vi.mocked(utils.toSignatureString).mockReturnValue(mockSignatureString);
+		vi.mocked(toSignatureStringUtil.toSignatureString).mockReturnValue(mockSignatureString);
 
 		driver['getFullSignature'](mockPayload);
 
@@ -288,7 +289,7 @@ describe('#getFullSignature', () => {
 	});
 
 	test('Preserves spaces in asset_folder when updating the hash', () => {
-		vi.mocked(utils.toSignatureString).mockRestore();
+		vi.mocked(toSignatureStringUtil.toSignatureString).mockRestore();
 
 		driver['getFullSignature']({
 			asset_folder: 'my folder',
@@ -634,7 +635,7 @@ describe('#stat', () => {
 	test('Creates form url encoded body ', async () => {
 		await driver.stat(sample.path.input);
 
-		expect(utils.toFormUrlEncoded).toHaveBeenCalledWith({
+		expect(toFormUrlEncodedUtil.toFormUrlEncoded).toHaveBeenCalledWith({
 			type: 'upload',
 			public_id: normalizePath(joinActual(sample.path.inputFolder, sample.publicId.input), { removeLeading: true }),
 			api_key: sample.config.apiKey,
@@ -765,7 +766,7 @@ describe('#move', () => {
 	test('Creates form url encoded body ', async () => {
 		await driver.move(sample.path.src, sample.path.dest);
 
-		expect(utils.toFormUrlEncoded).toHaveBeenCalledWith({
+		expect(toFormUrlEncodedUtil.toFormUrlEncoded).toHaveBeenCalledWith({
 			from_public_id: joinActual(sample.path.srcFolder, sample.publicId.src),
 			to_public_id: joinActual(sample.path.destFolder, sample.publicId.dest),
 			api_key: sample.config.apiKey,
@@ -1053,7 +1054,7 @@ describe('#delete', () => {
 	});
 
 	test('Calls fetch with correct parameters', async () => {
-		expect(utils.toFormUrlEncoded).toHaveBeenCalledWith({
+		expect(toFormUrlEncodedUtil.toFormUrlEncoded).toHaveBeenCalledWith({
 			timestamp: sample.timestamp,
 			api_key: sample.config.apiKey,
 			resource_type: sample.resourceType,

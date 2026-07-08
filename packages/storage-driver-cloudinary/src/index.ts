@@ -9,7 +9,8 @@ import PQueue from 'p-queue';
 import type { RequestInit } from 'undici';
 import { fetch, FormData } from 'undici';
 import { IMAGE_EXTENSIONS, MINIMUM_CHUNK_SIZE, VIDEO_EXTENSIONS } from './constants.js';
-import { toFormUrlEncoded, toSignatureString } from './utils.js';
+import { toFormUrlEncoded } from './utils/to-form-url-encoded.js';
+import { toSignatureString } from './utils/to-signature-string.js';
 
 export type DriverCloudinaryConfig = {
 	root?: string;
