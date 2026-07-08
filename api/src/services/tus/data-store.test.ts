@@ -1,147 +1,164 @@
-import { UnsupportedMediaTypeError } from '@directus/errors';
-import type { Accountability, SchemaOverview } from '@directus/types';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { useEnv } from '@directus/env';
+import { ForbiddenError, UnsupportedMediaTypeError } from '@directus/errors';
+import type { SchemaOverview } from '@directus/types';
+import type { Upload } from '@tus/utils';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import getDatabase from '../../database/index.js';
+import { createMockKnex, resetKnexMocks } from '../../test-utils/knex.js';
 import { ItemsService } from '../items.js';
 import { TusDataStore } from './data-store.js';
 
-vi.mock('../../database/index.js', () => ({
-	default: vi.fn(),
-}));
+vi.mock('../../database/index.js', () => ({ default: vi.fn() }));
 
-vi.mock('../../logger/index.js', () => ({
-	useLogger: vi.fn().mockReturnValue({
-		warn: vi.fn(),
-		error: vi.fn(),
-		info: vi.fn(),
-	}),
-}));
+vi.mock('../../logger/index.js', () => ({ useLogger: () => ({ warn: vi.fn() }) }));
 
-vi.mock('../items.js', () => ({
-	ItemsService: vi.fn(),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockEnv } = await import('../../test-utils/env.js');
 
-let mockEnv: Record<string, unknown> = {};
+	return mockEnv({
+		STORAGE_LOCATIONS: 'local',
+		STORAGE_LOCAL_DRIVER: 'local',
+		STORAGE_LOCAL_ROOT: '.',
+		EXTENSIONS_PATH: './extensions',
+		TEMP_PATH: './node_modules/.directus',
+	});
+});
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn(() => mockEnv),
-}));
+vi.mock('../items.js', async () => {
+	const { mockItemsService } = await import('../../test-utils/services/items-service.js');
+	return mockItemsService();
+});
 
-describe('TusDataStore', () => {
-	let mockSchema: SchemaOverview;
-	let mockAccountability: Accountability;
-	let mockItemsService: any;
+describe('TusDataStore.create', () => {
+	const { db, tracker, mockSchemaBuilder } = createMockKnex();
+
+	const schema = { collections: {}, relations: [] } as unknown as SchemaOverview;
+
+	const baseEnv = {
+		STORAGE_LOCATIONS: 'local',
+		STORAGE_LOCAL_DRIVER: 'local',
+		STORAGE_LOCAL_ROOT: '.',
+		EXTENSIONS_PATH: './extensions',
+		TEMP_PATH: './node_modules/.directus',
+		FILES_MIME_TYPE_ALLOW_LIST: '*/*',
+	};
+
+	let mockDriver: any;
+
+	const makeUpload = (metadata: Record<string, string>): Upload =>
+		({
+			id: 'upload-1',
+			size: 1024,
+			offset: 0,
+			metadata: { filename_download: 'photo.jpg', type: 'image/jpeg', ...metadata },
+		}) as unknown as Upload;
+
+	const makeStore = () =>
+		new TusDataStore({
+			constants: { ENABLED: true, CHUNK_SIZE: null, EXPIRATION_TIME: 0, SCHEDULE: '' },
+			location: 'local',
+			driver: mockDriver,
+			schema,
+			accountability: undefined,
+		});
 
 	beforeEach(() => {
-		mockEnv = { FILES_MIME_TYPE_ALLOW_LIST: '*/*' };
+		vi.mocked(useEnv).mockReturnValue(baseEnv);
+		vi.mocked(getDatabase).mockReturnValue(db);
+		vi.mocked(ItemsService.prototype.createOne).mockResolvedValue('generated-pk');
 
-		mockSchema = {
-			collections: {},
-			relations: [],
+		mockDriver = {
+			tusExtensions: [],
+			createChunkedUpload: vi.fn(async (_filename: string, upload: Upload) => upload),
 		};
 
-		mockAccountability = {
-			role: 'test-role',
-			user: 'test-user-id',
-		} as Accountability;
-
-		mockItemsService = {
-			createOne: vi.fn().mockResolvedValue('new-file-id'),
-			updateOne: vi.fn(),
-			deleteOne: vi.fn(),
-		};
-
-		const mockKnex = {
-			select: () => ({
-				from: () => ({
-					first: () => Promise.resolve(undefined),
-				}),
-			}),
-		};
-
-		vi.mocked(getDatabase).mockReturnValue(mockKnex as any);
-		vi.mocked(ItemsService).mockImplementation(() => mockItemsService);
+		// No existing file with this name, and no default folder configured
+		tracker.on.select('directus_files').response([]);
+		tracker.on.select('directus_settings').response([]);
 	});
 
-	function createStore() {
-		return new TusDataStore({
-			constants: {
-				ENABLED: true,
-				CHUNK_SIZE: null,
-				EXPIRATION_TIME: 0,
-				SCHEDULE: '',
-			},
-			location: 'local',
-			driver: {
-				createChunkedUpload: vi.fn().mockImplementation((_filename, upload) => Promise.resolve(upload)),
-			} as any,
-			schema: mockSchema,
-			accountability: mockAccountability,
-		});
-	}
+	afterEach(() => {
+		resetKnexMocks(tracker, mockSchemaBuilder);
+	});
 
-	describe('create', () => {
-		test('rejects an upload whose type is not in FILES_MIME_TYPE_ALLOW_LIST', async () => {
-			mockEnv = { FILES_MIME_TYPE_ALLOW_LIST: 'image/jpeg,image/png' };
+	test('rejects a filename_disk that targets a forbidden location and never writes', async () => {
+		const store = makeStore();
 
-			const store = createStore();
+		await expect(store.create(makeUpload({ filename_disk: 'extensions/evil.js' }))).rejects.toThrow(ForbiddenError);
+	});
 
-			await expect(
-				store.create({
-					id: 'upload-1',
-					offset: 0,
-					size: 10,
-					metadata: {
-						filename_download: 'malicious.html',
-						type: 'text/html',
-					},
-				} as any),
-			).rejects.toSatisfy((err: unknown) => {
-				return (
-					err instanceof UnsupportedMediaTypeError &&
-					(err as any).status_code === 415 &&
-					typeof (err as any).body === 'string' &&
-					(err as any).body.includes('text/html')
-				);
-			});
+	test('rejects a duplicate filename_disk and never writes', async () => {
+		tracker.reset();
+		tracker.on.select('directus_files').response([{ filename_disk: 'photo.jpg' }]);
+		tracker.on.select('directus_settings').response([]);
 
-			expect(mockItemsService.createOne).not.toHaveBeenCalled();
-		});
+		const store = makeStore();
 
-		test('accepts an upload whose type matches FILES_MIME_TYPE_ALLOW_LIST', async () => {
-			mockEnv = { FILES_MIME_TYPE_ALLOW_LIST: 'image/jpeg,image/png' };
+		await expect(store.create(makeUpload({ filename_disk: 'photo.jpg' }))).rejects.toThrow(ForbiddenError);
+	});
 
-			const store = createStore();
+	test('passes a sanitized, unique filename_disk through to the upload', async () => {
+		const store = makeStore();
 
-			await store.create({
-				id: 'upload-2',
-				offset: 0,
-				size: 10,
-				metadata: {
-					filename_download: 'photo.png',
-					type: 'image/png',
-				},
-			} as any);
+		await store.create(makeUpload({ filename_disk: './subdir/../photo.jpg' }));
 
-			expect(mockItemsService.createOne).toHaveBeenCalled();
-		});
+		expect(ItemsService.prototype.createOne).toHaveBeenCalledWith(
+			expect.objectContaining({ filename_disk: 'photo.jpg' }),
+			expect.anything(),
+		);
+	});
 
-		test('allows any type when FILES_MIME_TYPE_ALLOW_LIST is the default wildcard', async () => {
-			mockEnv = { FILES_MIME_TYPE_ALLOW_LIST: '*/*' };
+	test('does not run storage-path assertions when no filename_disk is provided', async () => {
+		const store = makeStore();
 
-			const store = createStore();
+		await store.create(makeUpload({}));
 
-			await store.create({
-				id: 'upload-3',
-				offset: 0,
-				size: 10,
-				metadata: {
-					filename_download: 'malicious.html',
-					type: 'text/html',
-				},
-			} as any);
+		expect(mockDriver.createChunkedUpload).toHaveBeenCalledWith('generated-pk.jpg', expect.anything());
+	});
 
-			expect(mockItemsService.createOne).toHaveBeenCalled();
-		});
+	test('treat invalid id as create instead of replace', async () => {
+		const store = makeStore();
+
+		const result = await store.create(makeUpload({ id: 'unknown-id' }));
+
+		expect(result.metadata!['id']).toBe('generated-pk');
+	});
+
+	test('rejects an upload whose type is not in FILES_MIME_TYPE_ALLOW_LIST', async () => {
+		vi.mocked(useEnv).mockReturnValue({ ...baseEnv, FILES_MIME_TYPE_ALLOW_LIST: 'image/jpeg,image/png' });
+
+		const store = makeStore();
+
+		await expect(
+			store.create(makeUpload({ filename_download: 'malicious.html', type: 'text/html' })),
+		).rejects.toSatisfy(
+			(err: unknown) =>
+				err instanceof UnsupportedMediaTypeError &&
+				(err as any).status_code === 415 &&
+				typeof (err as any).body === 'string' &&
+				(err as any).body.includes('text/html'),
+		);
+
+		expect(ItemsService.prototype.createOne).not.toHaveBeenCalled();
+	});
+
+	test('accepts an upload whose type matches FILES_MIME_TYPE_ALLOW_LIST', async () => {
+		vi.mocked(useEnv).mockReturnValue({ ...baseEnv, FILES_MIME_TYPE_ALLOW_LIST: 'image/jpeg,image/png' });
+
+		const store = makeStore();
+
+		await store.create(makeUpload({ filename_download: 'photo.png', type: 'image/png' }));
+
+		expect(ItemsService.prototype.createOne).toHaveBeenCalled();
+	});
+
+	test('allows any type when FILES_MIME_TYPE_ALLOW_LIST is the default wildcard', async () => {
+		vi.mocked(useEnv).mockReturnValue({ ...baseEnv, FILES_MIME_TYPE_ALLOW_LIST: '*/*' });
+
+		const store = makeStore();
+
+		await store.create(makeUpload({ filename_download: 'malicious.html', type: 'text/html' }));
+
+		expect(ItemsService.prototype.createOne).toHaveBeenCalled();
 	});
 });

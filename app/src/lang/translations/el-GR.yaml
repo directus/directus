@@ -365,6 +365,7 @@ fields:
     collection: Συλλογή
     icon: Εικονίδιο
     note: Σημείωση
+    status: Κατάσταση
     hidden: Κρυφό
   directus_files:
     title: Τίτλος

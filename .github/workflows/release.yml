@@ -84,6 +84,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        variant:
+          - name: standard
+            suffix: ''
+            file: ./Dockerfile
+          - name: dhi
+            suffix: '-dhi'
+            file: ./Dockerfile.dhi
+        platform:
+          - linux/amd64
+          - linux/arm64
         include:
           - platform: linux/amd64
             runner: ubuntu-latest
@@ -121,14 +131,16 @@ jobs:
         uses: actions/cache@v5
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-${{ env.PLATFORM_SLUG }}-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-${{ env.PLATFORM_SLUG }}-${{ matrix.variant.name }}-buildx-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-${{ env.PLATFORM_SLUG }}-buildx-
+            ${{ runner.os }}-${{ env.PLATFORM_SLUG }}-${{ matrix.variant.name }}-buildx-
 
       - name: Extract metadata for Docker image
         id: meta
         uses: docker/metadata-action@v5
         with:
+          flavor: |
+            suffix=${{ matrix.variant.suffix }},onlatest=true
           images: |
             ${{ env.DOCKERHUB_IMAGE }}
             ${{ env.GHCR_IMAGE }}
@@ -155,12 +167,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # DHI base image lives behind an entitled registry; reuse the Docker Hub
+      # publishing credentials (that account must hold the DHI entitlement).
+      # Gated to the dhi variant so the standard build never attempts this login.
+      - name: Login to DHI registry
+        uses: docker/login-action@v3
+        if: matrix.variant.name == 'dhi'
+        with:
+          registry: dhi.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
       - name: Build and push by digest
         uses: docker/build-push-action@v6
         id: build
         with:
           context: .
-          file: ./Dockerfile
+          file: ${{ matrix.variant.file }}
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           provenance: true
@@ -178,7 +201,7 @@ jobs:
       - name: Upload digest
         uses: actions/upload-artifact@v6
         with:
-          name: digests-${{ env.PLATFORM_SLUG }}
+          name: digests-${{ matrix.variant.name }}-${{ env.PLATFORM_SLUG }}
           path: ${{ runner.temp }}/digests/*
           if-no-files-found: error
           retention-days: 1
@@ -197,6 +220,14 @@ jobs:
     needs:
       - check-version
       - build-images
+    strategy:
+      fail-fast: false
+      matrix:
+        variant:
+          - name: standard
+            suffix: ''
+          - name: dhi
+            suffix: '-dhi'
     permissions:
       actions: write
       attestations: write
@@ -217,7 +248,7 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           path: ${{ runner.temp }}/digests
-          pattern: digests-*
+          pattern: digests-${{ matrix.variant.name }}-*
           merge-multiple: true
 
       - name: Install Cosign
@@ -231,6 +262,8 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
+          flavor: |
+            suffix=${{ matrix.variant.suffix }},onlatest=true
           images: |
             ${{ env.DOCKERHUB_IMAGE }}
             ${{ env.GHCR_IMAGE }}

@@ -1225,6 +1225,7 @@ fields:
     collection: Koleksiyon
     icon: Îkon
     note: Not
+    status: Rewş
     color: Reng
     display_template: Şablona Nîşanê
     hidden: Veşartî
@@ -1890,6 +1891,7 @@ interfaces:
     incompatible_data: Daneyên heyî bi navrûya dubarekê re ne lihev in û dema ku hêman li dubarekê tên zêdekirin dê werin guhertin
     interface_group: Vebijêrkên Navrûyê
     display_group: Vebijêrkên Nîşandanê
+    edit_mode_inline: Navxêz
   slider:
     slider: Lîstik
     description: Hejmarek bi lîstikê hilbijêre
