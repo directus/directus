@@ -32,8 +32,5 @@ export const editorExtensions = [
 	TextStyle,
 	Table,
 	PreKeymap,
-	// Advisory character count for the `softLength` option. No `limit` — typing past it is not
-	// blocked (soft). Default `textSize` mode counts the doc's text content, matching TinyMCE's
-	// former `textContent.length`.
 	CharacterCount,
 ];
