@@ -11,19 +11,15 @@ const schema = z.object({
 	schemaOnly: z.boolean().default(false),
 });
 
-function parse(argv: string[]) {
-	return parseCommandArgs(schema, argv);
-}
-
 describe('parseCommandArgs', () => {
 	it('parses a required string flag', () => {
-		const result = parse(['--from', 'local']);
+		const result = parseCommandArgs(schema, ['--from', 'local']);
 		expect(result.ok).toBe(true);
 		if (result.ok) expect(result.value.values.from).toBe('local');
 	});
 
 	it('applies schema defaults for omitted flags', () => {
-		const result = parse(['--from', 'local']);
+		const result = parseCommandArgs(schema, ['--from', 'local']);
 		expect(result.ok).toBe(true);
 
 		if (result.ok) {
@@ -35,55 +31,55 @@ describe('parseCommandArgs', () => {
 	});
 
 	it('returns a usage error when a required flag is missing', () => {
-		const result = parse([]);
+		const result = parseCommandArgs(schema, []);
 		expect(result.ok).toBe(false);
 		if (!result.ok) expect(result.error.code).toBe('USAGE');
 	});
 
 	it('coerces number flags to numbers', () => {
-		const result = parse(['--from', 'x', '--count', '5']);
+		const result = parseCommandArgs(schema, ['--from', 'x', '--count', '5']);
 		expect(result.ok).toBe(true);
 		if (result.ok) expect(result.value.values.count).toBe(5);
 	});
 
 	it('maps camelCase keys to --kebab-case flags', () => {
-		const result = parse(['--from', 'x', '--schema-only']);
+		const result = parseCommandArgs(schema, ['--from', 'x', '--schema-only']);
 		expect(result.ok).toBe(true);
 		if (result.ok) expect(result.value.values.schemaOnly).toBe(true);
 	});
 
 	it('supports --no-<flag> negation for booleans', () => {
-		const result = parse(['--from', 'x', '--no-schema-only']);
+		const result = parseCommandArgs(schema, ['--from', 'x', '--no-schema-only']);
 		expect(result.ok).toBe(true);
 		if (result.ok) expect(result.value.values.schemaOnly).toBe(false);
 	});
 
 	it('collects repeated array flags', () => {
-		const result = parse(['--from', 'x', '--collections', 'a', '--collections', 'b']);
+		const result = parseCommandArgs(schema, ['--from', 'x', '--collections', 'a', '--collections', 'b']);
 		expect(result.ok).toBe(true);
 		if (result.ok) expect(result.value.values.collections).toEqual(['a', 'b']);
 	});
 
 	it('rejects invalid enum values with a usage error', () => {
-		const result = parse(['--from', 'x', '--mode', 'nope']);
+		const result = parseCommandArgs(schema, ['--from', 'x', '--mode', 'nope']);
 		expect(result.ok).toBe(false);
 		if (!result.ok) expect(result.error.code).toBe('USAGE');
 	});
 
 	it('rejects unknown flags with a usage error', () => {
-		const result = parse(['--from', 'x', '--bogus']);
+		const result = parseCommandArgs(schema, ['--from', 'x', '--bogus']);
 		expect(result.ok).toBe(false);
 		if (!result.ok) expect(result.error.code).toBe('USAGE');
 	});
 
 	it('captures positional arguments', () => {
-		const result = parse(['--from', 'x', 'one', 'two']);
+		const result = parseCommandArgs(schema, ['--from', 'x', 'one', 'two']);
 		expect(result.ok).toBe(true);
 		if (result.ok) expect(result.value.positionals).toEqual(['one', 'two']);
 	});
 
 	it('treats a --no-<flag> after `--` as a literal positional, not a negation', () => {
-		const result = parse(['--from', 'x', '--', '--no-schema-only']);
+		const result = parseCommandArgs(schema, ['--from', 'x', '--', '--no-schema-only']);
 		expect(result.ok).toBe(true);
 
 		if (result.ok) {

@@ -13,5 +13,7 @@ describe('isCliError', () => {
 		expect(isCliError({ code: 'ECONNRESET', message: 'socket hang up' })).toBe(false);
 		expect(isCliError(null)).toBe(false);
 		expect(isCliError('nope')).toBe(false);
+		// An array carrying the error shape must not pass — arrays are objects.
+		expect(isCliError(Object.assign([], { code: 'USAGE', message: 'x', exitCode: 1 }))).toBe(false);
 	});
 });
