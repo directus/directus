@@ -47,7 +47,7 @@ describe('soft length indicator', () => {
 		expect(remaining.classes()).not.toContain('danger');
 	});
 
-	test('applies the warning state at ≤10% remaining', async () => {
+	test('applies the warning state at <10% remaining', async () => {
 		const { wrapper, editor } = await mountWith({ softLength: 100 });
 		await typeChars(editor, 91); // 9% remaining
 
