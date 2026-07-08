@@ -302,4 +302,55 @@ describe('POST /utils/import', () => {
 		expect(status).toBe(400);
 		expect(body.errors[0].extensions.code).toBe('INVALID_FOREIGN_KEY');
 	});
+
+	test('dangerouslyAllowDelete removes existing rows absent from a merge import', async () => {
+		const people = await makeCollection('del_people', 'uuid');
+		await makeField(people, 'name');
+
+		const keep = randomUUID();
+		const drop = randomUUID();
+
+		// Seed two rows via a merge import (uuid keys are preserved)
+		const seed = await importData(
+			[
+				{
+					collection: people,
+					items: [
+						{ id: keep, name: 'Keep' },
+						{ id: drop, name: 'Drop' },
+					],
+				},
+			],
+			{ mode: 'merge' },
+		);
+
+		expect(seed.status).toBe(200);
+
+		// Re-import only `keep` with the destructive mirror enabled
+		const { status, body } = await importData([{ collection: people, items: [{ id: keep, name: 'Keep' }] }], {
+			mode: 'merge',
+			dangerouslyAllowDelete: 'true',
+		});
+
+		expect(status).toBe(200);
+		expect(body.data.collections[people].deleted).toEqual([drop]);
+
+		const rows = await api.request(readItems(people as any, { fields: ['*'] as any }));
+
+		expect(rows).toHaveLength(1);
+		expect(rows[0]).toMatchObject({ id: keep, name: 'Keep' });
+	});
+
+	test('rejects dangerouslyAllowDelete without merge mode', async () => {
+		const people = await makeCollection('deladd_people', 'uuid');
+		await makeField(people, 'name');
+
+		const { status, body } = await importData([{ collection: people, items: [{ id: randomUUID(), name: 'X' }] }], {
+			mode: 'add',
+			dangerouslyAllowDelete: 'true',
+		});
+
+		expect(status).toBe(400);
+		expect(body.errors[0].extensions.code).toBe('INVALID_QUERY');
+	});
 });

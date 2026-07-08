@@ -142,6 +142,45 @@ describe('buildImportPlan', () => {
 		expect(plan.relationalFields.get('articles')).toEqual(new Set(['author']));
 	});
 
+	test('orders a2o allowed collections before the owning collection', () => {
+		const schema = new SchemaBuilder()
+			.collection('blog', (c) => {
+				c.field('id').id();
+				c.field('blocks').a2o(['paragraph', 'image']);
+			})
+			.build();
+
+		const plan = buildImportPlan(asInput('blog', 'paragraph', 'image'), schema);
+
+		expect(plan.fkFields.get('blog')).toEqual([
+			expect.objectContaining({
+				field: 'blocks',
+				target: null,
+				collectionField: 'collection',
+				allowedCollections: ['paragraph', 'image'],
+				nullable: true,
+			}),
+		]);
+
+		// blog depends on every allowed target that is part of the import
+		expect(plan.order.indexOf('paragraph')).toBeLessThan(plan.order.indexOf('blog'));
+		expect(plan.order.indexOf('image')).toBeLessThan(plan.order.indexOf('blog'));
+	});
+
+	test('ignores a2o allowed collections that are not part of the import', () => {
+		const schema = new SchemaBuilder()
+			.collection('blog', (c) => {
+				c.field('id').id();
+				c.field('blocks').a2o(['paragraph', 'image']);
+			})
+			.build();
+
+		// Only blog + paragraph are imported; image is pre-existing
+		const plan = buildImportPlan(asInput('blog', 'paragraph'), schema);
+
+		expect(plan.order).toEqual(['paragraph', 'blog']);
+	});
+
 	test('throws on an unknown collection', () => {
 		const schema = new SchemaBuilder()
 			.collection('authors', (c) => {

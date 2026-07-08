@@ -2,7 +2,7 @@ import { PassThrough, Readable } from 'node:stream';
 import { setTimeout } from 'node:timers/promises';
 import { ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { SchemaOverview } from '@directus/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -795,10 +795,11 @@ async function run(
 	input: ImportCollectionData[],
 	options: { mode?: 'add' | 'merge'; dryRun?: boolean; dangerouslyAllowDelete?: boolean } = {},
 	existing: Record<string, Set<string>> = {},
+	accountability: Accountability | null = null,
 ) {
 	holder.trx = createTrx(existing);
 	const ctx = setupServices(schema);
-	const service = new ImportService({ knex: {} as any, schema, accountability: null });
+	const service = new ImportService({ knex: {} as any, schema, accountability });
 	const result = await service.importBatch(input, options);
 	return { result, calls: ctx.calls };
 }
@@ -1252,5 +1253,217 @@ describe('ImportService.importBatch', () => {
 				dangerouslyAllowDelete: true,
 			}),
 		).rejects.toMatchObject({ code: ErrorCode.InvalidPayload });
+	});
+
+	test('remaps an a2o foreign key via the per-item target collection', async () => {
+		const schema = new SchemaBuilder()
+			.collection('paragraph', (c) => {
+				c.field('id').id();
+				c.field('text').string();
+			})
+			.collection('image', (c) => {
+				c.field('id').id();
+				c.field('src').string();
+			})
+			.collection('blog', (c) => {
+				c.field('id').id();
+				c.field('blocks').a2o(['paragraph', 'image']);
+			})
+			.build();
+
+		const { calls } = await run(schema, [
+			{ collection: 'paragraph', items: [{ id: 1, text: 'hello' }] },
+			{ collection: 'image', items: [{ id: 1, src: 'a.png' }] },
+			{
+				collection: 'blog',
+				items: [
+					{ id: 1, blocks: 1, collection: 'paragraph' },
+					{ id: 2, blocks: 1, collection: 'image' },
+				],
+			},
+		]);
+
+		const blogCreates = calls.filter((c) => c.collection === 'blog' && c.method === 'createOne');
+
+		// Same raw fk (1) resolves to a different target based on each item's collection field
+		expect(blogCreates[0]!.payload.blocks).toBe('paragraph-new-1');
+		expect(blogCreates[1]!.payload.blocks).toBe('image-new-1');
+	});
+
+	test('throws InvalidForeignKeyError on a dangling a2o reference', async () => {
+		const schema = new SchemaBuilder()
+			.collection('paragraph', (c) => {
+				c.field('id').id();
+				c.field('text').string();
+			})
+			.collection('image', (c) => {
+				c.field('id').id();
+				c.field('src').string();
+			})
+			.collection('blog', (c) => {
+				c.field('id').id();
+				c.field('blocks').a2o(['paragraph', 'image']);
+			})
+			.build();
+
+		await expect(
+			run(schema, [
+				{ collection: 'paragraph', items: [{ id: 1, text: 'hi' }] },
+				{ collection: 'blog', items: [{ id: 1, blocks: 999, collection: 'paragraph' }] },
+			]),
+		).rejects.toMatchObject({ code: ErrorCode.InvalidForeignKey });
+	});
+
+	describe('permissions', () => {
+		test('throws ForbiddenError for a system collection when not admin', async () => {
+			const schema = new SchemaBuilder()
+				.collection('directus_dashboards', (c) => {
+					c.field('id').uuid().primary();
+					c.field('name').string();
+				})
+				.build();
+
+			await expect(
+				run(
+					schema,
+					[{ collection: 'directus_dashboards', items: [{ id: 'x', name: 'n' }] }],
+					{},
+					{},
+					createDefaultAccountability({ admin: false }),
+				),
+			).rejects.toThrow(ForbiddenError);
+		});
+
+		test('validates create but not update permission in add mode', async () => {
+			const schema = new SchemaBuilder()
+				.collection('authors', (c) => {
+					c.field('id').id();
+					c.field('name').string();
+				})
+				.build();
+
+			await run(
+				schema,
+				[{ collection: 'authors', items: [{ id: 1, name: 'A' }] }],
+				{},
+				{},
+				createDefaultAccountability({ admin: false }),
+			);
+
+			expect(validateAccess).toHaveBeenCalledWith(
+				expect.objectContaining({ action: 'create', collection: 'authors' }),
+				expect.anything(),
+			);
+
+			expect(validateAccess).not.toHaveBeenCalledWith(expect.objectContaining({ action: 'update' }), expect.anything());
+		});
+
+		test('validates update permission in merge mode', async () => {
+			const schema = new SchemaBuilder()
+				.collection('authors', (c) => {
+					c.field('id').id();
+					c.field('name').string();
+				})
+				.build();
+
+			await run(
+				schema,
+				[{ collection: 'authors', items: [{ id: 1, name: 'A' }] }],
+				{ mode: 'merge' },
+				{},
+				createDefaultAccountability({ admin: false }),
+			);
+
+			expect(validateAccess).toHaveBeenCalledWith(
+				expect.objectContaining({ action: 'update', collection: 'authors' }),
+				expect.anything(),
+			);
+		});
+
+		test('validates update permission for a deferred field even in add mode', async () => {
+			const schema = new SchemaBuilder()
+				.collection('categories', (c) => {
+					c.field('id').id();
+					c.field('name').string();
+					c.field('parent').m2o('categories');
+				})
+				.build();
+
+			await run(
+				schema,
+				[{ collection: 'categories', items: [{ id: 1, name: 'root', parent: null }] }],
+				{},
+				{},
+				createDefaultAccountability({ admin: false }),
+			);
+
+			// categories.parent is deferred (nullable self-reference), so the second pass needs update access
+			expect(validateAccess).toHaveBeenCalledWith(
+				expect.objectContaining({ action: 'update', collection: 'categories' }),
+				expect.anything(),
+			);
+		});
+
+		test('validates delete permission when dangerouslyAllowDelete is set', async () => {
+			const schema = new SchemaBuilder()
+				.collection('authors', (c) => {
+					c.field('id').uuid().primary();
+					c.field('name').string();
+				})
+				.build();
+
+			await run(
+				schema,
+				[{ collection: 'authors', items: [{ id: 'uuid-1', name: 'A' }] }],
+				{ mode: 'merge', dangerouslyAllowDelete: true },
+				{ authors: new Set(['uuid-1']) },
+				createDefaultAccountability({ admin: false }),
+			);
+
+			expect(validateAccess).toHaveBeenCalledWith(
+				expect.objectContaining({ action: 'delete', collection: 'authors' }),
+				expect.anything(),
+			);
+		});
+
+		test('does not check delete permission without dangerouslyAllowDelete', async () => {
+			const schema = new SchemaBuilder()
+				.collection('authors', (c) => {
+					c.field('id').uuid().primary();
+					c.field('name').string();
+				})
+				.build();
+
+			await run(
+				schema,
+				[{ collection: 'authors', items: [{ id: 'uuid-1', name: 'A' }] }],
+				{ mode: 'merge' },
+				{},
+				createDefaultAccountability({ admin: false }),
+			);
+
+			expect(validateAccess).not.toHaveBeenCalledWith(expect.objectContaining({ action: 'delete' }), expect.anything());
+		});
+
+		test('rejects when validateAccess denies a collection', async () => {
+			const schema = new SchemaBuilder()
+				.collection('authors', (c) => {
+					c.field('id').id();
+					c.field('name').string();
+				})
+				.build();
+
+			vi.mocked(validateAccess).mockRejectedValueOnce(new ForbiddenError());
+
+			await expect(
+				run(
+					schema,
+					[{ collection: 'authors', items: [{ id: 1, name: 'A' }] }],
+					{},
+					{},
+					createDefaultAccountability({ admin: false }),
+				),
+			).rejects.toThrow(ForbiddenError);
+		});
 	});
 });
