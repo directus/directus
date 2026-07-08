@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { DAY_IN_S } from './constants.js';
 import type { MockLicense } from './types.js';
-import { createLicense } from './utils.js';
+import { createDirectusLicense, createMonospaceLicense } from './utils.js';
 
 const now = () => Math.floor(Date.now() / 1000);
 
@@ -14,14 +14,20 @@ const now = () => Math.floor(Date.now() / 1000);
  */
 export const licenseStore: Record<string, MockLicense> = {
 	// Unlimited, no enforcement.
-	'D0000-00000-00000-00000-0000K': createLicense({
+	'D0000-00000-00000-00000-0000K': createDirectusLicense({
 		key: 'D0000-00000-00000-00000-0000K',
 		name: 'UNLIMITED',
 		meta: { name: 'UNLIMITED' },
 	}),
 
+	'M0000-00000-00000-00000-0000C': createMonospaceLicense({
+		key: 'M0000-00000-00000-00000-0000C',
+		name: 'UNLIMITED',
+		meta: { name: 'UNLIMITED' },
+	}),
+
 	// Realistic limited plan with all features enabled and addons available
-	'D0001-00000-00000-00000-0000J': createLicense({
+	'D0001-00000-00000-00000-0000J': createDirectusLicense({
 		key: 'D0001-00000-00000-00000-0000J',
 		name: 'LIMITED',
 		meta: { name: 'LIMITED' },
@@ -84,7 +90,7 @@ export const licenseStore: Record<string, MockLicense> = {
 	}),
 
 	// LIMITED license expired 2 days ago, still within grace period
-	'D0002-00000-00000-00000-0000H': createLicense({
+	'D0002-00000-00000-00000-0000H': createDirectusLicense({
 		key: 'D0002-00000-00000-00000-0000H',
 		name: 'LIMITED_GRACE',
 		meta: {
@@ -113,7 +119,7 @@ export const licenseStore: Record<string, MockLicense> = {
 	}),
 
 	// LIMITED license past grace period — should force downgrade
-	'D0003-00000-00000-00000-0000G': createLicense({
+	'D0003-00000-00000-00000-0000G': createDirectusLicense({
 		key: 'D0003-00000-00000-00000-0000G',
 		name: 'LIMITED_EXPIRED',
 		meta: {
@@ -142,7 +148,7 @@ export const licenseStore: Record<string, MockLicense> = {
 	}),
 
 	// Tight 1/1/1 limits and no features enabled
-	'D0005-00000-00000-00000-0000E': createLicense({
+	'D0005-00000-00000-00000-0000E': createDirectusLicense({
 		key: 'D0005-00000-00000-00000-0000E',
 		name: 'TINY',
 		meta: { name: 'TINY' },

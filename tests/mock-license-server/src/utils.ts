@@ -5,7 +5,9 @@ import { generateKeyPair, type JWTPayload } from 'jose';
 import { SignJWT } from 'jose/jwt/sign';
 import { merge } from 'lodash-es';
 import { DAY_IN_S } from './constants.js';
-import type { MockLicense } from './types.js';
+import type { MockDirectusLicense, MockMonospaceLicense } from './types.js';
+
+type KeyType = 'monospace' | 'directus';
 
 const ALPHABET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
 
@@ -36,15 +38,20 @@ function luhnChecksum(payload: string): string {
 	return expectedChecksumChar;
 }
 
-export function generateKey() {
-	const c = Array.from({ length: 23 }, () => Math.floor(Math.random() * ALPHABET.length))
-		.map((i) => ALPHABET[i])
-		.join('');
+export function generateKey(type: KeyType = 'directus', values?: string) {
+	const prefix = type === 'directus' ? 'D' : 'M';
 
-	return `D${c.slice(0, 4)}-${c.slice(4, 9)}-${c.slice(9, 14)}-${c.slice(14, 19)}-${c.slice(19, 23) + luhnChecksum(`D${c}`)}`;
+	const c =
+		values && values.length === 23
+			? values
+			: Array.from({ length: 23 }, () => Math.floor(Math.random() * ALPHABET.length))
+					.map((i) => ALPHABET[i])
+					.join('');
+
+	return `${prefix}${c.slice(0, 4)}-${c.slice(4, 9)}-${c.slice(9, 14)}-${c.slice(14, 19)}-${c.slice(19, 23) + luhnChecksum(`${prefix}${c}`)}`;
 }
 
-export function createLicense(overrides?: DeepPartial<MockLicense>): MockLicense {
+export function createDirectusLicense(overrides?: DeepPartial<MockDirectusLicense>): MockDirectusLicense {
 	const key = overrides?.key ?? generateKey();
 	const now = Math.floor(Date.now() / 1000);
 
@@ -77,6 +84,45 @@ export function createLicense(overrides?: DeepPartial<MockLicense>): MockLicense
 				ai_translations_enabled: { default: true },
 				production_enabled: { default: true },
 				flows: { limit: -1 },
+			},
+		},
+		overrides,
+	);
+}
+
+export function createMonospaceLicense(overrides?: DeepPartial<MockMonospaceLicense>): MockMonospaceLicense {
+	const key = overrides?.key ?? generateKey();
+	const now = Math.floor(Date.now() / 1000);
+
+	return merge(
+		{
+			key,
+			max_projects: 10,
+			projects: [],
+			addons: [],
+			issued_at: now,
+			name: `mock-${key}`,
+			meta: {
+				name: 'mock',
+				version: '2026-05-08',
+				grace_period: DAY_IN_S,
+				validation_interval: 60 * 60,
+				expires_at: now + 30 * DAY_IN_S,
+				offline: false,
+			},
+			entitlements: {
+				workspaces: { limit: -1 },
+				seats: { limit: -1 },
+				custom_roles: { limit: -1 },
+				sso_enabled: { default: true },
+				custom_permission_rules_enabled: { default: true },
+				offline_enabled: { default: false },
+				telemetry_required: { default: false },
+				production_enabled: { default: true },
+				audit_logs_enabled: { default: true },
+				service_accounts_enabled: { default: true },
+				premium_connectors_enabled: { default: true },
+				custom_connectors_enabled: { default: true },
 			},
 		},
 		overrides,
