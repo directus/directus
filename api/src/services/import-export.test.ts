@@ -1018,10 +1018,17 @@ describe('ImportService', () => {
 				'application/json',
 				JSON.stringify([{ title: 'a' }]),
 				(service, finished) => {
+					// Mirror real importJSON: only resolve once the source stream is fully drained, so the
+					// caller's temp-file cleanup can't race the spooled-file read (ENOENT flake in CI).
 					service.importJSON = vi.fn().mockImplementation((_collection, source: Readable) => {
-						source.resume();
-						source.on('end', finished);
-						return Promise.resolve();
+						return new Promise<void>((resolve) => {
+							source.on('end', () => {
+								finished();
+								resolve();
+							});
+
+							source.resume();
+						});
 					});
 				},
 			);
