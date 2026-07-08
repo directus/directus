@@ -6,9 +6,11 @@ import { computed, ref, type Ref, toRefs, watch } from 'vue';
 import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
 import { useMedia } from './composables/use-media';
+import { useSourceCode } from './composables/use-source-code';
 import ImageDrawer from './drawers/image-drawer.vue';
 import LinkDrawer from './drawers/link-drawer.vue';
 import MediaDrawer from './drawers/media-drawer.vue';
+import SourceCodeDrawer from './drawers/source-code-drawer.vue';
 import { editorExtensions } from './extensions';
 import { LinkShortcut } from './extensions/link-shortcut';
 import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
@@ -150,12 +152,24 @@ const {
 	saveMedia,
 } = useMedia(editor as Ref<Editor>, imageToken);
 
+const {
+	sourceCodeDrawerOpen,
+	code,
+	normalizeConfirmOpen,
+	normalizeDiff,
+	openSourceCodeDrawer,
+	closeSourceCodeDrawer,
+	saveSourceCode,
+	confirmSaveSourceCode,
+	cancelNormalize,
+} = useSourceCode(editor as Ref<Editor>);
+
 // First drawer in the new editor: pause the surrounding view's focus trap while it's open so the
 // drawer's inputs are reachable; resume on close. Reused by the link/media/source drawers later.
 const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
 
-watch([imageDrawerOpen, linkDrawerOpen, mediaDrawerOpen], ([image, link, media]) =>
-	image || link || media ? pauseFocusTrap() : unpauseFocusTrap(),
+watch([imageDrawerOpen, linkDrawerOpen, mediaDrawerOpen, sourceCodeDrawerOpen], (open) =>
+	open.some(Boolean) ? pauseFocusTrap() : unpauseFocusTrap(),
 );
 
 // `editable` is only read at init, so keep it in sync when the prop flips
@@ -200,6 +214,7 @@ onKeyStroke('Escape', () => {
 			@open-image="openImageDrawer"
 			@open-media="openMediaDrawer"
 			@open-link="openLinkDrawer"
+			@open-source-code="openSourceCodeDrawer"
 		/>
 		<EditorContent class="editor-content" :editor="editor" :dir="editorDir" />
 
@@ -238,6 +253,17 @@ onKeyStroke('Escape', () => {
 			@select="onMediaSelect"
 			@save="saveMedia"
 			@cancel="closeMediaDrawer"
+		/>
+
+		<SourceCodeDrawer
+			v-model="sourceCodeDrawerOpen"
+			v-model:code="code"
+			v-model:normalize-confirm-open="normalizeConfirmOpen"
+			:normalize-diff="normalizeDiff"
+			@save="saveSourceCode"
+			@cancel="closeSourceCodeDrawer"
+			@confirm-save="confirmSaveSourceCode"
+			@cancel-normalize="cancelNormalize"
 		/>
 	</div>
 </template>
