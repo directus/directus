@@ -98,23 +98,25 @@ describe('WebSocket heartbeat handler', () => {
 		expect(mockClient.send).toBeCalled();
 	});
 
-	test('should clean up websocket.message listener after heartbeat timeout', () => {
-		const onSpy = vi.spyOn(emitter, 'onAction');
-		const offSpy = vi.spyOn(emitter, 'offAction');
+	// regression (#27831): idle clients used to leak a websocket.message listener on every heartbeat cycle
+	test('should not accumulate websocket.message listeners across idle heartbeat cycles', () => {
+		const actionEmitter = (emitter as unknown as { actionEmitter: { listenerCount(e: string): number } }).actionEmitter;
+
+		const messageListenerCount = () => actionEmitter.listenerCount('websocket.message');
 
 		new HeartbeatHandler(controller);
 
 		controller.clients.add(mockClient);
-
 		emitter.emitAction('websocket.connect', {}, {} as EventContext);
 
-		// First heartbeat starts
-		vi.advanceTimersByTime(1000);
+		const baseline = messageListenerCount();
 
-		// Timeout expires
-		vi.advanceTimersByTime(1000);
+		for (let cycle = 0; cycle < 10; cycle++) {
+			vi.advanceTimersByTime(1000);
+		}
 
-		expect(onSpy).toHaveBeenCalledWith('websocket.message', expect.any(Function));
-		expect(offSpy).toHaveBeenCalledWith('websocket.message', expect.any(Function));
+		// a leak would leave baseline + 10 listeners; only the current cycle's watcher should still be attached
+		expect(messageListenerCount()).toBeLessThanOrEqual(baseline + 1);
+		expect(mockClient.close).toBeCalled();
 	});
 });

@@ -82,10 +82,10 @@ export class HeartbeatHandler {
 		emitter.onAction('websocket.message', messageWatcher);
 
 		const timeout = setTimeout(() => {
-			// Remove listener before closing idle clients
+			// detach the watcher before closing so a close wont trigger the watcher
 			emitter.offAction('websocket.message', messageWatcher);
 
-			// close connections that haven't responded
+			// close any connections that did not respond in time
 			for (const client of pendingClients) {
 				client.close();
 			}
