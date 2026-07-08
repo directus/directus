@@ -1,0 +1,46 @@
+post:
+  summary: Register a New User
+  description: Register a new user with the configured self-registration settings.
+  operationId: registerUser
+  security: []
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [email, password]
+          properties:
+            email:
+              type: string
+              format: email
+              description: Email address of the new user.
+              example: user@example.com
+            password:
+              type: string
+              format: password
+              description: Password for the new user.
+              example: password
+            first_name:
+              type: string
+              description: First name of the new user.
+              example: Jane
+            last_name:
+              type: string
+              description: Last name of the new user.
+              example: Doe
+            verification_url:
+              type: string
+              format: uri
+              description: Custom URL for the email verification link.
+              example: 'https://example.com/verify'
+  responses:
+    '204':
+      $ref: '../../openapi.yaml#/components/responses/NoContentResponse'
+    '400':
+      $ref: '../../openapi.yaml#/components/responses/BadRequestError'
+    '403':
+      $ref: '../../openapi.yaml#/components/responses/ForbiddenError'
+    '429':
+      $ref: '../../openapi.yaml#/components/responses/TooManyRequestsError'
+  tags:
+    - Users
