@@ -1,5 +1,5 @@
 #!/usr/bin/env node
+import { commands } from './commands/index.js';
 import { run } from './kernel/run.js';
-import { corePlugins } from './plugins/index.js';
 
-process.exitCode = await run(process.argv.slice(2), { plugins: corePlugins });
+process.exitCode = await run(process.argv.slice(2), { commands });

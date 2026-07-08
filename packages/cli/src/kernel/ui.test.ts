@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cliError } from './result.js';
+import { CliError } from './error.js';
 import { createUi } from './ui.js';
 
 const ESC = String.fromCodePoint(27); // start byte of every ANSI escape sequence
@@ -46,7 +46,7 @@ describe('createUi', () => {
 
 	it('renders errors as structured stdout in --json mode', () => {
 		const ui = createUi({ json: true, color: false });
-		ui.error(cliError('USAGE', 'bad input'));
+		ui.error(new CliError('USAGE', 'bad input'));
 
 		expect(stdout.join('')).toContain('"code":"USAGE"');
 		expect(stderr.join('')).toBe('');
@@ -54,7 +54,7 @@ describe('createUi', () => {
 
 	it('renders errors with a hint on stderr in human mode', () => {
 		const ui = createUi({ json: false, color: false });
-		ui.error(cliError('USAGE', 'bad input', { hint: 'try --from' }));
+		ui.error(new CliError('USAGE', 'bad input', { hint: 'try --from' }));
 
 		const text = stderr.join('');
 		expect(text).toContain('bad input');

@@ -1,14 +1,12 @@
 import { version } from '../version.js';
 import { renderCommandHelp, renderRootHelp } from './args/help.js';
 import { parseCommandArgs } from './args/parse.js';
-import type { CliContext } from './context.js';
-import type { PluginDefinition } from './plugins/define.js';
-import { createRegistry } from './registry.js';
-import { type CliError, cliError, isCliError } from './result.js';
+import type { CliContext, CommandGroup } from './command.js';
+import { CliError, isCliError } from './error.js';
 import { createUi } from './ui.js';
 
 export interface RunOptions {
-	readonly plugins: readonly PluginDefinition[];
+	readonly commands: readonly CommandGroup[];
 	readonly cwd?: string;
 }
 
@@ -49,18 +47,29 @@ function extractGlobals(argv: readonly string[]): { globals: Globals; rest: stri
 	return { globals, rest };
 }
 
+function commandPaths(groups: readonly CommandGroup[]): string[] {
+	const paths: string[] = [];
+
+	for (const group of groups) {
+		for (const name of Object.keys(group.commands)) {
+			paths.push(`${group.name} ${name}`);
+		}
+	}
+
+	return paths;
+}
+
 function didYouMean(paths: readonly string[], attempt: string): string | undefined {
 	return paths.find((path) => path.startsWith(attempt));
 }
 
-// Normalize anything crossing the boundary — a thrown value or a returned
-// Result error — into a real CliError. A plugin can leak a non-CliError through
-// `any`, and both paths must be equally defensive.
+// Normalize anything crossing the boundary into a real CliError — a command can
+// throw a non-CliError, and the boundary must render it just as safely.
 function toCliError(value: unknown): CliError {
-	return isCliError(value) ? value : cliError('UNKNOWN', value instanceof Error ? value.message : String(value));
+	return isCliError(value) ? value : new CliError('UNKNOWN', value instanceof Error ? value.message : String(value));
 }
 
-// The single throw/exit boundary: internals return Result; here we render via ui
+// The single throw/exit boundary: internals throw CliError; here we render via ui
 // and map to an exit code. Returns the code; bin.ts sets process.exitCode.
 export async function run(argv: readonly string[], options: RunOptions): Promise<number> {
 	const { globals, rest } = extractGlobals(argv);
@@ -81,61 +90,42 @@ export async function run(argv: readonly string[], options: RunOptions): Promise
 		return Number.isInteger(code) && code >= 1 && code <= 255 ? code : 1;
 	};
 
-	const registryResult = createRegistry(options.plugins);
-	if (!registryResult.ok) return fail(registryResult.error);
-	const registry = registryResult.value;
-
-	const pluginName = rest[0];
+	const groups = options.commands;
+	const groupName = rest[0];
 	const commandName = rest[1];
 
-	if (pluginName === undefined || (globals.help && commandName === undefined)) {
-		ui.print(renderRootHelp(registry.plugins));
+	if (groupName === undefined || (globals.help && commandName === undefined)) {
+		ui.print(renderRootHelp(groups));
 		return 0;
 	}
 
-	if (commandName === undefined) {
-		return fail(
-			cliError('UNKNOWN_COMMAND', `Unknown command: "${pluginName}"`, { hint: "Run 'd6s --help' to list commands." }),
-		);
-	}
+	const command =
+		commandName === undefined ? undefined : groups.find((g) => g.name === groupName)?.commands[commandName];
 
-	const entry = registry.resolve(pluginName, commandName);
-
-	if (entry === undefined) {
-		const attempt = `${pluginName} ${commandName}`;
-		const near = didYouMean(registry.commandPaths(), attempt);
+	if (command === undefined) {
+		const attempt = commandName === undefined ? groupName : `${groupName} ${commandName}`;
+		const near = didYouMean(commandPaths(groups), attempt);
 
 		return fail(
-			cliError('UNKNOWN_COMMAND', `Unknown command: "${attempt}"`, {
+			new CliError('UNKNOWN_COMMAND', `Unknown command: "${attempt}"`, {
 				hint: near !== undefined ? `Did you mean "${near}"?` : "Run 'd6s --help' to list commands.",
 			}),
 		);
 	}
 
-	// Everything from here — the lazy module load, arg parsing, and the command
-	// body — runs inside the single catch so a rejected import() or a thrown
-	// command renders as a CliError instead of escaping as an unhandled rejection.
+	// Everything from here — arg parsing and the command body — runs inside the
+	// single catch so a thrown CliError (or any thrown value) renders as an error
+	// instead of escaping as an unhandled rejection.
 	try {
-		const command = await entry.load();
-
 		if (globals.help) {
-			ui.print(renderCommandHelp(pluginName, command));
+			ui.print(renderCommandHelp(groupName, command));
 			return 0;
 		}
 
 		const parsed = parseCommandArgs(command.args, rest.slice(2));
-		if (!parsed.ok) return fail(parsed.error);
-
 		const ctx: CliContext = { cwd: options.cwd ?? process.cwd(), json: globals.json, ui };
 
-		const outcome = await command.run({ args: parsed.value.values, positionals: parsed.value.positionals, ctx });
-
-		// Trust a returned error no more than a thrown one: an unvalidated
-		// error.exitCode of undefined would otherwise exit 0 — a failed command
-		// silently reporting success.
-		if (typeof outcome === 'object' && outcome !== null && outcome.ok === false) {
-			return fail(toCliError(outcome.error));
-		}
+		await command.run({ args: parsed.values, positionals: parsed.positionals, ctx });
 
 		return 0;
 	} catch (thrown) {

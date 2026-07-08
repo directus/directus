@@ -1,15 +1,8 @@
-// Public API surface for plugin authors. Treated as internal and unstable until
-// the plugin API is deliberately made public.
-export type { CliContext } from './kernel/context.js';
-export type {
-	CommandContext,
-	CommandDefinition,
-	CommandManifestEntry,
-	CommandOutcome,
-	PluginDefinition,
-} from './kernel/plugins/define.js';
-export { defineCommand, definePlugin } from './kernel/plugins/define.js';
-export type { CliError, CliErrorCode, Result } from './kernel/result.js';
-export { cliError, err, isCliError, ok } from './kernel/result.js';
+// Public API surface for command authors. Treated as internal and unstable until
+// the command API is deliberately made public.
+export type { CliContext, CommandContext, CommandDefinition, CommandGroup } from './kernel/command.js';
+export { defineCommand } from './kernel/command.js';
+export type { CliErrorCode } from './kernel/error.js';
+export { CliError, isCliError } from './kernel/error.js';
 export type { Ui } from './kernel/ui.js';
 export { version } from './version.js';

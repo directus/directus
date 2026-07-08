@@ -1,7 +1,7 @@
 import { parseArgs } from 'node:util';
 import { camelCase, kebabCase } from 'lodash-es';
 import { z } from 'zod';
-import { type CliError, cliError, err, ok, type Result } from '../result.js';
+import { CliError } from '../error.js';
 
 // We introspect the command's zod schema through its stable JSON-schema
 // projection rather than poking zod internals — types, array item types, enum
@@ -86,7 +86,7 @@ interface ParseSuccess<T> {
 export function parseCommandArgs<Schema extends z.ZodObject>(
 	schema: Schema,
 	argv: readonly string[],
-): Result<ParseSuccess<z.infer<Schema>>, CliError> {
+): ParseSuccess<z.infer<Schema>> {
 	const spec = describeArgs(schema);
 
 	const options: Record<string, { type: 'string' | 'boolean'; multiple?: boolean }> = {};
@@ -141,7 +141,7 @@ export function parseCommandArgs<Schema extends z.ZodObject>(
 			strict: true,
 		}) as { values: Record<string, unknown>; positionals: string[] };
 	} catch (error) {
-		return err(cliError('USAGE', error instanceof Error ? error.message : 'Invalid arguments'));
+		throw new CliError('USAGE', error instanceof Error ? error.message : 'Invalid arguments');
 	}
 
 	// Assemble a camelCase object, coercing per field type. Unprovided keys are
@@ -159,9 +159,7 @@ export function parseCommandArgs<Schema extends z.ZodObject>(
 
 	const result = schema.safeParse(raw);
 
-	if (!result.success) {
-		return err(cliError('USAGE', z.prettifyError(result.error)));
-	}
+	if (!result.success) throw new CliError('USAGE', z.prettifyError(result.error));
 
-	return ok({ values: result.data as z.infer<Schema>, positionals: parsed.positionals });
+	return { values: result.data as z.infer<Schema>, positionals: parsed.positionals };
 }
