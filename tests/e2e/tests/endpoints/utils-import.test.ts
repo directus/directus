@@ -21,6 +21,12 @@ const createdCollections: string[] = [];
 
 type Pk = 'integer' | 'uuid';
 
+/** Lower-case a key for cross-vendor uuid comparison (mssql `uniqueidentifier` returns upper-case). */
+const lower = (value: unknown): string => String(value).toLowerCase();
+
+/** Coerce an integer key for cross-vendor comparison (oracle returns generated keys as strings). */
+const int = (value: unknown): number => Number(value);
+
 async function makeCollection(name: string, pk: Pk = 'integer'): Promise<string> {
 	const collection = prefix + name;
 
@@ -65,12 +71,18 @@ async function makeM2O(
 		}),
 	);
 
+	// Self-references use NO ACTION (mirroring the Directus app), which every vendor accepts;
+	// mssql rejects a self-referencing SET NULL constraint (error 1785). Cross-collection nullable
+	// relations use SET NULL.
+	const selfReference = collection === related;
+	const onDelete = !selfReference && nullable ? 'SET NULL' : 'NO ACTION';
+
 	await api.request(
 		createRelation({
 			collection,
 			field,
 			related_collection: related,
-			schema: { on_delete: nullable ? 'SET NULL' : 'NO ACTION' },
+			schema: { on_delete: onDelete },
 		} as any),
 	);
 }
@@ -158,20 +170,22 @@ describe('POST /utils/import', () => {
 
 		expect(first.status).toBe(200);
 		// New row, key preserved (not remapped)
-		expect(first.body.data.collections[people].new).toEqual([id]);
+		expect(first.body.data.collections[people].new.map(lower)).toEqual([lower(id)]);
 		expect(first.body.data.collections[people].mapped).toEqual({});
 
 		const second = await importData([{ collection: people, items: [{ id, name: 'Second' }] }], { mode: 'merge' });
 
 		expect(second.status).toBe(200);
 		// Second import matches the existing row
-		expect(second.body.data.collections[people].existing).toEqual([id]);
+		expect(second.body.data.collections[people].existing.map(lower)).toEqual([lower(id)]);
 
 		const rows = await api.request(readItems(people as any, { fields: ['*'] as any }));
 
 		// Upsert: same row, updated value
 		expect(rows).toHaveLength(1);
-		expect(rows[0]).toMatchObject({ id, name: 'Second' });
+		const [row] = rows as any[];
+		expect(lower(row.id)).toBe(lower(id));
+		expect(row.name).toBe('Second');
 	});
 
 	test('add mode regenerates a conflicting UUID primary key', async () => {
@@ -244,14 +258,14 @@ describe('POST /utils/import', () => {
 
 		expect(status).toBe(200);
 
-		const countryId = body.data.collections[countries].mapped['1'] ?? 1;
-		const cityId = body.data.collections[cities].mapped['10'] ?? 10;
+		const countryId = int(body.data.collections[countries].mapped['1'] ?? 1);
+		const cityId = int(body.data.collections[cities].mapped['10'] ?? 10);
 
 		const [country] = (await api.request(readItems(countries as any, { fields: ['*'] as any }))) as any[];
 		const [city] = (await api.request(readItems(cities as any, { fields: ['*'] as any }))) as any[];
 
-		expect(country.capital).toBe(cityId);
-		expect(city.country).toBe(countryId);
+		expect(int(country.capital)).toBe(cityId);
+		expect(int(city.country)).toBe(countryId);
 	});
 
 	test('rejects an unresolvable non-nullable cycle', async () => {
@@ -333,12 +347,14 @@ describe('POST /utils/import', () => {
 		});
 
 		expect(status).toBe(200);
-		expect(body.data.collections[people].deleted).toEqual([drop]);
+		expect(body.data.collections[people].deleted.map(lower)).toEqual([lower(drop)]);
 
 		const rows = await api.request(readItems(people as any, { fields: ['*'] as any }));
 
 		expect(rows).toHaveLength(1);
-		expect(rows[0]).toMatchObject({ id: keep, name: 'Keep' });
+		const [row] = rows as any[];
+		expect(lower(row.id)).toBe(lower(keep));
+		expect(row.name).toBe('Keep');
 	});
 
 	test('rejects dangerouslyAllowDelete without merge mode', async () => {
