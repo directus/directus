@@ -25,15 +25,10 @@ export type SchemaDiffOptions = {
 export const schemaDiff =
 	<Schema>(snapshot: SchemaSnapshotOutput, options: SchemaDiffOptions = {}): RestCommand<SchemaDiffOutput, Schema> =>
 	() => {
-		const params: Record<string, string | boolean> = {};
-
-		if (options.force) params['force'] = options.force;
-		if (options.mode && options.mode !== 'mirror') params['mode'] = options.mode;
-
 		return {
 			method: 'POST',
 			path: '/schema/diff',
-			params,
+			params: options,
 			body: JSON.stringify(snapshot),
 		};
 	};
