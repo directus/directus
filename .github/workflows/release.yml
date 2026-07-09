@@ -337,14 +337,24 @@ jobs:
   generate-sbom:
     name: Generate SBOM
     runs-on: ubuntu-latest
+    # Runs after the release exists and uploads SBOMs to it directly, so a
+    # flaky SBOM step can never block or strand release creation. If this job
+    # fails, the release (and the already-published npm/docker artifacts) are
+    # untouched: use "Re-run failed jobs" in the Actions UI to re-drive just
+    # this job. The upload is idempotent (gh release upload --clobber), so a
+    # re-run cleanly (re-)attaches the SBOMs to the existing release.
     needs:
       - check-version
       - publish-docker-images
+      - create-release
     permissions:
-      contents: read
+      contents: write
       packages: read
     strategy:
       fail-fast: false
+      # Serialize the variants: both legs run `gh release upload` against the
+      # same release, and concurrent asset uploads to one release can 422.
+      max-parallel: 1
       matrix:
         variant:
           - name: standard
@@ -432,6 +442,14 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+      # Attach the SBOMs to the release that create-release already published.
+      # --clobber makes this idempotent so a re-run replaces any partial set.
+      - name: Attach SBOMs to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "$GITHUB_REF_NAME" directus-*.json --clobber
+
   create-release:
     name: Create Release
     runs-on: ubuntu-latest
@@ -439,24 +457,13 @@ jobs:
       - check-version
       - publish-npm
       - publish-docker-images
-      - generate-sbom
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Download SBOM artifacts
-        uses: actions/download-artifact@v6
-        with:
-          path: ${{ runner.temp }}/sbom
-          pattern: sbom-*
-          merge-multiple: true
-
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
         run: |
           gh release create \
             "$GITHUB_REF_NAME" \
             ${{ needs.check-version.outputs.prerelease == 'true' && '--prerelease' || '' }} \
-            --notes "Directus $GITHUB_REF_NAME" \
-            "${{ runner.temp }}"/sbom/*.json
+            --notes "Directus $GITHUB_REF_NAME"
