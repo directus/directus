@@ -36,10 +36,25 @@ describe('buildCustomFormats: parsing the option', () => {
 	});
 
 	test('returns empty for null/undefined/garbage input', () => {
+		vi.spyOn(console, 'warn').mockImplementation(() => {});
+
 		expect(buildCustomFormats(null).formats).toHaveLength(0);
 		expect(buildCustomFormats(undefined).extensions).toHaveLength(0);
 		expect(buildCustomFormats('not json').formats).toHaveLength(0);
 		expect(buildCustomFormats([]).extensions).toHaveLength(0);
+	});
+
+	test('warns when the option itself cannot be parsed, but not for unset/empty values', () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+		buildCustomFormats(null);
+		buildCustomFormats(undefined);
+		buildCustomFormats('');
+		expect(warn).not.toHaveBeenCalled();
+
+		buildCustomFormats('not json');
+		buildCustomFormats('{"an":"object"}');
+		expect(warn).toHaveBeenCalledTimes(2);
 	});
 
 	test('skips unsupported (block-level / missing inline) entries with a warning', () => {
@@ -54,6 +69,20 @@ describe('buildCustomFormats: parsing the option', () => {
 		expect(extensions).toHaveLength(1);
 		expect(formats).toHaveLength(1);
 		expect(warn).toHaveBeenCalled();
+	});
+
+	test('skips entries without a classes/attributes anchor with a warning (cannot round-trip)', () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+		const { formats } = buildCustomFormats([
+			{ title: 'Bare', inline: 'span' },
+			{ title: 'Styles only', inline: 'span', styles: { color: 'red' } },
+			SAMPLE[0],
+		]);
+
+		expect(formats).toHaveLength(1);
+		expect(formats[0]!.title).toBe('Highlight');
+		expect(warn).toHaveBeenCalledTimes(2);
 	});
 
 	test('exposes the inline styles as a preview string for the toolbar dropdown', () => {
@@ -119,6 +148,47 @@ describe('buildCustomFormats: round-trip + active state', () => {
 		editor.destroy();
 
 		expect(out).toBe('<p><span class="hl" style="color: #00ff00; font-size: 20px;" title="Highlighted">x</span></p>');
+	});
+
+	test('coexists with text color: format applied over colored text keeps the color', () => {
+		const { extensions, formats } = buildCustomFormats(SAMPLE);
+
+		const editor = new Editor({
+			extensions: [...editorExtensions, ...extensions],
+			content: '<p><span style="color: red">hi</span></p>',
+		});
+
+		editor.commands.selectAll();
+		editor.commands.toggleMark(formats[0]!.name);
+		const html = editor.getHTML();
+		editor.destroy();
+
+		expect(html).toContain('class="hl"');
+		expect(html).toContain('color: red');
+	});
+
+	test('coexists with text color: color applied over a format keeps the format', () => {
+		const { extensions, formats } = buildCustomFormats(SAMPLE);
+		const editor = new Editor({ extensions: [...editorExtensions, ...extensions], content: '<p>hi</p>' });
+
+		editor.commands.selectAll();
+		editor.commands.toggleMark(formats[0]!.name);
+		editor.commands.selectAll();
+		editor.commands.setColor('red');
+		const html = editor.getHTML();
+		editor.destroy();
+
+		expect(html).toContain('class="hl"');
+		expect(html).toContain('color: red');
+	});
+
+	test('a format span nested with a color span round-trips', () => {
+		const editor = editorWith(SAMPLE, '<p><span class="hl"><span style="color: red">hi</span></span></p>');
+		const out = editor.getHTML();
+		editor.destroy();
+
+		expect(out).toContain('class="hl"');
+		expect(out).toContain('color: red');
 	});
 
 	test('reports active when the selection sits inside a configured format', () => {

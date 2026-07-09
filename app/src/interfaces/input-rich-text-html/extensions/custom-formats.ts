@@ -3,8 +3,9 @@ import { type AnyExtension, Mark, mergeAttributes } from '@tiptap/vue-3';
 /**
  * Legacy TinyMCE `customFormats` (a.k.a. `style_formats`) entry. Only inline formats are supported
  * on Tiptap — each becomes a dynamic mark. Block-level shapes (`block`, `selector`, `wrapper`, or a
- * missing `inline` tag) and nested `items` groups are unsupported and skipped with a warning; they
- * are recorded limitations, not silent failures.
+ * missing `inline` tag), nested `items` groups, and entries without a `classes`/`attributes` anchor
+ * (nothing to recognize the mark by on reload) are unsupported and skipped with a warning; they are
+ * recorded limitations, not silent failures.
  */
 interface CustomFormatEntry {
 	title: string;
@@ -30,17 +31,22 @@ export interface BuiltCustomFormats {
 
 /** `type: json` field meta may hand back an already-parsed array or a raw JSON string. */
 function parseOption(raw: unknown): unknown[] {
+	if (raw == null) return [];
 	if (Array.isArray(raw)) return raw;
 
 	if (typeof raw === 'string') {
+		if (raw.trim() === '') return [];
+
 		try {
 			const parsed = JSON.parse(raw);
-			return Array.isArray(parsed) ? parsed : [];
+			if (Array.isArray(parsed)) return parsed;
 		} catch {
-			return [];
+			// fall through to the warning below
 		}
 	}
 
+	// eslint-disable-next-line no-console
+	console.warn('[wysiwyg] Could not parse the customFormats option (expected a JSON array of formats):', raw);
 	return [];
 }
 
@@ -83,10 +89,8 @@ function buildMark(entry: CustomFormatEntry, name: string): AnyExtension {
 
 	return Mark.create({
 		name,
-		// win parse ordering over TextStyle, and stop TextStyle from also capturing overlapping
-		// inline styles (color/font-size) on the same span — keeps the format a single element.
+		// win parse ordering over TextStyle so a stored format span is claimed by this mark
 		priority: 200,
-		excludes: 'textStyle',
 		parseHTML() {
 			return [
 				{
@@ -113,6 +117,16 @@ export function buildCustomFormats(raw: unknown): BuiltCustomFormats {
 		if (!isSupported(entry)) {
 			// eslint-disable-next-line no-console
 			console.warn('[wysiwyg] Unsupported customFormats entry skipped (inline formats only):', entry);
+			return;
+		}
+
+		// Without a class or attribute there is nothing to recognize the mark by on reload (`matches`
+		// would never fire), so the format could be applied but not round-tripped — reject it upfront.
+		const hasAnchor = Boolean(entry.classes?.trim()) || Object.keys(entry.attributes ?? {}).length > 0;
+
+		if (!hasAnchor) {
+			// eslint-disable-next-line no-console
+			console.warn('[wysiwyg] customFormats entry skipped — `classes` or `attributes` is required:', entry);
 			return;
 		}
 
