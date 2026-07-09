@@ -11,9 +11,6 @@ const CONFIG_FILENAME = 'directus.config.json';
 const profileSchema = z.object({
 	url: z.url(),
 	auth: z.object({ type: z.literal('token') }).default({ type: 'token' }),
-	// Protected profiles are never a default target and require sealed pushes in
-	// CI. The wizard suggests this for anything not localhost.
-	protect: z.boolean().default(false),
 });
 
 // The kernel owns `profiles` and `root`; any other top-level key (e.g. a future
@@ -30,7 +27,6 @@ const configSchema = z.looseObject({
 export interface Profile {
 	readonly url: string;
 	readonly auth: { readonly type: 'token' };
-	readonly protect: boolean;
 }
 
 export interface Config {

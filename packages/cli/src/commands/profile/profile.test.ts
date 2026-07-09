@@ -56,7 +56,7 @@ describe('profile commands', () => {
 		stdout.length = 0;
 
 		expect(await d6s('profile', 'list', '--json')).toBe(0);
-		expect(JSON.parse(stdout.join(''))).toEqual([{ name: 'staging', url: 'https://cms.example.com', protect: false }]);
+		expect(JSON.parse(stdout.join(''))).toEqual([{ name: 'staging', url: 'https://cms.example.com' }]);
 	});
 
 	it('remove deletes the named profile', async () => {

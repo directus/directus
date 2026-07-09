@@ -32,6 +32,7 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
+		"@clack/prompts": "catalog:",
 		"@directus/sdk": "workspace:*",
 		"chalk": "catalog:",
 		"lodash-es": "catalog:",

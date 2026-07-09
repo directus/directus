@@ -9,7 +9,7 @@ import { registerSecret } from '../secret.js';
 export interface ResolvedCredential {
 	readonly url: string;
 	readonly token: string;
-	readonly source: 'flag' | 'env' | 'store';
+	readonly source: 'flag' | 'env' | 'store' | 'prompt';
 }
 
 // Not-found is a valid state, not an error: in a TTY the caller prompts, and

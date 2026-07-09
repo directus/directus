@@ -10,7 +10,7 @@ export const list: CommandDefinition = {
 	args: schema,
 	run({ ctx }: CommandContext<z.infer<typeof schema>>) {
 		const profiles = loadConfig({ cwd: ctx.cwd })?.config.profiles ?? {};
-		const rows = Object.entries(profiles).map(([name, p]) => ({ name, url: p.url, protect: p.protect }));
+		const rows = Object.entries(profiles).map(([name, p]) => ({ name, url: p.url }));
 
 		if (ctx.ui.json) {
 			ctx.ui.data(rows);
@@ -23,7 +23,7 @@ export const list: CommandDefinition = {
 		}
 
 		for (const row of rows) {
-			ctx.ui.print(`${row.name}\t${row.url}${row.protect ? '\t(protected)' : ''}`);
+			ctx.ui.print(`${row.name}\t${row.url}`);
 		}
 	},
 };
