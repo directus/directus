@@ -17,20 +17,18 @@ const SYMBOLS = {
 	success: glyph('◇', '+'),
 	warn: glyph('▲', '!'),
 	error: glyph('✖', 'x'),
-	step: glyph('◆', '>'),
 };
 
 // Two channels kept strictly separate so stdout stays a clean machine channel:
-// requested output (print, data) → stdout; status (info/success/warn/step) →
-// stderr, suppressed under --json. error() renders human on stderr, or structured
-// JSON on stdout under --json.
+// requested output (print, data) → stdout; status (info/success/warn) → stderr,
+// suppressed under --json. error() renders human on stderr, or structured JSON on
+// stdout under --json.
 export interface Ui {
 	readonly json: boolean;
 	print(text: string): void;
 	info(message: string): void;
 	success(message: string): void;
 	warn(message: string): void;
-	step(message: string): void;
 	error(error: CliError): void;
 	data(payload: unknown): void;
 }
@@ -69,9 +67,6 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 		},
 		warn(message) {
 			status(c.yellow(SYMBOLS.warn), message);
-		},
-		step(message) {
-			status(c.magenta(SYMBOLS.step), message);
 		},
 		error(error) {
 			if (json) {

@@ -1,9 +1,10 @@
 import { createDirectus, isDirectusError, readMe, rest, serverInfo, staticToken } from '@directus/sdk';
+import { get } from 'lodash-es';
 import { CliError } from '../error.js';
 import { registerSecret } from '../secret.js';
 import type { ResolvedCredential } from './credentials.js';
 
-export interface Identity {
+interface Identity {
 	readonly user: string;
 	readonly role: string;
 	readonly projectName: string | undefined;
@@ -29,8 +30,8 @@ export async function testConnection(credential: ResolvedCredential): Promise<Id
 		let projectName: string | undefined;
 
 		try {
-			const info = (await client.request(serverInfo())) as { project?: { project_name?: unknown } };
-			if (typeof info.project?.project_name === 'string') projectName = info.project.project_name;
+			const name = get(await client.request(serverInfo()), 'project.project_name');
+			if (typeof name === 'string') projectName = name;
 		} catch {
 			// Server info is best-effort; readMe already proved authentication.
 		}
@@ -41,47 +42,21 @@ export async function testConnection(credential: ResolvedCredential): Promise<Id
 	}
 }
 
-function firstNonEmpty(...values: string[]): string {
-	for (const value of values) {
-		if (value !== '') return value;
-	}
-
-	return '';
-}
-
 // Turn a /users/me-shaped record into display strings, defensively — the SDK
 // types are loose without a schema and we never want to render a raw object.
 export function describeIdentity(me: unknown, projectName: string | undefined): Identity {
-	const record: Record<string, unknown> = typeof me === 'object' && me !== null ? (me as Record<string, unknown>) : {};
+	const asString = (value: unknown): string => (typeof value === 'string' ? value : '');
 
-	const first = typeof record['first_name'] === 'string' ? record['first_name'] : '';
-	const last = typeof record['last_name'] === 'string' ? record['last_name'] : '';
-	const email = typeof record['email'] === 'string' ? record['email'] : '';
-	const user = firstNonEmpty(`${first} ${last}`.trim(), email) || 'unknown user';
+	const name = `${asString(get(me, 'first_name'))} ${asString(get(me, 'last_name'))}`.trim();
+	const user = name || asString(get(me, 'email')) || 'unknown user';
 
-	const roleValue = record['role'];
-	let role = 'unknown role';
-
-	if (typeof roleValue === 'string') {
-		role = roleValue;
-	} else if (typeof roleValue === 'object' && roleValue !== null && 'name' in roleValue) {
-		const roleName = (roleValue as Record<string, unknown>)['name'];
-		if (typeof roleName === 'string') role = roleName;
-	}
+	const roleValue = get(me, 'role.name') ?? get(me, 'role');
+	const role = asString(roleValue) || 'unknown role';
 
 	return { user, role, projectName };
 }
 
 const AUTH_CODES = new Set(['INVALID_CREDENTIALS', 'INVALID_TOKEN', 'TOKEN_EXPIRED', 'INVALID_OTP', 'FORBIDDEN']);
-
-function statusOf(response: unknown): number | undefined {
-	if (response !== null && typeof response === 'object' && 'status' in response) {
-		const status = (response as Record<string, unknown>)['status'];
-		if (typeof status === 'number') return status;
-	}
-
-	return undefined;
-}
 
 // Map an SDK/HTTP failure into a CliError. `detail` is built from safe fields
 // only (Directus error codes/messages + HTTP status) — never the raw Response,
@@ -89,7 +64,8 @@ function statusOf(response: unknown): number | undefined {
 // token ever entering the error object we keep.
 export function mapRequestError(error: unknown, url: string): CliError {
 	if (isDirectusError(error)) {
-		const status = statusOf(error.response);
+		const rawStatus = get(error.response, 'status');
+		const status = typeof rawStatus === 'number' ? rawStatus : undefined;
 		const code = error.errors[0]?.extensions.code;
 		const detail = error.errors.map((entry) => `${entry.extensions.code}: ${entry.message}`).join('; ');
 		const isAuth = status === 401 || status === 403 || (code !== undefined && AUTH_CODES.has(code));

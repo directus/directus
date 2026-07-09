@@ -1,13 +1,4 @@
-export type CliErrorCode =
-	| 'USAGE'
-	| 'UNKNOWN_COMMAND'
-	| 'CONFIG'
-	| 'AUTH'
-	| 'HTTP'
-	| 'CONTRACT'
-	| 'STATE'
-	| 'SYNC'
-	| 'UNKNOWN';
+export type CliErrorCode = 'USAGE' | 'UNKNOWN_COMMAND' | 'CONFIG' | 'AUTH' | 'HTTP' | 'STATE' | 'UNKNOWN';
 
 // A tagged, throwable CLI error. Internals throw it; the single boundary in
 // run.ts catches, renders via ui, and maps `exitCode` to the process exit code.

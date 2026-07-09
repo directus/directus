@@ -1,7 +1,7 @@
 {
 	"name": "@directus/cli",
 	"version": "0.0.0",
-	"description": "Client-side, plugin-based CLI for Directus",
+	"description": "Client-side CLI for Directus",
 	"private": true,
 	"homepage": "https://directus.com",
 	"repository": {
