@@ -10,6 +10,7 @@ import type { StaticToolDefinition } from '../composables/define-tool';
 import type { AppModelDefinition } from '../models';
 import { isVisualElement, type UploadedFileResult } from '../types/context';
 import { getAvailableModels, getModelKey, resolveModelByKey } from '../utils/available-models';
+import { unwrapToolCall } from '../utils/unwrap-tool-call';
 import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
 import { useSettingsStore } from '@/stores/settings';
@@ -348,21 +349,15 @@ export const useAiStore = defineStore('ai-store', () => {
 			if ('toolCallId' in part && part.state === 'output-available' && !processedToolCallIds.has(part.toolCallId)) {
 				processedToolCallIds.add(part.toolCallId);
 
-				// Directus tools run through the root `execute` tool, so the inner tool identity and
-				// its arguments live in `input.{name,input}`, not the `tool-execute` part type. Without
-				// unwrapping here the system-tool-result hooks never fire, so stores/forms never refresh
-				// after the AI changes the schema or an item.
-				const isExecute = part.type === 'tool-execute';
-				const executeInput = part.input as { name?: unknown; input?: unknown } | undefined;
-
-				const tool = (
-					isExecute && typeof executeInput?.name === 'string' ? executeInput.name : part.type.substring('tool-'.length)
-				) as SystemTool;
+				// Unwrap execute parts so the system-tool-result hooks fire for registry-dispatched
+				// tools — otherwise stores/forms never refresh after the AI changes schema or items.
+				const { toolName, input } = unwrapToolCall(part);
+				const tool = toolName as SystemTool;
 
 				if (toolsStore.isSystemTool(tool)) {
 					toolsStore.triggerSystemToolResult(
 						tool,
-						(isExecute ? executeInput?.input : part.input) as Record<string, unknown>,
+						input as Record<string, unknown>,
 						part.output as Record<string, unknown>,
 					);
 				}

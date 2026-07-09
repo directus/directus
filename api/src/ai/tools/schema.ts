@@ -8,7 +8,6 @@ export const PrimaryKeyOutputSchema = PrimaryKeyInputSchema;
 // item
 export const ItemInputSchema = z.record(z.string(), z.any());
 export const ItemValidateSchema = z.record(z.string(), z.any());
-export const ItemOutputSchema = ItemInputSchema;
 
 // query
 export const QueryInputSchema = z

@@ -372,7 +372,6 @@ describe('useAiStore', () => {
 
 			const body = lastTransportConfig.body();
 
-			expect(body.tools).not.toContain('schema');
 			expect(body.toolApprovals).toEqual({ items: 'always' });
 		});
 

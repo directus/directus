@@ -1,14 +1,13 @@
 import { z } from 'zod';
 import type { ToolConfig } from './types.js';
 
-type JsonSchema = {
+export type JsonSchema = {
 	$defs?: Record<string, JsonSchema>;
 	$ref?: string;
 	anyOf?: JsonSchema[];
 	oneOf?: JsonSchema[];
 	allOf?: JsonSchema[];
 	const?: unknown;
-	default?: unknown;
 	description?: string;
 	enum?: unknown[];
 	type?: string | string[];
@@ -17,7 +16,6 @@ type JsonSchema = {
 	items?: JsonSchema | JsonSchema[];
 	prefixItems?: JsonSchema[];
 	additionalProperties?: boolean | JsonSchema;
-	propertyNames?: JsonSchema;
 };
 
 export type ToolTypeStrings = {
@@ -46,12 +44,11 @@ export function getToolTypeStrings(tool: ToolConfig<any>): ToolTypeStrings {
 }
 
 export function schemaToTypeString(schema: unknown, rootName: string): string {
-	const rootReferenced = referencesRoot(schema as JsonSchema);
-	const context = createContext(schema as JsonSchema, rootName, rootReferenced);
+	const root = schema as JsonSchema;
+	const rootReferenced = referencesRoot(root);
+	const context = createContext(root, rootName, rootReferenced);
 
-	const rootType = rootReferenced
-		? renderDeclaration(schema as JsonSchema, context, rootName)
-		: renderSchema(schema as JsonSchema, context, rootName);
+	const rootType = rootReferenced ? renderDeclaration(root, context, rootName) : renderSchema(root, context);
 
 	const defs = renderDefs(context);
 
@@ -61,7 +58,6 @@ export function schemaToTypeString(schema: unknown, rootName: string): string {
 type RenderContext = {
 	defs: Record<string, JsonSchema>;
 	defNames: Map<string, string>;
-	renderedDefs: Set<string>;
 	rootName: string;
 	usedNames: Set<string>;
 };
@@ -70,7 +66,6 @@ function createContext(schema: JsonSchema, rootName: string, rootDeclared: boole
 	const context: RenderContext = {
 		defs: schema.$defs ?? {},
 		defNames: new Map(),
-		renderedDefs: new Set(),
 		rootName,
 		usedNames: new Set(rootDeclared ? [rootName] : []),
 	};
@@ -111,54 +106,44 @@ function getSchemaTypes(schema: JsonSchema): string[] {
 }
 
 function renderDefs(context: RenderContext): string[] {
-	const output: string[] = [];
-
-	for (const key of Object.keys(context.defs).sort()) {
-		const name = getDefinitionNameForKey(key, context);
-
-		if (context.renderedDefs.has(key)) continue;
-
-		const line = renderDeclaration(context.defs[key]!, context, name);
-		context.renderedDefs.add(key);
-		output.push(line);
-	}
-
-	return output;
+	return Object.keys(context.defs)
+		.sort()
+		.map((key) => renderDeclaration(context.defs[key]!, context, context.defNames.get(key)!));
 }
 
 function renderDeclaration(schema: JsonSchema | boolean | undefined, context: RenderContext, name: string): string {
 	if (canRenderInterface(schema)) {
-		return `interface ${name} ${renderObject(schema, context, name)}`;
+		return `interface ${name} ${renderObject(schema, context)}`;
 	}
 
-	return `type ${name} = ${renderSchema(schema, context, name)};`;
+	return `type ${name} = ${renderSchema(schema, context)};`;
 }
 
-function renderSchema(schema: JsonSchema | boolean | undefined, context: RenderContext, currentName: string): string {
+function renderSchema(schema: JsonSchema | boolean | undefined, context: RenderContext): string {
 	if (schema === false) return 'never';
 	if (!schema || schema === true) return 'unknown';
 
 	if (schema.$ref) return renderRef(schema.$ref, context);
 	if ('const' in schema) return renderLiteral(schema.const);
 	if (schema.enum) return renderUnion(schema.enum.map(renderLiteral));
-	if (schema.anyOf) return renderUnion(schema.anyOf.map((entry) => renderSchema(entry, context, currentName)));
-	if (schema.oneOf) return renderUnion(schema.oneOf.map((entry) => renderSchema(entry, context, currentName)));
+	if (schema.anyOf) return renderUnion(schema.anyOf.map((entry) => renderSchema(entry, context)));
+	if (schema.oneOf) return renderUnion(schema.oneOf.map((entry) => renderSchema(entry, context)));
 
 	if (schema.allOf) {
-		return schema.allOf.map((entry) => parenthesizeUnion(renderSchema(entry, context, currentName))).join(' & ');
+		return schema.allOf.map((entry) => parenthesizeUnion(renderSchema(entry, context))).join(' & ');
 	}
 
 	const types = getSchemaTypes(schema);
 
 	if (types.length > 1) {
-		return renderUnion(types.map((type) => renderSchema({ ...schema, type }, context, currentName)));
+		return renderUnion(types.map((type) => renderSchema({ ...schema, type }, context)));
 	}
 
 	switch (types[0]) {
 		case 'object':
-			return renderObject(schema, context, currentName);
+			return renderObject(schema, context);
 		case 'array':
-			return renderArray(schema, context, currentName);
+			return renderArray(schema, context);
 		case 'string':
 			return 'string';
 		case 'number':
@@ -169,7 +154,7 @@ function renderSchema(schema: JsonSchema | boolean | undefined, context: RenderC
 		case 'null':
 			return 'null';
 		default:
-			return renderUnknownSchema(schema, context, currentName);
+			return renderUnknownSchema(schema, context);
 	}
 }
 
@@ -195,32 +180,32 @@ function renderRef(ref: string, context: RenderContext): string {
 	if (ref.startsWith(prefix)) {
 		const key = decodeJsonPointerToken(decodeURIComponent(ref.slice(prefix.length)));
 
-		return context.defNames.has(key) ? getDefinitionNameForKey(key, context) : 'unknown';
+		return context.defNames.get(key) ?? 'unknown';
 	}
 
 	return 'unknown';
 }
 
-function renderUnknownSchema(schema: JsonSchema, context: RenderContext, currentName: string): string {
+function renderUnknownSchema(schema: JsonSchema, context: RenderContext): string {
 	if (schema.properties || schema.additionalProperties) {
-		return renderObject(schema, context, currentName);
+		return renderObject(schema, context);
 	}
 
 	if (schema.items || schema.prefixItems) {
-		return renderArray(schema, context, currentName);
+		return renderArray(schema, context);
 	}
 
 	return 'unknown';
 }
 
-function renderObject(schema: JsonSchema, context: RenderContext, currentName: string): string {
+function renderObject(schema: JsonSchema, context: RenderContext): string {
 	const properties = schema.properties ?? {};
 	const required = new Set(schema.required ?? []);
 	const entries = Object.entries(properties);
 	const additional = schema.additionalProperties;
 
 	if (entries.length === 0 && additional && typeof additional === 'object') {
-		return `Record<string, ${renderSchema(additional, context, `${currentName}Value`)}>`;
+		return `Record<string, ${renderSchema(additional, context)}>`;
 	}
 
 	if (entries.length === 0) {
@@ -230,14 +215,14 @@ function renderObject(schema: JsonSchema, context: RenderContext, currentName: s
 	const lines = entries.flatMap(([key, property]) => {
 		const optional = required.has(key) ? '' : '?';
 		const description = renderDescription(property.description);
-		const member = `${formatPropertyKey(key)}${optional}: ${renderSchema(property, context, getMemberName(currentName, key))};`;
+		const member = `${formatPropertyKey(key)}${optional}: ${renderSchema(property, context)};`;
 
 		return description ? [description, member] : [member];
 	});
 
 	if (additional && typeof additional === 'object') {
-		const additionalType = renderSchema(additional, context, `${currentName}Value`);
-		const propertyTypes = entries.map(([, property]) => renderSchema(property, context, `${currentName}Value`));
+		const additionalType = renderSchema(additional, context);
+		const propertyTypes = entries.map(([, property]) => renderSchema(property, context));
 
 		lines.push(`[key: string]: ${renderUnion([additionalType, ...propertyTypes])};`);
 	} else if (additional === true) {
@@ -247,16 +232,16 @@ function renderObject(schema: JsonSchema, context: RenderContext, currentName: s
 	return `{\n${indent(lines.join('\n'))}\n}`;
 }
 
-function renderArray(schema: JsonSchema, context: RenderContext, currentName: string): string {
+function renderArray(schema: JsonSchema, context: RenderContext): string {
 	if (schema.prefixItems) {
-		return `[${schema.prefixItems.map((item) => renderSchema(item, context, `${currentName}Item`)).join(', ')}]`;
+		return `[${schema.prefixItems.map((item) => renderSchema(item, context)).join(', ')}]`;
 	}
 
 	if (Array.isArray(schema.items)) {
-		return `[${schema.items.map((item) => renderSchema(item, context, `${currentName}Item`)).join(', ')}]`;
+		return `[${schema.items.map((item) => renderSchema(item, context)).join(', ')}]`;
 	}
 
-	return `${parenthesizeUnion(renderSchema(schema.items, context, `${currentName}Item`))}[]`;
+	return `${parenthesizeUnion(renderSchema(schema.items, context))}[]`;
 }
 
 function renderUnion(types: string[]): string {
@@ -309,10 +294,6 @@ function getDefinitionName(key: string): string {
 	return name;
 }
 
-function getDefinitionNameForKey(key: string, context: RenderContext): string {
-	return context.defNames.get(key) ?? getDefinitionName(key);
-}
-
 function decodeJsonPointerToken(value: string): string {
 	return value.replaceAll('~1', '/').replaceAll('~0', '~');
 }
@@ -329,8 +310,4 @@ function getAvailableName(baseName: string, usedNames: Set<string>): string {
 	usedNames.add(name);
 
 	return name;
-}
-
-function getMemberName(parentName: string, key: string): string {
-	return `${parentName}${getDefinitionName(key)}`;
 }

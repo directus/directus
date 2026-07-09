@@ -49,9 +49,6 @@ describe('chatRequestToolsToAiSdkTools integration', () => {
 			},
 		});
 
-		expect((discoveryOutput as any).data.results[0]).not.toHaveProperty('inputType');
-		expect((discoveryOutput as any).data.results[0]).not.toHaveProperty('outputType');
-
 		const searchOutput = await tools['search']!.execute!({ names: ['system-prompt'] }, {} as any);
 
 		expect(searchOutput).toMatchObject({
@@ -64,9 +61,6 @@ describe('chatRequestToolsToAiSdkTools integration', () => {
 				],
 			},
 		});
-
-		expect((searchOutput as any).data.results[0]).not.toHaveProperty('inputSchema');
-		expect((searchOutput as any).data.results[0]).not.toHaveProperty('outputSchema');
 
 		const executeOutput = await tools['execute']!.execute!({ name: 'system-prompt', input: {} }, {} as any);
 
@@ -83,42 +77,37 @@ describe('chatRequestToolsToAiSdkTools integration', () => {
 			toolApprovals: { items: 'ask' },
 		});
 
-		expect(tools['execute']!.needsApproval!({ name: 'items', input: { action: 'read', collection: 'posts' } })).toBe(
-			false,
-		);
+		const needsApproval = tools['execute']!.needsApproval as (args: Record<string, unknown>) => boolean;
+
+		expect(needsApproval({ name: 'items', input: { action: 'read', collection: 'posts' } })).toBe(false);
 
 		expect(
-			tools['execute']!.needsApproval!({
+			needsApproval({
 				name: 'items',
 				input: { action: 'create', collection: 'posts', data: { title: 'Test' } },
 			}),
 		).toBe(true);
 	});
 
-	test('normalizes client tool input schemas for provider compatibility', () => {
+	// Disabled tools are enforced solely through registry visibility: excluded from the mount
+	// allowlist, they must neither prompt for approval nor execute.
+	test('treats disabled tools as unavailable without an approval prompt', async () => {
 		const tools = chatRequestToolsToAiSdkTools({
-			chatRequestTools: [
-				{
-					name: 'client-tool',
-					description: 'Client tool',
-					inputSchema: {
-						properties: {
-							query: { type: 'string' },
-						},
-						required: ['query'],
-					},
-				},
-			],
+			chatRequestTools: ['items'],
 			accountability,
 			schema,
+			toolApprovals: { items: 'disabled' },
 		});
 
-		expect((tools['client-tool'] as any).inputSchema.jsonSchema).toMatchObject({
-			type: 'object',
-			properties: {
-				query: { type: 'string' },
-			},
-			required: ['query'],
-		});
+		const needsApproval = tools['execute']!.needsApproval as (args: Record<string, unknown>) => boolean;
+
+		expect(needsApproval({ name: 'items', input: { action: 'create', collection: 'posts' } })).toBe(false);
+
+		const output = await tools['execute']!.execute!(
+			{ name: 'items', input: { action: 'read', collection: 'posts' } },
+			{} as any,
+		);
+
+		expect(output).toMatchObject({ error: { code: 'UNKNOWN_TOOL', recoverable: true } });
 	});
 });

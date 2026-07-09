@@ -1,24 +1,15 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { isObject, toArray } from '@directus/utils';
 import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 import { Url } from '../../utils/url.js';
-import { defineTool } from './define-tool.js';
 import { schema as schemaTool } from './schema/index.js';
 import { getToolTypeStrings } from './schema-to-type-string.js';
 import { createSearchIndex, type SearchIndex, type ToolSearchResults } from './search-index.js';
-import type { ToolConfig, ToolResult } from './types.js';
+import type { RootTool, ToolConfig, ToolResult } from './types.js';
 import { coerceJsonFields } from './utils.js';
-
-export type RegistryErrorCode =
-	| 'APPROVAL_REQUIRED'
-	| 'FORBIDDEN'
-	| 'INVALID_INPUT'
-	| 'TOOL_EXECUTION_FAILED'
-	| 'UNKNOWN_META_TOOL'
-	| 'UNKNOWN_TOOL';
 
 export type RegistryRecoveryNext = {
 	tool: string;
@@ -26,7 +17,7 @@ export type RegistryRecoveryNext = {
 };
 
 export type RegistryError = {
-	code: RegistryErrorCode | string;
+	code: string;
 	message: string;
 	recoverable: boolean;
 	next?: RegistryRecoveryNext;
@@ -36,7 +27,6 @@ export type RegistryExecuteResult =
 	| {
 			ok: true;
 			result?: ToolResult;
-			name: string;
 			structuredContent?: unknown;
 	  }
 	| {
@@ -53,18 +43,16 @@ export type ToolDetail = {
 };
 
 export type ToolRegistryMountContext = {
-	accountability?: Accountability;
-	allowDeletes?: boolean;
-	isToolCallApproved?: (options: { args: Record<string, unknown>; tool: ToolConfig<any> }) => boolean;
+	accountability?: Accountability | undefined;
+	allowDeletes?: boolean | undefined;
+	isToolCallApproved?: ((options: { args: Record<string, unknown>; tool: ToolConfig<any> }) => boolean) | undefined;
 	schema: SchemaOverview;
-	systemPrompt?: string | null;
-	systemPromptEnabled?: boolean;
-	toolNames?: readonly string[];
+	systemPrompt?: string | null | undefined;
+	systemPromptEnabled?: boolean | undefined;
+	toolNames?: readonly string[] | undefined;
 };
 
-export type ToolRegistrySearchInput =
-	| { query: string; names?: never }
-	| { names: [string, ...string[]]; query?: never };
+type ToolRegistrySearchInput = { query: string; names?: never } | { names: string[]; query?: never };
 
 export class ToolRegistry {
 	readonly #tools = new Map<string, ToolConfig<any>>();
@@ -108,47 +96,63 @@ export class MountedToolRegistry {
 		return names.flatMap((name) => {
 			const tool = this.#getVisibleTool(name);
 
-			if (!tool || tool.exposure === 'root') return [];
-
-			const detail = this.#toDetail(tool);
-
-			return [detail];
+			return tool && tool.exposure !== 'root' ? [this.#toDetail(tool)] : [];
 		});
 	}
 
-	getRootTools(): ToolConfig<any>[] {
-		const rootTools = [createSearchTool(this), createExecuteTool(this)];
+	getRootTools(): RootTool[] {
+		const rootTools: RootTool[] = [searchRootTool, executeRootTool];
 		const mountedSchemaTool = this.#getVisibleTool(schemaTool.name);
 
 		if (mountedSchemaTool) {
 			rootTools.push(mountedSchemaTool);
 		}
 
-		return rootTools.map((tool) => withDerivedAnnotations(tool));
+		return rootTools.map((tool) => ({
+			...tool,
+			annotations: {
+				...tool.annotations,
+				readOnlyHint: tool.readOnly === true,
+				destructiveHint: tool.readOnly !== true,
+			},
+		}));
 	}
 
 	async executeRoot(name: string, input: unknown): Promise<RegistryExecuteResult> {
-		const tool = this.getRootTools().find((tool) => tool.name === name);
-
-		if (!tool) {
-			return {
-				ok: false,
-				error: {
-					code: 'UNKNOWN_META_TOOL',
-					message: `"${name}" doesn't exist in the root toolset`,
-					recoverable: false,
-				},
-			};
-		}
-
 		try {
-			if (tool.name === 'execute') {
-				const args = this.#parseInput(tool, input) as z.infer<typeof ExecuteInputSchema>;
+			switch (name) {
+				case searchRootTool.name: {
+					const args = this.#parseInput(searchRootTool, input) as ToolRegistrySearchInput;
+					const data = args.query !== undefined ? this.search(args.query) : { results: this.detail(args.names ?? []) };
 
-				return await this.execute(args.name, args.input);
+					return { ok: true, result: { type: 'text', data } };
+				}
+
+				case executeRootTool.name: {
+					const args = this.#parseInput(executeRootTool, input) as z.infer<typeof ExecuteInputSchema>;
+
+					return await this.execute(args.name, args.input);
+				}
+
+				default: {
+					const tool = this.#getVisibleTool(name);
+
+					// Only exposure-root catalog tools are callable here; everything else must go
+					// through search → execute.
+					if (tool && tool.exposure === 'root') {
+						return await this.#executeTool(tool, input);
+					}
+
+					return {
+						ok: false,
+						error: {
+							code: 'UNKNOWN_META_TOOL',
+							message: `"${name}" doesn't exist in the root toolset`,
+							recoverable: false,
+						},
+					};
+				}
 			}
-
-			return this.#executeTool(tool, input);
 		} catch (error) {
 			return {
 				ok: false,
@@ -200,11 +204,7 @@ export class MountedToolRegistry {
 				throw new InvalidPayloadError({ reason: 'Delete actions are disabled' });
 			}
 
-			if (
-				tool.name !== 'execute' &&
-				!this.#isReadOnly(tool, args) &&
-				this.#context.isToolCallApproved?.({ tool, args }) !== true
-			) {
+			if (!this.#isReadOnly(tool, args) && this.#context.isToolCallApproved?.({ tool, args }) !== true) {
 				return {
 					ok: false,
 					error: {
@@ -225,7 +225,6 @@ export class MountedToolRegistry {
 
 			return {
 				ok: true,
-				name: tool.name,
 				...(result && { result }),
 				...(tool.output && result?.type === 'text' ? { structuredContent: { data: result.data } } : {}),
 			};
@@ -257,7 +256,7 @@ export class MountedToolRegistry {
 		return true;
 	}
 
-	#parseInput(tool: ToolConfig<any>, input: unknown): Record<string, unknown> {
+	#parseInput(tool: Pick<ToolConfig<any>, 'name' | 'validateSchema'>, input: unknown): Record<string, unknown> {
 		const rawInput = tool.name === 'system-prompt' ? { promptOverride: this.#context.systemPrompt } : input;
 
 		if (!isObject(rawInput)) {
@@ -338,7 +337,7 @@ const SearchValidateSchema: z.ZodType<ToolRegistrySearchInput> = SearchInputSche
 		return { query };
 	}
 
-	return { names: names as [string, ...string[]] };
+	return { names };
 });
 
 const ExecuteInputSchema = z.object({
@@ -346,72 +345,25 @@ const ExecuteInputSchema = z.object({
 	input: z.record(z.string(), z.unknown()).default({}),
 });
 
-export function createSearchTool(registry: MountedToolRegistry): ToolConfig<ToolRegistrySearchInput> {
-	return defineTool({
-		name: 'search',
-		description:
-			'Searches available Directus tools. Use query for discovery. Use names to load full details for selected tools before execute. Batch all selected names in one names array. Never send both query and names.',
-		inputSchema: SearchInputSchema,
-		validateSchema: SearchValidateSchema,
-		readOnly: true,
-		exposure: 'root',
-		handler: async ({ args }) => ({
-			type: 'text',
-			data: args.query !== undefined ? registry.search(args.query) : { results: registry.detail(args.names ?? []) },
-		}),
-	});
-}
+const searchRootTool: RootTool = {
+	name: 'search',
+	description:
+		'Searches available Directus tools. Use query for discovery. Use names to load full details for selected tools before execute. Batch all selected names in one names array. Never send both query and names.',
+	inputSchema: SearchInputSchema,
+	validateSchema: SearchValidateSchema,
+	readOnly: true,
+};
 
-export function createExecuteTool(registry: MountedToolRegistry): ToolConfig<z.infer<typeof ExecuteInputSchema>> {
-	return defineTool({
-		name: 'execute',
-		description:
-			'Executes a Directus tool after its details were loaded with search({ names }). The name must be an inner tool name like "collections", "fields", or "relations", never a root tool name like "search" or "execute". If the result includes next, call that tool with that input and retry.',
-		inputSchema: ExecuteInputSchema,
-		validateSchema: ExecuteInputSchema,
-		readOnly: (args) => registry.isCallReadOnly(args.name, args.input),
-		exposure: 'root',
-		annotations: {
-			openWorldHint: true,
-		},
-		handler: async ({ args }) => ({
-			type: 'text',
-			data: await registry.execute(args.name, args.input),
-		}),
-	});
-}
-
-function withDerivedAnnotations<T extends ToolConfig<any>>(tool: T): T {
-	return {
-		...tool,
-		annotations: {
-			...tool.annotations,
-			...getReadOnlyAnnotations(tool),
-		},
-	};
-}
-
-function getReadOnlyAnnotations(tool: ToolConfig<any>): ToolConfig<any>['annotations'] {
-	if (tool.name === 'execute') {
-		return {
-			readOnlyHint: false,
-			destructiveHint: true,
-			openWorldHint: true,
-		};
-	}
-
-	if (tool.readOnly === true) {
-		return {
-			readOnlyHint: true,
-			destructiveHint: false,
-		};
-	}
-
-	return {
-		readOnlyHint: false,
-		destructiveHint: true,
-	};
-}
+const executeRootTool: RootTool = {
+	name: 'execute',
+	description:
+		'Executes a Directus tool after its details were loaded with search({ names }). The name must be an inner tool name like "collections", "fields", or "relations", never a root tool name like "search" or "execute". If the result includes next, call that tool with that input and retry.',
+	inputSchema: ExecuteInputSchema,
+	validateSchema: ExecuteInputSchema,
+	annotations: {
+		openWorldHint: true,
+	},
+};
 
 function buildURL(tool: ToolConfig<any>, input: unknown, data: unknown): string | undefined {
 	const env = useEnv();
@@ -432,7 +384,7 @@ function toRegistryError(error: unknown, tool?: ToolConfig<any>): RegistryError 
 			code: error.code,
 			message: error.message || 'Unknown error',
 			recoverable: error instanceof InvalidPayloadError,
-			...(error instanceof InvalidPayloadError && tool?.exposure !== 'root'
+			...(error instanceof InvalidPayloadError && tool && tool.exposure !== 'root'
 				? {
 						next: {
 							tool: 'search',
@@ -440,14 +392,6 @@ function toRegistryError(error: unknown, tool?: ToolConfig<any>): RegistryError 
 						},
 					}
 				: {}),
-		};
-	}
-
-	if (error instanceof ForbiddenError) {
-		return {
-			code: 'FORBIDDEN',
-			message: error.message || 'Forbidden',
-			recoverable: false,
 		};
 	}
 

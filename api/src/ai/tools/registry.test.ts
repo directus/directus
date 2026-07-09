@@ -5,36 +5,14 @@ import { defineTool } from './define-tool.js';
 import { ToolRegistry } from './registry.js';
 import type { ToolConfig } from './types.js';
 
-const { defaultEnv, mockEnv } = vi.hoisted(() => {
-	const defaultEnv = {
+// The registry itself only reads PUBLIC_URL; the remaining keys satisfy import-time
+// env access in the service graph pulled in by the schema tool.
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn(() => ({
 		PUBLIC_URL: 'https://directus.example',
 		EMAIL_TEMPLATES_PATH: './templates',
 		EXTENSIONS_PATH: './extensions',
-		SESSION_COOKIE_NAME: 'directus_session',
-		REFRESH_TOKEN_COOKIE_DOMAIN: '',
-		REFRESH_TOKEN_TTL: '15m',
-		REFRESH_TOKEN_COOKIE_SECURE: false,
-		SESSION_COOKIE_DOMAIN: '',
-		SESSION_COOKIE_TTL: '1d',
-		SESSION_COOKIE_SECURE: false,
-		IP_TRUST_PROXY: true,
-		CACHE_ENABLED: false,
-		CACHE_NAMESPACE: 'directus-test',
-		CACHE_STORE: 'memory',
-		CACHE_SYSTEM_TTL: '5m',
-		RATE_LIMITER_ENABLED: false,
-		ACCESS_TOKEN_TTL: '15m',
-		EMAIL_FROM: 'no-reply@example.com',
-		EMAIL_TRANSPORT: 'sendmail',
-		QUERY_LIMIT_DEFAULT: 100,
-		MAX_PAYLOAD_SIZE: '2kb',
-	};
-
-	return { defaultEnv, mockEnv: { ...defaultEnv } };
-});
-
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn(() => mockEnv),
+	})),
 }));
 
 const schema = { collections: {} } as any;
@@ -44,7 +22,6 @@ describe('ToolRegistry', () => {
 	let writeHandler: ReturnType<typeof vi.fn>;
 
 	beforeEach(() => {
-		Object.assign(mockEnv, defaultEnv);
 		readHandler = vi.fn(async () => ({ type: 'text', data: [{ id: 1 }] }));
 		writeHandler = vi.fn(async () => ({ type: 'text', data: [{ id: 2 }] }));
 	});
@@ -66,15 +43,12 @@ describe('ToolRegistry', () => {
 			toolNames: ['allowed'],
 		});
 
-		const searchTool = mounted.getRootTools().find((tool) => tool.name === 'search')!;
-
 		expect(mounted.search('target').results.map(({ name }) => name)).toEqual(['allowed']);
 		expect(mounted.detail(['blocked'])).toEqual([]);
 
-		await expect(
-			searchTool.handler({ args: { names: ['blocked'] }, schema, accountability: undefined }),
-		).resolves.toMatchObject({
-			data: { results: [] },
+		await expect(mounted.executeRoot('search', { names: ['blocked'] })).resolves.toMatchObject({
+			ok: true,
+			result: { data: { results: [] } },
 		});
 
 		await expect(mounted.execute('blocked', {})).resolves.toMatchObject({
@@ -288,80 +262,49 @@ describe('ToolRegistry', () => {
 		]);
 
 		const mounted = registry.mount({ schema });
-		const searchTool = mounted.getRootTools().find((tool) => tool.name === 'search')!;
 
-		expect(mounted.search('entries').results[0]).toEqual({
-			name: 'items',
-			description: 'Reads entries',
-		});
-
-		await expect(
-			searchTool.handler({ args: { query: 'entries' }, schema, accountability: undefined }),
-		).resolves.toEqual({
-			type: 'text',
-			data: {
-				results: [
-					{
-						name: 'items',
-						description: 'Reads entries',
-					},
-				],
+		await expect(mounted.executeRoot('search', { query: 'entries' })).resolves.toEqual({
+			ok: true,
+			result: {
+				type: 'text',
+				data: {
+					results: [
+						{
+							name: 'items',
+							description: 'Reads entries',
+						},
+					],
+				},
 			},
 		});
 
-		await expect(
-			searchTool.handler({ args: { names: ['items'] }, schema, accountability: undefined }),
-		).resolves.toEqual({
-			type: 'text',
-			data: {
-				results: [
-					{
-						name: 'items',
-						description: 'Reads entries',
-						instructions: 'Full item instructions',
-						inputType: expect.any(String),
-						outputType: expect.any(String),
-					},
-				],
-			},
-		});
-
-		expect(mounted.detail(['items'])).toEqual([
-			{
-				name: 'items',
-				description: 'Reads entries',
-				instructions: 'Full item instructions',
-				inputType: expect.any(String),
-				outputType: expect.any(String),
-			},
-		]);
-
-		await expect(
-			searchTool.handler({ args: { names: ['items', 'files'] }, schema, accountability: undefined }),
-		).resolves.toEqual({
-			type: 'text',
-			data: {
-				results: [
-					{
-						name: 'items',
-						description: 'Reads entries',
-						instructions: 'Full item instructions',
-						inputType: expect.any(String),
-						outputType: expect.any(String),
-					},
-					{
-						name: 'files',
-						description: 'Reads files',
-						instructions: 'Full file instructions',
-						inputType: expect.any(String),
-					},
-				],
+		await expect(mounted.executeRoot('search', { names: ['items', 'files'] })).resolves.toEqual({
+			ok: true,
+			result: {
+				type: 'text',
+				data: {
+					results: [
+						{
+							name: 'items',
+							description: 'Reads entries',
+							instructions: 'Full item instructions',
+							inputType: expect.any(String),
+							outputType: expect.any(String),
+						},
+						{
+							name: 'files',
+							description: 'Reads files',
+							instructions: 'Full file instructions',
+							inputType: expect.any(String),
+						},
+					],
+				},
 			},
 		});
 	});
 
 	test('system prompt respects mount settings and server override', async () => {
-		const systemHandler = vi.fn(async () => ({ type: 'text', data: 'System prompt' }));
+		const systemHandler = vi.fn(async () => ({ type: 'text' as const, data: 'System prompt' }));
 
 		const registry = new ToolRegistry([
 			createTool({
@@ -463,10 +406,25 @@ describe('ToolRegistry', () => {
 			error: { code: 'UNKNOWN_META_TOOL', recoverable: false },
 		});
 
+		// Catalog tools without root exposure must stay behind the search → execute funnel.
+		await expect(mounted.executeRoot('items', { action: 'read' })).resolves.toMatchObject({
+			ok: false,
+			error: { code: 'UNKNOWN_META_TOOL', recoverable: false },
+		});
+
 		await expect(mounted.executeRoot('execute', { name: 'missing', input: {} })).resolves.toMatchObject({
 			ok: false,
 			error: { code: 'UNKNOWN_TOOL', recoverable: true },
 		});
+
+		const invalidExecuteInput = await mounted.executeRoot('execute', { name: 123 });
+
+		expect(invalidExecuteInput).toMatchObject({
+			ok: false,
+			error: { code: 'INVALID_PAYLOAD', recoverable: true },
+		});
+
+		expect((invalidExecuteInput as { error: object }).error).not.toHaveProperty('next');
 
 		await expect(mounted.executeRoot('search', {})).resolves.toMatchObject({
 			ok: false,
@@ -480,7 +438,6 @@ describe('ToolRegistry', () => {
 
 		await expect(mounted.executeRoot('search', { query: 'items', names: [] })).resolves.toMatchObject({
 			ok: true,
-			name: 'search',
 			result: {
 				data: {
 					results: [{ name: 'items', description: 'Items' }],
@@ -495,28 +452,11 @@ describe('ToolRegistry', () => {
 
 		await expect(mounted.executeRoot('execute', { name: 'items', input: { action: 'read' } })).resolves.toMatchObject({
 			ok: true,
-			name: 'items',
 			result: { data: [{ id: 1 }] },
-		});
-
-		await expect(mounted.executeRoot('search', { names: ['items'] })).resolves.toMatchObject({
-			ok: true,
-			name: 'search',
-			result: {
-				data: {
-					results: [
-						expect.objectContaining({
-							name: 'items',
-							inputType: expect.any(String),
-						}),
-					],
-				},
-			},
 		});
 
 		await expect(mounted.executeRoot('search', { query: null, names: ['items'] })).resolves.toMatchObject({
 			ok: true,
-			name: 'search',
 			result: {
 				data: {
 					results: [
@@ -543,14 +483,12 @@ describe('ToolRegistry', () => {
 
 		await expect(mounted.executeRoot('execute', { name: 'items', input: { action: 'read' } })).resolves.toMatchObject({
 			ok: true,
-			name: 'items',
 			result: { data: [{ id: 1 }] },
 		});
 
 		await expect(mounted.executeRoot('execute', { name: 'items', input: { action: 'create' } })).resolves.toMatchObject(
 			{
 				ok: true,
-				name: 'items',
 				result: { data: [{ id: 1 }] },
 			},
 		);

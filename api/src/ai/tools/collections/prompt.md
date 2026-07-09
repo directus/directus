@@ -15,7 +15,7 @@ Perform CRUD operations on Directus Collections.
 {
 	"collection": "products",
 	"meta": {
-		"collection": "ai_prompts",
+		"collection": "products",
 		"icon": "inventory_2", // Any Material Symbols icons
 		"note": "Main product catalog with inventory tracking" // Helpful 1 sentence description
 		"color": "#6366F1", // Color shown in content module sidebar

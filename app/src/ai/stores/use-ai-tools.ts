@@ -6,7 +6,7 @@ import type { StaticToolDefinition } from '../composables/define-tool';
 
 export type ToolApprovalMode = 'always' | 'ask' | 'disabled';
 
-const rootServerTools = ['search', 'execute', 'schema'] as const;
+const rootServerTools: string[] = ['search', 'execute', 'schema'];
 
 export const useAiToolsStore = defineStore('ai-tools-store', () => {
 	const toolApprovals = useLocalStorage<Record<string, ToolApprovalMode>>('ai-tool-approvals', {});
@@ -57,7 +57,7 @@ export const useAiToolsStore = defineStore('ai-tools-store', () => {
 	};
 
 	const isServerTool = (toolName: string): boolean => {
-		return isSystemTool(toolName) || rootServerTools.includes(toolName as (typeof rootServerTools)[number]);
+		return isSystemTool(toolName) || rootServerTools.includes(toolName);
 	};
 
 	const dehydrate = () => {

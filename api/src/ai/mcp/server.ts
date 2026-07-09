@@ -19,9 +19,8 @@ import type { Request, Response } from 'express';
 import { render, tokenize } from 'micromustache';
 import { z } from 'zod';
 import { ItemsService } from '../../services/index.js';
-import type { RegistryError, RegistryExecuteResult } from '../tools/index.js';
-import { ALL_TOOLS, ToolRegistry } from '../tools/index.js';
-import type { ToolConfig, ToolResult } from '../tools/types.js';
+import { ALL_TOOLS, type RegistryError, type RegistryExecuteResult, ToolRegistry } from '../tools/index.js';
+import type { RootTool, ToolResult } from '../tools/types.js';
 import { DirectusTransport } from './transport.js';
 import type { MCPOptions, Prompt } from './types.js';
 import { buildMcpWWWAuthenticateHeader, getMcpUrls, MCP_ACCESS_SCOPE } from './utils.js';
@@ -299,25 +298,14 @@ export class DirectusMCP {
 		return response;
 	}
 
-	toMcpTool(tool: ToolConfig<any>) {
-		const mcpTool: {
-			annotations?: ToolConfig<any>['annotations'];
-			description: string;
-			inputSchema: unknown;
-			name: string;
-			outputSchema?: unknown;
-		} = {
+	toMcpTool(tool: RootTool) {
+		return {
 			name: tool.name,
 			description: tool.description,
 			inputSchema: z.toJSONSchema(tool.inputSchema),
 			annotations: tool.annotations,
+			...(tool.output && { outputSchema: z.toJSONSchema(tool.output) }),
 		};
-
-		if (tool.output) {
-			mcpTool.outputSchema = z.toJSONSchema(tool.output);
-		}
-
-		return mcpTool;
 	}
 
 	toToolResponse(executeResult: RegistryExecuteResult): CallToolResult {
@@ -340,20 +328,12 @@ export class DirectusMCP {
 		}
 
 		if (result.type === 'text') {
-			const textPayload =
-				structuredContent !== undefined
-					? {
-							...(structuredContent as Record<string, unknown>),
-							...(result.url && { url: result.url }),
-						}
-					: {
-							data: result.data,
-							...(result.url && { url: result.url }),
-						};
-
 			response.content.push({
 				type: 'text',
-				text: JSON.stringify(textPayload),
+				text: JSON.stringify({
+					data: result.data,
+					...(result.url && { url: result.url }),
+				}),
 			});
 		} else {
 			response.content.push(result);

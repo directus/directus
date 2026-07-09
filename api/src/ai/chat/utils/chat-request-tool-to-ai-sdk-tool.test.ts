@@ -2,7 +2,7 @@ import { InvalidPayloadError } from '@directus/errors';
 import { jsonSchema as aiJsonSchema } from 'ai';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ALL_TOOLS } from '../../tools/index.js';
-import { chatRequestToolsToAiSdkTools, toModelOutput } from './chat-request-tool-to-ai-sdk-tool.js';
+import { chatRequestToolsToAiSdkTools } from './chat-request-tool-to-ai-sdk-tool.js';
 
 // Mock the AI SDK to capture tool/jsonSchema/zodSchema calls
 vi.mock('ai', () => {
@@ -14,9 +14,7 @@ vi.mock('ai', () => {
 });
 
 // Prepare hoisted mocks so they are available inside vi.mock factories
-const { mockHandler, mockMount, mockMountedRegistry, mockToolRegistryConstructor, mockValidate } = vi.hoisted(() => ({
-	mockValidate: { safeParse: vi.fn((args: any) => ({ data: args })) } as any,
-	mockHandler: vi.fn(async (_args: any) => 'handled') as any,
+const { mockMount, mockMountedRegistry, mockToolRegistryConstructor } = vi.hoisted(() => ({
 	mockMount: vi.fn(),
 	mockMountedRegistry: {
 		executeRoot: vi.fn(),
@@ -27,16 +25,8 @@ const { mockHandler, mockMount, mockMountedRegistry, mockToolRegistryConstructor
 }));
 
 vi.mock('../../tools/index.js', () => {
-	const TOOL = {
-		name: 'directus.test',
-		description: 'A test tool',
-		inputSchema: { any: 'flexible' },
-		validateSchema: mockValidate,
-		handler: mockHandler,
-	};
-
 	return {
-		ALL_TOOLS: [TOOL],
+		ALL_TOOLS: [{ name: 'directus.test', description: 'A test tool', inputSchema: { any: 'flexible' } }],
 		ToolRegistry: class {
 			constructor(tools: unknown[]) {
 				mockToolRegistryConstructor(tools);
@@ -57,34 +47,16 @@ const schema = { collections: {} } as any;
 describe('chat request tool mapping', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
-		// reset defaults
-		mockValidate.safeParse = vi.fn((args: any) => ({ data: args }));
-		(mockHandler as any).mockResolvedValue('handled');
 
 		mockMountedRegistry.getRootTools.mockReturnValue([
-			{
-				name: 'search',
-				description: 'Search tools',
-				inputSchema: { root: 'search' },
-				readOnly: true,
-			},
-			{
-				name: 'execute',
-				description: 'Execute tools',
-				inputSchema: { root: 'execute' },
-				readOnly: vi.fn(),
-			},
-			{
-				name: 'schema',
-				description: 'Read schema',
-				inputSchema: { root: 'schema' },
-				readOnly: true,
-			},
+			{ name: 'search', description: 'Search tools', inputSchema: { root: 'search' } },
+			{ name: 'execute', description: 'Execute tools', inputSchema: { root: 'execute' } },
+			{ name: 'schema', description: 'Read schema', inputSchema: { root: 'schema' } },
 		]);
 
 		mockMountedRegistry.executeRoot.mockResolvedValue({
 			ok: true,
-			result: { type: 'text', data: { ok: true } },
+			result: { type: 'text', data: { ok: true }, url: 'https://directus.example/admin/content/posts/1' },
 		});
 
 		mockMountedRegistry.isCallReadOnly.mockReturnValue(false);
@@ -110,7 +82,11 @@ describe('chat request tool mapping', () => {
 
 		expect(Object.keys(result)).toEqual(['search', 'execute', 'schema']);
 
-		await expect(result.search.config.execute({ query: 'items' })).resolves.toEqual({ data: { ok: true } });
+		await expect(result.search.config.execute({ query: 'items' })).resolves.toEqual({
+			data: { ok: true },
+			url: 'https://directus.example/admin/content/posts/1',
+		});
+
 		expect(mockMountedRegistry.executeRoot).toHaveBeenCalledWith('search', { query: 'items' });
 	});
 
@@ -192,14 +168,7 @@ describe('chat request tool mapping', () => {
 			toolApprovals: { 'directus.test': 'disabled', 'client-tool': 'disabled', schema: 'disabled' },
 		});
 
-		expect(mockMount).toHaveBeenCalledWith({
-			accountability,
-			schema,
-			systemPrompt: undefined,
-			toolNames: [],
-			isToolCallApproved: expect.any(Function),
-		});
-
+		expect(mockMount).toHaveBeenCalledWith(expect.objectContaining({ toolNames: [] }));
 		expect(Object.keys(result)).toEqual(['search', 'execute', 'schema']);
 	});
 
@@ -248,20 +217,6 @@ describe('chat request tool mapping', () => {
 		expect(result.execute.config.needsApproval({ name: 'other', input: { action: 'create' } })).toBe(false);
 	});
 
-	it('does not request approval for disabled indirect execute calls', () => {
-		const result: any = chatRequestToolsToAiSdkTools({
-			chatRequestTools: ['directus.test'],
-			accountability,
-			schema,
-			toolApprovals: { 'directus.test': 'disabled' },
-		});
-
-		mockMountedRegistry.isCallReadOnly.mockReturnValueOnce(false);
-
-		expect(result.execute.config.needsApproval({ name: 'directus.test', input: { action: 'create' } })).toBe(false);
-		expect(mockMountedRegistry.isCallReadOnly).not.toHaveBeenCalled();
-	});
-
 	it('returns registry errors as model-visible output', async () => {
 		mockMountedRegistry.executeRoot.mockResolvedValueOnce({
 			ok: false,
@@ -276,19 +231,6 @@ describe('chat request tool mapping', () => {
 
 		await expect(result.search.config.execute({ query: 'missing' })).resolves.toEqual({
 			error: { code: 'UNKNOWN_TOOL', message: 'Missing', recoverable: true },
-		});
-	});
-
-	it('maps ToolResult envelopes to model output with data and url', () => {
-		expect(
-			toModelOutput({
-				type: 'text',
-				data: [{ id: 1 }],
-				url: 'https://directus.example/admin/content/posts/1',
-			}),
-		).toEqual({
-			data: [{ id: 1 }],
-			url: 'https://directus.example/admin/content/posts/1',
 		});
 	});
 });

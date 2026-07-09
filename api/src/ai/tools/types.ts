@@ -32,9 +32,11 @@ export type ToolEndpoint<T> = {
 	(options: { input: T; data: unknown }): string[] | undefined;
 };
 
-export type ToolExposure = 'root' | 'search';
-
-export type ToolReadOnly<T> = boolean | ((input: T) => boolean);
+/**
+ * The registry's root meta-tools (`search`, `execute`) are dispatch surface, not catalog
+ * tools — they carry no handler; `MountedToolRegistry.executeRoot` owns their dispatch.
+ */
+export type RootTool = Omit<ToolConfig<any>, 'handler'>;
 
 export interface ToolConfig<Input, Output = unknown> {
 	name: string;
@@ -46,8 +48,8 @@ export interface ToolConfig<Input, Output = unknown> {
 	inputSchema: ZodType<any>;
 	validateSchema?: ZodType<Input>;
 	output?: ZodType<Output>;
-	readOnly?: ToolReadOnly<Input>;
-	exposure?: ToolExposure;
+	readOnly?: boolean | ((input: Input) => boolean);
+	exposure?: 'root' | 'search';
 	annotations?: ToolAnnotations;
 	handler: ToolHandler<Input>;
 }

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { JsonSchema } from './schema-to-type-string.js';
 import type { ToolConfig } from './types.js';
 
 export type ToolSearchMatch = {
@@ -23,16 +24,6 @@ type IndexedTool = {
 	termFrequency: Map<string, number>;
 	fieldWeights: Map<string, number>;
 	documentLength: number;
-};
-
-type JsonSchema = {
-	description?: string;
-	properties?: Record<string, JsonSchema>;
-	items?: JsonSchema | JsonSchema[];
-	prefixItems?: JsonSchema[];
-	anyOf?: JsonSchema[];
-	oneOf?: JsonSchema[];
-	allOf?: JsonSchema[];
 };
 
 const BM25_K1 = 1.2;
@@ -94,7 +85,7 @@ function indexTool(tool: ToolConfig<any>): IndexedTool {
 			name: tool.name,
 			description: tool.description,
 		},
-		normalizedName: normalizeTokens(tokenize(tool.name)),
+		normalizedName: tokenize(tool.name).join(' '),
 		termFrequency,
 		fieldWeights,
 		documentLength: [...termFrequency.values()].reduce((sum, count) => sum + count, 0),
@@ -105,7 +96,7 @@ function rankTools(indexedTools: IndexedTool[], queryTokens: string[]): IndexedT
 	const queryTerms = [...new Set(queryTokens)];
 	const documentFrequencies = getDocumentFrequencies(indexedTools, queryTerms);
 	const averageDocumentLength = getAverageDocumentLength(indexedTools);
-	const normalizedQuery = normalizeTokens(queryTokens);
+	const normalizedQuery = queryTokens.join(' ');
 
 	return indexedTools
 		.map((tool) => ({
@@ -203,6 +194,10 @@ function collectSchemaTokens(schema: JsonSchema | undefined): string[] {
 		tokens.push(...collectSchemaTokens(item));
 	}
 
+	for (const def of Object.values(schema.$defs ?? {})) {
+		tokens.push(...collectSchemaTokens(def));
+	}
+
 	return tokens;
 }
 
@@ -226,8 +221,4 @@ function tokenize(value: string): string[] {
 			.match(/[A-Za-z0-9]+/g)
 			?.map((token) => token.toLowerCase()) ?? []
 	);
-}
-
-function normalizeTokens(tokens: string[]): string {
-	return tokens.join(' ');
 }

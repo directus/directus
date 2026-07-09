@@ -1,6 +1,6 @@
 import type { StandardProviderType } from '@directus/ai';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import { safeValidateUIMessages, type Tool } from 'ai';
+import { safeValidateUIMessages } from 'ai';
 import type { RequestHandler } from 'express';
 import { fromZodError } from 'zod-validation-error';
 import { createUiStream } from '../lib/create-ui-stream.js';
@@ -51,7 +51,7 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 		schema: req.schema,
 		systemPrompt: res.locals['ai'].systemPrompt,
 		...(toolApprovals && { toolApprovals }),
-	}) as { [x: string]: Tool<unknown, unknown> };
+	});
 
 	const validationResult = await safeValidateUIMessages({ messages: fixedMessages });
 

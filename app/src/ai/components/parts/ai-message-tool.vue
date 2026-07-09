@@ -5,6 +5,7 @@ import { computed } from 'vue';
 import AiAskUserSummary from './ai-ask-user-summary.vue';
 import AiToolCallCard from './ai-tool-call-card.vue';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
+import { unwrapToolCall } from '@/ai/utils/unwrap-tool-call';
 import VNotice from '@/components/v-notice.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 
@@ -14,28 +15,9 @@ const props = defineProps<{
 	part: DynamicToolUIPart;
 }>();
 
-const isExecute = computed(() => props.part.type === 'tool-execute');
-
-// Directus tools run through the root `execute` tool, so the real identity (and the
-// key approvals are stored under) lives in `input.name`, not the `tool-execute` part type.
-const innerToolName = computed(() => {
-	const input = props.part.input as { name?: unknown } | undefined;
-	return isExecute.value && typeof input?.name === 'string' ? input.name : undefined;
-});
-
-const toolName = computed(() => innerToolName.value ?? props.part.type.replace('tool-', ''));
-
-// Unwrap the inner args for execute calls so the card shows the actual input instead of
-// the `{ name, input }` wrapper.
-const displayInput = computed(() => {
-	const input = (props.part as { input?: unknown }).input;
-
-	if (isExecute.value && input && typeof input === 'object' && 'input' in input) {
-		return (input as { input?: unknown }).input;
-	}
-
-	return input;
-});
+const unwrappedToolCall = computed(() => unwrapToolCall(props.part));
+const toolName = computed(() => unwrappedToolCall.value.toolName);
+const displayInput = computed(() => unwrappedToolCall.value.input);
 
 const toolDisplayName = computed(() => {
 	const localTool = toolsStore.localTools.find((t) => t.name === toolName.value);

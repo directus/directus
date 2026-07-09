@@ -309,22 +309,6 @@ describe('createUiStream', () => {
 		expect(Object.keys(call?.tools ?? {})).toEqual(['alpha', 'zeta']);
 	});
 
-	it('sorts Anthropic tools by name without provider-specific tool search', async () => {
-		await createUiStream(messages, {
-			provider: 'anthropic',
-			model: 'claude-sonnet-4-5',
-			tools: {
-				zeta: { description: 'Zeta tool', inputSchema: {} } as any,
-				alpha: { description: 'Alpha tool', inputSchema: {} } as any,
-			},
-			aiSettings,
-		});
-
-		const call = vi.mocked(streamText).mock.calls[0]?.[0];
-
-		expect(Object.keys(call?.tools ?? {})).toEqual(['alpha', 'zeta']);
-	});
-
 	it('passes onUsage callback to streamText onFinish', async () => {
 		const onUsage = vi.fn();
 

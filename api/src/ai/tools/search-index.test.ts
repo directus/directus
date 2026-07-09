@@ -54,17 +54,46 @@ describe('createSearchIndex', () => {
 		expect(names[3]).toBe('argument-tool');
 	});
 
-	test('tokenizes camel case, separators, and casing', () => {
+	// Ranking is two-stage by design: field precedence (name > keywords/description > args/
+	// instructions) decides coarse tiers, and field-weighted BM25 orders within a tier. The
+	// next two tests pin one side of that choice each — do not "simplify" either away.
+
+	// Names are the trusted, high-precision signal; description prose (eventually including
+	// unvetted metadata from mounted external MCP servers) must not out-shout them by
+	// repeating a term. Pure BM25 would rank the stuffed description first (tf saturation
+	// caps at k1+1, so 2 × 2.2 beats 3 × ~1.1).
+	test('a name match outranks a description that repeats the term', () => {
 		const index = createSearchIndex([
-			createTool({
-				name: 'triggerFlow',
-				description: 'Runs a flow',
-			}),
+			createTool({ name: 'zzz-helper', description: 'flow flow flow flow flow flow' }),
+			createTool({ name: 'flow_trigger', description: 'Runs automations' }),
 		]);
 
-		const result = index.search('TRIGGER flow');
+		expect(index.search('flow').results.map(({ name }) => name)).toEqual(['flow_trigger', 'zzz-helper']);
+	});
 
-		expect(result.results.map(({ name }) => name)).toEqual(['triggerFlow']);
+	// Within a tier, BM25 does the real ranking as the catalog grows: a short, focused
+	// description beats one that buries the term in unrelated prose. Without BM25 this tie
+	// would fall through to alphabetical order and rank alpha-tool first.
+	test('within the same field tier, focused descriptions outrank term-buried ones', () => {
+		const index = createSearchIndex([
+			createTool({
+				name: 'alpha-tool',
+				description: 'A long description that mentions a rendition once among many other unrelated words and features',
+			}),
+			createTool({ name: 'zeta-tool', description: 'Generates a rendition' }),
+		]);
+
+		expect(index.search('rendition').results.map(({ name }) => name)).toEqual(['zeta-tool', 'alpha-tool']);
+	});
+
+	test('tokenizes camel case, acronyms, separators, and casing', () => {
+		const index = createSearchIndex([
+			createTool({ name: 'triggerFlow', description: 'Runs a flow' }),
+			createTool({ name: 'JSONParser', description: 'Parses values' }),
+		]);
+
+		expect(index.search('TRIGGER flow').results.map(({ name }) => name)).toEqual(['triggerFlow']);
+		expect(index.search('json parser').results.map(({ name }) => name)).toEqual(['JSONParser']);
 	});
 
 	test('returns all tools by name for an empty query', () => {
@@ -93,15 +122,7 @@ describe('createSearchIndex', () => {
 		expect(result.hint).toBe('No tools matched. Available tools: files, items');
 	});
 
-	test('does not return available names for a successful non-empty search', () => {
-		const index = createSearchIndex([createTool({ name: 'items', description: 'Manage items' })]);
-
-		const result = index.search('items');
-
-		expect(result.availableToolNames).toBeUndefined();
-	});
-
-	test('indexes keywords without returning them', () => {
+	test('indexes keywords but returns only name and description', () => {
 		const index = createSearchIndex([
 			createTool({
 				name: 'assets',
@@ -112,17 +133,14 @@ describe('createSearchIndex', () => {
 
 		const result = index.search('rendition');
 
-		expect(result.results).toHaveLength(1);
+		expect(result.results).toEqual([
+			{
+				name: 'assets',
+				description: 'Reads assets',
+			},
+		]);
 
-		expect(result.results[0]).toEqual({
-			name: 'assets',
-			description: 'Reads assets',
-		});
-
-		expect(result.results[0]).not.toHaveProperty('keywords');
-		expect(result.results[0]).not.toHaveProperty('instructions');
-		expect(result.results[0]).not.toHaveProperty('inputType');
-		expect(result.results[0]).not.toHaveProperty('outputType');
+		expect(result.availableToolNames).toBeUndefined();
 	});
 
 	test('indexes instructions without returning them', () => {
@@ -137,7 +155,6 @@ describe('createSearchIndex', () => {
 		const result = index.search('recipes');
 
 		expect(result.results.map(({ name }) => name)).toEqual(['flows']);
-		expect(result.results[0]).not.toHaveProperty('instructions');
 	});
 
 	test('indexes argument names', () => {
@@ -155,41 +172,11 @@ describe('createSearchIndex', () => {
 
 		expect(result.results.map(({ name }) => name)).toEqual(['items']);
 	});
-
-	test('tokenizes acronym camel case', () => {
-		const index = createSearchIndex([createTool({ name: 'JSONParser', description: 'Parses values' })]);
-
-		const result = index.search('json parser');
-
-		expect(result.results.map(({ name }) => name)).toEqual(['JSONParser']);
-	});
-
-	test('does not return input or output types in discovery results', () => {
-		const index = createSearchIndex([
-			createTool({
-				name: 'schema',
-				description: 'Reads schema',
-				output: z.object({
-					data: z.array(z.string()),
-				}),
-			}),
-		]);
-
-		const result = index.search('schema');
-
-		expect(result.results[0]).toEqual({
-			name: 'schema',
-			description: 'Reads schema',
-		});
-
-		expect(result.results[0]).not.toHaveProperty('inputType');
-		expect(result.results[0]).not.toHaveProperty('outputType');
-	});
 });
 
 function createTool(
 	options: Pick<ToolConfig<{ value?: string }>, 'name' | 'description'> &
-		Partial<Pick<ToolConfig<{ value?: string }>, 'keywords' | 'instructions' | 'inputSchema' | 'output'>>,
+		Partial<Pick<ToolConfig<{ value?: string }>, 'keywords' | 'instructions' | 'inputSchema'>>,
 ): ToolConfig<{ value?: string }> {
 	const tool: ToolConfig<{ value?: string }> = {
 		name: options.name,
@@ -207,7 +194,6 @@ function createTool(
 
 	if (options.keywords) tool.keywords = options.keywords;
 	if (options.instructions) tool.instructions = options.instructions;
-	if (options.output) tool.output = options.output;
 
 	return defineTool(tool);
 }

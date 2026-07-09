@@ -4,10 +4,8 @@ import type { JSONSchema7, Tool } from 'ai';
 import { jsonSchema, tool, zodSchema } from 'ai';
 import type { MountedToolRegistry } from '../../tools/index.js';
 import { ALL_TOOLS, ToolRegistry } from '../../tools/index.js';
-import type { ToolConfig, ToolResult } from '../../tools/types.js';
+import type { RootTool, ToolResult } from '../../tools/types.js';
 import type { ChatRequestTool, ToolApprovalMode } from '../models/chat-request.js';
-
-const PINNED_ROOT_TOOL_NAMES = new Set(['search', 'execute', 'schema']);
 
 export const chatRequestToolsToAiSdkTools = ({
 	chatRequestTools,
@@ -38,8 +36,6 @@ export const chatRequestToolsToAiSdkTools = ({
 	});
 
 	const tools = mountedRegistry.getRootTools().reduce<Record<string, Tool>>((acc, directusTool) => {
-		if (!isPinnedRootTool(directusTool.name) && isToolDisabled(directusTool.name, toolApprovals)) return acc;
-
 		acc[directusTool.name] = directusToolToAiSdkTool({
 			directusTool,
 			mountedRegistry,
@@ -68,7 +64,7 @@ function directusToolToAiSdkTool({
 	mountedRegistry,
 	toolApprovals,
 }: {
-	directusTool: ToolConfig<any>;
+	directusTool: RootTool;
 	mountedRegistry: MountedToolRegistry;
 	toolApprovals?: Record<string, ToolApprovalMode>;
 }): Tool {
@@ -77,18 +73,6 @@ function directusToolToAiSdkTool({
 		inputSchema: zodSchema(directusTool.inputSchema),
 		needsApproval: (rawArgs) => needsApproval(directusTool, mountedRegistry, rawArgs, toolApprovals),
 		execute: async (rawArgs) => {
-			const disabledToolName = getDisabledToolName(directusTool.name, rawArgs, toolApprovals);
-
-			if (disabledToolName) {
-				return {
-					error: {
-						code: 'UNKNOWN_TOOL',
-						message: `"${disabledToolName}" doesn't exist in the toolset`,
-						recoverable: true,
-					},
-				};
-			}
-
 			const result = await mountedRegistry.executeRoot(directusTool.name, rawArgs);
 
 			if (!result.ok) {
@@ -138,26 +122,8 @@ function isToolDisabled(name: string, toolApprovals: Record<string, ToolApproval
 	return toolApprovals?.[name] === 'disabled';
 }
 
-function getDisabledToolName(
-	name: string,
-	rawArgs: unknown,
-	toolApprovals: Record<string, ToolApprovalMode> | undefined,
-): string | undefined {
-	if (!isPinnedRootTool(name) && isToolDisabled(name, toolApprovals)) return name;
-	if (name !== 'execute') return;
-
-	const args = rawArgs as { name?: unknown };
-	const targetName = typeof args.name === 'string' ? args.name : '';
-
-	return !isPinnedRootTool(targetName) && isToolDisabled(targetName, toolApprovals) ? targetName : undefined;
-}
-
-function isPinnedRootTool(name: string): boolean {
-	return PINNED_ROOT_TOOL_NAMES.has(name);
-}
-
 function needsApproval(
-	directusTool: ToolConfig<any>,
+	directusTool: RootTool,
 	mountedRegistry: MountedToolRegistry,
 	rawArgs: unknown,
 	toolApprovals: Record<string, ToolApprovalMode> | undefined,
@@ -166,22 +132,19 @@ function needsApproval(
 		return false;
 	}
 
-	if (getDisabledToolName(directusTool.name, rawArgs, toolApprovals)) {
-		return false;
-	}
-
 	const args = rawArgs as { input?: unknown; name?: unknown };
 	const name = typeof args.name === 'string' ? args.name : '';
-	const input = args.input ?? {};
 
-	if (mountedRegistry.isCallReadOnly(name, input)) {
+	// Disabled tools are excluded from the mount allowlist, so the registry reports them
+	// read-only here and `execute` fails them with UNKNOWN_TOOL — no approval prompt needed.
+	if (mountedRegistry.isCallReadOnly(name, args.input ?? {})) {
 		return false;
 	}
 
 	return (toolApprovals?.[name] ?? 'ask') !== 'always';
 }
 
-export function toModelOutput(result: ToolResult | undefined): unknown {
+function toModelOutput(result: ToolResult | undefined): unknown {
 	if (!result || typeof result.data === 'undefined') return null;
 
 	if (result.type !== 'text') return result;

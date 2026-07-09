@@ -168,27 +168,12 @@ describe('useAiToolsStore', () => {
 	});
 
 	describe('isServerTool', () => {
-		test('returns true for root registry tools without exposing them as configurable system tools', () => {
+		test('covers root registry tools and system tools but not client tools', () => {
 			const store = useAiToolsStore();
 
-			expect(store.isServerTool('search')).toBe(true);
 			expect(store.isServerTool('execute')).toBe(true);
 			expect(store.isServerTool('schema')).toBe(true);
-
-			expect(store.systemTools).not.toContain('search');
-			expect(store.systemTools).not.toContain('execute');
-			expect(store.systemTools).not.toContain('schema');
-		});
-
-		test('returns true for system tools', () => {
-			const store = useAiToolsStore();
-
 			expect(store.isServerTool('items')).toBe(true);
-		});
-
-		test('returns false for unknown client tools', () => {
-			const store = useAiToolsStore();
-
 			expect(store.isServerTool('custom-tool')).toBe(false);
 		});
 	});
