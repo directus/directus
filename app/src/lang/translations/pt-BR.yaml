@@ -109,7 +109,7 @@ extension_missing: Não encontrado
 extension_reload_required: Atualização de página necessária
 extension_reload_required_copy: É necessário recarregar a página para ver as alterações após ativar ou desativar extensões de aplicativo.
 extension_reload_now: Recarregar agora
-published_relative: Publicado em {relativeTime}
+published_relative: Publicado {relativeTime}
 compatible_with_your_project: Compatível com seu projeto
 compatible_with_your_project_copy: O autor indicou que a compatibilidade desta extensão é {hostVersion}, o que corresponde à versão do seu projeto ({currentVersion})
 last_updated_relative: Última atualização em {relativeTime}
