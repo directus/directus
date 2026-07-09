@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fix schema apply ignoring configured license
+Fixed schema apply ignoring configured license
