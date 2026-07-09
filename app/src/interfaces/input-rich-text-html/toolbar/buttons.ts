@@ -1,6 +1,8 @@
 import type { Editor } from '@tiptap/vue-3';
 import type { Component } from 'vue';
+import { PAGE_BREAK_NODE } from '../extensions/page-break';
 import ColorMenu from './menus/color-menu.vue';
+import DateTimeMenu from './menus/datetime-menu.vue';
 import StyleListMenu from './menus/style-list-menu.vue';
 import TableMenu from './menus/table-menu.vue';
 
@@ -283,6 +285,17 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 		icon: 'horizontal_rule',
 		label: 'wysiwyg_options.hr',
 		command: (e) => e.chain().focus().setHorizontalRule().run(),
+	},
+	pagebreak: {
+		icon: 'insert_page_break',
+		label: 'wysiwyg_options.pagebreak',
+		command: (e) => e.chain().focus().insertContent({ type: PAGE_BREAK_NODE }).run(),
+	},
+	insertdatetime: {
+		icon: 'schedule',
+		label: 'wysiwyg_options.insertdatetime',
+		component: DateTimeMenu,
+		width: CARET_BUTTON_WIDTH,
 	},
 	// icon deliberately not `code` (that's the inline/block code mark); this edits raw HTML source
 	code: {

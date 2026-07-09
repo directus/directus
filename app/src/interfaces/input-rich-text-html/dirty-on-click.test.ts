@@ -4,6 +4,7 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia } from 'pinia';
 import { describe, expect, test } from 'vitest';
 import { nextTick } from 'vue';
+import { createI18n } from 'vue-i18n';
 import Interface from './input-rich-text-html.vue';
 
 /**
@@ -16,10 +17,12 @@ import Interface from './input-rich-text-html.vue';
  * Tiptap already ends in that trailing paragraph, so it never reproduced.
  */
 async function mountWithValue(value: string) {
+	const i18n = createI18n({ legacy: false, locale: 'en-US', messages: { 'en-US': {} } });
+
 	const wrapper = mount(Interface, {
 		props: { value },
 		global: {
-			plugins: [createPinia()],
+			plugins: [createPinia(), i18n],
 			stubs: { Toolbar: true, TableBubbleMenu: true, ImageDrawer: true, LinkDrawer: true, SourceCodeDrawer: true },
 		},
 	});
