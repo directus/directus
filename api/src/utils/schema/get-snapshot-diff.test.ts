@@ -1,10 +1,10 @@
 import type { Snapshot } from '@directus/types';
 import { describe, expect, test, vi } from 'vitest';
+import { sanitizeField } from '../sanitize-schema.js';
 import { getSnapshotDiff } from './get-snapshot-diff.js';
-import { sanitizeField } from './sanitize-schema.js';
 
 // Mock the sanitize functions
-vi.mock('./sanitize-schema', () => ({
+vi.mock('../sanitize-schema', () => ({
 	sanitizeCollection: vi.fn((collection) => collection),
 	sanitizeField: vi.fn((field) => field),
 	sanitizeRelation: vi.fn((relation) => relation),

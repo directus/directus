@@ -8,10 +8,10 @@ import inquirer from 'inquirer';
 import { load as loadYaml } from 'js-yaml';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
 import { useLogger } from '../../../logger/index.js';
-import { isNestedMetaUpdate } from '../../../utils/apply-diff.js';
-import { applySnapshot } from '../../../utils/apply-snapshot.js';
-import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
-import { getSnapshot } from '../../../utils/get-snapshot.js';
+import { isNestedMetaUpdate } from '../../../utils/schema/apply-diff.js';
+import { applySnapshot } from '../../../utils/schema/apply-snapshot.js';
+import { getSnapshotDiff } from '../../../utils/schema/get-snapshot-diff.js';
+import { getSnapshot } from '../../../utils/schema/get-snapshot.js';
 
 export function filterSnapshotDiff(snapshot: SnapshotDiff, filters: string[]): SnapshotDiff {
 	const filterSet = new Set(filters);

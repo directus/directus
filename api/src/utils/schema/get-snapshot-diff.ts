@@ -1,9 +1,11 @@
 import type { Snapshot, SnapshotDiff, SnapshotSystemField } from '@directus/types';
 import { DiffKind } from '@directus/types';
-import deepDiff, { type Diff } from 'deep-diff';
-import { SNAPSHOT_VERSION } from '../constants.js';
+import deepDiff from 'deep-diff';
+import { SNAPSHOT_VERSION } from '../../constants.js';
+import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from '../sanitize-schema.js';
+import { isChanged } from './is-changed.js';
+import { isDeleteAllowed } from './is-delete-allowed.js';
 import { isInScope } from './is-in-scope.js';
-import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
 export interface GetSnapshotDiffOptions {
 	/** `merge` excludes deletions for an additive diff; `mirror` (default) returns all operations. */
@@ -204,21 +206,6 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: Ge
 	);
 
 	return diffedSnapshot;
-}
-
-function isChanged(entry: { diff: Diff<any>[] | undefined }) {
-	// `deep-diff` returns `undefined` when the two entities are identical.
-	return Array.isArray(entry.diff);
-}
-
-function isDeleteAllowed(entry: { diff: Diff<any>[] | undefined }, mode: GetSnapshotDiffOptions['mode']) {
-	if (mode !== 'merge') return true;
-
-	const change = entry.diff?.[0];
-	if (change?.kind !== DiffKind.DELETE) return true;
-
-	// `deep-diff` reports a whole-entity deletion as a root-level `D` (i.e. no `path`)
-	return change.path !== undefined;
 }
 
 function invertIndexed(field: SnapshotSystemField): SnapshotSystemField {

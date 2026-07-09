@@ -6,7 +6,7 @@ vi.mock('directus/version', () => ({
 	version: '10.0.0',
 }));
 
-vi.mock('../database/index.js', () => ({
+vi.mock('../../database/index.js', () => ({
 	getDatabaseClient: () => 'sqlite',
 }));
 

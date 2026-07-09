@@ -2,14 +2,17 @@ import type { Field, Relation, SchemaOverview, Snapshot } from '@directus/types'
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash-es';
-import { SNAPSHOT_VERSION } from '../constants.js';
-import getDatabase, { getDatabaseClient } from '../database/index.js';
-import { CollectionsService } from '../services/collections.js';
-import { FieldsService } from '../services/fields.js';
-import { RelationsService } from '../services/relations.js';
-import { getSchema } from './get-schema.js';
+import { SNAPSHOT_VERSION } from '../../constants.js';
+import getDatabase, { getDatabaseClient } from '../../database/index.js';
+import { CollectionsService } from '../../services/collections.js';
+import { FieldsService } from '../../services/fields.js';
+import { RelationsService } from '../../services/relations.js';
+import { getSchema } from '../get-schema.js';
+import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from '../sanitize-schema.js';
 import { isInScope } from './is-in-scope.js';
-import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
+import { isIndexedSystemField } from './is-indexed-system-field.js';
+import { isManaged } from './is-managed.js';
+import { isNonSystem } from './is-non-system.js';
 
 export interface GetSnapshotOptions {
 	database?: Knex;
@@ -83,23 +86,6 @@ export async function getSnapshot(options?: GetSnapshotOptions): Promise<Snapsho
 		systemFields: systemFieldsSorted,
 		relations: relationsSorted,
 	};
-}
-
-function isNonSystem(item: { meta: { system?: boolean | null } | null }) {
-	if (item?.meta?.system === true) return false;
-	return true;
-}
-
-function isIndexedSystemField(item: {
-	meta: { system?: boolean | null } | null;
-	schema: { is_indexed: boolean } | null;
-}) {
-	return item.meta?.system === true && item.schema?.is_indexed;
-}
-
-function isManaged(item: { meta: unknown | null } | null) {
-	if (item?.meta === null) return false;
-	return true;
 }
 
 function omitID(item: Record<string, any>) {

@@ -4,8 +4,8 @@ import type { Snapshot } from '@directus/types';
 import { DatabaseClients } from '@directus/types';
 import { version } from 'directus/version';
 import Joi from 'joi';
-import { ALIAS_TYPES, SNAPSHOT_VERSION } from '../constants.js';
-import { getDatabaseClient } from '../database/index.js';
+import { ALIAS_TYPES, SNAPSHOT_VERSION } from '../../constants.js';
+import { getDatabaseClient } from '../../database/index.js';
 
 const snapshotJoiSchema = Joi.object({
 	version: Joi.number()

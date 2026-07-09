@@ -11,17 +11,17 @@ import type { MockedFunction } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
 import { useLogger } from '../../../logger/index.js';
-import { applySnapshot } from '../../../utils/apply-snapshot.js';
-import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
-import { getSnapshot } from '../../../utils/get-snapshot.js';
+import { applySnapshot } from '../../../utils/schema/apply-snapshot.js';
+import { getSnapshotDiff } from '../../../utils/schema/get-snapshot-diff.js';
+import { getSnapshot } from '../../../utils/schema/get-snapshot.js';
 import { apply, filterSnapshotDiff, formatPath, formatRelatedCollection } from './apply.js';
 
 vi.mock('inquirer');
 vi.mock('../../../database/index.js');
 vi.mock('../../../logger/index.js');
-vi.mock('../../../utils/apply-snapshot.js');
-vi.mock('../../../utils/get-snapshot-diff.js');
-vi.mock('../../../utils/get-snapshot.js');
+vi.mock('../../../utils/schema/apply-snapshot.js');
+vi.mock('../../../utils/schema/get-snapshot-diff.js');
+vi.mock('../../../utils/schema/get-snapshot.js');
 
 class Client_PG extends MockClient {}
 
