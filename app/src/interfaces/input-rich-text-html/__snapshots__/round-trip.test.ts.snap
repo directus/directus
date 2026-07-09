@@ -51,6 +51,8 @@ exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > nested marks 
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > ordered list survives round-trip 1`] = `"<ol><li><p>first</p></li><li><p>second</p></li></ol>"`;
 
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > pagebreak survives round-trip 1`] = `"<p>a</p><!-- pagebreak --><p>b</p>"`;
+
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > paragraph survives round-trip 1`] = `"<p>Just a paragraph.</p>"`;
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > rtl heading survives round-trip 1`] = `"<h2 dir="rtl">عنوان</h2>"`;
@@ -90,7 +92,5 @@ exports[`round-trip: lossy (restored by later issues / accepted regression) > 'a
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'custom format span' is dropped today (→ 'CMS-2648') 1`] = `"<p>text</p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'iframe' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;
-
-exports[`round-trip: lossy (restored by later issues / accepted regression) > 'pagebreak' is dropped today (→ 'CMS-2647') 1`] = `"<p>a</p><p>b</p>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'video' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;

@@ -1,6 +1,7 @@
 import { Editor } from '@tiptap/vue-3';
 import { describe, expect, test } from 'vitest';
 import { editorExtensions } from './extensions';
+import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 
 /**
  * HTML corpus round-trip tests.
@@ -19,8 +20,10 @@ import { editorExtensions } from './extensions';
  * The editor here uses the same extension set as input-rich-text-html.vue (see ./extensions).
  */
 function roundTrip(html: string): string {
-	const editor = new Editor({ extensions: editorExtensions, content: html });
-	const out = editor.getHTML();
+	// Apply the same comment ↔ element boundary that input-rich-text-html.vue uses, so constructs
+	// that persist as HTML comments (page breaks) round-trip here exactly as they do in the editor.
+	const editor = new Editor({ extensions: editorExtensions, content: decodePageBreaks(html) });
+	const out = encodePageBreaks(editor.getHTML());
 	editor.destroy();
 	return out;
 }
@@ -61,6 +64,8 @@ const FAITHFUL: Record<string, string> = {
 	'text align right': '<p style="text-align: right;">right</p>',
 	'text align justify': '<p style="text-align: justify;">justified</p>',
 	'aligned heading': '<h2 style="text-align: center;">centered</h2>',
+	// CMS-2647: persists as the legacy `<!-- pagebreak -->` comment via the page-break serialization boundary
+	pagebreak: '<p>a</p><!-- pagebreak --><p>b</p>',
 	'rtl paragraph': '<p dir="rtl">شسي</p>',
 	'rtl heading': '<h2 dir="rtl">عنوان</h2>',
 	'rtl list': '<ul dir="rtl"><li><p>عنصر</p></li></ul>',
@@ -94,7 +99,6 @@ const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }
 		issue: 'CMS-2643',
 	},
 	{ name: 'iframe', html: '<iframe src="about:blank"></iframe>', absent: '<iframe', issue: 'CMS-2643' },
-	{ name: 'pagebreak', html: '<p>a</p><!-- pagebreak --><p>b</p>', absent: 'pagebreak', issue: 'CMS-2647' },
 	{
 		name: 'custom format span',
 		html: '<p><span class="my-format">text</span></p>',

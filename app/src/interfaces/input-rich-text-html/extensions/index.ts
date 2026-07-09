@@ -2,6 +2,7 @@ import { CharacterCount } from '@tiptap/extensions';
 import StarterKit from '@tiptap/starter-kit';
 import { Direction } from './direction';
 import { CustomImage } from './image';
+import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
 import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
 import { Table } from './table';
@@ -30,6 +31,7 @@ export const editorExtensions = [
 	CustomSubscript,
 	CustomSuperscript,
 	TextStyle,
+	PageBreak,
 	Table,
 	PreKeymap,
 	CharacterCount,

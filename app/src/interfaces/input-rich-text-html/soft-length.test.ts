@@ -3,6 +3,7 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia } from 'pinia';
 import { describe, expect, test } from 'vitest';
 import { nextTick } from 'vue';
+import { createI18n } from 'vue-i18n';
 import Interface from './input-rich-text-html.vue';
 
 /**
@@ -10,10 +11,12 @@ import Interface from './input-rich-text-html.vue';
  * Threshold parity with the legacy TinyMCE editor — warn at ≤10% remaining, danger at ≤5%.
  */
 async function mountWith(props: { value?: string | null; softLength?: number }) {
+	const i18n = createI18n({ legacy: false, locale: 'en-US', messages: { 'en-US': {} } });
+
 	const wrapper = mount(Interface, {
 		props: { value: null, ...props },
 		global: {
-			plugins: [createPinia()],
+			plugins: [createPinia(), i18n],
 			stubs: { Toolbar: true, TableBubbleMenu: true, ImageDrawer: true, LinkDrawer: true },
 		},
 	});
