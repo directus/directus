@@ -1,6 +1,6 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import { computed, defineComponent, h, ref, toRefs } from 'vue';
 import { RelationM2A } from './use-relation-m2a';
 import { RelationO2M } from './use-relation-o2m';
@@ -15,9 +15,9 @@ vi.mock('@/sdk', async () => {
 		} else if (path === '/items/worker') {
 			return Promise.resolve(workerData);
 		} else if (path === '/items/article_m2a' && params?.aggregate?.count === 'id') {
-			return Promise.resolve([{ count: { id: m2aData.length } }]);
+			return Promise.resolve([{ count: { id: (mockM2aDataOverride ?? m2aData).length } }]);
 		} else {
-			return Promise.resolve(m2aData);
+			return Promise.resolve(mockM2aDataOverride ?? m2aData);
 		}
 	});
 });
@@ -475,6 +475,10 @@ const m2aData: Record<string, any>[] = [
 	{ id: 3, article_id: 1, item: { id: 1 }, collection: 'code', sort: 3 },
 ];
 
+// Lets a test swap the server response mid-flight to simulate data changing on the backend
+// (e.g. a version being promoted). Reset to null after each test that touches it.
+let mockM2aDataOverride: Record<string, any>[] | null = null;
+
 const TestComponentM2A = defineComponent({
 	props: ['value', 'relation', 'id'], // eslint-disable-line vue/require-prop-types
 	emits: ['update:value'],
@@ -564,5 +568,51 @@ describe('test m2a relation', () => {
 				$edits: 1,
 			},
 		]);
+	});
+});
+
+const TestComponentM2AVersion = defineComponent({
+	props: ['value', 'relation', 'id', 'version'], // eslint-disable-line vue/require-prop-types
+	emits: ['update:value'],
+	setup(props) {
+		const valueRef = ref(props.value);
+		const { relation, id, version } = toRefs(props);
+
+		const query = computed<RelationQueryMultiple>(() => ({
+			limit: 15,
+			page: 1,
+			fields: ['id'],
+		}));
+
+		// eslint-disable-next-line vue/no-dupe-keys
+		return { value: valueRef, ...useRelationMultiple(valueRef, query, relation, id, version) };
+	},
+	render: () => h('div'),
+});
+
+describe('version refresh', () => {
+	afterEach(() => {
+		mockM2aDataOverride = null;
+	});
+
+	test('re-fetches related items when the version context changes, e.g. promoting to main (#27832)', async () => {
+		const wrapper = mount(TestComponentM2AVersion, {
+			props: { relation: relationM2A, value: [], id: 1, version: { key: 'draft' } },
+		});
+
+		await flushPromises();
+
+		expect(wrapper.vm.fetchedItems).toEqual(m2aData);
+		expect(wrapper.vm.totalItemCount).toBe(m2aData.length);
+
+		// Promoting the version commits a new block on the server, then clears the version back to main.
+		// The item's primary key doesn't change, so only the version context signals the data moved.
+		mockM2aDataOverride = [...m2aData, { id: 4, article_id: 1, item: { id: 3 }, collection: 'text', sort: 4 }];
+
+		await wrapper.setProps({ version: null });
+		await flushPromises();
+
+		expect(wrapper.vm.fetchedItems).toEqual(mockM2aDataOverride);
+		expect(wrapper.vm.totalItemCount).toBe(mockM2aDataOverride.length);
 	});
 });
