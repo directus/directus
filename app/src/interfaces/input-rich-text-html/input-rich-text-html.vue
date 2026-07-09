@@ -3,13 +3,17 @@ import type { SettingsStorageAssetPreset } from '@directus/types';
 import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
 import { computed, ref, type Ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
+import { useSourceCode } from './composables/use-source-code';
 import ImageDrawer from './drawers/image-drawer.vue';
 import LinkDrawer from './drawers/link-drawer.vue';
+import SourceCodeDrawer from './drawers/source-code-drawer.vue';
 import { editorExtensions } from './extensions';
 import { buildCustomFormats } from './extensions/custom-formats';
 import { LinkShortcut } from './extensions/link-shortcut';
+import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
 import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
@@ -17,6 +21,7 @@ import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager'
 import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import { percentage } from '@/utils/percentage';
 
 const props = withDefaults(
 	defineProps<{
@@ -29,6 +34,7 @@ const props = withDefaults(
 		folder?: string;
 		/** Legacy TinyMCE `customFormats` option (array or JSON string); see extensions/custom-formats.ts. */
 		customFormats?: unknown;
+		softLength?: number;
 		direction?: string;
 	}>(),
 	{
@@ -39,11 +45,15 @@ const props = withDefaults(
 
 const emit = defineEmits<{ input: [value: string | null] }>();
 
+const { t } = useI18n();
+
 const { imageToken, folder } = toRefs(props);
 
 // Built once at init from the field's `customFormats` option (design-time config, not reactive edits):
 // dynamic marks go into the editor's schema, the format list drives the toolbar's styles dropdown.
 const { extensions: customFormatExtensions, formats: customFormatList } = buildCustomFormats(props.customFormats);
+
+const pageBreakLabel = computed(() => `"${t('wysiwyg_options.pagebreak')}"`);
 
 // base content font, driven by the `font` option; theme tokens use `sans` (not `sans-serif`)
 const fontFamily = computed(() => {
@@ -68,9 +78,22 @@ function syncValue(instance: Editor, value: string | null) {
 	instance
 		.chain()
 		.setMeta('addToHistory', false)
-		.setContent(value ?? '', { emitUpdate: false })
+		.setContent(decodePageBreaks(value ?? ''), { emitUpdate: false })
 		.run();
+
+	// `emitUpdate: false` skips `onUpdate`, so refresh the soft-length count here too
+	updateCount(instance);
 }
+
+// Advisory character count for the `softLength` indicator. Reads the CharacterCount extension's
+// storage (default `textSize` mode → text content length, matching legacy TinyMCE counting).
+const count = ref(0);
+
+function updateCount(instance: Editor) {
+	count.value = instance.storage.characterCount?.characters() ?? 0;
+}
+
+const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
 
 const editor = useEditor({
 	// LinkShortcut lives here, not in the shared set, so its Mod-K handler can call this instance's opener
@@ -100,7 +123,8 @@ const editor = useEditor({
 	},
 	onCreate: ({ editor }) => syncValue(editor as Editor, props.value),
 	onUpdate: ({ editor }) => {
-		emit('input', editor.isEmpty ? null : editor.getHTML());
+		updateCount(editor as Editor);
+		emit('input', editor.isEmpty ? null : encodePageBreaks(editor.getHTML()));
 	},
 });
 
@@ -134,10 +158,25 @@ const {
 	unlink,
 } = useLink(editor as Ref<Editor>);
 
+const {
+	sourceCodeDrawerOpen,
+	code,
+	normalizeConfirmOpen,
+	normalizeDiff,
+	openSourceCodeDrawer,
+	closeSourceCodeDrawer,
+	saveSourceCode,
+	confirmSaveSourceCode,
+	cancelNormalize,
+} = useSourceCode(editor as Ref<Editor>);
+
 // First drawer in the new editor: pause the surrounding view's focus trap while it's open so the
 // drawer's inputs are reachable; resume on close. Reused by the link/media/source drawers later.
 const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
-watch([imageDrawerOpen, linkDrawerOpen], ([image, link]) => (image || link ? pauseFocusTrap() : unpauseFocusTrap()));
+
+watch([imageDrawerOpen, linkDrawerOpen, sourceCodeDrawerOpen], (open) =>
+	open.some(Boolean) ? pauseFocusTrap() : unpauseFocusTrap(),
+);
 
 // `editable` is only read at init, so keep it in sync when the prop flips
 watch(isEditable, (editable) => editor.value?.setEditable(editable));
@@ -147,7 +186,8 @@ watch(
 	() => props.value,
 	(value) => {
 		if (!editor.value) return;
-		if (editor.value.getHTML() === value) return;
+		// compare the encoded (stored) form so a re-emitted page-break marker doesn't look like a change
+		if (encodePageBreaks(editor.value.getHTML()) === value) return;
 		syncValue(editor.value, value);
 	},
 );
@@ -166,7 +206,7 @@ onKeyStroke('Escape', () => {
 	<div
 		class="wysiwyg"
 		:class="{ disabled, 'non-editable': nonEditable, fullscreen, visualaid }"
-		:style="{ '--editor-font-family': fontFamily }"
+		:style="{ '--editor-font-family': fontFamily, '--page-break-label': pageBreakLabel }"
 	>
 		<Toolbar
 			v-if="!nonEditable"
@@ -181,8 +221,20 @@ onKeyStroke('Escape', () => {
 			@toggle-visualaid="visualaid = !visualaid"
 			@open-image="openImageDrawer"
 			@open-link="openLinkDrawer"
+			@open-source-code="openSourceCodeDrawer"
 		/>
 		<EditorContent class="editor-content" :editor="editor" :dir="editorDir" />
+
+		<span
+			v-if="softLength"
+			class="remaining"
+			:class="{
+				warning: percRemaining < 10,
+				danger: percRemaining < 5,
+			}"
+		>
+			{{ softLength - count }}
+		</span>
 
 		<TableBubbleMenu v-if="!nonEditable" :editor="editor" />
 
@@ -207,6 +259,17 @@ onKeyStroke('Escape', () => {
 			@unlink="unlink"
 			@cancel="closeLinkDrawer"
 		/>
+
+		<SourceCodeDrawer
+			v-model="sourceCodeDrawerOpen"
+			v-model:code="code"
+			v-model:normalize-confirm-open="normalizeConfirmOpen"
+			:normalize-diff="normalizeDiff"
+			@save="saveSourceCode"
+			@cancel="closeSourceCodeDrawer"
+			@confirm-save="confirmSaveSourceCode"
+			@cancel-normalize="cancelNormalize"
+		/>
 	</div>
 </template>
 
@@ -217,6 +280,7 @@ onKeyStroke('Escape', () => {
 	--v-button-background-color-hover: var(--theme--form--field--input--border-color);
 	--v-button-color-hover: var(--theme--form--field--input--foreground);
 
+	position: relative; // anchors the soft-length `.remaining` indicator
 	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
@@ -254,6 +318,27 @@ onKeyStroke('Escape', () => {
 			overflow: auto;
 		}
 	}
+}
+
+/* Soft-length remaining-characters indicator, anchored to the editor's bottom-right (ported from
+   the legacy TinyMCE editor). */
+.remaining {
+	position: absolute;
+	inset-inline-end: 0.5625rem;
+	inset-block-end: 0.3125rem;
+	color: var(--theme--form--field--input--foreground-subdued);
+	font-weight: 600;
+	text-align: end;
+	vertical-align: middle;
+	font-feature-settings: 'tnum';
+}
+
+.warning {
+	color: var(--theme--warning);
+}
+
+.danger {
+	color: var(--theme--danger);
 }
 
 /* Content styles, scoped to the ProseMirror container so they neither leak into the app nor inherit app styles.
@@ -390,8 +475,31 @@ onKeyStroke('Escape', () => {
 		border-radius: var(--theme--border-radius);
 	}
 
-	:is(img, hr).ProseMirror-selectednode {
+	:is(img, hr, .page-break).ProseMirror-selectednode {
 		outline: 2px solid var(--theme--primary);
+	}
+
+	.page-break {
+		position: relative;
+		block-size: 0;
+		border: none;
+		border-block-start: 2px dashed var(--theme--form--field--input--border-color);
+		margin-block: 2em;
+		user-select: none;
+
+		&::after {
+			content: var(--page-break-label, 'Page Break');
+			position: absolute;
+			inset-block-start: -0.75em;
+			inset-inline-start: 50%;
+			transform: translateX(-50%);
+			padding-inline: 0.5em;
+			background-color: var(--theme--form--field--input--background);
+			color: var(--theme--foreground-subdued);
+			font-size: 0.6875rem;
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+		}
 	}
 
 	hr {
