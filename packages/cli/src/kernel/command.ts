@@ -5,7 +5,6 @@ import type { Ui } from './ui.js';
 // config attach via kernel helpers commands call on demand, not off ctx.
 export interface CliContext {
 	readonly cwd: string;
-	readonly json: boolean;
 	readonly ui: Ui;
 }
 
@@ -24,12 +23,6 @@ export interface CommandDefinition<Schema extends z.ZodObject = z.ZodObject> {
 	// stores. The kernel is the sole caller and always passes the full parsed args
 	// — do not switch this to an arrow property, it breaks group storage.
 	run(context: CommandContext<z.infer<Schema>>): void | Promise<void>;
-}
-
-export function defineCommand<Schema extends z.ZodObject>(
-	definition: CommandDefinition<Schema>,
-): CommandDefinition<Schema> {
-	return definition;
 }
 
 // A group namespaces related commands under one word: `d6s profile add`. Built in

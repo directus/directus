@@ -1,6 +1,7 @@
 import { chmodSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { isPlainObject } from 'lodash-es';
 import { isCI } from '../env.js';
 import { CliError } from '../error.js';
 import { registerSecret } from '../secret.js';
@@ -13,23 +14,21 @@ export interface ResolvedCredential {
 
 // Not-found is a valid state, not an error: in a TTY the caller prompts, and
 // non-interactively it becomes a hard error naming `envVar` to set.
-export type CredentialResolution =
+type CredentialResolution =
 	| { readonly found: true; readonly credential: ResolvedCredential }
 	| { readonly found: false; readonly envVar: string };
 
-export interface CredentialQuery {
+interface CredentialQuery {
 	readonly url: string;
 	readonly profileName?: string;
 	readonly tokenFlag?: string;
 	readonly hasConfiguredProfiles: boolean;
-	// Force off the unprefixed DIRECTUS_TOKEN even when it would otherwise apply,
-	// so a two-target sync can't authenticate both sides with one shared token.
-	readonly allowUnprefixedToken?: boolean;
 }
 
-// DIRECTUS_<PROFILE>_TOKEN, mirroring Directus's own AUTH_<PROVIDER>_* env style.
+// DIRECTUS_<PROFILE>_TOKEN, mirroring how Directus derives AUTH_<PROVIDER>_* /
+// STORAGE_<LOCATION>_* keys: uppercase the name, nothing else.
 export function envTokenVar(profileName: string): string {
-	return `DIRECTUS_${profileName.toUpperCase().replace(/[^A-Z0-9]/g, '_')}_TOKEN`;
+	return `DIRECTUS_${profileName.toUpperCase()}_TOKEN`;
 }
 
 // Resolution order: explicit flag → profile-specific DIRECTUS_<NAME>_TOKEN →
@@ -59,9 +58,7 @@ export function resolveCredential(query: CredentialQuery): CredentialResolution 
 
 	// The unprefixed DIRECTUS_TOKEN is disabled once config defines profiles, so a
 	// token meant for one instance can't silently authenticate another (F12).
-	const unprefixedAllowed = query.allowUnprefixedToken ?? !query.hasConfiguredProfiles;
-
-	if (unprefixedAllowed) {
+	if (!query.hasConfiguredProfiles) {
 		const unprefixed = process.env['DIRECTUS_TOKEN'];
 
 		if (unprefixed !== undefined && unprefixed !== '') {
@@ -72,7 +69,7 @@ export function resolveCredential(query: CredentialQuery): CredentialResolution 
 	// The saved store is machine-global but never consulted in CI, so a stray dev
 	// token cannot leak into an automated run.
 	if (!isCI()) {
-		const stored = readStoredToken(url, profileName);
+		const stored = profileName !== undefined ? readStore()[url]?.[profileName] : undefined;
 
 		if (stored !== undefined) {
 			return hit(stored, 'store');
@@ -93,23 +90,21 @@ function storePath(): string {
 function readStore(): CredentialStore {
 	try {
 		const parsed: unknown = JSON.parse(readFileSync(storePath(), 'utf8'));
-		return typeof parsed === 'object' && parsed !== null ? (parsed as CredentialStore) : {};
+		return isPlainObject(parsed) ? (parsed as CredentialStore) : {};
 	} catch {
 		// Missing or unreadable store is not fatal — fall through to prompt/error.
 		return {};
 	}
 }
 
-function readStoredToken(url: string, profileName: string | undefined): string | undefined {
-	if (profileName === undefined) return undefined;
-	return readStore()[url]?.[profileName];
-}
-
-// Owner-only (0600) because it holds a real token. Only called after an explicit
-// "save this token?" confirm (never in CI).
+// Owner-only (0600) because it holds a real token. Self-registers the token as a
+// secret so it's redacted from output. Only called after an explicit "save this
+// token?" confirm (never in CI).
 export function saveCredential(url: string, profileName: string, token: string): void {
-	const dir = join(homedir(), '.directus');
-	const path = join(dir, 'credentials.json');
+	registerSecret(token);
+
+	const path = storePath();
+	const dir = dirname(path);
 
 	try {
 		mkdirSync(dir, { recursive: true, mode: 0o700 });

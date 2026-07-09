@@ -22,9 +22,13 @@ afterEach(() => {
 });
 
 describe('envTokenVar', () => {
-	it('derives DIRECTUS_<PROFILE>_TOKEN, uppercasing and normalizing separators', () => {
+	// Mirrors Directus's AUTH_<PROVIDER>_* / STORAGE_<LOCATION>_* derivation: uppercase
+	// the name verbatim. Normalizing separators (as a prior version did) would map
+	// distinct profiles onto one token var, silently sharing a credential.
+	it('derives DIRECTUS_<PROFILE>_TOKEN by uppercasing the name verbatim', () => {
 		expect(envTokenVar('prod')).toBe('DIRECTUS_PROD_TOKEN');
-		expect(envTokenVar('my-staging')).toBe('DIRECTUS_MY_STAGING_TOKEN');
+		expect(envTokenVar('my-staging')).toBe('DIRECTUS_MY-STAGING_TOKEN');
+		expect(envTokenVar('my.staging')).not.toBe(envTokenVar('my-staging'));
 	});
 });
 

@@ -2,10 +2,11 @@ import { version } from '../version.js';
 import { renderCommandHelp, renderRootHelp } from './args/help.js';
 import { parseCommandArgs } from './args/parse.js';
 import type { CliContext, CommandGroup } from './command.js';
+import { loadProjectEnv } from './env.js';
 import { CliError, isCliError } from './error.js';
 import { createUi } from './ui.js';
 
-export interface RunOptions {
+interface RunOptions {
 	readonly commands: readonly CommandGroup[];
 	readonly cwd?: string;
 }
@@ -59,16 +60,6 @@ function commandPaths(groups: readonly CommandGroup[]): string[] {
 	return paths;
 }
 
-function didYouMean(paths: readonly string[], attempt: string): string | undefined {
-	return paths.find((path) => path.startsWith(attempt));
-}
-
-// Normalize anything crossing the boundary into a real CliError — a command can
-// throw a non-CliError, and the boundary must render it just as safely.
-function toCliError(value: unknown): CliError {
-	return isCliError(value) ? value : new CliError('UNKNOWN', value instanceof Error ? value.message : String(value));
-}
-
 // The single throw/exit boundary: internals throw CliError; here we render via ui
 // and map to an exit code. Returns the code; bin.ts sets process.exitCode.
 export async function run(argv: readonly string[], options: RunOptions): Promise<number> {
@@ -104,7 +95,7 @@ export async function run(argv: readonly string[], options: RunOptions): Promise
 
 	if (command === undefined) {
 		const attempt = commandName === undefined ? groupName : `${groupName} ${commandName}`;
-		const near = didYouMean(commandPaths(groups), attempt);
+		const near = commandPaths(groups).find((path) => path.startsWith(attempt));
 
 		return fail(
 			new CliError('UNKNOWN_COMMAND', `Unknown command: "${attempt}"`, {
@@ -122,13 +113,23 @@ export async function run(argv: readonly string[], options: RunOptions): Promise
 			return 0;
 		}
 
+		// Load a project `.env` before the command resolves anything, so env-based
+		// credentials (DIRECTUS_<PROFILE>_TOKEN) are visible.
+		const cwd = options.cwd ?? process.cwd();
+		loadProjectEnv(cwd);
+
 		const parsed = parseCommandArgs(command.args, rest.slice(2));
-		const ctx: CliContext = { cwd: options.cwd ?? process.cwd(), json: globals.json, ui };
+		const ctx: CliContext = { cwd, ui };
 
 		await command.run({ args: parsed.values, positionals: parsed.positionals, ctx });
 
 		return 0;
 	} catch (thrown) {
-		return fail(toCliError(thrown));
+		// A command may throw a non-CliError; the boundary renders it just as safely.
+		const error = isCliError(thrown)
+			? thrown
+			: new CliError('UNKNOWN', thrown instanceof Error ? thrown.message : String(thrown));
+
+		return fail(error);
 	}
 }

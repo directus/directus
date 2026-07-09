@@ -1,5 +1,6 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, parse as parsePath } from 'node:path';
+import { isPlainObject } from 'lodash-es';
 import { z } from 'zod';
 import { CliError } from '../error.js';
 
@@ -38,7 +39,7 @@ export interface Config {
 	readonly [namespace: string]: unknown;
 }
 
-export interface LoadedConfig {
+interface LoadedConfig {
 	readonly path: string;
 	readonly config: Config;
 }
@@ -84,4 +85,43 @@ export function loadConfig(options: { cwd: string; configPath?: string }): Loade
 	if (!parsed.success) throw new CliError('CONFIG', `Invalid config in ${path}:\n${z.prettifyError(parsed.error)}`);
 
 	return { path, config: parsed.data };
+}
+
+// Writes reload the raw JSON and touch only `profiles`, so a user's formatting
+// and any namespace the kernel doesn't own survive untouched.
+function readRawConfig(path: string): Record<string, unknown> {
+	if (!existsSync(path)) return {};
+
+	let parsed: unknown;
+
+	try {
+		parsed = JSON.parse(readFileSync(path, 'utf8'));
+	} catch {
+		throw new CliError('CONFIG', `${path} is not valid JSON.`);
+	}
+
+	return isPlainObject(parsed) ? (parsed as Record<string, unknown>) : {};
+}
+
+// Upsert into the discovered config, or a new file at cwd.
+export function upsertProfile(cwd: string, name: string, profile: Profile): void {
+	const path = findConfigPath(cwd) ?? join(cwd, CONFIG_FILENAME);
+	const raw = readRawConfig(path);
+	const existing = isPlainObject(raw['profiles']) ? (raw['profiles'] as Record<string, unknown>) : {};
+	const profiles = { ...existing, [name]: profile };
+	writeFileSync(path, `${JSON.stringify({ ...raw, profiles }, null, 2)}\n`);
+}
+
+export function removeProfile(cwd: string, name: string): void {
+	const path = findConfigPath(cwd);
+	if (path === undefined)
+		throw new CliError('CONFIG', 'No directus.config.json found.', { hint: 'Nothing to remove.' });
+
+	const raw = readRawConfig(path);
+	const profiles = isPlainObject(raw['profiles']) ? { ...(raw['profiles'] as Record<string, unknown>) } : {};
+
+	if (!(name in profiles)) throw new CliError('CONFIG', `Unknown profile: "${name}"`, { hint: 'Nothing to remove.' });
+
+	delete profiles[name];
+	writeFileSync(path, `${JSON.stringify({ ...raw, profiles }, null, 2)}\n`);
 }
