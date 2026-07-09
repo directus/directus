@@ -7,8 +7,11 @@
 
 const secrets = new Set<string>();
 
-// Short values are too collision-prone to redact safely (would mangle unrelated
-// output); real Directus tokens are long.
+// Only high-entropy values are registered for bare-substring redaction: blindly
+// replacing a short value would corrupt unrelated output — a token equal to "true"
+// would break JSON. Directus allows short static tokens, but they're still covered
+// where it matters: the Bearer / token= backstops below scrub them regardless of
+// length, and the CLI never emits a raw token in the first place.
 const MIN_SECRET_LENGTH = 8;
 
 export function registerSecret(value: string): void {

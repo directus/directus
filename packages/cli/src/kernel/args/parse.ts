@@ -135,7 +135,7 @@ export function parseCommandArgs<Schema extends z.ZodObject>(
 
 	try {
 		parsed = parseArgs({
-			args: [...filtered],
+			args: filtered,
 			options,
 			allowPositionals: true,
 			strict: true,
