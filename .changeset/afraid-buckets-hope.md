@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed resizing translations split view hiding second language (#27678)
+Fixed the translations split view hiding the second language when resizing the window
