@@ -1,6 +1,7 @@
 import { Editor } from '@tiptap/vue-3';
 import { describe, expect, test } from 'vitest';
 import { editorExtensions } from './extensions';
+import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 
 /**
  * HTML corpus round-trip tests.
@@ -21,8 +22,10 @@ import { editorExtensions } from './extensions';
  * The editor here uses the same extension set as input-rich-text-html.vue (see ./extensions).
  */
 function roundTrip(html: string): string {
-	const editor = new Editor({ extensions: editorExtensions, content: html });
-	const out = editor.getHTML();
+	// Apply the same comment ↔ element boundary that input-rich-text-html.vue uses, so constructs
+	// that persist as HTML comments (page breaks) round-trip here exactly as they do in the editor.
+	const editor = new Editor({ extensions: editorExtensions, content: decodePageBreaks(html) });
+	const out = encodePageBreaks(editor.getHTML());
 	editor.destroy();
 	return out;
 }
@@ -66,6 +69,8 @@ const FAITHFUL: Record<string, string> = {
 	video: '<video width="640" height="360" controls><source src="/assets/v.mp4" type="video/mp4"></video>',
 	'audio with loop': '<audio loop controls><source src="/assets/a.mp3" type="audio/mpeg"></audio>',
 	iframe: '<iframe src="about:blank" width="560" height="315"></iframe>',
+	// CMS-2647: persists as the legacy `<!-- pagebreak -->` comment via the page-break serialization boundary
+	pagebreak: '<p>a</p><!-- pagebreak --><p>b</p>',
 	'rtl paragraph': '<p dir="rtl">شسي</p>',
 	'rtl heading': '<h2 dir="rtl">عنوان</h2>',
 	'rtl list': '<ul dir="rtl"><li><p>عنصر</p></li></ul>',
@@ -86,7 +91,6 @@ const FAITHFUL: Record<string, string> = {
  * actual lossy output; the assertions document precisely what is lost today.
  */
 const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }> = [
-	{ name: 'pagebreak', html: '<p>a</p><!-- pagebreak --><p>b</p>', absent: 'pagebreak', issue: 'CMS-2647' },
 	{
 		name: 'custom format span',
 		html: '<p><span class="my-format">text</span></p>',
