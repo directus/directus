@@ -1,7 +1,9 @@
+import { dirname } from 'node:path';
 import { version } from '../version.js';
 import { renderCommandHelp, renderRootHelp } from './args/help.js';
 import { parseCommandArgs } from './args/parse.js';
 import type { CliContext, CommandGroup } from './command.js';
+import { findConfigPath } from './config/file.js';
 import { loadProjectEnv } from './env.js';
 import { CliError, isCliError } from './error.js';
 import { createUi } from './ui.js';
@@ -114,9 +116,12 @@ export async function run(argv: readonly string[], options: RunOptions): Promise
 		}
 
 		// Load a project `.env` before the command resolves anything, so env-based
-		// credentials (DIRECTUS_<PROFILE>_TOKEN) are visible.
+		// credentials (DIRECTUS_<PROFILE>_TOKEN) are visible. Read it from the config's
+		// directory — the project root — so it resolves the same from any subdirectory
+		// as the walk-up config discovery does; fall back to cwd when there's no config.
 		const cwd = options.cwd ?? process.cwd();
-		loadProjectEnv(cwd);
+		const configPath = findConfigPath(cwd);
+		loadProjectEnv(configPath !== undefined ? dirname(configPath) : cwd);
 
 		const parsed = parseCommandArgs(command.args, rest.slice(2));
 		const ctx: CliContext = { cwd, ui };

@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, statSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -97,6 +97,32 @@ describe('resolveCredential', () => {
 			found: false,
 			envVar: 'DIRECTUS_PROD_TOKEN',
 		});
+	});
+});
+
+describe('credential store integrity', () => {
+	// A present-but-corrupt store must surface an error, never read as empty — a
+	// silent {} would let the next saveCredential overwrite it and wipe every other
+	// saved token.
+	it('refuses a corrupt store instead of reading it empty or overwriting it', () => {
+		const home = isolateHome();
+		vi.stubEnv('CI', '');
+		vi.stubEnv('DIRECTUS_PROD_TOKEN', '');
+
+		const path = join(home, '.directus', 'credentials.json');
+		mkdirSync(join(home, '.directus'), { recursive: true });
+		writeFileSync(path, '{ corrupt not json');
+
+		// Read path refuses rather than reporting not-found.
+		expect(() =>
+			resolveCredential({ url: 'https://cms.example.com', profileName: 'prod', hasConfiguredProfiles: true }),
+		).toThrow(/not valid JSON/);
+
+		// Write path aborts before touching the file.
+		expect(() => saveCredential('https://cms.example.com', 'prod', 'secret')).toThrow(/not valid JSON/);
+
+		// The original bytes are intact — nothing was overwritten.
+		expect(readFileSync(path, 'utf8')).toBe('{ corrupt not json');
 	});
 });
 
