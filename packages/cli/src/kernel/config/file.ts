@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, parse as parsePath } from 'node:path';
 import { z } from 'zod';
-import { type CliError, cliError, err, ok, type Result } from '../result.js';
+import { CliError } from '../error.js';
 
 const CONFIG_FILENAME = 'directus.config.json';
 
@@ -15,11 +15,10 @@ const profileSchema = z.object({
 	protect: z.boolean().default(false),
 });
 
-// Plugin namespaces (e.g. `sync`) ride alongside the kernel keys and are
-// validated by each plugin's own schema, so unknown top-level keys pass through.
+// The kernel owns `profiles` and `root`; any other top-level key (e.g. a future
+// `sync` block) passes through untouched for its own consumer to read.
 const configSchema = z.looseObject({
 	root: z.string().default('directus'),
-	plugins: z.array(z.string()).default([]),
 	profiles: z.record(z.string(), profileSchema).default({}),
 });
 
@@ -35,9 +34,7 @@ export interface Profile {
 
 export interface Config {
 	readonly root: string;
-	readonly plugins: readonly string[];
 	readonly profiles: Readonly<Record<string, Profile>>;
-	// Plugin namespaces (e.g. `sync`) ride alongside, validated by their own schema.
 	readonly [namespace: string]: unknown;
 }
 
@@ -46,9 +43,8 @@ export interface LoadedConfig {
 	readonly config: Config;
 }
 
-// Walk up from the starting directory like git does, so the CLI works from any
-// subdirectory of a project. Returns undefined when nothing is found —
-// profile-less operation (`--url` + `--token`) is a first-class path.
+// Walk up from the starting dir like git, so the CLI works from any subdirectory.
+// undefined means nothing was found — profile-less operation stays first-class.
 export function findConfigPath(startDir: string): string | undefined {
 	const { root } = parsePath(startDir);
 	let dir = startDir;
@@ -61,19 +57,19 @@ export function findConfigPath(startDir: string): string | undefined {
 	}
 }
 
-// Resolves a config: an explicit `--config` path wins, otherwise walk-up
-// discovery. A missing discovered file is not an error (profile-less); a missing
-// explicit path or a malformed file is.
-export function loadConfig(options: { cwd: string; configPath?: string }): Result<LoadedConfig | undefined, CliError> {
+// An explicit `--config` path wins, otherwise walk-up discovery. A missing
+// discovered file is not an error (profile-less); a missing explicit path or a
+// malformed file is.
+export function loadConfig(options: { cwd: string; configPath?: string }): LoadedConfig | undefined {
 	const path = options.configPath ?? findConfigPath(options.cwd);
-	if (path === undefined) return ok(undefined);
+	if (path === undefined) return undefined;
 
 	let raw: string;
 
 	try {
 		raw = readFileSync(path, 'utf8');
 	} catch {
-		return err(cliError('CONFIG', `Cannot read config file: ${path}`));
+		throw new CliError('CONFIG', `Cannot read config file: ${path}`);
 	}
 
 	let json: unknown;
@@ -81,11 +77,11 @@ export function loadConfig(options: { cwd: string; configPath?: string }): Resul
 	try {
 		json = JSON.parse(raw);
 	} catch {
-		return err(cliError('CONFIG', `${path} is not valid JSON.`));
+		throw new CliError('CONFIG', `${path} is not valid JSON.`);
 	}
 
 	const parsed = configSchema.safeParse(json);
-	if (!parsed.success) return err(cliError('CONFIG', `Invalid config in ${path}:\n${z.prettifyError(parsed.error)}`));
+	if (!parsed.success) throw new CliError('CONFIG', `Invalid config in ${path}:\n${z.prettifyError(parsed.error)}`);
 
-	return ok({ path, config: parsed.data });
+	return { path, config: parsed.data };
 }
