@@ -321,6 +321,7 @@ fields:
     collection: Safn
     icon: Íkon
     note: Minnispunktur
+    status: Staða
     color: Litur
     hidden: Falið
   directus_files:

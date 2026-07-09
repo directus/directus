@@ -806,6 +806,7 @@ fields:
     collection: คอลเลกชัน
     icon: ไอคอน
     note: หมายเหตุ
+    status: สถานะ
     color: สี
     display_template: แม่แบบการแสดงผล
     hidden: ซ่อน
@@ -1192,6 +1193,7 @@ interfaces:
     sort: เรียง
     field_note_placeholder: กรอกโน้ตให้ฟิลด์
     interface_group: ตัวเลือกอินเทอร์เฟส
+    edit_mode_inline: แบบอินไลน์
   slider:
     slider: แถบเลื่อน
     description: เลือกตัวเลขโดยใช้แถบเลื่อน
