@@ -131,13 +131,7 @@ describe('TusDataStore.create', () => {
 
 		await expect(
 			store.create(makeUpload({ filename_download: 'malicious.html', type: 'text/html' })),
-		).rejects.toSatisfy(
-			(err: unknown) =>
-				err instanceof UnsupportedMediaTypeError &&
-				(err as any).status_code === 415 &&
-				typeof (err as any).body === 'string' &&
-				(err as any).body.includes('text/html'),
-		);
+		).rejects.toThrow(UnsupportedMediaTypeError);
 
 		expect(ItemsService.prototype.createOne).not.toHaveBeenCalled();
 	});

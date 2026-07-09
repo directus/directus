@@ -1,3 +1,4 @@
+import { UnsupportedMediaTypeError } from '@directus/errors';
 import type { Accountability, File, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import getDatabase from '../../database/index.js';
@@ -95,6 +96,28 @@ describe('createTusServer', () => {
 
 	afterEach(() => {
 		vi.clearAllMocks();
+	});
+
+	describe('onResponseError', () => {
+		test('maps UnsupportedMediaTypeError to tus-compatible status_code and body', async () => {
+			const [server, _cleanup] = await createTusServer({ schema: mockSchema, accountability: mockAccountability });
+			const onResponseError = (server as any).options.onResponseError;
+			expect(onResponseError).toBeDefined();
+
+			const err = new UnsupportedMediaTypeError({ mediaType: 'text/html', where: 'tus upload' });
+			const result = await onResponseError({}, {}, err);
+
+			expect(result).toMatchObject({ status_code: 415 });
+			expect(typeof result.body).toBe('string');
+		});
+
+		test('re-throws non-UnsupportedMediaTypeError errors', async () => {
+			const [server, _cleanup] = await createTusServer({ schema: mockSchema, accountability: mockAccountability });
+			const onResponseError = (server as any).options.onResponseError;
+
+			const err = new Error('unexpected error');
+			await expect(onResponseError({}, {}, err)).rejects.toThrow('unexpected error');
+		});
 	});
 
 	describe('onUploadFinish', () => {

@@ -17,12 +17,6 @@ import { assertValidStoragePath } from '../files/lib/assert-valid-storage-path.j
 import { sanitizeFilepath } from '../files/lib/sanitize-filepath.js';
 import { ItemsService } from '../items.js';
 
-function toTusError(err: InstanceType<typeof UnsupportedMediaTypeError>) {
-	return Object.assign(err, {
-		status_code: err.status,
-		body: err.message + '\n',
-	});
-}
 
 export type TusDataStoreConfig = {
 	constants: {
@@ -79,13 +73,13 @@ export class TusDataStore extends DataStore {
 			upload.metadata['type'] = 'application/octet-stream';
 		}
 
-		const mimeType = upload.metadata['type'] || 'application/octet-stream';
+		const mimeType = upload.metadata['type']!;
 		const env = useEnv();
 		const allowedPatterns = toArray(env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]);
 		const mimeTypeAllowed = allowedPatterns.some((pattern) => minimatch(mimeType, pattern));
 
 		if (mimeTypeAllowed === false) {
-			throw toTusError(new UnsupportedMediaTypeError({ mediaType: mimeType, where: 'tus upload' }));
+			throw new UnsupportedMediaTypeError({ mediaType: mimeType, where: 'tus upload' });
 		}
 
 		if (!upload.metadata['title']) {
