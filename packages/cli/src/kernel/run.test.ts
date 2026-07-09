@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
-import { type CommandGroup, defineCommand } from './command.js';
+import type { CommandDefinition, CommandGroup } from './command.js';
 import { CliError } from './error.js';
 import { run } from './run.js';
 
@@ -8,15 +8,15 @@ function syncGroup(options: {
 	onRun?: (args: { from: string }, positionals: string[]) => void;
 	throws?: unknown;
 }): CommandGroup {
-	const pull = defineCommand({
+	const pull: CommandDefinition = {
 		name: 'pull',
 		description: 'Pull schema from a source',
 		args: z.object({ from: z.string().describe('Source profile') }),
 		run({ args, positionals }) {
-			options.onRun?.(args, positionals);
+			options.onRun?.(args as { from: string }, positionals);
 			if (options.throws !== undefined) throw options.throws;
 		},
-	});
+	};
 
 	return { name: 'sync', description: 'Sync', commands: { pull } };
 }
@@ -78,7 +78,7 @@ describe('run', () => {
 
 	it('maps a thrown CliError to its own exit code', async () => {
 		const code = await run(['sync', 'pull', '--from', 'x'], {
-			commands: [syncGroup({ throws: new CliError('SYNC', 'boom', { exitCode: 2 }) })],
+			commands: [syncGroup({ throws: new CliError('STATE', 'boom', { exitCode: 2 }) })],
 		});
 
 		expect(code).toBe(2);
@@ -120,7 +120,7 @@ describe('run', () => {
 		// exitCode -1 would make `process.exitCode = -1` throw RangeError; the
 		// boundary must coerce it to a valid failing code instead of crashing.
 		const code = await run(['sync', 'pull', '--from', 'x'], {
-			commands: [syncGroup({ throws: new CliError('SYNC', 'boom', { exitCode: -1 }) })],
+			commands: [syncGroup({ throws: new CliError('STATE', 'boom', { exitCode: -1 }) })],
 		});
 
 		expect(code).toBe(1);
