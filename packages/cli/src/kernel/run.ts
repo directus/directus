@@ -1,10 +1,10 @@
 import { dirname } from 'node:path';
 import { version } from '../version.js';
-import { renderCommandHelp, renderRootHelp } from './args/help.js';
+import { renderCommandHelp, renderGroupHelp, renderRootHelp } from './args/help.js';
 import { parseCommandArgs } from './args/parse.js';
 import type { CliContext, CommandGroup } from './command.js';
 import { findConfigPath } from './config/file.js';
-import { loadProjectEnv } from './env.js';
+import { isCI, loadProjectEnv } from './env.js';
 import { CliError, isCliError } from './error.js';
 import { createUi } from './ui.js';
 
@@ -18,12 +18,13 @@ interface Globals {
 	json: boolean;
 	printVersion: boolean;
 	noColor: boolean;
+	noInteractive: boolean;
 }
 
-const GLOBAL_FLAGS = new Set(['--help', '-h', '--version', '-v', '--json', '--no-color']);
+const GLOBAL_FLAGS = new Set(['--help', '-h', '--version', '-v', '--json', '--no-color', '--no-interactive']);
 
 function extractGlobals(argv: readonly string[]): { globals: Globals; rest: string[] } {
-	const globals: Globals = { help: false, json: false, printVersion: false, noColor: false };
+	const globals: Globals = { help: false, json: false, printVersion: false, noColor: false, noInteractive: false };
 	const rest: string[] = [];
 	let passthrough = false;
 
@@ -45,6 +46,7 @@ function extractGlobals(argv: readonly string[]): { globals: Globals; rest: stri
 		else if (token === '--version' || token === '-v') globals.printVersion = true;
 		else if (token === '--json') globals.json = true;
 		else if (token === '--no-color') globals.noColor = true;
+		else if (token === '--no-interactive') globals.noInteractive = true;
 	}
 
 	return { globals, rest };
@@ -87,21 +89,44 @@ export async function run(argv: readonly string[], options: RunOptions): Promise
 	const groupName = rest[0];
 	const commandName = rest[1];
 
-	if (groupName === undefined || (globals.help && commandName === undefined)) {
+	// `d6s` or `d6s --help`: list every command.
+	if (groupName === undefined) {
 		ui.print(renderRootHelp(groups));
 		return 0;
 	}
 
-	const command =
-		commandName === undefined ? undefined : groups.find((g) => g.name === groupName)?.commands[commandName];
+	const group = groups.find((g) => g.name === groupName);
 
-	if (command === undefined) {
+	if (group === undefined) {
 		const attempt = commandName === undefined ? groupName : `${groupName} ${commandName}`;
 		const near = commandPaths(groups).find((path) => path.startsWith(attempt));
 
 		return fail(
 			new CliError('UNKNOWN_COMMAND', `Unknown command: "${attempt}"`, {
 				hint: near !== undefined ? `Did you mean "${near}"?` : "Run 'd6s --help' to list commands.",
+			}),
+		);
+	}
+
+	// `d6s <group>` or `d6s <group> --help`: the group is real but no action was
+	// named — show its subcommands rather than error on an incomplete command.
+	if (commandName === undefined) {
+		ui.print(renderGroupHelp(group));
+		return 0;
+	}
+
+	const command = group.commands[commandName];
+
+	if (command === undefined) {
+		const attempt = `${groupName} ${commandName}`;
+		const near = commandPaths([group]).find((path) => path.startsWith(attempt));
+
+		return fail(
+			new CliError('UNKNOWN_COMMAND', `Unknown command: "${attempt}"`, {
+				hint:
+					near !== undefined
+						? `Did you mean "${near}"?`
+						: `Run 'd6s ${groupName} --help' to list ${groupName} commands.`,
 			}),
 		);
 	}
@@ -123,8 +148,17 @@ export async function run(argv: readonly string[], options: RunOptions): Promise
 		const configPath = findConfigPath(cwd);
 		loadProjectEnv(configPath !== undefined ? dirname(configPath) : cwd);
 
+		// Prompts are for humans only: a real TTY on both ends, never CI, never the
+		// machine-readable --json path, and overridable with --no-interactive.
+		const interactive =
+			Boolean(process.stdout.isTTY) &&
+			Boolean(process.stdin.isTTY) &&
+			!isCI() &&
+			!globals.json &&
+			!globals.noInteractive;
+
 		const parsed = parseCommandArgs(command.args, rest.slice(2));
-		const ctx: CliContext = { cwd, ui };
+		const ctx: CliContext = { cwd, ui, interactive };
 
 		await command.run({ args: parsed.values, positionals: parsed.positionals, ctx });
 

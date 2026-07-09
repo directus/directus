@@ -91,6 +91,21 @@ describe('run', () => {
 		expect(await run(['nope'], { commands: [] })).toBe(1);
 	});
 
+	it('shows the group help (not an error) when a group is named with no subcommand', async () => {
+		const stdout: string[] = [];
+
+		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
+			stdout.push(String(chunk));
+			return true;
+		});
+
+		// `d6s sync` alone is incomplete, not wrong — list what it can do.
+		const code = await run(['sync'], { commands: [syncGroup({})] });
+
+		expect(code).toBe(0);
+		expect(stdout.join('')).toContain('sync pull');
+	});
+
 	it('offers a did-you-mean for a prefix typo', async () => {
 		const code = await run(['sync', 'pul'], { commands: [syncGroup({})] });
 

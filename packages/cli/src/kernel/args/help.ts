@@ -26,6 +26,17 @@ export function renderRootHelp(groups: readonly CommandGroup[]): string {
 	return lines.join('\n');
 }
 
+export function renderGroupHelp(group: CommandGroup): string {
+	const lines: string[] = [group.description, '', `Usage: d6s ${group.name} <command> [options]`, '', 'Commands:'];
+
+	for (const command of Object.values(group.commands)) {
+		lines.push(pad(`${group.name} ${command.name}`) + command.description);
+	}
+
+	lines.push('', `Run 'd6s ${group.name} <command> --help' for details.`);
+	return lines.join('\n');
+}
+
 export function renderCommandHelp(groupName: string, command: CommandDefinition): string {
 	const spec = describeArgs(command.args);
 	const lines: string[] = [command.description, '', `Usage: d6s ${groupName} ${command.name} [options]`, ''];

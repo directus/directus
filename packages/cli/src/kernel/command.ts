@@ -6,6 +6,9 @@ import type { Ui } from './ui.js';
 export interface CliContext {
 	readonly cwd: string;
 	readonly ui: Ui;
+	// True only in a real TTY that isn't CI, --json, or --no-interactive. Commands
+	// gate every prompt on this; an agent driving the CLI never hits one.
+	readonly interactive: boolean;
 }
 
 export interface CommandContext<Args> {

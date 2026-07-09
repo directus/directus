@@ -80,7 +80,7 @@ describe('loadConfig', () => {
 describe('resolveProfile', () => {
 	const config = {
 		root: 'directus',
-		profiles: { prod: { url: 'https://cms.example.com', auth: { type: 'token' as const }, protect: false } },
+		profiles: { prod: { url: 'https://cms.example.com', auth: { type: 'token' as const } } },
 	};
 
 	it('returns the named profile', () => {
