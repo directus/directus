@@ -153,7 +153,7 @@ describe('CloudflareDriver', () => {
 			await vi.advanceTimersByTimeAsync(30_000 * 3);
 			await assertion;
 
-			expect(mockAxiosRequest).toHaveBeenCalledTimes(4); // 1 initial + 3 retries
+			expect(mockAxiosRequest).toHaveBeenCalledTimes(4);
 		});
 
 		it('should default to a 60s wait when retry-after header is missing', async () => {
@@ -241,7 +241,6 @@ describe('CloudflareDriver', () => {
 			const result = await driver.getProject('worker-tag-b');
 
 			expect(result).toEqual({ id: 'worker-tag-b', name: 'worker-b', deployable: true });
-			// 1 call to list all workers + 1 trigger check for the one requested worker — not 1 + 3.
 			expect(mockAxiosRequest).toHaveBeenCalledTimes(2);
 			expect(mockAxiosRequest.mock.calls[1]![0].url).toContain('workers/worker-tag-b/triggers');
 		});
@@ -277,7 +276,6 @@ describe('CloudflareDriver', () => {
 						success: true,
 						result: {
 							build_uuid: 'build-123',
-							worker_tag: 'worker-tag-1',
 							status: cloudflareStatus,
 							build_outcome: buildOutcome,
 							created_on: '2026-01-01T00:00:00.000Z',
@@ -365,7 +363,7 @@ describe('CloudflareDriver', () => {
 						result: {
 							build_uuid: 'build-123',
 							status: 'active',
-							created_at: '2026-01-01T00:00:00.000Z',
+							created_on: '2026-01-01T00:00:00.000Z',
 						},
 					}),
 				);
@@ -397,7 +395,7 @@ describe('CloudflareDriver', () => {
 						result: {
 							build_uuid: 'build-123',
 							status: 'active',
-							created_at: '2026-01-01T00:00:00.000Z',
+							created_on: '2026-01-01T00:00:00.000Z',
 						},
 					}),
 				);
@@ -427,7 +425,7 @@ describe('CloudflareDriver', () => {
 				.mockResolvedValueOnce(
 					createAxiosResponse(200, {
 						success: true,
-						result: { build_uuid: 'build-456', status: 'active', created_at: '2026-01-01T00:00:00.000Z' },
+						result: { build_uuid: 'build-456', status: 'active', created_on: '2026-01-01T00:00:00.000Z' },
 					}),
 				);
 
@@ -765,7 +763,7 @@ describe('CloudflareDriver', () => {
 						result: {
 							build_uuid: 'build-123',
 							status: 'active',
-							created_at: '2026-01-01T00:00:00.000Z',
+							created_on: '2026-01-01T00:00:00.000Z',
 						},
 					}),
 				);

@@ -27,20 +27,12 @@ export interface CloudflareCredentials extends Credentials {
 
 export interface CloudflareOptions extends Options {
 	account_id: string;
-	/** Saved in Directus; keys are worker external IDs (tags) */
+	/** Keys are worker tags (immutable external IDs). */
 	deploy_hooks_by_project?: Record<string, Array<{ name?: string; url?: string }>>;
-	/**
-	 * Single queue ID for this deployment provider. In Cloudflare, create one event subscription per Worker, all targeting
-	 * this queue; messages include `workerName` for routing in Directus.
-	 * @see https://developers.cloudflare.com/workers/ci-cd/builds/event-subscriptions/
-	 * @see https://developers.cloudflare.com/queues/configuration/pull-consumers/
-	 */
+	/** One shared queue; create a Workers Builds event subscription per worker targeting this queue. */
 	events_queue_id?: string;
 }
 
-/**
- * Cloudflare API response types
- */
 interface CloudflareApiError {
 	message?: string;
 }
@@ -58,21 +50,11 @@ interface CloudflareWorker {
 }
 
 interface CloudflareBuild {
-	id?: string;
-	uuid?: string;
 	build_uuid?: string;
-	worker_tag?: string;
 	status?: string;
 	build_outcome?: string;
-	url?: string;
-	created_at?: string;
 	created_on?: string;
-	updated_at?: string;
 	stopped_on?: string;
-	finished_at?: string;
-	completed_at?: string;
-	error?: string;
-	error_message?: string;
 }
 
 type CloudflareBuildLogLine = [number, string];
@@ -85,22 +67,11 @@ interface CloudflareBuildLogsResponse {
 }
 
 interface CloudflareTrigger {
-	id?: string;
-	uuid?: string;
 	trigger_uuid?: string;
-	name?: string;
 	trigger_name?: string;
-	type?: string;
-	environment?: string;
-	target?: string;
-	branch?: string;
 	branch_includes?: string[];
 }
 
-/**
- * Workers Builds events delivered via Queues (event subscriptions).
- * @see https://developers.cloudflare.com/workers/ci-cd/builds/event-subscriptions/
- */
 interface CloudflareWorkersBuildsEvent {
 	type?: string;
 	source?: {
@@ -129,7 +100,6 @@ interface CloudflareWorkersBuildsEvent {
 	};
 }
 
-/** One message from POST .../queues/{id}/messages/pull */
 export interface CloudflareQueuePullMessage {
 	body: unknown;
 	id: string;
@@ -152,9 +122,7 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 		});
 	}
 
-	/**
-	 * Cloudflare Account IDs are 32 hex characters. Users often paste UUID-style groups or extra whitespace.
-	 */
+	/** Accepts 32-char hex; strips UUID-style separators and whitespace from pasted values. */
 	private normalizeAccountId(raw: string): string {
 		const trimmed = raw.trim();
 
@@ -249,9 +217,7 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 		return (body.result ?? {}) as T;
 	}
 
-	/**
-	 * Map Cloudflare build status/outcome to Directus run status. Unknown values stay `building`.
-	 */
+	/** Cloudflare uses `stopped` + `build_outcome`; unknown values stay `building`. */
 	private mapStatus(cloudflareStatus: string | undefined, buildOutcome?: string | undefined): Status {
 		const status = cloudflareStatus?.toLowerCase();
 		const outcome = buildOutcome?.toLowerCase();
@@ -281,24 +247,19 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 	}
 
 	private getBuildId(build: CloudflareBuild): string {
-		return build.build_uuid ?? build.uuid ?? build.id ?? '';
+		return build.build_uuid ?? '';
 	}
 
 	private mapBuild(build: CloudflareBuild): Run {
 		const result: Run = {
 			id: this.getBuildId(build),
-			project_id: build.worker_tag ?? '',
+			project_id: '', // build payload has no worker identifier
 			status: this.mapStatus(build.status, build.build_outcome),
-			created_at: new Date(build.created_at ?? build.created_on ?? build.updated_at ?? new Date().toISOString()),
+			created_at: new Date(build.created_on ?? new Date().toISOString()),
 		};
 
-		if (build.url) result.url = build.url;
-
-		const finishedAt = build.stopped_on ?? build.finished_at ?? build.completed_at;
-		if (finishedAt) result.finished_at = new Date(finishedAt);
-
-		const errorMsg = build.error_message ?? build.error;
-		if (errorMsg) result.error_message = errorMsg;
+		// Workers Builds has no per-build preview URL (unlike Vercel/Netlify deploy objects).
+		if (build.stopped_on) result.finished_at = new Date(build.stopped_on);
 
 		return result;
 	}
@@ -313,9 +274,8 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 		}));
 	}
 
-	/** One row from GET /accounts/{id}/workers/scripts (maps to a Directus “project”). */
 	private mapProject(worker: CloudflareWorker): Project {
-		const id = worker.tag ?? worker.id ?? '';
+		const id = worker.tag ?? worker.id ?? ''; // tag is the stable external ID
 		const name = worker.id ?? worker.name ?? worker.tag ?? '';
 
 		return {
@@ -339,31 +299,22 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 	}
 
 	private getTriggerUuid(trigger: CloudflareTrigger | undefined): string | null {
-		if (!trigger) return null;
-		return trigger.trigger_uuid ?? trigger.uuid ?? trigger.id ?? null;
+		return trigger?.trigger_uuid ?? null;
 	}
 
 	private getTriggerBranch(trigger: CloudflareTrigger | undefined): string | null {
-		if (!trigger) return null;
-		if (trigger.branch && trigger.branch !== '*') return trigger.branch;
-		return trigger.branch_includes?.find((value) => value !== '*') ?? null;
+		return trigger?.branch_includes?.find((value) => value !== '*') ?? null;
 	}
 
 	private isProductionTrigger(trigger: CloudflareTrigger): boolean {
-		const values = [trigger.type, trigger.environment, trigger.target, trigger.name, trigger.trigger_name]
-			.filter(Boolean)
-			.map((value) => value!.toLowerCase());
-
-		if (values.some((v) => v === 'production' || v.includes('default branch'))) return true;
+		const name = trigger.trigger_name?.toLowerCase();
+		if (name === 'production' || name?.includes('default branch')) return true;
 
 		const branches = trigger.branch_includes ?? [];
 		return branches.includes('main') || branches.includes('master');
 	}
 
-	/**
-	 * Deploy hooks are triggered with an unauthenticated HTTPS POST to the hook URL Cloudflare issued.
-	 * We only POST to URLs that are allowlisted in Directus for this worker (see assertDeployHookInProjectAllowlist).
-	 */
+	/** POST to the hook URL Cloudflare issued; no auth header on their side. */
 	private async requestDeployHook(hookUrl: string): Promise<CloudflareBuild> {
 		let parsed: URL;
 
@@ -398,9 +349,7 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 		return new URL(raw.trim()).href;
 	}
 
-	/**
-	 * Ensures hook deploys only use URLs saved for this worker in Directus (same list as the app menu).
-	 */
+	/** Only URLs saved for this worker in Directus options may be triggered. */
 	private assertDeployHookInProjectAllowlist(projectExternalId: string, deployHookUrl: string): void {
 		const map = this.options.deploy_hooks_by_project;
 
@@ -469,7 +418,7 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 	}
 
 	async getProject(projectId: string): Promise<Project> {
-		// Avoid O(workers) trigger lookups on a single-project fetch.
+		// List all workers once — avoids N trigger lookups when resolving a single project.
 		const mappedWorkers = await this.fetchMappedWorkers();
 		const worker = mappedWorkers.find((project) => project.id === projectId);
 
@@ -504,8 +453,7 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 		return {
 			deployment_id: this.getBuildId(build),
 			status: this.mapStatus(build.status, build.build_outcome),
-			created_at: new Date(build.created_at ?? build.created_on ?? new Date().toISOString()),
-			...(build.url ? { url: build.url } : {}),
+			created_at: new Date(build.created_on ?? new Date().toISOString()),
 		};
 	}
 
@@ -587,7 +535,7 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 		return logs;
 	}
 
-	/** No-op — Cloudflare has no outbound webhooks; status is polled or queue-pulled. */
+	/** No-op — Workers Builds has no outbound webhooks; status comes from polling or queue pull. */
 	async registerWebhook(_webhookUrl: string, _projectIds: string[]): Promise<WebhookRegistrationResult> {
 		return { webhook_ids: [], webhook_secret: '' };
 	}
@@ -614,12 +562,7 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 		await refreshCloudflareQueueConsumer();
 	}
 
-	/**
-	 * Pull a batch of messages from the configured Cloudflare Queue via the official HTTP pull API.
-	 * Messages are expected to be Workers Builds events from a Cloudflare event subscription (see link below).
-	 * @see https://developers.cloudflare.com/workers/ci-cd/builds/event-subscriptions/
-	 * @see https://developers.cloudflare.com/api/resources/queues/subresources/messages/methods/pull/
-	 */
+	/** Pull Workers Builds subscription events via Cloudflare Queues HTTP API. */
 	async pullQueueMessages(options?: {
 		batch_size?: number;
 		visibility_timeout_ms?: number;
@@ -641,10 +584,7 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 		return Array.isArray(result.messages) ? result.messages : [];
 	}
 
-	/**
-	 * Acknowledge and/or retry pulled messages so they are not redelivered after the visibility timeout.
-	 * @see https://developers.cloudflare.com/api/resources/queues/subresources/messages/methods/ack/
-	 */
+	/** Ack processed messages and retry failures so they are not redelivered after the lease expires. */
 	async ackQueueMessages(ackLeaseIds: string[], retryLeaseIds: string[]): Promise<void> {
 		const queueId = this.options.events_queue_id?.trim();
 		if (!queueId) return;
@@ -672,6 +612,7 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 			return body;
 		}
 
+		// Queues may deliver JSON as base64 when CF-Content-Type is json or bytes.
 		if (contentType === 'json' || contentType === 'bytes') {
 			try {
 				const decoded = Buffer.from(body, 'base64').toString('utf8');
@@ -688,19 +629,11 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 		}
 	}
 
-	/**
-	 * Parse a queue message body (including base64 JSON from Queues) into a webhook event.
-	 */
 	parseQueueMessage(message: CloudflareQueuePullMessage): DeploymentWebhookEvent | null {
 		return this.parseQueueEvent(this.decodeQueueMessageBody(message));
 	}
 
-	/**
-	 * Normalize Workers Builds queue / subscription events into Directus deployment webhook events.
-	 * Event `type` values are case-insensitive and match Cloudflare’s documented strings (e.g.
-	 * `cf.workersBuilds.worker.build.succeeded`).
-	 * @see https://developers.cloudflare.com/workers/ci-cd/builds/event-subscriptions/
-	 */
+	/** Map Workers Builds queue subscription payloads into deployment webhook events. */
 	parseQueueEvent(rawEvent: unknown): DeploymentWebhookEvent | null {
 		let parsedBody: unknown;
 
@@ -721,7 +654,7 @@ export class CloudflareDriver extends DeploymentDriver<CloudflareCredentials, Cl
 
 		if (!eventType || !workerName || !buildUuid) return null;
 
-		// Keys are lowercased; Cloudflare documents `cf.workersBuilds.worker.build.*` in event payloads.
+		// Event types are matched lowercased (`cf.workersBuilds.worker.build.*`).
 		const eventTypeMap: Record<
 			string,
 			'deployment.created' | 'deployment.succeeded' | 'deployment.error' | 'deployment.canceled'
