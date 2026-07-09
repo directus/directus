@@ -245,20 +245,26 @@ export async function parseFields(
 			};
 
 			for (const relatedCollection of allowedCollections) {
+				const collectionDeep = options.deep?.[`${fieldKey}:${relatedCollection}`];
+
+				// resolve nested aliases against the related collection, same as the m2o/o2m branch below
+				const deepAlias = getDeepQuery(collectionDeep || {})?.['alias'];
+				const childQuery = { ...options.query, alias: isEmpty(deepAlias) ? {} : deepAlias };
+
 				child.children[relatedCollection] = await parseFields(
 					{
 						parentCollection: relatedCollection,
 						fields: Array.isArray(nestedFields)
 							? nestedFields
 							: (nestedFields as CollectionScope)[relatedCollection] || [],
-						query: options.query,
-						deep: options.deep?.[`${fieldKey}:${relatedCollection}`],
+						query: childQuery,
+						deep: collectionDeep,
 						accountability: options.accountability,
 					},
 					{ ...context, parentRelation: relation },
 				);
 
-				child.query[relatedCollection] = getDeepQuery(options.deep?.[`${fieldKey}:${relatedCollection}`] || {});
+				child.query[relatedCollection] = getDeepQuery(collectionDeep || {});
 
 				child.relatedKey[relatedCollection] = context.schema.collections[relatedCollection]!.primary;
 			}

@@ -4,6 +4,7 @@ import { getRelation } from '@directus/utils';
 import knex from 'knex';
 import { expect, test, vi } from 'vitest';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
+import type { A2MNode } from '../../../types/index.js';
 import { Client_SQLite3 } from '../../run-ast/lib/apply-query/mock.js';
 import { parseFields } from './parse-fields.js';
 
@@ -668,4 +669,99 @@ test('parse fields distinguishes json function from relational fields', async ()
 	});
 
 	expect(result[2]?.type).toBe('m2o');
+});
+
+const schemaM2A = new SchemaBuilder()
+	.collection('blog', (c) => {
+		c.field('id').id();
+		c.field('blocks').m2a(['text']);
+	})
+	.collection('text', (c) => {
+		c.field('id').id();
+		c.field('author').m2o('users');
+	})
+	.collection('users', (c) => {
+		c.field('id').id();
+		c.field('name').string();
+	})
+	.build();
+
+test('parse fields with an aliased m2o nested inside an m2a block (#27772)', async () => {
+	fetchAllowedFieldsMock.mockResolvedValue([]);
+
+	const result = await parseFields(
+		{
+			accountability,
+			parentCollection: 'blog_builder',
+			fields: ['item:text.a.name'],
+			query: { alias: {} },
+			deep: { 'item:text': { _alias: { a: 'author' } } },
+		},
+		{ knex: db, schema: schemaM2A },
+	);
+
+	const a2oNode = result.find((node) => node.type === 'a2o') as A2MNode | undefined;
+
+	expect(a2oNode?.children['text']).toEqual([
+		{
+			cases: [],
+			children: [
+				{
+					alias: false,
+					fieldKey: 'name',
+					name: 'name',
+					type: 'field',
+					whenCase: [],
+				},
+			],
+			fieldKey: 'a',
+			name: 'users',
+			parentKey: 'id',
+			query: {},
+			relatedKey: 'id',
+			relation: getRelation(schemaM2A.relations, 'text', 'author'),
+			type: 'm2o',
+			whenCase: [],
+		},
+	]);
+});
+
+test('parse fields with a non-aliased m2o nested inside an m2a block', async () => {
+	fetchAllowedFieldsMock.mockResolvedValue([]);
+
+	const result = await parseFields(
+		{
+			accountability,
+			parentCollection: 'blog_builder',
+			fields: ['item:text.author.name'],
+			query: { alias: {} },
+			deep: {},
+		},
+		{ knex: db, schema: schemaM2A },
+	);
+
+	const a2oNode = result.find((node) => node.type === 'a2o') as A2MNode | undefined;
+
+	expect(a2oNode?.children['text']).toEqual([
+		{
+			cases: [],
+			children: [
+				{
+					alias: false,
+					fieldKey: 'name',
+					name: 'name',
+					type: 'field',
+					whenCase: [],
+				},
+			],
+			fieldKey: 'author',
+			name: 'users',
+			parentKey: 'id',
+			query: {},
+			relatedKey: 'id',
+			relation: getRelation(schemaM2A.relations, 'text', 'author'),
+			type: 'm2o',
+			whenCase: [],
+		},
+	]);
 });
