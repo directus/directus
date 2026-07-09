@@ -15,13 +15,22 @@ export type CliErrorCode =
 export class CliError extends Error {
 	readonly code: CliErrorCode;
 	readonly hint: string | undefined;
+	// Full (redacted) diagnostic behind a short message — e.g. the SDK/HTTP error
+	// under an AUTH failure. Shown in --json and dimmed under the message in human
+	// output, so nothing is discarded while the headline stays clean.
+	readonly detail: string | undefined;
 	readonly exitCode: number;
 
-	constructor(code: CliErrorCode, message: string, options: { hint?: string; exitCode?: number } = {}) {
+	constructor(
+		code: CliErrorCode,
+		message: string,
+		options: { hint?: string; detail?: string; exitCode?: number } = {},
+	) {
 		super(message);
 		this.name = 'CliError';
 		this.code = code;
 		this.hint = options.hint;
+		this.detail = options.detail;
 		this.exitCode = options.exitCode ?? 1;
 	}
 }

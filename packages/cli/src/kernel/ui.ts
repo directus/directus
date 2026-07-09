@@ -1,5 +1,6 @@
 import { Chalk } from 'chalk';
 import type { CliError } from './error.js';
+import { redact } from './secret.js';
 
 // Fancy glyphs on capable terminals; ASCII on legacy Windows consoles that would
 // render them as mojibake. Modern Windows terminals set these vars; elsewhere is
@@ -40,15 +41,25 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 	const c = new Chalk(options.color ? {} : { level: 0 });
 	const { json } = options;
 
+	// Every write goes through redact() — the last line of defense so a resolved
+	// token can never reach the terminal or an agent's captured output.
+	function writeOut(text: string): void {
+		process.stdout.write(redact(text));
+	}
+
+	function writeErr(text: string): void {
+		process.stderr.write(redact(text));
+	}
+
 	function status(symbol: string, message: string): void {
 		if (json) return;
-		process.stderr.write(`${symbol} ${message}\n`);
+		writeErr(`${symbol} ${message}\n`);
 	}
 
 	return {
 		json,
 		print(text) {
-			process.stdout.write(`${text}\n`);
+			writeOut(`${text}\n`);
 		},
 		info(message) {
 			status(c.cyan(SYMBOLS.info), message);
@@ -64,15 +75,21 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 		},
 		error(error) {
 			if (json) {
-				process.stdout.write(`${JSON.stringify({ error: { code: error.code, message: error.message } })}\n`);
+				const body =
+					error.detail !== undefined
+						? { code: error.code, message: error.message, detail: error.detail }
+						: { code: error.code, message: error.message };
+
+				writeOut(`${JSON.stringify({ error: body })}\n`);
 				return;
 			}
 
-			process.stderr.write(`${c.red(SYMBOLS.error)} ${error.message}\n`);
-			if (error.hint !== undefined) process.stderr.write(`  ${c.dim(error.hint)}\n`);
+			writeErr(`${c.red(SYMBOLS.error)} ${error.message}\n`);
+			if (error.hint !== undefined) writeErr(`  ${c.dim(error.hint)}\n`);
+			if (error.detail !== undefined) writeErr(`  ${c.dim(error.detail)}\n`);
 		},
 		data(payload) {
-			process.stdout.write(`${typeof payload === 'string' ? payload : JSON.stringify(payload)}\n`);
+			writeOut(`${typeof payload === 'string' ? payload : JSON.stringify(payload)}\n`);
 		},
 	};
 }
