@@ -1163,6 +1163,7 @@ fields:
     collection: Колекция
     icon: Икона
     note: Бележка
+    status: Статус
     color: Цвят
     display_template: Шаблон при показване
     hidden: Скриване
@@ -1787,6 +1788,7 @@ interfaces:
     incompatible_data: Текущите данни не са съвместими с интерфейсът за повторение и ще бъдат заместени при добавяне на нов запис
     interface_group: Настройки на интерфейса
     display_group: Опции на дисплея
+    edit_mode_inline: Вложен
   slider:
     slider: Плъзгач
     description: Избор на число чрез плъзгач

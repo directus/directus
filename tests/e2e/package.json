@@ -26,7 +26,8 @@
 		"jose": "catalog:",
 		"zod": "catalog:",
 		"knex": "catalog:",
-		"lodash-es": "catalog:"
+		"lodash-es": "catalog:",
+		"tus-js-client": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
