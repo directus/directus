@@ -443,7 +443,16 @@ export function useItem<T extends Item>(
 
 			const relatedItem = item[relation.meta.junction_field];
 
-			if (isObject(relatedItem)) clearPrimaryKey(junctionRelatedPrimaryKeyField, relatedItem);
+			if (!isObject(relatedItem)) return;
+
+			// Only deep-duplicate the related item when it carries edited content. If it's just a PK
+			// reference (e.g. a link-only reorder update), keep the key so the copy re-links to it.
+			const relatedPkField = junctionRelatedPrimaryKeyField?.field;
+			const carriesEditedContent = Object.keys(relatedItem).some((key) => key !== relatedPkField);
+
+			if (!carriesEditedContent) return;
+
+			clearPrimaryKey(junctionRelatedPrimaryKeyField, relatedItem);
 		}
 	}
 
