@@ -93,6 +93,9 @@ TEST_DB=postgres pnpm test:blackbox  # Against specific database
 - Prefer `const` over `let`, avoid `var`
 - Follow existing ESLint and Prettier configurations
 - Test files named `*.test.ts`, placed next to source files
+- Keep inline comments minimal and concise; add them only when strictly needed (non-obvious logic, gotchas, why not
+  what)
+- Don't comment what the code already says; delete redundant or narrating comments
 
 ## Testing Conventions
 
