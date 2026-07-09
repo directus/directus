@@ -1,3 +1,6 @@
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 import type { CommandDefinition, CommandGroup } from './command.js';
@@ -124,5 +127,42 @@ describe('run', () => {
 		});
 
 		expect(code).toBe(1);
+	});
+
+	it('loads .env from the config dir, so a subdirectory still sees project-root credentials', async () => {
+		const root = mkdtempSync(join(tmpdir(), 'd6s-env-'));
+
+		try {
+			writeFileSync(join(root, 'directus.config.json'), '{}');
+			writeFileSync(join(root, '.env'), 'DIRECTUS_ENVTEST_TOKEN=from-root\n');
+			const sub = join(root, 'nested', 'deep');
+			mkdirSync(sub, { recursive: true });
+
+			let seen: string | undefined = 'unset';
+
+			const group: CommandGroup = {
+				name: 'env',
+				description: 'env',
+				commands: {
+					show: {
+						name: 'show',
+						description: 'show',
+						args: z.object({}),
+						run() {
+							seen = process.env['DIRECTUS_ENVTEST_TOKEN'];
+						},
+					},
+				},
+			};
+
+			// cwd is two levels below the config; the token must still resolve because
+			// `.env` is read from the config's dir (the walk-up root), not cwd.
+			await run(['env', 'show'], { commands: [group], cwd: sub });
+
+			expect(seen).toBe('from-root');
+		} finally {
+			delete process.env['DIRECTUS_ENVTEST_TOKEN'];
+			rmSync(root, { recursive: true, force: true });
+		}
 	});
 });

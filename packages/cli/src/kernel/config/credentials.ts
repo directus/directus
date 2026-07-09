@@ -88,13 +88,41 @@ function storePath(): string {
 }
 
 function readStore(): CredentialStore {
+	const path = storePath();
+	let raw: string;
+
 	try {
-		const parsed: unknown = JSON.parse(readFileSync(storePath(), 'utf8'));
-		return isPlainObject(parsed) ? (parsed as CredentialStore) : {};
-	} catch {
-		// Missing or unreadable store is not fatal — fall through to prompt/error.
-		return {};
+		raw = readFileSync(path, 'utf8');
+	} catch (error) {
+		// A missing store is the normal "nothing saved yet" case. Anything else
+		// (unreadable, permissions) must NOT collapse to {} — saveCredential would
+		// then overwrite a recoverable file and wipe every other saved token.
+		const code = error instanceof Error && 'code' in error ? error.code : undefined;
+		if (code === 'ENOENT') return {};
+
+		const hint = error instanceof Error ? error.message : undefined;
+		throw new CliError('STATE', `Cannot read credential store at ${path}.`, hint !== undefined ? { hint } : {});
 	}
+
+	let parsed: unknown;
+
+	try {
+		parsed = JSON.parse(raw);
+	} catch {
+		throw new CliError('STATE', `Credential store at ${path} is not valid JSON.`, {
+			hint: 'Fix or remove the file, then retry.',
+		});
+	}
+
+	// A present-but-wrong-shape store is corrupt, not empty — refuse rather than
+	// silently overwrite it on the next save.
+	if (!isPlainObject(parsed)) {
+		throw new CliError('STATE', `Credential store at ${path} is not a JSON object.`, {
+			hint: 'Fix or remove the file, then retry.',
+		});
+	}
+
+	return parsed as CredentialStore;
 }
 
 // Owner-only (0600) because it holds a real token. Self-registers the token as a
@@ -104,12 +132,14 @@ export function saveCredential(url: string, profileName: string, token: string):
 	registerSecret(token);
 
 	const path = storePath();
-	const dir = dirname(path);
+
+	// Read first, outside the write try: a corrupt store must surface its precise
+	// error and abort before we mkdir/write, never get rewrapped or overwritten.
+	const store = readStore();
+	store[url] = { ...store[url], [profileName]: token };
 
 	try {
-		mkdirSync(dir, { recursive: true, mode: 0o700 });
-		const store = readStore();
-		store[url] = { ...store[url], [profileName]: token };
+		mkdirSync(dirname(path), { recursive: true, mode: 0o700 });
 		writeFileSync(path, `${JSON.stringify(store, null, 2)}\n`, { mode: 0o600 });
 		// Enforce 0600 even if the file pre-existed with looser permissions.
 		chmodSync(path, 0o600);
