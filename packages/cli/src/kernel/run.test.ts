@@ -62,6 +62,57 @@ describe('run', () => {
 		expect(seen).toEqual(['local']);
 	});
 
+	it('extracts --config with its value so the command parser never sees either token', async () => {
+		let seenConfigPath: string | undefined;
+		let seenPositionals: string[] | undefined;
+
+		const group: CommandGroup = {
+			name: 'conf',
+			description: 'conf',
+			commands: {
+				show: {
+					name: 'show',
+					description: 'show',
+					args: z.object({}),
+					run({ positionals, ctx }) {
+						seenConfigPath = ctx.configPath;
+						seenPositionals = positionals;
+					},
+				},
+			},
+		};
+
+		const code = await run(['conf', 'show', '--config', 'custom.json'], { commands: [group], cwd: '/tmp/proj' });
+
+		expect(code).toBe(0);
+		// The value resolved against cwd and reached ctx — and did NOT leak into
+		// the command's positionals, where a parser would reject it.
+		expect(seenConfigPath).toBe(join('/tmp/proj', 'custom.json'));
+		expect(seenPositionals).toEqual([]);
+	});
+
+	it('rejects --config without a value as a usage error instead of guessing', async () => {
+		expect(await run(['sync', 'pull', '--from', 'x', '--config'], { commands: [syncGroup({})] })).toBe(1);
+		expect(stderr.join('')).toContain('--config');
+	});
+
+	it('treats a flag after --config as a missing value, not a path named after the flag', async () => {
+		const stdout: string[] = [];
+
+		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
+			stdout.push(String(chunk));
+			return true;
+		});
+
+		// `--config --json` must not consume --json as the config path. It's rejected
+		// (missing value), and --json is still honored — so the error renders as JSON
+		// on stdout rather than being silently swallowed. --config=<path> is explicit.
+		const code = await run(['sync', 'pull', '--from', 'x', '--config', '--json'], { commands: [syncGroup({})] });
+
+		expect(code).toBe(1);
+		expect(stdout.join('') + stderr.join('')).toMatch(/config/i);
+	});
+
 	it('treats tokens after `--` as literal positionals, not global flags', async () => {
 		let positionals: string[] | undefined;
 

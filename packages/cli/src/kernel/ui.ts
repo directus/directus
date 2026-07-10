@@ -20,9 +20,10 @@ const SYMBOLS = {
 };
 
 // Two channels kept strictly separate so stdout stays a clean machine channel:
-// requested output (print, data) → stdout; status (info/success/warn) → stderr,
-// suppressed under --json. error() renders human on stderr, or structured JSON on
-// stdout under --json.
+// human-requested output (print) → stdout; status (info/success/warn) → stderr,
+// suppressed under --json. data() is the machine result: emitted on stdout only
+// under --json, silent otherwise. error() renders human on stderr, or structured
+// JSON on stdout under --json.
 export interface Ui {
 	readonly json: boolean;
 	print(text: string): void;
@@ -70,10 +71,14 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 		},
 		error(error) {
 			if (json) {
-				const body =
-					error.detail !== undefined
-						? { code: error.code, message: error.message, detail: error.detail }
-						: { code: error.code, message: error.message };
+				const body = {
+					code: error.code,
+					message: error.message,
+					// Carry the hint too: it holds the actionable next step (which env var to
+					// set, which flag to pass), which a --json consumer needs as much as a human.
+					...(error.hint !== undefined ? { hint: error.hint } : {}),
+					...(error.detail !== undefined ? { detail: error.detail } : {}),
+				};
 
 				writeOut(`${JSON.stringify({ error: body })}\n`);
 				return;
@@ -84,6 +89,7 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 			if (error.detail !== undefined) writeErr(`  ${c.dim(error.detail)}\n`);
 		},
 		data(payload) {
+			if (!json) return;
 			writeOut(`${typeof payload === 'string' ? payload : JSON.stringify(payload)}\n`);
 		},
 	};

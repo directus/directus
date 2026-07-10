@@ -5,6 +5,9 @@ import type { Ui } from './ui.js';
 // config attach via kernel helpers commands call on demand, not off ctx.
 export interface CliContext {
 	readonly cwd: string;
+	// Explicit --config path (resolved against cwd); undefined means walk-up
+	// discovery. Commands pass it through to loadConfig and the profile writers.
+	readonly configPath: string | undefined;
 	readonly ui: Ui;
 	// True only in a real TTY that isn't CI, --json, or --no-interactive. Commands
 	// gate every prompt on this; an agent driving the CLI never hits one.

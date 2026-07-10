@@ -1,4 +1,4 @@
-import { dirname } from 'node:path';
+import { dirname, resolve } from 'node:path';
 import { version } from '../version.js';
 import { renderCommandHelp, renderGroupHelp, renderRootHelp } from './args/help.js';
 import { parseCommandArgs } from './args/parse.js';
@@ -19,16 +19,41 @@ interface Globals {
 	printVersion: boolean;
 	noColor: boolean;
 	noInteractive: boolean;
+	configPath: string | undefined;
+	configMissingValue: boolean;
 }
 
-const GLOBAL_FLAGS = new Set(['--help', '-h', '--version', '-v', '--json', '--no-color', '--no-interactive']);
+type BooleanGlobal = 'help' | 'json' | 'printVersion' | 'noColor' | 'noInteractive';
+
+// Each boolean global flag (and its aliases) maps to the key it sets. --config
+// is handled separately below because it takes a value.
+const GLOBAL_FLAGS: Record<string, BooleanGlobal> = {
+	'--help': 'help',
+	'-h': 'help',
+	'--version': 'printVersion',
+	'-v': 'printVersion',
+	'--json': 'json',
+	'--no-color': 'noColor',
+	'--no-interactive': 'noInteractive',
+};
 
 function extractGlobals(argv: readonly string[]): { globals: Globals; rest: string[] } {
-	const globals: Globals = { help: false, json: false, printVersion: false, noColor: false, noInteractive: false };
+	const globals: Globals = {
+		help: false,
+		json: false,
+		printVersion: false,
+		noColor: false,
+		noInteractive: false,
+		configPath: undefined,
+		configMissingValue: false,
+	};
+
 	const rest: string[] = [];
 	let passthrough = false;
 
-	for (const token of argv) {
+	for (let i = 0; i < argv.length; i++) {
+		const token = argv[i]!;
+
 		// Everything at/after a `--` terminator is literal — hand it to the
 		// command untouched instead of extracting globals from it.
 		if (passthrough || token === '--') {
@@ -37,16 +62,27 @@ function extractGlobals(argv: readonly string[]): { globals: Globals; rest: stri
 			continue;
 		}
 
-		if (!GLOBAL_FLAGS.has(token)) {
-			rest.push(token);
+		// --config is the one value-taking global; consume its value here so it
+		// never reaches the command's own parser. In the space form, a flag-looking
+		// next token is a missing value — don't swallow it (e.g. `--config --json`
+		// must not become a path named "--json"). Use `--config=<path>` to be explicit.
+		if (token === '--config') {
+			const next = argv[i + 1];
+			if (next === undefined || next === '' || next.startsWith('-')) globals.configMissingValue = true;
+			else globals.configPath = argv[++i];
 			continue;
 		}
 
-		if (token === '--help' || token === '-h') globals.help = true;
-		else if (token === '--version' || token === '-v') globals.printVersion = true;
-		else if (token === '--json') globals.json = true;
-		else if (token === '--no-color') globals.noColor = true;
-		else if (token === '--no-interactive') globals.noInteractive = true;
+		if (token.startsWith('--config=')) {
+			const value = token.slice('--config='.length);
+			if (value === '') globals.configMissingValue = true;
+			else globals.configPath = value;
+			continue;
+		}
+
+		const flag = GLOBAL_FLAGS[token];
+		if (flag === undefined) rest.push(token);
+		else globals[flag] = true;
 	}
 
 	return { globals, rest };
@@ -85,27 +121,33 @@ export async function run(argv: readonly string[], options: RunOptions): Promise
 		return Number.isInteger(code) && code >= 1 && code <= 255 ? code : 1;
 	};
 
+	if (globals.configMissingValue) {
+		return fail(new CliError('USAGE', 'Missing value for --config.', { hint: 'Pass a path: --config <path>' }));
+	}
+
 	const groups = options.commands;
 	const groupName = rest[0];
 	const commandName = rest[1];
 
-	// `d6s` or `d6s --help`: list every command.
 	if (groupName === undefined) {
 		ui.print(renderRootHelp(groups));
 		return 0;
 	}
 
+	// Suggest the nearest known command path by prefix, or fall back to the given
+	// help hint when nothing is close.
+	const unknownCommand = (attempt: string, paths: string[], fallbackHint: string): CliError => {
+		const near = paths.find((path) => path.startsWith(attempt));
+		return new CliError('UNKNOWN_COMMAND', `Unknown command: "${attempt}"`, {
+			hint: near !== undefined ? `Did you mean "${near}"?` : fallbackHint,
+		});
+	};
+
 	const group = groups.find((g) => g.name === groupName);
 
 	if (group === undefined) {
 		const attempt = commandName === undefined ? groupName : `${groupName} ${commandName}`;
-		const near = commandPaths(groups).find((path) => path.startsWith(attempt));
-
-		return fail(
-			new CliError('UNKNOWN_COMMAND', `Unknown command: "${attempt}"`, {
-				hint: near !== undefined ? `Did you mean "${near}"?` : "Run 'd6s --help' to list commands.",
-			}),
-		);
+		return fail(unknownCommand(attempt, commandPaths(groups), "Run 'd6s --help' to list commands."));
 	}
 
 	// `d6s <group>` or `d6s <group> --help`: the group is real but no action was
@@ -118,22 +160,15 @@ export async function run(argv: readonly string[], options: RunOptions): Promise
 	const command = group.commands[commandName];
 
 	if (command === undefined) {
-		const attempt = `${groupName} ${commandName}`;
-		const near = commandPaths([group]).find((path) => path.startsWith(attempt));
-
 		return fail(
-			new CliError('UNKNOWN_COMMAND', `Unknown command: "${attempt}"`, {
-				hint:
-					near !== undefined
-						? `Did you mean "${near}"?`
-						: `Run 'd6s ${groupName} --help' to list ${groupName} commands.`,
-			}),
+			unknownCommand(
+				`${groupName} ${commandName}`,
+				commandPaths([group]),
+				`Run 'd6s ${groupName} --help' to list ${groupName} commands.`,
+			),
 		);
 	}
 
-	// Everything from here — arg parsing and the command body — runs inside the
-	// single catch so a thrown CliError (or any thrown value) renders as an error
-	// instead of escaping as an unhandled rejection.
 	try {
 		if (globals.help) {
 			ui.print(renderCommandHelp(groupName, command));
@@ -145,7 +180,8 @@ export async function run(argv: readonly string[], options: RunOptions): Promise
 		// directory — the project root — so it resolves the same from any subdirectory
 		// as the walk-up config discovery does; fall back to cwd when there's no config.
 		const cwd = options.cwd ?? process.cwd();
-		const configPath = findConfigPath(cwd);
+		const explicitConfig = globals.configPath !== undefined ? resolve(cwd, globals.configPath) : undefined;
+		const configPath = explicitConfig ?? findConfigPath(cwd);
 		loadProjectEnv(configPath !== undefined ? dirname(configPath) : cwd);
 
 		// Prompts are for humans only: a real TTY on both ends, never CI, never the
@@ -158,13 +194,12 @@ export async function run(argv: readonly string[], options: RunOptions): Promise
 			!globals.noInteractive;
 
 		const parsed = parseCommandArgs(command.args, rest.slice(2));
-		const ctx: CliContext = { cwd, ui, interactive };
+		const ctx: CliContext = { cwd, configPath: explicitConfig, ui, interactive };
 
 		await command.run({ args: parsed.values, positionals: parsed.positionals, ctx });
 
 		return 0;
 	} catch (thrown) {
-		// A command may throw a non-CliError; the boundary renders it just as safely.
 		const error = isCliError(thrown)
 			? thrown
 			: new CliError('UNKNOWN', thrown instanceof Error ? thrown.message : String(thrown));

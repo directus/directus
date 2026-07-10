@@ -29,13 +29,20 @@ describe('createUi', () => {
 		clearSecrets();
 	});
 
-	it('routes status to stderr and machine data to stdout', () => {
+	it('routes status to stderr and machine data to stdout under --json', () => {
+		const ui = createUi({ json: true, color: false });
+		ui.data({ ok: true });
+
+		expect(stdout.join('')).toContain('{"ok":true}');
+	});
+
+	it('suppresses machine data in human mode so commands can emit it unconditionally', () => {
 		const ui = createUi({ json: false, color: false });
 		ui.info('working');
 		ui.data({ ok: true });
 
 		expect(stderr.join('')).toContain('working');
-		expect(stdout.join('')).toContain('{"ok":true}');
+		expect(stdout.join('')).toBe('');
 	});
 
 	it('suppresses human status in --json mode so stdout stays a clean channel', () => {
@@ -90,9 +97,10 @@ describe('createUi', () => {
 
 	it('redacts a token that appears in machine data output', () => {
 		registerSecret('leaked-token-abc123');
-		const ui = createUi({ json: false, color: false });
+		const ui = createUi({ json: true, color: false });
 		ui.data({ token: 'leaked-token-abc123' });
 
+		expect(stdout.join('')).toContain('***');
 		expect(stdout.join('')).not.toContain('leaked-token-abc123');
 	});
 
@@ -101,5 +109,14 @@ describe('createUi', () => {
 		ui.error(new CliError('AUTH', 'auth failed', { detail: 'HTTP 401 from server' }));
 
 		expect(stdout.join('')).toContain('"detail":"HTTP 401 from server"');
+	});
+
+	it('carries the hint on the --json channel so a script sees the actionable fix', () => {
+		// The hint holds the next step (which env var to set); dropping it under --json
+		// would leave an automated caller with an error it cannot act on.
+		const ui = createUi({ json: true, color: false });
+		ui.error(new CliError('AUTH', 'no token', { hint: 'Set DIRECTUS_PROD_TOKEN or pass --token.' }));
+
+		expect(JSON.parse(stdout.join('')).error.hint).toBe('Set DIRECTUS_PROD_TOKEN or pass --token.');
 	});
 });
