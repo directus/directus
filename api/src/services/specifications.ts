@@ -102,6 +102,14 @@ class OASSpecsService implements SpecificationSubService {
 		const paths = await this.generatePaths(schemaForSpec, permissions, publicPermissions, tags);
 		const components = await this.generateComponents(schemaForSpec, tags);
 
+		// Ensure all schemas referenced by the included paths are present in components.
+		// The second call resolves transitive dependencies introduced by schemas pulled
+		// in during the first pass.
+		if (components?.schemas) {
+			this.resolveSchemaRefs(paths, components.schemas);
+			this.resolveSchemaRefs(components.schemas, components.schemas);
+		}
+
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
 		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
 
@@ -443,7 +451,50 @@ class OASSpecsService implements SpecificationSubService {
 			}
 		}
 
+		// Resolve transitive schema-to-schema dependencies (e.g. Files → Folders/Users when
+		// the public role has no access to those collections).
+		this.resolveSchemaRefs(components.schemas, components.schemas);
+
 		return components;
+	}
+
+	/**
+	 * Recursively collects the names of every schema referenced via `$ref: '#/components/schemas/NAME'`
+	 * within the given node.
+	 */
+	private collectSchemaRefs(node: unknown, refs: Set<string> = new Set()): Set<string> {
+		if (Array.isArray(node)) {
+			for (const item of node) {
+				this.collectSchemaRefs(item, refs);
+			}
+		} else if (node && typeof node === 'object') {
+			for (const [key, value] of Object.entries(node as Record<string, unknown>)) {
+				if (key === '$ref' && typeof value === 'string' && value.startsWith('#/components/schemas/')) {
+					refs.add(value.slice('#/components/schemas/'.length));
+				} else {
+					this.collectSchemaRefs(value, refs);
+				}
+			}
+		}
+
+		return refs;
+	}
+
+	private resolveSchemaRefs(source: unknown, schemas: NonNullable<OpenAPIObject['components']>['schemas']): void {
+		const staticSchemas = staticSpec.components?.schemas ?? {};
+		const queue = [...this.collectSchemaRefs(source)];
+
+		while (queue.length > 0) {
+			const name = queue.shift()!;
+
+			if (name in schemas! || !(name in staticSchemas)) continue;
+
+			const schema = cloneDeep(staticSchemas[name]!);
+			schemas![name] = schema;
+
+			// The schema we just pulled in may itself reference further schemas transitively.
+			queue.push(...this.collectSchemaRefs(schema));
+		}
 	}
 
 	private mergePathItemCustomizer(obj: unknown, src: unknown, key: string): unknown {
