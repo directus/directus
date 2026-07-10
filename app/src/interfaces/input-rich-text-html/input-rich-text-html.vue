@@ -234,7 +234,7 @@ onKeyStroke('Escape', () => {
 		<EditorContent class="editor-content" :editor="editor" :dir="editorDir" />
 
 		<span
-			v-if="softLength"
+			v-if="softLength && !comparisonMode"
 			class="remaining"
 			:class="{
 				warning: percRemaining < 10,

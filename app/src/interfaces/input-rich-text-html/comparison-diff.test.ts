@@ -71,11 +71,17 @@ describe('interface wiring', () => {
 	}
 
 	test('comparisonMode renders read-only without editing chrome, diff spans intact', async () => {
-		const { wrapper, editor } = await mountInterface({ comparisonMode: true, comparisonSide: 'incoming' });
+		const { wrapper, editor } = await mountInterface({
+			comparisonMode: true,
+			comparisonSide: 'incoming',
+			softLength: 100,
+		});
 
 		expect(editor.isEditable).toBe(false);
 		expect(wrapper.find('toolbar-stub').exists()).toBe(false);
 		expect(wrapper.find('table-bubble-menu-stub').exists()).toBe(false);
+		// the diff-marked value inflates the count, so the counter must not render either
+		expect(wrapper.find('.remaining').exists()).toBe(false);
 		expect(wrapper.classes()).toContain('non-editable');
 		expect(editor.getHTML()).toBe(DIFF_HTML);
 	});
