@@ -4,6 +4,7 @@ import type { Editor } from '@tiptap/vue-3';
 import { useResizeObserver } from '@vueuse/core';
 import { computed, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
+import type { CustomFormat } from '../extensions/custom-formats';
 import { type ToolbarButton, toolbarButtons, type ToolbarContext } from './buttons';
 import { computeToolbarLayout, type LayoutMeasurements, type RenderGroup } from './compute-toolbar-layout';
 import { toolbarGroups } from './groups';
@@ -20,11 +21,13 @@ const props = withDefaults(
 		toolbar: string[];
 		/** Field `font` option — drives the editor's base font, and thus the font-family dropdown default. */
 		font?: 'sans-serif' | 'serif' | 'monospace';
+		/** Custom formats built from the field's `customFormats` option; auto-appends the styles dropdown. */
+		customFormats?: CustomFormat[];
 		disabled?: boolean;
 		fullscreen?: boolean;
 		visualaid?: boolean;
 	}>(),
-	{ font: 'sans-serif' },
+	{ font: 'sans-serif', customFormats: () => [] },
 );
 
 const emit = defineEmits<{
@@ -88,10 +91,17 @@ const MEASUREMENTS: LayoutMeasurements = {
 
 const TOOLBAR_ALIASES: Record<string, string[]> = { 'ltr rtl': ['ltr', 'rtl'] };
 
-// keys present in the field config AND in the registry, preserving field order for the `other` bucket
-const selectedKeys = computed(() =>
-	props.toolbar.flatMap((key) => TOOLBAR_ALIASES[key] ?? [key]).filter((key) => Boolean(toolbarButtons[key])),
-);
+// keys present in the field config AND in the registry, preserving field order for the `other` bucket.
+// `styles` is never user-configured: it's auto-appended (and only present) when customFormats exist,
+// matching the legacy TinyMCE behavior (`toolbarString += ' styles'`).
+const selectedKeys = computed(() => {
+	const keys = props.toolbar
+		.flatMap((key) => TOOLBAR_ALIASES[key] ?? [key])
+		.filter((key) => key !== 'styles' && Boolean(toolbarButtons[key]));
+
+	if (props.customFormats.length > 0) keys.push('styles');
+	return keys;
+});
 
 // editor base font-size — mirrors `.ProseMirror { font-size: 0.875rem }` (14px) in input-rich-text-html.vue
 const BASE_FONT_SIZE_PX = 14;
@@ -130,13 +140,14 @@ const visibleGroups = computed(() => layout.value.visible);
 const overflowGroups = computed(() => layout.value.overflow);
 const hasOverflow = computed(() => overflowGroups.value.length > 0);
 
-// resolve a render group's keys to button definitions, injecting the derived style defaults
+// resolve a render group's keys to button definitions, injecting per-render props: the derived style
+// defaults (font family/size) and the dynamic custom-format list for the styles dropdown.
 function resolve(group: RenderGroup): { key: string; button: ToolbarButton }[] {
 	return group.keys.map((key) => {
 		const button = toolbarButtons[key]!;
-		const defaults = styleDefaults.value[key];
-		if (!defaults) return { key, button };
-		return { key, button: { ...button, componentProps: { ...button.componentProps, ...defaults } } };
+		const extra = key === 'styles' ? { formats: props.customFormats } : styleDefaults.value[key];
+		if (!extra) return { key, button };
+		return { key, button: { ...button, componentProps: { ...button.componentProps, ...extra } } };
 	});
 }
 

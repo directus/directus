@@ -13,6 +13,7 @@ import LinkDrawer from './drawers/link-drawer.vue';
 import MediaDrawer from './drawers/media-drawer.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
 import { editorExtensions } from './extensions';
+import { buildCustomFormats } from './extensions/custom-formats';
 import { LinkShortcut } from './extensions/link-shortcut';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
@@ -22,6 +23,7 @@ import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager'
 import { parseGlobalMimeTypeAllowList, useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import { percentage } from '@/utils/percentage';
 
 const props = withDefaults(
 	defineProps<{
@@ -32,6 +34,9 @@ const props = withDefaults(
 		nonEditable?: boolean;
 		imageToken?: string;
 		folder?: string;
+		/** Legacy TinyMCE `customFormats` option (array or JSON string); see extensions/custom-formats.ts. */
+		customFormats?: unknown;
+		softLength?: number;
 		direction?: string;
 	}>(),
 	{
@@ -45,6 +50,10 @@ const emit = defineEmits<{ input: [value: string | null] }>();
 const { t } = useI18n();
 
 const { imageToken, folder } = toRefs(props);
+
+// Built once at init from the field's `customFormats` option (design-time config, not reactive edits):
+// dynamic marks go into the editor's schema, the format list drives the toolbar's styles dropdown.
+const { extensions: customFormatExtensions, formats: customFormatList } = buildCustomFormats(props.customFormats);
 
 const pageBreakLabel = computed(() => `"${t('wysiwyg_options.pagebreak')}"`);
 
@@ -73,11 +82,28 @@ function syncValue(instance: Editor, value: string | null) {
 		.setMeta('addToHistory', false)
 		.setContent(decodePageBreaks(value ?? ''), { emitUpdate: false })
 		.run();
+
+	// `emitUpdate: false` skips `onUpdate`, so refresh the soft-length count here too
+	updateCount(instance);
 }
+
+// Advisory character count for the `softLength` indicator. Reads the CharacterCount extension's
+// storage (default `textSize` mode → text content length, matching legacy TinyMCE counting).
+const count = ref(0);
+
+function updateCount(instance: Editor) {
+	count.value = instance.storage.characterCount?.characters() ?? 0;
+}
+
+const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
 
 const editor = useEditor({
 	// LinkShortcut lives here, not in the shared set, so its Mod-K handler can call this instance's opener
-	extensions: [...editorExtensions, LinkShortcut.configure({ onTrigger: () => openLinkDrawer() })],
+	extensions: [
+		...editorExtensions,
+		...customFormatExtensions,
+		LinkShortcut.configure({ onTrigger: () => openLinkDrawer() }),
+	],
 	content: '',
 	editable: isEditable.value,
 	editorProps: {
@@ -107,6 +133,7 @@ const editor = useEditor({
 		if (storage.media) storage.media.onOpenDrawer = openMediaDrawer;
 	},
 	onUpdate: ({ editor }) => {
+		updateCount(editor as Editor);
 		emit('input', editor.isEmpty ? null : encodePageBreaks(editor.getHTML()));
 	},
 });
@@ -215,6 +242,7 @@ onKeyStroke('Escape', () => {
 			:editor="editor"
 			:toolbar="toolbar"
 			:font="font"
+			:custom-formats="customFormatList"
 			:disabled="disabled"
 			:fullscreen="fullscreen"
 			:visualaid="visualaid"
@@ -226,6 +254,17 @@ onKeyStroke('Escape', () => {
 			@open-source-code="openSourceCodeDrawer"
 		/>
 		<EditorContent class="editor-content" :editor="editor" :dir="editorDir" />
+
+		<span
+			v-if="softLength"
+			class="remaining"
+			:class="{
+				warning: percRemaining < 10,
+				danger: percRemaining < 5,
+			}"
+		>
+			{{ softLength - count }}
+		</span>
 
 		<TableBubbleMenu v-if="!nonEditable" :editor="editor" />
 
@@ -285,6 +324,7 @@ onKeyStroke('Escape', () => {
 	--v-button-background-color-hover: var(--theme--form--field--input--border-color);
 	--v-button-color-hover: var(--theme--form--field--input--foreground);
 
+	position: relative; // anchors the soft-length `.remaining` indicator
 	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
@@ -322,6 +362,27 @@ onKeyStroke('Escape', () => {
 			overflow: auto;
 		}
 	}
+}
+
+/* Soft-length remaining-characters indicator, anchored to the editor's bottom-right (ported from
+   the legacy TinyMCE editor). */
+.remaining {
+	position: absolute;
+	inset-inline-end: 0.5625rem;
+	inset-block-end: 0.3125rem;
+	color: var(--theme--form--field--input--foreground-subdued);
+	font-weight: 600;
+	text-align: end;
+	vertical-align: middle;
+	font-feature-settings: 'tnum';
+}
+
+.warning {
+	color: var(--theme--warning);
+}
+
+.danger {
+	color: var(--theme--danger);
 }
 
 /* Content styles, scoped to the ProseMirror container so they neither leak into the app nor inherit app styles.

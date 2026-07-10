@@ -1,3 +1,4 @@
+import { CharacterCount } from '@tiptap/extensions';
 import StarterKit from '@tiptap/starter-kit';
 import { Direction } from './direction';
 import { DropCursor } from './drop-cursor';
@@ -39,4 +40,5 @@ export const editorExtensions = [
 	PageBreak,
 	Table,
 	PreKeymap,
+	CharacterCount,
 ];

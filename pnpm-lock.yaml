@@ -258,6 +258,9 @@ catalogs:
     '@tiptap/extension-text-style':
       specifier: ^3.26.1
       version: 3.27.0
+    '@tiptap/extensions':
+      specifier: ^3.26.1
+      version: 3.26.1
     '@tiptap/pm':
       specifier: ^3.26.1
       version: 3.26.1
@@ -1803,6 +1806,9 @@ importers:
       '@tiptap/extension-text-style':
         specifier: 'catalog:'
         version: 3.27.0(@tiptap/core@3.26.1(@tiptap/pm@3.26.1))
+      '@tiptap/extensions':
+        specifier: 'catalog:'
+        version: 3.26.1(@tiptap/core@3.26.1(@tiptap/pm@3.26.1))(@tiptap/pm@3.26.1)
       '@tiptap/pm':
         specifier: 'catalog:'
         version: 3.26.1
@@ -20505,7 +20511,7 @@ snapshots:
       std-env: 3.10.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.6(@types/node@22.13.14)(@vitest/ui@3.2.6)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
+      vitest: 3.2.6(@types/node@24.9.1)(@vitest/ui@3.2.6)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -20562,7 +20568,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.17
       tinyrainbow: 2.0.0
-      vitest: 3.2.6(@types/node@22.13.14)(@vitest/ui@3.2.6)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
+      vitest: 3.2.6(@types/node@24.9.1)(@vitest/ui@3.2.6)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
 
   '@vitest/utils@3.2.6':
     dependencies:

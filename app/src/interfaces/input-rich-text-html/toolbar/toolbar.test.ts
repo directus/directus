@@ -10,7 +10,7 @@ import Toolbar from './toolbar.vue';
 
 let editor: Editor;
 
-function mountToolbar(toolbar: string[]) {
+function mountToolbar(toolbar: string[], customFormats: { name: string; title: string }[] = []) {
 	editor = new Editor({
 		extensions: [StarterKit, TextAlign.configure({ types: ['heading', 'paragraph'] })],
 		content: '<p>x</p>',
@@ -24,7 +24,7 @@ function mountToolbar(toolbar: string[]) {
 		routes: [{ path: '/', component: { template: '<div />' } }],
 	});
 
-	return mount(Toolbar, { props: { editor, toolbar }, global: { plugins: [pinia, i18n, router] } });
+	return mount(Toolbar, { props: { editor, toolbar, customFormats }, global: { plugins: [pinia, i18n, router] } });
 }
 
 afterEach(() => editor?.destroy());
@@ -64,5 +64,15 @@ describe('Toolbar', () => {
 		expect(wrapper.findAll('.toolbar-popover')).toHaveLength(1);
 		// format(bold) + align(popover) + view(fullscreen) => 2 separators
 		expect(wrapper.findAll('.toolbar-separator')).toHaveLength(2);
+	});
+
+	test('auto-appends a styles dropdown when customFormats are provided', () => {
+		const wrapper = mountToolbar(['bold'], [{ name: 'customFormat_0', title: 'Highlight' }]);
+		expect(wrapper.find('.style-list-button').exists()).toBe(true);
+	});
+
+	test('no styles dropdown when customFormats is empty', () => {
+		const wrapper = mountToolbar(['bold']);
+		expect(wrapper.find('.style-list-button').exists()).toBe(false);
 	});
 });

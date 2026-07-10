@@ -91,11 +91,14 @@ const FAITHFUL: Record<string, string> = {
  * actual lossy output; the assertions document precisely what is lost today.
  */
 const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }> = [
+	// Accepted regression: with NO configured format, an arbitrary class-bearing span is dropped — the
+	// base schema doesn't model classes. When the field's `customFormats` option defines it, a dynamic
+	// mark restores it (CMS-2648); that configured round-trip is covered in extensions/custom-formats.test.ts.
 	{
-		name: 'custom format span',
+		name: 'custom format span (unconfigured)',
 		html: '<p><span class="my-format">text</span></p>',
 		absent: 'my-format',
-		issue: 'CMS-2648',
+		issue: 'CMS-2648 (configured only)',
 	},
 ];
 
