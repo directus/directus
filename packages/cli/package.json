@@ -30,6 +30,7 @@
 		"@clack/prompts": "catalog:",
 		"@directus/sdk": "workspace:*",
 		"chalk": "catalog:",
+		"commander": "catalog:",
 		"lodash-es": "catalog:",
 		"zod": "catalog:"
 	},
