@@ -129,9 +129,9 @@ describe('TusDataStore.create', () => {
 
 		const store = makeStore();
 
-		await expect(
-			store.create(makeUpload({ filename_download: 'malicious.html', type: 'text/html' })),
-		).rejects.toThrow(UnsupportedMediaTypeError);
+		await expect(store.create(makeUpload({ filename_download: 'malicious.html', type: 'text/html' }))).rejects.toThrow(
+			UnsupportedMediaTypeError,
+		);
 
 		expect(ItemsService.prototype.createOne).not.toHaveBeenCalled();
 	});
@@ -142,16 +142,6 @@ describe('TusDataStore.create', () => {
 		const store = makeStore();
 
 		await store.create(makeUpload({ filename_download: 'photo.png', type: 'image/png' }));
-
-		expect(ItemsService.prototype.createOne).toHaveBeenCalled();
-	});
-
-	test('allows any type when FILES_MIME_TYPE_ALLOW_LIST is the default wildcard', async () => {
-		vi.mocked(useEnv).mockReturnValue({ ...baseEnv, FILES_MIME_TYPE_ALLOW_LIST: '*/*' });
-
-		const store = makeStore();
-
-		await store.create(makeUpload({ filename_download: 'malicious.html', type: 'text/html' }));
 
 		expect(ItemsService.prototype.createOne).toHaveBeenCalled();
 	});

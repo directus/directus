@@ -5,15 +5,14 @@ import { UnsupportedMediaTypeError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import type { TusDriver } from '@directus/storage';
 import type { Accountability, ChunkedUploadContext, File, SchemaOverview } from '@directus/types';
-import { toArray } from '@directus/utils';
 import { DataStore, ERRORS, Upload } from '@tus/utils';
 import { omit } from 'lodash-es';
 import { extension } from 'mime-types';
-import { minimatch } from 'minimatch';
 import getDatabase from '../../database/index.js';
 import { useLogger } from '../../logger/index.js';
 import { assertUniqueFilename } from '../files/lib/assert-unique-filename.js';
 import { assertValidStoragePath } from '../files/lib/assert-valid-storage-path.js';
+import { isMimeTypeAllowed } from '../files/lib/is-mime-type-allowed.js';
 import { sanitizeFilepath } from '../files/lib/sanitize-filepath.js';
 import { ItemsService } from '../items.js';
 
@@ -74,10 +73,8 @@ export class TusDataStore extends DataStore {
 
 		const mimeType = upload.metadata['type'];
 		const env = useEnv();
-		const allowedPatterns = toArray(env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]);
-		const mimeTypeAllowed = allowedPatterns.some((pattern) => minimatch(mimeType, pattern));
 
-		if (mimeTypeAllowed === false) {
+		if (isMimeTypeAllowed(mimeType, env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]) === false) {
 			throw new UnsupportedMediaTypeError({ mediaType: mimeType, where: 'tus upload' });
 		}
 
