@@ -160,6 +160,7 @@ router.post(
 
 router.post(
 	'/apply',
+	checkIsAdmin,
 	asyncHandler(schemaMultipartHandler),
 	asyncHandler(async (req, res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
