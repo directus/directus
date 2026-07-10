@@ -6,7 +6,16 @@ import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import type { RequestBodyObject } from 'openapi3-ts/oas30';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { SpecificationService } from './index.js';
+
+vi.mock('../permissions/lib/fetch-policies.js', () => ({
+	fetchPolicies: vi.fn().mockResolvedValue([]),
+}));
+
+vi.mock('../permissions/lib/fetch-permissions.js', () => ({
+	fetchPermissions: vi.fn().mockResolvedValue([]),
+}));
 
 class Client_PG extends MockClient {}
 
@@ -271,6 +280,34 @@ describe('Integration Tests', () => {
 
 						expect(targetSchema).toHaveProperty('oneOf');
 						expect(targetSchema).not.toHaveProperty('type');
+					});
+				});
+
+				describe('public role security declarations', () => {
+					it('stamps security: [] on operations accessible to the public role', async () => {
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([{ collection: 'test_table', action: 'read' } as any]);
+
+						const service = new SpecificationService({
+							knex: db,
+							schema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/items/test_table']?.get?.security).toEqual([]);
+					});
+
+					it('does not stamp security: [] on operations not accessible to the public role', async () => {
+						const service = new SpecificationService({
+							knex: db,
+							schema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/items/test_table']?.get?.security).not.toEqual([]);
 					});
 				});
 			});
