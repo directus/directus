@@ -1,18 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import type { Choice } from './types';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VImage from '@/components/v-image.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
-
-type Choice = {
-	text: string;
-	value: string | number;
-	description?: string;
-	icon_type?: 'icon' | 'image';
-	icon?: string;
-	image?: string;
-};
 
 interface CardPreviewProps {
 	choice: Choice;
@@ -34,16 +26,16 @@ const iconName = computed(() => {
 });
 
 const imageError = ref(false);
-
-function getImageSrc(imageId: string): string {
-	return getAssetUrl(imageId, { imageKey: 'system-medium-contain' });
-}
 </script>
 
 <template>
 	<div class="preview" :aria-checked="isSelected" :aria-disabled="disabled">
 		<div v-if="choice.icon_type === 'image' && choice.image && !imageError" class="image">
-			<VImage :src="getImageSrc(choice.image)" :alt="choice.text" @error="imageError = true" />
+			<VImage
+				:src="getAssetUrl(choice.image, { imageKey: 'system-medium-contain' })"
+				:alt="choice.text"
+				@error="imageError = true"
+			/>
 		</div>
 		<span v-else class="fallback">
 			<VIcon :name="choice.icon || 'box'" x-large />
