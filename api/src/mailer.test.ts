@@ -82,4 +82,15 @@ describe('getMailer', () => {
 
 		expect(() => getMailer()).not.toThrow();
 	});
+
+	test('should not throw when creating Mailtrap transport', () => {
+		mockUseEnv.mockReturnValue({
+			EMAIL_TRANSPORT: 'mailtrap',
+			EMAIL_MAILTRAP_TOKEN: 'test',
+			EMAIL_MAILTRAP_SANDBOX: true,
+			EMAIL_MAILTRAP_INBOX_ID: 12345,
+		});
+
+		expect(() => getMailer()).not.toThrow();
+	});
 });

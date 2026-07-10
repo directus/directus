@@ -690,6 +690,9 @@ catalogs:
     lru-cache:
       specifier: 11.2.2
       version: 11.2.2
+    mailtrap:
+      specifier: 4.6.1
+      version: 4.6.1
     mapbox-gl:
       specifier: 1.13.3
       version: 1.13.3
@@ -1315,6 +1318,9 @@ importers:
       lodash-es:
         specifier: 'catalog:'
         version: 4.18.1
+      mailtrap:
+        specifier: 'catalog:'
+        version: 4.6.1(@types/nodemailer@8.0.1)(nodemailer@9.0.3)
       marked:
         specifier: 'catalog:'
         version: 16.4.1
@@ -11376,6 +11382,18 @@ packages:
   mailparser@3.9.12:
     resolution: {integrity: sha512-kbT4xtkKEddonhDTjjWWVFJlI5axm0S9QuIAHs1ue3IEw+fNd9o4ytPKaG7p1LOE2aKifrWLjx/omOGLHz/9RQ==}
 
+  mailtrap@4.6.1:
+    resolution: {integrity: sha512-mObbFhDhpxZvSkDzIPch3lYQ/3m1y2oDr3Vg/YbFHlG6SDb4khCqhb8DkMwdm9heE+mLCzbCjnX6cJIYMAJM+g==}
+    engines: {node: '>=16.20.1', yarn: '>=1.22.17'}
+    peerDependencies:
+      '@types/nodemailer': ^6.4.9
+      nodemailer: ^9.0.1
+    peerDependenciesMeta:
+      '@types/nodemailer':
+        optional: true
+      nodemailer:
+        optional: true
+
   make-dir@4.0.0:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
@@ -21131,7 +21149,7 @@ snapshots:
       http-errors: 2.0.0
       iconv-lite: 0.7.2
       on-finished: 2.4.1
-      qs: 6.14.2
+      qs: 6.15.2
       raw-body: 3.0.1
       type-is: 2.0.1
     transitivePeerDependencies:
@@ -24261,6 +24279,17 @@ snapshots:
       nodemailer: 9.0.1
       punycode.js: 2.3.1
       tlds: 1.261.0
+
+  mailtrap@4.6.1(@types/nodemailer@8.0.1)(nodemailer@9.0.3):
+    dependencies:
+      axios: 1.16.1
+      qs: 6.15.2
+    optionalDependencies:
+      '@types/nodemailer': 8.0.1
+      nodemailer: 9.0.3
+    transitivePeerDependencies:
+      - debug
+      - supports-color
 
   make-dir@4.0.0:
     dependencies:
