@@ -105,6 +105,7 @@ describe('ItemsService createMany batch insert', () => {
 	describe('batch insert behaviour', () => {
 		test('inserts all rows in a single statement and returns keys in order', async () => {
 			const inserts: any[] = [];
+
 			tracker.on.insert('flat').response((query) => {
 				inserts.push(query);
 				return [{ id: 'aaa' }, { id: 'bbb' }];
@@ -120,6 +121,7 @@ describe('ItemsService createMany batch insert', () => {
 
 		test('handles rows with different key sets in a single insert', async () => {
 			const inserts: any[] = [];
+
 			tracker.on.insert('flat').response((query) => {
 				inserts.push(query);
 				return [{ id: 'aaa' }, { id: 'bbb' }];
@@ -144,6 +146,7 @@ describe('ItemsService createMany batch insert', () => {
 			const service = new ItemsService('flat', { knex: db, schema });
 
 			let thrown: unknown;
+
 			try {
 				await service.createMany([{ name: 'a' }, { name: 'b' }]);
 			} catch (err) {
@@ -157,6 +160,7 @@ describe('ItemsService createMany batch insert', () => {
 		test('falls back to per-row inserts when the collection is not eligible', async () => {
 			let n = 0;
 			const inserts: any[] = [];
+
 			tracker.on.insert('tracked').response((query) => {
 				inserts.push(query);
 				return [{ id: `id${++n}` }];

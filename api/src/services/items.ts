@@ -589,6 +589,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const primaryKeyField = collection.primary;
 		const primaryKeyType = collection.fields[primaryKeyField]!.type;
 		const fields = Object.keys(collection.fields);
+
 		const aliases = Object.values(collection.fields)
 			.filter((field) => field.alias === true)
 			.map((field) => field.field);
