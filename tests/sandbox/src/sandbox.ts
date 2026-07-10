@@ -20,7 +20,6 @@ import {
 	saveSchema,
 	startApi,
 } from './steps/index.js';
-import { startLicenseServer } from './steps/license.js';
 
 export type { Env } from './config.js';
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
@@ -153,7 +152,6 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 
 export const apiFolder = join(directusFolder, 'api');
 export const appFolder = join(directusFolder, 'app');
-export const licenseFolder = join(directusFolder, 'node_modules/@directus/mock-license-server');
 
 export const databases: Database[] = [
 	'maria',
@@ -191,12 +189,6 @@ export async function sandboxes(
 
 	let build: ChildProcessWithoutNullStreams | undefined;
 	const projects: { project: string; logger: Logger; env: Env }[] = [];
-
-	let license: ChildProcessWithoutNullStreams | undefined;
-
-	if (opts.extras.license) {
-		license = await startLicenseServer(await getEnv('sqlite', opts), logger);
-	}
 
 	try {
 		// Rebuild directus
@@ -248,8 +240,6 @@ export async function sandboxes(
 				kill(api.process);
 			}
 		}
-
-		kill(license);
 	}
 
 	return { sandboxes, stop, restartApis };
@@ -265,17 +255,12 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	let app: ChildProcessWithoutNullStreams | undefined;
 	let build: ChildProcessWithoutNullStreams | undefined;
 	let interval: NodeJS.Timeout;
-	let license: ChildProcessWithoutNullStreams | undefined;
 	let knex: Knex | undefined;
 
 	try {
 		// Rebuild directus
 		if (opts.build && !opts.dev) {
 			build = await buildApi(opts, logger, restartApi);
-		}
-
-		if (opts.extras.license) {
-			license = await startLicenseServer(env, logger);
 		}
 
 		await dockerUp(database, opts, env, logger);
@@ -327,7 +312,6 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		}
 
 		kill(app);
-		kill(license);
 
 		const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
 		logger.info(`Stopped sandbox ${time}`);

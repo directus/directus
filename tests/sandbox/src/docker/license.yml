@@ -1,0 +1,6 @@
+services:
+  license-mock-server:
+    image: nitwel/directus-mock-server
+    platform: linux/amd64
+    ports:
+      - ${LICENSE_PORT}:1133
