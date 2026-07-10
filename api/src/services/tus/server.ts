@@ -117,7 +117,7 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 				},
 			};
 		},
-		onResponseError(_req, _res, err) {
+		onResponseError(_req, err) {
 			if (isDirectusError(err)) {
 				return { status_code: err.status, body: err.message + '\n' };
 			}
