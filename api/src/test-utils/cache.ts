@@ -47,16 +47,22 @@ export function mockCache() {
 		lockCache: undefined,
 	};
 
+	const clearSystemCacheSpy = vi.fn();
+	const clearPermissionRelatedCacheSpy = vi.fn();
+
 	return {
 		getCache: vi.fn().mockReturnValue(mockCacheReturn),
 		getCacheValue: vi.fn().mockResolvedValue(null),
 		setCacheValue: vi.fn().mockResolvedValue(undefined),
-		clearSystemCache: vi.fn(),
+		clearSystemCache: clearSystemCacheSpy,
+		clearPermissionRelatedCache: clearPermissionRelatedCacheSpy,
 		spies: {
 			clearSpy,
 			systemClearSpy,
 			getCacheSpy,
 			setCacheSpy,
+			clearSystemCacheSpy,
+			clearPermissionRelatedCacheSpy,
 			mockCacheReturn,
 		},
 	};
