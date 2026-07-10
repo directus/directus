@@ -17,7 +17,6 @@ import { assertValidStoragePath } from '../files/lib/assert-valid-storage-path.j
 import { sanitizeFilepath } from '../files/lib/sanitize-filepath.js';
 import { ItemsService } from '../items.js';
 
-
 export type TusDataStoreConfig = {
 	constants: {
 		ENABLED: boolean;
