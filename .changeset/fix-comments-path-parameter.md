@@ -2,4 +2,4 @@
 '@directus/specs': patch
 ---
 
-Fix missing `id` path parameter declaration on `/comments/{id}` (Fixes #24155)
+Fixed missing `id` path parameter to the `/comments/{id}` OpenAPI spec
