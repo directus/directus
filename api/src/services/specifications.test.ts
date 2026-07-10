@@ -692,6 +692,22 @@ describe('Integration Tests', () => {
 
 						expect(responseData).toEqual({ $ref: '#/components/schemas/ItemsSettings' });
 					});
+
+					it('collection-specific tags array replaces the generic Items tag rather than appending to it', async () => {
+						const service = new SpecificationService({
+							knex: db,
+							schema: schema2,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						// The static /items/{collection} path this operation is cloned from is tagged ['Items'].
+						// Without replacing (rather than concatenating) the tags array during mergeWith, the
+						// generic 'Items' tag would leak into every generated collection operation alongside
+						// its own tag.
+						expect(spec.paths['/items/test_table']?.get?.tags).toEqual(['ItemsTestTable']);
+					});
 				});
 
 				describe('public role security declarations', () => {

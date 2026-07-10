@@ -499,6 +499,7 @@ class OASSpecsService implements SpecificationSubService {
 
 	private mergePathItemCustomizer(obj: unknown, src: unknown, key: string): unknown {
 		if (key === 'security') return src;
+		if (key === 'tags') return src;
 		if (src !== null && typeof src === 'object' && !Array.isArray(src) && '$ref' in src) return src;
 		if (Array.isArray(obj)) return obj.concat(src);
 		return undefined;
