@@ -1,22 +1,43 @@
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname, join, parse as parsePath } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import { z } from 'zod';
 import { CliError } from '../error.js';
+import { writeFileAtomic } from '../write.js';
 
 const CONFIG_FILENAME = 'directus.config.json';
+
+// A committable base URL must carry no secrets: http(s) only, no userinfo and no
+// query/fragment — so `https://user:pass@host` or `?token=…` can never be written
+// to config or printed by `profile list`. Also serves as the prompt validator.
+export function isSafeUrl(value: string): boolean {
+	let parsed: URL;
+
+	try {
+		parsed = new URL(value);
+	} catch {
+		return false;
+	}
+
+	return (
+		(parsed.protocol === 'http:' || parsed.protocol === 'https:') &&
+		parsed.username === '' &&
+		parsed.password === '' &&
+		parsed.search === '' &&
+		parsed.hash === ''
+	);
+}
 
 // No secrets ever live here — this file is committable. Credentials resolve
 // separately (env / ~/.directus/credentials.json / prompt).
 const profileSchema = z.object({
-	url: z.url(),
+	url: z.url().refine(isSafeUrl, 'Use an http(s) URL with no credentials, query, or fragment.'),
 	auth: z.object({ type: z.literal('token') }).default({ type: 'token' }),
 });
 
-// The kernel owns `profiles` and `root`; any other top-level key (e.g. a future
+// The kernel owns `profiles`; any other top-level key (e.g. a future
 // `sync` block) passes through untouched for its own consumer to read.
 const configSchema = z.looseObject({
-	root: z.string().default('directus'),
 	profiles: z.record(z.string(), profileSchema).default({}),
 });
 
@@ -30,7 +51,6 @@ export interface Profile {
 }
 
 export interface Config {
-	readonly root: string;
 	readonly profiles: Readonly<Record<string, Profile>>;
 	readonly [namespace: string]: unknown;
 }
@@ -38,6 +58,13 @@ export interface Config {
 interface LoadedConfig {
 	readonly path: string;
 	readonly config: Config;
+}
+
+// Where the config lives: an explicit `--config` path wins over walk-up
+// discovery from cwd. Commands build this from ctx.
+interface ConfigLocation {
+	readonly cwd: string;
+	readonly configPath?: string | undefined;
 }
 
 // Walk up from the starting dir like git, so the CLI works from any subdirectory.
@@ -54,11 +81,10 @@ export function findConfigPath(startDir: string): string | undefined {
 	}
 }
 
-// An explicit `--config` path wins, otherwise walk-up discovery. A missing
-// discovered file is not an error (profile-less); a missing explicit path or a
-// malformed file is.
-export function loadConfig(options: { cwd: string; configPath?: string }): LoadedConfig | undefined {
-	const path = options.configPath ?? findConfigPath(options.cwd);
+// A missing discovered file is not an error (profile-less); a missing explicit
+// path or a malformed file is.
+export function loadConfig(location: ConfigLocation): LoadedConfig | undefined {
+	const path = location.configPath ?? findConfigPath(location.cwd);
 	if (path === undefined) return undefined;
 
 	let raw: string;
@@ -84,7 +110,9 @@ export function loadConfig(options: { cwd: string; configPath?: string }): Loade
 }
 
 // Writes reload the raw JSON and touch only `profiles`, so a user's formatting
-// and any namespace the kernel doesn't own survive untouched.
+// and any namespace the kernel doesn't own survive untouched. A malformed file is
+// rejected, not silently reset to {} — a write would otherwise discard repairable
+// config that the read path (loadConfig) already refuses.
 function readRawConfig(path: string): Record<string, unknown> {
 	if (!existsSync(path)) return {};
 
@@ -96,28 +124,75 @@ function readRawConfig(path: string): Record<string, unknown> {
 		throw new CliError('CONFIG', `${path} is not valid JSON.`);
 	}
 
-	return isPlainObject(parsed) ? (parsed as Record<string, unknown>) : {};
+	if (!isPlainObject(parsed)) {
+		throw new CliError('CONFIG', `${path} is not a JSON object.`, { hint: 'Fix or remove the file.' });
+	}
+
+	return parsed as Record<string, unknown>;
 }
 
-// Upsert into the discovered config, or a new file at cwd.
-export function upsertProfile(cwd: string, name: string, profile: Profile): void {
-	const path = findConfigPath(cwd) ?? join(cwd, CONFIG_FILENAME);
+// The existing profiles block, or {} when absent — but a present-but-malformed
+// `profiles` is rejected, not silently wiped on the next write.
+function existingProfiles(raw: Record<string, unknown>, path: string): Record<string, unknown> {
+	const profiles = raw['profiles'];
+	if (profiles === undefined) return {};
+
+	if (!isPlainObject(profiles)) {
+		throw new CliError('CONFIG', `"profiles" in ${path} is not an object.`, { hint: 'Fix or remove it.' });
+	}
+
+	return profiles as Record<string, unknown>;
+}
+
+// Upsert into the explicit or discovered config, or a new file at cwd.
+export function upsertProfile(location: ConfigLocation, name: string, profile: Profile): void {
+	const path = location.configPath ?? findConfigPath(location.cwd) ?? join(location.cwd, CONFIG_FILENAME);
 	const raw = readRawConfig(path);
-	const existing = isPlainObject(raw['profiles']) ? (raw['profiles'] as Record<string, unknown>) : {};
-	const profiles = { ...existing, [name]: profile };
-	writeFileSync(path, `${JSON.stringify({ ...raw, profiles }, null, 2)}\n`);
+	const profiles = { ...existingProfiles(raw, path), [name]: profile };
+	// An explicit --config may name a file in a directory that doesn't exist yet.
+	mkdirSync(dirname(path), { recursive: true });
+	writeFileAtomic(path, `${JSON.stringify({ ...raw, profiles }, null, 2)}\n`, 0o644);
 }
 
-export function removeProfile(cwd: string, name: string): void {
-	const path = findConfigPath(cwd);
+// Returns the removed profile's URL (when well-formed) so the caller can clear the
+// matching saved credential — leaving a deleted profile's token behind would let a
+// later re-add silently resurrect it.
+export function removeProfile(location: ConfigLocation, name: string): string | undefined {
+	const path = location.configPath ?? findConfigPath(location.cwd);
 	if (path === undefined)
 		throw new CliError('CONFIG', 'No directus.config.json found.', { hint: 'Nothing to remove.' });
 
 	const raw = readRawConfig(path);
-	const profiles = isPlainObject(raw['profiles']) ? { ...(raw['profiles'] as Record<string, unknown>) } : {};
+	const profiles = { ...existingProfiles(raw, path) };
 
-	if (!(name in profiles)) throw new CliError('CONFIG', `Unknown profile: "${name}"`, { hint: 'Nothing to remove.' });
+	// hasOwn, not `in`: a name like "toString" must not match an inherited property.
+	if (!Object.hasOwn(profiles, name))
+		throw new CliError('CONFIG', `Unknown profile: "${name}"`, { hint: 'Nothing to remove.' });
 
+	const removed = profiles[name];
 	delete profiles[name];
-	writeFileSync(path, `${JSON.stringify({ ...raw, profiles }, null, 2)}\n`);
+	writeFileAtomic(path, `${JSON.stringify({ ...raw, profiles }, null, 2)}\n`, 0o644);
+
+	// Best-effort: only the raw (unvalidated) URL is available here, so hand it back
+	// only when it's actually a string for the credential store to key on.
+	return isPlainObject(removed) && typeof (removed as Record<string, unknown>)['url'] === 'string'
+		? ((removed as Record<string, unknown>)['url'] as string)
+		: undefined;
+}
+
+// A miss names the known profiles so a typo is fixable without opening the file.
+export function resolveProfile(config: Config, name: string): Profile {
+	// hasOwn guards against inherited-property false matches (e.g. "toString").
+	const profile = Object.hasOwn(config.profiles, name) ? config.profiles[name] : undefined;
+
+	if (profile === undefined) {
+		const known = Object.keys(config.profiles);
+
+		throw new CliError('CONFIG', `Unknown profile: "${name}"`, {
+			hint:
+				known.length > 0 ? `Known profiles: ${known.join(', ')}` : 'No profiles are defined in directus.config.json.',
+		});
+	}
+
+	return profile;
 }

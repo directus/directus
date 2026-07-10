@@ -3,8 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { type CliError, isCliError } from '../error.js';
-import { loadConfig } from './file.js';
-import { resolveProfile } from './profiles.js';
+import { loadConfig, resolveProfile } from './file.js';
 
 const created: string[] = [];
 
@@ -44,16 +43,28 @@ describe('loadConfig', () => {
 		expect(loadConfig({ cwd: nested })?.path).toBe(join(root, 'directus.config.json'));
 	});
 
-	it('applies defaults and preserves namespaces the kernel does not own', () => {
+	it('preserves namespaces the kernel does not own', () => {
 		const dir = tempDir();
 		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: {}, sync: { defaultMode: 'merge' } }));
 
 		const loaded = loadConfig({ cwd: dir });
 
-		// root default fills in...
-		expect(loaded?.config.root).toBe('directus');
-		// ...and the unrecognized `sync` namespace survives for its consumer to validate.
+		// The unrecognized `sync` namespace survives for its consumer to validate.
 		expect((loaded?.config as Record<string, unknown>)['sync']).toEqual({ defaultMode: 'merge' });
+	});
+
+	it('prefers an explicit configPath over walk-up discovery', () => {
+		const dir = tempDir();
+
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { discovered: { url: 'https://a.example.com' } } }),
+		);
+
+		const explicit = join(dir, 'other.config.json');
+		writeFileSync(explicit, JSON.stringify({ profiles: { explicit: { url: 'https://b.example.com' } } }));
+
+		expect(loadConfig({ cwd: dir, configPath: explicit })?.config.profiles['explicit']).toBeDefined();
 	});
 
 	it('reports malformed JSON as a CONFIG error rather than throwing raw', () => {
@@ -75,11 +86,21 @@ describe('loadConfig', () => {
 			'CONFIG',
 		);
 	});
+
+	it('rejects a credential-bearing url so a secret never lands in committable config', () => {
+		const dir = tempDir();
+
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { prod: { url: 'https://user:pass@cms.example.com' } } }),
+		);
+
+		expect(caught(() => loadConfig({ cwd: dir })).code).toBe('CONFIG');
+	});
 });
 
 describe('resolveProfile', () => {
 	const config = {
-		root: 'directus',
 		profiles: { prod: { url: 'https://cms.example.com', auth: { type: 'token' as const } } },
 	};
 
@@ -92,6 +113,12 @@ describe('resolveProfile', () => {
 	});
 
 	it('hints that none are defined when the profile set is empty', () => {
-		expect(caught(() => resolveProfile({ root: 'directus', profiles: {} }, 'prod')).hint).toContain('No profiles');
+		expect(caught(() => resolveProfile({ profiles: {} }, 'prod')).hint).toContain('No profiles');
+	});
+
+	it('does not match inherited object properties like "toString"', () => {
+		// `'toString' in profiles` is true via the prototype; hasOwn must reject it
+		// instead of returning Object.prototype.toString as a profile.
+		expect(caught(() => resolveProfile(config, 'toString')).code).toBe('CONFIG');
 	});
 });
