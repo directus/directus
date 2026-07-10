@@ -20,18 +20,9 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Over
-directus_mscl: Directus MSCL 1.0
 privacy_policy: Privacybeleid
-contact_our_team: Contacteer ons Team
 setup_welcome: Welkom bij Directus
 setup_info: Laten we je beheerdersaccount aanmaken en je project opstarten
-setup_license_notice: >
-  Directus is gratis te gebruiken voor entiteiten met een jaarlijkse omzet, financiering of operationeel budget onder de $ 5 miljoen.
-setup_license_follow_up: >
-  Voor entiteiten die deze grens overschrijden is een betaalde licentie vereist. Je kunt Directus blijven proberen en {contactOurTeam} wanneer je klaar bent om het productiegebruik te bespreken.
-setup_save_accept_license: >
-  Door op te slaan accepteer je de algemene voorwaarden van de {directusMscl} en {privacyPolicy}.
-setup_accept_license: Ik accepteer de voorwaarden van de {directusMscl} en {privacyPolicy}
 setup_marketing_emails: Stuur mij productupdates en release-info
 setup_launch: Start Directus
 setup_project: Project Setup
@@ -41,11 +32,6 @@ last_name: Achternaam
 admin_email: E-mailadres Beheerder
 owner_email: E-mailadres Eigenaar
 email_address: E-mailadres
-organization_name: Naam Organisatie
-how_do_you_use_directus: Waar gebruik je Directus voor?
-usage_personal: Persoonlijk / Leren
-usage_commercial: Zakelijk / Commercieel
-usage_community: Open Source / Community
 identifier: ID
 avatar: Profielafbeelding
 application: Applicatie
@@ -1307,6 +1293,7 @@ fields:
     collection: Collectie
     icon: Icoon
     note: Notitie
+    status: Status
     color: Kleur
     display_template: Weergavesjabloon
     hidden: Verborgen
@@ -1629,7 +1616,6 @@ ai:
   always_allow: Altijd Toestaan
   deny: Weigeren
   approve_tool_execution: Uitvoering Tool goedkeuren?
-  retry: Probeer Opnieuw
   prompt_input_placeholder: Typ je bericht hier...
   clear_conversation: Gesprek Wissen
   responses_may_be_inaccurate: AI--reacties zijn mogelijk onjuist
@@ -2062,6 +2048,7 @@ interfaces:
     incompatible_data: De huidige gegevens zijn niet compatibel met de repeaterinterface en zullen worden overschreven bij het toevoegen van items aan de repeater
     interface_group: Interface-opties
     display_group: Weergave Opties
+    edit_mode_inline: Doorlopend
   slider:
     slider: Schuifregelaar
     description: Selecteer een nummer met een slider

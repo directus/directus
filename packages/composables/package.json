@@ -1,6 +1,6 @@
 {
 	"name": "@directus/composables",
-	"version": "11.5.0-rc.0",
+	"version": "11.5.1",
 	"description": "Shared Vue composables for Directus use",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -43,6 +43,7 @@
 		"@types/lodash-es": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"@vue/test-utils": "catalog:",
+		"jsdom": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",

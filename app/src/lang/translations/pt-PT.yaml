@@ -20,15 +20,11 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Acerca
-contact_our_team: Contacta a nossa equipa
 setup_welcome: Bem-vindo ao Directus
-setup_license_notice: >
-  A Directus tem utilização gratuita para entidades abaixo dos 5 milhões em receitas anuais, fundos, ou orçamento operacional. 
 continue: Continuar
 first_name: Primeiro Nome
 last_name: Apelido
 email_address: Endereço de e-mail
-organization_name: Nome da organização 
 identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
@@ -1008,6 +1004,7 @@ fields:
   directus_collections:
     collection: Coleção
     note: Nota
+    status: Estado
     color: Cor
     display_template: Templates de Exibição
     sort_field: Campo de ordenação
@@ -1195,6 +1192,7 @@ interfaces:
   list:
     sort: Ordenar
     display_group: Opções de Exibição
+    edit_mode_inline: Em linha
   tags:
     tags: Etiquetas
   input-translated-string:

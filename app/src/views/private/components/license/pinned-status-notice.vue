@@ -53,7 +53,7 @@ const titleKey = computed(() =>
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--background-normal);
 	overflow: hidden;
-	font-size: 11px;
+	font-size: 0.625rem;
 	line-height: 1rem;
 }
 

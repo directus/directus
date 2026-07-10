@@ -20,18 +20,9 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Acerca de
-directus_mscl: MSCL de Directus 1.0
 privacy_policy: Política de Privacidad
-contact_our_team: Contacta con nuestro equipo
 setup_welcome: Bienvenido a Directus
 setup_info: Creemos tu cuenta de administrador y pongamos tu proyecto en funcionamiento.
-setup_license_notice: >
-  Directus es de uso gratuito para entidades con ingresos, financiación o presupuesto operativo anuales inferiores a 5 millones de dólares.
-setup_license_follow_up: >
-  Las entidades que superan este umbral requieren una licencia de pago. Puede continuar evaluando Directus ahora y contactarnos cuando esté listo para hablar sobre el uso en producción.
-setup_save_accept_license: >
-  Al hacer clic en Guardar, acepta los términos de {directusMscl} y {privacyPolicy}.
-setup_accept_license: Acepto los términos de {directusMscl} y {privacyPolicy}
 setup_marketing_emails: Envíame actualizaciones de productos y notas de lanzamiento
 setup_launch: Iniciar Directus
 setup_project: Configurar Proyecto
@@ -42,11 +33,6 @@ last_name: Apellido
 admin_email: Email del Administrador
 owner_email: E-Mail del propietario
 email_address: Dirección de correo electrónico
-organization_name: Nombre de la organización
-how_do_you_use_directus: '¿Para qué utilizas Directus?'
-usage_personal: Personal / Aprendizaje
-usage_commercial: Negocios / Comercial
-usage_community: Código abierto / Comunidad
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
@@ -1374,6 +1360,7 @@ fields:
     collection: Colección
     icon: Ícono
     note: Nota
+    status: Estatus
     color: Color
     display_template: Mostrar plantilla
     hidden: Oculto
@@ -2102,6 +2089,7 @@ interfaces:
     incompatible_data: Los datos actuales no son compatibles con la interfaz del repetidor y serán reemplazados al agregar elementos al repetidor
     interface_group: Opciones de Interfaz
     display_group: Opciones de visualización
+    edit_mode_inline: Alineado
   slider:
     slider: Deslizador
     description: Seleccionar un número usando un deslizador
@@ -2707,12 +2695,6 @@ search_flow: Buscar Flujo...
 percent: Porciento
 show_password: Mostrar Contraseña
 hide_password: Ocultar Contraseña
-license_banner:
-  title: Aún no has establecido un propietario del proyecto.
-  license: Necesitamos esta información para garantizar el cumplimiento de nuestra licencia MSCL 1.0. Esta persona debe ser el contacto principal responsable de tu proyecto.
-  set_owner: Asignar Propietario
-  remind_later: Recordar más tarde
-  remind_next_login: Te lo recordaremos nuevamente en tu próximo inicio de sesión.
 license_grace_key_modal:
   optional: Opcional
 accepted: Aceptado

@@ -23,7 +23,6 @@ about: About
 continue: Continua
 first_name: Nome
 last_name: Cognome
-organization_name: Nome Organizzazione
 identifier: Identificatore
 avatar: Avatar
 application: Applicazione
@@ -1230,6 +1229,7 @@ fields:
     collection: Raccolta
     icon: Icona
     note: Nota
+    status: Stato
     color: Colore
     display_template: Display Template
     hidden: Nascosto
@@ -1897,6 +1897,7 @@ interfaces:
     incompatible_data: I dati correnti non sono compatibili con l'interfaccia ripetitore e saranno sovrascritti quando si aggiungono elementi al ripetitore
     interface_group: Opzioni interfaccia
     display_group: Opzioni di visualizzazione
+    edit_mode_inline: In linea
   slider:
     slider: Cursore
     description: Seleziona un numero usando un cursore

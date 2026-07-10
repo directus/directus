@@ -14,6 +14,7 @@ import VTabItem from '@/components/v-tab-item.vue';
 import VTab from '@/components/v-tab.vue';
 import VTabsItems from '@/components/v-tabs-items.vue';
 import VTabs from '@/components/v-tabs.vue';
+import InterfaceInputTranslatedString from '@/interfaces/_system/system-input-translated-string/input-translated-string.vue';
 import InterfaceSelectColor from '@/interfaces/select-color/select-color.vue';
 import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
 import { useFlowsStore } from '@/stores/flows';
@@ -207,7 +208,12 @@ function onApply() {
 							{{ $t('flow_name') }}
 							<VIcon v-tooltip="$t('required')" class="required" name="star" sup filled />
 						</div>
-						<VInput v-model="values.name" autofocus :placeholder="$t('flow_name')" />
+						<InterfaceInputTranslatedString
+							:value="values.name"
+							autofocus
+							:placeholder="$t('flow_name')"
+							@input="values.name = $event"
+						/>
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('status') }}</div>
