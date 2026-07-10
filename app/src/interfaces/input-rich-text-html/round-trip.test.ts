@@ -99,11 +99,14 @@ const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }
 		issue: 'CMS-2643',
 	},
 	{ name: 'iframe', html: '<iframe src="about:blank"></iframe>', absent: '<iframe', issue: 'CMS-2643' },
+	// Accepted regression: with NO configured format, an arbitrary class-bearing span is dropped — the
+	// base schema doesn't model classes. When the field's `customFormats` option defines it, a dynamic
+	// mark restores it (CMS-2648); that configured round-trip is covered in extensions/custom-formats.test.ts.
 	{
-		name: 'custom format span',
+		name: 'custom format span (unconfigured)',
 		html: '<p><span class="my-format">text</span></p>',
 		absent: 'my-format',
-		issue: 'CMS-2648',
+		issue: 'CMS-2648 (configured only)',
 	},
 ];
 

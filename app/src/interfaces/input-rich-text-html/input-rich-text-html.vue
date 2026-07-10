@@ -11,6 +11,7 @@ import ImageDrawer from './drawers/image-drawer.vue';
 import LinkDrawer from './drawers/link-drawer.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
 import { editorExtensions } from './extensions';
+import { buildCustomFormats } from './extensions/custom-formats';
 import { LinkShortcut } from './extensions/link-shortcut';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
@@ -31,6 +32,8 @@ const props = withDefaults(
 		nonEditable?: boolean;
 		imageToken?: string;
 		folder?: string;
+		/** Legacy TinyMCE `customFormats` option (array or JSON string); see extensions/custom-formats.ts. */
+		customFormats?: unknown;
 		softLength?: number;
 		direction?: string;
 	}>(),
@@ -45,6 +48,10 @@ const emit = defineEmits<{ input: [value: string | null] }>();
 const { t } = useI18n();
 
 const { imageToken, folder } = toRefs(props);
+
+// Built once at init from the field's `customFormats` option (design-time config, not reactive edits):
+// dynamic marks go into the editor's schema, the format list drives the toolbar's styles dropdown.
+const { extensions: customFormatExtensions, formats: customFormatList } = buildCustomFormats(props.customFormats);
 
 const pageBreakLabel = computed(() => `"${t('wysiwyg_options.pagebreak')}"`);
 
@@ -90,7 +97,11 @@ const percRemaining = computed(() => percentage(count.value, props.softLength) ?
 
 const editor = useEditor({
 	// LinkShortcut lives here, not in the shared set, so its Mod-K handler can call this instance's opener
-	extensions: [...editorExtensions, LinkShortcut.configure({ onTrigger: () => openLinkDrawer() })],
+	extensions: [
+		...editorExtensions,
+		...customFormatExtensions,
+		LinkShortcut.configure({ onTrigger: () => openLinkDrawer() }),
+	],
 	content: '',
 	editable: isEditable.value,
 	editorProps: {
@@ -202,6 +213,7 @@ onKeyStroke('Escape', () => {
 			:editor="editor"
 			:toolbar="toolbar"
 			:font="font"
+			:custom-formats="customFormatList"
 			:disabled="disabled"
 			:fullscreen="fullscreen"
 			:visualaid="visualaid"
