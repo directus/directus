@@ -67,6 +67,18 @@ export default function getMailer(): Transporter {
 				host: env['EMAIL_MAILGUN_HOST'] || 'api.mailgun.net',
 			}) as any,
 		);
+	} else if (transportName === 'mailtrap') {
+		const { MailtrapTransport } = require('mailtrap');
+
+		const mailtrapOptions: Record<string, unknown> = {
+			token: env['EMAIL_MAILTRAP_TOKEN'],
+		};
+
+		if (env['EMAIL_MAILTRAP_SANDBOX'] !== undefined) mailtrapOptions['sandbox'] = env['EMAIL_MAILTRAP_SANDBOX'];
+		if (env['EMAIL_MAILTRAP_INBOX_ID'] !== undefined) mailtrapOptions['testInboxId'] = env['EMAIL_MAILTRAP_INBOX_ID'];
+		if (env['EMAIL_MAILTRAP_BULK'] !== undefined) mailtrapOptions['bulk'] = env['EMAIL_MAILTRAP_BULK'];
+
+		transporter = nodemailer.createTransport(MailtrapTransport(mailtrapOptions) as any);
 	} else {
 		logger.warn('Illegal transport given for email. Check the EMAIL_TRANSPORT env var.');
 	}
