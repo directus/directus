@@ -283,6 +283,46 @@ describe('Integration Tests', () => {
 					});
 				});
 
+				describe('$ref preservation in mergeWith', () => {
+					it('detail path requestBody schema is a bare $ref, not a deep-merged object', async () => {
+						const service = new SpecificationService({
+							knex: db,
+							schema: schema2,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						const patchBody = spec.paths['/items/test_table/{id}']?.patch?.requestBody as any;
+						const bodySchema = patchBody?.content?.['application/json']?.schema;
+
+						expect(bodySchema).toEqual({ $ref: '#/components/schemas/ItemsTestTable' });
+					});
+
+					it('singleton list path GET response data is a bare $ref, not a deep-merged object', async () => {
+						const singletonSchema = new SchemaBuilder()
+							.collection('settings', (c) => {
+								c.field('id').integer().primary().options({ nullable: false });
+							})
+							.options({ singleton: true })
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: singletonSchema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						const responseData =
+							spec.paths['/items/settings']?.get?.responses?.['200']?.content?.['application/json']?.schema?.properties
+								?.data;
+
+						expect(responseData).toEqual({ $ref: '#/components/schemas/ItemsSettings' });
+					});
+				});
+
 				describe('public role security declarations', () => {
 					it('stamps security: [] on operations accessible to the public role', async () => {
 						vi.mocked(fetchPermissions).mockResolvedValueOnce([{ collection: 'test_table', action: 'read' } as any]);

@@ -305,11 +305,7 @@ class OASSpecsService implements SpecificationSubService {
 										},
 									},
 								},
-								(obj, src, key) => {
-									if (key === 'security') return src;
-									if (Array.isArray(obj)) return obj.concat(src);
-									return undefined;
-								},
+								this.mergePathItemCustomizer,
 							);
 						}
 
@@ -352,10 +348,7 @@ class OASSpecsService implements SpecificationSubService {
 										},
 									},
 								},
-								(obj, src) => {
-									if (Array.isArray(obj)) return obj.concat(src);
-									return undefined;
-								},
+								this.mergePathItemCustomizer,
 							);
 						}
 					}
@@ -451,6 +444,13 @@ class OASSpecsService implements SpecificationSubService {
 		}
 
 		return components;
+	}
+
+	private mergePathItemCustomizer(obj: unknown, src: unknown, key: string): unknown {
+		if (key === 'security') return src;
+		if (src !== null && typeof src === 'object' && !Array.isArray(src) && '$ref' in src) return src;
+		if (Array.isArray(obj)) return obj.concat(src);
+		return undefined;
 	}
 
 	private filterCollectionFromParams(
