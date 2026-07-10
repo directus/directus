@@ -1114,5 +1114,35 @@ describe('getSnapshotDiff', () => {
 			expect(result.fields).toHaveLength(0);
 			expect(result.systemFields).toHaveLength(1);
 		});
+
+		test('should diff a custom field on a system collection that has no collections entry', () => {
+			const current = createMockSnapshot({ fields: [] });
+
+			const after = partial({
+				fields: [{ collection: 'directus_users', field: 'bio', type: 'string', meta: null, schema: null }],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.fields).toHaveLength(1);
+			expect(result.fields[0]!.collection).toBe('directus_users');
+			expect(result.fields[0]!.diff[0]!.kind).toBe('N');
+		});
+
+		test('should diff a custom relation on a system collection that has no collections entry', () => {
+			const current = createMockSnapshot({ relations: [] });
+
+			const after = partial({
+				relations: [
+					{ collection: 'directus_users', field: 'org', related_collection: 'orgs', meta: null, schema: null },
+				],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.relations).toHaveLength(1);
+			expect(result.relations[0]!.collection).toBe('directus_users');
+			expect(result.relations[0]!.diff[0]!.kind).toBe('N');
+		});
 	});
 });

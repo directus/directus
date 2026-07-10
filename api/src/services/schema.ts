@@ -9,10 +9,10 @@ import type {
 } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
+import { getVersionedHash } from '../utils/get-versioned-hash.js';
 import { applyDiff } from '../utils/schema/apply-diff.js';
 import { getSnapshotDiff } from '../utils/schema/get-snapshot-diff.js';
 import { getSnapshot } from '../utils/schema/get-snapshot.js';
-import { getVersionedHash } from '../utils/get-versioned-hash.js';
 import { validateApplyDiff } from '../utils/schema/validate-diff.js';
 import { validateSnapshot } from '../utils/schema/validate-snapshot.js';
 

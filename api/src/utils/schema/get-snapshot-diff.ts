@@ -13,9 +13,18 @@ export interface GetSnapshotDiffOptions {
 }
 
 export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: GetSnapshotDiffOptions): SnapshotDiff {
-	// A partial snapshot scopes the diff to its own collections
+	// Account for every collection referenced by the partial snapshot when computing the diff.
+	// Custom system fields/relations will not contain a collection entry.
 	const isPartial = after.version === SNAPSHOT_VERSION.PARTIAL;
-	const scope = isPartial ? new Set(after.collections.map((collection) => collection.collection)) : null;
+
+	const scope = isPartial
+		? new Set([
+				...after.collections.map((collection) => collection.collection),
+				...after.fields.map((field) => field.collection),
+				...after.relations.map((relation) => relation.collection),
+			])
+		: null;
+
 	const systemFieldScope = isPartial ? new Set((after.systemFields ?? []).map((field) => field.collection)) : null;
 
 	const diffedSnapshot: SnapshotDiff = {
