@@ -13,11 +13,6 @@
 	"license": "MIT",
 	"author": "Directus",
 	"type": "module",
-	"exports": {
-		".": "./dist/index.js",
-		"./package.json": "./package.json"
-	},
-	"main": "dist/index.js",
 	"bin": {
 		"directus-cli": "./dist/bin.js",
 		"d6s": "./dist/bin.js"
@@ -26,8 +21,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsdown src/index.ts src/bin.ts --dts",
-		"dev": "tsdown src/index.ts src/bin.ts --dts --watch",
+		"build": "tsdown src/bin.ts",
+		"dev": "tsdown src/bin.ts --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
@@ -45,6 +40,7 @@
 		"@vitest/coverage-v8": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
+		"undici": "catalog:",
 		"vitest": "catalog:"
 	},
 	"engines": {
