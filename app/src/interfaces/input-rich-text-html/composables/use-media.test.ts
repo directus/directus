@@ -35,6 +35,12 @@ test('onMediaSelect maps video MIME to the video tag with file dimensions', () =
 	expect(mediaSelection.value).toMatchObject({ tag: 'video', width: 640, height: 360 });
 });
 
+test('onMediaSelect ignores non-media files', () => {
+	const { mediaSelection, onMediaSelect } = setup();
+	onMediaSelect({ id: 'img1', type: 'image/png', width: 100, height: 100 } as unknown as File);
+	expect(mediaSelection.value).toBeNull();
+});
+
 test('saveMedia (file tab) inserts a video node', () => {
 	const { editor, mediaSelection, saveMedia } = setup();
 

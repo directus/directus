@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { File } from '@directus/types';
+import type { File, Filter } from '@directus/types';
 import { computed } from 'vue';
 import type { MediaSelection } from '../composables/use-media';
 import VCheckbox from '@/components/v-checkbox.vue';
@@ -14,7 +14,7 @@ import VTextarea from '@/components/v-textarea.vue';
 import VUpload from '@/components/v-upload.vue';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
-defineProps<{ folder?: string; allowedMimeTypes?: string; embedInvalid?: boolean }>();
+defineProps<{ folder?: string; allowedMimeTypes?: string; filter?: Filter | null; embedInvalid?: boolean }>();
 
 const emit = defineEmits<{ select: [file: File]; save: []; cancel: [] }>();
 
@@ -108,6 +108,7 @@ const autoHeight = computed({
 						from-url
 						:folder="folder"
 						:accept="allowedMimeTypes"
+						:filter="filter ?? undefined"
 						@input="emit('select', $event as File)"
 					/>
 				</VTabItem>

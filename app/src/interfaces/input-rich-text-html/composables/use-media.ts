@@ -3,6 +3,7 @@ import { DOMParser as PMDOMParser } from '@tiptap/pm/model';
 import type { Editor } from '@tiptap/vue-3';
 import { Ref, ref, watch } from 'vue';
 import type { MediaAttrs, MediaTag } from '../extensions/media';
+import { replaceUrlAccessToken } from './replace-url-access-token';
 import { getPublicURL } from '@/utils/get-root-path';
 
 export type MediaSelection = {
@@ -87,6 +88,10 @@ export function useMedia(editor: Ref<Editor>, imageToken: Ref<string | undefined
 	}
 
 	function onMediaSelect(file: File) {
+		// upload accept/library filter should prevent this, but guard against
+		// non-media picks that would otherwise render as a broken <video>
+		if (!file.type?.startsWith('audio/') && !file.type?.startsWith('video/')) return;
+
 		const src = getPublicURL() + 'assets/' + file.id;
 		const tokenized = replaceUrlAccessToken(src, imageToken.value);
 		const tag: MediaTag = file.type?.startsWith('audio') ? 'audio' : 'video';
@@ -149,29 +154,5 @@ export function useMedia(editor: Ref<Editor>, imageToken: Ref<string | undefined
 		});
 
 		return attrs;
-	}
-
-	function replaceUrlAccessToken(url: string, token: string | null | undefined): string {
-		// Only process assets URL
-		if (!url.includes(getPublicURL() + 'assets/')) {
-			return url;
-		}
-
-		try {
-			const parsedUrl = new URL(url);
-			const params = new URLSearchParams(parsedUrl.search);
-
-			if (!token) {
-				params.delete('access_token');
-			} else {
-				params.set('access_token', token);
-			}
-
-			return Array.from(params).length > 0
-				? `${parsedUrl.origin}${parsedUrl.pathname}?${params.toString()}`
-				: `${parsedUrl.origin}${parsedUrl.pathname}`;
-		} catch {
-			return url;
-		}
 	}
 }

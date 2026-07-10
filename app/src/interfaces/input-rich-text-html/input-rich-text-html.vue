@@ -19,7 +19,7 @@ import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
 import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
-import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
+import { parseGlobalMimeTypeAllowList, useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 
@@ -81,17 +81,12 @@ const editor = useEditor({
 	content: '',
 	editable: isEditable.value,
 	editorProps: {
-		// double-click an image or media node to edit it in the drawer; single click just selects
+		// double-click an image to edit it in the drawer; single click just selects.
+		// Media nodes handle this themselves via their node view's dblclick.
 		handleDoubleClickOn: (_view, _pos, node, nodePos) => {
 			if (node.type.name === 'image') {
 				editor.value?.commands.setNodeSelection(nodePos);
 				openImageDrawer();
-				return true;
-			}
-
-			if (node.type.name === 'media') {
-				editor.value?.commands.setNodeSelection(nodePos);
-				openMediaDrawer();
 				return true;
 			}
 
@@ -120,6 +115,13 @@ const settingsStore = useSettingsStore();
 const { info } = useServerStore();
 
 const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
+
+// The media drawer only handles <video>/<audio>; without this the library picker and upload
+// accept the global list (usually images) and the pick lands as a broken <video>.
+const { mimeTypeFilter: mediaMimeTypeFilter, combinedAcceptString: mediaAllowedMimeTypes } = useMimeTypeFilter([
+	'video/*',
+	'audio/*',
+]);
 
 const storageAssetTransform = ref('all');
 const storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
@@ -256,7 +258,8 @@ onKeyStroke('Escape', () => {
 			v-model:active-tab="activeTab"
 			:embed-invalid="embedInvalid"
 			:folder="folder"
-			:allowed-mime-types="allowedMimeTypes"
+			:allowed-mime-types="mediaAllowedMimeTypes"
+			:filter="mediaMimeTypeFilter"
 			@select="onMediaSelect"
 			@save="saveMedia"
 			@cancel="closeMediaDrawer"
