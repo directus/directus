@@ -2,6 +2,7 @@ import type { Field, Relation, SchemaOverview, Snapshot } from '@directus/types'
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash-es';
+import { SNAPSHOT_VERSION } from '../constants.js';
 import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { CollectionsService } from '../services/collections.js';
 import { FieldsService } from '../services/fields.js';
@@ -9,7 +10,25 @@ import { RelationsService } from '../services/relations.js';
 import { getSchema } from './get-schema.js';
 import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
-export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {
+export interface GetSnapshotOptions {
+	database?: Knex;
+	schema?: SchemaOverview;
+	/**
+	 * Scope the snapshot to exactly these collections
+	 */
+	collections?: string[] | undefined;
+}
+
+/**
+ * Build a snapshot of the current schema.
+ *
+ * @param options - Optional connection overrides and collection scoping.
+ * @param options.database - Knex instance to read from; defaults to the shared connection.
+ * @param options.schema - Pre-fetched schema overview; fetched fresh (cache bypassed) when omitted.
+ * @param options.collections - Restrict the snapshot to these collections, producing a partial snapshot (version 2)
+ * @returns The schema snapshot.
+ */
+export async function getSnapshot(options?: GetSnapshotOptions): Promise<Snapshot> {
 	const database = options?.database ?? getDatabase();
 	const vendor = getDatabaseClient(database);
 	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
@@ -24,10 +43,21 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 		relationsService.readAll(),
 	]);
 
-	const collectionsFiltered = collectionsRaw.filter((item) => excludeSystem(item) && excludeUntracked(item));
-	const fieldsFiltered = fieldsRaw.filter((item) => excludeSystem(item) && excludeUntracked(item));
-	const relationsFiltered = relationsRaw.filter((item) => excludeSystem(item) && excludeUntracked(item));
-	const systemFieldsFiltered = fieldsRaw.filter((item) => systemFieldWithIndex(item));
+	const scope = options?.collections !== undefined ? new Set(options.collections) : null;
+
+	const collectionsFiltered = collectionsRaw.filter(
+		(item) => excludeSystem(item) && excludeUntracked(item) && excludeOutOfScope(item, scope),
+	);
+
+	const fieldsFiltered = fieldsRaw.filter(
+		(item) => excludeSystem(item) && excludeUntracked(item) && excludeOutOfScope(item, scope),
+	);
+
+	const relationsFiltered = relationsRaw.filter(
+		(item) => excludeSystem(item) && excludeUntracked(item) && excludeOutOfScope(item, scope),
+	);
+
+	const systemFieldsFiltered = fieldsRaw.filter((item) => systemFieldWithIndex(item) && excludeOutOfScope(item, scope));
 
 	const collectionsSorted = sortBy(mapValues(collectionsFiltered, sortDeep), ['collection']).map((collection) =>
 		sanitizeCollection(collection),
@@ -46,7 +76,7 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 	);
 
 	return {
-		version: 1,
+		version: scope !== null ? SNAPSHOT_VERSION.PARTIAL : SNAPSHOT_VERSION.FULL,
 		directus: version,
 		vendor,
 		collections: collectionsSorted,
@@ -66,6 +96,11 @@ function systemFieldWithIndex(item: {
 	schema: { is_indexed: boolean } | null;
 }) {
 	return item.meta?.system === true && item.schema?.is_indexed;
+}
+
+function excludeOutOfScope(item: { collection: string }, scope: Set<string> | null) {
+	if (scope === null) return true;
+	return scope.has(item.collection);
 }
 
 function excludeUntracked(item: { meta: unknown | null } | null) {

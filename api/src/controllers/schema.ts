@@ -1,23 +1,46 @@
 import { InvalidPayloadError, UnsupportedMediaTypeError } from '@directus/errors';
 import type { Snapshot, SnapshotDiffWithHash } from '@directus/types';
-import { parseJSON, toBoolean } from '@directus/utils';
+import { parseJSON, toArray, toBoolean } from '@directus/utils';
 import Busboy from 'busboy';
 import type { RequestHandler } from 'express';
 import express from 'express';
 import { load as loadYaml } from 'js-yaml';
+import { z } from 'zod';
+import { fromZodError } from 'zod-validation-error';
 import { useLogger } from '../logger/index.js';
+import checkIsAdmin from '../middleware/is-admin.js';
 import { respond } from '../middleware/respond.js';
 import { SchemaService } from '../services/schema.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getVersionedHash } from '../utils/get-versioned-hash.js';
+import { resolveScopedCollections } from './schema/resolve-scoped-collections.js';
 
 const router = express.Router();
 
+/** Accepts a single collection name or a list, always normalizing to a string array. */
+const collectionList = z.union([z.string(), z.array(z.string())]).transform((value) => toArray(value));
+
+const snapshotQuerySchema = z
+	.object({
+		includeCollections: collectionList.optional(),
+		excludeCollections: collectionList.optional(),
+	})
+	.refine((value) => !(value.includeCollections && value.excludeCollections), {
+		message: `"includeCollections" and "excludeCollections" parameters cannot be used together`,
+	});
+
 router.get(
 	'/snapshot',
+	checkIsAdmin,
 	asyncHandler(async (req, res, next) => {
+		const parsed = snapshotQuerySchema.safeParse(req.query);
+		if (!parsed.success) throw new InvalidPayloadError({ reason: fromZodError(parsed.error).message });
+
+		// `null` (no scope) is full snapshot.
+		const collections = resolveScopedCollections(req.schema, parsed.data) ?? undefined;
+
 		const service = new SchemaService({ accountability: req.accountability });
-		const currentSnapshot = await service.snapshot();
+		const currentSnapshot = await service.snapshot({ collections });
 		res.locals['payload'] = { data: currentSnapshot };
 		return next();
 	}),
