@@ -185,8 +185,8 @@ class OASSpecsService implements SpecificationSubService {
 			}
 		}
 
-		// Filter out the generic Items information
-		return tags.filter((tag) => tag.name !== 'Items');
+		// Filter out the generic Items information, then sort alphabetically for consistent output
+		return tags.filter((tag) => tag.name !== 'Items').sort((a, b) => a.name.localeCompare(b.name));
 	}
 
 	private async generatePaths(
@@ -454,6 +454,8 @@ class OASSpecsService implements SpecificationSubService {
 		// Resolve transitive schema-to-schema dependencies (e.g. Files → Folders/Users when
 		// the public role has no access to those collections).
 		this.resolveSchemaRefs(components.schemas, components.schemas);
+
+		components.schemas = Object.fromEntries(Object.entries(components.schemas).sort(([a], [b]) => a.localeCompare(b)));
 
 		return components;
 	}
