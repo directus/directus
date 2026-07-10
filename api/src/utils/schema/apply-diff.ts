@@ -107,7 +107,7 @@ export async function applyDiff(
 
 		const deleteCollections = async (collections: CollectionDelta[]) => {
 			for (const { collection, diff } of collections) {
-				if (diff?.[0]?.kind === DiffKind.DELETE) {
+				if (diff?.[0]?.kind === DiffKind.DELETE && !isNestedMetaUpdate(diff[0])) {
 					const relations = schema.relations.filter(
 						(r) => r.related_collection === collection || r.collection === collection,
 					);
@@ -182,13 +182,13 @@ export async function applyDiff(
 		const collectionsToDelete = snapshotDiff.collections.filter(({ diff }) => {
 			if (diff.length === 0 || diff[0] === undefined) return false;
 			const collectionDiff = diff[0] as DiffDeleted<Collection>;
-			return collectionDiff.kind === DiffKind.DELETE;
+			return collectionDiff.kind === DiffKind.DELETE && !isNestedMetaUpdate(collectionDiff);
 		});
 
 		if (collectionsToDelete.length > 0) await deleteCollections(collectionsToDelete);
 
 		for (const { collection, diff } of snapshotDiff.collections) {
-			if (diff?.[0]?.kind === DiffKind.EDIT || diff?.[0]?.kind === DiffKind.ARRAY) {
+			if (diff?.[0]?.kind === DiffKind.EDIT || diff?.[0]?.kind === DiffKind.ARRAY || isNestedMetaUpdate(diff[0]!)) {
 				const currentCollection = currentSnapshot.collections.find((field) => {
 					return field.collection === collection;
 				});
@@ -371,7 +371,7 @@ export async function applyDiff(
 	}
 }
 
-export function isNestedMetaUpdate(diff: Diff<SnapshotField | undefined>): boolean {
+export function isNestedMetaUpdate(diff: Diff<Collection | SnapshotField | undefined>): boolean {
 	if (!diff) return false;
 	if (diff.kind !== DiffKind.NEW && diff.kind !== DiffKind.DELETE) return false;
 	if (!diff.path || diff.path.length < 2 || diff.path[0] !== 'meta') return false;
