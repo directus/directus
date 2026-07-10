@@ -328,6 +328,61 @@ describe('applyDiff', () => {
 			expect(deleteOneCollectionSpy).toHaveBeenCalledTimes(1);
 			expect(deleteOneCollectionSpy).toHaveBeenCalledWith('test_collection', mutationOptions);
 		});
+
+		it('Handles nested meta delete as metadata update instead of deleting the collection', async () => {
+			const currentSnapshot: Snapshot = {
+				version: 1,
+				directus: '0.0.0',
+				collections: [
+					{
+						collection: 'articles',
+						meta: { status: 'draft', hidden: false },
+						schema: { name: 'articles' },
+					} as unknown as SnapshotCollection,
+				],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			};
+
+			const snapshotDiff: SnapshotDiff = {
+				collections: [
+					{
+						collection: 'articles',
+						diff: [
+							{
+								kind: DiffKind.DELETE,
+								path: ['meta', 'status'],
+								lhs: 'draft' as any,
+							},
+						],
+					},
+				],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			};
+
+			const deleteOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'deleteOne').mockResolvedValue('test');
+			const updateOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'updateOne').mockResolvedValue('test');
+
+			await applyDiff(currentSnapshot, snapshotDiff, { database: db, schema: snapshotApplyTestSchema });
+
+			expect(deleteOneCollectionSpy).not.toHaveBeenCalled();
+
+			expect(updateOneCollectionSpy).toHaveBeenCalledTimes(1);
+
+			expect(updateOneCollectionSpy).toHaveBeenCalledWith(
+				'articles',
+				expect.objectContaining({
+					meta: expect.objectContaining({ hidden: false }),
+				}),
+				mutationOptions,
+			);
+
+			const updatedMeta = updateOneCollectionSpy.mock.calls[0]?.[1]?.meta as Record<string, unknown>;
+			expect(updatedMeta).not.toHaveProperty('status');
+		});
 	});
 
 	describe('Fields', () => {
