@@ -558,7 +558,9 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		// Fields on this collection that own a relation (m2o / a2o). An object value here would be a
 		// nested create, which the per-row path handles specially.
 		const relationalFields = new Set(
-			this.schema.relations.filter((relation) => relation.collection === this.collection).map((relation) => relation.field),
+			this.schema.relations
+				.filter((relation) => relation.collection === this.collection)
+				.map((relation) => relation.field),
 		);
 
 		for (const payload of data) {
@@ -647,11 +649,17 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					)
 				: payloadAfterHooks;
 
-			const { payload: payloadWithM2O, nestedActionEvents: nestedM2O, userIntegrityCheckFlags: flagsM2O } =
-				await payloadService.processM2O(payloadWithPresets, opts);
+			const {
+				payload: payloadWithM2O,
+				nestedActionEvents: nestedM2O,
+				userIntegrityCheckFlags: flagsM2O,
+			} = await payloadService.processM2O(payloadWithPresets, opts);
 
-			const { payload: payloadWithA2O, nestedActionEvents: nestedA2O, userIntegrityCheckFlags: flagsA2O } =
-				await payloadService.processA2O(payloadWithM2O, opts);
+			const {
+				payload: payloadWithA2O,
+				nestedActionEvents: nestedA2O,
+				userIntegrityCheckFlags: flagsA2O,
+			} = await payloadService.processA2O(payloadWithM2O, opts);
 
 			nestedActionEvents.push(...nestedM2O, ...nestedA2O);
 			userIntegrityCheckFlags |= flagsM2O | flagsA2O;
