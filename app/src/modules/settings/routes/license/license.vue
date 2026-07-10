@@ -41,7 +41,7 @@ const serverStore = useServerStore();
 const { info: license, addons, loading, boundary, isLicensed } = storeToRefs(licenseStore);
 
 const isLicenseSourceEnv = computed(() => license.value?.source === 'env');
-const isLicenseKeyManagementEnabled = computed(() => licenseStore.info?.editable);
+const isLicenseEditable = computed(() => license.value?.editable);
 
 const boundaryDate = computed(() => {
 	if (!boundary.value || !Number.isFinite(boundary.value.timestamp) || boundary.value.timestamp === -1) return null;
@@ -67,9 +67,11 @@ const upgradePlanLink = computed(() =>
 );
 
 const manageLicenseDisabledMessage = computed(() => {
-	if (!isLicenseKeyManagementEnabled.value) return t('licensing.manage_license_disabled');
-
+	// `editable` is also false for env-sourced licenses, so check the source first to show
+	// the more specific env message before falling back to the management-disabled one.
 	if (isLicenseSourceEnv.value) return t('licensing.env_managed');
+
+	if (!isLicenseEditable.value) return t('licensing.manage_license_disabled');
 
 	return null;
 });
@@ -283,7 +285,7 @@ async function handleDeactivateConfirm() {
 							v-tooltip.bottom="manageLicenseDisabledMessage"
 							secondary
 							small
-							:disabled="isLicenseKeyManagementEnabled === false"
+							:disabled="isLicenseEditable === false"
 							@click="addLicenseDrawer = true"
 						>
 							{{ isLicensed ? t('licensing.manage') : t('licensing.add') }}
@@ -326,11 +328,11 @@ async function handleDeactivateConfirm() {
 
 				<LicenseSection v-if="license.source !== null" icon="emergency_home" :title="t('danger_zone')" kind="danger">
 					<div class="danger-zone-content">
-						<VNotice v-if="isLicenseKeyManagementEnabled === false" type="info" class="danger-zone-notice">
+						<VNotice v-if="isLicenseEditable === false" type="info" class="danger-zone-notice">
 							{{ manageLicenseDisabledMessage }}
 						</VNotice>
 						<VButton
-							:disabled="isLicenseKeyManagementEnabled === false"
+							:disabled="isLicenseEditable === false"
 							:loading="deactivateLoading"
 							danger
 							@click="handleDeactivateClick"

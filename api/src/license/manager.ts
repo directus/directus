@@ -129,8 +129,9 @@ export class LicenseManager {
 							// CASE D
 							await this.activate(envKey);
 						} else if (envKey !== dbKey) {
-							// CASE B
-							await this.update(envKey, { oldKey: dbKey });
+							// CASE B — update operates on manager state, so seed it with the existing DB key
+							this.licenseKey = dbKey;
+							await this.update(envKey);
 						} else {
 							// CASE C
 							await this.refresh({ key: envKey, token: dbToken ?? null });
@@ -187,6 +188,7 @@ export class LicenseManager {
 		}
 	}
 
+	// Env-sourced licenses can never be managed via the API, independent of the flag.
 	public getEditable(): boolean {
 		return toBoolean(env['LICENSE_KEY_MANAGEMENT_ENABLED']) && this.source !== 'env';
 	}
