@@ -9,13 +9,11 @@ export const list: CommandDefinition = {
 	description: 'List configured profiles',
 	args: schema,
 	run({ ctx }: CommandContext<z.infer<typeof schema>>) {
-		const profiles = loadConfig({ cwd: ctx.cwd })?.config.profiles ?? {};
+		const profiles = loadConfig({ cwd: ctx.cwd, configPath: ctx.configPath })?.config.profiles ?? {};
 		const rows = Object.entries(profiles).map(([name, p]) => ({ name, url: p.url }));
 
-		if (ctx.ui.json) {
-			ctx.ui.data(rows);
-			return;
-		}
+		ctx.ui.data(rows);
+		if (ctx.ui.json) return;
 
 		if (rows.length === 0) {
 			ctx.ui.info('No profiles configured.');

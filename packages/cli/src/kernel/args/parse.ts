@@ -72,7 +72,7 @@ function coerce(value: unknown, meta: FieldMeta | undefined): unknown {
 	if (meta.type === 'number' && typeof value === 'string') return Number(value);
 
 	if (meta.type === 'array' && meta.itemType === 'number' && Array.isArray(value)) {
-		return (value as unknown[]).map((item) => (typeof item === 'string' ? Number(item) : item));
+		return value.map((item) => (typeof item === 'string' ? Number(item) : item));
 	}
 
 	return value;

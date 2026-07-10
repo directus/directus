@@ -6,35 +6,35 @@ function pad(left: string): string {
 	return `  ${left}`.padEnd(28);
 }
 
+// One `<group> <command>  description` line per command in the given groups.
+function commandLines(groups: readonly CommandGroup[]): string[] {
+	return groups.flatMap((group) =>
+		Object.values(group.commands).map((command) => pad(`${group.name} ${command.name}`) + command.description),
+	);
+}
+
 export function renderRootHelp(groups: readonly CommandGroup[]): string {
-	const lines: string[] = ['Usage: d6s <command> [options]', ''];
-
-	if (groups.length === 0) {
-		lines.push('No commands available yet — kernel scaffolding in progress.');
-		return lines.join('\n');
-	}
-
-	lines.push('Commands:');
-
-	for (const group of groups) {
-		for (const command of Object.values(group.commands)) {
-			lines.push(pad(`${group.name} ${command.name}`) + command.description);
-		}
-	}
-
-	lines.push('', "Run 'd6s <command> --help' for details.");
-	return lines.join('\n');
+	return [
+		'Usage: d6s <command> [options]',
+		'',
+		'Commands:',
+		...commandLines(groups),
+		'',
+		"Run 'd6s <command> --help' for details.",
+	].join('\n');
 }
 
 export function renderGroupHelp(group: CommandGroup): string {
-	const lines: string[] = [group.description, '', `Usage: d6s ${group.name} <command> [options]`, '', 'Commands:'];
-
-	for (const command of Object.values(group.commands)) {
-		lines.push(pad(`${group.name} ${command.name}`) + command.description);
-	}
-
-	lines.push('', `Run 'd6s ${group.name} <command> --help' for details.`);
-	return lines.join('\n');
+	return [
+		group.description,
+		'',
+		`Usage: d6s ${group.name} <command> [options]`,
+		'',
+		'Commands:',
+		...commandLines([group]),
+		'',
+		`Run 'd6s ${group.name} <command> --help' for details.`,
+	].join('\n');
 }
 
 export function renderCommandHelp(groupName: string, command: CommandDefinition): string {
