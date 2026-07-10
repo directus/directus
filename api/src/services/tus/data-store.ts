@@ -73,7 +73,7 @@ export class TusDataStore extends DataStore {
 			upload.metadata['type'] = 'application/octet-stream';
 		}
 
-		const mimeType = upload.metadata['type']!;
+		const mimeType = upload.metadata['type'];
 		const env = useEnv();
 		const allowedPatterns = toArray(env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]);
 		const mimeTypeAllowed = allowedPatterns.some((pattern) => minimatch(mimeType, pattern));

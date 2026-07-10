@@ -4,7 +4,7 @@
  * https://tus.io/
  */
 import { useEnv } from '@directus/env';
-import { UnsupportedMediaTypeError } from '@directus/errors';
+import { isDirectusError } from '@directus/errors';
 import type { Driver, TusDriver } from '@directus/storage';
 import { supportsTus } from '@directus/storage';
 import type { Accountability, File, SchemaOverview } from '@directus/types';
@@ -118,11 +118,9 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 			};
 		},
 		onResponseError(_req, _res, err) {
-			if (err instanceof UnsupportedMediaTypeError) {
-				return Promise.resolve({ status_code: err.status, body: err.message + '\n' });
+			if (isDirectusError(err)) {
+				return { status_code: err.status, body: err.message + '\n' };
 			}
-
-			return Promise.reject(err);
 		},
 		generateUrl(_req, opts) {
 			return env['PUBLIC_URL'] + '/files/tus/' + opts.id;
