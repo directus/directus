@@ -29,15 +29,6 @@ const snapshotQuerySchema = z
 		message: `"includeCollections" and "excludeCollections" parameters cannot be used together`,
 	});
 
-const diffQuerySchema = z.object({
-	// A bare `?force` (empty string) counts as true; an explicit `?force=false` stays false.
-	force: z
-		.string()
-		.optional()
-		.transform((value) => value === '' || toBoolean(value)),
-	mode: z.enum(['merge', 'mirror']).default('mirror'),
-});
-
 router.get(
 	'/snapshot',
 	checkIsAdmin,
@@ -130,6 +121,15 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 
 	req.pipe(busboy);
 };
+
+const diffQuerySchema = z.object({
+	// A bare `?force` (empty string) counts as true; an explicit `?force=false` stays false.
+	force: z
+		.string()
+		.optional()
+		.transform((value) => value === '' || toBoolean(value)),
+	mode: z.enum(['merge', 'mirror']).default('mirror'),
+});
 
 router.post(
 	'/diff',
