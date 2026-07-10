@@ -152,7 +152,7 @@ describe('PATCH /licenses', () => {
 
 	test('update from CORE rejects', async () => {
 		await expect(api.request(updateLicense({ license_key: baseLicense.key }))).rejects.toThrowError(
-			'A current license must be provided in order to update',
+			'There is no active license to manage.',
 		);
 	});
 });
@@ -175,9 +175,7 @@ describe('DELETE /licenses', () => {
 	});
 
 	test('deactivate from CORE rejects', async () => {
-		await expect(api.request(deactivateLicense())).rejects.toThrowError(
-			'"key" has to be defined in order to deactivate',
-		);
+		await expect(api.request(deactivateLicense())).rejects.toThrowError('There is no active license to manage.');
 	});
 });
 

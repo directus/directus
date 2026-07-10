@@ -239,6 +239,21 @@ export class LicenseManager {
 	}
 
 	/**
+	 * Throw if there is no active license to update or deactivate.
+	 *
+	 * Activation is the only management operation valid without an existing license;
+	 * update/deactivate require one. Checks manager state (not a passed-in key) so an
+	 * explicit key argument cannot bypass the guard.
+	 */
+	private assertLicenseExists() {
+		if (this.initialized && this.licenseKey === null) {
+			throw new ForbiddenError({
+				reason: `There is no active license to manage.`,
+			});
+		}
+	}
+
+	/**
 	 * Throw if the current license cannot have its entitlements changed (e.g. adding addons).
 	 *
 	 * Addons are supported for all licenses except core and offline.
@@ -320,12 +335,7 @@ export class LicenseManager {
 
 	public async deactivate(key?: string) {
 		this.assertCanManageLicense();
-
-		const currentKey = key ?? this.licenseKey;
-
-		if (!currentKey) {
-			throw new ForbiddenError({ reason: '"key" has to be defined in order to deactivate' });
-		}
+		this.assertLicenseExists();
 
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
@@ -333,7 +343,7 @@ export class LicenseManager {
 
 		try {
 			await deactivateKey({
-				license_key: currentKey,
+				license_key: this.licenseKey!,
 				project_id: project_id!,
 				public_url: env['PUBLIC_URL'] as string,
 			});
@@ -351,14 +361,9 @@ export class LicenseManager {
 	/**
 	 * Update from an existing key to a new key
 	 */
-	public async update(newKey: string, options?: { oldKey: string }) {
+	public async update(newKey: string) {
 		this.assertCanManageLicense();
-
-		const currentKey = options?.oldKey ?? this.licenseKey;
-
-		if (!currentKey) {
-			throw new ForbiddenError({ reason: 'A current license must be provided in order to update' });
-		}
+		this.assertLicenseExists();
 
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
@@ -367,7 +372,7 @@ export class LicenseManager {
 		try {
 			const { token } = await updateKey(
 				{
-					license_key: currentKey,
+					license_key: this.licenseKey!,
 					project_id: project_id!,
 					public_url: env['PUBLIC_URL'] as string,
 				},
