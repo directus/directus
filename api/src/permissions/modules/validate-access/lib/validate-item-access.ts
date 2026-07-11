@@ -66,7 +66,7 @@ export async function validateItemAccess(
 	const ast: AST = {
 		type: 'root',
 		name: options.collection,
-		query: { limit: isSingleton && !hasPrimaryKeys ? 1 : options.primaryKeys!.length },
+		query: { limit: isSingleton && !hasPrimaryKeys ? 1 : [...new Set(options.primaryKeys!)].length },
 		// Act as if every field was a "normal" field
 		children:
 			options.fields?.map((field) => ({ type: 'field', name: field, fieldKey: field, whenCase: [], alias: false })) ??
@@ -131,7 +131,7 @@ export async function validateItemAccess(
 		action: options.action,
 	});
 
-	const expectedCount = isSingleton && !hasPrimaryKeys ? 1 : options.primaryKeys!.length;
+	const expectedCount = isSingleton && !hasPrimaryKeys ? 1 : [...new Set(options.primaryKeys!)].length;
 	const hasAccess = items && items.length === expectedCount;
 
 	if (!hasAccess) {
