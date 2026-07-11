@@ -928,7 +928,7 @@ function usePublishActions() {
 		else if (quit) router.push(collectionRoute.value);
 		else router.replace(getItemRoute(props.collection, newItemKey));
 
-		deleteVersion(versionId);
+		if (deleteVersionsAllowed.value) await deleteVersion(versionId);
 	}
 
 	function finalizePublishedItem() {
