@@ -259,8 +259,12 @@ describe('Integration Tests', () => {
 						const maskedSchema = new SchemaBuilder()
 							.collection('test_secrets', (c) => {
 								c.field('id').integer().primary().options({ nullable: false });
-								c.field('api_key').string().options({ special: ['conceal'] });
-								c.field('blob').string().options({ special: ['encrypt'] });
+								c.field('api_key')
+									.string()
+									.options({ special: ['conceal'] });
+								c.field('blob')
+									.string()
+									.options({ special: ['encrypt'] });
 								c.field('password_hash').hash();
 							})
 							.build();
@@ -284,7 +288,9 @@ describe('Integration Tests', () => {
 						const usersSchema = new SchemaBuilder()
 							.collection('directus_users', (c) => {
 								c.field('id').uuid().primary().options({ nullable: false });
-								c.field('password').hash().options({ special: ['hash', 'conceal'] });
+								c.field('password')
+									.hash()
+									.options({ special: ['hash', 'conceal'] });
 								c.field('email').string();
 							})
 							.build();
