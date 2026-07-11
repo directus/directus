@@ -254,6 +254,53 @@ describe('Integration Tests', () => {
 							}
 						`);
 					});
+
+					it('marks conceal/encrypt fields writeOnly, not hash-only', async () => {
+						const maskedSchema = new SchemaBuilder()
+							.collection('test_secrets', (c) => {
+								c.field('id').integer().primary().options({ nullable: false });
+								c.field('api_key').string().options({ special: ['conceal'] });
+								c.field('blob').string().options({ special: ['encrypt'] });
+								c.field('password_hash').hash();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: maskedSchema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+						const properties = (spec.components?.schemas?.['ItemsTestSecrets'] as any)?.properties;
+
+						expect(properties?.api_key?.writeOnly).toBe(true);
+						expect(properties?.blob?.writeOnly).toBe(true);
+						expect(properties?.password_hash?.writeOnly).toBeUndefined();
+						expect(properties?.id?.writeOnly).toBeUndefined();
+					});
+
+					it('marks system Users password writeOnly from the live schema special flags', async () => {
+						const usersSchema = new SchemaBuilder()
+							.collection('directus_users', (c) => {
+								c.field('id').uuid().primary().options({ nullable: false });
+								c.field('password').hash().options({ special: ['hash', 'conceal'] });
+								c.field('email').string();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: usersSchema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+						const properties = (spec.components?.schemas?.['Users'] as any)?.properties;
+
+						expect(properties?.password?.writeOnly).toBe(true);
+						expect(properties?.email?.writeOnly).toBeUndefined();
+					});
 				});
 
 				describe('path', () => {

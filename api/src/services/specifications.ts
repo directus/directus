@@ -394,10 +394,12 @@ class OASSpecsService implements SpecificationSubService {
 				schemaComponent['x-collection'] = collection.collection;
 
 				for (const field of fieldsInCollection) {
-					schemaComponent.properties[field.field] =
+					const property =
 						(cloneDeep(
 							(spec.components!.schemas![tag.name] as SchemaObject).properties![field.field],
 						) as SchemaObject) || this.generateField(schema, collection.collection, field, tags);
+
+					schemaComponent.properties[field.field] = this.applyWriteOnly(property, field);
 				}
 
 				components.schemas[tag.name] = schemaComponent;
@@ -413,7 +415,7 @@ class OASSpecsService implements SpecificationSubService {
 
 				for (const field of fieldsInCollection) {
 					const fieldSchema = this.generateField(schema, collection.collection, field, tags);
-					schemaComponent.properties![field.field] = fieldSchema;
+					schemaComponent.properties![field.field] = this.applyWriteOnly(fieldSchema, field);
 
 					// Check if field is required
 					if (field.nullable === false && field.defaultValue === null && field.generated === false) {
@@ -451,6 +453,15 @@ class OASSpecsService implements SpecificationSubService {
 			default:
 				return 'read';
 		}
+	}
+
+	/** conceal/encrypt fields are masked on every read — mark writeOnly in OAS */
+	private applyWriteOnly(property: SchemaObject, field: FieldOverview): SchemaObject {
+		if (field.special?.includes('conceal') || field.special?.includes('encrypt')) {
+			property.writeOnly = true;
+		}
+
+		return property;
 	}
 
 	private generateField(
