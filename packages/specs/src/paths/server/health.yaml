@@ -1,0 +1,56 @@
+get:
+  summary: Health Check
+  description: |-
+    Checks if the server is healthy and can be used.
+    Returns 200 when healthy, 503 when degraded.
+    Only available when HEALTHCHECK_ENABLED is not false.
+  operationId: health
+  responses:
+    '200':
+      description: Healthy
+      content:
+        application/health+json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: ok
+              releaseId:
+                type: string
+              serviceId:
+                type: string
+              checks:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    type:
+                      type: string
+                    status:
+                      type: string
+                    threshold:
+                      type: integer
+                      nullable: true
+    '503':
+      description: Service Unavailable
+      content:
+        application/health+json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: error
+              releaseId:
+                type: string
+              serviceId:
+                type: string
+              checks:
+                type: array
+                items:
+                  type: object
+  tags:
+    - Server

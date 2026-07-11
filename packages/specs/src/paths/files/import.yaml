@@ -1,0 +1,34 @@
+post:
+  summary: Import File from URL
+  description: Import a file from a remote URL.
+  operationId: importFile
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - url
+          properties:
+            url:
+              type: string
+              format: uri
+              description: The URL to import the file from
+            data:
+              type: object
+              description: Any additional data to pass along with the file
+            filterMimeType:
+              type: string
+              description: Optional MIME type filter
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Files'
+  tags:
+    - Files

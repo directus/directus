@@ -178,10 +178,14 @@ paths:
     $ref: './paths/files/files.yaml'
   /files/{id}:
     $ref: './paths/files/file.yaml'
+  /files/import:
+    $ref: './paths/files/import.yaml'
 
   # Flows
   /flows:
     $ref: './paths/flows/flows.yaml'
+  /flows/trigger/{id}:
+    $ref: './paths/flows/trigger.yaml'
   /flows/{id}:
     $ref: './paths/flows/flow.yaml'
 
@@ -236,6 +240,8 @@ paths:
     $ref: './paths/server/info.yaml'
   /server/ping:
     $ref: './paths/server/ping.yaml'
+  /server/health:
+    $ref: './paths/server/health.yaml'
 
   # Settings
   /settings:

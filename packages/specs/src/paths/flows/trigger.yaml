@@ -1,0 +1,36 @@
+get:
+  summary: Trigger a Flow via GET
+  description: Trigger a flow via a GET webhook request.
+  operationId: triggerFlow
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/UUId'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+  tags:
+    - Flows
+
+post:
+  summary: Trigger a Flow via POST
+  description: Trigger a flow via a POST webhook request.
+  operationId: triggerFlowPost
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/UUId'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+  tags:
+    - Flows
