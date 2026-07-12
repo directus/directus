@@ -1,0 +1,136 @@
+get:
+  tags:
+    - Translations
+  operationId: getTranslations
+  summary: List Translations
+  description: List the translations.
+  security:
+    - Auth: []
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+    - $ref: '../../openapi.yaml#/components/parameters/Page'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Translations'
+              meta:
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+
+post:
+  tags:
+    - Translations
+  operationId: createTranslation
+  summary: Create a Translation
+  description: Create a new translation.
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [key, language, value]
+          properties:
+            key:
+              type: string
+              example: 'notification.item_created'
+            language:
+              type: string
+              example: en
+            value:
+              type: string
+              example: 'A new item has been created'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Translations'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+
+patch:
+  summary: Update Multiple Translations
+  description: Update multiple translations at the same time.
+  tags:
+    - Translations
+  operationId: updateTranslations
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            keys:
+              type: array
+              items:
+                type: string
+            data:
+              type: object
+              properties:
+                key:
+                  type: string
+                  example: 'notification.item_created'
+                language:
+                  type: string
+                  example: en
+                value:
+                  type: string
+                  example: 'A new item has been created'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Translations'
+              meta:
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+
+delete:
+  summary: Delete Multiple Translations
+  description: Delete multiple existing translations.
+  tags:
+    - Translations
+  operationId: deleteTranslations
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

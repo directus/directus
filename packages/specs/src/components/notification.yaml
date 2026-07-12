@@ -1,0 +1,49 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for this notification.
+    example: 1
+    type: integer
+  status:
+    description: Status of the notification.
+    example: inbox
+    type: string
+    enum:
+      - inbox
+      - archived
+  timestamp:
+    description: When the notification was created.
+    example: '2024-01-23T12:34:56Z'
+    type: string
+    format: date-time
+  recipient:
+    description: User who is receiving this notification.
+    example: 81dfa7e0-56d2-471f-b96a-1cf8a62bdf28
+    oneOf:
+      - type: string
+      - $ref: '../openapi.yaml#/components/schemas/Users'
+  sender:
+    description: User who is sending this notification.
+    example: 81dfa7e0-56d2-471f-b96a-1cf8a62bdf28
+    oneOf:
+      - type: string
+      - $ref: '../openapi.yaml#/components/schemas/Users'
+  subject:
+    description: Subject of the notification.
+    example: 'New item created'
+    type: string
+  message:
+    description: Message content of the notification.
+    example: 'A new article has been created.'
+    type: string
+    nullable: true
+  collection:
+    description: Collection identifier if notification is related to an item.
+    example: articles
+    type: string
+    nullable: true
+  item:
+    description: Item identifier if notification is related to an item.
+    example: '123'
+    type: string
+    nullable: true

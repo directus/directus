@@ -1,0 +1,76 @@
+get:
+  tags:
+    - Translations
+  operationId: getTranslation
+  summary: Retrieve a Translation
+  description: Retrieve a single translation by unique identifier.
+  security:
+    - Auth: []
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Translations'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+
+patch:
+  tags:
+    - Translations
+  operationId: updateTranslation
+  summary: Update a Translation
+  description: Update an existing translation.
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            key:
+              type: string
+              example: 'notification.item_created'
+            language:
+              type: string
+              example: en
+            value:
+              type: string
+              example: 'A new item has been created'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Translations'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+
+delete:
+  tags:
+    - Translations
+  operationId: deleteTranslation
+  summary: Delete a Translation
+  description: Delete an existing translation.
+  security:
+    - Auth: []
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

@@ -1,0 +1,18 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for this translation.
+    example: 81dfa7e0-56d2-471f-b96a-1cf8a62bdf28
+    type: string
+  key:
+    description: Translation key.
+    example: 'notification.item_created'
+    type: string
+  language:
+    description: Language code for this translation.
+    example: en
+    type: string
+  value:
+    description: Translation value.
+    example: 'A new item has been created'
+    type: string

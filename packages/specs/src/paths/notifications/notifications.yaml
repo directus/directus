@@ -1,0 +1,164 @@
+get:
+  tags:
+    - Notifications
+  operationId: getNotifications
+  summary: List Notifications
+  description: List the notifications.
+  security:
+    - Auth: []
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+    - $ref: '../../openapi.yaml#/components/parameters/Page'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Notifications'
+              meta:
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+
+post:
+  tags:
+    - Notifications
+  operationId: createNotification
+  summary: Create a Notification
+  description: Create a new notification.
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [recipient, sender, subject]
+          properties:
+            status:
+              type: string
+              enum:
+                - inbox
+                - archived
+            recipient:
+              type: string
+              example: 81dfa7e0-56d2-471f-b96a-1cf8a62bdf28
+            sender:
+              type: string
+              example: 81dfa7e0-56d2-471f-b96a-1cf8a62bdf28
+            subject:
+              type: string
+              example: 'New item created'
+            message:
+              type: string
+              example: 'A new article has been created.'
+            collection:
+              type: string
+              example: articles
+            item:
+              type: string
+              example: '123'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Notifications'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+
+patch:
+  summary: Update Multiple Notifications
+  description: Update multiple notifications at the same time.
+  tags:
+    - Notifications
+  operationId: updateNotifications
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            keys:
+              type: array
+              items:
+                type: integer
+            data:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - inbox
+                    - archived
+                recipient:
+                  type: string
+                  example: 81dfa7e0-56d2-471f-b96a-1cf8a62bdf28
+                sender:
+                  type: string
+                  example: 81dfa7e0-56d2-471f-b96a-1cf8a62bdf28
+                subject:
+                  type: string
+                  example: 'New item created'
+                message:
+                  type: string
+                  example: 'A new article has been created.'
+                collection:
+                  type: string
+                  example: articles
+                item:
+                  type: string
+                  example: '123'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Notifications'
+              meta:
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+
+delete:
+  summary: Delete Multiple Notifications
+  description: Delete multiple existing notifications.
+  tags:
+    - Notifications
+  operationId: deleteNotifications
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

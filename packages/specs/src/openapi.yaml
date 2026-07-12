@@ -93,6 +93,14 @@ tags:
   - name: Users
     description: Users are what gives you access to the data.
     x-collection: directus_users
+  - name: Notifications
+    description:
+      Notifications are sent to users to notify them about events within Directus.
+    x-collection: directus_notifications
+  - name: Translations
+    description:
+      Custom translations for multi-language support.
+    x-collection: directus_translations
   - name: Utilities
     description: Directus comes with various utility endpoints you can use to simplify your development flow.
     x-authentication: user
@@ -197,6 +205,12 @@ paths:
   /operations/{id}:
     $ref: './paths/operations/operation.yaml'
 
+  # Notifications
+  /notifications:
+    $ref: './paths/notifications/notifications.yaml'
+  /notifications/{id}:
+    $ref: './paths/notifications/notification.yaml'
+
   # Permissions
   /permissions:
     $ref: './paths/permissions/permissions.yaml'
@@ -222,6 +236,12 @@ paths:
     $ref: './paths/roles/roles.yaml'
   /roles/{id}:
     $ref: './paths/roles/role.yaml'
+
+  # Translations
+  /translations:
+    $ref: './paths/translations/translations.yaml'
+  /translations/{id}:
+    $ref: './paths/translations/translation.yaml'
 
   # Schema
   /schema/snapshot:
@@ -315,6 +335,8 @@ components:
       $ref: './components/folder.yaml'
     Items:
       $ref: './components/item.yaml'
+    Notifications:
+      $ref: './components/notification.yaml'
     Operations:
       $ref: './components/operation.yaml'
     Permissions:
@@ -329,6 +351,8 @@ components:
       $ref: './components/schema.yaml'
     Settings:
       $ref: './components/setting.yaml'
+    Translations:
+      $ref: './components/translation.yaml'
     Users:
       $ref: './components/user.yaml'
     Query:
