@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Collection } from '@directus/types';
+import dompurify from 'dompurify';
 import { orderBy } from 'lodash';
 import { computed, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -126,6 +127,10 @@ function isSVG(path: string) {
 	return path.startsWith('<svg');
 }
 
+function sanitizeSVG(svg: string) {
+	return dompurify.sanitize(svg, { USE_PROFILES: { svg: true, svgFilters: true } });
+}
+
 function toggleInterface(id: string) {
 	if (chosenInterface.value === id) {
 		chosenInterface.value = null;
@@ -151,7 +156,7 @@ function toggleInterface(id: string) {
 					<div class="preview">
 						<template v-if="inter.preview">
 							<!-- eslint-disable-next-line vue/no-v-html -->
-							<span v-if="isSVG(inter.preview)" class="svg" v-html="inter.preview" />
+							<span v-if="isSVG(inter.preview)" class="svg" v-html="sanitizeSVG(inter.preview)" />
 							<img v-else :src="inter.preview" alt="" />
 						</template>
 
