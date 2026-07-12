@@ -94,12 +94,10 @@ tags:
     description: Users are what gives you access to the data.
     x-collection: directus_users
   - name: Notifications
-    description:
-      Notifications are sent to users to notify them about events within Directus.
+    description: Notifications are sent to users to notify them about events within Directus.
     x-collection: directus_notifications
   - name: Translations
-    description:
-      Custom translations for multi-language support.
+    description: Custom translations for multi-language support.
     x-collection: directus_translations
   - name: Utilities
     description: Directus comes with various utility endpoints you can use to simplify your development flow.
