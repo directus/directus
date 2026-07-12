@@ -27,6 +27,7 @@ router.get(
 			entitlementManager.getUsage('flows'),
 		]);
 
+		const editable = licenseManager.getEditable();
 		const source = licenseManager.getSource();
 
 		let expiresAt = license.meta.expires_at;
@@ -43,6 +44,7 @@ router.get(
 
 		const payload: ReadLicenseOutput = {
 			name: license.meta.name,
+			editable,
 			status,
 			source,
 			downgrade_reason: downgradeReason,
