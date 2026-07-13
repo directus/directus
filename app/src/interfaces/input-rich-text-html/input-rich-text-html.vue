@@ -38,9 +38,8 @@ const props = withDefaults(
 		softLength?: number;
 		direction?: string;
 		// comparison view (content versioning / revision diffs): value arrives pre-marked with
-		// comparison-diff spans; `comparisonSide` is API surface only — side switches flow in as value changes
+		// comparison-diff spans; side switches flow in as value changes
 		comparisonMode?: boolean;
-		comparisonSide?: 'base' | 'incoming';
 	}>(),
 	{
 		toolbar: () => toolbarDefault,
@@ -349,8 +348,7 @@ onKeyStroke('Escape', () => {
 	color: var(--theme--danger);
 }
 
-/* Content styles, scoped to the ProseMirror container so they neither leak into the app nor inherit app styles.
-   Ported from the former iframe `get-editor-styles.ts`, using live theme tokens instead of snapshotted values. */
+/* Content styles, scoped to the ProseMirror container so they neither leak into the app nor inherit app styles. */
 .wysiwyg :deep(.ProseMirror) {
 	min-block-size: var(--input-height-tall);
 	padding: 1.125rem;

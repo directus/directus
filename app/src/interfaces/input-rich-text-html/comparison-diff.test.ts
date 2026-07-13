@@ -73,7 +73,6 @@ describe('interface wiring', () => {
 	test('comparisonMode renders read-only without editing chrome, diff spans intact', async () => {
 		const { wrapper, editor } = await mountInterface({
 			comparisonMode: true,
-			comparisonSide: 'incoming',
 			softLength: 100,
 		});
 
