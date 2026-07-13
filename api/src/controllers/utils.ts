@@ -125,10 +125,6 @@ router.post(
 		const dryRun = toBoolean(req.query['dryRun']);
 		const dangerouslyAllowDelete = toBoolean(req.query['dangerouslyAllowDelete']);
 
-		if (dangerouslyAllowDelete && mode !== 'merge') {
-			throw new InvalidQueryError({ reason: `"dangerouslyAllowDelete" can only be used with mode "merge"` });
-		}
-
 		const service = new ImportService({
 			accountability: req.accountability,
 			schema: req.schema,
