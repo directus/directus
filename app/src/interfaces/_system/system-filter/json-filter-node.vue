@@ -134,8 +134,11 @@ function updateValue(valueNode: FieldFilter) {
 	}
 
 	.comparator {
-		margin-inline-end: 0.4375rem;
 		font-weight: 700;
+
+		:deep(.inline-display) {
+			margin-inline-end: 0.4375rem;
+		}
 	}
 }
 </style>
