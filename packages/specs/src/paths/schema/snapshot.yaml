@@ -4,6 +4,26 @@ get:
   operationId: schemaSnapshot
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Export'
+    - name: includeCollections
+      description: >-
+        Restrict the snapshot to these collections (produces a partial snapshot, version 2). Mutually exclusive with
+        `excludeCollections`.
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+    - name: excludeCollections
+      description: >-
+        Exclude these collections from the snapshot (produces a partial snapshot, version 2). Mutually exclusive with
+        `includeCollections`.
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
   responses:
     '200':
       description: Successful request

@@ -387,6 +387,85 @@ describe('getSnapshot', () => {
 		});
 	});
 
+	describe('partial snapshots (collection scoping)', () => {
+		const collections = [
+			{ collection: 'articles', meta: {} },
+			{ collection: 'authors', meta: {} },
+			{ collection: 'tags', meta: {} },
+		];
+
+		const fields = [
+			{ field: 'id', collection: 'articles', meta: {} },
+			{ field: 'title', collection: 'articles', meta: {} },
+			{ field: 'author', collection: 'articles', meta: {} },
+			{ field: 'owner', collection: 'articles', meta: {} },
+			{ field: 'id', collection: 'authors', meta: {} },
+			{ field: 'name', collection: 'authors', meta: {} },
+			{ field: 'articles', collection: 'authors', type: 'alias', meta: {} },
+			{ field: 'id', collection: 'tags', meta: {} },
+			{
+				field: 'external_identifier',
+				collection: 'directus_users',
+				meta: { system: true },
+				schema: { is_indexed: true },
+			},
+		];
+
+		const relations = [
+			{ collection: 'articles', field: 'author', related_collection: 'authors', meta: { one_field: 'articles' } },
+			{ collection: 'articles', field: 'owner', related_collection: 'directus_users', meta: {} },
+		];
+
+		beforeEach(() => {
+			mockCollectionsService.readByQuery.mockResolvedValue(collections);
+			mockFieldsService.readAll.mockResolvedValue(fields);
+			mockRelationsService.readAll.mockResolvedValue(relations);
+		});
+
+		const collectionNames = (snapshot: any) => snapshot.collections.map((c: any) => c.collection);
+		const fieldKeys = (snapshot: any) => snapshot.fields.map((f: any) => `${f.collection}.${f.field}`);
+		const relationKeys = (snapshot: any) => snapshot.relations.map((r: any) => `${r.collection}.${r.field}`);
+		const systemFieldKeys = (snapshot: any) => snapshot.systemFields.map((f: any) => `${f.collection}.${f.field}`);
+
+		test('includes only the scoped collections and its fields, relations, and system fields', async () => {
+			const snapshot = await getSnapshot({ collections: ['articles', 'authors'] });
+
+			expect(snapshot.version).toBe(2);
+			expect(collectionNames(snapshot)).toEqual(['articles', 'authors']);
+
+			expect(fieldKeys(snapshot)).toEqual([
+				'articles.id',
+				'articles.title',
+				'articles.author',
+				'articles.owner',
+				'authors.id',
+				'authors.name',
+				'authors.articles',
+			]);
+
+			expect(relationKeys(snapshot)).toEqual(['articles.author', 'articles.owner']);
+			expect(systemFieldKeys(snapshot)).toEqual([]);
+		});
+
+		test('drops a relation owned by an out-of-scope collection while keeping the scoped fields', async () => {
+			const snapshot = await getSnapshot({ collections: ['authors'] });
+
+			expect(collectionNames(snapshot)).toEqual(['authors']);
+			expect(fieldKeys(snapshot)).toEqual(['authors.id', 'authors.name', 'authors.articles']);
+			expect(relationKeys(snapshot)).toEqual([]);
+		});
+
+		test('captures the indexed system fields of a scoped system collection', async () => {
+			const snapshot = await getSnapshot({ collections: ['directus_users'] });
+
+			expect(snapshot.version).toBe(2);
+			expect(collectionNames(snapshot)).toEqual([]);
+			expect(fieldKeys(snapshot)).toEqual([]);
+			expect(relationKeys(snapshot)).toEqual([]);
+			expect(systemFieldKeys(snapshot)).toEqual(['directus_users.external_identifier']);
+		});
+	});
+
 	describe('integration scenarios', () => {
 		test('should handle complex mixed data correctly', async () => {
 			const collections = [
