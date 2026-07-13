@@ -82,54 +82,22 @@
   action: read
   fields:
     - id
-    - project_name
     - project_url
-    - project_color
     - project_logo
-    - public_foreground
-    - public_background
-    - public_note
-    - auth_login_attempts
-    - auth_password_policy
+    - module_bar
     - storage_asset_transform
     - storage_asset_presets
-    - custom_css
-    - storage_default_folder
+    - custom_aspect_ratios
     - basemaps
     - mapbox_key
-    - module_bar
-    - project_descriptor
-    - default_language
-    - custom_aspect_ratios
-    - public_favicon
-    - default_appearance
-    - default_theme_light
-    - theme_light_overrides
-    - default_theme_dark
-    - theme_dark_overrides
-    - report_error_url
-    - report_bug_url
-    - report_feature_url
-    - public_registration
-    - public_registration_verify_email
-    - public_registration_role
-    - public_registration_email_filter
     - visual_editor_urls
-    - project_id
-    - mcp_enabled
-    - mcp_allow_deletes
-    - mcp_prompts_collection
-    - mcp_system_prompt_enabled
-    - mcp_system_prompt
-    - project_owner
-    - project_usage
-    - org_name
-    - product_updates
-    - project_status
+    - collaborative_editing_enabled
+    - report_error_url
+    - ai_openai_compatible_models
     - ai_openai_allowed_models
     - ai_anthropic_allowed_models
     - ai_google_allowed_models
-    - collaborative_editing_enabled
+    - mcp_prompts_collection
 
 - collection: directus_translations
   action: read
