@@ -3,7 +3,7 @@ import { ForbiddenError, InvalidPayloadError, InvalidQueryError } from '@directu
 import { toBoolean } from '@directus/utils';
 import bytes from 'bytes';
 import { Router } from 'express';
-import Joi from 'joi';
+import { z } from 'zod';
 import { resolveLoginRedirect } from '../auth/utils/resolve-login-redirect.js';
 import { clearSystemCache } from '../cache.js';
 import { getDatabase } from '../database/index.js';
@@ -26,8 +26,8 @@ const env = useEnv();
 
 const IMPORT_MAX_FILE_SIZE = bytes.parse(env['IMPORT_MAX_FILE_SIZE'] as string) ?? undefined;
 
-const randomStringSchema = Joi.object<{ length: number }>({
-	length: Joi.number().integer().min(1).max(500).default(32),
+const randomStringSchema = z.object({
+	length: z.coerce.number().int().min(1).max(500).default(32),
 });
 
 router.get(
@@ -35,7 +35,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const { nanoid } = await import('nanoid');
 
-		const { error, value } = randomStringSchema.validate(req.query, { allowUnknown: true });
+		const { data: value, error } = randomStringSchema.safeParse(req.query);
 
 		if (error) throw new InvalidQueryError({ reason: error.message });
 
@@ -43,16 +43,18 @@ router.get(
 	}),
 );
 
-const SortSchema = Joi.object({
-	item: Joi.alternatives(Joi.string(), Joi.number()).required(),
-	to: Joi.alternatives(Joi.string(), Joi.number()).required(),
-});
+const SortSchema = z
+	.object({
+		item: z.union([z.string(), z.number()]),
+		to: z.union([z.string(), z.number()]),
+	})
+	.strict();
 
 router.post(
 	'/sort/:collection',
 	collectionExists,
 	asyncHandler(async (req, res) => {
-		const { error } = SortSchema.validate(req.body);
+		const { error } = SortSchema.safeParse(req.body);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
 		const service = new UtilsService({
@@ -99,21 +101,20 @@ router.post(
 	}),
 );
 
-const ImportBatchSchema = Joi.array()
-	.items(
-		Joi.object({
-			collection: Joi.string().required(),
-			items: Joi.array().items(Joi.object().unknown(true)).required(),
+const ImportBatchSchema = z
+	.array(
+		z.object({
+			collection: z.string(),
+			items: z.array(z.record(z.string(), z.unknown())),
 		}),
 	)
-	.min(1)
-	.required();
+	.min(1);
 
 router.post(
 	'/import',
 	readFileUploadBody({ maxFileSize: IMPORT_MAX_FILE_SIZE }),
 	asyncHandler(async (req, res, next) => {
-		const { error, value } = ImportBatchSchema.validate(req.body);
+		const { data: value, error } = ImportBatchSchema.safeParse(req.body);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
 		if (req.query['mode'] !== undefined && ['add', 'merge'].includes(String(req.query['mode'])) === false) {
