@@ -26,6 +26,13 @@ const env = useEnv();
 
 const IMPORT_MAX_FILE_SIZE = bytes.parse(env['IMPORT_MAX_FILE_SIZE'] as string) ?? undefined;
 
+/**
+ * Read a boolean query flag. A bare `?flag` counts as true.
+ */
+function queryFlag(value: unknown): boolean {
+	return value === '' || toBoolean(value);
+}
+
 const randomStringSchema = z.object({
 	length: z.coerce.number().int().min(1).max(500).default(32),
 });
@@ -122,8 +129,8 @@ router.post(
 		}
 
 		const mode = req.query['mode'] === 'merge' ? 'merge' : 'add';
-		const dryRun = toBoolean(req.query['dryRun']);
-		const dangerouslyAllowDelete = toBoolean(req.query['dangerouslyAllowDelete']);
+		const dryRun = queryFlag(req.query['dryRun']);
+		const dangerouslyAllowDelete = queryFlag(req.query['dangerouslyAllowDelete']);
 
 		const service = new ImportService({
 			accountability: req.accountability,
