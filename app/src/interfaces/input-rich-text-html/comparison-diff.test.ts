@@ -9,7 +9,7 @@ import { ComparisonDiff } from './extensions/comparison-diff';
 import Interface from './input-rich-text-html.vue';
 
 /**
- * Comparison mode (CMS-2649): the comparison view feeds the editor diff-marked HTML
+ * Comparison mode: the comparison view feeds the editor diff-marked HTML
  * (`use-comparison-diff.ts` wraps changed text runs in `span.comparison-diff--added|--removed`).
  * The ComparisonDiff mark lets those spans survive schema parsing; it is registered only in
  * comparison mode, so the normal editing schema strips them (guard test below).

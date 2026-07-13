@@ -1,7 +1,7 @@
 import { Mark } from '@tiptap/core';
 
 /**
- * Comparison mode mark (CMS-2649). The comparison view precomputes diff-marked HTML
+ * Comparison mode mark. The comparison view precomputes diff-marked HTML
  * (span.comparison-diff--added / --removed, see use-comparison-diff.ts) and feeds it as the
  * field value; this mark lets those spans survive schema parsing. Registered only when the
  * editor is in comparison mode — in normal editing the spans are intentionally stripped.
