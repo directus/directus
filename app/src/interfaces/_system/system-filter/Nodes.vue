@@ -9,13 +9,22 @@ import {
 	LogicalFilterOR,
 	Type,
 } from '@directus/types';
-import { getFilterOperatorsForType, getOutputTypeForFunction, toArray } from '@directus/utils';
+import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/utils';
 import { get } from 'lodash';
 import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import InputGroup from './input-group.vue';
-import { fieldHasFunction, fieldToFilter, getComparator, getField, getNodeName } from './utils';
+import JsonFilterNode from './json-filter-node.vue';
+import {
+	fieldHasFunction,
+	fieldToFilter,
+	getComparator,
+	getField,
+	getNodeName,
+	initialValueForComparator,
+	isJsonFilter,
+} from './utils';
 import VFieldList from '@/components/v-field-list/v-field-list.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
@@ -168,42 +177,7 @@ function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 	const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
 	const value = get(nodeInfo.node, valuePath);
 
-	switch (operator) {
-		case '_in':
-		case '_nin':
-			update(toArray(value) || []);
-			break;
-		case '_between':
-		case '_nbetween':
-			update((toArray(value) || []).slice(0, 2));
-			break;
-		case '_null':
-		case '_nnull':
-		case '_empty':
-		case '_nempty':
-			update(true);
-			break;
-		case '_intersects':
-		case '_nintersects':
-		case '_intersects_bbox':
-		case '_nintersects_bbox':
-			if (['_intersects', '_nintersects', '_intersects_bbox', '_nintersects_bbox'].includes(nodeInfo.comparator)) {
-				update(value);
-			} else {
-				update(null);
-			}
-
-			break;
-		default:
-			// avoid setting value as string 'true'/'false' when switching from null/empty operators
-			if (['_null', '_nnull', '_empty', '_nempty'].includes(nodeInfo.comparator)) {
-				update(null);
-			} else {
-				update(Array.isArray(value) ? value[0] : value);
-			}
-
-			break;
-	}
+	update(initialValueForComparator(operator, value, nodeInfo.comparator));
 
 	function update(value: any) {
 		if (nodeInfo.isField === false) return;
@@ -306,41 +280,51 @@ function isExistingField(node: Record<string, any>): boolean {
 				<div v-if="filterInfo[index].isField" block class="node field">
 					<div class="header" :class="{ inline, 'raw-field-names': rawFieldNames }">
 						<VIcon name="drag_indicator" class="drag-handle" small></VIcon>
-						<span v-if="field || !isExistingField(element)" class="plain-name">
-							{{ getFieldPreview(element) }}
-						</span>
-						<VMenu v-else placement="bottom-start" show-arrow>
-							<template #activator="{ toggle }">
-								<button class="name" @click="toggle">
-									<span>{{ getFieldPreview(element) }}</span>
-								</button>
-							</template>
-
-							<VFieldList
-								:collection="collection"
-								:field="field"
-								include-functions
-								:include-relations="includeRelations"
-								:relational-field-selectable="relationalFieldSelectable"
-								:allow-select-all="false"
-								:raw-field-names="rawFieldNames"
-								@add="updateField(index, $event[0])"
-							/>
-						</VMenu>
-						<VSelect
-							inline
-							class="comparator"
-							placement="bottom-start"
-							:model-value="(filterInfo[index] as FilterInfoField).comparator"
-							:items="getCompareOptions((filterInfo[index] as FilterInfoField).field)"
-							@update:model-value="updateComparator(index, $event)"
-						/>
-						<InputGroup
-							:field="element"
+						<JsonFilterNode
+							v-if="isJsonFilter(element)"
+							:node="element"
+							:field-label="getFieldPreview(element)"
 							:collection="collection"
 							:variable-input-enabled="variableInputEnabled"
-							@update:field="replaceNode(index, $event)"
+							@update:node="replaceNode(index, $event)"
 						/>
+						<template v-else>
+							<span v-if="field || !isExistingField(element)" class="plain-name">
+								{{ getFieldPreview(element) }}
+							</span>
+							<VMenu v-else placement="bottom-start" show-arrow>
+								<template #activator="{ toggle }">
+									<button class="name" @click="toggle">
+										<span>{{ getFieldPreview(element) }}</span>
+									</button>
+								</template>
+
+								<VFieldList
+									:collection="collection"
+									:field="field"
+									include-functions
+									:include-relations="includeRelations"
+									:relational-field-selectable="relationalFieldSelectable"
+									:allow-select-all="false"
+									:raw-field-names="rawFieldNames"
+									@add="updateField(index, $event[0])"
+								/>
+							</VMenu>
+							<VSelect
+								inline
+								class="comparator"
+								placement="bottom-start"
+								:model-value="(filterInfo[index] as FilterInfoField).comparator"
+								:items="getCompareOptions((filterInfo[index] as FilterInfoField).field)"
+								@update:model-value="updateComparator(index, $event)"
+							/>
+							<InputGroup
+								:field="element"
+								:collection="collection"
+								:variable-input-enabled="variableInputEnabled"
+								@update:field="replaceNode(index, $event)"
+							/>
+						</template>
 						<span class="delete">
 							<VIcon
 								v-tooltip="$t('delete_label')"

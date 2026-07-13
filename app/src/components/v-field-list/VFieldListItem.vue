@@ -42,13 +42,7 @@ const emit = defineEmits(['add']);
 
 const supportedFunctions = computed(() => {
 	if (!props.includeFunctions || props.field.group) return [];
-	const funcs = getFunctionsForType(props.field.type);
-
-	if (props.field.type === 'json') {
-		return funcs.filter((f) => f !== 'json');
-	}
-
-	return funcs;
+	return getFunctionsForType(props.field.type);
 });
 
 const selectAllDisabled = computed(() => props.field.children?.every((field: FieldInfo) => field.disabled === true));
@@ -94,7 +88,7 @@ const openWhileSearching = computed(() => {
 				@click="$emit('add', [`${fn}(${field.key})`])"
 			>
 				<VListItemIcon>
-					<VIcon name="auto_awesome" small color="var(--theme--primary)" />
+					<VIcon name="function" small color="var(--theme--primary)" />
 				</VListItemIcon>
 				<VListItemContent>
 					<VTextOverflow

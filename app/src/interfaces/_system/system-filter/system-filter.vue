@@ -9,7 +9,7 @@ import {
 import { cloneDeep, get, isEmpty, set } from 'lodash';
 import { computed, inject, ref } from 'vue';
 import Nodes from './Nodes.vue';
-import { getNodeName } from './utils';
+import { buildJsonFilter, getNodeName } from './utils';
 import VDivider from '@/components/v-divider.vue';
 import VFieldList from '@/components/v-field-list/v-field-list.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -21,6 +21,7 @@ import VNotice from '@/components/v-notice.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 
 interface Props {
 	value?: Record<string, any> | string;
@@ -107,6 +108,13 @@ function addNode(key: string) {
 	if (key === '$group') {
 		innerValue.value = innerValue.value.concat({ _and: [] });
 	} else {
+		const functionInfo = extractFieldFromFunction(key);
+
+		if (functionInfo.fn === 'json') {
+			innerValue.value = innerValue.value.concat(buildJsonFilter(functionInfo.field, '', '_eq', null));
+			return;
+		}
+
 		let type: Type;
 		const field = fieldsStore.getField(collection.value, key);
 		const isVersion = key === '$version';

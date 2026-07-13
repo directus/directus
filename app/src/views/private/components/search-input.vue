@@ -52,6 +52,10 @@ const activeFilterCount = computed(() => {
 		for (const [key, value] of Object.entries(level)) {
 			if (key === '_and' || key === '_or') {
 				value.forEach(parseLevel);
+			} else if (key === '_json') {
+				if (isObject(value) && Object.keys(value).some((path) => path.length > 0)) {
+					filterOperators.push(key);
+				}
 			} else if (key.startsWith('_')) {
 				filterOperators.push(key);
 			} else {
