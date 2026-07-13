@@ -48,8 +48,10 @@ properties:
     description: Grouping allows for running aggregate functions grouped by a given field.
   alias:
     type: object
-    description: Alias allows you to rename fields on the fly and request the same field multiple times with different filters/relations.
+    description:
+      Alias allows you to rename fields on the fly and request the same field multiple times with different
+      filters/relations.
   backlink:
     type: boolean
     description: Toggle whether reverse-relational fields should be included when expanding a `*.*` wildcard.
-    default: true  
+    default: true
