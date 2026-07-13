@@ -4,26 +4,13 @@ import { editorExtensions } from './extensions';
 import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 
 /**
- * HTML corpus round-trip tests.
- *
- * Tiptap parses HTML into a strict ProseMirror schema and re-serializes it; anything the
- * schema doesn't model is dropped or normalized. These tests feed representative HTML
- * (everything the legacy TinyMCE editor produced) through `setContent → getHTML` and snapshot
- * the result, so any change in round-trip fidelity shows up in review.
- *
- * Raw-HTML-passthrough decision (CMS-2635):
- *   No global raw-HTML passthrough — the editor's schema is the source of truth. Each construct
- *   the current schema can't represent is EITHER restored by a later extension issue OR a
- *   documented accepted regression. `LOSSY` below is the ledger of those cases; when an
- *   extension lands, its sample moves from LOSSY → FAITHFUL and the snapshot updates.
- *   Media (CMS-2643): video/audio/iframe now round-trip via the custom `media` node. Bare boolean
- *   attributes normalize to `controls=""`/`loop=""` (ProseMirror's serializer cannot emit bare attrs).
- *
- * The editor here uses the same extension set as input-rich-text-html.vue (see ./extensions).
+ * HTML corpus round-trip tests: representative legacy-TinyMCE HTML through `setContent → getHTML`,
+ * snapshotted so any change in round-trip fidelity shows up in review. There is no global raw-HTML
+ * passthrough — the schema is the source of truth; anything it can't represent is either restored
+ * by an extension or documented in LOSSY as an accepted regression.
  */
 function roundTrip(html: string): string {
-	// Apply the same comment ↔ element boundary that input-rich-text-html.vue uses, so constructs
-	// that persist as HTML comments (page breaks) round-trip here exactly as they do in the editor.
+	// same comment ↔ element boundary as input-rich-text-html.vue, so page breaks round-trip identically
 	const editor = new Editor({ extensions: editorExtensions, content: decodePageBreaks(html) });
 	const out = encodePageBreaks(editor.getHTML());
 	editor.destroy();
@@ -69,13 +56,13 @@ const FAITHFUL: Record<string, string> = {
 	video: '<video width="640" height="360" controls><source src="/assets/v.mp4" type="video/mp4"></video>',
 	'audio with loop': '<audio loop controls><source src="/assets/a.mp3" type="audio/mpeg"></audio>',
 	iframe: '<iframe src="about:blank" width="560" height="315"></iframe>',
-	// CMS-2647: persists as the legacy `<!-- pagebreak -->` comment via the page-break serialization boundary
+	// persists as the legacy `<!-- pagebreak -->` comment via the page-break serialization boundary
 	pagebreak: '<p>a</p><!-- pagebreak --><p>b</p>',
 	'rtl paragraph': '<p dir="rtl">شسي</p>',
 	'rtl heading': '<h2 dir="rtl">عنوان</h2>',
 	'rtl list': '<ul dir="rtl"><li><p>عنصر</p></li></ul>',
-	// Tables (CMS-2639). Structure round-trips losslessly. Column widths survive only as a cell
-	// `colwidth`; legacy `<colgroup><col style="width…">` widths are normalized away (see snapshots).
+	// table structure round-trips losslessly; column widths survive only as a cell `colwidth`,
+	// legacy `<colgroup><col style="width…">` widths are normalized away (see snapshots)
 	table: '<table><tbody><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></tbody></table>',
 	'table with header row':
 		'<table><tbody><tr><th>Name</th><th>Role</th></tr><tr><td>Ada</td><td>Engineer</td></tr></tbody></table>',
@@ -85,20 +72,14 @@ const FAITHFUL: Record<string, string> = {
 		'<table><colgroup><col style="width: 120px;"><col style="width: 240px;"></colgroup><tbody><tr><td>a</td><td>b</td></tr></tbody></table>',
 };
 
-/**
- * Constructs the schema can't represent yet. Each is currently dropped/normalized; the comment
- * names the issue that will restore it (or marks it an accepted regression). Snapshots record the
- * actual lossy output; the assertions document precisely what is lost today.
- */
-const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }> = [
-	// Accepted regression: with NO configured format, an arbitrary class-bearing span is dropped — the
-	// base schema doesn't model classes. When the field's `customFormats` option defines it, a dynamic
-	// mark restores it (CMS-2648); that configured round-trip is covered in extensions/custom-formats.test.ts.
+/** Constructs the schema can't represent — accepted regressions; snapshots record the lossy output. */
+const LOSSY: Array<{ name: string; html: string; absent: string }> = [
+	// with no configured format, class-bearing spans are dropped; a configured `customFormats`
+	// mark restores them (covered in extensions/custom-formats.test.ts)
 	{
 		name: 'custom format span (unconfigured)',
 		html: '<p><span class="my-format">text</span></p>',
 		absent: 'my-format',
-		issue: 'CMS-2648 (configured only)',
 	},
 ];
 
@@ -108,12 +89,12 @@ describe('round-trip: faithful (StarterKit + TextStyleKit schema)', () => {
 	});
 });
 
-describe('round-trip: image (CMS-2641)', () => {
+describe('round-trip: image', () => {
 	test('preserves src with query params, alt, and loading="lazy"', () => {
 		const out = roundTrip('<img src="/assets/abc?width=100&access_token=x" loading="lazy" alt="alt">');
 
 		expect(out).toContain('<img');
-		// `&` serializes to the HTML entity `&amp;` (browsers decode it back) — URL is preserved.
+		// `&` serializes to the HTML entity `&amp;` (browsers decode it back) — URL is preserved
 		expect(out).toContain('src="/assets/abc?width=100&amp;access_token=x"');
 		expect(out).toContain('alt="alt"');
 		expect(out).toContain('loading="lazy"');
@@ -134,8 +115,8 @@ describe('round-trip: image (CMS-2641)', () => {
 	});
 });
 
-describe('round-trip: lossy (restored by later issues / accepted regression)', () => {
-	test.each(LOSSY)('$name is dropped today (→ $issue)', ({ html, absent }) => {
+describe('round-trip: lossy (accepted regressions)', () => {
+	test.each(LOSSY)('$name is dropped', ({ html, absent }) => {
 		const out = roundTrip(html);
 		expect(out).not.toContain(absent);
 		expect(out).toMatchSnapshot();

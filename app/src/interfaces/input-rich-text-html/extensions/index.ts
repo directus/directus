@@ -12,12 +12,9 @@ import { TextAlignment } from './text-alignment';
 import { TextStyle } from './text-style';
 
 /**
- * The editor's extension set. Shared by input-rich-text-html.vue and the round-trip tests so the
- * two never drift — the schema here is the single source of truth for what HTML round-trips.
- *
- * Link (CMS-2642) comes from StarterKit. Its defaults force `target="_blank"` and a `rel` on every
- * link, which would rewrite same-tab links on round-trip; nulling those HTMLAttributes lets `target`
- * and `rel` parse from the source instead. `defaultProtocol` matches the legacy TinyMCE setting.
+ * The editor's extension set, shared by input-rich-text-html.vue and the round-trip tests so the
+ * two never drift. Link's default HTMLAttributes force `target="_blank"`/`rel` on every link, which
+ * would rewrite same-tab links on round-trip — nulling them lets both parse from the source.
  */
 export const editorExtensions = [
 	StarterKit.configure({

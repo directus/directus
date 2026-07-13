@@ -3,16 +3,9 @@ import { Editor } from '@tiptap/vue-3';
 import { describe, expect, test } from 'vitest';
 
 /**
- * Undo-history hygiene (CMS-2636 regression).
- *
- * The interface mounts the editor empty and syncs the field value in afterwards (async item
- * load, revert, version switch) via `setContent`. By default that transaction lands in the
- * ProseMirror undo stack, so undo is enabled before the user types anything — and pressing it
- * reverts the editor to empty, wiping the loaded content. Programmatic value syncs must NOT be
- * undoable; only the user's own edits should be.
- *
- * These tests mirror exactly the two commands the component runs (initial empty editor, then the
- * value-watcher's setContent), so they guard the `addToHistory: false` meta on that sync path.
+ * Programmatic value syncs must not be undoable — without `addToHistory: false` the initial
+ * `setContent` lands in the undo stack and undo wipes the loaded content. These tests mirror the
+ * exact commands the component runs on its value-sync path.
  */
 function freshEditor() {
 	return new Editor({ extensions: [StarterKit], content: '' });

@@ -8,13 +8,9 @@ import { createI18n } from 'vue-i18n';
 import Interface from './input-rich-text-html.vue';
 
 /**
- * Regression (CMS-2635): clicking into TinyMCE-authored content must not mark the field dirty.
- *
- * StarterKit's TrailingNode flags "insert a trailing paragraph" when loaded content ends in a
- * non-paragraph block, but only appends it on the first dispatched transaction. A click is a
- * selection-only transaction; if it triggers that deferred append, `onUpdate` fires and the
- * interface emits `input` — marking the field dirty without any user edit. Content authored in
- * Tiptap already ends in that trailing paragraph, so it never reproduced.
+ * Regression: clicking into TinyMCE-authored content must not mark the field dirty. TrailingNode
+ * defers its "append trailing paragraph" normalization to the first dispatched transaction; if a
+ * selection-only click triggers it, the interface emits `input` without any user edit.
  */
 async function mountWithValue(value: string) {
 	const i18n = createI18n({ legacy: false, locale: 'en-US', messages: { 'en-US': {} } });
