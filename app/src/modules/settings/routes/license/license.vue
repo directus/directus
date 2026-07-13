@@ -24,7 +24,7 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import SystemLicenseKey from '@/interfaces/_system/system-license-key/system-license-key.vue';
 import sdk from '@/sdk';
 import { useLicenseStore } from '@/stores/license';
-import { useServerStore } from '@/stores/server';
+import { useServerStore } from '@/stores/server.js';
 import { getDirectusUrlWithUtm } from '@/utils/directus-url';
 import { formatDate } from '@/utils/format-date';
 import { formatTimeframe } from '@/utils/format-timeframe';
@@ -40,7 +40,8 @@ const serverStore = useServerStore();
 
 const { info: license, addons, loading, boundary, isLicensed } = storeToRefs(licenseStore);
 
-const isEnvManaged = computed(() => license.value?.source === 'env');
+const isLicenseSourceEnv = computed(() => license.value?.source === 'env');
+const isLicenseEditable = computed(() => license.value?.editable);
 
 const boundaryDate = computed(() => {
 	if (!boundary.value || !Number.isFinite(boundary.value.timestamp) || boundary.value.timestamp === -1) return null;
@@ -58,6 +59,22 @@ onMounted(async () => {
 });
 
 const planDisplayName = computed(() => license.value?.name ?? null);
+
+const upgradePlanLink = computed(() =>
+	isLicensed.value
+		? `${getRootPath()}license/portal`
+		: getDirectusUrlWithUtm(DIRECTUS_PRICING_URL, serverStore.info.version, 'settings_license_upgrade_plan_link'),
+);
+
+const manageLicenseDisabledMessage = computed(() => {
+	// `editable` is also false for env-sourced licenses, so check the source first to show
+	// the more specific env message before falling back to the management-disabled one.
+	if (isLicenseSourceEnv.value) return t('licensing.env_managed');
+
+	if (!isLicenseEditable.value) return t('licensing.manage_license_disabled');
+
+	return null;
+});
 
 const addLicenseDrawer = ref(false);
 const licenseKey = ref('');
@@ -264,45 +281,18 @@ async function handleDeactivateConfirm() {
 						</div>
 					</div>
 					<div class="plan-actions">
-						<template v-if="!isLicensed">
-							<VButton
-								v-tooltip.bottom="isEnvManaged ? t('licensing.env_managed') : null"
-								secondary
-								small
-								:disabled="isEnvManaged"
-								@click="addLicenseDrawer = true"
-							>
-								{{ t('licensing.add') }}
-							</VButton>
-							<VButton
-								small
-								:href="
-									getDirectusUrlWithUtm(
-										DIRECTUS_PRICING_URL,
-										serverStore.info.version,
-										'settings_license_upgrade_plan_link',
-									)
-								"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								{{ t('licensing.upgrade_plan') }}
-							</VButton>
-						</template>
-						<template v-else>
-							<VButton
-								v-tooltip.bottom="isEnvManaged ? t('licensing.env_managed') : null"
-								secondary
-								small
-								:disabled="isEnvManaged"
-								@click="addLicenseDrawer = true"
-							>
-								{{ t('licensing.manage') }}
-							</VButton>
-							<VButton small :href="`${getRootPath()}license/portal`" target="_blank" rel="noopener noreferrer">
-								{{ t('licensing.upgrade_plan') }}
-							</VButton>
-						</template>
+						<VButton
+							v-tooltip.bottom="manageLicenseDisabledMessage"
+							secondary
+							small
+							:disabled="isLicenseEditable === false"
+							@click="addLicenseDrawer = true"
+						>
+							{{ isLicensed ? t('licensing.manage') : t('licensing.add') }}
+						</VButton>
+						<VButton small :href="upgradePlanLink" target="_blank" rel="noopener noreferrer">
+							{{ t('licensing.upgrade_plan') }}
+						</VButton>
 					</div>
 				</div>
 				<VDivider />
@@ -338,10 +328,15 @@ async function handleDeactivateConfirm() {
 
 				<LicenseSection v-if="license.source !== null" icon="emergency_home" :title="t('danger_zone')" kind="danger">
 					<div class="danger-zone-content">
-						<VNotice v-if="isEnvManaged" type="info" class="danger-zone-notice">
-							{{ t('licensing.env_managed') }}
+						<VNotice v-if="isLicenseEditable === false" type="info" class="danger-zone-notice">
+							{{ manageLicenseDisabledMessage }}
 						</VNotice>
-						<VButton :disabled="isEnvManaged" :loading="deactivateLoading" danger @click="handleDeactivateClick">
+						<VButton
+							:disabled="isLicenseEditable === false"
+							:loading="deactivateLoading"
+							danger
+							@click="handleDeactivateClick"
+						>
 							{{ t('licensing.deactivate') }}
 						</VButton>
 					</div>

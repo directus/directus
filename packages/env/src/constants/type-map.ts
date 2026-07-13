@@ -96,6 +96,8 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	'AUTH_.+_GROUP_DN': 'string',
 	'AUTH_.+_BIND_PASSWORD': 'string',
 	'AUTH_.+_COOKIE_SECURE': 'boolean',
+
+	LICENSE_KEY_MANAGEMENT_ENABLED: 'boolean',
 } as const;
 
 export const TYPE_MAP_REGEX: [RegExp, EnvType][] = Object.entries(TYPE_MAP).map(([name, value]) => [
