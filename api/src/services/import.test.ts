@@ -784,6 +784,16 @@ function setupServices(schema: SchemaOverview): RunContext {
 				ctx.calls.push({ collection, method: 'deleteMany', keys });
 				return keys;
 			}),
+			deleteByQuery: vi.fn(async (query: any) => {
+				// Mirror `deleteByQuery`: read every existing key, then delete those not kept by `_nin`.
+				const rows = await holder.trx.select(pkField).from(collection);
+				const allKeys = rows.map((row: any) => row[pkField]);
+				const nin: any[] | undefined = query?.filter?.[pkField]?._nin;
+				const keptSet = new Set((nin ?? []).map((value: unknown) => String(value)));
+				const toDelete = allKeys.filter((key: unknown) => !keptSet.has(String(key)));
+				if (toDelete.length > 0) ctx.calls.push({ collection, method: 'deleteByQuery', keys: toDelete });
+				return toDelete;
+			}),
 		} as any;
 	});
 
@@ -1166,7 +1176,7 @@ describe('ImportService.importBatch', () => {
 		);
 
 		// uuid-1 is upserted (kept); uuid-2 and uuid-3 are absent from the import so they're deleted
-		const deleteCall = calls.find((c) => c.method === 'deleteMany');
+		const deleteCall = calls.find((c) => c.method === 'deleteByQuery');
 		expect(deleteCall).toMatchObject({ collection: 'authors' });
 		expect(new Set(deleteCall!.keys)).toEqual(new Set(['uuid-2', 'uuid-3']));
 		expect(new Set(result.collections['authors']!.deleted)).toEqual(new Set(['uuid-2', 'uuid-3']));
@@ -1195,7 +1205,7 @@ describe('ImportService.importBatch', () => {
 			{ authors: new Set(['a1', 'a2']), articles: new Set(['art1', 'art2']) },
 		);
 
-		const deleteOrder = calls.filter((c) => c.method === 'deleteMany').map((c) => c.collection);
+		const deleteOrder = calls.filter((c) => c.method === 'deleteByQuery').map((c) => c.collection);
 		// articles (child) must be deleted before authors (parent) to avoid FK violations
 		expect(deleteOrder).toEqual(['articles', 'authors']);
 	});
@@ -1215,7 +1225,7 @@ describe('ImportService.importBatch', () => {
 			{ authors: new Set(['uuid-1']) },
 		);
 
-		expect(calls.some((c) => c.method === 'deleteMany')).toBe(false);
+		expect(calls.some((c) => c.method === 'deleteByQuery')).toBe(false);
 		expect(result.collections['authors']!.deleted).toEqual([]);
 	});
 
@@ -1235,7 +1245,7 @@ describe('ImportService.importBatch', () => {
 		);
 
 		// Deletes are still exercised inside the transaction, then rolled back with everything else
-		expect(calls.some((c) => c.method === 'deleteMany')).toBe(true);
+		expect(calls.some((c) => c.method === 'deleteByQuery')).toBe(true);
 		expect(result.applied).toBe(false);
 	});
 

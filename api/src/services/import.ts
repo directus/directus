@@ -719,20 +719,8 @@ export class ImportService {
 				if (dangerouslyAllowDelete) {
 					for (const collection of [...plan.order].reverse()) {
 						const result = collections[collection]!;
-
-						const keptKeys = new Set<string>();
-						for (const pk of result.existing) keptKeys.add(normalizeKey(pk));
-						for (const pk of result.new) keptKeys.add(normalizeKey(pk));
-
+						const importKeys = [...result.existing, ...result.new];
 						const { primary: pkField } = this.schema.collections[collection]!;
-
-						const rows = await trx.select(pkField).from(collection);
-
-						const toDelete = rows
-							.map((row) => row[pkField] as PrimaryKey)
-							.filter((pk) => !keptKeys.has(normalizeKey(pk)));
-
-						if (toDelete.length === 0) continue;
 
 						const service = getService(collection, {
 							knex: trx,
@@ -740,8 +728,13 @@ export class ImportService {
 							accountability: this.accountability,
 						});
 
-						await service.deleteMany(toDelete, mutationOptions);
-						result.deleted = toDelete;
+						result.deleted = await service.deleteByQuery(
+							{
+								filter: importKeys.length > 0 ? { [pkField]: { _nin: importKeys } } : {},
+								limit: -1,
+							},
+							mutationOptions,
+						);
 					}
 				}
 
@@ -911,16 +904,6 @@ function resolveTarget(info: FkFieldInfo, item: Record<string, unknown>): string
 
 	const target = item[info.collectionField];
 	return typeof target === 'string' ? target : null;
-}
-
-/**
- * Normalize a primary key for set membership. Some vendors (e.g. mssql `uniqueidentifier`) store and
- * return uuid keys upper-cased, while a merge-matched key echoes back the caller's original casing.
- * Comparing case-insensitively keeps those forms equal so the destructive mirror never deletes a key
- * that was part of the import. Integer keys are unaffected by lower-casing.
- */
-function normalizeKey(value: PrimaryKey): string {
-	return String(value).toLowerCase();
 }
 
 async function keyExists(trx: Knex, collection: string, pkField: string, value: PrimaryKey): Promise<boolean> {
