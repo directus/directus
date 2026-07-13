@@ -5,11 +5,7 @@ import type { Request } from 'express';
 import proxyAddr from 'proxy-addr';
 import { useLogger } from '../logger/index.js';
 
-/**
- * No-auth endpoints that are commonly hit directly (health checks, uptime pings) rather than
- * through the proxy that sets IP_CUSTOM_HEADER. The missing-header warning is expected noise on
- * these, so it's suppressed. Auth'd requests still warn, since IP-based permissions may apply.
- */
+// No-auth endpoints often hit directly (health checks/pings), bypassing the IP_CUSTOM_HEADER proxy, so the missing-header warning is just noise.
 const IP_HEADER_WARNING_EXCLUDED_PATHS = new Set(['/server/ping', '/server/info']);
 
 function getReqPathname(req: IncomingMessage | Request): string {
