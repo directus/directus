@@ -6,6 +6,9 @@ get:
     - $ref: '../../openapi.yaml#/components/parameters/Id'
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
     - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: '../../openapi.yaml#/components/parameters/VersionRaw'
+    - $ref: '../../openapi.yaml#/components/parameters/Deep'
+    - $ref: '../../openapi.yaml#/components/parameters/Alias'
   responses:
     '200':
       description: Successful request

@@ -1,0 +1,9 @@
+name: backlink
+description: >
+  Toggle whether the fetched items should include their reverse-relational fields when expanded through a `*.*`
+  wildcard. Explicitly requested fields are not affected by this setting.
+in: query
+required: false
+schema:
+  type: boolean
+  default: true

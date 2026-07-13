@@ -1,0 +1,10 @@
+description: >
+  Aggregate functions allow you to perform calculations on a set of values, returning a single result.
+name: aggregate
+in: query
+required: false
+content:
+  application/json:
+    schema:
+      type: object
+      example: { count: '*' }

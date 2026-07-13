@@ -376,6 +376,18 @@ components:
       $ref: './parameters/export.yaml'
     Version:
       $ref: './parameters/version.yaml'
+    Aggregate:
+      $ref: './parameters/aggregate.yaml'
+    GroupBy:
+      $ref: './parameters/groupBy.yaml'
+    Deep:
+      $ref: './parameters/deep.yaml'
+    Alias:
+      $ref: './parameters/alias.yaml'
+    VersionRaw:
+      $ref: './parameters/versionRaw.yaml'
+    Backlink:
+      $ref: './parameters/backlink.yaml'
   responses:
     BadRequestError:
       $ref: './responses/badRequestError.yaml'

@@ -1,0 +1,10 @@
+description: >
+  Rename fields on the fly, and request the same nested data set multiple times using different filters.
+in: query
+name: alias
+required: false
+content:
+  application/json:
+    schema:
+      type: object
+      example: { <alias>: <field> }

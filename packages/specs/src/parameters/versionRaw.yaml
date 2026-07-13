@@ -1,0 +1,9 @@
+name: versionRaw
+description: >
+  Retrieve the raw revision data of the Content Version instead of the merged item data. Requires `version` to
+  also be set.
+in: query
+required: false
+schema:
+  type: boolean
+  default: false

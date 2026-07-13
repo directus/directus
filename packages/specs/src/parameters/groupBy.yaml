@@ -1,0 +1,10 @@
+description: >
+  Grouping allows for running aggregate functions grouped by a given field.
+in: query
+name: groupBy
+required: false
+explode: false
+schema:
+  type: array
+  items:
+    type: string
