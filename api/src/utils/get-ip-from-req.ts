@@ -5,17 +5,15 @@ import type { Request } from 'express';
 import proxyAddr from 'proxy-addr';
 import { useLogger } from '../logger/index.js';
 
-// No-auth endpoints often hit directly (health checks/pings), bypassing the IP_CUSTOM_HEADER proxy, so the missing-header warning is just noise.
 const IP_HEADER_WARNING_EXCLUDED_PATHS = new Set(['/server/ping', '/server/info']);
 
 function getReqPathname(req: IncomingMessage | Request): string {
 	const rawUrl = ('originalUrl' in req && req.originalUrl) || req.url || '';
 
 	try {
-		// Lower-cased since express routing is case-insensitive by default (/server/PING hits the same endpoint)
+		// Express routing is case-insensitive, so normalize before matching
 		return new URL(rawUrl, 'http://localhost').pathname.toLowerCase();
 	} catch {
-		// Malformed request target (never a valid excluded health-check path); don't throw, just don't suppress
 		return '';
 	}
 }
