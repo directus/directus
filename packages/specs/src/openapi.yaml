@@ -327,6 +327,7 @@ components:
       $ref: './definitions/query.yaml'
     Versions:
       $ref: './components/version.yaml'
+  
     x-metadata:
       type: object
       properties:
@@ -368,6 +369,19 @@ components:
       $ref: './parameters/export.yaml'
     Version:
       $ref: './parameters/version.yaml'
+    Aggregate:
+      $ref: './parameters/aggregate.yaml'
+    GroupBy:
+      $ref: './parameters/groupBy.yaml'
+    Alias:
+      $ref: './parameters/alias.yaml'
+    VersionRaw:
+      $ref: './parameters/versionRaw.yaml'
+    Backlink:
+      $ref: './parameters/backlink.yaml'
+    Deep:
+      $ref: './parameters/deep.yaml'
+
   responses:
     NotFoundError:
       $ref: './responses/notFoundError.yaml'

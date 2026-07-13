@@ -31,3 +31,34 @@ properties:
     type: object
     description: Deep allows you to set any of the other query parameters on a nested relational dataset.
     example: { 'related_articles': { '_limit': 3 } }
+
+  aggregate:
+    type: object
+    description: Object of aggregation functions mapped to one or more fields.
+    example:
+      count: "*"
+
+  groupBy:
+    type: array
+    items:
+      type: string
+    description: Group the returned items by one or more fields.
+    example: ["status"]
+
+  alias:
+    type: object
+    description: Rename fields on the fly.
+    example:
+    author_name: author.name
+
+  version:
+    type: string
+    description: Retrieve an item's state from a specific Content Version.
+
+  versionRaw:
+    type: boolean
+    description: Return raw revision data instead of merged item data.
+
+  backlink:
+    type: boolean
+    description: Include reverse relational fields when expanding wildcards.

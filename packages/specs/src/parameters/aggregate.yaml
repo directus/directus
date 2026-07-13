@@ -1,0 +1,7 @@
+name: aggregate
+description: >
+  Object of aggregation functions (count, sum, avg, min, max, etc.) mapped to one or more field names.
+in: query
+required: false
+schema:
+  type: object

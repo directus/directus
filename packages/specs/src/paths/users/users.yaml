@@ -11,6 +11,12 @@ get:
     - $ref: '../../openapi.yaml#/components/parameters/Sort'
     - $ref: '../../openapi.yaml#/components/parameters/Filter'
     - $ref: '../../openapi.yaml#/components/parameters/Search'
+    - $ref: '../../openapi.yaml#/components/parameters/Aggregate'
+    - $ref: '../../openapi.yaml#/components/parameters/GroupBy'
+    - $ref: '../../openapi.yaml#/components/parameters/Deep'
+    - $ref: '../../openapi.yaml#/components/parameters/Alias'
+    - $ref: '../../openapi.yaml#/components/parameters/VersionRaw'
+    - $ref: '../../openapi.yaml#/components/parameters/Backlink'
   responses:
     '200':
       description: Successful request
