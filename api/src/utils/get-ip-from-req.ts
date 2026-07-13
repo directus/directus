@@ -6,6 +6,19 @@ import proxyAddr from 'proxy-addr';
 import { useLogger } from '../logger/index.js';
 
 /**
+ * No-auth endpoints that are commonly hit directly (health checks, uptime pings) rather than
+ * through the proxy that sets IP_CUSTOM_HEADER. The missing-header warning is expected noise on
+ * these, so it's suppressed. Auth'd requests still warn, since IP-based permissions may apply.
+ */
+const IP_HEADER_WARNING_EXCLUDED_PATHS = new Set(['/server/ping', '/server/info']);
+
+function getReqPathname(req: IncomingMessage | Request): string {
+	const rawUrl = ('originalUrl' in req && req.originalUrl) || req.url || '';
+	const end = rawUrl.search(/[?#]/);
+	return end === -1 ? rawUrl : rawUrl.slice(0, end);
+}
+
+/**
  * Generate the trusted ip list
  *
  * Adapted to have feature parity with the express equivalent https://github.com/expressjs/express/blob/9f4dbe3a1332cd883069ba9b73a9eed99234cfc7/lib/utils.js#L192
@@ -44,7 +57,7 @@ export function getIPFromReq(req: IncomingMessage | Request): string | null {
 
 		if (typeof customIPHeaderValue === 'string' && isIP(customIPHeaderValue) !== 0) {
 			ip = customIPHeaderValue;
-		} else {
+		} else if (!IP_HEADER_WARNING_EXCLUDED_PATHS.has(getReqPathname(req))) {
 			logger.warn(`Custom IP header didn't return valid IP address: ${JSON.stringify(customIPHeaderValue)}`);
 		}
 	}
