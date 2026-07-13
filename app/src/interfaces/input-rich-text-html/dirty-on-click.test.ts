@@ -23,7 +23,14 @@ async function mountWithValue(value: string) {
 		props: { value },
 		global: {
 			plugins: [createPinia(), i18n],
-			stubs: { Toolbar: true, TableBubbleMenu: true, ImageDrawer: true, LinkDrawer: true, SourceCodeDrawer: true },
+			stubs: {
+				Toolbar: true,
+				TableBubbleMenu: true,
+				ImageDrawer: true,
+				LinkDrawer: true,
+				MediaDrawer: true,
+				SourceCodeDrawer: true,
+			},
 		},
 	});
 

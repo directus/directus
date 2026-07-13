@@ -16,6 +16,8 @@ import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
  *   the current schema can't represent is EITHER restored by a later extension issue OR a
  *   documented accepted regression. `LOSSY` below is the ledger of those cases; when an
  *   extension lands, its sample moves from LOSSY → FAITHFUL and the snapshot updates.
+ *   Media (CMS-2643): video/audio/iframe now round-trip via the custom `media` node. Bare boolean
+ *   attributes normalize to `controls=""`/`loop=""` (ProseMirror's serializer cannot emit bare attrs).
  *
  * The editor here uses the same extension set as input-rich-text-html.vue (see ./extensions).
  */
@@ -64,6 +66,9 @@ const FAITHFUL: Record<string, string> = {
 	'text align right': '<p style="text-align: right;">right</p>',
 	'text align justify': '<p style="text-align: justify;">justified</p>',
 	'aligned heading': '<h2 style="text-align: center;">centered</h2>',
+	video: '<video width="640" height="360" controls><source src="/assets/v.mp4" type="video/mp4"></video>',
+	'audio with loop': '<audio loop controls><source src="/assets/a.mp3" type="audio/mpeg"></audio>',
+	iframe: '<iframe src="about:blank" width="560" height="315"></iframe>',
 	// CMS-2647: persists as the legacy `<!-- pagebreak -->` comment via the page-break serialization boundary
 	pagebreak: '<p>a</p><!-- pagebreak --><p>b</p>',
 	'rtl paragraph': '<p dir="rtl">شسي</p>',
@@ -86,19 +91,6 @@ const FAITHFUL: Record<string, string> = {
  * actual lossy output; the assertions document precisely what is lost today.
  */
 const LOSSY: Array<{ name: string; html: string; absent: string; issue: string }> = [
-	{
-		name: 'video',
-		html: '<video controls><source src="/v.mp4" type="video/mp4"></video>',
-		absent: '<video',
-		issue: 'CMS-2643',
-	},
-	{
-		name: 'audio',
-		html: '<audio controls><source src="/a.mp3" type="audio/mpeg"></audio>',
-		absent: '<audio',
-		issue: 'CMS-2643',
-	},
-	{ name: 'iframe', html: '<iframe src="about:blank"></iframe>', absent: '<iframe', issue: 'CMS-2643' },
 	// Accepted regression: with NO configured format, an arbitrary class-bearing span is dropped — the
 	// base schema doesn't model classes. When the field's `customFormats` option defines it, a dynamic
 	// mark restores it (CMS-2648); that configured round-trip is covered in extensions/custom-formats.test.ts.

@@ -1,7 +1,9 @@
 import { CharacterCount } from '@tiptap/extensions';
 import StarterKit from '@tiptap/starter-kit';
 import { Direction } from './direction';
+import { DropCursor } from './drop-cursor';
 import { CustomImage } from './image';
+import { Media } from './media';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
 import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
@@ -19,13 +21,17 @@ import { TextStyle } from './text-style';
  */
 export const editorExtensions = [
 	StarterKit.configure({
+		// replaced by DropCursor, which draws a vertical indicator between same-row inline-block nodes
+		dropcursor: false,
 		link: {
 			defaultProtocol: 'https',
 			openOnClick: false,
 			HTMLAttributes: { target: null, rel: null },
 		},
 	}),
+	DropCursor,
 	CustomImage,
+	Media,
 	TextAlignment,
 	Direction,
 	CustomSubscript,
