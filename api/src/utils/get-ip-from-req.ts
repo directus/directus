@@ -10,8 +10,14 @@ const IP_HEADER_WARNING_EXCLUDED_PATHS = new Set(['/server/ping', '/server/info'
 
 function getReqPathname(req: IncomingMessage | Request): string {
 	const rawUrl = ('originalUrl' in req && req.originalUrl) || req.url || '';
-	const end = rawUrl.search(/[?#]/);
-	return end === -1 ? rawUrl : rawUrl.slice(0, end);
+
+	try {
+		// Lower-cased since express routing is case-insensitive by default (/server/PING hits the same endpoint)
+		return new URL(rawUrl, 'http://localhost').pathname.toLowerCase();
+	} catch {
+		// Malformed request target (never a valid excluded health-check path); don't throw, just don't suppress
+		return '';
+	}
 }
 
 /**

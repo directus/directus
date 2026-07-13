@@ -131,6 +131,36 @@ describe('getIPFromReq', () => {
 			expect(warn).not.toHaveBeenCalled();
 		});
 
+		test('Suppresses the warning regardless of path casing', () => {
+			vi.mocked(useEnv).mockReturnValue({
+				IP_TRUST_PROXY: true,
+				IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
+			});
+
+			getIPFromReq({
+				socket: { remoteAddress: '127.0.0.1' },
+				headers: {},
+				url: '/server/PING',
+			} as unknown as IncomingMessage);
+
+			expect(warn).not.toHaveBeenCalled();
+		});
+
+		test('Does not throw and still warns on a malformed request target', () => {
+			vi.mocked(useEnv).mockReturnValue({
+				IP_TRUST_PROXY: true,
+				IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
+			});
+
+			getIPFromReq({
+				socket: { remoteAddress: '127.0.0.1' },
+				headers: {},
+				url: '//bad url',
+			} as unknown as IncomingMessage);
+
+			expect(warn).toHaveBeenCalledOnce();
+		});
+
 		test('Still warns on other /server endpoints', () => {
 			vi.mocked(useEnv).mockReturnValue({
 				IP_TRUST_PROXY: true,
