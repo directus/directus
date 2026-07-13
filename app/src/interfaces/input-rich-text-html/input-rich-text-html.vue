@@ -55,8 +55,7 @@ const { t } = useI18n();
 
 const { imageToken, folder } = toRefs(props);
 
-// Built once at init from the field's `customFormats` option (design-time config, not reactive edits):
-// dynamic marks go into the editor's schema, the format list drives the toolbar's styles dropdown.
+// built once at init: `customFormats` is design-time config, not reactive
 const { extensions: customFormatExtensions, formats: customFormatList } = buildCustomFormats(props.customFormats);
 
 const pageBreakLabel = computed(() => `"${t('wysiwyg_options.pagebreak')}"`);
@@ -72,14 +71,9 @@ const isEditable = computed(() => !props.disabled && !props.nonEditable && !prop
 
 const editorDir = computed(() => (props.direction === 'rtl' ? 'rtl' : 'ltr'));
 
-// Sync an external value into the editor without polluting undo history or emitting an update.
-// `addToHistory: false` keeps these programmatic syncs out of the undo stack, otherwise the
-// first value load registers a phantom "empty → content" step and undo wipes the content.
-// The initial load also routes through here (not the constructor's `content`) so StarterKit's
-// TrailingNode normalization — appending a trailing paragraph after content that ends in a
-// non-paragraph block — runs now, inside this suppressed transaction. Set at construction it
-// would instead be deferred to the user's first click, emitting a phantom edit that marks the
-// field dirty (only for non-Tiptap-authored HTML, e.g. legacy TinyMCE content). See dirty-on-click.test.ts.
+// `addToHistory: false` keeps programmatic syncs out of the undo stack (undo would wipe the content).
+// The initial load routes through here (not the constructor) so TrailingNode normalization runs inside
+// this suppressed transaction instead of dirtying the field on first click (see dirty-on-click.test.ts).
 function syncValue(instance: Editor, value: string | null) {
 	instance
 		.chain()
@@ -91,8 +85,6 @@ function syncValue(instance: Editor, value: string | null) {
 	updateCount(instance);
 }
 
-// Advisory character count for the `softLength` indicator. Reads the CharacterCount extension's
-// storage (default `textSize` mode → text content length, matching legacy TinyMCE counting).
 const count = ref(0);
 
 function updateCount(instance: Editor) {
@@ -114,8 +106,7 @@ const editor = useEditor({
 	content: '',
 	editable: isEditable.value,
 	editorProps: {
-		// double-click an image to edit it in the drawer; single click just selects.
-		// Media nodes handle this themselves via their node view's dblclick.
+		// media nodes handle dblclick themselves in their node view
 		handleDoubleClickOn: (_view, _pos, node, nodePos) => {
 			if (node.type.name === 'image') {
 				editor.value?.commands.setNodeSelection(nodePos);
@@ -125,7 +116,7 @@ const editor = useEditor({
 
 			return false;
 		},
-		// Cmd/Ctrl+click a link opens it in a new tab (matches the legacy TinyMCE editor).
+		// Cmd/Ctrl+click opens links in a new tab (parity with TinyMCE)
 		handleClick: (_view, _pos, event) => {
 			if (event.button !== 0 || !(event.metaKey || event.ctrlKey)) return false;
 			const link = (event.target as HTMLElement | null)?.closest('a');
@@ -150,8 +141,7 @@ const { info } = useServerStore();
 
 const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
 
-// The media drawer only handles <video>/<audio>; without this the library picker and upload
-// accept the global list (usually images) and the pick lands as a broken <video>.
+// without this the picker/upload accept the global (usually image) list and the pick lands as a broken <video>
 const { mimeTypeFilter: mediaMimeTypeFilter, combinedAcceptString: mediaAllowedMimeTypes } = useMimeTypeFilter([
 	'video/*',
 	'audio/*',
@@ -206,8 +196,7 @@ const {
 	cancelNormalize,
 } = useSourceCode(editor as Ref<Editor>);
 
-// First drawer in the new editor: pause the surrounding view's focus trap while it's open so the
-// drawer's inputs are reachable; resume on close. Reused by the link/media/source drawers later.
+// pause the surrounding view's focus trap while a drawer is open so its inputs stay reachable
 const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
 
 watch([imageDrawerOpen, linkDrawerOpen, mediaDrawerOpen, sourceCodeDrawerOpen], (open) =>
@@ -229,8 +218,6 @@ watch(
 );
 
 const fullscreen = ref(false);
-
-// Container-class toggle revealing dashed guides on borderless tables — same pattern as `fullscreen`.
 const visualaid = ref(false);
 
 onKeyStroke('Escape', () => {
@@ -371,8 +358,6 @@ onKeyStroke('Escape', () => {
 	}
 }
 
-/* Soft-length remaining-characters indicator, anchored to the editor's bottom-right (ported from
-   the legacy TinyMCE editor). */
 .remaining {
 	position: absolute;
 	inset-inline-end: 0.5625rem;

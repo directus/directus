@@ -1,11 +1,9 @@
 import { type AnyExtension, Mark, mergeAttributes } from '@tiptap/vue-3';
 
 /**
- * Legacy TinyMCE `customFormats` (a.k.a. `style_formats`) entry. Only inline formats are supported
- * on Tiptap — each becomes a dynamic mark. Block-level shapes (`block`, `selector`, `wrapper`, or a
- * missing `inline` tag), nested `items` groups, and entries without a `classes`/`attributes` anchor
- * (nothing to recognize the mark by on reload) are unsupported and skipped with a warning; they are
- * recorded limitations, not silent failures.
+ * Legacy TinyMCE `customFormats` (`style_formats`) entry. Only inline formats are supported — each
+ * becomes a dynamic mark; block/selector/wrapper/`items` shapes and entries without a
+ * `classes`/`attributes` anchor are skipped with a warning.
  */
 interface CustomFormatEntry {
 	title: string;
@@ -16,11 +14,9 @@ interface CustomFormatEntry {
 }
 
 export interface CustomFormat {
-	/** Generated mark name, used for `toggleMark`/`isActive`. */
 	name: string;
-	/** Human label shown in the toolbar dropdown. */
 	title: string;
-	/** Serialized inline styles, applied to the dropdown item so it previews the format (TinyMCE parity). */
+	/** inline styles applied to the dropdown item so it previews the format (TinyMCE parity) */
 	previewStyle?: string;
 }
 
@@ -105,10 +101,7 @@ function buildMark(entry: CustomFormatEntry, name: string): AnyExtension {
 	});
 }
 
-/**
- * Turn the stored `customFormats` option into a set of dynamic marks plus the toolbar's format list.
- * Existing option values keep working as-is — no field-meta migration.
- */
+/** Turns the stored option into dynamic marks plus the toolbar's format list; no field-meta migration. */
 export function buildCustomFormats(raw: unknown): BuiltCustomFormats {
 	const extensions: AnyExtension[] = [];
 	const formats: CustomFormat[] = [];
@@ -120,8 +113,7 @@ export function buildCustomFormats(raw: unknown): BuiltCustomFormats {
 			return;
 		}
 
-		// Without a class or attribute there is nothing to recognize the mark by on reload (`matches`
-		// would never fire), so the format could be applied but not round-tripped — reject it upfront.
+		// no class/attribute anchor → the mark can't be recognized on reload, so reject upfront
 		const hasAnchor = Boolean(entry.classes?.trim()) || Object.keys(entry.attributes ?? {}).length > 0;
 
 		if (!hasAnchor) {

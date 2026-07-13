@@ -33,7 +33,6 @@ function shouldShow(): boolean {
 	return !!editor && editor.isEditable && editor.isActive('table');
 }
 
-/** Anchor to the table */
 function getReferencedVirtualElement(): { getBoundingClientRect: () => DOMRect } | null {
 	const table = tableElement();
 	if (!table) return null;

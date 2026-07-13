@@ -91,9 +91,8 @@ const MEASUREMENTS: LayoutMeasurements = {
 
 const TOOLBAR_ALIASES: Record<string, string[]> = { 'ltr rtl': ['ltr', 'rtl'] };
 
-// keys present in the field config AND in the registry, preserving field order for the `other` bucket.
-// `styles` is never user-configured: it's auto-appended (and only present) when customFormats exist,
-// matching the legacy TinyMCE behavior (`toolbarString += ' styles'`).
+// keys present in the field config AND the registry; `styles` is never user-configured — it's
+// auto-appended when customFormats exist (TinyMCE parity)
 const selectedKeys = computed(() => {
 	const keys = props.toolbar
 		.flatMap((key) => TOOLBAR_ALIASES[key] ?? [key])
@@ -106,8 +105,7 @@ const selectedKeys = computed(() => {
 // editor base font-size — mirrors `.ProseMirror { font-size: 0.875rem }` (14px) in input-rich-text-html.vue
 const BASE_FONT_SIZE_PX = 14;
 
-// Defaults the style dropdowns show when nothing is applied: the family resolves the active theme's
-// font token for the field's `font` option; the size mirrors the editor's fixed base size.
+// dropdown defaults when nothing is applied: family from the theme token for `font`, size from the editor's base size
 const styleDefaults = computed<Record<string, Partial<Record<'defaultLabel' | 'defaultValue', string>>>>(() => {
 	const token = props.font === 'sans-serif' ? 'sans' : props.font;
 	const family = cssVar(`--theme--fonts--${token}--font-family`).replace(/["']/g, '');
@@ -140,8 +138,7 @@ const visibleGroups = computed(() => layout.value.visible);
 const overflowGroups = computed(() => layout.value.overflow);
 const hasOverflow = computed(() => overflowGroups.value.length > 0);
 
-// resolve a render group's keys to button definitions, injecting per-render props: the derived style
-// defaults (font family/size) and the dynamic custom-format list for the styles dropdown.
+// resolve keys to button definitions, injecting per-render props (style defaults, custom-format list)
 function resolve(group: RenderGroup): { key: string; button: ToolbarButton }[] {
 	return group.keys.map((key) => {
 		const button = toolbarButtons[key]!;
@@ -239,8 +236,7 @@ const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ?
 	overflow: hidden;
 }
 
-// the "Show More" control never shrinks, so it stays visible even when the main row clips; the auto
-// inline-start margin anchors it to the end of the toolbar regardless of how many groups are visible
+// never shrinks so it stays visible when the main row clips; the auto margin anchors it to the end
 .toolbar-more-group {
 	display: flex;
 	align-items: center;

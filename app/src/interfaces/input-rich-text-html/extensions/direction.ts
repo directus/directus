@@ -17,9 +17,7 @@ declare module '@tiptap/core' {
 	}
 }
 
-/**
- * Adds a `dir` attribute to block nodes with `setDirection`/`unsetDirection` commands.
- */
+/** Adds a `dir` attribute to block nodes with `setDirection`/`unsetDirection` commands. */
 export const Direction = Extension.create<DirectionOptions>({
 	name: 'direction',
 

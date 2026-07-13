@@ -8,10 +8,7 @@ export function run(editor: Editor | undefined, command: (chain: Chain) => Chain
 	if (editor) command(editor.chain().focus()).run();
 }
 
-/**
- * Run a single-target table command from the context popup.
- *
- */
+/** Single-target command from the context popup: collapses a cell selection to its head cell first. */
 export function runContextCommand(editor: Editor | undefined, command: (chain: Chain) => Chain): void {
 	if (!editor) return;
 	const chain = editor.chain().focus();
@@ -28,9 +25,6 @@ export interface TableAction {
 	isEnabled: (editor: Editor) => boolean;
 }
 
-/**
- * Actions shown in the table context popup.
- */
 export const tableActionGroups: TableAction[][] = [
 	[
 		{

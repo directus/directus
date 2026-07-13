@@ -7,8 +7,8 @@ import { createI18n } from 'vue-i18n';
 import Interface from './input-rich-text-html.vue';
 
 /**
- * CMS-2640: the `softLength` indicator, reimplemented on Tiptap's CharacterCount extension.
- * Threshold parity with the legacy TinyMCE editor — warn at ≤10% remaining, danger at ≤5%.
+ * `softLength` indicator on Tiptap's CharacterCount extension. Threshold parity with the legacy
+ * TinyMCE editor — warn at ≤10% remaining, danger at ≤5%.
  */
 async function mountWith(props: { value?: string | null; softLength?: number }) {
 	const i18n = createI18n({ legacy: false, locale: 'en-US', messages: { 'en-US': {} } });

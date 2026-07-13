@@ -93,4 +93,4 @@ exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > underline sur
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > video survives round-trip 1`] = `"<video width="640" height="360" controls=""><source src="/assets/v.mp4" type="video/mp4"></video>"`;
 
-exports[`round-trip: lossy (restored by later issues / accepted regression) > 'custom format span (unconfigured)' is dropped today (→ 'CMS-2648 (configured only)') 1`] = `"<p>text</p>"`;
+exports[`round-trip: lossy (accepted regressions) > 'custom format span (unconfigured)' is dropped 1`] = `"<p>text</p>"`;

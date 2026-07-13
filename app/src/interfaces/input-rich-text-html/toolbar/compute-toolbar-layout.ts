@@ -40,8 +40,7 @@ function slotsOf(g: { popover?: boolean; keys: string[] }): number {
 }
 
 function widthOf(g: { popover?: boolean; keys: string[] }, m: LayoutMeasurements): number {
-	// popover groups collapse to one fixed-width button; otherwise sum per-key widths (labeled dropdowns
-	// are wider than square buttons), falling back to the default button width.
+	// popovers collapse to one fixed-width button; otherwise sum per-key widths (labeled dropdowns are wider)
 	return g.popover ? m.popoverWidth : g.keys.reduce((w, k) => w + (m.keyWidths?.[k] ?? m.buttonWidth), 0);
 }
 
@@ -110,10 +109,8 @@ export function computeToolbarLayout(
 		return { visible: candidates.map((c) => render(c)), overflow: [] };
 	}
 
-	// Keep-priority order: pinned groups collapse LAST (sorted ahead of non-pinned), then by priority desc.
-	// Nothing is force-visible — every group, pinned or not, can fall into "Show More" — so the visible row
-	// never clips the toolbar; pinned just stay accessible the longest. (The min-items floor below is the
-	// only thing that can push past the width, to avoid an almost-empty toolbar on a very narrow field.)
+	// keep-priority: pinned groups collapse last, then priority desc. Nothing is force-visible, so the
+	// row never clips the toolbar; only the min-items floor below may push past the width.
 	const keepRank = (c: Candidate) => (c.pinned ? 1 : 0);
 	const keepOrder = [...candidates].sort((a, b) => keepRank(b) - keepRank(a) || b.priority - a.priority);
 

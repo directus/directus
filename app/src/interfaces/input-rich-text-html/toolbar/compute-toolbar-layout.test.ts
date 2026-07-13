@@ -134,9 +134,8 @@ describe('computeToolbarLayout', () => {
 		expect(overflow.find((g) => g.id === 'align')).toBeUndefined();
 	});
 
-	// Regression suite against the REAL toolbar config: a wide pinned group (font family/size) must
-	// collapse into "Show More" rather than overflow the toolbar and clip the button.
-	describe('real config never clips the visible row (CMS-2637 regression)', () => {
+	// regression: a wide pinned group (font family/size) must collapse into "Show More", not clip the row
+	describe('real config never clips the visible row', () => {
 		// mirror the component's MEASUREMENTS, deriving the labeled-dropdown widths from the registry
 		const keyWidths = Object.fromEntries(
 			Object.entries(toolbarButtons)

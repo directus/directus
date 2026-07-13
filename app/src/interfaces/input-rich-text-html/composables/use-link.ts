@@ -46,8 +46,7 @@ export function useLink(editor: Ref<Editor>): UsableLink {
 		unlink,
 	};
 
-	// Opens the drawer; with the cursor inside an existing link, prefill from its attributes for editing.
-	// Otherwise seed from the current text selection: a URL prefills the url field, anything else the display text.
+	// inside an existing link: prefill from its attributes; otherwise seed from the selection (URL → url field, else display text)
 	function openLinkDrawer() {
 		linkDrawerOpen.value = true;
 		isEditingLink.value = editor.value.isActive('link');
@@ -100,8 +99,7 @@ export function useLink(editor: Ref<Editor>): UsableLink {
 		const chain = editor.value.chain().focus();
 		if (isEditingLink.value) chain.extendMarkRange('link');
 
-		// Display text unchanged → apply the mark to the existing range (preserves nested formatting).
-		// Changed (or a brand-new link with no selection) → replace the range with text carrying the mark.
+		// unchanged display text: re-mark the existing range (preserves nested formatting); changed: replace it
 		if (text === originalText.value && originalText.value !== '') {
 			chain.setLink(attrs).run();
 		} else {
@@ -116,8 +114,7 @@ export function useLink(editor: Ref<Editor>): UsableLink {
 		closeLinkDrawer();
 	}
 
-	// Author tokens like nofollow/sponsored/ugc on the edited link are preserved.
-	// Returns null when no tokens remain so we don't emit an empty rel.
+	// preserve author tokens (nofollow etc.); null when none remain so we don't emit an empty rel
 	function buildRel(newTab: boolean): string | null {
 		const authorTokens = originalRel.value.split(/\s+/).filter((token) => token && !SECURITY_REL.includes(token));
 		const tokens = newTab ? [...SECURITY_REL, ...authorTokens] : authorTokens;

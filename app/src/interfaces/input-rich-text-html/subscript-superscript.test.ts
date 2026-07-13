@@ -3,11 +3,8 @@ import { beforeEach, describe, expect, test } from 'vitest';
 import { editorExtensions } from './extensions';
 
 /**
- * Subscript / superscript marks (CMS-2638).
- *
- * Drives the same commands the toolbar buttons run (toggleSubscript / toggleSuperscript) against
- * the real shared extension set, so this also guards the mutual-exclusion config: the two marks
- * are wired to exclude each other (matching TinyMCE), which the schema-level `excludes` enforces.
+ * Drives the same toggleSubscript/toggleSuperscript commands the toolbar runs against the shared
+ * extension set, guarding the schema-level `excludes` mutual exclusion (matching TinyMCE).
  */
 let editor: Editor;
 

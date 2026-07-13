@@ -95,8 +95,7 @@ const FONT_FAMILY_WIDTH = 132;
 const FONT_SIZE_WIDTH = 80;
 const CUSTOM_FORMATS_WIDTH = 132;
 
-// Icon + caret dropdowns (color pickers) are wider than a plain icon button; keep in sync with the
-// `2.5rem` activator width in color-menu.vue and `popoverWidth` in toolbar.vue.
+// keep in sync with the `2.5rem` activator width in color-menu.vue and `popoverWidth` in toolbar.vue
 const CARET_BUTTON_WIDTH = 40;
 
 // text-align directions; `alignnone` (unset) is registered separately below
@@ -168,8 +167,7 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 			width: FONT_SIZE_WIDTH,
 		},
 	},
-	// Auto-appended by the toolbar when the field's `customFormats` option is set; `formats` is
-	// injected at render time (it is per-field-config, not static). See toolbar.vue.
+	// auto-appended when the field's `customFormats` option is set; `formats` is injected at render time (see toolbar.vue)
 	styles: {
 		icon: 'format_paint',
 		label: 'wysiwyg_options.styles',
