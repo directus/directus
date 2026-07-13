@@ -8,6 +8,7 @@ properties:
     example: ['*', '*.*']
   filter:
     type: object
+    description: Select items in the collection that match the given filter conditions.
     example: { <field>: { <operator>: <value> } }
   search:
     description: Filter by items that contain the given search query in one of their fields.
@@ -27,7 +28,50 @@ properties:
   page:
     type: number
     description: Cursor for use in pagination. Often used in combination with limit.
+  aggregate:
+    type: object
+    description: >
+      Aggregate function to apply, mapped to the field(s) to apply it to, for example `count`, `sum`, `avg`, `min`, or
+      `max`.
+    example: { 'count': ['*'] }
+  groupBy:
+    type: array
+    items:
+      type: string
+    description: Group the returned items by the given field(s).
+    example: ['status']
   deep:
     type: object
     description: Deep allows you to set any of the other query parameters on a nested relational dataset.
     example: { 'related_articles': { '_limit': 3 } }
+  alias:
+    type: object
+    description: >
+      Rename fields on the fly, so you can request the same field multiple times using different relational paths,
+      filters, or aggregations.
+    example: { 'author_name': 'author.name' }
+  export:
+    type: string
+    description: Saves the API response to a file. Accepts one of "csv", "csv_utf8", "json", "xml", "yaml".
+    enum:
+      - csv
+      - csv_utf8
+      - json
+      - xml
+      - yaml
+  version:
+    type: string
+    description: >
+      Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content
+      Version.
+  versionRaw:
+    type: boolean
+    default: false
+    description: When used with `version`, returns the raw revision data instead of the merged item data.
+  backlink:
+    type: boolean
+    default: true
+    description: >
+      Toggle whether reverse-relational fields are included when expanding a `*.*` wildcard. Explicitly specified field
+      names are not affected, so `fields=author.articles` still includes the reverse relation even when `backlink` is
+      `false`.
