@@ -7,7 +7,13 @@ import type { AISettings, ProviderConfig } from './types.js';
 
 type ProviderRegistry = ReturnType<typeof createProviderRegistry>;
 
-export function buildProviderConfigs(settings: AISettings): ProviderConfig[] {
+/** The subset of AI settings required to determine which providers are configured. */
+export type ProviderCredentials = Pick<
+	AISettings,
+	'openaiApiKey' | 'anthropicApiKey' | 'googleApiKey' | 'openaiCompatibleApiKey' | 'openaiCompatibleBaseUrl'
+>;
+
+export function buildProviderConfigs(settings: ProviderCredentials): ProviderConfig[] {
 	const configs: ProviderConfig[] = [];
 
 	if (settings.openaiApiKey) {

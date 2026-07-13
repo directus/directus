@@ -28,6 +28,7 @@ export type Info = {
 	};
 	mcp_enabled: boolean;
 	ai_enabled: boolean;
+	ai_providers?: string[];
 	files?: {
 		mimeTypeAllowList: string[];
 	};
@@ -92,6 +93,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		project: null,
 		mcp_enabled: true,
 		ai_enabled: true,
+		ai_providers: [],
 		files: undefined,
 		setupCompleted: false,
 		extensions: undefined,
@@ -131,6 +133,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		info.project = serverInfoResponse.data.data?.project;
 		info.mcp_enabled = serverInfoResponse.data.data?.mcp_enabled;
 		info.ai_enabled = serverInfoResponse.data.data?.ai_enabled;
+		info.ai_providers = serverInfoResponse.data.data?.ai_providers ?? [];
 		info.files = serverInfoResponse.data.data?.files;
 		info.setupCompleted = serverInfoResponse.data.data?.setupCompleted;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
@@ -157,6 +160,7 @@ export const useServerStore = defineStore('serverStore', () => {
 
 	const dehydrate = () => {
 		info.project = null;
+		info.ai_providers = [];
 
 		auth.providers = [];
 		auth.disableDefault = false;

@@ -11,6 +11,7 @@ import { AI_MODELS, type AppModelDefinition, buildCustomModelDefinition, buildCu
 import { isVisualElement, type UploadedFileResult } from '../types/context';
 import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
+import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
@@ -56,6 +57,7 @@ const getEffectiveToolPartState = (part: ToolPartLike) => {
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
+	const serverStore = useServerStore();
 	const sidebarStore = useSidebarStore();
 	const contextStore = useAiContextStore();
 	const toolsStore = useAiToolsStore();
@@ -91,6 +93,7 @@ export const useAiStore = defineStore('ai-store', () => {
 
 	// Model selection
 	const models = computed(() => {
+		const availableProviders = serverStore.info.ai_providers ?? [];
 		const customModels = buildCustomModels(settingsStore.settings?.ai_openai_compatible_models ?? null);
 		const allModels = [...AI_MODELS, ...customModels];
 
@@ -104,7 +107,7 @@ export const useAiStore = defineStore('ai-store', () => {
 
 		// Add models that are allowed or explicitly configured
 		for (const modelDef of allModels) {
-			if (!settingsStore.availableAiProviders.includes(modelDef.provider)) continue;
+			if (!availableProviders.includes(modelDef.provider)) continue;
 
 			// openai-compatible models are always allowed (user explicitly configured them)
 			if (modelDef.provider === 'openai-compatible') {
@@ -124,7 +127,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		// Add custom model IDs that are in allowed list but not in predefined models
 		for (const [provider, allowedModels] of Object.entries(allowedModelsMap)) {
 			if (!allowedModels || allowedModels.length === 0) continue;
-			if (!settingsStore.availableAiProviders.includes(provider)) continue;
+			if (!availableProviders.includes(provider)) continue;
 
 			for (const modelId of allowedModels) {
 				const exists = result.some((m) => m.provider === provider && m.model === modelId);

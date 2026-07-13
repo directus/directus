@@ -6,6 +6,7 @@ import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
+import { buildProviderConfigs } from '../ai/providers/registry.js';
 import { getCache } from '../cache.js';
 import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../constants.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
@@ -72,6 +73,30 @@ export class ServerService {
 		if (this.accountability?.user) {
 			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
+
+			if (info['ai_enabled']) {
+				// Expose which AI providers are configured so the app can render the model picker,
+				// without granting non-admin users read access to the underlying credentials.
+				const aiSettings = await this.settingsService.readSingleton({
+					fields: [
+						'ai_openai_api_key',
+						'ai_anthropic_api_key',
+						'ai_google_api_key',
+						'ai_openai_compatible_api_key',
+						'ai_openai_compatible_base_url',
+					],
+				});
+
+				const providerConfigs = buildProviderConfigs({
+					openaiApiKey: aiSettings['ai_openai_api_key'] ?? null,
+					anthropicApiKey: aiSettings['ai_anthropic_api_key'] ?? null,
+					googleApiKey: aiSettings['ai_google_api_key'] ?? null,
+					openaiCompatibleApiKey: aiSettings['ai_openai_compatible_api_key'] ?? null,
+					openaiCompatibleBaseUrl: aiSettings['ai_openai_compatible_base_url'] ?? null,
+				});
+
+				info['ai_providers'] = providerConfigs.map((config) => config.type);
+			}
 
 			info['files'] = {
 				mimeTypeAllowList: toArray(env['FILES_MIME_TYPE_ALLOW_LIST']),

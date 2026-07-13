@@ -33,6 +33,7 @@ const mockServerInfo: Info = {
 		public_registration: null,
 		public_registration_verify_email: null,
 	},
+	ai_providers: [],
 };
 
 const mockAuthProviders: Auth['providers'] = [
