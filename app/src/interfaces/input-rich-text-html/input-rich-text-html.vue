@@ -6,9 +6,11 @@ import { computed, ref, type Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
+import { useMedia } from './composables/use-media';
 import { useSourceCode } from './composables/use-source-code';
 import ImageDrawer from './drawers/image-drawer.vue';
 import LinkDrawer from './drawers/link-drawer.vue';
+import MediaDrawer from './drawers/media-drawer.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
 import { editorExtensions } from './extensions';
 import { buildCustomFormats } from './extensions/custom-formats';
@@ -18,7 +20,7 @@ import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
 import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
-import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
+import { parseGlobalMimeTypeAllowList, useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
@@ -105,12 +107,16 @@ const editor = useEditor({
 	content: '',
 	editable: isEditable.value,
 	editorProps: {
-		// double-click an image to edit it in the drawer; single click just selects the node
+		// double-click an image to edit it in the drawer; single click just selects.
+		// Media nodes handle this themselves via their node view's dblclick.
 		handleDoubleClickOn: (_view, _pos, node, nodePos) => {
-			if (node.type.name !== 'image') return false;
-			editor.value?.commands.setNodeSelection(nodePos);
-			openImageDrawer();
-			return true;
+			if (node.type.name === 'image') {
+				editor.value?.commands.setNodeSelection(nodePos);
+				openImageDrawer();
+				return true;
+			}
+
+			return false;
 		},
 		// Cmd/Ctrl+click a link opens it in a new tab (matches the legacy TinyMCE editor).
 		handleClick: (_view, _pos, event) => {
@@ -121,7 +127,11 @@ const editor = useEditor({
 			return true;
 		},
 	},
-	onCreate: ({ editor }) => syncValue(editor as Editor, props.value),
+	onCreate: ({ editor }) => {
+		syncValue(editor as Editor, props.value);
+		const storage = (editor as Editor).storage as Record<string, any>;
+		if (storage.media) storage.media.onOpenDrawer = openMediaDrawer;
+	},
 	onUpdate: ({ editor }) => {
 		updateCount(editor as Editor);
 		emit('input', editor.isEmpty ? null : encodePageBreaks(editor.getHTML()));
@@ -132,6 +142,13 @@ const settingsStore = useSettingsStore();
 const { info } = useServerStore();
 
 const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
+
+// The media drawer only handles <video>/<audio>; without this the library picker and upload
+// accept the global list (usually images) and the pick lands as a broken <video>.
+const { mimeTypeFilter: mediaMimeTypeFilter, combinedAcceptString: mediaAllowedMimeTypes } = useMimeTypeFilter([
+	'video/*',
+	'audio/*',
+]);
 
 const storageAssetTransform = ref('all');
 const storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
@@ -159,6 +176,18 @@ const {
 } = useLink(editor as Ref<Editor>);
 
 const {
+	mediaDrawerOpen,
+	mediaSelection,
+	embed,
+	embedInvalid,
+	activeTab,
+	openMediaDrawer,
+	closeMediaDrawer,
+	onMediaSelect,
+	saveMedia,
+} = useMedia(editor as Ref<Editor>, imageToken);
+
+const {
 	sourceCodeDrawerOpen,
 	code,
 	normalizeConfirmOpen,
@@ -174,7 +203,7 @@ const {
 // drawer's inputs are reachable; resume on close. Reused by the link/media/source drawers later.
 const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
 
-watch([imageDrawerOpen, linkDrawerOpen, sourceCodeDrawerOpen], (open) =>
+watch([imageDrawerOpen, linkDrawerOpen, mediaDrawerOpen, sourceCodeDrawerOpen], (open) =>
 	open.some(Boolean) ? pauseFocusTrap() : unpauseFocusTrap(),
 );
 
@@ -220,6 +249,7 @@ onKeyStroke('Escape', () => {
 			@toggle-fullscreen="fullscreen = !fullscreen"
 			@toggle-visualaid="visualaid = !visualaid"
 			@open-image="openImageDrawer"
+			@open-media="openMediaDrawer"
 			@open-link="openLinkDrawer"
 			@open-source-code="openSourceCodeDrawer"
 		/>
@@ -258,6 +288,20 @@ onKeyStroke('Escape', () => {
 			@save="saveLink"
 			@unlink="unlink"
 			@cancel="closeLinkDrawer"
+		/>
+
+		<MediaDrawer
+			v-model="mediaDrawerOpen"
+			v-model:media-selection="mediaSelection"
+			v-model:embed="embed"
+			v-model:active-tab="activeTab"
+			:embed-invalid="embedInvalid"
+			:folder="folder"
+			:allowed-mime-types="mediaAllowedMimeTypes"
+			:filter="mediaMimeTypeFilter"
+			@select="onMediaSelect"
+			@save="saveMedia"
+			@cancel="closeMediaDrawer"
 		/>
 
 		<SourceCodeDrawer

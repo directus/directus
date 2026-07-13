@@ -34,6 +34,7 @@ const emit = defineEmits<{
 	'toggle-fullscreen': [];
 	'toggle-visualaid': [];
 	'open-image': [];
+	'open-media': [];
 	'open-link': [];
 	'open-source-code': [];
 }>();
@@ -58,6 +59,9 @@ const context: ToolbarContext = {
 	},
 	image: {
 		open: () => emit('open-image'),
+	},
+	media: {
+		open: () => emit('open-media'),
 	},
 	link: {
 		open: () => emit('open-link'),

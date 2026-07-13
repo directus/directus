@@ -24,7 +24,11 @@ describe('computeNormalizationDiff', () => {
 		expect(removedText('<table><tbody><tr><td>a</td></tr></tbody></table>')).toContain('<table');
 	});
 
-	test('flags dropped iframe while keeping surrounding content', () => {
-		expect(removedText('<p>keep</p><iframe src="about:blank"></iframe>')).toContain('<iframe');
+	test('flags dropped element while keeping surrounding content', () => {
+		expect(removedText('<p>keep</p><object data="about:blank"></object>')).toContain('<object');
+	});
+
+	test('returns null for iframe preserved by the media node', () => {
+		expect(computeNormalizationDiff('<iframe src="about:blank"></iframe>')).toBeNull();
 	});
 });

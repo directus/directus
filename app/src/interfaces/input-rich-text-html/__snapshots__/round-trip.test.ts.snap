@@ -2,6 +2,8 @@
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > aligned heading survives round-trip 1`] = `"<h2 style="text-align: center;">centered</h2>"`;
 
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > audio with loop survives round-trip 1`] = `"<audio loop="" controls=""><source src="/assets/a.mp3" type="audio/mpeg"></audio>"`;
+
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > background color survives round-trip 1`] = `"<p><span style="background-color: #ffff00;">text</span></p>"`;
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > blockquote survives round-trip 1`] = `"<blockquote><p>quote</p></blockquote>"`;
@@ -32,6 +34,8 @@ exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > hard break su
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > headings survives round-trip 1`] = `"<h1>H1</h1><h2>H2</h2><h3>H3</h3><h4>H4</h4><h5>H5</h5><h6>H6</h6>"`;
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > horizontal rule survives round-trip 1`] = `"<p>before</p><hr><p>after</p>"`;
+
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > iframe survives round-trip 1`] = `"<iframe src="about:blank" width="560" height="315"></iframe>"`;
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > inline code survives round-trip 1`] = `"<p><code>inline()</code></p>"`;
 
@@ -87,10 +91,6 @@ exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > text color su
 
 exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > underline survives round-trip 1`] = `"<p><u>underline</u></p>"`;
 
-exports[`round-trip: lossy (restored by later issues / accepted regression) > 'audio' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;
+exports[`round-trip: faithful (StarterKit + TextStyleKit schema) > video survives round-trip 1`] = `"<video width="640" height="360" controls=""><source src="/assets/v.mp4" type="video/mp4"></video>"`;
 
 exports[`round-trip: lossy (restored by later issues / accepted regression) > 'custom format span (unconfigured)' is dropped today (→ 'CMS-2648 (configured only)') 1`] = `"<p>text</p>"`;
-
-exports[`round-trip: lossy (restored by later issues / accepted regression) > 'iframe' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;
-
-exports[`round-trip: lossy (restored by later issues / accepted regression) > 'video' is dropped today (→ 'CMS-2643') 1`] = `"<p></p>"`;

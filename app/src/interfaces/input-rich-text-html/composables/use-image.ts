@@ -2,6 +2,7 @@ import type { File, SettingsStorageAssetPreset } from '@directus/types';
 import type { Editor } from '@tiptap/vue-3';
 import mime from 'mime/lite';
 import { Ref, ref, watch } from 'vue';
+import { replaceUrlAccessToken } from './replace-url-access-token';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';
@@ -159,30 +160,6 @@ export function useImage(
 			return new URL(url, 'file://').searchParams;
 		} catch {
 			return undefined;
-		}
-	}
-
-	function replaceUrlAccessToken(url: string, token: string | null | undefined): string {
-		// Only process assets URL
-		if (!url.includes(getPublicURL() + 'assets/')) {
-			return url;
-		}
-
-		try {
-			const parsedUrl = new URL(url);
-			const params = new URLSearchParams(parsedUrl.search);
-
-			if (!token) {
-				params.delete('access_token');
-			} else {
-				params.set('access_token', token);
-			}
-
-			return Array.from(params).length > 0
-				? `${parsedUrl.origin}${parsedUrl.pathname}?${params.toString()}`
-				: `${parsedUrl.origin}${parsedUrl.pathname}`;
-		} catch {
-			return url;
 		}
 	}
 }
