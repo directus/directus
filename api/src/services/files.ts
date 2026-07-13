@@ -25,7 +25,6 @@ import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
 import { clone, cloneDeep } from 'lodash-es';
 import { extension } from 'mime-types';
-import { minimatch } from 'minimatch';
 import { RESUMABLE_UPLOADS } from '../constants.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
@@ -36,6 +35,7 @@ import { transaction } from '../utils/transaction.js';
 import { assertUniqueFilename } from './files/lib/assert-unique-filename.js';
 import { assertValidStoragePath } from './files/lib/assert-valid-storage-path.js';
 import { extractMetadata } from './files/lib/extract-metadata.js';
+import { isMimeTypeAllowed } from './files/lib/is-mime-type-allowed.js';
 import { sanitizeFilepath } from './files/lib/sanitize-filepath.js';
 import { ItemsService } from './items.js';
 
@@ -274,10 +274,7 @@ export class FilesService extends ItemsService<File> {
 		const mimeType = fileResponse.headers['content-type']?.split(';')[0]?.trim() || 'application/octet-stream';
 
 		// Check against global MIME type allow list from env
-		const globalAllowedPatterns = toArray(env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]);
-		const globalMimeTypeAllowed = globalAllowedPatterns.some((pattern) => minimatch(mimeType, pattern));
-
-		if (globalMimeTypeAllowed === false) {
+		if (isMimeTypeAllowed(mimeType, env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]) === false) {
 			throw new InvalidPayloadError({
 				reason: `File content type "${mimeType}" is not allowed for upload by your global file type restrictions`,
 			});
@@ -286,14 +283,10 @@ export class FilesService extends ItemsService<File> {
 		const { filterMimeType } = options;
 
 		// Check against interface-level MIME type restrictions if provided
-		if (filterMimeType && filterMimeType.length > 0) {
-			const interfaceMimeTypeAllowed = filterMimeType.some((pattern: string) => minimatch(mimeType, pattern));
-
-			if (interfaceMimeTypeAllowed === false) {
-				throw new InvalidPayloadError({
-					reason: `File content type "${mimeType}" is not allowed for upload by this field's file type restrictions`,
-				});
-			}
+		if (filterMimeType && filterMimeType.length > 0 && isMimeTypeAllowed(mimeType, filterMimeType) === false) {
+			throw new InvalidPayloadError({
+				reason: `File content type "${mimeType}" is not allowed for upload by this field's file type restrictions`,
+			});
 		}
 
 		const payload = {
