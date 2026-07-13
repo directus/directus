@@ -1,0 +1,9 @@
+description: Group the returned items by the given field(s).
+in: query
+name: groupBy
+required: false
+explode: false
+schema:
+  type: array
+  items:
+    type: string

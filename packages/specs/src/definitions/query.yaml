@@ -9,6 +9,9 @@ properties:
   filter:
     type: object
     description: Select items in the collection that match the given filter conditions.
+    externalDocs:
+      description: Available operators and dynamic variables
+      url: https://directus.com/docs/guides/connect/filter-rules#available-operators
     example: { <field>: { <operator>: <value> } }
   search:
     description: Filter by items that contain the given search query in one of their fields.
@@ -17,7 +20,10 @@ properties:
     type: array
     items:
       type: string
-    description: How to sort the returned items.
+    description: >
+      How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to
+      ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are
+      prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
     example: ['-date_created']
   limit:
     type: number

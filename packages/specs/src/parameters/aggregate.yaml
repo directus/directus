@@ -1,0 +1,11 @@
+description: >
+  Aggregate function to apply, mapped to the field(s) to apply it to, for example `count`, `sum`, `avg`, `min`, or
+  `max`.
+in: query
+name: aggregate
+required: false
+content:
+  application/json:
+    schema:
+      type: object
+      example: { 'count': ['*'] }

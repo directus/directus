@@ -1,0 +1,11 @@
+description: >
+  Rename fields on the fly, so you can request the same field multiple times using different relational paths, filters,
+  or aggregations.
+in: query
+name: alias
+required: false
+content:
+  application/json:
+    schema:
+      type: object
+      example: { 'author_name': 'author.name' }

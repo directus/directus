@@ -1,0 +1,9 @@
+description: Deep allows you to set any of the other query parameters on a nested relational dataset.
+in: query
+name: deep
+required: false
+content:
+  application/json:
+    schema:
+      type: object
+      example: { 'related_articles': { '_limit': 3 } }

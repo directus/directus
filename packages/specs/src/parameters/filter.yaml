@@ -1,4 +1,4 @@
-description: Select items in collection by given conditions.
+description: Select items in the collection that match the given filter conditions.
 in: query
 name: filter
 required: false
@@ -6,4 +6,7 @@ content:
   application/json:
     schema:
       type: object
+      externalDocs:
+        description: Available operators and dynamic variables
+        url: https://directus.com/docs/guides/connect/filter-rules#available-operators
       example: { <field>: { <operator>: <value> } }
