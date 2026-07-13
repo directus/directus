@@ -1,6 +1,7 @@
 import type { IncomingMessage } from 'http';
 import { isIP } from 'net';
 import { useEnv } from '@directus/env';
+import { toBoolean } from '@directus/utils';
 import type { Request } from 'express';
 import proxyAddr from 'proxy-addr';
 import { useLogger } from '../logger/index.js';
@@ -44,7 +45,9 @@ export function getIPFromReq(req: IncomingMessage | Request): string | null {
 
 		if (typeof customIPHeaderValue === 'string' && isIP(customIPHeaderValue) !== 0) {
 			ip = customIPHeaderValue;
-		} else {
+		} else if (toBoolean(env['IP_CUSTOM_HEADER_WARNINGS'] ?? true)) {
+			// Disable via IP_CUSTOM_HEADER_WARNINGS=false when the header is legitimately absent on
+			// some requests (e.g. health checks or non-proxied traffic), to avoid log noise.
 			logger.warn(`Custom IP header didn't return valid IP address: ${JSON.stringify(customIPHeaderValue)}`);
 		}
 	}

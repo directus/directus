@@ -136,6 +136,7 @@ export const DEFAULTS: Env = {
 
 	IP_TRUST_PROXY: false,
 	IP_CUSTOM_HEADER: false,
+	IP_CUSTOM_HEADER_WARNINGS: true,
 
 	IMPORT_EXPORT_NAMESPACE: 'directus:import-export',
 	IMPORT_IP_DENY_LIST: ['0.0.0.0', '169.254.169.254'],

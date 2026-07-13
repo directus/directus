@@ -1,9 +1,19 @@
 import type { IncomingMessage } from 'http';
 import { useEnv } from '@directus/env';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import { getIPFromReq } from './get-ip-from-req.js';
 
+const warn = vi.fn();
+
 vi.mock('@directus/env');
+
+vi.mock('../logger/index.js', () => ({
+	useLogger: vi.fn(() => ({ warn })),
+}));
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
 
 describe('getIPFromReq', () => {
 	test('Removes null if ip is undefined', () => {
@@ -57,6 +67,53 @@ describe('getIPFromReq', () => {
 		} as unknown as IncomingMessage);
 
 		expect(result).toBe('127.0.0.2');
+	});
+
+	describe('IP_CUSTOM_HEADER_WARNINGS', () => {
+		test('Warns by default when custom header does not return a valid IP', () => {
+			vi.mocked(useEnv).mockReturnValue({
+				IP_TRUST_PROXY: true,
+				IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
+			});
+
+			getIPFromReq({
+				socket: { remoteAddress: '127.0.0.1' },
+				headers: {},
+			} as unknown as IncomingMessage);
+
+			expect(warn).toHaveBeenCalledOnce();
+		});
+
+		test('Suppresses the warning when set to false', () => {
+			vi.mocked(useEnv).mockReturnValue({
+				IP_TRUST_PROXY: true,
+				IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
+				IP_CUSTOM_HEADER_WARNINGS: false,
+			});
+
+			const result = getIPFromReq({
+				socket: { remoteAddress: '127.0.0.1' },
+				headers: {},
+			} as unknown as IncomingMessage);
+
+			expect(warn).not.toHaveBeenCalled();
+			// Falls back to the resolved socket IP
+			expect(result).toBe('127.0.0.1');
+		});
+
+		test('Does not warn when the custom header returns a valid IP', () => {
+			vi.mocked(useEnv).mockReturnValue({
+				IP_TRUST_PROXY: true,
+				IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
+			});
+
+			getIPFromReq({
+				socket: { remoteAddress: '127.0.0.1' },
+				headers: { 'x-custom-ip': '127.0.0.2' },
+			} as unknown as IncomingMessage);
+
+			expect(warn).not.toHaveBeenCalled();
+		});
 	});
 
 	describe('IP_TRUST_PROXY', () => {
