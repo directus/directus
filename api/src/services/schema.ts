@@ -25,10 +25,11 @@ export class SchemaService {
 		this.accountability = options.accountability ?? null;
 	}
 
-	async snapshot(): Promise<Snapshot> {
+	/** Snapshot the schema, optionally scoped to a subset of `collections` (a partial snapshot). Admin only. */
+	async snapshot(options?: { collections?: string[] | undefined }): Promise<Snapshot> {
 		if (this.accountability?.admin !== true) throw new ForbiddenError();
 
-		const currentSnapshot = await getSnapshot({ database: this.knex });
+		const currentSnapshot = await getSnapshot({ database: this.knex, collections: options?.collections });
 
 		return currentSnapshot;
 	}

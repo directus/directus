@@ -1,6 +1,8 @@
 ---
 '@directus/api': minor
 '@directus/sdk': minor
+'@directus/env': minor
+'@directus/specs': minor
 ---
 
-Added a `POST /utils/import` endpoint (backed by `ImportService.importBatch`) that imports flat data for multiple related collections in a single request.
+Added support for multi collection flat data imports
