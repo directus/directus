@@ -131,7 +131,7 @@ export async function validateItemAccess(
 		action: options.action,
 	});
 
-	const expectedCount = isSingleton && !hasPrimaryKeys ? 1 : options.primaryKeys!.length;
+	const expectedCount = isSingleton && !hasPrimaryKeys ? 1 : new Set(options.primaryKeys!).size;
 	const hasAccess = items && items.length === expectedCount;
 
 	if (!hasAccess) {
