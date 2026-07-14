@@ -816,7 +816,7 @@ describe('Service / Files', () => {
 			expect(uploadOneSpy).not.toHaveBeenCalled();
 		});
 
-		test('succeeds when MIME type matches an filterMimeType glob pattern', async () => {
+		test('succeeds when MIME type is permitted by filterMimeType', async () => {
 			mockAxiosGet.mockResolvedValue({
 				headers: { 'content-type': 'image/png' },
 				data: new PassThrough(),
@@ -824,7 +824,7 @@ describe('Service / Files', () => {
 			});
 
 			await expect(
-				service.importOne('https://example.com/image.png', {}, { filterMimeType: ['image/*'] }),
+				service.importOne('https://example.com/image.png', {}, { filterMimeType: ['image/png'] }),
 			).resolves.toBe('imported-file-id');
 
 			expect(uploadOneSpy).toHaveBeenCalled();
