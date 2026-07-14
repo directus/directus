@@ -38,6 +38,7 @@ import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { buildImportPlan, type FkFieldInfo } from '../utils/build-import-plan.js';
+import { createMutationTracker } from '../utils/create-mutation-tracker.js';
 import { destroyPipedStream } from '../utils/destroy-piped-stream.js';
 import { createErrorTracker } from '../utils/error-tracker.js';
 import { getService } from '../utils/get-service.js';
@@ -569,11 +570,7 @@ export class ImportService {
 
 		try {
 			await transaction(this.knex, async (trx) => {
-				const mutationTracker = getService(plan.order[0]!, {
-					knex: trx,
-					schema: this.schema,
-					accountability: this.accountability,
-				}).createMutationTracker();
+				const mutationTracker = createMutationTracker();
 
 				const mutationOptions: MutationOptions = {
 					bypassEmitAction: (params) => nestedActionEvents.push(params),

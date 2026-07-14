@@ -1,5 +1,4 @@
 import { Action, isPublishedVersionKey } from '@directus/constants';
-import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type {
@@ -30,14 +29,13 @@ import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
 import { processPayload } from '../permissions/modules/process-payload/process-payload.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { createMutationTracker } from '../utils/create-mutation-tracker.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { captureSeatCount, validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { handleVersion } from '../utils/versioning/handle-version.js';
 import { PayloadService } from './payload.js';
-
-const env = useEnv();
 
 export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
 	implements AbstractService<Item>
@@ -88,20 +86,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	}
 
 	createMutationTracker(initialCount = 0): MutationTracker {
-		const maxCount = Number(env['MAX_BATCH_MUTATION']);
-		let mutationCount = initialCount;
-		return {
-			trackMutations(count: number) {
-				mutationCount += count;
-
-				if (mutationCount > maxCount) {
-					throw new InvalidPayloadError({ reason: `Exceeded max batch mutation limit of ${maxCount}` });
-				}
-			},
-			getCount() {
-				return mutationCount;
-			},
-		};
+		return createMutationTracker(initialCount);
 	}
 
 	async getKeysByQuery(query: Query): Promise<PrimaryKey[]> {
@@ -125,7 +110,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Create a single new item.
 	 */
 	async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		if (!opts.bypassLimits) {
 			opts.mutationTracker.trackMutations(1);
@@ -442,7 +427,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.createOne` under the hood.
 	 */
 	async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		if (this.collection === 'directus_users') {
 			opts.userIntegrityCheckFlags =
@@ -678,7 +663,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			throw new InvalidPayloadError({ reason: 'Input should be an array of items' });
 		}
 
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 
@@ -732,7 +717,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Update many items by primary key, setting all items to the same change.
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		if (!opts.bypassLimits) {
 			opts.mutationTracker.trackMutations(keys.length);
@@ -1048,7 +1033,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.upsertOne` under the hood.
 	 */
 	async upsertMany(payloads: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		const primaryKeys = await transaction(this.knex, async (knex) => {
 			const service = this.fork({ knex });
@@ -1108,7 +1093,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Delete multiple items by primary key.
 	 */
 	async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		if (!opts.bypassLimits) {
 			opts.mutationTracker.trackMutations(keys.length);
