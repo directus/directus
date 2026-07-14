@@ -172,6 +172,19 @@ export const DEFAULTS: Env = {
 	GRAPHQL_INTROSPECTION: true,
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 5,
 	GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
+	GRAPHQL_SINGLE_USE_MUTATIONS: [
+		'auth_login',
+		'auth_refresh',
+		'auth_password_request',
+		'auth_password_reset',
+		'users_register',
+		'users_register_verify',
+		'users_invite_accept',
+		'users_me_tfa_generate',
+		'users_me_tfa_enable',
+		'users_me_tfa_disable',
+		'utils_cache_clear',
+	],
 
 	WEBSOCKETS_ENABLED: false,
 	WEBSOCKETS_REST_ENABLED: true,
@@ -205,6 +218,11 @@ export const DEFAULTS: Env = {
 	PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED: false,
 	PRESSURE_LIMITER_RETRY_AFTER: false,
 
+	HEALTHCHECK_ENABLED: true,
+	HEALTHCHECK_NAMESPACE: 'directus:healthcheck',
+	HEALTHCHECK_SERVICES: 'database,redis,storage,email',
+	HEALTHCHECK_CACHE_TTL: '5m',
+
 	METRICS_ENABLED: false,
 	METRICS_SERVICES: 'database,cache,redis,storage',
 	METRICS_SCHEDULE: '*/1 * * * *',
@@ -222,6 +240,8 @@ export const DEFAULTS: Env = {
 
 	/** Auto-save revision-snapshot cadence in seconds. */
 	AUTOSAVE_REVISION_INTERVAL: 300,
+
+	PROJECT_OWNER_ENABLED: true,
 
 	MCP_ENABLED: true,
 	MCP_OAUTH_ENABLED: false,
@@ -252,4 +272,5 @@ export const DEFAULTS: Env = {
 	BRAINTRUST_API_URL: '',
 
 	LICENSE_NAMESPACE: 'license',
+	LICENSE_KEY_MANAGEMENT_ENABLED: true,
 } as const;

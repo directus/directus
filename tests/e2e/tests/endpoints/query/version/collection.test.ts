@@ -1,6 +1,5 @@
 import { randomUUID } from 'node:crypto';
 import {
-	compareContentVersion,
 	createContentVersion,
 	createDirectus,
 	createItem,
@@ -212,6 +211,36 @@ if (database !== 'mssql') {
 		await api.request(saveToContentVersion(version.id, { title: null, author: 'abc' }));
 
 		const response = (await api.request(readItems(collections.articles, { version: versionKey }))) as any[];
+
+		expect(response).toMatchObject([
+			{
+				$meta: {
+					error: expect.anything(),
+					version_id: version.id,
+				},
+				author: 'abc',
+				title: null,
+			},
+		]);
+
+		await api.request(deleteContentVersion(version.id));
+	});
+
+	test(`request version on collection a draft failed itemless with limit=-1`, async () => {
+		const versionKey = 'draft';
+
+		const version = await api.request(
+			createContentVersion({
+				collection: collections.articles,
+				item: null,
+				key: versionKey,
+				name: versionKey,
+			}),
+		);
+
+		await api.request(saveToContentVersion(version.id, { title: null, author: 'abc' }));
+
+		const response = (await api.request(readItems(collections.articles, { version: versionKey, limit: -1 }))) as any[];
 
 		expect(response).toMatchObject([
 			{

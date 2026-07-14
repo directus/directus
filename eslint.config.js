@@ -28,6 +28,7 @@ export default typescriptEslint.config(
 			'packages/extensions-sdk/templates/',
 			'api/extensions/',
 			'packages/visual-editing/test-website/**',
+			'docker-entrypoint.cjs',
 		],
 	},
 
@@ -161,8 +162,8 @@ export default typescriptEslint.config(
 			'vue/no-undef-components': [
 				'error',
 				{
-					// Histoire components in *.story.vue files
-					ignorePatterns: ['Story', 'Variant', 'Hst*'],
+					// TresJS custom-renderer elements
+					ignorePatterns: ['Tres*'],
 				},
 			],
 			// Require <PascalCase /> components in templates

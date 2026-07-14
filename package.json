@@ -34,28 +34,12 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"@directus/license>@directus/types": "workspace:*",
-			"fast-xml-parser": "5.8.0",
+			"fast-xml-parser": "5.9.3",
 			"@yarnpkg/shell>cross-spawn": "7.0.6",
-			"tar": "7.5.15",
-			"qs": "6.15.2",
-			"minimatch@10": "10.2.5",
+			"tar": "7.5.19",
 			"minimatch@9": "9.0.9",
-			"basic-ftp": "5.3.1",
-			"underscore": "1.13.8",
-			"flatted": "3.4.2",
 			"express@4>path-to-regexp": "0.1.13",
-			"micromatch>picomatch": "2.3.2",
-			"anymatch>picomatch": "2.3.2",
-			"picomatch": "4.0.4",
-			"defu": "6.1.7",
-			"unplugin-vue>vite": "8.0.14",
-			"vitest@3>vite": "7.3.2",
-			"protobufjs": "7.5.6",
-			"js-beautify>js-cookie": "3.0.7",
-			"pm2-sysmonit>systeminformation": "5.31.6",
-			"ajv>fast-uri": "3.1.2",
-			"braintrust>simple-git": "3.36.0"
+			"hono": "4.12.25"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",

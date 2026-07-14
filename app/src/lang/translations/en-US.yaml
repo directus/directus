@@ -343,6 +343,7 @@ validationError:
   niends_with: Value can't end with {substring}
   confirm_password: Passwords do not match
   org_name: Please include an organization name
+  unsafe: Value is not a safe number
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
@@ -1528,6 +1529,7 @@ licensing:
   resolve_ai_translations_confirm: Confirm AI Translations Deactivation
   resolve_ai_translations_caption: AI Translation will be disabled and your translation settings will no longer be used.
   env_managed: Your license key is managed via an environment variable and can't be updated here.
+  manage_license_disabled: Management of your license key is disabled by your environment settings.
   key_management: License Key Management
   key: License Key
   entitlements:
@@ -1704,6 +1706,10 @@ directus_collection:
   directus_translations: Custom translations
   directus_versions: Content Versions for items
   directus_extensions: Configuration of extensions
+  directus_oauth_clients: Registered OAuth client applications
+  directus_oauth_codes: Authorization codes for OAuth flows
+  directus_oauth_consents: User consent grants for OAuth clients
+  directus_oauth_tokens: Access and refresh tokens for OAuth clients
 fields:
   directus_activity:
     item: Item Primary Key
@@ -1720,6 +1726,7 @@ fields:
     collection: Collection
     icon: Icon
     note: Note
+    status: Status
     color: Color
     display_template: Display Template
     hidden: Hidden
@@ -2621,6 +2628,10 @@ interfaces:
       repeater
     interface_group: Interface Options
     display_group: Display Options
+    edit_mode: Edit Mode
+    edit_mode_drawer: Drawer
+    edit_mode_inline: Inline
+    confirm_remove: Confirm Item Removal
 
   slider:
     slider: Slider

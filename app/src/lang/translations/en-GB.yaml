@@ -1001,6 +1001,7 @@ fields:
     collection: Collection
     icon: Icon
     note: Note
+    status: Status
     color: Colour
     display_template: Display Template
     hidden: Hidden
@@ -1576,6 +1577,7 @@ interfaces:
     field_note_placeholder: Enter field note...
     incompatible_data: The current data is not compatible with the repeater interface and will be overridden when adding items to the repeater
     interface_group: Interface Options
+    edit_mode_inline: Inline
   slider:
     slider: Slider
     description: Select a number using a slider
@@ -1688,13 +1690,8 @@ interfaces:
     generate: Generate Token
     regenerate: Regenerate Token
     regenerate_confirm_title: Regenerate Token
-    regenerate_confirm_body: The current token will be immediately invalidated. This cannot be undone.
     remove_token: Remove Token
     remove_confirm_title: Remove Token
-    remove_confirm_body: Any API access using this token will stop working immediately.
-    new_user_disabled_notice: Save this user before generating a token.
-    token_saved_notice: Token was saved successfully.
-    token_saved_copy: Make sure to copy this token now. For security reasons, it will not be visible again.
   system-raw-editor:
     system-raw-editor: Raw Editor
     description: Allow entering of raw or mustache templating values

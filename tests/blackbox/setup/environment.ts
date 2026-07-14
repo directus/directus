@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import axios from 'axios';
-import type { Environment } from 'vitest';
+import type { Environment } from 'vitest/environments';
 import { USER } from '../common/variables';
 import { sleep } from '../utils/sleep';
 import { getReversedTestIndex } from './sequential-tests';
@@ -11,7 +11,7 @@ export default <Environment>{
 
 	async setup(global) {
 		const { totalTestsCount } = JSON.parse(await fs.readFile('sequencer-data.json', 'utf8'));
-		const testFilePath = global.__vitest_worker__.ctx.files[0].split('blackbox')[1];
+		const testFilePath = global.__vitest_worker__.ctx.files[0].filepath.split('blackbox')[1];
 		const serverUrl = process.env['serverUrl'];
 
 		if (!serverUrl || isNaN(totalTestsCount)) {

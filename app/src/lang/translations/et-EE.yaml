@@ -894,6 +894,7 @@ fields:
     collection: Kogud
     icon: Ikoon
     note: Märkus
+    status: Staatus
     color: Värv
     display_template: Vaate mall
     hidden: Peidetud
@@ -1262,6 +1263,7 @@ interfaces:
     sort: Sorteeri
     field_note_placeholder: Sisesta välja märkus...
     interface_group: Kasutajaliidese valikud
+    edit_mode_inline: Tekstisisene
   slider:
     slider: Liugur
     description: Vali number slaiderilt
