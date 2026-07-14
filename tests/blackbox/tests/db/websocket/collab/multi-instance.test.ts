@@ -63,8 +63,7 @@ describe('Collaborative Editing: Multi-Instance', () => {
 				const instance = directusInstances[vendor];
 				if (!instance || instance.exitCode !== null || instance.signalCode !== null) return;
 
-				// Wait for the spawned instance to exit; force-kill if graceful shutdown stalls
-				// (a wedged DB pool can hang termination and prevent the test runner from exiting).
+				// Force-kill if graceful shutdown stalls, else the process keeps vitest from exiting.
 				await new Promise<void>((resolve) => {
 					const forceKill = setTimeout(() => instance.kill('SIGKILL'), 5000);
 					const hardCap = setTimeout(resolve, 10000);
