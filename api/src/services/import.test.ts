@@ -18,6 +18,15 @@ import { NotificationsService } from './notifications.js';
 const holder = vi.hoisted(() => ({ trx: null as any }));
 const cache: { importCount?: number } = {};
 
+const envConfig = vi.hoisted(() => ({
+	MAX_IMPORT_ERRORS: 1000,
+	EMAIL_TEMPLATES_PATH: './templates',
+	EXTENSIONS_PATH: './extensions',
+	IMPORT_TIMEOUT: '1m',
+	IMPORT_MAX_CONCURRENCY: 10,
+	CACHE_AUTO_PURGE: false as boolean,
+}));
+
 vi.mock('../utils/store.js', () => ({
 	useStore: () => (callback: (store: any) => void) => {
 		callback({
@@ -33,13 +42,7 @@ vi.mock('../stores/notifications.js');
 vi.mock('./users.js');
 
 vi.mock('@directus/env', () => ({
-	useEnv: () => ({
-		MAX_IMPORT_ERRORS: 1000,
-		EMAIL_TEMPLATES_PATH: './templates',
-		EXTENSIONS_PATH: './extensions',
-		IMPORT_TIMEOUT: '1m',
-		IMPORT_MAX_CONCURRENCY: 10,
-	}),
+	useEnv: () => envConfig,
 }));
 
 vi.mock('../permissions/modules/validate-access/validate-access.js', () => ({
@@ -76,6 +79,8 @@ describe('ImportService', () => {
 		.build();
 
 	beforeEach(() => {
+		envConfig.CACHE_AUTO_PURGE = false;
+
 		db = knex.default({ client: MockClient }) as unknown as Knex;
 		tracker = createTracker(db);
 
@@ -1144,7 +1149,9 @@ describe('ImportService.importBatch', () => {
 		expect(cacheClear).not.toHaveBeenCalled();
 	});
 
-	test('emits queued actions and clears cache on a committed run', async () => {
+	test('emits queued actions and clears cache on a committed run when CACHE_AUTO_PURGE is enabled', async () => {
+		envConfig.CACHE_AUTO_PURGE = true;
+
 		const cacheClear = vi.fn();
 		vi.mocked(getCache).mockReturnValue({ cache: { clear: cacheClear } } as any);
 
@@ -1158,6 +1165,24 @@ describe('ImportService.importBatch', () => {
 		await run(schema, [{ collection: 'authors', items: [{ id: 1, name: 'A' }] }], { mode: 'add' });
 
 		expect(cacheClear).toHaveBeenCalledTimes(1);
+	});
+
+	test('does not clear cache on a committed run when CACHE_AUTO_PURGE is disabled', async () => {
+		envConfig.CACHE_AUTO_PURGE = false;
+
+		const cacheClear = vi.fn();
+		vi.mocked(getCache).mockReturnValue({ cache: { clear: cacheClear } } as any);
+
+		const schema = new SchemaBuilder()
+			.collection('authors', (c) => {
+				c.field('id').id();
+				c.field('name').string();
+			})
+			.build();
+
+		await run(schema, [{ collection: 'authors', items: [{ id: 1, name: 'A' }] }], { mode: 'add' });
+
+		expect(cacheClear).not.toHaveBeenCalled();
 	});
 
 	test('dangerouslyAllowDelete removes existing rows absent from a merge import', async () => {

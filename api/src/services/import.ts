@@ -36,6 +36,7 @@ import { buildImportPlan, type FkFieldInfo, type ImportCollectionData } from '..
 import { destroyPipedStream } from '../utils/destroy-piped-stream.js';
 import { createErrorTracker } from '../utils/error-tracker.js';
 import { getService } from '../utils/get-service.js';
+import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { useStore } from '../utils/store.js';
 import { transaction } from '../utils/transaction.js';
 import { userName } from '../utils/user-name.js';
@@ -747,7 +748,7 @@ export class ImportService {
 			}
 
 			const { cache } = getCache();
-			if (cache) await cache.clear();
+			if (shouldClearCache(cache)) await cache.clear();
 
 			return { applied: true, mode, collections };
 		} catch (error) {
