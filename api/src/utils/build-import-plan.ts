@@ -111,7 +111,7 @@ export function buildImportPlan(input: ImportCollectionData[], schema: SchemaOve
 	const deferredKeys = new Set<string>();
 
 	// Break cycles by deferring nullable edges; unresolvable (all non-nullable) cycles throw
-	for (;;) {
+	while (true) {
 		const scc = findCycleComponent([...nodes], edges);
 		if (!scc) break;
 
