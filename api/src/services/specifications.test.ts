@@ -750,6 +750,33 @@ describe('Integration Tests', () => {
 							{ CookieAuth: [] },
 						]);
 					});
+
+					it('also stamps optional-auth security on system-collection operations accessible to the public role', async () => {
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_files', action: 'read' } as any,
+						]);
+
+						const systemSchema = new SchemaBuilder()
+							.collection('directus_files', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: systemSchema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/files']?.get?.security).toEqual([
+							{},
+							{ Auth: [] },
+							{ KeyAuth: [] },
+							{ CookieAuth: [] },
+						]);
+					});
 				});
 
 				describe('CookieAuth scheme coverage', () => {

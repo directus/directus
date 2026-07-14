@@ -207,6 +207,8 @@ class OASSpecsService implements SpecificationSubService {
 			const isSystem = 'x-collection' in tag === false || isSystemCollection(tag['x-collection']);
 
 			if (isSystem) {
+				const collection = 'x-collection' in tag ? tag['x-collection'] : undefined;
+
 				for (const [path, pathItem] of Object.entries<PathItemObject>(staticSpec.paths)) {
 					for (const [method, operation] of Object.entries(pathItem)) {
 						if (operation.tags?.includes(tag.name)) {
@@ -216,21 +218,31 @@ class OASSpecsService implements SpecificationSubService {
 
 							const hasPermission =
 								this.accountability?.admin === true ||
-								'x-collection' in tag === false ||
+								collection === undefined ||
 								!!permissions.find(
 									(permission) =>
-										permission.collection === tag['x-collection'] &&
-										permission.action === this.getActionForMethod(method),
+										permission.collection === collection && permission.action === this.getActionForMethod(method),
 								);
 
 							if (hasPermission) {
+								const isPubliclyAccessible =
+									collection !== undefined &&
+									!!publicPermissions.find(
+										(permission) =>
+											permission.collection === collection && permission.action === this.getActionForMethod(method),
+									);
+
+								const operationWithSecurity = isPubliclyAccessible
+									? { ...operation, security: OPTIONAL_AUTH_SECURITY }
+									: operation;
+
 								if ('parameters' in pathItem) {
 									paths[path]![method as keyof PathItemObject] = {
-										...operation,
-										parameters: [...(pathItem.parameters ?? []), ...(operation?.parameters ?? [])],
+										...operationWithSecurity,
+										parameters: [...(pathItem.parameters ?? []), ...(operationWithSecurity?.parameters ?? [])],
 									};
 								} else {
-									paths[path]![method as keyof PathItemObject] = operation;
+									paths[path]![method as keyof PathItemObject] = operationWithSecurity;
 								}
 							}
 						}
