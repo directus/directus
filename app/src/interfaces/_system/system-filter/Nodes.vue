@@ -17,6 +17,7 @@ import Draggable from 'vuedraggable';
 import InputGroup from './input-group.vue';
 import JsonFilterNode from './json-filter-node.vue';
 import {
+	buildJsonFilter,
 	fieldHasFunction,
 	fieldToFilter,
 	getComparator,
@@ -191,11 +192,21 @@ function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 
 function updateField(index: number, newField: string) {
 	const nodeInfo = filterInfo.value[index];
-	const oldFieldInfo = fieldsStore.getField(props.collection, nodeInfo.name);
-	const newFieldInfo = fieldsStore.getField(props.collection, newField);
-
 	if (nodeInfo.isField === false) return;
 
+	const functionInfo = extractFieldFromFunction(newField);
+
+	if (functionInfo.fn === 'json') {
+		filterSync.value = filterSync.value.map((filter, filterIndex) => {
+			if (filterIndex === index) return buildJsonFilter(functionInfo.field, '', '_eq', null);
+			return filter;
+		});
+
+		return;
+	}
+
+	const oldFieldInfo = fieldsStore.getField(props.collection, nodeInfo.name);
+	const newFieldInfo = fieldsStore.getField(props.collection, newField);
 	const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
 	let value = get(nodeInfo.node, valuePath);
 	let comparator = nodeInfo.comparator;

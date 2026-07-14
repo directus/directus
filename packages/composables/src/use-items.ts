@@ -41,6 +41,10 @@ export type ComputedQuery = {
 	version?: Ref<Query['version']> | ComputedRef<Query['version']> | WritableComputedRef<Query['version']>;
 };
 
+function serializeFilter(filter: Query['filter']): string | null | undefined {
+	return filter ? JSON.stringify(filter) : filter;
+}
+
 export function useItems(collection: Ref<string | null>, query: ComputedQuery): UsableItems {
 	const api = useApi();
 	const { primaryKeyField } = useCollection(collection);
@@ -85,7 +89,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			const response = await api.get<any>(url, {
 				params: {
 					aggregate,
-					...(filter ? { filter } : {}),
+					...(filter ? { filter: serializeFilter(filter) } : {}),
 					...(search ? { search } : {}),
 				},
 			});
@@ -214,7 +218,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 					sort: unref(sort),
 					page: unref(page),
 					search: unref(search),
-					filter: unref(filter),
+					filter: serializeFilter(unref(filter)),
 					deep: unref(deep),
 					version: unref(version),
 				},
