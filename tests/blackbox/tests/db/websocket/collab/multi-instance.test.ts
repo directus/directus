@@ -54,13 +54,31 @@ describe('Collaborative Editing: Multi-Instance', () => {
 	}, 180_000);
 
 	afterAll(async () => {
-		for (const vendor of vendors) {
-			if (process.env['TEST_SAVE_LOGS'] && instance2Logs[vendor]) {
-				fs.writeFileSync(join(paths.cwd, `server-log-${vendor}-instance-2.txt`), instance2Logs[vendor]!);
-			}
+		await Promise.all(
+			vendors.map(async (vendor) => {
+				if (process.env['TEST_SAVE_LOGS'] && instance2Logs[vendor]) {
+					fs.writeFileSync(join(paths.cwd, `server-log-${vendor}-instance-2.txt`), instance2Logs[vendor]!);
+				}
 
-			directusInstances[vendor]?.kill();
-		}
+				const instance = directusInstances[vendor];
+				if (!instance || instance.exitCode !== null || instance.signalCode !== null) return;
+
+				// Wait for the spawned instance to exit; force-kill if graceful shutdown stalls
+				// (a wedged DB pool can hang termination and prevent the test runner from exiting).
+				await new Promise<void>((resolve) => {
+					const forceKill = setTimeout(() => instance.kill('SIGKILL'), 5000);
+					const hardCap = setTimeout(resolve, 10000);
+
+					instance.once('exit', () => {
+						clearTimeout(forceKill);
+						clearTimeout(hardCap);
+						resolve();
+					});
+
+					instance.kill();
+				});
+			}),
+		);
 	});
 
 	beforeEach(async () => {
