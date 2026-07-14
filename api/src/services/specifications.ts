@@ -33,6 +33,10 @@ import { GraphQLService } from './graphql/index.js';
 
 const env = useEnv();
 
+// Documents that a path is reachable both without authentication and with it (an authenticated
+// caller may see a broader response than the public role, e.g. more fields).
+const OPTIONAL_AUTH_SECURITY: OpenAPIObject['security'] = [{}, { Auth: [] }, { KeyAuth: [] }, { CookieAuth: [] }];
+
 export class SpecificationService {
 	accountability: Accountability | null;
 	knex: Knex;
@@ -257,107 +261,112 @@ class OASSpecsService implements SpecificationSubService {
 						if (!paths[`/items/${collection}/{id}`]) paths[`/items/${collection}/{id}`] = {};
 
 						if (listBase?.[method]) {
-							paths[`/items/${collection}`]![method] = mergeWith(
-								cloneDeep(listBase[method]),
-								{
-									description: listBase[method].description.replace('item', collection + ' item'),
-									...(isPubliclyAccessible && { security: [] }),
-									tags: [tag.name],
-									parameters: 'parameters' in listBase ? this.filterCollectionFromParams(listBase.parameters) : [],
-									operationId: `${this.getActionForMethod(method)}${tag.name}`,
-									requestBody: ['get', 'delete'].includes(method)
-										? undefined
-										: {
-												content: {
-													'application/json': {
-														schema: {
-															oneOf: [
-																{
-																	type: 'array',
-																	items: {
+							paths[`/items/${collection}`]![method] = {
+								...mergeWith(
+									cloneDeep(listBase[method]),
+									{
+										description: listBase[method].description.replace('item', collection + ' item'),
+										parameters: 'parameters' in listBase ? this.filterCollectionFromParams(listBase.parameters) : [],
+										operationId: `${this.getActionForMethod(method)}${tag.name}`,
+										requestBody: ['get', 'delete'].includes(method)
+											? undefined
+											: {
+													content: {
+														'application/json': {
+															schema: {
+																oneOf: [
+																	{
+																		type: 'array',
+																		items: {
+																			$ref: `#/components/schemas/${tag.name}`,
+																		},
+																	},
+																	{
 																		$ref: `#/components/schemas/${tag.name}`,
 																	},
-																},
-																{
-																	$ref: `#/components/schemas/${tag.name}`,
-																},
-															],
-														},
-													},
-												},
-											},
-									responses: {
-										'200': {
-											description: 'Successful request',
-											content:
-												method === 'delete'
-													? undefined
-													: {
-															'application/json': {
-																schema: {
-																	properties: {
-																		data: schema.collections[collection]?.singleton
-																			? {
-																					$ref: `#/components/schemas/${tag.name}`,
-																				}
-																			: {
-																					type: 'array',
-																					items: {
-																						$ref: `#/components/schemas/${tag.name}`,
-																					},
-																				},
-																	},
-																},
+																],
 															},
 														},
-										},
-									},
-								},
-								this.mergePathItemCustomizer,
-							);
-						}
-
-						if (detailBase?.[method]) {
-							paths[`/items/${collection}/{id}`]![method] = mergeWith(
-								cloneDeep(detailBase[method]),
-								{
-									description: detailBase[method].description.replace('item', collection + ' item'),
-									...(isPubliclyAccessible && { security: [] }),
-									tags: [tag.name],
-									operationId: `${this.getActionForMethod(method)}Single${tag.name}`,
-									parameters: 'parameters' in detailBase ? this.filterCollectionFromParams(detailBase.parameters) : [],
-									requestBody: ['get', 'delete'].includes(method)
-										? undefined
-										: {
-												content: {
-													'application/json': {
-														schema: {
-															$ref: `#/components/schemas/${tag.name}`,
-														},
 													},
 												},
-											},
-									responses: {
-										'200': {
-											content:
-												method === 'delete'
-													? undefined
-													: {
-															'application/json': {
-																schema: {
-																	properties: {
-																		data: {
-																			$ref: `#/components/schemas/${tag.name}`,
+										responses: {
+											'200': {
+												description: 'Successful request',
+												content:
+													method === 'delete'
+														? undefined
+														: {
+																'application/json': {
+																	schema: {
+																		properties: {
+																			data: schema.collections[collection]?.singleton
+																				? {
+																						$ref: `#/components/schemas/${tag.name}`,
+																					}
+																				: {
+																						type: 'array',
+																						items: {
+																							$ref: `#/components/schemas/${tag.name}`,
+																						},
+																					},
 																		},
 																	},
 																},
 															},
-														},
+											},
 										},
 									},
-								},
-								this.mergePathItemCustomizer,
-							);
+									this.mergePathItemCustomizer,
+								),
+								tags: [tag.name],
+								...(isPubliclyAccessible && { security: OPTIONAL_AUTH_SECURITY }),
+							};
+						}
+
+						if (detailBase?.[method]) {
+							paths[`/items/${collection}/{id}`]![method] = {
+								...mergeWith(
+									cloneDeep(detailBase[method]),
+									{
+										description: detailBase[method].description.replace('item', collection + ' item'),
+										operationId: `${this.getActionForMethod(method)}Single${tag.name}`,
+										parameters:
+											'parameters' in detailBase ? this.filterCollectionFromParams(detailBase.parameters) : [],
+										requestBody: ['get', 'delete'].includes(method)
+											? undefined
+											: {
+													content: {
+														'application/json': {
+															schema: {
+																$ref: `#/components/schemas/${tag.name}`,
+															},
+														},
+													},
+												},
+										responses: {
+											'200': {
+												content:
+													method === 'delete'
+														? undefined
+														: {
+																'application/json': {
+																	schema: {
+																		properties: {
+																			data: {
+																				$ref: `#/components/schemas/${tag.name}`,
+																			},
+																		},
+																	},
+																},
+															},
+											},
+										},
+									},
+									this.mergePathItemCustomizer,
+								),
+								tags: [tag.name],
+								...(isPubliclyAccessible && { security: OPTIONAL_AUTH_SECURITY }),
+							};
 						}
 					}
 				}
@@ -499,9 +508,7 @@ class OASSpecsService implements SpecificationSubService {
 		}
 	}
 
-	private mergePathItemCustomizer(obj: unknown, src: unknown, key: string): unknown {
-		if (key === 'security') return src;
-		if (key === 'tags') return src;
+	private mergePathItemCustomizer(obj: unknown, src: unknown): unknown {
 		if (src !== null && typeof src === 'object' && !Array.isArray(src) && '$ref' in src) return src;
 		if (Array.isArray(obj)) return obj.concat(src);
 		return undefined;

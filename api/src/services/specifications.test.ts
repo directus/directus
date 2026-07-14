@@ -692,7 +692,9 @@ describe('Integration Tests', () => {
 
 						expect(responseData).toEqual({ $ref: '#/components/schemas/ItemsSettings' });
 					});
+				});
 
+				describe('security / tags assignment', () => {
 					it('collection-specific tags array replaces the generic Items tag rather than appending to it', async () => {
 						const service = new SpecificationService({
 							knex: db,
@@ -702,16 +704,14 @@ describe('Integration Tests', () => {
 
 						const spec = await service.oas.generate();
 
-						// The static /items/{collection} path this operation is cloned from is tagged ['Items'].
-						// Without replacing (rather than concatenating) the tags array during mergeWith, the
-						// generic 'Items' tag would leak into every generated collection operation alongside
-						// its own tag.
+						// Each collection gets its own tag (e.g. 'ItemsTestTable') in place of the generic
+						// 'Items' tag on the static /items/{collection} template this operation is cloned from.
 						expect(spec.paths['/items/test_table']?.get?.tags).toEqual(['ItemsTestTable']);
 					});
 				});
 
 				describe('public role security declarations', () => {
-					it('stamps security: [] on operations accessible to the public role', async () => {
+					it('stamps optional-auth security on operations accessible to the public role', async () => {
 						vi.mocked(fetchPermissions).mockResolvedValueOnce([{ collection: 'test_table', action: 'read' } as any]);
 
 						const service = new SpecificationService({
@@ -722,10 +722,18 @@ describe('Integration Tests', () => {
 
 						const spec = await service.oas.generate();
 
-						expect(spec.paths['/items/test_table']?.get?.security).toEqual([]);
+						// A publicly-readable route can also be called with auth (e.g. an authenticated
+						// caller may see more fields than the public role), so every scheme stays listed
+						// as an option alongside the no-auth entry ({}) rather than excluding auth.
+						expect(spec.paths['/items/test_table']?.get?.security).toEqual([
+							{},
+							{ Auth: [] },
+							{ KeyAuth: [] },
+							{ CookieAuth: [] },
+						]);
 					});
 
-					it('does not stamp security: [] on operations not accessible to the public role', async () => {
+					it('does not stamp optional-auth security on operations not accessible to the public role', async () => {
 						const service = new SpecificationService({
 							knex: db,
 							schema,
@@ -734,7 +742,13 @@ describe('Integration Tests', () => {
 
 						const spec = await service.oas.generate();
 
-						expect(spec.paths['/items/test_table']?.get?.security).not.toEqual([]);
+						// Public role has no read access, so the operation keeps the base declaration
+						// requiring one of Auth, KeyAuth, or CookieAuth - no unauthenticated ({}) entry.
+						expect(spec.paths['/items/test_table']?.get?.security).toEqual([
+							{ Auth: [] },
+							{ KeyAuth: [] },
+							{ CookieAuth: [] },
+						]);
 					});
 				});
 
