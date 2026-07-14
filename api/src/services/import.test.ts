@@ -1072,22 +1072,6 @@ describe('ImportService.importBatch', () => {
 		expect(calls[0]!.payload.author).toBe(5);
 	});
 
-	test('throws InvalidForeignKeyError on a dangling reference', async () => {
-		const schema = new SchemaBuilder()
-			.collection('authors', (c) => {
-				c.field('id').id();
-			})
-			.collection('articles', (c) => {
-				c.field('id').id();
-				c.field('author').m2o('authors');
-			})
-			.build();
-
-		await expect(run(schema, [{ collection: 'articles', items: [{ id: 1, author: 99 }] }])).rejects.toSatisfy((error) =>
-			isDirectusError(error, ErrorCode.InvalidForeignKey),
-		);
-	});
-
 	test('resolves a nullable self-reference with a second pass', async () => {
 		const schema = new SchemaBuilder()
 			.collection('categories', (c) => {
@@ -1322,30 +1306,6 @@ describe('ImportService.importBatch', () => {
 		// Same raw fk (1) resolves to a different target based on each item's collection field
 		expect(blogCreates[0]!.payload.blocks).toBe('paragraph-new-1');
 		expect(blogCreates[1]!.payload.blocks).toBe('image-new-1');
-	});
-
-	test('throws InvalidForeignKeyError on a dangling a2o reference', async () => {
-		const schema = new SchemaBuilder()
-			.collection('paragraph', (c) => {
-				c.field('id').id();
-				c.field('text').string();
-			})
-			.collection('image', (c) => {
-				c.field('id').id();
-				c.field('src').string();
-			})
-			.collection('blog', (c) => {
-				c.field('id').id();
-				c.field('blocks').a2o(['paragraph', 'image']);
-			})
-			.build();
-
-		await expect(
-			run(schema, [
-				{ collection: 'paragraph', items: [{ id: 1, text: 'hi' }] },
-				{ collection: 'blog', items: [{ id: 1, blocks: 999, collection: 'paragraph' }] },
-			]),
-		).rejects.toMatchObject({ code: ErrorCode.InvalidForeignKey });
 	});
 
 	describe('permissions', () => {

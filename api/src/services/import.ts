@@ -4,7 +4,6 @@ import type { Readable, Writable } from 'node:stream';
 import { useEnv } from '@directus/env';
 import {
 	ForbiddenError,
-	InvalidForeignKeyError,
 	InvalidPayloadError,
 	LimitExceededError,
 	TimeoutError,
@@ -589,8 +588,6 @@ export class ImportService {
 					idMaps.set(collection, new Map());
 				}
 
-				await this.assertReferencesResolvable(trx, plan.fkFields, dataByCollection);
-
 				// Pass 1: insert/upsert each collection in dependency order, remapping FKs and PKs
 				for (const collection of plan.order) {
 					const entry = dataByCollection.get(collection)!;
@@ -767,79 +764,6 @@ export class ImportService {
 							reason: `Nested relational data is not supported for "${collection}.${field}"; provide a scalar foreign key reference instead`,
 						});
 					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Verify that every scalar foreign key reference points at a primary key that is either part of
-	 * this import or already present in the database.
-	 */
-	private async assertReferencesResolvable(
-		trx: Knex,
-		fkFields: Map<string, FkFieldInfo[]>,
-		dataByCollection: Map<string, ImportCollectionData>,
-	): Promise<void> {
-		const importedPks = new Map<string, Set<string>>();
-
-		for (const [collection, entry] of dataByCollection) {
-			const { primary: pkField } = this.schema.collections[collection]!;
-			const set = new Set<string>();
-
-			for (const item of entry.items) {
-				const pk = item[pkField];
-
-				if (pk !== undefined && pk !== null) {
-					set.add(String(pk));
-				}
-			}
-
-			importedPks.set(collection, set);
-		}
-
-		const candidates = new Map<string, Map<string, { value: unknown; fromCollection: string; field: string }>>();
-
-		for (const [collection, entry] of dataByCollection) {
-			const fields = fkFields.get(collection)!;
-
-			for (const item of entry.items) {
-				for (const info of fields) {
-					const value = item[info.field];
-					if (value === undefined || value === null || isObject(value)) continue;
-
-					const target = resolveTarget(info, item);
-					if (!target || !this.schema.collections[target]) continue;
-
-					if (importedPks.get(target)?.has(String(value))) continue;
-
-					if (!candidates.has(target)) {
-						candidates.set(target, new Map());
-					}
-
-					candidates.get(target)!.set(String(value), { value, fromCollection: collection, field: info.field });
-				}
-			}
-		}
-
-		for (const [target, valueMap] of candidates) {
-			const { primary: pkField } = this.schema.collections[target]!;
-			const rawValues = [...valueMap.values()].map((entry) => entry.value);
-
-			const existing = await trx
-				.select(pkField)
-				.from(target)
-				.whereIn(pkField, rawValues as PrimaryKey[]);
-
-			const existingKeys = new Set(existing.map((row) => String(row[pkField])));
-
-			for (const [key, info] of valueMap) {
-				if (!existingKeys.has(key)) {
-					throw new InvalidForeignKeyError({
-						collection: info.fromCollection,
-						field: info.field,
-						value: info.value == null ? null : String(info.value),
-					});
 				}
 			}
 		}
