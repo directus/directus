@@ -1,5 +1,6 @@
 import { InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
+import { getRelationType } from '@directus/utils';
 import { useLogger } from '../logger/index.js';
 import { createCollectionForbiddenError } from '../permissions/modules/process-ast/utils/validate-path/create-error.js';
 
@@ -68,15 +69,20 @@ export function buildImportPlan(input: ImportCollectionData[], schema: SchemaOve
 
 	// Collect owning FK fields (m2o/a2o) and all relational fields (incl. o2m aliases) per collection
 	for (const relation of schema.relations) {
-		const isA2O = Boolean(relation.meta?.one_collection_field && relation.meta?.one_allowed_collections);
-
 		// Owning side: `relation.collection` holds the foreign key in `relation.field`
 		if (nodes.has(relation.collection)) {
+			const relationType = getRelationType({
+				relation,
+				collection: relation.collection,
+				field: relation.field,
+				useA2O: true,
+			});
+
 			const nullable = schema.collections[relation.collection]?.fields[relation.field]?.nullable ?? true;
 
 			fkFields.get(relation.collection)!.push({
 				field: relation.field,
-				target: isA2O ? null : relation.related_collection,
+				target: relationType === 'a2o' ? null : relation.related_collection,
 				collectionField: relation.meta?.one_collection_field ?? null,
 				allowedCollections: relation.meta?.one_allowed_collections ?? null,
 				nullable,
