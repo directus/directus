@@ -88,7 +88,15 @@ describe('buildImportPlan', () => {
 			buildImportPlan(asInput('a', 'b'), schema);
 			expect.fail('should have thrown');
 		} catch (error) {
-			expect(isDirectusError(error, ErrorCode.UnprocessableContent)).toBe(true);
+			expect(isDirectusError(error, ErrorCode.ImportCyclicalRelation)).toBe(true);
+
+			expect((error as any).extensions).toEqual({
+				collections: ['a', 'b'],
+				relations: [
+					{ collection: 'a', field: 'b_link', related: 'b' },
+					{ collection: 'b', field: 'a_link', related: 'a' },
+				],
+			});
 		}
 	});
 

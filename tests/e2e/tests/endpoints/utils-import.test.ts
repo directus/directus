@@ -281,7 +281,7 @@ describe('POST /utils/import', () => {
 		]);
 
 		expect(status).toBe(422);
-		expect(body.errors[0].extensions.code).toBe('UNPROCESSABLE_CONTENT');
+		expect(body.errors[0].extensions.code).toBe('IMPORT_CYCLICAL_RELATION');
 	});
 
 	test('dry run does not persist any data', async () => {

@@ -1,4 +1,4 @@
-import { InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
+import { ImportCyclicalRelationError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { ImportCollectionData, SchemaOverview } from '@directus/types';
 import { getRelationType } from '@directus/utils';
 import { useLogger } from '../logger/index.js';
@@ -123,13 +123,16 @@ export function buildImportPlan(input: ImportCollectionData[], schema: SchemaOve
 			.sort((a, b) => a.from.localeCompare(b.from) || a.field.localeCompare(b.field) || a.to.localeCompare(b.to));
 
 		if (nullableEdges.length === 0) {
-			const involved = internalEdges
-				.map((edge) => `${edge.from}.${edge.field} -> ${edge.to}`)
-				.sort()
-				.join(', ');
-
-			throw new UnprocessableContentError({
-				reason: `Unresolvable cyclical relation between [${[...scc].sort().join(', ')}] with non-nullable keys (${involved})`,
+			throw new ImportCyclicalRelationError({
+				collections: [...scc].sort(),
+				relations: internalEdges
+					.map((edge) => ({ collection: edge.from, field: edge.field, related: edge.to }))
+					.sort(
+						(a, b) =>
+							a.collection.localeCompare(b.collection) ||
+							a.field.localeCompare(b.field) ||
+							a.related.localeCompare(b.related),
+					),
 			});
 		}
 
