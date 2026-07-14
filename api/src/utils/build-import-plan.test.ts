@@ -1,7 +1,8 @@
 import { ErrorCode, isDirectusError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
+import type { ImportCollectionData } from '@directus/types';
 import { describe, expect, test } from 'vitest';
-import { buildImportPlan, type ImportCollectionData } from './build-import-plan.js';
+import { buildImportPlan } from './build-import-plan.js';
 
 const asInput = (...collections: string[]): ImportCollectionData[] =>
 	collections.map((collection) => ({ collection, items: [] }));

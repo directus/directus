@@ -15,6 +15,11 @@ import type {
 	AbstractServiceOptions,
 	Accountability,
 	ActionEventParams,
+	ImportBatchCollectionResult,
+	ImportBatchMode,
+	ImportBatchOptions,
+	ImportBatchResult,
+	ImportCollectionData,
 	MutationOptions,
 	PrimaryKey,
 	SchemaOverview,
@@ -32,7 +37,7 @@ import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import { buildImportPlan, type FkFieldInfo, type ImportCollectionData } from '../utils/build-import-plan.js';
+import { buildImportPlan, type FkFieldInfo } from '../utils/build-import-plan.js';
 import { destroyPipedStream } from '../utils/destroy-piped-stream.js';
 import { createErrorTracker } from '../utils/error-tracker.js';
 import { getService } from '../utils/get-service.js';
@@ -49,31 +54,6 @@ const logger = useLogger();
 const store = useStore<{ importCount: number | undefined }>(String(env['IMPORT_EXPORT_NAMESPACE']), {
 	ttl: ms((env['IMPORT_TIMEOUT'] as StringValue) ?? '1h'),
 });
-
-export type ImportBatchMode = 'add' | 'merge';
-
-export interface ImportBatchOptions {
-	mode?: ImportBatchMode;
-	dryRun?: boolean;
-	/**
-	 * When combined with `mode: 'merge'`, delete every existing record in an imported collection
-	 * whose primary key is not present in the import (a destructive mirror). No effect on its own.
-	 */
-	dangerouslyAllowDelete?: boolean;
-}
-
-export interface ImportBatchCollectionResult {
-	existing: PrimaryKey[];
-	new: PrimaryKey[];
-	deleted: PrimaryKey[];
-	mapped: Record<string, PrimaryKey>;
-}
-
-export interface ImportBatchResult {
-	applied: boolean;
-	mode: ImportBatchMode;
-	collections: Record<string, ImportBatchCollectionResult>;
-}
 
 class DryRunRollback extends Error {}
 

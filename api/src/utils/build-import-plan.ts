@@ -1,13 +1,8 @@
 import { InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
-import type { SchemaOverview } from '@directus/types';
+import type { ImportCollectionData, SchemaOverview } from '@directus/types';
 import { getRelationType } from '@directus/utils';
 import { useLogger } from '../logger/index.js';
 import { createCollectionForbiddenError } from '../permissions/modules/process-ast/utils/validate-path/create-error.js';
-
-export interface ImportCollectionData {
-	collection: string;
-	items: Record<string, unknown>[];
-}
 
 export interface FkFieldInfo {
 	field: string;
