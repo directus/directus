@@ -404,6 +404,10 @@ components:
       type: apiKey
       in: query
       name: access_token
+    RefreshTokenCookieAuth:
+      type: apiKey
+      in: cookie
+      name: directus_refresh_token
 security:
   - Auth: []
   - CookieAuth: []

@@ -779,7 +779,7 @@ describe('Integration Tests', () => {
 					});
 				});
 
-				describe('CookieAuth scheme coverage', () => {
+				describe('CookieAuth / RefreshTokenCookieAuth scheme coverage', () => {
 					it('includes CookieAuth in the spec-wide security default', async () => {
 						const service = new SpecificationService({
 							knex: db,
@@ -792,6 +792,24 @@ describe('Integration Tests', () => {
 						// A session cookie authenticates every request via the global extractToken
 						// middleware, so it belongs on the default alongside Auth/KeyAuth.
 						expect(spec.security).toEqual([{ Auth: [] }, { KeyAuth: [] }, { CookieAuth: [] }]);
+					});
+
+					it('carries the static security declaration through for /auth/refresh and /auth/logout', async () => {
+						const service = new SpecificationService({
+							knex: db,
+							schema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						// The refresh token can be supplied in the request body (no scheme), the session
+						// cookie (CookieAuth), or the refresh-token cookie (RefreshTokenCookieAuth) -
+						// distinct from the spec-wide default, so both endpoints declare it explicitly.
+						const expectedSecurity = [{}, { CookieAuth: [] }, { RefreshTokenCookieAuth: [] }];
+
+						expect(spec.paths['/auth/refresh']?.post?.security).toEqual(expectedSecurity);
+						expect(spec.paths['/auth/logout']?.post?.security).toEqual(expectedSecurity);
 					});
 				});
 

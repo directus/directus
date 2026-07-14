@@ -1,5 +1,8 @@
 post:
-  security: []
+  security:
+    - {}
+    - CookieAuth: []
+    - RefreshTokenCookieAuth: []
   summary: Log Out
   description: Log Out
   tags:
