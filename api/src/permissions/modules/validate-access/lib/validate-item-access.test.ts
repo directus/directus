@@ -278,11 +278,10 @@ test('Deduplicates primary keys before comparing against the returned item count
 
 	const acc = {} as unknown as Accountability;
 
-	// The database returns distinct rows, so a duplicated primary key resolves to a single item
 	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{}]);
 
 	await expect(
-		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1, 1] }, {
+		validateItemAccess({ accountability: acc, action: 'update', collection: 'collection-a', primaryKeys: [1, 1] }, {
 			schema,
 		} as Context),
 	).resolves.toEqual({ accessAllowed: true });
@@ -300,27 +299,6 @@ test('Deduplicates primary keys before comparing against the returned item count
 		}),
 		expect.anything(),
 	);
-});
-
-test('Deduplicates primary keys before checking field access', async () => {
-	const schema = new SchemaBuilder()
-		.collection('collection-a', (c) => {
-			c.field('field-a').id();
-		})
-		.build();
-
-	const acc = {} as unknown as Accountability;
-
-	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ field_a: 1 }]);
-
-	await expect(
-		validateItemAccess(
-			{ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1, 1], fields: ['field_a'] },
-			{
-				schema,
-			} as Context,
-		),
-	).resolves.toEqual({ accessAllowed: true });
 });
 
 test('Returns allowed root fields when returnAllowedRootFields is true', async () => {

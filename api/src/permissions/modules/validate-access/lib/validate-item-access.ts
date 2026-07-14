@@ -54,8 +54,7 @@ export async function validateItemAccess(
 
 	const isSingleton = collectionInfo?.singleton === true;
 
-	// Deduplicate the primary keys, as the database returns distinct rows and duplicated keys would
-	// otherwise never satisfy the count comparison below, denying access even when it should be allowed
+	// Dedupe keys so the count comparison below isn't thrown off by duplicates
 	const primaryKeys = options.primaryKeys ? [...new Set(options.primaryKeys)] : undefined;
 	const hasPrimaryKeys = primaryKeys && primaryKeys.length > 0;
 
