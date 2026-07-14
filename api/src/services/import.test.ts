@@ -1270,7 +1270,7 @@ describe('ImportService.importBatch', () => {
 				mode: 'add',
 				dangerouslyAllowDelete: true,
 			}),
-		).rejects.toMatchObject({ code: ErrorCode.InvalidPayload });
+		).rejects.toMatchObject({ code: ErrorCode.InvalidQuery });
 	});
 
 	test('remaps an a2o foreign key via the per-item target collection', async () => {

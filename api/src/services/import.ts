@@ -5,6 +5,7 @@ import { useEnv } from '@directus/env';
 import {
 	ForbiddenError,
 	InvalidPayloadError,
+	InvalidQueryError,
 	LimitExceededError,
 	TimeoutError,
 	UnsupportedMediaTypeError,
@@ -502,7 +503,7 @@ export class ImportService {
 		const dangerouslyAllowDelete = options.dangerouslyAllowDelete ?? false;
 
 		if (dangerouslyAllowDelete && mode !== 'merge') {
-			throw new InvalidPayloadError({
+			throw new InvalidQueryError({
 				reason: `"dangerouslyAllowDelete" can only be used with mode "merge"`,
 			});
 		}
