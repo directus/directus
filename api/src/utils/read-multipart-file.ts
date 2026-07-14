@@ -30,7 +30,9 @@ export function readMultipartFile(req: Request, options: ReadMultipartFileOption
 			? req.headers
 			: { ...req.headers, 'content-type': 'application/octet-stream' };
 
-		const limits = options.maxFileSize !== undefined ? { fileSize: options.maxFileSize } : {};
+		// `files: 1` makes busboy drop any additional files (emitting `filesLimit`) instead of firing
+		// `file` for each one, so we cleanly read only the first upload without leaving streams undrained.
+		const limits = options.maxFileSize !== undefined ? { files: 1, fileSize: options.maxFileSize } : { files: 1 };
 
 		const busboy = Busboy({ headers, limits });
 
