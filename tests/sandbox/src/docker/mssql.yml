@@ -6,7 +6,7 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=${DB_PASSWORD}
-      - MSSQL_PID=Express
+      - MSSQL_PID=Developer
     ports:
       - ${DB_PORT}:1433
     healthcheck:
