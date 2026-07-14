@@ -8,7 +8,8 @@ export default defineConfig({
 		poolOptions: {
 			forks: {
 				minForks: 1,
-				maxForks: 6,
+				// mssql is slower and RAM-hungrier; fewer forks avoids contention that times tests out
+				maxForks: process.env['TEST_DB'] === 'mssql' ? 3 : 6,
 			},
 		},
 		environment: './setup/environment.ts',
