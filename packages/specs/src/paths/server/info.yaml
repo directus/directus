@@ -2,19 +2,19 @@ get:
   summary: System Info
   description: Perform a system status check and return the options.
   operationId: serverInfo
-  parameters:
-    - description:
-        The first time you create a project, the provided token will be saved and required for subsequent project
-        installs. It can also be found and configured in `/config/__api.json` on your server.
-      in: query
-      name: super_admin_token
-      required: true
-      schema:
-        type: integer
+  security:
+    - {}
+    - Auth: []
+    - KeyAuth: []
+    - CookieAuth: []
   responses:
     '200':
       content:
         application/json:
+          # TODO(directus/directus#27765): data.* has three tiers of conditionally-present
+          # fields (public/authenticated/admin) and several boolean-or-object union fields
+          # (e.g. rateLimit, websocket) - see ServerService.serverInfo(). This placeholder
+          # schema needs a real shape once that's modeled.
           schema:
             properties:
               data:
