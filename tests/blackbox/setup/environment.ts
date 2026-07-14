@@ -20,12 +20,7 @@ export default <Environment>{
 
 		const testIndex = getReversedTestIndex(testFilePath, global.__vitest_worker__.ctx.config.name);
 
-		const barrierStart = Date.now();
-
 		while (testIndex !== 0) {
-			// Safety valve: never block the whole run if the completion count stalls
-			if (Date.now() - barrierStart > 300_000) break;
-
 			try {
 				const response = await axios.get(`${serverUrl}/items/tests_flow_completed`, {
 					params: {
@@ -40,11 +35,12 @@ export default <Environment>{
 
 				if (testIndex >= 0) {
 					if (completedCount >= testIndex) break;
-				} else if (totalTestsCount + testIndex === completedCount) {
+				} else if (completedCount >= totalTestsCount + testIndex) {
+					// >= (not ===) so a burst of completions can't overshoot the target and hang forever
 					break;
 				}
 			} catch {
-				// retry after the sleep below
+				continue;
 			}
 
 			await sleep(1000);
