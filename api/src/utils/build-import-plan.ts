@@ -1,5 +1,7 @@
 import { InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
+import { useLogger } from '../logger/index.js';
+import { createCollectionForbiddenError } from '../permissions/modules/process-ast/utils/validate-path/create-error.js';
 
 export interface ImportCollectionData {
 	collection: string;
@@ -40,10 +42,13 @@ interface Edge {
  */
 export function buildImportPlan(input: ImportCollectionData[], schema: SchemaOverview): ImportPlan {
 	const nodes = new Set<string>();
+	const logger = useLogger();
 
 	for (const { collection } of input) {
 		if (!schema.collections[collection]) {
-			throw new InvalidPayloadError({ reason: `Unknown collection "${collection}"` });
+			logger.warn(`Import requested for non-existent collection "${collection}"`);
+
+			throw createCollectionForbiddenError('', collection);
 		}
 
 		if (nodes.has(collection)) {

@@ -192,7 +192,7 @@ describe('buildImportPlan', () => {
 			buildImportPlan(asInput('unknown'), schema);
 			expect.fail('should have thrown');
 		} catch (error) {
-			expect(isDirectusError(error, ErrorCode.InvalidPayload)).toBe(true);
+			expect(isDirectusError(error, ErrorCode.Forbidden)).toBe(true);
 		}
 	});
 
