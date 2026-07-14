@@ -393,9 +393,8 @@ components:
       $ref: './responses/unauthorizedError.yaml'
   securitySchemes:
     Auth:
-      type: apiKey
-      in: header
-      name: 'Authorization'
+      type: http
+      scheme: bearer
     CookieAuth:
       type: apiKey
       in: cookie
