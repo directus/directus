@@ -15,7 +15,7 @@ export * from './deployment-projects.js';
 export * from './deployment-runs.js';
 export * from './graphql/index.js';
 export * from './export.js';
-export * from './import.js';
+export * from './import/import.js';
 export * from './items.js';
 export * from './mail/index.js';
 export * from './meta.js';

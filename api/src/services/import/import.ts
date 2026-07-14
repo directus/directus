@@ -32,22 +32,23 @@ import { set } from 'lodash-es';
 import ms, { type StringValue } from 'ms';
 import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
-import { getCache } from '../cache.js';
-import getDatabase from '../database/index.js';
-import emitter from '../emitter.js';
-import { useLogger } from '../logger/index.js';
-import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import { buildImportPlan, type FkFieldInfo } from '../utils/build-import-plan.js';
-import { createMutationTracker } from '../utils/create-mutation-tracker.js';
-import { destroyPipedStream } from '../utils/destroy-piped-stream.js';
-import { createErrorTracker } from '../utils/error-tracker.js';
-import { getService } from '../utils/get-service.js';
-import { shouldClearCache } from '../utils/should-clear-cache.js';
-import { useStore } from '../utils/store.js';
-import { transaction } from '../utils/transaction.js';
-import { userName } from '../utils/user-name.js';
-import { NotificationsService } from './notifications.js';
-import { UsersService } from './users.js';
+import { getCache } from '../../cache.js';
+import getDatabase from '../../database/index.js';
+import emitter from '../../emitter.js';
+import { useLogger } from '../../logger/index.js';
+import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
+import { buildImportPlan, type FkFieldInfo } from '../../utils/build-import-plan.js';
+import { createMutationTracker } from '../../utils/create-mutation-tracker.js';
+import { destroyPipedStream } from '../../utils/destroy-piped-stream.js';
+import { createErrorTracker } from '../../utils/error-tracker.js';
+import { getService } from '../../utils/get-service.js';
+import { shouldClearCache } from '../../utils/should-clear-cache.js';
+import { useStore } from '../../utils/store.js';
+import { transaction } from '../../utils/transaction.js';
+import { userName } from '../../utils/user-name.js';
+import { NotificationsService } from '../notifications.js';
+import { UsersService } from '../users.js';
+import { validateFlatData } from './validate-flat-data.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -557,7 +558,7 @@ export class ImportService {
 		}
 
 		// Reject nested relational payloads before touching the database
-		this.validateFlatData(plan.relationalFields, dataByCollection);
+		validateFlatData(plan.relationalFields, dataByCollection);
 
 		const nestedActionEvents: ActionEventParams[] = [];
 		const collections: Record<string, ImportBatchCollectionResult> = {};
@@ -734,36 +735,6 @@ export class ImportService {
 			throw error;
 		} finally {
 			await this.releaseImportSlot();
-		}
-	}
-
-	/**
-	 * Reject nested relational payloads: any relational field (owning FK or o2m/alias) whose value is
-	 * an object, or an array containing an object. Ignores non-relational fields like json, csv, etc.
-	 */
-	private validateFlatData(
-		relationalFields: Map<string, Set<string>>,
-		dataByCollection: Map<string, ImportCollectionData>,
-	): void {
-		for (const [collection, fields] of relationalFields) {
-			if (fields.size === 0) continue;
-
-			const entry = dataByCollection.get(collection);
-			if (!entry) continue;
-
-			for (const item of entry.items) {
-				for (const field of fields) {
-					const value = item[field];
-					if (value === undefined || value === null) continue;
-
-					// check for nested relational objects
-					if (isObject(value) || (Array.isArray(value) && value.some((entry) => isObject(entry)))) {
-						throw new InvalidPayloadError({
-							reason: `Nested relational data is not supported for "${collection}.${field}"; provide a scalar foreign key reference instead`,
-						});
-					}
-				}
-			}
 		}
 	}
 }

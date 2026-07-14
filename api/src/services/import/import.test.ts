@@ -6,13 +6,13 @@ import type { Accountability, ImportCollectionData, SchemaOverview } from '@dire
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { getCache } from '../cache.js';
-import emitter from '../emitter.js';
-import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
-import { getService } from '../utils/get-service.js';
+import { getCache } from '../../cache.js';
+import emitter from '../../emitter.js';
+import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
+import { getService } from '../../utils/get-service.js';
+import { NotificationsService } from '../notifications.js';
 import { ImportService } from './import.js';
-import { NotificationsService } from './notifications.js';
 
 const holder = vi.hoisted(() => ({ trx: null as any }));
 const cache: { importCount?: number } = {};
@@ -26,7 +26,7 @@ const envConfig = vi.hoisted(() => ({
 	CACHE_AUTO_PURGE: false as boolean,
 }));
 
-vi.mock('../utils/store.js', () => ({
+vi.mock('../../utils/store.js', () => ({
 	useStore: () => (callback: (store: any) => void) => {
 		callback({
 			get: (key: 'importCount') => cache[key],
@@ -37,30 +37,30 @@ vi.mock('../utils/store.js', () => ({
 	},
 }));
 
-vi.mock('../stores/notifications.js');
-vi.mock('./users.js');
+vi.mock('../../stores/notifications.js');
+vi.mock('../users.js');
 
 vi.mock('@directus/env', () => ({
 	useEnv: () => envConfig,
 }));
 
-vi.mock('../permissions/modules/validate-access/validate-access.js', () => ({
+vi.mock('../../permissions/modules/validate-access/validate-access.js', () => ({
 	validateAccess: vi.fn(),
 }));
 
-vi.mock('../utils/get-service.js', () => ({
+vi.mock('../../utils/get-service.js', () => ({
 	getService: vi.fn(),
 }));
 
-vi.mock('../database/index.js', () => ({
+vi.mock('../../database/index.js', () => ({
 	default: vi.fn(),
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 }));
 
 // importBatch drives the transaction handler against a stub trx (see createTrx)
-vi.mock('../utils/transaction.js', () => ({ transaction: (_knex: any, handler: any) => handler(holder.trx) }));
+vi.mock('../../utils/transaction.js', () => ({ transaction: (_knex: any, handler: any) => handler(holder.trx) }));
 
-vi.mock('../cache.js', async (importOriginal) => ({
+vi.mock('../../cache.js', async (importOriginal) => ({
 	...(await importOriginal<any>()),
 	getCache: vi.fn(() => ({ cache: null })),
 }));

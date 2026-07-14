@@ -13,7 +13,7 @@ import collectionExists from '../middleware/collection-exists.js';
 import readFileUploadBody from '../middleware/read-file-upload-body.js';
 import { respond } from '../middleware/respond.js';
 import { ExportService } from '../services/export.js';
-import { ImportService } from '../services/import.js';
+import { ImportService } from '../services/import/import.js';
 import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
