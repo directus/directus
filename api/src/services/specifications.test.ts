@@ -738,6 +738,22 @@ describe('Integration Tests', () => {
 					});
 				});
 
+				describe('CookieAuth scheme coverage', () => {
+					it('includes CookieAuth in the spec-wide security default', async () => {
+						const service = new SpecificationService({
+							knex: db,
+							schema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						// A session cookie authenticates every request via the global extractToken
+						// middleware, so it belongs on the default alongside Auth/KeyAuth.
+						expect(spec.security).toEqual([{ Auth: [] }, { KeyAuth: [] }, { CookieAuth: [] }]);
+					});
+				});
+
 				describe('transitive schema $ref resolution', () => {
 					it('backfills schemas that are only reachable via a $ref inside another required schema', async () => {
 						const service = new SpecificationService({
