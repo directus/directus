@@ -85,4 +85,14 @@ describe('JsonFilterNode', () => {
 
 		expect(wrapper.emitted('update:node')?.at(-1)).toEqual([{ metadata: { _json: { rating: { _between: [3, 5] } } } }]);
 	});
+
+	test('preserves string values for string comparators', async () => {
+		const wrapper = mountComponent({ metadata: { _json: { code: { _icontains: '' } } } });
+
+		await wrapper.findComponent(InputGroupStub).vm.$emit('update:field', {
+			[JSON_VALUE_KEY]: { _icontains: '42' },
+		});
+
+		expect(wrapper.emitted('update:node')?.at(-1)).toEqual([{ metadata: { _json: { code: { _icontains: '42' } } } }]);
+	});
 });

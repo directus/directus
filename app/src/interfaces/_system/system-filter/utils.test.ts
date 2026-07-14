@@ -76,11 +76,28 @@ describe('JSON filter values', () => {
 		['jane', 'jane'],
 		['"3"', '3'],
 	])('coerces %s to the expected JSON scalar', (input, expected) => {
-		expect(coerceJsonFilterValue(input)).toEqual(expected);
+		expect(coerceJsonFilterValue(input, '_eq')).toEqual(expected);
 	});
 
 	test('coerces array entries independently', () => {
-		expect(coerceJsonFilterValue(['3', 'true', 'jane', '"3"'])).toEqual([3, true, 'jane', '3']);
+		expect(coerceJsonFilterValue(['3', 'true', 'jane', '"3"'], '_in')).toEqual([3, true, 'jane', '3']);
+	});
+
+	test.each([
+		'_contains',
+		'_ncontains',
+		'_icontains',
+		'_starts_with',
+		'_nstarts_with',
+		'_istarts_with',
+		'_nistarts_with',
+		'_ends_with',
+		'_nends_with',
+		'_iends_with',
+		'_niends_with',
+	] as const)('preserves string values for %s', (operator) => {
+		expect(coerceJsonFilterValue('42', operator)).toBe('42');
+		expect(coerceJsonFilterValue('true', operator)).toBe('true');
 	});
 
 	test('creates the correct value shape when an operator changes', () => {

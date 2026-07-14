@@ -143,9 +143,27 @@ export function isJsonFilter(node: Filter): boolean {
 	return paths.length === 0 || (paths.length === 1 && !['_and', '_or'].includes(paths[0]!));
 }
 
-export function coerceJsonFilterValue(value: unknown): unknown {
+const stringComparators: (keyof FieldFilterOperator)[] = [
+	'_contains',
+	'_ncontains',
+	'_icontains',
+	'_starts_with',
+	'_nstarts_with',
+	'_istarts_with',
+	'_nistarts_with',
+	'_ends_with',
+	'_nends_with',
+	'_iends_with',
+	'_niends_with',
+];
+
+export function coerceJsonFilterValue(value: unknown, operator: keyof FieldFilterOperator): unknown {
+	if (stringComparators.includes(operator)) {
+		return value;
+	}
+
 	if (Array.isArray(value)) {
-		return value.map(coerceJsonFilterValue);
+		return value.map((entry) => coerceJsonFilterValue(entry, operator));
 	}
 
 	if (typeof value !== 'string') {

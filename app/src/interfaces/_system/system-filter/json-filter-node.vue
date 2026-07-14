@@ -47,15 +47,11 @@ function updateOperator(operator: keyof FieldFilterOperator) {
 function updateValue(valueNode: FieldFilter) {
 	const operatorValues = valueNode[JSON_VALUE_KEY] as FieldFilterOperator;
 	const [operator = '_eq', value = null] = Object.entries(operatorValues)[0] ?? [];
+	const typedOperator = operator as keyof FieldFilterOperator;
 
 	emit(
 		'update:node',
-		buildJsonFilter(
-			parts.value.field,
-			parts.value.path,
-			operator as keyof FieldFilterOperator,
-			coerceJsonFilterValue(value),
-		),
+		buildJsonFilter(parts.value.field, parts.value.path, typedOperator, coerceJsonFilterValue(value, typedOperator)),
 	);
 }
 </script>
