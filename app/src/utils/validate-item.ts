@@ -7,6 +7,7 @@ import {
 } from '@directus/validation';
 import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';
 import { applyConditions } from './apply-conditions';
+import { isPresentationField } from './field-utils';
 import { parseFilter } from './parse-filter';
 import { useRelationsStore } from '@/stores/relations';
 import type { ContentVersionMaybeNew } from '@/types/versions';
@@ -77,9 +78,5 @@ export function validateItem(
 		(field.meta?.validation as LogicalFilterAND)?._and?.forEach((validation: any) => {
 			validationRules._and.push(parseFilter(validation));
 		});
-	}
-
-	function isPresentationField(field: Field): boolean {
-		return Array.isArray(field.meta?.special) && field.meta.special.includes('no-data');
 	}
 }
