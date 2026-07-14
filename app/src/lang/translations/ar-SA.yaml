@@ -1185,6 +1185,7 @@ fields:
     collection: المجموعة
     icon: أيقونة
     note: ملحوظة
+    status: حالة
     color: لون
     display_template: عرض القالب
     hidden: مخفي
@@ -1793,6 +1794,7 @@ interfaces:
     incompatible_data: البيانات الحالية غير متوافقة مع واجهة التكرار وسيتم تجاوزها عند إضافة عناصر إلى جهاز التكرار
     interface_group: خيارات الواجهة
     display_group: خيارات العرض
+    edit_mode_inline: ضمن السياق
   slider:
     slider: شريط
     description: حدد رقما باستخدام شريط التمرير

@@ -58,6 +58,15 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 			return null;
 		}
 
+		// sys.columns.max_length is a byte size for every data type, so it's only a meaningful length
+		// for character/binary types (e.g. varchar(100) => 100). For other types it's just the storage
+		// size (int => 4, decimal(12,2) => 9), which isn't a length, so report null.
+		const characterTypes = ['char', 'varchar', 'text', 'nchar', 'nvarchar', 'ntext', 'binary', 'varbinary', 'image'];
+
+		if (characterTypes.includes(rawColumn.data_type) === false) {
+			return null;
+		}
+
 		// n-* columns save every character as 2 bytes, which causes the max_length column to return the
 		// max length in bytes instead of characters. For example:
 		// varchar(100) => max_length == 100
