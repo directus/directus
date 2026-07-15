@@ -6,6 +6,7 @@ import { CustomImage } from './image';
 import { Media } from './media';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
+import { semanticHtml } from './semantic-html';
 import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
 import { Table } from './table';
 import { TextAlignment } from './text-alignment';
@@ -38,4 +39,5 @@ export const editorExtensions = [
 	Table,
 	PreKeymap,
 	CharacterCount,
+	...semanticHtml,
 ];
