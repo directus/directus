@@ -182,6 +182,14 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	}
 
 	/**
+	 * Max rows a single multi-row INSERT may carry for the given column count, or null for no limit.
+	 * Larger batches fall back to the per-row loop (see ItemsService.canBatchCreate).
+	 */
+	getMaxBatchInsertRows(_columnCount: number): number | null {
+		return null;
+	}
+
+	/**
 	 * @returns Size of the database in bytes
 	 */
 	async getDatabaseSize(): Promise<number | null> {

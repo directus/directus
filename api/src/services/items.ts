@@ -522,22 +522,24 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 	/**
 	 * Whether createMany can insert these rows in one multi-row statement, provably equivalent to the
-	 * per-row loop. Guarded to: Postgres, uuid PK, no accountability, no alias fields, flat payloads,
-	 * no client PK, >1 row. Anything else falls back to the per-row loop.
+	 * per-row loop. Guarded to: app-generated uuid PK, no accountability, no alias fields, flat payloads,
+	 * no client PK, >1 row. Anything else falls back to the per-row loop. Dialect-agnostic (works on
+	 * every supported database).
 	 */
 	private canBatchCreate(data: Partial<Item>[], opts: MutationOptions): boolean {
 		if (data.length < 2) return false;
 		if (opts.overwriteDefaults !== undefined) return false;
 		if (this.collection === 'directus_users') return false;
-		if (getDatabaseClient(this.knex) !== 'postgres') return false;
 
 		const collection = this.schema.collections[this.collection];
 		if (!collection || collection.accountability !== null) return false;
 
 		const primaryKeyField = collection.primary;
+		const pkField = collection.fields[primaryKeyField];
 
-		// uuid keys only: DB-generated, returned by RETURNING, and no auto-increment sequence to reset.
-		if (collection.fields[primaryKeyField]?.type !== 'uuid') return false;
+		// App-generated uuid PK only: key is known from the prepared payload (no RETURNING, no sequence
+		// reset), which keeps the batch path dialect-agnostic.
+		if (pkField?.type !== 'uuid' || !pkField.special?.includes('uuid')) return false;
 
 		const aliasFields = new Set(
 			Object.values(collection.fields)
@@ -548,6 +550,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		// Alias fields and o2m/m2m children need createOne's processO2M, which this path skips; excluding
 		// such collections means no relational data can be dropped even if a filter hook injects it.
 		if (aliasFields.size > 0) return false;
+
+		// Fall back to the per-row loop above the dialect's multi-row INSERT limit (e.g. SQL Server's
+		// 1000-row / 2100-param cap) so a large batch doesn't attempt a doomed single statement.
+		const batchLimit = getHelpers(this.knex).schema.getMaxBatchInsertRows(Object.keys(collection.fields).length);
+		if (batchLimit !== null && data.length > batchLimit) return false;
 
 		const hasChildRelations = this.schema.relations.some(
 			(relation) => relation.related_collection === this.collection && relation.meta?.one_field,
@@ -577,8 +584,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	}
 
 	/**
-	 * Insert multiple flat rows in one statement. Mirrors createOne's per-row prep (filter hook,
-	 * presets, m2o/a2o, value casting), then one multi-row INSERT, then per-row finalization
+	 * Insert multiple flat rows in a single batched insert. Mirrors createOne's per-row prep (filter
+	 * hook, presets, m2o/a2o, value casting), then one batched INSERT, then per-row finalization
 	 * (user-integrity, onItemCreate, action events). Only invoked when canBatchCreate() holds.
 	 */
 	private async batchCreate(
@@ -589,7 +596,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	): Promise<{ primaryKeys: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
 		const collection = this.schema.collections[this.collection]!;
 		const primaryKeyField = collection.primary;
-		const primaryKeyType = collection.fields[primaryKeyField]!.type;
 		const fields = Object.keys(collection.fields);
 
 		const aliases = Object.values(collection.fields)
@@ -676,22 +682,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			actionHookPayloads.push(payloadWithPresets);
 		}
 
-		let results: any[];
-
 		try {
 			// Savepoint so a failed batch can roll back without poisoning the outer transaction.
-			results = await trx.transaction((savepoint) =>
-				savepoint.insert(rows).into(this.collection).returning(primaryKeyField),
-			);
+			await trx.transaction((savepoint) => savepoint.insert(rows).into(this.collection));
 		} catch {
 			// Replay prepared rows one-by-one (no hooks re-run) so the failing row throws the same
 			// translated error as the per-row loop, rolling the whole batch back.
-			results = [];
-
 			for (const [index, row] of rows.entries()) {
 				try {
-					const result = await trx.insert(row).into(this.collection).returning(primaryKeyField);
-					results.push(result[0]);
+					await trx.insert(row).into(this.collection);
 				} catch (err: any) {
 					throw await translateDatabaseError(err, data[index]!);
 				}
@@ -700,10 +699,9 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		const helpers = getHelpers(trx);
 
-		const primaryKeys: PrimaryKey[] = results.map((result: any) => {
-			const key = typeof result === 'object' ? result[primaryKeyField] : result;
-			return primaryKeyType === 'uuid' ? helpers.schema.formatUUID(key) : key;
-		});
+		// uuid PKs are generated app-side (see canBatchCreate), so they're already on each prepared row -
+		// no RETURNING needed. formatUUID normalises per vendor (e.g. uppercase on MSSQL), matching createOne.
+		const primaryKeys: PrimaryKey[] = rows.map((row) => helpers.schema.formatUUID(row[primaryKeyField]));
 
 		if (userIntegrityCheckFlags) {
 			if (opts.onRequireUserIntegrityCheck) {

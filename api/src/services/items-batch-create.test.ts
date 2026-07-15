@@ -50,6 +50,20 @@ const intPkSchema = new SchemaBuilder()
 	.options({ accountability: null })
 	.build();
 
+// uuid PK that isn't app-generated (no `uuid` special, e.g. a DB default) - must NOT batch, since the
+// key wouldn't be on the prepared row without RETURNING.
+const dbGeneratedUuidSchema = new SchemaBuilder()
+	.collection('db_uuid', (c) => {
+		c.field('id').uuid().primary();
+		c.field('name').string();
+	})
+	.options({ accountability: null })
+	.build();
+
+dbGeneratedUuidSchema.collections['db_uuid']!.fields['id']!.special = [];
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 describe('ItemsService createMany batch insert', () => {
 	let db: MockedFunction<Knex>;
 	let tracker: Tracker;
@@ -68,8 +82,15 @@ describe('ItemsService createMany batch insert', () => {
 	describe('canBatchCreate guard', () => {
 		const svc = (collection: string, s = schema) => new ItemsService(collection, { knex: db, schema: s }) as any;
 
-		test('true for >1 flat uuid-PK rows on postgres', () => {
+		test('true for >1 flat uuid-PK rows', () => {
 			expect(svc('flat').canBatchCreate([{ name: 'a' }, { name: 'b' }], {})).toBe(true);
+		});
+
+		test('true regardless of database driver (dialect-agnostic)', () => {
+			for (const driver of ['mysql', 'sqlite', 'mssql', 'oracle', 'cockroachdb']) {
+				vi.mocked(getDatabaseClient).mockReturnValue(driver as any);
+				expect(svc('flat').canBatchCreate([{ name: 'a' }, { name: 'b' }], {})).toBe(true);
+			}
 		});
 
 		test('false for a single row', () => {
@@ -84,9 +105,16 @@ describe('ItemsService createMany batch insert', () => {
 			expect(svc('flat').canBatchCreate([{ name: 'a' }, { name: 'b' }], { overwriteDefaults: [{}, {}] })).toBe(false);
 		});
 
-		test('false on non-postgres drivers', () => {
-			vi.mocked(getDatabaseClient).mockReturnValue('mysql');
-			expect(svc('flat').canBatchCreate([{ name: 'a' }, { name: 'b' }], {})).toBe(false);
+		test('false for a uuid PK that is not app-generated (no uuid special)', () => {
+			expect(svc('db_uuid', dbGeneratedUuidSchema).canBatchCreate([{ name: 'a' }, { name: 'b' }], {})).toBe(false);
+		});
+
+		test('false on MSSQL above its multi-row INSERT limit (falls back to per-row)', () => {
+			vi.mocked(getDatabaseClient).mockReturnValue('mssql');
+			// `flat` has 3 columns; MSSQL cap = min(1000, floor(2100/3)) = 700.
+			const rows = (n: number) => Array.from({ length: n }, (_, i) => ({ name: `n${i}` }));
+			expect(svc('flat').canBatchCreate(rows(700), {})).toBe(true);
+			expect(svc('flat').canBatchCreate(rows(701), {})).toBe(false);
 		});
 
 		test('false for accountability-tracked collections', () => {
@@ -103,12 +131,12 @@ describe('ItemsService createMany batch insert', () => {
 	});
 
 	describe('batch insert behaviour', () => {
-		test('inserts all rows in a single statement and returns keys in order', async () => {
+		test('inserts all rows in a single statement and returns the generated keys in order', async () => {
 			const inserts: any[] = [];
 
 			tracker.on.insert('flat').response((query) => {
 				inserts.push(query);
-				return [{ id: 'aaa' }, { id: 'bbb' }];
+				return [];
 			});
 
 			const service = new ItemsService('flat', { knex: db, schema });
@@ -116,7 +144,12 @@ describe('ItemsService createMany batch insert', () => {
 
 			expect(inserts).toHaveLength(1); // one multi-row INSERT, not one per row
 			expect(inserts[0].bindings).toEqual(expect.arrayContaining(['a', 'b']));
-			expect(keys).toEqual(['aaa', 'bbb']);
+
+			// uuid PKs are generated app-side; the returned keys are those uuids in insertion order.
+			expect(keys).toHaveLength(2);
+			expect(keys.every((k) => UUID_RE.test(String(k)))).toBe(true);
+			const uuidBindings = inserts[0].bindings.filter((b: unknown) => typeof b === 'string' && UUID_RE.test(b));
+			expect(uuidBindings).toEqual(keys);
 		});
 
 		test('handles rows with different key sets in a single insert', async () => {
@@ -124,7 +157,7 @@ describe('ItemsService createMany batch insert', () => {
 
 			tracker.on.insert('flat').response((query) => {
 				inserts.push(query);
-				return [{ id: 'aaa' }, { id: 'bbb' }];
+				return [];
 			});
 
 			const service = new ItemsService('flat', { knex: db, schema });
@@ -132,7 +165,8 @@ describe('ItemsService createMany batch insert', () => {
 			const keys = await service.createMany([{ name: 'a', status: 'x' }, { name: 'b' }]);
 
 			expect(inserts).toHaveLength(1);
-			expect(keys).toEqual(['aaa', 'bbb']);
+			expect(keys).toHaveLength(2);
+			expect(keys.every((k) => UUID_RE.test(String(k)))).toBe(true);
 		});
 
 		test('translates DB constraint violations on the batch path (savepoint rollback + replay)', async () => {
