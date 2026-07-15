@@ -742,13 +742,10 @@ describe('Integration Tests', () => {
 
 						const spec = await service.oas.generate();
 
-						// Public role has no read access, so the operation keeps the base declaration
-						// requiring one of Auth, KeyAuth, or CookieAuth - no unauthenticated ({}) entry.
-						expect(spec.paths['/items/test_table']?.get?.security).toEqual([
-							{ Auth: [] },
-							{ KeyAuth: [] },
-							{ CookieAuth: [] },
-						]);
+						// Public role has no read access, so no optional-auth override is stamped. The
+						// operation has no explicit security key and falls back to the document-level
+						// default (Auth, KeyAuth, or CookieAuth required) via standard OAS3 inheritance.
+						expect(spec.paths['/items/test_table']?.get?.security).toBeUndefined();
 					});
 
 					it('also stamps optional-auth security on system-collection operations accessible to the public role', async () => {
