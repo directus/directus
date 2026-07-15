@@ -2,12 +2,10 @@ get:
   summary: Retrieve Settings
   description: List the settings.
   operationId: getSettings
+  # Only Fields applies: the controller calls SettingsService#readSingleton(), which forces
+  # limit to 1 (pagination params are moot) and never invokes MetaService (meta is moot too).
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Limit'
-    - $ref: '../../openapi.yaml#/components/parameters/Offset'
-
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
-    - $ref: '../../openapi.yaml#/components/parameters/Page'
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
   responses:
     '200':
       description: Successful request
