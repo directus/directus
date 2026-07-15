@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Field } from '@directus/types';
+import { Field, FieldFunction } from '@directus/types';
 import { debounce, isNil } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import VFieldListItem from './VFieldListItem.vue';
@@ -24,6 +24,7 @@ const props = withDefaults(
 		field?: string;
 		disabledFields?: string[];
 		includeFunctions?: boolean;
+		excludeFunctions?: FieldFunction[];
 		includeRelations?: boolean;
 		injectVersionField?: boolean;
 		relationalFieldSelectable?: boolean;
@@ -35,6 +36,7 @@ const props = withDefaults(
 		field: undefined,
 		disabledFields: () => [],
 		includeFunctions: false,
+		excludeFunctions: () => [],
 		includeRelations: true,
 		injectVersionField: false,
 		relationalFieldSelectable: true,
@@ -184,6 +186,7 @@ function filter(field: Field, parent?: FieldNode): boolean {
 			:field="fieldNode"
 			:search="search"
 			:include-functions="includeFunctions"
+			:exclude-functions="excludeFunctions"
 			:relational-field-selectable="relationalFieldSelectable"
 			:allow-select-all="allowSelectAll"
 			:raw-field-names="rawFieldNames"

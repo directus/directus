@@ -38,6 +38,11 @@ interface Props {
 	inline?: boolean;
 	includeValidation?: boolean;
 	includeRelations?: boolean;
+	/**
+	 * Allow creating `_json` filter nodes. Forced off when includeValidation is set, as the
+	 * validation/conditions rule engine (generate-joi) does not support the `_json` operator.
+	 */
+	includeJsonFunction?: boolean;
 	injectVersionField?: boolean;
 	relationalFieldSelectable?: boolean;
 	rawFieldNames?: boolean;
@@ -54,6 +59,7 @@ const props = withDefaults(defineProps<Props>(), {
 	inline: false,
 	includeValidation: false,
 	includeRelations: true,
+	includeJsonFunction: true,
 	injectVersionField: false,
 	relationalFieldSelectable: true,
 	rawFieldNames: false,
@@ -72,6 +78,8 @@ const collection = computed(() => {
 
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
+
+const jsonFunctionEnabled = computed(() => props.includeJsonFunction && !props.includeValidation);
 
 const innerValue = computed<Filter[]>({
 	get() {
@@ -111,6 +119,9 @@ function addNode(key: string) {
 		const functionInfo = extractFieldFromFunction(key);
 
 		if (functionInfo.fn === 'json') {
+			// getOutputTypeForFunction has no mapping for "json", so there is no generic fallback
+			if (!jsonFunctionEnabled.value) return;
+
 			innerValue.value = innerValue.value.concat(buildJsonFilter(functionInfo.field, '', '_eq', null));
 			return;
 		}
@@ -138,7 +149,9 @@ function addNode(key: string) {
 			}
 		}
 
-		const filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
+		const filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation }).filter(
+			(operator) => jsonFunctionEnabled.value || operator !== 'json',
+		);
 
 		const operator =
 			isVersion || (field?.meta?.options?.choices && filterOperators.includes('eq')) ? 'eq' : filterOperators[0];
@@ -198,6 +211,7 @@ function addKeyAsNode() {
 				:field="fieldName"
 				:depth="1"
 				:include-validation="includeValidation"
+				:include-json-function="jsonFunctionEnabled"
 				:include-relations="includeRelations"
 				:relational-field-selectable="relationalFieldSelectable"
 				:raw-field-names="rawFieldNames"
@@ -225,6 +239,7 @@ function addKeyAsNode() {
 					:attached="inline"
 					:collection="collection"
 					include-functions
+					:exclude-functions="jsonFunctionEnabled ? [] : ['json']"
 					:include-relations="includeRelations"
 					:relational-field-selectable="relationalFieldSelectable"
 					:inject-version-field="injectVersionField"

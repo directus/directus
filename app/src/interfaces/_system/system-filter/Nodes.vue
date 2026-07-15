@@ -58,6 +58,8 @@ interface Props {
 	inline?: boolean;
 	includeValidation?: boolean;
 	includeRelations?: boolean;
+	/** Resolved by system-filter.vue; when false, `_json` nodes cannot be created here */
+	includeJsonFunction?: boolean;
 	relationalFieldSelectable?: boolean;
 	rawFieldNames?: boolean;
 	variableInputEnabled: boolean | undefined;
@@ -69,6 +71,7 @@ const props = withDefaults(defineProps<Props>(), {
 	inline: false,
 	includeValidation: false,
 	includeRelations: true,
+	includeJsonFunction: true,
 	relationalFieldSelectable: true,
 	rawFieldNames: false,
 });
@@ -174,6 +177,7 @@ function toggleLogic(index: number) {
 function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 	const nodeInfo = filterInfo.value[index];
 	if (nodeInfo.isField === false) return;
+	if (operator === '_json' && !props.includeJsonFunction) return;
 
 	const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
 	const value = get(nodeInfo.node, valuePath);
@@ -197,6 +201,9 @@ function updateField(index: number, newField: string) {
 	const functionInfo = extractFieldFromFunction(newField);
 
 	if (functionInfo.fn === 'json') {
+		// getOutputTypeForFunction has no mapping for "json", so there is no generic fallback
+		if (!props.includeJsonFunction) return;
+
 		filterSync.value = filterSync.value.map((filter, filterIndex) => {
 			if (filterIndex === index) return buildJsonFilter(functionInfo.field, '', '_eq', null);
 			return filter;
@@ -251,10 +258,12 @@ function getCompareOptions(name: string) {
 		}
 	}
 
-	return getFilterOperatorsForType(type, { includeValidation: props.includeValidation }).map((type) => ({
-		text: t(`operators.${type}`),
-		value: `_${type}`,
-	}));
+	return getFilterOperatorsForType(type, { includeValidation: props.includeValidation })
+		.filter((operator) => props.includeJsonFunction || operator !== 'json')
+		.map((type) => ({
+			text: t(`operators.${type}`),
+			value: `_${type}`,
+		}));
 }
 
 function isExistingField(node: Record<string, any>): boolean {
@@ -314,6 +323,7 @@ function isExistingField(node: Record<string, any>): boolean {
 									:collection="collection"
 									:field="field"
 									include-functions
+									:exclude-functions="includeJsonFunction ? [] : ['json']"
 									:include-relations="includeRelations"
 									:relational-field-selectable="relationalFieldSelectable"
 									:allow-select-all="false"
@@ -382,6 +392,7 @@ function isExistingField(node: Record<string, any>): boolean {
 						:collection="collection"
 						:depth="depth + 1"
 						:inline="inline"
+						:include-json-function="includeJsonFunction"
 						:raw-field-names="rawFieldNames"
 						:variable-input-enabled="variableInputEnabled"
 						@change="$emit('change')"

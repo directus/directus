@@ -26,7 +26,7 @@ const SlotStub = defineComponent({
 	template: '<div><slot /></div>',
 });
 
-function mountJsonField() {
+function mountJsonField(props: Record<string, any> = {}) {
 	return mount(VFieldListItem, {
 		props: {
 			field: {
@@ -39,6 +39,7 @@ function mountJsonField() {
 				group: false,
 			},
 			includeFunctions: true,
+			...props,
 		},
 		global: {
 			mocks: {
@@ -73,5 +74,50 @@ describe('VFieldListItem functions', () => {
 
 		expect(icons).toHaveLength(2);
 		expect(icons.every((icon) => icon.attributes('data-name') === 'function')).toBe(true);
+	});
+
+	test('hides excluded functions but keeps the rest', async () => {
+		const wrapper = mountJsonField({ excludeFunctions: ['json'] });
+		const functionItems = wrapper.findAll('.functions .v-list-item-stub');
+
+		expect(functionItems).toHaveLength(1);
+		await functionItems[0]!.trigger('click');
+		expect(wrapper.emitted('add')).toContainEqual([['count(metadata)']]);
+	});
+
+	test('forwards excludeFunctions to nested child fields', async () => {
+		const wrapper = mountJsonField({
+			field: {
+				field: 'metadata',
+				key: 'metadata',
+				path: 'metadata',
+				type: 'json',
+				name: 'Metadata',
+				collection: 'articles',
+				group: false,
+				children: [
+					{
+						field: 'nested',
+						key: 'metadata.nested',
+						path: 'metadata.nested',
+						type: 'json',
+						name: 'Nested',
+						collection: 'articles',
+						group: false,
+					},
+				],
+			},
+			excludeFunctions: ['json'],
+		});
+
+		const functionItems = wrapper.findAll('.functions .v-list-item-stub');
+
+		// one "count" entry each for the parent and the child; no "json" entries
+		expect(functionItems).toHaveLength(2);
+
+		for (const item of functionItems) await item.trigger('click');
+
+		expect(wrapper.emitted('add')).toContainEqual([['count(metadata)']]);
+		expect(wrapper.emitted('add')).toContainEqual([['count(metadata.nested)']]);
 	});
 });

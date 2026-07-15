@@ -41,8 +41,21 @@ export type ComputedQuery = {
 	version?: Ref<Query['version']> | ComputedRef<Query['version']> | WritableComputedRef<Query['version']>;
 };
 
-function serializeFilter(filter: Query['filter']): string | null | undefined {
-	return filter ? JSON.stringify(filter) : filter;
+/**
+ * Filters containing `_json` are sent as a JSON string so that string values (e.g. numeric
+ * strings compared against JSON paths) survive query-string serialization untouched. All other
+ * filters keep the default object serialization.
+ */
+export function serializeFilter(filter: Query['filter']): Query['filter'] | string {
+	return filter && hasJsonOperator(filter) ? JSON.stringify(filter) : filter;
+}
+
+function hasJsonOperator(value: unknown): boolean {
+	if (!value || typeof value !== 'object') return false;
+
+	return Object.entries(value).some(
+		([key, child]) => key === '_json' || (Array.isArray(child) ? child.some(hasJsonOperator) : hasJsonOperator(child)),
+	);
 }
 
 export function useItems(collection: Ref<string | null>, query: ComputedQuery): UsableItems {
