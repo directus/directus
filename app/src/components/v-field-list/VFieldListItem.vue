@@ -92,7 +92,11 @@ const openWhileSearching = computed(() => {
 				</VListItemIcon>
 				<VListItemContent>
 					<VTextOverflow
-						:text="`${$t(`functions.${fn}`)} (${rawFieldNames ? field.field : field.name || formatTitle(field.field)})`"
+						:text="
+							fn === 'json'
+								? $t(`functions.${fn}`)
+								: `${$t(`functions.${fn}`)} (${rawFieldNames ? field.field : field.name || formatTitle(field.field)})`
+						"
 						:highlight="search"
 					/>
 				</VListItemContent>
