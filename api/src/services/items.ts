@@ -520,16 +520,29 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		return primaryKeys;
 	}
 
+	/** The create filter/action event name(s) for this service's event scope. */
+	private getEventScopeCreateEvents(): string[] {
+		return this.eventScope === 'items'
+			? ['items.create', `${this.collection}.items.create`]
+			: [`${this.eventScope}.create`];
+	}
+
 	/**
 	 * Whether createMany can insert these rows in one multi-row statement, provably equivalent to the
-	 * per-row loop. Guarded to: app-generated uuid PK, no accountability, no alias fields, flat payloads,
-	 * no client PK, >1 row. Anything else falls back to the per-row loop. Dialect-agnostic (works on
-	 * every supported database).
+	 * per-row loop. Guarded to: app-generated uuid PK, no accountability, no alias fields, flat payloads
+	 * with identical key sets, no client PK, no create filter hooks, no preMutationError, >1 row. Anything
+	 * else falls back to the per-row loop. Dialect-agnostic (works on every supported database).
 	 */
 	private canBatchCreate(data: Partial<Item>[], opts: MutationOptions): boolean {
 		if (data.length < 2) return false;
 		if (opts.overwriteDefaults !== undefined) return false;
+		if (opts.preMutationError) return false;
 		if (this.collection === 'directus_users') return false;
+
+		// Create filter hooks run per-row interleaved with inserts in the per-row path; the batch prepares
+		// all rows before any insert, so a hook that depends on earlier rows (or injects relational data)
+		// would diverge. Only batch when no create filter hook can run.
+		if (opts.emitEvents !== false && emitter.hasFilterListeners(this.getEventScopeCreateEvents())) return false;
 
 		const collection = this.schema.collections[this.collection];
 		if (!collection || collection.accountability !== null) return false;
@@ -570,14 +583,25 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				.map((relation) => relation.field),
 		);
 
+		// Rows must share one key set: a multi-row INSERT binds the union of columns and fills a row's
+		// missing ones, which diverges from the per-row path where an omitted column takes its DB default
+		// (notably NULL on SQLite's useNullAsDefault). Identical keys means no column is ever missing.
+		let keySignature: string | undefined;
+
 		for (const payload of data) {
 			if (payload === null || typeof payload !== 'object' || Array.isArray(payload)) return false;
 			if (primaryKeyField in payload) return false;
+
+			const keys = Object.keys(payload);
 
 			for (const [key, value] of Object.entries(payload)) {
 				if (aliasFields.has(key)) return false;
 				if (relationalFields.has(key) && value !== null && typeof value === 'object') return false;
 			}
+
+			const signature = keys.sort().join(',');
+			if (keySignature === undefined) keySignature = signature;
+			else if (signature !== keySignature) return false;
 		}
 
 		return true;
@@ -624,9 +648,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			const payloadAfterHooks =
 				opts.emitEvents !== false
 					? await emitter.emitFilter(
-							this.eventScope === 'items'
-								? ['items.create', `${this.collection}.items.create`]
-								: `${this.eventScope}.create`,
+							this.getEventScopeCreateEvents(),
 							clonedPayload,
 							{
 								collection: this.collection,
@@ -692,7 +714,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				try {
 					await trx.insert(row).into(this.collection);
 				} catch (err: any) {
-					throw await translateDatabaseError(err, data[index]!);
+					const dbError = await translateDatabaseError(err, data[index]!);
+
+					// MySQL doesn't name the field for a primary-key unique violation; match createOne.
+					if (isDirectusError(dbError, ErrorCode.RecordNotUnique) && dbError.extensions.primaryKey) {
+						dbError.extensions.field = collection.fields[primaryKeyField]?.field ?? null;
+						delete dbError.extensions.primaryKey;
+					}
+
+					throw dbError;
 				}
 			}
 		}
@@ -703,18 +733,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		// no RETURNING needed. formatUUID normalises per vendor (e.g. uppercase on MSSQL), matching createOne.
 		const primaryKeys: PrimaryKey[] = rows.map((row) => helpers.schema.formatUUID(row[primaryKeyField]));
 
-		if (userIntegrityCheckFlags) {
-			if (opts.onRequireUserIntegrityCheck) {
-				opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
-			} else {
-				await validateUserCountIntegrity({
-					flags: userIntegrityCheckFlags,
-					knex: trx,
-					previousSeatCount,
-				});
-			}
-		}
-
+		// onItemCreate + action events fire per row before the integrity check, matching the per-row
+		// createMany (createOne runs onItemCreate per row, then createMany does the accumulated check).
 		for (const [index, primaryKey] of primaryKeys.entries()) {
 			if (opts.onItemCreate) {
 				opts.onItemCreate(this.collection, primaryKey);
@@ -722,10 +742,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			if (opts.emitEvents !== false) {
 				nestedActionEvents.push({
-					event:
-						this.eventScope === 'items'
-							? ['items.create', `${this.collection}.items.create`]
-							: `${this.eventScope}.create`,
+					event: this.getEventScopeCreateEvents(),
 					meta: {
 						payload: actionHookPayloads[index],
 						key: primaryKey,
@@ -736,6 +753,18 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						schema: this.schema,
 						accountability: this.accountability,
 					},
+				});
+			}
+		}
+
+		if (userIntegrityCheckFlags) {
+			if (opts.onRequireUserIntegrityCheck) {
+				opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
+			} else {
+				await validateUserCountIntegrity({
+					flags: userIntegrityCheckFlags,
+					knex: trx,
+					previousSeatCount,
 				});
 			}
 		}

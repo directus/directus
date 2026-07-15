@@ -1,9 +1,12 @@
 import { ErrorCode, isDirectusError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
+import { UserIntegrityCheckFlag } from '@directus/types';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, describe, expect, type MockedFunction, test, vi } from 'vitest';
 import { getDatabaseClient } from '../database/index.js';
+import emitter from '../emitter.js';
+import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
 
 vi.mock('../../src/database/index', () => ({
@@ -105,6 +108,31 @@ describe('ItemsService createMany batch insert', () => {
 			expect(svc('flat').canBatchCreate([{ name: 'a' }, { name: 'b' }], { overwriteDefaults: [{}, {}] })).toBe(false);
 		});
 
+		test('false when preMutationError is set', () => {
+			expect(svc('flat').canBatchCreate([{ name: 'a' }, { name: 'b' }], { preMutationError: new Error('x') })).toBe(
+				false,
+			);
+		});
+
+		test('false for heterogeneous key sets across rows', () => {
+			// row 2 omits `status`: a multi-row insert would NULL-fill it, unlike the per-row DB default.
+			expect(svc('flat').canBatchCreate([{ name: 'a', status: 'x' }, { name: 'b' }], {})).toBe(false);
+		});
+
+		test('false when a create filter hook is registered (would run per-row in the loop)', () => {
+			const hook = () => undefined;
+			emitter.onFilter('items.create', hook);
+
+			try {
+				expect(svc('flat').canBatchCreate([{ name: 'a' }, { name: 'b' }], {})).toBe(false);
+			} finally {
+				emitter.offFilter('items.create', hook);
+			}
+
+			// once removed, eligible again
+			expect(svc('flat').canBatchCreate([{ name: 'a' }, { name: 'b' }], {})).toBe(true);
+		});
+
 		test('false for a uuid PK that is not app-generated (no uuid special)', () => {
 			expect(svc('db_uuid', dbGeneratedUuidSchema).canBatchCreate([{ name: 'a' }, { name: 'b' }], {})).toBe(false);
 		});
@@ -152,7 +180,7 @@ describe('ItemsService createMany batch insert', () => {
 			expect(uuidBindings).toEqual(keys);
 		});
 
-		test('handles rows with different key sets in a single insert', async () => {
+		test('falls back to per-row inserts for heterogeneous key sets (preserves DB defaults)', async () => {
 			const inserts: any[] = [];
 
 			tracker.on.insert('flat').response((query) => {
@@ -161,12 +189,11 @@ describe('ItemsService createMany batch insert', () => {
 			});
 
 			const service = new ItemsService('flat', { knex: db, schema });
-			// second row omits `status` — DB default should apply, still one statement
+			// row 2 omits `status`; batching would NULL-fill it, so this must use the per-row path.
 			const keys = await service.createMany([{ name: 'a', status: 'x' }, { name: 'b' }]);
 
-			expect(inserts).toHaveLength(1);
+			expect(inserts).toHaveLength(2); // one INSERT per row, not a batched multi-row insert
 			expect(keys).toHaveLength(2);
-			expect(keys.every((k) => UUID_RE.test(String(k)))).toBe(true);
 		});
 
 		test('translates DB constraint violations on the batch path (savepoint rollback + replay)', async () => {
@@ -189,6 +216,47 @@ describe('ItemsService createMany batch insert', () => {
 
 			// Same typed error the per-row path would throw, not a raw DB error.
 			expect(isDirectusError(thrown, ErrorCode.RecordNotUnique)).toBe(true);
+		});
+
+		test('normalizes MySQL primary-key unique violations to the pk field (replay path)', async () => {
+			vi.mocked(getDatabaseClient).mockReturnValue('mysql');
+
+			// MySQL doesn't name the field for a PK violation; the parser flags it via extensions.primaryKey.
+			const dupError: any = new Error('dup');
+			dupError.code = 'ER_DUP_ENTRY';
+			dupError.sqlMessage = "Duplicate entry 'x' for key 'PRIMARY'";
+			tracker.on.insert('flat').simulateError(dupError);
+
+			const service = new ItemsService('flat', { knex: db, schema });
+
+			let thrown: any;
+
+			try {
+				await service.createMany([{ name: 'a' }, { name: 'b' }]);
+			} catch (err) {
+				thrown = err;
+			}
+
+			// createOne maps this to field=<pk> and drops primaryKey; the batch replay must match.
+			expect(isDirectusError(thrown, ErrorCode.RecordNotUnique)).toBe(true);
+			expect(thrown.extensions.field).toBe('id');
+			expect(thrown.extensions.primaryKey).toBeUndefined();
+		});
+
+		test('runs onItemCreate for all rows before the user-integrity check', async () => {
+			tracker.on.insert('flat').response(() => []);
+
+			const order: string[] = [];
+			vi.mocked(validateUserCountIntegrity).mockImplementation(async () => void order.push('integrity'));
+
+			const service = new ItemsService('flat', { knex: db, schema });
+
+			await service.createMany([{ name: 'a' }, { name: 'b' }], {
+				userIntegrityCheckFlags: UserIntegrityCheckFlag.UserLimits,
+				onItemCreate: () => order.push('create'),
+			});
+
+			expect(order).toEqual(['create', 'create', 'integrity']);
 		});
 
 		test('falls back to per-row inserts when the collection is not eligible', async () => {
