@@ -374,8 +374,7 @@ export class ImportService {
 		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
 		let timeout: NodeJS.Timeout;
 
-		// Tear down the stream chain (source -> parser), resuming the source so the request body is
-		// drained. The upload size is capped upstream by busboy (see the import controller).
+		// Tear down the stream chain (source -> parser), resuming the source so the request body is drained.
 		const teardownStreams = () => {
 			destroyPipedStream(extractJSON, stream);
 		};
@@ -426,9 +425,8 @@ export class ImportService {
 
 					stream.pipe(extractJSON);
 
-					// Without a source-stream error handler a read failure would go unhandled and the
-					// import promise would never settle. busboy destroys the source with a
-					// ContentTooLargeError when the upload exceeds the cap, so preserve that type.
+					// Without a source error handler a read failure goes unhandled and the promise never settles.
+					// busboy destroys the source with ContentTooLargeError past the cap, so preserve that type below.
 					stream.on('error', (error: Error) => {
 						saveQueue.kill();
 						teardownStreams();
@@ -510,16 +508,14 @@ export class ImportService {
 		const tmpFile = await createTmpFile().catch(() => null);
 		if (!tmpFile) throw new Error('Failed to create temporary file for import');
 
-		// Bound the receive phase so a stalled upload can't hang indefinitely. When a shared deadline is
-		// passed the receive and parse phases split a single IMPORT_TIMEOUT budget between them.
+		// Bound the receive phase so a stalled upload can't hang indefinitely.
 		const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
 		const delay = deadline !== undefined ? Math.max(0, deadline - Date.now()) : duration;
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort(), delay);
 
 		try {
-			// The upload size is capped upstream by busboy (see the import controller), which destroys the
-			// source with a ContentTooLargeError when the cap is exceeded.
+			// Size is capped upstream by busboy, an over-cap source arrives as ContentTooLargeError (re-thrown below).
 			await pipeline(stream, createWriteStream(tmpFile.path), { signal: controller.signal });
 		} catch (error) {
 			await tmpFile.cleanup().catch(() => {
@@ -543,8 +539,7 @@ export class ImportService {
 	}
 
 	async importCSV(collection: string, stream: Readable): Promise<void> {
-		// Share one IMPORT_TIMEOUT budget across the receive and parse phases (see the background branch
-		// in `import()`) so a synchronous CSV import can't run for up to 2x the timeout either.
+		// One IMPORT_TIMEOUT budget across receive + parse (see import()'s background branch), so sync CSV can't hit 2x either.
 		const deadline = Date.now() + ms(env['IMPORT_TIMEOUT'] as StringValue);
 		const tmpFile = await this.spoolToTmpFile(stream, deadline);
 		return this.parseCsvFromTmpFile(collection, tmpFile, deadline);
@@ -585,11 +580,9 @@ export class ImportService {
 					const streams: (Readable | Writable)[] = [];
 					let rowNumber = 0;
 
-					const cleanup = (destroy = true) => {
-						if (destroy) {
-							for (const stream of streams) {
-								stream.destroy();
-							}
+					const cleanup = () => {
+						for (const stream of streams) {
+							stream.destroy();
 						}
 
 						removeTmpFile();
@@ -619,7 +612,7 @@ export class ImportService {
 
 							if (errorTracker.shouldStop()) {
 								saveQueue.kill();
-								cleanup(true);
+								cleanup();
 								reject();
 							}
 
@@ -661,7 +654,7 @@ export class ImportService {
 
 							if (isSingleton && rowNumber > 1) {
 								saveQueue.kill();
-								cleanup(true);
+								cleanup();
 
 								reject(
 									new InvalidPayloadError({
@@ -689,13 +682,13 @@ export class ImportService {
 						.on('end', () => {
 							// In case of empty CSV file
 							if (!saveQueue.started) {
-								cleanup(false);
+								removeTmpFile();
 
 								return resolve();
 							}
 
 							saveQueue.drain(() => {
-								if (!errorTracker.shouldStop()) cleanup(false);
+								if (!errorTracker.shouldStop()) removeTmpFile();
 
 								if (errorTracker.hasErrors()) {
 									return reject();
@@ -715,8 +708,8 @@ export class ImportService {
 					timeout = setTimeout(() => {
 						saveQueue.kill();
 						destroyPipedStream(parseStream, fileReadStream);
-						// Destroying via destroyPipedStream skips cleanup(), so remove the spooled file here.
-						cleanup(true);
+						// destroyPipedStream drains the pipe but leaves the temp file; cleanup() closes and removes it.
+						cleanup();
 						reject(new TimeoutError({ category: 'Import', duration }));
 					}, delay);
 				});
