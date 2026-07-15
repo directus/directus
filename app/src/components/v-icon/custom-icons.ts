@@ -6,7 +6,6 @@ import CustomIconFlipHorizontal from './custom-icons/flip_horizontal.vue';
 import CustomIconFlipVertical from './custom-icons/flip_vertical.vue';
 import CustomIconFolderLock from './custom-icons/folder_lock.vue';
 import CustomIconFolderMove from './custom-icons/folder_move.vue';
-import CustomIconFunction from './custom-icons/function.vue';
 import CustomIconGrid1 from './custom-icons/grid_1.vue';
 import CustomIconGrid2 from './custom-icons/grid_2.vue';
 import CustomIconGrid3 from './custom-icons/grid_3.vue';
@@ -42,7 +41,6 @@ export const components: Record<string, any> = {
 	CustomIconFlipVertical,
 	CustomIconFolderMove,
 	CustomIconFolderLock,
-	CustomIconFunction,
 	CustomIconLogoAnthropic,
 	CustomIconLogoCustomProvider,
 	CustomIconLogoGoogle,
