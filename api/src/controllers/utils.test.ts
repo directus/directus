@@ -1,5 +1,5 @@
 import { PassThrough } from 'node:stream';
-import { InvalidPayloadError } from '@directus/errors';
+import { ContentTooLargeError, InvalidPayloadError } from '@directus/errors';
 import FormData from 'form-data';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import router from './utils.js';
@@ -17,7 +17,7 @@ vi.mock('../services/import-export.js', () => {
 	const ImportService = vi.fn();
 	ImportService.prototype.import = vi.fn();
 	const ExportService = vi.fn();
-	return { ImportService, ExportService };
+	return { ImportService, ExportService, getImportMaxFileSize: vi.fn().mockReturnValue(undefined) };
 });
 
 // https://github.com/directus/directus/issues/27854
@@ -167,6 +167,53 @@ describe('import route', () => {
 
 		expect(next).toHaveBeenCalledTimes(1);
 		expect(next).toHaveBeenCalledWith(failure);
+		expect(res.end).not.toHaveBeenCalled();
+	});
+
+	it('rejects an upload larger than the configured size cap with ContentTooLargeError', async () => {
+		const next = vi.fn();
+		const { res } = makeRes();
+
+		const { getImportMaxFileSize } = await import('../services/import-export.js');
+		// Tiny cap so the small multipart body trips busboy's fileSize limit.
+		vi.mocked(getImportMaxFileSize).mockReturnValueOnce(4);
+
+		// Mirror the real service: consume the stream and reject when busboy destroys it on 'limit'.
+		mockImport.mockImplementation(
+			(_c: string, _m: string, fileStream: any) =>
+				new Promise((_resolve, reject) => {
+					fileStream.on('data', () => {});
+					fileStream.on('error', (err: Error) => reject(err));
+					fileStream.resume();
+				}),
+		);
+
+		await importHandler(buildRequest({ background: 'true' }), res, next);
+		await new Promise((resolve) => setImmediate(resolve));
+		await new Promise((resolve) => setImmediate(resolve));
+
+		expect(next).toHaveBeenCalledTimes(1);
+		expect(next).toHaveBeenCalledWith(expect.any(ContentTooLargeError));
+		expect(res.end).not.toHaveBeenCalled();
+	});
+
+	it('forwards the error when IMPORT_MAX_FILE_SIZE is set but unparseable', async () => {
+		const next = vi.fn();
+		const { res } = makeRes();
+
+		const configError = new Error('Invalid IMPORT_MAX_FILE_SIZE value "not-a-size"');
+
+		const { getImportMaxFileSize } = await import('../services/import-export.js');
+
+		vi.mocked(getImportMaxFileSize).mockImplementationOnce(() => {
+			throw configError;
+		});
+
+		await importHandler(buildRequest({}), res, next);
+		await new Promise((resolve) => setImmediate(resolve));
+
+		expect(mockImport).not.toHaveBeenCalled();
+		expect(next).toHaveBeenCalledWith(configError);
 		expect(res.end).not.toHaveBeenCalled();
 	});
 });

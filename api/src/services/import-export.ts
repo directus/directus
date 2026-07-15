@@ -1,6 +1,6 @@
 import { createReadStream, createWriteStream } from 'node:fs';
 import { appendFile } from 'node:fs/promises';
-import { type Readable, Transform, type Writable } from 'node:stream';
+import { type Readable, type Writable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { useEnv } from '@directus/env';
 import {
@@ -26,7 +26,7 @@ import type {
 	SchemaOverview,
 } from '@directus/types';
 import { getDateTimeFormatted, parseJSON, toArray } from '@directus/utils';
-import { createTmpFile } from '@directus/utils/node';
+import { createTmpFile, type TmpFile } from '@directus/utils/node';
 import type { ImportRowLines, ImportRowRange } from '@directus/validation';
 import { queue } from 'async';
 import bytes from 'bytes';
@@ -207,8 +207,6 @@ const store = useStore<{ importCount: number | undefined }>(String(env['IMPORT_E
 	ttl: ms((env['IMPORT_TIMEOUT'] as StringValue) ?? '1h'),
 });
 
-type TmpFile = Awaited<ReturnType<typeof createTmpFile>>;
-
 export class ImportService {
 	knex: Knex;
 	accountability: Accountability | null;
@@ -376,15 +374,10 @@ export class ImportService {
 		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
 		let timeout: NodeJS.Timeout;
 
-		// Cap the upload size on the streaming (non-spooled) path too, so synchronous JSON imports are
-		// bounded like the spooled paths. Sits in the pipe chain to keep backpressure.
-		const limiter = createSizeLimiter(getImportMaxFileSize());
-
-		// Tear down the whole stream chain (source -> limiter -> parser), resuming the source so the
-		// request body is drained.
+		// Tear down the stream chain (source -> parser), resuming the source so the request body is
+		// drained. The upload size is capped upstream by busboy (see the import controller).
 		const teardownStreams = () => {
-			destroyPipedStream(extractJSON, limiter);
-			destroyPipedStream(limiter, stream);
+			destroyPipedStream(extractJSON, stream);
 		};
 
 		return transaction(this.knex, async (trx) => {
@@ -431,18 +424,12 @@ export class ImportService {
 						}
 					});
 
-					stream.pipe(limiter).pipe(extractJSON);
+					stream.pipe(extractJSON);
 
 					// Without a source-stream error handler a read failure would go unhandled and the
-					// import promise would never settle.
+					// import promise would never settle. busboy destroys the source with a
+					// ContentTooLargeError when the upload exceeds the cap, so preserve that type.
 					stream.on('error', (error: Error) => {
-						saveQueue.kill();
-						teardownStreams();
-						reject(new Error('Error while retrieving import data', { cause: error }));
-					});
-
-					// The limiter errors with ContentTooLargeError once the upload exceeds the cap.
-					limiter.on('error', (error: Error) => {
 						saveQueue.kill();
 						teardownStreams();
 
@@ -520,10 +507,6 @@ export class ImportService {
 	 * background import detaches (see the background branch in `import()`).
 	 */
 	private async spoolToTmpFile(stream: Readable, deadline?: number): Promise<TmpFile> {
-		// Resolve the size cap before allocating anything, so an invalid config throws without leaking a
-		// temp file or timer. Unset means unlimited (a set-but-unparseable value throws).
-		const maxFileSize = getImportMaxFileSize();
-
 		const tmpFile = await createTmpFile().catch(() => null);
 		if (!tmpFile) throw new Error('Failed to create temporary file for import');
 
@@ -534,10 +517,10 @@ export class ImportService {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort(), delay);
 
-		const limiter = createSizeLimiter(maxFileSize);
-
 		try {
-			await pipeline(stream, limiter, createWriteStream(tmpFile.path), { signal: controller.signal });
+			// The upload size is capped upstream by busboy (see the import controller), which destroys the
+			// source with a ContentTooLargeError when the cap is exceeded.
+			await pipeline(stream, createWriteStream(tmpFile.path), { signal: controller.signal });
 		} catch (error) {
 			await tmpFile.cleanup().catch(() => {
 				logger.warn(`Failed to cleanup temporary import file (${tmpFile.path})`);
@@ -1041,32 +1024,10 @@ export function getHeadingsForCsvExport(
 }
 
 /**
- * A pass-through Transform that counts bytes and errors with ContentTooLargeError once maxFileSize is
- * exceeded. Sits in the pipe chain (rather than a raw `data` listener) so stream backpressure is kept.
- * A maxFileSize of undefined means no cap.
- */
-function createSizeLimiter(maxFileSize: number | undefined): Transform {
-	let bytesReceived = 0;
-
-	return new Transform({
-		transform(chunk: Buffer, _encoding, callback) {
-			bytesReceived += chunk.length;
-
-			if (maxFileSize !== undefined && bytesReceived > maxFileSize) {
-				callback(new ContentTooLargeError());
-				return;
-			}
-
-			callback(null, chunk);
-		},
-	});
-}
-
-/**
  * Resolve the configured import file-size cap in bytes. Unset means no cap; a set-but-unparseable
  * value throws rather than silently disabling the cap (fail open to unlimited).
  */
-function getImportMaxFileSize(): number | undefined {
+export function getImportMaxFileSize(): number | undefined {
 	const raw = env['IMPORT_MAX_FILE_SIZE'];
 	if (raw === undefined || raw === null || String(raw).trim() === '') return undefined;
 

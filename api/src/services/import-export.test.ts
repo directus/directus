@@ -1,6 +1,6 @@
 import { PassThrough, Readable } from 'node:stream';
 import { setTimeout } from 'node:timers/promises';
-import { ErrorCode, ForbiddenError } from '@directus/errors';
+import { ContentTooLargeError, ErrorCode, ForbiddenError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
@@ -1070,17 +1070,21 @@ describe('ImportService', () => {
 			expect(cache.importCount).toEqual(0);
 		});
 
-		test('rejects uploads exceeding IMPORT_MAX_FILE_SIZE and resets importCount', async () => {
+		// The upload size cap now lives at the import controller (busboy's fileSize limit), which destroys
+		// the source stream with a ContentTooLargeError once exceeded. The service must surface that error
+		// as-is (not wrap it) and still release the concurrency slot.
+		test('propagates a ContentTooLargeError from the source stream and resets importCount (background)', async () => {
 			service = new ImportService({
 				knex: db,
 				schema: baseSchema,
 				accountability: createDefaultAccountability(),
 			});
 
-			// IMPORT_MAX_FILE_SIZE is mocked to 1mb; push past it. The spool caps the write so an unbounded
-			// upload can't fill the disk.
-			const oversized = 'x'.repeat(1024 * 1024 + 1024);
-			const stream = Readable.from([oversized]);
+			const stream = new Readable({
+				read() {
+					this.destroy(new ContentTooLargeError());
+				},
+			});
 
 			await expect(
 				service.import('test_collection', 'application/json', stream, { background: true }),
@@ -1089,46 +1093,24 @@ describe('ImportService', () => {
 			expect(cache.importCount).toEqual(0);
 		});
 
-		test('rejects a synchronous JSON upload exceeding IMPORT_MAX_FILE_SIZE and resets importCount', async () => {
+		test('propagates a ContentTooLargeError from the source stream and resets importCount (synchronous JSON)', async () => {
 			service = new ImportService({
 				knex: db,
 				schema: baseSchema,
 				accountability: createDefaultAccountability(),
 			});
 
-			// The synchronous JSON path streams straight to the parser (no temp file), so the cap has to be
-			// enforced inline on that stream too. IMPORT_MAX_FILE_SIZE is mocked to 1mb; push past it.
-			const oversized = 'x'.repeat(1024 * 1024 + 1024);
-			const stream = Readable.from([oversized]);
+			const stream = new Readable({
+				read() {
+					this.destroy(new ContentTooLargeError());
+				},
+			});
 
 			await expect(
 				service.import('test_collection', 'application/json', stream, { background: false }),
 			).rejects.toMatchObject({ code: ErrorCode.ContentTooLarge });
 
 			expect(cache.importCount).toEqual(0);
-		});
-
-		test('rejects and resets importCount when IMPORT_MAX_FILE_SIZE is set but unparseable', async () => {
-			// An unparseable value must not silently disable the disk-fill cap (fail open to unlimited).
-			mockEnv['IMPORT_MAX_FILE_SIZE'] = 'not-a-size';
-
-			try {
-				service = new ImportService({
-					knex: db,
-					schema: baseSchema,
-					accountability: createDefaultAccountability(),
-				});
-
-				const stream = Readable.from(['title\na']);
-
-				await expect(
-					service.import('test_collection', 'application/json', stream, { background: true }),
-				).rejects.toThrow('Invalid IMPORT_MAX_FILE_SIZE');
-
-				expect(cache.importCount).toEqual(0);
-			} finally {
-				mockEnv['IMPORT_MAX_FILE_SIZE'] = '1mb';
-			}
 		});
 	});
 

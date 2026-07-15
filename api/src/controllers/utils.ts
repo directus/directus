@@ -1,4 +1,10 @@
-import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
+import {
+	ContentTooLargeError,
+	ForbiddenError,
+	InvalidPayloadError,
+	InvalidQueryError,
+	UnsupportedMediaTypeError,
+} from '@directus/errors';
 import { toBoolean } from '@directus/utils';
 import Busboy from 'busboy';
 import { Router } from 'express';
@@ -9,7 +15,7 @@ import { getDatabase } from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
-import { ExportService, ImportService } from '../services/import-export.js';
+import { ExportService, getImportMaxFileSize, ImportService } from '../services/import-export.js';
 import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -96,7 +102,16 @@ router.post(
 			};
 		}
 
-		const busboy = Busboy({ headers });
+		const busboy = Busboy({
+			headers,
+			limits: {
+				// A single file is imported per request; busboy ignores any extras.
+				files: 1,
+				// Cap the upload size (undefined = no cap). busboy truncates past this and emits 'limit'.
+				fileSize: getImportMaxFileSize(),
+			},
+		});
+
 		const background = toBoolean(req.query['background']);
 
 		let fileReceived = false;
@@ -126,13 +141,10 @@ router.post(
 		};
 
 		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
-			// Only one file is imported per request; drain extras so busboy can still reach 'close'.
-			if (fileReceived) {
-				fileStream.on('error', () => {}).resume();
-				return;
-			}
-
 			fileReceived = true;
+
+			// busboy truncates the file at the size cap; surface that to the reader as ContentTooLargeError.
+			fileStream.on('limit', () => fileStream.destroy(new ContentTooLargeError()));
 
 			try {
 				await service.import(req.params['collection']!, mimeType, fileStream, { background });
