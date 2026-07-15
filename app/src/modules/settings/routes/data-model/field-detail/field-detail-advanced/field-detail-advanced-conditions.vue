@@ -5,6 +5,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 import VForm from '@/components/v-form/v-form.vue';
+import { isPresentationField } from '@/utils/field-utils';
 
 const { t } = useI18n();
 
@@ -13,6 +14,7 @@ const fieldDetailStore = useFieldDetailStore();
 const { loading, field, collection } = storeToRefs(fieldDetailStore);
 
 const interfaceId = computed(() => field.value.meta?.interface ?? null);
+const isPresentation = computed(() => isPresentationField(field.value));
 const conditions = syncFieldDetailStoreProperty('field.meta.conditions');
 
 const conditionsSync = computed({
@@ -58,6 +60,7 @@ const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 		type: 'boolean',
 		meta: {
 			interface: 'boolean',
+			hidden: isPresentation.value,
 			options: {
 				label: t('readonly_field_label'),
 			},
@@ -70,6 +73,7 @@ const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 		type: 'boolean',
 		meta: {
 			interface: 'boolean',
+			hidden: isPresentation.value,
 			options: {
 				label: t('require_value_to_be_set'),
 			},
