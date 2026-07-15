@@ -1,4 +1,5 @@
-import { ForbiddenError } from '@directus/errors';
+import { useEnv } from '@directus/env';
+import { ForbiddenError, UnsupportedMediaTypeError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
 import type { Upload } from '@tus/utils';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -33,6 +34,15 @@ describe('TusDataStore.create', () => {
 
 	const schema = { collections: {}, relations: [] } as unknown as SchemaOverview;
 
+	const baseEnv = {
+		STORAGE_LOCATIONS: 'local',
+		STORAGE_LOCAL_DRIVER: 'local',
+		STORAGE_LOCAL_ROOT: '.',
+		EXTENSIONS_PATH: './extensions',
+		TEMP_PATH: './node_modules/.directus',
+		FILES_MIME_TYPE_ALLOW_LIST: '*/*',
+	};
+
 	let mockDriver: any;
 
 	const makeUpload = (metadata: Record<string, string>): Upload =>
@@ -53,6 +63,7 @@ describe('TusDataStore.create', () => {
 		});
 
 	beforeEach(() => {
+		vi.mocked(useEnv).mockReturnValue(baseEnv);
 		vi.mocked(getDatabase).mockReturnValue(db);
 		vi.mocked(ItemsService.prototype.createOne).mockResolvedValue('generated-pk');
 
@@ -111,5 +122,27 @@ describe('TusDataStore.create', () => {
 		const result = await store.create(makeUpload({ id: 'unknown-id' }));
 
 		expect(result.metadata!['id']).toBe('generated-pk');
+	});
+
+	test('rejects an upload whose type is not in FILES_MIME_TYPE_ALLOW_LIST', async () => {
+		vi.mocked(useEnv).mockReturnValue({ ...baseEnv, FILES_MIME_TYPE_ALLOW_LIST: 'image/jpeg,image/png' });
+
+		const store = makeStore();
+
+		await expect(store.create(makeUpload({ filename_download: 'malicious.html', type: 'text/html' }))).rejects.toThrow(
+			UnsupportedMediaTypeError,
+		);
+
+		expect(ItemsService.prototype.createOne).not.toHaveBeenCalled();
+	});
+
+	test('accepts an upload whose type matches FILES_MIME_TYPE_ALLOW_LIST', async () => {
+		vi.mocked(useEnv).mockReturnValue({ ...baseEnv, FILES_MIME_TYPE_ALLOW_LIST: 'image/jpeg,image/png' });
+
+		const store = makeStore();
+
+		await store.create(makeUpload({ filename_download: 'photo.png', type: 'image/png' }));
+
+		expect(ItemsService.prototype.createOne).toHaveBeenCalled();
 	});
 });

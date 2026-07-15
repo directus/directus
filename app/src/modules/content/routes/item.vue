@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { translateShortcut, useCollection, useShortcut } from '@directus/composables';
-import { VERSION_KEY_DRAFT, VERSION_KEY_PUBLISHED } from '@directus/constants';
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import type { AppCollection, Item, PrimaryKey } from '@directus/types';
 import { sameOrigin } from '@directus/utils/browser';
 import { SplitPanel } from '@directus/vue-split-panel';
@@ -53,6 +53,7 @@ import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { getPreviewVersionKey } from '@/utils/get-preview-version-key';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
@@ -418,7 +419,7 @@ const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?
 
 const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKeyParam, {
 	template: previewTemplate,
-	injectData: computed(() => ({ $version: currentVersion.value?.key ?? VERSION_KEY_PUBLISHED })),
+	injectData: computed(() => ({ $version: getPreviewVersionKey(currentVersion.value) })),
 });
 
 const previewUrl = computed(() => {

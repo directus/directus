@@ -237,6 +237,17 @@ describe('/files/tus', () => {
 		const downloaded = await api.request(readAssetArrayBuffer(target!.id));
 		expect(Buffer.from(downloaded).equals(original)).toBe(true);
 	});
+
+	test('rejects a resumable upload to a forbidden storage path with the underlying 403, not a generic 500', async () => {
+		const err = await uploadViaTus(Buffer.from('tus'), {
+			filename_download: `${randomUUID()}.bin`,
+			type: 'application/octet-stream',
+			filename_disk: 'extensions/evil.js',
+		}).catch((error) => error);
+
+		expect(err).toBeInstanceOf(Error);
+		expect(err.originalResponse?.getStatus()).toBe(403);
+	});
 });
 
 describe('POST /files forbidden storage paths', () => {
