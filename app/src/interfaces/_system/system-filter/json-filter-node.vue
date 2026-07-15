@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FieldFilter, FieldFilterOperator } from '@directus/types';
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import InputGroup from './input-group.vue';
 import {
@@ -27,6 +27,22 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const parts = computed(() => getJsonFilterParts(props.node));
 
+// A blank path collapses the node to an empty `_json: {}` (so incomplete drafts don't leak), which can't hold the
+// operator/value and so an operator cannot be selected until a path is present. Having a pending operator and value allows selecting an operator with no path.
+const pendingOperator = ref(parts.value.operator);
+const pendingValue = ref(parts.value.value);
+
+watch(parts, (newParts) => {
+	if (newParts.path) {
+		pendingOperator.value = newParts.operator;
+		pendingValue.value = newParts.value;
+	}
+});
+
+const valueNode = computed<FieldFilter>(() => ({
+	[JSON_VALUE_KEY]: { [pendingOperator.value]: pendingValue.value },
+}));
+
 const operatorOptions = computed(() =>
 	JSON_FILTER_OPERATORS.map((operator) => ({
 		text: t(`operators.${operator}`),
@@ -36,23 +52,25 @@ const operatorOptions = computed(() =>
 
 function updatePath(event: Event) {
 	const path = (event.target as HTMLInputElement).value.replace(/^\.+/, '');
-	emit('update:node', buildJsonFilter(parts.value.field, path, parts.value.operator, parts.value.value));
+	emit('update:node', buildJsonFilter(parts.value.field, path, pendingOperator.value, pendingValue.value));
 }
 
 function updateOperator(operator: keyof FieldFilterOperator) {
-	const value = initialValueForComparator(operator, parts.value.value, parts.value.operator);
+	const value = initialValueForComparator(operator, pendingValue.value, pendingOperator.value);
+	pendingOperator.value = operator;
+	pendingValue.value = value;
 	emit('update:node', buildJsonFilter(parts.value.field, parts.value.path, operator, value));
 }
 
-function updateValue(valueNode: FieldFilter) {
-	const operatorValues = valueNode[JSON_VALUE_KEY] as FieldFilterOperator;
+function updateValue(updatedValueNode: FieldFilter) {
+	const operatorValues = updatedValueNode[JSON_VALUE_KEY] as FieldFilterOperator;
 	const [operator = '_eq', value = null] = Object.entries(operatorValues)[0] ?? [];
 	const typedOperator = operator as keyof FieldFilterOperator;
+	const coercedValue = coerceJsonFilterValue(value, typedOperator);
 
-	emit(
-		'update:node',
-		buildJsonFilter(parts.value.field, parts.value.path, typedOperator, coerceJsonFilterValue(value, typedOperator)),
-	);
+	pendingOperator.value = typedOperator;
+	pendingValue.value = coercedValue;
+	emit('update:node', buildJsonFilter(parts.value.field, parts.value.path, typedOperator, coercedValue));
 }
 </script>
 
@@ -79,12 +97,12 @@ function updateValue(valueNode: FieldFilter) {
 			inline
 			class="comparator"
 			placement="bottom-start"
-			:model-value="parts.operator"
+			:model-value="pendingOperator"
 			:items="operatorOptions"
 			@update:model-value="updateOperator"
 		/>
 		<InputGroup
-			:field="parts.valueNode"
+			:field="valueNode"
 			:collection="collection"
 			:variable-input-enabled="variableInputEnabled"
 			@update:field="updateValue"
