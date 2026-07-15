@@ -191,6 +191,14 @@ describe('buildCustomFormats: round-trip + active state', () => {
 		expect(out).toContain('color: red');
 	});
 
+	test('an unconfigured class span is preserved instead of dropped', () => {
+		const editor = editorWith([], '<p><span class="unknown">x</span></p>');
+		const out = editor.getHTML();
+		editor.destroy();
+
+		expect(out).toBe('<p><span class="unknown">x</span></p>');
+	});
+
 	test('reports active when the selection sits inside a configured format', () => {
 		const { extensions, formats } = buildCustomFormats(SAMPLE);
 
