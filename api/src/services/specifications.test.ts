@@ -172,6 +172,30 @@ describe('Integration Tests', () => {
 							  },
 							  "Query": {
 							    "properties": {
+							      "aggregate": {
+							        "description": "Aggregate function to apply, mapped to the field(s) to apply it to, for example \`count\`, \`sum\`, \`avg\`, \`min\`, or \`max\`.
+							",
+							        "example": {
+							          "count": [
+							            "*",
+							          ],
+							        },
+							        "type": "object",
+							      },
+							      "alias": {
+							        "description": "Rename fields on the fly, so you can request the same field multiple times using different relational paths, filters, or aggregations.
+							",
+							        "example": {
+							          "author_name": "author.name",
+							        },
+							        "type": "object",
+							      },
+							      "backlink": {
+							        "default": true,
+							        "description": "Toggle whether reverse-relational fields are included when expanding a \`*.*\` wildcard. Explicitly specified field names are not affected, so \`fields=author.articles\` still includes the reverse relation even when \`backlink\` is \`false\`.
+							",
+							        "type": "boolean",
+							      },
 							      "deep": {
 							        "description": "Deep allows you to set any of the other query parameters on a nested relational dataset.",
 							        "example": {
@@ -180,6 +204,17 @@ describe('Integration Tests', () => {
 							          },
 							        },
 							        "type": "object",
+							      },
+							      "export": {
+							        "description": "Saves the API response to a file. Accepts one of "csv", "csv_utf8", "json", "xml", "yaml".",
+							        "enum": [
+							          "csv",
+							          "csv_utf8",
+							          "json",
+							          "xml",
+							          "yaml",
+							        ],
+							        "type": "string",
 							      },
 							      "fields": {
 							        "description": "Control what fields are being returned in the object.",
@@ -193,12 +228,27 @@ describe('Integration Tests', () => {
 							        "type": "array",
 							      },
 							      "filter": {
+							        "description": "Select items in the collection that match the given filter conditions.",
 							        "example": {
 							          "<field>": {
 							            "<operator>": "<value>",
 							          },
 							        },
+							        "externalDocs": {
+							          "description": "Available operators and dynamic variables",
+							          "url": "https://directus.com/docs/guides/connect/filter-rules#available-operators",
+							        },
 							        "type": "object",
+							      },
+							      "groupBy": {
+							        "description": "Group the returned items by the given field(s).",
+							        "example": [
+							          "status",
+							        ],
+							        "items": {
+							          "type": "string",
+							        },
+							        "type": "array",
 							      },
 							      "limit": {
 							        "description": "Set the maximum number of items that will be returned",
@@ -217,7 +267,8 @@ describe('Integration Tests', () => {
 							        "type": "string",
 							      },
 							      "sort": {
-							        "description": "How to sort the returned items.",
+							        "description": "How to sort the returned items. \`sort\` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (\` - \`) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a \` ? \` to sort randomly.
+							",
 							        "example": [
 							          "-date_created",
 							        ],
@@ -225,6 +276,16 @@ describe('Integration Tests', () => {
 							          "type": "string",
 							        },
 							        "type": "array",
+							      },
+							      "version": {
+							        "description": "Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content Version.
+							",
+							        "type": "string",
+							      },
+							      "versionRaw": {
+							        "default": false,
+							        "description": "When used with \`version\`, returns the raw revision data instead of the merged item data.",
+							        "type": "boolean",
 							      },
 							    },
 							    "type": "object",
