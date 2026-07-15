@@ -1,5 +1,6 @@
 ---
 '@directus/app': minor
+'@directus/composables': minor
 ---
 
-Added JSON path filtering to Studio filters and replaced filter function icons.
+Added JSON path filtering to Studio filters.
