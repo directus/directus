@@ -117,7 +117,9 @@ const showCustomValidationMessage = computed(() => {
 });
 
 function emitValue(value: any) {
-	if (
+	if (props.field.field === 'conditions' && isEqual(value, props.initialValue)) {
+		return;
+	} else if (
 		(isEqual(value, props.initialValue) || (props.initialValue === undefined && isEqual(value, defaultValue.value))) &&
 		props.batchMode === false
 	) {
