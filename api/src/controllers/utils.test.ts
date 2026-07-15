@@ -196,24 +196,4 @@ describe('import route', () => {
 		expect(next).toHaveBeenCalledWith(expect.any(ContentTooLargeError));
 		expect(res.end).not.toHaveBeenCalled();
 	});
-
-	it('forwards the error when IMPORT_MAX_FILE_SIZE is set but unparseable', async () => {
-		const next = vi.fn();
-		const { res } = makeRes();
-
-		const configError = new Error('Invalid IMPORT_MAX_FILE_SIZE value "not-a-size"');
-
-		const { getImportMaxFileSize } = await import('../services/import-export.js');
-
-		vi.mocked(getImportMaxFileSize).mockImplementationOnce(() => {
-			throw configError;
-		});
-
-		await importHandler(buildRequest({}), res, next);
-		await new Promise((resolve) => setImmediate(resolve));
-
-		expect(mockImport).not.toHaveBeenCalled();
-		expect(next).toHaveBeenCalledWith(configError);
-		expect(res.end).not.toHaveBeenCalled();
-	});
 });

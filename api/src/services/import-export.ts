@@ -1024,8 +1024,8 @@ export function getHeadingsForCsvExport(
 }
 
 /**
- * Resolve the configured import file-size cap in bytes. Unset means no cap; a set-but-unparseable
- * value throws rather than silently disabling the cap (fail open to unlimited).
+ * Resolve the configured import file-size cap in bytes. Unset means no cap. A set-but-unparseable
+ * value is a misconfiguration: warn and fall back to no cap rather than blocking imports.
  */
 export function getImportMaxFileSize(): number | undefined {
 	const raw = env['IMPORT_MAX_FILE_SIZE'];
@@ -1034,7 +1034,8 @@ export function getImportMaxFileSize(): number | undefined {
 	const parsed = bytes.parse(String(raw));
 
 	if (parsed === null || Number.isNaN(parsed)) {
-		throw new Error(`Invalid IMPORT_MAX_FILE_SIZE value "${raw}"`);
+		logger.warn(`Invalid IMPORT_MAX_FILE_SIZE value "${raw}"; ignoring the import file-size cap`);
+		return undefined;
 	}
 
 	return parsed;
