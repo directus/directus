@@ -196,4 +196,54 @@ describe('import route', () => {
 		expect(next).toHaveBeenCalledWith(expect.any(ContentTooLargeError));
 		expect(res.end).not.toHaveBeenCalled();
 	});
+
+	it('surfaces ContentTooLargeError without crashing when the cap trips before the importer reads', async () => {
+		const next = vi.fn();
+		const { res } = makeRes();
+
+		const { getImportMaxFileSize } = await import('../services/import-export.js');
+		vi.mocked(getImportMaxFileSize).mockReturnValueOnce(4);
+
+		// Importer never attaches a stream error handler / never reads (mimics the async validateAccess
+		// window). Without the controller's synchronous 'error' handler, the destroy would crash the process.
+		mockImport.mockImplementation(() => new Promise(() => {}));
+
+		await importHandler(buildRequest({ background: 'true' }), res, next);
+		await new Promise((resolve) => setImmediate(resolve));
+		await new Promise((resolve) => setImmediate(resolve));
+
+		expect(next).toHaveBeenCalledTimes(1);
+		expect(next).toHaveBeenCalledWith(expect.any(ContentTooLargeError));
+		expect(res.end).not.toHaveBeenCalled();
+	});
+
+	it('allows a file of exactly IMPORT_MAX_FILE_SIZE bytes (cap is "exceeded", not "reached")', async () => {
+		const next = vi.fn();
+		const { res, ended } = makeRes();
+
+		const content = '0123456789'; // 10 bytes
+		const { getImportMaxFileSize } = await import('../services/import-export.js');
+		vi.mocked(getImportMaxFileSize).mockReturnValueOnce(content.length);
+
+		const form = new FormData();
+		form.append('file', content, { filename: 'data.json', contentType: 'application/json' });
+		const stream = new PassThrough();
+		stream.end(form.getBuffer());
+
+		const req = {
+			headers: form.getHeaders(),
+			is: vi.fn().mockReturnValue(true),
+			query: { background: 'true' },
+			params: { collection: 'articles' },
+			accountability: null,
+			schema: { collections: {}, relations: [] },
+			pipe: (dest: NodeJS.WritableStream) => stream.pipe(dest),
+		} as any;
+
+		await importHandler(req, res, next);
+		await ended;
+
+		expect(res.status).toHaveBeenCalledWith(200);
+		expect(next).not.toHaveBeenCalled();
+	});
 });

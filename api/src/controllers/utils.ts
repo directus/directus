@@ -102,13 +102,16 @@ router.post(
 			};
 		}
 
+		const maxFileSize = getImportMaxFileSize();
+
 		const busboy = Busboy({
 			headers,
 			limits: {
 				// A single file is imported per request; busboy ignores any extras.
 				files: 1,
-				// Cap the upload size (undefined = no cap). busboy truncates past this and emits 'limit'.
-				fileSize: getImportMaxFileSize(),
+				// Cap the upload size (undefined = no cap). busboy rejects at exactly its fileSize, so +1
+				// keeps the cap "exceeded": a file of exactly IMPORT_MAX_FILE_SIZE bytes is still allowed.
+				fileSize: maxFileSize === undefined ? undefined : maxFileSize + 1,
 			},
 		});
 
@@ -143,8 +146,17 @@ router.post(
 		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
 			fileReceived = true;
 
-			// busboy truncates the file at the size cap; surface that to the reader as ContentTooLargeError.
-			fileStream.on('limit', () => fileStream.destroy(new ContentTooLargeError()));
+			// Swallow stream errors at the controller level so a destroy() can't crash the process with an
+			// unhandled 'error'. The importer attaches its own handlers and translates errors it observes.
+			fileStream.on('error', () => {});
+
+			// busboy enforces the size cap and can emit 'limit' before the importer starts reading. Respond
+			// here directly (don't rely on the importer settling) and destroy the stream so the truncated
+			// upload can't be committed.
+			fileStream.on('limit', () => {
+				fileStream.destroy(new ContentTooLargeError());
+				finish(() => next(new ContentTooLargeError()));
+			});
 
 			try {
 				await service.import(req.params['collection']!, mimeType, fileStream, { background });
@@ -153,7 +165,7 @@ router.post(
 			} catch (err: any) {
 				// import() can reject before reading the stream (e.g. bad media type); drain it so the client
 				// gets the error rather than a reset connection.
-				fileStream.on('error', () => {}).resume();
+				fileStream.resume();
 				finish(() => next(err));
 			}
 		});
