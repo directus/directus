@@ -3,4 +3,4 @@
 '@directus/api': patch
 ---
 
-Fixed OpenAPI spec error schema to match API error format.
+Fixed OpenAPI spec error schema to match API error format
