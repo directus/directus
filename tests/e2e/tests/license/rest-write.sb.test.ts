@@ -120,6 +120,7 @@ describe('POST /licenses', () => {
 			name: baseLicense.meta.name,
 			source: 'settings',
 			status: 'active',
+			editable: true,
 			entitlements: baseLicense.entitlements,
 		});
 	});
@@ -150,7 +151,9 @@ describe('PATCH /licenses', () => {
 	});
 
 	test('update from CORE rejects', async () => {
-		await expect(api.request(updateLicense({ license_key: baseLicense.key }))).rejects.toThrow();
+		await expect(api.request(updateLicense({ license_key: baseLicense.key }))).rejects.toThrowError(
+			'There is no active license to manage.',
+		);
 	});
 });
 
@@ -166,8 +169,13 @@ describe('DELETE /licenses', () => {
 			name: CORE_LICENSE.meta.name,
 			source: null,
 			status: 'active',
+			editable: true,
 			entitlements: CORE_LICENSE.entitlements,
 		});
+	});
+
+	test('deactivate from CORE rejects', async () => {
+		await expect(api.request(deactivateLicense())).rejects.toThrowError('There is no active license to manage.');
 	});
 });
 
@@ -386,5 +394,72 @@ describe('addons', () => {
 		const seats = addons.find((a) => a.id === SEATS_ADDON_ID);
 
 		expect(seats?.active_quantity ?? 0).toBe(0);
+	});
+});
+
+describe('LICENSE_KEY_MANAGEMENT_ENABLED=false with source=settings', () => {
+	const managedLicense = createLicense({ meta: { name: 'mgmt-disabled' } });
+
+	let managedDirectus: Sandbox;
+	let managedApi: DirectusClient<any> & RestClient<any>;
+
+	beforeAll(async () => {
+		managedDirectus = await sandbox(
+			database,
+			withDefaultSandboxOptions({
+				hooks: {
+					beforeApi: async ({ env }) => {
+						await mockClient.registerLicense(env.LICENSE_API_URL!, managedLicense);
+					},
+				},
+				extras: { license: true },
+			}),
+		);
+
+		managedApi = createDirectus<any>(`http://localhost:${managedDirectus.apis[0].port}`)
+			.with(rest())
+			.with(staticToken('admin'));
+
+		await managedApi.request(activateLicense({ license_key: managedLicense.key }));
+
+		(managedDirectus.env as Record<string, string>)['LICENSE_KEY_MANAGEMENT_ENABLED'] = 'false';
+		await managedDirectus.restartApi();
+
+		managedApi = createDirectus<any>(`http://localhost:${managedDirectus.apis[0].port}`)
+			.with(rest())
+			.with(staticToken('admin'));
+	});
+
+	afterAll(async () => {
+		await managedDirectus?.stop();
+	});
+
+	test('license boots from DB with source=settings and editable=false', async () => {
+		const info = await managedApi.request(readLicense());
+
+		expect(info).toMatchObject({
+			name: managedLicense.meta.name,
+			source: 'settings',
+			status: 'active',
+			editable: false,
+		});
+	});
+
+	test('POST activate rejects', async () => {
+		await expect(managedApi.request(activateLicense({ license_key: managedLicense.key }))).rejects.toThrowError(
+			'You cannot manage license for the current license',
+		);
+	});
+
+	test('PATCH update rejects', async () => {
+		await expect(managedApi.request(updateLicense({ license_key: upgradeLicense.key }))).rejects.toThrowError(
+			'You cannot manage license for the current license',
+		);
+	});
+
+	test('DELETE deactivate rejects', async () => {
+		await expect(managedApi.request(deactivateLicense())).rejects.toThrowError(
+			'You cannot manage license for the current license',
+		);
 	});
 });
