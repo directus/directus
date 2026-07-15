@@ -269,6 +269,38 @@ test('Returns false if the number of returned items matches the number of reques
 	).resolves.toEqual({ accessAllowed: false });
 });
 
+test('Deduplicates primary keys before comparing against the returned item count', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{}]);
+
+	await expect(
+		validateItemAccess({ accountability: acc, action: 'update', collection: 'collection-a', primaryKeys: [1, 1] }, {
+			schema,
+		} as Context),
+	).resolves.toEqual({ accessAllowed: true });
+
+	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
+		expect.objectContaining({
+			query: expect.objectContaining({
+				filter: {
+					'field-a': {
+						_in: [1],
+					},
+				},
+				limit: 1,
+			}),
+		}),
+		expect.anything(),
+	);
+});
+
 test('Returns allowed root fields when returnAllowedRootFields is true', async () => {
 	const schema = new SchemaBuilder()
 		.collection('collection-a', (c) => {
