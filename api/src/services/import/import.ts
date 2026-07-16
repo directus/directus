@@ -617,11 +617,9 @@ export class ImportService {
 							if (!matchedExisting && isAutoIncrement) {
 								// Key doesn't exist: remap so the auto-increment sequence keeps advancing naturally
 								delete payload[pkField];
-								newPk = await service.createOne(payload, mutationOptions);
-							} else {
-								// Existing key -> update in place; explicit new key -> insert preserving it
-								newPk = await service.upsertOne(payload, mutationOptions);
 							}
+
+							newPk = await service.upsertOne(payload, mutationOptions);
 						} else if (isAutoIncrement) {
 							// Add mode: always remap so the sequence keeps advancing naturally
 							delete payload[pkField];
