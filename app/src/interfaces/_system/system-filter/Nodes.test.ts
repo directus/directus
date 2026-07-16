@@ -82,23 +82,16 @@ function mountNodes(props: Record<string, any> = {}) {
 }
 
 describe('Nodes JSON filter gating', () => {
-	test('offers the json comparator for a raw JSON field by default', () => {
+	test('never offers the json comparator for a raw JSON field', () => {
 		const wrapper = mountNodes();
-		const items = wrapper.findComponent(VSelectStub).props('items') as { value: string }[];
-
-		expect(items.map((item) => item.value)).toContain('_json');
-	});
-
-	test('hides the json comparator when includeJsonFunction is false', () => {
-		const wrapper = mountNodes({ includeJsonFunction: false });
 		const items = wrapper.findComponent(VSelectStub).props('items') as { value: string }[];
 
 		expect(items.map((item) => item.value)).not.toContain('_json');
 		expect(items.length).toBeGreaterThan(0);
 	});
 
-	test('ignores a _json comparator selection when disabled', async () => {
-		const wrapper = mountNodes({ includeJsonFunction: false });
+	test('ignores a _json comparator selection', async () => {
+		const wrapper = mountNodes();
 
 		await wrapper.findComponent(VSelectStub).vm.$emit('update:model-value', '_json');
 		expect(wrapper.emitted('update:filter')).toBeUndefined();

@@ -185,7 +185,7 @@ function toggleLogic(index: number) {
 function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 	const nodeInfo = filterInfo.value[index];
 	if (!nodeInfo?.isField) return;
-	if (operator === '_json' && !props.includeJsonFunction) return;
+	if (operator === '_json') return;
 
 	const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
 	const value = get(nodeInfo.node, valuePath);
@@ -267,7 +267,7 @@ function getCompareOptions(name: string) {
 	}
 
 	return getFilterOperatorsForType(type, { includeValidation: props.includeValidation })
-		.filter((operator) => props.includeJsonFunction || operator !== 'json')
+		.filter((operator) => operator !== 'json')
 		.map((type) => ({
 			text: t(`operators.${type}`),
 			value: `_${type}`,

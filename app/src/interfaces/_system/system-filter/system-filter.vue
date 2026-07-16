@@ -150,7 +150,7 @@ function addNode(key: string) {
 		}
 
 		const filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation }).filter(
-			(operator) => jsonFunctionEnabled.value || operator !== 'json',
+			(operator) => operator !== 'json',
 		);
 
 		const operator =
