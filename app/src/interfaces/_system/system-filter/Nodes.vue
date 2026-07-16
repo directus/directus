@@ -523,6 +523,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		position: absolute;
 		inset-block-start: 50%;
 		inset-inline-start: 100%;
+		z-index: 3;
 		padding-inline-start: 0.25rem;
 		transform: translateY(-50%);
 		opacity: 0;
