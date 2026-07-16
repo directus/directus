@@ -1103,6 +1103,45 @@ describe('ImportService.importBatch', () => {
 		expect(result.collections['categories']!.mapped).toEqual({ '1': 'categories-new-1', '2': 'categories-new-2' });
 	});
 
+	test('remaps o2m alias arrays in a second pass', async () => {
+		const schema = new SchemaBuilder()
+			.collection('authors', (c) => {
+				c.field('id').id();
+				c.field('articles').o2m('articles', 'author');
+			})
+			.collection('articles', (c) => {
+				c.field('id').id();
+				c.field('title').string();
+				c.field('author').m2o('authors');
+			})
+			.build();
+
+		const { calls } = await run(schema, [
+			{ collection: 'authors', items: [{ id: 1, articles: [10, 11] }] },
+			{
+				collection: 'articles',
+				items: [
+					{ id: 10, title: 'A', author: 1 },
+					{ id: 11, title: 'B', author: 1 },
+				],
+			},
+		]);
+
+		// The alias array is stripped from the initial insert...
+		const authorCreate = calls.find((c) => c.collection === 'authors' && c.method === 'createOne')!;
+		expect(authorCreate.payload).not.toHaveProperty('articles');
+
+		// ...then set with remapped child keys once the articles exist
+		const updates = calls.filter((c) => c.method === 'updateOne');
+		expect(updates).toHaveLength(1);
+
+		expect(updates[0]).toMatchObject({
+			collection: 'authors',
+			pk: 'authors-new-1',
+			data: { articles: ['articles-new-1', 'articles-new-2'] },
+		});
+	});
+
 	test('dry run computes mappings without emitting actions or clearing cache', async () => {
 		const cacheClear = vi.fn();
 		vi.mocked(getCache).mockReturnValue({ cache: { clear: cacheClear } } as any);

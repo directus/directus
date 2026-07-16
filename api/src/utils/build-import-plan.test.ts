@@ -133,7 +133,7 @@ describe('buildImportPlan', () => {
 		expect(plan.order).toEqual(['a', 'b']);
 	});
 
-	test('exposes o2m alias fields as relational fields', () => {
+	test('records o2m alias fields with the child collection they reference', () => {
 		const schema = new SchemaBuilder()
 			.collection('authors', (c) => {
 				c.field('id').id();
@@ -147,8 +147,33 @@ describe('buildImportPlan', () => {
 
 		const plan = buildImportPlan(asInput('authors', 'articles'), schema);
 
-		expect(plan.relationalFields.get('authors')).toEqual(new Set(['articles']));
-		expect(plan.relationalFields.get('articles')).toEqual(new Set(['author']));
+		// The o2m alias is recorded with the child collection whose keys it lists, for second-pass remap
+		expect(plan.aliasFields.get('authors')).toEqual([{ field: 'articles', target: 'articles' }]);
+
+		// The owning m2o lives on the fkFields side, not as an alias
+		expect(plan.fkFields.get('articles')).toContainEqual(
+			expect.objectContaining({ field: 'author', target: 'authors' }),
+		);
+
+		expect(plan.aliasFields.get('articles')).toEqual([]);
+	});
+
+	test('records o2m alias fields with a null target when the child collection is not imported', () => {
+		const schema = new SchemaBuilder()
+			.collection('authors', (c) => {
+				c.field('id').id();
+				c.field('articles').o2m('articles', 'author');
+			})
+			.collection('articles', (c) => {
+				c.field('id').id();
+				c.field('author').m2o('authors');
+			})
+			.build();
+
+		const plan = buildImportPlan(asInput('authors'), schema);
+
+		// Still surfaced (so validation can reject nested payloads), but not remappable without the child's id map
+		expect(plan.aliasFields.get('authors')).toEqual([{ field: 'articles', target: null }]);
 	});
 
 	test('orders a2o allowed collections before the owning collection', () => {

@@ -538,7 +538,9 @@ export class ImportService {
 				);
 
 				// Second pass and merge mode both perform updates
-				if (mode === 'merge' || plan.deferred.has(collection)) {
+				const hasRemappableAlias = plan.aliasFields.get(collection)!.some((info) => info.target !== null);
+
+				if (mode === 'merge' || plan.deferred.has(collection) || hasRemappableAlias) {
 					await validateAccess(
 						{ accountability: this.accountability, action: 'update', collection },
 						{ schema: this.schema, knex: this.knex },
@@ -555,7 +557,7 @@ export class ImportService {
 		}
 
 		// Reject nested relational payloads before touching the database
-		validateFlatData(plan.relationalFields, dataByCollection);
+		validateFlatData(plan.fkFields, plan.aliasFields, dataByCollection);
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -576,8 +578,14 @@ export class ImportService {
 				for (const collection of plan.order) {
 					const entry = dataByCollection.get(collection)!;
 					const idMap = idMaps.get(collection)!;
-					const deferredFields = plan.deferred.get(collection);
 					const fkFields = plan.fkFields.get(collection)!;
+
+					// Fields resolved in the second pass. deferred FKs + remappable o2m/m2m aliases
+					const secondPassFields = new Set<string>(plan.deferred.get(collection));
+
+					for (const info of plan.aliasFields.get(collection) ?? []) {
+						if (info.target !== null) secondPassFields.add(info.field);
+					}
 
 					const service = getService(collection, {
 						knex: trx,
@@ -594,7 +602,7 @@ export class ImportService {
 					const isUuid = pkOverview.type === 'uuid';
 
 					for (const item of entry.items) {
-						const payload = remapForeignKeys(item, fkFields, idMaps, deferredFields);
+						const payload = remapForeignKeys(item, fkFields, idMaps, secondPassFields);
 						const oldPk = item[pkField] as PrimaryKey | undefined;
 
 						let newPk: PrimaryKey;
@@ -646,8 +654,14 @@ export class ImportService {
 					}
 				}
 
-				// Pass 2: set the deferred fields now that every collection has been imported
-				for (const [collection, fields] of plan.deferred) {
+				// Pass 2: resolve fields deferred to break nullable cycles and remap o2m/m2m alias arrays,
+				// now that every collection has been imported and all id maps are complete
+				for (const collection of plan.order) {
+					const deferredFields = plan.deferred.get(collection);
+					const aliasFields = plan.aliasFields.get(collection)?.filter((info) => info.target !== null) ?? [];
+
+					if (!deferredFields && aliasFields.length === 0) continue;
+
 					const entry = dataByCollection.get(collection)!;
 					const idMap = idMaps.get(collection)!;
 					const fkFields = plan.fkFields.get(collection)!;
@@ -659,23 +673,33 @@ export class ImportService {
 						accountability: this.accountability,
 					});
 
-					for (const field of fields) {
-						const fkInfo = fkFields.find((info) => info.field === field)!;
+					for (const item of entry.items) {
+						const oldPk = item[pkField] as PrimaryKey | undefined;
+						if (oldPk == null) continue;
 
-						for (const item of entry.items) {
+						const newPk = idMap.get(String(oldPk));
+						if (newPk === undefined) continue;
+
+						const patch: Record<string, unknown> = {};
+
+						for (const field of deferredFields!) {
 							const rawValue = item[field];
 							if (rawValue === undefined || rawValue === null) continue;
 
-							const oldPk = item[pkField] as PrimaryKey | undefined;
-							if (oldPk == null) continue;
-
-							const newPk = idMap.get(String(oldPk));
-							if (newPk === undefined) continue;
-
-							const value = remapValue(rawValue, resolveTarget(fkInfo, item), idMaps);
-
-							await service.updateOne(newPk, { [field]: value }, mutationOptions);
+							const fkInfo = fkFields.find((info) => info.field === field)!;
+							patch[field] = remapValue(rawValue, resolveTarget(fkInfo, item), idMaps);
 						}
+
+						for (const info of aliasFields) {
+							const rawValue = item[info.field];
+							if (rawValue === undefined || rawValue === null) continue;
+
+							patch[info.field] = remapValue(rawValue, info.target, idMaps);
+						}
+
+						if (Object.keys(patch).length === 0) continue;
+
+						await service.updateOne(newPk, patch, mutationOptions);
 					}
 				}
 
@@ -733,16 +757,16 @@ function remapForeignKeys(
 	item: Record<string, unknown>,
 	fkFields: FkFieldInfo[],
 	idMaps: Map<string, Map<string, PrimaryKey>>,
-	deferredFields: Set<string> | undefined,
+	secondPassFields: Set<string>,
 ): Record<string, unknown> {
 	const payload: Record<string, unknown> = { ...item };
 
-	for (const info of fkFields) {
-		if (deferredFields?.has(info.field)) {
-			delete payload[info.field];
-			continue;
-		}
+	// Fields resolved in the second pass (deferred FKs + o2m/m2m aliases) are dropped from the insert
+	for (const field of secondPassFields) {
+		delete payload[field];
+	}
 
+	for (const info of fkFields) {
 		const value = payload[info.field];
 		if (value === undefined || value === null || isObject(value)) continue;
 
@@ -752,9 +776,15 @@ function remapForeignKeys(
 	return payload;
 }
 
-/** Map a single foreign key value through the target collection's id map (identity when unmapped). */
+/**
+ * Map a foreign key value through the target collection's id map (identity when unmapped).
+ */
 function remapValue(value: unknown, target: string | null, idMaps: Map<string, Map<string, PrimaryKey>>): unknown {
 	if (value === null || value === undefined || !target) return value;
+
+	if (Array.isArray(value)) {
+		return value.map((entry) => remapValue(entry, target, idMaps));
+	}
 
 	const mapped = idMaps.get(target)?.get(String(value));
 	return mapped !== undefined ? mapped : value;

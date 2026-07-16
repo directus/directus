@@ -16,11 +16,19 @@ export interface FkFieldInfo {
 	nullable: boolean;
 }
 
+export interface AliasFieldInfo {
+	field: string;
+	/** The related collection for an o2m relation. **/
+	target: string | null;
+}
+
 export interface ImportPlan {
 	order: string[];
 	deferred: Map<string, Set<string>>;
+	/** m2o/a2o foreign key fields, keyed by collection. */
 	fkFields: Map<string, FkFieldInfo[]>;
-	relationalFields: Map<string, Set<string>>;
+	/** o2m/m2m alias fields, keyed by collection. */
+	aliasFields: Map<string, AliasFieldInfo[]>;
 }
 
 interface Edge {
@@ -55,16 +63,15 @@ export function buildImportPlan(input: ImportCollectionData[], schema: SchemaOve
 	}
 
 	const fkFields = new Map<string, FkFieldInfo[]>();
-	const relationalFields = new Map<string, Set<string>>();
+	const aliasFields = new Map<string, AliasFieldInfo[]>();
 
 	for (const collection of nodes) {
 		fkFields.set(collection, []);
-		relationalFields.set(collection, new Set());
+		aliasFields.set(collection, []);
 	}
 
-	// Collect owning FK fields (m2o/a2o) and all relational fields (incl. o2m aliases) per collection
+	// Collect FK fields (m2o/a2o) and o2m/m2m alias fields per collection
 	for (const relation of schema.relations) {
-		// Owning side: `relation.collection` holds the foreign key in `relation.field`
 		if (nodes.has(relation.collection)) {
 			const relationType = getRelationType({
 				relation,
@@ -82,13 +89,13 @@ export function buildImportPlan(input: ImportCollectionData[], schema: SchemaOve
 				allowedCollections: relation.meta?.one_allowed_collections ?? null,
 				nullable,
 			});
-
-			relationalFields.get(relation.collection)!.add(relation.field);
 		}
-
-		// One side: `relation.related_collection` exposes the o2m/alias field in `relation.meta.one_field`
+		
 		if (relation.related_collection && nodes.has(relation.related_collection) && relation.meta?.one_field) {
-			relationalFields.get(relation.related_collection)!.add(relation.meta.one_field);
+			aliasFields.get(relation.related_collection)!.push({
+				field: relation.meta.one_field,
+				target: nodes.has(relation.collection) ? relation.collection : null,
+			});
 		}
 	}
 
@@ -149,7 +156,7 @@ export function buildImportPlan(input: ImportCollectionData[], schema: SchemaOve
 
 	const order = topologicalSort([...nodes], edges);
 
-	return { order, deferred, fkFields, relationalFields };
+	return { order, deferred, fkFields, aliasFields };
 }
 
 /**
