@@ -18,7 +18,7 @@ export interface FkFieldInfo {
 
 export interface ImportPlan {
 	order: string[];
-	deferred: { collection: string; field: string }[];
+	deferred: Map<string, Set<string>>;
 	fkFields: Map<string, FkFieldInfo[]>;
 	relationalFields: Map<string, Set<string>>;
 }
@@ -107,8 +107,7 @@ export function buildImportPlan(input: ImportCollectionData[], schema: SchemaOve
 		}
 	}
 
-	const deferred: { collection: string; field: string }[] = [];
-	const deferredKeys = new Set<string>();
+	const deferred = new Map<string, Set<string>>();
 
 	// Break cycles by deferring nullable edges; unresolvable (all non-nullable) cycles throw
 	while (true) {
@@ -137,12 +136,12 @@ export function buildImportPlan(input: ImportCollectionData[], schema: SchemaOve
 		}
 
 		const chosen = nullableEdges[0]!;
-		const key = `${chosen.from}::${chosen.field}`;
 
-		if (!deferredKeys.has(key)) {
-			deferredKeys.add(key);
-			deferred.push({ collection: chosen.from, field: chosen.field });
+		if (!deferred.has(chosen.from)) {
+			deferred.set(chosen.from, new Set());
 		}
+
+		deferred.get(chosen.from)!.add(chosen.field);
 
 		// Remove every edge originating from the deferred field (a2o fields can have multiple edges)
 		edges = edges.filter((edge) => !(edge.from === chosen.from && edge.field === chosen.field));

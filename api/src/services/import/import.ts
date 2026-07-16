@@ -518,16 +518,6 @@ export class ImportService {
 			dataByCollection.set(entry.collection, entry);
 		}
 
-		const deferredByCollection = new Map<string, Set<string>>();
-
-		for (const { collection, field } of plan.deferred) {
-			if (!deferredByCollection.has(collection)) {
-				deferredByCollection.set(collection, new Set());
-			}
-
-			deferredByCollection.get(collection)!.add(field);
-		}
-
 		// Permission checks + system collection guard (mirrors this.import)
 		for (const collection of plan.order) {
 			if (this.accountability?.admin !== true && isSystemCollection(collection)) {
@@ -541,7 +531,7 @@ export class ImportService {
 				);
 
 				// Second pass and merge mode both perform updates
-				if (mode === 'merge' || deferredByCollection.has(collection)) {
+				if (mode === 'merge' || plan.deferred.has(collection)) {
 					await validateAccess(
 						{ accountability: this.accountability, action: 'update', collection },
 						{ schema: this.schema, knex: this.knex },
@@ -591,7 +581,7 @@ export class ImportService {
 				for (const collection of plan.order) {
 					const entry = dataByCollection.get(collection)!;
 					const idMap = idMaps.get(collection)!;
-					const deferredFields = deferredByCollection.get(collection);
+					const deferredFields = plan.deferred.get(collection);
 					const fkFields = plan.fkFields.get(collection)!;
 
 					const service = getService(collection, {
@@ -662,10 +652,10 @@ export class ImportService {
 				}
 
 				// Pass 2: set the deferred fields now that every collection has been imported
-				for (const { collection, field } of plan.deferred) {
+				for (const [collection, fields] of plan.deferred) {
 					const entry = dataByCollection.get(collection)!;
 					const idMap = idMaps.get(collection)!;
-					const fkInfo = plan.fkFields.get(collection)!.find((info) => info.field === field)!;
+					const fkFields = plan.fkFields.get(collection)!;
 					const { primary: pkField } = this.schema.collections[collection]!;
 
 					const service = getService(collection, {
@@ -674,19 +664,23 @@ export class ImportService {
 						accountability: this.accountability,
 					});
 
-					for (const item of entry.items) {
-						const rawValue = item[field];
-						if (rawValue === undefined || rawValue === null) continue;
+					for (const field of fields) {
+						const fkInfo = fkFields.find((info) => info.field === field)!;
 
-						const oldPk = item[pkField] as PrimaryKey | undefined;
-						if (oldPk == null) continue;
+						for (const item of entry.items) {
+							const rawValue = item[field];
+							if (rawValue === undefined || rawValue === null) continue;
 
-						const newPk = idMap.get(String(oldPk));
-						if (newPk === undefined) continue;
+							const oldPk = item[pkField] as PrimaryKey | undefined;
+							if (oldPk == null) continue;
 
-						const value = remapValue(rawValue, resolveTarget(fkInfo, item), idMaps);
+							const newPk = idMap.get(String(oldPk));
+							if (newPk === undefined) continue;
 
-						await service.updateOne(newPk, { [field]: value }, mutationOptions);
+							const value = remapValue(rawValue, resolveTarget(fkInfo, item), idMaps);
+
+							await service.updateOne(newPk, { [field]: value }, mutationOptions);
+						}
 					}
 				}
 

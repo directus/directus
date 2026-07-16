@@ -22,7 +22,7 @@ describe('buildImportPlan', () => {
 		const plan = buildImportPlan(asInput('articles', 'authors'), schema);
 
 		expect(plan.order).toEqual(['authors', 'articles']);
-		expect(plan.deferred).toEqual([]);
+		expect(plan.deferred).toEqual(new Map());
 	});
 
 	test('resolves a diamond dependency', () => {
@@ -48,7 +48,7 @@ describe('buildImportPlan', () => {
 		const plan = buildImportPlan(asInput('article', 'author', 'editor', 'category'), schema);
 
 		expect(plan.order).toEqual(['category', 'author', 'editor', 'article']);
-		expect(plan.deferred).toEqual([]);
+		expect(plan.deferred).toEqual(new Map());
 	});
 
 	test('ignores dependencies on collections not in the import', () => {
@@ -111,7 +111,7 @@ describe('buildImportPlan', () => {
 		const plan = buildImportPlan(asInput('categories'), schema);
 
 		expect(plan.order).toEqual(['categories']);
-		expect(plan.deferred).toEqual([{ collection: 'categories', field: 'parent' }]);
+		expect(plan.deferred).toEqual(new Map([['categories', new Set(['parent'])]]));
 	});
 
 	test('breaks a cross-collection cycle by deferring the nullable edge', () => {
@@ -128,7 +128,7 @@ describe('buildImportPlan', () => {
 
 		const plan = buildImportPlan(asInput('a', 'b'), schema);
 
-		expect(plan.deferred).toEqual([{ collection: 'a', field: 'b_link' }]);
+		expect(plan.deferred).toEqual(new Map([['a', new Set(['b_link'])]]));
 		// With a.b_link deferred, b depends on a, so a is imported first
 		expect(plan.order).toEqual(['a', 'b']);
 	});
