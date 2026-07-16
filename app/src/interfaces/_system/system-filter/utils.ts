@@ -54,15 +54,17 @@ export function getComparator(node: Record<string, any>): string {
 	return getNodeName(get(node, getField(node)));
 }
 
+const arrayComparators = ['_in', '_nin'];
+const rangeComparators = ['_between', '_nbetween'];
 const booleanComparators = ['_null', '_nnull', '_empty', '_nempty'];
 const geometryComparators = ['_intersects', '_nintersects', '_intersects_bbox', '_nintersects_bbox'];
 
 export function initialValueForComparator(comparator: string, value: unknown, previousComparator?: string): unknown {
-	if (['_in', '_nin'].includes(comparator)) {
+	if (arrayComparators.includes(comparator)) {
 		return toArray(value);
 	}
 
-	if (['_between', '_nbetween'].includes(comparator)) {
+	if (rangeComparators.includes(comparator)) {
 		return toArray(value).slice(0, 2);
 	}
 
