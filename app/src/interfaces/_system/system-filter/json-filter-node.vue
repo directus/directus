@@ -82,7 +82,6 @@ function updateValue(updatedValueNode: FieldFilter) {
 			{{ $t('functions.json') }}
 		</span>
 		<label class="json-path">
-			<span>.</span>
 			<input
 				v-input-auto-width
 				class="json-path-input"
