@@ -67,12 +67,12 @@ describe('VFieldListItem functions', () => {
 		expect(wrapper.emitted('add')).toContainEqual([['json(metadata)']]);
 	});
 
-	test('uses the function icon for function entries', () => {
+	test('uses the function_f icon for all function entries on json fields', () => {
 		const wrapper = mountJsonField();
 		const icons = wrapper.findAll('.functions .v-icon-stub');
 
 		expect(icons).toHaveLength(2);
-		expect(icons.every((icon) => icon.attributes('data-name') === 'function')).toBe(true);
+		expect(icons.every((icon) => icon.attributes('data-name') === 'function_f')).toBe(true);
 	});
 
 	test('hides excluded functions but keeps the rest', async () => {

@@ -99,7 +99,7 @@ const openWhileSearching = computed(() => {
 				@click="$emit('add', [`${fn}(${field.key})`])"
 			>
 				<VListItemIcon>
-					<VIcon name="function" small color="var(--theme--primary)" />
+					<VIcon :name="field.type === 'json' ? 'function_f' : 'function'" small color="var(--theme--primary)" />
 				</VListItemIcon>
 				<VListItemContent>
 					<VTextOverflow :text="functionLabel(fn)" :highlight="search" />
