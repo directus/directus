@@ -518,8 +518,15 @@ export class ImportService {
 			dataByCollection.set(entry.collection, entry);
 		}
 
+		const collections: Record<string, ImportBatchCollectionResult> = {};
+		// String(oldPk) -> new primary key, per collection
+		const idMaps = new Map<string, Map<string, PrimaryKey>>();
+
 		// Permission checks + system collection guard (mirrors this.import)
 		for (const collection of plan.order) {
+			collections[collection] = { existing: [], new: [], deleted: [], mapped: {} };
+			idMaps.set(collection, new Map());
+
 			if (this.accountability?.admin !== true && isSystemCollection(collection)) {
 				throw new ForbiddenError();
 			}
@@ -551,11 +558,6 @@ export class ImportService {
 		validateFlatData(plan.relationalFields, dataByCollection);
 
 		const nestedActionEvents: ActionEventParams[] = [];
-		const collections: Record<string, ImportBatchCollectionResult> = {};
-
-		for (const collection of plan.order) {
-			collections[collection] = { existing: [], new: [], deleted: [], mapped: {} };
-		}
 
 		await this.acquireImportSlot();
 
@@ -569,13 +571,6 @@ export class ImportService {
 					autoPurgeCache: false,
 					autoPurgeSystemCache: false,
 				};
-
-				// idMaps keyed by String(oldPk) -> new primary key, per collection
-				const idMaps = new Map<string, Map<string, PrimaryKey>>();
-
-				for (const collection of plan.order) {
-					idMaps.set(collection, new Map());
-				}
 
 				// Pass 1: insert/upsert each collection in dependency order, remapping FKs and PKs
 				for (const collection of plan.order) {
