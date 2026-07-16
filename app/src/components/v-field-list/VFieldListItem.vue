@@ -3,6 +3,7 @@ import formatTitle from '@directus/format-title';
 import { FieldFunction } from '@directus/types';
 import { getFunctionsForType } from '@directus/utils';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListGroup from '@/components/v-list-group.vue';
@@ -43,6 +44,16 @@ const props = withDefaults(
 
 const emit = defineEmits(['add']);
 
+const { t } = useI18n();
+
+const fieldLabel = computed(() =>
+	props.rawFieldNames ? props.field.field : props.field.name || formatTitle(props.field.field),
+);
+
+function functionLabel(fn: FieldFunction) {
+	return fn === 'json' ? t('functions.json') : `${t(`functions.${fn}`)} (${fieldLabel.value})`;
+}
+
 const supportedFunctions = computed(() => {
 	if (!props.includeFunctions || props.field.group) return [];
 	return getFunctionsForType(props.field.type).filter((fn) => !props.excludedFunctions.includes(fn));
@@ -75,10 +86,7 @@ const openWhileSearching = computed(() => {
 	>
 		<template #activator>
 			<VListItemContent>
-				<VTextOverflow
-					:text="rawFieldNames ? field.field : field.name || formatTitle(field.field)"
-					:highlight="search"
-				/>
+				<VTextOverflow :text="fieldLabel" :highlight="search" />
 			</VListItemContent>
 		</template>
 
@@ -94,14 +102,7 @@ const openWhileSearching = computed(() => {
 					<VIcon name="function" small color="var(--theme--primary)" />
 				</VListItemIcon>
 				<VListItemContent>
-					<VTextOverflow
-						:text="
-							fn === 'json'
-								? $t(`functions.${fn}`)
-								: `${$t(`functions.${fn}`)} (${rawFieldNames ? field.field : field.name || formatTitle(field.field)})`
-						"
-						:highlight="search"
-					/>
+					<VTextOverflow :text="functionLabel(fn)" :highlight="search" />
 				</VListItemContent>
 			</VListItem>
 
@@ -143,7 +144,7 @@ const openWhileSearching = computed(() => {
 			<VIcon name="auto_awesome" small color="var(--theme--primary)" />
 		</VListItemIcon>
 		<VListItemContent>
-			<VTextOverflow :text="rawFieldNames ? field.field : field.name || formatTitle(field.field)" :highlight="search" />
+			<VTextOverflow :text="fieldLabel" :highlight="search" />
 		</VListItemContent>
 	</VListItem>
 </template>

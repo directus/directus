@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils';
 import { describe, expect, test } from 'vitest';
 import { defineComponent } from 'vue';
 import VFieldListItem from './VFieldListItem.vue';
+import { i18n } from '@/lang';
 
 const VListGroupStub = defineComponent({
 	name: 'VListGroup',
@@ -42,9 +43,7 @@ function mountJsonField(props: Record<string, any> = {}) {
 			...props,
 		},
 		global: {
-			mocks: {
-				$t: (key: string) => key,
-			},
+			plugins: [i18n],
 			stubs: {
 				VDivider: true,
 				VIcon: VIconStub,
