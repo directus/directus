@@ -24,7 +24,7 @@ import type {
 	PrimaryKey,
 	SchemaOverview,
 } from '@directus/types';
-import { isObject, parseJSON, toArray } from '@directus/utils';
+import { parseJSON, toArray } from '@directus/utils';
 import { createTmpFile } from '@directus/utils/node';
 import { queue } from 'async';
 import type { Knex } from 'knex';
@@ -37,7 +37,7 @@ import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
-import { buildImportPlan, type FkFieldInfo } from '../../utils/build-import-plan.js';
+import { buildImportPlan } from '../../utils/build-import-plan.js';
 import { createMutationTracker } from '../../utils/create-mutation-tracker.js';
 import { destroyPipedStream } from '../../utils/destroy-piped-stream.js';
 import { createErrorTracker } from '../../utils/error-tracker.js';
@@ -48,6 +48,9 @@ import { transaction } from '../../utils/transaction.js';
 import { userName } from '../../utils/user-name.js';
 import { NotificationsService } from '../notifications.js';
 import { UsersService } from '../users.js';
+import { keyExists } from './key-exists.js';
+import { normalizeKey } from './normalize-key.js';
+import { remapForeignKeys, remapValue, resolveTarget } from './remap-foreign-keys.js';
 import { validateFlatData } from './validate-flat-data.js';
 
 const env = useEnv();
@@ -755,71 +758,4 @@ export class ImportService {
 			await this.releaseImportSlot();
 		}
 	}
-}
-
-/** Clone an item, remap its scalar foreign keys through the id maps, and drop deferred fields. */
-function remapForeignKeys(
-	item: Record<string, unknown>,
-	fkFields: FkFieldInfo[],
-	idMaps: Map<string, Map<string, PrimaryKey>>,
-	secondPassFields: Set<string>,
-): Record<string, unknown> {
-	const payload: Record<string, unknown> = { ...item };
-
-	// Fields resolved in the second pass (deferred FKs + o2m/m2m aliases) are dropped from the insert
-	for (const field of secondPassFields) {
-		delete payload[field];
-	}
-
-	for (const info of fkFields) {
-		const value = payload[info.field];
-		if (value === undefined || value === null || isObject(value)) continue;
-
-		payload[info.field] = remapValue(value, resolveTarget(info, item), idMaps);
-	}
-
-	return payload;
-}
-
-/**
- * Map a foreign key value through the target collection's id map (identity when unmapped).
- */
-function remapValue(value: unknown, target: string | null, idMaps: Map<string, Map<string, PrimaryKey>>): unknown {
-	if (value === null || value === undefined || !target) return value;
-
-	if (Array.isArray(value)) {
-		return value.map((entry) => remapValue(entry, target, idMaps));
-	}
-
-	const mapped = idMaps.get(target)?.get(String(value));
-	return mapped !== undefined ? mapped : value;
-}
-
-/** Determine the target collection for a foreign key field (static for m2o, per-item for a2o). */
-function resolveTarget(info: FkFieldInfo, item: Record<string, unknown>): string | null {
-	if (info.target) return info.target;
-	if (!info.collectionField) return null;
-
-	const target = item[info.collectionField];
-	return typeof target === 'string' ? target : null;
-}
-
-/**
- * Normalize a primary key for comparison. Some vendors (e.g. mssql `uniqueidentifier`) store and
- * return uuid keys upper-cased, while the caller supplies the original casing. Comparing
- * case-insensitively keeps those forms equal so a preserved key is not mistaken for a remap.
- * Integer keys are unaffected by lower-casing.
- */
-function normalizeKey(value: PrimaryKey): string {
-	return String(value).toLowerCase();
-}
-
-async function keyExists(trx: Knex, collection: string, pkField: string, value: PrimaryKey): Promise<boolean> {
-	const result = await trx
-		.select(pkField)
-		.from(collection)
-		.where({ [pkField]: value })
-		.first();
-
-	return Boolean(result);
 }
