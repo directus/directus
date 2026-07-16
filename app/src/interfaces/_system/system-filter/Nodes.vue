@@ -331,7 +331,7 @@ function isExistingField(node: Record<string, any>): boolean {
 									:collection="collection"
 									:field="field"
 									include-functions
-									:exclude-functions="includeJsonFunction ? [] : ['json']"
+									:excluded-functions="includeJsonFunction ? [] : ['json']"
 									:include-relations="includeRelations"
 									:relational-field-selectable="relationalFieldSelectable"
 									:allow-select-all="false"

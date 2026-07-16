@@ -22,7 +22,7 @@ const props = withDefaults(
 		field: FieldInfo;
 		search?: string;
 		includeFunctions?: boolean;
-		excludeFunctions?: FieldFunction[];
+		excludedFunctions?: FieldFunction[];
 		relationalFieldSelectable?: boolean;
 		allowSelectAll?: boolean;
 		parent?: string | null;
@@ -32,7 +32,7 @@ const props = withDefaults(
 	{
 		search: undefined,
 		includeFunctions: false,
-		excludeFunctions: () => [],
+		excludedFunctions: () => [],
 		relationalFieldSelectable: true,
 		allowSelectAll: false,
 		parent: null,
@@ -45,7 +45,7 @@ const emit = defineEmits(['add']);
 
 const supportedFunctions = computed(() => {
 	if (!props.includeFunctions || props.field.group) return [];
-	return getFunctionsForType(props.field.type).filter((fn) => !props.excludeFunctions.includes(fn));
+	return getFunctionsForType(props.field.type).filter((fn) => !props.excludedFunctions.includes(fn));
 });
 
 const selectAllDisabled = computed(() => props.field.children?.every((field: FieldInfo) => field.disabled === true));
@@ -122,7 +122,7 @@ const openWhileSearching = computed(() => {
 			:field="childField"
 			:search="search"
 			:include-functions="includeFunctions"
-			:exclude-functions="excludeFunctions"
+			:excluded-functions="excludedFunctions"
 			:relational-field-selectable="relationalFieldSelectable"
 			:parent="field.field"
 			:allow-select-all="allowSelectAll"

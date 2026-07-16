@@ -239,7 +239,7 @@ function addKeyAsNode() {
 					:attached="inline"
 					:collection="collection"
 					include-functions
-					:exclude-functions="jsonFunctionEnabled ? [] : ['json']"
+					:excluded-functions="jsonFunctionEnabled ? [] : ['json']"
 					:include-relations="includeRelations"
 					:relational-field-selectable="relationalFieldSelectable"
 					:inject-version-field="injectVersionField"

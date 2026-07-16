@@ -77,7 +77,7 @@ describe('VFieldListItem functions', () => {
 	});
 
 	test('hides excluded functions but keeps the rest', async () => {
-		const wrapper = mountJsonField({ excludeFunctions: ['json'] });
+		const wrapper = mountJsonField({ excludedFunctions: ['json'] });
 		const functionItems = wrapper.findAll('.functions .v-list-item-stub');
 
 		expect(functionItems).toHaveLength(1);
@@ -85,7 +85,7 @@ describe('VFieldListItem functions', () => {
 		expect(wrapper.emitted('add')).toContainEqual([['count(metadata)']]);
 	});
 
-	test('forwards excludeFunctions to nested child fields', async () => {
+	test('forwards excludedFunctions to nested child fields', async () => {
 		const wrapper = mountJsonField({
 			field: {
 				field: 'metadata',
@@ -107,7 +107,7 @@ describe('VFieldListItem functions', () => {
 					},
 				],
 			},
-			excludeFunctions: ['json'],
+			excludedFunctions: ['json'],
 		});
 
 		const functionItems = wrapper.findAll('.functions .v-list-item-stub');

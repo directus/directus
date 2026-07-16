@@ -24,7 +24,7 @@ const props = withDefaults(
 		field?: string;
 		disabledFields?: string[];
 		includeFunctions?: boolean;
-		excludeFunctions?: FieldFunction[];
+		excludedFunctions?: FieldFunction[];
 		includeRelations?: boolean;
 		injectVersionField?: boolean;
 		relationalFieldSelectable?: boolean;
@@ -36,7 +36,7 @@ const props = withDefaults(
 		field: undefined,
 		disabledFields: () => [],
 		includeFunctions: false,
-		excludeFunctions: () => [],
+		excludedFunctions: () => [],
 		includeRelations: true,
 		injectVersionField: false,
 		relationalFieldSelectable: true,
@@ -186,7 +186,7 @@ function filter(field: Field, parent?: FieldNode): boolean {
 			:field="fieldNode"
 			:search="search"
 			:include-functions="includeFunctions"
-			:exclude-functions="excludeFunctions"
+			:excluded-functions="excludedFunctions"
 			:relational-field-selectable="relationalFieldSelectable"
 			:allow-select-all="allowSelectAll"
 			:raw-field-names="rawFieldNames"
