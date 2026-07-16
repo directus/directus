@@ -649,7 +649,10 @@ export class ImportService {
 
 						if (oldPk != null) {
 							idMap.set(String(oldPk), newPk);
-							if (String(oldPk) !== String(newPk)) result.mapped[String(oldPk)] = newPk;
+
+							if (normalizeKey(oldPk) !== normalizeKey(newPk)) {
+								result.mapped[String(oldPk)] = newPk;
+							}
 						}
 					}
 				}
@@ -799,6 +802,16 @@ function resolveTarget(info: FkFieldInfo, item: Record<string, unknown>): string
 
 	const target = item[info.collectionField];
 	return typeof target === 'string' ? target : null;
+}
+
+/**
+ * Normalize a primary key for comparison. Some vendors (e.g. mssql `uniqueidentifier`) store and
+ * return uuid keys upper-cased, while the caller supplies the original casing. Comparing
+ * case-insensitively keeps those forms equal so a preserved key is not mistaken for a remap.
+ * Integer keys are unaffected by lower-casing.
+ */
+function normalizeKey(value: PrimaryKey): string {
+	return String(value).toLowerCase();
 }
 
 async function keyExists(trx: Knex, collection: string, pkField: string, value: PrimaryKey): Promise<boolean> {
