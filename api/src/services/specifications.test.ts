@@ -130,6 +130,30 @@ describe('Integration Tests', () => {
 							    },
 							    "type": "object",
 							  },
+							  "Error": {
+							    "properties": {
+							      "extensions": {
+							        "additionalProperties": true,
+							        "properties": {
+							          "code": {
+							            "type": "string",
+							          },
+							        },
+							        "required": [
+							          "code",
+							        ],
+							        "type": "object",
+							      },
+							      "message": {
+							        "type": "string",
+							      },
+							    },
+							    "required": [
+							      "message",
+							      "extensions",
+							    ],
+							    "type": "object",
+							  },
 							  "ItemsTestTable": {
 							    "properties": {
 							      "blob": {
