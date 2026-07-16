@@ -682,12 +682,14 @@ export class ImportService {
 
 						const patch: Record<string, unknown> = {};
 
-						for (const field of deferredFields!) {
-							const rawValue = item[field];
-							if (rawValue === undefined || rawValue === null) continue;
+						if (deferredFields) {
+							for (const field of deferredFields) {
+								const rawValue = item[field];
+								if (rawValue === undefined || rawValue === null) continue;
 
-							const fkInfo = fkFields.find((info) => info.field === field)!;
-							patch[field] = remapValue(rawValue, resolveTarget(fkInfo, item), idMaps);
+								const fkInfo = fkFields.find((info) => info.field === field)!;
+								patch[field] = remapValue(rawValue, resolveTarget(fkInfo, item), idMaps);
+							}
 						}
 
 						for (const info of aliasFields) {
