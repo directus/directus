@@ -219,6 +219,7 @@ function emitValue() {
 	--search-input-border-width: var(--theme--border-width);
 	--search-input-size: calc(var(--button-size) - var(--search-input-border-width) * 2);
 	--search-input-radius: var(--theme--border-radius);
+	--search-input-filter-active-width: 25rem;
 	--icon-size: var(--icon-size-default);
 	--icon-search-padding-left: 0.375rem; // visually center in closed filter
 	--icon-search-padding-right: 0.25rem;
@@ -364,6 +365,11 @@ function emitValue() {
 	&.filter-active {
 		min-inline-size: var(--form-column-min-width);
 		z-index: 10;
+
+		&:not(.expanded) {
+			inline-size: var(--search-input-filter-active-width);
+			max-inline-size: 100%;
+		}
 
 		.icon-filter {
 			--v-icon-color: var(--theme--primary);
