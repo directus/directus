@@ -1,6 +1,8 @@
 type: object
+# Runtime shape: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/snapshot.ts#L55
 properties:
   hash:
+    description: Hash of the current snapshot, used to detect drift before apply.
     type: string
   diff:
     type: object
@@ -13,6 +15,7 @@ properties:
             collection:
               type: string
             diff:
+              description: Array of `deep-diff` entries describing the changes to this collection.
               type: array
               items:
                 type: object
@@ -26,6 +29,22 @@ properties:
             field:
               type: string
             diff:
+              description: Array of `deep-diff` entries describing the changes to this field.
+              type: array
+              items:
+                type: object
+      systemFields:
+        description: Changes to indexed system fields (date_created/date_updated/user_created/user_updated).
+        type: array
+        items:
+          type: object
+          properties:
+            collection:
+              type: string
+            field:
+              type: string
+            diff:
+              description: Array of `deep-diff` entries describing the changes to this system field.
               type: array
               items:
                 type: object
@@ -41,6 +60,7 @@ properties:
             related_collection:
               type: string
             diff:
+              description: Array of `deep-diff` entries describing the changes to this relation.
               type: array
               items:
                 type: object
