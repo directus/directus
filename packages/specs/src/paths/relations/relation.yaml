@@ -2,8 +2,6 @@ get:
   summary: Retrieve a Relation
   description: Retrieve a single relation by unique identifier.
   operationId: getRelation
-  parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Fields'
   responses:
     '200':
       description: Successful request
@@ -25,8 +23,6 @@ patch:
   summary: Update a Relation
   description: Update an existing relation
   operationId: updateRelation
-  parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Fields'
   requestBody:
     content:
       application/json:
