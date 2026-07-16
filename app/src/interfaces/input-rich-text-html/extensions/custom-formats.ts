@@ -95,8 +95,16 @@ function buildMark(entry: CustomFormatEntry, name: string): AnyExtension {
 				},
 			];
 		},
-		renderHTML() {
-			return [entry.inline, mergeAttributes(attributes), 0];
+		renderHTML({ HTMLAttributes }) {
+			// preserved global attributes first (tiptap convention), then the format's static config;
+			// the preserved `class` re-captures the format's own classes, so drop the duplicates
+			const merged = mergeAttributes(HTMLAttributes, attributes);
+
+			if (typeof merged['class'] === 'string') {
+				merged['class'] = [...new Set(merged['class'].split(/\s+/).filter(Boolean))].join(' ');
+			}
+
+			return [entry.inline, merged, 0];
 		},
 	});
 }

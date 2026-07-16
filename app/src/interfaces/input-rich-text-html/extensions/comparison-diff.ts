@@ -6,6 +6,9 @@ import { Mark } from '@tiptap/core';
  * field value; this mark lets those spans survive schema parsing. Registered only when the
  * editor is in comparison mode — in normal editing the spans are intentionally stripped.
  */
+/** Class prefix of diff spans; other extensions must never claim or preserve them. */
+export const COMPARISON_DIFF_CLASS_PREFIX = 'comparison-diff--';
+
 export const ComparisonDiff = Mark.create({
 	name: 'comparisonDiff',
 
