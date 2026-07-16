@@ -191,6 +191,16 @@ describe('buildCustomFormats: round-trip + active state', () => {
 		expect(out).toContain('color: red');
 	});
 
+	test('extra preserved attributes on a format span round-trip without duplicating the format class', () => {
+		const editor = editorWith(SAMPLE, '<p><span class="hl extra" id="x" data-k="v">t</span></p>');
+		const out = editor.getHTML();
+		editor.destroy();
+
+		expect(out).toBe(
+			'<p><span class="hl extra" id="x" data-k="v" style="color: #00ff00; font-size: 20px;" title="Highlighted">t</span></p>',
+		);
+	});
+
 	test('an unconfigured class span is preserved instead of dropped', () => {
 		const editor = editorWith([], '<p><span class="unknown">x</span></p>');
 		const out = editor.getHTML();
