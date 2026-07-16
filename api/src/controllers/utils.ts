@@ -1,6 +1,5 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, InvalidQueryError } from '@directus/errors';
-import { toBoolean } from '@directus/utils';
 import bytes from 'bytes';
 import { Router } from 'express';
 import { z } from 'zod';
@@ -18,6 +17,7 @@ import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
 import { generateTranslations } from '../utils/generate-translations.js';
+import { queryFlag } from '../utils/query-flag.js';
 import { readMultipartFile } from '../utils/read-multipart-file.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
@@ -26,13 +26,6 @@ const router = Router();
 const env = useEnv();
 
 const IMPORT_MAX_FILE_SIZE = bytes.parse(env['IMPORT_MAX_FILE_SIZE'] as string) ?? undefined;
-
-/**
- * Read a boolean query flag. A bare `?flag` counts as true.
- */
-function queryFlag(value: unknown): boolean {
-	return value === '' || toBoolean(value);
-}
 
 const randomStringSchema = z.object({
 	length: z.coerce.number().int().min(1).max(500).default(32),
@@ -102,7 +95,7 @@ router.post(
 		const { mimetype, stream } = await readMultipartFile(req);
 
 		await service.import(req.params['collection']!, mimetype, stream, {
-			background: toBoolean(req.query['background']),
+			background: queryFlag(req.query['background']),
 		});
 
 		return res.status(200).end();
