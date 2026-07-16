@@ -2,6 +2,8 @@ get:
   summary: List Fields in Collection
   description: Returns a list of the fields available in the given collection.
   operationId: getCollectionFields
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
   responses:
     '200':
       description: Successful request
