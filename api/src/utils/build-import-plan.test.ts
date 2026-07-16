@@ -90,13 +90,20 @@ describe('buildImportPlan', () => {
 		} catch (error) {
 			expect(isDirectusError(error, ErrorCode.ImportCyclicalRelation)).toBe(true);
 
-			expect((error as any).extensions).toEqual({
-				collections: ['a', 'b'],
-				relations: [
+			const { collections, relations } = (error as any).extensions;
+
+			// Order is not guaranteed (it follows the SCC traversal), so compare order-insensitively
+			expect(collections).toEqual(expect.arrayContaining(['a', 'b']));
+			expect(collections).toHaveLength(2);
+
+			expect(relations).toEqual(
+				expect.arrayContaining([
 					{ collection: 'a', field: 'b_link', related: 'b' },
 					{ collection: 'b', field: 'a_link', related: 'a' },
-				],
-			});
+				]),
+			);
+
+			expect(relations).toHaveLength(2);
 		}
 	});
 

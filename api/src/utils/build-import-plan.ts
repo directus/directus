@@ -90,7 +90,7 @@ export function buildImportPlan(input: ImportCollectionData[], schema: SchemaOve
 				nullable,
 			});
 		}
-		
+
 		if (relation.related_collection && nodes.has(relation.related_collection) && relation.meta?.one_field) {
 			aliasFields.get(relation.related_collection)!.push({
 				field: relation.meta.one_field,
@@ -130,15 +130,8 @@ export function buildImportPlan(input: ImportCollectionData[], schema: SchemaOve
 
 		if (nullableEdges.length === 0) {
 			throw new ImportCyclicalRelationError({
-				collections: [...scc].sort(),
-				relations: internalEdges
-					.map((edge) => ({ collection: edge.from, field: edge.field, related: edge.to }))
-					.sort(
-						(a, b) =>
-							a.collection.localeCompare(b.collection) ||
-							a.field.localeCompare(b.field) ||
-							a.related.localeCompare(b.related),
-					),
+				collections: [...scc],
+				relations: internalEdges.map((edge) => ({ collection: edge.from, field: edge.field, related: edge.to })),
 			});
 		}
 
