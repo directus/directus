@@ -49,6 +49,7 @@ export function resolveTarget(info: FkFieldInfo, item: Record<string, unknown>):
 	if (info.target) return info.target;
 	if (!info.collectionField) return null;
 
+	// get target from data for a2o relations
 	const target = item[info.collectionField];
 	return typeof target === 'string' ? target : null;
 }
