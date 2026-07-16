@@ -1,4 +1,8 @@
 type: object
+# Runtime: Activity type
+# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/activity.ts
+# DB schema: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/database/seeds/10-activity.yaml
+# `revisions` relation added in: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/database/migrations/20230823A-add-content-versioning.ts
 properties:
   id:
     description: Unique identifier for the object.
@@ -9,10 +13,17 @@ properties:
     example: update
     type: string
     enum:
+      - comment
       - create
-      - update
       - delete
+      - install
       - login
+      - logout
+      - revert
+      - run
+      - update
+      - upload
+      - version_save
   user:
     description: The user who performed this action.
     oneOf:
@@ -27,19 +38,20 @@ properties:
   ip:
     description: The IP address of the user at the time the action took place.
     example: 127.0.0.1
-    oneOf:
-      - type: string
-        format: ipv4
+    type: string
+    nullable: true
   user_agent:
     description: User agent string of the browser the user used when the action took place.
     example:
       Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML,like Gecko) Chrome/78.0.3904.108
       Safari/537.36
     type: string
+    nullable: true
   origin:
     description: Origin of the request when the action took place.
     example: https://directus.com
     type: string
+    nullable: true
   collection:
     description: Collection identifier in which the item resides.
     oneOf:
@@ -50,10 +62,10 @@ properties:
       Unique identifier for the item the action applied to. This is always a string, even for integer primary keys.
     example: '328'
     type: string
-  comment:
-    description:
-      User comment. This will store the comments that show up in the right sidebar of the item edit page in the admin
-      app.
-    example: null
-    type: string
-    nullable: true
+  revisions:
+    description: Revisions associated with this activity record.
+    type: array
+    items:
+      oneOf:
+        - type: integer
+        - $ref: '../openapi.yaml#/components/schemas/Revisions'
