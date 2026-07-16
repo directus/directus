@@ -85,6 +85,9 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		return new (Service as new (options: AbstractServiceOptions) => this)(newOptions);
 	}
 
+	/**
+	 * @deprecated
+	 */
 	createMutationTracker(initialCount = 0): MutationTracker {
 		return createMutationTracker(initialCount);
 	}
