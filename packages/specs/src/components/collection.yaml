@@ -1,4 +1,11 @@
 type: object
+# Runtime: createOne only requires `collection` (line 70). `fields` is only
+# required when `schema` is supplied (line 110-112). Everything else is meta
+# or optional overrides.
+# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/services/collections.ts#L70
+# Type: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/collection.ts
+# Table shape: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/schema/src/types/table.ts
+required: [collection]
 properties:
   collection:
     description: The collection key.
@@ -7,7 +14,6 @@ properties:
   meta:
     description: Metadata of the collection.
     type: object
-    example: null
     nullable: true
     properties:
       collection:
@@ -32,9 +38,10 @@ properties:
       display_template:
         description: Text representation of how items from this collection are shown across the system.
         type: string
-        example: null
+        example: '{{ field_name }}'
         nullable: true
       hidden:
+        # TODO: https://github.com/directus/directus/issues/27700#issuecomment-4996660653
         description: Whether or not the collection is hidden from the navigation in the admin app.
         type: boolean
         example: false
@@ -44,6 +51,26 @@ properties:
         example: false
       translations:
         description: Key value pairs of how to show this collection's name in different languages in the admin app.
+        type: array
+        nullable: true
+        items:
+          type: object
+          properties:
+            language:
+              type: string
+            translation:
+              type: string
+            singular:
+              type: string
+            plural:
+              type: string
+        example:
+          - language: es-ES
+            translation: Propiedades
+            singular: Propiedad
+            plural: Propiedades
+      preview_url:
+        description: URL pattern for live previewing an item in the admin app.
         type: string
         example: null
         nullable: true
@@ -51,44 +78,109 @@ properties:
         description: Whether or not Content Versioning is enabled for this collection.
         type: boolean
         example: false
+      autosave_revision_interval:
+        description: Interval in milliseconds at which edits are auto-saved as revisions. Null disables auto-save.
+        type: integer
+        example: null
+        nullable: true
       archive_field:
         description: What field holds the archive value.
         type: string
         example: null
         nullable: true
       archive_app_filter:
-        description: What value to use for "archived" items.
-        type: string
-        example: null
-        nullable: true
+        description: Whether to show the "archived" filter toggle in the admin app.
+        type: boolean
+        example: true
       archive_value:
-        description: What value to use to "unarchive" items.
+        description: What value to use to "archive" an item.
         type: string
         example: null
         nullable: true
       unarchive_value:
-        description: Whether or not to show the "archived" filter.
+        description: What value to use to "unarchive" an item.
         type: string
         example: null
         nullable: true
       sort_field:
-        description: The sort field in the collection.
+        description:
+          Field on this collection that holds the manual sort order for items. Used as the default sort field when no
+          `?sort=` parameter is supplied.
         type: string
         example: null
         nullable: true
+      item_duplication_fields:
+        description: Fields to copy when duplicating an item. Null duplicates all fields.
+        type: array
+        nullable: true
+        items:
+          type: string
+      accountability:
+        description: What level of accountability is enforced.
+        type: string
+        enum: [all, activity, null]
+        example: null
+        nullable: true
+      system:
+        description: Whether the collection is a system collection (managed by Directus and not user-editable).
+        type: boolean
+        nullable: true
+      sort:
+        description: Manual sort order for the collection in the admin app. Overrides alphabetical ordering.
+        type: integer
+        example: null
+        nullable: true
+      group:
+        description: Collection key of the group this collection belongs to, or null if ungrouped.
+        type: string
+        example: null
+        nullable: true
+      collapse:
+        description: Default expanded state of this collection group in the admin app navigation.
+        type: string
+        enum: [open, closed, locked]
+      status:
+        description: Whether the collection is active. Inactive collections are hidden from the admin app.
+        type: string
+        enum: [active, inactive]
   schema:
+    description:
+      Database representation of the underlying table, or null when the collection has no backing table (alias
+      collections).
     type: object
+    nullable: true
     properties:
       name:
-        description: The collection key.
-        type: string
+        description: Name of the database table.
         example: customers
-      schema:
-        description: Database schema (pg only).
-        example: public
         type: string
       comment:
         description: Comment as saved in the database.
         type: string
         example: null
+        nullable: true
+      schema:
+        description: Database schema (pg only).
+        example: public
+        type: string
+        nullable: true
+      collation:
+        description: Database collation (MySQL only).
+        type: string
+        nullable: true
+      engine:
+        description: Database engine (MySQL only).
+        type: string
+        nullable: true
+      owner:
+        description: Table owner (Postgres only).
+        type: string
+        nullable: true
+      sql:
+        description: Table definition SQL (SQLite only).
+        type: string
+        nullable: true
+      catalog:
+        description: Database catalog (MSSQL only).
+        type: string
         nullable: true
