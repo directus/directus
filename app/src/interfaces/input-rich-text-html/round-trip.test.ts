@@ -81,8 +81,7 @@ describe('round-trip: faithful (StarterKit + TextStyleKit schema)', () => {
 /**
  * Non-schema semantic tags preserved by the semantic-html extensions. Exact-equality assertions
  * (not snapshots) so the preserved form, including which attributes survive, is explicit:
- * `details[open]`, `abbr[title]`. class/id/data-/aria- coverage lives in the preserved-attributes
- * suite below.
+ * `details[open]`, `abbr[title]`. Other attributes (class/id/data-/aria-) are not yet preserved.
  */
 const SEMANTIC: Record<string, string> = {
 	section: '<section><p>text</p></section>',
