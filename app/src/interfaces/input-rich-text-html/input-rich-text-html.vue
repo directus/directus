@@ -7,10 +7,12 @@ import { useI18n } from 'vue-i18n';
 import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
 import { useMedia } from './composables/use-media';
+import { useNormalizationWarning } from './composables/use-normalization-warning';
 import { useSourceCode } from './composables/use-source-code';
 import ImageDrawer from './drawers/image-drawer.vue';
 import LinkDrawer from './drawers/link-drawer.vue';
 import MediaDrawer from './drawers/media-drawer.vue';
+import NormalizationWarningDialog from './drawers/normalization-warning-dialog.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
 import { editorExtensions } from './extensions';
 import { ComparisonDiff } from './extensions/comparison-diff';
@@ -53,7 +55,7 @@ const emit = defineEmits<{ input: [value: string | null] }>();
 
 const { t } = useI18n();
 
-const { imageToken, folder } = toRefs(props);
+const { imageToken, folder, value } = toRefs(props);
 
 // built once at init: `customFormats` is design-time config, not reactive
 const { extensions: customFormatExtensions, formats: customFormatList } = buildCustomFormats(props.customFormats);
@@ -134,6 +136,9 @@ const editor = useEditor({
 		updateCount(editor as Editor);
 		emit('input', editor.isEmpty ? null : encodePageBreaks(editor.getHTML()));
 	},
+	onFocus: () => {
+		if (isEditable.value) onEditorFocus();
+	},
 });
 
 const settingsStore = useSettingsStore();
@@ -195,6 +200,15 @@ const {
 	confirmSaveSourceCode,
 	cancelNormalize,
 } = useSourceCode(editor as Ref<Editor>);
+
+const {
+	normalizationWarningOpen,
+	normalizationWarningDiff,
+	dontShowAgain,
+	onEditorFocus,
+	confirmNormalizationWarning,
+	cancelNormalizationWarning,
+} = useNormalizationWarning(editor as Ref<Editor>, value);
 
 // pause the surrounding view's focus trap while a drawer is open so its inputs stay reachable
 const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
@@ -307,6 +321,14 @@ onKeyStroke('Escape', () => {
 			@cancel="closeSourceCodeDrawer"
 			@confirm-save="confirmSaveSourceCode"
 			@cancel-normalize="cancelNormalize"
+		/>
+
+		<NormalizationWarningDialog
+			v-model="normalizationWarningOpen"
+			v-model:dont-show-again="dontShowAgain"
+			:diff="normalizationWarningDiff"
+			@confirm="confirmNormalizationWarning"
+			@cancel="cancelNormalizationWarning"
 		/>
 	</div>
 </template>
