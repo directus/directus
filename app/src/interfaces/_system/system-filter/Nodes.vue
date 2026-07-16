@@ -110,6 +110,14 @@ const filterInfo = computed<(FilterInfo | FilterInfoField)[]>({
 	},
 });
 
+function nodeInfoAt(index: number): FilterInfo | FilterInfoField {
+	return filterInfo.value[index]!;
+}
+
+function fieldInfoAt(index: number): FilterInfoField {
+	return nodeInfoAt(index) as FilterInfoField;
+}
+
 function getFieldPreview(node: Record<string, any>) {
 	const fieldKey = getField(node);
 	const fieldParts = fieldKey.split('.');
@@ -153,7 +161,7 @@ function getIndex(item: Filter) {
 function toggleLogic(index: number) {
 	const nodeInfo = filterInfo.value[index];
 
-	if (filterInfo.value[index].isField) return;
+	if (!nodeInfo || nodeInfo.isField) return;
 
 	if ('_and' in nodeInfo.node) {
 		filterSync.value = filterSync.value.map((filter, filterIndex) => {
@@ -176,7 +184,7 @@ function toggleLogic(index: number) {
 
 function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 	const nodeInfo = filterInfo.value[index];
-	if (nodeInfo.isField === false) return;
+	if (!nodeInfo?.isField) return;
 	if (operator === '_json' && !props.includeJsonFunction) return;
 
 	const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
@@ -185,7 +193,7 @@ function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 	update(initialValueForComparator(operator, value, nodeInfo.comparator));
 
 	function update(value: any) {
-		if (nodeInfo.isField === false) return;
+		if (!nodeInfo?.isField) return;
 
 		filterSync.value = filterSync.value.map((filter, filterIndex) => {
 			if (filterIndex === index) return fieldToFilter(nodeInfo.field, operator, value);
@@ -196,7 +204,7 @@ function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 
 function updateField(index: number, newField: string) {
 	const nodeInfo = filterInfo.value[index];
-	if (nodeInfo.isField === false) return;
+	if (!nodeInfo?.isField) return;
 
 	const functionInfo = extractFieldFromFunction(newField);
 
@@ -220,7 +228,7 @@ function updateField(index: number, newField: string) {
 
 	if (oldFieldInfo?.type !== newFieldInfo?.type) {
 		value = null;
-		comparator = getCompareOptions(newField)[0].value;
+		comparator = getCompareOptions(newField)[0]?.value ?? '_eq';
 	}
 
 	filterSync.value = filterSync.value.map((filter, filterIndex) => {
@@ -297,7 +305,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	>
 		<template #item="{ element, index }">
 			<li class="row">
-				<div v-if="filterInfo[index].isField" block class="node field">
+				<div v-if="nodeInfoAt(index).isField" block class="node field">
 					<div class="header" :class="{ inline, 'raw-field-names': rawFieldNames }">
 						<VIcon name="drag_indicator" class="drag-handle" small></VIcon>
 						<JsonFilterNode
@@ -335,8 +343,8 @@ function isExistingField(node: Record<string, any>): boolean {
 								inline
 								class="comparator"
 								placement="bottom-start"
-								:model-value="(filterInfo[index] as FilterInfoField).comparator"
-								:items="getCompareOptions((filterInfo[index] as FilterInfoField).field)"
+								:model-value="fieldInfoAt(index).comparator"
+								:items="getCompareOptions(fieldInfoAt(index).field)"
 								@update:model-value="updateComparator(index, $event)"
 							/>
 							<InputGroup
@@ -361,17 +369,17 @@ function isExistingField(node: Record<string, any>): boolean {
 				<div v-else class="node logic">
 					<div class="header" :class="{ inline }">
 						<VIcon name="drag_indicator" class="drag-handle" small />
-						<div class="logic-type" :class="{ or: filterInfo[index].name === '_or' }">
+						<div class="logic-type" :class="{ or: nodeInfoAt(index).name === '_or' }">
 							<span class="key" @click="toggleLogic(index)">
 								{{
-									filterInfo[index].name === '_and'
+									nodeInfoAt(index).name === '_and'
 										? $t('interfaces.filter.logic_type_and')
 										: $t('interfaces.filter.logic_type_or')
 								}}
 							</span>
 							<span class="text">
 								{{
-									`— ${filterInfo[index].name === '_and' ? $t('interfaces.filter.all') : $t('interfaces.filter.any')} ${t(
+									`— ${nodeInfoAt(index).name === '_and' ? $t('interfaces.filter.all') : $t('interfaces.filter.any')} ${t(
 										'interfaces.filter.of_the_following',
 									)}`
 								}}
@@ -388,7 +396,7 @@ function isExistingField(node: Record<string, any>): boolean {
 						</span>
 					</div>
 					<Nodes
-						:filter="element[filterInfo[index].name]"
+						:filter="element[nodeInfoAt(index).name]"
 						:collection="collection"
 						:depth="depth + 1"
 						:inline="inline"
@@ -396,8 +404,8 @@ function isExistingField(node: Record<string, any>): boolean {
 						:raw-field-names="rawFieldNames"
 						:variable-input-enabled="variableInputEnabled"
 						@change="$emit('change')"
-						@remove-node="$emit('remove-node', [`${index}.${filterInfo[index].name}`, ...$event])"
-						@update:filter="replaceNode(index, { [filterInfo[index].name]: $event })"
+						@remove-node="$emit('remove-node', [`${index}.${nodeInfoAt(index).name}`, ...$event])"
+						@update:filter="replaceNode(index, { [nodeInfoAt(index).name]: $event })"
 					/>
 				</div>
 			</li>
