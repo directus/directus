@@ -89,6 +89,45 @@ describe('round-trip: faithful (StarterKit + TextStyleKit schema)', () => {
 	});
 });
 
+/**
+ * Non-schema semantic tags preserved by the semantic-html extensions. Exact-equality assertions
+ * (not snapshots) so the preserved form, including which attributes survive, is explicit:
+ * `details[open]`, `abbr[title]`. Other attributes (class/id/data-/aria-) are not yet preserved.
+ */
+const SEMANTIC: Record<string, string> = {
+	section: '<section><p>text</p></section>',
+	article: '<article><p>text</p></article>',
+	'nested section in article': '<article><section><p>text</p></section></article>',
+	'figure with figcaption': '<figure><img src="/assets/abc" alt="photo"><figcaption>A caption</figcaption></figure>',
+	'figure with figcaption first':
+		'<figure><figcaption>A caption</figcaption><img src="/assets/abc" alt="photo"></figure>',
+	'details with summary': '<details><summary>More info</summary><p>Hidden content</p></details>',
+	'details open': '<details open=""><summary>More info</summary><p>Visible content</p></details>',
+	'description list':
+		'<dl><dt>Term</dt><dd><p>Definition</p></dd><dt>Other term</dt><dd><p>Other definition</p></dd></dl>',
+	mark: '<p>text with <mark>highlight</mark></p>',
+	abbr: '<p><abbr title="HyperText Markup Language">HTML</abbr> is a language</p>',
+	'abbr without title': '<p><abbr>HTML</abbr> is a language</p>',
+};
+
+describe('round-trip: semantic tags (preservation extensions)', () => {
+	test.each(Object.entries(SEMANTIC))('%s survives round-trip unchanged', (_name, html) => {
+		expect(roundTrip(html)).toBe(html);
+	});
+
+	test('details bare open attribute normalizes to open=""', () => {
+		expect(roundTrip('<details open><summary>t</summary><p>c</p></details>')).toBe(
+			'<details open=""><summary>t</summary><p>c</p></details>',
+		);
+	});
+
+	test('dd plain text is wrapped in a paragraph', () => {
+		expect(roundTrip('<dl><dt>Term</dt><dd>Definition</dd></dl>')).toBe(
+			'<dl><dt>Term</dt><dd><p>Definition</p></dd></dl>',
+		);
+	});
+});
+
 describe('round-trip: image', () => {
 	test('preserves src with query params, alt, and loading="lazy"', () => {
 		const out = roundTrip('<img src="/assets/abc?width=100&access_token=x" loading="lazy" alt="alt">');
