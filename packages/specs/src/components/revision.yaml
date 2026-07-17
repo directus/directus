@@ -41,12 +41,10 @@ properties:
     nullable: true
   parent:
     description: If the current item was updated relationally, this is the id of the parent revision record.
-    example: null
     type: integer
     nullable: true
   version:
     description: Associated version of this revision.
-    example: null
     oneOf:
       - type: string
         format: uuid

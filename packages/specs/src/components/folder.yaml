@@ -16,7 +16,6 @@ properties:
     type: string
   parent:
     description: Unique identifier of the parent folder. This allows for nested folders.
-    example: null
     oneOf:
       - type: string
         format: uuid

@@ -64,22 +64,18 @@ properties:
         type: string
       default_value:
         description: The default value of the field.
-        example: null
         type: string
         nullable: true
       max_length:
         description: The max length of the field.
-        example: null
         type: integer
         nullable: true
       numeric_precision:
         description: Numeric precision of the field.
-        example: null
         type: integer
         nullable: true
       numeric_scale:
         description: Numeric scale of the field.
-        example: null
         type: integer
         nullable: true
       is_nullable:
@@ -109,17 +105,14 @@ properties:
         type: boolean
       foreign_key_column:
         description: Related column from the foreign key constraint.
-        example: null
         type: string
         nullable: true
       foreign_key_table:
         description: Related table from the foreign key constraint.
-        example: null
         type: string
         nullable: true
       comment:
         description: Comment as saved in the database.
-        example: null
         type: string
         nullable: true
       schema:
@@ -129,7 +122,6 @@ properties:
         nullable: true
       foreign_key_schema:
         description: Related schema from the foreign key constraint (pg only).
-        example: null
         type: string
         nullable: true
   meta:
@@ -164,17 +156,14 @@ properties:
         nullable: true
       options:
         description: Options for the interface that's used. This format is based on the individual interface.
-        example: null
         type: object
         nullable: true
       display:
         description: What display is used in the admin app to display the value for this field.
-        example: null
         type: string
         nullable: true
       display_options:
         description: Options for the display that's used. This format is based on the individual display.
-        example: null
         type: object
         nullable: true
       readonly:

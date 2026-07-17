@@ -33,7 +33,6 @@ properties:
       note:
         description: A note describing the collection.
         type: string
-        example: null
         nullable: true
       display_template:
         description: Text representation of how items from this collection are shown across the system.
@@ -72,7 +71,6 @@ properties:
       preview_url:
         description: URL pattern for live previewing an item in the admin app.
         type: string
-        example: null
         nullable: true
       versioning:
         description: Whether or not Content Versioning is enabled for this collection.
@@ -81,12 +79,10 @@ properties:
       autosave_revision_interval:
         description: Interval in milliseconds at which edits are auto-saved as revisions. Null disables auto-save.
         type: integer
-        example: null
         nullable: true
       archive_field:
         description: What field holds the archive value.
         type: string
-        example: null
         nullable: true
       archive_app_filter:
         description: Whether to show the "archived" filter toggle in the admin app.
@@ -95,19 +91,16 @@ properties:
       archive_value:
         description: What value to use to "archive" an item.
         type: string
-        example: null
         nullable: true
       unarchive_value:
         description: What value to use to "unarchive" an item.
         type: string
-        example: null
         nullable: true
       sort_field:
         description:
           Field on this collection that holds the manual sort order for items. Used as the default sort field when no
           `?sort=` parameter is supplied.
         type: string
-        example: null
         nullable: true
       item_duplication_fields:
         description: Fields to copy when duplicating an item. Null duplicates all fields.
@@ -119,7 +112,6 @@ properties:
         description: What level of accountability is enforced.
         type: string
         enum: [all, activity, null]
-        example: null
         nullable: true
       system:
         description: Whether the collection is a system collection (managed by Directus and not user-editable).
@@ -128,12 +120,10 @@ properties:
       sort:
         description: Manual sort order for the collection in the admin app. Overrides alphabetical ordering.
         type: integer
-        example: null
         nullable: true
       group:
         description: Collection key of the group this collection belongs to, or null if ungrouped.
         type: string
-        example: null
         nullable: true
       collapse:
         description: Default expanded state of this collection group in the admin app navigation.
@@ -157,7 +147,6 @@ properties:
       comment:
         description: Comment as saved in the database.
         type: string
-        example: null
         nullable: true
       schema:
         description: Database schema (pg only).

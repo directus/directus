@@ -35,29 +35,24 @@ properties:
     writeOnly: true
   location:
     description: The user's location.
-    example: null
     type: string
     nullable: true
   title:
     description: The user's title.
-    example: null
     type: string
     nullable: true
   description:
     description: The user's description.
-    example: null
     type: string
     nullable: true
   tags:
     description: The user's tags.
-    example: null
     type: array
     nullable: true
     items:
       type: string
   avatar:
     description: The user's avatar.
-    example: null
     oneOf:
       - type: string
         format: uuid
@@ -93,7 +88,6 @@ properties:
     nullable: true
   tfa_secret:
     description: The 2FA secret string that's used to generate one time passwords. Never returned on read.
-    example: null
     type: string
     nullable: true
     writeOnly: true

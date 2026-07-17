@@ -77,7 +77,6 @@ properties:
       one_field:
         description: Alias column that serves as the _one_ side of the relationship.
         type: string
-        example: null
         nullable: true
       one_collection_field:
         description: Field on the related collection that points back at this relation (used for M2O aliases).
@@ -97,7 +96,6 @@ properties:
       junction_field:
         description: Field on the junction table that holds the many field of the related relation.
         type: string
-        example: null
         nullable: true
       sort_field:
         description: Field on the junction table used to sort related items.

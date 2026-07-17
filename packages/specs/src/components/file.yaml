@@ -31,7 +31,6 @@ properties:
     nullable: true
   folder:
     description: Virtual folder where this file resides in.
-    example: null
     oneOf:
       - type: string
         format: uuid
@@ -93,7 +92,6 @@ properties:
     nullable: true
   embed:
     description: Where the file was embedded from.
-    example: null
     type: string
     nullable: true
   description:
@@ -116,21 +114,17 @@ properties:
     nullable: true
   focal_point_x:
     description: Horizontal focal point of the image, in pixels from the left edge. Used for image cropping.
-    example: null
     type: integer
     nullable: true
   focal_point_y:
     description: Vertical focal point of the image, in pixels from the top edge. Used for image cropping.
-    example: null
     type: integer
     nullable: true
   tus_id:
     description: TUS (resumable upload) identifier. Populated by the TUS upload flow when TUS is enabled.
-    example: null
     type: string
     nullable: true
   tus_data:
     description: TUS (resumable upload) metadata. Populated by the TUS upload flow when TUS is enabled.
-    example: null
     type: object
     nullable: true
