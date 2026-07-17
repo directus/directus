@@ -504,6 +504,7 @@ functions:
   minute: Minuti
   second: Secondi
   count: Quantità
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -845,6 +846,7 @@ operators:
   nintersects: Non interseca
   intersects_bbox: Interseca il riquadro di delimitazione
   nintersects_bbox: Non interseca il riquadro di delimitazione
+  json: JSON
   regex: Corrisponde all'espressione regolare
 custom_validation_message: Messaggio di validazione personalizzato
 loading: Caricamento in corso...
