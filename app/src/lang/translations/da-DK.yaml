@@ -443,6 +443,7 @@ functions:
   minute: Minut
   second: Sekund
   count: Antal
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss a'
 date-fns_time_no_seconds: 'HH:mm a'
@@ -737,6 +738,7 @@ operators:
   nintersects: Skærer ikke
   intersects_bbox: Grænsefelt til skæring
   nintersects_bbox: Grænsefeltet skærer ikke op
+  json: JSON
   regex: Matcher RegExp
 custom_validation_message: Brugerdefineret Valideringsbesked
 loading: Indlæser...
