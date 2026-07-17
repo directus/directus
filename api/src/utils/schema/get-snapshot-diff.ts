@@ -19,9 +19,9 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: Ge
 
 	const scope = isPartial
 		? new Set([
-				...after.collections.map((collection) => collection.collection),
-				...after.fields.map((field) => field.collection),
-				...after.relations.map((relation) => relation.collection),
+				...(after.collections ?? []).map((collection) => collection.collection),
+				...(after.fields ?? []).map((field) => field.collection),
+				...(after.relations ?? []).map((relation) => relation.collection),
 			])
 		: null;
 
