@@ -502,6 +502,7 @@ functions:
   minute: Минут
   second: Секунд
   count: Тоо ширхэг
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -842,6 +843,7 @@ operators:
   nintersects: Огтлолцоогүй
   intersects_bbox: Хязгаарлах хайрцагтай огтлолцсон
   nintersects_bbox: Хязгаарлах хайрцагтай огтлолцоогүй
+  json: JSON
   regex: RegExp-тэй таарсан
 custom_validation_message: Тохируулгат баталгаажуулалтын мессеж
 loading: Уншиж байна...
