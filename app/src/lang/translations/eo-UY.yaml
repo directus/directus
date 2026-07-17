@@ -298,6 +298,7 @@ functions:
   hour: Horo
   minute: Minuto
   second: Sekundo
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'H:mm'
@@ -509,6 +510,7 @@ operators:
   nbetween: Ne estas inter
   empty: Estas malplena
   nempty: Ne estas malplena
+  json: JSON
 loading: Ŝargado...
 item: Ero
 items: Eroj
