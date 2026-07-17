@@ -1,21 +1,51 @@
 type: object
+# Runtime shape: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/snapshot.ts#L8-L16
+# Required vs optional fields come from the validate-snapshot Joi schema:
+# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/utils/validate-snapshot.ts#L10-L60
+required: [version, directus]
 properties:
   version:
+    description: Schema version. Always 1 in current releases.
     type: integer
     example: 1
   directus:
+    description: Directus version that produced this snapshot.
+    example: 12.0.2
     type: string
   vendor:
+    # DatabaseClient: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/database.ts#L3
+    description: Database vendor.
     type: string
+    enum: [cockroachdb, mssql, mysql, oracle, postgres, redshift, sqlite]
+    example: postgres
   collections:
+    description: Snapshot of every collection in the project.
     type: array
     items:
       $ref: '../openapi.yaml#/components/schemas/Collections'
   fields:
+    description: Snapshot of every field in the project.
     type: array
     items:
       $ref: '../openapi.yaml#/components/schemas/Fields'
+  systemFields:
+    # System field shape: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/snapshot.ts#L22-L28
+    description: Indexed system fields per collection (date_created/date_updated/user_created/user_updated).
+    type: array
+    items:
+      type: object
+      properties:
+        collection:
+          type: string
+        field:
+          type: string
+        schema:
+          type: object
+          properties:
+            is_indexed:
+              type: boolean
   relations:
+    description: Snapshot of every relation in the project.
     type: array
     items:
       $ref: '../openapi.yaml#/components/schemas/Relations'
