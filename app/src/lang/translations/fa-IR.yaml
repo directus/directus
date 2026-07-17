@@ -599,6 +599,7 @@ functions:
   minute: دقیقه
   second: ثانیه
   count: تعداد
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -959,6 +960,7 @@ operators:
   nintersects: تقاطع ندارد با
   intersects_bbox: با جعبه محدود کننده تقاطع دارد
   nintersects_bbox: با جعبه محدود کننده تقاطع ندارد
+  json: JSON
   regex: با RegExp مطابقت دارد
 custom_validation_message: پیام اعتبارسنجی سفارشی
 loading: در حال بارگذاری...
