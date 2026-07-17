@@ -502,6 +502,7 @@ functions:
   minute: خولەک
   second: چرکە
   count: ژمارە
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -843,6 +844,7 @@ operators:
   nintersects: یەکترنابڕن
   intersects_bbox: یەکتربرین لە سندوقی سنور
   nintersects_bbox: یەکترنەبڕین لە سندوقی سنور
+  json: JSON
   regex: یەکسان دەبێت لەگەڵ RegExp
 custom_validation_message: نامەی خوازراوی سەلماندن
 loading: بارکردن...
