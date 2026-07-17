@@ -108,7 +108,7 @@ defineExpose({ run, insertTable, menuOpen });
 				<VDivider />
 
 				<VListItem clickable :disabled="!inTable()" @click="run((c) => c.deleteRow())">
-					<VListItemIcon><VIcon name="delete" /></VListItemIcon>
+					<VListItemIcon><VIcon name="delete_row" /></VListItemIcon>
 					<VListItemContent>{{ t('wysiwyg_options.table_delete_row') }}</VListItemContent>
 				</VListItem>
 			</SubmenuListItem>
@@ -133,7 +133,7 @@ defineExpose({ run, insertTable, menuOpen });
 				<VDivider />
 
 				<VListItem clickable :disabled="!inTable()" @click="run((c) => c.deleteColumn())">
-					<VListItemIcon><VIcon name="delete" /></VListItemIcon>
+					<VListItemIcon><VIcon name="delete_column" /></VListItemIcon>
 					<VListItemContent>{{ t('wysiwyg_options.table_delete_column') }}</VListItemContent>
 				</VListItem>
 			</SubmenuListItem>
@@ -141,7 +141,7 @@ defineExpose({ run, insertTable, menuOpen });
 			<VDivider />
 
 			<VListItem clickable :disabled="!inTable()" @click="run((c) => c.deleteTable())">
-				<VListItemIcon><VIcon name="grid_off" /></VListItemIcon>
+				<VListItemIcon><VIcon name="delete_table" /></VListItemIcon>
 				<VListItemContent>{{ t('wysiwyg_options.table_delete') }}</VListItemContent>
 			</VListItem>
 		</VList>

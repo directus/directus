@@ -218,7 +218,7 @@ export const toolbarButtons: Record<string, ToolbarButton> = {
 	},
 	...align,
 	alignnone: {
-		icon: 'format_clear',
+		icon: 'format_align_justify_remove',
 		label: 'wysiwyg_options.alignnone',
 		command: (e) => e.chain().focus().unsetTextAlign().run(),
 	},

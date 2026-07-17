@@ -28,7 +28,7 @@ export interface TableAction {
 export const tableActionGroups: TableAction[][] = [
 	[
 		{
-			icon: 'grid_off',
+			icon: 'delete_table',
 			label: 'table_delete',
 			command: (c) => c.deleteTable(),
 			isEnabled: (e) => e.can().deleteTable(),
@@ -48,7 +48,7 @@ export const tableActionGroups: TableAction[][] = [
 			isEnabled: (e) => e.can().addRowAfter(),
 		},
 		{
-			icon: 'delete',
+			icon: 'delete_row',
 			label: 'table_delete_row',
 			command: (c) => c.deleteRow(),
 			isEnabled: (e) => e.can().deleteRow(),
@@ -68,7 +68,7 @@ export const tableActionGroups: TableAction[][] = [
 			isEnabled: (e) => e.can().addColumnAfter(),
 		},
 		{
-			icon: 'delete',
+			icon: 'delete_column',
 			label: 'table_delete_column',
 			command: (c) => c.deleteColumn(),
 			isEnabled: (e) => e.can().deleteColumn(),
