@@ -502,6 +502,7 @@ functions:
   minute: Deqîqe
   second: Saniye
   count: Hejmar
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -843,6 +844,7 @@ operators:
   nintersects: Naqelişe
   intersects_bbox: Qutiya sînordar diqelişe
   nintersects_bbox: Qutiya sînordar naqelişe
+  json: JSON
   regex: Bi RegExp re lihev dike
 custom_validation_message: Peyama Rastkirina Taybet
 loading: Tê barkirin...
