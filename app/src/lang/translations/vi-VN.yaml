@@ -416,6 +416,7 @@ functions:
   hour: Giờ
   minute: Phút
   second: Giây
+  json: JSON
 date-fns_date_short: 'MMM d, ''bạn'''
 minutes: Phút
 hours: Giờ
@@ -682,6 +683,7 @@ operators:
   nbetween: Ngoài khoảng
   empty: Bị rỗng
   nempty: Không rỗng
+  json: JSON
 loading: Đang tải...
 drop_to_upload: Kéo vào để tải lên
 upload_file: Tải lên tập tin
