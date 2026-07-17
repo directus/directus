@@ -509,6 +509,7 @@ functions:
   minute: წუთი
   second: წამი
   count: რაოდენობა
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -854,6 +855,7 @@ operators:
   nintersects: არ კვეთს
   intersects_bbox: კვეთს შემოსაზღვრულ ყუთს
   nintersects_bbox: არ კვეთს შემოსაზღვრულ ყუთს
+  json: JSON
   regex: ემთხვევა RegExp-ს
 custom_validation_message: მორგებული ვალიდაციის შეტყობინება
 loading: იტვირთება...
