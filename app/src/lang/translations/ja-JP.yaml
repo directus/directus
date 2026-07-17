@@ -552,6 +552,7 @@ functions:
   minute: 分
   second: 秒
   count: 回数
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'a h:mm:ss'
 date-fns_time_no_seconds: 'a hh:mm'
@@ -900,6 +901,7 @@ operators:
   nintersects: 交差しない
   intersects_bbox: 境界ボックスと交差する
   nintersects_bbox: 境界ボックスと交差しない
+  json: JSON
   regex: 正規表現にマッチ
 custom_validation_message: カスタムバリデーションメッセージ
 loading: 読み込み中...
