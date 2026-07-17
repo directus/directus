@@ -4,17 +4,12 @@ get:
   operationId: getPermissions
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
-    # Limit and Page are ignored: the controller forces limit=-1 on every request, and Page's
-    # offset calculation requires a real limit. See
-    # https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/controllers/permissions.ts#L70-L72
-    #- $ref: '../../openapi.yaml#/components/parameters/Limit'
     - $ref: '../../openapi.yaml#/components/parameters/Offset'
 
     - $ref: '../../openapi.yaml#/components/parameters/Meta'
     - $ref: '../../openapi.yaml#/components/parameters/Sort'
     - $ref: '../../openapi.yaml#/components/parameters/Filter'
     - $ref: '../../openapi.yaml#/components/parameters/Search'
-    #- $ref: '../../openapi.yaml#/components/parameters/Page'
   responses:
     '200':
       description: Successful request

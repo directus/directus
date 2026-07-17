@@ -2,8 +2,6 @@ get:
   summary: List Relations
   description: List the relations.
   operationId: getRelations
-  # No query parameters: the controller calls RelationsService#readAll(), which returns every
-  # relation unconditionally and never reads req.sanitizedQuery.
   responses:
     '200':
       description: Successful request
