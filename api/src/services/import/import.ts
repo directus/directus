@@ -524,11 +524,15 @@ export class ImportService {
 		const collections: Record<string, ImportBatchCollectionResult> = {};
 		// String(oldPk) -> new primary key, per collection
 		const idMaps = new Map<string, Map<string, PrimaryKey>>();
+		// New primary key per item, index-aligned to `entry.items`, per collection.
+		// This tracks rows imported without a source PK, so the second pass can reach them.
+		const newPksByCollection = new Map<string, PrimaryKey[]>();
 
 		// Permission checks + system collection guard (mirrors this.import)
 		for (const collection of plan.order) {
 			collections[collection] = { existing: [], new: [], deleted: [], mapped: {} };
 			idMaps.set(collection, new Map());
+			newPksByCollection.set(collection, []);
 
 			if (this.accountability?.admin !== true && isSystemCollection(collection)) {
 				throw new ForbiddenError();
@@ -581,6 +585,7 @@ export class ImportService {
 				for (const collection of plan.order) {
 					const entry = dataByCollection.get(collection)!;
 					const idMap = idMaps.get(collection)!;
+					const newPks = newPksByCollection.get(collection)!;
 					const fkFields = plan.fkFields.get(collection)!;
 
 					// Fields resolved in the second pass. deferred FKs + remappable o2m/m2m aliases
@@ -658,6 +663,8 @@ export class ImportService {
 							newPk = await service.createOne(payload, mutationOptions);
 						}
 
+						newPks.push(newPk);
+
 						const result = collections[collection]!;
 
 						if (matchedExisting) {
@@ -685,9 +692,8 @@ export class ImportService {
 					if (!deferredFields && aliasFields.length === 0) continue;
 
 					const entry = dataByCollection.get(collection)!;
-					const idMap = idMaps.get(collection)!;
+					const newPks = newPksByCollection.get(collection)!;
 					const fkFields = plan.fkFields.get(collection)!;
-					const { primary: pkField } = this.schema.collections[collection]!;
 
 					const service = getService(collection, {
 						knex: trx,
@@ -695,11 +701,9 @@ export class ImportService {
 						accountability: this.accountability,
 					});
 
-					for (const item of entry.items) {
-						const oldPk = item[pkField] as PrimaryKey | undefined;
-						if (oldPk == null) continue;
-
-						const newPk = idMap.get(String(oldPk));
+					for (let index = 0; index < entry.items.length; index++) {
+						const item = entry.items[index]!;
+						const newPk = newPks[index];
 						if (newPk === undefined) continue;
 
 						const patch: Record<string, unknown> = {};

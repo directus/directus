@@ -1152,6 +1152,86 @@ describe('ImportService.importBatch', () => {
 		});
 	});
 
+	test('resolves a deferred m2o for an item imported without a primary key', async () => {
+		// Regression: keyless rows used to be skipped in the second pass, silently dropping
+		// their deferred FK. Here "parent: 1" points at a pre-existing category (id 1).
+		const schema = new SchemaBuilder()
+			.collection('categories', (c) => {
+				c.field('id').id();
+				c.field('name').string();
+				c.field('parent').m2o('categories');
+			})
+			.build();
+
+		const { calls } = await run(
+			schema,
+			[
+				{
+					collection: 'categories',
+					items: [
+						{ name: 'Child of existing root (no id supplied)', parent: 1 },
+						{ name: 'Another child (no id supplied)', parent: 1 },
+					],
+				},
+			],
+			{},
+			{ categories: new Set(['1']) },
+		);
+
+		// parent is deferred: stripped on insert...
+		for (const call of calls.filter((c) => c.method === 'createOne')) {
+			expect(call.payload).not.toHaveProperty('parent');
+		}
+
+		// ...then set in a second pass for BOTH keyless rows (identity remap, id 1 is pre-existing)
+		const updates = calls.filter((c) => c.method === 'updateOne');
+		expect(updates).toHaveLength(2);
+		expect(updates[0]).toMatchObject({ collection: 'categories', pk: 'categories-new-1', data: { parent: 1 } });
+		expect(updates[1]).toMatchObject({ collection: 'categories', pk: 'categories-new-2', data: { parent: 1 } });
+	});
+
+	test('remaps an o2m alias array for an item imported without a primary key', async () => {
+		// Regression: a keyless parent row used to be skipped in the second pass, so its o2m
+		// children were never linked back.
+		const schema = new SchemaBuilder()
+			.collection('authors', (c) => {
+				c.field('id').id();
+				c.field('name').string();
+				c.field('articles').o2m('articles', 'author');
+			})
+			.collection('articles', (c) => {
+				c.field('id').id();
+				c.field('title').string();
+				c.field('author').m2o('authors');
+			})
+			.build();
+
+		const { calls } = await run(schema, [
+			{ collection: 'authors', items: [{ name: 'New author (no id supplied)', articles: [10, 11] }] },
+			{
+				collection: 'articles',
+				items: [
+					{ id: 10, title: 'Child A' },
+					{ id: 11, title: 'Child B' },
+				],
+			},
+		]);
+
+		// The alias array is stripped from the keyless insert...
+		const authorCreate = calls.find((c) => c.collection === 'authors' && c.method === 'createOne')!;
+		expect(authorCreate.payload).not.toHaveProperty('articles');
+
+		// ...then linked in a second pass against the keyless author's generated key
+		const updates = calls.filter((c) => c.method === 'updateOne');
+		expect(updates).toHaveLength(1);
+		
+		expect(updates[0]).toMatchObject({
+			collection: 'authors',
+			pk: 'authors-new-1',
+			data: { articles: ['articles-new-1', 'articles-new-2'] },
+		});
+	});
+
 	const singletonSchema = () => {
 		const schema = new SchemaBuilder()
 			.collection('settings', (c) => {
