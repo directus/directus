@@ -531,6 +531,7 @@ functions:
   minute: Perc
   second: Másodperc
   count: Mennyiség
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -824,6 +825,7 @@ operators:
   nintersects: Nem metszi
   intersects_bbox: Metszi a határoló dobozt
   nintersects_bbox: Nem metszi a határoló dobozt
+  json: JSON
   regex: Megfelel a RegExp-nek
 custom_validation_message: Egyéni érvényesítési üzenet
 loading: Betöltés...
