@@ -65,36 +65,45 @@ defineExpose({ shouldShow, getReferencedVirtualElement });
 </script>
 
 <template>
-	<BubbleMenu
-		v-if="editor"
-		:editor="editor"
-		plugin-key="tableBubbleMenu"
-		:should-show="shouldShow"
-		:get-referenced-virtual-element="getReferencedVirtualElement"
-		:options="options"
-	>
-		<div ref="menuEl" class="table-bubble-menu" :class="`placement-${placement}`">
-			<template v-for="(group, groupIndex) in tableActionGroups" :key="groupIndex">
-				<div v-if="groupIndex > 0" class="separator" />
-				<VButton
-					v-for="action in group"
-					:key="action.label"
-					v-tooltip="t(`wysiwyg_options.${action.label}`)"
-					class="toolbar-button"
-					ghost
-					small
-					icon
-					:disabled="!isEnabled(action)"
-					@click="runContextCommand(editor, action.command)"
-				>
-					<VIcon :name="action.icon" />
-				</VButton>
-			</template>
-		</div>
-	</BubbleMenu>
+	<!-- BubbleMenu detaches its own root element on mount (el.remove() in @tiptap/vue-3), so this component's
+	root must be a stable attached element — otherwise Vue resolves patch containers/anchors from the detached
+	node and crashes mid-patch, leaving the editor half-rendered (only the toolbar visible). -->
+	<div class="table-bubble-menu-anchor">
+		<BubbleMenu
+			v-if="editor"
+			:editor="editor"
+			plugin-key="tableBubbleMenu"
+			:should-show="shouldShow"
+			:get-referenced-virtual-element="getReferencedVirtualElement"
+			:options="options"
+		>
+			<div ref="menuEl" class="table-bubble-menu" :class="`placement-${placement}`">
+				<template v-for="(group, groupIndex) in tableActionGroups" :key="groupIndex">
+					<div v-if="groupIndex > 0" class="separator" />
+					<VButton
+						v-for="action in group"
+						:key="action.label"
+						v-tooltip="t(`wysiwyg_options.${action.label}`)"
+						class="toolbar-button"
+						ghost
+						small
+						icon
+						:disabled="!isEnabled(action)"
+						@click="runContextCommand(editor, action.command)"
+					>
+						<VIcon :name="action.icon" />
+					</VButton>
+				</template>
+			</div>
+		</BubbleMenu>
+	</div>
 </template>
 
 <style lang="scss" scoped>
+.table-bubble-menu-anchor {
+	display: contents;
+}
+
 .table-bubble-menu {
 	position: relative;
 	display: flex;

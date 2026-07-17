@@ -1,6 +1,7 @@
 import { Editor } from '@tiptap/vue-3';
 import { mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+import { nextTick } from 'vue';
 import { createI18n } from 'vue-i18n';
 import { editorExtensions } from '../../extensions';
 import TableBubbleMenu from './table-bubble-menu.vue';
@@ -76,6 +77,29 @@ describe('shouldShow', () => {
 
 		insertTable();
 		expect(vm.getReferencedVirtualElement()).not.toBeNull();
+	});
+});
+
+describe('root element', () => {
+	/**
+	 * Regression: the real BubbleMenu removes its own root element from the DOM on mount. If that
+	 * element is also this component's root, Vue later resolves patch containers/anchors from the
+	 * detached node and crashes mid-patch, leaving the editor half-rendered (e.g. on version switch).
+	 */
+	test('stays attached while BubbleMenu detaches its own element', async () => {
+		const wrapper = mount(TableBubbleMenu, {
+			props: { editor },
+			global: { ...global, stubs: baseStubs }, // real BubbleMenu
+			attachTo: document.body,
+		});
+
+		// BubbleMenu detaches its element in onMounted, then registers its plugin a tick later
+		await nextTick();
+		await nextTick();
+
+		expect(wrapper.element.isConnected).toBe(true);
+
+		wrapper.unmount();
 	});
 });
 
