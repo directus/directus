@@ -56,7 +56,7 @@ export function buildImportPlan(input: ImportCollectionData[], schema: SchemaOve
 		}
 
 		if (nodes.has(collection)) {
-			throw new InvalidPayloadError({ reason: 'Import payload contains a duplicate collection "${collection}"' });
+			throw new InvalidPayloadError({ reason: `Import payload contains a duplicate collection "${collection}"` });
 		}
 
 		nodes.add(collection);
