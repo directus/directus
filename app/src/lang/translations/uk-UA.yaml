@@ -546,6 +546,7 @@ functions:
   minute: Хвилина
   second: Секунда
   count: Кількість
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'h:mm a'
@@ -893,6 +894,7 @@ operators:
   nintersects: Не перетинає
   intersects_bbox: Перетинає обмежувальні рамки
   nintersects_bbox: Не перетинає обмежувальні рамки
+  json: JSON
   regex: За регулярним виразом
 custom_validation_message: Повідомлення про підтвердження користувача
 loading: Завантаження...
