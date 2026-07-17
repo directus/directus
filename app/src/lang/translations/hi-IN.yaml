@@ -296,6 +296,7 @@ functions:
   minute: मिनट
   second: सेकंड
   count: गिनती
+  json: JSON
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
@@ -369,6 +370,7 @@ color: Color
 circle: Circle
 operators:
   eq: Equals
+  json: JSON
 loading: लोड हो रहा है...
 item: समान
 columns: कॉलमस
