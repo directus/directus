@@ -290,6 +290,7 @@ delete_comment: Obriši komentar
 functions:
   year: Godina
   month: Mjesec
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -506,6 +507,7 @@ operators:
   nempty: Nije Prazno
   all: Sadrži sljedeće ključeve
   has: Sadrži neke od sljedećih ključeva
+  json: JSON
 loading: Učitavanje...
 drop_to_upload: Prenesi za Otpremanje
 item: Stavka
