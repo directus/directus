@@ -523,6 +523,7 @@ functions:
   minute: 분
   second: 초
   count: 카운팅(횟수)
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -869,6 +870,7 @@ operators:
   nintersects: '이(가) 교차하지 않음 :'
   intersects_bbox: 이(가) 경계 상자와 교차함
   nintersects_bbox: 이(가) 경계 상자와 교차하지 않음
+  json: JSON
   regex: '이(가) 정규표현식과 일치 :'
 custom_validation_message: 사용자 지정 유효성 검사 메시지
 loading: 로드 중...
