@@ -1224,7 +1224,7 @@ describe('ImportService.importBatch', () => {
 		// ...then linked in a second pass against the keyless author's generated key
 		const updates = calls.filter((c) => c.method === 'updateOne');
 		expect(updates).toHaveLength(1);
-		
+
 		expect(updates[0]).toMatchObject({
 			collection: 'authors',
 			pk: 'authors-new-1',

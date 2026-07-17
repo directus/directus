@@ -51,10 +51,7 @@ router.get(
 );
 
 const diffQuerySchema = z.object({
-	force: z
-		.string()
-		.optional()
-		.transform(queryFlag),
+	force: z.string().optional().transform(queryFlag),
 	mode: z.enum(['merge', 'mirror']).default('mirror'),
 });
 
@@ -87,7 +84,7 @@ router.post(
 
 router.post(
 	'/apply',
-  checkIsAdmin,
+	checkIsAdmin,
 	readFileUploadBody({ allowYaml: true, maxFileSize: IMPORT_MAX_FILE_SIZE }),
 	asyncHandler(async (req, _res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });

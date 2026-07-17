@@ -49,7 +49,7 @@ export class SchemaHelperOracle extends SchemaHelper {
 			}
 		}
 
-		// Oracle does not accept the "NO ACTION" referential action keyword (ORA-00905: missing keyword). 
+		// Oracle does not accept the "NO ACTION" referential action keyword (ORA-00905: missing keyword).
 		// It is the default behaviour anyway, so drop the clause rather than emit invalid DDL.
 		if (relation.schema?.on_delete === 'NO ACTION') {
 			relation.schema.on_delete = null;

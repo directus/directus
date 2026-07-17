@@ -32,7 +32,6 @@ export function validateFlatData(
 	}
 }
 
-
 function validateFlatValue(collection: string, field: string, value: unknown) {
 	if (value === undefined || value === null) return;
 
