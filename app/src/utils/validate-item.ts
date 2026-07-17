@@ -7,6 +7,7 @@ import {
 } from '@directus/validation';
 import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';
 import { applyConditions } from './apply-conditions';
+import { isPresentationField } from './field-utils';
 import { parseFilter } from './parse-filter';
 import { useRelationsStore } from '@/stores/relations';
 import type { ContentVersionMaybeNew } from '@/types/versions';
@@ -28,7 +29,9 @@ export function validateItem(
 		return conditionedField;
 	});
 
-	const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
+	const requiredFields = fieldsWithConditions.filter(
+		(field) => field.meta?.required === true && !isPresentationField(field),
+	);
 
 	requiredFields.forEach((field) => {
 		applyRulesForRequiredFields(field.field, field, isNew);
