@@ -502,6 +502,7 @@ functions:
   minute: Minuta
   second: Drugi
   count: Licz
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -839,6 +840,7 @@ operators:
   nintersects: Nie przecina się
   intersects_bbox: Przecina pole ograniczające
   nintersects_bbox: Nie przecina pola ograniczającego
+  json: JSON
   regex: Wyrażenie dopasowania
 custom_validation_message: Niestandardowy komunikat walidacyjny
 loading: Wczytywanie...
