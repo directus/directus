@@ -246,8 +246,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw handleError(e);
 		}
 
-		// Flatten response to support dot indexes
-		userInfo = flatten(userInfo) as Record<string, unknown>;
+		// Flatten response to support dot indexes (safe mode preserves arrays, e.g. the groups claim)
+		userInfo = flatten(userInfo, { safe: true }) as Record<string, unknown>;
 
 		let role = this.config['defaultRoleId'];
 		const groupClaimName: string = this.config['groupClaimName'] ?? 'groups';
