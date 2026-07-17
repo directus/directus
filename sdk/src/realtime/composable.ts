@@ -99,9 +99,9 @@ export function realtime(config: WebSocketConfig = {}) {
 				debug(
 					'info',
 					`reconnect #${reconnectState.attempts} ` +
-						(reconnectState.attempts >= config.reconnect.retries
-							? 'maximum retries reached'
-							: `trying again in ${Math.max(100, config.reconnect.delay)}ms`),
+					(reconnectState.attempts >= config.reconnect.retries
+						? 'maximum retries reached'
+						: `trying again in ${Math.max(100, config.reconnect.delay)}ms`),
 				);
 
 				if (reconnectState.active) return reconnectState.active;
@@ -132,7 +132,7 @@ export function realtime(config: WebSocketConfig = {}) {
 			reconnectState.attempts += 1;
 
 			reconnectState.active = reconnectPromise
-				.catch(() => {})
+				.catch(() => { })
 				.finally(() => {
 					reconnectState.active = false;
 				});
@@ -292,46 +292,52 @@ export function realtime(config: WebSocketConfig = {}) {
 					}, config.connect.timeout ?? 10000);
 				}
 
-				ws.addEventListener('open', async (evt: Event) => {
-					debug('info', `Connection open.`);
+				ws.addEventListener('open', (evt: Event) => {
+					void (async () => {
+						try {
 
-					state = { code: 'open', connection: ws, firstMessage: true };
-					reconnectState.attempts = 0;
-					reconnectState.active = false;
-					clearTimeout(connectTimeout);
-					handleMessages(self);
+							debug('info', `Connection open.`);
+							state = { code: 'open', connection: ws, firstMessage: true };
+							reconnectState.attempts = 0;
+							reconnectState.active = false;
+							clearTimeout(connectTimeout);
+							handleMessages(self);
 
-					if (config.authMode === 'handshake' && hasAuth(self)) {
-						const access_token = await self.getToken();
+							if (config.authMode === 'handshake' && hasAuth(self)) {
+								const access_token = await self.getToken();
 
-						if (!access_token) {
-							return reject(
-								'No token for authenticating the websocket. Make sure to provide one or call the login() function beforehand.',
-							);
+								if (!access_token) {
+									return reject(
+										'No token for authenticating the websocket. Make sure to provide one or call the login() function beforehand.',
+									);
+								}
+
+								ws.send(auth({ access_token }));
+								const confirm = await messageCallback(ws);
+
+								if (
+									!(
+										confirm &&
+										'type' in confirm &&
+										'status' in confirm &&
+										confirm['type'] === 'auth' &&
+										confirm['status'] === 'ok'
+									)
+								) {
+									return reject('Authentication failed while opening websocket connection');
+								} else {
+									debug('info', 'Authentication successful!');
+								}
+							}
+
+							eventHandlers['open'].forEach((handler) => handler.call(ws, evt));
+
+							resolved = true;
+							resolve(ws);
+						} catch (err) {
+							if (!resolved) reject(err);
 						}
-
-						ws.send(auth({ access_token }));
-						const confirm = await messageCallback(ws);
-
-						if (
-							!(
-								confirm &&
-								'type' in confirm &&
-								'status' in confirm &&
-								confirm['type'] === 'auth' &&
-								confirm['status'] === 'ok'
-							)
-						) {
-							return reject('Authentication failed while opening websocket connection');
-						} else {
-							debug('info', 'Authentication successful!');
-						}
-					}
-
-					eventHandlers['open'].forEach((handler) => handler.call(ws, evt));
-
-					resolved = true;
-					resolve(ws);
+					})();
 				});
 
 				ws.addEventListener('error', (evt: Event) => {
