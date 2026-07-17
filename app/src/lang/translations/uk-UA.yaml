@@ -20,7 +20,6 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Інформація про
-privacy_policy: Політика конфіденційності
 setup_welcome: Ласкаво просимо до Directus
 setup_info: Створімо ваш обліковий запис адміністратора та запустімо ваш проєкт.
 setup_marketing_emails: Надіслати мені оновлення продукту та нотатки про випуск
