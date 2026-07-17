@@ -474,6 +474,7 @@ functions:
   minute: 分
   second: 秒
   count: 數量
+  json: JSON
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 minutes: 分
@@ -759,6 +760,7 @@ operators:
   nintersects: 無交集
   intersects_bbox: 區域交集
   nintersects_bbox: 區域不交集
+  json: JSON
   regex: 符合正規表示式
 custom_validation_message: 自訂驗證訊息
 loading: 載入中...
