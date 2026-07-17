@@ -1,14 +1,25 @@
 type: object
+# Runtime: Permission type
+# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/permissions.ts
+# role was renamed to policy in 20240806A-permissions-policies:
+# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/database/migrations/20240806A-permissions-policies.ts#L132-L168
+# PERMISSION_ACTIONS: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/constants/src/permissions.ts
 properties:
   id:
     description: Unique identifier for the permission.
     example: 1
     type: integer
-  role:
-    description: Unique identifier of the role this permission applies to.
-    example: 2f24211d-d928-469a-aea3-3c8f53d4e426
+  policy:
+    # TODO: switch to oneOf: [string, Policies] once the Policies component exists (directus/directus#27700 and related).
+    # After uncommenting, also remove the `type: string, format: uuid` line below.
+    # oneOf:
+    #   - type: string
+    #     format: uuid
+    #   - $ref: '../openapi.yaml#/components/schemas/Policies'
+    description: Unique identifier of the policy this permission applies to.
+    example: 2f24211d-d928-469a-aea3-3c8f53d4e426A
     type: string
-    nullable: true
+    format: uuid
   collection:
     description: What collection this permission applies to.
     example: customers
@@ -17,26 +28,29 @@ properties:
     description: What action this permission applies to.
     example: create
     type: string
-    enum:
-      - create
-      - read
-      - update
-      - delete
+    enum: [create, read, update, delete, share]
   permissions:
     description: JSON structure containing the permissions checks for this permission.
     type: object
+    example: { <field>: { <operator>: <value> } }
     nullable: true
   validation:
     description: JSON structure containing the validation checks for this permission.
     type: object
+    example: { <field>: { <operator>: <value> } }
     nullable: true
   presets:
     description: JSON structure containing the preset value for created/updated items.
     type: object
+    example: { <field>: <value> }
     nullable: true
   fields:
-    description: CSV of fields that the user is allowed to interact with.
+    description: Fields that the user is allowed to interact with.
     type: array
     items:
       type: string
+    nullable: true
+  system:
+    description: True if this is a Directus-managed system permission.
+    type: boolean
     nullable: true
