@@ -1,4 +1,4 @@
-import { Node, VueNodeViewRenderer } from '@tiptap/vue-3';
+import { mergeAttributes, Node, VueNodeViewRenderer } from '@tiptap/vue-3';
 import MediaNodeView from './media-node-view.vue';
 
 export type MediaTag = 'video' | 'audio' | 'iframe';
@@ -54,15 +54,17 @@ export const Media = Node.create({
 	},
 
 	addAttributes() {
+		// rendered: false — renderHTML serializes these manually; only global (preserved) attrs may
+		// flow through the HTMLAttributes param
 		return {
-			tag: { default: 'video' as MediaTag },
-			src: { default: null },
-			type: { default: null },
-			width: { default: null },
-			height: { default: null },
+			tag: { default: 'video' as MediaTag, rendered: false },
+			src: { default: null, rendered: false },
+			type: { default: null, rendered: false },
+			width: { default: null, rendered: false },
+			height: { default: null, rendered: false },
 			// parseHTML prevents Tiptap's default fromString(getAttribute()) from converting "" → "" (falsy).
-			controls: { default: false, parseHTML: (el) => el.hasAttribute('controls') },
-			loop: { default: false, parseHTML: (el) => el.hasAttribute('loop') },
+			controls: { default: false, rendered: false, parseHTML: (el) => el.hasAttribute('controls') },
+			loop: { default: false, rendered: false, parseHTML: (el) => el.hasAttribute('loop') },
 		};
 	},
 
@@ -89,14 +91,18 @@ export const Media = Node.create({
 	},
 
 	// DOMSerializer skips attributes whose value is null; boolean attrs become ="" (documented normalization).
-	renderHTML({ node }) {
+	renderHTML({ node, HTMLAttributes }) {
 		const { tag, src, type, width, height, controls, loop } = node.attrs as MediaAttrs;
 
 		if (tag === 'iframe') {
-			return ['iframe', { src, width, height }];
+			return ['iframe', mergeAttributes(HTMLAttributes, { src, width, height })];
 		}
 
-		return [tag, { width, height, loop: loop ? '' : null, controls: controls ? '' : null }, ['source', { src, type }]];
+		return [
+			tag,
+			mergeAttributes(HTMLAttributes, { width, height, loop: loop ? '' : null, controls: controls ? '' : null }),
+			['source', { src, type }],
+		];
 	},
 
 	addCommands() {
