@@ -1,9 +1,15 @@
 type: object
+# Runtime: Folder type
+# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/folders.ts
+# name is required: the service relies on it for tree building
+# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/services/folders.ts#L73
+required: [name]
 properties:
   id:
     description: Unique identifier for the folder.
     example: 0cf0e03d-4364-45df-b77b-ca61f61869d2
     type: string
+    format: uuid
   name:
     description: Name of the folder.
     example: New York
@@ -13,5 +19,6 @@ properties:
     example: null
     oneOf:
       - type: string
+        format: uuid
       - $ref: '../openapi.yaml#/components/schemas/Folders'
     nullable: true

@@ -14,6 +14,7 @@ properties:
     nullable: true
     oneOf:
       - type: string
+        format: uuid
       - $ref: '../openapi.yaml#/components/schemas/Users'
   role:
     description:
@@ -23,6 +24,7 @@ properties:
     nullable: true
     oneOf:
       - type: string
+        format: uuid
       - $ref: '../openapi.yaml#/components/schemas/Roles'
   collection:
     description: What collection this collection preset is used for.

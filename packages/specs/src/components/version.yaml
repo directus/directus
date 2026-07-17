@@ -39,12 +39,14 @@ properties:
     example: 63716273-0f29-4648-8a2a-2af2948f6f78
     oneOf:
       - type: string
+        format: uuid
       - $ref: '../openapi.yaml#/components/schemas/Users'
   user_updated:
     description: User that last updated the Content Version.
     example: 63716273-0f29-4648-8a2a-2af2948f6f78
     oneOf:
       - type: string
+        format: uuid
       - $ref: '../openapi.yaml#/components/schemas/Users'
   delta:
     description: The current changes compared to the main version of the item.

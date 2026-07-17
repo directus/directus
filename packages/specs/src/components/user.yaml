@@ -47,6 +47,7 @@ properties:
     example: null
     oneOf:
       - type: string
+        format: uuid
       - $ref: '../openapi.yaml#/components/schemas/Files'
     nullable: true
   language:
@@ -73,6 +74,7 @@ properties:
     example: 2f24211d-d928-469a-aea3-3c8f53d4e426
     oneOf:
       - type: string
+        format: uuid
       - $ref: '../openapi.yaml#/components/schemas/Roles'
   token:
     description: Static token for the user.

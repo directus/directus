@@ -28,6 +28,7 @@ properties:
     description: The user who performed this action.
     oneOf:
       - type: string
+        format: uuid
       - $ref: '../openapi.yaml#/components/schemas/Users'
     nullable: true
   timestamp:
