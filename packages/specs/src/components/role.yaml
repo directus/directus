@@ -1,9 +1,14 @@
 type: object
+# Runtime: Role type
+# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/users.ts
+# ip_access / enforce_tfa / admin_access / app_access moved to directus_policies in:
+# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/database/migrations/20240806A-permissions-policies.ts#L122-L126
 properties:
   id:
     description: Unique identifier for the role.
     example: 2f24211d-d928-469a-aea3-3c8f53d4e426
     type: string
+    format: uuid
   name:
     description: Name of the role.
     example: Administrator
@@ -14,24 +19,42 @@ properties:
     type: string
   description:
     description: Description of the role.
-    example: Admins have access to all managed data within the system by default
+    example: Admins have access to all managed data within the system by default.
     type: string
-    nullable: true
-  ip_access:
-    description: Array of IP addresses that are allowed to connect to the API as a user of this role.
-    example: []
+  users:
+    description: Users assigned to this role (reverse of `directus_users.role`).
     type: array
     items:
+      oneOf:
+        - type: string
+          format: uuid
+        - $ref: '../openapi.yaml#/components/schemas/Users'
+  children:
+    description: Roles that have this role set as their `parent` (one-level, not recursive).
+    type: array
+    items:
+      oneOf:
+        - type: string
+          format: uuid
+        - $ref: '../openapi.yaml#/components/schemas/Roles'
+  policies:
+    description: Policy UUIDs attached to this role via `directus_access`.
+    type: array
+    # TODO: switch to oneOf: [string, Policies] once the Policies component exists
+    # https://github.com/directus/directus/issues/27925#issuecomment-4998154731
+    # After uncommenting, also remove the `items: type: string, format: uuid` block below.
+    # items:
+    #   oneOf:
+    #     - type: string
+    #       format: uuid
+    #     - $ref: '../openapi.yaml#/components/schemas/Policies'
+    items:
       type: string
-  enforce_tfa:
-    description: Whether or not this role enforces the use of 2FA.
-    example: false
-    type: boolean
-  admin_access:
-    description: Admin role. If true, skips all permission checks.
-    example: false
-    type: boolean
-  app_access:
-    description: The users in the role are allowed to use the app.
-    example: true
-    type: boolean
+      format: uuid
+  parent:
+    description: UUID of the parent role, or null for top-level roles.
+    nullable: true
+    oneOf:
+      - type: string
+        format: uuid
+      - $ref: '../openapi.yaml#/components/schemas/Roles'
