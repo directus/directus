@@ -369,6 +369,7 @@ functions:
   minute: Minuutti
   second: Sekunti
   count: Määrä
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'HH:mm'
@@ -659,6 +660,7 @@ operators:
   nintersects: Ei leikkaa
   intersects_bbox: Leikkaa rajaavaa laatikkoa
   nintersects_bbox: Ei leikkaa rajaavaa laatikkoa
+  json: JSON
 loading: Ladataan...
 drop_to_upload: Pudota ladataksesi
 item: Kohde
