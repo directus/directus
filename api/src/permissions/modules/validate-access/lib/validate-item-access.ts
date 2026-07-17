@@ -53,7 +53,10 @@ export async function validateItemAccess(
 	}
 
 	const isSingleton = collectionInfo?.singleton === true;
-	const hasPrimaryKeys = options.primaryKeys && options.primaryKeys.length > 0;
+
+	// Dedupe keys so the count comparison below isn't thrown off by duplicates
+	const primaryKeys = options.primaryKeys ? [...new Set(options.primaryKeys)] : undefined;
+	const hasPrimaryKeys = primaryKeys && primaryKeys.length > 0;
 
 	// For non-singletons, we must have PKs to validate against
 	if (!isSingleton && !hasPrimaryKeys) {
@@ -66,7 +69,7 @@ export async function validateItemAccess(
 	const ast: AST = {
 		type: 'root',
 		name: options.collection,
-		query: { limit: isSingleton && !hasPrimaryKeys ? 1 : options.primaryKeys!.length },
+		query: { limit: isSingleton && !hasPrimaryKeys ? 1 : primaryKeys!.length },
 		// Act as if every field was a "normal" field
 		children:
 			options.fields?.map((field) => ({ type: 'field', name: field, fieldKey: field, whenCase: [], alias: false })) ??
@@ -81,7 +84,7 @@ export async function validateItemAccess(
 	if (hasPrimaryKeys) {
 		ast.query.filter = {
 			[primaryKeyField]: {
-				_in: options.primaryKeys!,
+				_in: primaryKeys!,
 			},
 		};
 	}
@@ -131,7 +134,7 @@ export async function validateItemAccess(
 		action: options.action,
 	});
 
-	const expectedCount = isSingleton && !hasPrimaryKeys ? 1 : options.primaryKeys!.length;
+	const expectedCount = isSingleton && !hasPrimaryKeys ? 1 : primaryKeys!.length;
 	const hasAccess = items && items.length === expectedCount;
 
 	if (!hasAccess) {

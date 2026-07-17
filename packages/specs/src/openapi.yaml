@@ -297,14 +297,14 @@ components:
   schemas:
     Activity:
       $ref: './components/activity.yaml'
-    Presets:
-      $ref: './components/preset.yaml'
     Collections:
       $ref: './components/collection.yaml'
     Comments:
       $ref: './components/comment.yaml'
     Diff:
       $ref: './components/diff.yaml'
+    Error:
+      $ref: './components/error.yaml'
     Extensions:
       $ref: './components/extension.yaml'
     Fields:
@@ -321,6 +321,10 @@ components:
       $ref: './components/operation.yaml'
     Permissions:
       $ref: './components/permissions.yaml'
+    Presets:
+      $ref: './components/preset.yaml'
+    Query:
+      $ref: './definitions/query.yaml'
     Relations:
       $ref: './components/relation.yaml'
     Revisions:
@@ -333,8 +337,6 @@ components:
       $ref: './components/setting.yaml'
     Users:
       $ref: './components/user.yaml'
-    Query:
-      $ref: './definitions/query.yaml'
     Versions:
       $ref: './components/version.yaml'
     x-metadata:
