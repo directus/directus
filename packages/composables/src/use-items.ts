@@ -42,9 +42,9 @@ export type ComputedQuery = {
 };
 
 /**
- * Filters containing `_json` are sent as a JSON string so that string values (e.g. numeric
- * strings compared against JSON paths) survive query-string serialization untouched. All other
- * filters keep the default object serialization.
+ * Filters containing `_json` are sent as a JSON string so that the typed scalar values on JSON
+ * paths (numbers, booleans, and intentionally-quoted strings) survive query-string serialization
+ * with their types intact. All other filters keep the default object serialization.
  */
 export function serializeFilter(filter: Query['filter']): Query['filter'] | string {
 	return filter && hasJsonOperator(filter) ? JSON.stringify(filter) : filter;
