@@ -1,4 +1,6 @@
 type: object
+# Runtime: Preset type
+# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/presets.ts
 properties:
   id:
     description: Unique identifier for this single collection preset.
@@ -8,6 +10,18 @@ properties:
     description: Name for the bookmark. If this is set, the preset will be considered a bookmark.
     nullable: true
     type: string
+  icon:
+    # icon is NOT NULL with default 'bookmark_outline':
+    # https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/database/migrations/20220308A-add-bookmark-icon-and-color.ts
+    # TODO: https://github.com/directus/directus/issues/27700#issuecomment-4996660653
+    description: Icon displayed in the Admin App for the bookmark.
+    example: bookmark_outline
+    type: string
+  color:
+    description: Color of the icon displayed in the Admin App for the bookmark.
+    example: '#6644ff'
+    type: string
+    nullable: true
   user:
     description: The unique identifier of the user to whom this collection preset applies.
     example: 63716273-0f29-4648-8a2a-2af2948f6f78
@@ -36,21 +50,16 @@ properties:
     description: Search query.
     type: string
     nullable: true
-  filters:
-    description: The filters that the user applied.
-    example:
-      - key: 7RwVrquB5dPmfbrI1rcWy
-        field: title
-        operator: contains
-        value: Hello
-    type: array
+  filter:
+    description: Filters the user applied.
+    type: object
+    example: { <field>: { <operator>: <value> } }
     nullable: true
-    items:
-      type: object
   layout:
     description: Key of the layout that is used.
     type: string
-    example: null
+    example: cards
+    nullable: true
   layout_query:
     description:
       Layout query that's saved per layout type. Controls what data is fetched on load. These follow the same format as
@@ -67,4 +76,8 @@ properties:
         title: '{{ first_name }} {{ last_name }}'
         subtitle: '{{ title }}'
         size: 3
+    nullable: true
+  refresh_interval:
+    description: Interval in milliseconds at which the preset refreshes its data.
+    type: integer
     nullable: true
