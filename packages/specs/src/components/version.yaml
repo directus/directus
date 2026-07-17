@@ -1,17 +1,22 @@
 type: object
+# Runtime: ContentVersion type
+# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/versions.ts
+# DB schema: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/database/migrations/20230823A-add-content-versioning.ts
 properties:
   id:
     description: Primary key of the Content Version.
     example: 63716273-0f29-4648-8a2a-2af2948f6f78
     type: string
+    format: uuid
   key:
-    description: Key of the Content Version, used as the value for the "version" query parameter.
+    description: Key of the Content Version, used as the value for the `version` query parameter.
     example: draft
     type: string
   name:
     description: Descriptive name of the Content Version.
     example: My Draft
     type: string
+    nullable: true
   collection:
     description: Name of the collection the Content Version is created on.
     example: articles
@@ -22,12 +27,15 @@ properties:
     description: The item the Content Version is created on.
     example: '168'
     type: string
+    nullable: true
+  hash:
+    description: Hash of the Content Version state, used to detect drift before save/promote.
+    type: string
   date_created:
     description: When the Content Version was created.
     type: string
     example: '2022-05-11T13:14:52Z'
     format: date-time
-    nullable: true
   date_updated:
     description: When the Content Version was last updated.
     type: string
@@ -41,6 +49,7 @@ properties:
       - type: string
         format: uuid
       - $ref: '../openapi.yaml#/components/schemas/Users'
+    nullable: true
   user_updated:
     description: User that last updated the Content Version.
     example: 63716273-0f29-4648-8a2a-2af2948f6f78
@@ -48,8 +57,10 @@ properties:
       - type: string
         format: uuid
       - $ref: '../openapi.yaml#/components/schemas/Users'
+    nullable: true
   delta:
     description: The current changes compared to the main version of the item.
     example:
       my_field: Updated Value
     type: object
+    nullable: true
