@@ -500,6 +500,7 @@ functions:
   minute: Minúta
   second: Sekunda
   count: Počet
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'h:mm a'
@@ -840,6 +841,7 @@ operators:
   nintersects: Nepretína
   intersects_bbox: Pretína hraničný obdĺžnik
   nintersects_bbox: Nepretína hraničný obdĺžnik
+  json: JSON
   regex: Vyhovuje RegExp
 custom_validation_message: Vlastná validačná správa
 loading: Načítavanie...
