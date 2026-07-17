@@ -548,6 +548,7 @@ functions:
   minute: Minuut
   second: Seconde
   count: Aantal
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'H:mm'
@@ -896,6 +897,7 @@ operators:
   nintersects: Overlapt niet
   intersects_bbox: Overlapt begrenzingsvak
   nintersects_bbox: Overlapt niet met begrenzingsvak
+  json: JSON
   regex: Komt overeen met RegExp
 custom_validation_message: Aangepaste validatiemelding
 loading: Aan het laden...
