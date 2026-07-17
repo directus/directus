@@ -20,7 +20,6 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Rólunk
-privacy_policy: Adatvédelmi irányelvek
 setup_welcome: Üdvözöljük a Directusnál
 setup_info: Hozza létre rendszergazda fiókját, és indítsa el projektjét
 setup_marketing_emails: Küldjenek részemre információkat a termék frissítéséről és az új verziók módosításairól
