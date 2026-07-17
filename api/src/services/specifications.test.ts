@@ -64,22 +64,597 @@ describe('Integration Tests', () => {
 
 						const spec = await service.oas.generate();
 
-						expect(spec.components?.schemas?.['ItemsTestTable']).toMatchInlineSnapshot(`
+						expect(spec.components?.schemas).toMatchInlineSnapshot(`
 							{
-							  "properties": {
-							    "blob": {
-							      "nullable": true,
+							  "Collections": {
+							    "properties": {
+							      "collection": {
+							        "description": "The collection key.",
+							        "example": "customers",
+							        "type": "string",
+							      },
+							      "meta": {
+							        "description": "Metadata of the collection.",
+							        "example": null,
+							        "nullable": true,
+							        "properties": {
+							          "archive_app_filter": {
+							            "description": "What value to use for "archived" items.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "archive_field": {
+							            "description": "What field holds the archive value.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "archive_value": {
+							            "description": "What value to use to "unarchive" items.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "collection": {
+							            "description": "The collection key.",
+							            "example": "customers",
+							            "type": "string",
+							          },
+							          "color": {
+							            "description": "Choose an accent color for this collection.",
+							            "example": "#6644ff",
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "display_template": {
+							            "description": "Text representation of how items from this collection are shown across the system.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "hidden": {
+							            "description": "Whether or not the collection is hidden from the navigation in the admin app.",
+							            "example": false,
+							            "type": "boolean",
+							          },
+							          "icon": {
+							            "description": "Name of a Google Material Design Icon that's assigned to this collection.",
+							            "example": "people",
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "note": {
+							            "description": "A note describing the collection.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "singleton": {
+							            "description": "Whether or not the collection is treated as a single object.",
+							            "example": false,
+							            "type": "boolean",
+							          },
+							          "sort_field": {
+							            "description": "The sort field in the collection.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "translations": {
+							            "description": "Key value pairs of how to show this collection's name in different languages in the admin app.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "unarchive_value": {
+							            "description": "Whether or not to show the "archived" filter.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "versioning": {
+							            "description": "Whether or not Content Versioning is enabled for this collection.",
+							            "example": false,
+							            "type": "boolean",
+							          },
+							        },
+							        "type": "object",
+							      },
+							      "schema": {
+							        "properties": {
+							          "comment": {
+							            "description": "Comment as saved in the database.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "name": {
+							            "description": "The collection key.",
+							            "example": "customers",
+							            "type": "string",
+							          },
+							          "schema": {
+							            "description": "Database schema (pg only).",
+							            "example": "public",
+							            "type": "string",
+							          },
+							        },
+							        "type": "object",
+							      },
 							    },
-							    "id": {
-							      "nullable": false,
-							      "type": "integer",
-							    },
+							    "type": "object",
 							  },
-							  "required": [
-							    "id",
-							  ],
-							  "type": "object",
-							  "x-collection": "test_table",
+							  "Diff": {
+							    "properties": {
+							      "diff": {
+							        "properties": {
+							          "collections": {
+							            "items": {
+							              "properties": {
+							                "collection": {
+							                  "type": "string",
+							                },
+							                "diff": {
+							                  "items": {
+							                    "type": "object",
+							                  },
+							                  "type": "array",
+							                },
+							              },
+							              "type": "object",
+							            },
+							            "type": "array",
+							          },
+							          "fields": {
+							            "items": {
+							              "properties": {
+							                "collection": {
+							                  "type": "string",
+							                },
+							                "diff": {
+							                  "items": {
+							                    "type": "object",
+							                  },
+							                  "type": "array",
+							                },
+							                "field": {
+							                  "type": "string",
+							                },
+							              },
+							              "type": "object",
+							            },
+							            "type": "array",
+							          },
+							          "relations": {
+							            "items": {
+							              "properties": {
+							                "collection": {
+							                  "type": "string",
+							                },
+							                "diff": {
+							                  "items": {
+							                    "type": "object",
+							                  },
+							                  "type": "array",
+							                },
+							                "field": {
+							                  "type": "string",
+							                },
+							                "related_collection": {
+							                  "type": "string",
+							                },
+							              },
+							              "type": "object",
+							            },
+							            "type": "array",
+							          },
+							        },
+							        "type": "object",
+							      },
+							      "hash": {
+							        "type": "string",
+							      },
+							    },
+							    "type": "object",
+							  },
+							  "Error": {
+							    "properties": {
+							      "extensions": {
+							        "additionalProperties": true,
+							        "properties": {
+							          "code": {
+							            "type": "string",
+							          },
+							        },
+							        "required": [
+							          "code",
+							        ],
+							        "type": "object",
+							      },
+							      "message": {
+							        "type": "string",
+							      },
+							    },
+							    "required": [
+							      "message",
+							      "extensions",
+							    ],
+							    "type": "object",
+							  },
+							  "Fields": {
+							    "properties": {
+							      "collection": {
+							        "description": "Unique name of the collection this field is in.",
+							        "example": "about_us",
+							        "type": "string",
+							      },
+							      "field": {
+							        "description": "Unique name of the field. Field name is unique within the collection.",
+							        "example": "id",
+							        "type": "string",
+							      },
+							      "meta": {
+							        "description": "The meta info.",
+							        "nullable": true,
+							        "properties": {
+							          "collection": {
+							            "description": "Unique name of the collection this field is in.",
+							            "example": "posts",
+							            "type": "string",
+							          },
+							          "display": {
+							            "description": "What display is used in the admin app to display the value for this field.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "display_options": {
+							            "description": "Options for the display that's used. This format is based on the individual display.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "object",
+							          },
+							          "field": {
+							            "description": "Unique name of the field. Field name is unique within the collection.",
+							            "example": "title",
+							            "type": "string",
+							          },
+							          "group": {
+							            "description": "What field group this field is part of.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "integer",
+							          },
+							          "hidden": {
+							            "description": "If this field should be hidden.",
+							            "example": true,
+							            "type": "boolean",
+							          },
+							          "id": {
+							            "description": "Unique identifier for the field in the \`directus_fields\` collection.",
+							            "example": 3,
+							            "type": "integer",
+							          },
+							          "locked": {
+							            "description": "If the field can be altered by the end user. Most Directus system fields have this value set to \`true\`.",
+							            "example": true,
+							            "type": "boolean",
+							          },
+							          "note": {
+							            "description": "A user provided note for the field. Will be rendered alongside the interface on the edit page.",
+							            "example": "",
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "options": {
+							            "description": "Options for the interface that's used. This format is based on the individual interface.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "object",
+							          },
+							          "readonly": {
+							            "description": "Prevents the user from editing the value in the field.",
+							            "example": false,
+							            "type": "boolean",
+							          },
+							          "sort": {
+							            "description": "Sort order of this field on the edit page of the admin app.",
+							            "example": 1,
+							            "nullable": true,
+							            "type": "integer",
+							          },
+							          "special": {
+							            "description": "Transformation flags for field",
+							            "example": null,
+							            "items": {
+							              "type": "string",
+							            },
+							            "nullable": true,
+							            "type": "array",
+							          },
+							          "system-interface": {
+							            "description": "What interface is used in the admin app to edit the value for this field.",
+							            "example": "primary-key",
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "translations": {
+							            "description": "Key value pair of \`<language>: <translation>\` that allows the user to change the displayed name of the field in the admin app.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "object",
+							          },
+							          "width": {
+							            "description": "Width of the field on the edit form.",
+							            "enum": [
+							              "half",
+							              "half-left",
+							              "half-right",
+							              "full",
+							              "fill",
+							              null,
+							            ],
+							            "example": null,
+							            "nullable": true,
+							            "type": "string",
+							          },
+							        },
+							        "type": "object",
+							      },
+							      "schema": {
+							        "description": "The schema info.",
+							        "properties": {
+							          "comment": {
+							            "description": "Comment as saved in the database.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "default_value": {
+							            "description": "The default value of the field.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "foreign_key_column": {
+							            "description": "Related column from the foreign key constraint.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "foreign_key_schema": {
+							            "description": "Related schema from the foreign key constraint (pg only).",
+							            "example": null,
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "foreign_key_table": {
+							            "description": "Related table from the foreign key constraint.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "string",
+							          },
+							          "has_auto_increment": {
+							            "description": "If the field has auto increment.",
+							            "example": false,
+							            "type": "boolean",
+							          },
+							          "is_nullable": {
+							            "description": "If the field is nullable.",
+							            "example": false,
+							            "type": "boolean",
+							          },
+							          "is_primary_key": {
+							            "description": "If the field is primary key.",
+							            "example": false,
+							            "type": "boolean",
+							          },
+							          "max_length": {
+							            "description": "The max length of the field.",
+							            "example": null,
+							            "nullable": true,
+							            "type": "integer",
+							          },
+							          "name": {
+							            "description": "The name of the field.",
+							            "example": "title",
+							            "type": "string",
+							          },
+							          "schema": {
+							            "description": "Database schema (pg only).",
+							            "example": "public",
+							            "type": "string",
+							          },
+							          "table": {
+							            "description": "The collection of the field.",
+							            "example": "posts",
+							            "type": "string",
+							          },
+							          "type": {
+							            "description": "The datatype of the field.",
+							            "example": "string",
+							            "type": "string",
+							          },
+							        },
+							        "type": "object",
+							      },
+							      "type": {
+							        "description": "Directus specific data type. Used to cast values in the API.",
+							        "example": "integer",
+							        "type": "string",
+							      },
+							    },
+							    "type": "object",
+							  },
+							  "ItemsTestTable": {
+							    "properties": {
+							      "blob": {
+							        "nullable": true,
+							      },
+							      "id": {
+							        "nullable": false,
+							        "type": "integer",
+							      },
+							    },
+							    "required": [
+							      "id",
+							    ],
+							    "type": "object",
+							    "x-collection": "test_table",
+							  },
+							  "Query": {
+							    "properties": {
+							      "deep": {
+							        "description": "Deep allows you to set any of the other query parameters on a nested relational dataset.",
+							        "example": {
+							          "related_articles": {
+							            "_limit": 3,
+							          },
+							        },
+							        "type": "object",
+							      },
+							      "fields": {
+							        "description": "Control what fields are being returned in the object.",
+							        "example": [
+							          "*",
+							          "*.*",
+							        ],
+							        "items": {
+							          "type": "string",
+							        },
+							        "type": "array",
+							      },
+							      "filter": {
+							        "example": {
+							          "<field>": {
+							            "<operator>": "<value>",
+							          },
+							        },
+							        "type": "object",
+							      },
+							      "limit": {
+							        "description": "Set the maximum number of items that will be returned",
+							        "type": "number",
+							      },
+							      "offset": {
+							        "description": "How many items to skip when fetching data.",
+							        "type": "number",
+							      },
+							      "page": {
+							        "description": "Cursor for use in pagination. Often used in combination with limit.",
+							        "type": "number",
+							      },
+							      "search": {
+							        "description": "Filter by items that contain the given search query in one of their fields.",
+							        "type": "string",
+							      },
+							      "sort": {
+							        "description": "How to sort the returned items.",
+							        "example": [
+							          "-date_created",
+							        ],
+							        "items": {
+							          "type": "string",
+							        },
+							        "type": "array",
+							      },
+							    },
+							    "type": "object",
+							  },
+							  "Relations": {
+							    "properties": {
+							      "id": {
+							        "description": "Unique identifier for the relation.",
+							        "example": 1,
+							        "type": "integer",
+							      },
+							      "junction_field": {
+							        "description": "Field on the junction table that holds the many field of the related relation.",
+							        "example": null,
+							        "nullable": true,
+							        "type": "string",
+							      },
+							      "many_collection": {
+							        "description": "Collection that has the field that holds the foreign key.",
+							        "example": "directus_activity",
+							        "type": "string",
+							      },
+							      "many_field": {
+							        "description": "Foreign key. Field that holds the primary key of the related collection.",
+							        "example": "user",
+							        "type": "string",
+							      },
+							      "many_primary": {
+							        "description": "The primary key field of the current collection.",
+							        "example": "id",
+							        "type": "string",
+							      },
+							      "one_collection": {
+							        "description": "Collection on the _one_ side of the relationship.",
+							        "example": "directus_users",
+							        "type": "string",
+							      },
+							      "one_field": {
+							        "description": "Alias column that serves as the _one_ side of the relationship.",
+							        "example": null,
+							        "nullable": true,
+							        "type": "string",
+							      },
+							      "one_primary": {
+							        "description": "The primary key field of the related collection.",
+							        "example": "id",
+							        "type": "string",
+							      },
+							    },
+							    "type": "object",
+							  },
+							  "Schema": {
+							    "properties": {
+							      "collections": {
+							        "items": {
+							          "$ref": "#/components/schemas/Collections",
+							        },
+							        "type": "array",
+							      },
+							      "directus": {
+							        "type": "string",
+							      },
+							      "fields": {
+							        "items": {
+							          "$ref": "#/components/schemas/Fields",
+							        },
+							        "type": "array",
+							      },
+							      "relations": {
+							        "items": {
+							          "$ref": "#/components/schemas/Relations",
+							        },
+							        "type": "array",
+							      },
+							      "vendor": {
+							        "type": "string",
+							      },
+							      "version": {
+							        "example": 1,
+							        "type": "integer",
+							      },
+							    },
+							    "type": "object",
+							  },
+							  "x-metadata": {
+							    "properties": {
+							      "filter_count": {
+							        "description": "Returns the item count of the collection you're querying, taking the current filter/search parameters into account.",
+							        "type": "integer",
+							      },
+							      "total_count": {
+							        "description": "Returns the total item count of the collection you're querying.",
+							        "type": "integer",
+							      },
+							    },
+							    "type": "object",
+							  },
 							}
 						`);
 					});
