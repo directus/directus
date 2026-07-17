@@ -416,6 +416,7 @@ functions:
   minute: Minut
   second: Sekund
   count: Arv
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
@@ -683,6 +684,7 @@ operators:
   has: Sisaldab neid võtmeid
   intersects: Lõikub
   nintersects: Ei Lõiku
+  json: JSON
 loading: Laadimine...
 drop_to_upload: Lohista üleslaadimiseks
 item: Kirje
