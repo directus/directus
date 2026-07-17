@@ -53,8 +53,8 @@ properties:
     oneOf:
       - type: string
         format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Operations'
-    nullable: true
   reject:
     description:
       The operation triggered when the current operation fails (or `otherwise` logic of a condition operation).
@@ -62,8 +62,8 @@ properties:
     oneOf:
       - type: string
         format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Operations'
-    nullable: true
   flow:
     description: The flow containing this operation.
     example: 92e82998-e421-412f-a513-13701e83e4ce

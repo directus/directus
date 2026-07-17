@@ -56,8 +56,8 @@ properties:
     oneOf:
       - type: string
         format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Files'
-    nullable: true
   language:
     description: The user's language used in Directus.
     example: en-US
@@ -97,8 +97,8 @@ properties:
     oneOf:
       - type: string
         format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Roles'
-    nullable: true
   policies:
     description: Policies assigned to this user (via `directus_access`).
     type: array

@@ -19,5 +19,5 @@ properties:
     oneOf:
       - type: string
         format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Folders'
-    nullable: true

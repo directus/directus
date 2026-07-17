@@ -53,8 +53,8 @@ properties:
       format: uuid
   parent:
     description: UUID of the parent role, or null for top-level roles.
-    nullable: true
     oneOf:
       - type: string
         format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Roles'

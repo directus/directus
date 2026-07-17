@@ -48,16 +48,16 @@ properties:
     oneOf:
       - type: string
         format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Users'
-    nullable: true
   user_updated:
     description: User that last updated the Content Version.
     example: 63716273-0f29-4648-8a2a-2af2948f6f78
     oneOf:
       - type: string
         format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Users'
-    nullable: true
   delta:
     description: The current changes compared to the main version of the item.
     example:

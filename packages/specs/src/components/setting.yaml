@@ -106,8 +106,8 @@ properties:
     oneOf:
       - type: string
         format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Roles'
-    nullable: true
   public_registration_email_filter:
     description: >-
       Directus `Filter` evaluated against `{ email }` to gate public registration. A non-empty validation result denies

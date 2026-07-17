@@ -34,8 +34,8 @@ properties:
     oneOf:
       - type: string
         format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Folders'
-    nullable: true
   created_on:
     description: When the file was created.
     example: '2019-12-03T00:10:15+00:00'
@@ -47,8 +47,8 @@ properties:
     oneOf:
       - type: string
         format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Users'
-    nullable: true
   uploaded_on:
     description: When the file was last uploaded/replaced.
     example: '2019-12-03T00:10:15+00:00'
