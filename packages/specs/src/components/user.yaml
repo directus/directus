@@ -1,25 +1,38 @@
 type: object
+# Runtime: User type
+# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/users.ts
 properties:
   id:
     description: Unique identifier for the user.
     example: 63716273-0f29-4648-8a2a-2af2948f6f78
     type: string
+    format: uuid
+  status:
+    description: Status of the user.
+    example: active
+    type: string
+    enum: [active, archived, draft, invited, suspended, unverified]
   first_name:
     description: First name of the user.
     example: Admin
     type: string
+    nullable: true
   last_name:
     description: Last name of the user.
     example: User
     type: string
+    nullable: true
   email:
     description: Unique email address for the user.
     example: admin@example.com
     type: string
     format: email
+    nullable: true
   password:
     description: Password of the user.
     type: string
+    nullable: true
+    writeOnly: true
   location:
     description: The user's location.
     example: null
@@ -54,32 +67,62 @@ properties:
     description: The user's language used in Directus.
     example: en-US
     type: string
-  theme:
-    description: What theme the user is using.
+    nullable: true
+  appearance:
+    # TODO: https://github.com/directus/directus/issues/27700#issuecomment-4996660653
+    description: Theme appearance used by the Admin App for this user.
     example: auto
     type: string
-    enum: [light, dark, auto]
+    enum: [auto, dark, light, null]
+    nullable: true
+  theme_light:
+    description: Theme id to use as the light theme for this user.
+    type: string
+    nullable: true
+  theme_dark:
+    description: Theme id to use as the dark theme for this user.
+    type: string
+    nullable: true
+  theme_light_overrides:
+    description: CSS variable overrides applied on top of the light theme for this user.
+    type: object
+    nullable: true
+  theme_dark_overrides:
+    description: CSS variable overrides applied on top of the dark theme for this user.
+    type: object
+    nullable: true
   tfa_secret:
-    description: The 2FA secret string that's used to generate one time passwords.
+    description: The 2FA secret string that's used to generate one time passwords. Never returned on read.
     example: null
     type: string
     nullable: true
-  status:
-    description: Status of the user.
-    example: active
-    type: string
-    enum: [active, invited, draft, suspended, deleted]
+    writeOnly: true
   role:
-    description: Unique identifier of the role of this user.
+    description: Role assigned to this user.
     example: 2f24211d-d928-469a-aea3-3c8f53d4e426
     oneOf:
       - type: string
         format: uuid
       - $ref: '../openapi.yaml#/components/schemas/Roles'
+    nullable: true
+  policies:
+    description: Policies assigned to this user (via `directus_access`).
+    type: array
+    # TODO: https://github.com/directus/directus/issues/27925#issuecomment-4998154731
+    # After uncommenting, also remove the `items: type: string, format: uuid` block below.
+    # items:
+    #   oneOf:
+    #     - type: string
+    #       format: uuid
+    #     - $ref: '../openapi.yaml#/components/schemas/Policies'
+    items:
+      type: string
+      format: uuid
   token:
     description: Static token for the user.
     type: string
     nullable: true
+    writeOnly: true
   last_access:
     description: When this user used the API last.
     example: '2020-05-31T14:32:37Z'
@@ -91,3 +134,24 @@ properties:
     example: /my-project/settings/collections/a
     type: string
     nullable: true
+  external_identifier:
+    description: External SSO provider identifier for this user.
+    type: string
+    nullable: true
+  auth_data:
+    description: Opaque data blob stored by SSO providers.
+    type: object
+    nullable: true
+  provider:
+    description: SSO provider name. `default` for the built-in credential provider.
+    example: default
+    type: string
+  text_direction:
+    description: Text direction used in the Admin App.
+    example: auto
+    type: string
+    enum: [auto, ltr, rtl]
+  email_notifications:
+    description: Whether the user receives system email notifications.
+    example: true
+    type: boolean
