@@ -14,16 +14,14 @@ type QueryFilter = SdkQueryFilter<Schema, Articles>;
 test('count of the primary key returns matching items, not join rows, across an m2m filter (REST)', async () => {
 	const marker = 'm2m-count-id';
 
-	await Promise.all(
-		range(4).map((i) =>
-			api.request(
-				createItem(collections.articles, {
-					title: `${marker}-${i}`,
-					tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-${i}-${t}` } })),
-				}),
-			),
-		),
-	);
+	for (const i of range(4)) {
+		await api.request(
+			createItem(collections.articles, {
+				title: `${marker}-${i}`,
+				tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-${i}-${t}` } })),
+			}),
+		);
+	}
 
 	const filter: QueryFilter = { tags: { tags_id: { tag: { _starts_with: marker } } } };
 
@@ -40,16 +38,14 @@ test('count of the primary key returns matching items, not join rows, across an 
 test('count(*) returns matching items across an m2m filter (REST)', async () => {
 	const marker = 'm2m-count-star';
 
-	await Promise.all(
-		range(4).map((i) =>
-			api.request(
-				createItem(collections.articles, {
-					title: `${marker}-${i}`,
-					tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-${i}-${t}` } })),
-				}),
-			),
-		),
-	);
+	for (const i of range(4)) {
+		await api.request(
+			createItem(collections.articles, {
+				title: `${marker}-${i}`,
+				tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-${i}-${t}` } })),
+			}),
+		);
+	}
 
 	const filter: QueryFilter = { tags: { tags_id: { tag: { _starts_with: marker } } } };
 
@@ -61,16 +57,14 @@ test('count(*) returns matching items across an m2m filter (REST)', async () => 
 test('countDistinct on the primary key matches count across an m2m filter (REST)', async () => {
 	const marker = 'm2m-count-distinct';
 
-	await Promise.all(
-		range(4).map((i) =>
-			api.request(
-				createItem(collections.articles, {
-					title: `${marker}-${i}`,
-					tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-${i}-${t}` } })),
-				}),
-			),
-		),
-	);
+	for (const i of range(4)) {
+		await api.request(
+			createItem(collections.articles, {
+				title: `${marker}-${i}`,
+				tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-${i}-${t}` } })),
+			}),
+		);
+	}
 
 	const filter: QueryFilter = { tags: { tags_id: { tag: { _starts_with: marker } } } };
 
@@ -84,16 +78,14 @@ test('countDistinct on the primary key matches count across an m2m filter (REST)
 test('count is not inflated when the m2m filter uses an explicit _some (REST)', async () => {
 	const marker = 'm2m-some';
 
-	await Promise.all(
-		range(4).map((i) =>
-			api.request(
-				createItem(collections.articles, {
-					title: `${marker}-${i}`,
-					tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-${i}-${t}` } })),
-				}),
-			),
-		),
-	);
+	for (const i of range(4)) {
+		await api.request(
+			createItem(collections.articles, {
+				title: `${marker}-${i}`,
+				tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-${i}-${t}` } })),
+			}),
+		);
+	}
 
 	const filter = { tags: { _some: { tags_id: { tag: { _starts_with: marker } } } } } as QueryFilter;
 
@@ -110,16 +102,14 @@ test('count is not inflated when the m2m filter uses an explicit _some (REST)', 
 test('count returns matching items across an o2m filter, with and without _some (REST)', async () => {
 	const marker = 'o2m-count';
 
-	await Promise.all(
-		range(3).map((i) =>
-			api.request(
-				createItem(collections.articles, {
-					title: `${marker}-${i}`,
-					links: range(2).map((l) => ({ link: `${marker}-${i}-${l}` })),
-				}),
-			),
-		),
-	);
+	for (const i of range(3)) {
+		await api.request(
+			createItem(collections.articles, {
+				title: `${marker}-${i}`,
+				links: range(2).map((l) => ({ link: `${marker}-${i}-${l}` })),
+			}),
+		);
+	}
 
 	const filter: QueryFilter = { links: { link: { _starts_with: marker } } };
 	const filterSome = { links: { _some: { link: { _starts_with: marker } } } } as QueryFilter;
@@ -142,16 +132,14 @@ test('count returns matching items across an o2m filter, with and without _some 
 test('count is unaffected by a non-multiplying m2o filter (REST)', async () => {
 	const marker = 'm2o-count';
 
-	await Promise.all(
-		range(5).map((i) =>
-			api.request(
-				createItem(collections.articles, {
-					title: `${marker}-${i}`,
-					author: { name: `${marker}-author` },
-				}),
-			),
-		),
-	);
+	for (const i of range(5)) {
+		await api.request(
+			createItem(collections.articles, {
+				title: `${marker}-${i}`,
+				author: { name: `${marker}-author` },
+			}),
+		);
+	}
 
 	const filter: QueryFilter = { author: { name: { _eq: `${marker}-author` } } };
 
@@ -168,16 +156,14 @@ test('count is unaffected by a non-multiplying m2o filter (REST)', async () => {
 test('count matches item count when the relational filter is wrapped in _or (REST)', async () => {
 	const marker = 'or-count';
 
-	await Promise.all(
-		range(4).map((i) =>
-			api.request(
-				createItem(collections.articles, {
-					title: `${marker}-${i}`,
-					tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-${i}-${t}` } })),
-				}),
-			),
-		),
-	);
+	for (const i of range(4)) {
+		await api.request(
+			createItem(collections.articles, {
+				title: `${marker}-${i}`,
+				tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-${i}-${t}` } })),
+			}),
+		);
+	}
 
 	const filter = { _or: [{ tags: { tags_id: { tag: { _starts_with: marker } } } }] } as QueryFilter;
 
@@ -194,18 +180,16 @@ test('count matches item count when the relational filter is wrapped in _or (RES
 test('count matches item count for a combined scalar + m2o + m2m filter (REST)', async () => {
 	const marker = 'combined-count';
 
-	await Promise.all(
-		range(4).map((i) =>
-			api.request(
-				createItem(collections.articles, {
-					title: `${marker}-${i}`,
-					votes: 1,
-					author: { name: `${marker}-author` },
-					tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-${i}-${t}` } })),
-				}),
-			),
-		),
-	);
+	for (const i of range(4)) {
+		await api.request(
+			createItem(collections.articles, {
+				title: `${marker}-${i}`,
+				votes: 1,
+				author: { name: `${marker}-author` },
+				tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-${i}-${t}` } })),
+			}),
+		);
+	}
 
 	const filter: QueryFilter = {
 		votes: { _eq: 1 },
@@ -226,26 +210,25 @@ test('count matches item count for a combined scalar + m2o + m2m filter (REST)',
 test('grouped count of the primary key counts distinct items per group across an m2m filter (REST)', async () => {
 	const marker = 'group-count';
 
-	await Promise.all([
-		...range(3).map((i) =>
-			api.request(
-				createItem(collections.articles, {
-					title: `${marker}-a-${i}`,
-					votes: 1,
-					tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-a-${i}-${t}` } })),
-				}),
-			),
-		),
-		...range(2).map((i) =>
-			api.request(
-				createItem(collections.articles, {
-					title: `${marker}-b-${i}`,
-					votes: 2,
-					tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-b-${i}-${t}` } })),
-				}),
-			),
-		),
-	]);
+	for (const i of range(3)) {
+		await api.request(
+			createItem(collections.articles, {
+				title: `${marker}-a-${i}`,
+				votes: 1,
+				tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-a-${i}-${t}` } })),
+			}),
+		);
+	}
+
+	for (const i of range(2)) {
+		await api.request(
+			createItem(collections.articles, {
+				title: `${marker}-b-${i}`,
+				votes: 2,
+				tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-b-${i}-${t}` } })),
+			}),
+		);
+	}
 
 	const filter: QueryFilter = { tags: { tags_id: { tag: { _starts_with: marker } } } };
 
@@ -261,35 +244,35 @@ test('grouped count of the primary key counts distinct items per group across an
 test('grouped count with a limit keeps per-group counts correct across an m2m filter (REST)', async () => {
 	const marker = 'group-limit-count';
 
-	await Promise.all([
-		...range(4).map((i) =>
-			api.request(
-				createItem(collections.articles, {
-					title: `${marker}-a-${i}`,
-					votes: 1,
-					tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-a-${i}-${t}` } })),
-				}),
-			),
-		),
-		...range(3).map((i) =>
-			api.request(
-				createItem(collections.articles, {
-					title: `${marker}-b-${i}`,
-					votes: 2,
-					tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-b-${i}-${t}` } })),
-				}),
-			),
-		),
-		...range(2).map((i) =>
-			api.request(
-				createItem(collections.articles, {
-					title: `${marker}-c-${i}`,
-					votes: 3,
-					tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-c-${i}-${t}` } })),
-				}),
-			),
-		),
-	]);
+	for (const i of range(4)) {
+		await api.request(
+			createItem(collections.articles, {
+				title: `${marker}-a-${i}`,
+				votes: 1,
+				tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-a-${i}-${t}` } })),
+			}),
+		);
+	}
+
+	for (const i of range(3)) {
+		await api.request(
+			createItem(collections.articles, {
+				title: `${marker}-b-${i}`,
+				votes: 2,
+				tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-b-${i}-${t}` } })),
+			}),
+		);
+	}
+
+	for (const i of range(2)) {
+		await api.request(
+			createItem(collections.articles, {
+				title: `${marker}-c-${i}`,
+				votes: 3,
+				tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-c-${i}-${t}` } })),
+			}),
+		);
+	}
 
 	const filter: QueryFilter = { tags: { tags_id: { tag: { _starts_with: marker } } } };
 
@@ -310,16 +293,14 @@ test('grouped count with a limit keeps per-group counts correct across an m2m fi
 test('countAll returns matching items across an m2m filter (GraphQL)', async () => {
 	const marker = 'gql-countall';
 
-	await Promise.all(
-		range(4).map((i) =>
-			api.request(
-				createItem(collections.articles, {
-					title: `${marker}-${i}`,
-					tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-${i}-${t}` } })),
-				}),
-			),
-		),
-	);
+	for (const i of range(4)) {
+		await api.request(
+			createItem(collections.articles, {
+				title: `${marker}-${i}`,
+				tags: range(3).map((t) => ({ tags_id: { tag: `${marker}-${i}-${t}` } })),
+			}),
+		);
+	}
 
 	const result = (await api.query(`
 		query {
