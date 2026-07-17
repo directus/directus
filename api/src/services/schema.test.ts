@@ -6,8 +6,8 @@ import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 import type { Collection } from '../types/collection.js';
-import { applyDiff } from '../utils/apply-diff.js';
-import { getSnapshot } from '../utils/get-snapshot.js';
+import { applyDiff } from '../utils/schema/apply-diff.js';
+import { getSnapshot } from '../utils/schema/get-snapshot.js';
 import { SchemaService } from './schema.js';
 
 vi.mock('directus/version', () => ({ version: '0.0.0' }));
@@ -16,11 +16,11 @@ vi.mock('../../src/database/index.js', () => {
 	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
 
-vi.mock('../utils/get-snapshot.js', () => ({
+vi.mock('../utils/schema/get-snapshot.js', () => ({
 	getSnapshot: vi.fn(),
 }));
 
-vi.mock('../utils/apply-diff.js', () => ({
+vi.mock('../utils/schema/apply-diff.js', () => ({
 	applyDiff: vi.fn(),
 }));
 
@@ -194,6 +194,18 @@ describe('Services / Schema', () => {
 			const service = new SchemaService({ knex: db, accountability: { role: 'admin', admin: true } as Accountability });
 
 			await expect(service.diff(testSnapshot, { currentSnapshot: testSnapshot, force: true })).resolves.toBeNull();
+		});
+
+		test('should return null in merge mode when the only change is a deletion', async () => {
+			const service = new SchemaService({ knex: db, accountability: { role: 'admin', admin: true } as Accountability });
+
+			const result = await service.diff(testSnapshot, {
+				currentSnapshot: snapshotToApply,
+				force: true,
+				mode: 'merge',
+			});
+
+			expect(result).toBeNull();
 		});
 	});
 

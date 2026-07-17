@@ -1,41 +1,41 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { beforeEach, describe, expect, type Mock, test, vi } from 'vitest';
-import getDatabase, { getDatabaseClient } from '../database/index.js';
-import { CollectionsService } from '../services/collections.js';
-import { FieldsService } from '../services/fields.js';
-import { RelationsService } from '../services/relations.js';
-import { getSchema } from './get-schema.js';
+import getDatabase, { getDatabaseClient } from '../../database/index.js';
+import { CollectionsService } from '../../services/collections.js';
+import { FieldsService } from '../../services/fields.js';
+import { RelationsService } from '../../services/relations.js';
+import { getSchema } from '../get-schema.js';
+import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from '../sanitize-schema.js';
 import { getSnapshot } from './get-snapshot.js';
-import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
 // Mock dependencies
 vi.mock('directus/version', () => ({
 	version: '10.0.0',
 }));
 
-vi.mock('../database/index.js', () => ({
+vi.mock('../../database/index.js', () => ({
 	default: vi.fn(),
 	getDatabaseClient: vi.fn(),
 }));
 
-vi.mock('../services/collections.js', () => ({
+vi.mock('../../services/collections.js', () => ({
 	CollectionsService: vi.fn(),
 }));
 
-vi.mock('../services/fields.js', () => ({
+vi.mock('../../services/fields.js', () => ({
 	FieldsService: vi.fn(),
 }));
 
-vi.mock('../services/relations.js', () => ({
+vi.mock('../../services/relations.js', () => ({
 	RelationsService: vi.fn(),
 }));
 
-vi.mock('./get-schema.js', () => ({
+vi.mock('../get-schema.js', () => ({
 	getSchema: vi.fn(),
 }));
 
-vi.mock('./sanitize-schema.js', () => ({
+vi.mock('../sanitize-schema.js', () => ({
 	sanitizeCollection: vi.fn((c) => c),
 	sanitizeField: vi.fn((f) => f),
 	sanitizeRelation: vi.fn((r) => r),

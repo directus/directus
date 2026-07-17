@@ -122,14 +122,33 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	req.pipe(busboy);
 };
 
+const diffQuerySchema = z.object({
+	// A bare `?force` (empty string) counts as true; an explicit `?force=false` stays false.
+	force: z
+		.string()
+		.optional()
+		.transform((value) => value === '' || toBoolean(value)),
+	mode: z.enum(['merge', 'mirror']).default('mirror'),
+});
+
 router.post(
 	'/diff',
+	checkIsAdmin,
 	asyncHandler(schemaMultipartHandler),
 	asyncHandler(async (req, res, next) => {
+		const parsed = diffQuerySchema.safeParse(req.query);
+		if (!parsed.success) throw new InvalidPayloadError({ reason: fromZodError(parsed.error).message });
+
 		const service = new SchemaService({ accountability: req.accountability });
 		const snapshot: Snapshot = res.locals['upload'];
 		const currentSnapshot = await service.snapshot();
-		const snapshotDiff = await service.diff(snapshot, { currentSnapshot, force: 'force' in req.query });
+
+		const snapshotDiff = await service.diff(snapshot, {
+			currentSnapshot,
+			force: parsed.data.force,
+			mode: parsed.data.mode,
+		});
+
 		if (!snapshotDiff) return next();
 
 		const currentSnapshotHash = getVersionedHash(currentSnapshot);
@@ -141,6 +160,7 @@ router.post(
 
 router.post(
 	'/apply',
+	checkIsAdmin,
 	asyncHandler(schemaMultipartHandler),
 	asyncHandler(async (req, res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });

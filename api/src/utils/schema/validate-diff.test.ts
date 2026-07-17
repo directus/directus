@@ -9,7 +9,7 @@ import type {
 	SnapshotWithHash,
 } from '@directus/types';
 import { describe, expect, test } from 'vitest';
-import type { Collection } from '../types/collection.js';
+import type { Collection } from '../../types/collection.js';
 import { validateApplyDiff } from './validate-diff.js';
 
 test('should fail on invalid diff schema', () => {
