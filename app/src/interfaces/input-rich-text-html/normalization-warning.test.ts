@@ -5,14 +5,15 @@ import { afterEach, describe, expect, test } from 'vitest';
 import { nextTick } from 'vue';
 import { createI18n } from 'vue-i18n';
 import { NORMALIZATION_WARNING_DISMISSED } from './composables/use-normalization-warning';
+import NormalizationWarningDialog from './drawers/normalization-warning-dialog.vue';
 import Interface from './input-rich-text-html.vue';
 
 /**
- * Integration wiring for the first-focus normalization warning: focusing the editor over a stored
- * value the schema can't represent must open the dialog (see use-normalization-warning.test.ts for
- * the trigger logic itself).
+ * Integration wiring for the normalization guard: a stored value the schema can't represent keeps
+ * the editor read-only (so no edit can reach autosave) until the warning dialog is confirmed
+ * (see use-normalization-warning.test.ts for the state machine itself).
  */
-async function mountWithValue(value: string) {
+async function mountWithValue(value: string | null) {
 	const i18n = createI18n({ legacy: false, locale: 'en-US', messages: { 'en-US': {} } });
 
 	const wrapper = mount(Interface, {
@@ -37,12 +38,8 @@ async function mountWithValue(value: string) {
 	return { wrapper, editor };
 }
 
-function focus(editor: Editor) {
-	editor.emit('focus', { editor, event: new FocusEvent('focus'), transaction: editor.state.tr });
-}
-
 function findDialog(wrapper: Awaited<ReturnType<typeof mountWithValue>>['wrapper']) {
-	return wrapper.find('normalization-warning-dialog-stub');
+	return wrapper.findComponent(NormalizationWarningDialog);
 }
 
 afterEach(() => {
@@ -50,21 +47,79 @@ afterEach(() => {
 });
 
 describe('normalization warning wiring', () => {
-	test('focusing the editor over a lossy stored value opens the warning dialog', async () => {
-		const { wrapper, editor } = await mountWithValue('<marquee>legacy</marquee>');
+	test('a lossy stored value mounts the editor read-only', async () => {
+		const { editor } = await mountWithValue('<marquee>legacy</marquee>');
 
-		focus(editor);
-		await nextTick();
-
-		expect(findDialog(wrapper).attributes('modelvalue')).toBe('true');
+		expect(editor.isEditable).toBe(false);
 	});
 
-	test('focusing the editor over a clean stored value opens nothing', async () => {
+	test('a clean stored value mounts the editor editable and clicking opens nothing', async () => {
 		const { wrapper, editor } = await mountWithValue('<p>hello <strong>world</strong></p>');
 
-		focus(editor);
+		expect(editor.isEditable).toBe(true);
+
+		await wrapper.findComponent(EditorContent).trigger('click');
+
+		expect(findDialog(wrapper).props('modelValue')).toBe(false);
+	});
+
+	test('clicking a locked editor opens the warning dialog', async () => {
+		const { wrapper } = await mountWithValue('<marquee>legacy</marquee>');
+
+		await wrapper.findComponent(EditorContent).trigger('click');
+
+		expect(findDialog(wrapper).props('modelValue')).toBe(true);
+	});
+
+	test('confirming the warning unlocks the editor', async () => {
+		const { wrapper, editor } = await mountWithValue('<marquee>legacy</marquee>');
+
+		await wrapper.findComponent(EditorContent).trigger('click');
+		findDialog(wrapper).vm.$emit('confirm');
+		await flushPromises();
 		await nextTick();
 
-		expect(findDialog(wrapper).attributes('modelvalue')).toBe('false');
+		expect(editor.isEditable).toBe(true);
+	});
+
+	// setEditable(false) only blocks typing — commands still run programmatically, so the toolbar
+	// (bold, source-code drawer, …) must be disabled too or it can mutate the doc around the lock
+	test('the lock disables the toolbar and hides the table bubble menu until confirmed', async () => {
+		const { wrapper } = await mountWithValue('<marquee>legacy</marquee>');
+
+		expect(wrapper.find('toolbar-stub').attributes('disabled')).toBe('true');
+		expect(wrapper.find('table-bubble-menu-stub').exists()).toBe(false);
+
+		await wrapper.findComponent(EditorContent).trigger('click');
+		findDialog(wrapper).vm.$emit('confirm');
+		await flushPromises();
+		await nextTick();
+
+		expect(wrapper.find('toolbar-stub').attributes('disabled')).toBe('false');
+		expect(wrapper.find('table-bubble-menu-stub').exists()).toBe(true);
+	});
+
+	// versioned/draft items mount the form while loading, so the value arrives as a later prop change
+	test('a lossy value that arrives after mount locks the editor', async () => {
+		const { wrapper, editor } = await mountWithValue(null);
+
+		expect(editor.isEditable).toBe(true);
+
+		await wrapper.setProps({ value: '<marquee>legacy</marquee>' });
+		await flushPromises();
+		await nextTick();
+
+		expect(editor.isEditable).toBe(false);
+	});
+
+	test('cancelling the warning keeps the editor read-only', async () => {
+		const { wrapper, editor } = await mountWithValue('<marquee>legacy</marquee>');
+
+		await wrapper.findComponent(EditorContent).trigger('click');
+		findDialog(wrapper).vm.$emit('cancel');
+		await flushPromises();
+		await nextTick();
+
+		expect(editor.isEditable).toBe(false);
 	});
 });

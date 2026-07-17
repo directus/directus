@@ -2,7 +2,7 @@
 import type { SettingsStorageAssetPreset } from '@directus/types';
 import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
-import { computed, ref, type Ref, toRefs, watch } from 'vue';
+import { computed, nextTick, ref, type Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
@@ -22,8 +22,10 @@ import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
 import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
+import VButton from '@/components/v-button.vue';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
 import { parseGlobalMimeTypeAllowList, useMimeTypeFilter } from '@/composables/use-mime-type-filter';
+import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
@@ -68,8 +70,25 @@ const fontFamily = computed(() => {
 	return `var(--theme--fonts--${token}--font-family)`;
 });
 
-// all three states are read-only; `nonEditable`/`comparisonMode` keep the normal look, `disabled` dims (see styles)
-const isEditable = computed(() => !props.disabled && !props.nonEditable && !props.comparisonMode);
+const {
+	normalizationLocked,
+	normalizationWarningOpen,
+	normalizationWarningDiff,
+	dontShowAgain,
+	checkValue,
+	onLockedClick,
+	confirmNormalizationWarning,
+	cancelNormalizationWarning,
+} = useNormalizationWarning(value);
+
+// skipped for display-only modes; comparison values carry diff spans the base schema would flag as loss
+if (!props.comparisonMode && !props.nonEditable) checkValue();
+
+// read-only states: `nonEditable`/`comparisonMode` keep the normal look, `disabled` dims (see styles),
+// `normalizationLocked` guards lossy stored HTML until the warning dialog is confirmed
+const isEditable = computed(
+	() => !props.disabled && !props.nonEditable && !props.comparisonMode && !normalizationLocked.value,
+);
 
 const editorDir = computed(() => (props.direction === 'rtl' ? 'rtl' : 'ltr'));
 
@@ -136,10 +155,35 @@ const editor = useEditor({
 		updateCount(editor as Editor);
 		emit('input', editor.isEmpty ? null : encodePageBreaks(editor.getHTML()));
 	},
-	onFocus: () => {
-		if (isEditable.value) onEditorFocus();
-	},
 });
+
+function onEditorClick() {
+	if (props.disabled || props.nonEditable || props.comparisonMode) return;
+	onLockedClick();
+}
+
+// raw mode edits the stored HTML as text in the code interface — emits never round-trip through
+// the schema, so nothing is normalized away; the loss-free alternative the warning offers
+const rawMode = ref(false);
+
+function enterRawMode() {
+	normalizationWarningOpen.value = false;
+	rawMode.value = true;
+}
+
+function exitRawMode() {
+	rawMode.value = false;
+	if (!editor.value) return;
+	if (encodePageBreaks(editor.value.getHTML()) !== props.value) syncValue(editor.value, props.value);
+	checkValue();
+}
+
+// the unlock flips `isEditable` on the next flush, so focus has to wait for it
+async function onWarningConfirm() {
+	confirmNormalizationWarning();
+	await nextTick();
+	editor.value?.commands.focus();
+}
 
 const settingsStore = useSettingsStore();
 const { info } = useServerStore();
@@ -201,15 +245,6 @@ const {
 	cancelNormalize,
 } = useSourceCode(editor as Ref<Editor>);
 
-const {
-	normalizationWarningOpen,
-	normalizationWarningDiff,
-	dontShowAgain,
-	onEditorFocus,
-	confirmNormalizationWarning,
-	cancelNormalizationWarning,
-} = useNormalizationWarning(editor as Ref<Editor>, value);
-
 // pause the surrounding view's focus trap while a drawer is open so its inputs stay reachable
 const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
 
@@ -224,10 +259,13 @@ watch(isEditable, (editable) => editor.value?.setEditable(editable));
 watch(
 	() => props.value,
 	(value) => {
+		// raw mode edits flow straight through the code interface; the editor syncs on exit instead
+		if (rawMode.value) return;
 		if (!editor.value) return;
 		// compare the encoded (stored) form so a re-emitted page-break marker doesn't look like a change
 		if (encodePageBreaks(editor.value.getHTML()) === value) return;
 		syncValue(editor.value, value);
+		if (!props.comparisonMode && !props.nonEditable) checkValue();
 	},
 );
 
@@ -246,12 +284,12 @@ onKeyStroke('Escape', () => {
 		:style="{ '--editor-font-family': fontFamily, '--page-break-label': pageBreakLabel }"
 	>
 		<Toolbar
-			v-if="!nonEditable && !comparisonMode"
+			v-if="!nonEditable && !comparisonMode && !rawMode"
 			:editor="editor"
 			:toolbar="toolbar"
 			:font="font"
 			:custom-formats="customFormatList"
-			:disabled="disabled"
+			:disabled="disabled || normalizationLocked"
 			:fullscreen="fullscreen"
 			:visualaid="visualaid"
 			@toggle-fullscreen="fullscreen = !fullscreen"
@@ -261,10 +299,25 @@ onKeyStroke('Escape', () => {
 			@open-link="openLinkDrawer"
 			@open-source-code="openSourceCodeDrawer"
 		/>
-		<EditorContent class="editor-content" :editor="editor" :dir="editorDir" />
+		<div v-if="rawMode" class="raw-mode">
+			<div class="raw-mode-bar">
+				<VButton x-small secondary @click="exitRawMode">
+					{{ t('wysiwyg_options.back_to_visual_editor') }}
+				</VButton>
+			</div>
+			<InterfaceInputCode
+				:value="value"
+				language="htmlmixed"
+				:line-number="false"
+				:disabled="disabled"
+				@input="$emit('input', $event)"
+			/>
+		</div>
+
+		<EditorContent v-show="!rawMode" class="editor-content" :editor="editor" :dir="editorDir" @click="onEditorClick" />
 
 		<span
-			v-if="softLength && !comparisonMode"
+			v-if="softLength && !comparisonMode && !rawMode"
 			class="remaining"
 			:class="{
 				warning: percRemaining < 10,
@@ -274,7 +327,7 @@ onKeyStroke('Escape', () => {
 			{{ softLength - count }}
 		</span>
 
-		<TableBubbleMenu v-if="!nonEditable && !comparisonMode" :editor="editor" />
+		<TableBubbleMenu v-if="!nonEditable && !comparisonMode && !normalizationLocked" :editor="editor" />
 
 		<ImageDrawer
 			v-model="imageDrawerOpen"
@@ -327,8 +380,9 @@ onKeyStroke('Escape', () => {
 			v-model="normalizationWarningOpen"
 			v-model:dont-show-again="dontShowAgain"
 			:diff="normalizationWarningDiff"
-			@confirm="confirmNormalizationWarning"
+			@confirm="onWarningConfirm"
 			@cancel="cancelNormalizationWarning"
+			@raw="enterRawMode"
 		/>
 	</div>
 </template>
@@ -378,6 +432,13 @@ onKeyStroke('Escape', () => {
 			overflow: auto;
 		}
 	}
+}
+
+.raw-mode-bar {
+	display: flex;
+	justify-content: flex-end;
+	padding: 0.5rem;
+	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
 .remaining {

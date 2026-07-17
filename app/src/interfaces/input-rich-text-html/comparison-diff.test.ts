@@ -88,7 +88,8 @@ describe('interface wiring', () => {
 	test('normal mode keeps chrome and strips diff spans', async () => {
 		const { wrapper, editor } = await mountInterface({});
 
-		expect(editor.isEditable).toBe(true);
+		// the stripped spans register as normalization loss, so the guard mounts the editor read-only
+		expect(editor.isEditable).toBe(false);
 		expect(wrapper.find('toolbar-stub').exists()).toBe(true);
 		expect(editor.getHTML()).toBe('<p>Hello world</p>');
 	});

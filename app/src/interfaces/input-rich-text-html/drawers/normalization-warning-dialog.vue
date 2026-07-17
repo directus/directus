@@ -11,14 +11,14 @@ import VDialog from '@/components/v-dialog.vue';
 import VNotice from '@/components/v-notice.vue';
 
 defineProps<{ diff: Change[] }>();
-const emit = defineEmits<{ confirm: []; cancel: [] }>();
+const emit = defineEmits<{ confirm: []; cancel: []; raw: [] }>();
 
 const open = defineModel<boolean>({ required: true });
 const dontShowAgain = defineModel<boolean>('dontShowAgain', { required: true });
 </script>
 
 <template>
-	<VDialog v-model="open" @esc="emit('cancel')" @apply="emit('confirm')">
+	<VDialog v-model="open" @esc="emit('cancel')" @apply="emit('raw')">
 		<VCard class="normalization-warning-dialog">
 			<VCardTitle>{{ $t('wysiwyg_options.normalization_warning_title') }}</VCardTitle>
 
@@ -33,8 +33,13 @@ const dontShowAgain = defineModel<boolean>('dontShowAgain', { required: true });
 			</div>
 
 			<VCardActions>
-				<VButton secondary @click="emit('cancel')">{{ $t('cancel') }}</VButton>
-				<VButton @click="emit('confirm')">{{ $t('continue') }}</VButton>
+				<VButton secondary @click="emit('cancel')">
+					{{ $t('wysiwyg_options.normalization_warning_keep_readonly') }}
+				</VButton>
+				<VButton secondary @click="emit('confirm')">
+					{{ $t('wysiwyg_options.normalization_warning_edit_anyway') }}
+				</VButton>
+				<VButton @click="emit('raw')">{{ $t('wysiwyg_options.normalization_warning_edit_raw') }}</VButton>
 			</VCardActions>
 		</VCard>
 	</VDialog>
