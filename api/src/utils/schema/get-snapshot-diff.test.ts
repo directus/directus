@@ -1,10 +1,10 @@
 import type { Snapshot } from '@directus/types';
 import { describe, expect, test, vi } from 'vitest';
+import { sanitizeField } from '../sanitize-schema.js';
 import { getSnapshotDiff } from './get-snapshot-diff.js';
-import { sanitizeField } from './sanitize-schema.js';
 
 // Mock the sanitize functions
-vi.mock('./sanitize-schema', () => ({
+vi.mock('../sanitize-schema', () => ({
 	sanitizeCollection: vi.fn((collection) => collection),
 	sanitizeField: vi.fn((field) => field),
 	sanitizeRelation: vi.fn((relation) => relation),
@@ -872,6 +872,277 @@ describe('getSnapshotDiff', () => {
 
 			expect(result.collections).toHaveLength(1); // posts deleted
 			expect(result.fields).toHaveLength(0); // posts.title filtered out because collection deleted
+		});
+	});
+
+	describe('merge mode', () => {
+		test('should exclude collection deletions', () => {
+			const current = createMockSnapshot({
+				collections: [{ collection: 'posts', meta: null, schema: { name: 'posts' } }],
+			});
+
+			const after = createMockSnapshot({ collections: [] });
+
+			expect(getSnapshotDiff(current, after).collections).toHaveLength(1);
+			expect(getSnapshotDiff(current, after, { mode: 'merge' }).collections).toHaveLength(0);
+		});
+
+		test('should exclude field deletions from collections that still exist', () => {
+			const current = createMockSnapshot({
+				collections: [{ collection: 'users', meta: null, schema: { name: 'users' } }],
+				fields: [{ collection: 'users', field: 'legacy', type: 'string', meta: null, schema: null }],
+			});
+
+			const after = createMockSnapshot({
+				collections: [{ collection: 'users', meta: null, schema: { name: 'users' } }],
+				fields: [],
+			});
+
+			expect(getSnapshotDiff(current, after).fields).toHaveLength(1);
+			expect(getSnapshotDiff(current, after, { mode: 'merge' }).fields).toHaveLength(0);
+		});
+
+		test('should exclude relation deletions', () => {
+			const current = createMockSnapshot({
+				collections: [{ collection: 'posts', meta: null, schema: { name: 'posts' } }],
+				relations: [{ collection: 'posts', field: 'author', related_collection: 'users', meta: null, schema: null }],
+			});
+
+			const after = createMockSnapshot({
+				collections: [{ collection: 'posts', meta: null, schema: { name: 'posts' } }],
+				relations: [],
+			});
+
+			expect(getSnapshotDiff(current, after).relations).toHaveLength(1);
+			expect(getSnapshotDiff(current, after, { mode: 'merge' }).relations).toHaveLength(0);
+		});
+
+		test('should keep create and update operations', () => {
+			const current = createMockSnapshot({
+				collections: [{ collection: 'posts', meta: { hidden: false }, schema: { name: 'posts' } }],
+			});
+
+			const after = createMockSnapshot({
+				collections: [
+					{ collection: 'posts', meta: { hidden: true }, schema: { name: 'posts' } },
+					{ collection: 'comments', meta: null, schema: { name: 'comments' } },
+				],
+			});
+
+			const result = getSnapshotDiff(current, after, { mode: 'merge' });
+
+			expect(result.collections).toHaveLength(2);
+			expect(result.collections.every((entry) => entry.diff[0]!.kind !== 'D')).toBe(true);
+		});
+
+		test('should keep an update that removes a nested property (not a whole-entity deletion)', () => {
+			const current = createMockSnapshot({
+				collections: [{ collection: 'articles', meta: null, schema: { name: 'articles' } }],
+				fields: [
+					{
+						collection: 'articles',
+						field: 'title',
+						type: 'string',
+						meta: { options: { foo: 1, bar: 2 } },
+						schema: null,
+					},
+				],
+			});
+
+			const after = createMockSnapshot({
+				collections: [{ collection: 'articles', meta: null, schema: { name: 'articles' } }],
+				fields: [
+					{ collection: 'articles', field: 'title', type: 'string', meta: { options: { bar: 2 } }, schema: null },
+				],
+			});
+
+			const result = getSnapshotDiff(current, after, { mode: 'merge' });
+
+			expect(result.fields).toHaveLength(1);
+			expect(result.fields[0]!.field).toBe('title');
+		});
+	});
+
+	describe('partial snapshot (scoped)', () => {
+		const partial = (overrides?: Record<string, unknown>) => createMockSnapshot({ version: 2, ...overrides });
+
+		test('should not delete collections absent from a partial snapshot', () => {
+			const current = createMockSnapshot({
+				collections: [
+					{ collection: 'articles', meta: null, schema: { name: 'articles' } },
+					{ collection: 'legacy', meta: null, schema: { name: 'legacy' } },
+				],
+			});
+
+			const after = partial({
+				collections: [{ collection: 'articles', meta: null, schema: { name: 'articles' } }],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.collections.find((entry) => entry.collection === 'legacy')).toBeUndefined();
+		});
+
+		test('should not delete fields of collections that are out of a partial snapshot scope', () => {
+			const current = createMockSnapshot({
+				collections: [
+					{ collection: 'articles', meta: null, schema: { name: 'articles' } },
+					{ collection: 'legacy', meta: null, schema: { name: 'legacy' } },
+				],
+				fields: [{ collection: 'legacy', field: 'title', type: 'string', meta: null, schema: null }],
+			});
+
+			const after = partial({
+				collections: [{ collection: 'articles', meta: null, schema: { name: 'articles' } }],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.fields.find((entry) => entry.collection === 'legacy')).toBeUndefined();
+		});
+
+		test('should still delete in-scope fields absent from a partial snapshot', () => {
+			const current = createMockSnapshot({
+				collections: [{ collection: 'articles', meta: null, schema: { name: 'articles' } }],
+				fields: [
+					{ collection: 'articles', field: 'keep', type: 'string', meta: null, schema: null },
+					{ collection: 'articles', field: 'drop', type: 'string', meta: null, schema: null },
+				],
+			});
+
+			const after = partial({
+				collections: [{ collection: 'articles', meta: null, schema: { name: 'articles' } }],
+				fields: [{ collection: 'articles', field: 'keep', type: 'string', meta: null, schema: null }],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.fields.find((entry) => entry.field === 'drop')?.diff[0]!.kind).toBe('D');
+		});
+
+		test('should not diff system fields when a partial snapshot is scoped to regular collections', () => {
+			const current = createMockSnapshot({
+				collections: [{ collection: 'articles', meta: null, schema: { name: 'articles' } }],
+				systemFields: [
+					{
+						collection: 'directus_users',
+						field: 'external_identifier',
+						type: 'string',
+						meta: null,
+						schema: { is_indexed: true },
+					},
+				],
+			});
+
+			const after = { collections: [{ collection: 'articles', meta: null, schema: { name: 'articles' } }] };
+
+			expect(getSnapshotDiff(current, createMockSnapshot(after)).systemFields).toHaveLength(1);
+			expect(getSnapshotDiff(current, partial(after)).systemFields).toHaveLength(0);
+		});
+
+		test('should diff system fields carried by a partial snapshot scoped to their system collection', () => {
+			const current = createMockSnapshot({ systemFields: [] });
+
+			const after = partial({
+				systemFields: [
+					{
+						collection: 'directus_users',
+						field: 'external_identifier',
+						type: 'string',
+						meta: null,
+						schema: { is_indexed: true },
+					},
+				],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.systemFields).toHaveLength(1);
+			expect(result.systemFields[0]!.collection).toBe('directus_users');
+		});
+
+		test('should leave out-of-scope system fields alone when a partial snapshot is scoped to a system collection', () => {
+			const current = createMockSnapshot({
+				systemFields: [
+					{
+						collection: 'directus_files',
+						field: 'uploaded_on',
+						type: 'timestamp',
+						meta: null,
+						schema: { is_indexed: true },
+					},
+				],
+			});
+
+			const after = partial({
+				systemFields: [
+					{
+						collection: 'directus_users',
+						field: 'external_identifier',
+						type: 'string',
+						meta: null,
+						schema: { is_indexed: true },
+					},
+				],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.systemFields.find((entry) => entry.collection === 'directus_files')).toBeUndefined();
+			expect(result.systemFields.find((entry) => entry.collection === 'directus_users')).toBeDefined();
+		});
+
+		test('should not let a system-collection scope reach the regular fields diff', () => {
+			const current = createMockSnapshot({
+				fields: [{ collection: 'directus_users', field: 'custom', type: 'string', meta: null, schema: null }],
+			});
+
+			const after = partial({
+				systemFields: [
+					{
+						collection: 'directus_users',
+						field: 'external_identifier',
+						type: 'string',
+						meta: null,
+						schema: { is_indexed: true },
+					},
+				],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.fields).toHaveLength(0);
+			expect(result.systemFields).toHaveLength(1);
+		});
+
+		test('should diff a custom field on a system collection that has no collections entry', () => {
+			const current = createMockSnapshot({ fields: [] });
+
+			const after = partial({
+				fields: [{ collection: 'directus_users', field: 'bio', type: 'string', meta: null, schema: null }],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.fields).toHaveLength(1);
+			expect(result.fields[0]!.collection).toBe('directus_users');
+			expect(result.fields[0]!.diff[0]!.kind).toBe('N');
+		});
+
+		test('should diff a custom relation on a system collection that has no collections entry', () => {
+			const current = createMockSnapshot({ relations: [] });
+
+			const after = partial({
+				relations: [
+					{ collection: 'directus_users', field: 'org', related_collection: 'orgs', meta: null, schema: null },
+				],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.relations).toHaveLength(1);
+			expect(result.relations[0]!.collection).toBe('directus_users');
+			expect(result.relations[0]!.diff[0]!.kind).toBe('N');
 		});
 	});
 });

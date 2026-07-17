@@ -6,7 +6,7 @@ vi.mock('directus/version', () => ({
 	version: '10.0.0',
 }));
 
-vi.mock('../database/index.js', () => ({
+vi.mock('../../database/index.js', () => ({
 	getDatabaseClient: () => 'sqlite',
 }));
 
@@ -20,7 +20,13 @@ describe('should fail on invalid snapshot schema', () => {
 	test('invalid version', () => {
 		const snapshot = { version: 0 } as Snapshot;
 
-		expect(() => validateSnapshot(snapshot)).toThrowError('"version" must be [1]');
+		expect(() => validateSnapshot(snapshot)).toThrowError('"version" must be one of [1, 2]');
+	});
+
+	test('accepts a partial snapshot (version 2)', () => {
+		const snapshot = { version: 2, directus: '10.0.0', vendor: 'sqlite' } as Snapshot;
+
+		expect(validateSnapshot(snapshot)).toBeUndefined();
 	});
 
 	test('invalid schema', () => {
