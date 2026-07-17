@@ -1,17 +1,59 @@
 type: object
+# Runtime: Settings type
+# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/settings.ts
+required:
+  [
+    id,
+    project_name,
+    auth_login_attempts,
+    storage_asset_transform,
+    module_bar,
+    default_appearance,
+    mcp_enabled,
+    mcp_oauth_enabled,
+    mcp_oauth_dcr_enabled,
+    mcp_oauth_cimd_enabled,
+    mcp_allow_deletes,
+    mcp_system_prompt_enabled,
+    public_registration,
+    public_registration_verify_email,
+    collaborative_editing_enabled,
+    product_updates,
+  ]
 properties:
   id:
-    description: Unique identifier for the setting.
+    # Single-row table; id is always 1.
     type: integer
-    example: 1
+    default: 1
   project_name:
     description: The name of the project.
     type: string
     example: Directus
+  project_descriptor:
+    description: Short descriptor shown next to the project name.
+    type: string
+    nullable: true
   project_url:
     description: The url of the project.
     type: string
     example: null
+    nullable: true
+  report_error_url:
+    description: URL to send error reports to.
+    type: string
+    nullable: true
+  report_bug_url:
+    description: URL where users can report bugs.
+    type: string
+    nullable: true
+  report_feature_url:
+    description: URL where users can request features.
+    type: string
+    nullable: true
+  default_language:
+    description: Default language for the project (ISO 639-1 code).
+    type: string
+    example: en-US
     nullable: true
   project_color:
     description: The brand color of the project.
@@ -24,18 +66,33 @@ properties:
     example: null
     nullable: true
   public_foreground:
-    description: The foreground of the project.
+    description: UUID of the asset shown on the foreground of public pages.
     type: string
+    format: uuid
     example: null
     nullable: true
   public_background:
-    description: The background of the project.
+    description:
+      Asset shown on the background of public pages. m2o relation to `directus_files`; `type` is the file's MIME type.
     type: object
     properties:
       id:
+        description: UUID of the asset file.
         type: string
+        format: uuid
+        example: null
+        nullable: true
       type:
+        description: MIME type of the asset file.
         type: string
+        example: image/jpeg
+        nullable: true
+    example: null
+    nullable: true
+  public_favicon:
+    description: UUID of the favicon asset.
+    type: string
+    format: uuid
     example: null
     nullable: true
   public_note:
@@ -43,29 +100,55 @@ properties:
     type: string
     example: null
     nullable: true
+  public_registration:
+    description: Whether unauthenticated visitors can register a new user account.
+    type: boolean
+    example: false
+  public_registration_verify_email:
+    description: Whether public registrations require email verification.
+    type: boolean
+    example: true
+  public_registration_role:
+    description: Role assigned to newly registered public users, or null to use the default role.
+    example: 2f24211d-d928-469a-aea3-3c8f53d4e426
+    oneOf:
+      - type: string
+        format: uuid
+      - $ref: '../openapi.yaml#/components/schemas/Roles'
+    nullable: true
+  public_registration_email_filter:
+    description: >-
+      Directus `Filter` evaluated against `{ email }` to gate public registration. A non-empty validation result denies
+      registration. Accepts the same operators and nesting (`_and`, `_or`) as the `?filter=` query parameter.
+    type: object
+    example:
+      email:
+        _ends_with: '@directus.com'
+    nullable: true
+  visual_editor_urls:
+    description: URLs allowed to use the live preview visual editor.
+    type: array
+    items:
+      type: object
+      properties:
+        url:
+          type: string
+    nullable: true
   auth_login_attempts:
     description: Allowed authentication login attempts before the user's status is set to blocked.
     type: integer
     example: 25
   auth_password_policy:
-    description: Authentication password policy.
+    description: Authentication password policy. Regex or empty.
     type: string
     nullable: true
-  storage_default_folder:
-    description: Default folder to place files
-    type: string
-    format: uuid
   storage_asset_transform:
     description: What transformations are allowed in the assets endpoint.
     type: string
-    enum:
-      - all
-      - none
-      - presets
-    example: 'all'
-    nullable: true
+    enum: [all, none, presets]
+    example: all
   storage_asset_presets:
-    description: Array of allowed
+    description: Array of allowed asset transformations.
     type: array
     items:
       type: object
@@ -76,52 +159,271 @@ properties:
         fit:
           description: Whether to crop the thumbnail to match the size, or maintain the aspect ratio.
           type: string
-          enum:
-            - cover
-            - contain
-            - inside
-            - outside
+          enum: [cover, contain, inside, outside, null]
+          nullable: true
         width:
           description: Width of the thumbnail.
           type: integer
+          nullable: true
         height:
           description: Height of the thumbnail.
           type: integer
+          nullable: true
         withoutEnlargement:
-          description: No image upscale
+          description: No image upscale.
           type: boolean
+          nullable: true
         quality:
           description: Quality of the compression used.
           type: integer
+          nullable: true
         format:
-          description: Reformat output image
+          description: Reformat output image.
           type: string
-          enum:
-            - ''
-            - jpeg
-            - png
-            - webp
-            - tiff
-            - avif
+          enum: [jpeg, png, webp, tiff, avif, null]
+          nullable: true
         transforms:
-          description: Additional transformations to apply
+          description:
+            Additional [Sharp](https://sharp.pixelplumbing.com/api-constructor/) transformations, each as a
+            `[methodName, ...args]` tuple.
           type: array
           nullable: true
           items:
-            type: object
-            properties:
-              method:
-                description: The Sharp method name
-                type: string
-              arguments:
-                description: A list of arguments to pass to the Sharp method
-                type: array
-                nullable: true
-                items:
-                  type: object
-                  properties:
-                    argument:
-                      description: A JSON representation of the argument value
-                      type: string
+            type: array
+          example:
+            - - blur
+              - 45
+            - - grayscale
+            - - extend
+              - right: 500
+                background: rgb(255, 0, 0)
     example: null
+    nullable: true
+  custom_aspect_ratios:
+    description: Custom image aspect ratios shown in the image interface.
+    type: array
+    items:
+      type: object
+      properties:
+        text:
+          description: Display label for the aspect ratio.
+          type: string
+        value:
+          description: Width / height as a decimal.
+          type: number
+    nullable: true
+  custom_css:
+    # TODO: https://github.com/directus/directus/issues/27700#issuecomment-4996660653
+    description: Custom CSS injected into the Admin App.
+    type: string
+    nullable: true
+  storage_default_folder:
+    description: Default folder to place files.
+    type: string
+    format: uuid
+    nullable: true
+  basemaps:
+    description: Map basemap definitions.
+    type: array
+    nullable: true
+  mapbox_key:
+    description: Mapbox access token.
+    type: string
+    nullable: true
+  module_bar:
+    description: Configuration of the Admin App module bar.
+    type: array
+    items:
+      oneOf:
+        - type: object
+          required: [type, id, enabled]
+          properties:
+            type:
+              type: string
+              enum: [module]
+            id:
+              type: string
+            enabled:
+              type: boolean
+            locked:
+              type: boolean
+              nullable: true
+        - type: object
+          required: [type, id, url, enabled]
+          properties:
+            type:
+              type: string
+              enum: [link]
+            id:
+              type: string
+            url:
+              type: string
+            icon:
+              type: string
+            name:
+              type: string
+            enabled:
+              type: boolean
+            locked:
+              type: boolean
+              nullable: true
+  default_appearance:
+    description: Default theme appearance for new users.
+    type: string
+    enum: [auto, light, dark]
+  default_theme_light:
+    description: Theme id to use as the default light theme.
+    type: string
+    nullable: true
+  default_theme_dark:
+    description: Theme id to use as the default dark theme.
+    type: string
+    nullable: true
+  theme_light_overrides:
+    description: CSS variable overrides applied on top of the light theme.
+    type: object
+    nullable: true
+  theme_dark_overrides:
+    description: CSS variable overrides applied on top of the dark theme.
+    type: object
+    nullable: true
+  project_id:
+    description: Internal project identifier.
+    type: string
+    nullable: true
+  project_status:
+    description: Lifecycle status of the project (from `OwnerInformation`).
+    type: string
+    nullable: true
+  ai_openai_api_key:
+    description: OpenAI API key. Returned masked when set.
+    type: string
+    nullable: true
+    writeOnly: true
+  ai_anthropic_api_key:
+    description: Anthropic API key. Returned masked when set.
+    type: string
+    nullable: true
+    writeOnly: true
+  ai_google_api_key:
+    description: Google AI API key. Returned masked when set.
+    type: string
+    nullable: true
+    writeOnly: true
+  ai_openai_compatible_api_key:
+    description: OpenAI-compatible API key. Returned masked when set.
+    type: string
+    nullable: true
+    writeOnly: true
+  ai_openai_compatible_base_url:
+    description: Base URL for the OpenAI-compatible API.
+    type: string
+    nullable: true
+  ai_openai_compatible_name:
+    description: Display name for the OpenAI-compatible provider.
+    type: string
+    nullable: true
+  ai_openai_compatible_models:
+    description: OpenAI-compatible model definitions.
+    type: array
+    nullable: true
+  ai_openai_compatible_headers:
+    description: OpenAI-compatible custom headers.
+    type: array
+    nullable: true
+  ai_openai_allowed_models:
+    description: OpenAI model ids allowed for selection.
+    type: array
+    items:
+      type: string
+    nullable: true
+  ai_anthropic_allowed_models:
+    description: Anthropic model ids allowed for selection.
+    type: array
+    items:
+      type: string
+    nullable: true
+  ai_google_allowed_models:
+    description: Google model ids allowed for selection.
+    type: array
+    items:
+      type: string
+    nullable: true
+  ai_system_prompt:
+    description: System prompt used for AI operations.
+    type: string
+    nullable: true
+  ai_translation_default_model:
+    description: Default AI model id used for translations.
+    type: string
+    nullable: true
+  ai_translation_glossary:
+    description: Glossary terms used by the AI translation flow.
+    type: array
+    items:
+      type: object
+      properties:
+        term:
+          type: string
+        translation_note:
+          type: string
+    nullable: true
+  ai_translation_style_guide:
+    description: Style guide used by the AI translation flow.
+    type: string
+    nullable: true
+  mcp_enabled:
+    description: Whether the Model Context Protocol endpoint is enabled.
+    type: boolean
+  mcp_oauth_enabled:
+    description: Whether OAuth is required for the MCP endpoint.
+    type: boolean
+  mcp_oauth_dcr_enabled:
+    description: Whether Dynamic Client Registration is enabled for MCP OAuth.
+    type: boolean
+  mcp_oauth_cimd_enabled:
+    description: Whether Client ID Metadata Documents are accepted for MCP OAuth.
+    type: boolean
+  mcp_allow_deletes:
+    description: Whether MCP clients can issue delete operations.
+    type: boolean
+  mcp_prompts_collection:
+    description: Collection used to source MCP prompts.
+    type: string
+    nullable: true
+  mcp_system_prompt_enabled:
+    description: Whether the MCP system prompt is sent with every request.
+    type: boolean
+  mcp_system_prompt:
+    description: System prompt used by the MCP endpoint.
+    type: string
+    nullable: true
+  collaborative_editing_enabled:
+    description: Whether collaborative editing is enabled in the Admin App.
+    type: boolean
+  license_key:
+    description: Directus license key. Returned masked when set.
+    type: string
+    nullable: true
+    writeOnly: true
+  license_token:
+    description: Directus license token. Returned masked when set.
+    type: string
+    nullable: true
+    writeOnly: true
+  project_owner:
+    description: Project owner name (from `OwnerInformation`).
+    type: string
+    nullable: true
+  product_updates:
+    description: Whether the project owner opted in to product updates.
+    type: boolean
+  project_usage:
+    description: Project usage classification (from `OwnerInformation`).
+    type: string
+    enum: [commercial, community, personal, null]
+    nullable: true
+  org_name:
+    description: Owning organization name (from `OwnerInformation`).
+    type: string
     nullable: true
