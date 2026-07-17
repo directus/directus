@@ -11,12 +11,13 @@ import type { LoginResult } from './authentication.js';
 import type { ApiCollection, RawCollection } from './collection.js';
 import type { DeploymentConfig, Project, ProviderType, StoredProject } from './deployment.js';
 import type { ActionHandler } from './events.js';
+import type { ExportFormat } from './export.js';
 import type { ApiOutput, ExtensionManager, ExtensionSettings } from './extensions/index.js';
 import type { Field, RawField, Type } from './fields.js';
 import type { BusboyFileStream, File } from './files.js';
 import type { FlowRaw, OperationRaw } from './flows.js';
 import type { GQLScope, GraphQLParams } from './graphql.js';
-import type { ExportFormat } from './import-export.js';
+import type { ImportBatchOptions, ImportBatchResult, ImportCollectionData } from './import.js';
 import type { Item, MutationOptions, PrimaryKey, QueryOptions } from './items.js';
 import type { EmailOptions } from './mail.js';
 import type { CachedResult, DeepPartial } from './misc.js';
@@ -258,6 +259,7 @@ interface ImportService {
 	import(collection: string, mimetype: string, stream: Readable): Promise<void>;
 	importJSON(collection: string, stream: Readable): Promise<void>;
 	importCSV(collection: string, stream: Readable): Promise<void>;
+	importBatch(input: ImportCollectionData[], options?: ImportBatchOptions): Promise<ImportBatchResult>;
 }
 
 /**

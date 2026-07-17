@@ -1,0 +1,122 @@
+post:
+  summary: Import Multiple Collections
+  description: >-
+    Import flat data for multiple related collections in a single request. Relations are resolved from the schema so
+    collections are imported in dependency order and primary keys (and the foreign keys referencing them) are remapped.
+    The payload is uploaded as a JSON file (`multipart/form-data`).
+  operationId: importBatch
+  parameters:
+    - description: >-
+        `add` inserts new items and remaps conflicting primary keys, `merge` upserts items. Defaults to `add`.
+      in: query
+      name: mode
+      required: false
+      schema:
+        type: string
+        enum:
+          - add
+          - merge
+    - description: When true, no data is persisted; the computed id mappings are still returned.
+      in: query
+      name: dryRun
+      required: false
+      schema:
+        type: boolean
+    - description: >-
+        Only valid with `mode=merge`. Deletes any existing records in the imported collections whose primary key is
+        absent from the import, mirroring the payload. Destructive.
+      in: query
+      name: dangerouslyAllowDelete
+      required: false
+      schema:
+        type: boolean
+  requestBody:
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            file:
+              type: string
+              format: binary
+              description: >-
+                A JSON file containing an array of `{ collection, items }` objects.
+        example:
+          - collection: authors
+            items:
+              - id: '123'
+                name: Lorem Ipsum
+          - collection: articles
+            items:
+              - id: '123'
+                title: Hello World
+                author: '123'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  applied:
+                    type: boolean
+                    description: Whether the changes were committed. `false` for a dry run.
+                  mode:
+                    type: string
+                    enum:
+                      - add
+                      - merge
+                  collections:
+                    type: object
+                    description: Per-collection summary of the changes made.
+                    additionalProperties:
+                      type: object
+                      properties:
+                        existing:
+                          type: array
+                          description: Primary keys of pre-existing records that were matched and updated.
+                          items:
+                            type: string
+                        new:
+                          type: array
+                          description: Primary keys of newly created records.
+                          items:
+                            type: string
+                        deleted:
+                          type: array
+                          description:
+                            Primary keys of records that were deleted (only when `dangerouslyAllowDelete` is set).
+                          items:
+                            type: string
+                        mapped:
+                          type: object
+                          description: Provided primary key -> new primary key, for records whose key was remapped.
+    '400':
+      $ref: '../../openapi.yaml#/components/responses/BadRequestError'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '403':
+      $ref: '../../openapi.yaml#/components/responses/ForbiddenError'
+    '422':
+      description: >-
+        Error: The import could not be planned, e.g. the requested collections form an unresolvable (non-nullable)
+        relational cycle.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int64
+                  message:
+                    type: string
+  tags:
+    - Utilities
