@@ -548,6 +548,7 @@ functions:
   minute: 分
   second: 秒
   count: 总计
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -894,6 +895,7 @@ operators:
   nintersects: 不相交
   intersects_bbox: 相交边框
   nintersects_bbox: 没有相交边框
+  json: JSON
   regex: 匹配正则表达式
 custom_validation_message: 自定义验证消息
 loading: 正在载入...
