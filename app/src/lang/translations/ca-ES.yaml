@@ -411,6 +411,7 @@ functions:
   minute: Minut
   second: Segon
   count: Conta
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h.mm a'
@@ -704,6 +705,7 @@ operators:
   nintersects: No intersecta
   intersects_bbox: Intersecta la caixa delimitadora
   nintersects_bbox: No intersecta la caixa delimitadora
+  json: JSON
   regex: Correspon a expresió regular
 custom_validation_message: Missatge de validació personalitzat
 loading: Carregant...
