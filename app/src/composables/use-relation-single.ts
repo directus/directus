@@ -95,9 +95,9 @@ export function useRelationSingle<T extends Record<string, any>>(
 				displayItem.value = item;
 			}
 		} catch (error: any) {
-			// if the item has a manually entered primary key, we can ignore the error
-			if (typeof val === 'object' && error.response && error.response.status === 403) {
-				displayItem.value = val as T;
+			// If the related item cannot be read, still show the saved primary key instead of a blank value.
+			if (error.response && error.response.status === 403) {
+				displayItem.value = (typeof val === 'object' ? val : { [pkField]: val }) as T;
 			} else {
 				unexpectedError(error);
 			}
