@@ -106,7 +106,6 @@ export type JsonFilterParts = {
 	path: string;
 	operator: keyof FieldFilterOperator;
 	value: unknown;
-	valueNode: FieldFilter;
 };
 
 export function buildJsonFilter(
@@ -130,7 +129,6 @@ export function getJsonFilterParts(node: Filter): JsonFilterParts {
 		path,
 		operator: operator as keyof FieldFilterOperator,
 		value,
-		valueNode: { [JSON_VALUE_KEY]: { [operator]: value } },
 	};
 }
 

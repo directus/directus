@@ -6,7 +6,6 @@ import {
 	initialValueForComparator,
 	isJsonFilter,
 	JSON_FILTER_OPERATORS,
-	JSON_VALUE_KEY,
 } from './utils';
 
 describe('JSON filter serialization', () => {
@@ -43,7 +42,6 @@ describe('JSON filter serialization', () => {
 			path: 'rating',
 			operator: '_between',
 			value: [3, 5],
-			valueNode: { [JSON_VALUE_KEY]: { _between: [3, 5] } },
 		});
 	});
 
@@ -53,7 +51,6 @@ describe('JSON filter serialization', () => {
 			path: '',
 			operator: '_eq',
 			value: null,
-			valueNode: { [JSON_VALUE_KEY]: { _eq: null } },
 		});
 	});
 
