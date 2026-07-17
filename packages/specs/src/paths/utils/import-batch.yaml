@@ -95,5 +95,28 @@ post:
                         mapped:
                           type: object
                           description: Provided primary key -> new primary key, for records whose key was remapped.
+    '400':
+      $ref: '../../openapi.yaml#/components/responses/BadRequestError'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '403':
+      $ref: '../../openapi.yaml#/components/responses/ForbiddenError'
+    '422':
+      description: >-
+        Error: The import could not be planned, e.g. the requested collections form an unresolvable (non-nullable)
+        relational cycle.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int64
+                  message:
+                    type: string
   tags:
     - Utilities
