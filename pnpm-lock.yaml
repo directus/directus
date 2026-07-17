@@ -234,9 +234,6 @@ catalogs:
     '@supabase/storage-js':
       specifier: 2.81.0
       version: 2.81.0
-    '@tinymce/tinymce-vue':
-      specifier: 6.3.0
-      version: 6.3.0
     '@tiptap/core':
       specifier: ^3.26.1
       version: 3.26.1
@@ -918,9 +915,6 @@ catalogs:
     three:
       specifier: ^0.184.0
       version: 0.184.0
-    tinymce:
-      specifier: 6.8.6
-      version: 6.8.6
     tmp:
       specifier: 0.2.7
       version: 0.2.7
@@ -1782,9 +1776,6 @@ importers:
       '@sindresorhus/slugify':
         specifier: 'catalog:'
         version: 2.2.1
-      '@tinymce/tinymce-vue':
-        specifier: 'catalog:'
-        version: 6.3.0(tinymce@6.8.6)(vue@3.5.24(typescript@5.9.3))
       '@tiptap/core':
         specifier: 'catalog:'
         version: 3.26.1(@tiptap/pm@3.26.1)
@@ -2019,9 +2010,6 @@ importers:
       three:
         specifier: 'catalog:'
         version: 0.184.0
-      tinymce:
-        specifier: 'catalog:'
-        version: 6.8.6
       tus-js-client:
         specifier: 'catalog:'
         version: 4.3.1
@@ -7199,15 +7187,6 @@ packages:
     resolution: {integrity: sha512-vhF7kEU9EXWXh+HdAwKJ2m3xaOnTTmgcdXcF2pim8g4GvI7eRrk2YRuV5nUlZnd/NbCIX4/Ja2OZu5EjJL06Ww==}
     peerDependencies:
       vue: ^2.7.0 || ^3.0.0
-
-  '@tinymce/tinymce-vue@6.3.0':
-    resolution: {integrity: sha512-DSP8Jhd3XqCCliTnusfbmz3D8GqQ4iRzkc4aadYHDcJPVjkaqopJ61McOdH82CSy599vGLkPjGzqJYWJkRMiUA==}
-    peerDependencies:
-      tinymce: ^8.0.0 || ^7.0.0 || ^6.0.0 || ^5.5.1
-      vue: ^3.0.0
-    peerDependenciesMeta:
-      tinymce:
-        optional: true
 
   '@tiptap/core@3.26.1':
     resolution: {integrity: sha512-TX9PyPqBoix0qDLjtok/bddtdSy54QhzLVha405C07V+WySOpH3s/pWYkywehZQY0SQtcrcY4MNSCeQjCbA28A==}
@@ -14185,9 +14164,6 @@ packages:
     resolution: {integrity: sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==}
     engines: {node: '>=12.0.0'}
 
-  tinymce@6.8.6:
-    resolution: {integrity: sha512-++XYEs8lKWvZxDCjrr8Baiw7KiikraZ5JkLMg6EdnUVNKJui0IsrAADj5MsyUeFkcEryfn2jd3p09H7REvewyg==}
-
   tinypool@1.1.1:
     resolution: {integrity: sha512-Zba82s87IFq9A9XmjiX5uZA/ARWDrB03OHlq+Vw1fSdt0I+4/Kutwy8BP4Y/y/aORMo61FQ0vIb5j44vSo5Pkg==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -19772,12 +19748,6 @@ snapshots:
       '@tanstack/virtual-core': 3.13.12
       vue: 3.5.24(typescript@5.9.3)
 
-  '@tinymce/tinymce-vue@6.3.0(tinymce@6.8.6)(vue@3.5.24(typescript@5.9.3))':
-    dependencies:
-      vue: 3.5.24(typescript@5.9.3)
-    optionalDependencies:
-      tinymce: 6.8.6
-
   '@tiptap/core@3.26.1(@tiptap/pm@3.26.1)':
     dependencies:
       '@tiptap/pm': 3.26.1
@@ -20511,7 +20481,7 @@ snapshots:
       std-env: 3.10.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.6(@types/node@24.9.1)(@vitest/ui@3.2.6)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
+      vitest: 3.2.6(@types/node@22.13.14)(@vitest/ui@3.2.6)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -20568,7 +20538,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.17
       tinyrainbow: 2.0.0
-      vitest: 3.2.6(@types/node@24.9.1)(@vitest/ui@3.2.6)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
+      vitest: 3.2.6(@types/node@22.13.14)(@vitest/ui@3.2.6)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
 
   '@vitest/utils@3.2.6':
     dependencies:
@@ -27678,8 +27648,6 @@ snapshots:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.4)
       picomatch: 4.0.4
-
-  tinymce@6.8.6: {}
 
   tinypool@1.1.1: {}
 

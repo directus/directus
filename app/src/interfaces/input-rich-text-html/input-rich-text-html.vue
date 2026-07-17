@@ -37,6 +37,8 @@ const props = withDefaults(
 		folder?: string;
 		/** Legacy TinyMCE `customFormats` option (array or JSON string); see extensions/custom-formats.ts. */
 		customFormats?: unknown;
+		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
+		tinymceOverrides?: unknown;
 		softLength?: number;
 		direction?: string;
 		// comparison view (content versioning / revision diffs): value arrives pre-marked with
@@ -54,6 +56,16 @@ const emit = defineEmits<{ input: [value: string | null] }>();
 const { t } = useI18n();
 
 const { imageToken, folder } = toRefs(props);
+
+if (
+	props.tinymceOverrides != null &&
+	(typeof props.tinymceOverrides !== 'object' || Object.keys(props.tinymceOverrides).length > 0)
+) {
+	// eslint-disable-next-line no-console
+	console.warn(
+		'[input-rich-text-html] The "tinymceOverrides" option is deprecated and has no effect since the editor moved from TinyMCE to Tiptap. Use the interface options instead (e.g. "toolbar", "customFormats").',
+	);
+}
 
 // built once at init: `customFormats` is design-time config, not reactive
 const { extensions: customFormatExtensions, formats: customFormatList } = buildCustomFormats(props.customFormats);
