@@ -1,14 +1,6 @@
-import { afterEach, beforeEach, expect, test } from 'vitest';
-import { nextTick, ref } from 'vue';
-import { NORMALIZATION_WARNING_DISMISSED, useNormalizationWarning } from './use-normalization-warning';
-
-beforeEach(() => {
-	localStorage.removeItem(NORMALIZATION_WARNING_DISMISSED);
-});
-
-afterEach(() => {
-	localStorage.removeItem(NORMALIZATION_WARNING_DISMISSED);
-});
+import { expect, test } from 'vitest';
+import { ref } from 'vue';
+import { useNormalizationWarning } from './use-normalization-warning';
 
 function setup(initialValue: string | null) {
 	const value = ref<string | null>(initialValue);
@@ -100,40 +92,4 @@ test('a re-check after an external value change re-locks even after confirm', ()
 	checkValue();
 
 	expect(normalizationLocked.value).toBe(true);
-});
-
-test('confirm without the checkbox does not persist the opt-out', async () => {
-	const { onLockedClick, confirmNormalizationWarning } = setup(LOSSY);
-
-	onLockedClick();
-	confirmNormalizationWarning();
-	await nextTick();
-
-	expect(localStorage.getItem(NORMALIZATION_WARNING_DISMISSED)).not.toBe('true');
-});
-
-test('confirm with "don\'t show again" persists the opt-out and future instances never lock', async () => {
-	const first = setup(LOSSY);
-
-	first.onLockedClick();
-	first.dontShowAgain.value = true;
-	first.confirmNormalizationWarning();
-	await nextTick();
-
-	expect(localStorage.getItem(NORMALIZATION_WARNING_DISMISSED)).toBe('true');
-
-	const second = setup(LOSSY);
-	expect(second.normalizationLocked.value).toBe(false);
-});
-
-test('cancel with "don\'t show again" persists the opt-out and unlocks instead of bricking the field', async () => {
-	const { normalizationLocked, onLockedClick, dontShowAgain, cancelNormalizationWarning } = setup(LOSSY);
-
-	onLockedClick();
-	dontShowAgain.value = true;
-	cancelNormalizationWarning();
-	await nextTick();
-
-	expect(localStorage.getItem(NORMALIZATION_WARNING_DISMISSED)).toBe('true');
-	expect(normalizationLocked.value).toBe(false);
 });

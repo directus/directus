@@ -22,7 +22,7 @@ import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
 import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
-import VButton from '@/components/v-button.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
 import { parseGlobalMimeTypeAllowList, useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
@@ -74,7 +74,6 @@ const {
 	normalizationLocked,
 	normalizationWarningOpen,
 	normalizationWarningDiff,
-	dontShowAgain,
 	checkValue,
 	onLockedClick,
 	confirmNormalizationWarning,
@@ -171,13 +170,6 @@ function enterRawMode() {
 	rawMode.value = true;
 }
 
-function exitRawMode() {
-	rawMode.value = false;
-	if (!editor.value) return;
-	if (encodePageBreaks(editor.value.getHTML()) !== props.value) syncValue(editor.value, props.value);
-	checkValue();
-}
-
 // the unlock flips `isEditable` on the next flush, so focus has to wait for it
 async function onWarningConfirm() {
 	confirmNormalizationWarning();
@@ -259,7 +251,7 @@ watch(isEditable, (editable) => editor.value?.setEditable(editable));
 watch(
 	() => props.value,
 	(value) => {
-		// raw mode edits flow straight through the code interface; the editor syncs on exit instead
+		// raw mode edits flow straight through the code interface, never through the editor
 		if (rawMode.value) return;
 		if (!editor.value) return;
 		// compare the encoded (stored) form so a re-emitted page-break marker doesn't look like a change
@@ -278,6 +270,16 @@ onKeyStroke('Escape', () => {
 </script>
 
 <template>
+	<VNotice v-if="normalizationLocked && !rawMode" type="warning" multiline class="normalization-notice">
+		{{ t('wysiwyg_options.normalization_locked_notice') }}
+		<a
+			href="https://directus.com/docs/releases/breaking-changes/version-12#wysiwyg-editor-rebuilt-on-tiptap"
+			target="_blank"
+			rel="noopener noreferrer"
+		>
+			{{ t('wysiwyg_options.normalization_locked_learn_more') }}
+		</a>
+	</VNotice>
 	<div
 		class="wysiwyg"
 		:class="{ disabled, 'non-editable': nonEditable || comparisonMode, fullscreen, visualaid }"
@@ -299,20 +301,14 @@ onKeyStroke('Escape', () => {
 			@open-link="openLinkDrawer"
 			@open-source-code="openSourceCodeDrawer"
 		/>
-		<div v-if="rawMode" class="raw-mode">
-			<div class="raw-mode-bar">
-				<VButton x-small secondary @click="exitRawMode">
-					{{ t('wysiwyg_options.back_to_visual_editor') }}
-				</VButton>
-			</div>
-			<InterfaceInputCode
-				:value="value"
-				language="htmlmixed"
-				:line-number="false"
-				:disabled="disabled"
-				@input="$emit('input', $event)"
-			/>
-		</div>
+		<InterfaceInputCode
+			v-if="rawMode"
+			:value="value"
+			language="htmlmixed"
+			:line-number="false"
+			:disabled="disabled"
+			@input="$emit('input', $event)"
+		/>
 
 		<EditorContent v-show="!rawMode" class="editor-content" :editor="editor" :dir="editorDir" @click="onEditorClick" />
 
@@ -378,7 +374,6 @@ onKeyStroke('Escape', () => {
 
 		<NormalizationWarningDialog
 			v-model="normalizationWarningOpen"
-			v-model:dont-show-again="dontShowAgain"
 			:diff="normalizationWarningDiff"
 			@confirm="onWarningConfirm"
 			@cancel="cancelNormalizationWarning"
@@ -434,11 +429,8 @@ onKeyStroke('Escape', () => {
 	}
 }
 
-.raw-mode-bar {
-	display: flex;
-	justify-content: flex-end;
-	padding: 0.5rem;
-	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+.normalization-notice {
+	margin-block-end: 0.5rem;
 }
 
 .remaining {

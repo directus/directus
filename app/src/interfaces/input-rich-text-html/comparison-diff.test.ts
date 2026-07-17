@@ -81,7 +81,7 @@ describe('interface wiring', () => {
 		expect(wrapper.find('table-bubble-menu-stub').exists()).toBe(false);
 		// the diff-marked value inflates the count, so the counter must not render either
 		expect(wrapper.find('.remaining').exists()).toBe(false);
-		expect(wrapper.classes()).toContain('non-editable');
+		expect(wrapper.find('.wysiwyg').classes()).toContain('non-editable');
 		expect(editor.getHTML()).toBe(DIFF_HTML);
 	});
 

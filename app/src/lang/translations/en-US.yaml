@@ -1432,11 +1432,13 @@ wysiwyg_options:
     those items will be removed when you save. To keep the stored HTML exactly as is, edit the raw HTML instead. This
     warning will go away once the unsupported items are gone.
   normalization_warning_view_changes: View changes
-  normalization_warning_dont_show_again: Don't show this warning again
   normalization_warning_keep_readonly: Keep Read-only
   normalization_warning_edit_anyway: Edit Anyway
   normalization_warning_edit_raw: Edit Raw HTML
-  back_to_visual_editor: Back to Visual Editor
+  normalization_locked_notice:
+    This field includes formatting the new editor doesn't support, so it's read-only. Select the field to choose how to
+    edit it.
+  normalization_locked_learn_more: Learn what changed
   fullscreen: Full Screen
   directionality: Directionality
   ltr: Left to Right

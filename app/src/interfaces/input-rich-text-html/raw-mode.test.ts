@@ -1,10 +1,9 @@
 import { type Editor, EditorContent } from '@tiptap/vue-3';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia } from 'pinia';
-import { afterEach, describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { nextTick } from 'vue';
 import { createI18n } from 'vue-i18n';
-import { NORMALIZATION_WARNING_DISMISSED } from './composables/use-normalization-warning';
 import NormalizationWarningDialog from './drawers/normalization-warning-dialog.vue';
 import Interface from './input-rich-text-html.vue';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
@@ -32,7 +31,6 @@ async function mountWithValue(value: string) {
 				SourceCodeDrawer: true,
 				NormalizationWarningDialog: true,
 				InterfaceInputCode: true,
-				VButton: true,
 			},
 		},
 	});
@@ -53,10 +51,6 @@ async function enterRawMode(wrapper: Awaited<ReturnType<typeof mountWithValue>>[
 function editorContentHidden(wrapper: Awaited<ReturnType<typeof mountWithValue>>['wrapper']) {
 	return (wrapper.findComponent(EditorContent).attributes('style') ?? '').includes('display: none');
 }
-
-afterEach(() => {
-	localStorage.removeItem(NORMALIZATION_WARNING_DISMISSED);
-});
 
 describe('raw editing mode', () => {
 	test('choosing raw editing from the warning swaps the visual editor for the code interface', async () => {
@@ -80,32 +74,5 @@ describe('raw editing mode', () => {
 
 		const emitted = wrapper.emitted('input');
 		expect(emitted?.at(-1)).toEqual([edited]);
-	});
-
-	test('leaving raw mode returns to the visual editor, still locked over lossy content', async () => {
-		const { wrapper, editor } = await mountWithValue(LOSSY);
-
-		await enterRawMode(wrapper);
-		await wrapper.find('.raw-mode-bar v-button-stub').trigger('click');
-		await nextTick();
-
-		expect(wrapper.findComponent(InterfaceInputCode).exists()).toBe(false);
-		expect(editorContentHidden(wrapper)).toBe(false);
-		expect(editor.isEditable).toBe(false);
-	});
-
-	test('raw content fixed to clean HTML unlocks the visual editor on return', async () => {
-		const { wrapper, editor } = await mountWithValue(LOSSY);
-
-		await enterRawMode(wrapper);
-		const clean = '<p>fixed</p>';
-		wrapper.findComponent(InterfaceInputCode).vm.$emit('input', clean);
-		await wrapper.setProps({ value: clean });
-		await wrapper.find('.raw-mode-bar v-button-stub').trigger('click');
-		await flushPromises();
-		await nextTick();
-
-		expect(editor.isEditable).toBe(true);
-		expect(editor.getHTML()).toBe(clean);
 	});
 });

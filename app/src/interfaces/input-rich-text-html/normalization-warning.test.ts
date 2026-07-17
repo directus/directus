@@ -1,10 +1,9 @@
 import { type Editor, EditorContent } from '@tiptap/vue-3';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia } from 'pinia';
-import { afterEach, describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { nextTick } from 'vue';
 import { createI18n } from 'vue-i18n';
-import { NORMALIZATION_WARNING_DISMISSED } from './composables/use-normalization-warning';
 import NormalizationWarningDialog from './drawers/normalization-warning-dialog.vue';
 import Interface from './input-rich-text-html.vue';
 
@@ -41,10 +40,6 @@ async function mountWithValue(value: string | null) {
 function findDialog(wrapper: Awaited<ReturnType<typeof mountWithValue>>['wrapper']) {
 	return wrapper.findComponent(NormalizationWarningDialog);
 }
-
-afterEach(() => {
-	localStorage.removeItem(NORMALIZATION_WARNING_DISMISSED);
-});
 
 describe('normalization warning wiring', () => {
 	test('a lossy stored value mounts the editor read-only', async () => {
