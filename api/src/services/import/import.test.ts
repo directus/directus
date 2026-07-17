@@ -735,6 +735,13 @@ function createTrx(existing: Record<string, Set<string>> = {}) {
 			},
 			first: () => {
 				const set = existing[state.collection] ?? new Set();
+
+				// No `where`: existence check over the whole collection (rowExists / upsertSingleton)
+				if (state.where === undefined) {
+					const [firstKey] = [...set];
+					return Promise.resolve(firstKey === undefined ? undefined : { [state.selectField ?? 'id']: firstKey });
+				}
+
 				const value = String(Object.values(state.where)[0]);
 				return Promise.resolve(set.has(value) ? { found: true } : undefined);
 			},
@@ -778,7 +785,10 @@ function setupServices(schema: SchemaOverview): RunContext {
 			}),
 			upsertOne: vi.fn(async (payload: Record<string, any>) => {
 				ctx.calls.push({ collection, method: 'upsertOne', payload });
-				return payload[pkField];
+				// Mirror `upsertOne`: a payload without a PK results in a create with a fresh key
+				if (payload[pkField] !== undefined) return payload[pkField];
+				autoCounters[collection] = (autoCounters[collection] ?? 0) + 1;
+				return `${collection}-new-${autoCounters[collection]}`;
 			}),
 			updateOne: vi.fn(async (pk: any, data: Record<string, any>) => {
 				ctx.calls.push({ collection, method: 'updateOne', pk, data });
@@ -937,8 +947,8 @@ describe('ImportService.importBatch', () => {
 			mode: 'merge',
 		});
 
-		// Non-existent key: dropped and re-created so the sequence assigns a fresh id
-		expect(calls[0]).toMatchObject({ collection: 'authors', method: 'createOne' });
+		// Non-existent key: PK dropped so the upsert creates a row with a fresh sequence id
+		expect(calls[0]).toMatchObject({ collection: 'authors', method: 'upsertOne' });
 		expect(calls[0]!.payload).not.toHaveProperty('id');
 
 		expect(result.collections['authors']).toEqual({
@@ -1140,6 +1150,71 @@ describe('ImportService.importBatch', () => {
 			pk: 'authors-new-1',
 			data: { articles: ['articles-new-1', 'articles-new-2'] },
 		});
+	});
+
+	const singletonSchema = () => {
+		const schema = new SchemaBuilder()
+			.collection('settings', (c) => {
+				c.field('id').id();
+				c.field('theme').string();
+			})
+			.build();
+
+		schema.collections['settings']!.singleton = true;
+
+		return schema;
+	};
+
+	test('upserts a singleton collection in place, ignoring the source primary key', async () => {
+		const { result, calls } = await run(
+			singletonSchema(),
+			[{ collection: 'settings', items: [{ id: 999, theme: 'dark' }] }],
+			{},
+			{ settings: new Set(['1']) },
+		);
+
+		const call = calls.find((c) => c.method === 'updateOne')!;
+		expect(call).toMatchObject({ collection: 'settings', pk: '1', data: { theme: 'dark' } });
+		// The source PK is dropped; the existing row keeps its own key
+		expect(call.data).not.toHaveProperty('id');
+
+		expect(result.collections['settings']).toEqual({
+			existing: ['1'],
+			new: [],
+			deleted: [],
+			// Singleton keeps its own key; the source PK is not a meaningful remap to report
+			mapped: {},
+		});
+	});
+
+	test('creates a singleton collection row when none exists yet', async () => {
+		const { result, calls } = await run(singletonSchema(), [
+			{ collection: 'settings', items: [{ id: 999, theme: 'dark' }] },
+		]);
+
+		const call = calls.find((c) => c.method === 'createOne')!;
+		expect(call.payload).not.toHaveProperty('id');
+
+		expect(result.collections['settings']).toEqual({
+			existing: [],
+			new: ['settings-new-1'],
+			deleted: [],
+			mapped: {},
+		});
+	});
+
+	test('rejects multiple records for a singleton collection', async () => {
+		await expect(
+			run(singletonSchema(), [
+				{
+					collection: 'settings',
+					items: [
+						{ id: 1, theme: 'dark' },
+						{ id: 2, theme: 'light' },
+					],
+				},
+			]),
+		).rejects.toSatisfy((error) => isDirectusError(error, ErrorCode.InvalidPayload));
 	});
 
 	test('dry run computes mappings without emitting actions or clearing cache', async () => {

@@ -540,10 +540,10 @@ export class ImportService {
 					{ schema: this.schema, knex: this.knex },
 				);
 
-				// Second pass and merge mode both perform updates
 				const hasRemappableAlias = plan.aliasFields.get(collection)!.some((info) => info.target !== null);
+				const isSingleton = this.schema.collections[collection]?.singleton ?? false;
 
-				if (mode === 'merge' || plan.deferred.has(collection) || hasRemappableAlias) {
+				if (mode === 'merge' || isSingleton || plan.deferred.has(collection) || hasRemappableAlias) {
 					await validateAccess(
 						{ accountability: this.accountability, action: 'update', collection },
 						{ schema: this.schema, knex: this.knex },
@@ -596,13 +596,19 @@ export class ImportService {
 						accountability: this.accountability,
 					});
 
-					const { primary: pkField, fields } = this.schema.collections[collection]!;
+					const { primary: pkField, fields, singleton: isSingleton } = this.schema.collections[collection]!;
 					const pkOverview = fields[pkField]!;
 
 					const isAutoIncrement =
 						['integer', 'bigInteger'].includes(pkOverview.type) && pkOverview.defaultValue === 'AUTO_INCREMENT';
 
 					const isUuid = pkOverview.type === 'uuid';
+
+					if (isSingleton && entry.items.length > 1) {
+						throw new InvalidPayloadError({
+							reason: `Cannot import multiple records into singleton collection "${collection}"`,
+						});
+					}
 
 					for (const item of entry.items) {
 						const payload = remapForeignKeys(item, fkFields, idMaps, secondPassFields);
@@ -611,7 +617,19 @@ export class ImportService {
 						let newPk: PrimaryKey;
 						let matchedExisting = false;
 
-						if (mode === 'merge') {
+						if (isSingleton) {
+							// ignore the PK if provided and manually do an upsertSingleton so we know if it was created or updated
+							delete payload[pkField];
+
+							const existingRow = await trx.select(pkField).from(collection).first();
+
+							if (existingRow) {
+								matchedExisting = true;
+								newPk = await service.updateOne(existingRow[pkField], payload, mutationOptions);
+							} else {
+								newPk = await service.createOne(payload, mutationOptions);
+							}
+						} else if (mode === 'merge') {
 							matchedExisting = oldPk != null && (await keyExists(trx, collection, pkField, oldPk));
 
 							if (!matchedExisting && isAutoIncrement) {
@@ -651,7 +669,7 @@ export class ImportService {
 						if (oldPk != null) {
 							idMap.set(String(oldPk), newPk);
 
-							if (normalizeKey(oldPk) !== normalizeKey(newPk)) {
+							if (!isSingleton && normalizeKey(oldPk) !== normalizeKey(newPk)) {
 								result.mapped[String(oldPk)] = newPk;
 							}
 						}
