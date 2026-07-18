@@ -1,0 +1,56 @@
+post:
+  summary: Authenticate a Share
+  description: Authenticate a share access by providing the share ID and optional password. Returns an access token if successful.
+  tags:
+    - Shares
+  operationId: authenticateShare
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - share
+          properties:
+            share:
+              description: The UUID of the share to authenticate against.
+              type: string
+              format: uuid
+            password:
+              description: The password set on the share (if password protected).
+              type: string
+            mode:
+              description: Authentication mode. One of `json`, `cookie`, or `session`.
+              type: string
+              enum:
+                - json
+                - cookie
+                - session
+              default: json
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  access_token:
+                    description: Access token for the share.
+                    type: string
+                  refresh_token:
+                    description: Refresh token for the share.
+                    type: string
+                  expires:
+                    description: Token expiration time in milliseconds.
+                    type: integer
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    '429':
+      $ref: '../../openapi.yaml#/components/responses/TooManyRequestsError'

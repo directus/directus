@@ -1,0 +1,70 @@
+get:
+  summary: Retrieve a Share
+  description: Retrieve a single share by unique identifier.
+  tags:
+    - Shares
+  operationId: getShare
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Shares'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+
+patch:
+  summary: Update a Share
+  description: Update an existing share.
+  tags:
+    - Shares
+  operationId: updateShare
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          anyOf:
+            - $ref: '../../openapi.yaml#/components/schemas/Shares'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Shares'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+
+delete:
+  summary: Delete a Share
+  description: Delete an existing share.
+  tags:
+    - Shares
+  operationId: deleteShare
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+
+parameters:
+  - $ref: '../../openapi.yaml#/components/parameters/UUId'

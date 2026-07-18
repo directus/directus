@@ -1,0 +1,32 @@
+post:
+  summary: Invite to a Share
+  description: Send an email invitation to the given email address(es) with a link to the share.
+  tags:
+    - Shares
+  operationId: inviteShare
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - share
+          properties:
+            share:
+              description: The UUID of the share to invite to.
+              type: string
+              format: uuid
+            emails:
+              description: Array of email addresses to send the invitation to.
+              type: array
+              items:
+                type: string
+                format: email
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'

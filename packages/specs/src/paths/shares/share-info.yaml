@@ -1,0 +1,50 @@
+get:
+  summary: Get Share Info
+  description: Retrieve information about a share. This is a public endpoint that does not require authentication.
+  tags:
+    - Shares
+  operationId: getShareInfo
+  parameters:
+    - name: pk
+      in: path
+      required: true
+      description: The UUID of the share to retrieve info for.
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  collection:
+                    type: string
+                  item:
+                    type: string
+                  password:
+                    type: boolean
+                    description: Whether the share is password protected.
+                  max_uses:
+                    type: integer
+                    nullable: true
+                  times_used:
+                    type: integer
+                  date_start:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  date_end:
+                    type: string
+                    format: date-time
+                    nullable: true
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'

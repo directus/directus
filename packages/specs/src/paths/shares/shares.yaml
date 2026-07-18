@@ -1,0 +1,114 @@
+get:
+  summary: List Shares
+  description: List all shares.
+  tags:
+    - Shares
+  operationId: getShares
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Shares'
+              meta:
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+
+post:
+  summary: Create a Share
+  description: Create a new share.
+  tags:
+    - Shares
+  operationId: createShare
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          anyOf:
+            - $ref: '../../openapi.yaml#/components/schemas/Shares'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Shares'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+
+patch:
+  summary: Update Multiple Shares
+  description: Update multiple shares at the same time.
+  tags:
+    - Shares
+  operationId: updateShares
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              anyOf:
+                - $ref: '../../openapi.yaml#/components/schemas/Shares'
+            keys:
+              type: array
+              items:
+                type: string
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Shares'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+
+delete:
+  summary: Delete Multiple Shares
+  description: Delete multiple existing shares.
+  tags:
+    - Shares
+  operationId: deleteShares
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
