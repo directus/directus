@@ -66,13 +66,6 @@ export class HeartbeatHandler {
 		const pendingClients = new Set<WebSocketClient>(this.controller.clients);
 		const activeClients = new Set<WebSocketClient>();
 
-		const timeout = setTimeout(() => {
-			// close connections that haven't responded
-			for (const client of pendingClients) {
-				client.close();
-			}
-		}, HEARTBEAT_FREQUENCY);
-
 		const messageWatcher: ActionHandler = ({ client }) => {
 			// any message means this connection is still open
 			if (!activeClients.has(client)) {
@@ -87,6 +80,19 @@ export class HeartbeatHandler {
 		};
 
 		emitter.onAction('websocket.message', messageWatcher);
+
+		const timeout = setTimeout(() => {
+			// close connections that haven't responded
+			for (const client of pendingClients) {
+				client.close();
+			}
+
+			// Clean up the per-cycle message watcher — if we reached this timeout, none of
+			// the pending clients sent a message, so messageWatcher will never run its
+			// cleanup path (pendingClients.size never reaches 0). Without this, listeners
+			// accumulate across heartbeat cycles, causing a memory leak
+			emitter.offAction('websocket.message', messageWatcher);
+		}, HEARTBEAT_FREQUENCY);
 
 		// ping all the clients
 		for (const client of pendingClients) {
