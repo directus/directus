@@ -198,6 +198,14 @@ describe('POST /licenses/preview', () => {
 
 		expect(preview).toMatchObject({ plan_name: upgradeLicense.name });
 	});
+
+	test('rejects anonymous requests once setup is complete', async () => {
+		const anonymous = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest());
+
+		await expect(anonymous.request(previewLicense({ license_key: baseLicense.key }))).rejects.toThrowError(
+			"You don't have permission to access this.",
+		);
+	});
 });
 
 describe('POST /licenses/pending-resolution', () => {
