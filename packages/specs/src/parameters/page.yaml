@@ -1,6 +1,16 @@
-description: Cursor for use in pagination. Often used in combination with limit.
+description: >
+  An alternative to `offset`. The returned page is `limit` items wide; the first page is `1`. Uses `limit` if provided,
+  otherwise the `QUERY_LIMIT_DEFAULT` environment variable - unless `limit` is `-1` (unlimited), in which case `page`
+  has no effect. If `offset` is also provided, this value silently overrides it.
 in: query
 name: page
 required: false
 schema:
   type: integer
+  minimum: 1
+examples:
+  none:
+    summary: No page specified (default)
+  second:
+    summary: Second page
+    value: 2

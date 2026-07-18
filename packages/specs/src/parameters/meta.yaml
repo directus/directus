@@ -1,6 +1,15 @@
-description: What metadata to return in the response.
+description: >
+  What metadata to return. `*` is shorthand for both `total_count` (unfiltered count) and `filter_count` (count after
+  filters and search are applied). Omit to skip metadata.
 in: query
 name: meta
 required: false
+style: form
+explode: false
 schema:
-  type: string
+  type: array
+  items:
+    type: string
+    enum:
+      - total_count
+      - filter_count

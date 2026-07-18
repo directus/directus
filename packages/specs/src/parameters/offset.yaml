@@ -1,6 +1,15 @@
-description: How many items to skip when fetching data.
+description: >
+  How many items to skip when fetching data. Can be used for pagination. If `page` is also provided, `page` silently
+  overrides this value.
 in: query
 name: offset
 required: false
 schema:
   type: integer
+  minimum: 0
+examples:
+  none:
+    summary: No offset specified (default)
+  skip:
+    summary: Skip the first 100 items
+    value: 100

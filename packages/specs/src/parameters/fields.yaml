@@ -1,9 +1,43 @@
-description: Control what fields are being returned in the object.
+description: >
+  Control what fields are returned in the response.
+
+
+  Supports dot notation for related fields (e.g. `author.name`) and wildcards (`*` for all fields, `*.*` for one level
+  of relations).
+
+
+  Also supports Many-to-Any (M2A) collection-scoping (`field:collection.field`) and field functions (e.g.
+  `year(date_published)`). Nested functions are not supported.
 in: query
 name: fields
 required: false
+style: form
 explode: false
 schema:
   type: array
   items:
     type: string
+examples:
+  none:
+    summary: No fields specified (default)
+  wildcardAll:
+    summary: All fields
+    value: ['*']
+  wildcardOneLevel:
+    summary: All fields plus one level of relations
+    value: ['*.*']
+  wildcardScoped:
+    summary: All fields plus a scoped relation wildcard
+    value: ['*', 'images.*']
+  plainList:
+    summary: Plain field list
+    value: ['first_name', 'last_name']
+  relational:
+    summary: Dot notation for related fields
+    value: ['title', 'author.name']
+  manyToAny:
+    summary: Many-to-Any (M2A) collection-scoped fields
+    value: ['sections.item:headings.title']
+  function:
+    summary: Field function
+    value: ['year(date_published)']
