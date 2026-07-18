@@ -16,7 +16,7 @@ export type Avatar = {
 
 export type User = {
 	id: string;
-	status: 'draft' | 'invited' | 'unverified' | 'active' | 'suspended' | 'archived';
+	status: 'draft' | 'invited' | 'unverified' | 'active' | 'suspended' | 'archived' | 'inactive-license';
 	first_name: string | null;
 	last_name: string | null;
 	email: string | null;
