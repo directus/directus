@@ -1,6 +1,7 @@
 description: >
   Rename fields on the fly, so you can request the same field multiple times using different relational paths, filters,
-  or aggregations.
+  or aggregations. The alias value must reference a same-collection field or a field function; it cannot contain a
+  period. URL form: `?alias[user_id]=id`.
 in: query
 name: alias
 required: false
@@ -8,4 +9,15 @@ content:
   application/json:
     schema:
       type: object
-      example: { 'author_name': 'author.name' }
+    examples:
+      none:
+        summary: No aliasing (default)
+      singleRename:
+        summary: Rename a field
+        value: { 'user_id': 'id' }
+      functionAlias:
+        summary: Alias a field function
+        value: { 'release_year': 'year(date_created)' }
+      multipleRenames:
+        summary: Multiple renames in one request
+        value: { 'user_id': 'id', 'user_status': 'status' }

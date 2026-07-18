@@ -1,4 +1,6 @@
-description: When used with `version`, returns the raw revision data instead of the merged item data.
+description:
+  When used with `version`, returns the raw revision data instead of the merged item data. If omitted, the server
+  defaults to `false` (merged item data is returned).
 in: query
 name: versionRaw
 required: false

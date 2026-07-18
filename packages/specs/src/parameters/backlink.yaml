@@ -1,7 +1,7 @@
 description: >
   Toggle whether reverse-relational fields are included when expanding a `*.*` wildcard. Explicitly specified field
   names are not affected, so `fields=author.articles` still includes the reverse relation even when `backlink` is
-  `false`.
+  `false`. If omitted, the server defaults to `true` (reverse relations are included).
 in: query
 name: backlink
 required: false

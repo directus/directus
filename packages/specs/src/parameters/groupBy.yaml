@@ -2,6 +2,7 @@ description: Group the returned items by the given field(s).
 in: query
 name: groupBy
 required: false
+style: form
 explode: false
 schema:
   type: array

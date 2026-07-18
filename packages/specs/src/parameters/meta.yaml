@@ -4,6 +4,7 @@ description: >
 in: query
 name: meta
 required: false
+style: form
 explode: false
 schema:
   type: array

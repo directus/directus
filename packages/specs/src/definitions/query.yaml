@@ -46,7 +46,7 @@ properties:
     example: 100
   page:
     type: integer
-    minimum: 0
+    minimum: 1
     description: >
       An alternative to `offset`. The returned page is `limit` items wide; the first page is `1`. Uses `limit` if
       provided, otherwise the `QUERY_LIMIT_DEFAULT` environment variable - unless `limit` is `-1` (unlimited), in which
@@ -121,7 +121,7 @@ properties:
     example: { 'author_name': 'author.name' }
   export:
     type: string
-    description: Saves the API response to a file. Accepts one of "csv", "csv_utf8", "json", "xml", "yaml".
+    description: Saves the API response to a file.
     enum:
       - csv
       - csv_utf8
