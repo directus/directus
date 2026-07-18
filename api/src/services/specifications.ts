@@ -546,6 +546,11 @@ class OASSpecsService implements SpecificationSubService {
 			}
 		}
 
+		// Fields with conceal or encrypt special type never return real data on reads
+		if (field.special?.includes('conceal') || field.special?.includes('encrypt')) {
+			propertyObject.writeOnly = true;
+		}
+
 		return propertyObject;
 	}
 
