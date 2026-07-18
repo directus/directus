@@ -4,41 +4,104 @@ properties:
     type: array
     items:
       type: string
-    description: Control what fields are being returned in the object.
-    example: ['*', '*.*']
+    description: >
+      Control what fields are returned in the response. Supports dot notation for related fields, wildcards (`*`,
+      `*.*`), Many-to-Any (M2A) collection-scoping (`field:collection.field`), and field functions
+      (`year(date_published)`). Nested functions are not supported.
+    example: ['title', 'author.name', '*.*']
   filter:
     type: object
-    description: Select items in the collection that match the given filter conditions.
-    externalDocs:
-      description: Available operators and dynamic variables
-      url: https://directus.com/docs/guides/connect/filter-rules#available-operators
-    example: { <field>: { <operator>: <value> } }
+    description: >
+      Select items in the collection that match the given filter conditions.
+      https://directus.com/docs/guides/connect/filter-rules#available-operators
   search:
-    description: Filter by items that contain the given search query in one of their fields.
     type: string
+    description: >
+      Filter by items that contain the given search query in one of their fields. Matches case-insensitively against
+      `string`/`text` fields. Search is limited to fields that are tagged as searchable in the data studio (*2m fields
+      are not searched). If the search value itself parses as a number or a valid UUID, numeric and UUID fields are also
+      matched (exactly, not as a substring).
   sort:
     type: array
     items:
       type: string
     description: >
-      How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to
-      ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are
-      prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
+      How to sort the returned items. Sorting defaults to ascending order; prefix a field with `-` to reverse to
+      descending. Fields are prioritized in the order given. Dot notation is used to sort by values of related fields.
+      Field functions (e.g. `year(date_created)`) are also supported.
     example: ['-date_created']
   limit:
-    type: number
-    description: Set the maximum number of items that will be returned
+    type: integer
+    minimum: -1
+    description: >
+      Set the maximum number of items that will be returned. Defaults to 100. `-1` returns all items, unless the
+      `QUERY_LIMIT_MAX` environment variable is configured, in which case the limit is capped there instead.
+    example: 50
   offset:
-    type: number
-    description: How many items to skip when fetching data.
+    type: integer
+    minimum: 0
+    description: >
+      How many items to skip when fetching data. Can be used for pagination. If `page` is also provided, `page` silently
+      overrides this value.
+    example: 100
   page:
-    type: number
-    description: Cursor for use in pagination. Often used in combination with limit.
+    type: integer
+    minimum: 0
+    description: >
+      An alternative to `offset`. The returned page is `limit` items wide; the first page is `1`. Uses `limit` if
+      provided, otherwise the `QUERY_LIMIT_DEFAULT` environment variable - unless `limit` is `-1` (unlimited), in which
+      case `page` has no effect. If `offset` is also provided, this value silently overrides it.
+    example: 2
+  meta:
+    type: array
+    items:
+      type: string
+      enum:
+        - total_count
+        - filter_count
+    description: >
+      What metadata to return. `*` is shorthand for both `total_count` (unfiltered count) and `filter_count` (count
+      after filters and search are applied). Omit to skip metadata.
   aggregate:
     type: object
     description: >
-      Aggregate function to apply, mapped to the field(s) to apply it to, for example `count`, `sum`, `avg`, `min`, or
-      `max`.
+      Aggregate functions allow you to perform calculations on a set of values, returning a single result. Each key is
+      an aggregate function name, and each value is an array of field names to apply it to. `count` also accepts `*` in
+      place of a field name, to count all items regardless of field. `countAll` exists in GraphQL only; it is not usable
+      via REST.
+    properties:
+      count:
+        type: array
+        items:
+          type: string
+      countDistinct:
+        type: array
+        items:
+          type: string
+      sum:
+        type: array
+        items:
+          type: string
+      sumDistinct:
+        type: array
+        items:
+          type: string
+      avg:
+        type: array
+        items:
+          type: string
+      avgDistinct:
+        type: array
+        items:
+          type: string
+      min:
+        type: array
+        items:
+          type: string
+      max:
+        type: array
+        items:
+          type: string
     example: { 'count': ['*'] }
   groupBy:
     type: array

@@ -1,6 +1,10 @@
 description: >
-  Aggregate function to apply, mapped to the field(s) to apply it to, for example `count`, `sum`, `avg`, `min`, or
-  `max`.
+  Aggregate functions allow you to perform calculations on a set of values, returning a single result. Each key is an
+  aggregate function name, and each value is an array of field names to apply it to.
+
+
+  `count` also accepts `*` in place of a field name, to count all items regardless of field. `countAll` exists in
+  GraphQL only; it is not usable via REST.
 in: query
 name: aggregate
 required: false
@@ -8,4 +12,45 @@ content:
   application/json:
     schema:
       type: object
-      example: { 'count': ['*'] }
+      properties:
+        count:
+          type: array
+          items:
+            type: string
+        countDistinct:
+          type: array
+          items:
+            type: string
+        sum:
+          type: array
+          items:
+            type: string
+        sumDistinct:
+          type: array
+          items:
+            type: string
+        avg:
+          type: array
+          items:
+            type: string
+        avgDistinct:
+          type: array
+          items:
+            type: string
+        min:
+          type: array
+          items:
+            type: string
+        max:
+          type: array
+          items:
+            type: string
+    examples:
+      none:
+        summary: No aggregation specified (default)
+      countAll:
+        summary: Count all items
+        value: { 'count': ['*'] }
+      multiField:
+        summary: Multiple aggregate functions
+        value: { 'count': ['views', 'comments'], 'avg': ['rating'] }

@@ -1,4 +1,6 @@
-description: Select items in the collection that match the given filter conditions.
+description: >
+  Select items in the collection that match the given filter conditions.
+  https://directus.com/docs/guides/connect/filter-rules#available-operators
 in: query
 name: filter
 required: false
@@ -6,7 +8,30 @@ content:
   application/json:
     schema:
       type: object
-      externalDocs:
-        description: Available operators and dynamic variables
-        url: https://directus.com/docs/guides/connect/filter-rules#available-operators
-      example: { <field>: { <operator>: <value> } }
+    examples:
+      none:
+        summary: No filter
+        value: {}
+      basicField:
+        summary: Basic field filter
+        value: { 'title': { '_eq': 'Hello' } }
+      manyToOne:
+        summary: Many-to-One relational filter
+        value: { 'author': { 'name': { '_eq': 'Rijk van Zanten' } } }
+      manyToMany:
+        summary: Many-to-Many relational filter (through junction collection)
+        value: { 'authors': { 'authors_id': { 'name': { '_eq': 'Rijk van Zanten' } } } }
+      logicalCombination:
+        summary: '`_and`/`_or` logical combination'
+        value:
+          _or:
+            - { 'status': { '_eq': 'published' } }
+            - _and:
+                - { 'status': { '_eq': 'draft' } }
+                - { 'owner': { '_eq': '$CURRENT_USER' } }
+      dynamicVariable:
+        summary: Dynamic variable
+        value: { 'date_created': { '_gte': '$NOW(-1 year)' } }
+      relationalSomeNone:
+        summary: '`_some`/`_none` relational filter'
+        value: { 'categories': { '_none': { 'name': { '_eq': 'Recipe' } } } }
