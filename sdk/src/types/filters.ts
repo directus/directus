@@ -80,7 +80,7 @@ export type FilterOperators<
 	_nintersects: T;
 	_intersects_bbox: T;
 	_nintersects_bbox: T;
-	// regex is not available over the API https://docs.directus.io/reference/filter-rules.html#filter-operators
+	// regex is not available over the API https://directus.com/docs/reference/filter-rules.html#filter-operators
 	// _regex: IsDateTime<Type, never, IsString<T, string, never>>;
 }>;
 
