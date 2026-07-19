@@ -226,7 +226,7 @@ describe('resolveLoginRedirect', () => {
 	describe('provider redirect allow list', () => {
 		test('allows cross-domain redirect when in allow list', () => {
 			vi.mocked(useEnv).mockReturnValue({
-				PUBLIC_URL: 'https://api.directus.io',
+				PUBLIC_URL: 'https://api.directus.app',
 				AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://frontend.com/auth/callback',
 			});
 

@@ -31,7 +31,7 @@ test('Blocks request if host is missing', () => {
 });
 
 test('Does not call IP check on createConnection if host is not an IP', () => {
-	const options = { host: 'directus.io' };
+	const options = { host: 'directus.app' };
 
 	mockAgent.createConnection?.(options, () => {});
 
@@ -73,7 +73,7 @@ test('Blocks on resolve if IP is denied', async () => {
 test('Does not block on resolve if IP is allowed', async () => {
 	vi.mocked(isDeniedIp).mockReturnValue(false);
 
-	const options = { host: 'directus.io' };
+	const options = { host: 'directus.app' };
 
 	mockAgent.createConnection?.(options, () => {});
 

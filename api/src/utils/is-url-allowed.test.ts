@@ -2,15 +2,15 @@ import { expect, test } from 'vitest';
 import isUrlAllowed from './is-url-allowed.js';
 
 test('isUrlAllowed should allow matching domain', () => {
-	const checkUrl = 'https://directus.io';
-	const allowedUrls = ['https://directus.io/'];
+	const checkUrl = 'https://directus.app';
+	const allowedUrls = ['https://directus.app/'];
 
 	expect(isUrlAllowed(checkUrl, allowedUrls)).toBe(true);
 });
 
 test('isUrlAllowed should allow matching path', () => {
-	const checkUrl = 'https://directus.io/tv';
-	const allowedUrls = ['https://directus.io/tv'];
+	const checkUrl = 'https://directus.app/tv';
+	const allowedUrls = ['https://directus.app/tv'];
 
 	expect(isUrlAllowed(checkUrl, allowedUrls)).toBe(true);
 });
@@ -23,7 +23,7 @@ test('isUrlAllowed should block different paths', () => {
 });
 
 test('isUrlAllowed should block different domains', () => {
-	const checkUrl = 'http://directus.io/';
+	const checkUrl = 'http://directus.app/';
 	const allowedUrls = ['http://example.com/', 'http://directus.chat'];
 
 	expect(isUrlAllowed(checkUrl, allowedUrls)).toBe(false);
