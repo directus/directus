@@ -119,7 +119,7 @@ const isSaveDisabled = computed(() => {
 });
 
 function valueToPreview(value: Settings['module_bar']): PreviewValue[] {
-	return value.flatMap((part): PreviewValue[] => {
+	return (value ?? MODULE_BAR_DEFAULT).flatMap((part): PreviewValue[] => {
 		if (part.type === 'link') {
 			return [{ ...part, to: part.url, icon: part.icon, name: translate(part.name) }];
 		}
