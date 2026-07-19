@@ -834,6 +834,79 @@ describe('Integration Tests', () => {
 					});
 				});
 
+				describe('non-admin permission gating', () => {
+					it("reduces the schema to only the caller's own permitted fields", async () => {
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'test_table', action: 'read', fields: ['id'] } as any,
+						]);
+
+						const service = new SpecificationService({
+							knex: db,
+							schema,
+							accountability: { role: 'some-role', admin: false } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						const itemSchema = spec.components?.schemas?.['ItemsTestTable'] as any;
+						expect(itemSchema?.properties).toHaveProperty('id');
+						expect(itemSchema?.properties).not.toHaveProperty('blob');
+					});
+
+					it('denies actions not explicitly granted for a collection the caller does have some access to', async () => {
+						// Only a 'read' permission is granted for test_table, so it's present in the
+						// resulting CollectionAccess map (read access triggers the collection's entry to
+						// exist at all, which is also why it still gets a tag/schema generated), but
+						// 'create'/'update'/'delete' were never touched for it and stay at their
+						// initialized 'none' default rather than being absent.
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'test_table', action: 'read', fields: ['id'] } as any,
+						]);
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: schema2,
+							accountability: { role: 'some-role', admin: false } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths?.['/items/test_table']?.get).toBeDefined();
+						expect(spec.paths?.['/items/test_table']?.post).toBeUndefined();
+						expect(spec.paths?.['/items/test_table']?.patch).toBeUndefined();
+						expect(spec.paths?.['/items/test_table']?.delete).toBeUndefined();
+					});
+
+					it('excludes a collection entirely when the caller has no permissions for it at all', async () => {
+						const multiSchema = new SchemaBuilder()
+							.collection('test_table', (c) => {
+								c.field('id').integer().primary().options({ nullable: false });
+							})
+							.collection('other_table', (c) => {
+								c.field('id').integer().primary().options({ nullable: false });
+							})
+							.build();
+
+						// No permissions at all are granted for test_table, so it's entirely absent from
+						// the resulting CollectionAccess map - hasCollectionAccess must treat this the
+						// same as an explicit 'none', not read the missing entry as having access.
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'other_table', action: 'read', fields: ['id'] } as any,
+						]);
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: multiSchema,
+							accountability: { role: 'some-role', admin: false } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths?.['/items/test_table']).toBeUndefined();
+						expect(spec.paths?.['/items/other_table']?.get).toBeDefined();
+					});
+				});
+
 				describe('transitive schema $ref resolution', () => {
 					it('backfills schemas that are only reachable via a $ref inside another required schema', async () => {
 						const service = new SpecificationService({

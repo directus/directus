@@ -5,8 +5,9 @@ import { isSystemCollection } from '@directus/system-data';
 import type {
 	AbstractServiceOptions,
 	Accountability,
+	CollectionAccess,
 	FieldOverview,
-	Permission,
+	PermissionsAction,
 	SchemaOverview,
 	Type,
 } from '@directus/types';
@@ -24,9 +25,8 @@ import type {
 } from 'openapi3-ts/oas30';
 import { OAS_REQUIRED_SCHEMAS } from '../constants.js';
 import getDatabase from '../database/index.js';
-import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
-import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
-import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
+import { fetchAccountabilityCollectionAccess } from '../permissions/modules/fetch-accountability-collection-access/fetch-accountability-collection-access.js';
+import type { FieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
@@ -73,37 +73,26 @@ class OASSpecsService implements SpecificationSubService {
 
 	async generate(host?: string) {
 		let schemaForSpec = this.schema;
-		let permissions: Permission[] = [];
+		let collectionAccess: CollectionAccess | undefined;
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const allowedFields = await fetchAllowedFieldMap(
-				{
-					accountability: this.accountability,
-					action: 'read',
-				},
-				{ schema: this.schema, knex: this.knex },
-			);
+			collectionAccess = await fetchAccountabilityCollectionAccess(this.accountability, {
+				schema: this.schema,
+				knex: this.knex,
+			});
 
-			schemaForSpec = reduceSchema(this.schema, allowedFields);
-
-			const policies = await fetchPolicies(this.accountability, { schema: this.schema, knex: this.knex });
-
-			permissions = await fetchPermissions(
-				{ policies, accountability: this.accountability },
-				{ schema: this.schema, knex: this.knex },
-			);
+			schemaForSpec = reduceSchema(this.schema, this.toReadFieldMap(collectionAccess));
 		}
 
 		const publicAccountability = createDefaultAccountability();
-		const publicPolicies = await fetchPolicies(publicAccountability, { schema: this.schema, knex: this.knex });
 
-		const publicPermissions = await fetchPermissions(
-			{ policies: publicPolicies, accountability: publicAccountability },
-			{ schema: this.schema, knex: this.knex },
-		);
+		const publicCollectionAccess = await fetchAccountabilityCollectionAccess(publicAccountability, {
+			schema: this.schema,
+			knex: this.knex,
+		});
 
 		const tags = await this.generateTags(schemaForSpec);
-		const paths = await this.generatePaths(schemaForSpec, permissions, publicPermissions, tags);
+		const paths = await this.generatePaths(schemaForSpec, collectionAccess, publicCollectionAccess, tags);
 		const components = await this.generateComponents(schemaForSpec, tags, paths);
 
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
@@ -185,10 +174,32 @@ class OASSpecsService implements SpecificationSubService {
 		return tags.filter((tag) => tag.name !== 'Items').sort((a, b) => a.name.localeCompare(b.name));
 	}
 
+	/** Flattens a CollectionAccess map into the field map reduceSchema() expects. */
+	private toReadFieldMap(collectionAccess: CollectionAccess): FieldMap {
+		const fieldMap: FieldMap = {};
+
+		for (const [collection, access] of Object.entries(collectionAccess)) {
+			if (access.read.access === 'none') continue;
+			fieldMap[collection] = access.read.fields ?? [];
+		}
+
+		return fieldMap;
+	}
+
+	/** Treats a collection absent from CollectionAccess the same as explicit 'none' access. */
+	private hasCollectionAccess(
+		collectionAccess: CollectionAccess | undefined,
+		collection: string,
+		action: PermissionsAction,
+	): boolean {
+		return (collectionAccess?.[collection]?.[action]?.access ?? 'none') !== 'none';
+	}
+
+	/** Builds paths gated by collectionAccess, marking publicly-readable operations with optional-auth security. */
 	private async generatePaths(
 		schema: SchemaOverview,
-		permissions: Permission[],
-		publicPermissions: Permission[],
+		collectionAccess: CollectionAccess | undefined,
+		publicCollectionAccess: CollectionAccess,
 		tags: OpenAPIObject['tags'],
 	): Promise<OpenAPIObject['paths']> {
 		const paths: OpenAPIObject['paths'] = {};
@@ -211,18 +222,12 @@ class OASSpecsService implements SpecificationSubService {
 							const hasPermission =
 								this.accountability?.admin === true ||
 								collection === undefined ||
-								!!permissions.find(
-									(permission) =>
-										permission.collection === collection && permission.action === this.getActionForMethod(method),
-								);
+								this.hasCollectionAccess(collectionAccess, collection, this.getActionForMethod(method));
 
 							if (hasPermission) {
 								const isPubliclyAccessible =
 									collection !== undefined &&
-									!!publicPermissions.find(
-										(permission) =>
-											permission.collection === collection && permission.action === this.getActionForMethod(method),
-									);
+									this.hasCollectionAccess(publicCollectionAccess, collection, this.getActionForMethod(method));
 
 								const operationWithSecurity = isPubliclyAccessible
 									? { ...operation, security: OPTIONAL_AUTH_SECURITY }
@@ -250,14 +255,12 @@ class OASSpecsService implements SpecificationSubService {
 				for (const method of methods) {
 					const hasPermission =
 						this.accountability?.admin === true ||
-						!!permissions.find(
-							(permission) =>
-								permission.collection === collection && permission.action === this.getActionForMethod(method),
-						);
+						this.hasCollectionAccess(collectionAccess, collection, this.getActionForMethod(method));
 
-					const isPubliclyAccessible = !!publicPermissions.find(
-						(permission) =>
-							permission.collection === collection && permission.action === this.getActionForMethod(method),
+					const isPubliclyAccessible = this.hasCollectionAccess(
+						publicCollectionAccess,
+						collection,
+						this.getActionForMethod(method),
 					);
 
 					if (hasPermission) {
@@ -514,6 +517,7 @@ class OASSpecsService implements SpecificationSubService {
 		}
 	}
 
+	/** Prevents mergeWith from corrupting $refs and overwriting array items by index. */
 	private mergePathItemCustomizer(obj: unknown, src: unknown): unknown {
 		if (src !== null && typeof src === 'object' && !Array.isArray(src) && '$ref' in src) return src;
 		if (Array.isArray(obj)) return obj.concat(src);
