@@ -37,8 +37,6 @@ post:
   tags:
     - Items
   operationId: createItem
-  parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
   requestBody:
     content:
       application/json:
@@ -65,7 +63,6 @@ patch:
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
     - $ref: '../../openapi.yaml#/components/parameters/Limit'
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
     - $ref: '../../openapi.yaml#/components/parameters/Offset'
 
     - $ref: '../../openapi.yaml#/components/parameters/Sort'
@@ -83,8 +80,6 @@ responses:
               type: array
               items:
                 type: object
-            meta:
-              $ref: '../../openapi.yaml#/components/schemas/x-metadata'
   '401':
     $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
 
