@@ -63,7 +63,7 @@ const props = withDefaults(
 		value?: Settings['module_bar'];
 	}>(),
 	{
-		value: () => MODULE_BAR_DEFAULT,
+		value: () => MODULE_BAR_DEFAULT as Settings['module_bar'],
 	},
 );
 
