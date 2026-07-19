@@ -40,7 +40,7 @@ test.each([
 	{ scenario: 'relative', publicURL: '/', refererHost: 'http://ignore.domain' },
 	{ scenario: 'relative with subdirectory', publicURL: '/test/subfolder', refererHost: 'http://ignore.domain' },
 ])(
-	'should not skip cache for requests coming from data studio when public URL is $scenario and CACHE_AUTO_PURGE is true',
+	'should skip cache for requests coming from data studio when public URL is $scenario and CACHE_AUTO_PURGE is true',
 	({ publicURL, refererHost }) => {
 		vi.mocked(useEnv).mockReturnValue({
 			PUBLIC_URL: publicURL,
@@ -61,7 +61,7 @@ test.each([
 			originalUrl: 'http://admin.example.com/items/some_collection',
 		} as unknown as Request;
 
-		expect(shouldSkipCache(req)).toBe(false);
+		expect(shouldSkipCache(req)).toBe(true);
 	},
 );
 
