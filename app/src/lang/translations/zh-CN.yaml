@@ -1427,18 +1427,18 @@ fields:
     report_error_url: 用于反馈错误的网址
     collaborative_editing: 共同编辑
     collaborative_editing_note: 共同编辑需要WebSockets才能正常工作。
-    ai_notice: 'AI助手提供一个内置的侧边栏，用于与大型语言模型交谈。启用后，从工具栏中打开此侧边栏，以便询问问题、生成内容、获取帮助。<a href="https://directus.io/docs/guides/ai/assistant" target="_blank">了解更多关于配置和使用AI助手的信息。</a>'
+    ai_notice: 'AI助手提供一个内置的侧边栏，用于与大型语言模型交谈。启用后，从工具栏中打开此侧边栏，以便询问问题、生成内容、获取帮助。<a href="https://directus.com/docs/guides/ai/assistant" target="_blank">了解更多关于配置和使用AI助手的信息。</a>'
     mcp_enabled: MCP服务器
-    mcp_enabled_note: '通过 <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">模型上下文协议 (MCP)</a> 将 AI/LLM 工具连接到您的 Directus 项目。这使 AI 助手能够安全地读取您的 Directus 数据并与之交互。'
-    mcp_notice: '模型上下文协议（Model Context Protocol）是将大型语言模型（LLM）连接到像 Directus 这样的应用的标准。启用后，Directus MCP 服务器将在 /mcp 可用。<a href="https://directus.io/docs/guides/ai/mcp" target="_blank">了解有关 MCP 及如何连接的更多信息。</a>'
+    mcp_enabled_note: '通过 <a href="https://directus.com/docs/guides/ai/mcp" target="_blank">模型上下文协议 (MCP)</a> 将 AI/LLM 工具连接到您的 Directus 项目。这使 AI 助手能够安全地读取您的 Directus 数据并与之交互。'
+    mcp_notice: '模型上下文协议（Model Context Protocol）是将大型语言模型（LLM）连接到像 Directus 这样的应用的标准。启用后，Directus MCP 服务器将在 /mcp 可用。<a href="https://directus.com/docs/guides/ai/mcp" target="_blank">了解有关 MCP 及如何连接的更多信息。</a>'
     mcp_allow_deletes: 允许删除
     mcp_allow_deletes_note:
       - 允许通过MCP工具删除条目、文件、流程、字段、关系以及模型。<strong>注意：这可能导致数据丢失。</strong>出于安全考虑，默认为禁用。
     mcp_prompts_collection: AI 提示词集合
-    mcp_prompts_collection_note: '选择用于存储 AI 交互<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">可重复使用的提示词模板</a>的集合。'
+    mcp_prompts_collection_note: '选择用于存储 AI 交互<a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">可重复使用的提示词模板</a>的集合。'
     mcp_system_prompt_divider: 系统提示配置
     mcp_system_prompt_enabled: 使用系统提示
-    mcp_system_prompt_enabled_note: "使用<a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>默认系统提示词</a>来指导大型语言模型（LLM）的行为。禁用后可以移除或使用下方您自己的提示词覆盖。"
+    mcp_system_prompt_enabled_note: "使用<a href='https://directus.com/docs/guides/ai/mcp#system-prompt' target='_blank'>默认系统提示词</a>来指导大型语言模型（LLM）的行为。禁用后可以移除或使用下方您自己的提示词覆盖。"
     mcp_system_prompt: 自定义系统提示
     mcp_system_prompt_note: '自定义系统提示替换默认值。留空则使用默认值(如果已启用)。'
     ai_system_prompt: 用于AI系统的提示词
@@ -1656,7 +1656,7 @@ mcp_prompts_collection_schema:
   messages_role_user: 用户
   messages_role_assistant: 助理
   messages_role_note: 谁正在这个信息中说话。
-  meta_prompts_notice: '提示词是可重复使用的模板，您可以通过 Directus MCP 服务器、流程或其他 AI 应用程序与大型语言模型（LLM）一起使用。<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">了解更多关于创建有效提示词的信息。</a>'
+  meta_prompts_notice: '提示词是可重复使用的模板，您可以通过 Directus MCP 服务器、流程或其他 AI 应用程序与大型语言模型（LLM）一起使用。<a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">了解更多关于创建有效提示词的信息。</a>'
 expired: 已过期
 upcoming: 即将到来的
 share: 分享

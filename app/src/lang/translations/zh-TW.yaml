@@ -1180,7 +1180,7 @@ fields:
     custom_aspect_ratios: 自訂比例
     collaborative_editing: 共同編輯
     collaborative_editing_note: 共同編輯需要WebSockets才能正常工作。
-    ai_notice: 'AI助手提供一個內建的側邊欄，用於與大型語言模型對話。啟用後，從工具列中開啟此側邊欄，以便詢問問題、生成內容、獲取協助。<a href="https://directus.io/docs/guides/ai/assistant" target="_blank">了解更多關於配置和使用AI助手的資訊。</a>'
+    ai_notice: 'AI助手提供一個內建的側邊欄，用於與大型語言模型對話。啟用後，從工具列中開啟此側邊欄，以便詢問問題、生成內容、獲取協助。<a href="https://directus.com/docs/guides/ai/assistant" target="_blank">了解更多關於配置和使用AI助手的資訊。</a>'
     mcp_allow_deletes_note:
       - 允許通過MCP工具刪除項目、檔案、流程、欄位、關聯以及資料集。<strong>注意：這可能導致資料遺失。</strong>基於安全考量，預設為停用。
     ai_system_prompt: 用於AI系統的提示詞
