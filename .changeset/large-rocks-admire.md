@@ -1,5 +1,5 @@
 ---
-'@directus/app': major
+'@directus/app': minor
 ---
 
-Add search feature on relationship configuration
+Added search feature on relationship configuration
