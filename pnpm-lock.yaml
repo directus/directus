@@ -2031,6 +2031,9 @@ importers:
       '@directus/sdk':
         specifier: workspace:*
         version: link:../../sdk
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
       chalk:
         specifier: 'catalog:'
         version: 5.6.2
