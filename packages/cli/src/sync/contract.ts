@@ -14,7 +14,9 @@ import { CliError } from '../kernel/error.js';
 // snapshot, 2 = a partial, collection-scoped one. The distinction is load-bearing on
 // the server — a full snapshot diffed in `mirror` mode proposes deleting every
 // collection it omits — so the CLI never fabricates or edits it: it parses, stores,
-// and forwards it, and reads `version` only to know whether a snapshot is scoped.
+// and forwards it, and reads `version` only to know whether a snapshot is scoped. Only
+// these two values parse: an unknown future version fails loud rather than being
+// processed under a snapshot format the CLI does not understand.
 export const SNAPSHOT_FULL = 1;
 export const SNAPSHOT_PARTIAL = 2;
 
@@ -36,7 +38,7 @@ export interface SnapshotFieldEntry {
 }
 
 export interface Snapshot {
-	version: number;
+	version: 1 | 2;
 	directus: string;
 	vendor: string;
 	collections: SnapshotEntry[];
@@ -46,7 +48,9 @@ export interface Snapshot {
 }
 
 // The diff body is deep-diff output the CLI renders and forwards to /schema/apply but
-// never authors, so it stays an opaque object; `hash` seals it against the target.
+// never authors, so it stays an opaque object; `hash` seals it against the target. The
+// server answers 204 with no body when the snapshots match, so "no changes" is modeled
+// as a `null` result rather than a DiffResult (see parseDiffResult).
 export interface DiffResult {
 	hash: string;
 	diff: Record<string, unknown>;
@@ -56,12 +60,15 @@ const snapshotEntrySchema = z.looseObject({ collection: z.string() });
 const snapshotFieldSchema = z.looseObject({ collection: z.string(), field: z.string() });
 
 const snapshotSchema = z.object({
-	version: z.number(),
+	// Only the two known versions parse; a future version tag must fail loud, not flow through.
+	version: z.union([z.literal(SNAPSHOT_FULL), z.literal(SNAPSHOT_PARTIAL)]),
 	directus: z.string(),
 	vendor: z.string(),
 	collections: z.array(snapshotEntrySchema),
 	fields: z.array(snapshotFieldSchema),
-	systemFields: z.array(snapshotFieldSchema).default([]),
+	// Required, never defaulted: the API always emits systemFields, and an empty array is a real
+	// statement ("no indexed system-field state") that a defaulted missing key would forge.
+	systemFields: z.array(snapshotFieldSchema),
 	relations: z.array(snapshotEntrySchema),
 });
 
@@ -105,7 +112,12 @@ export function parseSnapshot(value: unknown): Snapshot {
 	return parseResponse(snapshotSchema, value, 'schema snapshot');
 }
 
-export function parseDiffResult(value: unknown): DiffResult {
+export function parseDiffResult(value: unknown): DiffResult | null {
+	// /schema/diff answers 204 with no body when the snapshots already match; a nullish or
+	// empty-string payload is that "no changes" outcome, so it parses to null rather than failing.
+	// Any other shape is still validated and fails loud.
+	if (value === null || value === undefined || value === '') return null;
+
 	return parseResponse(diffResultSchema, value, 'schema diff');
 }
 
