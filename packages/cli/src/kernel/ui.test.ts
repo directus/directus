@@ -106,6 +106,20 @@ describe('createUi', () => {
 		expect(stdout.join('')).not.toContain('leaked-token-abc123');
 	});
 
+	it('redacts a secret that JSON-escaping would otherwise hide on the machine channel', () => {
+		// A token containing a quote serializes as `abc\"def`; redacting the finished
+		// JSON string by substring would miss the escaped form. Redacting values before
+		// serialization catches the raw secret regardless of how it would be escaped.
+		const secret = 'abc"def\\ghi';
+		registerSecret(secret);
+		const ui = createUi({ json: true, color: false });
+		ui.data({ token: secret });
+
+		const out = stdout.join('');
+		expect(out).not.toContain('abc');
+		expect(JSON.parse(out)).toEqual({ token: '***' });
+	});
+
 	it('carries error detail on the --json channel so nothing is silently dropped', () => {
 		const ui = createUi({ json: true, color: false });
 		ui.error(new CliError('AUTH', 'auth failed', { detail: 'HTTP 401 from server' }));
