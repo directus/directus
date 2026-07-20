@@ -637,6 +637,159 @@ describe('OAuth2AuthDriver', () => {
 			});
 		});
 
+		describe('Nested claim flattening', () => {
+			test('maps role from a nested group claim referenced via dot-notation groupClaimName', async () => {
+				const config = createOAuth2Config({
+					identifierKey: 'sub',
+					defaultRoleId: 'default-role',
+					allowPublicRegistration: true,
+					groupClaimName: 'resource_access.roles',
+					roleMapping: {
+						'admin-group': 'admin-role-id',
+					},
+				});
+
+				const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
+
+				vi.spyOn(driver.client, 'oauthCallback').mockResolvedValue({ access_token: 'token' } as any);
+
+				vi.spyOn(driver.client, 'userinfo').mockResolvedValue({
+					sub: '123',
+					email: 'test@test.com',
+					resource_access: { roles: ['admin-group'] },
+				} as any);
+
+				vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue(undefined);
+
+				const createOneSpy = vi.fn().mockResolvedValue('new-user-id');
+				vi.spyOn(driver as any, 'getUsersService').mockReturnValue({ createOne: createOneSpy });
+
+				const payload = {
+					code: 'test-code',
+					codeVerifier: 'test-verifier',
+					state: 'test-state',
+				};
+
+				await driver.getUserID(payload);
+
+				expect(createOneSpy).toHaveBeenCalledWith(
+					expect.objectContaining({
+						role: 'admin-role-id',
+					}),
+				);
+			});
+
+			test('preserves the groups array (safe flatten) so a non-first member still maps to a role', async () => {
+				// Safe-mode flatten keeps arrays intact. Without it the array would be flattened into
+				// `groups.0`/`groups.1` keys and `userInfo['groups']` would be undefined, breaking mapping.
+				const config = createOAuth2Config({
+					identifierKey: 'sub',
+					defaultRoleId: 'default-role',
+					allowPublicRegistration: true,
+					roleMapping: {
+						'github-org-admins': 'admin-role-id',
+					},
+				});
+
+				const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
+
+				vi.spyOn(driver.client, 'oauthCallback').mockResolvedValue({ access_token: 'token' } as any);
+
+				vi.spyOn(driver.client, 'userinfo').mockResolvedValue({
+					sub: '123',
+					email: 'test@test.com',
+					groups: ['other-group', 'github-org-admins'],
+				} as any);
+
+				vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue(undefined);
+
+				const createOneSpy = vi.fn().mockResolvedValue('new-user-id');
+				vi.spyOn(driver as any, 'getUsersService').mockReturnValue({ createOne: createOneSpy });
+
+				const payload = {
+					code: 'test-code',
+					codeVerifier: 'test-verifier',
+					state: 'test-state',
+				};
+
+				await driver.getUserID(payload);
+
+				expect(createOneSpy).toHaveBeenCalledWith(
+					expect.objectContaining({
+						role: 'admin-role-id',
+					}),
+				);
+			});
+
+			test('resolves identifier from a nested dot-notation identifierKey', async () => {
+				const config = createOAuth2Config({
+					identifierKey: 'data.user.id',
+				});
+
+				const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
+
+				vi.spyOn(driver.client, 'oauthCallback').mockResolvedValue({ access_token: 'token' } as any);
+
+				vi.spyOn(driver.client, 'userinfo').mockResolvedValue({
+					data: { user: { id: 'nested-user-id' } },
+					email: 'test@test.com',
+				} as any);
+
+				const fetchUserIdSpy = vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue('existing-user');
+
+				const payload = {
+					code: 'test-code',
+					codeVerifier: 'test-verifier',
+					state: 'test-state',
+				};
+
+				await driver.getUserID(payload);
+
+				expect(fetchUserIdSpy).toHaveBeenCalledWith('nested-user-id');
+			});
+
+			test('resolves email/first_name/last_name from nested dot-notation keys', async () => {
+				const config = createOAuth2Config({
+					identifierKey: 'sub',
+					allowPublicRegistration: true,
+					emailKey: 'contact.email',
+					firstNameKey: 'name.first',
+					lastNameKey: 'name.last',
+				});
+
+				const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
+
+				vi.spyOn(driver.client, 'oauthCallback').mockResolvedValue({ access_token: 'token' } as any);
+
+				vi.spyOn(driver.client, 'userinfo').mockResolvedValue({
+					sub: '123',
+					contact: { email: 'nested@test.com' },
+					name: { first: 'Ada', last: 'Lovelace' },
+				} as any);
+
+				vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue(undefined);
+
+				const createOneSpy = vi.fn().mockResolvedValue('new-user-id');
+				vi.spyOn(driver as any, 'getUsersService').mockReturnValue({ createOne: createOneSpy });
+
+				const payload = {
+					code: 'test-code',
+					codeVerifier: 'test-verifier',
+					state: 'test-state',
+				};
+
+				await driver.getUserID(payload);
+
+				expect(createOneSpy).toHaveBeenCalledWith(
+					expect.objectContaining({
+						email: 'nested@test.com',
+						first_name: 'Ada',
+						last_name: 'Lovelace',
+					}),
+				);
+			});
+		});
+
 		describe('Identifier extraction', () => {
 			test('extracts identifier from custom identifierKey', async () => {
 				const config = createOAuth2Config({
