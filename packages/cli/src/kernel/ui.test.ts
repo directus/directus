@@ -106,6 +106,38 @@ describe('createUi', () => {
 		expect(stdout.join('')).not.toContain('leaked-token-abc123');
 	});
 
+	it('redacts a registered secret used as an object KEY in machine data output', () => {
+		// A replacer only rewrites values, so a secret surfacing as a key printed verbatim.
+		// Keys are attacker-reachable: payloads embed remote-controlled record maps.
+		registerSecret('leaked-token-abc123');
+		const ui = createUi({ json: true, color: false });
+		ui.data({ 'leaked-token-abc123': 'value' });
+
+		const out = stdout.join('');
+		expect(out).not.toContain('leaked-token-abc123');
+		expect(JSON.parse(out)).toEqual({ '***': 'value' });
+	});
+
+	it('redacts a secret nested deep inside arrays and objects on the machine channel', () => {
+		// The transform must walk the whole structure, not just top-level values.
+		registerSecret('leaked-token-abc123');
+		const ui = createUi({ json: true, color: false });
+		ui.data({ items: [{ nested: { token: 'leaked-token-abc123' } }] });
+
+		const out = stdout.join('');
+		expect(out).not.toContain('leaked-token-abc123');
+		expect(JSON.parse(out)).toEqual({ items: [{ nested: { token: '***' } }] });
+	});
+
+	it('preserves a `__proto__` key in machine data output instead of losing it to the prototype setter', () => {
+		// Rebuilding objects with assignment would route a `__proto__` key to the
+		// prototype setter and drop it; Object.fromEntries keeps it as an own property.
+		const ui = createUi({ json: true, color: false });
+		ui.data(JSON.parse('{"__proto__":"present"}'));
+
+		expect(JSON.parse(stdout.join(''))).toEqual(JSON.parse('{"__proto__":"present"}'));
+	});
+
 	it('redacts a secret that JSON-escaping would otherwise hide on the machine channel', () => {
 		// A token containing a quote serializes as `abc\"def`; redacting the finished
 		// JSON string by substring would miss the escaped form. Redacting values before

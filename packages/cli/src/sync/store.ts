@@ -1,10 +1,16 @@
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, lstatSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import { CliError } from '../kernel/error.js';
 import { writeFileAtomic } from '../kernel/write.js';
-import { parseSnapshot, type Snapshot, type SnapshotEntry, type SnapshotFieldEntry } from './contract.js';
+import {
+	parseSnapshot,
+	type Snapshot,
+	type SnapshotEntry,
+	type SnapshotFieldEntry,
+	type SnapshotRelationEntry,
+} from './contract.js';
 
 // The schema snapshot on disk as committable artifacts: one header file plus one file per
 // collection, serialized so the same schema always produces identical bytes on any
@@ -17,9 +23,11 @@ const METADATA_FILE = 'metadata.json';
 // recorded, not inferred from the name: metadata.json's `files` manifest lists exactly the
 // collection files this store wrote, and only those are read or cleaned up. This regex never
 // grants ownership on its own — a user's `notes_deadbeef.json` matches the shape yet is left
-// untouched because it is absent from the manifest — it is only the deletion path's second
-// guard, so a corrupted manifest can never delete anything outside our own naming shape.
-const OWNED_FILE = /^[a-z0-9-]*_[0-9a-f]{8}\.json$/;
+// untouched because it is absent from the manifest — it is the deletion path's second guard so a
+// corrupted manifest cannot delete outside our naming shape, and the read path's confinement guard:
+// the charset admits no `/` or `.`, so a traversal like `../outside.json` cannot match. The hash is
+// 16 hex chars because 8 collides in practice (sha256-prefix-8 of two distinct real names matched).
+const OWNED_FILE = /^[a-z0-9-]*_[0-9a-f]{16}\.json$/;
 
 export interface WriteResult {
 	readonly written: string[]; // filenames relative to dir, sorted
@@ -31,7 +39,7 @@ interface CollectionFile {
 	readonly definition: SnapshotEntry | null;
 	readonly fields: SnapshotFieldEntry[];
 	readonly systemFields: SnapshotFieldEntry[];
-	readonly relations: SnapshotEntry[];
+	readonly relations: SnapshotRelationEntry[];
 }
 
 interface RawCollectionFile {
@@ -51,19 +59,12 @@ function byCodepoint(a: string, b: string): number {
 	return 0;
 }
 
-function asString(value: unknown): string {
-	return typeof value === 'string' ? value : '';
-}
-
 function byField(a: SnapshotFieldEntry, b: SnapshotFieldEntry): number {
 	return byCodepoint(a.field, b.field);
 }
 
-function byRelation(a: SnapshotEntry, b: SnapshotEntry): number {
-	return (
-		byCodepoint(asString(a['field']), asString(b['field'])) ||
-		byCodepoint(asString(a['related_collection']), asString(b['related_collection']))
-	);
+function byRelation(a: SnapshotRelationEntry, b: SnapshotRelationEntry): number {
+	return byCodepoint(a.field, b.field) || byCodepoint(a.related_collection ?? '', b.related_collection ?? '');
 }
 
 // Canonical form: object keys sorted at every depth, array order preserved as data.
@@ -101,18 +102,26 @@ function fileName(collection: string): string {
 		.replace(/[^a-z0-9]+/g, '-')
 		.replace(/^-+|-+$/g, '');
 
-	const hash = createHash('sha256').update(collection).digest('hex').slice(0, 8);
+	const hash = createHash('sha256').update(collection).digest('hex').slice(0, 16);
 	return `${slug}_${hash}.json`;
 }
 
-// `files` is the ownership manifest: the sorted collection filenames written this pull (never
-// metadata.json itself). Since read and cleanup both key off it, provenance is recorded rather
-// than guessed from the directory listing.
-function header(
-	snapshot: Snapshot,
-	files: string[],
-): { directus: string; files: string[]; vendor: string; version: number } {
-	return { directus: snapshot.directus, files, vendor: snapshot.vendor, version: snapshot.version };
+// metadata.json holds two keys. `files` is the ownership manifest: the sorted collection filenames
+// written this pull (never metadata.json itself); since read and cleanup both key off it, provenance
+// is recorded, not guessed from the directory listing. `snapshot` carries every top-level snapshot
+// key except the four collection-partitioned arrays (which live in the owned per-collection files).
+// Namespacing the header under `snapshot` keeps a future server-side top-level key from ever
+// colliding with our `files` manifest key, and lets the CLI round-trip keys it does not model.
+function header(snapshot: Snapshot, files: string[]): { files: string[]; snapshot: Record<string, unknown> } {
+	const {
+		collections: _collections,
+		fields: _fields,
+		systemFields: _systemFields,
+		relations: _relations,
+		...rest
+	} = snapshot;
+
+	return { files, snapshot: rest };
 }
 
 // Every collection name that appears anywhere in the snapshot gets one file grouping its
@@ -143,30 +152,45 @@ function collectionFiles(snapshot: Snapshot): CollectionFile[] {
 	return files;
 }
 
-// The previous write's ownership manifest, or an empty list when there is none to read yet.
-// Used only by the write path's cleanup, which must tolerate a first pull or a pre-manifest
-// directory: a missing, unreadable, or malformed metadata.json simply means nothing is known to
-// be owned, so there is nothing to clean up rather than an error.
+const MANIFEST_HINT = 'Fix or delete the schema directory, then run d6s sync pull again.';
+
+// The previous write's ownership manifest, read strictly because the write path's cleanup keys off
+// it. Only a genuinely absent metadata.json is empty (a real first pull, nothing owned yet). Anything
+// else wrong — unreadable, invalid JSON, not an object, a missing/non-array `files`, or a non-string
+// entry — is corruption: swallowing it as "empty" would strand the previous generation's owned files
+// as permanently unowned artifacts that a later push could resurrect, so it fails loud instead.
 function readManifest(dir: string): string[] {
 	const path = join(dir, METADATA_FILE);
 
 	if (!existsSync(path)) return [];
 
+	let raw: string;
+
+	try {
+		raw = readFileSync(path, 'utf8');
+	} catch {
+		throw new CliError('STATE', `Cannot read ${METADATA_FILE}.`, { hint: MANIFEST_HINT });
+	}
+
 	let parsed: unknown;
 
 	try {
-		parsed = JSON.parse(readFileSync(path, 'utf8'));
+		parsed = JSON.parse(raw);
 	} catch {
-		return [];
+		throw new CliError('STATE', `${METADATA_FILE} is not valid JSON.`, { hint: MANIFEST_HINT });
 	}
 
-	if (!isPlainObject(parsed)) return [];
+	if (!isPlainObject(parsed)) {
+		throw new CliError('STATE', `${METADATA_FILE} is not a valid manifest.`, { hint: MANIFEST_HINT });
+	}
 
 	const files = (parsed as Record<string, unknown>)['files'];
 
-	if (!Array.isArray(files)) return [];
+	if (!Array.isArray(files) || files.some((name) => typeof name !== 'string')) {
+		throw new CliError('STATE', `${METADATA_FILE} is missing a valid "files" manifest.`, { hint: MANIFEST_HINT });
+	}
 
-	return files.filter((name): name is string => typeof name === 'string');
+	return files as string[];
 }
 
 export function writeSnapshotFiles(dir: string, snapshot: Snapshot): WriteResult {
@@ -176,13 +200,30 @@ export function writeSnapshotFiles(dir: string, snapshot: Snapshot): WriteResult
 	// store owns and may clean up.
 	const previous = readManifest(dir);
 
+	// Precompute the filename-to-collection map before writing anything: a hash collision must be
+	// DETECTED, never left probabilistic. Two distinct collections mapping to one filename would
+	// otherwise silently clobber each other on disk. This arm is not unit-testable without a real
+	// 64-bit collision — the read-side filename/collection agreement check covers the observable
+	// surface — but the invariant is enforced here so a collision fails loud rather than corrupts.
+	const byName = new Map<string, CollectionFile>();
+
+	for (const file of collectionFiles(snapshot)) {
+		const name = fileName(file.collection);
+		const clash = byName.get(name);
+
+		if (clash !== undefined) {
+			throw new CliError('STATE', `Collections "${clash.collection}" and "${file.collection}" both map to ${name}.`);
+		}
+
+		byName.set(name, file);
+	}
+
 	// Write every collection file first, collecting the names this pull owns. Determinism makes an
 	// unchanged file byte-identical, so a rewrite is invisible to git.
 	const targets = new Set<string>();
 	const files: string[] = [];
 
-	for (const file of collectionFiles(snapshot)) {
-		const name = fileName(file.collection);
+	for (const [name, file] of byName) {
 		targets.add(name);
 		files.push(name);
 		writeFileAtomic(join(dir, name), serialize(file), 0o644);
@@ -294,13 +335,47 @@ export function readSnapshotFiles(dir: string): Snapshot {
 	}
 
 	const files: RawCollectionFile[] = [];
+	const seen = new Set<string>();
 
 	for (const name of manifest as string[]) {
-		if (!existsSync(join(dir, name))) {
+		// Path confinement: the owned-file charset admits no `/` or `.`, so a hand-edited manifest
+		// entry like `../outside.json` cannot match and dies here — repo content must never point a
+		// sync read outside the schema directory.
+		if (!OWNED_FILE.test(name)) {
+			throw new CliError('STATE', `${METADATA_FILE} lists ${name}, which is not an owned schema file.`);
+		}
+
+		if (seen.has(name)) {
+			throw new CliError('STATE', `${METADATA_FILE} lists ${name} more than once.`);
+		}
+
+		seen.add(name);
+
+		const path = join(dir, name);
+
+		if (!existsSync(path)) {
 			throw new CliError('STATE', `${METADATA_FILE} lists ${name}, but it is missing.`);
 		}
 
-		files.push(readCollectionFile(dir, name));
+		// A symlinked artifact could read a file from outside the tree; require a regular file so a
+		// planted symlink cannot smuggle outside content into the snapshot.
+		if (!lstatSync(path).isFile()) {
+			throw new CliError('STATE', `${name} is not a regular file.`);
+		}
+
+		const file = readCollectionFile(dir, name);
+
+		// Filename/collection agreement: the filename is derived from the collection name, so a
+		// mismatch means a renamed file or a collision-duplicated one — refuse rather than fold the
+		// wrong collection in under a name that no longer identifies it.
+		if (fileName(file.collection) !== name) {
+			throw new CliError(
+				'STATE',
+				`${name} contains collection "${file.collection}", which does not match its filename.`,
+			);
+		}
+
+		files.push(file);
 	}
 
 	// Never trust manifest order for the reassembled arrays — sort by the authoritative internal
@@ -324,10 +399,18 @@ export function readSnapshotFiles(dir: string): Snapshot {
 		for (const entry of file.relations) relations.push(entry);
 	}
 
+	// The header is the `snapshot` object metadata.json namespaces every non-array top-level key
+	// under (version, directus, vendor, and any key the CLI does not model). Reassemble the full
+	// snapshot by laying the four collection-partitioned arrays over it, then validate as today —
+	// the spread preserves unknown top-level keys the write path round-tripped.
+	const snapshotHeader = metadata['snapshot'];
+
+	if (!isPlainObject(snapshotHeader)) {
+		throw new CliError('STATE', `${METADATA_FILE} is missing a valid "snapshot" header.`);
+	}
+
 	const assembled = {
-		version: metadata['version'],
-		directus: metadata['directus'],
-		vendor: metadata['vendor'],
+		...(snapshotHeader as Record<string, unknown>),
 		collections,
 		fields,
 		systemFields,

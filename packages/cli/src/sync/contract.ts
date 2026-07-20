@@ -37,6 +37,18 @@ export interface SnapshotFieldEntry {
 	[key: string]: unknown;
 }
 
+// A relation always carries collection/field/related_collection (see api sanitizeRelation, which
+// picks all three; related_collection is nullable — an m2a relation has no single target). The rest
+// (meta, schema) passes through verbatim. Typed so the store can sort by these keys without coercion.
+export interface SnapshotRelationEntry {
+	collection: string;
+	field: string;
+	related_collection: string | null;
+	[key: string]: unknown;
+}
+
+// The index signature keeps the CLI's verbatim promise at the top level too: a future server-side
+// key the CLI does not model must round-trip through store and diff, never be silently stripped.
 export interface Snapshot {
 	version: 1 | 2;
 	directus: string;
@@ -44,7 +56,8 @@ export interface Snapshot {
 	collections: SnapshotEntry[];
 	fields: SnapshotFieldEntry[];
 	systemFields: SnapshotFieldEntry[];
-	relations: SnapshotEntry[];
+	relations: SnapshotRelationEntry[];
+	[key: string]: unknown;
 }
 
 // The diff body mirrors the API's SnapshotDiff (packages/types): four arrays of changed
@@ -97,7 +110,18 @@ export interface DiffResult {
 const snapshotEntrySchema = z.looseObject({ collection: z.string() });
 const snapshotFieldSchema = z.looseObject({ collection: z.string(), field: z.string() });
 
-const snapshotSchema = z.object({
+// Relations get their own schema, not the generic entry schema: the server always emits
+// related_collection (nullable), and the diff path already keys off it, so require exactly the three
+// keys sanitizeRelation always picks and leave the rest loose.
+const snapshotRelationSchema = z.looseObject({
+	collection: z.string(),
+	field: z.string(),
+	related_collection: z.string().nullable(),
+});
+
+// Loose at the top level so unknown server-side keys survive the parse (z.object would strip them),
+// preserving the verbatim promise the store and diff both rely on.
+const snapshotSchema = z.looseObject({
 	// Only the two known versions parse; a future version tag must fail loud, not flow through.
 	version: z.union([z.literal(SNAPSHOT_FULL), z.literal(SNAPSHOT_PARTIAL)]),
 	directus: z.string(),
@@ -107,7 +131,7 @@ const snapshotSchema = z.object({
 	// Required, never defaulted: the API always emits systemFields, and an empty array is a real
 	// statement ("no indexed system-field state") that a defaulted missing key would forge.
 	systemFields: z.array(snapshotFieldSchema),
-	relations: z.array(snapshotEntrySchema),
+	relations: z.array(snapshotRelationSchema),
 });
 
 const diffOpSchema = z.looseObject({
@@ -177,10 +201,11 @@ export function parseSnapshot(value: unknown): Snapshot {
 }
 
 export function parseDiffResult(value: unknown): DiffResult | null {
-	// /schema/diff answers 204 with no body when the snapshots already match; a nullish or
-	// empty-string payload is that "no changes" outcome, so it parses to null rather than failing.
-	// Any other shape is still validated and fails loud.
-	if (value === null || value === undefined || value === '') return null;
+	// The accepted "no changes" values are exactly what the SDK maps a legitimate 204 to (see
+	// extractData: a 204 returns null) — nothing more. An empty-string body is NOT that: it is a
+	// malformed 200, and treating it as "no changes" would hide a broken response, so `''` falls
+	// through to the parse and fails loud like any other bad shape.
+	if (value === null) return null;
 
 	// zod infers an optional key as `T | undefined`; DiffOp.path is exact-optional (`T?`, never an
 	// explicit undefined). The wire only ever omits the key, so narrow to the public shape here.
