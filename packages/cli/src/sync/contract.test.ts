@@ -81,6 +81,40 @@ describe('parseSnapshot', () => {
 		expect((error as CliError).code).toBe('HTTP');
 		expect((error as CliError).detail).toMatch(/collection/i);
 	});
+
+	it('fails loud, naming the path, when a relation omits its always-emitted related_collection', () => {
+		// sanitizeRelation always picks related_collection, so the server always emits it; a relation
+		// that lacks it is a protocol break, not an implicit null, and must fail naming the field.
+		let error: unknown;
+
+		try {
+			parseSnapshot(fullSnapshot({ relations: [{ collection: 'articles', field: 'author' }] }));
+		} catch (caught) {
+			error = caught;
+		}
+
+		expect(error).toBeInstanceOf(CliError);
+		expect((error as CliError).code).toBe('HTTP');
+		expect((error as CliError).detail).toMatch(/related_collection/i);
+	});
+
+	it('parses a relation whose related_collection is null, the many-to-any case with no single target', () => {
+		// related_collection is required but nullable: an m2a relation legitimately has none, so null
+		// must parse through rather than being rejected as a missing key.
+		const parsed = parseSnapshot(
+			fullSnapshot({ relations: [{ collection: 'articles', field: 'item', related_collection: null }] }),
+		);
+
+		expect(parsed.relations[0]?.related_collection).toBeNull();
+	});
+
+	it('preserves an unknown top-level snapshot key so a future server-side key is not stripped', () => {
+		// The verbatim promise reaches the top level: z.object would silently drop an unmodeled key,
+		// so the loose schema must carry it through for the store to round-trip.
+		const parsed = parseSnapshot(fullSnapshot({ foo: { bar: 1 } }));
+
+		expect(parsed['foo']).toEqual({ bar: 1 });
+	});
 });
 
 describe('parseImportResult', () => {
@@ -183,9 +217,21 @@ describe('parseDiffResult', () => {
 		expect((error as CliError).detail).toMatch(/relations/i);
 	});
 
-	it('reads a 204 no-body diff as null, the "no changes" outcome, not a drift', () => {
-		// /schema/diff answers 204 with no body when the snapshots already match; that absent body
-		// must read as "no changes" rather than failing the parse.
-		expect(parseDiffResult(undefined)).toBeNull();
+	it('reads the SDK 204 value as null but rejects an empty-string body as malformed', () => {
+		// The SDK maps a legitimate 204 to null (extractData's status===204 arm), so null is the only
+		// "no changes" value. An empty-string body is a malformed 200, not a 204 — accepting it as "no
+		// changes" would silently swallow a broken response, so it must fail the parse like any bad shape.
+		expect(parseDiffResult(null)).toBeNull();
+
+		let error: unknown;
+
+		try {
+			parseDiffResult('');
+		} catch (caught) {
+			error = caught;
+		}
+
+		expect(error).toBeInstanceOf(CliError);
+		expect((error as CliError).code).toBe('HTTP');
 	});
 });

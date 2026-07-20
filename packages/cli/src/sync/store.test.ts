@@ -1,12 +1,21 @@
-import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+	existsSync,
+	mkdtempSync,
+	readdirSync,
+	readFileSync,
+	renameSync,
+	rmSync,
+	symlinkSync,
+	writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, relative } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { CliError } from '../kernel/error.js';
-import type { Snapshot, SnapshotEntry, SnapshotFieldEntry } from './contract.js';
+import type { Snapshot, SnapshotEntry, SnapshotFieldEntry, SnapshotRelationEntry } from './contract.js';
 import { readSnapshotFiles, writeSnapshotFiles } from './store.js';
 
-const OWNED = /^[a-z0-9-]*_[0-9a-f]{8}\.json$/;
+const OWNED = /^[a-z0-9-]*_[0-9a-f]{16}\.json$/;
 
 const dirs: string[] = [];
 
@@ -115,7 +124,7 @@ function shuffled(snapshot: Snapshot): Snapshot {
 		collections: shuffle([...snapshot.collections].reverse()) as SnapshotEntry[],
 		fields: shuffle([...snapshot.fields].reverse()) as SnapshotFieldEntry[],
 		systemFields: shuffle([...snapshot.systemFields].reverse()) as SnapshotFieldEntry[],
-		relations: shuffle([...snapshot.relations].reverse()) as SnapshotEntry[],
+		relations: shuffle([...snapshot.relations].reverse()) as SnapshotRelationEntry[],
 	};
 }
 
@@ -321,6 +330,39 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 		expect(Object.hasOwn(meta.options, '__proto__')).toBe(true);
 		expect(meta.options['__proto__']).toEqual({ kept: true });
 	});
+
+	it('round-trips an unknown top-level snapshot key, namespaced under snapshot in metadata.json', () => {
+		// The CLI's verbatim promise reaches the top level: a future server-side key must survive
+		// write→read and live under `snapshot` so it can never collide with the `files` manifest key.
+		const dir = tempDir();
+		const fx: Snapshot = { ...fixture(), foo: { bar: 1 } };
+
+		writeSnapshotFiles(dir, fx);
+
+		const metadata = JSON.parse(readFileSync(join(dir, 'metadata.json'), 'utf8'));
+		expect(metadata.snapshot.foo).toEqual({ bar: 1 });
+		expect(metadata.foo).toBeUndefined();
+		expect(Array.isArray(metadata.files)).toBe(true);
+
+		expect(readSnapshotFiles(dir)['foo']).toEqual({ bar: 1 });
+	});
+
+	it('treats absent metadata as a first pull but refuses a corrupt one on the next write', () => {
+		// readManifest used to swallow malformed metadata as "empty", which orphaned the previous
+		// generation's owned files as permanently unowned artifacts a later push could resurrect.
+		const dir = tempDir();
+
+		// Absent metadata.json is a genuine first pull: nothing is owned yet, so the write succeeds.
+		expect(() => writeSnapshotFiles(dir, fixture())).not.toThrow();
+
+		// Corrupting it must not read back as "empty" on the next write.
+		writeFileSync(join(dir, 'metadata.json'), '{ not valid json');
+
+		const error = expectCliError(() => writeSnapshotFiles(dir, fixture()));
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain('metadata.json');
+	});
 });
 
 describe('readSnapshotFiles failures', () => {
@@ -402,6 +444,91 @@ describe('readSnapshotFiles failures', () => {
 
 		const name = ownedFileFor(dir, 'articles');
 		rmSync(join(dir, name), { force: true });
+
+		const error = expectCliError(() => readSnapshotFiles(dir));
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain(name);
+	});
+
+	it('refuses a manifest entry that escapes the schema directory and never reads the outside file', () => {
+		// Repo content must never point a sync read outside the schema dir: a hand-edited manifest
+		// naming `../<name>/outside.json` would read a planted file above the dir. The owned-file
+		// charset cannot match a traversal, so the read fails naming the entry before touching it.
+		const dir = tempDir();
+		writeSnapshotFiles(dir, fixture());
+
+		const outsideDir = tempDir();
+		const outside = join(outsideDir, 'outside.json');
+		writeFileSync(outside, JSON.stringify({ collection: 'secret', fields: [], systemFields: [], relations: [] }));
+
+		const traversal = relative(dir, outside);
+		const metadataPath = join(dir, 'metadata.json');
+		const metadata = JSON.parse(readFileSync(metadataPath, 'utf8'));
+		metadata.files.push(traversal);
+		writeFileSync(metadataPath, JSON.stringify(metadata));
+
+		const error = expectCliError(() => readSnapshotFiles(dir));
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain(traversal);
+	});
+
+	it('refuses an owned file replaced by a symlink to an outside file', () => {
+		// A symlinked artifact could smuggle content from outside the tree into the snapshot, so the
+		// read requires a regular file — a planted symlink under an owned name must fail naming it.
+		const dir = tempDir();
+		writeSnapshotFiles(dir, fixture());
+
+		const name = ownedFileFor(dir, 'articles');
+		const outsideDir = tempDir();
+		const target = join(outsideDir, 'evil.json');
+		writeFileSync(target, JSON.stringify({ collection: 'articles', fields: [], systemFields: [], relations: [] }));
+
+		rmSync(join(dir, name), { force: true });
+		symlinkSync(target, join(dir, name));
+
+		const error = expectCliError(() => readSnapshotFiles(dir));
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain(name);
+		expect(error.message).toMatch(/regular file/i);
+	});
+
+	it('refuses a renamed owned file whose name no longer identifies its collection', () => {
+		// The filename is derived from the collection name; renaming the file (and its manifest entry)
+		// breaks that identity, so the read must refuse rather than fold the collection in under a
+		// foreign name — this also kills collision-duplication confusion.
+		const dir = tempDir();
+		writeSnapshotFiles(dir, fixture());
+
+		const name = ownedFileFor(dir, 'articles');
+		const renamed = `articles_${'0'.repeat(16)}.json`;
+		renameSync(join(dir, name), join(dir, renamed));
+
+		const metadataPath = join(dir, 'metadata.json');
+		const metadata = JSON.parse(readFileSync(metadataPath, 'utf8'));
+		metadata.files = metadata.files.map((entry: string) => (entry === name ? renamed : entry));
+		writeFileSync(metadataPath, JSON.stringify(metadata));
+
+		const error = expectCliError(() => readSnapshotFiles(dir));
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain(renamed);
+		expect(error.message).toContain('articles');
+	});
+
+	it('refuses a manifest that lists the same owned file twice', () => {
+		// Duplicate ownership entries are corruption; folding one file in twice would double its
+		// collection into the reassembled snapshot, so a repeated name must stop the read naming it.
+		const dir = tempDir();
+		writeSnapshotFiles(dir, fixture());
+
+		const name = ownedFileFor(dir, 'articles');
+		const metadataPath = join(dir, 'metadata.json');
+		const metadata = JSON.parse(readFileSync(metadataPath, 'utf8'));
+		metadata.files.push(name);
+		writeFileSync(metadataPath, JSON.stringify(metadata));
 
 		const error = expectCliError(() => readSnapshotFiles(dir));
 

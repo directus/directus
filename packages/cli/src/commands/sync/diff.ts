@@ -16,11 +16,13 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	const snapshot = readSnapshotFiles(schemaDir);
 
-	// Guard before any network call: pull only writes full snapshots today, so a partial here is
-	// hand-crafted state — refuse rather than let a scoped snapshot propose deleting everything it omits.
+	// Guard before any network call. The restriction is CLI-side, not server-side: the server scopes
+	// partial mirror diffs correctly, but this CLI cannot yet produce or reason about a partial
+	// snapshot (it has no scope configuration), so a partial in mirror mode is unsupported here rather
+	// than wrong on the wire — refuse it until scoped support lands.
 	if (snapshot.version === SNAPSHOT_PARTIAL && options.mode === 'mirror') {
-		throw new CliError('USAGE', 'A partial snapshot cannot be diffed in mirror mode.', {
-			hint: 'Mirror mode proposes deleting everything the snapshot omits. Use --mode merge.',
+		throw new CliError('USAGE', 'This CLI cannot yet diff a partial snapshot in mirror mode.', {
+			hint: 'Use --mode merge; scoped mirror support arrives with sync scope configuration.',
 		});
 	}
 

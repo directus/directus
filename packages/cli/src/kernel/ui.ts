@@ -1,4 +1,5 @@
 import { Chalk } from 'chalk';
+import { isPlainObject } from 'lodash-es';
 import type { CliError } from './error.js';
 import { redact } from './secret.js';
 
@@ -28,11 +29,29 @@ export function writeErr(text: string): void {
 	process.stderr.write(redact(text));
 }
 
-// Redact string values during serialization, not after: a secret can't survive by
-// being JSON-escaped, and non-string values aren't corrupted by substring edits.
+// Redact before serialization so a secret can't survive by being JSON-escaped, and
+// so object KEYS are covered too — a replacer only sees values, but payloads embed
+// remote-controlled record maps where the key is attacker-reachable. Rebuild plain
+// objects via Object.fromEntries so a `__proto__` key becomes an own data property
+// instead of hitting the prototype setter and vanishing.
+function redactValue(value: unknown): unknown {
+	if (typeof value === 'string') return redact(value);
+	if (Array.isArray(value)) return value.map(redactValue);
+
+	if (isPlainObject(value)) {
+		return Object.fromEntries(
+			Object.entries(value as Record<string, unknown>).map(([key, val]) => [redact(key), redactValue(val)]),
+		);
+	}
+
+	return value;
+}
+
+// Two redaction layers: redactValue is primary (covers keys and defeats JSON-escaping),
+// and writeOut is the final-boundary backstop for anything the transform misses.
 function writeJson(payload: unknown): void {
-	const body = JSON.stringify(payload, (_key, value: unknown) => (typeof value === 'string' ? redact(value) : value));
-	process.stdout.write(`${body ?? 'null'}\n`);
+	const body = JSON.stringify(redactValue(payload));
+	writeOut(`${body ?? 'null'}\n`);
 }
 
 // Human status uses stderr. JSON results and errors use stdout exclusively.

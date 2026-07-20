@@ -1,4 +1,13 @@
-import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+	existsSync,
+	mkdirSync,
+	mkdtempSync,
+	readdirSync,
+	readFileSync,
+	rmSync,
+	symlinkSync,
+	writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
@@ -9,7 +18,7 @@ import { writeSnapshotFiles } from '../../sync/store.js';
 import { registerSync } from './index.js';
 
 // The owned-file shape written by src/sync/store.ts: `${slug}_${hash}.json`.
-const OWNED = /^[a-z0-9-]*_[0-9a-f]{8}\.json$/;
+const OWNED = /^[a-z0-9-]*_[0-9a-f]{16}\.json$/;
 
 // Drive the whole path through the real dispatcher against a throwaway project dir (like
 // profile.test.ts) while pinning the network with undici and isolating HOME/env (like
@@ -22,6 +31,7 @@ describe('sync pull', () => {
 	let agent: MockAgent;
 	let dir: string;
 	let home: string;
+	let outside: string | undefined;
 	let stdout: string[];
 	let stderr: string[];
 
@@ -57,6 +67,7 @@ describe('sync pull', () => {
 	beforeEach(() => {
 		dir = mkdtempSync(join(tmpdir(), 'd6s-sync-'));
 		home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
+		outside = undefined;
 		stdout = [];
 		stderr = [];
 
@@ -90,6 +101,7 @@ describe('sync pull', () => {
 		vi.unstubAllEnvs();
 		rmSync(dir, { recursive: true, force: true });
 		rmSync(home, { recursive: true, force: true });
+		if (outside !== undefined) rmSync(outside, { recursive: true, force: true });
 	});
 
 	it('writes the source schema as committable files anchored to the config directory', async () => {
@@ -159,6 +171,39 @@ describe('sync pull', () => {
 
 		const output = stdout.join('') + stderr.join('');
 		expect(output).not.toMatch(/paste|log in|password/i);
+	});
+
+	it('refuses a schema directory that symlinks outside the project and writes nothing outside', async () => {
+		// Repo content must never redirect sync writes outside the repo: a schema dir symlinked to a
+		// directory outside the project tree is a containment escape, so pull must refuse before the
+		// fetch and leave the outside target empty. No intercept is registered — the disabled dispatcher
+		// would throw on any stray request, so reaching exit 1 proves nothing was fetched or written.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		outside = mkdtempSync(join(tmpdir(), 'd6s-outside-'));
+		mkdirSync(join(dir, 'directus', 'default'), { recursive: true });
+		symlinkSync(outside, join(dir, 'directus', 'default', 'schema'));
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
+		expect(stderr.join('')).toMatch(/outside the project/i);
+		expect(readdirSync(outside)).toEqual([]);
+	});
+
+	it('refuses a symlinked ANCESTOR of the schema dir, not just the leaf', async () => {
+		// The escape the leaf check misses: `directus` symlinks to an existing outside dir while
+		// `default/schema` does not exist yet, so an exists-only check on the full path never fires
+		// and mkdir would create the tail through the symlink. Containment must anchor on the
+		// deepest existing ancestor.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		outside = mkdtempSync(join(tmpdir(), 'd6s-outside-'));
+		symlinkSync(outside, join(dir, 'directus'));
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
+		expect(stderr.join('')).toMatch(/outside the project/i);
+		expect(readdirSync(outside)).toEqual([]);
 	});
 });
 
@@ -363,7 +408,7 @@ describe('sync diff', () => {
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--mode', 'mirror')).toBe(1);
-		expect(stderr.join('')).toContain('A partial snapshot cannot be diffed in mirror mode.');
+		expect(stderr.join('')).toContain('This CLI cannot yet diff a partial snapshot in mirror mode.');
 	});
 
 	it('fails with the pull-first precondition when no snapshot has been pulled', async () => {
