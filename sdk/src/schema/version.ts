@@ -11,7 +11,7 @@ export type DirectusVersion<Schema = any> = MergeCoreCollection<
 		name: string | null;
 		collection: DirectusCollection<Schema> | string;
 		item: string | null;
-		hash: string;
+		hash: string | null;
 		date_created: 'datetime' | null;
 		date_updated: 'datetime' | null;
 		user_created: DirectusUser<Schema> | string | null;
