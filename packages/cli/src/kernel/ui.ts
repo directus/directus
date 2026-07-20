@@ -28,6 +28,13 @@ export function writeErr(text: string): void {
 	process.stderr.write(redact(text));
 }
 
+// Redact string values during serialization, not after: a secret can't survive by
+// being JSON-escaped, and non-string values aren't corrupted by substring edits.
+function writeJson(payload: unknown): void {
+	const body = JSON.stringify(payload, (_key, value: unknown) => (typeof value === 'string' ? redact(value) : value));
+	process.stdout.write(`${body ?? 'null'}\n`);
+}
+
 // Human status uses stderr. JSON results and errors use stdout exclusively.
 export interface Ui {
 	readonly json: boolean;
@@ -74,7 +81,7 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 					...(error.detail !== undefined ? { detail: error.detail } : {}),
 				};
 
-				writeOut(`${JSON.stringify({ error: body })}\n`);
+				writeJson({ error: body });
 				return;
 			}
 
@@ -84,7 +91,7 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 		},
 		data(payload) {
 			if (!json) return;
-			writeOut(`${JSON.stringify(payload)}\n`);
+			writeJson(payload);
 		},
 	};
 }
