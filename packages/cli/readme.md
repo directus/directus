@@ -2,7 +2,7 @@
 
 Client-side CLI for Directus. Talks to instances over HTTP via `@directus/sdk`.
 
-> **Status: internal scaffolding.** Not published.
+> **Status: internal.** Not published.
 
 Distinct from `api/src/cli` (the server-process CLI that runs inside the Directus Node process). This one runs on a
 developer or CI machine and drives Directus instances remotely. Commands are built-in, statically registered groups — no

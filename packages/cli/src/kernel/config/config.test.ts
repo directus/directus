@@ -2,8 +2,8 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { type CliError, isCliError } from '../error.js';
-import { loadConfig, resolveProfile } from './file.js';
+import { CliError } from '../error.js';
+import { loadConfig, resolveProfile, upsertProfile } from './file.js';
 
 const created: string[] = [];
 
@@ -18,7 +18,7 @@ function caught(fn: () => unknown): CliError {
 	try {
 		fn();
 	} catch (error) {
-		if (isCliError(error)) return error;
+		if (error instanceof CliError) return error;
 		throw error;
 	}
 
@@ -49,7 +49,6 @@ describe('loadConfig', () => {
 
 		const loaded = loadConfig({ cwd: dir });
 
-		// The unrecognized `sync` namespace survives for its consumer to validate.
 		expect((loaded?.config as Record<string, unknown>)['sync']).toEqual({ defaultMode: 'merge' });
 	});
 
@@ -81,12 +80,6 @@ describe('loadConfig', () => {
 		expect(caught(() => loadConfig({ cwd: dir })).code).toBe('CONFIG');
 	});
 
-	it('errors when an explicit --config path cannot be read instead of silently skipping', () => {
-		expect(caught(() => loadConfig({ cwd: tempDir(), configPath: join(tempDir(), 'missing.json') })).code).toBe(
-			'CONFIG',
-		);
-	});
-
 	it('rejects a credential-bearing url so a secret never lands in committable config', () => {
 		const dir = tempDir();
 
@@ -96,6 +89,30 @@ describe('loadConfig', () => {
 		);
 
 		expect(caught(() => loadConfig({ cwd: dir })).code).toBe('CONFIG');
+	});
+
+	it('errors when an explicit --config path cannot be read instead of silently skipping', () => {
+		expect(caught(() => loadConfig({ cwd: tempDir(), configPath: join(tempDir(), 'missing.json') })).code).toBe(
+			'CONFIG',
+		);
+	});
+
+	it('refuses to write over an existing non-object config', () => {
+		const dir = tempDir();
+		writeFileSync(join(dir, 'directus.config.json'), '[]');
+
+		expect(() =>
+			upsertProfile({ cwd: dir }, 'prod', { url: 'https://cms.example.com', auth: { type: 'token' } }),
+		).toThrow(/not a JSON object/);
+	});
+
+	it('refuses to replace an existing non-object profiles block', () => {
+		const dir = tempDir();
+		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: [] }));
+
+		expect(() =>
+			upsertProfile({ cwd: dir }, 'prod', { url: 'https://cms.example.com', auth: { type: 'token' } }),
+		).toThrow(/"profiles".*not an object/);
 	});
 });
 
@@ -117,8 +134,6 @@ describe('resolveProfile', () => {
 	});
 
 	it('does not match inherited object properties like "toString"', () => {
-		// `'toString' in profiles` is true via the prototype; hasOwn must reject it
-		// instead of returning Object.prototype.toString as a profile.
 		expect(caught(() => resolveProfile(config, 'toString')).code).toBe('CONFIG');
 	});
 });
