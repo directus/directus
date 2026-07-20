@@ -50,6 +50,8 @@ const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 			options: {
 				collectionName: collection.value,
 				includeRelations: false,
+				// conditions are evaluated with generate-joi, which does not support `_json`
+				includeJsonFunction: false,
 				injectVersionField: true,
 			},
 		},
