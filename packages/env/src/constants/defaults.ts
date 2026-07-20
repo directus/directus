@@ -123,8 +123,8 @@ export const DEFAULTS: Env = {
 	MARKETPLACE_TRUST: 'sandbox',
 
 	TELEMETRY: true,
-	TELEMETRY_URL: 'https://telemetry.directus.com',
-	COMPLIANCE_URL: 'https://telemetry.directus.com',
+	TELEMETRY_URL: 'https://telemetry.directus.io',
+	COMPLIANCE_URL: 'https://telemetry.directus.io',
 
 	ASSETS_CACHE_TTL: '30d',
 	ASSETS_CACHE_REVALIDATE: false,

@@ -14,7 +14,7 @@ import type { AccountOptions } from '../types/account-options.js';
  * ```typescript
  * // Using default registry
  * const url = constructUrl('user123');
- * console.log(url.toString()); // "https://registry.directus.com/accounts/user123"
+ * console.log(url.toString()); // "https://registry.directus.io/accounts/user123"
  *
  * // Using custom registry
  * const customUrl = constructUrl('user456', {

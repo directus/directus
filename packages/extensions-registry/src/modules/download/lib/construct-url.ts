@@ -19,11 +19,11 @@ import type { DownloadOptions } from '../types/download-options.js';
  * ```typescript
  * // Download from default registry
  * const downloadUrl = constructUrl('extension-v1.0.0');
- * console.log(downloadUrl.href); // 'https://registry.directus.com/download/extension-v1.0.0'
+ * console.log(downloadUrl.href); // 'https://registry.directus.io/download/extension-v1.0.0'
  *
  * // Download with sandbox mode enabled
  * const sandboxUrl = constructUrl('extension-v1.0.0', true);
- * console.log(sandboxUrl.href); // 'https://registry.directus.com/download/extension-v1.0.0?sandbox=true'
+ * console.log(sandboxUrl.href); // 'https://registry.directus.io/download/extension-v1.0.0?sandbox=true'
  *
  * // Download from custom registry
  * const customUrl = constructUrl('extension-v1.0.0', false, {
