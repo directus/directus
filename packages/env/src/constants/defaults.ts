@@ -141,6 +141,7 @@ export const DEFAULTS: Env = {
 	IMPORT_IP_DENY_LIST: ['0.0.0.0', '169.254.169.254'],
 	IMPORT_TIMEOUT: '1h',
 	IMPORT_MAX_CONCURRENCY: 20,
+	IMPORT_MAX_FILE_SIZE: '50mb',
 
 	SERVE_APP: true,
 
@@ -272,4 +273,5 @@ export const DEFAULTS: Env = {
 	BRAINTRUST_API_URL: '',
 
 	LICENSE_NAMESPACE: 'license',
+	LICENSE_KEY_MANAGEMENT_ENABLED: true,
 } as const;

@@ -24,7 +24,7 @@ catalog:
   '@changesets/types': 6.1.0
   '@clack/prompts': 1.7.0
   '@directus/errors': 2.3.1
-  '@directus/license': 0.3.0
+  '@directus/license': 0.4.0
   '@directus/schema-builder': workspace:*
   '@directus/tsconfig': 4.0.0
   '@directus/types': workspace:*

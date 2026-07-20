@@ -5,7 +5,7 @@ import type { RequestHandler } from 'express';
 import { getCache, setCacheValue } from '../cache.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
-import { ExportService } from '../services/import-export.js';
+import { ExportService } from '../services/export.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getCacheKey } from '../utils/get-cache-key.js';

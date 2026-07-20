@@ -1,25 +1,34 @@
-import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
-import { toBoolean } from '@directus/utils';
-import Busboy from 'busboy';
+import { useEnv } from '@directus/env';
+import { ForbiddenError, InvalidPayloadError, InvalidQueryError } from '@directus/errors';
+import bytes from 'bytes';
 import { Router } from 'express';
-import Joi from 'joi';
+import { z } from 'zod';
+import { fromZodError } from 'zod-validation-error';
 import { resolveLoginRedirect } from '../auth/utils/resolve-login-redirect.js';
 import { clearSystemCache } from '../cache.js';
 import { getDatabase } from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import collectionExists from '../middleware/collection-exists.js';
+import readFileUploadBody from '../middleware/read-file-upload-body.js';
 import { respond } from '../middleware/respond.js';
-import { ExportService, ImportService } from '../services/import-export.js';
+import { ExportService } from '../services/export.js';
+import { ImportService } from '../services/import/import.js';
 import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
 import { generateTranslations } from '../utils/generate-translations.js';
+import { queryFlag } from '../utils/query-flag.js';
+import { readMultipartFile } from '../utils/read-multipart-file.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = Router();
 
-const randomStringSchema = Joi.object<{ length: number }>({
-	length: Joi.number().integer().min(1).max(500).default(32),
+const env = useEnv();
+
+const IMPORT_MAX_FILE_SIZE = bytes.parse(env['IMPORT_MAX_FILE_SIZE'] as string) ?? undefined;
+
+const randomStringSchema = z.object({
+	length: z.coerce.number().int().min(1).max(500).default(32),
 });
 
 router.get(
@@ -27,25 +36,27 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const { nanoid } = await import('nanoid');
 
-		const { error, value } = randomStringSchema.validate(req.query, { allowUnknown: true });
+		const { data: value, error } = randomStringSchema.safeParse(req.query);
 
-		if (error) throw new InvalidQueryError({ reason: error.message });
+		if (error) throw new InvalidQueryError({ reason: fromZodError(error).message });
 
 		return res.json({ data: nanoid(value.length) });
 	}),
 );
 
-const SortSchema = Joi.object({
-	item: Joi.alternatives(Joi.string(), Joi.number()).required(),
-	to: Joi.alternatives(Joi.string(), Joi.number()).required(),
-});
+const SortSchema = z
+	.object({
+		item: z.union([z.string(), z.number()]),
+		to: z.union([z.string(), z.number()]),
+	})
+	.strict();
 
 router.post(
 	'/sort/:collection',
 	collectionExists,
 	asyncHandler(async (req, res) => {
-		const { error } = SortSchema.validate(req.body);
-		if (error) throw new InvalidPayloadError({ reason: error.message });
+		const { error } = SortSchema.safeParse(req.body);
+		if (error) throw new InvalidPayloadError({ reason: fromZodError(error).message });
 
 		const service = new UtilsService({
 			accountability: req.accountability,
@@ -75,45 +86,57 @@ router.post(
 router.post(
 	'/import/:collection',
 	collectionExists,
+	asyncHandler(async (req, res) => {
+		const service = new ImportService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const { mimetype, stream } = await readMultipartFile(req);
+
+		await service.import(req.params['collection']!, mimetype, stream, {
+			background: queryFlag(req.query['background']),
+		});
+
+		return res.status(200).end();
+	}),
+);
+
+const ImportBatchSchema = z
+	.array(
+		z.object({
+			collection: z.string(),
+			items: z.array(z.record(z.string(), z.unknown())),
+		}),
+	)
+	.min(1);
+
+router.post(
+	'/import',
+	readFileUploadBody({ maxFileSize: IMPORT_MAX_FILE_SIZE }),
 	asyncHandler(async (req, res, next) => {
-		if (req.is('multipart/form-data') === false) {
-			throw new UnsupportedMediaTypeError({ mediaType: req.headers['content-type']!, where: 'Content-Type header' });
+		const { data: value, error } = ImportBatchSchema.safeParse(req.body);
+		if (error) throw new InvalidPayloadError({ reason: fromZodError(error).message });
+
+		if (req.query['mode'] !== undefined && ['add', 'merge'].includes(String(req.query['mode'])) === false) {
+			throw new InvalidQueryError({ reason: `"mode" must be one of ["add", "merge"]` });
 		}
+
+		const mode = req.query['mode'] === 'merge' ? 'merge' : 'add';
+		const dryRun = queryFlag(req.query['dryRun']);
+		const dangerouslyAllowDelete = queryFlag(req.query['dangerouslyAllowDelete']);
 
 		const service = new ImportService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		let headers;
+		const result = await service.importBatch(value, { mode, dryRun, dangerouslyAllowDelete });
 
-		if (req.headers['content-type']) {
-			headers = req.headers;
-		} else {
-			headers = {
-				...req.headers,
-				'content-type': 'application/octet-stream',
-			};
-		}
-
-		const busboy = Busboy({ headers });
-
-		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
-			try {
-				await service.import(req.params['collection']!, mimeType, fileStream, {
-					background: toBoolean(req.query['background']),
-				});
-			} catch (err: any) {
-				return next(err);
-			}
-
-			return res.status(200).end();
-		});
-
-		busboy.on('error', (err: Error) => next(err));
-
-		req.pipe(busboy);
+		res.locals['payload'] = { data: result };
+		return next();
 	}),
+	respond,
 );
 
 router.post(

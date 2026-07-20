@@ -10,18 +10,20 @@ import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
+import { getLicenseManager } from '../../../license/index.js';
 import { useLogger } from '../../../logger/index.js';
-import { applySnapshot } from '../../../utils/apply-snapshot.js';
-import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
-import { getSnapshot } from '../../../utils/get-snapshot.js';
+import { applySnapshot } from '../../../utils/schema/apply-snapshot.js';
+import { getSnapshotDiff } from '../../../utils/schema/get-snapshot-diff.js';
+import { getSnapshot } from '../../../utils/schema/get-snapshot.js';
 import { apply, filterSnapshotDiff, formatPath, formatRelatedCollection } from './apply.js';
 
 vi.mock('inquirer');
 vi.mock('../../../database/index.js');
+vi.mock('../../../license/index.js');
 vi.mock('../../../logger/index.js');
-vi.mock('../../../utils/apply-snapshot.js');
-vi.mock('../../../utils/get-snapshot-diff.js');
-vi.mock('../../../utils/get-snapshot.js');
+vi.mock('../../../utils/schema/apply-snapshot.js');
+vi.mock('../../../utils/schema/get-snapshot-diff.js');
+vi.mock('../../../utils/schema/get-snapshot.js');
 
 class Client_PG extends MockClient {}
 
@@ -263,6 +265,7 @@ describe('apply command', () => {
 	describe('apply function', () => {
 		let mockLogger: any;
 		let mockDatabase: any;
+		let mockLicenseManager: any;
 
 		beforeEach(() => {
 			// Setup mocks
@@ -275,8 +278,13 @@ describe('apply command', () => {
 				destroy: vi.fn(),
 			};
 
+			mockLicenseManager = {
+				initialize: vi.fn().mockResolvedValue(undefined),
+			};
+
 			// Setup default mock implementations
 			vi.mocked(getDatabase).mockReturnValue(mockDatabase as Knex);
+			vi.mocked(getLicenseManager).mockReturnValue(mockLicenseManager);
 			vi.mocked(useLogger).mockReturnValue(mockLogger);
 			vi.mocked(validateDatabaseConnection).mockResolvedValue(undefined);
 			vi.mocked(isInstalled).mockResolvedValue(true);

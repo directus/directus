@@ -1,4 +1,4 @@
-import { InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { type LicensePreviewOutput, type ReadLicenseOutput, ResolveInput } from '@directus/license';
 import express from 'express';
 import { fromZodError } from 'zod-validation-error';
@@ -7,7 +7,9 @@ import { getLicenseManager } from '../license/manager.js';
 import { getCoreGraceExpiresAt, GRACE_PERIOD_MS } from '../license/utils/get-core-grace-expires-at.js';
 import checkIsAdmin from '../middleware/is-admin.js';
 import { respond } from '../middleware/respond.js';
+import { ServerService } from '../services/server.js';
 import asyncHandler from '../utils/async-handler.js';
+import { isAdmin } from '../utils/is-admin.js';
 
 const router = express.Router();
 
@@ -27,6 +29,7 @@ router.get(
 			entitlementManager.getUsage('flows'),
 		]);
 
+		const editable = licenseManager.getEditable();
 		const source = licenseManager.getSource();
 
 		let expiresAt = license.meta.expires_at;
@@ -43,6 +46,7 @@ router.get(
 
 		const payload: ReadLicenseOutput = {
 			name: license.meta.name,
+			editable,
 			status,
 			source,
 			downgrade_reason: downgradeReason,
@@ -114,6 +118,13 @@ router.delete(
 router.post(
 	'/preview',
 	asyncHandler(async (req, res, next) => {
+		// Public only while onboarding (before an admin exists); admin-only thereafter.
+		const serverService = new ServerService({ schema: req.schema });
+
+		if ((await serverService.isSetupCompleted()) && !isAdmin(req.accountability)) {
+			throw new ForbiddenError();
+		}
+
 		if (!req.body.license_key) {
 			throw new InvalidPayloadError({ reason: 'A "license_key" is required' });
 		}

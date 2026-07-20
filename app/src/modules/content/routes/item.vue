@@ -746,6 +746,12 @@ function useResolvePrimaryKey() {
 	const resolvedPrimaryKey = ref<PrimaryKey | null>(primaryKeyParam.value);
 	const existingPrimaryKey = computed(() => (resolvedPrimaryKey.value === '+' ? null : resolvedPrimaryKey.value));
 
+	// Reset on collection change to avoid previous singleton’s primary key leaking into the next
+	// collection’s queries.
+	watch(collection, () => {
+		resolvedPrimaryKey.value = primaryKeyParam.value;
+	});
+
 	return {
 		primaryKeyParam,
 		resolvedPrimaryKey,
@@ -929,7 +935,7 @@ function usePublishActions() {
 		else if (quit) router.push(collectionRoute.value);
 		else router.replace(getItemRoute(props.collection, newItemKey));
 
-		deleteVersion(versionId);
+		if (deleteVersionsAllowed.value) await deleteVersion(versionId);
 	}
 
 	function finalizePublishedItem() {

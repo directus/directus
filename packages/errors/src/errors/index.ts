@@ -7,6 +7,7 @@ export { EmailLimitExceededError } from './email-limit-exceeded.js';
 export { ForbiddenError } from './forbidden.js';
 export { HitRateLimitError } from './hit-rate-limit.js';
 export { IllegalAssetTransformationError } from './illegal-asset-transformation.js';
+export { ImportCyclicalRelationError } from './import-cyclical-relation.js';
 export { InternalServerError } from './internal.js';
 export { InvalidCredentialsError } from './invalid-credentials.js';
 export { InvalidForeignKeyError } from './invalid-foreign-key.js';
