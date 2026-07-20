@@ -2,34 +2,40 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { z } from 'zod';
-import type { CommandDefinition, CommandGroup } from './command.js';
-import { CliError } from './error.js';
 import { run } from './run.js';
+import { clearSecrets, registerSecret } from './secret.js';
 
-function syncGroup(options: {
-	onRun?: (args: { from: string }, positionals: string[]) => void;
-	throws?: unknown;
-}): CommandGroup {
-	const pull: CommandDefinition = {
-		name: 'pull',
-		description: 'Pull schema from a source',
-		args: z.object({ from: z.string().describe('Source profile') }),
-		run({ args, positionals }) {
-			options.onRun?.(args as { from: string }, positionals);
-			if (options.throws !== undefined) throw options.throws;
-		},
+type RegisterCommands = Parameters<typeof run>[1]['registerCommands'];
+
+interface PullOptions {
+	readonly from: string;
+}
+
+function registerSync(options: { onRun?: (options: PullOptions) => void; throws?: unknown } = {}): RegisterCommands {
+	return (program) => {
+		program
+			.command('sync')
+			.command('pull')
+			.requiredOption('--from <profile>', 'Source profile')
+			.action((pullOptions: PullOptions) => {
+				options.onRun?.(pullOptions);
+				if (options.throws !== undefined) throw options.throws;
+			});
 	};
-
-	return { name: 'sync', description: 'Sync', commands: { pull } };
 }
 
 describe('run', () => {
+	let stdout: string[];
 	let stderr: string[];
 
 	beforeEach(() => {
+		stdout = [];
 		stderr = [];
-		vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+
+		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
+			stdout.push(String(chunk));
+			return true;
+		});
 
 		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
 			stderr.push(String(chunk));
@@ -39,193 +45,109 @@ describe('run', () => {
 
 	afterEach(() => {
 		vi.restoreAllMocks();
+		clearSecrets();
 	});
 
-	it('prints version and exits 0', async () => {
-		expect(await run(['--version'], { commands: [] })).toBe(0);
+	it('parses global options and dispatches the selected command', async () => {
+		let from: string | undefined;
+
+		expect(
+			await run(['sync', 'pull', '--from', 'local', '--json'], {
+				registerCommands: registerSync({ onRun: (options) => (from = options.from) }),
+			}),
+		).toBe(0);
+
+		expect(from).toBe('local');
 	});
 
-	it('honors --version even when a command is present (terminal, position-independent)', async () => {
-		// `sync` alone would be an unknown command (exit 1); returning 0 proves
-		// --version short-circuited before dispatch.
-		expect(await run(['sync', '--version'], { commands: [syncGroup({})] })).toBe(0);
+	it('renders Commander errors through the CLI error boundary', async () => {
+		expect(await run(['sync', 'pull', '--from', 'local', '--bogus'], { registerCommands: registerSync() })).toBe(1);
+		expect(stderr.join('')).toContain("unknown option '--bogus'");
 	});
 
-	it('dispatches a command with parsed args and exits 0', async () => {
-		const seen: string[] = [];
+	it('masks inline values in Commander errors', async () => {
+		const secret = 'super-secret-token';
+		const argv = ['sync', 'pull', '--from', 'local', `--token=${secret}`];
 
-		const code = await run(['sync', 'pull', '--from', 'local'], {
-			commands: [syncGroup({ onRun: (args) => seen.push(args.from) })],
-		});
+		expect(await run(argv, { registerCommands: registerSync() })).toBe(1);
+		expect(stderr.join('')).toContain("unknown option '--token=***'");
+		expect(stderr.join('')).not.toContain(secret);
 
-		expect(code).toBe(0);
-		expect(seen).toEqual(['local']);
+		stderr.length = 0;
+		expect(await run([...argv, '--json'], { registerCommands: registerSync() })).toBe(1);
+		expect(stdout.join('')).toContain("unknown option '--token=***'");
+		expect(stdout.join('')).not.toContain(secret);
 	});
 
-	it('extracts --config with its value so the command parser never sees either token', async () => {
-		let seenConfigPath: string | undefined;
-		let seenPositionals: string[] | undefined;
+	it('returns a failing status for errors thrown by commands', async () => {
+		expect(
+			await run(['sync', 'pull', '--from', 'local'], {
+				registerCommands: registerSync({ throws: new Error('boom') }),
+			}),
+		).toBe(1);
 
-		const group: CommandGroup = {
-			name: 'conf',
-			description: 'conf',
-			commands: {
-				show: {
-					name: 'show',
-					description: 'show',
-					args: z.object({}),
-					run({ positionals, ctx }) {
-						seenConfigPath = ctx.configPath;
-						seenPositionals = positionals;
-					},
-				},
-			},
+		expect(stderr.join('')).toContain('boom');
+	});
+
+	it('classifies unknown commands in JSON errors', async () => {
+		expect(await run(['nope', '--json'], { registerCommands: registerSync() })).toBe(1);
+		expect(JSON.parse(stdout.join('')).error.code).toBe('UNKNOWN_COMMAND');
+		expect(stderr.join('')).toBe('');
+	});
+
+	it('shows root, group, and command help on stdout', async () => {
+		const cases: [argv: string[], expected: string][] = [
+			[[], 'sync'],
+			[['sync'], 'pull'],
+			[['help', 'sync'], 'pull'],
+			[['sync', 'help', 'pull'], '--from <profile>'],
+		];
+
+		for (const [argv, expected] of cases) {
+			stdout.length = 0;
+			stderr.length = 0;
+
+			expect(await run(argv, { registerCommands: registerSync() })).toBe(0);
+			expect(stdout.join('')).toContain(expected);
+			expect(stderr.join('')).toBe('');
+		}
+	});
+
+	it('redacts Commander help output', async () => {
+		registerSecret('leaked-token-abc123');
+
+		const registerSafe: RegisterCommands = (program) => {
+			program
+				.command('safe')
+				.description('prints leaked-token-abc123')
+				.action(() => {});
 		};
 
-		const code = await run(['conf', 'show', '--config', 'custom.json'], { commands: [group], cwd: '/tmp/proj' });
-
-		expect(code).toBe(0);
-		// The value resolved against cwd and reached ctx — and did NOT leak into
-		// the command's positionals, where a parser would reject it.
-		expect(seenConfigPath).toBe(join('/tmp/proj', 'custom.json'));
-		expect(seenPositionals).toEqual([]);
+		expect(await run(['safe', '--help'], { registerCommands: registerSafe })).toBe(0);
+		expect(stdout.join('')).toContain('***');
+		expect(stdout.join('')).not.toContain('leaked-token-abc123');
 	});
 
-	it('rejects --config without a value as a usage error instead of guessing', async () => {
-		expect(await run(['sync', 'pull', '--from', 'x', '--config'], { commands: [syncGroup({})] })).toBe(1);
-		expect(stderr.join('')).toContain('--config');
-	});
-
-	it('treats a flag after --config as a missing value, not a path named after the flag', async () => {
-		const stdout: string[] = [];
-
-		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
-			stdout.push(String(chunk));
-			return true;
-		});
-
-		// `--config --json` must not consume --json as the config path. It's rejected
-		// (missing value), and --json is still honored — so the error renders as JSON
-		// on stdout rather than being silently swallowed. --config=<path> is explicit.
-		const code = await run(['sync', 'pull', '--from', 'x', '--config', '--json'], { commands: [syncGroup({})] });
-
-		expect(code).toBe(1);
-		expect(stdout.join('') + stderr.join('')).toMatch(/config/i);
-	});
-
-	it('treats tokens after `--` as literal positionals, not global flags', async () => {
-		let positionals: string[] | undefined;
-
-		const code = await run(['sync', 'pull', '--from', 'x', '--', '--version', 'file'], {
-			commands: [syncGroup({ onRun: (_args, p) => (positionals = p) })],
-		});
-
-		// The command RAN (so --version after -- did not short-circuit to version
-		// print) and the literal tokens reached it as positionals.
-		expect(code).toBe(0);
-		expect(positionals).toEqual(['--version', 'file']);
-	});
-
-	it('exits 1 when a required flag is missing', async () => {
-		expect(await run(['sync', 'pull'], { commands: [syncGroup({})] })).toBe(1);
-	});
-
-	it('maps a thrown CliError to its own exit code', async () => {
-		const code = await run(['sync', 'pull', '--from', 'x'], {
-			commands: [syncGroup({ throws: new CliError('STATE', 'boom', { exitCode: 2 }) })],
-		});
-
-		expect(code).toBe(2);
-	});
-
-	it('exits 1 for an unknown command', async () => {
-		expect(await run(['nope'], { commands: [] })).toBe(1);
-	});
-
-	it('shows the group help (not an error) when a group is named with no subcommand', async () => {
-		const stdout: string[] = [];
-
-		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
-			stdout.push(String(chunk));
-			return true;
-		});
-
-		// `d6s sync` alone is incomplete, not wrong — list what it can do.
-		const code = await run(['sync'], { commands: [syncGroup({})] });
-
-		expect(code).toBe(0);
-		expect(stdout.join('')).toContain('sync pull');
-	});
-
-	it('offers a did-you-mean for a prefix typo', async () => {
-		const code = await run(['sync', 'pul'], { commands: [syncGroup({})] });
-
-		expect(code).toBe(1);
-		expect(stderr.join('')).toContain('Did you mean "sync pull"');
-	});
-
-	it('does not offer an absurd did-you-mean for an unrelated command', async () => {
-		const code = await run(['zzz', 'qqq'], { commands: [syncGroup({})] });
-
-		expect(code).toBe(1);
-		expect(stderr.join('')).not.toContain('Did you mean');
-	});
-
-	it('routes --help to command help and exits 0', async () => {
-		expect(await run(['sync', 'pull', '--help'], { commands: [syncGroup({})] })).toBe(0);
-	});
-
-	it('normalizes a non-CliError thrown by a command to exit 1, never silent success', async () => {
-		// A command leaking a non-CliError must not exit 0 — a failed command
-		// silently reporting success to the shell is the worst outcome.
-		const code = await run(['sync', 'pull', '--from', 'x'], {
-			commands: [syncGroup({ throws: { nope: true } })],
-		});
-
-		expect(code).toBe(1);
-	});
-
-	it('clamps an out-of-range exit code so the process boundary never throws', async () => {
-		// exitCode -1 would make `process.exitCode = -1` throw RangeError; the
-		// boundary must coerce it to a valid failing code instead of crashing.
-		const code = await run(['sync', 'pull', '--from', 'x'], {
-			commands: [syncGroup({ throws: new CliError('STATE', 'boom', { exitCode: -1 }) })],
-		});
-
-		expect(code).toBe(1);
-	});
-
-	it('loads .env from the config dir, so a subdirectory still sees project-root credentials', async () => {
+	it('loads project environment variables relative to discovered config', async () => {
 		const root = mkdtempSync(join(tmpdir(), 'd6s-env-'));
 
 		try {
 			writeFileSync(join(root, 'directus.config.json'), '{}');
 			writeFileSync(join(root, '.env'), 'DIRECTUS_ENVTEST_TOKEN=from-root\n');
-			const sub = join(root, 'nested', 'deep');
-			mkdirSync(sub, { recursive: true });
 
-			let seen: string | undefined = 'unset';
+			const cwd = join(root, 'nested', 'deep');
+			mkdirSync(cwd, { recursive: true });
+			let value: string | undefined;
 
-			const group: CommandGroup = {
-				name: 'env',
-				description: 'env',
-				commands: {
-					show: {
-						name: 'show',
-						description: 'show',
-						args: z.object({}),
-						run() {
-							seen = process.env['DIRECTUS_ENVTEST_TOKEN'];
-						},
-					},
-				},
+			const registerEnv: RegisterCommands = (program, getContext) => {
+				program.command('env').action(() => {
+					getContext();
+					value = process.env['DIRECTUS_ENVTEST_TOKEN'];
+				});
 			};
 
-			// cwd is two levels below the config; the token must still resolve because
-			// `.env` is read from the config's dir (the walk-up root), not cwd.
-			await run(['env', 'show'], { commands: [group], cwd: sub });
-
-			expect(seen).toBe('from-root');
+			await run(['env'], { registerCommands: registerEnv, cwd });
+			expect(value).toBe('from-root');
 		} finally {
 			delete process.env['DIRECTUS_ENVTEST_TOKEN'];
 			rmSync(root, { recursive: true, force: true });

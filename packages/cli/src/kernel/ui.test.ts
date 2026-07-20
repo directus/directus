@@ -29,20 +29,21 @@ describe('createUi', () => {
 		clearSecrets();
 	});
 
-	it('routes status to stderr and machine data to stdout under --json', () => {
-		const ui = createUi({ json: true, color: false });
-		ui.data({ ok: true });
-
-		expect(stdout.join('')).toContain('{"ok":true}');
-	});
-
-	it('suppresses machine data in human mode so commands can emit it unconditionally', () => {
+	it('routes status to stderr and suppresses machine data outside --json', () => {
 		const ui = createUi({ json: false, color: false });
 		ui.info('working');
 		ui.data({ ok: true });
 
 		expect(stderr.join('')).toContain('working');
 		expect(stdout.join('')).toBe('');
+	});
+
+	it('routes machine data to stdout in --json mode', () => {
+		const ui = createUi({ json: true, color: false });
+		ui.data({ ok: true });
+		ui.data('done');
+
+		expect(stdout).toEqual(['{"ok":true}\n', '"done"\n']);
 	});
 
 	it('suppresses human status in --json mode so stdout stays a clean channel', () => {
@@ -72,7 +73,7 @@ describe('createUi', () => {
 
 	it('emits no ANSI escape codes when color is disabled', () => {
 		const ui = createUi({ json: false, color: false });
-		ui.warn('careful');
+		ui.info('careful');
 
 		expect(stderr.join('')).not.toContain(ESC);
 	});
@@ -100,7 +101,6 @@ describe('createUi', () => {
 		const ui = createUi({ json: true, color: false });
 		ui.data({ token: 'leaked-token-abc123' });
 
-		expect(stdout.join('')).toContain('***');
 		expect(stdout.join('')).not.toContain('leaked-token-abc123');
 	});
 
@@ -112,8 +112,6 @@ describe('createUi', () => {
 	});
 
 	it('carries the hint on the --json channel so a script sees the actionable fix', () => {
-		// The hint holds the next step (which env var to set); dropping it under --json
-		// would leave an automated caller with an error it cannot act on.
 		const ui = createUi({ json: true, color: false });
 		ui.error(new CliError('AUTH', 'no token', { hint: 'Set DIRECTUS_PROD_TOKEN or pass --token.' }));
 

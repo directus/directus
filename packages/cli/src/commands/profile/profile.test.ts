@@ -4,24 +4,29 @@ import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { resolveCredential, saveCredential } from '../../kernel/config/credentials.js';
 import { run } from '../../kernel/run.js';
-import { commands } from '../index.js';
+import { registerProfile } from './index.js';
 
 // Drive the real dispatcher against a throwaway project dir, so these exercise
 // the whole path: parse → command → config file on disk.
 describe('profile commands', () => {
 	let dir: string;
 	let stdout: string[];
+	let stderr: string[];
 
 	beforeEach(() => {
 		dir = mkdtempSync(join(tmpdir(), 'd6s-profile-'));
 		stdout = [];
+		stderr = [];
 
 		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
 			stdout.push(String(chunk));
 			return true;
 		});
 
-		vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
+			stderr.push(String(chunk));
+			return true;
+		});
 	});
 
 	afterEach(() => {
@@ -31,7 +36,7 @@ describe('profile commands', () => {
 	});
 
 	function d6s(...argv: string[]): Promise<number> {
-		return run(argv, { commands, cwd: dir });
+		return run(argv, { registerCommands: registerProfile, cwd: dir });
 	}
 
 	function readConfig(): { profiles: Record<string, { url: string }>; [key: string]: unknown } {
@@ -77,17 +82,14 @@ describe('profile commands', () => {
 		expect(config.profiles['staging']?.url).toBe('https://cms.example.com');
 	});
 
-	it('honors --config for both writes and reads, so add and list target the same file', async () => {
-		// A nested not-yet-existing path: add must create the directory, not ENOENT.
+	it('honors --config for writes and reads through commander global options', async () => {
 		const explicit = join(dir, 'envs', 'ci.config.json');
 
 		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com', '--config', explicit)).toBe(0);
 
-		// The write landed in the named file, not a discovered/default one...
 		const written = JSON.parse(readFileSync(explicit, 'utf8'));
 		expect(written.profiles['staging']?.url).toBe('https://cms.example.com');
 
-		// ...and list resolves through the same flag.
 		stdout.length = 0;
 		expect(await d6s('profile', 'list', '--json', '--config', explicit)).toBe(0);
 		expect(JSON.parse(stdout.join(''))).toEqual([{ name: 'staging', url: 'https://cms.example.com' }]);
@@ -98,25 +100,22 @@ describe('profile commands', () => {
 	});
 
 	it('rejects an env-unsafe profile name so DIRECTUS_<NAME>_TOKEN stays a valid var', async () => {
-		// `my-staging` would derive DIRECTUS_MY-STAGING_TOKEN, which is not exportable.
 		expect(await d6s('profile', 'add', 'my-staging', '--url', 'https://cms.example.com')).toBe(1);
 	});
 
-	it('rejects a credential-bearing url instead of writing it to committable config', async () => {
-		expect(await d6s('profile', 'add', 'staging', '--url', 'https://user:pass@cms.example.com')).toBe(1);
+	it('add with an invalid URL is a usage error', async () => {
+		expect(await d6s('profile', 'add', 'staging', '--url', 'not-a-url')).toBe(1);
 	});
 
-	it('refuses to overwrite a malformed config instead of silently discarding it', async () => {
-		writeFileSync(join(dir, 'directus.config.json'), '[]'); // valid JSON, wrong shape
+	it('rejects a credential-bearing url instead of writing it to committable config', async () => {
+		const password = 'super-secret-password';
 
-		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com')).toBe(1);
-		// The present-but-malformed file is left intact, not reset to {}.
-		expect(readFileSync(join(dir, 'directus.config.json'), 'utf8')).toBe('[]');
+		expect(await d6s('profile', 'add', 'staging', '--url', `https://user:${password}@cms.example.com`)).toBe(1);
+		expect(stdout.join('')).not.toContain(password);
+		expect(stderr.join('')).not.toContain(password);
 	});
 
 	it('clears the saved credential when a profile is removed, so re-adding cannot resurrect it', async () => {
-		// The credential store is machine-global (~/.directus), so isolate HOME to a
-		// throwaway dir instead of touching the developer's real store.
 		const home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
 		vi.stubEnv('HOME', home);
 		vi.stubEnv('USERPROFILE', home);
@@ -129,7 +128,6 @@ describe('profile commands', () => {
 
 			expect(await d6s('profile', 'remove', 'staging')).toBe(0);
 
-			// The store no longer resolves a token for the removed profile.
 			expect(
 				resolveCredential({ url: 'https://cms.example.com', profileName: 'staging', hasConfiguredProfiles: true }),
 			).toEqual({ found: false, envVar: 'DIRECTUS_STAGING_TOKEN' });
@@ -150,23 +148,30 @@ describe('profile commands', () => {
 		await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
 
 		expect(await d6s('profile', 'test', 'staging')).toBe(1);
+		expect(stderr.join('')).toContain('DIRECTUS_STAGING_TOKEN');
 	});
 
 	it('test --url does not borrow the ambient DIRECTUS_TOKEN, so a typo cannot leak it to that host', async () => {
-		// A real ambient token is set — the kind a single-instance user exports. An
-		// explicit --url is a hand-typed target (possibly a typo or someone else's
-		// host); the token must NOT be sent there. With no --token and no TTY that's a
-		// clean AUTH failure, not a request carrying the secret. CI=true also keeps the
-		// run hermetic (store skipped); the guard here is the explicit-url gate itself.
 		vi.stubEnv('DIRECTUS_TOKEN', 'ambient-secret-token');
 		vi.stubEnv('CI', 'true');
 
 		expect(await d6s('profile', 'test', '--url', 'https://oneoff.example.com', '--json')).toBe(1);
-		expect(JSON.parse(stdout.join('')).error.code).toBe('AUTH');
+
+		expect(JSON.parse(stdout.join('')).error).toMatchObject({
+			code: 'AUTH',
+			hint: 'Pass --token to test a URL directly.',
+		});
+
+		expect(stderr.join('')).toBe('');
 	});
 
 	it('test rejects a credential-bearing --url so a secret is never used or printed', async () => {
-		expect(await d6s('profile', 'test', '--url', 'https://user:pass@oneoff.example.com')).toBe(1);
+		const password = 'super-secret-password';
+
+		expect(await d6s('profile', 'test', '--url', `https://user:${password}@oneoff.example.com`, '--json')).toBe(1);
+		expect(stdout.join('')).not.toContain(password);
+		expect(stderr.join('')).not.toContain(password);
+		expect(JSON.parse(stdout.join('')).error.code).toBe('USAGE');
 	});
 
 	it('test rejects a profile name combined with --url instead of guessing which target wins', async () => {

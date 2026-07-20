@@ -3,39 +3,14 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { describeIdentity, loginSession, mapRequestError, pingServer } from './connection.js';
+import { loginSession, pingServer, testConnection } from './connection.js';
 import { redact } from './secret.js';
 
-describe('describeIdentity', () => {
-	it('prefers a full name, then email, then a safe placeholder', () => {
-		expect(describeIdentity({ first_name: 'Bryant', last_name: 'G', email: 'b@x.com' }, undefined).user).toBe(
-			'Bryant G',
-		);
-
-		expect(describeIdentity({ email: 'b@x.com' }, undefined).user).toBe('b@x.com');
-		expect(describeIdentity({}, undefined).user).toBe('unknown user');
-	});
-
-	it('reads the role name from an expanded role or a bare id string', () => {
-		expect(describeIdentity({ role: { name: 'Administrator' } }, undefined).role).toBe('Administrator');
-		expect(describeIdentity({ role: 'role-uuid' }, undefined).role).toBe('role-uuid');
-		expect(describeIdentity({}, undefined).role).toBe('unknown role');
-	});
-
-	it('passes the project name through', () => {
-		expect(describeIdentity({}, 'My CMS').projectName).toBe('My CMS');
-	});
-});
-
-// The SDK captures globalThis.fetch at module load, so stubbing fetch is too
-// late — MockAgent intercepts underneath it at the undici dispatcher level.
-describe('loginSession', () => {
+describe('connection', () => {
 	const realDispatcher = getGlobalDispatcher();
 	let agent: MockAgent;
 	const created: string[] = [];
 
-	// Isolate HOME so the session lands in a throwaway store, not the developer's
-	// real ~/.directus.
 	function isolateHome(): string {
 		const dir = mkdtempSync(join(tmpdir(), 'd6s-home-'));
 		created.push(dir);
@@ -53,11 +28,12 @@ describe('loginSession', () => {
 	afterEach(async () => {
 		setGlobalDispatcher(realDispatcher);
 		await agent.close();
+		vi.restoreAllMocks();
 		vi.unstubAllEnvs();
 		for (const dir of created.splice(0)) rmSync(dir, { recursive: true, force: true });
 	});
 
-	it('logs in and persists a rotating session — never the password — then reports identity', async () => {
+	it('logs in, persists a rotating session, and reports identity without storing the password', async () => {
 		const home = isolateHome();
 		const pool = agent.get('https://cms.example.com');
 
@@ -85,17 +61,71 @@ describe('loginSession', () => {
 
 		expect(identity).toMatchObject({ user: 'Ada L', role: 'Admin', projectName: 'Demo' });
 
-		// What persists is the rotating refresh-token session, keyed by profile —
-		// the password used to obtain it appears nowhere on disk.
 		const raw = readFileSync(join(home, '.directus', 'credentials.json'), 'utf8');
 		expect(JSON.parse(raw)['https://cms.example.com'].prod.refresh_token).toBe('refresh-token-value');
 		expect(raw).not.toContain('pw-login-secret');
-
-		// The password was registered as a secret before any request could echo it.
 		expect(redact('got pw-login-secret')).not.toContain('pw-login-secret');
 	});
 
-	it('maps a failed login through the same safe error path as testConnection', async () => {
+	it('does not leave a background SDK refresh timer in a one-shot CLI login', async () => {
+		isolateHome();
+		const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout');
+		const pool = agent.get('https://cms.example.com');
+
+		pool
+			.intercept({ path: '/auth/login', method: 'POST' })
+			.reply(
+				200,
+				{ data: { access_token: 'access-token-value', refresh_token: 'refresh-token-value', expires: 900_000 } },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		pool
+			.intercept({ path: /^\/users\/me/, method: 'GET' })
+			.reply(
+				200,
+				{ data: { first_name: 'Ada', last_name: 'L', email: 'ada@example.com', role: { name: 'Admin' } } },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		pool
+			.intercept({ path: /^\/server\/info/, method: 'GET' })
+			.reply(200, { data: { project: { project_name: 'Demo' } } }, { headers: { 'content-type': 'application/json' } });
+
+		await loginSession('https://cms.example.com', 'prod', 'ada@example.com', 'pw-login-secret');
+
+		expect(setTimeoutSpy).not.toHaveBeenCalled();
+	});
+
+	it('clears a saved login session when identity lookup fails', async () => {
+		const home = isolateHome();
+		const pool = agent.get('https://cms.example.com');
+
+		pool
+			.intercept({ path: '/auth/login', method: 'POST' })
+			.reply(
+				200,
+				{ data: { access_token: 'access-token-value', refresh_token: 'refresh-token-value', expires: 900_000 } },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		pool
+			.intercept({ path: /^\/users\/me/, method: 'GET' })
+			.reply(
+				500,
+				{ errors: [{ message: 'broken', extensions: { code: 'INTERNAL_SERVER_ERROR' } }] },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		await expect(
+			loginSession('https://cms.example.com', 'prod', 'ada@example.com', 'pw-login-secret'),
+		).rejects.toMatchObject({ code: 'HTTP' });
+
+		const raw = JSON.parse(readFileSync(join(home, '.directus', 'credentials.json'), 'utf8'));
+		expect(raw['https://cms.example.com']).toBeUndefined();
+	});
+
+	it('maps a failed login through the safe request-error path', async () => {
 		isolateHome();
 
 		agent
@@ -111,21 +141,25 @@ describe('loginSession', () => {
 			code: 'AUTH',
 		});
 	});
-});
 
-describe('pingServer', () => {
-	const realDispatcher = getGlobalDispatcher();
-	let agent: MockAgent;
+	it('does not retain a static token in an authentication error', async () => {
+		const token = 'super-secret-static-token';
 
-	beforeEach(() => {
-		agent = new MockAgent();
-		agent.disableNetConnect();
-		setGlobalDispatcher(agent);
-	});
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: /^\/users\/me/, method: 'GET' })
+			.reply(
+				401,
+				{ errors: [{ message: 'nope', extensions: { code: 'INVALID_CREDENTIALS' } }] },
+				{ headers: { 'content-type': 'application/json' } },
+			);
 
-	afterEach(async () => {
-		setGlobalDispatcher(realDispatcher);
-		await agent.close();
+		const error = await testConnection({ url: 'https://cms.example.com', token, source: 'flag' }).catch(
+			(error: unknown) => error,
+		);
+
+		expect(error).toMatchObject({ code: 'AUTH' });
+		expect(JSON.stringify(error)).not.toContain(token);
 	});
 
 	it('resolves when the instance answers the unauthenticated ping', async () => {
@@ -137,58 +171,12 @@ describe('pingServer', () => {
 		await expect(pingServer('https://cms.example.com')).resolves.toBeUndefined();
 	});
 
-	it('maps an unreachable host to a reachability error, so add can warn about a typo', async () => {
+	it('maps an unreachable host to a reachability error', async () => {
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/server/ping', method: 'GET' })
 			.replyWithError(new Error('getaddrinfo ENOTFOUND'));
 
 		await expect(pingServer('https://cms.example.com')).rejects.toMatchObject({ code: 'HTTP' });
-	});
-});
-
-describe('mapRequestError', () => {
-	function directusError(status: number, code: string, response: unknown = { status }) {
-		return { name: 'RequestError', errors: [{ message: `${code} happened`, extensions: { code } }], response };
-	}
-
-	it('maps 401 / auth codes to an AUTH error with a clean message', () => {
-		const result = mapRequestError(directusError(401, 'INVALID_CREDENTIALS'), 'https://cms.example.com');
-
-		expect(result.code).toBe('AUTH');
-		expect(result.message).toBe('Authentication failed for https://cms.example.com.');
-		expect(result.detail).toContain('INVALID_CREDENTIALS');
-	});
-
-	it('maps a 403 FORBIDDEN to AUTH', () => {
-		expect(mapRequestError(directusError(403, 'FORBIDDEN'), 'https://cms.example.com').code).toBe('AUTH');
-	});
-
-	it('maps other statuses to HTTP with the status in the message', () => {
-		const result = mapRequestError(directusError(500, 'INTERNAL_SERVER_ERROR'), 'https://cms.example.com');
-
-		expect(result.code).toBe('HTTP');
-		expect(result.message).toContain('HTTP 500');
-	});
-
-	it('builds detail from error codes only — never the Response, which carries the token', () => {
-		// The Response object holds the sent Authorization header; detail must not.
-		const withToken = directusError(401, 'INVALID_CREDENTIALS', {
-			status: 401,
-			headers: { Authorization: 'Bearer super-secret-token-xyz' },
-		});
-
-		const result = mapRequestError(withToken, 'https://cms.example.com');
-
-		expect(result.detail).not.toContain('super-secret-token-xyz');
-		expect(result.message).not.toContain('super-secret-token-xyz');
-	});
-
-	it('maps a transport failure (no Response) to a reachability HTTP error', () => {
-		const result = mapRequestError(new Error('fetch failed'), 'https://cms.example.com');
-
-		expect(result.code).toBe('HTTP');
-		expect(result.message).toContain('Could not reach');
-		expect(result.detail).toBe('fetch failed');
 	});
 });

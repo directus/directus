@@ -21,11 +21,6 @@ export interface Identity {
 	readonly projectName: string | undefined;
 }
 
-// Every REST request gets a hard timeout so a blackholed or wrong host fails fast
-// instead of hanging a CI job forever. AbortSignal.timeout's timer is unref'd, so
-// unlike the auth refresh timer it never keeps the process alive after a success.
-// (Covers rest() calls — readMe/serverInfo/serverPing; the auth composable's own
-// login/refresh fetch is a separate path, exercised only in interactive login.)
 const REQUEST_TIMEOUT_MS = 30_000;
 
 function restWithTimeout() {
@@ -35,32 +30,23 @@ function restWithTimeout() {
 function connect(credential: ResolvedCredential): RestClient<CoreSchema> {
 	if (credential.source === 'session') {
 		return createDirectus<CoreSchema>(credential.url)
-			.with(sessionAuth(credential.url, credential.profileName))
+			.with(
+				authentication('json', {
+					autoRefresh: false,
+					storage: credentialStorage(credential.url, credential.profileName),
+				}),
+			)
 			.with(restWithTimeout());
 	}
 
-	// Registered before the client exists, so anything it surfaces in — including
-	// an error's request context — is redacted.
 	registerSecret(credential.token);
 	return createDirectus<CoreSchema>(credential.url).with(restWithTimeout()).with(staticToken(credential.token));
 }
 
-// One-shot session auth: autoRefresh OFF so the SDK schedules no background refresh
-// timer, which would otherwise keep the CLI process alive after the command exits.
-// getToken still refreshes a stale session lazily on the next request, so a
-// persisted session stays usable.
-function sessionAuth(url: string, profileName: string) {
-	return authentication('json', { storage: credentialStorage(url, profileName), autoRefresh: false });
-}
-
-// Prove the credential works and return safe identity info for display — never
-// the token.
 export async function testConnection(credential: ResolvedCredential): Promise<Identity> {
 	return identify(connect(credential), credential.url);
 }
 
-// Unauthenticated reachability probe, so a URL typo is caught at `add` time
-// instead of on the first real request.
 export async function pingServer(url: string): Promise<void> {
 	const client = createDirectus<CoreSchema>(url).with(restWithTimeout());
 
@@ -71,11 +57,6 @@ export async function pingServer(url: string): Promise<void> {
 	}
 }
 
-// The interactive email/password bootstrap: log in and let the store-backed
-// session storage persist the resulting refresh-token session for this profile.
-// The password is used for the one login call and never stored — only the
-// rotating session is. Unlike a static token this never touches directus_users,
-// so it can't clobber a token another integration relies on.
 export async function loginSession(
 	url: string,
 	profileName: string,
@@ -84,7 +65,11 @@ export async function loginSession(
 ): Promise<Identity> {
 	registerSecret(password);
 
-	const client = createDirectus<CoreSchema>(url).with(sessionAuth(url, profileName)).with(restWithTimeout());
+	const storage = credentialStorage(url, profileName);
+
+	const client = createDirectus<CoreSchema>(url)
+		.with(authentication('json', { autoRefresh: false, storage }))
+		.with(restWithTimeout());
 
 	try {
 		await client.login({ email, password });
@@ -92,7 +77,12 @@ export async function loginSession(
 		throw mapRequestError(error, url);
 	}
 
-	return identify(client, url);
+	try {
+		return await identify(client, url);
+	} catch (error) {
+		storage.set(null);
+		throw error;
+	}
 }
 
 async function identify(client: RestClient<CoreSchema>, url: string): Promise<Identity> {
@@ -118,7 +108,7 @@ async function identify(client: RestClient<CoreSchema>, url: string): Promise<Id
 
 // Turn a /users/me-shaped record into display strings, defensively — the SDK
 // types are loose without a schema and we never want to render a raw object.
-export function describeIdentity(me: unknown, projectName: string | undefined): Identity {
+function describeIdentity(me: unknown, projectName: string | undefined): Identity {
 	const asString = (value: unknown): string => (typeof value === 'string' ? value : '');
 
 	const name = `${asString(get(me, 'first_name'))} ${asString(get(me, 'last_name'))}`.trim();
@@ -132,11 +122,8 @@ export function describeIdentity(me: unknown, projectName: string | undefined): 
 
 const AUTH_CODES = new Set(['INVALID_CREDENTIALS', 'INVALID_TOKEN', 'TOKEN_EXPIRED', 'INVALID_OTP', 'FORBIDDEN']);
 
-// Map an SDK/HTTP failure into a CliError. `detail` is built from safe fields
-// only (Directus error codes/messages + HTTP status) — never the raw Response,
-// which carries the Authorization header. So diagnostics survive without the
-// token ever entering the error object we keep.
-export function mapRequestError(error: unknown, url: string): CliError {
+// Never retain the raw Response: it carries the Authorization header.
+function mapRequestError(error: unknown, url: string): CliError {
 	if (isDirectusError(error)) {
 		const rawStatus = get(error.response, 'status');
 		const status = typeof rawStatus === 'number' ? rawStatus : undefined;

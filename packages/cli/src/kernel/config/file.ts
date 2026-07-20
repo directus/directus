@@ -41,16 +41,13 @@ const configSchema = z.looseObject({
 	profiles: z.record(z.string(), profileSchema).default({}),
 });
 
-// Public types are written by hand rather than `z.infer`red: isolatedDeclarations
-// can't emit a declaration for a schema-derived export, and an explicit shape
-// keeps the published .d.ts clean. The `config: parsed.data` return below is the
-// compile-time check that the schema keeps producing this shape.
-export interface Profile {
+// Explicit types keep isolated declaration emit independent of schema inference.
+interface Profile {
 	readonly url: string;
 	readonly auth: { readonly type: 'token' };
 }
 
-export interface Config {
+interface Config {
 	readonly profiles: Readonly<Record<string, Profile>>;
 	readonly [namespace: string]: unknown;
 }
@@ -60,8 +57,6 @@ interface LoadedConfig {
 	readonly config: Config;
 }
 
-// Where the config lives: an explicit `--config` path wins over walk-up
-// discovery from cwd. Commands build this from ctx.
 interface ConfigLocation {
 	readonly cwd: string;
 	readonly configPath?: string | undefined;
@@ -81,8 +76,9 @@ export function findConfigPath(startDir: string): string | undefined {
 	}
 }
 
-// A missing discovered file is not an error (profile-less); a missing explicit
-// path or a malformed file is.
+// An explicit `--config` path wins, otherwise walk-up discovery. A missing
+// discovered file is not an error (profile-less); a missing explicit path or a
+// malformed file is.
 export function loadConfig(location: ConfigLocation): LoadedConfig | undefined {
 	const path = location.configPath ?? findConfigPath(location.cwd);
 	if (path === undefined) return undefined;
@@ -109,10 +105,7 @@ export function loadConfig(location: ConfigLocation): LoadedConfig | undefined {
 	return { path, config: parsed.data };
 }
 
-// Writes reload the raw JSON and touch only `profiles`, so a user's formatting
-// and any namespace the kernel doesn't own survive untouched. A malformed file is
-// rejected, not silently reset to {} — a write would otherwise discard repairable
-// config that the read path (loadConfig) already refuses.
+// Preserve top-level namespaces the CLI does not own.
 function readRawConfig(path: string): Record<string, unknown> {
 	if (!existsSync(path)) return {};
 
@@ -131,8 +124,6 @@ function readRawConfig(path: string): Record<string, unknown> {
 	return parsed as Record<string, unknown>;
 }
 
-// The existing profiles block, or {} when absent — but a present-but-malformed
-// `profiles` is rejected, not silently wiped on the next write.
 function existingProfiles(raw: Record<string, unknown>, path: string): Record<string, unknown> {
 	const profiles = raw['profiles'];
 	if (profiles === undefined) return {};
@@ -149,14 +140,10 @@ export function upsertProfile(location: ConfigLocation, name: string, profile: P
 	const path = location.configPath ?? findConfigPath(location.cwd) ?? join(location.cwd, CONFIG_FILENAME);
 	const raw = readRawConfig(path);
 	const profiles = { ...existingProfiles(raw, path), [name]: profile };
-	// An explicit --config may name a file in a directory that doesn't exist yet.
 	mkdirSync(dirname(path), { recursive: true });
 	writeFileAtomic(path, `${JSON.stringify({ ...raw, profiles }, null, 2)}\n`, 0o644);
 }
 
-// Returns the removed profile's URL (when well-formed) so the caller can clear the
-// matching saved credential — leaving a deleted profile's token behind would let a
-// later re-add silently resurrect it.
 export function removeProfile(location: ConfigLocation, name: string): string | undefined {
 	const path = location.configPath ?? findConfigPath(location.cwd);
 	if (path === undefined)
@@ -165,7 +152,6 @@ export function removeProfile(location: ConfigLocation, name: string): string | 
 	const raw = readRawConfig(path);
 	const profiles = { ...existingProfiles(raw, path) };
 
-	// hasOwn, not `in`: a name like "toString" must not match an inherited property.
 	if (!Object.hasOwn(profiles, name))
 		throw new CliError('CONFIG', `Unknown profile: "${name}"`, { hint: 'Nothing to remove.' });
 
@@ -173,8 +159,6 @@ export function removeProfile(location: ConfigLocation, name: string): string | 
 	delete profiles[name];
 	writeFileAtomic(path, `${JSON.stringify({ ...raw, profiles }, null, 2)}\n`, 0o644);
 
-	// Best-effort: only the raw (unvalidated) URL is available here, so hand it back
-	// only when it's actually a string for the credential store to key on.
 	return isPlainObject(removed) && typeof (removed as Record<string, unknown>)['url'] === 'string'
 		? ((removed as Record<string, unknown>)['url'] as string)
 		: undefined;
@@ -182,7 +166,6 @@ export function removeProfile(location: ConfigLocation, name: string): string | 
 
 // A miss names the known profiles so a typo is fixable without opening the file.
 export function resolveProfile(config: Config, name: string): Profile {
-	// hasOwn guards against inherited-property false matches (e.g. "toString").
 	const profile = Object.hasOwn(config.profiles, name) ? config.profiles[name] : undefined;
 
 	if (profile === undefined) {

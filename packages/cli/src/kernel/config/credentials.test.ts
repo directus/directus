@@ -76,8 +76,6 @@ describe('resolveCredential', () => {
 	it('never applies the bare DIRECTUS_TOKEN to an explicitly-typed --url target', () => {
 		vi.stubEnv('DIRECTUS_TOKEN', 'bare');
 
-		// The bare token is for the user's one ambient instance; a hand-typed --url is
-		// an explicit (maybe mistyped) target, so the token must not be sent to it.
 		expect(resolveCredential({ url: base.url, hasConfiguredProfiles: false, explicitUrl: true })).toEqual({
 			found: false,
 			envVar: 'DIRECTUS_TOKEN',
@@ -114,8 +112,6 @@ describe('resolveCredential', () => {
 		vi.stubEnv('DIRECTUS_PROD_TOKEN', '');
 		saveCredential(base.url, 'prod', '');
 
-		// An empty token can never authenticate; reporting it "found" would block the
-		// prompt with an unusable credential.
 		expect(resolveCredential({ ...base, profileName: 'prod' })).toEqual({
 			found: false,
 			envVar: 'DIRECTUS_PROD_TOKEN',
@@ -147,6 +143,23 @@ describe('credential store integrity', () => {
 		// The original bytes are intact — nothing was overwritten.
 		expect(readFileSync(path, 'utf8')).toBe('{ corrupt not json');
 	});
+
+	it('refuses a corrupt URL bucket instead of treating it as missing or overwriting it', () => {
+		const home = isolateHome();
+		vi.stubEnv('CI', '');
+		vi.stubEnv('DIRECTUS_PROD_TOKEN', '');
+
+		const path = join(home, '.directus', 'credentials.json');
+		mkdirSync(join(home, '.directus'), { recursive: true });
+		writeFileSync(path, JSON.stringify({ 'https://cms.example.com': 'not-a-profile-map' }));
+
+		expect(() =>
+			resolveCredential({ url: 'https://cms.example.com', profileName: 'prod', hasConfiguredProfiles: true }),
+		).toThrow(/not a JSON object/);
+
+		expect(() => saveCredential('https://cms.example.com', 'prod', 'secret')).toThrow(/not a JSON object/);
+		expect(JSON.parse(readFileSync(path, 'utf8'))).toEqual({ 'https://cms.example.com': 'not-a-profile-map' });
+	});
 });
 
 describe('credentialStorage', () => {
@@ -163,27 +176,20 @@ describe('credentialStorage', () => {
 		isolateHome();
 	});
 
-	// The whole point of session auth: what lands on disk is a rotating refresh
-	// token, not the password used to obtain it.
-	it('persists a session and reads it back for the SDK to rotate', () => {
+	it('persists a session and reads it back for SDK rotation', () => {
 		const storage = credentialStorage(url, 'prod');
 		storage.set(session);
 
 		expect(storage.get()).toEqual(session);
 	});
 
-	// A static token and a session are distinct credential kinds; session-mode
-	// reads must not misinterpret a bare-string token as an (empty) session.
-	it('reads a static-token entry back as null so it routes through staticToken, not a session', () => {
+	it('reads a static-token entry as null so staticToken handles it', () => {
 		saveCredential(url, 'prod', 'static-abcdefgh');
 
 		expect(credentialStorage(url, 'prod').get()).toBeNull();
 	});
 
-	// The mirror on the resolve side: a persisted session resolves as a session
-	// credential (carrying its keys, no token), so `connect` rotates it via the
-	// SDK storage instead of the chain handing a JSON blob out as a bearer token.
-	it('resolves a persisted session as a session credential, not a static token', () => {
+	it('resolves a stored session as session auth rather than static-token auth', () => {
 		vi.stubEnv('CI', '');
 		vi.stubEnv('DIRECTUS_PROD_TOKEN', '');
 		credentialStorage(url, 'prod').set(session);
@@ -194,8 +200,6 @@ describe('credentialStorage', () => {
 		});
 	});
 
-	// A well-shaped but tokenless session can't be refreshed — it's unusable, so
-	// both read paths must treat it as absent (clearable) rather than "found".
 	it('treats an all-null session as absent, not a usable credential', () => {
 		vi.stubEnv('CI', '');
 		vi.stubEnv('DIRECTUS_PROD_TOKEN', '');
@@ -209,10 +213,6 @@ describe('credentialStorage', () => {
 		expect(credentialStorage(url, 'prod').get()).toBeNull();
 	});
 
-	// A bare `null` under a profile (a hand-edit, or a truncated write) is not an
-	// object; reaching property access on it would crash as an internal/unknown
-	// error. Both read paths must refuse it as STATE, the same as any other
-	// malformed session, rather than throwing raw.
 	it('rejects a stored null credential as STATE instead of crashing on property access', () => {
 		vi.stubEnv('CI', '');
 		vi.stubEnv('DIRECTUS_PROD_TOKEN', '');
@@ -222,32 +222,27 @@ describe('credentialStorage', () => {
 		writeFileSync(path, JSON.stringify({ [url]: { prod: null } }));
 
 		expect(() => resolveCredential({ url, profileName: 'prod', hasConfiguredProfiles: true })).toThrow(
-			/malformed session/,
+			/not a valid session/,
 		);
 
-		expect(() => credentialStorage(url, 'prod').get()).toThrow(/malformed session/);
+		expect(() => credentialStorage(url, 'prod').get()).toThrow(/not a valid session/);
 	});
 
-	// A hand-edited or partially-written store can hold an object that isn't a real
-	// session; treating it as one would hand the SDK bogus auth state (and register
-	// `undefined` as a secret). Both read paths must refuse it as STATE instead.
-	it('rejects a malformed session object rather than treating it as a session', () => {
+	it('refuses a malformed session entry instead of handing it to the SDK', () => {
+		const home = isolateHome();
 		vi.stubEnv('CI', '');
 		vi.stubEnv('DIRECTUS_PROD_TOKEN', '');
-
-		const path = join(homedir(), '.directus', 'credentials.json');
-		mkdirSync(dirname(path), { recursive: true });
-		writeFileSync(path, JSON.stringify({ [url]: { prod: { not: 'a session' } } }));
+		const path = join(home, '.directus', 'credentials.json');
+		mkdirSync(join(home, '.directus'), { recursive: true });
+		writeFileSync(path, JSON.stringify({ [url]: { prod: { refresh_token: 'missing-required-fields' } } }));
 
 		expect(() => resolveCredential({ url, profileName: 'prod', hasConfiguredProfiles: true })).toThrow(
-			/malformed session/,
+			/not a valid session/,
 		);
 
-		expect(() => credentialStorage(url, 'prod').get()).toThrow(/malformed session/);
+		expect(() => credentialStorage(url, 'prod').get()).toThrow(/not a valid session/);
 	});
 
-	// Logout clears exactly one profile; a sibling credential under the same url
-	// must survive so signing out of staging never logs you out of prod.
 	it('clears only the named profile on set(null), leaving siblings intact', () => {
 		credentialStorage(url, 'prod').set(session);
 		saveCredential(url, 'staging', 'static-abcdefgh');
@@ -270,8 +265,6 @@ describe('clearCredential', () => {
 		isolateHome();
 	});
 
-	// Removing a profile must not leave its credential behind, or re-adding the same
-	// name+URL would silently authenticate with a stale token the user meant to drop.
 	it('drops the named credential while leaving a sibling under the same url intact', () => {
 		vi.stubEnv('CI', '');
 		saveCredential(url, 'prod', 'prod-token');
@@ -290,9 +283,6 @@ describe('clearCredential', () => {
 		});
 	});
 
-	// `profile remove` clears even when nothing was saved; that must stay a true
-	// no-op — creating an (empty) machine-global store file as a side effect of a
-	// remove would be surprising and litter ~/.directus.
 	it('is a no-op that never creates the store file when nothing is stored', () => {
 		const path = join(homedir(), '.directus', 'credentials.json');
 
