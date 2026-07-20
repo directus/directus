@@ -70,6 +70,56 @@ describe('actions', () => {
 			expect(hydrateAdditionalFieldsSpy).toBeCalledWith(expect.arrayContaining(['role.name', 'custom_user_field']));
 		});
 
+		test('should parse dynamic preset variables from the current user when the permission is read', async () => {
+			const mockUser = {
+				id: sample.user.id,
+				role: {
+					id: sample.role.id,
+				},
+				builder_tenant_id: null,
+			} as any;
+
+			const userStore = useUserStore();
+			userStore.currentUser = mockUser;
+
+			vi.spyOn(userStore, 'hydrateAdditionalFields').mockResolvedValue();
+
+			vi.spyOn(vi.mocked(api), 'get').mockResolvedValueOnce({
+				data: {
+					data: {
+						[sample.collection]: {
+							create: {
+								access: 'full',
+								full_access: true,
+								fields: ['*'],
+								presets: {
+									tenant_id: '$CURRENT_USER.builder_tenant_id',
+								},
+							},
+						},
+					},
+				},
+			});
+
+			const permissionsStore = usePermissionsStore();
+			await permissionsStore.hydrate();
+
+			expect(permissionsStore.getPermission(sample.collection, 'create')?.presets).toEqual({
+				tenant_id: null,
+			});
+
+			userStore.currentUser = {
+				...mockUser,
+				builder_tenant_id: 'tenant-b',
+			};
+
+			expect(permissionsStore.getPermission(sample.collection, 'create')?.presets).toEqual({
+				tenant_id: 'tenant-b',
+			});
+
+			expect(api.get).toHaveBeenCalledTimes(1);
+		});
+
 		test('should not fetch additional fields when there are no dynamic variables in presets', async () => {
 			const mockUser = {
 				id: sample.user.id,

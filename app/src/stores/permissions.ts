@@ -1,6 +1,5 @@
 import { CollectionAccess, PermissionsAction } from '@directus/types';
 import { deepMap } from '@directus/utils';
-import { mapValues } from 'lodash';
 import { defineStore } from 'pinia';
 import { useUserStore } from '../stores/user';
 import api from '@/api';
@@ -24,18 +23,7 @@ export const usePermissionsStore = defineStore({
 				await userStore.hydrateAdditionalFields(fields);
 			}
 
-			this.permissions = mapValues(
-				response.data.data as CollectionAccess,
-				(collectionPermission: CollectionPermission) => {
-					Object.values(collectionPermission).forEach((actionPermission) => {
-						if (actionPermission.presets) {
-							actionPermission.presets = parsePreset(actionPermission.presets);
-						}
-					});
-
-					return collectionPermission;
-				},
-			) as CollectionAccess;
+			this.permissions = response.data.data as CollectionAccess;
 
 			function getNestedDynamicVariableFields(rawPermissions: Record<string, CollectionPermission>) {
 				const fields = new Set<string>();
@@ -63,7 +51,15 @@ export const usePermissionsStore = defineStore({
 			this.$reset();
 		},
 		getPermission(collection: string, action: PermissionsAction) {
-			return this.permissions[collection]?.[action] ?? null;
+			const permission = this.permissions[collection]?.[action];
+
+			if (!permission) return null;
+			if (!permission.presets) return permission;
+
+			return {
+				...permission,
+				presets: parsePreset(permission.presets),
+			};
 		},
 		hasPermission(collection: string, action: PermissionsAction) {
 			const userStore = useUserStore();

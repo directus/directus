@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed current-user permission presets keeping stale user values after saving the signed-in user and preserved saved M2O relation primary keys when the related item could not be read
+Fixed current-user permission presets using stale user values after the signed-in user changes, and preserved saved M2O relation primary keys when the related item cannot be read
