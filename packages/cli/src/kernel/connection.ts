@@ -27,7 +27,7 @@ function restWithTimeout() {
 	return rest({ onRequest: (options) => ({ ...options, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) }) });
 }
 
-function connect(credential: ResolvedCredential): RestClient<CoreSchema> {
+export function connect(credential: ResolvedCredential): RestClient<CoreSchema> {
 	if (credential.kind === 'session') {
 		return createDirectus<CoreSchema>(credential.url)
 			.with(
@@ -123,7 +123,7 @@ function describeIdentity(me: unknown, projectName: string | undefined): Identit
 const AUTH_CODES = new Set(['INVALID_CREDENTIALS', 'INVALID_TOKEN', 'TOKEN_EXPIRED', 'INVALID_OTP', 'FORBIDDEN']);
 
 // Never retain the raw Response: it carries the Authorization header.
-function mapRequestError(error: unknown, url: string): CliError {
+export function mapRequestError(error: unknown, url: string): CliError {
 	if (isDirectusError(error)) {
 		const rawStatus = get(error.response, 'status');
 		const status = typeof rawStatus === 'number' ? rawStatus : undefined;
