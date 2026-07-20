@@ -47,13 +47,51 @@ export interface Snapshot {
 	relations: SnapshotEntry[];
 }
 
-// The diff body is deep-diff output the CLI renders and forwards to /schema/apply but
-// never authors, so it stays an opaque object; `hash` seals it against the target. The
-// server answers 204 with no body when the snapshots match, so "no changes" is modeled
-// as a `null` result rather than a DiffResult (see parseDiffResult).
+// The diff body mirrors the API's SnapshotDiff (packages/types): four arrays of changed
+// items, each carrying deep-diff `diff` ops the CLI renders and forwards to /schema/apply
+// but never authors. The op BODIES (lhs/rhs/index/…) stay opaque and pass through verbatim,
+// but the addressing keys (collection/field/related_collection) and the op `kind` ARE
+// validated here, because rendering and gating key off them — an unknown kind is a
+// deep-diff/protocol change the CLI must not forward blind. `hash` seals the diff against
+// the target. The server answers 204 with no body when the snapshots match, so "no changes"
+// is modeled as a `null` result rather than a DiffResult (see parseDiffResult).
+export interface DiffOp {
+	kind: 'N' | 'D' | 'E' | 'A';
+	path?: (string | number)[];
+	[key: string]: unknown;
+}
+
+export interface DiffEntry {
+	collection: string;
+	diff: DiffOp[];
+	[key: string]: unknown;
+}
+
+export interface DiffFieldEntry {
+	collection: string;
+	field: string;
+	diff: DiffOp[];
+	[key: string]: unknown;
+}
+
+export interface DiffRelationEntry {
+	collection: string;
+	field: string;
+	related_collection: string | null;
+	diff: DiffOp[];
+	[key: string]: unknown;
+}
+
+export interface SchemaDiff {
+	collections: DiffEntry[];
+	fields: DiffFieldEntry[];
+	systemFields: DiffFieldEntry[];
+	relations: DiffRelationEntry[];
+}
+
 export interface DiffResult {
 	hash: string;
-	diff: Record<string, unknown>;
+	diff: SchemaDiff;
 }
 
 const snapshotEntrySchema = z.looseObject({ collection: z.string() });
@@ -72,9 +110,35 @@ const snapshotSchema = z.object({
 	relations: z.array(snapshotEntrySchema),
 });
 
+const diffOpSchema = z.looseObject({
+	// The strict enum is the gate: an unknown kind is a deep-diff/protocol change the CLI must
+	// not forward to /schema/apply blind. Everything else on the op (lhs/rhs/index/…) is opaque.
+	kind: z.enum(['N', 'D', 'E', 'A']),
+	path: z.array(z.union([z.string(), z.number()])).optional(),
+});
+
+const diffEntrySchema = z.looseObject({ collection: z.string(), diff: z.array(diffOpSchema) });
+const diffFieldEntrySchema = z.looseObject({ collection: z.string(), field: z.string(), diff: z.array(diffOpSchema) });
+
+const diffRelationEntrySchema = z.looseObject({
+	collection: z.string(),
+	field: z.string(),
+	related_collection: z.string().nullable(),
+	diff: z.array(diffOpSchema),
+});
+
+const schemaDiffSchema = z.object({
+	collections: z.array(diffEntrySchema),
+	fields: z.array(diffFieldEntrySchema),
+	// All four arrays required (same absence-is-not-emptiness stance as the snapshot): the server
+	// always emits every array, so a missing one is a protocol break, not "no changes of that kind".
+	systemFields: z.array(diffFieldEntrySchema),
+	relations: z.array(diffRelationEntrySchema),
+});
+
 const diffResultSchema = z.object({
 	hash: z.string(),
-	diff: z.record(z.string(), z.unknown()),
+	diff: schemaDiffSchema,
 });
 
 const primaryKey = z.union([z.string(), z.number()]);
@@ -118,7 +182,9 @@ export function parseDiffResult(value: unknown): DiffResult | null {
 	// Any other shape is still validated and fails loud.
 	if (value === null || value === undefined || value === '') return null;
 
-	return parseResponse(diffResultSchema, value, 'schema diff');
+	// zod infers an optional key as `T | undefined`; DiffOp.path is exact-optional (`T?`, never an
+	// explicit undefined). The wire only ever omits the key, so narrow to the public shape here.
+	return parseResponse(diffResultSchema, value, 'schema diff') as DiffResult;
 }
 
 export function parseImportResult(value: unknown): ImportBatchResult {
