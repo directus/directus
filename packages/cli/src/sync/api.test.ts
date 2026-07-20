@@ -5,7 +5,8 @@ import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ResolvedCredential } from '../kernel/config/credentials.js';
 import { CliError } from '../kernel/error.js';
-import { fetchSnapshot } from './api.js';
+import { fetchDiff, fetchSnapshot } from './api.js';
+import type { Snapshot } from './contract.js';
 
 describe('fetchSnapshot', () => {
 	const realDispatcher = getGlobalDispatcher();
@@ -99,5 +100,115 @@ describe('fetchSnapshot', () => {
 		expect(error).toBeInstanceOf(CliError);
 		expect(error).toMatchObject({ code: 'HTTP' });
 		expect((error as CliError).detail).toMatch(/collections/i);
+	});
+});
+
+describe('fetchDiff', () => {
+	const realDispatcher = getGlobalDispatcher();
+	const token = 'super-secret-static-token';
+	const credential: ResolvedCredential = { kind: 'token', url: 'https://cms.example.com', token };
+	let agent: MockAgent;
+	const created: string[] = [];
+
+	function isolateHome(): void {
+		const dir = mkdtempSync(join(tmpdir(), 'd6s-home-'));
+		created.push(dir);
+		vi.stubEnv('HOME', dir);
+		vi.stubEnv('USERPROFILE', dir);
+	}
+
+	function snapshot(): Snapshot {
+		return {
+			version: 1,
+			directus: '11.0.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'articles', meta: { note: null } }],
+			fields: [{ collection: 'articles', field: 'title', type: 'string' }],
+			systemFields: [],
+			relations: [],
+		};
+	}
+
+	function diffBody(): Record<string, unknown> {
+		return {
+			collections: [{ collection: 'events', diff: [{ kind: 'N', rhs: { collection: 'events' } }] }],
+			fields: [],
+			systemFields: [],
+			relations: [],
+		};
+	}
+
+	beforeEach(() => {
+		agent = new MockAgent();
+		agent.disableNetConnect();
+		setGlobalDispatcher(agent);
+	});
+
+	afterEach(async () => {
+		setGlobalDispatcher(realDispatcher);
+		await agent.close();
+		vi.restoreAllMocks();
+		vi.unstubAllEnvs();
+		for (const dir of created.splice(0)) rmSync(dir, { recursive: true, force: true });
+	});
+
+	it('sends the local snapshot unmodified with the mode on the wire, and returns the parsed diff', async () => {
+		// The mode must reach the query string: an absent mode silently means destructive `mirror`. And
+		// /schema/diff computes against exactly the snapshot the CLI captured, so it must arrive byte-for-byte.
+		isolateHome();
+
+		const local = snapshot();
+		let sentBody: string | undefined;
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({
+				path: '/schema/diff',
+				method: 'POST',
+				query: { mode: 'merge' },
+				headers: { authorization: `Bearer ${token}` },
+				body(raw: string) {
+					sentBody = raw;
+					return true;
+				},
+			})
+			.reply(200, { data: { hash: 'abc123', diff: diffBody() } }, { headers: { 'content-type': 'application/json' } });
+
+		const result = await fetchDiff(credential, local, 'merge');
+
+		expect(sentBody && JSON.parse(sentBody)).toEqual(local);
+		expect(result?.hash).toBe('abc123');
+		expect(result?.diff.collections[0]?.collection).toBe('events');
+	});
+
+	it('resolves null on a 204 empty reply, the "no changes" outcome the command keys off', async () => {
+		// When the snapshots already match the server answers 204 with no body; that must resolve to null
+		// (the diff command's short-circuit), never a failed parse.
+		isolateHome();
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/schema/diff', method: 'POST', query: { mode: 'mirror' } })
+			.reply(204, '');
+
+		await expect(fetchDiff(credential, snapshot(), 'mirror')).resolves.toBeNull();
+	});
+
+	it('routes a Directus error to a CliError so a failed diff surfaces a hint, not a stack trace', async () => {
+		isolateHome();
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/schema/diff', method: 'POST', query: { mode: 'merge' } })
+			.reply(
+				500,
+				{ errors: [{ message: 'boom', extensions: { code: 'INTERNAL_SERVER_ERROR' } }] },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		const error = await fetchDiff(credential, snapshot(), 'merge').catch((error: unknown) => error);
+
+		expect(error).toBeInstanceOf(CliError);
+		expect(error).toMatchObject({ code: 'HTTP' });
 	});
 });
