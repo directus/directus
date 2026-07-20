@@ -44,7 +44,7 @@ const filteredSystemCollections = computed(() => {
 	if (!trimmedValue) return systemCollections;
 
 	return systemCollections.filter((collection) => {
-		return collection.collection.includes(trimmedValue);
+		return collection.collection.toLowerCase().includes(trimmedValue);
 	});
 });
 
