@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { debounce } from 'lodash';
+import { computed, ref, watch } from 'vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
@@ -26,6 +27,33 @@ const collectionExists = computed(() => {
 
 const availableCollections = collectionsStore.databaseCollections.filter((collection) => collection.meta);
 const systemCollections = collectionsStore.crudSafeSystemCollections;
+const search = ref('');
+const internalSearch = ref('');
+
+const filteredCollections = computed(() => {
+	const trimmedValue = internalSearch.value?.trim()?.toLowerCase();
+	if (!trimmedValue) return availableCollections;
+
+	return availableCollections.filter((collection) => {
+		return collection.collection.includes(trimmedValue);
+	});
+});
+
+const filteredSystemCollections = computed(() => {
+	const trimmedValue = internalSearch.value?.trim()?.toLowerCase();
+	if (!trimmedValue) return systemCollections;
+
+	return systemCollections.filter((collection) => {
+		return collection.collection.includes(trimmedValue);
+	});
+});
+
+watch(
+	search,
+	debounce((val: string) => {
+		internalSearch.value = val;
+	}, 250),
+);
 </script>
 
 <template>
@@ -46,8 +74,17 @@ const systemCollections = collectionsStore.crudSafeSystemCollections;
 				</template>
 
 				<VList class="monospace">
+					<VListItem>
+						<VListItemContent>
+							<VInput v-model="search" autofocus small :placeholder="$t('search')" @click.stop.prevent>
+								<template #append>
+									<VIcon small name="search" />
+								</template>
+							</VInput>
+						</VListItemContent>
+					</VListItem>
 					<VListItem
-						v-for="availableCollection in availableCollections"
+						v-for="availableCollection in filteredCollections"
 						:key="availableCollection.collection"
 						:active="modelValue === availableCollection.collection"
 						:disabled="availableCollection.meta?.singleton"
@@ -59,22 +96,24 @@ const systemCollections = collectionsStore.crudSafeSystemCollections;
 						</VListItemContent>
 					</VListItem>
 
-					<VDivider />
+					<template v-if="filteredSystemCollections.length">
+						<VDivider />
 
-					<VListGroup>
-						<template #activator>{{ $t('system') }}</template>
-						<VListItem
-							v-for="systemCollection in systemCollections"
-							:key="systemCollection.collection"
-							:active="modelValue === systemCollection.collection"
-							clickable
-							@click="$emit('update:modelValue', systemCollection.collection)"
-						>
-							<VListItemContent>
-								{{ systemCollection.collection }}
-							</VListItemContent>
-						</VListItem>
-					</VListGroup>
+						<VListGroup>
+							<template #activator>{{ $t('system') }}</template>
+							<VListItem
+								v-for="systemCollection in filteredSystemCollections"
+								:key="systemCollection.collection"
+								:active="modelValue === systemCollection.collection"
+								clickable
+								@click="$emit('update:modelValue', systemCollection.collection)"
+							>
+								<VListItemContent>
+									{{ systemCollection.collection }}
+								</VListItemContent>
+							</VListItem>
+						</VListGroup>
+					</template>
 				</VList>
 			</VMenu>
 		</template>
