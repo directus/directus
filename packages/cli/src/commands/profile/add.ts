@@ -127,7 +127,7 @@ async function acquireCredential(
 	for (;;) {
 		try {
 			if (token !== undefined) {
-				const identity = await testConnection({ url, token, source: 'prompt' });
+				const identity = await testConnection({ url, token, kind: 'token' });
 				ctx.ui.success(`Authenticated to ${url} as ${identity.user} (${identity.role}).`);
 			} else {
 				await pingServer(url);

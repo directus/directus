@@ -33,7 +33,7 @@ describe('envTokenVar', () => {
 });
 
 describe('resolveCredential', () => {
-	const base = { url: 'https://cms.example.com', hasConfiguredProfiles: true } as const;
+	const url = 'https://cms.example.com';
 
 	beforeEach(() => {
 		isolateHome();
@@ -43,57 +43,47 @@ describe('resolveCredential', () => {
 	it('prefers an explicit --token flag over env and store', () => {
 		vi.stubEnv('DIRECTUS_PROD_TOKEN', 'from-env');
 
-		const result = resolveCredential({ ...base, profileName: 'prod', tokenFlag: 'from-flag' });
+		const result = resolveCredential({ target: 'profile', url, profileName: 'prod', tokenFlag: 'from-flag' });
 
-		expect(result).toMatchObject({ found: true, credential: { token: 'from-flag', source: 'flag' } });
+		expect(result).toMatchObject({ found: true, credential: { kind: 'token', token: 'from-flag' } });
 	});
 
 	it('reads the profile-specific env var', () => {
 		vi.stubEnv('DIRECTUS_PROD_TOKEN', 'from-env');
 
-		const result = resolveCredential({ ...base, profileName: 'prod' });
+		const result = resolveCredential({ target: 'profile', url, profileName: 'prod' });
 
-		expect(result).toMatchObject({ found: true, credential: { token: 'from-env', source: 'env' } });
+		expect(result).toMatchObject({ found: true, credential: { kind: 'token', token: 'from-env' } });
 	});
 
-	it('disables the bare DIRECTUS_TOKEN fallback once config defines profiles (F12 guard)', () => {
-		vi.stubEnv('DIRECTUS_TOKEN', 'bare');
-		vi.stubEnv('DIRECTUS_PROD_TOKEN', '');
+	it('never borrows the ambient environment for a direct --url target', () => {
+		// A hand-typed URL has no profile binding, so even with tokens in the
+		// environment it resolves not-found — the ambient credential can never be
+		// sent to a host the user only meant to probe. --token is the only way in.
+		vi.stubEnv('DIRECTUS_TOKEN', 'ambient');
+		vi.stubEnv('DIRECTUS_PROD_TOKEN', 'prod-token');
 
-		const result = resolveCredential({ ...base, profileName: 'prod', hasConfiguredProfiles: true });
-
-		expect(result).toEqual({ found: false, envVar: 'DIRECTUS_PROD_TOKEN' });
+		expect(resolveCredential({ target: 'url', url })).toEqual({ found: false, envVar: undefined });
 	});
 
-	it('allows the bare fallback for profile-less operation with no configured profiles', () => {
-		vi.stubEnv('DIRECTUS_TOKEN', 'bare');
+	it('accepts an explicit --token for a direct --url target', () => {
+		const result = resolveCredential({ target: 'url', url, tokenFlag: 'from-flag' });
 
-		const result = resolveCredential({ url: base.url, hasConfiguredProfiles: false });
-
-		expect(result).toMatchObject({ found: true, credential: { token: 'bare', source: 'env' } });
-	});
-
-	it('never applies the bare DIRECTUS_TOKEN to an explicitly-typed --url target', () => {
-		vi.stubEnv('DIRECTUS_TOKEN', 'bare');
-
-		expect(resolveCredential({ url: base.url, hasConfiguredProfiles: false, explicitUrl: true })).toEqual({
-			found: false,
-			envVar: 'DIRECTUS_TOKEN',
-		});
+		expect(result).toMatchObject({ found: true, credential: { kind: 'token', token: 'from-flag' } });
 	});
 
 	it('falls back to the saved store, but never in CI', () => {
 		vi.stubEnv('DIRECTUS_PROD_TOKEN', '');
-		saveCredential(base.url, 'prod', 'stored');
+		saveCredential(url, 'prod', 'stored');
 
-		expect(resolveCredential({ ...base, profileName: 'prod' })).toMatchObject({
+		expect(resolveCredential({ target: 'profile', url, profileName: 'prod' })).toMatchObject({
 			found: true,
-			credential: { token: 'stored', source: 'store' },
+			credential: { kind: 'token', token: 'stored' },
 		});
 
 		vi.stubEnv('CI', 'true');
 
-		expect(resolveCredential({ ...base, profileName: 'prod' })).toEqual({
+		expect(resolveCredential({ target: 'profile', url, profileName: 'prod' })).toEqual({
 			found: false,
 			envVar: 'DIRECTUS_PROD_TOKEN',
 		});
@@ -102,7 +92,7 @@ describe('resolveCredential', () => {
 	it('reports not-found with the env var to set when nothing resolves', () => {
 		vi.stubEnv('DIRECTUS_PROD_TOKEN', '');
 
-		expect(resolveCredential({ ...base, profileName: 'prod' })).toEqual({
+		expect(resolveCredential({ target: 'profile', url, profileName: 'prod' })).toEqual({
 			found: false,
 			envVar: 'DIRECTUS_PROD_TOKEN',
 		});
@@ -110,9 +100,9 @@ describe('resolveCredential', () => {
 
 	it('treats an empty stored token as absent so the prompt fallback still runs', () => {
 		vi.stubEnv('DIRECTUS_PROD_TOKEN', '');
-		saveCredential(base.url, 'prod', '');
+		saveCredential(url, 'prod', '');
 
-		expect(resolveCredential({ ...base, profileName: 'prod' })).toEqual({
+		expect(resolveCredential({ target: 'profile', url, profileName: 'prod' })).toEqual({
 			found: false,
 			envVar: 'DIRECTUS_PROD_TOKEN',
 		});
@@ -133,9 +123,9 @@ describe('credential store integrity', () => {
 		writeFileSync(path, '{ corrupt not json');
 
 		// Read path refuses rather than reporting not-found.
-		expect(() =>
-			resolveCredential({ url: 'https://cms.example.com', profileName: 'prod', hasConfiguredProfiles: true }),
-		).toThrow(/not valid JSON/);
+		expect(() => resolveCredential({ target: 'profile', url: 'https://cms.example.com', profileName: 'prod' })).toThrow(
+			/not valid JSON/,
+		);
 
 		// Write path aborts before touching the file.
 		expect(() => saveCredential('https://cms.example.com', 'prod', 'secret')).toThrow(/not valid JSON/);
@@ -153,9 +143,9 @@ describe('credential store integrity', () => {
 		mkdirSync(join(home, '.directus'), { recursive: true });
 		writeFileSync(path, JSON.stringify({ 'https://cms.example.com': 'not-a-profile-map' }));
 
-		expect(() =>
-			resolveCredential({ url: 'https://cms.example.com', profileName: 'prod', hasConfiguredProfiles: true }),
-		).toThrow(/not a JSON object/);
+		expect(() => resolveCredential({ target: 'profile', url: 'https://cms.example.com', profileName: 'prod' })).toThrow(
+			/not a JSON object/,
+		);
 
 		expect(() => saveCredential('https://cms.example.com', 'prod', 'secret')).toThrow(/not a JSON object/);
 		expect(JSON.parse(readFileSync(path, 'utf8'))).toEqual({ 'https://cms.example.com': 'not-a-profile-map' });
@@ -194,9 +184,9 @@ describe('credentialStorage', () => {
 		vi.stubEnv('DIRECTUS_PROD_TOKEN', '');
 		credentialStorage(url, 'prod').set(session);
 
-		expect(resolveCredential({ url, profileName: 'prod', hasConfiguredProfiles: true })).toEqual({
+		expect(resolveCredential({ target: 'profile', url, profileName: 'prod' })).toEqual({
 			found: true,
-			credential: { url, source: 'session', profileName: 'prod' },
+			credential: { kind: 'session', url, profileName: 'prod' },
 		});
 	});
 
@@ -205,7 +195,7 @@ describe('credentialStorage', () => {
 		vi.stubEnv('DIRECTUS_PROD_TOKEN', '');
 		credentialStorage(url, 'prod').set({ access_token: null, refresh_token: null, expires: null, expires_at: null });
 
-		expect(resolveCredential({ url, profileName: 'prod', hasConfiguredProfiles: true })).toEqual({
+		expect(resolveCredential({ target: 'profile', url, profileName: 'prod' })).toEqual({
 			found: false,
 			envVar: 'DIRECTUS_PROD_TOKEN',
 		});
@@ -221,9 +211,7 @@ describe('credentialStorage', () => {
 		mkdirSync(dirname(path), { recursive: true });
 		writeFileSync(path, JSON.stringify({ [url]: { prod: null } }));
 
-		expect(() => resolveCredential({ url, profileName: 'prod', hasConfiguredProfiles: true })).toThrow(
-			/not a valid session/,
-		);
+		expect(() => resolveCredential({ target: 'profile', url, profileName: 'prod' })).toThrow(/not a valid session/);
 
 		expect(() => credentialStorage(url, 'prod').get()).toThrow(/not a valid session/);
 	});
@@ -236,9 +224,7 @@ describe('credentialStorage', () => {
 		mkdirSync(join(home, '.directus'), { recursive: true });
 		writeFileSync(path, JSON.stringify({ [url]: { prod: { refresh_token: 'missing-required-fields' } } }));
 
-		expect(() => resolveCredential({ url, profileName: 'prod', hasConfiguredProfiles: true })).toThrow(
-			/not a valid session/,
-		);
+		expect(() => resolveCredential({ target: 'profile', url, profileName: 'prod' })).toThrow(/not a valid session/);
 
 		expect(() => credentialStorage(url, 'prod').get()).toThrow(/not a valid session/);
 	});
@@ -254,9 +240,9 @@ describe('credentialStorage', () => {
 
 		expect(credentialStorage(url, 'prod').get()).toBeNull();
 
-		expect(resolveCredential({ url, profileName: 'staging', hasConfiguredProfiles: true })).toMatchObject({
+		expect(resolveCredential({ target: 'profile', url, profileName: 'staging' })).toMatchObject({
 			found: true,
-			credential: { token: 'static-abcdefgh', source: 'store' },
+			credential: { kind: 'token', token: 'static-abcdefgh' },
 		});
 	});
 });
@@ -275,14 +261,14 @@ describe('clearCredential', () => {
 
 		clearCredential(url, 'prod');
 
-		expect(resolveCredential({ url, profileName: 'prod', hasConfiguredProfiles: true })).toEqual({
+		expect(resolveCredential({ target: 'profile', url, profileName: 'prod' })).toEqual({
 			found: false,
 			envVar: 'DIRECTUS_PROD_TOKEN',
 		});
 
-		expect(resolveCredential({ url, profileName: 'staging', hasConfiguredProfiles: true })).toMatchObject({
+		expect(resolveCredential({ target: 'profile', url, profileName: 'staging' })).toMatchObject({
 			found: true,
-			credential: { token: 'staging-token', source: 'store' },
+			credential: { kind: 'token', token: 'staging-token' },
 		});
 	});
 
