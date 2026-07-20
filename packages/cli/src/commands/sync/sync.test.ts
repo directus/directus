@@ -30,6 +30,7 @@ describe('sync pull', () => {
 			vendor: 'postgres',
 			collections: [{ collection: 'articles', meta: { note: null } }],
 			fields: [{ collection: 'articles', field: 'title', type: 'string' }],
+			systemFields: [],
 			relations: [],
 		};
 	}

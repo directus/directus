@@ -224,9 +224,9 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 		expect(new Set(owned).size).toBe(2);
 	});
 
-	it('returns directus_ fields in systemFields, not fields', () => {
-		// Schema apply treats the two buckets differently; a system field leaking into
-		// `fields` would be applied as a user field.
+	it('round-trips a systemFields entry back into systemFields, never into fields', () => {
+		// The fields/systemFields split is server provenance; /schema/apply treats the two buckets
+		// differently, so a system field leaking into `fields` would be applied as a user field.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, fixture());
 
@@ -237,34 +237,54 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 		expect(result.fields).not.toContainEqual(color);
 	});
 
-	it('re-homes a directus_ field misplaced in fields into systemFields on read', () => {
-		// A server bug or contract drift could hand back a directus_ field sitting in
-		// `snapshot.fields`. Dropping it on write, or round-tripping it into `fields`, is either
-		// data loss or a changed apply semantic — the write must keep it and the read must bucket
-		// it by its own name, not by whichever file happened to hold it.
+	it('round-trips an indexed system field on an ordinary collection through systemFields', () => {
+		// systemFields carries indexed system-owned fields that live on ordinary collections — an
+		// `articles.id`, not just `directus_*` names (see api get-snapshot: `test.id`/`articles.id`
+		// land in systemFields). The collection name never tells the two buckets apart, so the
+		// split is provenance that must round-trip verbatim: folding this entry into `fields` would
+		// make an apply treat system state as user schema.
 		const dir = tempDir();
 
-		const misplaced: SnapshotFieldEntry = {
-			collection: 'directus_users',
-			field: 'favorite_color',
-			type: 'string',
-			meta: { interface: 'select-color' },
+		const systemField: SnapshotFieldEntry = {
+			collection: 'articles',
+			field: 'id',
+			type: 'integer',
+			meta: { system: true },
+			schema: { is_indexed: true },
 		};
 
 		writeSnapshotFiles(dir, {
 			version: 1,
 			directus: '11.5.0',
 			vendor: 'postgres',
-			collections: [],
-			fields: [misplaced],
-			systemFields: [],
+			collections: [{ collection: 'articles' }],
+			fields: [{ collection: 'articles', field: 'title', type: 'string' }],
+			systemFields: [systemField],
 			relations: [],
 		});
 
 		const result = readSnapshotFiles(dir);
 
-		expect(result.systemFields).toContainEqual(misplaced);
-		expect(result.fields).not.toContainEqual(misplaced);
+		expect(result.systemFields).toContainEqual(systemField);
+		expect(result.fields).not.toContainEqual(systemField);
+	});
+
+	it('never deletes or reads an owned-shaped file it did not write', () => {
+		// Ownership is manifest-recorded, not pattern-inferred: a user's own file that happens to
+		// match `${slug}_${hash}.json` is absent from metadata's manifest, so a rewrite must not
+		// delete it and a read must not fold it in — its corrupt contents would otherwise blow up
+		// an otherwise valid read.
+		const dir = tempDir();
+		writeSnapshotFiles(dir, fixture());
+
+		const planted = join(dir, 'notes_deadbeef.json');
+		writeFileSync(planted, '{ "collection": "notes", "fields": "not even an array" }');
+
+		const result = writeSnapshotFiles(dir, fixture());
+
+		expect(result.removed).toEqual([]);
+		expect(existsSync(planted)).toBe(true);
+		expect(readSnapshotFiles(dir)).toEqual(canonical(fixture()));
 	});
 
 	it('preserves a field option literally named __proto__ through write and read', () => {
@@ -352,5 +372,40 @@ describe('readSnapshotFiles failures', () => {
 		expect(error.code).toBe('STATE');
 		expect(error.message).toContain(name);
 		expect(error.message).toMatch(/fields/);
+	});
+
+	it('fails loud, naming the file, when an owned file has a non-array "systemFields"', () => {
+		// systemFields is required in every owned file — write always emits it, even as []. A
+		// hand-corrupted `"systemFields": {}` must fail at read like a corrupted `fields`, not read
+		// back as "no system-field state" that the next mirror push would apply as a deletion.
+		const dir = tempDir();
+		writeSnapshotFiles(dir, fixture());
+
+		const name = ownedFileFor(dir, 'articles');
+		const parsed = JSON.parse(readFileSync(join(dir, name), 'utf8'));
+		parsed.systemFields = {};
+		writeFileSync(join(dir, name), JSON.stringify(parsed));
+
+		const error = expectCliError(() => readSnapshotFiles(dir));
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain(name);
+		expect(error.message).toMatch(/systemFields/);
+	});
+
+	it('fails loud, naming the file, when the manifest lists a collection file that is gone', () => {
+		// The manifest is the authority on membership: a listed file that has vanished from disk is
+		// corrupted local state, not an empty collection, and must stop the read naming what is
+		// missing rather than silently dropping the collection.
+		const dir = tempDir();
+		writeSnapshotFiles(dir, fixture());
+
+		const name = ownedFileFor(dir, 'articles');
+		rmSync(join(dir, name), { force: true });
+
+		const error = expectCliError(() => readSnapshotFiles(dir));
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain(name);
 	});
 });

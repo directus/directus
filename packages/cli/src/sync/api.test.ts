@@ -28,6 +28,7 @@ describe('fetchSnapshot', () => {
 			vendor: 'postgres',
 			collections: [{ collection: 'articles', meta: { note: null } }],
 			fields: [{ collection: 'articles', field: 'title', type: 'string' }],
+			systemFields: [],
 			relations: [],
 			...overrides,
 		};
@@ -61,7 +62,8 @@ describe('fetchSnapshot', () => {
 
 		expect(snapshot.version).toBe(1);
 		expect(snapshot.collections[0]?.collection).toBe('articles');
-		// Absent from the payload; callers map over it, so the parse must default it to [].
+		// Present as [] on the wire; the parse preserves it verbatim (never defaulted) so callers
+		// map over the value the server actually sent.
 		expect(snapshot.systemFields).toEqual([]);
 	});
 
