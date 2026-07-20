@@ -65,36 +65,46 @@ defineExpose({ shouldShow, getReferencedVirtualElement });
 </script>
 
 <template>
-	<BubbleMenu
-		v-if="editor"
-		:editor="editor"
-		plugin-key="tableBubbleMenu"
-		:should-show="shouldShow"
-		:get-referenced-virtual-element="getReferencedVirtualElement"
-		:options="options"
-	>
-		<div ref="menuEl" class="table-bubble-menu" :class="`placement-${placement}`">
-			<template v-for="(group, groupIndex) in tableActionGroups" :key="groupIndex">
-				<div v-if="groupIndex > 0" class="separator" />
-				<VButton
-					v-for="action in group"
-					:key="action.label"
-					v-tooltip="t(`wysiwyg_options.${action.label}`)"
-					class="toolbar-button"
-					ghost
-					small
-					icon
-					:disabled="!isEnabled(action)"
-					@click="runContextCommand(editor, action.command)"
-				>
-					<VIcon :name="action.icon" />
-				</VButton>
-			</template>
-		</div>
-	</BubbleMenu>
+	<div class="table-bubble-menu-anchor">
+		<!-- Stable attached root: BubbleMenu detaches its own root el on mount (el.remove()), so it must
+		never be this component's tracked root, or a structural patch that toggles/removes the menu (e.g.
+		the parent's normalization-lock v-if) crashes mid-patch and unmounts the editor body. -->
+		<BubbleMenu
+			v-if="editor"
+			:editor="editor"
+			plugin-key="tableBubbleMenu"
+			:should-show="shouldShow"
+			:get-referenced-virtual-element="getReferencedVirtualElement"
+			:options="options"
+		>
+			<div ref="menuEl" class="table-bubble-menu" :class="`placement-${placement}`">
+				<template v-for="(group, groupIndex) in tableActionGroups" :key="groupIndex">
+					<div v-if="groupIndex > 0" class="separator" />
+					<VButton
+						v-for="action in group"
+						:key="action.label"
+						v-tooltip="t(`wysiwyg_options.${action.label}`)"
+						class="toolbar-button"
+						ghost
+						small
+						icon
+						:disabled="!isEnabled(action)"
+						@click="runContextCommand(editor, action.command)"
+					>
+						<VIcon :name="action.icon" />
+					</VButton>
+				</template>
+			</div>
+		</BubbleMenu>
+	</div>
 </template>
 
 <style lang="scss" scoped>
+// layout-neutral wrapper; its only job is to be an attached, stable component root (see template comment)
+.table-bubble-menu-anchor {
+	display: contents;
+}
+
 .table-bubble-menu {
 	position: relative;
 	display: flex;
