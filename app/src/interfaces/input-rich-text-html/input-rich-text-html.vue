@@ -28,6 +28,7 @@ import { parseGlobalMimeTypeAllowList, useMimeTypeFilter } from '@/composables/u
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import { getDirectusUrlWithUtm } from '@/utils/directus-url';
 import { percentage } from '@/utils/percentage';
 
 const props = withDefaults(
@@ -182,6 +183,15 @@ const { info } = useServerStore();
 
 const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
 
+const normalizationDocsUrl = computed(
+	() =>
+		getDirectusUrlWithUtm(
+			'https://directus.com/docs/releases/breaking-changes/version-12',
+			info.version,
+			'wysiwyg_normalization_locked_learn_more_link',
+		) + '#wysiwyg-editor-rebuilt-on-tiptap',
+);
+
 // without this the picker/upload accept the global (usually image) list and the pick lands as a broken <video>
 const { mimeTypeFilter: mediaMimeTypeFilter, combinedAcceptString: mediaAllowedMimeTypes } = useMimeTypeFilter([
 	'video/*',
@@ -272,11 +282,7 @@ onKeyStroke('Escape', () => {
 <template>
 	<VNotice v-if="normalizationLocked && !rawMode" type="warning" multiline class="normalization-notice">
 		{{ t('wysiwyg_options.normalization_locked_notice') }}
-		<a
-			href="https://directus.com/docs/releases/breaking-changes/version-12#wysiwyg-editor-rebuilt-on-tiptap"
-			target="_blank"
-			rel="noopener noreferrer"
-		>
+		<a :href="normalizationDocsUrl" target="_blank" rel="noopener noreferrer">
 			{{ t('wysiwyg_options.normalization_locked_learn_more') }}
 		</a>
 	</VNotice>
