@@ -84,7 +84,7 @@ describe('interactive profile flows', () => {
 		expect(testConnection).toHaveBeenCalledWith({
 			url: 'https://cms.example.com',
 			token: 'tok-abcdefgh',
-			source: 'prompt',
+			kind: 'token',
 		});
 
 		const store = JSON.parse(readFileSync(join(home, '.directus', 'credentials.json'), 'utf8'));
@@ -116,7 +116,7 @@ describe('interactive profile flows', () => {
 		expect(testConnection).toHaveBeenLastCalledWith({
 			url: 'https://real.example.com',
 			token: 'tok-abcdefgh',
-			source: 'prompt',
+			kind: 'token',
 		});
 
 		const config = JSON.parse(readFileSync(join(dir, 'directus.config.json'), 'utf8'));
@@ -175,7 +175,7 @@ describe('interactive profile flows', () => {
 		await testProfile('prod', {}, ctxAt(dir));
 
 		expect(password).toHaveBeenCalled();
-		expect(testConnection).toHaveBeenCalledWith(expect.objectContaining({ token: 'typed-token', source: 'prompt' }));
+		expect(testConnection).toHaveBeenCalledWith(expect.objectContaining({ token: 'typed-token', kind: 'token' }));
 	});
 
 	it('test can log in with email/password when no token resolves', async () => {
@@ -202,7 +202,7 @@ describe('interactive profile flows', () => {
 		await testProfile(undefined, { url: 'https://oneoff.example.com', token: 'tok-flag' }, ctxAt(dir));
 
 		expect(testConnection).toHaveBeenCalledWith(
-			expect.objectContaining({ url: 'https://oneoff.example.com', token: 'tok-flag', source: 'flag' }),
+			expect.objectContaining({ url: 'https://oneoff.example.com', token: 'tok-flag', kind: 'token' }),
 		);
 	});
 

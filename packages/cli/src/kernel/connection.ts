@@ -28,7 +28,7 @@ function restWithTimeout() {
 }
 
 function connect(credential: ResolvedCredential): RestClient<CoreSchema> {
-	if (credential.source === 'session') {
+	if (credential.kind === 'session') {
 		return createDirectus<CoreSchema>(credential.url)
 			.with(
 				authentication('json', {

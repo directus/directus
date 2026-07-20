@@ -128,9 +128,10 @@ describe('profile commands', () => {
 
 			expect(await d6s('profile', 'remove', 'staging')).toBe(0);
 
-			expect(
-				resolveCredential({ url: 'https://cms.example.com', profileName: 'staging', hasConfiguredProfiles: true }),
-			).toEqual({ found: false, envVar: 'DIRECTUS_STAGING_TOKEN' });
+			expect(resolveCredential({ target: 'profile', url: 'https://cms.example.com', profileName: 'staging' })).toEqual({
+				found: false,
+				envVar: 'DIRECTUS_STAGING_TOKEN',
+			});
 		} finally {
 			rmSync(home, { recursive: true, force: true });
 		}

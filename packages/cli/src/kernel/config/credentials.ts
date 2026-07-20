@@ -9,22 +9,21 @@ import { registerSecret } from '../secret.js';
 import { writeFileAtomic } from '../write.js';
 
 export type ResolvedCredential =
-	| { readonly url: string; readonly source: 'flag' | 'env' | 'store' | 'prompt'; readonly token: string }
-	| { readonly url: string; readonly source: 'session'; readonly profileName: string };
+	| { readonly kind: 'token'; readonly url: string; readonly token: string }
+	| { readonly kind: 'session'; readonly url: string; readonly profileName: string };
 
 // Not-found is a valid state, not an error: in a TTY the caller prompts, and
-// non-interactively it becomes a hard error naming `envVar` to set.
+// non-interactively it becomes a hard error. `envVar` names the token var to set
+// for a profile; a direct URL has none — it only accepts an explicit --token.
 type CredentialResolution =
 	| { readonly found: true; readonly credential: ResolvedCredential }
-	| { readonly found: false; readonly envVar: string };
+	| { readonly found: false; readonly envVar: string | undefined };
 
-interface CredentialQuery {
-	readonly url: string;
-	readonly profileName?: string;
-	readonly tokenFlag?: string;
-	readonly hasConfiguredProfiles: boolean;
-	readonly explicitUrl?: boolean;
-}
+// A profile resolves from its env var and the saved store; a hand-typed URL
+// authenticates only with an explicit token, never the ambient environment.
+type CredentialQuery =
+	| { readonly target: 'profile'; readonly url: string; readonly profileName: string; readonly tokenFlag?: string }
+	| { readonly target: 'url'; readonly url: string; readonly tokenFlag?: string };
 
 // DIRECTUS_<PROFILE>_TOKEN, mirroring how Directus derives AUTH_<PROVIDER>_* /
 // STORAGE_<LOCATION>_* keys: uppercase the name, nothing else.
@@ -32,58 +31,51 @@ export function envTokenVar(profileName: string): string {
 	return `DIRECTUS_${profileName.toUpperCase()}_TOKEN`;
 }
 
-// Resolution order: explicit flag → profile-specific DIRECTUS_<NAME>_TOKEN →
-// unprefixed DIRECTUS_TOKEN → saved store (never in CI). The URL is resolved by
-// the caller, so this stays token-focused.
+// Resolution order: explicit --token flag → profile-specific DIRECTUS_<NAME>_TOKEN
+// → saved store (never in CI). There is no unprefixed/ambient token fallback: a
+// credential is bound to a named profile or passed explicitly, so it can never be
+// borrowed for a target the user didn't mean to authenticate.
 export function resolveCredential(query: CredentialQuery): CredentialResolution {
-	const { url, profileName, tokenFlag } = query;
+	const { url, tokenFlag } = query;
 
 	// Register the token the instant it materializes, so it is redacted from all
 	// output regardless of which consumer touches it next.
-	function hit(token: string, source: 'flag' | 'env' | 'store'): CredentialResolution {
+	function hit(token: string): CredentialResolution {
 		registerSecret(token);
-		return { found: true, credential: { url, token, source } };
+		return { found: true, credential: { kind: 'token', url, token } };
 	}
 
 	if (tokenFlag !== undefined && tokenFlag !== '') {
-		return hit(tokenFlag, 'flag');
+		return hit(tokenFlag);
 	}
 
-	if (profileName !== undefined) {
-		const specific = process.env[envTokenVar(profileName)];
-
-		if (specific !== undefined && specific !== '') {
-			return hit(specific, 'env');
-		}
+	// A direct URL has no profile binding, so nothing to resolve from env or store.
+	if (query.target === 'url') {
+		return { found: false, envVar: undefined };
 	}
 
-	// The unprefixed DIRECTUS_TOKEN is disabled once config defines profiles, so a
-	// token meant for one instance can't silently authenticate another (F12) — and
-	// never applies to an explicitly-typed `--url`, so a typo can't leak it to an
-	// arbitrary host. That leaves it for genuinely ambient operation only.
-	if (!query.hasConfiguredProfiles && query.explicitUrl !== true) {
-		const unprefixed = process.env['DIRECTUS_TOKEN'];
+	const { profileName } = query;
+	const specific = process.env[envTokenVar(profileName)];
 
-		if (unprefixed !== undefined && unprefixed !== '') {
-			return hit(unprefixed, 'env');
-		}
+	if (specific !== undefined && specific !== '') {
+		return hit(specific);
 	}
 
 	// The saved store is machine-global but never consulted in CI, so a stray dev
 	// token cannot leak into an automated run. Only bare strings are static tokens;
 	// persisted sessions are read through credentialStorage.
 	if (!isCI()) {
-		const stored = profileName !== undefined ? readStore()[url]?.[profileName] : undefined;
+		const stored = readStore()[url]?.[profileName];
 
 		if (typeof stored === 'string') {
-			if (stored !== '') return hit(stored, 'store');
-		} else if (stored !== undefined && profileName !== undefined) {
+			if (stored !== '') return hit(stored);
+		} else if (stored !== undefined) {
 			const session = requireSession(stored, url, profileName);
-			if (session.refresh_token !== null) return { found: true, credential: { url, source: 'session', profileName } };
+			if (session.refresh_token !== null) return { found: true, credential: { kind: 'session', url, profileName } };
 		}
 	}
 
-	return { found: false, envVar: profileName !== undefined ? envTokenVar(profileName) : 'DIRECTUS_TOKEN' };
+	return { found: false, envVar: envTokenVar(profileName) };
 }
 
 // `~/.directus/credentials.json`, machine-global across repos and worktrees.

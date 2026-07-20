@@ -154,7 +154,7 @@ describe('connection', () => {
 				{ headers: { 'content-type': 'application/json' } },
 			);
 
-		const error = await testConnection({ url: 'https://cms.example.com', token, source: 'flag' }).catch(
+		const error = await testConnection({ url: 'https://cms.example.com', token, kind: 'token' }).catch(
 			(error: unknown) => error,
 		);
 
