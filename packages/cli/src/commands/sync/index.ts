@@ -1,5 +1,6 @@
 import { type Command, Option } from 'commander';
 import type { CliContext } from '../../kernel/run.js';
+import { SELECTABLE_RESOURCES } from '../../sync/resources.js';
 import { diff, type DiffOptions } from './diff.js';
 import { pull, type PullOptions } from './pull.js';
 import { push, type PushOptions } from './push.js';
@@ -13,6 +14,11 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 		.requiredOption('--from <profile>', 'Source profile name')
 		.option('--collections <list>', 'Only these collections (comma-separated); pulls a partial snapshot')
 		.option('--exclude-collections <list>', 'All collections except these (comma-separated); pulls a partial snapshot')
+		// Built from the exported constant so the resource list in help can never drift from the graph.
+		.option(
+			'--data <list>',
+			`Also export records for these resources or collections (comma-separated). Resources: ${SELECTABLE_RESOURCES.join(', ')}`,
+		)
 		.action((options: PullOptions) => pull(options, getContext()));
 
 	sync

@@ -196,6 +196,7 @@ describe('sync pull', () => {
 			files: 2,
 			removed: [],
 			scope: null,
+			data: null,
 		});
 	});
 
@@ -323,6 +324,231 @@ describe('sync pull', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--collections', 'a', '--exclude-collections', 'b')).toBe(1);
 		expect(stderr.join('')).toContain('Pass --collections or --exclude-collections, not both.');
+	});
+});
+
+// Data export rides the same pull path (undici pins the wire, HOME/env isolated, CI forces token-only
+// resolution). The schema fetch runs first and unconditionally; data endpoints are registered only when a
+// call is expected, so the disabled dispatcher turns any stray data request into a throw and an unconsumed
+// intercept proves a must-pull edge was skipped.
+describe('sync pull --data', () => {
+	const realDispatcher = getGlobalDispatcher();
+	const url = 'https://cms.example.com';
+	const token = 'super-secret-static-token';
+	let agent: MockAgent;
+	let dir: string;
+	let dataDir: string;
+	let home: string;
+	let stdout: string[];
+	let stderr: string[];
+
+	// A user collection (articles) whose id field carries schema.is_primary_key, so a data export can key
+	// on the primary key drawn from the committed schema rather than a guess.
+	function schemaSnapshot(): Record<string, unknown> {
+		return {
+			version: 1,
+			directus: '11.0.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'articles', meta: { note: null } }],
+			fields: [
+				{ collection: 'articles', field: 'id', type: 'integer', schema: { is_primary_key: true } },
+				{ collection: 'articles', field: 'title', type: 'string', schema: { is_primary_key: false } },
+			],
+			systemFields: [],
+			relations: [],
+		};
+	}
+
+	function seedConfig(): void {
+		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url } } }));
+	}
+
+	function interceptSnapshot(): void {
+		agent
+			.get(url)
+			.intercept({ path: '/schema/snapshot', method: 'GET', headers: { authorization: `Bearer ${token}` } })
+			.reply(200, { data: schemaSnapshot() }, { headers: { 'content-type': 'application/json' } });
+	}
+
+	// A list endpoint pull: the intercept only matches when limit=-1 sorted by the primary key rides the
+	// query with the token, so a request that forgets the whole-set fetch never reaches this reply.
+	function interceptRecords(path: string, records: Record<string, unknown>[]): void {
+		agent
+			.get(url)
+			.intercept({
+				path,
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
+	}
+
+	// The data artifact whose authoritative `collection` key names the collection — found by content, not
+	// filename, so a test never hard-codes the hash the store derives.
+	function ownedDataFileFor(collection: string): string {
+		for (const name of readdirSync(dataDir).filter((entry) => OWNED.test(entry))) {
+			if (JSON.parse(readFileSync(join(dataDir, name), 'utf8')).collection === collection) return name;
+		}
+
+		throw new Error(`no data file for ${collection}`);
+	}
+
+	function d6s(...argv: string[]): Promise<number> {
+		return run(argv, { registerCommands: registerSync, cwd: dir });
+	}
+
+	beforeEach(() => {
+		dir = mkdtempSync(join(tmpdir(), 'd6s-sync-'));
+		dataDir = join(dir, 'directus', 'default', 'data');
+		home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
+		stdout = [];
+		stderr = [];
+
+		agent = new MockAgent();
+		agent.disableNetConnect();
+		setGlobalDispatcher(agent);
+
+		vi.stubEnv('HOME', home);
+		vi.stubEnv('USERPROFILE', home);
+		vi.stubEnv('CI', 'true');
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
+
+		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
+			stdout.push(String(chunk));
+			return true;
+		});
+
+		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
+			stderr.push(String(chunk));
+			return true;
+		});
+	});
+
+	afterEach(async () => {
+		setGlobalDispatcher(realDispatcher);
+		await agent.close();
+		vi.restoreAllMocks();
+		vi.unstubAllEnvs();
+		rmSync(dir, { recursive: true, force: true });
+		rmSync(home, { recursive: true, force: true });
+	});
+
+	it('exports a resource with its whole must-pull closure and lands committable data files', async () => {
+		// The graph's must-pull edges are the spec's core export semantic: --data roles must fetch roles AND
+		// its closure (policies, access, permissions), not just the named resource. Every intercept must be
+		// consumed — an unconsumed one means an edge was skipped.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptSnapshot();
+		interceptRecords('/roles', [{ id: 'r1' }]);
+		interceptRecords('/policies', [{ id: 'p1' }]);
+		interceptRecords('/access', [{ id: 'a1' }]);
+		interceptRecords('/permissions', [{ id: 'perm1' }]);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--data', 'roles')).toBe(0);
+
+		agent.assertNoPendingInterceptors();
+
+		expect(existsSync(join(dataDir, 'metadata.json'))).toBe(true);
+
+		const owned = readdirSync(dataDir).filter((name) => OWNED.test(name));
+		expect(owned).toHaveLength(4);
+	});
+
+	it('lands a singleton response as a one-record collection file', async () => {
+		// Singleton endpoints (settings) return an object, not an array; the export must normalize it to a
+		// single-record collection so the store treats it like any other data file.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptSnapshot();
+
+		agent
+			.get(url)
+			.intercept({ path: '/settings', method: 'GET', headers: { authorization: `Bearer ${token}` } })
+			.reply(200, { data: { project_name: 'Acme' } }, { headers: { 'content-type': 'application/json' } });
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--data', 'settings')).toBe(0);
+
+		const parsed = JSON.parse(readFileSync(join(dataDir, ownedDataFileFor('directus_settings')), 'utf8'));
+		expect(parsed.records).toEqual([{ project_name: 'Acme' }]);
+	});
+
+	it('exports a user collection keyed on the primary key from the pulled schema', async () => {
+		// A user collection is exported from /items/<name>, records sorted by the primary key the committed
+		// schema declares — keyed on the pulled schema, not a guess. Records arrive out of key order.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptSnapshot();
+
+		interceptRecords('/items/articles', [
+			{ id: 2, title: 'Second' },
+			{ id: 1, title: 'First' },
+		]);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--data', 'articles')).toBe(0);
+
+		const parsed = JSON.parse(readFileSync(join(dataDir, ownedDataFileFor('articles')), 'utf8'));
+		expect(parsed.primaryKey).toBe('id');
+		expect(parsed.records.map((record: { id: number }) => record.id)).toEqual([1, 2]);
+	});
+
+	it('refuses --data for a name absent from the pulled schema and hits no data endpoint', async () => {
+		// Exporting data for schema that was never pulled is the spec's prohibited drift: an unknown name
+		// fails USAGE naming it, and no data request is issued (no data intercept — a stray one would throw).
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptSnapshot();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--data', 'nope')).toBe(1);
+		expect(stderr.join('')).toContain('nope');
+		expect(existsSync(dataDir)).toBe(false);
+	});
+
+	it('refuses a dependent-only resource, routing to its parent', async () => {
+		// Dependent-only children (panels) are never directly selectable; the error must route the operator
+		// to the parent (dashboards) rather than exporting the child on its own.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptSnapshot();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--data', 'panels')).toBe(1);
+		expect(stderr.join('')).toContain('dashboards');
+		expect(existsSync(dataDir)).toBe(false);
+	});
+
+	it('emits the data export summary on --json and null when --data is absent', async () => {
+		// CI reads data.{resources,collections,records} to know what data landed; the key is always present,
+		// carrying the export summary with --data and null without it.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptSnapshot();
+		interceptRecords('/roles', [{ id: 'r1' }]);
+		interceptRecords('/policies', [{ id: 'p1' }]);
+		interceptRecords('/access', [{ id: 'a1' }]);
+		interceptRecords('/permissions', [{ id: 'perm1' }]);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--data', 'roles', '--json')).toBe(0);
+
+		expect(JSON.parse(stdout.join('')).data).toEqual({
+			resources: ['directus_access', 'directus_permissions', 'directus_policies', 'directus_roles'],
+			collections: 4,
+			records: 4,
+			files: 5,
+			removed: [],
+		});
+
+		stdout.length = 0;
+		interceptSnapshot();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--json')).toBe(0);
+		expect(JSON.parse(stdout.join('')).data).toBeNull();
 	});
 });
 

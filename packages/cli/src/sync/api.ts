@@ -7,8 +7,10 @@ import {
 	schemaSnapshot,
 	type SchemaSnapshotOptions,
 } from '@directus/sdk';
+import { isPlainObject } from 'lodash-es';
 import type { ResolvedCredential } from '../kernel/config/credentials.js';
 import { connect, mapRequestError } from '../kernel/connection.js';
+import { CliError } from '../kernel/error.js';
 import { type DiffResult, parseDiffResult, parseSnapshot, type Snapshot } from './contract.js';
 
 // The seam between the kernel connection and the sync contract: every sync API call
@@ -78,4 +80,53 @@ export async function applyDiff(credential: ResolvedCredential, result: DiffResu
 	} catch (error) {
 		throw mapRequestError(error, credential.url);
 	}
+}
+
+// One collection's data pull: a system endpoint (/roles) or a user-collection endpoint (/items/articles),
+// plus the primary key the export keys on and whether the endpoint is a singleton (settings).
+export interface RecordSource {
+	readonly collection: string; // e.g. 'directus_roles' or 'articles'
+	readonly endpoint: string; // '/roles' or '/items/articles'
+	readonly primaryKey: string;
+	readonly singleton: boolean;
+}
+
+// Pull one collection's records verbatim. Unlike snapshot/diff these are the user's own content, so they
+// are NOT parsed against a contract — only the envelope is validated so a broken response fails loud at
+// the seam rather than corrupting the export: a list must be an array of plain objects, a singleton one
+// plain object, otherwise HTTP naming the endpoint.
+export async function fetchRecords(
+	credential: ResolvedCredential,
+	source: RecordSource,
+): Promise<Record<string, unknown>[]> {
+	const client = connect(credential);
+
+	let response: unknown;
+
+	try {
+		// A hand-rolled RestCommand (the SDK's customEndpoint form): a bare thunk returning RequestOptions.
+		// limit -1 pulls the whole collection and sort keys it by the primary key so the fetch order is
+		// stable; a singleton endpoint returns one object, so limit/sort do not apply and are omitted.
+		response = await client.request(() => ({
+			path: source.endpoint,
+			method: 'GET',
+			params: source.singleton ? {} : { limit: -1, sort: source.primaryKey },
+		}));
+	} catch (error) {
+		throw mapRequestError(error, credential.url);
+	}
+
+	if (source.singleton) {
+		if (!isPlainObject(response)) {
+			throw new CliError('HTTP', `The ${source.endpoint} response was not a settings object.`);
+		}
+
+		return [response as Record<string, unknown>];
+	}
+
+	if (!Array.isArray(response) || !response.every((record) => isPlainObject(record))) {
+		throw new CliError('HTTP', `The ${source.endpoint} response was not an array of records.`);
+	}
+
+	return response as Record<string, unknown>[];
 }
