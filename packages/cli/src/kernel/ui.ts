@@ -100,7 +100,9 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 					...(error.detail !== undefined ? { detail: error.detail } : {}),
 				};
 
-				writeJson({ error: body });
+				// kind + formatVersion lead every machine payload so consumers dispatch on the tag;
+				// the inner error object is unchanged.
+				writeJson({ kind: 'ErrorReport', formatVersion: 1, error: body });
 				return;
 			}
 

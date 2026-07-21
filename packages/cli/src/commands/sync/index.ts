@@ -9,13 +9,13 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 
 	sync
 		.command('pull')
-		.description("Snapshot a source instance's schema into committable files")
+		.description('Snapshot schema from a source instance into committable files')
 		.requiredOption('--from <profile>', 'Source profile name')
 		.action((options: PullOptions) => pull(options, getContext()));
 
 	sync
 		.command('diff')
-		.description('Compare the local schema snapshot against a target instance')
+		.description('Show what a push would change on the target. Changes nothing')
 		.requiredOption('--to <profile>', 'Target profile name')
 		// merge is the CLI default even though the server defaults to mirror: additive is the path of
 		// least surprise, so a caller opts into deletions rather than getting them by omission.
@@ -28,7 +28,7 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 
 	sync
 		.command('push')
-		.description('Apply the local schema snapshot to a target instance')
+		.description('Apply committed schema files to a target instance')
 		.requiredOption('--to <profile>', 'Target profile name')
 		// merge is the CLI default even though the server defaults to mirror: additive is the path of
 		// least surprise, so a caller opts into deletions rather than getting them by omission.

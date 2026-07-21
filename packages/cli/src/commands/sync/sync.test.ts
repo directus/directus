@@ -139,8 +139,11 @@ describe('sync pull', () => {
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--json')).toBe(0);
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
+			kind: 'PullReport',
+			formatVersion: 1,
 			ok: true,
 			source: url,
+			profile: 'staging',
 			dir: 'directus/default/schema',
 			collections: 1,
 			fields: 1,
@@ -363,8 +366,11 @@ describe('sync diff', () => {
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--json')).toBe(0);
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
+			kind: 'DiffReport',
+			formatVersion: 1,
 			ok: true,
 			target: url,
+			profile: 'staging',
 			mode: 'merge',
 			changes: true,
 			added: 1,
@@ -382,14 +388,17 @@ describe('sync diff', () => {
 
 		interceptNoChanges();
 		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
-		expect(stderr.join('')).toMatch(/no schema changes/i);
+		expect(stderr.join('')).toContain('staging matches the local snapshot — nothing to do.');
 
 		interceptNoChanges();
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--json')).toBe(0);
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
+			kind: 'DiffReport',
+			formatVersion: 1,
 			ok: true,
 			target: url,
+			profile: 'staging',
 			mode: 'merge',
 			changes: false,
 			added: 0,
@@ -603,6 +612,25 @@ describe('sync push', () => {
 		expect(applied).toEqual({ hash: 'h1', diff: mergeDiffBody() });
 	});
 
+	it('prints the resolved target on the human channel before the diff summary so a misbound profile is visible', async () => {
+		// The misbinding guard (S48): a profile NAMED staging pointing at prod's URL must be visible
+		// before anything mutates, so the resolution line lands on stderr ahead of the change summary.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', mergeDiffBody());
+		interceptApply();
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+
+		const err = stderr.join('');
+		const resolutionAt = err.indexOf(`target: staging — ${url}`);
+		const summaryAt = err.indexOf('to push to');
+		expect(resolutionAt).toBeGreaterThanOrEqual(0);
+		expect(summaryAt).toBeGreaterThan(resolutionAt);
+	});
+
 	it('emits applied:true with the counts and the verified hash on --json', async () => {
 		// CI reads this exact shape to confirm the push landed and to record the hash it applied against.
 		seedConfig();
@@ -615,8 +643,11 @@ describe('sync push', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
+			kind: 'PushReport',
+			formatVersion: 1,
 			ok: true,
 			target: url,
+			profile: 'staging',
 			mode: 'merge',
 			applied: true,
 			changes: true,
@@ -639,8 +670,11 @@ describe('sync push', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
+			kind: 'PushReport',
+			formatVersion: 1,
 			ok: true,
 			target: url,
+			profile: 'staging',
 			mode: 'merge',
 			applied: false,
 			changes: false,
@@ -664,7 +698,8 @@ describe('sync push', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes')).toBe(1);
 
 		const err = stderr.join('');
-		expect(err).toMatch(/deletion/i);
+		expect(err).toContain('This push deletes 1 item.');
+		expect(err).toContain('--yes does not cover deletions');
 		expect(err).toContain('--allow-deletes');
 	});
 

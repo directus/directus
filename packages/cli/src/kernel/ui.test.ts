@@ -64,6 +64,18 @@ describe('createUi', () => {
 		expect(stderr.join('')).toBe('');
 	});
 
+	it('tags the --json error payload with kind ErrorReport and formatVersion so consumers can dispatch on it', () => {
+		// Consumers dispatch on the leading tag; an untagged error is unparseable to them, and adding
+		// the tag later would be a breaking change, so it must lead the envelope from the start.
+		const ui = createUi({ json: true, color: false });
+		ui.error(new CliError('USAGE', 'bad input'));
+
+		const payload = JSON.parse(stdout.join(''));
+		expect(payload.kind).toBe('ErrorReport');
+		expect(payload.formatVersion).toBe(1);
+		expect(payload.error.code).toBe('USAGE');
+	});
+
 	it('renders errors with a hint on stderr in human mode', () => {
 		const ui = createUi({ json: false, color: false });
 		ui.error(new CliError('USAGE', 'bad input', { hint: 'try --from' }));
