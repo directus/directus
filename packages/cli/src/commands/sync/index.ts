@@ -11,6 +11,8 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 		.command('pull')
 		.description('Snapshot schema from a source instance into committable files')
 		.requiredOption('--from <profile>', 'Source profile name')
+		.option('--collections <list>', 'Only these collections (comma-separated); pulls a partial snapshot')
+		.option('--exclude-collections <list>', 'All collections except these (comma-separated); pulls a partial snapshot')
 		.action((options: PullOptions) => pull(options, getContext()));
 
 	sync

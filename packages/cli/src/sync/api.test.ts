@@ -68,6 +68,42 @@ describe('fetchSnapshot', () => {
 		expect(snapshot.systemFields).toEqual([]);
 	});
 
+	it('sends includeCollections on the wire and returns the parsed partial snapshot', async () => {
+		// A scoped pull must reach the query string as a comma-joined list; the intercept only matches
+		// when includeCollections is on the wire, and the server tags the reply version 2.
+		isolateHome();
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({
+				path: '/schema/snapshot',
+				method: 'GET',
+				query: { includeCollections: 'articles,authors' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: fullSnapshot({ version: 2 }) }, { headers: { 'content-type': 'application/json' } });
+
+		const snapshot = await fetchSnapshot(credential, { include: ['articles', 'authors'] });
+
+		expect(snapshot.version).toBe(2);
+		expect(snapshot.collections[0]?.collection).toBe('articles');
+	});
+
+	it('sends excludeCollections on the wire for the mutually-exclusive exclude scope', async () => {
+		// The exclude variant maps to the other query param; the response is still parsed and its
+		// version-2 tag is preserved verbatim, never fabricated.
+		isolateHome();
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/schema/snapshot', method: 'GET', query: { excludeCollections: 'drafts' } })
+			.reply(200, { data: fullSnapshot({ version: 2 }) }, { headers: { 'content-type': 'application/json' } });
+
+		const snapshot = await fetchSnapshot(credential, { exclude: ['drafts'] });
+
+		expect(snapshot.version).toBe(2);
+	});
+
 	it('routes a 401 to an AUTH error so credential failures surface hints, not a stack trace', async () => {
 		isolateHome();
 

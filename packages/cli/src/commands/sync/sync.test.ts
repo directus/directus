@@ -47,6 +47,50 @@ describe('sync pull', () => {
 		};
 	}
 
+	// A full snapshot spanning two collections, so a later scoped pull of one can be shown to leave the
+	// other's committed artifact untouched.
+	function twoCollectionSnapshot(): Record<string, unknown> {
+		return {
+			version: 1,
+			directus: '11.0.0',
+			vendor: 'postgres',
+			collections: [
+				{ collection: 'articles', meta: { note: null } },
+				{ collection: 'authors', meta: { note: null } },
+			],
+			fields: [
+				{ collection: 'articles', field: 'title', type: 'string' },
+				{ collection: 'authors', field: 'name', type: 'string' },
+			],
+			systemFields: [],
+			relations: [],
+		};
+	}
+
+	// A partial (version 2) response carrying only articles, changed — what the server returns for an
+	// include-scoped pull of articles.
+	function scopedArticles(): Record<string, unknown> {
+		return {
+			version: 2,
+			directus: '11.0.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'articles', meta: { note: 'headline' } }],
+			fields: [{ collection: 'articles', field: 'title', type: 'string' }],
+			systemFields: [],
+			relations: [],
+		};
+	}
+
+	// The owned artifact whose authoritative `collection` key names the collection — found by content,
+	// not filename, so a test never hard-codes the hash the store derives.
+	function ownedFileFor(schemaDir: string, collection: string): string {
+		for (const name of readdirSync(schemaDir).filter((entry) => OWNED.test(entry))) {
+			if (JSON.parse(readFileSync(join(schemaDir, name), 'utf8')).collection === collection) return name;
+		}
+
+		throw new Error(`no owned file for ${collection}`);
+	}
+
 	function seedConfig(): void {
 		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url } } }));
 	}
@@ -151,6 +195,7 @@ describe('sync pull', () => {
 			relations: 0,
 			files: 2,
 			removed: [],
+			scope: null,
 		});
 	});
 
@@ -207,6 +252,77 @@ describe('sync pull', () => {
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
 		expect(stderr.join('')).toMatch(/outside the project/i);
 		expect(readdirSync(outside)).toEqual([]);
+	});
+
+	it('carries the include scope to the server and names it on the success line', async () => {
+		// The scope must reach the wire or a "scoped" pull silently pulls everything: the intercept only
+		// matches when includeCollections=articles rides the query, and the human line must name the scope.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/schema/snapshot',
+				method: 'GET',
+				query: { includeCollections: 'articles' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: scopedArticles() }, { headers: { 'content-type': 'application/json' } });
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--collections', 'articles')).toBe(0);
+		expect(stderr.join('')).toContain('(scoped to: articles)');
+	});
+
+	it('preserves out-of-scope siblings end to end when pulling a single collection', async () => {
+		// Pulling one collection must never destroy the committed schema around it (the spec's
+		// incremental-transfer core): a full pull writes articles + authors, then a scoped pull of only
+		// articles must leave the authors artifact byte-identical on disk and still owned in the manifest,
+		// and its --json payload must carry the scope it pulled.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		const schemaDir = join(dir, 'directus', 'default', 'schema');
+
+		agent
+			.get(url)
+			.intercept({ path: '/schema/snapshot', method: 'GET', headers: { authorization: `Bearer ${token}` } })
+			.reply(200, { data: twoCollectionSnapshot() }, { headers: { 'content-type': 'application/json' } });
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		const authorsFile = ownedFileFor(schemaDir, 'authors');
+		const authorsBytes = readFileSync(join(schemaDir, authorsFile), 'utf8');
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/schema/snapshot',
+				method: 'GET',
+				query: { includeCollections: 'articles' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: scopedArticles() }, { headers: { 'content-type': 'application/json' } });
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--collections', 'articles', '--json')).toBe(0);
+
+		// The sibling is untouched: identical bytes and still listed in the ownership manifest.
+		expect(readFileSync(join(schemaDir, authorsFile), 'utf8')).toBe(authorsBytes);
+
+		const manifest = JSON.parse(readFileSync(join(schemaDir, 'metadata.json'), 'utf8')).files;
+		expect(manifest).toContain(authorsFile);
+
+		expect(JSON.parse(stdout.join('')).scope).toEqual({ include: ['articles'] });
+	});
+
+	it('refuses --collections with --exclude-collections before any network call', async () => {
+		// Mutual exclusivity is a client-side contract, not a server 400: passing both fails USAGE with a
+		// clean message and never reaches the wire. No intercept — the disabled dispatcher would throw on one.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--collections', 'a', '--exclude-collections', 'b')).toBe(1);
+		expect(stderr.join('')).toContain('Pass --collections or --exclude-collections, not both.');
 	});
 });
 
@@ -408,16 +524,26 @@ describe('sync diff', () => {
 		});
 	});
 
-	it('refuses a partial snapshot in mirror mode before any request reaches the wire', async () => {
-		// Mirror proposes deleting everything the snapshot omits; on a scoped (partial) snapshot that is
-		// mass deletion, so the guard must fire before the network. No intercept is registered, and the
-		// disabled dispatcher would throw on any stray request — reaching the USAGE error proves nothing was sent.
+	it('diffs a partial snapshot in mirror mode by sending it to the wire', async () => {
+		// Scoped deletions are the spec's partial-mirror purpose — a partial mirror diff deletes
+		// fields/relations within scope but never collections — and the artifacts now carry an honest SET
+		// version, so the CLI no longer refuses it. mode=mirror must reach the wire; refusing it was a stopgap.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, partialSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		expect(await d6s('sync', 'diff', '--to', 'staging', '--mode', 'mirror')).toBe(1);
-		expect(stderr.join('')).toContain('This CLI cannot yet diff a partial snapshot in mirror mode.');
+		agent
+			.get(url)
+			.intercept({
+				path: '/schema/diff',
+				method: 'POST',
+				query: { mode: 'mirror' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(204, '');
+
+		expect(await d6s('sync', 'diff', '--to', 'staging', '--mode', 'mirror')).toBe(0);
+		expect(stderr.join('')).toContain('staging matches the local snapshot — nothing to do.');
 	});
 
 	it('fails with the pull-first precondition when no snapshot has been pulled', async () => {

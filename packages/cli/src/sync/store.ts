@@ -7,6 +7,7 @@ import { writeFileAtomic } from '../kernel/write.js';
 import {
 	parseSnapshot,
 	type Snapshot,
+	SNAPSHOT_FULL,
 	type SnapshotEntry,
 	type SnapshotFieldEntry,
 	type SnapshotRelationEntry,
@@ -32,6 +33,14 @@ const OWNED_FILE = /^[a-z0-9-]*_[0-9a-f]{16}\.json$/;
 export interface WriteResult {
 	readonly written: string[]; // filenames relative to dir, sorted
 	readonly removed: string[]; // stale owned files deleted, sorted
+}
+
+export interface WriteScope {
+	// A collection is INSIDE the pull's scope iff inScope(name) is true. Inside-scope artifacts mirror the
+	// response (rewritten, or removed when absent — deleted at source). Outside-scope artifacts are
+	// preserved verbatim: file untouched, manifest entry carried forward. Without a scope every artifact
+	// is in scope (full mirror).
+	readonly inScope: (collection: string) => boolean;
 }
 
 interface CollectionFile {
@@ -193,7 +202,24 @@ function readManifest(dir: string): string[] {
 	return files as string[];
 }
 
-export function writeSnapshotFiles(dir: string, snapshot: Snapshot): WriteResult {
+// The version tag the previous write recorded, or undefined when there is no previous metadata (a real
+// first pull) or it carried no numeric version. Read leniently: readManifest already proved the file is
+// a valid object with a valid `files` manifest, so this only sources the number that decides the artifact
+// SET's version on a scoped write.
+function readPreviousVersion(dir: string): number | undefined {
+	const path = join(dir, METADATA_FILE);
+
+	if (!existsSync(path)) return undefined;
+
+	const header = loadObject(path, METADATA_FILE)['snapshot'];
+
+	if (!isPlainObject(header)) return undefined;
+
+	const version = (header as Record<string, unknown>)['version'];
+	return typeof version === 'number' ? version : undefined;
+}
+
+export function writeSnapshotFiles(dir: string, snapshot: Snapshot, scope?: WriteScope): WriteResult {
 	mkdirSync(dir, { recursive: true });
 
 	// Read the previous manifest before touching anything: it is the only authority on what this
@@ -218,39 +244,63 @@ export function writeSnapshotFiles(dir: string, snapshot: Snapshot): WriteResult
 		byName.set(name, file);
 	}
 
-	// Write every collection file first, collecting the names this pull owns. Determinism makes an
-	// unchanged file byte-identical, so a rewrite is invisible to git.
+	// Write every collection file the response carries, collecting the names this pull newly owns. The
+	// server only returns in-scope collections, so every response file is a mirror write regardless of
+	// scope. Determinism makes an unchanged file byte-identical, so a rewrite is invisible to git.
 	const targets = new Set<string>();
-	const files: string[] = [];
+	const written: string[] = [];
 
 	for (const [name, file] of byName) {
 		targets.add(name);
-		files.push(name);
+		written.push(name);
 		writeFileAtomic(join(dir, name), serialize(file), 0o644);
 	}
 
-	// Stale cleanup: a pull mirrors the source, so an owned file left behind from a collection
-	// that no longer exists would resurrect it on the next push. Delete exactly the previous
-	// manifest's files this write did not re-emit; OWNED_FILE is a second guard so a corrupted
-	// manifest can never delete anything outside our naming shape, and an unlisted foreign file is
-	// never a candidate.
+	// Partition the previous manifest's owned files this write did not re-emit. A full pull (no scope)
+	// mirrors the whole directory, so every such file is stale and removed — otherwise a dropped
+	// collection resurrects on the next push. A scoped pull mirrors ONLY the collections inside its
+	// scope: a previous file whose collection is OUTSIDE the scope is preserved verbatim (untouched on
+	// disk, carried into the new manifest) so pulling one collection never destroys the schema around
+	// it, while an inside-scope file absent from the response is still deleted (deleted at source). The
+	// scope decision reads each file's authoritative `collection` key rather than trusting the filename;
+	// a corrupt file fails loud (STATE) exactly as read does. OWNED_FILE stays the second guard so a
+	// corrupted manifest can never delete or fold in anything outside our naming shape.
+	const preserved: string[] = [];
 	const removed: string[] = [];
 
 	for (const name of previous) {
-		if (!targets.has(name) && OWNED_FILE.test(name)) {
-			rmSync(join(dir, name), { force: true });
-			removed.push(name);
+		if (targets.has(name) || !OWNED_FILE.test(name)) continue;
+
+		if (scope !== undefined && !scope.inScope(readCollectionFile(dir, name).collection)) {
+			preserved.push(name);
+			continue;
 		}
+
+		rmSync(join(dir, name), { force: true });
+		removed.push(name);
+	}
+
+	// The ownership manifest is the newly written files plus the preserved out-of-scope ones: read
+	// consumes this set, so an out-of-scope collection dropped from it would vanish from the schema.
+	const manifest = [...written, ...preserved].sort(byCodepoint);
+	const meta = header(snapshot, manifest);
+
+	// The version tag drives diff scoping server-side, so metadata must describe what the artifact SET
+	// covers, not what this request fetched. A scoped pull that leaves out-of-scope files from a previous
+	// FULL set (metadata version 1) in place still represents a full schema, so keep 1; trimming it to the
+	// response's partial tag — or, conversely, tagging a genuinely partial set as full — is exactly the
+	// mass-delete hazard. Otherwise the set's version is the response's, stored honestly as returned.
+	if (scope !== undefined && preserved.length > 0 && readPreviousVersion(dir) === SNAPSHOT_FULL) {
+		meta.snapshot['version'] = SNAPSHOT_FULL;
 	}
 
 	// Write metadata.json LAST: read refuses a directory without it, so it is the publish marker
 	// for this pull. An interrupted first pull — collection files written, metadata not — reads
 	// back as "no snapshot" rather than a plausible partial one, and its `files` manifest becomes
 	// what the next read and the next cleanup treat as owned.
-	files.sort(byCodepoint);
-	writeFileAtomic(join(dir, METADATA_FILE), serialize(header(snapshot, files)), 0o644);
+	writeFileAtomic(join(dir, METADATA_FILE), serialize(meta), 0o644);
 
-	return { written: [METADATA_FILE, ...files].sort(byCodepoint), removed: removed.sort(byCodepoint) };
+	return { written: [METADATA_FILE, ...written].sort(byCodepoint), removed: removed.sort(byCodepoint) };
 }
 
 function loadObject(path: string, name: string): Record<string, unknown> {
