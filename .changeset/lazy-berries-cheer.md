@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Fixed relational fields (like the M2A builder) not reflecting changes after promoting a Content Version, which previously needed a manual page reload
+Fixed relational fields not refreshing after promotion
