@@ -5,8 +5,8 @@ import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ResolvedCredential } from '../kernel/config/credentials.js';
 import { CliError } from '../kernel/error.js';
-import { fetchDiff, fetchSnapshot } from './api.js';
-import type { Snapshot } from './contract.js';
+import { applyDiff, fetchDiff, fetchSnapshot } from './api.js';
+import type { DiffResult, Snapshot } from './contract.js';
 
 describe('fetchSnapshot', () => {
 	const realDispatcher = getGlobalDispatcher();
@@ -207,6 +207,92 @@ describe('fetchDiff', () => {
 			);
 
 		const error = await fetchDiff(credential, snapshot(), 'merge').catch((error: unknown) => error);
+
+		expect(error).toBeInstanceOf(CliError);
+		expect(error).toMatchObject({ code: 'HTTP' });
+	});
+});
+
+describe('applyDiff', () => {
+	const realDispatcher = getGlobalDispatcher();
+	const token = 'super-secret-static-token';
+	const credential: ResolvedCredential = { kind: 'token', url: 'https://cms.example.com', token };
+	let agent: MockAgent;
+	const created: string[] = [];
+
+	function isolateHome(): void {
+		const dir = mkdtempSync(join(tmpdir(), 'd6s-home-'));
+		created.push(dir);
+		vi.stubEnv('HOME', dir);
+		vi.stubEnv('USERPROFILE', dir);
+	}
+
+	function diffResult(): DiffResult {
+		return {
+			hash: 'abc123',
+			diff: {
+				collections: [{ collection: 'events', diff: [{ kind: 'N', rhs: { collection: 'events' } }] }],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			},
+		};
+	}
+
+	beforeEach(() => {
+		agent = new MockAgent();
+		agent.disableNetConnect();
+		setGlobalDispatcher(agent);
+	});
+
+	afterEach(async () => {
+		setGlobalDispatcher(realDispatcher);
+		await agent.close();
+		vi.restoreAllMocks();
+		vi.unstubAllEnvs();
+		for (const dir of created.splice(0)) rmSync(dir, { recursive: true, force: true });
+	});
+
+	it('carries the resolved credential and sends the sealed { hash, diff } to /schema/apply unmodified', async () => {
+		// The whole safety model is that the exact diff the server sealed reaches /schema/apply
+		// byte-faithful — the server re-checks the hash — so the body must deep-equal the DiffResult,
+		// hash and diff untouched. The admin-only intercept only matches with the token on the wire.
+		isolateHome();
+
+		const result = diffResult();
+		let sentBody: string | undefined;
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({
+				path: '/schema/apply',
+				method: 'POST',
+				headers: { authorization: `Bearer ${token}` },
+				body(raw: string) {
+					sentBody = raw;
+					return true;
+				},
+			})
+			.reply(204, '');
+
+		await applyDiff(credential, result);
+
+		expect(sentBody && JSON.parse(sentBody)).toEqual({ hash: result.hash, diff: result.diff });
+	});
+
+	it('routes a Directus error to a CliError so a failed apply surfaces a hint, not a stack trace', async () => {
+		isolateHome();
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/schema/apply', method: 'POST' })
+			.reply(
+				500,
+				{ errors: [{ message: 'boom', extensions: { code: 'INTERNAL_SERVER_ERROR' } }] },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		const error = await applyDiff(credential, diffResult()).catch((error: unknown) => error);
 
 		expect(error).toBeInstanceOf(CliError);
 		expect(error).toMatchObject({ code: 'HTTP' });
