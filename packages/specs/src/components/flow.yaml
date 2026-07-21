@@ -15,18 +15,17 @@ properties:
     example: Update Articles Flow
     nullable: true
   icon:
-    # TODO: https://github.com/directus/directus/issues/27700#issuecomment-4996660653
-    description: Icon displayed in the Admin App for the flow.
+    description: Icon displayed in the Data Studio for the flow.
     type: string
     example: bolt
     nullable: true
   color:
-    description: Color of the icon displayed in the Admin App for the flow.
+    description: Color of the icon displayed in the Data Studio for the flow.
     type: string
     example: '#112233'
     nullable: true
   description:
-    description: Short description of the flow displayed in the Admin App.
+    description: Short description of the flow displayed in the Data Studio.
     type: string
     example: This flow is used to update articles periodically.
     nullable: true

@@ -204,8 +204,7 @@ properties:
           type: number
     nullable: true
   custom_css:
-    # TODO: https://github.com/directus/directus/issues/27700#issuecomment-4996660653
-    description: Custom CSS injected into the Admin App.
+    description: Custom CSS injected into the Data Studio.
     type: string
     nullable: true
   storage_default_folder:
@@ -222,7 +221,7 @@ properties:
     type: string
     nullable: true
   module_bar:
-    description: Configuration of the Admin App module bar.
+    description: Configuration of the Data Studio module bar.
     type: array
     items:
       oneOf:
@@ -390,7 +389,7 @@ properties:
     type: string
     nullable: true
   collaborative_editing_enabled:
-    description: Whether collaborative editing is enabled in the Admin App.
+    description: Whether collaborative editing is enabled in the Data Studio.
     type: boolean
   license_key:
     description: Directus license key. Returned masked when set.

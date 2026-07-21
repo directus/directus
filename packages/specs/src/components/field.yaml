@@ -149,8 +149,7 @@ properties:
           type: string
         nullable: true
       interface:
-        # TODO: https://github.com/directus/directus/issues/27700#issuecomment-4996660653
-        description: What interface is used in the admin app to edit the value for this field.
+        description: What interface is used in the Data Studio to edit the value for this field.
         example: primary-key
         type: string
         nullable: true
@@ -159,7 +158,7 @@ properties:
         type: object
         nullable: true
       display:
-        description: What display is used in the admin app to display the value for this field.
+        description: What display is used in the Data Studio to display the value for this field.
         type: string
         nullable: true
       display_options:
@@ -171,11 +170,11 @@ properties:
         example: false
         type: boolean
       hidden:
-        description: If this field should be hidden in the admin app.
+        description: If this field should be hidden in the Data Studio.
         example: true
         type: boolean
       sort:
-        description: Sort order of this field on the edit page of the admin app.
+        description: Sort order of this field on the edit page of the Data Studio.
         example: 1
         type: integer
         nullable: true
@@ -190,7 +189,7 @@ properties:
         type: string
         nullable: true
       translations:
-        description: Translated field labels per language for the admin app.
+        description: Translated field labels per language for the Data Studio.
         type: array
         nullable: true
         items:
@@ -237,7 +236,7 @@ properties:
         type: string
         nullable: true
       searchable:
-        description: Whether this field is included in admin app full-text search.
+        description: Whether this field is included in Data Studio full-text search.
         type: boolean
       system:
         description: True if this is a Directus-managed system field.

@@ -22,8 +22,7 @@ properties:
     example: '123'
     type: string
   comment:
-    # TODO: https://github.com/directus/directus/issues/27700#issuecomment-4996660653
-    description: User comment text shown in the item edit page in the admin app.
+    description: User comment text shown in the item edit page in the Data Studio.
     example: 'This is a comment'
     type: string
   date_created:

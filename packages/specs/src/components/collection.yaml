@@ -40,8 +40,7 @@ properties:
         example: '{{ field_name }}'
         nullable: true
       hidden:
-        # TODO: https://github.com/directus/directus/issues/27700#issuecomment-4996660653
-        description: Whether or not the collection is hidden from the navigation in the admin app.
+        description: Whether or not the collection is hidden from the navigation in the Data Studio.
         type: boolean
         example: false
       singleton:
@@ -49,7 +48,7 @@ properties:
         type: boolean
         example: false
       translations:
-        description: Key value pairs of how to show this collection's name in different languages in the admin app.
+        description: Key value pairs of how to show this collection's name in different languages in the Data Studio.
         type: array
         nullable: true
         items:
@@ -69,7 +68,7 @@ properties:
             singular: Propiedad
             plural: Propiedades
       preview_url:
-        description: URL pattern for live previewing an item in the admin app.
+        description: URL pattern for live previewing an item in the Data Studio.
         type: string
         nullable: true
       versioning:
@@ -85,7 +84,7 @@ properties:
         type: string
         nullable: true
       archive_app_filter:
-        description: Whether to show the "archived" filter toggle in the admin app.
+        description: Whether to show the "archived" filter toggle in the Data Studio.
         type: boolean
         example: true
       archive_value:
@@ -118,7 +117,7 @@ properties:
         type: boolean
         nullable: true
       sort:
-        description: Manual sort order for the collection in the admin app. Overrides alphabetical ordering.
+        description: Manual sort order for the collection in the Data Studio. Overrides alphabetical ordering.
         type: integer
         nullable: true
       group:
@@ -126,11 +125,11 @@ properties:
         type: string
         nullable: true
       collapse:
-        description: Default expanded state of this collection group in the admin app navigation.
+        description: Default expanded state of this collection group in the Data Studio navigation.
         type: string
         enum: [open, closed, locked]
       status:
-        description: Whether the collection is active. Inactive collections are hidden from the admin app.
+        description: Whether the collection is active. Inactive collections are hidden from the Data Studio.
         type: string
         enum: [active, inactive]
   schema:

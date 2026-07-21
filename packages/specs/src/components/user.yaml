@@ -64,8 +64,7 @@ properties:
     type: string
     nullable: true
   appearance:
-    # TODO: https://github.com/directus/directus/issues/27700#issuecomment-4996660653
-    description: Theme appearance used by the Admin App for this user.
+    description: Theme appearance used by the Data Studio for this user.
     example: auto
     type: string
     enum: [auto, dark, light, null]
@@ -141,7 +140,7 @@ properties:
     example: default
     type: string
   text_direction:
-    description: Text direction used in the Admin App.
+    description: Text direction used in the Data Studio.
     example: auto
     type: string
     enum: [auto, ltr, rtl]
