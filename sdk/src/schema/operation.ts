@@ -12,7 +12,6 @@ export type DirectusOperation<Schema = any> = MergeCoreCollection<
 		type: string;
 		position_x: number;
 		position_y: number;
-		timestamp: string;
 		options: Record<string, any> | null;
 		resolve: DirectusOperation<Schema> | string | null;
 		reject: DirectusOperation<Schema> | string | null;
