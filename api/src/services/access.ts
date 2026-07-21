@@ -1,6 +1,6 @@
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
-import { clearPermissionRelatedCache } from '../cache.js';
+import { clearSystemCache } from '../cache.js';
 import { ItemsService } from './items.js';
 
 export class AccessService extends ItemsService {
@@ -9,7 +9,7 @@ export class AccessService extends ItemsService {
 	}
 
 	private async clearCaches(opts?: MutationOptions) {
-		await clearPermissionRelatedCache({ autoPurgeCache: opts?.autoPurgeCache });
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache, autoPurgeSchema: false });
 
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();

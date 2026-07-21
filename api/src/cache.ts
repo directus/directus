@@ -32,6 +32,7 @@ const messenger = useBus();
 
 interface CacheMessage {
 	autoPurgeCache: boolean | undefined;
+	autoPurgeSchema?: boolean | undefined;
 }
 
 if (redisConfigAvailable() && !messengerSubscribed) {
@@ -42,18 +43,10 @@ if (redisConfigAvailable() && !messengerSubscribed) {
 			await cache.clear();
 		}
 
-		await localSchemaCache?.clear();
-		memorySchemaCache = null;
-	});
-
-	// A permission/policy change invalidates permission-related caches on peers but
-	// does NOT touch the structural schema cache (permissions are not part of the schema).
-	messenger.subscribe<CacheMessage>('permissionsChanged', async (opts) => {
-		if (env['CACHE_STORE'] === 'memory' && env['CACHE_AUTO_PURGE'] && cache && opts?.['autoPurgeCache'] !== false) {
-			await cache.clear();
+		if (opts?.['autoPurgeSchema'] !== false) {
+			await localSchemaCache?.clear();
+			memorySchemaCache = null;
 		}
-
-		await clearPermissionCache();
 	});
 }
 
@@ -103,6 +96,7 @@ export async function flushCaches(forced?: boolean): Promise<void> {
 export async function clearSystemCache(opts?: {
 	forced?: boolean | undefined;
 	autoPurgeCache?: false | undefined;
+	autoPurgeSchema?: false | undefined;
 }): Promise<void> {
 	const { systemCache, localSchemaCache, lockCache } = getCache();
 
@@ -113,48 +107,20 @@ export async function clearSystemCache(opts?: {
 		await lockCache.delete('system-cache-lock');
 	}
 
-	await localSchemaCache.clear();
-	memorySchemaCache = null;
+	// Permissions/policies/access aren't part of the schema, so their writes can skip the
+	// schema purge (and the reload it forces on every instance) via autoPurgeSchema: false
+	if (opts?.autoPurgeSchema !== false) {
+		await localSchemaCache.clear();
+		memorySchemaCache = null;
+	}
 
 	// Since a lot of cached permission function rely on the schema it needs to be cleared as well
 	await clearPermissionCache();
 
-	messenger.publish<CacheMessage>('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
-}
-
-/**
- * Clear caches affected by a permission/policy/access change WITHOUT reloading the schema.
- *
- * Permissions, policies and access rows are not part of `SchemaOverview` ({ collections,
- * relations }), so mutating them cannot invalidate the structural schema. The full
- * `clearSystemCache()` nulls the schema cache and broadcasts `schemaChanged`, which forces
- * every instance to re-read the entire schema (collections + fields + relations) from the
- * database on the next request — one full reload per permission write. That reload is pure
- * overhead here.
- *
- * This clears the permission-dependent caches only:
- *   - the system cache (Keyv)
- *   - the permission resolver cache (local + shared)
- * and broadcasts the lighter `permissionsChanged` event so peers invalidate the same
- * permission-dependent caches — including the per-role GraphQL schema cache (see
- * services/graphql/schema-cache.ts, which subscribes to both `schemaChanged` and
- * `permissionsChanged`) — without reloading the structural schema.
- */
-export async function clearPermissionRelatedCache(opts?: {
-	forced?: boolean | undefined;
-	autoPurgeCache?: false | undefined;
-}): Promise<void> {
-	const { systemCache, lockCache } = getCache();
-
-	if (opts?.forced || !(await lockCache.get('system-cache-lock'))) {
-		await lockCache.set('system-cache-lock', true, 10000);
-		await systemCache.clear();
-		await lockCache.delete('system-cache-lock');
-	}
-
-	await clearPermissionCache();
-
-	messenger.publish<CacheMessage>('permissionsChanged', { autoPurgeCache: opts?.autoPurgeCache });
+	messenger.publish<CacheMessage>('schemaChanged', {
+		autoPurgeCache: opts?.autoPurgeCache,
+		autoPurgeSchema: opts?.autoPurgeSchema,
+	});
 }
 
 export async function setSystemCache(key: string, value: any, ttl?: number): Promise<void> {

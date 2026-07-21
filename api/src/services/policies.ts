@@ -2,7 +2,7 @@ import { InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, MutationOptions, Policy, PrimaryKey } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import { getMatch } from 'ip-matching';
-import { clearPermissionRelatedCache } from '../cache.js';
+import { clearSystemCache } from '../cache.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { ItemsService } from './items.js';
 
@@ -12,7 +12,7 @@ export class PoliciesService extends ItemsService<Policy> {
 	}
 
 	private async clearCaches(opts?: MutationOptions) {
-		await clearPermissionRelatedCache({ autoPurgeCache: opts?.autoPurgeCache });
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache, autoPurgeSchema: false });
 
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();

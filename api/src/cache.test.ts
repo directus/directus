@@ -1,4 +1,5 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import type { SchemaOverview } from '@directus/types';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 const bus = vi.hoisted(() => {
 	const handlers = new Map<string, (opts: any) => Promise<void> | void>();
@@ -29,7 +30,7 @@ vi.mock('./bus/index.js', () => ({
 	useBus: () => ({ publish: bus.publish, subscribe: bus.subscribe }),
 }));
 
-// Force the module-load subscription block so the `permissionsChanged` peer handler is registered.
+// Force the module-load subscription block so the peer handler is registered.
 vi.mock('./redis/index.js', () => ({ redisConfigAvailable: () => true }));
 
 vi.mock('./permissions/cache.js', () => ({ clearCache: vi.fn() }));
@@ -38,78 +39,51 @@ vi.mock('./logger/index.js', () => ({
 	useLogger: () => ({ warn: vi.fn(), info: vi.fn(), error: vi.fn() }),
 }));
 
-const { clearPermissionRelatedCache, getCache } = await import('./cache.js');
-const { clearCache: clearPermissionCache } = await import('./permissions/cache.js');
+const { clearSystemCache, getCache, setMemorySchemaCache, getMemorySchemaCache } = await import('./cache.js');
 
-describe('clearPermissionRelatedCache', () => {
+const SCHEMA = { collections: {}, relations: [] } as unknown as SchemaOverview;
+
+describe('permission writes do not purge the schema cache', () => {
 	beforeEach(async () => {
 		vi.clearAllMocks();
-		// Ensure no stale system-cache-lock between tests.
 		await getCache().lockCache.delete('system-cache-lock');
 	});
 
-	test('clears system + permission caches and broadcasts permissionsChanged (not schemaChanged)', async () => {
-		const systemClear = vi.spyOn(getCache().systemCache, 'clear');
+	test('clearSystemCache keeps the schema cached when autoPurgeSchema is false', async () => {
+		setMemorySchemaCache(SCHEMA);
 
-		await clearPermissionRelatedCache();
+		await clearSystemCache({ autoPurgeSchema: false });
 
-		expect(systemClear).toHaveBeenCalledOnce();
-		expect(clearPermissionCache).toHaveBeenCalledOnce();
-		expect(bus.publish).toHaveBeenCalledWith('permissionsChanged', { autoPurgeCache: undefined });
-		expect(bus.publish).not.toHaveBeenCalledWith('schemaChanged', expect.anything());
+		expect(getMemorySchemaCache()).toBeDefined();
 	});
 
-	test('skips the system cache flush when the lock is held (and not forced)', async () => {
-		await getCache().lockCache.set('system-cache-lock', true, 10000);
-		const systemClear = vi.spyOn(getCache().systemCache, 'clear');
+	test('clearSystemCache purges the schema cache on a full (default) clear', async () => {
+		setMemorySchemaCache(SCHEMA);
 
-		await clearPermissionRelatedCache();
+		await clearSystemCache();
 
-		expect(systemClear).not.toHaveBeenCalled();
-		// permission cache + peer broadcast still happen regardless of the lock
-		expect(clearPermissionCache).toHaveBeenCalledOnce();
-		expect(bus.publish).toHaveBeenCalledWith('permissionsChanged', { autoPurgeCache: undefined });
+		expect(getMemorySchemaCache()).toBeUndefined();
 	});
 
-	test('forces the system cache flush even when the lock is held', async () => {
-		await getCache().lockCache.set('system-cache-lock', true, 10000);
-		const systemClear = vi.spyOn(getCache().systemCache, 'clear');
+	test('the autoPurgeSchema flag is propagated to peers', async () => {
+		await clearSystemCache({ autoPurgeSchema: false });
 
-		await clearPermissionRelatedCache({ forced: true });
-
-		expect(systemClear).toHaveBeenCalledOnce();
+		expect(bus.publish).toHaveBeenCalledWith('schemaChanged', expect.objectContaining({ autoPurgeSchema: false }));
 	});
 
-	test('propagates autoPurgeCache: false to the broadcast', async () => {
-		await clearPermissionRelatedCache({ autoPurgeCache: false });
+	test('a peer keeps the schema cached when autoPurgeSchema is false', async () => {
+		setMemorySchemaCache(SCHEMA);
 
-		expect(bus.publish).toHaveBeenCalledWith('permissionsChanged', { autoPurgeCache: false });
-	});
-});
+		await bus.handlers.get('schemaChanged')!({ autoPurgeSchema: false });
 
-describe('permissionsChanged peer subscriber', () => {
-	afterEach(() => vi.clearAllMocks());
-
-	test('subscribes to permissionsChanged at module load', () => {
-		expect(bus.handlers.has('permissionsChanged')).toBe(true);
+		expect(getMemorySchemaCache()).toBeDefined();
 	});
 
-	test('clears the data cache and permission cache on memory store with auto-purge', async () => {
-		const dataClear = vi.spyOn(getCache().cache!, 'clear');
+	test('a peer purges the schema cache on a structural change', async () => {
+		setMemorySchemaCache(SCHEMA);
 
-		await bus.handlers.get('permissionsChanged')!(undefined);
+		await bus.handlers.get('schemaChanged')!({});
 
-		expect(dataClear).toHaveBeenCalledOnce();
-		expect(clearPermissionCache).toHaveBeenCalledOnce();
-	});
-
-	test('leaves the data cache alone when autoPurgeCache is false', async () => {
-		const dataClear = vi.spyOn(getCache().cache!, 'clear');
-
-		await bus.handlers.get('permissionsChanged')!({ autoPurgeCache: false });
-
-		expect(dataClear).not.toHaveBeenCalled();
-		// permission cache is always cleared
-		expect(clearPermissionCache).toHaveBeenCalledOnce();
+		expect(getMemorySchemaCache()).toBeUndefined();
 	});
 });

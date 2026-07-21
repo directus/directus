@@ -1,34 +1,35 @@
-import { SchemaBuilder } from '@directus/schema-builder';
+import type { SchemaOverview } from '@directus/types';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import * as cacheModule from '../cache.js';
 import { createMockKnex } from '../test-utils/knex.js';
-import { AccessService } from './access.js';
-import { PermissionsService } from './permissions.js';
-import { PoliciesService } from './policies.js';
+
+const bus = vi.hoisted(() => ({ publish: vi.fn(), subscribe: vi.fn() }));
 
 vi.mock('@directus/env', async () => {
 	const { mockEnv } = await import('../test-utils/env.js');
-	return mockEnv();
+
+	return mockEnv({
+		CACHE_ENABLED: true,
+		CACHE_STORE: 'memory',
+		CACHE_AUTO_PURGE: true,
+		CACHE_NAMESPACE: 'directus-test',
+		CACHE_TTL: '10m',
+		CACHE_SYSTEM_TTL: '10m',
+	});
 });
 
-vi.mock('../../src/database/index', async () => {
-	const { mockDatabase } = await import('../test-utils/database.js');
-	return mockDatabase();
-});
+vi.mock('../bus/index.js', () => ({ useBus: () => bus }));
+vi.mock('../redis/index.js', () => ({ redisConfigAvailable: () => false }));
+vi.mock('../permissions/cache.js', () => ({ clearCache: vi.fn() }));
 
-vi.mock('../cache.js', async () => {
-	const { mockCache } = await import('../test-utils/cache.js');
-	return mockCache();
-});
+vi.mock('../logger/index.js', () => ({
+	useLogger: () => ({ warn: vi.fn(), info: vi.fn(), error: vi.fn() }),
+}));
 
+// Base ItemsService is mocked so delete* are no-ops and only the subclass clearCaches runs.
 vi.mock('./items.js', async () => {
 	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
 });
-
-vi.mock('../utils/should-clear-cache.js', () => ({
-	shouldClearCache: vi.fn().mockReturnValue(true),
-}));
 
 vi.mock('../license/index.js', () => ({
 	getEntitlementManager: () => ({ clearCache: vi.fn(), isEntitled: () => true }),
@@ -43,52 +44,42 @@ vi.mock('../permissions/lib/fetch-permissions.js', () => ({ fetchPermissions: vi
 vi.mock('../permissions/lib/fetch-policies.js', () => ({ fetchPolicies: vi.fn() }));
 vi.mock('../permissions/lib/with-app-minimal-permissions.js', () => ({ withAppMinimalPermissions: vi.fn() }));
 vi.mock('../permissions/modules/validate-access/validate-access.js', () => ({ validateAccess: vi.fn() }));
-vi.mock('../permissions/cache.js', () => ({ clearCache: vi.fn() }));
+vi.mock('../utils/should-clear-cache.js', () => ({ shouldClearCache: vi.fn().mockReturnValue(true) }));
 
-const schema = new SchemaBuilder()
-	.collection('directus_permissions', (c) => {
-		c.field('id').integer().primary();
-	})
-	.collection('directus_policies', (c) => {
-		c.field('id').string().primary();
-	})
-	.build();
+// Real cache module — so we observe the actual schema cache, not a spy.
+const { setMemorySchemaCache, getMemorySchemaCache } = await import('../cache.js');
+const { AccessService } = await import('./access.js');
+const { PermissionsService } = await import('./permissions.js');
+const { PoliciesService } = await import('./policies.js');
+
+const SCHEMA = { collections: {}, relations: [] } as unknown as SchemaOverview;
 
 /**
- * Regression guard for the policy-save performance fix.
- *
- * Permissions and policies are NOT part of SchemaOverview ({ collections, relations }),
- * so mutating them must not trigger a structural schema reload. These tests lock in that
- * such mutations use clearPermissionRelatedCache() (permission caches only) and never call
- * clearSystemCache() (which nulls + reloads the schema on every instance). If a future change
- * reintroduces clearSystemCache() here, the per-write schema reload — and the associated
- * ~N× slowdown under DB latency — comes back, and these tests fail.
+ * Regression guard for the reported performance issue: permissions/policies/access are not
+ * part of SchemaOverview ({ collections, relations }), so writing them must not purge the
+ * cached schema (which forces a reload on every instance). If the schema were purged, these
+ * would fail — bringing back the per-write reload and its ~N× slowdown under DB latency.
  */
-describe('permission/policy writes do not reload the schema', () => {
+describe('permission/policy writes leave the schema cache intact', () => {
 	const { db } = createMockKnex();
 
 	beforeEach(() => {
 		vi.clearAllMocks();
+		setMemorySchemaCache(SCHEMA);
 	});
 
-	test('PermissionsService.deleteMany clears the permission cache, not the schema cache', async () => {
-		const service = new PermissionsService({ knex: db, schema });
-		await service.deleteMany([1]);
-		expect(cacheModule.clearPermissionRelatedCache).toHaveBeenCalledTimes(1);
-		expect(cacheModule.clearSystemCache).not.toHaveBeenCalled();
+	test('PermissionsService.deleteMany does not purge the schema cache', async () => {
+		await new PermissionsService({ knex: db, schema: SCHEMA }).deleteMany([1]);
+		expect(getMemorySchemaCache()).toBeDefined();
 	});
 
-	test('PoliciesService.deleteMany clears the permission cache, not the schema cache', async () => {
-		const service = new PoliciesService({ knex: db, schema });
-		await service.deleteMany([1]);
-		expect(cacheModule.clearPermissionRelatedCache).toHaveBeenCalledTimes(1);
-		expect(cacheModule.clearSystemCache).not.toHaveBeenCalled();
+	test('PoliciesService.deleteMany does not purge the schema cache', async () => {
+		await new PoliciesService({ knex: db, schema: SCHEMA }).deleteMany([1]);
+		expect(getMemorySchemaCache()).toBeDefined();
 	});
 
-	test('AccessService.deleteMany clears the permission cache, not the schema cache', async () => {
-		const service = new AccessService({ knex: db, schema });
-		await service.deleteMany([1]);
-		expect(cacheModule.clearPermissionRelatedCache).toHaveBeenCalledTimes(1);
-		expect(cacheModule.clearSystemCache).not.toHaveBeenCalled();
+	test('AccessService.deleteMany does not purge the schema cache', async () => {
+		await new AccessService({ knex: db, schema: SCHEMA }).deleteMany([1]);
+		expect(getMemorySchemaCache()).toBeDefined();
 	});
 });

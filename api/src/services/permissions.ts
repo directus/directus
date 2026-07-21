@@ -10,7 +10,7 @@ import type {
 	QueryOptions,
 } from '@directus/types';
 import { omit, uniq } from 'lodash-es';
-import { clearPermissionRelatedCache } from '../cache.js';
+import { clearSystemCache } from '../cache.js';
 import {
 	hasCustomRule,
 	isRecommendedAppPermission,
@@ -29,7 +29,7 @@ export class PermissionsService extends ItemsService {
 	}
 
 	private async clearCaches(opts?: MutationOptions) {
-		await clearPermissionRelatedCache({ autoPurgeCache: opts?.autoPurgeCache });
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache, autoPurgeSchema: false });
 		await getEntitlementManager().clearCache('custom_permission_rules_enabled');
 
 		if (this.cache && opts?.autoPurgeCache !== false) {
