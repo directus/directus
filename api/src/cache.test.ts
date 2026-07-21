@@ -30,7 +30,6 @@ vi.mock('./bus/index.js', () => ({
 	useBus: () => ({ publish: bus.publish, subscribe: bus.subscribe }),
 }));
 
-// Force the module-load subscription block so the peer handler is registered.
 vi.mock('./redis/index.js', () => ({ redisConfigAvailable: () => true }));
 
 vi.mock('./permissions/cache.js', () => ({ clearCache: vi.fn() }));

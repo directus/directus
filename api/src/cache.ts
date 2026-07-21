@@ -107,8 +107,7 @@ export async function clearSystemCache(opts?: {
 		await lockCache.delete('system-cache-lock');
 	}
 
-	// Permissions/policies/access aren't part of the schema, so their writes can skip the
-	// schema purge (and the reload it forces on every instance) via autoPurgeSchema: false
+	// Allow skipping schema purge when necessary (e.g. permission/policy/access writes
 	if (opts?.autoPurgeSchema !== false) {
 		await localSchemaCache.clear();
 		memorySchemaCache = null;

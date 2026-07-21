@@ -25,7 +25,6 @@ vi.mock('../logger/index.js', () => ({
 	useLogger: () => ({ warn: vi.fn(), info: vi.fn(), error: vi.fn() }),
 }));
 
-// Base ItemsService is mocked so delete* are no-ops and only the subclass clearCaches runs.
 vi.mock('./items.js', async () => {
 	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
@@ -46,7 +45,6 @@ vi.mock('../permissions/lib/with-app-minimal-permissions.js', () => ({ withAppMi
 vi.mock('../permissions/modules/validate-access/validate-access.js', () => ({ validateAccess: vi.fn() }));
 vi.mock('../utils/should-clear-cache.js', () => ({ shouldClearCache: vi.fn().mockReturnValue(true) }));
 
-// Real cache module — so we observe the actual schema cache, not a spy.
 const { setMemorySchemaCache, getMemorySchemaCache } = await import('../cache.js');
 const { AccessService } = await import('./access.js');
 const { PermissionsService } = await import('./permissions.js');
@@ -54,12 +52,6 @@ const { PoliciesService } = await import('./policies.js');
 
 const SCHEMA = { collections: {}, relations: [] } as unknown as SchemaOverview;
 
-/**
- * Regression guard for the reported performance issue: permissions/policies/access are not
- * part of SchemaOverview ({ collections, relations }), so writing them must not purge the
- * cached schema (which forces a reload on every instance). If the schema were purged, these
- * would fail — bringing back the per-write reload and its ~N× slowdown under DB latency.
- */
 describe('permission/policy writes leave the schema cache intact', () => {
 	const { db } = createMockKnex();
 
