@@ -475,8 +475,7 @@ const m2aData: Record<string, any>[] = [
 	{ id: 3, article_id: 1, item: { id: 1 }, collection: 'code', sort: 3 },
 ];
 
-// Lets a test swap the server response mid-flight to simulate data changing on the backend
-// (e.g. a version being promoted). Reset to null after each test that touches it.
+// `mock` prefix required for vi.mock factory access; reset in afterEach.
 let mockM2aDataOverride: Record<string, any>[] | null = null;
 
 const TestComponentM2A = defineComponent({
@@ -605,8 +604,6 @@ describe('version refresh', () => {
 		expect(wrapper.vm.fetchedItems).toEqual(m2aData);
 		expect(wrapper.vm.totalItemCount).toBe(m2aData.length);
 
-		// Promoting the version commits a new block on the server, then clears the version back to main.
-		// The item's primary key doesn't change, so only the version context signals the data moved.
 		mockM2aDataOverride = [...m2aData, { id: 4, article_id: 1, item: { id: 3 }, collection: 'text', sort: 4 }];
 
 		await wrapper.setProps({ version: null });
@@ -614,5 +611,81 @@ describe('version refresh', () => {
 
 		expect(wrapper.vm.fetchedItems).toEqual(mockM2aDataOverride);
 		expect(wrapper.vm.totalItemCount).toBe(mockM2aDataOverride.length);
+	});
+
+	test('re-fetches when entering a version from main, e.g. creating or opening a draft', async () => {
+		const wrapper = mount(TestComponentM2AVersion, {
+			props: { relation: relationM2A, value: [], id: 1, version: null },
+		});
+
+		await flushPromises();
+
+		expect(wrapper.vm.fetchedItems).toEqual(m2aData);
+
+		mockM2aDataOverride = [...m2aData, { id: 4, article_id: 1, item: { id: 3 }, collection: 'text', sort: 4 }];
+
+		await wrapper.setProps({ version: { key: 'draft' } });
+		await flushPromises();
+
+		expect(wrapper.vm.fetchedItems).toEqual(mockM2aDataOverride);
+		expect(wrapper.vm.totalItemCount).toBe(mockM2aDataOverride.length);
+	});
+
+	test('re-fetches when switching between two versions', async () => {
+		const wrapper = mount(TestComponentM2AVersion, {
+			props: { relation: relationM2A, value: [], id: 1, version: { key: 'draft-a' } },
+		});
+
+		await flushPromises();
+
+		expect(wrapper.vm.fetchedItems).toEqual(m2aData);
+
+		mockM2aDataOverride = [...m2aData, { id: 4, article_id: 1, item: { id: 3 }, collection: 'text', sort: 4 }];
+
+		await wrapper.setProps({ version: { key: 'draft-b' } });
+		await flushPromises();
+
+		expect(wrapper.vm.fetchedItems).toEqual(mockM2aDataOverride);
+		expect(wrapper.vm.totalItemCount).toBe(mockM2aDataOverride.length);
+	});
+
+	test('does not re-fetch when the version object identity changes but its key stays the same', async () => {
+		const wrapper = mount(TestComponentM2AVersion, {
+			props: { relation: relationM2A, value: [], id: 1, version: { key: 'draft' } },
+		});
+
+		await flushPromises();
+
+		expect(wrapper.vm.fetchedItems).toEqual(m2aData);
+
+		mockM2aDataOverride = [...m2aData, { id: 4, article_id: 1, item: { id: 3 }, collection: 'text', sort: 4 }];
+
+		await wrapper.setProps({ version: { key: 'draft' } });
+		await flushPromises();
+
+		expect(wrapper.vm.fetchedItems).toEqual(m2aData);
+		expect(wrapper.vm.totalItemCount).toBe(m2aData.length);
+	});
+
+	test('preserves unsaved local edits across a version-triggered re-fetch', async () => {
+		const wrapper = mount(TestComponentM2AVersion, {
+			props: { relation: relationM2A, value: [], id: 1, version: { key: 'draft' } },
+		});
+
+		await flushPromises();
+
+		wrapper.vm.create({ item: { id: 3 }, collection: 'text', sort: 5 });
+		await flushPromises();
+
+		const edits = { create: [{ item: { id: 3 }, collection: 'text', sort: 5 }], update: [], delete: [] };
+		expect(wrapper.vm.value).toEqual(edits);
+
+		mockM2aDataOverride = [...m2aData, { id: 4, article_id: 1, item: { id: 3 }, collection: 'text', sort: 4 }];
+
+		await wrapper.setProps({ version: null });
+		await flushPromises();
+
+		expect(wrapper.vm.fetchedItems).toEqual(mockM2aDataOverride);
+		expect(wrapper.vm.value).toEqual(edits);
 	});
 });
