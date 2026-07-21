@@ -2,15 +2,17 @@
 import type { SettingsStorageAssetPreset } from '@directus/types';
 import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
-import { computed, ref, type Ref, toRefs, watch } from 'vue';
+import { computed, nextTick, ref, type Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
 import { useMedia } from './composables/use-media';
+import { useNormalizationWarning } from './composables/use-normalization-warning';
 import { useSourceCode } from './composables/use-source-code';
 import ImageDrawer from './drawers/image-drawer.vue';
 import LinkDrawer from './drawers/link-drawer.vue';
 import MediaDrawer from './drawers/media-drawer.vue';
+import NormalizationWarningDialog from './drawers/normalization-warning-dialog.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
 import { editorExtensions } from './extensions';
 import { ComparisonDiff } from './extensions/comparison-diff';
@@ -20,10 +22,13 @@ import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
 import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
 import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
+import VNotice from '@/components/v-notice.vue';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
 import { parseGlobalMimeTypeAllowList, useMimeTypeFilter } from '@/composables/use-mime-type-filter';
+import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import { getDirectusUrlWithUtm } from '@/utils/directus-url';
 import { percentage } from '@/utils/percentage';
 
 const props = withDefaults(
@@ -53,7 +58,7 @@ const emit = defineEmits<{ input: [value: string | null] }>();
 
 const { t } = useI18n();
 
-const { imageToken, folder } = toRefs(props);
+const { imageToken, folder, value } = toRefs(props);
 
 // built once at init: `customFormats` is design-time config, not reactive
 const { extensions: customFormatExtensions, formats: customFormatList } = buildCustomFormats(props.customFormats);
@@ -66,8 +71,24 @@ const fontFamily = computed(() => {
 	return `var(--theme--fonts--${token}--font-family)`;
 });
 
-// all three states are read-only; `nonEditable`/`comparisonMode` keep the normal look, `disabled` dims (see styles)
-const isEditable = computed(() => !props.disabled && !props.nonEditable && !props.comparisonMode);
+const {
+	normalizationLocked,
+	normalizationWarningOpen,
+	normalizationWarningDiff,
+	checkValue,
+	onLockedClick,
+	confirmNormalizationWarning,
+	cancelNormalizationWarning,
+} = useNormalizationWarning(value);
+
+// skipped for display-only modes; comparison values carry diff spans the base schema would flag as loss
+if (!props.comparisonMode && !props.nonEditable) checkValue();
+
+// read-only states: `nonEditable`/`comparisonMode` keep the normal look, `disabled` dims (see styles),
+// `normalizationLocked` guards lossy stored HTML until the warning dialog is confirmed
+const isEditable = computed(
+	() => !props.disabled && !props.nonEditable && !props.comparisonMode && !normalizationLocked.value,
+);
 
 const editorDir = computed(() => (props.direction === 'rtl' ? 'rtl' : 'ltr'));
 
@@ -136,10 +157,40 @@ const editor = useEditor({
 	},
 });
 
+function onEditorClick() {
+	if (props.disabled || props.nonEditable || props.comparisonMode) return;
+	onLockedClick();
+}
+
+// raw mode edits the stored HTML as text in the code interface — emits never round-trip through
+// the schema, so nothing is normalized away; the loss-free alternative the warning offers
+const rawMode = ref(false);
+
+function enterRawMode() {
+	normalizationWarningOpen.value = false;
+	rawMode.value = true;
+}
+
+// the unlock flips `isEditable` on the next flush, so focus has to wait for it
+async function onWarningConfirm() {
+	confirmNormalizationWarning();
+	await nextTick();
+	editor.value?.commands.focus();
+}
+
 const settingsStore = useSettingsStore();
 const { info } = useServerStore();
 
 const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
+
+const normalizationDocsUrl = computed(
+	() =>
+		getDirectusUrlWithUtm(
+			'https://directus.com/docs/releases/breaking-changes/version-12',
+			info.version,
+			'wysiwyg_normalization_locked_learn_more_link',
+		) + '#wysiwyg-editor-rebuilt-on-tiptap',
+);
 
 // without this the picker/upload accept the global (usually image) list and the pick lands as a broken <video>
 const { mimeTypeFilter: mediaMimeTypeFilter, combinedAcceptString: mediaAllowedMimeTypes } = useMimeTypeFilter([
@@ -210,10 +261,13 @@ watch(isEditable, (editable) => editor.value?.setEditable(editable));
 watch(
 	() => props.value,
 	(value) => {
+		// raw mode edits flow straight through the code interface, never through the editor
+		if (rawMode.value) return;
 		if (!editor.value) return;
 		// compare the encoded (stored) form so a re-emitted page-break marker doesn't look like a change
 		if (encodePageBreaks(editor.value.getHTML()) === value) return;
 		syncValue(editor.value, value);
+		if (!props.comparisonMode && !props.nonEditable) checkValue();
 	},
 );
 
@@ -226,18 +280,24 @@ onKeyStroke('Escape', () => {
 </script>
 
 <template>
+	<VNotice v-if="normalizationLocked && !rawMode" type="warning" multiline class="normalization-notice">
+		{{ t('wysiwyg_options.normalization_locked_notice') }}
+		<a :href="normalizationDocsUrl" target="_blank" rel="noopener noreferrer">
+			{{ t('wysiwyg_options.normalization_locked_learn_more') }}
+		</a>
+	</VNotice>
 	<div
 		class="wysiwyg"
 		:class="{ disabled, 'non-editable': nonEditable || comparisonMode, fullscreen, visualaid }"
 		:style="{ '--editor-font-family': fontFamily, '--page-break-label': pageBreakLabel }"
 	>
 		<Toolbar
-			v-if="!nonEditable && !comparisonMode"
+			v-if="!nonEditable && !comparisonMode && !rawMode"
 			:editor="editor"
 			:toolbar="toolbar"
 			:font="font"
 			:custom-formats="customFormatList"
-			:disabled="disabled"
+			:disabled="disabled || normalizationLocked"
 			:fullscreen="fullscreen"
 			:visualaid="visualaid"
 			@toggle-fullscreen="fullscreen = !fullscreen"
@@ -247,10 +307,19 @@ onKeyStroke('Escape', () => {
 			@open-link="openLinkDrawer"
 			@open-source-code="openSourceCodeDrawer"
 		/>
-		<EditorContent class="editor-content" :editor="editor" :dir="editorDir" />
+		<InterfaceInputCode
+			v-if="rawMode"
+			:value="value"
+			language="htmlmixed"
+			:line-number="false"
+			:disabled="disabled"
+			@input="$emit('input', $event)"
+		/>
+
+		<EditorContent v-show="!rawMode" class="editor-content" :editor="editor" :dir="editorDir" @click="onEditorClick" />
 
 		<span
-			v-if="softLength && !comparisonMode"
+			v-if="softLength && !comparisonMode && !rawMode"
 			class="remaining"
 			:class="{
 				warning: percRemaining < 10,
@@ -260,7 +329,7 @@ onKeyStroke('Escape', () => {
 			{{ softLength - count }}
 		</span>
 
-		<TableBubbleMenu v-if="!nonEditable && !comparisonMode" :editor="editor" />
+		<TableBubbleMenu v-if="!nonEditable && !comparisonMode && !normalizationLocked" :editor="editor" />
 
 		<ImageDrawer
 			v-model="imageDrawerOpen"
@@ -307,6 +376,14 @@ onKeyStroke('Escape', () => {
 			@cancel="closeSourceCodeDrawer"
 			@confirm-save="confirmSaveSourceCode"
 			@cancel-normalize="cancelNormalize"
+		/>
+
+		<NormalizationWarningDialog
+			v-model="normalizationWarningOpen"
+			:diff="normalizationWarningDiff"
+			@confirm="onWarningConfirm"
+			@cancel="cancelNormalizationWarning"
+			@raw="enterRawMode"
 		/>
 	</div>
 </template>
@@ -356,6 +433,10 @@ onKeyStroke('Escape', () => {
 			overflow: auto;
 		}
 	}
+}
+
+.normalization-notice {
+	margin-block-end: 0.5rem;
 }
 
 .remaining {

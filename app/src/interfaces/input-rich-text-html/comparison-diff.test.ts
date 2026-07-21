@@ -81,14 +81,15 @@ describe('interface wiring', () => {
 		expect(wrapper.find('table-bubble-menu-stub').exists()).toBe(false);
 		// the diff-marked value inflates the count, so the counter must not render either
 		expect(wrapper.find('.remaining').exists()).toBe(false);
-		expect(wrapper.classes()).toContain('non-editable');
+		expect(wrapper.find('.wysiwyg').classes()).toContain('non-editable');
 		expect(editor.getHTML()).toBe(DIFF_HTML);
 	});
 
 	test('normal mode keeps chrome and strips diff spans', async () => {
 		const { wrapper, editor } = await mountInterface({});
 
-		expect(editor.isEditable).toBe(true);
+		// the stripped spans register as normalization loss, so the guard mounts the editor read-only
+		expect(editor.isEditable).toBe(false);
 		expect(wrapper.find('toolbar-stub').exists()).toBe(true);
 		expect(editor.getHTML()).toBe('<p>Hello world</p>');
 	});
