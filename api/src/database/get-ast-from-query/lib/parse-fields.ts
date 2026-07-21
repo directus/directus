@@ -247,9 +247,13 @@ export async function parseFields(
 			for (const relatedCollection of allowedCollections) {
 				const collectionDeep = options.deep?.[`${fieldKey}:${relatedCollection}`];
 
+				const childQuery = { ...options.query };
+
 				// resolve nested aliases against the related collection, same as the m2o/o2m branch below
 				const deepAlias = getDeepQuery(collectionDeep || {})?.['alias'];
-				const childQuery = { ...options.query, alias: isEmpty(deepAlias) ? {} : deepAlias };
+
+				// reset alias to empty if none are present
+				childQuery.alias = isEmpty(deepAlias) ? {} : deepAlias;
 
 				child.children[relatedCollection] = await parseFields(
 					{

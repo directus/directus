@@ -4,7 +4,6 @@ import { getRelation } from '@directus/utils';
 import knex from 'knex';
 import { expect, test, vi } from 'vitest';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
-import type { A2MNode } from '../../../types/index.js';
 import { Client_SQLite3 } from '../../run-ast/lib/apply-query/mock.js';
 import { parseFields } from './parse-fields.js';
 
@@ -687,7 +686,7 @@ const schemaM2A = new SchemaBuilder()
 	.build();
 
 test('parse fields with an aliased m2o nested inside an m2a block (#27772)', async () => {
-	fetchAllowedFieldsMock.mockResolvedValue([]);
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
 
 	const result = await parseFields(
 		{
@@ -700,34 +699,47 @@ test('parse fields with an aliased m2o nested inside an m2a block (#27772)', asy
 		{ knex: db, schema: schemaM2A },
 	);
 
-	const a2oNode = result.find((node) => node.type === 'a2o') as A2MNode | undefined;
-
-	expect(a2oNode?.children['text']).toEqual([
+	expect(result).toEqual([
 		{
-			cases: [],
-			children: [
-				{
-					alias: false,
-					fieldKey: 'name',
-					name: 'name',
-					type: 'field',
-					whenCase: [],
-				},
-			],
-			fieldKey: 'a',
-			name: 'users',
+			type: 'a2o',
+			names: ['text'],
+			children: {
+				text: [
+					{
+						type: 'm2o',
+						name: 'users',
+						fieldKey: 'a',
+						parentKey: 'id',
+						relatedKey: 'id',
+						relation: getRelation(schemaM2A.relations, 'text', 'author'),
+						query: {},
+						children: [
+							{
+								type: 'field',
+								name: 'name',
+								fieldKey: 'name',
+								whenCase: [],
+								alias: false,
+							},
+						],
+						cases: [],
+						whenCase: [],
+					},
+				],
+			},
+			query: { text: { alias: { a: 'author' } } },
+			relatedKey: { text: 'id' },
 			parentKey: 'id',
-			query: {},
-			relatedKey: 'id',
-			relation: getRelation(schemaM2A.relations, 'text', 'author'),
-			type: 'm2o',
+			fieldKey: 'item',
+			relation: getRelation(schemaM2A.relations, 'blog_builder', 'item'),
+			cases: {},
 			whenCase: [],
 		},
 	]);
 });
 
 test('parse fields with a non-aliased m2o nested inside an m2a block', async () => {
-	fetchAllowedFieldsMock.mockResolvedValue([]);
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
 
 	const result = await parseFields(
 		{
@@ -740,27 +752,40 @@ test('parse fields with a non-aliased m2o nested inside an m2a block', async () 
 		{ knex: db, schema: schemaM2A },
 	);
 
-	const a2oNode = result.find((node) => node.type === 'a2o') as A2MNode | undefined;
-
-	expect(a2oNode?.children['text']).toEqual([
+	expect(result).toEqual([
 		{
-			cases: [],
-			children: [
-				{
-					alias: false,
-					fieldKey: 'name',
-					name: 'name',
-					type: 'field',
-					whenCase: [],
-				},
-			],
-			fieldKey: 'author',
-			name: 'users',
+			type: 'a2o',
+			names: ['text'],
+			children: {
+				text: [
+					{
+						type: 'm2o',
+						name: 'users',
+						fieldKey: 'author',
+						parentKey: 'id',
+						relatedKey: 'id',
+						relation: getRelation(schemaM2A.relations, 'text', 'author'),
+						query: {},
+						children: [
+							{
+								type: 'field',
+								name: 'name',
+								fieldKey: 'name',
+								whenCase: [],
+								alias: false,
+							},
+						],
+						cases: [],
+						whenCase: [],
+					},
+				],
+			},
+			query: { text: {} },
+			relatedKey: { text: 'id' },
 			parentKey: 'id',
-			query: {},
-			relatedKey: 'id',
-			relation: getRelation(schemaM2A.relations, 'text', 'author'),
-			type: 'm2o',
+			fieldKey: 'item',
+			relation: getRelation(schemaM2A.relations, 'blog_builder', 'item'),
+			cases: {},
 			whenCase: [],
 		},
 	]);
