@@ -1,4 +1,12 @@
-import { schemaApply, schemaDiff, type SchemaDiffOutput, schemaSnapshot } from '@directus/sdk';
+import {
+	type AllCollections,
+	type CoreSchema,
+	schemaApply,
+	schemaDiff,
+	type SchemaDiffOutput,
+	schemaSnapshot,
+	type SchemaSnapshotOptions,
+} from '@directus/sdk';
 import type { ResolvedCredential } from '../kernel/config/credentials.js';
 import { connect, mapRequestError } from '../kernel/connection.js';
 import { type DiffResult, parseDiffResult, parseSnapshot, type Snapshot } from './contract.js';
@@ -7,13 +15,28 @@ import { type DiffResult, parseDiffResult, parseSnapshot, type Snapshot } from '
 // gets its credential wiring, request timeout, error mapping, and boundary validation
 // in one place.
 
-export async function fetchSnapshot(credential: ResolvedCredential): Promise<Snapshot> {
+// A scoped snapshot pull: exactly one of include/exclude, mutual exclusivity carried structurally so
+// the caller cannot express both (the server rejects that combination, mirroring the SDK options).
+export type SnapshotScope = { readonly include: string[] } | { readonly exclude: string[] };
+
+// scope → SDK snapshot options. The SDK types include/excludeCollections as AllCollections<Schema>[] —
+// collection-name literals under a typed schema. This CLI is schema-agnostic, so the scope names arrive
+// as plain strings; widen them to the SDK option shape here, the one place the mismatch lives.
+function snapshotOptions(scope: SnapshotScope): SchemaSnapshotOptions<CoreSchema> {
+	if ('include' in scope) return { includeCollections: scope.include as AllCollections<CoreSchema>[] };
+	return { excludeCollections: scope.exclude as AllCollections<CoreSchema>[] };
+}
+
+export async function fetchSnapshot(credential: ResolvedCredential, scope?: SnapshotScope): Promise<Snapshot> {
 	const client = connect(credential);
 
 	let response: unknown;
 
 	try {
-		response = await client.request(schemaSnapshot());
+		// Omit the options entirely for a full snapshot so existing behavior is unchanged. When scoped,
+		// the server tags the response `version: 2`; the CLI stores that tag exactly as returned via
+		// parseSnapshot and never fabricates it.
+		response = await client.request(scope === undefined ? schemaSnapshot() : schemaSnapshot(snapshotOptions(scope)));
 	} catch (error) {
 		throw mapRequestError(error, credential.url);
 	}

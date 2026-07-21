@@ -73,6 +73,24 @@ function fixture(): Snapshot {
 	};
 }
 
+// A minimal three-collection full snapshot (version 1) for the scoped-write tests: each collection
+// carries one field so a preserved file has real content to byte-compare and to reassemble on read.
+function abc(): Snapshot {
+	return {
+		version: 1,
+		directus: '11.5.0',
+		vendor: 'postgres',
+		collections: [{ collection: 'a' }, { collection: 'b' }, { collection: 'c' }],
+		fields: [
+			{ collection: 'a', field: 'title', type: 'string' },
+			{ collection: 'b', field: 'title', type: 'string' },
+			{ collection: 'c', field: 'title', type: 'string' },
+		],
+		systemFields: [],
+		relations: [],
+	};
+}
+
 function collectionEntry(snapshot: Snapshot, name: string): SnapshotEntry {
 	const found = snapshot.collections.find((entry) => entry.collection === name);
 	if (found === undefined) throw new Error(`no collection ${name}`);
@@ -362,6 +380,150 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 
 		expect(error.code).toBe('STATE');
 		expect(error.message).toContain('metadata.json');
+	});
+
+	it('preserves out-of-scope artifacts when a scoped pull refreshes one collection', () => {
+		// Pulling a single collection must never destroy the committed schema around it: A and C are
+		// outside the scope, so their bytes and their manifest entries must survive a scoped refresh of B,
+		// and the set — still a full schema — must stay tagged version 1.
+		const dir = tempDir();
+		writeSnapshotFiles(dir, abc());
+
+		const aFile = ownedFileFor(dir, 'a');
+		const cFile = ownedFileFor(dir, 'c');
+		const aBefore = readFileSync(join(dir, aFile), 'utf8');
+		const cBefore = readFileSync(join(dir, cFile), 'utf8');
+
+		const scopedB: Snapshot = {
+			version: 2,
+			directus: '11.5.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'b' }],
+			fields: [
+				{ collection: 'b', field: 'title', type: 'string' },
+				{ collection: 'b', field: 'body', type: 'text' },
+			],
+			systemFields: [],
+			relations: [],
+		};
+
+		const result = writeSnapshotFiles(dir, scopedB, { inScope: (name) => name === 'b' });
+
+		expect(readFileSync(join(dir, aFile), 'utf8')).toBe(aBefore);
+		expect(readFileSync(join(dir, cFile), 'utf8')).toBe(cBefore);
+		expect(result.removed).toEqual([]);
+		expect(result.written).toContain(ownedFileFor(dir, 'b'));
+		expect(result.written).not.toContain(aFile);
+
+		const metadata = JSON.parse(readFileSync(join(dir, 'metadata.json'), 'utf8'));
+		expect(metadata.files).toContain(aFile);
+		expect(metadata.files).toContain(cFile);
+		expect(metadata.snapshot.version).toBe(1);
+	});
+
+	it('removes an in-scope collection absent from the response but preserves out-of-scope files', () => {
+		// Within its scope a pull is still a mirror: a scoped collection missing from the response was
+		// deleted at source and must be removed, while collections outside the scope are left intact.
+		const dir = tempDir();
+		writeSnapshotFiles(dir, abc());
+
+		const aFile = ownedFileFor(dir, 'a');
+		const bFile = ownedFileFor(dir, 'b');
+		const cFile = ownedFileFor(dir, 'c');
+
+		const empty: Snapshot = {
+			version: 2,
+			directus: '11.5.0',
+			vendor: 'postgres',
+			collections: [],
+			fields: [],
+			systemFields: [],
+			relations: [],
+		};
+
+		const result = writeSnapshotFiles(dir, empty, { inScope: (name) => name === 'b' });
+
+		expect(result.removed).toEqual([bFile]);
+		expect(existsSync(join(dir, bFile))).toBe(false);
+		expect(existsSync(join(dir, aFile))).toBe(true);
+		expect(existsSync(join(dir, cFile))).toBe(true);
+
+		const metadata = JSON.parse(readFileSync(join(dir, 'metadata.json'), 'utf8'));
+		expect([...metadata.files].sort()).toEqual([aFile, cFile].sort());
+	});
+
+	it('tags a partial artifact set version 2 across successive scoped pulls of different collections', () => {
+		// A partial set must say so, or a later mirror diff would mass-delete everything it omits. The
+		// first scoped pull into an empty dir writes version 2, and pulling a disjoint scope keeps the
+		// union tagged version 2 — the response's tag, since nothing here descends from a full set.
+		const dir = tempDir();
+
+		const scopedA: Snapshot = {
+			version: 2,
+			directus: '11.5.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'a' }],
+			fields: [{ collection: 'a', field: 'title', type: 'string' }],
+			systemFields: [],
+			relations: [],
+		};
+
+		writeSnapshotFiles(dir, scopedA, { inScope: (name) => name === 'a' });
+
+		let metadata = JSON.parse(readFileSync(join(dir, 'metadata.json'), 'utf8'));
+		expect(metadata.snapshot.version).toBe(2);
+		expect(metadata.files).toEqual([ownedFileFor(dir, 'a')]);
+
+		const scopedB: Snapshot = {
+			version: 2,
+			directus: '11.5.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'b' }],
+			fields: [{ collection: 'b', field: 'title', type: 'string' }],
+			systemFields: [],
+			relations: [],
+		};
+
+		writeSnapshotFiles(dir, scopedB, { inScope: (name) => name === 'b' });
+
+		metadata = JSON.parse(readFileSync(join(dir, 'metadata.json'), 'utf8'));
+		expect(metadata.snapshot.version).toBe(2);
+		expect([...metadata.files].sort()).toEqual([ownedFileFor(dir, 'a'), ownedFileFor(dir, 'b')].sort());
+	});
+
+	it('reads back the full set, not just the last pull, after a scoped refresh', () => {
+		// Readers consume the committed set, not the most recent request: after a scoped refresh of one
+		// collection the reassembled snapshot must still validate and include the preserved collections.
+		const dir = tempDir();
+		writeSnapshotFiles(dir, abc());
+
+		const scopedB: Snapshot = {
+			version: 2,
+			directus: '11.5.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'b' }],
+			fields: [
+				{ collection: 'b', field: 'title', type: 'string' },
+				{ collection: 'b', field: 'subtitle', type: 'string' },
+			],
+			systemFields: [],
+			relations: [],
+		};
+
+		writeSnapshotFiles(dir, scopedB, { inScope: (name) => name === 'b' });
+
+		const read = readSnapshotFiles(dir);
+
+		expect(read.collections.map((entry) => entry.collection).sort()).toEqual(['a', 'b', 'c']);
+
+		expect(
+			read.fields
+				.filter((entry) => entry.collection === 'b')
+				.map((entry) => entry.field)
+				.sort(),
+		).toEqual(['subtitle', 'title']);
+
+		expect(read.version).toBe(1);
 	});
 });
 
