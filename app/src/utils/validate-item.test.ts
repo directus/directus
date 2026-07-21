@@ -54,6 +54,28 @@ const fields: DeepPartial<Field>[] = [
 		},
 		schema: null,
 	},
+	{
+		field: 'divider_line',
+		collection: 'articles',
+		type: 'alias',
+		name: 'Divider',
+		meta: {
+			required: true,
+			special: ['alias', 'no-data'],
+		},
+		schema: null,
+	},
+	{
+		field: 'group_tabs',
+		collection: 'articles',
+		type: 'alias',
+		name: 'Tab Group',
+		meta: {
+			required: false,
+			special: ['alias', 'no-data', 'group'],
+		},
+		schema: null,
+	},
 ];
 
 beforeEach(() => {
@@ -124,6 +146,33 @@ test('Custom validation with $NOW dynamic variable does not throw', () => {
 	const futureDate = new Date(Date.now() + 86400000).toISOString();
 
 	const result = validateItem({ publish_date: futureDate }, fieldsWithValidation as Field[], true, true);
+
+	expect(result.length).toEqual(0);
+});
+
+test('Presentation fields ignore required', () => {
+	let result = validateItem(
+		{
+			id: 1,
+			name: 'test',
+			email: 'test@test.com',
+		},
+		fields as Field[],
+		true,
+	);
+
+	expect(result.length).toEqual(1);
+
+	result = validateItem(
+		{
+			id: 1,
+			name: 'test',
+			email: 'test@test.com',
+			role: [1],
+		},
+		fields as Field[],
+		true,
+	);
 
 	expect(result.length).toEqual(0);
 });

@@ -43,6 +43,7 @@ export type Tags = {
 export type TextBlocks = {
 	id?: string | number;
 	text?: string | number;
+	author?: string | number | Users;
 };
 export type Users = {
 	id?: string | number;
