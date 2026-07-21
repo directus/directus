@@ -98,7 +98,13 @@ function canonicalize(value: unknown): unknown {
 	return value;
 }
 
-function serialize(value: unknown): string {
+/**
+ * The canonical serializer: object keys sorted at every depth (via canonicalize), tab indent, LF
+ * newlines, and a single trailing newline. Combined they yield the same bytes for the same value
+ * regardless of key insertion order — the byte-determinism contract every on-disk artifact relies on.
+ * Exported so the data store shares one serializer rather than forking a second, drifting copy.
+ */
+export function serializeCanonical(value: unknown): string {
 	return `${JSON.stringify(canonicalize(value), null, '\t')}\n`;
 }
 
@@ -253,7 +259,7 @@ export function writeSnapshotFiles(dir: string, snapshot: Snapshot, scope?: Writ
 	for (const [name, file] of byName) {
 		targets.add(name);
 		written.push(name);
-		writeFileAtomic(join(dir, name), serialize(file), 0o644);
+		writeFileAtomic(join(dir, name), serializeCanonical(file), 0o644);
 	}
 
 	// Partition the previous manifest's owned files this write did not re-emit. A full pull (no scope)
@@ -298,7 +304,7 @@ export function writeSnapshotFiles(dir: string, snapshot: Snapshot, scope?: Writ
 	// for this pull. An interrupted first pull — collection files written, metadata not — reads
 	// back as "no snapshot" rather than a plausible partial one, and its `files` manifest becomes
 	// what the next read and the next cleanup treat as owned.
-	writeFileAtomic(join(dir, METADATA_FILE), serialize(meta), 0o644);
+	writeFileAtomic(join(dir, METADATA_FILE), serializeCanonical(meta), 0o644);
 
 	return { written: [METADATA_FILE, ...written].sort(byCodepoint), removed: removed.sort(byCodepoint) };
 }
