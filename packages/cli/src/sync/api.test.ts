@@ -5,7 +5,7 @@ import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ResolvedCredential } from '../kernel/config/credentials.js';
 import { CliError } from '../kernel/error.js';
-import { applyDiff, fetchDiff, fetchSnapshot } from './api.js';
+import { applyDiff, fetchDiff, fetchRecords, fetchSnapshot } from './api.js';
 import type { DiffResult, Snapshot } from './contract.js';
 
 describe('fetchSnapshot', () => {
@@ -332,5 +332,108 @@ describe('applyDiff', () => {
 
 		expect(error).toBeInstanceOf(CliError);
 		expect(error).toMatchObject({ code: 'HTTP' });
+	});
+});
+
+describe('fetchRecords', () => {
+	const realDispatcher = getGlobalDispatcher();
+	const token = 'super-secret-static-token';
+	const credential: ResolvedCredential = { kind: 'token', url: 'https://cms.example.com', token };
+	let agent: MockAgent;
+	const created: string[] = [];
+
+	function isolateHome(): void {
+		const dir = mkdtempSync(join(tmpdir(), 'd6s-home-'));
+		created.push(dir);
+		vi.stubEnv('HOME', dir);
+		vi.stubEnv('USERPROFILE', dir);
+	}
+
+	beforeEach(() => {
+		agent = new MockAgent();
+		agent.disableNetConnect();
+		setGlobalDispatcher(agent);
+	});
+
+	afterEach(async () => {
+		setGlobalDispatcher(realDispatcher);
+		await agent.close();
+		vi.restoreAllMocks();
+		vi.unstubAllEnvs();
+		for (const dir of created.splice(0)) rmSync(dir, { recursive: true, force: true });
+	});
+
+	it('pulls the whole collection with limit -1 and the token on the wire, returning records verbatim', async () => {
+		// A data pull must fetch the entire set (limit -1) keyed by the primary key; the intercept only
+		// matches when both ride the query, and the endpoint is authenticated so the token must be present.
+		isolateHome();
+
+		// Two records, out of primary-key order and carrying a nested object: fetch returns them untouched
+		// (records are the user's data, never reshaped) — ordering and canonicalization are the store's job.
+		const records = [
+			{ id: 2, title: 'Second' },
+			{ id: 1, title: 'First', meta: { note: null } },
+		];
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({
+				path: '/items/articles',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
+
+		const result = await fetchRecords(credential, {
+			collection: 'articles',
+			endpoint: '/items/articles',
+			primaryKey: 'id',
+			singleton: false,
+		});
+
+		expect(result).toEqual(records);
+	});
+
+	it('wraps a singleton object response in a one-element array', async () => {
+		// A singleton endpoint (settings) returns one object, not an array; fetchRecords normalizes it to a
+		// single-record collection so the store treats it like any other. No limit/sort on the wire.
+		isolateHome();
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/settings', method: 'GET', headers: { authorization: `Bearer ${token}` } })
+			.reply(200, { data: { project_name: 'Acme' } }, { headers: { 'content-type': 'application/json' } });
+
+		const result = await fetchRecords(credential, {
+			collection: 'directus_settings',
+			endpoint: '/settings',
+			primaryKey: 'id',
+			singleton: true,
+		});
+
+		expect(result).toEqual([{ project_name: 'Acme' }]);
+	});
+
+	it('fails loud, naming the endpoint, when a list endpoint returns a non-array', async () => {
+		// A list endpoint that answers with an object is a protocol break; the boundary check fails HTTP
+		// naming the endpoint rather than letting a malformed shape corrupt the export downstream.
+		isolateHome();
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
+			.reply(200, { data: { not: 'an array' } }, { headers: { 'content-type': 'application/json' } });
+
+		const error = await fetchRecords(credential, {
+			collection: 'articles',
+			endpoint: '/items/articles',
+			primaryKey: 'id',
+			singleton: false,
+		}).catch((error: unknown) => error);
+
+		expect(error).toBeInstanceOf(CliError);
+		expect(error).toMatchObject({ code: 'HTTP' });
+		expect((error as CliError).message).toContain('/items/articles');
 	});
 });
