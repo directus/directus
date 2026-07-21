@@ -59,6 +59,7 @@ const value = computed(() =>
 		<VErrorBoundary v-if="interfaceExists && !rawEditorActive" :name="componentName">
 			<component
 				:is="componentName"
+				:key="`${componentName}-${version?.id ?? 'main'}`"
 				v-bind="(field.meta && field.meta.options) || {}"
 				:autofocus="disabled !== true && autofocus"
 				:disabled="disabled"

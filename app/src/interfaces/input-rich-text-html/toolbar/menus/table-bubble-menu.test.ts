@@ -1,6 +1,7 @@
 import { Editor } from '@tiptap/vue-3';
 import { mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+import { nextTick } from 'vue';
 import { createI18n } from 'vue-i18n';
 import { editorExtensions } from '../../extensions';
 import TableBubbleMenu from './table-bubble-menu.vue';
@@ -76,6 +77,36 @@ describe('shouldShow', () => {
 
 		insertTable();
 		expect(vm.getReferencedVirtualElement()).not.toBeNull();
+	});
+});
+
+describe('root element', () => {
+	/**
+	 * Regression: the real BubbleMenu removes its own root element from the DOM on mount. If that
+	 * element is also this component's root, Vue later resolves patch containers/anchors from the
+	 * detached node and crashes mid-patch, leaving the editor half-rendered (e.g. on version switch
+	 * or when the normalization lock toggles the menu's v-if).
+	 *
+	 * Assert the fix's contract directly: the component root is the stable anchor, not tiptap's
+	 * detachable node. `isConnected` is a false check — BubbleMenuPlugin re-appends its element, so
+	 * it reads true with or without the wrapper.
+	 */
+	test('roots on a stable anchor, not the element BubbleMenu detaches', async () => {
+		alwaysEnabled(); // real BubbleMenu renders the button slot, which calls editor.can()
+
+		const wrapper = mount(TableBubbleMenu, {
+			props: { editor },
+			global: { ...global, stubs: baseStubs }, // real BubbleMenu
+			attachTo: document.body,
+		});
+
+		// BubbleMenu detaches its element in onMounted, then registers its plugin a tick later
+		await nextTick();
+		await nextTick();
+
+		expect(wrapper.element.classList.contains('table-bubble-menu-anchor')).toBe(true);
+
+		wrapper.unmount();
 	});
 });
 
