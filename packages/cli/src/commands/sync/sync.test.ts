@@ -421,3 +421,296 @@ describe('sync diff', () => {
 		expect(stderr.join('')).toContain('Run d6s sync pull first.');
 	});
 });
+
+// Push is the first mutating command, so the discipline stays the same (undici pins the wire, HOME/env
+// isolated, CI forces token-only resolution) and the gate semantics are exercised end to end: --yes
+// applies, deletions demand --allow-deletes, and the sealed { hash, diff } must reach /schema/apply
+// unmodified. The apply intercept is registered only when a call is expected — the disabled dispatcher
+// turns any unexpected apply request into a throw, so its absence proves no apply happened.
+describe('sync push', () => {
+	const realDispatcher = getGlobalDispatcher();
+	const url = 'https://cms.example.com';
+	const token = 'super-secret-static-token';
+	let agent: MockAgent;
+	let dir: string;
+	let schemaDir: string;
+	let home: string;
+	let stdout: string[];
+	let stderr: string[];
+
+	function fullSnapshot(): Snapshot {
+		return {
+			version: 1,
+			directus: '11.0.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'articles', meta: { note: null } }],
+			fields: [{ collection: 'articles', field: 'title', type: 'string' }],
+			systemFields: [],
+			relations: [],
+		};
+	}
+
+	// One added collection plus one modified field, no deletions: exercises the plain apply path.
+	function mergeDiffBody(): Record<string, unknown> {
+		return {
+			collections: [{ collection: 'events', diff: [{ kind: 'N', rhs: { collection: 'events' } }] }],
+			fields: [
+				{
+					collection: 'articles',
+					field: 'title',
+					diff: [{ kind: 'E', path: ['meta', 'note'], lhs: null, rhs: 'headline' }],
+				},
+			],
+			systemFields: [],
+			relations: [],
+		};
+	}
+
+	// A single field deletion: the change kind the deletion gates key off.
+	function mirrorDiffBody(): Record<string, unknown> {
+		return {
+			collections: [],
+			fields: [{ collection: 'articles', field: 'old_slug', diff: [{ kind: 'D', lhs: { field: 'old_slug' } }] }],
+			systemFields: [],
+			relations: [],
+		};
+	}
+
+	function seedConfig(): void {
+		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url } } }));
+	}
+
+	function interceptDiff(mode: 'merge' | 'mirror', body: Record<string, unknown>): void {
+		agent
+			.get(url)
+			.intercept({
+				path: '/schema/diff',
+				method: 'POST',
+				query: { mode },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: { hash: 'h1', diff: body } }, { headers: { 'content-type': 'application/json' } });
+	}
+
+	function interceptDiffNoChanges(mode: 'merge' | 'mirror'): void {
+		agent
+			.get(url)
+			.intercept({
+				path: '/schema/diff',
+				method: 'POST',
+				query: { mode },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(204, '');
+	}
+
+	// The apply endpoint is admin-only; the intercept only matches with the token on the wire, and
+	// `capture` records the body so the seal-fidelity check can compare it to the diff that was fetched.
+	function interceptApply(capture?: (body: unknown) => void): void {
+		agent
+			.get(url)
+			.intercept({
+				path: '/schema/apply',
+				method: 'POST',
+				headers: { authorization: `Bearer ${token}` },
+				body(raw: string) {
+					capture?.(JSON.parse(raw));
+					return true;
+				},
+			})
+			.reply(204, '');
+	}
+
+	// The server's real hash-mismatch reply (see api validate-diff.ts): 400 INVALID_PAYLOAD whose
+	// message names the hash. mapRequestError carries that into detail, which push keys the re-run hint off.
+	function interceptApplyHashMismatch(): void {
+		agent
+			.get(url)
+			.intercept({ path: '/schema/apply', method: 'POST' })
+			.reply(
+				400,
+				{
+					errors: [
+						{
+							message:
+								"Provided hash does not match the current instance's schema hash, indicating the schema has changed after this diff was generated. Please generate a new diff and try again",
+							extensions: { code: 'INVALID_PAYLOAD' },
+						},
+					],
+				},
+				{ headers: { 'content-type': 'application/json' } },
+			);
+	}
+
+	function d6s(...argv: string[]): Promise<number> {
+		return run(argv, { registerCommands: registerSync, cwd: dir });
+	}
+
+	beforeEach(() => {
+		dir = mkdtempSync(join(tmpdir(), 'd6s-sync-'));
+		schemaDir = join(dir, 'directus', 'default', 'schema');
+		home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
+		stdout = [];
+		stderr = [];
+
+		agent = new MockAgent();
+		agent.disableNetConnect();
+		setGlobalDispatcher(agent);
+
+		vi.stubEnv('HOME', home);
+		vi.stubEnv('USERPROFILE', home);
+		vi.stubEnv('CI', 'true');
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
+
+		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
+			stdout.push(String(chunk));
+			return true;
+		});
+
+		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
+			stderr.push(String(chunk));
+			return true;
+		});
+	});
+
+	afterEach(async () => {
+		setGlobalDispatcher(realDispatcher);
+		await agent.close();
+		vi.restoreAllMocks();
+		vi.unstubAllEnvs();
+		rmSync(dir, { recursive: true, force: true });
+		rmSync(home, { recursive: true, force: true });
+	});
+
+	it('applies the sealed diff and sends { hash, diff } to /schema/apply byte-for-byte', async () => {
+		// The entire safety model rests on the exact diff the server sealed reaching /schema/apply
+		// unmodified — the server re-checks that hash — so the apply body must deep-equal the { hash, diff }
+		// the diff returned. Any mutation between diff and apply would break the seal.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', mergeDiffBody());
+
+		let applied: unknown;
+
+		interceptApply((body) => {
+			applied = body;
+		});
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+
+		expect(applied).toEqual({ hash: 'h1', diff: mergeDiffBody() });
+	});
+
+	it('emits applied:true with the counts and the verified hash on --json', async () => {
+		// CI reads this exact shape to confirm the push landed and to record the hash it applied against.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', mergeDiffBody());
+		interceptApply();
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
+
+		expect(JSON.parse(stdout.join(''))).toEqual({
+			ok: true,
+			target: url,
+			mode: 'merge',
+			applied: true,
+			changes: true,
+			added: 1,
+			modified: 1,
+			deleted: 0,
+			hash: 'h1',
+		});
+	});
+
+	it('reports applied:false on a no-change diff and never calls apply', async () => {
+		// A 204 diff is "nothing to push": the command must exit 0 with applied:false and issue no apply
+		// request at all. No apply intercept is registered, so the disabled dispatcher would throw on one.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiffNoChanges('merge');
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
+
+		expect(JSON.parse(stdout.join(''))).toEqual({
+			ok: true,
+			target: url,
+			mode: 'merge',
+			applied: false,
+			changes: false,
+			added: 0,
+			modified: 0,
+			deleted: 0,
+			hash: null,
+		});
+	});
+
+	it('refuses deletions under --yes alone, naming --allow-deletes, and never applies', async () => {
+		// The invariant: --yes must NEVER authorize deletions. A mirror diff carrying a deletion under
+		// --yes without --allow-deletes must fail before any apply request, and the message must route the
+		// CI operator to --allow-deletes. No apply intercept — a stray apply would throw on the disabled net.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('mirror', mirrorDiffBody());
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes')).toBe(1);
+
+		const err = stderr.join('');
+		expect(err).toMatch(/deletion/i);
+		expect(err).toContain('--allow-deletes');
+	});
+
+	it('applies deletions when --allow-deletes accompanies --yes', async () => {
+		// --allow-deletes is the CI consent for deletions; with it the mirror diff applies.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('mirror', mirrorDiffBody());
+
+		let applied: unknown;
+
+		interceptApply((body) => {
+			applied = body;
+		});
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes', '--allow-deletes')).toBe(0);
+
+		expect(applied).toEqual({ hash: 'h1', diff: mirrorDiffBody() });
+	});
+
+	it('refuses to apply without --yes in a non-interactive context', async () => {
+		// No TTY and no --yes: the push cannot silently apply, so it fails pointing at --yes. No apply
+		// intercept — reaching exit 1 proves nothing was applied.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', mergeDiffBody());
+
+		expect(await d6s('sync', 'push', '--to', 'staging')).toBe(1);
+		expect(stderr.join('')).toContain('--yes');
+	});
+
+	it('surfaces a re-run hint when the target hash changed between diff and apply', async () => {
+		// The diff was generated moments earlier, so a hash mismatch on apply means a concurrent schema
+		// change: the error must tell the operator to re-run the push, not just echo the raw payload error.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', mergeDiffBody());
+		interceptApplyHashMismatch();
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+		expect(stderr.join('')).toMatch(/re-run d6s sync push/i);
+	});
+});
