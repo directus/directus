@@ -18,8 +18,11 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	if (result === null) {
 		if (ctx.ui.json) {
 			ctx.ui.data({
+				kind: 'DiffReport',
+				formatVersion: 1,
 				ok: true,
 				target: url,
+				profile: options.to,
 				mode: options.mode,
 				changes: false,
 				added: 0,
@@ -31,7 +34,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 			return;
 		}
 
-		ctx.ui.success(`No schema changes between the local snapshot and ${url}.`);
+		ctx.ui.success(`${options.to} matches the local snapshot — nothing to do.`);
 		return;
 	}
 
@@ -40,8 +43,11 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	if (ctx.ui.json) {
 		// hash travels with the machine payload: apply seals against this diff and CI may persist it.
 		ctx.ui.data({
+			kind: 'DiffReport',
+			formatVersion: 1,
 			ok: true,
 			target: url,
+			profile: options.to,
 			mode: options.mode,
 			changes: true,
 			added,

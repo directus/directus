@@ -25,8 +25,11 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	);
 
 	ctx.ui.data({
+		kind: 'PullReport',
+		formatVersion: 1,
 		ok: true,
 		source: url,
+		profile: options.from,
 		dir: relativeDir,
 		collections,
 		fields: snapshot.fields.length,

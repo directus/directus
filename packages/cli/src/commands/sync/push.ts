@@ -18,14 +18,22 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	const target = resolveTarget(options.to, ctx);
 	const { url, credential } = target;
 
+	// Print the resolved target before any network call so a profile NAMED staging pointing at prod's
+	// URL is visible before anything mutates. Human channel only; --json consumers get profile + target
+	// in the payload. Naming the authenticated identity here needs an extra request — deliberately deferred.
+	ctx.ui.info(`target: ${options.to} — ${url}`);
+
 	const { result } = await localDiff(target, options.mode);
 
 	// A no-op push is the command's answer, not a failure: exit 0 and never reach an apply call.
 	if (result === null) {
 		if (ctx.ui.json) {
 			ctx.ui.data({
+				kind: 'PushReport',
+				formatVersion: 1,
 				ok: true,
 				target: url,
+				profile: options.to,
 				mode: options.mode,
 				applied: false,
 				changes: false,
@@ -38,7 +46,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 			return;
 		}
 
-		ctx.ui.success(`No schema changes to push to ${url}.`);
+		ctx.ui.success(`${options.to} already matches the local snapshot — nothing to push.`);
 		return;
 	}
 
@@ -62,8 +70,8 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	// Checked first so a non-interactive caller gets the deletion-specific message before the generic
 	// missing-confirmation one — the fix it needs is --allow-deletes, not --yes.
 	if (deleted > 0 && !allowDeletes && !ctx.interactive) {
-		throw new CliError('USAGE', `This push includes ${deleted} deletion${deleted === 1 ? '' : 's'}.`, {
-			hint: 'Pass --allow-deletes to include deletions, or use --mode merge.',
+		throw new CliError('USAGE', `This push deletes ${deleted} item${deleted === 1 ? '' : 's'}.`, {
+			hint: '--yes does not cover deletions; pass --allow-deletes or use --mode merge.',
 		});
 	}
 
@@ -75,7 +83,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	if (ctx.interactive && !yes) {
 		const proceed = await ask(
-			confirm({ message: `Apply ${total} schema ${total === 1 ? 'change' : 'changes'} to ${url}?` }),
+			confirm({ message: `Apply ${total} schema ${total === 1 ? 'change' : 'changes'} to ${options.to} — ${url}?` }),
 		);
 
 		if (!proceed) throw new CliError('USAGE', 'Push aborted; nothing was applied.');
@@ -112,8 +120,11 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	if (ctx.ui.json) {
 		ctx.ui.data({
+			kind: 'PushReport',
+			formatVersion: 1,
 			ok: true,
 			target: url,
+			profile: options.to,
 			mode: options.mode,
 			applied: true,
 			changes: true,
