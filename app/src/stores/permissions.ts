@@ -4,7 +4,6 @@ import { defineStore } from 'pinia';
 import { useUserStore } from '../stores/user';
 import api from '@/api';
 import { CollectionPermission } from '@/types/permissions';
-import { parsePreset } from '@/utils/parse-preset';
 
 export const usePermissionsStore = defineStore({
 	id: 'permissionsStore',
@@ -51,15 +50,7 @@ export const usePermissionsStore = defineStore({
 			this.$reset();
 		},
 		getPermission(collection: string, action: PermissionsAction) {
-			const permission = this.permissions[collection]?.[action];
-
-			if (!permission) return null;
-			if (!permission.presets) return permission;
-
-			return {
-				...permission,
-				presets: parsePreset(permission.presets),
-			};
+			return this.permissions[collection]?.[action] ?? null;
 		},
 		hasPermission(collection: string, action: PermissionsAction) {
 			const userStore = useUserStore();

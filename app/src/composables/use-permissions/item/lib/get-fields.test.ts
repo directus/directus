@@ -343,6 +343,52 @@ describe('non-admin users', () => {
 
 				expect(nameField?.schema?.default_value).toEqual(namePreset);
 			});
+
+			it('should resolve dynamic preset default values when fields are consumed', () => {
+				const userStore = mockedStore(useUserStore());
+
+				userStore.currentUser = {
+					id: 'user-a',
+					role: { id: 'role-a' },
+					builder_tenant_id: null,
+				} as any;
+
+				const mockActionPermission = {
+					access: 'full' as const,
+					presets: { name: '$CURRENT_USER.builder_tenant_id' } as Record<string, any>,
+				};
+
+				if (collectionType === 'collection') {
+					const permissionsStore = mockedStore(usePermissionsStore());
+
+					permissionsStore.getPermission.mockImplementation((_, action) => {
+						if (action === testAction) return mockActionPermission;
+						return null;
+					});
+				} else {
+					fetchedItemPermissions = computed(() => {
+						return {
+							update: {
+								access: true,
+								presets: mockActionPermission.presets,
+							},
+						} as ItemPermissions;
+					});
+				}
+
+				const isNew = testAction === 'create';
+
+				const fields = getFields(sample.collection, isNew, fetchedItemPermissions);
+
+				expect(fields.value.find((field) => field.field === 'name')?.schema?.default_value).toBe(null);
+
+				userStore.currentUser = {
+					...userStore.currentUser,
+					builder_tenant_id: 'tenant-b',
+				} as any;
+
+				expect(fields.value.find((field) => field.field === 'name')?.schema?.default_value).toBe('tenant-b');
+			});
 		});
 	});
 

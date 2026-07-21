@@ -70,7 +70,7 @@ describe('actions', () => {
 			expect(hydrateAdditionalFieldsSpy).toBeCalledWith(expect.arrayContaining(['role.name', 'custom_user_field']));
 		});
 
-		test('should parse dynamic preset variables from the current user when the permission is read', async () => {
+		test('should keep dynamic preset variables raw when the permission is read', async () => {
 			const mockUser = {
 				id: sample.user.id,
 				role: {
@@ -105,16 +105,7 @@ describe('actions', () => {
 			await permissionsStore.hydrate();
 
 			expect(permissionsStore.getPermission(sample.collection, 'create')?.presets).toEqual({
-				tenant_id: null,
-			});
-
-			userStore.currentUser = {
-				...mockUser,
-				builder_tenant_id: 'tenant-b',
-			};
-
-			expect(permissionsStore.getPermission(sample.collection, 'create')?.presets).toEqual({
-				tenant_id: 'tenant-b',
+				tenant_id: '$CURRENT_USER.builder_tenant_id',
 			});
 
 			expect(api.get).toHaveBeenCalledTimes(1);

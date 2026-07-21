@@ -6,6 +6,7 @@ import { Collection, IsNew } from '../../types';
 import type { FormField } from '@/components/v-form/types';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
+import { parsePreset } from '@/utils/parse-preset';
 
 export function getFields(
 	collection: Collection,
@@ -75,7 +76,7 @@ export function getFields(
 			}
 		}
 
-		const presets = permission?.presets;
+		const presets = permission?.presets ? parsePreset(permission.presets) : null;
 
 		if (presets) {
 			for (const field of fields) {
