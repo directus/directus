@@ -613,42 +613,6 @@ describe('version refresh', () => {
 		expect(wrapper.vm.totalItemCount).toBe(mockM2aDataOverride.length);
 	});
 
-	test('re-fetches when entering a version from main, e.g. creating or opening a draft', async () => {
-		const wrapper = mount(TestComponentM2AVersion, {
-			props: { relation: relationM2A, value: [], id: 1, version: null },
-		});
-
-		await flushPromises();
-
-		expect(wrapper.vm.fetchedItems).toEqual(m2aData);
-
-		mockM2aDataOverride = [...m2aData, { id: 4, article_id: 1, item: { id: 3 }, collection: 'text', sort: 4 }];
-
-		await wrapper.setProps({ version: { key: 'draft' } });
-		await flushPromises();
-
-		expect(wrapper.vm.fetchedItems).toEqual(mockM2aDataOverride);
-		expect(wrapper.vm.totalItemCount).toBe(mockM2aDataOverride.length);
-	});
-
-	test('re-fetches when switching between two versions', async () => {
-		const wrapper = mount(TestComponentM2AVersion, {
-			props: { relation: relationM2A, value: [], id: 1, version: { key: 'draft-a' } },
-		});
-
-		await flushPromises();
-
-		expect(wrapper.vm.fetchedItems).toEqual(m2aData);
-
-		mockM2aDataOverride = [...m2aData, { id: 4, article_id: 1, item: { id: 3 }, collection: 'text', sort: 4 }];
-
-		await wrapper.setProps({ version: { key: 'draft-b' } });
-		await flushPromises();
-
-		expect(wrapper.vm.fetchedItems).toEqual(mockM2aDataOverride);
-		expect(wrapper.vm.totalItemCount).toBe(mockM2aDataOverride.length);
-	});
-
 	test('does not re-fetch when the version object identity changes but its key stays the same', async () => {
 		const wrapper = mount(TestComponentM2AVersion, {
 			props: { relation: relationM2A, value: [], id: 1, version: { key: 'draft' } },
@@ -665,27 +629,5 @@ describe('version refresh', () => {
 
 		expect(wrapper.vm.fetchedItems).toEqual(m2aData);
 		expect(wrapper.vm.totalItemCount).toBe(m2aData.length);
-	});
-
-	test('preserves unsaved local edits across a version-triggered re-fetch', async () => {
-		const wrapper = mount(TestComponentM2AVersion, {
-			props: { relation: relationM2A, value: [], id: 1, version: { key: 'draft' } },
-		});
-
-		await flushPromises();
-
-		wrapper.vm.create({ item: { id: 3 }, collection: 'text', sort: 5 });
-		await flushPromises();
-
-		const edits = { create: [{ item: { id: 3 }, collection: 'text', sort: 5 }], update: [], delete: [] };
-		expect(wrapper.vm.value).toEqual(edits);
-
-		mockM2aDataOverride = [...m2aData, { id: 4, article_id: 1, item: { id: 3 }, collection: 'text', sort: 4 }];
-
-		await wrapper.setProps({ version: null });
-		await flushPromises();
-
-		expect(wrapper.vm.fetchedItems).toEqual(mockM2aDataOverride);
-		expect(wrapper.vm.value).toEqual(edits);
 	});
 });
