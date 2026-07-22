@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { convertToMySQLPath } from './mysql-json-path.js';
+import { convertToJsonPath } from './dot-notation-path.js';
 
 const TEST_CASES = [
 	// Simple property access
@@ -17,16 +17,11 @@ const TEST_CASES = [
 
 	// Array index access
 	{ input: '.items[0]', expected: '$.items[0]', description: 'array index access' },
-	{ input: '.items[5]', expected: '$.items[5]', description: 'array index with higher number' },
 	{ input: '.items[123]', expected: '$.items[123]', description: 'array index with multi-digit number' },
+	{ input: '[0]', expected: '$[0]', description: 'root array index' },
 
 	// Mixed property and array access
 	{ input: '.items[0].name', expected: '$.items[0].name', description: 'array index followed by property' },
-	{
-		input: '.data.items[0].name',
-		expected: '$.data.items[0].name',
-		description: 'nested property, array, then property',
-	},
 	{
 		input: '.users[0].profile.email',
 		expected: '$.users[0].profile.email',
@@ -35,40 +30,22 @@ const TEST_CASES = [
 
 	// Multiple array indices
 	{ input: '.matrix[0][1]', expected: '$.matrix[0][1]', description: 'multiple array indices' },
-	{ input: '.data[0][1][2]', expected: '$.data[0][1][2]', description: 'three array indices' },
 
-	// Complex real-world scenarios
-	{
-		input: '.metadata.tags[0].value',
-		expected: '$.metadata.tags[0].value',
-		description: 'metadata with array and property',
-	},
-	{
-		input: '.response.data.items[3].attributes.name',
-		expected: '$.response.data.items[3].attributes.name',
-		description: 'deeply nested with array in middle',
-	},
-	{
-		input: '.config.servers[0].host',
-		expected: '$.config.servers[0].host',
-		description: 'config with array access',
-	},
-
-	// Edge cases with underscore and special characters
+	// Edge cases with underscore and numbers in property names
 	{ input: '.user_data', expected: '$.user_data', description: 'property with underscore' },
-	{
-		input: '.first_name.last_name',
-		expected: '$.first_name.last_name',
-		description: 'nested properties with underscores',
-	},
-
-	// Edge cases with numbers in property names
-	{ input: '.item1', expected: '$.item1', description: 'property with number suffix' },
 	{ input: '.test123.value', expected: '$.test123.value', description: 'property with numbers in name' },
+
+	// Numeric segments are treated as array indices (consistent across dialects)
+	{ input: '.0', expected: '$[0]', description: 'numeric segment becomes array index' },
+
+	// Incomplete paths normalize consistently instead of producing broken output
+	{ input: '.author.', expected: '$.author', description: 'incomplete trailing dot' },
+	{ input: '.a..b', expected: '$.a.b', description: 'repeated dot' },
+	{ input: 'a[.b]', expected: '$.a.b', description: 'malformed bracket with leading dot' },
 ];
 
-describe('convertToMySQLPath', () => {
+describe('convertToJsonPath', () => {
 	test.each(TEST_CASES)('converts "$input" to "$expected" ($description)', ({ input, expected }) => {
-		expect(convertToMySQLPath(input)).toBe(expected);
+		expect(convertToJsonPath(input)).toBe(expected);
 	});
 });

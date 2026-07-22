@@ -1,5 +1,6 @@
 import { InvalidQueryError } from '@directus/errors';
 import type { Knex } from 'knex';
+import { convertToJsonPath } from '../json/dot-notation-path.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -74,7 +75,7 @@ export class FnHelperOracle extends FnHelper {
 		// characters ([A-Za-z0-9_]), dots, and square brackets are accepted, blocking all
 		// SQL-dangerous characters (quotes, parentheses, operators, etc.).
 		// See: api/src/database/helpers/fn/json/parse-function.ts
-		const jsonPath = '$' + options.jsonPath;
+		const jsonPath = convertToJsonPath(options.jsonPath);
 
 		if (options?.jsonReturnType === 'numeric') {
 			// JSON_VALUE with RETURNING NUMBER gives correct numeric comparison semantics.
