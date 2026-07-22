@@ -1494,16 +1494,16 @@ fields:
     visual_editor_urls: URLs del Editor Visual
     collaborative_editing_enabled: Habilitar Edición Colaborativa
     mcp_enabled: Servidor de MCP
-    mcp_enabled_note: 'Conecta herramientas de IA/LLM a tu proyecto de Directus mediante el <a href="https://directus.com/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. Esto permite que los asistentes de IA lean e interactúen con tus datos de Directus de forma segura.'
-    mcp_notice: 'Model Context Protocol es un estándar para conectar LLMs con aplicaciones como Directus. Una vez habilitado, el servidor MCP de Directus estará disponible en `/mcp`. <a href="https://directus.com/docs/guides/ai/mcp" target="_blank">Más información sobre MCP y cómo realizar la conexión.</a>'
+    mcp_enabled_note: 'Conecta herramientas de IA/LLM a tu proyecto de Directus mediante el <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. Esto permite que los asistentes de IA lean e interactúen con tus datos de Directus de forma segura.'
+    mcp_notice: 'Model Context Protocol es un estándar para conectar LLMs con aplicaciones como Directus. Una vez habilitado, el servidor MCP de Directus estará disponible en `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Más información sobre MCP y cómo realizar la conexión.</a>'
     mcp_allow_deletes: Permitir eliminar
     mcp_allow_deletes_note:
       - Puede provocar pérdida de datos.</strong> Desactivado de forma predeterminada por seguridad.'
     mcp_prompts_collection: Colección de prompts de IA
-    mcp_prompts_collection_note: 'Selecciona la colección donde se almacenarán las <a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">plantillas de prompts reutilizables</a> para las interacciones de IA.'
+    mcp_prompts_collection_note: 'Selecciona la colección donde se almacenarán las <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">plantillas de prompts reutilizables</a> para las interacciones de IA.'
     mcp_system_prompt_divider: Configuración del prompt del sistema
     mcp_system_prompt_enabled: Usar prompt del sistema
-    mcp_system_prompt_enabled_note: "Usar el <a href='https://directus.com/docs/guides/ai/mcp#system-prompt' target='_blank'>prompt de sistema predeterminado</a> para guiar el comportamiento del LLM. Desactívalo para eliminarlo o reemplazarlo con tu propio prompt a continuación."
+    mcp_system_prompt_enabled_note: "Usar el <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>prompt de sistema predeterminado</a> para guiar el comportamiento del LLM. Desactívalo para eliminarlo o reemplazarlo con tu propio prompt a continuación."
     mcp_system_prompt: Prompt de sistema personalizado
     mcp_system_prompt_note: 'Prompt de sistema personalizado para reemplazar el predeterminado. Déjalo vacío para usar el predeterminado (si está habilitado arriba).'
     ai_header_name: Cabecera
@@ -1718,7 +1718,7 @@ mcp_prompts_collection_schema:
   messages_role_user: Usuario
   messages_role_assistant: Asistente
   messages_role_note: Quién habla en este mensaje.
-  meta_prompts_notice: 'Los prompts son plantillas reutilizables que puedes usar con LLMs a través del servidor MCP de Directus, Flows u otras aplicaciones de IA. <a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">Más información sobre cómo crear prompts eficaces.</a>'
+  meta_prompts_notice: 'Los prompts son plantillas reutilizables que puedes usar con LLMs a través del servidor MCP de Directus, Flows u otras aplicaciones de IA. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">Más información sobre cómo crear prompts eficaces.</a>'
 expired: Expirado
 upcoming: Próximamente
 share: Compartir

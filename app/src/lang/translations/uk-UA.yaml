@@ -1419,16 +1419,16 @@ fields:
     public_registration_verify_email_note: Відправляє email до реєстраційного користувача із проханням натиснути на посилання для підтвердження, перш ніж він зможе увійти.
     visual_editor_urls: URL-адреси візуального редактора
     mcp_enabled: Сервер MCP
-    mcp_enabled_note: 'Приєднайте інструменти AI/LLM до вашого проєкту Directus за допомогою <a href="https://directus.com/docs/guides/ai/mcp" target="_blank">Протокол контексту моделі (MCP)</a>. Це дає змогу AI-асистентам безпечно читати та взаємодіяти з даними Directus.'
-    mcp_notice: 'Протокол контексту моделі є стандартним для підключення LLM до таких додатків, як Directus. Після увімкнення сервер Directus MCP буде доступний за адресою `/mcp`.<a href="https://directus.com/docs/guides/ai/mcp" target="_blank">Дізнайтеся більше про MCP та про те, як під''єднатися.</a>'
+    mcp_enabled_note: 'Приєднайте інструменти AI/LLM до вашого проєкту Directus за допомогою <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Протокол контексту моделі (MCP)</a>. Це дає змогу AI-асистентам безпечно читати та взаємодіяти з даними Directus.'
+    mcp_notice: 'Протокол контексту моделі є стандартним для підключення LLM до таких додатків, як Directus. Після увімкнення сервер Directus MCP буде доступний за адресою `/mcp`.<a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Дізнайтеся більше про MCP та про те, як під''єднатися.</a>'
     mcp_allow_deletes: Дозволити видалення
     mcp_allow_deletes_note:
       - Може спричинити втрату даних.</strong>За замовчуванням вимкнено з міркувань безпеки.'
     mcp_prompts_collection: Збірка запитів для ШІ
-    mcp_prompts_collection_note: 'Виберіть колекцію для зберігання<a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">шаблонів підказок для багаторазового використання</a>для взаємодії з АІ.'
+    mcp_prompts_collection_note: 'Виберіть колекцію для зберігання<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">шаблонів підказок для багаторазового використання</a>для взаємодії з АІ.'
     mcp_system_prompt_divider: Налаштування системних підказок
     mcp_system_prompt_enabled: Використовувати системне підказування
-    mcp_system_prompt_enabled_note: "Використовуйте<a href='https://directus.com/docs/guides/ai/mcp#system-prompt' target='_blank'>стандартне системне запитування</a>для керування поведінкою LLM. Вимкніть, щоб видалити або замінити власним запитуванням нижче."
+    mcp_system_prompt_enabled_note: "Використовуйте<a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>стандартне системне запитування</a>для керування поведінкою LLM. Вимкніть, щоб видалити або замінити власним запитуванням нижче."
     mcp_system_prompt: Користувацький Системний рядок
     mcp_system_prompt_note: 'Спеціальний запит щодо заміни стандартної системи. Залиште порожнім, щоб використовувати стандартну (якщо вказано вище).'
     ai_header_name: Заголовок
@@ -1634,7 +1634,7 @@ mcp_prompts_collection_schema:
   messages_role_user: Користувач
   messages_role_assistant: Помічник
   messages_role_note: Хто говорить у цьому повідомленні.
-  meta_prompts_notice: 'Запити — це шаблони багаторазового використання, які можна застосовувати з LLM через сервер Directus MCP, Flows або інші програми штучного інтелекту.<a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">Дізнайтеся більше про створення ефективних запитів.</a>'
+  meta_prompts_notice: 'Запити — це шаблони багаторазового використання, які можна застосовувати з LLM через сервер Directus MCP, Flows або інші програми штучного інтелекту.<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">Дізнайтеся більше про створення ефективних запитів.</a>'
 expired: Закінчився
 upcoming: Майбутнє
 share: Поділитись
