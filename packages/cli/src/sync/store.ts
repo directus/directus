@@ -50,7 +50,6 @@ const collectionFileSchema = z.object({
 });
 
 const metadataSchema = z.object({
-	files: z.array(z.string()),
 	snapshot: z.custom<Record<string, unknown>>(isPlainObject),
 });
 
@@ -126,18 +125,10 @@ function parseCollectionFile(value: unknown, name: string): RawCollectionFile {
 	};
 }
 
-function parseMetadata(value: unknown): SchemaMetadata {
-	if (!isPlainObject(value)) throw new CliError('STATE', `${METADATA_FILE} is not a schema file.`);
-
+function parseMetadata(value: unknown): { snapshot: Record<string, unknown> } {
 	const result = metadataSchema.safeParse(value);
 
 	if (!result.success) {
-		const field = result.error.issues[0]?.path[0];
-
-		if (field === 'files') {
-			throw new CliError('STATE', `${METADATA_FILE} is missing a valid "files" manifest.`);
-		}
-
 		throw new CliError('STATE', `${METADATA_FILE} is missing a valid "snapshot" header.`, {
 			detail: z.prettifyError(result.error),
 		});

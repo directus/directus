@@ -23,7 +23,6 @@ export interface DataReadResult {
 }
 
 interface DataMetadata {
-	readonly files: string[];
 	readonly source: string;
 }
 
@@ -34,7 +33,6 @@ const dataFileSchema = z.object({
 });
 
 const metadataSchema = z.object({
-	files: z.array(z.string()),
 	source: z.string().min(1),
 });
 
@@ -80,17 +78,9 @@ function parseDataFile(value: unknown, name: string): DataCollection {
 }
 
 function parseMetadata(value: unknown): DataMetadata {
-	if (!isPlainObject(value)) throw new CliError('STATE', `${METADATA_FILE} is not a data file.`);
-
 	const result = metadataSchema.safeParse(value);
 
 	if (!result.success) {
-		const field = result.error.issues[0]?.path[0];
-
-		if (field === 'files') {
-			throw new CliError('STATE', `${METADATA_FILE} is missing a valid "files" manifest.`);
-		}
-
 		throw new CliError('STATE', `${METADATA_FILE} does not record the source instance URL.`, {
 			hint: 'This data predates source tracking; run d6s sync pull again to record it.',
 		});
