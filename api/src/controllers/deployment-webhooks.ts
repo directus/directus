@@ -88,7 +88,7 @@ router.post(
 
 		const deployment = await deploymentService.readByProvider(provider as ProviderType);
 
-		const project = await projectsService.readByExternalIdForDeployment(deployment.id, event.project_external_id);
+		const project = await projectsService.readByExternalId(deployment.id, event.project_external_id);
 
 		if (!project) {
 			// 410 signals the provider this project is no longer tracked

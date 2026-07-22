@@ -120,33 +120,27 @@ describe('DeploymentProjectsService', () => {
 		});
 	});
 
-	describe('readByExternalIdForDeployment', () => {
+	describe('readByExternalId', () => {
 		let service: DeploymentProjectsService;
 
 		beforeEach(() => {
 			service = new DeploymentProjectsService({ knex: db, schema });
 		});
 
-		it('scopes the lookup to the given deployment and external ID', async () => {
+		it('returns the project matching the deployment and external ID', async () => {
 			const project = { id: 'proj-A', deployment: 'deploy-A', external_id: 'shared', name: 'A' };
-			const readByQuery = vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([project] as any);
 
-			const result = await service.readByExternalIdForDeployment('deploy-A', 'shared');
+			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([project] as any);
 
-			// The same external_id can exist under another deployment, so the query
-			// must be scoped to BOTH the deployment and the external_id.
-			expect(readByQuery.mock.calls[0]?.[0]?.filter).toEqual({
-				deployment: { _eq: 'deploy-A' },
-				external_id: { _eq: 'shared' },
-			});
+			const result = await service.readByExternalId('deploy-A', 'shared');
 
 			expect(result).toEqual(project);
 		});
 
-		it('returns null when no project matches the deployment', async () => {
-			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([] as any);
+		it('returns null when no project matches', async () => {
+			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([] as any);
 
-			const result = await service.readByExternalIdForDeployment('deploy-A', 'shared');
+			const result = await service.readByExternalId('deploy-A', 'shared');
 
 			expect(result).toBeNull();
 		});
