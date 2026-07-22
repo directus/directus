@@ -67,6 +67,52 @@ describe('summarizeDiff', () => {
 		expect(summary.lines).toEqual(['+         collection events']);
 	});
 
+	it('rolls a new collection’s fields and relations into its own line instead of listing each', () => {
+		// A first sync adds whole collections, and every child field/relation used to earn its own line —
+		// a 23-collection template rendered as 366 lines of noise. The children are implied by the
+		// collection line, so they collapse to counts; children of EXISTING collections keep their lines;
+		// and the totals still tally per item so the deletion gate and --json counts are unchanged.
+		const summary = summarizeDiff(
+			emptyDiff({
+				collections: [{ collection: 'posts', diff: [{ kind: 'N', rhs: {} }] }],
+				fields: [
+					{ collection: 'posts', field: 'title', diff: [{ kind: 'N', rhs: {} }] },
+					{ collection: 'posts', field: 'author', diff: [{ kind: 'N', rhs: {} }] },
+					{ collection: 'articles', field: 'summary', diff: [{ kind: 'N', rhs: {} }] },
+				],
+				relations: [
+					{
+						collection: 'posts',
+						field: 'author',
+						related_collection: 'directus_users',
+						diff: [{ kind: 'N', rhs: {} }],
+					},
+				],
+			}),
+		);
+
+		expect(summary.lines).toEqual([
+			'+         collection posts (2 fields, 1 relation)',
+			'+         field articles.summary',
+		]);
+
+		expect(summary).toMatchObject({ added: 5, modified: 0, deleted: 0 });
+	});
+
+	it('rolls a deleted collection’s children the same way, keeping the loud token', () => {
+		// Deleting a collection deletes its fields by definition; the DELETE line carries the toll so the
+		// operator sees the size of the loss without a page of ✖ lines.
+		const summary = summarizeDiff(
+			emptyDiff({
+				collections: [{ collection: 'legacy', diff: [{ kind: 'D', lhs: {} }] }],
+				fields: [{ collection: 'legacy', field: 'title', diff: [{ kind: 'D', lhs: {} }] }],
+			}),
+		);
+
+		expect(summary.lines).toEqual(['✖ DELETE  collection legacy (1 field)']);
+		expect(summary).toMatchObject({ added: 0, modified: 0, deleted: 2 });
+	});
+
 	it('groups collections → fields → systemFields → relations and codepoint-sorts within each group', () => {
 		// Ordering is deterministic (codepoint, never locale) and grouped so the reader scans by kind.
 		const summary = summarizeDiff(

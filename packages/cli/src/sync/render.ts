@@ -26,29 +26,71 @@ export function summarizeDiff(diff: SchemaDiff | null): DiffSummary {
 	// Normalize the server's no-change response to the same summary shape.
 	if (diff === null) return { added: 0, modified: 0, deleted: 0, lines: [] };
 
+	// A collection added or deleted wholesale brings every one of its fields and relations with it, so
+	// listing each child buries the real signal (a first sync's 25-line story rendered as 366 lines).
+	// Children of wholesale collections collapse to a count on the collection's own line; children of
+	// existing collections keep their lines. Counts still tally per item, so the deletion gate and the
+	// --json report are unchanged by the grouping.
+	const wholesale = new Set<string>();
+
+	for (const entry of diff.collections) {
+		if (classify(entry.diff) !== 'modified') wholesale.add(entry.collection);
+	}
+
+	const rolled = new Map<string, { fields: number; relations: number }>();
+
+	function keep<T extends { collection: string }>(entries: T[], kind: 'fields' | 'relations'): T[] {
+		return entries.filter((entry) => {
+			if (!wholesale.has(entry.collection)) return true;
+
+			const counts = rolled.get(entry.collection) ?? { fields: 0, relations: 0 };
+			counts[kind] += 1;
+			rolled.set(entry.collection, counts);
+			return false;
+		});
+	}
+
+	const keptFields = keep(diff.fields, 'fields');
+	const keptSystemFields = keep(diff.systemFields, 'fields');
+	const keptRelations = keep(diff.relations, 'relations');
+
+	function nameCollection(entry: { collection: string }): string {
+		const counts = rolled.get(entry.collection);
+
+		if (counts === undefined || (counts.fields === 0 && counts.relations === 0)) {
+			return `collection ${entry.collection}`;
+		}
+
+		const parts: string[] = [];
+		if (counts.fields > 0) parts.push(`${counts.fields} field${counts.fields === 1 ? '' : 's'}`);
+		if (counts.relations > 0) parts.push(`${counts.relations} relation${counts.relations === 1 ? '' : 's'}`);
+
+		return `collection ${entry.collection} (${parts.join(', ')})`;
+	}
+
 	// Preserve group order and sort within each group for deterministic output.
 	const items: RenderItem[] = [
-		...toItems(diff.collections, (item) => `collection ${item.collection}`),
-		...toItems(diff.fields, (item) => `field ${item.collection}.${item.field}`),
-		...toItems(diff.systemFields, (item) => `system field ${item.collection}.${item.field}`),
-		...toItems(diff.relations, nameRelation),
+		...toItems(diff.collections, nameCollection),
+		...toItems(keptFields, (item) => `field ${item.collection}.${item.field}`),
+		...toItems(keptSystemFields, (item) => `system field ${item.collection}.${item.field}`),
+		...toItems(keptRelations, nameRelation),
 	];
 
 	let added = 0;
 	let modified = 0;
 	let deleted = 0;
-	const lines: string[] = [];
 
-	// Counts are per changed item, never per op: one edited field with three ops is one modification.
-	for (const item of items) {
-		if (item.change === 'added') added++;
-		else if (item.change === 'deleted') deleted++;
+	// Counts are per changed item, never per op or per line: one edited field with three ops is one
+	// modification, and a rolled-up child still counts.
+	for (const entry of [...diff.collections, ...diff.fields, ...diff.systemFields, ...diff.relations]) {
+		const change = classify(entry.diff);
+
+		if (change === 'added') added++;
+		else if (change === 'deleted') deleted++;
 		else modified++;
-
-		lines.push(renderLine(item));
 	}
 
-	return { added, modified, deleted, lines };
+	return { added, modified, deleted, lines: items.map((item) => renderLine(item)) };
 }
 
 function toItems<T extends { diff: DiffOp[] }>(entries: T[], name: (entry: T) => string): RenderItem[] {
