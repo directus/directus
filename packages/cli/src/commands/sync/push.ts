@@ -8,8 +8,8 @@ import { count } from '../../kernel/text.js';
 import { applyDiff, importBatch } from '../../sync/api.js';
 import type { ImportBatchResult, ImportCollectionData } from '../../sync/contract.js';
 import { withMappings, writeIdMap } from '../../sync/id-map.js';
-import { type ImportSummary, summarizeDiff, summarizeImport } from '../../sync/render.js';
-import { type DataPushPlan, type DataPushResult, prepareDataPush } from './data-push.js';
+import { emptyImportSummary, type ImportSummary, summarizeDiff, summarizeImport } from '../../sync/render.js';
+import { type DataPushPlan, type DataPushResult, prepareDataPush, type UnchangedRows } from './data-push.js';
 import { localDiff } from './local-diff.js';
 import { resolveTarget } from './resolve-target.js';
 
@@ -69,9 +69,10 @@ export async function dryRunImport(
 	credential: ResolvedCredential,
 	batch: ImportCollectionData[],
 	mode: Mode,
+	unchanged?: UnchangedRows,
 ): Promise<{ result: ImportBatchResult; summary: ImportSummary }> {
 	const result = await importBatch(credential, batch, { ...dataImportOptions(mode), dryRun: true });
-	return { result, summary: summarizeImport(result) };
+	return { result, summary: summarizeImport(result, unchanged) };
 }
 
 // After the import, record sourceId → finalId for every system record sent, where finalId is the
@@ -102,8 +103,9 @@ function updateIdMap(dataResult: DataPushPlan, importResult: ImportBatchResult):
 }
 
 // The --json data block: always present so a consumer never guesses whether the data phase ran. Skipped
-// carries null-ish fields; a real run carries the mode, source, and the server's per-collection response
-// verbatim.
+// (no committed data) carries null-ish fields; a real run carries the mode, source, and the server's
+// per-collection response verbatim — or {} when the batch had nothing to send and the import was skipped
+// as converged, which is a checked outcome, not a skipped phase.
 interface PushDataReport {
 	mode: Mode;
 	source: string | null;
@@ -116,11 +118,11 @@ function dataReport(
 	dataResult: DataPushResult,
 	importResult: ImportBatchResult | undefined,
 ): PushDataReport {
-	if (dataResult.skipped || importResult === undefined) {
+	if (dataResult.skipped) {
 		return { mode, source: null, collections: null, skipped: true };
 	}
 
-	return { mode, source: dataResult.source, collections: importResult.collections, skipped: false };
+	return { mode, source: dataResult.source, collections: importResult?.collections ?? {}, skipped: false };
 }
 
 export async function push(options: PushOptions, ctx: CliContext): Promise<void> {
@@ -145,7 +147,10 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	const schemaTotal = schema.added + schema.modified + schema.deleted;
 
 	// Both empty is the command's answer, not a failure: exit 0 and never reach an apply or import call.
-	if (result === null && dataResult.skipped) {
+	// "Empty" data is either no committed data at all, or a checked batch with nothing left to send —
+	// every record proven already right on the target (impossible under mirror, whose batch keeps its
+	// rows for the delete semantics, so no deletion is ever skipped here).
+	if (result === null && (dataResult.skipped || dataResult.records === 0)) {
 		if (ctx.ui.json) {
 			ctx.ui.data({
 				kind: 'PushReport',
@@ -167,7 +172,8 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 			return;
 		}
 
-		ctx.ui.success(`${options.to} already matches the local snapshot — nothing to push.`);
+		const tail = dataResult.skipped ? 'nothing to push.' : 'schema and data match; nothing to push.';
+		ctx.ui.success(`${options.to} already matches the local snapshot — ${tail}`);
 		return;
 	}
 
@@ -180,8 +186,12 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	let dataSummary: ImportSummary | undefined;
 
 	if (ctx.interactive && !dataResult.skipped) {
-		const { summary } = await dryRunImport(credential, dataResult.batch, mode);
-		dataSummary = summary;
+		// An empty batch has nothing to dry-run (and the server has nothing to plan): the summary is the
+		// explicit zero, not a wire call.
+		dataSummary =
+			dataResult.records === 0
+				? emptyImportSummary()
+				: (await dryRunImport(credential, dataResult.batch, mode, dataResult.unchanged)).summary;
 	}
 
 	const dataDeleted = dataSummary?.deleted ?? 0;
@@ -203,7 +213,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 				} else {
 					ctx.ui.info('no data changes to import.');
 				}
-			} else {
+			} else if (dataResult.records > 0) {
 				const { records, collections } = dataResult;
 
 				ctx.ui.info(`${count(records, 'record')} across ${count(collections, 'collection')} to import (${mode}).`);
@@ -282,7 +292,11 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	let importResult: ImportBatchResult | undefined;
 
-	if (!dataResult.skipped) {
+	if (!dataResult.skipped && dataResult.records === 0) {
+		// A checked batch with nothing left to send: every record is already right on the target. The
+		// interactive plan already said so; say it here for the CI log, which saw no plan.
+		if (dataSummary === undefined) ctx.ui.info('no data changes to import.');
+	} else if (!dataResult.skipped) {
 		ctx.ui.info(`importing ${count(dataResult.collections, 'collection')}…`);
 
 		try {
@@ -307,7 +321,8 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		ctx.ui.info('id map updated.');
 	}
 
-	const importSummary = !dataResult.skipped && importResult !== undefined ? summarizeImport(importResult) : undefined;
+	const importSummary =
+		!dataResult.skipped && importResult !== undefined ? summarizeImport(importResult, dataResult.unchanged) : undefined;
 
 	const dataChanged =
 		importSummary !== undefined &&
@@ -342,6 +357,10 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 			: `Schema already matches ${url}.`;
 
 	let dataSentence = ' Data phase skipped (no committed data).';
+
+	if (!dataResult.skipped && dataResult.records === 0) {
+		dataSentence = ' No data changes to import.';
+	}
 
 	if (!dataResult.skipped && importSummary !== undefined) {
 		dataSentence = ` Imported ${count(dataResult.records, 'record')} across ${count(dataResult.collections, 'collection')}: ${importSummary.created} created, ${importSummary.updated} updated, ${importSummary.deleted} deleted.`;

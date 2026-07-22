@@ -1,4 +1,5 @@
 import { select } from '@clack/prompts';
+import { isEqual } from 'lodash-es';
 import { CliError } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
@@ -50,6 +51,14 @@ export interface SystemSent {
 }
 
 /**
+ * Sent target PKs known to be byte-identical on the target already, per collection. The server reports
+ * every PK-present row as `existing` whether or not anything differs, so this client-side set is what
+ * lets a summary distinguish "updated" from "already right" — and lets a converged push read as the
+ * no-op it is.
+ */
+export type UnchangedRows = ReadonlyMap<string, ReadonlySet<string>>;
+
+/**
  * A prepared data push: the flat batch to import, the per-system-collection send record for the map
  * update, and the map/urls push persists the import response into. Content collections carry no send
  * record — they are never reconciled and their primary keys pass through as-is.
@@ -62,6 +71,7 @@ export interface DataPushPlan {
 	readonly map: IdMap; // the map after reconcile matches were persisted
 	readonly batch: ImportCollectionData[];
 	readonly systemSent: readonly SystemSent[];
+	readonly unchanged: UnchangedRows; // rows kept in a mirror batch (or dropped from merge/add) as already-right
 	readonly records: number; // total records across the batch
 	readonly collections: number; // batch entries (system + content)
 }
@@ -285,6 +295,10 @@ interface Reconciled {
 	// (a resolved ambiguity) can reconcile again without fetching the target a second time.
 	readonly inputs: readonly ReconcileInput[];
 	readonly results: readonly CollectionReconcile[];
+	// Target rows per CONTENT collection, for the unchanged comparison. A collection absent from this map
+	// could not be fetched (not on the target yet, or a permission gap): comparison is skipped for it and
+	// every row rides as a change — never a false "unchanged".
+	readonly contentTargets: ReadonlyMap<string, readonly Record<string, unknown>[]>;
 }
 
 // The read-and-reconcile stem both entries share: an absent data directory (or an empty committed set) is
@@ -308,7 +322,27 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 	const map = readIdMap(target.idMapPath);
 	const { inputs, results } = await reconcileSystem(system, target, mappingsFor(map, source, targetUrl));
 
-	return { skipped: false, source, targetUrl, system, content, map, inputs, results };
+	const contentTargets = new Map<string, readonly Record<string, unknown>[]>();
+
+	for (const data of content) {
+		try {
+			contentTargets.set(
+				data.collection,
+				await fetchRecords(target.credential, {
+					collection: data.collection,
+					endpoint: `/items/${data.collection}`,
+					primaryKey: data.primaryKey,
+					singleton: false,
+				}),
+			);
+		} catch {
+			// Swallowed deliberately: an unfetchable content collection (its schema may not exist on the
+			// target until this very push applies it) just skips the unchanged comparison. The real import
+			// surfaces any genuine failure loudly.
+		}
+	}
+
+	return { skipped: false, source, targetUrl, system, content, map, inputs, results, contentTargets };
 }
 
 // Remap every system record into target space through `bucket` and assemble the flat import batch in
@@ -329,23 +363,49 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 //   the batch verbatim. The server's mirror delete removes every target row absent from the batch, and
 //   pull deliberately exports only null-user grants — without the echo, every user grant on the target
 //   would be destroyed (the directus-sync #148 class).
+// Whether a payload is already represented verbatim on the target: every exported field deep-equals the
+// target row's value. The PK is excluded (equal by construction for a mapped row, and its string/number
+// spelling differs between the map and the wire); fields only the target carries (user_created, defaults)
+// are ignored — the exported subset is the entire claim a sync makes.
+function fieldsEqual(payload: Record<string, unknown>, target: Record<string, unknown>, pkField: string): boolean {
+	for (const [key, value] of Object.entries(payload)) {
+		if (key === pkField) continue;
+		if (!isEqual(value, target[key])) return false;
+	}
+
+	return true;
+}
+
 function assembleBatch(
 	system: readonly SystemCollection[],
 	content: readonly DataCollection[],
 	bucket: Readonly<Record<string, Readonly<Record<string, string>>>>,
 	mode: Mode,
 	targets: ReadonlyMap<string, readonly Record<string, unknown>[]>,
-): { batch: ImportCollectionData[]; systemSent: SystemSent[]; records: number } {
+): { batch: ImportCollectionData[]; systemSent: SystemSent[]; unchanged: UnchangedRows; records: number } {
 	const batch: ImportCollectionData[] = [];
 	const systemSent: SystemSent[] = [];
+	const unchanged = new Map<string, Set<string>>();
 	let records = 0;
 
 	const includesUsers = system.some((entry) => entry.resource.collection === 'directus_users');
 
+	// Record an already-right row and answer whether it must still ride in the batch. Under mirror it
+	// rides — absence from the batch means deletion — and summaries subtract it from the server's
+	// indiscriminate `existing`; under merge/add there is nothing to import, so it is dropped (and the
+	// server never rewrites or reports it). Recorded either way, so the tally is mode-independent.
+	function markUnchanged(collection: string, pk: string): boolean {
+		const set = unchanged.get(collection) ?? new Set<string>();
+		set.add(pk);
+		unchanged.set(collection, set);
+
+		return mode === 'mirror';
+	}
+
 	for (const { data, resource } of system) {
 		const collectionBucket = bucket[resource.collection] ?? {};
-		const targetRows = targets.get(resource.collection) ?? [];
-		const targetPks = new Set(targetRows.map((row) => String(row[resource.primaryKey])));
+		const targetRows = targets.get(resource.collection);
+		const targetByPk = new Map((targetRows ?? []).map((row) => [String(row[resource.primaryKey]), row]));
 
 		const items: Record<string, unknown>[] = [];
 		const sent: SentRecord[] = [];
@@ -358,11 +418,23 @@ function assembleBatch(
 
 			const result = remapSystemRecord(record, resource.collection, resource.primaryKey, bucket);
 
-			if (mode !== 'add' && !mapped && typeof record[resource.primaryKey] === 'number' && targetPks.has(sourceId)) {
+			if (mode !== 'add' && !mapped && typeof record[resource.primaryKey] === 'number' && targetByPk.has(sourceId)) {
 				delete result.record[resource.primaryKey];
 				items.push(result.record);
 				sent.push({ sourceId, sentPk: null });
 				continue;
+			}
+
+			if (mapped && result.sent.sentPk !== null) {
+				const targetRow = targetByPk.get(result.sent.sentPk);
+
+				if (
+					targetRow !== undefined &&
+					fieldsEqual(result.record, targetRow, resource.primaryKey) &&
+					!markUnchanged(resource.collection, result.sent.sentPk)
+				) {
+					continue;
+				}
 			}
 
 			items.push(result.record);
@@ -370,8 +442,11 @@ function assembleBatch(
 		}
 
 		if (mode === 'mirror' && resource.collection === 'directus_access' && !includesUsers) {
-			for (const row of targetRows) {
-				if (row['user'] !== null && row['user'] !== undefined) items.push({ ...row });
+			for (const row of targetRows ?? []) {
+				if (row['user'] !== null && row['user'] !== undefined) {
+					items.push({ ...row });
+					markUnchanged(resource.collection, String(row[resource.primaryKey]));
+				}
 			}
 		}
 
@@ -381,11 +456,33 @@ function assembleBatch(
 	}
 
 	for (const data of content) {
-		batch.push({ collection: data.collection, items: data.records });
-		records += data.records.length;
+		// No fetched target rows (schema not on the target yet, or the fetch failed) means comparison is
+		// impossible: every row rides as a change, exactly the pre-comparison behavior.
+		const targetRows = targets.get(data.collection);
+		const targetByPk = new Map((targetRows ?? []).map((row) => [String(row[data.primaryKey]), row]));
+
+		const items: Record<string, unknown>[] = [];
+
+		for (const record of data.records) {
+			const pk = String(record[data.primaryKey]);
+			const targetRow = targetRows === undefined ? undefined : targetByPk.get(pk);
+
+			if (
+				targetRow !== undefined &&
+				fieldsEqual(record, targetRow, data.primaryKey) &&
+				!markUnchanged(data.collection, pk)
+			) {
+				continue;
+			}
+
+			items.push(record);
+		}
+
+		batch.push({ collection: data.collection, items });
+		records += items.length;
 	}
 
-	return { batch, systemSent, records };
+	return { batch, systemSent, unchanged, records };
 }
 
 /**
@@ -445,9 +542,12 @@ export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContex
 
 	if (map !== reconciled.map) writeIdMap(target.idMapPath, map);
 
-	const targets = new Map(inputs.map((input) => [input.collection, input.targetRecords]));
+	const targets = new Map([
+		...inputs.map((input): [string, readonly Record<string, unknown>[]] => [input.collection, input.targetRecords]),
+		...reconciled.contentTargets,
+	]);
 
-	const { batch, systemSent, records } = assembleBatch(
+	const { batch, systemSent, unchanged, records } = assembleBatch(
 		system,
 		content,
 		mappingsFor(map, source, targetUrl),
@@ -463,6 +563,7 @@ export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContex
 		map,
 		batch,
 		systemSent,
+		unchanged,
 		records,
 		collections: batch.length,
 	};
@@ -477,9 +578,12 @@ export interface DataPreviewPlan {
 	readonly skipped: false;
 	readonly source: string; // normalized source-instance URL, from the data's metadata
 	readonly batch: ImportCollectionData[];
+	readonly unchanged: UnchangedRows; // already-right rows a mirror batch keeps (merge/add drop them)
+	readonly records: number; // total records across the batch, after unchanged rows were dropped
 	readonly matchedCount: number; // sources matched to a target this run — applied to the batch in memory
 	readonly ambiguousCount: number; // sources with several candidate targets — only an interactive push resolves them
 	readonly unmatchedCount: number; // sources with no target match yet — a first push inserts and remaps them
+	readonly unchangedCount: number; // rows proven byte-identical on the target — not changes at all
 }
 
 export type DataPreviewResult = DataPreviewPlan | DataPushSkipped;
@@ -516,8 +620,31 @@ export async function previewData(target: Target, mode: Mode): Promise<DataPrevi
 		map = withMappings(map, source, targetUrl, result.collection, matchedEntries(result));
 	}
 
-	const targets = new Map(inputs.map((input) => [input.collection, input.targetRecords]));
-	const { batch } = assembleBatch(system, content, mappingsFor(map, source, targetUrl), mode, targets);
+	const targets = new Map([
+		...inputs.map((input): [string, readonly Record<string, unknown>[]] => [input.collection, input.targetRecords]),
+		...reconciled.contentTargets,
+	]);
 
-	return { skipped: false, source, batch, matchedCount, ambiguousCount, unmatchedCount };
+	const { batch, unchanged, records } = assembleBatch(
+		system,
+		content,
+		mappingsFor(map, source, targetUrl),
+		mode,
+		targets,
+	);
+
+	let unchangedCount = 0;
+	for (const set of unchanged.values()) unchangedCount += set.size;
+
+	return {
+		skipped: false,
+		source,
+		batch,
+		unchanged,
+		records,
+		matchedCount,
+		ambiguousCount,
+		unmatchedCount,
+		unchangedCount,
+	};
 }

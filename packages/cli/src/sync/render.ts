@@ -132,7 +132,18 @@ function renderImportLine(
 	return `~ ${name}  +${created} new  ~${updated} updated  ✖${deleted} deleted${deletedDetail}`;
 }
 
-export function summarizeImport(result: ImportBatchResult): ImportSummary {
+/**
+ * The all-zero plan, for a batch with nothing to send: the import (and its dry-run) is skipped entirely,
+ * so there is no server response to summarize, but the plan still needs an explicit shape to render.
+ */
+export function emptyImportSummary(): ImportSummary {
+	return { created: 0, updated: 0, deleted: 0, lines: ['no data changes'] };
+}
+
+export function summarizeImport(
+	result: ImportBatchResult,
+	unchanged?: ReadonlyMap<string, ReadonlySet<string>>,
+): ImportSummary {
 	let created = 0;
 	let updated = 0;
 	let deleted = 0;
@@ -144,8 +155,15 @@ export function summarizeImport(result: ImportBatchResult): ImportSummary {
 		const collection = result.collections[name];
 		if (collection === undefined) continue;
 
+		// The server reports every PK-present row as `existing` whether or not anything differed; the
+		// caller's client-side unchanged set is what turns that into an honest "updated" count. Rows a
+		// mirror batch carried only to survive the delete are not updates.
+		const unchangedSet = unchanged?.get(name);
+
 		const collectionCreated = collection.new.length;
-		const collectionUpdated = collection.existing.length;
+
+		const collectionUpdated = collection.existing.filter((pk) => !(unchangedSet?.has(String(pk)) ?? false)).length;
+
 		const collectionDeleted = collection.deleted.length;
 
 		created += collectionCreated;
