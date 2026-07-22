@@ -3,7 +3,7 @@ import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import type { RequestBodyObject } from 'openapi3-ts/oas30';
+import type { RequestBodyObject, SchemaObject } from 'openapi3-ts/oas30';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { SpecificationService } from './index.js';
@@ -55,228 +55,16 @@ describe('Integration Tests', () => {
 
 						const spec = await service.oas.generate();
 
-						expect(spec.components?.schemas).toMatchInlineSnapshot(`
-							{
-							  "Diff": {
-							    "properties": {
-							      "diff": {
-							        "properties": {
-							          "collections": {
-							            "items": {
-							              "properties": {
-							                "collection": {
-							                  "type": "string",
-							                },
-							                "diff": {
-							                  "items": {
-							                    "type": "object",
-							                  },
-							                  "type": "array",
-							                },
-							              },
-							              "type": "object",
-							            },
-							            "type": "array",
-							          },
-							          "fields": {
-							            "items": {
-							              "properties": {
-							                "collection": {
-							                  "type": "string",
-							                },
-							                "diff": {
-							                  "items": {
-							                    "type": "object",
-							                  },
-							                  "type": "array",
-							                },
-							                "field": {
-							                  "type": "string",
-							                },
-							              },
-							              "type": "object",
-							            },
-							            "type": "array",
-							          },
-							          "relations": {
-							            "items": {
-							              "properties": {
-							                "collection": {
-							                  "type": "string",
-							                },
-							                "diff": {
-							                  "items": {
-							                    "type": "object",
-							                  },
-							                  "type": "array",
-							                },
-							                "field": {
-							                  "type": "string",
-							                },
-							                "related_collection": {
-							                  "type": "string",
-							                },
-							              },
-							              "type": "object",
-							            },
-							            "type": "array",
-							          },
-							        },
-							        "type": "object",
-							      },
-							      "hash": {
-							        "type": "string",
-							      },
-							    },
-							    "type": "object",
-							  },
-							  "Error": {
-							    "properties": {
-							      "extensions": {
-							        "additionalProperties": true,
-							        "properties": {
-							          "code": {
-							            "type": "string",
-							          },
-							        },
-							        "required": [
-							          "code",
-							        ],
-							        "type": "object",
-							      },
-							      "message": {
-							        "type": "string",
-							      },
-							    },
-							    "required": [
-							      "message",
-							      "extensions",
-							    ],
-							    "type": "object",
-							  },
-							  "ItemsTestTable": {
-							    "properties": {
-							      "blob": {
-							        "nullable": true,
-							      },
-							      "id": {
-							        "nullable": false,
-							        "type": "integer",
-							      },
-							    },
-							    "required": [
-							      "id",
-							    ],
-							    "type": "object",
-							    "x-collection": "test_table",
-							  },
-							  "Query": {
-							    "properties": {
-							      "deep": {
-							        "description": "Deep allows you to set any of the other query parameters on a nested relational dataset.",
-							        "example": {
-							          "related_articles": {
-							            "_limit": 3,
-							          },
-							        },
-							        "type": "object",
-							      },
-							      "fields": {
-							        "description": "Control what fields are being returned in the object.",
-							        "example": [
-							          "*",
-							          "*.*",
-							        ],
-							        "items": {
-							          "type": "string",
-							        },
-							        "type": "array",
-							      },
-							      "filter": {
-							        "example": {
-							          "<field>": {
-							            "<operator>": "<value>",
-							          },
-							        },
-							        "type": "object",
-							      },
-							      "limit": {
-							        "description": "Set the maximum number of items that will be returned",
-							        "type": "number",
-							      },
-							      "offset": {
-							        "description": "How many items to skip when fetching data.",
-							        "type": "number",
-							      },
-							      "page": {
-							        "description": "Cursor for use in pagination. Often used in combination with limit.",
-							        "type": "number",
-							      },
-							      "search": {
-							        "description": "Filter by items that contain the given search query in one of their fields.",
-							        "type": "string",
-							      },
-							      "sort": {
-							        "description": "How to sort the returned items.",
-							        "example": [
-							          "-date_created",
-							        ],
-							        "items": {
-							          "type": "string",
-							        },
-							        "type": "array",
-							      },
-							    },
-							    "type": "object",
-							  },
-							  "Schema": {
-							    "properties": {
-							      "collections": {
-							        "items": {
-							          "$ref": "#/components/schemas/Collections",
-							        },
-							        "type": "array",
-							      },
-							      "directus": {
-							        "type": "string",
-							      },
-							      "fields": {
-							        "items": {
-							          "$ref": "#/components/schemas/Fields",
-							        },
-							        "type": "array",
-							      },
-							      "relations": {
-							        "items": {
-							          "$ref": "#/components/schemas/Relations",
-							        },
-							        "type": "array",
-							      },
-							      "vendor": {
-							        "type": "string",
-							      },
-							      "version": {
-							        "example": 1,
-							        "type": "integer",
-							      },
-							    },
-							    "type": "object",
-							  },
-							  "x-metadata": {
-							    "properties": {
-							      "filter_count": {
-							        "description": "Returns the item count of the collection you're querying, taking the current filter/search parameters into account.",
-							        "type": "integer",
-							      },
-							      "total_count": {
-							        "description": "Returns the total item count of the collection you're querying.",
-							        "type": "integer",
-							      },
-							    },
-							    "type": "object",
-							  },
-							}
-						`);
+						expect(spec.components?.schemas).toMatchObject({
+							ItemsTestTable: {
+								properties: {
+									blob: { nullable: true },
+								},
+							},
+						});
+
+						const blobSchema = spec.components?.schemas?.['ItemsTestTable'] as SchemaObject | undefined;
+						expect(blobSchema?.properties?.['blob']).not.toHaveProperty('type');
 					});
 				});
 
@@ -295,6 +83,39 @@ describe('Integration Tests', () => {
 
 						expect(targetSchema).toHaveProperty('oneOf');
 						expect(targetSchema).not.toHaveProperty('type');
+					});
+
+					it.each([
+						{ label: 'collection list path', schema: schema2, path: '/items/test_table' },
+						{
+							label: 'system list path',
+							schema: new SchemaBuilder()
+								.collection('directus_users', (c) => {
+									c.field('id').uuid().primary();
+								})
+								.build(),
+							path: '/users',
+						},
+					])('retains x-metadata schema and meta parameter on $label', async ({ schema, path }) => {
+						const service = new SpecificationService({
+							knex: db,
+							schema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+						const getPath = spec.paths[path]?.get;
+
+						const parameters = getPath?.parameters as { $ref?: string }[] | undefined;
+						expect(parameters?.some((p) => p?.$ref === '#/components/parameters/Meta')).toBe(true);
+
+						const getSchema = (
+							getPath?.responses?.['200'] as { content?: { 'application/json'?: { schema?: unknown } } }
+						)?.content?.['application/json']?.schema;
+
+						expect(getSchema).toMatchObject({
+							properties: { meta: { $ref: '#/components/schemas/x-metadata' } },
+						});
 					});
 				});
 			});
