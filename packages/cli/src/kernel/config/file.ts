@@ -45,6 +45,7 @@ const projectSchema = z.strictObject({
 	resources: z.array(z.string()).optional(),
 	excludeResources: z.array(z.string()).optional(),
 	content: z.array(z.string()).optional(),
+	deps: z.boolean().optional(),
 	mode: z.enum(MODES).optional(),
 });
 
@@ -72,6 +73,7 @@ export interface ProjectConfig {
 	readonly resources?: readonly string[] | undefined;
 	readonly excludeResources?: readonly string[] | undefined;
 	readonly content?: readonly string[] | undefined;
+	readonly deps?: boolean | undefined;
 	readonly mode?: Mode | undefined;
 }
 
@@ -177,6 +179,19 @@ export function upsertProfile(location: ConfigLocation, name: string, profile: P
 	const profiles = { ...existingProfiles(raw, path), [name]: profile };
 	mkdirSync(dirname(path), { recursive: true });
 	writeFileAtomic(path, `${JSON.stringify({ ...raw, profiles }, null, 2)}\n`, 0o644);
+}
+
+/** Persist a project's mode so later pushes default to it; flags still override. */
+export function upsertProjectMode(path: string, project: string, mode: Mode): void {
+	const raw = readRawConfig(path);
+	const projects = isPlainObject(raw['projects']) ? (raw['projects'] as Record<string, unknown>) : {};
+	const current = isPlainObject(projects[project]) ? (projects[project] as Record<string, unknown>) : {};
+
+	writeFileAtomic(
+		path,
+		`${JSON.stringify({ ...raw, projects: { ...projects, [project]: { ...current, mode } } }, null, 2)}\n`,
+		0o644,
+	);
 }
 
 /** Remove a profile and return its URL when available. */

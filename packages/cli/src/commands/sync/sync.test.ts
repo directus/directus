@@ -462,6 +462,26 @@ describe('sync pull resources and data', () => {
 		expect(exportedCollections()).toEqual(['directus_access', 'directus_permissions', 'directus_policies']);
 	});
 
+	it('honors deps:false from project config so a CI pull can reproduce a --no-deps checkout', async () => {
+		// The spec promises every selection key on flags is available in project config; deps had no config
+		// equivalent, so a configured scope could not sever the selectable closure without someone
+		// remembering to pass --no-deps on every invocation.
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({
+				profiles: { staging: { url } },
+				projects: { default: { resources: ['roles'], deps: false } },
+			}),
+		);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptList('/roles', []);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+		expect(exportedCollections()).toEqual(['directus_roles']);
+	});
+
 	it('drops a resource and any child that only rode in through it under --exclude-resources', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);

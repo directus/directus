@@ -1,5 +1,5 @@
 import { select } from '@clack/prompts';
-import { loadConfig } from '../../kernel/config/file.js';
+import { loadConfig, upsertProjectMode } from '../../kernel/config/file.js';
 import { CliError } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
@@ -87,6 +87,11 @@ export async function wizard(ctx: CliContext): Promise<void> {
 		];
 
 		promptedMode = await ask(select({ message: 'Mode:', initialValue: 'merge', options: modeOptions }));
+
+		// Persist the answer so later pushes default to it (and later wizard runs stop asking); an explicit
+		// --mode flag still overrides.
+		upsertProjectMode(loaded.path, project, promptedMode);
+		ctx.ui.info(`Saved mode "${promptedMode}" for project "${project}" to directus.config.json.`);
 	}
 
 	await pull({ from, project, deps: true }, ctx);

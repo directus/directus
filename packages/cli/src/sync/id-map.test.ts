@@ -47,9 +47,12 @@ describe('normalizeInstanceUrl', () => {
 		expect(normalizeInstanceUrl('https://example.com:443')).toBe('https://example.com');
 	});
 
-	it('strips a bare trailing slash but keeps a real path', () => {
+	it('strips trailing slashes at the root and after a real path', () => {
+		// `/directus` and `/directus/` are SDK-equivalent; keying them apart would orphan two ID-map
+		// buckets for one instance and reduplicate every record pushed under the second spelling.
 		expect(normalizeInstanceUrl('http://example.com/')).toBe('http://example.com');
 		expect(normalizeInstanceUrl('http://example.com/directus')).toBe('http://example.com/directus');
+		expect(normalizeInstanceUrl('http://example.com/directus/')).toBe('http://example.com/directus');
 	});
 
 	it('keeps an IPv6 host and its non-default port intact', () => {

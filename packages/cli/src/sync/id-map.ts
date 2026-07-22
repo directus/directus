@@ -31,7 +31,9 @@ export function normalizeInstanceUrl(url: string): string {
 	}
 
 	const host = port === '' ? hostname : `${hostname}:${port}`;
-	const pathname = parsed.pathname === '/' ? '' : parsed.pathname;
+	// Trailing slashes are SDK-equivalent everywhere, so `/directus/` and `/directus` (and root `/`)
+	// must land in one ID-map bucket, not orphan two.
+	const pathname = parsed.pathname.replace(/\/+$/, '');
 
 	return `${protocol}//${host}${pathname}`;
 }
