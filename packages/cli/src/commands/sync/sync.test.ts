@@ -579,6 +579,36 @@ describe('sync pull resources and data', () => {
 		expect(existsSync(join(dir, 'directus'))).toBe(false);
 	});
 
+	it('writes nothing when a fetched record lacks its primary key', async () => {
+		// A key-less row (field permissions can hide the column) would land on disk as an artifact the
+		// reader refuses — a pull that "succeeds" but leaves diff/push failing STATE. The fetch boundary
+		// refuses first, and because every fetch precedes every write, the committed tree stays untouched.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptList('/roles', [{ name: 'No key' }]);
+
+		for (const path of [
+			'/policies',
+			'/access',
+			'/permissions',
+			'/flows',
+			'/operations',
+			'/dashboards',
+			'/panels',
+			'/translations',
+		]) {
+			interceptList(path, []);
+		}
+
+		interceptSingleton('/settings', { id: 1 });
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
+
+		expect(stderr.join('')).toContain('primary key');
+		expect(existsSync(join(dir, 'directus'))).toBe(false);
+	});
+
 	it('drops user-attached access rows when users are out of scope', async () => {
 		// directus-sync #148: a user-attached access row references an unsynced user (missing-FK on import).
 		// A bare pull (users out of scope) must keep only the null-user grant.
@@ -1295,6 +1325,70 @@ describe('sync push with data', () => {
 		]);
 	});
 
+	it('drops an identical content row from the batch when the target fetch succeeds', async () => {
+		// Every other content test rides the swallowed-fetch path (fetch fails → send everything,
+		// conservative), which would mask a broken /items target fetch or comparison. Here the fetch
+		// succeeds: the identical row must drop out of the batch and the changed row must ride.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		seedData([
+			{
+				collection: 'articles',
+				primaryKey: 'id',
+				records: [
+					{ id: 1, title: 'Same' },
+					{ id: 2, title: 'New' },
+				],
+			},
+		]);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+
+		interceptTarget('/items/articles', [
+			{ id: 1, title: 'Same' },
+			{ id: 2, title: 'Old' },
+		]);
+
+		let sentForm: FormData | undefined;
+
+		interceptImport(
+			{ mode: 'merge' },
+			{
+				data: {
+					applied: true,
+					mode: 'merge',
+					collections: { articles: { existing: [2], new: [], deleted: [], mapped: {} } },
+				},
+			},
+			200,
+			(form) => {
+				sentForm = form;
+			},
+		);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+
+		expect(await decodeBatch(sentForm)).toEqual([{ collection: 'articles', items: [{ id: 2, title: 'New' }] }]);
+	});
+
+	it('reports a converged content-only push without calling import', async () => {
+		// The clean state must be reachable for content too: when the target fetch proves every content
+		// row identical, the batch empties and push stops. No import intercept — a reached import throws.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Same' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+		interceptTarget('/items/articles', [{ id: 1, title: 'Same' }]);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+		expect(stderr.join('')).toContain('schema and data match; nothing to push.');
+	});
+
 	it('carries dangerouslyAllowDelete on the import when mirror runs with --allow-deletes', async () => {
 		// mirror maps to a merge import plus dangerouslyAllowDelete (the server has no wire "mirror"); the
 		// exact query match proves the destructive flag rode along only because --allow-deletes consented.
@@ -1463,9 +1557,11 @@ describe('sync push with data', () => {
 		expect(err).toMatch(/re-run|retry/i);
 	});
 
-	it('emits the PushReport data block with the source and verbatim response collections on --json', async () => {
+	it('emits the PushReport data block with the source and parsed response collections on --json', async () => {
 		// CI reads this shape: the data block is always present, carrying the mode, the source URL, and the
-		// server's per-collection response verbatim, alongside the project and schema fields.
+		// server's per-collection response as parsed at the boundary (unknown fields are stripped by the
+		// strict contract schema — this is NOT a verbatim passthrough), alongside the project and schema
+		// fields.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData(fullFixture());
@@ -1623,9 +1719,10 @@ describe('sync diff with data', () => {
 		expect(existsSync(idMapPath)).toBe(false);
 	});
 
-	it('reports the reconcile counts and the dry-run response verbatim on --json, still writing nothing', async () => {
+	it('reports the reconcile counts and the parsed dry-run response on --json, still writing nothing', async () => {
 		// CI reads the data block: the mode, the source URL, the server's per-collection dry-run response
-		// verbatim, and the reconcile tally (one matched, none pending). The id map stays absent.
+		// as parsed at the boundary (unknown fields are stripped — not a verbatim passthrough), and the
+		// reconcile tally (one matched, none pending). The id map stays absent.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 
