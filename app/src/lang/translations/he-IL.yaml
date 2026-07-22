@@ -1751,18 +1751,13 @@ fields:
     collaborative_editing: עריכה שיתופית
     collaborative_editing_enabled: הפעל עריכה שיתופית
     collaborative_editing_note: כדי שעריכה שיתופית תעבוד נדרשים WebSockets.
-    ai_notice: 'עוזר ה-AI מספק סרגל צד בתוך האפליקציה לשיחה עם LLM. לאחר ההפעלה, פתח את סרגל ה-AI מסרגל הכלים כדי לשאול שאלות, ליצור תוכן ולקבל עזרה בעבודה עם הפרויקט שלך. <a href="https://directus.io/docs/guides/ai/assistant" target="_blank">למידע נוסף על הגדרת עוזר ה-AI ושימוש בו.</a>'
     mcp_enabled: שרת MCP
-    mcp_enabled_note: 'חבר כלי AI/LLM לפרויקט Directus שלך באמצעות <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. הדבר מאפשר לעוזרי AI לקרוא את נתוני Directus שלך ולתקשר עמם באופן מאובטח.'
-    mcp_notice: 'Model Context Protocol הוא תקן לחיבור LLM ליישומים כמו Directus. לאחר ההפעלה, שרת ה-MCP של Directus יהיה זמין בכתובת `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">למידע נוסף על MCP ועל אופן ההתחברות.</a>'
     mcp_allow_deletes: אפשר מחיקות
     mcp_allow_deletes_note:
       - עלול לגרום לאובדן נתונים.</strong> מושבת כברירת מחדל מטעמי בטיחות.'
     mcp_prompts_collection: אוסף הנחיות AI
-    mcp_prompts_collection_note: 'בחר אוסף לאחסון <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">תבניות הנחיה לשימוש חוזר</a> עבור אינטראקציות AI.'
     mcp_system_prompt_divider: הגדרת הנחיית מערכת
     mcp_system_prompt_enabled: השתמש בהנחיית מערכת
-    mcp_system_prompt_enabled_note: "השתמש ב<a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>הנחיית המערכת המוגדרת כברירת מחדל</a> כדי להנחות את התנהגות ה-LLM. השבת כדי להסיר או לעקוף עם הנחיה משלך שלהלן."
     mcp_system_prompt: הנחיית מערכת מותאמת אישית
     mcp_system_prompt_note: 'הנחיית מערכת מותאמת אישית שתחליף את ברירת המחדל. השאר ריק כדי להשתמש בברירת המחדל (אם הופעלה למעלה).'
     mcp_oauth_enabled: 'OAuth מופעל'
@@ -2086,7 +2081,6 @@ mcp_prompts_collection_schema:
   messages_role_user: משתמש
   messages_role_assistant: עוזר
   messages_role_note: מי מדבר בהודעה זו.
-  meta_prompts_notice: 'הנחיות הן תבניות לשימוש חוזר שניתן להשתמש בהן עם LLM דרך שרת ה-MCP של Directus, תהליכים או יישומי AI אחרים. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">למידע נוסף על יצירת הנחיות אפקטיביות.</a>'
 expired: פג תוקף
 upcoming: קרוב
 share: שיתוף
