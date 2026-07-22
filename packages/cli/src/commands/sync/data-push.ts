@@ -132,16 +132,24 @@ export function remapSystemRecord(
 
 // Reconcile parents before children so FK components can be translated through matches made earlier in
 // this run. Resource import order is children-first, so reconciliation consumes it in reverse.
+//
+// EVERY system target is fetched — not just the natural-keyed ones — because batch assembly needs to see
+// which PKs exist on the target: the add-mode skips and the mapped-row self-heal read that set, and an
+// unfetched collection (panels has no natural key) would read as "all rows missing", resending mapped
+// rows that add-mode then duplicates under fresh UUIDs.
 async function reconcileSystem(
 	system: readonly SystemCollection[],
 	target: Target,
 	existing: Readonly<Record<string, Readonly<Record<string, string>>>>,
-): Promise<{ inputs: ReconcileInput[]; results: CollectionReconcile[] }> {
+): Promise<{
+	inputs: ReconcileInput[];
+	results: CollectionReconcile[];
+	targets: Map<string, readonly Record<string, unknown>[]>;
+}> {
 	const inputs: ReconcileInput[] = [];
+	const targets = new Map<string, readonly Record<string, unknown>[]>();
 
 	for (const { data, resource } of [...system].reverse()) {
-		if (!hasNaturalKey(resource.collection)) continue;
-
 		const targetRecords = await fetchRecords(target.credential, {
 			collection: resource.collection,
 			endpoint: resource.endpoint,
@@ -149,6 +157,10 @@ async function reconcileSystem(
 			singleton: resource.singleton,
 			drop: resource.drop,
 		});
+
+		targets.set(resource.collection, targetRecords);
+
+		if (!hasNaturalKey(resource.collection)) continue;
 
 		inputs.push({
 			collection: resource.collection,
@@ -159,7 +171,7 @@ async function reconcileSystem(
 	}
 
 	// Keep the inputs so resolving a parent ambiguity can rerun reconciliation without refetching.
-	return { inputs, results: reconcileCollections(inputs, existing) };
+	return { inputs, results: reconcileCollections(inputs, existing), targets };
 }
 
 // Prefix target IDs so arbitrary IDs cannot collide with the create/abort prompt sentinels.
@@ -271,11 +283,7 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 	const targetUrl = normalizeInstanceUrl(target.url);
 	const { system, content } = partitionCollections(collections);
 	const map = readIdMap(target.idMapPath);
-	const { inputs, results } = await reconcileSystem(system, target, mappingsFor(map, source, targetUrl));
-
-	const targets = new Map<string, readonly Record<string, unknown>[]>(
-		inputs.map((input) => [input.collection, input.targetRecords]),
-	);
+	const { inputs, results, targets } = await reconcileSystem(system, target, mappingsFor(map, source, targetUrl));
 
 	for (const data of content) {
 		try {
@@ -311,9 +319,10 @@ function fieldsEqual(payload: Record<string, unknown>, target: Record<string, un
 	return true;
 }
 
-// Three server behaviors shape the batch: add skips mapped rows to avoid duplicate inserts; merge/mirror
-// withhold an unmatched occupied numeric PK to avoid overwriting an unrelated row; mirror echoes
-// user-attached access rows when users are out of scope so deletion does not remove target-local grants.
+// Three server behaviors shape the batch: add skips every row whose PK already exists on the target
+// (mapped or not — an add-mode conflict inserts a duplicate, never an update); merge/mirror withhold an
+// unmatched occupied numeric PK to avoid overwriting an unrelated row; mirror echoes user-attached
+// access rows when users are out of scope so deletion does not remove target-local grants.
 function assembleBatch(
 	system: readonly SystemCollection[],
 	content: readonly DataCollection[],
@@ -362,6 +371,11 @@ function assembleBatch(
 
 			const result = remapSystemRecord(record, resource.collection, resource.primaryKey, bucket);
 
+			// add creates only: an unmapped row whose PK already exists on the target must be skipped, not
+			// sent — the server resolves an add-mode conflict by minting a fresh UUID (or a fresh
+			// auto-increment key), materializing a duplicate on every run.
+			if (mode === 'add' && result.sent.sentPk !== null && targetByPk.has(result.sent.sentPk)) continue;
+
 			if (mode !== 'add' && !mapped && typeof record[resource.primaryKey] === 'number' && targetByPk.has(sourceId)) {
 				delete result.record[resource.primaryKey];
 				items.push(result.record);
@@ -409,6 +423,10 @@ function assembleBatch(
 		for (const record of data.records) {
 			const pk = String(record[data.primaryKey]);
 			const targetRow = targetRows === undefined ? undefined : targetByPk.get(pk);
+
+			// add creates only: a content PK already on the target is skipped even when fields differ —
+			// an add-mode import would not update the existing row but insert a duplicate beside it.
+			if (mode === 'add' && targetRow !== undefined) continue;
 
 			if (
 				targetRow !== undefined &&

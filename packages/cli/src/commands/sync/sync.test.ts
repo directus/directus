@@ -1377,6 +1377,85 @@ describe('sync push with data', () => {
 		]);
 	});
 
+	it('fetches unkeyed system targets under add so occupied panels are skipped, not duplicated', async () => {
+		// Panels have no natural key, so they never enter reconciliation — but their target rows MUST still
+		// be fetched: an unfetched collection reads as "all rows missing", the mapped-row self-heal resends
+		// every mapped panel, and the server resolves each add-mode conflict by minting a fresh UUID. That
+		// duplicated every mapped panel on every repeated add push. Here sp1 is mapped and present (skip),
+		// sp2 is unmapped but its PK already exists on the target — shared seed ancestry — (skip), and only
+		// the genuinely new sp3 may ride the batch.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		seedData([
+			{
+				collection: 'directus_panels',
+				primaryKey: 'id',
+				records: [
+					{ id: 'sp1', name: 'Orders' },
+					{ id: 'sp2', name: 'Signups' },
+					{ id: 'sp3', name: 'Revenue' },
+				],
+			},
+		]);
+
+		writeFileSync(
+			idMapPath,
+			JSON.stringify({
+				formatVersion: 1,
+				maps: { [source]: { [url]: { directus_panels: { sp1: 'tp1' } } } },
+			}),
+		);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+
+		interceptTarget('/panels', [
+			{ id: 'tp1', name: 'Orders' },
+			{ id: 'sp2', name: 'Signups' },
+		]);
+
+		let sentForm: FormData | undefined;
+
+		interceptImport(
+			{ mode: 'add' },
+			{
+				data: {
+					applied: true,
+					mode: 'add',
+					collections: { directus_panels: { existing: [], new: ['sp3'], deleted: [], mapped: {} } },
+				},
+			},
+			200,
+			(form) => {
+				sentForm = form;
+			},
+		);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'add', '--yes')).toBe(0);
+
+		expect(await decodeBatch(sentForm)).toEqual([
+			{ collection: 'directus_panels', items: [{ id: 'sp3', name: 'Revenue' }] },
+		]);
+	});
+
+	it('skips a changed content row under add instead of inserting a duplicate', async () => {
+		// add never updates: the server resolves an existing-PK conflict by inserting a fresh row (new
+		// auto-increment key), so sending a changed row under add duplicates it. The changed row must be
+		// skipped entirely — the batch empties and push stops before import.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Changed' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+		interceptTarget('/items/articles', [{ id: 1, title: 'Old' }]);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'add', '--yes')).toBe(0);
+		expect(stderr.join('')).toContain('nothing to push.');
+	});
+
 	it('drops an identical content row from the batch when the target fetch succeeds', async () => {
 		// Every other content test rides the swallowed-fetch path (fetch fails → send everything,
 		// conservative), which would mask a broken /items target fetch or comparison. Here the fetch
