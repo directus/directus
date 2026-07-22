@@ -136,6 +136,17 @@ export function mockList(agent: MockAgent, path: string, records: Record<string,
 				headers: { authorization: `Bearer ${SYNC_TOKEN}` },
 			})
 			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
+	} else {
+		// An empty first page triggers the zero-cap probe (limit=1); a healthy instance answers 200.
+		agent
+			.get(SYNC_URL)
+			.intercept({
+				path,
+				method: 'GET',
+				query: { limit: '1', sort: 'id' },
+				headers: { authorization: `Bearer ${SYNC_TOKEN}` },
+			})
+			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
 	}
 }
 

@@ -23,19 +23,13 @@ import {
 	type Snapshot,
 } from './contract.js';
 
-// The seam between the kernel connection and the sync contract: every sync API call
-// gets its credential wiring, request timeout, error mapping, and boundary validation
-// in one place.
-
 /**
- * A scoped snapshot pull: exactly one of include/exclude, mutual exclusivity carried structurally so
- * the caller cannot express both (the server rejects that combination, mirroring the SDK options).
+ * A snapshot scope that makes include/exclude mutually exclusive by construction.
  */
 export type SnapshotScope = { readonly include: string[] } | { readonly exclude: string[] };
 
-// scope → SDK snapshot options. The SDK types include/excludeCollections as AllCollections<Schema>[] —
-// collection-name literals under a typed schema. This CLI is schema-agnostic, so the scope names arrive
-// as plain strings; widen them to the SDK option shape here, the one place the mismatch lives.
+// The CLI is schema-agnostic, while the SDK expects collection literals from a typed schema. Contain that
+// mismatch at the wire boundary.
 function snapshotOptions(scope: SnapshotScope): SchemaSnapshotOptions<CoreSchema> {
 	if ('include' in scope) return { includeCollections: scope.include as AllCollections<CoreSchema>[] };
 	return { excludeCollections: scope.exclude as AllCollections<CoreSchema>[] };
@@ -47,9 +41,7 @@ export async function fetchSnapshot(credential: ResolvedCredential, scope?: Snap
 	let response: unknown;
 
 	try {
-		// Omit the options entirely for a full snapshot so existing behavior is unchanged. When scoped,
-		// the server tags the response `version: 2`; the CLI stores that tag exactly as returned via
-		// parseSnapshot and never fabricates it.
+		// Omit options for a full snapshot; the server alone owns the returned version tag.
 		response = await client.request(scope === undefined ? schemaSnapshot() : schemaSnapshot(snapshotOptions(scope)));
 	} catch (error) {
 		throw mapRequestError(error, credential.url);
@@ -82,12 +74,8 @@ export async function applyDiff(credential: ResolvedCredential, result: DiffResu
 	const client = connect(credential);
 
 	try {
-		// The seal reaches the wire unmodified: `hash` and `diff` are exactly what /schema/diff
-		// returned, so the server re-validates that hash against its live schema and refuses on drift.
-		// SchemaDiffOutput.diff is a `Record<string, any>` stub upstream (sdk src/rest/commands/schema/
-		// diff.ts: `// TODO improve typing`); our SchemaDiff is precisely typed with no index signature,
-		// so widen it here at the wire — the narrowest place the mismatch lives. `force` is deliberately
-		// NOT exposed: it bypasses the server's hash check, and this CLI's model is sealed applies only.
+		// Preserve the server-issued hash seal and contain the SDK's broad diff typing at the wire boundary.
+		// `force` is intentionally unavailable because it bypasses drift detection.
 		await client.request(schemaApply({ hash: result.hash, diff: result.diff as SchemaDiffOutput['diff'] }));
 	} catch (error) {
 		throw mapRequestError(error, credential.url);
@@ -99,17 +87,15 @@ export async function applyDiff(credential: ResolvedCredential, result: DiffResu
  * plus the primary key the export keys on and whether the endpoint is a singleton (settings).
  */
 export interface RecordSource {
-	readonly collection: string; // e.g. 'directus_roles' or 'articles'
-	readonly endpoint: string; // '/roles' or '/items/articles'
+	readonly collection: string;
+	readonly endpoint: string;
 	readonly primaryKey: string;
 	readonly singleton: boolean;
 }
 
 /**
- * Pull one collection's records verbatim. Unlike snapshot/diff these are the user's own content, so they
- * are NOT parsed against a contract — only the envelope is validated so a broken response fails loud at
- * the seam rather than corrupting the export: a list must be an array of plain objects, a singleton one
- * plain object, otherwise HTTP naming the endpoint.
+ * Fetch system or content records. The envelope and record object shape are validated, while collection-
+ * specific fields pass through unchanged.
  */
 export async function fetchRecords(
 	credential: ResolvedCredential,
@@ -121,8 +107,6 @@ export async function fetchRecords(
 		let response: unknown;
 
 		try {
-			// A hand-rolled RestCommand (the SDK's customEndpoint form): a bare thunk returning
-			// RequestOptions. A singleton endpoint returns one object, so limit/sort/offset do not apply.
 			response = await client.request(() => ({ path: source.endpoint, method: 'GET', params: {} }));
 		} catch (error) {
 			throw mapRequestError(error, credential.url);
@@ -135,14 +119,8 @@ export async function fetchRecords(
 		return [response as Record<string, unknown>];
 	}
 
-	// limit -1 asks for the whole collection, but a deployment that sets QUERY_LIMIT_MAX silently clamps
-	// -1 down to that cap (api sanitize-query), while an explicit limit above the cap is REJECTED (api
-	// validate-query) — so one request can truncate the fetch with no error, and a truncated fetch is data
-	// loss downstream: a mirror deletes every row it did not see, and the collision guard cannot see an
-	// occupied PK beyond the cap. Page by offset until an EMPTY response: exhaustion-by-emptiness is the
-	// only stop condition that works whether or not a cap exists, because a short page is
-	// indistinguishable from a clamped one. The primary-key sort keeps pages stable; offset is omitted on
-	// the first request so the single-request wire shape is unchanged.
+	// QUERY_LIMIT_MAX can silently clamp limit=-1, and a short page is indistinguishable from a clamped one.
+	// Continue until an empty page so mirror never mistakes a truncated fetch for the complete collection.
 	const records: Record<string, unknown>[] = [];
 
 	for (;;) {
@@ -151,7 +129,6 @@ export async function fetchRecords(
 		let response: unknown;
 
 		try {
-			// A hand-rolled RestCommand (the SDK's customEndpoint form): a bare thunk returning RequestOptions.
 			response = await client.request(() => ({
 				path: source.endpoint,
 				method: 'GET',
@@ -165,7 +142,33 @@ export async function fetchRecords(
 			throw new CliError('HTTP', `The ${source.endpoint} response was not an array of records.`);
 		}
 
-		if (response.length === 0) return records;
+		if (response.length === 0) {
+			// An empty FIRST page is ambiguous: a genuinely empty collection, or QUERY_LIMIT_MAX=0 — the
+			// server accepts a zero cap (sanitize-query checks `>= 0`) and clamps limit=-1 to zero rows,
+			// which reads exactly like emptiness. Mirror would turn that into "delete every target row",
+			// so the two must be split: validate-query rejects any explicit limit above the cap, so a
+			// limit=1 probe answers 400 on a zero-cap instance and 200 on a healthy one.
+			if (records.length === 0) {
+				try {
+					await client.request(() => ({
+						path: source.endpoint,
+						method: 'GET',
+						params: { limit: 1, sort: source.primaryKey },
+					}));
+				} catch (error) {
+					throw new CliError(
+						'CONFIG',
+						`The instance rejected a limit=1 read of ${source.endpoint} after an empty limit=-1 read — QUERY_LIMIT_MAX is 0, so every list reads as empty.`,
+						{
+							hint: 'A zero row cap would export empty collections and let a mirror push delete real target rows. Fix QUERY_LIMIT_MAX on the instance, then re-run.',
+							detail: mapRequestError(error, credential.url).message,
+						},
+					);
+				}
+			}
+
+			return records;
+		}
 
 		records.push(...(response as Record<string, unknown>[]));
 	}
@@ -182,10 +185,7 @@ export interface ImportBatchInput {
 	readonly dangerouslyAllowDelete?: boolean;
 }
 
-// The extensions the server attaches to an import failure the CLI can explain: the cyclical-relation
-// error carries the cycle it found, any other carries just its code. Dug out the same way
-// mapRequestError reads the code, so a shape drift degrades to the generic mapped error rather than
-// throwing here.
+// Import-specific extensions are optional; shape drift falls back to the generic mapped error.
 function importErrorExtensions(error: unknown): Record<string, unknown> | undefined {
 	if (!isDirectusError(error)) return undefined;
 
@@ -204,9 +204,6 @@ function importErrorExtensions(error: unknown): Record<string, unknown> | undefi
 	return undefined;
 }
 
-// Render the cycle the server reported into a single detail line: the collections that form it and the
-// non-nullable relations holding it together (`collection.field → related`). Values are stringified
-// defensively — this is failure-path presentation, not a validated contract.
 function renderCycle(extensions: Record<string, unknown>): string {
 	const collections = Array.isArray(extensions['collections']) ? (extensions['collections'] as unknown[]) : [];
 	const relations = Array.isArray(extensions['relations']) ? (extensions['relations'] as unknown[]) : [];
@@ -224,10 +221,7 @@ function renderCycle(extensions: Record<string, unknown>): string {
 	return `Cycle among ${collectionText}${suffix}.`;
 }
 
-// Turn a mapped import failure into one that explains the two import-specific failure modes push cannot
-// otherwise diagnose. A cyclical relation names the cycle and points at the fix (make one relation
-// nullable); a missing foreign key points at the likely cause (an out-of-scope reference or an unsynced
-// dependency). Any other error passes through as mapRequestError left it.
+// Add actionable context for import failures whose raw server messages do not identify the remedy.
 function enrichImportError(mapped: CliError, error: unknown): CliError {
 	const extensions = importErrorExtensions(error);
 
@@ -247,12 +241,8 @@ function enrichImportError(mapped: CliError, error: unknown): CliError {
 }
 
 /**
- * Import a flat batch of records through POST /utils/import. The payload is a multipart FILE upload: a
- * single JSON file whose content is the `[{collection, items}]` array (the server reads the first file
- * part regardless of field name and requires its mimetype to be application/json — see api
- * read-file-upload-body.ts and read-multipart-file.ts). Node's native FormData/Blob build it; the SDK
- * strips the placeholder multipart Content-Type so fetch sets the boundary. The response is parsed at
- * the boundary; a cyclical-relation or missing-FK failure is enriched here so push stays presentational.
+ * Import a flat record batch as the JSON multipart file required by `/utils/import`, validating the
+ * response and enriching actionable import failures at the boundary.
  */
 export async function importBatch(
 	credential: ResolvedCredential,
@@ -261,8 +251,6 @@ export async function importBatch(
 ): Promise<ImportBatchResult> {
 	const client = connect(credential);
 
-	// Only defined flags reach the params, so mode always rides and dryRun/dangerouslyAllowDelete appear
-	// exactly when true — a clean, deterministic query string.
 	const params = {
 		mode: options.mode,
 		...(options.dryRun === true ? { dryRun: true } : {}),

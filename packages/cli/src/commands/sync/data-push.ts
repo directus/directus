@@ -26,77 +26,56 @@ import {
 import { allResources, type Resource } from '../../sync/resources.js';
 import type { Target } from './resolve-target.js';
 
-// The data phase of push, orchestrated: read the committed records, remap their primary keys and static
-// FK fields from source-instance space into target space (seeding the ID map first via reconcile where a
-// natural key allows), and hand push a flat import batch plus the map-update bookkeeping. The remap and
-// batch-assembly logic is pure and unit-tested; the network fetch, prompting, and map persistence live
-// here so push stays composition-and-gates only.
-
 /**
- * The pre-remap source id paired with the primary key actually sent for one system record. push needs
- * both to update the map after import: the map entry is sourceId → (server-remapped pk ?? sentPk). A null
- * sentPk means the primary key was withheld (the collision guard stripped an occupied numeric PK): the
- * server assigned an id the response cannot report, so no map entry may be written — the next push
- * reconciles the created row by natural key instead.
+ * A source ID and the primary key sent for it. A null sent PK means the server assigned an ID that its
+ * import response cannot report, so the next push must reconcile it by natural key.
  */
 export interface SentRecord {
 	readonly sourceId: string;
 	readonly sentPk: string | null;
 }
 
+/** Records sent for one system collection, used to update the ID map after import. */
 export interface SystemSent {
 	readonly collection: string;
 	readonly records: readonly SentRecord[];
 }
 
 /**
- * Sent target PKs known to be byte-identical on the target already, per collection. The server reports
- * every PK-present row as `existing` whether or not anything differs, so this client-side set is what
- * lets a summary distinguish "updated" from "already right" — and lets a converged push read as the
- * no-op it is.
+ * Target rows whose exported fields already match. The server reports every PK-present row as `existing`,
+ * so this set distinguishes actual updates from rows sent only to survive mirror deletion.
  */
 export type UnchangedRows = ReadonlyMap<string, ReadonlySet<string>>;
 
-/**
- * A prepared data push: the flat batch to import, the per-system-collection send record for the map
- * update, and the map/urls push persists the import response into. Content collections carry no send
- * record — they are never reconciled and their primary keys pass through as-is.
- */
+/** A prepared data import and the identity state needed to process its response. */
 export interface DataPushPlan {
 	readonly skipped: false;
-	readonly source: string; // normalized source-instance URL, from the data's metadata
-	readonly target: string; // normalized target-instance URL
+	readonly source: string;
+	readonly target: string;
 	readonly idMapPath: string;
-	readonly map: IdMap; // the map after reconcile matches were persisted
+	readonly map: IdMap;
 	readonly batch: ImportCollectionData[];
 	readonly systemSent: readonly SystemSent[];
-	readonly unchanged: UnchangedRows; // rows kept in a mirror batch (or dropped from merge/add) as already-right
-	readonly records: number; // total records across the batch
-	readonly collections: number; // batch entries (system + content)
+	readonly unchanged: UnchangedRows;
+	readonly records: number;
+	readonly collections: number;
 }
 
-/**
- * The skip outcome: an older checkout committed schema without data. push must still run (schema-only)
- * and report the data phase as skipped rather than failing.
- */
+/** A schema-only checkout with no committed data generation. */
 export interface DataPushSkipped {
 	readonly skipped: true;
 }
 
 export type DataPushResult = DataPushPlan | DataPushSkipped;
 
-// One committed collection matched to its resource definition (endpoint, primary key, FK table). System
-// collections carry a resource; content collections do not.
 interface SystemCollection {
 	readonly data: DataCollection;
 	readonly resource: Resource;
 }
 
 /**
- * Partition the committed collections into system (a resolveResources graph member — remappable, and
- * reconcilable when it has a natural key) and content (everything else, passed through untouched). System
- * order is the resource graph's dependency order so a child's FK translates through a parent already
- * seeded this run; content is codepoint-sorted after.
+ * Partition committed collections into known system resources and user content. System resources follow
+ * graph order; content collections are codepoint-sorted.
  */
 export function partitionCollections(collections: readonly DataCollection[]): {
 	system: SystemCollection[];
@@ -123,11 +102,8 @@ export function partitionCollections(collections: readonly DataCollection[]): {
 }
 
 /**
- * One system record rewritten from source space into target space. The primary key and every static FK
- * field (SYSTEM_FK_FIELDS) are replaced when the bucket for the referenced collection holds a mapping; a
- * miss leaves the value verbatim — an in-batch new record the server links, or a genuinely dangling
- * reference the server rejects, never a guess. A null/undefined FK is a legitimate value and untouched.
- * Pure: the input record is never mutated.
+ * Rewrite a system record into target ID space without mutating the input. Missing mappings and nullish
+ * foreign keys remain unchanged; the server must resolve or reject them.
  */
 export function remapSystemRecord(
 	record: Record<string, unknown>,
@@ -154,16 +130,8 @@ export function remapSystemRecord(
 	return { record: remapped, sent: { sourceId, sentPk: targetPk ?? sourceId } };
 }
 
-// Fetch each reconcilable system collection's target records and reconcile them against the committed
-// source records, against the committed map bucket. panels and content are excluded upstream — reconcile
-// throws on a collection with no natural key by design.
-//
-// Order matters and is the REVERSE of the batch's resolveResources order. reconcile translates a child's
-// FK natural-key components through parents already matched this run, so it needs referenced-before-
-// referencer order (roles before access, flows before operations). resolveResources emits its must-pull
-// order — referencer first (policies must-pull access, so access precedes policies) — which is exactly
-// that reverse. Consuming it reversed here gives reconcile the parents-first order its contract demands;
-// passing the forward order would leave every access/operations row unmatched (untranslatable parent FK).
+// Reconcile parents before children so FK components can be translated through matches made earlier in
+// this run. Resource import order is children-first, so reconciliation consumes it in reverse.
 async function reconcileSystem(
 	system: readonly SystemCollection[],
 	target: Target,
@@ -189,40 +157,28 @@ async function reconcileSystem(
 		});
 	}
 
-	// The inputs ride along with the results: a resolved ambiguity can require another reconcile pass
-	// (see prepareDataPush), which reuses these fetched records rather than fetching the target again.
+	// Keep the inputs so resolving a parent ambiguity can rerun reconciliation without refetching.
 	return { inputs, results: reconcileCollections(inputs, existing) };
 }
 
-// The clack select value for one ambiguity choice, encoded as a string so the option list is a single
-// value type. A target id is prefixed 'target:' — an injective encoding, so it can never collide with the
-// fixed 'create' (leave unmapped; the server inserts and remaps) or 'abort' sentinels even if an id
-// happens to spell one of them.
+// Prefix target IDs so arbitrary IDs cannot collide with the create/abort prompt sentinels.
 const TARGET_PREFIX = 'target:';
 
-// One reconcile result's unambiguous matches as sourceId → targetId. Shared by the two consumers so the
-// seed shape is identical whether push persists it or preview folds it into an in-memory map.
 function matchedEntries(result: CollectionReconcile): Record<string, string> {
 	const entries: Record<string, string> = {};
 	for (const match of result.matched) entries[match.sourceId] = match.targetId;
 	return entries;
 }
 
-// The outcome of one resolveMatches pass over a reconcile run.
 interface ResolvedMatches {
-	// collection → (sourceId → targetId): every unambiguous match, plus each ambiguity answered with a target.
 	readonly seeds: ReadonlyMap<string, Record<string, string>>;
-	// Every prompted ambiguity, whatever the answer — the caller excludes these from any further reconcile
-	// pass so no question is ever asked twice.
+	// Excluded from later passes so an ambiguity is never prompted twice.
 	readonly decided: readonly { collection: string; sourceId: string }[];
-	// Whether some ambiguity was answered with an EXISTING target — the only answer that adds a mapping a
-	// child's FK key component could newly translate through ('create' maps nothing).
+	// Only an existing-target answer can unlock a child's FK reconciliation.
 	readonly resolvedExisting: boolean;
 }
 
-// Resolve reconcile into the map seeds to persist: every unambiguous match, plus each ambiguity's answer.
-// Interactive asks per ambiguity (pick a candidate, create new, or abort); non-interactive refuses loud,
-// listing every ambiguity so the operator can resolve them all in one interactive run.
+// Interactive pushes resolve ambiguities; non-interactive pushes report all of them and stop.
 async function resolveMatches(results: readonly CollectionReconcile[], ctx: CliContext): Promise<ResolvedMatches> {
 	const seeds = new Map<string, Record<string, string>>();
 
@@ -250,11 +206,7 @@ async function resolveMatches(results: readonly CollectionReconcile[], ctx: CliC
 	const decided: { collection: string; sourceId: string }[] = [];
 	let resolvedExisting = false;
 
-	// Targets already taken by an earlier answer this pass, per collection. Two sources sharing a natural
-	// key are offered the same candidate list, and letting both claim one target would bind two sources to
-	// a single row — every later push would have them overwriting each other on it (last write wins)
-	// instead of each keeping its own record. A taken target leaves the next prompt's options; when none
-	// remain, only create/abort do.
+	// One target cannot represent two sources; remove targets claimed by earlier answers in this pass.
 	const taken = new Map<string, Set<string>>();
 
 	for (const item of ambiguities) {
@@ -292,10 +244,6 @@ async function resolveMatches(results: readonly CollectionReconcile[], ctx: CliC
 	return { seeds, decided, resolvedExisting };
 }
 
-// The read-only output of readAndReconcile: the committed data split into system/content, the reconcile
-// results against the target, and the map exactly as read. Both callers share this stem but consume it
-// differently — push persists the matches, preview keeps them in memory — so it holds only facts, no
-// decisions about what to write.
 interface Reconciled {
 	readonly skipped: false;
 	readonly source: string;
@@ -303,25 +251,14 @@ interface Reconciled {
 	readonly system: readonly SystemCollection[];
 	readonly content: readonly DataCollection[];
 	readonly map: IdMap;
-	// The fetched source/target record pairs behind `results`, kept so a caller that learns new mappings
-	// (a resolved ambiguity) can reconcile again without fetching the target a second time.
+	// Retained so a resolved ambiguity can trigger another pass without refetching.
 	readonly inputs: readonly ReconcileInput[];
 	readonly results: readonly CollectionReconcile[];
-	// Target rows per collection, for the unchanged comparison: system rows reuse the reconcile fetch,
-	// content rows are fetched here. A content collection absent from this map could not be fetched (not
-	// on the target yet, or a permission gap): comparison is skipped for it and every row rides as a
-	// change — never a false "unchanged".
+	// Missing entries disable unchanged detection, keeping every source row in the batch.
 	readonly targets: ReadonlyMap<string, readonly Record<string, unknown>[]>;
 }
 
-// The read-and-reconcile stem both entries share: an absent data directory (or an empty committed set) is
-// a schema-only checkout that skips rather than fails; otherwise read {source, collections}, split
-// system/content, and reconcile the reconcilable system collections against the target's current records
-// and the committed map. Strictly READ-ONLY — it fetches and computes but never prompts and never writes —
-// so push and preview can never diverge on what "the same record" means before one of them acts on it.
 async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSkipped> {
-	// An absent data directory is a schema-only checkout: skip rather than fail. A present directory with
-	// no source recorded, or corruption, fails loud inside readDataFiles — never silently skipped.
 	if (!hasDataFiles(target.dataDir)) {
 		return { skipped: true };
 	}
@@ -350,38 +287,20 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 					singleton: false,
 				}),
 			);
-		} catch {
-			// Swallowed deliberately: an unfetchable content collection (its schema may not exist on the
-			// target until this very push applies it) just skips the unchanged comparison. The real import
-			// surfaces any genuine failure loudly.
+		} catch (error) {
+			// The collection may not exist until schema apply. On such fetch failures, keep every source row
+			// in the batch; the import remains authoritative and may still report the underlying failure.
+			// A CONFIG refusal (zero QUERY_LIMIT_MAX) must NOT be swallowed: it means every fetch is blind,
+			// and under mirror a blind batch deletes the target rows the echo could not see.
+			if (error instanceof CliError && error.code === 'CONFIG') throw error;
 		}
 	}
 
 	return { skipped: false, source, targetUrl, system, content, map, inputs, results, targets };
 }
 
-// Remap every system record into target space through `bucket` and assemble the flat import batch in
-// system-then-content order: a system record's PK and static FKs are rewritten and its (sourceId, sentPk)
-// captured for the post-import map update; content records pass through codepoint-sorted and verbatim.
-// Pure — the caller chooses which bucket to remap against (push's persisted map, preview's in-memory one).
-//
-// The mode and the fetched target records shape the batch three ways, each closing a verified server
-// hazard (api/src/services/import/import.ts):
-// - add: a record already mapped to a target row is SKIPPED. The server's add path inserts
-//   unconditionally (regenerating occupied uuids, re-sequencing autoincrements), so re-sending a settled
-//   record would mint another duplicate on every run.
-// - merge/mirror: an UNMATCHED record whose numeric PK is occupied on the target has its PK withheld
-//   (sentPk null). The server's merge treats an occupied PK as "the same record" and would silently
-//   overwrite the unrelated row — autoincrement ids carry no identity. Occupied uuids are left alone:
-//   equal uuids are shared lineage, and updating is the correct read.
-// - mirror: when access rides without users, the target's own user-attached access rows are echoed into
-//   the batch verbatim. The server's mirror delete removes every target row absent from the batch, and
-//   pull deliberately exports only null-user grants — without the echo, every user grant on the target
-//   would be destroyed (the directus-sync #148 class).
-// Whether a payload is already represented verbatim on the target: every exported field deep-equals the
-// target row's value. The PK is excluded (equal by construction for a mapped row, and its string/number
-// spelling differs between the map and the wire); fields only the target carries (user_created, defaults)
-// are ignored — the exported subset is the entire claim a sync makes.
+// Compare only exported fields; target-only defaults and audit columns are outside the sync claim. The PK
+// is excluded because mapped rows already establish identity and wire/map representations may differ.
 function fieldsEqual(payload: Record<string, unknown>, target: Record<string, unknown>, pkField: string): boolean {
 	for (const [key, value] of Object.entries(payload)) {
 		if (key === pkField) continue;
@@ -391,6 +310,9 @@ function fieldsEqual(payload: Record<string, unknown>, target: Record<string, un
 	return true;
 }
 
+// Three server behaviors shape the batch: add skips mapped rows to avoid duplicate inserts; merge/mirror
+// withhold an unmatched occupied numeric PK to avoid overwriting an unrelated row; mirror echoes
+// user-attached access rows when users are out of scope so deletion does not remove target-local grants.
 function assembleBatch(
 	system: readonly SystemCollection[],
 	content: readonly DataCollection[],
@@ -405,10 +327,7 @@ function assembleBatch(
 
 	const includesUsers = system.some((entry) => entry.resource.collection === 'directus_users');
 
-	// Record an already-right row and answer whether it must still ride in the batch. Under mirror it
-	// rides — absence from the batch means deletion — and summaries subtract it from the server's
-	// indiscriminate `existing`; under merge/add there is nothing to import, so it is dropped (and the
-	// server never rewrites or reports it). Recorded either way, so the tally is mode-independent.
+	// Mirror must carry unchanged rows to prevent deletion; merge/add can omit them.
 	function markUnchanged(collection: string, pk: string): boolean {
 		const set = unchanged.get(collection) ?? new Set<string>();
 		set.add(pk);
@@ -429,7 +348,16 @@ function assembleBatch(
 			const sourceId = String(record[resource.primaryKey]);
 			const mapped = Object.hasOwn(collectionBucket, sourceId);
 
-			if (mode === 'add' && mapped) continue;
+			if (mode === 'add' && mapped) {
+				// add skips mapped rows to avoid duplicate inserts — but only while the mapped target row
+				// still exists. A row deleted on the target would otherwise stay missing forever with no
+				// signal (merge/mirror self-heal by sending the mapped PK; add's skip never would). When the
+				// fetched target set proves the row absent, fall through: the remapped record imports under
+				// its mapped PK, restoring the row without minting a new identity.
+				const mappedPk = collectionBucket[sourceId];
+
+				if (mappedPk === undefined || targetByPk.has(mappedPk)) continue;
+			}
 
 			const result = remapSystemRecord(record, resource.collection, resource.primaryKey, bucket);
 
@@ -471,8 +399,7 @@ function assembleBatch(
 	}
 
 	for (const data of content) {
-		// No fetched target rows (schema not on the target yet, or the fetch failed) means comparison is
-		// impossible: every row rides as a change, exactly the pre-comparison behavior.
+		// Without target rows, unchanged detection stays conservative and sends every source row.
 		const targetRows = targets.get(data.collection);
 		const targetByPk = new Map((targetRows ?? []).map((row) => [String(row[data.primaryKey]), row]));
 
@@ -501,14 +428,8 @@ function assembleBatch(
 }
 
 /**
- * Prepare the data phase, or report it skipped. Reconcile the reconcilable system collections against the
- * target and persist the matches immediately (identity facts survive an aborted push), prompting on
- * ambiguity (interactive) or refusing loud (CI); then remap every record through the updated map and
- * assemble the batch plus the send record push needs to fold the import response back into the map.
- * An ambiguity answered with an existing target triggers another reconcile pass, so a child that mapping
- * unlocks matches its target row too instead of importing as a duplicate insert. The mode shapes the
- * batch (add skips settled records; merge/mirror guard occupied numeric PKs; mirror echoes the target's
- * user-attached access rows) — see assembleBatch.
+ * Reconcile system identities, persist resolved matches, and prepare the import batch. An existing-target
+ * ambiguity answer reruns reconciliation so newly translatable child keys do not import as duplicates.
  */
 export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContext): Promise<DataPushResult> {
 	const reconciled = await readAndReconcile(target);
@@ -517,15 +438,8 @@ export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContex
 
 	const { source, targetUrl, system, content, inputs, targets } = reconciled;
 
-	// Persist matches BEFORE remapping so a later aborted push keeps the identities it learned, then
-	// recompute the bucket from the updated map for the remap.
-	//
-	// Reconcile again whenever a pass resolved an ambiguity to an existing target: while a parent was
-	// ambiguous, a child keyed through its FK was untranslatable and sat unmatched — the answer's mapping
-	// is what lets it match, and without the extra pass it would import as an insert, duplicating the
-	// target's child row. The pass reuses the already-fetched inputs, minus every prompted source (whatever
-	// the answer), so no ambiguity is ever asked twice; a pass that resolves nothing to a target ends the
-	// loop, and each continuing pass consumed at least one ambiguity, so it terminates.
+	// Persist learned identities even if a later gate aborts. Existing-target answers can unlock child FK
+	// keys, so rerun with cached inputs while excluding every source already prompted.
 	let map = reconciled.map;
 	let results = reconciled.results;
 	const decided = new Map<string, Set<string>>();
@@ -579,31 +493,24 @@ export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContex
 	};
 }
 
-/**
- * A read-only preview of the data phase for diff: the batch a push would import (remapped through the
- * unambiguous matches only) and the reconcile tally. No map, no send record, no idMapPath — nothing here
- * is ever written back to disk.
- */
+/** A read-only, conservative data batch preview plus reconciliation counts. */
 export interface DataPreviewPlan {
 	readonly skipped: false;
-	readonly source: string; // normalized source-instance URL, from the data's metadata
+	readonly source: string;
 	readonly batch: ImportCollectionData[];
-	readonly unchanged: UnchangedRows; // already-right rows a mirror batch keeps (merge/add drop them)
-	readonly records: number; // total records across the batch, after unchanged rows were dropped
-	readonly matchedCount: number; // sources matched to a target this run — applied to the batch in memory
-	readonly ambiguousCount: number; // sources with several candidate targets — only an interactive push resolves them
-	readonly unmatchedCount: number; // sources with no target match yet — a first push inserts and remaps them
-	readonly unchangedCount: number; // rows proven byte-identical on the target — not changes at all
+	readonly unchanged: UnchangedRows;
+	readonly records: number;
+	readonly matchedCount: number;
+	readonly ambiguousCount: number;
+	readonly unmatchedCount: number;
+	readonly unchangedCount: number;
 }
 
 export type DataPreviewResult = DataPreviewPlan | DataPushSkipped;
 
 /**
- * Preview the data phase for diff (spec Q15) WITHOUT prompting or writing: reconcile, seed only the
- * unambiguous matches into an in-memory copy of the map so the remapped batch is truthful, and count the
- * ambiguous and unmatched sources rather than resolving them. The on-disk map is never touched — the hard
- * invariant of diff — so an ambiguity is reported for the first push to settle, never guessed here. The
- * mode shapes the batch exactly as push's would (see assembleBatch), so the dry-run previews the true one.
+ * Preview without prompting or writing. Unambiguous matches are applied in memory; ambiguous sources stay
+ * unmapped, so an interactive push may produce a different batch after the operator resolves them.
  */
 export async function previewData(target: Target, mode: Mode): Promise<DataPreviewResult> {
 	const reconciled = await readAndReconcile(target);
@@ -612,9 +519,7 @@ export async function previewData(target: Target, mode: Mode): Promise<DataPrevi
 
 	const { source, targetUrl, system, content, results, targets } = reconciled;
 
-	// withMappings is pure, so seeding these matches grows a fresh map object and never writes the file.
-	// Ambiguous sources are deliberately left unmapped: the preview's dry-run then shows them as the
-	// inserts a first push would create, and they are tallied for the reconcile note.
+	// Seed only unambiguous matches into the in-memory map; diff never settles identity choices.
 	let map = reconciled.map;
 	let matchedCount = 0;
 	let ambiguousCount = 0;
