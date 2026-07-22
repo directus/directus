@@ -22,7 +22,7 @@ properties:
     example: Admins have access to all managed data within the system by default.
     type: string
   users:
-    description: Users assigned to this role (reverse of `directus_users.role`).
+    description: Users assigned to this role.
     type: array
     items:
       oneOf:
