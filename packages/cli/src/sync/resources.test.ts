@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { CliError } from '../kernel/error.js';
-import { resolveResources, SELECTABLE_RESOURCES } from './resources.js';
+import { SYSTEM_FK_FIELDS } from './fk-map.js';
+import { hasNaturalKey } from './reconcile.js';
+import { allResources, resolveResources, SELECTABLE_RESOURCES } from './resources.js';
 
 function names(requested: string[], options?: { deps?: boolean }): string[] {
 	return resolveResources(requested, options).map((resource) => resource.name);
@@ -144,6 +146,26 @@ describe('resolveResources', () => {
 			expect(Array.isArray(resource.strip)).toBe(true);
 			expect(Array.isArray(resource.aliases)).toBe(true);
 		}
+	});
+
+	it('gives every resource explicit FK facts and an explicit natural-key state', () => {
+		// The resource facts live in three tables (graph, SYSTEM_FK_FIELDS, reconcile's natural keys) and
+		// both lookups fail QUIET on a missing entry: `?? []` skips FK remapping and a missing natural key
+		// reads as "not reconcilable" — for a forgotten new resource that means silently corrupted imports,
+		// not an error. This pins the facts as total: every synced collection must own an FK row (even an
+		// empty one) and must reconcile by natural key unless it is named here as deliberately keyless.
+		const missingFkFacts = allResources()
+			.filter((resource) => !Object.hasOwn(SYSTEM_FK_FIELDS, resource.collection))
+			.map((resource) => resource.collection);
+
+		expect(missingFkFacts).toEqual([]);
+
+		const keyless = allResources()
+			.filter((resource) => !hasNaturalKey(resource.collection))
+			.map((resource) => resource.collection);
+
+		// panels has no natural key on the server (name is nullable) — the one recorded exception.
+		expect(keyless).toEqual(['directus_panels']);
 	});
 
 	it('offers only the selectable names, sorted, never the dependent-only children', () => {
