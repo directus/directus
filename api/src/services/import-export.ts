@@ -34,7 +34,7 @@ import { dump as toYAML } from 'js-yaml';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import type { Knex } from 'knex';
-import { set } from 'lodash-es';
+import { toPath } from 'lodash-es';
 import ms, { type StringValue } from 'ms';
 import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
@@ -665,12 +665,26 @@ export class ImportService {
 								return;
 							}
 
-							const result: Record<string, unknown> = {};
+							// A CSV column header is a user-controlled object path (dotted headers create nested
+							// values). Build the row on a null-prototype object we own and create every intermediate
+							// node the same way, so a header like `toString.call` is just an own key and can never
+							// walk into (and corrupt) a shared builtin the way lodash `set` would. See
+							// GHSA-gwvv-rr68-cmv6.
+							const result: Record<string, unknown> = Object.create(null);
 
 							for (const field in obj) {
-								if (obj[field] !== undefined) {
-									set(result, field, obj[field]);
+								if (obj[field] === undefined) continue;
+
+								const segments = toPath(field);
+								let node: Record<string, any> = result;
+
+								for (let i = 0; i < segments.length - 1; i += 1) {
+									const key = segments[i]!;
+									if (typeof node[key] !== 'object' || node[key] === null) node[key] = Object.create(null);
+									node = node[key];
 								}
+
+								node[segments[segments.length - 1]!] = obj[field];
 							}
 
 							saveQueue.push({ data: result, rowNumber });
