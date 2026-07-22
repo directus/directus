@@ -4,9 +4,14 @@ import { SELECTABLE_RESOURCES } from '../../sync/resources.js';
 import { diff, type DiffOptions } from './diff.js';
 import { pull, type PullOptions } from './pull.js';
 import { push, type PushOptions } from './push.js';
+import { wizard } from './wizard.js';
 
 export function registerSync(program: Command, getContext: () => CliContext): void {
 	const sync = program.command('sync').description('Sync schema and configuration between Directus instances');
+
+	// Bare `d6s sync` runs the interactive wizard (spec Q13). Commander fires a parent's action only when
+	// no subcommand is given, so the subcommands below still work and `d6s sync --help` still prints help.
+	sync.action(() => wizard(getContext()));
 
 	sync
 		.command('pull')
@@ -29,12 +34,14 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 		.command('diff')
 		.description('Show what a push would change on the target. Changes nothing')
 		.requiredOption('--to <profile>', 'Target profile name')
-		// merge is the CLI default even though the server defaults to mirror: additive is the path of
-		// least surprise, so a caller opts into deletions rather than getting them by omission.
+		// No commander default on --mode: an absent flag lets diff resolve flag > project config mode >
+		// merge, exactly as push does, so a per-project `mode` is honored and the preview matches the push.
 		.addOption(
-			new Option('--mode <mode>', 'merge (additive) or mirror (includes deletions)')
-				.choices(['merge', 'mirror'])
-				.default('merge'),
+			new Option('--mode <mode>', 'add (only new records), merge (additive), or mirror (includes deletions)').choices([
+				'add',
+				'merge',
+				'mirror',
+			]),
 		)
 		.option('--project <name>', 'Project scope to sync (default: default)', 'default')
 		.action((options: DiffOptions) => diff(options, getContext()));
