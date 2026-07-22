@@ -65,6 +65,16 @@ export function resolveMode(flag: Mode | undefined, projectConfig: ProjectConfig
 }
 
 /**
+ * Whether the data phase has nothing left to do: no committed data at all, or a checked batch with
+ * nothing to send — EXCEPT under mirror, where an empty collection entry is itself an instruction (the
+ * server deletes every target row absent from the batch), so a mirror batch always dry-runs and imports
+ * no matter how few records it carries. Exported so diff answers "is the data a no-op" identically.
+ */
+export function dataPhaseConverged(data: { skipped: true } | { skipped: false; records: number }, mode: Mode): boolean {
+	return data.skipped || (data.records === 0 && mode !== 'mirror');
+}
+
+/**
  * Run the data import as a dry-run — the server executes it and rolls it back — and summarize the plan.
  * Returns both the raw per-collection result (diff persists it into the --json payload) and the rendered
  * summary (the human plan and the deletion gate read it), so diff and push preview the same import through
@@ -152,10 +162,10 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	const schemaTotal = schema.added + schema.modified + schema.deleted;
 
 	// Both empty is the command's answer, not a failure: exit 0 and never reach an apply or import call.
-	// "Empty" data is either no committed data at all, or a checked batch with nothing left to send —
-	// every record proven already right on the target (impossible under mirror, whose batch keeps its
-	// rows for the delete semantics, so no deletion is ever skipped here).
-	if (result === null && (dataResult.skipped || dataResult.records === 0)) {
+	// "Empty" data is either no committed data at all, or a checked merge/add batch with nothing left to
+	// send — every record proven already right on the target. Mirror never takes this path: even an empty
+	// collection entry instructs the server to delete, so its batch always proceeds to the dry-run/import.
+	if (result === null && dataPhaseConverged(dataResult, mode)) {
 		if (ctx.ui.json) {
 			ctx.ui.data({
 				kind: 'PushReport',
@@ -191,12 +201,12 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	let dataSummary: ImportSummary | undefined;
 
 	if (ctx.interactive && !dataResult.skipped) {
-		// An empty batch has nothing to dry-run (and the server has nothing to plan): the summary is the
-		// explicit zero, not a wire call.
-		dataSummary =
-			dataResult.records === 0
-				? emptyImportSummary()
-				: (await dryRunImport(credential, dataResult.batch, mode, dataResult.unchanged)).summary;
+		// A converged merge/add batch has nothing to dry-run (and the server has nothing to plan): the
+		// summary is the explicit zero, not a wire call. A mirror batch always dry-runs — its deletions
+		// live server-side and the batch content alone cannot name them.
+		dataSummary = dataPhaseConverged(dataResult, mode)
+			? emptyImportSummary()
+			: (await dryRunImport(credential, dataResult.batch, mode, dataResult.unchanged)).summary;
 	}
 
 	const dataDeleted = dataSummary?.deleted ?? 0;
@@ -297,9 +307,9 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	let importResult: ImportBatchResult | undefined;
 
-	if (!dataResult.skipped && dataResult.records === 0) {
-		// A checked batch with nothing left to send: every record is already right on the target. The
-		// interactive plan already said so; say it here for the CI log, which saw no plan.
+	if (!dataResult.skipped && dataPhaseConverged(dataResult, mode)) {
+		// A checked merge/add batch with nothing left to send: every record is already right on the target.
+		// The interactive plan already said so; say it here for the CI log, which saw no plan.
 		if (dataSummary === undefined) ctx.ui.info('no data changes to import.');
 	} else if (!dataResult.skipped) {
 		ctx.ui.info(`importing ${count(dataResult.collections, 'collection')}…`);
@@ -361,7 +371,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	let dataSentence = ' Data phase skipped (no committed data).';
 
-	if (!dataResult.skipped && dataResult.records === 0) {
+	if (!dataResult.skipped && dataPhaseConverged(dataResult, mode)) {
 		dataSentence = ' No data changes to import.';
 	}
 

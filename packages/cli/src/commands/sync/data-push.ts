@@ -250,9 +250,18 @@ async function resolveMatches(results: readonly CollectionReconcile[], ctx: CliC
 	const decided: { collection: string; sourceId: string }[] = [];
 	let resolvedExisting = false;
 
+	// Targets already taken by an earlier answer this pass, per collection. Two sources sharing a natural
+	// key are offered the same candidate list, and letting both claim one target would bind two sources to
+	// a single row — every later push would have them overwriting each other on it (last write wins)
+	// instead of each keeping its own record. A taken target leaves the next prompt's options; when none
+	// remain, only create/abort do.
+	const taken = new Map<string, Set<string>>();
+
 	for (const item of ambiguities) {
+		const claimed = taken.get(item.collection) ?? new Set<string>();
+
 		const options: { value: string; label: string }[] = [
-			...item.targetIds.map((id) => ({ value: `${TARGET_PREFIX}${id}`, label: id })),
+			...item.targetIds.filter((id) => !claimed.has(id)).map((id) => ({ value: `${TARGET_PREFIX}${id}`, label: id })),
 			{ value: 'create', label: 'Create a new record' },
 			{ value: 'abort', label: 'Abort the push' },
 		];
@@ -269,8 +278,12 @@ async function resolveMatches(results: readonly CollectionReconcile[], ctx: CliC
 		decided.push({ collection: item.collection, sourceId: item.sourceId });
 
 		if (choice.startsWith(TARGET_PREFIX)) {
+			const targetId = choice.slice(TARGET_PREFIX.length);
+			claimed.add(targetId);
+			taken.set(item.collection, claimed);
+
 			const entries = seeds.get(item.collection) ?? {};
-			entries[item.sourceId] = choice.slice(TARGET_PREFIX.length);
+			entries[item.sourceId] = targetId;
 			seeds.set(item.collection, entries);
 			resolvedExisting = true;
 		}
