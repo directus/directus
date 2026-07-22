@@ -1288,6 +1288,9 @@ importers:
       joi:
         specifier: 'catalog:'
         version: 18.0.1
+      jose:
+        specifier: 'catalog:'
+        version: 6.2.3
       js-yaml:
         specifier: 'catalog:'
         version: 4.1.1

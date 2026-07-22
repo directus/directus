@@ -19,6 +19,7 @@ import { transaction } from '../../utils/transaction.js';
 import { Url } from '../../utils/url.js';
 import { ActivityService } from '../activity.js';
 import { type CimdMetadata, detectClientIdType, fetchCimdMetadata, getAllowedDomains } from './cimd.js';
+import { ASSERTION_CLOCK_TOLERANCE_SECONDS, verifyClientAssertion } from './jwks.js';
 import { OAuthError } from './types/error.js';
 import { isDomainAllowed } from './utils/domain.js';
 import { matchRedirectUri, validateRedirectUri } from './utils/redirect.js';
@@ -31,6 +32,9 @@ export { validateRedirectUri } from './utils/redirect.js';
 
 const DEFAULT_UNUSED_CLIENT_TTL_MS = 3 * 24 * 60 * 60 * 1000; // 3d -- matches env default
 const DEFAULT_CIMD_TTL_MS = 3_600_000; // 1 hour
+const ASSERTION_MAX_BYTES = 16 * 1024;
+const CLIENT_ID_MAX_LENGTH = 255;
+const ASSERTION_REPLAY_MARKER_EXTRA_TTL_SECONDS = 5;
 const MAX_REDIRECT_URIS = 10;
 const MAX_CLIENT_NAME_LENGTH = 200;
 
@@ -38,6 +42,7 @@ const MAX_CLIENT_NAME_LENGTH = 200;
 const CONSENT_JWT_TYP = 'directus-mcp-consent+jwt';
 /** Consent JWT audience -- binds the token to the decision endpoint */
 const CONSENT_JWT_AUD = 'mcp-oauth-authorize-decision';
+const CLIENT_ASSERTION_TYPE_JWT_BEARER = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer';
 
 function parseStringArrayField(value: unknown, field: string): string[] {
 	let parsed = value;
@@ -92,6 +97,8 @@ export interface AuthParams {
 	client_id?: string;
 	client_secret?: string;
 	authorization_header?: string;
+	client_assertion_type?: string;
+	client_assertion?: string;
 }
 
 /** RFC 6749 Section 4.1.3 token request (authorization_code grant). */
@@ -138,8 +145,16 @@ const CODE_VERIFIER_RE = /^[A-Za-z0-9\-._~]{43,128}$/;
 /** RFC 7636 Section 4.2: S256 code_challenge is base64url-encoded SHA-256 (always 43 chars) */
 const CODE_CHALLENGE_S256_RE = /^[A-Za-z0-9_-]{43}$/;
 
-/** RFC 6749 Section 9 token endpoint auth methods supported by this server */
-const SUPPORTED_TOKEN_AUTH_METHODS = ['none', 'client_secret_basic', 'client_secret_post'] as const;
+/** OAuth token endpoint auth methods advertised when CIMD is disabled. */
+const DISCOVERY_SHARED_TOKEN_AUTH_METHODS = ['none', 'client_secret_basic', 'client_secret_post'] as const;
+
+/** OAuth token endpoint auth methods advertised when CIMD is enabled. */
+const DISCOVERY_CIMD_TOKEN_AUTH_METHODS = [...DISCOVERY_SHARED_TOKEN_AUTH_METHODS, 'private_key_jwt'] as const;
+
+/** RFC 7591 DCR accepts only public/shared-secret client methods. */
+const DCR_ACCEPTED_TOKEN_AUTH_METHODS = ['none', 'client_secret_basic', 'client_secret_post'] as const;
+
+const PRIVATE_KEY_JWT_SIGNING_ALGS = ['RS256'] as const;
 
 /** SHA-256 hash hex format guard (64 hex chars = 256 bits) */
 const SHA256_HEX_RE = /^[0-9a-f]{64}$/;
@@ -181,6 +196,163 @@ function getStringParam(params: Record<string, unknown>, key: string, redirectab
 	}
 
 	return value;
+}
+
+function hasAssertionParams(params: AuthParams): boolean {
+	return params.client_assertion_type !== undefined || params.client_assertion !== undefined;
+}
+
+function readAssertionIssuerSubject(assertion: string): { iss: string; sub: string } {
+	if (typeof assertion !== 'string' || Buffer.byteLength(assertion, 'utf8') > ASSERTION_MAX_BYTES) {
+		throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+	}
+
+	const segments = assertion.split('.');
+
+	if (segments.length !== 3) {
+		throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+	}
+
+	let payload: unknown;
+
+	try {
+		payload = JSON.parse(Buffer.from(segments[1]!, 'base64url').toString('utf8'));
+	} catch {
+		throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+	}
+
+	if (!isObject(payload)) {
+		throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+	}
+
+	const iss = payload['iss'];
+	const sub = payload['sub'];
+
+	if (typeof iss !== 'string' || typeof sub !== 'string' || iss.length === 0 || sub.length === 0 || iss !== sub) {
+		throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+	}
+
+	return { iss, sub };
+}
+
+function decodeAssertionClientIdForLookup(assertion: string): string {
+	const { iss } = readAssertionIssuerSubject(assertion);
+
+	if (iss.length > CLIENT_ID_MAX_LENGTH || detectClientIdType(iss) !== 'cimd') {
+		throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+	}
+
+	return iss;
+}
+
+function tryDecodeAssertionClientId(assertion: string | undefined): string | undefined {
+	if (assertion === undefined) return undefined;
+
+	try {
+		return decodeAssertionClientIdForLookup(assertion);
+	} catch {
+		return undefined;
+	}
+}
+
+function tryDecodeAssertionClientIdForMismatch(assertion: string | undefined): string | undefined {
+	if (assertion === undefined) return undefined;
+
+	try {
+		return readAssertionIssuerSubject(assertion).iss;
+	} catch {
+		return undefined;
+	}
+}
+
+function addClientStateAbsenceChecks(
+	query: Knex.QueryBuilder,
+	options: { includeConsents?: boolean } = {},
+): Knex.QueryBuilder {
+	if (options.includeConsents) {
+		query.whereNotExists(function () {
+			this.select(1)
+				.from('directus_oauth_consents')
+				.whereColumn('directus_oauth_consents.client', 'directus_oauth_clients.client_id');
+		});
+	}
+
+	return query
+		.whereNotExists(function () {
+			this.select(1)
+				.from('directus_sessions')
+				.whereColumn('directus_sessions.oauth_client', 'directus_oauth_clients.client_id');
+		})
+		.whereNotExists(function () {
+			this.select(1)
+				.from('directus_oauth_tokens')
+				.whereColumn('directus_oauth_tokens.client', 'directus_oauth_clients.client_id');
+		})
+		.whereNotExists(function () {
+			this.select(1)
+				.from('directus_oauth_client_assertions')
+				.whereColumn('directus_oauth_client_assertions.client', 'directus_oauth_clients.client_id');
+		});
+}
+
+function preflightCimdAuthorizationParams(params: Record<string, unknown>, redirectUri: string | undefined): void {
+	if (!redirectUri) {
+		throw new OAuthError(400, 'invalid_request', 'redirect_uri is required');
+	}
+
+	validateRedirectUri(redirectUri);
+	checkDuplicateParams(params, POST_TRUST_DUPLICATE_PARAMS, false);
+
+	const responseType = getStringParam(params, 'response_type', false);
+	const codeChallenge = getStringParam(params, 'code_challenge', false);
+	const codeChallengeMethod = getStringParam(params, 'code_challenge_method', false);
+	const scope = getStringParam(params, 'scope', false);
+	const resource = getStringParam(params, 'resource', false);
+	const responseMode = getStringParam(params, 'response_mode', false);
+
+	if (!responseType) {
+		throw new OAuthError(400, 'invalid_request', 'response_type is required');
+	}
+
+	if (responseType !== 'code') {
+		throw new OAuthError(400, 'unsupported_response_type', 'Only response_type code is supported');
+	}
+
+	if (!codeChallenge) {
+		throw new OAuthError(400, 'invalid_request', 'code_challenge is required');
+	}
+
+	if (!CODE_CHALLENGE_S256_RE.test(codeChallenge)) {
+		throw new OAuthError(400, 'invalid_request', 'code_challenge must be a valid S256 challenge');
+	}
+
+	if (!codeChallengeMethod || codeChallengeMethod !== 'S256') {
+		throw new OAuthError(400, 'invalid_request', 'code_challenge_method must be S256');
+	}
+
+	const parsedScopes = parseOAuthScope(scope);
+	const requestedScopes = parsedScopes.length > 0 ? parsedScopes : [MCP_ACCESS_SCOPE];
+
+	if (!requestedScopes.includes(MCP_ACCESS_SCOPE)) {
+		throw new OAuthError(400, 'invalid_scope', 'Scope must include mcp:access');
+	}
+
+	if (responseMode && responseMode !== 'query') {
+		throw new OAuthError(400, 'invalid_request', 'Only response_mode query is supported');
+	}
+
+	const env = useEnv();
+	const { resourceUrl: expectedResource } = getMcpUrls();
+	const requireResource = env['MCP_OAUTH_REQUIRE_RESOURCE'] === true;
+	const resolvedResource = resource || (!requireResource ? expectedResource : null);
+
+	if (!resolvedResource) {
+		throw new OAuthError(400, 'invalid_target', 'resource is required');
+	}
+
+	if (resolvedResource !== expectedResource) {
+		throw new OAuthError(400, 'invalid_target', 'resource does not match the protected resource');
+	}
 }
 
 /**
@@ -251,6 +423,7 @@ export class McpOAuthService {
 		const authorizationEndpoint = new Url(baseUrl).addPath('mcp-oauth', 'authorize');
 		const tokenEndpoint = new Url(baseUrl).addPath('mcp-oauth', 'token');
 		const revocationEndpoint = new Url(baseUrl).addPath('mcp-oauth', 'revoke');
+		const authMethods = cimdEnabled ? DISCOVERY_CIMD_TOKEN_AUTH_METHODS : DISCOVERY_SHARED_TOKEN_AUTH_METHODS;
 
 		const metadata: Record<string, unknown> = {
 			issuer: issuerUrl,
@@ -259,8 +432,8 @@ export class McpOAuthService {
 			revocation_endpoint: revocationEndpoint.toString(),
 			response_types_supported: ['code'],
 			grant_types_supported: ['authorization_code', 'refresh_token'],
-			token_endpoint_auth_methods_supported: SUPPORTED_TOKEN_AUTH_METHODS,
-			revocation_endpoint_auth_methods_supported: SUPPORTED_TOKEN_AUTH_METHODS,
+			token_endpoint_auth_methods_supported: authMethods,
+			revocation_endpoint_auth_methods_supported: authMethods,
 			code_challenge_methods_supported: ['S256'],
 			scopes_supported: [MCP_ACCESS_SCOPE],
 			response_modes_supported: ['query'],
@@ -274,6 +447,8 @@ export class McpOAuthService {
 
 		if (cimdEnabled) {
 			metadata['client_id_metadata_document_supported'] = true;
+			metadata['token_endpoint_auth_signing_alg_values_supported'] = PRIVATE_KEY_JWT_SIGNING_ALGS;
+			metadata['revocation_endpoint_auth_signing_alg_values_supported'] = PRIVATE_KEY_JWT_SIGNING_ALGS;
 		}
 
 		return metadata;
@@ -396,7 +571,7 @@ export class McpOAuthService {
 		// RFC 7591 Section 2: defaults to client_secret_basic if omitted
 		const authMethod = input['token_endpoint_auth_method'] ?? 'client_secret_basic';
 
-		if (!SUPPORTED_TOKEN_AUTH_METHODS.includes(authMethod as string)) {
+		if (!(DCR_ACCEPTED_TOKEN_AUTH_METHODS as readonly string[]).includes(authMethod as string)) {
 			rejectRegistration('invalid_client_metadata', `Unsupported token_endpoint_auth_method: ${authMethod}`);
 		}
 
@@ -536,6 +711,16 @@ export class McpOAuthService {
 		// Validate client_id exists -- resolveClientWithFetch handles DCR DB lookup and CIMD fetch/cache
 		if (!clientId) {
 			throw new OAuthError(400, 'invalid_request', 'client_id is required');
+		}
+
+		const clientIdType = detectClientIdType(clientId);
+
+		if (clientIdType === null) {
+			throw new OAuthError(400, 'invalid_request', 'Invalid client_id or redirect_uri');
+		}
+
+		if (clientIdType === 'cimd') {
+			preflightCimdAuthorizationParams(params, redirectUri);
 		}
 
 		const client = await this.resolveClientWithFetch(clientId);
@@ -836,15 +1021,21 @@ export class McpOAuthService {
 		const preAuthClient = await this.resolveClientFromDb(resolvedClientId);
 
 		if (!preAuthClient) {
+			if (hasAssertionParams(params)) {
+				throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+			}
+
 			throw new OAuthError(400, 'invalid_grant', 'Authorization code is invalid or has expired');
 		}
 
-		this.authenticateClient(preAuthClient, params, basicAuth);
+		await this.authenticateClient(preAuthClient, params, basicAuth, this.getTokenEndpointAudiences());
 
 		const tokenEndpointAuthMethod = preAuthClient['token_endpoint_auth_method'];
 
-		const isAuthenticatedConfidentialClient =
-			tokenEndpointAuthMethod === 'client_secret_basic' || tokenEndpointAuthMethod === 'client_secret_post';
+		const canRevokeGrantOnCodeReplay =
+			tokenEndpointAuthMethod === 'client_secret_basic' ||
+			tokenEndpointAuthMethod === 'client_secret_post' ||
+			tokenEndpointAuthMethod === 'private_key_jwt';
 
 		// 1. RFC 6749 Section 4.1.3: required token request params
 		if (!params.grant_type) {
@@ -904,7 +1095,7 @@ export class McpOAuthService {
 			if (burned === 0) {
 				logger.warn({ code_hash: codeHash }, 'Authorization code already used');
 
-				if (isAuthenticatedConfidentialClient) {
+				if (canRevokeGrantOnCodeReplay) {
 					await this.revokeGrantByCodeHash(trx, codeHash, resolvedClientId);
 				}
 
@@ -1099,10 +1290,14 @@ export class McpOAuthService {
 
 		// Collapse client existence + grant type errors to prevent enumeration
 		if (!client) {
+			if (hasAssertionParams(params)) {
+				throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+			}
+
 			throw new OAuthError(400, 'invalid_grant', 'Invalid refresh token');
 		}
 
-		this.authenticateClient(client, params, basicAuth);
+		await this.authenticateClient(client, params, basicAuth, this.getTokenEndpointAudiences());
 
 		const clientGrantTypes = parseStringArrayField(client['grant_types'], 'grant_types');
 
@@ -1312,7 +1507,7 @@ export class McpOAuthService {
 			throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
 		}
 
-		this.authenticateClient(client, params, basicAuth);
+		await this.authenticateClient(client, params, basicAuth, this.getRevocationEndpointAudiences());
 
 		// RFC 7009 Section 2.1: token REQUIRED
 		if (!params.token) {
@@ -1374,6 +1569,9 @@ export class McpOAuthService {
 		const now = new Date();
 		const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
 
+		// Delete expired client assertion replay markers.
+		await this.knex('directus_oauth_client_assertions').where('expires_at', '<', now).delete();
+
 		// 1. Delete expired unused codes
 		await this.knex('directus_oauth_codes').where('expires_at', '<', now).whereNull('used_at').delete();
 
@@ -1423,19 +1621,28 @@ export class McpOAuthService {
 			.leftJoin('directus_oauth_consents', 'directus_oauth_clients.client_id', 'directus_oauth_consents.client')
 			.leftJoin('directus_sessions', 'directus_oauth_clients.client_id', 'directus_sessions.oauth_client')
 			.leftJoin('directus_oauth_tokens', 'directus_oauth_clients.client_id', 'directus_oauth_tokens.client')
+			.leftJoin(
+				'directus_oauth_client_assertions',
+				'directus_oauth_clients.client_id',
+				'directus_oauth_client_assertions.client',
+			)
 			.whereNull('directus_oauth_consents.id')
 			.whereNull('directus_sessions.token')
 			.whereNull('directus_oauth_tokens.id')
+			.whereNull('directus_oauth_client_assertions.jti_hash')
 			.where('directus_oauth_clients.date_created', '<', unusedCutoff)
 			.select('directus_oauth_clients.client_id');
 
 		if (neverAuthorizedClients.length > 0) {
-			await this.knex('directus_oauth_clients')
-				.whereIn(
-					'client_id',
-					neverAuthorizedClients.map((c) => c.client_id),
-				)
-				.delete();
+			await addClientStateAbsenceChecks(
+				this.knex('directus_oauth_clients')
+					.whereIn(
+						'client_id',
+						neverAuthorizedClients.map((c) => c.client_id),
+					)
+					.where('date_created', '<', unusedCutoff),
+				{ includeConsents: true },
+			).delete();
 		}
 
 		// 5b. Tier 2: Idle authorized clients (have consents but no active sessions/grants)
@@ -1447,8 +1654,14 @@ export class McpOAuthService {
 			const idleAuthorizedClients = await this.knex('directus_oauth_clients')
 				.leftJoin('directus_sessions', 'directus_oauth_clients.client_id', 'directus_sessions.oauth_client')
 				.leftJoin('directus_oauth_tokens', 'directus_oauth_clients.client_id', 'directus_oauth_tokens.client')
+				.leftJoin(
+					'directus_oauth_client_assertions',
+					'directus_oauth_clients.client_id',
+					'directus_oauth_client_assertions.client',
+				)
 				.whereNull('directus_sessions.token')
 				.whereNull('directus_oauth_tokens.id')
+				.whereNull('directus_oauth_client_assertions.jti_hash')
 				.where('directus_oauth_clients.date_created', '<', idleCutoff)
 				.whereNotIn(
 					'directus_oauth_clients.client_id',
@@ -1457,12 +1670,18 @@ export class McpOAuthService {
 				.select('directus_oauth_clients.client_id');
 
 			if (idleAuthorizedClients.length > 0) {
-				await this.knex('directus_oauth_clients')
-					.whereIn(
-						'client_id',
-						idleAuthorizedClients.map((c) => c.client_id),
-					)
-					.delete();
+				await addClientStateAbsenceChecks(
+					this.knex('directus_oauth_clients')
+						.whereIn(
+							'client_id',
+							idleAuthorizedClients.map((c) => c.client_id),
+						)
+						.where('date_created', '<', idleCutoff)
+						.whereNotIn(
+							'client_id',
+							neverAuthorizedClients.map((c) => c.client_id),
+						),
+				).delete();
 			}
 		}
 	}
@@ -1625,7 +1844,19 @@ export class McpOAuthService {
 
 		const clientId = headerClientId ?? bodyClientId;
 
+		const assertionClientId = clientId
+			? tryDecodeAssertionClientIdForMismatch(params.client_assertion)
+			: tryDecodeAssertionClientId(params.client_assertion);
+
+		if (clientId && assertionClientId && assertionClientId !== clientId) {
+			throw new OAuthError(400, 'invalid_request', 'client_id mismatch between assertion and request');
+		}
+
 		if (!clientId) {
+			if (params.client_assertion !== undefined) {
+				return { clientId: assertionClientId ?? decodeAssertionClientIdForLookup(params.client_assertion), basicAuth };
+			}
+
 			throw new OAuthError(400, 'invalid_request', 'client_id is required');
 		}
 
@@ -1634,16 +1865,27 @@ export class McpOAuthService {
 
 	private static readonly WWW_AUTH_BASIC = { 'WWW-Authenticate': 'Basic realm="directus"' };
 
+	private getTokenEndpointAudiences(): string[] {
+		const env = useEnv();
+		return [new Url(env['PUBLIC_URL'] as string).addPath('mcp-oauth', 'token').toString()];
+	}
+
+	private getRevocationEndpointAudiences(): string[] {
+		const env = useEnv();
+		return [new Url(env['PUBLIC_URL'] as string).addPath('mcp-oauth', 'revoke').toString()];
+	}
+
 	/**
 	 * Enforce that the request matches the client's registered auth method exactly.
 	 * Accepts pre-parsed Basic auth from resolveClientId to avoid double decoding.
 	 * If preParsedBasicAuth is not provided, parses from params.authorization_header.
 	 */
-	authenticateClient(
+	async authenticateClient(
 		clientRecord: Record<string, unknown>,
 		params: AuthParams,
 		preParsedBasicAuth?: { clientId: string; clientSecret: string } | null,
-	): void {
+		acceptedAudiences = this.getTokenEndpointAudiences(),
+	): Promise<void> {
 		const authMethod = clientRecord['token_endpoint_auth_method'] as string;
 
 		const basicAuth =
@@ -1651,8 +1893,14 @@ export class McpOAuthService {
 
 		const hasBasicHeader = basicAuth !== null;
 		const hasBodySecret = typeof params.client_secret === 'string' && params.client_secret.length > 0;
+		const hasBodySecretParam = params.client_secret !== undefined;
+		const hasClientAssertionParams = hasAssertionParams(params);
 
 		if (authMethod === 'none') {
+			if (hasClientAssertionParams) {
+				throw new OAuthError(400, 'invalid_request', 'client_assertion not allowed for public clients');
+			}
+
 			if (hasBasicHeader) {
 				throw new OAuthError(400, 'invalid_request', 'Authorization header not allowed for public clients');
 			}
@@ -1665,6 +1913,10 @@ export class McpOAuthService {
 		}
 
 		if (authMethod === 'client_secret_basic') {
+			if (hasClientAssertionParams) {
+				throw new OAuthError(400, 'invalid_request', 'client_assertion not allowed for client_secret_basic');
+			}
+
 			if (hasBodySecret) {
 				throw new OAuthError(400, 'invalid_request', 'client_secret in body not allowed for client_secret_basic');
 			}
@@ -1684,6 +1936,10 @@ export class McpOAuthService {
 		}
 
 		if (authMethod === 'client_secret_post') {
+			if (hasClientAssertionParams) {
+				throw new OAuthError(400, 'invalid_request', 'client_assertion not allowed for client_secret_post');
+			}
+
 			if (hasBasicHeader) {
 				throw new OAuthError(400, 'invalid_request', 'Authorization header not allowed for client_secret_post');
 			}
@@ -1696,7 +1952,126 @@ export class McpOAuthService {
 			return;
 		}
 
+		if (authMethod === 'private_key_jwt') {
+			await this.authenticatePrivateKeyJwtClient(clientRecord, params, {
+				hasBasicHeader,
+				hasBodySecretParam,
+				acceptedAudiences,
+			});
+
+			return;
+		}
+
 		throw new OAuthError(401, 'invalid_client', 'Unsupported authentication method');
+	}
+
+	private async authenticatePrivateKeyJwtClient(
+		clientRecord: Record<string, unknown>,
+		params: AuthParams,
+		options: { hasBasicHeader: boolean; hasBodySecretParam: boolean; acceptedAudiences: string[] },
+	): Promise<void> {
+		const env = useEnv();
+
+		if (!toBoolean(env['MCP_OAUTH_CIMD_ENABLED'])) {
+			throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+		}
+
+		const settings = await this.knex('directus_settings').select('mcp_oauth_cimd_enabled').first();
+
+		if (!toBoolean(settings?.mcp_oauth_cimd_enabled)) {
+			throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+		}
+
+		if (
+			clientRecord['registration_type'] !== 'cimd' ||
+			clientRecord['token_endpoint_auth_method'] !== 'private_key_jwt' ||
+			typeof clientRecord['jwks_uri'] !== 'string' ||
+			clientRecord['jwks_uri'].length === 0 ||
+			clientRecord['token_endpoint_auth_signing_alg'] !== 'RS256'
+		) {
+			throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+		}
+
+		const hasClientAssertionParams = hasAssertionParams(params);
+
+		// A client assertion is its own authentication method. Mixing it with Basic or client_secret would make
+		// failures ambiguous and could let clients accidentally fall back to shared-secret authentication.
+		if (!hasClientAssertionParams && options.hasBasicHeader) {
+			throw new OAuthError(
+				401,
+				'invalid_client',
+				'Client authentication failed',
+				false,
+				McpOAuthService.WWW_AUTH_BASIC,
+			);
+		}
+
+		if (!hasClientAssertionParams && options.hasBodySecretParam) {
+			throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+		}
+
+		if (hasClientAssertionParams && (options.hasBasicHeader || options.hasBodySecretParam)) {
+			throw new OAuthError(
+				400,
+				'invalid_request',
+				'Basic auth and client_secret are not allowed with client_assertion',
+			);
+		}
+
+		if (params.client_assertion_type !== CLIENT_ASSERTION_TYPE_JWT_BEARER) {
+			throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+		}
+
+		if (typeof params.client_assertion !== 'string' || params.client_assertion.length === 0) {
+			throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+		}
+
+		const clientId = params.client_id ?? (clientRecord['client_id'] as string | undefined);
+
+		if (!clientId) {
+			throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+		}
+
+		if (
+			typeof params.client_id === 'string' &&
+			typeof clientRecord['client_id'] === 'string' &&
+			params.client_id !== clientRecord['client_id']
+		) {
+			throw new OAuthError(400, 'invalid_request', 'client_id mismatch between request and stored client');
+		}
+
+		const verified = await verifyClientAssertion({
+			clientId,
+			jwksUri: clientRecord['jwks_uri'] as string,
+			assertion: params.client_assertion,
+			acceptedAudiences: options.acceptedAudiences,
+		});
+
+		await this.insertClientAssertionReplayMarker(clientId, verified.claims.jti, verified.claims.exp);
+	}
+
+	private async insertClientAssertionReplayMarker(clientId: string, jti: string, exp: number): Promise<void> {
+		// Hash client_id + jti before storage so the replay table enforces uniqueness without retaining raw
+		// assertion identifiers from client-controlled JWTs.
+		const row = {
+			client: clientId,
+			jti_hash: crypto.createHash('sha256').update(`${clientId}\0${jti}`).digest('hex'),
+			expires_at: new Date(
+				(exp + ASSERTION_CLOCK_TOLERANCE_SECONDS + ASSERTION_REPLAY_MARKER_EXTRA_TTL_SECONDS) * 1000,
+			),
+		};
+
+		try {
+			await this.knex('directus_oauth_client_assertions').insert(row);
+		} catch (err) {
+			const translated = await translateDatabaseError(err, row);
+
+			if (translated instanceof RecordNotUniqueError) {
+				throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+			}
+
+			throw err;
+		}
 	}
 
 	/** Timing-safe secret verification with hex format guard and length pre-check. */
@@ -1759,6 +2134,8 @@ export class McpOAuthService {
 			redirect_uris: JSON.stringify(metadata.redirect_uris),
 			grant_types: JSON.stringify(metadata.grant_types),
 			token_endpoint_auth_method: metadata.token_endpoint_auth_method,
+			jwks_uri: metadata.jwks_uri ?? null,
+			token_endpoint_auth_signing_alg: metadata.token_endpoint_auth_signing_alg ?? null,
 			registration_type: 'cimd',
 			client_uri: metadata.client_uri ?? null,
 			logo_uri: metadata.logo_uri ?? null,
@@ -1869,6 +2246,8 @@ export class McpOAuthService {
 			redirect_uris: JSON.stringify(metadata.redirect_uris),
 			grant_types: JSON.stringify(metadata.grant_types),
 			token_endpoint_auth_method: metadata.token_endpoint_auth_method,
+			jwks_uri: metadata.jwks_uri ?? null,
+			token_endpoint_auth_signing_alg: metadata.token_endpoint_auth_signing_alg ?? null,
 			client_uri: metadata.client_uri ?? null,
 			logo_uri: metadata.logo_uri ?? null,
 			tos_uri: metadata.tos_uri ?? null,

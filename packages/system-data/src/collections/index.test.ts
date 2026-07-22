@@ -43,6 +43,16 @@ describe('systemCollectionRows', () => {
 		const uniqueNames = new Set(collectionNames);
 		expect(collectionNames.length).toBe(uniqueNames.size);
 	});
+
+	test('should register OAuth client assertions as a hidden system collection without accountability', () => {
+		const collection = systemCollectionRows.find((row) => row.collection === 'directus_oauth_client_assertions');
+
+		expect(collection).toMatchObject({
+			collection: 'directus_oauth_client_assertions',
+			hidden: true,
+			accountability: null,
+		});
+	});
 });
 
 describe('systemCollectionNames', () => {

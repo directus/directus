@@ -126,6 +126,11 @@ data:
     note: $t:directus_collection.directus_oauth_clients
     accountability: null
 
+  - collection: directus_oauth_client_assertions
+    note: $t:directus_collection.directus_oauth_client_assertions
+    accountability: null
+    hidden: true
+
   - collection: directus_oauth_codes
     note: $t:directus_collection.directus_oauth_codes
     accountability: null

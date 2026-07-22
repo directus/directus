@@ -57,20 +57,22 @@ vi.mock('../activity.js', () => ({
 	})),
 }));
 
+const mockLogger = vi.hoisted(() => ({
+	debug: vi.fn(),
+	info: vi.fn(),
+	warn: vi.fn(),
+	error: vi.fn(),
+}));
+
 vi.mock('../../logger/index.js', () => ({
-	useLogger: () => ({
-		debug: vi.fn(),
-		info: vi.fn(),
-		warn: vi.fn(),
-		error: vi.fn(),
-	}),
+	useLogger: () => mockLogger,
 }));
 
 const mockDetectClientIdType = vi.fn().mockReturnValue('dcr');
 const mockFetchCimdMetadata = vi.fn();
 const mockGetAllowedDomains = vi.fn().mockReturnValue([]);
 const mockIsDomainAllowed = vi.fn().mockReturnValue(true);
-const mockValidateCimdHostnameEgress = vi.fn().mockResolvedValue(undefined);
+const mockValidateMcpOAuthHostnameEgress = vi.fn().mockResolvedValue(undefined);
 
 vi.mock('./cimd.js', () => ({
 	detectClientIdType: (...args: unknown[]) => mockDetectClientIdType(...args),
@@ -79,12 +81,12 @@ vi.mock('./cimd.js', () => ({
 	isDomainAllowed: (...args: unknown[]) => mockIsDomainAllowed(...args),
 }));
 
-vi.mock('./utils/cimd-egress.js', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('./utils/cimd-egress.js')>();
+vi.mock('./utils/mcp-oauth-egress.js', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('./utils/mcp-oauth-egress.js')>();
 
 	return {
 		...actual,
-		validateCimdHostnameEgress: (...args: unknown[]) => mockValidateCimdHostnameEgress(...args),
+		validateMcpOAuthHostnameEgress: (...args: unknown[]) => mockValidateMcpOAuthHostnameEgress(...args),
 	};
 });
 
@@ -92,6 +94,18 @@ const mockTranslateDatabaseError = vi.fn().mockResolvedValue(new Error('unknown'
 
 vi.mock('../../database/errors/translate.js', () => ({
 	translateDatabaseError: (...args: unknown[]) => mockTranslateDatabaseError(...args),
+}));
+
+const mockVerifyClientAssertion = vi.fn();
+
+vi.mock('./jwks.js', () => ({
+	ASSERTION_CLOCK_TOLERANCE_SECONDS: 60,
+	verifyClientAssertion: (...args: unknown[]) => mockVerifyClientAssertion(...args),
+	JwksVerificationError: class JwksVerificationError extends Error {
+		constructor() {
+			super('Client authentication failed');
+		}
+	},
 }));
 
 const consentKey = crypto.createHmac('sha256', TEST_SECRET).update('mcp-oauth-consent-v1').digest();
@@ -126,6 +140,7 @@ const confidentialMethods = [
 const TEST_PUBLIC_URL = 'https://example.com';
 const TEST_RESOURCE_URL = `${TEST_PUBLIC_URL}/mcp`;
 const TEST_REDIRECT_URI = 'https://client.example.com/callback';
+const CLIENT_ASSERTION_TYPE = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer';
 
 // --- Test factories ---
 
@@ -159,6 +174,29 @@ function createGrantRow(overrides: Record<string, unknown> = {}) {
 		expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
 		date_created: new Date(),
 		...overrides,
+	};
+}
+
+function createUnverifiedAssertionPayload(payload: Record<string, unknown>) {
+	const encode = (value: unknown) => Buffer.from(JSON.stringify(value)).toString('base64url');
+	return `${encode({ alg: 'RS256', typ: 'JWT' })}.${encode(payload)}.signature`;
+}
+
+function createVerifiedAssertion(clientId: string, overrides: Record<string, unknown> = {}) {
+	const now = Math.floor(Date.now() / 1000);
+
+	return {
+		header: { alg: 'RS256' },
+		payload: {},
+		claims: {
+			iss: clientId,
+			sub: clientId,
+			aud: `${TEST_PUBLIC_URL}/mcp-oauth/token`,
+			jti: crypto.randomUUID(),
+			iat: now,
+			exp: now + 300,
+			...overrides,
+		},
 	};
 }
 
@@ -215,13 +253,24 @@ describe('McpOAuthService', () => {
 		mockFetchCimdMetadata.mockReset();
 		mockGetAllowedDomains.mockReturnValue([]);
 		mockIsDomainAllowed.mockReturnValue(true);
-		mockValidateCimdHostnameEgress.mockResolvedValue(undefined);
+		mockValidateMcpOAuthHostnameEgress.mockResolvedValue(undefined);
 		mockTranslateDatabaseError.mockResolvedValue(new Error('unknown'));
+		mockVerifyClientAssertion.mockReset();
 		vi.clearAllMocks();
 	});
 
 	function queryHistory(op: 'select' | 'insert' | 'update' | 'delete', table: string) {
 		return tracker.history[op].filter((q: any) => q.sql.includes(table));
+	}
+
+	function mutationValue(query: { sql: string; bindings: unknown[] }, column: string) {
+		const columns =
+			query.sql
+				.match(/\((.*)\) values/i)?.[1]
+				?.split(',')
+				.map((entry) => entry.replaceAll('"', '').trim()) ?? [];
+
+		return query.bindings[columns.indexOf(column)];
 	}
 
 	function decodeConsent(token: string) {
@@ -374,6 +423,46 @@ describe('McpOAuthService', () => {
 				'client_secret_basic',
 				'client_secret_post',
 			]);
+		});
+
+		it('advertises private_key_jwt and RS256 signing alg metadata when CIMD enabled', async () => {
+			mockSettings({ mcp_oauth_cimd_enabled: true });
+
+			const meta = await service.getAuthorizationServerMetadata();
+
+			expect(meta.token_endpoint_auth_methods_supported).toEqual([
+				'none',
+				'client_secret_basic',
+				'client_secret_post',
+				'private_key_jwt',
+			]);
+
+			expect(meta.revocation_endpoint_auth_methods_supported).toEqual([
+				'none',
+				'client_secret_basic',
+				'client_secret_post',
+				'private_key_jwt',
+			]);
+
+			expect(meta.token_endpoint_auth_signing_alg_values_supported).toEqual(['RS256']);
+			expect(meta.revocation_endpoint_auth_signing_alg_values_supported).toEqual(['RS256']);
+		});
+
+		it('omits private_key_jwt and signing alg metadata when CIMD disabled', async () => {
+			mockSettings({ mcp_oauth_cimd_enabled: false });
+
+			const meta = await service.getAuthorizationServerMetadata();
+
+			expect(meta.token_endpoint_auth_methods_supported).toEqual(['none', 'client_secret_basic', 'client_secret_post']);
+
+			expect(meta.revocation_endpoint_auth_methods_supported).toEqual([
+				'none',
+				'client_secret_basic',
+				'client_secret_post',
+			]);
+
+			expect(meta).not.toHaveProperty('token_endpoint_auth_signing_alg_values_supported');
+			expect(meta).not.toHaveProperty('revocation_endpoint_auth_signing_alg_values_supported');
 		});
 
 		it('includes code_challenge_methods_supported: ["S256"]', async () => {
@@ -579,6 +668,68 @@ describe('McpOAuthService', () => {
 				() => service.registerClient(createTestClient({ token_endpoint_auth_method: 'private_key_jwt' })),
 				{ error: 'invalid_client_metadata' },
 			);
+
+			expect(queryHistory('insert', 'directus_oauth_clients')).toHaveLength(0);
+		});
+
+		it('ignores private-key metadata fields for supported DCR auth methods', async () => {
+			tracker.on.select('directus_oauth_clients').response([{ count: 0 }]);
+			tracker.on.insert('directus_oauth_clients').response([]);
+
+			const result = await service.registerClient(
+				createTestClient({
+					token_endpoint_auth_method: 'none',
+					jwks_uri: 'https://client.example.com/jwks.json',
+					jwks: { keys: [] },
+					token_endpoint_auth_signing_alg: 'RS256',
+				}),
+			);
+
+			expect(result).not.toHaveProperty('jwks_uri');
+			expect(result).not.toHaveProperty('jwks');
+			expect(result).not.toHaveProperty('token_endpoint_auth_signing_alg');
+
+			const insert = queryHistory('insert', 'directus_oauth_clients')[0]!;
+			expect(insert.sql).not.toContain('jwks_uri');
+			expect(insert.sql).not.toContain('jwks');
+			expect(insert.sql).not.toContain('token_endpoint_auth_signing_alg');
+			expect(insert.bindings).not.toContain('https://client.example.com/jwks.json');
+			expect(insert.bindings).not.toContain('RS256');
+		});
+
+		it('redacts rejected private-key metadata values from DCR validation logs when auth method is unsupported', async () => {
+			await assertOAuthError(
+				() =>
+					service.registerClient(
+						createTestClient({
+							token_endpoint_auth_method: 'private_key_jwt',
+							jwks_uri: 'https://client.example.com/sensitive-jwks.json?token=secret-token',
+							jwks: {
+								keys: [
+									{
+										kty: 'RSA',
+										kid: 'private-key-id',
+										d: 'private-key-member',
+									},
+								],
+							},
+							token_endpoint_auth_signing_alg: 'RS256',
+							client_secret: 'raw-client-secret',
+						}),
+					),
+				{ error: 'invalid_client_metadata', statusCode: 400 },
+			);
+
+			const debugLogPayload = JSON.stringify(mockLogger.debug.mock.calls);
+
+			expect(debugLogPayload).toContain('DCR validation failed');
+			expect(debugLogPayload).not.toContain('https://client.example.com/sensitive-jwks.json');
+			expect(debugLogPayload).not.toContain('secret-token');
+			expect(debugLogPayload).not.toContain('private-key-member');
+			expect(debugLogPayload).not.toContain('private-key-id');
+			expect(debugLogPayload).not.toContain('raw-client-secret');
+			expect(debugLogPayload).not.toContain(TEST_REDIRECT_URI);
+			expect(debugLogPayload).not.toContain('input');
 		});
 
 		it('stores SHA-256 hash of secret, not the raw secret', async () => {
@@ -1328,6 +1479,99 @@ describe('McpOAuthService', () => {
 			expect(result.registration_type).toBe('cimd');
 			expect(result.client_domain).toBe('tools.example.com');
 		});
+
+		it.each([
+			['missing redirect_uri', { redirect_uri: undefined }],
+			['invalid redirect_uri', { redirect_uri: 'not-a-url' }],
+			['missing response_type', { response_type: undefined }],
+			['invalid response_type', { response_type: 'token' }],
+			['missing code_challenge', { code_challenge: undefined }],
+			['invalid code_challenge', { code_challenge: 'abc' }],
+			['missing code_challenge_method', { code_challenge_method: undefined }],
+			['invalid code_challenge_method', { code_challenge_method: 'plain' }],
+			['invalid response_mode', { response_mode: 'fragment' }],
+			['invalid scope', { scope: 'openid' }],
+			['invalid resource', { resource: 'https://evil.com/mcp' }],
+		])('preflights CIMD authorize request with %s before fetch/store side effects', async (_label, override) => {
+			const cimdId = 'https://tools.example.com/meta';
+
+			mockDetectClientIdType.mockReturnValue('cimd');
+
+			mockFetchCimdMetadata.mockResolvedValue({
+				notModified: false,
+				metadata: {
+					client_id: cimdId,
+					client_name: 'CIMD Tool',
+					redirect_uris: [TEST_REDIRECT_URI],
+					grant_types: ['authorization_code'],
+					token_endpoint_auth_method: 'none',
+				},
+				etag: '"v1"',
+				ttlMs: 3600_000,
+			});
+
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+			tracker.on.select('directus_oauth_clients').responseOnce([]);
+			tracker.on.select('directus_oauth_clients').responseOnce([{ count: 0 }]);
+			tracker.on.insert('directus_oauth_clients').response([]);
+
+			try {
+				await service.validateAuthorization(validParams({ client_id: cimdId, ...override }), userId, sessionHash);
+				expect.fail('Expected OAuthError to be thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).redirectable).toBe(false);
+			}
+
+			expect(mockFetchCimdMetadata).not.toHaveBeenCalled();
+			expect(queryHistory('select', 'directus_settings')).toHaveLength(0);
+			expect(queryHistory('select', 'directus_oauth_clients')).toHaveLength(0);
+			expect(queryHistory('insert', 'directus_oauth_clients')).toHaveLength(0);
+			expect(queryHistory('update', 'directus_oauth_clients')).toHaveLength(0);
+		});
+
+		it('preflights required CIMD resource before fetch/store side effects', async () => {
+			const { useEnv } = vi.mocked(await import('@directus/env'));
+			const cimdId = 'https://tools.example.com/meta';
+
+			useEnv.mockReturnValue({
+				PUBLIC_URL: TEST_PUBLIC_URL,
+				MCP_OAUTH_CIMD_ENABLED: true,
+				MCP_OAUTH_REQUIRE_RESOURCE: true,
+			} as any);
+
+			mockDetectClientIdType.mockReturnValue('cimd');
+
+			mockFetchCimdMetadata.mockResolvedValue({
+				notModified: false,
+				metadata: {
+					client_id: cimdId,
+					client_name: 'CIMD Tool',
+					redirect_uris: [TEST_REDIRECT_URI],
+					grant_types: ['authorization_code'],
+					token_endpoint_auth_method: 'none',
+				},
+				etag: '"v1"',
+				ttlMs: 3600_000,
+			});
+
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+			tracker.on.select('directus_oauth_clients').responseOnce([]);
+			tracker.on.select('directus_oauth_clients').responseOnce([{ count: 0 }]);
+			tracker.on.insert('directus_oauth_clients').response([]);
+
+			await assertOAuthError(
+				() =>
+					service.validateAuthorization(validParams({ client_id: cimdId, resource: undefined }), userId, sessionHash),
+				{ error: 'invalid_target', redirectable: false },
+			);
+
+			expect(mockFetchCimdMetadata).not.toHaveBeenCalled();
+			expect(queryHistory('select', 'directus_settings')).toHaveLength(0);
+			expect(queryHistory('select', 'directus_oauth_clients')).toHaveLength(0);
+			expect(queryHistory('insert', 'directus_oauth_clients')).toHaveLength(0);
+			expect(queryHistory('update', 'directus_oauth_clients')).toHaveLength(0);
+		});
 	});
 
 	describe('processDecision', () => {
@@ -1932,6 +2176,54 @@ describe('McpOAuthService', () => {
 			});
 		});
 
+		it('private_key_jwt code replay revokes the authenticated confidential-client grant and session', async () => {
+			const privateClientId = 'https://tools.example.com/oauth/client.json';
+
+			mockClientLookup(privateClientId, {
+				client_id: privateClientId,
+				token_endpoint_auth_method: 'private_key_jwt',
+				registration_type: 'cimd',
+				jwks_uri: 'https://tools.example.com/oauth/jwks.json',
+				token_endpoint_auth_signing_alg: 'RS256',
+			});
+
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+			mockVerifyClientAssertion.mockResolvedValueOnce(createVerifiedAssertion(privateClientId, { jti: 'replay-jti' }));
+			tracker.on.insert('directus_oauth_client_assertions').response([]);
+			mockCodeLookup({ client: privateClientId });
+			tracker.on.update('directus_oauth_codes').response(0);
+
+			tracker.on.select('directus_oauth_tokens').response([
+				{
+					id: 'winner-grant',
+					client: privateClientId,
+					session: 'winner-session-hash',
+					code_hash: codeHash,
+				},
+			]);
+
+			tracker.on.delete('directus_oauth_tokens').response(1);
+			tracker.on.delete('directus_sessions').response(1);
+
+			await assertOAuthError(
+				() =>
+					service.exchangeCode(
+						validParams({
+							client_id: privateClientId,
+							client_assertion_type: CLIENT_ASSERTION_TYPE,
+							client_assertion: createUnverifiedAssertionPayload({ iss: privateClientId, sub: privateClientId }),
+						}),
+						context,
+					),
+				{ error: 'invalid_grant' },
+			);
+
+			expect(queryHistory('insert', 'directus_oauth_client_assertions')).toHaveLength(1);
+			expect(queryHistory('select', 'directus_oauth_tokens')).toHaveLength(1);
+			expect(queryHistory('delete', 'directus_oauth_tokens')).toHaveLength(1);
+			expect(queryHistory('delete', 'directus_sessions')).toHaveLength(1);
+		});
+
 		it('concurrent code exchange - only one wins (atomic UPDATE)', async () => {
 			mockClientLookup(clientId);
 			// First call: code found in SELECT, but UPDATE returns 0 (someone else used it first)
@@ -2248,6 +2540,147 @@ describe('McpOAuthService', () => {
 
 				const result = await service.exchangeCode(validParams(), context);
 				expect(result.access_token).toBeDefined();
+			});
+
+			it('private_key_jwt succeeds and verifies token endpoint audience', async () => {
+				const privateClientId = 'https://tools.example.com/oauth/client.json';
+				const assertion = createUnverifiedAssertionPayload({ iss: privateClientId, sub: privateClientId });
+
+				mockClientLookup(privateClientId, {
+					client_id: privateClientId,
+					token_endpoint_auth_method: 'private_key_jwt',
+					registration_type: 'cimd',
+					jwks_uri: 'https://tools.example.com/oauth/jwks.json',
+					token_endpoint_auth_signing_alg: 'RS256',
+				});
+
+				tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+				mockVerifyClientAssertion.mockResolvedValueOnce(
+					createVerifiedAssertion(privateClientId, { jti: 'exchange-jti' }),
+				);
+
+				tracker.on.insert('directus_oauth_client_assertions').response([]);
+				mockCodeLookup({ client: privateClientId });
+				tracker.on.update('directus_oauth_codes').response(1);
+				mockUserLookup();
+				tracker.on.select('directus_oauth_tokens').response([]);
+				tracker.on.insert('directus_sessions').response([]);
+				tracker.on.insert('directus_oauth_tokens').response([]);
+
+				const result = await service.exchangeCode(
+					validParams({
+						client_id: privateClientId,
+						client_assertion_type: CLIENT_ASSERTION_TYPE,
+						client_assertion: assertion,
+					}),
+					context,
+				);
+
+				expect(result.access_token).toBeDefined();
+
+				expect(mockVerifyClientAssertion).toHaveBeenCalledWith(
+					expect.objectContaining({ acceptedAudiences: ['https://example.com/mcp-oauth/token'] }),
+				);
+			});
+
+			it('private_key_jwt code exchange succeeds without client_id by using the assertion issuer', async () => {
+				const privateClientId = 'https://tools.directus.io/oauth/client.json';
+				const assertion = createUnverifiedAssertionPayload({ iss: privateClientId, sub: privateClientId });
+				mockDetectClientIdType.mockReturnValue('cimd');
+
+				mockClientLookup(privateClientId, {
+					client_id: privateClientId,
+					token_endpoint_auth_method: 'private_key_jwt',
+					registration_type: 'cimd',
+					jwks_uri: 'https://tools.example.com/oauth/jwks.json',
+					token_endpoint_auth_signing_alg: 'RS256',
+				});
+
+				tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+				mockVerifyClientAssertion.mockResolvedValueOnce(
+					createVerifiedAssertion(privateClientId, { jti: 'exchange-no-client-id-jti' }),
+				);
+
+				tracker.on.insert('directus_oauth_client_assertions').response([]);
+				mockCodeLookup({ client: privateClientId });
+				tracker.on.update('directus_oauth_codes').response(1);
+				mockUserLookup();
+				tracker.on.select('directus_oauth_tokens').response([]);
+				tracker.on.insert('directus_sessions').response([]);
+				tracker.on.insert('directus_oauth_tokens').response([]);
+
+				const result = await service.exchangeCode(
+					validParams({
+						client_id: undefined,
+						client_assertion_type: CLIENT_ASSERTION_TYPE,
+						client_assertion: assertion,
+					}),
+					context,
+				);
+
+				expect(result.access_token).toBeDefined();
+				expect(mockVerifyClientAssertion).toHaveBeenCalledWith(expect.objectContaining({ clientId: privateClientId }));
+			});
+
+			it('private_key_jwt unknown assertion-derived client returns invalid_client', async () => {
+				const privateClientId = 'https://tools.directus.io/oauth/client.json';
+				const assertion = createUnverifiedAssertionPayload({ iss: privateClientId, sub: privateClientId });
+				mockDetectClientIdType.mockReturnValue('cimd');
+				tracker.on.select('directus_oauth_clients').response([]);
+
+				await assertOAuthError(
+					() =>
+						service.exchangeCode(
+							validParams({
+								client_id: undefined,
+								client_assertion_type: CLIENT_ASSERTION_TYPE,
+								client_assertion: assertion,
+							}),
+							context,
+						),
+					{ error: 'invalid_client', statusCode: 401 },
+				);
+
+				expect(mockVerifyClientAssertion).not.toHaveBeenCalled();
+				expect(queryHistory('select', 'directus_oauth_codes')).toHaveLength(0);
+			});
+
+			it('private_key_jwt consumes jti before invalid authorization code validation', async () => {
+				const privateClientId = 'https://tools.example.com/oauth/client.json';
+
+				mockClientLookup(privateClientId, {
+					client_id: privateClientId,
+					token_endpoint_auth_method: 'private_key_jwt',
+					registration_type: 'cimd',
+					jwks_uri: 'https://tools.example.com/oauth/jwks.json',
+					token_endpoint_auth_signing_alg: 'RS256',
+				});
+
+				tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+				mockVerifyClientAssertion.mockResolvedValueOnce(
+					createVerifiedAssertion(privateClientId, { jti: 'burn-before-code' }),
+				);
+
+				tracker.on.insert('directus_oauth_client_assertions').response([]);
+				tracker.on.select('directus_oauth_codes').response([]);
+
+				await assertOAuthError(
+					() =>
+						service.exchangeCode(
+							validParams({
+								client_id: privateClientId,
+								client_assertion_type: CLIENT_ASSERTION_TYPE,
+								client_assertion: createUnverifiedAssertionPayload({ iss: privateClientId, sub: privateClientId }),
+							}),
+							context,
+						),
+					{ error: 'invalid_grant' },
+				);
+
+				expect(queryHistory('insert', 'directus_oauth_client_assertions')).toHaveLength(1);
 			});
 		});
 	});
@@ -2793,6 +3226,83 @@ describe('McpOAuthService', () => {
 				const result = await service.refreshToken(validParams(), context);
 				expect(result.access_token).toBeDefined();
 			});
+
+			it('private_key_jwt succeeds with a fresh assertion', async () => {
+				const privateClientId = 'https://tools.example.com/oauth/client.json';
+
+				mockClientLookup(privateClientId, {
+					client_id: privateClientId,
+					token_endpoint_auth_method: 'private_key_jwt',
+					registration_type: 'cimd',
+					jwks_uri: 'https://tools.example.com/oauth/jwks.json',
+					token_endpoint_auth_signing_alg: 'RS256',
+				});
+
+				tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+				mockVerifyClientAssertion.mockResolvedValueOnce(
+					createVerifiedAssertion(privateClientId, { jti: 'refresh-jti' }),
+				);
+
+				tracker.on.insert('directus_oauth_client_assertions').response([]);
+
+				tracker.on
+					.select('directus_oauth_tokens')
+					.response([createGrantRow({ id: grantId, client: privateClientId, user: userId, session: sessionHash })]);
+
+				tracker.on.select('directus_users').response([createUserRow()]);
+				tracker.on.delete('directus_sessions').response(1);
+				tracker.on.update('directus_oauth_tokens').response(1);
+				tracker.on.insert('directus_sessions').response([]);
+
+				const result = await service.refreshToken(
+					validParams({
+						client_id: privateClientId,
+						client_assertion_type: CLIENT_ASSERTION_TYPE,
+						client_assertion: createUnverifiedAssertionPayload({ iss: privateClientId, sub: privateClientId }),
+					}),
+					context,
+				);
+
+				expect(result.access_token).toBeDefined();
+				expect(queryHistory('insert', 'directus_oauth_client_assertions')).toHaveLength(1);
+			});
+
+			it('private_key_jwt consumes jti before invalid refresh token validation', async () => {
+				const privateClientId = 'https://tools.example.com/oauth/client.json';
+
+				mockClientLookup(privateClientId, {
+					client_id: privateClientId,
+					token_endpoint_auth_method: 'private_key_jwt',
+					registration_type: 'cimd',
+					jwks_uri: 'https://tools.example.com/oauth/jwks.json',
+					token_endpoint_auth_signing_alg: 'RS256',
+				});
+
+				tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+				mockVerifyClientAssertion.mockResolvedValueOnce(
+					createVerifiedAssertion(privateClientId, { jti: 'refresh-invalid' }),
+				);
+
+				tracker.on.insert('directus_oauth_client_assertions').response([]);
+				tracker.on.select('directus_oauth_tokens').response([]);
+
+				await assertOAuthError(
+					() =>
+						service.refreshToken(
+							validParams({
+								client_id: privateClientId,
+								client_assertion_type: CLIENT_ASSERTION_TYPE,
+								client_assertion: createUnverifiedAssertionPayload({ iss: privateClientId, sub: privateClientId }),
+							}),
+							context,
+						),
+					{ error: 'invalid_grant' },
+				);
+
+				expect(queryHistory('insert', 'directus_oauth_client_assertions')).toHaveLength(1);
+			});
 		});
 	});
 
@@ -2945,6 +3455,80 @@ describe('McpOAuthService', () => {
 			expect(tokenDeletes.length).toBe(1);
 			expect(sessionDeletes.length).toBe(1);
 		});
+
+		it('private_key_jwt succeeds and verifies the revoke endpoint audience', async () => {
+			const privateClientId = 'https://tools.example.com/oauth/client.json';
+
+			mockClientLookup(privateClientId, {
+				client_id: privateClientId,
+				token_endpoint_auth_method: 'private_key_jwt',
+				registration_type: 'cimd',
+				jwks_uri: 'https://tools.example.com/oauth/jwks.json',
+				token_endpoint_auth_signing_alg: 'RS256',
+			});
+
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+			mockVerifyClientAssertion.mockResolvedValueOnce(
+				createVerifiedAssertion(privateClientId, {
+					aud: 'https://example.com/mcp-oauth/revoke',
+					jti: 'revoke-jti',
+				}),
+			);
+
+			tracker.on.insert('directus_oauth_client_assertions').response([]);
+			mockGrantLookup({ client: privateClientId });
+			tracker.on.delete('directus_oauth_tokens').response(1);
+			tracker.on.delete('directus_sessions').response(1);
+			tracker.on.select('directus_users').response([createUserRow()]);
+
+			await service.revokeToken({
+				...validParams({
+					client_id: privateClientId,
+					client_assertion_type: CLIENT_ASSERTION_TYPE,
+					client_assertion: createUnverifiedAssertionPayload({ iss: privateClientId, sub: privateClientId }),
+				}),
+			});
+
+			expect(mockVerifyClientAssertion).toHaveBeenCalledWith(
+				expect.objectContaining({
+					acceptedAudiences: ['https://example.com/mcp-oauth/revoke'],
+				}),
+			);
+
+			expect(queryHistory('delete', 'directus_oauth_tokens')).toHaveLength(1);
+		});
+
+		it('private_key_jwt consumes jti before unknown revoke target returns 200', async () => {
+			const privateClientId = 'https://tools.example.com/oauth/client.json';
+
+			mockClientLookup(privateClientId, {
+				client_id: privateClientId,
+				token_endpoint_auth_method: 'private_key_jwt',
+				registration_type: 'cimd',
+				jwks_uri: 'https://tools.example.com/oauth/jwks.json',
+				token_endpoint_auth_signing_alg: 'RS256',
+			});
+
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+			mockVerifyClientAssertion.mockResolvedValueOnce(
+				createVerifiedAssertion(privateClientId, { jti: 'revoke-unknown' }),
+			);
+
+			tracker.on.insert('directus_oauth_client_assertions').response([]);
+			tracker.on.select('directus_oauth_tokens').response([]);
+
+			await service.revokeToken({
+				...validParams({
+					client_id: privateClientId,
+					client_assertion_type: CLIENT_ASSERTION_TYPE,
+					client_assertion: createUnverifiedAssertionPayload({ iss: privateClientId, sub: privateClientId }),
+				}),
+			});
+
+			expect(queryHistory('insert', 'directus_oauth_client_assertions')).toHaveLength(1);
+		});
 	});
 
 	describe('revokeToken with confidential client', () => {
@@ -3051,6 +3635,29 @@ describe('McpOAuthService', () => {
 
 		beforeEach(() => {
 			service = new McpOAuthService({ knex: db, schema });
+			tracker.on.delete('directus_oauth_client_assertions').response(0);
+		});
+
+		it('expired client assertion markers are deleted while non-expired markers are preserved by cutoff', async () => {
+			// Step 1: delete expired assertion replay markers
+			// Step 2: expired unused codes
+			tracker.on.delete('directus_oauth_codes').response(0);
+			// Step 3: used codes older than 1 hour
+			tracker.on.delete('directus_oauth_codes').response(0);
+			// Step 4: expired grants lookup
+			tracker.on.select('directus_oauth_tokens').responseOnce([]);
+			// Step 5: orphaned grants lookup
+			tracker.on.select('directus_oauth_tokens').responseOnce([]);
+			// Step 6a: tier 1 - never-authorized clients
+			tracker.on.select('directus_oauth_clients').responseOnce([]);
+
+			await service.cleanup();
+
+			const assertionDeletes = queryHistory('delete', 'directus_oauth_client_assertions');
+			expect(assertionDeletes).toHaveLength(1);
+			expect(assertionDeletes[0]!.sql).toContain('expires_at');
+			expect(assertionDeletes[0]!.sql).toContain('<');
+			expect(assertionDeletes[0]!.bindings[0]).toBeInstanceOf(Date);
 		});
 
 		it('expired unused codes deleted', async () => {
@@ -3160,6 +3767,12 @@ describe('McpOAuthService', () => {
 
 			const clientDeletes = queryHistory('delete', 'directus_oauth_clients');
 			expect(clientDeletes.length).toBe(1);
+			expect(clientDeletes[0]!.sql.toLowerCase()).toContain('not exists');
+			expect(clientDeletes[0]!.sql).toContain('directus_oauth_consents');
+			expect(clientDeletes[0]!.sql).toContain('directus_sessions');
+			expect(clientDeletes[0]!.sql).toContain('directus_oauth_tokens');
+			expect(clientDeletes[0]!.sql).toContain('directus_oauth_client_assertions');
+			expect(clientDeletes[0]!.sql).toContain('date_created');
 
 			// Verify the select query joins on consents to exclude authorized clients
 			const clientSelects = queryHistory('select', 'directus_oauth_clients');
@@ -3183,6 +3796,23 @@ describe('McpOAuthService', () => {
 
 			const clientSelects = queryHistory('select', 'directus_oauth_clients');
 			expect(clientSelects[0]!.sql).toContain('date_created');
+		});
+
+		it('never-authorized client cleanup query excludes clients with active assertion replay markers', async () => {
+			tracker.on.delete('directus_oauth_codes').response(0);
+			tracker.on.delete('directus_oauth_codes').response(0);
+			tracker.on.select('directus_oauth_tokens').responseOnce([]);
+			tracker.on.select('directus_oauth_tokens').responseOnce([]);
+			tracker.on.select('directus_oauth_clients').responseOnce([]);
+
+			await service.cleanup();
+
+			const clientDeletes = queryHistory('delete', 'directus_oauth_clients');
+			expect(clientDeletes).toHaveLength(0);
+
+			const clientSelects = queryHistory('select', 'directus_oauth_clients');
+			expect(clientSelects[0]!.sql).toContain('directus_oauth_client_assertions');
+			expect(clientSelects[0]!.sql).toContain('directus_oauth_client_assertions"."jti_hash" is null');
 		});
 
 		it('idle authorized client cleanup is skipped when idle TTL is disabled', async () => {
@@ -3228,6 +3858,11 @@ describe('McpOAuthService', () => {
 
 				const clientDeletes = queryHistory('delete', 'directus_oauth_clients');
 				expect(clientDeletes.length).toBe(1);
+				expect(clientDeletes[0]!.sql.toLowerCase()).toContain('not exists');
+				expect(clientDeletes[0]!.sql).toContain('directus_sessions');
+				expect(clientDeletes[0]!.sql).toContain('directus_oauth_tokens');
+				expect(clientDeletes[0]!.sql).toContain('directus_oauth_client_assertions');
+				expect(clientDeletes[0]!.sql).toContain('date_created');
 
 				const clientSelects = queryHistory('select', 'directus_oauth_clients');
 				expect(clientSelects[1]!.sql).toContain('date_created');
@@ -3260,6 +3895,33 @@ describe('McpOAuthService', () => {
 
 				const clientSelects = queryHistory('select', 'directus_oauth_clients');
 				expect(clientSelects[1]!.sql).toContain('date_created');
+			} finally {
+				env['MCP_OAUTH_CLIENT_IDLE_TTL'] = originalIdleTtl;
+			}
+		});
+
+		it('idle authorized client cleanup query excludes clients with active assertion replay markers', async () => {
+			const { useEnv } = await import('@directus/env');
+			const env = useEnv() as Record<string, unknown>;
+			const originalIdleTtl = env['MCP_OAUTH_CLIENT_IDLE_TTL'];
+			env['MCP_OAUTH_CLIENT_IDLE_TTL'] = '30d';
+
+			try {
+				tracker.on.delete('directus_oauth_codes').response(0);
+				tracker.on.delete('directus_oauth_codes').response(0);
+				tracker.on.select('directus_oauth_tokens').responseOnce([]);
+				tracker.on.select('directus_oauth_tokens').responseOnce([]);
+				tracker.on.select('directus_oauth_clients').responseOnce([]);
+				tracker.on.select('directus_oauth_clients').responseOnce([]);
+
+				await service.cleanup();
+
+				const clientDeletes = queryHistory('delete', 'directus_oauth_clients');
+				expect(clientDeletes).toHaveLength(0);
+
+				const clientSelects = queryHistory('select', 'directus_oauth_clients');
+				expect(clientSelects[1]!.sql).toContain('directus_oauth_client_assertions');
+				expect(clientSelects[1]!.sql).toContain('directus_oauth_client_assertions"."jti_hash" is null');
 			} finally {
 				env['MCP_OAUTH_CLIENT_IDLE_TTL'] = originalIdleTtl;
 			}
@@ -3309,7 +3971,7 @@ describe('McpOAuthService', () => {
 			const result = await service.resolveClientWithFetch(dcrClientId);
 			expect(result['client_id']).toBe(dcrClientId);
 			expect(result['client_name']).toBe('Test DCR Client');
-			expect(mockValidateCimdHostnameEgress).not.toHaveBeenCalled();
+			expect(mockValidateMcpOAuthHostnameEgress).not.toHaveBeenCalled();
 		});
 
 		it('DCR UUID not found throws error', async () => {
@@ -3349,7 +4011,7 @@ describe('McpOAuthService', () => {
 
 			const result = await service.resolveClientWithFetch(cimdClientId);
 			expect(result['client_name']).toBe('Cached CIMD Client');
-			expect(mockValidateCimdHostnameEgress).not.toHaveBeenCalled();
+			expect(mockValidateMcpOAuthHostnameEgress).not.toHaveBeenCalled();
 			expect(mockFetchCimdMetadata).not.toHaveBeenCalled();
 		});
 
@@ -3384,6 +4046,39 @@ describe('McpOAuthService', () => {
 			expect(result['client_name']).toBe('New CIMD Client');
 			expect(result['registration_type']).toBe('cimd');
 			expect(mockFetchCimdMetadata).toHaveBeenCalledWith(cimdClientId);
+		});
+
+		it('CIMD first contact stores private_key_jwt jwks metadata', async () => {
+			mockDetectClientIdType.mockReturnValue('cimd');
+
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+			tracker.on.select('directus_oauth_clients').responseOnce([]);
+			tracker.on.select('directus_oauth_clients').responseOnce([{ count: 0 }]);
+
+			mockFetchCimdMetadata.mockResolvedValue({
+				notModified: false,
+				metadata: {
+					client_id: cimdClientId,
+					client_name: 'Private Key JWT Client',
+					redirect_uris: [TEST_REDIRECT_URI],
+					grant_types: ['authorization_code'],
+					token_endpoint_auth_method: 'private_key_jwt',
+					jwks_uri: 'https://tools.example.com/jwks.json',
+					token_endpoint_auth_signing_alg: 'RS256',
+				},
+				etag: '"abc123"',
+				ttlMs: 3600_000,
+			});
+
+			tracker.on.insert('directus_oauth_clients').response([]);
+
+			const result = await service.resolveClientWithFetch(cimdClientId);
+			const insert = queryHistory('insert', 'directus_oauth_clients')[0]!;
+
+			expect(result['jwks_uri']).toBe('https://tools.example.com/jwks.json');
+			expect(result['token_endpoint_auth_signing_alg']).toBe('RS256');
+			expect(mutationValue(insert, 'jwks_uri')).toBe('https://tools.example.com/jwks.json');
+			expect(mutationValue(insert, 'token_endpoint_auth_signing_alg')).toBe('RS256');
 		});
 
 		it('CIMD stale cache triggers re-fetch (200)', async () => {
@@ -3426,6 +4121,51 @@ describe('McpOAuthService', () => {
 			expect(mockFetchCimdMetadata).toHaveBeenCalledWith(cimdClientId, '"old-etag"');
 		});
 
+		it('CIMD stale refresh updates private_key_jwt jwks metadata', async () => {
+			mockDetectClientIdType.mockReturnValue('cimd');
+
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+			tracker.on.select('directus_oauth_clients').response([
+				{
+					client_id: cimdClientId,
+					client_name: 'Stale Client',
+					redirect_uris: JSON.stringify([TEST_REDIRECT_URI]),
+					metadata_expires_at: new Date(Date.now() - 1000),
+					metadata_fetched_at: new Date(Date.now() - 3600_000),
+					metadata_etag: '"old-etag"',
+					registration_type: 'cimd',
+					jwks_uri: null,
+					token_endpoint_auth_signing_alg: null,
+				},
+			]);
+
+			mockFetchCimdMetadata.mockResolvedValue({
+				notModified: false,
+				metadata: {
+					client_id: cimdClientId,
+					client_name: 'Updated Client',
+					redirect_uris: [TEST_REDIRECT_URI],
+					grant_types: ['authorization_code'],
+					token_endpoint_auth_method: 'private_key_jwt',
+					jwks_uri: 'https://tools.example.com/jwks.json',
+					token_endpoint_auth_signing_alg: 'RS256',
+				},
+				etag: '"new-etag"',
+				ttlMs: 3600_000,
+			});
+
+			tracker.on.update('directus_oauth_clients').response(1);
+
+			const result = await service.resolveClientWithFetch(cimdClientId);
+			const update = queryHistory('update', 'directus_oauth_clients')[0]!;
+
+			expect(result['jwks_uri']).toBe('https://tools.example.com/jwks.json');
+			expect(result['token_endpoint_auth_signing_alg']).toBe('RS256');
+			expect(update.bindings).toContain('https://tools.example.com/jwks.json');
+			expect(update.bindings).toContain('RS256');
+		});
+
 		it('CIMD stale cache with 304 updates timestamps only', async () => {
 			mockDetectClientIdType.mockReturnValue('cimd');
 
@@ -3442,6 +4182,8 @@ describe('McpOAuthService', () => {
 					metadata_fetched_at: new Date(Date.now() - 3600_000),
 					metadata_etag: '"etag-1"',
 					registration_type: 'cimd',
+					jwks_uri: 'https://tools.example.com/jwks.json',
+					token_endpoint_auth_signing_alg: 'RS256',
 				},
 			]);
 
@@ -3456,7 +4198,13 @@ describe('McpOAuthService', () => {
 			const result = await service.resolveClientWithFetch(cimdClientId);
 			// Name stays the same (304 = no content change)
 			expect(result['client_name']).toBe('Existing Client');
+			expect(result['jwks_uri']).toBe('https://tools.example.com/jwks.json');
+			expect(result['token_endpoint_auth_signing_alg']).toBe('RS256');
 			expect(mockFetchCimdMetadata).toHaveBeenCalledWith(cimdClientId, '"etag-1"');
+
+			const update = queryHistory('update', 'directus_oauth_clients')[0]!;
+			expect(update.bindings).not.toContain('https://tools.example.com/jwks.json');
+			expect(update.bindings).not.toContain('RS256');
 		});
 
 		it('CIMD disabled in env throws error', async () => {
@@ -3903,6 +4651,93 @@ describe('McpOAuthService', () => {
 				expect((err as OAuthError).code).toBe('invalid_request');
 			}
 		});
+
+		it('client assertion supplies omitted client_id without fetching CIMD metadata or writing clients', () => {
+			const clientId = 'https://tools.example.com/oauth/client.json';
+			mockDetectClientIdType.mockReturnValueOnce('cimd');
+
+			const result = service.resolveClientId({
+				client_assertion_type: CLIENT_ASSERTION_TYPE,
+				client_assertion: createUnverifiedAssertionPayload({ iss: clientId, sub: clientId }),
+			});
+
+			expect(result.clientId).toBe(clientId);
+			expect(result.basicAuth).toBeNull();
+			expect(mockFetchCimdMetadata).not.toHaveBeenCalled();
+			expect(queryHistory('insert', 'directus_oauth_clients')).toHaveLength(0);
+			expect(queryHistory('update', 'directus_oauth_clients')).toHaveLength(0);
+		});
+
+		it.each([
+			['missing sub', { iss: 'https://tools.example.com/oauth/client.json' }],
+			[
+				'unequal iss/sub',
+				{ iss: 'https://tools.example.com/oauth/client.json', sub: 'https://tools.example.com/oauth/other.json' },
+			],
+			[
+				'overlong client_id',
+				{ iss: `https://tools.example.com/${'a'.repeat(255)}`, sub: `https://tools.example.com/${'a'.repeat(255)}` },
+			],
+			[
+				'DCR-shaped client_id',
+				(() => {
+					const id = crypto.randomUUID();
+					return { iss: id, sub: id };
+				})(),
+			],
+		])('malformed lookup assertion rejects with invalid_client: %s', (_label, payload) => {
+			mockDetectClientIdType.mockReturnValue('dcr');
+
+			try {
+				service.resolveClientId({
+					client_assertion_type: CLIENT_ASSERTION_TYPE,
+					client_assertion: createUnverifiedAssertionPayload(payload),
+				});
+
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(401);
+				expect((err as OAuthError).code).toBe('invalid_client');
+			}
+		});
+
+		it('rejects body/assertion client_id mismatch as invalid_request', () => {
+			const assertionClientId = 'https://tools.example.com/oauth/client.json';
+			mockDetectClientIdType.mockReturnValueOnce('cimd');
+
+			try {
+				service.resolveClientId({
+					client_id: 'different-client',
+					client_assertion_type: CLIENT_ASSERTION_TYPE,
+					client_assertion: createUnverifiedAssertionPayload({ iss: assertionClientId, sub: assertionClientId }),
+				});
+
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(400);
+				expect((err as OAuthError).code).toBe('invalid_request');
+			}
+		});
+
+		it('rejects explicit client_id mismatch even when assertion client_id is not CIMD-shaped', () => {
+			const assertionClientId = crypto.randomUUID();
+
+			try {
+				service.resolveClientId({
+					client_id: crypto.randomUUID(),
+					client_assertion_type: CLIENT_ASSERTION_TYPE,
+					client_assertion: createUnverifiedAssertionPayload({ iss: assertionClientId, sub: assertionClientId }),
+				});
+
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(400);
+				expect((err as OAuthError).code).toBe('invalid_request');
+			}
+		});
 	});
 
 	describe('authenticateClient', () => {
@@ -3915,74 +4750,317 @@ describe('McpOAuthService', () => {
 			return `Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`;
 		}
 
+		function mockCimdSettings(enabled = true) {
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: enabled }]);
+		}
+
+		function privateKeyClient(
+			clientId = 'https://tools.example.com/oauth/client.json',
+			overrides: Record<string, unknown> = {},
+		) {
+			return {
+				client_id: clientId,
+				client_name: 'Private Key Client',
+				token_endpoint_auth_method: 'private_key_jwt',
+				registration_type: 'cimd',
+				jwks_uri: 'https://tools.example.com/oauth/jwks.json',
+				token_endpoint_auth_signing_alg: 'RS256',
+				...overrides,
+			};
+		}
+
+		function privateKeyParams(
+			clientId = 'https://tools.example.com/oauth/client.json',
+			overrides: Record<string, unknown> = {},
+		) {
+			return {
+				client_id: clientId,
+				client_assertion_type: CLIENT_ASSERTION_TYPE,
+				client_assertion: createUnverifiedAssertionPayload({ iss: clientId, sub: clientId }),
+				...overrides,
+			};
+		}
+
 		beforeEach(() => {
 			service = new McpOAuthService({ knex: db, schema });
 		});
 
+		it('private_key_jwt verifies a CIMD assertion and stores replay marker expiry with tolerance', async () => {
+			const clientId = 'https://tools.example.com/oauth/client.json';
+			mockCimdSettings();
+			const exp = 1_900_000_000;
+			mockVerifyClientAssertion.mockResolvedValueOnce(createVerifiedAssertion(clientId, { jti: 'jti-valid', exp }));
+			tracker.on.insert('directus_oauth_client_assertions').response([]);
+
+			await service.authenticateClient(privateKeyClient(clientId), privateKeyParams(clientId));
+
+			expect(mockVerifyClientAssertion).toHaveBeenCalledWith({
+				clientId,
+				jwksUri: 'https://tools.example.com/oauth/jwks.json',
+				assertion: expect.any(String),
+				acceptedAudiences: ['https://example.com/mcp-oauth/token'],
+			});
+
+			const replayInserts = queryHistory('insert', 'directus_oauth_client_assertions');
+			expect(replayInserts).toHaveLength(1);
+			expect(mutationValue(replayInserts[0]!, 'client')).toBe(clientId);
+
+			expect(mutationValue(replayInserts[0]!, 'jti_hash')).toBe(
+				crypto.createHash('sha256').update(`${clientId}\0jti-valid`).digest('hex'),
+			);
+
+			expect(mutationValue(replayInserts[0]!, 'expires_at')).toEqual(new Date((exp + 65) * 1000));
+		});
+
+		it('private_key_jwt maps duplicate replay insert to invalid_client through translated errors', async () => {
+			const clientId = 'https://tools.example.com/oauth/client.json';
+			const dbError = new Error('duplicate replay');
+			mockCimdSettings();
+			mockVerifyClientAssertion.mockResolvedValueOnce(createVerifiedAssertion(clientId, { jti: 'jti-replayed' }));
+			tracker.on.insert('directus_oauth_client_assertions').simulateError(dbError);
+
+			mockTranslateDatabaseError.mockResolvedValueOnce(
+				new RecordNotUniqueError({ collection: 'directus_oauth_client_assertions', field: 'jti_hash' }),
+			);
+
+			await assertOAuthError(() => service.authenticateClient(privateKeyClient(clientId), privateKeyParams(clientId)), {
+				error: 'invalid_client',
+				statusCode: 401,
+			});
+
+			expect(mockTranslateDatabaseError).toHaveBeenCalledWith(dbError, expect.any(Object));
+		});
+
+		it('private_key_jwt rejects mixed Basic or client_secret credentials as invalid_request', async () => {
+			const clientId = 'https://tools.example.com/oauth/client.json';
+			mockCimdSettings();
+
+			await assertOAuthError(
+				() =>
+					service.authenticateClient(privateKeyClient(clientId), {
+						...privateKeyParams(clientId),
+						authorization_header: basicHeader(clientId, 'secret'),
+					}),
+				{ error: 'invalid_request', statusCode: 400 },
+			);
+
+			mockCimdSettings();
+
+			await assertOAuthError(
+				() =>
+					service.authenticateClient(privateKeyClient(clientId), {
+						...privateKeyParams(clientId),
+						client_secret: 'secret',
+					}),
+				{ error: 'invalid_request', statusCode: 400 },
+			);
+
+			mockCimdSettings();
+
+			await assertOAuthError(
+				() =>
+					service.authenticateClient(privateKeyClient(clientId), {
+						...privateKeyParams(clientId),
+						client_secret: '',
+					}),
+				{ error: 'invalid_request', statusCode: 400 },
+			);
+		});
+
+		it('private_key_jwt rejects Basic-only authentication as invalid_client with Basic challenge', async () => {
+			const clientId = 'https://tools.example.com/oauth/client.json';
+			mockCimdSettings();
+
+			try {
+				await service.authenticateClient(privateKeyClient(clientId), {
+					client_id: clientId,
+					authorization_header: basicHeader(clientId, 'secret'),
+				});
+
+				expect.fail('Expected OAuthError to be thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).code).toBe('invalid_client');
+				expect((err as OAuthError).status).toBe(401);
+				expect((err as OAuthError).headers).toEqual({ 'WWW-Authenticate': 'Basic realm="directus"' });
+			}
+
+			expect(mockVerifyClientAssertion).not.toHaveBeenCalled();
+		});
+
+		it('private_key_jwt rejects client_secret-only authentication as invalid_client', async () => {
+			const clientId = 'https://tools.example.com/oauth/client.json';
+			mockCimdSettings();
+
+			await assertOAuthError(
+				() =>
+					service.authenticateClient(privateKeyClient(clientId), {
+						client_id: clientId,
+						client_secret: 'secret',
+					}),
+				{ error: 'invalid_client', statusCode: 401 },
+			);
+
+			expect(mockVerifyClientAssertion).not.toHaveBeenCalled();
+		});
+
+		it('private_key_jwt rejects a request client_id that does not match the stored client', async () => {
+			const clientId = 'https://tools.example.com/oauth/client.json';
+			mockCimdSettings();
+
+			await assertOAuthError(
+				() =>
+					service.authenticateClient(privateKeyClient(clientId), {
+						...privateKeyParams(clientId),
+						client_id: 'https://other.example.com/oauth/client.json',
+					}),
+				{ error: 'invalid_request', statusCode: 400 },
+			);
+
+			expect(mockVerifyClientAssertion).not.toHaveBeenCalled();
+		});
+
+		it.each(['none', 'client_secret_basic', 'client_secret_post'])(
+			'%s rejects assertion params as invalid_request',
+			async (token_endpoint_auth_method) => {
+				await assertOAuthError(
+					() =>
+						service.authenticateClient(
+							{ token_endpoint_auth_method, client_secret_hash: secretHash },
+							{
+								client_assertion_type: CLIENT_ASSERTION_TYPE,
+								client_assertion: createUnverifiedAssertionPayload({
+									iss: 'https://tools.example.com/oauth/client.json',
+									sub: 'https://tools.example.com/oauth/client.json',
+								}),
+							},
+						),
+					{ error: 'invalid_request', statusCode: 400 },
+				);
+			},
+		);
+
+		it.each([
+			['CIMD disabled in env', { envEnabled: false }],
+			['CIMD disabled in settings', { settingsEnabled: false }],
+			['non-CIMD registration', { client: { registration_type: 'dcr' } }],
+			['missing jwks_uri', { client: { jwks_uri: null } }],
+			['non-RS256 signing alg', { client: { token_endpoint_auth_signing_alg: 'ES256' } }],
+		])('private_key_jwt runtime guard rejects %s without Basic challenge', async (_label, options) => {
+			const clientId = 'https://tools.example.com/oauth/client.json';
+
+			if ((options as { envEnabled?: boolean }).envEnabled === false) {
+				const { useEnv } = vi.mocked(await import('@directus/env'));
+
+				useEnv.mockReturnValue({
+					PUBLIC_URL: TEST_PUBLIC_URL,
+					MCP_OAUTH_CIMD_ENABLED: false,
+				} as any);
+			} else {
+				mockCimdSettings((options as { settingsEnabled?: boolean }).settingsEnabled ?? true);
+			}
+
+			try {
+				await service.authenticateClient(
+					privateKeyClient(clientId, (options as { client?: Record<string, unknown> }).client),
+					privateKeyParams(clientId),
+				);
+
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(401);
+				expect((err as OAuthError).code).toBe('invalid_client');
+				expect((err as OAuthError).headers).toEqual({});
+			}
+		});
+
+		it.each([
+			['missing assertion type', { client_assertion_type: undefined }],
+			['wrong assertion type', { client_assertion_type: 'urn:example:not-jwt-bearer' }],
+			['missing assertion', { client_assertion: undefined }],
+			['empty assertion', { client_assertion: '' }],
+		])('private_key_jwt rejects %s before verification or replay storage', async (_label, overrides) => {
+			const clientId = 'https://tools.example.com/oauth/client.json';
+			mockCimdSettings();
+
+			await assertOAuthError(
+				() => service.authenticateClient(privateKeyClient(clientId), privateKeyParams(clientId, overrides)),
+				{ error: 'invalid_client', statusCode: 401 },
+			);
+
+			expect(mockVerifyClientAssertion).not.toHaveBeenCalled();
+			expect(queryHistory('insert', 'directus_oauth_client_assertions')).toHaveLength(0);
+		});
+
+		it('private_key_jwt propagates verifier rejection without storing replay marker', async () => {
+			const clientId = 'https://tools.example.com/oauth/client.json';
+			mockCimdSettings();
+
+			mockVerifyClientAssertion.mockRejectedValueOnce(
+				new OAuthError(401, 'invalid_client', 'Client authentication failed'),
+			);
+
+			await assertOAuthError(() => service.authenticateClient(privateKeyClient(clientId), privateKeyParams(clientId)), {
+				error: 'invalid_client',
+				statusCode: 401,
+			});
+
+			expect(queryHistory('insert', 'directus_oauth_client_assertions')).toHaveLength(0);
+		});
+
 		// --- none method ---
 
-		it('none: passes with no credentials', () => {
+		it('none: passes with no credentials', async () => {
 			const client = { token_endpoint_auth_method: 'none' };
-			expect(() => service.authenticateClient(client, {})).not.toThrow();
+			await expect(service.authenticateClient(client, {})).resolves.toBeUndefined();
 		});
 
-		it('none: rejects Basic header', () => {
+		it('none: rejects Basic header', async () => {
 			const client = { token_endpoint_auth_method: 'none' };
 
-			try {
-				service.authenticateClient(client, { authorization_header: basicHeader('id', 'secret') });
-				expect.unreachable('should have thrown');
-			} catch (err) {
-				expect(err).toBeInstanceOf(OAuthError);
-				expect((err as OAuthError).status).toBe(400);
-				expect((err as OAuthError).code).toBe('invalid_request');
-			}
+			await assertOAuthError(
+				() => service.authenticateClient(client, { authorization_header: basicHeader('id', 'secret') }),
+				{ error: 'invalid_request', statusCode: 400 },
+			);
 		});
 
-		it('none: rejects client_secret in body', () => {
+		it('none: rejects client_secret in body', async () => {
 			const client = { token_endpoint_auth_method: 'none' };
 
-			try {
-				service.authenticateClient(client, { client_secret: 'some-secret' });
-				expect.unreachable('should have thrown');
-			} catch (err) {
-				expect(err).toBeInstanceOf(OAuthError);
-				expect((err as OAuthError).status).toBe(400);
-				expect((err as OAuthError).code).toBe('invalid_request');
-			}
+			await assertOAuthError(() => service.authenticateClient(client, { client_secret: 'some-secret' }), {
+				error: 'invalid_request',
+				statusCode: 400,
+			});
 		});
 
 		// --- Symmetric confidential client tests ---
 
 		describe.each(confidentialMethods)('$label', ({ method, makeAuthParams }) => {
-			it('valid secret passes', () => {
+			it('valid secret passes', async () => {
 				const client = { token_endpoint_auth_method: method, client_secret_hash: secretHash };
 				const params = makeAuthParams('my-client', secret);
-				expect(() => service.authenticateClient(client, params)).not.toThrow();
+				await expect(service.authenticateClient(client, params)).resolves.toBeUndefined();
 			});
 
-			it('wrong secret rejects with 401', () => {
+			it('wrong secret rejects with 401', async () => {
 				const client = { token_endpoint_auth_method: method, client_secret_hash: secretHash };
 				const params = makeAuthParams('my-client', 'wrong-secret');
 
-				try {
-					service.authenticateClient(client, params);
-					expect.unreachable('should have thrown');
-				} catch (err) {
-					expect(err).toBeInstanceOf(OAuthError);
-					expect((err as OAuthError).status).toBe(401);
-					expect((err as OAuthError).code).toBe('invalid_client');
-				}
+				await assertOAuthError(() => service.authenticateClient(client, params), {
+					error: 'invalid_client',
+					statusCode: 401,
+				});
 			});
 		});
 
 		// --- Asymmetric method-specific tests ---
 
-		it('client_secret_basic: missing header rejects with 401 + WWW-Authenticate', () => {
+		it('client_secret_basic: missing header rejects with 401 + WWW-Authenticate', async () => {
 			const client = { token_endpoint_auth_method: 'client_secret_basic', client_secret_hash: secretHash };
 
 			try {
-				service.authenticateClient(client, {});
+				await service.authenticateClient(client, {});
 				expect.unreachable('should have thrown');
 			} catch (err) {
 				expect(err).toBeInstanceOf(OAuthError);
@@ -3992,101 +5070,73 @@ describe('McpOAuthService', () => {
 			}
 		});
 
-		it('client_secret_basic: rejects client_secret in body', () => {
+		it('client_secret_basic: rejects client_secret in body', async () => {
 			const client = { token_endpoint_auth_method: 'client_secret_basic', client_secret_hash: secretHash };
 			const params = { authorization_header: basicHeader('my-client', secret), client_secret: secret };
 
-			try {
-				service.authenticateClient(client, params);
-				expect.unreachable('should have thrown');
-			} catch (err) {
-				expect(err).toBeInstanceOf(OAuthError);
-				expect((err as OAuthError).status).toBe(400);
-				expect((err as OAuthError).code).toBe('invalid_request');
-			}
+			await assertOAuthError(() => service.authenticateClient(client, params), {
+				error: 'invalid_request',
+				statusCode: 400,
+			});
 		});
 
-		it('client_secret_basic: rejects body-only secret without header', () => {
+		it('client_secret_basic: rejects body-only secret without header', async () => {
 			const client = { token_endpoint_auth_method: 'client_secret_basic', client_secret_hash: secretHash };
 
-			try {
-				service.authenticateClient(client, { client_secret: secret });
-				expect.unreachable('should have thrown');
-			} catch (err) {
-				expect(err).toBeInstanceOf(OAuthError);
-				expect((err as OAuthError).status).toBe(400);
-				expect((err as OAuthError).code).toBe('invalid_request');
-			}
+			await assertOAuthError(() => service.authenticateClient(client, { client_secret: secret }), {
+				error: 'invalid_request',
+				statusCode: 400,
+			});
 		});
 
-		it('client_secret_post: missing secret rejects', () => {
+		it('client_secret_post: missing secret rejects', async () => {
 			const client = { token_endpoint_auth_method: 'client_secret_post', client_secret_hash: secretHash };
 
-			try {
-				service.authenticateClient(client, {});
-				expect.unreachable('should have thrown');
-			} catch (err) {
-				expect(err).toBeInstanceOf(OAuthError);
-				expect((err as OAuthError).status).toBe(401);
-				expect((err as OAuthError).code).toBe('invalid_client');
-			}
+			await assertOAuthError(() => service.authenticateClient(client, {}), {
+				error: 'invalid_client',
+				statusCode: 401,
+			});
 		});
 
-		it('client_secret_post: rejects Basic header', () => {
+		it('client_secret_post: rejects Basic header', async () => {
 			const client = { token_endpoint_auth_method: 'client_secret_post', client_secret_hash: secretHash };
 			const params = { authorization_header: basicHeader('my-client', secret) };
 
-			try {
-				service.authenticateClient(client, params);
-				expect.unreachable('should have thrown');
-			} catch (err) {
-				expect(err).toBeInstanceOf(OAuthError);
-				expect((err as OAuthError).status).toBe(400);
-				expect((err as OAuthError).code).toBe('invalid_request');
-			}
+			await assertOAuthError(() => service.authenticateClient(client, params), {
+				error: 'invalid_request',
+				statusCode: 400,
+			});
 		});
 
 		// --- Edge cases ---
 
-		it('rejects when stored hash is corrupt (length mismatch)', () => {
+		it('rejects when stored hash is corrupt (length mismatch)', async () => {
 			const client = { token_endpoint_auth_method: 'client_secret_post', client_secret_hash: 'short' };
 			const params = { client_secret: secret };
 
-			try {
-				service.authenticateClient(client, params);
-				expect.unreachable('should have thrown');
-			} catch (err) {
-				expect(err).toBeInstanceOf(OAuthError);
-				expect((err as OAuthError).status).toBe(401);
-				expect((err as OAuthError).code).toBe('invalid_client');
-			}
+			await assertOAuthError(() => service.authenticateClient(client, params), {
+				error: 'invalid_client',
+				statusCode: 401,
+			});
 		});
 
-		it('rejects when stored hash is null for confidential client', () => {
+		it('rejects when stored hash is null for confidential client', async () => {
 			const client = { token_endpoint_auth_method: 'client_secret_post', client_secret_hash: null };
 			const params = { client_secret: secret };
 
-			try {
-				service.authenticateClient(client, params);
-				expect.unreachable('should have thrown');
-			} catch (err) {
-				expect(err).toBeInstanceOf(OAuthError);
-				expect((err as OAuthError).status).toBe(401);
-				expect((err as OAuthError).code).toBe('invalid_client');
-			}
+			await assertOAuthError(() => service.authenticateClient(client, params), {
+				error: 'invalid_client',
+				statusCode: 401,
+			});
 		});
 
-		it('rejects unknown auth method stored in DB', () => {
-			const client = { token_endpoint_auth_method: 'private_key_jwt' };
+		it('rejects unknown auth method stored in DB', async () => {
+			const client = { token_endpoint_auth_method: 'client_secret_jwt' };
 
-			try {
-				service.authenticateClient(client, {});
-				expect.unreachable('should have thrown');
-			} catch (err) {
-				expect(err).toBeInstanceOf(OAuthError);
-				expect((err as OAuthError).status).toBe(401);
-				expect((err as OAuthError).code).toBe('invalid_client');
-			}
+			await assertOAuthError(() => service.authenticateClient(client, {}), {
+				error: 'invalid_client',
+				statusCode: 401,
+			});
 		});
 	});
 });
