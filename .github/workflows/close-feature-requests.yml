@@ -29,7 +29,7 @@ jobs:
               }
             `, {
               discussionId: discussionId,
-              body: 'This discussion has been automatically closed. Please submit feature requests at https://roadmap.directus.com/request'
+              body: 'This discussion has been automatically closed. Please submit feature requests at https://roadmap.directus.com'
             });
 
             // Close the discussion

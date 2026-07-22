@@ -7,7 +7,7 @@ body:
       value: |
         **Feature requests have moved to our Public Roadmap**
 
-        Please submit your request here: https://roadmap.directus.com/request
+        Please submit your request here: https://roadmap.directus.com/
 
         This allows you to:
         - ✅ Vote on features you'd like to see
@@ -24,5 +24,5 @@ body:
     attributes:
       label: 'Next steps'
       options:
-        - label: "I'll submit my feature request at roadmap.directus.com/request (please do not start discussion)"
+        - label: "I'll submit my feature request at roadmap.directus.com (please do not start discussion)"
           required: true

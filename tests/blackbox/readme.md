@@ -1,6 +1,6 @@
 # Blackbox Tests
 
-See https://directus.com/docs/contributing/tests.html#running-blackbox-tests.
+See https://directus.com/docs/community/codebase/testing#running-blackbox-tests.
 
 ## Run Blackbox Tests in Pull Requests
 

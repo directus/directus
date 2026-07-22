@@ -250,7 +250,7 @@ pnpm dev
 ## Documentation
 
 - Main documentation: https://directus.com/docs
-- Contributing guide: https://directus.com/docs/contributing/introduction
+- Contributing guide: https://directus.com/docs/community/overview/welcome
 - Update documentation for new features at https://github.com/directus/docs
 
 ## Support Channels
