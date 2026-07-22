@@ -213,6 +213,39 @@ describe('interactive sync push', () => {
 		expect(importBatch).toHaveBeenCalledTimes(2);
 	});
 
+	it('imports an all-empty mirror batch instead of calling it converged — emptiness IS the deletion', async () => {
+		// Under mirror, { collection, items: [] } instructs the server to delete EVERY target row in that
+		// collection, so a committed-but-empty collection is the opposite of a no-op. The converged
+		// short-circuit (records === 0) must never swallow it: the dry-run runs and names the doomed rows,
+		// the typed gate fires, and the committing import carries the empty entry to the server.
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+		seedData([{ collection: 'articles', primaryKey: 'id', records: [] }]);
+
+		vi.mocked(importBatch).mockResolvedValue(
+			importResult({ articles: { existing: [], new: [], deleted: [1, 2], mapped: {} } }),
+		);
+
+		vi.mocked(text).mockResolvedValueOnce('staging');
+
+		await push({ to: 'staging', mode: 'mirror', yes: true, project: 'default' }, ctxAt(dir));
+
+		expect(text).toHaveBeenCalledTimes(1);
+		expect(importBatch).toHaveBeenCalledTimes(2);
+		expect(vi.mocked(importBatch).mock.calls[1]?.[1]).toEqual([{ collection: 'articles', items: [] }]);
+	});
+
+	it('short-circuits the same all-empty batch under merge — without the delete semantics it is a no-op', async () => {
+		// The converged exit stays correct for merge: an empty batch entry imports nothing and deletes
+		// nothing, so no import (not even a dry-run) should touch the wire.
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+		seedData([{ collection: 'articles', primaryKey: 'id', records: [] }]);
+
+		await push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir));
+
+		expect(importBatch).not.toHaveBeenCalled();
+		expect(confirm).not.toHaveBeenCalled();
+	});
+
 	it('persists an ambiguity choice into the committed map before importing', async () => {
 		// Reconcile stops on an ambiguous match rather than guessing; the operator's pick is seeded into the
 		// committed map immediately (identity facts survive even an aborted push) so a future reconcile skips
@@ -236,6 +269,51 @@ describe('interactive sync push', () => {
 		expect(readIdMap()).toEqual({
 			formatVersion: 1,
 			maps: { [source]: { [url]: { directus_roles: { sr1: 't2' } } } },
+		});
+	});
+
+	it('withholds a target already claimed by an earlier ambiguity answer in the same pass', async () => {
+		// Two sources sharing a natural key are offered the same candidate list; if both could claim one
+		// target, two sources would bind to a single row and every later push would have them overwriting
+		// each other on it (last write wins). The second prompt must not offer what the first answer took.
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+
+		seedData([
+			{
+				collection: 'directus_roles',
+				primaryKey: 'id',
+				records: [
+					{ id: 'sr1', name: 'Editor' },
+					{ id: 'sr2', name: 'Editor' },
+				],
+			},
+		]);
+
+		vi.mocked(fetchRecords).mockResolvedValueOnce([
+			{ id: 't1', name: 'Editor' },
+			{ id: 't2', name: 'Editor' },
+		]);
+
+		vi.mocked(select).mockResolvedValueOnce('target:t1').mockResolvedValueOnce('target:t2');
+		vi.mocked(importBatch).mockResolvedValue(importResult());
+		vi.mocked(confirm).mockResolvedValue(true);
+
+		await push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir));
+
+		expect(select).toHaveBeenCalledTimes(2);
+
+		const optionValues = (call: number): string[] => {
+			const options = vi.mocked(select).mock.calls[call]?.[0]?.options as { value: string }[];
+			return options.map((option) => option.value);
+		};
+
+		expect(optionValues(0)).toEqual(['target:t1', 'target:t2', 'create', 'abort']);
+		expect(optionValues(1)).toEqual(['target:t2', 'create', 'abort']);
+
+		// Both answers land in the committed map as distinct identities.
+		expect(readIdMap()).toEqual({
+			formatVersion: 1,
+			maps: { [source]: { [url]: { directus_roles: { sr1: 't1', sr2: 't2' } } } },
 		});
 	});
 

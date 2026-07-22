@@ -152,4 +152,26 @@ describe('interactive sync diff', () => {
 		expect(output).toContain('no data changes to import.');
 		expect(output).not.toContain('data changes to import to');
 	});
+
+	it('dry-runs an all-empty mirror batch instead of calling it a match — emptiness IS the deletion', async () => {
+		// Under mirror, { collection, items: [] } deletes every target row in that collection server-side,
+		// so a committed-but-empty collection must reach the dry-run — skipping it would make diff report
+		// "matches" while a push would destroy rows. The dry-run names the doomed rows in the plan.
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+		seedData([{ collection: 'articles', primaryKey: 'id', records: [] }]);
+
+		vi.mocked(importBatch).mockResolvedValue(
+			importResult({ articles: { existing: [], new: [], deleted: [1, 2], mapped: {} } }),
+		);
+
+		await diff({ to: 'staging', mode: 'mirror', project: 'default' }, ctxAt(dir));
+
+		expect(importBatch).toHaveBeenCalledTimes(1);
+		expect(vi.mocked(importBatch).mock.calls[0]?.[2]).toMatchObject({ dryRun: true });
+
+		// The deletions count as changes: the plan header renders (info → stderr) instead of the
+		// "matches the local snapshot" no-op copy.
+		expect(stderr.join('')).toContain('data changes to import to');
+		expect(stderr.join('')).not.toContain('matches the local snapshot');
+	});
 });

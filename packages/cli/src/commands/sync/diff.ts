@@ -5,7 +5,7 @@ import type { Mode } from '../../sync/mode.js';
 import { emptyImportSummary, hasImportChanges, type ImportSummary, summarizeDiff } from '../../sync/render.js';
 import { type DataPreviewResult, previewData } from './data-push.js';
 import { localDiff } from './local-diff.js';
-import { dryRunImport, resolveMode, schemaDiffMode } from './push.js';
+import { dataPhaseConverged, dryRunImport, resolveMode, schemaDiffMode } from './push.js';
 import { resolveTarget } from './resolve-target.js';
 
 export interface DiffOptions {
@@ -76,9 +76,10 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	let dataSummary: ImportSummary | undefined;
 
 	if (!preview.skipped) {
-		// An empty batch (every record proven already right on the target) has nothing to dry-run: the
-		// summary is the explicit zero, not a wire call.
-		if (preview.records === 0) {
+		// A converged merge/add batch (every record proven already right on the target) has nothing to
+		// dry-run: the summary is the explicit zero, not a wire call. A mirror batch always dry-runs —
+		// even an empty collection entry deletes server-side, and only the dry-run can name the rows.
+		if (dataPhaseConverged(preview, mode)) {
 			dataSummary = emptyImportSummary();
 		} else {
 			const dry = await dryRunImport(target.credential, preview.batch, mode, preview.unchanged);
