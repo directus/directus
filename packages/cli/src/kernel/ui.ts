@@ -25,15 +25,13 @@ export function writeOut(text: string): void {
 	process.stdout.write(redact(text));
 }
 
+/** Write redacted text to stderr. */
 export function writeErr(text: string): void {
 	process.stderr.write(redact(text));
 }
 
-// Redact before serialization so a secret can't survive by being JSON-escaped, and
-// so object KEYS are covered too — a replacer only sees values, but payloads embed
-// remote-controlled record maps where the key is attacker-reachable. Rebuild plain
-// objects via Object.fromEntries so a `__proto__` key becomes an own data property
-// instead of hitting the prototype setter and vanishing.
+// Redact before serialization to cover escaped values and attacker-controlled object keys. Rebuild with
+// Object.fromEntries so a `__proto__` key remains an own data property.
 function redactValue(value: unknown): unknown {
 	if (typeof value === 'string') return redact(value);
 	if (Array.isArray(value)) return value.map(redactValue);
@@ -47,8 +45,7 @@ function redactValue(value: unknown): unknown {
 	return value;
 }
 
-// Two redaction layers: redactValue is primary (covers keys and defeats JSON-escaping),
-// and writeOut is the final-boundary backstop for anything the transform misses.
+// Keep final-boundary redaction as a backstop for anything the structured transform misses.
 function writeJson(payload: unknown): void {
 	const body = JSON.stringify(redactValue(payload));
 	writeOut(`${body ?? 'null'}\n`);
@@ -65,9 +62,9 @@ export interface Ui {
 	data(payload: unknown): void;
 }
 
+/** Create human or JSON CLI output with final-boundary secret redaction. */
 export function createUi(options: { json: boolean; color: boolean }): Ui {
-	// Explicit level 0 disables color (honors --no-color); otherwise chalk
-	// auto-detects the TTY and respects NO_COLOR / FORCE_COLOR itself.
+	// Level 0 honors --no-color; otherwise Chalk performs its normal environment detection.
 	const c = new Chalk(options.color ? {} : { level: 0 });
 	const { json } = options;
 
@@ -100,8 +97,7 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 					...(error.detail !== undefined ? { detail: error.detail } : {}),
 				};
 
-				// kind + formatVersion lead every machine payload so consumers dispatch on the tag;
-				// the inner error object is unchanged.
+				// Stable leading tags let machine consumers dispatch before reading the payload.
 				writeJson({ kind: 'ErrorReport', formatVersion: 1, error: body });
 				return;
 			}

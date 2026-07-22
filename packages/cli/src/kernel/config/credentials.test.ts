@@ -122,15 +122,12 @@ describe('credential store integrity', () => {
 		mkdirSync(join(home, '.directus'), { recursive: true });
 		writeFileSync(path, '{ corrupt not json');
 
-		// Read path refuses rather than reporting not-found.
 		expect(() => resolveCredential({ target: 'profile', url: 'https://cms.example.com', profileName: 'prod' })).toThrow(
 			/not valid JSON/,
 		);
 
-		// Write path aborts before touching the file.
 		expect(() => saveCredential('https://cms.example.com', 'prod', 'secret')).toThrow(/not valid JSON/);
 
-		// The original bytes are intact — nothing was overwritten.
 		expect(readFileSync(path, 'utf8')).toBe('{ corrupt not json');
 	});
 

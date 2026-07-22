@@ -6,7 +6,7 @@ import { CliError } from '../kernel/error.js';
 import { type ArtifactWriteResult, METADATA_FILE, readArtifacts, writeArtifacts } from './artifact-store.js';
 import { byCodepoint } from './codepoint.js';
 
-/** One collection and its records as committed in the data artifact set. */
+/** One collection and its records in the data artifact set. */
 export interface DataCollection {
 	readonly collection: string;
 	readonly primaryKey: string;
@@ -16,7 +16,7 @@ export interface DataCollection {
 /** Files written and stale data artifacts removed by a data write. */
 export type DataWriteResult = ArtifactWriteResult;
 
-/** A validated committed data generation and its source instance. */
+/** A validated data artifact set and its source instance. */
 export interface DataReadResult {
 	readonly source: string;
 	readonly collections: DataCollection[];
@@ -127,12 +127,12 @@ export function writeDataFiles(dir: string, collections: DataCollection[], sourc
 	});
 }
 
-/** Whether a committed data generation exists at the given directory. */
+/** Whether a data artifact manifest exists at the given directory. */
 export function hasDataFiles(dir: string): boolean {
 	return existsSync(dir) && existsSync(join(dir, METADATA_FILE));
 }
 
-/** Read and validate committed data artifacts. */
+/** Read and validate the manifest-owned data artifacts. */
 export function readDataFiles(dir: string): DataReadResult {
 	const { metadata, artifacts } = readArtifacts({
 		dir,

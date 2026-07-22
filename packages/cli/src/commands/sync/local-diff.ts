@@ -4,9 +4,7 @@ import { readSnapshotFiles } from '../../sync/store.js';
 import type { Target } from './resolve-target.js';
 
 /**
- * The read → fetch sequence shared by diff and push. Both must resolve their local snapshot into a
- * target diff through one path so their preconditions and error semantics can never drift; the
- * command layer decides what to do with the null-when-identical result.
+ * Compare the committed snapshot with a target using the same read/fetch path for diff and push.
  */
 export async function localDiff(target: Target, mode: 'merge' | 'mirror'): Promise<DiffResult | null> {
 	const snapshot = readSnapshotFiles(target.schemaDir);

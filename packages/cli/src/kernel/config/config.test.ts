@@ -66,8 +66,7 @@ describe('loadConfig', () => {
 	});
 
 	it('parses a declared project scope, keeping every scope key optional', () => {
-		// A project may declare any subset of scope keys; an empty object is a valid declaration that
-		// merely names a scope slot. Later slices read these to seed a sync's scope.
+		// An empty object validly declares a project without overriding any sync defaults.
 		const dir = tempDir();
 
 		writeFileSync(
@@ -95,8 +94,7 @@ describe('loadConfig', () => {
 	});
 
 	it('rejects format: yaml, the reserved-but-not-yet-serialized artifact format', () => {
-		// format is a seam for YAML later (spec Q16); only json is valid today, so anything else must fail
-		// loud rather than silently fall back to json.
+		// Unsupported formats must fail instead of silently being treated as JSON.
 		const dir = tempDir();
 		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ format: 'yaml' }));
 

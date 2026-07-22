@@ -10,10 +10,7 @@ import { pull } from './pull.js';
 import { push } from './push.js';
 import { wizard } from './wizard.js';
 
-// vitest hoists these above the imports so the bindings resolve to the mocks. clack is mocked to script
-// the select answers; pull and push are mocked because the wizard's whole contract is that it OWNS prompts
-// and sequencing only — it must call the real primitives with constructed options, in order, and nothing
-// else. The mocks record which options each got and the order they ran.
+// Script prompt answers and verify the wizard delegates execution to pull then push.
 vi.mock('@clack/prompts', () => ({
 	select: vi.fn(),
 	isCancel: vi.fn(() => false),
@@ -97,9 +94,6 @@ describe('sync wizard', () => {
 	});
 
 	it('runs pull then push with the gathered options when config answers neither project nor mode', async () => {
-		// The happy path: pick source, target, and mode (no declared project, so project is silently
-		// default), then call the primitives in order — pull with {from, project, deps}, push with {to, mode,
-		// project}. Three prompts fire and no project prompt among them.
 		twoProfiles();
 
 		vi.mocked(select).mockResolvedValueOnce('staging').mockResolvedValueOnce('prod').mockResolvedValueOnce('merge');
@@ -114,7 +108,6 @@ describe('sync wizard', () => {
 
 		expect(order).toEqual(['pull', 'push']);
 
-		// Only source/target/mode were asked — no project prompt, since only `default` exists.
 		expect(select).toHaveBeenCalledTimes(3);
 
 		const messages = vi.mocked(select).mock.calls.map((call) => call[0].message);

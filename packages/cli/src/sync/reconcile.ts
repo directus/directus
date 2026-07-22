@@ -2,17 +2,8 @@ import { CliError } from '../kernel/error.js';
 import { byCodepoint } from './codepoint.js';
 import { SYSTEM_FK_FIELDS } from './fk-map.js';
 
-// Natural-key matching that seeds the ID map before a first import: it lets merge-mode imports UPDATE an
-// existing target record instead of duplicating it, and stops a mirror-mode delete from destroying a
-// target record that merely carries a different primary key. Pure — the caller supplies source and target
-// records and receives a report; prompting on ambiguity and persisting matches into the committed map are
-// other slices.
-
-// The natural key per system collection: the field set that identifies "the same record" across two
-// instances that assigned it different primary keys. directus_settings is the singleton — an empty key
-// makes every settings record hash to the same key, so a lone source and a lone target match
-// unconditionally (and two on a side, which cannot legitimately happen, fall to ambiguous rather than to a
-// guess). A collection absent from this table is drift and must fail loud, never be silently unmatchable.
+// These fields identify the same system record across instances with different primary keys. Settings is
+// a singleton, so its empty key matches a lone source and target but remains ambiguous for duplicates.
 const NATURAL_KEYS: Readonly<Record<string, readonly string[]>> = {
 	directus_roles: ['name'],
 	directus_policies: ['name'],
@@ -27,16 +18,13 @@ const NATURAL_KEYS: Readonly<Record<string, readonly string[]>> = {
 };
 
 /**
- * Whether a collection can be reconciled at all: exactly the collections given a natural key above. The
- * import slice consults this to pass reconcile only what it can match — a synced system collection with
- * no natural key (directus_panels: identified solely by its dashboard FK, no stable cross-instance key)
- * is remapped in place but never reconciled, and content is neither. Keeps NATURAL_KEYS private while
- * letting a caller avoid the by-design STATE throw on an unkeyed collection.
+ * Whether a collection has a stable cross-instance natural key. Panels intentionally do not.
  */
 export function hasNaturalKey(collection: string): boolean {
 	return Object.hasOwn(NATURAL_KEYS, collection);
 }
 
+/** Source and target records for one collection reconciliation. */
 export interface ReconcileInput {
 	readonly collection: string;
 	readonly primaryKey: string;
@@ -44,6 +32,7 @@ export interface ReconcileInput {
 	readonly targetRecords: readonly Record<string, unknown>[];
 }
 
+/** Matched, ambiguous, and unmatched source identities for one collection. */
 export interface CollectionReconcile {
 	readonly collection: string;
 	readonly matched: readonly { sourceId: string; targetId: string; key: string }[];
@@ -51,15 +40,9 @@ export interface CollectionReconcile {
 	readonly unmatched: readonly string[];
 }
 
-// A source FK component whose referenced parent has not matched in this run. The row cannot equal any
-// target row — its parent has no target-space ID yet — so the whole record is unmatched.
 const UNTRANSLATABLE: unique symbol = Symbol('untranslatable');
 
-// The ordered key components for one record. FK components (fields referencing another synced collection)
-// are resolved through `resolveFk`: identity for target rows, whose values are already target-space, and a
-// translation through the in-progress map for source rows. A null/undefined FK stays null and is a
-// legitimate component — an access row with role set and user null must never collide with role null and
-// user set. Returns null when a source FK is non-null but untranslatable.
+// Null is a real key component; a non-null source FK with no target mapping makes the whole key unusable.
 function keyComponents(
 	record: Record<string, unknown>,
 	naturalKey: readonly string[],
@@ -107,7 +90,6 @@ function groupTargets(
 
 		if (claimed.has(targetId)) continue;
 
-		// A target FK resolves to itself: its stored value is already the target-space ID.
 		const components = keyComponents(record, naturalKey, references, (_referenced, id) => id);
 		const key = JSON.stringify(components);
 		const bucket = byKey.get(key);
@@ -194,7 +176,6 @@ function reconcileOne(
 			const [sourceId] = sourceIds;
 			const [targetId] = targetIds;
 
-			// Both groups hold exactly one member, so both are defined; the guard proves it to the checker.
 			if (sourceId !== undefined && targetId !== undefined) {
 				matched.push({ sourceId, targetId, key });
 
@@ -207,9 +188,7 @@ function reconcileOne(
 			continue;
 		}
 
-		// More than one source OR more than one target sharing a key: every involved source is ambiguous
-		// against all candidate targets. Never guess — a wrong seed silently corrupts a later import or a
-		// mirror delete.
+		// Never guess among duplicate natural keys; a wrong identity can corrupt import or mirror deletion.
 		const targetIdsSorted = [...targetIds].sort(byCodepoint);
 
 		for (const sourceId of sourceIds) {
@@ -225,19 +204,14 @@ function reconcileOne(
 }
 
 /**
- * Reconcile each collection in the given order — the caller passes parents before children so a child's FK
- * components can translate through matches already made this run. `existing` is the committed map's
- * collection→sourceId→targetId bucket (the shape id-map's mappingsFor returns); its source IDs are skipped
- * and its target IDs pre-claimed. The result array mirrors the input order; each collection's buckets are
- * codepoint-sorted so a reshuffled input yields byte-identical output.
+ * Reconcile collections in parent-first order. Existing source IDs are skipped and their targets claimed;
+ * new matches become available to later child FK keys.
  */
 export function reconcileCollections(
 	inputs: readonly ReconcileInput[],
 	existing: Readonly<Record<string, Readonly<Record<string, string>>>>,
 ): CollectionReconcile[] {
-	// The in-progress map: collection → (sourceId → targetId), seeded from the committed map and grown as
-	// matches land, and the set of claimed target IDs per collection. Both are String()-normalized so an
-	// integer primary key (settings id 1) compares as the same '1' whichever side it came from.
+	// Normalize IDs to strings so numeric primary keys match persisted map keys.
 	const progress = new Map<string, Map<string, string>>();
 	const claimed = new Map<string, Set<string>>();
 

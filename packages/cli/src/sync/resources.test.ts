@@ -71,8 +71,7 @@ describe('resolveResources', () => {
 	});
 
 	it('rejects a directly requested dependent-only child, naming its parent', () => {
-		// Spec: "Does not allow selection of dependent collections (e.g. panels), expected to select
-		// parent (e.g. dashboard)." The error must name the parent so the user knows what to pick instead.
+		// Name the parent so the operator knows which selectable resource includes this child.
 		const error = expectCliError(() => resolveResources(['panels']));
 
 		expect(error.code).toBe('USAGE');
@@ -124,7 +123,7 @@ describe('resolveResources', () => {
 	});
 
 	it('follows a selectable-to-selectable edge by default but severs it under deps:false', () => {
-		// Closure between selectable resources is opt-out (RFC --no-deps): with deps on, roles drags in its
+		// Closure between selectable resources is opt-out: with deps on, roles drags in its
 		// policies (and their access/permissions children); with deps off, the selectable edge roles→policies
 		// is severed and roles resolves to itself alone.
 		expect(names(['roles'])).toEqual(['access', 'permissions', 'policies', 'roles']);

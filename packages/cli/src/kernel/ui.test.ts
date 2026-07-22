@@ -131,7 +131,6 @@ describe('createUi', () => {
 	});
 
 	it('redacts a secret nested deep inside arrays and objects on the machine channel', () => {
-		// The transform must walk the whole structure, not just top-level values.
 		registerSecret('leaked-token-abc123');
 		const ui = createUi({ json: true, color: false });
 		ui.data({ items: [{ nested: { token: 'leaked-token-abc123' } }] });
