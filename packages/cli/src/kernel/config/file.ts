@@ -35,10 +35,34 @@ const profileSchema = z.object({
 	auth: z.object({ type: z.literal('token') }).default({ type: 'token' }),
 });
 
-// The kernel owns `profiles`; any other top-level key (e.g. a future
-// `sync` block) passes through untouched for its own consumer to read.
+// A project's scope overrides. Every key is optional, so an empty object is a valid declaration that
+// merely names a scope slot; a CLI flag overrides whatever a key sets. include/exclude in either pair
+// are mutually exclusive, but that is enforced where the scope resolves (naming the project), not here.
+// Strict, unlike the loose top level: a typo'd scope key ("colections") would otherwise be silently
+// dropped and widen the pull to everything — scope config must fail loud, not fail open.
+const projectSchema = z.strictObject({
+	collections: z.array(z.string()).optional(),
+	excludeCollections: z.array(z.string()).optional(),
+	resources: z.array(z.string()).optional(),
+	excludeResources: z.array(z.string()).optional(),
+	content: z.array(z.string()).optional(),
+	mode: z.enum(['add', 'merge', 'mirror']).optional(),
+});
+
+// The kernel owns `profiles`, `directory`, `projects`, and `format`; any other top-level key (e.g. a
+// future `sync` block) passes through untouched for its own consumer to read. All four carry defaults
+// so a config predating them parses unchanged.
 const configSchema = z.looseObject({
 	profiles: z.record(z.string(), profileSchema).default({}),
+	// The artifact root, relative to this config file's directory: every sync command anchors its
+	// committable files under it. Configurable so a repo can rename or nest the sync tree; containment
+	// is re-checked on whatever it resolves to.
+	directory: z.string().min(1).default('directus'),
+	// Named scope profiles. `default` is always valid without appearing here; any other name must be
+	// declared to be selectable. A declared entry supplies the scope defaults a flag can override.
+	projects: z.record(z.string(), projectSchema).default({}),
+	// Reserved seam for YAML artifacts (spec Q16): only json serializes today.
+	format: z.enum(['json']).default('json'),
 });
 
 // Explicit types keep isolated declaration emit independent of schema inference.
@@ -47,8 +71,23 @@ interface Profile {
 	readonly auth: { readonly type: 'token' };
 }
 
+// A project's scope overrides from directus.config.json; every key is optional. Exported because later
+// slices read these to seed a sync's scope whenever the matching flag is absent. `| undefined` on each
+// key mirrors the zod-optional output shape under exactOptionalPropertyTypes.
+export interface ProjectConfig {
+	readonly collections?: readonly string[] | undefined;
+	readonly excludeCollections?: readonly string[] | undefined;
+	readonly resources?: readonly string[] | undefined;
+	readonly excludeResources?: readonly string[] | undefined;
+	readonly content?: readonly string[] | undefined;
+	readonly mode?: 'add' | 'merge' | 'mirror' | undefined;
+}
+
 interface Config {
 	readonly profiles: Readonly<Record<string, Profile>>;
+	readonly directory: string;
+	readonly projects: Readonly<Record<string, ProjectConfig>>;
+	readonly format: 'json';
 	readonly [namespace: string]: unknown;
 }
 

@@ -110,7 +110,7 @@ describe('interactive sync push', () => {
 		vi.mocked(fetchDiff).mockResolvedValueOnce(changesResult());
 		vi.mocked(confirm).mockResolvedValueOnce(true);
 
-		await push({ to: 'staging', mode: 'merge' }, ctxAt(dir));
+		await push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir));
 
 		expect(applyDiff).toHaveBeenCalledTimes(1);
 	});
@@ -119,7 +119,9 @@ describe('interactive sync push', () => {
 		vi.mocked(fetchDiff).mockResolvedValueOnce(changesResult());
 		vi.mocked(confirm).mockResolvedValueOnce(false);
 
-		await expect(push({ to: 'staging', mode: 'merge' }, ctxAt(dir))).rejects.toThrow(/nothing was applied/i);
+		await expect(push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir))).rejects.toThrow(
+			/nothing was applied/i,
+		);
 
 		expect(applyDiff).not.toHaveBeenCalled();
 	});
@@ -130,7 +132,7 @@ describe('interactive sync push', () => {
 		vi.mocked(fetchDiff).mockResolvedValueOnce(deletionResult());
 		vi.mocked(text).mockResolvedValueOnce('staging');
 
-		await push({ to: 'staging', mode: 'mirror', yes: true }, ctxAt(dir));
+		await push({ to: 'staging', mode: 'mirror', yes: true, project: 'default' }, ctxAt(dir));
 
 		expect(confirm).not.toHaveBeenCalled();
 		expect(text).toHaveBeenCalledTimes(1);
@@ -141,7 +143,9 @@ describe('interactive sync push', () => {
 		vi.mocked(fetchDiff).mockResolvedValueOnce(deletionResult());
 		vi.mocked(text).mockResolvedValueOnce('nope');
 
-		await expect(push({ to: 'staging', mode: 'mirror', yes: true }, ctxAt(dir))).rejects.toThrow(/did not match/i);
+		await expect(push({ to: 'staging', mode: 'mirror', yes: true, project: 'default' }, ctxAt(dir))).rejects.toThrow(
+			/did not match/i,
+		);
 
 		expect(applyDiff).not.toHaveBeenCalled();
 	});

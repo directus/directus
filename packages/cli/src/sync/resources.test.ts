@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { CliError } from '../kernel/error.js';
 import { resolveResources, SELECTABLE_RESOURCES } from './resources.js';
 
-function names(requested: string[]): string[] {
-	return resolveResources(requested).map((resource) => resource.name);
+function names(requested: string[], options?: { deps?: boolean }): string[] {
+	return resolveResources(requested, options).map((resource) => resource.name);
 }
 
 function expectCliError(fn: () => unknown): CliError {
@@ -90,10 +90,44 @@ describe('resolveResources', () => {
 
 	it('marks settings the lone singleton and leaves it standalone', () => {
 		// directus_settings is a single-object endpoint (system-data collections.yaml: singleton) that
-		// pulls nothing, so a settings selection resolves to exactly itself.
+		// pulls nothing, so a settings selection resolves to exactly itself — carrying its external-reference
+		// strip list (project logo/favicon and storage_default_folder FKs) and no alias views.
 		expect(resolveResources(['settings'])).toEqual([
-			{ name: 'settings', collection: 'directus_settings', endpoint: '/settings', primaryKey: 'id', singleton: true },
+			{
+				name: 'settings',
+				collection: 'directus_settings',
+				endpoint: '/settings',
+				primaryKey: 'id',
+				singleton: true,
+				strip: ['project_logo', 'public_foreground', 'public_background', 'public_favicon', 'storage_default_folder'],
+				aliases: [],
+			},
 		]);
+	});
+
+	it('follows a selectable-to-selectable edge by default but severs it under deps:false', () => {
+		// Closure between selectable resources is opt-out (RFC --no-deps): with deps on, roles drags in its
+		// policies (and their access/permissions children); with deps off, the selectable edge roles→policies
+		// is severed and roles resolves to itself alone.
+		expect(names(['roles'])).toEqual(['access', 'permissions', 'policies', 'roles']);
+		expect(names(['roles'], { deps: false })).toEqual(['roles']);
+	});
+
+	it('keeps dependent-only children riding with their parent even under deps:false', () => {
+		// The parent→child edge (policies→access/permissions) is selection semantics, not closure, so
+		// --no-deps never severs it: selecting policies alone still exports its access and permissions rows.
+		expect(names(['policies'], { deps: false })).toEqual(['access', 'permissions', 'policies']);
+	});
+
+	it('gives every resource a strip and an aliases list, so a new resource cannot forget them', () => {
+		// The strip/alias tables are the export's secrets-and-FK guard: a resource added without them would
+		// silently ship sensitive columns or break a fresh-target import. Loop so the invariant is total.
+		const all = ['dashboards', 'flows', 'policies', 'roles', 'settings', 'translations', 'users'];
+
+		for (const resource of resolveResources(all)) {
+			expect(Array.isArray(resource.strip)).toBe(true);
+			expect(Array.isArray(resource.aliases)).toBe(true);
+		}
 	});
 
 	it('offers only the selectable names, sorted, never the dependent-only children', () => {
