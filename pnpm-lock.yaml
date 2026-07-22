@@ -2047,6 +2047,9 @@ importers:
         specifier: 'catalog:'
         version: 4.1.12
     devDependencies:
+      '@directus/system-data':
+        specifier: workspace:*
+        version: link:../system-data
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 4.0.0

@@ -36,6 +36,7 @@
 		"zod": "catalog:"
 	},
 	"devDependencies": {
+		"@directus/system-data": "workspace:*",
 		"@directus/tsconfig": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
