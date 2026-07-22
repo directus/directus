@@ -1,20 +1,89 @@
-import { writeFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import type { MockAgent } from 'undici';
+import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
+import { afterEach, beforeEach, vi } from 'vitest';
 import { run } from '../../kernel/run.js';
 import type { Snapshot } from '../../sync/contract.js';
 import { registerSync } from './index.js';
 
-// Shared scaffolding for the sync command suites (sync.test.ts and the interactive push/diff suites), kept
-// in one home so the config seed, the CLI runner, and the undici mock helpers are written once rather than
-// re-declared per describe block. Named *.test-support.ts (not *.test.ts) so vitest never collects it as a
-// suite, and — because the build is entry-point-driven from src/bin.ts, which never imports it — it is
-// provably absent from the bundle.
+// The filename keeps shared scaffolding out of Vitest collection.
 
 export const SYNC_URL = 'https://cms.example.com';
 export const SYNC_TOKEN = 'super-secret-static-token';
 
-// The minimal full (version 1) snapshot the schema suites pull, diff, and seed on disk.
+// The owned-file shape written by src/sync/artifact-store.ts: `${slug}_${hash}.json`.
+export const OWNED: RegExp = /^[a-z0-9-]*_[0-9a-f]{16}\.json$/;
+
+/** Isolated filesystem, network, environment, and output state for a sync test. */
+export interface SyncWorld {
+	dir: string;
+	agent: MockAgent;
+	stdout: string[];
+	stderr: string[];
+	outsideDir(): string;
+}
+
+/**
+ * Register fresh filesystem, network, environment, and output isolation for each test.
+ */
+export function useSyncWorld(): SyncWorld {
+	const realDispatcher = getGlobalDispatcher();
+	const cleanup: string[] = [];
+	const stdout: string[] = [];
+	const stderr: string[] = [];
+
+	const world: SyncWorld = {
+		dir: '',
+		agent: undefined as unknown as MockAgent,
+		stdout,
+		stderr,
+		outsideDir: () => {
+			const outside = mkdtempSync(join(tmpdir(), 'd6s-outside-'));
+			cleanup.push(outside);
+			return outside;
+		},
+	};
+
+	beforeEach(() => {
+		world.dir = mkdtempSync(join(tmpdir(), 'd6s-sync-'));
+		const home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
+		cleanup.push(world.dir, home);
+		stdout.length = 0;
+		stderr.length = 0;
+
+		world.agent = new MockAgent();
+		world.agent.disableNetConnect();
+		setGlobalDispatcher(world.agent);
+
+		vi.stubEnv('HOME', home);
+		vi.stubEnv('USERPROFILE', home);
+		vi.stubEnv('CI', 'true');
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
+
+		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
+			stdout.push(String(chunk));
+			return true;
+		});
+
+		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
+			stderr.push(String(chunk));
+			return true;
+		});
+	});
+
+	afterEach(async () => {
+		setGlobalDispatcher(realDispatcher);
+		await world.agent.close();
+		vi.restoreAllMocks();
+		vi.unstubAllEnvs();
+		for (const dir of cleanup.splice(0)) rmSync(dir, { recursive: true, force: true });
+	});
+
+	return world;
+}
+
+/** Return the minimal full snapshot used by sync command tests. */
 export function fullSnapshot(): Snapshot {
 	return {
 		version: 1,
@@ -27,20 +96,17 @@ export function fullSnapshot(): Snapshot {
 	};
 }
 
-// Drive the whole CLI path through registerSync against a throwaway project dir, exactly as a bin
-// invocation would resolve parse → profile → credential → fetch.
+/** Run sync through the real command dispatcher. */
 export function runSync(dir: string, argv: string[]): Promise<number> {
 	return run(argv, { registerCommands: [registerSync], cwd: dir });
 }
 
-// The single-profile config every suite seeds before a command runs.
+/** Seed the standard staging profile. */
 export function seedProjectConfig(dir: string): void {
 	writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url: SYNC_URL } } }));
 }
 
-// The snapshot endpoint is admin-only, so the intercept only matches when the resolved token is on the
-// wire — a broken credential path never reaches this reply. The body is passed in so a suite can serve the
-// plain full snapshot or a variant (e.g. one carrying a primary key) through the same intercept shape.
+// Require authentication on the admin-only snapshot endpoint.
 export function mockSnapshot(agent: MockAgent, body: unknown): void {
 	agent
 		.get(SYNC_URL)
@@ -48,10 +114,7 @@ export function mockSnapshot(agent: MockAgent, body: unknown): void {
 		.reply(200, { data: body }, { headers: { 'content-type': 'application/json' } });
 }
 
-// A list-endpoint record pull: matches only with the whole-set query (limit -1 sorted by primary key) and
-// the token on the wire, mirroring fetchRecords — which pages by offset until an EMPTY response (a
-// QUERY_LIMIT_MAX clamp is silent, so emptiness is the only trustworthy exhaustion signal), so a
-// non-empty first page is always followed by one exhaustion probe.
+// Register the empty exhaustion probe because QUERY_LIMIT_MAX can silently clamp the first page.
 export function mockList(agent: MockAgent, path: string, records: Record<string, unknown>[]): void {
 	agent
 		.get(SYNC_URL)
@@ -101,4 +164,108 @@ export function mockDefaultRecords(agent: MockAgent): void {
 	}
 
 	mockSingleton(agent, '/settings', { id: 1 });
+}
+
+// Match mode exactly because omitting it selects the server's destructive mirror default.
+export function mockDiff(
+	agent: MockAgent,
+	mode: 'merge' | 'mirror',
+	body: Record<string, unknown> | null,
+	capture?: (body: unknown) => void,
+): void {
+	const reply = agent.get(SYNC_URL).intercept({
+		path: '/schema/diff',
+		method: 'POST',
+		query: { mode },
+		headers: { authorization: `Bearer ${SYNC_TOKEN}` },
+		body(raw: string) {
+			capture?.(JSON.parse(raw));
+			return true;
+		},
+	});
+
+	if (body === null) {
+		reply.reply(204, '');
+	} else {
+		reply.reply(200, { data: { hash: 'h1', diff: body } }, { headers: { 'content-type': 'application/json' } });
+	}
+}
+
+// Capture apply bodies for hash-seal fidelity checks.
+export function mockApply(agent: MockAgent, capture?: (body: unknown) => void): void {
+	agent
+		.get(SYNC_URL)
+		.intercept({
+			path: '/schema/apply',
+			method: 'POST',
+			headers: { authorization: `Bearer ${SYNC_TOKEN}` },
+			body(raw: string) {
+				capture?.(JSON.parse(raw));
+				return true;
+			},
+		})
+		.reply(204, '');
+}
+
+// Match the server hash-mismatch shape that triggers push's rerun hint.
+export function mockApplyHashMismatch(agent: MockAgent): void {
+	agent
+		.get(SYNC_URL)
+		.intercept({ path: '/schema/apply', method: 'POST' })
+		.reply(
+			400,
+			{
+				errors: [
+					{
+						message:
+							"Provided hash does not match the current instance's schema hash, indicating the schema has changed after this diff was generated. Please generate a new diff and try again",
+						extensions: { code: 'INVALID_PAYLOAD' },
+					},
+				],
+			},
+			{ headers: { 'content-type': 'application/json' } },
+		);
+}
+
+// Undici matches the complete query, proving no unregistered import flags were sent.
+export function mockImport(
+	agent: MockAgent,
+	query: Record<string, string>,
+	result: Record<string, unknown>,
+	status = 200,
+	capture?: (form: FormData) => void,
+): void {
+	agent
+		.get(SYNC_URL)
+		.intercept({
+			path: '/utils/import',
+			method: 'POST',
+			query,
+			headers: { authorization: `Bearer ${SYNC_TOKEN}` },
+			body(raw: unknown) {
+				if (capture !== undefined) capture(raw as FormData);
+				return true;
+			},
+		})
+		.reply(status, result, { headers: { 'content-type': 'application/json' } });
+}
+
+export async function decodeBatch(form: FormData | undefined): Promise<unknown> {
+	const file = form?.get('file');
+
+	if (file === null || file === undefined || typeof (file as Blob).text !== 'function') {
+		throw new Error('no import file part');
+	}
+
+	return JSON.parse(await (file as Blob).text());
+}
+
+// The owned artifact whose authoritative `collection` key names the collection — found by content, not
+// filename, so a test never hard-codes the hash the store derives.
+export function ownedFileFor(dir: string, collection: string): string {
+	for (const name of readdirSync(dir).filter((entry) => OWNED.test(entry))) {
+		if (JSON.parse(readFileSync(join(dir, name), 'utf8')).collection === collection) return name;
+	}
+
+	throw new Error(`no owned file for ${collection}`);
 }

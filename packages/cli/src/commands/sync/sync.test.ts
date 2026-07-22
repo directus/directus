@@ -1,42 +1,44 @@
-import {
-	existsSync,
-	mkdirSync,
-	mkdtempSync,
-	readdirSync,
-	readFileSync,
-	rmSync,
-	symlinkSync,
-	writeFileSync,
-} from 'node:fs';
-import { tmpdir } from 'node:os';
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { MockAgent } from 'undici';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Snapshot } from '../../sync/contract.js';
 import { type DataCollection, writeDataFiles } from '../../sync/data-store.js';
 import { writeSnapshotFiles } from '../../sync/store.js';
 import {
+	decodeBatch,
 	fullSnapshot,
+	mockApply,
+	mockApplyHashMismatch,
 	mockDefaultRecords,
+	mockDiff,
+	mockImport,
 	mockList,
 	mockSingleton,
 	mockSnapshot,
+	OWNED,
+	ownedFileFor,
 	runSync,
 	seedProjectConfig,
 	SYNC_TOKEN,
 	SYNC_URL,
+	useSyncWorld,
 } from './sync.test-support.js';
 
-// The owned-file shape written by src/sync/store.ts: `${slug}_${hash}.json`.
-const OWNED = /^[a-z0-9-]*_[0-9a-f]{16}\.json$/;
-
-// The config constants and the current test's mutable dir/agent, shared by every describe below so the CLI
-// runner and the mock binders are declared once. Each suite's beforeEach assigns dir (and, where it hits
-// the wire, agent); tests run sequentially within a file, so the shared slots never overlap.
+// The per-test world (dirs, agent, env isolation, output capture) lives in the harness; the module-scope
+// slots mirror it so every call site below stays argument-free. Tests run sequentially within a file, so
+// the shared slots never overlap.
+const world = useSyncWorld();
 const url = SYNC_URL;
 const token = SYNC_TOKEN;
 let agent: MockAgent;
 let dir: string;
+let stdout: string[];
+let stderr: string[];
+
+beforeEach(() => {
+	({ agent, dir, stdout, stderr } = world);
+});
 
 // Thin binders over the shared helpers, closing over the module-scope dir/agent so every call site stays
 // argument-free exactly as it read before the hoist.
@@ -60,17 +62,35 @@ function interceptDefaultRecords(): void {
 	mockDefaultRecords(agent);
 }
 
+// A target record fetch during reconcile is the same whole-set list request a pull makes.
+const interceptTarget = interceptList;
+
+function interceptDiff(
+	mode: 'merge' | 'mirror',
+	body: Record<string, unknown> | null,
+	capture?: (body: unknown) => void,
+): void {
+	mockDiff(agent, mode, body, capture);
+}
+
+function interceptApply(capture?: (body: unknown) => void): void {
+	mockApply(agent, capture);
+}
+
+function interceptImport(
+	query: Record<string, string>,
+	result: Record<string, unknown>,
+	status = 200,
+	capture?: (form: FormData) => void,
+): void {
+	mockImport(agent, query, result, status, capture);
+}
+
 // Drive the whole path through the real dispatcher against a throwaway project dir (like
 // profile.test.ts) while pinning the network with undici and isolating HOME/env (like
 // connection.test.ts), so a pull exercises parse → profile → credential → fetch → files
 // with nothing borrowed from the developer's real machine.
 describe('sync pull', () => {
-	const realDispatcher = getGlobalDispatcher();
-	let home: string;
-	let outside: string | undefined;
-	let stdout: string[];
-	let stderr: string[];
-
 	// A full snapshot spanning two collections, so a later scoped pull of one can be shown to leave the
 	// other's committed artifact untouched.
 	function twoCollectionSnapshot(): Record<string, unknown> {
@@ -105,60 +125,10 @@ describe('sync pull', () => {
 		};
 	}
 
-	// The owned artifact whose authoritative `collection` key names the collection — found by content,
-	// not filename, so a test never hard-codes the hash the store derives.
-	function ownedFileFor(schemaDir: string, collection: string): string {
-		for (const name of readdirSync(schemaDir).filter((entry) => OWNED.test(entry))) {
-			if (JSON.parse(readFileSync(join(schemaDir, name), 'utf8')).collection === collection) return name;
-		}
-
-		throw new Error(`no owned file for ${collection}`);
-	}
-
 	// This suite serves the plain full snapshot; other suites pass their own body to mockSnapshot.
 	function interceptSnapshot(): void {
 		mockSnapshot(agent, fullSnapshot());
 	}
-
-	beforeEach(() => {
-		dir = mkdtempSync(join(tmpdir(), 'd6s-sync-'));
-		home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
-		outside = undefined;
-		stdout = [];
-		stderr = [];
-
-		agent = new MockAgent();
-		agent.disableNetConnect();
-		setGlobalDispatcher(agent);
-
-		// Isolate HOME and force CI so resolution reads only DIRECTUS_STAGING_TOKEN — never the
-		// developer's saved store — and behaves the same here as in a pipeline. Default the token
-		// to absent; the tests that need it opt in.
-		vi.stubEnv('HOME', home);
-		vi.stubEnv('USERPROFILE', home);
-		vi.stubEnv('CI', 'true');
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
-
-		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
-			stdout.push(String(chunk));
-			return true;
-		});
-
-		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
-			stderr.push(String(chunk));
-			return true;
-		});
-	});
-
-	afterEach(async () => {
-		setGlobalDispatcher(realDispatcher);
-		await agent.close();
-		vi.restoreAllMocks();
-		vi.unstubAllEnvs();
-		rmSync(dir, { recursive: true, force: true });
-		rmSync(home, { recursive: true, force: true });
-		if (outside !== undefined) rmSync(outside, { recursive: true, force: true });
-	});
 
 	it('writes the source schema as committable files anchored to the config directory', async () => {
 		// Proves the full path lands deterministic files under directus/default/schema and that
@@ -268,7 +238,7 @@ describe('sync pull', () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		outside = mkdtempSync(join(tmpdir(), 'd6s-outside-'));
+		const outside = world.outsideDir();
 		mkdirSync(join(dir, 'directus', 'default'), { recursive: true });
 		symlinkSync(outside, join(dir, 'directus', 'default', 'schema'));
 
@@ -285,7 +255,7 @@ describe('sync pull', () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		outside = mkdtempSync(join(tmpdir(), 'd6s-outside-'));
+		const outside = world.outsideDir();
 		symlinkSync(outside, join(dir, 'directus'));
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
@@ -377,12 +347,11 @@ describe('sync pull', () => {
 // expected to hit it, so the disabled dispatcher turns any stray request into a throw: an unregistered
 // endpoint proves a resource was NOT exported, an unconsumed one that it was not skipped.
 describe('sync pull resources and data', () => {
-	const realDispatcher = getGlobalDispatcher();
 	let dataDir: string;
-	let home: string;
-	let outside: string | undefined;
-	let stdout: string[];
-	let stderr: string[];
+
+	beforeEach(() => {
+		dataDir = join(dir, 'directus', 'default', 'data');
+	});
 
 	// A full schema whose articles collection carries a primary key, so a --content export can key on it.
 	function schemaBody(): Record<string, unknown> {
@@ -427,52 +396,6 @@ describe('sync pull resources and data', () => {
 			.map((name) => JSON.parse(readFileSync(join(dataDir, name), 'utf8')).collection)
 			.sort();
 	}
-
-	function ownedDataFileFor(collection: string): string {
-		for (const name of readdirSync(dataDir).filter((entry) => OWNED.test(entry))) {
-			if (JSON.parse(readFileSync(join(dataDir, name), 'utf8')).collection === collection) return name;
-		}
-
-		throw new Error(`no data file for ${collection}`);
-	}
-
-	beforeEach(() => {
-		dir = mkdtempSync(join(tmpdir(), 'd6s-sync-'));
-		dataDir = join(dir, 'directus', 'default', 'data');
-		home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
-		outside = undefined;
-		stdout = [];
-		stderr = [];
-
-		agent = new MockAgent();
-		agent.disableNetConnect();
-		setGlobalDispatcher(agent);
-
-		vi.stubEnv('HOME', home);
-		vi.stubEnv('USERPROFILE', home);
-		vi.stubEnv('CI', 'true');
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
-
-		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
-			stdout.push(String(chunk));
-			return true;
-		});
-
-		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
-			stderr.push(String(chunk));
-			return true;
-		});
-	});
-
-	afterEach(async () => {
-		setGlobalDispatcher(realDispatcher);
-		await agent.close();
-		vi.restoreAllMocks();
-		vi.unstubAllEnvs();
-		rmSync(dir, { recursive: true, force: true });
-		rmSync(home, { recursive: true, force: true });
-		if (outside !== undefined) rmSync(outside, { recursive: true, force: true });
-	});
 
 	it('exports every default resource but never users on a bare pull', async () => {
 		// Spec Q8: a bare pull ships the whole config graph EXCEPT users (selectable-but-off). /users is not
@@ -643,12 +566,12 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'users')).toBe(0);
 
-		const roleBytes = readFileSync(join(dataDir, ownedDataFileFor('directus_roles')), 'utf8');
+		const roleBytes = readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_roles')), 'utf8');
 		expect(roleBytes).not.toContain('"users"');
 		expect(roleBytes).not.toContain('"policies"');
 		expect(roleBytes).not.toContain('"children"');
 
-		const userBytes = readFileSync(join(dataDir, ownedDataFileFor('directus_users')), 'utf8');
+		const userBytes = readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_users')), 'utf8');
 		expect(userBytes).not.toContain('token');
 		expect(userBytes).not.toContain('password');
 		expect(userBytes).not.toContain('tfa_secret');
@@ -711,7 +634,7 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
 
-		const access = JSON.parse(readFileSync(join(dataDir, ownedDataFileFor('directus_access')), 'utf8'));
+		const access = JSON.parse(readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_access')), 'utf8'));
 		expect(access.records).toEqual([{ id: 'a1', role: 'r1', user: null }]);
 	});
 
@@ -733,7 +656,7 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'users,roles,policies')).toBe(0);
 
-		const access = JSON.parse(readFileSync(join(dataDir, ownedDataFileFor('directus_access')), 'utf8'));
+		const access = JSON.parse(readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_access')), 'utf8'));
 
 		expect(access.records).toEqual([
 			{ id: 'a1', role: 'r1', user: null },
@@ -752,7 +675,7 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--content', 'articles', '--json')).toBe(0);
 
-		const article = JSON.parse(readFileSync(join(dataDir, ownedDataFileFor('articles')), 'utf8'));
+		const article = JSON.parse(readFileSync(join(dataDir, ownedFileFor(dataDir, 'articles')), 'utf8'));
 		expect(article.primaryKey).toBe('id');
 		expect(article.records).toEqual([{ id: 1, title: 'First' }]);
 		expect(JSON.parse(stdout.join('')).content).toEqual(['articles']);
@@ -782,7 +705,7 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--content', 'articles')).toBe(0);
 
-		const article = JSON.parse(readFileSync(join(dataDir, ownedDataFileFor('articles')), 'utf8'));
+		const article = JSON.parse(readFileSync(join(dataDir, ownedFileFor(dataDir, 'articles')), 'utf8'));
 		expect(article.records).toEqual([{ id: 1, title: 'First' }]);
 		expect(stderr.join('')).toContain('exported without api_key');
 	});
@@ -861,7 +784,7 @@ describe('sync pull resources and data', () => {
 		writeConfig({ profiles: { staging: { url } }, directory: 'cms' });
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		outside = mkdtempSync(join(tmpdir(), 'd6s-outside-'));
+		const outside = world.outsideDir();
 		symlinkSync(outside, join(dir, 'cms'));
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
@@ -874,11 +797,11 @@ describe('sync pull resources and data', () => {
 // path is exercised in isolation from pull's network fetch. Same isolation discipline as `sync pull`:
 // undici pins the wire, HOME/env are stubbed, and CI forces resolution to read only the token var.
 describe('sync diff', () => {
-	const realDispatcher = getGlobalDispatcher();
 	let schemaDir: string;
-	let home: string;
-	let stdout: string[];
-	let stderr: string[];
+
+	beforeEach(() => {
+		schemaDir = join(dir, 'directus', 'default', 'schema');
+	});
 
 	function partialSnapshot(): Snapshot {
 		return { ...fullSnapshot(), version: 2 };
@@ -902,74 +825,6 @@ describe('sync diff', () => {
 		};
 	}
 
-	// The diff endpoint is admin-only and mode-bearing, so the intercept only matches when the resolved
-	// token and mode=merge are on the wire; `capture` records the request body for the fidelity check.
-	function interceptDiff(capture?: (body: unknown) => void): void {
-		agent
-			.get(url)
-			.intercept({
-				path: '/schema/diff',
-				method: 'POST',
-				query: { mode: 'merge' },
-				headers: { authorization: `Bearer ${token}` },
-				body(raw: string) {
-					capture?.(JSON.parse(raw));
-					return true;
-				},
-			})
-			.reply(200, { data: { hash: 'h1', diff: diffBody() } }, { headers: { 'content-type': 'application/json' } });
-	}
-
-	function interceptNoChanges(): void {
-		agent
-			.get(url)
-			.intercept({
-				path: '/schema/diff',
-				method: 'POST',
-				query: { mode: 'merge' },
-				headers: { authorization: `Bearer ${token}` },
-			})
-			.reply(204, '');
-	}
-
-	beforeEach(() => {
-		dir = mkdtempSync(join(tmpdir(), 'd6s-sync-'));
-		schemaDir = join(dir, 'directus', 'default', 'schema');
-		home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
-		stdout = [];
-		stderr = [];
-
-		agent = new MockAgent();
-		agent.disableNetConnect();
-		setGlobalDispatcher(agent);
-
-		// Isolate HOME and force CI so resolution reads only DIRECTUS_STAGING_TOKEN, and default the
-		// token absent; the tests that reach the wire opt in.
-		vi.stubEnv('HOME', home);
-		vi.stubEnv('USERPROFILE', home);
-		vi.stubEnv('CI', 'true');
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
-
-		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
-			stdout.push(String(chunk));
-			return true;
-		});
-
-		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
-			stderr.push(String(chunk));
-			return true;
-		});
-	});
-
-	afterEach(async () => {
-		setGlobalDispatcher(realDispatcher);
-		await agent.close();
-		vi.restoreAllMocks();
-		vi.unstubAllEnvs();
-		rmSync(dir, { recursive: true, force: true });
-		rmSync(home, { recursive: true, force: true });
-	});
-
 	it('sends the seeded snapshot to /schema/diff byte-for-byte and renders the change summary', async () => {
 		// The whole git workflow rests on the diff computing against exactly what pull wrote, so the
 		// request body must deep-equal the seeded snapshot — the file→wire round trip, unmodified.
@@ -979,7 +834,7 @@ describe('sync diff', () => {
 
 		let sent: unknown;
 
-		interceptDiff((body) => {
+		interceptDiff('merge', diffBody(), (body) => {
 			sent = body;
 		});
 
@@ -997,7 +852,7 @@ describe('sync diff', () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-		interceptDiff();
+		interceptDiff('merge', diffBody());
 
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--json')).toBe(0);
 
@@ -1035,11 +890,11 @@ describe('sync diff', () => {
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		interceptNoChanges();
+		interceptDiff('merge', null);
 		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
 		expect(stderr.join('')).toContain('staging matches the local snapshot — nothing to do.');
 
-		interceptNoChanges();
+		interceptDiff('merge', null);
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--json')).toBe(0);
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
@@ -1076,15 +931,7 @@ describe('sync diff', () => {
 		writeSnapshotFiles(schemaDir, partialSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		agent
-			.get(url)
-			.intercept({
-				path: '/schema/diff',
-				method: 'POST',
-				query: { mode: 'mirror' },
-				headers: { authorization: `Bearer ${token}` },
-			})
-			.reply(204, '');
+		interceptDiff('mirror', null);
 
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--mode', 'mirror')).toBe(0);
 		expect(stderr.join('')).toContain('staging matches the local snapshot — nothing to do.');
@@ -1107,11 +954,11 @@ describe('sync diff', () => {
 // unmodified. The apply intercept is registered only when a call is expected — the disabled dispatcher
 // turns any unexpected apply request into a throw, so its absence proves no apply happened.
 describe('sync push', () => {
-	const realDispatcher = getGlobalDispatcher();
 	let schemaDir: string;
-	let home: string;
-	let stdout: string[];
-	let stderr: string[];
+
+	beforeEach(() => {
+		schemaDir = join(dir, 'directus', 'default', 'schema');
+	});
 
 	// One added collection plus one modified field, no deletions: exercises the plain apply path.
 	function mergeDiffBody(): Record<string, unknown> {
@@ -1138,104 +985,6 @@ describe('sync push', () => {
 			relations: [],
 		};
 	}
-
-	function interceptDiff(mode: 'merge' | 'mirror', body: Record<string, unknown>): void {
-		agent
-			.get(url)
-			.intercept({
-				path: '/schema/diff',
-				method: 'POST',
-				query: { mode },
-				headers: { authorization: `Bearer ${token}` },
-			})
-			.reply(200, { data: { hash: 'h1', diff: body } }, { headers: { 'content-type': 'application/json' } });
-	}
-
-	function interceptDiffNoChanges(mode: 'merge' | 'mirror'): void {
-		agent
-			.get(url)
-			.intercept({
-				path: '/schema/diff',
-				method: 'POST',
-				query: { mode },
-				headers: { authorization: `Bearer ${token}` },
-			})
-			.reply(204, '');
-	}
-
-	// The apply endpoint is admin-only; the intercept only matches with the token on the wire, and
-	// `capture` records the body so the seal-fidelity check can compare it to the diff that was fetched.
-	function interceptApply(capture?: (body: unknown) => void): void {
-		agent
-			.get(url)
-			.intercept({
-				path: '/schema/apply',
-				method: 'POST',
-				headers: { authorization: `Bearer ${token}` },
-				body(raw: string) {
-					capture?.(JSON.parse(raw));
-					return true;
-				},
-			})
-			.reply(204, '');
-	}
-
-	// The server's real hash-mismatch reply (see api validate-diff.ts): 400 INVALID_PAYLOAD whose
-	// message names the hash. mapRequestError carries that into detail, which push keys the re-run hint off.
-	function interceptApplyHashMismatch(): void {
-		agent
-			.get(url)
-			.intercept({ path: '/schema/apply', method: 'POST' })
-			.reply(
-				400,
-				{
-					errors: [
-						{
-							message:
-								"Provided hash does not match the current instance's schema hash, indicating the schema has changed after this diff was generated. Please generate a new diff and try again",
-							extensions: { code: 'INVALID_PAYLOAD' },
-						},
-					],
-				},
-				{ headers: { 'content-type': 'application/json' } },
-			);
-	}
-
-	beforeEach(() => {
-		dir = mkdtempSync(join(tmpdir(), 'd6s-sync-'));
-		schemaDir = join(dir, 'directus', 'default', 'schema');
-		home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
-		stdout = [];
-		stderr = [];
-
-		agent = new MockAgent();
-		agent.disableNetConnect();
-		setGlobalDispatcher(agent);
-
-		vi.stubEnv('HOME', home);
-		vi.stubEnv('USERPROFILE', home);
-		vi.stubEnv('CI', 'true');
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
-
-		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
-			stdout.push(String(chunk));
-			return true;
-		});
-
-		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
-			stderr.push(String(chunk));
-			return true;
-		});
-	});
-
-	afterEach(async () => {
-		setGlobalDispatcher(realDispatcher);
-		await agent.close();
-		vi.restoreAllMocks();
-		vi.unstubAllEnvs();
-		rmSync(dir, { recursive: true, force: true });
-		rmSync(home, { recursive: true, force: true });
-	});
 
 	it('applies the sealed diff and sends { hash, diff } to /schema/apply byte-for-byte', async () => {
 		// The entire safety model rests on the exact diff the server sealed reaching /schema/apply
@@ -1315,7 +1064,7 @@ describe('sync push', () => {
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		interceptDiffNoChanges('merge');
+		interceptDiff('merge', null);
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
 
@@ -1394,7 +1143,7 @@ describe('sync push', () => {
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		interceptDiff('merge', mergeDiffBody());
-		interceptApplyHashMismatch();
+		mockApplyHashMismatch(agent);
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
 		expect(stderr.join('')).toMatch(/re-run d6s sync push/i);
@@ -1407,16 +1156,18 @@ describe('sync push', () => {
 // HOME/env stubbed, CI forces token-only resolution and non-interactive gates). An endpoint is registered
 // only when a call is expected, so a stray request throws on the disabled dispatcher.
 describe('sync push with data', () => {
-	const realDispatcher = getGlobalDispatcher();
 	// A distinct source URL (the instance the data was pulled from) so the ID map's source→target bucket
 	// keys are visibly different — the exact keying push must reproduce from the committed metadata.
 	const source = 'https://source.example.com';
 	let schemaDir: string;
 	let dataDir: string;
 	let idMapPath: string;
-	let home: string;
-	let stdout: string[];
-	let stderr: string[];
+
+	beforeEach(() => {
+		schemaDir = join(dir, 'directus', 'default', 'schema');
+		dataDir = join(dir, 'directus', 'default', 'data');
+		idMapPath = join(dir, 'directus', 'default', 'id_map.json');
+	});
 
 	// A schema diff with one added collection: enough that the schema phase applies, so the combined flow
 	// (apply then import) is exercised.
@@ -1462,129 +1213,9 @@ describe('sync push with data', () => {
 		writeDataFiles(dataDir, collections, source);
 	}
 
-	function interceptDiff(mode: 'merge' | 'mirror', body: Record<string, unknown> | null): void {
-		const reply = agent.get(url).intercept({
-			path: '/schema/diff',
-			method: 'POST',
-			query: { mode },
-			headers: { authorization: `Bearer ${token}` },
-		});
-
-		if (body === null) {
-			reply.reply(204, '');
-		} else {
-			reply.reply(200, { data: { hash: 'h1', diff: body } }, { headers: { 'content-type': 'application/json' } });
-		}
-	}
-
-	function interceptApply(): void {
-		agent
-			.get(url)
-			.intercept({ path: '/schema/apply', method: 'POST', headers: { authorization: `Bearer ${token}` } })
-			.reply(204, '');
-	}
-
-	// A target record fetch during reconcile: the whole-set query (limit -1 sorted by id) with the token.
-	// fetchRecords pages until an empty response, so a non-empty page earns one exhaustion probe.
-	function interceptTarget(path: string, records: Record<string, unknown>[]): void {
-		agent
-			.get(url)
-			.intercept({
-				path,
-				method: 'GET',
-				query: { limit: '-1', sort: 'id' },
-				headers: { authorization: `Bearer ${token}` },
-			})
-			.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
-
-		if (records.length > 0) {
-			agent
-				.get(url)
-				.intercept({
-					path,
-					method: 'GET',
-					query: { limit: '-1', sort: 'id', offset: String(records.length) },
-					headers: { authorization: `Bearer ${token}` },
-				})
-				.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
-		}
-	}
-
-	// The import endpoint: the query object is asserted EXACTLY by undici (an extra param fails the match),
-	// so registering { mode } alone proves no dryRun/dangerouslyAllowDelete rode along. `capture` records
-	// the multipart FormData so a test can decode the uploaded JSON file and inspect the batch.
-	function interceptImport(
-		query: Record<string, string>,
-		result: Record<string, unknown>,
-		status = 200,
-		capture?: (form: FormData) => void,
-	): void {
-		agent
-			.get(url)
-			.intercept({
-				path: '/utils/import',
-				method: 'POST',
-				query,
-				headers: { authorization: `Bearer ${token}` },
-				body(raw: unknown) {
-					if (capture !== undefined) capture(raw as FormData);
-					return true;
-				},
-			})
-			.reply(status, result, { headers: { 'content-type': 'application/json' } });
-	}
-
-	async function decodeBatch(form: FormData | undefined): Promise<unknown> {
-		const file = form?.get('file');
-
-		if (file === null || file === undefined || typeof (file as Blob).text !== 'function') {
-			throw new Error('no import file part');
-		}
-
-		return JSON.parse(await (file as Blob).text());
-	}
-
 	function readIdMapFile(): Record<string, unknown> {
 		return JSON.parse(readFileSync(idMapPath, 'utf8'));
 	}
-
-	beforeEach(() => {
-		dir = mkdtempSync(join(tmpdir(), 'd6s-sync-'));
-		schemaDir = join(dir, 'directus', 'default', 'schema');
-		dataDir = join(dir, 'directus', 'default', 'data');
-		idMapPath = join(dir, 'directus', 'default', 'id_map.json');
-		home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
-		stdout = [];
-		stderr = [];
-
-		agent = new MockAgent();
-		agent.disableNetConnect();
-		setGlobalDispatcher(agent);
-
-		vi.stubEnv('HOME', home);
-		vi.stubEnv('USERPROFILE', home);
-		vi.stubEnv('CI', 'true');
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
-
-		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
-			stdout.push(String(chunk));
-			return true;
-		});
-
-		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
-			stderr.push(String(chunk));
-			return true;
-		});
-	});
-
-	afterEach(async () => {
-		setGlobalDispatcher(realDispatcher);
-		await agent.close();
-		vi.restoreAllMocks();
-		vi.unstubAllEnvs();
-		rmSync(dir, { recursive: true, force: true });
-		rmSync(home, { recursive: true, force: true });
-	});
 
 	it('uploads the remapped batch and writes the map from reconcile matches and the import response', async () => {
 		// The safety core of a repeat import: the multipart body must decode to records rewritten into target
@@ -1878,130 +1509,20 @@ describe('sync push with data', () => {
 // a call is expected; a stray request throws on the disabled dispatcher. The invariant every test guards:
 // id_map.json is absent afterwards, because previewData applies matches in memory only.
 describe('sync diff with data', () => {
-	const realDispatcher = getGlobalDispatcher();
 	const source = 'https://source.example.com';
 	let schemaDir: string;
 	let dataDir: string;
 	let idMapPath: string;
-	let home: string;
-	let stdout: string[];
-	let stderr: string[];
+
+	beforeEach(() => {
+		schemaDir = join(dir, 'directus', 'default', 'schema');
+		dataDir = join(dir, 'directus', 'default', 'data');
+		idMapPath = join(dir, 'directus', 'default', 'id_map.json');
+	});
 
 	function seedData(collections: DataCollection[]): void {
 		writeDataFiles(dataDir, collections, source);
 	}
-
-	// The schema diff endpoint; `body === null` is the 204 "no schema change" the data-only previews use.
-	function interceptDiff(mode: 'merge' | 'mirror', body: Record<string, unknown> | null): void {
-		const reply = agent.get(url).intercept({
-			path: '/schema/diff',
-			method: 'POST',
-			query: { mode },
-			headers: { authorization: `Bearer ${token}` },
-		});
-
-		if (body === null) {
-			reply.reply(204, '');
-		} else {
-			reply.reply(200, { data: { hash: 'h1', diff: body } }, { headers: { 'content-type': 'application/json' } });
-		}
-	}
-
-	// A target record fetch during reconcile: the whole-set query with the token, mirroring fetchRecords —
-	// which pages until an empty response, so a non-empty page earns one exhaustion probe.
-	function interceptTarget(path: string, records: Record<string, unknown>[]): void {
-		agent
-			.get(url)
-			.intercept({
-				path,
-				method: 'GET',
-				query: { limit: '-1', sort: 'id' },
-				headers: { authorization: `Bearer ${token}` },
-			})
-			.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
-
-		if (records.length > 0) {
-			agent
-				.get(url)
-				.intercept({
-					path,
-					method: 'GET',
-					query: { limit: '-1', sort: 'id', offset: String(records.length) },
-					headers: { authorization: `Bearer ${token}` },
-				})
-				.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
-		}
-	}
-
-	// The dry-run import: undici matches the query object EXACTLY, so registering dryRun proves diff always
-	// dry-runs and never sent a committing import. `capture` records the multipart form for batch decoding.
-	function interceptImport(
-		query: Record<string, string>,
-		result: Record<string, unknown>,
-		capture?: (form: FormData) => void,
-	): void {
-		agent
-			.get(url)
-			.intercept({
-				path: '/utils/import',
-				method: 'POST',
-				query,
-				headers: { authorization: `Bearer ${token}` },
-				body(raw: unknown) {
-					if (capture !== undefined) capture(raw as FormData);
-					return true;
-				},
-			})
-			.reply(200, result, { headers: { 'content-type': 'application/json' } });
-	}
-
-	async function decodeBatch(form: FormData | undefined): Promise<unknown> {
-		const file = form?.get('file');
-
-		if (file === null || file === undefined || typeof (file as Blob).text !== 'function') {
-			throw new Error('no import file part');
-		}
-
-		return JSON.parse(await (file as Blob).text());
-	}
-
-	beforeEach(() => {
-		dir = mkdtempSync(join(tmpdir(), 'd6s-sync-'));
-		schemaDir = join(dir, 'directus', 'default', 'schema');
-		dataDir = join(dir, 'directus', 'default', 'data');
-		idMapPath = join(dir, 'directus', 'default', 'id_map.json');
-		home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
-		stdout = [];
-		stderr = [];
-
-		agent = new MockAgent();
-		agent.disableNetConnect();
-		setGlobalDispatcher(agent);
-
-		vi.stubEnv('HOME', home);
-		vi.stubEnv('USERPROFILE', home);
-		vi.stubEnv('CI', 'true');
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
-
-		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
-			stdout.push(String(chunk));
-			return true;
-		});
-
-		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
-			stderr.push(String(chunk));
-			return true;
-		});
-	});
-
-	afterEach(async () => {
-		setGlobalDispatcher(realDispatcher);
-		await agent.close();
-		vi.restoreAllMocks();
-		vi.unstubAllEnvs();
-		rmSync(dir, { recursive: true, force: true });
-		rmSync(home, { recursive: true, force: true });
-	});
 
 	it('dry-runs the remapped batch, renders per-collection data lines, and writes nothing', async () => {
 		// The core of the preview: an unambiguous match (role Editor sr1→tr1) is applied to the batch in
@@ -2035,6 +1556,7 @@ describe('sync diff with data', () => {
 					},
 				},
 			},
+			200,
 			(form) => {
 				sentForm = form;
 			},
@@ -2219,39 +1741,6 @@ describe('sync diff with data', () => {
 // pull` still routes to the pull subcommand, and `sync --help` still prints help. No network is touched;
 // the wizard's non-interactive guard trips before any config or wire work.
 describe('sync bare wizard wiring', () => {
-	let home: string;
-	let stdout: string[];
-	let stderr: string[];
-
-	beforeEach(() => {
-		dir = mkdtempSync(join(tmpdir(), 'd6s-sync-'));
-		home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
-		stdout = [];
-		stderr = [];
-
-		// Force CI so the wizard is non-interactive here regardless of the runner's TTY.
-		vi.stubEnv('HOME', home);
-		vi.stubEnv('USERPROFILE', home);
-		vi.stubEnv('CI', 'true');
-
-		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
-			stdout.push(String(chunk));
-			return true;
-		});
-
-		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
-			stderr.push(String(chunk));
-			return true;
-		});
-	});
-
-	afterEach(() => {
-		vi.restoreAllMocks();
-		vi.unstubAllEnvs();
-		rmSync(dir, { recursive: true, force: true });
-		rmSync(home, { recursive: true, force: true });
-	});
-
 	it('runs the wizard for bare `sync` and refuses without a terminal, pointing at the subcommands', async () => {
 		expect(await d6s('sync')).toBe(1);
 
