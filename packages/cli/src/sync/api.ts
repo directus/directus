@@ -282,6 +282,16 @@ function renderCycle(extensions: Record<string, unknown>): string {
 
 // Add actionable context for import failures whose raw server messages do not identify the remedy.
 function enrichImportError(mapped: CliError, error: unknown): CliError {
+	// No server response (timeout, abort, dropped connection): aborting the request does NOT stop the
+	// server's import transaction, so it may still have committed — with the id-map updates in the lost
+	// response. A blind retry can duplicate records in collections with no natural key to reconcile by.
+	if (!isDirectusError(error)) {
+		return withHint(
+			mapped,
+			'The import may still have been applied on the server. Run d6s sync diff before retrying — a blind retry can duplicate records.',
+		);
+	}
+
 	const extensions = importErrorExtensions(error);
 
 	if (extensions === undefined) return mapped;
@@ -299,6 +309,11 @@ function enrichImportError(mapped: CliError, error: unknown): CliError {
 	);
 }
 
+// The server runs an import for up to its IMPORT_TIMEOUT (default 1h) inside one transaction, and a
+// client-side abort does not stop that transaction — a short timeout only widens the window where the
+// import commits but the response (and its id-map entries) is lost.
+const IMPORT_TIMEOUT_MS = 600_000;
+
 /**
  * Import a flat record batch as the JSON multipart file required by `/utils/import`, validating the
  * response and enriching actionable import failures at the boundary.
@@ -308,7 +323,7 @@ export async function importBatch(
 	batch: ImportCollectionData[],
 	options: ImportBatchInput,
 ): Promise<ImportBatchResult> {
-	const client = connect(credential);
+	const client = connect(credential, { timeoutMs: IMPORT_TIMEOUT_MS });
 
 	const params = {
 		mode: options.mode,

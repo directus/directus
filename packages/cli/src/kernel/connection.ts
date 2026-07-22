@@ -23,11 +23,11 @@ export interface Identity {
 
 const REQUEST_TIMEOUT_MS = 30_000;
 
-function restWithTimeout() {
-	return rest({ onRequest: (options) => ({ ...options, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) }) });
+function restWithTimeout(timeoutMs: number = REQUEST_TIMEOUT_MS) {
+	return rest({ onRequest: (options) => ({ ...options, signal: AbortSignal.timeout(timeoutMs) }) });
 }
 
-export function connect(credential: ResolvedCredential): RestClient<CoreSchema> {
+export function connect(credential: ResolvedCredential, options?: { timeoutMs?: number }): RestClient<CoreSchema> {
 	if (credential.kind === 'session') {
 		return createDirectus<CoreSchema>(credential.url)
 			.with(
@@ -36,11 +36,14 @@ export function connect(credential: ResolvedCredential): RestClient<CoreSchema> 
 					storage: credentialStorage(credential.url, credential.profileName),
 				}),
 			)
-			.with(restWithTimeout());
+			.with(restWithTimeout(options?.timeoutMs));
 	}
 
 	registerSecret(credential.token);
-	return createDirectus<CoreSchema>(credential.url).with(restWithTimeout()).with(staticToken(credential.token));
+
+	return createDirectus<CoreSchema>(credential.url)
+		.with(restWithTimeout(options?.timeoutMs))
+		.with(staticToken(credential.token));
 }
 
 export async function testConnection(credential: ResolvedCredential): Promise<Identity> {
