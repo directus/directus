@@ -1,0 +1,27 @@
+get:
+  summary: Retrieve Current User's Policy Globals
+  description:
+    Retrieve the merged global access flags (`app_access`, `admin_access`, `enforce_tfa`) from all policies that apply
+    to the current user.
+  operationId: getMyPolicyGlobals
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  app_access:
+                    type: boolean
+                  admin_access:
+                    type: boolean
+                  enforce_tfa:
+                    type: boolean
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+  tags:
+    - Policies

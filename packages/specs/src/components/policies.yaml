@@ -1,0 +1,44 @@
+type: object
+# Runtime: Policy type
+# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/policies.ts
+# PoliciesService: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/services/policies.ts
+# directus_policies table: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/database/migrations/20240806A-permissions-policies.ts#L78-L87
+# Note: Policy.enforce_tfa is typed `null | boolean` but the DB column is `notNullable().defaultTo(false)`. The runtime never produces null. This is a type-vs-DB drift tracked under directus/directus#20972.
+properties:
+  id:
+    description: Unique identifier for the policy.
+    example: 2f24211d-d928-469a-aea3-3c8f53d4e426
+    type: string
+    format: uuid
+  name:
+    description: Name of the policy.
+    example: Administrator
+    type: string
+  icon:
+    description: The policy's icon.
+    example: verified_user
+    type: string
+  description:
+    description: Description of the policy.
+    example: Admins have access to all managed data within the system by default.
+    type: string
+    nullable: true
+  enforce_tfa:
+    description: Whether or not this policy enforces the use of 2FA.
+    example: false
+    type: boolean
+    nullable: true
+  ip_access:
+    description: Array of IP addresses that are allowed to connect to the API as a user of this policy.
+    type: array
+    nullable: true
+    items:
+      type: string
+  app_access:
+    description: Whether users with this policy are allowed to use the app.
+    example: true
+    type: boolean
+  admin_access:
+    description: Admin policy. If true, skips all permission checks.
+    example: false
+    type: boolean

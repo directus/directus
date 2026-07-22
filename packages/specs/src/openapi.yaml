@@ -64,6 +64,9 @@ tags:
   - name: Permissions
     description: Permissions control who has access to what and when.
     x-collection: directus_permissions
+  - name: Policies
+    description: Policies are reusable sets of permissions and access rules that can be attached to roles or users.
+    x-collection: directus_policies
   - name: Relations
     description:
       What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever
@@ -205,6 +208,14 @@ paths:
   /permissions/{id}:
     $ref: './paths/permissions/permission.yaml'
 
+  # Policies
+  /policies:
+    $ref: './paths/policies/policies.yaml'
+  /policies/me/globals:
+    $ref: './paths/policies/policies-me-globals.yaml'
+  /policies/{id}:
+    $ref: './paths/policies/policy.yaml'
+
   # Relations
   /relations:
     $ref: './paths/relations/relations.yaml'
@@ -321,6 +332,8 @@ components:
       $ref: './components/operation.yaml'
     Permissions:
       $ref: './components/permissions.yaml'
+    Policies:
+      $ref: './components/policies.yaml'
     Presets:
       $ref: './components/preset.yaml'
     Query:

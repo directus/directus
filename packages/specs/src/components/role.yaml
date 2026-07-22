@@ -38,19 +38,13 @@ properties:
           format: uuid
         - $ref: '../openapi.yaml#/components/schemas/Roles'
   policies:
-    description: Policy UUIDs attached to this role via `directus_access`.
+    description: Policy UUIDs attached to this role.
     type: array
-    # TODO: switch to oneOf: [string, Policies] once the Policies component exists
-    # https://github.com/directus/directus/issues/27925#issuecomment-4998154731
-    # After uncommenting, also remove the `items: type: string, format: uuid` block below.
-    # items:
-    #   oneOf:
-    #     - type: string
-    #       format: uuid
-    #     - $ref: '../openapi.yaml#/components/schemas/Policies'
     items:
-      type: string
-      format: uuid
+      oneOf:
+        - type: string
+          format: uuid
+        - $ref: '../openapi.yaml#/components/schemas/Policies'
   parent:
     description: UUID of the parent role, or null for top-level roles.
     oneOf:
