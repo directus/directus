@@ -30,10 +30,14 @@ interface ResourceDef extends Resource {
 // directus_settings is the lone singleton (packages/system-data collections.yaml: `singleton: true`).
 //
 // `strip` and `aliases` are both deleted from every exported record; the split is documentary. `strip`
-// covers two categories (spec Q9): sensitive columns that must never touch disk (users.password/token/
-// tfa_secret) and external references that would break a fresh-target import — FKs to out-of-scope
-// collections (user_created, settings.*_logo/favicon/…, users.avatar) plus login-churn fields
-// (users.last_access/last_page) that would dirty config PRs forever. `aliases` are the third category:
+// covers two categories (spec Q9): sensitive columns that must never touch disk — users.password/token/
+// tfa_secret, users.auth_data (OAuth refresh credentials), and settings' encrypt-special key fields,
+// which read back as the masked literal "**********" and would re-encrypt that literal over the target's
+// real credential on import (settings.license_key/license_token are additionally refused outright by the
+// settings service, failing the whole batch) — and external references that would break a fresh-target
+// import: FKs to out-of-scope collections (user_created, settings.*_logo/favicon/…, users.avatar) plus
+// login-churn fields (users.last_access/last_page) that would dirty config PRs forever. `aliases` are the
+// third category:
 // they are not real columns but views of other collections' FKs (roles.users, policies.permissions,
 // flows.operations, …); the linkage ships as real rows on the child collection, so the alias view is
 // dropped rather than duplicated. date_created and project_url are deliberately KEPT — a synced value
@@ -47,7 +51,7 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: false,
 		selectable: true,
 		mustPull: ['roles', 'policies'],
-		strip: ['password', 'token', 'tfa_secret', 'last_access', 'last_page', 'avatar'],
+		strip: ['password', 'token', 'tfa_secret', 'auth_data', 'last_access', 'last_page', 'avatar'],
 		aliases: [],
 	},
 	{
@@ -146,7 +150,20 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: true,
 		selectable: true,
 		mustPull: [],
-		strip: ['project_logo', 'public_foreground', 'public_background', 'public_favicon', 'storage_default_folder'],
+		strip: [
+			'project_logo',
+			'public_foreground',
+			'public_background',
+			'public_favicon',
+			'storage_default_folder',
+			'license_key',
+			'license_token',
+			'ai_openai_api_key',
+			'ai_anthropic_api_key',
+			'ai_google_api_key',
+			'ai_openai_compatible_api_key',
+			'ai_openai_compatible_headers',
+		],
 		aliases: [],
 	},
 	{

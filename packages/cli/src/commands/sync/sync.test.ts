@@ -620,6 +620,7 @@ describe('sync pull resources and data', () => {
 				token: 'super-secret-static-token',
 				password: 'hashed-password',
 				tfa_secret: 'tfa-seed',
+				auth_data: '{"refresh_token":"oauth-refresh-secret"}',
 				avatar: 'file-1',
 				last_access: '2020-01-01',
 				last_page: '/content',
@@ -651,10 +652,39 @@ describe('sync pull resources and data', () => {
 		expect(userBytes).not.toContain('token');
 		expect(userBytes).not.toContain('password');
 		expect(userBytes).not.toContain('tfa_secret');
+		expect(userBytes).not.toContain('auth_data');
+		expect(userBytes).not.toContain('oauth-refresh-secret');
 		expect(userBytes).not.toContain('avatar');
 		expect(userBytes).not.toContain('super-secret-static-token');
 		// The non-sensitive columns survive, so the export is not simply empty.
 		expect(userBytes).toContain('editor@example.com');
+	});
+
+	it('writes nothing at all when a data fetch fails — no mixed generations', async () => {
+		// The commit point is after every fetch: a pull that dies mid-fetch must leave the committed tree
+		// exactly as it was — never a fresh schema beside stale data, which a later mirror push would treat
+		// as the desired state.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/access',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(
+				500,
+				{ errors: [{ message: 'boom', extensions: { code: 'INTERNAL_SERVER_ERROR' } }] },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
+
+		expect(existsSync(join(dir, 'directus'))).toBe(false);
 	});
 
 	it('drops user-attached access rows when users are out of scope', async () => {
@@ -1713,6 +1743,36 @@ describe('sync push with data', () => {
 				collections: fullImportResult()['collections'],
 			},
 		});
+	});
+
+	it('reports changes:true for a data-only push that imported rows', async () => {
+		// A push with a clean schema but a real import mutated the target; `changes` is the overall answer
+		// (schema OR data), so it must not read false just because the schema half was a no-op. `applied`
+		// stays schema-scoped, mirroring the added/modified/deleted counts beside it.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+		interceptTarget('/roles', []);
+
+		interceptImport(
+			{ mode: 'merge' },
+			{
+				data: {
+					applied: true,
+					mode: 'merge',
+					collections: { directus_roles: { existing: [], new: ['sr1'], deleted: [], mapped: {} } },
+				},
+			},
+		);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
+
+		const payload = JSON.parse(stdout.join(''));
+
+		expect(payload).toMatchObject({ kind: 'PushReport', ok: true, applied: false, changes: true, hash: null });
 	});
 
 	it('writes a byte-identical id map across two identical push runs', async () => {

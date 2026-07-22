@@ -302,6 +302,12 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		ctx.ui.info('id map updated.');
 	}
 
+	const importSummary = !dataResult.skipped && importResult !== undefined ? summarizeImport(importResult) : undefined;
+
+	const dataChanged =
+		importSummary !== undefined &&
+		(importSummary.created > 0 || importSummary.updated > 0 || importSummary.deleted > 0);
+
 	if (ctx.ui.json) {
 		ctx.ui.data({
 			kind: 'PushReport',
@@ -311,8 +317,10 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 			profile: options.to,
 			project: target.project,
 			mode,
+			// `applied` and the added/modified/deleted counts are schema-scoped (the data block carries the
+			// import detail); `changes` is the overall answer — a data-only push that imported rows is a change.
 			applied: schemaApplied,
-			changes: result !== null,
+			changes: result !== null || dataChanged,
 			added: schema.added,
 			modified: schema.modified,
 			deleted: schema.deleted,
@@ -330,10 +338,8 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	let dataSentence = ' Data phase skipped (no committed data).';
 
-	if (!dataResult.skipped && importResult !== undefined) {
-		const summary = summarizeImport(importResult);
-
-		dataSentence = ` Imported ${count(dataResult.records, 'record')} across ${count(dataResult.collections, 'collection')}: ${summary.created} created, ${summary.updated} updated, ${summary.deleted} deleted.`;
+	if (!dataResult.skipped && importSummary !== undefined) {
+		dataSentence = ` Imported ${count(dataResult.records, 'record')} across ${count(dataResult.collections, 'collection')}: ${importSummary.created} created, ${importSummary.updated} updated, ${importSummary.deleted} deleted.`;
 	}
 
 	ctx.ui.success(`${schemaSentence}${dataSentence}`);

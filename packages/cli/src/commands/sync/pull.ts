@@ -10,7 +10,7 @@ import type { Snapshot } from '../../sync/contract.js';
 import { type DataCollection, writeDataFiles } from '../../sync/data-store.js';
 import { normalizeInstanceUrl } from '../../sync/id-map.js';
 import { allResources, resolveResources, type Resource, SELECTABLE_RESOURCES } from '../../sync/resources.js';
-import { readSnapshotFiles, type WriteScope, writeSnapshotFiles } from '../../sync/store.js';
+import { type WriteScope, writeSnapshotFiles } from '../../sync/store.js';
 import { resolveTarget } from './resolve-target.js';
 
 export interface PullOptions {
@@ -225,19 +225,16 @@ function contentNames(options: PullOptions, projectConfig: ProjectConfig | undef
 	return [];
 }
 
-// Expand content names to record sources against the just-written schema. A name that is a resource-graph
-// name is a config resource in disguise and routes to --resources; every other name is a user collection
-// exported from /items/<name>, and must exist in the pulled schema (data follows schema) with a
-// discoverable primary key. Order is codepoint-sorted, deduped by collection.
-function resolveContentSources(names: string[], schemaDir: string): RecordSource[] {
+// Expand content names to record sources against the fetched snapshot — the schema this same pull is
+// about to commit, so content data can never outrun its schema. A name that is a resource-graph name is a
+// config resource in disguise and routes to --resources; every other name is a user collection exported
+// from /items/<name>, and must exist in the snapshot with a discoverable primary key. Order is
+// codepoint-sorted, deduped by collection.
+function resolveContentSources(names: string[], snapshot: Snapshot): RecordSource[] {
 	if (names.length === 0) return [];
 
 	// The whole graph's CLI names, derived from the frozen module rather than hardcoded here.
 	const graphNames = new Set(allResources().map((resource) => resource.name));
-
-	// Read the schema back from disk (not the fetched snapshot) so a content collection's data can only be
-	// exported for schema that is actually committed.
-	const snapshot = readSnapshotFiles(schemaDir);
 
 	const sources: RecordSource[] = [];
 
@@ -301,14 +298,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 	const snapshot = await fetchSnapshot(credential, scope?.api);
 
-	const result = writeSnapshotFiles(schemaDir, snapshot, scope?.write);
-	const relativeDir = relative(ctx.cwd, schemaDir);
-	const collections = snapshot.collections.length;
-	const removed = result.removed.length;
-
-	const removedNote = removed > 0 ? ` Removed ${count(removed, 'stale file')}.` : '';
-
-	const contentSources = resolveContentSources(contentNamesList, schemaDir);
+	const contentSources = resolveContentSources(contentNamesList, snapshot);
 
 	const includesUsers = resources.some((resource) => resource.name === 'users');
 
@@ -345,8 +335,17 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		});
 	}
 
-	// Record the normalized source URL so a later push can find this data's source→target ID-map bucket
-	// without re-deriving (and possibly mis-guessing) which instance produced the records.
+	// Every fetch has succeeded before the first byte lands on disk, so a failed pull leaves the committed
+	// tree exactly as it was — never a fresh schema beside stale data (mixed generations). The data
+	// metadata records the normalized source URL so a later push can find this data's source→target ID-map
+	// bucket without re-deriving (and possibly mis-guessing) which instance produced the records.
+	const result = writeSnapshotFiles(schemaDir, snapshot, scope?.write);
+	const relativeDir = relative(ctx.cwd, schemaDir);
+	const collections = snapshot.collections.length;
+	const removed = result.removed.length;
+
+	const removedNote = removed > 0 ? ` Removed ${count(removed, 'stale file')}.` : '';
+
 	const dataResult = writeDataFiles(dataDir, dataCollections, normalizeInstanceUrl(url));
 	const records = dataCollections.reduce((total, entry) => total + entry.records.length, 0);
 	const dataDirRelative = relative(ctx.cwd, dataDir);
