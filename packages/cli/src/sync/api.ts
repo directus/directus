@@ -1,17 +1,27 @@
 import {
 	type AllCollections,
 	type CoreSchema,
+	isDirectusError,
 	schemaApply,
 	schemaDiff,
 	type SchemaDiffOutput,
 	schemaSnapshot,
 	type SchemaSnapshotOptions,
+	utilsImportBatch,
 } from '@directus/sdk';
 import { isPlainObject } from 'lodash-es';
 import type { ResolvedCredential } from '../kernel/config/credentials.js';
 import { connect, mapRequestError } from '../kernel/connection.js';
 import { CliError } from '../kernel/error.js';
-import { type DiffResult, parseDiffResult, parseSnapshot, type Snapshot } from './contract.js';
+import {
+	type DiffResult,
+	type ImportBatchResult,
+	type ImportCollectionData,
+	parseDiffResult,
+	parseImportResult,
+	parseSnapshot,
+	type Snapshot,
+} from './contract.js';
 
 // The seam between the kernel connection and the sync contract: every sync API call
 // gets its credential wiring, request timeout, error mapping, and boundary validation
@@ -129,4 +139,113 @@ export async function fetchRecords(
 	}
 
 	return response as Record<string, unknown>[];
+}
+
+// The import options the batch endpoint understands. mode is ALWAYS sent (the server defaults to `add`,
+// so an omitted mode silently changes semantics); dryRun and dangerouslyAllowDelete ride only when set,
+// so the query string carries exactly the flags the CLI chose and stays deterministic for assertions.
+export interface ImportBatchInput {
+	readonly mode: 'add' | 'merge';
+	readonly dryRun?: boolean;
+	readonly dangerouslyAllowDelete?: boolean;
+}
+
+// The extensions the server attaches to an import failure the CLI can explain: the cyclical-relation
+// error carries the cycle it found, any other carries just its code. Dug out the same way
+// mapRequestError reads the code, so a shape drift degrades to the generic mapped error rather than
+// throwing here.
+function importErrorExtensions(error: unknown): Record<string, unknown> | undefined {
+	if (!isDirectusError(error)) return undefined;
+
+	for (const entry of error.errors) {
+		const extensions = entry.extensions;
+
+		if (isPlainObject(extensions)) {
+			const code = (extensions as Record<string, unknown>)['code'];
+
+			if (code === 'IMPORT_CYCLICAL_RELATION' || code === 'INVALID_FOREIGN_KEY') {
+				return extensions as Record<string, unknown>;
+			}
+		}
+	}
+
+	return undefined;
+}
+
+// Render the cycle the server reported into a single detail line: the collections that form it and the
+// non-nullable relations holding it together (`collection.field → related`). Values are stringified
+// defensively — this is failure-path presentation, not a validated contract.
+function renderCycle(extensions: Record<string, unknown>): string {
+	const collections = Array.isArray(extensions['collections']) ? (extensions['collections'] as unknown[]) : [];
+	const relations = Array.isArray(extensions['relations']) ? (extensions['relations'] as unknown[]) : [];
+
+	const relationText = relations
+		.filter((relation): relation is Record<string, unknown> => isPlainObject(relation))
+		.map(
+			(relation) => `${String(relation['collection'])}.${String(relation['field'])} → ${String(relation['related'])}`,
+		)
+		.join(', ');
+
+	const collectionText = collections.map((name) => String(name)).join(', ');
+	const suffix = relationText === '' ? '' : `; non-nullable relations: ${relationText}`;
+
+	return `Cycle among ${collectionText}${suffix}.`;
+}
+
+// Turn a mapped import failure into one that explains the two import-specific failure modes push cannot
+// otherwise diagnose. A cyclical relation names the cycle and points at the fix (make one relation
+// nullable); a missing foreign key points at the likely cause (an out-of-scope reference or an unsynced
+// dependency). Any other error passes through as mapRequestError left it.
+function enrichImportError(mapped: CliError, error: unknown): CliError {
+	const extensions = importErrorExtensions(error);
+
+	if (extensions === undefined) return mapped;
+
+	if (extensions['code'] === 'IMPORT_CYCLICAL_RELATION') {
+		return new CliError(mapped.code, mapped.message, {
+			hint: 'A relation in the cycle must be nullable so the importer can defer it.',
+			detail: renderCycle(extensions),
+		});
+	}
+
+	return new CliError(mapped.code, mapped.message, {
+		hint: 'A referenced record is missing on the target — an out-of-scope reference or an unsynced dependency.',
+		...(mapped.detail !== undefined ? { detail: mapped.detail } : {}),
+	});
+}
+
+// Import a flat batch of records through POST /utils/import. The payload is a multipart FILE upload: a
+// single JSON file whose content is the `[{collection, items}]` array (the server reads the first file
+// part regardless of field name and requires its mimetype to be application/json — see api
+// read-file-upload-body.ts and read-multipart-file.ts). Node's native FormData/Blob build it; the SDK
+// strips the placeholder multipart Content-Type so fetch sets the boundary. The response is parsed at
+// the boundary; a cyclical-relation or missing-FK failure is enriched here so push stays presentational.
+export async function importBatch(
+	credential: ResolvedCredential,
+	batch: ImportCollectionData[],
+	options: ImportBatchInput,
+): Promise<ImportBatchResult> {
+	const client = connect(credential);
+
+	// Only defined flags reach the params, so mode always rides and dryRun/dangerouslyAllowDelete appear
+	// exactly when true — a clean, deterministic query string.
+	const params = {
+		mode: options.mode,
+		...(options.dryRun === true ? { dryRun: true } : {}),
+		...(options.dangerouslyAllowDelete === true ? { dangerouslyAllowDelete: true } : {}),
+	};
+
+	const file = new Blob([JSON.stringify(batch)], { type: 'application/json' });
+	const form = new FormData();
+	form.append('file', file, 'import.json');
+
+	let response: unknown;
+
+	try {
+		response = await client.request(utilsImportBatch(form, params));
+	} catch (error) {
+		throw enrichImportError(mapRequestError(error, credential.url), error);
+	}
+
+	return parseImportResult(response);
 }

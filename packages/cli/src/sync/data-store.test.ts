@@ -7,6 +7,10 @@ import { type DataCollection, readDataFiles, writeDataFiles } from './data-store
 
 const OWNED = /^[a-z0-9-]*_[0-9a-f]{16}\.json$/;
 
+// The normalized source-instance URL every write now records in metadata.json; push reads it to key the
+// ID map's source→target bucket, so the store must round-trip it faithfully.
+const SOURCE = 'https://source.example.com';
+
 const dirs: string[] = [];
 
 function tempDir(): string {
@@ -99,9 +103,9 @@ describe('writeDataFiles / readDataFiles', () => {
 		// from the committed artifact and from the next import. Records come back sorted by PK and
 		// collections sorted by name, independent of input order.
 		const dir = tempDir();
-		writeDataFiles(dir, fixture());
+		writeDataFiles(dir, fixture(), SOURCE);
 
-		const read = readDataFiles(dir);
+		const { collections: read } = readDataFiles(dir);
 
 		expect(read.map((collection) => collection.collection)).toEqual(['articles', 'directus_roles']);
 
@@ -113,14 +117,23 @@ describe('writeDataFiles / readDataFiles', () => {
 		]);
 	});
 
+	it('records the source instance URL and returns it on read', () => {
+		// Push learns the source only from the committed data (it knows the target), so the store must
+		// persist and return it; a wrong or missing source would key the ID map's bucket wrong and misremap.
+		const dir = tempDir();
+		writeDataFiles(dir, fixture(), SOURCE);
+
+		expect(readDataFiles(dir).source).toBe(SOURCE);
+	});
+
 	it('writes byte-identical files regardless of record order or key insertion order', () => {
 		// This is the module's reason to exist: a committed data artifact must depend only on the records,
 		// so a PR diff surfaces real content changes and never incidental reordering from the export.
 		const a = tempDir();
 		const b = tempDir();
 
-		writeDataFiles(a, fixture());
-		writeDataFiles(b, shuffled(fixture()));
+		writeDataFiles(a, fixture(), SOURCE);
+		writeDataFiles(b, shuffled(fixture()), SOURCE);
 
 		expect(readAll(a)).toEqual(readAll(b));
 	});
@@ -131,21 +144,23 @@ describe('writeDataFiles / readDataFiles', () => {
 		// order — so a later "fix" toward numeric sorting that reintroduced nondeterminism fails here.
 		const dir = tempDir();
 
-		writeDataFiles(dir, [
-			{ collection: 'articles', primaryKey: 'id', records: [{ id: '10' }, { id: '9' }, { id: '100' }] },
-		]);
+		writeDataFiles(
+			dir,
+			[{ collection: 'articles', primaryKey: 'id', records: [{ id: '10' }, { id: '9' }, { id: '100' }] }],
+			SOURCE,
+		);
 
-		const read = readDataFiles(dir);
+		const { collections: read } = readDataFiles(dir);
 
 		expect(read[0]?.records.map((record) => record['id'])).toEqual(['10', '100', '9']);
 	});
 
 	it('is idempotent: a second identical write changes no bytes and removes nothing', () => {
 		const dir = tempDir();
-		writeDataFiles(dir, fixture());
+		writeDataFiles(dir, fixture(), SOURCE);
 		const before = readAll(dir);
 
-		const result = writeDataFiles(dir, fixture());
+		const result = writeDataFiles(dir, fixture(), SOURCE);
 
 		expect(readAll(dir)).toEqual(before);
 		expect(result.removed).toEqual([]);
@@ -156,15 +171,17 @@ describe('writeDataFiles / readDataFiles', () => {
 		// the next read, while a user's own file that merely matches the owned-name shape — absent from
 		// the manifest — must survive untouched.
 		const dir = tempDir();
-		writeDataFiles(dir, fixture());
+		writeDataFiles(dir, fixture(), SOURCE);
 
 		const articlesFile = ownedFileFor(dir, 'articles');
 		const planted = join(dir, 'notes_deadbeef.json');
 		writeFileSync(planted, '{ "collection": "notes", "records": "not even an array" }');
 
-		const result = writeDataFiles(dir, [
-			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'a', name: 'Admin' }] },
-		]);
+		const result = writeDataFiles(
+			dir,
+			[{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'a', name: 'Admin' }] }],
+			SOURCE,
+		);
 
 		expect(result.removed).toEqual([articlesFile]);
 		expect(existsSync(join(dir, articlesFile))).toBe(false);
@@ -180,12 +197,30 @@ describe('readDataFiles failures', () => {
 		expect(error.hint).toBe('Run d6s sync pull first.');
 	});
 
+	it('fails loud when metadata predates source tracking, pointing at a re-pull', () => {
+		// Data written before the source field existed cannot be pushed safely: the source keys the ID map
+		// bucket, and guessing it would misremap. Reading it must fail loud pointing at a re-pull, never
+		// silently proceed with an unknown source.
+		const dir = tempDir();
+		writeDataFiles(dir, fixture(), SOURCE);
+
+		const metadataPath = join(dir, 'metadata.json');
+		const metadata = JSON.parse(readFileSync(metadataPath, 'utf8'));
+		delete metadata.source;
+		writeFileSync(metadataPath, JSON.stringify(metadata));
+
+		const error = expectCliError(() => readDataFiles(dir));
+
+		expect(error.code).toBe('STATE');
+		expect(error.hint).toMatch(/pull/i);
+	});
+
 	it('fails loud, naming the file, when the manifest lists a data file that is gone', () => {
 		// The manifest is the authority on membership: a listed file that has vanished is corrupted local
 		// state, not an empty collection, and must stop the read naming what is missing rather than
 		// silently dropping the collection.
 		const dir = tempDir();
-		writeDataFiles(dir, fixture());
+		writeDataFiles(dir, fixture(), SOURCE);
 
 		const name = ownedFileFor(dir, 'articles');
 		rmSync(join(dir, name), { force: true });
@@ -200,7 +235,7 @@ describe('readDataFiles failures', () => {
 		// A hand-corrupted `"records": {}` must not read back as a collection with zero records that the
 		// next import would treat as the whole set; corruption has to stop at read, naming the file.
 		const dir = tempDir();
-		writeDataFiles(dir, fixture());
+		writeDataFiles(dir, fixture(), SOURCE);
 
 		const name = ownedFileFor(dir, 'articles');
 		const parsed = JSON.parse(readFileSync(join(dir, name), 'utf8'));

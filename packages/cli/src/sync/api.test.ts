@@ -5,8 +5,8 @@ import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ResolvedCredential } from '../kernel/config/credentials.js';
 import { CliError } from '../kernel/error.js';
-import { applyDiff, fetchDiff, fetchRecords, fetchSnapshot } from './api.js';
-import type { DiffResult, Snapshot } from './contract.js';
+import { applyDiff, fetchDiff, fetchRecords, fetchSnapshot, importBatch } from './api.js';
+import type { DiffResult, ImportCollectionData, Snapshot } from './contract.js';
 
 describe('fetchSnapshot', () => {
 	const realDispatcher = getGlobalDispatcher();
@@ -435,5 +435,140 @@ describe('fetchRecords', () => {
 		expect(error).toBeInstanceOf(CliError);
 		expect(error).toMatchObject({ code: 'HTTP' });
 		expect((error as CliError).message).toContain('/items/articles');
+	});
+});
+
+describe('importBatch', () => {
+	const realDispatcher = getGlobalDispatcher();
+	const token = 'super-secret-static-token';
+	const credential: ResolvedCredential = { kind: 'token', url: 'https://cms.example.com', token };
+	let agent: MockAgent;
+	const created: string[] = [];
+
+	const batch: ImportCollectionData[] = [{ collection: 'directus_roles', items: [{ id: 't1', name: 'Editor' }] }];
+
+	function isolateHome(): void {
+		const dir = mkdtempSync(join(tmpdir(), 'd6s-home-'));
+		created.push(dir);
+		vi.stubEnv('HOME', dir);
+		vi.stubEnv('USERPROFILE', dir);
+	}
+
+	// A Directus error reply shaped like the SDK reconstructs it: errors[].extensions carries the code and,
+	// for a cyclical failure, the cycle's collections and relations.
+	function errorReply(status: number, extensions: Record<string, unknown>, message = 'failed'): void {
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/utils/import', method: 'POST', query: { mode: 'merge' } })
+			.reply(status, { errors: [{ message, extensions }] }, { headers: { 'content-type': 'application/json' } });
+	}
+
+	beforeEach(() => {
+		agent = new MockAgent();
+		agent.disableNetConnect();
+		setGlobalDispatcher(agent);
+	});
+
+	afterEach(async () => {
+		setGlobalDispatcher(realDispatcher);
+		await agent.close();
+		vi.restoreAllMocks();
+		vi.unstubAllEnvs();
+		for (const dir of created.splice(0)) rmSync(dir, { recursive: true, force: true });
+	});
+
+	it('uploads the batch as an application/json file with mode on the wire and returns the parsed result', async () => {
+		// The server reads the FIRST file part (any field name) and requires its mimetype to be
+		// application/json; the batch array is its content. mode always rides so the server never falls back
+		// to its `add` default. The response is parsed at the boundary.
+		isolateHome();
+
+		let sentForm: FormData | undefined;
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({
+				path: '/utils/import',
+				method: 'POST',
+				query: { mode: 'merge' },
+				headers: { authorization: `Bearer ${token}` },
+				body(raw: unknown) {
+					sentForm = raw as FormData;
+					return true;
+				},
+			})
+			.reply(
+				200,
+				{ data: { applied: true, mode: 'merge', collections: {} } },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		const result = await importBatch(credential, batch, { mode: 'merge' });
+
+		expect(result.applied).toBe(true);
+
+		const file = sentForm?.get('file');
+		if (file === null || file === undefined) throw new Error('no file part');
+
+		expect((file as Blob).type).toBe('application/json');
+		expect(JSON.parse(await (file as Blob).text())).toEqual(batch);
+	});
+
+	it('rides dryRun and dangerouslyAllowDelete on the query only when set', async () => {
+		// The exact query match (undici rejects an extra param) proves both flags reached the wire together —
+		// the mirror dry-run's exact option set.
+		isolateHome();
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({
+				path: '/utils/import',
+				method: 'POST',
+				query: { mode: 'merge', dryRun: 'true', dangerouslyAllowDelete: 'true' },
+			})
+			.reply(
+				200,
+				{ data: { applied: false, mode: 'merge', collections: {} } },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		const result = await importBatch(credential, batch, {
+			mode: 'merge',
+			dryRun: true,
+			dangerouslyAllowDelete: true,
+		});
+
+		expect(result.applied).toBe(false);
+	});
+
+	it('enriches a missing-foreign-key failure with the likely cause', async () => {
+		// INVALID_FOREIGN_KEY has no dedicated server check — it surfaces as the DB constraint — so push
+		// cannot diagnose it. api.ts adds the actionable cause: an out-of-scope reference or unsynced dependency.
+		isolateHome();
+		errorReply(400, { code: 'INVALID_FOREIGN_KEY' });
+
+		const error = await importBatch(credential, batch, { mode: 'merge' }).catch((error: unknown) => error);
+
+		expect(error).toBeInstanceOf(CliError);
+		expect((error as CliError).hint).toMatch(/referenced record|out-of-scope|unsynced/i);
+	});
+
+	it('enriches a cyclical-relation failure by naming the cycle and pointing at the nullable fix', async () => {
+		// A cycle of non-nullable FKs is unresolvable; the CLI must name the collections and relations forming
+		// it (from the error extensions) and point at the fix — make one relation nullable.
+		isolateHome();
+
+		errorReply(422, {
+			code: 'IMPORT_CYCLICAL_RELATION',
+			collections: ['directus_flows', 'directus_operations'],
+			relations: [{ collection: 'directus_flows', field: 'operation', related: 'directus_operations' }],
+		});
+
+		const error = await importBatch(credential, batch, { mode: 'merge' }).catch((error: unknown) => error);
+
+		expect(error).toBeInstanceOf(CliError);
+		expect((error as CliError).detail).toContain('directus_flows, directus_operations');
+		expect((error as CliError).detail).toContain('directus_flows.operation → directus_operations');
+		expect((error as CliError).hint).toMatch(/nullable/i);
 	});
 });

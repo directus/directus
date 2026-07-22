@@ -41,14 +41,17 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 
 	sync
 		.command('push')
-		.description('Apply committed schema files to a target instance')
+		.description('Apply committed schema and data to a target instance')
+		// No commander default on --mode: an absent flag lets push resolve flag > project config mode >
+		// merge, so a per-project `mode` in directus.config.json is honored instead of being masked by a
+		// default. merge is additive and the fallback — a caller opts into deletions rather than defaulting.
 		.requiredOption('--to <profile>', 'Target profile name')
-		// merge is the CLI default even though the server defaults to mirror: additive is the path of
-		// least surprise, so a caller opts into deletions rather than getting them by omission.
 		.addOption(
-			new Option('--mode <mode>', 'merge (additive) or mirror (includes deletions)')
-				.choices(['merge', 'mirror'])
-				.default('merge'),
+			new Option('--mode <mode>', 'add (only new records), merge (additive), or mirror (includes deletions)').choices([
+				'add',
+				'merge',
+				'mirror',
+			]),
 		)
 		.option('--allow-deletes', 'Include deletions; without it deletions are refused outside interactive confirmation')
 		.option('--yes', 'Skip the apply confirmation; never authorizes deletions')

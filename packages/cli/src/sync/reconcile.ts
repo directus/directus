@@ -25,6 +25,15 @@ const NATURAL_KEYS: Readonly<Record<string, readonly string[]>> = {
 	directus_settings: [],
 };
 
+// Whether a collection can be reconciled at all: exactly the collections given a natural key above. The
+// import slice consults this to pass reconcile only what it can match — a synced system collection with
+// no natural key (directus_panels: identified solely by its dashboard FK, no stable cross-instance key)
+// is remapped in place but never reconciled, and content is neither. Keeps NATURAL_KEYS private while
+// letting a caller avoid the by-design STATE throw on an unkeyed collection.
+export function hasNaturalKey(collection: string): boolean {
+	return Object.hasOwn(NATURAL_KEYS, collection);
+}
+
 export interface ReconcileInput {
 	readonly collection: string;
 	readonly primaryKey: string;

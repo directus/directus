@@ -6,6 +6,7 @@ import type { CliContext } from '../../kernel/run.js';
 import { fetchRecords, fetchSnapshot, type RecordSource, type SnapshotScope } from '../../sync/api.js';
 import type { Snapshot } from '../../sync/contract.js';
 import { type DataCollection, writeDataFiles } from '../../sync/data-store.js';
+import { normalizeInstanceUrl } from '../../sync/id-map.js';
 import { resolveResources, type Resource, SELECTABLE_RESOURCES } from '../../sync/resources.js';
 import { readSnapshotFiles, type WriteScope, writeSnapshotFiles } from '../../sync/store.js';
 import { resolveTarget } from './resolve-target.js';
@@ -357,7 +358,9 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		});
 	}
 
-	const dataResult = writeDataFiles(dataDir, dataCollections);
+	// Record the normalized source URL so a later push can find this data's source→target ID-map bucket
+	// without re-deriving (and possibly mis-guessing) which instance produced the records.
+	const dataResult = writeDataFiles(dataDir, dataCollections, normalizeInstanceUrl(url));
 	const records = dataCollections.reduce((total, entry) => total + entry.records.length, 0);
 	const dataDirRelative = relative(ctx.cwd, dataDir);
 	const collectionCount = dataCollections.length;

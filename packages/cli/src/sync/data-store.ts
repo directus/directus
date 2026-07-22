@@ -34,6 +34,14 @@ export interface DataWriteResult {
 	readonly removed: string[]; // stale owned files deleted, sorted
 }
 
+// The read shape: the exported collections plus the normalized URL of the instance they were pulled
+// from. Push needs the source to key the ID map's source→target bucket — it knows only the target — so
+// the source is committed alongside the data rather than re-derived (which would be a guess).
+export interface DataReadResult {
+	readonly source: string; // normalizeInstanceUrl of the pulled-from instance, from metadata.json
+	readonly collections: DataCollection[];
+}
+
 // Codepoint comparison, never localeCompare/Intl (see the schema store): locale ordering varies by
 // machine and would make the committed bytes non-deterministic. Replicated so this module's only
 // dependency on the schema store is the exported canonical serializer.
@@ -121,7 +129,10 @@ function readManifest(dir: string): string[] {
 	return files as string[];
 }
 
-export function writeDataFiles(dir: string, collections: DataCollection[]): DataWriteResult {
+// `source` is the normalizeInstanceUrl of the instance this data was pulled from, threaded from the
+// pull's resolved target. It is recorded so a later push can look up the ID map's source→target bucket
+// without guessing which instance produced the committed records.
+export function writeDataFiles(dir: string, collections: DataCollection[], source: string): DataWriteResult {
 	mkdirSync(dir, { recursive: true });
 
 	// Read the previous manifest before touching anything: it is the only authority on what this store
@@ -174,7 +185,9 @@ export function writeDataFiles(dir: string, collections: DataCollection[]): Data
 
 	// Write metadata.json LAST: read refuses a directory without it, so it is this write's publish
 	// marker, and its `files` manifest becomes what the next read and the next cleanup treat as owned.
-	writeFileAtomic(join(dir, METADATA_FILE), serializeCanonical({ files: manifest }), 0o644);
+	// `source` rides in the same manifest; the canonical serializer sorts the keys, so its placement is
+	// deterministic regardless of insertion order.
+	writeFileAtomic(join(dir, METADATA_FILE), serializeCanonical({ files: manifest, source }), 0o644);
 
 	return { written: [METADATA_FILE, ...written].sort(byCodepoint), removed: removed.sort(byCodepoint) };
 }
@@ -228,7 +241,7 @@ function readDataFile(dir: string, name: string): DataCollection {
 	return { collection, primaryKey, records: records as Record<string, unknown>[] };
 }
 
-export function readDataFiles(dir: string): DataCollection[] {
+export function readDataFiles(dir: string): DataReadResult {
 	const metadataPath = join(dir, METADATA_FILE);
 
 	if (!existsSync(dir) || !existsSync(metadataPath)) {
@@ -236,6 +249,17 @@ export function readDataFiles(dir: string): DataCollection[] {
 	}
 
 	const metadata = loadObject(metadataPath, METADATA_FILE);
+
+	// The pulled-from instance URL is required, never inferred: push keys the ID map's source→target
+	// bucket off it, and a wrong source would seed the wrong remaps. Data written before the field was
+	// recorded (an older checkout) fails loud pointing at a re-pull rather than letting push guess.
+	const source = metadata['source'];
+
+	if (typeof source !== 'string' || source === '') {
+		throw new CliError('STATE', `${METADATA_FILE} does not record the source instance URL.`, {
+			hint: 'This data predates source tracking; run d6s sync pull again to record it.',
+		});
+	}
 
 	// Membership is manifest-driven, never directory-driven: read exactly the files metadata.json
 	// recorded. An unlisted file — even one matching the owned pattern — is not ours and is never read;
@@ -294,5 +318,5 @@ export function readDataFiles(dir: string): DataCollection[] {
 	// deterministic regardless of how the manifest was ordered.
 	collections.sort((a, b) => byCodepoint(a.collection, b.collection));
 
-	return collections;
+	return { source, collections };
 }

@@ -14,6 +14,7 @@ import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { run } from '../../kernel/run.js';
 import type { Snapshot } from '../../sync/contract.js';
+import { type DataCollection, writeDataFiles } from '../../sync/data-store.js';
 import { writeSnapshotFiles } from '../../sync/store.js';
 import { registerSync } from './index.js';
 
@@ -1347,6 +1348,7 @@ describe('sync push', () => {
 			ok: true,
 			target: url,
 			profile: 'staging',
+			project: 'default',
 			mode: 'merge',
 			applied: true,
 			changes: true,
@@ -1354,6 +1356,9 @@ describe('sync push', () => {
 			modified: 1,
 			deleted: 0,
 			hash: 'h1',
+			// No data dir was seeded, so the data phase is skipped and its block carries null-ish fields —
+			// always present so a consumer never has to guess whether data ran.
+			data: { mode: 'merge', source: null, collections: null, skipped: true },
 		});
 	});
 
@@ -1374,6 +1379,7 @@ describe('sync push', () => {
 			ok: true,
 			target: url,
 			profile: 'staging',
+			project: 'default',
 			mode: 'merge',
 			applied: false,
 			changes: false,
@@ -1381,13 +1387,14 @@ describe('sync push', () => {
 			modified: 0,
 			deleted: 0,
 			hash: null,
+			data: { mode: 'merge', source: null, collections: null, skipped: true },
 		});
 	});
 
-	it('refuses deletions under --yes alone, naming --allow-deletes, and never applies', async () => {
-		// The invariant: --yes must NEVER authorize deletions. A mirror diff carrying a deletion under
-		// --yes without --allow-deletes must fail before any apply request, and the message must route the
-		// CI operator to --allow-deletes. No apply intercept — a stray apply would throw on the disabled net.
+	it('refuses mirror in CI without --allow-deletes, before any apply, naming the consent flag', async () => {
+		// The updated truth table: mirror can delete BOTH schema and data rows absent from the import set,
+		// and CI skips the dry-run, so the data deletions are unknowable — mirror itself requires
+		// --allow-deletes in CI. --yes never covers deletions. The refusal must precede any apply request.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -1397,8 +1404,7 @@ describe('sync push', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes')).toBe(1);
 
 		const err = stderr.join('');
-		expect(err).toContain('This push deletes 1 item.');
-		expect(err).toContain('--yes does not cover deletions');
+		expect(err).toMatch(/refusing mirror/i);
 		expect(err).toContain('--allow-deletes');
 	});
 
@@ -1446,5 +1452,433 @@ describe('sync push', () => {
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
 		expect(stderr.join('')).toMatch(/re-run d6s sync push/i);
+	});
+});
+
+// The data phase end to end: schema diff/apply plus a multipart /utils/import whose body must decode to
+// the REMAPPED batch, the ID map written from reconcile matches + the import response, and the mode gates
+// exercised against real requests. Same isolation as the schema-only push suite (undici pins the wire,
+// HOME/env stubbed, CI forces token-only resolution and non-interactive gates). An endpoint is registered
+// only when a call is expected, so a stray request throws on the disabled dispatcher.
+describe('sync push with data', () => {
+	const realDispatcher = getGlobalDispatcher();
+	const url = 'https://cms.example.com';
+	const token = 'super-secret-static-token';
+	// A distinct source URL (the instance the data was pulled from) so the ID map's source→target bucket
+	// keys are visibly different — the exact keying push must reproduce from the committed metadata.
+	const source = 'https://source.example.com';
+	let agent: MockAgent;
+	let dir: string;
+	let schemaDir: string;
+	let dataDir: string;
+	let idMapPath: string;
+	let home: string;
+	let stdout: string[];
+	let stderr: string[];
+
+	function fullSnapshot(): Snapshot {
+		return {
+			version: 1,
+			directus: '11.0.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'articles', meta: { note: null } }],
+			fields: [{ collection: 'articles', field: 'title', type: 'string' }],
+			systemFields: [],
+			relations: [],
+		};
+	}
+
+	// A schema diff with one added collection: enough that the schema phase applies, so the combined flow
+	// (apply then import) is exercised.
+	function schemaChangesBody(): Record<string, unknown> {
+		return {
+			collections: [{ collection: 'events', diff: [{ kind: 'N', rhs: { collection: 'events' } }] }],
+			fields: [],
+			systemFields: [],
+			relations: [],
+		};
+	}
+
+	// Roles matched by natural key (name), an access row referencing that role (FK remap), and a content
+	// collection passed through untouched: the three remap behaviors in one batch.
+	function fullFixture(): DataCollection[] {
+		return [
+			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] },
+			{
+				collection: 'directus_access',
+				primaryKey: 'id',
+				records: [{ id: 'sa1', role: 'sr1', policy: null, user: null }],
+			},
+			{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] },
+		];
+	}
+
+	// The import response for the full fixture: roles matched (updated in place), access inserted and
+	// remapped sa1→na1, articles inserted. Push must fold every one of these into the committed map.
+	function fullImportResult(): Record<string, unknown> {
+		return {
+			applied: true,
+			mode: 'merge',
+			collections: {
+				directus_access: { existing: [], new: ['na1'], deleted: [], mapped: { sa1: 'na1' } },
+				directus_roles: { existing: ['tr1'], new: [], deleted: [], mapped: {} },
+				articles: { existing: [], new: [1], deleted: [], mapped: {} },
+			},
+		};
+	}
+
+	function seedConfig(): void {
+		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url } } }));
+	}
+
+	function seedData(collections: DataCollection[]): void {
+		writeDataFiles(dataDir, collections, source);
+	}
+
+	function interceptDiff(mode: 'merge' | 'mirror', body: Record<string, unknown> | null): void {
+		const reply = agent.get(url).intercept({
+			path: '/schema/diff',
+			method: 'POST',
+			query: { mode },
+			headers: { authorization: `Bearer ${token}` },
+		});
+
+		if (body === null) {
+			reply.reply(204, '');
+		} else {
+			reply.reply(200, { data: { hash: 'h1', diff: body } }, { headers: { 'content-type': 'application/json' } });
+		}
+	}
+
+	function interceptApply(): void {
+		agent
+			.get(url)
+			.intercept({ path: '/schema/apply', method: 'POST', headers: { authorization: `Bearer ${token}` } })
+			.reply(204, '');
+	}
+
+	// A target record fetch during reconcile: the whole-set query (limit -1 sorted by id) with the token.
+	function interceptTarget(path: string, records: Record<string, unknown>[]): void {
+		agent
+			.get(url)
+			.intercept({
+				path,
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
+	}
+
+	// The import endpoint: the query object is asserted EXACTLY by undici (an extra param fails the match),
+	// so registering { mode } alone proves no dryRun/dangerouslyAllowDelete rode along. `capture` records
+	// the multipart FormData so a test can decode the uploaded JSON file and inspect the batch.
+	function interceptImport(
+		query: Record<string, string>,
+		result: Record<string, unknown>,
+		status = 200,
+		capture?: (form: FormData) => void,
+	): void {
+		agent
+			.get(url)
+			.intercept({
+				path: '/utils/import',
+				method: 'POST',
+				query,
+				headers: { authorization: `Bearer ${token}` },
+				body(raw: unknown) {
+					if (capture !== undefined) capture(raw as FormData);
+					return true;
+				},
+			})
+			.reply(status, result, { headers: { 'content-type': 'application/json' } });
+	}
+
+	async function decodeBatch(form: FormData | undefined): Promise<unknown> {
+		const file = form?.get('file');
+
+		if (file === null || file === undefined || typeof (file as Blob).text !== 'function') {
+			throw new Error('no import file part');
+		}
+
+		return JSON.parse(await (file as Blob).text());
+	}
+
+	function readIdMapFile(): Record<string, unknown> {
+		return JSON.parse(readFileSync(idMapPath, 'utf8'));
+	}
+
+	function d6s(...argv: string[]): Promise<number> {
+		return run(argv, { registerCommands: registerSync, cwd: dir });
+	}
+
+	beforeEach(() => {
+		dir = mkdtempSync(join(tmpdir(), 'd6s-sync-'));
+		schemaDir = join(dir, 'directus', 'default', 'schema');
+		dataDir = join(dir, 'directus', 'default', 'data');
+		idMapPath = join(dir, 'directus', 'default', 'id_map.json');
+		home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
+		stdout = [];
+		stderr = [];
+
+		agent = new MockAgent();
+		agent.disableNetConnect();
+		setGlobalDispatcher(agent);
+
+		vi.stubEnv('HOME', home);
+		vi.stubEnv('USERPROFILE', home);
+		vi.stubEnv('CI', 'true');
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
+
+		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
+			stdout.push(String(chunk));
+			return true;
+		});
+
+		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
+			stderr.push(String(chunk));
+			return true;
+		});
+	});
+
+	afterEach(async () => {
+		setGlobalDispatcher(realDispatcher);
+		await agent.close();
+		vi.restoreAllMocks();
+		vi.unstubAllEnvs();
+		rmSync(dir, { recursive: true, force: true });
+		rmSync(home, { recursive: true, force: true });
+	});
+
+	it('uploads the remapped batch and writes the map from reconcile matches and the import response', async () => {
+		// The safety core of a repeat import: the multipart body must decode to records rewritten into target
+		// space — role sr1→tr1 (reconciled by name), access.role remapped to tr1, content untouched — in
+		// system-then-content order; and the committed map must fold in the reconcile match, the server's
+		// sa1→na1 remap, and the identity roles entry. All against one target URL keyed under the source URL.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData(fullFixture());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', schemaChangesBody());
+		interceptApply();
+		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+		interceptTarget('/access', []);
+
+		let sentForm: FormData | undefined;
+
+		interceptImport({ mode: 'merge' }, { data: fullImportResult() }, 200, (form) => {
+			sentForm = form;
+		});
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+
+		expect(await decodeBatch(sentForm)).toEqual([
+			{ collection: 'directus_access', items: [{ id: 'sa1', role: 'tr1', policy: null, user: null }] },
+			{ collection: 'directus_roles', items: [{ id: 'tr1', name: 'Editor' }] },
+			{ collection: 'articles', items: [{ id: 1, title: 'Hello' }] },
+		]);
+
+		expect(readIdMapFile()).toEqual({
+			formatVersion: 1,
+			maps: {
+				[source]: {
+					[url]: {
+						directus_access: { sa1: 'na1' },
+						directus_roles: { sr1: 'tr1' },
+					},
+				},
+			},
+		});
+	});
+
+	it('sends a schema MERGE diff and a data ADD import under --mode add', async () => {
+		// add maps to an additive schema diff (mode=merge on the wire) and an add-mode import (existing rows
+		// untouched). The two query matchers assert both wire modes exactly.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', schemaChangesBody());
+		interceptApply();
+		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+
+		interceptImport(
+			{ mode: 'add' },
+			{
+				data: {
+					applied: true,
+					mode: 'add',
+					collections: { directus_roles: { existing: [], new: ['tr1'], deleted: [], mapped: {} } },
+				},
+			},
+		);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'add', '--yes')).toBe(0);
+	});
+
+	it('carries dangerouslyAllowDelete on the import when mirror runs with --allow-deletes', async () => {
+		// mirror maps to a merge import plus dangerouslyAllowDelete (the server has no wire "mirror"); the
+		// exact query match proves the destructive flag rode along only because --allow-deletes consented.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('mirror', schemaChangesBody());
+		interceptApply();
+		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+
+		interceptImport(
+			{ mode: 'merge', dangerouslyAllowDelete: 'true' },
+			{
+				data: {
+					applied: true,
+					mode: 'merge',
+					collections: { directus_roles: { existing: ['tr1'], new: [], deleted: [], mapped: {} } },
+				},
+			},
+		);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes', '--allow-deletes')).toBe(0);
+	});
+
+	it('refuses mirror in CI without --allow-deletes before any apply or import, even with data present', async () => {
+		// The updated gate: mirror can delete schema AND data rows absent from the import set, unknowable in
+		// CI without a dry-run, so it is refused outright. Only the diff is registered — a reached apply or
+		// import would throw on the disabled dispatcher, proving neither happened.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('mirror', schemaChangesBody());
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes')).toBe(1);
+		expect(stderr.join('')).toMatch(/refusing mirror/i);
+	});
+
+	it('renders the cycle when the import fails with IMPORT_CYCLICAL_RELATION', async () => {
+		// A cyclical failure must name the collections and non-nullable relations forming the cycle and point
+		// at the fix (make one nullable). Schema is clean here, so the import is the only failure and its
+		// enriched error surfaces directly rather than under a partial-failure wrap.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+
+		interceptImport(
+			{ mode: 'merge' },
+			{
+				errors: [
+					{
+						message: "Can't import collections",
+						extensions: {
+							code: 'IMPORT_CYCLICAL_RELATION',
+							collections: ['directus_flows', 'directus_operations'],
+							relations: [{ collection: 'directus_flows', field: 'operation', related: 'directus_operations' }],
+						},
+					},
+				],
+			},
+			422,
+		);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+
+		const err = stderr.join('');
+		expect(err).toContain('directus_flows');
+		expect(err).toContain('directus_operations');
+		expect(err).toMatch(/nullable/i);
+	});
+
+	it('reports schema-applied and a data-retry path when the import fails after a schema apply', async () => {
+		// Partial failure: the schema landed but the import threw. There is no rollback, so the operator must
+		// be told the schema is already applied and that a re-run retries only the data (empty schema diff).
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', schemaChangesBody());
+		interceptApply();
+		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+
+		interceptImport(
+			{ mode: 'merge' },
+			{ errors: [{ message: 'boom', extensions: { code: 'INTERNAL_SERVER_ERROR' } }] },
+			500,
+		);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+
+		const err = stderr.join('');
+		expect(err).toMatch(/schema/i);
+		expect(err).toMatch(/re-run|retry/i);
+	});
+
+	it('emits the PushReport data block with the source and verbatim response collections on --json', async () => {
+		// CI reads this shape: the data block is always present, carrying the mode, the source URL, and the
+		// server's per-collection response verbatim, alongside the project and schema fields.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData(fullFixture());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', schemaChangesBody());
+		interceptApply();
+		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+		interceptTarget('/access', []);
+		interceptImport({ mode: 'merge' }, { data: fullImportResult() });
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
+
+		const payload = JSON.parse(stdout.join(''));
+
+		expect(payload).toMatchObject({
+			kind: 'PushReport',
+			ok: true,
+			project: 'default',
+			mode: 'merge',
+			applied: true,
+			data: {
+				mode: 'merge',
+				source,
+				skipped: false,
+				collections: fullImportResult()['collections'],
+			},
+		});
+	});
+
+	it('writes a byte-identical id map across two identical push runs', async () => {
+		// Determinism through the whole path: a second push against the same source must reproduce the exact
+		// committed map (reconcile skips settled records, the response folds back to the same entries), so a
+		// no-op push is a no-op diff in the repo.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData(fullFixture());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		function register(): void {
+			interceptDiff('merge', schemaChangesBody());
+			interceptApply();
+			interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+			interceptTarget('/access', []);
+			interceptImport({ mode: 'merge' }, { data: fullImportResult() });
+		}
+
+		register();
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+		const first = readFileSync(idMapPath, 'utf8');
+
+		register();
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+		const second = readFileSync(idMapPath, 'utf8');
+
+		expect(second).toBe(first);
 	});
 });
