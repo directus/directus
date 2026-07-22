@@ -1,27 +1,32 @@
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { confirm, isCancel, text } from '@clack/prompts';
+import { confirm, isCancel, select, text } from '@clack/prompts';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CliContext } from '../../kernel/run.js';
 import { createUi } from '../../kernel/ui.js';
-import { applyDiff, fetchDiff } from '../../sync/api.js';
-import type { DiffResult } from '../../sync/contract.js';
+import { applyDiff, fetchDiff, fetchRecords, importBatch } from '../../sync/api.js';
+import type { DiffResult, ImportBatchResult } from '../../sync/contract.js';
+import { writeDataFiles } from '../../sync/data-store.js';
 import { writeSnapshotFiles } from '../../sync/store.js';
 import { push } from './push.js';
 
 // vitest hoists these above the imports, so the bindings above resolve to the mocks. The prompts are
-// mocked to script the confirm/text answers, and the api seam is mocked so the interactive gate logic
-// is tested in isolation from the wire — the assertions are about which gate fired and whether apply ran.
+// mocked to script the confirm/text/select answers, and the api seam is mocked so the interactive gate
+// and reconcile logic are tested in isolation from the wire — the assertions are about which gate fired,
+// whether apply/import ran, and what landed in the committed map.
 vi.mock('@clack/prompts', () => ({
 	confirm: vi.fn(),
 	text: vi.fn(),
+	select: vi.fn(),
 	isCancel: vi.fn(() => false),
 }));
 
 vi.mock('../../sync/api.js', () => ({
 	fetchDiff: vi.fn(),
 	applyDiff: vi.fn(),
+	fetchRecords: vi.fn(),
+	importBatch: vi.fn(),
 }));
 
 const url = 'https://cms.example.com';
@@ -91,13 +96,32 @@ describe('interactive sync push', () => {
 
 		vi.mocked(confirm).mockReset();
 		vi.mocked(text).mockReset();
+		vi.mocked(select).mockReset();
 		vi.mocked(isCancel).mockReset().mockReturnValue(false);
 		vi.mocked(fetchDiff).mockReset();
 		vi.mocked(applyDiff).mockReset().mockResolvedValue(undefined);
+		vi.mocked(fetchRecords).mockReset().mockResolvedValue([]);
+		vi.mocked(importBatch).mockReset();
 
 		seedConfig();
 		seedSnapshot();
 	});
+
+	// A source→target data set seeded on disk so prepareDataPush has records to reconcile and import; the
+	// source URL keys the committed ID map's bucket.
+	const source = 'https://source.example.com';
+
+	function seedData(collections: Parameters<typeof writeDataFiles>[1]): void {
+		writeDataFiles(join(dir, 'directus', 'default', 'data'), collections, source);
+	}
+
+	function importResult(collections: ImportBatchResult['collections'] = {}): ImportBatchResult {
+		return { applied: true, mode: 'merge', collections };
+	}
+
+	function readIdMap(): Record<string, unknown> {
+		return JSON.parse(readFileSync(join(dir, 'directus', 'default', 'id_map.json'), 'utf8'));
+	}
 
 	afterEach(() => {
 		vi.restoreAllMocks();
@@ -147,6 +171,87 @@ describe('interactive sync push', () => {
 			/did not match/i,
 		);
 
+		expect(applyDiff).not.toHaveBeenCalled();
+	});
+
+	it('runs a dry-run import before the committing import in the interactive path', async () => {
+		// The interactive data plan is REAL: a dry-run import (rolled back server-side) produces the plan the
+		// operator approves, so it must run — and run before — the committing import. CI skips it (covered in
+		// the wire suite, where the import is registered exactly once with no dryRun).
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hi' }] }]);
+		vi.mocked(importBatch).mockResolvedValue(importResult());
+		vi.mocked(confirm).mockResolvedValueOnce(true);
+
+		await push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir));
+
+		expect(importBatch).toHaveBeenCalledTimes(2);
+		expect(vi.mocked(importBatch).mock.calls[0]?.[2]).toMatchObject({ dryRun: true });
+		expect(vi.mocked(importBatch).mock.calls[1]?.[2]).not.toHaveProperty('dryRun');
+	});
+
+	it('demands the typed confirmation for data deletions the dry-run surfaces, even with a clean schema', async () => {
+		// Destruction on the table is not only schema: a mirror data plan that deletes rows triggers the
+		// typed confirmation even when the schema is clean and even under --yes. No schema change means apply
+		// never runs, proving the data plan alone drove the gate.
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hi' }] }]);
+
+		vi.mocked(importBatch).mockResolvedValue(
+			importResult({ articles: { existing: [], new: [], deleted: [9], mapped: {} } }),
+		);
+
+		vi.mocked(text).mockResolvedValueOnce('staging');
+
+		await push({ to: 'staging', mode: 'mirror', yes: true, project: 'default' }, ctxAt(dir));
+
+		expect(text).toHaveBeenCalledTimes(1);
+		expect(applyDiff).not.toHaveBeenCalled();
+		expect(importBatch).toHaveBeenCalledTimes(2);
+	});
+
+	it('persists an ambiguity choice into the committed map before importing', async () => {
+		// Reconcile stops on an ambiguous match rather than guessing; the operator's pick is seeded into the
+		// committed map immediately (identity facts survive even an aborted push) so a future reconcile skips
+		// the now-settled record.
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+
+		vi.mocked(fetchRecords).mockResolvedValueOnce([
+			{ id: 't1', name: 'Editor' },
+			{ id: 't2', name: 'Editor' },
+		]);
+
+		vi.mocked(select).mockResolvedValueOnce('target:t2');
+		vi.mocked(importBatch).mockResolvedValue(importResult());
+		vi.mocked(confirm).mockResolvedValueOnce(true);
+
+		await push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir));
+
+		expect(select).toHaveBeenCalledTimes(1);
+
+		expect(readIdMap()).toEqual({
+			formatVersion: 1,
+			maps: { [source]: { [url]: { directus_roles: { sr1: 't2' } } } },
+		});
+	});
+
+	it('aborts the push and touches neither apply nor import when the operator aborts an ambiguity', async () => {
+		// Choosing abort at an ambiguity stops the push before any mutation — the reconcile refusal is a hard
+		// stop, not a skip.
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+
+		vi.mocked(fetchRecords).mockResolvedValueOnce([
+			{ id: 't1', name: 'Editor' },
+			{ id: 't2', name: 'Editor' },
+		]);
+
+		vi.mocked(select).mockResolvedValueOnce('abort');
+
+		await expect(push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir))).rejects.toThrow(/abort/i);
+
+		expect(importBatch).not.toHaveBeenCalled();
 		expect(applyDiff).not.toHaveBeenCalled();
 	});
 });

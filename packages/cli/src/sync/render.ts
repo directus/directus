@@ -1,4 +1,4 @@
-import type { DiffOp, DiffRelationEntry, SchemaDiff } from './contract.js';
+import type { DiffOp, DiffRelationEntry, ImportBatchResult, SchemaDiff } from './contract.js';
 
 // Pure diff renderer: turns a SchemaDiff into a human summary the diff command prints and the
 // push slice reuses. No I/O, no colour — the caller decides how to surface `lines`, and the
@@ -103,4 +103,75 @@ function byCodepoint(a: string, b: string): number {
 	if (a < b) return -1;
 	if (a > b) return 1;
 	return 0;
+}
+
+// Pure renderer for the data plan the dry-run (or real import) returns: per-collection created/updated/
+// deleted counts, with the deleted PKs named so a destructive plan is legible before it is approved. The
+// server's response keys are existing (rows the import matched and updated), new (inserted), and deleted
+// (removed under mirror). No I/O — the caller prints `lines`, the counts feed the deletion gate.
+
+export interface ImportSummary {
+	readonly created: number;
+	readonly updated: number;
+	readonly deleted: number;
+	readonly lines: string[];
+}
+
+// How many deleted PKs to spell out before eliding: enough to recognize a small destructive plan, capped
+// so a large one does not flood the terminal. The elision is a literal '…', never a count.
+const MAX_SHOWN_DELETED = 5;
+
+function renderImportLine(
+	name: string,
+	created: number,
+	updated: number,
+	deleted: number,
+	deletedIds: string[],
+): string {
+	const shown = deletedIds.slice(0, MAX_SHOWN_DELETED).join(', ');
+	const ellipsis = deletedIds.length > MAX_SHOWN_DELETED ? ', …' : '';
+	const deletedDetail = deleted > 0 ? ` (${shown}${ellipsis})` : '';
+	return `~ ${name}  +${created} new  ~${updated} updated  ✖${deleted} deleted${deletedDetail}`;
+}
+
+export function summarizeImport(result: ImportBatchResult): ImportSummary {
+	let created = 0;
+	let updated = 0;
+	let deleted = 0;
+	const lines: string[] = [];
+
+	// Codepoint-sorted collection order so the plan is byte-identical run to run regardless of how the
+	// server keyed its response object.
+	for (const name of Object.keys(result.collections).sort(byCodepoint)) {
+		const collection = result.collections[name];
+		if (collection === undefined) continue;
+
+		const collectionCreated = collection.new.length;
+		const collectionUpdated = collection.existing.length;
+		const collectionDeleted = collection.deleted.length;
+
+		created += collectionCreated;
+		updated += collectionUpdated;
+		deleted += collectionDeleted;
+
+		// An all-zero collection is a no-op line the reader does not need — every committed collection ships
+		// in the batch for uniformity, but only the ones that actually change earn a line.
+		if (collectionCreated === 0 && collectionUpdated === 0 && collectionDeleted === 0) continue;
+
+		lines.push(
+			renderImportLine(
+				name,
+				collectionCreated,
+				collectionUpdated,
+				collectionDeleted,
+				collection.deleted.map((id) => String(id)),
+			),
+		);
+	}
+
+	// A wholly-zero plan states so explicitly rather than rendering nothing, so the combined push plan
+	// never leaves the data section blank and ambiguous.
+	if (lines.length === 0) lines.push('no data changes');
+
+	return { created, updated, deleted, lines };
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { SchemaDiff } from './contract.js';
-import { summarizeDiff } from './render.js';
+import type { ImportBatchResult, SchemaDiff } from './contract.js';
+import { summarizeDiff, summarizeImport } from './render.js';
 
 function emptyDiff(overrides: Partial<SchemaDiff> = {}): SchemaDiff {
 	return { collections: [], fields: [], systemFields: [], relations: [], ...overrides };
@@ -110,5 +110,59 @@ describe('summarizeDiff', () => {
 	it('returns zero counts and no lines for an empty diff', () => {
 		// The no-change case must be unambiguously empty, so the command can print nothing rather than a header.
 		expect(summarizeDiff(emptyDiff())).toEqual({ added: 0, modified: 0, deleted: 0, lines: [] });
+	});
+});
+
+function importResult(collections: ImportBatchResult['collections']): ImportBatchResult {
+	return { applied: false, mode: 'merge', collections };
+}
+
+describe('summarizeImport', () => {
+	it('totals created/updated/deleted and renders only the collections that change, codepoint-sorted', () => {
+		// The counts feed the deletion gate and the success sentence; the lines are the operator's plan. A
+		// collection the import leaves untouched earns no line even though it ships in every batch, and the
+		// order is codepoint (never response-key order) so the plan is byte-identical run to run.
+		const summary = summarizeImport(
+			importResult({
+				directus_roles: { existing: ['t1'], new: ['t2'], deleted: [], mapped: {} },
+				directus_settings: { existing: [], new: [], deleted: [], mapped: {} },
+				articles: { existing: [], new: [], deleted: ['9', '10'], mapped: {} },
+			}),
+		);
+
+		expect(summary).toMatchObject({ created: 1, updated: 1, deleted: 2 });
+
+		expect(summary.lines).toEqual([
+			'~ articles  +0 new  ~0 updated  ✖2 deleted (9, 10)',
+			'~ directus_roles  +1 new  ~1 updated  ✖0 deleted',
+		]);
+	});
+
+	it('states "no data changes" when every collection is a no-op', () => {
+		// A wholly-zero plan must say so, not render blank — the combined push plan can never leave the data
+		// section ambiguous.
+		const summary = summarizeImport(
+			importResult({ directus_roles: { existing: [], new: [], deleted: [], mapped: {} } }),
+		);
+
+		expect(summary).toEqual({ created: 0, updated: 0, deleted: 0, lines: ['no data changes'] });
+	});
+
+	it('names up to five deleted PKs then elides with a literal ellipsis', () => {
+		// A destructive plan must be legible before approval, but a large one must not flood the terminal:
+		// the first five PKs are spelled out and the rest collapse to '…' — never a residual count.
+		const summary = summarizeImport(
+			importResult({
+				directus_permissions: {
+					existing: [],
+					new: [],
+					deleted: [1, 2, 3, 4, 5, 6, 7],
+					mapped: {},
+				},
+			}),
+		);
+
+		expect(summary.deleted).toBe(7);
+		expect(summary.lines).toEqual(['~ directus_permissions  +0 new  ~0 updated  ✖7 deleted (1, 2, 3, 4, 5, …)']);
 	});
 });
