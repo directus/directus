@@ -36,10 +36,12 @@ export interface WriteResult {
 }
 
 export interface WriteScope {
-	// A collection is INSIDE the pull's scope iff inScope(name) is true. Inside-scope artifacts mirror the
-	// response (rewritten, or removed when absent — deleted at source). Outside-scope artifacts are
-	// preserved verbatim: file untouched, manifest entry carried forward. Without a scope every artifact
-	// is in scope (full mirror).
+	/**
+	 * A collection is INSIDE the pull's scope iff inScope(name) is true. Inside-scope artifacts mirror the
+	 * response (rewritten, or removed when absent — deleted at source). Outside-scope artifacts are
+	 * preserved verbatim: file untouched, manifest entry carried forward. Without a scope every artifact
+	 * is in scope (full mirror).
+	 */
 	readonly inScope: (collection: string) => boolean;
 }
 

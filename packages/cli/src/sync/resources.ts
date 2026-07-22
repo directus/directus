@@ -172,8 +172,10 @@ function byCodepoint(a: string, b: string): number {
 	return 0;
 }
 
-// The selectable names, sorted, for help text and error copy. The dependent-only children are excluded
-// so they can never be offered as a valid choice.
+/**
+ * The selectable names, sorted, for help text and error copy. The dependent-only children are excluded
+ * so they can never be offered as a valid choice.
+ */
 export const SELECTABLE_RESOURCES: string[] = RESOURCE_LIST.filter((def) => def.selectable)
 	.map((def) => def.name)
 	.sort(byCodepoint);

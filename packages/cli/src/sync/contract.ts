@@ -10,22 +10,26 @@ import { CliError } from '../kernel/error.js';
 // types and parsers are the public surface. Import types come from @directus/types,
 // which types them properly; the snapshot/diff types are owned here (see below).
 
-// Snapshot version tags (mirror the API's SNAPSHOT_VERSION): 1 = a full instance
-// snapshot, 2 = a partial, collection-scoped one. The distinction is load-bearing on
-// the server — a full snapshot diffed in `mirror` mode proposes deleting every
-// collection it omits — so the CLI never fabricates or edits it: it parses, stores,
-// and forwards it, and reads `version` only to know whether a snapshot is scoped. Only
-// these two values parse: an unknown future version fails loud rather than being
-// processed under a snapshot format the CLI does not understand.
+/**
+ * Snapshot version tags (mirror the API's SNAPSHOT_VERSION): 1 = a full instance
+ * snapshot, 2 = a partial, collection-scoped one. The distinction is load-bearing on
+ * the server — a full snapshot diffed in `mirror` mode proposes deleting every
+ * collection it omits — so the CLI never fabricates or edits it: it parses, stores,
+ * and forwards it, and reads `version` only to know whether a snapshot is scoped. Only
+ * these two values parse: an unknown future version fails loud rather than being
+ * processed under a snapshot format the CLI does not understand.
+ */
 export const SNAPSHOT_FULL = 1;
 export const SNAPSHOT_PARTIAL = 2;
 
-// Snapshot types are owned here rather than reused from the SDK: the SDK's
-// `SchemaSnapshotOutput` types collections/fields/relations as `Record<string, any>`
-// (stubbed, `// TODO improve typing`), which would erase the type of the very keys the
-// CLI groups and renders by. We keep the fields we read typed and pass the rest through
-// verbatim. Arrays stay mutable so a snapshot can be handed straight back to the SDK's
-// diff/apply commands.
+/**
+ * Snapshot types are owned here rather than reused from the SDK: the SDK's
+ * `SchemaSnapshotOutput` types collections/fields/relations as `Record<string, any>`
+ * (stubbed, `// TODO improve typing`), which would erase the type of the very keys the
+ * CLI groups and renders by. We keep the fields we read typed and pass the rest through
+ * verbatim. Arrays stay mutable so a snapshot can be handed straight back to the SDK's
+ * diff/apply commands.
+ */
 export interface SnapshotEntry {
 	collection: string;
 	[key: string]: unknown;
@@ -37,9 +41,11 @@ export interface SnapshotFieldEntry {
 	[key: string]: unknown;
 }
 
-// A relation always carries collection/field/related_collection (see api sanitizeRelation, which
-// picks all three; related_collection is nullable — an m2a relation has no single target). The rest
-// (meta, schema) passes through verbatim. Typed so the store can sort by these keys without coercion.
+/**
+ * A relation always carries collection/field/related_collection (see api sanitizeRelation, which
+ * picks all three; related_collection is nullable — an m2a relation has no single target). The rest
+ * (meta, schema) passes through verbatim. Typed so the store can sort by these keys without coercion.
+ */
 export interface SnapshotRelationEntry {
 	collection: string;
 	field: string;
@@ -47,8 +53,10 @@ export interface SnapshotRelationEntry {
 	[key: string]: unknown;
 }
 
-// The index signature keeps the CLI's verbatim promise at the top level too: a future server-side
-// key the CLI does not model must round-trip through store and diff, never be silently stripped.
+/**
+ * The index signature keeps the CLI's verbatim promise at the top level too: a future server-side
+ * key the CLI does not model must round-trip through store and diff, never be silently stripped.
+ */
 export interface Snapshot {
 	version: 1 | 2;
 	directus: string;
@@ -60,14 +68,16 @@ export interface Snapshot {
 	[key: string]: unknown;
 }
 
-// The diff body mirrors the API's SnapshotDiff (packages/types): four arrays of changed
-// items, each carrying deep-diff `diff` ops the CLI renders and forwards to /schema/apply
-// but never authors. The op BODIES (lhs/rhs/index/…) stay opaque and pass through verbatim,
-// but the addressing keys (collection/field/related_collection) and the op `kind` ARE
-// validated here, because rendering and gating key off them — an unknown kind is a
-// deep-diff/protocol change the CLI must not forward blind. `hash` seals the diff against
-// the target. The server answers 204 with no body when the snapshots match, so "no changes"
-// is modeled as a `null` result rather than a DiffResult (see parseDiffResult).
+/**
+ * The diff body mirrors the API's SnapshotDiff (packages/types): four arrays of changed
+ * items, each carrying deep-diff `diff` ops the CLI renders and forwards to /schema/apply
+ * but never authors. The op BODIES (lhs/rhs/index/…) stay opaque and pass through verbatim,
+ * but the addressing keys (collection/field/related_collection) and the op `kind` ARE
+ * validated here, because rendering and gating key off them — an unknown kind is a
+ * deep-diff/protocol change the CLI must not forward blind. `hash` seals the diff against
+ * the target. The server answers 204 with no body when the snapshots match, so "no changes"
+ * is modeled as a `null` result rather than a DiffResult (see parseDiffResult).
+ */
 export interface DiffOp {
 	kind: 'N' | 'D' | 'E' | 'A';
 	path?: (string | number)[];

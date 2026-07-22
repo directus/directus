@@ -34,9 +34,11 @@ export interface DataWriteResult {
 	readonly removed: string[]; // stale owned files deleted, sorted
 }
 
-// The read shape: the exported collections plus the normalized URL of the instance they were pulled
-// from. Push needs the source to key the ID map's source→target bucket — it knows only the target — so
-// the source is committed alongside the data rather than re-derived (which would be a guess).
+/**
+ * The read shape: the exported collections plus the normalized URL of the instance they were pulled
+ * from. Push needs the source to key the ID map's source→target bucket — it knows only the target — so
+ * the source is committed alongside the data rather than re-derived (which would be a guess).
+ */
 export interface DataReadResult {
 	readonly source: string; // normalizeInstanceUrl of the pulled-from instance, from metadata.json
 	readonly collections: DataCollection[];
@@ -129,9 +131,11 @@ function readManifest(dir: string): string[] {
 	return files as string[];
 }
 
-// `source` is the normalizeInstanceUrl of the instance this data was pulled from, threaded from the
-// pull's resolved target. It is recorded so a later push can look up the ID map's source→target bucket
-// without guessing which instance produced the committed records.
+/**
+ * `source` is the normalizeInstanceUrl of the instance this data was pulled from, threaded from the
+ * pull's resolved target. It is recorded so a later push can look up the ID map's source→target bucket
+ * without guessing which instance produced the committed records.
+ */
 export function writeDataFiles(dir: string, collections: DataCollection[], source: string): DataWriteResult {
 	mkdirSync(dir, { recursive: true });
 

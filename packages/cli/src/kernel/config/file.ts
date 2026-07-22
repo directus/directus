@@ -7,9 +7,11 @@ import { writeFileAtomic } from '../write.js';
 
 const CONFIG_FILENAME = 'directus.config.json';
 
-// A committable base URL must carry no secrets: http(s) only, no userinfo and no
-// query/fragment — so `https://user:pass@host` or `?token=…` can never be written
-// to config or printed by `profile list`. Also serves as the prompt validator.
+/**
+ * A committable base URL must carry no secrets: http(s) only, no userinfo and no
+ * query/fragment — so `https://user:pass@host` or `?token=…` can never be written
+ * to config or printed by `profile list`. Also serves as the prompt validator.
+ */
 export function isSafeUrl(value: string): boolean {
 	let parsed: URL;
 
@@ -71,9 +73,11 @@ interface Profile {
 	readonly auth: { readonly type: 'token' };
 }
 
-// A project's scope overrides from directus.config.json; every key is optional. Exported because later
-// slices read these to seed a sync's scope whenever the matching flag is absent. `| undefined` on each
-// key mirrors the zod-optional output shape under exactOptionalPropertyTypes.
+/**
+ * A project's scope overrides from directus.config.json; every key is optional. Exported because later
+ * slices read these to seed a sync's scope whenever the matching flag is absent. `| undefined` on each
+ * key mirrors the zod-optional output shape under exactOptionalPropertyTypes.
+ */
 export interface ProjectConfig {
 	readonly collections?: readonly string[] | undefined;
 	readonly excludeCollections?: readonly string[] | undefined;
@@ -101,8 +105,10 @@ interface ConfigLocation {
 	readonly configPath?: string | undefined;
 }
 
-// Walk up from the starting dir like git, so the CLI works from any subdirectory.
-// undefined means nothing was found — profile-less operation stays first-class.
+/**
+ * Walk up from the starting dir like git, so the CLI works from any subdirectory.
+ * undefined means nothing was found — profile-less operation stays first-class.
+ */
 export function findConfigPath(startDir: string): string | undefined {
 	const { root } = parsePath(startDir);
 	let dir = startDir;
@@ -115,9 +121,11 @@ export function findConfigPath(startDir: string): string | undefined {
 	}
 }
 
-// An explicit `--config` path wins, otherwise walk-up discovery. A missing
-// discovered file is not an error (profile-less); a missing explicit path or a
-// malformed file is.
+/**
+ * An explicit `--config` path wins, otherwise walk-up discovery. A missing
+ * discovered file is not an error (profile-less); a missing explicit path or a
+ * malformed file is.
+ */
 export function loadConfig(location: ConfigLocation): LoadedConfig | undefined {
 	const path = location.configPath ?? findConfigPath(location.cwd);
 	if (path === undefined) return undefined;
@@ -174,7 +182,7 @@ function existingProfiles(raw: Record<string, unknown>, path: string): Record<st
 	return profiles as Record<string, unknown>;
 }
 
-// Upsert into the explicit or discovered config, or a new file at cwd.
+/** Upsert into the explicit or discovered config, or a new file at cwd. */
 export function upsertProfile(location: ConfigLocation, name: string, profile: Profile): void {
 	const path = location.configPath ?? findConfigPath(location.cwd) ?? join(location.cwd, CONFIG_FILENAME);
 	const raw = readRawConfig(path);
@@ -203,7 +211,7 @@ export function removeProfile(location: ConfigLocation, name: string): string | 
 		: undefined;
 }
 
-// A miss names the known profiles so a typo is fixable without opening the file.
+/** A miss names the known profiles so a typo is fixable without opening the file. */
 export function resolveProfile(config: Config, name: string): Profile {
 	const profile = Object.hasOwn(config.profiles, name) ? config.profiles[name] : undefined;
 

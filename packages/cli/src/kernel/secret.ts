@@ -8,7 +8,7 @@ export function registerSecret(value: string): void {
 	if (value.length >= MIN_SECRET_LENGTH) secrets.add(value);
 }
 
-// Test/reset hook — the registry is process-global.
+/** Test/reset hook — the registry is process-global. */
 export function clearSecrets(): void {
 	secrets.clear();
 }

@@ -20,7 +20,7 @@ const SYMBOLS = {
 	error: glyph('✖', 'x'),
 };
 
-// Keep redaction at the final output boundary, including Commander output.
+/** Keep redaction at the final output boundary, including Commander output. */
 export function writeOut(text: string): void {
 	process.stdout.write(redact(text));
 }
@@ -54,7 +54,7 @@ function writeJson(payload: unknown): void {
 	writeOut(`${body ?? 'null'}\n`);
 }
 
-// Human status uses stderr. JSON results and errors use stdout exclusively.
+/** Human status uses stderr. JSON results and errors use stdout exclusively. */
 export interface Ui {
 	readonly json: boolean;
 	print(text: string): void;

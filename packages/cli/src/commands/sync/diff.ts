@@ -9,8 +9,10 @@ import { resolveTarget } from './resolve-target.js';
 
 export interface DiffOptions {
 	readonly to: string;
-	// No commander default: an absent flag resolves to the project config's mode, then merge — the exact
-	// precedence push uses, so the diff previews precisely what that push would do.
+	/**
+	 * No commander default: an absent flag resolves to the project config's mode, then merge — the exact
+	 * precedence push uses, so the diff previews precisely what that push would do.
+	 */
 	readonly mode?: 'add' | 'merge' | 'mirror';
 	readonly project: string;
 }

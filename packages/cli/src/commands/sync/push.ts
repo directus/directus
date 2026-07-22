@@ -12,27 +12,35 @@ import { resolveTarget } from './resolve-target.js';
 
 export interface PushOptions {
 	readonly to: string;
-	// No commander default: an absent flag resolves to the project config's mode, then 'merge'. Choices
-	// are validated by commander (add|merge|mirror), so a present value is always one of the three.
+	/**
+	 * No commander default: an absent flag resolves to the project config's mode, then 'merge'. Choices
+	 * are validated by commander (add|merge|mirror), so a present value is always one of the three.
+	 */
 	readonly mode?: 'add' | 'merge' | 'mirror';
 	readonly allowDeletes?: boolean;
 	readonly yes?: boolean;
 	readonly project: string;
 }
 
-// Exported so diff previews the exact push these mappings produce (spec Q15) — a single source of truth
-// for how a mode reaches the schema and data wires, never a second copy that could drift.
+/**
+ * Exported so diff previews the exact push these mappings produce (spec Q15) — a single source of truth
+ * for how a mode reaches the schema and data wires, never a second copy that could drift.
+ */
 export type Mode = 'add' | 'merge' | 'mirror';
 
-// mode → schema diff mode: add and merge both take the additive schema diff (add never deletes); only
-// mirror computes a deleting diff.
+/**
+ * mode → schema diff mode: add and merge both take the additive schema diff (add never deletes); only
+ * mirror computes a deleting diff.
+ */
 export function schemaDiffMode(mode: Mode): 'merge' | 'mirror' {
 	return mode === 'mirror' ? 'mirror' : 'merge';
 }
 
-// mode → data import options: add inserts only, merge upserts, mirror upserts AND deletes rows absent
-// from the import set. The server requires mode=merge alongside dangerouslyAllowDelete, so mirror maps to
-// merge+flag rather than a wire "mirror" (which does not exist).
+/**
+ * mode → data import options: add inserts only, merge upserts, mirror upserts AND deletes rows absent
+ * from the import set. The server requires mode=merge alongside dangerouslyAllowDelete, so mirror maps to
+ * merge+flag rather than a wire "mirror" (which does not exist).
+ */
 export function dataImportOptions(mode: Mode): { mode: 'add' | 'merge'; dangerouslyAllowDelete?: boolean } {
 	if (mode === 'add') return { mode: 'add' };
 	if (mode === 'mirror') return { mode: 'merge', dangerouslyAllowDelete: true };

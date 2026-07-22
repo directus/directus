@@ -5,8 +5,10 @@ import { loadConfig, type ProjectConfig, resolveProfile } from '../../kernel/con
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 
-// The config → profile → credential → artifact-dir preamble shared by every sync command. Extracted
-// so pull and diff resolve their target through one path and their error semantics can never drift.
+/**
+ * The config → profile → credential → artifact-dir preamble shared by every sync command. Extracted
+ * so pull and diff resolve their target through one path and their error semantics can never drift.
+ */
 export interface Target {
 	readonly url: string;
 	readonly credential: ResolvedCredential;
@@ -14,8 +16,10 @@ export interface Target {
 	readonly schemaDir: string;
 	readonly dataDir: string;
 	readonly idMapPath: string;
-	// The config entry for this project, or undefined when the project is not declared (only `default`
-	// may go undeclared). Later slices read its scope defaults; the pull layer already does.
+	/**
+	 * The config entry for this project, or undefined when the project is not declared (only `default`
+	 * may go undeclared). Later slices read its scope defaults; the pull layer already does.
+	 */
 	readonly projectConfig: ProjectConfig | undefined;
 }
 
