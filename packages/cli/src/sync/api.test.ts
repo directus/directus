@@ -659,4 +659,21 @@ describe('importBatch', () => {
 		expect((error as CliError).detail).toContain('directus_flows.operation → directus_operations');
 		expect((error as CliError).hint).toMatch(/nullable/i);
 	});
+
+	it('marks a lost-response import as unknown outcome, steering to diff before any retry', async () => {
+		// Aborting or losing the connection does NOT stop the server's import transaction: it may still
+		// commit, with the id-map entries in the response that never arrived. The failure must say the
+		// outcome is unknown and route through diff — a blind retry duplicates records in collections
+		// that have no natural key to reconcile by.
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/utils/import', method: 'POST', query: { mode: 'merge' } })
+			.replyWithError(new Error('socket hang up'));
+
+		const error = await importBatch(credential, batch, { mode: 'merge' }).catch((error: unknown) => error);
+
+		expect(error).toBeInstanceOf(CliError);
+		expect((error as CliError).hint).toContain('may still have been applied');
+		expect((error as CliError).hint).toContain('sync diff');
+	});
 });
