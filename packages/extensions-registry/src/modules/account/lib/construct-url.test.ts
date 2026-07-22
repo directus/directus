@@ -2,13 +2,13 @@ import { expect, test, vi } from 'vitest';
 import { constructUrl } from './construct-url.js';
 
 vi.mock('../../../constants.js', () => ({
-	DEFAULT_REGISTRY: 'https://registry.directus.com',
+	DEFAULT_REGISTRY: 'https://registry.directus.io',
 }));
 
 test('Uses default registry when no options provided', () => {
 	const url = constructUrl('user123');
 
-	expect(url.hostname).toBe('registry.directus.com');
+	expect(url.hostname).toBe('registry.directus.io');
 	expect(url.protocol).toBe('https:');
 	expect(url.pathname).toBe('/accounts/user123');
 });
@@ -16,7 +16,7 @@ test('Uses default registry when no options provided', () => {
 test('Uses default registry when empty options provided', () => {
 	const url = constructUrl('user456', {});
 
-	expect(url.hostname).toBe('registry.directus.com');
+	expect(url.hostname).toBe('registry.directus.io');
 	expect(url.protocol).toBe('https:');
 	expect(url.pathname).toBe('/accounts/user456');
 });

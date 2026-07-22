@@ -137,7 +137,7 @@ describe('download', () => {
 
 	test('Works with different registry options', async () => {
 		const registryOptions = [
-			{ registry: 'https://registry.directus.com' },
+			{ registry: 'https://registry.directus.io' },
 			{ registry: 'https://custom-registry.example.com' },
 			{ registry: 'http://localhost:3000' },
 		];
