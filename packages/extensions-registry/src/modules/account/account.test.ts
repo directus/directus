@@ -69,7 +69,7 @@ test('Constructs URL with undefined options when none provided', async () => {
 });
 
 test('Fetches constructed URL using ky.get', async () => {
-	const url = new URL('/accounts/test-user', 'https://registry.directus.app');
+	const url = new URL('/accounts/test-user', 'https://registry.example.directus.com');
 
 	vi.mocked(constructUrl).mockReturnValue(url);
 	vi.mocked(ky.get).mockReturnValue({ json: vi.fn() } as unknown as ResponsePromise);
@@ -208,7 +208,7 @@ test('Handles different account ID formats', async () => {
 
 test('Works with different registry options', async () => {
 	const registryUrls = [
-		'https://registry.directus.app',
+		'https://registry.example.directus.com',
 		'https://custom-registry.example.com',
 		'http://localhost:3000',
 		'https://internal-registry.company.com',

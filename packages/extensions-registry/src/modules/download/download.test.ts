@@ -137,7 +137,7 @@ describe('download', () => {
 
 	test('Works with different registry options', async () => {
 		const registryOptions = [
-			{ registry: 'https://registry.directus.app' },
+			{ registry: 'https://registry.directus.com' },
 			{ registry: 'https://custom-registry.example.com' },
 			{ registry: 'http://localhost:3000' },
 		];
@@ -179,7 +179,7 @@ describe('download', () => {
 	test('Combines all parameters correctly', async () => {
 		const versionId = 'complex-extension-v2.1.0';
 		const requireSandbox = true;
-		const options = { registry: 'https://enterprise-registry.directus.app' };
+		const options = { registry: 'https://enterprise-registry.example.com' };
 		const mockBody = new ReadableStream();
 		const mockResponse = { body: mockBody };
 

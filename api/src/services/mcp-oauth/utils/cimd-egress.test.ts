@@ -113,7 +113,7 @@ describe('validateCimdHostnameEgress', () => {
 			AAAA: ['2606:4700:4700::1111'],
 		});
 
-		await expectCimdError(validateCimdHostnameEgress('directus.app', { resolver }), 'cimd_dns_special_use_ip');
+		await expectCimdError(validateCimdHostnameEgress('example.directus.com', { resolver }), 'cimd_dns_special_use_ip');
 	});
 
 	it('rejects malformed DNS answers as special-use results', async () => {
@@ -122,7 +122,7 @@ describe('validateCimdHostnameEgress', () => {
 			AAAA: ['not-an-ip'],
 		});
 
-		await expectCimdError(validateCimdHostnameEgress('directus.app', { resolver }), 'cimd_dns_special_use_ip');
+		await expectCimdError(validateCimdHostnameEgress('example.directus.com', { resolver }), 'cimd_dns_special_use_ip');
 	});
 
 	it('returns public A and AAAA DNS answers after validation', async () => {
@@ -131,7 +131,7 @@ describe('validateCimdHostnameEgress', () => {
 			AAAA: ['2606:4700:4700::1111'],
 		});
 
-		await expect(validateCimdHostnameEgress('directus.app', { resolver })).resolves.toEqual({
+		await expect(validateCimdHostnameEgress('example.directus.com', { resolver })).resolves.toEqual({
 			addresses4: ['8.8.8.8'],
 			addresses6: ['2606:4700:4700::1111'],
 		});
@@ -140,7 +140,7 @@ describe('validateCimdHostnameEgress', () => {
 	it('treats ENODATA from one family as empty and allows the other public family', async () => {
 		const resolver = createResolver({ A: ['8.8.8.8'] }, { AAAA: dnsError('ENODATA') });
 
-		await expect(validateCimdHostnameEgress('directus.app', { resolver })).resolves.toEqual({
+		await expect(validateCimdHostnameEgress('example.directus.com', { resolver })).resolves.toEqual({
 			addresses4: ['8.8.8.8'],
 			addresses6: [],
 		});
@@ -149,13 +149,13 @@ describe('validateCimdHostnameEgress', () => {
 	it('rejects when both DNS families are empty', async () => {
 		const resolver = createResolver({}, { A: dnsError('ENOTFOUND'), AAAA: dnsError('ENODATA') });
 
-		await expectCimdError(validateCimdHostnameEgress('empty.directus.app', { resolver }), 'cimd_dns_empty_result');
+		await expectCimdError(validateCimdHostnameEgress('empty.example.directus.com', { resolver }), 'cimd_dns_empty_result');
 	});
 
 	it('wraps resolver failures as DNS errors', async () => {
 		const resolver = createResolver({ AAAA: ['2606:4700:4700::1111'] }, { A: dnsError('SERVFAIL') });
 
-		await expectCimdError(validateCimdHostnameEgress('directus.app', { resolver }), 'cimd_dns_error');
+		await expectCimdError(validateCimdHostnameEgress('example.directus.com', { resolver }), 'cimd_dns_error');
 	});
 
 	it('times out under the shared deadline', async () => {
@@ -165,7 +165,7 @@ describe('validateCimdHostnameEgress', () => {
 		};
 
 		await expectCimdError(
-			validateCimdHostnameEgress('directus.app', { resolver, deadlineAt: performance.now() + 5 }),
+			validateCimdHostnameEgress('example.directus.com', { resolver, deadlineAt: performance.now() + 5 }),
 			'cimd_dns_timeout',
 		);
 	});
@@ -179,7 +179,7 @@ describe('validateCimdHostnameEgress', () => {
 				resolve6: vi.fn(() => new Promise<string[]>(() => undefined)),
 			};
 
-			const promise = validateCimdHostnameEgress('directus.app', {
+			const promise = validateCimdHostnameEgress('example.directus.com', {
 				resolver,
 				deadlineAt: performance.now() + 3_000,
 			});
@@ -198,7 +198,7 @@ describe('validateCimdHostnameEgress', () => {
 		const resolver = createResolver({ A: ['8.8.8.8'], AAAA: ['2606:4700:4700::1111'] });
 
 		await expectCimdError(
-			validateCimdHostnameEgress('directus.app', { resolver, deadlineAt: performance.now() - 1 }),
+			validateCimdHostnameEgress('example.directus.com', { resolver, deadlineAt: performance.now() - 1 }),
 			'cimd_dns_timeout',
 		);
 
@@ -217,7 +217,7 @@ describe('createCimdLookup', () => {
 		const lookup = createCimdLookup({ deadlineAt: performance.now() + 1_000, resolver });
 		const callback = vi.fn();
 
-		lookup('directus.app', { all: true }, callback);
+		lookup('example.directus.com', { all: true }, callback);
 
 		await vi.waitFor(() => {
 			expect(callback).toHaveBeenCalledOnce();
@@ -238,7 +238,7 @@ describe('createCimdLookup', () => {
 		const lookup = createCimdLookup({ deadlineAt: performance.now() + 1_000, resolver });
 		const callback = vi.fn();
 
-		lookup('directus.app', { all: true, family: 6 }, callback);
+		lookup('example.directus.com', { all: true, family: 6 }, callback);
 
 		await vi.waitFor(() => {
 			expect(callback).toHaveBeenCalledOnce();
@@ -257,7 +257,7 @@ describe('createCimdLookup', () => {
 		const lookup = createCimdLookup({ deadlineAt: performance.now() + 1_000, resolver });
 		const callback = vi.fn();
 
-		lookup('directus.app', { all: true, family: 6 }, callback);
+		lookup('example.directus.com', { all: true, family: 6 }, callback);
 
 		await vi.waitFor(() => {
 			expect(callback).toHaveBeenCalledOnce();
@@ -275,7 +275,7 @@ describe('createCimdLookup', () => {
 		const lookup = createCimdLookup({ deadlineAt: performance.now() + 1_000, resolver });
 		const callback = vi.fn();
 
-		lookup('directus.app', { family: 4 }, callback);
+		lookup('example.directus.com', { family: 4 }, callback);
 
 		await vi.waitFor(() => {
 			expect(callback).toHaveBeenCalledOnce();
@@ -290,7 +290,7 @@ describe('createCimdLookup', () => {
 		const lookup = createCimdLookup({ deadlineAt: performance.now() + 1_000, resolver });
 		const callback = vi.fn();
 
-		lookup('directus.app', { family: 4 }, callback);
+		lookup('example.directus.com', { family: 4 }, callback);
 
 		await vi.waitFor(() => {
 			expect(callback).toHaveBeenCalledOnce();
@@ -312,7 +312,7 @@ describe('createCimdLookup', () => {
 		const lookup = createCimdLookup({ deadlineAt: performance.now() + 5, resolver });
 		const callback = vi.fn();
 
-		lookup('directus.app', { family: 4 }, callback);
+		lookup('example.directus.com', { family: 4 }, callback);
 
 		await vi.waitFor(() => {
 			expect(callback).toHaveBeenCalledOnce();
