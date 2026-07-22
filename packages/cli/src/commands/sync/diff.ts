@@ -2,7 +2,7 @@ import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
 import type { ImportBatchResult } from '../../sync/contract.js';
 import type { Mode } from '../../sync/mode.js';
-import { emptyImportSummary, type ImportSummary, summarizeDiff } from '../../sync/render.js';
+import { emptyImportSummary, hasImportChanges, type ImportSummary, summarizeDiff } from '../../sync/render.js';
 import { type DataPreviewResult, previewData } from './data-push.js';
 import { localDiff } from './local-diff.js';
 import { dryRunImport, resolveMode, schemaDiffMode } from './push.js';
@@ -91,8 +91,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	const schemaTotal = schema.added + schema.modified + schema.deleted;
 
-	const dataChanged =
-		dataSummary !== undefined && (dataSummary.created > 0 || dataSummary.updated > 0 || dataSummary.deleted > 0);
+	const dataChanged = dataSummary !== undefined && hasImportChanges(dataSummary);
 
 	if (ctx.ui.json) {
 		// hash travels with the machine payload: apply seals against this diff and CI may persist it. The

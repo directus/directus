@@ -140,6 +140,15 @@ export function emptyImportSummary(): ImportSummary {
 	return { created: 0, updated: 0, deleted: 0, lines: ['no data changes'] };
 }
 
+/**
+ * Whether a summarized import carries any real change. The one definition of "the data changed" — the
+ * changes flags in both JSON reports and the plan's header/no-op copy all read it, so they can never
+ * disagree on what counts as a change.
+ */
+export function hasImportChanges(summary: ImportSummary): boolean {
+	return summary.created > 0 || summary.updated > 0 || summary.deleted > 0;
+}
+
 export function summarizeImport(
 	result: ImportBatchResult,
 	unchanged?: ReadonlyMap<string, ReadonlySet<string>>,

@@ -9,7 +9,13 @@ import { applyDiff, importBatch } from '../../sync/api.js';
 import type { ImportBatchResult, ImportCollectionData } from '../../sync/contract.js';
 import { withMappings, writeIdMap } from '../../sync/id-map.js';
 import type { Mode } from '../../sync/mode.js';
-import { emptyImportSummary, type ImportSummary, summarizeDiff, summarizeImport } from '../../sync/render.js';
+import {
+	emptyImportSummary,
+	hasImportChanges,
+	type ImportSummary,
+	summarizeDiff,
+	summarizeImport,
+} from '../../sync/render.js';
 import { type DataPushPlan, type DataPushResult, prepareDataPush, type UnchangedRows } from './data-push.js';
 import { localDiff } from './local-diff.js';
 import { resolveTarget } from './resolve-target.js';
@@ -206,7 +212,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		if (!dataResult.skipped) {
 			if (dataSummary !== undefined) {
 				// An all-zero plan is stated plainly — never a "data changes" header over a "no data changes" line.
-				if (dataSummary.created > 0 || dataSummary.updated > 0 || dataSummary.deleted > 0) {
+				if (hasImportChanges(dataSummary)) {
 					ctx.ui.info(`data changes to import to ${url}:`);
 					for (const line of dataSummary.lines) ctx.ui.print(line);
 				} else {
@@ -323,9 +329,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	const importSummary =
 		!dataResult.skipped && importResult !== undefined ? summarizeImport(importResult, dataResult.unchanged) : undefined;
 
-	const dataChanged =
-		importSummary !== undefined &&
-		(importSummary.created > 0 || importSummary.updated > 0 || importSummary.deleted > 0);
+	const dataChanged = importSummary !== undefined && hasImportChanges(importSummary);
 
 	if (ctx.ui.json) {
 		ctx.ui.data({
