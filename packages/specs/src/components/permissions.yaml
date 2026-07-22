@@ -10,16 +10,12 @@ properties:
     example: 1
     type: integer
   policy:
-    # TODO: switch to oneOf: [string, Policies] once the Policies component exists (directus/directus#27700 and related).
-    # After uncommenting, also remove the `type: string, format: uuid` line below.
-    # oneOf:
-    #   - type: string
-    #     format: uuid
-    #   - $ref: '../openapi.yaml#/components/schemas/Policies'
     description: Unique identifier of the policy this permission applies to.
-    example: 2f24211d-d928-469a-aea3-3c8f53d4e426A
-    type: string
-    format: uuid
+    example: 2f24211d-d928-469a-aea3-3c8f53d4e426
+    oneOf:
+      - type: string
+        format: uuid
+      - $ref: '../openapi.yaml#/components/schemas/Policies'
   collection:
     description: What collection this permission applies to.
     example: customers

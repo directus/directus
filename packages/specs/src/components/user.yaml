@@ -99,18 +99,13 @@ properties:
         nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Roles'
   policies:
-    description: Policies assigned to this user (via `directus_access`).
+    description: Policies assigned to this user.
     type: array
-    # TODO: https://github.com/directus/directus/issues/27925#issuecomment-4998154731
-    # After uncommenting, also remove the `items: type: string, format: uuid` block below.
-    # items:
-    #   oneOf:
-    #     - type: string
-    #       format: uuid
-    #     - $ref: '../openapi.yaml#/components/schemas/Policies'
     items:
-      type: string
-      format: uuid
+      oneOf:
+        - type: string
+          format: uuid
+        - $ref: '../openapi.yaml#/components/schemas/Policies'
   token:
     description: Static token for the user.
     type: string
