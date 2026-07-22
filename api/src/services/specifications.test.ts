@@ -42,14 +42,6 @@ describe('Integration Tests', () => {
 		})
 		.build();
 
-	const hasParameterRef = (parameters: unknown, ref: string) =>
-		Array.isArray(parameters) &&
-		parameters.some((p) => typeof p === 'object' && p !== null && '$ref' in p && (p as { $ref: string }).$ref === ref);
-
-	const xMetadataInResponse = () => ({
-		properties: { meta: { $ref: '#/components/schemas/x-metadata' } },
-	});
-
 	describe('Services / Specifications', () => {
 		describe('oas', () => {
 			describe('generate', () => {
@@ -93,48 +85,37 @@ describe('Integration Tests', () => {
 						expect(targetSchema).not.toHaveProperty('type');
 					});
 
-					it('retains x-metadata schema and meta parameter on collection list path', async () => {
+					it.each([
+						{ label: 'collection list path', schema: schema2, path: '/items/test_table' },
+						{
+							label: 'system list path',
+							schema: new SchemaBuilder()
+								.collection('directus_users', (c) => {
+									c.field('id').uuid().primary();
+								})
+								.build(),
+							path: '/users',
+						},
+					])('retains x-metadata schema and meta parameter on $label', async ({ schema, path }) => {
 						const service = new SpecificationService({
 							knex: db,
-							schema: schema2,
+							schema,
 							accountability: { role: 'admin', admin: true } as Accountability,
 						});
 
 						const spec = await service.oas.generate();
-						const getPath = spec.paths['/items/test_table']?.get;
+						const getPath = spec.paths[path]?.get;
 
-						expect(hasParameterRef(getPath?.parameters, '#/components/parameters/Meta')).toBe(true);
+						const parameters = getPath?.parameters as { $ref?: string }[] | undefined;
+						expect(parameters?.some((p) => p?.$ref === '#/components/parameters/Meta')).toBe(true);
 
 						const getSchema = (
 							getPath?.responses?.['200'] as { content?: { 'application/json'?: { schema?: unknown } } }
 						)?.content?.['application/json']?.schema;
 
-						expect(getSchema).toMatchObject(xMetadataInResponse());
-					});
-
-					it('retains x-metadata schema and meta parameter on system list paths', async () => {
-						const systemSchema = new SchemaBuilder()
-							.collection('directus_users', (c) => {
-								c.field('id').uuid().primary();
-							})
-							.build();
-
-						const service = new SpecificationService({
-							knex: db,
-							schema: systemSchema,
-							accountability: { role: 'admin', admin: true } as Accountability,
+						expect(getSchema).toMatchObject({
+							properties: { meta: { $ref: '#/components/schemas/x-metadata' } },
 						});
-
-						const spec = await service.oas.generate();
-						const getPath = spec.paths['/users']?.get;
-
-						expect(hasParameterRef(getPath?.parameters, '#/components/parameters/Meta')).toBe(true);
-
-						const getSchema = (
-							getPath?.responses?.['200'] as { content?: { 'application/json'?: { schema?: unknown } } }
-						)?.content?.['application/json']?.schema;
-
-						expect(getSchema).toMatchObject(xMetadataInResponse());
 					});
 				});
 			});
