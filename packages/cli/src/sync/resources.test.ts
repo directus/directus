@@ -33,6 +33,25 @@ describe('resolveResources', () => {
 		expect(names(['dashboards'])).toEqual(['panels', 'dashboards']);
 	});
 
+	it('pins every selectable closure — the checked form of the hand-maintained mustPull table', () => {
+		// One closure per selectable resource fully determines the dependency edges (spec Q8): users ride
+		// with the roles/policies they reference, roles with the policies their access rows grant,
+		// policies with their access + permissions children, flows with operations, dashboards with
+		// panels, settings and translations alone. An edge added, dropped, or reordered ANYWHERE in the
+		// resource table changes at least one of these arrays.
+		const closures = Object.fromEntries(SELECTABLE_RESOURCES.map((name) => [name, names([name])]));
+
+		expect(closures).toEqual({
+			dashboards: ['panels', 'dashboards'],
+			flows: ['operations', 'flows'],
+			policies: ['access', 'permissions', 'policies'],
+			roles: ['access', 'permissions', 'policies', 'roles'],
+			settings: ['settings'],
+			translations: ['translations'],
+			users: ['access', 'permissions', 'policies', 'roles', 'users'],
+		});
+	});
+
 	it('produces one deterministic order for the whole selection, dependencies first', () => {
 		// This exact sequence is the module's contract: the lexicographically minimal topological order
 		// over the must-pull edges. Locking it here makes any reordering — from a graph edit or a sort
