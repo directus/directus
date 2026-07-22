@@ -1391,16 +1391,12 @@ fields:
     public_registration_verify_email_note: 등록하는 사용자에게 로그인하기 전에 인증 링크를 클릭하도록 요청하는 이메일을 보냅니다.
     visual_editor_urls: 비주얼 에디터 URL
     mcp_enabled: MCP 서버
-    mcp_enabled_note: '<a href="https://directus.io/docs/guides/ai/mcp" target="_blank">모델 컨텍스트 프로토콜(MCP)</a> 을 통해 AI/LLM 도구를 Directus 프로젝트에 연결하세요. 이를 통해 AI 어시스턴트가 Directus 데이터를 안전하게 읽고 상호 작용할 수 있습니다.'
-    mcp_notice: '모델 컨텍스트 프로토콜(MCP)은 Directus와 같은 애플리케이션에 LLM을 연결하는 표준입니다. 활성화되면 Directus MCP 서버를 `/mcp`에서 사용할 수 있습니다. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">MCP 및 연결 방법에 대해 자세히 알아보세요.</a>'
     mcp_allow_deletes: 삭제 허용
     mcp_allow_deletes_note:
       - 데이터 손실이 발생할 수 있습니다. 안전을 위해 기본적으로 비활성화되어 있습니다.
     mcp_prompts_collection: AI 프롬프트 컬렉션
-    mcp_prompts_collection_note: 'AI 상호작용을 위한 <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">재사용 가능한 프롬프트 템플릿을</a> 저장하기 위한 컬렉션을 선택하세요.'
     mcp_system_prompt_divider: 시스템 프롬프트 구성
     mcp_system_prompt_enabled: 시스템 프롬프트 사용
-    mcp_system_prompt_enabled_note: "LLM 동작을 안내하려면 <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>기본 시스템 프롬프트를</a> 사용하세요. 아래의 프롬프트를 제거하거나 재정의하려면 비활성화하세요."
     mcp_system_prompt: 사용자 정의 시스템 프롬프트
     mcp_system_prompt_note: '기본값을 대체할 사용자 지정 시스템 프롬프트입니다. 기본값을 사용하려면 비워 두세요(위에서 활성화한 경우).'
     ai_header_name: 머리글
@@ -1606,7 +1602,6 @@ mcp_prompts_collection_schema:
   messages_role_user: 사용자
   messages_role_assistant: 어시스턴트
   messages_role_note: 이 메시지에서 말하는 사람은 누구입니까?
-  meta_prompts_notice: '프롬프트는 Directus MCP 서버, Flows 또는 기타 AI 애플리케이션을 통해 LLM과 함께 사용할 수 있는 재사용 가능한 템플릿입니다. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">효과적인 프롬프트 생성에 대해 자세히 알아보세요.</a>'
 expired: 만료됨
 upcoming: 다가오는
 share: 공유하다
