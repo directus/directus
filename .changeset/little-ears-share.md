@@ -4,4 +4,4 @@
 '@directus/specs': patch
 ---
 
-Updated to current directus.com domains
+Updated the remaining *.io references to the current *.com domains where possible
