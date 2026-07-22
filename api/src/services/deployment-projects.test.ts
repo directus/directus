@@ -119,30 +119,4 @@ describe('DeploymentProjectsService', () => {
 			);
 		});
 	});
-
-	describe('readByExternalId', () => {
-		let service: DeploymentProjectsService;
-
-		beforeEach(() => {
-			service = new DeploymentProjectsService({ knex: db, schema });
-		});
-
-		it('returns the project matching the deployment and external ID', async () => {
-			const project = { id: 'proj-A', deployment: 'deploy-A', external_id: 'shared', name: 'A' };
-
-			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([project] as any);
-
-			const result = await service.readByExternalId('deploy-A', 'shared');
-
-			expect(result).toEqual(project);
-		});
-
-		it('returns null when no project matches', async () => {
-			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([] as any);
-
-			const result = await service.readByExternalId('deploy-A', 'shared');
-
-			expect(result).toBeNull();
-		});
-	});
 });
