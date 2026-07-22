@@ -117,22 +117,17 @@ export async function fetchRecords(
 ): Promise<Record<string, unknown>[]> {
 	const client = connect(credential);
 
-	let response: unknown;
-
-	try {
-		// A hand-rolled RestCommand (the SDK's customEndpoint form): a bare thunk returning RequestOptions.
-		// limit -1 pulls the whole collection and sort keys it by the primary key so the fetch order is
-		// stable; a singleton endpoint returns one object, so limit/sort do not apply and are omitted.
-		response = await client.request(() => ({
-			path: source.endpoint,
-			method: 'GET',
-			params: source.singleton ? {} : { limit: -1, sort: source.primaryKey },
-		}));
-	} catch (error) {
-		throw mapRequestError(error, credential.url);
-	}
-
 	if (source.singleton) {
+		let response: unknown;
+
+		try {
+			// A hand-rolled RestCommand (the SDK's customEndpoint form): a bare thunk returning
+			// RequestOptions. A singleton endpoint returns one object, so limit/sort/offset do not apply.
+			response = await client.request(() => ({ path: source.endpoint, method: 'GET', params: {} }));
+		} catch (error) {
+			throw mapRequestError(error, credential.url);
+		}
+
 		if (!isPlainObject(response)) {
 			throw new CliError('HTTP', `The ${source.endpoint} response was not a settings object.`);
 		}
@@ -140,11 +135,40 @@ export async function fetchRecords(
 		return [response as Record<string, unknown>];
 	}
 
-	if (!Array.isArray(response) || !response.every((record) => isPlainObject(record))) {
-		throw new CliError('HTTP', `The ${source.endpoint} response was not an array of records.`);
-	}
+	// limit -1 asks for the whole collection, but a deployment that sets QUERY_LIMIT_MAX silently clamps
+	// -1 down to that cap (api sanitize-query), while an explicit limit above the cap is REJECTED (api
+	// validate-query) — so one request can truncate the fetch with no error, and a truncated fetch is data
+	// loss downstream: a mirror deletes every row it did not see, and the collision guard cannot see an
+	// occupied PK beyond the cap. Page by offset until an EMPTY response: exhaustion-by-emptiness is the
+	// only stop condition that works whether or not a cap exists, because a short page is
+	// indistinguishable from a clamped one. The primary-key sort keeps pages stable; offset is omitted on
+	// the first request so the single-request wire shape is unchanged.
+	const records: Record<string, unknown>[] = [];
 
-	return response as Record<string, unknown>[];
+	for (;;) {
+		const offset = records.length;
+
+		let response: unknown;
+
+		try {
+			// A hand-rolled RestCommand (the SDK's customEndpoint form): a bare thunk returning RequestOptions.
+			response = await client.request(() => ({
+				path: source.endpoint,
+				method: 'GET',
+				params: { limit: -1, sort: source.primaryKey, ...(offset === 0 ? {} : { offset }) },
+			}));
+		} catch (error) {
+			throw mapRequestError(error, credential.url);
+		}
+
+		if (!Array.isArray(response) || !response.every((record) => isPlainObject(record))) {
+			throw new CliError('HTTP', `The ${source.endpoint} response was not an array of records.`);
+		}
+
+		if (response.length === 0) return records;
+
+		records.push(...(response as Record<string, unknown>[]));
+	}
 }
 
 /**

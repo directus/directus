@@ -49,7 +49,9 @@ export function mockSnapshot(agent: MockAgent, body: unknown): void {
 }
 
 // A list-endpoint record pull: matches only with the whole-set query (limit -1 sorted by primary key) and
-// the token on the wire, mirroring fetchRecords.
+// the token on the wire, mirroring fetchRecords — which pages by offset until an EMPTY response (a
+// QUERY_LIMIT_MAX clamp is silent, so emptiness is the only trustworthy exhaustion signal), so a
+// non-empty first page is always followed by one exhaustion probe.
 export function mockList(agent: MockAgent, path: string, records: Record<string, unknown>[]): void {
 	agent
 		.get(SYNC_URL)
@@ -60,6 +62,18 @@ export function mockList(agent: MockAgent, path: string, records: Record<string,
 			headers: { authorization: `Bearer ${SYNC_TOKEN}` },
 		})
 		.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
+
+	if (records.length > 0) {
+		agent
+			.get(SYNC_URL)
+			.intercept({
+				path,
+				method: 'GET',
+				query: { limit: '-1', sort: 'id', offset: String(records.length) },
+				headers: { authorization: `Bearer ${SYNC_TOKEN}` },
+			})
+			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
+	}
 }
 
 export function mockSingleton(agent: MockAgent, path: string, object: Record<string, unknown>): void {
@@ -86,5 +100,5 @@ export function mockDefaultRecords(agent: MockAgent): void {
 		mockList(agent, path, []);
 	}
 
-	mockSingleton(agent, '/settings', {});
+	mockSingleton(agent, '/settings', { id: 1 });
 }

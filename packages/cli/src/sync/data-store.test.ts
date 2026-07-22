@@ -248,4 +248,53 @@ describe('readDataFiles failures', () => {
 		expect(error.message).toContain(name);
 		expect(error.message).toMatch(/records/);
 	});
+
+	it('fails loud when a record is not an object or has no primary key — junk rows must not import', () => {
+		// A `[null]` or PK-less `{}` row would import as a fresh auto-ID record while every real row stays
+		// out of the batch — under mirror that is one hand-edit away from deleting the collection. Both
+		// refusals stop the read naming the file and the offending record.
+		const dir = tempDir();
+		writeDataFiles(dir, fixture(), SOURCE);
+
+		const name = ownedFileFor(dir, 'articles');
+		const parsed = JSON.parse(readFileSync(join(dir, name), 'utf8'));
+
+		parsed.records = [null];
+		writeFileSync(join(dir, name), JSON.stringify(parsed));
+
+		const notObject = expectCliError(() => readDataFiles(dir));
+		expect(notObject.code).toBe('STATE');
+		expect(notObject.message).toContain(name);
+		expect(notObject.message).toContain('not an object');
+
+		parsed.records = [{ title: 'No key' }];
+		writeFileSync(join(dir, name), JSON.stringify(parsed));
+
+		const missingPk = expectCliError(() => readDataFiles(dir));
+		expect(missingPk.code).toBe('STATE');
+		expect(missingPk.message).toContain(name);
+		expect(missingPk.message).toContain('primary key');
+	});
+
+	it('fails loud on a duplicated primary key — record identity is keyed on it', () => {
+		// The ID map, unchanged detection, and mirror survival all key on the PK; two rows sharing one have
+		// no single identity and must stop the read rather than race each other through the import.
+		const dir = tempDir();
+		writeDataFiles(dir, fixture(), SOURCE);
+
+		const name = ownedFileFor(dir, 'articles');
+		const parsed = JSON.parse(readFileSync(join(dir, name), 'utf8'));
+
+		parsed.records = [
+			{ id: 1, title: 'One' },
+			{ id: 1, title: 'Also one' },
+		];
+
+		writeFileSync(join(dir, name), JSON.stringify(parsed));
+
+		const error = expectCliError(() => readDataFiles(dir));
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain(name);
+		expect(error.message).toContain('more than once');
+	});
 });

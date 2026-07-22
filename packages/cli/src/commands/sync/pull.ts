@@ -81,6 +81,34 @@ function primaryKeyOf(snapshot: Snapshot, collection: string): string {
 	});
 }
 
+// The field specials whose values cannot round-trip through an export: the server masks conceal and
+// encrypt reads to '**********' (api payload.ts), and re-hashes whatever a hash field is WRITTEN with —
+// so exporting them commits masks, and pushing would overwrite the target's real secret with the mask
+// (or corrupt its hash by hashing the hash).
+const NON_ROUNDTRIP_SPECIALS = new Set(['conceal', 'encrypt', 'hash']);
+
+// Field names in a content collection that must be stripped at export, dug defensively out of the loose
+// snapshot field meta (special is an array of strings when present).
+function nonRoundtripFields(snapshot: Snapshot, collection: string): string[] {
+	const fields: string[] = [];
+
+	for (const entry of snapshot.fields) {
+		if (entry.collection !== collection) continue;
+
+		const meta = entry['meta'];
+		const special = isPlainObject(meta) ? (meta as Record<string, unknown>)['special'] : undefined;
+
+		if (
+			Array.isArray(special) &&
+			special.some((value) => typeof value === 'string' && NON_ROUNDTRIP_SPECIALS.has(value))
+		) {
+			fields.push(entry.field);
+		}
+	}
+
+	return fields;
+}
+
 // Resolve one include/exclude scope pair with flag-over-config precedence, independently per scope. A CLI
 // flag on either side makes the flags authoritative for the pair (config ignored); otherwise the project
 // config supplies it. Include and exclude are mutually exclusive: both flags is USAGE, both config keys
@@ -318,11 +346,25 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	}
 
 	for (const source of contentSources) {
-		dataCollections.push({
-			collection: source.collection,
-			primaryKey: source.primaryKey,
-			records: await fetchRecords(credential, source),
-		});
+		const rows = await fetchRecords(credential, source);
+
+		// Content is otherwise exported verbatim, but conceal/encrypt/hash fields cannot round-trip (see
+		// NON_ROUNDTRIP_SPECIALS): committing them would land masks in git and a later push would overwrite
+		// the target's real secrets with those masks. Strip them and say so — an absent field is never
+		// written by the import, so the target keeps its own values.
+		const masked = nonRoundtripFields(snapshot, source.collection);
+
+		if (masked.length > 0) {
+			for (const row of rows) {
+				for (const field of masked) delete row[field];
+			}
+
+			ctx.ui.warn(
+				`content ${source.collection}: exported without ${masked.join(', ')} — conceal/encrypt/hash values cannot round-trip.`,
+			);
+		}
+
+		dataCollections.push({ collection: source.collection, primaryKey: source.primaryKey, records: rows });
 	}
 
 	// Every fetch has succeeded before the first byte lands on disk, so a failed pull leaves the committed
