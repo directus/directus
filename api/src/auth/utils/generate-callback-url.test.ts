@@ -4,7 +4,7 @@ import { generateCallbackUrl } from './generate-callback-url.js';
 
 vi.mock('@directus/env');
 
-const PUBLIC_URL = 'https://directus.app';
+const PUBLIC_URL = 'https://directus.example.com';
 
 describe('generateCallbackUrl', () => {
 	beforeEach(() => {
@@ -25,7 +25,7 @@ describe('generateCallbackUrl', () => {
 		test('falls back to PUBLIC_URL when request origin does not match any allowed origin', () => {
 			vi.mocked(useEnv).mockReturnValue({
 				PUBLIC_URL,
-				AUTH_ALLOWED_PUBLIC_URLS: 'https://api.directus.io',
+				AUTH_ALLOWED_PUBLIC_URLS: 'https://directus.example.com',
 			});
 
 			const result = generateCallbackUrl('github', 'https://unknown.com');
@@ -38,12 +38,12 @@ describe('generateCallbackUrl', () => {
 		test('uses matching origin from AUTH_ALLOWED_PUBLIC_URLS', () => {
 			vi.mocked(useEnv).mockReturnValue({
 				PUBLIC_URL,
-				AUTH_ALLOWED_PUBLIC_URLS: 'https://api-eu.directus.io,https://api-us.directus.io',
+				AUTH_ALLOWED_PUBLIC_URLS: 'https://api-eu.directus.example.com,https://api-us.directus.example.com',
 			});
 
-			const result = generateCallbackUrl('github', 'https://api-us.directus.io');
+			const result = generateCallbackUrl('github', 'https://api-us.directus.example.com');
 
-			expect(result).toBe('https://api-us.directus.io/auth/login/github/callback');
+			expect(result).toBe('https://api-us.directus.example.com/auth/login/github/callback');
 		});
 
 		test('preserves subpath from matched AUTH_ALLOWED_PUBLIC_URLS entry', () => {
@@ -61,24 +61,24 @@ describe('generateCallbackUrl', () => {
 		test('works with array of allowed origins', () => {
 			vi.mocked(useEnv).mockReturnValue({
 				PUBLIC_URL,
-				AUTH_ALLOWED_PUBLIC_URLS: ['https://api-eu.directus.io', 'https://api-us.directus.io/v1'],
+				AUTH_ALLOWED_PUBLIC_URLS: ['https://api-eu.directus.example.com', 'https://api-us.directus.example.com/v1'],
 			});
 
-			const result = generateCallbackUrl('github', 'https://api-us.directus.io');
+			const result = generateCallbackUrl('github', 'https://api-us.directus.example.com');
 
-			expect(result).toBe('https://api-us.directus.io/v1/auth/login/github/callback');
+			expect(result).toBe('https://api-us.directus.example.com/v1/auth/login/github/callback');
 		});
 
 		test('matches on protocol and host only (without port)', () => {
 			vi.mocked(useEnv).mockReturnValue({
 				PUBLIC_URL,
-				AUTH_ALLOWED_PUBLIC_URLS: 'https://api.directus.io/subpath',
+				AUTH_ALLOWED_PUBLIC_URLS: 'https://directus.example.com/subpath',
 			});
 
 			// Even though request origin doesn't have subpath, it should match
-			const result = generateCallbackUrl('github', 'https://api.directus.io');
+			const result = generateCallbackUrl('github', 'https://directus.example.com');
 
-			expect(result).toBe('https://api.directus.io/subpath/auth/login/github/callback');
+			expect(result).toBe('https://directus.example.com/subpath/auth/login/github/callback');
 		});
 
 		test('matches on protocol and host with custom port', () => {
@@ -95,18 +95,18 @@ describe('generateCallbackUrl', () => {
 		test('skips invalid URLs in AUTH_ALLOWED_PUBLIC_URLS', () => {
 			vi.mocked(useEnv).mockReturnValue({
 				PUBLIC_URL,
-				AUTH_ALLOWED_PUBLIC_URLS: 'invalid-url,https://api.directus.io',
+				AUTH_ALLOWED_PUBLIC_URLS: 'invalid-url,https://directus.example.com',
 			});
 
-			const result = generateCallbackUrl('github', 'https://api.directus.io');
+			const result = generateCallbackUrl('github', 'https://directus.example.com');
 
-			expect(result).toBe('https://api.directus.io/auth/login/github/callback');
+			expect(result).toBe('https://directus.example.com/auth/login/github/callback');
 		});
 	});
 
 	describe('provider name handling', () => {
 		test('includes provider name in callback path', () => {
-			const result = generateCallbackUrl('google', 'https://directus.app');
+			const result = generateCallbackUrl('google', 'https://directus.example.com');
 
 			expect(result).toBe(`${PUBLIC_URL}/auth/login/google/callback`);
 		});
