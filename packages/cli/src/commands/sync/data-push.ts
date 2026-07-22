@@ -154,7 +154,7 @@ async function reconcileSystem(
 	system: readonly SystemCollection[],
 	target: Target,
 	existing: Readonly<Record<string, Readonly<Record<string, string>>>>,
-): Promise<CollectionReconcile[]> {
+): Promise<{ inputs: ReconcileInput[]; results: CollectionReconcile[] }> {
 	const inputs: ReconcileInput[] = [];
 
 	for (const { data, resource } of [...system].reverse()) {
@@ -175,7 +175,9 @@ async function reconcileSystem(
 		});
 	}
 
-	return reconcileCollections(inputs, existing);
+	// The inputs ride along with the results: a resolved ambiguity can require another reconcile pass
+	// (see prepareDataPush), which reuses these fetched records rather than fetching the target again.
+	return { inputs, results: reconcileCollections(inputs, existing) };
 }
 
 // The clack select value for one ambiguity choice, encoded as a string so the option list is a single
@@ -192,14 +194,22 @@ function matchedEntries(result: CollectionReconcile): Record<string, string> {
 	return entries;
 }
 
+// The outcome of one resolveMatches pass over a reconcile run.
+interface ResolvedMatches {
+	// collection → (sourceId → targetId): every unambiguous match, plus each ambiguity answered with a target.
+	readonly seeds: ReadonlyMap<string, Record<string, string>>;
+	// Every prompted ambiguity, whatever the answer — the caller excludes these from any further reconcile
+	// pass so no question is ever asked twice.
+	readonly decided: readonly { collection: string; sourceId: string }[];
+	// Whether some ambiguity was answered with an EXISTING target — the only answer that adds a mapping a
+	// child's FK key component could newly translate through ('create' maps nothing).
+	readonly resolvedExisting: boolean;
+}
+
 // Resolve reconcile into the map seeds to persist: every unambiguous match, plus each ambiguity's answer.
 // Interactive asks per ambiguity (pick a candidate, create new, or abort); non-interactive refuses loud,
-// listing every ambiguity so the operator can resolve them all in one interactive run. Returns
-// collection → (sourceId → targetId).
-async function resolveMatches(
-	results: readonly CollectionReconcile[],
-	ctx: CliContext,
-): Promise<Map<string, Record<string, string>>> {
+// listing every ambiguity so the operator can resolve them all in one interactive run.
+async function resolveMatches(results: readonly CollectionReconcile[], ctx: CliContext): Promise<ResolvedMatches> {
 	const seeds = new Map<string, Record<string, string>>();
 
 	for (const result of results) {
@@ -211,7 +221,7 @@ async function resolveMatches(
 		result.ambiguous.map((item) => ({ collection: result.collection, ...item })),
 	);
 
-	if (ambiguities.length === 0) return seeds;
+	if (ambiguities.length === 0) return { seeds, decided: [], resolvedExisting: false };
 
 	if (!ctx.interactive) {
 		const lines = ambiguities.map(
@@ -222,6 +232,9 @@ async function resolveMatches(
 			hint: 'Run d6s sync push interactively once to choose, then commit the updated id map.',
 		});
 	}
+
+	const decided: { collection: string; sourceId: string }[] = [];
+	let resolvedExisting = false;
 
 	for (const item of ambiguities) {
 		const options: { value: string; label: string }[] = [
@@ -239,14 +252,17 @@ async function resolveMatches(
 
 		if (choice === 'abort') throw new CliError('STATE', 'Push aborted.');
 
+		decided.push({ collection: item.collection, sourceId: item.sourceId });
+
 		if (choice.startsWith(TARGET_PREFIX)) {
 			const entries = seeds.get(item.collection) ?? {};
 			entries[item.sourceId] = choice.slice(TARGET_PREFIX.length);
 			seeds.set(item.collection, entries);
+			resolvedExisting = true;
 		}
 	}
 
-	return seeds;
+	return { seeds, decided, resolvedExisting };
 }
 
 // The read-only output of readAndReconcile: the committed data split into system/content, the reconcile
@@ -260,6 +276,9 @@ interface Reconciled {
 	readonly system: readonly SystemCollection[];
 	readonly content: readonly DataCollection[];
 	readonly map: IdMap;
+	// The fetched source/target record pairs behind `results`, kept so a caller that learns new mappings
+	// (a resolved ambiguity) can reconcile again without fetching the target a second time.
+	readonly inputs: readonly ReconcileInput[];
 	readonly results: readonly CollectionReconcile[];
 }
 
@@ -282,9 +301,9 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 	const targetUrl = normalizeInstanceUrl(target.url);
 	const { system, content } = partitionCollections(collections);
 	const map = readIdMap(target.idMapPath);
-	const results = await reconcileSystem(system, target, mappingsFor(map, source, targetUrl));
+	const { inputs, results } = await reconcileSystem(system, target, mappingsFor(map, source, targetUrl));
 
-	return { skipped: false, source, targetUrl, system, content, map, results };
+	return { skipped: false, source, targetUrl, system, content, map, inputs, results };
 }
 
 // Remap every system record into target space through `bucket` and assemble the flat import batch in
@@ -328,24 +347,55 @@ function assembleBatch(
  * target and persist the matches immediately (identity facts survive an aborted push), prompting on
  * ambiguity (interactive) or refusing loud (CI); then remap every record through the updated map and
  * assemble the batch plus the send record push needs to fold the import response back into the map.
+ * An ambiguity answered with an existing target triggers another reconcile pass, so a child that mapping
+ * unlocks matches its target row too instead of importing as a duplicate insert.
  */
 export async function prepareDataPush(target: Target, ctx: CliContext): Promise<DataPushResult> {
 	const reconciled = await readAndReconcile(target);
 
 	if (reconciled.skipped) return { skipped: true };
 
-	const { source, targetUrl, system, content, results } = reconciled;
+	const { source, targetUrl, system, content, inputs } = reconciled;
 
 	// Persist matches BEFORE remapping so a later aborted push keeps the identities it learned, then
 	// recompute the bucket from the updated map for the remap.
+	//
+	// Reconcile again whenever a pass resolved an ambiguity to an existing target: while a parent was
+	// ambiguous, a child keyed through its FK was untranslatable and sat unmatched — the answer's mapping
+	// is what lets it match, and without the extra pass it would import as an insert, duplicating the
+	// target's child row. The pass reuses the already-fetched inputs, minus every prompted source (whatever
+	// the answer), so no ambiguity is ever asked twice; a pass that resolves nothing to a target ends the
+	// loop, and each continuing pass consumed at least one ambiguity, so it terminates.
 	let map = reconciled.map;
-	const seeds = await resolveMatches(results, ctx);
+	let results = reconciled.results;
+	const decided = new Map<string, Set<string>>();
 
-	for (const [collection, entries] of seeds) {
-		map = withMappings(map, source, targetUrl, collection, entries);
+	for (;;) {
+		const resolved = await resolveMatches(results, ctx);
+
+		for (const item of resolved.decided) {
+			const settled = decided.get(item.collection) ?? new Set<string>();
+			settled.add(item.sourceId);
+			decided.set(item.collection, settled);
+		}
+
+		for (const [collection, entries] of resolved.seeds) {
+			map = withMappings(map, source, targetUrl, collection, entries);
+		}
+
+		if (!resolved.resolvedExisting) break;
+
+		const remaining = inputs.map((input) => ({
+			...input,
+			sourceRecords: input.sourceRecords.filter(
+				(record) => !decided.get(input.collection)?.has(String(record[input.primaryKey])),
+			),
+		}));
+
+		results = reconcileCollections(remaining, mappingsFor(map, source, targetUrl));
 	}
 
-	if (seeds.size > 0) writeIdMap(target.idMapPath, map);
+	if (map !== reconciled.map) writeIdMap(target.idMapPath, map);
 
 	const { batch, systemSent, records } = assembleBatch(system, content, mappingsFor(map, source, targetUrl));
 

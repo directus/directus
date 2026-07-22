@@ -64,6 +64,7 @@ function deletionResult(): DiffResult {
 describe('interactive sync push', () => {
 	let dir: string;
 	let home: string;
+	let stderr: string[];
 
 	function seedSnapshot(): void {
 		writeSnapshotFiles(join(dir, 'directus', 'default', 'schema'), {
@@ -80,9 +81,14 @@ describe('interactive sync push', () => {
 	beforeEach(() => {
 		dir = mkdtempSync(join(tmpdir(), 'd6s-ipush-'));
 		home = mkdtempSync(join(tmpdir(), 'd6s-ihome-'));
+		stderr = [];
 
 		vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
-		vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+
+		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
+			stderr.push(String(chunk));
+			return true;
+		});
 
 		// Non-CI so credential resolution is allowed to consult the ambient token; the profile-specific
 		// env var is the source resolveTarget reads without prompting.
@@ -231,6 +237,111 @@ describe('interactive sync push', () => {
 			formatVersion: 1,
 			maps: { [source]: { [url]: { directus_roles: { sr1: 't2' } } } },
 		});
+	});
+
+	it('re-reconciles children after an ambiguity is resolved to an existing target', async () => {
+		// While a parent is ambiguous, a child keyed through its FK is untranslatable and cannot match. The
+		// operator's answer supplies the missing mapping, so reconcile must run again: the child then UPDATES
+		// the target's own child row instead of inserting a look-alike duplicate beside it. The answer is
+		// never asked twice, and the second pass reuses the fetched records rather than re-fetching.
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+
+		seedData([
+			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] },
+			{
+				collection: 'directus_access',
+				primaryKey: 'id',
+				records: [{ id: 'sa1', role: 'sr1', user: null, policy: null }],
+			},
+		]);
+
+		// Reconcile fetches parents first (reversed dependency order): roles, then access.
+		vi.mocked(fetchRecords)
+			.mockResolvedValueOnce([
+				{ id: 't1', name: 'Editor' },
+				{ id: 't2', name: 'Editor' },
+			])
+			.mockResolvedValueOnce([{ id: 'ta2', role: 't2', user: null, policy: null }]);
+
+		vi.mocked(select).mockResolvedValueOnce('target:t2');
+		vi.mocked(importBatch).mockResolvedValue(importResult());
+		vi.mocked(confirm).mockResolvedValueOnce(true);
+
+		await push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir));
+
+		expect(select).toHaveBeenCalledTimes(1);
+		expect(fetchRecords).toHaveBeenCalledTimes(2);
+
+		// Both identities land in the committed map: the answered parent AND the child the answer unlocked.
+		expect(readIdMap()).toEqual({
+			formatVersion: 1,
+			maps: { [source]: { [url]: { directus_access: { sa1: 'ta2' }, directus_roles: { sr1: 't2' } } } },
+		});
+
+		// The committing import carries the child rewritten fully into target space — an update of ta2.
+		const batch = vi.mocked(importBatch).mock.calls.at(-1)?.[1];
+		const access = batch?.find((entry) => entry.collection === 'directus_access');
+
+		expect(access?.items).toEqual([{ id: 'ta2', role: 't2', user: null, policy: null }]);
+	});
+
+	it('asks once and cascades nothing when an ambiguity is answered with create', async () => {
+		// 'create' adds no mapping, so a second reconcile pass could translate nothing new — it must not run,
+		// and above all it must not re-ask the question it already had answered. The child keeps its
+		// source-space FK for the server to link against the parent inserted in the same batch.
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+
+		seedData([
+			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] },
+			{
+				collection: 'directus_access',
+				primaryKey: 'id',
+				records: [{ id: 'sa1', role: 'sr1', user: null, policy: null }],
+			},
+		]);
+
+		vi.mocked(fetchRecords)
+			.mockResolvedValueOnce([
+				{ id: 't1', name: 'Editor' },
+				{ id: 't2', name: 'Editor' },
+			])
+			.mockResolvedValueOnce([]);
+
+		vi.mocked(select).mockResolvedValueOnce('create');
+		vi.mocked(importBatch).mockResolvedValue(importResult());
+		vi.mocked(confirm).mockResolvedValueOnce(true);
+
+		await push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir));
+
+		expect(select).toHaveBeenCalledTimes(1);
+
+		const batch = vi.mocked(importBatch).mock.calls.at(-1)?.[1];
+		const access = batch?.find((entry) => entry.collection === 'directus_access');
+
+		expect(access?.items).toEqual([{ id: 'sa1', role: 'sr1', user: null, policy: null }]);
+
+		// The post-import map update records only the identity facts of what was sent — no cross-mapping to
+		// t1 or t2 exists, because 'create' answered that neither is this record.
+		expect(readIdMap()).toEqual({
+			formatVersion: 1,
+			maps: { [source]: { [url]: { directus_access: { sa1: 'sa1' }, directus_roles: { sr1: 'sr1' } } } },
+		});
+	});
+
+	it('states an all-zero data plan plainly instead of a contradictory header', async () => {
+		// A changed schema with a no-op data dry-run must not render "data changes to import" over a
+		// "no data changes" line — the header appears only when the plan contains any.
+		vi.mocked(fetchDiff).mockResolvedValueOnce(changesResult());
+		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hi' }] }]);
+		vi.mocked(importBatch).mockResolvedValue(importResult());
+		vi.mocked(confirm).mockResolvedValueOnce(true);
+
+		await push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir));
+
+		const output = stderr.join('');
+
+		expect(output).toContain('no data changes to import.');
+		expect(output).not.toContain('data changes to import to');
 	});
 
 	it('aborts the push and touches neither apply nor import when the operator aborts an ambiguity', async () => {

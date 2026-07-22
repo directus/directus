@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CliContext } from '../../kernel/run.js';
 import { createUi } from '../../kernel/ui.js';
 import { fetchDiff, fetchRecords, importBatch } from '../../sync/api.js';
-import type { ImportBatchResult } from '../../sync/contract.js';
+import type { DiffResult, ImportBatchResult } from '../../sync/contract.js';
 import { writeDataFiles } from '../../sync/data-store.js';
 import { writeSnapshotFiles } from '../../sync/store.js';
 import { diff } from './diff.js';
@@ -126,5 +126,30 @@ describe('interactive sync diff', () => {
 
 		expect(stderr.join('')).toContain('have no target match yet');
 		expect(existsSync(join(dir, 'directus', 'default', 'id_map.json'))).toBe(false);
+	});
+
+	it('states an all-zero data plan plainly instead of a contradictory header', async () => {
+		// A changed schema with a no-op data dry-run must not render "data changes to import" over a
+		// "no data changes" line — the header appears only when the plan contains any.
+		const schemaChange: DiffResult = {
+			hash: 'h1',
+			diff: {
+				collections: [{ collection: 'events', diff: [{ kind: 'N', rhs: { collection: 'events' } }] }],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			},
+		};
+
+		vi.mocked(fetchDiff).mockResolvedValueOnce(schemaChange);
+		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hi' }] }]);
+		vi.mocked(importBatch).mockResolvedValue(importResult());
+
+		await diff({ to: 'staging', project: 'default' }, ctxAt(dir));
+
+		const output = stderr.join('');
+
+		expect(output).toContain('no data changes to import.');
+		expect(output).not.toContain('data changes to import to');
 	});
 });

@@ -114,8 +114,14 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	}
 
 	if (dataSummary !== undefined) {
-		ctx.ui.info(`data changes to import to ${url}:`);
-		for (const line of dataSummary.lines) ctx.ui.print(line);
+		// An all-zero plan is stated plainly — never a "data changes" header over a "no data changes" line.
+		// Reached only when the schema differs; a no-op on both fronts took the early return above.
+		if (dataChanged) {
+			ctx.ui.info(`data changes to import to ${url}:`);
+			for (const line of dataSummary.lines) ctx.ui.print(line);
+		} else {
+			ctx.ui.info('no data changes to import.');
+		}
 	}
 
 	// Records with no target match are REPORTED, never resolved — diff never writes the map. N counts every
