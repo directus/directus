@@ -57,7 +57,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	// diff IS the preview command, so it always pays the data dry-run when data is present: the plan shows
 	// the real created/updated/deleted the import would produce, rolled back server-side. previewData is
 	// read-only (unambiguous matches applied in memory only), so nothing on disk changed to reach here.
-	const preview = await previewData(target);
+	const preview = await previewData(target, mode);
 
 	let dryRun: ImportBatchResult | undefined;
 	let dataSummary: ImportSummary | undefined;

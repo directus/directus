@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { confirm, isCancel, select, text } from '@clack/prompts';
@@ -326,6 +326,105 @@ describe('interactive sync push', () => {
 			formatVersion: 1,
 			maps: { [source]: { [url]: { directus_access: { sa1: 'sa1' }, directus_roles: { sr1: 'sr1' } } } },
 		});
+	});
+
+	it("echoes the target's user-attached access rows into a mirror batch so they survive the delete", async () => {
+		// The server's mirror delete removes every target row absent from the batch, and pull deliberately
+		// exports only null-user access grants — so without the echo, a mirror push would destroy every user
+		// grant on the target (the directus-sync #148 data-loss class). The target's own user rows ride along
+		// verbatim, upsert onto themselves, and survive.
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+
+		seedData([
+			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] },
+			{
+				collection: 'directus_access',
+				primaryKey: 'id',
+				records: [{ id: 'sa1', role: 'sr1', user: null, policy: null }],
+			},
+		]);
+
+		// Reversed reconcile order: roles first, then access. The target holds one user-attached grant.
+		vi.mocked(fetchRecords)
+			.mockResolvedValueOnce([{ id: 't1', name: 'Editor' }])
+			.mockResolvedValueOnce([{ id: 'ta-user', role: 't1', user: 'u9', policy: null }]);
+
+		vi.mocked(importBatch).mockResolvedValue(importResult());
+		vi.mocked(confirm).mockResolvedValueOnce(true);
+
+		await push({ to: 'staging', mode: 'mirror', project: 'default' }, ctxAt(dir));
+
+		const batch = vi.mocked(importBatch).mock.calls.at(-1)?.[1];
+		const access = batch?.find((entry) => entry.collection === 'directus_access');
+
+		expect(access?.items).toEqual([
+			{ id: 'sa1', role: 't1', user: null, policy: null },
+			{ id: 'ta-user', role: 't1', user: 'u9', policy: null },
+		]);
+	});
+
+	it('withholds an occupied numeric PK instead of overwriting the unrelated target row', async () => {
+		// The server's merge treats an occupied PK as "the same record" — for autoincrement ids that is zero
+		// identity evidence, and sending id 7 would silently replace an unrelated permission. The guard sends
+		// the record without its PK (the server inserts fresh) and records NO map entry: the response cannot
+		// report the assigned id, and a wrong entry would bind the source to the wrong row forever. The next
+		// push reconciles the created row by natural key.
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+
+		seedData([
+			{
+				collection: 'directus_permissions',
+				primaryKey: 'id',
+				records: [{ id: 7, policy: null, collection: 'articles', action: 'read' }],
+			},
+		]);
+
+		vi.mocked(fetchRecords).mockResolvedValueOnce([{ id: 7, policy: null, collection: 'articles', action: 'update' }]);
+
+		vi.mocked(importBatch).mockResolvedValue(importResult());
+		vi.mocked(confirm).mockResolvedValueOnce(true);
+
+		await push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir));
+
+		const batch = vi.mocked(importBatch).mock.calls.at(-1)?.[1];
+		const permissions = batch?.find((entry) => entry.collection === 'directus_permissions');
+
+		expect(permissions?.items).toEqual([{ policy: null, collection: 'articles', action: 'read' }]);
+		expect(readIdMap()).toEqual({ formatVersion: 1, maps: {} });
+	});
+
+	it('sends only unmapped records under add mode, so a repeat add cannot mint duplicates', async () => {
+		// The server's add path inserts unconditionally — an occupied uuid is regenerated — so re-sending a
+		// record that is already mapped to a target row would create another copy on every run and chase the
+		// map to the newest duplicate. "add (only new records)" means exactly the unmapped ones.
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+
+		seedData([
+			{
+				collection: 'directus_roles',
+				primaryKey: 'id',
+				records: [
+					{ id: 'sr1', name: 'Editor' },
+					{ id: 'sr2', name: 'Writer' },
+				],
+			},
+		]);
+
+		writeFileSync(
+			join(dir, 'directus', 'default', 'id_map.json'),
+			`${JSON.stringify({ formatVersion: 1, maps: { [source]: { [url]: { directus_roles: { sr1: 't1' } } } } })}\n`,
+		);
+
+		vi.mocked(fetchRecords).mockResolvedValueOnce([{ id: 't1', name: 'Editor' }]);
+		vi.mocked(importBatch).mockResolvedValue(importResult());
+		vi.mocked(confirm).mockResolvedValueOnce(true);
+
+		await push({ to: 'staging', mode: 'add', project: 'default' }, ctxAt(dir));
+
+		const batch = vi.mocked(importBatch).mock.calls.at(-1)?.[1];
+		const roles = batch?.find((entry) => entry.collection === 'directus_roles');
+
+		expect(roles?.items).toEqual([{ id: 'sr2', name: 'Writer' }]);
 	});
 
 	it('states an all-zero data plan plainly instead of a contradictory header', async () => {

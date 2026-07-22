@@ -22,6 +22,8 @@ import {
 	type ReconcileInput,
 } from '../../sync/reconcile.js';
 import { allResources, type Resource } from '../../sync/resources.js';
+// Type-only, so the push → data-push runtime edge stays one-directional.
+import type { Mode } from './push.js';
 import type { Target } from './resolve-target.js';
 
 // The data phase of push, orchestrated: read the committed records, remap their primary keys and static
@@ -32,11 +34,14 @@ import type { Target } from './resolve-target.js';
 
 /**
  * The pre-remap source id paired with the primary key actually sent for one system record. push needs
- * both to update the map after import: the map entry is sourceId → (server-remapped pk ?? sentPk).
+ * both to update the map after import: the map entry is sourceId → (server-remapped pk ?? sentPk). A null
+ * sentPk means the primary key was withheld (the collision guard stripped an occupied numeric PK): the
+ * server assigned an id the response cannot report, so no map entry may be written — the next push
+ * reconciles the created row by natural key instead.
  */
 export interface SentRecord {
 	readonly sourceId: string;
-	readonly sentPk: string;
+	readonly sentPk: string | null;
 }
 
 export interface SystemSent {
@@ -310,23 +315,64 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 // system-then-content order: a system record's PK and static FKs are rewritten and its (sourceId, sentPk)
 // captured for the post-import map update; content records pass through codepoint-sorted and verbatim.
 // Pure — the caller chooses which bucket to remap against (push's persisted map, preview's in-memory one).
+//
+// The mode and the fetched target records shape the batch three ways, each closing a verified server
+// hazard (api/src/services/import/import.ts):
+// - add: a record already mapped to a target row is SKIPPED. The server's add path inserts
+//   unconditionally (regenerating occupied uuids, re-sequencing autoincrements), so re-sending a settled
+//   record would mint another duplicate on every run.
+// - merge/mirror: an UNMATCHED record whose numeric PK is occupied on the target has its PK withheld
+//   (sentPk null). The server's merge treats an occupied PK as "the same record" and would silently
+//   overwrite the unrelated row — autoincrement ids carry no identity. Occupied uuids are left alone:
+//   equal uuids are shared lineage, and updating is the correct read.
+// - mirror: when access rides without users, the target's own user-attached access rows are echoed into
+//   the batch verbatim. The server's mirror delete removes every target row absent from the batch, and
+//   pull deliberately exports only null-user grants — without the echo, every user grant on the target
+//   would be destroyed (the directus-sync #148 class).
 function assembleBatch(
 	system: readonly SystemCollection[],
 	content: readonly DataCollection[],
 	bucket: Readonly<Record<string, Readonly<Record<string, string>>>>,
+	mode: Mode,
+	targets: ReadonlyMap<string, readonly Record<string, unknown>[]>,
 ): { batch: ImportCollectionData[]; systemSent: SystemSent[]; records: number } {
 	const batch: ImportCollectionData[] = [];
 	const systemSent: SystemSent[] = [];
 	let records = 0;
 
+	const includesUsers = system.some((entry) => entry.resource.collection === 'directus_users');
+
 	for (const { data, resource } of system) {
+		const collectionBucket = bucket[resource.collection] ?? {};
+		const targetRows = targets.get(resource.collection) ?? [];
+		const targetPks = new Set(targetRows.map((row) => String(row[resource.primaryKey])));
+
 		const items: Record<string, unknown>[] = [];
 		const sent: SentRecord[] = [];
 
 		for (const record of data.records) {
+			const sourceId = String(record[resource.primaryKey]);
+			const mapped = Object.hasOwn(collectionBucket, sourceId);
+
+			if (mode === 'add' && mapped) continue;
+
 			const result = remapSystemRecord(record, resource.collection, resource.primaryKey, bucket);
+
+			if (mode !== 'add' && !mapped && typeof record[resource.primaryKey] === 'number' && targetPks.has(sourceId)) {
+				delete result.record[resource.primaryKey];
+				items.push(result.record);
+				sent.push({ sourceId, sentPk: null });
+				continue;
+			}
+
 			items.push(result.record);
 			sent.push(result.sent);
+		}
+
+		if (mode === 'mirror' && resource.collection === 'directus_access' && !includesUsers) {
+			for (const row of targetRows) {
+				if (row['user'] !== null && row['user'] !== undefined) items.push({ ...row });
+			}
 		}
 
 		batch.push({ collection: resource.collection, items });
@@ -348,9 +394,11 @@ function assembleBatch(
  * ambiguity (interactive) or refusing loud (CI); then remap every record through the updated map and
  * assemble the batch plus the send record push needs to fold the import response back into the map.
  * An ambiguity answered with an existing target triggers another reconcile pass, so a child that mapping
- * unlocks matches its target row too instead of importing as a duplicate insert.
+ * unlocks matches its target row too instead of importing as a duplicate insert. The mode shapes the
+ * batch (add skips settled records; merge/mirror guard occupied numeric PKs; mirror echoes the target's
+ * user-attached access rows) — see assembleBatch.
  */
-export async function prepareDataPush(target: Target, ctx: CliContext): Promise<DataPushResult> {
+export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContext): Promise<DataPushResult> {
 	const reconciled = await readAndReconcile(target);
 
 	if (reconciled.skipped) return { skipped: true };
@@ -397,7 +445,15 @@ export async function prepareDataPush(target: Target, ctx: CliContext): Promise<
 
 	if (map !== reconciled.map) writeIdMap(target.idMapPath, map);
 
-	const { batch, systemSent, records } = assembleBatch(system, content, mappingsFor(map, source, targetUrl));
+	const targets = new Map(inputs.map((input) => [input.collection, input.targetRecords]));
+
+	const { batch, systemSent, records } = assembleBatch(
+		system,
+		content,
+		mappingsFor(map, source, targetUrl),
+		mode,
+		targets,
+	);
 
 	return {
 		skipped: false,
@@ -432,14 +488,15 @@ export type DataPreviewResult = DataPreviewPlan | DataPushSkipped;
  * Preview the data phase for diff (spec Q15) WITHOUT prompting or writing: reconcile, seed only the
  * unambiguous matches into an in-memory copy of the map so the remapped batch is truthful, and count the
  * ambiguous and unmatched sources rather than resolving them. The on-disk map is never touched — the hard
- * invariant of diff — so an ambiguity is reported for the first push to settle, never guessed here.
+ * invariant of diff — so an ambiguity is reported for the first push to settle, never guessed here. The
+ * mode shapes the batch exactly as push's would (see assembleBatch), so the dry-run previews the true one.
  */
-export async function previewData(target: Target): Promise<DataPreviewResult> {
+export async function previewData(target: Target, mode: Mode): Promise<DataPreviewResult> {
 	const reconciled = await readAndReconcile(target);
 
 	if (reconciled.skipped) return { skipped: true };
 
-	const { source, targetUrl, system, content, results } = reconciled;
+	const { source, targetUrl, system, content, inputs, results } = reconciled;
 
 	// withMappings is pure, so seeding these matches grows a fresh map object and never writes the file.
 	// Ambiguous sources are deliberately left unmapped: the preview's dry-run then shows them as the
@@ -459,7 +516,8 @@ export async function previewData(target: Target): Promise<DataPreviewResult> {
 		map = withMappings(map, source, targetUrl, result.collection, matchedEntries(result));
 	}
 
-	const { batch } = assembleBatch(system, content, mappingsFor(map, source, targetUrl));
+	const targets = new Map(inputs.map((input) => [input.collection, input.targetRecords]));
+	const { batch } = assembleBatch(system, content, mappingsFor(map, source, targetUrl), mode, targets);
 
 	return { skipped: false, source, batch, matchedCount, ambiguousCount, unmatchedCount };
 }

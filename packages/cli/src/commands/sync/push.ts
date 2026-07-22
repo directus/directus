@@ -86,6 +86,11 @@ function updateIdMap(dataResult: DataPushPlan, importResult: ImportBatchResult):
 		const entries: Record<string, string> = {};
 
 		for (const { sourceId, sentPk } of records) {
+			// A withheld PK (collision guard) means the server assigned an id the response cannot report;
+			// writing any entry would bind the source to the WRONG row. The next push reconciles the created
+			// row by natural key and the map heals with the true id.
+			if (sentPk === null) continue;
+
 			const finalPk = mapped[sentPk];
 			entries[sourceId] = finalPk === undefined ? sentPk : String(finalPk);
 		}
@@ -133,7 +138,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	// The data phase prep runs before any plan display or gate: it fetches target records, reconciles, and
 	// (interactive) prompts on ambiguity, or refuses loudly in CI — all before a single mutation.
-	const dataResult = await prepareDataPush(target, ctx);
+	const dataResult = await prepareDataPush(target, mode, ctx);
 
 	const schema = summarizeDiff(result === null ? null : result.diff);
 
