@@ -15,6 +15,18 @@ describe('computeNormalizationDiff', () => {
 		expect(computeNormalizationDiff('<p>hello <strong>world</strong></p>')).toBeNull();
 	});
 
+	test('returns null for a title attribute the schema preserves', () => {
+		expect(computeNormalizationDiff('<p><span title="Tooltip">text</span></p>')).toBeNull();
+	});
+
+	test('returns null for role, lang and dir the schema preserves', () => {
+		// authored in the editor's canonical render order (role, lang, aria-*, dir) so the textual
+		// diff only surfaces genuine loss, not attribute reordering
+		expect(
+			computeNormalizationDiff('<p><span role="note" lang="fr" aria-label="Note" dir="rtl">text</span></p>'),
+		).toBeNull();
+	});
+
 	test('returns null for cosmetic-only reformatting', () => {
 		// Same document, arbitrary incoming indentation/whitespace — no semantic change.
 		expect(computeNormalizationDiff('<ul>\n\n    <li><p>one</p></li>\n  <li><p>two</p></li>\n</ul>')).toBeNull();

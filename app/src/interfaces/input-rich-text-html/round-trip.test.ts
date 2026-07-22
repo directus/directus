@@ -118,9 +118,9 @@ describe('round-trip: semantic tags (preservation extensions)', () => {
 });
 
 /**
- * class, id, data-* and aria-* preserved on schema types by the PreservedAttributes extension.
- * Exact-equality: inputs are authored in serialized attribute order (global attrs render before a
- * type's own attrs, e.g. class before href).
+ * class, id, title, role, lang, dir, data-* and aria-* preserved on schema types by the
+ * PreservedAttributes extension. Exact-equality: inputs are authored in serialized attribute order
+ * (global attrs render before a type's own attrs, e.g. class before href).
  */
 const PRESERVED_ATTRIBUTES: Record<string, string> = {
 	'paragraph class': '<p class="intro">text</p>',
@@ -129,6 +129,14 @@ const PRESERVED_ATTRIBUTES: Record<string, string> = {
 	'paragraph data attributes': '<p data-uid="42" data-context="hero">text</p>',
 	'paragraph aria attributes': '<p aria-hidden="true">text</p>',
 	'combined data and aria': '<p data-note="a" aria-label="Note">text</p>',
+	'paragraph title': '<p title="Tooltip">text</p>',
+	'span title only': '<p><span title="More info">text</span></p>',
+	'span class before title': '<p><span class="fmt" title="Tip">text</span></p>',
+	'paragraph role': '<p role="note">text</p>',
+	'paragraph lang': '<p lang="fr">text</p>',
+	'span role only': '<p><span role="note">text</span></p>',
+	'span lang only': '<p><span lang="de">text</span></p>',
+	'inline dir on span': '<p><span dir="rtl">نص</span></p>',
 	'rtl paragraph with class': '<p dir="rtl" class="rtl-note">شسي</p>',
 	'span class (unconfigured custom format)': '<p><span class="my-format">text</span></p>',
 	'span id': '<p><span id="anchor-1">text</span></p>',
@@ -150,7 +158,7 @@ const PRESERVED_ATTRIBUTES: Record<string, string> = {
 	'abbr class before own title': '<p><abbr class="term" title="HyperText Markup Language">HTML</abbr> x</p>',
 };
 
-describe('round-trip: preserved attributes (class/id/data-*/aria-*)', () => {
+describe('round-trip: preserved attributes (class/id/title/role/lang/dir/data-*/aria-*)', () => {
 	test.each(Object.entries(PRESERVED_ATTRIBUTES))('%s survives round-trip unchanged', (_name, html) => {
 		expect(roundTrip(html)).toBe(html);
 	});
@@ -184,6 +192,26 @@ describe('round-trip: preserved attributes (class/id/data-*/aria-*)', () => {
 		expect(out).toContain('class="embed"');
 		expect(out).toContain('aria-label="Map"');
 		expect(out).toContain('src="about:blank"');
+	});
+
+	test('styled span keeps title', () => {
+		const out = roundTrip('<p><span style="color: #ff0000;" title="Tip">text</span></p>');
+
+		expect(out).toContain('title="Tip"');
+		expect(out).toContain('color: #ff0000');
+	});
+
+	test('span keeps role, lang and dir alongside aria', () => {
+		const out = roundTrip('<p><span aria-label="Note" role="note" lang="fr" dir="rtl">text</span></p>');
+
+		expect(out).toContain('aria-label="Note"');
+		expect(out).toContain('role="note"');
+		expect(out).toContain('lang="fr"');
+		expect(out).toContain('dir="rtl"');
+	});
+
+	test('block dir is not duplicated by the inline dir attribute', () => {
+		expect(roundTrip('<p dir="rtl">نص</p>')).toBe('<p dir="rtl">نص</p>');
 	});
 
 	test('event-handler attributes are dropped', () => {
