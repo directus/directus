@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 about: Über
 directus_mscl: Directus MSCL-1.0-GPL
+data_processing_agreement: Datenverarbeitungsvereinbarung
 contact_support: kontaktiere Support
 setup_welcome: Willkommen bei Directus
 setup_info: Erstellen Sie Ihren Admin-Account und starten Sie Ihr Projekt.
@@ -40,6 +41,7 @@ license_onboarding_desc: >
   Geben Sie es unten ein, um Ihr ganzes Paket freizuschalten. Qualifizieren Sie Unternehmen unter 5M Jahreseinnahmen können für unseren {oig} in Betracht gezogen werden.
 project_usage: Wofür benutzen Sie Directus ?
 project_usage_personal: Persönliches / Seitenprojekt
+project_usage_commercial: Wirtschaft / Gewerbe
 project_usage_community: Open Source / Community
 org_name: Name der Organisation
 org_name_placeholder: Acme Inc.
@@ -49,6 +51,7 @@ core_option: Ich benutze Core Plan
 core_option_desc: Frei, kein Schlüssel erforderlich
 remind_later: Später erinnern
 remind_next_login: Wir erinnern Sie daran, wenn Sie sich das nächste Mal anmelden
+open_innovation_grant: Innovationszuschuss
 setup_project: Projekt einrichten
 enter_license_key: Lizenzschlüssel eingeben
 license_valid: Lizenz gültig
@@ -103,6 +106,7 @@ invalid_range_min: Wert liegt unter mindestens {value}
 invalid_range_max: Wert überschreitet das Maximum von {value}
 maps: Karten
 switch_user: Benutzer wechseln
+item_deleted: Das von Ihnen bearbeitete Element wurde gelöscht.
 item_creation: Element-Erstellung
 item_revision: Element-Überarbeitung
 previous_revision: Vorherige Revision
@@ -323,6 +327,7 @@ validationError:
   niends_with: Wert kann nicht mit {substring} enden
   confirm_password: Passwörter stimmen nicht überein
   org_name: Bitte geben Sie einen Organisationsnamen ein
+  unsafe: Wert ist keine sichere Zahl
 all_access: Kompletter Zugriff
 no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
@@ -572,6 +577,8 @@ enable_translations: Übersetzungen aktivieren
 manage_translation_fields: Übersetzungsfelder hinzufügen
 fields_to_translate: Zu übersetzende Felder
 fields_to_add_to_translations: Zu Übersetzungen hinzuzufügende Felder
+translations_collection_name: Name der Übersetzungs-Sammlung
+translations_already_enabled: Übersetzungen aktivieren
 translations_manage_helper_description: Sie können weitere Felder hinzufügen, die aus dieser Sammlung übersetzt werden können.
 translations_copy_data_note: Felder werden in die Übersetzung-Sammlung kopiert. Vorhandene Daten werden nicht migriert.
 add_fields: Feld hinzufügen
@@ -598,6 +605,7 @@ import_upload_success: '{filename} erfolgreich hochgeladen. Daten werden im Hint
 import_data_errors: Fehler beim Import
 import_data_error: Die Datenstruktur der Datei stimmt nicht mit der Sammlung überein.
 import_data_validation_errors_notice: 'Die folgenden Felder sind ungültig:'
+import_data_error_row: '{rows}{field}:'
 snapshot:
   export: Exportiere Schema
   download: Snapshot herunterladen (JSON)
@@ -619,6 +627,7 @@ system: System
 add_field_related: Feld zur abhängigen Sammlung hinzufügen
 interface_label: Benutzeroberfläche
 display_label: Anzeige
+x_axis_display_field: X-Achsen-Anzeigefeld
 today: Heute
 yesterday: Gestern
 delete_comment: Kommentar löschen
@@ -1176,6 +1185,7 @@ deployment:
         hint: Ihr Vercel-Benutzername für persönliche Konten. Finden Sie ihn in Ihrer Vercel-Konto-URL (vercel.com/username).
         placeholder: Ihr Benutzername
     netlify:
+      name: Netlify
       settings_warning: Das Ändern von Zugangsdaten oder Konto-Slug kann sich auf Ihre ausgewählten Projekte auswirken, wenn diese nicht mehr mit der neuen Konfiguration zugänglich sind.
       account_slug:
         hint: Optional. Filtern Sie Sites zu einem bestimmten Konto. Lassen Sie leer, um alle zugänglichen Sites anzuzeigen.
@@ -1185,6 +1195,7 @@ deployment:
     project:
       not_deployable: Projekt kann nicht von Directus bereitgestellt werden. Weitere Informationen finden Sie unter Dokumentation.
     runs:
+      id: Deployment ID
       started: Gestartet
       author: Autor
       refresh: Aktualisieren
@@ -1192,6 +1203,7 @@ deployment:
       empty_copy: Dieses Projekt hat noch keinen Bereitstellungsverlauf.
       external_user: Externer Benutzer
     run:
+      id: Deployment ID
       currently_deploying: Momentane Bereitstellung...
       stop: Stoppe Bereitstellung
       cancel_confirm: Diese Aktion kann nicht rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?
@@ -1421,7 +1433,9 @@ licensing:
   resolve_title_grace: Lizenzbeschränkungen auflösen
   resolve_title_no_resolution: Lizenz inaktiv
   resolve_subtitle: Wenn Sie Ihren Lizenzschlüssel aktualisieren müssen, können Sie ihn in Ihrer Umgebungsvariablen aktualisieren.
+  resolve_notice_grace: Ihre Projektnutzung überschreitet Ihr Plan-Limit. Beheben Sie den Bruch, bevor Ihre Nachfrist beendet ist, andernfalls wird Ihr Projekt gesperrt. Deaktivierte Gegenstände werden gespeichert, aber in Directus gesperrt und benutzerdefinierte Zugriffsregeln werden ebenfalls gesperrt.
   resolve_countdown: '{days} Tag verbleibend (bis {date}) | {days} Tage verbleibend (bis {date})'
+  resolve_notice_manual: Um Ihr Projekt zu deaktivieren, muss es zuerst die Grenzen des Core Plans erfüllen. Alle Elemente, die die Kerngrenzen überschreiten und Anpassungen erfordern, werden unten angezeigt.
   resolve_notice_locked: Ihr Projekt überschreitet die Grenzen des Plans und ist gesperrt. Alle Elemente, die die Grenzen überschreiten und Anpassungen erfordern, werden unten angezeigt.
   resolve_notice_env_removed: Ihr Projekt hat keinen aktiven Lizenzschlüssel mehr. Alle Elemente, die die Kerngrenzen überschreiten und Anpassungen erfordern, werden unten angezeigt.
   resolve_notice_no_resolution: Ihre Lizenz ist nicht mehr aktiv und Ihr Projekt wurde auf den Core Plan heruntergestuft. Einige Funktionen sind möglicherweise nicht mehr verfügbar und Elemente außerhalb der Kernplangrenzen bleiben gespeichert, aber in Directus gesperrt. Um den vollen Zugriff wiederherzustellen, fügen Sie einen neuen Lizenzschlüssel hinzu.
@@ -1430,6 +1444,7 @@ licensing:
   resolve_submit: Ausgewählte Elemente deaktivieren
   resolve_show_n_more: 'Zeige {count} mehr'
   resolve_available: Verfügbar
+  resolve_section_collections: Datensammlungen
   resolve_section_seats: Benutzersitze
   resolve_section_flows: Flows
   resolve_section_collections_caption: Wähle Sammlung(en) zum Deaktivieren aus
@@ -1456,6 +1471,7 @@ licensing:
   resolve_ai_translations_confirm: AI Translations Deaktivierung bestätigen
   resolve_ai_translations_caption: AI Translation wird deaktiviert und Ihre Übersetzungseinstellungen werden nicht mehr verwendet.
   env_managed: Ihr Lizenzschlüssel wird über eine Umgebungsvariable verwaltet und kann hier nicht aktualisiert werden.
+  manage_license_disabled: Die Verwaltung Ihres Lizenzschlüssels ist durch Ihre Umgebungseinstellungen deaktiviert.
   key_management: Lizenzschlüssel Management
   key: Lizenzschlüssel
   entitlements:
@@ -1474,6 +1490,7 @@ licensing:
     production_enabled: Produktion
   badge:
     directus: Powered by Directus
+    oig: Innovationszuschuss
     non_prod: Nicht-Produktion
 danger_zone: Gefahrenzone
 settings_appearance: Erscheinung
@@ -1564,6 +1581,7 @@ license:
     grace_period: 'Sie haben {daysLeft} verbleibend, bevor das Core tier Ressourcenlimit gilt.'
     grace_days: '{days} Tag | {days} Tage'
   unlicensed_status_notice:
+    grace_period: 'Du hast {daysLeft} in deiner Gnadenfrist — bis {date}. Danach gelten die Grenzen der Kern-Level-Ressourcen. {retrieveLicenseKey} oder {upgrade} , um Ihre Grenzen zu erhöhen.'
     grace_days_left: '{days} Tag verbleibend | {days} Tage verbleibend'
     retrieve_license_key: Lizenzschlüssel abrufen
     upgrade: Upgrade
@@ -1779,13 +1797,18 @@ fields:
     collaborative_editing: Kollaborative Bearbeitung
     collaborative_editing_enabled: Gemeinschaftliche Bearbeitung aktivieren
     collaborative_editing_note: WebSockets sind notwendig, um gemeinsam bearbeiten zu können.
+    ai_notice: 'AI Assistant stellt eine In-App-Sidebar zur Verfügung, um mit einer LLM zu kommunizieren. Wenn aktiviert, öffnen Sie die KI-Seitenleiste in der Symbolleiste, um Fragen zu stellen, Inhalte zu generieren und Hilfe bei der Arbeit mit Ihrem Projekt zu erhalten. <a href="https://directus.com/docs/guides/ai/assistant" target="_blank">Erfahren Sie mehr über die Konfiguration und Verwendung des AI Assistenten.</a>'
     mcp_enabled: MCP-Server
+    mcp_enabled_note: 'Verbinden Sie AI/LLM-Werkzeuge mit Ihrem Directus Projekt über <a href="https://directus.com/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. So können AI-Assistenten Ihre Directus-Daten sicher lesen und mit ihnen interagieren.'
+    mcp_notice: 'Model Context Protocol ist ein Standard für die Anbindung von LLMs an Anwendungen wie Directus. Sobald aktiviert, wird der Directus MCP Server unter `/mcp` verfügbar sein. <a href="https://directus.com/docs/guides/ai/mcp" target="_blank">Erfahren Sie mehr über MCP und wie Sie sich verbinden.</a>'
     mcp_allow_deletes: Löschen erlauben
     mcp_allow_deletes_note:
       - Kann Datenverlust verursachen.</strong> standardmäßig deaktiviert für Sicherheit.'
     mcp_prompts_collection: KI Prompts Sammlung
+    mcp_prompts_collection_note: 'Wählen Sie eine Sammlung für die Speicherung von <a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">wiederverwendbaren Eingabeaufforderungsvorlagen</a> für KI-Interaktionen.'
     mcp_system_prompt_divider: Konfiguration der Systemnachfrage
     mcp_system_prompt_enabled: Systemanfrage verwenden
+    mcp_system_prompt_enabled_note: "Verwenden Sie die <a href='https://directus.com/docs/guides/ai/mcp#system-prompt' target='_blank'>Standard-System-Eingabeaufforderung</a> um das LLM-Verhalten anzuleiten. Deaktivieren, um Ihre eigene Eingabeaufforderung unten zu entfernen oder zu überschreiben."
     mcp_system_prompt: Benutzerdefinierter System-Prompt
     mcp_system_prompt_note: 'Benutzerdefinierte System-Promt, um die Standardeinstellung zu ersetzen. Leer lassen um die Standardeinstellung zu verwenden (wenn oben aktiviert).'
     mcp_oauth_enabled: 'OAuth aktiviert'
@@ -2115,6 +2138,7 @@ mcp_prompts_collection_schema:
   messages_role_user: Benutzer
   messages_role_assistant: Assistent
   messages_role_note: Wer spricht in dieser Nachricht.
+  meta_prompts_notice: 'Prompts sind wiederverwendbare Vorlagen, die Sie mit LLMs über den Directus MCP Server, Flows oder andere AI Anwendungen verwenden können. <a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">Erfahren Sie mehr über das Erstellen effektiver Eingabeaufforderungen.</a>'
 expired: Abgelaufen
 upcoming: Bevorstehend
 share: Teilen
@@ -2493,7 +2517,10 @@ interfaces:
     incompatible_data: Die aktuellen Daten sind nicht kompatibel mit der Repeater-Schnittstelle und werden beim Hinzufügen von Elementen zum Repeater überschrieben
     interface_group: Schnittstellenoptionen
     display_group: Anzeige-Optionen
+    edit_mode: Bearbeitungsmodus
+    edit_mode_drawer: Slider
     edit_mode_inline: Inline
+    confirm_remove: Löschung bestätigen
   slider:
     slider: Slider
     description: Nummer mit Schieberegler auswählen
@@ -2658,6 +2685,8 @@ interfaces:
   input-password:
     input-password: Passwort eingeben
     description: Passwort-Eingabe mit Schalter zum Verstecken des Wertes
+  flow-select:
+    flow-select: Flow Auswahl
   header:
     header: Header
     description: Erstellen Sie einen Header mit einem Titel, Untertitel, Hilfsinformationen und/oder Links, um Benutzern zu helfen, Flows zu navigieren oder auszuführen.
