@@ -41,11 +41,12 @@ interface WriteArtifactsOptions<T extends Artifact> {
 	};
 }
 
-interface ReadArtifactsOptions<T extends Artifact, M extends { readonly files: string[] }> {
+interface ReadArtifactsOptions<T extends Artifact, M> {
 	readonly dir: string;
 	readonly kind: string;
 	readonly missing: string;
 	readonly missingHint: string;
+	/** Parses the store's own metadata extras; the `files` manifest is validated here, not by adapters. */
 	readonly parseMetadata: (value: unknown) => M;
 	readonly parseArtifact: (value: unknown, name: string) => T;
 }
@@ -202,7 +203,7 @@ export function writeArtifacts<T extends Artifact>(options: WriteArtifactsOption
 }
 
 /** Read and validate one committed artifact generation from its ownership manifest. */
-export function readArtifacts<T extends Artifact, M extends { readonly files: string[] }>(
+export function readArtifacts<T extends Artifact, M>(
 	options: ReadArtifactsOptions<T, M>,
 ): { metadata: M; artifacts: T[] } {
 	const { dir, kind, missing, missingHint, parseMetadata, parseArtifact } = options;
@@ -212,11 +213,23 @@ export function readArtifacts<T extends Artifact, M extends { readonly files: st
 		throw new CliError('STATE', missing, { hint: missingHint });
 	}
 
-	const metadata = parseMetadata(loadJson(metadataPath, METADATA_FILE));
+	const raw = loadJson(metadataPath, METADATA_FILE);
+
+	if (!isPlainObject(raw)) {
+		throw new CliError('STATE', `${METADATA_FILE} is not a ${kind} file.`);
+	}
+
+	const manifest = manifestSchema.safeParse(raw);
+
+	if (!manifest.success) {
+		throw new CliError('STATE', `${METADATA_FILE} is missing a valid "files" manifest.`);
+	}
+
+	const metadata = parseMetadata(raw);
 	const artifacts: T[] = [];
 	const seen = new Set<string>();
 
-	for (const name of metadata.files) {
+	for (const name of manifest.data.files) {
 		if (!OWNED_FILE.test(name)) {
 			throw new CliError('STATE', `${METADATA_FILE} lists ${name}, which is not an owned ${kind} file.`);
 		}
