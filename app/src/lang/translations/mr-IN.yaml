@@ -502,6 +502,7 @@ functions:
   minute: मिनिटे
   second: सेकंद
   count: मोजा
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -842,6 +843,7 @@ operators:
   nintersects: एकमेकांना छेदत नाही
   intersects_bbox: बाउंडिंग बॉक्सला छेदतो
   nintersects_bbox: बाउंडिंग बॉक्सला छेदत नाही
+  json: JSON
   regex: RegExp शी जुळते
 custom_validation_message: कस्टम प्रमाणीकरण संदेश
 loading: लोड करत आहे...

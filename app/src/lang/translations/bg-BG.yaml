@@ -488,6 +488,7 @@ functions:
   minute: Минута
   second: Секунда
   count: Брой
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
@@ -814,6 +815,7 @@ operators:
   nintersects: Няма пресичане
   intersects_bbox: Прилежащи към границите
   nintersects_bbox: Не са прилежащи към границите
+  json: JSON
   regex: Отговаря на RegExp
 custom_validation_message: Собствено съобщение при валидация
 loading: Зареждане...

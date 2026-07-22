@@ -132,6 +132,7 @@ this_collection: Ova zbirka
 display_label: Pokazatelj
 functions:
   count: Zbir
+  json: JSON
 months:
   january: Јануар
   february: Фебруар
@@ -163,6 +164,7 @@ bookmarks: Сачуване странице
 back: Назад
 operators:
   contains: Садржи
+  json: JSON
 role: Рола
 create: Креирај
 flow_name: Име

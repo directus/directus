@@ -325,6 +325,7 @@ functions:
   minute: นาที
   second: วินาที
   count: นับจำนวน
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -581,6 +582,7 @@ operators:
   nintersects: ไม่ตัดกัน
   intersects_bbox: ตัดขอบกล่อง
   nintersects_bbox: ไม่ตัดขอบกล่อง
+  json: JSON
 loading: กำลังโหลด...
 drop_to_upload: วางเพื่ออัพโหลด
 item: รายการ

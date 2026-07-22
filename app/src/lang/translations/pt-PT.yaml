@@ -513,6 +513,7 @@ functions:
   minute: Minuto
   second: Segundo
   count: Contagem
+  json: JSON
 date-fns_date: dd MMM u
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
@@ -827,6 +828,7 @@ operators:
   intersects: Interseção
   nintersects: Não se intercepta
   nintersects_bbox: Não cruza a caixa delimitadora
+  json: JSON
   regex: Jogos RegExp
 custom_validation_message: Mensagem personalizada de validação
 loading: A carregar...

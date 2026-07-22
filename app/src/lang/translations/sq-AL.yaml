@@ -502,6 +502,7 @@ functions:
   minute: Minuta
   second: Sekonda
   count: Numri
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -842,6 +843,7 @@ operators:
   nintersects: Nuk Përkryhet
   intersects_bbox: Përkryhet me Kutinë Kufizuese
   nintersects_bbox: Nuk Përkryhet me Kutinë Kufizuese
+  json: JSON
   regex: Përputhet me RegExp
 custom_validation_message: Mesazh i Personalizuar i Validimit
 loading: Po Ngarkohet...

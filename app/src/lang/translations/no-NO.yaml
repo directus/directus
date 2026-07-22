@@ -422,6 +422,7 @@ functions:
   minute: Minutt
   second: Sekund
   count: Antall
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -658,6 +659,7 @@ operators:
   contains: Inneholder
   ncontains: Inneholder ikke
   empty: Er tom
+  json: JSON
 loading: Laster...
 item: Element
 items: Elementer

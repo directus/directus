@@ -503,6 +503,7 @@ functions:
   minute: Minut
   second: Sekund
   count: Antal
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -812,6 +813,7 @@ operators:
   has: Innehåller några av dessa nycklar
   intersects: Korsar
   nintersects: Korsar inte
+  json: JSON
 loading: Laddar...
 drop_to_upload: Släpp för att ladda upp
 item: Objekt

@@ -20,7 +20,6 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Sobre
-privacy_policy: Política de Privacidade
 setup_welcome: Bem-Vindo ao Directus
 setup_info: Vamos criar sua conta de administrador e começar seu projeto.
 setup_marketing_emails: Receber novidades do produto e notas de lançamento
@@ -109,7 +108,7 @@ extension_missing: Não encontrado
 extension_reload_required: Atualização de página necessária
 extension_reload_required_copy: É necessário recarregar a página para ver as alterações após ativar ou desativar extensões de aplicativo.
 extension_reload_now: Recarregar agora
-published_relative: Publicado em {relativeTime}
+published_relative: Publicado {relativeTime}
 compatible_with_your_project: Compatível com seu projeto
 compatible_with_your_project_copy: O autor indicou que a compatibilidade desta extensão é {hostVersion}, o que corresponde à versão do seu projeto ({currentVersion})
 last_updated_relative: Última atualização em {relativeTime}
@@ -559,6 +558,7 @@ functions:
   minute: Minuto
   second: Segundo
   count: Contagem
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -919,6 +919,7 @@ operators:
   nintersects: Não interceptado
   intersects_bbox: Cruza a caixa delimitadora
   nintersects_bbox: Não cruza a caixa delimitadora
+  json: JSON
   regex: Coincide RegExp
 custom_validation_message: Mensagem personalizada de validação
 loading: Carregando...

@@ -20,7 +20,6 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: À propos
-privacy_policy: Politique de confidentialité
 setup_welcome: Bienvenue sur Directus
 setup_launch: Lancer Directus
 setup_project: Configurer un projet
@@ -550,6 +549,7 @@ functions:
   minute: Minute
   second: Seconde
   count: Compter
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -906,6 +906,7 @@ operators:
   nintersects: Ne recoupe pas
   intersects_bbox: Recoupe les délimitations
   nintersects_bbox: Ne recoupe pas les limitations
+  json: JSON
   regex: Correspondances RegExp
 custom_validation_message: Message de validation personnalisé
 loading: Chargement…

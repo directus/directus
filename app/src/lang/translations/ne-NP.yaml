@@ -358,6 +358,7 @@ functions:
   minute: मिनेट
   second: सेकेण्ड
   count: गणना
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -649,6 +650,7 @@ operators:
   nintersects: मिल्दैन
   intersects_bbox: बाउन्डिङ बाकसलाई काट्छ
   nintersects_bbox: बाउन्डिङ बक्स काट्दैन
+  json: JSON
   regex: RegExp सँग मेल खान्छ
 custom_validation_message: कस्टम प्रमाणीकरण सन्देश
 loading: लोड हुँदैछ ...

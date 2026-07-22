@@ -330,6 +330,7 @@ delete_comment: Izbriši komentar
 functions:
   year: Leto
   month: Mesec
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'hh:mm:ss'
 date-fns_time_no_seconds: 'hh:mm'
@@ -560,6 +561,7 @@ operators:
   nintersects: Ni preseka
   intersects_bbox: Seka meje
   nintersects_bbox: Ne seka mej
+  json: JSON
 loading: Nalaganje ...
 drop_to_upload: Spustite za prenos
 item: Zapis

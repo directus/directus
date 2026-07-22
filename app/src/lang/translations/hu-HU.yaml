@@ -20,7 +20,6 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Rólunk
-privacy_policy: Adatvédelmi irányelvek
 setup_welcome: Üdvözöljük a Directusnál
 setup_info: Hozza létre rendszergazda fiókját, és indítsa el projektjét
 setup_marketing_emails: Küldjenek részemre információkat a termék frissítéséről és az új verziók módosításairól
@@ -531,6 +530,7 @@ functions:
   minute: Perc
   second: Másodperc
   count: Mennyiség
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -824,6 +824,7 @@ operators:
   nintersects: Nem metszi
   intersects_bbox: Metszi a határoló dobozt
   nintersects_bbox: Nem metszi a határoló dobozt
+  json: JSON
   regex: Megfelel a RegExp-nek
 custom_validation_message: Egyéni érvényesítési üzenet
 loading: Betöltés...

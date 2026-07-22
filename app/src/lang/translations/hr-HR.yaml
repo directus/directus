@@ -502,6 +502,7 @@ functions:
   minute: Minuta
   second: Sekunda
   count: Zbroj
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm.ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -843,6 +844,7 @@ operators:
   nintersects: Ne presijeca
   intersects_bbox: Presijeca granični okvir
   nintersects_bbox: Ne presijeca granični okvir
+  json: JSON
   regex: Podudara se s RegExp
 custom_validation_message: Prilagođena validacijska poruka
 loading: Učitavanje...
