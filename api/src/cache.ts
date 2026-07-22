@@ -43,7 +43,7 @@ if (redisConfigAvailable() && !messengerSubscribed) {
 			await cache.clear();
 		}
 
-		if (opts?.['autoPurgeSchema'] !== false) {
+		if (opts?.autoPurgeSchema !== false) {
 			await localSchemaCache?.clear();
 			memorySchemaCache = null;
 		}
