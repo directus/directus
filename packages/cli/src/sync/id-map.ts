@@ -5,22 +5,10 @@ import { CliError } from '../kernel/error.js';
 import { writeFileAtomic } from '../kernel/write.js';
 import { serializeCanonical } from './artifact-store.js';
 
-// The committed ID map: <dir>/<project>/id_map.json, recording which source-instance record IDs were
-// imported as which target-instance record IDs so a repeated import upserts instead of duplicating. It is
-// committed rather than gitignored because a lost map recreates on the next clone or CI run the very
-// duplicate problem it exists to prevent.
-//
-// Keyed by NESTED normalized instance URLs, never a delimited composite string: an IPv6 host such as
-// http://[::1]:8055 embeds colons and would break any single-string delimiter. A source→target bucket and
-// its reverse are distinct by construction — a remapping only holds in one direction. Written through the
-// shared canonical serializer so object keys sort at every depth and a changed mapping is a one-line diff.
-
-// Nesting, innermost first: one collection's sourceId→targetId bucket; the per-target set of those buckets
-// keyed by collection; the per-source set of those keyed by normalized target URL. Modeled as nested
-// Readonly Records so the URL keys never need a delimiter.
 type CollectionMap = Readonly<Record<string, Readonly<Record<string, string>>>>;
 type TargetMap = Readonly<Record<string, CollectionMap>>;
 
+/** Committed source→target record identities, nested by normalized instance URL and collection. */
 export interface IdMap {
 	readonly formatVersion: 1;
 	readonly maps: Readonly<Record<string, TargetMap>>;
@@ -29,11 +17,7 @@ export interface IdMap {
 const REPAIR_HINT = 'Fix or delete the ID map file, then re-run.';
 
 /**
- * Canonical form of a profile URL so two spellings of the same instance key one bucket: lowercase the
- * protocol and host, drop the protocol's default port, and treat a bare "/" path as empty. An IPv6 host's
- * brackets and any non-default port survive intact — the reason the map nests URLs instead of joining them.
- * Config-validated URLs never throw here; a malformed string may throw TypeError, which is a caller bug
- * (callers pass already-validated profile URLs), not corrupt on-disk state.
+ * Normalize equivalent profile URLs to one ID-map key while preserving non-default ports and paths.
  */
 export function normalizeInstanceUrl(url: string): string {
 	const parsed = new URL(url);
@@ -52,11 +36,8 @@ export function normalizeInstanceUrl(url: string): string {
 	return `${protocol}//${host}${pathname}`;
 }
 
-// Rebuild every level with Object.fromEntries, never obj[key] = value: a record ID can legally be the
-// string "__proto__" (Directus primary keys are arbitrary), and an assignment would hit the prototype
-// setter — dropping the mapping and risking prototype pollution, exactly the discipline store.ts follows.
-// Each level must be an object down to the leaves, and every leaf a string; anything else is hand-editing
-// and fails loud naming the path.
+// Parsers rebuild every level with Object.fromEntries so a legal "__proto__" record ID cannot invoke the
+// prototype setter or disappear.
 function readObject(value: unknown, path: string, what: string): Record<string, unknown> {
 	if (!isPlainObject(value)) {
 		throw new CliError('STATE', `${path} has a ${what} that is not an object.`, { hint: REPAIR_HINT });
@@ -67,6 +48,7 @@ function readObject(value: unknown, path: string, what: string): Record<string, 
 
 function parseBucket(value: unknown, path: string): Readonly<Record<string, string>> {
 	const record = readObject(value, path, 'collection bucket');
+	const owners = new Map<string, string>();
 
 	return Object.fromEntries(
 		Object.keys(record).map((sourceId): [string, string] => {
@@ -77,6 +59,22 @@ function parseBucket(value: unknown, path: string): Readonly<Record<string, stri
 					hint: REPAIR_HINT,
 				});
 			}
+
+			// A bucket must be injective: two sources sharing one target row have no single identity — both
+			// would import onto the same row (last write wins) and unchanged detection would lie for one.
+			// Reconcile never produces this (committed targets are excluded from matching), so it can only
+			// arrive by hand-edit or a bad merge, and a corrupt map is refused rather than trusted.
+			const owner = owners.get(targetId);
+
+			if (owner !== undefined) {
+				throw new CliError(
+					'STATE',
+					`${path} maps source ids "${owner}" and "${sourceId}" to the same target id "${targetId}".`,
+					{ hint: REPAIR_HINT },
+				);
+			}
+
+			owners.set(targetId, sourceId);
 
 			return [sourceId, targetId];
 		}),
@@ -114,9 +112,7 @@ function parseMaps(value: unknown, path: string): Readonly<Record<string, Target
 }
 
 /**
- * An absent file is a real first sync: nothing has been mapped yet, so the empty map is legitimate. A
- * present file is parsed strictly — invalid JSON, a wrong formatVersion, or any node not matching the
- * nesting fails loud under STATE naming the path, so a hand-corrupted map can never seed a wrong upsert.
+ * Read a strict ID map. A missing file is an empty first-sync state; malformed state is never trusted.
  */
 export function readIdMap(path: string): IdMap {
 	if (!existsSync(path)) return { formatVersion: 1, maps: {} };
@@ -151,9 +147,7 @@ export function readIdMap(path: string): IdMap {
 }
 
 /**
- * The collection→(sourceId→targetId) bucket for one normalized source/target pair, or {} when absent.
- * Normalizing both URLs here means a repointed-but-equivalent profile URL still finds its bucket, while
- * source→target and target→source stay separate.
+ * Return the collection buckets for one normalized, directional source/target pair.
  */
 export function mappingsFor(map: IdMap, sourceUrl: string, targetUrl: string): CollectionMap {
 	const source = normalizeInstanceUrl(sourceUrl);
@@ -163,8 +157,7 @@ export function mappingsFor(map: IdMap, sourceUrl: string, targetUrl: string): C
 }
 
 /**
- * A new IdMap with `entries` merged INTO (never replacing) the collection bucket for the normalized pair.
- * Pure — the input map is untouched. Empty entries return the same map so a no-op reconcile writes nothing.
+ * Merge entries into one collection bucket without mutating the map. Empty entries preserve identity.
  */
 export function withMappings(
 	map: IdMap,
@@ -182,9 +175,7 @@ export function withMappings(
 	const collectionMap = targetMap[target] ?? {};
 	const bucket = collectionMap[collection] ?? {};
 
-	// Spread merges the new entries into the existing bucket and copies even a "__proto__" key as an own
-	// property (object spread uses define semantics, never the prototype setter); the computed keys below
-	// are safe for the same reason.
+	// Object spread uses define semantics, preserving a "__proto__" ID as an own property.
 	const mergedBucket = { ...bucket, ...entries };
 	const mergedCollection = { ...collectionMap, [collection]: mergedBucket };
 	const mergedTarget = { ...targetMap, [target]: mergedCollection };
@@ -193,8 +184,7 @@ export function withMappings(
 }
 
 /**
- * Serialize canonically (sorted keys at every depth, LF, trailing newline) and write atomically, creating
- * the project directory if needed. Canonical output is what keeps a map change to a one-line git diff.
+ * Write an ID map atomically in canonical key order.
  */
 export function writeIdMap(path: string, map: IdMap): void {
 	mkdirSync(dirname(path), { recursive: true });

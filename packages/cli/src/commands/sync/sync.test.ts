@@ -1239,6 +1239,62 @@ describe('sync push with data', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'add', '--yes')).toBe(0);
 	});
 
+	it('recreates a mapped record under add when its target row is gone, still skipping present ones', async () => {
+		// add skips mapped rows to avoid duplicate inserts, but the skip must be conditional on the target
+		// row existing: a mapped row deleted on the target would otherwise stay missing forever with no
+		// signal (merge/mirror self-heal by sending the mapped PK). sr1→t9 is absent from the target, so
+		// its record must ride the batch under the mapped PK; sr2→tr1 is present, so it stays skipped.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		seedData([
+			{
+				collection: 'directus_roles',
+				primaryKey: 'id',
+				records: [
+					{ id: 'sr1', name: 'Editor' },
+					{ id: 'sr2', name: 'Admin' },
+				],
+			},
+		]);
+
+		writeFileSync(
+			idMapPath,
+			JSON.stringify({
+				formatVersion: 1,
+				maps: { [source]: { [url]: { directus_roles: { sr1: 't9', sr2: 'tr1' } } } },
+			}),
+		);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+		interceptTarget('/roles', [{ id: 'tr1', name: 'Admin' }]);
+
+		let sentForm: FormData | undefined;
+
+		interceptImport(
+			{ mode: 'add' },
+			{
+				data: {
+					applied: true,
+					mode: 'add',
+					collections: { directus_roles: { existing: [], new: ['t9'], deleted: [], mapped: {} } },
+				},
+			},
+			200,
+			(form) => {
+				sentForm = form;
+			},
+		);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'add', '--yes')).toBe(0);
+
+		expect(await decodeBatch(sentForm)).toEqual([
+			{ collection: 'directus_roles', items: [{ id: 't9', name: 'Editor' }] },
+		]);
+	});
+
 	it('carries dangerouslyAllowDelete on the import when mirror runs with --allow-deletes', async () => {
 		// mirror maps to a merge import plus dangerouslyAllowDelete (the server has no wire "mirror"); the
 		// exact query match proves the destructive flag rode along only because --allow-deletes consented.

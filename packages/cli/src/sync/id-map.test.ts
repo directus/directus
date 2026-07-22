@@ -199,6 +199,26 @@ describe('readIdMap failures', () => {
 		expect(error.message).toMatch(/formatVersion/);
 	});
 
+	it('fails STATE when two sources map to the same target id — a bucket must be injective', () => {
+		// Two sources sharing one target row have no single identity: both would import onto the same row
+		// (last write wins) and unchanged detection would lie for one of them. Reconcile cannot produce
+		// this (committed targets are excluded from matching), so it is hand-edit/merge corruption and the
+		// map must be refused, not trusted.
+		const path = mapPath();
+
+		writeFileSync(
+			mkdirForFile(path),
+			JSON.stringify({ formatVersion: 1, maps: { [A]: { [B]: { directus_roles: { s1: 't1', s2: 't1' } } } } }),
+		);
+
+		const error = expectCliError(() => readIdMap(path));
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain('"s1"');
+		expect(error.message).toContain('"s2"');
+		expect(error.message).toContain('"t1"');
+	});
+
 	it('fails STATE naming the path when a leaf is not a string', () => {
 		// A non-string target ID means a hand-edited or corrupt map; coercing it would seed an import with a
 		// bogus primary key, so it must fail loud rather than flow downstream.
@@ -216,8 +236,6 @@ describe('readIdMap failures', () => {
 	});
 });
 
-// Create the parent directory of a hand-written fixture file so writeFileSync can land it, returning the
-// path unchanged for inline use.
 function mkdirForFile(path: string): string {
 	const map: IdMap = { formatVersion: 1, maps: {} };
 	writeIdMap(path, map);

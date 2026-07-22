@@ -102,7 +102,6 @@ describe('fetchSnapshot', () => {
 	});
 
 	it('routes a 401 to an AUTH error so credential failures surface hints, not a stack trace', async () => {
-
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/schema/snapshot', method: 'GET' })
@@ -197,7 +196,6 @@ describe('fetchDiff', () => {
 	});
 
 	it('routes a Directus error to a CliError so a failed diff surfaces a hint, not a stack trace', async () => {
-
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/schema/diff', method: 'POST', query: { mode: 'merge' } })
@@ -254,7 +252,6 @@ describe('applyDiff', () => {
 	});
 
 	it('routes a Directus error to a CliError so a failed apply surfaces a hint, not a stack trace', async () => {
-
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/schema/apply', method: 'POST' })
@@ -279,7 +276,7 @@ describe('fetchRecords', () => {
 		// complete — a QUERY_LIMIT_MAX clamp is silent, so a single response can never prove exhaustion.
 
 		// Two records, out of primary-key order and carrying a nested object: fetch returns them untouched
-		// (records are the user's data, never reshaped) — ordering and canonicalization are the store's job.
+		// Collection records pass through unchanged; ordering and canonicalization are the store's job.
 		const records = [
 			{ id: 2, title: 'Second' },
 			{ id: 1, title: 'First', meta: { note: null } },
@@ -347,6 +344,60 @@ describe('fetchRecords', () => {
 		});
 
 		expect(result).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
+	});
+
+	it('probes limit=1 on an empty first page and returns empty when the probe succeeds', async () => {
+		// An empty first page could also be QUERY_LIMIT_MAX=0 clamping limit=-1 to zero rows; only a
+		// successful explicit-limit read proves the collection is genuinely empty.
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
+			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '1', sort: 'id' } })
+			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
+
+		const result = await fetchRecords(credential, {
+			collection: 'articles',
+			endpoint: '/items/articles',
+			primaryKey: 'id',
+			singleton: false,
+		});
+
+		expect(result).toEqual([]);
+	});
+
+	it('refuses when the limit=1 probe is rejected — a zero cap masks every row as emptiness', async () => {
+		// sanitize-query accepts QUERY_LIMIT_MAX=0 (`>= 0`) and clamps limit=-1 to zero rows, while
+		// validate-query rejects any explicit limit above the cap. Empty page + rejected probe therefore
+		// means a zero cap; continuing would export empty collections that a later mirror push turns into
+		// target-row deletions.
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
+			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '1', sort: 'id' } })
+			.reply(
+				400,
+				{ errors: [{ message: '"limit" must be less than or equal to 0', extensions: { code: 'INVALID_QUERY' } }] },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		const error = await fetchRecords(credential, {
+			collection: 'articles',
+			endpoint: '/items/articles',
+			primaryKey: 'id',
+			singleton: false,
+		}).catch((error: unknown) => error);
+
+		expect(error).toBeInstanceOf(CliError);
+		expect(error).toMatchObject({ code: 'CONFIG' });
+		expect((error as CliError).message).toContain('QUERY_LIMIT_MAX');
 	});
 
 	it('wraps a singleton object response in a one-element array', async () => {
