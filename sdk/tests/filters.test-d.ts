@@ -380,4 +380,39 @@ describe('Test QueryFilters', () => {
 		expectTypeOf(_relationalJsonAndId).toBeFunction();
 		expectTypeOf(_relationalJsonOr).toBeFunction();
 	});
+
+	test('nested filter on an array-union relation infers the related fields (issue #22746)', () => {
+		const client = createDirectus<TestSchema>('https://directus.example.com').with(rest());
+
+		// o2m is typed `number[] | CollectionC[] | null`; the related collection's
+		// fields must be inferred and correctly typed inside the nested filter.
+		const _valid = () =>
+			client.request(
+				readItems('collection_a', {
+					filter: {
+						o2m: {
+							id: { _eq: 5 },
+							non_nullable: { _eq: 'value' },
+						},
+					},
+				}),
+			);
+
+		// `id` is a number on the related collection, so a string must be rejected
+		// (previously the primitive foreign-key type made the nested filter permissive).
+		const _invalid = () =>
+			client.request(
+				readItems('collection_a', {
+					filter: {
+						o2m: {
+							// @ts-expect-error
+							id: { _eq: 'not-a-number' },
+						},
+					},
+				}),
+			);
+
+		expectTypeOf(_valid).toBeFunction();
+		expectTypeOf(_invalid).toBeFunction();
+	});
 });
