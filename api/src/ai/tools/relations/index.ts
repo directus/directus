@@ -8,6 +8,7 @@ import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
 import {
 	RelationItemInputSchema,
+	RelationItemOutputSchema,
 	RelationItemValidateCreateSchema,
 	RelationItemValidateUpdateSchema,
 } from '../schema.js';
@@ -46,15 +47,29 @@ const RelationsInputSchema = z.object({
 	data: RelationItemInputSchema.optional().describe('The relation data. (required for create, update)'),
 });
 
-export const relations = defineTool<z.infer<typeof RelationsValidateSchema>>({
+const RelationsOutputSchema = z.object({
+	data: z.union([
+		RelationItemOutputSchema,
+		z.array(RelationItemOutputSchema),
+		z.object({ collection: z.string(), field: z.string() }),
+		z.null(),
+	]),
+});
+
+export const relations = defineTool<z.infer<typeof RelationsValidateSchema>, z.infer<typeof RelationsOutputSchema>>({
 	name: 'relations',
 	admin: true,
-	description: requireText(resolve(__dirname, './prompt.md')),
+	description:
+		'Reads and changes relationships between Directus collections. Use for many-to-one, one-to-many, many-to-many, and many-to-any relations.',
+	instructions: requireText(resolve(__dirname, './prompt.md')),
+	keywords: ['relationships', 'foreign keys', 'm2o', 'o2m', 'm2m', 'm2a', 'junction'],
 	annotations: {
 		title: 'Directus - Relations',
 	},
 	inputSchema: RelationsInputSchema,
 	validateSchema: RelationsValidateSchema,
+	output: RelationsOutputSchema,
+	readOnly: (input) => input.action === 'read',
 	async handler({ args, schema, accountability }) {
 		const service = new RelationsService({
 			schema,

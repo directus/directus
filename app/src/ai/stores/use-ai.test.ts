@@ -2,7 +2,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { lastAssistantMessageIsCompleteWithToolCalls, type UIMessage } from 'ai';
 import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { ref } from 'vue';
+import { nextTick, reactive, ref } from 'vue';
 import { useAiStore } from './use-ai';
 import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
@@ -14,16 +14,16 @@ let sessionMessagesRef: { value: UIMessage[] } | undefined;
 vi.mock('@vueuse/core', () => {
 	return {
 		createEventHook: vi.fn(() => {
-			const listeners = new Set<(value: unknown) => void>();
+			const listeners = new Set<(...args: unknown[]) => void>();
 
 			return {
-				on: (callback: (value: unknown) => void) => {
+				on: (callback: (...args: unknown[]) => void) => {
 					listeners.add(callback);
 					return () => listeners.delete(callback);
 				},
-				trigger: (value: unknown) => {
+				trigger: (...args: unknown[]) => {
 					for (const listener of listeners) {
-						listener(value);
+						listener(...args);
 					}
 				},
 			};
@@ -57,13 +57,21 @@ vi.mock('@/views/private/private-view/stores/sidebar', () => ({
 	})),
 }));
 
+vi.mock('vue-router', () => ({
+	useRoute: () => ({
+		path: '/content/articles',
+		params: {},
+	}),
+}));
+
 vi.mock('@ai-sdk/vue', () => {
 	return {
 		Chat: vi.fn().mockImplementation((config: any) => {
 			lastChatConfig = config;
 
-			// Create a mutable messages array from the initial messages
-			const messages = config?.messages || [];
+			// Create a reactive messages array so watchers in the store (e.g. the system-tool-result
+			// dispatcher) react to pushes the way they do against the real Chat instance.
+			const messages = reactive(config?.messages || []);
 
 			return {
 				messages,
@@ -274,6 +282,60 @@ describe('useAiStore', () => {
 		});
 	});
 
+	describe('system tool result dispatch', () => {
+		// Directus tools all run through the root `execute` tool, so the inner identity lives in
+		// `input.name`. If the dispatcher reads the `tool-execute` part type instead, the refresh
+		// hooks (collections/fields/relations re-hydrate, current item/list refetch) never fire
+		// after the AI changes the schema or an item — the bug this guards against.
+		test('fires the refresh hook with the unwrapped inner tool name and input for execute calls', async () => {
+			const aiStore = useAiStore();
+			const toolsStore = useAiToolsStore();
+
+			const handler = vi.fn();
+			toolsStore.onSystemToolResult(handler);
+
+			aiStore.chat.messages.push({
+				id: '1',
+				role: 'assistant',
+				parts: [
+					{
+						type: 'tool-execute',
+						toolCallId: 'call-1',
+						state: 'output-available',
+						input: { name: 'collections', input: { action: 'create', collection: 'articles' } },
+						output: { ok: true },
+					},
+				],
+			} as any);
+
+			await nextTick();
+
+			expect(handler).toHaveBeenCalledTimes(1);
+			expect(handler).toHaveBeenCalledWith('collections', { action: 'create', collection: 'articles' }, { ok: true });
+		});
+
+		test('ignores root tools that are not system tools', async () => {
+			const aiStore = useAiStore();
+			const toolsStore = useAiToolsStore();
+
+			const handler = vi.fn();
+			toolsStore.onSystemToolResult(handler);
+
+			aiStore.chat.messages.push({
+				id: '1',
+				role: 'assistant',
+				parts: [
+					{ type: 'tool-search', toolCallId: 'c1', state: 'output-available', input: { query: 'x' }, output: {} },
+					{ type: 'tool-execute', toolCallId: 'c2', state: 'output-available', input: { name: 'execute' }, output: {} },
+				],
+			} as any);
+
+			await nextTick();
+
+			expect(handler).not.toHaveBeenCalled();
+		});
+	});
+
 	describe('message sanitization', () => {
 		test('sanitizes data/blob file URLs before transport send', () => {
 			useAiStore();
@@ -299,6 +361,18 @@ describe('useAiStore', () => {
 			expect(parts[0].url).toBe('');
 			expect(parts[1].url).toBe('');
 			expect(parts[2].url).toBe('/assets/abc');
+		});
+
+		test('does not send stale approvals for non-configurable root tools', () => {
+			useAiStore();
+			const toolsStore = useAiToolsStore();
+
+			toolsStore.toolApprovals['schema'] = 'always';
+			toolsStore.setToolApprovalMode('items', 'always');
+
+			const body = lastTransportConfig.body();
+
+			expect(body.toolApprovals).toEqual({ items: 'always' });
 		});
 
 		test('sanitizes stored message file URLs on finish', () => {

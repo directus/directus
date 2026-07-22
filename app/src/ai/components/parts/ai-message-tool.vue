@@ -5,6 +5,7 @@ import { computed } from 'vue';
 import AiAskUserSummary from './ai-ask-user-summary.vue';
 import AiToolCallCard from './ai-tool-call-card.vue';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
+import { unwrapToolCall } from '@/ai/utils/unwrap-tool-call';
 import VNotice from '@/components/v-notice.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 
@@ -14,9 +15,9 @@ const props = defineProps<{
 	part: DynamicToolUIPart;
 }>();
 
-const toolName = computed(() => {
-	return props.part.type.replace('tool-', '');
-});
+const unwrappedToolCall = computed(() => unwrapToolCall(props.part));
+const toolName = computed(() => unwrappedToolCall.value.toolName);
+const displayInput = computed(() => unwrappedToolCall.value.input);
 
 const toolDisplayName = computed(() => {
 	const localTool = toolsStore.localTools.find((t) => t.name === toolName.value);
@@ -67,9 +68,9 @@ const isAskUser = computed(() => toolName.value === 'ask_user');
 			</VNotice>
 		</template>
 		<template #content>
-			<div v-if="'input' in part && part.input" class="tool-input">
+			<div v-if="displayInput" class="tool-input">
 				<p class="label">{{ $t('ai.input') }}</p>
-				<code>{{ part.input }}</code>
+				<code>{{ displayInput }}</code>
 			</div>
 			<div v-if="'output' in part && part.output && part.state === 'output-available'" class="tool-output">
 				<p class="label">{{ $t('ai.output') }}</p>

@@ -10,6 +10,7 @@ import type { StaticToolDefinition } from '../composables/define-tool';
 import type { AppModelDefinition } from '../models';
 import { isVisualElement, type UploadedFileResult } from '../types/context';
 import { getAvailableModels, getModelKey, resolveModelByKey } from '../utils/available-models';
+import { unwrapToolCall } from '../utils/unwrap-tool-call';
 import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
 import { useSettingsStore } from '@/stores/settings';
@@ -171,11 +172,14 @@ export const useAiStore = defineStore('ai-store', () => {
 		credentials: 'include',
 		body: () => {
 			const tools = [...toolsStore.enabledSystemTools, ...toolsStore.localTools.map(toApiTool)];
+			const approvalToolNames = new Set(tools.map((tool) => (typeof tool === 'string' ? tool : tool.name)));
 
 			// Filter toolApprovals to only include 'always' and 'ask' (not 'disabled')
 			const approvals: Record<string, 'always' | 'ask'> = {};
 
 			for (const [toolName, mode] of Object.entries(toolsStore.toolApprovals)) {
+				if (!approvalToolNames.has(toolName)) continue;
+
 				if (mode === 'always' || mode === 'ask') {
 					approvals[toolName] = mode;
 				}
@@ -239,7 +243,7 @@ export const useAiStore = defineStore('ai-store', () => {
 			}
 		},
 		onToolCall: async ({ toolCall }) => {
-			const isServerTool = toolCall.dynamic || toolsStore.isSystemTool(toolCall.toolName);
+			const isServerTool = toolCall.dynamic || toolsStore.isServerTool(toolCall.toolName);
 
 			if (isServerTool) {
 				return;
@@ -345,12 +349,15 @@ export const useAiStore = defineStore('ai-store', () => {
 			if ('toolCallId' in part && part.state === 'output-available' && !processedToolCallIds.has(part.toolCallId)) {
 				processedToolCallIds.add(part.toolCallId);
 
-				const tool = part.type.substring('tool-'.length) as SystemTool;
+				// Unwrap execute parts so the system-tool-result hooks fire for registry-dispatched
+				// tools — otherwise stores/forms never refresh after the AI changes schema or items.
+				const { toolName, input } = unwrapToolCall(part);
+				const tool = toolName as SystemTool;
 
 				if (toolsStore.isSystemTool(tool)) {
 					toolsStore.triggerSystemToolResult(
 						tool,
-						part.input as Record<string, unknown>,
+						input as Record<string, unknown>,
 						part.output as Record<string, unknown>,
 					);
 				}

@@ -15,7 +15,7 @@ Perform CRUD operations on Directus Collections.
 {
 	"collection": "products",
 	"meta": {
-		"collection": "ai_prompts",
+		"collection": "products",
 		"icon": "inventory_2", // Any Material Symbols icons
 		"note": "Main product catalog with inventory tracking" // Helpful 1 sentence description
 		"color": "#6366F1", // Color shown in content module sidebar
@@ -67,28 +67,30 @@ Perform CRUD operations on Directus Collections.
 ```json
 {
 	"action": "create",
-	"data": {
-		"collection": "articles",
-		"fields": [
-			{
-				"field": "id",
-				"type": "uuid",
-				"meta": { "special": ["uuid"], "hidden": true, "readonly": true, "interface": "input" },
-				"schema": { "is_primary_key": true, "length": 36, "has_auto_increment": false }
-			},
-			{
-				"field": "title",
-				"type": "string",
-				"meta": { "interface": "input", "required": true },
-				"schema": { "is_nullable": false }
+	"data": [
+		{
+			"collection": "articles",
+			"fields": [
+				{
+					"field": "id",
+					"type": "uuid",
+					"meta": { "special": ["uuid"], "hidden": true, "readonly": true, "interface": "input" },
+					"schema": { "is_primary_key": true, "length": 36, "has_auto_increment": false }
+				},
+				{
+					"field": "title",
+					"type": "string",
+					"meta": { "interface": "input", "required": true },
+					"schema": { "is_nullable": false }
+				}
+			],
+			"schema": {}, // Always send empty object for new collection unless creating a folder collection
+			"meta": {
+				"singleton": false,
+				"display_template": "{{title}}"
 			}
-		],
-		"schema": {}, // Always send empty object for new collection unless creating a folder collection
-		"meta": {
-			"singleton": false,
-			"display_template": "{{title}}"
 		}
-	}
+	]
 }
 ```
 
@@ -103,166 +105,168 @@ For content collections (blogs, products, pages), include these optional system 
 ```json
 {
 	"action": "create",
-	"data": {
-		"collection": "articles",
-		"fields": [
-			{
-				"field": "id",
-				"type": "uuid",
-				"meta": {
-					"hidden": true,
-					"readonly": true,
-					"interface": "input",
-					"special": ["uuid"]
+	"data": [
+		{
+			"collection": "articles",
+			"fields": [
+				{
+					"field": "id",
+					"type": "uuid",
+					"meta": {
+						"hidden": true,
+						"readonly": true,
+						"interface": "input",
+						"special": ["uuid"]
+					},
+					"schema": {
+						"is_primary_key": true,
+						"length": 36,
+						"has_auto_increment": false
+					}
 				},
-				"schema": {
-					"is_primary_key": true,
-					"length": 36,
-					"has_auto_increment": false
+				{
+					"field": "status",
+					"type": "string",
+					"meta": {
+						"width": "full",
+						"options": {
+							// You might choose to customize these options based on the users request
+							"choices": [
+								{
+									"text": "$t:published",
+									"value": "published",
+									"color": "var(--theme--primary)"
+								},
+								{
+									"text": "$t:draft",
+									"value": "draft",
+									"color": "var(--theme--foreground)"
+								},
+								{
+									"text": "$t:archived",
+									"value": "archived",
+									"color": "var(--theme--warning)"
+								}
+							]
+						},
+						"interface": "select-dropdown",
+						"display": "labels",
+						"display_options": {
+							"showAsDot": true,
+							"choices": [
+								{
+									"text": "$t:published",
+									"value": "published",
+									"color": "var(--theme--primary)",
+									"foreground": "var(--theme--primary)",
+									"background": "var(--theme--primary-background)"
+								},
+								{
+									"text": "$t:draft",
+									"value": "draft",
+									"color": "var(--theme--foreground)",
+									"foreground": "var(--theme--foreground)",
+									"background": "var(--theme--background-normal)"
+								},
+								{
+									"text": "$t:archived",
+									"value": "archived",
+									"color": "var(--theme--warning)",
+									"foreground": "var(--theme--warning)",
+									"background": "var(--theme--warning-background)"
+								}
+							]
+						}
+					},
+					"schema": {
+						"default_value": "draft",
+						"is_nullable": false
+					}
+				},
+				{
+					"field": "sort",
+					"type": "integer",
+					"meta": {
+						"interface": "input",
+						"hidden": true
+					},
+					"schema": {}
+				},
+				{
+					"field": "user_created",
+					"type": "uuid",
+					"meta": {
+						"special": ["user-created"],
+						"interface": "select-dropdown-m2o",
+						"options": {
+							"template": "{{avatar}} {{first_name}} {{last_name}}"
+						},
+						"display": "user",
+						"readonly": true,
+						"hidden": true,
+						"width": "half"
+					},
+					"schema": {}
+				},
+				{
+					"field": "date_created",
+					"type": "timestamp",
+					"meta": {
+						"special": ["date-created"],
+						"interface": "datetime",
+						"readonly": true,
+						"hidden": true,
+						"width": "half",
+						"display": "datetime",
+						"display_options": {
+							"relative": true
+						}
+					},
+					"schema": {}
+				},
+				{
+					"field": "user_updated",
+					"type": "uuid",
+					"meta": {
+						"special": ["user-updated"],
+						"interface": "select-dropdown-m2o",
+						"options": {
+							"template": "{{avatar}} {{first_name}} {{last_name}}"
+						},
+						"display": "user",
+						"readonly": true,
+						"hidden": true,
+						"width": "half"
+					},
+					"schema": {}
+				},
+				{
+					"field": "date_updated",
+					"type": "timestamp",
+					"meta": {
+						"special": ["date-updated"],
+						"interface": "datetime",
+						"readonly": true,
+						"hidden": true,
+						"width": "half",
+						"display": "datetime",
+						"display_options": {
+							"relative": true
+						}
+					},
+					"schema": {}
 				}
-			},
-			{
-				"field": "status",
-				"type": "string",
-				"meta": {
-					"width": "full",
-					"options": {
-						// You might choose to customize these options based on the users request
-						"choices": [
-							{
-								"text": "$t:published",
-								"value": "published",
-								"color": "var(--theme--primary)"
-							},
-							{
-								"text": "$t:draft",
-								"value": "draft",
-								"color": "var(--theme--foreground)"
-							},
-							{
-								"text": "$t:archived",
-								"value": "archived",
-								"color": "var(--theme--warning)"
-							}
-						]
-					},
-					"interface": "select-dropdown",
-					"display": "labels",
-					"display_options": {
-						"showAsDot": true,
-						"choices": [
-							{
-								"text": "$t:published",
-								"value": "published",
-								"color": "var(--theme--primary)",
-								"foreground": "var(--theme--primary)",
-								"background": "var(--theme--primary-background)"
-							},
-							{
-								"text": "$t:draft",
-								"value": "draft",
-								"color": "var(--theme--foreground)",
-								"foreground": "var(--theme--foreground)",
-								"background": "var(--theme--background-normal)"
-							},
-							{
-								"text": "$t:archived",
-								"value": "archived",
-								"color": "var(--theme--warning)",
-								"foreground": "var(--theme--warning)",
-								"background": "var(--theme--warning-background)"
-							}
-						]
-					}
-				},
-				"schema": {
-					"default_value": "draft",
-					"is_nullable": false
-				}
-			},
-			{
-				"field": "sort",
-				"type": "integer",
-				"meta": {
-					"interface": "input",
-					"hidden": true
-				},
-				"schema": {}
-			},
-			{
-				"field": "user_created",
-				"type": "uuid",
-				"meta": {
-					"special": ["user-created"],
-					"interface": "select-dropdown-m2o",
-					"options": {
-						"template": "{{avatar}} {{first_name}} {{last_name}}"
-					},
-					"display": "user",
-					"readonly": true,
-					"hidden": true,
-					"width": "half"
-				},
-				"schema": {}
-			},
-			{
-				"field": "date_created",
-				"type": "timestamp",
-				"meta": {
-					"special": ["date-created"],
-					"interface": "datetime",
-					"readonly": true,
-					"hidden": true,
-					"width": "half",
-					"display": "datetime",
-					"display_options": {
-						"relative": true
-					}
-				},
-				"schema": {}
-			},
-			{
-				"field": "user_updated",
-				"type": "uuid",
-				"meta": {
-					"special": ["user-updated"],
-					"interface": "select-dropdown-m2o",
-					"options": {
-						"template": "{{avatar}} {{first_name}} {{last_name}}"
-					},
-					"display": "user",
-					"readonly": true,
-					"hidden": true,
-					"width": "half"
-				},
-				"schema": {}
-			},
-			{
-				"field": "date_updated",
-				"type": "timestamp",
-				"meta": {
-					"special": ["date-updated"],
-					"interface": "datetime",
-					"readonly": true,
-					"hidden": true,
-					"width": "half",
-					"display": "datetime",
-					"display_options": {
-						"relative": true
-					}
-				},
-				"schema": {}
+			],
+			"schema": {}, // Always send empty object for new collection unless creating a folder collection
+			"meta": {
+				"sort_field": "sort",
+				"archive_field": "status",
+				"archive_value": "archived",
+				"unarchive_value": "draft",
+				"singleton": false
 			}
-		],
-		"schema": {}, // Always send empty object for new collection unless creating a folder collection
-		"meta": {
-			"sort_field": "sort",
-			"archive_field": "status",
-			"archive_value": "archived",
-			"unarchive_value": "draft",
-			"singleton": false
 		}
-	}
+	]
 }
 ```
 
