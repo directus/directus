@@ -132,29 +132,28 @@ export async function fetchRecords(
 	}
 
 	// QUERY_LIMIT_MAX can silently clamp limit=-1, and a short page is indistinguishable from a clamped one.
-	// Continue until an empty page so mirror never mistakes a truncated fetch for the complete collection.
+	// Continue until pages are exhausted so mirror never mistakes a truncated fetch for the complete set.
 	//
-	// Pages advance by keyset (sort by PK, filter PK strictly greater than the last kept row), not offset:
-	// offset pages shift under concurrent writes — an insert re-serves a row (caught as a duplicate below),
-	// but a DELETE silently skips one, and a skipped row exports as absent, which a later mirror push turns
-	// into a target deletion. Sort and _gt evaluate in the same database collation, so the cursor is
-	// consistent with page order.
+	// Pages advance by OFFSET WITH A ONE-ROW OVERLAP: each follow-up page starts at the last row already
+	// kept, and that first row must match it. Offset pages shift under concurrent writes — an insert
+	// re-serves a row, a DELETE silently skips one, and a skipped row exports as absent, which a later
+	// mirror push turns into a target deletion — and a shifted boundary breaks the overlap in both
+	// directions, failing loud instead. Keyset paging (filter PK _gt cursor) is NOT an option: the query
+	// validator forbids _gt on uuid fields (get-filter-operators-for-type.ts), which most system PKs are.
 	const records: Record<string, unknown>[] = [];
 	const seen = new Set<string>();
-	let cursor: string | number | undefined;
+	let last: string | undefined;
 
 	for (;;) {
+		const offset = records.length === 0 ? undefined : records.length - 1;
+
 		let response: unknown;
 
 		try {
 			response = await client.request(() => ({
 				path: source.endpoint,
 				method: 'GET',
-				params: {
-					limit: -1,
-					sort: source.primaryKey,
-					...(cursor === undefined ? {} : { filter: { [source.primaryKey]: { _gt: cursor } } }),
-				},
+				params: { limit: -1, sort: source.primaryKey, ...(offset === undefined ? {} : { offset }) },
 			}));
 		} catch (error) {
 			throw mapRequestError(error, credential.url);
@@ -176,39 +175,57 @@ export async function fetchRecords(
 				? (response as Record<string, unknown>[])
 				: (response as Record<string, unknown>[]).filter((record) => !drop(record));
 
-		if (rows.length === 0) {
+		if (offset === undefined && rows.length === 0) {
 			// An empty FIRST page is ambiguous: a genuinely empty collection, or QUERY_LIMIT_MAX=0 — the
 			// server accepts a zero cap (sanitize-query checks `>= 0`) and clamps limit=-1 to zero rows,
 			// which reads exactly like emptiness. Mirror would turn that into "delete every target row",
 			// so the two must be split: validate-query rejects any explicit limit above the cap, so a
 			// limit=1 probe answers 400 on a zero-cap instance and 200 on a healthy one.
-			if (records.length === 0) {
-				try {
-					await client.request(() => ({
-						path: source.endpoint,
-						method: 'GET',
-						params: { limit: 1, sort: source.primaryKey },
-					}));
-				} catch (error) {
-					throw new CliError(
-						'CONFIG',
-						`The instance rejected a limit=1 read of ${source.endpoint} after an empty limit=-1 read — QUERY_LIMIT_MAX is 0, so every list reads as empty.`,
-						{
-							hint: 'A zero row cap would export empty collections and let a mirror push delete real target rows. Fix QUERY_LIMIT_MAX on the instance, then re-run.',
-							detail: mapRequestError(error, credential.url).message,
-						},
-					);
-				}
+			try {
+				await client.request(() => ({
+					path: source.endpoint,
+					method: 'GET',
+					params: { limit: 1, sort: source.primaryKey },
+				}));
+			} catch (error) {
+				throw new CliError(
+					'CONFIG',
+					`The instance rejected a limit=1 read of ${source.endpoint} after an empty limit=-1 read — QUERY_LIMIT_MAX is 0, so every list reads as empty.`,
+					{
+						hint: 'A zero row cap would export empty collections and let a mirror push delete real target rows. Fix QUERY_LIMIT_MAX on the instance, then re-run.',
+						detail: mapRequestError(error, credential.url).message,
+					},
+				);
 			}
 
 			return records;
 		}
 
+		let fresh = rows;
+
+		if (offset !== undefined) {
+			// The overlap row is the consistency check: any concurrent insert or delete before the boundary
+			// shifts what lives at this offset, and a silent shift either re-serves or SKIPS a row — a
+			// skipped row exports as absent, which a later mirror push turns into a target deletion.
+			const overlapPk = rows[0]?.[source.primaryKey];
+
+			if (overlapPk === undefined || String(overlapPk) !== last) {
+				throw new CliError('HTTP', `${source.endpoint} shifted while paging — the overlap row changed.`, {
+					hint: 'Concurrent writes moved the pages mid-fetch; re-run the command.',
+				});
+			}
+
+			fresh = rows.slice(1);
+
+			// Only the overlap row came back: the real rows are exhausted.
+			if (fresh.length === 0) return records;
+		}
+
 		// Every consumer keys on the primary key: pull writes artifacts the reader would refuse without
 		// one, and reconcile/unchanged comparisons would key on the string "undefined". A missing key
-		// (field permissions can hide columns) fails here, before anything is written or compared; the
-		// duplicate check guards the keyset invariant (a _gt cursor can never legally re-serve a key).
-		for (const record of rows) {
+		// (field permissions can hide columns) fails here, before anything is written or compared; a
+		// repeated key within the fetch means the server broke its sort and pages cannot be trusted.
+		for (const record of fresh) {
 			const pk = record[source.primaryKey];
 
 			if (typeof pk !== 'string' && typeof pk !== 'number') {
@@ -221,15 +238,15 @@ export async function fetchRecords(
 
 			if (seen.has(key)) {
 				throw new CliError('HTTP', `${source.endpoint} returned primary key "${key}" more than once.`, {
-					hint: 'The server re-served a page row mid-fetch; re-run the command.',
+					hint: 'Unstable pages mid-fetch; re-run the command.',
 				});
 			}
 
 			seen.add(key);
-			cursor = pk;
+			last = key;
 		}
 
-		records.push(...rows);
+		records.push(...fresh);
 	}
 }
 

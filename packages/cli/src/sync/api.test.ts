@@ -272,9 +272,9 @@ describe('fetchRecords', () => {
 	it('pulls the whole collection with limit -1 and the token on the wire, returning records verbatim', async () => {
 		// A data pull must fetch the entire set (limit -1) keyed by the primary key; the intercept only
 		// matches when both ride the query, and the endpoint is authenticated so the token must be present.
-		// The follow-up probe (keyset filter past the last row served) must come back empty before fetch
-		// trusts the set is complete — a QUERY_LIMIT_MAX clamp is silent, so a single response can never
-		// prove exhaustion.
+		// The follow-up probe overlaps by one row (offset at the last kept row) and must return ONLY that
+		// row before fetch trusts the set is complete — a QUERY_LIMIT_MAX clamp is silent, so a single
+		// response can never prove exhaustion.
 
 		// Records carrying a nested object: fetch returns them untouched.
 		// Collection records pass through unchanged; canonicalization is the store's job.
@@ -298,10 +298,10 @@ describe('fetchRecords', () => {
 			.intercept({
 				path: '/items/articles',
 				method: 'GET',
-				query: { limit: '-1', sort: 'id', filter: JSON.stringify({ id: { _gt: 2 } }) },
+				query: { limit: '-1', sort: 'id', offset: '1' },
 				headers: { authorization: `Bearer ${token}` },
 			})
-			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
+			.reply(200, { data: [records[1]] }, { headers: { 'content-type': 'application/json' } });
 
 		const result = await fetchRecords(credential, {
 			collection: 'articles',
@@ -317,25 +317,22 @@ describe('fetchRecords', () => {
 		// A deployment with QUERY_LIMIT_MAX clamps limit -1 down to the cap WITHOUT an error — a single
 		// request would silently drop every later row, and downstream that is data loss (mirror deletes
 		// what it did not see; the collision guard cannot see an occupied PK beyond the cap). The fetch
-		// must keep paging past short pages by keyset cursor — only an EMPTY page proves exhaustion.
+		// must keep paging past short pages, each follow-up overlapping one row — only a page carrying
+		// nothing beyond its overlap row proves exhaustion.
 
-		const pages: { cursor: number | undefined; rows: { id: number }[] }[] = [
-			{ cursor: undefined, rows: [{ id: 1 }, { id: 2 }] },
-			{ cursor: 2, rows: [{ id: 3 }] },
-			{ cursor: 3, rows: [] },
+		const pages: { offset: string | undefined; rows: { id: number }[] }[] = [
+			{ offset: undefined, rows: [{ id: 1 }, { id: 2 }] },
+			{ offset: '1', rows: [{ id: 2 }, { id: 3 }] },
+			{ offset: '2', rows: [{ id: 3 }] },
 		];
 
-		for (const { cursor, rows } of pages) {
+		for (const { offset, rows } of pages) {
 			agent
 				.get('https://cms.example.com')
 				.intercept({
 					path: '/items/articles',
 					method: 'GET',
-					query: {
-						limit: '-1',
-						sort: 'id',
-						...(cursor === undefined ? {} : { filter: JSON.stringify({ id: { _gt: cursor } }) }),
-					},
+					query: { limit: '-1', sort: 'id', ...(offset === undefined ? {} : { offset }) },
 					headers: { authorization: `Bearer ${token}` },
 				})
 				.reply(200, { data: rows }, { headers: { 'content-type': 'application/json' } });
@@ -426,29 +423,46 @@ describe('fetchRecords', () => {
 		expect((error as CliError).message).toContain('"id" primary key');
 	});
 
-	it('refuses a primary key the server re-serves across pages', async () => {
-		// A _gt cursor can never legally re-serve a key, so a repeat means the server broke the keyset
-		// invariant (collation quirk, misapplied filter). Writing it would produce a duplicate-PK artifact
-		// the reader refuses; failing the fetch keeps the export honest and the fix is simply re-running.
-		const pages: { cursor: number | undefined; rows: { id: number }[] }[] = [
-			{ cursor: undefined, rows: [{ id: 1 }] },
-			{ cursor: 1, rows: [{ id: 1 }] },
+	it('refuses when the overlap row changes between pages — the pages shifted mid-fetch', async () => {
+		// Each follow-up page starts at the last row already kept, so its first row must BE that row. A
+		// concurrent insert or delete before the boundary shifts what lives at the offset — silently
+		// re-serving or SKIPPING a row (a skipped row exports as absent, which mirror turns into a target
+		// deletion). The broken overlap fails the fetch; the fix is simply re-running.
+		const pages: { offset: string | undefined; rows: { id: number }[] }[] = [
+			{ offset: undefined, rows: [{ id: 1 }] },
+			{ offset: '0', rows: [{ id: 2 }] },
 		];
 
-		for (const { cursor, rows } of pages) {
+		for (const { offset, rows } of pages) {
 			agent
 				.get('https://cms.example.com')
 				.intercept({
 					path: '/items/articles',
 					method: 'GET',
-					query: {
-						limit: '-1',
-						sort: 'id',
-						...(cursor === undefined ? {} : { filter: JSON.stringify({ id: { _gt: cursor } }) }),
-					},
+					query: { limit: '-1', sort: 'id', ...(offset === undefined ? {} : { offset }) },
 				})
 				.reply(200, { data: rows }, { headers: { 'content-type': 'application/json' } });
 		}
+
+		const error = await fetchRecords(credential, {
+			collection: 'articles',
+			endpoint: '/items/articles',
+			primaryKey: 'id',
+			singleton: false,
+		}).catch((error: unknown) => error);
+
+		expect(error).toBeInstanceOf(CliError);
+		expect(error).toMatchObject({ code: 'HTTP' });
+		expect((error as CliError).message).toContain('shifted while paging');
+	});
+
+	it('refuses a primary key repeated within a page', async () => {
+		// A duplicate inside one response means the server broke its sort or served junk; writing it would
+		// produce a duplicate-PK artifact the data-store reader refuses anyway — fail at the boundary.
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
+			.reply(200, { data: [{ id: 1 }, { id: 1 }] }, { headers: { 'content-type': 'application/json' } });
 
 		const error = await fetchRecords(credential, {
 			collection: 'articles',
@@ -465,9 +479,9 @@ describe('fetchRecords', () => {
 	it('drops server-derived rows before validation and ends paging when only derived rows remain', async () => {
 		// The server appends the app-access minimal permissions (system: true, NO id) to every
 		// authenticated /permissions read, AFTER the query is applied to the real rows. So every page
-		// carries them: they must not trip the key-less refusal, must not advance the keyset cursor
-		// (the second request filters past id 1, the last REAL row), and a page of only derived rows
-		// means the real rows are exhausted.
+		// carries them: they must not trip the key-less refusal, must not count toward the paging offset
+		// (the follow-up request starts at offset 0 — one real row kept — not 1), and a page carrying
+		// nothing real beyond its overlap row means the real rows are exhausted.
 		const derived = { policy: null, collection: 'directus_settings', action: 'read', system: true };
 
 		agent
@@ -477,12 +491,8 @@ describe('fetchRecords', () => {
 
 		agent
 			.get('https://cms.example.com')
-			.intercept({
-				path: '/permissions',
-				method: 'GET',
-				query: { limit: '-1', sort: 'id', filter: JSON.stringify({ id: { _gt: 1 } }) },
-			})
-			.reply(200, { data: [derived] }, { headers: { 'content-type': 'application/json' } });
+			.intercept({ path: '/permissions', method: 'GET', query: { limit: '-1', sort: 'id', offset: '0' } })
+			.reply(200, { data: [{ id: 1, policy: 'p1' }, derived] }, { headers: { 'content-type': 'application/json' } });
 
 		const result = await fetchRecords(credential, {
 			collection: 'directus_permissions',

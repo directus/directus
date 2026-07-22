@@ -127,18 +127,16 @@ export function mockList(agent: MockAgent, path: string, records: Record<string,
 		.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
 
 	if (records.length > 0) {
-		// The exhaustion probe advances by keyset: filter PK strictly greater than the last row served.
-		const last = records[records.length - 1]?.['id'];
-
+		// Pages overlap by one row: the exhaustion probe starts at the last kept row and returns only it.
 		agent
 			.get(SYNC_URL)
 			.intercept({
 				path,
 				method: 'GET',
-				query: { limit: '-1', sort: 'id', filter: JSON.stringify({ id: { _gt: last } }) },
+				query: { limit: '-1', sort: 'id', offset: String(records.length - 1) },
 				headers: { authorization: `Bearer ${SYNC_TOKEN}` },
 			})
-			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
+			.reply(200, { data: [records[records.length - 1]] }, { headers: { 'content-type': 'application/json' } });
 	} else {
 		// An empty first page triggers the zero-cap probe (limit=1); a healthy instance answers 200.
 		agent
