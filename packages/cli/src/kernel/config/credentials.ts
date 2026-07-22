@@ -8,27 +8,21 @@ import { CliError } from '../error.js';
 import { registerSecret } from '../secret.js';
 import { writeFileAtomic } from '../write.js';
 
+/** A static token or persisted login session bound to one Directus URL. */
 export type ResolvedCredential =
 	| { readonly kind: 'token'; readonly url: string; readonly token: string }
 	| { readonly kind: 'session'; readonly url: string; readonly profileName: string };
 
-// Not-found is a valid state, not an error: in a TTY the caller prompts, and
-// non-interactively it becomes a hard error. `envVar` names the token var to set
-// for a profile; a direct URL has none — it only accepts an explicit --token.
+// Callers decide whether a missing credential can prompt or must fail.
 type CredentialResolution =
 	| { readonly found: true; readonly credential: ResolvedCredential }
 	| { readonly found: false; readonly envVar: string | undefined };
 
-// A profile resolves from its env var and the saved store; a hand-typed URL
-// authenticates only with an explicit token, never the ambient environment.
 type CredentialQuery =
 	| { readonly target: 'profile'; readonly url: string; readonly profileName: string; readonly tokenFlag?: string }
 	| { readonly target: 'url'; readonly url: string; readonly tokenFlag?: string };
 
-/**
- * DIRECTUS_<PROFILE>_TOKEN, mirroring how Directus derives AUTH_<PROVIDER>_* /
- * STORAGE_<LOCATION>_* keys: uppercase the name, nothing else.
- */
+/** Return the profile-specific `DIRECTUS_<PROFILE>_TOKEN` variable name. */
 export function envTokenVar(profileName: string): string {
 	return `DIRECTUS_${profileName.toUpperCase()}_TOKEN`;
 }
@@ -82,8 +76,6 @@ export function resolveCredential(query: CredentialQuery): CredentialResolution 
 	return { found: false, envVar: envTokenVar(profileName) };
 }
 
-// `~/.directus/credentials.json`, machine-global across repos and worktrees.
-// Shape: { "<url>": { "<profile>": StoredCredential } }.
 type StoredCredential = string | AuthenticationData;
 type CredentialStore = Record<string, Record<string, StoredCredential>>;
 
@@ -151,10 +143,12 @@ export function saveCredential(url: string, profileName: string, token: string):
 	writeStored(url, profileName, token);
 }
 
+/** Remove a saved credential if present. */
 export function clearCredential(url: string, profileName: string): void {
 	writeStored(url, profileName, null);
 }
 
+/** SDK authentication storage backed by the profile credential store. */
 export function credentialStorage(url: string, profileName: string): AuthenticationStorage {
 	return {
 		get() {

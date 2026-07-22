@@ -7,7 +7,7 @@ import { CliError } from '../kernel/error.js';
 import { writeFileAtomic } from '../kernel/write.js';
 import { byCodepoint } from './codepoint.js';
 
-/** The publish marker and ownership manifest for an artifact generation. */
+/** The artifact ownership manifest filename. */
 export const METADATA_FILE = 'metadata.json';
 
 const OWNED_FILE = /^[a-z0-9-]*_[0-9a-f]{16}\.json$/;
@@ -142,7 +142,7 @@ function readArtifact<T extends Artifact>(dir: string, name: string, parse: (val
 	return artifact;
 }
 
-/** Write a complete artifact generation and publish its ownership manifest last. */
+/** Write artifact files, remove stale owned files, then update the ownership manifest. */
 export function writeArtifacts<T extends Artifact>(options: WriteArtifactsOptions<T>): ArtifactWriteResult {
 	const { dir, artifacts, body, manifestHint, metadata, preserve } = options;
 	mkdirSync(dir, { recursive: true });
@@ -176,9 +176,7 @@ export function writeArtifacts<T extends Artifact>(options: WriteArtifactsOption
 	const preserved: string[] = [];
 	const removed: string[] = [];
 
-	// Only files the previous manifest lists (and that match the owned pattern) are ever removed: the
-	// store never deletes a file it didn't write, so a stray user file in the directory survives every
-	// generation.
+	// Never infer ownership from the filename pattern alone; user files absent from the manifest survive.
 	for (const name of previous.files) {
 		if (targets.has(name) || !OWNED_FILE.test(name)) continue;
 
@@ -191,10 +189,8 @@ export function writeArtifacts<T extends Artifact>(options: WriteArtifactsOption
 		removed.push(name);
 	}
 
-	// The manifest is written LAST: read refuses a directory without it, so it is the publish marker for
-	// this generation. An interrupted first write — artifacts on disk, manifest not — reads back as
-	// "nothing to read" rather than a plausible partial set, and its `files` list is what the next read
-	// and the next cleanup treat as owned.
+	// Write the manifest last so a first interrupted write is not readable and ownership never names files
+	// this call has not processed. Existing generations are updated file-by-file, not transactionally.
 	const files = [...written, ...preserved].sort(byCodepoint);
 	const meta = metadata({ files, preserved, previousMetadata: previous.metadata });
 	writeFileAtomic(join(dir, METADATA_FILE), serializeCanonical(meta), 0o644);
@@ -202,7 +198,7 @@ export function writeArtifacts<T extends Artifact>(options: WriteArtifactsOption
 	return { written: [METADATA_FILE, ...written].sort(byCodepoint), removed: removed.sort(byCodepoint) };
 }
 
-/** Read and validate one committed artifact generation from its ownership manifest. */
+/** Read and validate the artifact set named by its ownership manifest. */
 export function readArtifacts<T extends Artifact, M>(
 	options: ReadArtifactsOptions<T, M>,
 ): { metadata: M; artifacts: T[] } {

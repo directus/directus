@@ -34,11 +34,13 @@ export async function promptToken(profileName: string): Promise<string> {
 	return token;
 }
 
+/** Persist a token and report success. */
 export function saveToken(ui: Ui, url: string, profileName: string, token: string): void {
 	saveCredential(url, profileName, token);
 	ui.success(`Saved a token for "${profileName}" to the credential store.`);
 }
 
+/** Prompt for credentials and open a persisted login session. */
 export async function promptLogin(url: string, profileName: string): Promise<Identity> {
 	const email = await ask(
 		text({ message: 'Email', validate: (v) => (v?.includes('@') ? undefined : 'Enter a valid email.') }),

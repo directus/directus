@@ -33,21 +33,14 @@ export interface PushOptions {
 }
 
 /**
- * Exported so diff previews the exact push these mappings produce (spec Q15) — a single source of truth
- * for how a mode reaches the schema and data wires, never a second copy that could drift.
- */
-/**
- * mode → schema diff mode: add and merge both take the additive schema diff (add never deletes); only
- * mirror computes a deleting diff.
+ * Map a user-facing mode to schema diff semantics. Add and merge are additive; mirror permits deletions.
  */
 export function schemaDiffMode(mode: Mode): 'merge' | 'mirror' {
 	return mode === 'mirror' ? 'mirror' : 'merge';
 }
 
 /**
- * mode → data import options: add inserts only, merge upserts, mirror upserts AND deletes rows absent
- * from the import set. The server requires mode=merge alongside dangerouslyAllowDelete, so mirror maps to
- * merge+flag rather than a wire "mirror" (which does not exist).
+ * Map a user-facing mode to import options. The API represents mirror as merge plus delete permission.
  */
 export function dataImportOptions(mode: Mode): { mode: 'add' | 'merge'; dangerouslyAllowDelete?: boolean } {
 	if (mode === 'add') return { mode: 'add' };
@@ -56,29 +49,22 @@ export function dataImportOptions(mode: Mode): { mode: 'add' | 'merge'; dangerou
 }
 
 /**
- * Resolve the effective mode: an explicit flag wins, else the project config's mode, else additive merge —
- * the path of least surprise, so deletions are always opted into rather than defaulted on. Exported so diff
- * resolves it identically and thus previews exactly the push this mode would run.
+ * Resolve flag over project config over additive merge, so deletions are never the default.
  */
 export function resolveMode(flag: Mode | undefined, projectConfig: ProjectConfig | undefined): Mode {
 	return flag ?? projectConfig?.mode ?? 'merge';
 }
 
 /**
- * Whether the data phase has nothing left to do: no committed data at all, or a checked batch with
- * nothing to send — EXCEPT under mirror, where an empty collection entry is itself an instruction (the
- * server deletes every target row absent from the batch), so a mirror batch always dry-runs and imports
- * no matter how few records it carries. Exported so diff answers "is the data a no-op" identically.
+ * Whether the data phase is done. Mirror never converges from record count alone because an empty
+ * collection entry can still delete target rows.
  */
 export function dataPhaseConverged(data: { skipped: true } | { skipped: false; records: number }, mode: Mode): boolean {
 	return data.skipped || (data.records === 0 && mode !== 'mirror');
 }
 
 /**
- * Run the data import as a dry-run — the server executes it and rolls it back — and summarize the plan.
- * Returns both the raw per-collection result (diff persists it into the --json payload) and the rendered
- * summary (the human plan and the deletion gate read it), so diff and push preview the same import through
- * one call instead of each assembling the dryRun option set and summarizing separately.
+ * Execute and roll back a data import, returning both its wire result and rendered summary.
  */
 export async function dryRunImport(
 	credential: ResolvedCredential,
@@ -90,10 +76,7 @@ export async function dryRunImport(
 	return { result, summary: summarizeImport(result, unchanged) };
 }
 
-// After the import, record sourceId → finalId for every system record sent, where finalId is the
-// server's remap of the sent pk (add mode on a conflict) or the sent pk itself. Identity entries are
-// included deliberately: they let a future reconcile skip a settled record and protect it from later
-// ambiguity. Content collections get no entries (no reconcile, pk-as-is). Persisted with writeIdMap.
+// Record each sent system identity so later pushes update the same target row instead of duplicating it.
 function updateIdMap(dataResult: DataPushPlan, importResult: ImportBatchResult): void {
 	let map = dataResult.map;
 
@@ -102,9 +85,7 @@ function updateIdMap(dataResult: DataPushPlan, importResult: ImportBatchResult):
 		const entries: Record<string, string> = {};
 
 		for (const { sourceId, sentPk } of records) {
-			// A withheld PK (collision guard) means the server assigned an id the response cannot report;
-			// writing any entry would bind the source to the WRONG row. The next push reconciles the created
-			// row by natural key and the map heals with the true id.
+			// A withheld PK receives an unreported server ID; guessing would bind the source to the wrong row.
 			if (sentPk === null) continue;
 
 			const finalPk = mapped[sentPk];
@@ -117,10 +98,6 @@ function updateIdMap(dataResult: DataPushPlan, importResult: ImportBatchResult):
 	writeIdMap(dataResult.idMapPath, map);
 }
 
-// The --json data block: always present so a consumer never guesses whether the data phase ran. Skipped
-// (no committed data) carries null-ish fields; a real run carries the mode, source, and the server's
-// per-collection response verbatim — or {} when the batch had nothing to send and the import was skipped
-// as converged, which is a checked outcome, not a skipped phase.
 interface PushDataReport {
 	mode: Mode;
 	source: string | null;
@@ -146,25 +123,18 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	const mode: Mode = resolveMode(options.mode, target.projectConfig);
 
-	// Print the resolved target before any network call so a profile NAMED staging pointing at prod's
-	// URL is visible before anything mutates. Human channel only; --json consumers get profile + target
-	// in the payload. Naming the authenticated identity here needs an extra request — deliberately deferred.
+	// Show the resolved URL before remote work so a misleading profile name is visible.
 	ctx.ui.info(`target: ${options.to} — ${url}`);
 
 	const result = await localDiff(target, schemaDiffMode(mode));
 
-	// The data phase prep runs before any plan display or gate: it fetches target records, reconciles, and
-	// (interactive) prompts on ambiguity, or refuses loudly in CI — all before a single mutation.
+	// Preparation may persist learned local identities, but all remote mutations remain behind the gates.
 	const dataResult = await prepareDataPush(target, mode, ctx);
 
 	const schema = summarizeDiff(result === null ? null : result.diff);
 
 	const schemaTotal = schema.added + schema.modified + schema.deleted;
 
-	// Both empty is the command's answer, not a failure: exit 0 and never reach an apply or import call.
-	// "Empty" data is either no committed data at all, or a checked merge/add batch with nothing left to
-	// send — every record proven already right on the target. Mirror never takes this path: even an empty
-	// collection entry instructs the server to delete, so its batch always proceeds to the dry-run/import.
 	if (result === null && dataPhaseConverged(dataResult, mode)) {
 		if (ctx.ui.json) {
 			ctx.ui.data({
@@ -195,15 +165,10 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	const allowDeletes = options.allowDeletes ?? false;
 	const yes = options.yes ?? false;
 
-	// The dry-run is INTERACTIVE ONLY: it runs the whole import transaction and rolls it back, so the plan
-	// shows the real created/updated/deleted per collection with PKs. CI skips it — flags are the contract
-	// and a dry-run doubles the push cost — so CI cannot know data deletions ahead of time (see the gate).
+	// CI skips the extra import transaction, so mirror requires explicit delete consent without a data plan.
 	let dataSummary: ImportSummary | undefined;
 
 	if (ctx.interactive && !dataResult.skipped) {
-		// A converged merge/add batch has nothing to dry-run (and the server has nothing to plan): the
-		// summary is the explicit zero, not a wire call. A mirror batch always dry-runs — its deletions
-		// live server-side and the batch content alone cannot name them.
 		dataSummary = dataPhaseConverged(dataResult, mode)
 			? emptyImportSummary()
 			: (await dryRunImport(credential, dataResult.batch, mode, dataResult.unchanged)).summary;
@@ -211,8 +176,6 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	const dataDeleted = dataSummary?.deleted ?? 0;
 
-	// Render the plan before any gate — the push's dry-run view — so the operator (or the CI log) sees what
-	// would change before a prompt or a refusal. --json stays silent here; its payload lands at the end.
 	if (!ctx.ui.json) {
 		if (result !== null) {
 			ctx.ui.info(`${count(schemaTotal, 'schema change')} to push to ${url}:`);
@@ -221,7 +184,6 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 		if (!dataResult.skipped) {
 			if (dataSummary !== undefined) {
-				// An all-zero plan is stated plainly — never a "data changes" header over a "no data changes" line.
 				if (hasImportChanges(dataSummary)) {
 					ctx.ui.info(`data changes to import to ${url}:`);
 					for (const line of dataSummary.lines) ctx.ui.print(line);
@@ -236,20 +198,14 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		}
 	}
 
-	// The invariant across every gate: --yes never authorizes deletions. Deletions require either
-	// --allow-deletes (the CI consent) or the interactive typed confirmation (the human consent).
-
-	// mirror in CI without --allow-deletes is refused outright: it can delete BOTH schema and data rows
-	// absent from the import set, and CI skips the dry-run, so the data deletions are unknowable here.
-	// Checked before the generic missing-confirmation gate so the operator gets the deletion-specific fix.
+	// --yes never authorizes deletion; CI mirror needs explicit consent because it skips the data dry-run.
 	if (!ctx.interactive && mode === 'mirror' && !allowDeletes) {
 		throw new CliError('USAGE', 'Refusing mirror mode in a non-interactive context without --allow-deletes.', {
 			hint: 'mirror can delete schema and data rows absent from the import set; pass --allow-deletes to consent, or use --mode merge.',
 		});
 	}
 
-	// A merge/add diff should never carry schema deletions, but guard: a deletion in CI still demands the
-	// --allow-deletes consent rather than riding in under --yes.
+	// Guard unexpected schema deletions under additive modes too.
 	if (!ctx.interactive && schema.deleted > 0 && !allowDeletes) {
 		throw new CliError('USAGE', `This push deletes ${count(schema.deleted, 'schema item')}.`, {
 			hint: '--yes does not cover deletions; pass --allow-deletes or use --mode merge.',
@@ -268,9 +224,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		if (!proceed) throw new CliError('USAGE', 'Push aborted; nothing was applied.');
 	}
 
-	// The last gate before the act: any destruction on the table — schema deletions OR data deletions the
-	// dry-run surfaced — that was not pre-authorized with --allow-deletes must be typed out in full. --yes
-	// cannot reach past this; the invariant holds.
+	// Interactive deletions require typed confirmation unless already authorized explicitly.
 	if (ctx.interactive && (schema.deleted > 0 || dataDeleted > 0) && !allowDeletes) {
 		const typed = await ask(
 			text({
@@ -308,8 +262,6 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	let importResult: ImportBatchResult | undefined;
 
 	if (!dataResult.skipped && dataPhaseConverged(dataResult, mode)) {
-		// A checked merge/add batch with nothing left to send: every record is already right on the target.
-		// The interactive plan already said so; say it here for the CI log, which saw no plan.
 		if (dataSummary === undefined) ctx.ui.info('no data changes to import.');
 	} else if (!dataResult.skipped) {
 		ctx.ui.info(`importing ${count(dataResult.collections, 'collection')}…`);
@@ -317,9 +269,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		try {
 			importResult = await importBatch(credential, dataResult.batch, dataImportOptions(mode));
 		} catch (error) {
-			// Partial failure: the schema landed but the import did not. Do not roll back (no rollback
-			// exists) — surface loudly that schema WAS applied and a re-run retries only the data (the schema
-			// diff will now be empty), then rethrow the enriched error.
+			// Schema apply has no rollback; make the partial commit and retry path explicit.
 			if (schemaApplied && error instanceof CliError) {
 				ctx.ui.warn('Schema was applied, but the data import failed. Re-run push to retry the data import.');
 
@@ -350,8 +300,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 			profile: options.to,
 			project: target.project,
 			mode,
-			// `applied` and the added/modified/deleted counts are schema-scoped (the data block carries the
-			// import detail); `changes` is the overall answer — a data-only push that imported rows is a change.
+			// Schema counts stay schema-scoped; changes includes schema or data work.
 			applied: schemaApplied,
 			changes: result !== null || dataChanged,
 			added: schema.added,

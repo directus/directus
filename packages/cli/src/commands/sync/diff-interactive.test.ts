@@ -12,9 +12,7 @@ import { writeSnapshotFiles } from '../../sync/store.js';
 import { diff } from './diff.js';
 import { seedProjectConfig, SYNC_TOKEN } from './sync.test-support.js';
 
-// vitest hoists these above the imports so the bindings resolve to the mocks. The prompts are mocked only
-// to PROVE they are never called — diff is read-only and must resolve an ambiguity by REPORTING it, never
-// by asking — and the api seam is mocked so the reconcile runs in isolation from the wire.
+// Prompts are mocked to prove diff reports ambiguities instead of resolving them interactively.
 vi.mock('@clack/prompts', () => ({
 	confirm: vi.fn(),
 	text: vi.fn(),
@@ -73,8 +71,7 @@ describe('interactive sync diff', () => {
 			return true;
 		});
 
-		// Non-CI so credential resolution consults the ambient token; the profile-specific env var is what
-		// resolveTarget reads without prompting.
+		// Interactive resolution still authenticates through the profile-specific environment variable.
 		vi.stubEnv('HOME', home);
 		vi.stubEnv('USERPROFILE', home);
 		vi.stubEnv('CI', '');
@@ -120,7 +117,6 @@ describe('interactive sync diff', () => {
 		expect(confirm).not.toHaveBeenCalled();
 		expect(text).not.toHaveBeenCalled();
 
-		// The dry-run ran once (diff always previews) and carried dryRun, never a committing import.
 		expect(importBatch).toHaveBeenCalledTimes(1);
 		expect(vi.mocked(importBatch).mock.calls[0]?.[2]).toMatchObject({ dryRun: true });
 
@@ -169,8 +165,6 @@ describe('interactive sync diff', () => {
 		expect(importBatch).toHaveBeenCalledTimes(1);
 		expect(vi.mocked(importBatch).mock.calls[0]?.[2]).toMatchObject({ dryRun: true });
 
-		// The deletions count as changes: the plan header renders (info → stderr) instead of the
-		// "matches the local snapshot" no-op copy.
 		expect(stderr.join('')).toContain('data changes to import to');
 		expect(stderr.join('')).not.toContain('matches the local snapshot');
 	});

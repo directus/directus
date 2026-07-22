@@ -12,10 +12,7 @@ import { writeSnapshotFiles } from '../../sync/store.js';
 import { push } from './push.js';
 import { seedProjectConfig, SYNC_TOKEN, SYNC_URL } from './sync.test-support.js';
 
-// vitest hoists these above the imports, so the bindings above resolve to the mocks. The prompts are
-// mocked to script the confirm/text/select answers, and the api seam is mocked so the interactive gate
-// and reconcile logic are tested in isolation from the wire — the assertions are about which gate fired,
-// whether apply/import ran, and what landed in the committed map.
+// Script prompts and isolate interactive gates/reconciliation from the network.
 vi.mock('@clack/prompts', () => ({
 	confirm: vi.fn(),
 	text: vi.fn(),
@@ -90,8 +87,7 @@ describe('interactive sync push', () => {
 			return true;
 		});
 
-		// Non-CI so credential resolution is allowed to consult the ambient token; the profile-specific
-		// env var is the source resolveTarget reads without prompting.
+		// Interactive resolution still authenticates through the profile-specific environment variable.
 		vi.stubEnv('HOME', home);
 		vi.stubEnv('USERPROFILE', home);
 		vi.stubEnv('CI', '');
@@ -110,8 +106,6 @@ describe('interactive sync push', () => {
 		seedSnapshot();
 	});
 
-	// A source→target data set seeded on disk so prepareDataPush has records to reconcile and import; the
-	// source URL keys the committed ID map's bucket.
 	const source = 'https://source.example.com';
 
 	function seedData(collections: Parameters<typeof writeDataFiles>[1]): void {
@@ -178,9 +172,7 @@ describe('interactive sync push', () => {
 	});
 
 	it('runs a dry-run import before the committing import in the interactive path', async () => {
-		// The interactive data plan is REAL: a dry-run import (rolled back server-side) produces the plan the
-		// operator approves, so it must run — and run before — the committing import. CI skips it (covered in
-		// the wire suite, where the import is registered exactly once with no dryRun).
+		// The approved plan must come from a rolled-back server import before the committing import.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hi' }] }]);
 		vi.mocked(importBatch).mockResolvedValue(importResult());
@@ -310,7 +302,6 @@ describe('interactive sync push', () => {
 		expect(optionValues(0)).toEqual(['target:t1', 'target:t2', 'create', 'abort']);
 		expect(optionValues(1)).toEqual(['target:t2', 'create', 'abort']);
 
-		// Both answers land in the committed map as distinct identities.
 		expect(readIdMap()).toEqual({
 			formatVersion: 1,
 			maps: { [source]: { [url]: { directus_roles: { sr1: 't1', sr2: 't2' } } } },
@@ -327,14 +318,12 @@ describe('interactive sync push', () => {
 		seedData([
 			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] },
 			{
-				// sort differs from the target row so the matched child still rides as a genuine update
 				collection: 'directus_access',
 				primaryKey: 'id',
 				records: [{ id: 'sa1', role: 'sr1', user: null, policy: null, sort: 1 }],
 			},
 		]);
 
-		// Reconcile fetches parents first (reversed dependency order): roles, then access.
 		vi.mocked(fetchRecords)
 			.mockResolvedValueOnce([
 				{ id: 't1', name: 'Editor' },
@@ -351,13 +340,11 @@ describe('interactive sync push', () => {
 		expect(select).toHaveBeenCalledTimes(1);
 		expect(fetchRecords).toHaveBeenCalledTimes(2);
 
-		// Both identities land in the committed map: the answered parent AND the child the answer unlocked.
 		expect(readIdMap()).toEqual({
 			formatVersion: 1,
 			maps: { [source]: { [url]: { directus_access: { sa1: 'ta2' }, directus_roles: { sr1: 't2' } } } },
 		});
 
-		// The committing import carries the child rewritten fully into target space — an update of ta2.
 		const batch = vi.mocked(importBatch).mock.calls.at(-1)?.[1];
 		const access = batch?.find((entry) => entry.collection === 'directus_access');
 
@@ -399,8 +386,6 @@ describe('interactive sync push', () => {
 
 		expect(access?.items).toEqual([{ id: 'sa1', role: 'sr1', user: null, policy: null }]);
 
-		// The post-import map update records only the identity facts of what was sent — no cross-mapping to
-		// t1 or t2 exists, because 'create' answered that neither is this record.
 		expect(readIdMap()).toEqual({
 			formatVersion: 1,
 			maps: { [source]: { [url]: { directus_access: { sa1: 'sa1' }, directus_roles: { sr1: 'sr1' } } } },
@@ -423,7 +408,6 @@ describe('interactive sync push', () => {
 			},
 		]);
 
-		// Reversed reconcile order: roles first, then access. The target holds one user-attached grant.
 		vi.mocked(fetchRecords)
 			.mockResolvedValueOnce([{ id: 't1', name: 'Editor' }])
 			.mockResolvedValueOnce([{ id: 'ta-user', role: 't1', user: 'u9', policy: null }]);
@@ -523,8 +507,7 @@ describe('interactive sync push', () => {
 	});
 
 	it('aborts the push and touches neither apply nor import when the operator aborts an ambiguity', async () => {
-		// Choosing abort at an ambiguity stops the push before any mutation — the reconcile refusal is a hard
-		// stop, not a skip.
+		// Aborting identity resolution must stop before any remote mutation.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
 

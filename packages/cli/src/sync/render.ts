@@ -1,11 +1,7 @@
 import { byCodepoint } from './codepoint.js';
 import type { DiffOp, DiffRelationEntry, ImportBatchResult, SchemaDiff } from './contract.js';
 
-// Pure diff renderer: turns a SchemaDiff into a human summary the diff command prints and the
-// push slice reuses. No I/O, no colour — the caller decides how to surface `lines`, and the
-// counts drive gating. Classification and ordering key off the validated addressing keys and op
-// kinds; everything else on an op stays opaque.
-
+/** Counts and deterministic terminal lines for a schema diff. */
 export interface DiffSummary {
 	readonly added: number;
 	readonly modified: number;
@@ -25,14 +21,12 @@ interface RenderItem {
 	paths: string[];
 }
 
+/** Summarize a schema diff for deterministic terminal output. */
 export function summarizeDiff(diff: SchemaDiff | null): DiffSummary {
-	// A null diff is the server's "schema already matches" answer; the zero summary lets both commands
-	// treat "no schema change" and a genuinely empty diff through one shape, killing the duplicated
-	// { added: 0, … } literal and its cast at the call sites.
+	// Normalize the server's no-change response to the same summary shape.
 	if (diff === null) return { added: 0, modified: 0, deleted: 0, lines: [] };
 
-	// Grouped collections → fields → systemFields → relations; each group codepoint-sorted by
-	// rendered name so the output is byte-identical run to run.
+	// Preserve group order and sort within each group for deterministic output.
 	const items: RenderItem[] = [
 		...toItems(diff.collections, (item) => `collection ${item.collection}`),
 		...toItems(diff.fields, (item) => `field ${item.collection}.${item.field}`),
@@ -61,7 +55,6 @@ function toItems<T extends { diff: DiffOp[] }>(entries: T[], name: (entry: T) =>
 	return entries
 		.map((entry) => {
 			const change = classify(entry.diff);
-			// Only modifications name their touched paths; an add/delete is the whole item.
 			return { name: name(entry), change, paths: change === 'modified' ? changedPaths(entry.diff) : [] };
 		})
 		.sort((a, b) => byCodepoint(a.name, b.name));
@@ -79,7 +72,7 @@ function isRoot(op: DiffOp): boolean {
 	return op.path === undefined || op.path.length === 0;
 }
 
-// Unique dot-joined paths in first-seen order — the wire diff order is deterministic, so no sort.
+// Preserve first-seen wire order while removing duplicate paths.
 function changedPaths(ops: DiffOp[]): string[] {
 	const seen = new Set<string>();
 
@@ -92,7 +85,6 @@ function changedPaths(ops: DiffOp[]): string[] {
 }
 
 function nameRelation(entry: DiffRelationEntry): string {
-	// A relation with no related_collection (e.g. an m2a) has no target to point at, so drop the arrow.
 	const target = entry.related_collection === null ? '' : ` → ${entry.related_collection}`;
 	return `relation ${entry.collection}.${entry.field}${target}`;
 }
@@ -103,11 +95,7 @@ function renderLine(item: RenderItem): string {
 	return `${token}  ${item.name}${paths}`;
 }
 
-// Pure renderer for the data plan the dry-run (or real import) returns: per-collection created/updated/
-// deleted counts, with the deleted PKs named so a destructive plan is legible before it is approved. The
-// server's response keys are existing (rows the import matched and updated), new (inserted), and deleted
-// (removed under mirror). No I/O — the caller prints `lines`, the counts feed the deletion gate.
-
+/** Counts and deterministic terminal lines for a data import. */
 export interface ImportSummary {
 	readonly created: number;
 	readonly updated: number;
@@ -115,8 +103,7 @@ export interface ImportSummary {
 	readonly lines: string[];
 }
 
-// How many deleted PKs to spell out before eliding: enough to recognize a small destructive plan, capped
-// so a large one does not flood the terminal. The elision is a literal '…', never a count.
+// Keep destructive plans recognizable without flooding the terminal.
 const MAX_SHOWN_DELETED = 5;
 
 function renderImportLine(
@@ -133,22 +120,20 @@ function renderImportLine(
 }
 
 /**
- * The all-zero plan, for a batch with nothing to send: the import (and its dry-run) is skipped entirely,
- * so there is no server response to summarize, but the plan still needs an explicit shape to render.
+ * Return an explicit zero summary when no import request was needed.
  */
 export function emptyImportSummary(): ImportSummary {
 	return { created: 0, updated: 0, deleted: 0, lines: ['no data changes'] };
 }
 
 /**
- * Whether a summarized import carries any real change. The one definition of "the data changed" — the
- * changes flags in both JSON reports and the plan's header/no-op copy all read it, so they can never
- * disagree on what counts as a change.
+ * Whether an import summary contains any created, updated, or deleted rows.
  */
 export function hasImportChanges(summary: ImportSummary): boolean {
 	return summary.created > 0 || summary.updated > 0 || summary.deleted > 0;
 }
 
+/** Summarize an import response, subtracting rows known to have been unchanged. */
 export function summarizeImport(
 	result: ImportBatchResult,
 	unchanged?: ReadonlyMap<string, ReadonlySet<string>>,
@@ -158,8 +143,7 @@ export function summarizeImport(
 	let deleted = 0;
 	const lines: string[] = [];
 
-	// Codepoint-sorted collection order so the plan is byte-identical run to run regardless of how the
-	// server keyed its response object.
+	// Server response object order must not affect terminal output.
 	for (const name of Object.keys(result.collections).sort(byCodepoint)) {
 		const collection = result.collections[name];
 		if (collection === undefined) continue;
@@ -179,8 +163,6 @@ export function summarizeImport(
 		updated += collectionUpdated;
 		deleted += collectionDeleted;
 
-		// An all-zero collection is a no-op line the reader does not need — every committed collection ships
-		// in the batch for uniformity, but only the ones that actually change earn a line.
 		if (collectionCreated === 0 && collectionUpdated === 0 && collectionDeleted === 0) continue;
 
 		lines.push(
@@ -194,8 +176,7 @@ export function summarizeImport(
 		);
 	}
 
-	// A wholly-zero plan states so explicitly rather than rendering nothing, so the combined push plan
-	// never leaves the data section blank and ambiguous.
+	// Never leave a rendered data section blank and ambiguous.
 	if (lines.length === 0) lines.push('no data changes');
 
 	return { created, updated, deleted, lines };

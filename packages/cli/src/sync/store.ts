@@ -15,6 +15,7 @@ import {
 /** Files written and stale schema artifacts removed by a snapshot write. */
 export type WriteResult = ArtifactWriteResult;
 
+/** Controls which collections a scoped snapshot write may replace or remove. */
 export interface WriteScope {
 	/** Whether a collection is inside the pull scope and may be replaced or removed. */
 	readonly inScope: (collection: string) => boolean;
@@ -157,11 +158,8 @@ export function writeSnapshotFiles(dir: string, snapshot: Snapshot, scope?: Writ
 		metadata: ({ files, preserved, previousMetadata }) => {
 			const metadata = header(snapshot, files);
 
-			// The version tag drives diff scoping server-side, so metadata must describe what the artifact SET
-			// covers, not what this request fetched. A scoped pull that leaves out-of-scope files from a previous
-			// FULL set in place still represents a full schema, so keep the FULL tag; trimming it to the
-			// response's partial tag — or, conversely, tagging a genuinely partial set as full — is exactly the
-			// mass-delete hazard. Otherwise the set's version is the response's, stored honestly as returned.
+			// Metadata describes the assembled artifact set, not only this response. Preserving files from a
+			// prior full set must preserve its full tag or a later mirror diff could delete omitted collections.
 			if (scope !== undefined && preserved.length > 0 && previousVersion(previousMetadata) === SNAPSHOT_FULL) {
 				metadata.snapshot['version'] = SNAPSHOT_FULL;
 			}

@@ -29,9 +29,6 @@ afterEach(() => {
 	for (const dir of dirs.splice(0)) rmSync(dir, { recursive: true, force: true });
 });
 
-// One realistic snapshot: two user collections carrying nested unknown keys, several
-// fields with nested objects, one relation, and a single system field for directus_users.
-// The nested `special` array exercises the rule that array order is data (never reordered).
 function fixture(): Snapshot {
 	return {
 		version: 1,
@@ -73,8 +70,6 @@ function fixture(): Snapshot {
 	};
 }
 
-// A minimal three-collection full snapshot (version 1) for the scoped-write tests: each collection
-// carries one field so a preserved file has real content to byte-compare and to reassemble on read.
 function abc(): Snapshot {
 	return {
 		version: 1,
@@ -123,8 +118,6 @@ function canonical(snapshot: Snapshot): Snapshot {
 	};
 }
 
-// Reverse every top-level array and every object's key order at every depth, while leaving
-// nested array order intact — the exact transformations the serializer must render invisible.
 function shuffle(value: unknown): unknown {
 	if (Array.isArray(value)) return value.map(shuffle);
 
@@ -366,14 +359,11 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	});
 
 	it('treats absent metadata as a first pull but refuses a corrupt one on the next write', () => {
-		// readManifest used to swallow malformed metadata as "empty", which orphaned the previous
-		// generation's owned files as permanently unowned artifacts a later push could resurrect.
+		// Corrupt ownership state must not orphan files that a later push could resurrect.
 		const dir = tempDir();
 
-		// Absent metadata.json is a genuine first pull: nothing is owned yet, so the write succeeds.
 		expect(() => writeSnapshotFiles(dir, fixture())).not.toThrow();
 
-		// Corrupting it must not read back as "empty" on the next write.
 		writeFileSync(join(dir, 'metadata.json'), '{ not valid json');
 
 		const error = expectCliError(() => writeSnapshotFiles(dir, fixture()));

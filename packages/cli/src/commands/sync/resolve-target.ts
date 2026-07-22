@@ -5,10 +5,7 @@ import { loadConfig, type ProjectConfig, resolveProfile } from '../../kernel/con
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 
-/**
- * The config → profile → credential → artifact-dir preamble shared by every sync command. Extracted
- * so pull and diff resolve their target through one path and their error semantics can never drift.
- */
+/** A resolved sync endpoint and its project-scoped artifact paths. */
 export interface Target {
 	readonly url: string;
 	readonly credential: ResolvedCredential;
@@ -18,24 +15,16 @@ export interface Target {
 	readonly idMapPath: string;
 	/**
 	 * The config entry for this project, or undefined when the project is not declared (only `default`
-	 * may go undeclared). Later slices read its scope defaults; the pull layer already does.
+	 * may go undeclared).
 	 */
 	readonly projectConfig: ProjectConfig | undefined;
 }
 
-// A project name is a single path segment (<dir>/<project>/…), so it must carry no separators or dots:
-// a name that could climb out of the artifact tree is refused before it is ever joined into a path.
+// Project names become path segments, so separators and traversal components are forbidden.
 const PROJECT_NAME = /^[a-z0-9][a-z0-9-_]*$/i;
 
-// Containment enforced here — the only production constructor of these dirs and the layer that knows the
-// project boundary — so repo content can never point sync writes or deletes outside the repo. Both the
-// configurable `directory` root and the per-project leaves are checked, because either can be redirected:
-// the `directory` key is a repo-relative path a config author controls, and the leaves live under it. The
-// check anchors on the deepest EXISTING ancestor of `dir`, not `dir` itself: a symlinked ancestor (e.g. a
-// committed `directus` -> /elsewhere) with a not-yet-created tail would pass an exists-only check and
-// mkdir would then build the tail through the symlink. Components below the checked ancestor are created
-// by pull as real directories, so containment of that ancestor contains every write. realpathSync
-// resolves symlinks on both sides; internal symlinks that stay inside are fine, an escape is refused.
+// Resolve the deepest existing ancestor: a symlinked ancestor with a not-yet-created tail could otherwise
+// redirect mkdir and every later write outside the project.
 function assertContained(dir: string, realRoot: string): void {
 	let probe = dir;
 
@@ -61,8 +50,6 @@ export function resolveTarget(profileName: string, ctx: CliContext, projectName:
 
 	const { url } = resolveProfile(loaded.config, profileName);
 
-	// Never prompts. Authentication decisions are recorded once at profile / scope-definition time
-	// and only read back here, so a sync command behaves identically locally and in CI.
 	const resolution = resolveCredential({ target: 'profile', url, profileName });
 
 	if (!resolution.found) {
@@ -92,9 +79,7 @@ export function resolveTarget(profileName: string, ctx: CliContext, projectName:
 		});
 	}
 
-	// Anchor artifacts to the config file's directory, not the invocation cwd, so they land in the repo
-	// no matter where the command runs from. `<directory>/<project>/{schema,data,id_map.json}` is the
-	// committable layout; `directory` is the configured (repo-relative, possibly nested) root.
+	// Anchor artifacts to the config directory so invocation cwd cannot move committed output.
 	const projectRoot = dirname(loaded.path);
 	const directoryRoot = join(projectRoot, loaded.config.directory);
 	const projectDir = join(directoryRoot, projectName);
@@ -102,9 +87,7 @@ export function resolveTarget(profileName: string, ctx: CliContext, projectName:
 	const dataDir = join(projectDir, 'data');
 	const idMapPath = join(projectDir, 'id_map.json');
 
-	// The configured root, both leaves, and the id map's parent are each containment-checked: any of them
-	// can be redirected out of the repo via a symlink or a `..`-bearing `directory`, and each is a write
-	// target, so each must resolve inside the project.
+	// Check each write root independently because any component may already be a symlink.
 	const realRoot = realpathSync(projectRoot);
 
 	assertContained(directoryRoot, realRoot);

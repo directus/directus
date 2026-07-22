@@ -17,8 +17,7 @@ function parseList(value: string): string[] {
 export function registerSync(program: Command, getContext: () => CliContext): void {
 	const sync = program.command('sync').description('Sync schema and configuration between Directus instances');
 
-	// Bare `d6s sync` runs the interactive wizard (spec Q13). Commander fires a parent's action only when
-	// no subcommand is given, so the subcommands below still work and `d6s sync --help` still prints help.
+	// Commander runs this action only when no sync subcommand is given.
 	sync.action(() => wizard(getContext()));
 
 	sync
@@ -31,7 +30,6 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 			'All collections except these (comma-separated); pulls a partial snapshot',
 			parseList,
 		)
-		// Built from the exported constant so the resource list in help can never drift from the graph.
 		.option(
 			'--resources <list>',
 			`Only these config resources (comma-separated). Resources: ${SELECTABLE_RESOURCES.join(', ')}`,
@@ -47,8 +45,6 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 		.command('diff')
 		.description('Show what a push would change on the target. Changes nothing')
 		.requiredOption('--to <profile>', 'Target profile name')
-		// No commander default on --mode: an absent flag lets diff resolve flag > project config mode >
-		// merge, exactly as push does, so a per-project `mode` is honored and the preview matches the push.
 		.addOption(
 			new Option('--mode <mode>', 'add (only new records), merge (additive), or mirror (includes deletions)').choices(
 				MODES,
@@ -60,9 +56,6 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 	sync
 		.command('push')
 		.description('Apply committed schema and data to a target instance')
-		// No commander default on --mode: an absent flag lets push resolve flag > project config mode >
-		// merge, so a per-project `mode` in directus.config.json is honored instead of being masked by a
-		// default. merge is additive and the fallback — a caller opts into deletions rather than defaulting.
 		.requiredOption('--to <profile>', 'Target profile name')
 		.addOption(
 			new Option('--mode <mode>', 'add (only new records), merge (additive), or mirror (includes deletions)').choices(

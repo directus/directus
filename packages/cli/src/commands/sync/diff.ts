@@ -11,17 +11,13 @@ import { resolveTarget } from './resolve-target.js';
 export interface DiffOptions {
 	readonly to: string;
 	/**
-	 * No commander default: an absent flag resolves to the project config's mode, then merge — the exact
-	 * precedence push uses, so the diff previews precisely what that push would do.
+	 * No commander default: an absent flag resolves to the project config's mode, then merge — the same
+	 * precedence push uses.
 	 */
 	readonly mode?: Mode;
 	readonly project: string;
 }
 
-// The --json `data` block: always present so a consumer never guesses whether the data phase was previewed.
-// Skipped carries null-ish fields; a real preview carries the mode, the source, the dry-run response's
-// per-collection detail verbatim ({} when the batch had nothing to send and the dry-run was skipped), and
-// the reconcile tally. Read-only — no map was written to produce it.
 interface DiffDataReport {
 	mode: Mode;
 	source: string | null;
@@ -67,18 +63,15 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	const result = await localDiff(target, schemaDiffMode(mode));
 
-	// diff IS the preview command, so it always pays the data dry-run when data is present: the plan shows
-	// the real created/updated/deleted the import would produce, rolled back server-side. previewData is
-	// read-only (unambiguous matches applied in memory only), so nothing on disk changed to reach here.
+	// This is conservative when identities are ambiguous: diff never prompts or writes the ID map, while an
+	// interactive push may resolve those identities before importing.
 	const preview = await previewData(target, mode);
 
 	let dryRun: ImportBatchResult | undefined;
 	let dataSummary: ImportSummary | undefined;
 
 	if (!preview.skipped) {
-		// A converged merge/add batch (every record proven already right on the target) has nothing to
-		// dry-run: the summary is the explicit zero, not a wire call. A mirror batch always dry-runs —
-		// even an empty collection entry deletes server-side, and only the dry-run can name the rows.
+		// Mirror always dry-runs because an empty collection entry can still delete target rows.
 		if (dataPhaseConverged(preview, mode)) {
 			dataSummary = emptyImportSummary();
 		} else {
@@ -95,9 +88,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	const dataChanged = dataSummary !== undefined && hasImportChanges(dataSummary);
 
 	if (ctx.ui.json) {
-		// hash travels with the machine payload: apply seals against this diff and CI may persist it. The
-		// schema fields keep their pre-data meaning (backward compat); `data` carries the new preview, and
-		// `changes` widens to the honest overall answer (schema OR data).
+		// The hash lets a later apply detect target-schema drift.
 		ctx.ui.data({
 			kind: 'DiffReport',
 			formatVersion: 1,
@@ -117,9 +108,6 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 		return;
 	}
 
-	// A no-op is the command's answer, not a failure: the schema matches and the data phase either was
-	// skipped or dry-ran to an all-zero plan. Keep the original copy when data was skipped; extend it
-	// naturally when data was actually checked and also matched.
 	if (result === null && !dataChanged) {
 		const tail = preview.skipped ? 'nothing to do.' : 'schema and data match; nothing to do.';
 		ctx.ui.success(`${options.to} matches the local snapshot — ${tail}`);
@@ -133,8 +121,6 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	}
 
 	if (dataSummary !== undefined) {
-		// An all-zero plan is stated plainly — never a "data changes" header over a "no data changes" line.
-		// Reached only when the schema differs; a no-op on both fronts took the early return above.
 		if (dataChanged) {
 			ctx.ui.info(`data changes to import to ${url}:`);
 			for (const line of dataSummary.lines) ctx.ui.print(line);
@@ -143,9 +129,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 		}
 	}
 
-	// Records with no target match are REPORTED, never resolved — diff never writes the map. N counts every
-	// source still awaiting a match (ambiguous + unmatched); the parenthetical names how many are ambiguous
-	// (a choice only an interactive push can make) and appears only when there are any.
+	// Diff reports unresolved identities but leaves every choice for an interactive push.
 	if (!preview.skipped) {
 		const pending = preview.ambiguousCount + preview.unmatchedCount;
 

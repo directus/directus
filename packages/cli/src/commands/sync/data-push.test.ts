@@ -10,15 +10,12 @@ import { type DataCollection, writeDataFiles } from '../../sync/data-store.js';
 import { partitionCollections, prepareDataPush, previewData, remapSystemRecord } from './data-push.js';
 import type { Target } from './resolve-target.js';
 
-// vitest hoists this above the imports. The api seam is mocked so no test here can reach a real network:
-// the pure helpers never call it, and the preview's content-target fetch (for the unchanged comparison)
-// exercises its swallow-and-degrade path against a rejection instead of a live socket.
+// Keep unit tests off the network; the rejection also exercises conservative unchanged detection.
 vi.mock('../../sync/api.js', () => ({
 	fetchRecords: vi.fn(() => Promise.reject(new Error('no network in unit tests'))),
 	importBatch: vi.fn(),
 }));
 
-// A source→target bucket keyed collection → sourceId → targetId, the shape mappingsFor returns.
 const bucket = {
 	directus_access: { a1: 'ta1' },
 	directus_roles: { sr: 'tr' },
@@ -86,9 +83,7 @@ function content(collection: string): DataCollection {
 
 describe('partitionCollections', () => {
 	it('orders system collections dependencies-first and codepoint-sorts content after them', () => {
-		// The batch order is load-bearing: a child's FK can only translate through a parent already sent, so
-		// system collections ride in dependency order (access/permissions before policies, policies before
-		// roles); content — never reconciled — follows, codepoint-sorted for determinism.
+		// Keep system resources in the graph's import order and user content deterministic after them.
 		const { system, content: contentOut } = partitionCollections([
 			content('zebra'),
 			content('directus_roles'),
