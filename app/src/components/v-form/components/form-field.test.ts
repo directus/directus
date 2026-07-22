@@ -100,6 +100,33 @@ describe('FormField', () => {
 		expect(wrapper.findComponent({ name: 'FormFieldLabel' }).exists()).toBe(false);
 	});
 
+	describe('interfaceLocked', () => {
+		// force the VMenu content (FormFieldMenu) to render without opening the menu
+		const globalWithOpenMenu = {
+			...global,
+			stubs: {
+				VMenu: { template: '<div><slot name="activator" :toggle="() => {}" :active="false" /><slot /></div>' },
+				// VListItem (inside FormFieldMenu) pulls in vue-router's useLink
+				VListItem: { template: '<li><slot /></li>' },
+			},
+		};
+
+		it('passes interfaceLocked=false to the menu by default', () => {
+			const wrapper = mount(FormField, { props: { field: baseField }, global: globalWithOpenMenu });
+
+			expect(wrapper.findComponent({ name: 'FormFieldMenu' }).props('interfaceLocked')).toBe(false);
+		});
+
+		it('relays the interface readonly signal to the menu', async () => {
+			const wrapper = mount(FormField, { props: { field: baseField }, global: globalWithOpenMenu });
+
+			wrapper.findComponent({ name: 'FormFieldInterface' }).vm.$emit('readonly', true);
+			await wrapper.vm.$nextTick();
+
+			expect(wrapper.findComponent({ name: 'FormFieldMenu' }).props('interfaceLocked')).toBe(true);
+		});
+	});
+
 	describe('isNonEditable', () => {
 		it('should pass non-editable=false when neither prop nor meta is set', () => {
 			const wrapper = mount(FormField, {
