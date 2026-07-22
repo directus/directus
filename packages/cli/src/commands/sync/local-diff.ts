@@ -3,9 +3,11 @@ import type { DiffResult, Snapshot } from '../../sync/contract.js';
 import { readSnapshotFiles } from '../../sync/store.js';
 import type { Target } from './resolve-target.js';
 
-// The read → fetch sequence shared by diff and push. Both must resolve their local snapshot into a
-// target diff through one path so their preconditions and error semantics can never drift; the
-// command layer decides what to do with the result.
+/**
+ * The read → fetch sequence shared by diff and push. Both must resolve their local snapshot into a
+ * target diff through one path so their preconditions and error semantics can never drift; the
+ * command layer decides what to do with the result.
+ */
 export interface LocalDiff {
 	readonly snapshot: Snapshot;
 	readonly result: DiffResult | null;

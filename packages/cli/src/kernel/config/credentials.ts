@@ -25,16 +25,20 @@ type CredentialQuery =
 	| { readonly target: 'profile'; readonly url: string; readonly profileName: string; readonly tokenFlag?: string }
 	| { readonly target: 'url'; readonly url: string; readonly tokenFlag?: string };
 
-// DIRECTUS_<PROFILE>_TOKEN, mirroring how Directus derives AUTH_<PROVIDER>_* /
-// STORAGE_<LOCATION>_* keys: uppercase the name, nothing else.
+/**
+ * DIRECTUS_<PROFILE>_TOKEN, mirroring how Directus derives AUTH_<PROVIDER>_* /
+ * STORAGE_<LOCATION>_* keys: uppercase the name, nothing else.
+ */
 export function envTokenVar(profileName: string): string {
 	return `DIRECTUS_${profileName.toUpperCase()}_TOKEN`;
 }
 
-// Resolution order: explicit --token flag → profile-specific DIRECTUS_<NAME>_TOKEN
-// → saved store (never in CI). There is no unprefixed/ambient token fallback: a
-// credential is bound to a named profile or passed explicitly, so it can never be
-// borrowed for a target the user didn't mean to authenticate.
+/**
+ * Resolution order: explicit --token flag → profile-specific DIRECTUS_<NAME>_TOKEN
+ * → saved store (never in CI). There is no unprefixed/ambient token fallback: a
+ * credential is bound to a named profile or passed explicitly, so it can never be
+ * borrowed for a target the user didn't mean to authenticate.
+ */
 export function resolveCredential(query: CredentialQuery): CredentialResolution {
 	const { url, tokenFlag } = query;
 
@@ -141,7 +145,7 @@ function readStore(): CredentialStore {
 	return store as CredentialStore;
 }
 
-// The store is owner-only (0600); register the token before writing it.
+/** The store is owner-only (0600); register the token before writing it. */
 export function saveCredential(url: string, profileName: string, token: string): void {
 	registerSecret(token);
 	writeStored(url, profileName, token);

@@ -28,11 +28,13 @@ export interface IdMap {
 
 const REPAIR_HINT = 'Fix or delete the ID map file, then re-run.';
 
-// Canonical form of a profile URL so two spellings of the same instance key one bucket: lowercase the
-// protocol and host, drop the protocol's default port, and treat a bare "/" path as empty. An IPv6 host's
-// brackets and any non-default port survive intact — the reason the map nests URLs instead of joining them.
-// Config-validated URLs never throw here; a malformed string may throw TypeError, which is a caller bug
-// (callers pass already-validated profile URLs), not corrupt on-disk state.
+/**
+ * Canonical form of a profile URL so two spellings of the same instance key one bucket: lowercase the
+ * protocol and host, drop the protocol's default port, and treat a bare "/" path as empty. An IPv6 host's
+ * brackets and any non-default port survive intact — the reason the map nests URLs instead of joining them.
+ * Config-validated URLs never throw here; a malformed string may throw TypeError, which is a caller bug
+ * (callers pass already-validated profile URLs), not corrupt on-disk state.
+ */
 export function normalizeInstanceUrl(url: string): string {
 	const parsed = new URL(url);
 	const protocol = parsed.protocol.toLowerCase();
@@ -111,9 +113,11 @@ function parseMaps(value: unknown, path: string): Readonly<Record<string, Target
 	);
 }
 
-// An absent file is a real first sync: nothing has been mapped yet, so the empty map is legitimate. A
-// present file is parsed strictly — invalid JSON, a wrong formatVersion, or any node not matching the
-// nesting fails loud under STATE naming the path, so a hand-corrupted map can never seed a wrong upsert.
+/**
+ * An absent file is a real first sync: nothing has been mapped yet, so the empty map is legitimate. A
+ * present file is parsed strictly — invalid JSON, a wrong formatVersion, or any node not matching the
+ * nesting fails loud under STATE naming the path, so a hand-corrupted map can never seed a wrong upsert.
+ */
 export function readIdMap(path: string): IdMap {
 	if (!existsSync(path)) return { formatVersion: 1, maps: {} };
 
@@ -146,9 +150,11 @@ export function readIdMap(path: string): IdMap {
 	return { formatVersion: 1, maps: parseMaps(record['maps'], path) };
 }
 
-// The collection→(sourceId→targetId) bucket for one normalized source/target pair, or {} when absent.
-// Normalizing both URLs here means a repointed-but-equivalent profile URL still finds its bucket, while
-// source→target and target→source stay separate.
+/**
+ * The collection→(sourceId→targetId) bucket for one normalized source/target pair, or {} when absent.
+ * Normalizing both URLs here means a repointed-but-equivalent profile URL still finds its bucket, while
+ * source→target and target→source stay separate.
+ */
 export function mappingsFor(map: IdMap, sourceUrl: string, targetUrl: string): CollectionMap {
 	const source = normalizeInstanceUrl(sourceUrl);
 	const target = normalizeInstanceUrl(targetUrl);
@@ -156,8 +162,10 @@ export function mappingsFor(map: IdMap, sourceUrl: string, targetUrl: string): C
 	return map.maps[source]?.[target] ?? {};
 }
 
-// A new IdMap with `entries` merged INTO (never replacing) the collection bucket for the normalized pair.
-// Pure — the input map is untouched. Empty entries return the same map so a no-op reconcile writes nothing.
+/**
+ * A new IdMap with `entries` merged INTO (never replacing) the collection bucket for the normalized pair.
+ * Pure — the input map is untouched. Empty entries return the same map so a no-op reconcile writes nothing.
+ */
 export function withMappings(
 	map: IdMap,
 	sourceUrl: string,
@@ -184,8 +192,10 @@ export function withMappings(
 	return { formatVersion: 1, maps: { ...map.maps, [source]: mergedTarget } };
 }
 
-// Serialize canonically (sorted keys at every depth, LF, trailing newline) and write atomically, creating
-// the project directory if needed. Canonical output is what keeps a map change to a one-line git diff.
+/**
+ * Serialize canonically (sorted keys at every depth, LF, trailing newline) and write atomically, creating
+ * the project directory if needed. Canonical output is what keeps a map change to a one-line git diff.
+ */
 export function writeIdMap(path: string, map: IdMap): void {
 	mkdirSync(dirname(path), { recursive: true });
 	writeFileAtomic(path, serializeCanonical(map), 0o644);

@@ -122,7 +122,7 @@ function describeIdentity(me: unknown, projectName: string | undefined): Identit
 
 const AUTH_CODES = new Set(['INVALID_CREDENTIALS', 'INVALID_TOKEN', 'TOKEN_EXPIRED', 'INVALID_OTP', 'FORBIDDEN']);
 
-// Never retain the raw Response: it carries the Authorization header.
+/** Never retain the raw Response: it carries the Authorization header. */
 export function mapRequestError(error: unknown, url: string): CliError {
 	if (isDirectusError(error)) {
 		const rawStatus = get(error.response, 'status');

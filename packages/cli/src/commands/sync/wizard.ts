@@ -21,11 +21,13 @@ const MODE_LABELS: Record<Mode, string> = {
 	mirror: 'mirror (includes deletions)',
 };
 
-// Bare `d6s sync`: the team flow in one sitting (spec Q13). It gathers source/target/project/mode, then
-// runs THE PRIMITIVES — the exported pull() then push() — with the constructed options. The wizard owns
-// prompts and sequencing only; there is no second code path. Prompts fire ONLY where the config does not
-// already answer (one project → no project prompt; a committed mode → no mode prompt). CI and machine
-// callers use the explicit subcommands instead.
+/**
+ * Bare `d6s sync`: the team flow in one sitting (spec Q13). It gathers source/target/project/mode, then
+ * runs THE PRIMITIVES — the exported pull() then push() — with the constructed options. The wizard owns
+ * prompts and sequencing only; there is no second code path. Prompts fire ONLY where the config does not
+ * already answer (one project → no project prompt; a committed mode → no mode prompt). CI and machine
+ * callers use the explicit subcommands instead.
+ */
 export async function wizard(ctx: CliContext): Promise<void> {
 	// The whole flow is interactive by definition — it exists to prompt. CI, --json, and --no-interactive
 	// all clear ctx.interactive, and each must route to the subcommands rather than hang waiting on a prompt.

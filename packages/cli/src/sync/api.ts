@@ -27,8 +27,10 @@ import {
 // gets its credential wiring, request timeout, error mapping, and boundary validation
 // in one place.
 
-// A scoped snapshot pull: exactly one of include/exclude, mutual exclusivity carried structurally so
-// the caller cannot express both (the server rejects that combination, mirroring the SDK options).
+/**
+ * A scoped snapshot pull: exactly one of include/exclude, mutual exclusivity carried structurally so
+ * the caller cannot express both (the server rejects that combination, mirroring the SDK options).
+ */
 export type SnapshotScope = { readonly include: string[] } | { readonly exclude: string[] };
 
 // scope → SDK snapshot options. The SDK types include/excludeCollections as AllCollections<Schema>[] —
@@ -92,8 +94,10 @@ export async function applyDiff(credential: ResolvedCredential, result: DiffResu
 	}
 }
 
-// One collection's data pull: a system endpoint (/roles) or a user-collection endpoint (/items/articles),
-// plus the primary key the export keys on and whether the endpoint is a singleton (settings).
+/**
+ * One collection's data pull: a system endpoint (/roles) or a user-collection endpoint (/items/articles),
+ * plus the primary key the export keys on and whether the endpoint is a singleton (settings).
+ */
 export interface RecordSource {
 	readonly collection: string; // e.g. 'directus_roles' or 'articles'
 	readonly endpoint: string; // '/roles' or '/items/articles'
@@ -101,10 +105,12 @@ export interface RecordSource {
 	readonly singleton: boolean;
 }
 
-// Pull one collection's records verbatim. Unlike snapshot/diff these are the user's own content, so they
-// are NOT parsed against a contract — only the envelope is validated so a broken response fails loud at
-// the seam rather than corrupting the export: a list must be an array of plain objects, a singleton one
-// plain object, otherwise HTTP naming the endpoint.
+/**
+ * Pull one collection's records verbatim. Unlike snapshot/diff these are the user's own content, so they
+ * are NOT parsed against a contract — only the envelope is validated so a broken response fails loud at
+ * the seam rather than corrupting the export: a list must be an array of plain objects, a singleton one
+ * plain object, otherwise HTTP naming the endpoint.
+ */
 export async function fetchRecords(
 	credential: ResolvedCredential,
 	source: RecordSource,
@@ -141,9 +147,11 @@ export async function fetchRecords(
 	return response as Record<string, unknown>[];
 }
 
-// The import options the batch endpoint understands. mode is ALWAYS sent (the server defaults to `add`,
-// so an omitted mode silently changes semantics); dryRun and dangerouslyAllowDelete ride only when set,
-// so the query string carries exactly the flags the CLI chose and stays deterministic for assertions.
+/**
+ * The import options the batch endpoint understands. mode is ALWAYS sent (the server defaults to `add`,
+ * so an omitted mode silently changes semantics); dryRun and dangerouslyAllowDelete ride only when set,
+ * so the query string carries exactly the flags the CLI chose and stays deterministic for assertions.
+ */
 export interface ImportBatchInput {
 	readonly mode: 'add' | 'merge';
 	readonly dryRun?: boolean;
@@ -214,12 +222,14 @@ function enrichImportError(mapped: CliError, error: unknown): CliError {
 	});
 }
 
-// Import a flat batch of records through POST /utils/import. The payload is a multipart FILE upload: a
-// single JSON file whose content is the `[{collection, items}]` array (the server reads the first file
-// part regardless of field name and requires its mimetype to be application/json — see api
-// read-file-upload-body.ts and read-multipart-file.ts). Node's native FormData/Blob build it; the SDK
-// strips the placeholder multipart Content-Type so fetch sets the boundary. The response is parsed at
-// the boundary; a cyclical-relation or missing-FK failure is enriched here so push stays presentational.
+/**
+ * Import a flat batch of records through POST /utils/import. The payload is a multipart FILE upload: a
+ * single JSON file whose content is the `[{collection, items}]` array (the server reads the first file
+ * part regardless of field name and requires its mimetype to be application/json — see api
+ * read-file-upload-body.ts and read-multipart-file.ts). Node's native FormData/Blob build it; the SDK
+ * strips the placeholder multipart Content-Type so fetch sets the boundary. The response is parsed at
+ * the boundary; a cyclical-relation or missing-FK failure is enriched here so push stays presentational.
+ */
 export async function importBatch(
 	credential: ResolvedCredential,
 	batch: ImportCollectionData[],

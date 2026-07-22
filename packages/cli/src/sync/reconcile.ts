@@ -25,11 +25,13 @@ const NATURAL_KEYS: Readonly<Record<string, readonly string[]>> = {
 	directus_settings: [],
 };
 
-// Whether a collection can be reconciled at all: exactly the collections given a natural key above. The
-// import slice consults this to pass reconcile only what it can match — a synced system collection with
-// no natural key (directus_panels: identified solely by its dashboard FK, no stable cross-instance key)
-// is remapped in place but never reconciled, and content is neither. Keeps NATURAL_KEYS private while
-// letting a caller avoid the by-design STATE throw on an unkeyed collection.
+/**
+ * Whether a collection can be reconciled at all: exactly the collections given a natural key above. The
+ * import slice consults this to pass reconcile only what it can match — a synced system collection with
+ * no natural key (directus_panels: identified solely by its dashboard FK, no stable cross-instance key)
+ * is remapped in place but never reconciled, and content is neither. Keeps NATURAL_KEYS private while
+ * letting a caller avoid the by-design STATE throw on an unkeyed collection.
+ */
 export function hasNaturalKey(collection: string): boolean {
 	return Object.hasOwn(NATURAL_KEYS, collection);
 }
@@ -229,11 +231,13 @@ function reconcileOne(
 	return { collection: input.collection, matched, ambiguous, unmatched };
 }
 
-// Reconcile each collection in the given order — the caller passes parents before children so a child's FK
-// components can translate through matches already made this run. `existing` is the committed map's
-// collection→sourceId→targetId bucket (the shape id-map's mappingsFor returns); its source IDs are skipped
-// and its target IDs pre-claimed. The result array mirrors the input order; each collection's buckets are
-// codepoint-sorted so a reshuffled input yields byte-identical output.
+/**
+ * Reconcile each collection in the given order — the caller passes parents before children so a child's FK
+ * components can translate through matches already made this run. `existing` is the committed map's
+ * collection→sourceId→targetId bucket (the shape id-map's mappingsFor returns); its source IDs are skipped
+ * and its target IDs pre-claimed. The result array mirrors the input order; each collection's buckets are
+ * codepoint-sorted so a reshuffled input yields byte-identical output.
+ */
 export function reconcileCollections(
 	inputs: readonly ReconcileInput[],
 	existing: Readonly<Record<string, Readonly<Record<string, string>>>>,

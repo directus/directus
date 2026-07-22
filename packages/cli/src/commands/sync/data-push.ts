@@ -36,8 +36,10 @@ import type { Target } from './resolve-target.js';
 // module's only coupling to the store is the read/write functions.
 const DATA_METADATA_FILE = 'metadata.json';
 
-// The pre-remap source id paired with the primary key actually sent for one system record. push needs
-// both to update the map after import: the map entry is sourceId → (server-remapped pk ?? sentPk).
+/**
+ * The pre-remap source id paired with the primary key actually sent for one system record. push needs
+ * both to update the map after import: the map entry is sourceId → (server-remapped pk ?? sentPk).
+ */
 export interface SentRecord {
 	readonly sourceId: string;
 	readonly sentPk: string;
@@ -48,9 +50,11 @@ export interface SystemSent {
 	readonly records: readonly SentRecord[];
 }
 
-// A prepared data push: the flat batch to import, the per-system-collection send record for the map
-// update, and the map/urls push persists the import response into. Content collections carry no send
-// record — they are never reconciled and their primary keys pass through as-is.
+/**
+ * A prepared data push: the flat batch to import, the per-system-collection send record for the map
+ * update, and the map/urls push persists the import response into. Content collections carry no send
+ * record — they are never reconciled and their primary keys pass through as-is.
+ */
 export interface DataPushPlan {
 	readonly skipped: false;
 	readonly source: string; // normalized source-instance URL, from the data's metadata
@@ -63,8 +67,10 @@ export interface DataPushPlan {
 	readonly collections: number; // batch entries (system + content)
 }
 
-// The skip outcome: an older checkout committed schema without data. push must still run (schema-only)
-// and report the data phase as skipped rather than failing.
+/**
+ * The skip outcome: an older checkout committed schema without data. push must still run (schema-only)
+ * and report the data phase as skipped rather than failing.
+ */
 export interface DataPushSkipped {
 	readonly skipped: true;
 }
@@ -86,10 +92,12 @@ interface SystemCollection {
 	readonly resource: Resource;
 }
 
-// Partition the committed collections into system (a resolveResources graph member — remappable, and
-// reconcilable when it has a natural key) and content (everything else, passed through untouched). System
-// order is the resource graph's dependency order so a child's FK translates through a parent already
-// seeded this run; content is codepoint-sorted after.
+/**
+ * Partition the committed collections into system (a resolveResources graph member — remappable, and
+ * reconcilable when it has a natural key) and content (everything else, passed through untouched). System
+ * order is the resource graph's dependency order so a child's FK translates through a parent already
+ * seeded this run; content is codepoint-sorted after.
+ */
 export function partitionCollections(collections: readonly DataCollection[]): {
 	system: SystemCollection[];
 	content: DataCollection[];
@@ -114,11 +122,13 @@ export function partitionCollections(collections: readonly DataCollection[]): {
 	return { system, content };
 }
 
-// One system record rewritten from source space into target space. The primary key and every static FK
-// field (SYSTEM_FK_FIELDS) are replaced when the bucket for the referenced collection holds a mapping; a
-// miss leaves the value verbatim — an in-batch new record the server links, or a genuinely dangling
-// reference the server rejects, never a guess. A null/undefined FK is a legitimate value and untouched.
-// Pure: the input record is never mutated.
+/**
+ * One system record rewritten from source space into target space. The primary key and every static FK
+ * field (SYSTEM_FK_FIELDS) are replaced when the bucket for the referenced collection holds a mapping; a
+ * miss leaves the value verbatim — an in-batch new record the server links, or a genuinely dangling
+ * reference the server rejects, never a guess. A null/undefined FK is a legitimate value and untouched.
+ * Pure: the input record is never mutated.
+ */
 export function remapSystemRecord(
 	record: Record<string, unknown>,
 	collection: string,
@@ -322,10 +332,12 @@ function assembleBatch(
 	return { batch, systemSent, records };
 }
 
-// Prepare the data phase, or report it skipped. Reconcile the reconcilable system collections against the
-// target and persist the matches immediately (identity facts survive an aborted push), prompting on
-// ambiguity (interactive) or refusing loud (CI); then remap every record through the updated map and
-// assemble the batch plus the send record push needs to fold the import response back into the map.
+/**
+ * Prepare the data phase, or report it skipped. Reconcile the reconcilable system collections against the
+ * target and persist the matches immediately (identity facts survive an aborted push), prompting on
+ * ambiguity (interactive) or refusing loud (CI); then remap every record through the updated map and
+ * assemble the batch plus the send record push needs to fold the import response back into the map.
+ */
 export async function prepareDataPush(target: Target, ctx: CliContext): Promise<DataPushResult> {
 	const reconciled = await readAndReconcile(target);
 
@@ -359,9 +371,11 @@ export async function prepareDataPush(target: Target, ctx: CliContext): Promise<
 	};
 }
 
-// A read-only preview of the data phase for diff: the batch a push would import (remapped through the
-// unambiguous matches only) and the reconcile tally. No map, no send record, no idMapPath — nothing here
-// is ever written back to disk.
+/**
+ * A read-only preview of the data phase for diff: the batch a push would import (remapped through the
+ * unambiguous matches only) and the reconcile tally. No map, no send record, no idMapPath — nothing here
+ * is ever written back to disk.
+ */
 export interface DataPreviewPlan {
 	readonly skipped: false;
 	readonly source: string; // normalized source-instance URL, from the data's metadata
@@ -373,10 +387,12 @@ export interface DataPreviewPlan {
 
 export type DataPreviewResult = DataPreviewPlan | DataPushSkipped;
 
-// Preview the data phase for diff (spec Q15) WITHOUT prompting or writing: reconcile, seed only the
-// unambiguous matches into an in-memory copy of the map so the remapped batch is truthful, and count the
-// ambiguous and unmatched sources rather than resolving them. The on-disk map is never touched — the hard
-// invariant of diff — so an ambiguity is reported for the first push to settle, never guessed here.
+/**
+ * Preview the data phase for diff (spec Q15) WITHOUT prompting or writing: reconcile, seed only the
+ * unambiguous matches into an in-memory copy of the map so the remapped batch is truthful, and count the
+ * ambiguous and unmatched sources rather than resolving them. The on-disk map is never touched — the hard
+ * invariant of diff — so an ambiguity is reported for the first push to settle, never guessed here.
+ */
 export async function previewData(target: Target): Promise<DataPreviewResult> {
 	const reconciled = await readAndReconcile(target);
 
