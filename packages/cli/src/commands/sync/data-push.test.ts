@@ -139,13 +139,13 @@ describe('prepareDataPush skip and precondition', () => {
 	it('returns skipped when the data directory is absent (a schema-only checkout)', async () => {
 		// Older checkouts committed schema without data; push must still run and report the data phase
 		// skipped rather than failing. No credential is touched — the skip precedes any network work.
-		await expect(prepareDataPush(target(), ctx())).resolves.toEqual({ skipped: true });
+		await expect(prepareDataPush(target(), 'merge', ctx())).resolves.toEqual({ skipped: true });
 	});
 
 	it('returns skipped when the committed data set is empty', async () => {
 		writeDataFiles(join(dir, 'data'), [], 'https://source.example.com');
 
-		await expect(prepareDataPush(target(), ctx())).resolves.toEqual({ skipped: true });
+		await expect(prepareDataPush(target(), 'merge', ctx())).resolves.toEqual({ skipped: true });
 	});
 
 	it('refuses loud when the committed data predates source tracking', async () => {
@@ -162,7 +162,7 @@ describe('prepareDataPush skip and precondition', () => {
 		delete metadata.source;
 		writeFileSync(metadataPath, JSON.stringify(metadata));
 
-		const error = await prepareDataPush(target(), ctx()).catch((error: unknown) => error);
+		const error = await prepareDataPush(target(), 'merge', ctx()).catch((error: unknown) => error);
 
 		expect(error).toBeInstanceOf(CliError);
 		expect((error as CliError).code).toBe('STATE');
@@ -171,7 +171,7 @@ describe('prepareDataPush skip and precondition', () => {
 	it('previewData skips a schema-only checkout without touching the credential', async () => {
 		// An absent data directory is a schema-only checkout: the preview skips exactly as the push path does,
 		// before any network work.
-		await expect(previewData(target())).resolves.toEqual({ skipped: true });
+		await expect(previewData(target(), 'merge')).resolves.toEqual({ skipped: true });
 	});
 
 	it('previewData assembles the content batch, tallies zero, and never writes the id map', async () => {
@@ -184,7 +184,7 @@ describe('prepareDataPush skip and precondition', () => {
 			'https://source.example.com',
 		);
 
-		const preview = await previewData(target());
+		const preview = await previewData(target(), 'merge');
 
 		expect(preview).toEqual({
 			skipped: false,
