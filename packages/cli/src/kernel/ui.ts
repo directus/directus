@@ -55,6 +55,8 @@ function writeJson(payload: unknown): void {
 export interface Ui {
 	readonly json: boolean;
 	print(text: string): void;
+	/** Print a schema/data plan line with its change token colored (green +, yellow ~, red deletions). */
+	plan(text: string): void;
 	info(message: string): void;
 	success(message: string): void;
 	warn(message: string): void;
@@ -73,11 +75,35 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 		writeErr(`${symbol} ${message}\n`);
 	}
 
+	// Color carries the change semantics a scanning eye reads first: deletions whole-line red (they are
+	// the rows an approval must not miss), additions' token green, modifications' token yellow — plus the
+	// destructive tail of a data line (`✖N deleted (…)`) red whenever N is non-zero.
+	function paintPlan(line: string): string {
+		if (line.startsWith('✖ DELETE')) return c.red(line);
+		if (line.startsWith('+')) return `${c.green('+')}${line.slice(1)}`;
+
+		if (line.startsWith('~')) {
+			const painted = `${c.yellow('~')}${line.slice(1)}`;
+			const tail = painted.indexOf('✖');
+
+			if (tail !== -1 && !painted.slice(tail).startsWith('✖0 ')) {
+				return painted.slice(0, tail) + c.red(painted.slice(tail));
+			}
+
+			return painted;
+		}
+
+		return line;
+	}
+
 	return {
 		json,
 		print(text) {
 			if (json) return;
 			writeOut(`${text}\n`);
+		},
+		plan(text) {
+			writeOut(`${paintPlan(text)}\n`);
 		},
 		info(message) {
 			status(c.cyan(SYMBOLS.info), message);

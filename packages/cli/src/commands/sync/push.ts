@@ -181,14 +181,14 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	if (!ctx.ui.json) {
 		if (result !== null) {
 			ctx.ui.info(`Schema — ${count(schemaTotal, 'change')} to apply:`);
-			for (const line of schema.lines) ctx.ui.print(line);
+			for (const line of schema.lines) ctx.ui.plan(line);
 		}
 
 		if (!dataResult.skipped) {
 			if (dataSummary !== undefined) {
 				if (hasImportChanges(dataSummary)) {
 					ctx.ui.info('Data — changes to import:');
-					for (const line of dataSummary.lines) ctx.ui.print(line);
+					for (const line of dataSummary.lines) ctx.ui.plan(line);
 				} else {
 					ctx.ui.info('Data — no changes to import.');
 				}
