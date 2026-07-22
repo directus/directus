@@ -198,6 +198,48 @@ describe('sync diff', () => {
 		expect(stderr.join('')).toContain('staging matches the local snapshot — nothing to do.');
 	});
 
+	it('refuses a diff whose collection entry starts with a nested-meta delete (directus#27877)', async () => {
+		// The server's apply drops the WHOLE collection when the first diff op is kind D — even a nested
+		// meta delete produced by migration skew — while this CLI classifies a pathed D as a modification,
+		// so the plan would show a harmless tweak and the deletion gate would never arm. The only safe
+		// answer is refusal before anything displays or applies, in diff and push alike (shared localDiff).
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', {
+			collections: [{ collection: 'articles', diff: [{ kind: 'D', path: ['meta', 'status'], lhs: 'draft' }] }],
+			fields: [],
+			systemFields: [],
+			relations: [],
+		});
+
+		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(1);
+
+		const err = stderr.join('');
+		expect(err).toContain('DROP 1 collection (articles)');
+		expect(err).toContain('27877');
+		expect(err).toContain('migration skew');
+	});
+
+	it('passes a genuine root-delete collection through to the loud plan line', async () => {
+		// The guard keys on the op SHAPE (pathed D), never on D itself: an intentional collection delete is
+		// a root D and must keep flowing to the DELETE line and the deletion gates downstream.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', {
+			collections: [{ collection: 'legacy', diff: [{ kind: 'D', lhs: { collection: 'legacy' } }] }],
+			fields: [],
+			systemFields: [],
+			relations: [],
+		});
+
+		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
+		expect(stdout.join('')).toContain('✖ DELETE  collection legacy');
+	});
+
 	it('fails with the pull-first precondition when no snapshot has been pulled', async () => {
 		// The operator must be routed to the fix: config and credential resolve, but with no artifacts on
 		// disk the STATE error points at `d6s sync pull` rather than failing obscurely downstream.
