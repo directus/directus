@@ -294,10 +294,11 @@ interface Reconciled {
 	// (a resolved ambiguity) can reconcile again without fetching the target a second time.
 	readonly inputs: readonly ReconcileInput[];
 	readonly results: readonly CollectionReconcile[];
-	// Target rows per CONTENT collection, for the unchanged comparison. A collection absent from this map
-	// could not be fetched (not on the target yet, or a permission gap): comparison is skipped for it and
-	// every row rides as a change — never a false "unchanged".
-	readonly contentTargets: ReadonlyMap<string, readonly Record<string, unknown>[]>;
+	// Target rows per collection, for the unchanged comparison: system rows reuse the reconcile fetch,
+	// content rows are fetched here. A content collection absent from this map could not be fetched (not
+	// on the target yet, or a permission gap): comparison is skipped for it and every row rides as a
+	// change — never a false "unchanged".
+	readonly targets: ReadonlyMap<string, readonly Record<string, unknown>[]>;
 }
 
 // The read-and-reconcile stem both entries share: an absent data directory (or an empty committed set) is
@@ -321,11 +322,13 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 	const map = readIdMap(target.idMapPath);
 	const { inputs, results } = await reconcileSystem(system, target, mappingsFor(map, source, targetUrl));
 
-	const contentTargets = new Map<string, readonly Record<string, unknown>[]>();
+	const targets = new Map<string, readonly Record<string, unknown>[]>(
+		inputs.map((input) => [input.collection, input.targetRecords]),
+	);
 
 	for (const data of content) {
 		try {
-			contentTargets.set(
+			targets.set(
 				data.collection,
 				await fetchRecords(target.credential, {
 					collection: data.collection,
@@ -341,7 +344,7 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 		}
 	}
 
-	return { skipped: false, source, targetUrl, system, content, map, inputs, results, contentTargets };
+	return { skipped: false, source, targetUrl, system, content, map, inputs, results, targets };
 }
 
 // Remap every system record into target space through `bucket` and assemble the flat import batch in
@@ -499,7 +502,7 @@ export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContex
 
 	if (reconciled.skipped) return { skipped: true };
 
-	const { source, targetUrl, system, content, inputs } = reconciled;
+	const { source, targetUrl, system, content, inputs, targets } = reconciled;
 
 	// Persist matches BEFORE remapping so a later aborted push keeps the identities it learned, then
 	// recompute the bucket from the updated map for the remap.
@@ -540,11 +543,6 @@ export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContex
 	}
 
 	if (map !== reconciled.map) writeIdMap(target.idMapPath, map);
-
-	const targets = new Map([
-		...inputs.map((input): [string, readonly Record<string, unknown>[]] => [input.collection, input.targetRecords]),
-		...reconciled.contentTargets,
-	]);
 
 	const { batch, systemSent, unchanged, records } = assembleBatch(
 		system,
@@ -599,7 +597,7 @@ export async function previewData(target: Target, mode: Mode): Promise<DataPrevi
 
 	if (reconciled.skipped) return { skipped: true };
 
-	const { source, targetUrl, system, content, inputs, results } = reconciled;
+	const { source, targetUrl, system, content, results, targets } = reconciled;
 
 	// withMappings is pure, so seeding these matches grows a fresh map object and never writes the file.
 	// Ambiguous sources are deliberately left unmapped: the preview's dry-run then shows them as the
@@ -618,11 +616,6 @@ export async function previewData(target: Target, mode: Mode): Promise<DataPrevi
 
 		map = withMappings(map, source, targetUrl, result.collection, matchedEntries(result));
 	}
-
-	const targets = new Map([
-		...inputs.map((input): [string, readonly Record<string, unknown>[]] => [input.collection, input.targetRecords]),
-		...reconciled.contentTargets,
-	]);
 
 	const { batch, unchanged, records } = assembleBatch(
 		system,
