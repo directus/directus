@@ -4,7 +4,7 @@ import { resolveLoginRedirect } from './resolve-login-redirect.js';
 
 vi.mock('@directus/env');
 
-const PUBLIC_URL = 'https:/example.directus.com';
+const PUBLIC_URL = 'https://example.directus.com';
 
 const FALSY_INPUTS = [{ input: undefined }, { input: '' }, { input: null }, { input: false }, { input: 0 }];
 
@@ -62,20 +62,20 @@ const VALID_PUBLIC_URL_REDIRECTS = [
 ];
 
 const AUTHORITY_BYPASS_ATTEMPTS = [
-	{ input: 'https:/example.directus.com@evil.com' },
+	{ input: 'https://example.directus.com@evil.com' },
 	{ input: 'https://user:pass@evil.com/admin' },
-	{ input: 'https:/example.directus.com.evil.com/admin' },
+	{ input: 'https://example.directus.com.evil.com/admin' },
 	{ input: 'HTTPS://evil.com/admin' },
 ];
 
-const SUB_PATH_URL = 'https:/example.directus.com/subpath';
+const SUB_PATH_URL = 'https://example.directus.com/subpath';
 
 const VALID_SUB_PATH_REDIRECTS = [
 	{ input: `${SUB_PATH_URL}/admin` },
 	{ input: `${SUB_PATH_URL}/` },
 	{ input: SUB_PATH_URL },
 	{ input: `${SUB_PATH_URL}/admin?tab=users#top` },
-	{ input: 'https:/example.directus.com/other' },
+	{ input: 'https://example.directus.com/other' },
 ];
 
 const ALLOW_LIST_EXTRA_PARAMS = [
@@ -182,7 +182,7 @@ describe('resolveLoginRedirect', () => {
 			});
 
 			test('rejects different protocol (http vs https)', () => {
-				expect(() => resolveLoginRedirect('http:/example.directus.com/admin')).toThrow('App "redirect" must match PUBLIC_URL');
+				expect(() => resolveLoginRedirect('http://example.directus.com/admin')).toThrow('App "redirect" must match PUBLIC_URL');
 			});
 
 			test('rejects different port', () => {
@@ -216,7 +216,7 @@ describe('resolveLoginRedirect', () => {
 			});
 
 			test('rejects different protocol', () => {
-				expect(() => resolveLoginRedirect('http:/example.directus.com/subpath/admin')).toThrow(
+				expect(() => resolveLoginRedirect('http://example.directus.com/subpath/admin')).toThrow(
 					'App "redirect" must match PUBLIC_URL',
 				);
 			});
@@ -304,7 +304,7 @@ describe('resolveLoginRedirect', () => {
 		describe('with sub path PUBLIC_URL', () => {
 			test('allows allow-listed redirect', () => {
 				vi.mocked(useEnv).mockReturnValue({
-					PUBLIC_URL: 'https:/example.directus.com/subpath',
+					PUBLIC_URL: 'https://example.directus.com/subpath',
 					AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://frontend.com/callback',
 				});
 
@@ -315,12 +315,12 @@ describe('resolveLoginRedirect', () => {
 
 			test('implicitly allows PUBLIC_URL with sub path', () => {
 				vi.mocked(useEnv).mockReturnValue({
-					PUBLIC_URL: 'https:/example.directus.com/subpath',
+					PUBLIC_URL: 'https://example.directus.com/subpath',
 					AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://other.com/callback',
 				});
 
-				expect(resolveLoginRedirect('https:/example.directus.com/subpath', { provider: 'github' })).toBe(
-					'https:/example.directus.com/subpath',
+				expect(resolveLoginRedirect('https://example.directus.com/subpath', { provider: 'github' })).toBe(
+					'https://example.directus.com/subpath',
 				);
 			});
 		});
