@@ -1,10 +1,11 @@
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
 import type { ImportBatchResult } from '../../sync/contract.js';
+import type { Mode } from '../../sync/mode.js';
 import { emptyImportSummary, type ImportSummary, summarizeDiff } from '../../sync/render.js';
 import { type DataPreviewResult, previewData } from './data-push.js';
 import { localDiff } from './local-diff.js';
-import { dryRunImport, type Mode, resolveMode, schemaDiffMode } from './push.js';
+import { dryRunImport, resolveMode, schemaDiffMode } from './push.js';
 import { resolveTarget } from './resolve-target.js';
 
 export interface DiffOptions {
@@ -13,7 +14,7 @@ export interface DiffOptions {
 	 * No commander default: an absent flag resolves to the project config's mode, then merge — the exact
 	 * precedence push uses, so the diff previews precisely what that push would do.
 	 */
-	readonly mode?: 'add' | 'merge' | 'mirror';
+	readonly mode?: Mode;
 	readonly project: string;
 }
 

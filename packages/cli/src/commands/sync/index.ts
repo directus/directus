@@ -1,10 +1,18 @@
 import { type Command, Option } from 'commander';
 import type { CliContext } from '../../kernel/run.js';
+import { MODES } from '../../sync/mode.js';
 import { SELECTABLE_RESOURCES } from '../../sync/resources.js';
 import { diff, type DiffOptions } from './diff.js';
 import { pull, type PullOptions } from './pull.js';
 import { push, type PushOptions } from './push.js';
 import { wizard } from './wizard.js';
+
+function parseList(value: string): string[] {
+	return value
+		.split(',')
+		.map((entry) => entry.trim())
+		.filter(Boolean);
+}
 
 export function registerSync(program: Command, getContext: () => CliContext): void {
 	const sync = program.command('sync').description('Sync schema and configuration between Directus instances');
@@ -17,15 +25,20 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 		.command('pull')
 		.description('Snapshot schema and config resources from a source instance into committable files')
 		.requiredOption('--from <profile>', 'Source profile name')
-		.option('--collections <list>', 'Only these collections (comma-separated); pulls a partial snapshot')
-		.option('--exclude-collections <list>', 'All collections except these (comma-separated); pulls a partial snapshot')
+		.option('--collections <list>', 'Only these collections (comma-separated); pulls a partial snapshot', parseList)
+		.option(
+			'--exclude-collections <list>',
+			'All collections except these (comma-separated); pulls a partial snapshot',
+			parseList,
+		)
 		// Built from the exported constant so the resource list in help can never drift from the graph.
 		.option(
 			'--resources <list>',
 			`Only these config resources (comma-separated). Resources: ${SELECTABLE_RESOURCES.join(', ')}`,
+			parseList,
 		)
-		.option('--exclude-resources <list>', 'All config resources except these (comma-separated)')
-		.option('--content <list>', 'Also export records for these user collections (comma-separated)')
+		.option('--exclude-resources <list>', 'All config resources except these (comma-separated)', parseList)
+		.option('--content <list>', 'Also export records for these user collections (comma-separated)', parseList)
 		.option('--no-deps', 'Do not pull resource dependencies (dependent children still ride with their parent)')
 		.option('--project <name>', 'Project scope to sync (default: default)', 'default')
 		.action((options: PullOptions) => pull(options, getContext()));
@@ -37,11 +50,9 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 		// No commander default on --mode: an absent flag lets diff resolve flag > project config mode >
 		// merge, exactly as push does, so a per-project `mode` is honored and the preview matches the push.
 		.addOption(
-			new Option('--mode <mode>', 'add (only new records), merge (additive), or mirror (includes deletions)').choices([
-				'add',
-				'merge',
-				'mirror',
-			]),
+			new Option('--mode <mode>', 'add (only new records), merge (additive), or mirror (includes deletions)').choices(
+				MODES,
+			),
 		)
 		.option('--project <name>', 'Project scope to sync (default: default)', 'default')
 		.action((options: DiffOptions) => diff(options, getContext()));
@@ -54,11 +65,9 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 		// default. merge is additive and the fallback — a caller opts into deletions rather than defaulting.
 		.requiredOption('--to <profile>', 'Target profile name')
 		.addOption(
-			new Option('--mode <mode>', 'add (only new records), merge (additive), or mirror (includes deletions)').choices([
-				'add',
-				'merge',
-				'mirror',
-			]),
+			new Option('--mode <mode>', 'add (only new records), merge (additive), or mirror (includes deletions)').choices(
+				MODES,
+			),
 		)
 		.option('--allow-deletes', 'Include deletions; without it deletions are refused outside interactive confirmation')
 		.option('--yes', 'Skip the apply confirmation; never authorizes deletions')

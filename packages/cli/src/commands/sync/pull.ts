@@ -15,11 +15,11 @@ import { resolveTarget } from './resolve-target.js';
 
 export interface PullOptions {
 	readonly from: string;
-	readonly collections?: string;
-	readonly excludeCollections?: string;
-	readonly resources?: string;
-	readonly excludeResources?: string;
-	readonly content?: string;
+	readonly collections?: readonly string[];
+	readonly excludeCollections?: readonly string[];
+	readonly resources?: readonly string[];
+	readonly excludeResources?: readonly string[];
+	readonly content?: readonly string[];
 	// commander sets deps=false for --no-deps; true by default (dependency closure is opt-out).
 	readonly deps: boolean;
 	readonly project: string;
@@ -60,13 +60,6 @@ interface PairMessages {
 	readonly bothConfig: string;
 }
 
-function parseList(raw: string): string[] {
-	return raw
-		.split(',')
-		.map((entry) => entry.trim())
-		.filter((entry) => entry.length > 0);
-}
-
 // A content collection's primary key, dug defensively out of the on-disk schema: the field entry for the
 // collection whose loose `schema.is_primary_key` is true. Fields are verbatim loose objects, so every
 // access is guarded. Both buckets are searched because an ordinary collection's id can live in either
@@ -93,8 +86,8 @@ function primaryKeyOf(snapshot: Snapshot, collection: string): string {
 // config supplies it. Include and exclude are mutually exclusive: both flags is USAGE, both config keys
 // is CONFIG (naming the project). Flag lists must be non-empty; config lists are trusted as authored.
 function resolvePair(
-	flagInclude: string | undefined,
-	flagExclude: string | undefined,
+	flagInclude: readonly string[] | undefined,
+	flagExclude: readonly string[] | undefined,
 	configInclude: readonly string[] | undefined,
 	configExclude: readonly string[] | undefined,
 	messages: PairMessages,
@@ -105,15 +98,13 @@ function resolvePair(
 		}
 
 		if (flagInclude !== undefined) {
-			const include = parseList(flagInclude);
-			if (include.length === 0) throw new CliError('USAGE', messages.emptyInclude);
-			return { include };
+			if (flagInclude.length === 0) throw new CliError('USAGE', messages.emptyInclude);
+			return { include: [...flagInclude] };
 		}
 
 		if (flagExclude !== undefined) {
-			const exclude = parseList(flagExclude);
-			if (exclude.length === 0) throw new CliError('USAGE', messages.emptyExclude);
-			return { exclude };
+			if (flagExclude.length === 0) throw new CliError('USAGE', messages.emptyExclude);
+			return { exclude: [...flagExclude] };
 		}
 	}
 
@@ -215,9 +206,8 @@ function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig |
 // pulled schema, once it is on disk.
 function contentNames(options: PullOptions, projectConfig: ProjectConfig | undefined): string[] {
 	if (options.content !== undefined) {
-		const list = parseList(options.content);
-		if (list.length === 0) throw new CliError('USAGE', '--content needs at least one collection name.');
-		return list;
+		if (options.content.length === 0) throw new CliError('USAGE', '--content needs at least one collection name.');
+		return [...options.content];
 	}
 
 	if (projectConfig?.content !== undefined) return [...projectConfig.content];

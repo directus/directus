@@ -16,6 +16,7 @@ import {
 	withMappings,
 	writeIdMap,
 } from '../../sync/id-map.js';
+import type { Mode } from '../../sync/mode.js';
 import {
 	type CollectionReconcile,
 	hasNaturalKey,
@@ -23,8 +24,6 @@ import {
 	type ReconcileInput,
 } from '../../sync/reconcile.js';
 import { allResources, type Resource } from '../../sync/resources.js';
-// Type-only, so the push → data-push runtime edge stays one-directional.
-import type { Mode } from './push.js';
 import type { Target } from './resolve-target.js';
 
 // The data phase of push, orchestrated: read the committed records, remap their primary keys and static
