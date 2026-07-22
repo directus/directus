@@ -1601,18 +1601,13 @@ fields:
     collaborative_editing: ویرایش مشارکتی
     collaborative_editing_enabled: فعال‌سازی ویرایش مشارکتی
     collaborative_editing_note: وب‌سوکت‌ها برای کار کردن ویرایش مشارکتی ضروری هستند.
-    ai_notice: 'دستیار هوش مصنوعی، نوار کناری داخل برنامه‌ای برای مکالمه با یک مدل زبانی بزرگ ارائه می‌دهد. به محض فعال‌سازی، نوار کناری هوش مصنوعی را برای پرسیدن سوالات، تولید محتوا و کمک گرفتن برای کار با پروژه‌تان از جعبه ابزار باز کنید. <a href="https://directus.io/docs/guides/ai/assistant" target="_blank">درباره پیکربندی و استفاده از دستیار هوش مصنوعی بیشتر یاد بگیرید.</a>'
     mcp_enabled: سرور MCP
-    mcp_enabled_note: 'ابزارهای AI/LLM را از طریق <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">چارچوب زمینه مدل (MCP)</a> به پروژه دایرکتوس خود متصل کنید. این کار، دستیارهای هوش مصنوعی را قادر به خواندن و تعامل امن با داده دایرکتوس شما می‌کند.'
-    mcp_notice: 'چارچوب زمینه مدل (MCP)، استانداردی برای اتصال مدل‌های زبانی بزرگ (LLMها) به برنامه‌هایی شبیه دایرکتوس است. به محض فعالسازی، سرور MCP دایرکتوس در نشانی `/mcp` در دسترس خواهد بود. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">درباره MCP و روش اتصال بیشتر بدانید.</a>'
     mcp_allow_deletes: اجازه حذف
     mcp_allow_deletes_note:
       - ممکن است منجر به از دست رفتن داده شود.</strong> به طور پیش‌فرض به دلایل ایمنی غیرفعال شده است.'
     mcp_prompts_collection: مجموعه پرامپت‌های هوش مصنوعی
-    mcp_prompts_collection_note: 'مجموعه‌ای را برای نگهداری <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">قالب‌های پرامپت قابل استفاده مجدد</a> برای تعاملات هوش مصنوعی انتخاب کنید.'
     mcp_system_prompt_divider: پیکربندی پرامپت سیستمی
     mcp_system_prompt_enabled: استفاده از پرامپت سیستمی
-    mcp_system_prompt_enabled_note: "از <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>پرامپت سیستمی پیش‌فرض</a> برای هدایت رفتار LLM استفاده کنید. برای حذف یا جایگزین کردن با پرامپت خودتان در پایین غیرفعال کنید."
     mcp_system_prompt: پرامپت سیستمی سفارشی
     mcp_system_prompt_note: 'پرامپت سیستمی سفارشی برای جایگزینی با پیش‌فرض. برای استفاده از مقدار پیش‌فرض خالی بگذارید (اگر بالا فعال شده).'
     ai_system_prompt: دستورالعمل سیستمی هوش مصنوعی
@@ -1912,7 +1907,6 @@ mcp_prompts_collection_schema:
   messages_role_user: کاربر
   messages_role_assistant: دستیار
   messages_role_note: چه کسی در این پیام صحبت می‌کند.
-  meta_prompts_notice: 'پرامپت‌ها، قالب‌های قابل استفاده مجدد هستند که می‌توانید در LLMها از طریق سرور MCP دایرکتوس، جریان‌ها یا سایر برنامه‌های هوش مصنوعی استفاده کنید. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">درباره ساخت پرامپت‌های مفید بیشتر بدانید.</a>'
 expired: منقضی شده
 upcoming: به زودی
 share: اشتراک‌گذاری
