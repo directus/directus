@@ -2,9 +2,9 @@ import { LimitExceededError, ResourceRestrictedError } from '@directus/errors';
 import type {
 	AppEntitlements,
 	CountableEntitlementKey,
+	Directus,
 	EntitlementCheckResult,
 	EntitlementResolver,
-	Entitlements,
 	FeatureFlagCheckResult,
 	FeatureFlagEntitlementKey,
 	FeatureFlagValidator,
@@ -42,7 +42,7 @@ export function getEntitlementManager(): EntitlementManager {
 }
 
 export class EntitlementManager {
-	private entitlements: Entitlements = CORE_LICENSE['entitlements'];
+	private entitlements: Directus.Entitlements = CORE_LICENSE['entitlements'];
 	private counterSources = new Map<CountableEntitlementKey, UsageCounter>();
 	private validatorSources = new Map<FeatureFlagEntitlementKey, FeatureFlagValidator>();
 	private resolverSources = new Map<keyof ResolveInput, EntitlementResolver<any>>();
@@ -83,7 +83,7 @@ export class EntitlementManager {
 	/**
 	 * Replace the active license. Pass `null` to reset to the core license.
 	 */
-	setEntitlements(entitlements: Entitlements | null): void {
+	setEntitlements(entitlements: Directus.Entitlements | null): void {
 		this.entitlements = entitlements ?? CORE_LICENSE['entitlements'];
 		this.clearCache();
 	}
@@ -95,7 +95,7 @@ export class EntitlementManager {
 	 * checks. Mutating methods (`setEntitlements`, `clearCache`) on the
 	 * fork will affect the shared cache.
 	 */
-	fork(entitlements: Entitlements | null): EntitlementManager {
+	fork(entitlements: Directus.Entitlements | null): EntitlementManager {
 		const forked = Object.create(EntitlementManager.prototype) as EntitlementManager;
 		forked.entitlements = entitlements ?? CORE_LICENSE['entitlements'];
 		forked.counterSources = this.counterSources;

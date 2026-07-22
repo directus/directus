@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { DIRECTUS_OIG_URL, DIRECTUS_PRICING_URL } from '@directus/constants';
-import { deactivateLicense, type Entitlements } from '@directus/license';
+import { deactivateLicense, type Directus } from '@directus/license';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
@@ -104,7 +104,7 @@ function handleAddLicenseCancel() {
 }
 
 type EntitlementConfig = {
-	key: keyof Entitlements;
+	key: keyof Directus.Entitlements;
 	icon: string;
 	title: string;
 	formatter?: (value: number) => string;
@@ -159,7 +159,7 @@ function isIncluded(entitlement: FeatureFlagEntitlement): boolean {
 	return entitlement.override ?? entitlement.default;
 }
 
-function usageFor(key: keyof Entitlements): number | null {
+function usageFor(key: keyof Directus.Entitlements): number | null {
 	if (!license.value) return null;
 	if (key === 'seats') return license.value.usage.seats;
 	if (key === 'collections') return license.value.usage.collections;
