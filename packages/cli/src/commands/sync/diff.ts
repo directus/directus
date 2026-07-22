@@ -1,7 +1,7 @@
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
 import type { ImportBatchResult } from '../../sync/contract.js';
-import type { Mode } from '../../sync/mode.js';
+import { describeMode, type Mode } from '../../sync/mode.js';
 import { emptyImportSummary, hasImportChanges, type ImportSummary, summarizeDiff } from '../../sync/render.js';
 import { type DataPreviewResult, previewData } from './data-push.js';
 import { localDiff } from './local-diff.js';
@@ -61,6 +61,10 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	const mode: Mode = resolveMode(options.mode, target.projectConfig);
 
+	// Same disclosure as push: which instance, and what the mode would mean — BEFORE any results, so an
+	// operator diffing the wrong profile notices here, not in the push that follows.
+	ctx.ui.info(`Comparing committed files with ${options.to} — ${url} (${describeMode(mode)})`);
+
 	const result = await localDiff(target, schemaDiffMode(mode));
 
 	// This is conservative when identities are ambiguous: diff never prompts or writes the ID map, while an
@@ -115,17 +119,17 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	}
 
 	if (result !== null) {
-		ctx.ui.info(`${count(schemaTotal, 'schema change')} between the local snapshot and ${url}:`);
+		ctx.ui.info(`Schema — ${count(schemaTotal, 'change')} a push would apply:`);
 
 		for (const line of schema.lines) ctx.ui.print(line);
 	}
 
 	if (dataSummary !== undefined) {
 		if (dataChanged) {
-			ctx.ui.info(`data changes to import to ${url}:`);
+			ctx.ui.info('Data — changes a push would import:');
 			for (const line of dataSummary.lines) ctx.ui.print(line);
 		} else {
-			ctx.ui.info('no data changes to import.');
+			ctx.ui.info('Data — no changes to import.');
 		}
 	}
 
@@ -135,9 +139,13 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 		if (pending > 0) {
 			const detail =
-				preview.ambiguousCount > 0 ? ` (${preview.ambiguousCount} ambiguous need interactive resolution)` : '';
+				preview.ambiguousCount > 0
+					? ` (${preview.ambiguousCount} ambiguous — run push in a terminal to choose the match)`
+					: '';
 
-			ctx.ui.info(`${count(pending, 'record')} have no target match yet — the first push will reconcile${detail}.`);
+			ctx.ui.info(
+				`${count(pending, 'committed record')} ${pending === 1 ? 'has' : 'have'} no target match yet — the first push will match or create them${detail}.`,
+			);
 		}
 	}
 }

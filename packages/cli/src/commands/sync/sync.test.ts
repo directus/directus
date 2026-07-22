@@ -137,9 +137,14 @@ describe('sync pull', () => {
 		const parsed = JSON.parse(readFileSync(join(schemaDir, ownedFile), 'utf8'));
 		expect(parsed.collection).toBe('articles');
 
-		const line = stderr.join('');
-		expect(line).toMatch(/1 collection/);
-		expect(line).toContain('directus/default/schema');
+		// The headline names source and URL on the status channel; the per-axis report lines (schema /
+		// resources / content) print to stdout with the destinations the operator will commit.
+		expect(stderr.join('')).toContain('Pulled from staging');
+
+		const report = stdout.join('');
+		expect(report).toMatch(/Schema {5}1 collection/);
+		expect(report).toContain('directus/default/schema');
+		expect(report).toContain('Content    none — add --content');
 	});
 
 	it('emits a machine payload of ok:true, the snapshot counts, and the default data export on --json', async () => {
@@ -268,7 +273,7 @@ describe('sync pull', () => {
 		interceptDefaultRecords();
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--collections', 'articles')).toBe(0);
-		expect(stderr.join('')).toContain('(scoped to: articles)');
+		expect(stdout.join('')).toContain('(scoped to: articles)');
 	});
 
 	it('preserves out-of-scope siblings end to end when pulling a single collection', async () => {
@@ -289,6 +294,10 @@ describe('sync pull', () => {
 		interceptDefaultRecords();
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		// The first (human-mode) pull prints its report to stdout; clear it so the --json run's payload
+		// is the only stdout content parsed below.
+		stdout.length = 0;
 
 		const authorsFile = ownedFileFor(schemaDir, 'authors');
 		const authorsBytes = readFileSync(join(schemaDir, authorsFile), 'utf8');
@@ -1061,9 +1070,10 @@ describe('sync push', () => {
 		expect(applied).toEqual({ hash: 'h1', diff: mergeDiffBody() });
 	});
 
-	it('prints the resolved target on the human channel before the diff summary so a misbound profile is visible', async () => {
-		// A profile named staging but pointing at prod's URL must be visible
-		// before anything mutates, so the resolution line lands on stderr ahead of the change summary.
+	it('prints the resolved target and mode on the human channel before the diff summary', async () => {
+		// A profile named staging but pointing at prod's URL must be visible before anything mutates, so
+		// the resolution line lands on stderr ahead of the change summary — and it carries the mode gloss,
+		// because "mirror deletes" must never be a surprise learned at the refusal.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -1074,8 +1084,8 @@ describe('sync push', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
 
 		const err = stderr.join('');
-		const resolutionAt = err.indexOf(`target: staging — ${url}`);
-		const summaryAt = err.indexOf('to push to');
+		const resolutionAt = err.indexOf(`Pushing to staging — ${url} (merge — additive, no deletions)`);
+		const summaryAt = err.indexOf('Schema — ');
 		expect(resolutionAt).toBeGreaterThanOrEqual(0);
 		expect(summaryAt).toBeGreaterThan(resolutionAt);
 	});
@@ -1946,7 +1956,7 @@ describe('sync diff with data', () => {
 		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
 
 		const err = stderr.join('');
-		expect(err).toContain('have no target match yet');
+		expect(err).toContain('has no target match yet');
 		expect(err).toContain('1 ambiguous');
 
 		expect(existsSync(idMapPath)).toBe(false);

@@ -86,7 +86,7 @@ export async function wizard(ctx: CliContext): Promise<void> {
 			{ value: 'mirror', label: MODE_LABELS.mirror },
 		];
 
-		promptedMode = await ask(select({ message: 'Mode:', initialValue: 'merge', options: modeOptions }));
+		promptedMode = await ask(select({ message: 'Push mode:', initialValue: 'merge', options: modeOptions }));
 
 		// Persist the answer so later pushes default to it (and later wizard runs stop asking); an explicit
 		// --mode flag still overrides.

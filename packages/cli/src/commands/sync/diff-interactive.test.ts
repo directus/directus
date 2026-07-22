@@ -120,7 +120,7 @@ describe('interactive sync diff', () => {
 		expect(importBatch).toHaveBeenCalledTimes(1);
 		expect(vi.mocked(importBatch).mock.calls[0]?.[2]).toMatchObject({ dryRun: true });
 
-		expect(stderr.join('')).toContain('have no target match yet');
+		expect(stderr.join('')).toContain('has no target match yet');
 		expect(existsSync(join(dir, 'directus', 'default', 'id_map.json'))).toBe(false);
 	});
 
@@ -145,8 +145,8 @@ describe('interactive sync diff', () => {
 
 		const output = stderr.join('');
 
-		expect(output).toContain('no data changes to import.');
-		expect(output).not.toContain('data changes to import to');
+		expect(output).toContain('Data — no changes to import.');
+		expect(output).not.toContain('changes a push would import');
 	});
 
 	it('dry-runs an all-empty mirror batch instead of calling it a match — emptiness IS the deletion', async () => {
@@ -165,7 +165,7 @@ describe('interactive sync diff', () => {
 		expect(importBatch).toHaveBeenCalledTimes(1);
 		expect(vi.mocked(importBatch).mock.calls[0]?.[2]).toMatchObject({ dryRun: true });
 
-		expect(stderr.join('')).toContain('data changes to import to');
+		expect(stderr.join('')).toContain('Data — changes a push would import:');
 		expect(stderr.join('')).not.toContain('matches the local snapshot');
 	});
 });

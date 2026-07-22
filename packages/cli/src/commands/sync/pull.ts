@@ -331,8 +331,6 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	const collections = snapshot.collections.length;
 	const removed = result.removed.length;
 
-	const removedNote = removed > 0 ? ` Removed ${count(removed, 'stale file')}.` : '';
-
 	// The source URL selects the correct source→target ID-map bucket during push.
 	const dataResult = writeDataFiles(dataDir, dataCollections, normalizeInstanceUrl(url));
 	const records = dataCollections.reduce((total, entry) => total + entry.records.length, 0);
@@ -347,11 +345,33 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		removed: dataResult.removed,
 	};
 
-	const dataSentence = ` Pulled ${count(records, 'data record')} across ${count(collectionCount, 'collection')} → ${dataDirRelative}.`;
+	// One line per axis so "collection" never means two things in one sentence: Schema is structure for
+	// every collection, Resources are directus_* config records, Content is records of user collections.
+	if (!ctx.ui.json) {
+		const contentNamesSet = new Set(contentSources.map((source) => source.collection));
+		const resourceEntries = dataCollections.filter((entry) => !contentNamesSet.has(entry.collection));
+		const contentEntries = dataCollections.filter((entry) => contentNamesSet.has(entry.collection));
+		const resourceRecords = resourceEntries.reduce((total, entry) => total + entry.records.length, 0);
+		const contentRecords = contentEntries.reduce((total, entry) => total + entry.records.length, 0);
 
-	ctx.ui.success(
-		`Pulled ${count(collections, 'collection')} from ${url} → ${relativeDir}.${removedNote}${scope?.note ?? ''}${dataSentence}`,
-	);
+		const schemaNote = `${scope?.note ?? ''}${removed > 0 ? ` (removed ${count(removed, 'stale file')})` : ''}`;
+
+		const dataNote =
+			dataResult.removed.length > 0 ? ` (removed ${count(dataResult.removed.length, 'stale file')})` : '';
+
+		ctx.ui.success(`Pulled from ${options.from} — ${url}`);
+		ctx.ui.print(`  Schema     ${count(collections, 'collection')} → ${relativeDir}${schemaNote}`);
+
+		ctx.ui.print(
+			`  Resources  ${count(resourceRecords, 'record')} in ${count(resourceEntries.length, 'resource')} → ${dataDirRelative}${dataNote}`,
+		);
+
+		ctx.ui.print(
+			contentEntries.length > 0
+				? `  Content    ${count(contentRecords, 'record')} in ${count(contentEntries.length, 'collection')} → ${dataDirRelative}`
+				: '  Content    none — add --content <collections> to export records',
+		);
+	}
 
 	ctx.ui.data({
 		kind: 'PullReport',
