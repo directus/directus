@@ -191,8 +191,13 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 		if (!dataResult.skipped) {
 			if (dataSummary !== undefined) {
-				ctx.ui.info(`data changes to import to ${url}:`);
-				for (const line of dataSummary.lines) ctx.ui.print(line);
+				// An all-zero plan is stated plainly — never a "data changes" header over a "no data changes" line.
+				if (dataSummary.created > 0 || dataSummary.updated > 0 || dataSummary.deleted > 0) {
+					ctx.ui.info(`data changes to import to ${url}:`);
+					for (const line of dataSummary.lines) ctx.ui.print(line);
+				} else {
+					ctx.ui.info('no data changes to import.');
+				}
 			} else {
 				const { records, collections } = dataResult;
 
