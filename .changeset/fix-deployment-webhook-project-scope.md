@@ -1,5 +1,11 @@
 ---
-'@directus/api': patch
+'@directus/api': major
 ---
 
-Scoped the deployment webhook's project lookup to the requesting provider's deployment, so a webhook can no longer resolve a project that shares an external ID under a different provider
+Fixed deployment webhooks resolving a project from the wrong provider when external IDs collide
+
+::: notice
+
+The `DeploymentProjectsService.readByExternalId` method now takes the deployment ID as its first argument (i.e. `readByExternalId(deploymentId, externalId)`)
+
+:::
