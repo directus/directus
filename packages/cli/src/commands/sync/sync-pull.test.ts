@@ -633,10 +633,10 @@ describe('sync pull resources and data', () => {
 			.intercept({
 				path: '/permissions',
 				method: 'GET',
-				query: { limit: '-1', sort: 'id', filter: JSON.stringify({ id: { _gt: 1 } }) },
+				query: { limit: '-1', sort: 'id', offset: '0' },
 				headers: { authorization: `Bearer ${token}` },
 			})
-			.reply(200, { data: [derived] }, { headers: { 'content-type': 'application/json' } });
+			.reply(200, { data: [stored, derived] }, { headers: { 'content-type': 'application/json' } });
 
 		for (const path of [
 			'/roles',
