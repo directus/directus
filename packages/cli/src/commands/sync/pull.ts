@@ -13,16 +13,18 @@ import { allResources, resolveResources, type Resource, SELECTABLE_RESOURCES } f
 import { type WriteScope, writeSnapshotFiles } from '../../sync/store.js';
 import { resolveTarget } from './resolve-target.js';
 
-export interface PullOptions {
+// The selectable resource names, as commander camelCases each --<resource>/--no-<resource> flag onto opts().
+type SelectableResourceFlag = 'dashboards' | 'flows' | 'policies' | 'roles' | 'settings' | 'translations' | 'users';
+
+export type PullOptions = {
 	readonly from: string;
 	readonly collections?: readonly string[];
 	readonly excludeCollections?: readonly string[];
-	readonly resources?: readonly string[];
-	readonly excludeResources?: readonly string[];
+	readonly all?: boolean;
 	readonly content?: readonly string[];
 	readonly deps: boolean;
 	readonly project: string;
-}
+} & Partial<Record<SelectableResourceFlag, boolean>>;
 
 interface PullDataReport {
 	readonly resources: string[];
@@ -166,43 +168,68 @@ function resolveScope(options: PullOptions, projectConfig: ProjectConfig | undef
 // Users require explicit selection so a bare pull never commits accounts.
 const DEFAULT_RESOURCE_NAMES = SELECTABLE_RESOURCES.filter((name) => name !== 'users');
 
-// Resolve flags over project config over defaults, then expand the selected resource closure.
+// Resolve boolean flags over --all over project config over defaults, then expand the selected closure.
 function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig | undefined): Resource[] {
-	const pair = resolvePair(
-		options.resources,
-		options.excludeResources,
-		projectConfig?.resources,
-		projectConfig?.excludeResources,
-		{
-			bothFlags: 'Pass --resources or --exclude-resources, not both.',
-			emptyInclude: '--resources needs at least one resource name.',
-			emptyExclude: '--exclude-resources needs at least one resource name.',
-			bothConfig: `Project "${options.project}" sets both resources and excludeResources.`,
-		},
-	);
-
 	// Commander only defines the negative flag, so options.deps is false exactly when --no-deps was
 	// passed; otherwise the project config's deps (when set) decides, defaulting to the full closure.
 	const deps = options.deps === false ? false : (projectConfig?.deps ?? true);
 
-	if (pair === undefined) return resolveResources(DEFAULT_RESOURCE_NAMES, { deps });
+	const positives = SELECTABLE_RESOURCES.filter((name) => options[name as SelectableResourceFlag] === true);
+	const negatives = SELECTABLE_RESOURCES.filter((name) => options[name as SelectableResourceFlag] === false);
 
-	if ('include' in pair) return resolveResources(pair.include, { deps });
-
-	const excluded = pair.exclude;
-
-	for (const name of excluded) {
-		if (!SELECTABLE_RESOURCES.includes(name)) {
-			throw new CliError('USAGE', `Cannot exclude "${name}": not a selectable resource.`, {
-				hint: `Selectable resources: ${SELECTABLE_RESOURCES.join(', ')}.`,
-			});
+	// Any boolean flag or --all overrides project config wholesale — no merging.
+	if (options.all === true || positives.length > 0 || negatives.length > 0) {
+		if (options.all === true && positives.length > 0) {
+			throw new CliError(
+				'USAGE',
+				'--all already includes every resource; drop the named resources or subtract with --no-<resource>.',
+			);
 		}
+
+		if (positives.length > 0 && negatives.length > 0) {
+			throw new CliError('USAGE', 'Name the resources you want, or subtract them with --no-<resource> — not both.');
+		}
+
+		if (options.all === true) {
+			return resolveResources(
+				SELECTABLE_RESOURCES.filter((name) => !negatives.includes(name)),
+				{ deps },
+			);
+		}
+
+		if (positives.length > 0) return resolveResources(positives, { deps });
+
+		return resolveResources(
+			DEFAULT_RESOURCE_NAMES.filter((name) => !negatives.includes(name)),
+			{ deps },
+		);
 	}
 
-	return resolveResources(
-		DEFAULT_RESOURCE_NAMES.filter((name) => !excluded.includes(name)),
-		{ deps },
-	);
+	const configInclude = projectConfig?.resources;
+	const configExclude = projectConfig?.excludeResources;
+
+	if (configInclude !== undefined && configExclude !== undefined) {
+		throw new CliError('CONFIG', `Project "${options.project}" sets both resources and excludeResources.`);
+	}
+
+	if (configInclude !== undefined) return resolveResources([...configInclude], { deps });
+
+	if (configExclude !== undefined) {
+		for (const name of configExclude) {
+			if (!SELECTABLE_RESOURCES.includes(name)) {
+				throw new CliError('USAGE', `Cannot exclude "${name}": not a selectable resource.`, {
+					hint: `Selectable resources: ${SELECTABLE_RESOURCES.join(', ')}.`,
+				});
+			}
+		}
+
+		return resolveResources(
+			DEFAULT_RESOURCE_NAMES.filter((name) => !configExclude.includes(name)),
+			{ deps },
+		);
+	}
+
+	return resolveResources(DEFAULT_RESOURCE_NAMES, { deps });
 }
 
 // Parse content names before fetching; validate membership against the fetched snapshot.
@@ -228,7 +255,7 @@ function resolveContentSources(names: string[], snapshot: Snapshot): RecordSourc
 	for (const collection of [...new Set(names)].sort(byCodepoint)) {
 		if (graphNames.has(collection)) {
 			throw new CliError('USAGE', `"${collection}" is a config resource, not content.`, {
-				hint: 'Export config resources with --resources, not --content.',
+				hint: 'Export config resources with their --<resource> flag, not --content.',
 			});
 		}
 

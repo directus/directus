@@ -375,8 +375,9 @@ describe('sync pull resources and data', () => {
 		]);
 	});
 
-	it('includes users only when --resources names them', async () => {
-		// Users ride in exactly via --resources users, dragging their role/policy closure with them.
+	it('includes users only when --users is named', async () => {
+		// Users ride in exactly via --users, dragging their role/policy closure with them; a bare pull never
+		// commits accounts, so the account export must require this explicit flag.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -386,7 +387,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/access', []);
 		interceptList('/permissions', []);
 
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'users')).toBe(0);
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--users')).toBe(0);
 
 		expect(exportedCollections()).toEqual([
 			'directus_access',
@@ -397,7 +398,66 @@ describe('sync pull resources and data', () => {
 		]);
 	});
 
-	it('expands a resource to its full closure by default', async () => {
+	it('exports every config resource including users under --all', async () => {
+		// --all is the one selection that commits accounts alongside every other config resource; nothing but
+		// content stays out (content still needs --content), so a leak or a miss would change this exact set.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptList('/users', []);
+		interceptDefaultRecords();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--all')).toBe(0);
+
+		expect(exportedCollections()).toEqual([
+			'directus_access',
+			'directus_dashboards',
+			'directus_flows',
+			'directus_operations',
+			'directus_panels',
+			'directus_permissions',
+			'directus_policies',
+			'directus_roles',
+			'directus_settings',
+			'directus_translations',
+			'directus_users',
+		]);
+	});
+
+	it('composes --all with --no-flows to subtract a resource and its dependent child', async () => {
+		// The subtraction path off --all: everything (users included) except the flows closure, so a
+		// stray /flows fetch or a dropped user export would both break this set.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptList('/users', []);
+		interceptList('/roles', []);
+		interceptList('/policies', []);
+		interceptList('/access', []);
+		interceptList('/permissions', []);
+		interceptList('/dashboards', []);
+		interceptList('/panels', []);
+		interceptList('/translations', []);
+		interceptSingleton('/settings', { id: 1 });
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--all', '--no-flows')).toBe(0);
+
+		expect(exportedCollections()).toEqual([
+			'directus_access',
+			'directus_dashboards',
+			'directus_panels',
+			'directus_permissions',
+			'directus_policies',
+			'directus_roles',
+			'directus_settings',
+			'directus_translations',
+			'directus_users',
+		]);
+	});
+
+	it('expands a named resource to its full closure by default', async () => {
+		// A single positive flag is exclusive — only that resource and its dependency closure, nothing from the
+		// default set rides along — so naming roles must not pull dashboards, flows, settings, or translations.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -406,7 +466,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/access', []);
 		interceptList('/permissions', []);
 
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'roles')).toBe(0);
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--roles')).toBe(0);
 
 		expect(exportedCollections()).toEqual([
 			'directus_access',
@@ -426,7 +486,7 @@ describe('sync pull resources and data', () => {
 		interceptSnapshot();
 		interceptList('/roles', []);
 
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'roles', '--no-deps')).toBe(0);
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--roles', '--no-deps')).toBe(0);
 		expect(exportedCollections()).toEqual(['directus_roles']);
 
 		rmSync(dataDir, { recursive: true, force: true });
@@ -436,7 +496,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/access', []);
 		interceptList('/permissions', []);
 
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'policies', '--no-deps')).toBe(0);
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--policies', '--no-deps')).toBe(0);
 		expect(exportedCollections()).toEqual(['directus_access', 'directus_permissions', 'directus_policies']);
 	});
 
@@ -460,7 +520,9 @@ describe('sync pull resources and data', () => {
 		expect(exportedCollections()).toEqual(['directus_roles']);
 	});
 
-	it('drops a resource and any child that only rode in through it under --exclude-resources', async () => {
+	it('subtracts a resource and any child that only rode in through it under --no-flows', async () => {
+		// A lone negative starts from the default set and drops the named closure: flows and its operations
+		// child both leave, and because negatives never add users, the account export stays absent.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -473,7 +535,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/translations', []);
 		interceptSingleton('/settings', { id: 1 });
 
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--exclude-resources', 'flows')).toBe(0);
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--no-flows')).toBe(0);
 
 		expect(exportedCollections()).toEqual([
 			'directus_access',
@@ -487,15 +549,48 @@ describe('sync pull resources and data', () => {
 		]);
 	});
 
-	it('refuses --resources with --exclude-resources before any network call', async () => {
+	it('treats --no-users as a no-op since users are already out of the default set', async () => {
+		// Subtracting users can never remove what the default never included; the negative must resolve to the
+		// same set as a bare pull, so /users stays unregistered and a stray fetch would throw.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptDefaultRecords();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--no-users')).toBe(0);
+
+		expect(exportedCollections()).toEqual([
+			'directus_access',
+			'directus_dashboards',
+			'directus_flows',
+			'directus_operations',
+			'directus_panels',
+			'directus_permissions',
+			'directus_policies',
+			'directus_roles',
+			'directus_settings',
+			'directus_translations',
+		]);
+	});
+
+	it('refuses --all combined with a named resource before any network call', async () => {
+		// --all already selects everything, so also naming a resource is a contradiction the user must resolve;
+		// it fails USAGE client-side and never reaches the wire (the disabled dispatcher would throw otherwise).
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'roles', '--exclude-resources', 'flows')).toBe(
-			1,
-		);
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--all', '--roles')).toBe(1);
+		expect(stderr.join('')).toContain('--all already includes every resource');
+	});
 
-		expect(stderr.join('')).toContain('Pass --resources or --exclude-resources, not both.');
+	it('refuses a positive resource combined with a negative before any network call', async () => {
+		// Naming what you want and subtracting from the default are two different mental models; mixing them is
+		// ambiguous, so it fails USAGE client-side rather than guessing which the operator meant.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--roles', '--no-flows')).toBe(1);
+		expect(stderr.join('')).toContain('Name the resources you want');
 	});
 
 	it('never writes secrets or alias views to disk', async () => {
@@ -534,7 +629,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/access', []);
 		interceptList('/permissions', []);
 
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'users')).toBe(0);
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--users')).toBe(0);
 
 		const roleBytes = readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_roles')), 'utf8');
 		expect(roleBytes).not.toContain('"users"');
@@ -702,7 +797,7 @@ describe('sync pull resources and data', () => {
 
 		interceptList('/permissions', []);
 
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'users,roles,policies')).toBe(0);
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--users', '--roles', '--policies')).toBe(0);
 
 		const access = JSON.parse(readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_access')), 'utf8'));
 
@@ -756,14 +851,15 @@ describe('sync pull resources and data', () => {
 		expect(stderr.join('')).toContain('exported without api_key');
 	});
 
-	it('routes a config resource named as --content to --resources', async () => {
+	it('routes a config resource named as --content to its resource flag', async () => {
 		// Fail after schema fetch but before either artifact writer or any record fetch.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--content', 'roles')).toBe(1);
-		expect(stderr.join('')).toContain('--resources');
+		expect(stderr.join('')).toContain('is a config resource, not content');
+		expect(stderr.join('')).toContain('--<resource> flag');
 	});
 
 	it('refuses a project that is not declared in config', async () => {
@@ -785,10 +881,11 @@ describe('sync pull resources and data', () => {
 		expect(stderr.join('')).toContain('Invalid project name');
 	});
 
-	it('drives a bare pull from a declared project scope, and lets a flag override it', async () => {
-		// A project's scope config supplies the resource set when no flag is present; a flag overrides it.
-		// First pull: config resources ['roles'] → only the roles closure. Second: --resources translations
-		// wins. Endpoints outside each expected set are unregistered, so a leak would throw.
+	it('drives a bare pull from a declared project scope, and lets a boolean flag override it', async () => {
+		// A project's scope config supplies the resource set when no boolean flag is present; any flag overrides
+		// it wholesale. First pull: config resources ['roles'] → only the roles closure. Second: --translations
+		// wins outright (no merge with config). Endpoints outside each expected set are unregistered, so a leak
+		// would throw.
 		writeConfig({
 			profiles: { staging: { url } },
 			projects: { default: { resources: ['roles'] } },
@@ -816,8 +913,69 @@ describe('sync pull resources and data', () => {
 		interceptSnapshot();
 		interceptList('/translations', []);
 
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'translations')).toBe(0);
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--translations')).toBe(0);
 		expect(exportedCollections()).toEqual(['directus_translations']);
+	});
+
+	it('subtracts a configured excludeResources list from the default set', async () => {
+		// The config exclude path mirrors --no-<resource>: the default set minus the named closure, so a
+		// configured CI checkout can drop flows without anyone passing a flag on every run.
+		writeConfig({
+			profiles: { staging: { url } },
+			projects: { default: { excludeResources: ['flows'] } },
+		});
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptList('/roles', []);
+		interceptList('/policies', []);
+		interceptList('/access', []);
+		interceptList('/permissions', []);
+		interceptList('/dashboards', []);
+		interceptList('/panels', []);
+		interceptList('/translations', []);
+		interceptSingleton('/settings', { id: 1 });
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		expect(exportedCollections()).toEqual([
+			'directus_access',
+			'directus_dashboards',
+			'directus_panels',
+			'directus_permissions',
+			'directus_policies',
+			'directus_roles',
+			'directus_settings',
+			'directus_translations',
+		]);
+	});
+
+	it('refuses a project that sets both resources and excludeResources', async () => {
+		// The two config lists are mutually exclusive like their flag equivalents; setting both is a config
+		// defect that must fail before the fetch rather than silently pick one.
+		writeConfig({
+			profiles: { staging: { url } },
+			projects: { default: { resources: ['roles'], excludeResources: ['flows'] } },
+		});
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
+		expect(stderr.join('')).toContain('sets both resources and excludeResources');
+	});
+
+	it('refuses a configured excludeResources naming a non-selectable resource', async () => {
+		// Only selectable resources can be subtracted; naming a dependent-only child like operations is a config
+		// error caught before the fetch, since excluding it could never be honored on its own.
+		writeConfig({
+			profiles: { staging: { url } },
+			projects: { default: { excludeResources: ['operations'] } },
+		});
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
+		expect(stderr.join('')).toContain('Cannot exclude "operations"');
 	});
 
 	it('lands artifacts under a configured directory key', async () => {

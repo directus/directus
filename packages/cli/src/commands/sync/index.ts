@@ -14,13 +14,24 @@ function parseList(value: string): string[] {
 		.filter(Boolean);
 }
 
+// The dependency rollup each --<resource> flag pulls in, so newcomers learn the graph from --help.
+const RESOURCE_FLAG_PHRASES: Record<string, string> = {
+	dashboards: 'dashboards and their panels',
+	flows: 'flows and their operations',
+	policies: 'access policies with their permissions and access rules',
+	roles: 'roles (brings their policies)',
+	settings: 'project settings',
+	translations: 'custom translations',
+	users: 'user accounts (brings roles and policies)',
+};
+
 export function registerSync(program: Command, getContext: () => CliContext): void {
 	const sync = program.command('sync').description('Sync schema and configuration between Directus instances');
 
 	// Commander runs this action only when no sync subcommand is given.
 	sync.action(() => wizard(getContext()));
 
-	sync
+	const pullCommand = sync
 		.command('pull')
 		.description('Snapshot schema and config resources from a source instance into committable files')
 		.requiredOption('--from <profile>', 'Source profile name')
@@ -30,12 +41,16 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 			'All collections except these (comma-separated); pulls a partial snapshot',
 			parseList,
 		)
-		.option(
-			'--resources <list>',
-			`Only these config resources (comma-separated). Resources: ${SELECTABLE_RESOURCES.join(', ')}`,
-			parseList,
-		)
-		.option('--exclude-resources <list>', 'All config resources except these (comma-separated)', parseList)
+		.option('--all', 'Every config resource, including users (content still requires --content)');
+
+	// Define each positive flag before its --no- twin so the default stays undefined (tri-state selection).
+	for (const name of SELECTABLE_RESOURCES) {
+		pullCommand
+			.option(`--${name}`, `Only the named resources — ${RESOURCE_FLAG_PHRASES[name]}`)
+			.option(`--no-${name}`, `Exclude ${name} from the default set`);
+	}
+
+	pullCommand
 		.option('--content <list>', 'Also export records for these user collections (comma-separated)', parseList)
 		.option('--no-deps', 'Do not pull resource dependencies (dependent children still ride with their parent)')
 		.option('--project <name>', 'Project scope to sync (default: default)', 'default')
