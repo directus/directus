@@ -694,6 +694,17 @@ describe('sync pull resources and data', () => {
 		expect(stderr.join('')).toContain('Unknown project');
 	});
 
+	it('refuses a path-like project name before any filesystem or network work', async () => {
+		// The project name becomes a path segment of the artifact tree; a "../"-bearing or slash-bearing
+		// name would escape or nest the containment root, so anything outside the safe charset is refused.
+		// No intercept is registered — the disabled dispatcher would throw on a stray request.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--project', '../evil')).toBe(1);
+		expect(stderr.join('')).toContain('Invalid project name');
+	});
+
 	it('drives a bare pull from a declared project scope, and lets a flag override it', async () => {
 		// A project's scope config supplies the resource set when no flag is present; a flag overrides it.
 		// First pull: config resources ['roles'] → only the roles closure. Second: --resources translations
@@ -1051,6 +1062,54 @@ describe('sync push', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
 		expect(stderr.join('')).toMatch(/re-run d6s sync push/i);
 	});
+
+	it('refuses a deletion-bearing MERGE diff in CI without --allow-deletes', async () => {
+		// The backstop behind the mirror gate: a merge diff should never carry deletions, but if the
+		// server returns one anyway it must not ride in under --yes — the deletion consent is
+		// --allow-deletes, in every mode. No apply intercept: the refusal precedes any apply request.
+		const deletionDiff = {
+			collections: [],
+			fields: [{ collection: 'articles', field: 'old_slug', diff: [{ kind: 'D', lhs: { field: 'old_slug' } }] }],
+			systemFields: [],
+			relations: [],
+		};
+
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', deletionDiff);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+
+		const err = stderr.join('');
+		expect(err).toMatch(/deletes/i);
+		expect(err).toContain('--allow-deletes');
+	});
+
+	it('resolves mode from project config when no flag is given, and lets the flag win', async () => {
+		// A committed config can select mirror — deletion behavior — so precedence must be pinned. Run 1:
+		// no flag, projects.default.mode=mirror; the mode-bearing diff intercept only matches mode=mirror
+		// on the wire, and the CI mirror gate must fire off the config-resolved mode. Run 2: an explicit
+		// --mode merge overrides the config; the merge intercept matching (204) proves the flag won.
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { staging: { url } }, projects: { default: { mode: 'mirror' } } }),
+		);
+
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('mirror', mergeDiffBody());
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+		expect(stderr.join('')).toMatch(/refusing mirror/i);
+
+		interceptDiff('merge', null);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'merge', '--yes')).toBe(0);
+		expect(stderr.join('')).toContain('nothing to push.');
+	});
 });
 
 describe('sync push with data', () => {
@@ -1238,6 +1297,31 @@ describe('sync push with data', () => {
 		const err = stderr.join('');
 		expect(err).toMatch(/refusing mirror/i);
 		expect(err).toContain('--allow-deletes');
+	});
+
+	it('refuses an ambiguous reconcile in CI, naming the collision, before any import', async () => {
+		// Reconcile never guesses and CI cannot prompt: two target roles named Editor make sr1 ambiguous,
+		// so push must fail STATE naming the collision and routing to an interactive run. Only the diff
+		// and the target fetch are registered — a reached apply or import would throw on the disabled
+		// dispatcher, proving the refusal preceded any mutation.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+
+		interceptTarget('/roles', [
+			{ id: 't1', name: 'Editor' },
+			{ id: 't2', name: 'Editor' },
+		]);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+
+		const err = stderr.join('');
+		expect(err).toContain('Ambiguous target matches');
+		expect(err).toContain('directus_roles "sr1"');
+		expect(err).toMatch(/interactively/i);
 	});
 
 	it('renders the cycle when the import fails with IMPORT_CYCLICAL_RELATION', async () => {
