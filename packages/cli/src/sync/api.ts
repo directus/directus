@@ -91,6 +91,8 @@ export interface RecordSource {
 	readonly endpoint: string;
 	readonly primaryKey: string;
 	readonly singleton: boolean;
+	/** Rows the server derives at read time (never real records); dropped before validation and paging. */
+	readonly drop?: ((record: Record<string, unknown>) => boolean) | undefined;
 }
 
 /**
@@ -143,7 +145,19 @@ export async function fetchRecords(
 			throw new CliError('HTTP', `The ${source.endpoint} response was not an array of records.`);
 		}
 
-		if (response.length === 0) {
+		// Server-derived rows (e.g. the app-access minimal permissions appended to every authenticated
+		// /permissions read) are runtime state, not config: they carry no primary key and are appended
+		// AFTER limit/offset are applied to the real rows — so they are dropped before validation,
+		// excluded from the paging offset, and a page of only derived rows means the real rows are
+		// exhausted.
+		const drop = source.drop;
+
+		const rows =
+			drop === undefined
+				? (response as Record<string, unknown>[])
+				: (response as Record<string, unknown>[]).filter((record) => !drop(record));
+
+		if (rows.length === 0) {
 			// An empty FIRST page is ambiguous: a genuinely empty collection, or QUERY_LIMIT_MAX=0 — the
 			// server accepts a zero cap (sanitize-query checks `>= 0`) and clamps limit=-1 to zero rows,
 			// which reads exactly like emptiness. Mirror would turn that into "delete every target row",
@@ -175,7 +189,7 @@ export async function fetchRecords(
 		// one, and reconcile/unchanged comparisons would key on the string "undefined". A missing key
 		// (field permissions can hide columns) or a repeated one (a concurrent insert shifts offset
 		// pages) fails here, before anything is written or compared.
-		for (const record of response as Record<string, unknown>[]) {
+		for (const record of rows) {
 			const pk = record[source.primaryKey];
 
 			if (typeof pk !== 'string' && typeof pk !== 'number') {
@@ -195,7 +209,7 @@ export async function fetchRecords(
 			seen.add(key);
 		}
 
-		records.push(...(response as Record<string, unknown>[]));
+		records.push(...rows);
 	}
 }
 

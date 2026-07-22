@@ -453,6 +453,35 @@ describe('fetchRecords', () => {
 		expect((error as CliError).message).toContain('more than once');
 	});
 
+	it('drops server-derived rows before validation and ends paging when only derived rows remain', async () => {
+		// The server appends the app-access minimal permissions (system: true, NO id) to every
+		// authenticated /permissions read, AFTER limit/offset are applied to the real rows. So every
+		// page carries them: they must not trip the key-less refusal, must not count toward the paging
+		// offset (the second request asks for offset 1, not 2), and a page of only derived rows means
+		// the real rows are exhausted.
+		const derived = { policy: null, collection: 'directus_settings', action: 'read', system: true };
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/permissions', method: 'GET', query: { limit: '-1', sort: 'id' } })
+			.reply(200, { data: [{ id: 1, policy: 'p1' }, derived] }, { headers: { 'content-type': 'application/json' } });
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/permissions', method: 'GET', query: { limit: '-1', sort: 'id', offset: '1' } })
+			.reply(200, { data: [derived] }, { headers: { 'content-type': 'application/json' } });
+
+		const result = await fetchRecords(credential, {
+			collection: 'directus_permissions',
+			endpoint: '/permissions',
+			primaryKey: 'id',
+			singleton: false,
+			drop: (record) => record['system'] === true,
+		});
+
+		expect(result).toEqual([{ id: 1, policy: 'p1' }]);
+	});
+
 	it('wraps a singleton object response in a one-element array', async () => {
 		// A singleton endpoint (settings) returns one object, not an array; fetchRecords normalizes it to a
 		// single-record collection so the store treats it like any other. No limit/sort on the wire.
