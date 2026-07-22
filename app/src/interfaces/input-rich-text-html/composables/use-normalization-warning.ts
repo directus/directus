@@ -1,3 +1,4 @@
+import type { AnyExtension } from '@tiptap/vue-3';
 import type { Change } from 'diff';
 import { Ref, ref } from 'vue';
 import { computeValueNormalizationDiff } from './normalization-diff';
@@ -18,7 +19,10 @@ type UsableNormalizationWarning = {
  * edit can reach the value — and thus autosave — until the warning dialog is confirmed. Content
  * that survives normalization never locks.
  */
-export function useNormalizationWarning(value: Ref<string | null>): UsableNormalizationWarning {
+export function useNormalizationWarning(
+	value: Ref<string | null>,
+	extraExtensions: AnyExtension[] = [],
+): UsableNormalizationWarning {
 	const normalizationLocked = ref(false);
 	const normalizationWarningOpen = ref(false);
 	const normalizationWarningDiff = ref<Change[]>([]);
@@ -42,7 +46,7 @@ export function useNormalizationWarning(value: Ref<string | null>): UsableNormal
 			return;
 		}
 
-		const diff = computeValueNormalizationDiff(value.value);
+		const diff = computeValueNormalizationDiff(value.value, extraExtensions);
 		normalizationLocked.value = diff !== null;
 		normalizationWarningDiff.value = diff ?? [];
 	}
