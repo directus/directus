@@ -8,20 +8,34 @@ import { CliError } from '../kernel/error.js';
 import { applyDiff, fetchDiff, fetchRecords, fetchSnapshot, importBatch } from './api.js';
 import type { DiffResult, ImportCollectionData, Snapshot } from './contract.js';
 
+// One setup for every suite in this file: isolate HOME so nothing reads the developer's real ~/.directus,
+// and pin the wire with a fresh MockAgent per test — net connect disabled, so a stray request throws.
+const realDispatcher = getGlobalDispatcher();
+const token = 'super-secret-static-token';
+const credential: ResolvedCredential = { kind: 'token', url: 'https://cms.example.com', token };
+let agent: MockAgent;
+const created: string[] = [];
+
+beforeEach(() => {
+	const home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
+	created.push(home);
+	vi.stubEnv('HOME', home);
+	vi.stubEnv('USERPROFILE', home);
+
+	agent = new MockAgent();
+	agent.disableNetConnect();
+	setGlobalDispatcher(agent);
+});
+
+afterEach(async () => {
+	setGlobalDispatcher(realDispatcher);
+	await agent.close();
+	vi.restoreAllMocks();
+	vi.unstubAllEnvs();
+	for (const dir of created.splice(0)) rmSync(dir, { recursive: true, force: true });
+});
+
 describe('fetchSnapshot', () => {
-	const realDispatcher = getGlobalDispatcher();
-	const token = 'super-secret-static-token';
-	const credential: ResolvedCredential = { kind: 'token', url: 'https://cms.example.com', token };
-	let agent: MockAgent;
-	const created: string[] = [];
-
-	function isolateHome(): void {
-		const dir = mkdtempSync(join(tmpdir(), 'd6s-home-'));
-		created.push(dir);
-		vi.stubEnv('HOME', dir);
-		vi.stubEnv('USERPROFILE', dir);
-	}
-
 	function fullSnapshot(overrides: Record<string, unknown> = {}): Record<string, unknown> {
 		return {
 			version: 1,
@@ -35,24 +49,9 @@ describe('fetchSnapshot', () => {
 		};
 	}
 
-	beforeEach(() => {
-		agent = new MockAgent();
-		agent.disableNetConnect();
-		setGlobalDispatcher(agent);
-	});
-
-	afterEach(async () => {
-		setGlobalDispatcher(realDispatcher);
-		await agent.close();
-		vi.restoreAllMocks();
-		vi.unstubAllEnvs();
-		for (const dir of created.splice(0)) rmSync(dir, { recursive: true, force: true });
-	});
-
 	it('carries the resolved credential on the admin-only snapshot request and returns a parsed snapshot', async () => {
 		// /schema/snapshot is admin-only, so the request must present the resolved token;
 		// the intercept only matches when the Authorization header is on the wire.
-		isolateHome();
 
 		agent
 			.get('https://cms.example.com')
@@ -71,7 +70,6 @@ describe('fetchSnapshot', () => {
 	it('sends includeCollections on the wire and returns the parsed partial snapshot', async () => {
 		// A scoped pull must reach the query string as a comma-joined list; the intercept only matches
 		// when includeCollections is on the wire, and the server tags the reply version 2.
-		isolateHome();
 
 		agent
 			.get('https://cms.example.com')
@@ -92,7 +90,6 @@ describe('fetchSnapshot', () => {
 	it('sends excludeCollections on the wire for the mutually-exclusive exclude scope', async () => {
 		// The exclude variant maps to the other query param; the response is still parsed and its
 		// version-2 tag is preserved verbatim, never fabricated.
-		isolateHome();
 
 		agent
 			.get('https://cms.example.com')
@@ -105,7 +102,6 @@ describe('fetchSnapshot', () => {
 	});
 
 	it('routes a 401 to an AUTH error so credential failures surface hints, not a stack trace', async () => {
-		isolateHome();
 
 		agent
 			.get('https://cms.example.com')
@@ -122,7 +118,6 @@ describe('fetchSnapshot', () => {
 	it('fails at the transport boundary, naming the drifted field, when the snapshot shape breaks', async () => {
 		// A 200 that omits a required field is a protocol break; routing the response through
 		// the contract parse makes drift fail loud here rather than downstream.
-		isolateHome();
 
 		const { collections: _collections, ...withoutCollections } = fullSnapshot();
 
@@ -140,19 +135,6 @@ describe('fetchSnapshot', () => {
 });
 
 describe('fetchDiff', () => {
-	const realDispatcher = getGlobalDispatcher();
-	const token = 'super-secret-static-token';
-	const credential: ResolvedCredential = { kind: 'token', url: 'https://cms.example.com', token };
-	let agent: MockAgent;
-	const created: string[] = [];
-
-	function isolateHome(): void {
-		const dir = mkdtempSync(join(tmpdir(), 'd6s-home-'));
-		created.push(dir);
-		vi.stubEnv('HOME', dir);
-		vi.stubEnv('USERPROFILE', dir);
-	}
-
 	function snapshot(): Snapshot {
 		return {
 			version: 1,
@@ -174,24 +156,9 @@ describe('fetchDiff', () => {
 		};
 	}
 
-	beforeEach(() => {
-		agent = new MockAgent();
-		agent.disableNetConnect();
-		setGlobalDispatcher(agent);
-	});
-
-	afterEach(async () => {
-		setGlobalDispatcher(realDispatcher);
-		await agent.close();
-		vi.restoreAllMocks();
-		vi.unstubAllEnvs();
-		for (const dir of created.splice(0)) rmSync(dir, { recursive: true, force: true });
-	});
-
 	it('sends the local snapshot unmodified with the mode on the wire, and returns the parsed diff', async () => {
 		// The mode must reach the query string: an absent mode silently means destructive `mirror`. And
 		// /schema/diff computes against exactly the snapshot the CLI captured, so it must arrive byte-for-byte.
-		isolateHome();
 
 		const local = snapshot();
 		let sentBody: string | undefined;
@@ -220,7 +187,6 @@ describe('fetchDiff', () => {
 	it('resolves null on a 204 empty reply, the "no changes" outcome the command keys off', async () => {
 		// When the snapshots already match the server answers 204 with no body; that must resolve to null
 		// (the diff command's short-circuit), never a failed parse.
-		isolateHome();
 
 		agent
 			.get('https://cms.example.com')
@@ -231,7 +197,6 @@ describe('fetchDiff', () => {
 	});
 
 	it('routes a Directus error to a CliError so a failed diff surfaces a hint, not a stack trace', async () => {
-		isolateHome();
 
 		agent
 			.get('https://cms.example.com')
@@ -250,19 +215,6 @@ describe('fetchDiff', () => {
 });
 
 describe('applyDiff', () => {
-	const realDispatcher = getGlobalDispatcher();
-	const token = 'super-secret-static-token';
-	const credential: ResolvedCredential = { kind: 'token', url: 'https://cms.example.com', token };
-	let agent: MockAgent;
-	const created: string[] = [];
-
-	function isolateHome(): void {
-		const dir = mkdtempSync(join(tmpdir(), 'd6s-home-'));
-		created.push(dir);
-		vi.stubEnv('HOME', dir);
-		vi.stubEnv('USERPROFILE', dir);
-	}
-
 	function diffResult(): DiffResult {
 		return {
 			hash: 'abc123',
@@ -275,25 +227,10 @@ describe('applyDiff', () => {
 		};
 	}
 
-	beforeEach(() => {
-		agent = new MockAgent();
-		agent.disableNetConnect();
-		setGlobalDispatcher(agent);
-	});
-
-	afterEach(async () => {
-		setGlobalDispatcher(realDispatcher);
-		await agent.close();
-		vi.restoreAllMocks();
-		vi.unstubAllEnvs();
-		for (const dir of created.splice(0)) rmSync(dir, { recursive: true, force: true });
-	});
-
 	it('carries the resolved credential and sends the sealed { hash, diff } to /schema/apply unmodified', async () => {
 		// The whole safety model is that the exact diff the server sealed reaches /schema/apply
 		// byte-faithful — the server re-checks the hash — so the body must deep-equal the DiffResult,
 		// hash and diff untouched. The admin-only intercept only matches with the token on the wire.
-		isolateHome();
 
 		const result = diffResult();
 		let sentBody: string | undefined;
@@ -317,7 +254,6 @@ describe('applyDiff', () => {
 	});
 
 	it('routes a Directus error to a CliError so a failed apply surfaces a hint, not a stack trace', async () => {
-		isolateHome();
 
 		agent
 			.get('https://cms.example.com')
@@ -336,39 +272,11 @@ describe('applyDiff', () => {
 });
 
 describe('fetchRecords', () => {
-	const realDispatcher = getGlobalDispatcher();
-	const token = 'super-secret-static-token';
-	const credential: ResolvedCredential = { kind: 'token', url: 'https://cms.example.com', token };
-	let agent: MockAgent;
-	const created: string[] = [];
-
-	function isolateHome(): void {
-		const dir = mkdtempSync(join(tmpdir(), 'd6s-home-'));
-		created.push(dir);
-		vi.stubEnv('HOME', dir);
-		vi.stubEnv('USERPROFILE', dir);
-	}
-
-	beforeEach(() => {
-		agent = new MockAgent();
-		agent.disableNetConnect();
-		setGlobalDispatcher(agent);
-	});
-
-	afterEach(async () => {
-		setGlobalDispatcher(realDispatcher);
-		await agent.close();
-		vi.restoreAllMocks();
-		vi.unstubAllEnvs();
-		for (const dir of created.splice(0)) rmSync(dir, { recursive: true, force: true });
-	});
-
 	it('pulls the whole collection with limit -1 and the token on the wire, returning records verbatim', async () => {
 		// A data pull must fetch the entire set (limit -1) keyed by the primary key; the intercept only
 		// matches when both ride the query, and the endpoint is authenticated so the token must be present.
 		// The follow-up probe (offset past the page) must come back empty before fetch trusts the set is
 		// complete — a QUERY_LIMIT_MAX clamp is silent, so a single response can never prove exhaustion.
-		isolateHome();
 
 		// Two records, out of primary-key order and carrying a nested object: fetch returns them untouched
 		// (records are the user's data, never reshaped) — ordering and canonicalization are the store's job.
@@ -412,7 +320,6 @@ describe('fetchRecords', () => {
 		// request would silently drop every later row, and downstream that is data loss (mirror deletes
 		// what it did not see; the collision guard cannot see an occupied PK beyond the cap). The fetch
 		// must keep offsetting past short pages — only an EMPTY page proves exhaustion.
-		isolateHome();
 
 		const pages: Record<string, { id: number }[]> = {
 			'0': [{ id: 1 }, { id: 2 }],
@@ -445,7 +352,6 @@ describe('fetchRecords', () => {
 	it('wraps a singleton object response in a one-element array', async () => {
 		// A singleton endpoint (settings) returns one object, not an array; fetchRecords normalizes it to a
 		// single-record collection so the store treats it like any other. No limit/sort on the wire.
-		isolateHome();
 
 		agent
 			.get('https://cms.example.com')
@@ -465,7 +371,6 @@ describe('fetchRecords', () => {
 	it('fails loud, naming the endpoint, when a list endpoint returns a non-array', async () => {
 		// A list endpoint that answers with an object is a protocol break; the boundary check fails HTTP
 		// naming the endpoint rather than letting a malformed shape corrupt the export downstream.
-		isolateHome();
 
 		agent
 			.get('https://cms.example.com')
@@ -486,20 +391,7 @@ describe('fetchRecords', () => {
 });
 
 describe('importBatch', () => {
-	const realDispatcher = getGlobalDispatcher();
-	const token = 'super-secret-static-token';
-	const credential: ResolvedCredential = { kind: 'token', url: 'https://cms.example.com', token };
-	let agent: MockAgent;
-	const created: string[] = [];
-
 	const batch: ImportCollectionData[] = [{ collection: 'directus_roles', items: [{ id: 't1', name: 'Editor' }] }];
-
-	function isolateHome(): void {
-		const dir = mkdtempSync(join(tmpdir(), 'd6s-home-'));
-		created.push(dir);
-		vi.stubEnv('HOME', dir);
-		vi.stubEnv('USERPROFILE', dir);
-	}
 
 	// A Directus error reply shaped like the SDK reconstructs it: errors[].extensions carries the code and,
 	// for a cyclical failure, the cycle's collections and relations.
@@ -510,25 +402,10 @@ describe('importBatch', () => {
 			.reply(status, { errors: [{ message, extensions }] }, { headers: { 'content-type': 'application/json' } });
 	}
 
-	beforeEach(() => {
-		agent = new MockAgent();
-		agent.disableNetConnect();
-		setGlobalDispatcher(agent);
-	});
-
-	afterEach(async () => {
-		setGlobalDispatcher(realDispatcher);
-		await agent.close();
-		vi.restoreAllMocks();
-		vi.unstubAllEnvs();
-		for (const dir of created.splice(0)) rmSync(dir, { recursive: true, force: true });
-	});
-
 	it('uploads the batch as an application/json file with mode on the wire and returns the parsed result', async () => {
 		// The server reads the FIRST file part (any field name) and requires its mimetype to be
 		// application/json; the batch array is its content. mode always rides so the server never falls back
 		// to its `add` default. The response is parsed at the boundary.
-		isolateHome();
 
 		let sentForm: FormData | undefined;
 
@@ -564,7 +441,6 @@ describe('importBatch', () => {
 	it('rides dryRun and dangerouslyAllowDelete on the query only when set', async () => {
 		// The exact query match (undici rejects an extra param) proves both flags reached the wire together —
 		// the mirror dry-run's exact option set.
-		isolateHome();
 
 		agent
 			.get('https://cms.example.com')
@@ -591,7 +467,7 @@ describe('importBatch', () => {
 	it('enriches a missing-foreign-key failure with the likely cause', async () => {
 		// INVALID_FOREIGN_KEY has no dedicated server check — it surfaces as the DB constraint — so push
 		// cannot diagnose it. api.ts adds the actionable cause: an out-of-scope reference or unsynced dependency.
-		isolateHome();
+
 		errorReply(400, { code: 'INVALID_FOREIGN_KEY' });
 
 		const error = await importBatch(credential, batch, { mode: 'merge' }).catch((error: unknown) => error);
@@ -603,7 +479,6 @@ describe('importBatch', () => {
 	it('enriches a cyclical-relation failure by naming the cycle and pointing at the nullable fix', async () => {
 		// A cycle of non-nullable FKs is unresolvable; the CLI must name the collections and relations forming
 		// it (from the error extensions) and point at the fix — make one relation nullable.
-		isolateHome();
 
 		errorReply(422, {
 			code: 'IMPORT_CYCLICAL_RELATION',
