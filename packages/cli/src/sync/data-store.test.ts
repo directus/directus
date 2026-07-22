@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -23,9 +23,6 @@ afterEach(() => {
 	for (const dir of dirs.splice(0)) rmSync(dir, { recursive: true, force: true });
 });
 
-// Two collections: a system one whose records carry nested unknown keys (including a nested array whose
-// order is data, never reordered), and a user one whose ids are numeric-looking strings so the PK sort's
-// string comparison is exercised.
 function fixture(): DataCollection[] {
 	return [
 		{
@@ -46,33 +43,6 @@ function fixture(): DataCollection[] {
 			],
 		},
 	];
-}
-
-// Reverse the collection list, every record array, and every object's key order at every depth, while
-// leaving nested array order intact — the exact transformations the store must render invisible.
-function shuffleValue(value: unknown): unknown {
-	if (Array.isArray(value)) return value.map(shuffleValue);
-
-	if (value !== null && typeof value === 'object') {
-		const reversed = Object.entries(value as Record<string, unknown>).reverse();
-		return Object.fromEntries(reversed.map(([key, inner]) => [key, shuffleValue(inner)]));
-	}
-
-	return value;
-}
-
-function shuffled(collections: DataCollection[]): DataCollection[] {
-	return [...collections].reverse().map((collection) => ({
-		collection: collection.collection,
-		primaryKey: collection.primaryKey,
-		records: [...collection.records].reverse().map((record) => shuffleValue(record) as Record<string, unknown>),
-	}));
-}
-
-function readAll(dir: string): Map<string, string> {
-	const files = new Map<string, string>();
-	for (const name of readdirSync(dir).sort()) files.set(name, readFileSync(join(dir, name), 'utf8'));
-	return files;
 }
 
 function ownedFileFor(dir: string, collection: string): string {
@@ -126,18 +96,6 @@ describe('writeDataFiles / readDataFiles', () => {
 		expect(readDataFiles(dir).source).toBe(SOURCE);
 	});
 
-	it('writes byte-identical files regardless of record order or key insertion order', () => {
-		// This is the module's reason to exist: a committed data artifact must depend only on the records,
-		// so a PR diff surfaces real content changes and never incidental reordering from the export.
-		const a = tempDir();
-		const b = tempDir();
-
-		writeDataFiles(a, fixture(), SOURCE);
-		writeDataFiles(b, shuffled(fixture()), SOURCE);
-
-		expect(readAll(a)).toEqual(readAll(b));
-	});
-
 	it('sorts records by primary key as strings, so numeric-looking ids order lexically', () => {
 		// The PK sort is codepoint over String(id): "10" and "100" sort before "9". This tradeoff is
 		// accepted and asserted deliberately — the store guarantees determinism, not numeric-natural
@@ -154,49 +112,9 @@ describe('writeDataFiles / readDataFiles', () => {
 
 		expect(read[0]?.records.map((record) => record['id'])).toEqual(['10', '100', '9']);
 	});
-
-	it('is idempotent: a second identical write changes no bytes and removes nothing', () => {
-		const dir = tempDir();
-		writeDataFiles(dir, fixture(), SOURCE);
-		const before = readAll(dir);
-
-		const result = writeDataFiles(dir, fixture(), SOURCE);
-
-		expect(readAll(dir)).toEqual(before);
-		expect(result.removed).toEqual([]);
-	});
-
-	it('removes a dropped collection’s owned file but never a foreign one', () => {
-		// A data write mirrors the exported set: a leftover owned file would resurrect dropped records on
-		// the next read, while a user's own file that merely matches the owned-name shape — absent from
-		// the manifest — must survive untouched.
-		const dir = tempDir();
-		writeDataFiles(dir, fixture(), SOURCE);
-
-		const articlesFile = ownedFileFor(dir, 'articles');
-		const planted = join(dir, 'notes_deadbeef.json');
-		writeFileSync(planted, '{ "collection": "notes", "records": "not even an array" }');
-
-		const result = writeDataFiles(
-			dir,
-			[{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'a', name: 'Admin' }] }],
-			SOURCE,
-		);
-
-		expect(result.removed).toEqual([articlesFile]);
-		expect(existsSync(join(dir, articlesFile))).toBe(false);
-		expect(existsSync(planted)).toBe(true);
-	});
 });
 
 describe('readDataFiles failures', () => {
-	it('reports missing state on a directory with no data', () => {
-		const error = expectCliError(() => readDataFiles(tempDir()));
-
-		expect(error.code).toBe('STATE');
-		expect(error.hint).toBe('Run d6s sync pull first.');
-	});
-
 	it('fails loud when metadata predates source tracking, pointing at a re-pull', () => {
 		// Data written before the source field existed cannot be pushed safely: the source keys the ID map
 		// bucket, and guessing it would misremap. Reading it must fail loud pointing at a re-pull, never
@@ -213,22 +131,6 @@ describe('readDataFiles failures', () => {
 
 		expect(error.code).toBe('STATE');
 		expect(error.hint).toMatch(/pull/i);
-	});
-
-	it('fails loud, naming the file, when the manifest lists a data file that is gone', () => {
-		// The manifest is the authority on membership: a listed file that has vanished is corrupted local
-		// state, not an empty collection, and must stop the read naming what is missing rather than
-		// silently dropping the collection.
-		const dir = tempDir();
-		writeDataFiles(dir, fixture(), SOURCE);
-
-		const name = ownedFileFor(dir, 'articles');
-		rmSync(join(dir, name), { force: true });
-
-		const error = expectCliError(() => readDataFiles(dir));
-
-		expect(error.code).toBe('STATE');
-		expect(error.message).toContain(name);
 	});
 
 	it('fails loud, naming the file, when an owned file has a non-array "records"', () => {

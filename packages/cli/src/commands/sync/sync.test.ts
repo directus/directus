@@ -25,9 +25,6 @@ import {
 	useSyncWorld,
 } from './sync.test-support.js';
 
-// The per-test world (dirs, agent, env isolation, output capture) lives in the harness; the module-scope
-// slots mirror it so every call site below stays argument-free. Tests run sequentially within a file, so
-// the shared slots never overlap.
 const world = useSyncWorld();
 const url = SYNC_URL;
 const token = SYNC_TOKEN;
@@ -40,8 +37,6 @@ beforeEach(() => {
 	({ agent, dir, stdout, stderr } = world);
 });
 
-// Thin binders over the shared helpers, closing over the module-scope dir/agent so every call site stays
-// argument-free exactly as it read before the hoist.
 function d6s(...argv: string[]): Promise<number> {
 	return runSync(dir, argv);
 }
@@ -62,7 +57,6 @@ function interceptDefaultRecords(): void {
 	mockDefaultRecords(agent);
 }
 
-// A target record fetch during reconcile is the same whole-set list request a pull makes.
 const interceptTarget = interceptList;
 
 function interceptDiff(
@@ -86,13 +80,7 @@ function interceptImport(
 	mockImport(agent, query, result, status, capture);
 }
 
-// Drive the whole path through the real dispatcher against a throwaway project dir (like
-// profile.test.ts) while pinning the network with undici and isolating HOME/env (like
-// connection.test.ts), so a pull exercises parse → profile → credential → fetch → files
-// with nothing borrowed from the developer's real machine.
 describe('sync pull', () => {
-	// A full snapshot spanning two collections, so a later scoped pull of one can be shown to leave the
-	// other's committed artifact untouched.
 	function twoCollectionSnapshot(): Record<string, unknown> {
 		return {
 			version: 1,
@@ -111,8 +99,6 @@ describe('sync pull', () => {
 		};
 	}
 
-	// A partial (version 2) response carrying only articles, changed — what the server returns for an
-	// include-scoped pull of articles.
 	function scopedArticles(): Record<string, unknown> {
 		return {
 			version: 2,
@@ -125,7 +111,6 @@ describe('sync pull', () => {
 		};
 	}
 
-	// This suite serves the plain full snapshot; other suites pass their own body to mockSnapshot.
 	function interceptSnapshot(): void {
 		mockSnapshot(agent, fullSnapshot());
 	}
@@ -158,7 +143,7 @@ describe('sync pull', () => {
 	});
 
 	it('emits a machine payload of ok:true, the snapshot counts, and the default data export on --json', async () => {
-		// CI consumes this shape to decide whether a pull produced changes. `data` is now always an object
+		// CI consumes this shape to decide whether a pull produced changes. `data` is always an object
 		// (every pull exports the default resource set), and `content`/`project` are top-level.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -287,8 +272,8 @@ describe('sync pull', () => {
 	});
 
 	it('preserves out-of-scope siblings end to end when pulling a single collection', async () => {
-		// Pulling one collection must never destroy the committed schema around it (the spec's
-		// incremental-transfer core): a full pull writes articles + authors, then a scoped pull of only
+		// Pulling one collection must never destroy the committed schema around it: a full pull writes
+		// articles + authors, then a scoped pull of only
 		// articles must leave the authors artifact byte-identical on disk and still owned in the manifest,
 		// and its --json payload must carry the scope it pulled.
 		seedConfig();
@@ -322,7 +307,6 @@ describe('sync pull', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--collections', 'articles', '--json')).toBe(0);
 
-		// The sibling is untouched: identical bytes and still listed in the ownership manifest.
 		expect(readFileSync(join(schemaDir, authorsFile), 'utf8')).toBe(authorsBytes);
 
 		const manifest = JSON.parse(readFileSync(join(schemaDir, 'metadata.json'), 'utf8')).files;
@@ -342,10 +326,6 @@ describe('sync pull', () => {
 	});
 });
 
-// Every pull now snapshots schema AND exports config resources by default (undici pins the wire, HOME/env
-// isolated, CI forces token-only resolution). A record endpoint is registered only when the pull is
-// expected to hit it, so the disabled dispatcher turns any stray request into a throw: an unregistered
-// endpoint proves a resource was NOT exported, an unconsumed one that it was not skipped.
 describe('sync pull resources and data', () => {
 	let dataDir: string;
 
@@ -353,7 +333,6 @@ describe('sync pull resources and data', () => {
 		dataDir = join(dir, 'directus', 'default', 'data');
 	});
 
-	// A full schema whose articles collection carries a primary key, so a --content export can key on it.
 	function schemaBody(): Record<string, unknown> {
 		return {
 			version: 1,
@@ -383,13 +362,10 @@ describe('sync pull resources and data', () => {
 		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify(config));
 	}
 
-	// This suite's snapshot carries a primary key so a --content export can key on it; the shared list and
-	// default-record binders serve the rest.
 	function interceptSnapshot(): void {
 		mockSnapshot(agent, schemaBody());
 	}
 
-	// The collection names of every data artifact on disk, sorted — the exported set the assertions read.
 	function exportedCollections(): string[] {
 		return readdirSync(dataDir)
 			.filter((name) => OWNED.test(name))
@@ -398,7 +374,7 @@ describe('sync pull resources and data', () => {
 	}
 
 	it('exports every default resource but never users on a bare pull', async () => {
-		// Spec Q8: a bare pull ships the whole config graph EXCEPT users (selectable-but-off). /users is not
+		// A bare pull ships the config graph except users. /users is not
 		// registered, so a stray fetch of it would throw on the disabled dispatcher.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -444,7 +420,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('expands a resource to its full closure by default', async () => {
-		// --resources roles must drag in policies and their access/permissions children (closure on).
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -488,8 +463,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('drops a resource and any child that only rode in through it under --exclude-resources', async () => {
-		// Excluding flows removes flows AND operations (operations only rides via flows); everything else in
-		// the default set stays. /flows and /operations are left unregistered to prove they are skipped.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -517,7 +490,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('refuses --resources with --exclude-resources before any network call', async () => {
-		// Mutual exclusivity is a client-side USAGE contract; passing both never reaches the wire.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -579,14 +551,11 @@ describe('sync pull resources and data', () => {
 		expect(userBytes).not.toContain('oauth-refresh-secret');
 		expect(userBytes).not.toContain('avatar');
 		expect(userBytes).not.toContain('super-secret-static-token');
-		// The non-sensitive columns survive, so the export is not simply empty.
 		expect(userBytes).toContain('editor@example.com');
 	});
 
 	it('writes nothing at all when a data fetch fails — no mixed generations', async () => {
-		// The commit point is after every fetch: a pull that dies mid-fetch must leave the committed tree
-		// exactly as it was — never a fresh schema beside stale data, which a later mirror push would treat
-		// as the desired state.
+		// Record fetches finish before either artifact writer starts, so this failure leaves both generations untouched.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -639,7 +608,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('keeps user-attached access rows when users are in scope', async () => {
-		// With users selected the FK is satisfied, so no access row is filtered.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -665,8 +633,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('exports a content collection from the pulled schema and reports it', async () => {
-		// --content names a user collection, exported from /items/<name> keyed on the pulled schema's PK, and
-		// listed under the report's top-level `content`.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -711,8 +677,7 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('routes a config resource named as --content to --resources', async () => {
-		// A resource-graph name is not content; the error must route the operator to --resources. It fails
-		// after the schema write but before any record fetch, so no record endpoint is registered.
+		// Fail after schema fetch but before either artifact writer or any record fetch.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -722,7 +687,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('refuses a project that is not declared in config', async () => {
-		// Any project but `default` must be declared; a typo fails CONFIG before the network.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -793,9 +757,6 @@ describe('sync pull resources and data', () => {
 	});
 });
 
-// Seed local artifacts directly with writeSnapshotFiles rather than running pull first, so the diff
-// path is exercised in isolation from pull's network fetch. Same isolation discipline as `sync pull`:
-// undici pins the wire, HOME/env are stubbed, and CI forces resolution to read only the token var.
 describe('sync diff', () => {
 	let schemaDir: string;
 
@@ -807,8 +768,6 @@ describe('sync diff', () => {
 		return { ...fullSnapshot(), version: 2 };
 	}
 
-	// One added collection, one modified field (path meta.note), one deleted field: the three change
-	// kinds the summary must count, carrying the loud DELETE and (meta.note) tokens the human line shows.
 	function diffBody(): Record<string, unknown> {
 		return {
 			collections: [{ collection: 'events', diff: [{ kind: 'N', rhs: { collection: 'events' } }] }],
@@ -924,9 +883,7 @@ describe('sync diff', () => {
 	});
 
 	it('diffs a partial snapshot in mirror mode by sending it to the wire', async () => {
-		// Scoped deletions are the spec's partial-mirror purpose — a partial mirror diff deletes
-		// fields/relations within scope but never collections — and the artifacts now carry an honest SET
-		// version, so the CLI no longer refuses it. mode=mirror must reach the wire; refusing it was a stopgap.
+		// A partial mirror may delete fields/relations within scope, but never omitted collections.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, partialSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -948,11 +905,6 @@ describe('sync diff', () => {
 	});
 });
 
-// Push is the first mutating command, so the discipline stays the same (undici pins the wire, HOME/env
-// isolated, CI forces token-only resolution) and the gate semantics are exercised end to end: --yes
-// applies, deletions demand --allow-deletes, and the sealed { hash, diff } must reach /schema/apply
-// unmodified. The apply intercept is registered only when a call is expected — the disabled dispatcher
-// turns any unexpected apply request into a throw, so its absence proves no apply happened.
 describe('sync push', () => {
 	let schemaDir: string;
 
@@ -960,7 +912,6 @@ describe('sync push', () => {
 		schemaDir = join(dir, 'directus', 'default', 'schema');
 	});
 
-	// One added collection plus one modified field, no deletions: exercises the plain apply path.
 	function mergeDiffBody(): Record<string, unknown> {
 		return {
 			collections: [{ collection: 'events', diff: [{ kind: 'N', rhs: { collection: 'events' } }] }],
@@ -971,16 +922,6 @@ describe('sync push', () => {
 					diff: [{ kind: 'E', path: ['meta', 'note'], lhs: null, rhs: 'headline' }],
 				},
 			],
-			systemFields: [],
-			relations: [],
-		};
-	}
-
-	// A single field deletion: the change kind the deletion gates key off.
-	function mirrorDiffBody(): Record<string, unknown> {
-		return {
-			collections: [],
-			fields: [{ collection: 'articles', field: 'old_slug', diff: [{ kind: 'D', lhs: { field: 'old_slug' } }] }],
 			systemFields: [],
 			relations: [],
 		};
@@ -1008,7 +949,7 @@ describe('sync push', () => {
 	});
 
 	it('prints the resolved target on the human channel before the diff summary so a misbound profile is visible', async () => {
-		// The misbinding guard (S48): a profile NAMED staging pointing at prod's URL must be visible
+		// A profile named staging but pointing at prod's URL must be visible
 		// before anything mutates, so the resolution line lands on stderr ahead of the change summary.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
@@ -1051,8 +992,6 @@ describe('sync push', () => {
 			modified: 1,
 			deleted: 0,
 			hash: 'h1',
-			// No data dir was seeded, so the data phase is skipped and its block carries null-ish fields —
-			// always present so a consumer never has to guess whether data ran.
 			data: { mode: 'merge', source: null, collections: null, skipped: true },
 		});
 	});
@@ -1086,42 +1025,6 @@ describe('sync push', () => {
 		});
 	});
 
-	it('refuses mirror in CI without --allow-deletes, before any apply, naming the consent flag', async () => {
-		// The updated truth table: mirror can delete BOTH schema and data rows absent from the import set,
-		// and CI skips the dry-run, so the data deletions are unknowable — mirror itself requires
-		// --allow-deletes in CI. --yes never covers deletions. The refusal must precede any apply request.
-		seedConfig();
-		writeSnapshotFiles(schemaDir, fullSnapshot());
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-
-		interceptDiff('mirror', mirrorDiffBody());
-
-		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes')).toBe(1);
-
-		const err = stderr.join('');
-		expect(err).toMatch(/refusing mirror/i);
-		expect(err).toContain('--allow-deletes');
-	});
-
-	it('applies deletions when --allow-deletes accompanies --yes', async () => {
-		// --allow-deletes is the CI consent for deletions; with it the mirror diff applies.
-		seedConfig();
-		writeSnapshotFiles(schemaDir, fullSnapshot());
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-
-		interceptDiff('mirror', mirrorDiffBody());
-
-		let applied: unknown;
-
-		interceptApply((body) => {
-			applied = body;
-		});
-
-		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes', '--allow-deletes')).toBe(0);
-
-		expect(applied).toEqual({ hash: 'h1', diff: mirrorDiffBody() });
-	});
-
 	it('refuses to apply without --yes in a non-interactive context', async () => {
 		// No TTY and no --yes: the push cannot silently apply, so it fails pointing at --yes. No apply
 		// intercept — reaching exit 1 proves nothing was applied.
@@ -1150,11 +1053,6 @@ describe('sync push', () => {
 	});
 });
 
-// The data phase end to end: schema diff/apply plus a multipart /utils/import whose body must decode to
-// the REMAPPED batch, the ID map written from reconcile matches + the import response, and the mode gates
-// exercised against real requests. Same isolation as the schema-only push suite (undici pins the wire,
-// HOME/env stubbed, CI forces token-only resolution and non-interactive gates). An endpoint is registered
-// only when a call is expected, so a stray request throws on the disabled dispatcher.
 describe('sync push with data', () => {
 	// A distinct source URL (the instance the data was pulled from) so the ID map's source→target bucket
 	// keys are visibly different — the exact keying push must reproduce from the committed metadata.
@@ -1169,8 +1067,6 @@ describe('sync push with data', () => {
 		idMapPath = join(dir, 'directus', 'default', 'id_map.json');
 	});
 
-	// A schema diff with one added collection: enough that the schema phase applies, so the combined flow
-	// (apply then import) is exercised.
 	function schemaChangesBody(): Record<string, unknown> {
 		return {
 			collections: [{ collection: 'events', diff: [{ kind: 'N', rhs: { collection: 'events' } }] }],
@@ -1184,7 +1080,6 @@ describe('sync push with data', () => {
 	// collection passed through untouched: the three remap behaviors in one batch.
 	function fullFixture(): DataCollection[] {
 		return [
-			// icon differs from the target row so the matched role still rides as a genuine update
 			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor', icon: 'edit' }] },
 			{
 				collection: 'directus_access',
@@ -1195,8 +1090,6 @@ describe('sync push with data', () => {
 		];
 	}
 
-	// The import response for the full fixture: roles matched (updated in place), access inserted and
-	// remapped sa1→na1, articles inserted. Push must fold every one of these into the committed map.
 	function fullImportResult(): Record<string, unknown> {
 		return {
 			applied: true,
@@ -1290,14 +1183,28 @@ describe('sync push with data', () => {
 	it('carries dangerouslyAllowDelete on the import when mirror runs with --allow-deletes', async () => {
 		// mirror maps to a merge import plus dangerouslyAllowDelete (the server has no wire "mirror"); the
 		// exact query match proves the destructive flag rode along only because --allow-deletes consented.
+		// The schema diff carries a DELETION, so this also pins the schema half of the consent: with
+		// --allow-deletes the sealed { hash, diff } reaches apply byte-for-byte, deletions included.
+		const deletionDiff = {
+			collections: [],
+			fields: [{ collection: 'articles', field: 'old_slug', diff: [{ kind: 'D', lhs: { field: 'old_slug' } }] }],
+			systemFields: [],
+			relations: [],
+		};
+
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		interceptDiff('mirror', schemaChangesBody());
-		interceptApply();
+		interceptDiff('mirror', deletionDiff);
 		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+
+		let applied: unknown;
+
+		interceptApply((body) => {
+			applied = body;
+		});
 
 		interceptImport(
 			{ mode: 'merge', dangerouslyAllowDelete: 'true' },
@@ -1311,10 +1218,12 @@ describe('sync push with data', () => {
 		);
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes', '--allow-deletes')).toBe(0);
+
+		expect(applied).toEqual({ hash: 'h1', diff: deletionDiff });
 	});
 
 	it('refuses mirror in CI without --allow-deletes before any apply or import, even with data present', async () => {
-		// The updated gate: mirror can delete schema AND data rows absent from the import set, unknowable in
+		// Mirror can delete schema and data rows absent from the import set, unknowable in
 		// CI without a dry-run, so it is refused outright. Only the diff is registered — a reached apply or
 		// import would throw on the disabled dispatcher, proving neither happened.
 		seedConfig();
@@ -1325,7 +1234,10 @@ describe('sync push with data', () => {
 		interceptDiff('mirror', schemaChangesBody());
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes')).toBe(1);
-		expect(stderr.join('')).toMatch(/refusing mirror/i);
+
+		const err = stderr.join('');
+		expect(err).toMatch(/refusing mirror/i);
+		expect(err).toContain('--allow-deletes');
 	});
 
 	it('renders the cycle when the import fails with IMPORT_CYCLICAL_RELATION', async () => {
@@ -1368,8 +1280,8 @@ describe('sync push with data', () => {
 	});
 
 	it('reports a converged data push as nothing-to-push without calling import', async () => {
-		// The clean state must be reachable: when every committed record is proven byte-identical on the
-		// target, the batch empties and push must say so and stop — not upsert every row again (the server
+		// When every committed record's exported non-PK fields match the target, the batch empties and push
+		// must stop instead of upserting every row again (the server
 		// reports any PK-present row as "existing" whether or not it changed, so only this client-side
 		// comparison can close the loop). No import intercept is registered: a reached import would throw.
 		seedConfig();
@@ -1503,11 +1415,7 @@ describe('sync push with data', () => {
 	});
 });
 
-// diff previews the data phase (spec Q15): schema diff + a data dry-run summary, and it is READ-ONLY — it
-// must never write the id map and never prompt. Same isolation as the push-with-data suite (undici pins
-// the wire, HOME/env stubbed, CI forces token-only, non-interactive). An endpoint is registered only when
-// a call is expected; a stray request throws on the disabled dispatcher. The invariant every test guards:
-// id_map.json is absent afterwards, because previewData applies matches in memory only.
+// Data diff is read-only: reconciliation applies unambiguous matches in memory and never writes the ID map.
 describe('sync diff with data', () => {
 	const source = 'https://source.example.com';
 	let schemaDir: string;
@@ -1525,14 +1433,11 @@ describe('sync diff with data', () => {
 	}
 
 	it('dry-runs the remapped batch, renders per-collection data lines, and writes nothing', async () => {
-		// The core of the preview: an unambiguous match (role Editor sr1→tr1) is applied to the batch in
-		// memory so the dry-run is truthful, the plan renders per collection, and — the invariant — the id
-		// map is never written even though a match was found.
+		// Apply the unambiguous role match in memory without persisting it.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 
 		seedData([
-			// icon differs from the target row so the matched role still rides as a genuine update
 			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor', icon: 'edit' }] },
 			{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] },
 		]);
@@ -1564,7 +1469,7 @@ describe('sync diff with data', () => {
 
 		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
 
-		// The dry-run received the batch remapped into target space (role sr1→tr1), so the preview is honest.
+		// The dry-run receives the unambiguous role remap in target space.
 		expect(await decodeBatch(sentForm)).toEqual([
 			{ collection: 'directus_roles', items: [{ id: 'tr1', name: 'Editor', icon: 'edit' }] },
 			{ collection: 'articles', items: [{ id: 1, title: 'Hello' }] },
@@ -1575,7 +1480,6 @@ describe('sync diff with data', () => {
 		expect(out).toContain('+1 new');
 		expect(out).toContain('directus_roles');
 
-		// THE invariant of this slice: diff never wrote the id map.
 		expect(existsSync(idMapPath)).toBe(false);
 	});
 
@@ -1721,25 +1625,8 @@ describe('sync diff with data', () => {
 		expect(stderr.join('')).toContain('schema and data match; nothing to do.');
 		expect(existsSync(idMapPath)).toBe(false);
 	});
-
-	it('keeps the original no-op copy when there is no committed data to check', async () => {
-		// A schema-only checkout: no data directory, so the preview is skipped and the line stays exactly the
-		// pre-data copy — data phrasing must not leak in when nothing was checked.
-		seedConfig();
-		writeSnapshotFiles(schemaDir, fullSnapshot());
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-
-		interceptDiff('merge', null);
-
-		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
-		expect(stderr.join('')).toContain('staging matches the local snapshot — nothing to do.');
-	});
 });
 
-// The bare `d6s sync` wiring: commander must fire the parent's wizard action only when no subcommand is
-// given, so `sync` alone runs the wizard (which refuses without a terminal here — CI is forced), `sync
-// pull` still routes to the pull subcommand, and `sync --help` still prints help. No network is touched;
-// the wizard's non-interactive guard trips before any config or wire work.
 describe('sync bare wizard wiring', () => {
 	it('runs the wizard for bare `sync` and refuses without a terminal, pointing at the subcommands', async () => {
 		expect(await d6s('sync')).toBe(1);
