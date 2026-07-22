@@ -10,6 +10,8 @@ export interface Resource {
 	readonly singleton: boolean;
 	readonly strip: readonly string[];
 	readonly aliases: readonly string[];
+	/** Rows the server derives at read time (never real records); dropped at fetch, before export. */
+	readonly drop?: ((record: Record<string, unknown>) => boolean) | undefined;
 }
 
 interface ResourceDef extends Resource {
@@ -81,6 +83,11 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		mustPull: [],
 		strip: [],
 		aliases: [],
+		// The server appends the app-access minimal permissions (system: true, no id) to every
+		// authenticated /permissions read (api with-app-minimal-permissions.ts). They are derived
+		// runtime state — never stored rows — so exporting or importing them would materialize
+		// duplicates of built-in behavior as real rows on the target.
+		drop: (record) => record['system'] === true,
 	},
 	{
 		name: 'flows',
@@ -188,6 +195,7 @@ function toResource(def: ResourceDef): Resource {
 		singleton: def.singleton,
 		strip: def.strip,
 		aliases: def.aliases,
+		drop: def.drop,
 	};
 }
 

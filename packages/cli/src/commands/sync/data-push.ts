@@ -147,6 +147,7 @@ async function reconcileSystem(
 			endpoint: resource.endpoint,
 			primaryKey: resource.primaryKey,
 			singleton: resource.singleton,
+			drop: resource.drop,
 		});
 
 		inputs.push({

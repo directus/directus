@@ -609,6 +609,58 @@ describe('sync pull resources and data', () => {
 		expect(existsSync(join(dir, 'directus'))).toBe(false);
 	});
 
+	it('exports only stored permissions — appended app-access rows never reach disk', async () => {
+		// Real instances append the app-access minimal permissions (system: true, no id) to every
+		// authenticated /permissions read, on every page. Exporting them would commit derived runtime
+		// state and a later push would materialize duplicates of built-in behavior as real target rows.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+
+		const derived = { policy: null, collection: 'directus_settings', action: 'read', system: true };
+		const stored = { id: 1, policy: 'p1', collection: 'articles', action: 'read' };
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/permissions',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: [stored, derived] }, { headers: { 'content-type': 'application/json' } });
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/permissions',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id', offset: '1' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: [derived] }, { headers: { 'content-type': 'application/json' } });
+
+		for (const path of [
+			'/roles',
+			'/policies',
+			'/access',
+			'/flows',
+			'/operations',
+			'/dashboards',
+			'/panels',
+			'/translations',
+		]) {
+			interceptList(path, []);
+		}
+
+		interceptSingleton('/settings', { id: 1 });
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		const permissions = JSON.parse(readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_permissions')), 'utf8'));
+		expect(permissions.records).toEqual([stored]);
+	});
+
 	it('drops user-attached access rows when users are out of scope', async () => {
 		// directus-sync #148: a user-attached access row references an unsynced user (missing-FK on import).
 		// A bare pull (users out of scope) must keep only the null-user grant.

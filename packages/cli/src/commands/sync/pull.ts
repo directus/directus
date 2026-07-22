@@ -287,6 +287,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 			endpoint: resource.endpoint,
 			primaryKey: resource.primaryKey,
 			singleton: resource.singleton,
+			drop: resource.drop,
 		});
 
 		rows = stripSystemFields(rows, resource);
