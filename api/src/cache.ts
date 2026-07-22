@@ -107,7 +107,7 @@ export async function clearSystemCache(opts?: {
 		await lockCache.delete('system-cache-lock');
 	}
 
-	// Allow skipping schema purge when necessary (e.g. permission/policy/access writes
+	// Allow skipping schema purge when necessary (e.g. permission/policy/access writes)
 	if (opts?.autoPurgeSchema !== false) {
 		await localSchemaCache.clear();
 		memorySchemaCache = null;
