@@ -1061,12 +1061,24 @@ describe('sync diff', () => {
 			ok: true,
 			target: url,
 			profile: 'staging',
+			project: 'default',
 			mode: 'merge',
 			changes: true,
 			added: 1,
 			modified: 1,
 			deleted: 1,
 			hash: 'h1',
+			// No data dir was seeded, so the preview is skipped and its block carries null-ish fields —
+			// always present so a consumer never has to guess whether data was previewed.
+			data: {
+				mode: 'merge',
+				source: null,
+				collections: null,
+				matched: null,
+				ambiguous: null,
+				unmatched: null,
+				skipped: true,
+			},
 		});
 	});
 
@@ -1089,12 +1101,22 @@ describe('sync diff', () => {
 			ok: true,
 			target: url,
 			profile: 'staging',
+			project: 'default',
 			mode: 'merge',
 			changes: false,
 			added: 0,
 			modified: 0,
 			deleted: 0,
 			hash: null,
+			data: {
+				mode: 'merge',
+				source: null,
+				collections: null,
+				matched: null,
+				ambiguous: null,
+				unmatched: null,
+				skipped: true,
+			},
 		});
 	});
 
@@ -1880,5 +1902,424 @@ describe('sync push with data', () => {
 		const second = readFileSync(idMapPath, 'utf8');
 
 		expect(second).toBe(first);
+	});
+});
+
+// diff previews the data phase (spec Q15): schema diff + a data dry-run summary, and it is READ-ONLY — it
+// must never write the id map and never prompt. Same isolation as the push-with-data suite (undici pins
+// the wire, HOME/env stubbed, CI forces token-only, non-interactive). An endpoint is registered only when
+// a call is expected; a stray request throws on the disabled dispatcher. The invariant every test guards:
+// id_map.json is absent afterwards, because previewData applies matches in memory only.
+describe('sync diff with data', () => {
+	const realDispatcher = getGlobalDispatcher();
+	const url = 'https://cms.example.com';
+	const token = 'super-secret-static-token';
+	const source = 'https://source.example.com';
+	let agent: MockAgent;
+	let dir: string;
+	let schemaDir: string;
+	let dataDir: string;
+	let idMapPath: string;
+	let home: string;
+	let stdout: string[];
+	let stderr: string[];
+
+	function fullSnapshot(): Snapshot {
+		return {
+			version: 1,
+			directus: '11.0.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'articles', meta: { note: null } }],
+			fields: [{ collection: 'articles', field: 'title', type: 'string' }],
+			systemFields: [],
+			relations: [],
+		};
+	}
+
+	function seedConfig(): void {
+		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url } } }));
+	}
+
+	function seedData(collections: DataCollection[]): void {
+		writeDataFiles(dataDir, collections, source);
+	}
+
+	// The schema diff endpoint; `body === null` is the 204 "no schema change" the data-only previews use.
+	function interceptDiff(mode: 'merge' | 'mirror', body: Record<string, unknown> | null): void {
+		const reply = agent.get(url).intercept({
+			path: '/schema/diff',
+			method: 'POST',
+			query: { mode },
+			headers: { authorization: `Bearer ${token}` },
+		});
+
+		if (body === null) {
+			reply.reply(204, '');
+		} else {
+			reply.reply(200, { data: { hash: 'h1', diff: body } }, { headers: { 'content-type': 'application/json' } });
+		}
+	}
+
+	// A target record fetch during reconcile: the whole-set query with the token, mirroring fetchRecords.
+	function interceptTarget(path: string, records: Record<string, unknown>[]): void {
+		agent
+			.get(url)
+			.intercept({
+				path,
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
+	}
+
+	// The dry-run import: undici matches the query object EXACTLY, so registering dryRun proves diff always
+	// dry-runs and never sent a committing import. `capture` records the multipart form for batch decoding.
+	function interceptImport(
+		query: Record<string, string>,
+		result: Record<string, unknown>,
+		capture?: (form: FormData) => void,
+	): void {
+		agent
+			.get(url)
+			.intercept({
+				path: '/utils/import',
+				method: 'POST',
+				query,
+				headers: { authorization: `Bearer ${token}` },
+				body(raw: unknown) {
+					if (capture !== undefined) capture(raw as FormData);
+					return true;
+				},
+			})
+			.reply(200, result, { headers: { 'content-type': 'application/json' } });
+	}
+
+	async function decodeBatch(form: FormData | undefined): Promise<unknown> {
+		const file = form?.get('file');
+
+		if (file === null || file === undefined || typeof (file as Blob).text !== 'function') {
+			throw new Error('no import file part');
+		}
+
+		return JSON.parse(await (file as Blob).text());
+	}
+
+	function d6s(...argv: string[]): Promise<number> {
+		return run(argv, { registerCommands: registerSync, cwd: dir });
+	}
+
+	beforeEach(() => {
+		dir = mkdtempSync(join(tmpdir(), 'd6s-sync-'));
+		schemaDir = join(dir, 'directus', 'default', 'schema');
+		dataDir = join(dir, 'directus', 'default', 'data');
+		idMapPath = join(dir, 'directus', 'default', 'id_map.json');
+		home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
+		stdout = [];
+		stderr = [];
+
+		agent = new MockAgent();
+		agent.disableNetConnect();
+		setGlobalDispatcher(agent);
+
+		vi.stubEnv('HOME', home);
+		vi.stubEnv('USERPROFILE', home);
+		vi.stubEnv('CI', 'true');
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
+
+		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
+			stdout.push(String(chunk));
+			return true;
+		});
+
+		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
+			stderr.push(String(chunk));
+			return true;
+		});
+	});
+
+	afterEach(async () => {
+		setGlobalDispatcher(realDispatcher);
+		await agent.close();
+		vi.restoreAllMocks();
+		vi.unstubAllEnvs();
+		rmSync(dir, { recursive: true, force: true });
+		rmSync(home, { recursive: true, force: true });
+	});
+
+	it('dry-runs the remapped batch, renders per-collection data lines, and writes nothing', async () => {
+		// The core of the preview: an unambiguous match (role Editor sr1→tr1) is applied to the batch in
+		// memory so the dry-run is truthful, the plan renders per collection, and — the invariant — the id
+		// map is never written even though a match was found.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		seedData([
+			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] },
+			{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] },
+		]);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+
+		let sentForm: FormData | undefined;
+
+		interceptImport(
+			{ mode: 'merge', dryRun: 'true' },
+			{
+				data: {
+					applied: false,
+					mode: 'merge',
+					collections: {
+						directus_roles: { existing: ['tr1'], new: [], deleted: [], mapped: {} },
+						articles: { existing: [], new: [1], deleted: [], mapped: {} },
+					},
+				},
+			},
+			(form) => {
+				sentForm = form;
+			},
+		);
+
+		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
+
+		// The dry-run received the batch remapped into target space (role sr1→tr1), so the preview is honest.
+		expect(await decodeBatch(sentForm)).toEqual([
+			{ collection: 'directus_roles', items: [{ id: 'tr1', name: 'Editor' }] },
+			{ collection: 'articles', items: [{ id: 1, title: 'Hello' }] },
+		]);
+
+		const out = stdout.join('');
+		expect(out).toContain('articles');
+		expect(out).toContain('+1 new');
+		expect(out).toContain('directus_roles');
+
+		// THE invariant of this slice: diff never wrote the id map.
+		expect(existsSync(idMapPath)).toBe(false);
+	});
+
+	it('reports the reconcile counts and the dry-run response verbatim on --json, still writing nothing', async () => {
+		// CI reads the data block: the mode, the source URL, the server's per-collection dry-run response
+		// verbatim, and the reconcile tally (one matched, none pending). The id map stays absent.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		seedData([
+			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] },
+			{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] },
+		]);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		const collections = {
+			directus_roles: { existing: ['tr1'], new: [], deleted: [], mapped: {} },
+			articles: { existing: [], new: [1], deleted: [], mapped: {} },
+		};
+
+		interceptDiff('merge', null);
+		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+		interceptImport({ mode: 'merge', dryRun: 'true' }, { data: { applied: false, mode: 'merge', collections } });
+
+		expect(await d6s('sync', 'diff', '--to', 'staging', '--json')).toBe(0);
+
+		const payload = JSON.parse(stdout.join(''));
+
+		expect(payload).toMatchObject({
+			kind: 'DiffReport',
+			project: 'default',
+			mode: 'merge',
+			changes: true,
+			data: {
+				mode: 'merge',
+				source,
+				collections,
+				matched: 1,
+				ambiguous: 0,
+				unmatched: 0,
+				skipped: false,
+			},
+		});
+
+		expect(existsSync(idMapPath)).toBe(false);
+	});
+
+	it('reports an ambiguity as a note rather than resolving it, and never prompts or writes', async () => {
+		// Two target roles named Editor make sr1 ambiguous. diff must REPORT it (the note names the pending
+		// count and how many are ambiguous) rather than stop to ask — CI never prompts — and must leave the
+		// source unremapped and the id map unwritten.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+
+		interceptTarget('/roles', [
+			{ id: 't1', name: 'Editor' },
+			{ id: 't2', name: 'Editor' },
+		]);
+
+		interceptImport(
+			{ mode: 'merge', dryRun: 'true' },
+			{
+				data: {
+					applied: false,
+					mode: 'merge',
+					collections: { directus_roles: { existing: [], new: ['sr1'], deleted: [], mapped: {} } },
+				},
+			},
+		);
+
+		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
+
+		const err = stderr.join('');
+		expect(err).toContain('have no target match yet');
+		expect(err).toContain('1 ambiguous');
+
+		expect(existsSync(idMapPath)).toBe(false);
+	});
+
+	it('shows data deletes under mirror without applying or writing anything', async () => {
+		// A mirror preview dry-runs with dangerouslyAllowDelete, so the plan can show a target row absent from
+		// the import set as a delete. diff never applies (dry-run rolls back) and never writes the map.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('mirror', null);
+
+		interceptTarget('/roles', [
+			{ id: 'tr1', name: 'Editor' },
+			{ id: 'tr9', name: 'Stale' },
+		]);
+
+		interceptImport(
+			{ mode: 'merge', dangerouslyAllowDelete: 'true', dryRun: 'true' },
+			{
+				data: {
+					applied: false,
+					mode: 'merge',
+					collections: { directus_roles: { existing: ['tr1'], new: [], deleted: ['tr9'], mapped: {} } },
+				},
+			},
+		);
+
+		expect(await d6s('sync', 'diff', '--to', 'staging', '--mode', 'mirror')).toBe(0);
+
+		const out = stdout.join('');
+		expect(out).toContain('✖');
+		expect(out).toContain('tr9');
+
+		expect(existsSync(idMapPath)).toBe(false);
+	});
+
+	it('extends the no-op copy when the data was checked and also matches', async () => {
+		// Schema clean AND an all-zero data dry-run is "nothing to do", but the line must say the data was
+		// checked too — distinguishing it from a schema-only checkout where data is skipped.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+
+		interceptImport(
+			{ mode: 'merge', dryRun: 'true' },
+			{
+				data: {
+					applied: false,
+					mode: 'merge',
+					collections: { directus_roles: { existing: [], new: [], deleted: [], mapped: {} } },
+				},
+			},
+		);
+
+		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
+		expect(stderr.join('')).toContain('schema and data match; nothing to do.');
+		expect(existsSync(idMapPath)).toBe(false);
+	});
+
+	it('keeps the original no-op copy when there is no committed data to check', async () => {
+		// A schema-only checkout: no data directory, so the preview is skipped and the line stays exactly the
+		// pre-data copy — data phrasing must not leak in when nothing was checked.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+
+		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
+		expect(stderr.join('')).toContain('staging matches the local snapshot — nothing to do.');
+	});
+});
+
+// The bare `d6s sync` wiring: commander must fire the parent's wizard action only when no subcommand is
+// given, so `sync` alone runs the wizard (which refuses without a terminal here — CI is forced), `sync
+// pull` still routes to the pull subcommand, and `sync --help` still prints help. No network is touched;
+// the wizard's non-interactive guard trips before any config or wire work.
+describe('sync bare wizard wiring', () => {
+	let dir: string;
+	let home: string;
+	let stdout: string[];
+	let stderr: string[];
+
+	function d6s(...argv: string[]): Promise<number> {
+		return run(argv, { registerCommands: registerSync, cwd: dir });
+	}
+
+	beforeEach(() => {
+		dir = mkdtempSync(join(tmpdir(), 'd6s-sync-'));
+		home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
+		stdout = [];
+		stderr = [];
+
+		// Force CI so the wizard is non-interactive here regardless of the runner's TTY.
+		vi.stubEnv('HOME', home);
+		vi.stubEnv('USERPROFILE', home);
+		vi.stubEnv('CI', 'true');
+
+		vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
+			stdout.push(String(chunk));
+			return true;
+		});
+
+		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
+			stderr.push(String(chunk));
+			return true;
+		});
+	});
+
+	afterEach(() => {
+		vi.restoreAllMocks();
+		vi.unstubAllEnvs();
+		rmSync(dir, { recursive: true, force: true });
+		rmSync(home, { recursive: true, force: true });
+	});
+
+	it('runs the wizard for bare `sync` and refuses without a terminal, pointing at the subcommands', async () => {
+		expect(await d6s('sync')).toBe(1);
+
+		const err = stderr.join('');
+		expect(err).toMatch(/needs a terminal/i);
+		expect(err).toMatch(/sync pull/i);
+	});
+
+	it('does NOT fire the wizard when a subcommand is given (sync pull still routes to pull)', async () => {
+		// A subcommand present means the parent action must not fire: `sync pull` with no --from is pull's own
+		// required-option error, not the wizard's terminal refusal.
+		expect(await d6s('sync', 'pull')).toBe(1);
+
+		const err = stderr.join('');
+		expect(err).not.toMatch(/needs a terminal/i);
+		expect(err).toMatch(/--from/);
+	});
+
+	it('still prints help for `sync --help`', async () => {
+		expect(await d6s('sync', '--help')).toBe(0);
+		expect(stdout.join('')).toMatch(/Sync schema and configuration/i);
 	});
 });

@@ -20,18 +20,20 @@ export interface PushOptions {
 	readonly project: string;
 }
 
-type Mode = 'add' | 'merge' | 'mirror';
+// Exported so diff previews the exact push these mappings produce (spec Q15) — a single source of truth
+// for how a mode reaches the schema and data wires, never a second copy that could drift.
+export type Mode = 'add' | 'merge' | 'mirror';
 
 // mode → schema diff mode: add and merge both take the additive schema diff (add never deletes); only
 // mirror computes a deleting diff.
-function schemaDiffMode(mode: Mode): 'merge' | 'mirror' {
+export function schemaDiffMode(mode: Mode): 'merge' | 'mirror' {
 	return mode === 'mirror' ? 'mirror' : 'merge';
 }
 
 // mode → data import options: add inserts only, merge upserts, mirror upserts AND deletes rows absent
 // from the import set. The server requires mode=merge alongside dangerouslyAllowDelete, so mirror maps to
 // merge+flag rather than a wire "mirror" (which does not exist).
-function dataImportOptions(mode: Mode): { mode: 'add' | 'merge'; dangerouslyAllowDelete?: boolean } {
+export function dataImportOptions(mode: Mode): { mode: 'add' | 'merge'; dangerouslyAllowDelete?: boolean } {
 	if (mode === 'add') return { mode: 'add' };
 	if (mode === 'mirror') return { mode: 'merge', dangerouslyAllowDelete: true };
 	return { mode: 'merge' };

@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -7,7 +7,7 @@ import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 import { createUi } from '../../kernel/ui.js';
 import { type DataCollection, writeDataFiles } from '../../sync/data-store.js';
-import { partitionCollections, prepareDataPush, remapSystemRecord } from './data-push.js';
+import { partitionCollections, prepareDataPush, previewData, remapSystemRecord } from './data-push.js';
 import type { Target } from './resolve-target.js';
 
 // A source→target bucket keyed collection → sourceId → targetId, the shape mappingsFor returns.
@@ -166,5 +166,35 @@ describe('prepareDataPush skip and precondition', () => {
 
 		expect(error).toBeInstanceOf(CliError);
 		expect((error as CliError).code).toBe('STATE');
+	});
+
+	it('previewData skips a schema-only checkout without touching the credential', async () => {
+		// An absent data directory is a schema-only checkout: the preview skips exactly as the push path does,
+		// before any network work.
+		await expect(previewData(target())).resolves.toEqual({ skipped: true });
+	});
+
+	it('previewData assembles the content batch, tallies zero, and never writes the id map', async () => {
+		// Content-only data reconciles nothing (content is never matched), so the preview passes it through
+		// verbatim, reports all-zero counts, and — the read-only invariant — leaves no id_map.json behind. No
+		// network is reached because there is no reconcilable system collection to fetch.
+		writeDataFiles(
+			join(dir, 'data'),
+			[{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] }],
+			'https://source.example.com',
+		);
+
+		const preview = await previewData(target());
+
+		expect(preview).toEqual({
+			skipped: false,
+			source: 'https://source.example.com',
+			batch: [{ collection: 'articles', items: [{ id: 1, title: 'Hello' }] }],
+			matchedCount: 0,
+			ambiguousCount: 0,
+			unmatchedCount: 0,
+		});
+
+		expect(existsSync(join(dir, 'id_map.json'))).toBe(false);
 	});
 });

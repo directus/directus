@@ -248,11 +248,26 @@ async function resolveMatches(
 	return seeds;
 }
 
-// Prepare the data phase, or report it skipped. Steps: read {source, collections}; split system/content;
-// reconcile the reconcilable system collections against the target and persist the matches immediately
-// (identity facts survive an aborted push); remap every system record into target space; assemble the
-// batch in system-then-content order with the send record push needs to update the map from the import.
-export async function prepareDataPush(target: Target, ctx: CliContext): Promise<DataPushResult> {
+// The read-only output of readAndReconcile: the committed data split into system/content, the reconcile
+// results against the target, and the map exactly as read. Both callers share this stem but consume it
+// differently — push persists the matches, preview keeps them in memory — so it holds only facts, no
+// decisions about what to write.
+interface Reconciled {
+	readonly skipped: false;
+	readonly source: string;
+	readonly targetUrl: string;
+	readonly system: readonly SystemCollection[];
+	readonly content: readonly DataCollection[];
+	readonly map: IdMap;
+	readonly results: readonly CollectionReconcile[];
+}
+
+// The read-and-reconcile stem both entries share: an absent data directory (or an empty committed set) is
+// a schema-only checkout that skips rather than fails; otherwise read {source, collections}, split
+// system/content, and reconcile the reconcilable system collections against the target's current records
+// and the committed map. Strictly READ-ONLY — it fetches and computes but never prompts and never writes —
+// so push and preview can never diverge on what "the same record" means before one of them acts on it.
+async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSkipped> {
 	// An absent data directory is a schema-only checkout: skip rather than fail. A present directory with
 	// no source recorded, or corruption, fails loud inside readDataFiles — never silently skipped.
 	if (!existsSync(target.dataDir) || !existsSync(join(target.dataDir, DATA_METADATA_FILE))) {
@@ -265,27 +280,25 @@ export async function prepareDataPush(target: Target, ctx: CliContext): Promise<
 
 	const targetUrl = normalizeInstanceUrl(target.url);
 	const { system, content } = partitionCollections(collections);
-
-	// Reconcile against the committed bucket, then persist matches BEFORE remapping so a later aborted
-	// push keeps the identities it learned. Recompute the bucket from the updated map for the remap.
-	let map = readIdMap(target.idMapPath);
+	const map = readIdMap(target.idMapPath);
 	const results = await reconcileSystem(system, target, mappingsFor(map, source, targetUrl));
-	const seeds = await resolveMatches(results, ctx);
 
-	for (const [collection, entries] of seeds) {
-		map = withMappings(map, source, targetUrl, collection, entries);
-	}
+	return { skipped: false, source, targetUrl, system, content, map, results };
+}
 
-	if (seeds.size > 0) writeIdMap(target.idMapPath, map);
-
-	const bucket = mappingsFor(map, source, targetUrl);
-
+// Remap every system record into target space through `bucket` and assemble the flat import batch in
+// system-then-content order: a system record's PK and static FKs are rewritten and its (sourceId, sentPk)
+// captured for the post-import map update; content records pass through codepoint-sorted and verbatim.
+// Pure — the caller chooses which bucket to remap against (push's persisted map, preview's in-memory one).
+function assembleBatch(
+	system: readonly SystemCollection[],
+	content: readonly DataCollection[],
+	bucket: Readonly<Record<string, Readonly<Record<string, string>>>>,
+): { batch: ImportCollectionData[]; systemSent: SystemSent[]; records: number } {
 	const batch: ImportCollectionData[] = [];
 	const systemSent: SystemSent[] = [];
 	let records = 0;
 
-	// System collections first, in dependency order: each record's PK and static FKs remap through the
-	// bucket, and its (sourceId, sentPk) is captured for the post-import map update.
 	for (const { data, resource } of system) {
 		const items: Record<string, unknown>[] = [];
 		const sent: SentRecord[] = [];
@@ -301,11 +314,37 @@ export async function prepareDataPush(target: Target, ctx: CliContext): Promise<
 		records += items.length;
 	}
 
-	// Content collections follow, codepoint-sorted, verbatim — no reconcile, no remap, no map entry.
 	for (const data of content) {
 		batch.push({ collection: data.collection, items: data.records });
 		records += data.records.length;
 	}
+
+	return { batch, systemSent, records };
+}
+
+// Prepare the data phase, or report it skipped. Reconcile the reconcilable system collections against the
+// target and persist the matches immediately (identity facts survive an aborted push), prompting on
+// ambiguity (interactive) or refusing loud (CI); then remap every record through the updated map and
+// assemble the batch plus the send record push needs to fold the import response back into the map.
+export async function prepareDataPush(target: Target, ctx: CliContext): Promise<DataPushResult> {
+	const reconciled = await readAndReconcile(target);
+
+	if (reconciled.skipped) return { skipped: true };
+
+	const { source, targetUrl, system, content, results } = reconciled;
+
+	// Persist matches BEFORE remapping so a later aborted push keeps the identities it learned, then
+	// recompute the bucket from the updated map for the remap.
+	let map = reconciled.map;
+	const seeds = await resolveMatches(results, ctx);
+
+	for (const [collection, entries] of seeds) {
+		map = withMappings(map, source, targetUrl, collection, entries);
+	}
+
+	if (seeds.size > 0) writeIdMap(target.idMapPath, map);
+
+	const { batch, systemSent, records } = assembleBatch(system, content, mappingsFor(map, source, targetUrl));
 
 	return {
 		skipped: false,
@@ -318,4 +357,54 @@ export async function prepareDataPush(target: Target, ctx: CliContext): Promise<
 		records,
 		collections: batch.length,
 	};
+}
+
+// A read-only preview of the data phase for diff: the batch a push would import (remapped through the
+// unambiguous matches only) and the reconcile tally. No map, no send record, no idMapPath — nothing here
+// is ever written back to disk.
+export interface DataPreviewPlan {
+	readonly skipped: false;
+	readonly source: string; // normalized source-instance URL, from the data's metadata
+	readonly batch: ImportCollectionData[];
+	readonly matchedCount: number; // sources matched to a target this run — applied to the batch in memory
+	readonly ambiguousCount: number; // sources with several candidate targets — only an interactive push resolves them
+	readonly unmatchedCount: number; // sources with no target match yet — a first push inserts and remaps them
+}
+
+export type DataPreviewResult = DataPreviewPlan | DataPushSkipped;
+
+// Preview the data phase for diff (spec Q15) WITHOUT prompting or writing: reconcile, seed only the
+// unambiguous matches into an in-memory copy of the map so the remapped batch is truthful, and count the
+// ambiguous and unmatched sources rather than resolving them. The on-disk map is never touched — the hard
+// invariant of diff — so an ambiguity is reported for the first push to settle, never guessed here.
+export async function previewData(target: Target): Promise<DataPreviewResult> {
+	const reconciled = await readAndReconcile(target);
+
+	if (reconciled.skipped) return { skipped: true };
+
+	const { source, targetUrl, system, content, results } = reconciled;
+
+	// withMappings is pure, so seeding these matches grows a fresh map object and never writes the file.
+	// Ambiguous sources are deliberately left unmapped: the preview's dry-run then shows them as the
+	// inserts a first push would create, and they are tallied for the reconcile note.
+	let map = reconciled.map;
+	let matchedCount = 0;
+	let ambiguousCount = 0;
+	let unmatchedCount = 0;
+
+	for (const result of results) {
+		matchedCount += result.matched.length;
+		ambiguousCount += result.ambiguous.length;
+		unmatchedCount += result.unmatched.length;
+
+		if (result.matched.length === 0) continue;
+
+		const entries: Record<string, string> = {};
+		for (const match of result.matched) entries[match.sourceId] = match.targetId;
+		map = withMappings(map, source, targetUrl, result.collection, entries);
+	}
+
+	const { batch } = assembleBatch(system, content, mappingsFor(map, source, targetUrl));
+
+	return { skipped: false, source, batch, matchedCount, ambiguousCount, unmatchedCount };
 }
