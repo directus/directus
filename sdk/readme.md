@@ -65,7 +65,9 @@ await client.login('admin@example.com', 'd1r3ctu5');
 ```
 
 ```ts
-const client = createDirectus<Schema>('https://example.directus.com').with(rest()).with(staticToken('super-secure-token'));
+const client = createDirectus<Schema>('https://example.directus.com')
+	.with(rest())
+	.with(staticToken('super-secure-token'));
 
 // do authenticated requests
 ```

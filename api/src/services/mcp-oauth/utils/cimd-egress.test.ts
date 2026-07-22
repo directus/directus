@@ -149,7 +149,10 @@ describe('validateCimdHostnameEgress', () => {
 	it('rejects when both DNS families are empty', async () => {
 		const resolver = createResolver({}, { A: dnsError('ENOTFOUND'), AAAA: dnsError('ENODATA') });
 
-		await expectCimdError(validateCimdHostnameEgress('empty.example.directus.com', { resolver }), 'cimd_dns_empty_result');
+		await expectCimdError(
+			validateCimdHostnameEgress('empty.example.directus.com', { resolver }),
+			'cimd_dns_empty_result',
+		);
 	});
 
 	it('wraps resolver failures as DNS errors', async () => {

@@ -182,7 +182,9 @@ describe('resolveLoginRedirect', () => {
 			});
 
 			test('rejects different protocol (http vs https)', () => {
-				expect(() => resolveLoginRedirect('http://example.directus.com/admin')).toThrow('App "redirect" must match PUBLIC_URL');
+				expect(() => resolveLoginRedirect('http://example.directus.com/admin')).toThrow(
+					'App "redirect" must match PUBLIC_URL',
+				);
 			});
 
 			test('rejects different port', () => {
