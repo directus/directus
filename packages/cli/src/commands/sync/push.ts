@@ -1,3 +1,4 @@
+import { relative } from 'node:path';
 import { confirm, text } from '@clack/prompts';
 import type { ResolvedCredential } from '../../kernel/config/credentials.js';
 import type { ProjectConfig } from '../../kernel/config/file.js';
@@ -8,7 +9,7 @@ import { count } from '../../kernel/text.js';
 import { applyDiff, importBatch } from '../../sync/api.js';
 import type { ImportBatchResult, ImportCollectionData } from '../../sync/contract.js';
 import { withMappings, writeIdMap } from '../../sync/id-map.js';
-import type { Mode } from '../../sync/mode.js';
+import { describeMode, type Mode } from '../../sync/mode.js';
 import {
 	emptyImportSummary,
 	hasImportChanges,
@@ -123,8 +124,9 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	const mode: Mode = resolveMode(options.mode, target.projectConfig);
 
-	// Show the resolved URL before remote work so a misleading profile name is visible.
-	ctx.ui.info(`target: ${options.to} — ${url}`);
+	// Show the resolved URL and the mode's consequences before any remote work: a misleading profile name
+	// must be visible, and "mirror deletes" must never be a surprise learned at the refusal.
+	ctx.ui.info(`Pushing to ${options.to} — ${url} (${describeMode(mode)})`);
 
 	const result = await localDiff(target, schemaDiffMode(mode));
 
@@ -178,22 +180,23 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	if (!ctx.ui.json) {
 		if (result !== null) {
-			ctx.ui.info(`${count(schemaTotal, 'schema change')} to push to ${url}:`);
+			ctx.ui.info(`Schema — ${count(schemaTotal, 'change')} to apply:`);
 			for (const line of schema.lines) ctx.ui.print(line);
 		}
 
 		if (!dataResult.skipped) {
 			if (dataSummary !== undefined) {
 				if (hasImportChanges(dataSummary)) {
-					ctx.ui.info(`data changes to import to ${url}:`);
+					ctx.ui.info('Data — changes to import:');
 					for (const line of dataSummary.lines) ctx.ui.print(line);
 				} else {
-					ctx.ui.info('no data changes to import.');
+					ctx.ui.info('Data — no changes to import.');
 				}
 			} else if (dataResult.records > 0) {
 				const { records, collections } = dataResult;
 
-				ctx.ui.info(`${count(records, 'record')} across ${count(collections, 'collection')} to import (${mode}).`);
+				// Non-interactive pushes skip the dry-run, so record counts are the only preview available.
+				ctx.ui.info(`Data — ${count(records, 'record')} across ${count(collections, 'collection')} to import.`);
 			}
 		}
 	}
@@ -226,9 +229,14 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	// Interactive deletions require typed confirmation unless already authorized explicitly.
 	if (ctx.interactive && (schema.deleted > 0 || dataDeleted > 0) && !allowDeletes) {
+		// Name what dies, not just that something does: the operator confirms specific losses.
+		const parts: string[] = [];
+		if (dataDeleted > 0) parts.push(count(dataDeleted, 'record'));
+		if (schema.deleted > 0) parts.push(count(schema.deleted, 'schema item'));
+
 		const typed = await ask(
 			text({
-				message: `This push DELETES data that cannot be restored. Type "${options.to}" to confirm:`,
+				message: `This push permanently deletes ${parts.join(' and ')} from ${options.to}. Type "${options.to}" to confirm:`,
 			}),
 		);
 
@@ -256,15 +264,15 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		}
 
 		schemaApplied = true;
-		ctx.ui.info('schema applied.');
+		ctx.ui.info('Schema applied.');
 	}
 
 	let importResult: ImportBatchResult | undefined;
 
 	if (!dataResult.skipped && dataPhaseConverged(dataResult, mode)) {
-		if (dataSummary === undefined) ctx.ui.info('no data changes to import.');
+		if (dataSummary === undefined) ctx.ui.info('Data — no changes to import.');
 	} else if (!dataResult.skipped) {
-		ctx.ui.info(`importing ${count(dataResult.collections, 'collection')}…`);
+		ctx.ui.info(`Importing data (${count(dataResult.collections, 'collection')})…`);
 
 		try {
 			importResult = await importBatch(credential, dataResult.batch, dataImportOptions(mode));
@@ -283,7 +291,10 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		}
 
 		updateIdMap(dataResult, importResult);
-		ctx.ui.info('id map updated.');
+
+		// The map is how the NEXT push updates these rows instead of duplicating them — committing it is
+		// part of the workflow, and a first-time operator has no way to know that unprompted.
+		ctx.ui.info(`Identity map updated — commit ${relative(ctx.cwd, dataResult.idMapPath)} with this change.`);
 	}
 
 	const importSummary =

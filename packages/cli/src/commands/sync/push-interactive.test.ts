@@ -502,8 +502,8 @@ describe('interactive sync push', () => {
 
 		const output = stderr.join('');
 
-		expect(output).toContain('no data changes to import.');
-		expect(output).not.toContain('data changes to import to');
+		expect(output).toContain('Data — no changes to import.');
+		expect(output).not.toContain('Data — changes to import:');
 	});
 
 	it('aborts the push and touches neither apply nor import when the operator aborts an ambiguity', async () => {
