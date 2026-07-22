@@ -577,7 +577,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/dashboards', []);
 		interceptList('/panels', []);
 		interceptList('/translations', []);
-		interceptSingleton('/settings', {});
+		interceptSingleton('/settings', { id: 1 });
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--exclude-resources', 'flows')).toBe(0);
 
@@ -707,7 +707,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/dashboards', []);
 		interceptList('/panels', []);
 		interceptList('/translations', []);
-		interceptSingleton('/settings', {});
+		interceptSingleton('/settings', { id: 1 });
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
 
@@ -756,6 +756,35 @@ describe('sync pull resources and data', () => {
 		expect(article.primaryKey).toBe('id');
 		expect(article.records).toEqual([{ id: 1, title: 'First' }]);
 		expect(JSON.parse(stdout.join('')).content).toEqual(['articles']);
+	});
+
+	it('strips conceal/encrypt/hash content fields at export — masks and hashes cannot round-trip', async () => {
+		// The server reads a conceal/encrypt field as '**********' and RE-hashes anything written to a hash
+		// field, so exporting them would commit masks to git and a later push would overwrite the target's
+		// real secret with the mask (or corrupt its hash). The field is dropped from the export — an absent
+		// field is never written by the import, so the target keeps its own value — and the pull says so.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		const body = schemaBody();
+
+		(body['fields'] as Record<string, unknown>[]).push({
+			collection: 'articles',
+			field: 'api_key',
+			type: 'string',
+			meta: { special: ['conceal'] },
+			schema: { is_primary_key: false },
+		});
+
+		mockSnapshot(agent, body);
+		interceptDefaultRecords();
+		interceptList('/items/articles', [{ id: 1, title: 'First', api_key: '**********' }]);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--content', 'articles')).toBe(0);
+
+		const article = JSON.parse(readFileSync(join(dataDir, ownedDataFileFor('articles')), 'utf8'));
+		expect(article.records).toEqual([{ id: 1, title: 'First' }]);
+		expect(stderr.join('')).toContain('exported without api_key');
 	});
 
 	it('routes a config resource named as --content to --resources', async () => {
@@ -1456,6 +1485,7 @@ describe('sync push with data', () => {
 	}
 
 	// A target record fetch during reconcile: the whole-set query (limit -1 sorted by id) with the token.
+	// fetchRecords pages until an empty response, so a non-empty page earns one exhaustion probe.
 	function interceptTarget(path: string, records: Record<string, unknown>[]): void {
 		agent
 			.get(url)
@@ -1466,6 +1496,18 @@ describe('sync push with data', () => {
 				headers: { authorization: `Bearer ${token}` },
 			})
 			.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
+
+		if (records.length > 0) {
+			agent
+				.get(url)
+				.intercept({
+					path,
+					method: 'GET',
+					query: { limit: '-1', sort: 'id', offset: String(records.length) },
+					headers: { authorization: `Bearer ${token}` },
+				})
+				.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
+		}
 	}
 
 	// The import endpoint: the query object is asserted EXACTLY by undici (an extra param fails the match),
@@ -1865,7 +1907,8 @@ describe('sync diff with data', () => {
 		}
 	}
 
-	// A target record fetch during reconcile: the whole-set query with the token, mirroring fetchRecords.
+	// A target record fetch during reconcile: the whole-set query with the token, mirroring fetchRecords —
+	// which pages until an empty response, so a non-empty page earns one exhaustion probe.
 	function interceptTarget(path: string, records: Record<string, unknown>[]): void {
 		agent
 			.get(url)
@@ -1876,6 +1919,18 @@ describe('sync diff with data', () => {
 				headers: { authorization: `Bearer ${token}` },
 			})
 			.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
+
+		if (records.length > 0) {
+			agent
+				.get(url)
+				.intercept({
+					path,
+					method: 'GET',
+					query: { limit: '-1', sort: 'id', offset: String(records.length) },
+					headers: { authorization: `Bearer ${token}` },
+				})
+				.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
+		}
 	}
 
 	// The dry-run import: undici matches the query object EXACTLY, so registering dryRun proves diff always

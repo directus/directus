@@ -70,11 +70,38 @@ function parseDataFile(value: unknown, name: string): DataCollection {
 		throw new CliError('STATE', `${name} is not a data file.`, { detail: z.prettifyError(result.error) });
 	}
 
-	return {
-		collection: result.data.collection,
-		primaryKey: result.data.primaryKey,
-		records: result.data.records as Record<string, unknown>[],
-	};
+	const { collection, primaryKey } = result.data;
+	const records: Record<string, unknown>[] = [];
+	const seen = new Set<string>();
+
+	// Records feed the import, and under mirror absence from the batch means deletion — so a malformed
+	// row is refused loud here rather than trusted: a non-object or PK-less row would import as a fresh
+	// auto-ID record while every real row falls out of the batch, one hand-edit away from a destructive
+	// push. Duplicate PKs are refused because record identity (the map, unchanged detection, mirror
+	// survival) is keyed on them.
+	for (const [index, value] of result.data.records.entries()) {
+		if (!isPlainObject(value)) {
+			throw new CliError('STATE', `${name} record ${index} is not an object.`);
+		}
+
+		const record = value as Record<string, unknown>;
+		const pk = record[primaryKey];
+
+		if (typeof pk !== 'string' && typeof pk !== 'number') {
+			throw new CliError('STATE', `${name} record ${index} has no "${primaryKey}" primary key.`);
+		}
+
+		const key = String(pk);
+
+		if (seen.has(key)) {
+			throw new CliError('STATE', `${name} lists primary key "${key}" more than once.`);
+		}
+
+		seen.add(key);
+		records.push(record);
+	}
+
+	return { collection, primaryKey, records };
 }
 
 function parseMetadata(value: unknown): DataMetadata {

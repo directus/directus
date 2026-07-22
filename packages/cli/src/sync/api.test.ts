@@ -366,6 +366,8 @@ describe('fetchRecords', () => {
 	it('pulls the whole collection with limit -1 and the token on the wire, returning records verbatim', async () => {
 		// A data pull must fetch the entire set (limit -1) keyed by the primary key; the intercept only
 		// matches when both ride the query, and the endpoint is authenticated so the token must be present.
+		// The follow-up probe (offset past the page) must come back empty before fetch trusts the set is
+		// complete — a QUERY_LIMIT_MAX clamp is silent, so a single response can never prove exhaustion.
 		isolateHome();
 
 		// Two records, out of primary-key order and carrying a nested object: fetch returns them untouched
@@ -385,6 +387,16 @@ describe('fetchRecords', () => {
 			})
 			.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
 
+		agent
+			.get('https://cms.example.com')
+			.intercept({
+				path: '/items/articles',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id', offset: '2' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
+
 		const result = await fetchRecords(credential, {
 			collection: 'articles',
 			endpoint: '/items/articles',
@@ -393,6 +405,41 @@ describe('fetchRecords', () => {
 		});
 
 		expect(result).toEqual(records);
+	});
+
+	it('pages past a server row cap until an empty response, so a clamped fetch cannot truncate', async () => {
+		// A deployment with QUERY_LIMIT_MAX clamps limit -1 down to the cap WITHOUT an error — a single
+		// request would silently drop every later row, and downstream that is data loss (mirror deletes
+		// what it did not see; the collision guard cannot see an occupied PK beyond the cap). The fetch
+		// must keep offsetting past short pages — only an EMPTY page proves exhaustion.
+		isolateHome();
+
+		const pages: Record<string, { id: number }[]> = {
+			'0': [{ id: 1 }, { id: 2 }],
+			'2': [{ id: 3 }],
+			'3': [],
+		};
+
+		for (const [offset, rows] of Object.entries(pages)) {
+			agent
+				.get('https://cms.example.com')
+				.intercept({
+					path: '/items/articles',
+					method: 'GET',
+					query: { limit: '-1', sort: 'id', ...(offset === '0' ? {} : { offset }) },
+					headers: { authorization: `Bearer ${token}` },
+				})
+				.reply(200, { data: rows }, { headers: { 'content-type': 'application/json' } });
+		}
+
+		const result = await fetchRecords(credential, {
+			collection: 'articles',
+			endpoint: '/items/articles',
+			primaryKey: 'id',
+			singleton: false,
+		});
+
+		expect(result).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
 	});
 
 	it('wraps a singleton object response in a one-element array', async () => {
