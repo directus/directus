@@ -1,4 +1,5 @@
 import { CliError } from '../kernel/error.js';
+import { byCodepoint } from './codepoint.js';
 
 // The system-resource dependency graph from the spec's Addendum, encoded as data. A pull SELECTS
 // resources; each may "must-pull" further resources (its dependencies), and the graph's dependent-only
@@ -163,15 +164,6 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 
 const RESOURCES: Record<string, ResourceDef> = Object.fromEntries(RESOURCE_LIST.map((def) => [def.name, def]));
 
-// Codepoint comparison, never localeCompare/Intl (see the schema store): locale ordering varies by
-// machine, so neither the dependency order nor the sorted name lists may depend on it. Written as
-// statements rather than a nested ternary to satisfy the repo's no-nested-ternary rule.
-function byCodepoint(a: string, b: string): number {
-	if (a < b) return -1;
-	if (a > b) return 1;
-	return 0;
-}
-
 /**
  * The selectable names, sorted, for help text and error copy. The dependent-only children are excluded
  * so they can never be offered as a valid choice.
@@ -282,4 +274,14 @@ export function resolveResources(requested: string[], options?: { deps?: boolean
 	}
 
 	return dependencyOrder(closure).map(toResource);
+}
+
+/**
+ * The entire resource graph in dependency order: every selectable resource expanded to its full closure.
+ * The whole-graph idiom callers use to enumerate config resources — telling a config resource from a
+ * content collection, or walking every graph member — factored out so `resolveResources([...SELECTABLE_
+ * RESOURCES])` is written in one place rather than re-spelled at each call.
+ */
+export function allResources(): Resource[] {
+	return resolveResources([...SELECTABLE_RESOURCES]);
 }

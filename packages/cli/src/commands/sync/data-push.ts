@@ -1,12 +1,11 @@
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
 import { select } from '@clack/prompts';
 import { CliError } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
 import { fetchRecords } from '../../sync/api.js';
+import { byCodepoint } from '../../sync/codepoint.js';
 import type { ImportCollectionData } from '../../sync/contract.js';
-import { type DataCollection, readDataFiles } from '../../sync/data-store.js';
+import { type DataCollection, hasDataFiles, readDataFiles } from '../../sync/data-store.js';
 import { SYSTEM_FK_FIELDS } from '../../sync/fk-map.js';
 import {
 	type IdMap,
@@ -22,7 +21,7 @@ import {
 	reconcileCollections,
 	type ReconcileInput,
 } from '../../sync/reconcile.js';
-import { resolveResources, type Resource, SELECTABLE_RESOURCES } from '../../sync/resources.js';
+import { allResources, type Resource } from '../../sync/resources.js';
 import type { Target } from './resolve-target.js';
 
 // The data phase of push, orchestrated: read the committed records, remap their primary keys and static
@@ -30,11 +29,6 @@ import type { Target } from './resolve-target.js';
 // natural key allows), and hand push a flat import batch plus the map-update bookkeeping. The remap and
 // batch-assembly logic is pure and unit-tested; the network fetch, prompting, and map persistence live
 // here so push stays composition-and-gates only.
-
-// data-store.ts publishes its directory with this file; its absence is a schema-only checkout, not an
-// error. Kept in sync with data-store's own METADATA_FILE by test, not by a shared export, so this
-// module's only coupling to the store is the read/write functions.
-const DATA_METADATA_FILE = 'metadata.json';
 
 /**
  * The pre-remap source id paired with the primary key actually sent for one system record. push needs
@@ -77,14 +71,6 @@ export interface DataPushSkipped {
 
 export type DataPushResult = DataPushPlan | DataPushSkipped;
 
-// Codepoint comparison, never localeCompare/Intl (see the store): content-collection order in the batch
-// must not vary by machine, or the imported payload — and any assertion over it — is non-deterministic.
-function byCodepoint(a: string, b: string): number {
-	if (a < b) return -1;
-	if (a > b) return 1;
-	return 0;
-}
-
 // One committed collection matched to its resource definition (endpoint, primary key, FK table). System
 // collections carry a resource; content collections do not.
 interface SystemCollection {
@@ -106,7 +92,7 @@ export function partitionCollections(collections: readonly DataCollection[]): {
 	const system: SystemCollection[] = [];
 	const claimed = new Set<string>();
 
-	for (const resource of resolveResources([...SELECTABLE_RESOURCES])) {
+	for (const resource of allResources()) {
 		const data = byCollection.get(resource.collection);
 
 		if (data !== undefined) {
@@ -198,6 +184,14 @@ async function reconcileSystem(
 // happens to spell one of them.
 const TARGET_PREFIX = 'target:';
 
+// One reconcile result's unambiguous matches as sourceId → targetId. Shared by the two consumers so the
+// seed shape is identical whether push persists it or preview folds it into an in-memory map.
+function matchedEntries(result: CollectionReconcile): Record<string, string> {
+	const entries: Record<string, string> = {};
+	for (const match of result.matched) entries[match.sourceId] = match.targetId;
+	return entries;
+}
+
 // Resolve reconcile into the map seeds to persist: every unambiguous match, plus each ambiguity's answer.
 // Interactive asks per ambiguity (pick a candidate, create new, or abort); non-interactive refuses loud,
 // listing every ambiguity so the operator can resolve them all in one interactive run. Returns
@@ -210,10 +204,7 @@ async function resolveMatches(
 
 	for (const result of results) {
 		if (result.matched.length === 0) continue;
-
-		const entries: Record<string, string> = {};
-		for (const match of result.matched) entries[match.sourceId] = match.targetId;
-		seeds.set(result.collection, entries);
+		seeds.set(result.collection, matchedEntries(result));
 	}
 
 	const ambiguities = results.flatMap((result) =>
@@ -280,7 +271,7 @@ interface Reconciled {
 async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSkipped> {
 	// An absent data directory is a schema-only checkout: skip rather than fail. A present directory with
 	// no source recorded, or corruption, fails loud inside readDataFiles — never silently skipped.
-	if (!existsSync(target.dataDir) || !existsSync(join(target.dataDir, DATA_METADATA_FILE))) {
+	if (!hasDataFiles(target.dataDir)) {
 		return { skipped: true };
 	}
 
@@ -415,9 +406,7 @@ export async function previewData(target: Target): Promise<DataPreviewResult> {
 
 		if (result.matched.length === 0) continue;
 
-		const entries: Record<string, string> = {};
-		for (const match of result.matched) entries[match.sourceId] = match.targetId;
-		map = withMappings(map, source, targetUrl, result.collection, entries);
+		map = withMappings(map, source, targetUrl, result.collection, matchedEntries(result));
 	}
 
 	const { batch } = assembleBatch(system, content, mappingsFor(map, source, targetUrl));

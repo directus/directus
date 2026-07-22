@@ -12,7 +12,7 @@ import {
 import { isPlainObject } from 'lodash-es';
 import type { ResolvedCredential } from '../kernel/config/credentials.js';
 import { connect, mapRequestError } from '../kernel/connection.js';
-import { CliError } from '../kernel/error.js';
+import { CliError, withHint } from '../kernel/error.js';
 import {
 	type DiffResult,
 	type ImportBatchResult,
@@ -216,10 +216,10 @@ function enrichImportError(mapped: CliError, error: unknown): CliError {
 		});
 	}
 
-	return new CliError(mapped.code, mapped.message, {
-		hint: 'A referenced record is missing on the target — an out-of-scope reference or an unsynced dependency.',
-		...(mapped.detail !== undefined ? { detail: mapped.detail } : {}),
-	});
+	return withHint(
+		mapped,
+		'A referenced record is missing on the target — an out-of-scope reference or an unsynced dependency.',
+	);
 }
 
 /**

@@ -111,6 +111,13 @@ describe('summarizeDiff', () => {
 		// The no-change case must be unambiguously empty, so the command can print nothing rather than a header.
 		expect(summarizeDiff(emptyDiff())).toEqual({ added: 0, modified: 0, deleted: 0, lines: [] });
 	});
+
+	it('returns the zero summary for a null diff', () => {
+		// null is the server's "schema already matches" answer (fetchDiff returns null on a 204). summarizeDiff
+		// absorbs it into the same zero summary so push and diff read one shape for "no schema change" instead
+		// of each re-spelling the { added: 0, … } literal and casting it beside the real summary.
+		expect(summarizeDiff(null)).toEqual({ added: 0, modified: 0, deleted: 0, lines: [] });
+	});
 });
 
 function importResult(collections: ImportBatchResult['collections']): ImportBatchResult {

@@ -13,3 +13,16 @@ export class CliError extends Error {
 		this.detail = options.detail;
 	}
 }
+
+/**
+ * Rethrow copy of `error` with `hint` attached, preserving its code, message, and detail. Absorbs the
+ * `...(detail !== undefined ? { detail } : {})` spread once: under exactOptionalPropertyTypes a literal
+ * `detail: undefined` is not assignable to the optional `detail?: string`, so an absent detail must be
+ * omitted from the options rather than passed through as undefined.
+ */
+export function withHint(error: CliError, hint: string): CliError {
+	return new CliError(error.code, error.message, {
+		hint,
+		...(error.detail !== undefined ? { detail: error.detail } : {}),
+	});
+}

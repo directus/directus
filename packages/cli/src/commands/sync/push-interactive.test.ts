@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { confirm, isCancel, select, text } from '@clack/prompts';
@@ -10,6 +10,7 @@ import type { DiffResult, ImportBatchResult } from '../../sync/contract.js';
 import { writeDataFiles } from '../../sync/data-store.js';
 import { writeSnapshotFiles } from '../../sync/store.js';
 import { push } from './push.js';
+import { seedProjectConfig, SYNC_TOKEN, SYNC_URL } from './sync.test-support.js';
 
 // vitest hoists these above the imports, so the bindings above resolve to the mocks. The prompts are
 // mocked to script the confirm/text/select answers, and the api seam is mocked so the interactive gate
@@ -29,8 +30,8 @@ vi.mock('../../sync/api.js', () => ({
 	importBatch: vi.fn(),
 }));
 
-const url = 'https://cms.example.com';
-const token = 'super-secret-static-token';
+const url = SYNC_URL;
+const token = SYNC_TOKEN;
 
 function ctxAt(cwd: string): CliContext {
 	return { cwd, configPath: undefined, interactive: true, ui: createUi({ json: false, color: false }) };
@@ -63,10 +64,6 @@ function deletionResult(): DiffResult {
 describe('interactive sync push', () => {
 	let dir: string;
 	let home: string;
-
-	function seedConfig(): void {
-		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url } } }));
-	}
 
 	function seedSnapshot(): void {
 		writeSnapshotFiles(join(dir, 'directus', 'default', 'schema'), {
@@ -103,7 +100,7 @@ describe('interactive sync push', () => {
 		vi.mocked(fetchRecords).mockReset().mockResolvedValue([]);
 		vi.mocked(importBatch).mockReset();
 
-		seedConfig();
+		seedProjectConfig(dir);
 		seedSnapshot();
 	});
 

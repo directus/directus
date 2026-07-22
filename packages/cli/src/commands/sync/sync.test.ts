@@ -12,14 +12,53 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { run } from '../../kernel/run.js';
 import type { Snapshot } from '../../sync/contract.js';
 import { type DataCollection, writeDataFiles } from '../../sync/data-store.js';
 import { writeSnapshotFiles } from '../../sync/store.js';
-import { registerSync } from './index.js';
+import {
+	fullSnapshot,
+	mockDefaultRecords,
+	mockList,
+	mockSingleton,
+	mockSnapshot,
+	runSync,
+	seedProjectConfig,
+	SYNC_TOKEN,
+	SYNC_URL,
+} from './sync.test-support.js';
 
 // The owned-file shape written by src/sync/store.ts: `${slug}_${hash}.json`.
 const OWNED = /^[a-z0-9-]*_[0-9a-f]{16}\.json$/;
+
+// The config constants and the current test's mutable dir/agent, shared by every describe below so the CLI
+// runner and the mock binders are declared once. Each suite's beforeEach assigns dir (and, where it hits
+// the wire, agent); tests run sequentially within a file, so the shared slots never overlap.
+const url = SYNC_URL;
+const token = SYNC_TOKEN;
+let agent: MockAgent;
+let dir: string;
+
+// Thin binders over the shared helpers, closing over the module-scope dir/agent so every call site stays
+// argument-free exactly as it read before the hoist.
+function d6s(...argv: string[]): Promise<number> {
+	return runSync(dir, argv);
+}
+
+function seedConfig(): void {
+	seedProjectConfig(dir);
+}
+
+function interceptList(path: string, records: Record<string, unknown>[]): void {
+	mockList(agent, path, records);
+}
+
+function interceptSingleton(path: string, object: Record<string, unknown>): void {
+	mockSingleton(agent, path, object);
+}
+
+function interceptDefaultRecords(): void {
+	mockDefaultRecords(agent);
+}
 
 // Drive the whole path through the real dispatcher against a throwaway project dir (like
 // profile.test.ts) while pinning the network with undici and isolating HOME/env (like
@@ -27,26 +66,10 @@ const OWNED = /^[a-z0-9-]*_[0-9a-f]{16}\.json$/;
 // with nothing borrowed from the developer's real machine.
 describe('sync pull', () => {
 	const realDispatcher = getGlobalDispatcher();
-	const url = 'https://cms.example.com';
-	const token = 'super-secret-static-token';
-	let agent: MockAgent;
-	let dir: string;
 	let home: string;
 	let outside: string | undefined;
 	let stdout: string[];
 	let stderr: string[];
-
-	function fullSnapshot(): Record<string, unknown> {
-		return {
-			version: 1,
-			directus: '11.0.0',
-			vendor: 'postgres',
-			collections: [{ collection: 'articles', meta: { note: null } }],
-			fields: [{ collection: 'articles', field: 'title', type: 'string' }],
-			systemFields: [],
-			relations: [],
-		};
-	}
 
 	// A full snapshot spanning two collections, so a later scoped pull of one can be shown to leave the
 	// other's committed artifact untouched.
@@ -92,62 +115,9 @@ describe('sync pull', () => {
 		throw new Error(`no owned file for ${collection}`);
 	}
 
-	function seedConfig(): void {
-		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url } } }));
-	}
-
-	// The snapshot endpoint is admin-only, so the intercept only matches when the resolved
-	// token is on the wire — a broken credential path never reaches this reply.
+	// This suite serves the plain full snapshot; other suites pass their own body to mockSnapshot.
 	function interceptSnapshot(): void {
-		agent
-			.get(url)
-			.intercept({ path: '/schema/snapshot', method: 'GET', headers: { authorization: `Bearer ${token}` } })
-			.reply(200, { data: fullSnapshot() }, { headers: { 'content-type': 'application/json' } });
-	}
-
-	// A list-endpoint record pull: matches only with the whole-set query (limit -1 sorted by primary key)
-	// and the token on the wire, mirroring fetchRecords.
-	function interceptList(path: string, records: Record<string, unknown>[]): void {
-		agent
-			.get(url)
-			.intercept({
-				path,
-				method: 'GET',
-				query: { limit: '-1', sort: 'id' },
-				headers: { authorization: `Bearer ${token}` },
-			})
-			.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
-	}
-
-	function interceptSingleton(path: string, object: Record<string, unknown>): void {
-		agent
-			.get(url)
-			.intercept({ path, method: 'GET', headers: { authorization: `Bearer ${token}` } })
-			.reply(200, { data: object }, { headers: { 'content-type': 'application/json' } });
-	}
-
-	// The default resource set every pull exports (users excluded), stubbed empty with settings a lone
-	// object, so the data phase of a schema-focused pull has a reply for each request it makes.
-	function interceptDefaultRecords(): void {
-		for (const path of [
-			'/roles',
-			'/policies',
-			'/access',
-			'/permissions',
-			'/flows',
-			'/operations',
-			'/dashboards',
-			'/panels',
-			'/translations',
-		]) {
-			interceptList(path, []);
-		}
-
-		interceptSingleton('/settings', {});
-	}
-
-	function d6s(...argv: string[]): Promise<number> {
-		return run(argv, { registerCommands: [registerSync], cwd: dir });
+		mockSnapshot(agent, fullSnapshot());
 	}
 
 	beforeEach(() => {
@@ -408,10 +378,6 @@ describe('sync pull', () => {
 // endpoint proves a resource was NOT exported, an unconsumed one that it was not skipped.
 describe('sync pull resources and data', () => {
 	const realDispatcher = getGlobalDispatcher();
-	const url = 'https://cms.example.com';
-	const token = 'super-secret-static-token';
-	let agent: MockAgent;
-	let dir: string;
 	let dataDir: string;
 	let home: string;
 	let outside: string | undefined;
@@ -448,61 +414,10 @@ describe('sync pull resources and data', () => {
 		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify(config));
 	}
 
-	function seedConfig(): void {
-		writeConfig({ profiles: { staging: { url } } });
-	}
-
+	// This suite's snapshot carries a primary key so a --content export can key on it; the shared list and
+	// default-record binders serve the rest.
 	function interceptSnapshot(): void {
-		agent
-			.get(url)
-			.intercept({
-				path: '/schema/snapshot',
-				method: 'GET',
-				headers: { authorization: `Bearer ${token}` },
-			})
-			.reply(200, { data: schemaBody() }, { headers: { 'content-type': 'application/json' } });
-	}
-
-	function interceptList(path: string, records: Record<string, unknown>[]): void {
-		agent
-			.get(url)
-			.intercept({
-				path,
-				method: 'GET',
-				query: { limit: '-1', sort: 'id' },
-				headers: { authorization: `Bearer ${token}` },
-			})
-			.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
-	}
-
-	function interceptSingleton(path: string, object: Record<string, unknown>): void {
-		agent
-			.get(url)
-			.intercept({
-				path,
-				method: 'GET',
-				headers: { authorization: `Bearer ${token}` },
-			})
-			.reply(200, { data: object }, { headers: { 'content-type': 'application/json' } });
-	}
-
-	// The default resource set (users excluded), stubbed empty with settings a lone object.
-	function interceptDefaultRecords(): void {
-		for (const path of [
-			'/roles',
-			'/policies',
-			'/access',
-			'/permissions',
-			'/flows',
-			'/operations',
-			'/dashboards',
-			'/panels',
-			'/translations',
-		]) {
-			interceptList(path, []);
-		}
-
-		interceptSingleton('/settings', {});
+		mockSnapshot(agent, schemaBody());
 	}
 
 	// The collection names of every data artifact on disk, sorted — the exported set the assertions read.
@@ -519,10 +434,6 @@ describe('sync pull resources and data', () => {
 		}
 
 		throw new Error(`no data file for ${collection}`);
-	}
-
-	function d6s(...argv: string[]): Promise<number> {
-		return run(argv, { registerCommands: registerSync, cwd: dir });
 	}
 
 	beforeEach(() => {
@@ -905,26 +816,10 @@ describe('sync pull resources and data', () => {
 // undici pins the wire, HOME/env are stubbed, and CI forces resolution to read only the token var.
 describe('sync diff', () => {
 	const realDispatcher = getGlobalDispatcher();
-	const url = 'https://cms.example.com';
-	const token = 'super-secret-static-token';
-	let agent: MockAgent;
-	let dir: string;
 	let schemaDir: string;
 	let home: string;
 	let stdout: string[];
 	let stderr: string[];
-
-	function fullSnapshot(): Snapshot {
-		return {
-			version: 1,
-			directus: '11.0.0',
-			vendor: 'postgres',
-			collections: [{ collection: 'articles', meta: { note: null } }],
-			fields: [{ collection: 'articles', field: 'title', type: 'string' }],
-			systemFields: [],
-			relations: [],
-		};
-	}
 
 	function partialSnapshot(): Snapshot {
 		return { ...fullSnapshot(), version: 2 };
@@ -946,10 +841,6 @@ describe('sync diff', () => {
 			systemFields: [],
 			relations: [],
 		};
-	}
-
-	function seedConfig(): void {
-		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url } } }));
 	}
 
 	// The diff endpoint is admin-only and mode-bearing, so the intercept only matches when the resolved
@@ -980,10 +871,6 @@ describe('sync diff', () => {
 				headers: { authorization: `Bearer ${token}` },
 			})
 			.reply(204, '');
-	}
-
-	function d6s(...argv: string[]): Promise<number> {
-		return run(argv, { registerCommands: registerSync, cwd: dir });
 	}
 
 	beforeEach(() => {
@@ -1160,26 +1047,10 @@ describe('sync diff', () => {
 // turns any unexpected apply request into a throw, so its absence proves no apply happened.
 describe('sync push', () => {
 	const realDispatcher = getGlobalDispatcher();
-	const url = 'https://cms.example.com';
-	const token = 'super-secret-static-token';
-	let agent: MockAgent;
-	let dir: string;
 	let schemaDir: string;
 	let home: string;
 	let stdout: string[];
 	let stderr: string[];
-
-	function fullSnapshot(): Snapshot {
-		return {
-			version: 1,
-			directus: '11.0.0',
-			vendor: 'postgres',
-			collections: [{ collection: 'articles', meta: { note: null } }],
-			fields: [{ collection: 'articles', field: 'title', type: 'string' }],
-			systemFields: [],
-			relations: [],
-		};
-	}
 
 	// One added collection plus one modified field, no deletions: exercises the plain apply path.
 	function mergeDiffBody(): Record<string, unknown> {
@@ -1205,10 +1076,6 @@ describe('sync push', () => {
 			systemFields: [],
 			relations: [],
 		};
-	}
-
-	function seedConfig(): void {
-		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url } } }));
 	}
 
 	function interceptDiff(mode: 'merge' | 'mirror', body: Record<string, unknown>): void {
@@ -1271,10 +1138,6 @@ describe('sync push', () => {
 				},
 				{ headers: { 'content-type': 'application/json' } },
 			);
-	}
-
-	function d6s(...argv: string[]): Promise<number> {
-		return run(argv, { registerCommands: registerSync, cwd: dir });
 	}
 
 	beforeEach(() => {
@@ -1484,31 +1347,15 @@ describe('sync push', () => {
 // only when a call is expected, so a stray request throws on the disabled dispatcher.
 describe('sync push with data', () => {
 	const realDispatcher = getGlobalDispatcher();
-	const url = 'https://cms.example.com';
-	const token = 'super-secret-static-token';
 	// A distinct source URL (the instance the data was pulled from) so the ID map's source→target bucket
 	// keys are visibly different — the exact keying push must reproduce from the committed metadata.
 	const source = 'https://source.example.com';
-	let agent: MockAgent;
-	let dir: string;
 	let schemaDir: string;
 	let dataDir: string;
 	let idMapPath: string;
 	let home: string;
 	let stdout: string[];
 	let stderr: string[];
-
-	function fullSnapshot(): Snapshot {
-		return {
-			version: 1,
-			directus: '11.0.0',
-			vendor: 'postgres',
-			collections: [{ collection: 'articles', meta: { note: null } }],
-			fields: [{ collection: 'articles', field: 'title', type: 'string' }],
-			systemFields: [],
-			relations: [],
-		};
-	}
 
 	// A schema diff with one added collection: enough that the schema phase applies, so the combined flow
 	// (apply then import) is exercised.
@@ -1547,10 +1394,6 @@ describe('sync push with data', () => {
 				articles: { existing: [], new: [1], deleted: [], mapped: {} },
 			},
 		};
-	}
-
-	function seedConfig(): void {
-		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url } } }));
 	}
 
 	function seedData(collections: DataCollection[]): void {
@@ -1628,10 +1471,6 @@ describe('sync push with data', () => {
 
 	function readIdMapFile(): Record<string, unknown> {
 		return JSON.parse(readFileSync(idMapPath, 'utf8'));
-	}
-
-	function d6s(...argv: string[]): Promise<number> {
-		return run(argv, { registerCommands: registerSync, cwd: dir });
 	}
 
 	beforeEach(() => {
@@ -1912,33 +1751,13 @@ describe('sync push with data', () => {
 // id_map.json is absent afterwards, because previewData applies matches in memory only.
 describe('sync diff with data', () => {
 	const realDispatcher = getGlobalDispatcher();
-	const url = 'https://cms.example.com';
-	const token = 'super-secret-static-token';
 	const source = 'https://source.example.com';
-	let agent: MockAgent;
-	let dir: string;
 	let schemaDir: string;
 	let dataDir: string;
 	let idMapPath: string;
 	let home: string;
 	let stdout: string[];
 	let stderr: string[];
-
-	function fullSnapshot(): Snapshot {
-		return {
-			version: 1,
-			directus: '11.0.0',
-			vendor: 'postgres',
-			collections: [{ collection: 'articles', meta: { note: null } }],
-			fields: [{ collection: 'articles', field: 'title', type: 'string' }],
-			systemFields: [],
-			relations: [],
-		};
-	}
-
-	function seedConfig(): void {
-		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url } } }));
-	}
 
 	function seedData(collections: DataCollection[]): void {
 		writeDataFiles(dataDir, collections, source);
@@ -2003,10 +1822,6 @@ describe('sync diff with data', () => {
 		}
 
 		return JSON.parse(await (file as Blob).text());
-	}
-
-	function d6s(...argv: string[]): Promise<number> {
-		return run(argv, { registerCommands: registerSync, cwd: dir });
 	}
 
 	beforeEach(() => {
@@ -2262,14 +2077,9 @@ describe('sync diff with data', () => {
 // pull` still routes to the pull subcommand, and `sync --help` still prints help. No network is touched;
 // the wizard's non-interactive guard trips before any config or wire work.
 describe('sync bare wizard wiring', () => {
-	let dir: string;
 	let home: string;
 	let stdout: string[];
 	let stderr: string[];
-
-	function d6s(...argv: string[]): Promise<number> {
-		return run(argv, { registerCommands: registerSync, cwd: dir });
-	}
 
 	beforeEach(() => {
 		dir = mkdtempSync(join(tmpdir(), 'd6s-sync-'));

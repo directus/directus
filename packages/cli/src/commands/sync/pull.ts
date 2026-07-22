@@ -3,11 +3,13 @@ import { isPlainObject } from 'lodash-es';
 import type { ProjectConfig } from '../../kernel/config/file.js';
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
+import { count } from '../../kernel/text.js';
 import { fetchRecords, fetchSnapshot, type RecordSource, type SnapshotScope } from '../../sync/api.js';
+import { byCodepoint } from '../../sync/codepoint.js';
 import type { Snapshot } from '../../sync/contract.js';
 import { type DataCollection, writeDataFiles } from '../../sync/data-store.js';
 import { normalizeInstanceUrl } from '../../sync/id-map.js';
-import { resolveResources, type Resource, SELECTABLE_RESOURCES } from '../../sync/resources.js';
+import { allResources, resolveResources, type Resource, SELECTABLE_RESOURCES } from '../../sync/resources.js';
 import { readSnapshotFiles, type WriteScope, writeSnapshotFiles } from '../../sync/store.js';
 import { resolveTarget } from './resolve-target.js';
 
@@ -27,7 +29,7 @@ export interface PullOptions {
 // collection identifiers in export order; `files` is the count written (metadata.json included) and
 // `removed` the stale artifacts cleaned up — mirroring the schema report's file fields. Every pull now
 // exports at least the default resource set, so the block is always present, never null.
-interface DataReport {
+interface PullDataReport {
 	readonly resources: string[];
 	readonly collections: number;
 	readonly records: number;
@@ -63,14 +65,6 @@ function parseList(raw: string): string[] {
 		.split(',')
 		.map((entry) => entry.trim())
 		.filter((entry) => entry.length > 0);
-}
-
-// Codepoint comparison, never localeCompare/Intl (see the schema store): the sorted content-collection
-// order must not vary by machine. Written as statements rather than a nested ternary per the repo's rule.
-function byCodepoint(a: string, b: string): number {
-	if (a < b) return -1;
-	if (a > b) return 1;
-	return 0;
 }
 
 // A content collection's primary key, dug defensively out of the on-disk schema: the field entry for the
@@ -173,9 +167,7 @@ function resolveScope(options: PullOptions, projectConfig: ProjectConfig | undef
 
 // Every selectable resource EXCEPT users: the default set a bare pull exports. Users is selectable-but-off
 // (spec Q8), so a bare pull must never write accounts to disk; --resources users is the only way in.
-function defaultResourceNames(): string[] {
-	return SELECTABLE_RESOURCES.filter((name) => name !== 'users');
-}
+const DEFAULT_RESOURCE_NAMES = SELECTABLE_RESOURCES.filter((name) => name !== 'users');
 
 // The system resources this pull exports, expanded to their dependency closure. Precedence: flags over
 // project config over the default set. An include list is validated by resolveResources (unknown → USAGE,
@@ -198,7 +190,7 @@ function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig |
 
 	const deps = options.deps;
 
-	if (pair === undefined) return resolveResources(defaultResourceNames(), { deps });
+	if (pair === undefined) return resolveResources(DEFAULT_RESOURCE_NAMES, { deps });
 
 	if ('include' in pair) return resolveResources(pair.include, { deps });
 
@@ -213,7 +205,7 @@ function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig |
 	}
 
 	return resolveResources(
-		defaultResourceNames().filter((name) => !excluded.includes(name)),
+		DEFAULT_RESOURCE_NAMES.filter((name) => !excluded.includes(name)),
 		{ deps },
 	);
 }
@@ -241,13 +233,12 @@ function resolveContentSources(names: string[], schemaDir: string): RecordSource
 	if (names.length === 0) return [];
 
 	// The whole graph's CLI names, derived from the frozen module rather than hardcoded here.
-	const graphNames = new Set(resolveResources([...SELECTABLE_RESOURCES]).map((resource) => resource.name));
+	const graphNames = new Set(allResources().map((resource) => resource.name));
 
 	// Read the schema back from disk (not the fetched snapshot) so a content collection's data can only be
 	// exported for schema that is actually committed.
 	const snapshot = readSnapshotFiles(schemaDir);
 
-	const seen = new Set<string>();
 	const sources: RecordSource[] = [];
 
 	for (const collection of [...new Set(names)].sort(byCodepoint)) {
@@ -257,15 +248,11 @@ function resolveContentSources(names: string[], schemaDir: string): RecordSource
 			});
 		}
 
-		if (seen.has(collection)) continue;
-
 		if (!snapshot.collections.some((entry) => entry.collection === collection)) {
 			throw new CliError('USAGE', `Collection "${collection}" is not in the pulled schema.`, {
 				hint: `Data follows schema — pull ${collection}'s schema first, e.g. --collections ${collection}.`,
 			});
 		}
-
-		seen.add(collection);
 
 		sources.push({
 			collection,
@@ -319,11 +306,11 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	const collections = snapshot.collections.length;
 	const removed = result.removed.length;
 
-	const removedNote = removed > 0 ? ` Removed ${removed} stale ${removed === 1 ? 'file' : 'files'}.` : '';
+	const removedNote = removed > 0 ? ` Removed ${count(removed, 'stale file')}.` : '';
 
 	const contentSources = resolveContentSources(contentNamesList, schemaDir);
 
-	const includesUsers = new Set(resources.map((resource) => resource.name)).has('users');
+	const includesUsers = resources.some((resource) => resource.name === 'users');
 
 	const dataCollections: DataCollection[] = [];
 
@@ -365,7 +352,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	const dataDirRelative = relative(ctx.cwd, dataDir);
 	const collectionCount = dataCollections.length;
 
-	const data: DataReport = {
+	const data: PullDataReport = {
 		resources: dataCollections.map((entry) => entry.collection),
 		collections: collectionCount,
 		records,
@@ -373,10 +360,10 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		removed: dataResult.removed,
 	};
 
-	const dataSentence = ` Pulled ${records} data ${records === 1 ? 'record' : 'records'} across ${collectionCount} ${collectionCount === 1 ? 'collection' : 'collections'} → ${dataDirRelative}.`;
+	const dataSentence = ` Pulled ${count(records, 'data record')} across ${count(collectionCount, 'collection')} → ${dataDirRelative}.`;
 
 	ctx.ui.success(
-		`Pulled ${collections} ${collections === 1 ? 'collection' : 'collections'} from ${url} → ${relativeDir}.${removedNote}${scope?.note ?? ''}${dataSentence}`,
+		`Pulled ${count(collections, 'collection')} from ${url} → ${relativeDir}.${removedNote}${scope?.note ?? ''}${dataSentence}`,
 	);
 
 	ctx.ui.data({

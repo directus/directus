@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { confirm, isCancel, select, text } from '@clack/prompts';
@@ -10,6 +10,7 @@ import type { ImportBatchResult } from '../../sync/contract.js';
 import { writeDataFiles } from '../../sync/data-store.js';
 import { writeSnapshotFiles } from '../../sync/store.js';
 import { diff } from './diff.js';
+import { seedProjectConfig, SYNC_TOKEN } from './sync.test-support.js';
 
 // vitest hoists these above the imports so the bindings resolve to the mocks. The prompts are mocked only
 // to PROVE they are never called — diff is read-only and must resolve an ambiguity by REPORTING it, never
@@ -28,8 +29,7 @@ vi.mock('../../sync/api.js', () => ({
 	importBatch: vi.fn(),
 }));
 
-const url = 'https://cms.example.com';
-const token = 'super-secret-static-token';
+const token = SYNC_TOKEN;
 const source = 'https://source.example.com';
 
 function ctxAt(cwd: string): CliContext {
@@ -40,10 +40,6 @@ describe('interactive sync diff', () => {
 	let dir: string;
 	let home: string;
 	let stderr: string[];
-
-	function seedConfig(): void {
-		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url } } }));
-	}
 
 	function seedSnapshot(): void {
 		writeSnapshotFiles(join(dir, 'directus', 'default', 'schema'), {
@@ -92,7 +88,7 @@ describe('interactive sync diff', () => {
 		vi.mocked(fetchRecords).mockReset().mockResolvedValue([]);
 		vi.mocked(importBatch).mockReset();
 
-		seedConfig();
+		seedProjectConfig(dir);
 		seedSnapshot();
 	});
 

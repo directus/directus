@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import { CliError } from '../kernel/error.js';
 import { writeFileAtomic } from '../kernel/write.js';
+import { byCodepoint } from './codepoint.js';
 import {
 	parseSnapshot,
 	type Snapshot,
@@ -59,15 +60,6 @@ interface RawCollectionFile {
 	readonly fields: readonly unknown[];
 	readonly systemFields: readonly unknown[];
 	readonly relations: readonly unknown[];
-}
-
-// Codepoint comparison, never localeCompare/Intl: locale ordering varies by machine and
-// would make the committed bytes non-deterministic across contributors and CI. Written as
-// statements rather than a nested ternary to satisfy the repo's no-nested-ternary rule.
-function byCodepoint(a: string, b: string): number {
-	if (a < b) return -1;
-	if (a > b) return 1;
-	return 0;
 }
 
 function byField(a: SnapshotFieldEntry, b: SnapshotFieldEntry): number {
