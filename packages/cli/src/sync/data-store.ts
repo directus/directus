@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import { CliError } from '../kernel/error.js';
 import { writeFileAtomic } from '../kernel/write.js';
+import { byCodepoint } from './codepoint.js';
 import { serializeCanonical } from './store.js';
 
 // The exported data records on disk as committable artifacts: one file per collection, each holding its
@@ -42,15 +43,6 @@ export interface DataWriteResult {
 export interface DataReadResult {
 	readonly source: string; // normalizeInstanceUrl of the pulled-from instance, from metadata.json
 	readonly collections: DataCollection[];
-}
-
-// Codepoint comparison, never localeCompare/Intl (see the schema store): locale ordering varies by
-// machine and would make the committed bytes non-deterministic. Replicated so this module's only
-// dependency on the schema store is the exported canonical serializer.
-function byCodepoint(a: string, b: string): number {
-	if (a < b) return -1;
-	if (a > b) return 1;
-	return 0;
 }
 
 // The record's primary-key value as the string the PK sort compares. A record missing the key sorts
@@ -243,6 +235,15 @@ function readDataFile(dir: string, name: string): DataCollection {
 	}
 
 	return { collection, primaryKey, records: records as Record<string, unknown>[] };
+}
+
+/**
+ * Whether `dir` holds a committed data set: the directory exists and carries the metadata.json publish
+ * marker readDataFiles requires. push probes this to treat an absent set as a schema-only checkout it may
+ * skip, rather than letting readDataFiles throw — keeping the marker filename owned by this module alone.
+ */
+export function hasDataFiles(dir: string): boolean {
+	return existsSync(dir) && existsSync(join(dir, METADATA_FILE));
 }
 
 export function readDataFiles(dir: string): DataReadResult {

@@ -3,16 +3,9 @@ import { loadConfig } from '../../kernel/config/file.js';
 import { CliError } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
+import { byCodepoint } from '../../sync/codepoint.js';
 import { pull } from './pull.js';
 import { type Mode, push } from './push.js';
-
-// Codepoint comparison, never localeCompare/Intl (see the store): the prompt option order must not vary
-// by machine, so the wizard shows the same choices in the same order to every operator.
-function byCodepoint(a: string, b: string): number {
-	if (a < b) return -1;
-	if (a > b) return 1;
-	return 0;
-}
 
 // One-line mode labels matching the --mode help text, so the wizard names each mode exactly as the flag does.
 const MODE_LABELS: Record<Mode, string> = {

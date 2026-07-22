@@ -1,12 +1,15 @@
 import { confirm, text } from '@clack/prompts';
-import { CliError } from '../../kernel/error.js';
+import type { ResolvedCredential } from '../../kernel/config/credentials.js';
+import type { ProjectConfig } from '../../kernel/config/file.js';
+import { CliError, withHint } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
+import { count } from '../../kernel/text.js';
 import { applyDiff, importBatch } from '../../sync/api.js';
-import type { ImportBatchResult } from '../../sync/contract.js';
-import { type IdMap, withMappings, writeIdMap } from '../../sync/id-map.js';
+import type { ImportBatchResult, ImportCollectionData } from '../../sync/contract.js';
+import { withMappings, writeIdMap } from '../../sync/id-map.js';
 import { type ImportSummary, summarizeDiff, summarizeImport } from '../../sync/render.js';
-import { type DataPushResult, prepareDataPush } from './data-push.js';
+import { type DataPushPlan, type DataPushResult, prepareDataPush } from './data-push.js';
 import { localDiff } from './local-diff.js';
 import { resolveTarget } from './resolve-target.js';
 
@@ -47,11 +50,35 @@ export function dataImportOptions(mode: Mode): { mode: 'add' | 'merge'; dangerou
 	return { mode: 'merge' };
 }
 
+/**
+ * Resolve the effective mode: an explicit flag wins, else the project config's mode, else additive merge —
+ * the path of least surprise, so deletions are always opted into rather than defaulted on. Exported so diff
+ * resolves it identically and thus previews exactly the push this mode would run.
+ */
+export function resolveMode(flag: Mode | undefined, projectConfig: ProjectConfig | undefined): Mode {
+	return flag ?? projectConfig?.mode ?? 'merge';
+}
+
+/**
+ * Run the data import as a dry-run — the server executes it and rolls it back — and summarize the plan.
+ * Returns both the raw per-collection result (diff persists it into the --json payload) and the rendered
+ * summary (the human plan and the deletion gate read it), so diff and push preview the same import through
+ * one call instead of each assembling the dryRun option set and summarizing separately.
+ */
+export async function dryRunImport(
+	credential: ResolvedCredential,
+	batch: ImportCollectionData[],
+	mode: Mode,
+): Promise<{ result: ImportBatchResult; summary: ImportSummary }> {
+	const result = await importBatch(credential, batch, { ...dataImportOptions(mode), dryRun: true });
+	return { result, summary: summarizeImport(result) };
+}
+
 // After the import, record sourceId → finalId for every system record sent, where finalId is the
 // server's remap of the sent pk (add mode on a conflict) or the sent pk itself. Identity entries are
 // included deliberately: they let a future reconcile skip a settled record and protect it from later
 // ambiguity. Content collections get no entries (no reconcile, pk-as-is). Persisted with writeIdMap.
-function updateIdMap(dataResult: Extract<DataPushResult, { skipped: false }>, importResult: ImportBatchResult): IdMap {
+function updateIdMap(dataResult: DataPushPlan, importResult: ImportBatchResult): void {
 	let map = dataResult.map;
 
 	for (const { collection, records } of dataResult.systemSent) {
@@ -67,17 +94,23 @@ function updateIdMap(dataResult: Extract<DataPushResult, { skipped: false }>, im
 	}
 
 	writeIdMap(dataResult.idMapPath, map);
-	return map;
 }
 
 // The --json data block: always present so a consumer never guesses whether the data phase ran. Skipped
 // carries null-ish fields; a real run carries the mode, source, and the server's per-collection response
 // verbatim.
+interface PushDataReport {
+	mode: Mode;
+	source: string | null;
+	collections: ImportBatchResult['collections'] | null;
+	skipped: boolean;
+}
+
 function dataReport(
 	mode: Mode,
 	dataResult: DataPushResult,
 	importResult: ImportBatchResult | undefined,
-): { mode: Mode; source: string | null; collections: ImportBatchResult['collections'] | null; skipped: boolean } {
+): PushDataReport {
 	if (dataResult.skipped || importResult === undefined) {
 		return { mode, source: null, collections: null, skipped: true };
 	}
@@ -89,23 +122,20 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	const target = resolveTarget(options.to, ctx, options.project);
 	const { url, credential } = target;
 
-	// Precedence: an explicit flag wins, else the project config's mode, else additive merge — the path of
-	// least surprise, so deletions are always opted into rather than defaulted on.
-	const mode: Mode = options.mode ?? target.projectConfig?.mode ?? 'merge';
+	const mode: Mode = resolveMode(options.mode, target.projectConfig);
 
 	// Print the resolved target before any network call so a profile NAMED staging pointing at prod's
 	// URL is visible before anything mutates. Human channel only; --json consumers get profile + target
 	// in the payload. Naming the authenticated identity here needs an extra request — deliberately deferred.
 	ctx.ui.info(`target: ${options.to} — ${url}`);
 
-	const { result } = await localDiff(target, schemaDiffMode(mode));
+	const result = await localDiff(target, schemaDiffMode(mode));
 
 	// The data phase prep runs before any plan display or gate: it fetches target records, reconciles, and
 	// (interactive) prompts on ambiguity, or refuses loudly in CI — all before a single mutation.
 	const dataResult = await prepareDataPush(target, ctx);
 
-	const schema =
-		result === null ? { added: 0, modified: 0, deleted: 0, lines: [] as string[] } : summarizeDiff(result.diff);
+	const schema = summarizeDiff(result === null ? null : result.diff);
 
 	const schemaTotal = schema.added + schema.modified + schema.deleted;
 
@@ -145,8 +175,8 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	let dataSummary: ImportSummary | undefined;
 
 	if (ctx.interactive && !dataResult.skipped) {
-		const dryRun = await importBatch(credential, dataResult.batch, { ...dataImportOptions(mode), dryRun: true });
-		dataSummary = summarizeImport(dryRun);
+		const { summary } = await dryRunImport(credential, dataResult.batch, mode);
+		dataSummary = summary;
 	}
 
 	const dataDeleted = dataSummary?.deleted ?? 0;
@@ -155,7 +185,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	// would change before a prompt or a refusal. --json stays silent here; its payload lands at the end.
 	if (!ctx.ui.json) {
 		if (result !== null) {
-			ctx.ui.info(`${schemaTotal} schema ${schemaTotal === 1 ? 'change' : 'changes'} to push to ${url}:`);
+			ctx.ui.info(`${count(schemaTotal, 'schema change')} to push to ${url}:`);
 			for (const line of schema.lines) ctx.ui.print(line);
 		}
 
@@ -166,9 +196,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 			} else {
 				const { records, collections } = dataResult;
 
-				ctx.ui.info(
-					`${records} ${records === 1 ? 'record' : 'records'} across ${collections} ${collections === 1 ? 'collection' : 'collections'} to import (${mode}).`,
-				);
+				ctx.ui.info(`${count(records, 'record')} across ${count(collections, 'collection')} to import (${mode}).`);
 			}
 		}
 	}
@@ -188,7 +216,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	// A merge/add diff should never carry schema deletions, but guard: a deletion in CI still demands the
 	// --allow-deletes consent rather than riding in under --yes.
 	if (!ctx.interactive && schema.deleted > 0 && !allowDeletes) {
-		throw new CliError('USAGE', `This push deletes ${schema.deleted} schema item${schema.deleted === 1 ? '' : 's'}.`, {
+		throw new CliError('USAGE', `This push deletes ${count(schema.deleted, 'schema item')}.`, {
 			hint: '--yes does not cover deletions; pass --allow-deletes or use --mode merge.',
 		});
 	}
@@ -229,10 +257,10 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 			// The diff was generated moments ago, so a hash mismatch means the target schema changed
 			// concurrently — surface that and point at a re-run. Everything else rethrows untouched.
 			if (error instanceof CliError && /INVALID_PAYLOAD/.test(error.detail ?? '') && /hash/i.test(error.detail ?? '')) {
-				throw new CliError(error.code, error.message, {
-					hint: 'The target schema changed while pushing. Re-run d6s sync push to generate a fresh diff.',
-					...(error.detail !== undefined ? { detail: error.detail } : {}),
-				});
+				throw withHint(
+					error,
+					'The target schema changed while pushing. Re-run d6s sync push to generate a fresh diff.',
+				);
 			}
 
 			throw error;
@@ -245,7 +273,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	let importResult: ImportBatchResult | undefined;
 
 	if (!dataResult.skipped) {
-		ctx.ui.info(`importing ${dataResult.collections} ${dataResult.collections === 1 ? 'collection' : 'collections'}…`);
+		ctx.ui.info(`importing ${count(dataResult.collections, 'collection')}…`);
 
 		try {
 			importResult = await importBatch(credential, dataResult.batch, dataImportOptions(mode));
@@ -256,10 +284,10 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 			if (schemaApplied && error instanceof CliError) {
 				ctx.ui.warn('Schema was applied, but the data import failed. Re-run push to retry the data import.');
 
-				throw new CliError(error.code, error.message, {
-					hint: 'Schema is already applied — re-run d6s sync push to retry the data import against an empty schema diff.',
-					...(error.detail !== undefined ? { detail: error.detail } : {}),
-				});
+				throw withHint(
+					error,
+					'Schema is already applied — re-run d6s sync push to retry the data import against an empty schema diff.',
+				);
 			}
 
 			throw error;
@@ -292,7 +320,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	const schemaSentence =
 		result !== null
-			? `Applied ${schemaTotal} schema ${schemaTotal === 1 ? 'change' : 'changes'} to ${url}; schema hash verified.`
+			? `Applied ${count(schemaTotal, 'schema change')} to ${url}; schema hash verified.`
 			: `Schema already matches ${url}.`;
 
 	let dataSentence = ' Data phase skipped (no committed data).';
@@ -300,7 +328,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	if (!dataResult.skipped && importResult !== undefined) {
 		const summary = summarizeImport(importResult);
 
-		dataSentence = ` Imported ${dataResult.records} ${dataResult.records === 1 ? 'record' : 'records'} across ${dataResult.collections} ${dataResult.collections === 1 ? 'collection' : 'collections'}: ${summary.created} created, ${summary.updated} updated, ${summary.deleted} deleted.`;
+		dataSentence = ` Imported ${count(dataResult.records, 'record')} across ${count(dataResult.collections, 'collection')}: ${summary.created} created, ${summary.updated} updated, ${summary.deleted} deleted.`;
 	}
 
 	ctx.ui.success(`${schemaSentence}${dataSentence}`);

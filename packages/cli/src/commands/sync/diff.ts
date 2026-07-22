@@ -1,10 +1,10 @@
 import type { CliContext } from '../../kernel/run.js';
-import { importBatch } from '../../sync/api.js';
+import { count } from '../../kernel/text.js';
 import type { ImportBatchResult } from '../../sync/contract.js';
-import { type ImportSummary, summarizeDiff, summarizeImport } from '../../sync/render.js';
+import { type ImportSummary, summarizeDiff } from '../../sync/render.js';
 import { type DataPreviewResult, previewData } from './data-push.js';
 import { localDiff } from './local-diff.js';
-import { dataImportOptions, type Mode, schemaDiffMode } from './push.js';
+import { dryRunImport, type Mode, resolveMode, schemaDiffMode } from './push.js';
 import { resolveTarget } from './resolve-target.js';
 
 export interface DiffOptions {
@@ -20,11 +20,7 @@ export interface DiffOptions {
 // The --json `data` block: always present so a consumer never guesses whether the data phase was previewed.
 // Skipped carries null-ish fields; a real preview carries the mode, the source, the dry-run response's
 // per-collection detail verbatim, and the reconcile tally. Read-only — no map was written to produce it.
-function dataReport(
-	mode: Mode,
-	preview: DataPreviewResult,
-	dryRun: ImportBatchResult | undefined,
-): {
+interface DiffDataReport {
 	mode: Mode;
 	source: string | null;
 	collections: ImportBatchResult['collections'] | null;
@@ -32,7 +28,9 @@ function dataReport(
 	ambiguous: number | null;
 	unmatched: number | null;
 	skipped: boolean;
-} {
+}
+
+function dataReport(mode: Mode, preview: DataPreviewResult, dryRun: ImportBatchResult | undefined): DiffDataReport {
 	if (preview.skipped || dryRun === undefined) {
 		return { mode, source: null, collections: null, matched: null, ambiguous: null, unmatched: null, skipped: true };
 	}
@@ -52,11 +50,9 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	const target = resolveTarget(options.to, ctx, options.project);
 	const { url } = target;
 
-	// Precedence identical to push: an explicit flag wins, else the project config's mode, else additive
-	// merge — so the preview reflects exactly the push the operator would run.
-	const mode: Mode = options.mode ?? target.projectConfig?.mode ?? 'merge';
+	const mode: Mode = resolveMode(options.mode, target.projectConfig);
 
-	const { result } = await localDiff(target, schemaDiffMode(mode));
+	const result = await localDiff(target, schemaDiffMode(mode));
 
 	// diff IS the preview command, so it always pays the data dry-run when data is present: the plan shows
 	// the real created/updated/deleted the import would produce, rolled back server-side. previewData is
@@ -67,12 +63,12 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	let dataSummary: ImportSummary | undefined;
 
 	if (!preview.skipped) {
-		dryRun = await importBatch(target.credential, preview.batch, { ...dataImportOptions(mode), dryRun: true });
-		dataSummary = summarizeImport(dryRun);
+		const dry = await dryRunImport(target.credential, preview.batch, mode);
+		dryRun = dry.result;
+		dataSummary = dry.summary;
 	}
 
-	const schema =
-		result === null ? { added: 0, modified: 0, deleted: 0, lines: [] as string[] } : summarizeDiff(result.diff);
+	const schema = summarizeDiff(result === null ? null : result.diff);
 
 	const schemaTotal = schema.added + schema.modified + schema.deleted;
 
@@ -112,9 +108,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	}
 
 	if (result !== null) {
-		ctx.ui.info(
-			`${schemaTotal} schema ${schemaTotal === 1 ? 'change' : 'changes'} between the local snapshot and ${url}:`,
-		);
+		ctx.ui.info(`${count(schemaTotal, 'schema change')} between the local snapshot and ${url}:`);
 
 		for (const line of schema.lines) ctx.ui.print(line);
 	}
@@ -134,9 +128,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 			const detail =
 				preview.ambiguousCount > 0 ? ` (${preview.ambiguousCount} ambiguous need interactive resolution)` : '';
 
-			ctx.ui.info(
-				`${pending} record${pending === 1 ? '' : 's'} have no target match yet — the first push will reconcile${detail}.`,
-			);
+			ctx.ui.info(`${count(pending, 'record')} have no target match yet — the first push will reconcile${detail}.`);
 		}
 	}
 }

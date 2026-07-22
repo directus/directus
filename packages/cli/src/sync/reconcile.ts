@@ -1,4 +1,5 @@
 import { CliError } from '../kernel/error.js';
+import { byCodepoint } from './codepoint.js';
 import { SYSTEM_FK_FIELDS } from './fk-map.js';
 
 // Natural-key matching that seeds the ID map before a first import: it lets merge-mode imports UPDATE an
@@ -48,14 +49,6 @@ export interface CollectionReconcile {
 	readonly matched: readonly { sourceId: string; targetId: string; key: string }[];
 	readonly ambiguous: readonly { sourceId: string; key: string; targetIds: readonly string[] }[];
 	readonly unmatched: readonly string[];
-}
-
-// Codepoint comparison, never localeCompare/Intl: locale ordering varies by machine and would make the
-// seeded map — and every diff derived from it — non-deterministic across contributors and CI.
-function byCodepoint(a: string, b: string): number {
-	if (a < b) return -1;
-	if (a > b) return 1;
-	return 0;
 }
 
 // A source FK component whose referenced parent has not matched in this run. The row cannot equal any

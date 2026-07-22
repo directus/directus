@@ -1,3 +1,4 @@
+import { byCodepoint } from './codepoint.js';
 import type { DiffOp, DiffRelationEntry, ImportBatchResult, SchemaDiff } from './contract.js';
 
 // Pure diff renderer: turns a SchemaDiff into a human summary the diff command prints and the
@@ -24,7 +25,12 @@ interface RenderItem {
 	paths: string[];
 }
 
-export function summarizeDiff(diff: SchemaDiff): DiffSummary {
+export function summarizeDiff(diff: SchemaDiff | null): DiffSummary {
+	// A null diff is the server's "schema already matches" answer; the zero summary lets both commands
+	// treat "no schema change" and a genuinely empty diff through one shape, killing the duplicated
+	// { added: 0, … } literal and its cast at the call sites.
+	if (diff === null) return { added: 0, modified: 0, deleted: 0, lines: [] };
+
 	// Grouped collections → fields → systemFields → relations; each group codepoint-sorted by
 	// rendered name so the output is byte-identical run to run.
 	const items: RenderItem[] = [
@@ -95,14 +101,6 @@ function renderLine(item: RenderItem): string {
 	const token = KIND_TOKENS[item.change].padEnd(TOKEN_WIDTH);
 	const paths = item.paths.length > 0 ? ` (${item.paths.join(', ')})` : '';
 	return `${token}  ${item.name}${paths}`;
-}
-
-// Codepoint comparison, never localeCompare/Intl: locale ordering varies by machine and would make
-// the rendered output non-deterministic across contributors and CI (same rule as the store).
-function byCodepoint(a: string, b: string): number {
-	if (a < b) return -1;
-	if (a > b) return 1;
-	return 0;
 }
 
 // Pure renderer for the data plan the dry-run (or real import) returns: per-collection created/updated/
