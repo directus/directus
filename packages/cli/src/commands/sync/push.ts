@@ -28,7 +28,8 @@ export interface PushOptions {
 	 * are validated by commander (add|merge|mirror), so a present value is always one of the three.
 	 */
 	readonly mode?: Mode;
-	readonly allowDeletes?: boolean;
+	/** Deliberately loud flag name, mirroring the API's import parameter — the one consent for deletions. */
+	readonly dangerouslyAllowDelete?: boolean;
 	readonly yes?: boolean;
 	readonly project: string;
 }
@@ -164,7 +165,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		return;
 	}
 
-	const allowDeletes = options.allowDeletes ?? false;
+	const allowDeletes = options.dangerouslyAllowDelete ?? false;
 	const yes = options.yes ?? false;
 
 	// CI skips the extra import transaction, so mirror requires explicit delete consent without a data plan.
@@ -203,15 +204,19 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	// --yes never authorizes deletion; CI mirror needs explicit consent because it skips the data dry-run.
 	if (!ctx.interactive && mode === 'mirror' && !allowDeletes) {
-		throw new CliError('USAGE', 'Refusing mirror mode in a non-interactive context without --allow-deletes.', {
-			hint: 'mirror can delete schema and data rows absent from the import set; pass --allow-deletes to consent, or use --mode merge.',
-		});
+		throw new CliError(
+			'USAGE',
+			'Refusing mirror mode in a non-interactive context without --dangerously-allow-delete.',
+			{
+				hint: 'mirror can delete schema and data rows absent from the import set; pass --dangerously-allow-delete to consent, or use --mode merge.',
+			},
+		);
 	}
 
 	// Guard unexpected schema deletions under additive modes too.
 	if (!ctx.interactive && schema.deleted > 0 && !allowDeletes) {
 		throw new CliError('USAGE', `This push deletes ${count(schema.deleted, 'schema item')}.`, {
-			hint: '--yes does not cover deletions; pass --allow-deletes or use --mode merge.',
+			hint: '--yes does not cover deletions; pass --dangerously-allow-delete or use --mode merge.',
 		});
 	}
 

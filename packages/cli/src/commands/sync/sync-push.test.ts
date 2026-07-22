@@ -214,10 +214,10 @@ describe('sync push', () => {
 		expect(stderr.join('')).toMatch(/re-run d6s sync push/i);
 	});
 
-	it('refuses a deletion-bearing MERGE diff in CI without --allow-deletes', async () => {
+	it('refuses a deletion-bearing MERGE diff in CI without --dangerously-allow-delete', async () => {
 		// The backstop behind the mirror gate: a merge diff should never carry deletions, but if the
 		// server returns one anyway it must not ride in under --yes — the deletion consent is
-		// --allow-deletes, in every mode. No apply intercept: the refusal precedes any apply request.
+		// --dangerously-allow-delete, in every mode. No apply intercept: the refusal precedes any apply request.
 		const deletionDiff = {
 			collections: [],
 			fields: [{ collection: 'articles', field: 'old_slug', diff: [{ kind: 'D', lhs: { field: 'old_slug' } }] }],
@@ -235,7 +235,7 @@ describe('sync push', () => {
 
 		const err = stderr.join('');
 		expect(err).toMatch(/deletes/i);
-		expect(err).toContain('--allow-deletes');
+		expect(err).toContain('--dangerously-allow-delete');
 	});
 
 	it('resolves mode from project config when no flag is given, and lets the flag win', async () => {
@@ -589,11 +589,11 @@ describe('sync push with data', () => {
 		expect(stderr.join('')).toContain('schema and data match; nothing to push.');
 	});
 
-	it('carries dangerouslyAllowDelete on the import when mirror runs with --allow-deletes', async () => {
+	it('carries dangerouslyAllowDelete on the import when mirror runs with --dangerously-allow-delete', async () => {
 		// mirror maps to a merge import plus dangerouslyAllowDelete (the server has no wire "mirror"); the
-		// exact query match proves the destructive flag rode along only because --allow-deletes consented.
+		// exact query match proves the destructive flag rode along only because --dangerously-allow-delete consented.
 		// The schema diff carries a DELETION, so this also pins the schema half of the consent: with
-		// --allow-deletes the sealed { hash, diff } reaches apply byte-for-byte, deletions included.
+		// --dangerously-allow-delete the sealed { hash, diff } reaches apply byte-for-byte, deletions included.
 		const deletionDiff = {
 			collections: [],
 			fields: [{ collection: 'articles', field: 'old_slug', diff: [{ kind: 'D', lhs: { field: 'old_slug' } }] }],
@@ -626,12 +626,12 @@ describe('sync push with data', () => {
 			},
 		);
 
-		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes', '--allow-deletes')).toBe(0);
+		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes', '--dangerously-allow-delete')).toBe(0);
 
 		expect(applied).toEqual({ hash: 'h1', diff: deletionDiff });
 	});
 
-	it('refuses mirror in CI without --allow-deletes before any apply or import, even with data present', async () => {
+	it('refuses mirror in CI without --dangerously-allow-delete before any apply or import, even with data present', async () => {
 		// Mirror can delete schema and data rows absent from the import set, unknowable in
 		// CI without a dry-run, so it is refused outright. Only the diff is registered — a reached apply or
 		// import would throw on the disabled dispatcher, proving neither happened.
@@ -646,7 +646,7 @@ describe('sync push with data', () => {
 
 		const err = stderr.join('');
 		expect(err).toMatch(/refusing mirror/i);
-		expect(err).toContain('--allow-deletes');
+		expect(err).toContain('--dangerously-allow-delete');
 	});
 
 	it('refuses an ambiguous reconcile in CI, naming the collision, before any import', async () => {

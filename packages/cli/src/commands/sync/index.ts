@@ -77,7 +77,10 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 				MODES,
 			),
 		)
-		.option('--allow-deletes', 'Include deletions; without it deletions are refused outside interactive confirmation')
+		.option(
+			'--dangerously-allow-delete',
+			'Include deletions; without it deletions are refused outside interactive confirmation',
+		)
 		.option('--yes', 'Skip the apply confirmation; never authorizes deletions')
 		.option('--project <name>', 'Project scope to sync (default: default)', 'default')
 		.action((options: PushOptions) => push(options, getContext()));
