@@ -261,7 +261,7 @@ async function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, a
 		const parsedLevel: Record<string, any> = {};
 
 		for (const [key, value] of Object.entries(level)) {
-			if (!key) break;
+			if (!key) continue;
 
 			if (key.startsWith('_')) {
 				// Collect all sub query parameters without the leading underscore
