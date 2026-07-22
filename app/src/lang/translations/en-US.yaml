@@ -22,7 +22,7 @@
 
 about: About
 directus_mscl: Directus MSCL-1.0-GPL
-privacy_policy: Privacy Policy
+data_processing_agreement: Data Processing Agreement
 contact_support: contact support
 setup_welcome: Welcome to Directus
 setup_info: Let's create your admin account and get your project up and running.
@@ -343,6 +343,7 @@ validationError:
   niends_with: Value can't end with {substring}
   confirm_password: Passwords do not match
   org_name: Please include an organization name
+  unsafe: Value is not a safe number
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
@@ -661,6 +662,7 @@ functions:
   minute: Minute
   second: Second
   count: Count
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -1039,6 +1041,7 @@ operators:
   nintersects: Doesn't intersect
   intersects_bbox: Intersects bounding box
   nintersects_bbox: Doesn't intersect bounding box
+  json: JSON
   regex: Matches RegExp
 custom_validation_message: Custom Validation Message
 loading: Loading...
@@ -1219,46 +1222,11 @@ deployment:
         label: Account Slug
         hint: Optional. Filter sites to a specific account. Leave empty to show all accessible sites.
         placeholder: your-account-slug
-    cloudflare-workers:
-      name: Cloudflare Workers
-      settings_warning:
-        Changing credentials or account ID may affect your selected projects if they are no longer accessible with the
-        new configuration.
-      setup_requirements:
-        To deploy from Directus, each Worker must have Workers Builds enabled and a connected Git repository with a
-        build trigger. Deploy Hooks are optional and provide an additional manual trigger option.
-      api_token:
-        hint: >
-          Must be a user-scoped API token (not an account token) with Workers Builds Configuration: Edit and Workers
-          Scripts: Read permissions. If you plan to use event subscriptions for build notifications, also add Account →
-          Queues → Edit (read and write).
-      account_id:
-        label: Account ID
-        hint: Your Cloudflare account ID used for Workers Builds API requests.
-        placeholder: 023e105f4ecef8ad9ca31a8372d0c353
-      events_queue_id:
-        label: Event Subscription Queue ID
-        hint: >
-          Optional. Without this, Directus only tracks builds triggered from within Directus, builds started outside
-          will not appear. To capture those, create a Cloudflare Queue, add an event subscription per Worker pointing to
-          that queue, enable HTTP pull on the queue, then paste the queue ID here.
-        placeholder: e.g. queue UUID from Workers & Pages → Queues
-      deploy_hooks:
-        title: Deploy Hooks
-        hint: Create Deploy Hooks in Cloudflare (Worker Settings > Builds > Deploy Hooks), then paste the URL here.
-        add: Add Deploy Hook
-        name_placeholder: e.g. Production - main
-        url_placeholder: https://api.cloudflare.com/client/v4/workers/builds/deploy_hooks/...
-        deploy_via: 'Deploy via {name}'
     projects: Projects
     select_projects: Select Projects
     select_projects_hint: Choose which projects you want to manage from Directus
     project:
       not_deployable: Project not deployable by Directus. Please see documentation for more info.
-      not_deployable_cloudflare:
-        This Worker has no Cloudflare Builds trigger yet. In Cloudflare, open Worker Settings > Builds and finish Builds
-        setup.
-      missing_build_trigger: Missing Cloudflare Build Trigger
     runs:
       runs: Deployment Runs
       id: Deployment ID
@@ -1563,6 +1531,7 @@ licensing:
   resolve_ai_translations_confirm: Confirm AI Translations Deactivation
   resolve_ai_translations_caption: AI Translation will be disabled and your translation settings will no longer be used.
   env_managed: Your license key is managed via an environment variable and can't be updated here.
+  manage_license_disabled: Management of your license key is disabled by your environment settings.
   key_management: License Key Management
   key: License Key
   entitlements:
@@ -1759,6 +1728,7 @@ fields:
     collection: Collection
     icon: Icon
     note: Note
+    status: Status
     color: Color
     display_template: Display Template
     hidden: Hidden
@@ -1904,16 +1874,16 @@ fields:
     ai_notice:
       'AI Assistant provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the
       toolbar to ask questions, generate content, and get help working with your project. <a
-      href="https://directus.io/docs/guides/ai/assistant" target="_blank">Learn more about configuring and using AI
+      href="https://directus.com/docs/guides/ai/assistant" target="_blank">Learn more about configuring and using AI
       Assistant.</a>'
     mcp_enabled: MCP Server
     mcp_enabled_note:
-      'Connect AI/LLM tools to your Directus project via <a href="https://directus.io/docs/guides/ai/mcp"
+      'Connect AI/LLM tools to your Directus project via <a href="https://directus.com/docs/guides/ai/mcp"
       target="_blank">Model Context Protocol (MCP)</a>. This enables AI assistants to read and interact with your
       Directus data securely.'
     mcp_notice:
       'Model Context Protocol is a standard for connecting LLMs to applications like Directus. Once enabled, the
-      Directus MCP server will be available at `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp"
+      Directus MCP server will be available at `/mcp`. <a href="https://directus.com/docs/guides/ai/mcp"
       target="_blank">Learn more about MCP and how to connect.</a>'
     mcp_allow_deletes: Allow Deletes
     mcp_allow_deletes_note:
@@ -1921,12 +1891,12 @@ fields:
       May cause data loss.</strong> Disabled by default for safety.'
     mcp_prompts_collection: AI Prompts Collection
     mcp_prompts_collection_note:
-      'Select collection for storing <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">reusable
+      'Select collection for storing <a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">reusable
       prompt templates</a> for AI interactions.'
     mcp_system_prompt_divider: System Prompt Configuration
     mcp_system_prompt_enabled: Use System Prompt
     mcp_system_prompt_enabled_note:
-      "Use the <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>default system prompt</a>
+      "Use the <a href='https://directus.com/docs/guides/ai/mcp#system-prompt' target='_blank'>default system prompt</a>
       to guide LLM behavior. Disable to remove or override with your own prompt below."
     mcp_system_prompt: Custom System Prompt
     mcp_system_prompt_note:
@@ -2274,7 +2244,7 @@ mcp_prompts_collection_schema:
   messages_role_note: Who is speaking in this message.
   meta_prompts_notice:
     'Prompts are reusable templates that you can use with LLMs through the Directus MCP server, Flows, or other AI
-    applications. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">Learn more about creating
+    applications. <a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">Learn more about creating
     effective prompts.</a>'
 expired: Expired
 upcoming: Upcoming

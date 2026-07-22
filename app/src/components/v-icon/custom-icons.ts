@@ -1,12 +1,12 @@
 import CustomIconBookmarkSave from './custom-icons/bookmark_save.vue';
 import CustomIconBox from './custom-icons/box.vue';
-import CustomIconCloudflareWorkers from './custom-icons/cloudflare.vue';
 import CustomIconCommitNode from './custom-icons/commit_node.vue';
 import CustomIconDirectus from './custom-icons/directus.vue';
 import CustomIconFlipHorizontal from './custom-icons/flip_horizontal.vue';
 import CustomIconFlipVertical from './custom-icons/flip_vertical.vue';
 import CustomIconFolderLock from './custom-icons/folder_lock.vue';
 import CustomIconFolderMove from './custom-icons/folder_move.vue';
+import CustomIconFunctionF from './custom-icons/function_f.vue';
 import CustomIconGrid1 from './custom-icons/grid_1.vue';
 import CustomIconGrid2 from './custom-icons/grid_2.vue';
 import CustomIconGrid3 from './custom-icons/grid_3.vue';
@@ -29,7 +29,6 @@ export const components: Record<string, any> = {
 	CustomIconBookmarkSave,
 	CustomIconBox,
 	CustomIconCommitNode,
-	CustomIconCloudflareWorkers,
 	CustomIconGrid1,
 	CustomIconGrid2,
 	CustomIconGrid3,
@@ -43,6 +42,7 @@ export const components: Record<string, any> = {
 	CustomIconFlipVertical,
 	CustomIconFolderMove,
 	CustomIconFolderLock,
+	CustomIconFunctionF,
 	CustomIconLogoAnthropic,
 	CustomIconLogoCustomProvider,
 	CustomIconLogoGoogle,

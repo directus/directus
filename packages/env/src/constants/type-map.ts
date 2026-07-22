@@ -25,6 +25,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	IMPORT_IP_DENY_LIST: 'array',
 	IMPORT_TIMEOUT: 'string',
 	IMPORT_MAX_CONCURRENCY: 'number',
+	IMPORT_MAX_FILE_SIZE: 'string',
 	IMPORT_EXPORT_NAMESPACE: 'string',
 
 	FILE_METADATA_ALLOW_LIST: 'array',
@@ -35,6 +36,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	OPENAPI_ENABLED: 'boolean',
 	GRAPHQL_INTROSPECTION: 'boolean',
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 'number',
+	GRAPHQL_SINGLE_USE_MUTATIONS: 'array',
 
 	MAX_BATCH_MUTATION: 'number',
 	MAX_IMPORT_ERRORS: 'number',
@@ -68,6 +70,8 @@ export const TYPE_MAP: Record<string, EnvType> = {
 
 	EXTENSIONS_ROLLDOWN: 'boolean',
 
+	PROJECT_OWNER_ENABLED: 'boolean',
+
 	MCP_OAUTH_ENABLED: 'boolean',
 	MCP_OAUTH_AUTH_CODE_TTL: 'string',
 	MCP_OAUTH_MAX_CLIENTS: 'number',
@@ -92,6 +96,8 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	'AUTH_.+_GROUP_DN': 'string',
 	'AUTH_.+_BIND_PASSWORD': 'string',
 	'AUTH_.+_COOKIE_SECURE': 'boolean',
+
+	LICENSE_KEY_MANAGEMENT_ENABLED: 'boolean',
 } as const;
 
 export const TYPE_MAP_REGEX: [RegExp, EnvType][] = Object.entries(TYPE_MAP).map(([name, value]) => [

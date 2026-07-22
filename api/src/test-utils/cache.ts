@@ -7,43 +7,13 @@ import { vi } from 'vitest';
 
 /**
  * Creates a standard cache mock for service tests
- * Returns mock functions for vi.mock() and spies for testing cache behavior
- *
- * @returns Object with mock functions at root level and spies nested under 'spies' property
- *
- * @example
- * ```typescript
- * // Standard usage for vi.mock()
- * vi.mock('../cache.js', async () => {
- *   const { mockCache } = await import('../test-utils/cache.js');
- *   return mockCache();
- * });
- *
- * // Testing cache clearing with spies
- * import { getCache } from '../cache.js';
- * import { mockCache } from '../test-utils/cache.js';
- *
- * test('should clear cache after update', async () => {
- *   const { spies } = mockCache();
- *   vi.mocked(getCache).mockReturnValue(spies.mockCacheReturn as any);
- *
- *   const service = new YourService({ knex: db, schema });
- *   await service.updateOne('1', { name: 'Updated' });
- *
- *   expect(spies.clearSpy).toHaveBeenCalled();
- * });
- * ```
+ * Returns mock functions for vi.mock()
  */
 export function mockCache() {
-	const clearSpy = vi.fn();
-	const systemClearSpy = vi.fn();
-	const getCacheSpy = vi.fn();
-	const setCacheSpy = vi.fn();
-
 	const mockCacheReturn = {
-		cache: { clear: clearSpy } as any,
-		systemCache: { clear: systemClearSpy } as any,
-		localSchemaCache: { get: getCacheSpy, set: setCacheSpy } as any,
+		cache: { clear: vi.fn() } as any,
+		systemCache: { clear: vi.fn() } as any,
+		localSchemaCache: { get: vi.fn(), set: vi.fn() } as any,
 		lockCache: undefined,
 	};
 
@@ -52,12 +22,5 @@ export function mockCache() {
 		getCacheValue: vi.fn().mockResolvedValue(null),
 		setCacheValue: vi.fn().mockResolvedValue(undefined),
 		clearSystemCache: vi.fn(),
-		spies: {
-			clearSpy,
-			systemClearSpy,
-			getCacheSpy,
-			setCacheSpy,
-			mockCacheReturn,
-		},
 	};
 }
