@@ -1426,16 +1426,12 @@ fields:
     public_registration_verify_email_note: Stuurt een e-mail naar de registrerende gebruiker waarin wordt gevraagd om op een verificatielink te klikken voordat ze kunnen inloggen.
     visual_editor_urls: Visual Editor URLs
     mcp_enabled: MCP-server
-    mcp_enabled_note: 'Sluit AI/LM tools aan op uw Directus project via <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. Hierdoor kunnen AI-assistenten veilig lezen en communiceren met uw Directusgegevens.'
-    mcp_notice: 'Model Context Protocol is een standaard om LLMs te verbinden met toepassingen zoals Directus. Eenmaal ingeschakeld, zal de Directus MCP-server beschikbaar zijn op `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Meer informatie over MCP en hoe te verbinden.</a>'
     mcp_allow_deletes: Verwijderen Toestaan
     mcp_allow_deletes_note:
       - Kan dataverlies veroorzaken.</strong> Standaard uitgeschakeld voor veiligheid.'
     mcp_prompts_collection: AI Prompts collectie
-    mcp_prompts_collection_note: 'Selecteer collectie voor het opslaan van <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">herbruikbare prompt templates</a> voor AI-interacties.'
     mcp_system_prompt_divider: Systeemprompt Configuratie
     mcp_system_prompt_enabled: Gebruik Systeemprompt
-    mcp_system_prompt_enabled_note: "Gebruik het <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>standaard systeem prompt</a> om LLM-gedrag te begeleiden. Uitschakelen om dit te verwijderen of te overschrijven met uw eigen prompt hieronder."
     mcp_system_prompt: Aangepast Systeemprompt
     mcp_system_prompt_note: 'Aangepast systeemprompt om de standaard te vervangen. Laat leeg om standaard te gebruiken (indien ingeschakeld).'
     ai_system_prompt: AI Systeemprompt
@@ -1679,7 +1675,6 @@ mcp_prompts_collection_schema:
   messages_role_user: Gebruiker
   messages_role_assistant: Assistent
   messages_role_note: Wie spreekt in dit bericht.
-  meta_prompts_notice: 'Prompts zijn herbruikbare sjablonen die je kunt gebruiken met LLMs via de Directus MCP-server, Flows, of andere AI applicaties. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">Leer meer over het maken van effectieve prompts.</a>'
 expired: Verlopen
 upcoming: Aankomend
 share: Delen
