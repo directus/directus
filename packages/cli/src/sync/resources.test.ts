@@ -90,8 +90,11 @@ describe('resolveResources', () => {
 
 	it('marks settings the lone singleton and leaves it standalone', () => {
 		// directus_settings is a single-object endpoint (system-data collections.yaml: singleton) that
-		// pulls nothing, so a settings selection resolves to exactly itself — carrying its external-reference
-		// strip list (project logo/favicon and storage_default_folder FKs) and no alias views.
+		// pulls nothing, so a settings selection resolves to exactly itself — carrying its strip list and no
+		// alias views. The strip list is load-bearing three ways: the asset FKs break fresh-target imports;
+		// the license fields are refused by the settings service on import (failing the whole batch); and the
+		// encrypt-special AI keys read back as a masked literal that import would re-encrypt over the
+		// target's real credential.
 		expect(resolveResources(['settings'])).toEqual([
 			{
 				name: 'settings',
@@ -99,7 +102,20 @@ describe('resolveResources', () => {
 				endpoint: '/settings',
 				primaryKey: 'id',
 				singleton: true,
-				strip: ['project_logo', 'public_foreground', 'public_background', 'public_favicon', 'storage_default_folder'],
+				strip: [
+					'project_logo',
+					'public_foreground',
+					'public_background',
+					'public_favicon',
+					'storage_default_folder',
+					'license_key',
+					'license_token',
+					'ai_openai_api_key',
+					'ai_anthropic_api_key',
+					'ai_google_api_key',
+					'ai_openai_compatible_api_key',
+					'ai_openai_compatible_headers',
+				],
 				aliases: [],
 			},
 		]);
