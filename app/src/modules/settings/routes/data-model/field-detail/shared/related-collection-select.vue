@@ -1,14 +1,8 @@
 <script setup lang="ts">
-import { debounce } from 'lodash';
-import { computed, ref, watch } from 'vue';
-import VDivider from '@/components/v-divider.vue';
+import { computed } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
-import VListGroup from '@/components/v-list-group.vue';
-import VListItemContent from '@/components/v-list-item-content.vue';
-import VListItem from '@/components/v-list-item.vue';
-import VList from '@/components/v-list.vue';
-import VMenu from '@/components/v-menu.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionsStore } from '@/stores/collections';
 
@@ -18,7 +12,6 @@ const props = defineProps<{
 }>();
 
 defineEmits(['update:modelValue']);
-
 const collectionsStore = useCollectionsStore();
 
 const collectionExists = computed(() => {
@@ -27,33 +20,14 @@ const collectionExists = computed(() => {
 
 const availableCollections = collectionsStore.databaseCollections.filter((collection) => collection.meta);
 const systemCollections = collectionsStore.crudSafeSystemCollections;
-const search = ref('');
-const internalSearch = ref('');
 
-const filteredCollections = computed(() => {
-	const trimmedValue = internalSearch.value?.trim()?.toLowerCase();
-	if (!trimmedValue) return availableCollections;
-
-	return availableCollections.filter((collection) => {
-		return collection.collection.toLowerCase().includes(trimmedValue);
-	});
+const displayItems = computed(() => {
+	return [
+		...availableCollections.map((collection) => collection.collection),
+		{ divider: true },
+		...systemCollections.map((collection) => collection.collection),
+	];
 });
-
-const filteredSystemCollections = computed(() => {
-	const trimmedValue = internalSearch.value?.trim()?.toLowerCase();
-	if (!trimmedValue) return systemCollections;
-
-	return systemCollections.filter((collection) => {
-		return collection.collection.toLowerCase().includes(trimmedValue);
-	});
-});
-
-watch(
-	search,
-	debounce((val: string) => {
-		internalSearch.value = val;
-	}, 250),
-);
 </script>
 
 <template>
@@ -68,54 +42,18 @@ watch(
 		@update:model-value="$emit('update:modelValue', $event)"
 	>
 		<template v-if="!disabled" #append>
-			<VMenu show-arrow placement="bottom-end">
-				<template #activator="{ toggle }">
+			<VSelect
+				:items="displayItems"
+				item-text="collection"
+				item-value="collection"
+				placement="bottom-start"
+				item-label-font-family="var(--theme--fonts--monospace--font-family)"
+				@update:model-value="$emit('update:modelValue', $event)"
+			>
+				<template #preview="{ toggle }">
 					<VIcon v-tooltip="$t('select_existing')" name="list_alt" clickable :disabled="disabled" @click="toggle" />
 				</template>
-
-				<VList class="monospace">
-					<VListItem>
-						<VListItemContent>
-							<VInput v-model="search" autofocus small :placeholder="$t('search')" @click.stop.prevent>
-								<template #append>
-									<VIcon small name="search" />
-								</template>
-							</VInput>
-						</VListItemContent>
-					</VListItem>
-					<VListItem
-						v-for="availableCollection in filteredCollections"
-						:key="availableCollection.collection"
-						:active="modelValue === availableCollection.collection"
-						:disabled="availableCollection.meta?.singleton"
-						clickable
-						@click="$emit('update:modelValue', availableCollection.collection)"
-					>
-						<VListItemContent>
-							{{ availableCollection.collection }}
-						</VListItemContent>
-					</VListItem>
-
-					<template v-if="filteredSystemCollections.length">
-						<VDivider />
-
-						<VListGroup>
-							<template #activator>{{ $t('system') }}</template>
-							<VListItem
-								v-for="systemCollection in filteredSystemCollections"
-								:key="systemCollection.collection"
-								:active="modelValue === systemCollection.collection"
-								clickable
-								@click="$emit('update:modelValue', systemCollection.collection)"
-							>
-								<VListItemContent>
-									{{ systemCollection.collection }}
-								</VListItemContent>
-							</VListItem>
-						</VListGroup>
-					</template>
-				</VList>
-			</VMenu>
+			</VSelect>
 		</template>
 
 		<template v-if="disabled" #input>
