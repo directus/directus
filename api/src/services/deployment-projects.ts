@@ -33,11 +33,8 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 	}
 
 	/**
-	 * Find a project by its provider-side external ID, scoped to a specific deployment.
-	 * Returns null if not tracked. An external ID is only unique per deployment
-	 * (directus_deployment_projects is unique on deployment + external_id), so callers
-	 * acting on behalf of one provider must scope the lookup to that provider's
-	 * deployment to avoid resolving a project that belongs to another provider.
+	 * Find a project by external ID within a deployment. Returns null if not tracked.
+	 * external_id is unique only per deployment, so the lookup must be scoped.
 	 */
 	async readByExternalId(deploymentId: string, externalId: string): Promise<DeploymentProject | null> {
 		const results = await this.readByQuery({
