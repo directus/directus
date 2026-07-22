@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { isCancel, select } from '@clack/prompts';
@@ -112,6 +112,10 @@ describe('sync wizard', () => {
 
 		const messages = vi.mocked(select).mock.calls.map((call) => call[0].message);
 		expect(messages).not.toContain('Project scope:');
+
+		// The prompted mode must persist so later pushes default to it and later wizard runs stop asking.
+		const saved = JSON.parse(readFileSync(join(dir, 'directus.config.json'), 'utf8'));
+		expect(saved.projects).toEqual({ default: { mode: 'merge' } });
 	});
 
 	it('skips the mode prompt and omits mode from push when the project config sets it', async () => {
@@ -125,6 +129,10 @@ describe('sync wizard', () => {
 
 		expect(select).toHaveBeenCalledTimes(2);
 		expect(vi.mocked(push).mock.calls[0]?.[0]).toEqual({ to: 'prod', project: 'default' });
+
+		// An answered mode is never re-written; the config stays byte-identical to what was committed.
+		const saved = JSON.parse(readFileSync(join(dir, 'directus.config.json'), 'utf8'));
+		expect(saved.projects).toEqual({ default: { mode: 'mirror' } });
 	});
 
 	it('excludes the chosen source from the target options so one profile can never be both ends', async () => {

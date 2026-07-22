@@ -181,7 +181,9 @@ function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig |
 		},
 	);
 
-	const deps = options.deps;
+	// Commander only defines the negative flag, so options.deps is false exactly when --no-deps was
+	// passed; otherwise the project config's deps (when set) decides, defaulting to the full closure.
+	const deps = options.deps === false ? false : (projectConfig?.deps ?? true);
 
 	if (pair === undefined) return resolveResources(DEFAULT_RESOURCE_NAMES, { deps });
 
