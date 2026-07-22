@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname, join, parse as parsePath } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import { z } from 'zod';
+import { type Mode, MODES } from '../../sync/mode.js';
 import { CliError } from '../error.js';
 import { writeFileAtomic } from '../write.js';
 
@@ -48,7 +49,7 @@ const projectSchema = z.strictObject({
 	resources: z.array(z.string()).optional(),
 	excludeResources: z.array(z.string()).optional(),
 	content: z.array(z.string()).optional(),
-	mode: z.enum(['add', 'merge', 'mirror']).optional(),
+	mode: z.enum(MODES).optional(),
 });
 
 // The kernel owns `profiles`, `directory`, `projects`, and `format`; any other top-level key (e.g. a
@@ -84,7 +85,7 @@ export interface ProjectConfig {
 	readonly resources?: readonly string[] | undefined;
 	readonly excludeResources?: readonly string[] | undefined;
 	readonly content?: readonly string[] | undefined;
-	readonly mode?: 'add' | 'merge' | 'mirror' | undefined;
+	readonly mode?: Mode | undefined;
 }
 
 interface Config {

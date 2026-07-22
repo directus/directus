@@ -4,8 +4,9 @@ import { CliError } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
 import { byCodepoint } from '../../sync/codepoint.js';
+import type { Mode } from '../../sync/mode.js';
 import { pull } from './pull.js';
-import { type Mode, push } from './push.js';
+import { push } from './push.js';
 
 // One-line mode labels matching the --mode help text, so the wizard names each mode exactly as the flag does.
 const MODE_LABELS: Record<Mode, string> = {

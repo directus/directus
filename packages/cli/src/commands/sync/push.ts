@@ -8,6 +8,7 @@ import { count } from '../../kernel/text.js';
 import { applyDiff, importBatch } from '../../sync/api.js';
 import type { ImportBatchResult, ImportCollectionData } from '../../sync/contract.js';
 import { withMappings, writeIdMap } from '../../sync/id-map.js';
+import type { Mode } from '../../sync/mode.js';
 import { emptyImportSummary, type ImportSummary, summarizeDiff, summarizeImport } from '../../sync/render.js';
 import { type DataPushPlan, type DataPushResult, prepareDataPush, type UnchangedRows } from './data-push.js';
 import { localDiff } from './local-diff.js';
@@ -19,7 +20,7 @@ export interface PushOptions {
 	 * No commander default: an absent flag resolves to the project config's mode, then 'merge'. Choices
 	 * are validated by commander (add|merge|mirror), so a present value is always one of the three.
 	 */
-	readonly mode?: 'add' | 'merge' | 'mirror';
+	readonly mode?: Mode;
 	readonly allowDeletes?: boolean;
 	readonly yes?: boolean;
 	readonly project: string;
@@ -29,8 +30,6 @@ export interface PushOptions {
  * Exported so diff previews the exact push these mappings produce (spec Q15) — a single source of truth
  * for how a mode reaches the schema and data wires, never a second copy that could drift.
  */
-export type Mode = 'add' | 'merge' | 'mirror';
-
 /**
  * mode → schema diff mode: add and merge both take the additive schema diff (add never deletes); only
  * mirror computes a deleting diff.
