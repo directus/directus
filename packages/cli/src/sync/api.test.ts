@@ -400,6 +400,59 @@ describe('fetchRecords', () => {
 		expect((error as CliError).message).toContain('QUERY_LIMIT_MAX');
 	});
 
+	it('refuses a listed record that lacks the primary key', async () => {
+		// Field permissions can hide the key column. Without it, pull would write artifacts its own
+		// reader refuses and reconcile would key comparisons on the string "undefined" — so the fetch
+		// fails before anything downstream sees the rows.
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
+			.reply(200, { data: [{ title: 'No key' }] }, { headers: { 'content-type': 'application/json' } });
+
+		const error = await fetchRecords(credential, {
+			collection: 'articles',
+			endpoint: '/items/articles',
+			primaryKey: 'id',
+			singleton: false,
+		}).catch((error: unknown) => error);
+
+		expect(error).toBeInstanceOf(CliError);
+		expect(error).toMatchObject({ code: 'HTTP' });
+		expect((error as CliError).message).toContain('"id" primary key');
+	});
+
+	it('refuses a primary key repeated across offset pages', async () => {
+		// A concurrent insert shifts offset pages mid-fetch, so paging can hand back the same row twice.
+		// Writing it would produce a duplicate-PK artifact the reader refuses; failing the fetch keeps
+		// the export honest and the fix is simply re-running.
+		const pages: Record<string, { id: number }[]> = {
+			'0': [{ id: 1 }],
+			'1': [{ id: 1 }],
+		};
+
+		for (const [offset, rows] of Object.entries(pages)) {
+			agent
+				.get('https://cms.example.com')
+				.intercept({
+					path: '/items/articles',
+					method: 'GET',
+					query: { limit: '-1', sort: 'id', ...(offset === '0' ? {} : { offset }) },
+				})
+				.reply(200, { data: rows }, { headers: { 'content-type': 'application/json' } });
+		}
+
+		const error = await fetchRecords(credential, {
+			collection: 'articles',
+			endpoint: '/items/articles',
+			primaryKey: 'id',
+			singleton: false,
+		}).catch((error: unknown) => error);
+
+		expect(error).toBeInstanceOf(CliError);
+		expect(error).toMatchObject({ code: 'HTTP' });
+		expect((error as CliError).message).toContain('more than once');
+	});
+
 	it('wraps a singleton object response in a one-element array', async () => {
 		// A singleton endpoint (settings) returns one object, not an array; fetchRecords normalizes it to a
 		// single-record collection so the store treats it like any other. No limit/sort on the wire.

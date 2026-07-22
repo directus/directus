@@ -122,6 +122,7 @@ export async function fetchRecords(
 	// QUERY_LIMIT_MAX can silently clamp limit=-1, and a short page is indistinguishable from a clamped one.
 	// Continue until an empty page so mirror never mistakes a truncated fetch for the complete collection.
 	const records: Record<string, unknown>[] = [];
+	const seen = new Set<string>();
 
 	for (;;) {
 		const offset = records.length;
@@ -168,6 +169,30 @@ export async function fetchRecords(
 			}
 
 			return records;
+		}
+
+		// Every consumer keys on the primary key: pull writes artifacts the reader would refuse without
+		// one, and reconcile/unchanged comparisons would key on the string "undefined". A missing key
+		// (field permissions can hide columns) or a repeated one (a concurrent insert shifts offset
+		// pages) fails here, before anything is written or compared.
+		for (const record of response as Record<string, unknown>[]) {
+			const pk = record[source.primaryKey];
+
+			if (typeof pk !== 'string' && typeof pk !== 'number') {
+				throw new CliError('HTTP', `A ${source.endpoint} record has no "${source.primaryKey}" primary key.`, {
+					hint: 'Field permissions may hide the key column; records cannot be keyed without it.',
+				});
+			}
+
+			const key = String(pk);
+
+			if (seen.has(key)) {
+				throw new CliError('HTTP', `${source.endpoint} returned primary key "${key}" more than once.`, {
+					hint: 'Concurrent writes can shift offset pages mid-fetch; re-run the command.',
+				});
+			}
+
+			seen.add(key);
 		}
 
 		records.push(...(response as Record<string, unknown>[]));
