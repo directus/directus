@@ -6,10 +6,11 @@ import { resolveTarget } from './resolve-target.js';
 export interface DiffOptions {
 	readonly to: string;
 	readonly mode: 'merge' | 'mirror';
+	readonly project: string;
 }
 
 export async function diff(options: DiffOptions, ctx: CliContext): Promise<void> {
-	const target = resolveTarget(options.to, ctx);
+	const target = resolveTarget(options.to, ctx, options.project);
 	const { url } = target;
 
 	const { result } = await localDiff(target, options.mode);

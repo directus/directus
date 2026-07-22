@@ -77,7 +77,7 @@ function byRelation(a: SnapshotRelationEntry, b: SnapshotRelationEntry): number 
 }
 
 // Canonical form: object keys sorted at every depth, array order preserved as data.
-// Combined with tab indent, LF newlines, and a single trailing newline this yields the
+// Combined with two-space indent, LF newlines, and a single trailing newline this yields the
 // same bytes for the same schema regardless of key insertion order or how the snapshot's
 // top-level arrays were ordered upstream.
 function canonicalize(value: unknown): unknown {
@@ -99,13 +99,14 @@ function canonicalize(value: unknown): unknown {
 }
 
 /**
- * The canonical serializer: object keys sorted at every depth (via canonicalize), tab indent, LF
+ * The canonical serializer: object keys sorted at every depth (via canonicalize), two-space indent, LF
  * newlines, and a single trailing newline. Combined they yield the same bytes for the same value
  * regardless of key insertion order — the byte-determinism contract every on-disk artifact relies on.
- * Exported so the data store shares one serializer rather than forking a second, drifting copy.
+ * Exported so the data store shares one serializer rather than forking a second, drifting copy. Two
+ * spaces (not tabs) is the artifact format the spec fixes (Q16); source files stay on tabs.
  */
 export function serializeCanonical(value: unknown): string {
-	return `${JSON.stringify(canonicalize(value), null, '\t')}\n`;
+	return `${JSON.stringify(canonicalize(value), null, 2)}\n`;
 }
 
 // The slug is display-only: it collides across case-variant and punctuation-variant names,

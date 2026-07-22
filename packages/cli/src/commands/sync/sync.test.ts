@@ -104,6 +104,47 @@ describe('sync pull', () => {
 			.reply(200, { data: fullSnapshot() }, { headers: { 'content-type': 'application/json' } });
 	}
 
+	// A list-endpoint record pull: matches only with the whole-set query (limit -1 sorted by primary key)
+	// and the token on the wire, mirroring fetchRecords.
+	function interceptList(path: string, records: Record<string, unknown>[]): void {
+		agent
+			.get(url)
+			.intercept({
+				path,
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
+	}
+
+	function interceptSingleton(path: string, object: Record<string, unknown>): void {
+		agent
+			.get(url)
+			.intercept({ path, method: 'GET', headers: { authorization: `Bearer ${token}` } })
+			.reply(200, { data: object }, { headers: { 'content-type': 'application/json' } });
+	}
+
+	// The default resource set every pull exports (users excluded), stubbed empty with settings a lone
+	// object, so the data phase of a schema-focused pull has a reply for each request it makes.
+	function interceptDefaultRecords(): void {
+		for (const path of [
+			'/roles',
+			'/policies',
+			'/access',
+			'/permissions',
+			'/flows',
+			'/operations',
+			'/dashboards',
+			'/panels',
+			'/translations',
+		]) {
+			interceptList(path, []);
+		}
+
+		interceptSingleton('/settings', {});
+	}
+
 	function d6s(...argv: string[]): Promise<number> {
 		return run(argv, { registerCommands: [registerSync], cwd: dir });
 	}
@@ -154,6 +195,7 @@ describe('sync pull', () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
+		interceptDefaultRecords();
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
 
@@ -174,20 +216,25 @@ describe('sync pull', () => {
 		expect(line).toContain('directus/default/schema');
 	});
 
-	it('emits a machine payload of ok:true and the snapshot counts on --json', async () => {
-		// CI consumes this exact shape to decide whether a pull produced changes.
+	it('emits a machine payload of ok:true, the snapshot counts, and the default data export on --json', async () => {
+		// CI consumes this shape to decide whether a pull produced changes. `data` is now always an object
+		// (every pull exports the default resource set), and `content`/`project` are top-level.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
+		interceptDefaultRecords();
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--json')).toBe(0);
 
-		expect(JSON.parse(stdout.join(''))).toEqual({
+		const payload = JSON.parse(stdout.join(''));
+
+		expect(payload).toMatchObject({
 			kind: 'PullReport',
 			formatVersion: 1,
 			ok: true,
 			source: url,
 			profile: 'staging',
+			project: 'default',
 			dir: 'directus/default/schema',
 			collections: 1,
 			fields: 1,
@@ -196,8 +243,28 @@ describe('sync pull', () => {
 			files: 2,
 			removed: [],
 			scope: null,
-			data: null,
+			content: [],
 		});
+
+		// The default set is every selectable resource except users; settings contributes its one
+		// singleton row, the rest are stubbed empty.
+		expect(payload.data.collections).toBe(10);
+		expect(payload.data.records).toBe(1);
+
+		expect(new Set(payload.data.resources)).toEqual(
+			new Set([
+				'directus_access',
+				'directus_dashboards',
+				'directus_flows',
+				'directus_operations',
+				'directus_panels',
+				'directus_permissions',
+				'directus_policies',
+				'directus_roles',
+				'directus_settings',
+				'directus_translations',
+			]),
+		);
 	});
 
 	it('fails with a CONFIG error before any network call when no config exists', async () => {
@@ -271,6 +338,9 @@ describe('sync pull', () => {
 			})
 			.reply(200, { data: scopedArticles() }, { headers: { 'content-type': 'application/json' } });
 
+		// The schema scope narrows only the schema; the default resource data export still runs.
+		interceptDefaultRecords();
+
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--collections', 'articles')).toBe(0);
 		expect(stderr.join('')).toContain('(scoped to: articles)');
 	});
@@ -290,6 +360,8 @@ describe('sync pull', () => {
 			.intercept({ path: '/schema/snapshot', method: 'GET', headers: { authorization: `Bearer ${token}` } })
 			.reply(200, { data: twoCollectionSnapshot() }, { headers: { 'content-type': 'application/json' } });
 
+		interceptDefaultRecords();
+
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
 
 		const authorsFile = ownedFileFor(schemaDir, 'authors');
@@ -304,6 +376,8 @@ describe('sync pull', () => {
 				headers: { authorization: `Bearer ${token}` },
 			})
 			.reply(200, { data: scopedArticles() }, { headers: { 'content-type': 'application/json' } });
+
+		interceptDefaultRecords();
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--collections', 'articles', '--json')).toBe(0);
 
@@ -327,11 +401,11 @@ describe('sync pull', () => {
 	});
 });
 
-// Data export rides the same pull path (undici pins the wire, HOME/env isolated, CI forces token-only
-// resolution). The schema fetch runs first and unconditionally; data endpoints are registered only when a
-// call is expected, so the disabled dispatcher turns any stray data request into a throw and an unconsumed
-// intercept proves a must-pull edge was skipped.
-describe('sync pull --data', () => {
+// Every pull now snapshots schema AND exports config resources by default (undici pins the wire, HOME/env
+// isolated, CI forces token-only resolution). A record endpoint is registered only when the pull is
+// expected to hit it, so the disabled dispatcher turns any stray request into a throw: an unregistered
+// endpoint proves a resource was NOT exported, an unconsumed one that it was not skipped.
+describe('sync pull resources and data', () => {
 	const realDispatcher = getGlobalDispatcher();
 	const url = 'https://cms.example.com';
 	const token = 'super-secret-static-token';
@@ -339,40 +413,56 @@ describe('sync pull --data', () => {
 	let dir: string;
 	let dataDir: string;
 	let home: string;
+	let outside: string | undefined;
 	let stdout: string[];
 	let stderr: string[];
 
-	// A user collection (articles) whose id field carries schema.is_primary_key, so a data export can key
-	// on the primary key drawn from the committed schema rather than a guess.
-	function schemaSnapshot(): Record<string, unknown> {
+	// A full schema whose articles collection carries a primary key, so a --content export can key on it.
+	function schemaBody(): Record<string, unknown> {
 		return {
 			version: 1,
 			directus: '11.0.0',
 			vendor: 'postgres',
 			collections: [{ collection: 'articles', meta: { note: null } }],
 			fields: [
-				{ collection: 'articles', field: 'id', type: 'integer', schema: { is_primary_key: true } },
-				{ collection: 'articles', field: 'title', type: 'string', schema: { is_primary_key: false } },
+				{
+					collection: 'articles',
+					field: 'id',
+					type: 'integer',
+					schema: { is_primary_key: true },
+				},
+				{
+					collection: 'articles',
+					field: 'title',
+					type: 'string',
+					schema: { is_primary_key: false },
+				},
 			],
 			systemFields: [],
 			relations: [],
 		};
 	}
 
+	function writeConfig(config: Record<string, unknown>): void {
+		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify(config));
+	}
+
 	function seedConfig(): void {
-		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url } } }));
+		writeConfig({ profiles: { staging: { url } } });
 	}
 
 	function interceptSnapshot(): void {
 		agent
 			.get(url)
-			.intercept({ path: '/schema/snapshot', method: 'GET', headers: { authorization: `Bearer ${token}` } })
-			.reply(200, { data: schemaSnapshot() }, { headers: { 'content-type': 'application/json' } });
+			.intercept({
+				path: '/schema/snapshot',
+				method: 'GET',
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: schemaBody() }, { headers: { 'content-type': 'application/json' } });
 	}
 
-	// A list endpoint pull: the intercept only matches when limit=-1 sorted by the primary key rides the
-	// query with the token, so a request that forgets the whole-set fetch never reaches this reply.
-	function interceptRecords(path: string, records: Record<string, unknown>[]): void {
+	function interceptList(path: string, records: Record<string, unknown>[]): void {
 		agent
 			.get(url)
 			.intercept({
@@ -384,8 +474,44 @@ describe('sync pull --data', () => {
 			.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
 	}
 
-	// The data artifact whose authoritative `collection` key names the collection — found by content, not
-	// filename, so a test never hard-codes the hash the store derives.
+	function interceptSingleton(path: string, object: Record<string, unknown>): void {
+		agent
+			.get(url)
+			.intercept({
+				path,
+				method: 'GET',
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: object }, { headers: { 'content-type': 'application/json' } });
+	}
+
+	// The default resource set (users excluded), stubbed empty with settings a lone object.
+	function interceptDefaultRecords(): void {
+		for (const path of [
+			'/roles',
+			'/policies',
+			'/access',
+			'/permissions',
+			'/flows',
+			'/operations',
+			'/dashboards',
+			'/panels',
+			'/translations',
+		]) {
+			interceptList(path, []);
+		}
+
+		interceptSingleton('/settings', {});
+	}
+
+	// The collection names of every data artifact on disk, sorted — the exported set the assertions read.
+	function exportedCollections(): string[] {
+		return readdirSync(dataDir)
+			.filter((name) => OWNED.test(name))
+			.map((name) => JSON.parse(readFileSync(join(dataDir, name), 'utf8')).collection)
+			.sort();
+	}
+
 	function ownedDataFileFor(collection: string): string {
 		for (const name of readdirSync(dataDir).filter((entry) => OWNED.test(entry))) {
 			if (JSON.parse(readFileSync(join(dataDir, name), 'utf8')).collection === collection) return name;
@@ -402,6 +528,7 @@ describe('sync pull --data', () => {
 		dir = mkdtempSync(join(tmpdir(), 'd6s-sync-'));
 		dataDir = join(dir, 'directus', 'default', 'data');
 		home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
+		outside = undefined;
 		stdout = [];
 		stderr = [];
 
@@ -432,123 +559,343 @@ describe('sync pull --data', () => {
 		vi.unstubAllEnvs();
 		rmSync(dir, { recursive: true, force: true });
 		rmSync(home, { recursive: true, force: true });
+		if (outside !== undefined) rmSync(outside, { recursive: true, force: true });
 	});
 
-	it('exports a resource with its whole must-pull closure and lands committable data files', async () => {
-		// The graph's must-pull edges are the spec's core export semantic: --data roles must fetch roles AND
-		// its closure (policies, access, permissions), not just the named resource. Every intercept must be
-		// consumed — an unconsumed one means an edge was skipped.
+	it('exports every default resource but never users on a bare pull', async () => {
+		// Spec Q8: a bare pull ships the whole config graph EXCEPT users (selectable-but-off). /users is not
+		// registered, so a stray fetch of it would throw on the disabled dispatcher.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptDefaultRecords();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		expect(exportedCollections()).toEqual([
+			'directus_access',
+			'directus_dashboards',
+			'directus_flows',
+			'directus_operations',
+			'directus_panels',
+			'directus_permissions',
+			'directus_policies',
+			'directus_roles',
+			'directus_settings',
+			'directus_translations',
+		]);
+	});
+
+	it('includes users only when --resources names them', async () => {
+		// Users ride in exactly via --resources users, dragging their role/policy closure with them.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptList('/users', []);
+		interceptList('/roles', []);
+		interceptList('/policies', []);
+		interceptList('/access', []);
+		interceptList('/permissions', []);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'users')).toBe(0);
+
+		expect(exportedCollections()).toEqual([
+			'directus_access',
+			'directus_permissions',
+			'directus_policies',
+			'directus_roles',
+			'directus_users',
+		]);
+	});
+
+	it('expands a resource to its full closure by default', async () => {
+		// --resources roles must drag in policies and their access/permissions children (closure on).
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptList('/roles', []);
+		interceptList('/policies', []);
+		interceptList('/access', []);
+		interceptList('/permissions', []);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'roles')).toBe(0);
+
+		expect(exportedCollections()).toEqual([
+			'directus_access',
+			'directus_permissions',
+			'directus_policies',
+			'directus_roles',
+		]);
+	});
+
+	it('severs the selectable closure under --no-deps but keeps dependent children', async () => {
+		// --no-deps drops the selectable edge roles→policies, so roles resolves alone; but policies→access/
+		// permissions is selection semantics and still rides. Two pulls prove both halves; only the endpoints
+		// each pull should hit are registered, so a leak would throw.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		interceptSnapshot();
-		interceptRecords('/roles', [{ id: 'r1' }]);
-		interceptRecords('/policies', [{ id: 'p1' }]);
-		interceptRecords('/access', [{ id: 'a1' }]);
-		interceptRecords('/permissions', [{ id: 'perm1' }]);
+		interceptList('/roles', []);
 
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--data', 'roles')).toBe(0);
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'roles', '--no-deps')).toBe(0);
+		expect(exportedCollections()).toEqual(['directus_roles']);
 
-		agent.assertNoPendingInterceptors();
+		rmSync(dataDir, { recursive: true, force: true });
 
-		expect(existsSync(join(dataDir, 'metadata.json'))).toBe(true);
+		interceptSnapshot();
+		interceptList('/policies', []);
+		interceptList('/access', []);
+		interceptList('/permissions', []);
 
-		const owned = readdirSync(dataDir).filter((name) => OWNED.test(name));
-		expect(owned).toHaveLength(4);
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'policies', '--no-deps')).toBe(0);
+		expect(exportedCollections()).toEqual(['directus_access', 'directus_permissions', 'directus_policies']);
 	});
 
-	it('lands a singleton response as a one-record collection file', async () => {
-		// Singleton endpoints (settings) return an object, not an array; the export must normalize it to a
-		// single-record collection so the store treats it like any other data file.
+	it('drops a resource and any child that only rode in through it under --exclude-resources', async () => {
+		// Excluding flows removes flows AND operations (operations only rides via flows); everything else in
+		// the default set stays. /flows and /operations are left unregistered to prove they are skipped.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptList('/roles', []);
+		interceptList('/policies', []);
+		interceptList('/access', []);
+		interceptList('/permissions', []);
+		interceptList('/dashboards', []);
+		interceptList('/panels', []);
+		interceptList('/translations', []);
+		interceptSingleton('/settings', {});
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--exclude-resources', 'flows')).toBe(0);
+
+		expect(exportedCollections()).toEqual([
+			'directus_access',
+			'directus_dashboards',
+			'directus_panels',
+			'directus_permissions',
+			'directus_policies',
+			'directus_roles',
+			'directus_settings',
+			'directus_translations',
+		]);
+	});
+
+	it('refuses --resources with --exclude-resources before any network call', async () => {
+		// Mutual exclusivity is a client-side USAGE contract; passing both never reaches the wire.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		interceptSnapshot();
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'roles', '--exclude-resources', 'flows')).toBe(
+			1,
+		);
 
-		agent
-			.get(url)
-			.intercept({ path: '/settings', method: 'GET', headers: { authorization: `Bearer ${token}` } })
-			.reply(200, { data: { project_name: 'Acme' } }, { headers: { 'content-type': 'application/json' } });
-
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--data', 'settings')).toBe(0);
-
-		const parsed = JSON.parse(readFileSync(join(dataDir, ownedDataFileFor('directus_settings')), 'utf8'));
-		expect(parsed.records).toEqual([{ project_name: 'Acme' }]);
+		expect(stderr.join('')).toContain('Pass --resources or --exclude-resources, not both.');
 	});
 
-	it('exports a user collection keyed on the primary key from the pulled schema', async () => {
-		// A user collection is exported from /items/<name>, records sorted by the primary key the committed
-		// schema declares — keyed on the pulled schema, not a guess. Records arrive out of key order.
+	it('never writes secrets or alias views to disk', async () => {
+		// The secrets-never-on-disk property, checked against the written BYTES not just the parsed shape: a
+		// role's alias arrays (users/policies/children) and a user's sensitive columns (token/password/…)
+		// must be absent from the artifacts entirely.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-
 		interceptSnapshot();
 
-		interceptRecords('/items/articles', [
-			{ id: 2, title: 'Second' },
-			{ id: 1, title: 'First' },
+		interceptList('/users', [
+			{
+				id: 'u1',
+				email: 'editor@example.com',
+				token: 'super-secret-static-token',
+				password: 'hashed-password',
+				tfa_secret: 'tfa-seed',
+				avatar: 'file-1',
+				last_access: '2020-01-01',
+				last_page: '/content',
+			},
 		]);
 
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--data', 'articles')).toBe(0);
+		interceptList('/roles', [
+			{
+				id: 'r1',
+				name: 'Editor',
+				users: ['u1'],
+				policies: ['p1'],
+				children: [],
+			},
+		]);
 
-		const parsed = JSON.parse(readFileSync(join(dataDir, ownedDataFileFor('articles')), 'utf8'));
-		expect(parsed.primaryKey).toBe('id');
-		expect(parsed.records.map((record: { id: number }) => record.id)).toEqual([1, 2]);
+		interceptList('/policies', [{ id: 'p1', name: 'Standard' }]);
+		interceptList('/access', []);
+		interceptList('/permissions', []);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'users')).toBe(0);
+
+		const roleBytes = readFileSync(join(dataDir, ownedDataFileFor('directus_roles')), 'utf8');
+		expect(roleBytes).not.toContain('"users"');
+		expect(roleBytes).not.toContain('"policies"');
+		expect(roleBytes).not.toContain('"children"');
+
+		const userBytes = readFileSync(join(dataDir, ownedDataFileFor('directus_users')), 'utf8');
+		expect(userBytes).not.toContain('token');
+		expect(userBytes).not.toContain('password');
+		expect(userBytes).not.toContain('tfa_secret');
+		expect(userBytes).not.toContain('avatar');
+		expect(userBytes).not.toContain('super-secret-static-token');
+		// The non-sensitive columns survive, so the export is not simply empty.
+		expect(userBytes).toContain('editor@example.com');
 	});
 
-	it('refuses --data for a name absent from the pulled schema and hits no data endpoint', async () => {
-		// Exporting data for schema that was never pulled is the spec's prohibited drift: an unknown name
-		// fails USAGE naming it, and no data request is issued (no data intercept — a stray one would throw).
+	it('drops user-attached access rows when users are out of scope', async () => {
+		// directus-sync #148: a user-attached access row references an unsynced user (missing-FK on import).
+		// A bare pull (users out of scope) must keep only the null-user grant.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptList('/roles', []);
+		interceptList('/policies', []);
+
+		interceptList('/access', [
+			{ id: 'a1', role: 'r1', user: null },
+			{ id: 'a2', policy: 'p1', user: 'u1' },
+		]);
+
+		interceptList('/permissions', []);
+		interceptList('/flows', []);
+		interceptList('/operations', []);
+		interceptList('/dashboards', []);
+		interceptList('/panels', []);
+		interceptList('/translations', []);
+		interceptSingleton('/settings', {});
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		const access = JSON.parse(readFileSync(join(dataDir, ownedDataFileFor('directus_access')), 'utf8'));
+		expect(access.records).toEqual([{ id: 'a1', role: 'r1', user: null }]);
+	});
+
+	it('keeps user-attached access rows when users are in scope', async () => {
+		// With users selected the FK is satisfied, so no access row is filtered.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptList('/users', []);
+		interceptList('/roles', []);
+		interceptList('/policies', []);
+
+		interceptList('/access', [
+			{ id: 'a1', role: 'r1', user: null },
+			{ id: 'a2', policy: 'p1', user: 'u1' },
+		]);
+
+		interceptList('/permissions', []);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'users,roles,policies')).toBe(0);
+
+		const access = JSON.parse(readFileSync(join(dataDir, ownedDataFileFor('directus_access')), 'utf8'));
+
+		expect(access.records).toEqual([
+			{ id: 'a1', role: 'r1', user: null },
+			{ id: 'a2', policy: 'p1', user: 'u1' },
+		]);
+	});
+
+	it('exports a content collection from the pulled schema and reports it', async () => {
+		// --content names a user collection, exported from /items/<name> keyed on the pulled schema's PK, and
+		// listed under the report's top-level `content`.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptDefaultRecords();
+		interceptList('/items/articles', [{ id: 1, title: 'First' }]);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--content', 'articles', '--json')).toBe(0);
+
+		const article = JSON.parse(readFileSync(join(dataDir, ownedDataFileFor('articles')), 'utf8'));
+		expect(article.primaryKey).toBe('id');
+		expect(article.records).toEqual([{ id: 1, title: 'First' }]);
+		expect(JSON.parse(stdout.join('')).content).toEqual(['articles']);
+	});
+
+	it('routes a config resource named as --content to --resources', async () => {
+		// A resource-graph name is not content; the error must route the operator to --resources. It fails
+		// after the schema write but before any record fetch, so no record endpoint is registered.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--content', 'roles')).toBe(1);
+		expect(stderr.join('')).toContain('--resources');
+	});
+
+	it('refuses a project that is not declared in config', async () => {
+		// Any project but `default` must be declared; a typo fails CONFIG before the network.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		interceptSnapshot();
-
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--data', 'nope')).toBe(1);
-		expect(stderr.join('')).toContain('nope');
-		expect(existsSync(dataDir)).toBe(false);
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--project', 'prod')).toBe(1);
+		expect(stderr.join('')).toContain('Unknown project');
 	});
 
-	it('refuses a dependent-only resource, routing to its parent', async () => {
-		// Dependent-only children (panels) are never directly selectable; the error must route the operator
-		// to the parent (dashboards) rather than exporting the child on its own.
-		seedConfig();
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-
-		interceptSnapshot();
-
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--data', 'panels')).toBe(1);
-		expect(stderr.join('')).toContain('dashboards');
-		expect(existsSync(dataDir)).toBe(false);
-	});
-
-	it('emits the data export summary on --json and null when --data is absent', async () => {
-		// CI reads data.{resources,collections,records} to know what data landed; the key is always present,
-		// carrying the export summary with --data and null without it.
-		seedConfig();
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-
-		interceptSnapshot();
-		interceptRecords('/roles', [{ id: 'r1' }]);
-		interceptRecords('/policies', [{ id: 'p1' }]);
-		interceptRecords('/access', [{ id: 'a1' }]);
-		interceptRecords('/permissions', [{ id: 'perm1' }]);
-
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--data', 'roles', '--json')).toBe(0);
-
-		expect(JSON.parse(stdout.join('')).data).toEqual({
-			resources: ['directus_access', 'directus_permissions', 'directus_policies', 'directus_roles'],
-			collections: 4,
-			records: 4,
-			files: 5,
-			removed: [],
+	it('drives a bare pull from a declared project scope, and lets a flag override it', async () => {
+		// A project's scope config supplies the resource set when no flag is present; a flag overrides it.
+		// First pull: config resources ['roles'] → only the roles closure. Second: --resources translations
+		// wins. Endpoints outside each expected set are unregistered, so a leak would throw.
+		writeConfig({
+			profiles: { staging: { url } },
+			projects: { default: { resources: ['roles'] } },
 		});
 
-		stdout.length = 0;
-		interceptSnapshot();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--json')).toBe(0);
-		expect(JSON.parse(stdout.join('')).data).toBeNull();
+		interceptSnapshot();
+		interceptList('/roles', []);
+		interceptList('/policies', []);
+		interceptList('/access', []);
+		interceptList('/permissions', []);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		expect(exportedCollections()).toEqual([
+			'directus_access',
+			'directus_permissions',
+			'directus_policies',
+			'directus_roles',
+		]);
+
+		rmSync(dataDir, { recursive: true, force: true });
+
+		interceptSnapshot();
+		interceptList('/translations', []);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--resources', 'translations')).toBe(0);
+		expect(exportedCollections()).toEqual(['directus_translations']);
+	});
+
+	it('lands artifacts under a configured directory key', async () => {
+		// The `directory` key relocates the artifact root; schema and data land under it, not the default.
+		writeConfig({ profiles: { staging: { url } }, directory: 'cms' });
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptDefaultRecords();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		expect(existsSync(join(dir, 'cms', 'default', 'schema', 'metadata.json'))).toBe(true);
+		expect(existsSync(join(dir, 'cms', 'default', 'data', 'metadata.json'))).toBe(true);
+	});
+
+	it('enforces containment against a configured directory that symlinks outside the project', async () => {
+		// Containment is re-checked on whatever `directory` resolves to: a configured root symlinked outside
+		// the project must be refused before the fetch, leaving the outside target empty.
+		writeConfig({ profiles: { staging: { url } }, directory: 'cms' });
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		outside = mkdtempSync(join(tmpdir(), 'd6s-outside-'));
+		symlinkSync(outside, join(dir, 'cms'));
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
+		expect(stderr.join('')).toMatch(/outside the project/i);
+		expect(readdirSync(outside)).toEqual([]);
 	});
 });
 

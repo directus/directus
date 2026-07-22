@@ -12,6 +12,8 @@ export interface Resource {
 	readonly endpoint: string; // REST path, e.g. '/roles'; settings is a singleton endpoint
 	readonly primaryKey: string; // field records key on — 'id' for every system resource
 	readonly singleton: boolean; // settings only: a single-object endpoint, not a collection
+	readonly strip: readonly string[]; // fields deleted from every exported record (never on disk)
+	readonly aliases: readonly string[]; // alias views of other collections' FKs; deleted on export too
 }
 
 // A resource plus its graph edges. `selectable` gates direct selection; `mustPull` names the resources
@@ -25,6 +27,16 @@ interface ResourceDef extends Resource {
 // /permissions, /flows, /operations, /dashboards, /panels, /settings, /translations). Every system
 // collection keys on `id` (verified against api/src/database seeds and the create-table migrations);
 // directus_settings is the lone singleton (packages/system-data collections.yaml: `singleton: true`).
+//
+// `strip` and `aliases` are both deleted from every exported record; the split is documentary. `strip`
+// covers two categories (spec Q9): sensitive columns that must never touch disk (users.password/token/
+// tfa_secret) and external references that would break a fresh-target import — FKs to out-of-scope
+// collections (user_created, settings.*_logo/favicon/…, users.avatar) plus login-churn fields
+// (users.last_access/last_page) that would dirty config PRs forever. `aliases` are the third category:
+// they are not real columns but views of other collections' FKs (roles.users, policies.permissions,
+// flows.operations, …); the linkage ships as real rows on the child collection, so the alias view is
+// dropped rather than duplicated. date_created and project_url are deliberately KEPT — a synced value
+// should read identical on both instances.
 const RESOURCE_LIST: readonly ResourceDef[] = [
 	{
 		name: 'users',
@@ -34,6 +46,8 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: false,
 		selectable: true,
 		mustPull: ['roles', 'policies'],
+		strip: ['password', 'token', 'tfa_secret', 'last_access', 'last_page', 'avatar'],
+		aliases: [],
 	},
 	{
 		name: 'roles',
@@ -43,6 +57,8 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: false,
 		selectable: true,
 		mustPull: ['policies'],
+		strip: [],
+		aliases: ['users', 'children', 'policies'],
 	},
 	{
 		name: 'policies',
@@ -52,6 +68,8 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: false,
 		selectable: true,
 		mustPull: ['access', 'permissions'],
+		strip: [],
+		aliases: ['users', 'roles', 'permissions'],
 	},
 	{
 		name: 'access',
@@ -61,6 +79,8 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: false,
 		selectable: false,
 		mustPull: [],
+		strip: [],
+		aliases: [],
 	},
 	{
 		name: 'permissions',
@@ -70,6 +90,8 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: false,
 		selectable: false,
 		mustPull: [],
+		strip: [],
+		aliases: [],
 	},
 	{
 		name: 'flows',
@@ -79,6 +101,8 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: false,
 		selectable: true,
 		mustPull: ['operations'],
+		strip: ['user_created'],
+		aliases: ['operations'],
 	},
 	{
 		name: 'operations',
@@ -88,6 +112,8 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: false,
 		selectable: false,
 		mustPull: [],
+		strip: ['user_created'],
+		aliases: [],
 	},
 	{
 		name: 'dashboards',
@@ -97,6 +123,8 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: false,
 		selectable: true,
 		mustPull: ['panels'],
+		strip: ['user_created'],
+		aliases: ['panels'],
 	},
 	{
 		name: 'panels',
@@ -106,6 +134,8 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: false,
 		selectable: false,
 		mustPull: [],
+		strip: ['user_created'],
+		aliases: [],
 	},
 	{
 		name: 'settings',
@@ -115,6 +145,8 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: true,
 		selectable: true,
 		mustPull: [],
+		strip: ['project_logo', 'public_foreground', 'public_background', 'public_favicon', 'storage_default_folder'],
+		aliases: [],
 	},
 	{
 		name: 'translations',
@@ -124,6 +156,8 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: false,
 		selectable: true,
 		mustPull: [],
+		strip: [],
+		aliases: [],
 	},
 ];
 
@@ -162,6 +196,8 @@ function toResource(def: ResourceDef): Resource {
 		endpoint: def.endpoint,
 		primaryKey: def.primaryKey,
 		singleton: def.singleton,
+		strip: def.strip,
+		aliases: def.aliases,
 	};
 }
 
@@ -184,8 +220,10 @@ function dependencyOrder(closure: Set<string>): ResourceDef[] {
 	const ordered: ResourceDef[] = [];
 
 	while (remaining.size > 0) {
+		// A dep only gates ordering when it is itself in the closure: --no-deps can drop a selectable dep
+		// from the closure, and requiring an absent dep would deadlock this walk into a false "cycle".
 		const ready = [...remaining]
-			.filter((name) => resource(name).mustPull.every((dep) => emitted.has(dep)))
+			.filter((name) => resource(name).mustPull.every((dep) => !closure.has(dep) || emitted.has(dep)))
 			.sort(byCodepoint);
 
 		const next = ready[0];
@@ -201,7 +239,9 @@ function dependencyOrder(closure: Set<string>): ResourceDef[] {
 	return ordered;
 }
 
-export function resolveResources(requested: string[]): Resource[] {
+export function resolveResources(requested: string[], options?: { deps?: boolean }): Resource[] {
+	const deps = options?.deps ?? true;
+
 	for (const name of requested) {
 		const def = RESOURCES[name];
 
@@ -219,7 +259,10 @@ export function resolveResources(requested: string[]): Resource[] {
 	}
 
 	// Transitive closure over must-pull edges, deduplicated: the requested resources plus everything
-	// they drag in.
+	// they drag in. Closure BETWEEN selectable resources (users→roles/policies, roles→policies) is
+	// opt-out via deps:false (RFC --no-deps); an edge to a non-selectable, dependent-only child
+	// (policies→access/permissions, flows→operations, dashboards→panels) is selection semantics, not
+	// closure — that parent→child ride is never severed, so those edges are always followed.
 	const closure = new Set<string>();
 	const stack = [...requested];
 
@@ -230,7 +273,10 @@ export function resolveResources(requested: string[]): Resource[] {
 
 		closure.add(name);
 
-		for (const dep of resource(name).mustPull) stack.push(dep);
+		for (const dep of resource(name).mustPull) {
+			if (!deps && resource(dep).selectable) continue;
+			stack.push(dep);
+		}
 	}
 
 	return dependencyOrder(closure).map(toResource);

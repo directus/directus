@@ -12,10 +12,11 @@ export interface PushOptions {
 	readonly mode: 'merge' | 'mirror';
 	readonly allowDeletes?: boolean;
 	readonly yes?: boolean;
+	readonly project: string;
 }
 
 export async function push(options: PushOptions, ctx: CliContext): Promise<void> {
-	const target = resolveTarget(options.to, ctx);
+	const target = resolveTarget(options.to, ctx, options.project);
 	const { url, credential } = target;
 
 	// Print the resolved target before any network call so a profile NAMED staging pointing at prod's
