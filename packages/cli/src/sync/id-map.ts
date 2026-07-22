@@ -3,7 +3,7 @@ import { dirname } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import { CliError } from '../kernel/error.js';
 import { writeFileAtomic } from '../kernel/write.js';
-import { serializeCanonical } from './store.js';
+import { serializeCanonical } from './artifact-store.js';
 
 // The committed ID map: <dir>/<project>/id_map.json, recording which source-instance record IDs were
 // imported as which target-instance record IDs so a repeated import upserts instead of duplicating. It is
