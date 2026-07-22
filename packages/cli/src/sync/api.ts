@@ -118,24 +118,43 @@ export async function fetchRecords(
 			throw new CliError('HTTP', `The ${source.endpoint} response was not a settings object.`);
 		}
 
-		return [response as Record<string, unknown>];
+		const record = response as Record<string, unknown>;
+		const singletonPk = record[source.primaryKey];
+
+		// Same boundary rule as lists: without a key, pull would write an artifact its own reader refuses.
+		if (typeof singletonPk !== 'string' && typeof singletonPk !== 'number') {
+			throw new CliError('HTTP', `A ${source.endpoint} record has no "${source.primaryKey}" primary key.`, {
+				hint: 'Field permissions may hide the key column; records cannot be keyed without it.',
+			});
+		}
+
+		return [record];
 	}
 
 	// QUERY_LIMIT_MAX can silently clamp limit=-1, and a short page is indistinguishable from a clamped one.
 	// Continue until an empty page so mirror never mistakes a truncated fetch for the complete collection.
+	//
+	// Pages advance by keyset (sort by PK, filter PK strictly greater than the last kept row), not offset:
+	// offset pages shift under concurrent writes — an insert re-serves a row (caught as a duplicate below),
+	// but a DELETE silently skips one, and a skipped row exports as absent, which a later mirror push turns
+	// into a target deletion. Sort and _gt evaluate in the same database collation, so the cursor is
+	// consistent with page order.
 	const records: Record<string, unknown>[] = [];
 	const seen = new Set<string>();
+	let cursor: string | number | undefined;
 
 	for (;;) {
-		const offset = records.length;
-
 		let response: unknown;
 
 		try {
 			response = await client.request(() => ({
 				path: source.endpoint,
 				method: 'GET',
-				params: { limit: -1, sort: source.primaryKey, ...(offset === 0 ? {} : { offset }) },
+				params: {
+					limit: -1,
+					sort: source.primaryKey,
+					...(cursor === undefined ? {} : { filter: { [source.primaryKey]: { _gt: cursor } } }),
+				},
 			}));
 		} catch (error) {
 			throw mapRequestError(error, credential.url);
@@ -187,8 +206,8 @@ export async function fetchRecords(
 
 		// Every consumer keys on the primary key: pull writes artifacts the reader would refuse without
 		// one, and reconcile/unchanged comparisons would key on the string "undefined". A missing key
-		// (field permissions can hide columns) or a repeated one (a concurrent insert shifts offset
-		// pages) fails here, before anything is written or compared.
+		// (field permissions can hide columns) fails here, before anything is written or compared; the
+		// duplicate check guards the keyset invariant (a _gt cursor can never legally re-serve a key).
 		for (const record of rows) {
 			const pk = record[source.primaryKey];
 
@@ -202,11 +221,12 @@ export async function fetchRecords(
 
 			if (seen.has(key)) {
 				throw new CliError('HTTP', `${source.endpoint} returned primary key "${key}" more than once.`, {
-					hint: 'Concurrent writes can shift offset pages mid-fetch; re-run the command.',
+					hint: 'The server re-served a page row mid-fetch; re-run the command.',
 				});
 			}
 
 			seen.add(key);
+			cursor = pk;
 		}
 
 		records.push(...rows);

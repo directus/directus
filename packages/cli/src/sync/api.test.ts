@@ -272,14 +272,15 @@ describe('fetchRecords', () => {
 	it('pulls the whole collection with limit -1 and the token on the wire, returning records verbatim', async () => {
 		// A data pull must fetch the entire set (limit -1) keyed by the primary key; the intercept only
 		// matches when both ride the query, and the endpoint is authenticated so the token must be present.
-		// The follow-up probe (offset past the page) must come back empty before fetch trusts the set is
-		// complete — a QUERY_LIMIT_MAX clamp is silent, so a single response can never prove exhaustion.
+		// The follow-up probe (keyset filter past the last row served) must come back empty before fetch
+		// trusts the set is complete — a QUERY_LIMIT_MAX clamp is silent, so a single response can never
+		// prove exhaustion.
 
-		// Two records, out of primary-key order and carrying a nested object: fetch returns them untouched
-		// Collection records pass through unchanged; ordering and canonicalization are the store's job.
+		// Records carrying a nested object: fetch returns them untouched.
+		// Collection records pass through unchanged; canonicalization is the store's job.
 		const records = [
-			{ id: 2, title: 'Second' },
 			{ id: 1, title: 'First', meta: { note: null } },
+			{ id: 2, title: 'Second' },
 		];
 
 		agent
@@ -297,7 +298,7 @@ describe('fetchRecords', () => {
 			.intercept({
 				path: '/items/articles',
 				method: 'GET',
-				query: { limit: '-1', sort: 'id', offset: '2' },
+				query: { limit: '-1', sort: 'id', filter: JSON.stringify({ id: { _gt: 2 } }) },
 				headers: { authorization: `Bearer ${token}` },
 			})
 			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
@@ -316,21 +317,25 @@ describe('fetchRecords', () => {
 		// A deployment with QUERY_LIMIT_MAX clamps limit -1 down to the cap WITHOUT an error — a single
 		// request would silently drop every later row, and downstream that is data loss (mirror deletes
 		// what it did not see; the collision guard cannot see an occupied PK beyond the cap). The fetch
-		// must keep offsetting past short pages — only an EMPTY page proves exhaustion.
+		// must keep paging past short pages by keyset cursor — only an EMPTY page proves exhaustion.
 
-		const pages: Record<string, { id: number }[]> = {
-			'0': [{ id: 1 }, { id: 2 }],
-			'2': [{ id: 3 }],
-			'3': [],
-		};
+		const pages: { cursor: number | undefined; rows: { id: number }[] }[] = [
+			{ cursor: undefined, rows: [{ id: 1 }, { id: 2 }] },
+			{ cursor: 2, rows: [{ id: 3 }] },
+			{ cursor: 3, rows: [] },
+		];
 
-		for (const [offset, rows] of Object.entries(pages)) {
+		for (const { cursor, rows } of pages) {
 			agent
 				.get('https://cms.example.com')
 				.intercept({
 					path: '/items/articles',
 					method: 'GET',
-					query: { limit: '-1', sort: 'id', ...(offset === '0' ? {} : { offset }) },
+					query: {
+						limit: '-1',
+						sort: 'id',
+						...(cursor === undefined ? {} : { filter: JSON.stringify({ id: { _gt: cursor } }) }),
+					},
 					headers: { authorization: `Bearer ${token}` },
 				})
 				.reply(200, { data: rows }, { headers: { 'content-type': 'application/json' } });
@@ -421,22 +426,26 @@ describe('fetchRecords', () => {
 		expect((error as CliError).message).toContain('"id" primary key');
 	});
 
-	it('refuses a primary key repeated across offset pages', async () => {
-		// A concurrent insert shifts offset pages mid-fetch, so paging can hand back the same row twice.
-		// Writing it would produce a duplicate-PK artifact the reader refuses; failing the fetch keeps
-		// the export honest and the fix is simply re-running.
-		const pages: Record<string, { id: number }[]> = {
-			'0': [{ id: 1 }],
-			'1': [{ id: 1 }],
-		};
+	it('refuses a primary key the server re-serves across pages', async () => {
+		// A _gt cursor can never legally re-serve a key, so a repeat means the server broke the keyset
+		// invariant (collation quirk, misapplied filter). Writing it would produce a duplicate-PK artifact
+		// the reader refuses; failing the fetch keeps the export honest and the fix is simply re-running.
+		const pages: { cursor: number | undefined; rows: { id: number }[] }[] = [
+			{ cursor: undefined, rows: [{ id: 1 }] },
+			{ cursor: 1, rows: [{ id: 1 }] },
+		];
 
-		for (const [offset, rows] of Object.entries(pages)) {
+		for (const { cursor, rows } of pages) {
 			agent
 				.get('https://cms.example.com')
 				.intercept({
 					path: '/items/articles',
 					method: 'GET',
-					query: { limit: '-1', sort: 'id', ...(offset === '0' ? {} : { offset }) },
+					query: {
+						limit: '-1',
+						sort: 'id',
+						...(cursor === undefined ? {} : { filter: JSON.stringify({ id: { _gt: cursor } }) }),
+					},
 				})
 				.reply(200, { data: rows }, { headers: { 'content-type': 'application/json' } });
 		}
@@ -455,10 +464,10 @@ describe('fetchRecords', () => {
 
 	it('drops server-derived rows before validation and ends paging when only derived rows remain', async () => {
 		// The server appends the app-access minimal permissions (system: true, NO id) to every
-		// authenticated /permissions read, AFTER limit/offset are applied to the real rows. So every
-		// page carries them: they must not trip the key-less refusal, must not count toward the paging
-		// offset (the second request asks for offset 1, not 2), and a page of only derived rows means
-		// the real rows are exhausted.
+		// authenticated /permissions read, AFTER the query is applied to the real rows. So every page
+		// carries them: they must not trip the key-less refusal, must not advance the keyset cursor
+		// (the second request filters past id 1, the last REAL row), and a page of only derived rows
+		// means the real rows are exhausted.
 		const derived = { policy: null, collection: 'directus_settings', action: 'read', system: true };
 
 		agent
@@ -468,7 +477,11 @@ describe('fetchRecords', () => {
 
 		agent
 			.get('https://cms.example.com')
-			.intercept({ path: '/permissions', method: 'GET', query: { limit: '-1', sort: 'id', offset: '1' } })
+			.intercept({
+				path: '/permissions',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id', filter: JSON.stringify({ id: { _gt: 1 } }) },
+			})
 			.reply(200, { data: [derived] }, { headers: { 'content-type': 'application/json' } });
 
 		const result = await fetchRecords(credential, {
@@ -489,7 +502,7 @@ describe('fetchRecords', () => {
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/settings', method: 'GET', headers: { authorization: `Bearer ${token}` } })
-			.reply(200, { data: { project_name: 'Acme' } }, { headers: { 'content-type': 'application/json' } });
+			.reply(200, { data: { id: 1, project_name: 'Acme' } }, { headers: { 'content-type': 'application/json' } });
 
 		const result = await fetchRecords(credential, {
 			collection: 'directus_settings',
@@ -498,7 +511,27 @@ describe('fetchRecords', () => {
 			singleton: true,
 		});
 
-		expect(result).toEqual([{ project_name: 'Acme' }]);
+		expect(result).toEqual([{ id: 1, project_name: 'Acme' }]);
+	});
+
+	it('refuses a singleton response that lacks the primary key', async () => {
+		// The singleton path must apply the same boundary rule as lists: a key-less settings object would
+		// produce a successful pull whose artifact the data-store reader later refuses — a fail-late trap.
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/settings', method: 'GET' })
+			.reply(200, { data: { project_name: 'Acme' } }, { headers: { 'content-type': 'application/json' } });
+
+		const error = await fetchRecords(credential, {
+			collection: 'directus_settings',
+			endpoint: '/settings',
+			primaryKey: 'id',
+			singleton: true,
+		}).catch((error: unknown) => error);
+
+		expect(error).toBeInstanceOf(CliError);
+		expect(error).toMatchObject({ code: 'HTTP' });
+		expect((error as CliError).message).toContain('"id" primary key');
 	});
 
 	it('fails loud, naming the endpoint, when a list endpoint returns a non-array', async () => {
