@@ -145,6 +145,26 @@ describe('summarizeImport', () => {
 		]);
 	});
 
+	it('subtracts client-known unchanged rows from existing before calling them updated', () => {
+		// The server reports every PK-present row as `existing` whether or not anything differed, so the
+		// caller's unchanged set is the only honest source of "updated": a mirror batch that carried two
+		// already-right rows (one of them for delete-survival) must summarize as one real update — and an
+		// all-unchanged collection as no data changes at all.
+		const summary = summarizeImport(
+			importResult({ directus_roles: { existing: ['t1', 't2', 't3'], new: [], deleted: [], mapped: {} } }),
+			new Map([['directus_roles', new Set(['t1', 't3'])]]),
+		);
+
+		expect(summary).toMatchObject({ created: 0, updated: 1, deleted: 0 });
+
+		const converged = summarizeImport(
+			importResult({ directus_roles: { existing: ['t1'], new: [], deleted: [], mapped: {} } }),
+			new Map([['directus_roles', new Set(['t1'])]]),
+		);
+
+		expect(converged).toEqual({ created: 0, updated: 0, deleted: 0, lines: ['no data changes'] });
+	});
+
 	it('states "no data changes" when every collection is a no-op', () => {
 		// A wholly-zero plan must say so, not render blank — the combined push plan can never leave the data
 		// section ambiguous.

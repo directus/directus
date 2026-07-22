@@ -994,6 +994,7 @@ describe('sync diff', () => {
 				matched: null,
 				ambiguous: null,
 				unmatched: null,
+				unchanged: null,
 				skipped: true,
 			},
 		});
@@ -1032,6 +1033,7 @@ describe('sync diff', () => {
 				matched: null,
 				ambiguous: null,
 				unmatched: null,
+				unchanged: null,
 				skipped: true,
 			},
 		});
@@ -1402,7 +1404,8 @@ describe('sync push with data', () => {
 	// collection passed through untouched: the three remap behaviors in one batch.
 	function fullFixture(): DataCollection[] {
 		return [
-			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] },
+			// icon differs from the target row so the matched role still rides as a genuine update
+			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor', icon: 'edit' }] },
 			{
 				collection: 'directus_access',
 				primaryKey: 'id',
@@ -1566,7 +1569,7 @@ describe('sync push with data', () => {
 
 		expect(await decodeBatch(sentForm)).toEqual([
 			{ collection: 'directus_access', items: [{ id: 'sa1', role: 'tr1', policy: null, user: null }] },
-			{ collection: 'directus_roles', items: [{ id: 'tr1', name: 'Editor' }] },
+			{ collection: 'directus_roles', items: [{ id: 'tr1', name: 'Editor', icon: 'edit' }] },
 			{ collection: 'articles', items: [{ id: 1, title: 'Hello' }] },
 		]);
 
@@ -1593,7 +1596,9 @@ describe('sync push with data', () => {
 
 		interceptDiff('merge', schemaChangesBody());
 		interceptApply();
-		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+		// No target match: a matched role would be skipped under add (already on the target), and the
+		// import this test exists to assert would never fire.
+		interceptTarget('/roles', []);
 
 		interceptImport(
 			{ mode: 'add' },
@@ -1660,7 +1665,9 @@ describe('sync push with data', () => {
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		interceptDiff('merge', null);
-		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+		// No target match: an identical matched role would be dropped as unchanged and the failing import
+		// this test asserts would never fire.
+		interceptTarget('/roles', []);
 
 		interceptImport(
 			{ mode: 'merge' },
@@ -1687,6 +1694,23 @@ describe('sync push with data', () => {
 		expect(err).toMatch(/nullable/i);
 	});
 
+	it('reports a converged data push as nothing-to-push without calling import', async () => {
+		// The clean state must be reachable: when every committed record is proven byte-identical on the
+		// target, the batch empties and push must say so and stop — not upsert every row again (the server
+		// reports any PK-present row as "existing" whether or not it changed, so only this client-side
+		// comparison can close the loop). No import intercept is registered: a reached import would throw.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+		expect(stderr.join('')).toContain('schema and data match; nothing to push.');
+	});
+
 	it('reports schema-applied and a data-retry path when the import fails after a schema apply', async () => {
 		// Partial failure: the schema landed but the import threw. There is no rollback, so the operator must
 		// be told the schema is already applied and that a re-run retries only the data (empty schema diff).
@@ -1697,7 +1721,9 @@ describe('sync push with data', () => {
 
 		interceptDiff('merge', schemaChangesBody());
 		interceptApply();
-		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+		// No target match: an identical matched role would be dropped as unchanged and the failing import
+		// this test asserts would never fire.
+		interceptTarget('/roles', []);
 
 		interceptImport(
 			{ mode: 'merge' },
@@ -1930,7 +1956,8 @@ describe('sync diff with data', () => {
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 
 		seedData([
-			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] },
+			// icon differs from the target row so the matched role still rides as a genuine update
+			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor', icon: 'edit' }] },
 			{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] },
 		]);
 
@@ -1962,7 +1989,7 @@ describe('sync diff with data', () => {
 
 		// The dry-run received the batch remapped into target space (role sr1→tr1), so the preview is honest.
 		expect(await decodeBatch(sentForm)).toEqual([
-			{ collection: 'directus_roles', items: [{ id: 'tr1', name: 'Editor' }] },
+			{ collection: 'directus_roles', items: [{ id: 'tr1', name: 'Editor', icon: 'edit' }] },
 			{ collection: 'articles', items: [{ id: 1, title: 'Hello' }] },
 		]);
 

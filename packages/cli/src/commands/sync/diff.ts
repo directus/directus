@@ -1,7 +1,7 @@
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
 import type { ImportBatchResult } from '../../sync/contract.js';
-import { type ImportSummary, summarizeDiff } from '../../sync/render.js';
+import { emptyImportSummary, type ImportSummary, summarizeDiff } from '../../sync/render.js';
 import { type DataPreviewResult, previewData } from './data-push.js';
 import { localDiff } from './local-diff.js';
 import { dryRunImport, type Mode, resolveMode, schemaDiffMode } from './push.js';
@@ -19,7 +19,8 @@ export interface DiffOptions {
 
 // The --json `data` block: always present so a consumer never guesses whether the data phase was previewed.
 // Skipped carries null-ish fields; a real preview carries the mode, the source, the dry-run response's
-// per-collection detail verbatim, and the reconcile tally. Read-only — no map was written to produce it.
+// per-collection detail verbatim ({} when the batch had nothing to send and the dry-run was skipped), and
+// the reconcile tally. Read-only — no map was written to produce it.
 interface DiffDataReport {
 	mode: Mode;
 	source: string | null;
@@ -27,21 +28,32 @@ interface DiffDataReport {
 	matched: number | null;
 	ambiguous: number | null;
 	unmatched: number | null;
+	unchanged: number | null;
 	skipped: boolean;
 }
 
 function dataReport(mode: Mode, preview: DataPreviewResult, dryRun: ImportBatchResult | undefined): DiffDataReport {
-	if (preview.skipped || dryRun === undefined) {
-		return { mode, source: null, collections: null, matched: null, ambiguous: null, unmatched: null, skipped: true };
+	if (preview.skipped) {
+		return {
+			mode,
+			source: null,
+			collections: null,
+			matched: null,
+			ambiguous: null,
+			unmatched: null,
+			unchanged: null,
+			skipped: true,
+		};
 	}
 
 	return {
 		mode,
 		source: preview.source,
-		collections: dryRun.collections,
+		collections: dryRun?.collections ?? {},
 		matched: preview.matchedCount,
 		ambiguous: preview.ambiguousCount,
 		unmatched: preview.unmatchedCount,
+		unchanged: preview.unchangedCount,
 		skipped: false,
 	};
 }
@@ -63,9 +75,15 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	let dataSummary: ImportSummary | undefined;
 
 	if (!preview.skipped) {
-		const dry = await dryRunImport(target.credential, preview.batch, mode);
-		dryRun = dry.result;
-		dataSummary = dry.summary;
+		// An empty batch (every record proven already right on the target) has nothing to dry-run: the
+		// summary is the explicit zero, not a wire call.
+		if (preview.records === 0) {
+			dataSummary = emptyImportSummary();
+		} else {
+			const dry = await dryRunImport(target.credential, preview.batch, mode, preview.unchanged);
+			dryRun = dry.result;
+			dataSummary = dry.summary;
+		}
 	}
 
 	const schema = summarizeDiff(result === null ? null : result.diff);

@@ -1,7 +1,7 @@
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ResolvedCredential } from '../../kernel/config/credentials.js';
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
@@ -9,6 +9,14 @@ import { createUi } from '../../kernel/ui.js';
 import { type DataCollection, writeDataFiles } from '../../sync/data-store.js';
 import { partitionCollections, prepareDataPush, previewData, remapSystemRecord } from './data-push.js';
 import type { Target } from './resolve-target.js';
+
+// vitest hoists this above the imports. The api seam is mocked so no test here can reach a real network:
+// the pure helpers never call it, and the preview's content-target fetch (for the unchanged comparison)
+// exercises its swallow-and-degrade path against a rejection instead of a live socket.
+vi.mock('../../sync/api.js', () => ({
+	fetchRecords: vi.fn(() => Promise.reject(new Error('no network in unit tests'))),
+	importBatch: vi.fn(),
+}));
 
 // A source→target bucket keyed collection → sourceId → targetId, the shape mappingsFor returns.
 const bucket = {
@@ -176,8 +184,9 @@ describe('prepareDataPush skip and precondition', () => {
 
 	it('previewData assembles the content batch, tallies zero, and never writes the id map', async () => {
 		// Content-only data reconciles nothing (content is never matched), so the preview passes it through
-		// verbatim, reports all-zero counts, and — the read-only invariant — leaves no id_map.json behind. No
-		// network is reached because there is no reconcilable system collection to fetch.
+		// verbatim, reports all-zero counts, and — the read-only invariant — leaves no id_map.json behind.
+		// The content-target fetch for the unchanged comparison fails here (the api seam is mocked to
+		// reject), which must degrade to "compare nothing, keep everything" — never an error.
 		writeDataFiles(
 			join(dir, 'data'),
 			[{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] }],
@@ -190,9 +199,12 @@ describe('prepareDataPush skip and precondition', () => {
 			skipped: false,
 			source: 'https://source.example.com',
 			batch: [{ collection: 'articles', items: [{ id: 1, title: 'Hello' }] }],
+			unchanged: new Map(),
+			records: 1,
 			matchedCount: 0,
 			ambiguousCount: 0,
 			unmatchedCount: 0,
+			unchangedCount: 0,
 		});
 
 		expect(existsSync(join(dir, 'id_map.json'))).toBe(false);

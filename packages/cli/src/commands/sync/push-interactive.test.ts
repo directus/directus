@@ -249,9 +249,10 @@ describe('interactive sync push', () => {
 		seedData([
 			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] },
 			{
+				// sort differs from the target row so the matched child still rides as a genuine update
 				collection: 'directus_access',
 				primaryKey: 'id',
-				records: [{ id: 'sa1', role: 'sr1', user: null, policy: null }],
+				records: [{ id: 'sa1', role: 'sr1', user: null, policy: null, sort: 1 }],
 			},
 		]);
 
@@ -261,7 +262,7 @@ describe('interactive sync push', () => {
 				{ id: 't1', name: 'Editor' },
 				{ id: 't2', name: 'Editor' },
 			])
-			.mockResolvedValueOnce([{ id: 'ta2', role: 't2', user: null, policy: null }]);
+			.mockResolvedValueOnce([{ id: 'ta2', role: 't2', user: null, policy: null, sort: 2 }]);
 
 		vi.mocked(select).mockResolvedValueOnce('target:t2');
 		vi.mocked(importBatch).mockResolvedValue(importResult());
@@ -282,7 +283,7 @@ describe('interactive sync push', () => {
 		const batch = vi.mocked(importBatch).mock.calls.at(-1)?.[1];
 		const access = batch?.find((entry) => entry.collection === 'directus_access');
 
-		expect(access?.items).toEqual([{ id: 'ta2', role: 't2', user: null, policy: null }]);
+		expect(access?.items).toEqual([{ id: 'ta2', role: 't2', user: null, policy: null, sort: 1 }]);
 	});
 
 	it('asks once and cascades nothing when an ambiguity is answered with create', async () => {
