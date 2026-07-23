@@ -1,0 +1,50 @@
+{
+	"name": "@directus/cli",
+	"version": "0.0.0",
+	"description": "Client-side CLI for Directus",
+	"private": true,
+	"homepage": "https://directus.com",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/cli"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
+	"author": "Directus",
+	"type": "module",
+	"bin": {
+		"directus-cli": "./dist/bin.js",
+		"d6s": "./dist/bin.js"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsdown src/bin.ts",
+		"dev": "tsdown src/bin.ts --watch",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage"
+	},
+	"dependencies": {
+		"@clack/prompts": "catalog:",
+		"@directus/sdk": "workspace:*",
+		"chalk": "catalog:",
+		"commander": "catalog:",
+		"lodash-es": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "catalog:",
+		"@types/lodash-es": "catalog:",
+		"@types/node": "catalog:",
+		"@vitest/coverage-v8": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:",
+		"undici": "catalog:",
+		"vitest": "catalog:"
+	},
+	"engines": {
+		"node": ">=22"
+	}
+}
