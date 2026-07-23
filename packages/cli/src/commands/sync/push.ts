@@ -181,14 +181,22 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	if (!ctx.ui.json) {
 		if (result !== null) {
-			ctx.ui.info(`Schema — ${count(schemaTotal, 'change')} to apply:`);
+			ctx.ui.info(
+				`Schema — ${count(schemaTotal, 'change')}: ${schema.added} added, ${schema.modified} modified, ${schema.deleted} deleted`,
+			);
+
 			for (const line of schema.lines) ctx.ui.plan(line);
 		}
 
 		if (!dataResult.skipped) {
 			if (dataSummary !== undefined) {
 				if (hasImportChanges(dataSummary)) {
-					ctx.ui.info('Data — changes to import:');
+					const total = dataSummary.created + dataSummary.updated + dataSummary.deleted;
+
+					ctx.ui.info(
+						`Data — ${count(total, 'change')}: ${dataSummary.created} created, ${dataSummary.updated} updated, ${dataSummary.deleted} deleted`,
+					);
+
 					for (const line of dataSummary.lines) ctx.ui.plan(line);
 				} else {
 					ctx.ui.info('Data — no changes to import.');
@@ -227,7 +235,12 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	}
 
 	if (ctx.interactive && !yes) {
-		const proceed = await ask(confirm({ message: `Apply changes to ${options.to} — ${url}?` }));
+		const dataTotal = dataSummary === undefined ? 0 : dataSummary.created + dataSummary.updated + dataSummary.deleted;
+		const planned: string[] = [];
+		if (schemaTotal > 0) planned.push(count(schemaTotal, 'schema change'));
+		if (dataTotal > 0) planned.push(count(dataTotal, 'data change'));
+
+		const proceed = await ask(confirm({ message: `Apply ${planned.join(' and ')} to ${options.to} — ${url}?` }));
 
 		if (!proceed) throw new CliError('USAGE', 'Push aborted; nothing was applied.');
 	}
@@ -299,7 +312,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 		// The map is how the NEXT push updates these rows instead of duplicating them — committing it is
 		// part of the workflow, and a first-time operator has no way to know that unprompted.
-		ctx.ui.info(`Identity map updated — commit ${relative(ctx.cwd, dataResult.idMapPath)} with this change.`);
+		ctx.ui.info(`Identity map updated: ${relative(ctx.cwd, dataResult.idMapPath)}`);
 	}
 
 	const importSummary =
@@ -344,5 +357,5 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		dataSentence = ` Imported ${count(dataResult.records, 'record')} across ${count(dataResult.collections, 'collection')}: ${importSummary.created} created, ${importSummary.updated} updated, ${importSummary.deleted} deleted.`;
 	}
 
-	ctx.ui.success(`${schemaSentence}${dataSentence}`);
+	ctx.ui.success(`Push complete. ${schemaSentence}${dataSentence}`);
 }

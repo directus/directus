@@ -165,7 +165,7 @@ describe('interactive sync diff', () => {
 		expect(importBatch).toHaveBeenCalledTimes(1);
 		expect(vi.mocked(importBatch).mock.calls[0]?.[2]).toMatchObject({ dryRun: true });
 
-		expect(stderr.join('')).toContain('Data — changes a push would import:');
+		expect(stderr.join('')).toContain('Data — 2 changes: 0 created, 0 updated, 2 deleted');
 		expect(stderr.join('')).not.toContain('matches the local snapshot');
 	});
 });
