@@ -17,7 +17,9 @@ export function buildPostgresJsonPath(
 	path: string,
 	options?: { asText?: boolean },
 ): { template: string; bindings: (string | number)[] } {
-	const parts = toPath(path.startsWith('.') ? path.slice(1) : path);
+	// Drop empty segments left behind by incomplete paths (trailing/repeated dots),
+	// consistent with convertToJsonPath used by the other dialects.
+	const parts = toPath(path.startsWith('.') ? path.slice(1) : path).filter((part) => part !== '');
 
 	let template = '';
 	const bindings: (string | number)[] = [];

@@ -89,6 +89,10 @@ const TEST_CASES = [
 		bindings: ['first_name', 'last_name'],
 		description: 'nested properties with underscores',
 	},
+
+	// Incomplete paths — empty segments left by a trailing dot are dropped,
+	// consistent with convertToJsonPath used by the other dialects.
+	{ input: '.color.', template: '->?', bindings: ['color'], description: 'trailing dot drops empty segment' },
 ];
 
 describe('buildPostgresJsonPath', () => {
