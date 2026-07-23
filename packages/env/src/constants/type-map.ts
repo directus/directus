@@ -89,6 +89,11 @@ export const TYPE_MAP: Record<string, EnvType> = {
 
 	EMAIL_SMTP_PASSWORD: 'string',
 
+	EMAIL_MAILTRAP_TOKEN: 'string',
+	EMAIL_MAILTRAP_SANDBOX: 'boolean',
+	EMAIL_MAILTRAP_INBOX_ID: 'number',
+	EMAIL_MAILTRAP_BULK: 'boolean',
+
 	'STORAGE_.+_SECRET': 'string',
 
 	'AUTH_.+_BIND_DN': 'string',

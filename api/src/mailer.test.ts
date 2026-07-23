@@ -82,4 +82,23 @@ describe('getMailer', () => {
 
 		expect(() => getMailer()).not.toThrow();
 	});
+
+	test('should not throw when creating Mailtrap transport', async () => {
+		// Re-import getMailer so it runs against a fresh module (the transporter is
+		// cached at module scope, and beforeEach's resetModules only affects fresh
+		// imports, not the statically imported getMailer used by the tests above).
+		// Without this, the cached transporter short-circuits the mailtrap branch.
+		const { useEnv } = await import('@directus/env');
+
+		vi.mocked(useEnv).mockReturnValue({
+			EMAIL_TRANSPORT: 'mailtrap',
+			EMAIL_MAILTRAP_TOKEN: 'test',
+			EMAIL_MAILTRAP_SANDBOX: true,
+			EMAIL_MAILTRAP_INBOX_ID: 12345,
+		});
+
+		const { default: getFreshMailer } = await import('./mailer.js');
+
+		expect(() => getFreshMailer()).not.toThrow();
+	});
 });
