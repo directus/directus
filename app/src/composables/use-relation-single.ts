@@ -72,7 +72,7 @@ export function useRelationSingle<T extends Record<string, any>>(
 
 		const id = typeof val === 'object' ? val[relation.value.relatedPrimaryKeyField.field] : val;
 
-		if (!id) {
+		if (!id || id === '+') {
 			displayItem.value = val as T;
 			return;
 		}
