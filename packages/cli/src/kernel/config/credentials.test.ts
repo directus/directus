@@ -244,6 +244,9 @@ describe('credentialStorage', () => {
 	});
 
 	it('clears only the named profile on set(null), leaving siblings intact', () => {
+		// This assertion reads the store, which credential resolution intentionally skips in CI.
+		vi.stubEnv('CI', '');
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
 		credentialStorage(url, 'prod').set(session);
 		saveCredential(url, 'staging', 'static-abcdefgh');
 
