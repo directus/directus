@@ -357,6 +357,51 @@ describe('Integration Tests', () => {
 					});
 				});
 
+				describe("public accessibility does not widen a non-public caller's own access", () => {
+					it('excludes an items path/method the caller cannot access, even when the public role can', async () => {
+						// Caller has read (keeps the tag/schema alive) but not create; the public role has
+						// create. The create path must still be absent, not merely un-stamped -
+						// isPubliclyAccessible only adds the security override once hasPermission already passed.
+						vi.mocked(fetchPermissions)
+							.mockResolvedValueOnce([{ collection: 'test_table', action: 'read', fields: ['*'] } as any])
+							.mockResolvedValueOnce([{ collection: 'test_table', action: 'create', fields: ['*'] } as any]);
+
+						const service = new SpecificationService({
+							knex: db,
+							schema,
+							accountability: { role: 'some-role', admin: false } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths?.['/items/test_table']?.get).toBeDefined();
+						expect(spec.paths?.['/items/test_table']?.post).toBeUndefined();
+					});
+
+					it('excludes a system-collection path/method the caller cannot access, even when the public role can', async () => {
+						vi.mocked(fetchPermissions)
+							.mockResolvedValueOnce([{ collection: 'directus_files', action: 'read', fields: ['*'] } as any])
+							.mockResolvedValueOnce([{ collection: 'directus_files', action: 'create', fields: ['*'] } as any]);
+
+						const systemSchema = new SchemaBuilder()
+							.collection('directus_files', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: systemSchema,
+							accountability: { role: 'some-role', admin: false } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths?.['/files']?.get).toBeDefined();
+						expect(spec.paths?.['/files']?.post).toBeUndefined();
+					});
+				});
+
 				describe('transitive schema $ref resolution', () => {
 					it('backfills schemas that are only reachable via a $ref inside another required schema', async () => {
 						const service = new SpecificationService({
