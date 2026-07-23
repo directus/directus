@@ -273,6 +273,22 @@ const getSuccessGroups = (localCollectionSuppliers: string): Record<string, Succ
 			expectedNames: ['Delta'],
 		},
 	],
+	'Incomplete path normalization': [
+		{
+			// normalizes: 'color.' → '$.color', matching Alpha the same as a bare 'color'.
+			description: 'trailing dot normalizes and matches (color. → color)',
+			filter: { metadata: { _json: { 'color.': { _eq: 'red' } } } },
+			expectedLength: 1,
+			expectedNames: ['Alpha'],
+		},
+		{
+			// A repeated dot leaves an empty segment that is dropped consistently across dialects:
+			description: 'repeated dot normalizes and matches (settings..theme → settings.theme)',
+			filter: { metadata: { _json: { 'settings..theme': { _eq: 'dark' } } } },
+			expectedLength: 2,
+			expectedNames: ['Alpha', 'Gamma'],
+		},
+	],
 	'Inline _or/_and inside _json': [
 		{
 			// color='red': Alpha; color='blue': Beta
