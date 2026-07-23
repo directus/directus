@@ -28,7 +28,13 @@ export function validateItem(
 		return conditionedField;
 	});
 
-	const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
+	const hiddenFieldKeys = new Set(
+		fieldsWithConditions.filter((field) => field.meta?.hidden === true).map((field) => field.field),
+	);
+
+	const requiredFields = fieldsWithConditions.filter(
+		(field) => field.meta?.required === true && !hiddenFieldKeys.has(field.meta?.group ?? ''),
+	);
 
 	requiredFields.forEach((field) => {
 		applyRulesForRequiredFields(field.field, field, isNew);
