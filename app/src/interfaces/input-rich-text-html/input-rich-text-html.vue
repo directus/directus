@@ -79,7 +79,7 @@ const {
 	onLockedClick,
 	confirmNormalizationWarning,
 	cancelNormalizationWarning,
-} = useNormalizationWarning(value);
+} = useNormalizationWarning(value, customFormatExtensions);
 
 // skipped for display-only modes; comparison values carry diff spans the base schema would flag as loss
 if (!props.comparisonMode && !props.nonEditable) checkValue();
@@ -245,7 +245,7 @@ const {
 	saveSourceCode,
 	confirmSaveSourceCode,
 	cancelNormalize,
-} = useSourceCode(editor as Ref<Editor>);
+} = useSourceCode(editor as Ref<Editor>, customFormatExtensions);
 
 // pause the surrounding view's focus trap while a drawer is open so its inputs stay reachable
 const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();

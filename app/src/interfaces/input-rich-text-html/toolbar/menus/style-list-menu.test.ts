@@ -53,6 +53,60 @@ describe('style-list-menu', () => {
 		expect(readStyle(editor, 'fontSize')).toBeNull();
 	});
 
+	// The font-family picker has no `defaultValue` (its default is "unset"), so the null "Default" entry must
+	// highlight while nothing is applied, and clear once a real font is set.
+	test('highlights the Default (null) entry when nothing is applied', () => {
+		const wrapper = mount(StyleListMenu, {
+			props: {
+				editor,
+				icon: 'font_download',
+				label: 'wysiwyg_options.fontselect',
+				attr: 'fontFamily' as const,
+				items: [
+					{ label: 'wysiwyg_options.default', value: null },
+					{ label: 'Arial Black', value: "'Arial Black', sans-serif" },
+				],
+			},
+			global,
+		});
+
+		const vm = wrapper.vm as unknown as {
+			select: (v: string | null) => void;
+			isActive: (item: { label: string; value: string | null }) => boolean;
+		};
+
+		expect(vm.isActive({ label: 'wysiwyg_options.default', value: null })).toBe(true);
+
+		vm.select("'Arial Black', sans-serif");
+		expect(vm.isActive({ label: 'wysiwyg_options.default', value: null })).toBe(false);
+		expect(vm.isActive({ label: 'Arial Black', value: "'Arial Black', sans-serif" })).toBe(true);
+	});
+
+	// The null "Default" entry shows the editor's effective default font (the resolved theme family passed as
+	// `defaultLabel`) instead of the generic "Default", matching what the activator already shows.
+	test('shows the effective default font name for the null entry', () => {
+		const wrapper = mount(StyleListMenu, {
+			props: {
+				editor,
+				icon: 'font_download',
+				label: 'wysiwyg_options.fontselect',
+				attr: 'fontFamily' as const,
+				defaultLabel: 'Inter, system-ui, sans-serif',
+				items: [
+					{ label: 'wysiwyg_options.default', value: null },
+					{ label: 'Arial Black', value: "'Arial Black', sans-serif" },
+				],
+			},
+			global,
+		});
+
+		const vm = wrapper.vm as unknown as {
+			displayLabel: (item: { label: string; value: string | null }) => string;
+		};
+
+		expect(vm.displayLabel({ label: 'wysiwyg_options.default', value: null })).toBe('Inter, system-ui, sans-serif');
+	});
+
 	// A real browser rewrites the single quotes in our item values to double when it serializes the inline
 	// style, so the value read back differs from the item by quote style only. The activator label must still
 	// match the named font instead of falling back to the raw quoted value (the `"Arial Blac…` bug).

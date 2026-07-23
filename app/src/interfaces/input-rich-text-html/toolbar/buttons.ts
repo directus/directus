@@ -65,7 +65,9 @@ const headings: Record<string, ToolbarButton> = Object.fromEntries(
 );
 
 // Mirrors TinyMCE's default `font_family_formats` so existing content maps to the same names.
+// The leading `null` entry reverts to the editor's base font (unsetFontFamily).
 const FONT_FAMILIES: { label: string; value: string | null }[] = [
+	{ label: 'wysiwyg_options.default', value: null },
 	{ label: 'Andale Mono', value: "'Andale Mono', monospace" },
 	{ label: 'Arial', value: 'Arial, Helvetica, sans-serif' },
 	{ label: 'Arial Black', value: "'Arial Black', sans-serif" },

@@ -51,19 +51,29 @@ function normalize(value: string | null): string | null {
 function isActive(item: Item): boolean {
 	const value = current();
 	// Nothing applied → highlight the default item, so the menu reflects the editor's effective value.
-	if (value === null) return props.defaultValue !== undefined && item.value === props.defaultValue;
+	// With no explicit `defaultValue` (e.g. font family, whose default is "unset"), the null entry matches.
+	if (value === null) return item.value === (props.defaultValue ?? null);
 	return item.value !== null && normalize(value) === normalize(item.value);
 }
 
-/** Item labels that are i18n keys (the "Default" entry) are translated; literal names shown as-is. */
+// The null "Default" entry shows the editor's effective default (e.g. the resolved base font family) when
+// known, falling back to a translated "Default". i18n-key labels are translated; literal names shown as-is.
 function displayLabel(item: Item): string {
+	if (item.value === null) return props.defaultLabel || t('wysiwyg_options.default');
 	return item.label.startsWith('wysiwyg_options.') ? t(item.label) : item.label;
+}
+
+/** Preview font for a list item: its own value, or the effective default for the null "Default" entry. */
+function previewStyle(item: Item): { fontFamily: string } | undefined {
+	if (!props.previewFont) return undefined;
+	const family = item.value ?? props.defaultLabel;
+	return family ? { fontFamily: family } : undefined;
 }
 
 /** The label shown on the activator: the matched item, the raw value as a fallback, or "Default". */
 const currentLabel = computed(() => {
 	const value = current();
-	if (value === null) return props.defaultLabel ?? t('wysiwyg_options.default');
+	if (value === null) return props.defaultLabel || t('wysiwyg_options.default');
 	const match = props.items.find((item) => normalize(item.value) === normalize(value));
 	return match ? displayLabel(match) : value;
 });
@@ -76,7 +86,7 @@ function select(value: string | null): void {
 	if (props.editor) applyStyle(props.editor, props.attr, value);
 }
 
-defineExpose({ select, currentLabel });
+defineExpose({ select, currentLabel, isActive, displayLabel });
 </script>
 
 <template>
@@ -101,7 +111,7 @@ defineExpose({ select, currentLabel });
 		<VList class="style-list">
 			<VListItem v-for="item in items" :key="item.label" clickable :active="isActive(item)" @click="select(item.value)">
 				<VListItemContent>
-					<span :style="previewFont && item.value ? { fontFamily: item.value } : undefined">
+					<span :style="previewStyle(item)">
 						{{ displayLabel(item) }}
 					</span>
 				</VListItemContent>
