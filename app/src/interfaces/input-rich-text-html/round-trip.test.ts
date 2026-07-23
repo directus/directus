@@ -210,7 +210,11 @@ describe('round-trip: preserved attributes (class/id/title/role/lang/dir/data-*/
 		expect(out).toContain('dir="rtl"');
 	});
 
-	test('block dir is not duplicated by the inline dir attribute', () => {
+	test('block dir stays owned by the Direction extension (passthrough does not leak onto blocks)', () => {
+		// Direction models only ltr/rtl on block nodes; a value it rejects must be dropped, not
+		// preserved verbatim by the global passthrough. Fails if the passthrough double-registers
+		// `dir` on block types instead of excluding them (OWN_DIR_TYPES).
+		expect(roundTrip('<p dir="auto">نص</p>')).toBe('<p>نص</p>');
 		expect(roundTrip('<p dir="rtl">نص</p>')).toBe('<p dir="rtl">نص</p>');
 	});
 
