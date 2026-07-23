@@ -125,6 +125,17 @@ describe('FormField', () => {
 
 			expect(wrapper.findComponent({ name: 'FormFieldMenu' }).props('interfaceLocked')).toBe(true);
 		});
+
+		it('disables the raw editor drawer once the interface locks so viewing raw stays read-only', async () => {
+			const wrapper = mount(FormField, { props: { field: baseField }, global: globalWithOpenMenu });
+
+			expect(wrapper.findComponent({ name: 'FormFieldRawEditor' }).props('disabled')).toBe(false);
+
+			wrapper.findComponent({ name: 'FormFieldInterface' }).vm.$emit('readonly', true);
+			await wrapper.vm.$nextTick();
+
+			expect(wrapper.findComponent({ name: 'FormFieldRawEditor' }).props('disabled')).toBe(true);
+		});
 	});
 
 	describe('isNonEditable', () => {

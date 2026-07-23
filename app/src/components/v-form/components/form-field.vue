@@ -282,7 +282,7 @@ function useComputedValues() {
 			:show-modal="showRaw"
 			:field="field"
 			:current-value="internalValue"
-			:disabled="isDisabled"
+			:disabled="isDisabled || interfaceLocked"
 			@cancel="showRaw = false"
 			@set-raw-value="onRawValueSubmit"
 		/>
