@@ -334,6 +334,7 @@ describe('sync push with data', () => {
 		interceptApply();
 		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
 		interceptTarget('/access', []);
+		interceptTarget('/items/articles', []);
 
 		let sentForm: FormData | undefined;
 
@@ -626,14 +627,16 @@ describe('sync push with data', () => {
 			},
 		);
 
-		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes', '--dangerously-allow-delete')).toBe(0);
+		expect(
+			await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes', '--dangerously-allow-delete'),
+		).toBe(0);
 
 		expect(applied).toEqual({ hash: 'h1', diff: deletionDiff });
 	});
 
 	it('refuses mirror in CI without --dangerously-allow-delete before any apply or import, even with data present', async () => {
 		// Mirror can delete schema and data rows absent from the import set, unknowable in
-		// CI without a dry-run, so it is refused outright. Only the diff is registered — a reached apply or
+		// CI without a dry-run, so it is refused outright. Only the diff and the content target read are registered — a reached apply or
 		// import would throw on the disabled dispatcher, proving neither happened.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
@@ -641,6 +644,7 @@ describe('sync push with data', () => {
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		interceptDiff('mirror', schemaChangesBody());
+		interceptTarget('/items/articles', []);
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes')).toBe(1);
 
@@ -670,7 +674,7 @@ describe('sync push with data', () => {
 
 		const err = stderr.join('');
 		expect(err).toContain('Ambiguous target matches');
-		expect(err).toContain('directus_roles "sr1"');
+		expect(err).toContain('directus_roles source "Editor" — sr1');
 		expect(err).toMatch(/interactively/i);
 	});
 
@@ -771,6 +775,7 @@ describe('sync push with data', () => {
 		interceptApply();
 		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
 		interceptTarget('/access', []);
+		interceptTarget('/items/articles', []);
 		interceptImport({ mode: 'merge' }, { data: fullImportResult() });
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
@@ -836,6 +841,7 @@ describe('sync push with data', () => {
 			interceptApply();
 			interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
 			interceptTarget('/access', []);
+			interceptTarget('/items/articles', []);
 			interceptImport({ mode: 'merge' }, { data: fullImportResult() });
 		}
 

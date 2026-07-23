@@ -177,6 +177,55 @@ async function reconcileSystem(
 // Prefix target IDs so arbitrary IDs cannot collide with the create/abort prompt sentinels.
 const TARGET_PREFIX = 'target:';
 
+function scalar(value: unknown): string | undefined {
+	let rendered: string | undefined;
+
+	if (typeof value === 'string') rendered = value === '' ? undefined : JSON.stringify(value);
+	if (typeof value === 'number' || typeof value === 'boolean' || value === null) rendered = String(value);
+	if (rendered === undefined) return undefined;
+
+	return rendered.length > 60 ? `${rendered.slice(0, 59)}…` : rendered;
+}
+
+function recordLabel(record: Record<string, unknown> | undefined, primaryKey: string, fallbackId: string): string {
+	if (record === undefined) return fallbackId;
+
+	for (const field of ['name', 'email', 'key', 'title', 'collection', 'action']) {
+		const value = scalar(record[field]);
+		if (value !== undefined) return `${value} — ${String(record[primaryKey] ?? fallbackId)}`;
+	}
+
+	return String(record[primaryKey] ?? fallbackId);
+}
+
+function differenceHint(
+	source: Record<string, unknown> | undefined,
+	target: Record<string, unknown> | undefined,
+	primaryKey: string,
+): string {
+	if (source === undefined || target === undefined) return 'Uses this existing target record';
+
+	const differences: string[] = [];
+
+	for (const field of [...new Set([...Object.keys(source), ...Object.keys(target)])].sort(byCodepoint)) {
+		if (field === primaryKey || isEqual(source[field], target[field])) continue;
+
+		const before = scalar(source[field]);
+		const after = scalar(target[field]);
+
+		differences.push(
+			before === undefined || after === undefined
+				? `${field}: values differ`
+				: `${field}: source ${before}, target ${after}`,
+		);
+	}
+
+	if (differences.length === 0) return 'Same synced values as source; only the ID differs';
+
+	const shown = differences.slice(0, 2).join('; ');
+	return differences.length > 2 ? `${shown}; +${differences.length - 2} more differences` : shown;
+}
+
 function matchedEntries(result: CollectionReconcile): Record<string, string> {
 	const entries: Record<string, string> = {};
 	for (const match of result.matched) entries[match.sourceId] = match.targetId;
@@ -192,7 +241,11 @@ interface ResolvedMatches {
 }
 
 // Interactive pushes resolve ambiguities; non-interactive pushes report all of them and stop.
-async function resolveMatches(results: readonly CollectionReconcile[], ctx: CliContext): Promise<ResolvedMatches> {
+async function resolveMatches(
+	results: readonly CollectionReconcile[],
+	inputs: readonly ReconcileInput[],
+	ctx: CliContext,
+): Promise<ResolvedMatches> {
 	const seeds = new Map<string, Record<string, string>>();
 
 	for (const result of results) {
@@ -207,9 +260,12 @@ async function resolveMatches(results: readonly CollectionReconcile[], ctx: CliC
 	if (ambiguities.length === 0) return { seeds, decided: [], resolvedExisting: false };
 
 	if (!ctx.interactive) {
-		const lines = ambiguities.map(
-			(item) => `${item.collection} "${item.sourceId}" → one of ${item.targetIds.join(', ')}`,
-		);
+		const lines = ambiguities.map((item) => {
+			const input = inputs.find((candidate) => candidate.collection === item.collection);
+			const source = input?.sourceRecords.find((record) => String(record[input.primaryKey]) === item.sourceId);
+			const label = recordLabel(source, input?.primaryKey ?? 'id', item.sourceId);
+			return `${item.collection} source ${label} → one of ${item.targetIds.join(', ')}`;
+		});
 
 		throw new CliError('STATE', `Ambiguous target matches:\n  ${lines.join('\n  ')}`, {
 			hint: 'Run d6s sync push interactively once to choose, then commit the updated id map.',
@@ -222,18 +278,34 @@ async function resolveMatches(results: readonly CollectionReconcile[], ctx: CliC
 	// One target cannot represent two sources; remove targets claimed by earlier answers in this pass.
 	const taken = new Map<string, Set<string>>();
 
-	for (const item of ambiguities) {
+	for (const [index, item] of ambiguities.entries()) {
 		const claimed = taken.get(item.collection) ?? new Set<string>();
+		const input = inputs.find((candidate) => candidate.collection === item.collection);
+		const primaryKey = input?.primaryKey ?? 'id';
+		const source = input?.sourceRecords.find((record) => String(record[primaryKey]) === item.sourceId);
 
-		const options: { value: string; label: string }[] = [
-			...item.targetIds.filter((id) => !claimed.has(id)).map((id) => ({ value: `${TARGET_PREFIX}${id}`, label: id })),
-			{ value: 'create', label: 'Create a new record' },
-			{ value: 'abort', label: 'Abort the push' },
+		const options: { value: string; label: string; hint: string }[] = [
+			...item.targetIds
+				.filter((id) => !claimed.has(id))
+				.map((id) => {
+					const target = input?.targetRecords.find((record) => String(record[primaryKey]) === id);
+					return {
+						value: `${TARGET_PREFIX}${id}`,
+						label: `Use ${recordLabel(target, primaryKey, id)}`,
+						hint: differenceHint(source, target, primaryKey),
+					};
+				}),
+			{
+				value: 'create',
+				label: 'Create a separate record',
+				hint: 'Adds one record; leaves every existing match unchanged',
+			},
+			{ value: 'abort', label: 'Abort the push', hint: 'Applies no remote changes' },
 		];
 
 		const choice = await ask(
 			select({
-				message: `Multiple ${item.collection} records match source "${item.sourceId}". Pick the target:`,
+				message: `Resolve identity ${index + 1} of ${ambiguities.length}: ${item.collection} source ${recordLabel(source, primaryKey, item.sourceId)} matches multiple target records`,
 				options,
 			}),
 		);
@@ -297,11 +369,13 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 				}),
 			);
 		} catch (error) {
-			// The collection may not exist until schema apply. On such fetch failures, keep every source row
-			// in the batch; the import remains authoritative and may still report the underlying failure.
-			// A CONFIG refusal (zero QUERY_LIMIT_MAX) must NOT be swallowed: it means every fetch is blind,
-			// and under mirror a blind batch deletes the target rows the echo could not see.
-			if (error instanceof CliError && error.code === 'CONFIG') throw error;
+			// A collection that does not exist until schema apply reads as 403 FORBIDDEN (existence-hiding),
+			// which maps to AUTH — the one failure with an innocent reading, so only it keeps the batch
+			// intact with the import staying authoritative (a real permission failure fails there, loudly).
+			// Anything else (5xx, network, timeout, CONFIG's zero QUERY_LIMIT_MAX, malformed pages) is a
+			// blind read: treating it as "no targets" makes add resend existing rows, duplicating uuid-keyed
+			// content via server remint.
+			if (!(error instanceof CliError) || error.code !== 'AUTH') throw error;
 		}
 	}
 
@@ -464,7 +538,7 @@ export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContex
 	const decided = new Map<string, Set<string>>();
 
 	for (;;) {
-		const resolved = await resolveMatches(results, ctx);
+		const resolved = await resolveMatches(results, inputs, ctx);
 
 		for (const item of resolved.decided) {
 			const settled = decided.get(item.collection) ?? new Set<string>();
