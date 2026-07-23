@@ -119,14 +119,21 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	}
 
 	if (result !== null) {
-		ctx.ui.info(`Schema — ${count(schemaTotal, 'change')} a push would apply:`);
+		ctx.ui.info(
+			`Schema — ${count(schemaTotal, 'change')}: ${schema.added} added, ${schema.modified} modified, ${schema.deleted} deleted`,
+		);
 
 		for (const line of schema.lines) ctx.ui.plan(line);
 	}
 
 	if (dataSummary !== undefined) {
 		if (dataChanged) {
-			ctx.ui.info('Data — changes a push would import:');
+			const total = dataSummary.created + dataSummary.updated + dataSummary.deleted;
+
+			ctx.ui.info(
+				`Data — ${count(total, 'change')}: ${dataSummary.created} created, ${dataSummary.updated} updated, ${dataSummary.deleted} deleted`,
+			);
+
 			for (const line of dataSummary.lines) ctx.ui.plan(line);
 		} else {
 			ctx.ui.info('Data — no changes to import.');

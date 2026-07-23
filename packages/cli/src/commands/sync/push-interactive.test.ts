@@ -258,6 +258,30 @@ describe('interactive sync push', () => {
 
 		expect(select).toHaveBeenCalledTimes(1);
 
+		expect(select).toHaveBeenCalledWith(
+			expect.objectContaining({
+				message: 'Resolve identity 1 of 1: directus_roles source "Editor" — sr1 matches multiple target records',
+				options: [
+					{
+						value: 'target:t1',
+						label: 'Use "Editor" — t1',
+						hint: 'Same synced values as source; only the ID differs',
+					},
+					{
+						value: 'target:t2',
+						label: 'Use "Editor" — t2',
+						hint: 'Same synced values as source; only the ID differs',
+					},
+					{
+						value: 'create',
+						label: 'Create a separate record',
+						hint: 'Adds one record; leaves every existing match unchanged',
+					},
+					{ value: 'abort', label: 'Abort the push', hint: 'Applies no remote changes' },
+				],
+			}),
+		);
+
 		expect(readIdMap()).toEqual({
 			formatVersion: 1,
 			maps: { [source]: { [url]: { directus_roles: { sr1: 't2' } } } },
@@ -503,7 +527,7 @@ describe('interactive sync push', () => {
 		const output = stderr.join('');
 
 		expect(output).toContain('Data — no changes to import.');
-		expect(output).not.toContain('Data — changes to import:');
+		expect(output).not.toMatch(/Data — \d+ changes?:/);
 	});
 
 	it('aborts the push and touches neither apply nor import when the operator aborts an ambiguity', async () => {
