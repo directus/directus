@@ -1,5 +1,13 @@
+import type { Command } from 'commander';
 import { loadConfig } from '../../kernel/config/file.js';
 import type { CliContext } from '../../kernel/run.js';
+
+export function registerList(profile: Command, getContext: () => CliContext): void {
+	profile
+		.command('list')
+		.description('List configured profiles')
+		.action(() => list(getContext()));
+}
 
 export function list(ctx: CliContext): void {
 	const profiles = loadConfig({ cwd: ctx.cwd, configPath: ctx.configPath })?.config.profiles ?? {};
