@@ -30,9 +30,28 @@ const TEST_CASES = [
 
 	// Multiple array indices
 	{ input: '.matrix[0][1]', expected: '$.matrix[0][1]', description: 'multiple array indices' },
+	{ input: '.data[0][1][2]', expected: '$.data[0][1][2]', description: 'three array indices' },
+
+	// Complex real-world scenarios
+	{
+		input: '.metadata.tags[0].value',
+		expected: '$.metadata.tags[0].value',
+		description: 'metadata with array and property',
+	},
+	{
+		input: '.response.data.items[3].attributes.name',
+		expected: '$.response.data.items[3].attributes.name',
+		description: 'deeply nested with array in middle',
+	},
+	{ input: '.config.servers[0].host', expected: '$.config.servers[0].host', description: 'config with array access' },
 
 	// Edge cases with underscore and numbers in property names
 	{ input: '.user_data', expected: '$.user_data', description: 'property with underscore' },
+	{
+		input: '.first_name.last_name',
+		expected: '$.first_name.last_name',
+		description: 'nested properties with underscores',
+	},
 	{ input: '.test123.value', expected: '$.test123.value', description: 'property with numbers in name' },
 
 	// Numeric segments are treated as array indices (consistent across dialects)
