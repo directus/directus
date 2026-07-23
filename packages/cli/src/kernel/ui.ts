@@ -53,6 +53,7 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 	return {
 		json,
 		print(text) {
+			if (json) return;
 			writeOut(`${text}\n`);
 		},
 		info(message) {

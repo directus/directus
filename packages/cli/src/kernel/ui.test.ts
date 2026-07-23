@@ -50,8 +50,10 @@ describe('createUi', () => {
 		const ui = createUi({ json: true, color: false });
 		ui.info('working');
 		ui.success('done');
+		ui.print('human row');
 
 		expect(stderr.join('')).toBe('');
+		expect(stdout.join('')).toBe('');
 	});
 
 	it('renders errors as structured stdout in --json mode', () => {
