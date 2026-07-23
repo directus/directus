@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { convertToJsonPath } from './dot-notation-path.js';
+import { convertToJsonPath } from './convert-json-path.js';
 
 const TEST_CASES = [
 	// Simple property access

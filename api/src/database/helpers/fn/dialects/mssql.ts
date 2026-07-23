@@ -1,6 +1,6 @@
 import { InvalidQueryError } from '@directus/errors';
 import type { Knex } from 'knex';
-import { convertToJsonPath } from '../json/dot-notation-path.js';
+import { convertToJsonPath } from '../json/convert-json-path.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
