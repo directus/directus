@@ -45,13 +45,16 @@ export async function testProfile(name: string | undefined, options: TestOptions
 		url = resolveProfile(loaded.config, name).url;
 	}
 
-	const resolution = resolveCredential({
-		url,
-		hasConfiguredProfiles: name !== undefined,
-		...(options.url !== undefined ? { explicitUrl: true } : {}),
-		...(name !== undefined ? { profileName: name } : {}),
-		...(options.token !== undefined ? { tokenFlag: options.token } : {}),
-	});
+	const resolution = resolveCredential(
+		name !== undefined
+			? {
+					target: 'profile',
+					url,
+					profileName: name,
+					...(options.token !== undefined ? { tokenFlag: options.token } : {}),
+				}
+			: { target: 'url', url, ...(options.token !== undefined ? { tokenFlag: options.token } : {}) },
+	);
 
 	let identity: Identity;
 
@@ -79,7 +82,7 @@ export async function testProfile(name: string | undefined, options: TestOptions
 			identity = await promptLogin(url, name);
 		} else {
 			const token = await promptToken(name ?? url);
-			identity = await testConnection({ url, token, source: 'prompt' });
+			identity = await testConnection({ url, token, kind: 'token' });
 
 			if (name !== undefined && (await ask(confirm({ message: 'Save this token for next time?' })))) {
 				saveToken(ctx.ui, url, name, token);

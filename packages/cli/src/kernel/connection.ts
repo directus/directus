@@ -23,12 +23,12 @@ export interface Identity {
 
 const REQUEST_TIMEOUT_MS = 30_000;
 
-function restWithTimeout() {
-	return rest({ onRequest: (options) => ({ ...options, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) }) });
+function restWithTimeout(timeoutMs: number = REQUEST_TIMEOUT_MS) {
+	return rest({ onRequest: (options) => ({ ...options, signal: AbortSignal.timeout(timeoutMs) }) });
 }
 
-function connect(credential: ResolvedCredential): RestClient<CoreSchema> {
-	if (credential.source === 'session') {
+export function connect(credential: ResolvedCredential, options?: { timeoutMs?: number }): RestClient<CoreSchema> {
+	if (credential.kind === 'session') {
 		return createDirectus<CoreSchema>(credential.url)
 			.with(
 				authentication('json', {
@@ -36,11 +36,14 @@ function connect(credential: ResolvedCredential): RestClient<CoreSchema> {
 					storage: credentialStorage(credential.url, credential.profileName),
 				}),
 			)
-			.with(restWithTimeout());
+			.with(restWithTimeout(options?.timeoutMs));
 	}
 
 	registerSecret(credential.token);
-	return createDirectus<CoreSchema>(credential.url).with(restWithTimeout()).with(staticToken(credential.token));
+
+	return createDirectus<CoreSchema>(credential.url)
+		.with(restWithTimeout(options?.timeoutMs))
+		.with(staticToken(credential.token));
 }
 
 export async function testConnection(credential: ResolvedCredential): Promise<Identity> {
@@ -122,18 +125,27 @@ function describeIdentity(me: unknown, projectName: string | undefined): Identit
 
 const AUTH_CODES = new Set(['INVALID_CREDENTIALS', 'INVALID_TOKEN', 'TOKEN_EXPIRED', 'INVALID_OTP', 'FORBIDDEN']);
 
-// Never retain the raw Response: it carries the Authorization header.
-function mapRequestError(error: unknown, url: string): CliError {
+/** Never retain the raw Response: it carries the Authorization header. */
+export function mapRequestError(error: unknown, url: string): CliError {
 	if (isDirectusError(error)) {
 		const rawStatus = get(error.response, 'status');
 		const status = typeof rawStatus === 'number' ? rawStatus : undefined;
 		const code = error.errors[0]?.extensions.code;
 		const detail = error.errors.map((entry) => `${entry.extensions.code}: ${entry.message}`).join('; ');
-		const isAuth = status === 401 || status === 403 || (code !== undefined && AUTH_CODES.has(code));
+		// Directus also uses 403 for non-auth refusals such as license limits. Prefer the structured
+		// error code whenever present so those failures keep their real cause and remediation.
+		const isAuth = status === 401 || (code !== undefined ? AUTH_CODES.has(code) : status === 403);
 
 		if (isAuth) {
 			return new CliError('AUTH', `Authentication failed for ${url}.`, {
 				hint: 'Check the token or credentials for this profile.',
+				...(detail !== '' ? { detail } : {}),
+			});
+		}
+
+		if (code === 'LIMIT_EXCEEDED') {
+			return new CliError('HTTP', `Target limit exceeded for ${url}.`, {
+				hint: 'Reduce the limited resources or update the target license, then retry.',
 				...(detail !== '' ? { detail } : {}),
 			});
 		}

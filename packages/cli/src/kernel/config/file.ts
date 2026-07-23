@@ -2,14 +2,17 @@ import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname, join, parse as parsePath } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import { z } from 'zod';
+import { type Mode, MODES } from '../../sync/mode.js';
 import { CliError } from '../error.js';
 import { writeFileAtomic } from '../write.js';
 
 const CONFIG_FILENAME = 'directus.config.json';
 
-// A committable base URL must carry no secrets: http(s) only, no userinfo and no
-// query/fragment — so `https://user:pass@host` or `?token=…` can never be written
-// to config or printed by `profile list`. Also serves as the prompt validator.
+/**
+ * A committable base URL must carry no secrets: http(s) only, no userinfo and no
+ * query/fragment — so `https://user:pass@host` or `?token=…` can never be written
+ * to config or printed by `profile list`. Also serves as the prompt validator.
+ */
 export function isSafeUrl(value: string): boolean {
 	let parsed: URL;
 
@@ -35,10 +38,26 @@ const profileSchema = z.object({
 	auth: z.object({ type: z.literal('token') }).default({ type: 'token' }),
 });
 
-// The kernel owns `profiles`; any other top-level key (e.g. a future
-// `sync` block) passes through untouched for its own consumer to read.
+// Strict parsing prevents a misspelled scope key from silently widening a pull.
+const projectSchema = z.strictObject({
+	collections: z.array(z.string()).optional(),
+	excludeCollections: z.array(z.string()).optional(),
+	resources: z.array(z.string()).optional(),
+	excludeResources: z.array(z.string()).optional(),
+	content: z.array(z.string()).optional(),
+	deps: z.boolean().optional(),
+	mode: z.enum(MODES).optional(),
+});
+
+// The kernel owns `profiles`, `directory`, `projects`, and `format`; any other top-level key (e.g. a
+// future `sync` block) passes through untouched for its own consumer to read. All four carry defaults
+// so a config predating them parses unchanged.
 const configSchema = z.looseObject({
 	profiles: z.record(z.string(), profileSchema).default({}),
+	directory: z.string().min(1).default('directus'),
+	projects: z.record(z.string(), projectSchema).default({}),
+	// Reject unsupported artifact formats instead of silently treating them as JSON.
+	format: z.enum(['json']).default('json'),
 });
 
 // Explicit types keep isolated declaration emit independent of schema inference.
@@ -47,8 +66,22 @@ interface Profile {
 	readonly auth: { readonly type: 'token' };
 }
 
+/** Optional project-level sync scope and mode defaults. */
+export interface ProjectConfig {
+	readonly collections?: readonly string[] | undefined;
+	readonly excludeCollections?: readonly string[] | undefined;
+	readonly resources?: readonly string[] | undefined;
+	readonly excludeResources?: readonly string[] | undefined;
+	readonly content?: readonly string[] | undefined;
+	readonly deps?: boolean | undefined;
+	readonly mode?: Mode | undefined;
+}
+
 interface Config {
 	readonly profiles: Readonly<Record<string, Profile>>;
+	readonly directory: string;
+	readonly projects: Readonly<Record<string, ProjectConfig>>;
+	readonly format: 'json';
 	readonly [namespace: string]: unknown;
 }
 
@@ -62,8 +95,10 @@ interface ConfigLocation {
 	readonly configPath?: string | undefined;
 }
 
-// Walk up from the starting dir like git, so the CLI works from any subdirectory.
-// undefined means nothing was found — profile-less operation stays first-class.
+/**
+ * Walk up from the starting dir like git, so the CLI works from any subdirectory.
+ * undefined means nothing was found — profile-less operation stays first-class.
+ */
 export function findConfigPath(startDir: string): string | undefined {
 	const { root } = parsePath(startDir);
 	let dir = startDir;
@@ -76,9 +111,11 @@ export function findConfigPath(startDir: string): string | undefined {
 	}
 }
 
-// An explicit `--config` path wins, otherwise walk-up discovery. A missing
-// discovered file is not an error (profile-less); a missing explicit path or a
-// malformed file is.
+/**
+ * An explicit `--config` path wins, otherwise walk-up discovery. A missing
+ * discovered file is not an error (profile-less); a missing explicit path or a
+ * malformed file is.
+ */
 export function loadConfig(location: ConfigLocation): LoadedConfig | undefined {
 	const path = location.configPath ?? findConfigPath(location.cwd);
 	if (path === undefined) return undefined;
@@ -135,7 +172,7 @@ function existingProfiles(raw: Record<string, unknown>, path: string): Record<st
 	return profiles as Record<string, unknown>;
 }
 
-// Upsert into the explicit or discovered config, or a new file at cwd.
+/** Upsert into the explicit or discovered config, or a new file at cwd. */
 export function upsertProfile(location: ConfigLocation, name: string, profile: Profile): void {
 	const path = location.configPath ?? findConfigPath(location.cwd) ?? join(location.cwd, CONFIG_FILENAME);
 	const raw = readRawConfig(path);
@@ -144,6 +181,20 @@ export function upsertProfile(location: ConfigLocation, name: string, profile: P
 	writeFileAtomic(path, `${JSON.stringify({ ...raw, profiles }, null, 2)}\n`, 0o644);
 }
 
+/** Persist a project's mode so later pushes default to it; flags still override. */
+export function upsertProjectMode(path: string, project: string, mode: Mode): void {
+	const raw = readRawConfig(path);
+	const projects = isPlainObject(raw['projects']) ? (raw['projects'] as Record<string, unknown>) : {};
+	const current = isPlainObject(projects[project]) ? (projects[project] as Record<string, unknown>) : {};
+
+	writeFileAtomic(
+		path,
+		`${JSON.stringify({ ...raw, projects: { ...projects, [project]: { ...current, mode } } }, null, 2)}\n`,
+		0o644,
+	);
+}
+
+/** Remove a profile and return its URL when available. */
 export function removeProfile(location: ConfigLocation, name: string): string | undefined {
 	const path = location.configPath ?? findConfigPath(location.cwd);
 	if (path === undefined)
@@ -164,7 +215,7 @@ export function removeProfile(location: ConfigLocation, name: string): string | 
 		: undefined;
 }
 
-// A miss names the known profiles so a typo is fixable without opening the file.
+/** A miss names the known profiles so a typo is fixable without opening the file. */
 export function resolveProfile(config: Config, name: string): Profile {
 	const profile = Object.hasOwn(config.profiles, name) ? config.profiles[name] : undefined;
 

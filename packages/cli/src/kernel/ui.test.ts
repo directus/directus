@@ -64,6 +64,18 @@ describe('createUi', () => {
 		expect(stderr.join('')).toBe('');
 	});
 
+	it('tags the --json error payload with kind ErrorReport and formatVersion so consumers can dispatch on it', () => {
+		// Consumers dispatch on the leading tag; an untagged error is unparseable to them, and adding
+		// the tag later would be a breaking change, so it must lead the envelope from the start.
+		const ui = createUi({ json: true, color: false });
+		ui.error(new CliError('USAGE', 'bad input'));
+
+		const payload = JSON.parse(stdout.join(''));
+		expect(payload.kind).toBe('ErrorReport');
+		expect(payload.formatVersion).toBe(1);
+		expect(payload.error.code).toBe('USAGE');
+	});
+
 	it('renders errors with a hint on stderr in human mode', () => {
 		const ui = createUi({ json: false, color: false });
 		ui.error(new CliError('USAGE', 'bad input', { hint: 'try --from' }));
@@ -104,6 +116,51 @@ describe('createUi', () => {
 		ui.data({ token: 'leaked-token-abc123' });
 
 		expect(stdout.join('')).not.toContain('leaked-token-abc123');
+	});
+
+	it('redacts a registered secret used as an object KEY in machine data output', () => {
+		// A replacer only rewrites values, so a secret surfacing as a key printed verbatim.
+		// Keys are attacker-reachable: payloads embed remote-controlled record maps.
+		registerSecret('leaked-token-abc123');
+		const ui = createUi({ json: true, color: false });
+		ui.data({ 'leaked-token-abc123': 'value' });
+
+		const out = stdout.join('');
+		expect(out).not.toContain('leaked-token-abc123');
+		expect(JSON.parse(out)).toEqual({ '***': 'value' });
+	});
+
+	it('redacts a secret nested deep inside arrays and objects on the machine channel', () => {
+		registerSecret('leaked-token-abc123');
+		const ui = createUi({ json: true, color: false });
+		ui.data({ items: [{ nested: { token: 'leaked-token-abc123' } }] });
+
+		const out = stdout.join('');
+		expect(out).not.toContain('leaked-token-abc123');
+		expect(JSON.parse(out)).toEqual({ items: [{ nested: { token: '***' } }] });
+	});
+
+	it('preserves a `__proto__` key in machine data output instead of losing it to the prototype setter', () => {
+		// Rebuilding objects with assignment would route a `__proto__` key to the
+		// prototype setter and drop it; Object.fromEntries keeps it as an own property.
+		const ui = createUi({ json: true, color: false });
+		ui.data(JSON.parse('{"__proto__":"present"}'));
+
+		expect(JSON.parse(stdout.join(''))).toEqual(JSON.parse('{"__proto__":"present"}'));
+	});
+
+	it('redacts a secret that JSON-escaping would otherwise hide on the machine channel', () => {
+		// A token containing a quote serializes as `abc\"def`; redacting the finished
+		// JSON string by substring would miss the escaped form. Redacting values before
+		// serialization catches the raw secret regardless of how it would be escaped.
+		const secret = 'abc"def\\ghi';
+		registerSecret(secret);
+		const ui = createUi({ json: true, color: false });
+		ui.data({ token: secret });
+
+		const out = stdout.join('');
+		expect(out).not.toContain('abc');
+		expect(JSON.parse(out)).toEqual({ token: '***' });
 	});
 
 	it('carries error detail on the --json channel so nothing is silently dropped', () => {

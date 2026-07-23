@@ -52,6 +52,55 @@ describe('loadConfig', () => {
 		expect((loaded?.config as Record<string, unknown>)['sync']).toEqual({ defaultMode: 'merge' });
 	});
 
+	it('fills directory, projects, and format with defaults so a config predating them parses unchanged', () => {
+		// The three CLI-owned keys must all default, or adding them would break every config already
+		// committed without them.
+		const dir = tempDir();
+		writeFileSync(join(dir, 'directus.config.json'), '{ "profiles": {} }');
+
+		const loaded = loadConfig({ cwd: dir });
+
+		expect(loaded?.config.directory).toBe('directus');
+		expect(loaded?.config.projects).toEqual({});
+		expect(loaded?.config.format).toBe('json');
+	});
+
+	it('parses a declared project scope, keeping every scope key optional', () => {
+		// An empty object validly declares a project without overriding any sync defaults.
+		const dir = tempDir();
+
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ projects: { staging: { resources: ['roles'], mode: 'mirror' }, empty: {} } }),
+		);
+
+		const loaded = loadConfig({ cwd: dir });
+
+		expect(loaded?.config.projects['staging']).toEqual({ resources: ['roles'], mode: 'mirror' });
+		expect(loaded?.config.projects['empty']).toEqual({});
+	});
+
+	it('rejects an unknown key inside a project scope', () => {
+		// Scope config must fail loud, not fail open: a typo'd key ("colections") silently dropped would
+		// widen the pull to everything instead of the intended subset.
+		const dir = tempDir();
+
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ projects: { staging: { colections: ['articles'] } } }),
+		);
+
+		expect(caught(() => loadConfig({ cwd: dir })).code).toBe('CONFIG');
+	});
+
+	it('rejects format: yaml, the reserved-but-not-yet-serialized artifact format', () => {
+		// Unsupported formats must fail instead of silently being treated as JSON.
+		const dir = tempDir();
+		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ format: 'yaml' }));
+
+		expect(caught(() => loadConfig({ cwd: dir })).code).toBe('CONFIG');
+	});
+
 	it('prefers an explicit configPath over walk-up discovery', () => {
 		const dir = tempDir();
 
@@ -119,6 +168,9 @@ describe('loadConfig', () => {
 describe('resolveProfile', () => {
 	const config = {
 		profiles: { prod: { url: 'https://cms.example.com', auth: { type: 'token' as const } } },
+		directory: 'directus',
+		projects: {},
+		format: 'json' as const,
 	};
 
 	it('returns the named profile', () => {
@@ -130,7 +182,9 @@ describe('resolveProfile', () => {
 	});
 
 	it('hints that none are defined when the profile set is empty', () => {
-		expect(caught(() => resolveProfile({ profiles: {} }, 'prod')).hint).toContain('No profiles');
+		expect(
+			caught(() => resolveProfile({ profiles: {}, directory: 'directus', projects: {}, format: 'json' }, 'prod')).hint,
+		).toContain('No profiles');
 	});
 
 	it('does not match inherited object properties like "toString"', () => {
