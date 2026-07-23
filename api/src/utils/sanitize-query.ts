@@ -250,13 +250,6 @@ async function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, a
 		}
 	}
 
-	// The result is built entirely by us here rather than with a path-based setter like lodash
-	// `set`. Every node is a null-prototype object we own, and children are written as plain own
-	// properties. This is important for security: `deep` keys are attacker-controlled, and a
-	// path-walking setter would follow inherited properties (e.g. `toString.call`) and corrupt a
-	// shared builtin, crashing the process. With null-prototype nodes there is no prototype chain to
-	// walk, so a key that happens to be named like a builtin is just harmless data. See
-	// GHSA-gwvv-rr68-cmv6.
 	return parse(deep);
 
 	async function parse(level: Record<string, any>, isRoot = true): Promise<Record<string, any>> {
