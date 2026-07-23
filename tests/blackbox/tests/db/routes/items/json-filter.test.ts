@@ -281,13 +281,6 @@ const getSuccessGroups = (localCollectionSuppliers: string): Record<string, Succ
 			expectedLength: 1,
 			expectedNames: ['Alpha'],
 		},
-		{
-			// A repeated dot leaves an empty segment that is dropped consistently across dialects:
-			description: 'repeated dot normalizes and matches (settings..theme → settings.theme)',
-			filter: { metadata: { _json: { 'settings..theme': { _eq: 'dark' } } } },
-			expectedLength: 2,
-			expectedNames: ['Alpha', 'Gamma'],
-		},
 	],
 	'Inline _or/_and inside _json': [
 		{
@@ -768,6 +761,11 @@ const ERROR_CASES: ErrorCase[] = [
 		description: 'returns 400 when a json path key is nested inside another json path key',
 		// nested paths must be written flat: 'a.b.c[0]', not { 'a.b': { 'c[0]': { _eq: 1 } } }
 		filter: { metadata: { _json: { 'a.b': { 'c[0]': { _eq: 1 } } } } },
+	},
+	{
+		// A repeated dot forms '..' (recursive descent), which is rejected by parseJsonPath.
+		description: 'returns 400 for a repeated dot (settings..theme)',
+		filter: { metadata: { _json: { 'settings..theme': { _eq: 'dark' } } } },
 	},
 ];
 
