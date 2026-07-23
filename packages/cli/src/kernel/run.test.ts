@@ -5,13 +5,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { run } from './run.js';
 import { clearSecrets, registerSecret } from './secret.js';
 
-type RegisterCommands = Parameters<typeof run>[1]['registerCommands'];
+type CommandRegistrar = Parameters<typeof run>[1]['registerCommands'][number];
 
 interface PullOptions {
 	readonly from: string;
 }
 
-function registerSync(options: { onRun?: (options: PullOptions) => void; throws?: unknown } = {}): RegisterCommands {
+function registerSync(options: { onRun?: (options: PullOptions) => void; throws?: unknown } = {}): CommandRegistrar {
 	return (program) => {
 		program
 			.command('sync')
@@ -53,15 +53,28 @@ describe('run', () => {
 
 		expect(
 			await run(['sync', 'pull', '--from', 'local', '--json'], {
-				registerCommands: registerSync({ onRun: (options) => (from = options.from) }),
+				registerCommands: [registerSync({ onRun: (options) => (from = options.from) })],
 			}),
 		).toBe(0);
 
 		expect(from).toBe('local');
 	});
 
+	it('registers multiple command groups', async () => {
+		let statusRan = false;
+
+		const registerStatus: CommandRegistrar = (program) => {
+			program.command('status').action(() => {
+				statusRan = true;
+			});
+		};
+
+		expect(await run(['status'], { registerCommands: [registerSync(), registerStatus] })).toBe(0);
+		expect(statusRan).toBe(true);
+	});
+
 	it('renders Commander errors through the CLI error boundary', async () => {
-		expect(await run(['sync', 'pull', '--from', 'local', '--bogus'], { registerCommands: registerSync() })).toBe(1);
+		expect(await run(['sync', 'pull', '--from', 'local', '--bogus'], { registerCommands: [registerSync()] })).toBe(1);
 		expect(stderr.join('')).toContain("unknown option '--bogus'");
 	});
 
@@ -69,12 +82,12 @@ describe('run', () => {
 		const secret = 'super-secret-token';
 		const argv = ['sync', 'pull', '--from', 'local', `--token=${secret}`];
 
-		expect(await run(argv, { registerCommands: registerSync() })).toBe(1);
+		expect(await run(argv, { registerCommands: [registerSync()] })).toBe(1);
 		expect(stderr.join('')).toContain("unknown option '--token=***'");
 		expect(stderr.join('')).not.toContain(secret);
 
 		stderr.length = 0;
-		expect(await run([...argv, '--json'], { registerCommands: registerSync() })).toBe(1);
+		expect(await run([...argv, '--json'], { registerCommands: [registerSync()] })).toBe(1);
 		expect(stdout.join('')).toContain("unknown option '--token=***'");
 		expect(stdout.join('')).not.toContain(secret);
 	});
@@ -82,7 +95,7 @@ describe('run', () => {
 	it('returns a failing status for errors thrown by commands', async () => {
 		expect(
 			await run(['sync', 'pull', '--from', 'local'], {
-				registerCommands: registerSync({ throws: new Error('boom') }),
+				registerCommands: [registerSync({ throws: new Error('boom') })],
 			}),
 		).toBe(1);
 
@@ -90,7 +103,7 @@ describe('run', () => {
 	});
 
 	it('classifies unknown commands in JSON errors', async () => {
-		expect(await run(['nope', '--json'], { registerCommands: registerSync() })).toBe(1);
+		expect(await run(['nope', '--json'], { registerCommands: [registerSync()] })).toBe(1);
 		expect(JSON.parse(stdout.join('')).error.code).toBe('UNKNOWN_COMMAND');
 		expect(stderr.join('')).toBe('');
 	});
@@ -107,7 +120,7 @@ describe('run', () => {
 			stdout.length = 0;
 			stderr.length = 0;
 
-			expect(await run(argv, { registerCommands: registerSync() })).toBe(0);
+			expect(await run(argv, { registerCommands: [registerSync()] })).toBe(0);
 			expect(stdout.join('')).toContain(expected);
 			expect(stderr.join('')).toBe('');
 		}
@@ -116,14 +129,14 @@ describe('run', () => {
 	it('redacts Commander help output', async () => {
 		registerSecret('leaked-token-abc123');
 
-		const registerSafe: RegisterCommands = (program) => {
+		const registerSafe: CommandRegistrar = (program) => {
 			program
 				.command('safe')
 				.description('prints leaked-token-abc123')
 				.action(() => {});
 		};
 
-		expect(await run(['safe', '--help'], { registerCommands: registerSafe })).toBe(0);
+		expect(await run(['safe', '--help'], { registerCommands: [registerSafe] })).toBe(0);
 		expect(stdout.join('')).toContain('***');
 		expect(stdout.join('')).not.toContain('leaked-token-abc123');
 	});
@@ -139,14 +152,14 @@ describe('run', () => {
 			mkdirSync(cwd, { recursive: true });
 			let value: string | undefined;
 
-			const registerEnv: RegisterCommands = (program, getContext) => {
+			const registerEnv: CommandRegistrar = (program, getContext) => {
 				program.command('env').action(() => {
 					getContext();
 					value = process.env['DIRECTUS_ENVTEST_TOKEN'];
 				});
 			};
 
-			await run(['env'], { registerCommands: registerEnv, cwd });
+			await run(['env'], { registerCommands: [registerEnv], cwd });
 			expect(value).toBe('from-root');
 		} finally {
 			delete process.env['DIRECTUS_ENVTEST_TOKEN'];

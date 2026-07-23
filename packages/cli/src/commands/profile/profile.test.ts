@@ -36,7 +36,7 @@ describe('profile commands', () => {
 	});
 
 	function d6s(...argv: string[]): Promise<number> {
-		return run(argv, { registerCommands: registerProfile, cwd: dir });
+		return run(argv, { registerCommands: [registerProfile], cwd: dir });
 	}
 
 	function readConfig(): { profiles: Record<string, { url: string }>; [key: string]: unknown } {
