@@ -1,34 +1,34 @@
-import type { AllCollections, MergeCoreCollection } from '../index.js';
+import type { CompleteSchema, MergeCoreCollection } from '../index.js';
 
 export type DirectusRelation<Schema = any> = {
-	collection: AllCollections<Schema>;
+	collection: keyof CompleteSchema<Schema>;
 	field: string;
-	related_collection: AllCollections<Schema> | null;
+	related_collection: keyof CompleteSchema<Schema> | null;
 	meta: MergeCoreCollection<
 		Schema,
 		'directus_relations',
 		{
 			id?: number;
 			junction_field: string | null;
-			many_collection: AllCollections<Schema>;
+			many_collection: keyof CompleteSchema<Schema>;
 			many_field: string;
-			one_allowed_collections: string | null;
-			one_collection: AllCollections<Schema> | null;
+			one_allowed_collections: (keyof CompleteSchema<Schema>)[] | null;
+			one_collection: keyof CompleteSchema<Schema> | null;
 			one_collection_field: string | null;
-			one_deselect_action: string;
+			one_deselect_action: 'nullify' | 'delete';
 			one_field: string | null;
 			sort_field: string | null;
-			system: boolean | null;
+			system?: boolean;
 		}
 	> | null;
 	schema: {
 		column: string;
 		constraint_name: string | null;
 		foreign_key_column: string;
-		foreign_key_schema: string;
-		foreign_key_table: string;
-		on_delete: string | null;
-		on_update: string | null;
-		table: string;
+		foreign_key_schema?: string;
+		foreign_key_table: keyof CompleteSchema<Schema>;
+		on_delete: 'NO ACTION' | 'RESTRICT' | 'CASCADE' | 'SET NULL' | 'SET DEFAULT' | null;
+		on_update: 'NO ACTION' | 'RESTRICT' | 'CASCADE' | 'SET NULL' | 'SET DEFAULT' | null;
+		table: keyof CompleteSchema<Schema>;
 	} | null;
 };
