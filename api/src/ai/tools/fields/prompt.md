@@ -471,7 +471,7 @@ This shows a real field configuration with validation, conditions, and all metad
 		"sort": 11, // Field order in forms
 		"width": "half",
 		"translations": null, // No field name translations
-		"note": "The URL to link to. Could be relative (ie `/my-page`) or a full external URL (ie `https://docs.directus.io`)",
+		"note": "The URL to link to. Could be relative (ie `/my-page`) or a full external URL (ie `https://directus.example.com/external-page`)",
 		"conditions": [
 			{
 				"hidden": false, // Show field when condition is met

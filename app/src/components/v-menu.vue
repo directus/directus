@@ -391,7 +391,7 @@ function usePopper(
 						padding,
 					});
 
-					if (state.placement.startsWith('top') && overflow.top < 0) {
+					if (state.placement.startsWith('top') && overflow.top > 0) {
 						forceMaxHeight.value = state.elements.popper.offsetHeight - Math.ceil(overflow.top);
 					} else if (state.placement.startsWith('bottom') && overflow.bottom > 0) {
 						forceMaxHeight.value = state.elements.popper.offsetHeight - Math.floor(overflow.bottom);

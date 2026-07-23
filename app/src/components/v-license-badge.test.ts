@@ -43,7 +43,7 @@ describe('v-license-badge', () => {
 		expect(wrapper.find('a').exists()).toBe(false);
 	});
 
-	it('renders badge linking to directus.io when display_powered_by is DIRECTUS', () => {
+	it('renders badge linking to directus.com when display_powered_by is DIRECTUS', () => {
 		useServerStore().info.license = { source: null, entitlements: { display_powered_by: 'DIRECTUS' } };
 
 		const wrapper = mount(VLicenseBadge, { global });
@@ -52,7 +52,7 @@ describe('v-license-badge', () => {
 		expect(wrapper.find('a').attributes('href')).toBe('https://directus.com/');
 	});
 
-	it('renders badge linking to directus.io/oig when display_powered_by is OIG', () => {
+	it('renders badge linking to directus.com/oig when display_powered_by is OIG', () => {
 		useServerStore().info.license = { source: null, entitlements: { display_powered_by: 'OIG' } };
 
 		const wrapper = mount(VLicenseBadge, { global });
