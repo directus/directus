@@ -156,6 +156,13 @@ describe('ItemsService createMany batch insert', () => {
 		test('false for non-uuid (auto-increment) primary keys', () => {
 			expect(svc('int_pk', intPkSchema).canBatchCreate([{ name: 'a' }, { name: 'b' }], {})).toBe(false);
 		});
+
+		test('false for ItemsService subclasses (would skip their createOne override)', () => {
+			class SubService extends ItemsService {}
+
+			const sub = new SubService('flat', { knex: db, schema }) as any;
+			expect(sub.canBatchCreate([{ name: 'a' }, { name: 'b' }], {})).toBe(false);
+		});
 	});
 
 	describe('batch insert behaviour', () => {

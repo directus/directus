@@ -529,9 +529,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 	/**
 	 * Whether createMany can insert these rows in one multi-row statement, provably equivalent to the
-	 * per-row loop. Guarded to: app-generated uuid PK, no accountability, no alias fields, flat payloads
-	 * with identical key sets, no client PK, no create filter hooks, no preMutationError, >1 row. Anything
-	 * else falls back to the per-row loop. Dialect-agnostic (works on every supported database).
+	 * per-row loop. Rejected cases fall back to the untouched loop. Dialect-agnostic. See the inline
+	 * conditions for what each guard preserves.
 	 */
 	private canBatchCreate(data: Partial<Item>[], opts: MutationOptions): boolean {
 		if (data.length < 2) return false;
@@ -539,9 +538,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		if (opts.preMutationError) return false;
 		if (this.collection === 'directus_users') return false;
 
-		// Create filter hooks run per-row interleaved with inserts in the per-row path; the batch prepares
-		// all rows before any insert, so a hook that depends on earlier rows (or injects relational data)
-		// would diverge. Only batch when no create filter hook can run.
+		// Base class only: a subclass createOne override (extra validation/side effects) would be skipped.
+		if (Object.getPrototypeOf(this) !== ItemsService.prototype) return false;
+
+		// Create filter hooks run per-row in the loop; batching prepares all rows first, so a hook that
+		// reads earlier rows (or injects relational data) would diverge.
 		if (opts.emitEvents !== false && emitter.hasFilterListeners(this.getEventScopeCreateEvents())) return false;
 
 		const collection = this.schema.collections[this.collection];
@@ -550,8 +551,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const primaryKeyField = collection.primary;
 		const pkField = collection.fields[primaryKeyField];
 
-		// App-generated uuid PK only: key is known from the prepared payload (no RETURNING, no sequence
-		// reset), which keeps the batch path dialect-agnostic.
+		// App-generated uuid PK only: the key is known without RETURNING, which keeps this dialect-agnostic.
 		if (pkField?.type !== 'uuid' || !pkField.special?.includes('uuid')) return false;
 
 		const aliasFields = new Set(
@@ -560,12 +560,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				.map((field) => field.field),
 		);
 
-		// Alias fields and o2m/m2m children need createOne's processO2M, which this path skips; excluding
-		// such collections means no relational data can be dropped even if a filter hook injects it.
+		// Alias / o2m / m2m fields need createOne's processO2M, which this path skips.
 		if (aliasFields.size > 0) return false;
 
-		// Fall back to the per-row loop above the dialect's multi-row INSERT limit (e.g. SQL Server's
-		// 1000-row / 2100-param cap) so a large batch doesn't attempt a doomed single statement.
+		// Above the dialect's multi-row INSERT limit (e.g. MSSQL 1000 rows / 2100 params), fall back.
 		const batchLimit = getHelpers(this.knex).schema.getMaxBatchInsertRows(Object.keys(collection.fields).length);
 		if (batchLimit !== null && data.length > batchLimit) return false;
 
@@ -575,17 +573,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		if (hasChildRelations) return false;
 
-		// Fields on this collection that own a relation (m2o / a2o). An object value here would be a
-		// nested create, which the per-row path handles specially.
+		// Fields owning a relation (m2o / a2o); an object value would be a nested create.
 		const relationalFields = new Set(
 			this.schema.relations
 				.filter((relation) => relation.collection === this.collection)
 				.map((relation) => relation.field),
 		);
 
-		// Rows must share one key set: a multi-row INSERT binds the union of columns and fills a row's
-		// missing ones, which diverges from the per-row path where an omitted column takes its DB default
-		// (notably NULL on SQLite's useNullAsDefault). Identical keys means no column is ever missing.
+		// Rows must share one key set: a multi-row INSERT NULL-fills a row's missing columns, unlike the
+		// per-row path where an omitted column takes its DB default.
 		let keySignature: string | undefined;
 
 		for (const payload of data) {
@@ -708,8 +704,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			// Savepoint so a failed batch can roll back without poisoning the outer transaction.
 			await trx.transaction((savepoint) => savepoint.insert(rows).into(this.collection));
 		} catch {
-			// Replay prepared rows one-by-one (no hooks re-run) so the failing row throws the same
-			// translated error as the per-row loop, rolling the whole batch back.
+			// Replay rows one-by-one (no hooks re-run) so the failing row throws the same translated error createOne would.
 			for (const [index, row] of rows.entries()) {
 				try {
 					await trx.insert(row).into(this.collection);
@@ -729,12 +724,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		const helpers = getHelpers(trx);
 
-		// uuid PKs are generated app-side (see canBatchCreate), so they're already on each prepared row -
-		// no RETURNING needed. formatUUID normalises per vendor (e.g. uppercase on MSSQL), matching createOne.
+		// uuid PKs are app-generated (see canBatchCreate), so they're on each prepared row; formatUUID normalises per vendor.
 		const primaryKeys: PrimaryKey[] = rows.map((row) => helpers.schema.formatUUID(row[primaryKeyField]));
 
-		// onItemCreate + action events fire per row before the integrity check, matching the per-row
-		// createMany (createOne runs onItemCreate per row, then createMany does the accumulated check).
+		// onItemCreate + action events fire per row before the integrity check, matching the per-row createMany.
 		for (const [index, primaryKey] of primaryKeys.entries()) {
 			if (opts.onItemCreate) {
 				opts.onItemCreate(this.collection, primaryKey);
