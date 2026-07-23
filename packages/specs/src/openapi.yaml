@@ -10,7 +10,7 @@ info:
   version: '10'
 externalDocs:
   description: Directus Docs
-  url: 'https://docs.directus.io'
+  url: 'https://directus.com/docs'
 tags:
   - name: Activity
     description:

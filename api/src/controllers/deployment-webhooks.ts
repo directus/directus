@@ -77,14 +77,13 @@ router.post(
 			return res.sendStatus(401);
 		}
 
-		// Look up project by external_id
 		const projectsService = new DeploymentProjectsService({
 			schema,
 			knex,
 			accountability: null,
 		});
 
-		const project = await projectsService.readByExternalId(event.project_external_id);
+		const project = await projectsService.readByExternalId(webhookConfig.deployment_id, event.project_external_id);
 
 		if (!project) {
 			// 410 signals the provider this project is no longer tracked
