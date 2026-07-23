@@ -11,7 +11,7 @@ import { toPath } from 'lodash-es';
  * @example "a[.b]" → "$.a.b"
  */
 export function convertToJsonPath(path: string): string {
-	const parts = toPath(path.startsWith('.') ? path.slice(1) : path);
+	const parts = toPath(path);
 
 	let result = '$';
 
