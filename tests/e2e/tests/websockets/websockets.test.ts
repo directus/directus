@@ -13,6 +13,17 @@ if (options.extras?.redis) {
 	test('subscribing to websockets', async () => {
 		const { subscription, unsubscribe } = await api.subscribe(collections.plants);
 
+		const initResult = await subscription.next();
+
+		expect(initResult).toMatchObject({
+			done: false,
+			value: {
+				uid: '1',
+				type: 'subscription',
+				event: 'init',
+			},
+		});
+
 		const created = await api.request(
 			createItem(collections.plants, {
 				name: 'Alocasia Frydek',
@@ -115,6 +126,14 @@ if (options.extras?.redis) {
 						_contains: 'abc',
 					},
 				},
+			},
+		});
+
+		await expect(subscription.next()).resolves.toMatchObject({
+			done: false,
+			value: {
+				type: 'subscription',
+				event: 'init',
 			},
 		});
 

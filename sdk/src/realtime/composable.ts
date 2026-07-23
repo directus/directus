@@ -17,6 +17,7 @@ import type {
 	WebSocketEvents,
 } from './types.js';
 import { generateUid } from './utils/generate-uid.js';
+import { createMessageBuffer } from './utils/message-buffer.js';
 import { messageCallback } from './utils/message-callback.js';
 
 type AuthWSClient<Schema> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
@@ -408,63 +409,59 @@ export function realtime(config: WebSocketConfig = {}) {
 					options.query = queryToParams(options.query as ExtendedQuery<Schema, Schema[Collection]>);
 				}
 
-				subscriptions.add({ ...options, collection, type: 'subscribe' });
+				const subscriptionMessage = { ...options, collection, type: 'subscribe' };
+				subscriptions.add(subscriptionMessage);
 
 				if (state.code !== 'open') {
 					debug('info', 'No connection available for subscribing!');
 					await this.connect();
 				}
 
-				this.sendMessage({ ...options, collection, type: 'subscribe' });
-				let subscribed = true;
+				type Message = SubscriptionOutput<Schema, Collection, Options['query'], SubscriptionEvents>;
 
-				async function* subscriptionGenerator(): AsyncGenerator<
-					SubscriptionOutput<Schema, Collection, Options['query'], SubscriptionEvents>,
-					void,
-					unknown
-				> {
-					while (subscribed && state.code === 'open') {
-						const message = await messageCallback(state.connection).catch(() => {
-							/* let the loop continue */
-						});
+				const buffer = createMessageBuffer<Message>();
 
-						if (!message) continue;
+				const removeMessageListener = this.onWebSocket('message', (message: Record<string, any>) => {
+					if (typeof message !== 'object' || message === null || Array.isArray(message)) return;
 
-						if (
-							'type' in message &&
-							'status' in message &&
-							message['type'] === 'subscribe' &&
-							message['status'] === 'error'
-						) {
-							throw message;
-						}
-
-						if (
-							'type' in message &&
-							'uid' in message &&
-							message['type'] === 'subscription' &&
-							message['uid'] === options.uid
-						) {
-							yield message as SubscriptionOutput<Schema, Collection, Options['query'], SubscriptionEvents>;
-						}
+					if (
+						message['type'] === 'subscribe' &&
+						message['status'] === 'error' &&
+						(message['uid'] === undefined || message['uid'] === options.uid)
+					) {
+						buffer.fail(message);
+						return;
 					}
 
-					if (config.reconnect && reconnectState.active) {
-						await reconnectState.active;
+					if (message['type'] === 'subscription' && 'uid' in message && message['uid'] === options.uid) {
+						buffer.push(message as Message);
+					}
+				});
 
-						if (state.code === 'open') {
-							// re-subscribe on the new connection
-							state.connection.send(JSON.stringify({ ...options, collection, type: 'subscribe' }));
+				// When the connection closes and we won't reconnect, the stream is over. When we will
+				// reconnect, reconnect() re-sends the subscription and this persistent listener keeps
+				// receiving on the new connection, so the buffer is left open to resume.
+				const removeCloseListener = this.onWebSocket('close', () => {
+					if (!config.reconnect) buffer.end();
+				});
 
-							yield* subscriptionGenerator();
+				this.sendMessage(subscriptionMessage);
+
+				async function* subscriptionGenerator(): AsyncGenerator<Message, void, unknown> {
+					try {
+						for (let message = await buffer.next(); message !== undefined; message = await buffer.next()) {
+							yield message;
 						}
+					} finally {
+						removeMessageListener();
+						removeCloseListener();
 					}
 				}
 
 				const unsubscribe = () => {
-					subscriptions.delete({ ...options, collection, type: 'subscribe' });
+					subscriptions.delete(subscriptionMessage);
 					this.sendMessage({ uid: options.uid, type: 'unsubscribe' });
-					subscribed = false;
+					buffer.end({ discard: true });
 				};
 
 				return {
