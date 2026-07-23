@@ -162,6 +162,25 @@ describe('connection', () => {
 		expect(JSON.stringify(error)).not.toContain(token);
 	});
 
+	it('reports a 403 license limit as its real cause instead of an authentication failure', async () => {
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: /^\/users\/me/, method: 'GET' })
+			.reply(
+				403,
+				{ errors: [{ message: 'flows limit exceeded', extensions: { code: 'LIMIT_EXCEEDED' } }] },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		await expect(
+			testConnection({ url: 'https://cms.example.com', token: 'token', kind: 'token' }),
+		).rejects.toMatchObject({
+			code: 'HTTP',
+			message: 'Target limit exceeded for https://cms.example.com.',
+			detail: 'LIMIT_EXCEEDED: flows limit exceeded',
+		});
+	});
+
 	it('resolves when the instance answers the unauthenticated ping', async () => {
 		agent
 			.get('https://cms.example.com')

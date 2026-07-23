@@ -132,11 +132,20 @@ export function mapRequestError(error: unknown, url: string): CliError {
 		const status = typeof rawStatus === 'number' ? rawStatus : undefined;
 		const code = error.errors[0]?.extensions.code;
 		const detail = error.errors.map((entry) => `${entry.extensions.code}: ${entry.message}`).join('; ');
-		const isAuth = status === 401 || status === 403 || (code !== undefined && AUTH_CODES.has(code));
+		// Directus also uses 403 for non-auth refusals such as license limits. Prefer the structured
+		// error code whenever present so those failures keep their real cause and remediation.
+		const isAuth = status === 401 || (code !== undefined ? AUTH_CODES.has(code) : status === 403);
 
 		if (isAuth) {
 			return new CliError('AUTH', `Authentication failed for ${url}.`, {
 				hint: 'Check the token or credentials for this profile.',
+				...(detail !== '' ? { detail } : {}),
+			});
+		}
+
+		if (code === 'LIMIT_EXCEEDED') {
+			return new CliError('HTTP', `Target limit exceeded for ${url}.`, {
+				hint: 'Reduce the limited resources or update the target license, then retry.',
 				...(detail !== '' ? { detail } : {}),
 			});
 		}
