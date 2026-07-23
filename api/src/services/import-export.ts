@@ -34,7 +34,6 @@ import { dump as toYAML } from 'js-yaml';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import type { Knex } from 'knex';
-import { toPath } from 'lodash-es';
 import ms, { type StringValue } from 'ms';
 import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
@@ -46,6 +45,7 @@ import { validateAccess } from '../permissions/modules/validate-access/validate-
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/index.js';
 import { destroyPipedStream } from '../utils/destroy-piped-stream.js';
 import { getService } from '../utils/get-service.js';
+import { setDeep } from '../utils/set-deep.js';
 import { useStore } from '../utils/store.js';
 import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
@@ -666,25 +666,15 @@ export class ImportService {
 							}
 
 							// A CSV column header is a user-controlled object path (dotted headers create nested
-							// values). Build the row on a null-prototype object we own and create every intermediate
-							// node the same way, so a header like `toString.call` is just an own key and can never
-							// walk into (and corrupt) a shared builtin the way lodash `set` would. See
-							// GHSA-gwvv-rr68-cmv6.
+							// values). Build the row on a null-prototype object with `setDeep`, so a header like
+							// `toString.call` is just an own key and can never walk into (and corrupt) a shared
+							// builtin the way lodash `set` would. See GHSA-gwvv-rr68-cmv6.
 							const result: Record<string, unknown> = Object.create(null);
 
 							for (const field in obj) {
-								if (obj[field] === undefined) continue;
-
-								const segments = toPath(field);
-								let node: Record<string, any> = result;
-
-								for (let i = 0; i < segments.length - 1; i += 1) {
-									const key = segments[i]!;
-									if (typeof node[key] !== 'object' || node[key] === null) node[key] = Object.create(null);
-									node = node[key];
+								if (obj[field] !== undefined) {
+									setDeep(result, field, obj[field]);
 								}
-
-								node[segments[segments.length - 1]!] = obj[field];
 							}
 
 							saveQueue.push({ data: result, rowNumber });

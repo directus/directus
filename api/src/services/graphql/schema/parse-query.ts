@@ -1,34 +1,14 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { getRelationInfo } from '@directus/utils';
 import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode } from 'graphql';
-import { get, mapKeys, merge, toPath, uniq } from 'lodash-es';
+import { get, mapKeys, merge, uniq } from 'lodash-es';
 import { getRelatedCollection } from '../../../database/get-ast-from-query/utils/get-related-collection.js';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
+import { setDeep } from '../../../utils/set-deep.js';
 import { validateQuery } from '../../../utils/validate-query.js';
 import { filterReplaceM2A, filterReplaceM2ADeep } from '../utils/filter-replace-m2a.js';
 import { replaceFuncs } from '../utils/replace-funcs.js';
 import { parseArgs } from './parse-args.js';
-
-/**
- * Write a value into the `deep` object at a user-controlled path (built from field names/aliases)
- * without a prototype-walking setter. Every intermediate node is created as a null-prototype object
- * we own, so a builtin-named segment (e.g. `toString`) is just an own key and can never reach or
- * corrupt a shared prototype the way lodash `set` would. See GHSA-gwvv-rr68-cmv6.
- */
-function setDeep(deep: Record<string, any>, path: string, value: unknown): void {
-	const segments = toPath(path);
-	if (segments.length === 0) return;
-
-	let node: Record<string, any> = deep;
-
-	for (let i = 0; i < segments.length - 1; i += 1) {
-		const key = segments[i]!;
-		if (typeof node[key] !== 'object' || node[key] === null) node[key] = Object.create(null);
-		node = node[key];
-	}
-
-	node[segments[segments.length - 1]!] = value;
-}
 
 /**
  * Get a Directus Query object from the parsed arguments (rawQuery) and GraphQL AST selectionSet. Converts SelectionSet into
