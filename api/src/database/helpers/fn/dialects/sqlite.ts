@@ -1,5 +1,6 @@
 import { InvalidQueryError } from '@directus/errors';
 import type { Knex } from 'knex';
+import { convertToJsonPath } from '../json/convert-json-path.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -92,8 +93,8 @@ export class FnHelperSQLite extends FnHelper {
 		}
 
 		// SQLite uses json_extract with $ path notation
-		// ".data.items[0].name" → "$.items[0].name"
-		const jsonPath = '$' + options.jsonPath;
+		// ".data.items[0].name" → "$.data.items[0].name"
+		const jsonPath = convertToJsonPath(options.jsonPath);
 
 		return this.knex.raw(`json_extract(??.??, ?)`, [table, column, jsonPath]);
 	}
