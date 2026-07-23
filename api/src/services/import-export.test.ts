@@ -1170,8 +1170,6 @@ describe('ImportService', () => {
 			);
 		});
 
-		// Regression test for GHSA-gwvv-rr68-cmv6: a CSV column header is a user-controlled object
-		// path. A header like `toString.call` must not corrupt the shared `Object.prototype` builtin.
 		test('does not corrupt a builtin via a prototype-polluting header', async () => {
 			const original = Object.prototype.toString.call;
 
@@ -1186,11 +1184,9 @@ describe('ImportService', () => {
 
 			await service.importCSV('test_collection', stream);
 
-			// The shared builtin is untouched and still works
 			expect(Object.prototype.toString.call).toBe(original);
 			expect(Object.prototype.toString.call([])).toBe('[object Array]');
 
-			// The value is kept as harmless own data on the row instead
 			const row = mockUpsertOne.mock.calls[0]![0];
 			expect(row).toHaveProperty('id', '1');
 			expect(row['toString']).toEqual({ call: 'boom' });

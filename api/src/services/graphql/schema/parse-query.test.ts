@@ -186,9 +186,7 @@ describe('parseFields', () => {
 
 		const query = await getQuery({}, m2aSchema, selections, mockVariableValues, mockAccountability, 'test_collection');
 		expect(query.fields).toEqual(['parent:child.grandchild']);
-
-		// `toEqual` (not `toStrictEqual`): deep is built on null-prototype nodes to prevent prototype
-		// pollution from user-controlled field/alias paths (GHSA-gwvv-rr68-cmv6).
+		
 		expect(query.deep).toEqual({
 			parent__child: {
 				grandchild: {
@@ -200,15 +198,11 @@ describe('parseFields', () => {
 		});
 	});
 
-	// Regression test for GHSA-gwvv-rr68-cmv6: a field/alias named like a builtin must not corrupt a
-	// shared prototype while building the deep query.
 	test('should not corrupt a builtin via a prototype-polluting alias path', async () => {
 		const original = Object.prototype.toString.call;
 
 		const limitArg = { name: { value: 'limit' }, value: { kind: 'IntValue', value: '10' } };
 
-		// Alias a relation as `toString`, then nest a further relation with arguments so the deep
-		// path becomes `parent.toString.grandchild` (the dangerous "builtin as non-final segment" case).
 		const selections = [
 			field('parent', {
 				children: [
