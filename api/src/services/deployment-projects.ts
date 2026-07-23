@@ -33,11 +33,12 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 	}
 
 	/**
-	 * Find a project by its provider-side external ID. Returns null if not tracked.
+	 * Find a project by external ID within a deployment. Returns null if not tracked.
+	 * external_id is unique only per deployment, so the lookup must be scoped.
 	 */
-	async readByExternalId(externalId: string): Promise<DeploymentProject | null> {
+	async readByExternalId(deploymentId: string, externalId: string): Promise<DeploymentProject | null> {
 		const results = await this.readByQuery({
-			filter: { external_id: { _eq: externalId } },
+			filter: { deployment: { _eq: deploymentId }, external_id: { _eq: externalId } },
 			limit: 1,
 		});
 
