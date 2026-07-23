@@ -13,10 +13,10 @@ export interface CliContext {
 	readonly interactive: boolean;
 }
 
-type RegisterCommands = (program: Command, getContext: () => CliContext) => void;
+type CommandRegistrar = (program: Command, getContext: () => CliContext) => void;
 
 interface RunOptions {
-	readonly registerCommands: RegisterCommands;
+	readonly registerCommands: readonly CommandRegistrar[];
 	readonly cwd?: string;
 }
 
@@ -85,7 +85,7 @@ function createProgram(options: RunOptions, ui: Ui): Command {
 	const cwd = options.cwd ?? process.cwd();
 	const getContext = (): CliContext => createContext(cwd, ui, program.opts<GlobalOptions>());
 
-	options.registerCommands(program, getContext);
+	for (const register of options.registerCommands) register(program, getContext);
 
 	return program;
 }
