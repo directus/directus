@@ -29,8 +29,13 @@ export function validateItem(
 		return conditionedField;
 	});
 
+	const hiddenFieldKeys = new Set(
+		fieldsWithConditions.filter((field) => field.meta?.hidden === true).map((field) => field.field),
+	);
+
 	const requiredFields = fieldsWithConditions.filter(
-		(field) => field.meta?.required === true && !isPresentationField(field),
+		(field) =>
+			field.meta?.required === true && !isPresentationField(field) && !hiddenFieldKeys.has(field.meta?.group ?? ''),
 	);
 
 	requiredFields.forEach((field) => {
