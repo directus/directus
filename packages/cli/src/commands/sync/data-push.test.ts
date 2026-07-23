@@ -10,11 +10,18 @@ import { type DataCollection, writeDataFiles } from '../../sync/data-store.js';
 import { partitionCollections, prepareDataPush, previewData, remapSystemRecord } from './data-push.js';
 import type { Target } from './resolve-target.js';
 
-// Keep unit tests off the network; the rejection also exercises conservative unchanged detection.
-vi.mock('../../sync/api.js', () => ({
-	fetchRecords: vi.fn(() => Promise.reject(new Error('no network in unit tests'))),
-	importBatch: vi.fn(),
-}));
+// Keep unit tests off the network. The rejection is AUTH — the not-yet-existing-collection shape, the
+// one failure content reads may swallow — so these tests also exercise conservative unchanged detection;
+// any other rejection would (correctly) refuse the whole preparation as a blind read.
+vi.mock('../../sync/api.js', async () => {
+	// The factory is hoisted above the file's imports, so CliError must arrive via dynamic import.
+	const { CliError: HoistedCliError } = await import('../../kernel/error.js');
+
+	return {
+		fetchRecords: vi.fn(() => Promise.reject(new HoistedCliError('AUTH', 'no network in unit tests'))),
+		importBatch: vi.fn(),
+	};
+});
 
 const bucket = {
 	directus_access: { a1: 'ta1' },

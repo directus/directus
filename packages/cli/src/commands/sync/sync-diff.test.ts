@@ -282,6 +282,7 @@ describe('sync diff with data', () => {
 
 		interceptDiff('merge', null);
 		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+		interceptTarget('/items/articles', [{ id: 1, title: 'Old' }]);
 
 		let sentForm: FormData | undefined;
 
@@ -340,6 +341,7 @@ describe('sync diff with data', () => {
 
 		interceptDiff('merge', null);
 		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+		interceptTarget('/items/articles', [{ id: 1, title: 'Old' }]);
 		interceptImport({ mode: 'merge', dryRun: 'true' }, { data: { applied: false, mode: 'merge', collections } });
 
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--json')).toBe(0);
@@ -434,6 +436,71 @@ describe('sync diff with data', () => {
 		expect(out).toContain('tr9');
 
 		expect(existsSync(idMapPath)).toBe(false);
+	});
+
+	it('treats a 403 on a content target read as not-yet-existing and keeps the batch intact', async () => {
+		// Directus hides unknown collections behind FORBIDDEN, so a 403 is the one read failure with an
+		// innocent meaning: the collection arrives with schema apply. The batch must keep every source row
+		// and let the import stay authoritative (a real permission failure fails there, loudly).
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/items/articles',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(
+				403,
+				{ errors: [{ message: "You don't have permission to access this.", extensions: { code: 'FORBIDDEN' } }] },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		interceptImport(
+			{ mode: 'merge', dryRun: 'true' },
+			{
+				data: {
+					applied: false,
+					mode: 'merge',
+					collections: { articles: { existing: [], new: [1], deleted: [], mapped: {} } },
+				},
+			},
+		);
+
+		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
+		expect(stdout.join('')).toContain('+1 new');
+	});
+
+	it('refuses when a content target read fails for any non-403 reason instead of importing blind', async () => {
+		// A 500/timeout/network failure says nothing about the target's rows. Treating it as "no targets"
+		// would make add resend existing rows — duplicating uuid-keyed content via server remint — so the
+		// fetch error must surface before any import request leaves the client.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/items/articles',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(500, { errors: [{ message: 'boom' }] }, { headers: { 'content-type': 'application/json' } });
+
+		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(1);
+		expect(stderr.join('')).toContain('boom');
 	});
 
 	it('extends the no-op copy when the data was checked and also matches', async () => {
