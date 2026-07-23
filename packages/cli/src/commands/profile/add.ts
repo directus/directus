@@ -1,4 +1,5 @@
 import { select, text } from '@clack/prompts';
+import type { Command } from 'commander';
 import { isSafeUrl, upsertProfile } from '../../kernel/config/file.js';
 import { pingServer, testConnection } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
@@ -8,6 +9,16 @@ import type { CliContext } from '../../kernel/run.js';
 export interface AddOptions {
 	readonly url?: string;
 	readonly token?: string;
+}
+
+export function registerAdd(profile: Command, getContext: () => CliContext): void {
+	profile
+		.command('add')
+		.description('Add or update a profile (upsert)')
+		.argument('[name]')
+		.option('--url <url>', 'Directus instance URL')
+		.option('--token <token>', 'Static token to save for this profile')
+		.action((name: string | undefined, options: AddOptions) => add(name, options, getContext()));
 }
 
 const PROFILE_NAME = /^[A-Za-z0-9_]+$/;

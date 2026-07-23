@@ -1,4 +1,5 @@
 import { confirm, select } from '@clack/prompts';
+import type { Command } from 'commander';
 import { resolveCredential } from '../../kernel/config/credentials.js';
 import { isSafeUrl, loadConfig, resolveProfile } from '../../kernel/config/file.js';
 import { type Identity, testConnection } from '../../kernel/connection.js';
@@ -9,6 +10,16 @@ import type { CliContext } from '../../kernel/run.js';
 export interface TestOptions {
 	readonly url?: string;
 	readonly token?: string;
+}
+
+export function registerTest(profile: Command, getContext: () => CliContext): void {
+	profile
+		.command('test')
+		.description('Verify a profile can authenticate')
+		.argument('[name]')
+		.option('--url <url>', 'Test a URL directly, without a profile or config file')
+		.option('--token <token>', 'Override the resolved token')
+		.action((name: string | undefined, options: TestOptions) => testProfile(name, options, getContext()));
 }
 
 export async function testProfile(name: string | undefined, options: TestOptions, ctx: CliContext): Promise<void> {
