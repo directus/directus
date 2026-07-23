@@ -1,6 +1,7 @@
 import type { Snapshot, SnapshotDiff, SnapshotSystemField } from '@directus/types';
 import { DiffKind } from '@directus/types';
 import deepDiff from 'deep-diff';
+import { isNestedMetaUpdate } from './apply-diff.js';
 import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
 export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDiff {
@@ -172,7 +173,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 	 */
 
 	const deletedCollections = diffedSnapshot.collections
-		.filter((collection) => collection.diff?.[0]?.kind === DiffKind.DELETE)
+		.filter((collection) => collection.diff?.[0]?.kind === DiffKind.DELETE && !isNestedMetaUpdate(collection.diff[0]))
 		.map(({ collection }) => collection);
 
 	diffedSnapshot.fields = diffedSnapshot.fields.filter(

@@ -111,6 +111,47 @@ describe('getSnapshotDiff', () => {
 			expect(result.fields).toHaveLength(0); // Should be filtered out
 			expect(result.relations).toHaveLength(0); // Should be filtered out
 		});
+
+		test('should keep fields and relations when the collection diff is only a nested meta delete', () => {
+			const current = createMockSnapshot({
+				collections: [{ collection: 'posts', meta: { status: 'draft', hidden: false }, schema: { name: 'posts' } }],
+				fields: [{ collection: 'posts', field: 'title', type: 'string', meta: null, schema: null }],
+				relations: [
+					{
+						collection: 'posts',
+						field: 'author_id',
+						related_collection: 'users',
+						meta: null,
+						schema: { on_delete: 'SET NULL' },
+					},
+				],
+			});
+
+			const after = createMockSnapshot({
+				collections: [{ collection: 'posts', meta: { hidden: false }, schema: { name: 'posts' } }],
+				fields: [{ collection: 'posts', field: 'title', type: 'text', meta: null, schema: null }],
+				relations: [
+					{
+						collection: 'posts',
+						field: 'author_id',
+						related_collection: 'users',
+						meta: null,
+						schema: { on_delete: 'CASCADE' },
+					},
+				],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			// The collection is only losing a meta property, it is not being deleted
+			expect(result.collections).toHaveLength(1);
+			expect(result.collections[0]!.diff[0]!.kind).toBe('D');
+			expect(result.collections[0]!.diff[0]!.path).toEqual(['meta', 'status']);
+
+			// So its field and relation changes still have to be applied
+			expect(result.fields).toHaveLength(1);
+			expect(result.relations).toHaveLength(1);
+		});
 	});
 
 	describe('fields', () => {
