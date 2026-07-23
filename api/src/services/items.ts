@@ -461,6 +461,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			const pkField = this.schema.collections[this.collection]!.primary;
 
+			// Fast path: one multi-row INSERT when provably equivalent to the per-row loop.
+			if (this.canBatchCreate(data, opts)) {
+				return await this.batchCreate(data, opts, knex, previousSeatCount);
+			}
+
 			for (const [index, payload] of data.entries()) {
 				let bypassAutoIncrementSequenceReset = true;
 
@@ -513,6 +518,251 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		}
 
 		return primaryKeys;
+	}
+
+	/** The create filter/action event name(s) for this service's event scope. */
+	private getEventScopeCreateEvents(): string[] {
+		return this.eventScope === 'items'
+			? ['items.create', `${this.collection}.items.create`]
+			: [`${this.eventScope}.create`];
+	}
+
+	/**
+	 * Whether createMany can insert these rows in one multi-row statement, provably equivalent to the
+	 * per-row loop. Rejected cases fall back to the untouched loop. Dialect-agnostic. See the inline
+	 * conditions for what each guard preserves.
+	 */
+	private canBatchCreate(data: Partial<Item>[], opts: MutationOptions): boolean {
+		if (data.length < 2) return false;
+		if (opts.overwriteDefaults !== undefined) return false;
+		if (opts.preMutationError) return false;
+		if (this.collection === 'directus_users') return false;
+
+		// Base class only: a subclass createOne override (extra validation/side effects) would be skipped.
+		if (Object.getPrototypeOf(this) !== ItemsService.prototype) return false;
+
+		// Create filter hooks run per-row in the loop; batching prepares all rows first, so a hook that
+		// reads earlier rows (or injects relational data) would diverge.
+		if (opts.emitEvents !== false && emitter.hasFilterListeners(this.getEventScopeCreateEvents())) return false;
+
+		const collection = this.schema.collections[this.collection];
+		if (!collection || collection.accountability !== null) return false;
+
+		const primaryKeyField = collection.primary;
+		const pkField = collection.fields[primaryKeyField];
+
+		// App-generated uuid PK only: the key is known without RETURNING, which keeps this dialect-agnostic.
+		if (pkField?.type !== 'uuid' || !pkField.special?.includes('uuid')) return false;
+
+		const aliasFields = new Set(
+			Object.values(collection.fields)
+				.filter((field) => field.alias === true)
+				.map((field) => field.field),
+		);
+
+		// Alias / o2m / m2m fields need createOne's processO2M, which this path skips.
+		if (aliasFields.size > 0) return false;
+
+		// Above the dialect's multi-row INSERT limit (e.g. MSSQL 1000 rows / 2100 params), fall back.
+		const batchLimit = getHelpers(this.knex).schema.getMaxBatchInsertRows(Object.keys(collection.fields).length);
+		if (batchLimit !== null && data.length > batchLimit) return false;
+
+		const hasChildRelations = this.schema.relations.some(
+			(relation) => relation.related_collection === this.collection && relation.meta?.one_field,
+		);
+
+		if (hasChildRelations) return false;
+
+		// Fields owning a relation (m2o / a2o); an object value would be a nested create.
+		const relationalFields = new Set(
+			this.schema.relations
+				.filter((relation) => relation.collection === this.collection)
+				.map((relation) => relation.field),
+		);
+
+		// Rows must share one key set: a multi-row INSERT NULL-fills a row's missing columns, unlike the
+		// per-row path where an omitted column takes its DB default.
+		let keySignature: string | undefined;
+
+		for (const payload of data) {
+			if (payload === null || typeof payload !== 'object' || Array.isArray(payload)) return false;
+			if (primaryKeyField in payload) return false;
+
+			const keys = Object.keys(payload);
+
+			for (const [key, value] of Object.entries(payload)) {
+				if (aliasFields.has(key)) return false;
+				if (relationalFields.has(key) && value !== null && typeof value === 'object') return false;
+			}
+
+			const signature = keys.sort().join(',');
+			if (keySignature === undefined) keySignature = signature;
+			else if (signature !== keySignature) return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Insert multiple flat rows in a single batched insert. Mirrors createOne's per-row prep (filter
+	 * hook, presets, m2o/a2o, value casting), then one batched INSERT, then per-row finalization
+	 * (user-integrity, onItemCreate, action events). Only invoked when canBatchCreate() holds.
+	 */
+	private async batchCreate(
+		data: Partial<Item>[],
+		opts: MutationOptions,
+		trx: Knex,
+		previousSeatCount: number | undefined,
+	): Promise<{ primaryKeys: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
+		const collection = this.schema.collections[this.collection]!;
+		const primaryKeyField = collection.primary;
+		const fields = Object.keys(collection.fields);
+
+		const aliases = Object.values(collection.fields)
+			.filter((field) => field.alias === true)
+			.map((field) => field.field);
+
+		if (!opts.bypassLimits) {
+			opts.mutationTracker!.trackMutations(data.length);
+		}
+
+		const nestedActionEvents: ActionEventParams[] = [];
+		const actionHookPayloads: AnyItem[] = [];
+		const rows: AnyItem[] = [];
+		let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
+
+		const payloadService = new PayloadService(this.collection, {
+			accountability: this.accountability,
+			knex: trx,
+			schema: this.schema,
+			nested: this.nested,
+		});
+
+		for (const payload of data) {
+			const clonedPayload: AnyItem = cloneDeep(payload);
+
+			const payloadAfterHooks =
+				opts.emitEvents !== false
+					? await emitter.emitFilter(
+							this.getEventScopeCreateEvents(),
+							clonedPayload,
+							{
+								collection: this.collection,
+							},
+							{
+								database: trx,
+								schema: this.schema,
+								accountability: this.accountability,
+							},
+						)
+					: clonedPayload;
+
+			const payloadWithPresets = this.accountability
+				? await processPayload(
+						{
+							accountability: this.accountability,
+							action: 'create',
+							collection: this.collection,
+							payload: payloadAfterHooks,
+							nested: this.nested,
+						},
+						{
+							knex: trx,
+							schema: this.schema,
+						},
+					)
+				: payloadAfterHooks;
+
+			const {
+				payload: payloadWithM2O,
+				nestedActionEvents: nestedM2O,
+				userIntegrityCheckFlags: flagsM2O,
+			} = await payloadService.processM2O(payloadWithPresets, opts);
+
+			const {
+				payload: payloadWithA2O,
+				nestedActionEvents: nestedA2O,
+				userIntegrityCheckFlags: flagsA2O,
+			} = await payloadService.processA2O(payloadWithM2O, opts);
+
+			nestedActionEvents.push(...nestedM2O, ...nestedA2O);
+			userIntegrityCheckFlags |= flagsM2O | flagsA2O;
+
+			const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
+			const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
+
+			// A filter hook may have set the PK; validate it exactly as createOne does.
+			if (payloadWithTypeCasting[primaryKeyField]) {
+				validateKeys(this.schema, this.collection, primaryKeyField, payloadWithTypeCasting[primaryKeyField]);
+			}
+
+			rows.push(payloadWithTypeCasting);
+			actionHookPayloads.push(payloadWithPresets);
+		}
+
+		try {
+			// Savepoint so a failed batch can roll back without poisoning the outer transaction.
+			await trx.transaction((savepoint) => savepoint.insert(rows).into(this.collection));
+		} catch {
+			// Replay rows one-by-one (no hooks re-run) so the failing row throws the same translated error createOne would.
+			for (const [index, row] of rows.entries()) {
+				try {
+					await trx.insert(row).into(this.collection);
+				} catch (err: any) {
+					const dbError = await translateDatabaseError(err, data[index]!);
+
+					// MySQL doesn't name the field for a primary-key unique violation; match createOne.
+					if (isDirectusError(dbError, ErrorCode.RecordNotUnique) && dbError.extensions.primaryKey) {
+						dbError.extensions.field = collection.fields[primaryKeyField]?.field ?? null;
+						delete dbError.extensions.primaryKey;
+					}
+
+					throw dbError;
+				}
+			}
+		}
+
+		const helpers = getHelpers(trx);
+
+		// uuid PKs are app-generated (see canBatchCreate), so they're on each prepared row; formatUUID normalises per vendor.
+		const primaryKeys: PrimaryKey[] = rows.map((row) => helpers.schema.formatUUID(row[primaryKeyField]));
+
+		// onItemCreate + action events fire per row before the integrity check, matching the per-row createMany.
+		for (const [index, primaryKey] of primaryKeys.entries()) {
+			if (opts.onItemCreate) {
+				opts.onItemCreate(this.collection, primaryKey);
+			}
+
+			if (opts.emitEvents !== false) {
+				nestedActionEvents.push({
+					event: this.getEventScopeCreateEvents(),
+					meta: {
+						payload: actionHookPayloads[index],
+						key: primaryKey,
+						collection: this.collection,
+					},
+					context: {
+						database: getDatabase(),
+						schema: this.schema,
+						accountability: this.accountability,
+					},
+				});
+			}
+		}
+
+		if (userIntegrityCheckFlags) {
+			if (opts.onRequireUserIntegrityCheck) {
+				opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
+			} else {
+				await validateUserCountIntegrity({
+					flags: userIntegrityCheckFlags,
+					knex: trx,
+					previousSeatCount,
+				});
+			}
+		}
+
+		return { primaryKeys, nestedActionEvents };
 	}
 
 	/**

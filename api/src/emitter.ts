@@ -59,6 +59,15 @@ export class Emitter {
 		return updatedPayload;
 	}
 
+	/**
+	 * Whether any filter listener would run for the given event(s). Mirrors `emitFilter`'s listener
+	 * resolution, so a `false` result guarantees `emitFilter` for those events is a no-op.
+	 */
+	public hasFilterListeners(event: string | string[]): boolean {
+		const events = Array.isArray(event) ? event : [event];
+		return events.some((event) => this.filterEmitter.listeners(event).length > 0);
+	}
+
 	public emitAction(event: string | string[], meta: Record<string, any>, context: EventContext | null = null): void {
 		const logger = useLogger();
 		const events = Array.isArray(event) ? event : [event];

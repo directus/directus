@@ -31,6 +31,11 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		return uuid.toUpperCase();
 	}
 
+	override getMaxBatchInsertRows(columnCount: number): number | null {
+		// SQL Server caps a VALUES clause at 1000 rows and a statement at 2100 bind params.
+		return Math.max(1, Math.min(1000, Math.floor(2100 / Math.max(1, columnCount))));
+	}
+
 	override async getDatabaseSize(): Promise<number | null> {
 		try {
 			const result = await this.knex.raw('SELECT SUM(size) * 8192 AS size FROM sys.database_files;');
