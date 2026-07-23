@@ -147,7 +147,9 @@ describe('buildCustomFormats: round-trip + active state', () => {
 		const out = editor.getHTML();
 		editor.destroy();
 
-		expect(out).toBe('<p><span class="hl" style="color: #00ff00; font-size: 20px;" title="Highlighted">x</span></p>');
+		// `title` is a preserved global attribute, so it renders in the global-attr slot (with class)
+		// ahead of the format's own `style`; single span, single title
+		expect(out).toBe('<p><span class="hl" title="Highlighted" style="color: #00ff00; font-size: 20px;">x</span></p>');
 	});
 
 	test('coexists with text color: format applied over colored text keeps the color', () => {
