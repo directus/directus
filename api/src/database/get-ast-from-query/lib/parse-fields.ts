@@ -339,15 +339,15 @@ export async function parseFields(
 		}
 	}
 
-	// Deduplicate any children fields that are included both as a regular field, and as a nested m2o field
-	const nestedCollectionNodes = children.filter((childNode) => childNode.type !== 'field');
+	// Deduplicate any children fields that are included both as a regular field, and as a nested m2o field.
+	// Collect the nested relational field keys into a Set so the check below is O(1) per child instead of a
+	// nested `find` scan — turning this dedup from O(fields²) into O(fields).
+	const nestedRelationalFieldKeys = new Set(
+		children.filter((childNode) => childNode.type !== 'field').map((childNode) => childNode.fieldKey),
+	);
 
 	return children.filter((childNode) => {
-		const existsAsNestedRelational = !!nestedCollectionNodes.find(
-			(nestedCollectionNode) => childNode.fieldKey === nestedCollectionNode.fieldKey,
-		);
-
-		if (childNode.type === 'field' && existsAsNestedRelational) return false;
+		if (childNode.type === 'field' && nestedRelationalFieldKeys.has(childNode.fieldKey)) return false;
 
 		return true;
 	});
