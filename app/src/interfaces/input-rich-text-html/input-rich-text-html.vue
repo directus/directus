@@ -1,108 +1,218 @@
 <script setup lang="ts">
 import type { SettingsStorageAssetPreset } from '@directus/types';
-import Editor from '@tinymce/tinymce-vue';
-import { cloneDeep, isEqual } from 'lodash';
-import tinymce from 'tinymce/tinymce';
-import { ComponentPublicInstance, computed, nextTick, onMounted, ref, toRefs, watch } from 'vue';
+import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
+import { onKeyStroke } from '@vueuse/core';
+import { computed, nextTick, ref, type Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import getEditorStyles from './get-editor-styles';
+import { useImage } from './composables/use-image';
+import { useLink } from './composables/use-link';
+import { useMedia } from './composables/use-media';
+import { useNormalizationWarning } from './composables/use-normalization-warning';
+import { useSourceCode } from './composables/use-source-code';
+import ImageDrawer from './drawers/image-drawer.vue';
+import LinkDrawer from './drawers/link-drawer.vue';
+import MediaDrawer from './drawers/media-drawer.vue';
+import NormalizationWarningDialog from './drawers/normalization-warning-dialog.vue';
+import SourceCodeDrawer from './drawers/source-code-drawer.vue';
+import { editorExtensions } from './extensions';
+import { ComparisonDiff } from './extensions/comparison-diff';
+import { buildCustomFormats } from './extensions/custom-formats';
+import { LinkShortcut } from './extensions/link-shortcut';
+import { decodePageBreaks, encodePageBreaks } from './extensions/page-break';
+import TableBubbleMenu from './toolbar/menus/table-bubble-menu.vue';
+import Toolbar from './toolbar/toolbar.vue';
 import toolbarDefault from './toolbar-default';
-import useImage from './useImage';
-import useInlineCode from './useInlineCode';
-import useLink from './useLink';
-import useMedia from './useMedia';
-import usePre from './usePre';
-import useSourceCode from './useSourceCode';
-import VButton from '@/components/v-button.vue';
-import VCardActions from '@/components/v-card-actions.vue';
-import VCardText from '@/components/v-card-text.vue';
-import VCardTitle from '@/components/v-card-title.vue';
-import VCard from '@/components/v-card.vue';
-import VCheckbox from '@/components/v-checkbox.vue';
-import VDialog from '@/components/v-dialog.vue';
-import VDrawer from '@/components/v-drawer.vue';
-import VInput from '@/components/v-input.vue';
-import VSelect from '@/components/v-select/v-select.vue';
-import VTabItem from '@/components/v-tab-item.vue';
-import VTab from '@/components/v-tab.vue';
-import VTabsItems from '@/components/v-tabs-items.vue';
-import VTabs from '@/components/v-tabs.vue';
-import VTextarea from '@/components/v-textarea.vue';
-import VUpload from '@/components/v-upload.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
-import { useFocusin } from '@/composables/use-focusin';
-import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
+import { parseGlobalMimeTypeAllowList, useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
-import { i18n } from '@/lang';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import { getDirectusUrlWithUtm } from '@/utils/directus-url';
 import { percentage } from '@/utils/percentage';
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import 'tinymce/skins/ui/oxide/skin.css';
-import './tinymce-overrides.css';
-import 'tinymce/tinymce';
-import 'tinymce/icons/default';
-import 'tinymce/models/dom';
-import 'tinymce/plugins/autoresize/plugin';
-import 'tinymce/plugins/code/plugin';
-import 'tinymce/plugins/directionality/plugin';
-import 'tinymce/plugins/fullscreen/plugin';
-import 'tinymce/plugins/image/plugin';
-import 'tinymce/plugins/insertdatetime/plugin';
-import 'tinymce/plugins/link/plugin';
-import 'tinymce/plugins/lists/plugin';
-import 'tinymce/plugins/media/plugin';
-import 'tinymce/plugins/pagebreak/plugin';
-import 'tinymce/plugins/preview/plugin';
-import 'tinymce/plugins/table/plugin';
-import 'tinymce/themes/silver';
-
-type CustomFormat = {
-	title: string;
-	inline: string;
-	classes: string;
-	styles: Record<string, string>;
-	attributes: Record<string, string>;
-};
 
 const props = withDefaults(
 	defineProps<{
 		value: string | null;
 		toolbar?: string[];
 		font?: 'sans-serif' | 'serif' | 'monospace';
-		customFormats?: CustomFormat[];
-		tinymceOverrides?: Record<string, unknown>;
 		disabled?: boolean;
 		nonEditable?: boolean;
 		imageToken?: string;
 		folder?: string;
+		/** Legacy TinyMCE `customFormats` option (array or JSON string); see extensions/custom-formats.ts. */
+		customFormats?: unknown;
+		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
+		tinymceOverrides?: unknown;
 		softLength?: number;
 		direction?: string;
+		// comparison view (content versioning / revision diffs): value arrives pre-marked with
+		// comparison-diff spans; side switches flow in as value changes
 		comparisonMode?: boolean;
-		comparisonSide?: 'base' | 'incoming';
-		fieldData?: any;
 	}>(),
 	{
 		toolbar: () => toolbarDefault,
 		font: 'sans-serif',
-		customFormats: () => [],
 	},
 );
 
-const emit = defineEmits(['input']);
+const emit = defineEmits<{ input: [value: string | null]; readonly: [locked: boolean] }>();
 
 const { t } = useI18n();
-const editorRef = ref<any | null>(null);
-const editorElement = ref<ComponentPublicInstance | null>(null);
-const readonlyEditorRef = ref<any | null>(null);
-const readonlyEditorInitialized = ref(false);
-const editorKey = ref(0);
-const readonlyEditorKey = ref(0);
 
-const { imageToken } = toRefs(props);
+const { imageToken, folder, value } = toRefs(props);
+
+if (
+	props.tinymceOverrides != null &&
+	(typeof props.tinymceOverrides !== 'object' || Object.keys(props.tinymceOverrides).length > 0)
+) {
+	// eslint-disable-next-line no-console
+	console.warn(
+		'[input-rich-text-html] The "tinymceOverrides" option is deprecated and no longer has any effect. Use the customFormats interface option instead.',
+	);
+}
+
+// built once at init: `customFormats` is design-time config, not reactive
+const { extensions: customFormatExtensions, formats: customFormatList } = buildCustomFormats(props.customFormats);
+
+const pageBreakLabel = computed(() => `"${t('wysiwyg_options.pagebreak')}"`);
+
+// base content font, driven by the `font` option; theme tokens use `sans` (not `sans-serif`)
+const fontFamily = computed(() => {
+	const token = props.font === 'sans-serif' ? 'sans' : props.font;
+	return `var(--theme--fonts--${token}--font-family)`;
+});
+
+const {
+	normalizationLocked,
+	normalizationWarningOpen,
+	normalizationWarningDiff,
+	checkValue,
+	onLockedClick,
+	confirmNormalizationWarning,
+	cancelNormalizationWarning,
+} = useNormalizationWarning(value, customFormatExtensions);
+
+// skipped for display-only modes; comparison values carry diff spans the base schema would flag as loss
+if (!props.comparisonMode && !props.nonEditable) checkValue();
+
+// surface the unsupported-data lock to the form so the field menu can gate raw editing (which
+// would otherwise bypass this guard); `immediate` reports the state settled by the check above
+watch(normalizationLocked, (locked) => emit('readonly', locked), { immediate: true });
+
+// read-only states: `nonEditable`/`comparisonMode` keep the normal look, `disabled` dims (see styles),
+// `normalizationLocked` guards lossy stored HTML until the warning dialog is confirmed
+const isEditable = computed(
+	() => !props.disabled && !props.nonEditable && !props.comparisonMode && !normalizationLocked.value,
+);
+
+const editorDir = computed(() => (props.direction === 'rtl' ? 'rtl' : 'ltr'));
+
+// `addToHistory: false` keeps programmatic syncs out of the undo stack (undo would wipe the content).
+// The initial load routes through here (not the constructor) so TrailingNode normalization runs inside
+// this suppressed transaction instead of dirtying the field on first click (see dirty-on-click.test.ts).
+function syncValue(instance: Editor, value: string | null) {
+	instance
+		.chain()
+		.setMeta('addToHistory', false)
+		.setContent(decodePageBreaks(value ?? ''), { emitUpdate: false })
+		.run();
+
+	// `emitUpdate: false` skips `onUpdate`, so refresh the soft-length count here too
+	updateCount(instance);
+}
+
+const count = ref(0);
+
+function updateCount(instance: Editor) {
+	count.value = instance.storage.characterCount?.characters() ?? 0;
+}
+
+const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
+
+const editor = useEditor({
+	// LinkShortcut lives here, not in the shared set, so its Mod-K handler can call this instance's opener.
+	// ComparisonDiff only joins the schema in comparison mode — the view mounts fresh per comparison,
+	// so deciding at construction is safe, and normal editing keeps stripping diff spans.
+	extensions: [
+		...editorExtensions,
+		...customFormatExtensions,
+		LinkShortcut.configure({ onTrigger: () => openLinkDrawer() }),
+		...(props.comparisonMode ? [ComparisonDiff] : []),
+	],
+	content: '',
+	editable: isEditable.value,
+	editorProps: {
+		// media nodes handle dblclick themselves in their node view
+		handleDoubleClickOn: (_view, _pos, node, nodePos) => {
+			if (node.type.name === 'image') {
+				editor.value?.commands.setNodeSelection(nodePos);
+				openImageDrawer();
+				return true;
+			}
+
+			return false;
+		},
+		// Cmd/Ctrl+click opens links in a new tab (parity with TinyMCE)
+		handleClick: (_view, _pos, event) => {
+			if (event.button !== 0 || !(event.metaKey || event.ctrlKey)) return false;
+			const link = (event.target as HTMLElement | null)?.closest('a');
+			if (!link?.href) return false;
+			window.open(link.href, '_blank', 'noopener,noreferrer');
+			return true;
+		},
+	},
+	onCreate: ({ editor }) => {
+		syncValue(editor as Editor, props.value);
+		const storage = (editor as Editor).storage as Record<string, any>;
+		if (storage.media) storage.media.onOpenDrawer = openMediaDrawer;
+	},
+	onUpdate: ({ editor }) => {
+		updateCount(editor as Editor);
+		emit('input', editor.isEmpty ? null : encodePageBreaks(editor.getHTML()));
+	},
+});
+
+function onEditorClick() {
+	if (props.disabled || props.nonEditable || props.comparisonMode) return;
+	onLockedClick();
+}
+
+// raw mode edits the stored HTML as text in the code interface — emits never round-trip through
+// the schema, so nothing is normalized away; the loss-free alternative the warning offers
+const rawMode = ref(false);
+
+function enterRawMode() {
+	normalizationWarningOpen.value = false;
+	rawMode.value = true;
+}
+
+// the unlock flips `isEditable` on the next flush, so focus has to wait for it
+async function onWarningConfirm() {
+	confirmNormalizationWarning();
+	await nextTick();
+	editor.value?.commands.focus();
+}
+
 const settingsStore = useSettingsStore();
 const { info } = useServerStore();
+
 const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
+
+const normalizationDocsUrl = computed(
+	() =>
+		getDirectusUrlWithUtm(
+			'https://directus.com/docs/releases/breaking-changes/version-12',
+			info.version,
+			'wysiwyg_normalization_locked_learn_more_link',
+		) + '#wysiwyg-editor-rebuilt-on-tiptap',
+);
+
+// without this the picker/upload accept the global (usually image) list and the pick lands as a broken <video>
+const { mimeTypeFilter: mediaMimeTypeFilter, combinedAcceptString: mediaAllowedMimeTypes } = useMimeTypeFilter([
+	'video/*',
+	'audio/*',
+]);
 
 const storageAssetTransform = ref('all');
 const storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
@@ -112,615 +222,237 @@ if (settingsStore.settings?.storage_asset_transform) {
 	storageAssetPresets.value = settingsStore.settings.storage_asset_presets ?? [];
 }
 
-const count = ref(0);
-
-const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
-	editorRef,
-	imageToken!,
-	{
-		storageAssetTransform,
-		storageAssetPresets,
-	},
+const { imageDrawerOpen, imageSelection, openImageDrawer, closeImageDrawer, onImageSelect, saveImage } = useImage(
+	editor as Ref<Editor>,
+	imageToken,
+	{ storageAssetTransform, storageAssetPresets },
 );
+
+const {
+	linkDrawerOpen,
+	linkSelection,
+	isEditingLink,
+	isLinkSaveable,
+	openLinkDrawer,
+	closeLinkDrawer,
+	saveLink,
+	unlink,
+} = useLink(editor as Ref<Editor>);
 
 const {
 	mediaDrawerOpen,
 	mediaSelection,
-	closeMediaDrawer,
-	openMediaTab,
-	onMediaSelect,
 	embed,
+	embedInvalid,
+	activeTab,
+	openMediaDrawer,
+	closeMediaDrawer,
+	onMediaSelect,
 	saveMedia,
-	mediaHeight,
-	mediaWidth,
-	mediaSource,
-	mediaButton,
-} = useMedia(editorRef, imageToken!);
+} = useMedia(editor as Ref<Editor>, imageToken);
 
-const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, isLinkSaveable } = useLink(editorRef);
+const {
+	sourceCodeDrawerOpen,
+	code,
+	normalizeConfirmOpen,
+	normalizeDiff,
+	openSourceCodeDrawer,
+	closeSourceCodeDrawer,
+	saveSourceCode,
+	confirmSaveSourceCode,
+	cancelNormalize,
+} = useSourceCode(editor as Ref<Editor>, customFormatExtensions);
 
-const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
+// pause the surrounding view's focus trap while a drawer is open so its inputs stay reachable
+const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
 
-const { preButton } = usePre(editorRef);
-const { inlineCodeButton } = useInlineCode(editorRef);
+watch([imageDrawerOpen, linkDrawerOpen, mediaDrawerOpen, sourceCodeDrawerOpen], (open) =>
+	open.some(Boolean) ? pauseFocusTrap() : unpauseFocusTrap(),
+);
 
-const internalValue = computed({
-	get() {
-		return props.value || '';
-	},
-	set(value) {
-		if (props.value !== value) {
-			contentUpdated();
-		}
-	},
-});
+// `editable` is only read at init, so keep it in sync when the prop flips
+watch(isEditable, (editable) => editor.value?.setEditable(editable));
 
-const editorInitialized = ref(false);
-const { isEditorMounted } = useEditorMounted();
-
-const editorDisabled = computed(() => {
-	if (!editorInitialized.value) return false;
-
-	return props.disabled;
-});
-
+// external value changes (async load, revert, version switch) — guard against echo loops
 watch(
-	() => [props.direction, editorRef],
-	() => {
-		if (editorRef.value) {
-			if (props.direction === 'rtl') {
-				editorRef.value.editorCommands?.commands?.exec?.mcedirectionrtl();
-			} else {
-				editorRef.value.editorCommands?.commands?.exec?.mcedirectionltr();
-			}
-		}
+	() => props.value,
+	(value) => {
+		// raw mode edits flow straight through the code interface, never through the editor
+		if (rawMode.value) return;
+		if (!editor.value) return;
+		// compare the encoded (stored) form so a re-emitted page-break marker doesn't look like a change
+		if (encodePageBreaks(editor.value.getHTML()) === value) return;
+		syncValue(editor.value, value);
+		if (!props.comparisonMode && !props.nonEditable) checkValue();
 	},
 );
 
-watch(
-	() => [props.toolbar, props.font, props.customFormats, props.tinymceOverrides],
-	(newOptions, oldOptions) => {
-		if (isEqual(newOptions, oldOptions)) return;
+const fullscreen = ref(false);
+const visualaid = ref(false);
 
-		editorRef.value?.remove?.();
-
-		editorInitialized.value = false;
-		editorKey.value++;
-	},
-);
-
-watch(
-	() => [props.value, props.font, props.direction, props.comparisonSide],
-	() => {
-		if (readonlyEditorRef.value && readonlyEditorInitialized.value) {
-			readonlyEditorRef.value.setContent(props.value || '');
-		}
-	},
-);
-
-watch(
-	() => props.comparisonSide,
-	() => {
-		readonlyEditorInitialized.value = false;
-		readonlyEditorKey.value++;
-	},
-);
-
-function getBaseEditorOptions() {
-	return {
-		skin: false,
-		body_class: props.nonEditable ? 'non-editable' : '',
-		content_css: false,
-		branding: false,
-		max_height: 1000,
-		elementpath: false,
-		statusbar: false,
-		menubar: false,
-		convert_urls: false,
-		directionality: props.direction,
-		language: i18n.global.locale.value,
-	};
-}
-
-function mapToolbarButton(button: string): string {
-	const buttonMap: Record<string, string> = {
-		link: 'customLink',
-		media: 'customMedia',
-		code: 'customCode',
-		image: 'customImage',
-		pre: 'customPre',
-		inlinecode: 'customInlineCode',
-	};
-
-	return buttonMap[button] || button;
-}
-
-const editorOptions = computed(() => {
-	const styleFormats =
-		Array.isArray(props.customFormats) && props.customFormats.length > 0 ? cloneDeep(props.customFormats) : null;
-
-	let toolbarString = (props.toolbar ?? []).map(mapToolbarButton).join(' ');
-
-	if (styleFormats) {
-		toolbarString += ' styles';
-	}
-
-	return {
-		...getBaseEditorOptions(),
-		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace'),
-		plugins: [
-			'media',
-			'table',
-			'lists',
-			'image',
-			'link',
-			'pagebreak',
-			'code',
-			'insertdatetime',
-			'autoresize',
-			'preview',
-			'fullscreen',
-			'directionality',
-		],
-		image_dimensions: false,
-		extended_valid_elements: 'audio[loop|controls],source[src|type]',
-		toolbar: toolbarString ? toolbarString : false,
-		style_formats: styleFormats,
-		file_picker_types: 'customImage customMedia image media',
-		link_default_protocol: 'https',
-		browser_spellcheck: true,
-		paste_data_images: false,
-		setup,
-		ui_mode: 'split',
-		...(props.tinymceOverrides && cloneDeep(props.tinymceOverrides)),
-	};
+onKeyStroke('Escape', () => {
+	if (fullscreen.value) fullscreen.value = false;
 });
-
-const readonlyEditorOptions = computed(() => {
-	return {
-		...getBaseEditorOptions(),
-		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', true),
-		plugins: ['autoresize', 'directionality'],
-		toolbar: false,
-		readonly: true,
-		setup: (editor: any) => {
-			readonlyEditorRef.value = editor;
-
-			editor.on('init', () => {
-				readonlyEditorInitialized.value = true;
-				editor.setContent(props.value || '');
-			});
-		},
-	};
-});
-
-const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
-
-let observer: MutationObserver;
-let emittedValue: any;
-
-function setCount() {
-	const iframeContents = editorRef.value?.contentWindow.document.getElementById('tinymce');
-	count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
-}
-
-function contentUpdated() {
-	setCount();
-
-	if (!observer) return;
-
-	const newValue = editorRef.value.getContent() || null;
-
-	if (newValue === emittedValue) return;
-
-	emittedValue = newValue;
-	emit('input', newValue);
-}
-
-function setupContentWatcher() {
-	if (observer) return;
-
-	const iframeContents = editorRef.value.contentWindow.document.getElementById('tinymce');
-
-	observer = new MutationObserver((_mutations) => {
-		contentUpdated();
-	});
-
-	const config = { characterData: true, childList: true, subtree: true };
-	observer.observe(iframeContents, config);
-}
-
-function setup(editor: any) {
-	editorRef.value = editor;
-
-	const linkShortcut = 'meta+k';
-
-	editor.ui.registry.addToggleButton('customPre', preButton);
-	editor.ui.registry.addToggleButton('customImage', imageButton);
-	editor.ui.registry.addToggleButton('customMedia', mediaButton);
-	editor.ui.registry.addToggleButton('customLink', { ...linkButton, shortcut: linkShortcut });
-
-	editor.ui.registry.addToggleButton('customInlineCode', inlineCodeButton);
-	editor.ui.registry.addButton('customCode', sourceCodeButton);
-
-	editor.on('init', function () {
-		editor.shortcuts.remove(linkShortcut);
-
-		editor.addShortcut(linkShortcut, 'Insert Link', () => {
-			editor.ui.registry.getAll().buttons.customlink.onAction();
-		});
-
-		setCount();
-
-		editorInitialized.value = true;
-	});
-
-	editor.on('OpenWindow', function (e: any) {
-		if (e.dialog?.getData) {
-			const data = e.dialog?.getData();
-
-			if (data) {
-				if (data.url) {
-					e.dialog.close();
-					editor.ui.registry.getAll().buttons.customlink.onAction();
-				}
-
-				if (data.src) {
-					e.dialog.close();
-					editor.ui.registry.getAll().buttons.customimage.onAction(true);
-				}
-			}
-		}
-	});
-
-	let pausedFocusTrap = false;
-	editor.on('OpenWindow', onOpenWindow);
-	editor.on('CloseWindow', onCloseWindow);
-
-	const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
-
-	function onOpenWindow() {
-		const toxDialogEl = document.querySelector('.tox-dialog') as HTMLElement | null;
-		if (toxDialogEl === null) return;
-
-		const firstFocusableElement = getFirstFocusableElement(toxDialogEl);
-		if (!firstFocusableElement) return;
-
-		pausedFocusTrap = true;
-		pauseFocusTrap();
-		firstFocusableElement.focus();
-	}
-
-	function getFirstFocusableElement(toxDialogEl: HTMLElement) {
-		// TinyMCE adds tabindex="-1" to all focusable elements in the dialog
-		const findElement = toxDialogEl.querySelector('[tabindex="-1"]') as HTMLElement | null;
-		if (!findElement) return;
-
-		// To shift the focus to this dialog, we need to make this element focusable
-		findElement.tabIndex = 0;
-		return findElement;
-	}
-
-	function onCloseWindow() {
-		if (!pausedFocusTrap) return;
-
-		pausedFocusTrap = false;
-		unpauseFocusTrap();
-	}
-}
-
-function setFocus(val: boolean) {
-	if (editorElement.value == null) return;
-	const body = editorElement.value.$el.parentElement?.querySelector('.tox-tinymce');
-
-	const { focus, blur } = useFocusin(body);
-
-	if (body == null) return;
-
-	if (val) {
-		focus();
-		body.classList.add('focus');
-	} else {
-		blur();
-		body.classList.remove('focus');
-	}
-}
-
-onMounted(() => {
-	tinymce.addI18n(i18n.global.locale.value, {
-		Undo: t('wysiwyg_options.undo'),
-		Redo: t('wysiwyg_options.redo'),
-		Bold: t('wysiwyg_options.bold'),
-		Italic: t('wysiwyg_options.italic'),
-		Underline: t('wysiwyg_options.underline'),
-		Strikethrough: t('wysiwyg_options.strikethrough'),
-		Subscript: t('wysiwyg_options.subscript'),
-		Superscript: t('wysiwyg_options.superscript'),
-		'Font {0}': `${t('wysiwyg_options.fontselect')} {0}`,
-		'Font size {0}': `${t('wysiwyg_options.fontsizeselect')} {0}`,
-		'Heading 1': t('wysiwyg_options.h1'),
-		'Heading 2': t('wysiwyg_options.h2'),
-		'Heading 3': t('wysiwyg_options.h3'),
-		'Heading 4': t('wysiwyg_options.h4'),
-		'Heading 5': t('wysiwyg_options.h5'),
-		'Heading 6': t('wysiwyg_options.h6'),
-		'Align center': t('wysiwyg_options.aligncenter'),
-		'Align left': t('wysiwyg_options.alignleft'),
-		'Align right': t('wysiwyg_options.alignright'),
-		Justify: t('wysiwyg_options.alignjustify'),
-		'No alignment': t('wysiwyg_options.alignnone'),
-		'Increase indent': t('wysiwyg_options.indent'),
-		'Decrease indent': t('wysiwyg_options.outdent'),
-		'Numbered list': t('wysiwyg_options.numlist'),
-		'Bullet list': t('wysiwyg_options.bullist'),
-		'Text color {0}': `${t('wysiwyg_options.forecolor')} {0}`,
-		'Background color {0}': `${t('wysiwyg_options.backcolor')} {0}`,
-		'Clear formatting': t('wysiwyg_options.removeformat'),
-		Cut: t('wysiwyg_options.cut'),
-		Copy: t('wysiwyg_options.copy'),
-		Paste: t('wysiwyg_options.paste'),
-		Remove: t('wysiwyg_options.remove'),
-		'Select all': t('wysiwyg_options.selectall'),
-		Blockquote: t('wysiwyg_options.blockquote'),
-		Fullscreen: t('wysiwyg_options.fullscreen'),
-		Table: t('wysiwyg_options.table'),
-		'Horizontal line': t('wysiwyg_options.hr'),
-		'Visual aids': t('wysiwyg_options.visualaid'),
-		'Left to right': t('left_to_right'),
-		'Right to left': t('right_to_left'),
-	});
-});
-
-const menuActive = computed(
-	() => codeDrawerOpen.value || imageDrawerOpen.value || mediaDrawerOpen.value || linkDrawerOpen.value,
-);
-
-function useEditorMounted() {
-	const isEditorMounted = ref(true);
-
-	watch(() => props.nonEditable, reMountEditor);
-
-	return { isEditorMounted };
-
-	async function reMountEditor() {
-		isEditorMounted.value = false;
-		await nextTick();
-		isEditorMounted.value = true;
-	}
-}
 </script>
 
 <template>
-	<div v-prevent-focusout="menuActive" class="wysiwyg" :class="{ disabled }">
-		<template v-if="isEditorMounted">
-			<Editor
-				v-if="comparisonMode"
-				:key="`comparison-${comparisonSide ?? ''}-${readonlyEditorKey}`"
-				:value="value"
-				:init="readonlyEditorOptions"
-				disabled
-			/>
-			<Editor
-				v-else-if="nonEditable"
-				:key="`readonly-${readonlyEditorKey}`"
-				:value="value"
-				:init="readonlyEditorOptions"
-				disabled
-			/>
-			<Editor
-				v-else
-				:key="editorKey"
-				ref="editorElement"
-				v-model="internalValue"
-				:init="editorOptions"
-				:disabled="editorDisabled"
-				model-events="change keydown blur focus paste ExecCommand SetContent"
-				@focusin="setFocus(true)"
-				@focusout="setFocus(false)"
-				@focus="setupContentWatcher"
-				@set-content="contentUpdated"
-			/>
-		</template>
-		<template v-if="softLength">
-			<span
-				class="remaining"
-				:class="{
-					warning: percRemaining < 10,
-					danger: percRemaining < 5,
-				}"
-			>
-				{{ softLength - count }}
-			</span>
-		</template>
-		<VDialog v-model="linkDrawerOpen" @esc="closeLinkDrawer" @apply="saveLink">
-			<VCard>
-				<VCardTitle>{{ $t('wysiwyg_options.link') }}</VCardTitle>
-				<VCardText>
-					<div class="grid">
-						<div class="field">
-							<div class="type-label">{{ $t('url') }}</div>
-							<VInput v-model="linkSelection.url" :placeholder="$t('url_placeholder')" autofocus></VInput>
-						</div>
-						<div class="field">
-							<div class="type-label">{{ $t('display_text') }}</div>
-							<VInput v-model="linkSelection.displayText" :placeholder="$t('display_text_placeholder')"></VInput>
-						</div>
-						<div class="field half">
-							<div class="type-label">{{ $t('tooltip') }}</div>
-							<VInput v-model="linkSelection.title" :placeholder="$t('tooltip_placeholder')"></VInput>
-						</div>
-						<div class="field half-right">
-							<div class="type-label">{{ $t('open_link_in') }}</div>
-							<VCheckbox v-model="linkSelection.newTab" block :label="$t('new_tab')"></VCheckbox>
-						</div>
-					</div>
-				</VCardText>
-				<VCardActions>
-					<VButton secondary @click="closeLinkDrawer">{{ $t('cancel') }}</VButton>
-					<VButton :disabled="!isLinkSaveable" @click="saveLink">{{ $t('save') }}</VButton>
-				</VCardActions>
-			</VCard>
-		</VDialog>
+	<VNotice v-if="normalizationLocked && !rawMode" type="warning" multiline class="normalization-notice">
+		{{ t('wysiwyg_options.normalization_locked_notice') }}
+		<a :href="normalizationDocsUrl" target="_blank" rel="noopener noreferrer">
+			{{ t('wysiwyg_options.normalization_locked_learn_more') }}
+		</a>
+	</VNotice>
+	<div
+		class="wysiwyg"
+		:class="{ disabled, 'non-editable': nonEditable || comparisonMode, fullscreen, visualaid }"
+		:style="{ '--editor-font-family': fontFamily, '--page-break-label': pageBreakLabel }"
+	>
+		<Toolbar
+			v-if="!nonEditable && !comparisonMode && !rawMode"
+			:editor="editor"
+			:toolbar="toolbar"
+			:font="font"
+			:custom-formats="customFormatList"
+			:disabled="disabled || normalizationLocked"
+			:fullscreen="fullscreen"
+			:visualaid="visualaid"
+			@toggle-fullscreen="fullscreen = !fullscreen"
+			@toggle-visualaid="visualaid = !visualaid"
+			@open-image="openImageDrawer"
+			@open-media="openMediaDrawer"
+			@open-link="openLinkDrawer"
+			@open-source-code="openSourceCodeDrawer"
+		/>
+		<InterfaceInputCode
+			v-if="rawMode"
+			:value="value"
+			language="htmlmixed"
+			:line-number="false"
+			:disabled="disabled"
+			@input="$emit('input', $event)"
+		/>
 
-		<VDrawer
-			v-model="codeDrawerOpen"
-			:title="$t('wysiwyg_options.source_code')"
-			icon="code"
-			@cancel="closeCodeDrawer"
-			@apply="saveCode"
+		<EditorContent v-show="!rawMode" class="editor-content" :editor="editor" :dir="editorDir" @click="onEditorClick" />
+
+		<span
+			v-if="softLength && !comparisonMode && !rawMode"
+			class="remaining"
+			:class="{
+				warning: percRemaining < 10,
+				danger: percRemaining < 5,
+			}"
 		>
-			<div class="content">
-				<InterfaceInputCode
-					:value="code"
-					language="htmlmixed"
-					line-wrapping
-					@input="code = $event"
-				></InterfaceInputCode>
-			</div>
+			{{ softLength - count }}
+		</span>
 
-			<template #actions:primary>
-				<PrivateViewHeaderBarActionButton :label="$t('save')" icon="check" @click="saveCode" />
-			</template>
-		</VDrawer>
+		<TableBubbleMenu v-if="!nonEditable && !comparisonMode && !normalizationLocked" :editor="editor" />
 
-		<VDrawer
+		<ImageDrawer
 			v-model="imageDrawerOpen"
-			:title="$t('wysiwyg_options.image')"
-			icon="image"
+			v-model:image-selection="imageSelection"
+			:storage-asset-transform="storageAssetTransform"
+			:storage-asset-presets="storageAssetPresets"
+			:folder="folder"
+			:allowed-mime-types="allowedMimeTypes"
+			@select="onImageSelect"
+			@save="saveImage"
 			@cancel="closeImageDrawer"
-			@apply="saveImage"
-		>
-			<div class="content">
-				<template v-if="imageSelection">
-					<img class="image-preview" :src="imageSelection.previewUrl" />
-					<div class="grid">
-						<div class="field half">
-							<div class="type-label">{{ $t('image_url') }}</div>
-							<VInput v-model="imageSelection.imageUrl" />
-						</div>
-						<div class="field half-right">
-							<div class="type-label">{{ $t('alt_text') }}</div>
-							<VInput v-model="imageSelection.alt" :nullable="false" />
-						</div>
-						<template v-if="storageAssetTransform === 'all'">
-							<div class="field half">
-								<div class="type-label">{{ $t('width') }}</div>
-								<VInput v-model="imageSelection.width" :disabled="!!imageSelection.transformationKey" />
-							</div>
-							<div class="field half-right">
-								<div class="type-label">{{ $t('height') }}</div>
-								<VInput v-model="imageSelection.height" :disabled="!!imageSelection.transformationKey" />
-							</div>
-						</template>
-						<div class="field half">
-							<div class="type-label">{{ $t('wysiwyg_options.lazy_loading') }}</div>
-							<VCheckbox v-model="imageSelection.lazy" block :label="$t('wysiwyg_options.lazy_loading_label')" />
-						</div>
-						<div v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0" class="field half">
-							<div class="type-label">{{ $t('transformation_preset_key') }}</div>
-							<VSelect
-								v-model="imageSelection.transformationKey"
-								:items="storageAssetPresets.map((preset) => ({ text: preset.key, value: preset.key }))"
-								show-deselect
-							/>
-						</div>
-					</div>
-				</template>
-				<VUpload
-					v-else
-					:multiple="false"
-					from-library
-					from-url
-					:folder="folder"
-					:accept="allowedMimeTypes"
-					@input="onImageSelect"
-				/>
-			</div>
+		/>
 
-			<template #actions:primary>
-				<PrivateViewHeaderBarActionButton :label="$t('save_image')" icon="check" @click="saveImage" />
-			</template>
-		</VDrawer>
+		<LinkDrawer
+			v-model="linkDrawerOpen"
+			v-model:link-selection="linkSelection"
+			:editing="isEditingLink"
+			:saveable="isLinkSaveable"
+			@save="saveLink"
+			@unlink="unlink"
+			@cancel="closeLinkDrawer"
+		/>
 
-		<VDrawer
+		<MediaDrawer
 			v-model="mediaDrawerOpen"
-			:title="$t('wysiwyg_options.media')"
-			icon="slideshow"
+			v-model:media-selection="mediaSelection"
+			v-model:embed="embed"
+			v-model:active-tab="activeTab"
+			:embed-invalid="embedInvalid"
+			:folder="folder"
+			:allowed-mime-types="mediaAllowedMimeTypes"
+			:filter="mediaMimeTypeFilter"
+			@select="onMediaSelect"
+			@save="saveMedia"
 			@cancel="closeMediaDrawer"
-			@apply="saveMedia"
-		>
-			<template #sidebar>
-				<VTabs v-model="openMediaTab" vertical>
-					<VTab value="video">{{ $t('media') }}</VTab>
-					<VTab value="embed">{{ $t('embed') }}</VTab>
-				</VTabs>
-			</template>
+		/>
 
-			<div class="content">
-				<VTabsItems v-model="openMediaTab">
-					<VTabItem value="video">
-						<template v-if="mediaSelection">
-							<video v-if="mediaSelection.tag !== 'iframe'" class="media-preview" controls="true">
-								<source :src="mediaSelection.previewUrl" />
-							</video>
-							<iframe
-								v-if="mediaSelection.tag === 'iframe'"
-								:title="$t('interfaces.input-rich-text-html.media_preview_iframe_title')"
-								class="media-preview"
-								:src="mediaSelection.previewUrl"
-							></iframe>
-							<div class="grid">
-								<div class="field">
-									<div class="type-label">{{ $t('source') }}</div>
-									<VInput v-model="mediaSource" />
-								</div>
-								<div class="field half">
-									<div class="type-label">{{ $t('width') }}</div>
-									<VInput v-model="mediaWidth" />
-								</div>
-								<div class="field half-right">
-									<div class="type-label">{{ $t('height') }}</div>
-									<VInput v-model="mediaHeight" />
-								</div>
-							</div>
-						</template>
-						<VUpload
-							v-else
-							:multiple="false"
-							from-library
-							from-url
-							:folder="folder"
-							:accept="allowedMimeTypes"
-							@input="onMediaSelect"
-						/>
-					</VTabItem>
-					<VTabItem value="embed">
-						<div class="grid">
-							<div class="field">
-								<div class="type-label">{{ $t('embed') }}</div>
-								<VTextarea v-model="embed" :nullable="false" />
-							</div>
-						</div>
-					</VTabItem>
-				</VTabsItems>
-			</div>
+		<SourceCodeDrawer
+			v-model="sourceCodeDrawerOpen"
+			v-model:code="code"
+			v-model:normalize-confirm-open="normalizeConfirmOpen"
+			:normalize-diff="normalizeDiff"
+			@save="saveSourceCode"
+			@cancel="closeSourceCodeDrawer"
+			@confirm-save="confirmSaveSourceCode"
+			@cancel-normalize="cancelNormalize"
+		/>
 
-			<template #actions:primary>
-				<PrivateViewHeaderBarActionButton :label="$t('save_media')" icon="check" @click="saveMedia" />
-			</template>
-		</VDrawer>
+		<NormalizationWarningDialog
+			v-model="normalizationWarningOpen"
+			:diff="normalizationWarningDiff"
+			@confirm="onWarningConfirm"
+			@cancel="cancelNormalizationWarning"
+			@raw="enterRawMode"
+		/>
 	</div>
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins';
+.wysiwyg {
+	--v-button-background-color: transparent;
+	--v-button-color: var(--theme--form--field--input--foreground);
+	--v-button-background-color-hover: var(--theme--form--field--input--border-color);
+	--v-button-color-hover: var(--theme--form--field--input--foreground);
 
-.body {
-	padding: 1.125rem;
+	position: relative; // anchors the soft-length `.remaining` indicator
+	background-color: var(--theme--form--field--input--background);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
+	transition: border-color var(--fast) var(--transition);
+
+	&:not(.disabled):not(.non-editable):hover {
+		border-color: var(--theme--form--field--input--border-color-hover);
+	}
+
+	&:not(.disabled):not(.non-editable):focus-within {
+		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+		outline-offset: var(--focus-ring-offset-invert);
+	}
+
+	// `non-editable` stays visually normal (read-only display); only `disabled` dims
+	&.disabled:not(.non-editable) {
+		background-color: var(--theme--form--field--input--background-subdued);
+
+		:deep(.ProseMirror) {
+			color: var(--theme--foreground-subdued);
+		}
+	}
+
+	&.fullscreen {
+		position: fixed;
+		inset: 0;
+		z-index: 490; // below drawers/dialogs (500+) so image/link drawers stay on top
+		display: flex;
+		flex-direction: column;
+		border-radius: 0;
+
+		.editor-content {
+			flex: 1;
+			min-block-size: 0;
+			overflow: auto;
+		}
+	}
 }
 
-.grid {
-	@include mixins.form-grid;
+.normalization-notice {
+	margin-block-end: 0.5rem;
 }
 
 .remaining {
@@ -742,17 +474,260 @@ function useEditorMounted() {
 	color: var(--theme--danger);
 }
 
-.image-preview,
-.media-preview {
-	inline-size: 100%;
-	block-size: var(--input-height-md);
-	margin-block-end: 1.375rem;
-	object-fit: cover;
-	border-radius: var(--theme--border-radius);
+/* Content styles, scoped to the ProseMirror container so they neither leak into the app nor inherit app styles. */
+.wysiwyg :deep(.ProseMirror) {
+	min-block-size: var(--input-height-tall);
+	padding: 1.125rem;
+	outline: none;
+	color: var(--theme--form--field--input--foreground);
+	font-family: var(--editor-font-family);
+	font-size: 0.875rem;
+	line-height: 1.5714;
+	font-weight: 500;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		font-family: var(--editor-font-family);
+		color: var(--theme--form--field--input--foreground-accent);
+		font-weight: 700;
+		margin-block-end: 0;
+	}
+
+	:is(h1, h2, h3, h4, h5, h6) + p {
+		margin-block-start: 0.5em;
+	}
+
+	h1 {
+		font-size: 2rem;
+		line-height: 1.2813;
+		margin-block-start: 1em;
+	}
+
+	h2 {
+		font-size: 1.375rem;
+		line-height: 1.4091;
+		margin-block-start: 1.25em;
+	}
+
+	h3 {
+		font-size: 1.0625rem;
+		line-height: 1.5294;
+		margin-block-start: 1.25em;
+	}
+
+	h4 {
+		font-size: 0.875rem;
+		line-height: 1.6429;
+		margin-block-start: 1.5em;
+	}
+
+	h5 {
+		font-size: 0.8125rem;
+		line-height: 1.6923;
+		margin-block-start: 2em;
+	}
+
+	h6 {
+		font-size: 0.6875rem;
+		line-height: 1.8182;
+		margin-block-start: 2em;
+	}
+
+	p,
+	ul,
+	ol {
+		font-family: var(--editor-font-family);
+		margin: 1.5em 0;
+	}
+
+	:is(ul, ol) :is(ul, ol) {
+		margin: 0;
+	}
+
+	li,
+	li > p {
+		margin: 0;
+	}
+
+	a {
+		color: var(--theme--primary-accent);
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
+	b,
+	strong {
+		font-weight: 700;
+	}
+
+	code {
+		padding: 0.125rem 0.25rem;
+		font-family: var(--theme--fonts--monospace--font-family), monospace;
+		background-color: var(--theme--background-normal);
+		border-radius: var(--theme--border-radius);
+		overflow-wrap: break-word;
+	}
+
+	pre {
+		padding: 1em;
+		font-family: var(--theme--fonts--monospace--font-family), monospace;
+		background-color: var(--theme--background-normal);
+		border-radius: var(--theme--border-radius);
+		overflow: auto;
+
+		code {
+			padding: 0;
+			background: none;
+		}
+	}
+
+	blockquote {
+		font-family: var(--editor-font-family);
+		border-inline-start: 2px solid var(--theme--form--field--input--border-color);
+		padding-inline-start: 1em;
+		margin-inline-start: 0;
+	}
+
+	img,
+	video {
+		max-inline-size: 100%;
+		block-size: auto;
+		border-radius: var(--theme--border-radius);
+	}
+
+	iframe {
+		max-inline-size: 100%;
+		border-radius: var(--theme--border-radius);
+	}
+
+	:is(img, hr, .page-break).ProseMirror-selectednode {
+		outline: 2px solid var(--theme--primary);
+	}
+
+	.page-break {
+		position: relative;
+		block-size: 0;
+		border: none;
+		border-block-start: 2px dashed var(--theme--form--field--input--border-color);
+		margin-block: 2em;
+		user-select: none;
+
+		&::after {
+			content: var(--page-break-label, 'Page Break');
+			position: absolute;
+			inset-block-start: -0.75em;
+			inset-inline-start: 50%;
+			transform: translateX(-50%);
+			padding-inline: 0.5em;
+			background-color: var(--theme--form--field--input--background);
+			color: var(--theme--foreground-subdued);
+			font-size: 0.6875rem;
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+		}
+	}
+
+	hr {
+		background-color: var(--theme--form--field--input--border-color);
+		block-size: 0.0625rem;
+		border: none;
+		margin-block: 2em;
+	}
+
+	// prevent table from extending beyond the editor itself
+	.tableWrapper {
+		overflow-x: auto;
+		margin: 1.5em 0;
+	}
+
+	table {
+		border-collapse: collapse;
+		table-layout: fixed; // honor the resizable extension's colwidth
+		inline-size: 100%;
+		margin: 0; // vertical spacing lives on `.tableWrapper`
+		overflow: hidden;
+	}
+
+	table :is(th, td) {
+		position: relative; // anchors the resize handle
+		border: 0.0625rem solid var(--theme--form--field--input--border-color);
+		padding: 0.3125rem;
+		vertical-align: top;
+		box-sizing: border-box;
+	}
+
+	table :is(th, td) > * {
+		margin-block: 0;
+	}
+
+	table th {
+		font-weight: 700;
+		text-align: start;
+		background-color: var(--theme--background-subdued);
+	}
+
+	// tiptap adds `.selectedCell` to the active cell selection
+	table .selectedCell::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: var(--theme--primary);
+		opacity: 0.1;
+		pointer-events: none;
+	}
+
+	// tiptap adds `.column-resize-handle` while resizing
+	.column-resize-handle {
+		position: absolute;
+		inset-block: 0;
+		inset-inline-end: -0.125rem;
+		inline-size: 0.25rem;
+		background-color: var(--theme--primary);
+		cursor: col-resize;
+		pointer-events: none;
+	}
+
+	&.resize-cursor {
+		cursor: col-resize;
+	}
+
+	figure {
+		display: table;
+		margin: 0.8125rem auto;
+	}
+
+	figure figcaption {
+		color: var(--theme--foreground-subdued);
+		display: block;
+		margin-block-start: 0.1875rem;
+		text-align: center;
+	}
+
+	// content versioning / revision diff highlights (comparison mode)
+	.comparison-diff--added {
+		color: var(--theme--success);
+		background-color: var(--theme--success-background);
+		padding: 0.125rem;
+		border-radius: var(--theme--border-radius);
+	}
+
+	.comparison-diff--removed {
+		color: var(--theme--danger);
+		background-color: var(--theme--danger-background);
+		padding: 0.125rem;
+		border-radius: var(--theme--border-radius);
+	}
 }
 
-.content {
-	padding: var(--content-padding);
-	padding-block-end: var(--content-padding);
+/* `visualaid` toggle: dashed guides so borderless tables stay visible while editing. */
+.wysiwyg.visualaid :deep(.ProseMirror) table :is(th, td) {
+	border: 0.0625rem dashed var(--theme--primary);
 }
 </style>

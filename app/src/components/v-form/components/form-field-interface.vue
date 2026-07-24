@@ -27,7 +27,7 @@ const props = defineProps<{
 	version?: ContentVersionMaybeNew | null;
 }>();
 
-defineEmits(['update:modelValue', 'setFieldValue']);
+defineEmits(['update:modelValue', 'setFieldValue', 'readonly']);
 
 const inter = useExtension(
 	'interface',
@@ -59,6 +59,7 @@ const value = computed(() =>
 		<VErrorBoundary v-if="interfaceExists && !rawEditorActive" :name="componentName">
 			<component
 				:is="componentName"
+				:key="`${componentName}-${version?.id ?? 'main'}`"
 				v-bind="(field.meta && field.meta.options) || {}"
 				:autofocus="disabled !== true && autofocus"
 				:disabled="disabled"
@@ -82,6 +83,7 @@ const value = computed(() =>
 				:version
 				@input="$emit('update:modelValue', $event)"
 				@set-field-value="$emit('setFieldValue', $event)"
+				@readonly="$emit('readonly', $event)"
 			/>
 
 			<template #fallback>
