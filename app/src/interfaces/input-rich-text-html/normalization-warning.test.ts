@@ -117,6 +117,29 @@ describe('normalization warning wiring', () => {
 		expect(editor.isEditable).toBe(true);
 	});
 
+	test('a lossy value emits readonly=true so the form can gate raw editing', async () => {
+		const { wrapper } = await mountWithValue('<marquee>legacy</marquee>');
+
+		expect(wrapper.emitted('readonly')?.at(-1)).toEqual([true]);
+	});
+
+	test('a clean value emits readonly=false', async () => {
+		const { wrapper } = await mountWithValue('<p>hello</p>');
+
+		expect(wrapper.emitted('readonly')?.at(-1)).toEqual([false]);
+	});
+
+	test('confirming the warning emits readonly=false', async () => {
+		const { wrapper } = await mountWithValue('<marquee>legacy</marquee>');
+
+		await wrapper.findComponent(EditorContent).trigger('click');
+		findDialog(wrapper).vm.$emit('confirm');
+		await flushPromises();
+		await nextTick();
+
+		expect(wrapper.emitted('readonly')?.at(-1)).toEqual([false]);
+	});
+
 	test('cancelling the warning keeps the editor read-only', async () => {
 		const { wrapper, editor } = await mountWithValue('<marquee>legacy</marquee>');
 
