@@ -10,7 +10,7 @@ import { toPath } from 'lodash-es';
  *
  * @example ".color" → { template: "->?", bindings: ["color"] }
  * @example ".color" (asText) → { template: "->>?", bindings: ["color"] }
- * @example ".items[0].name" → { template: "->?->?->?", bindings: ["items", 0, "name"] }
+ * @example ".items[0].name" → { template: "->?->0->?", bindings: ["items", 0, "name"] }
  * @example ".items[0].name" (asText) → { template: "->?->?->>?", bindings: ["items", 0, "name"] }
  */
 export function buildPostgresJsonPath(
