@@ -20,8 +20,8 @@ const router = useRouter();
 const userStore = useUserStore();
 const isAdmin = userStore.isAdmin;
 const permissionsStore = usePermissionsStore();
-const canCreateProvider = permissionsStore.hasPermission('directus_deployments', 'create');
-const canReadRuns = permissionsStore.hasPermission('directus_deployment_runs', 'read');
+const canCreateProvider = computed(() => permissionsStore.hasPermission('directus_deployments', 'create'));
+const canReadRuns = computed(() => permissionsStore.hasPermission('directus_deployment_runs', 'read'));
 
 const { providers, loading, fetch } = useDeploymentNavigation();
 
@@ -47,7 +47,7 @@ const providersList = computed(() => {
 	}
 
 	return providers.value
-		.filter((p) => (p.projects?.length ?? 0) > 0 && canReadRuns)
+		.filter((p) => (p.projects?.length ?? 0) > 0 && canReadRuns.value)
 		.map((p) => ({
 			type: p.provider,
 			configured: true,

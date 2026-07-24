@@ -10,11 +10,12 @@ import {
 } from '@directus/sdk';
 import type { DeploymentConfig } from '@directus/types';
 import { isEmpty, isEqual, isNil, pickBy } from 'lodash';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import DeploymentNavigation from '../../components/navigation.vue';
+import { useDeploymentCapabilities } from '../../composables/use-deployment-capabilities';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
-import { useProviderConfigs } from '../../config/providers';
+import { defaultNotDeployableHintKey, useProviderConfigs } from '../../config/providers';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -24,6 +25,7 @@ import VCheckbox from '@/components/v-checkbox.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
 import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
@@ -42,12 +44,14 @@ const router = useRouter();
 const { refresh: refreshNavigation } = useDeploymentNavigation();
 const permissionsStore = usePermissionsStore();
 
-const canManageProjects =
-	permissionsStore.hasPermission('directus_deployment_projects', 'create') ||
-	permissionsStore.hasPermission('directus_deployment_projects', 'delete');
+const canManageProjects = computed(
+	() =>
+		permissionsStore.hasPermission('directus_deployment_projects', 'create') ||
+		permissionsStore.hasPermission('directus_deployment_projects', 'delete'),
+);
 
-const canDelete = permissionsStore.hasPermission('directus_deployments', 'delete');
-const canUpdate = permissionsStore.hasPermission('directus_deployments', 'update');
+const canDelete = computed(() => permissionsStore.hasPermission('directus_deployments', 'delete'));
+const canUpdate = computed(() => permissionsStore.hasPermission('directus_deployments', 'update'));
 const loading = ref(true);
 const saving = ref(false);
 const deleting = ref(false);
@@ -62,6 +66,40 @@ const initialProjectIds = ref<string[]>([]);
 
 const { providerConfigs } = useProviderConfigs(true, true);
 const providerConfig = computed(() => providerConfigs.value[props.provider]);
+
+const {
+	capabilities: mergedCapabilities,
+	setFromDeployment: setCapabilitiesFromDeployment,
+	reset: resetCapabilities,
+} = useDeploymentCapabilities(() => props.provider);
+
+const showDeployHookSetupNotice = computed(() => mergedCapabilities.value.supportsDeployHookUrl);
+
+const deployHooksOptionKey = 'deploy_hooks_by_project';
+type DeployHookEntry = { name: string; url: string };
+const projectDeployHooks = reactive<Record<string, DeployHookEntry[]>>({});
+const initialProjectDeployHooks = ref<Record<string, DeployHookEntry[]>>({});
+const expandedHookProjects = ref<Set<string>>(new Set());
+
+function toggleHookExpansion(externalId: string) {
+	if (expandedHookProjects.value.has(externalId)) {
+		expandedHookProjects.value.delete(externalId);
+	} else {
+		expandedHookProjects.value.add(externalId);
+	}
+}
+
+function addDeployHook(externalId: string) {
+	if (!projectDeployHooks[externalId]) {
+		projectDeployHooks[externalId] = [];
+	}
+
+	projectDeployHooks[externalId]!.push({ name: '', url: '' });
+}
+
+function removeDeployHook(externalId: string, index: number) {
+	projectDeployHooks[externalId]?.splice(index, 1);
+}
 
 const allFields = computed(() => [
 	...(providerConfig.value?.credentialsFields || []),
@@ -78,6 +116,23 @@ const optionsFieldNames = computed(
 
 const filterEmpty = (obj: Record<string, any>) => pickBy(obj, (v) => !isNil(v) && v !== '');
 
+const projectDeployableHintKey = computed(
+	() => providerConfig.value?.notDeployableHintKey ?? defaultNotDeployableHintKey,
+);
+
+const projectDeployableStatusKey = computed(() => providerConfig.value?.notDeployableStatusKey ?? null);
+
+const hasDeployHookEdits = computed(() => {
+	for (const externalId of Object.keys(projectDeployHooks)) {
+		const current = projectDeployHooks[externalId] ?? [];
+		const initial = initialProjectDeployHooks.value[externalId] ?? [];
+
+		if (!isEqual(current, initial)) return true;
+	}
+
+	return false;
+});
+
 const hasEdits = computed(() => {
 	const credentialsEdits = pickBy(configurationEdits.value, (_, key) => credentialsFieldNames.value.includes(key));
 	const optionsEdits = pickBy(configurationEdits.value, (_, key) => optionsFieldNames.value.includes(key));
@@ -90,7 +145,7 @@ const hasEdits = computed(() => {
 
 	const projectsChanged = !isEqual([...selectedProjectIds.value].sort(), [...initialProjectIds.value].sort());
 
-	return hasCredentialsEdits || hasOptionsEdits || projectsChanged;
+	return hasCredentialsEdits || hasOptionsEdits || projectsChanged || hasDeployHookEdits.value;
 });
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
@@ -103,6 +158,15 @@ function discardAndLeave() {
 	if (!leaveTo.value) return;
 	configurationEdits.value = {};
 	selectedProjectIds.value = [...initialProjectIds.value];
+
+	for (const key of Object.keys(projectDeployHooks)) {
+		delete projectDeployHooks[key];
+	}
+
+	for (const [key, hooks] of Object.entries(initialProjectDeployHooks.value)) {
+		projectDeployHooks[key] = hooks.map((h) => ({ ...h }));
+	}
+
 	confirmLeave.value = false;
 	router.push(leaveTo.value);
 }
@@ -118,9 +182,32 @@ async function loadConfig() {
 			}),
 		);
 
+		setCapabilitiesFromDeployment(configData as DeploymentConfig);
+
 		config.value = configData as DeploymentConfig;
 
-		if (canManageProjects) {
+		// Hydrate deploy hooks from saved options, then snapshot as baseline for change detection
+		const hooksByProject =
+			(config.value.options?.[deployHooksOptionKey] as Record<string, DeployHookEntry[]> | undefined) ?? {};
+
+		for (const key of Object.keys(projectDeployHooks)) {
+			delete projectDeployHooks[key];
+		}
+
+		for (const [externalId, hooks] of Object.entries(hooksByProject)) {
+			if (Array.isArray(hooks)) {
+				projectDeployHooks[externalId] = hooks.map((hook) => ({
+					name: hook?.name ?? '',
+					url: hook?.url ?? '',
+				}));
+			}
+		}
+
+		initialProjectDeployHooks.value = Object.fromEntries(
+			Object.entries(projectDeployHooks).map(([externalId, hooks]) => [externalId, hooks.map((hook) => ({ ...hook }))]),
+		);
+
+		if (canManageProjects.value) {
 			// Load all projects from provider
 			const projectsData = await sdk.request(readDeploymentProjects(props.provider));
 			availableProjects.value = projectsData as DeploymentProjectListOutput[];
@@ -131,6 +218,7 @@ async function loadConfig() {
 			initialProjectIds.value = [...storedIds];
 		}
 	} catch (error) {
+		resetCapabilities();
 		unexpectedError(error);
 	} finally {
 		loading.value = false;
@@ -182,6 +270,22 @@ async function save() {
 			}
 		}
 
+		// Persist deploy hooks — skip incomplete entries (blank name or URL)
+		if (mergedCapabilities.value.supportsDeployHookUrl && hasDeployHookEdits.value) {
+			updatePayload.options ??= { ...config.value?.options };
+
+			const hooksByProject = Object.fromEntries(
+				Object.entries(projectDeployHooks).map(([externalId, hooks]) => [
+					externalId,
+					hooks
+						.filter((hook) => hook.name.trim() && hook.url.trim())
+						.map((hook) => ({ name: hook.name.trim(), url: hook.url.trim() })),
+				]),
+			);
+
+			updatePayload.options[deployHooksOptionKey] = hooksByProject;
+		}
+
 		// Update deployment config if we have anything to save
 		if (Object.keys(updatePayload).length > 0) {
 			await sdk.request(updateDeployment(props.provider, updatePayload));
@@ -223,6 +327,15 @@ async function save() {
 		initialProjectIds.value = [...selectedProjectIds.value];
 		projectsToRemove.value = [];
 
+		// Snapshot deploy hooks as the new initial state
+		const hooksSnapshot: Record<string, DeployHookEntry[]> = {};
+
+		for (const [externalId, hooks] of Object.entries(projectDeployHooks)) {
+			hooksSnapshot[externalId] = (hooks ?? []).map((h) => ({ ...h }));
+		}
+
+		initialProjectDeployHooks.value = hooksSnapshot;
+
 		// Navigate to dashboard if we have projects
 		if (selectedProjectIds.value.length > 0) {
 			router.push({ name: 'deployments-provider-dashboard', params: { provider: props.provider } });
@@ -257,6 +370,13 @@ watch(
 	() => props.provider,
 	() => {
 		configurationEdits.value = {};
+
+		for (const key of Object.keys(projectDeployHooks)) {
+			delete projectDeployHooks[key];
+		}
+
+		initialProjectDeployHooks.value = {};
+		expandedHookProjects.value = new Set();
 		loadConfig();
 	},
 );
@@ -302,6 +422,10 @@ watch(
 				{{ providerConfig.settingsWarning }}
 			</VNotice>
 
+			<VNotice v-if="showDeployHookSetupNotice && providerConfig?.deployHooks" type="info" class="field full">
+				<div>{{ $t(providerConfig.deployHooks.setupNoticeKey) }}</div>
+			</VNotice>
+
 			<InterfacePresentationDivider
 				:title="$t('deployment.provider.settings.edit_configuration')"
 				icon="settings"
@@ -326,20 +450,87 @@ watch(
 				<div class="field full">
 					<div class="type-label">{{ $t('deployment.provider.select_projects') }}</div>
 					<div class="checkboxes">
-						<VCheckbox
-							v-for="project in availableProjects"
-							:key="project.external_id"
-							block
-							:value="project.external_id"
-							:label="project.name"
-							:disabled="!project.deployable"
-							:model-value="selectedProjectIds"
-							@update:model-value="(value) => (selectedProjectIds = value)"
-						>
-							<template v-if="!project.deployable" #append>
-								<VIcon v-tooltip.left="$t('deployment.provider.project.not_deployable')" name="info" />
-							</template>
-						</VCheckbox>
+						<div v-for="project in availableProjects" :key="project.external_id" class="project-row">
+							<VCheckbox
+								block
+								:value="project.external_id"
+								:label="project.name"
+								:disabled="!project.deployable"
+								:model-value="selectedProjectIds"
+								@update:model-value="(value) => (selectedProjectIds = value)"
+							>
+								<template v-if="!project.deployable" #append>
+									<span v-if="projectDeployableStatusKey" class="project-status">
+										{{ $t(projectDeployableStatusKey) }}
+									</span>
+									<VIcon v-tooltip.left="$t(projectDeployableHintKey)" name="info" />
+								</template>
+							</VCheckbox>
+
+							<div
+								v-if="
+									showDeployHookSetupNotice &&
+									providerConfig?.deployHooks &&
+									selectedProjectIds.includes(project.external_id)
+								"
+								class="deploy-hooks-section"
+							>
+								<button class="deploy-hooks-toggle" @click="toggleHookExpansion(project.external_id)">
+									<VIcon
+										:name="expandedHookProjects.has(project.external_id) ? 'expand_more' : 'chevron_right'"
+										small
+									/>
+									<span class="type-label">
+										{{ $t(providerConfig.deployHooks.titleKey) }}
+										<span v-if="(projectDeployHooks[project.external_id] ?? []).length > 0" class="hook-count">
+											({{ (projectDeployHooks[project.external_id] ?? []).length }})
+										</span>
+									</span>
+								</button>
+
+								<div v-if="expandedHookProjects.has(project.external_id)" class="deploy-hooks-content">
+									<small class="type-note">
+										{{ $t(providerConfig.deployHooks.hintKey) }}
+									</small>
+
+									<div
+										v-for="(hook, index) in projectDeployHooks[project.external_id] ?? []"
+										:key="index"
+										class="deploy-hook-row"
+									>
+										<VInput
+											v-model="hook.name"
+											:placeholder="$t(providerConfig.deployHooks.namePlaceholderKey)"
+											small
+											class="hook-name-input"
+										/>
+
+										<VInput
+											v-model="hook.url"
+											:placeholder="$t(providerConfig.deployHooks.urlPlaceholderKey)"
+											small
+											class="hook-url-input"
+										/>
+
+										<VButton
+											v-tooltip="$t('delete_label')"
+											x-small
+											rounded
+											icon
+											secondary
+											@click="removeDeployHook(project.external_id, index)"
+										>
+											<VIcon name="close" x-small />
+										</VButton>
+									</div>
+
+									<VButton small secondary @click="addDeployHook(project.external_id)">
+										<VIcon name="add" small />
+										{{ $t(providerConfig.deployHooks.addLabelKey) }}
+									</VButton>
+								</div>
+							</div>
+						</div>
 					</div>
 					<small class="type-note">{{ $t('deployment.provider.select_projects_hint') }}</small>
 				</div>
@@ -413,5 +604,71 @@ watch(
 	display: grid;
 	gap: 0.4375rem;
 	padding-block: 0.125rem;
+}
+
+.project-status {
+	color: var(--theme--foreground-subdued);
+	font-size: 0.75rem;
+	white-space: nowrap;
+}
+
+.project-row {
+	display: flex;
+	flex-direction: column;
+}
+
+.deploy-hooks-section {
+	margin-inline-start: 2rem;
+	margin-block: 0.25rem 0.5rem;
+}
+
+.deploy-hooks-toggle {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+	padding: 0;
+	border: none;
+	background: none;
+	cursor: pointer;
+	color: var(--theme--foreground-subdued);
+	font-size: 0.875rem;
+
+	&:hover {
+		color: var(--theme--foreground);
+	}
+}
+
+.hook-count {
+	color: var(--theme--foreground-subdued);
+	font-weight: 400;
+}
+
+.deploy-hooks-content {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	margin-block-start: 0.5rem;
+	padding-inline-start: 0.25rem;
+}
+
+.deploy-hook-row {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+	inline-size: 100%;
+}
+
+.hook-name-input {
+	flex: 0 0 15rem;
+	max-inline-size: 18rem;
+}
+
+.hook-url-input {
+	flex: 1 1 auto;
+	min-inline-size: 16rem;
+}
+
+.container :deep(.v-notice a) {
+	color: var(--theme--primary);
 }
 </style>

@@ -2,7 +2,6 @@ import { ErrorCode, InvalidPathParameterError, InvalidPayloadError, isDirectusEr
 import { DEPLOYMENT_PROVIDER_TYPES, type DeploymentConfig, type ProviderType } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
-import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -13,7 +12,7 @@ import { DeploymentService } from '../services/deployment.js';
 import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
-import { transaction } from '../utils/transaction.js';
+import { validateProvider } from './utils/validate-provider.js';
 
 const router = express.Router();
 
@@ -24,10 +23,13 @@ function parseRange(range: unknown, defaultMs: number): Date {
 
 router.use(useCollection('directus_deployments'));
 
-// Validate provider parameter
-const validateProvider = (provider: string): provider is ProviderType => {
-	return DEPLOYMENT_PROVIDER_TYPES.includes(provider as ProviderType);
-};
+router.param('provider', (_req, _res, next, provider) => {
+	if (!validateProvider(provider)) {
+		return next(new InvalidPathParameterError({ reason: `${provider} is not a supported provider` }));
+	}
+
+	return next();
+});
 
 // Validation schema for creating/updating deployment
 const deploymentSchema = Joi.object({
@@ -48,25 +50,32 @@ router.post(
 			throw new InvalidPayloadError({ reason: error.message });
 		}
 
-		const db = getDatabase();
-
-		const item = await transaction(db, async (trx) => {
-			const service = new DeploymentService({
-				accountability: req.accountability,
-				schema: req.schema,
-				knex: trx,
-			});
-
-			const key = await service.createOne({
-				provider: req.body.provider,
-				credentials: req.body.credentials,
-				options: req.body.options,
-			} as Partial<DeploymentConfig>);
-
-			return service.readOne(key, req.sanitizedQuery);
+		const service = new DeploymentService({
+			accountability: req.accountability,
+			schema: req.schema,
 		});
 
+		const key = await service.createOne({
+			provider: req.body.provider,
+			credentials: req.body.credentials,
+			options: req.body.options,
+		} as Partial<DeploymentConfig>);
+
+		let item;
+
+		try {
+			item = await service.readOne(key, req.sanitizedQuery);
+		} catch (error: any) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
+				item = null;
+			} else {
+				throw error;
+			}
+		}
+
 		res.locals['payload'] = { data: item };
+
+		await service.invokeConfigLifecycle(req.body.provider, 'created');
 
 		return next();
 	}),
@@ -102,17 +111,20 @@ router.get(
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider'] as ProviderType;
 
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
-		}
-
 		const service = new DeploymentService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
 		const record = await service.readByProvider(provider, req.sanitizedQuery);
-		res.locals['payload'] = { data: record || null };
+
+		if (record) {
+			const driver = await service.getDriver(provider);
+			res.locals['payload'] = { data: { ...record, capabilities: driver.capabilities } };
+		} else {
+			res.locals['payload'] = { data: null };
+		}
+
 		return next();
 	}),
 	respond,
@@ -123,10 +135,6 @@ router.get(
 	'/:provider/projects',
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider'] as ProviderType;
-
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
-		}
 
 		const service = new DeploymentService({
 			accountability: req.accountability,
@@ -157,10 +165,6 @@ router.get(
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider'] as ProviderType;
 		const projectId = req.params['id'] as string;
-
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
-		}
 
 		const service = new DeploymentService({
 			accountability: req.accountability,
@@ -213,10 +217,6 @@ router.patch(
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider'] as ProviderType;
 
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
-		}
-
 		const { error, value } = updateProjectsSchema.validate(req.body);
 
 		if (error) {
@@ -241,9 +241,8 @@ router.patch(
 		const updatedProjects = await projectsService.updateSelection(provider, value.create, value.delete);
 
 		// Sync webhook with updated project list
-		service.syncWebhook(provider).catch((err) => {
-			const logger = useLogger();
-			logger.error(`Failed to sync webhook for ${provider}: ${err}`);
+		service.syncWebhook(provider).catch((error) => {
+			useLogger().error(error, `[webhook:${provider}] Failed to sync webhook`);
 		});
 
 		res.locals['payload'] = { data: updatedProjects };
@@ -263,10 +262,6 @@ router.get(
 	'/:provider/dashboard',
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider'] as ProviderType;
-
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
-		}
 
 		const { error, value } = rangeQuerySchema.validate(req.query);
 
@@ -294,7 +289,10 @@ router.get(
 // Trigger deployment for a project
 const triggerDeploySchema = Joi.object({
 	preview: Joi.boolean().default(false),
-	clear_cache: Joi.boolean().default(true), // Default at true (matches Vercel UI behavior)
+	clear_cache: Joi.boolean().default(true),
+	deploy_hook_url: Joi.string()
+		.uri({ scheme: ['https'] })
+		.optional(),
 });
 
 router.post(
@@ -302,10 +300,6 @@ router.post(
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider'] as ProviderType;
 		const projectId = req.params['id']!;
-
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
-		}
 
 		const { error, value } = triggerDeploySchema.validate(req.body);
 
@@ -321,6 +315,7 @@ router.post(
 		const run = await service.triggerDeployment(provider, projectId, {
 			preview: value.preview,
 			clearCache: value.clear_cache,
+			...(value.deploy_hook_url ? { deployHookUrl: value.deploy_hook_url } : {}),
 		});
 
 		res.locals['payload'] = { data: run };
@@ -336,38 +331,33 @@ router.patch(
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider'] as ProviderType;
 
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
-		}
-
-		const db = getDatabase();
-
-		const item = await transaction(db, async (trx) => {
-			const service = new DeploymentService({
-				accountability: req.accountability,
-				schema: req.schema,
-				knex: trx,
-			});
-
-			const data: Partial<DeploymentConfig> = {};
-
-			if ('credentials' in req.body) data['credentials'] = req.body.credentials;
-			if ('options' in req.body) data['options'] = req.body.options;
-
-			const primaryKey = await service.updateByProvider(provider, data);
-
-			try {
-				return await service.readOne(primaryKey, req.sanitizedQuery);
-			} catch (error: any) {
-				if (isDirectusError(error, ErrorCode.Forbidden)) {
-					return null;
-				}
-
-				throw error;
-			}
+		const service = new DeploymentService({
+			accountability: req.accountability,
+			schema: req.schema,
 		});
 
+		const data: Partial<DeploymentConfig> = {};
+
+		if ('credentials' in req.body) data['credentials'] = req.body.credentials;
+		if ('options' in req.body) data['options'] = req.body.options;
+
+		const primaryKey = await service.updateByProvider(provider, data);
+
+		let item;
+
+		try {
+			item = await service.readOne(primaryKey, req.sanitizedQuery);
+		} catch (error: any) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
+				item = null;
+			} else {
+				throw error;
+			}
+		}
+
 		res.locals['payload'] = { data: item };
+
+		await service.invokeConfigLifecycle(provider, 'updated');
 
 		return next();
 	}),
@@ -379,10 +369,6 @@ router.delete(
 	'/:provider',
 	asyncHandler(async (req, _res, next) => {
 		const provider = req.params['provider'] as ProviderType;
-
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
-		}
 
 		const service = new DeploymentService({
 			accountability: req.accountability,
@@ -403,16 +389,17 @@ router.get(
 		const provider = req.params['provider'] as ProviderType;
 		const projectId = req.params['id']!;
 
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
-		}
-
 		const projectsService = new DeploymentProjectsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
 		const runsService = new DeploymentRunsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const service = new DeploymentService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -429,6 +416,7 @@ router.get(
 		};
 
 		const runs = await runsService.readByQuery(query);
+		const refreshedRuns = await service.refreshRunsStatuses(provider, runs);
 
 		const metaService = new MetaService({
 			accountability: req.accountability,
@@ -437,7 +425,7 @@ router.get(
 
 		const meta = await metaService.getMetaForQuery('directus_deployment_runs', query);
 
-		res.locals['payload'] = { data: runs, meta };
+		res.locals['payload'] = { data: refreshedRuns, meta };
 		return next();
 	}),
 	respond,
@@ -448,12 +436,7 @@ router.get(
 router.get(
 	'/:provider/projects/:id/runs/stats',
 	asyncHandler(async (req, res, next) => {
-		const provider = req.params['provider'] as ProviderType;
 		const projectId = req.params['id']!;
-
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
-		}
 
 		const { error, value } = rangeQuerySchema.validate(req.query);
 
@@ -498,10 +481,6 @@ router.get(
 		const provider = req.params['provider'] as ProviderType;
 		const runId = req.params['id']!;
 
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
-		}
-
 		const { error, value } = runDetailsQuerySchema.validate(req.query);
 
 		if (error) {
@@ -529,10 +508,6 @@ router.post(
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider'] as ProviderType;
 		const runId = req.params['id']!;
-
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
-		}
 
 		const service = new DeploymentService({
 			accountability: req.accountability,
