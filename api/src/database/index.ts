@@ -172,6 +172,102 @@ export function getDatabase(): Knex {
 	database = knex.default(knexConfig);
 	validateDatabaseCharset(database);
 
+	// MSSQL connection-management fixes. MS SQL Server (via tedious) permits only one request per
+	// connection at a time, which exposes two latent knex bugs under heavy/concurrent load. Both are
+	// gated to mssql and leave every other vendor untouched.
+	if (client === 'mssql') {
+		const mssqlClient = database.client as any;
+
+		// Fix 1: per-connection request queue. knex's Client_MSSQL keeps `requestQueue` on the PROTOTYPE,
+		// shared across every pooled connection, and `_chomp(connection)` pops from it and runs the request
+		// on whatever connection is passed in. Under load a request enqueued for a busy connection gets
+		// popped by ANOTHER connection's nextTick `_chomp` and executed on the wrong connection, corrupting
+		// pooled connections and surfacing as "Requests can only be made in the LoggedIn state". Giving each
+		// connection its own queue means a request can only ever run on the connection it was enqueued for.
+		// (Upstream knex bug: `requestQueue` should be per-connection, not on the prototype.)
+		if (typeof mssqlClient._chomp === 'function' && typeof mssqlClient._enqueueRequest === 'function') {
+			mssqlClient._enqueueRequest = function (request: any, connection: any) {
+				if (!connection.__mssqlQueue) connection.__mssqlQueue = [];
+				connection.__mssqlQueue.push(request);
+				this._chomp(connection);
+			};
+
+			mssqlClient._chomp = function (connection: any) {
+				if (connection?.state?.name !== 'LoggedIn') return;
+
+				const queue = connection.__mssqlQueue;
+				const nextRequest = queue && queue.length > 0 ? queue.pop() : undefined;
+
+				if (nextRequest) connection.execSql(nextRequest);
+			};
+
+			// knex's `_query` only re-chomps after a SUCCESSFUL request; cover the error/timeout path too so
+			// a request queued behind a failed one on the same connection still drains once it frees.
+			// `_chomp` is a no-op unless the connection is LoggedIn, so this is safe.
+			const origQuery = mssqlClient.query.bind(mssqlClient);
+
+			mssqlClient.query = async (connection: any, obj: any) => {
+				try {
+					return await origQuery(connection, obj);
+				} finally {
+					try {
+						mssqlClient._chomp(connection);
+					} catch {
+						// ignore
+					}
+				}
+			};
+		}
+
+		// Fix 2: wait for the connection to drain before issuing a transaction-control request. If the
+		// connection is still mid-request when knex issues begin/savepoint/commit, knex fires it blindly and
+		// 500s. Briefly wait for the in-flight request to drain, then issue; bounded, so a genuinely stuck
+		// request still falls through to knex's original behaviour.
+		const WAIT_TXN_OPS = ['beginTransaction', 'saveTransaction', 'commitTransaction'];
+		const wrappedConns = new WeakSet<object>();
+
+		const wrapTxnMethods = (connection: any) => {
+			if (!connection || wrappedConns.has(connection)) return;
+			wrappedConns.add(connection);
+
+			for (const method of WAIT_TXN_OPS) {
+				const orig = connection[method];
+				if (typeof orig !== 'function') continue;
+
+				connection[method] = function (this: any, callback: any, ...rest: any[]) {
+					if (connection.state?.name === 'LoggedIn') {
+						return orig.call(this, callback, ...rest);
+					}
+
+					const MAX_WAIT_MS = 2000;
+					const STEP_MS = 10;
+					let waited = 0;
+
+					const issueWhenReady = () => {
+						if (connection.state?.name === 'LoggedIn' || waited >= MAX_WAIT_MS) {
+							orig.call(connection, callback, ...rest);
+							return;
+						}
+
+						waited += STEP_MS;
+						setTimeout(issueWhenReady, STEP_MS);
+					};
+
+					issueWhenReady();
+					// knex ignores the return value of begin/commit/savepoint (callback-based), so deferring is safe.
+					return undefined;
+				};
+			}
+		};
+
+		const baseValidate = mssqlClient.validateConnection.bind(mssqlClient);
+
+		mssqlClient.validateConnection = (connection: any) => {
+			wrapTxnMethods(connection);
+			return baseValidate(connection);
+		};
+	}
+
 	const times = new Map<string, number>();
 
 	database

@@ -253,8 +253,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			try {
 				let returningOptions = undefined;
 
-				// Support MSSQL tables that have triggers.
-				if (getDatabaseClient(trx) === 'mssql') {
+				// Support MSSQL tables that have triggers, but only when they actually have one.
+				if (getDatabaseClient(trx) === 'mssql' && (await getHelpers(trx).schema.hasTriggers(this.collection))) {
 					returningOptions = { includeTriggerModifications: true };
 				}
 
