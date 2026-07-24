@@ -26,6 +26,7 @@ import { useItem } from '@/composables/use-item';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useLicenseStore } from '@/stores/license';
+import { usePermissionsStore } from '@/stores/permissions';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getAssetUrl } from '@/utils/get-asset-url';
@@ -54,6 +55,7 @@ const collectionsStore = useCollectionsStore();
 const userStore = useUserStore();
 const serverStore = useServerStore();
 const licenseStore = useLicenseStore();
+const permissionsStore = usePermissionsStore();
 const seatsLimitModalOpen = ref(false);
 
 async function saveAsInactive() {
@@ -290,6 +292,10 @@ async function setLang(user: Record<string, any>) {
 async function refreshCurrentUser() {
 	if (userStore.currentUser!.id === item.value?.id) {
 		await userStore.hydrate();
+
+		// Presets are resolved on the server, we must refresh
+		// to pick up any possible changes to user-specific dynamic variables.
+		await permissionsStore.hydrate();
 	}
 }
 
