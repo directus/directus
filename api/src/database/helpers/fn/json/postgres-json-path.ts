@@ -24,8 +24,9 @@ export function buildPostgresJsonPath(
 
 	// Index of the final non-empty segment, which takes the asText operator (->>).
 	let lastIndex = parts.length - 1;
+
 	while (lastIndex >= 0 && parts[lastIndex] === '') {
-	  lastIndex--;
+		lastIndex--;
 	}
 
 	for (let i = 0; i <= lastIndex; i++) {
