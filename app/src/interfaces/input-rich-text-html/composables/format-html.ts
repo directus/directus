@@ -47,6 +47,40 @@ function isBlock(node: Node): node is HTMLElement {
 	return node.nodeType === Node.ELEMENT_NODE && BLOCK_TAGS.has((node as HTMLElement).tagName.toLowerCase());
 }
 
+// ASCII whitespace HTML collapses at a textblock boundary; excludes &nbsp; / Unicode spaces, which
+// are significant and survive normalization.
+const LEADING_WS = /^[ \t\n\r\f]+/;
+const TRAILING_WS = /[ \t\n\r\f]+$/;
+
+function firstTextNode(el: Node): Text | null {
+	for (const child of Array.from(el.childNodes)) {
+		if (child.nodeType === Node.TEXT_NODE) return child as Text;
+		const nested = firstTextNode(child);
+		if (nested) return nested;
+	}
+
+	return null;
+}
+
+function lastTextNode(el: Node): Text | null {
+	for (const child of Array.from(el.childNodes).reverse()) {
+		if (child.nodeType === Node.TEXT_NODE) return child as Text;
+		const nested = lastTextNode(child);
+		if (nested) return nested;
+	}
+
+	return null;
+}
+
+// Drop the leading/trailing whitespace Tiptap trims at a textblock boundary (possibly nested inside
+// inline marks) so an otherwise-identical document doesn't read as changed.
+function trimBoundaryWhitespace(el: HTMLElement): void {
+	const first = firstTextNode(el);
+	if (first) first.textContent = (first.textContent ?? '').replace(LEADING_WS, '');
+	const last = lastTextNode(el);
+	if (last) last.textContent = (last.textContent ?? '').replace(TRAILING_WS, '');
+}
+
 function hasBlockChild(el: HTMLElement): boolean {
 	return Array.from(el.childNodes).some(isBlock);
 }
@@ -71,8 +105,12 @@ function serialize(nodes: NodeListOf<ChildNode> | ChildNode[], depth: number): s
 
 			if (VOID_TAGS.has(tag)) {
 				lines.push(pad + openTag(el));
-			} else if (PRESERVE_TAGS.has(tag) || !hasBlockChild(el)) {
-				// inline-only (or whitespace-significant) block: keep its contents on one line
+			} else if (PRESERVE_TAGS.has(tag)) {
+				// whitespace-significant block (<pre>): emit verbatim
+				lines.push(pad + el.outerHTML);
+			} else if (!hasBlockChild(el)) {
+				// inline-only block: keep its contents on one line, minus boundary whitespace
+				trimBoundaryWhitespace(el);
 				lines.push(pad + el.outerHTML);
 			} else {
 				lines.push(pad + openTag(el));

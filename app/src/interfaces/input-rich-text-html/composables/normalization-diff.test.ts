@@ -33,6 +33,11 @@ describe('computeNormalizationDiff', () => {
 		expect(computeNormalizationDiff('<ul>\n\n    <li><p>one</p></li>\n  <li><p>two</p></li>\n</ul>')).toBeNull();
 	});
 
+	test('returns null for a trailing space inside an inline-only block', () => {
+		// Tiptap trims the trailing space; the delta is cosmetic and must not warn.
+		expect(computeNormalizationDiff('<p>The content is pretty awesome </p>')).toBeNull();
+	});
+
 	test('flags dropped table markup', () => {
 		expect(removedText('<table><tbody><tr><td>a</td></tr></tbody></table>')).toContain('<table');
 	});
