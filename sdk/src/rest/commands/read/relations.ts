@@ -24,7 +24,7 @@ export const readRelations =
 export const readRelationByCollection =
 	<Schema>(collection: DirectusRelation<Schema>['collection']): RestCommand<ReadRelationOutput<Schema>[], Schema> =>
 	() => ({
-		path: `/relations/${collection}`,
+		path: `/relations/${collection as string}`,
 		method: 'GET',
 	});
 
@@ -42,11 +42,11 @@ export const readRelation =
 		field: DirectusRelation<Schema>['field'],
 	): RestCommand<ReadRelationOutput<Schema>, Schema> =>
 	() => {
-		throwIfEmpty(collection, 'Collection cannot be empty');
+		throwIfEmpty(String(collection), 'Collection cannot be empty');
 		throwIfEmpty(field, 'Field cannot be empty');
 
 		return {
-			path: `/relations/${collection}/${field}`,
+			path: `/relations/${collection as string}/${field}`,
 			method: 'GET',
 		};
 	};
