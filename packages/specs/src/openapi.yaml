@@ -394,14 +394,22 @@ components:
     UnauthorizedError:
       $ref: './responses/unauthorizedError.yaml'
   securitySchemes:
+    Auth:
+      type: http
+      scheme: bearer
+    CookieAuth:
+      type: apiKey
+      in: cookie
+      name: directus_session_token
     KeyAuth:
       type: apiKey
       in: query
       name: access_token
-    Auth:
+    RefreshTokenCookieAuth:
       type: apiKey
-      in: header
-      name: 'Authorization'
+      in: cookie
+      name: directus_refresh_token
 security:
   - Auth: []
+  - CookieAuth: []
   - KeyAuth: []

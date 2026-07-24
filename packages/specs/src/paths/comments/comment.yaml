@@ -6,6 +6,8 @@ get:
   description: Retrieve a single comment by unique identifier.
   security:
     - Auth: []
+    - KeyAuth: []
+    - CookieAuth: []
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
   responses:
@@ -69,6 +71,8 @@ delete:
   description: Delete an existing comment.
   security:
     - Auth: []
+    - KeyAuth: []
+    - CookieAuth: []
   responses:
     '200':
       description: Successful request
