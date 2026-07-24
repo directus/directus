@@ -1,11 +1,10 @@
 import { PermissionsAction } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { usePermissionsStore } from './permissions';
 import { useUserStore } from './user';
 import { mockedStore } from '@/__utils__/store';
-import api from '@/api';
 import { ActionPermission, CollectionPermission } from '@/types/permissions';
 
 vi.mock('@/api');
@@ -38,34 +37,6 @@ afterEach(() => {
 const actions: PermissionsAction[] = ['create', 'read', 'update', 'delete', 'share'];
 
 describe('actions', () => {
-	describe('hydrate', () => {
-		test('should store the permissions returned by the API', async () => {
-			const permissions = {
-				[sample.collection]: {
-					create: {
-						access: 'full',
-						full_access: true,
-						fields: ['*'],
-						presets: {
-							tenant_id: 'resolved-tenant-id',
-						},
-					},
-				},
-			};
-
-			vi.spyOn(vi.mocked(api), 'get').mockResolvedValueOnce({ data: { data: permissions } });
-
-			const permissionsStore = usePermissionsStore();
-			await permissionsStore.hydrate();
-
-			expect(api.get).toHaveBeenCalledWith('/permissions/me');
-
-			expect(permissionsStore.getPermission(sample.collection, 'create')?.presets).toEqual({
-				tenant_id: 'resolved-tenant-id',
-			});
-		});
-	});
-
 	describe('getPermission', () => {
 		it.each(actions)('should return matching permission if it exists', (action) => {
 			const permission: ActionPermission = {

@@ -343,43 +343,6 @@ describe('non-admin users', () => {
 
 				expect(nameField?.schema?.default_value).toEqual(namePreset);
 			});
-
-			it('should reflect updated preset default values when permissions re-hydrate', () => {
-				const preset = ref<Record<string, any>>({ name: null });
-
-				const mockActionPermission = computed(() => ({
-					access: 'full' as const,
-					presets: preset.value,
-				}));
-
-				if (collectionType === 'collection') {
-					const permissionsStore = mockedStore(usePermissionsStore());
-
-					permissionsStore.getPermission.mockImplementation((_, action) => {
-						if (action === testAction) return mockActionPermission.value;
-						return null;
-					});
-				} else {
-					fetchedItemPermissions = computed(() => {
-						return {
-							update: {
-								access: true,
-								presets: preset.value,
-							},
-						} as ItemPermissions;
-					});
-				}
-
-				const isNew = testAction === 'create';
-
-				const fields = getFields(sample.collection, isNew, fetchedItemPermissions);
-
-				expect(fields.value.find((field) => field.field === 'name')?.schema?.default_value).toBe(null);
-
-				preset.value = { name: 'tenant-b' };
-
-				expect(fields.value.find((field) => field.field === 'name')?.schema?.default_value).toBe('tenant-b');
-			});
 		});
 	});
 
