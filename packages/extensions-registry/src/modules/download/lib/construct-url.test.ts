@@ -118,7 +118,7 @@ describe('constructUrl', () => {
 
 	test('Preserves all parameters when all options are provided', () => {
 		const versionId = 'complex-extension-v2.1.0';
-		const customRegistry = 'https://enterprise-registry.directus.io';
+		const customRegistry = 'https://enterprise-registry.example.com';
 		const result = constructUrl(versionId, true, { registry: customRegistry });
 
 		expect(result.origin).toBe(customRegistry);
