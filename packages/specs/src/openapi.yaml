@@ -358,26 +358,38 @@ components:
       $ref: './parameters/collection.yaml'
 
     # All query parameters
-    Search:
-      $ref: './parameters/search.yaml'
-    Page:
-      $ref: './parameters/page.yaml'
-    Offset:
-      $ref: './parameters/offset.yaml'
-    Sort:
-      $ref: './parameters/sort.yaml'
-    Meta:
-      $ref: './parameters/meta.yaml'
-    Limit:
-      $ref: './parameters/limit.yaml'
-    Filter:
-      $ref: './parameters/filter.yaml'
-    Fields:
-      $ref: './parameters/fields.yaml'
+    Aggregate:
+      $ref: './parameters/aggregate.yaml'
+    Alias:
+      $ref: './parameters/alias.yaml'
+    Backlink:
+      $ref: './parameters/backlink.yaml'
+    Deep:
+      $ref: './parameters/deep.yaml'
     Export:
       $ref: './parameters/export.yaml'
+    Fields:
+      $ref: './parameters/fields.yaml'
+    Filter:
+      $ref: './parameters/filter.yaml'
+    GroupBy:
+      $ref: './parameters/groupBy.yaml'
+    Limit:
+      $ref: './parameters/limit.yaml'
+    Meta:
+      $ref: './parameters/meta.yaml'
+    Offset:
+      $ref: './parameters/offset.yaml'
+    Page:
+      $ref: './parameters/page.yaml'
+    Search:
+      $ref: './parameters/search.yaml'
+    Sort:
+      $ref: './parameters/sort.yaml'
     Version:
       $ref: './parameters/version.yaml'
+    VersionRaw:
+      $ref: './parameters/versionRaw.yaml'
   responses:
     BadRequestError:
       $ref: './responses/badRequestError.yaml'

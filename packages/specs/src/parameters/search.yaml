@@ -1,6 +1,22 @@
-description: Filter by items that contain the given search query in one of their fields.
+description: >
+  Filter by items that contain the given search query in one of their fields. Matches case-insensitively against
+  `string`/`text` fields. Search is limited to fields that are tagged as searchable in the data studio (*2m fields are
+  not searched). If the search value itself parses as a number or a valid UUID, numeric and UUID fields are also matched
+  (exactly, not as a substring).
 in: query
 name: search
 required: false
 schema:
   type: string
+examples:
+  none:
+    summary: No search specified (default)
+  textMatch:
+    summary: Substring match on string/text fields
+    value: Directus
+  numericMatch:
+    summary: Exact match on numeric fields
+    value: '42'
+  uuidMatch:
+    summary: Exact match on UUID fields
+    value: 8cbb43fe-4cdf-4991-8352-c461779cec02

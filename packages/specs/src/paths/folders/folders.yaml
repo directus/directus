@@ -4,11 +4,18 @@ get:
   operationId: getFolders
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
-    - $ref: '../../openapi.yaml#/components/parameters/Limit'
-    - $ref: '../../openapi.yaml#/components/parameters/Offset'
-    - $ref: '../../openapi.yaml#/components/parameters/Sort'
     - $ref: '../../openapi.yaml#/components/parameters/Filter'
     - $ref: '../../openapi.yaml#/components/parameters/Search'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+    - $ref: '../../openapi.yaml#/components/parameters/Page'
+    - $ref: '../../openapi.yaml#/components/parameters/Aggregate'
+    - $ref: '../../openapi.yaml#/components/parameters/GroupBy'
+    - $ref: '../../openapi.yaml#/components/parameters/Deep'
+    - $ref: '../../openapi.yaml#/components/parameters/Alias'
+    - $ref: '../../openapi.yaml#/components/parameters/Export'
+    - $ref: '../../openapi.yaml#/components/parameters/Backlink'
     - $ref: '../../openapi.yaml#/components/parameters/Meta'
   responses:
     '200':
@@ -76,12 +83,11 @@ patch:
   operationId: updateFolders
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
-    - $ref: '../../openapi.yaml#/components/parameters/Limit'
-    - $ref: '../../openapi.yaml#/components/parameters/Offset'
-
-    - $ref: '../../openapi.yaml#/components/parameters/Sort'
     - $ref: '../../openapi.yaml#/components/parameters/Filter'
     - $ref: '../../openapi.yaml#/components/parameters/Search'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
   requestBody:
     content:
       application/json:

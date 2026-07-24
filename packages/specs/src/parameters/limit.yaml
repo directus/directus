@@ -1,6 +1,18 @@
-description: A limit on the number of objects that are returned.
+description: >
+  Set the maximum number of items that will be returned. Defaults to 100. `-1` returns all items, unless the
+  `QUERY_LIMIT_MAX` environment variable is configured, in which case the limit is capped there instead.
 in: query
 name: limit
 required: false
 schema:
   type: integer
+  minimum: -1
+examples:
+  none:
+    summary: No limit specified (default of 100)
+  fixed:
+    summary: Fixed limit
+    value: 50
+  unlimited:
+    summary: All items (unless QUERY_LIMIT_MAX is configured)
+    value: -1

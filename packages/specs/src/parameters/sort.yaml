@@ -1,12 +1,31 @@
 description: >
-  How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to
-  ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are
-  prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
+  How to sort the returned items. Sorting defaults to ascending order; prefix a field with `-` to reverse to descending.
+  Fields are prioritized in the order given. Dot notation is used to sort by values of related fields. Field functions
+  (e.g. `year(date_created)`) are also supported.
 in: query
 name: sort
 required: false
+style: form
 explode: false
 schema:
   type: array
   items:
     type: string
+examples:
+  none:
+    summary: No sort specified (default)
+  ascending:
+    summary: Ascending sort
+    value: ['sort']
+  descending:
+    summary: Descending sort
+    value: ['-date_created']
+  multiField:
+    summary: Multiple fields, prioritized in order
+    value: ['sort', '-date_created']
+  relational:
+    summary: Sort by a related field
+    value: ['author.name']
+  function:
+    summary: Sort by a field function
+    value: ['year(date_created)']

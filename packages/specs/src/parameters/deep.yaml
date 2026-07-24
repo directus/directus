@@ -1,0 +1,23 @@
+description: >
+  Deep allows you to set any of the other query parameters on a nested relational dataset. URL form:
+  `?deep[related_articles][_limit]=3`.
+in: query
+name: deep
+required: false
+content:
+  application/json:
+    schema:
+      type: object
+    examples:
+      none:
+        summary: No nested query (default)
+      limitOnRelation:
+        summary: Limit items on a related collection
+        value: { 'related_articles': { '_limit': 3 } }
+      fullNestedQuery:
+        summary: Full nested query with filter, sort, and limit
+        value:
+          related_articles:
+            _filter: { 'status': { '_eq': 'published' } }
+            _sort: ['-date_created']
+            _limit: 5
