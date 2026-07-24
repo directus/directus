@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Panel } from '@directus/extensions';
+import dompurify from 'dompurify';
 import { assign, clone, isUndefined, omitBy } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
 import { storeToRefs } from 'pinia';
@@ -70,6 +71,10 @@ const customOptionsFields = computed(() => {
 
 function isSVG(path: string) {
 	return path.startsWith('<svg');
+}
+
+function sanitizeSVG(svg: string) {
+	return dompurify.sanitize(svg, { USE_PROFILES: { svg: true, svgFilters: true } });
 }
 
 const configRow = computed(() => {
@@ -161,7 +166,7 @@ const stageChanges = () => {
 					<div class="preview">
 						<template v-if="pan.preview">
 							<!-- eslint-disable-next-line vue/no-v-html -->
-							<span v-if="isSVG(pan.preview)" class="svg" v-html="pan.preview" />
+							<span v-if="isSVG(pan.preview)" class="svg" v-html="sanitizeSVG(pan.preview)" />
 							<img v-else :src="pan.preview" alt="" />
 						</template>
 
