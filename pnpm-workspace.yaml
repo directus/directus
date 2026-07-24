@@ -86,7 +86,6 @@ catalog:
   '@sindresorhus/slugify': 2.2.1
   '@smithy/node-http-handler': 4.4.5
   '@supabase/storage-js': 2.81.0
-  '@tinymce/tinymce-vue': 6.3.0
   '@tiptap/core': ^3.26.1
   '@tiptap/extensions': ^3.26.1
   '@tiptap/extension-text-style': ^3.26.1
@@ -325,7 +324,6 @@ catalog:
   tar: 7.5.8
   tedious: 18.6.1
   three: ^0.184.0
-  tinymce: 6.8.6
   tmp: 0.2.7
   tsdown: 0.15.11
   tsx: 4.22.4
