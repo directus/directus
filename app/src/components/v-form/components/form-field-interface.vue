@@ -27,7 +27,7 @@ const props = defineProps<{
 	version?: ContentVersionMaybeNew | null;
 }>();
 
-defineEmits(['update:modelValue', 'setFieldValue']);
+defineEmits(['update:modelValue', 'setFieldValue', 'readonly']);
 
 const inter = useExtension(
 	'interface',
@@ -83,6 +83,7 @@ const value = computed(() =>
 				:version
 				@input="$emit('update:modelValue', $event)"
 				@set-field-value="$emit('setFieldValue', $event)"
+				@readonly="$emit('readonly', $event)"
 			/>
 
 			<template #fallback>

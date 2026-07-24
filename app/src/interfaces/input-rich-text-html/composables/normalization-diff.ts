@@ -1,13 +1,14 @@
-import { Editor } from '@tiptap/vue-3';
+import { type AnyExtension, Editor } from '@tiptap/vue-3';
 import { type Change, diffLines } from 'diff';
 import { editorExtensions } from '../extensions';
 import { decodePageBreaks, encodePageBreaks } from '../extensions/page-break';
 import { formatHtml } from './format-html';
 
 // Re-parse through the schema exactly as saveSourceCode will, so the diff compares against what
-// actually gets stored.
-function roundTrip(html: string): string {
-	const editor = new Editor({ extensions: editorExtensions, content: html });
+// actually gets stored. `extraExtensions` carries the instance-only marks (custom formats) the live
+// editor was built with — without them their markup reads as dropped and falsely trips the warning.
+function roundTrip(html: string, extraExtensions: AnyExtension[]): string {
+	const editor = new Editor({ extensions: [...editorExtensions, ...extraExtensions], content: html });
 	const out = editor.getHTML();
 	editor.destroy();
 	return out;
@@ -28,8 +29,8 @@ function diffFormatted(rawBefore: string, rawAfter: string): Change[] | null {
  * Diffs the source-code drawer's HTML against what saving it would actually store. Returns null
  * when the document survives normalization unchanged.
  */
-export function computeNormalizationDiff(code: string): Change[] | null {
-	return diffFormatted(code, roundTrip(code));
+export function computeNormalizationDiff(code: string, extraExtensions: AnyExtension[] = []): Change[] | null {
+	return diffFormatted(code, roundTrip(code, extraExtensions));
 }
 
 /**
@@ -37,7 +38,7 @@ export function computeNormalizationDiff(code: string): Change[] | null {
  * representation so the page-break marker ↔ element boundary cancels out instead of reading
  * as a change.
  */
-export function computeValueNormalizationDiff(value: string): Change[] | null {
+export function computeValueNormalizationDiff(value: string, extraExtensions: AnyExtension[] = []): Change[] | null {
 	const decoded = decodePageBreaks(value);
-	return diffFormatted(encodePageBreaks(decoded), encodePageBreaks(roundTrip(decoded)));
+	return diffFormatted(encodePageBreaks(decoded), encodePageBreaks(roundTrip(decoded, extraExtensions)));
 }

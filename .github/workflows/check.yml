@@ -2,8 +2,13 @@ name: Check
 
 on:
   pull_request:
-    branches:
-      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      # Re-trigger so toggling the 'Skip Checks' label re-evaluates the required checks
+      - labeled
+      - unlabeled
 
   push:
     branches:
@@ -22,6 +27,7 @@ env:
 jobs:
   lint:
     name: Lint
+    if: ${{ ! contains(github.event.pull_request.labels.*.name, 'Skip Checks') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -46,6 +52,7 @@ jobs:
 
   stylelint:
     name: Stylelint
+    if: ${{ ! contains(github.event.pull_request.labels.*.name, 'Skip Checks') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -65,6 +72,7 @@ jobs:
 
   format:
     name: Format
+    if: ${{ ! contains(github.event.pull_request.labels.*.name, 'Skip Checks') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -84,6 +92,7 @@ jobs:
 
   unit:
     name: Unit Tests
+    if: ${{ ! contains(github.event.pull_request.labels.*.name, 'Skip Checks') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

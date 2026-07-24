@@ -1,8 +1,10 @@
 import { createReadStream, createWriteStream } from 'node:fs';
 import { appendFile } from 'node:fs/promises';
-import type { Readable, Writable } from 'node:stream';
+import { type Readable, type Writable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import { useEnv } from '@directus/env';
 import {
+	ContentTooLargeError,
 	createError,
 	ErrorCode,
 	ForbiddenError,
@@ -24,9 +26,10 @@ import type {
 	SchemaOverview,
 } from '@directus/types';
 import { getDateTimeFormatted, parseJSON, toArray } from '@directus/utils';
-import { createTmpFile } from '@directus/utils/node';
+import { createTmpFile, type TmpFile } from '@directus/utils/node';
 import type { ImportRowLines, ImportRowRange } from '@directus/validation';
 import { queue } from 'async';
+import bytes from 'bytes';
 import { dump as toYAML } from 'js-yaml';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
@@ -281,7 +284,34 @@ export class ImportService {
 			}
 		};
 
-		if (mimetype === 'application/json') {
+		if (options?.background) {
+			// Fully receive the upload (to a temp file) before responding, so the detached parse job reads
+			// the spooled copy instead of the live request body.
+			let tmpFile: TmpFile;
+
+			// Share one IMPORT_TIMEOUT budget across both phases (receive + parse) so a background import
+			// can't run for up to 2x the timeout.
+			const deadline = Date.now() + ms(env['IMPORT_TIMEOUT'] as StringValue);
+
+			try {
+				tmpFile = await this.spoolToTmpFile(stream, deadline);
+			} catch (error) {
+				await decrementImportCount();
+				throw error;
+			}
+
+			if (mimetype === 'application/json') {
+				// importJSON doesn't own the temp file, so clean it up here.
+				promise = this.importJSON(collection, createReadStream(tmpFile.path), deadline).finally(() =>
+					tmpFile.cleanup().catch(() => {
+						logger.warn(`Failed to cleanup temporary import file (${tmpFile.path})`);
+					}),
+				);
+			} else {
+				// parseCsvFromTmpFile owns and cleans up the spooled file itself.
+				promise = this.parseCsvFromTmpFile(collection, tmpFile, deadline);
+			}
+		} else if (mimetype === 'application/json') {
 			promise = this.importJSON(collection, stream);
 		} else {
 			promise = this.importCSV(collection, stream);
@@ -337,12 +367,17 @@ export class ImportService {
 		}
 	}
 
-	async importJSON(collection: string, stream: Readable): Promise<void> {
+	async importJSON(collection: string, stream: Readable, deadline?: number): Promise<void> {
 		const extractJSON = StreamArray.withParser();
 		const nestedActionEvents: ActionEventParams[] = [];
 		const errorTracker = createErrorTracker();
 		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
 		let timeout: NodeJS.Timeout;
+
+		// Tear down the stream chain (source -> parser), resuming the source so the request body is drained.
+		const teardownStreams = () => {
+			destroyPipedStream(extractJSON, stream);
+		};
 
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
@@ -380,7 +415,7 @@ export class ImportService {
 							if (errorTracker.shouldStop()) {
 								saveQueue.kill();
 
-								destroyPipedStream(extractJSON, stream);
+								teardownStreams();
 								reject();
 							}
 
@@ -390,10 +425,23 @@ export class ImportService {
 
 					stream.pipe(extractJSON);
 
+					// Without a source error handler a read failure goes unhandled and the promise never settles.
+					// busboy destroys the source with ContentTooLargeError past the cap, so preserve that type below.
+					stream.on('error', (error: Error) => {
+						saveQueue.kill();
+						teardownStreams();
+
+						reject(
+							error instanceof ContentTooLargeError
+								? error
+								: new Error('Error while retrieving import data', { cause: error }),
+						);
+					});
+
 					extractJSON.on('data', ({ value }: Record<string, any>) => {
 						if (isSingleton && rowNumber > 1) {
 							saveQueue.kill();
-							destroyPipedStream(extractJSON, stream);
+							teardownStreams();
 
 							reject(
 								new InvalidPayloadError({
@@ -408,7 +456,7 @@ export class ImportService {
 					});
 
 					extractJSON.on('error', (err: Error) => {
-						destroyPipedStream(extractJSON, stream);
+						teardownStreams();
 
 						reject(new InvalidPayloadError({ reason: err.message }));
 					});
@@ -431,12 +479,13 @@ export class ImportService {
 					});
 
 					const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
+					const delay = deadline !== undefined ? Math.max(0, deadline - Date.now()) : duration;
 
 					timeout = setTimeout(() => {
 						saveQueue.kill();
-						destroyPipedStream(extractJSON, stream);
+						teardownStreams();
 						reject(new TimeoutError({ category: 'Import', duration }));
-					}, duration);
+					}, delay);
 				});
 			} catch (error) {
 				if (!error && errorTracker.hasErrors()) {
@@ -450,14 +499,74 @@ export class ImportService {
 		});
 	}
 
-	async importCSV(collection: string, stream: Readable): Promise<void> {
+	/**
+	 * Spool a source stream to a fresh temp file, resolving only once the whole stream has been
+	 * received. Used to fully consume the request body within the request lifecycle before a
+	 * background import detaches (see the background branch in `import()`).
+	 */
+	private async spoolToTmpFile(stream: Readable, deadline?: number): Promise<TmpFile> {
 		const tmpFile = await createTmpFile().catch(() => null);
 		if (!tmpFile) throw new Error('Failed to create temporary file for import');
 
+		// Bound the receive phase so a stalled upload can't hang indefinitely.
+		const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
+		const delay = deadline !== undefined ? Math.max(0, deadline - Date.now()) : duration;
+		const controller = new AbortController();
+		const timeout = setTimeout(() => controller.abort(), delay);
+
+		try {
+			// Size is capped upstream by busboy, an over-cap source arrives as ContentTooLargeError (re-thrown below).
+			await pipeline(stream, createWriteStream(tmpFile.path), { signal: controller.signal });
+		} catch (error) {
+			await tmpFile.cleanup().catch(() => {
+				logger.warn(`Failed to cleanup temporary import file (${tmpFile.path})`);
+			});
+
+			if (error instanceof ContentTooLargeError) {
+				throw error;
+			}
+
+			if (controller.signal.aborted) {
+				throw new TimeoutError({ category: 'Import', duration });
+			}
+
+			throw new Error('Error while retrieving import data', { cause: error });
+		} finally {
+			clearTimeout(timeout);
+		}
+
+		return tmpFile;
+	}
+
+	async importCSV(collection: string, stream: Readable): Promise<void> {
+		// One IMPORT_TIMEOUT budget across receive + parse (see import()'s background branch), so sync CSV can't hit 2x either.
+		const deadline = Date.now() + ms(env['IMPORT_TIMEOUT'] as StringValue);
+		const tmpFile = await this.spoolToTmpFile(stream, deadline);
+		return this.parseCsvFromTmpFile(collection, tmpFile, deadline);
+	}
+
+	/**
+	 * Parse an already-spooled CSV temp file and upsert its rows. Owns the lifecycle of the passed
+	 * temp file and cleans it up when done.
+	 */
+	private async parseCsvFromTmpFile(collection: string, tmpFile: TmpFile, deadline?: number): Promise<void> {
 		const nestedActionEvents: ActionEventParams[] = [];
 		const errorTracker = createErrorTracker();
 		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
 		let timeout: NodeJS.Timeout;
+
+		// Remove the spooled file exactly once (the parse cleanup below, or the trailing .finally which
+		// also covers failures before the parse Promise is reached).
+		let removed = false;
+
+		const removeTmpFile = () => {
+			if (removed) return;
+			removed = true;
+
+			tmpFile.cleanup().catch(() => {
+				logger.warn(`Failed to cleanup temporary import file (${tmpFile.path})`);
+			});
+		};
 
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
@@ -468,19 +577,15 @@ export class ImportService {
 
 			try {
 				await new Promise<void>((resolve, reject) => {
-					const streams: (Readable | Writable)[] = [stream];
+					const streams: (Readable | Writable)[] = [];
 					let rowNumber = 0;
 
-					const cleanup = (destroy = true) => {
-						if (destroy) {
-							for (const stream of streams) {
-								stream.destroy();
-							}
+					const cleanup = () => {
+						for (const stream of streams) {
+							stream.destroy();
 						}
 
-						tmpFile.cleanup().catch(() => {
-							logger.warn(`Failed to cleanup temporary import file (${tmpFile.path})`);
-						});
+						removeTmpFile();
 					};
 
 					const saveQueue = queue(async (task: { data: Record<string, unknown>; rowNumber: number }) => {
@@ -507,7 +612,7 @@ export class ImportService {
 
 							if (errorTracker.shouldStop()) {
 								saveQueue.kill();
-								cleanup(true);
+								cleanup();
 								reject();
 							}
 
@@ -515,111 +620,98 @@ export class ImportService {
 						}
 					});
 
-					const fileWriteStream = createWriteStream(tmpFile.path)
-						.on('error', (error) => {
-							cleanup();
-							reject(new Error('Error while writing import data to temporary file', { cause: error }));
-						})
-						.on('finish', () => {
-							const fileReadStream = createReadStream(tmpFile.path).on('error', (error) => {
+					const fileReadStream = createReadStream(tmpFile.path).on('error', (error) => {
+						cleanup();
+						reject(new Error('Error while reading import data from temporary file', { cause: error }));
+					});
+
+					streams.push(fileReadStream);
+
+					const parseStream = Papa.parse(Papa.NODE_STREAM_INPUT, {
+						header: true,
+						transformHeader: (header) => header.trim(),
+						transform: (value: string) => {
+							if (value.length === 0) return;
+
+							try {
+								const parsedJson = parseJSON(value);
+
+								if (typeof parsedJson === 'number') {
+									return value;
+								}
+
+								return parsedJson;
+							} catch {
+								return value;
+							}
+						},
+					});
+
+					fileReadStream
+						.pipe(parseStream)
+						.on('data', (obj: Record<string, unknown>) => {
+							rowNumber++;
+
+							if (isSingleton && rowNumber > 1) {
+								saveQueue.kill();
 								cleanup();
-								reject(new Error('Error while reading import data from temporary file', { cause: error }));
-							});
 
-							streams.push(fileReadStream);
-
-							fileReadStream
-								.pipe(
-									Papa.parse(Papa.NODE_STREAM_INPUT, {
-										header: true,
-										transformHeader: (header) => header.trim(),
-										transform: (value: string) => {
-											if (value.length === 0) return;
-
-											try {
-												const parsedJson = parseJSON(value);
-
-												if (typeof parsedJson === 'number') {
-													return value;
-												}
-
-												return parsedJson;
-											} catch {
-												return value;
-											}
-										},
+								reject(
+									new InvalidPayloadError({
+										reason: `Cannot import multiple records into singleton collection ${collection}`,
 									}),
-								)
-								.on('data', (obj: Record<string, unknown>) => {
-									rowNumber++;
+								);
 
-									if (isSingleton && rowNumber > 1) {
-										saveQueue.kill();
-										cleanup(true);
+								return;
+							}
 
-										reject(
-											new InvalidPayloadError({
-												reason: `Cannot import multiple records into singleton collection ${collection}`,
-											}),
-										);
+							const result: Record<string, unknown> = {};
 
-										return;
-									}
+							for (const field in obj) {
+								if (obj[field] !== undefined) {
+									set(result, field, obj[field]);
+								}
+							}
 
-									const result: Record<string, unknown> = {};
+							saveQueue.push({ data: result, rowNumber });
+						})
+						.on('error', (error: Error) => {
+							cleanup();
+							reject(new InvalidPayloadError({ reason: error.message }));
+						})
+						.on('end', () => {
+							// In case of empty CSV file
+							if (!saveQueue.started) {
+								removeTmpFile();
 
-									for (const field in obj) {
-										if (obj[field] !== undefined) {
-											set(result, field, obj[field]);
-										}
-									}
+								return resolve();
+							}
 
-									saveQueue.push({ data: result, rowNumber });
-								})
-								.on('error', (error: Error) => {
-									cleanup();
-									reject(new InvalidPayloadError({ reason: error.message }));
-								})
-								.on('end', () => {
-									// In case of empty CSV file
-									if (!saveQueue.started) {
-										cleanup(false);
+							saveQueue.drain(() => {
+								if (!errorTracker.shouldStop()) removeTmpFile();
 
-										return resolve();
-									}
+								if (errorTracker.hasErrors()) {
+									return reject();
+								}
 
-									saveQueue.drain(() => {
-										if (!errorTracker.shouldStop()) cleanup(false);
+								for (const nestedActionEvent of nestedActionEvents) {
+									emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+								}
 
-										if (errorTracker.hasErrors()) {
-											return reject();
-										}
-
-										for (const nestedActionEvent of nestedActionEvents) {
-											emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
-										}
-
-										return resolve();
-									});
-								});
+								return resolve();
+							});
 						});
 
-					streams.push(fileWriteStream);
-
 					const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
+					const delay = deadline !== undefined ? Math.max(0, deadline - Date.now()) : duration;
 
 					timeout = setTimeout(() => {
 						saveQueue.kill();
-						destroyPipedStream(fileWriteStream, stream);
+						destroyPipedStream(parseStream, fileReadStream);
+						// destroyPipedStream drains the pipe but leaves the temp file; cleanup() closes and removes it.
+						cleanup();
 						reject(new TimeoutError({ category: 'Import', duration }));
-					}, duration);
-
-					stream
-						.on('error', (error) => {
-							cleanup();
-							reject(new Error('Error while retrieving import data', { cause: error }));
-						})
-						.pipe(fileWriteStream);
+					}, delay);
 				});
 			} catch (error) {
 				if (!error && errorTracker.hasErrors()) {
@@ -630,7 +722,7 @@ export class ImportService {
 			} finally {
 				clearTimeout(timeout);
 			}
-		});
+		}).finally(() => removeTmpFile());
 	}
 }
 
@@ -922,4 +1014,22 @@ export function getHeadingsForCsvExport(
 	});
 
 	return fieldNames;
+}
+
+/**
+ * Resolve the configured import file-size cap in bytes. Unset means no cap. A set-but-unparseable
+ * value is a misconfiguration: warn and fall back to no cap rather than blocking imports.
+ */
+export function getImportMaxFileSize(): number | undefined {
+	const raw = env['IMPORT_MAX_FILE_SIZE'];
+	if (raw === undefined || raw === null || String(raw).trim() === '') return undefined;
+
+	const parsed = bytes.parse(String(raw));
+
+	if (parsed === null || Number.isNaN(parsed)) {
+		logger.warn(`Invalid IMPORT_MAX_FILE_SIZE value "${raw}"; ignoring the import file-size cap`);
+		return undefined;
+	}
+
+	return parsed;
 }

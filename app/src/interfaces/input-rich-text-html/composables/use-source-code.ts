@@ -1,4 +1,4 @@
-import type { Editor } from '@tiptap/vue-3';
+import type { AnyExtension, Editor } from '@tiptap/vue-3';
 import type { Change } from 'diff';
 import { Ref, ref } from 'vue';
 import { formatHtml } from './format-html';
@@ -16,7 +16,7 @@ type UsableSourceCode = {
 	cancelNormalize: () => void;
 };
 
-export function useSourceCode(editor: Ref<Editor>): UsableSourceCode {
+export function useSourceCode(editor: Ref<Editor>, extraExtensions: AnyExtension[] = []): UsableSourceCode {
 	const sourceCodeDrawerOpen = ref(false);
 	const code = ref('');
 	const normalizeConfirmOpen = ref(false);
@@ -47,7 +47,7 @@ export function useSourceCode(editor: Ref<Editor>): UsableSourceCode {
 	// If saving would drop markup the schema can't represent, surface the diff for confirmation;
 	// otherwise apply straight away.
 	function saveSourceCode() {
-		const diff = computeNormalizationDiff(code.value);
+		const diff = computeNormalizationDiff(code.value, extraExtensions);
 
 		if (diff === null) {
 			applySourceCode();

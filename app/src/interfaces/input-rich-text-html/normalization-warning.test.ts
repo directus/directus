@@ -12,11 +12,11 @@ import Interface from './input-rich-text-html.vue';
  * the editor read-only (so no edit can reach autosave) until the warning dialog is confirmed
  * (see use-normalization-warning.test.ts for the state machine itself).
  */
-async function mountWithValue(value: string | null) {
+async function mountWithValue(value: string | null, extraProps: Record<string, unknown> = {}) {
 	const i18n = createI18n({ legacy: false, locale: 'en-US', messages: { 'en-US': {} } });
 
 	const wrapper = mount(Interface, {
-		props: { value },
+		props: { value, ...extraProps },
 		global: {
 			plugins: [createPinia(), i18n],
 			stubs: {
@@ -105,6 +105,39 @@ describe('normalization warning wiring', () => {
 		await nextTick();
 
 		expect(editor.isEditable).toBe(false);
+	});
+
+	// custom-format marks live only on this editor instance; the guard's round-trip must know them
+	// or their stored markup falsely reads as lossy and locks the editor (ENG-1474)
+	test('a value using a configured custom format mounts editable', async () => {
+		const { editor } = await mountWithValue('<p><cite class="src">quoted</cite></p>', {
+			customFormats: [{ title: 'Cite', inline: 'cite', classes: 'src' }],
+		});
+
+		expect(editor.isEditable).toBe(true);
+	});
+
+	test('a lossy value emits readonly=true so the form can gate raw editing', async () => {
+		const { wrapper } = await mountWithValue('<marquee>legacy</marquee>');
+
+		expect(wrapper.emitted('readonly')?.at(-1)).toEqual([true]);
+	});
+
+	test('a clean value emits readonly=false', async () => {
+		const { wrapper } = await mountWithValue('<p>hello</p>');
+
+		expect(wrapper.emitted('readonly')?.at(-1)).toEqual([false]);
+	});
+
+	test('confirming the warning emits readonly=false', async () => {
+		const { wrapper } = await mountWithValue('<marquee>legacy</marquee>');
+
+		await wrapper.findComponent(EditorContent).trigger('click');
+		findDialog(wrapper).vm.$emit('confirm');
+		await flushPromises();
+		await nextTick();
+
+		expect(wrapper.emitted('readonly')?.at(-1)).toEqual([false]);
 	});
 
 	test('cancelling the warning keeps the editor read-only', async () => {

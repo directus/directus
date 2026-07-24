@@ -56,7 +56,7 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits<{ input: [value: string | null] }>();
+const emit = defineEmits<{ input: [value: string | null]; readonly: [locked: boolean] }>();
 
 const { t } = useI18n();
 
@@ -91,10 +91,14 @@ const {
 	onLockedClick,
 	confirmNormalizationWarning,
 	cancelNormalizationWarning,
-} = useNormalizationWarning(value);
+} = useNormalizationWarning(value, customFormatExtensions);
 
 // skipped for display-only modes; comparison values carry diff spans the base schema would flag as loss
 if (!props.comparisonMode && !props.nonEditable) checkValue();
+
+// surface the unsupported-data lock to the form so the field menu can gate raw editing (which
+// would otherwise bypass this guard); `immediate` reports the state settled by the check above
+watch(normalizationLocked, (locked) => emit('readonly', locked), { immediate: true });
 
 // read-only states: `nonEditable`/`comparisonMode` keep the normal look, `disabled` dims (see styles),
 // `normalizationLocked` guards lossy stored HTML until the warning dialog is confirmed
@@ -257,7 +261,7 @@ const {
 	saveSourceCode,
 	confirmSaveSourceCode,
 	cancelNormalize,
-} = useSourceCode(editor as Ref<Editor>);
+} = useSourceCode(editor as Ref<Editor>, customFormatExtensions);
 
 // pause the surrounding view's focus trap while a drawer is open so its inputs stay reachable
 const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();

@@ -83,6 +83,10 @@ const isLabelHidden = computed(() => {
 	return props.field.hideLabel;
 });
 
+// set by interfaces that lock themselves read-only for a data-integrity reason (not permissions),
+// e.g. WYSIWYG content the editor can't represent; gates the field menu's raw-value editing
+const interfaceLocked = ref(false);
+
 const { internalValue, isEdited, defaultValue } = useComputedValues();
 
 const { showRaw, copyRaw, pasteRaw, onRawValueSubmit } = useRaw();
@@ -239,6 +243,7 @@ function useComputedValues() {
 				:model-value="internalValue"
 				:initial-value="initialValue"
 				:restricted="isDisabled"
+				:interface-locked="interfaceLocked"
 				:disabled-options="disabledMenuOptions"
 				@update:model-value="emitValue($event)"
 				@unset="unsetValue"
@@ -268,6 +273,7 @@ function useComputedValues() {
 			:version
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
+			@readonly="interfaceLocked = $event"
 			@focusin="onFocus"
 			@focusout="onBlur"
 		/>
@@ -276,7 +282,7 @@ function useComputedValues() {
 			:show-modal="showRaw"
 			:field="field"
 			:current-value="internalValue"
-			:disabled="isDisabled"
+			:disabled="isDisabled || interfaceLocked"
 			@cancel="showRaw = false"
 			@set-raw-value="onRawValueSubmit"
 		/>

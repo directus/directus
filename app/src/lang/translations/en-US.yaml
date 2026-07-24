@@ -22,7 +22,7 @@
 
 about: About
 directus_mscl: Directus MSCL-1.0-GPL
-privacy_policy: Privacy Policy
+data_processing_agreement: Data Processing Agreement
 contact_support: contact support
 setup_welcome: Welcome to Directus
 setup_info: Let's create your admin account and get your project up and running.
@@ -662,6 +662,7 @@ functions:
   minute: Minute
   second: Second
   count: Count
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -1040,6 +1041,7 @@ operators:
   nintersects: Doesn't intersect
   intersects_bbox: Intersects bounding box
   nintersects_bbox: Doesn't intersect bounding box
+  json: JSON
   regex: Matches RegExp
 custom_validation_message: Custom Validation Message
 loading: Loading...
@@ -1916,16 +1918,16 @@ fields:
     ai_notice:
       'AI Assistant provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the
       toolbar to ask questions, generate content, and get help working with your project. <a
-      href="https://directus.io/docs/guides/ai/assistant" target="_blank">Learn more about configuring and using AI
+      href="https://directus.com/docs/guides/ai/assistant" target="_blank">Learn more about configuring and using AI
       Assistant.</a>'
     mcp_enabled: MCP Server
     mcp_enabled_note:
-      'Connect AI/LLM tools to your Directus project via <a href="https://directus.io/docs/guides/ai/mcp"
+      'Connect AI/LLM tools to your Directus project via <a href="https://directus.com/docs/guides/ai/mcp"
       target="_blank">Model Context Protocol (MCP)</a>. This enables AI assistants to read and interact with your
       Directus data securely.'
     mcp_notice:
       'Model Context Protocol is a standard for connecting LLMs to applications like Directus. Once enabled, the
-      Directus MCP server will be available at `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp"
+      Directus MCP server will be available at `/mcp`. <a href="https://directus.com/docs/guides/ai/mcp"
       target="_blank">Learn more about MCP and how to connect.</a>'
     mcp_allow_deletes: Allow Deletes
     mcp_allow_deletes_note:
@@ -1933,12 +1935,12 @@ fields:
       May cause data loss.</strong> Disabled by default for safety.'
     mcp_prompts_collection: AI Prompts Collection
     mcp_prompts_collection_note:
-      'Select collection for storing <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">reusable
+      'Select collection for storing <a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">reusable
       prompt templates</a> for AI interactions.'
     mcp_system_prompt_divider: System Prompt Configuration
     mcp_system_prompt_enabled: Use System Prompt
     mcp_system_prompt_enabled_note:
-      "Use the <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>default system prompt</a>
+      "Use the <a href='https://directus.com/docs/guides/ai/mcp#system-prompt' target='_blank'>default system prompt</a>
       to guide LLM behavior. Disable to remove or override with your own prompt below."
     mcp_system_prompt: Custom System Prompt
     mcp_system_prompt_note:
@@ -2286,7 +2288,7 @@ mcp_prompts_collection_schema:
   messages_role_note: Who is speaking in this message.
   meta_prompts_notice:
     'Prompts are reusable templates that you can use with LLMs through the Directus MCP server, Flows, or other AI
-    applications. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">Learn more about creating
+    applications. <a href="https://directus.com/docs/guides/ai/mcp/prompts" target="_blank">Learn more about creating
     effective prompts.</a>'
 expired: Expired
 upcoming: Upcoming
