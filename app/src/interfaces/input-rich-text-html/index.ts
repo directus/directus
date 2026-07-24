@@ -1,4 +1,5 @@
 import { defineInterface } from '@directus/extensions';
+import type { AppField, DeepPartial } from '@directus/types';
 import { defineAsyncComponent } from 'vue';
 import PreviewSVG from './preview.svg?raw';
 import toolbarDefault from './toolbar-default';
@@ -14,7 +15,7 @@ export default defineInterface({
 	types: ['text'],
 	group: 'standard',
 	preview: PreviewSVG,
-	options: {
+	options: ({ field }) => ({
 		standard: [
 			{
 				field: 'toolbar',
@@ -304,26 +305,23 @@ export default defineInterface({
 					},
 				},
 			},
-			{
-				field: 'tinymceOverrides',
-				name: '$t:interfaces.input-rich-text-html.options_override',
-				type: 'json',
-				meta: {
-					interface: 'code',
-					note: '$t:interfaces.input-rich-text-html.options_override_note',
-					options: {
-						language: 'json',
-						template: JSON.stringify(
-							{
-								font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
-								font_family_formats: 'Arial=arial,helvetica,sans-serif; Courier New=courier new,courier,monospace;',
+			// deprecated + inert; only rendered for fields that still carry a stored value
+			...(field.meta?.options?.['tinymceOverrides'] != null
+				? [
+						{
+							field: 'tinymceOverrides',
+							name: '$t:interfaces.input-rich-text-html.options_override',
+							type: 'json',
+							meta: {
+								interface: 'code',
+								note: '$t:interfaces.input-rich-text-html.options_override_note',
+								options: {
+									language: 'json',
+								},
 							},
-							null,
-							4,
-						),
-					},
-				},
-			},
+						} satisfies DeepPartial<AppField>,
+					]
+				: []),
 		],
-	},
+	}),
 });

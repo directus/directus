@@ -2780,10 +2780,10 @@ interfaces:
       A list of custom inline formats. Each entry needs a `title` and an `inline` tag, with optional `classes`,
       `styles`, and `attributes`. When set, a Formats dropdown is added to the toolbar. Block-level and nested formats
       are not supported.
-    options_override: Options Override
+    options_override: Options Override (Deprecated)
     options_override_note:
-      The TinyMCE User Formatting keys and their values. See the TinyMCE documentation about [User
-      Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) for more information.
+      Deprecated legacy TinyMCE overrides. This value is no longer applied by the editor and is kept for reference only.
+      Use the other interface options instead, such as the Custom Formats option.
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
