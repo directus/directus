@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VSelect from '@/components/v-select/v-select.vue';
@@ -12,28 +13,25 @@ const props = defineProps<{
 }>();
 
 defineEmits(['update:modelValue']);
+
+const { t } = useI18n();
 const collectionsStore = useCollectionsStore();
 
 const collectionExists = computed(() => {
 	return !!collectionsStore.getCollection(props.modelValue);
 });
 
-const availableCollections = collectionsStore.databaseCollections.filter((collection) => collection.meta);
-const systemCollections = collectionsStore.crudSafeSystemCollections;
-
-const displayItems = computed(() => {
+const availableCollections = computed(() => {
 	return [
-		...availableCollections.map((collection) => ({
-			text: collection.collection,
-			value: collection.collection,
-			disabled: collection.meta?.singleton,
-		})),
-		{ divider: true },
-		...systemCollections.map((collection) => ({
-			text: collection.collection,
-			value: collection.collection,
-			disabled: collection.meta?.singleton,
-		})),
+		...collectionsStore.databaseCollections.filter((collection) => collection.meta),
+		{
+			divider: true,
+		},
+		{
+			collection: t('system'),
+			selectable: false,
+			children: collectionsStore.crudSafeSystemCollections,
+		},
 	];
 });
 </script>
@@ -51,9 +49,14 @@ const displayItems = computed(() => {
 	>
 		<template v-if="!disabled" #append>
 			<VSelect
-				:items="displayItems"
-				:model-value="props.modelValue"
-				placement="bottom-start"
+				:items="availableCollections"
+				:model-value="modelValue"
+				:attached="false"
+				show-arrow
+				placement="bottom-end"
+				item-value="collection"
+				item-text="collection"
+				item-disabled="meta.singleton"
 				item-label-font-family="var(--theme--fonts--monospace--font-family)"
 				@update:model-value="$emit('update:modelValue', $event)"
 			>
