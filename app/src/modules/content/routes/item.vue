@@ -1256,6 +1256,7 @@ function useAutoSwitchToDraft() {
 					:collab-context="collabContext"
 					:validation-errors="validationErrors"
 					:version="currentVersion"
+					:can-auto-switch-to-draft="canAutoSwitchToDraft"
 					:direction="userStore.textDirection"
 				/>
 			</template>
