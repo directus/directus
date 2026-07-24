@@ -344,25 +344,19 @@ describe('non-admin users', () => {
 				expect(nameField?.schema?.default_value).toEqual(namePreset);
 			});
 
-			it('should resolve dynamic preset default values when fields are consumed', () => {
-				const userStore = mockedStore(useUserStore());
+			it('should reflect updated preset default values when permissions re-hydrate', () => {
+				const preset = ref<Record<string, any>>({ name: null });
 
-				userStore.currentUser = {
-					id: 'user-a',
-					role: { id: 'role-a' },
-					builder_tenant_id: null,
-				} as any;
-
-				const mockActionPermission = {
+				const mockActionPermission = computed(() => ({
 					access: 'full' as const,
-					presets: { name: '$CURRENT_USER.builder_tenant_id' } as Record<string, any>,
-				};
+					presets: preset.value,
+				}));
 
 				if (collectionType === 'collection') {
 					const permissionsStore = mockedStore(usePermissionsStore());
 
 					permissionsStore.getPermission.mockImplementation((_, action) => {
-						if (action === testAction) return mockActionPermission;
+						if (action === testAction) return mockActionPermission.value;
 						return null;
 					});
 				} else {
@@ -370,7 +364,7 @@ describe('non-admin users', () => {
 						return {
 							update: {
 								access: true,
-								presets: mockActionPermission.presets,
+								presets: preset.value,
 							},
 						} as ItemPermissions;
 					});
@@ -382,10 +376,7 @@ describe('non-admin users', () => {
 
 				expect(fields.value.find((field) => field.field === 'name')?.schema?.default_value).toBe(null);
 
-				userStore.currentUser = {
-					...userStore.currentUser,
-					builder_tenant_id: 'tenant-b',
-				} as any;
+				preset.value = { name: 'tenant-b' };
 
 				expect(fields.value.find((field) => field.field === 'name')?.schema?.default_value).toBe('tenant-b');
 			});

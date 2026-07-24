@@ -1,4 +1,4 @@
-import { PermissionsAction, User } from '@directus/types';
+import { PermissionsAction } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
@@ -39,92 +39,30 @@ const actions: PermissionsAction[] = ['create', 'read', 'update', 'delete', 'sha
 
 describe('actions', () => {
 	describe('hydrate', () => {
-		test('should fetch additional fields when there are dynamic variables in presets', async () => {
-			const mockUser = {
-				id: sample.user.id,
-				role: {
-					id: sample.role.id,
-				},
-			} as User;
-
-			const userStore = useUserStore();
-			userStore.currentUser = mockUser;
-
-			const hydrateAdditionalFieldsSpy = vi.spyOn(userStore, 'hydrateAdditionalFields').mockResolvedValue();
-
-			const permissionWithDynamicVariablesInPresets = {
-				presets: {
-					field_a: '$CURRENT_ROLE.name',
-					field_b: '$CURRENT_USER.custom_user_field',
-				},
-			};
-
-			vi.spyOn(vi.mocked(api), 'get').mockResolvedValueOnce({
-				data: { data: { [sample.collection]: { read: permissionWithDynamicVariablesInPresets } } },
-			});
-
-			const permissionsStore = usePermissionsStore();
-			await permissionsStore.hydrate();
-
-			expect(hydrateAdditionalFieldsSpy).toHaveBeenCalledOnce();
-			expect(hydrateAdditionalFieldsSpy).toBeCalledWith(expect.arrayContaining(['role.name', 'custom_user_field']));
-		});
-
-		test('should keep dynamic preset variables raw when the permission is read', async () => {
-			const mockUser = {
-				id: sample.user.id,
-				role: {
-					id: sample.role.id,
-				},
-				builder_tenant_id: null,
-			} as any;
-
-			const userStore = useUserStore();
-			userStore.currentUser = mockUser;
-
-			vi.spyOn(userStore, 'hydrateAdditionalFields').mockResolvedValue();
-
-			vi.spyOn(vi.mocked(api), 'get').mockResolvedValueOnce({
-				data: {
-					data: {
-						[sample.collection]: {
-							create: {
-								access: 'full',
-								full_access: true,
-								fields: ['*'],
-								presets: {
-									tenant_id: '$CURRENT_USER.builder_tenant_id',
-								},
-							},
+		test('should store the permissions returned by the API', async () => {
+			const permissions = {
+				[sample.collection]: {
+					create: {
+						access: 'full',
+						full_access: true,
+						fields: ['*'],
+						presets: {
+							tenant_id: 'resolved-tenant-id',
 						},
 					},
 				},
-			});
+			};
+
+			vi.spyOn(vi.mocked(api), 'get').mockResolvedValueOnce({ data: { data: permissions } });
 
 			const permissionsStore = usePermissionsStore();
 			await permissionsStore.hydrate();
 
+			expect(api.get).toHaveBeenCalledWith('/permissions/me');
+
 			expect(permissionsStore.getPermission(sample.collection, 'create')?.presets).toEqual({
-				tenant_id: '$CURRENT_USER.builder_tenant_id',
+				tenant_id: 'resolved-tenant-id',
 			});
-
-			expect(api.get).toHaveBeenCalledTimes(1);
-		});
-
-		test('should not fetch additional fields when there are no dynamic variables in presets', async () => {
-			const mockUser = {
-				id: sample.user.id,
-				role: {
-					id: sample.role.id,
-				},
-			} as User;
-
-			const userStore = useUserStore();
-			userStore.currentUser = mockUser;
-
-			vi.spyOn(userStore, 'hydrateAdditionalFields').mockResolvedValue();
-
-			expect(userStore.hydrateAdditionalFields).not.toHaveBeenCalled();
 		});
 	});
 
