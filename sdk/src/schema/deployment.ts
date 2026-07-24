@@ -9,9 +9,12 @@ export type DirectusDeployment<Schema = any> = MergeCoreCollection<
 	'directus_deployments',
 	{
 		id: string;
-		provider: string;
+		provider: 'vercel' | 'netlify';
 		credentials: Record<string, any>;
 		options: Record<string, any> | null;
+		webhook_ids: string[] | null;
+		webhook_secret: string | null;
+		last_synced_at: string | null;
 		date_created: 'datetime' | null;
 		user_created: DirectusUser<Schema> | string | null;
 		projects: DirectusDeploymentProject<Schema>[] | string[];
@@ -29,6 +32,9 @@ export type DirectusDeploymentProject<Schema = any> = MergeCoreCollection<
 		deployment: DirectusDeployment<Schema> | string;
 		external_id: string;
 		name: string;
+		url: string | null;
+		framework: string | null;
+		deployable: boolean;
 		date_created: 'datetime' | null;
 		user_created: DirectusUser<Schema> | string | null;
 	}
@@ -44,7 +50,7 @@ export type DirectusDeploymentRun<Schema = any> = MergeCoreCollection<
 		id: string;
 		project: DirectusDeploymentProject<Schema> | string;
 		external_id: string;
-		status: 'building' | 'ready' | 'error' | 'canceled';
+		status: 'building' | 'ready' | 'error' | 'canceled' | null;
 		target: string;
 		url: string | null;
 		started_at: 'datetime' | null;
