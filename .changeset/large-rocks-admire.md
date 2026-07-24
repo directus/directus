@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Added search to the collection dropdowns in relationship configuration
+Added search to the collection selection in relationship configuration
