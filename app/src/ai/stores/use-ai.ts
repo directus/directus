@@ -123,6 +123,11 @@ export const useAiStore = defineStore('ai-store', () => {
 			return;
 		}
 
+		// Clear conversation when switching models to prevent context mismatch
+		if (chat.messages.length > 0) {
+			reset();
+		}
+
 		selectedModelId.value = getModelKey(modelDefinition);
 	};
 
