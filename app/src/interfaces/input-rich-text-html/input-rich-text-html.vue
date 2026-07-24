@@ -68,7 +68,7 @@ if (
 ) {
 	// eslint-disable-next-line no-console
 	console.warn(
-		'[input-rich-text-html] The "tinymceOverrides" option is deprecated and has no effect since the editor moved from TinyMCE to Tiptap. Use the interface options instead (e.g. "toolbar", "customFormats").',
+		'[input-rich-text-html] The "tinymceOverrides" option is deprecated and no longer has any effect. Use the customFormats interface option instead.',
 	);
 }
 

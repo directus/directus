@@ -2781,7 +2781,7 @@ interfaces:
     options_override: Options Override (Deprecated)
     options_override_note:
       Deprecated legacy TinyMCE overrides. This value is no longer applied by the editor and is kept for reference only.
-      Use the interface options instead (for example the Toolbar and Custom Formats options).
+      Use the other interface options instead, such as the Custom Formats option.
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
