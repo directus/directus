@@ -1038,7 +1038,8 @@ function useAutoSwitchToDraft() {
 		<template v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template" #title>
 			<VSkeletonLoader v-if="loading" class="title-loader" type="text" />
 
-			<h1 v-else class="type-title">
+			<h1 v-else class="type-title type-title-template">
+				{{ collectionInfo.name }}:
 				<RenderTemplate
 					:collection="collectionInfo.collection"
 					:item="templateData"
@@ -1411,6 +1412,18 @@ function useAutoSwitchToDraft() {
 
 :deep(.type-title) {
 	min-inline-size: 0;
+}
+
+.type-title-template {
+	display: flex;
+	gap: 0.25rem;
+
+	:deep(.render-template) {
+		.vertical-aligner,
+		> * {
+			vertical-align: bottom;
+		}
+	}
 }
 
 .content-split {
