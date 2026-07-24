@@ -20,7 +20,6 @@ get:
     - $ref: '../../openapi.yaml#/components/parameters/Alias'
     - $ref: '../../openapi.yaml#/components/parameters/Export'
     - $ref: '../../openapi.yaml#/components/parameters/Version'
-    - $ref: '../../openapi.yaml#/components/parameters/VersionRaw'
     - $ref: '../../openapi.yaml#/components/parameters/Backlink'
     - $ref: '../../openapi.yaml#/components/parameters/Meta'
   responses:
