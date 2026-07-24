@@ -23,9 +23,17 @@ const systemCollections = collectionsStore.crudSafeSystemCollections;
 
 const displayItems = computed(() => {
 	return [
-		...availableCollections.map((collection) => collection.collection),
+		...availableCollections.map((collection) => ({
+			text: collection.collection,
+			value: collection.collection,
+			disabled: collection.meta?.singleton,
+		})),
 		{ divider: true },
-		...systemCollections.map((collection) => collection.collection),
+		...systemCollections.map((collection) => ({
+			text: collection.collection,
+			value: collection.collection,
+			disabled: collection.meta?.singleton,
+		})),
 	];
 });
 </script>
@@ -44,8 +52,7 @@ const displayItems = computed(() => {
 		<template v-if="!disabled" #append>
 			<VSelect
 				:items="displayItems"
-				item-text="collection"
-				item-value="collection"
+				:model-value="props.modelValue"
 				placement="bottom-start"
 				item-label-font-family="var(--theme--fonts--monospace--font-family)"
 				@update:model-value="$emit('update:modelValue', $event)"
