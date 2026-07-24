@@ -76,7 +76,7 @@ describe('useRelationSingle', () => {
 	});
 
 	test('falls back to the scalar primary key when the related item is forbidden', async () => {
-		vi.mocked(sdk.request).mockRejectedValueOnce({ response: { status: 403 } });
+		vi.mocked(sdk.request).mockRejectedValueOnce({ errors: [{ extensions: { code: 'FORBIDDEN' } }] });
 
 		const wrapper = mount(TestComponent, {
 			props: {
@@ -88,5 +88,35 @@ describe('useRelationSingle', () => {
 
 		expect(wrapper.vm.displayItem).toEqual({ id: 'tenant-a' });
 		expect(unexpectedError).not.toHaveBeenCalled();
+	});
+
+	test('keeps the existing object value when the related item is forbidden', async () => {
+		vi.mocked(sdk.request).mockRejectedValueOnce({ errors: [{ extensions: { code: 'FORBIDDEN' } }] });
+
+		const wrapper = mount(TestComponent, {
+			props: {
+				value: { id: 'tenant-a', name: 'Typed Name' },
+			},
+		});
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItem).toEqual({ id: 'tenant-a', name: 'Typed Name' });
+		expect(unexpectedError).not.toHaveBeenCalled();
+	});
+
+	test('surfaces errors that are not forbidden', async () => {
+		vi.mocked(sdk.request).mockRejectedValueOnce({ errors: [{ extensions: { code: 'INTERNAL_SERVER_ERROR' } }] });
+
+		const wrapper = mount(TestComponent, {
+			props: {
+				value: 'tenant-a',
+			},
+		});
+
+		await flushPromises();
+
+		expect(unexpectedError).toHaveBeenCalledOnce();
+		expect(wrapper.vm.displayItem).toBeNull();
 	});
 });
