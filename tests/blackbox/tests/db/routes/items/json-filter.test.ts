@@ -275,7 +275,6 @@ const getSuccessGroups = (localCollectionSuppliers: string): Record<string, Succ
 	],
 	'Incomplete path normalization': [
 		{
-			// normalizes: 'color.' → '$.color', matching Alpha the same as a bare 'color'.
 			description: 'trailing dot normalizes and matches (color. → color)',
 			filter: { metadata: { _json: { 'color.': { _eq: 'red' } } } },
 			expectedLength: 1,
@@ -763,7 +762,6 @@ const ERROR_CASES: ErrorCase[] = [
 		filter: { metadata: { _json: { 'a.b': { 'c[0]': { _eq: 1 } } } } },
 	},
 	{
-		// A repeated dot forms '..' (recursive descent), which is rejected by parseJsonPath.
 		description: 'returns 400 for a repeated dot (settings..theme)',
 		filter: { metadata: { _json: { 'settings..theme': { _eq: 'dark' } } } },
 	},

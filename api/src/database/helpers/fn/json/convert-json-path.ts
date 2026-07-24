@@ -16,7 +16,6 @@ export function convertToJsonPath(path: string): string {
 	let result = '$';
 
 	for (const part of parts) {
-		// Drop empty segments left behind by incomplete paths (trailing/repeated dots).
 		if (part === '') continue;
 
 		const num = Number(part);

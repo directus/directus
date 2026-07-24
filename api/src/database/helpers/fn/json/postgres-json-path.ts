@@ -29,8 +29,6 @@ export function buildPostgresJsonPath(
 	for (let i = 0; i <= lastIndex; i++) {
 		const part = parts[i]!;
 
-		// Drop empty segments left behind by incomplete paths (leading/trailing/repeated dots),
-		// consistent with convertToJsonPath used by the other dialects.
 		if (part === '') continue;
 
 		const operator = i === lastIndex && options?.asText ? '->>' : '->';
