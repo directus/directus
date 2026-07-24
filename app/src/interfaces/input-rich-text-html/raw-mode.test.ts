@@ -15,11 +15,11 @@ import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
  */
 const LOSSY = '<marquee>legacy</marquee>';
 
-async function mountWithValue(value: string) {
+async function mountWithValue(value: string, extraProps: Record<string, unknown> = {}) {
 	const i18n = createI18n({ legacy: false, locale: 'en-US', messages: { 'en-US': {} } });
 
 	const wrapper = mount(Interface, {
-		props: { value },
+		props: { value, ...extraProps },
 		global: {
 			plugins: [createPinia(), i18n],
 			stubs: {
@@ -74,5 +74,25 @@ describe('raw editing mode', () => {
 
 		const emitted = wrapper.emitted('input');
 		expect(emitted?.at(-1)).toEqual([edited]);
+	});
+
+	// On a versioned item, opening raw editing is an edit intent: it must move the item to a Draft
+	// version (parity with "Edit anyway"). The Draft switch is edit-driven, so force the current
+	// value into the form via set-field-value without changing it (CMS-2881).
+	test('entering raw mode force-sets the current value to trigger the draft switch when auto-switch is enabled', async () => {
+		const { wrapper } = await mountWithValue(LOSSY, { field: 'body', autoSwitchToDraft: true });
+
+		await enterRawMode(wrapper);
+
+		expect(wrapper.emitted('setFieldValue')?.at(-1)).toEqual([{ field: 'body', value: LOSSY }]);
+	});
+
+	// Non-versioned items have no Draft to switch to; opening raw must not dirty the field.
+	test('entering raw mode does not force a value when auto-switch is disabled', async () => {
+		const { wrapper } = await mountWithValue(LOSSY, { field: 'body' });
+
+		await enterRawMode(wrapper);
+
+		expect(wrapper.emitted('setFieldValue')).toBeUndefined();
 	});
 });

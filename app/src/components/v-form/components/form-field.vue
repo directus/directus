@@ -39,6 +39,7 @@ const props = withDefaults(
 		disabledMenu?: boolean;
 		direction?: string;
 		version?: ContentVersionMaybeNew | null;
+		canAutoSwitchToDraft?: boolean;
 		collabFieldContext?: CollabFieldContext;
 	}>(),
 	{
@@ -271,6 +272,7 @@ function useComputedValues() {
 			:comparison="comparison"
 			:comparison-active="comparisonActive"
 			:version
+			:can-auto-switch-to-draft="canAutoSwitchToDraft"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 			@readonly="interfaceLocked = $event"
