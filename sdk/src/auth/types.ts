@@ -1,3 +1,5 @@
+import type { RequestCredentials } from '../types/globals.js';
+
 export type AuthenticationMode = 'json' | 'cookie' | 'session';
 
 export type LocalLoginPayload = { email: string; password: string };

@@ -1,6 +1,23 @@
 // using "| any" to ensure compatibility with various "Fetch" alternative function signatures
 export type FetchInterface = (input: string | any, init?: RequestInit | any) => Promise<unknown>;
 
+/**
+ * Structural equivalent of the DOM `RequestCredentials` type, redeclared here so the SDK's public
+ * type definitions don't require the `DOM` lib to be present in consuming projects (e.g. Node ESM).
+ */
+export type RequestCredentials = 'omit' | 'same-origin' | 'include';
+
+/**
+ * Minimal structural equivalent of the DOM `CloseEvent`, redeclared here so the SDK's public type
+ * definitions don't require the `DOM` lib to be present in consuming projects (e.g. Node ESM).
+ */
+export type CloseEventInterface = {
+	readonly type: string;
+	readonly code: number;
+	readonly reason: string;
+	readonly wasClean: boolean;
+};
+
 export type UrlInterface = typeof URL;
 
 /** While the standard says 'string | URL' for the 'url' parameter, some implementations (e.g. React Native) only accept 'string' */
