@@ -14,9 +14,10 @@ import {
 	toDimension,
 } from './assert-transforms-allowed.js';
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({}),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockEnv } = await import('../../test-utils/env.js');
+	return mockEnv();
+});
 
 describe('assertTransformsAllowed', () => {
 	const MAX_DIM = 6000;
@@ -28,7 +29,7 @@ describe('assertTransformsAllowed', () => {
 
 	afterEach(() => {
 		const env = vi.mocked(useEnv)() as Record<string, unknown>;
-		for (const k of Object.keys(env)) delete env[k];
+		delete env['ASSETS_TRANSFORM_IMAGE_MAX_OUTPUT_DIMENSION'];
 	});
 
 	test('When there are no transforms, then it does not throw', () => {
@@ -62,6 +63,22 @@ describe('assertTransformsAllowed', () => {
 	test('When a source dimension is zero, then it does not divide by zero or throw', () => {
 		const transforms: Transformation[] = [['resize', { width: 100 }]];
 		expect(() => assertTransformsAllowed(0, 0, transforms)).not.toThrow();
+	});
+
+	test.each([
+		['undefined', undefined],
+		['a non-numeric string', 'not-a-number'],
+		['zero', 0],
+		['a negative number', -100],
+	])('When the max output dimension env var is %s, then it falls back to the default cap', (_label, value) => {
+		const env = vi.mocked(useEnv)() as Record<string, unknown>;
+		env['ASSETS_TRANSFORM_IMAGE_MAX_OUTPUT_DIMENSION'] = value;
+
+		const within: Transformation[] = [['resize', { width: 3000 }]];
+		expect(() => assertTransformsAllowed(1, 1, within)).not.toThrow();
+
+		const exceeds: Transformation[] = [['resize', { width: 3001 }]];
+		expect(() => assertTransformsAllowed(1, 1, exceeds)).toThrow(IllegalAssetTransformationError);
 	});
 });
 

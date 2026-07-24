@@ -33,7 +33,7 @@ import { getStorage } from '../storage/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
-import { assertTransformsAllowed } from './assets/assert-transforms-allowed.js';
+import { assertTransformsAllowed, toDimension } from './assets/assert-transforms-allowed.js';
 import { NameDeduper } from './assets/name-deduper.js';
 import { getSharpInstance } from './files/lib/get-sharp-instance.js';
 import { FilesService } from './files.js';
@@ -330,12 +330,9 @@ export class AssetsService {
 			// limitInputPixels, but we should have that check applied before starting the read streams
 			const { width, height } = file;
 
-			if (
-				!width ||
-				!height ||
-				width > (env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] as number) ||
-				height > (env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] as number)
-			) {
+			const maxInputDimension = toDimension(env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION']) ?? 6000;
+
+			if (!width || !height || width > maxInputDimension || height > maxInputDimension) {
 				logger.warn(`Image is too large to be transformed, or image size couldn't be determined.`);
 				throw new IllegalAssetTransformationError({ invalidTransformations: ['width', 'height'] });
 			}

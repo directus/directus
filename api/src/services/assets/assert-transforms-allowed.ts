@@ -47,7 +47,8 @@ export function calculateStep(size: Size, method: string, args: unknown[]): Size
  */
 export function assertTransformsAllowed(sourceWidth: number, sourceHeight: number, transforms: Transformation[]): void {
 	const env = useEnv();
-	const maxOutputDimension = env['ASSETS_TRANSFORM_IMAGE_MAX_OUTPUT_DIMENSION'] as number;
+
+	const maxOutputDimension = toDimension(env['ASSETS_TRANSFORM_IMAGE_MAX_OUTPUT_DIMENSION']) ?? 3000;
 
 	let size: Size = { width: sourceWidth, height: sourceHeight };
 
