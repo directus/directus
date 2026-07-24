@@ -27,6 +27,7 @@ const BLOCK_TAGS = new Set([
 	'li',
 	'ol',
 	'p',
+	'pre',
 	'section',
 	'table',
 	'tbody',

@@ -59,6 +59,12 @@ describe('formatHtml', () => {
 		expect(formatHtml('<pre><code>a </code></pre>')).toBe('<pre><code>a </code></pre>');
 	});
 
+	test('keeps <pre> contents untouched when nested inside a block', () => {
+		expect(formatHtml('<blockquote><pre><code> a\n  b </code></pre></blockquote>')).toBe(
+			['<blockquote>', '  <pre><code> a\n  b </code></pre>', '</blockquote>'].join('\n'),
+		);
+	});
+
 	test('preserves a non-breaking space at the block boundary', () => {
 		// A non-breaking space is significant and survives Tiptap normalization, so it must not be trimmed.
 		expect(formatHtml('<p>hello\u00a0</p>')).toBe('<p>hello&nbsp;</p>');
