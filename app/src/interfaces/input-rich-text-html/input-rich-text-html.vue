@@ -47,7 +47,6 @@ const props = withDefaults(
 		// comparison view (content versioning / revision diffs): value arrives pre-marked with
 		// comparison-diff spans; side switches flow in as value changes
 		comparisonMode?: boolean;
-		// this field's key, and whether editing it should move the item to a Draft version (versioning)
 		field?: string;
 		autoSwitchToDraft?: boolean;
 	}>(),
