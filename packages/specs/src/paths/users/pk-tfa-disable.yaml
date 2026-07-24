@@ -11,3 +11,5 @@ post:
       $ref: '../../openapi.yaml#/components/responses/ForbiddenError'
   tags:
     - Users
+parameters:
+  - $ref: '../../openapi.yaml#/components/parameters/UUId'

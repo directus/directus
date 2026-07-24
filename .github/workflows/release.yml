@@ -334,6 +334,122 @@ jobs:
         run: |
           docker buildx imagetools inspect ${{ env.GHCR_IMAGE }}:${{ steps.meta.outputs.version }}
 
+  generate-sbom:
+    name: Generate SBOM
+    runs-on: ubuntu-latest
+    # Runs after the release exists and uploads SBOMs to it directly, so a
+    # flaky SBOM step can never block or strand release creation. If this job
+    # fails, the release (and the already-published npm/docker artifacts) are
+    # untouched: use "Re-run failed jobs" in the Actions UI to re-drive just
+    # this job. The upload is idempotent (gh release upload --clobber), so a
+    # re-run cleanly (re-)attaches the SBOMs to the existing release.
+    needs:
+      - check-version
+      - publish-docker-images
+      - create-release
+    permissions:
+      contents: write
+      packages: read
+    strategy:
+      fail-fast: false
+      # Serialize the variants: both legs run `gh release upload` against the
+      # same release, and concurrent asset uploads to one release can 422.
+      max-parallel: 1
+      matrix:
+        variant:
+          - name: standard
+            suffix: ''
+            file: ./Dockerfile
+          - name: dhi
+            suffix: '-dhi'
+            file: ./Dockerfile.dhi
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Reuse the amd64 build cache from the build-images job so the builder
+      # stage is a cache hit rather than a full rebuild. SBOMs are generated
+      # for a single platform: npm packages are arch-independent and the OS
+      # package set/versions match across amd64/arm64 for these images.
+      - name: Restore Docker layer cache (amd64)
+        uses: actions/cache/restore@v5
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-linux-amd64-${{ matrix.variant.name }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-linux-amd64-${{ matrix.variant.name }}-buildx-
+
+      # Bare version only (e.g. 11.2.0). The published tag suffix (-dhi) is
+      # appended explicitly from the matrix below, so this must NOT set a
+      # suffix flavor.
+      - name: Extract version
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKERHUB_IMAGE }}
+          tags: |
+            type=semver,pattern={{version}}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      # Build the builder stage only (no runtime base needed, so no DHI
+      # entitlement required here). This captures the full build closure:
+      # the builder-stage OS toolchain plus the complete npm graph including
+      # dev/transitive dependencies (the builder runs a non-prod install).
+      - name: Build builder stage for build-time SBOM
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.variant.file }}
+          target: builder
+          platforms: linux/amd64
+          load: true
+          tags: directus-builder-sbom:${{ matrix.variant.name }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+
+      - name: Install Syft
+        uses: anchore/sbom-action/download-syft@v0
+
+      # Build-time SBOM: everything used to produce the artifact.
+      - name: Generate build-time SBOM
+        run: |
+          syft "directus-builder-sbom:${{ matrix.variant.name }}" \
+            -o "spdx-json=directus-${{ steps.meta.outputs.version }}${{ matrix.variant.suffix }}.buildtime.spdx.json" \
+            -o "cyclonedx-json=directus-${{ steps.meta.outputs.version }}${{ matrix.variant.suffix }}.buildtime.cdx.json"
+
+      # Run-time SBOM: what is actually shipped in the published image
+      # (OS packages plus the production node_modules bundled into dist).
+      - name: Generate run-time SBOM
+        run: |
+          syft "${{ env.DOCKERHUB_IMAGE }}:${{ steps.meta.outputs.version }}${{ matrix.variant.suffix }}" \
+            --platform linux/amd64 \
+            -o "spdx-json=directus-${{ steps.meta.outputs.version }}${{ matrix.variant.suffix }}.runtime.spdx.json" \
+            -o "cyclonedx-json=directus-${{ steps.meta.outputs.version }}${{ matrix.variant.suffix }}.runtime.cdx.json"
+
+      - name: Upload SBOM artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: sbom-${{ matrix.variant.name }}
+          path: directus-*.json
+          if-no-files-found: error
+          retention-days: 1
+
+      # Attach the SBOMs to the release that create-release already published.
+      # --clobber makes this idempotent so a re-run replaces any partial set.
+      - name: Attach SBOMs to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "$GITHUB_REF_NAME" directus-*.json --clobber
+
   create-release:
     name: Create Release
     runs-on: ubuntu-latest
@@ -342,12 +458,10 @@ jobs:
       - publish-npm
       - publish-docker-images
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
         run: |
           gh release create \
             "$GITHUB_REF_NAME" \

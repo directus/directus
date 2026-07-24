@@ -1,5 +1,7 @@
 import { extname } from 'node:path';
 import stream from 'node:stream';
+import { useEnv } from '@directus/env';
+import { UnsupportedMediaTypeError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import type { TusDriver } from '@directus/storage';
 import type { Accountability, ChunkedUploadContext, File, SchemaOverview } from '@directus/types';
@@ -10,6 +12,7 @@ import getDatabase from '../../database/index.js';
 import { useLogger } from '../../logger/index.js';
 import { assertUniqueFilename } from '../files/lib/assert-unique-filename.js';
 import { assertValidStoragePath } from '../files/lib/assert-valid-storage-path.js';
+import { isMimeTypeAllowed } from '../files/lib/is-mime-type-allowed.js';
 import { sanitizeFilepath } from '../files/lib/sanitize-filepath.js';
 import { ItemsService } from '../items.js';
 
@@ -66,6 +69,13 @@ export class TusDataStore extends DataStore {
 
 		if (!upload.metadata['type']) {
 			upload.metadata['type'] = 'application/octet-stream';
+		}
+
+		const mimeType = upload.metadata['type'];
+		const env = useEnv();
+
+		if (isMimeTypeAllowed(mimeType, env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]) === false) {
+			throw new UnsupportedMediaTypeError({ mediaType: mimeType, where: 'tus upload' });
 		}
 
 		if (!upload.metadata['title']) {

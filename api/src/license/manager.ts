@@ -26,6 +26,7 @@ import {
 	verifyLicense,
 } from '@directus/license';
 import type { Accountability } from '@directus/types';
+import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { useLogger } from '../logger/index.js';
 import { clearCache as clearPermissionCache } from '../permissions/cache.js';
@@ -127,8 +128,9 @@ export class LicenseManager {
 							// CASE D
 							await this.activate(envKey);
 						} else if (envKey !== dbKey) {
-							// CASE B
-							await this.update(envKey, { oldKey: dbKey });
+							// CASE B — update operates on manager state, so seed it with the existing DB key
+							this.licenseKey = dbKey;
+							await this.update(envKey);
 						} else {
 							// CASE C
 							await this.refresh({ key: envKey, token: dbToken ?? null });
@@ -185,6 +187,11 @@ export class LicenseManager {
 		}
 	}
 
+	// Env-sourced licenses can never be managed via the API, independent of the flag.
+	public getEditable(): boolean {
+		return toBoolean(env['LICENSE_KEY_MANAGEMENT_ENABLED']) && this.source !== 'env';
+	}
+
 	public async getLicense(options?: { database?: Knex }): Promise<Directus.License> {
 		if (licenseCache) return licenseCache;
 
@@ -221,12 +228,28 @@ export class LicenseManager {
 	/**
 	 * Throw if the current license cannot have its key changed (activate / update / deactivate).
 	 *
-	 * License management is only allowed for setting-based licenses
+	 * License management is only allowed when the license is editable, i.e. it is not env-sourced
+	 * and env's LICENSE_KEY_MANAGEMENT_ENABLED !== false.
 	 */
 	private assertCanManageLicense() {
-		if (this.initialized && this.source !== 'settings') {
+		if (this.initialized && this.getEditable() === false) {
 			throw new ForbiddenError({
 				reason: `You cannot manage license for the current license.`,
+			});
+		}
+	}
+
+	/**
+	 * Throw if there is no active license to update or deactivate.
+	 *
+	 * Activation is the only management operation valid without an existing license;
+	 * update/deactivate require one. Checks manager state (not a passed-in key) so an
+	 * explicit key argument cannot bypass the guard.
+	 */
+	private assertLicenseExists() {
+		if (this.initialized && this.licenseKey === null) {
+			throw new ForbiddenError({
+				reason: `There is no active license to manage.`,
 			});
 		}
 	}
@@ -267,10 +290,7 @@ export class LicenseManager {
 	 * Activates a new license
 	 */
 	public async activate(key: string) {
-		// bypass case for upgrading from core to another license
-		if (this.source !== null) {
-			this.assertCanManageLicense();
-		}
+		this.assertCanManageLicense();
 
 		// Keys cannot be directly activated if one is already active, must go via update route
 		if (this.licenseKey) {
@@ -314,14 +334,9 @@ export class LicenseManager {
 		}
 	}
 
-	public async deactivate(key?: string) {
+	public async deactivate() {
 		this.assertCanManageLicense();
-
-		const currentKey = key ?? this.licenseKey;
-
-		if (!currentKey) {
-			throw new InvalidPayloadError({ reason: '"key" has to be defined in order to deactivate' });
-		}
+		this.assertLicenseExists();
 
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
@@ -329,7 +344,7 @@ export class LicenseManager {
 
 		try {
 			await deactivateKey({
-				license_key: currentKey,
+				license_key: this.licenseKey!,
 				project_id: project_id!,
 				public_url: env['PUBLIC_URL'] as string,
 			});
@@ -347,14 +362,9 @@ export class LicenseManager {
 	/**
 	 * Update from an existing key to a new key
 	 */
-	public async update(newKey: string, options?: { oldKey: string }) {
+	public async update(newKey: string) {
 		this.assertCanManageLicense();
-
-		const currentKey = options?.oldKey ?? this.licenseKey;
-
-		if (!currentKey) {
-			throw new InvalidPayloadError({ reason: 'A current license must be provided in order to update' });
-		}
+		this.assertLicenseExists();
 
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
@@ -363,7 +373,7 @@ export class LicenseManager {
 		try {
 			const { token } = await updateKey(
 				{
-					license_key: currentKey,
+					license_key: this.licenseKey!,
 					project_id: project_id!,
 					public_url: env['PUBLIC_URL'] as string,
 				},
@@ -388,11 +398,11 @@ export class LicenseManager {
 
 	private async verify(token: string): Promise<Directus.License | null> {
 		try {
-			const license =  await verifyLicense(token);
+			const license = await verifyLicense(token);
 
-			if(license.audience !== 'directus') return null
+			if (license.audience !== 'directus') return null;
 
-			return license
+			return license;
 		} catch {
 			return null;
 		}

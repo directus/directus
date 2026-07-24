@@ -421,3 +421,76 @@ test(`m2a alias on a scalar field inside the m2a result (GraphQL)`, async () => 
 		],
 	});
 });
+
+test(`m2a alias on a relational field inside the m2a result (REST) (#27772)`, async () => {
+	const id = (
+		await api.request(
+			createItem(collections.articles, {
+				title: `Article A`,
+				blocks: [
+					{
+						collection: collections.text_blocks,
+						item: { text: 'Text Block A', author: { name: 'Author A' } },
+					},
+				],
+			}),
+		)
+	).id!;
+
+	const result = await api.request(
+		readItem(collections.articles, id, {
+			fields: [`blocks.item:${collections.text_blocks}.aliasedAuthor.name`],
+			deep: { blocks: { [`item:${collections.text_blocks}`]: { _alias: { aliasedAuthor: 'author' } } } },
+		} as any),
+	);
+
+	expect(result).toEqual({
+		blocks: [
+			{
+				item: { aliasedAuthor: { name: 'Author A' } },
+			},
+		],
+	});
+});
+
+test(`m2a alias on a relational field inside the m2a result (GraphQL) (#27772)`, async () => {
+	const id = (
+		await api.request(
+			createItem(collections.articles, {
+				title: `Article A`,
+				blocks: [
+					{
+						collection: collections.text_blocks,
+						item: { text: 'Text Block A', author: { name: 'Author A' } },
+					},
+				],
+			}),
+		)
+	).id!;
+
+	const result = (
+		await api.query(`
+			query {
+				${collections.articles} (filter: { id: { _eq: "${id}" }}) {
+					blocks {
+						item {
+							... on ${collections.text_blocks} {
+								aliasedAuthor: author {
+									name
+								}
+							}
+						}
+					}
+				}
+			}
+		`)
+	)[collections.articles][0];
+
+	expect(result).toEqual({
+		blocks: [
+			{
+				item: { aliasedAuthor: { name: 'Author A' } },
+			},
+		],
+	});
+});
