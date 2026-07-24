@@ -85,6 +85,11 @@ export function useRelationMultiple(
 		},
 	});
 
+	// Re-fetch when the version context changes (e.g. promoting a version to main, or switching
+	// versions). The item's primary key stays the same across a promote, so the watchers below
+	// wouldn't otherwise re-run and the related items would render stale until a manual reload.
+	const versionKey = computed(() => version.value?.key ?? null);
+
 	// Fetch new items when the value gets changed by the external "save and stay"
 	// We don't want to refresh when we ourself reset the value (when we have no more changes)
 	watch(value, (newValue, oldValue) => {
@@ -100,7 +105,7 @@ export function useRelationMultiple(
 	});
 
 	watch(
-		[previewQuery, itemId, relation],
+		[previewQuery, itemId, relation, versionKey],
 		(newData, oldData) => {
 			if (!isEqual(newData, oldData)) {
 				updateFetchedItems();
@@ -424,16 +429,17 @@ export function useRelationMultiple(
 	}
 
 	watch(
-		[previewQuery, itemId, relation],
+		[previewQuery, itemId, relation, versionKey],
 		(newData, oldData) => {
-			const [newPreviewQuery, newItemId, newRelation] = newData;
-			const [oldPreviewQuery, oldItemId, oldRelation] = oldData;
+			const [newPreviewQuery, newItemId, newRelation, newVersionKey] = newData;
+			const [oldPreviewQuery, oldItemId, oldRelation, oldVersionKey] = oldData;
 
 			if (
 				isEqual(newRelation, oldRelation) &&
 				newPreviewQuery.filter === oldPreviewQuery?.filter &&
 				newPreviewQuery.search === oldPreviewQuery?.search &&
-				newItemId === oldItemId
+				newItemId === oldItemId &&
+				newVersionKey === oldVersionKey
 			) {
 				return;
 			}
