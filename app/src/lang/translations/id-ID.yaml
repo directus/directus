@@ -1,4 +1,3 @@
----
 continue: Lanjut
 first_name: Nama Depan
 last_name: Nama belakang
@@ -98,8 +97,7 @@ version_name: Nama Versi
 reset_bookmark: Hapus Markah
 update_bookmark: Hapus Markah
 delete_bookmark: Hapus Markah
-delete_bookmark_copy: >-
-  Apakah anda yakin ingin menghapus markah "{bookmark}"? Tindakan ini tidak dapat dikembalikan.
+delete_bookmark_copy: Apakah anda yakin ingin menghapus markah "{bookmark}"? Tindakan ini tidak dapat dikembalikan.
 delete_personal_bookmark: Hapus Markah Pribadi
 delete_role_bookmark: Hapus Markah Peran
 delete_global_bookmark: Hapus Markah Global
@@ -112,8 +110,7 @@ admin_description: Peran administratif awal tanpa batasan akses aplikasi/API.
 not_allowed: Tidak Diizinkan
 archive: Arsip
 archive_confirm: Apakah Anda yakin ingin mengarsipkan item ini?
-archive_confirm_count: >-
-  Tidak ada item terpilih | Apakah Anda yakin ingin mengarsipkan item ini? | Apakah Anda yakin ingin mengarsipkan {count} item ini?
+archive_confirm_count: Tidak ada item terpilih | Apakah Anda yakin ingin mengarsipkan item ini? | Apakah Anda yakin ingin mengarsipkan {count} item ini?
 reset_system_permissions_to: 'Set Ulang Perizinan Sistem ke:'
 reset_system_permissions_copy: Tindakan ini akan menimpa perizinan kustom apapun yang mungkin telah diterapkan ke koleksi sistem. Apakah Anda yakin?
 the_following_are_minimum_permissions: Izin minimum berikut ini diterapkan secara otomatis ketika "Akses Aplikasi" diaktifkan. Anda dapat memberikan izin tambahan jika diperlukan, tetapi Anda tidak dapat mengurangi izin di bawah level ini.
@@ -136,7 +133,7 @@ validationError:
   lte: Nilai harus kurang dari ataus sama dengan {valid}
   empty: Nilai harus kosong
   nempty: Nilai tidak boleh kosong
-  null: Nilai harus kosong
+  'null': Nilai harus kosong
   nnull: Nilai tidak boleh kosong
   required: Nilai diperlukan
   unique: Nilai harus unik
@@ -163,11 +160,11 @@ item_permissions: Perizinan Item
 field_permissions: Perizinan Baris
 field_validation: Validasi Baris
 field_presets: Preset Baris
-permissions_for_role: 'Item {role} Peran dapat {action}.'
-fields_for_role: 'Baris {role} Peran dapat {action}.'
-validation_for_role: 'Aturan baris {action} Peran {role} harus tunduk.'
-presets_for_role: 'Nilai bawaan baris untuk Peran {role}.'
-presets_field_warning: 'Preset relasional untuk kolom "{field}" harus dikonfigurasi dengan sintaks "detail".'
+permissions_for_role: Item {role} Peran dapat {action}.
+fields_for_role: Baris {role} Peran dapat {action}.
+validation_for_role: Aturan baris {action} Peran {role} harus tunduk.
+presets_for_role: Nilai bawaan baris untuk Peran {role}.
+presets_field_warning: Preset relasional untuk kolom "{field}" harus dikonfigurasi dengan sintaks "detail".
 presentation_and_aliases: Presentasi & Alias
 revision_post_create: Ini adalah bagaimana item ini terlihat ketika dibuat.
 revision_post_update: Ini adalah bagaimana item ini terlihat setelah pembaruan.
@@ -211,7 +208,7 @@ iso: ISO
 focal_length: Jarak Fokus
 schema_setup_key: Nama kolom baris database ini dan kunci API
 create_field: Buat Bidang
-creating_new_field: 'Kolom Baru ({collection})'
+creating_new_field: Kolom Baru ({collection})
 field_in_collection: '{field} ({collection})'
 reset_page_preferences: Reset Preferensi Halaman
 hidden_field: Kolom Tersembunyi
@@ -248,18 +245,17 @@ auto_generate: Buat Otomatis
 this_will_auto_setup_fields_relations: Ini akan secara otomatis menkonfigurasi seluruh kolom dan hubungan yang dibutuhkan.
 click_here: Tekan di sini
 to_manually_setup_translations: untuk secara manual menkonfirgurasi penerjemah.
-click_to_manage_translated_fields: >-
-  Belum ada baris yang diterjemahkan. Klik disini untuk membuatnya. | Terdapat satu baris yang diterjemahan. Klik disini untuk mengelolanya. | Terdapat {count} baris yang diterjemahkan. Klik disini untuk mengelola baris tersebut.
+click_to_manage_translated_fields: Belum ada baris yang diterjemahkan. Klik disini untuk membuatnya. | Terdapat satu baris yang diterjemahan. Klik disini untuk mengelolanya. | Terdapat {count} baris yang diterjemahkan. Klik disini untuk mengelola baris tersebut.
 fields_group: Grup kolom-kolom
 no_collections_found: Tidak ada koleksi ditemukan.
 new_data_alert: 'Berikut ini akan dibuat menurut Model Data Anda:'
 search_collection: Cari Koleksi...
 search_field: Kolom Pencarian...
-new_field: 'Baris Baru'
-new_collection: 'Koleksi Baru'
-add_m2o_to_collection: 'Tambah M2O ke "{collection}"'
-add_o2m_to_collection: 'Tambah O2M ke "{collection}"'
-add_m2m_to_collection: 'Tambah M2M ke "{collection}"'
+new_field: Baris Baru
+new_collection: Koleksi Baru
+add_m2o_to_collection: Tambah M2O ke "{collection}"
+add_o2m_to_collection: Tambah O2M ke "{collection}"
+add_m2m_to_collection: Tambah M2M ke "{collection}"
 choose_a_type: Pilih tipe...
 determined_by_relationship: Ditentukan oleh relasi
 add_note: Tambahkan catatan untuk pengguna...
@@ -302,7 +298,7 @@ field_key: Kunci Kolom
 finish_setup: Selesai Setup
 dismiss: Abaikan
 toggle_raw_editor: Ganti Editor Raw
-raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
+raw_editor_placeholder: '{''{''}{''{''}$trigger.payload.example{''}''}{''}''}'
 raw_value: Nilai mentah
 copy_raw_value: Salin Nilai Asli
 copy_raw_value_success: Disalin
@@ -330,14 +326,14 @@ title: Judul
 subtitle: Subjudul
 revision_delta_created: Dibuat
 revision_delta_created_externally: Buat secara Eksternal
-revision_delta_updated: 'Diperbarui 1 Baris | Diperbarui {count} Baris'
+revision_delta_updated: Diperbarui 1 Baris | Diperbarui {count} Baris
 revision_delta_deleted: Terhapus
 revision_delta_reverted: Dikembalikan
 revision_delta_update_message: Kolom ini telah diperbarui namun nilainya sedang disembunyikan demi alasan keamanan.
 revision_delta_other: Revisi
 revision_delta_by: '{date} oleh {user}'
-presentation_text_values_cannot_be_reimported: 'Menggunakan teks untuk presentasi, nilai tidak dapat diimpor ulang.'
-download_page_as_csv: 'Unduh Halaman sebagai CSV'
+presentation_text_values_cannot_be_reimported: Menggunakan teks untuk presentasi, nilai tidak dapat diimpor ulang.
+download_page_as_csv: Unduh Halaman sebagai CSV
 private_user: Pengguna Pribadi
 creation_preview: Pratinjau Kreasi
 revision_preview: Pratinjau Revisi
@@ -391,12 +387,12 @@ functions:
   second: Detik
   count: Hitung
 date-fns_date: PPP
-date-fns_time: 'h:mm:ss a'
-date-fns_time_no_seconds: 'h:mm a'
-date-fns_time_24hour: 'HH:mm:ss'
-date-fns_time_no_seconds_24hour: 'HH:mm'
-date-fns_date_short: 'MMM d, u'
-date-fns_time_short: 'h:mma'
+date-fns_time: h:mm:ss a
+date-fns_time_no_seconds: h:mm a
+date-fns_time_24hour: HH:mm:ss
+date-fns_time_no_seconds_24hour: HH:mm
+date-fns_date_short: MMM d, u
+date-fns_time_short: h:mma
 date-fns_date_short_no_year: MMM d
 minutes: Menit
 hours: Jam
@@ -478,17 +474,17 @@ information: Informasi
 report_bug: Laporkan Bug
 request_feature: Meminta Fitur
 request_body: Body Permintaan
-interface_not_found: 'Antarmuka "{interface}" tidak ditemukan.'
-operation_not_found: 'Operasi "{operation}" tidak ditemukan.'
+interface_not_found: Antarmuka "{interface}" tidak ditemukan.
+operation_not_found: Operasi "{operation}" tidak ditemukan.
 reset_interface: Atur ulang Antarmuka
-display_not_found: 'Tampilan "{display}" tidka ditemukan.'
+display_not_found: Tampilan "{display}" tidka ditemukan.
 reset_display: Set ulang Tampilan
 list-m2a: Pembangun (M2A)
-item_count: 'Tidak Ada Item | Satu Item | {count} Item'
+item_count: Tidak Ada Item | Satu Item | {count} Item
 no_items_copy: Belum ada item pada koleksi ini.
-file_count: 'Tidak Ada Berkas | Satu Berkas | {count} Berkas'
+file_count: Tidak Ada Berkas | Satu Berkas | {count} Berkas
 no_files_copy: Tidak ada berkas disini.
-user_count: 'Tidak Ada Pengguna | Satu Pengguna | {count} Pengguna'
+user_count: Tidak Ada Pengguna | Satu Pengguna | {count} Pengguna
 no_users_copy: Belum ada pengguna didalam peran ini.
 no_notifications: Tidak ada Pemberitahuan
 no_notifications_copy: Selesai!
@@ -559,7 +555,7 @@ account_created_successfully: Akun Berhasil Dibuat
 auto_fill: Isi Otomatis
 corresponding_field: Bidang yang sesuai
 errors:
-  COLLECTION_NOT_FOUND: "Koleksi tidak tersedia"
+  COLLECTION_NOT_FOUND: Koleksi tidak tersedia
   CONTAINS_NULL_VALUES: Bidang berisi nilai nol
   FIELD_NOT_FOUND: Baris tidak ditemukan
   FORBIDDEN: Dilarang
@@ -626,8 +622,7 @@ make_collection_hidden: Buat Koleksi Tersembunyi
 make_folder_visible: Buat Folder Terlihat
 make_folder_hidden: Buat Folder Tersembunyi
 goto_collection_content: Tampilkan konten
-delete_collection_are_you_sure: >-
-  Apakah anda yakin ingin menghapus koleksi "{collection}"? Hal ini akan menghapus koleksi dan semua item di dalamnya. Aksi ini bersifat permanen.
+delete_collection_are_you_sure: Apakah anda yakin ingin menghapus koleksi "{collection}"? Hal ini akan menghapus koleksi dan semua item di dalamnya. Aksi ini bersifat permanen.
 delete_folder_are_you_sure: Anda yakin ingin menghapus folder "{folder}"? Susunan folder dan koleksi akan dipindahkan ke level paling atas.
 delete_collection_peer_dependencies: Kolom berikut juga akan dihapus, karena terkait dengan koleksi saat ini.
 collections_shown: Koleksi yang ditampilkan
@@ -650,7 +645,7 @@ divider: Pembagi/Pemecah
 color: Warna
 circle: Lingkaran
 empty_item: Item kosong
-log_in_with: 'Masuk dengan {provider}'
+log_in_with: Masuk dengan {provider}
 conditional_styles: Gaya Bersyarat
 advanced_settings: Pengaturan Lanjutan
 advanced_filter: Filter Lanjutan
@@ -666,7 +661,7 @@ operators:
   gte: Lebih besar dari atau sama dengan
   in: Adalah salah satu dari
   nin: Bukan salah satu dari
-  null: Adalah kosong
+  'null': Adalah kosong
   nnull: Bukan null
   contains: Mengandung
   ncontains: Tidak mengandung
@@ -694,7 +689,7 @@ items: Barang-barang
 upload_file: Unggah Berkas
 upload_file_indeterminate: Mengunggah Berkas...
 upload_file_success: Berkas Diunggah
-upload_files_indeterminate: 'Mengunggah berkas {done}/{total}'
+upload_files_indeterminate: Mengunggah berkas {done}/{total}
 upload_files_success: '{count} Berkas Diunggah'
 upload_pending: Unggahan Tertunda
 drag_file_here: Geser & Lepas berkas disini
@@ -906,12 +901,12 @@ deselect_all: Hapus Semua
 other: Lainnya...
 adding_user: Menambahkan Pengguna
 unknown_user: Pengguna Tidak Dikenal
-creating_in: 'Membuat Item di {collection}'
-editing_in: 'Mengedit Item di {collection}'
-viewing_in: 'Melihat Item di {collection}'
-creating_unit: 'Membuat {unit}'
-editing_unit: 'Mengedit {unit}'
-editing_in_batch: 'Mengedit Masal {count} item'
+creating_in: Membuat Item di {collection}
+editing_in: Mengedit Item di {collection}
+viewing_in: Melihat Item di {collection}
+creating_unit: Membuat {unit}
+editing_unit: Mengedit {unit}
+editing_in_batch: Mengedit Masal {count} item
 no_options_available: Tidak ada opsi tersedia
 settings_data_model: Model Data
 settings_project: Pengaturan
@@ -919,7 +914,7 @@ licensing:
   unlimited: Tak terbatas
   addon_update: Perbarui
   resolve_continue: Lanjut
-  resolve_show_n_more: 'Tampilkan {count} lebih banyak'
+  resolve_show_n_more: Tampilkan {count} lebih banyak
   resolve_section_flows: Kumpulan Alur
   resolve_sso_admin_password: Kata Sandi
   entitlements:
@@ -955,8 +950,7 @@ create_new: Buat baru
 all: Semua
 none: Tidak ada
 no_layout_collection_selected_yet: Belum ada tata letak/koleksi yang dipilih
-batch_delete_confirm: >-
-  Tidak ada item terpilih | Apakah Anda yakin ingin menghapus item ini? Tindakan ini tidak dapat dibatalkan. | Apakah Anda yakin ingin menghapus {count} item ini? Tindakan ini tidak dapat dibatalkan.
+batch_delete_confirm: Tidak ada item terpilih | Apakah Anda yakin ingin menghapus item ini? Tindakan ini tidak dapat dibatalkan. | Apakah Anda yakin ingin menghapus {count} item ini? Tindakan ini tidak dapat dibatalkan.
 cancel: Batal
 no_upscale: Jangan memperbesar gambar
 collection: Koleksi
@@ -1180,7 +1174,7 @@ field_options:
     status_dropdown_suspended: Tergantung
     status_dropdown_archived: Diarsipkan
     token: Masukkan token akses aman...
-no_fields_in_collection: 'Belum ada bidang pada "{collection}" ini'
+no_fields_in_collection: Belum ada bidang pada "{collection}" ini
 no_value: Tidak berharga
 do_nothing: Tidak Ada
 generate_and_save_uuid: Hasilkan dan Simpan UUID
@@ -1218,10 +1212,9 @@ expired: Kedaluwarsa
 share: Bagikan
 share_item: Bagikan Item
 continue_label: Lanjut
-editing_role: 'Peraturan {role}'
+editing_role: Peraturan {role}
 delete_label: Hapus
-delete_field_are_you_sure: >-
-  Apakah Anda yakin Anda ingin menghapus bidang "{field}" ini? Tindakan ini tidak dapat dikembalikan.
+delete_field_are_you_sure: Apakah Anda yakin Anda ingin menghapus bidang "{field}" ini? Tindakan ini tidak dapat dikembalikan.
 description: Deskripsi
 done: Selesai
 duplicate: Gandakan
@@ -1323,7 +1316,7 @@ interfaces:
     checkboxes: Kotak centang
     description: Pilih diantara beberapa opsi melalui kotak centang
     allow_other: Izinkan Lainnya
-    show_more: 'Tampilkan {count} lebih banyak'
+    show_more: Tampilkan {count} lebih banyak
     items_shown: Items yang Ditampilkan
   select-multiple-checkbox-tree:
     name: Kotak centang (Pohon)
@@ -1521,3 +1514,107 @@ fonts:
   bold: Tebal
   black: Hitam
   italic: Miring
+about: Tentang
+directus_mscl: Directus MSCL-1.0-GPL
+data_processing_agreement: Perjanjian Pemrosesan Data
+contact_support: hubungi dukungan
+setup_welcome: Selamat datang di Directus
+setup_info: Mari buat akun admin Anda dan siapkan proyek Anda.
+setup_license_key_notice: |
+  Jika memiliki kunci lisensi, masukkan di bawah ini untuk membuka fitur paket penuh Anda. Bisnis yang memenuhi syarat dengan pendapatan tahunan di bawah $5 juta dapat memenuhi syarat untuk {oig}.
+setup_save_accept_license: |
+  Dengan menekan simpan, Anda menyetujui persyaratan {directusMscl} dan {privacyPolicy}.
+setup_license_invalid: |
+  Lisensi tidak valid. Silakan {contactSupport} untuk mengatasi masalah ini.
+setup_license_invalid_format: Format kunci lisensi tidak valid.
+setup_accept_license: Saya menerima persyaratan {directusMscl} dan {privacyPolicy}
+setup_marketing_emails: Kirimi saya pembaruan produk dan catatan rilis
+setup_launch: Luncurkan Directus
+setup_license_title: Siapkan lisensi Anda
+license_onboarding_title: Punya kunci lisensi?
+license_onboarding_desc: |
+  Masukkan di bawah ini untuk membuka kunci fitur paket penuh Anda. Bisnis yang memenuhi syarat dengan pendapatan tahunan di bawah $5 juta dapat memenuhi syarat untuk {oig}.
+project_usage: Untuk apa Anda menggunakan Directus?
+project_usage_personal: Proyek Pribadi / Sampingan
+project_usage_commercial: Bisnis / Komersial
+project_usage_community: Open Source / Komunitas
+org_name: Nama Organisasi
+org_name_placeholder: Acme Inc.
+license_key_option: Saya memiliki kunci lisensi
+license_key_option_desc: Paket OIG, Tim, atau Perusahaan
+core_option: Saya menggunakan paket Core
+core_option_desc: Gratis, tidak perlu kunci
+remind_later: Ingatkan Nanti
+remind_next_login: Kami akan mengingatkan Anda saat Anda masuk berikutnya
+open_innovation_grant: Hibah Inovasi Terbuka (Open Innovation Grant)
+setup_project: Siapkan Proyek
+enter_license_key: Masukkan Kunci Lisensi Anda
+license_valid: Lisensi Valid
+plan_prefix: 'Paket: {plan}'
+license_key: Kunci Lisensi
+no_license_key: Belum memiliki kunci lisensi?
+get_license_key: Dapatkan Kunci Lisensi
+expires_on: Berakhir pada
+environment: Lingkungan
+production: Produksi
+non_production: Non-Produksi
+skip: Lewati
+admin_email: Email Admin
+owner_email: Email Pemilik
+email_address: Alamat Email
+not_archived: Tidak Diarsipkan
+marketplace: Marketplace
+extensions: Ekstensi
+skip_link_nav: Lewati ke Navigasi
+skip_link_module_nav: Lewati ke Navigasi Modul
+skip_link_main: Lewati ke Konten Utama
+skip_link_sidebar: Lewati ke Bilah Samping
+unknown: Tidak diketahui
+invalid_input: Input Tidak Valid
+invalid_file_type: Tipe File Tidak Valid
+invalid_files_selected: Tidak ada file yang tidak valid | File Tidak Valid Dipilih | {count} File Tidak Valid Dipilih
+files_wrong_type: File {files} memiliki tipe yang tidak valid, mengharapkan tipe {expected}.
+files_are_empty: 'File berikut ini kosong dan tidak dapat diunggah: {files}'
+not_a_number: Bukan sebuah Angka
+invalid_range_min: Nilai berada di bawah batas minimum {value}
+invalid_range_max: Nilai melebihi batas maksimum {value}
+item_deleted: Item yang sedang Anda edit telah dihapus.
+previous_revision: Revisi Sebelumnya
+latest_revision: Revisi Terbaru
+comparing_to: Membandingkan dengan
+compare_to_latest_to_restore: Bandingkan dengan yang terbaru untuk mempertimbangkan memulihkan revisi ini
+select_earlier_revision_to_restore: Pilih revisi sebelumnya untuk dipertimbangkan pemulihannya
+popular: Populer
+recent: Terbaru
+previous: Sebelumnya
+latest: Terbaru
+updated: Diperbarui
+extension_module: Modul
+extension_theme: Tema
+extension_endpoint: Endpoint
+extension_operation: Operasi
+extension_bundle: Bundel
+extension_interfaces: Antarmuka
+extension_displays: Tampilan
+extension_layouts: Tata Letak
+extension_panels: Panel
+extension_themes: Tema
+extension_hooks: Hook
+extension_endpoints: Endpoint
+extension_operations: Operasi
+extension_bundles: Bundel
+extension_reload_required: Diperlukan Muat Ulang Halaman
+extension_reload_required_copy: Diperlukan memuat ulang halaman untuk melihat perubahan setelah mengaktifkan atau menonaktifkan ekstensi aplikasi.
+extension_reload_now: Muat ulang sekarang
+published_relative: Diterbitkan {relativeTime}
+compatible_with_your_project_copy: Penulis telah mengindikasikan kompatibilitas ekstensi ini ke {hostVersion}, yang cocok dengan versi proyek Anda ({currentVersion})
+last_updated_relative: Terakhir diperbarui {relativeTime}
+n_files: '{n} File'
+homepage: Beranda
+repository: Repositori
+reload_page: Muat Ulang Halaman
+reload_required: Perlu Muat Ulang
+report_an_issue: Laporkan Masalah
+website: Situs Web
+github: GitHub
+beta: Beta
