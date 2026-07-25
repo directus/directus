@@ -42,11 +42,15 @@ const props = withDefaults(
 		folder?: string;
 		/** Legacy TinyMCE `customFormats` option (array or JSON string); see extensions/custom-formats.ts. */
 		customFormats?: unknown;
+		/** Deprecated TinyMCE raw-config passthrough; accepted but inert (warning below). */
+		tinymceOverrides?: unknown;
 		softLength?: number;
 		direction?: string;
 		// comparison view (content versioning / revision diffs): value arrives pre-marked with
 		// comparison-diff spans; side switches flow in as value changes
 		comparisonMode?: boolean;
+		field?: string;
+		autoSwitchToDraft?: boolean;
 	}>(),
 	{
 		toolbar: () => toolbarDefault,
@@ -54,11 +58,25 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits<{ input: [value: string | null]; readonly: [locked: boolean] }>();
+const emit = defineEmits<{
+	input: [value: string | null];
+	readonly: [locked: boolean];
+	setFieldValue: [payload: { field: string; value: string | null }];
+}>();
 
 const { t } = useI18n();
 
 const { imageToken, folder, value } = toRefs(props);
+
+if (
+	props.tinymceOverrides != null &&
+	(typeof props.tinymceOverrides !== 'object' || Object.keys(props.tinymceOverrides).length > 0)
+) {
+	// eslint-disable-next-line no-console
+	console.warn(
+		'[input-rich-text-html] The "tinymceOverrides" option is deprecated and no longer has any effect. Use the customFormats interface option instead.',
+	);
+}
 
 // built once at init: `customFormats` is design-time config, not reactive
 const { extensions: customFormatExtensions, formats: customFormatList } = buildCustomFormats(props.customFormats);
@@ -172,6 +190,15 @@ const rawMode = ref(false);
 
 function enterRawMode() {
 	normalizationWarningOpen.value = false;
+
+	// Opening raw editing is an edit intent. On a versioned item this must move it to a Draft (parity
+	// with "Edit anyway"); the Draft switch is edit-driven, so force the current value through unchanged.
+	// `set-field-value` bypasses the equal-to-initial unset, and the auto-switch gate keeps it a no-op
+	// on non-versioned items (where nothing should be marked dirty until a real edit).
+	if (props.autoSwitchToDraft && props.field) {
+		emit('setFieldValue', { field: props.field, value: props.value });
+	}
+
 	rawMode.value = true;
 }
 
