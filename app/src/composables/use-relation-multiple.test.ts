@@ -595,7 +595,7 @@ describe('version refresh', () => {
 		mockM2aDataOverride = null;
 	});
 
-	test('re-fetches related items when the version context changes, e.g. promoting to main (#27832)', async () => {
+	test('re-fetches related items when a version is promoted back to main (#27832)', async () => {
 		const wrapper = mount(TestComponentM2AVersion, {
 			props: { relation: relationM2A, value: [], id: 1, version: { key: 'draft' } },
 		});
@@ -606,7 +606,7 @@ describe('version refresh', () => {
 		expect(wrapper.vm.totalItemCount).toBe(m2aData.length);
 
 		// Promoting the version commits a new block on the server, then clears the version back to main.
-		// The item's primary key doesn't change, so only the version context signals the data moved.
+		// The item's primary key doesn't change, so only the version -> main transition signals the data moved.
 		mockM2aDataOverride = [...m2aData, { id: 4, article_id: 1, item: { id: 3 }, collection: 'text', sort: 4 }];
 
 		await wrapper.setProps({ version: null });
@@ -614,5 +614,25 @@ describe('version refresh', () => {
 
 		expect(wrapper.vm.fetchedItems).toEqual(mockM2aDataOverride);
 		expect(wrapper.vm.totalItemCount).toBe(mockM2aDataOverride.length);
+	});
+
+	test('does not re-fetch when switching between versions', async () => {
+		const wrapper = mount(TestComponentM2AVersion, {
+			props: { relation: relationM2A, value: [], id: 1, version: { key: 'draft' } },
+		});
+
+		await flushPromises();
+
+		expect(wrapper.vm.fetchedItems).toEqual(m2aData);
+
+		// The fetch always reads the main item, so switching to another version returns the same data.
+		// If a refetch fired here it would pick up the override, which is the wasted work we want to avoid.
+		mockM2aDataOverride = [...m2aData, { id: 4, article_id: 1, item: { id: 3 }, collection: 'text', sort: 4 }];
+
+		await wrapper.setProps({ version: { key: 'draft-2' } });
+		await flushPromises();
+
+		expect(wrapper.vm.fetchedItems).toEqual(m2aData);
+		expect(wrapper.vm.totalItemCount).toBe(m2aData.length);
 	});
 });
