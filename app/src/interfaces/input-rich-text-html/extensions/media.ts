@@ -21,6 +21,20 @@ declare module '@tiptap/core' {
 	}
 }
 
+// script-capable URL schemes; a javascript:/data: iframe would execute in the dashboard origin
+const UNSAFE_PROTOCOLS = ['javascript:', 'data:', 'vbscript:'];
+
+// The URL parser normalizes case/whitespace obfuscation (" JaVaScRiPt:…") before the protocol check.
+export function sanitizeMediaSrc(src: string | null): string | null {
+	if (!src) return null;
+
+	try {
+		return UNSAFE_PROTOCOLS.includes(new URL(src, 'http://relative-url').protocol) ? null : src;
+	} catch {
+		return null;
+	}
+}
+
 // Parse a numeric attribute; empty/absent/non-numeric → null so it renders as omitted.
 function numberAttr(value: string | null): number | null {
 	if (value === null || value === '') return null;
@@ -33,7 +47,7 @@ function parseSourced(el: HTMLElement, tag: 'video' | 'audio'): MediaAttrs {
 	const source = el.querySelector('source');
 	return {
 		tag,
-		src: source?.getAttribute('src') ?? el.getAttribute('src') ?? null,
+		src: sanitizeMediaSrc(source?.getAttribute('src') ?? el.getAttribute('src')),
 		type: source?.getAttribute('type') ?? null,
 		width: numberAttr(el.getAttribute('width')),
 		height: numberAttr(el.getAttribute('height')),
@@ -58,7 +72,13 @@ export const Media = Node.create({
 		// flow through the HTMLAttributes param
 		return {
 			tag: { default: 'video' as MediaTag, rendered: false },
-			src: { default: null, rendered: false },
+			// explicit parseHTML: Tiptap's default (getAttribute) would override the sanitized
+			// getAttrs value with the raw one; video/audio carry src on a child <source>
+			src: {
+				default: null,
+				rendered: false,
+				parseHTML: (el) => sanitizeMediaSrc(el.querySelector('source')?.getAttribute('src') ?? el.getAttribute('src')),
+			},
 			type: { default: null, rendered: false },
 			width: { default: null, rendered: false },
 			height: { default: null, rendered: false },
@@ -78,7 +98,7 @@ export const Media = Node.create({
 					const iframe = el as HTMLElement;
 					return {
 						tag: 'iframe',
-						src: iframe.getAttribute('src'),
+						src: sanitizeMediaSrc(iframe.getAttribute('src')),
 						type: null,
 						width: numberAttr(iframe.getAttribute('width')),
 						height: numberAttr(iframe.getAttribute('height')),

@@ -54,6 +54,29 @@ describe('media node: parse + render', () => {
 	});
 });
 
+describe('media node: unsafe src', () => {
+	test('strips javascript: URLs from iframe src', () => {
+		const out = roundTrip('<iframe src="javascript:alert(1)" width="560" height="315"></iframe>');
+		expect(out).not.toContain('javascript:');
+		expect(out).toContain('<iframe');
+	});
+
+	test('strips obfuscated javascript: URLs (case/whitespace)', () => {
+		const out = roundTrip('<iframe src=" JaVaScRiPt:alert(1)"></iframe>');
+		expect(out).not.toContain('alert(1)');
+	});
+
+	test('strips data: URLs from video source src', () => {
+		const out = roundTrip('<video><source src="data:text/html,<script>alert(1)</script>" type="video/mp4"></video>');
+		expect(out).not.toContain('data:');
+	});
+
+	test('keeps https and root-relative srcs', () => {
+		expect(roundTrip('<iframe src="https://example.com/embed"></iframe>')).toContain('src="https://example.com/embed"');
+		expect(roundTrip('<video><source src="/assets/v.mp4" type="video/mp4"></video>')).toContain('src="/assets/v.mp4"');
+	});
+});
+
 describe('media node view', () => {
 	// Node views need draggable + data-drag-handle on the wrapper, otherwise tiptap cancels the
 	// drag (or the browser copy-drops it, duplicating the node). Images have no node view, so

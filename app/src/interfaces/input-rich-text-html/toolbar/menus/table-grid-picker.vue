@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, useId } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
@@ -17,9 +17,18 @@ const emit = defineEmits<{ select: [size: { rows: number; cols: number }] }>();
 
 const { t } = useI18n();
 
+const gridId = useId();
+
 // 1-based highlight extent; 0 means nothing is hovered/focused yet.
 const hoveredRows = ref(0);
 const hoveredCols = ref(0);
+
+function cellId(row: number, col: number): string {
+	return `${gridId}-cell-${row}-${col}`;
+}
+
+// The container holds focus; announce the highlighted cell as the active descendant.
+const activeCellId = computed(() => (hoveredRows.value > 0 ? cellId(hoveredRows.value, hoveredCols.value) : undefined));
 
 const rows = computed(() => Array.from({ length: props.maxRows }, (_, i) => i + 1));
 const cols = computed(() => Array.from({ length: props.maxCols }, (_, i) => i + 1));
@@ -86,21 +95,27 @@ defineExpose({ select });
 			role="grid"
 			tabindex="0"
 			:aria-label="t('wysiwyg_options.table_insert')"
+			:aria-activedescendant="activeCellId"
 			@mouseleave="reset"
 			@focus="highlight(1, 1)"
 			@keydown="onKeydown"
 		>
-			<button
-				v-for="cell in rows.flatMap((row) => cols.map((col) => ({ row, col })))"
-				:key="`${cell.row}-${cell.col}`"
-				type="button"
-				class="cell"
-				:class="{ active: cell.row <= hoveredRows && cell.col <= hoveredCols }"
-				:aria-label="t('wysiwyg_options.table_insert_size', { cols: cell.col, rows: cell.row })"
-				tabindex="-1"
-				@mouseover="highlight(cell.row, cell.col)"
-				@click="select(cell.row, cell.col)"
-			/>
+			<div v-for="row in rows" :key="row" class="row" role="row">
+				<button
+					v-for="col in cols"
+					:id="cellId(row, col)"
+					:key="`${row}-${col}`"
+					type="button"
+					role="gridcell"
+					class="cell"
+					:class="{ active: row <= hoveredRows && col <= hoveredCols }"
+					:aria-label="t('wysiwyg_options.table_insert_size', { cols: col, rows: row })"
+					:aria-selected="row <= hoveredRows && col <= hoveredCols"
+					tabindex="-1"
+					@mouseover="highlight(row, col)"
+					@click="select(row, col)"
+				/>
+			</div>
 		</div>
 		<div class="caption">{{ caption }}</div>
 	</div>
@@ -117,6 +132,11 @@ defineExpose({ select });
 	padding-block-start: 0.0625rem;
 	padding-inline-start: 0.0625rem;
 	outline: none;
+}
+
+// keep the cells as direct grid items while giving the a11y tree real rows
+.row {
+	display: contents;
 }
 
 .cell {

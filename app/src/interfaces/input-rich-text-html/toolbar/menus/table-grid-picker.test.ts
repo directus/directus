@@ -41,4 +41,28 @@ describe('table-grid-picker', () => {
 		await wrapper.findAll('.cell')[4]!.trigger('mouseover');
 		expect(wrapper.findAll('.cell.active')).toHaveLength(4);
 	});
+
+	test('grid exposes row and gridcell structure', () => {
+		const wrapper = mount(TableGridPicker, { props: { maxRows: 2, maxCols: 3 }, global });
+		const grid = wrapper.find('[role="grid"]');
+		expect(grid.exists()).toBe(true);
+		expect(grid.findAll('[role="row"]')).toHaveLength(2);
+		expect(grid.findAll('[role="row"] > [role="gridcell"]')).toHaveLength(6);
+	});
+
+	test('aria-activedescendant tracks the highlighted cell', async () => {
+		const wrapper = mount(TableGridPicker, { props: { maxRows: 3, maxCols: 3 }, global });
+		const grid = wrapper.find('[role="grid"]');
+		expect(grid.attributes('aria-activedescendant')).toBeUndefined();
+
+		await grid.trigger('focus');
+		await grid.trigger('keydown', { key: 'ArrowDown' });
+		await grid.trigger('keydown', { key: 'ArrowRight' });
+
+		// highlight is now row 2, col 2 → the active descendant is that gridcell's id
+		const active = grid.attributes('aria-activedescendant');
+		expect(active).toBeTruthy();
+		const cells = grid.findAll('[role="gridcell"]');
+		expect(cells[4]!.attributes('id')).toBe(active);
+	});
 });

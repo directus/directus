@@ -82,6 +82,33 @@ test('saveMedia (embed tab) rejects non-representable markup and flags it', () =
 	expect(mediaDrawerOpen.value).toBe(true);
 });
 
+test('saveMedia (embed tab) rejects javascript: srcs and flags invalid', () => {
+	const { editor, embed, embedInvalid, activeTab, saveMedia } = setup();
+	activeTab.value = ['embed'];
+	embed.value = '<iframe src="javascript:alert(1)"></iframe>';
+	saveMedia();
+	expect(editor.value.getHTML()).not.toContain('javascript:');
+	expect(embedInvalid.value).toBe(true);
+});
+
+test('saveMedia (file tab) does not insert an unsafe src', () => {
+	const { editor, mediaSelection, saveMedia } = setup();
+
+	mediaSelection.value = {
+		tag: 'video',
+		src: 'javascript:alert(1)',
+		type: 'video/mp4',
+		width: null,
+		height: null,
+		controls: true,
+		loop: false,
+		previewUrl: null,
+	};
+
+	saveMedia();
+	expect(editor.value.getHTML()).not.toContain('javascript:');
+});
+
 test('editing the embed markup clears the invalid flag', async () => {
 	const { embed, embedInvalid, activeTab, saveMedia } = setup();
 	activeTab.value = ['embed'];

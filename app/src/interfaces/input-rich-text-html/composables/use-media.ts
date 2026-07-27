@@ -2,7 +2,7 @@ import type { File } from '@directus/types';
 import { DOMParser as PMDOMParser } from '@tiptap/pm/model';
 import type { Editor } from '@tiptap/vue-3';
 import { Ref, ref, watch } from 'vue';
-import type { MediaAttrs, MediaTag } from '../extensions/media';
+import { type MediaAttrs, type MediaTag, sanitizeMediaSrc } from '../extensions/media';
 import { replaceUrlAccessToken } from './replace-url-access-token';
 import { getPublicURL } from '@/utils/get-root-path';
 
@@ -124,11 +124,13 @@ export function useMedia(editor: Ref<Editor>, imageToken: Ref<string | undefined
 
 	function selectionToAttrs(): Partial<MediaAttrs> | null {
 		const sel = mediaSelection.value;
-		if (!sel || !sel.src) return null;
+		// sanitize here too: the drawer form exposes src as a free-text field
+		const src = sel ? sanitizeMediaSrc(sel.src) : null;
+		if (!sel || !src) return null;
 
 		return {
 			tag: sel.tag,
-			src: sel.src,
+			src,
 			type: sel.type,
 			width: sel.width,
 			height: sel.height,
