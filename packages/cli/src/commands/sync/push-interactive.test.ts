@@ -480,6 +480,37 @@ describe('interactive sync push', () => {
 		expect(readIdMap()).toEqual({ formatVersion: 1, maps: {} });
 	});
 
+	it('withholds an unmatched numeric PK even when the target read shows it absent', async () => {
+		// The old guard only withheld when the fetched target set proved the id occupied. But the server's
+		// existence check runs inside the import transaction and the target read is entitlement-filterable
+		// (unlicensed /permissions hides custom-rule rows) — so a raw source id could collide with a row
+		// this batch just inserted, or a hidden target row, and silently overwrite it. Withhold regardless:
+		// the server inserts fresh, and natural-key reconcile re-identifies the row next push.
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+
+		seedData([
+			{
+				collection: 'directus_permissions',
+				primaryKey: 'id',
+				records: [{ id: 7, policy: null, collection: 'articles', action: 'read' }],
+			},
+		]);
+
+		// Target read returns nothing — the id looks free, yet sending it raw is still unsafe.
+		vi.mocked(fetchRecords).mockResolvedValueOnce([]);
+
+		vi.mocked(importBatch).mockResolvedValue(importResult());
+		vi.mocked(confirm).mockResolvedValueOnce(true);
+
+		await push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir));
+
+		const batch = vi.mocked(importBatch).mock.calls.at(-1)?.[1];
+		const permissions = batch?.find((entry) => entry.collection === 'directus_permissions');
+
+		expect(permissions?.items).toEqual([{ policy: null, collection: 'articles', action: 'read' }]);
+		expect(readIdMap()).toEqual({ formatVersion: 1, maps: {} });
+	});
+
 	it('sends only unmapped records under add mode, so a repeat add cannot mint duplicates', async () => {
 		// The server's add path inserts unconditionally — an occupied uuid is regenerated — so re-sending a
 		// record that is already mapped to a target row would create another copy on every run and chase the

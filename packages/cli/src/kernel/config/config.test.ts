@@ -93,6 +93,17 @@ describe('loadConfig', () => {
 		expect(caught(() => loadConfig({ cwd: dir })).code).toBe('CONFIG');
 	});
 
+	it('rejects an empty scope array instead of silently widening to everything', () => {
+		// `collections: []` cannot reach the wire (the SDK drops the empty param), so it degraded to a FULL
+		// snapshot printed as "(scoped to: )" — a mirror project with it holds delete authority over every
+		// collection. Fail loud; "unscoped" is expressed by omitting the key. Found in QA.
+		const dir = tempDir();
+
+		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ projects: { staging: { collections: [] } } }));
+
+		expect(caught(() => loadConfig({ cwd: dir })).code).toBe('CONFIG');
+	});
+
 	it('rejects format: yaml, the reserved-but-not-yet-serialized artifact format', () => {
 		// Unsupported formats must fail instead of silently being treated as JSON.
 		const dir = tempDir();

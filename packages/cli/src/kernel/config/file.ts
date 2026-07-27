@@ -44,13 +44,19 @@ const profileSchema = z.object({
 	auth: z.object({ type: z.literal('token') }).default({ type: 'token' }),
 });
 
-// Strict parsing prevents a misspelled scope key from silently widening a pull.
+// Strict parsing prevents a misspelled scope key from silently widening a pull. Empty scope arrays are
+// refused for the same reason: `collections: []` cannot go on the wire (the SDK drops the empty param),
+// so it silently degraded to a FULL snapshot — labeled "(scoped to: )" — handing a mirror-mode project
+// delete authority over every collection. Found in QA. Remove the key to mean "unscoped".
+const scopeList = (name: string) =>
+	z.array(z.string()).min(1, `"${name}" must list at least one name; remove the key to leave it unscoped.`).optional();
+
 const projectSchema = z.strictObject({
-	collections: z.array(z.string()).optional(),
-	excludeCollections: z.array(z.string()).optional(),
-	resources: z.array(z.string()).optional(),
-	excludeResources: z.array(z.string()).optional(),
-	content: z.array(z.string()).optional(),
+	collections: scopeList('collections'),
+	excludeCollections: scopeList('excludeCollections'),
+	resources: scopeList('resources'),
+	excludeResources: scopeList('excludeResources'),
+	content: scopeList('content'),
 	deps: z.boolean().optional(),
 	mode: z.enum(MODES).optional(),
 });

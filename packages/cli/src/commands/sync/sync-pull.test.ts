@@ -412,6 +412,26 @@ describe('sync pull resources and data', () => {
 		expect(flowsBytes).toContain('Nightly');
 	});
 
+	it('strips creation stamps from flow exports — the server assigns them on create, breaking convergence', async () => {
+		// The server replaces user_created/date_created with import-time values on the CREATE path but
+		// honors them on update. Committing them made every first push report phantom "updates" (the
+		// timestamps) that only a second push wrote through — found in QA as first-push non-convergence.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+
+		interceptList('/flows', [
+			{ id: 'f1', name: 'Nightly', user_created: 'u1', date_created: '2026-07-27T19:22:14.564Z' },
+		]);
+
+		interceptList('/operations', []);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
+
+		const flows = JSON.parse(readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_flows')), 'utf8'));
+		expect(flows.records).toEqual([{ id: 'f1', name: 'Nightly' }]);
+	});
+
 	it('includes users only when --users is named', async () => {
 		// Users ride in exactly via --users, dragging their role/policy closure with them; a bare pull never
 		// commits accounts, so the account export must require this explicit flag.

@@ -36,8 +36,11 @@ interface ResourceDef extends Resource {
 // `strip` removes secrets, out-of-scope FKs, and login churn — including settings' encrypt-special key
 // fields, which read back as the masked literal "**********" and would re-encrypt that literal over the
 // target's real credential on import (settings.license_key/license_token are additionally refused
-// outright by the settings service, failing the whole batch). `aliases` removes relationship views whose
-// linkage already ships as child rows. Both are deleted before data reaches disk.
+// outright by the settings service, failing the whole batch). `user_created` and `date_created` go
+// because the server assigns both on create regardless of what an import sends (but honors them on
+// update) — keeping them made every first push report phantom "updates" until a second push wrote the
+// source stamps through. `aliases` removes relationship views whose linkage already ships as child
+// rows. Both are deleted before data reaches disk.
 const RESOURCE_LIST: readonly ResourceDef[] = [
 	{
 		name: 'users',
@@ -114,7 +117,7 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: false,
 		selectable: true,
 		mustPull: ['operations'],
-		strip: ['user_created'],
+		strip: ['user_created', 'date_created'],
 		aliases: ['operations'],
 	},
 	{
@@ -125,7 +128,7 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: false,
 		selectable: false,
 		mustPull: [],
-		strip: ['user_created'],
+		strip: ['user_created', 'date_created'],
 		aliases: [],
 	},
 	{
@@ -136,7 +139,7 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: false,
 		selectable: true,
 		mustPull: ['panels'],
-		strip: ['user_created'],
+		strip: ['user_created', 'date_created'],
 		aliases: ['panels'],
 	},
 	{
@@ -147,7 +150,7 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		singleton: false,
 		selectable: false,
 		mustPull: [],
-		strip: ['user_created'],
+		strip: ['user_created', 'date_created'],
 		aliases: [],
 	},
 	{

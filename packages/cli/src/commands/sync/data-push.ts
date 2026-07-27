@@ -399,7 +399,7 @@ function fieldsEqual(payload: Record<string, unknown>, target: Record<string, un
 
 // Three server behaviors shape the batch: add skips every row whose PK already exists on the target
 // (mapped or not — an add-mode conflict inserts a duplicate, never an update); merge/mirror withhold an
-// unmatched occupied numeric PK to avoid overwriting an unrelated row; mirror echoes user-attached
+// unmatched auto-increment PK so the server never treats a colliding id as identity; mirror echoes user-attached
 // access rows when users are out of scope so deletion does not remove target-local grants.
 function assembleBatch(
 	system: readonly SystemCollection[],
@@ -454,7 +454,20 @@ function assembleBatch(
 			// auto-increment key), materializing a duplicate on every run.
 			if (mode === 'add' && result.sent.sentPk !== null && targetByPk.has(result.sent.sentPk)) continue;
 
-			if (mode !== 'add' && !mapped && typeof record[resource.primaryKey] === 'number' && targetByPk.has(sourceId)) {
+			// merge/mirror never send a raw source auto-increment PK for an unmatched row. The server's
+			// existence check runs inside the import transaction, so a source id can collide with a row this
+			// same batch just inserted — or with an entitlement-hidden target row the fetched set never
+			// showed (unlicensed /permissions reads filter custom-rule rows) — and silently overwrite it.
+			// The earlier guard only fired when the fetched target set proved the id occupied, which that
+			// filter defeats; withhold unconditionally instead. The server inserts fresh and the row is
+			// re-identified by natural key next push (only natural-keyed resources reach here). No map entry
+			// is recorded: the assigned id is unreported and a guess would bind the source to the wrong row.
+			if (
+				mode !== 'add' &&
+				!mapped &&
+				typeof record[resource.primaryKey] === 'number' &&
+				hasNaturalKey(resource.collection)
+			) {
 				delete result.record[resource.primaryKey];
 				items.push(result.record);
 				sent.push({ sourceId, sentPk: null });
