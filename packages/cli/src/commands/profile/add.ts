@@ -1,6 +1,6 @@
 import { confirm, select, text } from '@clack/prompts';
 import type { Command } from 'commander';
-import { existingProfileUrl, isSafeUrl, upsertProfile } from '../../kernel/config/file.js';
+import { existingProfile, isSafeUrl, upsertProfile } from '../../kernel/config/file.js';
 import { pingServer, testConnection } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
 import { ask, orPrompt, promptLogin, promptToken, saveToken } from '../../kernel/prompt.js';
@@ -47,16 +47,18 @@ export async function add(nameArg: string | undefined, options: AddOptions, ctx:
 	if (!isSafeUrl(url)) throw new CliError('USAGE', 'Enter a valid http(s) URL.');
 
 	// Repointing an existing name is where the upsert bites: the saved credential follows the profile
-	// NAME, so a silent URL change would send that token to the new host on the next command. Same-URL
-	// re-adds (e.g. rotating a token) and new names stay frictionless.
-	const previousUrl = existingProfileUrl({ cwd: ctx.cwd, configPath: ctx.configPath }, name);
+	// NAME, so a silent URL change would send that token to the new host on the next command. Existence,
+	// not URL validity, decides the gate: a profile whose stored URL is missing or mangled is still a
+	// named profile. Same-URL re-adds (e.g. rotating a token) and new names stay frictionless.
+	const previous = existingProfile({ cwd: ctx.cwd, configPath: ctx.configPath }, name);
+	const repointing = previous.exists && previous.url !== url;
 
 	// The stored value bypassed schema validation (a hand-edited config can hold anything, including a
 	// credential-bearing URL every other command would refuse) — never interpolate it raw into output.
 	const previousShown =
-		previousUrl !== undefined && isSafeUrl(previousUrl) ? previousUrl : '<saved URL is invalid or unsafe to print>';
+		previous.url !== undefined && isSafeUrl(previous.url) ? previous.url : '<saved URL is invalid or unsafe to print>';
 
-	if (previousUrl !== undefined && previousUrl !== url && options.yes !== true) {
+	if (repointing && options.yes !== true) {
 		if (!ctx.interactive) {
 			throw new CliError('USAGE', `Profile "${name}" already points at ${previousShown}.`, {
 				hint: `Pass --yes to repoint it to ${url}; its saved credential will be sent to the new URL.`,
@@ -74,7 +76,7 @@ export async function add(nameArg: string | undefined, options: AddOptions, ctx:
 
 	upsertProfile({ cwd: ctx.cwd, configPath: ctx.configPath }, name, { url, auth: { type: 'token' } });
 
-	if (previousUrl !== undefined && previousUrl !== url) {
+	if (repointing) {
 		ctx.ui.warn(`Repointed "${name}": ${previousShown} → ${url} — its saved credential now applies to the new URL.`);
 	}
 

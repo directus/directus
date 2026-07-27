@@ -214,6 +214,105 @@ describe('readDataFiles failures', () => {
 		expect(error.hint).toMatch(/pull/i);
 	});
 
+	it('fails loud when metadata predates completeness tracking, pointing at a re-pull', () => {
+		// An absent `incomplete` field read as "verified complete" would let mirror trust a permissions
+		// export that may have been silently truncated before tracking existed. Absence must refuse.
+		const dir = tempDir();
+		writeDataFiles(dir, fixture(), SOURCE);
+
+		const metadataPath = join(dir, 'metadata.json');
+		const metadata = JSON.parse(readFileSync(metadataPath, 'utf8'));
+		delete metadata.incomplete;
+		writeFileSync(metadataPath, JSON.stringify(metadata));
+
+		const error = expectCliError(() => readDataFiles(dir));
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain('completeness');
+		expect(error.hint).toMatch(/pull/i);
+	});
+
+	it('refuses to write over a manifest with no valid source — never silently adopts it', () => {
+		// A pre-source-tracking (or hand-edited) manifest with a valid files list would otherwise be
+		// relabeled with THIS pull's source while its preserved files keep another instance's records.
+		const dir = tempDir();
+		writeDataFiles(dir, fixture(), SOURCE);
+
+		const articlesFile = ownedFileFor(dir, 'articles');
+		const metadataPath = join(dir, 'metadata.json');
+		const metadata = JSON.parse(readFileSync(metadataPath, 'utf8'));
+		delete metadata.source;
+		writeFileSync(metadataPath, JSON.stringify(metadata));
+
+		const error = expectCliError(() =>
+			writeDataFiles(
+				dir,
+				[{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Nightly' }] }],
+				SOURCE,
+			),
+		);
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain('source');
+		expect(readFileSync(join(dir, articlesFile), 'utf8')).toContain('Ten');
+	});
+
+	it('refuses to write over a manifest with a mistyped incomplete marker', () => {
+		// A malformed marker must not silently read as "nothing incomplete" — that is exactly the state a
+		// mirror refusal depends on.
+		const dir = tempDir();
+		writeDataFiles(dir, fixture(), SOURCE);
+
+		const metadataPath = join(dir, 'metadata.json');
+		const metadata = JSON.parse(readFileSync(metadataPath, 'utf8'));
+		metadata.incomplete = 'nope';
+		writeFileSync(metadataPath, JSON.stringify(metadata));
+
+		const error = expectCliError(() =>
+			writeDataFiles(
+				dir,
+				[{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Nightly' }] }],
+				SOURCE,
+			),
+		);
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain('incomplete');
+	});
+
+	it('treats a pre-tracking manifest as unverified for preserved verify-tracked collections', () => {
+		// Nothing ever verified a pre-tracking permissions export. A scoped pull that preserves it must
+		// mark it incomplete — laundering it to "complete" via the new manifest would hand mirror a lie.
+		// Only a re-fetch (bare pull) may clear the marker.
+		const dir = tempDir();
+
+		const permissions: DataCollection = {
+			collection: 'directus_permissions',
+			primaryKey: 'id',
+			records: [{ id: 1, policy: 'p1', collection: 'articles', action: 'read' }],
+		};
+
+		writeDataFiles(dir, [permissions, ...fixture()], SOURCE);
+
+		const metadataPath = join(dir, 'metadata.json');
+		const metadata = JSON.parse(readFileSync(metadataPath, 'utf8'));
+		delete metadata.incomplete;
+		writeFileSync(metadataPath, JSON.stringify(metadata));
+
+		const scoped = writeDataFiles(
+			dir,
+			[{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Nightly' }] }],
+			SOURCE,
+		);
+
+		expect(scoped.incomplete).toEqual(['directus_permissions']);
+		expect(readDataFiles(dir).incomplete).toEqual(['directus_permissions']);
+
+		// Re-fetching permissions (with a clean verification) replaces the unknown state.
+		const clean = writeDataFiles(dir, [permissions], SOURCE);
+		expect(clean.incomplete).toEqual([]);
+	});
+
 	it('fails loud, naming the file, when an owned file has a non-array "records"', () => {
 		// A hand-corrupted `"records": {}` must not read back as a collection with zero records that the
 		// next import would treat as the whole set; corruption has to stop at read, naming the file.

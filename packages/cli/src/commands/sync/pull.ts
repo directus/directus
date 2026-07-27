@@ -8,7 +8,7 @@ import { count } from '../../kernel/text.js';
 import { fetchRecords, fetchSnapshot, type RecordSource, type SnapshotScope } from '../../sync/api.js';
 import { byCodepoint } from '../../sync/codepoint.js';
 import type { Snapshot } from '../../sync/contract.js';
-import { type DataCollection, writeDataFiles } from '../../sync/data-store.js';
+import { assertDataSource, type DataCollection, writeDataFiles } from '../../sync/data-store.js';
 import { normalizeInstanceUrl } from '../../sync/id-map.js';
 import { allResources, resolveResources, type Resource, SELECTABLE_RESOURCES } from '../../sync/resources.js';
 import { type WriteScope, writeSnapshotFiles } from '../../sync/store.js';
@@ -303,6 +303,10 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	// Fail invalid resource/content options before the first network request.
 	const resources = resolveResourceSet(options, projectConfig);
 	const contentNamesList = contentNames(options, projectConfig);
+
+	// Provenance preflight BEFORE any network or write: the schema files land first, so a writer-level
+	// refusal alone would leave the new source's schema committed beside the old source's data.
+	assertDataSource(dataDir, normalizeInstanceUrl(url));
 
 	const snapshot = await fetchSnapshot(credential, scope?.api);
 

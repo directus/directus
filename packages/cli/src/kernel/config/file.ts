@@ -14,6 +14,12 @@ const CONFIG_FILENAME = 'directus.config.json';
  * to config or printed by `profile list`. Also serves as the prompt validator.
  */
 export function isSafeUrl(value: string): boolean {
+	// The URL parser strips \t\n\r anywhere and percent-encodes other C0 controls in paths — but callers
+	// store and print the RAW string, so a parse-based check alone would let terminal control sequences
+	// (e.g. an ESC in the path) through to output. Reject them before parsing.
+	// eslint-disable-next-line no-control-regex
+	if (/[\u0000-\u001f\u007f]/.test(value)) return false;
+
 	let parsed: URL;
 
 	try {
@@ -173,18 +179,23 @@ function existingProfiles(raw: Record<string, unknown>, path: string): Record<st
 }
 
 /**
- * The URL an existing profile points at, or undefined when the profile or config does not exist.
- * Tolerant like the upsert path: a not-yet-created explicit config is a fresh start, not an error.
+ * Whether a profile name is already taken, and the URL it points at when one is stored. Existence and
+ * URL are separate on purpose: a hand-edited profile with a missing or mangled `url` is still a NAMED
+ * profile (with a possibly-attached credential), so overwriting it must clear the same gate as a
+ * repoint. Tolerant like the upsert path: a not-yet-created explicit config is a fresh start.
  */
-export function existingProfileUrl(location: ConfigLocation, name: string): string | undefined {
+export function existingProfile(location: ConfigLocation, name: string): { exists: boolean; url?: string } {
 	const path = location.configPath ?? findConfigPath(location.cwd);
-	if (path === undefined) return undefined;
+	if (path === undefined) return { exists: false };
 
-	const profile = existingProfiles(readRawConfig(path), path)[name];
+	const profiles = existingProfiles(readRawConfig(path), path);
+	if (!Object.hasOwn(profiles, name)) return { exists: false };
+
+	const profile = profiles[name];
 
 	return isPlainObject(profile) && typeof (profile as Record<string, unknown>)['url'] === 'string'
-		? ((profile as Record<string, unknown>)['url'] as string)
-		: undefined;
+		? { exists: true, url: (profile as Record<string, unknown>)['url'] as string }
+		: { exists: true };
 }
 
 /** Upsert into the explicit or discovered config, or a new file at cwd. */

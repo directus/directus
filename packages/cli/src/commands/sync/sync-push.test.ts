@@ -154,7 +154,7 @@ describe('sync push', () => {
 			modified: 1,
 			deleted: 0,
 			hash: 'h1',
-			data: { mode: 'merge', source: null, collections: null, skipped: true },
+			data: { mode: 'merge', source: null, collections: null, incomplete: null, skipped: true },
 		});
 	});
 
@@ -183,7 +183,7 @@ describe('sync push', () => {
 			modified: 0,
 			deleted: 0,
 			hash: null,
-			data: { mode: 'merge', source: null, collections: null, skipped: true },
+			data: { mode: 'merge', source: null, collections: null, incomplete: null, skipped: true },
 		});
 	});
 

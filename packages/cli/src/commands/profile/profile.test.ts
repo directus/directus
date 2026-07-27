@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -85,6 +85,27 @@ describe('profile commands', () => {
 		const output = stdout.join('') + stderr.join('');
 		expect(output).not.toContain(password);
 		expect(stderr.join('')).toContain('<saved URL is invalid or unsafe to print>');
+	});
+
+	it('gates overwriting a profile whose stored URL is missing or mangled — existence decides, not URL validity', async () => {
+		// A hand-edited profile with a broken url is still a NAMED profile with a possibly-attached
+		// credential; silently "repairing" it would skip the same consent a repoint requires.
+		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url: 123 } } }));
+
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://new.example.com')).toBe(1);
+		expect(stderr.join('')).toContain('<saved URL is invalid or unsafe to print>');
+
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://new.example.com', '--yes')).toBe(0);
+		expect(readConfig().profiles['staging']?.url).toBe('https://new.example.com');
+	});
+
+	it('rejects URLs carrying control characters the parser would silently strip or encode', async () => {
+		// new URL() strips \t\n\r and percent-encodes other C0s, but the CLI stores and prints the RAW
+		// string — accepted, an ESC sequence in the path would reach the terminal of whoever runs
+		// profile list or reads an error message.
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com/\u001b]0;pwn\u0007')).toBe(1);
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com/a\nb')).toBe(1);
+		expect(existsSync(join(dir, 'directus.config.json'))).toBe(false);
 	});
 
 	it('re-adding the same URL stays frictionless — no confirmation, no --yes', async () => {

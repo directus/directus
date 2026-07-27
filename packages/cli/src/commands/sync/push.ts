@@ -104,6 +104,8 @@ interface PushDataReport {
 	mode: Mode;
 	source: string | null;
 	collections: ImportBatchResult['collections'] | null;
+	/** Collections the committed manifest marks as truncated; a merge/add push of them is partial by nature. */
+	incomplete: string[] | null;
 	skipped: boolean;
 }
 
@@ -113,10 +115,16 @@ function dataReport(
 	importResult: ImportBatchResult | undefined,
 ): PushDataReport {
 	if (dataResult.skipped) {
-		return { mode, source: null, collections: null, skipped: true };
+		return { mode, source: null, collections: null, incomplete: null, skipped: true };
 	}
 
-	return { mode, source: dataResult.source, collections: importResult?.collections ?? {}, skipped: false };
+	return {
+		mode,
+		source: dataResult.source,
+		collections: importResult?.collections ?? {},
+		incomplete: [...dataResult.incomplete],
+		skipped: false,
+	};
 }
 
 export async function push(options: PushOptions, ctx: CliContext): Promise<void> {

@@ -2,9 +2,11 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import { z } from 'zod';
+import { isSafeUrl } from '../kernel/config/file.js';
 import { CliError } from '../kernel/error.js';
 import { type ArtifactWriteResult, METADATA_FILE, readArtifacts, writeArtifacts } from './artifact-store.js';
 import { byCodepoint } from './codepoint.js';
+import { allResources } from './resources.js';
 
 /** One collection and its records in the data artifact set. */
 export interface DataCollection {
@@ -43,10 +45,15 @@ const dataFileSchema = z.object({
 	records: z.array(z.unknown()),
 });
 
-const metadataSchema = z.object({
-	source: z.string().min(1),
-	incomplete: z.array(z.string()).optional(),
-});
+const sourceSchema = z.object({ source: z.string().min(1) });
+const incompleteSchema = z.object({ incomplete: z.array(z.string()) });
+
+// Collections whose exports carry a pull-time completeness verification (see resources.ts verifyCount).
+const VERIFY_TRACKED = new Set(
+	allResources()
+		.filter((resource) => resource.verifyCount === true)
+		.map((resource) => resource.collection),
+);
 
 function pkString(record: Record<string, unknown>, primaryKey: string): string {
 	const value = record[primaryKey];
@@ -117,41 +124,101 @@ function parseDataFile(value: unknown, name: string): DataCollection {
 }
 
 function parseMetadata(value: unknown): DataMetadata {
-	const result = metadataSchema.safeParse(value);
+	const source = sourceSchema.safeParse(value);
 
-	if (!result.success) {
+	if (!source.success) {
 		throw new CliError('STATE', `${METADATA_FILE} does not record the source instance URL.`, {
 			hint: 'This data predates source tracking; run d6s sync pull again to record it.',
 		});
 	}
 
-	return { source: result.data.source, incomplete: result.data.incomplete ?? [] };
+	// Required, not defaulted: an absent field means the export predates completeness tracking, and
+	// reading it as "verified complete" would let mirror trust a possibly-truncated permissions export.
+	const incomplete = incompleteSchema.safeParse(value);
+
+	if (!incomplete.success) {
+		throw new CliError('STATE', `${METADATA_FILE} does not record export completeness.`, {
+			hint: 'This data predates completeness tracking; run d6s sync pull again to record it.',
+		});
+	}
+
+	return { source: source.data.source, incomplete: incomplete.data.incomplete };
 }
 
-// The committed manifest's provenance, read leniently before a write: a missing or malformed manifest
-// answers undefined and the write path's own validation deals with it.
-function committedState(dir: string): { source: string | undefined; incomplete: string[] } {
+type CommittedState = { exists: false } | { exists: true; source: string; incomplete: string[] | 'unknown' };
+
+// A stored source is normalized by the writer, but a hand-edited one can hold anything — never print raw.
+function shownSource(source: string): string {
+	return isSafeUrl(source) ? source : '<committed source is invalid or unsafe to print>';
+}
+
+// The committed manifest's provenance and completeness, validated STRICTLY before any write builds on it:
+// a lenient read here would let a pull relabel another instance's preserved records or launder away
+// their incompleteness. Absent `incomplete` alone is tolerated as 'unknown' (pre-tracking generations).
+function committedState(dir: string): CommittedState {
 	const path = join(dir, METADATA_FILE);
-	if (!existsSync(path)) return { source: undefined, incomplete: [] };
+	if (!existsSync(path)) return { exists: false };
 
 	let parsed: unknown;
 
 	try {
 		parsed = JSON.parse(readFileSync(path, 'utf8'));
 	} catch {
-		return { source: undefined, incomplete: [] };
+		throw new CliError('STATE', `${METADATA_FILE} is not valid JSON.`, {
+			hint: 'Fix or delete the data directory, then run d6s sync pull again.',
+		});
 	}
 
-	if (!isPlainObject(parsed)) return { source: undefined, incomplete: [] };
+	if (!isPlainObject(parsed)) {
+		throw new CliError('STATE', `${METADATA_FILE} is not a data manifest.`, {
+			hint: 'Fix or delete the data directory, then run d6s sync pull again.',
+		});
+	}
 
 	const record = parsed as Record<string, unknown>;
-	const source = typeof record['source'] === 'string' ? record['source'] : undefined;
+	const source = sourceSchema.safeParse(record);
 
-	const incomplete = Array.isArray(record['incomplete'])
-		? record['incomplete'].filter((entry): entry is string => typeof entry === 'string')
-		: [];
+	if (!source.success) {
+		throw new CliError('STATE', `${METADATA_FILE} does not record a valid source instance URL.`, {
+			hint: 'This data predates source tracking (or the manifest was edited); delete the data directory or run a full re-pull.',
+		});
+	}
 
-	return { source, incomplete };
+	if (!('incomplete' in record)) {
+		return { exists: true, source: source.data.source, incomplete: 'unknown' };
+	}
+
+	const incomplete = incompleteSchema.safeParse(record);
+
+	if (!incomplete.success) {
+		throw new CliError('STATE', `${METADATA_FILE} has an invalid "incomplete" marker.`, {
+			hint: 'Fix or delete the data directory, then run d6s sync pull again.',
+		});
+	}
+
+	return { exists: true, source: source.data.source, incomplete: incomplete.data.incomplete };
+}
+
+/**
+ * Refuse when the committed data generation came from a different source instance. Exposed so pull can
+ * run it BEFORE any write — a writer-level refusal alone would land after the schema files changed.
+ */
+export function assertDataSource(dir: string, source: string): void {
+	const committed = committedState(dir);
+
+	// Preserved files keep their CONTENT but the manifest records one source for the whole set — so a
+	// pull from a different instance would relabel another instance's records as its own, and push would
+	// remap them through the wrong ID-map bucket. Switching sources is a deliberate act: clear the data
+	// or give the new source its own project.
+	if (committed.exists && committed.source !== source) {
+		throw new CliError(
+			'STATE',
+			`The committed data in ${dir} came from ${shownSource(committed.source)}; this pull is from ${source}.`,
+			{
+				hint: 'Mixed sources corrupt identity mapping. Delete the data directory to switch this project to the new source, or declare a separate project for it.',
+			},
+		);
+	}
 }
 
 /** Write deterministic data artifacts and record the normalized source instance URL. */
@@ -161,41 +228,38 @@ export function writeDataFiles(
 	source: string,
 	incomplete: readonly string[] = [],
 ): DataWriteResult {
+	assertDataSource(dir, source);
+
 	const committed = committedState(dir);
-
-	// Preserved files keep their CONTENT but the manifest records one source for the whole set — so a
-	// pull from a different instance would relabel another instance's records as its own, and push would
-	// remap them through the wrong ID-map bucket. Switching sources is a deliberate act: clear the data
-	// or give the new source its own project.
-	if (committed.source !== undefined && committed.source !== source) {
-		throw new CliError(
-			'STATE',
-			`The committed data in ${dir} came from ${committed.source}; this pull is from ${source}.`,
-			{
-				hint: 'Mixed sources corrupt identity mapping. Delete the data directory to switch this project to the new source, or declare a separate project for it.',
-			},
-		);
-	}
-
 	const fetched = new Set(collections.map((entry) => entry.collection));
 	const preservedCollections = new Set<string>();
 
 	// This pull's shortfalls replace the state of every FETCHED collection; preserved files keep their
-	// committed markers — a scoped pull that never touched permissions cannot vouch for them.
-	const carried = committed.incomplete.filter((collection) => !fetched.has(collection));
-	const effective = [...new Set([...incomplete, ...carried])].sort(byCodepoint);
+	// committed markers — a scoped pull that never touched permissions cannot vouch for them. A
+	// pre-tracking generation ('unknown') marks every preserved verify-tracked collection incomplete:
+	// nothing ever verified it, and only a re-fetch may clear the marker.
+	const keptIncomplete = (): string[] => {
+		let carried: string[] = [];
+
+		if (committed.exists) {
+			carried =
+				committed.incomplete === 'unknown'
+					? [...preservedCollections].filter((collection) => VERIFY_TRACKED.has(collection))
+					: committed.incomplete.filter(
+							(collection) => !fetched.has(collection) && preservedCollections.has(collection),
+						);
+		}
+
+		return [...new Set([...incomplete, ...carried])].sort(byCodepoint);
+	};
 
 	const result = writeArtifacts({
 		dir,
 		artifacts: collections,
 		body: dataFileBody,
 		manifestHint: 'Fix or delete the data directory, then run d6s sync pull again.',
-		metadata: ({ files }) => {
-			// A marker only survives with its file: a carried collection whose file was manually removed
-			// (and thus not preserved) drops out here.
-			const kept = effective.filter((collection) => fetched.has(collection) || preservedCollections.has(collection));
-			return { files, source, ...(kept.length > 0 ? { incomplete: kept } : {}) };
-		},
+		// `incomplete` is written unconditionally: its absence is reserved for pre-tracking generations.
+		metadata: ({ files }) => ({ files, source, incomplete: keptIncomplete() }),
 		// A pull writes only what it fetched, and the fetch set shrinks legitimately all the time: a
 		// resource-scoped pull, or any re-pull without --content, fetches a subset of what is committed.
 		// Deleting the rest would wipe committed collections (the data half of the schema store's scope
@@ -210,8 +274,7 @@ export function writeDataFiles(
 		},
 	});
 
-	const kept = effective.filter((collection) => fetched.has(collection) || preservedCollections.has(collection));
-	return { ...result, incomplete: kept };
+	return { ...result, incomplete: keptIncomplete() };
 }
 
 /** Whether a data artifact manifest exists at the given directory. */

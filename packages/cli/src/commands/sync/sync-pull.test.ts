@@ -854,6 +854,39 @@ describe('sync pull resources and data', () => {
 		expect(metadata.incomplete).toEqual(['directus_permissions']);
 	});
 
+	it('refuses a cross-source pull before ANY write or request — schema and data stay byte-identical', async () => {
+		// The writer-level refusal alone fired after the schema files were already replaced, leaving the
+		// new source's schema beside the old source's data. The preflight must run first: no intercepts
+		// are registered for the second profile, so any network request would throw on the disabled
+		// dispatcher instead of producing this exact refusal.
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { staging: { url }, other: { url: 'https://other.example.com' } } }),
+		);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		vi.stubEnv('DIRECTUS_OTHER_TOKEN', token);
+		interceptSnapshot();
+		interceptDefaultRecords();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		const schemaDir = join(dir, 'directus', 'default', 'schema');
+
+		const treeOf = (root: string): Record<string, string> =>
+			Object.fromEntries(readdirSync(root).map((name) => [name, readFileSync(join(root, name), 'utf8')]));
+
+		const schemaBefore = treeOf(schemaDir);
+		const dataBefore = treeOf(dataDir);
+		stderr.length = 0;
+
+		expect(await d6s('sync', 'pull', '--from', 'other')).toBe(1);
+
+		expect(stderr.join('')).toContain('came from');
+		expect(treeOf(schemaDir)).toEqual(schemaBefore);
+		expect(treeOf(dataDir)).toEqual(dataBefore);
+	});
+
 	it('marks the export incomplete when the completeness probe cannot answer — unknown is not complete', async () => {
 		// A timed-out, erroring, or meta-less probe proves nothing either way, and mirror deletions ride on
 		// this answer. Unknown must degrade to incomplete (mirror refuses; re-pull retries), never to
