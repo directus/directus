@@ -65,6 +65,10 @@ describe('formatHtml', () => {
 		);
 	});
 
+	test('leaves an inline-only block without text nodes unchanged', () => {
+		expect(formatHtml('<p><br></p>')).toBe('<p><br></p>');
+	});
+
 	test('preserves a non-breaking space at the block boundary', () => {
 		// A non-breaking space is significant and survives Tiptap normalization, so it must not be trimmed.
 		expect(formatHtml('<p>hello\u00a0</p>')).toBe('<p>hello&nbsp;</p>');
