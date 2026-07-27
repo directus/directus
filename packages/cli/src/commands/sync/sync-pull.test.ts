@@ -375,6 +375,41 @@ describe('sync pull resources and data', () => {
 		]);
 	});
 
+	it('preserves committed data files a scoped re-pull did not fetch', async () => {
+		// The QA repro: full pull, then `pull --flows`. The scoped pull fetches only flows + operations, and
+		// the committed tree is what a later push applies — so the data writer replacing the whole directory
+		// with the scoped subset silently deleted roles, policies, dashboards, settings and the rest.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptDefaultRecords();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		interceptSnapshot();
+		interceptList('/flows', [{ id: 'f1', name: 'Nightly' }]);
+		interceptList('/operations', []);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
+
+		expect(exportedCollections()).toEqual([
+			'directus_access',
+			'directus_dashboards',
+			'directus_flows',
+			'directus_operations',
+			'directus_panels',
+			'directus_permissions',
+			'directus_policies',
+			'directus_roles',
+			'directus_settings',
+			'directus_translations',
+		]);
+
+		// The preserved files stay manifest-owned, so a later read still returns them.
+		const flowsBytes = readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_flows')), 'utf8');
+		expect(flowsBytes).toContain('Nightly');
+	});
+
 	it('includes users only when --users is named', async () => {
 		// Users ride in exactly via --users, dragging their role/policy closure with them; a bare pull never
 		// commits accounts, so the account export must require this explicit flag.

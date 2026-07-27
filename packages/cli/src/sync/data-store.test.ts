@@ -96,6 +96,30 @@ describe('writeDataFiles / readDataFiles', () => {
 		expect(readDataFiles(dir).source).toBe(SOURCE);
 	});
 
+	it('preserves committed files whose collection is outside the current write set', () => {
+		// The fetch set shrinks legitimately (resource-scoped pulls, re-pulls without --content), and the
+		// committed tree is what a later push applies — deleting unfetched collections here silently turned
+		// a scoped pull into data loss (found in QA: `pull --flows` wiped roles/policies/dashboards).
+		// Removal is a manual act; the writer never deletes what it did not fetch.
+		const dir = tempDir();
+		writeDataFiles(dir, fixture(), SOURCE);
+
+		const articlesFile = ownedFileFor(dir, 'articles');
+
+		const result = writeDataFiles(
+			dir,
+			[{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Nightly' }] }],
+			SOURCE,
+		);
+
+		expect(result.removed).toEqual([]);
+		expect(readFileSync(join(dir, articlesFile), 'utf8')).toContain('Ten');
+
+		const { collections: read } = readDataFiles(dir);
+
+		expect(read.map((collection) => collection.collection)).toEqual(['articles', 'directus_flows', 'directus_roles']);
+	});
+
 	it('sorts records by primary key as strings, so numeric-looking ids order lexically', () => {
 		// The PK sort is codepoint over String(id): "10" and "100" sort before "9". This tradeoff is
 		// accepted and asserted deliberately — the store guarantees determinism, not numeric-natural

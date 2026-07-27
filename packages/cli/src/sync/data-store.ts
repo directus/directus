@@ -118,12 +118,22 @@ function parseMetadata(value: unknown): DataMetadata {
 
 /** Write deterministic data artifacts and record the normalized source instance URL. */
 export function writeDataFiles(dir: string, collections: DataCollection[], source: string): DataWriteResult {
+	const fetched = new Set(collections.map((entry) => entry.collection));
+
 	return writeArtifacts({
 		dir,
 		artifacts: collections,
 		body: dataFileBody,
 		manifestHint: 'Fix or delete the data directory, then run d6s sync pull again.',
 		metadata: ({ files }) => ({ files, source }),
+		// A pull writes only what it fetched, and the fetch set shrinks legitimately all the time: a
+		// resource-scoped pull, or any re-pull without --content, fetches a subset of what is committed.
+		// Deleting the rest would wipe committed collections (the data half of the schema store's scope
+		// rule). Removal is therefore a manual act: delete the file and its manifest line.
+		preserve: {
+			parse: parseDataFile,
+			when: (artifact) => !fetched.has(artifact.collection),
+		},
 	});
 }
 
