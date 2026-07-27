@@ -285,19 +285,32 @@ watch([imageDrawerOpen, linkDrawerOpen, mediaDrawerOpen, sourceCodeDrawerOpen], 
 	open.some(Boolean) ? pauseFocusTrap() : unpauseFocusTrap(),
 );
 
-// `editable` is only read at init, so keep it in sync when the prop flips
-watch(isEditable, (editable) => editor.value?.setEditable(editable));
+// `editable` is only read at init, so keep it in sync when the prop flips.
+// `emitUpdate: false` — the default emits `update`, turning every disabled flip (form loading,
+// collab field locks) into a phantom `input` that rebroadcasts content and steals the collab lock
+watch(isEditable, (editable) => editor.value?.setEditable(editable, false));
 
 // external value changes (async load, revert, version switch) — guard against echo loops
+let syncScheduled = false;
+
 watch(
 	() => props.value,
-	(value) => {
+	async () => {
+		if (syncScheduled) return;
+		syncScheduled = true;
+
+		// Defer past the current flush: setContent mid-patch (watchers run pre-flush) tears down Vue
+		// node views whose unmount re-enters Vue's queue and corrupts ProseMirror's view tree
+		// (CMS-2885); deferring also coalesces same-flush churn (save flows flip html -> null -> html)
+		await nextTick();
+		syncScheduled = false;
+
 		// raw mode edits flow straight through the code interface, never through the editor
 		if (rawMode.value) return;
 		if (!editor.value) return;
 		// compare the encoded (stored) form so a re-emitted page-break marker doesn't look like a change
-		if (encodePageBreaks(editor.value.getHTML()) === value) return;
-		syncValue(editor.value, value);
+		if (encodePageBreaks(editor.value.getHTML()) === props.value) return;
+		syncValue(editor.value, props.value);
 		if (!props.comparisonMode && !props.nonEditable) checkValue();
 	},
 );
