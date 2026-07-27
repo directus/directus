@@ -320,6 +320,79 @@ describe('sync push with data', () => {
 		return JSON.parse(readFileSync(idMapPath, 'utf8'));
 	}
 
+	it('refuses a mirror push whose committed export is marked incomplete — no flag overrides it', async () => {
+		// The pull-time manifest flag exists for exactly this moment: under mirror, absence from the batch
+		// IS the deletion order, and an export the source truncated (unlicensed instances hide custom-rule
+		// permissions from reads) is full of absences that are lies. Even the full deletion consent
+		// (--dangerously-allow-delete) cannot authorize deletions no plan can name.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		writeDataFiles(
+			dataDir,
+			[
+				{
+					collection: 'directus_permissions',
+					primaryKey: 'id',
+					records: [{ id: 1, policy: 'p1', collection: 'articles', action: 'read' }],
+				},
+			],
+			source,
+			['directus_permissions'],
+		);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptDiff('mirror', null);
+		interceptTarget('/permissions', []);
+
+		expect(
+			await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--dangerously-allow-delete', '--yes'),
+		).toBe(1);
+
+		const output = stderr.join('');
+		expect(output).toMatch(/refusing mirror/i);
+		expect(output).toContain('directus_permissions');
+		expect(output).toContain('re-pull');
+	});
+
+	it('pushes an incomplete export under merge — upserting visible rows touches nothing hidden', async () => {
+		// The flag gates only deletion semantics. Merge sends what the export has and deletes nothing, so
+		// a degraded (unlicensed) source can still sync everything it CAN read.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		writeDataFiles(
+			dataDir,
+			[
+				{
+					collection: 'directus_permissions',
+					primaryKey: 'id',
+					records: [{ id: 1, policy: 'p1', collection: 'articles', action: 'read' }],
+				},
+			],
+			source,
+			['directus_permissions'],
+		);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptDiff('merge', null);
+		interceptTarget('/permissions', []);
+
+		interceptImport(
+			{ mode: 'merge' },
+			{
+				data: {
+					applied: true,
+					mode: 'merge',
+					collections: { directus_permissions: { existing: [], new: [1], deleted: [], mapped: {} } },
+				},
+			},
+		);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+		expect(stderr.join('')).toContain('Push complete.');
+	});
+
 	it('uploads the remapped batch and writes the map from reconcile matches and the import response', async () => {
 		// The safety core of a repeat import: the multipart body must decode to records rewritten into target
 		// space — role sr1→tr1 (reconciled by name), access.role remapped to tr1, content untouched — in

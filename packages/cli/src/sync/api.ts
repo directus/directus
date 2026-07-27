@@ -93,6 +93,111 @@ export interface RecordSource {
 	readonly singleton: boolean;
 	/** Rows the server derives at read time (never real records); dropped before validation and paging. */
 	readonly drop?: ((record: Record<string, unknown>) => boolean) | undefined;
+	/** Page by PK cursor instead of offset; integer-PK endpoints only (_gt is forbidden on uuid fields). */
+	readonly keyset?: boolean | undefined;
+}
+
+// An empty FIRST page is ambiguous: a genuinely empty collection, or QUERY_LIMIT_MAX=0 — the server
+// accepts a zero cap (sanitize-query checks `>= 0`) and clamps limit=-1 to zero rows, which reads exactly
+// like emptiness. Mirror would turn that into "delete every target row", so the two must be split:
+// validate-query rejects any explicit limit above the cap, so a limit=1 probe answers 400 on a zero-cap
+// instance and 200 on a healthy one.
+async function refuseZeroCapEmptiness(
+	client: ReturnType<typeof connect>,
+	credential: ResolvedCredential,
+	source: RecordSource,
+): Promise<void> {
+	try {
+		await client.request(() => ({
+			path: source.endpoint,
+			method: 'GET',
+			params: { limit: 1, sort: source.primaryKey },
+		}));
+	} catch (error) {
+		throw new CliError(
+			'CONFIG',
+			`The instance rejected a limit=1 read of ${source.endpoint} after an empty limit=-1 read — QUERY_LIMIT_MAX is 0, so every list reads as empty.`,
+			{
+				hint: 'A zero row cap would export empty collections and let a mirror push delete real target rows. Fix QUERY_LIMIT_MAX on the instance, then re-run.',
+				detail: mapRequestError(error, credential.url).message,
+			},
+		);
+	}
+}
+
+// Keyset pages advance by PK cursor (filter PK _gt last), naming the boundary row by VALUE — so neither
+// concurrent writes nor server-side row hiding can silently re-serve or skip a visible row. This exists
+// because /permissions breaks the offset contract on unlicensed instances: custom-rule rows are filtered
+// AFTER limit/offset (services/permissions.ts), which shifts every offset past the hidden rows and made
+// the overlap check refuse deterministically. Integer-PK endpoints only; _gt is forbidden on uuid fields.
+async function fetchKeysetPages(
+	client: ReturnType<typeof connect>,
+	credential: ResolvedCredential,
+	source: RecordSource,
+): Promise<Record<string, unknown>[]> {
+	const records: Record<string, unknown>[] = [];
+	const seen = new Set<string>();
+	let cursor: string | number | undefined;
+
+	for (;;) {
+		let response: unknown;
+
+		try {
+			response = await client.request(() => ({
+				path: source.endpoint,
+				method: 'GET',
+				params: {
+					limit: -1,
+					sort: source.primaryKey,
+					...(cursor === undefined ? {} : { filter: { [source.primaryKey]: { _gt: cursor } } }),
+				},
+			}));
+		} catch (error) {
+			throw mapRequestError(error, credential.url);
+		}
+
+		if (!Array.isArray(response) || !response.every((record) => isPlainObject(record))) {
+			throw new CliError('HTTP', `The ${source.endpoint} response was not an array of records.`);
+		}
+
+		// Derived rows (see RecordSource.drop) carry no primary key and are appended to every page.
+		const drop = source.drop;
+
+		const rows =
+			drop === undefined
+				? (response as Record<string, unknown>[])
+				: (response as Record<string, unknown>[]).filter((record) => !drop(record));
+
+		if (rows.length === 0) {
+			if (cursor === undefined) await refuseZeroCapEmptiness(client, credential, source);
+			return records;
+		}
+
+		for (const record of rows) {
+			const pk = record[source.primaryKey];
+
+			if (typeof pk !== 'string' && typeof pk !== 'number') {
+				throw new CliError('HTTP', `A ${source.endpoint} record has no "${source.primaryKey}" primary key.`, {
+					hint: 'Field permissions may hide the key column; records cannot be keyed without it.',
+				});
+			}
+
+			const key = String(pk);
+
+			// A repeat means the server ignored the cursor filter; looping on it would never terminate.
+			if (seen.has(key)) {
+				throw new CliError('HTTP', `${source.endpoint} returned primary key "${key}" more than once.`, {
+					hint: 'The server did not honor the cursor filter; pages cannot be trusted.',
+				});
+			}
+
+			seen.add(key);
+			// The raw value, not its string form: the filter must compare in the column's own type.
+			cursor = pk;
+		}
+
+		records.push(...rows);
+	}
 }
 
 /**
@@ -131,6 +236,8 @@ export async function fetchRecords(
 		return [record];
 	}
 
+	if (source.keyset === true) return fetchKeysetPages(client, credential, source);
+
 	// QUERY_LIMIT_MAX can silently clamp limit=-1, and a short page is indistinguishable from a clamped one.
 	// Continue until pages are exhausted so mirror never mistakes a truncated fetch for the complete set.
 	//
@@ -138,8 +245,9 @@ export async function fetchRecords(
 	// kept, and that first row must match it. Offset pages shift under concurrent writes — an insert
 	// re-serves a row, a DELETE silently skips one, and a skipped row exports as absent, which a later
 	// mirror push turns into a target deletion — and a shifted boundary breaks the overlap in both
-	// directions, failing loud instead. Keyset paging (filter PK _gt cursor) is NOT an option: the query
-	// validator forbids _gt on uuid fields (get-filter-operators-for-type.ts), which most system PKs are.
+	// directions, failing loud instead. Keyset paging (filter PK _gt cursor) is NOT the default: the query
+	// validator forbids _gt on uuid fields (get-filter-operators-for-type.ts), which most system PKs are —
+	// integer-PK endpoints opt in via `keyset` above.
 	const records: Record<string, unknown>[] = [];
 	const seen = new Set<string>();
 	let last: string | undefined;
@@ -176,28 +284,7 @@ export async function fetchRecords(
 				: (response as Record<string, unknown>[]).filter((record) => !drop(record));
 
 		if (offset === undefined && rows.length === 0) {
-			// An empty FIRST page is ambiguous: a genuinely empty collection, or QUERY_LIMIT_MAX=0 — the
-			// server accepts a zero cap (sanitize-query checks `>= 0`) and clamps limit=-1 to zero rows,
-			// which reads exactly like emptiness. Mirror would turn that into "delete every target row",
-			// so the two must be split: validate-query rejects any explicit limit above the cap, so a
-			// limit=1 probe answers 400 on a zero-cap instance and 200 on a healthy one.
-			try {
-				await client.request(() => ({
-					path: source.endpoint,
-					method: 'GET',
-					params: { limit: 1, sort: source.primaryKey },
-				}));
-			} catch (error) {
-				throw new CliError(
-					'CONFIG',
-					`The instance rejected a limit=1 read of ${source.endpoint} after an empty limit=-1 read — QUERY_LIMIT_MAX is 0, so every list reads as empty.`,
-					{
-						hint: 'A zero row cap would export empty collections and let a mirror push delete real target rows. Fix QUERY_LIMIT_MAX on the instance, then re-run.',
-						detail: mapRequestError(error, credential.url).message,
-					},
-				);
-			}
-
+			await refuseZeroCapEmptiness(client, credential, source);
 			return records;
 		}
 

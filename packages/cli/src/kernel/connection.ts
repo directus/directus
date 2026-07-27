@@ -123,6 +123,40 @@ function describeIdentity(me: unknown, projectName: string | undefined): Identit
 	return { user, role, projectName };
 }
 
+/**
+ * Total stored rows behind a list endpoint via `meta=total_count`, or undefined when the server cannot
+ * answer. This is a raw request on purpose: the SDK strips the response envelope (extract-data returns
+ * `data`), losing `meta`. For an admin token total_count is computed straight on the database — it counts
+ * rows that entitlement filtering hides from list reads, which is exactly what makes it usable as an
+ * export completeness check. Best-effort: any failure disables the check, never the caller.
+ */
+export async function fetchTotalCount(credential: ResolvedCredential, path: string): Promise<number | undefined> {
+	const token =
+		credential.kind === 'token'
+			? credential.token
+			: (await credentialStorage(credential.url, credential.profileName).get())?.access_token;
+
+	if (token === undefined || token === null) return undefined;
+
+	const url = new URL(`${credential.url.replace(/\/+$/, '')}${path}`);
+	url.searchParams.set('limit', '0');
+	url.searchParams.set('meta', 'total_count');
+
+	try {
+		const response = await fetch(url, {
+			headers: { authorization: `Bearer ${token}` },
+			signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+		});
+
+		if (!response.ok) return undefined;
+
+		const total = get(await response.json(), 'meta.total_count');
+		return typeof total === 'number' ? total : undefined;
+	} catch {
+		return undefined;
+	}
+}
+
 const AUTH_CODES = new Set(['INVALID_CREDENTIALS', 'INVALID_TOKEN', 'TOKEN_EXPIRED', 'INVALID_OTP', 'FORBIDDEN']);
 
 /** Never retain the raw Response: it carries the Authorization header. */

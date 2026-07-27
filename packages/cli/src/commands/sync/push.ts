@@ -134,6 +134,19 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	// Preparation may persist learned local identities, but all remote mutations remain behind the gates.
 	const dataResult = await prepareDataPush(target, mode, ctx);
 
+	// Under mirror, absence from the batch IS the deletion order — and an export the source truncated at
+	// pull time (reads filtered by license entitlements) is full of absences that are lies. No flag
+	// overrides this: the operator cannot consent to deletions no plan can name.
+	if (mode === 'mirror' && !dataResult.skipped && dataResult.incomplete.length > 0) {
+		throw new CliError(
+			'STATE',
+			`Refusing mirror: the committed export is incomplete for ${dataResult.incomplete.join(', ')}.`,
+			{
+				hint: 'The source instance hid rows from reads when this data was pulled (unlicensed custom permission rules), so mirror would delete those rows on the target. Push with --mode merge, or license the source and re-pull.',
+			},
+		);
+	}
+
 	const schema = summarizeDiff(result === null ? null : result.diff);
 
 	const schemaTotal = schema.added + schema.modified + schema.deleted;

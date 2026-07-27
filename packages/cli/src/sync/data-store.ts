@@ -20,10 +20,18 @@ export type DataWriteResult = ArtifactWriteResult;
 export interface DataReadResult {
 	readonly source: string;
 	readonly collections: DataCollection[];
+	/**
+	 * Collections whose export the source instance is known to have silently truncated (reads filtered by
+	 * license entitlements). Recorded in the committed manifest so the knowledge survives to whoever
+	 * pushes: merge/add stay safe, mirror must refuse — absence from an incomplete batch is not deletion
+	 * consent.
+	 */
+	readonly incomplete: string[];
 }
 
 interface DataMetadata {
 	readonly source: string;
+	readonly incomplete: string[];
 }
 
 const dataFileSchema = z.object({
@@ -34,6 +42,7 @@ const dataFileSchema = z.object({
 
 const metadataSchema = z.object({
 	source: z.string().min(1),
+	incomplete: z.array(z.string()).optional(),
 });
 
 function pkString(record: Record<string, unknown>, primaryKey: string): string {
@@ -113,19 +122,25 @@ function parseMetadata(value: unknown): DataMetadata {
 		});
 	}
 
-	return result.data;
+	return { source: result.data.source, incomplete: result.data.incomplete ?? [] };
 }
 
 /** Write deterministic data artifacts and record the normalized source instance URL. */
-export function writeDataFiles(dir: string, collections: DataCollection[], source: string): DataWriteResult {
+export function writeDataFiles(
+	dir: string,
+	collections: DataCollection[],
+	source: string,
+	incomplete: readonly string[] = [],
+): DataWriteResult {
 	const fetched = new Set(collections.map((entry) => entry.collection));
+	const truncated = [...incomplete].sort(byCodepoint);
 
 	return writeArtifacts({
 		dir,
 		artifacts: collections,
 		body: dataFileBody,
 		manifestHint: 'Fix or delete the data directory, then run d6s sync pull again.',
-		metadata: ({ files }) => ({ files, source }),
+		metadata: ({ files }) => ({ files, source, ...(truncated.length > 0 ? { incomplete: truncated } : {}) }),
 		// A pull writes only what it fetched, and the fetch set shrinks legitimately all the time: a
 		// resource-scoped pull, or any re-pull without --content, fetches a subset of what is committed.
 		// Deleting the rest would wipe committed collections (the data half of the schema store's scope
@@ -153,5 +168,5 @@ export function readDataFiles(dir: string): DataReadResult {
 		parseArtifact: parseDataFile,
 	});
 
-	return { source: metadata.source, collections: artifacts };
+	return { source: metadata.source, collections: artifacts, incomplete: metadata.incomplete };
 }

@@ -348,6 +348,78 @@ describe('fetchRecords', () => {
 		expect(result).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
 	});
 
+	it('pages a keyset endpoint by PK cursor, so server-side row hiding cannot shift a page boundary', async () => {
+		// /permissions on unlicensed instances filters custom-rule rows AFTER limit/offset
+		// (api services/permissions.ts), which deterministically breaks offset arithmetic — the QA repro:
+		// CMS template plus one new policy made every pull refuse with the overlap error. A cursor names
+		// the boundary row by VALUE; the intercepts here only match cursor queries, so a regression to
+		// offset paging throws on the disabled dispatcher. Row 3 is server-hidden: the cursor just moves
+		// past the gap where an offset would have re-served or skipped a visible row.
+		const pages = [
+			{ filter: undefined, rows: [{ id: 1 }, { id: 2 }] },
+			{ filter: JSON.stringify({ id: { _gt: 2 } }), rows: [{ id: 4 }] },
+			{ filter: JSON.stringify({ id: { _gt: 4 } }), rows: [] },
+		];
+
+		for (const { filter, rows } of pages) {
+			agent
+				.get('https://cms.example.com')
+				.intercept({
+					path: '/permissions',
+					method: 'GET',
+					query: { limit: '-1', sort: 'id', ...(filter === undefined ? {} : { filter }) },
+					headers: { authorization: `Bearer ${token}` },
+				})
+				.reply(200, { data: rows }, { headers: { 'content-type': 'application/json' } });
+		}
+
+		const result = await fetchRecords(credential, {
+			collection: 'directus_permissions',
+			endpoint: '/permissions',
+			primaryKey: 'id',
+			singleton: false,
+			keyset: true,
+		});
+
+		expect(result).toEqual([{ id: 1 }, { id: 2 }, { id: 4 }]);
+	});
+
+	it('refuses when a keyset page repeats a primary key — the server ignored the cursor filter', async () => {
+		// A server that ignores the _gt filter re-serves the same rows forever; without this refusal the
+		// loop would never terminate. A repeated PK is the loud, cheap witness.
+		agent
+			.get('https://cms.example.com')
+			.intercept({
+				path: '/permissions',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: [{ id: 1 }] }, { headers: { 'content-type': 'application/json' } });
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({
+				path: '/permissions',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id', filter: JSON.stringify({ id: { _gt: 1 } }) },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: [{ id: 1 }] }, { headers: { 'content-type': 'application/json' } });
+
+		const error = await fetchRecords(credential, {
+			collection: 'directus_permissions',
+			endpoint: '/permissions',
+			primaryKey: 'id',
+			singleton: false,
+			keyset: true,
+		}).catch((error: unknown) => error);
+
+		expect(error).toBeInstanceOf(CliError);
+		expect(error).toMatchObject({ code: 'HTTP' });
+		expect((error as CliError).message).toContain('more than once');
+	});
+
 	it('probes limit=1 on an empty first page and returns empty when the probe succeeds', async () => {
 		// An empty first page could also be QUERY_LIMIT_MAX=0 clamping limit=-1 to zero rows; only a
 		// successful explicit-limit read proves the collection is genuinely empty.

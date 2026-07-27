@@ -5,6 +5,7 @@ import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
 import { afterEach, beforeEach, vi } from 'vitest';
 import { run } from '../../kernel/run.js';
 import type { Snapshot } from '../../sync/contract.js';
+import { allResources } from '../../sync/resources.js';
 import { registerSync } from './index.js';
 
 // The filename keeps shared scaffolding out of Vitest collection.
@@ -114,6 +115,19 @@ export function mockSnapshot(agent: MockAgent, body: unknown): void {
 		.reply(200, { data: body }, { headers: { 'content-type': 'application/json' } });
 }
 
+// Endpoint behaviors mirrored from the resource table so mocks stay honest about the wire protocol.
+const KEYSET_ENDPOINTS = new Set(
+	allResources()
+		.filter((resource) => resource.keyset === true)
+		.map((resource) => resource.endpoint),
+);
+
+const VERIFIED_ENDPOINTS = new Set(
+	allResources()
+		.filter((resource) => resource.verifyCount === true)
+		.map((resource) => resource.endpoint),
+);
+
 // Register the empty exhaustion probe because QUERY_LIMIT_MAX can silently clamp the first page.
 export function mockList(agent: MockAgent, path: string, records: Record<string, unknown>[]): void {
 	agent
@@ -126,7 +140,22 @@ export function mockList(agent: MockAgent, path: string, records: Record<string,
 		})
 		.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
 
-	if (records.length > 0) {
+	if (records.length > 0 && KEYSET_ENDPOINTS.has(path)) {
+		// Keyset paging exhausts with an empty page past the last cursor.
+		agent
+			.get(SYNC_URL)
+			.intercept({
+				path,
+				method: 'GET',
+				query: {
+					limit: '-1',
+					sort: 'id',
+					filter: JSON.stringify({ id: { _gt: records[records.length - 1]!['id'] } }),
+				},
+				headers: { authorization: `Bearer ${SYNC_TOKEN}` },
+			})
+			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
+	} else if (records.length > 0) {
 		// Pages overlap by one row: the exhaustion probe starts at the last kept row and returns only it.
 		agent
 			.get(SYNC_URL)
@@ -149,6 +178,24 @@ export function mockList(agent: MockAgent, path: string, records: Record<string,
 			})
 			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
 	}
+
+	if (VERIFIED_ENDPOINTS.has(path)) {
+		// Pull verifies export completeness against total_count; a healthy instance hides nothing.
+		mockTotalCount(agent, path, records.length);
+	}
+}
+
+/** Answer the pull-time completeness probe with a server-side total row count. */
+export function mockTotalCount(agent: MockAgent, path: string, total: number): void {
+	agent
+		.get(SYNC_URL)
+		.intercept({
+			path,
+			method: 'GET',
+			query: { limit: '0', meta: 'total_count' },
+			headers: { authorization: `Bearer ${SYNC_TOKEN}` },
+		})
+		.reply(200, { data: [], meta: { total_count: total } }, { headers: { 'content-type': 'application/json' } });
 }
 
 export function mockSingleton(agent: MockAgent, path: string, object: Record<string, unknown>): void {

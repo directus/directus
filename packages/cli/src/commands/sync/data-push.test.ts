@@ -207,6 +207,7 @@ describe('prepareDataPush skip and precondition', () => {
 			ambiguousCount: 0,
 			unmatchedCount: 0,
 			unchangedCount: 0,
+			incomplete: [],
 		});
 
 		expect(existsSync(join(dir, 'id_map.json'))).toBe(false);

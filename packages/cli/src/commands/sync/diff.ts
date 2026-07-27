@@ -71,6 +71,14 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	// interactive push may resolve those identities before importing.
 	const preview = await previewData(target, mode);
 
+	// Diff stays read-only, so it shows the mirror consequences but names the lie: deletions counted below
+	// include rows the source hid at pull time, and push will refuse this mirror outright.
+	if (mode === 'mirror' && !preview.skipped && preview.incomplete.length > 0) {
+		ctx.ui.warn(
+			`The committed export is incomplete for ${preview.incomplete.join(', ')} — the source hid rows from reads at pull time, and push will refuse mirror. Push with --mode merge, or license the source and re-pull.`,
+		);
+	}
+
 	let dryRun: ImportBatchResult | undefined;
 	let dataSummary: ImportSummary | undefined;
 

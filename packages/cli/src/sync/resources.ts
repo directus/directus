@@ -12,6 +12,16 @@ export interface Resource {
 	readonly aliases: readonly string[];
 	/** Rows the server derives at read time (never real records); dropped at fetch, before export. */
 	readonly drop?: ((record: Record<string, unknown>) => boolean) | undefined;
+	/**
+	 * Page by PK cursor (filter _gt) instead of offset. Only integer-PK endpoints may opt in — the query
+	 * validator forbids _gt on uuid fields (get-filter-operators-for-type.ts).
+	 */
+	readonly keyset?: boolean | undefined;
+	/**
+	 * Verify the fetched row count against the server's total_count at pull time. Opt-in for endpoints
+	 * whose reads can be silently filtered, so an incomplete export is detected instead of committed.
+	 */
+	readonly verifyCount?: boolean | undefined;
 }
 
 interface ResourceDef extends Resource {
@@ -88,6 +98,13 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		// runtime state — never stored rows — so exporting or importing them would materialize
 		// duplicates of built-in behavior as real rows on the target.
 		drop: (record) => record['system'] === true,
+		// Unlicensed instances filter custom-rule permissions AFTER limit/offset (services/permissions.ts,
+		// custom_permission_rules_enabled defaults off in the core license): offsets deterministically
+		// shift past the hidden rows, and the visible set silently understates the stored one. The integer
+		// PK allows cursor paging, and the count check turns the silent shortfall into a named
+		// incompleteness that mirror pushes refuse.
+		keyset: true,
+		verifyCount: true,
 	},
 	{
 		name: 'flows',
@@ -196,6 +213,8 @@ function toResource(def: ResourceDef): Resource {
 		strip: def.strip,
 		aliases: def.aliases,
 		drop: def.drop,
+		keyset: def.keyset,
+		verifyCount: def.verifyCount,
 	};
 }
 

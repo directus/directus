@@ -59,6 +59,8 @@ export interface DataPushPlan {
 	readonly unchanged: UnchangedRows;
 	readonly records: number;
 	readonly collections: number;
+	/** Collections the committed manifest marks as truncated at pull time; mirror must refuse them. */
+	readonly incomplete: readonly string[];
 }
 
 /** A schema-only checkout with no committed data generation. */
@@ -156,6 +158,7 @@ async function reconcileSystem(
 			primaryKey: resource.primaryKey,
 			singleton: resource.singleton,
 			drop: resource.drop,
+			keyset: resource.keyset,
 		});
 
 		targets.set(resource.collection, targetRecords);
@@ -336,6 +339,7 @@ interface Reconciled {
 	readonly system: readonly SystemCollection[];
 	readonly content: readonly DataCollection[];
 	readonly map: IdMap;
+	readonly incomplete: readonly string[];
 	// Retained so a resolved ambiguity can trigger another pass without refetching.
 	readonly inputs: readonly ReconcileInput[];
 	readonly results: readonly CollectionReconcile[];
@@ -348,7 +352,7 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 		return { skipped: true };
 	}
 
-	const { source, collections } = readDataFiles(target.dataDir);
+	const { source, collections, incomplete } = readDataFiles(target.dataDir);
 
 	if (collections.length === 0) return { skipped: true };
 
@@ -379,7 +383,7 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 		}
 	}
 
-	return { skipped: false, source, targetUrl, system, content, map, inputs, results, targets };
+	return { skipped: false, source, targetUrl, system, content, map, incomplete, inputs, results, targets };
 }
 
 // Compare only exported fields; target-only defaults and audit columns are outside the sync claim. The PK
@@ -583,6 +587,7 @@ export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContex
 		unchanged,
 		records,
 		collections: batch.length,
+		incomplete: reconciled.incomplete,
 	};
 }
 
@@ -597,6 +602,8 @@ export interface DataPreviewPlan {
 	readonly ambiguousCount: number;
 	readonly unmatchedCount: number;
 	readonly unchangedCount: number;
+	/** Collections the committed manifest marks as truncated at pull time; push refuses mirror on them. */
+	readonly incomplete: readonly string[];
 }
 
 export type DataPreviewResult = DataPreviewPlan | DataPushSkipped;
@@ -649,5 +656,6 @@ export async function previewData(target: Target, mode: Mode): Promise<DataPrevi
 		ambiguousCount,
 		unmatchedCount,
 		unchangedCount,
+		incomplete: reconciled.incomplete,
 	};
 }

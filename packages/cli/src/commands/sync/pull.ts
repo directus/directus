@@ -1,6 +1,7 @@
 import { relative } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import type { ProjectConfig } from '../../kernel/config/file.js';
+import { fetchTotalCount } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
@@ -32,6 +33,7 @@ interface PullDataReport {
 	readonly records: number;
 	readonly files: number;
 	readonly removed: string[];
+	readonly incomplete: string[];
 }
 
 interface ResolvedScope {
@@ -309,6 +311,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	const includesUsers = resources.some((resource) => resource.name === 'users');
 
 	const dataCollections: DataCollection[] = [];
+	const incomplete: string[] = [];
 
 	for (const resource of resources) {
 		let rows = await fetchRecords(credential, {
@@ -317,7 +320,23 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 			primaryKey: resource.primaryKey,
 			singleton: resource.singleton,
 			drop: resource.drop,
+			keyset: resource.keyset,
 		});
+
+		// Unlicensed instances hide custom-rule permissions from every read path, so the fetch above can be
+		// silently short. total_count is computed on the database and still sees them — a shortfall is
+		// recorded in the committed manifest (merge/add stay safe; mirror refuses an incomplete export).
+		if (resource.verifyCount === true) {
+			const total = await fetchTotalCount(credential, resource.endpoint);
+
+			if (total !== undefined && total !== rows.length) {
+				incomplete.push(resource.collection);
+
+				ctx.ui.warn(
+					`${resource.name}: exported ${rows.length} of ${total} rows — this instance hides custom permission rules from reads (unlicensed custom_permission_rules_enabled). The export is incomplete: merge and add pushes stay safe, mirror pushes will refuse it. License the instance to export these rows.`,
+				);
+			}
+		}
 
 		rows = stripSystemFields(rows, resource);
 
@@ -359,7 +378,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	const removed = result.removed.length;
 
 	// The source URL selects the correct source→target ID-map bucket during push.
-	const dataResult = writeDataFiles(dataDir, dataCollections, normalizeInstanceUrl(url));
+	const dataResult = writeDataFiles(dataDir, dataCollections, normalizeInstanceUrl(url), incomplete);
 	const records = dataCollections.reduce((total, entry) => total + entry.records.length, 0);
 	const dataDirRelative = relative(ctx.cwd, dataDir);
 	const collectionCount = dataCollections.length;
@@ -370,6 +389,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		records,
 		files: dataResult.written.length,
 		removed: dataResult.removed,
+		incomplete,
 	};
 
 	// One line per axis so "collection" never means two things in one sentence: Schema is structure for

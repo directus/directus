@@ -8,6 +8,7 @@ import {
 	mockList,
 	mockSingleton,
 	mockSnapshot,
+	mockTotalCount,
 	OWNED,
 	ownedFileFor,
 	runSync,
@@ -758,15 +759,19 @@ describe('sync pull resources and data', () => {
 			})
 			.reply(200, { data: [stored, derived] }, { headers: { 'content-type': 'application/json' } });
 
+		// The keyset exhaustion page carries the derived rows too — appended to EVERY page.
 		agent
 			.get(url)
 			.intercept({
 				path: '/permissions',
 				method: 'GET',
-				query: { limit: '-1', sort: 'id', offset: '0' },
+				query: { limit: '-1', sort: 'id', filter: JSON.stringify({ id: { _gt: 1 } }) },
 				headers: { authorization: `Bearer ${token}` },
 			})
-			.reply(200, { data: [stored, derived] }, { headers: { 'content-type': 'application/json' } });
+			.reply(200, { data: [derived] }, { headers: { 'content-type': 'application/json' } });
+
+		// One stored row; the derived rows are not stored, so a matching count means a complete export.
+		mockTotalCount(agent, '/permissions', 1);
 
 		for (const path of [
 			'/roles',
@@ -787,6 +792,65 @@ describe('sync pull resources and data', () => {
 
 		const permissions = JSON.parse(readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_permissions')), 'utf8'));
 		expect(permissions.records).toEqual([stored]);
+	});
+
+	it('marks a truncated permissions export incomplete instead of committing the shortfall silently', async () => {
+		// Unlicensed instances hide custom-rule permissions from reads (post-pagination filtering in
+		// services/permissions.ts) — the fetch "succeeds" while missing rows. total_count is computed on
+		// the database and still counts them; the mismatch must land in the committed manifest, because
+		// whoever pushes mirror later has no other way to know the absences are lies.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+
+		for (const path of [
+			'/roles',
+			'/policies',
+			'/access',
+			'/flows',
+			'/operations',
+			'/dashboards',
+			'/panels',
+			'/translations',
+		]) {
+			interceptList(path, []);
+		}
+
+		interceptSingleton('/settings', { id: 1 });
+
+		// One visible row; the server holds three. mockList would answer the probe with a matching count,
+		// so the shortfall is registered raw.
+		const visible = { id: 5, policy: 'p1', collection: 'articles', action: 'read' };
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/permissions',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: [visible] }, { headers: { 'content-type': 'application/json' } });
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/permissions',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id', filter: JSON.stringify({ id: { _gt: 5 } }) },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
+
+		mockTotalCount(agent, '/permissions', 3);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		expect(stderr.join('')).toContain('exported 1 of 3 rows');
+		expect(stderr.join('')).toContain('mirror pushes will refuse');
+
+		const metadata = JSON.parse(readFileSync(join(dataDir, 'metadata.json'), 'utf8'));
+		expect(metadata.incomplete).toEqual(['directus_permissions']);
 	});
 
 	it('drops user-attached access rows when users are out of scope', async () => {
