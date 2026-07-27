@@ -7,7 +7,9 @@ import { computed, ref, Ref } from 'vue';
 import { getFields } from './get-fields';
 import { mockedStore } from '@/__utils__/store';
 import type { FormField } from '@/components/v-form/types';
+import { useCollectionsStore } from '@/stores/collections';
 import { usePermissionsStore } from '@/stores/permissions';
+import { useRelationsStore } from '@/stores/relations';
 import { useUserStore } from '@/stores/user';
 
 vi.mock('@directus/composables');
@@ -23,6 +25,12 @@ beforeEach(() => {
 			createSpy: vi.fn,
 		}),
 	);
+
+	const relationsStore = mockedStore(useRelationsStore());
+	relationsStore.getRelationsForField.mockReturnValue([]);
+
+	const collectionsStore = mockedStore(useCollectionsStore());
+	collectionsStore.getCollection.mockReturnValue({ meta: { status: 'active' } } as any);
 
 	const collection = 'test_collection';
 
@@ -104,6 +112,32 @@ describe('admin users', () => {
 		const fields = getFields(sample.collection, isNew, fetchedItemPermissions);
 
 		expect(fields.value.length).toEqual(sample.fields.length);
+	});
+
+	it('should drop a relational field whose related collection is inactive', () => {
+		const userStore = mockedStore(useUserStore());
+		userStore.isAdmin = true;
+
+		const relationsStore = mockedStore(useRelationsStore());
+
+		relationsStore.getRelationsForField.mockImplementation((_collection, field) =>
+			field === 'name'
+				? ([{ collection: sample.collection, field, related_collection: 'inactive_target' }] as any)
+				: [],
+		);
+
+		const collectionsStore = mockedStore(useCollectionsStore());
+
+		collectionsStore.getCollection.mockImplementation(
+			(key) => ({ meta: { status: key === 'inactive_target' ? 'inactive' : 'active' } }) as any,
+		);
+
+		vi.mocked(useCollection).mockReturnValue({ fields: ref(sample.fields) } as any);
+
+		const fields = getFields(sample.collection, false, ref({} as ItemPermissions));
+
+		expect(fields.value.map((field) => field.field)).not.toContain('name');
+		expect(fields.value.length).toEqual(sample.fields.length - 1);
 	});
 });
 

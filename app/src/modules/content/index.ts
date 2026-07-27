@@ -183,8 +183,8 @@ export default defineModule({
 
 				if (collectionsStore.visibleCollections.length === 0) return;
 
-				const rootCollections = collectionsStore.visibleCollections.filter((collection) =>
-					isNil(collection?.meta?.group),
+				const rootCollections = collectionsStore.visibleCollections.filter(
+					(collection) => isNil(collection?.meta?.group) && collection.meta?.status === 'active',
 				);
 
 				const lastAccessedCollection = useLocalStorage<string | null>('directus-last-accessed-collection', null);
@@ -192,7 +192,9 @@ export default defineModule({
 				if (
 					typeof lastAccessedCollection.value === 'string' &&
 					collectionsStore.visibleCollections.find(
-						(visibleCollection) => visibleCollection.collection === lastAccessedCollection.value,
+						(visibleCollection) =>
+							visibleCollection.collection === lastAccessedCollection.value &&
+							visibleCollection.meta?.status === 'active',
 					)
 				) {
 					return getCollectionRoute(lastAccessedCollection.value);
@@ -218,7 +220,9 @@ export default defineModule({
 
 						const children = orderBy(
 							collectionsStore.visibleCollections.filter((childCollection) => {
-								return collection.collection === childCollection.meta?.group;
+								return (
+									collection.collection === childCollection.meta?.group && childCollection.meta?.status === 'active'
+								);
 							}),
 							['meta.sort', 'collection'],
 						);

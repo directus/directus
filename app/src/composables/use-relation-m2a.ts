@@ -60,7 +60,7 @@ export function useRelationM2A(collection: Ref<string>, field: Ref<string>) {
 
 		const allowedCollections = (relation.meta?.one_allowed_collections ?? []).reduce((acc, collection) => {
 			const collectionInfo = collectionsStore.getCollection(collection);
-			if (collectionInfo) acc.push(collectionInfo);
+			if (collectionInfo && collectionInfo.meta?.status === 'active') acc.push(collectionInfo);
 			return acc;
 		}, [] as Collection[]);
 
