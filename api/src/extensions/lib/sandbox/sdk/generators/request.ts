@@ -4,6 +4,27 @@ import globToRegExp from 'glob-to-regexp';
 import type { Reference } from 'isolated-vm';
 import { getAxios } from '../../../../../request/index.js';
 
+function assertUrlAllowed(url: string, allowedUrlScopes: string[]): void {
+	const urlAllowed = allowedUrlScopes.some((urlScope) => {
+		const regex = globToRegExp(urlScope);
+		return regex.test(url);
+	});
+
+	if (urlAllowed === false) {
+		throw new Error(`No permission to request "${url}"`);
+	}
+}
+
+function getRedirectUrl(options: { protocol?: string; hostname?: string; host?: string; path?: string }): string {
+	const host = options.host ?? options.hostname;
+
+	if (host === undefined || options.protocol === undefined) {
+		throw new Error('Unable to validate redirect URL');
+	}
+
+	return new URL(options.path ?? '/', `${options.protocol}//${host}`).toString();
+}
+
 export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScopes): (
 	url: Reference<string>,
 	options: Reference<{
@@ -30,14 +51,7 @@ export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScope
 
 		if (permissions === undefined) throw new Error('No permission to access "request"');
 
-		const urlAllowed = permissions.urls.some((urlScope) => {
-			const regex = globToRegExp(urlScope);
-			return regex.test(urlCopied);
-		});
-
-		if (urlAllowed === false) {
-			throw new Error(`No permission to request "${urlCopied}"`);
-		}
+		assertUrlAllowed(urlCopied, permissions.urls);
 
 		const method = options.typeof !== 'undefined' ? await options.get('method', { reference: true }) : undefined;
 		const body = options.typeof !== 'undefined' ? await options.get('body', { reference: true }) : undefined;
@@ -70,6 +84,9 @@ export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScope
 			method: methodCopied ?? 'GET',
 			data: bodyCopied ?? null,
 			headers: headersCopied ?? {},
+			beforeRedirect: (redirectOptions) => {
+				assertUrlAllowed(getRedirectUrl(redirectOptions), permissions.urls);
+			},
 		});
 
 		return { status: result.status, statusText: result.statusText, headers: result.headers, data: result.data };
