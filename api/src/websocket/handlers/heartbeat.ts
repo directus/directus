@@ -71,6 +71,8 @@ export class HeartbeatHandler {
 			for (const client of pendingClients) {
 				client.close();
 			}
+
+			emitter.offAction('websocket.message', messageWatcher);
 		}, HEARTBEAT_FREQUENCY);
 
 		const messageWatcher: ActionHandler = ({ client }) => {
