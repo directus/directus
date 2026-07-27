@@ -90,10 +90,14 @@ describe('profile commands', () => {
 	it('gates overwriting a profile whose stored URL is missing or mangled — existence decides, not URL validity', async () => {
 		// A hand-edited profile with a broken url is still a NAMED profile with a possibly-attached
 		// credential; silently "repairing" it would skip the same consent a repoint requires.
-		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url: 123 } } }));
+		const broken = JSON.stringify({ profiles: { staging: { url: 123 } } });
+		writeFileSync(join(dir, 'directus.config.json'), broken);
 
 		expect(await d6s('profile', 'add', 'staging', '--url', 'https://new.example.com')).toBe(1);
 		expect(stderr.join('')).toContain('<saved URL is invalid or unsafe to print>');
+
+		// The refusal must leave the file byte-identical — a gate that already wrote would be theater.
+		expect(readFileSync(join(dir, 'directus.config.json'), 'utf8')).toBe(broken);
 
 		expect(await d6s('profile', 'add', 'staging', '--url', 'https://new.example.com', '--yes')).toBe(0);
 		expect(readConfig().profiles['staging']?.url).toBe('https://new.example.com');
@@ -105,6 +109,9 @@ describe('profile commands', () => {
 		// profile list or reads an error message.
 		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com/\u001b]0;pwn\u0007')).toBe(1);
 		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com/a\nb')).toBe(1);
+		// C1s matter too: CSI (U+009B) and NEL (U+0085) are single-codepoint controls many terminals honor.
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com/a\u0085b')).toBe(1);
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com/a\u009bb')).toBe(1);
 		expect(existsSync(join(dir, 'directus.config.json'))).toBe(false);
 	});
 

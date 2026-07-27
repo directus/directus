@@ -280,6 +280,46 @@ describe('readDataFiles failures', () => {
 		expect(error.message).toContain('incomplete');
 	});
 
+	it('refuses a hand-edited source that is not a safe, normalized URL — it flows into reports and map keys', () => {
+		// The writer only records normalizeInstanceUrl() of a validated profile URL. A credential-bearing
+		// or trailing-slash source can only come from an edit; passing it through would leak it into
+		// --json reports and CI logs, or crash as a native URL error inside the ID-map keying.
+		for (const source of ['https://user:secret@source.example.com', 'https://source.example.com/']) {
+			const dir = tempDir();
+			const metadataPath = join(dir, 'metadata.json');
+			writeDataFiles(dir, fixture(), SOURCE);
+
+			const metadata = JSON.parse(readFileSync(metadataPath, 'utf8'));
+			metadata.source = source;
+			writeFileSync(metadataPath, JSON.stringify(metadata));
+
+			const error = expectCliError(() => readDataFiles(dir));
+
+			expect(error.code).toBe('STATE');
+			expect(error.message).toContain('source');
+			// The refusal must never echo the edited value — that is the leak it exists to prevent.
+			expect(error.message).not.toContain(source);
+		}
+	});
+
+	it('refuses incomplete entries outside the verify-tracked set — they are interpolated into terminal output', () => {
+		// Only verify-tracked collections can legitimately carry the marker; anything else is an edit, and
+		// the entries reach the mirror refusal and diff warning verbatim.
+		const dir = tempDir();
+		writeDataFiles(dir, fixture(), SOURCE);
+
+		const metadataPath = join(dir, 'metadata.json');
+		const metadata = JSON.parse(readFileSync(metadataPath, 'utf8'));
+		metadata.incomplete = ['not-a-tracked-collection'];
+		writeFileSync(metadataPath, JSON.stringify(metadata));
+
+		const error = expectCliError(() => readDataFiles(dir));
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain('incomplete');
+		expect(error.message).not.toContain('not-a-tracked-collection');
+	});
+
 	it('treats a pre-tracking manifest as unverified for preserved verify-tracked collections', () => {
 		// Nothing ever verified a pre-tracking permissions export. A scoped pull that preserves it must
 		// mark it incomplete — laundering it to "complete" via the new manifest would hand mirror a lie.

@@ -14,11 +14,11 @@ const CONFIG_FILENAME = 'directus.config.json';
  * to config or printed by `profile list`. Also serves as the prompt validator.
  */
 export function isSafeUrl(value: string): boolean {
-	// The URL parser strips \t\n\r anywhere and percent-encodes other C0 controls in paths — but callers
+	// The URL parser strips \t\n\r anywhere and percent-encodes other C0 controls and every C1 in paths — but callers
 	// store and print the RAW string, so a parse-based check alone would let terminal control sequences
-	// (e.g. an ESC in the path) through to output. Reject them before parsing.
+	// (an ESC in the path, or a single-codepoint C1 like CSI/NEL) through to output. Reject them before parsing.
 	// eslint-disable-next-line no-control-regex
-	if (/[\u0000-\u001f\u007f]/.test(value)) return false;
+	if (/[\u0000-\u001f\u007f-\u009f]/.test(value)) return false;
 
 	let parsed: URL;
 

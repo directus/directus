@@ -6,6 +6,7 @@ import { isSafeUrl } from '../kernel/config/file.js';
 import { CliError } from '../kernel/error.js';
 import { type ArtifactWriteResult, METADATA_FILE, readArtifacts, writeArtifacts } from './artifact-store.js';
 import { byCodepoint } from './codepoint.js';
+import { normalizeInstanceUrl } from './id-map.js';
 import { allResources } from './resources.js';
 
 /** One collection and its records in the data artifact set. */
@@ -45,15 +46,29 @@ const dataFileSchema = z.object({
 	records: z.array(z.unknown()),
 });
 
-const sourceSchema = z.object({ source: z.string().min(1) });
-const incompleteSchema = z.object({ incomplete: z.array(z.string()) });
-
 // Collections whose exports carry a pull-time completeness verification (see resources.ts verifyCount).
 const VERIFY_TRACKED = new Set(
 	allResources()
 		.filter((resource) => resource.verifyCount === true)
 		.map((resource) => resource.collection),
 );
+
+// The writer only ever records normalizeInstanceUrl() of an isSafeUrl-validated profile URL, so a
+// legitimate committed source is a fixpoint of both. Anything else was hand-edited — and the value
+// flows into JSON reports and ID-map bucket keys, so a credential-bearing or garbage source is
+// refused here instead of leaking into logs or crashing as a native URL error downstream.
+function isCommittedSource(value: string): boolean {
+	return isSafeUrl(value) && normalizeInstanceUrl(value) === value;
+}
+
+const sourceSchema = z.object({ source: z.string().refine(isCommittedSource) });
+
+// Only verify-tracked collections can legitimately carry the marker, and the entries are interpolated
+// into terminal messages (the mirror refusal, the diff warning) — an unknown name or control-bearing
+// string is refused rather than printed.
+const incompleteSchema = z.object({
+	incomplete: z.array(z.string().refine((collection) => VERIFY_TRACKED.has(collection))),
+});
 
 function pkString(record: Record<string, unknown>, primaryKey: string): string {
 	const value = record[primaryKey];
@@ -127,8 +142,10 @@ function parseMetadata(value: unknown): DataMetadata {
 	const source = sourceSchema.safeParse(value);
 
 	if (!source.success) {
-		throw new CliError('STATE', `${METADATA_FILE} does not record the source instance URL.`, {
-			hint: 'This data predates source tracking; run d6s sync pull again to record it.',
+		// Pull's own preflight refuses this manifest too, so "re-pull" alone is dead advice: the data
+		// directory has to go first.
+		throw new CliError('STATE', `${METADATA_FILE} does not record a valid source instance URL.`, {
+			hint: 'This data predates source tracking (or the manifest was edited); delete the data directory, then run d6s sync pull again.',
 		});
 	}
 
@@ -137,6 +154,14 @@ function parseMetadata(value: unknown): DataMetadata {
 	const incomplete = incompleteSchema.safeParse(value);
 
 	if (!incomplete.success) {
+		// Absence is the pre-tracking generation (a plain re-pull records it); a PRESENT-but-invalid
+		// marker is an edit, and a re-pull alone cannot repair it — the writer refuses the manifest.
+		if (isPlainObject(value) && 'incomplete' in (value as Record<string, unknown>)) {
+			throw new CliError('STATE', `${METADATA_FILE} has an invalid "incomplete" marker.`, {
+				hint: 'Fix or delete the data directory, then run d6s sync pull again.',
+			});
+		}
+
 		throw new CliError('STATE', `${METADATA_FILE} does not record export completeness.`, {
 			hint: 'This data predates completeness tracking; run d6s sync pull again to record it.',
 		});
@@ -146,11 +171,6 @@ function parseMetadata(value: unknown): DataMetadata {
 }
 
 type CommittedState = { exists: false } | { exists: true; source: string; incomplete: string[] | 'unknown' };
-
-// A stored source is normalized by the writer, but a hand-edited one can hold anything — never print raw.
-function shownSource(source: string): string {
-	return isSafeUrl(source) ? source : '<committed source is invalid or unsafe to print>';
-}
 
 // The committed manifest's provenance and completeness, validated STRICTLY before any write builds on it:
 // a lenient read here would let a pull relabel another instance's preserved records or launder away
@@ -180,7 +200,7 @@ function committedState(dir: string): CommittedState {
 
 	if (!source.success) {
 		throw new CliError('STATE', `${METADATA_FILE} does not record a valid source instance URL.`, {
-			hint: 'This data predates source tracking (or the manifest was edited); delete the data directory or run a full re-pull.',
+			hint: 'This data predates source tracking (or the manifest was edited); delete the data directory, then run d6s sync pull again.',
 		});
 	}
 
@@ -210,10 +230,11 @@ export function assertDataSource(dir: string, source: string): void {
 	// pull from a different instance would relabel another instance's records as its own, and push would
 	// remap them through the wrong ID-map bucket. Switching sources is a deliberate act: clear the data
 	// or give the new source its own project.
+	// committedState validated the stored source strictly, so it is safe to interpolate here.
 	if (committed.exists && committed.source !== source) {
 		throw new CliError(
 			'STATE',
-			`The committed data in ${dir} came from ${shownSource(committed.source)}; this pull is from ${source}.`,
+			`The committed data in ${dir} came from ${committed.source}; this pull is from ${source}.`,
 			{
 				hint: 'Mixed sources corrupt identity mapping. Delete the data directory to switch this project to the new source, or declare a separate project for it.',
 			},

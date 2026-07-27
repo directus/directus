@@ -389,8 +389,13 @@ describe('sync push with data', () => {
 			},
 		);
 
-		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
-		expect(stderr.join('')).toContain('Push complete.');
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
+
+		// The report must carry the marker: a CI consumer of a merge push needs to know the export it just
+		// applied was partial, without re-reading the manifest.
+		const payload = JSON.parse(stdout.join(''));
+		expect(payload.ok).toBe(true);
+		expect(payload.data).toMatchObject({ incomplete: ['directus_permissions'], skipped: false });
 	});
 
 	it('uploads the remapped batch and writes the map from reconcile matches and the import response', async () => {
@@ -865,6 +870,7 @@ describe('sync push with data', () => {
 				mode: 'merge',
 				source,
 				skipped: false,
+				incomplete: [],
 				collections: fullImportResult()['collections'],
 			},
 		});
