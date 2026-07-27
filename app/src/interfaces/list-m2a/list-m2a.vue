@@ -21,6 +21,7 @@ import { usePageSize } from '@/composables/use-page-size';
 import { useRelationM2A } from '@/composables/use-relation-m2a';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationPermissionsM2A } from '@/composables/use-relation-permissions';
+import { useCollectionsStore } from '@/stores/collections';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { hideDragImage } from '@/utils/hide-drag-image';
@@ -57,6 +58,7 @@ const props = withDefaults(
 
 const emit = defineEmits(['input']);
 const { t, te } = useI18n();
+const collectionsStore = useCollectionsStore();
 const { collection, field, primaryKey, limit, version } = toRefs(props);
 const { relationInfo } = useRelationM2A(collection, field);
 
@@ -138,6 +140,16 @@ const {
 	isLocalItem,
 	getItemEdits,
 } = useRelationMultiple(value, query, relationInfo, primaryKey, version);
+
+function isInactiveCollection(item: DisplayItem) {
+	const info = relationInfo.value;
+	if (!info) return false;
+	const collectionInfo = collectionsStore.getCollection(item[info.collectionField.field]);
+	// Exists but not active: hide it. Deleted collections return null and stay as "Invalid Item".
+	return !!collectionInfo && collectionInfo.meta?.status !== 'active';
+}
+
+const visibleItems = computed(() => displayItems.value.filter((item) => !isInactiveCollection(item)));
 
 function sortItems(items: DisplayItem[]) {
 	const info = relationInfo.value;
@@ -368,11 +380,11 @@ const menuActive = computed(
 		</template>
 
 		<template v-else>
-			<VNotice v-if="displayItems.length === 0">{{ $t('no_items') }}</VNotice>
+			<VNotice v-if="visibleItems.length === 0">{{ $t('no_items') }}</VNotice>
 
 			<Draggable
 				v-else
-				:model-value="displayItems"
+				:model-value="visibleItems"
 				tag="v-list"
 				item-key="$index"
 				:set-data="hideDragImage"
