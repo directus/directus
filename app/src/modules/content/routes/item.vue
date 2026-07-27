@@ -50,6 +50,7 @@ import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
 import { useAutoSave } from '@/modules/content/composables/use-auto-save';
 import { useNotificationsStore } from '@/stores/notifications';
+import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -101,6 +102,7 @@ const { collectionRoute, backRoute } = useItemNavigation();
 
 const userStore = useUserStore();
 const notificationsStore = useNotificationsStore();
+const settingsStore = useSettingsStore();
 
 const isCurrentVersionNew = computed(() => currentVersion.value?.id === '+');
 
@@ -660,6 +662,19 @@ async function saveAndQuit() {
 	}
 }
 
+function saveDefault() {
+	const action = settingsStore.settings?.default_save_action;
+	const isSingleton = collectionInfo.value?.meta?.singleton === true;
+
+	if (action === 'save-and-stay') {
+		saveAndStay();
+	} else if (action === 'save-and-create-new' && !isSingleton && !disabledOptions.value.includes('save-and-add-new')) {
+		saveAndAddNew();
+	} else {
+		saveAndQuit();
+	}
+}
+
 async function deleteAndQuit() {
 	if (deleting.value) return;
 
@@ -1208,11 +1223,12 @@ function useAutoSwitchToDraft() {
 					icon="check"
 					:loading="saving"
 					:disabled="!isSavable"
-					@click="saveAndQuit()"
+					@click="saveDefault()"
 				>
 					<template v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true" #split-menu>
 						<SaveOptions
 							:disabled-options="disabledOptions"
+							@save-and-quit="saveAndQuit"
 							@save-and-stay="saveAndStay"
 							@save-and-add-new="saveAndAddNew"
 							@save-as-copy="saveAsCopyAndNavigate"

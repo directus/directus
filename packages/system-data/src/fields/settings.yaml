@@ -32,6 +32,19 @@ fields:
       placeholder: en-US
     width: half
 
+  - field: default_save_action
+    interface: select-dropdown
+    width: half
+    options:
+      choices:
+        - value: save-and-quit
+          text: $t:save_and_quit
+        - value: save-and-stay
+          text: $t:save_and_stay
+        - value: save-and-create-new
+          text: $t:save_and_create_new
+    note: $t:default_save_action_note
+
   - field: project_owner
     interface: system-owner
     width: half
