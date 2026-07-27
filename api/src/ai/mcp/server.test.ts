@@ -16,7 +16,7 @@ const toolMocks = vi.hoisted(() => ({
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
-		PUBLIC_URL: 'https://example.directus.app',
+		PUBLIC_URL: 'https://directus.example.com',
 		MCP_OAUTH_ENABLED: true,
 		SECRET: 'test-secret',
 		// Required by transitive module-level useEnv() calls:
@@ -1365,7 +1365,7 @@ describe('mcp server', () => {
 	});
 
 	describe('auth guard', () => {
-		const MCP_RESOURCE_URL = 'https://example.directus.app/mcp';
+		const MCP_RESOURCE_URL = 'https://directus.example.com/mcp';
 
 		const regularAccountability = {
 			user: 'user-id',

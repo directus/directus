@@ -1,4 +1,10 @@
-import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
+import {
+	ContentTooLargeError,
+	ForbiddenError,
+	InvalidPayloadError,
+	InvalidQueryError,
+	UnsupportedMediaTypeError,
+} from '@directus/errors';
 import { toBoolean } from '@directus/utils';
 import Busboy from 'busboy';
 import { Router } from 'express';
@@ -9,7 +15,7 @@ import { getDatabase } from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
-import { ExportService, ImportService } from '../services/import-export.js';
+import { ExportService, getImportMaxFileSize, ImportService } from '../services/import-export.js';
 import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -96,21 +102,80 @@ router.post(
 			};
 		}
 
-		const busboy = Busboy({ headers });
+		const maxFileSize = getImportMaxFileSize();
 
-		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
-			try {
-				await service.import(req.params['collection']!, mimeType, fileStream, {
-					background: toBoolean(req.query['background']),
-				});
-			} catch (err: any) {
-				return next(err);
-			}
-
-			return res.status(200).end();
+		const busboy = Busboy({
+			headers,
+			limits: {
+				// A single file is imported per request; busboy ignores any extras.
+				files: 1,
+				// Cap the upload size (undefined = no cap). busboy rejects at exactly its fileSize, so +1
+				// keeps the cap "exceeded": a file of exactly IMPORT_MAX_FILE_SIZE bytes is still allowed.
+				fileSize: maxFileSize === undefined ? undefined : maxFileSize + 1,
+			},
 		});
 
-		busboy.on('error', (err: Error) => next(err));
+		const background = toBoolean(req.query['background']);
+
+		let fileReceived = false;
+		let importSucceeded = false;
+		let closed = false;
+		let settled = false;
+
+		// Dispatch the final response/error exactly once (busboy may emit `close` after an error).
+		const finish = (fn: () => void) => {
+			if (settled) return;
+			settled = true;
+			fn();
+		};
+
+		// Respond only once the body is fully consumed (busboy 'close') AND the import has settled, so the
+		// response never precedes the upload being read.
+		const tryRespond = () => {
+			if (closed && !fileReceived) {
+				return finish(() => next(new InvalidPayloadError({ reason: `No file was included in the body` })));
+			}
+
+			if (importSucceeded && closed) {
+				return finish(() => res.status(200).end());
+			}
+
+			return undefined;
+		};
+
+		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
+			fileReceived = true;
+
+			// Swallow stream errors at the controller level so a destroy() can't crash the process with an
+			// unhandled 'error'. The importer attaches its own handlers and translates errors it observes.
+			fileStream.on('error', () => {});
+
+			// busboy enforces the size cap and can emit 'limit' before the importer starts reading. Respond
+			// here directly (don't rely on the importer settling) and destroy the stream so the truncated
+			// upload can't be committed.
+			fileStream.on('limit', () => {
+				fileStream.destroy(new ContentTooLargeError());
+				finish(() => next(new ContentTooLargeError()));
+			});
+
+			try {
+				await service.import(req.params['collection']!, mimeType, fileStream, { background });
+				importSucceeded = true;
+				tryRespond();
+			} catch (err: any) {
+				// import() can reject before reading the stream (e.g. bad media type); drain it so the client
+				// gets the error rather than a reset connection.
+				fileStream.resume();
+				finish(() => next(err));
+			}
+		});
+
+		busboy.on('error', (err: Error) => finish(() => next(err)));
+
+		busboy.on('close', () => {
+			closed = true;
+			tryRespond();
+		});
 
 		req.pipe(busboy);
 	}),
