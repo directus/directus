@@ -63,14 +63,25 @@ function createContext(cwd: string, ui: Ui, globals: GlobalOptions): CliContext 
 	return { cwd, configPath, ui, interactive };
 }
 
+function normalizeHelpOption(command: Command): void {
+	command.helpOption('-h, --help', 'Display help for command');
+
+	// Only where an implicit help subcommand already exists; a bare nameAndArgs call would ADD one to leaves.
+	if (command.commands.length > 0) command.helpCommand('help [command]', 'Display help for command');
+
+	for (const sub of command.commands) normalizeHelpOption(sub);
+}
+
 function createProgram(options: RunOptions, ui: Ui): Command {
+	// Help-text convention: sentence case, no trailing period — including Commander's built-ins, whose
+	// lowercase defaults would sit inconsistently next to every registered description.
 	const program = new Command('d6s')
 		.exitOverride()
-		.version(version, '-v, --version')
-		.option('--json', 'Output machine-readable JSON.')
-		.option('--no-color', 'Disable colored output.')
-		.option('--no-interactive', 'Disable interactive prompts.')
-		.option('--config <path>', 'Path to directus.config.json.')
+		.version(version, '-v, --version', 'Output the version number')
+		.option('--json', 'Output machine-readable JSON')
+		.option('--no-color', 'Disable colored output')
+		.option('--no-interactive', 'Disable interactive prompts')
+		.option('--config <path>', 'Path to directus.config.json')
 		.configureOutput({
 			// Commander sends bare-parent help to writeErr before throwing
 			// commander.help. Route it to redacted stdout; actual errors are suppressed
@@ -86,6 +97,9 @@ function createProgram(options: RunOptions, ui: Ui): Command {
 	const getContext = (): CliContext => createContext(cwd, ui, program.opts<GlobalOptions>());
 
 	for (const register of options.registerCommands) register(program, getContext);
+
+	// Commander creates a lowercase "display help for command" option per command; align every level.
+	normalizeHelpOption(program);
 
 	return program;
 }
