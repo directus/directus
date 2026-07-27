@@ -326,10 +326,17 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		// Unlicensed instances hide custom-rule permissions from every read path, so the fetch above can be
 		// silently short. total_count is computed on the database and still sees them — a shortfall is
 		// recorded in the committed manifest (merge/add stay safe; mirror refuses an incomplete export).
+		// An UNANSWERED probe marks incomplete too: unknown cannot vouch for a mirror's deletions.
 		if (resource.verifyCount === true) {
 			const total = await fetchTotalCount(credential, resource.endpoint);
 
-			if (total !== undefined && total !== rows.length) {
+			if (total === undefined) {
+				incomplete.push(resource.collection);
+
+				ctx.ui.warn(
+					`${resource.name}: could not verify the export is complete (total_count unavailable) — marked incomplete. Merge and add pushes stay safe, mirror pushes will refuse it; re-pull to retry the check.`,
+				);
+			} else if (total !== rows.length) {
 				incomplete.push(resource.collection);
 
 				ctx.ui.warn(
@@ -389,7 +396,8 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		records,
 		files: dataResult.written.length,
 		removed: dataResult.removed,
-		incomplete,
+		// The COMMITTED state, not just this pull's findings: preserved files carry their markers forward.
+		incomplete: dataResult.incomplete,
 	};
 
 	// One line per axis so "collection" never means two things in one sentence: Schema is structure for

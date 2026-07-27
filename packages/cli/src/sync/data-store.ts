@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import { z } from 'zod';
@@ -13,8 +13,11 @@ export interface DataCollection {
 	readonly records: Record<string, unknown>[];
 }
 
-/** Files written and stale data artifacts removed by a data write. */
-export type DataWriteResult = ArtifactWriteResult;
+/** Files written and stale data artifacts removed by a data write, plus the effective incomplete set. */
+export interface DataWriteResult extends ArtifactWriteResult {
+	/** The committed incompleteness after the write: this pull's shortfalls plus markers carried by preserved files. */
+	readonly incomplete: string[];
+}
 
 /** A validated data artifact set and its source instance. */
 export interface DataReadResult {
@@ -125,6 +128,32 @@ function parseMetadata(value: unknown): DataMetadata {
 	return { source: result.data.source, incomplete: result.data.incomplete ?? [] };
 }
 
+// The committed manifest's provenance, read leniently before a write: a missing or malformed manifest
+// answers undefined and the write path's own validation deals with it.
+function committedState(dir: string): { source: string | undefined; incomplete: string[] } {
+	const path = join(dir, METADATA_FILE);
+	if (!existsSync(path)) return { source: undefined, incomplete: [] };
+
+	let parsed: unknown;
+
+	try {
+		parsed = JSON.parse(readFileSync(path, 'utf8'));
+	} catch {
+		return { source: undefined, incomplete: [] };
+	}
+
+	if (!isPlainObject(parsed)) return { source: undefined, incomplete: [] };
+
+	const record = parsed as Record<string, unknown>;
+	const source = typeof record['source'] === 'string' ? record['source'] : undefined;
+
+	const incomplete = Array.isArray(record['incomplete'])
+		? record['incomplete'].filter((entry): entry is string => typeof entry === 'string')
+		: [];
+
+	return { source, incomplete };
+}
+
 /** Write deterministic data artifacts and record the normalized source instance URL. */
 export function writeDataFiles(
 	dir: string,
@@ -132,24 +161,57 @@ export function writeDataFiles(
 	source: string,
 	incomplete: readonly string[] = [],
 ): DataWriteResult {
-	const fetched = new Set(collections.map((entry) => entry.collection));
-	const truncated = [...incomplete].sort(byCodepoint);
+	const committed = committedState(dir);
 
-	return writeArtifacts({
+	// Preserved files keep their CONTENT but the manifest records one source for the whole set — so a
+	// pull from a different instance would relabel another instance's records as its own, and push would
+	// remap them through the wrong ID-map bucket. Switching sources is a deliberate act: clear the data
+	// or give the new source its own project.
+	if (committed.source !== undefined && committed.source !== source) {
+		throw new CliError(
+			'STATE',
+			`The committed data in ${dir} came from ${committed.source}; this pull is from ${source}.`,
+			{
+				hint: 'Mixed sources corrupt identity mapping. Delete the data directory to switch this project to the new source, or declare a separate project for it.',
+			},
+		);
+	}
+
+	const fetched = new Set(collections.map((entry) => entry.collection));
+	const preservedCollections = new Set<string>();
+
+	// This pull's shortfalls replace the state of every FETCHED collection; preserved files keep their
+	// committed markers — a scoped pull that never touched permissions cannot vouch for them.
+	const carried = committed.incomplete.filter((collection) => !fetched.has(collection));
+	const effective = [...new Set([...incomplete, ...carried])].sort(byCodepoint);
+
+	const result = writeArtifacts({
 		dir,
 		artifacts: collections,
 		body: dataFileBody,
 		manifestHint: 'Fix or delete the data directory, then run d6s sync pull again.',
-		metadata: ({ files }) => ({ files, source, ...(truncated.length > 0 ? { incomplete: truncated } : {}) }),
+		metadata: ({ files }) => {
+			// A marker only survives with its file: a carried collection whose file was manually removed
+			// (and thus not preserved) drops out here.
+			const kept = effective.filter((collection) => fetched.has(collection) || preservedCollections.has(collection));
+			return { files, source, ...(kept.length > 0 ? { incomplete: kept } : {}) };
+		},
 		// A pull writes only what it fetched, and the fetch set shrinks legitimately all the time: a
 		// resource-scoped pull, or any re-pull without --content, fetches a subset of what is committed.
 		// Deleting the rest would wipe committed collections (the data half of the schema store's scope
 		// rule). Removal is therefore a manual act: delete the file and its manifest line.
 		preserve: {
 			parse: parseDataFile,
-			when: (artifact) => !fetched.has(artifact.collection),
+			when: (artifact) => {
+				const keep = !fetched.has(artifact.collection);
+				if (keep) preservedCollections.add(artifact.collection);
+				return keep;
+			},
 		},
 	});
+
+	const kept = effective.filter((collection) => fetched.has(collection) || preservedCollections.has(collection));
+	return { ...result, incomplete: kept };
 }
 
 /** Whether a data artifact manifest exists at the given directory. */

@@ -142,6 +142,7 @@ describe('sync diff', () => {
 				ambiguous: null,
 				unmatched: null,
 				unchanged: null,
+				incomplete: null,
 				skipped: true,
 			},
 		});
@@ -181,6 +182,7 @@ describe('sync diff', () => {
 				ambiguous: null,
 				unmatched: null,
 				unchanged: null,
+				incomplete: null,
 				skipped: true,
 			},
 		});

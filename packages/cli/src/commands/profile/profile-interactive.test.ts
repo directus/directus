@@ -32,13 +32,19 @@ function ctxAt(cwd: string): CliContext {
 describe('interactive profile flows', () => {
 	let dir: string;
 	let home: string;
+	let stderr: string[];
 
 	beforeEach(() => {
 		dir = mkdtempSync(join(tmpdir(), 'd6s-icwd-'));
 		home = mkdtempSync(join(tmpdir(), 'd6s-ihome-'));
+		stderr = [];
 
 		vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
-		vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+
+		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
+			stderr.push(String(chunk));
+			return true;
+		});
 
 		vi.stubEnv('HOME', home);
 		vi.stubEnv('USERPROFILE', home);
@@ -159,6 +165,10 @@ describe('interactive profile flows', () => {
 
 		const store = JSON.parse(readFileSync(join(home, '.directus', 'credentials.json'), 'utf8'));
 		expect(store['https://real.example.com'].staging).toBe('tok-abcdefgh');
+
+		// The recovery path skips the repoint confirm (the user typed the URL), but the credential
+		// consequence must still be said out loud.
+		expect(stderr.join('')).toContain('Repointed "staging"');
 	});
 
 	it('discards the token on request while keeping the profile', async () => {

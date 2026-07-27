@@ -120,6 +120,63 @@ describe('writeDataFiles / readDataFiles', () => {
 		expect(read.map((collection) => collection.collection)).toEqual(['articles', 'directus_flows', 'directus_roles']);
 	});
 
+	it('refuses to write over committed data from a different source instance', () => {
+		// Preserved files keep another instance's records, but the manifest names ONE source for the whole
+		// set — a cross-source write would relabel them and push would remap through the wrong ID-map
+		// bucket. Switching sources must be deliberate: delete the data dir or use a separate project.
+		const dir = tempDir();
+		writeDataFiles(dir, fixture(), SOURCE);
+
+		const articlesFile = ownedFileFor(dir, 'articles');
+
+		const error = expectCliError(() =>
+			writeDataFiles(
+				dir,
+				[{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Other' }] }],
+				'https://other.example.com',
+			),
+		);
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain(SOURCE);
+		expect(error.message).toContain('https://other.example.com');
+
+		// The refusal fires before any write: the committed generation is untouched.
+		expect(readFileSync(join(dir, articlesFile), 'utf8')).toContain('Ten');
+		expect(readDataFiles(dir).source).toBe(SOURCE);
+	});
+
+	it('carries incomplete markers on preserved files and replaces them for fetched collections', () => {
+		// The marker is what stands between a truncated export and a mirror deleting the hidden rows. A
+		// scoped pull that never touched the truncated collection cannot vouch for it — its marker must
+		// survive the write — while re-fetching the collection replaces its state (a clean re-pull clears).
+		const dir = tempDir();
+
+		const permissions: DataCollection = {
+			collection: 'directus_permissions',
+			primaryKey: 'id',
+			records: [{ id: 1, policy: 'p1', collection: 'articles', action: 'read' }],
+		};
+
+		writeDataFiles(dir, [permissions, ...fixture()], SOURCE, ['directus_permissions']);
+
+		// A scoped pull (flows only) preserves the permissions file — and must preserve its marker.
+		const scoped = writeDataFiles(
+			dir,
+			[{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Nightly' }] }],
+			SOURCE,
+		);
+
+		expect(scoped.incomplete).toEqual(['directus_permissions']);
+		expect(readDataFiles(dir).incomplete).toEqual(['directus_permissions']);
+
+		// Re-fetching permissions with a clean count replaces the state: the marker clears.
+		const clean = writeDataFiles(dir, [permissions], SOURCE);
+
+		expect(clean.incomplete).toEqual([]);
+		expect(readDataFiles(dir).incomplete).toEqual([]);
+	});
+
 	it('sorts records by primary key as strings, so numeric-looking ids order lexically', () => {
 		// The PK sort is codepoint over String(id): "10" and "100" sort before "9". This tradeoff is
 		// accepted and asserted deliberately — the store guarantees determinism, not numeric-natural

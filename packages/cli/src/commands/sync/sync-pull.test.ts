@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	fullSnapshot,
 	mockDefaultRecords,
+	mockDiff,
 	mockList,
 	mockSingleton,
 	mockSnapshot,
@@ -851,6 +852,143 @@ describe('sync pull resources and data', () => {
 
 		const metadata = JSON.parse(readFileSync(join(dataDir, 'metadata.json'), 'utf8'));
 		expect(metadata.incomplete).toEqual(['directus_permissions']);
+	});
+
+	it('marks the export incomplete when the completeness probe cannot answer — unknown is not complete', async () => {
+		// A timed-out, erroring, or meta-less probe proves nothing either way, and mirror deletions ride on
+		// this answer. Unknown must degrade to incomplete (mirror refuses; re-pull retries), never to
+		// "verified complete".
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+
+		for (const path of [
+			'/roles',
+			'/policies',
+			'/access',
+			'/flows',
+			'/operations',
+			'/dashboards',
+			'/panels',
+			'/translations',
+		]) {
+			interceptList(path, []);
+		}
+
+		interceptSingleton('/settings', { id: 1 });
+
+		const visible = { id: 5, policy: 'p1', collection: 'articles', action: 'read' };
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/permissions',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: [visible] }, { headers: { 'content-type': 'application/json' } });
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/permissions',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id', filter: JSON.stringify({ id: { _gt: 5 } }) },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/permissions',
+				method: 'GET',
+				query: { limit: '0', meta: 'total_count' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(500, { errors: [{ message: 'boom', extensions: { code: 'INTERNAL_SERVER_ERROR' } }] });
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		expect(stderr.join('')).toContain('could not verify');
+
+		const metadata = JSON.parse(readFileSync(join(dataDir, 'metadata.json'), 'utf8'));
+		expect(metadata.incomplete).toEqual(['directus_permissions']);
+	});
+
+	it('carries the incomplete marker through a scoped re-pull, and mirror push still refuses', async () => {
+		// The review-found hole: a scoped pull preserved the truncated permissions FILE but erased its
+		// marker, so a later mirror would have deleted the hidden rows after all. The marker must ride
+		// with the preserved file all the way to the push refusal.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		// Pull 1: permissions truncated (1 visible of 3) — marked incomplete.
+		interceptSnapshot();
+
+		for (const path of [
+			'/roles',
+			'/policies',
+			'/access',
+			'/flows',
+			'/operations',
+			'/dashboards',
+			'/panels',
+			'/translations',
+		]) {
+			interceptList(path, []);
+		}
+
+		interceptSingleton('/settings', { id: 1 });
+
+		const visible = { id: 5, policy: 'p1', collection: 'articles', action: 'read' };
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/permissions',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: [visible] }, { headers: { 'content-type': 'application/json' } });
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/permissions',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id', filter: JSON.stringify({ id: { _gt: 5 } }) },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
+
+		mockTotalCount(agent, '/permissions', 3);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		// Pull 2: flows only — the permissions file is preserved, and so must be its marker.
+		interceptSnapshot();
+		interceptList('/flows', []);
+		interceptList('/operations', []);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
+
+		const metadata = JSON.parse(readFileSync(join(dataDir, 'metadata.json'), 'utf8'));
+		expect(metadata.incomplete).toEqual(['directus_permissions']);
+
+		// Mirror push refuses on the carried marker — even with full deletion consent.
+		mockDiff(agent, 'mirror', null);
+		mockDefaultRecords(agent);
+		stderr.length = 0;
+
+		expect(
+			await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--dangerously-allow-delete', '--yes'),
+		).toBe(1);
+
+		expect(stderr.join('')).toMatch(/refusing mirror/i);
+		expect(stderr.join('')).toContain('directus_permissions');
 	});
 
 	it('drops user-attached access rows when users are out of scope', async () => {

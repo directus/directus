@@ -70,6 +70,23 @@ describe('profile commands', () => {
 		expect(readConfig().profiles['staging']?.url).toBe('https://one.example.com');
 	});
 
+	it('never prints a malformed legacy profile URL — the stored value bypassed schema validation', async () => {
+		// existingProfileUrl reads the raw config on purpose (the upsert path tolerates files loadConfig
+		// would refuse), so a hand-edited profile URL can carry userinfo. The refusal must not leak it.
+		const password = 'super-secret-password';
+
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { staging: { url: `https://user:${password}@old.example.com` } } }),
+		);
+
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://new.example.com')).toBe(1);
+
+		const output = stdout.join('') + stderr.join('');
+		expect(output).not.toContain(password);
+		expect(stderr.join('')).toContain('<saved URL is invalid or unsafe to print>');
+	});
+
 	it('re-adding the same URL stays frictionless — no confirmation, no --yes', async () => {
 		// Idempotent re-asserts (e.g. rotating a token for the same host) are the scripting path; only a
 		// URL CHANGE is gated.

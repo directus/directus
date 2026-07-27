@@ -51,16 +51,21 @@ export async function add(nameArg: string | undefined, options: AddOptions, ctx:
 	// re-adds (e.g. rotating a token) and new names stay frictionless.
 	const previousUrl = existingProfileUrl({ cwd: ctx.cwd, configPath: ctx.configPath }, name);
 
+	// The stored value bypassed schema validation (a hand-edited config can hold anything, including a
+	// credential-bearing URL every other command would refuse) — never interpolate it raw into output.
+	const previousShown =
+		previousUrl !== undefined && isSafeUrl(previousUrl) ? previousUrl : '<saved URL is invalid or unsafe to print>';
+
 	if (previousUrl !== undefined && previousUrl !== url && options.yes !== true) {
 		if (!ctx.interactive) {
-			throw new CliError('USAGE', `Profile "${name}" already points at ${previousUrl}.`, {
+			throw new CliError('USAGE', `Profile "${name}" already points at ${previousShown}.`, {
 				hint: `Pass --yes to repoint it to ${url}; its saved credential will be sent to the new URL.`,
 			});
 		}
 
 		const proceed = await ask(
 			confirm({
-				message: `Repoint "${name}" from ${previousUrl} to ${url}? Its saved credential will be sent to the new URL.`,
+				message: `Repoint "${name}" from ${previousShown} to ${url}? Its saved credential will be sent to the new URL.`,
 			}),
 		);
 
@@ -70,7 +75,7 @@ export async function add(nameArg: string | undefined, options: AddOptions, ctx:
 	upsertProfile({ cwd: ctx.cwd, configPath: ctx.configPath }, name, { url, auth: { type: 'token' } });
 
 	if (previousUrl !== undefined && previousUrl !== url) {
-		ctx.ui.warn(`Repointed "${name}": ${previousUrl} → ${url} — its saved credential now applies to the new URL.`);
+		ctx.ui.warn(`Repointed "${name}": ${previousShown} → ${url} — its saved credential now applies to the new URL.`);
 	}
 
 	ctx.ui.success(`Saved profile "${name}" → ${url}`);
@@ -199,6 +204,13 @@ async function editUrl(ctx: CliContext, name: string, current: string): Promise<
 	);
 
 	upsertProfile({ cwd: ctx.cwd, configPath: ctx.configPath }, name, { url, auth: { type: 'token' } });
+
+	// The user typed the new URL themselves, so no second confirmation — but this recovery path skips the
+	// repoint gate above, and the credential consequence still deserves saying out loud.
+	if (url !== current) {
+		ctx.ui.warn(`Repointed "${name}": ${current} → ${url} — its saved credential now applies to the new URL.`);
+	}
+
 	return url;
 }
 

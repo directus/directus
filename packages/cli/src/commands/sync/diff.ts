@@ -26,6 +26,8 @@ interface DiffDataReport {
 	ambiguous: number | null;
 	unmatched: number | null;
 	unchanged: number | null;
+	/** Collections the committed manifest marks as truncated; push refuses mirror while any are present. */
+	incomplete: string[] | null;
 	skipped: boolean;
 }
 
@@ -39,6 +41,7 @@ function dataReport(mode: Mode, preview: DataPreviewResult, dryRun: ImportBatchR
 			ambiguous: null,
 			unmatched: null,
 			unchanged: null,
+			incomplete: null,
 			skipped: true,
 		};
 	}
@@ -51,6 +54,7 @@ function dataReport(mode: Mode, preview: DataPreviewResult, dryRun: ImportBatchR
 		ambiguous: preview.ambiguousCount,
 		unmatched: preview.unmatchedCount,
 		unchanged: preview.unchangedCount,
+		incomplete: [...preview.incomplete],
 		skipped: false,
 	};
 }
