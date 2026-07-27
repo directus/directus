@@ -184,7 +184,7 @@ describe('JsonHelper', () => {
 				{ input: "color' OR '1'='1", desc: 'Oracle — classic quoted tautology' },
 				{ input: 'name) RETURNING NUMBER', desc: 'Oracle — escapes RETURNING clause' },
 				{ input: "data') UNION SELECT password FROM dba_users--", desc: 'Oracle — subquery via UNION' },
-				// MySQL: even though path is parameterized, these must be caught before reaching convertToMySQLPath
+				// MySQL: even though path is parameterized, these must be caught before reaching convertToJsonPath
 				{ input: "color') AND SLEEP(5)--", desc: 'MySQL — time-based blind via SLEEP' },
 				{
 					input: "data') AND EXTRACTVALUE(1,CONCAT(0x7e,version()))--",
