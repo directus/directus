@@ -1,6 +1,6 @@
 import { PassThrough, Readable } from 'node:stream';
 import { setTimeout } from 'node:timers/promises';
-import { ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
+import { ContentTooLargeError, ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, ImportCollectionData, SchemaOverview } from '@directus/types';
 import knex, { type Knex } from 'knex';
@@ -12,7 +12,7 @@ import { validateAccess } from '../../permissions/modules/validate-access/valida
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { getService } from '../../utils/get-service.js';
 import { NotificationsService } from '../notifications.js';
-import { ImportService } from './import.js';
+import { getImportMaxFileSize, ImportService } from './import.js';
 
 const holder = vi.hoisted(() => ({ trx: null as any }));
 const cache: { importCount?: number } = {};
@@ -23,6 +23,7 @@ const envConfig = vi.hoisted(() => ({
 	EXTENSIONS_PATH: './extensions',
 	IMPORT_TIMEOUT: '1m',
 	IMPORT_MAX_CONCURRENCY: 10,
+	IMPORT_MAX_FILE_SIZE: '1mb',
 	CACHE_AUTO_PURGE: false as boolean,
 }));
 
@@ -42,6 +43,12 @@ vi.mock('../users.js');
 
 vi.mock('@directus/env', () => ({
 	useEnv: () => envConfig,
+}));
+
+const mockLoggerWarn = vi.hoisted(() => vi.fn());
+
+vi.mock('../../logger/index.js', () => ({
+	useLogger: () => ({ warn: mockLoggerWarn, error: vi.fn(), info: vi.fn(), debug: vi.fn(), trace: vi.fn() }),
 }));
 
 vi.mock('../../permissions/modules/validate-access/validate-access.js', () => ({
@@ -308,7 +315,9 @@ describe('ImportService', () => {
 				resolve();
 			});
 
-			service.importCSV = async () => {
+			// Background CSV spools the upload up front, then parses the spooled file in the detached job;
+			// force that detached parse to fail.
+			(service as any).parseCsvFromTmpFile = async () => {
 				throw new Error();
 			};
 
@@ -330,6 +339,150 @@ describe('ImportService', () => {
 				sender: 'fake-user',
 				subject: 'Your import has failed',
 			});
+		});
+
+		// #27854: background import() must finish reading the request body before it resolves (the
+		// controller responds once it resolves). The parse step is mocked so these assert only that ordering.
+		const assertBodyConsumedBeforeResponse = async (
+			mimetype: string,
+			body: string,
+			mockParse: (service: ImportService, finished: () => void) => void,
+		) => {
+			service = new ImportService({
+				knex: db,
+				schema: baseSchema,
+				accountability: {
+					...createDefaultAccountability(),
+					user: 'fake-user',
+				},
+			});
+
+			// Resolves once the detached background job finishes, so we can await it and avoid the
+			// fire-and-forget work leaking into subsequent tests.
+			let importFinished: any;
+			const importDone = new Promise((res) => (importFinished = res));
+			mockParse(service, importFinished);
+			NotificationsService.prototype.createOne = vi.fn().mockResolvedValue({} as any);
+
+			const order: string[] = [];
+
+			// Models the live multipart request body stream handed to the service by busboy.
+			const stream = new PassThrough();
+
+			const bodyConsumed = new Promise<void>((resolve) => {
+				stream.on('end', () => {
+					order.push('request-body-consumed');
+					resolve();
+				});
+			});
+
+			const responseSent = service.import('test_collection', mimetype, stream, { background: true }).then(() => {
+				order.push('http-response-sent');
+			});
+
+			stream.end(body);
+
+			await Promise.all([responseSent, bodyConsumed]);
+
+			expect(order[0]).toBe('request-body-consumed');
+
+			await importDone;
+		};
+
+		test('background JSON import consumes the request body before sending the response', async () => {
+			await assertBodyConsumedBeforeResponse(
+				'application/json',
+				JSON.stringify([{ title: 'a' }]),
+				(service, finished) => {
+					// Mirror real importJSON: only resolve once the source stream is fully drained, so the
+					// caller's temp-file cleanup can't race the spooled-file read (ENOENT flake in CI).
+					service.importJSON = vi.fn().mockImplementation((_collection, source: Readable) => {
+						return new Promise<void>((resolve) => {
+							source.on('end', () => {
+								finished();
+								resolve();
+							});
+
+							source.resume();
+						});
+					});
+				},
+			);
+		});
+
+		test('background CSV import consumes the request body before sending the response', async () => {
+			// CSV is spooled to a temp file up front; the detached parse reads that spooled copy. Assert the
+			// upload is fully received before the response regardless.
+			await assertBodyConsumedBeforeResponse('text/csv', 'title\na', (service, finished) => {
+				(service as any).parseCsvFromTmpFile = vi.fn().mockImplementation(async (_collection, tmpFile: any) => {
+					await tmpFile.cleanup().catch(() => {});
+					finished();
+				});
+			});
+		});
+
+		test('background import rejects and resets importCount when the upload stream errors mid-spool', async () => {
+			service = new ImportService({
+				knex: db,
+				schema: baseSchema,
+				accountability: createDefaultAccountability(),
+			});
+
+			const errorStream = new Readable({
+				read() {
+					this.emit('error', new Error('connection reset'));
+				},
+			});
+
+			await expect(
+				service.import('test_collection', 'application/json', errorStream, { background: true }),
+			).rejects.toThrow('Error while retrieving import data');
+
+			// The concurrency slot taken before spooling must be released on failure.
+			expect(cache.importCount).toEqual(0);
+		});
+
+		// The upload size cap now lives at the import controller (busboy's fileSize limit), which destroys
+		// the source stream with a ContentTooLargeError once exceeded. The service must surface that error
+		// as-is (not wrap it) and still release the concurrency slot.
+		test('propagates a ContentTooLargeError from the source stream and resets importCount (background)', async () => {
+			service = new ImportService({
+				knex: db,
+				schema: baseSchema,
+				accountability: createDefaultAccountability(),
+			});
+
+			const stream = new Readable({
+				read() {
+					this.destroy(new ContentTooLargeError());
+				},
+			});
+
+			await expect(
+				service.import('test_collection', 'application/json', stream, { background: true }),
+			).rejects.toMatchObject({ code: ErrorCode.ContentTooLarge });
+
+			expect(cache.importCount).toEqual(0);
+		});
+
+		test('propagates a ContentTooLargeError from the source stream and resets importCount (synchronous JSON)', async () => {
+			service = new ImportService({
+				knex: db,
+				schema: baseSchema,
+				accountability: createDefaultAccountability(),
+			});
+
+			const stream = new Readable({
+				read() {
+					this.destroy(new ContentTooLargeError());
+				},
+			});
+
+			await expect(
+				service.import('test_collection', 'application/json', stream, { background: false }),
+			).rejects.toMatchObject({ code: ErrorCode.ContentTooLarge });
+
+			expect(cache.importCount).toEqual(0);
 		});
 	});
 
@@ -1653,5 +1806,31 @@ describe('ImportService.importBatch', () => {
 				),
 			).rejects.toThrow(ForbiddenError);
 		});
+	});
+});
+
+describe('getImportMaxFileSize', () => {
+	afterEach(() => {
+		mockLoggerWarn.mockClear();
+		envConfig['IMPORT_MAX_FILE_SIZE'] = '1mb';
+	});
+
+	test('parses a valid size to bytes', () => {
+		envConfig['IMPORT_MAX_FILE_SIZE'] = '1mb';
+		expect(getImportMaxFileSize()).toBe(1024 * 1024);
+		expect(mockLoggerWarn).not.toHaveBeenCalled();
+	});
+
+	test('returns undefined (no cap) when unset', () => {
+		envConfig['IMPORT_MAX_FILE_SIZE'] = '';
+		expect(getImportMaxFileSize()).toBeUndefined();
+		expect(mockLoggerWarn).not.toHaveBeenCalled();
+	});
+
+	test('warns and falls back to no cap on an unparseable value (does not throw)', () => {
+		envConfig['IMPORT_MAX_FILE_SIZE'] = 'not-a-size';
+		expect(getImportMaxFileSize()).toBeUndefined();
+		expect(mockLoggerWarn).toHaveBeenCalledTimes(1);
+		expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('Invalid IMPORT_MAX_FILE_SIZE'));
 	});
 });
