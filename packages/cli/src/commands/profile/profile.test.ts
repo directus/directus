@@ -48,13 +48,35 @@ describe('profile commands', () => {
 		expect(readConfig().profiles['staging']?.url).toBe('https://cms.example.com');
 	});
 
-	it('add is an upsert — re-adding the same name overwrites, not duplicates', async () => {
+	it('add is an upsert — re-adding the same name with --yes overwrites, not duplicates', async () => {
 		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
-		await d6s('profile', 'add', 'staging', '--url', 'https://two.example.com');
+		await d6s('profile', 'add', 'staging', '--url', 'https://two.example.com', '--yes');
 
 		const config = readConfig();
 		expect(config.profiles['staging']?.url).toBe('https://two.example.com');
 		expect(Object.keys(config.profiles)).toHaveLength(1);
+		expect(stderr.join('')).toContain('Repointed "staging"');
+	});
+
+	it('refuses to repoint an existing profile to a new URL without --yes', async () => {
+		// The saved credential follows the profile NAME: a silent URL overwrite would send that token to
+		// the new host on the next command. Non-interactive repoints follow the standard --yes convention.
+		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
+
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://two.example.com')).toBe(1);
+
+		expect(stderr.join('')).toContain('https://one.example.com');
+		expect(stderr.join('')).toContain('--yes');
+		expect(readConfig().profiles['staging']?.url).toBe('https://one.example.com');
+	});
+
+	it('re-adding the same URL stays frictionless — no confirmation, no --yes', async () => {
+		// Idempotent re-asserts (e.g. rotating a token for the same host) are the scripting path; only a
+		// URL CHANGE is gated.
+		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
+
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com')).toBe(0);
+		expect(readConfig().profiles['staging']?.url).toBe('https://one.example.com');
 	});
 
 	it('list emits the profiles as JSON on the machine channel', async () => {

@@ -172,6 +172,21 @@ function existingProfiles(raw: Record<string, unknown>, path: string): Record<st
 	return profiles as Record<string, unknown>;
 }
 
+/**
+ * The URL an existing profile points at, or undefined when the profile or config does not exist.
+ * Tolerant like the upsert path: a not-yet-created explicit config is a fresh start, not an error.
+ */
+export function existingProfileUrl(location: ConfigLocation, name: string): string | undefined {
+	const path = location.configPath ?? findConfigPath(location.cwd);
+	if (path === undefined) return undefined;
+
+	const profile = existingProfiles(readRawConfig(path), path)[name];
+
+	return isPlainObject(profile) && typeof (profile as Record<string, unknown>)['url'] === 'string'
+		? ((profile as Record<string, unknown>)['url'] as string)
+		: undefined;
+}
+
 /** Upsert into the explicit or discovered config, or a new file at cwd. */
 export function upsertProfile(location: ConfigLocation, name: string, profile: Profile): void {
 	const path = location.configPath ?? findConfigPath(location.cwd) ?? join(location.cwd, CONFIG_FILENAME);

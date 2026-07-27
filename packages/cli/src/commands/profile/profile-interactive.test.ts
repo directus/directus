@@ -74,6 +74,41 @@ describe('interactive profile flows', () => {
 		expect(pingServer).toHaveBeenCalledWith('https://cms.example.com');
 	});
 
+	it('confirms before repointing an existing profile to a different URL, and aborts on decline', async () => {
+		// The saved credential follows the profile NAME; the confirm is the one human check before that
+		// token starts going to a different host. A decline must leave the profile untouched.
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { staging: { url: 'https://one.example.com', auth: { type: 'token' } } } }),
+		);
+
+		vi.mocked(confirm).mockResolvedValueOnce(false);
+
+		await expect(add('staging', { url: 'https://two.example.com' }, ctxAt(dir))).rejects.toMatchObject({
+			code: 'USAGE',
+		});
+
+		expect(vi.mocked(confirm).mock.calls[0]?.[0]?.message).toContain('https://one.example.com');
+
+		const config = JSON.parse(readFileSync(join(dir, 'directus.config.json'), 'utf8'));
+		expect(config.profiles.staging.url).toBe('https://one.example.com');
+	});
+
+	it('repoints after an accepted confirmation', async () => {
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { staging: { url: 'https://one.example.com', auth: { type: 'token' } } } }),
+		);
+
+		vi.mocked(confirm).mockResolvedValueOnce(true);
+		vi.mocked(select).mockResolvedValueOnce('skip');
+
+		await add('staging', { url: 'https://two.example.com' }, ctxAt(dir));
+
+		const config = JSON.parse(readFileSync(join(dir, 'directus.config.json'), 'utf8'));
+		expect(config.profiles.staging.url).toBe('https://two.example.com');
+	});
+
 	it('add enters and saves a pasted token when interactive and none was passed', async () => {
 		vi.mocked(select).mockResolvedValueOnce('paste');
 		vi.mocked(password).mockResolvedValueOnce('tok-abcdefgh');

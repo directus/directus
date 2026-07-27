@@ -1,6 +1,6 @@
-import { select, text } from '@clack/prompts';
+import { confirm, select, text } from '@clack/prompts';
 import type { Command } from 'commander';
-import { isSafeUrl, upsertProfile } from '../../kernel/config/file.js';
+import { existingProfileUrl, isSafeUrl, upsertProfile } from '../../kernel/config/file.js';
 import { pingServer, testConnection } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
 import { ask, orPrompt, promptLogin, promptToken, saveToken } from '../../kernel/prompt.js';
@@ -9,6 +9,7 @@ import type { CliContext } from '../../kernel/run.js';
 export interface AddOptions {
 	readonly url?: string;
 	readonly token?: string;
+	readonly yes?: boolean;
 }
 
 export function registerAdd(profile: Command, getContext: () => CliContext): void {
@@ -18,6 +19,7 @@ export function registerAdd(profile: Command, getContext: () => CliContext): voi
 		.argument('[name]')
 		.option('--url <url>', 'Directus instance URL')
 		.option('--token <token>', 'Static token to save for this profile')
+		.option('--yes', 'Skip the confirmation when repointing an existing profile to a different URL')
 		.action((name: string | undefined, options: AddOptions) => add(name, options, getContext()));
 }
 
@@ -44,7 +46,33 @@ export async function add(nameArg: string | undefined, options: AddOptions, ctx:
 
 	if (!isSafeUrl(url)) throw new CliError('USAGE', 'Enter a valid http(s) URL.');
 
+	// Repointing an existing name is where the upsert bites: the saved credential follows the profile
+	// NAME, so a silent URL change would send that token to the new host on the next command. Same-URL
+	// re-adds (e.g. rotating a token) and new names stay frictionless.
+	const previousUrl = existingProfileUrl({ cwd: ctx.cwd, configPath: ctx.configPath }, name);
+
+	if (previousUrl !== undefined && previousUrl !== url && options.yes !== true) {
+		if (!ctx.interactive) {
+			throw new CliError('USAGE', `Profile "${name}" already points at ${previousUrl}.`, {
+				hint: `Pass --yes to repoint it to ${url}; its saved credential will be sent to the new URL.`,
+			});
+		}
+
+		const proceed = await ask(
+			confirm({
+				message: `Repoint "${name}" from ${previousUrl} to ${url}? Its saved credential will be sent to the new URL.`,
+			}),
+		);
+
+		if (!proceed) throw new CliError('USAGE', `Profile "${name}" unchanged.`);
+	}
+
 	upsertProfile({ cwd: ctx.cwd, configPath: ctx.configPath }, name, { url, auth: { type: 'token' } });
+
+	if (previousUrl !== undefined && previousUrl !== url) {
+		ctx.ui.warn(`Repointed "${name}": ${previousUrl} → ${url} — its saved credential now applies to the new URL.`);
+	}
+
 	ctx.ui.success(`Saved profile "${name}" → ${url}`);
 
 	let token = options.token;
