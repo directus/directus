@@ -87,9 +87,8 @@ const matchesSearch = computed(() => {
 const hasContextMenu = computed(() => isAdmin && props.collection.type === 'table');
 
 function getChildCollections(collection: Collection) {
-	let collections = collectionsStore.sortedCollections.filter(
-		(childCollection) =>
-			childCollection.meta?.group === collection.collection && childCollection.meta?.status === 'active',
+	let collections = collectionsStore.activeCollections.filter(
+		(childCollection) => childCollection.meta?.group === collection.collection,
 	);
 
 	if (props.showHidden === false) {

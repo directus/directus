@@ -25,6 +25,7 @@ import { useCollectionsStore } from '@/stores/collections';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { hideDragImage } from '@/utils/hide-drag-image';
+import { isCollectionActive } from '@/utils/is-collection-active';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
@@ -146,7 +147,7 @@ function isInactiveCollection(item: DisplayItem) {
 	if (!info) return false;
 	const collectionInfo = collectionsStore.getCollection(item[info.collectionField.field]);
 	// Exists but not active: hide it. Deleted collections return null and stay as "Invalid Item".
-	return !!collectionInfo && collectionInfo.meta?.status !== 'active';
+	return !!collectionInfo && !isCollectionActive(collectionInfo);
 }
 
 const visibleItems = computed(() => displayItems.value.filter((item) => !isInactiveCollection(item)));

@@ -14,6 +14,7 @@ import { i18n } from '@/lang';
 import { Collection } from '@/types/collections';
 import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
+import { isCollectionActive } from '@/utils/is-collection-active';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -57,6 +58,16 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 	);
 
 	/**
+	 * All non-system collections that are active (not deactivated)
+	 */
+	const activeCollections = computed(() => allCollections.value.filter(isCollectionActive));
+
+	/**
+	 * All non-system collections that are configured, visible (not hidden) and active (not deactivated)
+	 */
+	const activeVisibleCollections = computed(() => visibleCollections.value.filter(isCollectionActive));
+
+	/**
 	 * All non-system collections that are configured and have a corresponding database table
 	 */
 	const databaseCollections = computed(() => allCollections.value.filter((collection) => collection.schema));
@@ -73,6 +84,8 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 		sortedCollections,
 		allCollections,
 		visibleCollections,
+		activeCollections,
+		activeVisibleCollections,
 		configuredCollections,
 		databaseCollections,
 		systemCollections,

@@ -4,6 +4,7 @@ import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { Collection } from '@/types/collections';
+import { isCollectionActive } from '@/utils/is-collection-active';
 
 export type RelationM2A = {
 	allowedCollections: Collection[];
@@ -60,7 +61,7 @@ export function useRelationM2A(collection: Ref<string>, field: Ref<string>) {
 
 		const allowedCollections = (relation.meta?.one_allowed_collections ?? []).reduce((acc, collection) => {
 			const collectionInfo = collectionsStore.getCollection(collection);
-			if (collectionInfo && collectionInfo.meta?.status === 'active') acc.push(collectionInfo);
+			if (collectionInfo && isCollectionActive(collectionInfo)) acc.push(collectionInfo);
 			return acc;
 		}, [] as Collection[]);
 

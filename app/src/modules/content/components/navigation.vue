@@ -28,10 +28,13 @@ const collectionsStore = useCollectionsStore();
 const userStore = useUserStore();
 
 const rootItems = computed(() => {
-	const shownCollections = showHidden.value ? collectionsStore.allCollections : collectionsStore.visibleCollections;
+	const shownCollections = showHidden.value
+		? collectionsStore.activeCollections
+		: collectionsStore.activeVisibleCollections;
+
 	return orderBy(
 		shownCollections.filter((collection) => {
-			return isNil(collection?.meta?.group) && collection.meta?.status === 'active';
+			return isNil(collection?.meta?.group);
 		}),
 		['meta.sort', 'collection'],
 	);

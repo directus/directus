@@ -8,6 +8,7 @@ import { useCollectionsStore } from '@/stores/collections';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { getRelatedCollection } from '@/utils/get-related-collection';
+import { isCollectionActive } from '@/utils/is-collection-active';
 
 export function getFields(
 	collection: Collection,
@@ -31,7 +32,7 @@ export function getFields(
 		fields = fields.filter((field) => {
 			const related = getRelatedCollection(collectionValue, field.field);
 			if (!related) return true;
-			return collectionsStore.getCollection(related.relatedCollection)?.meta?.status === 'active';
+			return isCollectionActive(collectionsStore.getCollection(related.relatedCollection));
 		});
 
 		if (userStore.isAdmin) return fields;
