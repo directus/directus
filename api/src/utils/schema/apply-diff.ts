@@ -24,8 +24,8 @@ import { CollectionsService } from '../../services/collections.js';
 import { FieldsService } from '../../services/fields.js';
 import { RelationsService } from '../../services/relations.js';
 import type { Collection } from '../../types/index.js';
-import { transaction } from '../transaction.js';
 import { getSchema } from '../get-schema.js';
+import { transaction } from '../transaction.js';
 
 type CollectionDelta = {
 	collection: string;

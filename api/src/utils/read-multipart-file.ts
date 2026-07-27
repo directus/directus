@@ -42,7 +42,9 @@ export function readMultipartFile(req: Request, options: ReadMultipartFileOption
 			fileFound = true;
 
 			if (options.maxFileSize !== undefined) {
-				fileStream.on('error', () => { /* prevent unhandled error */ });
+				fileStream.on('error', () => {
+					/* prevent unhandled error */
+				});
 				fileStream.on('limit', () => fileStream.destroy(new ContentTooLargeError()));
 			}
 
