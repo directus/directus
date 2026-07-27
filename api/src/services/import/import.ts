@@ -29,7 +29,6 @@ import type {
 import { parseJSON, toArray } from '@directus/utils';
 import { createTmpFile, type TmpFile } from '@directus/utils/node';
 import { queue } from 'async';
-import bytes from 'bytes';
 import type { Knex } from 'knex';
 import { set } from 'lodash-es';
 import ms, { type StringValue } from 'ms';
@@ -870,22 +869,4 @@ export class ImportService {
 			await this.releaseImportSlot();
 		}
 	}
-}
-
-/**
- * Resolve the configured import file-size cap in bytes. Unset means no cap. A set-but-unparseable
- * value is a misconfiguration: warn and fall back to no cap rather than blocking imports.
- */
-export function getImportMaxFileSize(): number | undefined {
-	const raw = env['IMPORT_MAX_FILE_SIZE'];
-	if (raw === undefined || raw === null || String(raw).trim() === '') return undefined;
-
-	const parsed = bytes.parse(String(raw));
-
-	if (parsed === null || Number.isNaN(parsed)) {
-		logger.warn(`Invalid IMPORT_MAX_FILE_SIZE value "${raw}"; ignoring the import file-size cap`);
-		return undefined;
-	}
-
-	return parsed;
 }

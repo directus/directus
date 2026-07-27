@@ -12,7 +12,7 @@ import { validateAccess } from '../../permissions/modules/validate-access/valida
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { getService } from '../../utils/get-service.js';
 import { NotificationsService } from '../notifications.js';
-import { getImportMaxFileSize, ImportService } from './import.js';
+import { ImportService } from './import.js';
 
 const holder = vi.hoisted(() => ({ trx: null as any }));
 const cache: { importCount?: number } = {};
@@ -23,7 +23,6 @@ const envConfig = vi.hoisted(() => ({
 	EXTENSIONS_PATH: './extensions',
 	IMPORT_TIMEOUT: '1m',
 	IMPORT_MAX_CONCURRENCY: 10,
-	IMPORT_MAX_FILE_SIZE: '1mb',
 	CACHE_AUTO_PURGE: false as boolean,
 }));
 
@@ -43,12 +42,6 @@ vi.mock('../users.js');
 
 vi.mock('@directus/env', () => ({
 	useEnv: () => envConfig,
-}));
-
-const mockLoggerWarn = vi.hoisted(() => vi.fn());
-
-vi.mock('../../logger/index.js', () => ({
-	useLogger: () => ({ warn: mockLoggerWarn, error: vi.fn(), info: vi.fn(), debug: vi.fn(), trace: vi.fn() }),
 }));
 
 vi.mock('../../permissions/modules/validate-access/validate-access.js', () => ({
@@ -1806,31 +1799,5 @@ describe('ImportService.importBatch', () => {
 				),
 			).rejects.toThrow(ForbiddenError);
 		});
-	});
-});
-
-describe('getImportMaxFileSize', () => {
-	afterEach(() => {
-		mockLoggerWarn.mockClear();
-		envConfig['IMPORT_MAX_FILE_SIZE'] = '1mb';
-	});
-
-	test('parses a valid size to bytes', () => {
-		envConfig['IMPORT_MAX_FILE_SIZE'] = '1mb';
-		expect(getImportMaxFileSize()).toBe(1024 * 1024);
-		expect(mockLoggerWarn).not.toHaveBeenCalled();
-	});
-
-	test('returns undefined (no cap) when unset', () => {
-		envConfig['IMPORT_MAX_FILE_SIZE'] = '';
-		expect(getImportMaxFileSize()).toBeUndefined();
-		expect(mockLoggerWarn).not.toHaveBeenCalled();
-	});
-
-	test('warns and falls back to no cap on an unparseable value (does not throw)', () => {
-		envConfig['IMPORT_MAX_FILE_SIZE'] = 'not-a-size';
-		expect(getImportMaxFileSize()).toBeUndefined();
-		expect(mockLoggerWarn).toHaveBeenCalledTimes(1);
-		expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('Invalid IMPORT_MAX_FILE_SIZE'));
 	});
 });
