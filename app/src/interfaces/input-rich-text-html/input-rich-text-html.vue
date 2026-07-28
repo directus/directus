@@ -191,10 +191,9 @@ const rawMode = ref(false);
 function enterRawMode() {
 	normalizationWarningOpen.value = false;
 
-	// Opening raw editing is an edit intent. On a versioned item this must move it to a Draft (parity
-	// with "Edit anyway"); the Draft switch is edit-driven, so force the current value through unchanged.
-	// `set-field-value` bypasses the equal-to-initial unset, and the auto-switch gate keeps it a no-op
-	// on non-versioned items (where nothing should be marked dirty until a real edit).
+	// Opening raw editing is an edit intent: on a versioned item it must move to a Draft (parity with
+	// "Edit anyway"), so force the current value through unchanged. `set-field-value` bypasses the
+	// equal-to-initial unset; the auto-switch gate keeps it a no-op on non-versioned items.
 	if (props.autoSwitchToDraft && props.field) {
 		emit('setFieldValue', { field: props.field, value: props.value });
 	}
@@ -300,8 +299,8 @@ watch(
 		syncScheduled = true;
 
 		// Defer past the current flush: setContent mid-patch (watchers run pre-flush) tears down Vue
-		// node views whose unmount re-enters Vue's queue and corrupts ProseMirror's view tree
-		// (CMS-2885); deferring also coalesces same-flush churn (save flows flip html -> null -> html)
+		// node views and corrupts ProseMirror's view tree; deferring also coalesces same-flush churn
+		// (save flows flip html -> null -> html)
 		await nextTick();
 		syncScheduled = false;
 

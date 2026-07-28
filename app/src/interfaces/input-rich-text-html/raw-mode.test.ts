@@ -76,9 +76,8 @@ describe('raw editing mode', () => {
 		expect(emitted?.at(-1)).toEqual([edited]);
 	});
 
-	// On a versioned item, opening raw editing is an edit intent: it must move the item to a Draft
-	// version (parity with "Edit anyway"). The Draft switch is edit-driven, so force the current
-	// value into the form via set-field-value without changing it (CMS-2881).
+	// Opening raw editing is an edit intent: it must move a versioned item to a Draft (parity with
+	// "Edit anyway"), so the current value is forced into the form without changing it.
 	test('entering raw mode force-sets the current value to trigger the draft switch when auto-switch is enabled', async () => {
 		const { wrapper } = await mountWithValue(LOSSY, { field: 'body', autoSwitchToDraft: true });
 

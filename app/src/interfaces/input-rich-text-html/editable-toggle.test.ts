@@ -7,11 +7,9 @@ import { createI18n } from 'vue-i18n';
 import Interface from './input-rich-text-html.vue';
 
 /**
- * The `disabled` prop flips constantly without user interaction: `v-form` disables all fields
- * while an item (re)loads, and collaborative editing disables a field while another user holds
- * it. Tiptap's `setEditable` defaults to emitting an `update` event, which would surface here as
- * a phantom `input` emit — broadcasting stale content and stealing the collab field lock
- * (CMS-2885, ENG-1477, ENG-1478).
+ * The `disabled` prop flips without user interaction (form loading, collab field locks).
+ * Tiptap's `setEditable` emits `update` by default, which would surface as a phantom `input`
+ * emit, broadcasting stale content and stealing the collab field lock.
  */
 const VALUE = '<p>hello world</p>';
 

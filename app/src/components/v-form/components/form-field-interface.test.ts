@@ -5,9 +5,9 @@ import type { FormField } from '@/components/v-form/types';
 import { i18n } from '@/lang';
 
 /**
- * The interface is keyed so a genuine comparison/diff switch rebuilds it (see #27907 — the WYSIWYG's
- * ComparisonDiff extension is fixed at construction). But the live main→draft auto-switch (versioning)
- * must NOT remount, or the field loses focus mid-edit (CMS-2871) and drops raw-editing state (CMS-2881).
+ * The interface is keyed so a genuine comparison/diff switch rebuilds it, but the live
+ * main->draft auto-switch (versioning) must NOT remount, or the field loses focus mid-edit
+ * and drops raw-editing state.
  */
 
 let mountCount = 0;

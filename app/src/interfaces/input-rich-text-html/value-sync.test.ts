@@ -7,11 +7,9 @@ import { createI18n } from 'vue-i18n';
 import Interface from './input-rich-text-html.vue';
 
 /**
- * CMS-2885: save-and-stay nulls the item then two getItem calls restore it (use-item refresh +
- * collab receiveSave), so props.value whiplashes html -> null -> html across back-to-back
- * flushes. Dispatching a setContent per intermediate value tears down the Vue-managed node views
- * (media) mid-churn and corrupts ProseMirror's view tree ("Cannot read properties of undefined
- * (reading 'destroy')" in ViewTreeUpdater). External syncs must coalesce to the settled value.
+ * Save-and-stay whiplashes props.value html -> null -> html across back-to-back flushes.
+ * Dispatching a setContent per intermediate value tears down Vue-managed node views mid-churn
+ * and corrupts ProseMirror's view tree; external syncs must coalesce to the settled value.
  */
 const VALUE = [
 	'<p>intro text</p>',
