@@ -357,6 +357,8 @@ describe('syncExtensions', () => {
 		test('should drain in-flight sync tasks before releasing locks when a task fails', async () => {
 			mockLock.increment.mockResolvedValue(1);
 
+			let rejectFirstRead!: (error: Error) => void;
+			const firstReadHeld = new Promise<never>((_resolve, reject) => (rejectFirstRead = reject));
 			let resolveSecondRead!: () => void;
 			const secondReadHeld = new Promise<void>((resolve) => (resolveSecondRead = resolve));
 
@@ -364,7 +366,7 @@ describe('syncExtensions', () => {
 			vi.mocked(pipeline).mockResolvedValue(undefined);
 
 			vi.mocked(mockDisk.read).mockImplementation(async (filepath) => {
-				if (filepath.includes('file1')) throw new Error('File read error');
+				if (filepath.includes('file1')) return firstReadHeld;
 				await secondReadHeld;
 				return new Readable() as any;
 			});
@@ -376,8 +378,9 @@ describe('syncExtensions', () => {
 
 			const syncPromise = syncExtensions();
 
-			// Wait until both file reads have started, so the first failure has already happened
+			// Wait until both file reads are in flight, then fail the first one
 			await vi.waitFor(() => expect(mockDisk.read).toHaveBeenCalledTimes(2));
+			rejectFirstRead(new Error('File read error'));
 			await new Promise((resolve) => setTimeout(resolve, 0));
 
 			// The second file is still syncing, so nothing may be released yet
@@ -392,6 +395,70 @@ describe('syncExtensions', () => {
 			expect(mockMessenger.publish).toHaveBeenCalledWith('extensions-sync/test-machine-id', { ready: true });
 			expect(mockLock.delete).toHaveBeenCalled();
 			expect(setSyncStatus).toHaveBeenCalledWith(SyncStatus.IDLE);
+		});
+
+		test('should not start queued files after a sync task fails', async () => {
+			mockLock.increment.mockResolvedValue(1);
+
+			let rejectFirstRead!: (error: Error) => void;
+			const firstReadHeld = new Promise<never>((_resolve, reject) => (rejectFirstRead = reject));
+			let resolveOtherReads!: () => void;
+			const otherReadsHeld = new Promise<void>((resolve) => (resolveOtherReads = resolve));
+
+			vi.mocked(createWriteStream).mockReturnValue({ pipe: vi.fn() } as any);
+			vi.mocked(pipeline).mockResolvedValue(undefined);
+
+			vi.mocked(mockDisk.read).mockImplementation(async (filepath) => {
+				if (filepath.endsWith('file-0.js')) return firstReadHeld;
+				await otherReadsHeld;
+				return new Readable() as any;
+			});
+
+			vi.mocked(mockDisk.list).mockImplementation(async function* () {
+				for (let i = 0; i <= 1000; i++) yield `remote/extensions/file-${i}.js`;
+			});
+
+			const syncPromise = syncExtensions();
+
+			// The queue concurrency is 1000, so 1000 reads start and the 1001st file stays queued
+			await vi.waitFor(() => expect(mockDisk.read).toHaveBeenCalledTimes(1000));
+			rejectFirstRead(new Error('File read error'));
+			await new Promise((resolve) => setTimeout(resolve, 0));
+			resolveOtherReads();
+
+			await expect(syncPromise).rejects.toThrow('File read error');
+
+			// The queued file must not have started after the failure
+			expect(mockDisk.read).toHaveBeenCalledTimes(1000);
+		});
+
+		test('should stop scheduling further files after a sync task fails', async () => {
+			mockLock.increment.mockResolvedValue(1);
+
+			let releaseListing!: () => void;
+			const listingHeld = new Promise<void>((resolve) => (releaseListing = resolve));
+
+			vi.mocked(createWriteStream).mockReturnValue({ pipe: vi.fn() } as any);
+			vi.mocked(pipeline).mockResolvedValue(undefined);
+			vi.mocked(mockDisk.read).mockRejectedValue(new Error('File read error'));
+
+			vi.mocked(mockDisk.list).mockImplementation(async function* () {
+				yield 'remote/extensions/file1.js';
+				await listingHeld;
+				yield 'remote/extensions/file2.js';
+			});
+
+			const syncPromise = syncExtensions();
+
+			// Let the first file fail while the listing is still in progress
+			await vi.waitFor(() => expect(mockDisk.read).toHaveBeenCalledTimes(1));
+			await new Promise((resolve) => setTimeout(resolve, 0));
+			releaseListing();
+
+			await expect(syncPromise).rejects.toThrow('File read error');
+
+			// The second file was listed after the failure, so it must not be synced
+			expect(mockDisk.read).toHaveBeenCalledTimes(1);
 		});
 
 		test('should handle file read errors gracefully', async () => {

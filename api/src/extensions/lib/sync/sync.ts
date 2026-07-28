@@ -71,7 +71,13 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 
 		// Make sure we don't overload the file handles
 		const queue = new Queue({ concurrency: 1000 });
-		const syncTasks: Promise<unknown>[] = [];
+		let syncError: unknown;
+
+		// On the first failure, stop starting new work; a partial sync is invalid anyway
+		const onTaskError = (error: unknown) => {
+			syncError ??= error;
+			queue.clear();
+		};
 
 		// start file tracker
 		const fileTracker = new SyncFileTracker();
@@ -80,6 +86,8 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 
 		try {
 			for await (const filepath of disk.list(remoteExtensionsPath)) {
+				if (syncError) break;
+
 				// We want files to be stored in the root of `$TEMP_PATH/extensions`, so gotta remove the
 				// extensions path on disk from the start of the file path
 				const relativePath = relative(resolve(sep, remoteExtensionsPath), resolve(sep, filepath));
@@ -103,19 +111,19 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 					await pipeline(readStream, writeStream);
 				};
 
-				// Queue the whole per-file sync so the remote stat/read round trips run concurrently
-				const task = queue.add(syncFile);
-				// Attach a no-op handler so an early failure isn't an unhandled rejection while listing continues
-				task.catch(() => {});
-				syncTasks.push(task);
+				// Queue the whole per-file sync so the remote stat/read round trips run concurrently.
+				// Failures are recorded inside the task so the queue is cleared before it starts more work.
+				queue.add(() => syncFile().catch(onTaskError));
 			}
-
-			// wait for all file syncs to finish, surfacing any errors
-			await Promise.all(syncTasks);
-		} finally {
-			// Promise.all is fail-fast, so drain in-flight tasks before the outer finally signals readiness
-			await queue.onIdle();
+		} catch (error) {
+			// The listing itself failed; stop queued work
+			onTaskError(error);
 		}
+
+		// wait for in-flight tasks to finish; on failure the queued tasks were already cleared
+		await queue.onIdle();
+
+		if (syncError) throw syncError;
 
 		// cleanup dangling local files
 		await fileTracker.cleanup(localExtensionsPath);
