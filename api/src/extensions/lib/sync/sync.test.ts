@@ -21,6 +21,7 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn(() => ({
 		EXTENSIONS_LOCATION: 'test-location',
 		EXTENSIONS_PATH: 'remote/extensions',
+		EXTENSIONS_SYNC_MAX_CONCURRENCY: 2,
 		REFRESH_TOKEN_COOKIE_DOMAIN: 'localhost',
 		REFRESH_TOKEN_TTL: '7d',
 		REFRESH_TOKEN_COOKIE_SECURE: false,
@@ -60,6 +61,7 @@ describe('syncExtensions', () => {
 			{
 				EXTENSIONS_LOCATION: 'test-location',
 				EXTENSIONS_PATH: 'remote/extensions',
+				EXTENSIONS_SYNC_MAX_CONCURRENCY: 2,
 			},
 			{
 				get: (target, prop) => {
@@ -415,13 +417,13 @@ describe('syncExtensions', () => {
 			});
 
 			vi.mocked(mockDisk.list).mockImplementation(async function* () {
-				for (let i = 0; i <= 1000; i++) yield `remote/extensions/file-${i}.js`;
+				for (let i = 0; i <= 2; i++) yield `remote/extensions/file-${i}.js`;
 			});
 
 			const syncPromise = syncExtensions();
 
-			// The queue concurrency is 1000, so 1000 reads start and the 1001st file stays queued
-			await vi.waitFor(() => expect(mockDisk.read).toHaveBeenCalledTimes(1000));
+			// The mocked queue concurrency is 2, so two reads start and the third file stays queued
+			await vi.waitFor(() => expect(mockDisk.read).toHaveBeenCalledTimes(2));
 			rejectFirstRead(new Error('File read error'));
 			await new Promise((resolve) => setTimeout(resolve, 0));
 			resolveOtherReads();
@@ -429,7 +431,7 @@ describe('syncExtensions', () => {
 			await expect(syncPromise).rejects.toThrow('File read error');
 
 			// The queued file must not have started after the failure
-			expect(mockDisk.read).toHaveBeenCalledTimes(1000);
+			expect(mockDisk.read).toHaveBeenCalledTimes(2);
 		});
 
 		test('should stop scheduling further files after a sync task fails', async () => {

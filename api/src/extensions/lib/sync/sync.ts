@@ -69,8 +69,8 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 			}
 		}
 
-		// Make sure we don't overload the file handles
-		const queue = new Queue({ concurrency: 1000 });
+		// Limit concurrent requests to the storage driver (also bounds open file handles)
+		const queue = new Queue({ concurrency: Number(env['EXTENSIONS_SYNC_MAX_CONCURRENCY']) });
 		let syncError: unknown;
 
 		// On the first failure, stop starting new work; a partial sync is invalid anyway
