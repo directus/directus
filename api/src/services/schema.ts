@@ -5,6 +5,7 @@ import type {
 	Snapshot,
 	SnapshotDiff,
 	SnapshotDiffWithHash,
+	SnapshotScope,
 	SnapshotWithHash,
 } from '@directus/types';
 import type { Knex } from 'knex';
@@ -25,11 +26,11 @@ export class SchemaService {
 		this.accountability = options.accountability ?? null;
 	}
 
-	/** Snapshot the schema, optionally scoped to a subset of `collections` (a partial snapshot). Admin only. */
-	async snapshot(options?: { collections?: string[] | undefined }): Promise<Snapshot> {
+	/** Snapshot the schema, optionally scoped to a subset of collections (a partial snapshot). Admin only. */
+	async snapshot(options?: { scope?: SnapshotScope | undefined }): Promise<Snapshot> {
 		if (this.accountability?.admin !== true) throw new ForbiddenError();
 
-		const currentSnapshot = await getSnapshot({ database: this.knex, collections: options?.collections });
+		const currentSnapshot = await getSnapshot({ database: this.knex, scope: options?.scope });
 
 		return currentSnapshot;
 	}

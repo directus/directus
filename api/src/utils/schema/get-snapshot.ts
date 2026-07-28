@@ -1,4 +1,4 @@
-import type { Field, Relation, SchemaOverview, Snapshot } from '@directus/types';
+import type { Field, Relation, SchemaOverview, Snapshot, SnapshotScope } from '@directus/types';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash-es';
@@ -13,14 +13,15 @@ import { isInScope } from './is-in-scope.js';
 import { isIndexedSystemField } from './is-indexed-system-field.js';
 import { isManaged } from './is-managed.js';
 import { isNonSystem } from './is-non-system.js';
+import { resolveScopedCollections } from './resolve-scoped-collections.js';
 
 export interface GetSnapshotOptions {
 	database?: Knex;
 	schema?: SchemaOverview;
 	/**
-	 * Scope the snapshot to exactly these collections
+	 * Scope the snapshot to a subset of collections
 	 */
-	collections?: string[] | undefined;
+	scope?: SnapshotScope | undefined;
 }
 
 /**
@@ -29,7 +30,7 @@ export interface GetSnapshotOptions {
  * @param options - Optional connection overrides and collection scoping.
  * @param options.database - Knex instance to read from; defaults to the shared connection.
  * @param options.schema - Pre-fetched schema overview; fetched fresh (cache bypassed) when omitted.
- * @param options.collections - Restrict the snapshot to these collections, producing a partial snapshot (version 2)
+ * @param options.scope - Restrict the snapshot to a subset of collections (partial snapshot)
  * @returns The schema snapshot.
  */
 export async function getSnapshot(options?: GetSnapshotOptions): Promise<Snapshot> {
@@ -47,7 +48,9 @@ export async function getSnapshot(options?: GetSnapshotOptions): Promise<Snapsho
 		relationsService.readAll(),
 	]);
 
-	const scope = options?.collections !== undefined ? new Set(options.collections) : null;
+	// `null` (no scope) is full snapshot, passing in raw to ensure folders are included
+	const scoped = options?.scope ? resolveScopedCollections(collectionsRaw, options.scope) : null;
+	const scope = scoped === null ? null : new Set(scoped);
 
 	const collectionsFiltered = collectionsRaw.filter(
 		(item) => isNonSystem(item) && isManaged(item) && isInScope(item, scope),

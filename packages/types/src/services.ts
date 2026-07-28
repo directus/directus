@@ -29,7 +29,7 @@ import type { Aggregate, Query } from './query.js';
 import type { Relation } from './relations.js';
 import type { FieldOverview, SchemaOverview } from './schema.js';
 import type { ServerHealth } from './server.js';
-import type { Snapshot, SnapshotDiff, SnapshotDiffWithHash, SnapshotWithHash } from './snapshot.js';
+import type { Snapshot, SnapshotDiff, SnapshotDiffWithHash, SnapshotScope, SnapshotWithHash } from './snapshot.js';
 import type { Range, Stat } from './storage.js';
 import type { RegisterUserInput } from './users.js';
 import type { ContentVersion } from './versions.js';
@@ -390,9 +390,12 @@ interface RevisionsService {
  * The SchemaService
  */
 interface SchemaService {
-	snapshot(): Promise<Snapshot>;
+	snapshot(options?: { scope?: SnapshotScope | undefined }): Promise<Snapshot>;
 	apply(payload: SnapshotDiffWithHash, options?: { force?: boolean }): Promise<void>;
-	diff(snapshot: Snapshot, options?: { currentSnapshot?: Snapshot; force?: boolean }): Promise<SnapshotDiff | null>;
+	diff(
+		snapshot: Snapshot,
+		options?: { currentSnapshot?: Snapshot; force?: boolean; mode?: 'merge' | 'mirror' },
+	): Promise<SnapshotDiff | null>;
 	getHashedSnapshot(snapshot: Snapshot): SnapshotWithHash;
 }
 
