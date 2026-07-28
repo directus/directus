@@ -4,6 +4,7 @@ import type {
 	Accountability,
 	Snapshot,
 	SnapshotDiff,
+	SnapshotDiffMode,
 	SnapshotDiffWithHash,
 	SnapshotScope,
 	SnapshotWithHash,
@@ -49,7 +50,7 @@ export class SchemaService {
 
 	async diff(
 		snapshot: Snapshot,
-		options?: { currentSnapshot?: Snapshot; force?: boolean; mode?: 'merge' | 'mirror' },
+		options?: { currentSnapshot?: Snapshot; force?: boolean; mode?: SnapshotDiffMode },
 	): Promise<SnapshotDiff | null> {
 		if (this.accountability?.admin !== true) throw new ForbiddenError();
 

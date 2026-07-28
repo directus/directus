@@ -34,6 +34,8 @@ export type SnapshotScope = {
 	excludeCollections?: string[] | undefined;
 };
 
+export type SnapshotDiffMode = 'merge' | 'mirror';
+
 export type SnapshotDiff = {
 	collections: {
 		collection: string;
