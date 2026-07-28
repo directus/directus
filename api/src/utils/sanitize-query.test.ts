@@ -421,6 +421,19 @@ describe('deep', () => {
 			},
 		});
 	});
+
+	test('should skip empty string keys but continue processing subsequent valid relation keys', async () => {
+		const deep = {
+			deep: {
+				'': { _sort: ['name'] },
+				valid_relation: { _sort: ['title'] },
+			},
+		};
+
+		const sanitizedQuery = await sanitizeQuery({ deep }, null as any);
+
+		expect(sanitizedQuery.deep).toEqual({ deep: { valid_relation: { _sort: ['title'] } } });
+	});
 });
 
 describe('alias', () => {
