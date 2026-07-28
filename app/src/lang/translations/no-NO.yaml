@@ -717,6 +717,7 @@ fields:
     collection: Kolleksjon
     icon: Ikon
     note: Notat
+    status: Status
     color: Farge
     hidden: Skjult
     sort_field: Sorter felt

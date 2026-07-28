@@ -1,3 +1,4 @@
+import { GEOMETRY_TYPES } from '@directus/constants';
 import type { Field, RawField } from '@directus/types';
 import type { Knex } from 'knex';
 import type { GeoJSONGeometry } from 'wellknown';
@@ -9,6 +10,21 @@ export abstract class GeometryHelper extends DatabaseHelper {
 		return true;
 	}
 
+	/**
+	 * Extract the geometry subtype from a field's type
+	 *
+	 * @return geometry subtype if found
+	 */
+	protected geometrySubtype(field: RawField | Field) {
+		const subtype = field.type.split('.')[1];
+
+		if (!subtype) return null;
+
+		const type = GEOMETRY_TYPES.find((value) => value.toLowerCase() === subtype.toLowerCase());
+
+		return type || null;
+	}
+
 	isTrue(expression: Knex.Raw) {
 		return expression;
 	}
@@ -18,7 +34,7 @@ export abstract class GeometryHelper extends DatabaseHelper {
 	}
 
 	createColumn(table: Knex.CreateTableBuilder, field: RawField | Field) {
-		const type = field.type.split('.')[1] ?? 'geometry';
+		const type = this.geometrySubtype(field) ?? 'geometry';
 		return table.specificType(field.field, type);
 	}
 

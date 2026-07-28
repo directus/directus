@@ -1218,6 +1218,7 @@ fields:
     collection: Бүрдэл
     icon: Таних тэмдэг
     note: Тэмдэглэл
+    status: Статус
     color: Өнгө
     display_template: Харагдацын загвар
     hidden: Нуусан
@@ -1882,6 +1883,7 @@ interfaces:
     incompatible_data: Одоогийн өгөгдөл нь давталтын интерфэйстэй тохирохгүй бөгөөд давтагч руу оруулга нэмэх үед хүчингүй болно
     interface_group: Интерфэйс тохиргоо
     display_group: Харагдах байдлын тохиргоо
+    edit_mode_inline: Тасралтгүй шугаманд
   slider:
     slider: Гулсагч
     description: Гулсагч ашиглан тоо сонгох

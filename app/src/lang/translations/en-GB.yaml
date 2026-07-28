@@ -1001,6 +1001,7 @@ fields:
     collection: Collection
     icon: Icon
     note: Note
+    status: Status
     color: Colour
     display_template: Display Template
     hidden: Hidden
@@ -1576,6 +1577,7 @@ interfaces:
     field_note_placeholder: Enter field note...
     incompatible_data: The current data is not compatible with the repeater interface and will be overridden when adding items to the repeater
     interface_group: Interface Options
+    edit_mode_inline: Inline
   slider:
     slider: Slider
     description: Select a number using a slider

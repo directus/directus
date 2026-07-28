@@ -1290,6 +1290,7 @@ fields:
     collection: 数据模型
     icon: 图标
     note: 注释
+    status: 状态
     color: 颜色
     display_template: 显示模板
     hidden: 隐藏
@@ -2019,6 +2020,7 @@ interfaces:
     incompatible_data: 当前数据与重复器接口不兼容，添加项目到重复器时将被覆盖
     interface_group: 接口选项
     display_group: 显示选项
+    edit_mode_inline: 内联
   slider:
     slider: 滑块
     description: 使用滑块选择一个数字

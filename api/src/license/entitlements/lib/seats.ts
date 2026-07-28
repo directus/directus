@@ -118,13 +118,31 @@ export async function getActiveSeats(opts?: {
 				{
 					id: {
 						_in: Array.from(appUsers),
-						_nin: Array.from(adminUsers),
 					},
 				},
 				{
 					role: {
 						_in: Array.from(allAppRoles),
+					},
+				},
+			],
+		},
+		{
+			id: {
+				_nin: Array.from(adminUsers),
+			},
+		},
+		{
+			_or: [
+				{
+					role: {
 						_nin: Array.from(allAdminRoles),
+					},
+				},
+				// Dont exclude users marked as app via direct policy
+				{
+					role: {
+						_null: true,
 					},
 				},
 			],

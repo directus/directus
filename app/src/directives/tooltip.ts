@@ -1,11 +1,21 @@
-import { nanoid } from 'nanoid';
-import { Directive, DirectiveBinding } from 'vue';
-import { useUserStore } from '@/stores/user';
+import type { ReferenceElement } from 'reka-ui';
+import type { Directive, DirectiveBinding } from 'vue';
 
-const DELAYS = {
-	tooltip: 500,
-	tooltipDisabled: 125,
-};
+export const TOOLTIP_CONTENT_ID = 'app-tooltip-content';
+
+export type TooltipSide = 'top' | 'bottom' | 'left' | 'right';
+export type TooltipAlign = 'start' | 'center' | 'end';
+
+export interface TooltipPayload {
+	content: string;
+	kbd?: string[];
+	side: TooltipSide;
+	align: TooltipAlign;
+	inverted: boolean;
+	monospace: boolean;
+	delayDuration: number;
+	virtualRef: ReferenceElement | null;
+}
 
 export function isDisabled(element: HTMLElement): boolean {
 	return (
@@ -15,250 +25,162 @@ export function isDisabled(element: HTMLElement): boolean {
 	);
 }
 
-const handlers: Record<string, () => void> = {};
+const SIDES: TooltipSide[] = ['top', 'bottom', 'left', 'right'];
+
+export function resolveSide(binding: DirectiveBinding): TooltipSide {
+	return SIDES.find((s) => binding.modifiers[s] || binding.arg === s) ?? 'top';
+}
+
+const ALIGNS: TooltipAlign[] = ['start', 'center', 'end'];
+
+export function resolveAlign(binding: DirectiveBinding): TooltipAlign {
+	return ALIGNS.find((a) => binding.modifiers[a]) ?? 'center';
+}
+
+interface TooltipHandlers {
+	enter: () => void;
+	leave: () => void;
+	focus: () => void;
+	blur: () => void;
+}
+
+export interface TooltipValue {
+	text: string;
+	kbd?: string[];
+}
+
+export function resolveTooltipValue(value: string | TooltipValue): { content: string; kbd: string[] | undefined } {
+	if (typeof value === 'string') return { content: value, kbd: undefined };
+	return { content: value.text, kbd: value.kbd };
+}
+
+interface TooltipState extends Omit<TooltipPayload, 'delayDuration'> {
+	open: boolean;
+}
+
+const state: TooltipState = {
+	open: false,
+	content: '',
+	kbd: undefined,
+	side: 'top',
+	align: 'center',
+	inverted: false,
+	monospace: false,
+	virtualRef: null,
+};
+
+let timer: ReturnType<typeof setTimeout> | null = null;
+let onChange: (() => void) | null = null;
+
+function notify(): void {
+	onChange?.();
+}
+
+function openTooltip(payload: TooltipPayload, immediateContent = false): void {
+	if (timer) clearTimeout(timer);
+
+	if (immediateContent) {
+		state.content = payload.content;
+		notify();
+	}
+
+	timer = setTimeout(() => {
+		const { delayDuration: _, kbd, ...rest } = payload;
+		Object.assign(state, rest);
+		state.kbd = kbd;
+		state.open = true;
+		notify();
+	}, payload.delayDuration);
+}
+
+function closeTooltip(): void {
+	if (timer) clearTimeout(timer);
+	timer = null;
+	state.open = false;
+	notify();
+}
+
+export function getGlobalTooltip() {
+	return {
+		state,
+		openTooltip,
+		closeTooltip,
+		watch: (cb: () => void) => {
+			onChange = cb;
+
+			return () => {
+				onChange = null;
+			};
+		},
+	};
+}
+
+const handlerMap = new WeakMap<HTMLElement, TooltipHandlers>();
 
 function beforeMount(element: HTMLElement, binding: DirectiveBinding): void {
-	if (binding.value) {
-		element.dataset.tooltip = nanoid();
-		handlers[element.dataset.tooltip] = createEnterHandler(element, binding);
-		element.addEventListener('mouseenter', handlers[element.dataset.tooltip]);
-		element.addEventListener('mouseleave', onLeaveTooltip);
-	}
+	if (!binding.value) return;
+
+	const virtualRef = { getBoundingClientRect: () => element.getBoundingClientRect() };
+	const { content, kbd } = resolveTooltipValue(binding.value);
+
+	const buildPayload = (delayDuration: number) => ({
+		content,
+		kbd,
+		side: resolveSide(binding),
+		align: resolveAlign(binding),
+		inverted: !!binding.modifiers['inverted'],
+		monospace: !!binding.modifiers['monospace'],
+		delayDuration,
+		virtualRef,
+	});
+
+	const enter = () => {
+		let delay = 500;
+		if (binding.modifiers['instant']) delay = 0;
+		else if (isDisabled(element)) delay = 125;
+		openTooltip(buildPayload(delay));
+	};
+
+	const focus = () => {
+		openTooltip(buildPayload(binding.modifiers['instant'] ? 0 : 500), true);
+	};
+
+	const leave = closeTooltip;
+	const blur = closeTooltip;
+
+	handlerMap.set(element, { enter, leave, focus, blur });
+	element.addEventListener('mouseenter', enter);
+	element.addEventListener('mouseleave', leave);
+	element.addEventListener('focus', focus);
+	element.addEventListener('blur', blur);
+	element.setAttribute('aria-describedby', TOOLTIP_CONTENT_ID);
 }
 
 function unmounted(element: HTMLElement): void {
-	element.removeEventListener('mouseenter', handlers[element.dataset.tooltip as string]);
-	element.removeEventListener('mouseleave', onLeaveTooltip);
-	clearTimeout(tooltipTimer);
-	const tooltip = getTooltip();
-	tooltip.classList.remove('visible');
-	delete handlers[element.dataset.tooltip as string];
+	const handlers = handlerMap.get(element);
+
+	if (handlers) {
+		element.removeEventListener('mouseenter', handlers.enter);
+		element.removeEventListener('mouseleave', handlers.leave);
+		element.removeEventListener('focus', handlers.focus);
+		element.removeEventListener('blur', handlers.blur);
+		handlerMap.delete(element);
+		element.removeAttribute('aria-describedby');
+		closeTooltip();
+	}
 }
 
 const Tooltip: Directive = {
 	beforeMount,
 	unmounted,
 	updated(element, binding) {
-		if (binding.value && !binding.oldValue) {
-			beforeMount(element, binding);
-		} else if (!binding.value && binding.oldValue) {
-			unmounted(element);
-		} else {
-			unmounted(element);
+		if (binding.value === binding.oldValue) return;
+		unmounted(element);
+
+		if (binding.value) {
 			beforeMount(element, binding);
 		}
 	},
 };
 
 export default Tooltip;
-
-let tooltipTimer: number;
-
-export function createEnterHandler(element: HTMLElement, binding: DirectiveBinding) {
-	return (): void => {
-		const tooltip = getTooltip();
-
-		if (binding.modifiers.instant) {
-			animateIn(tooltip);
-			updateTooltip(element, binding, tooltip);
-		} else {
-			clearTimeout(tooltipTimer);
-
-			tooltipTimer = window.setTimeout(
-				() => {
-					animateIn(tooltip);
-					updateTooltip(element, binding, tooltip);
-				},
-				isDisabled(element) ? DELAYS.tooltipDisabled : DELAYS.tooltip,
-			);
-		}
-	};
-}
-
-export function onLeaveTooltip(): void {
-	const tooltip = getTooltip();
-
-	clearTimeout(tooltipTimer);
-	animateOut(tooltip);
-}
-
-export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, tooltip: HTMLElement): void {
-	const userStore = useUserStore();
-
-	const offset = 10;
-	const arrowAlign = 20;
-
-	const isRTL = userStore.textDirection === 'rtl';
-
-	const bounds = element.getBoundingClientRect();
-	let top = bounds.top + pageYOffset;
-	let left = bounds.left + pageXOffset;
-
-	if (isRTL) {
-		left = window.innerWidth - bounds.right + pageXOffset;
-	}
-
-	let transformPos;
-
-	tooltip.innerText = binding.value;
-	tooltip.classList.remove('top', 'bottom', 'left', 'right', 'start', 'end');
-
-	let placement = binding.arg ?? 'top';
-
-	if ('top' in binding.modifiers) placement = 'top';
-	if ('right' in binding.modifiers) placement = 'right';
-	if ('bottom' in binding.modifiers) placement = 'bottom';
-	if ('left' in binding.modifiers) placement = 'left';
-
-	if (binding.modifiers.inverted) {
-		tooltip.classList.add('inverted');
-	} else {
-		tooltip.classList.remove('inverted');
-	}
-
-	if (binding.modifiers.monospace) {
-		tooltip.classList.add('monospace');
-	}
-
-	if (placement === 'bottom') {
-		if (binding.modifiers.start) {
-			left += arrowAlign;
-			transformPos = 100;
-			tooltip.classList.add('start');
-		} else if (binding.modifiers.end) {
-			left += bounds.width - arrowAlign;
-			transformPos = 0;
-			tooltip.classList.add('end');
-		} else {
-			left += bounds.width / 2;
-			transformPos = 50;
-		}
-
-		top += bounds.height + offset;
-
-		if (isRTL) {
-			tooltip.style.transform = `translate(calc(-${left}px + ${transformPos}%), ${top}px)`;
-		} else {
-			tooltip.style.transform = `translate(calc(${left}px - ${transformPos}%), ${top}px)`;
-		}
-
-		tooltip.classList.add('bottom');
-	} else if (placement === 'left') {
-		if (binding.modifiers.start) {
-			top += arrowAlign;
-			transformPos = 100;
-			tooltip.classList.add('start');
-		} else if (binding.modifiers.end) {
-			top += bounds.height - arrowAlign;
-			transformPos = 0;
-			tooltip.classList.add('end');
-		} else {
-			top += bounds.height / 2;
-			transformPos = 50;
-		}
-
-		left -= offset;
-
-		if (isRTL) {
-			tooltip.style.transform = `translate(calc(-${left}px + 100%), calc(${top}px - ${transformPos}%))`;
-		} else {
-			tooltip.style.transform = `translate(calc(${left}px - 100%), calc(${top}px - ${transformPos}%))`;
-		}
-
-		tooltip.classList.add('left');
-	} else if (placement === 'right') {
-		if (binding.modifiers.start) {
-			top += arrowAlign;
-			transformPos = 100;
-			tooltip.classList.add('start');
-		} else if (binding.modifiers.end) {
-			top += bounds.height - arrowAlign;
-			transformPos = 0;
-			tooltip.classList.add('end');
-		} else {
-			top += bounds.height / 2;
-			transformPos = 50;
-		}
-
-		left += bounds.width + offset;
-
-		if (isRTL) {
-			tooltip.style.transform = `translate(-${left}px, calc(${top}px - ${transformPos}%))`;
-		} else {
-			tooltip.style.transform = `translate(${left}px, calc(${top}px - ${transformPos}%))`;
-		}
-
-		tooltip.classList.add('right');
-	} else {
-		if (binding.modifiers.start) {
-			left += arrowAlign;
-			transformPos = 100;
-			tooltip.classList.add('start');
-		} else if (binding.modifiers.end) {
-			left += bounds.width - arrowAlign;
-			transformPos = 0;
-			tooltip.classList.add('end');
-		} else {
-			left += bounds.width / 2;
-			transformPos = 50;
-		}
-
-		top -= offset;
-
-		if (isRTL) {
-			tooltip.style.transform = `translate(calc(-${left}px + ${transformPos}%), calc(${top}px - 100%))`;
-		} else {
-			tooltip.style.transform = `translate(calc(${left}px - ${transformPos}%), calc(${top}px - 100%))`;
-		}
-
-		tooltip.classList.add('top');
-	}
-}
-
-export function animateIn(tooltip: HTMLElement): void {
-	tooltip.classList.add('visible', 'enter');
-	tooltip.classList.remove('leave', 'leave-active');
-
-	setTimeout(() => {
-		if (tooltip.classList.contains('enter') === false) return;
-		tooltip.classList.add('enter-active');
-		tooltip.classList.remove('enter');
-	}, 1);
-
-	setTimeout(() => {
-		tooltip.classList.remove('enter-active');
-	}, 200);
-}
-
-export function animateOut(tooltip: HTMLElement): void {
-	if (tooltip.classList.contains('visible') === false) return;
-
-	tooltip.classList.add('visible', 'leave');
-	tooltip.classList.remove('enter', 'enter-active');
-
-	setTimeout(() => {
-		if (tooltip.classList.contains('leave') === false) return;
-		tooltip.classList.add('leave-active');
-		tooltip.classList.remove('leave');
-	}, 1);
-
-	setTimeout(() => {
-		if (tooltip.classList.contains('leave-active') === false) return;
-		tooltip.classList.remove('leave-active');
-		tooltip.classList.remove('visible');
-	}, 200);
-}
-
-export function getTooltip(): HTMLElement {
-	let tooltip = document.getElementById('tooltip');
-
-	if (tooltip instanceof HTMLElement) {
-		return tooltip;
-	}
-
-	tooltip = document.createElement('div');
-	tooltip.id = 'tooltip';
-	document.body.appendChild(tooltip);
-
-	return tooltip;
-}

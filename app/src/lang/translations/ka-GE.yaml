@@ -1239,6 +1239,7 @@ fields:
     collection: კოლექცია
     icon: ხატულა
     note: შენიშვნა
+    status: სტატუსი
     color: ფერი
     display_template: ჩვენების შაბლონი
     hidden: დამალული
@@ -1906,6 +1907,7 @@ interfaces:
     incompatible_data: მიმდინარე მონაცემები არ არის თავსებადი გამეორების ინტერფეისთან და გადაიწერება გამეორებაში ჩანაწერების დამატებისას
     interface_group: ინტერფეისის ოფციები
     display_group: ჩვენების ოფციები
+    edit_mode_inline: შიდა
   slider:
     slider: სლაიდერი
     description: აირჩიეთ რიცხვი სლაიდერის გამოყენებით

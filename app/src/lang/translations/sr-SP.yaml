@@ -197,6 +197,7 @@ fields:
     ip: ИП адреса
   directus_collections:
     collection: Колекција
+    status: Стање
   directus_files:
     title: Наслов
     description: Опис

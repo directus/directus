@@ -13,7 +13,6 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import { useInjectNestedValidation } from '@/composables/use-nested-validation';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
-import { useWindowSize } from '@/composables/use-window-size';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
 import { useLicenseStore } from '@/stores/license';
@@ -113,8 +112,7 @@ function useSplitView() {
 		}
 	});
 
-	const { width } = useWindowSize();
-	const splitViewAvailable = computed(() => width.value > 960 && languageOptions.value.length > 1);
+	const splitViewAvailable = computed(() => languageOptions.value.length > 1);
 	const splitViewEnabled = computed(() => splitViewAvailable.value && splitView.value);
 
 	return {

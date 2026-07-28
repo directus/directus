@@ -1298,6 +1298,7 @@ fields:
     collection: コレクション
     icon: アイコン
     note: 備考
+    status: ステータス
     color: 色
     display_template: テンプレートを表示
     hidden: 非表示
@@ -1925,6 +1926,7 @@ interfaces:
     sort: 並べ替え
     sort_placeholder: マニュアル
     display_group: オプションを表示
+    edit_mode_inline: インライン
   tags:
     tags: タグ
   input:

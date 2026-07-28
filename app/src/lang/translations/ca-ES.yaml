@@ -973,6 +973,7 @@ fields:
     collection: Coŀlecció
     icon: Icona
     note: Nota
+    status: Estat
     color: Color
     display_template: Mostra la plantilla
     hidden: Amagat
@@ -1491,6 +1492,7 @@ interfaces:
     sort: Ordre
     field_note_placeholder: Introdueix una nota sobre el camp...
     interface_group: Opcions d'Interfície
+    edit_mode_inline: Inline
   slider:
     slider: Lliscador
     description: Selecciona un número utilitzant el lliscador

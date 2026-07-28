@@ -1044,6 +1044,7 @@ fields:
     collection: Samling
     icon: Ikon
     note: Kommentar
+    status: Status
     color: Farve
     display_template: Vis skabelon
     hidden: Skjult
@@ -1609,6 +1610,7 @@ interfaces:
     field_note_placeholder: Indtast felt note...
     incompatible_data: De aktuelle data er ikke kompatible med gentager-grænsefladen og vil blive tilsidesat, når du tilføjer elementer til gentager
     interface_group: Grænsefladeindstillinger
+    edit_mode_inline: Indlejret
   slider:
     slider: Skyder
     description: Vælg et nummer ved hjælp af en skyder

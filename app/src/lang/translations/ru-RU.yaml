@@ -1329,6 +1329,7 @@ fields:
     collection: Коллекция
     icon: Иконка
     note: Заметка
+    status: Статус
     color: Цвет
     display_template: Шаблон отображения
     hidden: Скрыто
@@ -2006,6 +2007,7 @@ interfaces:
     incompatible_data: Текущие данные не совместимы с интерфейсом репитера и будут переопределены при добавлении элементов в репитер
     interface_group: Параметры интерфейса
     display_group: Параметры отображения
+    edit_mode_inline: Встроенный
   slider:
     slider: Слайдер
     description: Выберите номер с помощью слайдера

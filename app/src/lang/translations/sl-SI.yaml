@@ -762,6 +762,7 @@ fields:
     collection: Zbirka
     icon: Ikona
     note: Opomba
+    status: Stanje
     color: Barva
     display_template: Prikaži predlogo
     hidden: Skrito
@@ -1195,6 +1196,7 @@ interfaces:
     sort: Razvrsti
     field_note_placeholder: Vnesite opis polja ...
     interface_group: Možnosti vmesnika
+    edit_mode_inline: V vrstici
   slider:
     slider: Drsnik
     description: Z drsnikom izberite vrednost

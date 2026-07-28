@@ -349,11 +349,7 @@ function usePublish() {
 								</VCheckbox>
 							</div>
 							<div class="buttons-container">
-								<VButton
-									v-tooltip.top="`${$t('cancel')} (${translateShortcut(['esc'])})`"
-									secondary
-									@click="$emit('cancel')"
-								>
+								<VButton v-tooltip.top="{ text: $t('cancel'), kbd: ['esc'] }" secondary @click="$emit('cancel')">
 									<VIcon name="close" left />
 									<span class="button-text">{{ $t(mode === 'collab' ? 'discard' : 'cancel') }}</span>
 								</VButton>
