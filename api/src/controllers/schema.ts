@@ -13,7 +13,6 @@ import { SchemaService } from '../services/schema.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getVersionedHash } from '../utils/get-versioned-hash.js';
 import { queryFlag } from '../utils/query-flag.js';
-import { resolveScopedCollections } from './schema/resolve-scoped-collections.js';
 
 const env = useEnv();
 const router = express.Router();
@@ -39,11 +38,8 @@ router.get(
 		const parsed = snapshotQuerySchema.safeParse(req.query);
 		if (!parsed.success) throw new InvalidPayloadError({ reason: fromZodError(parsed.error).message });
 
-		// `null` (no scope) is full snapshot.
-		const collections = resolveScopedCollections(req.schema, parsed.data) ?? undefined;
-
 		const service = new SchemaService({ accountability: req.accountability });
-		const currentSnapshot = await service.snapshot({ collections });
+		const currentSnapshot = await service.snapshot({ scope: parsed.data });
 		res.locals['payload'] = { data: currentSnapshot };
 		return next();
 	}),

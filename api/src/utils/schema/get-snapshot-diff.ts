@@ -1,4 +1,4 @@
-import type { Snapshot, SnapshotDiff, SnapshotSystemField } from '@directus/types';
+import type { Snapshot, SnapshotDiff, SnapshotDiffMode, SnapshotSystemField } from '@directus/types';
 import { DiffKind } from '@directus/types';
 import deepDiff from 'deep-diff';
 import { SNAPSHOT_VERSION } from '../../constants.js';
@@ -9,7 +9,7 @@ import { isInScope } from './is-in-scope.js';
 
 export interface GetSnapshotDiffOptions {
 	/** `merge` excludes deletions for an additive diff; `mirror` (default) returns all operations. */
-	mode?: 'merge' | 'mirror' | undefined;
+	mode?: SnapshotDiffMode | undefined;
 }
 
 export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: GetSnapshotDiffOptions): SnapshotDiff {

@@ -389,9 +389,11 @@ describe('getSnapshot', () => {
 
 	describe('partial snapshots (collection scoping)', () => {
 		const collections = [
-			{ collection: 'articles', meta: {} },
-			{ collection: 'authors', meta: {} },
-			{ collection: 'tags', meta: {} },
+			{ collection: 'articles', schema: {}, meta: {} },
+			{ collection: 'authors', schema: {}, meta: {} },
+			{ collection: 'tags', schema: {}, meta: {} },
+			{ collection: 'content', schema: null, meta: {} },
+			{ collection: 'directus_users', schema: {}, meta: { system: true } },
 		];
 
 		const fields = [
@@ -428,7 +430,7 @@ describe('getSnapshot', () => {
 		const systemFieldKeys = (snapshot: any) => snapshot.systemFields.map((f: any) => `${f.collection}.${f.field}`);
 
 		test('includes only the scoped collections and its fields, relations, and system fields', async () => {
-			const snapshot = await getSnapshot({ collections: ['articles', 'authors'] });
+			const snapshot = await getSnapshot({ scope: { includeCollections: ['articles', 'authors'] } });
 
 			expect(snapshot.version).toBe(2);
 			expect(collectionNames(snapshot)).toEqual(['articles', 'authors']);
@@ -448,7 +450,7 @@ describe('getSnapshot', () => {
 		});
 
 		test('drops a relation owned by an out-of-scope collection while keeping the scoped fields', async () => {
-			const snapshot = await getSnapshot({ collections: ['authors'] });
+			const snapshot = await getSnapshot({ scope: { includeCollections: ['authors'] } });
 
 			expect(collectionNames(snapshot)).toEqual(['authors']);
 			expect(fieldKeys(snapshot)).toEqual(['authors.id', 'authors.name', 'authors.articles']);
@@ -456,13 +458,33 @@ describe('getSnapshot', () => {
 		});
 
 		test('captures the indexed system fields of a scoped system collection', async () => {
-			const snapshot = await getSnapshot({ collections: ['directus_users'] });
+			const snapshot = await getSnapshot({ scope: { includeCollections: ['directus_users'] } });
 
 			expect(snapshot.version).toBe(2);
 			expect(collectionNames(snapshot)).toEqual([]);
 			expect(fieldKeys(snapshot)).toEqual([]);
 			expect(relationKeys(snapshot)).toEqual([]);
 			expect(systemFieldKeys(snapshot)).toEqual(['directus_users.external_identifier']);
+		});
+
+		test('keeps folders in scope when excluding collections', async () => {
+			const snapshot = await getSnapshot({ scope: { excludeCollections: ['tags'] } });
+
+			expect(snapshot.version).toBe(2);
+			expect(collectionNames(snapshot)).toEqual(['articles', 'authors', 'content']);
+		});
+
+		test('keeps a folder that is included by name', async () => {
+			const snapshot = await getSnapshot({ scope: { includeCollections: ['content', 'articles'] } });
+
+			expect(collectionNames(snapshot)).toEqual(['articles', 'content']);
+		});
+
+		test('returns a full snapshot when the scope is empty', async () => {
+			const snapshot = await getSnapshot({ scope: {} });
+
+			expect(snapshot.version).toBe(1);
+			expect(collectionNames(snapshot)).toEqual(['articles', 'authors', 'content', 'tags']);
 		});
 	});
 
