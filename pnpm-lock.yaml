@@ -983,7 +983,6 @@ overrides:
   minimatch@9: 9.0.9
   express@4>path-to-regexp: 0.1.13
   adm-zip: 0.6.0
-  linkify-it: 6.1.0
   js-yaml@4: 4.3.0
 
 importers:
@@ -3321,8 +3320,8 @@ importers:
         specifier: 'catalog:'
         version: 4.18.1
       mailparser:
-        specifier: 3.9.12
-        version: 3.9.12
+        specifier: 3.9.14
+        version: 3.9.14
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -8016,8 +8015,8 @@ packages:
     engines: {node: '>= 8'}
     hasBin: true
 
-  '@zone-eu/mailsplit@5.4.13':
-    resolution: {integrity: sha512-j40NeNlSAivqnKEjzZYsGP/bKWr2zwuyb8XOYsC3i0ZlfM5UnTYTa7aCRkE8rYQvVzE1dRjVYdvZ1Epi6x+h6w==}
+  '@zone-eu/mailsplit@5.4.14':
+    resolution: {integrity: sha512-rz0FQOhN3Vq1XrSeSSa9+dPcaFbBxmQPjiZm6zS9oxdVHV7rOWIAYX3yP2YAUf0qBncY8CI+NogzPCmMVrMXcw==}
 
   JSV@4.0.2:
     resolution: {integrity: sha512-ZJ6wx9xaKJ3yFUhq5/sk82PJMuUyLk277I8mQeyDgCTjGdjWJIvPfaU5LIXaMuaN2UO1X3kZH4+lgphublZUHw==}
@@ -11207,8 +11206,8 @@ packages:
   libbase64@1.3.0:
     resolution: {integrity: sha512-GgOXd0Eo6phYgh0DJtjQ2tO8dc0IVINtZJeARPeiIJqge+HdsWSuaDTe8ztQ7j/cONByDZ3zeB325AHiv5O0dg==}
 
-  libmime@5.4.0:
-    resolution: {integrity: sha512-MAWyU2qYtCsrZ6GClgukz2jx73NQrzA6ASo9qzThuTG+A7+H3lWQuBsjoy9lls+v6q/epAeBdEMJ3T0f4b+uRw==}
+  libmime@5.4.1:
+    resolution: {integrity: sha512-0wHGhsofo9IdQPenr3BBHXuxcwMq4atFUTsZ9Ogc1OvI5h4rUdDIrBQEN9JHjCXfDMrE59LUMJWsTD82wTYk8A==}
 
   libqp@2.1.1:
     resolution: {integrity: sha512-0Wd+GPz1O134cP62YU2GTOPNA7Qgl09XwCqM5zpBv87ERCXdfDtyKXvV7c9U22yWJh44QZqBocFnXN11K96qow==}
@@ -11293,8 +11292,8 @@ packages:
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
-  linkify-it@6.1.0:
-    resolution: {integrity: sha512-wJ/TwpSDTLepCrQoYWYIExIKg5Zchex2Nn5yk2mFnB+6PtdkHtyLx742md9csRjjOnGkKIS/RrbY7l8D6gT9Vw==}
+  linkify-it@5.0.2:
+    resolution: {integrity: sha512-ONTm2jCMAVZjgQa/Fy1kScXsuOoF5NPTsoFBdE1KVIZ2vAh/r9+Bqo+0jINCBYnavTPQZz38QzFTme79ENoN3Q==}
 
   liquidjs@10.27.2:
     resolution: {integrity: sha512-kvknfAEtOHjHkAAv7GxLEJh8ghpMQm3Fc4uWVyF7hERSTsSRsdC7saWs0p5aDG7GDcWsu5o+T4232O+8KZO55w==}
@@ -11487,8 +11486,8 @@ packages:
   mailgun.js@8.2.2:
     resolution: {integrity: sha512-po/KtofzrTuKhHLenbmliDsVVOFANwcfDFUGnggwnyZJmZz7JgBlV6nzK9o2Fk+OK2SiBmJTK25RbkAj57Hd+Q==}
 
-  mailparser@3.9.12:
-    resolution: {integrity: sha512-kbT4xtkKEddonhDTjjWWVFJlI5axm0S9QuIAHs1ue3IEw+fNd9o4ytPKaG7p1LOE2aKifrWLjx/omOGLHz/9RQ==}
+  mailparser@3.9.14:
+    resolution: {integrity: sha512-3QD6TRXcyXtq2NCuyA2AEjqmallQkyxYmZI9GMCIvQDCaB9Uc034WUI1x8RUBYFnk5+p7h14JEz4O/lrxQmttw==}
 
   make-dir@4.0.0:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
@@ -14471,9 +14470,6 @@ packages:
 
   uc.micro@2.1.0:
     resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
-
-  uc.micro@3.0.0:
-    resolution: {integrity: sha512-U3PppEkleoTnIfi8BozMx3yju3qc/L6SwqWo2Sw+54PX+PX0q9I+r1Um5HCmqD7n9VDX5/v3vQH/AjA6deDdtw==}
 
   ufo@1.6.1:
     resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
@@ -20933,10 +20929,10 @@ snapshots:
     dependencies:
       isexe: 2.0.0
 
-  '@zone-eu/mailsplit@5.4.13':
+  '@zone-eu/mailsplit@5.4.14':
     dependencies:
       libbase64: 1.3.0
-      libmime: 5.4.0
+      libmime: 5.4.1
       libqp: 2.1.1
 
   JSV@4.0.2: {}
@@ -23765,6 +23761,7 @@ snapshots:
   iconv-lite@0.7.2:
     dependencies:
       safer-buffer: 2.1.2
+    optional: true
 
   iconv-lite@0.7.3:
     dependencies:
@@ -24360,10 +24357,10 @@ snapshots:
 
   libbase64@1.3.0: {}
 
-  libmime@5.4.0:
+  libmime@5.4.1:
     dependencies:
       encoding-japanese: 2.2.0
-      iconv-lite: 0.7.2
+      iconv-lite: 0.7.3
       libbase64: 1.3.0
       libqp: 2.1.1
 
@@ -24428,9 +24425,9 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  linkify-it@6.1.0:
+  linkify-it@5.0.2:
     dependencies:
-      uc.micro: 3.0.0
+      uc.micro: 2.1.0
 
   liquidjs@10.27.2:
     dependencies:
@@ -24614,16 +24611,16 @@ snapshots:
       - supports-color
     optional: true
 
-  mailparser@3.9.12:
+  mailparser@3.9.14:
     dependencies:
-      '@zone-eu/mailsplit': 5.4.13
+      '@zone-eu/mailsplit': 5.4.14
       encoding-japanese: 2.2.0
       he: 1.2.0
       html-to-text: 10.0.0
-      iconv-lite: 0.7.2
-      libmime: 5.4.0
-      linkify-it: 6.1.0
-      nodemailer: 9.0.1
+      iconv-lite: 0.7.3
+      libmime: 5.4.1
+      linkify-it: 5.0.2
+      nodemailer: 9.0.3
       punycode.js: 2.3.1
       tlds: 1.261.0
 
@@ -24741,7 +24738,7 @@ snapshots:
     dependencies:
       argparse: 2.0.1
       entities: 4.5.0
-      linkify-it: 6.1.0
+      linkify-it: 5.0.2
       mdurl: 2.0.0
       punycode.js: 2.3.1
       uc.micro: 2.1.0
@@ -28186,8 +28183,6 @@ snapshots:
   typescript@5.9.3: {}
 
   uc.micro@2.1.0: {}
-
-  uc.micro@3.0.0: {}
 
   ufo@1.6.1: {}
 

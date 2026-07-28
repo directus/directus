@@ -40,7 +40,6 @@
 			"minimatch@9": "9.0.9",
 			"express@4>path-to-regexp": "0.1.13",
 			"adm-zip": "0.6.0",
-			"linkify-it": "6.1.0",
 			"js-yaml@4": "4.3.0"
 		}
 	},
