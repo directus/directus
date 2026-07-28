@@ -247,6 +247,101 @@ describe('sync pull', () => {
 		expect(stdout.join('')).toContain('(scoped to: articles)');
 	});
 
+	it('warns when a scoped pull commits a collection whose group parent is out of scope', async () => {
+		// The CMS-starter repro: everything sits under a `website` folder, so a `--collections pages` pull
+		// commits pages pointing at a website group it did not fetch. That dangling reference 500s on a fresh
+		// target, so the pull must warn the operator now, at authoring time, not leave it for the push crash.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		const groupedPages = {
+			version: 2,
+			directus: '11.0.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'pages', meta: { group: 'website' } }],
+			fields: [{ collection: 'pages', field: 'title', type: 'string' }],
+			systemFields: [],
+			relations: [],
+		};
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/schema/snapshot',
+				method: 'GET',
+				query: { includeCollections: 'pages' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: groupedPages }, { headers: { 'content-type': 'application/json' } });
+
+		interceptDefaultRecords();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--collections', 'pages')).toBe(0);
+
+		const err = stderr.join('');
+		expect(err).toContain('does not include');
+		expect(err).toContain('pages → website (group parent)');
+	});
+
+	it('does not warn when the out-of-scope group parent is already committed from a prior full pull', async () => {
+		// The reason the reference check runs over the committed set, not this fetch: after a full pull that
+		// committed website, a later `--collections pages` scoped pull preserves the website artifact on disk.
+		// The reference resolves against what is actually committed, so warning here would be a false alarm.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		const fullWithGroup = {
+			version: 1,
+			directus: '11.0.0',
+			vendor: 'postgres',
+			collections: [
+				{ collection: 'website', meta: { group: null } },
+				{ collection: 'pages', meta: { group: 'website' } },
+			],
+			fields: [
+				{ collection: 'website', field: 'id', type: 'integer' },
+				{ collection: 'pages', field: 'title', type: 'string' },
+			],
+			systemFields: [],
+			relations: [],
+		};
+
+		agent
+			.get(url)
+			.intercept({ path: '/schema/snapshot', method: 'GET', headers: { authorization: `Bearer ${token}` } })
+			.reply(200, { data: fullWithGroup }, { headers: { 'content-type': 'application/json' } });
+
+		interceptDefaultRecords();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+		stderr.length = 0;
+
+		const scopedPages = {
+			version: 2,
+			directus: '11.0.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'pages', meta: { group: 'website' } }],
+			fields: [{ collection: 'pages', field: 'title', type: 'string' }],
+			systemFields: [],
+			relations: [],
+		};
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/schema/snapshot',
+				method: 'GET',
+				query: { includeCollections: 'pages' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: scopedPages }, { headers: { 'content-type': 'application/json' } });
+
+		interceptDefaultRecords();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--collections', 'pages')).toBe(0);
+		expect(stderr.join('')).not.toContain('does not include');
+	});
+
 	it('preserves out-of-scope siblings end to end when pulling a single collection', async () => {
 		// Pulling one collection must never destroy the committed schema around it: a full pull writes
 		// articles + authors, then a scoped pull of only

@@ -137,7 +137,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	// must be visible, and "mirror deletes" must never be a surprise learned at the refusal.
 	ctx.ui.info(`Pushing to ${options.to} — ${url} (${describeMode(mode)})`);
 
-	const result = await localDiff(target, schemaDiffMode(mode));
+	const result = await localDiff(target, schemaDiffMode(mode), ctx);
 
 	// Preparation may persist learned local identities, but all remote mutations remain behind the gates.
 	const dataResult = await prepareDataPush(target, mode, ctx);

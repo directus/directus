@@ -69,7 +69,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	// operator diffing the wrong profile notices here, not in the push that follows.
 	ctx.ui.info(`Comparing committed files with ${options.to} — ${url} (${describeMode(mode)})`);
 
-	const result = await localDiff(target, schemaDiffMode(mode));
+	const result = await localDiff(target, schemaDiffMode(mode), ctx);
 
 	// This is conservative when identities are ambiguous: diff never prompts or writes the ID map, while an
 	// interactive push may resolve those identities before importing.

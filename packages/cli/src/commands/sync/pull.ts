@@ -10,8 +10,9 @@ import { byCodepoint } from '../../sync/codepoint.js';
 import type { Snapshot } from '../../sync/contract.js';
 import { assertDataSource, type DataCollection, writeDataFiles } from '../../sync/data-store.js';
 import { normalizeInstanceUrl } from '../../sync/id-map.js';
+import { findOutOfScopeReferences, formatOutOfScopeReferences } from '../../sync/references.js';
 import { allResources, resolveResources, type Resource, SELECTABLE_RESOURCES } from '../../sync/resources.js';
-import { type WriteScope, writeSnapshotFiles } from '../../sync/store.js';
+import { readSnapshotFiles, type WriteScope, writeSnapshotFiles } from '../../sync/store.js';
 import { resolveTarget } from './resolve-target.js';
 
 // The selectable resource names, as commander camelCases each --<resource>/--no-<resource> flag onto opts().
@@ -384,6 +385,14 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	}
 
 	const result = writeSnapshotFiles(schemaDir, snapshot, scope?.write);
+
+	// Warn about references pointing outside the committed set — a scoped pull can strand a group parent or
+	// relation target the snapshot omits, which fails apply on a fresh target (Chris/Judd thread). Detect over
+	// the committed snapshot, not this fetch: a scoped pull preserves out-of-scope files from a prior full
+	// pull, so the on-disk set is what a later push actually carries.
+	const references = findOutOfScopeReferences(readSnapshotFiles(schemaDir));
+	if (references.length > 0) ctx.ui.warn(formatOutOfScopeReferences(references));
+
 	const relativeDir = relative(ctx.cwd, schemaDir);
 	const collections = snapshot.collections.length;
 	const removed = result.removed.length;

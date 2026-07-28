@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { MockAgent } from 'undici';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Snapshot } from '../../sync/contract.js';
 import { type DataCollection, writeDataFiles } from '../../sync/data-store.js';
 import { writeSnapshotFiles } from '../../sync/store.js';
 import {
@@ -127,6 +128,33 @@ describe('sync push', () => {
 		const summaryAt = err.indexOf('Schema — ');
 		expect(resolutionAt).toBeGreaterThanOrEqual(0);
 		expect(summaryAt).toBeGreaterThan(resolutionAt);
+	});
+
+	it('warns before apply when the committed schema references a collection it does not include', async () => {
+		// A scoped export can strand a group parent the target lacks, and apply then 500s server-side
+		// (server scoped-snapshot bug). Push must warn about the dangling reference before the apply so the
+		// operator can widen scope, rather than only learning at the crash.
+		const grouped: Snapshot = {
+			version: 2,
+			directus: '11.0.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'pages', meta: { group: 'website' } }],
+			fields: [{ collection: 'pages', field: 'title', type: 'string' }],
+			systemFields: [],
+			relations: [],
+		};
+
+		seedConfig();
+		writeSnapshotFiles(schemaDir, grouped);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+
+		const err = stderr.join('');
+		expect(err).toContain('does not include');
+		expect(err).toContain('pages → website (group parent)');
 	});
 
 	it('emits applied:true with the counts and the verified hash on --json', async () => {

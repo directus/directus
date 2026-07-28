@@ -1,7 +1,9 @@
 import { CliError } from '../../kernel/error.js';
+import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
 import { fetchDiff } from '../../sync/api.js';
 import type { DiffResult, SchemaDiff } from '../../sync/contract.js';
+import { findOutOfScopeReferences, formatOutOfScopeReferences } from '../../sync/references.js';
 import { readSnapshotFiles } from '../../sync/store.js';
 import type { Target } from './resolve-target.js';
 
@@ -29,8 +31,14 @@ function assertNoMisroutedCollectionDrops(diff: SchemaDiff): void {
 /**
  * Compare the committed snapshot with a target using the same read/fetch path for diff and push.
  */
-export async function localDiff(target: Target, mode: 'merge' | 'mirror'): Promise<DiffResult | null> {
+export async function localDiff(target: Target, mode: 'merge' | 'mirror', ctx: CliContext): Promise<DiffResult | null> {
 	const snapshot = readSnapshotFiles(target.schemaDir);
+
+	// Warn before apply about references pointing outside the committed snapshot: a scoped export can strand
+	// a group parent or relation target the fresh instance lacks, and apply fails on it. Independent of pull's
+	// warning (Chris/Judd thread) — the operator may push a scope they did not pull.
+	const references = findOutOfScopeReferences(snapshot);
+	if (references.length > 0) ctx.ui.warn(formatOutOfScopeReferences(references));
 
 	const result = await fetchDiff(target.credential, snapshot, mode);
 
