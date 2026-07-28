@@ -148,9 +148,9 @@ describe('sync pull', () => {
 			content: [],
 		});
 
-		// The default set is every selectable resource except users; settings contributes its one
-		// singleton row, the rest are stubbed empty.
-		expect(payload.data.collections).toBe(10);
+		// The default set is every selectable resource except users and translations; settings contributes
+		// its one singleton row, the rest are stubbed empty.
+		expect(payload.data.collections).toBe(9);
 		expect(payload.data.records).toBe(1);
 
 		expect(new Set(payload.data.resources)).toEqual(
@@ -164,7 +164,6 @@ describe('sync pull', () => {
 				'directus_policies',
 				'directus_roles',
 				'directus_settings',
-				'directus_translations',
 			]),
 		);
 	});
@@ -468,7 +467,6 @@ describe('sync pull resources and data', () => {
 			'directus_policies',
 			'directus_roles',
 			'directus_settings',
-			'directus_translations',
 		]);
 	});
 
@@ -499,7 +497,6 @@ describe('sync pull resources and data', () => {
 			'directus_policies',
 			'directus_roles',
 			'directus_settings',
-			'directus_translations',
 		]);
 
 		// The preserved files stay manifest-owned, so a later read still returns them.
@@ -697,7 +694,6 @@ describe('sync pull resources and data', () => {
 			'directus_policies',
 			'directus_roles',
 			'directus_settings',
-			'directus_translations',
 		]);
 	});
 
@@ -721,8 +717,30 @@ describe('sync pull resources and data', () => {
 			'directus_policies',
 			'directus_roles',
 			'directus_settings',
-			'directus_translations',
 		]);
+	});
+
+	it('omits translations from the default set so a bare pull never sets up a broken mirror', async () => {
+		// The server's translations updateMany throws "Duplicate key and language combination" on any mirror
+		// push of translations (api services/translations.ts), so committing them by default would break an
+		// otherwise clean mirror. Translations ride only via --translations. /translations is deliberately left
+		// unregistered, so a stray fetch would throw on the disabled dispatcher — proving a bare pull skips it.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptList('/roles', []);
+		interceptList('/policies', []);
+		interceptList('/access', []);
+		interceptList('/permissions', []);
+		interceptList('/flows', []);
+		interceptList('/operations', []);
+		interceptList('/dashboards', []);
+		interceptList('/panels', []);
+		interceptSingleton('/settings', { id: 1 });
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		expect(exportedCollections()).not.toContain('directus_translations');
 	});
 
 	it('refuses --all combined with a named resource before any network call', async () => {
@@ -1395,7 +1413,6 @@ describe('sync pull resources and data', () => {
 			'directus_policies',
 			'directus_roles',
 			'directus_settings',
-			'directus_translations',
 		]);
 	});
 

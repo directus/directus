@@ -41,7 +41,7 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 			'All collections except these (comma-separated); pulls a partial snapshot',
 			parseList,
 		)
-		.option('--all', 'Every config resource, including users (content still requires --content)');
+		.option('--all', 'Every config resource, including users and translations (content still requires --content)');
 
 	// Define each positive flag before its --no- twin so the default stays undefined (tri-state selection).
 	for (const name of SELECTABLE_RESOURCES) {

@@ -173,8 +173,11 @@ function resolveScope(options: PullOptions, projectConfig: ProjectConfig | undef
 	};
 }
 
-// Users require explicit selection so a bare pull never commits accounts.
-const DEFAULT_RESOURCE_NAMES = SELECTABLE_RESOURCES.filter((name) => name !== 'users');
+// Users and translations require explicit selection. A bare pull never commits accounts (users), and it
+// omits translations because the server's translations updateMany throws "Duplicate key and language
+// combination" on any mirror push of them (api services/translations.ts) — shipping them by default would
+// break an otherwise clean mirror. Opt in with --translations (or --all); merge and add are unaffected.
+const DEFAULT_RESOURCE_NAMES = SELECTABLE_RESOURCES.filter((name) => name !== 'users' && name !== 'translations');
 
 // Resolve boolean flags over --all over project config over defaults, then expand the selected closure.
 function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig | undefined): Resource[] {
