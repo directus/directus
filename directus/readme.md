@@ -69,6 +69,15 @@ One click. Fully provisioned with PostgreSQL, Redis, and S3-compatible storage, 
 
 ---
 
+### Deploy on Sealos
+
+One click. Deploy Directus with PostgreSQL, Redis, and persistent file storage. Private S3-compatible object storage is
+available as an option.
+
+[![Deploy on Sealos](https://sealos.io/Deploy-on-Sealos.svg)](https://sealos.io/products/app-store/directus)
+
+---
+
 ## 🙋 Community Help
 
 [The Directus Documentation](https://directus.com/docs) is a great place to start, or explore these other channels:
