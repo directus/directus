@@ -46,8 +46,7 @@ const props = withDefaults(
 		tinymceOverrides?: unknown;
 		softLength?: number;
 		direction?: string;
-		// comparison view (content versioning / revision diffs): value arrives pre-marked with
-		// comparison-diff spans; side switches flow in as value changes
+		/** Comparison view (versioning/revision diffs); the value arrives pre-marked with comparison-diff spans. */
 		comparisonMode?: boolean;
 		field?: string;
 		autoSwitchToDraft?: boolean;
@@ -83,7 +82,7 @@ const { extensions: customFormatExtensions, formats: customFormatList } = buildC
 
 const pageBreakLabel = computed(() => `"${t('wysiwyg_options.pagebreak')}"`);
 
-// base content font, driven by the `font` option; theme tokens use `sans` (not `sans-serif`)
+// theme tokens use `sans`, not `sans-serif`
 const fontFamily = computed(() => {
 	const token = props.font === 'sans-serif' ? 'sans' : props.font;
 	return `var(--theme--fonts--${token}--font-family)`;
@@ -102,12 +101,9 @@ const {
 // skipped for display-only modes; comparison values carry diff spans the base schema would flag as loss
 if (!props.comparisonMode && !props.nonEditable) checkValue();
 
-// surface the unsupported-data lock to the form so the field menu can gate raw editing (which
-// would otherwise bypass this guard); `immediate` reports the state settled by the check above
+// surface the lock to the form so the field menu can gate raw editing, which would bypass this guard
 watch(normalizationLocked, (locked) => emit('readonly', locked), { immediate: true });
 
-// read-only states: `nonEditable`/`comparisonMode` keep the normal look, `disabled` dims (see styles),
-// `normalizationLocked` guards lossy stored HTML until the warning dialog is confirmed
 const isEditable = computed(
 	() => !props.disabled && !props.nonEditable && !props.comparisonMode && !normalizationLocked.value,
 );
@@ -137,9 +133,8 @@ function updateCount(instance: Editor) {
 const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
 
 const editor = useEditor({
-	// LinkShortcut lives here, not in the shared set, so its Mod-K handler can call this instance's opener.
-	// ComparisonDiff only joins the schema in comparison mode — the view mounts fresh per comparison,
-	// so deciding at construction is safe, and normal editing keeps stripping diff spans.
+	// LinkShortcut is per-instance (its Mod-K handler opens this editor's drawer); ComparisonDiff only
+	// joins the schema in comparison mode, so normal editing keeps stripping diff spans
 	extensions: [
 		...editorExtensions,
 		...customFormatExtensions,
@@ -184,17 +179,15 @@ function onEditorClick() {
 	onLockedClick();
 }
 
-// raw mode edits the stored HTML as text in the code interface — emits never round-trip through
-// the schema, so nothing is normalized away; the loss-free alternative the warning offers
+// raw mode edits the stored HTML as text; emits never round-trip the schema, so nothing is normalized away
 const rawMode = ref(false);
 
 function enterRawMode() {
 	normalizationWarningOpen.value = false;
 
-	// Opening raw editing is an edit intent. On a versioned item this must move it to a Draft (parity
-	// with "Edit anyway"); the Draft switch is edit-driven, so force the current value through unchanged.
-	// `set-field-value` bypasses the equal-to-initial unset, and the auto-switch gate keeps it a no-op
-	// on non-versioned items (where nothing should be marked dirty until a real edit).
+	// Opening raw editing is an edit intent: on a versioned item it must move to a Draft (parity with
+	// "Edit anyway"), so force the current value through unchanged. `set-field-value` bypasses the
+	// equal-to-initial unset; the auto-switch gate keeps it a no-op on non-versioned items.
 	if (props.autoSwitchToDraft && props.field) {
 		emit('setFieldValue', { field: props.field, value: props.value });
 	}
@@ -285,9 +278,8 @@ watch([imageDrawerOpen, linkDrawerOpen, mediaDrawerOpen, sourceCodeDrawerOpen], 
 	open.some(Boolean) ? pauseFocusTrap() : unpauseFocusTrap(),
 );
 
-// `editable` is only read at init, so keep it in sync when the prop flips.
-// `emitUpdate: false` — the default emits `update`, turning every disabled flip (form loading,
-// collab field locks) into a phantom `input` that rebroadcasts content and steals the collab lock
+// `editable` is only read at init, so sync it manually. `setEditable(_, false)`: the default emits
+// `update`, turning every disabled flip into a phantom `input` that steals the collab field lock
 watch(isEditable, (editable) => editor.value?.setEditable(editable, false));
 
 // external value changes (async load, revert, version switch) — guard against echo loops
@@ -300,12 +292,11 @@ watch(
 		syncScheduled = true;
 
 		// Defer past the current flush: setContent mid-patch (watchers run pre-flush) tears down Vue
-		// node views whose unmount re-enters Vue's queue and corrupts ProseMirror's view tree
-		// (CMS-2885); deferring also coalesces same-flush churn (save flows flip html -> null -> html)
+		// node views and corrupts ProseMirror's view tree; deferring also coalesces same-flush churn
+		// (save flows flip html -> null -> html)
 		await nextTick();
 		syncScheduled = false;
 
-		// raw mode edits flow straight through the code interface, never through the editor
 		if (rawMode.value) return;
 		if (!editor.value) return;
 		// compare the encoded (stored) form so a re-emitted page-break marker doesn't look like a change

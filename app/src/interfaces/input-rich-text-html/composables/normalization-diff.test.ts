@@ -51,7 +51,7 @@ describe('computeNormalizationDiff', () => {
 	});
 
 	// Custom-format marks live only on the editor instance, so the round-trip must be told about them
-	// or their markup reads as dropped/reordered and falsely triggers the warning (ENG-1474).
+	// or their markup reads as dropped/reordered and falsely triggers the warning.
 	test('returns null for custom-format markup when its extensions are supplied', () => {
 		const { extensions } = buildCustomFormats([
 			{ title: 'Highlight', inline: 'span', classes: 'highlight', styles: { 'background-color': 'yellow' } },

@@ -63,7 +63,7 @@ export function useSourceCode(editor: Ref<Editor>, extraExtensions: AnyExtension
 		applySourceCode();
 	}
 
-	// Close the confirmation but keep the drawer open so the user can keep editing.
+	// keeps the drawer open so the user can keep editing
 	function cancelNormalize() {
 		normalizeConfirmOpen.value = false;
 	}

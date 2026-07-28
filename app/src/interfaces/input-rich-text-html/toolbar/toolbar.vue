@@ -138,7 +138,6 @@ const visibleGroups = computed(() => layout.value.visible);
 const overflowGroups = computed(() => layout.value.overflow);
 const hasOverflow = computed(() => overflowGroups.value.length > 0);
 
-// resolve keys to button definitions, injecting per-render props (style defaults, custom-format list)
 function resolve(group: RenderGroup): { key: string; button: ToolbarButton }[] {
 	return group.keys.map((key) => {
 		const button = toolbarButtons[key]!;
@@ -148,7 +147,6 @@ function resolve(group: RenderGroup): { key: string; button: ToolbarButton }[] {
 	});
 }
 
-// max width of the "Show More" panel = current toolbar width
 const overflowMaxWidth = computed(() => (Number.isFinite(availableWidth.value) ? `${availableWidth.value}px` : '100%'));
 </script>
 

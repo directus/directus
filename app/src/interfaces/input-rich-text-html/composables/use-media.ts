@@ -54,7 +54,6 @@ export function useMedia(editor: Ref<Editor>, imageToken: Ref<string | undefined
 		saveMedia,
 	};
 
-	// Opens the drawer; on an active media node, prefill the form for editing, else start empty.
 	function openMediaDrawer() {
 		mediaDrawerOpen.value = true;
 		activeTab.value = ['media'];

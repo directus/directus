@@ -108,7 +108,7 @@ describe('normalization warning wiring', () => {
 	});
 
 	// custom-format marks live only on this editor instance; the guard's round-trip must know them
-	// or their stored markup falsely reads as lossy and locks the editor (ENG-1474)
+	// or their stored markup falsely reads as lossy and locks the editor
 	test('a value using a configured custom format mounts editable', async () => {
 		const { editor } = await mountWithValue('<p><cite class="src">quoted</cite></p>', {
 			customFormats: [{ title: 'Cite', inline: 'cite', classes: 'src' }],
