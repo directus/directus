@@ -2,7 +2,6 @@ import { OwnerInformation, Settings } from '@directus/types';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
 import { useUserStore } from './user';
-import { getAvailableAiProviders } from '@/ai/utils/available-models';
 import api from '@/api';
 import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';

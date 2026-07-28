@@ -15,30 +15,7 @@ export type AIModelSettings = Pick<
 	| 'ai_google_allowed_models'
 >;
 
-export function getAvailableAiProviders(settings: AIModelSettings | null | undefined): ProviderType[] {
-	const providers: ProviderType[] = [];
-
-	if (settings?.ai_openai_api_key) {
-		providers.push('openai');
-	}
-
-	if (settings?.ai_anthropic_api_key) {
-		providers.push('anthropic');
-	}
-
-	if (settings?.ai_google_api_key) {
-		providers.push('google');
-	}
-
-	if (settings?.ai_openai_compatible_api_key && settings?.ai_openai_compatible_base_url) {
-		providers.push('openai-compatible');
-	}
-
-	return providers;
-}
-
-export function getAvailableModels(settings: AIModelSettings | null | undefined): AppModelDefinition[] {
-	const availableProviders = getAvailableAiProviders(settings);
+export function getAvailableModels(settings: AIModelSettings | null | undefined, availableProviders: ProviderType[]): AppModelDefinition[] {
 	const customModels = buildCustomModels(settings?.ai_openai_compatible_models ?? null);
 	const allModels = [...AI_MODELS, ...customModels];
 
