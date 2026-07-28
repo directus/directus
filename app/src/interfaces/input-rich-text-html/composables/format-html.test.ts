@@ -47,6 +47,33 @@ describe('formatHtml', () => {
 		expect(formatHtml('<pre><code>a\n  b</code></pre>')).toBe('<pre><code>a\n  b</code></pre>');
 	});
 
+	test('trims boundary whitespace inside an inline-only block', () => {
+		expect(formatHtml('<p> hello world </p>')).toBe('<p>hello world</p>');
+	});
+
+	test('trims boundary whitespace nested inside inline marks', () => {
+		expect(formatHtml('<p>hi <em>there </em></p>')).toBe('<p>hi <em>there</em></p>');
+	});
+
+	test('keeps trailing whitespace inside <pre>', () => {
+		expect(formatHtml('<pre><code>a </code></pre>')).toBe('<pre><code>a </code></pre>');
+	});
+
+	test('keeps <pre> contents untouched when nested inside a block', () => {
+		expect(formatHtml('<blockquote><pre><code> a\n  b </code></pre></blockquote>')).toBe(
+			['<blockquote>', '  <pre><code> a\n  b </code></pre>', '</blockquote>'].join('\n'),
+		);
+	});
+
+	test('leaves an inline-only block without text nodes unchanged', () => {
+		expect(formatHtml('<p><br></p>')).toBe('<p><br></p>');
+	});
+
+	test('preserves a non-breaking space at the block boundary', () => {
+		// A non-breaking space is significant and survives Tiptap normalization, so it must not be trimmed.
+		expect(formatHtml('<p>hello\u00a0</p>')).toBe('<p>hello&nbsp;</p>');
+	});
+
 	test('preserves HTML comments between blocks', () => {
 		expect(formatHtml('<p>Testing this</p><!-- comment --><p>Check it out</p>')).toBe(
 			['<p>Testing this</p>', '<!-- comment -->', '<p>Check it out</p>'].join('\n'),
