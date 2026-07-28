@@ -15,7 +15,6 @@ import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
 import { buildProviderConfigs } from '../ai/providers/registry.js';
-import { getCache } from '../cache.js';
 import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../constants.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
 import { getEntitlementManager, getLicenseManager } from '../license/index.js';
