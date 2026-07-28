@@ -1,7 +1,7 @@
 import { relative } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import type { ProjectConfig } from '../../kernel/config/file.js';
-import { fetchCustomPermissionRulesEntitled, fetchTotalCount } from '../../kernel/connection.js';
+import { fetchCustomPermissionRulesEntitled, fetchQueryLimitMax, fetchTotalCount } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
@@ -333,6 +333,10 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 	const snapshot = await fetchSnapshot(credential, scope?.api);
 
+	// One keystone read for the whole pull: when the source reports no row cap, every fetch below is a single
+	// unbounded read instead of a read plus an exhaustion probe. Best-effort — undefined keeps the probe.
+	const queryMax = await fetchQueryLimitMax(credential);
+
 	const contentSources = resolveContentSources(contentNamesList, snapshot);
 
 	const includesUsers = resources.some((resource) => resource.name === 'users');
@@ -356,14 +360,18 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	};
 
 	for (const resource of resources) {
-		let rows = await fetchRecords(credential, {
-			collection: resource.collection,
-			endpoint: resource.endpoint,
-			primaryKey: resource.primaryKey,
-			singleton: resource.singleton,
-			drop: resource.drop,
-			keyset: resource.keyset,
-		});
+		let rows = await fetchRecords(
+			credential,
+			{
+				collection: resource.collection,
+				endpoint: resource.endpoint,
+				primaryKey: resource.primaryKey,
+				singleton: resource.singleton,
+				drop: resource.drop,
+				keyset: resource.keyset,
+			},
+			queryMax,
+		);
 
 		// Unlicensed instances hide custom-rule permissions from every read path, so the fetch above can be
 		// silently short. total_count is computed on the database and still sees them — a shortfall is
@@ -398,7 +406,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	}
 
 	for (const source of contentSources) {
-		const rows = await fetchRecords(credential, source);
+		const rows = await fetchRecords(credential, source, queryMax);
 
 		// Content is otherwise exported verbatim, but conceal/encrypt/hash fields cannot round-trip (see
 		// NON_ROUNDTRIP_SPECIALS): committing them would land masks in git and a later push would overwrite

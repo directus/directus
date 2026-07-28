@@ -1,5 +1,6 @@
 import { select } from '@clack/prompts';
 import { isEqual } from 'lodash-es';
+import { fetchQueryLimitMax } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
@@ -143,6 +144,7 @@ async function reconcileSystem(
 	system: readonly SystemCollection[],
 	target: Target,
 	existing: Readonly<Record<string, Readonly<Record<string, string>>>>,
+	queryMax: number | undefined,
 ): Promise<{
 	inputs: ReconcileInput[];
 	results: CollectionReconcile[];
@@ -152,14 +154,18 @@ async function reconcileSystem(
 	const targets = new Map<string, readonly Record<string, unknown>[]>();
 
 	for (const { data, resource } of [...system].reverse()) {
-		const targetRecords = await fetchRecords(target.credential, {
-			collection: resource.collection,
-			endpoint: resource.endpoint,
-			primaryKey: resource.primaryKey,
-			singleton: resource.singleton,
-			drop: resource.drop,
-			keyset: resource.keyset,
-		});
+		const targetRecords = await fetchRecords(
+			target.credential,
+			{
+				collection: resource.collection,
+				endpoint: resource.endpoint,
+				primaryKey: resource.primaryKey,
+				singleton: resource.singleton,
+				drop: resource.drop,
+				keyset: resource.keyset,
+			},
+			queryMax,
+		);
 
 		targets.set(resource.collection, targetRecords);
 
@@ -359,18 +365,32 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 	const targetUrl = normalizeInstanceUrl(target.url);
 	const { system, content } = partitionCollections(collections);
 	const map = readIdMap(target.idMapPath);
-	const { inputs, results, targets } = await reconcileSystem(system, target, mappingsFor(map, source, targetUrl));
+
+	// One keystone read per push covers every reconcile fetch below (Judd's "2 requests per resource" —
+	// each target read otherwise costs a fetch plus an exhaustion probe). Best-effort; undefined keeps the probe.
+	const queryMax = await fetchQueryLimitMax(target.credential);
+
+	const { inputs, results, targets } = await reconcileSystem(
+		system,
+		target,
+		mappingsFor(map, source, targetUrl),
+		queryMax,
+	);
 
 	for (const data of content) {
 		try {
 			targets.set(
 				data.collection,
-				await fetchRecords(target.credential, {
-					collection: data.collection,
-					endpoint: `/items/${data.collection}`,
-					primaryKey: data.primaryKey,
-					singleton: false,
-				}),
+				await fetchRecords(
+					target.credential,
+					{
+						collection: data.collection,
+						endpoint: `/items/${data.collection}`,
+						primaryKey: data.primaryKey,
+						singleton: false,
+					},
+					queryMax,
+				),
 			);
 		} catch (error) {
 			// A collection that does not exist until schema apply reads as 403 FORBIDDEN (existence-hiding),

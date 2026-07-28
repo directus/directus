@@ -200,13 +200,74 @@ async function fetchKeysetPages(
 	}
 }
 
+// A known-unbounded instance (queryLimit.max === -1) returns every row in a single consistent limit=-1
+// read: no cap can clamp it to empty and there are no page boundaries to shift, so neither the offset
+// overlap probe nor the zero-cap probe is needed. This halves the requests per resource on a standard
+// instance — the paging machinery below exists only because, without the server's cap, a short page is
+// indistinguishable from a clamped one.
+async function fetchUnbounded(
+	client: ReturnType<typeof connect>,
+	credential: ResolvedCredential,
+	source: RecordSource,
+): Promise<Record<string, unknown>[]> {
+	let response: unknown;
+
+	try {
+		response = await client.request(() => ({
+			path: source.endpoint,
+			method: 'GET',
+			params: { limit: -1, sort: source.primaryKey },
+		}));
+	} catch (error) {
+		throw mapRequestError(error, credential.url);
+	}
+
+	if (!Array.isArray(response) || !response.every((record) => isPlainObject(record))) {
+		throw new CliError('HTTP', `The ${source.endpoint} response was not an array of records.`);
+	}
+
+	const drop = source.drop;
+
+	const rows =
+		drop === undefined
+			? (response as Record<string, unknown>[])
+			: (response as Record<string, unknown>[]).filter((record) => !drop(record));
+
+	const seen = new Set<string>();
+
+	for (const record of rows) {
+		const pk = record[source.primaryKey];
+
+		if (typeof pk !== 'string' && typeof pk !== 'number') {
+			throw new CliError('HTTP', `A ${source.endpoint} record has no "${source.primaryKey}" primary key.`, {
+				hint: 'Field permissions may hide the key column; records cannot be keyed without it.',
+			});
+		}
+
+		const key = String(pk);
+
+		if (seen.has(key)) {
+			throw new CliError('HTTP', `${source.endpoint} returned primary key "${key}" more than once.`, {
+				hint: 'The server returned a duplicate primary key in one read; pages cannot be trusted.',
+			});
+		}
+
+		seen.add(key);
+	}
+
+	return rows;
+}
+
 /**
  * Fetch system or content records. The envelope and record object shape are validated, while collection-
- * specific fields pass through unchanged.
+ * specific fields pass through unchanged. `queryMax` is the instance's `queryLimit.max` (from the keystone
+ * `/server/info` read): when it is -1 the fetch is a single unbounded read; otherwise, or when unknown, the
+ * probe-based paging below stands.
  */
 export async function fetchRecords(
 	credential: ResolvedCredential,
 	source: RecordSource,
+	queryMax?: number,
 ): Promise<Record<string, unknown>[]> {
 	const client = connect(credential);
 
@@ -235,6 +296,9 @@ export async function fetchRecords(
 
 		return [record];
 	}
+
+	// The server told us it has no row cap, so one read is the whole collection (see fetchUnbounded).
+	if (queryMax === -1) return fetchUnbounded(client, credential, source);
 
 	if (source.keyset === true) return fetchKeysetPages(client, credential, source);
 

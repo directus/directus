@@ -174,6 +174,22 @@ export async function fetchServerVersion(credential: ResolvedCredential): Promis
 }
 
 /**
+ * The instance's `queryLimit.max` from `/server/info` (visible to any authenticated user): `-1` means no
+ * cap, a positive N is the hard page cap, `0` refuses everything. Undefined when it can't be read. Lets the
+ * fetch layer skip the exhaustion probe on an unbounded instance; a missing value degrades to today's
+ * probe-based paging, so this is best-effort and never gates.
+ */
+export async function fetchQueryLimitMax(credential: ResolvedCredential): Promise<number | undefined> {
+	try {
+		const info = await connect(credential).request(serverInfo());
+		const max = get(info, 'queryLimit.max');
+		return typeof max === 'number' ? max : undefined;
+	} catch {
+		return undefined;
+	}
+}
+
+/**
  * Whether the instance is licensed for custom permission rules, read from the admin-only `/license`
  * endpoint (`entitlements.custom_permission_rules_enabled`, `override ?? default`). When false the server
  * filters custom-rule permissions out of reads, which is exactly what makes a `/permissions` export

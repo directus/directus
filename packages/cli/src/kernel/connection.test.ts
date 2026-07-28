@@ -5,6 +5,7 @@ import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	fetchCustomPermissionRulesEntitled,
+	fetchQueryLimitMax,
 	fetchServerVersion,
 	loginSession,
 	pingServer,
@@ -225,6 +226,24 @@ describe('connection', () => {
 			.replyWithError(new Error('boom'));
 
 		await expect(fetchServerVersion(token)).resolves.toBeUndefined();
+	});
+
+	it('reads queryLimit.max from /server/info', async () => {
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: /^\/server\/info/, method: 'GET' })
+			.reply(200, { data: { queryLimit: { max: -1 } } }, { headers: { 'content-type': 'application/json' } });
+
+		await expect(fetchQueryLimitMax(token)).resolves.toBe(-1);
+	});
+
+	it('returns undefined for the query limit when /server/info omits it, so paging falls back to probing', async () => {
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: /^\/server\/info/, method: 'GET' })
+			.reply(200, { data: { project: { project_name: 'Demo' } } }, { headers: { 'content-type': 'application/json' } });
+
+		await expect(fetchQueryLimitMax(token)).resolves.toBeUndefined();
 	});
 
 	it('reads custom_permission_rules_enabled from /license, preferring override over default', async () => {

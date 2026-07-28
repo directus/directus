@@ -313,6 +313,57 @@ describe('fetchRecords', () => {
 		expect(result).toEqual(records);
 	});
 
+	it('reads an unbounded instance in a single request, skipping the exhaustion probe', async () => {
+		// queryMax === -1 means the server has no row cap, so limit=-1 provably returns the whole set in one
+		// consistent read — the overlap/exhaustion probe exists only to detect a silent clamp, which cannot
+		// happen here. Only the single read is intercepted: if the code still probed, the unmatched offset
+		// request would throw on the disabled dispatcher and fail this test.
+		const records = [
+			{ id: 1, title: 'First' },
+			{ id: 2, title: 'Second' },
+		];
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({
+				path: '/items/articles',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
+
+		const result = await fetchRecords(
+			credential,
+			{ collection: 'articles', endpoint: '/items/articles', primaryKey: 'id', singleton: false },
+			-1,
+		);
+
+		expect(result).toEqual(records);
+	});
+
+	it('does not treat an empty unbounded read as needing a zero-cap probe', async () => {
+		// With queryMax === -1 the instance is known not to be zero-capped, so an empty collection is just
+		// empty — no limit=1 probe. Only the single read is intercepted.
+		agent
+			.get('https://cms.example.com')
+			.intercept({
+				path: '/items/articles',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
+
+		const result = await fetchRecords(
+			credential,
+			{ collection: 'articles', endpoint: '/items/articles', primaryKey: 'id', singleton: false },
+			-1,
+		);
+
+		expect(result).toEqual([]);
+	});
+
 	it('pages past a server row cap until an empty response, so a clamped fetch cannot truncate', async () => {
 		// A deployment with QUERY_LIMIT_MAX clamps limit -1 down to the cap WITHOUT an error — a single
 		// request would silently drop every later row, and downstream that is data loss (mirror deletes
