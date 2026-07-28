@@ -186,7 +186,7 @@ describe('parseFields', () => {
 
 		const query = await getQuery({}, m2aSchema, selections, mockVariableValues, mockAccountability, 'test_collection');
 		expect(query.fields).toEqual(['parent:child.grandchild']);
-		
+
 		expect(query.deep).toEqual({
 			parent__child: {
 				grandchild: {
