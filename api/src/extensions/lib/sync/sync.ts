@@ -103,7 +103,10 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 			};
 
 			// Queue the whole per-file sync so the remote stat/read round trips run concurrently
-			syncTasks.push(queue.add(syncFile));
+			const task = queue.add(syncFile);
+			// Attach a no-op handler so an early failure isn't an unhandled rejection while listing continues
+			task.catch(() => {});
+			syncTasks.push(task);
 		}
 
 		// wait for all file syncs to finish, surfacing any errors
