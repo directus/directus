@@ -49,8 +49,7 @@ export async function getSnapshot(options?: GetSnapshotOptions): Promise<Snapsho
 	]);
 
 	// `null` (no scope) is full snapshot, passing in raw to ensure folders are included
-	const scoped = options?.scope ? resolveScopedCollections(collectionsRaw, options.scope) : null;
-	const scope = scoped === null ? null : new Set(scoped);
+	const scope = resolveScopedCollections(collectionsRaw, options?.scope);
 
 	const collectionsFiltered = collectionsRaw.filter(
 		(item) => isNonSystem(item) && isManaged(item) && isInScope(item, scope),
