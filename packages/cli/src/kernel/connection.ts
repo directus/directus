@@ -88,6 +88,44 @@ export async function loginSession(
 	}
 }
 
+// A saved session's access token expires; the refresh token outlives it. Before the first request of a
+// command, refresh an expired (or near-expiry) session so it re-auths silently instead of failing hard and
+// forcing the whole profile to be re-added (Judd's pain). Run once per command: the rotated tokens persist
+// to the shared store, so every later request — SDK client or raw fetch — reads the fresh access token. A
+// static token has nothing to refresh; a session with no saved refresh token is left for the request to
+// 401 on as before. A failed refresh means the refresh token itself is dead, so surface a clear
+// re-authenticate error rather than a bare 401.
+const SESSION_REFRESH_SKEW_MS = 60_000;
+
+export async function refreshSessionIfNeeded(credential: ResolvedCredential): Promise<void> {
+	if (credential.kind !== 'session') return;
+
+	const storage = credentialStorage(credential.url, credential.profileName);
+	const data = await storage.get();
+
+	if (data === null) return;
+
+	const expiring = data.expires_at !== null && data.expires_at <= Date.now() + SESSION_REFRESH_SKEW_MS;
+
+	if (data.access_token !== null && !expiring) return;
+
+	const client = createDirectus<CoreSchema>(credential.url)
+		.with(authentication('json', { autoRefresh: false, storage }))
+		.with(restWithTimeout());
+
+	try {
+		// json mode reads the refresh token from storage and persists the rotated tokens back through it.
+		await client.refresh();
+	} catch (error) {
+		const mapped = mapRequestError(error, credential.url);
+
+		throw new CliError('AUTH', `The saved session for profile "${credential.profileName}" has expired.`, {
+			hint: `Sign in again: d6s profile test ${credential.profileName}`,
+			...(mapped.detail !== undefined ? { detail: mapped.detail } : {}),
+		});
+	}
+}
+
 async function identify(client: RestClient<CoreSchema>, url: string): Promise<Identity> {
 	try {
 		const me: unknown = await client.request(

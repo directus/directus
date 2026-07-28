@@ -3,12 +3,14 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { credentialStorage } from './config/credentials.js';
 import {
 	fetchCustomPermissionRulesEntitled,
 	fetchQueryLimitMax,
 	fetchServerVersion,
 	loginSession,
 	pingServer,
+	refreshSessionIfNeeded,
 	testConnection,
 } from './connection.js';
 import { redact } from './secret.js';
@@ -204,6 +206,79 @@ describe('connection', () => {
 			.replyWithError(new Error('getaddrinfo ENOTFOUND'));
 
 		await expect(pingServer('https://cms.example.com')).rejects.toMatchObject({ code: 'HTTP' });
+	});
+
+	function seedSession(url: string, profile: string, expiresAt: number): void {
+		credentialStorage(url, profile).set({
+			access_token: 'old-access',
+			refresh_token: 'refresh-value',
+			expires: 900_000,
+			expires_at: expiresAt,
+		});
+	}
+
+	it('leaves a static token untouched — there is nothing to refresh', async () => {
+		// No /auth/refresh is registered, so a stray refresh request would throw on the disabled dispatcher;
+		// resolving proves the static-token path is a pure no-op.
+		await expect(
+			refreshSessionIfNeeded({ url: 'https://cms.example.com', token: 'tok', kind: 'token' }),
+		).resolves.toBeUndefined();
+	});
+
+	it('does not refresh a session whose access token is still valid', async () => {
+		// A future expiry means the saved token is fine; refreshing it anyway would rotate tokens on every
+		// command for no reason. No /auth/refresh is registered, so a refresh attempt would fail the test.
+		isolateHome();
+		seedSession('https://cms.example.com', 'prod', Date.now() + 3_600_000);
+
+		await refreshSessionIfNeeded({ url: 'https://cms.example.com', profileName: 'prod', kind: 'session' });
+
+		expect((await credentialStorage('https://cms.example.com', 'prod').get())?.access_token).toBe('old-access');
+	});
+
+	it('refreshes an expired session and persists the rotated tokens for later requests', async () => {
+		// The whole point: an expired access token becomes a silent re-auth. After refresh the shared store
+		// must hold the new access token so every subsequent request (SDK or raw fetch) reads it.
+		isolateHome();
+		seedSession('https://cms.example.com', 'prod', Date.now() - 1_000);
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/auth/refresh', method: 'POST' })
+			.reply(
+				200,
+				{ data: { access_token: 'new-access', refresh_token: 'new-refresh', expires: 900_000 } },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		await refreshSessionIfNeeded({ url: 'https://cms.example.com', profileName: 'prod', kind: 'session' });
+
+		expect((await credentialStorage('https://cms.example.com', 'prod').get())?.access_token).toBe('new-access');
+	});
+
+	it('fails with a re-authenticate hint when the refresh token itself is dead', async () => {
+		// A dead refresh token is the one case re-login is unavoidable — surface that clearly, naming the
+		// command to run, instead of letting the request fail later with a bare 401.
+		isolateHome();
+		seedSession('https://cms.example.com', 'prod', Date.now() - 1_000);
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/auth/refresh', method: 'POST' })
+			.reply(
+				401,
+				{ errors: [{ message: 'nope', extensions: { code: 'INVALID_CREDENTIALS' } }] },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		const error = await refreshSessionIfNeeded({
+			url: 'https://cms.example.com',
+			profileName: 'prod',
+			kind: 'session',
+		}).catch((error: unknown) => error);
+
+		expect(error).toMatchObject({ code: 'AUTH' });
+		expect((error as { hint: string }).hint).toContain('profile test prod');
 	});
 
 	const token = { url: 'https://cms.example.com', token: 'tok', kind: 'token' } as const;

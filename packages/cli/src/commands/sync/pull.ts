@@ -1,7 +1,12 @@
 import { relative } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import type { ProjectConfig } from '../../kernel/config/file.js';
-import { fetchCustomPermissionRulesEntitled, fetchQueryLimitMax, fetchTotalCount } from '../../kernel/connection.js';
+import {
+	fetchCustomPermissionRulesEntitled,
+	fetchQueryLimitMax,
+	fetchTotalCount,
+	refreshSessionIfNeeded,
+} from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
@@ -330,6 +335,9 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	// Provenance preflight BEFORE any network or write: the schema files land first, so a writer-level
 	// refusal alone would leave the new source's schema committed beside the old source's data.
 	assertDataSource(dataDir, normalizeInstanceUrl(url));
+
+	// Refresh an expiring saved session before the first request so an expired token re-auths silently.
+	await refreshSessionIfNeeded(credential);
 
 	const snapshot = await fetchSnapshot(credential, scope?.api);
 

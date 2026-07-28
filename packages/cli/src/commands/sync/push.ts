@@ -2,6 +2,7 @@ import { relative } from 'node:path';
 import { confirm, text } from '@clack/prompts';
 import type { ResolvedCredential } from '../../kernel/config/credentials.js';
 import type { ProjectConfig } from '../../kernel/config/file.js';
+import { refreshSessionIfNeeded } from '../../kernel/connection.js';
 import { CliError, withHint } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
@@ -136,6 +137,9 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	// Show the resolved URL and the mode's consequences before any remote work: a misleading profile name
 	// must be visible, and "mirror deletes" must never be a surprise learned at the refusal.
 	ctx.ui.info(`Pushing to ${options.to} — ${url} (${describeMode(mode)})`);
+
+	// Refresh an expiring saved session before the first request so an expired token re-auths silently.
+	await refreshSessionIfNeeded(credential);
 
 	const result = await localDiff(target, schemaDiffMode(mode), ctx);
 

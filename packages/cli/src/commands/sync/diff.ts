@@ -1,3 +1,4 @@
+import { refreshSessionIfNeeded } from '../../kernel/connection.js';
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
 import type { ImportBatchResult } from '../../sync/contract.js';
@@ -68,6 +69,9 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	// Same disclosure as push: which instance, and what the mode would mean — BEFORE any results, so an
 	// operator diffing the wrong profile notices here, not in the push that follows.
 	ctx.ui.info(`Comparing committed files with ${options.to} — ${url} (${describeMode(mode)})`);
+
+	// Refresh an expiring saved session before the first request so an expired token re-auths silently.
+	await refreshSessionIfNeeded(target.credential);
 
 	const result = await localDiff(target, schemaDiffMode(mode), ctx);
 
