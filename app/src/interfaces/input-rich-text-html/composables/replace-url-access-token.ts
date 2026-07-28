@@ -1,7 +1,6 @@
 import { getPublicURL } from '@/utils/get-root-path';
 
 export function replaceUrlAccessToken(url: string, token: string | null | undefined): string {
-	// Only process assets URL
 	if (!url.includes(getPublicURL() + 'assets/')) {
 		return url;
 	}

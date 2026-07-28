@@ -116,7 +116,6 @@ defineExpose({ shouldShow, getReferencedVirtualElement });
 	border-radius: var(--theme--popover--menu--border-radius);
 	box-shadow: var(--theme--popover--menu--box-shadow);
 
-	// Arrow pointing at the table.
 	&::after {
 		content: '';
 		position: absolute;

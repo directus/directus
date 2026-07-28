@@ -389,8 +389,7 @@ async function onClick(event: MouseEvent) {
 	background-color: var(--v-button-background-color, var(--theme--primary));
 }
 
-// Ghost: transparent at rest, dimmed-primary fill on hover/active. Consolidated from the WYSIWYG
-// toolbar, which previously duplicated this CSS-variable override across its button components.
+// Ghost: transparent at rest, dimmed-primary fill on hover/active.
 .ghost {
 	--v-button-color: var(--theme--foreground);
 	--v-button-color-hover: var(--primary-ondimmed);

@@ -54,7 +54,6 @@ export function useImage(
 
 	return { imageDrawerOpen, imageSelection, openImageDrawer, closeImageDrawer, onImageSelect, saveImage };
 
-	// Opens the drawer; when an image node is selected, prefill the form from its attributes for editing.
 	function openImageDrawer() {
 		imageDrawerOpen.value = true;
 
