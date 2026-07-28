@@ -1,6 +1,6 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { createTestingPinia } from '@pinia/testing';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { expect, test, vi } from 'vitest';
 import VIcon from './v-icon.vue';
 
@@ -62,7 +62,7 @@ test('custom icon', () => {
 	expect(wrapper.find('svg').exists()).toBeTruthy();
 });
 
-test('social icon', () => {
+test('social icon', async () => {
 	const wrapper = mount(VIcon, {
 		props: {
 			name: 'docker',
@@ -76,10 +76,14 @@ test('social icon', () => {
 		},
 	});
 
+	// SocialIcon is loaded asynchronously via defineAsyncComponent
+	await vi.dynamicImportSettled();
+	await flushPromises();
+
 	expect(wrapper.find('svg').exists()).toBeTruthy();
 });
 
-test('should only load fontawesome brand icons when using social icon', () => {
+test('should only load fontawesome brand icons when using social icon', async () => {
 	const libraryAddSpy = vi.spyOn(library, 'add');
 
 	mount(VIcon, {
@@ -95,6 +99,9 @@ test('should only load fontawesome brand icons when using social icon', () => {
 		},
 	});
 
+	await vi.dynamicImportSettled();
+	await flushPromises();
+
 	expect(libraryAddSpy).not.toHaveBeenCalled();
 
 	mount(VIcon, {
@@ -109,6 +116,10 @@ test('should only load fontawesome brand icons when using social icon', () => {
 			],
 		},
 	});
+
+	// SocialIcon is loaded asynchronously via defineAsyncComponent
+	await vi.dynamicImportSettled();
+	await flushPromises();
 
 	expect(libraryAddSpy).toHaveBeenCalledOnce();
 });

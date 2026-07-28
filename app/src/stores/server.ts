@@ -26,6 +26,7 @@ export type Info = {
 		public_registration: boolean | null;
 		public_registration_verify_email: boolean | null;
 	};
+	project_owner_enabled: boolean;
 	mcp_enabled: boolean;
 	ai_enabled: boolean;
 	mcp_oauth_enabled: boolean;
@@ -104,6 +105,7 @@ export type Auth = {
 export const useServerStore = defineStore('serverStore', () => {
 	const info = reactive<Info>({
 		project: null,
+		project_owner_enabled: true,
 		mcp_enabled: true,
 		ai_enabled: true,
 		mcp_oauth_enabled: false,
@@ -149,6 +151,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		]);
 
 		info.project = serverInfoResponse.data.data?.project;
+		info.project_owner_enabled = serverInfoResponse.data.data?.project_owner_enabled;
 		info.mcp_enabled = serverInfoResponse.data.data?.mcp_enabled;
 		info.ai_enabled = serverInfoResponse.data.data?.ai_enabled;
 		info.mcp_oauth_enabled = serverInfoResponse.data.data?.mcp_oauth_enabled;

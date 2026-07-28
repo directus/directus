@@ -1257,6 +1257,7 @@ fields:
     collection: 컬렉션
     icon: 아이콘
     note: 메모
+    status: 상태
     color: 색상
     display_template: 표시 형식
     hidden: 숨김
@@ -1965,6 +1966,7 @@ interfaces:
     incompatible_data: 현재 데이터는 리피터 레이아웃과 호환되지 않으며 리피터 레이아웃에 항목을 추가할 때 재정의됩니다.
     interface_group: 인터페이스 옵션
     display_group: 디스플레이 옵션
+    edit_mode_inline: 인라인
   slider:
     slider: 슬라이더
     description: 슬라이더를 사용하여 숫자 선택

@@ -1145,6 +1145,7 @@ fields:
     collection: Gyűjtemény
     icon: Ikon
     note: Jegyzet
+    status: Állapot
     color: Szín
     display_template: Megjelenítési sablon
     hidden: Rejtett
@@ -1722,6 +1723,7 @@ interfaces:
     field_note_placeholder: Megjegyzés hozzáadása mezőhöz...
     incompatible_data: Az aktuális adatok nem kompatibilisek az átjátszó interfésszel, és felülbírálásra kerülnek, amikor elemeket adunk az átjátszóhoz
     interface_group: Interfész opciók
+    edit_mode_inline: Inline
   slider:
     slider: Csúszka
     description: Válasszon számot csúszka segítségével

@@ -1218,6 +1218,7 @@ fields:
     collection: कलेक्शन
     icon: आयकॉन
     note: नोट
+    status: स्टेटस
     color: कलर
     display_template: डिस्प्ले टेम्प्लेट
     hidden: लपलेले
@@ -1882,6 +1883,7 @@ interfaces:
     incompatible_data: वर्तमान डेटा रिपीटर इंटरफेसशी सुसंगत नाही आणि रिपीटरमध्ये आयटम जोडताना ओव्हरराइड केला जाईल
     interface_group: इंटरफेस पर्याय
     display_group: प्रदर्शन पर्याय
+    edit_mode_inline: इनलाईन
   slider:
     slider: स्लाइडर
     description: स्लाइडर वापरून संख्या निवडा

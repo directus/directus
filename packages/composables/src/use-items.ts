@@ -41,6 +41,23 @@ export type ComputedQuery = {
 	version?: Ref<Query['version']> | ComputedRef<Query['version']> | WritableComputedRef<Query['version']>;
 };
 
+/**
+ * Filters containing `_json` are sent as a JSON string so that the typed scalar values on JSON
+ * paths (numbers, booleans, and intentionally-quoted strings) survive query-string serialization
+ * with their types intact. All other filters keep the default object serialization.
+ */
+export function serializeFilter(filter: Query['filter']): Query['filter'] | string {
+	return filter && hasJsonOperator(filter) ? JSON.stringify(filter) : filter;
+}
+
+function hasJsonOperator(value: unknown): boolean {
+	if (!value || typeof value !== 'object') return false;
+
+	return Object.entries(value).some(
+		([key, child]) => key === '_json' || (Array.isArray(child) ? child.some(hasJsonOperator) : hasJsonOperator(child)),
+	);
+}
+
 export function useItems(collection: Ref<string | null>, query: ComputedQuery): UsableItems {
 	const api = useApi();
 	const { primaryKeyField } = useCollection(collection);
@@ -85,7 +102,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			const response = await api.get<any>(url, {
 				params: {
 					aggregate,
-					...(filter ? { filter } : {}),
+					...(filter ? { filter: serializeFilter(filter) } : {}),
 					...(search ? { search } : {}),
 				},
 			});
@@ -214,7 +231,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 					sort: unref(sort),
 					page: unref(page),
 					search: unref(search),
-					filter: unref(filter),
+					filter: serializeFilter(unref(filter)),
 					deep: unref(deep),
 					version: unref(version),
 				},

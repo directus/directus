@@ -960,6 +960,7 @@ fields:
     collection: संग्रह
     icon: आइकन
     note: नोट
+    status: स्थिति
     color: रंग
     display_template: टेम्प्लेट प्रदर्शन गर्नुहोस्
     hidden: लुकेको

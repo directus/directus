@@ -215,7 +215,7 @@ function toggle(candidate: TCandidate): void {
 	gap: 0.5rem;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 45rem) {
 	.grid {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
@@ -258,7 +258,7 @@ function toggle(candidate: TCandidate): void {
 	align-items: center;
 	gap: 0.5rem;
 	flex: 1;
-	min-width: 0;
+	min-inline-size: 0;
 	padding: 0.5rem 0.75rem;
 	color: inherit;
 	font: inherit;
@@ -276,7 +276,7 @@ function toggle(candidate: TCandidate): void {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
-	min-width: 0;
+	min-inline-size: 0;
 	flex: 1;
 }
 

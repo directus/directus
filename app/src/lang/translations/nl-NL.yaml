@@ -1293,6 +1293,7 @@ fields:
     collection: Collectie
     icon: Icoon
     note: Notitie
+    status: Status
     color: Kleur
     display_template: Weergavesjabloon
     hidden: Verborgen
@@ -2047,6 +2048,7 @@ interfaces:
     incompatible_data: De huidige gegevens zijn niet compatibel met de repeaterinterface en zullen worden overschreven bij het toevoegen van items aan de repeater
     interface_group: Interface-opties
     display_group: Weergave Opties
+    edit_mode_inline: Doorlopend
   slider:
     slider: Schuifregelaar
     description: Selecteer een nummer met een slider

@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { type TelemetryReport } from '../types/report.js';
-import { sendReport } from './send-report.js';
+import { type OwnerReport, sendReport } from './send-report.js';
 
 vi.mock('@directus/env');
 
@@ -87,17 +87,36 @@ test('Sends to /v1/owner on owner payload', async () => {
 	vi.mocked(useEnv).mockReturnValue({
 		COMPLIANCE_URL: mockIngress,
 		TELEMETRY_AUTHORIZATION: 'test-auth',
+		PROJECT_OWNER_ENABLED: true,
 	});
 
-	await sendReport({
-		project_owner: '',
-		version: '',
-		org_name: '',
-		product_updates: false,
-		project_id: '',
-		project_usage: 'personal',
-	});
+	await sendReport({ project_owner: '' } as unknown as OwnerReport);
 
 	expect(vi.mocked(global.fetch)).toHaveBeenCalled();
 	expect(vi.mocked(global.fetch).mock.calls[0]![0].toString()).toEqual('https://example.com/v1/owner');
+});
+
+test('Does not send owner report when PROJECT_OWNER_ENABLED is false', async () => {
+	vi.mocked(useEnv).mockReturnValue({
+		COMPLIANCE_URL: 'https://example.com',
+		PROJECT_OWNER_ENABLED: false,
+	});
+
+	await sendReport({ project_owner: '' } as unknown as OwnerReport);
+
+	expect(vi.mocked(global.fetch)).not.toHaveBeenCalled();
+});
+
+test('Still sends telemetry report when PROJECT_OWNER_ENABLED is false', async () => {
+	vi.mocked(useEnv).mockReturnValue({
+		TELEMETRY_URL: 'https://example.com',
+		PROJECT_OWNER_ENABLED: false,
+	});
+
+	const mockReport = {} as unknown as TelemetryReport;
+
+	await sendReport(mockReport);
+
+	expect(vi.mocked(global.fetch)).toHaveBeenCalled();
+	expect(vi.mocked(global.fetch).mock.calls[0]![0].toString()).toEqual('https://example.com/v1/metrics');
 });

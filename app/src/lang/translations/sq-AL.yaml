@@ -1218,6 +1218,7 @@ fields:
     collection: Koleksion
     icon: Ikona
     note: Shënim
+    status: Statusi
     color: Ngjyra
     display_template: Shabllon i Shfaqjes
     hidden: I Fshehur
@@ -1882,6 +1883,7 @@ interfaces:
     incompatible_data: Të dhënat aktuale nuk janë të përputhshme me ndërfaqen e përsëritësit dhe do të zëvendësohen kur të shtohen artikuj në përsëritës
     interface_group: Opsionet e Ndërfaqes
     display_group: Opsionet e Shfaqjes
+    edit_mode_inline: Në vijë
   slider:
     slider: Rrëshqitës
     description: Zgjidh një numër përmes një rrëshqitësi

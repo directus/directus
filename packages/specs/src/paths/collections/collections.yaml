@@ -2,10 +2,6 @@ get:
   summary: List Collections
   description: Returns a list of the collections available in the project.
   operationId: getCollections
-  parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Offset'
-
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
   responses:
     '200':
       description: Successful request
@@ -29,8 +25,6 @@ post:
   summary: Create a Collection
   description: Create a new collection in Directus.
   operationId: createCollection
-  parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
   requestBody:
     content:
       application/json:

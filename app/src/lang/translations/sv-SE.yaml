@@ -1140,6 +1140,7 @@ fields:
     collection: Kollektion
     icon: Ikon
     note: Anteckning
+    status: Status
     color: Färg
     display_template: Visningsmall
     hidden: Dold
@@ -1732,6 +1733,7 @@ interfaces:
     field_note_placeholder: Ange fältanteckning...
     interface_group: Alternativ för gränssnitt
     display_group: Visningsalternativ
+    edit_mode_inline: Infogad
   slider:
     slider: Reglage
     description: Välj ett nummer med ett reglage

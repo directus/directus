@@ -170,6 +170,8 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	async deleteByProvider(provider: ProviderType): Promise<PrimaryKey> {
 		const deployment = await this.readByProvider(provider);
 
+		const primaryKey = await this.deleteOne(deployment.id);
+
 		// Webhook cleanup
 		if (deployment.webhook_ids && deployment.webhook_ids.length > 0) {
 			try {
@@ -181,7 +183,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			}
 		}
 
-		return this.deleteOne(deployment.id);
+		return primaryKey;
 	}
 
 	/**
@@ -211,10 +213,11 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	 */
 	async getWebhookConfig(
 		provider: ProviderType,
-	): Promise<{ webhook_secret: string | null; credentials: Credentials; options: Options }> {
+	): Promise<{ deployment_id: string; webhook_secret: string | null; credentials: Credentials; options: Options }> {
 		const config = await this.readConfig(provider);
 
 		return {
+			deployment_id: config.id,
 			webhook_secret: config.webhook_secret ?? null,
 			credentials: parseValue<Credentials>(config.credentials, {}),
 			options: parseValue<Options>(config.options, {}),

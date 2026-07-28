@@ -92,4 +92,34 @@ describe('ServerService', () => {
 		expect(info['mcp_oauth_dcr_enabled']).toBe(false);
 		expect(info['mcp_oauth_cimd_enabled']).toBe(true);
 	});
+
+	test('serverInfo defaults project_owner_enabled to true for authenticated users', async () => {
+		tracker.on.select('directus_users').response([{ id: 'user-id' }]);
+
+		const service = new ServerService({
+			knex: db,
+			schema: {} as any,
+			accountability: { user: 'user-id', admin: false } as any,
+		});
+
+		const info = await service.serverInfo();
+
+		expect(info['project_owner_enabled']).toBe(true);
+	});
+
+	test('serverInfo respects PROJECT_OWNER_ENABLED=false for authenticated users', async () => {
+		Object.assign(mockEnv, { PROJECT_OWNER_ENABLED: false });
+
+		tracker.on.select('directus_users').response([{ id: 'user-id' }]);
+
+		const service = new ServerService({
+			knex: db,
+			schema: {} as any,
+			accountability: { user: 'user-id', admin: false } as any,
+		});
+
+		const info = await service.serverInfo();
+
+		expect(info['project_owner_enabled']).toBe(false);
+	});
 });
