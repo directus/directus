@@ -71,6 +71,7 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 
 		// Make sure we don't overload the file handles
 		const queue = new Queue({ concurrency: 1000 });
+		const syncTasks: Promise<unknown>[] = [];
 
 		// start file tracker
 		const fileTracker = new SyncFileTracker();
@@ -85,23 +86,28 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 
 			await fileTracker.passedFile(relativePath);
 
-			// No need to check metadata when force is enabled
-			if (options?.forceSync !== true && hasLocalFiles) {
-				const fileUnchanged = await compareFileMetadata(destinationPath, filepath, disk);
-				if (fileUnchanged) continue;
-			}
+			const syncFile = async () => {
+				// No need to check metadata when force is enabled
+				if (options?.forceSync !== true && hasLocalFiles) {
+					const fileUnchanged = await compareFileMetadata(destinationPath, filepath, disk);
+					if (fileUnchanged) return;
+				}
 
-			// Ensure that the directory path exists
-			await mkdir(dirname(destinationPath), { recursive: true });
+				// Ensure that the directory path exists
+				await mkdir(dirname(destinationPath), { recursive: true });
 
-			// write remote file to the local filesystem
-			const readStream = await disk.read(filepath);
-			const writeStream = createWriteStream(destinationPath);
-			queue.add(() => pipeline(readStream, writeStream));
+				// write remote file to the local filesystem
+				const readStream = await disk.read(filepath);
+				const writeStream = createWriteStream(destinationPath);
+				await pipeline(readStream, writeStream);
+			};
+
+			// Queue the whole per-file sync so the remote stat/read round trips run concurrently
+			syncTasks.push(queue.add(syncFile));
 		}
 
-		// wait for the queue to finish
-		await queue.onIdle();
+		// wait for all file syncs to finish, surfacing any errors
+		await Promise.all(syncTasks);
 		// cleanup dangling local files
 		await fileTracker.cleanup(localExtensionsPath);
 	} finally {
