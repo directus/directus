@@ -78,39 +78,45 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 		const localFileCount = await fileTracker.readLocalFiles(localExtensionsPath);
 		const hasLocalFiles = localFileCount > 0;
 
-		for await (const filepath of disk.list(remoteExtensionsPath)) {
-			// We want files to be stored in the root of `$TEMP_PATH/extensions`, so gotta remove the
-			// extensions path on disk from the start of the file path
-			const relativePath = relative(resolve(sep, remoteExtensionsPath), resolve(sep, filepath));
-			const destinationPath = join(localExtensionsPath, relativePath);
+		try {
+			for await (const filepath of disk.list(remoteExtensionsPath)) {
+				// We want files to be stored in the root of `$TEMP_PATH/extensions`, so gotta remove the
+				// extensions path on disk from the start of the file path
+				const relativePath = relative(resolve(sep, remoteExtensionsPath), resolve(sep, filepath));
+				const destinationPath = join(localExtensionsPath, relativePath);
 
-			await fileTracker.passedFile(relativePath);
+				await fileTracker.passedFile(relativePath);
 
-			const syncFile = async () => {
-				// No need to check metadata when force is enabled
-				if (options?.forceSync !== true && hasLocalFiles) {
-					const fileUnchanged = await compareFileMetadata(destinationPath, filepath, disk);
-					if (fileUnchanged) return;
-				}
+				const syncFile = async () => {
+					// No need to check metadata when force is enabled
+					if (options?.forceSync !== true && hasLocalFiles) {
+						const fileUnchanged = await compareFileMetadata(destinationPath, filepath, disk);
+						if (fileUnchanged) return;
+					}
 
-				// Ensure that the directory path exists
-				await mkdir(dirname(destinationPath), { recursive: true });
+					// Ensure that the directory path exists
+					await mkdir(dirname(destinationPath), { recursive: true });
 
-				// write remote file to the local filesystem
-				const readStream = await disk.read(filepath);
-				const writeStream = createWriteStream(destinationPath);
-				await pipeline(readStream, writeStream);
-			};
+					// write remote file to the local filesystem
+					const readStream = await disk.read(filepath);
+					const writeStream = createWriteStream(destinationPath);
+					await pipeline(readStream, writeStream);
+				};
 
-			// Queue the whole per-file sync so the remote stat/read round trips run concurrently
-			const task = queue.add(syncFile);
-			// Attach a no-op handler so an early failure isn't an unhandled rejection while listing continues
-			task.catch(() => {});
-			syncTasks.push(task);
+				// Queue the whole per-file sync so the remote stat/read round trips run concurrently
+				const task = queue.add(syncFile);
+				// Attach a no-op handler so an early failure isn't an unhandled rejection while listing continues
+				task.catch(() => {});
+				syncTasks.push(task);
+			}
+
+			// wait for all file syncs to finish, surfacing any errors
+			await Promise.all(syncTasks);
+		} finally {
+			// Promise.all is fail-fast, so drain in-flight tasks before the outer finally signals readiness
+			await queue.onIdle();
 		}
 
-		// wait for all file syncs to finish, surfacing any errors
-		await Promise.all(syncTasks);
 		// cleanup dangling local files
 		await fileTracker.cleanup(localExtensionsPath);
 	} finally {

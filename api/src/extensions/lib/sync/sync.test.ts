@@ -354,6 +354,46 @@ describe('syncExtensions', () => {
 			expect(setSyncStatus).toHaveBeenCalledWith(SyncStatus.IDLE);
 		});
 
+		test('should drain in-flight sync tasks before releasing locks when a task fails', async () => {
+			mockLock.increment.mockResolvedValue(1);
+
+			let resolveSecondRead!: () => void;
+			const secondReadHeld = new Promise<void>((resolve) => (resolveSecondRead = resolve));
+
+			vi.mocked(createWriteStream).mockReturnValue({ pipe: vi.fn() } as any);
+			vi.mocked(pipeline).mockResolvedValue(undefined);
+
+			vi.mocked(mockDisk.read).mockImplementation(async (filepath) => {
+				if (filepath.includes('file1')) throw new Error('File read error');
+				await secondReadHeld;
+				return new Readable() as any;
+			});
+
+			vi.mocked(mockDisk.list).mockImplementation(async function* () {
+				yield 'remote/extensions/file1.js';
+				yield 'remote/extensions/file2.js';
+			});
+
+			const syncPromise = syncExtensions();
+
+			// Wait until both file reads have started, so the first failure has already happened
+			await vi.waitFor(() => expect(mockDisk.read).toHaveBeenCalledTimes(2));
+			await new Promise((resolve) => setTimeout(resolve, 0));
+
+			// The second file is still syncing, so nothing may be released yet
+			expect(mockMessenger.publish).not.toHaveBeenCalled();
+			expect(mockLock.delete).not.toHaveBeenCalled();
+			expect(setSyncStatus).not.toHaveBeenCalledWith(SyncStatus.IDLE);
+
+			resolveSecondRead();
+
+			await expect(syncPromise).rejects.toThrow('File read error');
+
+			expect(mockMessenger.publish).toHaveBeenCalledWith('extensions-sync/test-machine-id', { ready: true });
+			expect(mockLock.delete).toHaveBeenCalled();
+			expect(setSyncStatus).toHaveBeenCalledWith(SyncStatus.IDLE);
+		});
+
 		test('should handle file read errors gracefully', async () => {
 			mockLock.increment.mockResolvedValue(1);
 			vi.mocked(mockDisk.read).mockRejectedValue(new Error('File read error'));
