@@ -15,7 +15,10 @@ export type AIModelSettings = Pick<
 	| 'ai_google_allowed_models'
 >;
 
-export function getAvailableModels(settings: AIModelSettings | null | undefined, availableProviders: ProviderType[]): AppModelDefinition[] {
+export function getAvailableModels(
+	settings: AIModelSettings | null | undefined,
+	availableProviders: ProviderType[],
+): AppModelDefinition[] {
 	const customModels = buildCustomModels(settings?.ai_openai_compatible_models ?? null);
 	const allModels = [...AI_MODELS, ...customModels];
 
