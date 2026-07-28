@@ -14,6 +14,7 @@ import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { stall } from '../../utils/stall.js';
 import { AuthDriver } from '../auth.js';
+import { checkLocalAuthDisabled } from '../utils/check-local-disabled.js';
 
 export class LocalAuthDriver extends AuthDriver {
 	async getUserID(payload: Record<string, any>): Promise<string> {
@@ -49,6 +50,8 @@ export function createLocalAuthRouter(provider: string): Router {
 	const env = useEnv();
 
 	const router = Router();
+
+	router.use(checkLocalAuthDisabled);
 
 	const userLoginSchema = Joi.object({
 		email: Joi.string().email().required(),

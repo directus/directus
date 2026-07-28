@@ -114,6 +114,36 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 	},
 	{
 		provider: 'openai',
+		model: 'gpt-5.1',
+		name: 'GPT-5.1',
+		limit: {
+			context: 400_000,
+			output: 128_000,
+		},
+		cost: {
+			input: 1.25,
+			output: 10.0,
+		},
+		attachment: true,
+		reasoning: true,
+	},
+	{
+		provider: 'openai',
+		model: 'gpt-5.1-chat-latest',
+		name: 'GPT-5.1 Chat',
+		limit: {
+			context: 128_000,
+			output: 16_384,
+		},
+		cost: {
+			input: 1.25,
+			output: 10.0,
+		},
+		attachment: true,
+		reasoning: true,
+	},
+	{
+		provider: 'openai',
 		model: 'gpt-5.2',
 		name: 'GPT-5.2',
 		limit: {
@@ -159,6 +189,36 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 	},
 	{
 		provider: 'openai',
+		model: 'gpt-5.4-nano',
+		name: 'GPT-5.4 Nano',
+		limit: {
+			context: 400_000,
+			output: 128_000,
+		},
+		cost: {
+			input: 0.2,
+			output: 1.25,
+		},
+		attachment: true,
+		reasoning: true,
+	},
+	{
+		provider: 'openai',
+		model: 'gpt-5.4-mini',
+		name: 'GPT-5.4 Mini',
+		limit: {
+			context: 400_000,
+			output: 128_000,
+		},
+		cost: {
+			input: 0.75,
+			output: 4.5,
+		},
+		attachment: true,
+		reasoning: true,
+	},
+	{
+		provider: 'openai',
 		model: 'gpt-5.4',
 		name: 'GPT-5.4',
 		limit: {
@@ -176,6 +236,36 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 		provider: 'openai',
 		model: 'gpt-5.4-pro',
 		name: 'GPT-5.4 Pro',
+		limit: {
+			context: 1_050_000,
+			output: 128_000,
+		},
+		cost: {
+			input: 30.0,
+			output: 180.0,
+		},
+		attachment: true,
+		reasoning: true,
+	},
+	{
+		provider: 'openai',
+		model: 'gpt-5.5',
+		name: 'GPT-5.5',
+		limit: {
+			context: 1_050_000,
+			output: 128_000,
+		},
+		cost: {
+			input: 5.0,
+			output: 30.0,
+		},
+		attachment: true,
+		reasoning: true,
+	},
+	{
+		provider: 'openai',
+		model: 'gpt-5.5-pro',
+		name: 'GPT-5.5 Pro',
 		limit: {
 			context: 1_050_000,
 			output: 128_000,
@@ -205,36 +295,6 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 	},
 	{
 		provider: 'anthropic',
-		model: 'claude-sonnet-4-5',
-		name: 'Claude Sonnet 4.5',
-		limit: {
-			context: 200_000,
-			output: 64_000,
-		},
-		cost: {
-			input: 3.0,
-			output: 15.0,
-		},
-		attachment: true,
-		reasoning: true,
-	},
-	{
-		provider: 'anthropic',
-		model: 'claude-opus-4-5',
-		name: 'Claude Opus 4.5',
-		limit: {
-			context: 200_000,
-			output: 64_000,
-		},
-		cost: {
-			input: 5.0,
-			output: 25.0,
-		},
-		attachment: true,
-		reasoning: true,
-	},
-	{
-		provider: 'anthropic',
 		model: 'claude-sonnet-4-6',
 		name: 'Claude Sonnet 4.6',
 		limit: {
@@ -244,6 +304,21 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 		cost: {
 			input: 3.0,
 			output: 15.0,
+		},
+		attachment: true,
+		reasoning: true,
+	},
+	{
+		provider: 'anthropic',
+		model: 'claude-opus-4-7',
+		name: 'Claude Opus 4.7',
+		limit: {
+			context: 200_000,
+			output: 128_000,
+		},
+		cost: {
+			input: 5.0,
+			output: 25.0,
 		},
 		attachment: true,
 		reasoning: true,

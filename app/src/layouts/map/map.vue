@@ -18,7 +18,7 @@ const props = withDefaults(
 		geojson: any;
 		directusSource: any;
 		directusLayers: any[];
-		handleClick: (event: { id: string | number; replace: boolean }) => void;
+		handleClick: (event: { id: string | number; replace: boolean; event: MouseEvent }) => void;
 		handleSelect: (event: { ids: Array<string | number>; replace: boolean }) => void;
 		resetPresetAndRefresh: () => Promise<void>;
 		fitDataBounds: () => void;

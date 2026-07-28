@@ -17,13 +17,13 @@
 		"@types/lodash-es": "catalog:",
 		"@types/mailparser": "3.4.6",
 		"@types/seedrandom": "3.0.8",
-		"@types/smtp-server": "3.5.12",
+		"@types/smtp-server": "3.5.13",
 		"@types/supertest": "6.0.2",
 		"@types/ws": "catalog:",
 		"argon2": "catalog:",
 		"autocannon": "8.0.0",
-		"smtp-server": "3.18.4",
-		"mailparser": "3.9.8",
+		"smtp-server": "3.19.1",
+		"mailparser": "3.9.12",
 		"axios": "catalog:",
 		"get-port": "catalog:",
 		"globby": "14.1.0",
@@ -39,7 +39,7 @@
 		"typescript": "catalog:",
 		"uuid": "catalog:",
 		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "1.6.1",
+		"vitest": "catalog:",
 		"ws": "catalog:"
 	}
 }

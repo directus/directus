@@ -3,12 +3,11 @@ import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import useNavigation from '../composables/use-navigation';
 import api from '@/api';
 import { logout } from '@/auth';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardTitle from '@/components/v-card-title.vue';
@@ -17,6 +16,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VInfo from '@/components/v-info.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -37,6 +37,8 @@ const { roles } = useNavigation(role);
 const userInviteModalActive = ref(false);
 const serverStore = useServerStore();
 const userStore = useUserStore();
+const licenseStore = useLicenseStore();
+const router = useRouter();
 
 const layoutRef = ref();
 const selection = ref<string[]>([]);
@@ -44,9 +46,11 @@ const selection = ref<string[]>([]);
 const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
 const { addNewLink } = useLinks();
 
+const navigateToNewUser = () => router.push(addNewLink.value);
+
 const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
 
-const { breadcrumb, title } = useBreadcrumb();
+const { title } = useTitle();
 
 const roleFilter = computed(() => {
 	if (props.role) {
@@ -146,7 +150,7 @@ function useBatch() {
 			}
 
 			await refresh();
-
+			licenseStore.hydrate();
 			selection.value = [];
 			confirmDelete.value = false;
 		} catch (e) {
@@ -166,25 +170,14 @@ function useLinks() {
 	return { addNewLink };
 }
 
-function useBreadcrumb() {
-	const breadcrumb = computed(() => {
-		if (!props.role) return null;
-
-		return [
-			{
-				name: t('user_directory'),
-				to: `/users`,
-			},
-		];
-	});
-
+function useTitle() {
 	const title = computed(() => {
 		if (props.status) return t(`${props.status}_users`);
 		if (!props.role) return t('all_users');
 		return roles.value?.find((role) => role.id === props.role)?.name;
 	});
 
-	return { breadcrumb, title };
+	return { title };
 }
 
 function clearFilters() {
@@ -209,10 +202,6 @@ function clearFilters() {
 		:reset-preset="resetPreset"
 	>
 		<PrivateView :title="title" icon="people_alt">
-			<template v-if="breadcrumb" #headline>
-				<VBreadcrumb :items="breadcrumb" />
-			</template>
-
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
 			</template>
@@ -225,8 +214,8 @@ function clearFilters() {
 						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
 							:disabled="batchDeleteAllowed !== true"
-							class="action-delete"
-							secondary
+							kind="danger"
+							variant="ghost"
 							icon="delete"
 							@click="on"
 						/>
@@ -249,7 +238,7 @@ function clearFilters() {
 				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0"
 					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
-					secondary
+					variant="ghost"
 					:disabled="batchEditAllowed === false"
 					icon="edit"
 					@click="batchEditActive = true"
@@ -258,16 +247,19 @@ function clearFilters() {
 				<PrivateViewHeaderBarActionButton
 					v-if="canInviteUsers"
 					v-tooltip.bottom="$t('invite_users')"
-					secondary
+					variant="ghost"
 					icon="person_add"
 					@click="userInviteModalActive = true"
 				/>
+			</template>
 
+			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
-					:to="addNewLink"
+					:tooltip="createAllowed ? undefined : $t('not_allowed')"
+					:label="$t('create')"
 					:disabled="createAllowed === false"
 					icon="add"
+					@click="navigateToNewUser"
 				/>
 			</template>
 
@@ -283,7 +275,7 @@ function clearFilters() {
 						{{ status ? $t('no_status_users_copy', { status }) : $t('no_users_copy') }}
 
 						<template v-if="canInviteUsers && (!status || status === 'active')" #append>
-							<VButton :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
+							<VButton @click="navigateToNewUser">
 								{{ $t('create_user') }}
 							</VButton>
 						</template>
@@ -303,7 +295,7 @@ function clearFilters() {
 						{{ status ? $t('no_status_users_copy', { status }) : $t('no_users_copy') }}
 
 						<template v-if="canInviteUsers && (!status || status === 'active')" #append>
-							<VButton :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
+							<VButton @click="navigateToNewUser">
 								{{ $t('create_user') }}
 							</VButton>
 						</template>
@@ -336,11 +328,6 @@ function clearFilters() {
 </template>
 
 <style lang="scss" scoped>
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
 .header-icon {
 	--v-button-color-disabled: var(--theme--foreground);
 }

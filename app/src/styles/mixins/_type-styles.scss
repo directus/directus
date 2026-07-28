@@ -1,35 +1,46 @@
-@mixin type-title {
+@mixin type-display {
 	color: var(--theme--foreground-accent);
-	font-size: 1rem;
-	font-weight: var(--theme--fonts--display--font-weight);
 	font-family: var(--theme--fonts--display--font-family);
+	font-weight: var(--theme--fonts--display--font-weight);
 	font-style: normal;
-	line-height: 1.375;
+	font-size: 1.375rem;
+	line-height: 1.1818;
+}
+
+@mixin type-title {
+	color: var(--theme--foreground);
+	font-family: var(--theme--fonts--title--font-family);
+	font-weight: var(--theme--fonts--title--font-weight);
+	font-style: normal;
+	font-size: 0.8125rem;
+	line-height: 1.5385;
 }
 
 @mixin type-label {
+	--label-height: 1.25rem; /* = 0.875rem (fs) * 1.4286 (lh) */
+
 	color: var(--theme--foreground-accent);
-	font-size: 0.875rem;
-	font-weight: var(--theme--form--field--label--font-weight);
 	font-family: var(--theme--form--field--label--font-family);
+	font-weight: var(--theme--form--field--label--font-weight);
 	font-style: normal;
-	line-height: 1.2143;
+	font-size: 0.875rem;
+	line-height: 1.4286;
 }
 
 @mixin type-text {
 	color: var(--theme--foreground);
-	font-weight: var(--theme--fonts--sans--font-weight);
-	font-size: 0.8125rem;
 	font-family: var(--theme--fonts--sans--font-family);
+	font-weight: var(--theme--fonts--sans--font-weight);
 	font-style: normal;
-	line-height: 1.5385;
+	font-size: 0.8125rem;
+	line-height: 1.4615;
 }
 
 @mixin type-note {
 	color: var(--theme--foreground-subdued);
-	font-weight: var(--theme--fonts--sans--font-weight);
-	font-size: 0.75rem;
 	font-family: var(--theme--fonts--sans--font-family);
+	font-weight: var(--theme--fonts--sans--font-weight);
 	font-style: italic;
-	line-height: 1.3333;
+	font-size: 0.6875rem;
+	line-height: 1.4545;
 }

@@ -56,6 +56,27 @@ for (const n of ['a', integer.min.toString() + '0', (integer.max + '0').toString
 	});
 }
 
+// Postgres numeric overflow (22003) doesn't name the offending column.
+// The field is only attributed when a single field was provided; for multi-field
+// inserts it is omitted to avoid mis-attribution
+if (database === 'postgres') {
+	const overflow = (integer.max + 1n).toString();
+
+	test('numeric overflow attributes the field for a single-field insert', async () => {
+		await expect(api.request(createItem(collections.fields, { integer: overflow }))).rejects.toMatchObject({
+			errors: [{ extensions: { code: 'VALUE_OUT_OF_RANGE', collection: collections.fields, field: 'integer' } }],
+		});
+	});
+
+	test('numeric overflow omits the field for a multi-field insert', async () => {
+		await expect(
+			api.request(createItem(collections.fields, { integer: overflow, string: 'overflow' })),
+		).rejects.toMatchObject({
+			errors: [{ extensions: { code: 'VALUE_OUT_OF_RANGE', collection: collections.fields, field: null } }],
+		});
+	});
+}
+
 // BUG: Current bug in CRDB, see https://github.com/directus/directus/issues/25685
 if (database === 'cockroachdb') {
 	test(`integer overflow on crdb`, async () => {

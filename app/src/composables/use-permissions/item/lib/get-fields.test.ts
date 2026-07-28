@@ -208,6 +208,36 @@ describe('non-admin users', () => {
 				}
 			});
 
+			it("should mark all fields as read-only if update/create permission access is 'none'", () => {
+				if (collectionType === 'collection') {
+					const permissionsStore = mockedStore(usePermissionsStore());
+
+					permissionsStore.getPermission.mockImplementation((_, action) => {
+						if (action === testAction) return { access: 'none' };
+						return null;
+					});
+				} else {
+					fetchedItemPermissions = computed(() => {
+						return {
+							update: {
+								access: 'none',
+							},
+						} as unknown as ItemPermissions;
+					});
+				}
+
+				const isNew = testAction === 'create';
+
+				const fields = getFields(sample.collection, isNew, fetchedItemPermissions);
+
+				expect(fields.value.length).toEqual(sample.fields.length);
+
+				for (const field of fields.value) {
+					expect(field.meta?.readonly).toBe(true);
+					expect((field as FormField).meta?.non_editable).toBe(true);
+				}
+			});
+
 			it('should mark non-allowed fields as read-only', () => {
 				const allowedFields = ['id', 'start_date', 'end_date'];
 

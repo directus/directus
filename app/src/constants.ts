@@ -1,4 +1,4 @@
-import { Type } from '@directus/types';
+import { type SettingsModuleBarLink, type SettingsModuleBarModule, Type } from '@directus/types';
 
 export const VALIDATION_TYPES = ['FAILED_VALIDATION', 'RECORD_NOT_UNIQUE'];
 
@@ -39,7 +39,7 @@ export const COLLECTIONS_DENY_LIST = [
 	'directus_settings',
 ];
 
-export const MODULE_BAR_DEFAULT = [
+export const MODULE_BAR_DEFAULT: (SettingsModuleBarLink | SettingsModuleBarModule)[] = [
 	{
 		type: 'module',
 		id: 'content',
@@ -76,7 +76,7 @@ export const MODULE_BAR_DEFAULT = [
 		enabled: true,
 		name: '$t:documentation',
 		icon: 'help',
-		url: 'https://docs.directus.io',
+		url: 'https://directus.com/docs',
 	},
 	{
 		type: 'module',
@@ -88,6 +88,7 @@ export const MODULE_BAR_DEFAULT = [
 
 // Keep in sync with $breakpoints in app/src/styles/mixins/_breakpoints.scss
 export const BREAKPOINTS = {
+	xs: '28rem',
 	sm: '36rem',
 	lg: '57.625rem',
 	xl: '72rem',
@@ -165,8 +166,6 @@ export const FIELD_TYPES_SELECT: Array<{ value: Type; text: string } | { divider
 	},
 ];
 
-export const DRAFT_VERSION_KEY = 'draft';
-
 /** Contains `integer` and `float` – exclude `bigInteger` and `decimal` to avoid rounding errors. */
 export const APP_NUMERIC_TYPES = ['integer', 'float'];
 /** Treat `bigInteger` and `decimal` as strings to avoid rounding errors. */
@@ -178,6 +177,6 @@ export const DEFAULT_AUTH_DRIVER = 'default';
 export const AUTH_SSO_DRIVERS = ['oauth2', 'openid', 'saml'];
 
 export const DEFAULT_REPORT_BUG_URL = 'https://github.com/directus/directus/issues/new?template=bug_report.yml';
-export const DEFAULT_REPORT_FEATURE_URL = 'https://roadmap.directus.io/';
+export const DEFAULT_REPORT_FEATURE_URL = 'https://roadmap.directus.com/';
 
 export const SDK_AUTH_REFRESH_BEFORE_EXPIRES = 10_000;

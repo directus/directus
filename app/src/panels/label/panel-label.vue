@@ -99,12 +99,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-	<div
-		ref="labelContainer"
-		class="label type-title"
-		:class="[font, { 'has-header': showHeader }]"
-		:style="{ color: color }"
-	>
+	<div ref="labelContainer" class="label" :class="[font, { 'has-header': showHeader }]" :style="{ color: color }">
 		<p
 			ref="labelText"
 			class="label-text"

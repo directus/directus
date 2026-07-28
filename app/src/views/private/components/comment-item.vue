@@ -83,7 +83,7 @@ function useEdits() {
 	position: relative;
 	margin-block-end: 0.4375rem;
 	padding: 0.4375rem;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
 }
 
@@ -134,7 +134,7 @@ function useEdits() {
 	block-size: 0.125rem;
 	margin: 0.6875rem 0;
 	border: 0;
-	border-block-start: 2px solid var(--theme--form--field--input--border-color);
+	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
 .comment-item .content :deep(mark) {

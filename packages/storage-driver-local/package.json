@@ -1,15 +1,15 @@
 {
 	"name": "@directus/storage-driver-local",
-	"version": "12.0.4",
+	"version": "13.0.0",
 	"description": "Local file storage abstraction for `@directus/storage`",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
 		"directory": "packages/storage-driver-local"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "BUSL-1.1",
+	"license": "SEE LICENSE IN license",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"type": "module",
 	"exports": {

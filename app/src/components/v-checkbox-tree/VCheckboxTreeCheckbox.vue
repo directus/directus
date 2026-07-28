@@ -435,6 +435,6 @@ function getRecursiveChildrenValues(mode: 'all' | 'branch' | 'leaf', children: R
 
 <style scoped>
 .item {
-	padding-inline-start: 1.8125rem !important;
+	padding-inline-start: calc(var(--icon-size-default) + 0.4375rem);
 }
 </style>

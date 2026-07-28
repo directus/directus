@@ -34,6 +34,7 @@ import { getSchema } from '../../utils/get-schema.js';
 import { getSecret } from '../../utils/get-secret.js';
 import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
+import { checkSsoEnabled } from '../utils/check-sso-enabled.js';
 import { generateCallbackUrl } from '../utils/generate-callback-url.js';
 import { resolveLoginRedirect } from '../utils/resolve-login-redirect.js';
 import { LocalAuthDriver } from './local.js';
@@ -434,6 +435,8 @@ const handleError = (e: any) => {
 export function createOpenIDAuthRouter(providerName: string): Router {
 	const env = useEnv();
 	const router = Router();
+
+	router.use(checkSsoEnabled);
 
 	router.get(
 		'/',

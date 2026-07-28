@@ -3,7 +3,6 @@ import { useCollection, useLayout } from '@directus/composables';
 import { ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -113,10 +112,6 @@ function clearFilters() {
 		:clear-filters="clearFilters"
 	>
 		<PrivateView :title="$t('settings_presets')" icon="bookmark">
-			<template #headline>
-				<VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
-			</template>
-
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout || 'tabular'}`" v-bind="layoutState" />
 			</template>
@@ -129,8 +124,8 @@ function clearFilters() {
 						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
 							:disabled="batchDeleteAllowed !== true"
-							class="action-delete"
-							secondary
+							kind="danger"
+							variant="ghost"
 							icon="delete"
 							@click="on"
 						/>
@@ -153,14 +148,17 @@ function clearFilters() {
 				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0"
 					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
-					secondary
+					variant="ghost"
 					:disabled="batchEditAllowed === false"
 					icon="edit"
 					@click="batchEditActive = true"
 				/>
+			</template>
 
+			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="createAllowed ? $t('create_preset') : $t('not_allowed')"
+					:tooltip="createAllowed ? undefined : $t('not_allowed')"
+					:label="$t('create')"
 					:to="{ name: 'settings-presets-item', params: { id: '+' } }"
 					:disabled="createAllowed === false"
 					icon="add"
@@ -231,10 +229,5 @@ function clearFilters() {
 	--v-button-color-disabled: var(--theme--primary);
 	--v-button-background-color-hover-disabled: var(--theme--primary-subdued);
 	--v-button-color-hover-disabled: var(--theme--primary);
-}
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
 }
 </style>

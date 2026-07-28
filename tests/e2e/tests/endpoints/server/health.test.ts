@@ -1,9 +1,9 @@
 import { randomUUID } from 'crypto';
-import { createDirectus, createUser, rest, serverHealth, staticToken } from '@directus/sdk';
+import { createDirectus, createUser, graphql, rest, serverHealth, staticToken } from '@directus/sdk';
 import { database, env, options, port } from '@utils/constants.js';
-import { expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
-const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus(`http://localhost:${port}`).with(rest()).with(graphql()).with(staticToken('admin'));
 
 const dbMapped = {
 	sqlite: 'sqlite3',
@@ -15,110 +15,129 @@ const dbMapped = {
 	mysql: 'mysql',
 }[database];
 
-test('reading health as admin', async () => {
-	const result = await api.request(serverHealth());
+describe('health access', () => {
+	test('deny reading health as public user', async () => {
+		const userApi = createDirectus(`http://localhost:${port}`).with(rest()).with(graphql());
 
-	expect(result).toEqual({
-		checks: {
-			'email:connection': [
-				{
-					componentType: 'email',
-					status: 'ok',
-				},
-			],
-			[`${dbMapped}:connectionsAvailable`]: [
-				{
-					componentType: 'datastore',
-					observedValue: expect.any(Number),
-					status: 'ok',
-				},
-			],
-			[`${dbMapped}:connectionsUsed`]: [
-				{
-					componentType: 'datastore',
-					observedValue: expect.any(Number),
-					status: 'ok',
-				},
-			],
-			[`${dbMapped}:responseTime`]: [
-				{
-					componentType: 'datastore',
-					observedUnit: 'ms',
-					observedValue: expect.any(Number),
-					status: 'ok',
-					threshold: 150,
-				},
-			],
-			'storage:local:responseTime': [
-				{
-					componentType: 'objectstore',
-					observedUnit: 'ms',
-					observedValue: expect.any(Number),
-					status: 'ok',
-					threshold: 750,
-				},
-			],
-			...(env.CACHE_ENABLED === 'true'
-				? {
-						'cache:responseTime': [
-							{
-								componentType: 'cache',
-								observedUnit: 'ms',
-								observedValue: expect.any(Number),
-								status: 'ok',
-								threshold: 150,
-							},
-						],
-					}
-				: {}),
-			...(options.extras?.minio
-				? {
-						'storage:minio:responseTime': [
-							{
-								componentType: 'objectstore',
-								observedUnit: 'ms',
-								observedValue: expect.any(Number),
-								status: 'ok',
-								threshold: 750,
-							},
-						],
-					}
-				: {}),
-		},
-		releaseId: expect.any(String),
-		serviceId: expect.any(String),
-		status: 'ok',
+		// REST
+		await expect(userApi.request(serverHealth())).rejects.toThrow("You don't have permission to access this.");
+
+		// GQL
+		await expect(() => userApi.query(`query { server_health }`, {}, 'system')).rejects.toThrow(
+			"You don't have permission to access this.",
+		);
 	});
-});
 
-test('reading health as user', async () => {
-	const token = randomUUID();
+	test('only status returned reading health as non-admin user', async () => {
+		const token = randomUUID();
 
-	await api.request(
-		createUser({
-			first_name: 'Test',
-			last_name: 'Permissions',
-			email: `${token}@health.com`,
-			password: 'password',
-			token,
-		}),
-	);
+		await api.request(
+			createUser({
+				first_name: 'Test',
+				last_name: 'Permissions',
+				email: `${token}@health.com`,
+				password: 'password',
+				token,
+			}),
+		);
 
-	const userApi = createDirectus(`http://localhost:${port}`).with(rest()).with(staticToken(token));
+		const userApi = createDirectus(`http://localhost:${port}`).with(rest()).with(graphql()).with(staticToken(token));
 
-	const result = await userApi.request(serverHealth());
+		const restResult = await userApi.request(serverHealth());
+		const gqlResult = await userApi.query(`query { server_health }`, {}, 'system');
 
-	expect(result).toEqual({
-		status: 'ok',
+		expect(restResult).toEqual({
+			status: 'ok',
+		});
+
+		expect(gqlResult).toEqual({
+			server_health: { status: 'ok' },
+		});
 	});
-});
 
-test('reading health public', async () => {
-	const userApi = createDirectus(`http://localhost:${port}`).with(rest());
+	test('full health information returned reading as admin', async () => {
+		const result = await api.request(serverHealth());
+		const gqlResult = await api.query(`query { server_health }`, {}, 'system');
 
-	const result = await userApi.request(serverHealth());
+		expect(result).toEqual({
+			checks: {
+				'email:connection': [
+					{
+						componentType: 'email',
+						status: 'ok',
+					},
+				],
+				[`${dbMapped}:connectionsAvailable`]: [
+					{
+						componentType: 'datastore',
+						observedValue: expect.any(Number),
+						status: 'ok',
+					},
+				],
+				[`${dbMapped}:connectionsUsed`]: [
+					{
+						componentType: 'datastore',
+						observedValue: expect.any(Number),
+						status: 'ok',
+					},
+				],
+				[`${dbMapped}:responseTime`]: [
+					{
+						componentType: 'datastore',
+						observedUnit: 'ms',
+						observedValue: expect.any(Number),
+						status: 'ok',
+						threshold: 150,
+					},
+				],
+				'storage:local:responseTime': [
+					{
+						componentType: 'objectstore',
+						observedUnit: 'ms',
+						observedValue: expect.any(Number),
+						status: 'ok',
+						threshold: 750,
+					},
+				],
+				...(env.REDIS_ENABLED === 'true'
+					? {
+							'redis:responseTime': [
+								{
+									componentType: 'cache',
+									observedUnit: 'ms',
+									observedValue: expect.any(Number),
+									status: 'ok',
+									threshold: 150,
+								},
+							],
+						}
+					: {}),
+				...(options.extras?.minio
+					? {
+							'storage:minio:responseTime': [
+								{
+									componentType: 'objectstore',
+									observedUnit: 'ms',
+									observedValue: expect.any(Number),
+									status: 'ok',
+									threshold: 750,
+								},
+							],
+						}
+					: {}),
+			},
+			releaseId: expect.any(String),
+			serviceId: expect.any(String),
+			status: 'ok',
+		});
 
-	expect(result).toEqual({
-		status: 'ok',
+		expect(gqlResult).toEqual({
+			server_health: {
+				checks: expect.any(Object),
+				releaseId: expect.any(String),
+				serviceId: expect.any(String),
+				status: 'ok',
+			},
+		});
 	});
 });

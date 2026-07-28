@@ -174,6 +174,24 @@ describe('Collaborative Editing: Core', () => {
 				await ws2.getMessages(1); // Drain LEAVE
 			}
 
+			// An observer client lets us wait for the update to actually land in shared room state
+			// rather than guessing with a fixed delay. room.update writes the change to the store
+			// before broadcasting it, so once the observer receives the broadcast the change is
+			// committed and a rejoining client's init is guaranteed to include it. The previous
+			// sleep(200) raced the update's server-side work (schema/permission/validation + store
+			// write) and intermittently joined before V2 was committed on slower vendors.
+			const wsObserver = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
+
+			await wsObserver.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollabCore,
+				item: itemId,
+				version: null,
+			});
+
+			await waitForMatchingMessage(wsObserver, (msg) => msg.type === 'collab' && msg.action === 'init');
+
 			await ws2.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
 
 			await ws2.sendMessage({
@@ -184,7 +202,10 @@ describe('Collaborative Editing: Core', () => {
 				changes: 'V2',
 			});
 
-			await sleep(200);
+			await waitForMatchingMessage(
+				wsObserver,
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.changes === 'V2',
+			);
 
 			// Action
 			const wsRec = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
@@ -204,6 +225,7 @@ describe('Collaborative Editing: Core', () => {
 			expect(init2Msg?.changes).toMatchObject({ title: 'V2' });
 
 			wsRec.conn.close();
+			wsObserver.conn.close();
 			ws2.conn.close();
 		});
 	});
@@ -465,22 +487,18 @@ describe('Collaborative Editing: Core', () => {
 
 			await Promise.all([focusPromise1, focusPromise2]);
 
-			await sleep(500);
+			// Exactly one client (whichever lost the race) should receive a rejection.
+			const [ws1Error, ws2Error] = await Promise.all([
+				waitForMatchingMessage<WebSocketCollabResponse>(ws1, (msg) => msg.action === 'error', 5000).catch(() => null),
+				waitForMatchingMessage<WebSocketCollabResponse>(ws2, (msg) => msg.action === 'error', 5000).catch(() => null),
+			]);
 
-			// Assert
-			const ws1Msgs = (await ws1.getMessages(ws1.getUnreadMessageCount())) || [];
-			const ws2Msgs = (await ws2.getMessages(ws2.getUnreadMessageCount())) || [];
+			const errors = [ws1Error, ws2Error].filter((msg): msg is WebSocketCollabResponse => msg !== null);
+			expect(errors).toHaveLength(1);
 
-			// Exactly one client should have received an error
-			const ws1Errors = ws1Msgs.filter((msg) => msg.action === 'error');
-			const ws2Errors = ws2Msgs.filter((msg) => msg.action === 'error');
-
-			const totalErrors = ws1Errors.length + ws2Errors.length;
-			expect(totalErrors).toBe(1);
-
-			const errorMsg = [...ws1Errors, ...ws2Errors][0] as WebSocketCollabResponse;
-			expect(errorMsg?.code).toBe('FORBIDDEN');
-			expect(errorMsg?.message).toContain('already focused');
+			const errorMsg = errors[0]!;
+			expect(errorMsg.code).toBe('FORBIDDEN');
+			expect(errorMsg.message).toContain('already focused');
 
 			ws1.conn.close();
 			ws2.conn.close();

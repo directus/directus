@@ -38,8 +38,14 @@ const internalPlaceholder = computed(() => {
 
 watch(
 	() => props.value,
-	() => {
-		isHashed.value = !!(props.value && props.value.length > 0);
+	(newValue) => {
+		isHashed.value = !!(newValue && newValue.length > 0);
+
+		// Once an entered value is persisted, props.value becomes the stored hash,
+		// Reset localValue so the field reflects the securely-stored (hashed) state.
+		if (newValue !== localValue.value) {
+			localValue.value = null;
+		}
 	},
 	{ immediate: true },
 );
@@ -47,6 +53,11 @@ watch(
 function emitValue(newValue: string) {
 	emit('input', newValue);
 	localValue.value = newValue;
+}
+
+function clearValue() {
+	localValue.value = null;
+	emit('input', null);
 }
 </script>
 
@@ -57,12 +68,20 @@ function emitValue(newValue: string) {
 		:non-editable
 		:type="masked ? 'password' : 'text'"
 		:autocomplete
-		:model-value="localValue"
+		:model-value="localValue ?? ''"
 		:class="{ hashed: isHashed && !localValue, 'non-editable': nonEditable }"
 		@update:model-value="emitValue"
 	>
 		<template #append>
 			<VIcon class="lock" :class="{ disabled }" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
+			<VIcon
+				v-if="(isHashed || localValue) && !disabled && !nonEditable"
+				v-tooltip="t('clear_value')"
+				class="clear"
+				name="close"
+				clickable
+				@click.stop="clearValue"
+			/>
 		</template>
 	</VInput>
 </template>
@@ -77,8 +96,14 @@ function emitValue(newValue: string) {
 	}
 }
 
+.clear {
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
+}
+
 .lock {
 	--v-icon-color: var(--theme--warning);
+
+	margin-inline-end: 0.25rem;
 
 	&.disabled {
 		--v-icon-color: var(--theme--form--field--input--foreground-subdued);

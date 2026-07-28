@@ -23,8 +23,8 @@ export type UsableItems = {
 	error: Ref<any>;
 	changeManualSort: (data: ManualSortData) => Promise<void>;
 	getItems: () => Promise<void>;
-	getTotalCount: () => Promise<void>;
-	getItemCount: () => Promise<void>;
+	getTotalCount: (force?: boolean) => Promise<void>;
+	getItemCount: (force?: boolean) => Promise<void>;
 };
 
 export type ComputedQuery = {
@@ -38,13 +38,31 @@ export type ComputedQuery = {
 	filterSystem?: Ref<Query['filter']> | ComputedRef<Query['filter']> | WritableComputedRef<Query['filter']>;
 	alias?: Ref<Query['alias']> | ComputedRef<Query['alias']> | WritableComputedRef<Query['alias']>;
 	deep?: Ref<Query['deep']> | ComputedRef<Query['deep']> | WritableComputedRef<Query['deep']>;
+	version?: Ref<Query['version']> | ComputedRef<Query['version']> | WritableComputedRef<Query['version']>;
 };
+
+/**
+ * Filters containing `_json` are sent as a JSON string so that the typed scalar values on JSON
+ * paths (numbers, booleans, and intentionally-quoted strings) survive query-string serialization
+ * with their types intact. All other filters keep the default object serialization.
+ */
+export function serializeFilter(filter: Query['filter']): Query['filter'] | string {
+	return filter && hasJsonOperator(filter) ? JSON.stringify(filter) : filter;
+}
+
+function hasJsonOperator(value: unknown): boolean {
+	if (!value || typeof value !== 'object') return false;
+
+	return Object.entries(value).some(
+		([key, child]) => key === '_json' || (Array.isArray(child) ? child.some(hasJsonOperator) : hasJsonOperator(child)),
+	);
+}
 
 export function useItems(collection: Ref<string | null>, query: ComputedQuery): UsableItems {
 	const api = useApi();
 	const { primaryKeyField } = useCollection(collection);
 
-	const { fields, limit, sort, search, filter, page, filterSystem, alias, deep } = query;
+	const { fields, limit, sort, search, filter, page, filterSystem, alias, deep, version } = query;
 
 	const endpoint = computed(() => {
 		if (!collection.value) return null;
@@ -84,7 +102,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			const response = await api.get<any>(url, {
 				params: {
 					aggregate,
-					...(filter ? { filter } : {}),
+					...(filter ? { filter: serializeFilter(filter) } : {}),
 					...(search ? { search } : {}),
 				},
 			});
@@ -107,16 +125,16 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 	// Throttle is used to ensure we send the first trigger instantly, debounce will not.
 	const fetchItems = throttle((shouldUpdateCount: boolean) => {
-		Promise.all([getItems(), shouldUpdateCount ? getItemCount() : Promise.resolve()]);
+		Promise.all([getItems(), shouldUpdateCount && !unref(version) ? getItemCount() : Promise.resolve()]);
 	}, 500);
 
 	watch(
-		[collection, limit, sort, search, filter, fields, page, toRef(alias), toRef(deep)],
+		[collection, limit, sort, search, filter, toRef(version), fields, page, toRef(alias), toRef(deep)],
 		async (after, before) => {
 			if (isEqual(after, before)) return;
 
-			const [newCollection, newLimit, newSort, newSearch, newFilter] = after;
-			const [oldCollection, oldLimit, oldSort, oldSearch, oldFilter] = before;
+			const [newCollection, newLimit, newSort, newSearch, newFilter, newVersion] = after;
+			const [oldCollection, oldLimit, oldSort, oldSearch, oldFilter, oldVersion] = before;
 
 			if (!newCollection || !query) return;
 
@@ -137,7 +155,10 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 			// determine if the count needs to be updated based on changes to a collection, filter, or search
 			const shouldUpdateCount =
-				newCollection !== oldCollection || !isEqual(newFilter, oldFilter) || newSearch !== oldSearch;
+				newCollection !== oldCollection ||
+				!isEqual(newFilter, oldFilter) ||
+				newSearch !== oldSearch ||
+				!isEqual(newVersion, oldVersion);
 
 			fetchItems(shouldUpdateCount);
 		},
@@ -145,11 +166,11 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	);
 
 	watch(
-		[collection, toRef(filterSystem)],
+		[collection, toRef(filterSystem), toRef(version)],
 		async (after, before) => {
 			if (isEqual(after, before)) return;
 
-			getTotalCount();
+			if (!unref(version)) getTotalCount();
 		},
 		{ deep: true, immediate: true },
 	);
@@ -210,8 +231,9 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 					sort: unref(sort),
 					page: unref(page),
 					search: unref(search),
-					filter: unref(filter),
+					filter: serializeFilter(unref(filter)),
 					deep: unref(deep),
+					version: unref(version),
 				},
 				signal: itemsAbort.signal,
 			});
@@ -237,6 +259,13 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			}
 
 			items.value = fetchedItems;
+
+			// When fetching versioned items, derive counts client-side
+			// because aggregate endpoints don't support the version param
+			if (unref(version)) {
+				itemCount.value = fetchedItems.length;
+				totalCount.value = fetchedItems.length;
+			}
 
 			if (page && fetchedItems.length === 0 && page?.value !== 1) {
 				page.value = 1;
@@ -264,6 +293,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	}
 
 	async function changeManualSort({ item, to }: ManualSortData) {
+		if (unref(version)) return;
+
 		const pk = primaryKeyField.value?.field;
 		if (!pk) return;
 
@@ -276,13 +307,17 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		await api.post(endpoint.value, { item, to });
 	}
 
-	async function getTotalCount() {
+	async function getTotalCount(force = false) {
 		if (!endpoint.value) return;
 
 		const currentGeneration = ++totalCountGeneration;
 
 		try {
-			const count = await fetchAggregate(endpoint.value, filterSystem?.value, undefined);
+			// Bypass memoize cache on explicit refresh so that data mutations (deletes,
+			// inserts, etc.) are reflected; otherwise the previously cached aggregate
+			// keyed on (url, filter, search) would mask the new count.
+			const fetcher = force ? fetchAggregate.load : fetchAggregate;
+			const count = await fetcher(endpoint.value, filterSystem?.value, undefined);
 
 			// Discard the result if a newer request has been initiated (prevents race conditions
 			// when navigating between collections quickly)
@@ -296,7 +331,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		}
 	}
 
-	async function getItemCount() {
+	async function getItemCount(force = false) {
 		if (!endpoint.value) return;
 
 		const currentGeneration = ++itemCountGeneration;
@@ -304,7 +339,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		loadingItemCount.value = true;
 
 		try {
-			const count = await fetchAggregate(endpoint.value, filter.value, search.value);
+			const fetcher = force ? fetchAggregate.load : fetchAggregate;
+			const count = await fetcher(endpoint.value, filter.value, search.value);
 
 			// Discard the result if a newer request has been initiated (prevents race conditions
 			// when rapidly changing filters or search terms)

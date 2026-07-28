@@ -9,6 +9,7 @@ import VInput from '@/components/v-input.vue';
 import VNotice from '@/components/v-notice.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { translateAPIError } from '@/lang';
+import { navigateAfterLogin } from '@/routes/login/utils/navigate-after-login';
 import { useUserStore } from '@/stores/user';
 
 type Credentials = {
@@ -81,7 +82,7 @@ async function onSubmit() {
 			lastPage = userStore.currentUser.last_page;
 		}
 
-		router.push(redirectQuery || lastPage || '/content');
+		navigateAfterLogin(router, redirectQuery || lastPage || '/content');
 	} catch (err: any) {
 		if (err.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
 			requiresTFA.value = true;

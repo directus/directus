@@ -357,7 +357,7 @@ async function copy(id: string) {
 			</VCard>
 		</VDialog>
 
-		<VButton v-if="allowed" full-width @click="select('+')">
+		<VButton v-if="allowed" full-width small @click="select('+')">
 			{{ $t('new_share') }}
 		</VButton>
 	</SidebarDetail>
@@ -381,7 +381,7 @@ async function copy(id: string) {
 }
 
 .empty {
-	margin-block: 0.875rem;
+	margin-block-end: 0.875rem;
 	margin-inline-start: 0.125rem;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;

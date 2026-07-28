@@ -183,6 +183,8 @@ fields:
           value: suspended
         - text: $t:fields.directus_users.status_archived
           value: archived
+        - text: $t:fields.directus_users.status_inactive_license_exceeded
+          value: inactive-license
     width: half
 
   - field: role

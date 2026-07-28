@@ -13,17 +13,5 @@ const emit = defineEmits<{
 </script>
 
 <template>
-	<div class="actions">
-		<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save')" icon="check" @click="emit('save')" />
-	</div>
+	<PrivateViewHeaderBarActionButton :label="$t('save')" icon="check" @click="emit('save')" />
 </template>
-
-<style lang="scss" scoped>
-.actions {
-	display: contents;
-}
-
-.v-button:not(:last-child) {
-	margin-inline-end: 0.4375rem;
-}
-</style>

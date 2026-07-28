@@ -415,7 +415,7 @@ defineExpose({ abort });
 					v-if="fromUser"
 					v-tooltip="!disabled && $t('click_to_browse')"
 					icon
-					rounded
+					small
 					secondary
 					:disabled
 					@click="openFileBrowser"
@@ -436,7 +436,7 @@ defineExpose({ abort });
 					v-if="fromLibrary"
 					v-tooltip="!disabled && $t('choose_from_library')"
 					icon
-					rounded
+					small
 					secondary
 					:disabled
 					@click="activeDialog = 'choose'"
@@ -447,7 +447,7 @@ defineExpose({ abort });
 					v-if="fromUrl && fromUser"
 					v-tooltip="!disabled && $t('import_from_url')"
 					icon
-					rounded
+					small
 					secondary
 					:disabled
 					@click="activeDialog = 'url'"
@@ -521,20 +521,18 @@ defineExpose({ abort });
 	&:not(.uploading):not(.disabled):hover {
 		border-color: var(--theme--form--field--input--border-color-hover);
 	}
+
+	&:not(.uploading):not(.disabled):focus-within {
+		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+		outline-offset: var(--focus-ring-offset-invert);
+	}
 }
 
 .actions {
 	display: flex;
 	justify-content: center;
-	margin-block-end: 1rem;
-
-	.v-button {
-		margin-inline-end: 0.6875rem;
-
-		&:last-child {
-			margin-inline-end: 0;
-		}
-	}
+	margin-block-end: 0.625rem;
+	gap: 0.625rem;
 }
 
 .browse {
@@ -552,7 +550,7 @@ defineExpose({ abort });
 .dragging {
 	color: var(--theme--primary);
 	background-color: var(--theme--primary-background);
-	border-color: var(--theme--form--field--input--border-color-focus);
+	border-color: var(--theme--primary);
 
 	* {
 		pointer-events: none;
@@ -571,7 +569,7 @@ defineExpose({ abort });
 
 	color: var(--white);
 	background-color: var(--theme--primary);
-	border-color: var(--theme--form--field--input--border-color-focus);
+	border-color: var(--theme--primary);
 	border-style: solid;
 
 	.v-progress-linear {

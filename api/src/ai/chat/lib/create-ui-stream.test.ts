@@ -146,6 +146,123 @@ describe('createUiStream', () => {
 		expect(streamText).toHaveBeenCalledWith(expect.objectContaining({ system: 'CUSTOM_PROMPT' }));
 	});
 
+	it('includes context in the top-level system prompt without prepareStep override', async () => {
+		await createUiStream(messages, {
+			provider: 'openai',
+			model: 'gpt-4',
+			tools: {},
+			aiSettings,
+			context: {
+				page: {
+					path: '/content/posts/123',
+					collection: 'posts',
+				},
+			},
+		});
+
+		const call = vi.mocked(streamText).mock.calls[0]?.[0];
+
+		expect(call?.system).toContain('DEFAULT_SYSTEM_PROMPT');
+		expect(call?.system).toContain('<user_context>');
+		expect(call?.system).toContain('Path: /content/posts/123');
+		expect(call).not.toHaveProperty('prepareStep');
+	});
+
+	it('keeps context out of the cached Anthropic system prompt and appends it as a trailing user message', async () => {
+		const userInitiatedMessages: UIMessage[] = [
+			{ id: '1', role: 'user', parts: [{ type: 'text', text: 'Hello' }] },
+			{ id: '2', role: 'assistant', parts: [{ type: 'text', text: 'Hi there!' }] },
+			{ id: '3', role: 'user', parts: [{ type: 'text', text: 'Update the title' }] },
+		];
+
+		await createUiStream(userInitiatedMessages, {
+			provider: 'anthropic',
+			model: 'claude-sonnet-4-5',
+			tools: {},
+			aiSettings,
+			context: {
+				page: {
+					path: '/content/posts/123',
+					collection: 'posts',
+				},
+			},
+		});
+
+		const call = vi.mocked(streamText).mock.calls[0]?.[0];
+
+		expect(call?.system).toEqual({
+			role: 'system',
+			content: 'DEFAULT_SYSTEM_PROMPT',
+			providerOptions: { anthropic: { cacheControl: { type: 'ephemeral' } } },
+		});
+
+		const callMessages = call?.messages ?? [];
+		const trailingContext = callMessages.at(-1);
+
+		expect(trailingContext?.role).toBe('user');
+
+		expect(typeof trailingContext?.content === 'string' ? trailingContext.content : '').toContain(
+			'Path: /content/posts/123',
+		);
+	});
+
+	it('does not append context as a trailing user message during multi-step continuations', async () => {
+		await createUiStream(messages, {
+			provider: 'anthropic',
+			model: 'claude-sonnet-4-5',
+			tools: {},
+			aiSettings,
+			context: {
+				page: { path: '/content/posts/123' },
+			},
+		});
+
+		const call = vi.mocked(streamText).mock.calls[0]?.[0];
+		const callMessages = call?.messages ?? [];
+
+		expect(callMessages.at(-1)?.role).toBe('assistant');
+	});
+
+	it('places a cache breakpoint on the last existing Anthropic message', async () => {
+		await createUiStream(messages, {
+			provider: 'anthropic',
+			model: 'claude-sonnet-4-5',
+			tools: {},
+			aiSettings,
+		});
+
+		const call = vi.mocked(streamText).mock.calls[0]?.[0];
+		const callMessages = call?.messages ?? [];
+
+		expect(callMessages.at(-1)).toEqual(
+			expect.objectContaining({
+				providerOptions: expect.objectContaining({
+					anthropic: expect.objectContaining({ cacheControl: { type: 'ephemeral' } }),
+				}),
+			}),
+		);
+	});
+
+	it('does not add Anthropic cache breakpoints for other providers', async () => {
+		await createUiStream(messages, {
+			provider: 'openai',
+			model: 'gpt-4',
+			tools: {},
+			aiSettings,
+			context: {
+				page: {
+					path: '/content/posts/123',
+				},
+			},
+		});
+
+		const call = vi.mocked(streamText).mock.calls[0]?.[0];
+		const callMessages = call?.messages ?? [];
+
+		expect(callMessages.every((m: any) => !m.providerOptions?.anthropic)).toBe(true);
+		expect(callMessages.at(-1)?.role).toBe('assistant');
+	});
+
 	it('replaces empty string system prompt with default', async () => {
 		await createUiStream(messages, {
 			provider: 'openai',
@@ -156,6 +273,61 @@ describe('createUiStream', () => {
 		});
 
 		expect(streamText).toHaveBeenCalledWith(expect.objectContaining({ system: 'DEFAULT_SYSTEM_PROMPT' }));
+	});
+
+	it('adds Anthropic cache control to the system prompt', async () => {
+		await createUiStream(messages, {
+			provider: 'anthropic',
+			model: 'claude-sonnet-4-5',
+			tools: {},
+			aiSettings,
+		});
+
+		expect(streamText).toHaveBeenCalledWith(
+			expect.objectContaining({
+				system: {
+					role: 'system',
+					content: 'DEFAULT_SYSTEM_PROMPT',
+					providerOptions: {
+						anthropic: {
+							cacheControl: { type: 'ephemeral' },
+						},
+					},
+				},
+			}),
+		);
+	});
+
+	it('sorts tools by name before streaming', async () => {
+		await createUiStream(messages, {
+			provider: 'openai',
+			model: 'gpt-4',
+			tools: {
+				zeta: { description: 'Zeta tool', inputSchema: {} } as any,
+				alpha: { description: 'Alpha tool', inputSchema: {} } as any,
+			},
+			aiSettings,
+		});
+
+		const call = vi.mocked(streamText).mock.calls[0]?.[0];
+
+		expect(Object.keys(call?.tools ?? {})).toEqual(['alpha', 'zeta']);
+	});
+
+	it('sorts Anthropic deferred tools and tool search by name', async () => {
+		await createUiStream(messages, {
+			provider: 'anthropic',
+			model: 'claude-sonnet-4-5',
+			tools: {
+				zeta: { description: 'Zeta tool', inputSchema: {} } as any,
+				alpha: { description: 'Alpha tool', inputSchema: {} } as any,
+			},
+			aiSettings,
+		});
+
+		const call = vi.mocked(streamText).mock.calls[0]?.[0];
+
+		expect(Object.keys(call?.tools ?? {})).toEqual(['alpha', 'toolSearch', 'zeta']);
 	});
 
 	it('passes onUsage callback to streamText onFinish', async () => {
@@ -180,6 +352,16 @@ describe('createUiStream', () => {
 
 		const onFinish = call?.onFinish as (result: {
 			usage: { inputTokens: number; outputTokens: number; totalTokens: number };
+			totalUsage?: {
+				inputTokens: number;
+				outputTokens: number;
+				totalTokens: number;
+				inputTokenDetails?: {
+					cacheReadTokens?: number;
+					cacheWriteTokens?: number;
+				};
+			};
+			steps?: [];
 		}) => void;
 
 		onFinish({ usage: { inputTokens: 100, outputTokens: 50, totalTokens: 150 } });

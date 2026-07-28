@@ -1,4 +1,5 @@
 ---
+continue: Nadaljuj
 first_name: Ime
 last_name: Priimek
 identifier: Identifikator
@@ -704,6 +705,14 @@ editing_in_batch: 'Masovno urejanje {count} zapisov'
 no_options_available: Ni opcij
 settings_data_model: Podatkovni model
 settings_project: Nastavitve
+licensing:
+  unlimited: Neomejeno
+  addon_update: Posodobi
+  resolve_continue: Nadaljuj
+  resolve_show_n_more: 'Pokaži še {count}'
+  resolve_sso_admin_password: Geslo
+  entitlements:
+    collections: Zbirke
 settings_presets: Zaznamki
 settings_translations: Prevodi
 one_or_more_options_are_missing: Manjka ena ali več opcij
@@ -753,6 +762,7 @@ fields:
     collection: Zbirka
     icon: Ikona
     note: Opomba
+    status: Stanje
     color: Barva
     display_template: Prikaži predlogo
     hidden: Skrito
@@ -1186,6 +1196,7 @@ interfaces:
     sort: Razvrsti
     field_note_placeholder: Vnesite opis polja ...
     interface_group: Možnosti vmesnika
+    edit_mode_inline: V vrstici
   slider:
     slider: Drsnik
     description: Z drsnikom izberite vrednost

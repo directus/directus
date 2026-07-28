@@ -22,7 +22,7 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 		v-tooltip.left="sidebarStore.collapsed && $t('ai_assistant')"
 		class="collapsible-root"
 	>
-		<CollapsibleTrigger class="collapsible-trigger">
+		<CollapsibleTrigger class="collapsible-trigger" :class="{ active: aiStore.chatOpen }">
 			<div ref="collapsible-trigger-content" class="collapsible-trigger-content">
 				<AiMagicButton class="collapsible-trigger-icon" :animate="hovering" />
 				<span v-show="!sidebarStore.collapsed" class="collapsible-trigger-title">{{ $t('ai_assistant') }}</span>
@@ -37,8 +37,16 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 	</CollapsibleRoot>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .collapsible-root {
+	--ai-sidebar-open-height: calc(100vh - var(--sidebar-section-trigger-height));
+
+	@include mixins.breakpoint-up('sm') {
+		--ai-sidebar-open-height: calc(100vh - var(--sidebar-section-trigger-height) - var(--header-bar-height));
+	}
+
 	inline-size: 100%;
 	background-color: var(--theme--sidebar--background);
 }
@@ -46,34 +54,35 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 .collapsible-trigger {
 	--focus-ring-offset: var(--focus-ring-offset-invert);
 
-	block-size: 3.375rem;
+	block-size: var(--sidebar-section-trigger-height);
 	inline-size: 100%;
 }
 
 .collapsible-trigger-content {
+	@include mixins.sidebar-section-trigger(
+		$chevron-selector: '.collapsible-trigger-chevron',
+		$active-parent-selector: '.collapsible-trigger.active'
+	);
+
 	block-size: 100%;
 	inline-size: 100%;
-	background-color: var(--theme--sidebar--section--toggle--background);
-	color: var(--theme--sidebar--section--toggle--foreground);
-	display: flex;
-	align-items: center;
-	padding-inline: 1rem 0.5rem;
-	transition: color var(--fast) var(--transition);
 }
 
 .collapsible-trigger-icon {
-	margin-inline-end: 0.6875rem;
+	@include mixins.sidebar-section-trigger-icon;
+
+	block-size: var(--sidebar-section-trigger-icon-size);
+	inline-size: var(--sidebar-section-trigger-icon-size);
 }
 
 .collapsible-trigger-title {
-	flex-grow: 1;
-	text-align: start;
+	@include mixins.sidebar-section-trigger-title;
 }
 
 .collapsible-trigger-chevron {
-	color: var(--theme--foreground-subdued);
-	transform: rotate(0deg);
-	transition: transform var(--fast) var(--transition);
+	@include mixins.sidebar-section-trigger-chevron;
+
+	transition-property: transform, color;
 }
 
 .collapsible-trigger[data-state='open'] {
@@ -96,16 +105,16 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 
 .collapsible-content[data-state='open'] {
 	animation: slide-down var(--fast) var(--transition);
-	block-size: calc(100vh - 3.375rem);
+	block-size: var(--ai-sidebar-open-height);
 }
 
 .collapsible-content[data-state='closed'] {
 	animation: slide-up var(--fast) var(--transition);
-	block-size: calc(100vh - 3.375rem);
+	block-size: var(--ai-sidebar-open-height);
 }
 
 .ai-sidebar-content {
-	padding: 0.6875rem;
+	padding: 0 var(--sidebar-section-content-padding) var(--sidebar-section-content-padding);
 	block-size: 100%;
 	display: flex;
 	flex-direction: column;
@@ -116,13 +125,13 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 		block-size: 0;
 	}
 	to {
-		block-size: calc(100vh - 3.375rem);
+		block-size: var(--ai-sidebar-open-height);
 	}
 }
 
 @keyframes slide-up {
 	from {
-		block-size: calc(100vh - 3.375rem);
+		block-size: var(--ai-sidebar-open-height);
 	}
 	to {
 		block-size: 0;

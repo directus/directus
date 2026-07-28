@@ -175,7 +175,7 @@ function onClickIcon(e: MouseEvent): void {
 			inline-size: 100%;
 			background-color: transparent;
 			border: none;
-			border-block-end: 2px solid var(--theme--form--field--input--border-color);
+			border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 			border-radius: 0;
 		}
 	}

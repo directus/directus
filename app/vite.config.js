@@ -3,6 +3,7 @@ import path from 'node:path';
 import { APP_SHARED_DEPS } from '@directus/extensions';
 import { generateExtensionsEntrypoint, resolveFsExtensions, resolveModuleExtensions } from '@directus/extensions/node';
 import yaml from '@rollup/plugin-yaml';
+import { templateCompilerOptions } from '@tresjs/core';
 import UnheadVite from '@unhead/addons/vite';
 import vue from '@vitejs/plugin-vue';
 import { searchForWorkspaceRoot } from 'vite';
@@ -11,12 +12,18 @@ import { defineConfig } from 'vitest/config';
 
 const API_PATH = path.join('..', 'api');
 
-/*
- * @TODO This extension path is hardcoded to the env default (./extensions). This won't work
- * as expected when extensions are read from a different location locally through the
- * EXTENSIONS_LOCATION env var
- */
-const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
+// api/.env is not loaded automatically when running `pnpm --filter app dev`
+const apiEnvFile = path.join(API_PATH, '.env');
+if (fs.existsSync(apiEnvFile)) process.loadEnvFile(apiEnvFile);
+
+// Mirror the API's getExtensionsPath() resolution so the dev server reads from
+// the same location. In remote mode (EXTENSIONS_LOCATION) the API syncs remote
+// extensions into TEMP_PATH/extensions at boot, and EXTENSIONS_PATH is ignored.
+// The './node_modules/.directus' and './extensions' fallbacks mirror the
+// TEMP_PATH and EXTENSIONS_PATH defaults from @directus/env's DEFAULTS
+const EXTENSIONS_PATH = process.env.EXTENSIONS_LOCATION
+	? path.resolve(API_PATH, process.env.TEMP_PATH ?? './node_modules/.directus', 'extensions')
+	: path.resolve(API_PATH, process.env.EXTENSIONS_PATH ?? './extensions');
 
 const extensionsPathExists = fs.existsSync(EXTENSIONS_PATH);
 
@@ -31,7 +38,9 @@ export default defineConfig({
 	},
 	plugins: [
 		directusExtensions(),
-		vue(),
+		vue({
+			...templateCompilerOptions,
+		}),
 		UnheadVite(),
 		yaml({
 			transform(data) {
@@ -56,28 +65,26 @@ export default defineConfig({
 		alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
 	},
 	base: process.env.NODE_ENV === 'production' ? '' : '/admin',
-	...(!process.env.HISTOIRE && {
-		server: {
-			port: 8080,
-			proxy: {
-				'^/(?!admin)': {
-					target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
-				},
-				'/websocket/logs': {
-					target: process.env.API_URL ? process.env.API_URL : 'ws://127.0.0.1:8055/',
-					changeOrigin: true,
-				},
-				'/websocket': {
-					target: process.env.API_URL ? process.env.API_URL : 'ws://127.0.0.1:8055/',
-					changeOrigin: true,
-					ws: true,
-				},
+	server: {
+		port: 8080,
+		proxy: {
+			'^/(?!admin)': {
+				target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
 			},
-			fs: {
-				allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
+			'/websocket/logs': {
+				target: process.env.API_URL ? process.env.API_URL : 'ws://127.0.0.1:8055/',
+				changeOrigin: true,
+			},
+			'/websocket': {
+				target: process.env.API_URL ? process.env.API_URL : 'ws://127.0.0.1:8055/',
+				changeOrigin: true,
+				ws: true,
 			},
 		},
-	}),
+		fs: {
+			allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
+		},
+	},
 	test: {
 		dir: path.resolve(__dirname, '..'),
 		include: ['app/**/*.test.ts'],

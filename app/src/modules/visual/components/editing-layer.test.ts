@@ -1,19 +1,26 @@
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import type { CheckFieldAccessData } from '@directus/visual-editing/types';
 import { createTestingPinia } from '@pinia/testing';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { nextTick } from 'vue';
 import EditingLayer from './editing-layer.vue';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
+import { useNotificationsStore } from '@/stores/notifications';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 
+const { mockCollectionInfo } = vi.hoisted(() => ({
+	mockCollectionInfo: { value: null as null | { meta?: { versioning?: boolean } } },
+}));
+
 vi.mock('@directus/composables', () => ({
 	useCollection: () => ({
-		info: { value: null },
+		info: mockCollectionInfo,
 		primaryKeyField: { value: { field: 'id' } },
 		fields: { value: [] },
 	}),
@@ -85,6 +92,8 @@ beforeEach(() => {
 		contentWindow: { postMessage: postMessageSpy },
 	} as unknown as HTMLIFrameElement;
 
+	mockCollectionInfo.value = null;
+
 	const pinia = createTestingPinia({
 		createSpy: vi.fn,
 		initialState: {
@@ -99,7 +108,11 @@ beforeEach(() => {
 		plugins: [i18n, pinia],
 		directives: { tooltip: Tooltip },
 		stubs: {
-			OverlayItem: true,
+			OverlayItem: {
+				name: 'OverlayItem',
+				props: ['active'],
+				template: '<div data-testid="overlay-item" :data-active="String(active)" />',
+			},
 			VButton: true,
 			VIcon: true,
 		},
@@ -111,10 +124,26 @@ afterEach(() => {
 });
 
 function mountEditingLayer(version: { key: string; name: string } | null = null) {
-	mount(EditingLayer, {
+	return mount(EditingLayer, {
 		global: mountOptions,
 		props: { frameSrc: FRAME_SRC, frameEl: mockFrameEl, version },
 	});
+}
+
+function sendEdit(editConfig: Partial<{ collection: string; item: string; fields: string[]; mode: string }> = {}) {
+	window.dispatchEvent(
+		new MessageEvent('message', {
+			origin: FRAME_SRC,
+			data: {
+				action: 'edit',
+				data: {
+					key: 'edit-key',
+					editConfig: { collection: 'articles', item: '1', fields: ['title'], mode: 'drawer', ...editConfig },
+					rect: { top: 0, left: 0, width: 0, height: 0 },
+				},
+			},
+		}),
+	);
 }
 
 function setupCollection(meta: Record<string, unknown> = {}) {
@@ -329,5 +358,72 @@ describe('checkFieldAccess', () => {
 		sendCheckFieldAccess(createElements());
 
 		expect(postMessageSpy).toHaveBeenCalledWith({ action: 'activateElements', data: ['el-0'] }, FRAME_SRC);
+	});
+});
+
+describe('switchVersion on edit click', () => {
+	it('emits switchVersion and adds notification when collection is versioned and no version is set', async () => {
+		mockCollectionInfo.value = { meta: { versioning: true } };
+		const wrapper = mountEditingLayer(null);
+
+		sendEdit();
+		await flushPromises();
+
+		const emits = wrapper.emitted('switchVersion');
+		expect(emits).toHaveLength(1);
+		expect(emits![0]![0]).toBe(VERSION_KEY_DRAFT);
+		expect(typeof emits![0]![1]).toBe('function');
+
+		const done = emits![0]![1] as () => void;
+		done();
+		await flushPromises();
+
+		expect(useNotificationsStore().add).toHaveBeenCalledWith({
+			title: i18n.global.t('editing_draft_version'),
+			icon: 'edit',
+		});
+	});
+
+	it('does not emit switchVersion when a version is already set', async () => {
+		mockCollectionInfo.value = { meta: { versioning: true } };
+		const wrapper = mountEditingLayer({ key: 'draft', name: 'Draft' });
+
+		sendEdit();
+		await flushPromises();
+
+		expect(wrapper.emitted('switchVersion')).toBeUndefined();
+		expect(useNotificationsStore().add).not.toHaveBeenCalled();
+	});
+
+	it('does not emit switchVersion when collection has no versioning', async () => {
+		mockCollectionInfo.value = { meta: { versioning: false } };
+		const wrapper = mountEditingLayer(null);
+
+		sendEdit();
+		await flushPromises();
+
+		expect(wrapper.emitted('switchVersion')).toBeUndefined();
+		expect(useNotificationsStore().add).not.toHaveBeenCalled();
+	});
+
+	it('activates the overlay only after done() is invoked', async () => {
+		mockCollectionInfo.value = { meta: { versioning: true } };
+		const wrapper = mountEditingLayer(null);
+
+		sendEdit();
+		await flushPromises();
+
+		const overlay = wrapper.find('[data-testid="overlay-item"]');
+		expect(overlay.exists()).toBe(true);
+		expect(overlay.attributes('data-active')).toBe('false');
+		expect(useNotificationsStore().add).not.toHaveBeenCalled();
+
+		const onSwitched = wrapper.emitted('switchVersion')![0]![1] as () => void;
+		onSwitched();
+		await flushPromises();
+		await nextTick();
+
+		expect(wrapper.find('[data-testid="overlay-item"]').attributes('data-active')).toBe('true');
+		expect(useNotificationsStore().add).toHaveBeenCalledOnce();
 	});
 });

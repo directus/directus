@@ -27,6 +27,7 @@ import type { Policy } from './policies.js';
 import type { Aggregate, Query } from './query.js';
 import type { Relation } from './relations.js';
 import type { FieldOverview, SchemaOverview } from './schema.js';
+import type { ServerHealth } from './server.js';
 import type { Snapshot, SnapshotDiff, SnapshotDiffWithHash, SnapshotWithHash } from './snapshot.js';
 import type { Range, Stat } from './storage.js';
 import type { RegisterUserInput } from './users.js';
@@ -398,7 +399,7 @@ interface SchemaService {
  */
 interface ServerService {
 	serverInfo(): Promise<Record<string, any>>;
-	health(): Promise<Record<string, any>>;
+	health(): Promise<ServerHealth | Pick<ServerHealth, 'status'>>;
 }
 
 /**
@@ -500,9 +501,14 @@ interface UtilsService {
 interface VersionsService {
 	getMainItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item>;
 	verifyHash(collection: string, item: PrimaryKey, hash: string): Promise<{ outdated: boolean; mainHash: string }>;
-	getVersionSave(key: string, collection: string, item: string | undefined): Promise<ContentVersion | undefined>;
+	getVersionSaves(
+		key: string,
+		collection: string,
+		item: PrimaryKey | null,
+		mapDelta: boolean,
+	): Promise<ContentVersion[]>;
 	save(key: PrimaryKey, data: Partial<Item>): Promise<Partial<Item>>;
-	promote(version: PrimaryKey, mainHash: string, fields?: string[]): Promise<PrimaryKey>;
+	promote(version: PrimaryKey, opts?: { mainHash: string; fields?: string[] }): Promise<PrimaryKey>;
 }
 
 /**

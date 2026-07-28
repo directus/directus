@@ -3,7 +3,7 @@ import type { SettingsStorageAssetPreset } from '@directus/types';
 import Editor from '@tinymce/tinymce-vue';
 import { cloneDeep, isEqual } from 'lodash';
 import tinymce from 'tinymce/tinymce';
-import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
+import { ComponentPublicInstance, computed, nextTick, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
 import toolbarDefault from './toolbar-default';
@@ -94,10 +94,10 @@ const emit = defineEmits(['input']);
 const { t } = useI18n();
 const editorRef = ref<any | null>(null);
 const editorElement = ref<ComponentPublicInstance | null>(null);
-const comparisonEditorRef = ref<any | null>(null);
-const comparisonEditorInitialized = ref(false);
+const readonlyEditorRef = ref<any | null>(null);
+const readonlyEditorInitialized = ref(false);
 const editorKey = ref(0);
-const comparisonEditorKey = ref(0);
+const readonlyEditorKey = ref(0);
 
 const { imageToken } = toRefs(props);
 const settingsStore = useSettingsStore();
@@ -156,6 +156,7 @@ const internalValue = computed({
 });
 
 const editorInitialized = ref(false);
+const { isEditorMounted } = useEditorMounted();
 
 const editorDisabled = computed(() => {
 	if (!editorInitialized.value) return false;
@@ -181,7 +182,8 @@ watch(
 	(newOptions, oldOptions) => {
 		if (isEqual(newOptions, oldOptions)) return;
 
-		editorRef.value.remove();
+		editorRef.value?.remove?.();
+
 		editorInitialized.value = false;
 		editorKey.value++;
 	},
@@ -190,8 +192,8 @@ watch(
 watch(
 	() => [props.value, props.font, props.direction, props.comparisonSide],
 	() => {
-		if (comparisonEditorRef.value && comparisonEditorInitialized.value) {
-			comparisonEditorRef.value.setContent(props.value || '');
+		if (readonlyEditorRef.value && readonlyEditorInitialized.value) {
+			readonlyEditorRef.value.setContent(props.value || '');
 		}
 	},
 );
@@ -199,8 +201,8 @@ watch(
 watch(
 	() => props.comparisonSide,
 	() => {
-		comparisonEditorInitialized.value = false;
-		comparisonEditorKey.value++;
+		readonlyEditorInitialized.value = false;
+		readonlyEditorKey.value++;
 	},
 );
 
@@ -274,7 +276,7 @@ const editorOptions = computed(() => {
 	};
 });
 
-const comparisonEditorOptions = computed(() => {
+const readonlyEditorOptions = computed(() => {
 	return {
 		...getBaseEditorOptions(),
 		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', true),
@@ -282,10 +284,10 @@ const comparisonEditorOptions = computed(() => {
 		toolbar: false,
 		readonly: true,
 		setup: (editor: any) => {
-			comparisonEditorRef.value = editor;
+			readonlyEditorRef.value = editor;
 
 			editor.on('init', () => {
-				comparisonEditorInitialized.value = true;
+				readonlyEditorInitialized.value = true;
 				editor.setContent(props.value || '');
 			});
 		},
@@ -472,30 +474,53 @@ onMounted(() => {
 const menuActive = computed(
 	() => codeDrawerOpen.value || imageDrawerOpen.value || mediaDrawerOpen.value || linkDrawerOpen.value,
 );
+
+function useEditorMounted() {
+	const isEditorMounted = ref(true);
+
+	watch(() => props.nonEditable, reMountEditor);
+
+	return { isEditorMounted };
+
+	async function reMountEditor() {
+		isEditorMounted.value = false;
+		await nextTick();
+		isEditorMounted.value = true;
+	}
+}
 </script>
 
 <template>
 	<div v-prevent-focusout="menuActive" class="wysiwyg" :class="{ disabled }">
-		<Editor
-			v-if="nonEditable"
-			:key="`comparison-${comparisonSide ?? ''}-${comparisonEditorKey}`"
-			:value="value"
-			:init="comparisonEditorOptions"
-			disabled
-		/>
-		<Editor
-			v-else
-			:key="editorKey"
-			ref="editorElement"
-			v-model="internalValue"
-			:init="editorOptions"
-			:disabled="editorDisabled"
-			model-events="change keydown blur focus paste ExecCommand SetContent"
-			@focusin="setFocus(true)"
-			@focusout="setFocus(false)"
-			@focus="setupContentWatcher"
-			@set-content="contentUpdated"
-		/>
+		<template v-if="isEditorMounted">
+			<Editor
+				v-if="comparisonMode"
+				:key="`comparison-${comparisonSide ?? ''}-${readonlyEditorKey}`"
+				:value="value"
+				:init="readonlyEditorOptions"
+				disabled
+			/>
+			<Editor
+				v-else-if="nonEditable"
+				:key="`readonly-${readonlyEditorKey}`"
+				:value="value"
+				:init="readonlyEditorOptions"
+				disabled
+			/>
+			<Editor
+				v-else
+				:key="editorKey"
+				ref="editorElement"
+				v-model="internalValue"
+				:init="editorOptions"
+				:disabled="editorDisabled"
+				model-events="change keydown blur focus paste ExecCommand SetContent"
+				@focusin="setFocus(true)"
+				@focusout="setFocus(false)"
+				@focus="setupContentWatcher"
+				@set-content="contentUpdated"
+			/>
+		</template>
 		<template v-if="softLength">
 			<span
 				class="remaining"
@@ -553,8 +578,8 @@ const menuActive = computed(
 				></InterfaceInputCode>
 			</div>
 
-			<template #actions>
-				<PrivateViewHeaderBarActionButton icon="check" @click="saveCode" />
+			<template #actions:primary>
+				<PrivateViewHeaderBarActionButton :label="$t('save')" icon="check" @click="saveCode" />
 			</template>
 		</VDrawer>
 
@@ -612,8 +637,8 @@ const menuActive = computed(
 				/>
 			</div>
 
-			<template #actions>
-				<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save_image')" icon="check" @click="saveImage" />
+			<template #actions:primary>
+				<PrivateViewHeaderBarActionButton :label="$t('save_image')" icon="check" @click="saveImage" />
 			</template>
 		</VDrawer>
 
@@ -680,8 +705,8 @@ const menuActive = computed(
 				</VTabsItems>
 			</div>
 
-			<template #actions>
-				<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save_media')" icon="check" @click="saveMedia" />
+			<template #actions:primary>
+				<PrivateViewHeaderBarActionButton :label="$t('save_media')" icon="check" @click="saveMedia" />
 			</template>
 		</VDrawer>
 	</div>

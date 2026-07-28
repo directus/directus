@@ -16,8 +16,6 @@ vi.mock('@vueuse/core', async () => {
 			smallerOrEqual: vi.fn(() => isMobileRef),
 		})),
 		useLocalStorage: vi.fn((_key: string, defaultValue: unknown) => ref(defaultValue)),
-		useResizeObserver: vi.fn(),
-		useScroll: vi.fn(() => ({ x: ref(0), y: ref(0) })),
 	};
 });
 

@@ -1,0 +1,39 @@
+@mixin sidebar-section-trigger($chevron-selector, $active-parent-selector) {
+	font-family: var(--theme--sidebar--section--toggle--font-family);
+	background-color: var(--theme--sidebar--section--toggle--background);
+	color: var(--theme--sidebar--section--toggle--foreground);
+	display: flex;
+	align-items: center;
+	padding-inline: var(--sidebar-section-content-padding);
+	transition: color var(--fast) var(--transition);
+
+	&:hover {
+		&,
+		#{$chevron-selector} {
+			color: var(--theme--sidebar--section--toggle--foreground-hover);
+		}
+	}
+
+	#{$active-parent-selector} &:not(:hover) {
+		color: var(--theme--sidebar--section--toggle--foreground-active);
+	}
+}
+
+@mixin sidebar-section-trigger-icon {
+	margin-inline-end: 0.625rem;
+	color: inherit;
+}
+
+@mixin sidebar-section-trigger-title {
+	flex-grow: 1;
+	text-align: start;
+	font-size: 0.875rem;
+	line-height: 1.4286;
+	font-weight: var(--theme--form--field--label--font-weight);
+}
+
+@mixin sidebar-section-trigger-chevron {
+	color: var(--theme--foreground-subdued);
+	transform: rotate(0deg);
+	transition: var(--fast) var(--transition);
+}

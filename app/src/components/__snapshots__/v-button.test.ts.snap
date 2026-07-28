@@ -5,5 +5,7 @@ exports[`Mount component 1`] = `
     <div data-v-28d526fe="" class="spinner">
       <!--v-if-->
     </div>
-  </button></div>"
+  </button>
+  <!--v-if-->
+</div>"
 `;

@@ -257,7 +257,7 @@ useResizeObserver(contentRef, (entries) => {
 	vertical-align: top;
 	appearance: none;
 	background-color: transparent;
-	border: 2px solid var(--theme--foreground-subdued);
+	border: var(--theme--border-width) solid var(--theme--foreground-subdued);
 	border-radius: 2px;
 	cursor: pointer;
 	transition: all var(--fast) var(--transition);
@@ -277,7 +277,7 @@ useResizeObserver(contentRef, (entries) => {
 			inline-size: 0.3125rem;
 			block-size: 0.5625rem;
 			border: solid var(--theme--primary);
-			border-width: 0 2px 2px 0;
+			border-width: 0 var(--theme--border-width) var(--theme--border-width) 0;
 			transform: rotate(45deg);
 		}
 	}

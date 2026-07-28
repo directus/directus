@@ -3,7 +3,7 @@ import { flushPromises } from '@vue/test-utils';
 import type { AxiosInstance } from 'axios';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { type Ref, ref, unref } from 'vue';
-import { useItems } from './use-items.js';
+import { serializeFilter, useItems } from './use-items.js';
 import { useApi } from './use-system.js';
 
 vi.mock('./use-system.js');
@@ -381,5 +381,340 @@ describe('useItems', () => {
 		await flushPromises();
 
 		expect(unref(items.value[0]?.['$thumbnail'])).toBeOneOf([expect.any(Object)]);
+	});
+
+	describe('version query param', () => {
+		test('should skip getItemCount and getTotalCount when version is set', async () => {
+			const collection = ref('test_collection');
+
+			vi.mocked(mockApiGet).mockResolvedValue({
+				data: {
+					data: [{ id: 1 }, { id: 2 }],
+				},
+			});
+
+			await useItems(collection, {
+				fields: ref(['id']),
+				limit: ref(25),
+				sort: ref(['id']),
+				search: ref(''),
+				filter: ref({}),
+				page: ref(1),
+				version: ref('draft'),
+			});
+
+			// Only getItems should be called — no aggregate calls for count/total
+			expect(mockApiGet).toHaveBeenCalledTimes(1);
+
+			expect(mockApiGet).toHaveBeenCalledWith(
+				'/items/test_collection',
+				expect.objectContaining({
+					params: expect.objectContaining({
+						version: 'draft',
+					}),
+				}),
+			);
+		});
+
+		test('should derive itemCount and totalCount client-side from fetched items when version is set', async () => {
+			const collection = ref('test_collection');
+			const fetchedItems = [{ id: 1 }, { id: 2 }, { id: 3 }];
+
+			vi.mocked(mockApiGet).mockResolvedValue({
+				data: { data: fetchedItems },
+			});
+
+			const { itemCount, totalCount } = useItems(collection, {
+				fields: ref(['id']),
+				limit: ref(25),
+				sort: ref(['id']),
+				search: ref(''),
+				filter: ref({}),
+				page: ref(1),
+				version: ref('draft'),
+			});
+
+			await flushPromises();
+
+			expect(itemCount.value).toBe(3);
+			expect(totalCount.value).toBe(3);
+		});
+
+		test('should pass version param to the API request', async () => {
+			const collection = ref('test_collection');
+
+			vi.mocked(mockApiGet).mockResolvedValue({
+				data: { data: [] },
+			});
+
+			await useItems(collection, {
+				fields: ref(['id']),
+				limit: ref(25),
+				sort: ref(['id']),
+				search: ref(''),
+				filter: ref({}),
+				page: ref(1),
+				version: ref('draft'),
+			});
+
+			expect(mockApiGet).toHaveBeenCalledWith(
+				'/items/test_collection',
+				expect.objectContaining({
+					params: expect.objectContaining({
+						version: 'draft',
+					}),
+				}),
+			);
+		});
+
+		test('should prevent changeManualSort when version is set', async () => {
+			const collection = ref('test_collection');
+			const mockApiPost = vi.fn();
+
+			vi.mocked(useApi).mockImplementation(() => ({ get: mockApiGet, post: mockApiPost }) as unknown as AxiosInstance);
+
+			vi.mocked(mockApiGet).mockResolvedValue({
+				data: { data: [{ id: 1 }, { id: 2 }] },
+			});
+
+			const { changeManualSort } = useItems(collection, {
+				fields: ref(['id']),
+				limit: ref(25),
+				sort: ref(['id']),
+				search: ref(''),
+				filter: ref({}),
+				page: ref(1),
+				version: ref('draft'),
+			});
+
+			await flushPromises();
+
+			await changeManualSort({ item: 1, to: 2 });
+
+			expect(mockApiPost).not.toHaveBeenCalled();
+		});
+
+		test('should refetch with count update when version value changes', async () => {
+			const collection = ref('test_collection');
+			const version: Ref<string | undefined> = ref(undefined);
+
+			vi.mocked(mockApiGet).mockResolvedValue({
+				data: {
+					data: [{ count: 1, countDistinct: { id: 1 } }],
+				},
+			});
+
+			await useItems(collection, {
+				fields: ref(['id']),
+				limit: ref(25),
+				sort: ref(['id']),
+				search: ref(''),
+				filter: ref({}),
+				page: ref(1),
+				version,
+			});
+
+			// Initial: items + 1 deduped aggregate (itemCount/totalCount share the same memoize key when filter and search are empty)
+			expect(mockApiGet).toHaveBeenCalledTimes(2);
+
+			// Switch to draft mode
+			version.value = 'draft';
+
+			await vi.advanceTimersByTimeAsync(500);
+
+			// Should call getItems again (no separate count call since version is now set)
+			// items(2) + initial deduped aggregate(1) = 3
+			expect(mockApiGet).toHaveBeenCalledTimes(3);
+		});
+	});
+
+	describe('refresh cache bypass', () => {
+		test('getItemCount(true) bypasses memoize and reflects mutated count', async () => {
+			const collection = ref('test_collection');
+
+			// Initial fetch returns count = 1
+			vi.mocked(mockApiGet).mockResolvedValue({
+				data: { data: [{ count: 1, countDistinct: { id: 1 } }] },
+			});
+
+			// Active search ensures itemCount makes its own aggregate request (can't reuse totalCount)
+			const { itemCount, getItemCount } = useItems(collection, {
+				fields: ref(['id']),
+				limit: ref(25),
+				sort: ref(['id']),
+				search: ref('foo'),
+				filter: ref({}),
+				page: ref(1),
+			});
+
+			await flushPromises();
+
+			// Initial: items + totalCount + itemCount = 3
+			expect(mockApiGet).toHaveBeenCalledTimes(3);
+			expect(itemCount.value).toBe(1);
+
+			// Simulate the row being deleted on the server
+			vi.mocked(mockApiGet).mockResolvedValue({
+				data: { data: [{ count: 0, countDistinct: { id: 0 } }] },
+			});
+
+			// Without force the memoize returns the cached `1` and skips the network
+			await getItemCount();
+			await flushPromises();
+
+			expect(mockApiGet).toHaveBeenCalledTimes(3);
+			expect(itemCount.value).toBe(1);
+
+			// With force=true the cache is bypassed and the fresh `0` is observed
+			await getItemCount(true);
+			await flushPromises();
+
+			expect(mockApiGet).toHaveBeenCalledTimes(4);
+			expect(itemCount.value).toBe(0);
+		});
+
+		test('getTotalCount(true) bypasses memoize and reflects mutated count', async () => {
+			const collection = ref('test_collection');
+
+			vi.mocked(mockApiGet).mockResolvedValue({
+				data: { data: [{ count: 1, countDistinct: { id: 1 } }] },
+			});
+
+			const { totalCount, getTotalCount } = useItems(collection, {
+				fields: ref(['id']),
+				limit: ref(25),
+				sort: ref(['id']),
+				search: ref<string | null>(null),
+				filter: ref<Filter | null>(null),
+				page: ref(1),
+			});
+
+			await flushPromises();
+
+			// Initial: items + totalCount = 2 (itemCount reuses totalCount when no filter/search)
+			expect(mockApiGet).toHaveBeenCalledTimes(2);
+			expect(totalCount.value).toBe(1);
+
+			vi.mocked(mockApiGet).mockResolvedValue({
+				data: { data: [{ count: 0, countDistinct: { id: 0 } }] },
+			});
+
+			await getTotalCount();
+			await flushPromises();
+
+			expect(mockApiGet).toHaveBeenCalledTimes(2);
+			expect(totalCount.value).toBe(1);
+
+			await getTotalCount(true);
+			await flushPromises();
+
+			expect(mockApiGet).toHaveBeenCalledTimes(3);
+			expect(totalCount.value).toBe(0);
+		});
+	});
+
+	describe('serializeFilter', () => {
+		test('passes filters without _json through untouched', () => {
+			const filter = { _and: [{ status: { _eq: 'published' } }] };
+
+			expect(serializeFilter(filter)).toBe(filter);
+			expect(serializeFilter(null)).toBe(null);
+			expect(serializeFilter(undefined)).toBe(undefined);
+		});
+
+		test('stringifies filters containing _json at the top level', () => {
+			const filter = { metadata: { _json: { 'data.tags[0]': { _eq: 'featured' } } } };
+
+			expect(serializeFilter(filter)).toBe(JSON.stringify(filter));
+		});
+
+		test('detects _json nested under logical groups and relational paths', () => {
+			const nestedInGroup = {
+				_or: [{ status: { _eq: 'published' } }, { _and: [{ metadata: { _json: { rating: { _gte: '4' } } } }] }],
+			};
+
+			const nestedInRelation = { author: { profile: { metadata: { _json: { city: { _eq: 'Berlin' } } } } } };
+
+			expect(serializeFilter(nestedInGroup)).toBe(JSON.stringify(nestedInGroup));
+			expect(serializeFilter(nestedInRelation)).toBe(JSON.stringify(nestedInRelation));
+		});
+
+		test('stringifies an empty _json filter (initial UI state)', () => {
+			const filter = { _and: [{ metadata: { _json: {} } }] };
+
+			expect(serializeFilter(filter)).toBe(JSON.stringify(filter));
+		});
+
+		test('does not treat operator values as _json containers', () => {
+			const filter = { _and: [{ tags: { _in: ['_json', 'other'] } }] };
+
+			expect(serializeFilter(filter)).toBe(filter);
+		});
+	});
+
+	describe('filter serialization on requests', () => {
+		function mockCountResponse() {
+			vi.mocked(mockApiGet).mockResolvedValue({
+				data: { data: [{ count: 1, countDistinct: { id: 1 } }] },
+			});
+		}
+
+		function getRequestFilters() {
+			const calls = vi.mocked(mockApiGet).mock.calls as [string, { params: Record<string, any> }][];
+
+			const itemCall = calls.find(([, config]) => config?.params?.['fields']);
+			const aggregateCalls = calls.filter(([, config]) => config?.params?.['aggregate'] && config?.params?.['filter']);
+
+			return {
+				itemFilter: itemCall?.[1].params['filter'],
+				aggregateFilters: aggregateCalls.map(([, c]) => c.params['filter']),
+			};
+		}
+
+		test('sends non-JSON filters as objects on both item and aggregate requests', async () => {
+			mockCountResponse();
+
+			const filter = { _and: [{ status: { _eq: 'published' } }] };
+
+			useItems(ref('test_collection'), {
+				fields: ref(['id']),
+				limit: ref(25),
+				sort: ref(['id']),
+				search: ref<string | null>(null),
+				filter: ref<Filter | null>(filter),
+				page: ref(1),
+			});
+
+			await flushPromises();
+
+			const { itemFilter, aggregateFilters } = getRequestFilters();
+
+			expect(itemFilter).toEqual(filter);
+			expect(aggregateFilters.length).toBeGreaterThan(0);
+			for (const aggregateFilter of aggregateFilters) expect(aggregateFilter).toEqual(filter);
+		});
+
+		test('sends filters containing _json as JSON strings on both item and aggregate requests', async () => {
+			mockCountResponse();
+
+			const filter = { _and: [{ metadata: { _json: { rating: { _gte: '4' } } } }] };
+
+			useItems(ref('test_collection'), {
+				fields: ref(['id']),
+				limit: ref(25),
+				sort: ref(['id']),
+				search: ref<string | null>(null),
+				filter: ref<Filter | null>(filter),
+				page: ref(1),
+			});
+
+			await flushPromises();
+
+			const { itemFilter, aggregateFilters } = getRequestFilters();
+
+			expect(itemFilter).toBe(JSON.stringify(filter));
+			expect(aggregateFilters.length).toBeGreaterThan(0);
+			for (const aggregateFilter of aggregateFilters) expect(aggregateFilter).toBe(JSON.stringify(filter));
+		});
 	});
 });

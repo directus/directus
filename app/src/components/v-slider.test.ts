@@ -77,3 +77,68 @@ test('defaults to 0% fill when modelValue is undefined', () => {
 	const style = wrapper.find('.v-slider').attributes('style');
 	expect(style).toContain('--_v-slider-percentage: 0');
 });
+
+test('renders ticks when tick count is within limit', () => {
+	const wrapper = mount(VSlider, {
+		props: {
+			showTicks: true,
+			min: 0,
+			max: 10,
+			step: 1,
+		},
+	});
+
+	expect(wrapper.find('.ticks').exists()).toBe(true);
+	expect(wrapper.findAll('.tick')).toHaveLength(11);
+});
+
+test('renders ticks with default min, max, and step', () => {
+	const wrapper = mount(VSlider, {
+		props: {
+			showTicks: true,
+		},
+	});
+
+	expect(wrapper.find('.ticks').exists()).toBe(true);
+	expect(wrapper.findAll('.tick')).toHaveLength(101);
+});
+
+test('renders ticks at the threshold (tick count === 101)', () => {
+	const wrapper = mount(VSlider, {
+		props: {
+			showTicks: true,
+			min: 0,
+			max: 200,
+			step: 2,
+		},
+	});
+
+	expect(wrapper.find('.ticks').exists()).toBe(true);
+	expect(wrapper.findAll('.tick')).toHaveLength(101);
+});
+
+test('does not render ticks just past the threshold (tick count === 102)', () => {
+	const wrapper = mount(VSlider, {
+		props: {
+			showTicks: true,
+			min: 0,
+			max: 101,
+			step: 1,
+		},
+	});
+
+	expect(wrapper.find('.ticks').exists()).toBe(false);
+});
+
+test('does not render ticks when tick count exceeds limit', () => {
+	const wrapper = mount(VSlider, {
+		props: {
+			showTicks: true,
+			min: -9999,
+			max: 9999,
+			step: 1,
+		},
+	});
+
+	expect(wrapper.find('.ticks').exists()).toBe(false);
+});

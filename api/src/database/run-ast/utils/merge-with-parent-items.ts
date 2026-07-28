@@ -17,10 +17,14 @@ export function mergeWithParentItems(
 
 	if (nestedNode.type === 'm2o') {
 		const parentsByForeignKey = new Map<PrimaryKey, Item[]>();
+		const nestedPrimaryKeyField = schema.collections[nestedNode.relation.related_collection!]!.primary;
 
 		// default all nested nodes to null
 		for (const parentItem of parentItems) {
-			const relationKey = parentItem[nestedNode.relation.field];
+			// When another merge already resolved this relation, the field holds the resolved object.
+			// Read the PK from the object in that case, otherwise fall back to the raw FK.
+			const relationKey =
+				parentItem[nestedNode.relation.field]?.[nestedPrimaryKeyField] ?? parentItem[nestedNode.relation.field];
 
 			if (!parentsByForeignKey.has(relationKey)) {
 				parentsByForeignKey.set(relationKey, []);
@@ -29,8 +33,6 @@ export function mergeWithParentItems(
 			parentItem[nestedNode.fieldKey] = null;
 			parentsByForeignKey.get(relationKey)!.push(parentItem);
 		}
-
-		const nestedPrimaryKeyField = schema.collections[nestedNode.relation.related_collection!]!.primary;
 
 		// populate nested items where applicable
 		for (const nestedItem of nestedItems) {
@@ -169,8 +171,14 @@ export function mergeWithParentItems(
 				continue;
 			}
 
+			const relatedPrimaryKeyField = schema.collections[relatedCollection]!.primary;
+
+			// Read the PK from the object, otherwise fall back to the raw FK.
+			const foreignKey =
+				parentItem[nestedNode.relation.field]?.[relatedPrimaryKeyField] ?? parentItem[nestedNode.relation.field];
+
 			const itemChild = (nestedItem as Record<string, any[]>)[relatedCollection]!.find((nestedItem) => {
-				return nestedItem[nestedNode.relatedKey[relatedCollection]!] == parentItem[nestedNode.fieldKey];
+				return nestedItem[nestedNode.relatedKey[relatedCollection]!] == foreignKey;
 			});
 
 			parentItem[nestedNode.fieldKey] = itemChild || null;

@@ -144,9 +144,9 @@ describe('InputCode', () => {
 		});
 
 		expect(wrapper.html()).toMatchInlineSnapshot(`
-			"<div data-v-3cd4e8d0="" class="input-code codemirror-custom-styles disabled" dir="ltr">
+			"<div data-v-3cd4e8d0="" class="input-code disabled" dir="ltr">
 			  <div data-v-3cd4e8d0=""></div>
-			  <v-button-stub data-v-3cd4e8d0="" autofocus="false" kind="normal" fullwidth="false" rounded="false" outlined="false" icon="true" type="button" disabled="true" loading="false" to="" target="_blank" exact="false" query="false" secondary="true" warning="false" danger="false" dashed="false" tile="false" align="center" xsmall="false" small="true" large="false" xlarge="false"></v-button-stub>
+			  <v-button-stub data-v-3cd4e8d0="" autofocus="false" kind="normal" fullwidth="false" outlined="false" icon="true" type="button" disabled="true" loading="false" to="" target="_blank" exact="false" query="false" secondary="true" warning="false" danger="false" dashed="false" tile="false" align="center" xsmall="false" small="true" large="false" xlarge="false"></v-button-stub>
 			</div>"
 		`);
 

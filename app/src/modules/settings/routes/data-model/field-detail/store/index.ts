@@ -11,7 +11,6 @@ import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { getLocalTypeForField } from '@/utils/get-local-type';
-import { unexpectedError } from '@/utils/unexpected-error';
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 	const fieldDetailStore = useFieldDetailStore();
@@ -285,10 +284,10 @@ export const useFieldDetailStore = defineStore({
 				}
 
 				await fieldsStore.hydrate({ skipTranslation: true });
-			} catch (error) {
-				unexpectedError(error);
-			} finally {
 				this.saving = false;
+			} catch (error) {
+				this.saving = false;
+				throw error;
 			}
 		},
 	},

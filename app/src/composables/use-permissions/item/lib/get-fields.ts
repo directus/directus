@@ -55,7 +55,7 @@ export function getFields(
 			}
 		}
 
-		if (!permission || permission.access === false) {
+		if (!permission || permission.access === false || permission.access === 'none') {
 			for (const field of fields) {
 				(field as FormField).meta = {
 					...(field.meta || {}),

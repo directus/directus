@@ -1,7 +1,6 @@
 dist/
 coverage/
 pnpm-lock.yaml
-.histoire/
 **/.vitepress/cache/
 /.changeset/pre.json
 /.changeset/*.md

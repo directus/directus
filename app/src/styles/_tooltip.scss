@@ -1,22 +1,28 @@
-.tooltip,
-#tooltip {
-	$arrow-alignment: 0.3125rem;
-
+.tooltip {
 	--tooltip-foreground-color: var(--foreground-inverted);
 	--tooltip-background-color: var(--background-inverted);
 
-	position: absolute;
-	inset-block-start: 0;
-	inset-inline-start: 0;
 	z-index: 850;
-	display: none;
+	display: flex;
+	align-items: center;
 	max-inline-size: 14.625rem;
 	padding: 0.25rem 0.4375rem;
 	color: var(--tooltip-foreground-color);
 	overflow-wrap: break-word;
 	background-color: var(--tooltip-background-color);
 	border-radius: 0.25rem;
+	opacity: 0;
 	transition: opacity 200ms;
+	pointer-events: none;
+
+	&[data-state='delayed-open'] {
+		opacity: 1;
+	}
+
+	&[data-state='instant-open'] {
+		opacity: 1;
+		transition: none;
+	}
 
 	&.inverted {
 		--tooltip-foreground-color: var(--theme--foreground);
@@ -27,94 +33,14 @@
 		font-family: var(--theme--fonts--monospace--font-family);
 	}
 
-	&.visible {
-		display: block;
+	.tooltip-kbd {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.125rem;
+		margin-inline-start: 0.375rem;
 	}
 
-	&.enter,
-	&.leave-active {
-		opacity: 0;
-	}
-
-	&.enter-active,
-	&.leave {
-		opacity: 1;
-	}
-
-	&::after {
-		position: absolute;
-		inset-block-start: -0.3125rem;
-		inset-inline-start: calc(50% - 0.3125rem);
-		inline-size: 0;
-		block-size: 0;
-		border-inline-end: 6px solid transparent;
-		border-block-end: 6px solid var(--tooltip-background-color);
-		border-inline-start: 6px solid transparent;
-		content: '';
-	}
-
-	&.start::after {
-		inset-inline-end: $arrow-alignment;
-		inset-inline-start: unset;
-	}
-
-	&.end::after {
-		inset-inline-start: $arrow-alignment;
-	}
-
-	&.top::after {
-		inset-block-start: unset;
-		inset-block-end: -0.3125rem;
-		inset-inline-start: calc(50% - 0.3125rem);
-		border-block-start: 6px solid var(--tooltip-background-color);
-		border-inline-end: 6px solid transparent;
-		border-block-end: unset;
-		border-inline-start: 6px solid transparent;
-	}
-
-	&.top.start::after {
-		inset-inline-end: $arrow-alignment;
-		inset-inline-start: unset;
-	}
-
-	&.top.end::after {
-		inset-inline-start: $arrow-alignment;
-	}
-
-	&.left::after {
-		inset-block-start: calc(50% - 0.3125rem);
-		inset-inline-end: -0.3125rem;
-		inset-inline-start: unset;
-		border-block-start: 6px solid transparent;
-		border-inline-end: unset;
-		border-block-end: 6px solid transparent;
-		border-inline-start: 6px solid var(--tooltip-background-color);
-	}
-
-	&.left.start::after {
-		inset-block-start: unset;
-		inset-block-end: $arrow-alignment;
-	}
-
-	&.left.end::after {
-		inset-block-start: $arrow-alignment;
-	}
-
-	&.right::after {
-		inset-block-start: calc(50% - 0.3125rem);
-		inset-inline-start: -0.3125rem;
-		border-block-start: 6px solid transparent;
-		border-inline-end: 6px solid var(--tooltip-background-color);
-		border-block-end: 6px solid transparent;
-		border-inline-start: unset;
-	}
-
-	&.right.start::after {
-		inset-block-start: unset;
-		inset-block-end: $arrow-alignment;
-	}
-
-	&.right.end::after {
-		inset-block-start: $arrow-alignment;
+	svg {
+		fill: var(--tooltip-background-color);
 	}
 }

@@ -20,8 +20,54 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Über
+directus_mscl: Directus MSCL-1.0-GPL
+privacy_policy: Datenschutzerklärung
+contact_support: kontaktiere Support
+setup_welcome: Willkommen bei Directus
+setup_info: Erstellen Sie Ihren Admin-Account und starten Sie Ihr Projekt.
+setup_license_key_notice: >
+  Wenn Sie einen Lizenzschlüssel haben, geben Sie ihn unten ein, um Ihr ganzes Paket freizuschalten. Qualifizierte Unternehmen unter 5M Jahreseinnahmen können für unsere {oig} in Frage kommen.
+setup_save_accept_license: >
+  Wenn Sie auf Speichern klicken, akzeptieren Sie die Bedingungen der {directusMscl} und {privacyPolicy}.
+setup_license_invalid: >
+  Lizenz ungültig. Bitte {contactSupport} um dieses Problem zu beheben.
+setup_license_invalid_format: Ungültiges Lizenzschlüsselformat.
+setup_accept_license: Ich akzeptiere die Bedingungen der {directusMscl} und {privacyPolicy}
+setup_marketing_emails: Produkt-Updates und Versionshinweise senden
+setup_launch: Directus starten
+setup_license_title: Ihre Lizenz einrichten
+license_onboarding_title: Haben Sie einen Lizenzschlüssel?
+license_onboarding_desc: >
+  Geben Sie es unten ein, um Ihr ganzes Paket freizuschalten. Qualifizieren Sie Unternehmen unter 5M Jahreseinnahmen können für unseren {oig} in Betracht gezogen werden.
+project_usage: Wofür benutzen Sie Directus ?
+project_usage_personal: Persönliches / Seitenprojekt
+project_usage_community: Open Source / Community
+org_name: Name der Organisation
+org_name_placeholder: Acme Inc.
+license_key_option: Ich habe bereits eine Lizenz
+license_key_option_desc: 'OIG, Team oder Enterprise Plan'
+core_option: Ich benutze Core Plan
+core_option_desc: Frei, kein Schlüssel erforderlich
+remind_later: Später erinnern
+remind_next_login: Wir erinnern Sie daran, wenn Sie sich das nächste Mal anmelden
+setup_project: Projekt einrichten
+enter_license_key: Lizenzschlüssel eingeben
+license_valid: Lizenz gültig
+plan_prefix: 'Plan: {plan}'
+license_key: Lizenzschlüssel
+no_license_key: Sie haben noch keinen Lizenzschlüssel?
+get_license_key: Lizenzschlüssel erhalten
+expires_on: Läuft ab
+environment: Umgebung
+production: Produktion
+non_production: Nicht-Produktion
+skip: Überspringen
+continue: Weiter
 first_name: Vorname
 last_name: Nachname
+admin_email: Admin Email
+owner_email: E-Mail-Adresse des Inhabers
+email_address: E-Mail-Adresse
 identifier: Identifikator
 avatar: Avatar
 application: Anwendung
@@ -30,6 +76,7 @@ method: Methode
 published: Veröffentlicht
 draft: Entwurf
 archived: Archiviert
+not_archived: Nicht archiviert
 marketplace: Marketplace
 extensions: Erweiterungen
 skip_link_nav: Zur Navigation springen
@@ -48,10 +95,22 @@ location: Ort
 collection_names_are_case_sensitive: Bei den Namen der Sammlungen wird zwischen Groß- und Kleinschreibung unterschieden
 condition_rules: Bedingte Stile
 input: Eingabe
+invalid_input: Ungültige Eingabe
+invalid_file_type: Ungültiger Dateityp
+invalid_files_selected: 'Keine ungültigen Dateien | Ungültige Datei ausgewählt | {count} Ungültige Dateien ausgewählt'
+files_are_empty: 'Die folgenden Dateien sind leer und können nicht hochgeladen werden: {files}'
+not_a_number: Keine Zahl
+invalid_range_min: Wert liegt unter mindestens {value}
+invalid_range_max: Wert überschreitet das Maximum von {value}
 maps: Karten
 switch_user: Benutzer wechseln
 item_creation: Element-Erstellung
 item_revision: Element-Überarbeitung
+previous_revision: Vorherige Revision
+latest_revision: Aktuellste Revision
+comparing_to: Vergleich mit
+compare_to_latest_to_restore: Vergleichen Sie mit dem neuesten um die Wiederherstellung dieser Revision zu erwägen
+select_earlier_revision_to_restore: Wählen Sie eine frühere Revision aus, um die Wiederherstellung zu erwägen
 enter_a_name: Namen eingeben...
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
@@ -59,6 +118,9 @@ full_width: Volle Breite
 group: Gruppe
 popular: Beliebt
 recent: Aktuell
+previous: Vorherige
+latest: Neuste
+updated: Aktualisiert
 export_items: Elemente exportieren
 and: Und
 or: Oder
@@ -103,6 +165,11 @@ report_an_issue: Problem melden
 website: Webseite
 github: GitHub
 beta: Beta
+collab_collision: Das Element wurde während der Bearbeitung geändert. Wählen Sie aus, welche Änderungen beibehalten werden sollen.
+collab_disconnected: Gemeinschaftliche Bearbeitung getrennt
+collab_editing_field: Feld “{field}” bearbeiten
+collab_currently_viewing: Derzeitige Ansicht 
+you: Du
 n_downloads: '{n} Downloads'
 downloads: Downloads
 compatibility_not_guaranteed: Kompatibilität nicht garantiert
@@ -114,6 +181,12 @@ hook: Hook
 fill_width: Breite füllen
 field_name_translations: Feldnamen-Übersetzungen
 enter_password_to_enable_tfa: Geben Sie Ihr Passwort ein, um die Zwei-Faktor-Authentifizierung zu aktivieren
+sso_tfa_setup_notice: Sie werden von Ihrem Konto abgemeldet und müssen sich wieder einloggen. Alle ungespeicherten Änderungen werden verworfen.
+enable_tfa: 2FA aktivieren
+cancel_tfa_setup: 2FA Einrichtung abbrechen
+cancel_tfa_setup_notice: Bist du sicher, dass du die Einrichtung abbrechen möchtest?
+keep_setup: Einrichtung behalten
+cancel_setup: Einrichtung abbrechen
 add_field: Feld hinzufügen
 role_name: Rollenname
 policy_name: Richtlinienname
@@ -153,6 +226,7 @@ connection_good: Gute Verbindung
 connection_fair: Brauchbare Verbindung
 connection_poor: Schlechte Verbindung
 primary: Primär
+download_folder: Ordner herunterladen
 rename_folder: Ordner umbenennen
 delete_folder: Ordner löschen
 prefix: Präfix
@@ -161,17 +235,28 @@ keep: Behalten
 version: Version
 version_key: Versionsschlüssel
 version_name: Versionsname
-main_version: Main
+your_version: Ihre Version
 switch_version: Version wechseln
 switch_version_copy: Sind Sie sicher, dass Sie zur "{version}" Version wechseln möchten? Ungespeicherte Änderungen gehen verloren.
 create_version: Version erstellen
 rename_version: Version umbenennen
+reserved_version_key: 'Der Versionsschlüssel "{key}" ist reserviert und kann nicht verwendet werden.'
 compare_version: Version vergleichen
 save_version: Version speichern
-promote_version: Version überführen
+publish: Veröffentlichen
+version_create_item_less: Versionen können erst erstellt werden, wenn die Entwurfsversion veröffentlicht wird
+apply: Anwenden
+discard: Verwerfen
+select_all_differences: Alle Unterschiede auswählen
+show_differences_only: Nur Unterschiede anzeigen
+published_updated_notice: Die veröffentlichte Version wurde seit der Erstellung dieser Version aktualisiert.
 delete_version: Version löschen
 delete_version_copy: >-
   Möchten Sie die "{version}" Version wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+auto_save_failed: Automatisches Speichern fehlgeschlagen
+auto_save_failed_copy: Diese Seite öffnen, während wir es erneut versuchen!
+auto_save_enabled: Auto-Speichern aktiviert
+content_edited: Inhalt bearbeitet
 reset_bookmark: Lesezeichen zurücksetzen
 update_bookmark: Lesezeichen bearbeiten
 delete_bookmark: Lesezeichen löschen
@@ -204,7 +289,12 @@ recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
 unarchive_confirm: Möchten Sie dieses Element wirklich aus dem Archiv zurückholen?
 nested_files_folders_will_be_moved: Verschachtelte Dateien und Ordner werden eine Ebene nach oben verschoben.
+delete_folder_dialog:
+  move_content: Inhalt eine Ebene nach oben verschieben
+  delete_content: Alle Inhalte löschen
+  content_behavior: Was soll mit dem Inhalt des Ordners geschehen?
 validation_errors_notice: 'Die folgenden Felder sind ungültig:'
+validation_value_is_invalid: Wert ist ungültig
 validationError:
   eq: Der Wert muss {valid} sein
   neq: Der Wert kann nicht {invalid} sein
@@ -232,6 +322,8 @@ validationError:
   iends_with: Wert muss mit {substring} enden
   nends_with: Wert kann nicht mit {substring} enden
   niends_with: Wert kann nicht mit {substring} enden
+  confirm_password: Passwörter stimmen nicht überein
+  org_name: Bitte geben Sie einen Organisationsnamen ein
 all_access: Kompletter Zugriff
 no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
@@ -311,7 +403,10 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Seiteneinstellungen zurücksetzen
 hidden_field: Verstecktes Feld
 hidden_on_detail: In Detailansicht ausblenden
+clear_hidden_field: Wert(e) löschen
+clear_value_on_save_when_hidden: Lösche Werte beim Speichern, wenn ausgeblendet
 readonly_field_label: Das Feld in der App deaktivieren
+required_readonly_field_warning: Das Aktivieren von sowohl schreibgeschützt als auch erforderlich für ein Feld verhindert das Speichern eines Elements, wenn der Wert leer ist.
 key: Schlüssel
 alias: Alias
 bigInteger: Big Integer
@@ -409,6 +504,8 @@ precision_scale: Präzision & Skalierung
 readonly: Lesezugriff
 unique: Eindeutig
 index: Index
+searchable: Durchsuchbar
+field_searchable: Feld in Suchabfragen einbeziehen
 updated_on: Geändert am
 updated_by: Geändert von
 primary_key: Primärschlüssel
@@ -453,6 +550,7 @@ revision_delta_reverted: Zurückgesetzt
 revision_delta_update_message: Dieses Feld wurde aktualisiert, aber sein Wert wird aus Sicherheitsgründen verschleiert.
 revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
+differences_count: 'Keine Unterschiede | 1 Unterschied | {count} Unterschiede'
 presentation_text_values_cannot_be_reimported: 'Verwendet Präsentationstext, Werte können nicht neu importiert werden.'
 download_page_as_csv: 'Als CSV herunterladen'
 download_page_as_csv_unsupported: Dieses Layout unterstützt das Herunterladen der aktuellen Seite nicht.
@@ -471,13 +569,40 @@ related_collection: Verknüpfte Sammlung
 related_collections: Verwandte Sammlungen
 translations_collection: Übersetzungs-Sammlung
 languages_collection: Sprachen-Sammlung
+enable_translations: Übersetzungen aktivieren
+manage_translation_fields: Übersetzungsfelder hinzufügen
+fields_to_translate: Zu übersetzende Felder
+fields_to_add_to_translations: Zu Übersetzungen hinzuzufügende Felder
+translations_manage_helper_description: Sie können weitere Felder hinzufügen, die aus dieser Sammlung übersetzt werden können.
+translations_copy_data_note: Felder werden in die Übersetzung-Sammlung kopiert. Vorhandene Daten werden nicht migriert.
+add_fields: Feld hinzufügen
+show_advanced_options: Beziehungsdetails anzeigen
+hide_advanced_options: Beziehungsdetails ausblenden
+translations_field_name_required: Alle Namen des Übersetzungsfeldes sind erforderlich.
+translations_foreign_key_name_conflict: Übergeordnete und Sprache Fremdschlüssel müssen unterschiedlich sein.
+translations_duplicate_field_names: Die Namen des Übersetzungsfeldes müssen eindeutig sein.
+translation_configuration: Übersetzungskonfiguration
+translations_invalid_config_warning: '{count} Übersetzungskonfiguration konnte nicht gelöst werden und bleibt schreibgeschützt | {count} Übersetzungskonfigurationen konnten nicht gelöst werden und bleiben schreibgeschützt'
+translations_collection_already_exists: Diese Übersetzung-Sammlung existiert bereits und wird wiederverwendet
+translations_fields_up_to_date: Alle gültigen Felder sind bereits in der Übersetzung-Sammlung vorhanden.
 translations_preview_collections: Sammlungen
 translations_preview_fields: Felder
+translations_preview_relations: Beziehungen
+ungrouped: Gruppierung aufgehoben
+translations_enable_helper_description: Übersetze Inhalte in mehrere Sprachen.
 import_data_input_placeholder: CSV oder JSON...
 import_data_button: Import starten
+import_background: Im Hintergrund importieren
 import_data_indeterminate: Importiere Daten...
 import_data_success: Daten erfolgreich aus {filename} importiert
+import_upload_success: '{filename} erfolgreich hochgeladen. Daten werden im Hintergrund importiert.'
+import_data_errors: Fehler beim Import
 import_data_error: Die Datenstruktur der Datei stimmt nicht mit der Sammlung überein.
+import_data_validation_errors_notice: 'Die folgenden Felder sind ungültig:'
+snapshot:
+  export: Exportiere Schema
+  download: Snapshot herunterladen (JSON)
+  info: Nur Schema-Export zum Teilen oder Debuggen
 label_import: Import
 label_export: Export
 import_export: Import / Export
@@ -551,6 +676,9 @@ original: Original
 url: URL
 import_label: Import
 file_details: Datei-Informationen
+copy_id: ID kopieren
+copy_id_success: ID kopiert
+copy_id_fail: ID nicht kopiert
 dimensions: Dimensionen
 size: Größe
 created: Erstellt
@@ -601,8 +729,12 @@ manual_string: Manuell eingegebene Zeichenkette
 save_and_create_new: Speichern und neues Element anlegen
 save_and_stay: Speichern und auf der Seite bleiben
 save_and_quit: Speichern und schließen
-save_and_return_to_main: Speichern und zurück
+publish_and_quit: Veröffentlichen und beenden
+publish_without_review: Ohne Überprüfung veröffentlichen
+publish_anyway: Trotzdem veröffentlichen
+save_and_return_to_published: Speichern und zurück zu Veröffentlicht
 save_as_copy: Als Kopie speichern
+save_as_new_file: Als neue Datei speichern
 add_existing: Vorhandene hinzufügen
 creating_items: Elemente erstellen
 enable_create_button: Button zum Erstellen aktivieren
@@ -634,20 +766,28 @@ list-m2a: Builder (n:x, Many to Any)
 item_count: 'Keine Elemente | Ein Element | {count} Elemente'
 filtered_item_count: 'Keine gefilterten Elemente | Ein gefiltertes Element | {count} gefilterte Elemente'
 no_items_copy: Bisher gibt es noch keine Elemente in dieser Sammlung.
+no_versions: 'Keine "{version}" Version'
+no_versions_copy: 'Es gibt noch keine "{version}" Versionen in dieser Sammlung.'
 file_count: 'Keine Dateien | Eine Datei | {count} Dateien'
 no_files_copy: Keine Dateien vorhanden.
 user_count: 'Keine Benutzer | Ein Benutzer | {count} Benutzer'
 no_users_copy: Es gibt noch keine Benutzer in dieser Rolle.
+no_active_users: Keine aktiven Benutzer
+no_suspended_users: Keine gesperrten Benutzer
+no_invited_users: Keine eingeladenen Benutzer
+no_status_users_copy: 'Es gibt keine Benutzer mit {status} Status.'
 no_notifications: Keine Benachrichtigungen
 no_notifications_copy: Du bist auf dem neusten Stand!
 activity_log: Aktivitätsprotokoll
 all_items: Alle Elemente
 any: Irgendein
 csv: CSV
+csv_utf8: CSV Excel (UTF-8)
 no_collections: Keine Sammlungen
 create_collection: Sammlung erstellen
 no_collections_copy_admin: Keine Sammlungen vorhanden. Auf die untenstehende Schaltfläche klicken, um loszulegen.
 no_collections_copy: Keine Sammlungen vorhanden. Bitte Systemadministrator kontaktieren.
+relationship_not_setup: Die Beziehung ist nicht richtig konfiguriert oder Sie haben keine Berechtigung auf sie zuzugreifen
 no_singleton_relations: Relationen zu Singletons werden nicht unterstützt
 display_template_not_setup: Die Anzeige-Vorlage ist falsch konfiguriert
 collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
@@ -688,6 +828,7 @@ modified_on: Geändert am
 card_size: Kartengröße
 sort_field: Sortierfeld
 add_sort_field: Sortierfeld hinzufügen
+add_to_ai_context: Zum AI-Kontext hinzufügen
 sort: Sortieren
 status: Status
 remove: Löschen
@@ -706,6 +847,7 @@ enabled_dev_tooltip: App-Erweiterungen sind im Dev-Modus immer aktiviert
 disable_tfa: 2FA deaktivieren
 admin_disable_tfa_text: Bist du dir sicher, dass du 2FA für diesen Nutzer deaktivieren möchtest?
 tfa_setup: 2FA einrichten
+tfa_setup_description: Zwei-Faktor-Authentifizierung zum Schutz Ihres Kontos einrichten
 tfa_scan_code: Scannen Sie den Code in Ihrer Authentifikator-App, um die Einrichtung von 2FA abzuschließen
 enter_otp_to_disable_tfa: OTP zum deaktivieren der 2FA eingeben
 create_account: Konto erstellen
@@ -716,6 +858,7 @@ errors:
   COLLECTION_NOT_FOUND: "Sammlung existiert nicht"
   CONTAINS_NULL_VALUES: Feld enthält NULL-Werte
   CONTENT_TOO_LARGE: Gewähltes Element bzw. gewählte Datei ist zu groß
+  FAILED_VALIDATION: Validierung fehlgeschlagen
   FIELD_NOT_FOUND: Feld nicht gefunden
   FORBIDDEN: Verweigert
   GRAPHQL_VALIDATION: GraphQL-Validierung
@@ -724,10 +867,12 @@ errors:
   INVALID_CONFIG: Ungültige Konfiguration
   INVALID_CREDENTIALS: Benutzername oder Passwort falsch
   INVALID_FOREIGN_KEY: Ungültiger Fremdschlüssel
+  INVALID_INVITE: Diese Einladung ist nicht mehr gültig
   INVALID_IP: IP-Adresse nicht erlaubt
   INVALID_OTP: Falsches Einmalpasswort
   INVALID_PAYLOAD: Ungültige Nutzdaten
   INVALID_PROVIDER: Benutzer gehört zu einem anderen Authentifizierungsanbieter
+  INVALID_PROVIDER_CONFIG: Ungültige Provider-Konfiguration
   INVALID_QUERY: Ungültige anfrage
   INVALID_TOKEN: Token ungültig
   INVALID_USER: Nutzer konnte nicht authentifiziert werden
@@ -736,9 +881,11 @@ errors:
   LIMIT_EXCEEDED: 'Limit überschritten'
   METHOD_NOT_ALLOWED: Methode ist nicht erlaubt
   NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
+  PROJECT_LOCKED: Projekt wurde gesperrt. Kontaktieren Sie Ihren Administrator, um das Problem zu beheben.
   RANGE_NOT_SATISFIABLE: Ungültiger Bereich
   RECORD_NOT_UNIQUE: Doppelter Wert erkannt
   REQUESTS_EXCEEDED: Anfragelimit erreicht
+  RESOURCE_RESTRICTED: Ressourcen eingeschränkt
   ROUTE_NOT_FOUND: Nicht gefunden
   SERVICE_UNAVAILABLE: Dienst nicht verfügbar
   TOKEN_EXPIRED: Token abgelaufen
@@ -750,12 +897,14 @@ errors:
   VALUE_OUT_OF_RANGE: Wert ist außerhalb des gültigen Bereichs
   VALUE_TOO_LONG: Wert ist zu lang
 security: Sicherheit
+value_securely_stored: Wert sicher gespeichert
 bookmark_name: Name des Lesezeichens...
 create_bookmark: Lesezeichen erstellen
 edit_bookmark: Lesezeichen bearbeiten
 edit_personal_bookmark: Persönliches Lesezeichen bearbeiten
 edit_role_bookmark: Rollen-Lesezeichen bearbeiten
 edit_global_bookmark: Globales Lesezeichen bearbeiten
+cannot_edit_personal_bookmarks: Globales Lesezeichen kann nicht bearbeitet werden
 cannot_edit_role_bookmarks: Rollen-Lesezeichen kann nicht bearbeitet werden
 cannot_edit_global_bookmarks: Globales Lesezeichen kann nicht bearbeitet werden
 bookmarks: Lesezeichen
@@ -765,6 +914,7 @@ unexpected_error_copy: Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen 
 copy_details: Details kopieren
 no_app_access: Kein App-Zugriff
 no_app_access_copy: Dieser Benutzer darf die Admin-App nicht verwenden.
+password_reset_sent: Wenn Sie ein Konto haben und es das Zurücksetzen des Passworts unterstützt, haben wir einen sicheren Link an Ihre E-Mail gesendet
 password_reset_successful: Das Passwort wurde erfolgreich zurückgesetzt
 back: Zurück
 filter: Filter
@@ -777,7 +927,13 @@ flip_vertical: Vertikal spiegeln
 aspect_ratio: Seitenverhältnis
 rotate: Drehen
 all_users: Alle Benutzer
+active_users: Aktive Benutzer
+suspended_users: Gesperrte Benutzer
+invited_users: Eingeladene Benutzer
 delete_collection: Sammlung löschen
+activate_collection: Sammlung aktivieren
+deactivate_collection: Sammlung deaktivieren
+deactivated_collections: Deaktivierte Sammlungen
 update_collection_success: Sammlung aktualisiert
 delete_collection_success: Sammlung gelöscht
 make_collection_visible: Sammlung sichtbar machen
@@ -924,8 +1080,11 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Flow auswählen
+run_flow_confirm: Sind Sie sicher, dass Sie diesen Flow ausführen wollen?
+run_flow_anyway: Flow trotzdem ausführen
 run_flow_on_current_collection: Flow in der aktuellen Sammlung ausführen
 run_flow_on_current: Flow beim aktuellen Element ausführen
+run_flow_on_current_edited_confirm: Dieses Element kann durch diesen Flow aktualisiert werden, bist du dir sicher, dass du es ausführen möchtest?
 run_flow_on_selected: Zuerst eine oder mehrere Elemente auswählen | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Elemente ausführen
 run_flow: Flow ausführen
 trigger_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
@@ -967,16 +1126,111 @@ operation_handle_resolve: 'Lösen: Zum Hinzufügen klicken oder für Reroute zie
 operation_handle_reject: 'Ablehnen: Zum Hinzufügen klicken oder für Reroute ziehen'
 visual_editor: Visueller Editor
 toggle_navigation: Navigation umschalten
+toggle_sidebar: Seitenleiste umschalten
+toggle_editable_elements: Bearbeitbare Elemente umschalten
+editing_draft_version: Auf Entwurfsversion bearbeiten
+no_url: Kein URL angegeben
+no_url_copy: Bitte fügen Sie eine URL in die Einstellungen ein.
+invalid_url: Ungültige URL
+invalid_url_copy: Die angegebene URL stimmt nicht mit einer in den Einstellungen angegebenen URL überein.
 insights: Einblicke
+overview: Übersicht
 deployment:
+  deployment: Deployment
+  overview:
+    overview: Übersicht
+    providers: Anbieter
+    configure: Konfigurieren
+    provider_description: Trigger {provider} Deployments aus Directus
+    projects: '{count} Projekt |{count} Projekte'
   provider:
+    setup_title: '{provider} Einrichtung'
+    credentials:
+      notice: Diese Informationen finden Sie in Ihren {provider} Kontoeinstellungen.
+      link: Öffne {provider} Einstellungen
+    token:
+      label: Persönlicher Zugangs-Token
+      placeholder: Einen sicheren Zugangs-Token eingeben...
+      encrypted_notice: Dieser Token wird verschlüsselt und sicher in Ihrer Directus Konfiguration gespeichert
     settings:
+      settings: '{provider} Konfiguration'
+      edit_configuration: Konfiguration bearbeiten
+      delete: Konfiguration löschen
       delete_confirm: Diese Aktion kann nicht rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?
+      remove_projects_confirm: Das Entfernen der Projekt(e) ({projects}) wird den gesamten Bereitstellungsverlauf von Directus dauerhaft löschen. Diese Aktion kann nicht rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?
+    vercel:
+      name: Vercel
+      settings_warning: Das Ändern der Anmeldedaten oder der Team-ID kann sich auf die ausgewählten Projekte auswirken, wenn diese nicht mehr mit der neuen Konfiguration zugänglich sind.
+      account_type:
+        label: Kontotyp
+        hint: Wählen Sie das Team aus, um eine Team-ID oder ein persönliches Konto zu verwenden, um Ihren Vercel Benutzernamen für Bereitstellungslinks zu verwenden.
+        team: Team
+        personal: Persönliches Konto
+      team_id:
+        label: Team ID
+        hint: Benötigt für Teamkonten. Finden Sie es in Ihren Vercel Team-Einstellungen.
+        placeholder: team_xxxxxxxxxxx
+      username:
+        label: Benutzername
+        hint: Ihr Vercel-Benutzername für persönliche Konten. Finden Sie ihn in Ihrer Vercel-Konto-URL (vercel.com/username).
+        placeholder: Ihr Benutzername
+    netlify:
+      settings_warning: Das Ändern von Zugangsdaten oder Konto-Slug kann sich auf Ihre ausgewählten Projekte auswirken, wenn diese nicht mehr mit der neuen Konfiguration zugänglich sind.
+      account_slug:
+        hint: Optional. Filtern Sie Sites zu einem bestimmten Konto. Lassen Sie leer, um alle zugänglichen Sites anzuzeigen.
+    projects: Projekte
+    select_projects: Projekte auswählen
+    select_projects_hint: Wählen Sie aus, welche Projekte Sie über Directus verwalten möchten
+    project:
+      not_deployable: Projekt kann nicht von Directus bereitgestellt werden. Weitere Informationen finden Sie unter Dokumentation.
+    runs:
+      started: Gestartet
+      author: Autor
+      refresh: Aktualisieren
+      deploy_preview: Deploy-Vorschau
+      empty_copy: Dieses Projekt hat noch keinen Bereitstellungsverlauf.
+      external_user: Externer Benutzer
     run:
+      currently_deploying: Momentane Bereitstellung...
+      stop: Stoppe Bereitstellung
       cancel_confirm: Diese Aktion kann nicht rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?
       log_all: Alle Log-Levels
+      search_logs: Logs durchsuchen ...
+      no_logs: Keine Logs verfügbar
+      download_logs: Logs herunterladen
+      open_deployment: Besuche
+      open_in_provider: Öffnen in {provider}
+  no_providers: Keine Bereitstellungsanbieter
+  no_providers_copy: Konfigurieren Sie einen Bereitstellungsanbieter in den Einstellungen, um loszulegen.
+  no_providers_copy_nonadmin: Für Ihr Konto sind keine Bereitstellungsanbieter verfügbar. Kontaktieren Sie einen Administrator.
+  select_provider: Wählen Sie einen Anbieter
+  select_provider_copy: Wählen Sie einen Bereitstellungsanbieter aus der Seitenleiste, um Ihre Projekte anzuzeigen.
+  no_projects: Keine Projekte
+  no_projects_copy: Es wurden keine Projekte für diesen Anbieter ausgewählt.
+  no_runs_copy: Dieses Projekt hat noch keinen Bereitstellungsverlauf.
+  deploy: Bereitstellen
+  target: Ziel
   target_value:
+    production: Produktion
     preview: Vorschau
+  runs_status:
+    ready: Bereit
+    error: Fehlgeschlagen
+    canceled: Abgebrochen
+  dashboard:
+    projects: Projekte (%{count})
+    deployed: Bereitgestellt
+    total_projects: 'Gesamtes Projekt: {count} | Gesamte Projekte: {count}'
+    active_deployments: 'Aktive Verteilung: {count} | Aktive Verteilungen: {count}'
+    failed_builds: 'Fehlgeschlagenes Build: {count} | Fehlgeschlagene Builds: {count}'
+    successful_builds: 'Erfolgreicher Build: {count} | Erfolgreiche Builds: {count}'
+    total_deployments: 'Aktive Bereitgestellung: {count} | Aktive Bereitgestellungen: {count}'
+    average_build_time: 'Avg Build Zeit: {value}'
+    success_rate: 'Erfolgsrate: {value}%'
+  range:
+    1d: Letzten 24 Stunden
+    7d: Letzten 7 Tage
+    30d: Letzten 30 Tage
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel-Optionen
@@ -1081,6 +1335,7 @@ wysiwyg_options:
   h4: Überschrift 4
   h5: Überschrift 5
   h6: Überschrift 6
+  pre: Vorformatiert
   fontselect: Schriftart auswählen
   fontsizeselect: Schriftgröße auswählen
   indent: Einrücken
@@ -1110,7 +1365,10 @@ appearance_light: Hell
 appearance_dark: Dunkel
 other: Andere...
 adding_user: Benutzer hinzufügen
+more_users: Klicken Sie, um mehr anzuzeigen
 unknown_user: Unbekannter Benutzer
+unknown_version: Unbekannte Version
+unknown_revision: Unbekannte Revision
 creating_in: 'Element in {collection} erstellen'
 editing_in: 'Bearbeite Element in {collection}'
 viewing_in: 'Element aus {collection} wird angezeigt'
@@ -1122,7 +1380,115 @@ settings_data_model: Datenmodell
 settings_roles: Benutzerrollen
 settings_permissions: Zugangsrichtlinien
 settings_project: Einstellungen
+settings_license: Lizenz
+licensing:
+  unlicensed: Unlizenziert
+  current_plan: Aktueller Plan
+  expires_on: 'Läuft ab am {date}'
+  renews_on: 'Verlängert sich am {date}'
+  add: Lizenz hinzufügen
+  manage: Lizenz verwalten
+  upgrade_plan: Plan hochstufen
+  included: Enthalten
+  not_included: Nicht enthalten
+  unlimited: Unlimitiert
+  plan_usage: Ihre Plan-Nutzung
+  addons: Add-on-Pakete
+  addon_purchase: Kaufen
+  addon_manage: Verwalten
+  contact_sales: Vertrieb kontaktieren
+  addon_purchase_dialog_title: 'Kaufe zusätzliche {name}'
+  addon_summary_purchase: '{new} insgesamt.'
+  addon_summary_active: '{active} aktuell'
+  addon_summary_pending: '{active} aktueller → {effective} bei der nächsten Erneuerung wirksam ({date}). Erhöhen, um die ausstehende Deaktivierung abzubrechen.'
+  addon_summary_upgrade: '{active} aktuelle + {difference} Einheit(en) = {new} Einheit(en) insgesamt'
+  addon_summary_downgrade: '{active} aktuell - {difference} Einheit(en) = {new} Einheit(en) insgesamt'
+  addon_price_summary: '{ new } x ${ unitPrice }/unit/{ interval } = ${ total }/{ interval }'
+  addon_prorated_notice: 'Mit der Bestätigung stimmen Sie zu, ${total}/{interval} ab {renewalDate}zu berechnen. Eine anteilige Gebühr von ${adjustedTotal} für den Rest Ihres aktuellen Abrechnungszeitraums wird Ihrer nächsten Rechnung hinzugefügt.'
+  addon_renewal_notice_date: 'Änderungen werden bei der nächsten Erneuerung wirksam ({date}).'
+  addon_update: Aktualisieren
+  addon_confirm_purchase: Kauf bestätigen
+  deactivate: Lizenz deaktivieren
+  deactivate_confirm_title: Lizenz deaktivieren?
+  deactivate_confirm_body: Sind Sie sicher, dass Sie die Lizenz deaktivieren möchten? Ihre Instanz wird auf den Core Plan heruntergestuft.
+  resolve_title_manual: Lizenz deaktivieren
+  resolve_title_locked: Lizenzbeschränkungen auflösen
+  resolve_title_expired: Ablaufdatum der Lizenz
+  resolve_title_suspended: Lizenzsperre
+  resolve_title_canceled: Lizenz abgebrochen
+  resolve_title_env_removed: Lizenz entfernt
+  resolve_title_grace: Lizenzbeschränkungen auflösen
+  resolve_title_no_resolution: Lizenz inaktiv
+  resolve_subtitle: Wenn Sie Ihren Lizenzschlüssel aktualisieren müssen, können Sie ihn in Ihrer Umgebungsvariablen aktualisieren.
+  resolve_countdown: '{days} Tag verbleibend (bis {date}) | {days} Tage verbleibend (bis {date})'
+  resolve_notice_locked: Ihr Projekt überschreitet die Grenzen des Plans und ist gesperrt. Alle Elemente, die die Grenzen überschreiten und Anpassungen erfordern, werden unten angezeigt.
+  resolve_notice_env_removed: Ihr Projekt hat keinen aktiven Lizenzschlüssel mehr. Alle Elemente, die die Kerngrenzen überschreiten und Anpassungen erfordern, werden unten angezeigt.
+  resolve_notice_no_resolution: Ihre Lizenz ist nicht mehr aktiv und Ihr Projekt wurde auf den Core Plan heruntergestuft. Einige Funktionen sind möglicherweise nicht mehr verfügbar und Elemente außerhalb der Kernplangrenzen bleiben gespeichert, aber in Directus gesperrt. Um den vollen Zugriff wiederherzustellen, fügen Sie einen neuen Lizenzschlüssel hinzu.
+  resolve_continue: Weiter
+  resolve_acknowledge: Anerkennung
+  resolve_submit: Ausgewählte Elemente deaktivieren
+  resolve_show_n_more: 'Zeige {count} mehr'
+  resolve_available: Verfügbar
+  resolve_section_seats: Benutzersitze
+  resolve_section_flows: Flows
+  resolve_section_collections_caption: Wähle Sammlung(en) zum Deaktivieren aus
+  resolve_section_seats_users_caption: Wähle Benutzersitz(e) zum Deaktivieren aus
+  resolve_section_seats_admins_caption: Admin(e) zum Deaktivieren auswählen
+  resolve_section_flows_caption: Flow(s) zum Deaktivieren auswählen
+  resolve_section_sso: SSO-Deaktivierung
+  resolve_sso_confirm: SSO-Deaktivierung bestätigen
+  resolve_sso_caption: Nur SSO-Benutzer werden deaktiviert, wenn diese Änderung vorgenommen wird. Um den Zugriff wiederherzustellen, müssen Sie sie reaktivieren und eine E-Mail und ein Passwort über das Benutzerverzeichnis konfigurieren.
+  resolve_sso_admin_title: SSO-Admin-Informationen bestätigen
+  resolve_sso_admin_description: Bitte bestätigen Sie, dass Ihre E-Mail und Ihr Passwort korrekt sind. Sobald SSO deaktiviert wurde, müssen Sie sich erneut anmelden.
+  resolve_sso_admin_description_email_only: Bitte bestätigen Sie, dass Ihre E-Mail korrekt ist. Sobald SSO deaktiviert wurde, müssen Sie sich erneut anmelden.
+  resolve_sso_admin_email: E-Mail-Adresse
+  resolve_sso_admin_password: Passwort
+  resolve_sso_admin_password_placeholder: Passwort festlegen...
+  resolve_sso_admin_confirm: Bestätigen
+  resolve_section_custom_llms: Eigene LLM
+  resolve_custom_llms_confirm: Benutzerdefinierte LLM-Deaktivierung bestätigen
+  resolve_custom_llms_caption: Benutzerdefinierte LLM-Konfigurationen werden deaktiviert, wenn diese Änderung vorgenommen wird.
+  resolve_section_custom_permissions: Benutzerdefinierte Zugriffsrichtlinien
+  resolve_custom_permissions_confirm: Benutzerdefinierte Zugriffsregeln deaktivieren bestätigen
+  resolve_custom_permissions_caption: Alle Zugriffsrichtlinien/Berechtigungen, die von benutzerdefinierten Regeln geregelt werden, werden auf „Kein Zugriff“ zurückgeführt.
+  resolve_section_ai_translations: KI-Übersetzungen
+  resolve_ai_translations_confirm: AI Translations Deaktivierung bestätigen
+  resolve_ai_translations_caption: AI Translation wird deaktiviert und Ihre Übersetzungseinstellungen werden nicht mehr verwendet.
+  env_managed: Ihr Lizenzschlüssel wird über eine Umgebungsvariable verwaltet und kann hier nicht aktualisiert werden.
+  key_management: Lizenzschlüssel Management
+  key: Lizenzschlüssel
+  entitlements:
+    collections: Sammlungen
+    seats: Sitze
+    flows: Flows
+    activity_historical_timeframe: Aktivitätsverlauf
+    revisions_historical_timeframe: Versionsverlauf
+    sso_enabled: SSO
+    offline_enabled: Offline-Modus
+    telemetry_opt_out: Telemetrie Opt-Out
+    custom_llms_enabled: Eigene LLM
+    custom_permission_rules_enabled: Benutzerdefinierte Regeln (Zugriffsrichtlinien)
+    ai_translations_enabled: KI-Übersetzungen
+    display_powered_by: Anzeige Powered by
+    production_enabled: Produktion
+  badge:
+    directus: Powered by Directus
+    non_prod: Nicht-Produktion
+danger_zone: Gefahrenzone
 settings_appearance: Erscheinung
+settings_ai: KI
+model_context_protocol: Modell-Kontext-Protokoll
+ai_assistant: KI-Assistent
+ai_disabled_by_env: KI Assistent Funktionen wurden über Umgebungsvariablen deaktiviert.
+mcp_disabled_by_env: MCP-Funktionen wurden über Umgebungsvariablen deaktiviert.
+mcp_oauth_disabled_by_env: MCP OAuth ist durch die MCP_OAUTH_ENABLED Umgebungsvariable deaktiviert.
+mcp_oauth_dcr_disabled_by_env: Dynamic Client Registration ist durch die MCP_OAUTH_DCR_ENABLED Umgebungsvariable deaktiviert.
+mcp_oauth_cimd_disabled_by_env: Client-ID Metadaten-Dokumente werden durch die Umgebungsvariable MCP_OAUTH_CIMD_ENABLED deaktiviert.
+mcp_oauth_clients: 'MCP OAuth-Clients'
+manage_registered_clients: 'Registrierte Clients verwalten'
+no_oauth_clients: 'Es wurden noch keine OAuth-Clients registriert.'
+revoke_client: 'Client widerrufen'
+revoke_client_confirm: 'Sind Sie sicher, dass Sie diesen Client widerrufen möchten? Alle zugehörigen Token und Sitzungen werden gelöscht.'
 settings_flows: Flows
 settings_system_logs: Systemprotokolle
 settings_presets: Lesezeichen
@@ -1144,9 +1510,16 @@ data: Daten
 theme-overrides: Theme-Überschreibungen
 unsaved_changes: Nicht gespeicherte Änderungen
 unsaved_changes_copy: Möchten Sie diese Seite wirklich verlassen?
+unsaved_changes_collab: Ungespeicherte Collaborative Änderungen
+unsaved_changes_copy_collab: Sie bearbeiten dieses Element mit anderen. Ihre Änderungen bleiben im Moment in der Kollaborativen Sitzung, können aber verloren gehen, wenn niemand sie speichert.
+leave_page: Seite verlassen
+cancel_anyway: Trotzdem abbrechen
 discard_changes: Änderungen verwerfen
 discard_all_changes: Alle Änderungen verwerfen
 discard_changes_copy: Möchten Sie wirklich alle Änderungen verwerfen?
+published_item_has_changed: Veröffentlichtes Element hat sich geändert
+published_item_has_changed_copy: Das veröffentlichte Element wurde seit der Erstellung dieser Version aktualisiert. Die Veröffentlichung wird diese Änderungen überschreiben.
+discard_changes_copy_collab: Sie bearbeiten dieses Element mit anderen. Änderungen verwerfen löscht alle ungespeicherten Änderungen für alle in dieser kollaborativen Sitzung.
 show_x_axis: X-Achse anzeigen
 show_y_axis: Y-Achse anzeigen
 keep_editing: Weiter bearbeiten
@@ -1159,6 +1532,47 @@ no_layout_collection_selected_yet: Noch kein Layout / keine Sammlung ausgewählt
 batch_delete_confirm: >-
   Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden. | Möchten Sie diese {count} Elemente wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
 cancel: Abbrechen
+license:
+  seats_limit:
+    title: Der Benutzer wird erstellt, aber in einem inaktiven Zustand platziert.
+    body_admin: >-
+      Sie haben das maximal zulässige Limit für Ihr Paket erreicht. Sie müssen zusätzliche Add-ons oder ein Upgrade erwerben.
+    body_member: >-
+      Sie haben das maximal zulässige Limit für Ihr Paket erreicht. Kontaktieren Sie den Administrator, um zusätzliche Add-ons oder ein Upgrade zu kaufen.
+  collections_limit:
+    title: Sammlungslimit erreicht
+    body: >-
+      Sie haben das maximal zulässige Limit für Ihr Paket erreicht. Sie müssen zusätzliche Add-ons oder ein Upgrade erwerben.
+  max_capacity:
+    label: Maximale Kapazität
+    alert_danger_prefix: Sie haben die maximale Kapazität erreicht.
+    alert_danger_suffix: um mehr zu entsperren.
+    alert_warning: Sie haben {count} übrig. Verbessern Sie Ihren Plan, um mehr freizuschalten.
+  manage_plan: Plan verwalten
+  collections_remaining: '{n} Sammlung links | {n} Sammlungen übrig'
+  flows_limit:
+    title: Limit für Elemente erreicht
+    body: >-
+      Sie haben das maximal zulässige Limit für Ihr Paket erreicht. Sie müssen zusätzliche Add-ons oder ein Upgrade erwerben.
+  flows_remaining: '{n} Flow verfügbar | {n} Flows verfügbar'
+  contact_sales: Vertrieb kontaktieren
+  upgrade_to_unlock: Stufen Sie Ihren Plan hoch, um diese Funktion freizuschalten.
+  activity_history_notice: '{timeframe} des Aktivitätsprotokolls ist in Ihrem aktuellen Paket enthalten.'
+  revisions_history_notice: '{timeframe} der Revisionshistorie ist in Ihrem aktuellen Paket enthalten.'
+  status_notice:
+    grace_period: 'Sie haben {daysLeft} verbleibend, bevor das Core tier Ressourcenlimit gilt.'
+    grace_days: '{days} Tag | {days} Tage'
+  unlicensed_status_notice:
+    grace_days_left: '{days} Tag verbleibend | {days} Tage verbleibend'
+    retrieve_license_key: Lizenzschlüssel abrufen
+    upgrade: Upgrade
+    oig_eligible: 'Möglicherweise sind Sie für unseren {oig}berechtigt. Bewerben Sie sich und erhalten Sie vollen Zugriff auf Directus kostenlos.'
+  locked_status_notice: 'Ihre Directus-Instanz ist gesperrt. Verwalten Sie Lizenz oder {contactSupport} um sie aufzulösen.'
+  pinned_status_notice:
+    grace_period_title: 'Nachfrist ({days}d übrig)'
+    grace_period_body: Verwalten Sie Ihren Lizenzschlüssel unter Einstellungen > Lizenz.
+  unlicensed_pinned_status_notice:
+    grace_period_title: 'Nachfrist ({days}d übrig)'
 no_upscale: Bilder nicht hochskalieren
 no_extensions: Keine Erweiterungen
 no_extensions_copy: Es wurden noch keine Erweiterungen installiert.
@@ -1185,6 +1599,7 @@ directus_collection:
   directus_dashboards: Dashboards innerhalb des Moduls "Einblicke"
   directus_fields: Weitere Felder und Metadaten
   directus_files: Metadaten für alle verwalteten Dateien
+  directus_flows: Automation Flows
   directus_folders: Stellt virtuelle Verzeichnisse für Dateien bereit
   directus_migrations: Welche Version der Datenbank verwenden Sie
   directus_notifications: Benachrichtigungen an Benutzer gesendet
@@ -1203,6 +1618,10 @@ directus_collection:
   directus_translations: Benutzerdefinierte Übersetzungen
   directus_versions: Versionierung für Elemente
   directus_extensions: Konfiguration der Erweiterungen
+  directus_oauth_clients: Registrierte OAuth-Client-Anwendungen
+  directus_oauth_codes: Autorisierungscodes für OAuth-Flows
+  directus_oauth_consents: Benutzergenehmigungen für OAuth-Clients
+  directus_oauth_tokens: Zugang und Aktualisierung von Token für OAuth-Clients
 fields:
   directus_activity:
     item: Item-Primärschlüssel
@@ -1219,6 +1638,7 @@ fields:
     collection: Sammlung
     icon: Symbol
     note: Notiz
+    status: Status
     color: Farbe
     display_template: Anzeigevorlage
     hidden: Ausgeblendet
@@ -1230,6 +1650,7 @@ fields:
     sort_field: Sortierfeld
     accountability: Aktivitäts- und Änderungsverfolgung
     versioning: Versionierung
+    autosave_revision_interval: Aktualisierungsintervall automatisch speichern
     archive_field: Archivfeld
     item_duplication_fields: Vervielfältigungsfelder
   directus_files:
@@ -1270,6 +1691,7 @@ fields:
     tags: Stichwörter
     user_preferences: Benutzereinstellungen
     language: Sprache
+    text_direction: Textfluss
     tfa_secret: Zwei-Faktor-Authentifizierung
     admin_options: Admin-Optionen
     status: Status
@@ -1279,6 +1701,7 @@ fields:
     status_active: Aktiv
     status_suspended: Gesperrt
     status_archived: Archiviert
+    status_inactive_license_exceeded: Inaktiv (überzogen)
     role: Rolle
     token: Token
     provider: Anbieter
@@ -1315,6 +1738,7 @@ fields:
     project_color: Projektfarbe
     project_logo: Projektlogo
     default_language: Standardsprache
+    project_owner: Projekt-Besitzer
     branding: Branding
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
@@ -1347,6 +1771,64 @@ fields:
     public_registration_email_filter_note: Nur E-Mail-Adressen, welche diesem Filter entsprechen, können sich registrieren.
     public_registration_verify_email: E-Mail-Adresse bestätigen
     public_registration_verify_email_note: Sendet eine E-Mail an den registrierenden Benutzer mit einem Bestätigungslink, welcher zuerst angeklickt werden muss, bevor man sich anmelden kann.
+    visual_editor_urls: Visuelle Editor-URLs
+    report_feature_url: URL des Berichts
+    report_bug_url: Fehler-URL melden
+    report_error_url: Fehler-URL melden
+    collaborative_editing: Kollaborative Bearbeitung
+    collaborative_editing_enabled: Gemeinschaftliche Bearbeitung aktivieren
+    collaborative_editing_note: WebSockets sind notwendig, um gemeinsam bearbeiten zu können.
+    ai_notice: 'AI Assistant stellt eine In-App-Sidebar zur Verfügung, um mit einer LLM zu kommunizieren. Wenn aktiviert, öffnen Sie die KI-Seitenleiste in der Symbolleiste, um Fragen zu stellen, Inhalte zu generieren und Hilfe bei der Arbeit mit Ihrem Projekt zu erhalten. <a href="https://directus.io/docs/guides/ai/assistant" target="_blank">Erfahren Sie mehr über die Konfiguration und Verwendung des AI Assistenten.</a>'
+    mcp_enabled: MCP-Server
+    mcp_enabled_note: 'Verbinden Sie AI/LLM-Werkzeuge mit Ihrem Directus Projekt über <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. So können AI-Assistenten Ihre Directus-Daten sicher lesen und mit ihnen interagieren.'
+    mcp_notice: 'Model Context Protocol ist ein Standard für die Anbindung von LLMs an Anwendungen wie Directus. Sobald aktiviert, wird der Directus MCP Server unter `/mcp` verfügbar sein. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Erfahren Sie mehr über MCP und wie Sie sich verbinden.</a>'
+    mcp_allow_deletes: Löschen erlauben
+    mcp_allow_deletes_note:
+      - Kann Datenverlust verursachen.</strong> standardmäßig deaktiviert für Sicherheit.'
+    mcp_prompts_collection: KI Prompts Sammlung
+    mcp_prompts_collection_note: 'Wählen Sie eine Sammlung für die Speicherung von <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">wiederverwendbaren Eingabeaufforderungsvorlagen</a> für KI-Interaktionen.'
+    mcp_system_prompt_divider: Konfiguration der Systemnachfrage
+    mcp_system_prompt_enabled: Systemanfrage verwenden
+    mcp_system_prompt_enabled_note: "Verwenden Sie die <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>Standard-System-Eingabeaufforderung</a> um das LLM-Verhalten anzuleiten. Deaktivieren, um Ihre eigene Eingabeaufforderung unten zu entfernen oder zu überschreiben."
+    mcp_system_prompt: Benutzerdefinierter System-Prompt
+    mcp_system_prompt_note: 'Benutzerdefinierte System-Promt, um die Standardeinstellung zu ersetzen. Leer lassen um die Standardeinstellung zu verwenden (wenn oben aktiviert).'
+    mcp_oauth_enabled: 'OAuth aktiviert'
+    mcp_oauth_enabled_note: 'MCP-Clients erlauben, sich über OAuth 2.1 zu authentifizieren'
+    mcp_oauth_dcr_enabled: 'Dynamische Client-Registrierung'
+    mcp_oauth_cimd_enabled: 'Client-ID Metadaten-Dokument'
+    ai_system_prompt: KI System Prompt
+    ai_system_prompt_note: 'Benutzerdefinierte KI-System-Eingabeaufforderung, um das LLM-Verhalten in den AI-Assistent-Interaktionen zu lenken. Leer lassen um die Standardeinstellung zu verwenden.'
+    ai_translation_default_model: Standard-Übersetzungsmodell
+    ai_translation_default_model_note: 'Wählen Sie das Standardmodell für KI-Übersetzungen. Hier stehen nur Modelle zur Verfügung, die in den obigen Einstellungen aktiviert sind.'
+    ai_glossary_term_placeholder: Directus Flows
+    ai_glossary_note: Übersetzungsnotiz
+    ai_glossary_note_placeholder: Niemals übersetzen, so lassen wie es ist
+    ai_translation_glossary: Übersetzungsglossar
+    ai_translation_glossary_note: 'Definieren Sie Schlüsselbegriffe und deren genehmigte Übersetzungen in Ihren Sprachen. Behalten Sie Produktnamen, UI-Etiketten und andere wichtige Phrasen einheitlich in Ihrem Inhalt.'
+    ai_translation_style_guide: Übersetzungsstil-Leitfaden
+    ai_translation_style_guide_note: 'Beschreiben Sie, wie Ihre Inhalte übersetzt werden sollen, einschließlich Ton-, Formatierungs- und Formatierungsregeln. Fügen Sie Details zu Ihrem Unternehmen, Ihrem Produkt und Ihrer Zuhörerschaft hinzu, um die Stimme Ihrer Marke konsistent zu halten.'
+    ai_translation_style_guide_placeholder: "Übersetzen Sie in einem zuversichtlichen, zugänglichen Ton. Verwenden Sie informelle \"Sie\", vermeiden Sie Slang, und halten Sie Terminologie einheitlich."
+    ai_openai_api_key: OpenAI API-Schlüssel
+    ai_openai_allowed_models: OpenAI Erlaubte Modelle
+    ai_anthropic_api_key: Anthropic API Schlüssel
+    ai_anthropic_allowed_models: Anthropic erlaubte Modelle
+    ai_google_api_key: Google API-Schlüssel
+    ai_google_allowed_models: Google erlaubte Modelle
+    ai_openai_compatible: OpenAI-kompatibler Anbieter
+    ai_translations_notice: Ihr aktueller Plan enthält keine KI-Übersetzung. Aktualisiere zum Entsperren.
+    ai_openai_compatible_notice: Ihr aktueller Plan enthält keine Custom LLM. Upgrade zum Entsperren.
+    ai_openai_compatible_name: Anbietername
+    ai_openai_compatible_base_url: Basis-URL
+    ai_openai_compatible_api_key: API-Schlüssel
+    ai_openai_compatible_models: Modelle
+    ai_openai_compatible_headers: Benutzerdefinierte Header
+    ai_model_id: Modell ID
+    ai_context_limit: Kontext-Limit
+    ai_output_limit: Ausgabelimit
+    ai_supports_attachments: Unterstützt Anhänge
+    ai_supports_reasoning: Unterstützt das logische Denken
+    ai_provider_options: Anbieter-Optionen
+    ai_provider_options_note: Provider-spezifische Optionen an KI-Endpunkte übergeben.
     ai_header_name: Header
   directus_shares:
     name: Name
@@ -1371,6 +1853,7 @@ fields:
     users: Benutzer in Rolle
     parent: Übergeordnete Rolle
     children: Untergeordnete Rollen
+    policies: Richtlinien
   directus_policies:
     name: Richtlinienname
     description: Beschreibung
@@ -1411,14 +1894,19 @@ field_options:
     overrides_divider_title: App-Überschreibungen
   directus_activity:
     login: Login
+    logout: Abmelden
     create: Erstellen
     update: Aktualisieren
     delete: Löschen
+  directus_oauth_clients:
+    registration_type_dcr: DCR
+    registration_type_cimd: CIMD
   directus_collections:
     track_activity_revisions: Verfolge Aktivitäten und Änderungen
     only_track_activity: Nur Aktivitäten verfolgen
     do_not_track_anything: Nichts verfolgen
     collection_setup: Einrichtung Sammlung
+    collection_naming_translations_note: "Überschreiben Sie den Anzeigenamen der Sammlung in der App basierend auf der Sprache des Benutzers."
     note_placeholder: Eine Beschreibung dieser Sammlung...
     hidden_label: Innerhalb der App verstecken
     singleton: Als einzelnes Objekt behandeln
@@ -1438,8 +1926,11 @@ field_options:
     accountability_divider: Verantwortlichkeit
     duplication_divider: Duplikation
     preview_divider: Vorschau
+    content_translations_divider: Inhaltsübersetzungen
     content_versioning_divider: Inhalts-Versionierung
     enable_versioning: Versionierung aktivieren
+    interval_default: 'Standard ({minutes} Minuten)'
+    interval_default_seconds: 'Standard ({seconds} Sekunden)'
   directus_files:
     title: Ein einzigartiger Titel...
     description: Eine optionale Beschreibung...
@@ -1500,23 +1991,101 @@ live_preview:
   new_window: In neuem Fenster öffnen
   close_window: In geteilter Ansicht öffnen
   toggle_3d: 3D umschalten
+  iframe_title: Live-Website-Vorschau
   display_options: Anzeige-Optionen
+  exit_full_width: Vollbreite beenden
+  open_in_visual_editor: Im Visuellen Editor öffnen
 shares: Freigaben
 unlimited_usage: Unbegrenzte Nutzung
 uses_left: Keine Verwendungen übrig | Eine Verwendung übrig | {n} Verwendungen übrig
 no_shares: Keine Freigaben zum Anzeigen
 new_share: Neue Freigabe
+show_more: Mehr anzeigen
+show_less: Weniger anzeigen
+retry: Erneut versuchen
 ai:
+  thinking: Nachdenken...
   input: Eingabe
+  output: Ausgabe
+  streaming: Streamen...
+  ready: Bereit
+  complete: Abschließen
+  error: Fehler
+  error_message: Ein Fehler ist aufgetreten
+  unknown_error: Unbekannter Fehler
   unknown: Unbekannt
+  approval_requested: Genehmigung angefordert
+  approve: Genehmigen
+  always_allow: Immer erlauben
+  deny: Ablehnen
+  approve_tool_execution: Tool-Ausführung genehmigen?
+  prompt_input_placeholder: Geben Sie Ihre Nachricht hier ein...
+  clear_conversation: Konversation leeren
+  build_with_assistant: Mit KI-Assistenten erstellen
+  responses_may_be_inaccurate: KI-Antworten können ungenau sein
+  add_content: Inhalt hinzufügen
+  prompt: Prompt
+  prompts: Prompts
   items: Elemente
   content: Inhalt
+  insert_prompt: Prompt einfügen
+  insert_reusable_prompt: Eine wiederverwendbare Promptvorlage einfügen
+  insert_item_context: Elementkontext einfügen
+  coming_soon: Bald verfügbar
+  failed_to_load_prompts: Fehler beim Laden der Prompts
+  failed_to_load_items: Fehler beim Laden von Elementen
+  some_context_failed: '{count} Kontext(e) konnten nicht geladen werden'
+  prompt_inserted: Prompt eingefügt
+  prompt_staged: Prompt inszeniert
+  items_staged: Vorbereitete Elemente
+  some_items_staged: '{count} Element(en) inszeniert (Limit erreicht)'
+  files_staged: Dateien inszeniert
+  some_files_staged: '{count} Datei(en) inszeniert (Limit erreicht)'
+  attach_file_subtitle: Vorhandene Dateien anhängen
+  upload_file_subtitle: Lokale Dateien hochladen
+  file_upload_failed: 'Fehler beim Hochladen von {name}'
+  file_upload_not_supported: Datei-Uploads werden für diesen Anbieter nicht unterstützt
+  unsupported_file_type: Nicht unterstützter Dateityp
+  provider_locked_tooltip: Anbieter können nach dem Hochladen von Dateien nicht geändert werden. Löschen Sie die bestehende Konversation zum Wechseln.
+  image_preview: Bildvorschau
+  item_staged: Element inszeniert
+  invalid_collection: Ungültige Sammlung
+  element_already_staged: Element bereits inszeniert
+  max_elements_reached: Maximale Elemente erreicht
+  element_staged: Element inszeniert
+  failed_to_insert_prompt: Fehler beim Einfügen des Prompts
+  go_to_settings: Zu den Einstellungen gehen
+  setup_ai_assistant: KI-Assistent einrichten
+  setup_ai_assistant_admin_description: Fügen Sie Ihre AI-Provider-API-Schlüssel in die Einstellungen ein, um den AI-Assistenten zu aktivieren.
+  setup_ai_assistant_user_description: Kontaktieren Sie Ihren Administrator, um den AI-Assistenten zu aktivieren.
   settings: Einstellungen
   tool_approval:
+    always: Immer erlaubt
+    ask: Erfordert Genehmigung
     disabled: Deaktiviert
+  enabled_tools: Aktivierte Werkzeuge
+  disabled_tools: Deaktivierte Werkzeuge
   ask_user_submit: Absenden
   ask_user_next: Weiter
+  ask_user_skip: Überspringen
+  ask_user_chat_about_this: Chatten über dieses
+  ask_user_type_answer: Geben Sie Ihre Antwort ein...
+  ask_user_skipped: Übersprungen
+  tool_descriptions:
+    items: Inhalt erstellen, lesen, aktualisieren und löschen
+    files: Dateien suchen und verwalten
+    folders: Ordner erstellen und organisieren
+    flows: Erstelle und aktualisiere Flows
+    trigger-flow: Manuell ausgelöste Flows ausführen
+    operations: Operationen innerhalb von Flows verwalten
+    schema: Datenbankschema-Informationen abrufen
+    collections: Sammlungen erstellen und verwalten
+    fields: Sammlungsfelder erstellen und konfigurieren
+    relations: Beziehungen zwischen Sammlungen einrichten
 ai_tools:
+  ask_user: Nutzer fragen
+  update_form_values: Formularwerte aktualisieren
+  read_form_values: Formularwerte lesen
   items: Elemente
   files: Dateien
   folders: Ordner
@@ -1526,14 +2095,38 @@ ai_tools:
   schema: Schema
   collections: Sammlungen
   fields: Felder
+  relations: Beziehungen
+mcp_prompts_collection:
+  no_collection_selected: Keine Sammlung ausgewählt
+  no_collection_selected_copy: Wählen Sie eine Sammlung aus, um wiederverwendbare Eingabeauffordervorlagen zu aktivieren.
+  collection_not_found: Sammlung nicht gefunden
+  collection_not_found_description: Die Sammlung "{collection}" existiert nicht in der Datenbank.
+  generate: Erstelle KI Prompts Sammlung...
+  already_exists: Sammlung von AI Prompts existiert bereits
+  generate_collection_dialog_title: Erstelle KI Prompts Sammlung
+  generate_fields_dialog_title: KI-Eingabeaufforderungsfelder generieren
+  generate_collection_dialog_description: 'Dies wird eine neue Sammlung "{collection}" mit den notwendigen Feldern und Einstellungen erstellen, um wiederverwendbare Templates zu speichern.'
+  generate_fields_dialog_description: 'Dadurch werden die erforderlichen Felder in Ihrer "{collection}" Sammlung erstellt.'
+  validation_success: 'Die Kollektion kann als "AI Prompts" Sammlung verwendet werden.'
+  validation_error_invalid: Sammlung kann nicht verwendet werden
+  validation_error_missing: Sammlung kann noch nicht verwendet werden
+  invalid_fields: 'Die folgenden Felder existieren aber sind von einem inkompatiblen Typ:'
+  missing_fields: 'Die folgenden Felder sind erforderlich, aber fehlen:'
+  generate_missing: Fehlende Felder generieren...
 mcp_prompts_collection_schema:
+  system_prompt_note: Anleitungen, die bestimmen, wie die LLM reagiert.
+  messages_note: 'Optional: Definieren Sie die Konversationsstruktur zwischen Benutzern und LLMs. Wird verwendet, um Kontext hinzuzufügen und die Ausgaben zu verbessern.'
   messages_role_user: Benutzer
+  messages_role_assistant: Assistent
+  messages_role_note: Wer spricht in dieser Nachricht.
+  meta_prompts_notice: 'Prompts sind wiederverwendbare Vorlagen, die Sie mit LLMs über den Directus MCP Server, Flows oder andere AI Anwendungen verwenden können. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">Erfahren Sie mehr über das Erstellen effektiver Eingabeaufforderungen.</a>'
 expired: Abgelaufen
 upcoming: Bevorstehend
 share: Teilen
 share_item: Element teilen
 shared_with_you: Ein Element wurde mit dir geteilt
 shared_enter_passcode: Kennwort eingeben um fortzufahren...
+generate: Generieren
 shared_leave_blank_for_passwordless_access: Leer lassen für passwortlosen Zugriff
 shared_leave_blank_for_unlimited: Leer lassen für kein Limit
 shared_times_remaining: Dieser Link kann nur {n} mal verwendet werden
@@ -1564,6 +2157,7 @@ no_permissions: Keine Berechtigungen
 permission_add_collection: Sammlung hinzufügen
 default_label: Standard
 delete_label: Löschen
+discard_label: Verwerfen
 delete_are_you_sure: >-
   Diese Aktion kann nicht rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?
 delete_field_are_you_sure: >-
@@ -1600,6 +2194,7 @@ colors:
 junction_collection: Verbindungssammlung
 latency: Latenz
 login: Login
+logout: Abmelden
 my_activity: Meine Aktivität
 not_authenticated: Nicht authentifiziert
 authenticated: Authentifiziert
@@ -1614,6 +2209,8 @@ reset_password: Passwort zurücksetzen
 revisions: Revisionen
 no_revisions: Noch keine Revision
 no_logs: Keine Logs vorhanden
+show_failed_only: Zeige nur fehlgeschlagen
+no_logs_on_page: Keine Logs auf dieser Seite
 revert: Zurücksetzen
 save: Speichern
 schema: Schema
@@ -1693,14 +2290,21 @@ interfaces:
     accordion_mode: Akkordeon-Modus
     max_one_section_open: Max. einen Abschnitt öffnen
   group-tabs:
+    name: Reiter
+    description: Felder oder Gruppen als Tabs anzeigen
+    overwrite_group_width: Gruppenbreite überschreiben
     fill_width: Breite füllen
+    fill_width_note: Erlaube dieser Gruppe die volle Breite der Seite zu füllen.
   presentation-links:
     presentation-links: Buttons
+    description: Konfigurierbare Link-Buttons für dynamische URLs
     style: Stil
     primary: Primär
     link: Links
     button: Buttons
     error: Aktion kann nicht ausgeführt werden
+    action_type: Aktion Typ
+    select_manual_flow_note: Flow muss mit einem manuellen Trigger für diese Sammlung konfiguriert werden
   select-multiple-checkbox:
     checkboxes: Checkboxen
     description: Zwischen mehreren Optionen auswählen über Checkboxen
@@ -1724,6 +2328,11 @@ interfaces:
     collection: Sammlung
     description: Aus bestehenden Sammlungen auswählen
     include_system_collections: Systemsammlungen einbeziehen
+  system-owner:
+    update: Projekteigentümer aktualisieren
+    edit: Projekteigentümer bearbeiten
+    system-owner: Systemeigentümer
+    description: Benutzeroberfläche für Systembesitzer
   system-collections:
     collections: Sammlungen
     description: Aus bestehenden Sammlungen auswählen
@@ -1776,6 +2385,9 @@ interfaces:
   file:
     file: Datei
     description: Datei auswählen oder hochladen
+    allowed_mime_types: Erlaubte MIME-Typen
+    mime_types_placeholder: Erlaubte MIME-Typen auswählen oder hinzufügen...
+    mime_types_note: Beachten Sie, dass die in Ihrem env definierte globale FILES_MIME_TYPE_ALLOW_LIST Vorrang vor der obigen Auswahl hat.
   files:
     files: Dateien
     description: Mehrere Dateien auswählen oder hochladen
@@ -1821,6 +2433,9 @@ interfaces:
   collection-item-dropdown:
     collection-item-dropdown: Dropdown für Elemente einer Sammlung
     description: Auswahl eines Elements aus einer Sammlung im JSON-Format
+  collection-item-multiple-dropdown:
+    collection-item-multiple-dropdown: Sammlungsobjekt Dropdown (mehrfach)
+    description: Wählen Sie mehrere Elemente aus einer Sammlung im JSON-Format
   input-rich-text-md:
     markdown: Markdown
     description: Markdown eingeben und Vorschau anzeigen
@@ -1883,6 +2498,7 @@ interfaces:
     incompatible_data: Die aktuellen Daten sind nicht kompatibel mit der Repeater-Schnittstelle und werden beim Hinzufügen von Elementen zum Repeater überschrieben
     interface_group: Schnittstellenoptionen
     display_group: Anzeige-Optionen
+    edit_mode_inline: Inline
   slider:
     slider: Slider
     description: Nummer mit Schieberegler auswählen
@@ -1940,6 +2556,29 @@ interfaces:
     default_language: Standardsprache
     language_field: Sprachindikatorfeld
     language_direction_field: Schreibrichtung-Feld
+    ai_translate: Mit KI übersetzen
+    ai_translate_short: Übersetzen
+    ai_translate_tooltip: Übersetzen Sie Ihren Inhalt automatisch mit der KI
+    model: Modell
+    source_language: Ausgangssprache
+    target_languages: Zielsprachen
+    translate_n_languages: 'Übersetze {count} Sprache | Übersetze {count} Sprachen'
+    no_source_content: Die ausgewählten Quellfelder haben keinen zu übersetzenden Inhalt.
+    no_additional_languages: Keine zusätzlichen Sprachen konfiguriert.
+    no_translation_models: Derzeit sind keine Übersetzungsmodelle verfügbar.
+    translation_error: Übersetzung für diese Sprache fehlgeschlagen.
+    translation_not_allowed: Sie haben keine Berechtigung diese Sprache zu übersetzen.
+    translation_pending_delete: Diese Sprache hat ausstehende Löschung und kann nicht übersetzt werden.
+    permission_check_failed: Die Berechtigungen für diese Sprache konnten nicht verifiziert werden. Bitte versuchen Sie es erneut.
+    empty: (leer)
+    field_empty_tooltip: Dieses Feld hat keine zu übersetzenden Quellinhalte
+    ai_translating: Übersetzen...
+    ai_translating_progress: 'Übersetze {done} von {total} Sprachen...'
+    translation_has_errors: Einige Übersetzungen sind fehlgeschlagen.
+    translation_complete: Übersetzungen erfolgreich abgeschlossen.
+    translation_complete_with_warnings: Übersetzungen abgeschlossen, aber einige Felder können unvollständig sein.
+    partial_translation: 'Nur {count} von {total} Feldern wurden übersetzt.'
+    rate_limited: Der AI-Provider ist die Preisbegrenzung von Anfragen. Bitte warten Sie einen Moment und versuchen Sie es erneut.
   list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
     recursive_only: Die Baumansicht funktioniert nur für rekursive Beziehungen.
@@ -1962,6 +2601,7 @@ interfaces:
     folder_note: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
     imageToken: Statisches Zugriffstoken
     imageToken_label: Statisches Zugriffstoken wird an die URL der Assets angehängt
+    media_preview_iframe_title: Medien-Vorschau
   input-block-editor:
     input-block-editor: Block-Editor
     description: Block-basierter Editor für Rich-Media-Content, erzeugt sauberes JSON mithilfe von Editor.js
@@ -2009,7 +2649,14 @@ interfaces:
     value_securely_saved: Wert sicher gespeichert
     generate: Token generieren
     regenerate: Token neu generieren
+    regenerate_confirm_title: Token neu generieren
+    regenerate_confirm_body: Das aktuelle Token wird sofort ungültig gemacht. Dies kann nicht rückgängig gemacht werden.
     remove_token: Token löschen
+    remove_confirm_title: Token löschen
+    remove_confirm_body: Jeder API-Zugriff mit diesem Token wird sofort aufhören.
+    new_user_disabled_notice: Speichern Sie diesen Benutzer, bevor Sie ein Token erstellen.
+    token_saved_notice: Token wurde erfolgreich gespeichert.
+    token_saved_copy: Stellen Sie sicher, dass Sie dieses Token jetzt kopieren. Aus Sicherheitsgründen wird es nicht mehr sichtbar sein.
   system-raw-editor:
     system-raw-editor: Quelltext-Editor
     description: Eingabe von Rohwerten oder Mustache-Templates erlauben
@@ -2018,7 +2665,22 @@ interfaces:
     description: Passwort-Eingabe mit Schalter zum Verstecken des Wertes
   header:
     header: Header
+    description: Erstellen Sie einen Header mit einem Titel, Untertitel, Hilfsinformationen und/oder Links, um Benutzern zu helfen, Flows zu navigieren oder auszuführen.
     links: Links
+    action_type: Aktion Typ
+    help:
+      title: Hilfe
+      note: Bietet dem Benutzer ein- und ausblendbare Hilfeinformationen.
+    help_display_mode:
+      title: Hilfe-Anzeigemodus
+      note: Wählen Sie den Anzeigemodus für die Hilfe-Informationen.
+    enable_help_translations:
+      title: Hilfeübersetzungen aktivieren
+      note: Falls aktiviert, wird das Hilfefeld mit Werten aus dem Feld Hilfeübersetzungen überschrieben.
+    help_translations_string:
+      title: Neues Übersetzungelement
+      note: Sie müssen einen Übersetzungswert für den Schlüssel in den Übersetzungseinstellungen Ihres Projekts mit dem übersetzten Inhalt für jede Sprache erstellen, die Sie unterstützen möchten.
+    collapse: Hilfe einklappen
 displays:
   translations:
     translations: Übersetzungen
@@ -2234,6 +2896,7 @@ show_legend: Legende anzeigen
 right: Rechts
 left: Links
 start: Start
+end: Ende
 donut: Donut
 continuous: Kontinuierlich
 gap: Abstand
@@ -2303,6 +2966,7 @@ triggers:
     filter: 'Filter (blockierend)'
   webhook:
     name: Webhook
+    error_on_reject: Fehler bei Ablehnung
     description: Auslösend bei eingehender HTTP-Anfrage
     method: Methode
     async: Asynchron
@@ -2325,9 +2989,11 @@ triggers:
 a_flow_uuid: Auszulösenden Flow auswählen...
 any_string_or_json: Ein String oder JSON...
 item_payload_placeholder: Dies ist der JSON-Wert um die Feldwerte des Elements zu aktualisieren...
+operation_variables_note: Sie können auf Flow-Daten mit Variablen wie **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** und **{'{'}{'{'}$accountability{'}'}{'}'}** zugreifen oder mit **{'{'}{'{'}operation_key{'}'}{'}'}** auf frühere Operationen verweisen.
 operations:
   condition:
     name: Kondition
+    description: Leiten eines Flows basierend auf If / Else Logik
   exec:
     name: Skript ausführen
     description: Führe beliebigen Code aus, um die Nutzlast zu ändern
@@ -2413,11 +3079,18 @@ operations:
     name: Warten
     description: Gegebene Zeit in Millisekunden warten
     milliseconds: Millisekunden
+  throw-error:
+    name: Fehler ausgeben
+    description: Fehler im Ablehnungspfad werfen
+    code: Fehlercode
+    status: HTTP-Statuscode
+    message: Fehlermeldung
   transform:
     name: Payload bearbeiten
     description: JSON Payload des Flows bearbeiten
   trigger:
     name: Flow auslösen
+    description: Daten an anderen Flow übergeben
     flows: Flows
     flow: Flow
     data: Daten
@@ -2428,6 +3101,9 @@ operations:
     batch: Stapel
     batch_size: Stapelgröße
     cache: Cache
+    cache_query: Cache-Abfrageparameter
+    cache_query_placeholder: Erlaubte Abfrageparameter...
+    cache_query_description: Diese Abfrageparameter werden zusätzlich für den Cache-Schlüssel verwendet.
 unit: Einheit
 standard: Standard
 scientific: Wissenschaftlich
@@ -2466,9 +3142,29 @@ series_grouping: Serien-Gruppierung
 date_precision: Datumsgenauigkeit
 export_dashboard: Dashboard exportieren
 duplicate_dashboard: Dashboard duplizieren
+duplicate_policy: Richtlinie duplizieren
 search_dashboard: Dashboard suchen...
 search_flow: Flow suchen...
 percent: Prozent
 show_password: Passwort anzeigen
 hide_password: Passwort ausblenden
+license_grace_key_modal:
+  optional: Optional
+  get_license_key: Lizenzschlüssel erhalten
+  over_limit_warning_lead: Sie haben die erlaubte Nutzung des Core Plans überschritten.
+  over_limit_warning_tail: '{lead} Fügen Sie vor {date} ({days} Tage) einen {licenseKey} hinzu, um Ihren aktuellen Zugriff zu behalten.'
+  over_limit_customer_help: Bereits ein Kunden? E-Mail {email} um Ihren Schlüssel abzurufen.
+  license_key_link_label: Lizenzschlüssel
+license_banner:
+  title: Sie haben keinen Projektbesitzer festgelegt.
+  license: Wir benötigen dies, um die Einhaltung unserer MSCL-1.0-GPL-Lizenz zu gewährleisten. Dies sollte der Hauptverantwortliche für Ihr Projekt sein.
+  set_owner: Besitzer setzen
+  remind_later: Erinner mich später
+  remind_next_login: Wir werden Sie bei Ihrem nächsten Login erneut daran erinnern.
+accepted: Akzeptiert
+text_direction_auto: Automatisch (Match-Sprache)
+text_direction_ltr: Links nach Rechts (LTR)
+text_direction_rtl: Rechts nach Links (RTL)
 set_to_now: Auf Jetzt setzen
+aria:
+  more_options: Weitere Optionen

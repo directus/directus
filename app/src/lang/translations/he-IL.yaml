@@ -20,8 +20,54 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: אודות
+directus_mscl: Directus MSCL-1.0-GPL
+privacy_policy: מדיניות פרטיות
+contact_support: יצירת קשר עם התמיכה
+setup_welcome: ברוכים הבאים ל-Directus
+setup_info: בואו ניצור את חשבון המנהל שלך ונפעיל את הפרויקט.
+setup_license_key_notice: >
+  אם יש לך מפתח רישיון, הזן אותו למטה כדי לפתוח את התוכנית המלאה. עסקים העומדים בתנאים עם הכנסה שנתית מתחת ל-5M$ עשויים להיות זכאים ל{oig} שלנו.
+setup_save_accept_license: >
+  בלחיצה על שמירה, אתה מקבל את התנאים של {directusMscl} ושל {privacyPolicy}.
+setup_license_invalid: >
+  הרישיון אינו תקין. נא {contactSupport} כדי לפתור את הבעיה.
+setup_license_invalid_format: פורמט מפתח רישיון לא תקין.
+setup_accept_license: אני מקבל את התנאים של {directusMscl} ושל {privacyPolicy}
+setup_marketing_emails: שלחו לי עדכוני מוצר והערות גרסה
+setup_launch: הפעל את Directus
+setup_license_title: הגדר את הרישיון שלך
+license_onboarding_title: יש לך מפתח רישיון?
+license_onboarding_desc: >
+  הזן אותו למטה כדי לפתוח את התוכנית המלאה. עסקים העומדים בתנאים עם הכנסה שנתית מתחת ל-5M$ עשויים להיות זכאים ל{oig} שלנו.
+project_usage: למה אתה משתמש ב-Directus?
+project_usage_personal: אישי / פרויקט צד
+project_usage_commercial: עסקי / מסחרי
+project_usage_community: קוד פתוח / קהילה
+org_name: שם הארגון
+license_key_option: יש לי מפתח רישיון
+license_key_option_desc: 'תוכנית OIG, Team או Enterprise'
+core_option: אני משתמש בתוכנית Core
+core_option_desc: חינמי, ללא צורך במפתח
+remind_later: הזכר לי מאוחר יותר
+remind_next_login: נזכיר לך בכניסה הבאה
+setup_project: הגדרת פרויקט
+enter_license_key: הזן את מפתח הרישיון שלך
+license_valid: רישיון תקין
+plan_prefix: 'תוכנית: {plan}'
+license_key: מפתח רישיון
+no_license_key: אין לך מפתח רישיון?
+get_license_key: קבל מפתח רישיון
+expires_on: תוקף עד
+environment: סביבה
+production: ייצור
+non_production: לא ייצור
+skip: דלג
+continue: המשך
 first_name: שם פרטי
 last_name: שם משפחה
+admin_email: דוא"ל מנהל
+owner_email: דוא"ל בעלים
+email_address: כתובת דוא"ל
 identifier: מזהה
 avatar: צלמית
 application: יישום
@@ -30,8 +76,13 @@ method: פונקציה
 published: פורסם
 draft: טיוטה
 archived: ארכיון
+not_archived: לא בארכיון
 marketplace: חנות
 extensions: הרחבות
+skip_link_nav: דלג לניווט
+skip_link_module_nav: דלג לניווט המודולים
+skip_link_main: דלג לתוכן הראשי
+skip_link_sidebar: דלג לסרגל הצד
 modules: מודולים
 module_bar: סרגל מודולים
 logs: לוגים
@@ -44,10 +95,24 @@ location: מיקום
 collection_names_are_case_sensitive: יש חשיבות לגודל אותיות בשמות
 condition_rules: תנאי כלל
 input: קלט
+invalid_input: קלט לא תקין
+invalid_file_type: סוג קובץ לא תקין
+invalid_files_selected: 'אין קבצים לא תקינים | נבחר קובץ לא תקין | {count} קבצים לא תקינים נבחרו'
+files_wrong_type: 'לקבצים {files} יש סוגים לא תקינים, מצופה סוג {expected}.'
+files_are_empty: 'הקבצים הבאים ריקים ולא ניתן להעלות אותם: {files}'
+not_a_number: לא מספר
+invalid_range_min: הערך נמוך מהמינימום של {value}
+invalid_range_max: הערך חורג מהמקסימום של {value}
 maps: מפות
 switch_user: החלף משתמש
+item_deleted: הפריט שערכת נמחק.
 item_creation: יצירת פריט חדש
 item_revision: גרסת פריט
+previous_revision: מהדורה קודמת
+latest_revision: מהדורה אחרונה
+comparing_to: משווה אל
+compare_to_latest_to_restore: השווה למהדורה האחרונה כדי לשקול שחזור של מהדורה זו
+select_earlier_revision_to_restore: בחר מהדורה מוקדמת יותר כדי לשקול את שחזורה
 enter_a_name: הכניסו שם...
 duplicate_field: שדה כפול
 half_width: חצי עמוד
@@ -55,67 +120,85 @@ full_width: רוחב מלא
 group: קבוצה
 popular: פופולרי
 recent: אחרון
+previous: הקודם
+latest: האחרון
+updated: עודכן
 export_items: יצא פריטים
 and: ו
 or: או
 init: אתחל
 dataset_too_large_currently_showing_n_items: מערך הנתונים גדול מדי. מציג כעת את {n} הפריטים הראשונים.
+modifier: משנה
 extension_interface: ממשק
 extension_display: תצוגה
 extension_layout: פריסה
 extension_module: מודול
 extension_panel: לוח
 extension_theme: ערכת נושא
-extension_hook: נקודת השחלה
-extension_endpoint: כתובת קצה
+extension_hook: הוק
+extension_endpoint: נקודת קצה
 extension_operation: פעולה
 extension_bundle: חבילה
 extension_interfaces: ממשקים
-extension_displays: תצוגה
-extension_layouts: פריסה
+extension_displays: תצוגות
+extension_layouts: פריסות
 extension_modules: מודולים
 extension_panels: לוחות
 extension_themes: ערכות נושא
-extension_hooks: נקודת השחלה
-extension_endpoints: נקודת גישה
-extension_operations: תהליכים
+extension_hooks: הוקים
+extension_endpoints: נקודות קצה
+extension_operations: פעולות
 extension_bundles: חבילות
 extension_missing: חסרים
 extension_reload_required: יש לטעון את הדף מחדש
-extension_reload_required_copy: יש לטעון את הדף מחדש לאחר הפעלה או נטרול של תוסף.
+extension_reload_required_copy: יש לטעון את הדף מחדש לאחר הפעלה או השבתה של הרחבה.
 extension_reload_now: טען מחדש כעת
 published_relative: פורסם ב{relativeTime}
 compatible_with_your_project: תואם את הפרויקט שלך
+compatible_with_your_project_copy: היוצר ציין שהתאימות של הרחבה זו היא {hostVersion}, התואמת את גרסת הפרויקט שלך ({currentVersion})
 last_updated_relative: תאריך עדכון {relativeTime}
 n_files: '{n} קבצים'
 verified: מאומת
 homepage: דף הבית
-repository: מאגר
+repository: מאגר קוד
 reload_page: רענן דף
 reload_required: יש לטעון את הדף מחדש
 report_an_issue: דווח על תקלה
 website: אתר
 github: גיטהאב
 beta: בטא
+collab_collision: הפריט שונה בזמן שערכת אותו. בחר אילו שינויים לשמור.
+collab_disconnected: עריכה שיתופית מנותקת
+collab_editing_field: עריכת השדה “{field}”
+collab_currently_viewing: מציג כעת
+you: אתה
 n_downloads: '{n} הורדות'
 downloads: הורדות
 compatibility_not_guaranteed: תאימות לא מובטחת
+compatibility_not_guaranteed_copy: היוצר ציין שהתאימות של הרחבה זו היא {hostVersion}, שאינה תואמת את גרסת הפרויקט שלך ({currentVersion})
 enable: אפשר
-disable: מושבת
+disable: השבת
 custom: מותאם אישית
 hook: נקודת השחלה
 fill_width: עמוד מלא
 field_name_translations: תרגומי שמות שדות
 enter_password_to_enable_tfa: הכניסו סיסמה להפעלת אימות דו שלבי
+sso_tfa_setup_notice: תתבצע יציאה מהחשבון שלך ותידרש להתחבר מחדש. כל שינוי שלא נשמר יימחק.
+enable_tfa: הפעל 2FA
+cancel_tfa_setup: בטל הגדרת 2FA
+cancel_tfa_setup_notice: האם אתה בטוח שברצונך לבטל את הגדרת ה-2FA?
+keep_setup: שמור הגדרה
+cancel_setup: בטל הגדרה
 add_field: הוסף שדה
 role_name: שם תפקיד
+policy_name: שם מדיניות
 branch: ענף
 leaf: עלה
 indeterminate: לא מוגדר
 edit_collection: ערוך אוסף
 exclusive: בלעדי
 children: ילדים
-db_only_click_to_configure: 'דאטהבייס בלבד: יש ללחץ כאן על מנת להגדיר'
+db_only_click_to_configure: 'מסד נתונים בלבד: יש ללחוץ כאן כדי להגדיר'
 show_active_items: הצג פריטים פעילים
 show_archived_items: הצג פריטי ארכיון
 show_all_items: הצג את כל הפריטים
@@ -126,16 +209,17 @@ requires_value: דורש ערך
 create_preset: יצירת הגדרה מראש
 create_panel: יצירת לוח
 create_role: צור תפקיד
+create_policy: צור מדיניות
 create_user: צור משתמש
 message: הודעה
 delete_panel: מחיקת לוח
 create_custom_translation: יצירת תרגומים
 edit_custom_translation: עריכת תרגומים
-no_custom_translations: חסרים תרגומים
-no_custom_translations_copy: חסרים תרגומים.
+no_custom_translations: אין תרגומים
+no_custom_translations_copy: אין תרגומים.
 invite_users: הזמן משתמשים
 invite: הזמן
-email_already_invited: כבר נשלחה הזמנה לכתובת מייל "{email}"
+email_already_invited: כבר נשלחה הזמנה לכתובת המייל "{email}"
 subject: נושא
 inbox: תיבת דואר
 emails: אימייל
@@ -144,6 +228,7 @@ connection_good: קליטה טובה
 connection_fair: קליטה בינוני
 connection_poor: קליטה לא טובה
 primary: ראשי
+download_folder: הורד תיקייה
 rename_folder: שינוי שם תיקיה
 delete_folder: מחק תיקייה
 prefix: קידומת
@@ -152,97 +237,246 @@ keep: שמור
 version: גרסה
 version_key: מזהה גרסה
 version_name: שם הגרסה
-main_version: ראשי
+your_version: הגרסה שלך
 switch_version: החלפת גרסה
-switch_version_copy: האם את/ה רוצה להחליף לגרסה {version}? שינויים שלא נשמרו יאבדו.
+switch_version_copy: האם ברצונך להחליף לגרסה {version}? שינויים שלא נשמרו יאבדו.
 create_version: צור גרסה
-rename_version: לשנות שם גרסה
-compare_version: השווה גירסאות
-save_version: לשמור גרסה
-promote_version: לקדם גרסה
-delete_version: מחיקת גרסא
+rename_version: שינוי שם גרסה
+reserved_version_key: 'מזהה הגרסה "{key}" שמור ולא ניתן להשתמש בו.'
+compare_version: השווה גרסאות
+save_version: שמור גרסה
+publish: פרסם
+version_create_item_less: ניתן ליצור גרסאות רק לאחר שגרסת הטיוטה פורסמה
+apply: החל
+discard: בטל שינויים
+select_all_differences: בחר את כל ההבדלים
+show_differences_only: הצג הבדלים בלבד
+published_updated_notice: הפריט שפורסם עודכן מאז שגרסה זו נוצרה.
+delete_version: מחיקת גרסה
 delete_version_copy: >-
   האם ברצונך למחוק את גרסה {version}? הפעולה אינה ניתנת לביטול.
-reached_maximum_number_of_extensions: הגעת למספר התוספות המקסימלי עבור הפרויקט ({n}). למידע נוסף, פנה למנהל המערכת.
+auto_save_failed: השמירה האוטומטית נכשלה
+auto_save_failed_copy: יש להשאיר דף זה פתוח בזמן שאנו מנסים שוב!
+auto_save_enabled: שמירה אוטומטית מופעלת
+content_edited: התוכן נערך
+reset_bookmark: איפוס סימנייה
+update_bookmark: עדכון סימנייה
+delete_bookmark: מחיקת סימנייה
+delete_bookmark_copy: >-
+  האם ברצונך למחוק את הסימנייה "{bookmark}"? הפעולה אינה ניתנת לביטול.
+delete_personal_bookmark: מחיקת סימנייה אישית
+delete_role_bookmark: מחיקת סימניית תפקיד
+delete_global_bookmark: מחיקת סימנייה גלובלית
+logoutReason:
+  SIGN_OUT: התנתקת
+  SESSION_EXPIRED: תוקף ההפעלה פג
+public_label: ציבורי
+public_description: שולט באילו נתוני API זמינים ללא אימות.
+public_role_info: >-
+  התפקיד הציבורי שולט באילו נתוני API זמינים למשתמשים לא מאומתים או למשתמשים ללא תפקיד. בקשות עם התפקיד הציבורי אינן יכולות לכלול גישת אפליקציה או גישת מנהל. אם ניתנת גישת אפליקציה או גישת מנהל למדיניות המשויכת לתפקיד הציבורי, היא תתעלם.
+admin_description: תפקיד ניהולי ראשוני עם גישת אפליקציה/API ללא הגבלה.
+admin_policy_description: מדיניות ניהולית ראשונית עם גישת אפליקציה/API ללא הגבלה.
+no_description: אין תיאור...
+reached_maximum_number_of_extensions: הגעת למספר ההרחבות המקסימלי עבור הפרויקט ({n}). למידע נוסף, פנה למנהל המערכת.
 not_allowed: לא מורשה
 archive: ארכיון
-archive_confirm: האם אתם בטוחים שברצונכם להעביר פריט זה לארכיון?
+archive_confirm: האם ברצונך להעביר פריט זה לארכיון?
+archive_confirm_count: >-
+  לא נבחרו פריטים | האם ברצונך להעביר פריט זה לארכיון? | האם ברצונך להעביר {count} פריטים אלה לארכיון?
+reset_system_permissions_to: 'איפוס הרשאות מערכת אל:'
+reset_system_permissions_copy: פעולה זו תדרוס כל הרשאה מותאמת אישית שאולי החלת על אוספי המערכת. האם להמשיך?
+the_following_are_minimum_permissions: ההרשאות המינימליות הבאות מוחלות אוטומטית כאשר "גישת אפליקציה" מופעלת. ניתן להעניק הרשאות נוספות במידת הצורך, אך לא ניתן לצמצם את ההרשאות מתחת לרמה זו.
+app_access_minimum: מינימום גישת אפליקציה
+recommended_defaults: ברירות מחדל מומלצות
 unarchive: הוצאה מהארכיון
-unarchive_confirm: האם אתם בטוחים שברצונכם להוציא פריט זה מהארכיון?
+unarchive_confirm: האם ברצונך להוציא פריט זה מהארכיון?
+nested_files_folders_will_be_moved: קבצים ותיקיות מקוננים יועברו רמה אחת מעלה.
+delete_folder_dialog:
+  move_content: העבר תוכן רמה אחת מעלה
+  delete_content: מחק את כל התוכן
+  content_behavior: מה צריך לקרות לתוכן התיקייה?
+validation_errors_notice: 'בשדות הבאים יש ערכים לא חוקיים:'
+validation_value_is_invalid: הערך לא חוקי
 validationError:
   eq: הערך צריך להיות {valid}
   neq: הערך אינו יכול להיות {invalid}
   in: הערך צריך להיות אחד מ- {valid}
+  nin: הערך אינו יכול להיות אחד מ- {invalid}
+  contains: הערך חייב להכיל {substring}
+  ncontains: הערך אינו יכול להכיל {substring}
+  gt: הערך חייב להיות גדול מ-{valid}
+  gte: הערך חייב להיות גדול מ- או שווה ל-{valid}
+  lt: הערך חייב להיות קטן מ-{valid}
+  lte: הערך חייב להיות קטן מ- או שווה ל-{valid}
+  empty: הערך חייב להיות ריק
   nempty: הערך אינו יכול להיות ריק
   null: הערך צריך להיות null
   nnull: הערך צריך להיות לא null
-  starts_with: ערך צריך להתחיל ב{substring}
-  istarts_with: ערך צריך להתחיל ב{substring}
-  nstarts_with: ערך לא יכול יכול להתחיל ב{substring}
-  nistarts_with: ערך לא יכול יכול להתחיל ב{substring}
-  ends_with: ערך צריך להסתיים ב{substring}
-  iends_with: ערך צריך להסתיים ב{substring}
-  nends_with: ערך לא יכול יכול להסתיים ב{substring}
-  niends_with: ערך לא יכול יכול להסתיים ב{substring}
+  required: הערך הוא חובה
+  unique: הערך חייב להיות ייחודי
+  email: הערך חייב להיות כתובת אימייל חוקית
+  regex: לערך אין את הפורמט הנכון
+  starts_with: הערך צריך להתחיל ב{substring}
+  istarts_with: הערך צריך להתחיל ב{substring}
+  nstarts_with: הערך אינו יכול להתחיל ב{substring}
+  nistarts_with: הערך אינו יכול להתחיל ב{substring}
+  ends_with: הערך צריך להסתיים ב{substring}
+  iends_with: הערך צריך להסתיים ב{substring}
+  nends_with: הערך אינו יכול להסתיים ב{substring}
+  niends_with: הערך אינו יכול להסתיים ב{substring}
+  confirm_password: הסיסמאות אינן תואמות
+  org_name: יש לכלול שם ארגון
 all_access: גישה פתוחה
 no_access: אין גישה
 use_custom: השתמש במותאם אישית
 nullable: לא חובה
 allow_null_value: אפשר ערך ריק
 allow_multiple: מאפשר כמה
+allow_multiple_to_be_open: אפשר פתיחה של כמה
+enter_value_to_replace_nulls: יש להזין ערך חדש שיחליף כל NULL הנמצא כעת בשדה זה.
 field_standard: סטנדרטי
+field_presentation: תצוגה וכינויים
 field_file: קובץ בודד
 field_files: כמה קובצים
 field_m2o: קשר רבים ליחיד (M2O)
+field_m2a: קשר M2A
 field_o2m: קשר יחיד לרבים (O2M)
 field_m2m: קשר רבים לרבים (M2M)
 field_translations: תרגומים
 field_group: קבוצת שדות
 item_permissions: הרשאות פריט
 field_permissions: הרשאות שדה
-field_validation: וולידציות שדה
-field_presets: פריסטים שדה
+field_validation: אימותי שדה
+field_presets: הגדרות מראש לשדה
+permissions_for_role: 'פריטים שהתפקיד {role} יכול {action}.'
+permissions_for_policy: 'פריטים שהמדיניות {policy} יכולה {action}.'
+fields_for_role: 'שדות שהתפקיד {role} יכול {action}.'
+fields_for_policy: 'שדות שהמדיניות {policy} יכולה {action}.'
+validation_for_role: 'כללי {action} שדה שהתפקיד {role} חייב לציית להם.'
+validation_for_policy: 'כללי {action} שדה שהמדיניות {policy} חייבת לציית להם.'
+presets_for_role: 'ברירות מחדל לערכי שדה עבור התפקיד {role}.'
+presets_for_policy: 'ברירות מחדל לערכי שדה עבור המדיניות {policy}.'
+presets_field_warning: 'יש להגדיר הגדרות מראש יחסיות עבור השדה "{field}" באמצעות התחביר ה"מפורט".'
+presentation_and_aliases: תצוגה וכינויים
+revision_post_create: כך נראה פריט זה כשהוא נוצר.
+revision_post_update: כך נראה פריט זה לאחר העדכון.
+changes_made: להלן השינויים הספציפיים שבוצעו במהדורה זו.
+no_relational_data: יש לזכור שנתונים יחסיים אינם כלולים כאן.
+junction_field_location: מיקום שדות הצומת
+top: למעלה
+bottom: למטה
 hide_field: שדה הסתר
 hide_field_on_detail: הסתר שדה
 show_field_on_detail: הצג שדה
 delete_field: מחק שדה
+fields_and_layout: שדות ופריסה
 field_create_success: 'שדה "{field}" נוצר בהצלחה'
+field_update_success: 'שדה עודכן: "{field}"'
+duplicate_where_to: לאן ברצונך לשכפל שדה זה?
 language: שפה
 language_placeholder: בחר שפה...
+aggregate_function: פונקציית צבירה
+aggregate_precision: דיוק צבירה
+group_aggregation: צבירת קבוצה
+group_precision: דיוק קבוצה
 global: גלובלי
+admins_have_all_permissions: למנהלים יש את כל ההרשאות
 camera: מצלמה
+show_zero: הצג אפס
+create_in_advanced_field_creation_mode: צור שדה במצב מתקדם
+continue_in_advanced_field_creation_mode: המשך במצב יצירת שדה מתקדם
 validation: אימות
 sum: סכום
+sum_distinct: סכום מובחן
 avg: ממוצע
+avg_distinct: ממוצע מובחן
 count: כמות
 count_distinct: ספירה מובחנת
 min: מינימום
 max: מקסימום
+exposure: חשיפה
+shutter: צמצם
+focal_length: אורך מוקד
+schema_setup_key: שם עמודת בסיס הנתונים ומפתח ה-API של שדה זה
 create_field: צור שדה
 creating_new_field: 'שדה חדש ({collection})'
 field_in_collection: '{field} ({collection})'
+reset_page_preferences: איפוס העדפות עמוד
 hidden_field: שדה מוסתר
-clear_hidden_field: נקה שדות
+hidden_on_detail: מוסתר בתצוגת פרטים
+clear_hidden_field: נקה שדה מוסתר
+clear_value_on_save_when_hidden: נקה ערכים בשמירה כשהשדה מוסתר
+readonly_field_label: השבת את השדה ביישום
+required_readonly_field_warning: הפעלת קריאה בלבד וגם חובה על שדה מונעת שמירת פריט אם הערך ריק.
 key: מפתח
+alias: כינוי
+bigInteger: מספר שלם גדול
 boolean: בוליאני
 date: תאריך
 date_range: טווח תאריכים
+translation_key_placeholder: הכנס מפתח...
+datetime: תאריך ושעה
+dateTime: תאריך ושעה
 precision: דיוק
+decimal: עשרוני
+float: נקודה צפה
+integer: מספר שלם
 string: מחרוזת
 text: טקסט
 time: זמן
+timestamp: חותמת זמן
+hash: גיבוב
+geometry:
+  All: גאומטריה (הכול)
+theme_auto: אוטומטי (לפי המערכת)
+theme_light: מצב בהיר
+theme_dark: מצב כהה
+not_available_for_type: לא זמין עבור סוג זה
+create_translations: צור תרגומים
+auto_refresh: רענון אוטומטי
+refresh_interval: מרווח רענון
+no_refresh: אל תרענן
+refresh_interval_seconds: רענן מיד | בכל שנייה | בכל {seconds} שניות
+refresh_interval_minutes: בכל דקה | בכל {minutes} דקות
+auto_generate: יצירה אוטומטית
+this_will_auto_setup_fields_relations: פעולה זו תגדיר אוטומטית את כל השדות והקשרים הנדרשים.
 click_here: לחץ כאן
+to_manually_setup_translations: כדי להגדיר תרגומים באופן ידני.
+manage: ניהול
+click_to_manage_translated_fields: >-
+  אין עדיין שדות מתורגמים. לחץ כאן כדי ליצור אותם. | יש שדה מתורגם אחד. לחץ כאן כדי לנהל אותו. | יש {count} שדות מתורגמים. לחץ כאן כדי לנהל אותם.
+fields_group: קבוצת שדות
+no_collections_found: לא נמצאו אוספים.
+new_data_alert: 'הפריטים הבאים ייווצרו במודל הנתונים שלך:'
+search_collection: חיפוש אוסף...
+search_role: חיפוש תפקיד...
+search_policy: חיפוש מדיניות...
+search_field: חיפוש שדה...
 new_field: 'שדה חדש'
 new_collection: 'אוסף חדש'
+add_m2o_to_collection: 'הוסף M2O אל "{collection}"'
+add_o2m_to_collection: 'הוסף O2M אל "{collection}"'
+add_m2m_to_collection: 'הוסף M2M אל "{collection}"'
+choose_a_type: בחר סוג...
+determined_by_relationship: נקבע לפי הקשר
+add_note: הוסף הערה מועילה למשתמשים...
 add_link: הוסף קישור
+custom_link: קישור מותאם אישית
 default_value: ערך ברירת מחדל
+standard_field: שדה רגיל
 single_file: קובץ בודד
 multiple_files: כמה קובצים
 m2o_relationship: קשר רבים ליחיד
+o2m_relationship: קשר יחיד לרבים
 m2m_relationship: קשר רבים לרבים
+m2a_relationship: קשר רבים לכל
+invalid_item: פריט לא תקין
+require_confirmation: דרוש אישור
 dialog: חלונית
-modal: מודל
+modal: חלון קופץ
 confirmation_dialog: חלונית אישור
+confirmation_description: תיאור אישור
+confirmation_input_fields: שדות קלט לאישור
 next: המשך
 field_name: שם שדה
 translations: תרגומים
@@ -251,30 +485,156 @@ left_to_right: שמאל לימין
 right_to_left: ימין לשמאל
 note: הערה
 enter_a_value: הכנס ערך...
+enter_a_placeholder: הכנס מציין מיקום...
 length: אורך
+soft_length: מגבלה רכה
+precision_scale: דיוק וקנה מידה
 readonly: קריאה בלבד
 unique: ייחודי
 index: אינדקס
+searchable: ניתן לחיפוש
+field_searchable: כלול את השדה בשאילתות חיפוש
 updated_on: עודכן ב-
 updated_by: עודכן על ידי
 primary_key: מפתח ראשי
 foreign_key: מפתח זר
+field_key: מפתח שדה
+finish_setup: סיים הגדרה
 dismiss: דחה
+toggle_raw_editor: הצג/הסתר עורך גולמי
+toggle_variable_input: הצג/הסתר קלט משתנה
+raw_value: ערך גולמי
+copy_raw_value: העתק ערך גולמי
 copy_raw_value_success: הועתק
 copy_raw_value_fail: העתקה נכשלה
+paste_raw_value: הדבק ערך גולמי
 paste_raw_value_success: הודבק
 paste_raw_value_fail: ההדבקה נכשלה
-clear_value: נקה שדות
+view_raw_value: הצג ערך גולמי
+edit_raw_value: ערוך ערך גולמי
+enter_raw_value: הכנס ערך גולמי...
+clear_value: נקה ערך
+clear_changes: נקה שינויים
+clear_items: נקה פריטים
+reset_to_default: אפס לברירת מחדל
+undo_changes: בטל שינויים
 notifications: התראות
+archive_all: העבר הכול לארכיון
+show_all_activity: הצג את כל הפעילות
+page_not_found: העמוד לא נמצא
+page_not_found_body: העמוד שאתה מחפש כנראה אינו קיים.
+confirm_revert: אשר שחזור
+confirm_revert_body: פעולה זו תשחזר את הפריט למצב שנבחר.
+display: תצוגה
+settings_update_success: ההגדרות עודכנו
 title: כותרת
 subtitle: כותרת משנית
+revision_delta_created: נוצר
+revision_delta_created_externally: נוצר חיצונית
+revision_delta_updated: 'עודכן שדה אחד | עודכנו {count} שדות'
 revision_delta_deleted: נמחק
+revision_delta_reverted: שוחזר
+revision_delta_update_message: שדה זה עודכן אך ערכו מוסתר מטעמי אבטחה.
+revision_delta_other: מהדורה
+revision_delta_by: '{date} על ידי {user}'
+differences_count: 'אין הבדלים | הבדל אחד | {count} הבדלים'
+presentation_text_values_cannot_be_reimported: 'משתמש בטקסט תצוגה, לא ניתן לייבא מחדש את הערכים.'
+download_page_as_csv: 'הורד עמוד כ-CSV'
+download_page_as_csv_unsupported: פריסה זו אינה תומכת בהורדת העמוד הנוכחי.
+private_user: משתמש פרטי
+creation_preview: תצוגה מקדימה של יצירה
+revision_preview: תצוגה מקדימה של מהדורה
+updates_made: עדכונים שבוצעו
 leave_comment: השאר תגובה...
 post_comment_success: תגובה פורסמה
 post_comment_updated: התגובה עודכנה
+item_create_success: פריט נוצר | פריטים נוצרו
+item_update_success: פריט עודכן | פריטים עודכנו
+item_delete_success: פריט נמחק | פריטים נמחקו
+this_collection: אוסף זה
+related_collection: אוסף קשור
+related_collections: אוספים קשורים
+translations_collection: אוסף תרגומים
+languages_collection: אוסף שפות
+enable_translations: הפעל תרגומים
+manage_translation_fields: הוסף שדות תרגום
+fields_to_translate: שדות לתרגום
+fields_to_add_to_translations: שדות להוספה לתרגומים
+translations_collection_name: שם אוסף התרגומים
+translations_already_enabled: התרגומים מופעלים
+translations_manage_helper_description: ניתן להוסיף שדות נוספים לתרגום מאוסף זה.
+translations_copy_data_note: השדות מועתקים לאוסף התרגומים. נתונים קיימים אינם מועברים.
+add_fields: הוסף שדות
+show_advanced_options: הצג פרטי קשר
+hide_advanced_options: הסתר פרטי קשר
+translations_field_name_required: כל שמות שדות התרגום הם שדות חובה.
+translations_foreign_key_name_conflict: שמות המפתח הזר של ההורה ושל השפה חייבים להיות שונים.
+translations_duplicate_field_names: שמות שדות התרגום חייבים להיות ייחודיים.
+translation_configuration: תצורת תרגום
+translations_invalid_config_warning: '{count} תצורת תרגום לא ניתנה לפענוח ותישאר לקריאה בלבד | {count} תצורות תרגום לא ניתנו לפענוח ויישארו לקריאה בלבד'
+translations_collection_already_exists: אוסף תרגומים זה כבר קיים ויעשה בו שימוש חוזר
+translations_fields_up_to_date: כל השדות הזכאים כבר קיימים באוסף התרגומים.
+translations_preview_collections: אוספים
+translations_preview_fields: שדות
+translations_preview_relations: קשרים
+ungrouped: ללא קבוצה
+translations_enable_helper_description: תרגם תוכן למספר שפות.
+import_data_input_placeholder: CSV או JSON...
+import_data_button: התחל ייבוא
+import_background: ייבוא ברקע
+import_data_indeterminate: מייבא נתונים...
+import_data_success: הנתונים יובאו בהצלחה מתוך {filename}
+import_upload_success: '{filename} הועלה בהצלחה. מייבא נתונים ברקע.'
+import_data_errors: שגיאת ייבוא
+import_data_error: מבנה הנתונים של הקובץ אינו תואם לאוסף.
+import_data_validation_errors_notice: 'בשורות הבאות יש ערכים לא תקינים:'
+import_data_error_row: 'שורה {rows}{field}:'
+snapshot:
+  export: ייצוא סכמה
+  download: הורדת תמונת מצב (JSON)
+  info: ייצוא סכמה בלבד לשיתוף או לניפוי באגים
 label_import: ייבוא
+label_export: ייצוא
+import_export: ייבוא / ייצוא
+format: פורמט
+last_page: עמוד אחרון
+last_access: גישה אחרונה
+fill_template: מילוי בערך מהתבנית
+a_unique_table_name: שם טבלה ייחודי...
+a_unique_column_name: שם עמודה ייחודי...
+enable_custom_values: הפעלת ערכים מותאמים אישית
+submit: שליחה
+move_to_folder: העברה לתיקייה
+move: העברה
+system: מערכת
+add_field_related: הוספת שדה לאוסף המקושר
+interface_label: ממשק
+display_label: תצוגה
+x_axis_display_field: שדה תצוגה לציר X
+today: היום
+yesterday: אתמול
+delete_comment: מחק תגובה
+delete_share: מחק שיתוף
 functions:
+  year: שנה
+  month: חודש
+  week: שבוע
+  day: יום
+  weekday: יום בשבוע
+  hour: שעה
+  minute: דקה
+  second: שנייה
   count: כמות
+minutes: דקות
+hours: שעות
+month: חודש
+year: שנה
+select_all: בחר הכול
+permissionsLevel:
+  all: גישה מלאה ל{action}
+  partial: גישה חלקית ל{action}
+  custom: גישה חלקית ל{action}
+  none: אין גישה ל{action}
 months:
   january: ינואר
   february: פברואר
@@ -289,12 +649,21 @@ months:
   november: נובמבר
   december: דצמבר
 drag_mode: מצב גרירה
+move_tool: כלי הזזה
+crop_tool: כלי חיתוך
+focal_point_tool: כלי נקודת מוקד
+cancel_crop: ביטול חיתוך
+cancel_selection: ביטול בחירה
 original: מקורי
 import_label: ייבוא
 file_details: פרטי קובץ
 copy_id: העתק ID
+copy_id_success: ה-ID הועתק
+copy_id_fail: ה-ID לא הועתק
+dimensions: מידות
 size: גודל
 created: נוצר
+uploaded: הועלה
 modified: נערך
 owner: בעלים
 edited_by: נערך על ידי
@@ -304,19 +673,62 @@ zoom: זום
 download: הורדה
 open: פתיחה
 open_in_new_window: פתח בחלון חדש
-open_folder: פתח תקייה "{folder}"
+open_folder: פתח תיקייה "{folder}"
+foreground_color: צבע חזית
 background_color: צבע רקע
 upload_from_device: העלאה ממכשיר
 choose_from_library: בחר קובץ מספריית הקבצים
 import_from_url: יבא קובץ מקישור URL
+replace_from_device: החלף קובץ מהמכשיר
+replace_from_library: החלף קובץ מהספרייה
+replace_from_url: החלף קובץ מ-URL
 no_image_selected: לא נבחרה תמונה
+no_file_selected: לא נבחר קובץ
+download_file: הורד קובץ
+open_file_in_tab: פתח קובץ בלשונית חדשה
+start_export: התחל ייצוא
+not_available_for_local_downloads: לא זמין להורדות מקומיות
+exporting_all_items_in_collection: מייצא את כל הפריטים ({total}) שבתוך {collection}.
+exporting_limited_items_in_collection: '{count} מתוך {total} פריטים שבתוך {collection} ייוצאו.'
+exporting_no_items_to_export: אין פריטים לייצוא. התאם את הגדרות הייצוא ו/או הוסף פריטים לאוסף.
+exporting_download_hint: לאחר שקובץ ה-{format} ייווצר, הוא יורד למכשיר שלך.
+exporting_library_hint: לאחר שקובץ ה-{format} ייווצר, הוא יישמר בספריית הקבצים.
+exporting_library_hint_forced: ייצוא זה חייב להתבצע באצוות. לאחר השלמתו, קובץ ה-{format} יישמר בספריית הקבצים.
+collection_key: מפתח אוסף
+name: שם
+primary_key_field: שדה מפתח ראשי
+type: סוג
+creating_new_collection: יוצר אוסף חדש
 created_by: נוצר על ידי
 created_on: נוצר בתאריך
+creating_collection_info: תן שם לאוסף והגדר את שדה ה"מפתח" הייחודי שלו...
+creating_collection_system: הפעל ושנה את שמם של כל אחד מהשדות האופציונליים האלה.
+auto_increment_integer: מספר שלם עם הגדלה אוטומטית
+auto_increment_big_integer: מספר שלם גדול עם הגדלה אוטומטית
+generated_uuid: UUID שנוצר
+manual_string: מחרוזת שהוזנה ידנית
 save_and_create_new: שמור וצור חדש
+save_and_stay: שמור והישאר
+save_and_quit: שמור וצא
+publish_and_quit: פרסם וצא
+publish_without_review: פרסם ללא בדיקה
+publish_anyway: פרסם בכל זאת
+save_and_return_to_published: שמור וחזור לגרסה שפורסמה
+save_as_copy: שמור כעותק
+save_as_new_file: שמור כקובץ חדש
 add_existing: הוסף קיים
+creating_items: יוצר פריטים
 enable_create_button: אפשר כפתור יצירה
+selecting_items: בוחר פריטים
+enable_select_button: אפשר כפתור בחירה
+allow_duplicates: אפשר כפילויות
+comments: תגובות
+no_comments: אין תגובות עדיין
+expand: הרחב
+expand_all: הרחב הכול
+expand_none: כווץ הכול
 collapse: צמצם
-collapse_all: צמצם הכל
+collapse_all: צמצם הכול
 select_item: בחר פריט
 no_items: אין פריטים
 search_items: חפש פריטים...
@@ -324,54 +736,875 @@ search_extensions: חפש הרחבות...
 disabled: מושבת
 information: מידע
 report_bug: דווח על תקלה
+request_feature: בקש תכונה
+request_body: גוף הבקשה
+interface_not_found: 'הממשק "{interface}" לא נמצא.'
+operation_not_found: 'הפעולה "{operation}" לא נמצאה.'
+reset_interface: אפס ממשק
+display_not_found: 'התצוגה "{display}" לא נמצאה.'
+reset_display: אפס תצוגה
+list-m2a: בונה (M2A)
 item_count: 'אין פריטים | פריט אחד | {count} פריטים'
 filtered_item_count: 'אין פריטים מסוננים | פריט אחד מסונן | {count} פריטים מסוננים'
-no_items_copy: אין פריטים במאגר עדיין.
+no_items_copy: אין פריטים באוסף עדיין.
+no_versions: 'אין גרסת "{version}"'
+no_versions_copy: 'אין עדיין גרסאות "{version}" באוסף זה.'
 file_count: 'אין קבצים | קובץ אחד | {count} קבצים'
+no_files_copy: אין כאן קבצים.
 user_count: 'אין משתמשים | משתמש אחד | {count} משתמשים'
 no_users_copy: אין משתמשים בתפקיד זה.
+no_active_users: אין משתמשים פעילים
+no_suspended_users: אין משתמשים מושעים
+no_invited_users: אין משתמשים מוזמנים
+no_status_users_copy: 'אין משתמשים בסטטוס {status}.'
 no_notifications: אין התראות
 no_notifications_copy: אתם מעודכנים לגמרי!
 activity_log: יומן פעילות
 all_items: כל הפריטים
 any: כל
 csv: CSV
-no_collections: אין מאגרים
-create_collection: צור מאגר
+no_collections: אין אוספים
+create_collection: צור אוסף
+no_collections_copy_admin: אין לך עדיין אוספים. לחץ על הכפתור שלמטה כדי להתחיל.
+no_collections_copy: אין לך עדיין אוספים. אנא פנה למנהל המערכת.
+relationship_not_setup: הקשר אינו מוגדר כראוי או שאין לך הרשאה לגשת אליו
+no_singleton_relations: קשרים ל-Singletons אינם נתמכים
+display_template_not_setup: אפשרות תבנית התצוגה מוגדרת בצורה שגויה
+collection_field_not_setup: אפשרות שדה האוסף מוגדרת בצורה שגויה
+select_a_collection: בחירת אוסף
 select_a_field: בחירת שדה
 active: פעיל
 move_to: העבר אל...
 copy: העתק
 copy_to: העתק אל...
+no_other_dashboards_copy: אין לך עדיין מרכזי בקרה אחרים.
 inactive: לא פעיל
 users: משתמשים
 roles: תפקידים
 activity: פעילות
+activity_item: פריט פעילות
 action: פעולה
 ip_address: '‏כתובת IP'
+user_agent: סוכן משתמש
+origin: מקור
+decimals: ספרות עשרוניות
+value_decimals: ספרות עשרוניות של הערך
+min_value: ערך מינימלי
+max_value: ערך מקסימלי
+automatic: אוטומטי
+field_width: רוחב שדה
+add_filter: הוספת מסנן
+upper_limit: גבול עליון...
+lower_limit: גבול תחתון...
+user_directory: ספריית משתמשים
+documentation: תיעוד
+sidebar: סרגל צד
 duration: משך זמן
-collection_created: המאגר נוצר
+charset: ערכת תווים
+second: שנייה
+file_moved: הקובץ הועבר
+collection_created: האוסף נוצר
+modified_on: שונה בתאריך
+card_size: גודל כרטיס
+sort_field: שדה מיון
+add_sort_field: הוספת שדה מיון
+add_to_ai_context: הוספה להקשר ה-AI
+sort: מיון
 status: סטטוס
+remove: הסר
+toggle_manual_sorting: החלפת מצב מיון ידני
+bookmark_doesnt_exist: הסימנייה לא קיימת
+bookmark_doesnt_exist_copy: הסימנייה שניסית לפתוח לא נמצאה.
+bookmark_doesnt_exist_cta: חזרה לאוסף
 select_an_item: בחר פריט...
 edit: עריכה
 edit_item: עריכת פריט
 enabled: מופעל
+partially_enabled: מופעל חלקית
+enable_all: הפעל הכול
+disable_all: השבת הכול
+enabled_dev_tooltip: הרחבות אפליקציה מופעלות תמיד במצב פיתוח
+disable_tfa: השבתת 2FA
+admin_disable_tfa_text: האם אתה בטוח שברצונך להשבית את 2FA עבור משתמש זה?
+tfa_setup: הגדרת 2FA
+tfa_setup_description: הגדר אימות דו-שלבי כדי להגן על החשבון שלך
+tfa_scan_code: סרוק את הקוד באפליקציית האימות כדי לסיים את הגדרת 2FA
+enter_otp_to_disable_tfa: הזן את ה-OTP כדי להשבית את 2FA
 create_account: צור חשבון
 account_created_successfully: חשבון נוצר בהצלחה
+auto_fill: מילוי אוטומטי
+corresponding_field: שדה תואם
 errors:
+  COLLECTION_NOT_FOUND: "האוסף לא קיים"
+  CONTAINS_NULL_VALUES: השדה מכיל ערכי null
+  CONTENT_TOO_LARGE: הפריט/הקובץ שנשלח גדול מדי
+  FAILED_VALIDATION: האימות נכשל
+  FIELD_NOT_FOUND: השדה לא נמצא
+  FORBIDDEN: אסור
+  GRAPHQL_VALIDATION: אימות GraphQL
+  ILLEGAL_ASSET_TRANSFORMATION: מקור התמונה גדול מדי לתצוגה מקדימה
+  INTERNAL_SERVER_ERROR: שגיאה בלתי צפויה
+  INVALID_CONFIG: תצורה לא תקינה
+  INVALID_CREDENTIALS: שם משתמש או סיסמה שגויים
+  INVALID_FOREIGN_KEY: מפתח זר לא תקין
+  INVALID_INVITE: הזמנה זו כבר אינה תקפה
+  INVALID_IP: כתובת IP לא מורשית
+  INVALID_OTP: סיסמה חד-פעמית שגויה
+  INVALID_PAYLOAD: מטען לא תקין
+  INVALID_PROVIDER: המשתמש שייך לספק אימות אחר
+  INVALID_PROVIDER_CONFIG: תצורת ספק לא תקינה
+  INVALID_QUERY: שאילתה לא תקינה
+  INVALID_TOKEN: אסימון לא תקין
+  INVALID_USER: אימות המשתמש נכשל
+  ITEM_LIMIT_REACHED: הושגה מגבלת הפריטים
+  ITEM_NOT_FOUND: הפריט לא נמצא
+  LIMIT_EXCEEDED: 'חריגה מהמגבלה'
+  METHOD_NOT_ALLOWED: השיטה אינה מותרת
   NOT_NULL_VIOLATION: הערך צריך להיות לא null
-create_bookmark: צור סימניה
+  PROJECT_LOCKED: הפרויקט ננעל. צור קשר עם מנהל המערכת שלך כדי לפתור את הבעיה.
+  RANGE_NOT_SATISFIABLE: טווח לא תקין
+  RECORD_NOT_UNIQUE: זוהה ערך כפול
+  REQUESTS_EXCEEDED: הושגה מגבלת הבקשות
+  RESOURCE_RESTRICTED: המשאב מוגבל
+  ROUTE_NOT_FOUND: לא נמצא
+  SERVICE_UNAVAILABLE: השירות אינו זמין
+  TOKEN_EXPIRED: תוקף האסימון פג
+  UNEXPECTED_RESPONSE: תגובה בלתי צפויה
+  UNKNOWN: שגיאה בלתי צפויה
+  UNPROCESSABLE_CONTENT: תוכן שלא ניתן לעיבוד
+  UNSUPPORTED_MEDIA_TYPE: סוג מדיה שאינו נתמך
+  USER_SUSPENDED: המשתמש הושעה
+  VALUE_OUT_OF_RANGE: הערך מחוץ לטווח
+  VALUE_TOO_LONG: הערך ארוך מדי
+security: אבטחה
+value_securely_stored: הערך מאוחסן באופן מאובטח
+bookmark_name: שם הסימנייה...
+create_bookmark: צור סימנייה
+edit_bookmark: עריכת סימנייה
+edit_personal_bookmark: עריכת סימנייה אישית
+edit_role_bookmark: עריכת סימניית תפקיד
+edit_global_bookmark: עריכת סימנייה גלובלית
+cannot_edit_personal_bookmarks: לא ניתן לערוך סימניות אישיות
+cannot_edit_role_bookmarks: לא ניתן לערוך סימניות תפקיד
+cannot_edit_global_bookmarks: לא ניתן לערוך סימניות גלובליות
+bookmarks: סימניות
+presets: הגדרות מראש
+unexpected_error: שגיאה בלתי צפויה
+unexpected_error_copy: אירעה שגיאה בלתי צפויה. נסה שוב.
+copy_details: העתקת פרטים
+no_app_access: אין גישה לאפליקציה
+no_app_access_copy: משתמש זה אינו רשאי להשתמש באפליקציית הניהול.
+password_reset_sent: אם יש לך חשבון והוא תומך באיפוס סיסמה, שלחנו קישור מאובטח לכתובת הדוא"ל שלך
+password_reset_successful: הסיסמה אופסה בהצלחה
+back: חזרה
+filter: סינון
+edit_image: עריכת תמונה
+editing_image: עריכת התמונה
+square: ריבוע
+free: חופשי
+flip_horizontal: היפוך אופקי
+flip_vertical: היפוך אנכי
+aspect_ratio: יחס גובה-רוחב
+rotate: סיבוב
+all_users: כל המשתמשים
+active_users: משתמשים פעילים
+suspended_users: משתמשים מושעים
+invited_users: משתמשים מוזמנים
+delete_collection: מחיקת אוסף
+activate_collection: הפעלת אוסף
+deactivate_collection: השבתת אוסף
+deactivated_collections: אוספים מושבתים
+update_collection_success: האוסף עודכן
+delete_collection_success: האוסף נמחק
+make_collection_visible: הפיכת האוסף לגלוי
+make_collection_hidden: הפיכת האוסף למוסתר
+make_folder_visible: הפיכת התיקייה לגלויה
+make_folder_hidden: הפיכת התיקייה למוסתרת
+goto_collection_content: הצגת תוכן
+count_of_total_items: '{count} מתוך {total} פריטים'
+start_end_of_count_items: '{start}-{end} מתוך {count} פריטים'
+start_end_of_count_filtered_items: '{start}-{end} מתוך {count} פריטים מסוננים'
+delete_collection_are_you_sure: >-
+  האם אתה בטוח שברצונך למחוק את האוסף "{collection}"? פעולה זו תמחק את האוסף ואת כל הפריטים שבו. פעולה זו היא קבועה.
+delete_folder_are_you_sure: האם אתה בטוח שברצונך למחוק את התיקייה "{folder}"? תיקיות ואוספים מקוננים יועברו לרמה העליונה ביותר.
+delete_collection_peer_dependencies: גם השדות הבאים יימחקו, מכיוון שהם קשורים לאוסף הנוכחי.
+collections_shown: אוספים מוצגים
+visible_collections: אוספים גלויים
+hidden_collections: אוספים מוסתרים
+show_hidden_collections: הצגת אוספים מוסתרים
+hide_hidden_collections: הסתרת אוספים מוסתרים
+show_header: הצגת כותרת
+unmanaged_collections: אוספים לא מוגדרים
+system_collections: אוספי מערכת
+placeholder: מציין מיקום
+icon_left: סמל משמאל
+icon_right: סמל מימין
+count_other_revisions: '{count} מהדורות אחרות'
+font: גופן
+divider: מפריד
+color: צבע
+circle: מעגל
+empty_item: עריכת פריט
+log_in_with: 'כניסה באמצעות {provider}'
+conditional_styles: סגנונות מותנים
+advanced_settings: הגדרות מתקדמות
+advanced_filter: מסנן מתקדם
+delete_advanced_filter: מחיקת מסנן
+change_advanced_filter_operator: שינוי אופרטור
+advanced: מתקדם
+operators:
+  eq: שווה ל
+  neq: לא שווה ל
+  lt: קטן מ
+  gt: גדול מ
+  lte: קטן או שווה ל
+  gte: גדול או שווה ל
+  in: הוא אחד מ
+  nin: אינו אחד מ
+  null: הוא null
+  nnull: אינו null
+  contains: מכיל
+  ncontains: אינו מכיל
+  icontains: מכיל (לא רגיש לאותיות)
+  starts_with: מתחיל ב
+  nstarts_with: לא מתחיל ב
+  istarts_with: מתחיל ב (לא תלוי רישיות)
+  nistarts_with: לא מתחיל ב (לא תלוי רישיות)
+  ends_with: מסתיים ב
+  nends_with: לא מסתיים ב
+  iends_with: מסתיים ב (לא תלוי רישיות)
+  niends_with: לא מסתיים ב (לא תלוי רישיות)
+  between: נמצא בין
+  nbetween: לא נמצא בין
+  empty: ריק
+  nempty: לא ריק
+  all: מכיל את כל המפתחות האלה
+  has: מכיל חלק מהמפתחות האלה
+  intersects: חותך
+  nintersects: לא חותך
+  intersects_bbox: חותך תיבה תוחמת
+  nintersects_bbox: לא חותך תיבה תוחמת
+  regex: תואם RegExp
+custom_validation_message: הודעת אימות מותאמת אישית
+loading: טוען...
+extension_readme_missing: להרחבה זו אין קובץ README.
+drop_to_upload: גרור כדי להעלות
+item: פריט
+items: פריטים
+upload_file: העלה קובץ
+upload_file_indeterminate: מעלה קובץ...
+upload_file_success: הקובץ הועלה
+upload_files_indeterminate: 'מעלה קבצים {done}/{total}'
+upload_files_success: '{count} קבצים הועלו'
+upload_pending: ההעלאה ממתינה
+drag_file_here: גרור ושחרר קובץ כאן
+click_to_browse: לחץ כדי לעיין
+interface_options: אפשרויות ממשק
+display_options: אפשרויות תצוגה
+layout_options: אפשרויות פריסה
+rows: שורות
+columns: עמודות
+collection_setup: הגדרת אוסף
+optional_system_fields: שדות אופציונליים
+value_unique: הערך חייב להיות ייחודי
+value_index: השדה מאונדקס
+all_activity: כל הפעילות
 create_item: צור פריט
+display_template: תבנית תצוגה
+language_display_template: תבנית תצוגת שפה
+translations_display_template: תבנית תצוגת תרגומים
+n_items_selected: 'לא נבחרו פריטים | נבחר פריט אחד | נבחרו {n} פריטים'
+per_page: בכל עמוד
+all_files: כל הקבצים
+my_files: הקבצים שלי
+recent_files: קבצים אחרונים
 create_folder: צור תיקייה
+edit_folder: ערוך תיקייה
+folder_name: שם תיקייה...
+folder_key: מפתח תיקייה...
+add_file: הוסף קובץ
+replace_file: החלף קובץ
+no_results: אין תוצאות
+no_results_copy: התאם או נקה את מסנני החיפוש כדי לראות תוצאות.
+no_visible_fields: טופס ריק
+no_visible_fields_copy: לטופס הזה אין שדות גלויים.
+clear_filters: נקה מסננים
+saves_automatically: נשמר אוטומטית
 role: תפקיד
+edit_role: ערוך תפקיד
+rule: כלל
+user: משתמש
+no_presets: אין הגדרות מראש
+no_presets_copy: עדיין לא נשמרו הגדרות מראש או סימניות.
+no_presets_cta: הוסף הגדרה מראש
+presets_only: הגדרות מראש בלבד
 create: צור
+on_create: ביצירה
+on_update: בעדכון
+read: קריאה
+update: עדכן
+delete: מחק
+select_fields: בחר שדות
+format_text: עצב טקסט
+format_value: עצב ערך
+abbreviate_value: קצר ערך
+operator: אופרטור
+bold: מודגש
+toggle: החלף מצב
+icon_on: סמל מופעל
+icon_off: סמל מושבת
+label: תווית
+flows: תהליכים
+flow: תהליך
+select_a_flow: בחר תהליך
+run_flow_confirm: האם אתה בטוח שברצונך להריץ את התהליך הזה?
+run_flow_anyway: הרץ את התהליך בכל זאת
+run_flow_on_current_collection: הרץ תהליך על האוסף הנוכחי
+run_flow_on_current: הרץ תהליך על הפריט הנוכחי
+run_flow_on_current_edited_confirm: ייתכן שהפריט הזה יעודכן על ידי התהליך הזה, האם אתה בטוח שברצונך להריץ אותו?
+run_flow_on_selected: בחר תחילה פריט אחד או יותר | הרץ תהליך על פריט נבחר אחד | הרץ תהליך על {n} פריטים נבחרים
+run_flow: הרץ תהליך
+trigger_flow_success: התהליך "{flow}" הופעל בהצלחה
+field_name_placeholder: הזן שם שדה...
+field_key_placeholder: הזן מפתח שדה...
+trigger: טריגר
+trigger_options: אפשרויות טריגר
+view_trigger: הצג טריגר
+create_trigger: צור טריגר
+trigger_setup: הגדרת טריגר
+change_trigger: שנה טריגר
+flow_delete_confirm: האם אתה בטוח שברצונך למחוק את התהליך "{flow}"? לא ניתן לבטל פעולה זו.
+set_flow_active: הגדר תהליך כפעיל
+set_flow_inactive: הגדר תהליך כלא פעיל
+edit_flow: ערוך תהליך
+delete_flow: מחק תהליך
+no_other_flows_copy: עדיין אין לך תהליכים אחרים.
+no_flows: אין תהליכים
+no_flows_copy: עדיין אין לך תהליכים.
+create_flow: צור תהליך
+creating_new_flow: יוצר תהליך חדש
+updating_flow: מעדכן תהליך
+flow_setup: הגדרת תהליך
+flow_name: שם
+flow_tracking: מעקב פעילות ויומנים
+flow_tracking_all: עקוב אחר פעילות ויומנים
+flow_tracking_activity: עקוב אחר פעילות בלבד
+flow_tracking_null: אל תעקוב אחר דבר
+start_flow: התחל תהליך
+stop_flow: עצור תהליך
+create_operation: צור פעולה
+edit_operation: ערוך פעולה
+code: קוד
+operation_options: אפשרויות פעולה
+operation_name: שם הפעולה...
+operation_key: מזהה לצורך הפניה...
+operation_key_unique_error: מפתחות הפעולה חייבים להיות ייחודיים בתוך תהליך
+operation_handle_resolve: 'פתרון: לחץ כדי להוסיף או גרור כדי לנתב מחדש'
+operation_handle_reject: 'דחייה: לחץ כדי להוסיף או גרור כדי לנתב מחדש'
+visual_editor: עורך חזותי
+toggle_navigation: החלף מצב ניווט
+toggle_sidebar: החלף מצב סרגל צד
+toggle_editable_elements: החלף מצב אלמנטים הניתנים לעריכה
+editing_draft_version: עורך בגרסת טיוטה
+no_url: לא סופק URL
+no_url_copy: יש להוסיף URL בהגדרות.
+invalid_url: URL לא תקין
+invalid_url_copy: ה-URL שצוין אינו תואם לאף URL שצוין בהגדרות.
+insights: תובנות
+overview: סקירה כללית
+deployment:
+  deployment: פריסה
+  overview:
+    overview: סקירה כללית
+    providers: ספקים
+    configure: הגדר
+    provider_description: הפעל פריסות {provider} מתוך Directus
+    projects: '{count} פרויקט|{count} פרויקטים'
+  provider:
+    setup_title: 'הגדרת {provider}'
+    credentials:
+      notice: ניתן למצוא מידע זה בהגדרות חשבון {provider} שלך.
+      link: פתח את הגדרות {provider}
+    token:
+      label: אסימון גישה אישי
+      placeholder: הזן את אסימון הגישה שלך...
+      encrypted_notice: אסימון זה יוצפן ויאוחסן באופן מאובטח בתצורת Directus שלך
+    settings:
+      settings: 'תצורת {provider}'
+      edit_configuration: ערוך תצורה
+      delete: מחק תצורה
+      delete_confirm: פעולה זו היא קבועה ולא ניתן לבטל אותה. האם אתה בטוח שברצונך להמשיך?
+      remove_projects_confirm: הסרת הפרויקט(ים) ({projects}) תמחק לצמיתות את כל היסטוריית הפריסה שלהם מ-Directus. לא ניתן לבטל פעולה זו. האם אתה בטוח שברצונך להמשיך?
+    vercel:
+      settings_warning: שינוי האישורים או מזהה הצוות עשוי להשפיע על הפרויקטים שבחרת אם הם כבר אינם נגישים עם התצורה החדשה.
+      account_type:
+        label: סוג חשבון
+        hint: בחר צוות כדי להשתמש במזהה צוות, או חשבון אישי כדי להשתמש בשם המשתמש שלך ב-Vercel עבור קישורי פריסה.
+        team: צוות
+        personal: חשבון אישי
+      team_id:
+        label: מזהה צוות
+        hint: נדרש עבור חשבונות צוות. ניתן למצוא אותו בהגדרות הצוות שלך ב-Vercel.
+      username:
+        label: שם משתמש
+        hint: שם המשתמש שלך ב-Vercel עבור חשבונות אישיים. ניתן למצוא אותו ב-URL של חשבון Vercel שלך (vercel.com/username).
+    netlify:
+      settings_warning: שינוי האישורים או ה-slug של החשבון עשוי להשפיע על הפרויקטים שבחרת אם הם כבר אינם נגישים עם התצורה החדשה.
+      account_slug:
+        label: Slug של חשבון
+        hint: אופציונלי. סנן אתרים לחשבון מסוים. השאר ריק כדי להציג את כל האתרים הנגישים.
+    projects: פרויקטים
+    select_projects: בחר פרויקטים
+    select_projects_hint: בחר אילו פרויקטים ברצונך לנהל מ-Directus
+    project:
+      not_deployable: הפרויקט אינו ניתן לפריסה על ידי Directus. אנא עיין בתיעוד למידע נוסף.
+    runs:
+      runs: הרצות פריסה
+      id: מזהה פריסה
+      started: התחיל
+      author: מחבר
+      refresh: רענן
+      deploy_preview: פרוס תצוגה מקדימה
+      empty: אין הרצות פריסה
+      empty_copy: לפרויקט הזה אין עדיין היסטוריית פריסה.
+      external_user: משתמש חיצוני
+    run:
+      title: '{project}: פרטי פריסה'
+      id: מזהה פריסה
+      currently_deploying: כעת בפריסה...
+      stop: עצור פריסה
+      cancel_confirm: פעולה זו היא קבועה ולא ניתן לבטל אותה. האם אתה בטוח שברצונך להמשיך?
+      log_all: כל רמות היומן
+      search_logs: חפש ביומנים...
+      no_logs: אין יומנים זמינים
+      download_logs: הורד יומנים
+      open_deployment: בקר
+      open_in_provider: פתח ב-{provider}
+  no_providers: אין ספקי פריסה
+  no_providers_copy: יש להגדיר ספק פריסה בהגדרות כדי להתחיל.
+  no_providers_copy_nonadmin: אין ספקי פריסה זמינים עבור החשבון שלך. יש לפנות למנהל מערכת.
+  select_provider: בחירת ספק
+  select_provider_copy: יש לבחור ספק פריסה מסרגל הצד כדי להציג את הפרויקטים שלך.
+  no_projects: אין פרויקטים
+  no_projects_copy: לא נבחרו פרויקטים עבור ספק זה.
+  no_runs: אין הרצות פריסה
+  no_runs_copy: לפרויקט זה אין עדיין היסטוריית פריסה.
+  deploy: פרוס
+  target: יעד
+  target_value:
+    production: ייצור
+    preview: תצוגה מקדימה
+  runs_status:
+    ready: מוכן
+    building: בבנייה
+    error: נכשל
+    canceled: בוטל
+  dashboard:
+    projects: פרויקטים ({count})
+    deployed: נפרס
+    total_projects: 'סך הכול פרויקט: {count} | סך הכול פרויקטים: {count}'
+    active_deployments: 'פריסה פעילה: {count} | פריסות פעילות: {count}'
+    failed_builds: 'בנייה שנכשלה: {count} | בניות שנכשלו: {count}'
+    successful_builds: 'בנייה מוצלחת: {count} | בניות מוצלחות: {count}'
+    total_deployments: 'פריסה: {count} | פריסות: {count}'
+    average_build_time: 'זמן בנייה ממוצע: {value}'
+    success_rate: 'שיעור הצלחה: {value}%'
+  range:
+    1d: 24 השעות האחרונות
+    7d: 7 הימים האחרונים
+    30d: 30 הימים האחרונים
+dashboard: מרכז בקרה
+panel: לוח
+panel_options: אפשרויות לוח
+panel_header: כותרת הלוח
+panel_name_placeholder: שם ללוח זה...
+panel_note_placeholder: פרטים אופציונליים על לוח זה...
+panel_delete_confirm: למחוק את הלוח הזה? לא ניתן לבטל פעולה זו.
+list_panel_allow_edit: אפשר עריכה מוטמעת
+dashboard_delete_confirm: למחוק את מרכז הבקרה הזה? לא ניתן לבטל פעולה זו.
+edit_dashboard: ערוך מרכז בקרה
+delete_dashboard: מחק מרכז בקרה
+visible: גלוי
+prefix_placeholder: טקסט לפני הערך...
+suffix_placeholder: טקסט אחרי הערך...
+decimals_placeholder: מספר ספרות עשרוניות...
+no_dashboards: אין מרכזי בקרה
+no_dashboards_copy: אין לך עדיין מרכזי בקרה.
+create_dashboard: צור מרכז בקרה
+dashboard_name: שם מרכז הבקרה
+no_data: אין נתונים
+no_data_in_flow: לא הופקו ולא נצפו נתונים בתהליך זה
+accountability: אחריות
+payload: מטען
+details: פרטים
+resume_streaming_logs: המשך הזרמת יומנים
+pause_streaming_logs: השהה הזרמת יומנים
+logs_session_resumed: הפעלת היומנים חודשה...
+logs_session_paused: הפעלת היומנים הושהתה...
+logs_stream_disconnected: זרם היומנים התנתק...
+log_detail_filter_paths: 'סינון נתיבים (לדוגמה: req.method, res.statusCode)'
+logs_beginning: זוהי תחילת הפעלת היומנים שלך...
+logs_waiting: 'ממתין ליומנים נוספים...'
+logs_unread_count: '{count} לא נקראו'
+clear_logs: נקה יומנים
+search_logs: חפש ביומנים...
+all_instances: כל המופעים
+instance_count: 'אין מופעים | מופע אחד | {count} מופעים'
+all_log_levels: כל רמות היומן
+log_level_count: 'אין רמת יומן | רמת יומן אחת | {count} רמות יומן'
+soft_wrap_lines: גלישת שורות רכה
+full_screen: מסך מלא
+full_text_search: חיפוש טקסט מלא
+edit_panels: ערוך לוחות
+center_align: יישור למרכז
+left_align: יישור לשמאל
+right_align: יישור לימין
+fit_to_screen: התאם למסך
+image_url: כתובת URL של תמונה
+alt_text: טקסט חלופי
+media: מדיה
+quality: איכות
 width: רוחב
 height: גובה
+transformation_preset_key: מפתח הגדרה מראש של טרנספורמציה
+source: מקור
+url_placeholder: הזן כתובת URL...
+display_text: טקסט לתצוגה
+display_text_placeholder: הזן טקסט לתצוגה...
+interface_group_text_and_numbers: טקסט ומספרים
+interface_group_selection: בחירה
+interface_group_relational: יחסי
+interface_group_presentation: מצגת
+interface_group_groups: קבוצות
+interface_group_other: אחר
+tooltip: תיאור קצר
+tooltip_placeholder: הזן תיאור קצר...
+unlimited: ללא הגבלה
+open_link_in: פתח קישור ב
+new_tab: כרטיסייה חדשה
+save_image: שמור תמונה
+save_media: שמור מדיה
 wysiwyg_options:
+  aligncenter: יישור למרכז
+  alignjustify: יישור לשני הצדדים
+  alignleft: יישור לשמאל
+  alignnone: ללא יישור
+  alignright: יישור לימין
+  forecolor: צבע חזית
   backcolor: צבע רקע
+  bold: מודגש
+  italic: נטוי
+  underline: קו תחתון
+  strikethrough: קו חוצה
+  subscript: כתב תחתי
+  superscript: כתב עילי
+  codeblock: קוד
+  blockquote: ציטוט
+  bullist: רשימת תבליטים
+  numlist: רשימה ממוספרת
+  hr: קו אופקי
+  link: הוסף/ערוך קישור
+  unlink: הסר קישור
+  media: הוסף/ערוך מדיה
+  image: הוסף/ערוך תמונה
+  copy: העתק
+  cut: גזור
+  paste: הדבק
+  heading: כותרת
+  h1: כותרת 1
+  h2: כותרת 2
+  h3: כותרת 3
+  h4: כותרת 4
+  h5: כותרת 5
+  h6: כותרת 6
+  pre: מעוצב מראש
+  fontselect: בחר גופן
+  fontsizeselect: בחר גודל גופן
+  indent: הגדל כניסה
+  outdent: הקטן כניסה
+  undo: בטל
+  redo: בצע שוב
+  remove: הסר
+  removeformat: הסר עיצוב
+  selectall: בחר הכול
+  table: טבלה
+  visualaid: הצג רכיבים בלתי נראים
+  source_code: ערוך קוד מקור
+  fullscreen: מסך מלא
+  directionality: כיווניות
+  lazy_loading: טעינה עצלה של תמונה
+  lazy_loading_label: הפעל טעינה עצלה
+dropdown: תפריט נפתח
+choices: אפשרויות
+choices_option_configured_incorrectly: האפשרויות הוגדרו בצורה שגויה
+deselect: בטל בחירה
+deselect_all: בטל בחירת הכול
+theme: ערכת נושא
+select_a_theme: בחר ערכת נושא
+default_sync_with_project: ברירת מחדל (סנכרון עם הפרויקט)
+appearance_auto: אוטומטי (סנכרון עם המערכת)
+appearance_light: בהיר
+appearance_dark: כהה
+other: אחר...
+adding_user: מוסיף משתמש
+more_users: לחץ כדי להציג עוד
+unknown_user: משתמש לא ידוע
+unknown_version: גרסה לא ידועה
+unknown_revision: מהדורה לא ידועה
+creating_in: 'יצירת פריט ב{collection}'
+editing_in: 'עריכת פריט ב{collection}'
+viewing_in: 'הצגת פריט ב{collection}'
+creating_unit: 'יצירת {unit}'
+editing_unit: 'עריכת {unit}'
+editing_in_batch: 'עריכה אצווה של {count} פריטים'
+no_options_available: אין אפשרויות זמינות
+settings_data_model: מודל נתונים
+settings_roles: תפקידי משתמשים
+settings_permissions: מדיניות גישה
+settings_project: הגדרות
+settings_license: רישיון
+licensing:
+  unlicensed: ללא רישיון
+  current_plan: התוכנית הנוכחית
+  expires_on: 'פג תוקף ב-{date}'
+  renews_on: 'מתחדש ב-{date}'
+  add: הוסף רישיון
+  manage: נהל רישיון
+  upgrade_plan: שדרג תוכנית
+  included: כלול
+  not_included: לא כלול
+  unlimited: ללא הגבלה
+  plan_usage: השימוש בתוכנית שלך
+  addons: חבילות הרחבה
+  addon_purchase: רכוש
+  addon_manage: נהל
+  contact_sales: צור קשר עם המכירות
+  addon_purchase_dialog_title: 'רכישת {name} נוסף'
+  addon_summary_purchase: '{new} בסך הכול.'
+  addon_summary_active: '{active} נוכחי'
+  addon_summary_pending: '{active} נוכחי → {effective} ייכנס לתוקף בחידוש הבא ({date}). הגדל כדי לבטל את ההשבתה הממתינה.'
+  addon_summary_upgrade: '{active} נוכחי + {difference} יחידות = {new} יחידות בסך הכול'
+  addon_summary_downgrade: '{active} נוכחי - {difference} יחידות = {new} יחידות בסך הכול'
+  addon_price_summary: '{ new } x ${ unitPrice }/יחידה/{ interval } = ${ total }/{ interval }'
+  addon_prorated_notice: 'באישור, אתה מסכים לחיוב של ${total}/{interval} החל מ-{renewalDate}. חיוב יחסי של ${adjustedTotal} עבור יתרת תקופת החיוב הנוכחית שלך יתווסף לחשבונית הבאה שלך.'
+  addon_renewal_notice_date: 'השינויים ייכנסו לתוקף בחידוש הבא ({date}).'
+  addon_update: עדכן
+  addon_confirm_purchase: אישור רכישה
+  deactivate: השבתת רישיון
+  deactivate_confirm_title: להשבית את הרישיון?
+  deactivate_confirm_body: האם אתה בטוח שברצונך להשבית את הרישיון? המופע שלך ישודרג כלפי מטה לתוכנית Core.
+  resolve_title_manual: השבתת רישיון
+  resolve_title_locked: פתרון מגבלות רישיון
+  resolve_title_expired: תפוגת רישיון
+  resolve_title_suspended: השעיית רישיון
+  resolve_title_canceled: הרישיון בוטל
+  resolve_title_env_removed: הרישיון הוסר
+  resolve_title_grace: פתרון מגבלות רישיון
+  resolve_title_no_resolution: הרישיון אינו פעיל
+  resolve_subtitle: אם עליך לעדכן את מפתח הרישיון שלך, ניתן לעדכן אותו במשתנה הסביבה שלך.
+  resolve_notice_grace: השימוש בפרויקט שלך חורג ממגבלות התוכנית. פתור את החריגה לפני תום תקופת החסד, אחרת הפרויקט שלך יינעל. פריטים מושבתים יישמרו אך יינעלו ב-Directus, וכללי גישה מותאמים אישית ייחסמו גם הם.
+  resolve_countdown: 'נותר {days} יום (עד {date}) | נותרו {days} ימים (עד {date})'
+  resolve_notice_manual: כדי להשבית את הפרויקט שלך, עליו לעמוד תחילה במגבלות תוכנית Core. כל הפריטים החורגים ממגבלות Core ודורשים התאמה מוצגים להלן.
+  resolve_notice_locked: הפרויקט שלך חורג ממגבלות התוכנית והוא נעול. כל הפריטים החורגים מהמגבלות ודורשים התאמה מוצגים להלן.
+  resolve_notice_env_removed: לפרויקט שלך אין עוד מפתח רישיון פעיל. כל הפריטים החורגים ממגבלות Core ודורשים התאמה מוצגים להלן.
+  resolve_notice_no_resolution: הרישיון שלך אינו פעיל עוד והפרויקט שלך שודרג כלפי מטה לתוכנית Core. ייתכן שחלק מהתכונות לא יהיו זמינות עוד, ופריטים החורגים ממגבלות תוכנית Core יישמרו אך יינעלו ב-Directus. כדי לשחזר גישה מלאה, הוסף מפתח רישיון חדש.
+  resolve_continue: המשך
+  resolve_acknowledge: אשר
+  resolve_submit: השבת פריטים נבחרים
+  resolve_show_n_more: 'הצג {count} נוספים'
+  resolve_available: זמין
+  resolve_section_collections: אוספי נתונים
+  resolve_section_seats: מושבי משתמשים
+  resolve_section_flows: תהליכים
+  resolve_section_collections_caption: בחר אוספים להשבתה
+  resolve_section_seats_users_caption: בחר מושבי משתמשים להשבתה
+  resolve_section_seats_admins_caption: בחר מנהלים להשבתה
+  resolve_section_flows_caption: בחר תהליכים להשבתה
+  resolve_section_sso: השבתת SSO
+  resolve_sso_confirm: אישור השבתת SSO
+  resolve_sso_caption: משתמשי SSO בלבד יושבתו כאשר שינוי זה יבוצע. כדי לשחזר את הגישה שלהם, יהיה עליך להפעיל אותם מחדש ולהגדיר אימייל וסיסמה דרך ספריית המשתמשים.
+  resolve_sso_admin_title: אישור פרטי מנהל SSO
+  resolve_sso_admin_description: אנא ודא שהאימייל והסיסמה שלך נכונים. לאחר השבתת SSO, יהיה עליך להשתמש בשניהם כדי להתחבר מחדש.
+  resolve_sso_admin_description_email_only: אנא ודא שהאימייל שלך נכון. לאחר השבתת SSO, יהיה עליך להשתמש בו כדי להתחבר מחדש.
+  resolve_sso_admin_email: כתובת אימייל
+  resolve_sso_admin_password: סיסמה
+  resolve_sso_admin_password_placeholder: הגדר סיסמה...
+  resolve_sso_admin_confirm: אישור
+  resolve_section_custom_llms: LLM מותאם אישית
+  resolve_custom_llms_confirm: אישור השבתת LLM מותאם אישית
+  resolve_custom_llms_caption: תצורות LLM מותאמות אישית יושבתו כאשר שינוי זה יבוצע.
+  resolve_section_custom_permissions: מדיניות גישה מותאמת אישית
+  resolve_custom_permissions_confirm: אישור השבתת כללי גישה מותאמים אישית
+  resolve_custom_permissions_caption: כל מדיניות גישה/הרשאות המנוהלות על ידי כללים מותאמים אישית יחזרו ל"אין גישה".
+  resolve_section_ai_translations: תרגומי AI
+  resolve_ai_translations_confirm: אישור השבתת תרגומי AI
+  resolve_ai_translations_caption: תרגום AI יושבת והגדרות התרגום שלך לא ישמשו עוד.
+  env_managed: מפתח הרישיון שלך מנוהל באמצעות משתנה סביבה ולא ניתן לעדכן אותו כאן.
+  key_management: ניהול מפתח רישיון
+  key: מפתח רישיון
+  entitlements:
+    collections: אוספים
+    seats: מושבים
+    flows: תהליכים
+    activity_historical_timeframe: היסטוריית פעילות
+    revisions_historical_timeframe: היסטוריית מהדורות
+    offline_enabled: מצב לא מקוון
+    telemetry_opt_out: ביטול הסכמה לטלמטריה
+    custom_llms_enabled: LLM מותאם אישית
+    custom_permission_rules_enabled: כללים מותאמים אישית (מדיניות גישה)
+    ai_translations_enabled: תרגומי AI
+    display_powered_by: הצגת "מופעל על ידי"
+    production_enabled: ייצור
+  badge:
+    directus: מופעל על ידי Directus
+    non_prod: לא ייצור
+danger_zone: אזור סכנה
+settings_appearance: מראה
+ai_assistant: עוזר AI
+ai_disabled_by_env: תכונות AI Assistant הושבתו באמצעות משתנה סביבה.
+mcp_disabled_by_env: תכונות MCP הושבתו באמצעות משתנה סביבה.
+mcp_oauth_disabled_by_env: MCP OAuth מושבת על ידי משתנה הסביבה MCP_OAUTH_ENABLED.
+mcp_oauth_dcr_disabled_by_env: Dynamic Client Registration מושבת על ידי משתנה הסביבה MCP_OAUTH_DCR_ENABLED.
+mcp_oauth_cimd_disabled_by_env: Client ID Metadata Documents מושבתים על ידי משתנה הסביבה MCP_OAUTH_CIMD_ENABLED.
+mcp_oauth_clients: 'לקוחות MCP OAuth'
+manage_registered_clients: 'נהל לקוחות רשומים'
+no_oauth_clients: 'עדיין לא נרשמו לקוחות OAuth.'
+revoke_client: 'בטל לקוח'
+revoke_client_confirm: 'האם אתה בטוח שברצונך לבטל לקוח זה? כל האסימונים וההפעלות המשויכים יימחקו.'
+settings_flows: תהליכים
+settings_system_logs: יומני מערכת
+settings_presets: סימניות
 settings_translations: תרגומים
+one_or_more_options_are_missing: חסרה אפשרות אחת או יותר
+configure_field_key_to_continue: הגדר את מפתח השדה כדי להמשיך
+scope: היקף
+actions: פעולות
+select: בחר...
+layout: פריסה
+tree_view: תצוגת עץ
+changes_are_permanent: השינויים הם קבועים
+preset_name_placeholder: משמש כברירת מחדל כשריק...
+preset_search_placeholder: שאילתת חיפוש...
+editing_preset: עריכת הגדרה מראש
+layout_preview: תצוגה מקדימה של פריסה
+layout_setup: הגדרת פריסה
+data: נתונים
+theme-overrides: עקיפות ערכת נושא
+unsaved_changes: שינויים שלא נשמרו
+unsaved_changes_copy: האם אתה בטוח שברצונך לעזוב דף זה?
+unsaved_changes_collab: שינויים שיתופיים שלא נשמרו
+unsaved_changes_copy_collab: אתה עורך פריט זה יחד עם אחרים. השינויים שלך יישארו בהפעלה השיתופית לעת עתה, אך עלולים לאבוד אם אף אחד לא ישמור אותם.
+leave_page: עזוב דף
+cancel_anyway: בטל בכל מקרה
+discard_changes: בטל שינויים
+discard_all_changes: בטל את כל השינויים
+discard_changes_copy: האם אתה בטוח שברצונך לבטל את כל השינויים שבוצעו?
+published_item_has_changed: הפריט שפורסם השתנה
+published_item_has_changed_copy: הפריט שפורסם עודכן מאז שגרסה זו נוצרה. פרסום כעת יחליף את אותם שינויים.
+discard_changes_copy_collab: אתה עורך פריט זה יחד עם אחרים. ביטול שינויים ינקה את כל העריכות שלא נשמרו עבור כל המשתתפים בהפעלה השיתופית הזו.
+show_x_axis: הצג ציר X
+show_y_axis: הצג ציר Y
+keep_editing: המשך לערוך
+activity_feed: פיד פעילות
+add_new: הוסף חדש
+create_new: צור חדש
+all: הכול
+none: ללא
+no_layout_collection_selected_yet: עדיין לא נבחרה פריסה/אוסף
+batch_delete_confirm: >-
+  לא נבחרו פריטים | האם אתה בטוח שברצונך למחוק פריט זה? לא ניתן לבטל פעולה זו. | האם אתה בטוח שברצונך למחוק {count} פריטים אלה? לא ניתן לבטל פעולה זו.
+cancel: ביטול
+license:
+  seats_limit:
+    title: המשתמש ייווצר אך יוצב במצב לא פעיל.
+    body_admin: >-
+      הגעת למגבלה המרבית המותרת בתוכנית שלך. יהיה עליך לרכוש תוספים נוספים או לשדרג.
+    body_member: >-
+      הגעת למגבלה המרבית המותרת בתוכנית שלך. צור קשר עם המנהל כדי לרכוש תוספים נוספים או לשדרג.
+  collections_limit:
+    title: הגעת למגבלת האוספים
+    body: >-
+      הגעת למגבלה המרבית המותרת בתוכנית שלך. יהיה עליך לרכוש תוספים נוספים או לשדרג.
+  max_capacity:
+    label: קיבולת מרבית
+    alert_danger_prefix: הגעת לקיבולת המרבית.
+    alert_danger_suffix: כדי לפתוח עוד.
+    alert_warning: נותרו לך {count}. שדרג את התוכנית שלך כדי לפתוח עוד.
+  manage_plan: נהל תוכנית
+  collections_remaining: 'נותר אוסף {n} | נותרו {n} אוספים'
+  flows_limit:
+    title: הגעת למגבלת התהליכים
+    body: >-
+      הגעת למגבלה המרבית המותרת בתוכנית שלך. יהיה עליך לרכוש תוספים נוספים או לשדרג.
+  flows_remaining: 'נותר תהליך {n} | נותרו {n} תהליכים'
+  contact_sales: צור קשר עם מכירות
+  upgrade_to_unlock: שדרג את התוכנית שלך כדי לפתוח תכונה זו.
+  activity_history_notice: '{timeframe} של היסטוריית פעילות כלולים בתוכנית הנוכחית שלך.'
+  revisions_history_notice: '{timeframe} של היסטוריית מהדורות כלולים בתוכנית הנוכחית שלך.'
+  status_notice:
+    grace_period: 'נותרו לך {daysLeft} לפני שמגבלות המשאבים של שכבת Core ייכנסו לתוקף.'
+    grace_days: 'יום {days} | {days} ימים'
+  unlicensed_status_notice:
+    grace_period: 'נותרו לך {daysLeft} בתקופת החסד שלך — עד {date}. לאחר מכן, מגבלות המשאבים של שכבת Core ייכנסו לתוקף. {retrieveLicenseKey} או {upgrade} כדי להגדיל את המגבלות שלך.'
+    grace_days_left: 'נותר {days} יום | נותרו {days} ימים'
+    retrieve_license_key: אחזר מפתח רישיון
+    upgrade: שדרג
+    oig_eligible: 'ייתכן שאתה זכאי ל-{oig} שלנו. הגש בקשה וקבל גישה מלאה ל-Directus בחינם.'
+  locked_status_notice: 'מופע Directus שלך נעול. נהל את הרישיון או {contactSupport} כדי לפתור.'
+  pinned_status_notice:
+    grace_period_title: 'תקופת חסד (נותרו {days} ימים)'
+    grace_period_body: נהל את מפתח הרישיון שלך ב-הגדרות > רישיון.
+  unlicensed_pinned_status_notice:
+    grace_period_title: 'תקופת חסד (נותרו {days} ימים)'
+no_upscale: אל תגדיל תמונות
+no_extensions: אין הרחבות
+no_extensions_copy: עדיין לא הותקנו הרחבות.
+install_extension: התקן הרחבה
+uninstall_locked: לא ניתן להסיר התקנה של הרחבות שלא הותקנו דרך החנות
+uninstall: הסר התקנה
+installed: מותקן
+reinstall: התקן מחדש
+open_in_marketplace: פתח בחנות
 source_registry: חנות
+source_local: מקומי
+source_module: מודול Node
 collection: מאגר
+collections: אוספים
+content: תוכן
+singleton: יחידון
+singleton_label: התייחס כאל אובייקט יחיד
+system_fields_locked: שדות מערכת נעולים ולא ניתן לערוך אותם
+directus_collection:
+  directus_access: צירופי מדיניות
+  directus_activity: יומני אחריות לכל האירועים
+  directus_collections: הגדרות ומטא-נתונים נוספים של אוספים
+  directus_comments: תגובות לפריטים
+  directus_dashboards: מרכזי בקרה בתוך מודול התובנות
+  directus_fields: הגדרות ומטא-נתונים נוספים של שדות
+  directus_files: מטא-נתונים לכל נכסי הקבצים המנוהלים
+  directus_flows: תהליכי אוטומציה
+  directus_folders: מספק תיקיות וירטואליות לקבצים
+  directus_migrations: באיזו גרסה של מסד הנתונים נעשה שימוש
+  directus_notifications: התראות שנשלחו למשתמשים
+  directus_operations: פעולות שרצות בתהליכים
+  directus_panels: לוחות בודדים בתוך מרכזי בקרה של תובנות
+  directus_permissions: הרשאות גישה לכל מדיניות
+  directus_policies: מדיניות בקרת גישה
+  directus_presets: הגדרות מראש לברירות מחדל של אוספים ולסימניות
+  directus_relations: הגדרות ומטא-נתונים של קשרים
+  directus_revisions: תצלומי מצב של נתונים לכל פעילות
+  directus_roles: קבוצות הרשאה למשתמשי מערכת
+  directus_sessions: מידע על הפעלת משתמש
+  directus_settings: אפשרויות הגדרה של הפרויקט
+  directus_shares: מעקב אחר פריטים ששותפו חיצונית
+  directus_users: משתמשי מערכת של הפלטפורמה
+  directus_translations: תרגומים מותאמים אישית
+  directus_versions: גרסאות תוכן לפריטים
+  directus_extensions: הגדרות של הרחבות
+  directus_oauth_clients: יישומי לקוח OAuth רשומים
+  directus_oauth_codes: קודי הרשאה עבור תהליכי OAuth
+  directus_oauth_consents: הסכמות משתמש ללקוחות OAuth
+  directus_oauth_tokens: אסימוני גישה ורענון ללקוחות OAuth
 fields:
   directus_activity:
     item: מפתח ראשי
@@ -380,23 +1613,55 @@ fields:
     timestamp: מועד פעולה
     user: מבצע פעולה
     comment: הערה
+    user_agent: סוכן משתמש
+    origin: מקור
     ip: '‏כתובת IP'
+    revisions: מהדורות
   directus_collections:
     collection: מאגר
+    icon: סמל
     note: הערה
+    status: סטטוס
+    color: צבע
+    display_template: תבנית תצוגה
+    hidden: מוסתר
+    singleton: יחידון
+    translations: תרגומי שמות אוסף
+    archive_app_filter: מסנן ארכיון באפליקציה
+    archive_value: ערך ארכיון
+    unarchive_value: ערך הוצאה מארכיון
+    sort_field: שדה מיון
+    accountability: מעקב פעילות ומהדורות
+    versioning: ניהול גרסאות
+    autosave_revision_interval: מרווח שמירה אוטומטית של מהדורות
+    archive_field: שדה ארכיון
+    item_duplication_fields: שדות לשכפול פריט
   directus_files:
+    $thumbnail: תמונה ממוזערת
     title: כותרת
     description: תיאור
     tags: תגיות
     location: מיקום
+    storage: אחסון
+    filename_disk: שם קובץ (דיסק)
+    filename_download: שם קובץ (הורדה)
     metadata: מטא-נתונים
+    type: סוג MIME
     filesize: גודל קובץ
+    modified_by: שונה על ידי
+    modified_on: שונה בתאריך
     created_on: נוצר בתאריך
     created_by: נוצר על ידי
+    embed: הטמעה
+    uploaded_by: הועלה על ידי
     folder: תיקייה
     width: רוחב
+    uploaded_on: הועלה בתאריך
     height: גובה
+    charset: ערכת תווים
     duration: משך זמן
+    focal_point_x: קואורדינטת X
+    focal_point_y: קואורדינטת Y
   directus_users:
     first_name: שם פרטי
     last_name: שם משפחה
@@ -407,107 +1672,1452 @@ fields:
     title: כותרת
     description: תיאור
     tags: תגיות
+    user_preferences: העדפות משתמש
     language: שפה
+    text_direction: כיוון טקסט
     tfa_secret: אימות דו-שלבי
+    admin_options: אפשרויות ניהול
     status: סטטוס
+    status_draft: טיוטה
+    status_invited: הוזמן
+    status_unverified: לא מאומת
     status_active: פעיל
+    status_suspended: מושעה
+    status_archived: בארכיון
+    status_inactive_license_exceeded: לא פעיל (חריגה מרישיון)
     role: תפקיד
+    token: אסימון
+    provider: ספק
+    external_identifier: מזהה חיצוני
+    last_page: עמוד אחרון
+    last_access: גישה אחרונה
+    email_notifications: התראות בדוא"ל
+    appearance: מראה
+    theme_light: ערכת נושא בהירה
+    theme_dark: ערכת נושא כהה
+    theme_light_overrides: התאמה אישית של ערכת נושא בהירה
+    theme_dark_overrides: התאמה אישית של ערכת נושא כהה
   directus_settings:
+    reporting: דיווח
+    mapping: מיפוי
+    basemaps: מפות בסיס
+    basemaps_style: סגנון Mapbox
+    mapbox_key: אסימון גישה ל-Mapbox
+    attribution: ייחוס
+    transforms_note: שם המתודה של Sharp והארגומנטים שלה. למידע נוסף ראו https://sharp.pixelplumbing.com/api-constructor.
+    additional_transforms: התמרות נוספות
+    project_name: שם הפרויקט
+    project_descriptor: מתאר הפרויקט
+    project_url: כתובת URL של הפרויקט
+    project_color: צבע הפרויקט
+    project_logo: לוגו הפרויקט
+    default_language: שפת ברירת מחדל
+    project_owner: בעלים של הפרויקט
+    branding: מיתוג
+    public_foreground: חזית ציבורית
+    public_background: רקע ציבורי
+    public_note: הערה ציבורית
+    theming: ברירות מחדל של ערכת נושא
+    default_appearance: מראה ברירת מחדל
+    default_theme_light: ערכת נושא בהירה כברירת מחדל
+    default_theme_dark: ערכת נושא כהה כברירת מחדל
+    auth_password_policy: מדיניות סיסמת אימות
+    auth_login_attempts: ניסיונות התחברות אימות
+    files_and_thumbnails: קבצים ואחסון
+    storage_default_folder: תיקיית ברירת מחדל
+    storage_asset_presets: הגדרות מראש של התמרה
+    storage_asset_transform: התמרות מותרות
+    overrides: עקיפות אפליקציה
+    custom_css: CSS מותאם אישית
     module_bar: סרגל מודולים
+    transformations_all: אפשר את כל ההתמרות
+    transformations_none: השבת התמרות
+    transformations_presets: הגבל התמרות להגדרות המראש שלהלן
+    image_editor: עורך תמונות
+    custom_aspect_ratios: יחסי רוחב-גובה מותאמים אישית
+    theme_light_overrides: התאמה אישית של ערכת נושא בהירה
+    theme_dark_overrides: התאמה אישית של ערכת נושא כהה
+    public_registration: רישום משתמשים
+    public_registration_note: מאפשר למשתמשים להירשם דרך [נתיב הרישום](/admin/register).
+    public_registration_role: תפקיד משתמש
+    public_registration_role_note: תפקיד זה מוקצה למשתמשים שנרשמים בשיטה זו. אינו משפיע על משתמשים שכבר רשומים.
+    public_registration_email_filter: מסנן כתובות דוא"ל
+    public_registration_email_filter_note: רק כתובות דוא"ל התואמות למסנן זה יכולות להירשם.
+    public_registration_verify_email: אימות דוא"ל
+    public_registration_verify_email_note: שולח דוא"ל למשתמש הנרשם ומבקש ממנו ללחוץ על קישור אימות לפני שיוכל להתחבר.
+    visual_editor_urls: כתובות URL של העורך החזותי
+    report_feature_url: כתובת URL לדיווח על תכונה
+    report_bug_url: כתובת URL לדיווח על באג
+    report_error_url: כתובת URL לדיווח על שגיאה
+    collaborative_editing: עריכה שיתופית
+    collaborative_editing_enabled: הפעל עריכה שיתופית
+    collaborative_editing_note: כדי שעריכה שיתופית תעבוד נדרשים WebSockets.
+    ai_notice: 'עוזר ה-AI מספק סרגל צד בתוך האפליקציה לשיחה עם LLM. לאחר ההפעלה, פתח את סרגל ה-AI מסרגל הכלים כדי לשאול שאלות, ליצור תוכן ולקבל עזרה בעבודה עם הפרויקט שלך. <a href="https://directus.io/docs/guides/ai/assistant" target="_blank">למידע נוסף על הגדרת עוזר ה-AI ושימוש בו.</a>'
+    mcp_enabled: שרת MCP
+    mcp_enabled_note: 'חבר כלי AI/LLM לפרויקט Directus שלך באמצעות <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. הדבר מאפשר לעוזרי AI לקרוא את נתוני Directus שלך ולתקשר עמם באופן מאובטח.'
+    mcp_notice: 'Model Context Protocol הוא תקן לחיבור LLM ליישומים כמו Directus. לאחר ההפעלה, שרת ה-MCP של Directus יהיה זמין בכתובת `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">למידע נוסף על MCP ועל אופן ההתחברות.</a>'
+    mcp_allow_deletes: אפשר מחיקות
+    mcp_allow_deletes_note:
+      - עלול לגרום לאובדן נתונים.</strong> מושבת כברירת מחדל מטעמי בטיחות.'
+    mcp_prompts_collection: אוסף הנחיות AI
+    mcp_prompts_collection_note: 'בחר אוסף לאחסון <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">תבניות הנחיה לשימוש חוזר</a> עבור אינטראקציות AI.'
+    mcp_system_prompt_divider: הגדרת הנחיית מערכת
+    mcp_system_prompt_enabled: השתמש בהנחיית מערכת
+    mcp_system_prompt_enabled_note: "השתמש ב<a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>הנחיית המערכת המוגדרת כברירת מחדל</a> כדי להנחות את התנהגות ה-LLM. השבת כדי להסיר או לעקוף עם הנחיה משלך שלהלן."
+    mcp_system_prompt: הנחיית מערכת מותאמת אישית
+    mcp_system_prompt_note: 'הנחיית מערכת מותאמת אישית שתחליף את ברירת המחדל. השאר ריק כדי להשתמש בברירת המחדל (אם הופעלה למעלה).'
+    mcp_oauth_enabled: 'OAuth מופעל'
+    mcp_oauth_enabled_note: 'אפשר ללקוחות MCP לבצע אימות באמצעות OAuth 2.1'
+    mcp_oauth_dcr_enabled: 'רישום לקוח דינמי'
+    mcp_oauth_cimd_enabled: 'מסמך מטא-נתונים של מזהה לקוח'
+    ai_system_prompt: הנחיית מערכת AI
+    ai_system_prompt_note: 'הנחיית מערכת AI מותאמת אישית להנחיית התנהגות ה-LLM באינטראקציות עם עוזר ה-AI. השאר ריק כדי להשתמש בברירת המחדל.'
+    ai_translation_default_model: מודל ברירת מחדל לתרגום
+    ai_translation_default_model_note: 'בחר את המודל המשמש כברירת מחדל לתרגומי AI. רק מודלים שהופעלו בהגדרות שלמעלה זמינים כאן.'
+    ai_glossary_term: מונח
+    ai_glossary_note: הערת תרגום
+    ai_glossary_note_placeholder: לעולם אל תתרגם, השאר כפי שהוא
+    ai_translation_glossary: מילון תרגום
+    ai_translation_glossary_note: 'הגדר מונחי מפתח ואת התרגומים המאושרים שלהם בכל השפות שלך. שמור על עקביות בשמות מוצרים, תוויות ממשק וביטויים חשובים אחרים לאורך התוכן שלך.'
+    ai_translation_style_guide: מדריך סגנון לתרגום
+    ai_translation_style_guide_note: 'תאר כיצד יש לתרגם את התוכן שלך, כולל טון, רמת פורמליות וכללי עיצוב. כלול פרטים על העסק, המוצר והקהל שלך כדי לעזור ל-AI לשמור על קול מותג עקבי.'
+    ai_translation_style_guide_placeholder: "תרגם בטון בטוח ונגיש. השתמש בפנייה לא רשמית, הימנע מסלנג ושמור על עקביות בטרמינולוגיה."
+    ai_openai_api_key: מפתח API של OpenAI
+    ai_openai_allowed_models: מודלים מותרים של OpenAI
+    ai_anthropic_api_key: מפתח API של Anthropic
+    ai_anthropic_allowed_models: מודלים מותרים של Anthropic
+    ai_google_api_key: מפתח API של Google
+    ai_google_allowed_models: מודלים מותרים של Google
+    ai_openai_compatible: ספק תואם OpenAI
+    ai_translations_notice: התוכנית הנוכחית שלך אינה כוללת תרגום AI. שדרג כדי לפתוח את התכונה.
+    ai_openai_compatible_notice: התוכנית הנוכחית שלך אינה כוללת LLM מותאם אישית. שדרג כדי לפתוח את התכונה.
+    ai_openai_compatible_name: שם הספק
+    ai_openai_compatible_base_url: כתובת בסיס
+    ai_openai_compatible_api_key: מפתח API
+    ai_openai_compatible_models: מודלים
+    ai_openai_compatible_headers: כותרות מותאמות אישית
+    ai_model_id: מזהה מודל
+    ai_context_limit: מגבלת הקשר
+    ai_output_limit: מגבלת פלט
+    ai_supports_attachments: תומך בקבצים מצורפים
+    ai_supports_reasoning: תומך בהסקה
+    ai_provider_options: אפשרויות ספק
+    ai_provider_options_note: אפשרויות ייחודיות לספק המועברות לנקודות קצה של AI.
+    ai_header_name: כותרת
   directus_shares:
+    name: שם
     role: תפקיד
     password: סיסמה
+    date_start: תאריך התחלה
+    date_end: תאריך סיום
+    max_uses: מספר שימושים מרבי
+    times_used: מספר פעמים שנעשה שימוש
   directus_fields:
+    collection: שם אוסף
+    icon: סמל אוסף
     note: הערה
+    hidden: מוסתר
+    singleton: יחידון
     translation: תרגומי שמות שדות
+    display_template: תבנית
   directus_roles:
     name: שם תפקיד
+    icon: סמל תפקיד
     description: תיאור
+    users: משתמשים בתפקיד
+    parent: תפקיד אב
+    children: תפקידי בן
+    policies: מדיניות
   directus_policies:
+    name: שם מדיניות
     description: תיאור
+    app_access: גישה לאפליקציה
+    admin_access: גישת ניהול
+    ip_access: גישת IP
+    enforce_tfa: דרוש 2FA
 field_options:
+  directus_settings:
+    project_name_placeholder: הפרויקט שלי...
+    project_color_note: רקע התחברות ולוגו
+    project_logo_note: SVG/PNG לבן 40×40
+    project_favicon_note: ICO‏ 32×32
+    public_note_placeholder: הודעה ציבורית קצרה התומכת בעיצוב markdown...
+    security_divider_title: אבטחה
+    auth_password_policy:
+      none_text: ללא – לא מומלץ
+      weak_text: חלשה – לפחות 8 תווים
+      strong_text: חזקה – אותיות גדולות / קטנות / מספרים / תווים מיוחדים
+    storage_asset_presets:
+      fit_label: התאמה
+      upscaling: הגדלה
+      fit:
+        contain_text: הכלה (שמירה על יחס גובה-רוחב)
+        cover_text: כיסוי (כפיית גודל מדויק)
+        fit_text: התאמה פנימה
+        outside_text: התאמה החוצה
+    additional_transforms: טרנספורמציות נוספות
+    transforms_note: שם המתודה של Sharp והארגומנטים שלה. ראו https://sharp.pixelplumbing.com/api-constructor למידע נוסף.
+    mapbox_key: אסימון גישה של Mapbox
+    basemaps: מפות בסיס
+    basemaps_name_placeholder: הזינו את שם מפת הבסיס...
+    basemaps_style: סגנון Mapbox
+    files_divider_title: קבצים ותמונות ממוזערות
+    overrides_divider_title: עקיפות אפליקציה
   directus_activity:
+    login: התחברות
+    logout: התנתקות
     create: צור
+    update: עדכן
+    delete: מחק
   directus_collections:
+    track_activity_revisions: מעקב אחר פעילות ומהדורות
+    only_track_activity: מעקב אחר פעילות בלבד
+    do_not_track_anything: אל תעקוב אחר דבר
+    collection_setup: הגדרת אוסף
+    collection_naming_translations_note: "עקיפת שם התצוגה של האוסף באפליקציה בהתאם לשפת המשתמש."
+    note_placeholder: תיאור של אוסף זה...
+    hidden_label: הסתר בתוך האפליקציה
+    singleton: התייחס כאל אובייקט יחיד
     language: שפה
+    translation: תרגום
+    translation_placeholder: הזינו תרגום...
+    collection_name: שם אוסף
+    singular_unit: יחידה ביחיד
+    plural_unit: יחידה ברבים
     archive_divider: ארכיון
+    archive_field_placeholder: בחרו שדה...
+    archive_app_filter: הפעל מסנן ארכיון באפליקציה
+    archive_value: ערך שמוגדר בעת העברה לארכיון...
+    unarchive_value: ערך שמוגדר בעת הוצאה מארכיון...
+    sort_divider: מיון
+    sort_field: בחרו שדה...
+    accountability_divider: אחריות
+    duplication_divider: שכפול
+    preview_divider: תצוגה מקדימה
+    content_translations_divider: תרגומי תוכן
+    content_versioning_divider: ניהול גרסאות תוכן
+    enable_versioning: הפעל ניהול גרסאות
+    interval_default: 'ברירת מחדל ({minutes} דקות)'
+    interval_default_seconds: 'ברירת מחדל ({seconds} שניות)'
+  directus_files:
+    title: כותרת ייחודית...
+    description: תיאור אופציונלי...
+    location: מיקום אופציונלי...
+    storage_divider: שם קובץ
+    focal_point_divider: נקודת מוקד
+    filename_disk: שם באחסון בדיסק...
+    filename_download: שם בעת הורדה...
+  directus_policies:
+    name: שם ייחודי למדיניות זו...
+    description: תיאור של מדיניות זו...
+    ip_access: הוסיפו כתובות IP, טווחי IP ובלוקים של CIDR מורשים. השאירו ריק כדי לאפשר את הכול...
+    enforce_tfa: אכוף אימות דו-שלבי
+    assigned_to: משויך ל...
+  directus_roles:
+    name: השם הייחודי לתפקיד זה...
+    description: תיאור של תפקיד זה...
+    fields:
+      icon_name: סמל
+      name_name: שם
+      name_placeholder: הזינו כותרת...
+      link_name: קישור
+      link_placeholder: כתובת URL יחסית או מוחלטת...
+    parent_note: תפקיד אב אופציונלי שתפקיד זה יורש ממנו הרשאות
+    children_note: תפקידי בן מקוננים היורשים את הרשאות תפקיד זה
+    collections_name: אוספים
+    collections_addLabel: הוסף אוסף...
   directus_users:
+    preferences_divider: העדפות משתמש
+    dropdown_auto: אוטומטי (בהתאם למערכת)
+    dropdown_light: מצב בהיר
+    dropdown_dark: מצב כהה
+    admin_divider: אפשרויות ניהול
+    status_dropdown_draft: טיוטה
+    status_dropdown_invited: הוזמן
     status_dropdown_active: פעיל
+    status_dropdown_suspended: מושעה
+    status_dropdown_archived: בארכיון
+    token: הזינו אסימון גישה מאובטח...
+no_fields_in_collection: 'אין עדיין שדות ב"{collection}"'
+no_value: אין ערך
+do_nothing: אל תעשה דבר
+generate_and_save_uuid: צור ושמור UUID
+save_current_user_id: שמור מזהה משתמש נוכחי
+save_current_user_role: שמור תפקיד משתמש נוכחי
+save_current_datetime: שמור תאריך/שעה נוכחיים
+always_open: תמיד פתוח
+start_open: התחל פתוח
+start_collapsed: התחל מכווץ
+block: בלוק
+inline: בשורה
 comment: הערה
 live_preview:
+  enable: הפעל תצוגה מקדימה
+  disable: השבת תצוגה מקדימה
+  change_size: שנה מימדי תצוגה
+  refresh: רענן תצוגה מקדימה
   new_window: פתח בחלון חדש
+  close_window: פתח בתצוגה מפוצלת
+  toggle_3d: החלף תלת-ממד
+  iframe_title: תצוגה מקדימה חיה של האתר
+  display_options: אפשרויות תצוגה
+  exit_full_width: צא מרוחב מלא
+  open_in_visual_editor: פתח בעורך החזותי
+shares: שיתופים
+unlimited_usage: שימוש בלתי מוגבל
+uses_left: לא נותרו שימושים | נותר שימוש אחד | נותרו {n} שימושים
+no_shares: אין שיתופים להצגה
+new_share: שיתוף חדש
+show_more: הצג עוד
+show_less: הצג פחות
+retry: נסה שוב
 ai:
+  thinking: חושב...
+  input: קלט
+  output: פלט
+  streaming: מזרים...
+  ready: מוכן
+  complete: הושלם
+  error: שגיאה
+  error_message: אירעה שגיאה
+  unknown_error: שגיאה לא ידועה
   unknown: לא ידוע
+  approval_requested: התבקש אישור
+  approve: אשר
+  always_allow: אפשר תמיד
+  deny: דחה
+  approve_tool_execution: לאשר את הרצת הכלי?
+  prompt_input_placeholder: הקלידו את ההודעה שלכם כאן...
+  clear_conversation: נקה שיחה
+  build_with_assistant: בנה עם AI Assistant
+  responses_may_be_inaccurate: תשובות AI עשויות להיות לא מדויקות
+  add_content: הוסף תוכן
+  prompt: הנחיה
+  prompts: הנחיות
+  items: פריטים
+  content: תוכן
+  insert_prompt: הוסף הנחיה
+  insert_reusable_prompt: הוסף תבנית הנחיה לשימוש חוזר
+  insert_item_context: הוספת הקשר של פריט
+  coming_soon: בקרוב
+  failed_to_load_prompts: טעינת ההנחיות נכשלה
+  failed_to_load_items: טעינת הפריטים נכשלה
+  some_context_failed: 'לא ניתן היה לטעון {count} פריטי הקשר'
+  prompt_inserted: ההנחיה הוספה
+  prompt_staged: ההנחיה הוכנה
+  items_staged: הפריטים הוכנו
+  some_items_staged: '{count} פריטים הוכנו (הגעת למגבלה)'
+  files_staged: הקבצים הוכנו
+  some_files_staged: '{count} קבצים הוכנו (הגעת למגבלה)'
+  attach_file_subtitle: צירוף קבצים קיימים
+  upload_file_subtitle: העלאת קבצים מקומיים
+  file_upload_failed: 'העלאת {name} נכשלה'
+  file_upload_not_supported: ספק זה אינו תומך בהעלאת קבצים
+  unsupported_file_type: סוג קובץ לא נתמך
+  provider_locked_tooltip: לא ניתן לשנות ספק לאחר העלאת קבצים. נקה את השיחה הקיימת כדי להחליף.
+  image_preview: תצוגה מקדימה של התמונה
+  item_staged: הפריט הוכן
+  invalid_collection: אוסף לא תקין
+  element_already_staged: הרכיב כבר הוכן
+  max_elements_reached: הגעת למספר הרכיבים המרבי
+  element_staged: הרכיב הוכן
+  failed_to_insert_prompt: הוספת ההנחיה נכשלה
+  go_to_settings: מעבר להגדרות
+  setup_ai_assistant: הגדרת עוזר ה-AI
+  setup_ai_assistant_admin_description: הוסף את מפתחות ה-API של ספק ה-AI שלך בהגדרות כדי להפעיל את עוזר ה-AI.
+  setup_ai_assistant_user_description: פנה למנהל המערכת כדי להפעיל את עוזר ה-AI.
+  settings: הגדרות
   tool_approval:
+    always: תמיד מותר
+    ask: דורש אישור
     disabled: מושבת
+  enabled_tools: כלים מופעלים
+  disabled_tools: כלים מושבתים
+  ask_user_submit: שליחה
   ask_user_next: המשך
+  ask_user_skip: דילוג
+  ask_user_chat_about_this: שוחח על כך
+  ask_user_type_answer: הקלד את תשובתך...
+  ask_user_skipped: דולג
+  tool_descriptions:
+    items: יצירה, קריאה, עדכון ומחיקה של תוכן
+    files: חיפוש וניהול קבצים
+    folders: יצירה וארגון של תיקיות
+    flows: יצירה ועדכון של תהליכים
+    trigger-flow: הרצת תהליכים המופעלים ידנית
+    operations: ניהול פעולות בתוך תהליכים
+    schema: קבלת מידע על סכמת מסד הנתונים
+    collections: יצירה וניהול של אוספים
+    fields: יצירה והגדרה של שדות אוסף
+    relations: הגדרת קשרים בין אוספים
 ai_tools:
+  ask_user: שאל את המשתמש
+  update_form_values: עדכון ערכי הטופס
+  read_form_values: קריאת ערכי הטופס
+  items: פריטים
   files: קבצים
   folders: תיקיות
-  operations: תהליכים
+  flows: תהליכים
+  trigger-flow: הפעלת תהליך
+  operations: פעולות
+  schema: סכמה
+  collections: אוספים
+  fields: שדות
+  relations: קשרים
+mcp_prompts_collection:
+  no_collection_selected: לא נבחר אוסף
+  no_collection_selected_copy: בחר אוסף כדי לאפשר תבניות הנחיות לשימוש חוזר.
+  collection_not_found: האוסף לא נמצא
+  collection_not_found_description: האוסף "{collection}" אינו קיים במסד הנתונים.
+  generate: יצירת אוסף הנחיות AI...
+  already_exists: אוסף הנחיות ה-AI כבר קיים
+  generate_collection_dialog_title: יצירת אוסף הנחיות AI
+  generate_fields_dialog_title: יצירת שדות הנחיות AI
+  generate_collection_dialog_description: 'פעולה זו תיצור אוסף חדש "{collection}" עם השדות וההגדרות הנדרשים לאחסון תבניות הנחיות לשימוש חוזר.'
+  generate_fields_dialog_description: 'פעולה זו תיצור את השדות הנדרשים באוסף "{collection}" שלך.'
+  validation_success: 'האוסף מוכן לשימוש כאוסף "הנחיות AI".'
+  validation_error_invalid: לא ניתן להשתמש באוסף
+  validation_error_missing: עדיין לא ניתן להשתמש באוסף
+  invalid_fields: 'השדות הבאים קיימים אך הם מסוג לא תואם:'
+  missing_fields: 'השדות הבאים נדרשים אך חסרים:'
+  generate_missing: יצירת השדות החסרים...
+mcp_prompts_collection_schema:
+  system_prompt_note: הוראות שמעצבות את אופן התגובה של ה-LLM.
+  messages_note: 'אופציונלי: הגדרת מבנה השיחה בין משתמשים ל-LLM. משמש להוספת הקשר ולשיפור הפלט.'
+  messages_role_user: משתמש
+  messages_role_assistant: עוזר
+  messages_role_note: מי מדבר בהודעה זו.
+  meta_prompts_notice: 'הנחיות הן תבניות לשימוש חוזר שניתן להשתמש בהן עם LLM דרך שרת ה-MCP של Directus, תהליכים או יישומי AI אחרים. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">למידע נוסף על יצירת הנחיות אפקטיביות.</a>'
+expired: פג תוקף
+upcoming: קרוב
+share: שיתוף
+share_item: שיתוף פריט
+shared_with_you: פריט שותף איתך
+shared_enter_passcode: הזן את קוד הגישה שלך כדי להמשיך...
+generate: יצירה
+shared_leave_blank_for_passwordless_access: השאר ריק לגישה ללא סיסמה
+shared_leave_blank_for_unlimited: השאר ריק ללא הגבלה
+shared_times_remaining: ניתן להשתמש בקישור זה {n} פעמים בלבד
+shared_last_remaining: ניתן להשתמש בקישור זה פעם אחת בלבד
+shared_uses_left: לאבטחה נוספת, דף משותף זה הוגדר עם מספר מוגבל של צפיות. נותרו כעת {n} צפיות, ולאחריהן הדף לא יהיה נגיש עוד.
+share_access_page: גישה לדף משותף
+share_access_not_found: דף משותף זה אינו קיים או שכבר חרג ממספר השימושים המרבי המותר.
+share_access_not_found_desc: פנה למשתמש מורשה של פרויקט זה כדי לבקש גישה.
+share_access_not_found_title: דף שיתוף לא ידוע
+share_copy_link: העתקת קישור
+share_copy_link_success: הקישור הועתק
+share_copy_link_error: לא ניתן להעתיק את הקישור
+share_send_link: שליחת קישור
+relational_triggers: טריגרים יחסיים
+referential_action_field_label_m2o: בעת מחיקת {collection}...
+referential_action_field_label_o2m: בעת ביטול בחירת {collection}...
+referential_action_no_action: מניעת המחיקה
+referential_action_cascade: מחיקת פריט {collection} (מדורג)
+referential_action_set_null: איפוס שדה {field} לערך null
+referential_action_set_default: הגדרת {field} לערך ברירת המחדל שלו
+choose_action: בחירת פעולה
+continue_label: המשך
+continue_as: >-
+  {name} מאומת כעת. אם אתה מזהה חשבון זה, לחץ על המשך.
+editing_role: 'תפקיד {role}'
+editing_policy: 'מדיניות {policy}'
+no_permissions: אין הרשאות
+permission_add_collection: הוספת אוסף
+default_label: ברירת מחדל
+delete_label: מחיקה
+discard_label: התעלמות
+delete_are_you_sure: >-
+  פעולה זו היא לצמיתות ולא ניתן לבטל אותה. האם אתה בטוח שברצונך להמשיך?
+delete_field_are_you_sure: >-
+  האם אתה בטוח שברצונך למחוק את השדה "{field}"? לא ניתן לבטל פעולה זו.
 description: תיאור
+done: סיום
+duplicate: שכפול
+limit: הגבלה
 email: דוא"ל
+embed: הטמעה
+fallback_icon: סמל חלופי
+field: שדה | שדות
+file: קובץ
+file_library: ספריית הקבצים
+forgot_password: שכחת סיסמה
+hidden: מוסתר
+hidden_in_group: מוסתר ב{group}
+icon: סמל
+info: מידע
+normal: רגיל
+success: הצלחה
+warning: אזהרה
+danger: סכנה
+colors:
+  purple: סגול
+  blue: כחול
+  green: ירוק
+  yellow: צהוב
+  orange: כתום
+  red: אדום
+  black: שחור
+  gray: אפור
+  white: לבן
+junction_collection: אוסף צומת
+latency: השהיה
+login: התחברות
+logout: התנתקות
+my_activity: הפעילות שלי
+not_authenticated: לא מאומת
+authenticated: מאומת
+options: אפשרויות
+otp: סיסמה חד-פעמית
 password: סיסמה
+confirm_password: אימות סיסמה
+permissions: הרשאות
+relationship: קשר
+reset: איפוס
+reset_password: איפוס סיסמה
+revisions: מהדורות
+no_revisions: אין עדיין מהדורות
+no_logs: אין עדיין יומנים
+show_failed_only: הצג כשלים בלבד
+no_logs_on_page: אין יומנים בדף זה
+revert: שחזור
+save: שמירה
+schema: סכמה
+search: חיפוש
+select_existing: בחירת קיים
+select_field_type: בחירת סוג שדה
+select_interface: בחירת ממשק
+select_display: בחירת תצוגה
+settings: הגדרות
+register: הרשמה
+registration_successful_headline: הצלחה!
+registration_successful_note: כעת תוכל להמשיך לדף ההתחברות.
+registration_successful_check_email_note: |
+  שים לב שלפני שתוכל להתחבר, יהיה עליך לאמת את כתובת הדוא"ל שלך באמצעות לחיצה על קישור האימות שנשלח אליך.
+dont_have_an_account: אין לך חשבון?
+already_have_an_account: כבר יש לך חשבון?
+sign_up_now: הירשם עכשיו
+sign_in: התחברות
+sign_out: התנתקות
+sign_out_confirm: בטוח שברצונך להתנתק?
+something_went_wrong: משהו השתבש.
+sort_direction: כיוון מיון
+export_location: מיקום ייצוא
+export_started: הייצוא החל
+export_started_copy: הייצוא החל. תקבל התראה כשהוא יהיה מוכן להורדה.
+sort_asc: מיון בסדר עולה
+sort_desc: מיון בסדר יורד
+disable_sort: השבתת מיון
+template: תבנית
+require_value_to_be_set: דרוש הגדרת ערך בעת היצירה
+translation: תרגום
+translation_placeholder: הזן תרגום...
+value: ערך
+view_project: הצג פרויקט
+report_error: דווח על שגיאה
+table: טבלה
+list: רשימה
+search_filter: חיפוש וסינון
+enable_search_filter: הפעלת חיפוש וסינון
+item_link: קישור לפריט
+show_link_to_item: הצג קישור לפריט
+navigate_to_item: נווט לפריט
+undo_removed_item: בטל הסרת פריט
+remove_item: הסר פריט
+delete_item: מחק פריט
+pause: השהה
+resume: המשך
 interfaces:
+  list-m2a:
+    prefix_note: משתמש כברירת מחדל בשם האוסף של הפריט המשויך.
+    sorting_disabled: המיון מושבת מכיוון שיש יותר פריטים מכפי שיכולים להיכנס בעמוד אחד.
   filter:
+    name: מסנן
+    description: הגדרת אובייקט מסנן.
+    add_filter: הוסף מסנן
+    add_group: קבוצת And / Or
+    add_value: הוסף ערך
+    all: הכול
     any: כל
+    and: וגם
+    of_the_following: מהבאים
+    no_rules: לא הוגדרו כללים
+    change_value: לחץ לשינוי הערך
+    placeholder: גרור כללים לכאן
+    add_key_placeholder: הוסף מפתח ולחץ אנטר...
+  fields:
+    name: שדות
+  group-accordion:
+    name: אקורדיון
+    description: הצג שדות או קבוצות כקטעי אקורדיון
+    start: התחלה
+    all_closed: הכול סגור
+    first_opened: הראשון פתוח
+    all_opened: הכול פתוח
+    accordion_mode: מצב אקורדיון
+    max_one_section_open: לכל היותר קטע אחד פתוח
   group-tabs:
+    name: לשוניות
+    description: הצג שדות או קבוצות כלשוניות
+    overwrite_group_width: דריסת רוחב הקבוצה
     fill_width: עמוד מלא
+    fill_width_note: אפשר לקבוצה זו למלא את מלוא רוחב העמוד.
   presentation-links:
+    presentation-links: לחצנים
+    description: לחצני קישור הניתנים להגדרה לפתיחת כתובות URL דינמיות או להפעלת תהליכים
+    style: סגנון
     primary: ראשי
+    link: קישורים
+    button: לחצנים
+    error: לא ניתן לבצע את הפעולה
+    action_type: סוג פעולה
+    select_manual_flow_note: התהליך חייב להיות מוגדר עם טריגר ידני עבור אוסף זה
+  select-multiple-checkbox:
+    checkboxes: תיבות סימון
+    description: בחר בין מספר אפשרויות באמצעות תיבות סימון
+    allow_other: אפשר אחר
+    show_more: 'הצג {count} נוספים'
+    items_shown: פריטים מוצגים
+  select-multiple-checkbox-tree:
+    name: תיבות סימון (עץ)
+    description: בחר בין מספר אפשרויות באמצעות תיבות סימון מקוננות
+    value_combining: שילוב ערכים
+    value_combining_note: שולט באיזה ערך נשמר כאשר מתבצעות בחירות מקוננות.
+    show_all: הצג הכול
+    show_selected: הצג נבחרים
+  input-code:
+    code: קוד
+    description: כתוב או שתף קטעי קוד
+    line_number: מספר שורה
+    line_wrapping: גלישת שורות
+    placeholder: הזן קוד כאן...
   system-collection:
     collection: מאגר
+    description: בחר בין אוספים קיימים
+    include_system_collections: כלול אוספי מערכת
+  system-owner:
+    update: עדכן בעלים של הפרויקט
+    edit: ערוך בעלים של הפרויקט
+    system-owner: בעלים של המערכת
+    description: ממשק בעלים של המערכת
+  system-collections:
+    collections: אוספים
+    description: בחר בין אוספים קיימים
+    include_system_collections: כלול אוספי מערכת
+  select-color:
+    color: צבע
+    description: הזן או בחר ערך צבע
+    placeholder: בחר צבע...
+    preset_colors: צבעים מוגדרים מראש
+    opacity: שקיפות
+    preset_colors_add_label: הוסף צבע חדש...
+    name_placeholder: הזן שם צבע...
+  datetime:
+    datetime: תאריך ושעה
+    description: הזן תאריכים ושעות
+    include_seconds: כלול שניות
+    set_to_now: הגדר לעכשיו
+    use_24: השתמש בפורמט 24 שעות
+    placeholder: בחר תאריך ושעה...
+  system-fields:
+    select_a_collection: בחר אוסף
+    no_fields: אין שדות
+  system-display-template:
+    display-template: תבנית תצוגה
+    description: שלב טקסט סטטי וערכי שדות דינמיים
+    collection_field: שדה אוסף
+    collection_field_not_setup: אפשרות שדה האוסף מוגדרת בצורה שגויה
+    select_a_collection: בחר אוסף
+  presentation-divider:
+    divider: קו מפריד
+    description: סמן וחלק שדות לקטעים
+    title_placeholder: הזן כותרת, או השאר ריק כדי להציג קו בלבד...
+    inline_title: כותרת מוטבעת
+    inline_title_label: הצג כותרת בתוך הקו
+    margin_top: שוליים עליונים
+    margin_top_label: הגדל שוליים עליונים
   select-dropdown:
+    description: בחר ערך מתוך תפריט נפתח
+    choices_placeholder: הוסף אפשרות חדשה
+    allow_other: אפשר אחר
+    allow_other_label: אפשר ערכים אחרים
+    allow_none: אפשר ללא
+    allow_none_label: אפשר ללא בחירה
+    choices_name_placeholder: הזן שם...
     choices_value_placeholder: הכנס ערך...
+    preview_threshold: סף תצוגה מקדימה
+  select-multiple-dropdown:
+    select-multiple-dropdown: תפריט נפתח (מרובה)
+    description: בחר ערכים מרובים מתוך תפריט נפתח
+  file:
+    file: קובץ
+    description: בחר או העלה קובץ
+    allowed_mime_types: סוגי MIME מותרים
+    mime_types_placeholder: בחר או הוסף סוגי MIME מותרים...
+    mime_types_note: שים לב שהרשימה הגלובלית FILES_MIME_TYPE_ALLOW_LIST המוגדרת ב-env שלך תקבל עדיפות על פני הבחירה שלמעלה.
   files:
     files: קבצים
+    description: בחר או העלה קבצים מרובים
+  input-hash:
+    hash: גיבוב
+    description: הזן ערך לגיבוב
+    masked: מוסתר
+    masked_label: הסתר את הערכים האמיתיים
+  select-icon:
+    icon: סמל
+    description: בחר סמל מתוך תפריט נפתח
+    search_for_icon: חפש סמל...
+  file-image:
+    image: תמונה
+    description: בחר או העלה תמונה
+    crop: חתוך להתאמה
+    crop_label: חתוך את התמונה לפי הצורך
+    letterbox: מסגור (letterbox)
+    letterbox_label: הוסף ריפוד לתצוגה מקדימה של התמונה
+  system-interface:
+    interface: ממשק
+    description: בחר ממשק קיים
+    placeholder: בחר ממשק...
+  system-interface-options:
+    interface-options: אפשרויות ממשק
+    description: חלונית לבחירת אפשרויות של ממשק
+  system-display:
+    display: תצוגה
+    description: בחר תצוגה קיימת
+    placeholder: בחר תצוגה...
+  system-display-options:
+    display-options: אפשרויות תצוגה
+    description: חלונית לבחירת אפשרויות של תצוגה
+  list-m2m:
+    many-to-many: רבים לרבים
+    description: בחר פריטי צומת משויכים מרובים
+    columns_configure_notice: ניתן להגדיר את העמודות לאחר יצירת שדה זה.
+    display_template_configure_notice: ניתן להגדיר את תבנית התצוגה לאחר יצירת שדה זה.
+  select-dropdown-m2o:
+    many-to-one: רבים לאחד
+    description: בחר פריט משויך יחיד
+    display_template: תבנית תצוגה
+  collection-item-dropdown:
+    collection-item-dropdown: רשימה נפתחת של פריט מאוסף
+    description: בחירת פריט מאוסף בפורמט JSON
+  collection-item-multiple-dropdown:
+    collection-item-multiple-dropdown: רשימה נפתחת של פריט מאוסף (מרובה)
+    description: בחירת מספר פריטים מאוסף בפורמט JSON
   input-rich-text-md:
+    description: הזנה ותצוגה מקדימה של markdown
     edit: עריכה
+    preview: תצוגה מקדימה
+    editorFont: גופן עורך
+    previewFont: גופן תצוגה מקדימה
+    default_view: תצוגת ברירת מחדל
+    default_view_editor: עורך
+    default_view_preview: תצוגה מקדימה
+    customSyntax: בלוקים מותאמים אישית
+    customSyntax_label: הוספת סוגי תחביר מותאמים אישית
+    customSyntax_add: הוספת תחביר מותאם אישית
+    box: בלוק / מוטבע
+    imageToken: אסימון גישה סטטי
+    imageToken_label: אסימון גישה סטטי מצורף לכתובת ה-URL של הנכסים
   map:
+    map: מפה
+    description: בחירת מיקום על מפה
     zoom: זום
+    geometry_type: סוג גאומטריה
+    geometry_format: פורמט גאומטריה
+    default_view: תצוגת ברירת מחדל
+    invalid_options: אפשרויות לא תקינות
+    invalid_format: פורמט לא תקין ({format})
+    unexpected_geometry: צפוי {expected}, התקבל {got}.
+    fit_bounds: התאמת התצוגה לנתונים
+    native: מקורי
+    lnglat: קו אורך, קו רוחב
+    click_to_select: לחיצה לבחירת {geometry}
+  presentation-notice:
+    notice: הודעה
+    description: הצגת הודעה קצרה
+    text: הזן כאן את תוכן ההודעה...
+    no_text: לא הוגדר טקסט...
+  list-o2m:
+    one-to-many: אחד לרבים
+    description: בחירת מספר פריטים קשורים
+    no_collection: לא ניתן למצוא את האוסף
+  system-folder:
+    folder: תיקיית שורש
+    description: בחירת תיקייה
+    field_hint: תיקיית ברירת מחדל לקבצים שהועלו ללא ציון תיקייה. אינה משפיעה על קבצים קיימים.
+    root_name: שורש ספריית הקבצים
+    system_default: ברירות מחדל של המערכת
+  select-radio:
+    radio-buttons: כפתורי רדיו
+    description: בחירת אחת ממספר אפשרויות
+  list:
+    repeater: חוזר
+    description: יצירת מספר רשומות בעלות אותו מבנה
+    edit_fields: עריכת שדות
+    add_label: 'תווית "יצירת חדש"'
+    sort: מיון
+    sort_placeholder: ידני
+    field_note_placeholder: הזן הערת שדה...
+    incompatible_data: הנתונים הנוכחיים אינם תואמים לממשק החוזר וייכתבו מחדש בעת הוספת פריטים לחוזר
+    interface_group: אפשרויות ממשק
+    display_group: אפשרויות תצוגה
+    edit_mode_inline: בשורה
+  slider:
+    slider: מחוון
+    description: בחירת מספר באמצעות מחוון
+    always_show_value: הצג תמיד את הערך
   tags:
     tags: תגיות
+    description: בחירה או הוספה של תגיות
+    whitespace: רווח לבן
+    hyphen: החלפה במקף
+    underscore: החלפה בקו תחתון
+    remove: הסרת רווח לבן
+    capitalization: שימוש באותיות גדולות
+    uppercase: המרה לאותיות גדולות
+    lowercase: המרה לאותיות קטנות
+    auto_formatter: שימוש בעיצוב כותרת אוטומטי
+    alphabetize: סידור אלפביתי
+    alphabetize_label: כפיית סדר אלפביתי
+    add_tags: הוסף תגית ולחץ Enter...
+  input:
+    input: קלט
+    description: הזנת ערך באופן ידני
+    trim: חיתוך
+    trim_label: חיתוך ההתחלה והסוף
+    mask: מוסתר
+    mask_label: הסתרת הערך האמיתי
+    clear: ערך מנוקה
+    clear_label: שמירה כמחרוזת ריקה
+    minimum_value: ערך מינימלי
+    maximum_value: ערך מקסימלי
+    step_interval: מרווח צעד
+    slug: יצירת slug
+    slug_label: הפיכת הערך שהוזן לבטוח לשימוש בכתובת URL
+  input-multiline:
+    textarea: אזור טקסט
+    description: הזנת טקסט פשוט מרובה שורות
+  input-translated-string:
+    input-translated-string: מחרוזות מתורגמות
+    description: בחירה או הוספה של תרגום מותאם אישית
+    search_placeholder: חיפוש...
+    new_custom_translation: תרגום מותאם אישית חדש
   boolean:
+    toggle: מתג
+    description: מעבר בין מופעל למושבת
+    color_on: צבע במצב מופעל
+    color_off: צבע במצב מושבת
+    label_placeholder: הזן תווית...
     label_default: מופעל
+  translations:
+    display_template: תבנית תצוגה
+    no_collection: אין אוסף
+    toggle_split_view: החלפת תצוגה מפוצלת
+    enable: הפעלה
+    default_split_view_state: מצב ברירת מחדל של תצוגה מפוצלת
+    user_language: שימוש בשפת המשתמש הנוכחי
+    default_language: שפת ברירת מחדל
+    language_field: שדה מחוון שפה
+    language_direction_field: שדה כיוון שפה
+    ai_translate: תרגום עם AI
+    ai_translate_short: תרגום
+    ai_translate_tooltip: תרגם את התוכן שלך אוטומטית עם AI
+    model: מודל
+    source_language: שפת מקור
+    target_languages: שפות יעד
+    translate_n_languages: 'תרגם {count} שפה | תרגם {count} שפות'
+    no_source_content: לשדות המקור שנבחרו אין תוכן לתרגום.
+    no_additional_languages: לא הוגדרו שפות נוספות.
+    no_translation_models: אין כעת מודלי תרגום זמינים.
+    translation_error: התרגום נכשל עבור שפה זו.
+    translation_not_allowed: אין לך הרשאה לתרגם שפה זו.
+    translation_pending_delete: שפה זו ממתינה למחיקה ולא ניתן לתרגם אותה.
+    permission_check_failed: לא ניתן היה לאמת הרשאות עבור שפה זו. נסה שוב.
+    empty: (ריק)
+    field_empty_tooltip: לשדה זה אין תוכן מקור לתרגום
+    ai_translating: מתרגם...
+    ai_translating_progress: 'מתרגם {done} מתוך {total} שפות...'
+    translation_has_errors: חלק מהתרגומים נכשלו.
+    translation_complete: התרגומים הושלמו בהצלחה.
+    translation_complete_with_warnings: התרגומים הושלמו, אך ייתכן שחלק מהשדות אינם שלמים.
+    partial_translation: 'רק {count} מתוך {total} שדות תורגמו.'
+    rate_limited: ספק ה-AI מגביל את קצב הבקשות. המתן רגע ונסה שוב.
+  list-o2m-tree-view:
+    description: תצוגת עץ עבור פריטי אחד-לרבים רקורסיביים מקוננים
+    recursive_only: ממשק תצוגת העץ עובד רק עבור קשרים רקורסיביים.
+  user:
+    user: משתמש
+    description: בחירת משתמש directus קיים
+    select_mode: מצב בחירה
+    modes:
+      auto: אוטומטי
+      dropdown: רשימה נפתחת
+      modal: חלון מודאלי
+  input-rich-text-html:
+    description: עורך טקסט עשיר לכתיבת תוכן HTML
+    toolbar: סרגל כלים
+    custom_formats: פורמטים מותאמים אישית
+    custom_formats_note: רשימת פורמטי תוכן של TinyMCE. עיין בתיעוד של TinyMCE בנושא [Content Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) למידע נוסף.
+    options_override: עקיפת אפשרויות
+    options_override_note: מפתחות עיצוב המשתמש של TinyMCE וערכיהם. עיין בתיעוד של TinyMCE בנושא [User Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) למידע נוסף.
+    folder_note: תיקייה לקבצים שהועלו. אינה משפיעה על קבצים קיימים.
+    imageToken: אסימון גישה סטטי
+    imageToken_label: אסימון גישה סטטי מצורף לכתובת ה-URL של הנכסים
+    media_preview_iframe_title: תצוגה מקדימה של מדיה
+  input-block-editor:
+    input-block-editor: עורך בלוקים
+    description: עורך מבוסס בלוקים לסיפורי מדיה עשירים, מפיק נתונים נקיים ב-JSON באמצעות Editor.js
+    tools: סרגל כלים
+    tools_options:
+      header: כותרת
+      nestedlist: רשימה
+      embed: הטמעה
+      paragraph: פסקה
+      code: קוד
+      image: תמונה
+      attaches: קבצים מצורפים
+      table: טבלה
+      quote: ציטוט
+      underline: קו תחתון
+      inlinecode: קוד מוטבע
+      delimiter: מפריד
+      checklist: רשימת משימות
+      toggle: בלוק מתג
+      alignment: יישור
+      raw: HTML גולמי
+  input-autocomplete-api:
+    input-autocomplete-api: קלט השלמה אוטומטית (API)
+    description: חיפוש מקדים לערכים מ-API חיצוני.
+    results_path: נתיב תוצאות
+    value_path: נתיב ערך
+    text_path: נתיב טקסט
+    trigger: טריגר
+    rate: קצב
+  group-raw:
+    name: קבוצה גולמית
+    description: הצגת השדות כפי שהם
+  group-detail:
+    name: קבוצת פירוט
+    description: הצגת השדות כמקטע שניתן לכווץ
+    show_header: הצגת כותרת הקבוצה
+    header_icon: סמל כותרת
+    header_color: צבע כותרת
+    start_open: התחל פתוח
+    start_closed: התחל סגור
+  system-token:
+    system-token: אסימון
+    description: ניהול אסימון גישה סטטי
+    placeholder: לחץ על "צור אסימון" כדי ליצור אסימון גישה סטטי חדש
+    value_securely_saved: הערך נשמר באופן מאובטח
+    generate: צור אסימון
+    regenerate: צור אסימון מחדש
+    regenerate_confirm_title: צור אסימון מחדש
+    regenerate_confirm_body: האסימון הנוכחי יבוטל מיד. לא ניתן לבטל פעולה זו.
+    remove_token: הסר אסימון
+    remove_confirm_title: הסר אסימון
+    remove_confirm_body: כל גישה ל-API שמשתמשת באסימון זה תפסיק לעבוד מיד.
+    new_user_disabled_notice: שמור משתמש זה לפני יצירת אסימון.
+    token_saved_notice: האסימון נשמר בהצלחה.
+    token_saved_copy: הקפד להעתיק את האסימון הזה כעת. מטעמי אבטחה, הוא לא יוצג שוב.
+  system-raw-editor:
+    system-raw-editor: עורך גולמי
+    description: אפשר הזנה של ערכים גולמיים או ערכי תבנית mustache
+  input-password:
+    input-password: שדה סיסמה
+    description: שדה סיסמה עם החלפה להסתרת הערך
+  flow-select:
+    flow-select: בחירת תהליך
+  header:
+    header: כותרת
+    description: יצירת כותרת עם כותרת, כותרת משנה, מידע עזרה ו/או קישורים שיעזרו למשתמשים לנווט או להריץ תהליכים.
+    links: קישורים
+    action_type: סוג פעולה
+    help:
+      title: עזרה
+      note: מספק מידע עזרה שניתן להפעיל ולכבות עבור המשתמש.
+    help_display_mode:
+      title: מצב תצוגת עזרה
+      note: בחר את מצב התצוגה עבור מידע העזרה.
+    enable_help_translations:
+      title: הפעלת תרגומי עזרה
+      note: אם מופעל, הדבר ידרוס את שדה העזרה בערכים משדה מחרוזת תרגומי העזרה.
+    help_translations_string:
+      title: מחרוזת תרגומי עזרה
+      note: יהיה עליך ליצור ערך תרגום עבור המפתח בהגדרות התרגומים של הפרויקט שלך עם התוכן המתורגם לכל שפה שברצונך לתמוך בה.
+    collapse: כווץ עזרה
 displays:
   translations:
     translations: תרגומים
+    description: תצוגה מקדימה של תרגומים
+    enable: הפעלה
+    user_language: השתמש בשפת המשתמש הנוכחי
+    default_language: שפת ברירת מחדל
+    language_field: שדה מחוון שפה
   boolean:
     boolean: בוליאני
+    description: הצגת מצבי הפעלה וכיבוי
+    label_on: תווית הפעלה
+    label_on_placeholder: הזן תווית הפעלה...
+    label_off: תווית כיבוי
+    label_off_placeholder: הזן תווית כיבוי...
+    icon_on: סמל הפעלה
+    icon_off: סמל כיבוי
+    color_on: צבע הפעלה
+    color_off: צבע כיבוי
   collection:
     collection: מאגר
+    description: הצגת אוסף
+    icon_label: הצג את סמל האוסף
+  color:
+    color: צבע
+    description: הצגת נקודה צבעונית
+    default_color: צבע ברירת מחדל
   datetime:
+    datetime: תאריך ושעה
+    description: הצגת ערכים הקשורים לזמן
+    format: פורמט
+    format_note: >-
+      הפורמט המותאם אישית מקבל את __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: ארוך
+    short: קצר
+    relative: יחסי
+    relative_label: 'הצג זמן יחסי, לדוגמה: לפני 5 דקות'
     suffix: סיומת
+    suffix_label: הצג מחוון יחסי
+    suffix_note: משתמש במילים כמו 'בעוד' ו'לפני'
+    strict: מחמיר
+    strict_label: השתמש ביחידות מחמירות
+    strict_note: מסיר מילים כמו 'כמעט', 'מעל', 'פחות מ'
+    round: עיגול
+    round_note: בחר פונקציית עיגול לשימוש
+    down: למטה
+    nearest: הקרוב ביותר
+    up: למעלה
+  file:
+    file: קובץ
+    description: הצגת קבצים
+  filesize:
+    filesize: גודל קובץ
+    description: הצגת גודלו של קובץ
   formatted-value:
+    formatted-value: ערך מעוצב
+    description: הצגת גרסה מעוצבת של הטקסט
+    format: פורמט
+    format_label: עיצוב אוטומטי
+    font: גופן
+    bold: מודגש
+    bold_label: השתמש בסגנון מודגש
+    italic: נטוי
+    italic_label: השתמש בסגנון נטוי
     prefix: קידומת
+    prefix_label: הוסף טקסט בהתחלה
     suffix: סיומת
+    suffix_label: טקסט שמתווסף בסוף
+    color: צבע
+    background: רקע
+    icon: סמל
+    border: גבול
+    border_label: הצג גבול
+    mask: מוסתר
+    mask_label: הסתר את הערך האמיתי
     text: טקסט
+    text_placeholder: דריסת ערך אופציונלית...
+  formatted-json-value:
+    formatted-json-value: ערך JSON מעוצב
+    description: הצגת גרסה מעוצבת של האובייקט
+  hash:
+    hash: גיבוב
+    description: הצגת גרסה מצונזרת של הערך
+  icon:
+    icon: סמל
+    description: הצגת סמל
+    filled: מלא
+    filled_label: השתמש בגרסה המלאה
+  image:
+    image: תמונה
+    description: הצגת תצוגה מקדימה זעירה של תמונה
+    circle: מעגל
+    circle_label: הצג כמעגל
   labels:
+    labels: תוויות
+    description: הצגת תווית בודדת או רשימת תוויות
+    default_foreground: חזית ברירת מחדל
+    default_background: רקע ברירת מחדל
+    format_label: עצב כל תווית
+    show_as_dot: הצג כנקודה
     choices_value_placeholder: הכנס ערך...
+    choices_text_placeholder: הזן טקסט...
   mime-type:
-    mime-type: MIME Type
+    mime-type: סוג MIME
+    description: הצג את סוג ה-MIME של קובץ
+    extension_only: סיומת בלבד
+    extension_only_label: הצג רק את סיומת הקובץ
   rating:
     rating: דירוג
+    description: הצגת מספר ככוכבים יחסית לערך המרבי
     simple: פשוט
+    simple_label: הצג כוכבים בפורמט פשוט
+  raw:
+    raw: ערך גולמי
+  related-values:
+    related-values: ערכים קשורים
+    description: הצגת ערכים יחסיים
+    display_template_configure_notice: ניתן להגדיר את תבנית התצוגה לאחר יצירת שדה זה.
   user:
+    user: משתמש
+    description: הצגת משתמש directus
     avatar: צלמית
+    name: שם
     both: שניהם
+    circle_label: הצג משתמש במעגל
 layouts:
   cards:
+    cards: כרטיסים
+    image_source: מקור תמונה
+    image_fit: התאמת תמונה
+    crop: חיתוך
+    contain: הכלה
     title: כותרת
     subtitle: כותרת משנית
+  tabular:
+    tabular: טבלה
+    spacing: מרווח
+    comfortable: נוח
+    compact: קומפקטי
+    cozy: מרווח-בינוני
   calendar:
     calendar: לוח שנה
+    start_date_field: שדה תאריך התחלה
+    end_date_field: שדה תאריך סיום
+    optional: אופציונלי
+    first_day: היום הראשון בשבוע
+  map:
+    map: מפה
+    basemap: מפת בסיס
+    layers: שכבות
+    cluster_options: אפשרויות אשכול
+    cluster: אשכול נתונים סמוכים
+    cluster_radius: רדיוס אשכול
+    cluster_minpoints: גודל אשכול מינימלי
+    cluster_maxzoom: זום מרבי לאשכול
+    field: שדה גאו-מרחבי
+    invalid_geometry: גאומטריה לא תקינה
+    find_location: חיפוש מיקום...
+    default_template: שימוש בברירת המחדל של האוסף...
+    no_compatible_fields: אין שדות תואמים
+  kanban:
+    name: קנבן
+    group_field: קיבוץ לפי
+    group_field_placeholder: שדה לקיבוץ לפיו...
+    group_title: כותרת קבוצה
+    group_title_placeholder: שדה לכותרות קבוצה...
+    title: כותרת כרטיס
+    title_placeholder: שדה כותרת אופציונלי...
+    text: טקסט כרטיס
+    text_placeholder: שדה טקסט אופציונלי...
+    date: תאריך כרטיס
+    date_placeholder: שדה תאריך אופציונלי...
+    tags: תגיות כרטיס
+    tags_placeholder: שדה תגיות אופציונלי...
+    user: משתמש כרטיס
+    user_placeholder: שדה משתמש אופציונלי...
+    image: תמונת כרטיס
+    image_placeholder: שדה תמונה אופציונלי...
+    image_fit: התאמת תמונת כרטיס
+    crop: חיתוך
+    advanced: מתקדם
+    edit_group: עריכת קבוצה
+    delete_group: מחיקת קבוצה
+    add_group: הוספת קבוצה
+    add_group_placeholder: יש להזין כותרת קבוצה חדשה...
+    show_ungrouped: הצג ללא קיבוץ
+    show: הצג
+    no_group: ללא קבוצה
+horizontal: אופקי
+vertical: אנכי
+axis: ציר
+x_axis: ציר X
+y_axis: ציר Y
+y_axis_function: פונקציית ציר Y
+show_x_only: הצג ציר X בלבד
+show_y_only: הצג ציר Y בלבד
+show_data_label: הצג תווית נתונים
 both: שניהם
+show_axis_labels: הצג תוויות ציר
+function: פונקציה
+half_circle: חצי עיגול
+full_circle: עיגול מלא
+stroke_width: עובי קו
+rounded_stroke: קו מעוגל
+thin: דק
+medium: בינוני
+broad: רחב
+show_labels: הצג תוויות
+show_legend: הצג מקרא
+right: ימין
+left: שמאל
+start: התחלה
+end: סוף
+donut: דונאט
+continuous: רציף
+gap: מרווח
+panels:
+  metric:
+    name: מדד
+    description: הצגת ערך יחיד על בסיס שאילתה
+    field: שדה
+  metric_list:
+    name: רשימת מדדים
+    description: רשימה והצגה חזותית של מדדים מצטברים מאוסף
+  time_series:
+    name: סדרה עתית
+    description: הצגת תרשים קו על בסיס ערכים לאורך זמן
+    date_field: שדה תאריך
+    value_field: שדה ערך
+    fill_type: סוג מילוי
+    curve_type: סוג עקומה
+    missing_data: נתונים חסרים
+  label:
+    name: תווית
+    description: הצגת טקסט כלשהו
+  list:
+    name: רשימה
+    description: סינון ורשימה של שדות מאוסף
+  barchart:
+    name: תרשים עמודות
+    description: תרשימי עמודות אופקיים או אנכיים להשוואת קבוצות ערכים
+    horizontal: אופקי
+    select_collection: יש לבחור אוסף.
+  linechart:
+    name: תרשים קו
+    description: תרשים קו להשוואת שינוי של שדה
+    disabled_grouping: מושבת כאשר נבחר קיבוץ.
+    disabled_no_grouping: מושבת כאשר לא נבחר קיבוץ.
+    show_marker: הצג סמן רמז
+    curve_type: סוג עקומה
+    smooth: חלק
+    straight: ישר
+    step_line: קו מדורג
+    show_legend: הצג מקרא
+  meter:
+    name: מד
+    description: מד למעקב אחר ערכים
+  piechart:
+    name: תרשים עוגה או דונאט
+    description: תרשים מעגלי המציג את היחסים בין קבוצות בעמודה
+  variable:
+    name: משתנה גלובלי
+    description: הגדרת ערך גלובלי לשימוש במסננים של לוחות אחרים
+    variable_key: מפתח משתנה
+  relational-variable:
+    name: משתנה יחסי גלובלי
+    description: הגדרת ערך יחסי גלובלי לשימוש במסננים של לוחות אחרים
+    variable_key: מפתח משתנה
+    multiple: מרובה
+    multiple-label: בחירת פריטים מרובים
 triggers:
+  common:
+    response_body: גוף התגובה
+    response_body_all: כל הנתונים
+    response_body_last: נתוני הפעולה האחרונה
+  event:
+    name: הוק אירוע
+    description: מופעל על אירועי פלטפורמה או נתונים
+    action: 'פעולה (לא חוסמת)'
+    filter: 'מסנן (חוסם)'
   webhook:
-    method: פונקציה
+    error_on_reject: שגיאה בעת דחייה
+    description: מופעל על בקשת HTTP נכנסת
+    method: שיטה
+    async: אסינכרוני
+  operation:
+    name: תהליך אחר
+    description: מופעל על ידי תהליך אחר, לשרשור
+    preview: מופעל על ידי פעולה בתהליך אחר
+  schedule:
+    name: תזמון (CRON)
+    description: מופעל בנקודות זמן קבועות
+    cron: מרווח
+  manual:
+    name: ידני
+    description: מופעל בהרצה ידנית בתוך האוסף/ים הנבחר/ים
+    collection_and_item: דפי אוסף ופריט
+    collection_only: דף אוסף בלבד
+    item_only: דף פריט בלבד
+    collection_page: דף אוסף
+    require_selection: דורש בחירה
+a_flow_uuid: יש לבחור תהליך להפעלה...
+any_string_or_json: כל מחרוזת או JSON...
+item_payload_placeholder: זהו ה-JSON המשמש לעדכון ערכי השדות של הפריט...
+operation_variables_note: ניתן לגשת לנתוני התהליך באמצעות משתנים כגון **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** ו-**{'{'}{'{'}$accountability{'}'}{'}'}**, או להפנות לפעולות קודמות באמצעות **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  condition:
+    name: תנאי
+    description: ניתוב תהליך על בסיס לוגיקת If / Else
+  exec:
+    name: הרצת סקריפט
+    description: הרצת קוד שרירותי לשינוי המטען
+    modules: 'ניתן להשתמש ב-**Node modules** הבאים:'
+  item-create:
+    name: יצירת נתונים
+    description: יצירת פריטים במסד הנתונים
+    payload: מטען
+    emit_events: שידור אירועים
+  item-delete:
+    name: מחיקת נתונים
+    description: מחיקת פריטים ממסד הנתונים
+    emit_events: שידור אירועים
+    key: מזהים
+    query: שאילתה
+  item-read:
+    name: קריאת נתונים
+    description: קריאת פריטים ממסד הנתונים
+    key: מזהים
+    query: שאילתה
+    emit_events: שידור אירועים
+  item-update:
+    name: עדכון נתונים
+    description: עדכון פריטים במסד הנתונים
+    emit_events: שידור אירועים
+    key: מזהים
+    payload: מטען
+    query: שאילתה
+  json-web-token:
+    description: חתימה ואימות של JSON Web Tokens
+    operation: פעולה
+    secret: סוד
+    secret_placeholder: יש להזין סוד...
+    payload: מטען
+    token: אסימון
+    options: אפשרויות
+    options_placeholder: 'יש לעיין ב-https://www.npmjs.com/package/jsonwebtoken#usage לאפשרויות הזמינות'
+    sign: חתום על אסימון
+    verify: אמת אסימון
+    decode: פענח אסימון
   log:
+    name: רישום לקונסול
+    description: פלט של משהו לקונסול
     message: הודעה
+    message_placeholder: יש להזין הודעה להצגה בקונסול...
+  mail:
+    name: שליחת אימייל
+    description: שליחת אימייל לאדם אחד או יותר
+    to: אל
+    to_placeholder: יש להוסיף כתובות אימייל וללחוץ Enter...
+    body: גוף
+    template: תבנית
+    data: נתונים
+    cc: עותק
+    cc_placeholder: יש להוסיף כתובות אימייל לעותק וללחוץ Enter...
+    bcc: עותק מוסתר
+    bcc_placeholder: יש להוסיף כתובות אימייל לעותק מוסתר וללחוץ Enter...
+    reply_to: השב אל
+    reply_to_placeholder: יש להוסיף כתובות אימייל למענה וללחוץ Enter...
   notification:
+    name: שליחת התראה
+    description: שליחת התראה בתוך האפליקציה למשתמש אחד או יותר
+    recipient: משתמש
+    recipient_placeholder: יש להזין UUID...
+    recipient_note: יש להוסיף UUID של משתמש וללחוץ Enter...
+    item_note: מפתח פריט או URL יחסי
     message: הודעה
     subject: נושא
   request:
-    method: פונקציה
+    name: Webhook / בקשת URL
+    description: 'שליחת בקשה ל-URL'
+    method: שיטה
+    data: נתונים
+    headers: כותרות
+    header: כותרת
+  sleep:
+    name: השהיה
+    description: המתנה למספר נתון של מילישניות
+    milliseconds: מילישניות
+  throw-error:
+    name: זריקת שגיאה
+    description: זריקת שגיאה בנתיב הדחייה
+    code: קוד שגיאה
+    status: קוד סטטוס HTTP
+    message: הודעת שגיאה
+  transform:
+    name: המרת מטען
+    description: שינוי מטען ה-JSON של התהליך
+  trigger:
+    name: הפעלת תהליך
+    description: העברת נתונים אלה לתהליך אחר
+    flows: תהליכים
+    flow: תהליך
+    data: נתונים
+    iteration_mode: מצב איטרציה
+    iteration_mode_note: מצב לאיטרציה על מערכים.
+    serial: טורי
+    parallel: מקבילי
+    batch: אצווה
+    batch_size: גודל אצווה
+    cache: מטמון
+    cache_query: פרמטרים של שאילתת מטמון
+    cache_query_placeholder: פרמטרים מותרים לשאילתה...
+    cache_query_description: פרמטרים אלה של השאילתה ישמשו בנוסף עבור מפתח המטמון.
+unit: יחידה
 standard: סטנדרטי
+scientific: מדעי
+engineering: הנדסי
+compact: קומפקטי
+currency: מטבע
+notation: סימון
+style: סגנון
+fonts:
+  thin: דק
+  extra_light: דק במיוחד
+  light: קל
+  normal: רגיל
+  medium: בינוני
+  semi_bold: מודגש למחצה
+  bold: מודגש
+  extra_bold: מודגש במיוחד
+  black: שחור
+  italic: נטוי
+  oblique: אלכסוני
+  small: קטן
+  large: גדול
+  auto: אוטומטי
+text_wrap: גלישת טקסט
+center: מרכז
+justify: יישור לשני הצדדים
+text_align: יישור טקסט
+font_weight: עובי גופן
+font_style: סגנון גופן
+font_size: גודל גופן
+minimum_fraction_digits: מינימום ספרות עשרוניות
+maximum_fraction_digits: מקסימום ספרות עשרוניות
+show_percentage: הצגת אחוזים
+aggregation: צבירה
+series_grouping: קיבוץ סדרות
+date_precision: דיוק תאריך
+export_dashboard: ייצוא מרכז בקרה
+duplicate_dashboard: שכפול מרכז בקרה
+duplicate_policy: שכפול מדיניות
+search_dashboard: חיפוש מרכז בקרה...
+search_flow: חיפוש תהליך...
+percent: אחוז
+show_password: הצגת סיסמה
+hide_password: הסתרת סיסמה
+license_grace_key_modal:
+  optional: אופציונלי
+  get_license_key: קבלת מפתח רישיון
+  over_limit_warning_lead: חרגת מהשימוש המותר בתוכנית Core.
+  over_limit_warning_tail: '{lead} יש להוסיף {licenseKey} לפני {date} (בעוד {days} ימים) כדי לשמור על הגישה הנוכחית שלך.'
+  over_limit_customer_help: כבר לקוח? שלח אימייל אל {email} כדי לאחזר את המפתח שלך.
+  license_key_link_label: מפתח רישיון
+license_banner:
+  title: לא הגדרת בעלים לפרויקט.
+  license: אנחנו זקוקים לכך כדי להבטיח עמידה ברישיון MSCL-1.0-GPL שלנו. זה אמור להיות איש הקשר הראשי האחראי על הפרויקט שלך.
+  set_owner: הגדרת בעלים
+  remind_later: הזכר מאוחר יותר
+  remind_next_login: נזכיר לך שוב בהתחברות הבאה שלך.
+accepted: התקבל
+text_direction_auto: אוטומטי (התאמה לשפה)
+text_direction_ltr: משמאל לימין (LTR)
+text_direction_rtl: מימין לשמאל (RTL)
+set_to_now: הגדר לעכשיו
+aria:
+  more_options: אפשרויות נוספות

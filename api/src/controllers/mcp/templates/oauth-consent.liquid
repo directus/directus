@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en"{{ themeAttr | raw }}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Authorize - {{ projectName }}</title>
+<style>{{ styles | raw }}</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo-row">
+    <div class="{{ logoClass }}">
+      {% if logoUrl %}
+        <img src="{{ logoUrl }}" alt="{{ logoAlt }}">
+      {% elsif logoDataUri %}
+        <img src="{{ logoDataUri | raw }}" alt="Directus">
+      {% endif %}
+    </div>
+  </div>
+  <h1><strong>{{ clientName }}</strong> is requesting access</h1>
+  <div class="details">
+    <div class="details-label">Details</div>
+    <div class="detail-row">
+      <span class="detail-key">Name</span>
+      <span class="detail-value name">{{ clientName }}</span>
+    </div>
+    {% if clientDomain %}
+    <div class="detail-row">
+      <span class="detail-key">Domain</span>
+      <span class="detail-value">{{ clientDomain }}</span>
+    </div>
+    {% endif %}
+    <div class="detail-row">
+      <span class="detail-key">Redirect URI</span>
+      <span class="detail-value">{{ redirectUri }}</span>
+    </div>
+    {% if redirectIndicator == 'localhost' %}
+    <div class="detail-row">
+      <span class="detail-key"></span>
+      <span class="detail-value redirect-warn">Redirects to your local machine. Another application on this device could intercept this authorization.</span>
+    </div>
+    {% elsif redirectIndicator == 'cross-origin' %}
+    <div class="detail-row">
+      <span class="detail-key"></span>
+      <span class="detail-value redirect-warn">Redirect goes to a different domain than the application.</span>
+    </div>
+    {% elsif redirectIndicator == 'ip-address' %}
+    <div class="detail-row">
+      <span class="detail-key"></span>
+      <span class="detail-value redirect-warn">Redirect uses an IP address.</span>
+    </div>
+    {% endif %}
+  </div>
+  <p class="note">This MCP client is requesting to be authorized. If you approve, it will be able to access data on <strong>{{ projectName }}</strong> on your behalf. This application has not been verified by <strong>{{ projectName }}</strong>.</p>
+  <form action="{{ decisionUrl }}" method="POST" class="actions">
+    <input type="hidden" name="signed_params" value="{{ signedParams }}">
+    <button type="submit" name="approved" value="false" class="btn-cancel">Cancel</button>
+    <button type="submit" name="approved" value="true" class="btn-approve">Approve</button>
+  </form>
+</div>
+</body>
+</html>

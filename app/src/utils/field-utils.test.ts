@@ -4,6 +4,7 @@ import {
 	isDateCreated,
 	isDateUpdated,
 	isHidden,
+	isPresentationField,
 	isPrimaryKey,
 	isRelational,
 	isUserCreated,
@@ -70,6 +71,16 @@ test('isUserCreated', () => {
 
 	expect(isUserCreated(field!)).toBe(true);
 	expect(isUserCreated(wrongField!)).toBe(false);
+});
+
+test('isPresentationField', () => {
+	const dividerField = fields.find((f) => f.field === 'divider');
+	const groupField = fields.find((f) => f.field === 'group');
+	const wrongField = fields.find((f) => f.field === 'o2m');
+
+	expect(isPresentationField(dividerField!)).toBe(true);
+	expect(isPresentationField(groupField!)).toBe(true);
+	expect(isPresentationField(wrongField!)).toBe(false);
 });
 
 const fields: Field[] = [
@@ -636,5 +647,61 @@ const fields: Field[] = [
 			validation_message: null,
 		},
 		name: 'M2A',
+	},
+	{
+		collection: 'test_collection',
+		field: 'divider',
+		type: 'alias',
+		schema: null,
+		meta: {
+			id: 208,
+			collection: 'test_collection',
+			field: 'divider',
+			special: ['alias', 'no-data'],
+			interface: 'presentation-divider',
+			options: null,
+			display: null,
+			display_options: null,
+			readonly: false,
+			hidden: false,
+			sort: 14,
+			width: 'full',
+			translations: null,
+			note: null,
+			conditions: null,
+			required: false,
+			group: null,
+			validation: null,
+			validation_message: null,
+		},
+		name: 'Divider',
+	},
+	{
+		collection: 'test_collection',
+		field: 'group',
+		type: 'alias',
+		schema: null,
+		meta: {
+			id: 209,
+			collection: 'test_collection',
+			field: 'group',
+			special: ['alias', 'no-data', 'group'],
+			interface: 'group-standard',
+			options: null,
+			display: null,
+			display_options: null,
+			readonly: false,
+			hidden: false,
+			sort: 15,
+			width: 'full',
+			translations: null,
+			note: null,
+			conditions: null,
+			required: false,
+			group: null,
+			validation: null,
+			validation_message: null,
+		},
+		name: 'Group',
 	},
 ];

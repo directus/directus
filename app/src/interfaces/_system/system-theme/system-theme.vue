@@ -86,9 +86,8 @@ const valueWithDefault = computed(() => {
 	border-color: var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	color: var(--theme--form--field--input--foreground);
-	box-shadow: var(--theme--form--field--input--box-shadow);
 	transition-duration: var(--fast);
-	transition-property: background-color, border-color, box-shadow;
+	transition-property: background-color, border-color;
 	transition-timing-function: var(--ease-out);
 	text-align: start;
 
@@ -106,13 +105,12 @@ const valueWithDefault = computed(() => {
 	&:hover {
 		background-color: var(--theme--form--field--input--background);
 		border-color: var(--v-input-border-color-hover, var(--theme--form--field--input--border-color-hover));
-		box-shadow: var(--theme--form--field--input--box-shadow-hover);
 	}
 
 	&.active {
 		background-color: var(--theme--form--field--input--background);
-		border-color: var(--theme--form--field--input--border-color-focus);
-		box-shadow: var(--theme--form--field--input--box-shadow-focus);
+		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+		outline-offset: var(--focus-ring-offset-invert);
 	}
 }
 </style>

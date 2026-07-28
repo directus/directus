@@ -1,7 +1,11 @@
 import { useEnv } from '@directus/env';
-import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, RouteNotFoundError } from '@directus/errors';
+import { toBoolean } from '@directus/utils';
 import { format } from 'date-fns';
 import { Router } from 'express';
+import z from 'zod';
+import { fromZodError } from 'zod-validation-error';
+import { getLicenseManager } from '../license/manager.js';
 import { respond } from '../middleware/respond.js';
 import { SettingsService } from '../services/index.js';
 import { ServerService } from '../services/server.js';
@@ -71,25 +75,45 @@ router.get(
 	respond,
 );
 
-router.get(
-	'/health',
-	asyncHandler(async (req, res, next) => {
-		const service = new ServerService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+if (toBoolean(env['HEALTHCHECK_ENABLED']) !== false) {
+	router.get(
+		'/health',
+		asyncHandler(async (req, res, next) => {
+			const service = new ServerService({
+				accountability: req.accountability,
+				schema: req.schema,
+			});
 
-		const data = await service.health();
+			const data = await service.health();
 
-		res.setHeader('Content-Type', 'application/health+json');
+			res.setHeader('Content-Type', 'application/health+json');
 
-		if (data['status'] === 'error') res.status(503);
-		res.locals['payload'] = data;
-		res.locals['cache'] = false;
-		return next();
+			if (data['status'] === 'error') res.status(503);
+			res.locals['payload'] = data;
+			res.locals['cache'] = false;
+			return next();
+		}),
+		respond,
+	);
+}
+
+const SetupSchema = z.object({
+	admin: z.object({
+		email: z.string(),
+		password: z.string(),
+		first_name: z.string().optional(),
+		last_name: z.string().optional(),
 	}),
-	respond,
-);
+	license_key: z.string().optional(),
+	owner: z
+		.object({
+			project_owner: z.string().nullable(),
+			project_usage: z.enum(['personal', 'commercial', 'community']).nullable(),
+			org_name: z.string().nullable(),
+			product_updates: z.boolean(),
+		})
+		.optional(),
+});
 
 router.post(
 	'/setup',
@@ -100,17 +124,32 @@ router.post(
 			throw new ForbiddenError();
 		}
 
+		const { error, data } = SetupSchema.safeParse(req.body);
+
+		if (error) {
+			throw new InvalidPayloadError({ reason: fromZodError(error).message });
+		}
+
+		const licenseManager = getLicenseManager();
+
 		try {
+			// If provided ensure the license key is valid before proceeding with setup
+			if (data.license_key) {
+				await licenseManager.activate(data.license_key);
+			}
+
 			await createAdmin(req.schema, {
-				email: req.body.project_owner,
-				password: req.body.password,
-				first_name: req.body.first_name,
-				last_name: req.body.last_name,
+				email: data.admin.email,
+				password: data.admin.password,
+				first_name: data.admin.first_name,
+				last_name: data.admin.last_name,
 			});
 
 			const settingsService = new SettingsService({ schema: req.schema });
 
-			settingsService.setOwner(req.body);
+			if (data.owner) {
+				settingsService.setOwner(data.owner);
+			}
 		} catch (error: any) {
 			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();

@@ -3,14 +3,16 @@ export type TestSchema = {
 	collection_b: CollectionB[];
 	collection_c: CollectionC[];
 	// singleton
-	collection_d: CollectionD[];
+	// https://directus.com/docs/tutorials/tips-and-tricks/advanced-types-with-the-directus-sdk#setting-up-a-schema
+	user_defined_singleton: CollectionD;
 	// junction collections
 	collection_a_b_m2m: CollectionAB_Many[];
 	collection_a_b_m2a: CollectionAB_Any[];
-	// directus_users: object; // workaround
+	// extend the provided DirectusUser type
+	// https://directus.com/docs/tutorials/tips-and-tricks/advanced-types-with-the-directus-sdk#custom-fields-on-core-collections
+	directus_users: CustomUser;
 };
 
-// Collection A
 export type CollectionA = {
 	id: number;
 	string_field: string;
@@ -36,14 +38,12 @@ export type CollectionAB_Any = {
 	item: string | CollectionB | CollectionC;
 };
 
-// Collection B
 export type CollectionB = {
 	id: number;
 	json_field: 'json' | null;
 	csv_field: 'csv' | null;
 };
 
-// Collection C
 export type CollectionC = {
 	id: number;
 	parent_id: number | CollectionA;
@@ -57,4 +57,10 @@ export type CollectionC = {
 // Singleton collection
 export type CollectionD = {
 	id: number;
+};
+
+// Used to extend directus_users collection, cannot modify core fields
+export type CustomUser = {
+	custom_field?: boolean;
+	id: number; // core collection type is string (uuid), number will not be accepted as a valid modification
 };

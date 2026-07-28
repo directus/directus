@@ -325,7 +325,7 @@ function useDisplayValue() {
 				>
 					<template v-if="$slots.prepend || displayValue.icon || displayValue.color" #prepend>
 						<slot v-if="$slots.prepend" name="prepend" />
-						<VIcon v-else-if="displayValue.icon" :name="displayValue.icon" :color="displayValue.color" />
+						<VIcon v-else-if="displayValue.icon" :name="displayValue.icon" :color="displayValue.color" small />
 						<DisplayColor v-else-if="displayValue.color" :value="displayValue.color" />
 					</template>
 					<template #append>

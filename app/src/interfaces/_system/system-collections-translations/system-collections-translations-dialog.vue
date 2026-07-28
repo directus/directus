@@ -13,6 +13,7 @@ import VNotice from '@/components/v-notice.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { useLicenseStore } from '@/stores/license';
 import { useRelationsStore } from '@/stores/relations';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -34,6 +35,7 @@ const active = defineModel<boolean>('active', { default: false });
 
 const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
+const licenseStore = useLicenseStore();
 const relationsStore = useRelationsStore();
 
 const submitting = ref(false);
@@ -353,7 +355,12 @@ async function submit() {
 	submitting.value = false;
 
 	try {
-		await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate(), relationsStore.hydrate()]);
+		await Promise.all([
+			collectionsStore.hydrate(),
+			fieldsStore.hydrate(),
+			licenseStore.hydrate(),
+			relationsStore.hydrate(),
+		]);
 	} catch (error) {
 		unexpectedError(error);
 	}

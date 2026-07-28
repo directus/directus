@@ -646,6 +646,13 @@ editing_in_batch: 'Grupna izmjena {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model Podataka
 settings_project: Podešavanja
+licensing:
+  unlimited: Neograničeno
+  addon_update: Ažuriranje
+  resolve_show_n_more: 'Prikaži {count} više'
+  resolve_sso_admin_password: Lozinka
+  entitlements:
+    collections: Kolekcije
 settings_presets: Oznake
 settings_translations: Prevodi
 one_or_more_options_are_missing: Jedna ili više opcija nedostaje
@@ -692,6 +699,7 @@ fields:
     collection: Kolekcija
     icon: Ikonica
     note: Napomena
+    status: Status
     color: Boja
     display_template: Šablon za Prikaz
     hidden: Sakriveno
@@ -1024,6 +1032,7 @@ interfaces:
     sort: Sortiranje
     field_note_placeholder: Unesi napomenu polja...
     interface_group: Opcije Interfejsa
+    edit_mode_inline: Linijski
   slider:
     slider: Slajder
     description: Odaberi broj uz pomoć slajdera

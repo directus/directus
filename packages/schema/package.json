@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema",
-	"version": "13.0.8",
+	"version": "14.0.0",
 	"description": "Utility for extracting information about existing DB schema",
 	"keywords": [
 		"sql",
@@ -12,14 +12,14 @@
 		"sqlite3",
 		"javascript"
 	],
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
 		"directory": "packages/schema"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "BUSL-1.1",
+	"license": "SEE LICENSE IN license",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"type": "module",
 	"exports": {

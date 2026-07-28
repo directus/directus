@@ -1,4 +1,7 @@
 export enum ErrorCode {
+	AddonNotAvailable = 'ADDON_NOT_AVAILABLE',
+	AddonNotFound = 'ADDON_NOT_FOUND',
+	AddonQuantityOutOfRange = 'ADDON_QUANTITY_OUT_OF_RANGE',
 	ContainsNullValues = 'CONTAINS_NULL_VALUES',
 	ContentTooLarge = 'CONTENT_TOO_LARGE',
 	EmailLimitExceeded = 'EMAIL_LIMIT_EXCEEDED',
@@ -16,6 +19,11 @@ export enum ErrorCode {
 	InvalidProviderConfig = 'INVALID_PROVIDER_CONFIG',
 	InvalidQuery = 'INVALID_QUERY',
 	InvalidToken = 'INVALID_TOKEN',
+	LicenseInvalid = 'LICENSE_INVALID',
+	LicenseManagedByEnv = 'LICENSE_MANAGED_BY_ENV',
+	LicenseOfflineUnsupported = 'LICENSE_OFFLINE_UNSUPPORTED',
+	LicenseResolveIncomplete = 'LICENSE_RESOLVE_INCOMPLETE',
+	LicenseServiceUnavailable = 'LICENSE_SERVICE_UNAVAILABLE',
 	LimitExceeded = 'LIMIT_EXCEEDED',
 	MethodNotAllowed = 'METHOD_NOT_ALLOWED',
 	NotNullViolation = 'NOT_NULL_VIOLATION',
@@ -23,6 +31,7 @@ export enum ErrorCode {
 	OutOfTime = 'OUT_OF_TIME',
 	RangeNotSatisfiable = 'RANGE_NOT_SATISFIABLE',
 	RecordNotUnique = 'RECORD_NOT_UNIQUE',
+	ResourceRestricted = 'RESOURCE_RESTRICTED',
 	RequestsExceeded = 'REQUESTS_EXCEEDED',
 	RouteNotFound = 'ROUTE_NOT_FOUND',
 	ServiceUnavailable = 'SERVICE_UNAVAILABLE',
@@ -33,4 +42,5 @@ export enum ErrorCode {
 	UserSuspended = 'USER_SUSPENDED',
 	ValueOutOfRange = 'VALUE_OUT_OF_RANGE',
 	ValueTooLong = 'VALUE_TOO_LONG',
+	VersionHashMismatch = 'VERSION_HASH_MISMATCH',
 }

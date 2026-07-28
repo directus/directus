@@ -399,6 +399,71 @@ describe('deep', () => {
 
 		expect(sanitizedQuery.deep).toEqual({ deep: { relational_field_a: { _limit: 100, _sort: ['name'] } } });
 	});
+
+	test('should convert nested filters with dynamic variables to corresponding values', async () => {
+		const deep = {
+			deep: {
+				relational_field: {
+					_filter: { name: { _eq: '$CURRENT_USER.something' } },
+				},
+			},
+		};
+
+		vi.mocked(fetchDynamicVariableData).mockResolvedValue({ $CURRENT_USER: { something: 'test' } });
+
+		const sanitizedQuery = await sanitizeQuery({ deep }, null as any, {} as any);
+
+		expect(sanitizedQuery.deep).toEqual({
+			deep: {
+				relational_field: {
+					_filter: { name: { _eq: 'test' } },
+				},
+			},
+		});
+	});
+
+	// Regression tests for GHSA-gwvv-rr68-cmv6: a `deep` key that names an inherited builtin (e.g.
+	// `toString`) must not be walked into while building the query object, as that corrupts a shared
+	// prototype and crashes the process. These keys bypass the classic
+	// `__proto__`/`constructor`/`prototype` blocklists, so the fix contains the write on a plain
+	// object instead of touching the builtin.
+	describe('prototype pollution (GHSA-gwvv-rr68-cmv6)', () => {
+		test.each([
+			'{"toString":{"call":{"_limit":1}}}',
+			'{"hasOwnProperty":{"x":{"_limit":1}}}',
+			'{"valueOf":{"x":{"_limit":1}}}',
+			'{"isPrototypeOf":{"x":{"_limit":1}}}',
+			'{"constructor":{"x":{"_limit":1}}}',
+			'{"__proto__":{"polluted":{"_limit":1}}}',
+		])('should not corrupt a builtin when deep string names one: %s', async (deep) => {
+			const original = Object.prototype.toString.call;
+
+			// Must not throw and, crucially, must not mutate the shared builtin
+			await expect(sanitizeQuery({ deep }, null as any)).resolves.toBeDefined();
+
+			expect(Object.prototype.toString.call).toBe(original);
+			expect(typeof Object.prototype.toString.call).toBe('function');
+			expect(({} as any).polluted).toBeUndefined();
+		});
+
+		test('should not corrupt Object.prototype when a builtin key is nested below a real relation', async () => {
+			const original = Object.prototype.toString.call;
+
+			await expect(
+				sanitizeQuery({ deep: { real_relation: { toString: { call: { _limit: 1 } } } } }, null as any),
+			).resolves.toBeDefined();
+
+			expect(Object.prototype.toString.call).toBe(original);
+			// The standard type-tag check (used across Node/pino/dateformat) must still work
+			expect(Object.prototype.toString.call([])).toBe('[object Array]');
+		});
+
+		test('keeps a builtin-named deep key as harmless own data', async () => {
+			const sanitizedQuery = await sanitizeQuery({ deep: '{"toString":{"call":{"_limit":1}}}' }, null as any);
+
+			expect(sanitizedQuery.deep).toEqual({ toString: { call: { _limit: 1 } } });
+		});
+	});
 });
 
 describe('alias', () => {

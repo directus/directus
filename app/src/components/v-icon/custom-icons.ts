@@ -6,6 +6,7 @@ import CustomIconFlipHorizontal from './custom-icons/flip_horizontal.vue';
 import CustomIconFlipVertical from './custom-icons/flip_vertical.vue';
 import CustomIconFolderLock from './custom-icons/folder_lock.vue';
 import CustomIconFolderMove from './custom-icons/folder_move.vue';
+import CustomIconFunctionF from './custom-icons/function_f.vue';
 import CustomIconGrid1 from './custom-icons/grid_1.vue';
 import CustomIconGrid2 from './custom-icons/grid_2.vue';
 import CustomIconGrid3 from './custom-icons/grid_3.vue';
@@ -18,6 +19,10 @@ import CustomIconSignalWifi1Bar from './custom-icons/signal_wifi_1_bar.vue';
 import CustomIconSignalWifi2Bar from './custom-icons/signal_wifi_2_bar.vue';
 import CustomIconSignalWifi3Bar from './custom-icons/signal_wifi_3_bar.vue';
 import CustomIconVercel from './custom-icons/vercel.vue';
+import CustomIconLogoAnthropic from '@/ai/components/logos/claude.vue';
+import CustomIconLogoCustomProvider from '@/ai/components/logos/custom.vue';
+import CustomIconLogoGoogle from '@/ai/components/logos/google.vue';
+import CustomIconLogoOpenai from '@/ai/components/logos/openai.vue';
 
 export const components: Record<string, any> = {
 	CustomIconDirectus,
@@ -37,6 +42,11 @@ export const components: Record<string, any> = {
 	CustomIconFlipVertical,
 	CustomIconFolderMove,
 	CustomIconFolderLock,
+	CustomIconFunctionF,
+	CustomIconLogoAnthropic,
+	CustomIconLogoCustomProvider,
+	CustomIconLogoGoogle,
+	CustomIconLogoOpenai,
 	CustomIconLogout,
 	CustomIconNetlify,
 	CustomIconVercel,

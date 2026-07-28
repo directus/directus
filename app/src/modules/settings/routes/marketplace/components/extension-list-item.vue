@@ -37,8 +37,14 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 		<VListItemContent>
 			<div class="name">
 				{{ formatName(extension) }}
-				<VChip v-if="showType" outlined x-small class="chip">{{ chip }}</VChip>
-				<VChip v-if="extensionsStore.extensionIds.includes(extension.id)" outlined x-small class="chip">
+				<VChip v-if="showType" kind="primary" :label="false" x-small class="chip">{{ chip }}</VChip>
+				<VChip
+					v-if="extensionsStore.extensionIds.includes(extension.id)"
+					kind="primary"
+					:label="false"
+					x-small
+					class="chip"
+				>
 					{{ $t('installed') }}
 				</VChip>
 			</div>
@@ -114,9 +120,6 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 .chip {
 	margin-inline-start: 0.25rem;
 	vertical-align: 0.125rem;
-
-	--v-chip-color: var(--theme--primary);
-	--v-chip-background-color: var(--theme--primary-subdued);
 }
 
 .license.known {

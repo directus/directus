@@ -287,6 +287,8 @@ function toggleManualSort() {
 
 <style lang="scss" scoped>
 .table-header {
+	--drag-handle-hit-area: calc(var(--drag-handle-width) * 2);
+
 	.cell {
 		position: relative;
 		block-size: 2.8125rem; /* +2px for bottom border */
@@ -294,7 +296,7 @@ function toggleManualSort() {
 		font-weight: 500;
 		font-size: 0.8125rem;
 		background-color: var(--v-table-background-color, var(--theme--background));
-		border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-block-end: var(--theme--border-width) solid var(--theme--border-color);
 
 		&.select {
 			--focus-ring-offset: var(--focus-ring-offset-invert);
@@ -424,25 +426,27 @@ function toggleManualSort() {
 		position: absolute;
 		inset-block-start: 0;
 		inset-inline-end: 0;
-		inline-size: 0.3125rem;
+		inline-size: var(--drag-handle-hit-area);
 		block-size: 100%;
 		cursor: ew-resize;
 		transition: opacity var(--fast) var(--transition);
 
 		&::after {
 			position: relative;
-			inset-block-start: 20%;
-			inset-inline-start: 0.1875rem;
+			inset-block-start: 50%;
+			inset-inline-start: 50%;
+			transform: translate(-50%, -50%);
 			display: block;
 			inline-size: var(--theme--border-width);
 			block-size: 60%;
-			background-color: var(--theme--border-color-subdued);
+			background-color: var(--theme--border-color);
 			content: '';
 			transition: background-color var(--fast) var(--transition);
 		}
 
 		&:hover::after {
 			background-color: var(--theme--primary);
+			inline-size: var(--drag-handle-width);
 		}
 	}
 }
@@ -454,18 +458,19 @@ function toggleManualSort() {
 :deep(.header-order-ghost) {
 	&::after,
 	&::before {
-		inline-size: 0.125rem;
 		content: '';
 		display: block;
-		position: absolute;
-		inset-inline-end: 0;
-		inset-block-start: 20%;
+		inline-size: var(--drag-handle-width);
 		block-size: 60%;
+		position: absolute;
+		inset-block-start: 50%;
+		inset-inline-start: 100%;
+		transform: translate(calc(-50% - var(--drag-handle-hit-area) / 2), -50%);
 		background-color: var(--theme--primary);
 	}
 
 	&::before {
-		inset-inline: 0 auto;
+		inset-inline-start: 0;
 	}
 }
 

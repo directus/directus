@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VIconFile from '@/components/v-icon-file.vue';
 import VImage from '@/components/v-image.vue';
@@ -25,19 +24,18 @@ const props = withDefaults(
 		item?: Record<string, any>;
 		modelValue?: (string | number)[];
 		selectMode?: boolean;
-		to?: string;
 		readonly?: boolean;
 	}>(),
 	{
 		icon: 'box',
 		modelValue: () => [],
-		to: '',
 	},
 );
 
-const emit = defineEmits(['update:modelValue']);
-
-const router = useRouter();
+const emit = defineEmits<{
+	'update:modelValue': [value: (string | number)[]];
+	click: [payload: { item: Record<string, any>; event: MouseEvent | KeyboardEvent }];
+}>();
 
 const imgError = ref(false);
 
@@ -93,12 +91,9 @@ function toggleSelection() {
 	}
 }
 
-function handleClick() {
-	if (props.selectMode === true || props.modelValue.length > 0) {
-		toggleSelection();
-	} else {
-		router.push(props.to);
-	}
+function handleClick(event: MouseEvent | KeyboardEvent) {
+	if (!props.item) return;
+	emit('click', { item: props.item, event });
 }
 </script>
 
@@ -107,9 +102,9 @@ function handleClick() {
 		class="card"
 		:class="{ loading, readonly, selected: item && modelValue.includes(item[itemKey]), 'select-mode': selectMode }"
 		:tabindex="readonly || loading || modelValue.length > 0 ? -1 : 0"
-		@click="handleClick"
-		@keydown.self.enter.prevent="handleClick"
-		@keydown.self.space.prevent="handleClick"
+		@click="handleClick($event)"
+		@keydown.self.enter.prevent="handleClick($event)"
+		@keydown.self.space.prevent="handleClick($event)"
 	>
 		<VIcon class="selector" :name="selectionIcon" clickable @click.stop="toggleSelection" />
 		<div class="header">

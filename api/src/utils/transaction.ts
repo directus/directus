@@ -14,8 +14,9 @@ import { useLogger } from '../logger/index.js';
 export const transaction = async <T = unknown>(
 	knex: Knex,
 	handler: (knex: Knex.Transaction) => Promise<T>,
+	forceNewTransaction = false,
 ): Promise<T> => {
-	if (knex.isTransaction) {
+	if (knex.isTransaction && forceNewTransaction === false) {
 		return handler(knex as Knex.Transaction);
 	} else {
 		try {

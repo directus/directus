@@ -5,12 +5,12 @@ import type { Database, Options } from './sandbox.js';
 
 const directusConfig = {
 	TZ: 'UTC',
-	ADMIN_EMAIL: 'admin@example.com',
-	PROJECT_OWNER: 'admin@example.com',
-	ADMIN_PASSWORD: 'pw',
-	ADMIN_TOKEN: 'admin',
 	SECRET: 'directus-test',
 	TELEMETRY: 'false',
+	// Non-routable on purpose: unlicensed instances fall back to the core
+	// license, whose telemetry_required entitlement force-enables telemetry
+	TELEMETRY_URL: 'http://127.0.0.1:1',
+	COMPLIANCE_URL: 'http://127.0.0.1:1',
 	CONFIG_PATH: join(directusFolder, '.env'), // Override to non existent file so process envs aren't overwritten by file envs
 	RATE_LIMITER_ENABLED: 'false',
 	PRESSURE_LIMITER_ENABLED: 'false',
@@ -24,6 +24,7 @@ const directusConfig = {
 	HOST: '127.0.0.1',
 	REDIS_HOST: '127.0.0.1',
 	REDIS_PORT: '$PORT',
+	LICENSE_PORT: '$PORT_LICENSE',
 } as const;
 
 const maria = {
@@ -146,18 +147,33 @@ const baseConfig = {
 
 export async function getEnv(database: Database, opts: Options): Promise<Env> {
 	const portMap: Record<string, string> = {};
+	const base = baseConfig[database];
 
 	const env = {
-		...baseConfig[database],
+		...base,
 		REDIS_ENABLED: String(opts.extras.redis),
 		CACHE_ENABLED: String(opts.cache),
 		NODE_ENV: opts.dev ? 'development' : 'production',
+		...(!opts.skipSetup
+			? {
+					ADMIN_EMAIL: 'admin@example.com',
+					PROJECT_OWNER: 'admin@example.com',
+					ADMIN_PASSWORD: 'pw',
+					ADMIN_TOKEN: 'admin',
+				}
+			: {}),
 		...(process.arch === 'arm64' ? { DOCKER_DEFAULT_PLATFORM: 'linux/amd64' } : {}),
 		...(opts.extras.minio ? minio : {}),
 		...(opts.extras.saml ? saml : {}),
 		...(opts.extras.maildev ? maildev : {}),
 		...opts.env,
 		...(process.env as Record<string, any>),
+		...(opts.extras.license ? { NODE_ENV: 'development', LICENSE_API_URL: `http://${base.HOST}:$PORT_LICENSE` } : {}),
+		// PORT/PUBLIC_URL must be authoritative — process.env carries the vitest
+		// per-project PORT baseline, but opts.port is the resolved port the API
+		// actually binds (and what tests reach via apis[0].port).
+		PORT: String(opts.port),
+		PUBLIC_URL: `http://${base.HOST}:${opts.port}`,
 	} satisfies Env;
 
 	if (opts.dbVersion && 'DB_VERSION' in env) {
@@ -185,10 +201,17 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 }
 
 export type Env = (typeof baseConfig)[Database] & {
+	PORT: string;
+	PUBLIC_URL: string;
 	REDIS_ENABLED: string;
 	CACHE_ENABLED: string;
 	NODE_ENV: string;
+	ADMIN_EMAIL?: 'admin@example.com';
+	PROJECT_OWNER?: 'admin@example.com';
+	ADMIN_PASSWORD?: 'pw';
+	ADMIN_TOKEN?: 'admin';
 	DOCKER_DEFAULT_PLATFORM?: string;
 } & Partial<typeof minio> &
 	Partial<typeof saml> &
-	Partial<typeof maildev>;
+	Partial<typeof maildev> &
+	Partial<{ LICENSE_API_URL: string }>;

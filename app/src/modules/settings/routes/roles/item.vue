@@ -5,7 +5,6 @@ import { computed, ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import RoleInfoSidebarDetail from './role-info-sidebar-detail.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -15,6 +14,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -32,6 +32,7 @@ const router = useRouter();
 
 const userStore = useUserStore();
 const serverStore = useServerStore();
+const licenseStore = useLicenseStore();
 const userInviteModalActive = ref(false);
 const { primaryKey } = toRefs(props);
 
@@ -69,6 +70,7 @@ async function saveAndStay() {
 	try {
 		await save();
 		await userStore.hydrate();
+		licenseStore.hydrate();
 		revisionsSidebarDetailRef.value?.refresh?.();
 	} catch {
 		// `save` shows unexpected error dialog
@@ -79,6 +81,7 @@ async function saveAndAddNew() {
 	try {
 		await save();
 		await userStore.hydrate();
+		licenseStore.hydrate();
 		router.push({ name: 'settings-add-new-role' });
 	} catch {
 		// `save` shows unexpected error dialog
@@ -89,6 +92,7 @@ async function saveAndQuit() {
 	try {
 		await save();
 		await userStore.hydrate();
+		licenseStore.hydrate();
 		router.push({ name: 'settings-roles-collection' });
 	} catch {
 		// `save` shows unexpected error dialog
@@ -100,6 +104,7 @@ async function deleteAndQuit() {
 
 	try {
 		await remove();
+		licenseStore.hydrate();
 		edits.value = {};
 		router.replace({ name: 'settings-roles-collection' });
 	} catch {
@@ -126,17 +131,13 @@ function discardAndStay() {
 		show-back
 		back-to="/settings/roles"
 	>
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('settings_roles'), to: '/settings/roles' }]" />
-		</template>
-
 		<template #actions>
 			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('delete_label')"
-						class="action-delete"
-						secondary
+						kind="danger"
+						variant="ghost"
 						:disabled="item === null"
 						icon="delete"
 						@click="on"
@@ -160,21 +161,22 @@ function discardAndStay() {
 			<PrivateViewHeaderBarActionButton
 				v-if="canInviteUsers"
 				v-tooltip.bottom="$t('invite_users')"
-				secondary
+				variant="ghost"
 				icon="person_add"
 				@click="userInviteModalActive = true"
 			/>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('save')"
+				:label="$t('save')"
 				:loading="saving"
 				:disabled="!hasEdits"
 				icon="check"
 				@click="saveAndQuit"
 			>
-				<template #append-outer>
+				<template #split-menu>
 					<SaveOptions
-						v-if="hasEdits"
 						:disabled-options="['save-as-copy']"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
@@ -227,11 +229,6 @@ function discardAndStay() {
 	--v-button-color: var(--theme--primary);
 	--v-button-background-color-hover: var(--theme--primary-subdued);
 	--v-button-color-hover: var(--theme--primary);
-}
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
 }
 
 .content {

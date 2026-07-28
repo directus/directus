@@ -16,8 +16,8 @@ Now you can start up the test suite by running:
 
 - `pnpm test` or `pnpm vitest --project sqlite` to start up the tests against directus running with a sqlite database
 
-- `pnpm test:dev my-test` or `DEV=true pnpm vitest --project sqlite my-test` to start all tests matching the name
-  `my-test` in dev mode, which hot reloads the api and keeps the docker containers running.
+- `pnpm test:dev my-test` or `NODE_ENV=development pnpm vitest --project sqlite my-test` to start all tests matching the
+  name `my-test` in dev mode, which hot reloads the api and keeps the docker containers running.
 
 ## Running tests indepth
 

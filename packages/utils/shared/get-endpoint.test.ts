@@ -9,4 +9,8 @@ describe('getEndpoint', () => {
 	it('When a non-system collection is passed in', () => {
 		expect(getEndpoint('user_collection')).toBe('/items/user_collection');
 	});
+
+	it('returns override path for directus_oauth_clients', () => {
+		expect(getEndpoint('directus_oauth_clients')).toBe('/mcp-oauth/clients');
+	});
 });

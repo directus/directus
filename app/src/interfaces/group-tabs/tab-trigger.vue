@@ -88,7 +88,7 @@ function useComparisonIndicator() {
 	>
 		<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 		<span class="field-name">{{ field.name }}</span>
-		<VChip v-if="badge" x-small>{{ badge }}</VChip>
+		<VChip v-if="badge" :label="false" x-small>{{ badge }}</VChip>
 		<VIcon
 			v-if="validationMessages.length > 0"
 			v-tooltip="validationMessages.join('\n')"

@@ -4,7 +4,7 @@
 # ONLY FOR DEBUGGING. THIS IS NOT INTENDED FOR PRODUCTION USE.
 #
 # For production use see the docker compose file example in the docs:
-#     https://docs.directus.io/self-hosted/docker-guide.html#example-docker-compose
+#     https://docs.directus.com/self-hosted/docker-guide.html#example-docker-compose
 #
 # For receiving emails via MailDev, you'll need to add the following to your env:
 #   EMAIL_FROM=directus@directus.io

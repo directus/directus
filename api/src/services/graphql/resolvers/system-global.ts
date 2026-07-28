@@ -1,7 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Accountability, GraphQLParams } from '@directus/types';
-import argon2 from 'argon2';
 import {
 	GraphQLBoolean,
 	GraphQLEnumType,
@@ -17,7 +16,6 @@ import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS }
 import { rateLimiter } from '../../../middleware/rate-limiter-registration.js';
 import { createDefaultAccountability } from '../../../permissions/utils/create-default-accountability.js';
 import type { AuthenticationMode } from '../../../types/index.js';
-import { generateHash } from '../../../utils/generate-hash.js';
 import { getIPFromReq } from '../../../utils/get-ip-from-req.js';
 import { getSecret } from '../../../utils/get-secret.js';
 import isDirectusJWT from '../../../utils/is-directus-jwt.js';
@@ -364,25 +362,6 @@ export function globalResolvers(gql: GraphQLService, schemaComposer: SchemaCompo
 				}
 
 				return nanoid(args['length'] ? args['length'] : 32);
-			},
-		},
-		utils_hash_generate: {
-			type: GraphQLString,
-			args: {
-				string: new GraphQLNonNull(GraphQLString),
-			},
-			resolve: async (_, args) => {
-				return await generateHash(args['string']);
-			},
-		},
-		utils_hash_verify: {
-			type: GraphQLBoolean,
-			args: {
-				string: new GraphQLNonNull(GraphQLString),
-				hash: new GraphQLNonNull(GraphQLString),
-			},
-			resolve: async (_, args) => {
-				return await argon2.verify(args['hash'], args['string']);
 			},
 		},
 		utils_sort: {

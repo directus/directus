@@ -22,6 +22,7 @@ export type Config = {
 export const paths = {
 	cli: join(__dirname, '..', '..', '..', 'dist', 'cli'),
 	cwd: join(__dirname, '..'),
+	license: join(__dirname, '..', '..', 'mock-license-server'),
 };
 
 const migrationsDir = './setup/migrations';
@@ -91,10 +92,15 @@ const directusStorageConfig = {
 
 const directusConfig = {
 	...process.env,
+	NODE_ENV: 'development',
 	ADMIN_EMAIL: 'admin@example.com',
 	ADMIN_PASSWORD: 'password',
 	SECRET: 'directus-test',
 	TELEMETRY: 'false',
+	// Non-routable on purpose: unlicensed instances fall back to the core
+	// license, whose telemetry_required entitlement force-enables telemetry
+	TELEMETRY_URL: 'http://127.0.0.1:1',
+	COMPLIANCE_URL: 'http://127.0.0.1:1',
 	CACHE_SCHEMA: 'true',
 	CACHE_SCHEMA_MAX_ITERATIONS: '100',
 	CACHE_ENABLED: 'false',
@@ -120,6 +126,8 @@ const directusConfig = {
 	EMAIL_TRANSPORT: 'smtp',
 	EMAIL_SMTP_HOST: '127.0.0.1',
 	EMAIL_SMTP_PORT: '1025',
+	LICENSE_API_URL: 'http://127.0.0.1:7000',
+	LICENSE_KEY: 'D0000-00000-00000-00000-0000K',
 	...directusAuthConfig,
 	...directusStorageConfig,
 };
@@ -335,10 +343,8 @@ const config: Config = {
 	},
 };
 
-const isWindows = ['win32', 'win64'].includes(process.platform);
-
 for (const vendor of allVendors) {
-	config.envs[vendor]['TZ'] = isWindows ? '0' : 'UTC';
+	config.envs[vendor]['TZ'] = 'UTC';
 	config.envs[vendor]['PUBLIC_URL'] = getUrl(vendor);
 }
 

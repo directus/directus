@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en"{{ themeAttr | raw }}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Authorization Error - {{ projectName }}</title>
+<style>
+{{ styles | raw }}
+h1 { color: var(--theme--danger); }
+.note { text-align: center; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo-row">
+    <div class="{{ logoClass }}">
+      {% if logoUrl %}
+        <img src="{{ logoUrl }}" alt="{{ logoAlt }}">
+      {% elsif logoDataUri %}
+        <img src="{{ logoDataUri | raw }}" alt="Directus">
+      {% endif %}
+    </div>
+  </div>
+  <h1>Authorization Error</h1>
+  <p class="note">{{ description }}</p>
+</div>
+</body>
+</html>

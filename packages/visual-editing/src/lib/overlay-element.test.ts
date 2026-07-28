@@ -4,10 +4,11 @@ import { OverlayElement } from './overlay-element.ts';
 import { OverlayManager } from './overlay-manager.ts';
 
 const mockIsAiEnabled = vi.fn().mockReturnValue(false);
+const mockGetMessages = vi.fn().mockReturnValue(null);
 
 vi.mock('./directus-frame.ts', () => ({
 	DirectusFrame: vi.fn(function () {
-		return { isAiEnabled: mockIsAiEnabled };
+		return { isAiEnabled: mockIsAiEnabled, getMessages: mockGetMessages };
 	}),
 }));
 
@@ -24,6 +25,7 @@ describe('OverlayElement', () => {
 		document.body.innerHTML = '';
 		document.head.innerHTML = '';
 		mockIsAiEnabled.mockReturnValue(false);
+		mockGetMessages.mockReturnValue(null);
 		EditableStore.highlightOverlayElements = false;
 	});
 
@@ -92,6 +94,23 @@ describe('OverlayElement', () => {
 
 			overlay.updateRect({ width: 100, height: 50, left: 0, top: 0 } as DOMRect);
 			expect(getRect().style.display).toBe('');
+		});
+
+		it('adds actions-flipped class when rect is too close to the viewport top', () => {
+			const overlay = new OverlayElement();
+
+			overlay.updateRect({ width: 100, height: 50, left: 10, top: 0 } as DOMRect);
+
+			expect(getRect().classList.contains(OverlayManager.RECT_ACTIONS_FLIPPED_CLASS_NAME)).toBe(true);
+		});
+
+		it('removes actions-flipped class when rect has room above', () => {
+			const overlay = new OverlayElement();
+
+			overlay.updateRect({ width: 100, height: 50, left: 10, top: 0 } as DOMRect);
+			overlay.updateRect({ width: 100, height: 50, left: 10, top: 200 } as DOMRect);
+
+			expect(getRect().classList.contains(OverlayManager.RECT_ACTIONS_FLIPPED_CLASS_NAME)).toBe(false);
 		});
 	});
 
@@ -215,5 +234,41 @@ describe('OverlayElement', () => {
 
 		overlay.toggleHighlightActive(false);
 		expect(getRect().classList.contains(OverlayManager.RECT_HIGHLIGHT_ACTIVE_CLASS_NAME)).toBe(false);
+	});
+
+	describe('messages from DirectusFrame', () => {
+		it('sets title and aria-label on edit button', () => {
+			mockGetMessages.mockReturnValue({ edit: 'Edit', addToContext: 'Add to AI Context' });
+
+			const overlay = new OverlayElement();
+
+			expect(overlay.editButton.title).toBe('Edit');
+			expect(overlay.editButton.getAttribute('aria-label')).toBe('Edit');
+		});
+
+		it('sets title and aria-label on ai button when present', () => {
+			mockIsAiEnabled.mockReturnValue(true);
+			mockGetMessages.mockReturnValue({ edit: 'Edit', addToContext: 'Add to AI Context' });
+
+			const overlay = new OverlayElement();
+
+			expect(overlay.aiButton?.title).toBe('Add to AI Context');
+			expect(overlay.aiButton?.getAttribute('aria-label')).toBe('Add to AI Context');
+		});
+
+		it('does nothing when messages is null', () => {
+			mockGetMessages.mockReturnValue(null);
+
+			const overlay = new OverlayElement();
+
+			expect(overlay.editButton.title).toBe('');
+			expect(overlay.editButton.getAttribute('aria-label')).toBeNull();
+		});
+
+		it('does not throw when ai button is absent and messages are set', () => {
+			mockGetMessages.mockReturnValue({ edit: 'Edit', addToContext: 'Add to AI Context' });
+
+			expect(() => new OverlayElement()).not.toThrow();
+		});
 	});
 });
