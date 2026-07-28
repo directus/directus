@@ -402,11 +402,26 @@ const isFormNonEditable = computed(
 		!canAutoSwitchToDraft.value,
 );
 
-const disabledOptions = computed(() => {
+const baseDisabledOptions = computed(() => {
 	if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];
 	if (isNew.value) return ['save-as-copy'];
 	return [];
 });
+
+const defaultSaveAction = computed(() => {
+	const action = settingsStore.settings?.default_save_action;
+	const isSingleton = collectionInfo.value?.meta?.singleton === true;
+
+	if (action === 'save-and-stay') return 'save-and-stay';
+
+	if (action === 'save-and-create-new' && !isSingleton && !baseDisabledOptions.value.includes('save-and-add-new')) {
+		return 'save-and-add-new';
+	}
+
+	return 'save-and-quit';
+});
+
+const disabledOptions = computed(() => [...baseDisabledOptions.value, defaultSaveAction.value]);
 
 const currentVersionId = computed(() => currentVersion.value?.id ?? null);
 
@@ -663,12 +678,9 @@ async function saveAndQuit() {
 }
 
 function saveDefault() {
-	const action = settingsStore.settings?.default_save_action;
-	const isSingleton = collectionInfo.value?.meta?.singleton === true;
-
-	if (action === 'save-and-stay') {
+	if (defaultSaveAction.value === 'save-and-stay') {
 		saveAndStay();
-	} else if (action === 'save-and-create-new' && !isSingleton && !disabledOptions.value.includes('save-and-add-new')) {
+	} else if (defaultSaveAction.value === 'save-and-add-new') {
 		saveAndAddNew();
 	} else {
 		saveAndQuit();

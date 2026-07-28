@@ -36,6 +36,7 @@ fields:
     interface: select-dropdown
     width: half
     options:
+      placeholder: $t:save_and_quit
       choices:
         - value: save-and-quit
           text: $t:save_and_quit
