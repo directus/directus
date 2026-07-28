@@ -93,7 +93,9 @@ export const useAiStore = defineStore('ai-store', () => {
 	});
 
 	// Model selection
-	const models = computed<AppModelDefinition[]>(() => getAvailableModels(settingsStore.settings, serverStore.info.ai_providers ?? []));
+	const models = computed<AppModelDefinition[]>(() =>
+		getAvailableModels(settingsStore.settings, serverStore.info.ai_providers ?? []),
+	);
 
 	const defaultModel = computed(() => models.value[0] ?? null);
 
