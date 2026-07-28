@@ -66,6 +66,25 @@ describe('cut', () => {
 		expect(write).toHaveBeenCalledOnce();
 		expect(editor.getText()).toBe('');
 	});
+
+	test('does not delete the selection when the Clipboard API is unsupported', async () => {
+		// remove `clipboard` everywhere `'clipboard' in navigator` could find it
+		Reflect.deleteProperty(navigator, 'clipboard');
+		const proto = Object.getPrototypeOf(navigator);
+		const protoDescriptor = Object.getOwnPropertyDescriptor(proto, 'clipboard');
+		if (protoDescriptor) Reflect.deleteProperty(proto, 'clipboard');
+
+		try {
+			const editor = makeEditor();
+			editor.commands.selectAll();
+
+			await useClipboardActions().cutSelection(editor);
+
+			expect(editor.getText()).toBe('hello world');
+		} finally {
+			if (protoDescriptor) Object.defineProperty(proto, 'clipboard', protoDescriptor);
+		}
+	});
 });
 
 describe('paste', () => {

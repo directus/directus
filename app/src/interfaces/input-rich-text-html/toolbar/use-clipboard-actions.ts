@@ -30,7 +30,8 @@ export function useClipboardActions() {
 	}
 
 	async function cutSelection(editor: Editor) {
-		if (editor.state.selection.empty) return;
+		// bail when copy would no-op — deleting without copying loses content
+		if (editor.state.selection.empty || !isSupported.value) return;
 		await copySelection(editor);
 		editor.chain().focus().deleteSelection().run();
 	}
