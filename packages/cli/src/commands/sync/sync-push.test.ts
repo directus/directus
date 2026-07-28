@@ -157,6 +157,59 @@ describe('sync push', () => {
 		expect(err).toContain('pages → website (group parent)');
 	});
 
+	function interceptServerInfo(version: string): void {
+		agent
+			.get(url)
+			.intercept({ path: /^\/server\/info/, method: 'GET', headers: { authorization: `Bearer ${token}` } })
+			.reply(200, { data: { version } }, { headers: { 'content-type': 'application/json' } });
+	}
+
+	function versionedSnapshot(version: string): Snapshot {
+		return {
+			version: 1,
+			directus: version,
+			vendor: 'postgres',
+			collections: [{ collection: 'articles', meta: { note: null } }],
+			fields: [{ collection: 'articles', field: 'title', type: 'string' }],
+			systemFields: [],
+			relations: [],
+		};
+	}
+
+	it('warns when the target Directus version differs from the source the snapshot was pulled from', async () => {
+		// A schema pulled from one major.minor and applied to another can produce spurious diffs (#27877
+		// class). The snapshot records its source version, so push compares it to the live target and warns
+		// before apply rather than leaving the operator to puzzle over the plan.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptServerInfo('11.1.0');
+		interceptDiff('merge', null);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+
+		const err = stderr.join('');
+		expect(err).toContain('Version skew');
+		expect(err).toContain('11.2.0');
+		expect(err).toContain('11.1.0');
+	});
+
+	it('does not warn on a patch-level version difference', async () => {
+		// Patch drift between instances is routine and harmless; warning on it would train operators to
+		// ignore the signal that matters. Only a major.minor mismatch is skew worth surfacing.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptServerInfo('11.2.5');
+		interceptDiff('merge', null);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+
+		expect(stderr.join('')).not.toContain('Version skew');
+	});
+
 	it('emits applied:true with the counts and the verified hash on --json', async () => {
 		// CI reads this exact shape to confirm the push landed and to record the hash it applied against.
 		seedConfig();

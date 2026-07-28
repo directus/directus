@@ -157,6 +157,59 @@ export async function fetchTotalCount(credential: ResolvedCredential, path: stri
 	}
 }
 
+/**
+ * The instance's Directus version from `/server/info` (`version` is visible to any authenticated user),
+ * or undefined when it cannot be read. Best-effort on purpose: this only feeds a source/target version
+ * skew warning, so a missing field, an older server, or any transient failure degrades to "no warning" and
+ * NEVER gates the sync.
+ */
+export async function fetchServerVersion(credential: ResolvedCredential): Promise<string | undefined> {
+	try {
+		const info = await connect(credential).request(serverInfo());
+		const version = get(info, 'version');
+		return typeof version === 'string' ? version : undefined;
+	} catch {
+		return undefined;
+	}
+}
+
+/**
+ * Whether the instance is licensed for custom permission rules, read from the admin-only `/license`
+ * endpoint (`entitlements.custom_permission_rules_enabled`, `override ?? default`). When false the server
+ * filters custom-rule permissions out of reads, which is exactly what makes a `/permissions` export
+ * incomplete. Best-effort: a non-admin 403, an older server without the endpoint, or any transient failure
+ * returns undefined, and the caller degrades to inference — it NEVER gates on this. Raw fetch because the
+ * SDK strips the response envelope this reads from (same reason as fetchTotalCount).
+ */
+export async function fetchCustomPermissionRulesEntitled(credential: ResolvedCredential): Promise<boolean | undefined> {
+	const token =
+		credential.kind === 'token'
+			? credential.token
+			: (await credentialStorage(credential.url, credential.profileName).get())?.access_token;
+
+	if (token === undefined || token === null) return undefined;
+
+	const url = new URL(`${credential.url.replace(/\/+$/, '')}/license`);
+
+	try {
+		const response = await fetch(url, {
+			headers: { authorization: `Bearer ${token}` },
+			signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+		});
+
+		if (!response.ok) return undefined;
+
+		const body = await response.json();
+		const override = get(body, 'data.entitlements.custom_permission_rules_enabled.override');
+		const fallback = get(body, 'data.entitlements.custom_permission_rules_enabled.default');
+		const value = override ?? fallback;
+
+		return typeof value === 'boolean' ? value : undefined;
+	} catch {
+		return undefined;
+	}
+}
+
 const AUTH_CODES = new Set(['INVALID_CREDENTIALS', 'INVALID_TOKEN', 'TOKEN_EXPIRED', 'INVALID_OTP', 'FORBIDDEN']);
 
 /** Never retain the raw Response: it carries the Authorization header. */

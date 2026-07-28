@@ -1,3 +1,4 @@
+import { fetchServerVersion } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
@@ -28,11 +29,35 @@ function assertNoMisroutedCollectionDrops(diff: SchemaDiff): void {
 	);
 }
 
+// The version's major.minor, or undefined when the string is not a recognizable Directus version (a dev
+// `0.0.0`, a fork tag, a git build). Patch is deliberately dropped — patch drift is not skew worth warning.
+function majorMinor(version: string | undefined): string | undefined {
+	const match = version?.match(/^(\d+)\.(\d+)/);
+	return match ? `${match[1]}.${match[2]}` : undefined;
+}
+
+// Warn when the target's Directus version differs (at major.minor) from the source the snapshot was pulled
+// from. Diffing/applying a schema across versions can surface spurious changes — the proactive form of the
+// reactive #27877 guard below. Best-effort: an unreadable or unparseable version on either side skips.
+function versionSkewWarning(source: string, target: string | undefined): string | undefined {
+	const a = majorMinor(source);
+	const b = majorMinor(target);
+
+	if (a === undefined || b === undefined || a === b) return undefined;
+
+	return `Version skew: the snapshot was pulled from Directus ${source}, but ${target} is on the target. Schema diff/apply across versions can surface spurious changes — align the versions if the plan looks wrong.`;
+}
+
 /**
  * Compare the committed snapshot with a target using the same read/fetch path for diff and push.
  */
 export async function localDiff(target: Target, mode: 'merge' | 'mirror', ctx: CliContext): Promise<DiffResult | null> {
 	const snapshot = readSnapshotFiles(target.schemaDir);
+
+	// The snapshot records the source's version at pull time (snapshot.directus); compare it to the target's
+	// live version so version skew surfaces as a warning before apply, not as a puzzling diff.
+	const skew = versionSkewWarning(snapshot.directus, await fetchServerVersion(target.credential));
+	if (skew !== undefined) ctx.ui.warn(skew);
 
 	// Warn before apply about references pointing outside the committed snapshot: a scoped export can strand
 	// a group parent or relation target the fresh instance lacks, and apply fails on it. Independent of pull's

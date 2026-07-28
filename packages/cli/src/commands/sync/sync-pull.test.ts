@@ -969,6 +969,70 @@ describe('sync pull resources and data', () => {
 		expect(metadata.incomplete).toEqual(['directus_permissions']);
 	});
 
+	it('confirms an unlicensed cause of a permissions shortfall from the /license entitlement', async () => {
+		// The probe proves the export is short; the license entitlement proves WHY. When the instance is
+		// unlicensed for custom permission rules, the warning must say so with certainty rather than inferring
+		// it — that is the decisive upgrade over hardcoding "unlicensed" for every shortfall.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+
+		for (const path of [
+			'/roles',
+			'/policies',
+			'/access',
+			'/flows',
+			'/operations',
+			'/dashboards',
+			'/panels',
+			'/translations',
+		]) {
+			interceptList(path, []);
+		}
+
+		interceptSingleton('/settings', { id: 1 });
+
+		const visible = { id: 5, policy: 'p1', collection: 'articles', action: 'read' };
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/permissions',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: [visible] }, { headers: { 'content-type': 'application/json' } });
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/permissions',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id', filter: JSON.stringify({ id: { _gt: 5 } }) },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
+
+		mockTotalCount(agent, '/permissions', 3);
+
+		// The shortfall triggers the lazy /license read; the instance reports the entitlement disabled.
+		agent
+			.get(url)
+			.intercept({ path: '/license', method: 'GET', headers: { authorization: `Bearer ${token}` } })
+			.reply(
+				200,
+				{ data: { entitlements: { custom_permission_rules_enabled: { override: null, default: false } } } },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		const err = stderr.join('');
+		expect(err).toContain('exported 1 of 3 rows');
+		expect(err).toContain('Confirmed: this instance is unlicensed for custom permission rules');
+	});
+
 	it('refuses a cross-source pull before ANY write or request — schema and data stay byte-identical', async () => {
 		// The writer-level refusal alone fired after the schema files were already replaced, leaving the
 		// new source's schema beside the old source's data. The preflight must run first: no intercepts

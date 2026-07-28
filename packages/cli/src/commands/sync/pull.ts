@@ -1,7 +1,7 @@
 import { relative } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import type { ProjectConfig } from '../../kernel/config/file.js';
-import { fetchTotalCount } from '../../kernel/connection.js';
+import { fetchCustomPermissionRulesEntitled, fetchTotalCount } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
@@ -279,6 +279,28 @@ function resolveContentSources(names: string[], snapshot: Snapshot): RecordSourc
 	return sources;
 }
 
+// Word a permissions shortfall by what the license entitlement actually says, not by assumption. The
+// total_count probe proves the export is short; the entitlement (when readable) proves WHY, so we never
+// blame licensing for a shortfall we couldn't confirm, and we flag a licensed shortfall as unexpected.
+function permissionsShortfallWarning(
+	name: string,
+	exported: number,
+	total: number,
+	entitled: boolean | undefined,
+): string {
+	const base = `${name}: exported ${exported} of ${total} rows — the export is incomplete: merge and add pushes stay safe, mirror pushes will refuse it.`;
+
+	if (entitled === false) {
+		return `${base} Confirmed: this instance is unlicensed for custom permission rules (custom_permission_rules_enabled), so it hides them from reads. License the instance to export these rows.`;
+	}
+
+	if (entitled === true) {
+		return `${base} This instance IS licensed for custom permission rules, so the missing rows are unexpected — investigate before trusting a mirror push.`;
+	}
+
+	return `${base} This instance likely hides custom permission rules from reads (unlicensed custom_permission_rules_enabled); the license entitlement could not be confirmed.`;
+}
+
 // A deny-list preserves new server fields by default while removing secrets, external FKs, and alias views.
 function stripSystemFields(records: Record<string, unknown>[], resource: Resource): Record<string, unknown>[] {
 	const drop = [...resource.strip, ...resource.aliases];
@@ -318,6 +340,21 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	const dataCollections: DataCollection[] = [];
 	const incomplete: string[] = [];
 
+	// Read the admin-only license entitlement only if a shortfall actually occurs — a clean pull pays
+	// nothing, and the result is memoized so repeated shortfalls share one read. Any failure (non-admin,
+	// older server) leaves it undefined and the message degrades to inference.
+	let entitlementResolved = false;
+	let customRulesEntitled: boolean | undefined;
+
+	const customRulesEntitlement = async (): Promise<boolean | undefined> => {
+		if (!entitlementResolved) {
+			entitlementResolved = true;
+			customRulesEntitled = await fetchCustomPermissionRulesEntitled(credential);
+		}
+
+		return customRulesEntitled;
+	};
+
 	for (const resource of resources) {
 		let rows = await fetchRecords(credential, {
 			collection: resource.collection,
@@ -344,9 +381,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 			} else if (total !== rows.length) {
 				incomplete.push(resource.collection);
 
-				ctx.ui.warn(
-					`${resource.name}: exported ${rows.length} of ${total} rows — this instance hides custom permission rules from reads (unlicensed custom_permission_rules_enabled). The export is incomplete: merge and add pushes stay safe, mirror pushes will refuse it. License the instance to export these rows.`,
-				);
+				ctx.ui.warn(permissionsShortfallWarning(resource.name, rows.length, total, await customRulesEntitlement()));
 			}
 		}
 

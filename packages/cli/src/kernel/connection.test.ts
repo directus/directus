@@ -3,7 +3,13 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { loginSession, pingServer, testConnection } from './connection.js';
+import {
+	fetchCustomPermissionRulesEntitled,
+	fetchServerVersion,
+	loginSession,
+	pingServer,
+	testConnection,
+} from './connection.js';
 import { redact } from './secret.js';
 
 describe('connection', () => {
@@ -197,5 +203,68 @@ describe('connection', () => {
 			.replyWithError(new Error('getaddrinfo ENOTFOUND'));
 
 		await expect(pingServer('https://cms.example.com')).rejects.toMatchObject({ code: 'HTTP' });
+	});
+
+	const token = { url: 'https://cms.example.com', token: 'tok', kind: 'token' } as const;
+
+	it('reads the Directus version from /server/info', async () => {
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: /^\/server\/info/, method: 'GET' })
+			.reply(200, { data: { version: '11.2.0' } }, { headers: { 'content-type': 'application/json' } });
+
+		await expect(fetchServerVersion(token)).resolves.toBe('11.2.0');
+	});
+
+	it('returns undefined for the version rather than throwing when /server/info fails', async () => {
+		// The version only powers a skew warning, so an unreachable or erroring info endpoint must degrade
+		// silently — a broken best-effort read can never take down the command that depends on the real work.
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: /^\/server\/info/, method: 'GET' })
+			.replyWithError(new Error('boom'));
+
+		await expect(fetchServerVersion(token)).resolves.toBeUndefined();
+	});
+
+	it('reads custom_permission_rules_enabled from /license, preferring override over default', async () => {
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/license', method: 'GET' })
+			.reply(
+				200,
+				{ data: { entitlements: { custom_permission_rules_enabled: { override: true, default: false } } } },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		await expect(fetchCustomPermissionRulesEntitled(token)).resolves.toBe(true);
+	});
+
+	it('falls back to the entitlement default when there is no override', async () => {
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/license', method: 'GET' })
+			.reply(
+				200,
+				{ data: { entitlements: { custom_permission_rules_enabled: { override: null, default: false } } } },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		await expect(fetchCustomPermissionRulesEntitled(token)).resolves.toBe(false);
+	});
+
+	it('degrades to undefined on a non-admin 403 from /license instead of failing the pull', async () => {
+		// /license is admin-only. A non-admin (or any 403) must not error — the entitlement read is purely an
+		// enrichment, so the caller falls back to inference and the sync proceeds. This is the graceful path.
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/license', method: 'GET' })
+			.reply(
+				403,
+				{ errors: [{ message: 'nope', extensions: { code: 'FORBIDDEN' } }] },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		await expect(fetchCustomPermissionRulesEntitled(token)).resolves.toBeUndefined();
 	});
 });
