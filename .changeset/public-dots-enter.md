@@ -1,5 +1,7 @@
 ---
 '@directus/system-data': patch
+'@directus/api': patch
+'@directus/app': patch
 ---
 
-Limited read access on directus_settings for minimum app permissions 
+Restricted the settings fields readable with minimal app access to those actually needed by non-admin users, no longer exposing admin-only and sensitive AI configuration fields
