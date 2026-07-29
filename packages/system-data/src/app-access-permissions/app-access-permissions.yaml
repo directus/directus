@@ -98,6 +98,7 @@
     - ai_anthropic_allowed_models
     - ai_google_allowed_models
     - mcp_prompts_collection
+    - default_save_action
 
 - collection: directus_translations
   action: read
