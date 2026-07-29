@@ -99,6 +99,9 @@
     - ai_google_allowed_models
     - mcp_prompts_collection
     - default_save_action
+    - ai_translation_default_model
+    - ai_translation_glossary
+    - ai_translation_style_guide
 
 - collection: directus_translations
   action: read
