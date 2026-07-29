@@ -1000,12 +1000,15 @@ wysiwyg_options:
   bullist: Punktlista
   numlist: Numrerad lista
   hr: Horisontell linje
+  insertdatetime_date: Datum
+  insertdatetime_time: Time
   link: Lägg till/redigera länk
   unlink: Ta bort länk
   media: Lägg till/redigera media
   image: Lägg till/redigera bild
   copy: Kopiera
   cut: Klipp
+  default: Standard
   paste: Klistra in
   heading: Rubrik
   h1: Rubrik 1
@@ -1029,6 +1032,8 @@ wysiwyg_options:
   source_code: Redigera källkod
   fullscreen: Helskärm
   directionality: Riktning
+  ltr: Vänster till höger
+  rtl: Höger till Vänster
 dropdown: Rullgardinsmeny
 choices: Alternativ
 choices_option_configured_incorrectly: Val felaktigt konfigurerade
@@ -1802,7 +1807,6 @@ interfaces:
     description: En textredigerare som skriver HTML-innehåll
     toolbar: Verktygsfält
     custom_formats: Anpassade format
-    options_override: Skriv över alternativ
     folder_note: Mapp för uppladdade filer. Påverkar inte befintliga filer.
   input-block-editor:
     input-block-editor: Blockredigerare
