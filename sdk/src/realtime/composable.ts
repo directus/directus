@@ -7,6 +7,7 @@ import { pong } from './commands/pong.js';
 import type {
 	ConnectionState,
 	ReconnectState,
+	RemoveEventHandler,
 	SubscribeOptions,
 	SubscriptionEvents,
 	SubscriptionOutput,
@@ -17,7 +18,6 @@ import type {
 	WebSocketEvents,
 } from './types.js';
 import { generateUid } from './utils/generate-uid.js';
-import { createMessageBuffer } from './utils/message-buffer.js';
 import { messageCallback } from './utils/message-callback.js';
 
 type AuthWSClient<Schema> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
@@ -419,49 +419,76 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				type Message = SubscriptionOutput<Schema, Collection, Options['query'], SubscriptionEvents>;
 
-				const buffer = createMessageBuffer<Message>();
+				// Listening starts before the subscription is sent, so no message can slip through
+				// before (or between) pulls on the generator.
+				const queue: Message[] = [];
+				const removeListeners: RemoveEventHandler[] = [];
+				let waiting: (() => void) | null;
+				let done = false;
+				let failure: unknown;
 
-				const removeMessageListener = this.onWebSocket('message', (message: Record<string, any>) => {
-					if (typeof message !== 'object' || message === null || Array.isArray(message)) return;
+				const notify = () => {
+					waiting?.();
+					waiting = null;
+				};
 
-					if (
-						message['type'] === 'subscribe' &&
-						message['status'] === 'error' &&
-						(message['uid'] === undefined || message['uid'] === options.uid)
-					) {
-						buffer.fail(message);
-						return;
-					}
+				const end = (reason?: unknown) => {
+					if (done) return;
+					done = true;
+					failure = reason;
+					removeListeners.forEach((remove) => remove());
+					notify();
+				};
 
-					if (message['type'] === 'subscription' && 'uid' in message && message['uid'] === options.uid) {
-						buffer.push(message as Message);
-					}
-				});
+				removeListeners.push(
+					this.onWebSocket('message', (message: Record<string, any>) => {
+						if (typeof message !== 'object' || message === null || Array.isArray(message)) return;
 
-				// When the connection closes and we won't reconnect, the stream is over. When we will
-				// reconnect, reconnect() re-sends the subscription and this persistent listener keeps
-				// receiving on the new connection, so the buffer is left open to resume.
-				const removeCloseListener = this.onWebSocket('close', () => {
-					if (!config.reconnect) buffer.end();
-				});
+						if (message['type'] === 'subscription' && message['uid'] === options.uid) {
+							queue.push(message as Message);
+							notify();
+							return;
+						}
+
+						if (
+							message['type'] === 'subscribe' &&
+							message['status'] === 'error' &&
+							(message['uid'] === undefined || message['uid'] === options.uid)
+						) {
+							end(message);
+						}
+					}),
+					this.onWebSocket('close', () => {
+						// Mirrors the condition in reconnect(): as long as a retry follows, the subscription
+						// is re-sent on the new connection and the listener above keeps filling this queue,
+						// so the stream resumes rather than ends.
+						const willReconnect =
+							config.reconnect && !wasManuallyDisconnected && reconnectState.attempts < config.reconnect.retries;
+
+						if (!willReconnect) end();
+					}),
+				);
 
 				this.sendMessage(subscriptionMessage);
 
 				async function* subscriptionGenerator(): AsyncGenerator<Message, void, unknown> {
 					try {
-						for (let message = await buffer.next(); message !== undefined; message = await buffer.next()) {
-							yield message;
+						while (true) {
+							while (queue.length > 0) yield queue.shift()!;
+							if (failure) throw failure;
+							if (done) return;
+							await new Promise<void>((resolve) => (waiting = resolve));
 						}
 					} finally {
-						removeMessageListener();
-						removeCloseListener();
+						end();
 					}
 				}
 
 				const unsubscribe = () => {
 					subscriptions.delete(subscriptionMessage);
+					queue.length = 0;
+					end();
 					this.sendMessage({ uid: options.uid, type: 'unsubscribe' });
-					buffer.end({ discard: true });
 				};
 
 				return {
