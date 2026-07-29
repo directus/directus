@@ -29,10 +29,10 @@ beforeEach(() => {
 	const relationsStore = mockedStore(useRelationsStore());
 	relationsStore.getRelationsForField.mockReturnValue([]);
 
-	const collectionsStore = mockedStore(useCollectionsStore());
-	collectionsStore.getCollection.mockReturnValue({ meta: { status: 'active' } } as any);
-
 	const collection = 'test_collection';
+
+	const collectionsStore = mockedStore(useCollectionsStore());
+	collectionsStore.getCollection.mockImplementation((key) => ({ collection: key, meta: { status: 'active' } }) as any);
 
 	sample = {
 		collection,
@@ -129,7 +129,7 @@ describe('admin users', () => {
 		const collectionsStore = mockedStore(useCollectionsStore());
 
 		collectionsStore.getCollection.mockImplementation(
-			(key) => ({ meta: { status: key === 'inactive_target' ? 'inactive' : 'active' } }) as any,
+			(key) => ({ collection: key, meta: { status: key === 'inactive_target' ? 'inactive' : 'active' } }) as any,
 		);
 
 		vi.mocked(useCollection).mockReturnValue({ fields: ref(sample.fields) } as any);
@@ -138,6 +138,26 @@ describe('admin users', () => {
 
 		expect(fields.value.map((field) => field.field)).not.toContain('name');
 		expect(fields.value.length).toEqual(sample.fields.length - 1);
+	});
+
+	it('should keep a relational field pointing at a system collection, which has no status', () => {
+		const userStore = mockedStore(useUserStore());
+		userStore.isAdmin = true;
+
+		const relationsStore = mockedStore(useRelationsStore());
+
+		relationsStore.getRelationsForField.mockImplementation((_collection, field) =>
+			field === 'name' ? ([{ collection: sample.collection, field, related_collection: 'directus_files' }] as any) : [],
+		);
+
+		const collectionsStore = mockedStore(useCollectionsStore());
+		collectionsStore.getCollection.mockImplementation((key) => ({ collection: key, meta: {} }) as any);
+
+		vi.mocked(useCollection).mockReturnValue({ fields: ref(sample.fields) } as any);
+
+		const fields = getFields(sample.collection, false, ref({} as ItemPermissions));
+
+		expect(fields.value.map((field) => field.field)).toContain('name');
 	});
 });
 
