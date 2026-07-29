@@ -593,10 +593,13 @@ wysiwyg_options:
   underline: Substrekita
   strikethrough: Trastrekita
   codeblock: Kodo
+  insertdatetime_date: Dato
+  insertdatetime_time: Tempo
   link: Aldoni/redakti ligilon
   unlink: Forigi la ligilon
   copy: Kopii
   cut: Eltondi
+  default: Defaŭlta
   paste: Alglui
   fontselect: Elekti tiparon
   undo: Malfari
