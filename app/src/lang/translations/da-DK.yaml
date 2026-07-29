@@ -919,12 +919,15 @@ wysiwyg_options:
   bullist: Kugle liste
   numlist: Nummereret liste
   hr: Horisontal regel
+  insertdatetime_date: Dato
+  insertdatetime_time: Tid
   link: Tilføj/Rediger link
   unlink: Fjern link
   media: Tilføj/Rediger medie
   image: Tilføj/Rediger billede
   copy: Kopiér
   cut: Klip
+  default: Standard
   paste: Indsæt
   heading: Overskrift
   h1: Overskrift 1
@@ -947,6 +950,8 @@ wysiwyg_options:
   source_code: Rediger kildekode
   fullscreen: Fuld skærm
   directionality: Retningslinjer
+  ltr: Venstre mod højre
+  rtl: Højre mod venstre
 dropdown: Rulleliste
 choices: Valgmuligheder
 choices_option_configured_incorrectly: Valg konfigureret forkert
@@ -1683,7 +1688,6 @@ interfaces:
     description: En brødtekst redigeringsværktøj som skriver HTML-indhold
     toolbar: Værktøjslinje
     custom_formats: Brugerdefinerede formater
-    options_override: Tilsidesæt
     folder_note: Mappe for uploadede filer. Påvirker ikke eksisterende filer.
     imageToken: Statisk Adgangstoken
     imageToken_label: Statisk adgangstoken er vedlagt aktivernes URL
