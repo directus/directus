@@ -12,8 +12,14 @@ export class TranslationsService extends ItemsService {
 		this.schema = options.schema;
 	}
 
-	private async translationKeyExists(key: string, language: string) {
-		const result = await this.knex.select('id').from(this.collection).where({ key, language });
+	private async translationKeyExists(key: string, language: string, excludeKeys: PrimaryKey[] = []) {
+		const query = this.knex.select('id').from(this.collection).where({ key, language });
+
+		if (excludeKeys.length > 0) {
+			query.whereNotIn('id', excludeKeys);
+		}
+
+		const result = await query;
 		return result.length > 0;
 	}
 
@@ -26,15 +32,21 @@ export class TranslationsService extends ItemsService {
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if (keys.length > 0 && 'key' in data && 'language' in data) {
-			throw new InvalidPayloadError({ reason: 'Duplicate key and language combination' });
-		} else if ('key' in data || 'language' in data) {
+		if (keys.length > 0 && ('key' in data || 'language' in data)) {
 			const items = await this.readMany(keys);
+			const seenCombinations = new Set<string>();
 
 			for (const item of items) {
 				const updatedData = { ...item, ...data };
+				const combination = JSON.stringify([updatedData['key'], updatedData['language']]);
 
-				if (await this.translationKeyExists(updatedData['key'], updatedData['language'])) {
+				if (seenCombinations.has(combination)) {
+					throw new InvalidPayloadError({ reason: 'Duplicate key and language combination' });
+				}
+
+				seenCombinations.add(combination);
+
+				if (await this.translationKeyExists(updatedData['key'], updatedData['language'], keys)) {
 					throw new InvalidPayloadError({ reason: 'Duplicate key and language combination' });
 				}
 			}
