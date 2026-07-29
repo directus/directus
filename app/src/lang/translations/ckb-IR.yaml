@@ -1065,12 +1065,15 @@ wysiwyg_options:
   bullist: لیستی خاڵ
   numlist: لیستی ژمارە
   hr: یاسای ئاسۆیی
+  insertdatetime_date: ڕێکەوت
+  insertdatetime_time: کات
   link: زیادکردن/دەستکاری بەستەر
   unlink: لابردنی بەستەر
   media: زیادکردن/دەستکاری میدیا
   image: زیادکردن/دەستکاری میدیا
   copy: لەبەرگرتنەوە
   cut: بڕین
+  default: بنەڕەت
   paste: دانانەوە
   heading: سەردێڕ
   h1: سەردێڕ ١
@@ -1093,6 +1096,8 @@ wysiwyg_options:
   source_code: دەتسکاری سەرچاوەی کۆد
   fullscreen: پڕ ڕوونما
   directionality: ئاڕاستەیی
+  ltr: چەپ بۆ ڕاست
+  rtl: ڕاست بۆ چەپ
   lazy_loading: باربوونی هێواش
   lazy_loading_label: چالاککردنی باربوونی هێواش
 dropdown: لیستی داخراو
@@ -1968,9 +1973,6 @@ interfaces:
     description: دەستکاریکەرێکی دەوڵەمەندی دەقە بە نوسینی ناوەڕۆکی HTML
     toolbar: شریتی ئامرازەکان
     custom_formats: داڕشتنە تایبەتەکان
-    custom_formats_note: لیستی داڕشتنەکانی ناوەڕۆکی TinyMCE. سەردانی بەڵگەنامەکانی TinyMCE بکە دەربارەی [داڕشتنی ناوەڕۆک](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) بۆ زانیاری زیاتر.
-    options_override: هەڵبژاردەکانی سەرپێچی
-    options_override_note: کلیلەکانی داڕشتنی بەکارهێنەری TinyMCE و بەهاکانیان. سەردانی بەڵگەنامەکانی TinyMCE بکە دەربارەی [داڕشتنی بەکارهێنەر](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) بۆ زانیاری زیاتر.
     folder_note: بوخچە بۆ بارکردنی پەڕگەکان. کاریگەری نابێت لەسەر پەڕگە هەنووکەیەکان.
     imageToken: تۆکنی دەستگەیشتنی جێگیر
     imageToken_label: تۆکنی دەستڕاگەیشتن بە جێگیری لەگەڵ بەستەری یاریدەدەریەکان هاوپێچ دەکرێت
