@@ -33,6 +33,7 @@ const mockServerInfo = {
 		public_registration: null,
 		public_registration_verify_email: null,
 	},
+	ai_providers: [],
 	license: null,
 	mcp_enabled: true,
 	ai_enabled: true,
