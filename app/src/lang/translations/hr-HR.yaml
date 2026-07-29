@@ -1058,12 +1058,15 @@ wysiwyg_options:
   bullist: Popis sa grafičkim oznakama
   numlist: Numerirani popis
   hr: Vodoravno pravilo
+  insertdatetime_date: Datum
+  insertdatetime_time: Vrijeme
   link: Dodaj/uredi poveznicu
   unlink: Ukloni poveznicu
   media: Dodaj/uredi medijski zapis
   image: Dodaj/uredi sliku
   copy: Kopiraj
   cut: Izreži
+  default: Zadano
   paste: Zalijepi
   heading: Naslov
   h1: Zaglavlje 1
@@ -1086,6 +1089,8 @@ wysiwyg_options:
   source_code: Uredi izvorni kod
   fullscreen: Puni zaslon
   directionality: Usmjerenost
+  ltr: S lijeva na desno
+  rtl: S desna na lijevo
   lazy_loading: Odgodeno Učitavanje Slike
   lazy_loading_label: Omogući Odgodeno Učitavanje Slike
 dropdown: Padajući izbornik
@@ -1921,9 +1926,6 @@ interfaces:
     description: Uređivač bogatog teksta koji piše HTML sadržaj
     toolbar: Alatna traka
     custom_formats: Prilagođeni formati
-    custom_formats_note: Popis TinyMCE formata sadržaja. Za više informacija pogledajte TinyMCE dokumentaciju o [Formatiranje Sadržaja](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/).
-    options_override: Nadjačavanje opcija
-    options_override_note: Korisnički ključevi i vrijednosti formatiranja za TinyMCE. Pogledajte TinyMCE dokumentaciju o [Korisnička Formatiranja](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) za više informacija.
     folder_note: Mapa za učitane datoteke. Ne utječe na postojeće datoteke.
     imageToken: Statički pristupni token
     imageToken_label: Statički pristupni token se dodaje URL-u
