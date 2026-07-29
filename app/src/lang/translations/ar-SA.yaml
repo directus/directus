@@ -1037,12 +1037,15 @@ wysiwyg_options:
   bullist: قائمة نُقطيّة
   numlist: قائمة مرقّمة
   hr: مسطرة أفقية
+  insertdatetime_date: التاريخ
+  insertdatetime_time: الوقت
   link: إضافة/تحرير الرابط
   unlink: إزالة الرابط
   media: إضافة/تعديل الوسائط
   image: إضافة/تحرير الصورة
   copy: نسخ
   cut: قص
+  default: الافتراضي
   paste: لصق
   heading: العنوان
   h1: العنوان 1
@@ -1065,6 +1068,8 @@ wysiwyg_options:
   source_code: تعديل رمز المصدر
   fullscreen: ملء الشاشة
   directionality: الاتجاهية
+  ltr: من اليسار إلى اليمين
+  rtl: من اليمين إلى اليسار
   lazy_loading: التحميل البطيء للصور
   lazy_loading_label: تمكين التحميل البطيء
 dropdown: قائمة منسدلة
@@ -1867,8 +1872,6 @@ interfaces:
     description: محرر نص يكتب محتوى HTML
     toolbar: شريط الأدوات
     custom_formats: تنسيقات مخصصة
-    custom_formats_note: قائمة بتنسيقات محتوى TinyMCE - راجع وثائق TinyMCE حول [تنسيق المحتوى] (https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) لمزيد من المعلومات.
-    options_override: تجاوز الخيارات
     folder_note: مجلد الملفات التي تم رفعها. لا يؤثر على الملفات الموجودة.
     imageToken: رمز الوصول الثابت
     imageToken_label: تم إلحاق رمز الوصول الثابت إلى عنوان URL للأصول
