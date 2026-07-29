@@ -3,6 +3,7 @@ import emitter from '../../emitter.js';
 import { ItemsService, MetaService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
+import { validateQuery } from '../../utils/validate-query.js';
 import { handleWebSocketError, WebSocketError } from '../errors.js';
 import { WebSocketItemsMessage } from '../messages.js';
 import type { WebSocketClient } from '../types.js';
@@ -47,6 +48,7 @@ export class ItemsHandler {
 
 		if (message.action === 'create') {
 			const query = await sanitizeQuery(message?.query ?? {}, schema, accountability);
+			validateQuery(query);
 
 			if (Array.isArray(message.data)) {
 				const keys = await service.createMany(message.data);
@@ -59,6 +61,7 @@ export class ItemsHandler {
 
 		if (message.action === 'read') {
 			const query = await sanitizeQuery(message.query ?? {}, schema, accountability);
+			validateQuery(query);
 
 			if (message.id) {
 				result = await service.readOne(message.id, query);
@@ -75,6 +78,7 @@ export class ItemsHandler {
 
 		if (message.action === 'update') {
 			const query = await sanitizeQuery(message.query ?? {}, schema, accountability);
+			validateQuery(query);
 
 			if (message.id) {
 				const key = await service.updateOne(message.id, message.data);
@@ -106,6 +110,7 @@ export class ItemsHandler {
 				result = message.ids;
 			} else if (message.query) {
 				const query = await sanitizeQuery(message.query, schema, accountability);
+				validateQuery(query);
 				result = await service.deleteByQuery(query);
 			} else {
 				throw new WebSocketError(

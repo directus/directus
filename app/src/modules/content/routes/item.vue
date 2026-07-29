@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { translateShortcut, useCollection, useShortcut } from '@directus/composables';
-import { VERSION_KEY_DRAFT, VERSION_KEY_PUBLISHED } from '@directus/constants';
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import type { AppCollection, Item, PrimaryKey } from '@directus/types';
 import { sameOrigin } from '@directus/utils/browser';
 import { SplitPanel } from '@directus/vue-split-panel';
@@ -50,9 +50,11 @@ import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
 import { useAutoSave } from '@/modules/content/composables/use-auto-save';
 import { useNotificationsStore } from '@/stores/notifications';
+import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { getPreviewVersionKey } from '@/utils/get-preview-version-key';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
@@ -100,6 +102,7 @@ const { collectionRoute, backRoute } = useItemNavigation();
 
 const userStore = useUserStore();
 const notificationsStore = useNotificationsStore();
+const settingsStore = useSettingsStore();
 
 const isCurrentVersionNew = computed(() => currentVersion.value?.id === '+');
 
@@ -399,11 +402,26 @@ const isFormNonEditable = computed(
 		!canAutoSwitchToDraft.value,
 );
 
-const disabledOptions = computed(() => {
+const baseDisabledOptions = computed(() => {
 	if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];
 	if (isNew.value) return ['save-as-copy'];
 	return [];
 });
+
+const defaultSaveAction = computed(() => {
+	const action = settingsStore.settings?.default_save_action;
+	const isSingleton = collectionInfo.value?.meta?.singleton === true;
+
+	if (action === 'save-and-stay') return 'save-and-stay';
+
+	if (action === 'save-and-create-new' && !isSingleton && !baseDisabledOptions.value.includes('save-and-add-new')) {
+		return 'save-and-add-new';
+	}
+
+	return 'save-and-quit';
+});
+
+const disabledOptions = computed(() => [...baseDisabledOptions.value, defaultSaveAction.value]);
 
 const currentVersionId = computed(() => currentVersion.value?.id ?? null);
 
@@ -418,7 +436,7 @@ const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?
 
 const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKeyParam, {
 	template: previewTemplate,
-	injectData: computed(() => ({ $version: currentVersion.value?.key ?? VERSION_KEY_PUBLISHED })),
+	injectData: computed(() => ({ $version: getPreviewVersionKey(currentVersion.value) })),
 });
 
 const previewUrl = computed(() => {
@@ -659,6 +677,16 @@ async function saveAndQuit() {
 	}
 }
 
+function saveDefault() {
+	if (defaultSaveAction.value === 'save-and-stay') {
+		saveAndStay();
+	} else if (defaultSaveAction.value === 'save-and-add-new') {
+		saveAndAddNew();
+	} else {
+		saveAndQuit();
+	}
+}
+
 async function deleteAndQuit() {
 	if (deleting.value) return;
 
@@ -744,6 +772,12 @@ function useResolvePrimaryKey() {
 	 */
 	const resolvedPrimaryKey = ref<PrimaryKey | null>(primaryKeyParam.value);
 	const existingPrimaryKey = computed(() => (resolvedPrimaryKey.value === '+' ? null : resolvedPrimaryKey.value));
+
+	// Reset on collection change to avoid previous singleton’s primary key leaking into the next
+	// collection’s queries.
+	watch(collection, () => {
+		resolvedPrimaryKey.value = primaryKeyParam.value;
+	});
 
 	return {
 		primaryKeyParam,
@@ -928,7 +962,7 @@ function usePublishActions() {
 		else if (quit) router.push(collectionRoute.value);
 		else router.replace(getItemRoute(props.collection, newItemKey));
 
-		deleteVersion(versionId);
+		if (deleteVersionsAllowed.value) await deleteVersion(versionId);
 	}
 
 	function finalizePublishedItem() {
@@ -1201,11 +1235,12 @@ function useAutoSwitchToDraft() {
 					icon="check"
 					:loading="saving"
 					:disabled="!isSavable"
-					@click="saveAndQuit()"
+					@click="saveDefault()"
 				>
 					<template v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true" #split-menu>
 						<SaveOptions
 							:disabled-options="disabledOptions"
+							@save-and-quit="saveAndQuit"
 							@save-and-stay="saveAndStay"
 							@save-and-add-new="saveAndAddNew"
 							@save-as-copy="saveAsCopyAndNavigate"
@@ -1249,6 +1284,7 @@ function useAutoSwitchToDraft() {
 					:collab-context="collabContext"
 					:validation-errors="validationErrors"
 					:version="currentVersion"
+					:can-auto-switch-to-draft="canAutoSwitchToDraft"
 					:direction="userStore.textDirection"
 				/>
 			</template>

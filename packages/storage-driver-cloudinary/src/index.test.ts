@@ -25,6 +25,8 @@ import { fetch, FormData } from 'undici';
 import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
+import * as toFormUrlEncodedUtil from './utils/to-form-url-encoded.js';
+import * as toSignatureStringUtil from './utils/to-signature-string.js';
 import type { DriverCloudinaryConfig } from './index.js';
 import { DriverCloudinary } from './index.js';
 
@@ -159,7 +161,7 @@ beforeEach(() => {
 	driver['getBasicAuth'] = vi.fn().mockReturnValue(sample.basicAuth);
 	driver['getFullSignature'] = vi.fn().mockReturnValue(sample.fullSignature);
 	driver['getTimestamp'] = vi.fn().mockReturnValue(sample.timestamp);
-	driver['toFormUrlEncoded'] = vi.fn().mockReturnValue(sample.formUrlEncoded);
+	vi.spyOn(toFormUrlEncodedUtil, 'toFormUrlEncoded').mockReturnValue(sample.formUrlEncoded);
 });
 
 afterEach(() => {
@@ -224,59 +226,6 @@ describe('#fullPath', () => {
 	});
 });
 
-describe('#toFormUrlEncoded', () => {
-	let mockProps: [string, string, string];
-	let mockValues: [string, string, string];
-
-	beforeEach(() => {
-		driver = new DriverCloudinary({
-			apiKey: sample.config.apiKey,
-			apiSecret: sample.config.apiSecret,
-			cloudName: sample.config.cloudName,
-			accessMode: sample.config.accessMode,
-		});
-
-		mockProps = Array.from(Array(3), () => randAlphaNumeric({ length: randNumber({ min: 2, max: 15 }) }).join('')) as [
-			string,
-			string,
-			string,
-		];
-
-		mockValues = randWord({ length: 3 }) as [string, string, string];
-	});
-
-	test('Parses plain object of strings', () => {
-		const result = driver['toFormUrlEncoded']({
-			[mockProps[0]]: mockValues[0],
-			[mockProps[1]]: mockValues[1],
-			[mockProps[2]]: mockValues[2],
-		});
-
-		// The order isn't guaranteed
-		expect(result).toContain(`${mockProps[0]}=${mockValues[0]}`);
-		expect(result).toContain(`${mockProps[1]}=${mockValues[1]}`);
-		expect(result).toContain(`${mockProps[2]}=${mockValues[2]}`);
-	});
-
-	test('Optionally sorts the properties alphabetically', () => {
-		// Expected order should be 2-0-1
-		mockProps[0] = `b_${mockProps[0]}`;
-		mockProps[1] = `c_${mockProps[1]}`;
-		mockProps[2] = `a_${mockProps[2]}`;
-
-		expect(
-			driver['toFormUrlEncoded'](
-				{
-					[mockProps[0]]: mockValues[0],
-					[mockProps[1]]: mockValues[1],
-					[mockProps[2]]: mockValues[2],
-				},
-				{ sort: true },
-			),
-		).toBe(`${mockProps[2]}=${mockValues[2]}&${mockProps[0]}=${mockValues[0]}&${mockProps[1]}=${mockValues[1]}`);
-	});
-});
-
 describe('#getFullSignature', () => {
 	let mockPayload: Record<string, string>;
 
@@ -299,8 +248,7 @@ describe('#getFullSignature', () => {
 		};
 
 		vi.mocked(createHash).mockReturnValue(mockCreateHash as unknown as Hash);
-
-		driver['toFormUrlEncoded'] = vi.fn();
+		vi.spyOn(toSignatureStringUtil, 'toSignatureString');
 
 		const randLength = randNumber({ min: 1, max: 10 });
 
@@ -323,7 +271,7 @@ describe('#getFullSignature', () => {
 
 		driver['getFullSignature'](payload);
 
-		expect(driver['toFormUrlEncoded']).toHaveBeenCalledWith(mockPayload, { sort: true });
+		expect(toSignatureStringUtil.toSignatureString).toHaveBeenCalledWith(mockPayload);
 	});
 
 	test('Creates sha256 hash', () => {
@@ -332,12 +280,25 @@ describe('#getFullSignature', () => {
 	});
 
 	test('Updates sha256 hash with signature payload + api secret', () => {
-		const mockFormUrlEncoded = randWord();
-		vi.mocked(driver['toFormUrlEncoded']).mockReturnValue(mockFormUrlEncoded);
+		const mockSignatureString = randWord();
+		vi.mocked(toSignatureStringUtil.toSignatureString).mockReturnValue(mockSignatureString);
 
 		driver['getFullSignature'](mockPayload);
 
-		expect(mockCreateHash.update).toHaveBeenCalledWith(mockFormUrlEncoded + sample.config.apiSecret);
+		expect(mockCreateHash.update).toHaveBeenCalledWith(mockSignatureString + sample.config.apiSecret);
+	});
+
+	test('Preserves spaces in asset_folder when updating the hash', () => {
+		vi.mocked(toSignatureStringUtil.toSignatureString).mockRestore();
+
+		driver['getFullSignature']({
+			asset_folder: 'my folder',
+			timestamp: sample.timestamp,
+		});
+
+		expect(mockCreateHash.update).toHaveBeenCalledWith(
+			`asset_folder=my folder&timestamp=${sample.timestamp}${sample.config.apiSecret}`,
+		);
 	});
 
 	test('Digests hash as hex', () => {
@@ -674,7 +635,7 @@ describe('#stat', () => {
 	test('Creates form url encoded body ', async () => {
 		await driver.stat(sample.path.input);
 
-		expect(driver['toFormUrlEncoded']).toHaveBeenCalledWith({
+		expect(toFormUrlEncodedUtil.toFormUrlEncoded).toHaveBeenCalledWith({
 			type: 'upload',
 			public_id: normalizePath(joinActual(sample.path.inputFolder, sample.publicId.input), { removeLeading: true }),
 			api_key: sample.config.apiKey,
@@ -805,7 +766,7 @@ describe('#move', () => {
 	test('Creates form url encoded body ', async () => {
 		await driver.move(sample.path.src, sample.path.dest);
 
-		expect(driver['toFormUrlEncoded']).toHaveBeenCalledWith({
+		expect(toFormUrlEncodedUtil.toFormUrlEncoded).toHaveBeenCalledWith({
 			from_public_id: joinActual(sample.path.srcFolder, sample.publicId.src),
 			to_public_id: joinActual(sample.path.destFolder, sample.publicId.dest),
 			api_key: sample.config.apiKey,
@@ -1093,7 +1054,7 @@ describe('#delete', () => {
 	});
 
 	test('Calls fetch with correct parameters', async () => {
-		expect(driver['toFormUrlEncoded']).toHaveBeenCalledWith({
+		expect(toFormUrlEncodedUtil.toFormUrlEncoded).toHaveBeenCalledWith({
 			timestamp: sample.timestamp,
 			api_key: sample.config.apiKey,
 			resource_type: sample.resourceType,

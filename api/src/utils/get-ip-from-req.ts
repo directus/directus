@@ -5,6 +5,19 @@ import type { Request } from 'express';
 import proxyAddr from 'proxy-addr';
 import { useLogger } from '../logger/index.js';
 
+const IP_HEADER_WARNING_EXCLUDED_PATHS = new Set(['/server/ping', '/server/info']);
+
+function getReqPathname(req: IncomingMessage | Request): string {
+	const rawUrl = ('originalUrl' in req && req.originalUrl) || req.url || '';
+
+	try {
+		// Express routing is case-insensitive, so normalize before matching
+		return new URL(rawUrl, 'http://localhost').pathname.toLowerCase();
+	} catch {
+		return '';
+	}
+}
+
 /**
  * Generate the trusted ip list
  *
@@ -44,7 +57,7 @@ export function getIPFromReq(req: IncomingMessage | Request): string | null {
 
 		if (typeof customIPHeaderValue === 'string' && isIP(customIPHeaderValue) !== 0) {
 			ip = customIPHeaderValue;
-		} else {
+		} else if (!IP_HEADER_WARNING_EXCLUDED_PATHS.has(getReqPathname(req))) {
 			logger.warn(`Custom IP header didn't return valid IP address: ${JSON.stringify(customIPHeaderValue)}`);
 		}
 	}
