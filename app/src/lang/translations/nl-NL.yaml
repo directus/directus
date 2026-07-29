@@ -1124,12 +1124,15 @@ wysiwyg_options:
   bullist: Opsomming
   numlist: Genummerde lijst
   hr: Horizontale lijn
+  insertdatetime_date: Datum
+  insertdatetime_time: Tijd
   link: Link toevoegen/bewerken
   unlink: Link verwijderen
   media: Media toevoegen/bewerken
   image: Afbeelding toevoegen/bewerken
   copy: Kopieer
   cut: Knippen
+  default: Standaard
   paste: Plakken
   heading: Titel
   h1: Titel 1
@@ -1153,6 +1156,8 @@ wysiwyg_options:
   source_code: Broncode bewerken
   fullscreen: Volledig scherm
   directionality: Richting
+  ltr: Links naar rechts
+  rtl: Rechts naar links
   lazy_loading: Afbeelding reactief laden
   lazy_loading_label: Reactief laden inschakelen
 dropdown: Keuzemenu
@@ -2118,9 +2123,6 @@ interfaces:
     description: Een rich-text editor voor HTML-inhoud
     toolbar: Werkbalk
     custom_formats: Aangepaste vorm
-    custom_formats_note: Lijst van TinyMCE inhoud formaten. Zie de TinyMCE documentatie over [Content Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) voor meer informatie.
-    options_override: Overschrijf opties
-    options_override_note: De TinyMCE gebruikers opmaaksleutels en hun waarden. Zie de TinyMCE documentatie over [Gebruiker Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) voor meer informatie.
     folder_note: Map voor geüploade bestanden. Heeft geen invloed op bestaande bestanden.
     imageToken: Statische toegangstoken
     imageToken_label: Statisch toegangstoken wordt toegevoegd aan de assets URL
