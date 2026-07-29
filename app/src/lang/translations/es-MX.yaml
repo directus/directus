@@ -1087,12 +1087,15 @@ wysiwyg_options:
   bullist: Lista con viñetas
   numlist: Lista Numerada
   hr: Regla Horizontal
+  insertdatetime_date: Fecha
+  insertdatetime_time: Hora
   link: Añadir/Editar enlace
   unlink: Remover Enlace
   media: Añadir/Editar medios
   image: Añadir/Editar imagen
   copy: Copiar
   cut: Cortar
+  default: Por defecto
   paste: Pegar
   heading: Título
   h1: Título 1
@@ -1116,6 +1119,8 @@ wysiwyg_options:
   source_code: Editar código fuente
   fullscreen: Pantalla Completa
   directionality: Direccionalidad
+  ltr: Izquierda a derecha
+  rtl: Derecha a izquierda
   lazy_loading: Imagen de carga diferida
   lazy_loading_label: Habilitar carga diferida
 dropdown: Lista Desplegable
@@ -1996,9 +2001,6 @@ interfaces:
     description: Un editor de texto rich escribiendo contenido HTML
     toolbar: Barra de Herramientas
     custom_formats: Formatos Personalizados
-    custom_formats_note: Lista de Formatos de Contenido de TinyMCE. Consulte la documentación de TinyMCE acerca de [Formateo de Contenido](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) para más información.
-    options_override: Sobrescribir Opciones
-    options_override_note: Lista de Formatos de Contenido de TinyMCE. Consulte la documentación de TinyMCE acerca de [Formateo de Contenido](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) para más información.
     folder_note: Carpeta para los archivos subidos. No afecta a los archivos existentes.
     imageToken: Token de acceso estático
     imageToken_label: Token de acceso estático se añade a la URL de los archivos
