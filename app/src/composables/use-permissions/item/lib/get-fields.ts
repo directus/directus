@@ -4,11 +4,9 @@ import { cloneDeep } from 'lodash';
 import { computed, MaybeRef, ref, Ref, unref } from 'vue';
 import { Collection, IsNew } from '../../types';
 import type { FormField } from '@/components/v-form/types';
-import { useCollectionsStore } from '@/stores/collections';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
-import { getRelatedCollection } from '@/utils/get-related-collection';
-import { isCollectionActive } from '@/utils/is-collection-active';
+import { isRelatedCollectionActive } from '@/utils/is-related-collection-active';
 
 export function getFields(
 	collection: Collection,
@@ -18,7 +16,6 @@ export function getFields(
 ) {
 	const userStore = useUserStore();
 	const { getPermission } = usePermissionsStore();
-	const collectionsStore = useCollectionsStore();
 	const { fields: rawFields, info: collectionInfo } = useCollection(ref(collection));
 
 	return computed(() => {
@@ -29,11 +26,7 @@ export function getFields(
 		let fields = cloneDeep(rawFields.value);
 
 		// Suppress relational fields whose related collection is inactive
-		fields = fields.filter((field) => {
-			const related = getRelatedCollection(collectionValue, field.field);
-			if (!related) return true;
-			return isCollectionActive(collectionsStore.getCollection(related.relatedCollection));
-		});
+		fields = fields.filter((field) => isRelatedCollectionActive(collectionValue, field.field));
 
 		if (userStore.isAdmin) return fields;
 
