@@ -1162,12 +1162,15 @@ wysiwyg_options:
   bullist: Маркированный список
   numlist: Нумерованный список
   hr: Горизонтальный разделитель
+  insertdatetime_date: Дата
+  insertdatetime_time: Время
   link: Добавить/редактировать ссылку
   unlink: Удалить ссылку
   media: Добавить/редактировать медиа
   image: Добавить/редактировать изображ.
   copy: Копировать
   cut: Вырезать
+  default: По умолчанию
   paste: Вставить
   heading: Заголовок
   h1: Заголовок 1
@@ -1191,6 +1194,8 @@ wysiwyg_options:
   source_code: Редактировать исходный код
   fullscreen: Во весь экран
   directionality: Направленность
+  ltr: Слева направо
+  rtl: Справа налево
   lazy_loading: Отложенная загрузка изображения
   lazy_loading_label: Включить отложенную загрузку
 dropdown: Выпадающий список
@@ -2084,9 +2089,6 @@ interfaces:
     description: Расширенный редактор, генерирующий HTML
     toolbar: Панель инструментов
     custom_formats: Пользовательские форматы
-    custom_formats_note: Список форматов контента TinyMCE. Смотрите документацию TinyMCE о [форматировании контента](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) для получения дополнительной информации.
-    options_override: Переопределение параметров
-    options_override_note: Ключи форматирования пользователей TinyMCE и их значения. Смотрите документацию TinyMCE о [Форматировании пользователей](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) для получения дополнительной информации.
     folder_note: Папка для загруженных файлов. Не влияет на существующие файлы.
     imageToken: Токен Статического Доступа
     imageToken_label: Статический токен доступа добавляется после URL-адреса файла
