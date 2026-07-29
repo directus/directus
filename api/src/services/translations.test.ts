@@ -31,7 +31,7 @@ describe('Integration Tests', () => {
 
 	describe('Services / Translations', () => {
 		describe('updateMany', () => {
-			test('allows a single-row update that resends the row own key and language', async () => {
+			test("allows a single-row update that resends the row's own key and language", async () => {
 				vi.mocked(ItemsService.prototype.readMany).mockResolvedValueOnce([
 					{ id: 'row-1', key: 'greeting', language: 'en-US' },
 				]);
@@ -67,20 +67,14 @@ describe('Integration Tests', () => {
 				expect(ItemsService.prototype.updateMany).not.toHaveBeenCalled();
 			});
 
-			test('still rejects a bulk update that collapses multiple rows onto the same key and language', async () => {
-				vi.mocked(ItemsService.prototype.readMany).mockResolvedValueOnce([
-					{ id: 'row-1', key: 'old-a', language: 'fr-FR' },
-					{ id: 'row-2', key: 'old-b', language: 'de-DE' },
-				]);
-
-				tracker.on.select('directus_translations').response([]);
-
+			test('rejects a bulk update that sets both key and language without reading from the database', async () => {
 				const service = new TranslationsService({ knex: db, schema });
 
 				await expect(service.updateMany(['row-1', 'row-2'], { key: 'greeting', language: 'en-US' })).rejects.toThrow(
 					InvalidPayloadError,
 				);
 
+				expect(ItemsService.prototype.readMany).not.toHaveBeenCalled();
 				expect(ItemsService.prototype.updateMany).not.toHaveBeenCalled();
 			});
 
@@ -99,6 +93,25 @@ describe('Integration Tests', () => {
 				);
 
 				expect(ItemsService.prototype.updateMany).not.toHaveBeenCalled();
+			});
+
+			test('allows a bulk update changing only the language when the rows stay unique', async () => {
+				vi.mocked(ItemsService.prototype.readMany).mockResolvedValueOnce([
+					{ id: 'row-1', key: 'hello', language: 'fr-FR' },
+					{ id: 'row-2', key: 'goodbye', language: 'de-DE' },
+				]);
+
+				tracker.on.select('directus_translations').response([]);
+
+				const service = new TranslationsService({ knex: db, schema });
+
+				await expect(service.updateMany(['row-1', 'row-2'], { language: 'en-US' })).resolves.toEqual([1]);
+
+				expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith(
+					['row-1', 'row-2'],
+					{ language: 'en-US' },
+					undefined,
+				);
 			});
 		});
 	});

@@ -32,13 +32,15 @@ export class TranslationsService extends ItemsService {
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if (keys.length > 0 && ('key' in data || 'language' in data)) {
+		if (keys.length > 1 && 'key' in data && 'language' in data) {
+			throw new InvalidPayloadError({ reason: 'Duplicate key and language combination' });
+		} else if ('key' in data || 'language' in data) {
 			const items = await this.readMany(keys);
 			const seenCombinations = new Set<string>();
 
 			for (const item of items) {
 				const updatedData = { ...item, ...data };
-				const combination = JSON.stringify([updatedData['key'], updatedData['language']]);
+				const combination = `${updatedData['key']}-${updatedData['language']}`;
 
 				if (seenCombinations.has(combination)) {
 					throw new InvalidPayloadError({ reason: 'Duplicate key and language combination' });
@@ -46,7 +48,7 @@ export class TranslationsService extends ItemsService {
 
 				seenCombinations.add(combination);
 
-				if (await this.translationKeyExists(updatedData['key'], updatedData['language'], keys)) {
+				if (await this.translationKeyExists(updatedData['key'], updatedData['language'], [item['id']])) {
 					throw new InvalidPayloadError({ reason: 'Duplicate key and language combination' });
 				}
 			}
