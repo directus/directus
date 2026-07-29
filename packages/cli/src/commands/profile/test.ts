@@ -2,7 +2,7 @@ import { confirm, select } from '@clack/prompts';
 import type { Command } from 'commander';
 import { resolveCredential } from '../../kernel/config/credentials.js';
 import { isSafeUrl, loadConfig, resolveProfile } from '../../kernel/config/file.js';
-import { type Identity, testConnection } from '../../kernel/connection.js';
+import { type Identity, refreshSessionIfNeeded, testConnection } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
 import { ask, promptLogin, promptToken, saveToken } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
@@ -59,6 +59,10 @@ export async function testProfile(name: string | undefined, options: TestOptions
 	let identity: Identity;
 
 	if (resolution.found) {
+		// A saved session whose access token has expired is recoverable from its refresh token; refresh
+		// before testing so `profile test` validates the profile the same way the sync commands reach it,
+		// rather than reporting a live session as broken.
+		await refreshSessionIfNeeded(resolution.credential);
 		identity = await testConnection(resolution.credential);
 	} else if (!ctx.interactive) {
 		throw new CliError('AUTH', `No token found for ${name !== undefined ? `"${name}"` : url}.`, {

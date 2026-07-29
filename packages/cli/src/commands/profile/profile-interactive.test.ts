@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { confirm, isCancel, password, select, text } from '@clack/prompts';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { loginSession, pingServer, testConnection } from '../../kernel/connection.js';
+import { loginSession, pingServer, refreshSessionIfNeeded, testConnection } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 import { createUi } from '../../kernel/ui.js';
@@ -23,6 +23,7 @@ vi.mock('../../kernel/connection.js', () => ({
 	testConnection: vi.fn(),
 	loginSession: vi.fn(),
 	pingServer: vi.fn(),
+	refreshSessionIfNeeded: vi.fn(),
 }));
 
 function ctxAt(cwd: string): CliContext {
@@ -58,6 +59,7 @@ describe('interactive profile flows', () => {
 		vi.mocked(testConnection).mockReset();
 		vi.mocked(loginSession).mockReset();
 		vi.mocked(pingServer).mockReset();
+		vi.mocked(refreshSessionIfNeeded).mockReset();
 		vi.mocked(isCancel).mockReset().mockReturnValue(false);
 	});
 
@@ -249,6 +251,21 @@ describe('interactive profile flows', () => {
 		expect(testConnection).toHaveBeenCalledWith(
 			expect.objectContaining({ url: 'https://oneoff.example.com', token: 'tok-flag', kind: 'token' }),
 		);
+	});
+
+	it('refreshes an expiring saved session before testing it, so a live profile is not reported broken', async () => {
+		// profile test is the command users run to validate a profile; it must recover an expiring session the
+		// same way the sync commands do (refreshSessionIfNeeded no-ops on non-session credentials), rather than
+		// reporting a still-valid, refreshable session as a failed authentication.
+		vi.mocked(testConnection).mockResolvedValueOnce({ user: 'Ada', role: 'Admin', projectName: 'Demo' });
+
+		await testProfile(undefined, { url: 'https://cms.example.com', token: 'tok-flag' }, ctxAt(dir));
+
+		expect(refreshSessionIfNeeded).toHaveBeenCalledWith(expect.objectContaining({ url: 'https://cms.example.com' }));
+
+		const refreshOrder = vi.mocked(refreshSessionIfNeeded).mock.invocationCallOrder[0] ?? Infinity;
+		const testOrder = vi.mocked(testConnection).mock.invocationCallOrder[0] ?? 0;
+		expect(refreshOrder).toBeLessThan(testOrder);
 	});
 
 	it('a cancelled prompt aborts cleanly instead of proceeding', async () => {
