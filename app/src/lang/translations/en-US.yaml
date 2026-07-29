@@ -1352,6 +1352,7 @@ unlimited: Unlimited
 open_link_in: Open link in
 new_tab: New Tab
 save_image: Save Image
+save_link: Save Link
 save_media: Save Media
 wysiwyg_options:
   aligncenter: Align Center
@@ -1372,12 +1373,19 @@ wysiwyg_options:
   bullist: Bullet List
   numlist: Numbered List
   hr: Horizontal Rule
+  pagebreak: Page Break
+  insertdatetime: Insert Date/Time
+  insertdatetime_date: Date
+  insertdatetime_time: Time
+  insertdatetime_datetime: Date & Time
+  insertdatetime_locale: Localized
   link: Add/Edit Link
   unlink: Remove Link
   media: Add/Edit Media
   image: Add/Edit Image
   copy: Copy
   cut: Cut
+  default: Default
   paste: Paste
   heading: Heading
   h1: Heading 1
@@ -1389,6 +1397,7 @@ wysiwyg_options:
   pre: Preformatted
   fontselect: Select Font
   fontsizeselect: Select Font Size
+  styles: Formats
   indent: Indent
   outdent: Outdent
   undo: Undo
@@ -1397,10 +1406,45 @@ wysiwyg_options:
   removeformat: Remove Format
   selectall: Select All
   table: Table
+  table_cell: Cell
+  table_row: Row
+  table_column: Column
+  table_insert: Insert Table
+  table_insert_size: '{cols} × {rows}'
+  table_add_row_before: Add Row Above
+  table_add_row_after: Add Row Below
+  table_add_column_before: Add Column Left
+  table_add_column_after: Add Column Right
+  table_delete_row: Delete Row
+  table_delete_column: Delete Column
+  table_toggle_header_row: Toggle Header Row
+  table_toggle_header_column: Toggle Header Column
+  table_merge_cells: Merge Cells
+  table_split_cell: Split Cell
+  table_delete: Delete Table
   visualaid: View invisible elements
   source_code: Edit Source Code
+  source_code_normalization_notice: Markup that the editor can't represent is normalized when you save.
+  source_code_normalize_title: Some markup will be removed
+  source_code_normalize_body: The editor can't represent the highlighted markup, so it will be removed when you save.
+  save_anyway: Save Anyway
+  normalization_warning_title: Some formatting here isn't supported
+  normalization_warning_body:
+    This content includes items the new editor doesn't support, so the field is read-only for now. If you edit anyway,
+    those items will be removed when you save. To keep the stored HTML exactly as is, edit the raw HTML instead. This
+    warning will go away once the unsupported items are gone.
+  normalization_warning_view_changes: View changes
+  normalization_warning_keep_readonly: Keep Read-only
+  normalization_warning_edit_anyway: Edit Anyway
+  normalization_warning_edit_raw: Edit Raw HTML
+  normalization_locked_notice:
+    This field includes formatting the new editor doesn't support, so it's read-only. Select the field to choose how to
+    edit it.
+  normalization_locked_learn_more: Learn what changed
   fullscreen: Full Screen
   directionality: Directionality
+  ltr: Left to Right
+  rtl: Right to Left
   lazy_loading: Lazy Load Image
   lazy_loading_label: Enable Lazy Loading
 dropdown: Dropdown
@@ -2733,16 +2777,19 @@ interfaces:
     toolbar: Toolbar
     custom_formats: Custom Formats
     custom_formats_note:
-      List of TinyMCE Content Formats. See the TinyMCE documentation about [Content
-      Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) for more information.
-    options_override: Options Override
+      A list of custom inline formats. Each entry needs a `title` and an `inline` tag, with optional `classes`,
+      `styles`, and `attributes`. When set, a Formats dropdown is added to the toolbar. Block-level and nested formats
+      are not supported.
+    options_override: Options Override (Deprecated)
     options_override_note:
-      The TinyMCE User Formatting keys and their values. See the TinyMCE documentation about [User
-      Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) for more information.
+      Deprecated legacy TinyMCE overrides. This value is no longer applied by the editor and is kept for reference only.
+      Use the other interface options instead, such as the Custom Formats option.
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
     media_preview_iframe_title: Media Preview
+    embed_invalid: The embed markup could not be parsed as media (video, audio, or iframe)
+    auto_height: Auto height
   input-block-editor:
     input-block-editor: Block Editor
     description: Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js
