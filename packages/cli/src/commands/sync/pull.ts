@@ -344,10 +344,10 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 	const snapshot = await fetchSnapshot(credential, scope?.api);
 
-	// An explicitly requested collection that never appears in the fetched snapshot was silently dropped by
-	// the source: it is a folder (the schema-snapshot endpoint omits folder collections) or a name that does
-	// not exist. Left unsaid, the pull commits a partial snapshot missing exactly what was asked for, and a
-	// later push fails on the dangling reference. Name the gap so it is visible at pull time.
+	// An explicitly requested collection missing from the fetched snapshot was dropped by the source: a typo
+	// or a name that does not exist, or — on Directus without the partial-snapshot folder fix (#27991) — a
+	// named collection folder. Left unsaid, the pull commits a partial snapshot missing exactly what was
+	// asked for, and a later push fails on the dangling reference. Name the gap so it is visible at pull time.
 	if (scope !== undefined && 'include' in scope.payload) {
 		const present = new Set(snapshot.collections.map((entry) => entry.collection));
 		const missing = scope.payload.include.filter((name) => !present.has(name));
@@ -355,8 +355,8 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		if (missing.length > 0) {
 			ctx.ui.warn(
 				`Requested ${count(missing.length, 'collection')} not in the pulled schema: ${missing.join(', ')}. ` +
-					`They may not exist on the source, or be folders — the schema snapshot omits folder collections, ` +
-					`so scope the parent collection or pull the whole schema instead.`,
+					`Check the spelling and that each collection exists on the source. ` +
+					`Older Directus also omits a named collection folder from the snapshot — pull the whole schema instead.`,
 			);
 		}
 	}

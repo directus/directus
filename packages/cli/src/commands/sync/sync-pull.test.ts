@@ -282,10 +282,10 @@ describe('sync pull', () => {
 		expect(err).toContain('pages → website (group parent)');
 	});
 
-	it('warns when an explicitly requested collection is dropped from the snapshot (a folder or a typo)', async () => {
-		// Naming a folder in --collections resolves to nothing — the schema-snapshot endpoint omits folder
-		// collections — so the pull would silently commit a snapshot missing exactly what was asked for. Name
-		// the gap at authoring time instead of leaving a downstream push to fail on the absent collection.
+	it('warns when an explicitly requested collection is dropped from the snapshot (a typo or an old-server folder)', async () => {
+		// A requested collection missing from the returned snapshot — a typo, or a named collection folder on
+		// Directus without the #27991 partial-snapshot fix — would otherwise silently commit a snapshot missing
+		// exactly what was asked for. Name the gap at authoring time instead of leaving a push to fail on it.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
