@@ -7,7 +7,7 @@ post:
   operationId: importBatch
   parameters:
     - description: >-
-        `add` inserts new items and remaps conflicting primary keys, `merge` upserts items. Defaults to `add`.
+        `add` (default) inserts new items and remaps conflicting primary keys, `merge` upserts items.
       in: query
       name: mode
       required: false
@@ -16,6 +16,7 @@ post:
         enum:
           - add
           - merge
+        default: add
     - description: When true, no data is persisted; the computed id mappings are still returned.
       in: query
       name: dryRun
