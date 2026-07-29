@@ -829,12 +829,15 @@ wysiwyg_options:
   bullist: Merkitty lista
   numlist: Numeroitu luettelo
   hr: Vaakaviivain
+  insertdatetime_date: Päivämäärä
+  insertdatetime_time: Aika
   link: Lisää/Muokkaa Linkki
   unlink: Poista linkki
   media: Lisää/Muokkaa Mediaa
   image: Lisää/Muokkaa kuva
   copy: Kopioi
   cut: Leikkaa
+  default: Oletus
   paste: Liitä
   heading: Otsake
   h1: Otsake 1
@@ -857,6 +860,8 @@ wysiwyg_options:
   source_code: Muokkaa lähdekoodia
   fullscreen: Koko näyttö
   directionality: Suuntaus
+  ltr: Vasemmalta oikealle
+  rtl: Oikealta vasemmalle
 dropdown: Pudotusvalikko
 choices: Valinnat
 choices_option_configured_incorrectly: Valinnat määritetty väärin
@@ -1491,7 +1496,6 @@ interfaces:
     description: Rikastekstieditori HTML-sisällön kirjoitukseen
     toolbar: Työkalupalkki
     custom_formats: Mukautetut muodot
-    options_override: Valintojen ohitus
     folder_note: Ladattujen tiedostojen kansio. Ei vaikuta olemassa oleviin tiedostoihin.
   input-block-editor:
     tools: Työkalupalkki
