@@ -480,6 +480,53 @@ describe('sync diff with data', () => {
 		expect(stdout.join('')).toContain('+1 new');
 	});
 
+	it('previews creates for a collection the target lacks instead of dry-running it and reporting false auth', async () => {
+		// The reported repro: a new content collection is committed with a row, but the target has no such
+		// table yet — schema apply will create it. A data dry-run of that absent table 403s, which the error
+		// mapper renders as "Authentication failed", so push (which applies schema first) succeeds where diff
+		// died. diff must preview those rows as creates from the schema plan and never dry-run them. No import
+		// intercept is registered: a stray dry-run would throw on the disabled dispatcher and fail this test.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'qa_content_add', primaryKey: 'id', records: [{ id: 1, title: 'New' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', {
+			collections: [{ collection: 'qa_content_add', diff: [{ kind: 'N', rhs: { collection: 'qa_content_add' } }] }],
+			fields: [],
+			systemFields: [],
+			relations: [],
+		});
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/items/qa_content_add',
+				method: 'GET',
+				query: { limit: '-1', sort: 'id' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(
+				403,
+				{
+					errors: [
+						{
+							message: 'You don\'t have permission to access collection "qa_content_add" or it does not exist.',
+							extensions: { code: 'FORBIDDEN' },
+						},
+					],
+				},
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
+
+		const out = stdout.join('');
+		expect(out).toContain('qa_content_add');
+		expect(out).toContain('+1 new');
+		expect(stderr.join('')).not.toContain('Authentication failed');
+	});
+
 	it('refuses when a content target read fails for any non-403 reason instead of importing blind', async () => {
 		// A 500/timeout/network failure says nothing about the target's rows. Treating it as "no targets"
 		// would make add resend existing rows — duplicating uuid-keyed content via server remint — so the

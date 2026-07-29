@@ -62,6 +62,8 @@ export interface DataPushPlan {
 	readonly collections: number;
 	/** Collections the committed manifest marks as truncated at pull time; mirror must refuse them. */
 	readonly incomplete: readonly string[];
+	/** Each committed collection's primary-key field, so a preview can read the PKs off the batch items. */
+	readonly primaryKeys: ReadonlyMap<string, string>;
 }
 
 /** A schema-only checkout with no committed data generation. */
@@ -351,6 +353,8 @@ interface Reconciled {
 	readonly results: readonly CollectionReconcile[];
 	// Missing entries disable unchanged detection, keeping every source row in the batch.
 	readonly targets: ReadonlyMap<string, readonly Record<string, unknown>[]>;
+	// Each committed collection's primary-key field, so a preview can read the PKs off the batch items.
+	readonly primaryKeys: ReadonlyMap<string, string>;
 }
 
 async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSkipped> {
@@ -365,6 +369,13 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 	const targetUrl = normalizeInstanceUrl(target.url);
 	const { system, content } = partitionCollections(collections);
 	const map = readIdMap(target.idMapPath);
+
+	// The primary-key field for every committed collection. A preview uses it to recover the PKs of rows
+	// bound for a collection the target lacks: schema apply will create that collection, but a data dry-run
+	// against the still-absent table cannot, so those rows are previewed as creates from the committed batch.
+	const primaryKeys = new Map<string, string>();
+	for (const { resource } of system) primaryKeys.set(resource.collection, resource.primaryKey);
+	for (const data of content) primaryKeys.set(data.collection, data.primaryKey);
 
 	// One keystone read per push covers every reconcile fetch below (Judd's "2 requests per resource" —
 	// each target read otherwise costs a fetch plus an exhaustion probe). Best-effort; undefined keeps the probe.
@@ -403,7 +414,7 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 		}
 	}
 
-	return { skipped: false, source, targetUrl, system, content, map, incomplete, inputs, results, targets };
+	return { skipped: false, source, targetUrl, system, content, map, incomplete, inputs, results, targets, primaryKeys };
 }
 
 // Compare only exported fields; target-only defaults and audit columns are outside the sync claim. The PK
@@ -621,6 +632,7 @@ export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContex
 		records,
 		collections: batch.length,
 		incomplete: reconciled.incomplete,
+		primaryKeys: reconciled.primaryKeys,
 	};
 }
 
@@ -637,6 +649,8 @@ export interface DataPreviewPlan {
 	readonly unchangedCount: number;
 	/** Collections the committed manifest marks as truncated at pull time; push refuses mirror on them. */
 	readonly incomplete: readonly string[];
+	/** Each committed collection's primary-key field, so a caller can read the PKs off the batch items. */
+	readonly primaryKeys: ReadonlyMap<string, string>;
 }
 
 export type DataPreviewResult = DataPreviewPlan | DataPushSkipped;
@@ -650,7 +664,7 @@ export async function previewData(target: Target, mode: Mode): Promise<DataPrevi
 
 	if (reconciled.skipped) return { skipped: true };
 
-	const { source, targetUrl, system, content, results, targets } = reconciled;
+	const { source, targetUrl, system, content, results, targets, primaryKeys } = reconciled;
 
 	// Seed only unambiguous matches into the in-memory map; diff never settles identity choices.
 	let map = reconciled.map;
@@ -690,5 +704,6 @@ export async function previewData(target: Target, mode: Mode): Promise<DataPrevi
 		unmatchedCount,
 		unchangedCount,
 		incomplete: reconciled.incomplete,
+		primaryKeys,
 	};
 }

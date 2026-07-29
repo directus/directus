@@ -185,6 +185,37 @@ describe('interactive sync push', () => {
 		expect(vi.mocked(importBatch).mock.calls[1]?.[2]).not.toHaveProperty('dryRun');
 	});
 
+	it('previews a create for a to-be-created collection without dry-running its absent table', async () => {
+		// A committed content collection the schema plan will create has no table on the target yet, so a data
+		// dry-run of it 403s — which the error mapper renders as an auth failure. Interactive push dry-runs
+		// before it applies schema, so it must preview those rows as creates from the plan and skip the dry-run
+		// for them, then apply schema and import for real. No dry-run import may be sent for the absent table.
+		vi.mocked(fetchDiff).mockResolvedValueOnce({
+			hash: 'h1',
+			diff: {
+				collections: [{ collection: 'qa_content_add', diff: [{ kind: 'N', rhs: { collection: 'qa_content_add' } }] }],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			},
+		});
+
+		seedData([{ collection: 'qa_content_add', primaryKey: 'id', records: [{ id: 1, title: 'New' }] }]);
+
+		vi.mocked(importBatch).mockResolvedValue(
+			importResult({ qa_content_add: { existing: [], new: [1], deleted: [], mapped: {} } }),
+		);
+
+		vi.mocked(confirm).mockResolvedValueOnce(true);
+
+		await push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir));
+
+		// Schema applied once; the only import is the committing one — no dry-run was sent for the absent table.
+		expect(applyDiff).toHaveBeenCalledTimes(1);
+		expect(importBatch).toHaveBeenCalledTimes(1);
+		expect(vi.mocked(importBatch).mock.calls[0]?.[2]).not.toHaveProperty('dryRun');
+	});
+
 	it('demands the typed confirmation for data deletions the dry-run surfaces, even with a clean schema', async () => {
 		// Destruction on the table is not only schema: a mirror data plan that deletes rows triggers the
 		// typed confirmation even when the schema is clean and even under --yes. No schema change means apply

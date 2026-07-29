@@ -208,6 +208,9 @@ describe('prepareDataPush skip and precondition', () => {
 			unmatchedCount: 0,
 			unchangedCount: 0,
 			incomplete: [],
+			// The primary-key field per committed collection, so diff can preview creates into a not-yet-created
+			// target table by reading the PKs off the batch items.
+			primaryKeys: new Map([['articles', 'id']]),
 		});
 
 		expect(existsSync(join(dir, 'id_map.json'))).toBe(false);
