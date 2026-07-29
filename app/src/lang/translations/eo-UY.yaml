@@ -668,6 +668,7 @@ fields:
     collection: Kolekto
     icon: Emblemo
     note: Noto
+    status: Stato
     color: Koloro
     hidden: Kaŝita
     archive_value: Arĥivi la valoron

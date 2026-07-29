@@ -273,6 +273,14 @@ const getSuccessGroups = (localCollectionSuppliers: string): Record<string, Succ
 			expectedNames: ['Delta'],
 		},
 	],
+	'Incomplete path normalization': [
+		{
+			description: 'trailing dot normalizes and matches (color. → color)',
+			filter: { metadata: { _json: { 'color.': { _eq: 'red' } } } },
+			expectedLength: 1,
+			expectedNames: ['Alpha'],
+		},
+	],
 	'Inline _or/_and inside _json': [
 		{
 			// color='red': Alpha; color='blue': Beta
@@ -752,6 +760,10 @@ const ERROR_CASES: ErrorCase[] = [
 		description: 'returns 400 when a json path key is nested inside another json path key',
 		// nested paths must be written flat: 'a.b.c[0]', not { 'a.b': { 'c[0]': { _eq: 1 } } }
 		filter: { metadata: { _json: { 'a.b': { 'c[0]': { _eq: 1 } } } } },
+	},
+	{
+		description: 'returns 400 for a repeated dot (settings..theme)',
+		filter: { metadata: { _json: { 'settings..theme': { _eq: 'dark' } } } },
 	},
 ];
 

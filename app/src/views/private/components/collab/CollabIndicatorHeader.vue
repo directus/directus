@@ -74,8 +74,7 @@ function focusIntoView(cid: ClientID) {
 						<VIcon v-else name="person" small />
 					</VAvatar>
 				</template>
-
-				<div class="collab-header-popover">
+				<div class="collab-header-tooltip-content">
 					<p>
 						{{ user.name ?? t('unknown_user') }}
 						<template v-if="user.isCurrentUser">({{ t('you') }})</template>
@@ -159,20 +158,12 @@ function focusIntoView(cid: ClientID) {
 .collab-header-more-popover-item {
 	:deep(.v-avatar) {
 		font-size: 0.6875rem;
+
+		+ .v-avatar,
+		+ .v-menu .v-avatar {
+			margin-inline-start: -0.25rem;
+		}
 	}
-}
-
-.collab-header-popover {
-	padding: 0.25rem;
-	padding-block-end: 0.375rem;
-	display: flex;
-	flex-direction: column;
-}
-
-.collab-header-popover-status {
-	font-size: 0.857em;
-	line-height: 1.2;
-	color: var(--theme--foreground-subdued);
 }
 
 .collab-header-more-popover-item {

@@ -163,6 +163,7 @@ fields:
   directus_collections:
     collection: Koleksi
     note: Nota
+    status: Status
   directus_files:
     title: Tajuk
     description: Penerangan

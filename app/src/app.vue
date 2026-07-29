@@ -3,6 +3,7 @@ import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
 import { useHead } from '@unhead/vue';
 import { storeToRefs } from 'pinia';
+import { TooltipProvider } from 'reka-ui';
 import { computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
 import { RouterView, useRouter } from 'vue-router';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
@@ -10,6 +11,7 @@ import { startIdleTracking, stopIdleTracking } from './idle';
 import { ALLOWED_WHILE_LOCKED } from './router';
 import { useLicenseStore } from './stores/license';
 import { useUserStore } from './stores/user';
+import AppTooltip from '@/components/app-tooltip.vue';
 import VButton from '@/components/v-button.vue';
 import VError from '@/components/v-error.vue';
 import VInfo from '@/components/v-info.vue';
@@ -105,35 +107,38 @@ const reload = () => {
 </script>
 
 <template>
-	<ThemeProvider
-		:dark-mode="darkMode"
-		:theme-light="themeLight"
-		:theme-dark="themeDark"
-		:theme-light-overrides="themeLightOverrides"
-		:theme-dark-overrides="themeDarkOverrides"
-	/>
+	<TooltipProvider>
+		<ThemeProvider
+			:dark-mode="darkMode"
+			:theme-light="themeLight"
+			:theme-dark="themeDark"
+			:theme-light-overrides="themeLightOverrides"
+			:theme-dark-overrides="themeDarkOverrides"
+		/>
 
-	<div id="directus">
-		<Transition name="fade">
-			<div v-if="hydrating" class="hydrating">
-				<VProgressCircular indeterminate />
-			</div>
-		</Transition>
+		<div id="directus">
+			<Transition name="fade">
+				<div v-if="hydrating" class="hydrating">
+					<VProgressCircular indeterminate />
+				</div>
+			</Transition>
 
-		<VInfo v-if="error" type="danger" :title="$t('unexpected_error')" icon="error" center>
-			{{ $t('unexpected_error_copy') }}
+			<VInfo v-if="error" type="danger" :title="$t('unexpected_error')" icon="error" center>
+				{{ $t('unexpected_error_copy') }}
 
-			<template #append>
-				<VError class="error" :error="error" />
+				<template #append>
+					<VError class="error" :error="error" />
 
-				<VButton small @click="reload">{{ $t('reload_page') }}</VButton>
-			</template>
-		</VInfo>
+					<VButton small @click="reload">{{ $t('reload_page') }}</VButton>
+				</template>
+			</VInfo>
 
-		<RouterView v-else-if="!hydrating" />
-	</div>
+			<RouterView v-else-if="!hydrating" />
+		</div>
 
-	<Teleport to="#custom-css">{{ customCSS }}</Teleport>
+		<Teleport to="#custom-css">{{ customCSS }}</Teleport>
+		<AppTooltip />
+	</TooltipProvider>
 </template>
 
 <style lang="scss" scoped>

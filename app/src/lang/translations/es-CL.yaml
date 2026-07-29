@@ -1241,6 +1241,7 @@ fields:
     collection: Colección
     icon: Icono
     note: Nota
+    status: Estado
     color: Color
     display_template: Plantilla de Presentación
     hidden: Oculto
@@ -1910,6 +1911,7 @@ interfaces:
     incompatible_data: Los datos actuales no son compatibles con la interfaz del repetidor y serán reemplazados al agregar elementos al repetidor
     interface_group: Opciones de Interfaz
     display_group: Opciones de Visualización
+    edit_mode_inline: Alineado
   slider:
     slider: Deslizador
     description: Seleccionar un número usando un deslizador

@@ -555,7 +555,6 @@ function useInlineWarning() {
 
 		input {
 			pointer-events: none;
-			-webkit-user-select: none;
 			user-select: none;
 
 			&::selection {

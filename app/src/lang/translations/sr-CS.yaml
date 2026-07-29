@@ -699,6 +699,7 @@ fields:
     collection: Kolekcija
     icon: Ikonica
     note: Napomena
+    status: Status
     color: Boja
     display_template: Šablon za Prikaz
     hidden: Sakriveno
@@ -1031,6 +1032,7 @@ interfaces:
     sort: Sortiranje
     field_note_placeholder: Unesi napomenu polja...
     interface_group: Opcije Interfejsa
+    edit_mode_inline: Linijski
   slider:
     slider: Slajder
     description: Odaberi broj uz pomoć slajdera

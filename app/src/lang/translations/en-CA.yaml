@@ -826,6 +826,7 @@ fields:
     collection: Collection
     icon: Icon
     note: Note
+    status: Status
     color: Colour
     display_template: Display Template
     hidden: Hidden
@@ -1355,6 +1356,7 @@ interfaces:
     sort: Sort
     field_note_placeholder: Enter field note...
     interface_group: Interface Options
+    edit_mode_inline: Inline
   slider:
     slider: Slider
     description: Select a number using a slider

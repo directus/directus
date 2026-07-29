@@ -1000,6 +1000,7 @@ fields:
     collection: Koleksi
     icon: Ikon
     note: Catatan
+    status: Status
     color: Warna
     display_template: Tampilan Template
     hidden: Tersembunyi
@@ -1395,6 +1396,7 @@ interfaces:
     description: Pilih folder
   list:
     sort: Sortir
+    edit_mode_inline: Inline
   tags:
     tags: Tagar
   boolean:

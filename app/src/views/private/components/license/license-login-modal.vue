@@ -52,6 +52,7 @@ async function save() {
 
 function dismiss() {
 	cookies.set('license-login-modal-dismissed', 'true', {
+		path: '/',
 		expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
 	});
 

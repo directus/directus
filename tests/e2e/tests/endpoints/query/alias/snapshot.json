@@ -1124,6 +1124,49 @@
 			}
 		},
 		{
+			"collection": "text_blocks_1234",
+			"field": "author",
+			"type": "integer",
+			"meta": {
+				"collection": "text_blocks_1234",
+				"conditions": null,
+				"display": null,
+				"display_options": null,
+				"field": "author",
+				"group": null,
+				"hidden": false,
+				"interface": "select-dropdown-m2o",
+				"note": null,
+				"options": null,
+				"readonly": false,
+				"required": false,
+				"sort": 3,
+				"special": ["m2o"],
+				"translations": null,
+				"validation": null,
+				"validation_message": null,
+				"width": "full"
+			},
+			"schema": {
+				"name": "author",
+				"table": "text_blocks_1234",
+				"data_type": "integer",
+				"default_value": null,
+				"max_length": null,
+				"numeric_precision": 32,
+				"numeric_scale": 0,
+				"is_nullable": true,
+				"is_unique": false,
+				"is_indexed": false,
+				"is_primary_key": false,
+				"is_generated": false,
+				"generation_expression": null,
+				"has_auto_increment": false,
+				"foreign_key_table": "users_1234",
+				"foreign_key_column": "id"
+			}
+		},
+		{
 			"collection": "users_1234",
 			"field": "id",
 			"type": "integer",
@@ -1232,6 +1275,31 @@
 				"foreign_key_table": "users_1234",
 				"foreign_key_column": "id",
 				"constraint_name": "articles_1234_author_foreign",
+				"on_update": "NO ACTION",
+				"on_delete": "SET NULL"
+			}
+		},
+		{
+			"collection": "text_blocks_1234",
+			"field": "author",
+			"related_collection": "users_1234",
+			"meta": {
+				"junction_field": null,
+				"many_collection": "text_blocks_1234",
+				"many_field": "author",
+				"one_allowed_collections": null,
+				"one_collection": "users_1234",
+				"one_collection_field": null,
+				"one_deselect_action": "nullify",
+				"one_field": null,
+				"sort_field": null
+			},
+			"schema": {
+				"table": "text_blocks_1234",
+				"column": "author",
+				"foreign_key_table": "users_1234",
+				"foreign_key_column": "id",
+				"constraint_name": "text_blocks_1234_author_foreign",
 				"on_update": "NO ACTION",
 				"on_delete": "SET NULL"
 			}

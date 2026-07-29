@@ -49,7 +49,11 @@ async function setOwner() {
 
 function remindLater() {
 	// 30 days, will be deleted on logout / session end
-	cookies.set('license-banner-dismissed', 'true', { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) });
+	cookies.set('license-banner-dismissed', 'true', {
+		path: '/',
+		expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+	});
+
 	notify({ title: t('license_banner.remind_next_login'), type: 'info' });
 	model.value = false;
 }

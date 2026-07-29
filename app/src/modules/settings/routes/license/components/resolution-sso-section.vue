@@ -58,7 +58,7 @@ function toggle() {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
-	width: 100%;
+	inline-size: 100%;
 	padding: 0.5rem 0.75rem;
 	border: 1px solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);

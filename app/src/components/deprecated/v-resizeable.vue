@@ -218,7 +218,6 @@ function onPointerUp() {
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 		transition-delay: 0s;
-		-webkit-user-select: none;
 		user-select: none;
 		touch-action: none;
 		transform: translate(50%, 0);
