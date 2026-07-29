@@ -217,6 +217,7 @@ export function mockDefaultRecords(agent: MockAgent): void {
 		'/operations',
 		'/dashboards',
 		'/panels',
+		'/folders',
 		'/translations',
 	]) {
 		mockList(agent, path, []);

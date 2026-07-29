@@ -37,13 +37,14 @@ describe('resolveResources', () => {
 		// One closure per selectable resource fully determines the dependency edges (spec Q8): users ride
 		// with the roles/policies they reference, roles with the policies their access rows grant,
 		// policies with their access + permissions children, flows with operations, dashboards with
-		// panels, settings and translations alone. An edge added, dropped, or reordered ANYWHERE in the
+		// panels, folders/settings/translations alone. An edge added, dropped, or reordered ANYWHERE in the
 		// resource table changes at least one of these arrays.
 		const closures = Object.fromEntries(SELECTABLE_RESOURCES.map((name) => [name, names([name])]));
 
 		expect(closures).toEqual({
 			dashboards: ['panels', 'dashboards'],
 			flows: ['operations', 'flows'],
+			folders: ['folders'],
 			policies: ['access', 'permissions', 'policies'],
 			roles: ['access', 'permissions', 'policies', 'roles'],
 			settings: ['settings'],
@@ -56,10 +57,11 @@ describe('resolveResources', () => {
 		// This exact sequence is the module's contract: the lexicographically minimal topological order
 		// over the must-pull edges. Locking it here makes any reordering — from a graph edit or a sort
 		// regression — fail loudly instead of silently changing the import plan committed to a repo.
-		const all = ['dashboards', 'flows', 'policies', 'roles', 'settings', 'translations', 'users'];
+		const all = ['dashboards', 'flows', 'folders', 'policies', 'roles', 'settings', 'translations', 'users'];
 
 		expect(names(all)).toEqual([
 			'access',
+			'folders',
 			'operations',
 			'flows',
 			'panels',
@@ -158,7 +160,7 @@ describe('resolveResources', () => {
 	it('gives every resource a strip and an aliases list, so a new resource cannot forget them', () => {
 		// The strip/alias tables are the export's secrets-and-FK guard: a resource added without them would
 		// silently ship sensitive columns or break a fresh-target import. Loop so the invariant is total.
-		const all = ['dashboards', 'flows', 'policies', 'roles', 'settings', 'translations', 'users'];
+		const all = ['dashboards', 'flows', 'folders', 'policies', 'roles', 'settings', 'translations', 'users'];
 
 		for (const resource of resolveResources(all)) {
 			expect(Array.isArray(resource.strip)).toBe(true);
@@ -192,6 +194,7 @@ describe('resolveResources', () => {
 		expect(SELECTABLE_RESOURCES).toEqual([
 			'dashboards',
 			'flows',
+			'folders',
 			'policies',
 			'roles',
 			'settings',

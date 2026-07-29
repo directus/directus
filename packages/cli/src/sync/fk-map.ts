@@ -23,6 +23,7 @@ export const SYSTEM_FK_FIELDS: Readonly<Record<string, readonly FkField[]>> = {
 	directus_panels: [{ field: 'dashboard', references: 'directus_dashboards' }],
 	directus_flows: [{ field: 'operation', references: 'directus_operations' }],
 	directus_roles: [{ field: 'parent', references: 'directus_roles' }],
+	directus_folders: [{ field: 'parent', references: 'directus_folders' }],
 	directus_users: [{ field: 'role', references: 'directus_roles' }],
 	directus_settings: [{ field: 'public_registration_role', references: 'directus_roles' }],
 	directus_dashboards: [],

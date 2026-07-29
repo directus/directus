@@ -18,6 +18,7 @@ function parseList(value: string): string[] {
 const RESOURCE_FLAG_PHRASES: Record<string, string> = {
 	dashboards: 'dashboards and their panels',
 	flows: 'flows and their operations',
+	folders: 'media-library folders (the folder tree, not the files)',
 	policies: 'access policies with their permissions and access rules',
 	roles: 'roles (brings their policies)',
 	settings: 'project settings',

@@ -150,7 +150,7 @@ describe('sync pull', () => {
 
 		// The default set is every selectable resource except users and translations; settings contributes
 		// its one singleton row, the rest are stubbed empty.
-		expect(payload.data.collections).toBe(9);
+		expect(payload.data.collections).toBe(10);
 		expect(payload.data.records).toBe(1);
 
 		expect(new Set(payload.data.resources)).toEqual(
@@ -158,6 +158,7 @@ describe('sync pull', () => {
 				'directus_access',
 				'directus_dashboards',
 				'directus_flows',
+				'directus_folders',
 				'directus_operations',
 				'directus_panels',
 				'directus_permissions',
@@ -499,6 +500,7 @@ describe('sync pull resources and data', () => {
 			'directus_access',
 			'directus_dashboards',
 			'directus_flows',
+			'directus_folders',
 			'directus_operations',
 			'directus_panels',
 			'directus_permissions',
@@ -529,6 +531,7 @@ describe('sync pull resources and data', () => {
 			'directus_access',
 			'directus_dashboards',
 			'directus_flows',
+			'directus_folders',
 			'directus_operations',
 			'directus_panels',
 			'directus_permissions',
@@ -600,6 +603,7 @@ describe('sync pull resources and data', () => {
 			'directus_access',
 			'directus_dashboards',
 			'directus_flows',
+			'directus_folders',
 			'directus_operations',
 			'directus_panels',
 			'directus_permissions',
@@ -624,6 +628,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/permissions', []);
 		interceptList('/dashboards', []);
 		interceptList('/panels', []);
+		interceptList('/folders', []);
 		interceptList('/translations', []);
 		interceptSingleton('/settings', { id: 1 });
 
@@ -632,6 +637,7 @@ describe('sync pull resources and data', () => {
 		expect(exportedCollections()).toEqual([
 			'directus_access',
 			'directus_dashboards',
+			'directus_folders',
 			'directus_panels',
 			'directus_permissions',
 			'directus_policies',
@@ -719,6 +725,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/permissions', []);
 		interceptList('/dashboards', []);
 		interceptList('/panels', []);
+		interceptList('/folders', []);
 		interceptList('/translations', []);
 		interceptSingleton('/settings', { id: 1 });
 
@@ -727,6 +734,7 @@ describe('sync pull resources and data', () => {
 		expect(exportedCollections()).toEqual([
 			'directus_access',
 			'directus_dashboards',
+			'directus_folders',
 			'directus_panels',
 			'directus_permissions',
 			'directus_policies',
@@ -749,6 +757,7 @@ describe('sync pull resources and data', () => {
 			'directus_access',
 			'directus_dashboards',
 			'directus_flows',
+			'directus_folders',
 			'directus_operations',
 			'directus_panels',
 			'directus_permissions',
@@ -774,6 +783,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/operations', []);
 		interceptList('/dashboards', []);
 		interceptList('/panels', []);
+		interceptList('/folders', []);
 		interceptSingleton('/settings', { id: 1 });
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
@@ -897,6 +907,7 @@ describe('sync pull resources and data', () => {
 			'/operations',
 			'/dashboards',
 			'/panels',
+			'/folders',
 			'/translations',
 		]) {
 			interceptList(path, []);
@@ -953,6 +964,7 @@ describe('sync pull resources and data', () => {
 			'/operations',
 			'/dashboards',
 			'/panels',
+			'/folders',
 			'/translations',
 		]) {
 			interceptList(path, []);
@@ -983,6 +995,7 @@ describe('sync pull resources and data', () => {
 			'/operations',
 			'/dashboards',
 			'/panels',
+			'/folders',
 			'/translations',
 		]) {
 			interceptList(path, []);
@@ -1041,6 +1054,7 @@ describe('sync pull resources and data', () => {
 			'/operations',
 			'/dashboards',
 			'/panels',
+			'/folders',
 			'/translations',
 		]) {
 			interceptList(path, []);
@@ -1138,6 +1152,7 @@ describe('sync pull resources and data', () => {
 			'/operations',
 			'/dashboards',
 			'/panels',
+			'/folders',
 			'/translations',
 		]) {
 			interceptList(path, []);
@@ -1203,6 +1218,7 @@ describe('sync pull resources and data', () => {
 			'/operations',
 			'/dashboards',
 			'/panels',
+			'/folders',
 			'/translations',
 		]) {
 			interceptList(path, []);
@@ -1278,6 +1294,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/operations', []);
 		interceptList('/dashboards', []);
 		interceptList('/panels', []);
+		interceptList('/folders', []);
 		interceptList('/translations', []);
 		interceptSingleton('/settings', { id: 1 });
 
@@ -1438,6 +1455,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/permissions', []);
 		interceptList('/dashboards', []);
 		interceptList('/panels', []);
+		interceptList('/folders', []);
 		interceptList('/translations', []);
 		interceptSingleton('/settings', { id: 1 });
 
@@ -1446,6 +1464,7 @@ describe('sync pull resources and data', () => {
 		expect(exportedCollections()).toEqual([
 			'directus_access',
 			'directus_dashboards',
+			'directus_folders',
 			'directus_panels',
 			'directus_permissions',
 			'directus_policies',

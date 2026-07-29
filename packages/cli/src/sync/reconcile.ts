@@ -6,6 +6,7 @@ import { SYSTEM_FK_FIELDS } from './fk-map.js';
 // a singleton, so its empty key matches a lone source and target but remains ambiguous for duplicates.
 const NATURAL_KEYS: Readonly<Record<string, readonly string[]>> = {
 	directus_roles: ['name'],
+	directus_folders: ['name'],
 	directus_policies: ['name'],
 	directus_flows: ['name'],
 	directus_dashboards: ['name'],

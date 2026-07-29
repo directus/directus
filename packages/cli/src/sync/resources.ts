@@ -178,6 +178,19 @@ const RESOURCE_LIST: readonly ResourceDef[] = [
 		aliases: [],
 	},
 	{
+		// Media-library folder tree (id/name/parent) — configuration, not file content. Its self-referential
+		// parent FK mirrors directus_roles, so import ordering and remapping ride the existing system path.
+		name: 'folders',
+		collection: 'directus_folders',
+		endpoint: '/folders',
+		primaryKey: 'id',
+		singleton: false,
+		selectable: true,
+		mustPull: [],
+		strip: [],
+		aliases: [],
+	},
+	{
 		name: 'translations',
 		collection: 'directus_translations',
 		endpoint: '/translations',

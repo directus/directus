@@ -27,6 +27,7 @@ const bucket = {
 	directus_access: { a1: 'ta1' },
 	directus_roles: { sr: 'tr' },
 	directus_policies: { sp: 'tp' },
+	directus_folders: { fChild: 'tChild', fParent: 'tParent' },
 };
 
 describe('remapSystemRecord', () => {
@@ -71,6 +72,21 @@ describe('remapSystemRecord', () => {
 		const miss = remapSystemRecord({ id: 'new', name: 'New' }, 'directus_roles', 'id', bucket);
 		expect(miss.record['id']).toBe('new');
 		expect(miss.sent).toEqual({ sourceId: 'new', sentPk: 'new' });
+	});
+
+	it('remaps a folder onto its target id and its parent onto the target parent — the self-ref tree survives', () => {
+		// directus_folders parents another folder, exactly like directus_roles. Without the parent FK in the
+		// map a re-push keeps the source-space parent id, which names a different (or absent) folder on the
+		// target — silently reparenting the media-library tree. This pins the self-ref FK entry as load-bearing.
+		const { record, sent } = remapSystemRecord(
+			{ id: 'fChild', name: 'Images', parent: 'fParent' },
+			'directus_folders',
+			'id',
+			bucket,
+		);
+
+		expect(record).toEqual({ id: 'tChild', name: 'Images', parent: 'tParent' });
+		expect(sent).toEqual({ sourceId: 'fChild', sentPk: 'tChild' });
 	});
 
 	it('never mutates the input record and leaves non-key fields untouched', () => {
