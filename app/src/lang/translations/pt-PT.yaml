@@ -928,6 +928,8 @@ wysiwyg_options:
   forecolor: Cor principal
   backcolor: Cor de Fundo
   bold: Negrito
+  insertdatetime_date: Data
+  insertdatetime_time: Hora
   h3: Título 3
   h4: Título 4
   h5: Título 5
@@ -944,6 +946,8 @@ wysiwyg_options:
   source_code: Editar o código-fonte
   fullscreen: Ecrã completo
   directionality: Direcionalidade
+  ltr: Da Esquerda para a Direita
+  rtl: Da direita para a esquerda
 choices: Opções
 choices_option_configured_incorrectly: Opções configuradas incorretamente
 deselect: Desselecionar
