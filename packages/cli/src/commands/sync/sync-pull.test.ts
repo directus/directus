@@ -282,6 +282,44 @@ describe('sync pull', () => {
 		expect(err).toContain('pages → website (group parent)');
 	});
 
+	it('warns when an explicitly requested collection is dropped from the snapshot (a folder or a typo)', async () => {
+		// Naming a folder in --collections resolves to nothing — the schema-snapshot endpoint omits folder
+		// collections — so the pull would silently commit a snapshot missing exactly what was asked for. Name
+		// the gap at authoring time instead of leaving a downstream push to fail on the absent collection.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		const onlyPages = {
+			version: 2,
+			directus: '11.0.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'pages', meta: { group: null } }],
+			fields: [{ collection: 'pages', field: 'title', type: 'string' }],
+			systemFields: [],
+			relations: [],
+		};
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/schema/snapshot',
+				method: 'GET',
+				query: { includeCollections: 'pages,website_folder' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: onlyPages }, { headers: { 'content-type': 'application/json' } });
+
+		interceptDefaultRecords();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--collections', 'pages,website_folder')).toBe(0);
+
+		const err = stderr.join('');
+		expect(err).toContain('not in the pulled schema: website_folder');
+		// pages WAS returned, so only the dropped name is named, and no group-parent warning fires here.
+		expect(err).not.toContain('pages,');
+		expect(err).not.toContain('does not include');
+	});
+
 	it('does not warn when the out-of-scope group parent is already committed from a prior full pull', async () => {
 		// The reason the reference check runs over the committed set, not this fetch: after a full pull that
 		// committed website, a later `--collections pages` scoped pull preserves the website artifact on disk.

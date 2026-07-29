@@ -344,6 +344,23 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 	const snapshot = await fetchSnapshot(credential, scope?.api);
 
+	// An explicitly requested collection that never appears in the fetched snapshot was silently dropped by
+	// the source: it is a folder (the schema-snapshot endpoint omits folder collections) or a name that does
+	// not exist. Left unsaid, the pull commits a partial snapshot missing exactly what was asked for, and a
+	// later push fails on the dangling reference. Name the gap so it is visible at pull time.
+	if (scope !== undefined && 'include' in scope.payload) {
+		const present = new Set(snapshot.collections.map((entry) => entry.collection));
+		const missing = scope.payload.include.filter((name) => !present.has(name));
+
+		if (missing.length > 0) {
+			ctx.ui.warn(
+				`Requested ${count(missing.length, 'collection')} not in the pulled schema: ${missing.join(', ')}. ` +
+					`They may not exist on the source, or be folders — the schema snapshot omits folder collections, ` +
+					`so scope the parent collection or pull the whole schema instead.`,
+			);
+		}
+	}
+
 	// One keystone read for the whole pull: when the source reports no row cap, every fetch below is a single
 	// unbounded read instead of a read plus an exhaustion probe. Best-effort — undefined keeps the probe.
 	const queryMax = await fetchQueryLimitMax(credential);
