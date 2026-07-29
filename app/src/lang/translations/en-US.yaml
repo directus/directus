@@ -759,6 +759,7 @@ manual_string: Manually entered string
 save_and_create_new: Save and Create New
 save_and_stay: Save and Stay
 save_and_quit: Save and Quit
+default_save_action_note: The action the Save button performs by default when editing an item.
 publish_and_quit: Publish and Quit
 publish_without_review: Publish without Review
 publish_anyway: Publish Anyway
