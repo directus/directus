@@ -1056,12 +1056,15 @@ wysiwyg_options:
   bullist: Noktalı Liste
   numlist: Numaralı Liste
   hr: Yatay Çizgi
+  insertdatetime_date: Tarih
+  insertdatetime_time: Zaman
   link: Link Ekle/Düzenle
   unlink: Linki Kaldır
   media: Medya Ekle/Düzenle
   image: Fotoğraf Ekle/Düzenle
   copy: Kopyala
   cut: Kes
+  default: Varsayılan
   paste: Yapıştır
   heading: Başlık
   h1: Başlık 1
@@ -1084,6 +1087,8 @@ wysiwyg_options:
   source_code: Kaynak Kodunu Düzenle
   fullscreen: Tam Ekran
   directionality: Yönlülük
+  ltr: Soldan Sağa
+  rtl: Sağdan Sola
   lazy_loading: Tembel Yükleme Fotoğrafı
   lazy_loading_label: Lazy yüklemeyi etkinleştir
 dropdown: Açılır Liste
@@ -1917,7 +1922,6 @@ interfaces:
     description: HTML içeriği yazmak için zengin bir metin editörü
     toolbar: Araç Çubuğu
     custom_formats: Özel Biçimler
-    options_override: Seçeneklerin Üstüne Yazma
     folder_note: Yüklenen dosyalar için bir klasör. Varolan dosyaları etkilemez.
     imageToken: Statik Erişim Anahtarı
     imageToken_label: Statik erişim anahtarı dosyaların URL'lerinin sonuna eklenir
