@@ -187,7 +187,7 @@ describe('parseFields', () => {
 		const query = await getQuery({}, m2aSchema, selections, mockVariableValues, mockAccountability, 'test_collection');
 		expect(query.fields).toEqual(['parent:child.grandchild']);
 
-		expect(query.deep).toStrictEqual({
+		expect(query.deep).toEqual({
 			parent__child: {
 				grandchild: {
 					_alias: {},
@@ -196,6 +196,30 @@ describe('parseFields', () => {
 				},
 			},
 		});
+	});
+
+	test('should not corrupt a builtin via a prototype-polluting alias path', async () => {
+		const original = Object.prototype.toString.call;
+
+		const limitArg = { name: { value: 'limit' }, value: { kind: 'IntValue', value: '10' } };
+
+		const selections = [
+			field('parent', {
+				children: [
+					field('some_relation', {
+						alias: 'toString',
+						children: [field('grandchild', { args: [limitArg] })],
+					}),
+				],
+			}),
+		];
+
+		vi.mocked(sanitizeQuery).mockResolvedValue({ limit: 10 });
+
+		await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
+
+		expect(Object.prototype.toString.call).toBe(original);
+		expect(Object.prototype.toString.call([])).toBe('[object Array]');
 	});
 
 	test('should parse _func field with selectionSet', async () => {
