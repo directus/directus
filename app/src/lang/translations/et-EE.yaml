@@ -794,6 +794,8 @@ wysiwyg_options:
   bullist: Punktloetelu
   numlist: Numbriline loetelu
   hr: Horisontaaljoon
+  insertdatetime_date: Kuupäev
+  insertdatetime_time: Kellaaeg
   link: Lisa/muuda linki
   unlink: Eemalda link
   media: Lisa/muuda meedia
@@ -822,6 +824,8 @@ wysiwyg_options:
   source_code: Muuda lähtekoodi
   fullscreen: Täisekraan
   directionality: Suund
+  ltr: Vasakult paremale
+  rtl: Paremalt vasakule
 dropdown: Rippmenüü
 choices: Valikud
 choices_option_configured_incorrectly: Valikud pole korrektselt seadistatud
@@ -1328,7 +1332,6 @@ interfaces:
     description: Tekstiredaktor HTML sisu loomiseks
     toolbar: Tööriistariba
     custom_formats: Kohandatud vormingud
-    options_override: Valikute ülekirjutamine
     folder_note: Üles laetud failide kaust. Ei mõjuta olemasolevaid faile.
   input-block-editor:
     tools: Tööriistariba
