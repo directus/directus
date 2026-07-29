@@ -42,7 +42,7 @@ describe('/assets', () => {
 									.fill(0)
 									.map((_, index) =>
 										request(getUrl(vendor))
-											.get(`/assets/${uploadedFileID}?width=${4000 + index}&height=${4000 + index}`)
+											.get(`/assets/${uploadedFileID}?width=${1000 + index}&height=${1000 + index}`)
 											.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 									),
 							);
@@ -79,7 +79,7 @@ describe('/assets', () => {
 									.fill(0)
 									.map((_, index) =>
 										request(getUrl(vendor))
-											.get(`/assets/${uploadedFileID}?width=${4000 + index}&height=${4000 + index}`)
+											.get(`/assets/${uploadedFileID}?width=${1000 + index}&height=${1000 + index}`)
 											.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 									),
 							);

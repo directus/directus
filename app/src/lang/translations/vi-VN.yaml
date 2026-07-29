@@ -416,6 +416,7 @@ functions:
   hour: Giờ
   minute: Phút
   second: Giây
+  json: JSON
 date-fns_date_short: 'MMM d, ''bạn'''
 minutes: Phút
 hours: Giờ
@@ -682,6 +683,7 @@ operators:
   nbetween: Ngoài khoảng
   empty: Bị rỗng
   nempty: Không rỗng
+  json: JSON
 loading: Đang tải...
 drop_to_upload: Kéo vào để tải lên
 upload_file: Tải lên tập tin
@@ -785,6 +787,8 @@ wysiwyg_options:
   bullist: Danh sách dấu đầu dòng
   numlist: Danh Sách Đánh Số
   hr: Thước ngang
+  insertdatetime_date: Ngày tháng
+  insertdatetime_time: Thời gian
   link: Thêm/Sửa Liên kết
   unlink: Loại bỏ liên kết
   media: Thêm/Sửa Phương tiện
@@ -810,6 +814,8 @@ wysiwyg_options:
   table: Bảng
   source_code: Chỉnh sửa mã nguồn
   fullscreen: Toàn màn hình
+  ltr: Trái sang phải
+  rtl: Phải sang trái
 dropdown: Tuỳ chọn dạng thả xuống
 choices: Lựa chọn
 deselect: Bỏ chọn
