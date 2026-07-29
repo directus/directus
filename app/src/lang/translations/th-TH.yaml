@@ -706,12 +706,15 @@ wysiwyg_options:
   bullist: รายการแบบไม่มีลําดับ
   numlist: รายการแบบมีลำดับ
   hr: เส้นคั่นแนวนอน
+  insertdatetime_date: วันที่
+  insertdatetime_time: เวลา
   link: เพิ่ม/แก้ไข ลิงค์
   unlink: ลบลิงค์
   media: เพิ่ม/แก้ไข สื่อ
   image: เพิ่ม/แก้ไขภาพ
   copy: คัดลอก
   cut: ตัด
+  default: ค่าเริ่มต้น
   paste: วาง
   heading: หัวข้อ
   h1: หัวข้อที่ 1
@@ -734,6 +737,8 @@ wysiwyg_options:
   source_code: แก้ไข Source Code
   fullscreen: เต็มจอ
   directionality: อย่างมีทิศทาง
+  ltr: ซ้ายไปขวา
+  rtl: ขวาไปซ้าย
 dropdown: ตัวเลือกแบบดรอปดาวน์
 choices: ตัวเลือกแบบช้อยส์
 choices_option_configured_incorrectly: ตั้งค่าตัวเลือกแบบช้อยส์ไม่ถูกต้อง
@@ -1258,7 +1263,6 @@ interfaces:
     description: เขียนข้อความที่สามารถตกแต่งได้ด้วย HTML
     toolbar: แถบเครื่องมือ
     custom_formats: รูปแบบที่กำหนดเอง
-    options_override: ตัวเลือกแทนที่
   input-block-editor:
     tools: แถบเครื่องมือ
     tools_options:
