@@ -1283,12 +1283,15 @@ wysiwyg_options:
   bullist: فهرست نقطه دار
   numlist: فهرست شماره‌دار
   hr: خط افقی
+  insertdatetime_date: تاریخ
+  insertdatetime_time: زمان
   link: اضافه/ویرایش لینک
   unlink: حذف لینک
   media: اضافه/ویرایش رسانه
   image: اضافه/ویرایش تصویر
   copy: کپی
   cut: کات
+  default: پیش‌فرض
   paste: چسباندن
   heading: سرتیتر
   h1: سرتیتر ۱
@@ -1312,6 +1315,8 @@ wysiwyg_options:
   source_code: ویرایش کد سورس
   fullscreen: تمام صفحه
   directionality: جهت گیری
+  ltr: چپ به راست
+  rtl: راست به چپ
   lazy_loading: بارگزاری تنبل تصاویر
   lazy_loading_label: فعال‌سازی بارگزاری تنبل
 dropdown: لیست کشویی
@@ -2354,9 +2359,6 @@ interfaces:
     description: A rich-text editor writing HTML content
     toolbar: نوار ابزار
     custom_formats: نوع سفارشی
-    custom_formats_note: فهرست قالب‌های محتوای TinyMCE. برای اطلاعات بیشتر، مستندات TinyMCE درباره [قالب‌بندی محتوا](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) را ببینید.
-    options_override: Options Override
-    options_override_note: کلیدهای قالب‌بندی کاربر و مقادیرشان در TinyMCE. برای اطلاعات بیشتر، مستندات TinyMCE درباره [قالب‌بندی کاربر](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) را ببینید.
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
