@@ -213,10 +213,11 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	 */
 	async getWebhookConfig(
 		provider: ProviderType,
-	): Promise<{ webhook_secret: string | null; credentials: Credentials; options: Options }> {
+	): Promise<{ deployment_id: string; webhook_secret: string | null; credentials: Credentials; options: Options }> {
 		const config = await this.readConfig(provider);
 
 		return {
+			deployment_id: config.id,
 			webhook_secret: config.webhook_secret ?? null,
 			credentials: parseValue<Credentials>(config.credentials, {}),
 			options: parseValue<Options>(config.options, {}),

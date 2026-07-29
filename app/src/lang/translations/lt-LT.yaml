@@ -502,6 +502,7 @@ functions:
   minute: Minutė
   second: Sekundė
   count: Kiekis
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -843,6 +844,7 @@ operators:
   nintersects: Nepersidengia
   intersects_bbox: Persidengia (geometrija)
   nintersects_bbox: Nepersidengia (geometrija)
+  json: JSON
   regex: Atitinka RegExp
 custom_validation_message: Validacinis pranešimas
 loading: Kraunasi...
@@ -1057,12 +1059,15 @@ wysiwyg_options:
   bullist: Suženklintasis sąrašas
   numlist: Numeruotasis sąrašas
   hr: Horizontali linija
+  insertdatetime_date: Data
+  insertdatetime_time: Laikas
   link: Pridėti / redaguoti nuorodą
   unlink: Pašalinti nuorodą
   media: Pridėti / redaguoti mediją
   image: Pridėti / redaguoti nuotrauką
   copy: Kopijuoti
   cut: Iškirpti
+  default: Numatytasis
   paste: Įklijuoti
   heading: Antraštė
   h1: Antraštė 1
@@ -1085,6 +1090,8 @@ wysiwyg_options:
   source_code: Redaguoti šaltinį
   fullscreen: Per visą ekraną
   directionality: Kryptingumas
+  ltr: Iš kairės į dešinę
+  rtl: Iš dešinės į kairę
   lazy_loading: Nuotrauką užkrauti asinchroniškai
   lazy_loading_label: Leisti asinchroninį krovimą
 dropdown: Išskleidžiamasis meniu
@@ -1959,9 +1966,6 @@ interfaces:
     description: Formatuoto HTML teksto redaktorius
     toolbar: Įrankių juosta
     custom_formats: Kiti formatai
-    custom_formats_note: List of TinyMCE Content Formats. See the TinyMCE documentation about [Content Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) for more information.
-    options_override: Parinkčių perrašymas
-    options_override_note: The TinyMCE User Formatting keys and their values. See the TinyMCE documentation about [User Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) for more information.
     folder_note: Katalogas įkeltiems failams. Esami failai bus nepakeisti.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL

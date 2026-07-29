@@ -20,7 +20,6 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: À propos
-privacy_policy: Politique de confidentialité
 setup_welcome: Bienvenue sur Directus
 setup_launch: Lancer Directus
 setup_project: Configurer un projet
@@ -550,6 +549,7 @@ functions:
   minute: Minute
   second: Seconde
   count: Compter
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -906,6 +906,7 @@ operators:
   nintersects: Ne recoupe pas
   intersects_bbox: Recoupe les délimitations
   nintersects_bbox: Ne recoupe pas les limitations
+  json: JSON
   regex: Correspondances RegExp
 custom_validation_message: Message de validation personnalisé
 loading: Chargement…
@@ -1132,12 +1133,15 @@ wysiwyg_options:
   bullist: Liste à puces
   numlist: Liste numérotée
   hr: Barre horizontale
+  insertdatetime_date: Date
+  insertdatetime_time: Heure
   link: Ajouter/modifier un lien
   unlink: Supprimer le lien
   media: Ajouter/modifier un média
   image: Ajouter/modifier une image
   copy: Copier
   cut: Couper
+  default: Défaut
   paste: Coller
   heading: En-tête
   h1: En-tête 1
@@ -1160,6 +1164,8 @@ wysiwyg_options:
   source_code: Modifier le code source
   fullscreen: Plein écran
   directionality: Sens de lecture
+  ltr: De gauche à droite
+  rtl: De droite à gauche
   lazy_loading: Image à chargement différée
   lazy_loading_label: Autoriser le chargement différé
 dropdown: Liste déroulante
@@ -2044,9 +2050,6 @@ interfaces:
     description: Un éditeur de texte avancé pour écrire du contenu HTML
     toolbar: Barre d’outils
     custom_formats: Formats personnalisés
-    custom_formats_note: Liste des formats de contenu TinyMCE. Voir la documentation TinyMCE à propos du [Formatage de contenu](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) pour plus d'informations.
-    options_override: Remplacement des options
-    options_override_note: Les clés de mise en forme TinyMCE et leurs valeurs. Voir la documentation de TinyMCE sur le [Formatage des utilisateurs](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) pour plus d'informations.
     folder_note: Dossier pour les fichiers téléchargés. Cela n'affecte pas les fichiers existants.
     imageToken: Jeton d'accès statique
     imageToken_label: Le jeton d’accès statique est ajouté à l’URL des ressources
