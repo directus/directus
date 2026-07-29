@@ -663,12 +663,15 @@ wysiwyg_options:
   bullist: Seznam
   numlist: Oštevilčen seznam
   hr: Vodoravna črta
+  insertdatetime_date: Datum
+  insertdatetime_time: Ura
   link: Dodaj/uredi povezavo
   unlink: Odstrani povezavo
   media: Ustvari/uredi medijsko datoteko
   image: Ustvari/uredi sliko
   copy: Kopiraj
   cut: Izreži
+  default: Privzeto
   paste: Prilepi
   heading: Naslov
   h1: Naslov 1
@@ -1259,7 +1262,6 @@ interfaces:
     description: Bogat tekstualni urejevalnik za HTML vsebino
     toolbar: Orodna vrstica
     custom_formats: Prilagojene oblike
-    options_override: Preglasitev opcij
   input-block-editor:
     tools: Orodna vrstica
     tools_options:
