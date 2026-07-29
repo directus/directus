@@ -704,12 +704,15 @@ wysiwyg_options:
   bullist: Bullet List
   numlist: Numbered List
   hr: Horizontal Rule
+  insertdatetime_date: Date
+  insertdatetime_time: Time
   link: Add/Edit Link
   unlink: Remove Link
   media: Add/Edit Media
   image: Add/Edit Image
   copy: Copy
   cut: Cut
+  default: Default
   paste: Paste
   heading: Heading
   h1: Heading 1
@@ -1424,7 +1427,6 @@ interfaces:
     description: A rich-text editor writing HTML content
     toolbar: Toolbar
     custom_formats: Custom Formats
-    options_override: Options Override
     folder_note: Folder for uploaded files. Does not affect existing files.
   input-block-editor:
     tools: Toolbar
