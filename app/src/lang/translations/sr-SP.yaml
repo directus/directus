@@ -173,6 +173,8 @@ width: Ширина
 height: Висина
 wysiwyg_options:
   codeblock: Код
+  insertdatetime_date: Datum
+  insertdatetime_time: Vreme
   table: Табела
 choices: Избори
 deselect: Поништи избор
