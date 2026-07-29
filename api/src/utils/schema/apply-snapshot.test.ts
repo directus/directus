@@ -4,16 +4,16 @@ import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { snapshotApplyTestSchema } from '../__utils__/schemas.js';
+import { snapshotApplyTestSchema } from '../../__utils__/schemas.js';
 import {
 	snapshotBeforeCreateCollection,
 	snapshotBeforeDeleteCollection,
 	snapshotCreateCollection,
 	snapshotCreateCollectionNotNested,
-} from '../__utils__/snapshots.js';
-import { CollectionsService, FieldsService } from '../services/index.js';
+} from '../../__utils__/snapshots.js';
+import { CollectionsService, FieldsService } from '../../services/index.js';
+import * as getSchema from '../get-schema.js';
 import { applySnapshot } from './apply-snapshot.js';
-import * as getSchema from './get-schema.js';
 
 class Client_PG extends MockClient {}
 

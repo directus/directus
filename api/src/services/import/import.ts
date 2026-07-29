@@ -1,16 +1,14 @@
+import { randomUUID } from 'node:crypto';
 import { createReadStream, createWriteStream } from 'node:fs';
-import { appendFile } from 'node:fs/promises';
-import { type Readable, type Writable } from 'node:stream';
+import type { Readable, Writable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { useEnv } from '@directus/env';
 import {
 	ContentTooLargeError,
-	createError,
-	ErrorCode,
 	ForbiddenError,
 	InvalidPayloadError,
+	InvalidQueryError,
 	LimitExceededError,
-	ServiceUnavailableError,
 	TimeoutError,
 	UnsupportedMediaTypeError,
 } from '@directus/errors';
@@ -19,193 +17,52 @@ import type {
 	AbstractServiceOptions,
 	Accountability,
 	ActionEventParams,
-	DirectusError,
-	ExportFormat,
-	File,
-	Query,
+	ImportBatchCollectionResult,
+	ImportBatchMode,
+	ImportBatchOptions,
+	ImportBatchResult,
+	ImportCollectionData,
+	MutationOptions,
+	PrimaryKey,
 	SchemaOverview,
 } from '@directus/types';
-import { getDateTimeFormatted, parseJSON, toArray } from '@directus/utils';
+import { parseJSON, toArray } from '@directus/utils';
 import { createTmpFile, type TmpFile } from '@directus/utils/node';
-import type { ImportRowLines, ImportRowRange } from '@directus/validation';
 import { queue } from 'async';
-import bytes from 'bytes';
-import { dump as toYAML } from 'js-yaml';
-import { parse as toXML } from 'js2xmlparser';
-import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import type { Knex } from 'knex';
 import ms, { type StringValue } from 'ms';
 import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
-import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
-import getDatabase from '../database/index.js';
-import emitter from '../emitter.js';
-import { useLogger } from '../logger/index.js';
-import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/index.js';
-import { destroyPipedStream } from '../utils/destroy-piped-stream.js';
-import { getService } from '../utils/get-service.js';
-import { setDeep } from '../utils/set-deep.js';
-import { useStore } from '../utils/store.js';
-import { transaction } from '../utils/transaction.js';
-import { Url } from '../utils/url.js';
-import { userName } from '../utils/user-name.js';
-import { FilesService } from './files.js';
-import { NotificationsService } from './notifications.js';
-import { UsersService } from './users.js';
+import { getCache } from '../../cache.js';
+import getDatabase from '../../database/index.js';
+import emitter from '../../emitter.js';
+import { useLogger } from '../../logger/index.js';
+import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
+import { buildImportPlan } from '../../utils/build-import-plan.js';
+import { createMutationTracker } from '../../utils/create-mutation-tracker.js';
+import { destroyPipedStream } from '../../utils/destroy-piped-stream.js';
+import { createErrorTracker } from '../../utils/error-tracker.js';
+import { getService } from '../../utils/get-service.js';
+import { setDeep } from '../../utils/set-deep.js';
+import { shouldClearCache } from '../../utils/should-clear-cache.js';
+import { useStore } from '../../utils/store.js';
+import { transaction } from '../../utils/transaction.js';
+import { userName } from '../../utils/user-name.js';
+import { NotificationsService } from '../notifications.js';
+import { UsersService } from '../users.js';
+import { keyExists } from './key-exists.js';
+import { normalizeKey } from './normalize-key.js';
+import { remapForeignKeys, remapValue, resolveTarget } from './remap-foreign-keys.js';
+import { validateFlatData } from './validate-flat-data.js';
 
 const env = useEnv();
 const logger = useLogger();
 
-const MAX_IMPORT_ERRORS = env['MAX_IMPORT_ERRORS'] as number;
-
-type CapturedErrorData = {
-	message: string;
-	rowNumbers: number[];
-};
-
-export function createErrorTracker() {
-	let genericError: DirectusError | undefined;
-	// For errors with field / type (joi validation or DB with field)
-	const fieldErrors: Map<ErrorCode, Map<string, CapturedErrorData>> = new Map();
-	let capturedErrorCount = 0;
-	let isLimitReached = false;
-
-	function convertToRanges(rows: number[], minRangeSize = 4): Array<ImportRowLines | ImportRowRange> {
-		const sorted = Array.from(new Set(rows)).sort((a, b) => a - b);
-		const result: Array<ImportRowLines | ImportRowRange> = [];
-
-		if (sorted.length === 0) return [];
-
-		let start = sorted[0] as number;
-		let prev = sorted[0] as number;
-		let count = 1;
-		const nonConsecutive: number[] = [];
-
-		const flush = () => {
-			if (count >= minRangeSize) {
-				result.push({ type: 'range', start, end: prev });
-			} else {
-				for (let i = start; i <= prev; i++) {
-					nonConsecutive.push(i);
-				}
-			}
-		};
-
-		for (let i = 1; i < sorted.length; i++) {
-			const current = sorted[i] as number;
-
-			if (current === prev + 1) {
-				prev = current;
-				count++;
-			} else {
-				flush();
-				start = prev = current;
-				count = 1;
-			}
-		}
-
-		flush();
-
-		// Add non-consecutive rows as a single "lines" entry
-		if (nonConsecutive.length > 0) {
-			result.push({ type: 'lines', rows: nonConsecutive });
-		}
-
-		return result;
-	}
-
-	function addCapturedError(err: any, rowNumber: number) {
-		const field = err.extensions?.field;
-
-		if (field) {
-			const type = err.extensions?.type;
-			const substring = err.extensions?.substring;
-			const valid = err.extensions?.valid;
-			const invalid = err.extensions?.invalid;
-			let key = type ? `${field}|${type}` : field;
-
-			if (substring !== undefined) key += `|substring:${substring}`;
-			if (valid !== undefined) key += `|valid:${JSON.stringify(valid)}`;
-			if (invalid !== undefined) key += `|invalid:${JSON.stringify(invalid)}`;
-
-			if (!fieldErrors.has(err.code)) {
-				fieldErrors.set(err.code, new Map());
-			}
-
-			const errorsByCode = fieldErrors.get(err.code)!;
-
-			if (!errorsByCode.has(key)) {
-				errorsByCode.set(key, {
-					message: err.message,
-					rowNumbers: [],
-				});
-			}
-
-			errorsByCode.get(key)!.rowNumbers.push(rowNumber);
-		} else {
-			genericError = err;
-		}
-
-		capturedErrorCount++;
-
-		if (capturedErrorCount >= MAX_IMPORT_ERRORS) {
-			isLimitReached = true;
-		}
-	}
-
-	function hasGenericError() {
-		return genericError !== undefined;
-	}
-
-	function buildFinalErrors() {
-		if (genericError) {
-			return [genericError];
-		}
-
-		return Array.from(fieldErrors.entries()).flatMap(([code, fieldMap]) =>
-			Array.from(fieldMap.entries()).map(([compositeKey, errorData]) => {
-				const parts = compositeKey.split('|');
-				const field = parts[0];
-				const type = parts[1];
-
-				const extensions: any = {};
-
-				for (let i = 2; i < parts.length; i++) {
-					const [paramType, paramValue] = parts[i]?.split(':', 2) ?? [];
-					if (!paramType || paramValue === undefined) continue;
-
-					try {
-						extensions[paramType] = JSON.parse(paramValue);
-					} catch {
-						extensions[paramType] = paramValue;
-					}
-				}
-
-				const ErrorClass = createError<any>(code, errorData.message, 400);
-				return new ErrorClass({
-					field,
-					type,
-					...extensions,
-					rows: convertToRanges(errorData.rowNumbers),
-				});
-			}),
-		);
-	}
-
-	return {
-		addCapturedError,
-		buildFinalErrors,
-		getCount: () => capturedErrorCount,
-		hasErrors: () => capturedErrorCount > 0 || hasGenericError(),
-		shouldStop: () => isLimitReached || hasGenericError(),
-		hasGenericError,
-	};
-}
-
 const store = useStore<{ importCount: number | undefined }>(String(env['IMPORT_EXPORT_NAMESPACE']), {
 	ttl: ms((env['IMPORT_TIMEOUT'] as StringValue) ?? '1h'),
 });
+
+class DryRunRollback extends Error {}
 
 export class ImportService {
 	knex: Knex;
@@ -218,13 +75,43 @@ export class ImportService {
 		this.schema = options.schema;
 	}
 
+	private async acquireImportSlot(): Promise<void> {
+		const limitReached = await store(async (store) => {
+			const count = (await store.get('importCount')) ?? 0;
+
+			if (count >= Number(env['IMPORT_MAX_CONCURRENCY'])) return true;
+
+			await store.set('importCount', count + 1);
+			return false;
+		});
+
+		if (limitReached) {
+			throw new LimitExceededError({
+				category: 'Concurrent import',
+			});
+		}
+	}
+
+	private async releaseImportSlot(): Promise<void> {
+		try {
+			await store(async (store) => {
+				const count = (await store.get('importCount')) ?? 0;
+				await store.set('importCount', count - 1);
+			});
+		} catch (error) {
+			logger.error(error, `Failed to decrement importCount`);
+		}
+	}
+
 	async import(
 		collection: string,
 		mimetype: string,
 		stream: Readable,
 		options?: { background: boolean },
 	): Promise<void> {
-		if (this.accountability?.admin !== true && isSystemCollection(collection)) throw new ForbiddenError();
+		if (this.accountability?.admin !== true && isSystemCollection(collection)) {
+			throw new ForbiddenError();
+		}
 
 		if (this.accountability) {
 			await validateAccess(
@@ -256,33 +143,9 @@ export class ImportService {
 			throw new UnsupportedMediaTypeError({ mediaType: mimetype, where: 'file import' });
 		}
 
-		const limitReached = await store(async (store) => {
-			const count = (await store.get('importCount')) ?? 0;
-
-			if (count >= Number(env['IMPORT_MAX_CONCURRENCY'])) return true;
-
-			await store.set('importCount', count + 1);
-			return false;
-		});
-
-		if (limitReached) {
-			throw new LimitExceededError({
-				category: 'Concurrent import',
-			});
-		}
+		await this.acquireImportSlot();
 
 		let promise: Promise<void>;
-
-		const decrementImportCount = async () => {
-			try {
-				await store(async (store) => {
-					const count = (await store.get('importCount')) ?? 0;
-					await store.set('importCount', count - 1);
-				});
-			} catch (error) {
-				logger.error(error, `Failed to decrement importCount`);
-			}
-		};
 
 		if (options?.background) {
 			// Fully receive the upload (to a temp file) before responding, so the detached parse job reads
@@ -296,7 +159,7 @@ export class ImportService {
 			try {
 				tmpFile = await this.spoolToTmpFile(stream, deadline);
 			} catch (error) {
-				await decrementImportCount();
+				await this.releaseImportSlot();
 				throw error;
 			}
 
@@ -357,12 +220,12 @@ export class ImportService {
 						`Your import in ${collection} has failed.\n\n${(error as any).message ?? ''}`,
 					);
 				})
-				.finally(async () => await decrementImportCount());
+				.finally(async () => await this.releaseImportSlot());
 		} else {
 			try {
 				await promise;
 			} finally {
-				await decrementImportCount();
+				await this.releaseImportSlot();
 			}
 		}
 	}
@@ -728,312 +591,286 @@ export class ImportService {
 			}
 		}).finally(() => removeTmpFile());
 	}
-}
-
-export class ExportService {
-	knex: Knex;
-	accountability: Accountability | null;
-	schema: SchemaOverview;
-
-	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || getDatabase();
-		this.accountability = options.accountability || null;
-		this.schema = options.schema;
-	}
 
 	/**
-	 * Export the query results as a named file. Will query in batches, and keep appending a tmp file
-	 * until all the data is retrieved. Uploads the result as a new file using the regular
-	 * FilesService upload method.
+	 * Import data for multiple collections in a single request. Builds a relational dependency graph
+	 * from the schema, imports collections in topological order, remaps primary keys (and the foreign
+	 * keys that reference them), and resolves nullable relational cycles via a second pass.
 	 */
-	async exportToFile(
-		collection: string,
-		query: Partial<Query>,
-		format: ExportFormat,
-		options?: {
-			file?: Partial<File>;
-		},
-	) {
-		const { createTmpFile } = await import('@directus/utils/node');
-		const tmpFile = await createTmpFile().catch(() => null);
+	async importBatch(input: ImportCollectionData[], options: ImportBatchOptions = {}): Promise<ImportBatchResult> {
+		const mode: ImportBatchMode = options.mode ?? 'add';
+		const dryRun = options.dryRun ?? false;
+		const dangerouslyAllowDelete = options.dangerouslyAllowDelete ?? false;
 
-		try {
-			if (!tmpFile) throw new Error('Failed to create temporary file for export');
+		if (dangerouslyAllowDelete && mode !== 'merge') {
+			throw new InvalidQueryError({
+				reason: `"dangerouslyAllowDelete" can only be used with mode "merge"`,
+			});
+		}
 
-			const mimeTypes = {
-				csv: 'text/csv',
-				csv_utf8: 'text/csv; charset=utf-8',
-				json: 'application/json',
-				xml: 'text/xml',
-				yaml: 'text/yaml',
-			};
+		const plan = buildImportPlan(input, this.schema);
 
-			const database = getDatabase();
+		const dataByCollection = new Map<string, ImportCollectionData>();
 
-			await transaction(database, async (trx) => {
-				const service = getService(collection, {
-					accountability: this.accountability,
-					schema: this.schema,
-					knex: trx,
-				});
+		for (const entry of input) {
+			dataByCollection.set(entry.collection, entry);
+		}
 
-				const { primary } = this.schema.collections[collection]!;
+		const collections: Record<string, ImportBatchCollectionResult> = {};
+		// String(oldPk) -> new primary key, per collection
+		const idMaps = new Map<string, Map<string, PrimaryKey>>();
+		// New primary key per item, index-aligned to `entry.items`, per collection.
+		// This tracks rows imported without a source PK, so the second pass can reach them.
+		const newPksByCollection = new Map<string, PrimaryKey[]>();
 
-				const sort = query.sort ?? [];
+		// Permission checks + system collection guard (mirrors this.import)
+		for (const collection of plan.order) {
+			collections[collection] = { existing: [], new: [], deleted: [], mapped: {} };
+			idMaps.set(collection, new Map());
+			newPksByCollection.set(collection, []);
 
-				if (sort.includes(primary) === false) {
-					sort.push(primary);
+			if (this.accountability?.admin !== true && isSystemCollection(collection)) {
+				throw new ForbiddenError();
+			}
+
+			if (this.accountability) {
+				await validateAccess(
+					{ accountability: this.accountability, action: 'create', collection },
+					{ schema: this.schema, knex: this.knex },
+				);
+
+				const hasRemappableAlias = plan.aliasFields.get(collection)!.some((info) => info.target !== null);
+				const isSingleton = this.schema.collections[collection]?.singleton ?? false;
+
+				if (mode === 'merge' || isSingleton || plan.deferred.has(collection) || hasRemappableAlias) {
+					await validateAccess(
+						{ accountability: this.accountability, action: 'update', collection },
+						{ schema: this.schema, knex: this.knex },
+					);
 				}
 
-				const totalCount = await service
-					.readByQuery({
-						...query,
-						aggregate: {
-							count: ['*'],
-						},
-					})
-					.then((result) => Number(result?.[0]?.['count'] ?? 0));
+				if (dangerouslyAllowDelete) {
+					await validateAccess(
+						{ accountability: this.accountability, action: 'delete', collection },
+						{ schema: this.schema, knex: this.knex },
+					);
+				}
+			}
+		}
 
-				const count = query.limit && query.limit > -1 ? Math.min(totalCount, query.limit) : totalCount;
+		// Reject nested relational payloads before touching the database
+		validateFlatData(plan.fkFields, plan.aliasFields, dataByCollection);
 
-				const requestedLimit = query.limit ?? -1;
-				const batchesRequired = Math.ceil(count / (env['EXPORT_BATCH_SIZE'] as number));
+		const nestedActionEvents: ActionEventParams[] = [];
 
-				let readCount = 0;
+		await this.acquireImportSlot();
 
-				for (let batch = 0; batch < batchesRequired; batch++) {
-					let limit = env['EXPORT_BATCH_SIZE'] as number;
+		try {
+			await transaction(this.knex, async (trx) => {
+				const mutationTracker = createMutationTracker();
 
-					if (requestedLimit > 0 && (env['EXPORT_BATCH_SIZE'] as number) > requestedLimit - readCount) {
-						limit = requestedLimit - readCount;
+				const mutationOptions: MutationOptions = {
+					bypassEmitAction: (params) => nestedActionEvents.push(params),
+					mutationTracker,
+					autoPurgeCache: false,
+					autoPurgeSystemCache: false,
+				};
+
+				// Pass 1: insert/upsert each collection in dependency order, remapping FKs and PKs
+				for (const collection of plan.order) {
+					const entry = dataByCollection.get(collection)!;
+					const idMap = idMaps.get(collection)!;
+					const newPks = newPksByCollection.get(collection)!;
+					const fkFields = plan.fkFields.get(collection)!;
+
+					// Fields resolved in the second pass. deferred FKs + remappable o2m/m2m aliases
+					const secondPassFields = new Set<string>(plan.deferred.get(collection));
+
+					for (const info of plan.aliasFields.get(collection) ?? []) {
+						if (info.target !== null) secondPassFields.add(info.field);
 					}
 
-					const result = await service.readByQuery({
-						...query,
-						sort,
-						limit,
-						offset: batch * (env['EXPORT_BATCH_SIZE'] as number),
+					const service = getService(collection, {
+						knex: trx,
+						schema: this.schema,
+						accountability: this.accountability,
 					});
 
-					readCount += result.length;
+					const { primary: pkField, fields, singleton: isSingleton } = this.schema.collections[collection]!;
+					const pkOverview = fields[pkField]!;
 
-					if (result.length) {
-						let csvHeadings = null;
+					const isAutoIncrement =
+						['integer', 'bigInteger'].includes(pkOverview.type) && pkOverview.defaultValue === 'AUTO_INCREMENT';
 
-						if (format.startsWith('csv')) {
-							if (!query.fields) query.fields = ['*'];
+					const isUuid = pkOverview.type === 'uuid';
 
-							// to ensure the all headings are included in the CSV file, all possible fields need to be determined.
+					if (isSingleton && entry.items.length > 1) {
+						throw new InvalidPayloadError({
+							reason: `Cannot import multiple records into singleton collection "${collection}"`,
+						});
+					}
 
-							const parsedFields = await parseFields(
-								{
-									parentCollection: collection,
-									fields: query.fields,
-									query: query,
-									accountability: this.accountability,
-								},
-								{
-									schema: this.schema,
-									knex: database,
-								},
-							);
+					for (const item of entry.items) {
+						const payload = remapForeignKeys(item, fkFields, idMaps, secondPassFields);
+						const oldPk = item[pkField] as PrimaryKey | undefined;
 
-							csvHeadings = getHeadingsForCsvExport(parsedFields);
+						let newPk: PrimaryKey;
+						let matchedExisting = false;
+
+						if (isSingleton) {
+							// ignore the PK if provided and manually do an upsertSingleton so we know if it was created or updated
+							delete payload[pkField];
+
+							const existingRow = await trx.select(pkField).from(collection).first();
+
+							if (existingRow) {
+								matchedExisting = true;
+								newPk = await service.updateOne(existingRow[pkField], payload, mutationOptions);
+							} else {
+								newPk = await service.createOne(payload, mutationOptions);
+							}
+						} else if (mode === 'merge') {
+							matchedExisting = oldPk != null && (await keyExists(trx, collection, pkField, oldPk));
+
+							if (!matchedExisting && isAutoIncrement) {
+								// Key doesn't exist: remap so the auto-increment sequence keeps advancing naturally
+								delete payload[pkField];
+							}
+
+							newPk = await service.upsertOne(payload, mutationOptions);
+						} else if (isAutoIncrement) {
+							// Add mode: always remap so the sequence keeps advancing naturally
+							delete payload[pkField];
+							newPk = await service.createOne(payload, mutationOptions);
+						} else {
+							const conflict = oldPk != null && (await keyExists(trx, collection, pkField, oldPk));
+
+							if (conflict) {
+								if (isUuid) {
+									payload[pkField] = randomUUID();
+								} else {
+									throw new InvalidPayloadError({
+										reason: `Item with primary key "${oldPk}" in "${collection}" conflicts with an existing record and can't be safely remapped (only uuid keys are regenerated)`,
+									});
+								}
+							}
+
+							newPk = await service.createOne(payload, mutationOptions);
 						}
 
-						await appendFile(
-							tmpFile.path,
-							this.transform(result, format, {
-								includeHeader: batch === 0,
-								includeFooter: batch + 1 === batchesRequired,
-								fields: csvHeadings,
-							}),
+						newPks.push(newPk);
+
+						const result = collections[collection]!;
+
+						if (matchedExisting) {
+							result.existing.push(newPk);
+						} else {
+							result.new.push(newPk);
+						}
+
+						if (oldPk != null) {
+							idMap.set(String(oldPk), newPk);
+
+							if (!isSingleton && normalizeKey(oldPk) !== normalizeKey(newPk)) {
+								result.mapped[String(oldPk)] = newPk;
+							}
+						}
+					}
+				}
+
+				// Pass 2: resolve fields deferred to break nullable cycles and remap o2m/m2m alias arrays,
+				// now that every collection has been imported and all id maps are complete
+				for (const collection of plan.order) {
+					const deferredFields = plan.deferred.get(collection);
+					const aliasFields = plan.aliasFields.get(collection)?.filter((info) => info.target !== null) ?? [];
+
+					if (!deferredFields && aliasFields.length === 0) continue;
+
+					const entry = dataByCollection.get(collection)!;
+					const newPks = newPksByCollection.get(collection)!;
+					const fkFields = plan.fkFields.get(collection)!;
+
+					const service = getService(collection, {
+						knex: trx,
+						schema: this.schema,
+						accountability: this.accountability,
+					});
+
+					for (let index = 0; index < entry.items.length; index++) {
+						const item = entry.items[index]!;
+						const newPk = newPks[index];
+						if (newPk === undefined) continue;
+
+						const patch: Record<string, unknown> = {};
+
+						if (deferredFields) {
+							for (const field of deferredFields) {
+								const rawValue = item[field];
+								if (rawValue === undefined || rawValue === null) continue;
+
+								const fkInfo = fkFields.find((info) => info.field === field)!;
+								patch[field] = remapValue(rawValue, resolveTarget(fkInfo, item), idMaps);
+							}
+						}
+
+						for (const info of aliasFields) {
+							const rawValue = item[info.field];
+							if (rawValue === undefined || rawValue === null) continue;
+
+							patch[info.field] = remapValue(rawValue, info.target, idMaps);
+						}
+
+						if (Object.keys(patch).length === 0) continue;
+
+						await service.updateOne(newPk, patch, mutationOptions);
+					}
+				}
+
+				// Destructive mirror: delete every existing record whose primary key survived neither an
+				// insert nor a merge. Reverse dependency order so children go before the parents they
+				// reference, avoiding foreign key violations.
+				if (dangerouslyAllowDelete) {
+					for (const collection of [...plan.order].reverse()) {
+						const result = collections[collection]!;
+						const importKeys = [...result.existing, ...result.new];
+						const { primary: pkField } = this.schema.collections[collection]!;
+
+						const service = getService(collection, {
+							knex: trx,
+							schema: this.schema,
+							accountability: this.accountability,
+						});
+
+						result.deleted = await service.deleteByQuery(
+							{
+								filter: importKeys.length > 0 ? { [pkField]: { _nin: importKeys } } : {},
+								limit: -1,
+							},
+							mutationOptions,
 						);
 					}
 				}
+
+				if (dryRun) throw new DryRunRollback();
 			});
 
-			const filesService = new FilesService({
-				accountability: this.accountability,
-				schema: this.schema,
-			});
-
-			const title = `export-${collection}-${getDateTimeFormatted()}`;
-			const filename = `${title}.${format}`;
-
-			const fileWithDefaults: Partial<File> & { filename_download: string } = {
-				...(options?.file ?? {}),
-				title: options?.file?.title ?? title,
-				filename_download: options?.file?.filename_download ?? filename,
-				type: mimeTypes[format],
-			};
-
-			const savedFile = await filesService.uploadOne(createReadStream(tmpFile.path), fileWithDefaults);
-
-			if (this.accountability?.user) {
-				const notificationsService = new NotificationsService({
-					schema: this.schema,
-				});
-
-				const usersService = new UsersService({
-					schema: this.schema,
-				});
-
-				const user = await usersService.readOne(this.accountability.user, {
-					fields: ['first_name', 'last_name', 'email'],
-				});
-
-				const href = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'files', savedFile).toString();
-
-				const message = `
-Hello ${userName(user)},
-
-Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
-`;
-
-				await notificationsService.createOne({
-					recipient: this.accountability.user,
-					sender: this.accountability.user,
-					subject: `Your export of ${collection} is ready`,
-					message,
-					collection: `directus_files`,
-					item: savedFile,
-				});
+			// Only emit action events and purge the cache once the data is actually committed
+			for (const nestedActionEvent of nestedActionEvents) {
+				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
 			}
-		} catch (err: any) {
-			logger.error(err, `Couldn't export ${collection}: ${err.message}`);
 
-			if (this.accountability?.user) {
-				const notificationsService = new NotificationsService({
-					schema: this.schema,
-				});
+			const { cache } = getCache();
+			if (shouldClearCache(cache)) await cache.clear();
 
-				await notificationsService.createOne({
-					recipient: this.accountability.user,
-					sender: this.accountability.user,
-					subject: `Your export of ${collection} failed`,
-					message: `Please contact your system administrator for more information.`,
-				});
+			return { applied: true, mode, collections };
+		} catch (error) {
+			if (error instanceof DryRunRollback) {
+				return { applied: false, mode, collections };
 			}
+
+			throw error;
 		} finally {
-			await tmpFile?.cleanup();
+			await this.releaseImportSlot();
 		}
 	}
-
-	/**
-	 * Transform a given input object / array to the given type
-	 */
-	transform(
-		input: Record<string, any>[],
-		format: ExportFormat,
-		options?: {
-			includeHeader?: boolean;
-			includeFooter?: boolean;
-			fields?: string[] | null;
-		},
-	): string {
-		if (format === 'json') {
-			let string = JSON.stringify(input || null, null, '\t');
-
-			if (options?.includeHeader === false) string = string.split('\n').slice(1).join('\n');
-
-			if (options?.includeFooter === false) {
-				const lines = string.split('\n');
-				string = lines.slice(0, lines.length - 1).join('\n');
-				string += ',\n';
-			}
-
-			return string;
-		}
-
-		if (format === 'xml') {
-			let string = toXML('data', input);
-
-			if (options?.includeHeader === false) string = string.split('\n').slice(2).join('\n');
-
-			if (options?.includeFooter === false) {
-				const lines = string.split('\n');
-				string = lines.slice(0, lines.length - 1).join('\n');
-				string += '\n';
-			}
-
-			return string;
-		}
-
-		if (format.startsWith('csv')) {
-			if (input.length === 0) return '';
-
-			const transforms = [CSVTransforms.flatten({ separator: '.' })];
-			const header = options?.includeHeader !== false;
-			const withBOM = format === 'csv_utf8';
-
-			const transformOptions = options?.fields
-				? { transforms, header, fields: options?.fields, withBOM }
-				: { transforms, header, withBOM };
-
-			let string = new CSVParser(transformOptions).parse(input);
-
-			if (options?.includeHeader === false) {
-				string = '\n' + string;
-			}
-
-			return string;
-		}
-
-		if (format === 'yaml') {
-			return toYAML(input);
-		}
-
-		throw new ServiceUnavailableError({ service: 'export', reason: `Illegal export type used: "${format}"` });
-	}
-}
-/*
- * Recursive function to traverse the field nodes, to determine the headings for the CSV export file.
- *
- * Relational nodes which target a single item get expanded, which means that their nested fields get their own column in the csv file.
- * For relational nodes which target a multiple items, the nested field names are not going to be expanded.
- * Instead they will be stored as a single value/cell of the CSV file.
- */
-export function getHeadingsForCsvExport(
-	nodes: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] | undefined,
-	prefix: string = '',
-) {
-	let fieldNames: string[] = [];
-
-	if (!nodes) return fieldNames;
-
-	nodes.forEach((node) => {
-		switch (node.type) {
-			case 'field':
-			case 'functionField':
-			case 'o2m':
-			case 'a2o':
-				fieldNames.push(prefix ? `${prefix}.${node.fieldKey}` : node.fieldKey);
-				break;
-			case 'm2o':
-				fieldNames = fieldNames.concat(
-					getHeadingsForCsvExport(node.children, prefix ? `${prefix}.${node.fieldKey}` : node.fieldKey),
-				);
-		}
-	});
-
-	return fieldNames;
-}
-
-/**
- * Resolve the configured import file-size cap in bytes. Unset means no cap. A set-but-unparseable
- * value is a misconfiguration: warn and fall back to no cap rather than blocking imports.
- */
-export function getImportMaxFileSize(): number | undefined {
-	const raw = env['IMPORT_MAX_FILE_SIZE'];
-	if (raw === undefined || raw === null || String(raw).trim() === '') return undefined;
-
-	const parsed = bytes.parse(String(raw));
-
-	if (parsed === null || Number.isNaN(parsed)) {
-		logger.warn(`Invalid IMPORT_MAX_FILE_SIZE value "${raw}"; ignoring the import file-size cap`);
-		return undefined;
-	}
-
-	return parsed;
 }
