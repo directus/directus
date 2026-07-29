@@ -872,6 +872,8 @@ wysiwyg_options:
   bullist: Daftar Bullet
   numlist: Daftar Nomor
   hr: Garis Horizontal
+  insertdatetime_date: Tanggal
+  insertdatetime_time: Time
   link: Tambah/Sunting Tautan
   unlink: Hapus Tautan
   media: Tambah /Sunting Media
@@ -900,6 +902,8 @@ wysiwyg_options:
   source_code: Edit Kode Sumber
   fullscreen: Layar Penuh
   directionality: Keterarahan
+  ltr: Kiri ke Kanan
+  rtl: Kanan ke Kiri
 dropdown: Dropwdown
 choices: Pilihan
 choices_option_configured_incorrectly: Pilihan dikonfigurasi dengan tidak benar
