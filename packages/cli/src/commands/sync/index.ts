@@ -42,7 +42,7 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 			'All collections except these (comma-separated); pulls a partial snapshot',
 			parseList,
 		)
-		.option('--all', 'Every config resource, including users and translations (content still requires --content)');
+		.option('--all', 'Every config resource, including users and translations');
 
 	// Define each positive flag before its --no- twin so the default stays undefined (tri-state selection).
 	for (const name of SELECTABLE_RESOURCES) {
@@ -52,7 +52,6 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 	}
 
 	pullCommand
-		.option('--content <list>', 'Also export records for these user collections (comma-separated)', parseList)
 		.option('--no-deps', 'Do not pull resource dependencies (dependent children still ride with their parent)')
 		.option('--project <name>', 'Project scope to sync (default: default)', 'default')
 		.action((options: PullOptions) => pull(options, getContext()));

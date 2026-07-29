@@ -56,7 +56,6 @@ const projectSchema = z.strictObject({
 	excludeCollections: scopeList('excludeCollections'),
 	resources: scopeList('resources'),
 	excludeResources: scopeList('excludeResources'),
-	content: scopeList('content'),
 	deps: z.boolean().optional(),
 	mode: z.enum(MODES).optional(),
 });
@@ -84,7 +83,6 @@ export interface ProjectConfig {
 	readonly excludeCollections?: readonly string[] | undefined;
 	readonly resources?: readonly string[] | undefined;
 	readonly excludeResources?: readonly string[] | undefined;
-	readonly content?: readonly string[] | undefined;
 	readonly deps?: boolean | undefined;
 	readonly mode?: Mode | undefined;
 }

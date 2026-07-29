@@ -1,5 +1,4 @@
 import { relative } from 'node:path';
-import { isPlainObject } from 'lodash-es';
 import type { ProjectConfig } from '../../kernel/config/file.js';
 import {
 	fetchCustomPermissionRulesEntitled,
@@ -10,13 +9,11 @@ import {
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
-import { fetchRecords, fetchSnapshot, type RecordSource, type SnapshotScope } from '../../sync/api.js';
-import { byCodepoint } from '../../sync/codepoint.js';
-import type { Snapshot } from '../../sync/contract.js';
+import { fetchRecords, fetchSnapshot, type SnapshotScope } from '../../sync/api.js';
 import { assertDataSource, type DataCollection, writeDataFiles } from '../../sync/data-store.js';
 import { normalizeInstanceUrl } from '../../sync/id-map.js';
 import { findOutOfScopeReferences, formatOutOfScopeReferences } from '../../sync/references.js';
-import { allResources, resolveResources, type Resource, SELECTABLE_RESOURCES } from '../../sync/resources.js';
+import { resolveResources, type Resource, SELECTABLE_RESOURCES } from '../../sync/resources.js';
 import { readSnapshotFiles, type WriteScope, writeSnapshotFiles } from '../../sync/store.js';
 import { resolveTarget } from './resolve-target.js';
 
@@ -28,7 +25,6 @@ export type PullOptions = {
 	readonly collections?: readonly string[];
 	readonly excludeCollections?: readonly string[];
 	readonly all?: boolean;
-	readonly content?: readonly string[];
 	readonly deps: boolean;
 	readonly project: string;
 } & Partial<Record<SelectableResourceFlag, boolean>>;
@@ -56,50 +52,6 @@ interface PairMessages {
 	readonly emptyInclude: string;
 	readonly emptyExclude: string;
 	readonly bothConfig: string;
-}
-
-// Ordinary collection primary keys can appear in fields or systemFields; the loose snapshot values must
-// be narrowed before use.
-function primaryKeyOf(snapshot: Snapshot, collection: string): string {
-	for (const entry of [...snapshot.fields, ...snapshot.systemFields]) {
-		if (entry.collection !== collection) continue;
-
-		const schema = entry['schema'];
-
-		if (isPlainObject(schema) && (schema as Record<string, unknown>)['is_primary_key'] === true) {
-			return entry.field;
-		}
-	}
-
-	throw new CliError('STATE', `Collection "${collection}" has no field marked as a primary key.`, {
-		hint: 'A synced collection needs a primary key to order and reconcile its records.',
-	});
-}
-
-// The field specials whose values cannot round-trip through an export: the server masks conceal and
-// encrypt reads to '**********' (api payload.ts), and re-hashes whatever a hash field is WRITTEN with —
-// so exporting them commits masks, and pushing would overwrite the target's real secret with the mask
-// (or corrupt its hash by hashing the hash).
-const NON_ROUNDTRIP_SPECIALS = new Set(['conceal', 'encrypt', 'hash']);
-
-function nonRoundtripFields(snapshot: Snapshot, collection: string): string[] {
-	const fields: string[] = [];
-
-	for (const entry of snapshot.fields) {
-		if (entry.collection !== collection) continue;
-
-		const meta = entry['meta'];
-		const special = isPlainObject(meta) ? (meta as Record<string, unknown>)['special'] : undefined;
-
-		if (
-			Array.isArray(special) &&
-			special.some((value) => typeof value === 'string' && NON_ROUNDTRIP_SPECIALS.has(value))
-		) {
-			fields.push(entry.field);
-		}
-	}
-
-	return fields;
 }
 
 // Any CLI scope flag overrides the configured pair; include and exclude remain mutually exclusive.
@@ -243,50 +195,6 @@ function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig |
 	return resolveResources(DEFAULT_RESOURCE_NAMES, { deps });
 }
 
-// Parse content names before fetching; validate membership against the fetched snapshot.
-function contentNames(options: PullOptions, projectConfig: ProjectConfig | undefined): string[] {
-	if (options.content !== undefined) {
-		if (options.content.length === 0) throw new CliError('USAGE', '--content needs at least one collection name.');
-		return [...options.content];
-	}
-
-	if (projectConfig?.content !== undefined) return [...projectConfig.content];
-
-	return [];
-}
-
-// Content sources must exist in the fetched schema and have a discoverable primary key.
-function resolveContentSources(names: string[], snapshot: Snapshot): RecordSource[] {
-	if (names.length === 0) return [];
-
-	const graphNames = new Set(allResources().map((resource) => resource.name));
-
-	const sources: RecordSource[] = [];
-
-	for (const collection of [...new Set(names)].sort(byCodepoint)) {
-		if (graphNames.has(collection)) {
-			throw new CliError('USAGE', `"${collection}" is a config resource, not content.`, {
-				hint: 'Export config resources with their --<resource> flag, not --content.',
-			});
-		}
-
-		if (!snapshot.collections.some((entry) => entry.collection === collection)) {
-			throw new CliError('USAGE', `Collection "${collection}" is not in the pulled schema.`, {
-				hint: `Data follows schema — pull ${collection}'s schema first, e.g. --collections ${collection}.`,
-			});
-		}
-
-		sources.push({
-			collection,
-			endpoint: `/items/${collection}`,
-			primaryKey: primaryKeyOf(snapshot, collection),
-			singleton: false,
-		});
-	}
-
-	return sources;
-}
-
 // Word a permissions shortfall by what the license entitlement actually says, not by assumption. The
 // total_count probe proves the export is short; the entitlement (when readable) proves WHY, so we never
 // blame licensing for a shortfall we couldn't confirm, and we flag a licensed shortfall as unexpected.
@@ -331,9 +239,8 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 	const scope = resolveScope(options, projectConfig);
 
-	// Fail invalid resource/content options before the first network request.
+	// Fail invalid resource options before the first network request.
 	const resources = resolveResourceSet(options, projectConfig);
-	const contentNamesList = contentNames(options, projectConfig);
 
 	// Provenance preflight BEFORE any network or write: the schema files land first, so a writer-level
 	// refusal alone would leave the new source's schema committed beside the old source's data.
@@ -364,8 +271,6 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	// One keystone read for the whole pull: when the source reports no row cap, every fetch below is a single
 	// unbounded read instead of a read plus an exhaustion probe. Best-effort — undefined keeps the probe.
 	const queryMax = await fetchQueryLimitMax(credential);
-
-	const contentSources = resolveContentSources(contentNamesList, snapshot);
 
 	const includesUsers = resources.some((resource) => resource.name === 'users');
 
@@ -433,28 +338,6 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		dataCollections.push({ collection: resource.collection, primaryKey: resource.primaryKey, records: rows });
 	}
 
-	for (const source of contentSources) {
-		const rows = await fetchRecords(credential, source, queryMax);
-
-		// Content is otherwise exported verbatim, but conceal/encrypt/hash fields cannot round-trip (see
-		// NON_ROUNDTRIP_SPECIALS): committing them would land masks in git and a later push would overwrite
-		// the target's real secrets with those masks. Strip them and say so — an absent field is never
-		// written by the import, so the target keeps its own values.
-		const masked = nonRoundtripFields(snapshot, source.collection);
-
-		if (masked.length > 0) {
-			for (const row of rows) {
-				for (const field of masked) delete row[field];
-			}
-
-			ctx.ui.warn(
-				`content ${source.collection}: exported without ${masked.join(', ')} — conceal/encrypt/hash values cannot round-trip.`,
-			);
-		}
-
-		dataCollections.push({ collection: source.collection, primaryKey: source.primaryKey, records: rows });
-	}
-
 	const result = writeSnapshotFiles(schemaDir, snapshot, scope?.write);
 
 	// Warn about references pointing outside the committed set — a scoped pull can strand a group parent or
@@ -485,14 +368,8 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	};
 
 	// One line per axis so "collection" never means two things in one sentence: Schema is structure for
-	// every collection, Resources are directus_* config records, Content is records of user collections.
+	// every collection, Resources are the directus_* config records.
 	if (!ctx.ui.json) {
-		const contentNamesSet = new Set(contentSources.map((source) => source.collection));
-		const resourceEntries = dataCollections.filter((entry) => !contentNamesSet.has(entry.collection));
-		const contentEntries = dataCollections.filter((entry) => contentNamesSet.has(entry.collection));
-		const resourceRecords = resourceEntries.reduce((total, entry) => total + entry.records.length, 0);
-		const contentRecords = contentEntries.reduce((total, entry) => total + entry.records.length, 0);
-
 		const schemaNote = `${scope?.note ?? ''}${removed > 0 ? ` (removed ${count(removed, 'stale file')})` : ''}`;
 
 		const dataNote =
@@ -502,13 +379,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		ctx.ui.print(`  Schema     ${count(collections, 'collection')} → ${relativeDir}${schemaNote}`);
 
 		ctx.ui.print(
-			`  Resources  ${count(resourceRecords, 'record')} in ${count(resourceEntries.length, 'resource')} → ${dataDirRelative}${dataNote}`,
-		);
-
-		ctx.ui.print(
-			contentEntries.length > 0
-				? `  Content    ${count(contentRecords, 'record')} in ${count(contentEntries.length, 'collection')} → ${dataDirRelative}`
-				: '  Content    none — add --content <collections> to export records',
+			`  Resources  ${count(records, 'record')} in ${count(collectionCount, 'resource')} → ${dataDirRelative}${dataNote}`,
 		);
 	}
 
@@ -527,7 +398,6 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		files: result.written.length,
 		removed: result.removed,
 		scope: scope?.payload ?? null,
-		content: contentSources.map((source) => source.collection),
 		data,
 	});
 }

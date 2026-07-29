@@ -97,7 +97,7 @@ describe('writeDataFiles / readDataFiles', () => {
 	});
 
 	it('preserves committed files whose collection is outside the current write set', () => {
-		// The fetch set shrinks legitimately (resource-scoped pulls, re-pulls without --content), and the
+		// The fetch set shrinks legitimately (resource-scoped and collection-scoped pulls), and the
 		// committed tree is what a later push applies — deleting unfetched collections here silently turned
 		// a scoped pull into data loss (found in QA: `pull --flows` wiped roles/policies/dashboards).
 		// Removal is a manual act; the writer never deletes what it did not fetch.

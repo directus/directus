@@ -282,8 +282,8 @@ export function writeDataFiles(
 		// `incomplete` is written unconditionally: its absence is reserved for pre-tracking generations.
 		metadata: ({ files }) => ({ files, source, incomplete: keptIncomplete() }),
 		// A pull writes only what it fetched, and the fetch set shrinks legitimately all the time: a
-		// resource-scoped pull, or any re-pull without --content, fetches a subset of what is committed.
-		// Deleting the rest would wipe committed collections (the data half of the schema store's scope
+		// resource-scoped or collection-scoped pull fetches a subset of what is committed. Deleting the
+		// rest would wipe committed collections (the data half of the schema store's scope
 		// rule). Removal is therefore a manual act: delete the file and its manifest line.
 		preserve: {
 			parse: parseDataFile,

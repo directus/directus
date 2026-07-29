@@ -109,18 +109,18 @@ describe('sync pull', () => {
 		expect(parsed.collection).toBe('articles');
 
 		// The headline names source and URL on the status channel; the per-axis report lines (schema /
-		// resources / content) print to stdout with the destinations the operator will commit.
+		// resources) print to stdout with the destinations the operator will commit.
 		expect(stderr.join('')).toContain('Pulled from staging');
 
 		const report = stdout.join('');
 		expect(report).toMatch(/Schema {5}1 collection/);
 		expect(report).toContain('directus/default/schema');
-		expect(report).toContain('Content    none — add --content');
+		expect(report).toContain('Resources');
 	});
 
 	it('emits a machine payload of ok:true, the snapshot counts, and the default data export on --json', async () => {
 		// CI consumes this shape to decide whether a pull produced changes. `data` is always an object
-		// (every pull exports the default resource set), and `content`/`project` are top-level.
+		// (every pull exports the default resource set), and `project` is top-level.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -145,7 +145,6 @@ describe('sync pull', () => {
 			files: 2,
 			removed: [],
 			scope: null,
-			content: [],
 		});
 
 		// The default set is every selectable resource except users and translations; settings contributes
@@ -589,8 +588,8 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('exports every config resource including users under --all', async () => {
-		// --all is the one selection that commits accounts alongside every other config resource; nothing but
-		// content stays out (content still needs --content), so a leak or a miss would change this exact set.
+		// --all is the one selection that commits accounts alongside every other config resource, so a leak
+		// (a dropped resource) or a miss would change this exact set.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1327,61 +1326,6 @@ describe('sync pull resources and data', () => {
 			{ id: 'a1', role: 'r1', user: null },
 			{ id: 'a2', policy: 'p1', user: 'u1' },
 		]);
-	});
-
-	it('exports a content collection from the pulled schema and reports it', async () => {
-		seedConfig();
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-		interceptSnapshot();
-		interceptDefaultRecords();
-		interceptList('/items/articles', [{ id: 1, title: 'First' }]);
-
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--content', 'articles', '--json')).toBe(0);
-
-		const article = JSON.parse(readFileSync(join(dataDir, ownedFileFor(dataDir, 'articles')), 'utf8'));
-		expect(article.primaryKey).toBe('id');
-		expect(article.records).toEqual([{ id: 1, title: 'First' }]);
-		expect(JSON.parse(stdout.join('')).content).toEqual(['articles']);
-	});
-
-	it('strips conceal/encrypt/hash content fields at export — masks and hashes cannot round-trip', async () => {
-		// The server reads a conceal/encrypt field as '**********' and RE-hashes anything written to a hash
-		// field, so exporting them would commit masks to git and a later push would overwrite the target's
-		// real secret with the mask (or corrupt its hash). The field is dropped from the export — an absent
-		// field is never written by the import, so the target keeps its own value — and the pull says so.
-		seedConfig();
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-
-		const body = schemaBody();
-
-		(body['fields'] as Record<string, unknown>[]).push({
-			collection: 'articles',
-			field: 'api_key',
-			type: 'string',
-			meta: { special: ['conceal'] },
-			schema: { is_primary_key: false },
-		});
-
-		mockSnapshot(agent, body);
-		interceptDefaultRecords();
-		interceptList('/items/articles', [{ id: 1, title: 'First', api_key: '**********' }]);
-
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--content', 'articles')).toBe(0);
-
-		const article = JSON.parse(readFileSync(join(dataDir, ownedFileFor(dataDir, 'articles')), 'utf8'));
-		expect(article.records).toEqual([{ id: 1, title: 'First' }]);
-		expect(stderr.join('')).toContain('exported without api_key');
-	});
-
-	it('routes a config resource named as --content to its resource flag', async () => {
-		// Fail after schema fetch but before either artifact writer or any record fetch.
-		seedConfig();
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-		interceptSnapshot();
-
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--content', 'roles')).toBe(1);
-		expect(stderr.join('')).toContain('is a config resource, not content');
-		expect(stderr.join('')).toContain('--<resource> flag');
 	});
 
 	it('refuses a project that is not declared in config', async () => {
