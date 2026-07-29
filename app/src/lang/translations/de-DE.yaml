@@ -1334,12 +1334,15 @@ wysiwyg_options:
   bullist: Aufzählung
   numlist: Nummerierte Liste
   hr: Horizontale Linie
+  insertdatetime_date: Datum
+  insertdatetime_time: Zeit
   link: Link einfügen/bearbeiten
   unlink: Link entfernen
   media: Medien hinzufügen/bearbeiten
   image: Bild hinzufügen/bearbeiten
   copy: Kopieren
   cut: Ausschneiden
+  default: Standard
   paste: Einfügen
   heading: Überschrift
   h1: Überschrift 1
@@ -1363,6 +1366,8 @@ wysiwyg_options:
   source_code: Quellcode bearbeiten
   fullscreen: Vollbild
   directionality: Richtung
+  ltr: Von links nach rechts
+  rtl: Von rechts nach links
   lazy_loading: Bilder nachladen
   lazy_loading_label: Lazy Loading aktivieren
 dropdown: Dropdown
@@ -2617,9 +2622,6 @@ interfaces:
     description: Ein Rich-Text-Editor, der HTML-Inhalte erzeugt
     toolbar: Toolbar
     custom_formats: Benutzerdefinierte Formate
-    custom_formats_note: Liste der TinyMCE Inhaltsformate. Siehe TinyMCE Dokumentation über [Inhaltsformatierung](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) für weitere Informationen.
-    options_override: Optionen überschreiben
-    options_override_note: Die TinyMCE Schlüssel und Werte für Benutzer-Formatierung. Siehe TinyMCE Dokumentation über [Benutzer-Formatierung](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) für weitere Informationen.
     folder_note: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
     imageToken: Statisches Zugriffstoken
     imageToken_label: Statisches Zugriffstoken wird an die URL der Assets angehängt
