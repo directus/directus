@@ -682,9 +682,13 @@ flow_name: Navn
 insights: Nøkkeltall
 wysiwyg_options:
   backcolor: Bakgrunnsfarge
+  insertdatetime_date: Dato
+  insertdatetime_time: Tid
   remove: Fjern
   selectall: Merk alt
   table: Tabell
+  ltr: Venstre mot høyre
+  rtl: Høyre til Venstre
 deselect: Velg bort
 creating_in: 'Oppretter element i {collection}'
 editing_in_batch: 'Batch Editing {count} elementer'
