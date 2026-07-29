@@ -20,7 +20,6 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Sobre
-privacy_policy: Política de Privacidade
 setup_welcome: Bem-Vindo ao Directus
 setup_info: Vamos criar sua conta de administrador e começar seu projeto.
 setup_marketing_emails: Receber novidades do produto e notas de lançamento
@@ -109,7 +108,7 @@ extension_missing: Não encontrado
 extension_reload_required: Atualização de página necessária
 extension_reload_required_copy: É necessário recarregar a página para ver as alterações após ativar ou desativar extensões de aplicativo.
 extension_reload_now: Recarregar agora
-published_relative: Publicado em {relativeTime}
+published_relative: Publicado {relativeTime}
 compatible_with_your_project: Compatível com seu projeto
 compatible_with_your_project_copy: O autor indicou que a compatibilidade desta extensão é {hostVersion}, o que corresponde à versão do seu projeto ({currentVersion})
 last_updated_relative: Última atualização em {relativeTime}
@@ -559,6 +558,7 @@ functions:
   minute: Minuto
   second: Segundo
   count: Contagem
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -919,6 +919,7 @@ operators:
   nintersects: Não interceptado
   intersects_bbox: Cruza a caixa delimitadora
   nintersects_bbox: Não cruza a caixa delimitadora
+  json: JSON
   regex: Coincide RegExp
 custom_validation_message: Mensagem personalizada de validação
 loading: Carregando...
@@ -1148,12 +1149,15 @@ wysiwyg_options:
   bullist: Lista de itens
   numlist: Lista numerada
   hr: Linha Horizontal
+  insertdatetime_date: Data
+  insertdatetime_time: Hora
   link: Adicionar/Editar link
   unlink: Excluir Link
   media: Adicionar/Editar mídia
   image: Adicionar/Editar imagem
   copy: Copiar
   cut: Recortar
+  default: Padrão
   paste: Colar
   heading: Cabeçalho
   h1: Cabeçalho 1
@@ -1177,6 +1181,8 @@ wysiwyg_options:
   source_code: Editar o código-fonte
   fullscreen: Tela cheia
   directionality: Direcionalidade
+  ltr: Esquerda para Direita
+  rtl: Direita para esquerda
   lazy_loading: Carregar imagens por demanda
   lazy_loading_label: Habilitar carregamento lento
 dropdown: Seleção
@@ -2077,9 +2083,6 @@ interfaces:
     description: Um editor de rich-text que gera HTML
     toolbar: Barra de ferramentas
     custom_formats: Formatos Personalizados
-    custom_formats_note: Lista de formatos do TinyMCE. Consulte a documentação do TinyMCE sobre [Formatação de Conteúdo](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) para mais informações.
-    options_override: Sobrescrever opções
-    options_override_note: Chaves e valores da formatação de usuário do TinyMCE. Consulte a documentação sobre [Formatação do Usuário](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) para mais informações.
     folder_note: Pasta para arquivos carregados. Não afeta os arquivos existentes.
     imageToken: Token de Acesso Estático
     imageToken_label: Token de acesso estático é adicionado à URL dos conteúdos

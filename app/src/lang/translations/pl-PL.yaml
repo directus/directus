@@ -502,6 +502,7 @@ functions:
   minute: Minuta
   second: Drugi
   count: Licz
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -839,6 +840,7 @@ operators:
   nintersects: Nie przecina się
   intersects_bbox: Przecina pole ograniczające
   nintersects_bbox: Nie przecina pola ograniczającego
+  json: JSON
   regex: Wyrażenie dopasowania
 custom_validation_message: Niestandardowy komunikat walidacyjny
 loading: Wczytywanie...
@@ -1044,12 +1046,15 @@ wysiwyg_options:
   bullist: Lista wypunktowana
   numlist: Lista numerowana
   hr: Pozioma linia
+  insertdatetime_date: Data
+  insertdatetime_time: Czas
   link: Dodaj/edytuj link
   unlink: Usuń link
   media: Dodaj/Edytuj media
   image: Dodaj/Edytuj obraz
   copy: Kopiuj
   cut: Wytnij
+  default: Domyślny
   paste: Wklej
   heading: Nagłówek
   h1: Nagłówek 1
@@ -1072,6 +1077,8 @@ wysiwyg_options:
   source_code: Edytuj kod źródłowy
   fullscreen: Pełny ekran
   directionality: Kierunek
+  ltr: Od lewej do prawej
+  rtl: Od prawej do lewej
   lazy_loading: Lazy load dla obrazów
   lazy_loading_label: Włącz Lazy Ładowanie
 dropdown: Lista rozwijana
@@ -1930,9 +1937,6 @@ interfaces:
     description: Edytor zawartość HTML
     toolbar: Pasek narzędzi
     custom_formats: Niestandardowe formaty
-    custom_formats_note: Lista formatów zawartości TinyMCE. Więcej informacji można znaleźć w dokumentacji TinyMCE na temat [Formatowania Treści](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/).
-    options_override: Zastąp opcje
-    options_override_note: Klucze formatowania użytkownika TinyMCE i ich wartości. Więcej informacji można znaleźć w dokumentacji TinyMCE na temat opcji [Formatowania Użytkownika](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/).
     folder_note: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
     imageToken: Statyczny token dostępu
     imageToken_label: Statyczny token dostępu jest dołączony do adresu URL aktywów

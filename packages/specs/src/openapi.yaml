@@ -270,6 +270,8 @@ paths:
   # Utils
   /utils/sort/{collection}:
     $ref: './paths/utils/sort.yaml'
+  /utils/import:
+    $ref: './paths/utils/import-batch.yaml'
   /utils/import/{collection}:
     $ref: './paths/utils/import.yaml'
   /utils/export/{collection}:

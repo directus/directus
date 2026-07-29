@@ -51,7 +51,9 @@ const mcpEdits = ref<Record<string, any> | null>(null);
 
 const effectiveAiSettings = computed(() => ({ ...(settingsStore.settings ?? {}), ...(aiEdits.value ?? {}) }));
 
-const availableTranslationModels = computed(() => getAvailableModels(effectiveAiSettings.value));
+const availableTranslationModels = computed(() =>
+	getAvailableModels(effectiveAiSettings.value, serverStore.info.ai_providers ?? []),
+);
 
 const aiFields = computed(() =>
 	unref(allFields)
