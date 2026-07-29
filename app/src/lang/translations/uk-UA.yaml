@@ -1118,12 +1118,15 @@ wysiwyg_options:
   bullist: Список з пунктами
   numlist: Нумерований список
   hr: Горизонтальна лінійка
+  insertdatetime_date: Дата
+  insertdatetime_time: Час
   link: Додати/редагувати посилання
   unlink: Видалити посилання
   media: Додати/Редагувати медіа
   image: Додати/Редагувати зображення
   copy: Копіювати
   cut: Вирізати
+  default: За замовчуванням
   paste: Вставити
   heading: Заголовок
   h1: Заголовок 1
@@ -1147,6 +1150,8 @@ wysiwyg_options:
   source_code: Редагувати вихідний код
   fullscreen: Повний екран
   directionality: Спрямування
+  ltr: Зліва направо
+  rtl: Справа наліво
   lazy_loading: Завантаження зображень на вимогу
   lazy_loading_label: Увімкнути відкладене завантаження
 dropdown: Випадаюче меню
@@ -2074,9 +2079,6 @@ interfaces:
     description: Багатотекстовий редактор, що пише матеріал для HTML
     toolbar: Панель інструментів
     custom_formats: Власне форматування
-    custom_formats_note: Список форматів вмісту TinyMCE. Докладнішу інформацію можна знайти у документації TinyMCE про [Форматування вмісту] (https://www.tiny.cloud/docs/tinymce/latest/content-formatting/).
-    options_override: Перевизначення параметрів
-    options_override_note: Параметри форматування користувацького інтерфейсу TinyMCE та їхні значення. Докладнішу інформацію можна знайти у документації TinyMCE про [Форматування для користувача](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/).
     folder_note: Тека для завантажених файлів. Не може вплинути на існуючі файли.
     imageToken: Статичний маркер доступу
     imageToken_label: До URL-адреси об’єкта додається статичний маркер доступу
