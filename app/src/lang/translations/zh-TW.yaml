@@ -945,12 +945,15 @@ wysiwyg_options:
   bullist: 項目列表
   numlist: 編號列表
   hr: 分隔線
+  insertdatetime_date: 日期
+  insertdatetime_time: 時間
   link: 新增/修改連結
   unlink: 移除連結
   media: 新增/修改媒體
   image: 新增/修改圖片
   copy: 複製
   cut: 剪下
+  default: 預設
   paste: 貼上
   heading: 標頭
   h1: 標題1
@@ -973,6 +976,8 @@ wysiwyg_options:
   source_code: 編輯原始碼
   fullscreen: 全螢幕
   directionality: 方向
+  ltr: 由左至右
+  rtl: 由右至左
 dropdown: 下拉選單
 choices: 選擇
 choices_option_configured_incorrectly: 選項設定錯誤
@@ -1739,7 +1744,6 @@ interfaces:
     description: 可以編輯HTML內容的編輯器
     toolbar: 工具列
     custom_formats: 自訂格式
-    options_override: 覆蓋選項
     folder_note: 供上傳檔案用的資料夾。並不會影響已存在的其他檔案。
     imageToken: 永久的 Access Token
     imageToken_label: 永久的 Access Token 將會附在網址後方
