@@ -1128,12 +1128,15 @@ wysiwyg_options:
   bullist: 箇条書きリスト
   numlist: 番号付きリスト
   hr: 水平線
+  insertdatetime_date: 日付
+  insertdatetime_time: 時刻
   link: リンクの挿入 / 編集
   unlink: リンクを削除
   media: メディアの追加 / 編集
   image: 画像の挿入 / 編集
   copy: コピー
   cut: 切り取り
+  default: デフォルト
   paste: ペースト
   heading: 見出し
   h1: 見出し 1
@@ -1157,6 +1160,8 @@ wysiwyg_options:
   source_code: ソースコードを編集
   fullscreen: 全画面表示
   directionality: 方向
+  ltr: 左から右
+  rtl: 右から左
   lazy_loading: 画像の遅延読み込み
   lazy_loading_label: 遅延読み込みを有効化
 dropdown: ドロップダウン
@@ -1947,9 +1952,6 @@ interfaces:
     description: HTML コンテンツを作成するリッチテキストエディター
     toolbar: ツールバー
     custom_formats: カスタムフォーマット
-    custom_formats_note: TinyMCE コンテンツフォーマットの一覧。詳細については、TinyMCE ドキュメントの コンテンツフォーマット (https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) を参照してください。
-    options_override: オプションの上書き
-    options_override_note: TinyMCE のユーザーフォーマットキーとその値。詳細については、TinyMCE ドキュメントの ユーザーフォーマット (https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) を参照してください。
   input-block-editor:
     tools: ツールバー
     tools_options:
