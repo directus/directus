@@ -1093,12 +1093,15 @@ wysiwyg_options:
   bullist: 글머리기호 목록
   numlist: 번호 매기기 목록
   hr: 가로줄
+  insertdatetime_date: 날짜형
+  insertdatetime_time: 시간
   link: 링크 추가/편집
   unlink: 링크 제거
   media: 미디어 추가/편집
   image: 이미지 추가/편집
   copy: 복사
   cut: 자르다
+  default: 기본
   paste: 반죽
   heading: 표제
   h1: 제목 1
@@ -1122,6 +1125,8 @@ wysiwyg_options:
   source_code: 소스 코드 편집
   fullscreen: 전체화면
   directionality: 방향성
+  ltr: 왼쪽에서 오른쪽으로
+  rtl: 오른쪽에서 왼쪽으로
   lazy_loading: 이미지 지연 로드
   lazy_loading_label: 지연 로드 활성화하기
 dropdown: 드롭다운
@@ -2037,9 +2042,6 @@ interfaces:
     description: HTML 형식으로 작성할 수 있는 리치텍스트 에디터
     toolbar: 툴바
     custom_formats: 맞춤 형식
-    custom_formats_note: TinyMCE 콘텐츠 형식의 목록은 다음과 같습니다. 자세한 내용은 TinyMCE의 [사용자 서식 문서](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/)를 참조하십시오.
-    options_override: 옵션 재정의
-    options_override_note: TinyMCE 사용자 서식 키와 그 값들은 다음과 같습니다. 자세한 내용은 TinyMCE의 [사용자 서식 문서](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/)를 참조하십시오.
     folder_note: 업로드된 파일의 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
     imageToken: 정적 액세스 토큰
     imageToken_label: 정적 액세스 토큰이 자산의 URL에 추가됩니다.
