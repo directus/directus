@@ -1121,12 +1121,15 @@ wysiwyg_options:
   bullist: 符号列表
   numlist: 数字列表
   hr: 水平线
+  insertdatetime_date: Date
+  insertdatetime_time: 时间
   link: 添加/编辑链接
   unlink: 移除链接
   media: 添加/编辑媒体
   image: 添加/编辑图像
   copy: 复制
   cut: 剪切
+  default: 默认值
   paste: 粘帖
   heading: 标题
   h1: 一级标题
@@ -1150,6 +1153,8 @@ wysiwyg_options:
   source_code: 编辑源代码
   fullscreen: 全屏显示
   directionality: 方向
+  ltr: 从左到右
+  rtl: 从右到左
   lazy_loading: "延迟加载图像\n"
   lazy_loading_label: 允许延迟加载
 dropdown: 下拉列表
@@ -2089,9 +2094,6 @@ interfaces:
     description: 富文本编辑器
     toolbar: 工具栏
     custom_formats: 自定义格式
-    custom_formats_note: TinyMCE 内容格式列表。有关更多信息，请参阅有关 [内容格式](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) 的 TinyMCE 文档。
-    options_override: 覆盖选项
-    options_override_note: TinyMCE 自定义格式快捷键及其值。有关更多信息，请参阅有关 [自定义格式](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) 的 TinyMCE 文档。
     folder_note: 用于上传文件的文件夹。不影响现有文件。
     imageToken: 静态访问令牌
     imageToken_label: 静态访问令牌已被附加到资源的 URL
