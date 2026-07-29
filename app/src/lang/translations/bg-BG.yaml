@@ -1009,12 +1009,15 @@ wysiwyg_options:
   bullist: Списък
   numlist: Номериран списък
   hr: Хоризонтална линия
+  insertdatetime_date: Дата
+  insertdatetime_time: Час
   link: Добавяне/редактиране на връзка
   unlink: Премахване на връзка
   media: Добавяне/редактиране на медия
   image: Добавяне/редактиране на изображение
   copy: Копиране
   cut: Изрязване
+  default: По подразбиране
   paste: Поставяне
   heading: Заглавие
   h1: Заглавие 1
@@ -1037,6 +1040,8 @@ wysiwyg_options:
   source_code: Редактиране на изходния код
   fullscreen: Пълен екран
   directionality: Подравняване
+  ltr: От ляво на дясно
+  rtl: От дясно на ляво
   lazy_loading: Бавно зареждане на изображение
   lazy_loading_label: Разрешете бавно зареждане
 dropdown: Падащо меню
@@ -1864,9 +1869,6 @@ interfaces:
     description: Визуален редактор на HTML съдържание
     toolbar: Лента с инструменти
     custom_formats: Собтсвени формати
-    custom_formats_note: Списък с формати на съдържание на TinyMCE. Вижте документацията на TinyMCE относно [Форматиране на съдържание](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) за повече информация.
-    options_override: Преопределяне на настройки
-    options_override_note: Ключовете за потребителско форматиране на TinyMCE и техните стойности. Вижте документацията на TinyMCE относно [Потребителско форматиране](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) за повече информация.
     folder_note: Папка за качване на файловете. Съществуващите файлове не се променят.
     imageToken: Статичен токен за достъп
     imageToken_label: Статичния токен за достъп се добавя след URL-a на файла
