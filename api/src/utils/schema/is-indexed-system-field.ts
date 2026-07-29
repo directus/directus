@@ -3,5 +3,5 @@ export function isIndexedSystemField(item: {
 	meta: { system?: boolean | null } | null;
 	schema: { is_indexed: boolean } | null;
 }) {
-	return item.meta?.system === true && item.schema?.is_indexed;
+	return Boolean(item.meta?.system === true && item.schema?.is_indexed);
 }
