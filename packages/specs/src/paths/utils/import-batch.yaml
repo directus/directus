@@ -110,13 +110,9 @@ post:
           schema:
             type: object
             properties:
-              error:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    format: int64
-                  message:
-                    type: string
+              errors:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Error'
   tags:
     - Utilities
