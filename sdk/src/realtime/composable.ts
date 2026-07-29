@@ -457,7 +457,10 @@ export function realtime(config: WebSocketConfig = {}) {
 						) {
 							end(message);
 						}
-					}),
+					})
+				);
+				
+				removeListeners.push(
 					this.onWebSocket('close', () => {
 						// Mirrors the condition in reconnect(): as long as a retry follows, the subscription
 						// is re-sent on the new connection and the listener above keeps filling this queue,
