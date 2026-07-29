@@ -1302,12 +1302,15 @@ wysiwyg_options:
   bullist: רשימת תבליטים
   numlist: רשימה ממוספרת
   hr: קו אופקי
+  insertdatetime_date: תאריך
+  insertdatetime_time: זמן
   link: הוסף/ערוך קישור
   unlink: הסר קישור
   media: הוסף/ערוך מדיה
   image: הוסף/ערוך תמונה
   copy: העתק
   cut: גזור
+  default: ברירת מחדל
   paste: הדבק
   heading: כותרת
   h1: כותרת 1
@@ -1331,6 +1334,8 @@ wysiwyg_options:
   source_code: ערוך קוד מקור
   fullscreen: מסך מלא
   directionality: כיווניות
+  ltr: שמאל לימין
+  rtl: ימין לשמאל
   lazy_loading: טעינה עצלה של תמונה
   lazy_loading_label: הפעל טעינה עצלה
 dropdown: תפריט נפתח
@@ -2549,9 +2554,6 @@ interfaces:
     description: עורך טקסט עשיר לכתיבת תוכן HTML
     toolbar: סרגל כלים
     custom_formats: פורמטים מותאמים אישית
-    custom_formats_note: רשימת פורמטי תוכן של TinyMCE. עיין בתיעוד של TinyMCE בנושא [Content Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) למידע נוסף.
-    options_override: עקיפת אפשרויות
-    options_override_note: מפתחות עיצוב המשתמש של TinyMCE וערכיהם. עיין בתיעוד של TinyMCE בנושא [User Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) למידע נוסף.
     folder_note: תיקייה לקבצים שהועלו. אינה משפיעה על קבצים קיימים.
     imageToken: אסימון גישה סטטי
     imageToken_label: אסימון גישה סטטי מצורף לכתובת ה-URL של הנכסים
