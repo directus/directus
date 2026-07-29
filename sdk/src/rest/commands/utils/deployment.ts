@@ -11,9 +11,15 @@ export interface TriggerDeploymentResult {
 	date_created: string;
 }
 
+/**
+ * Trigger payload for `POST /deployments/:provider/projects/:id/deploy`.
+ * Supported fields depend on provider capabilities (`DeploymentProviderCapabilities` in `@directus/types`).
+ */
 export interface TriggerDeploymentOptions {
 	preview?: boolean;
 	clear_cache?: boolean;
+	/** When supported by the provider (e.g. Cloudflare Workers deploy hooks) */
+	deploy_hook_url?: string;
 }
 
 /**

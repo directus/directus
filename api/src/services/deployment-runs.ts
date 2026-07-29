@@ -1,4 +1,5 @@
 import type { AbstractServiceOptions, DeploymentWebhookEvent } from '@directus/types';
+import emitter from '../emitter.js';
 import { ItemsService } from './items.js';
 
 export interface DeploymentRun {
@@ -19,10 +20,6 @@ export class DeploymentRunsService extends ItemsService<DeploymentRun> {
 		super('directus_deployment_runs', options);
 	}
 
-	/**
-	 * Process a webhook event: create or update a run based on the event data.
-	 * Returns the run ID.
-	 */
 	async processWebhookEvent(projectId: string, event: DeploymentWebhookEvent): Promise<string> {
 		const existingRuns = await this.readByQuery({
 			filter: {
@@ -37,6 +34,8 @@ export class DeploymentRunsService extends ItemsService<DeploymentRun> {
 			event.type === 'deployment.error' ||
 			event.type === 'deployment.canceled';
 
+		let runId: string;
+
 		if (existingRuns && existingRuns.length > 0) {
 			const existingRun = existingRuns[0]!;
 
@@ -49,18 +48,35 @@ export class DeploymentRunsService extends ItemsService<DeploymentRun> {
 				...(isTerminal ? { completed_at: event.timestamp.toISOString() } : {}),
 			});
 
-			return existingRun.id;
+			runId = existingRun.id;
+		} else {
+			runId = (await this.createOne({
+				project: projectId,
+				external_id: event.deployment_external_id,
+				target: event.target || 'production',
+				status: event.status,
+				...(event.url ? { url: event.url } : {}),
+				started_at: event.type === 'deployment.created' ? event.timestamp.toISOString() : null,
+				...(isTerminal ? { completed_at: event.timestamp.toISOString() } : {}),
+			})) as string;
 		}
 
-		return (await this.createOne({
-			project: projectId,
-			external_id: event.deployment_external_id,
-			target: event.target || 'production',
-			status: event.status,
-			...(event.url ? { url: event.url } : {}),
-			started_at: event.type === 'deployment.created' ? event.timestamp.toISOString() : null,
-			...(isTerminal ? { completed_at: event.timestamp.toISOString() } : {}),
-		})) as string;
+		emitter.emitAction(
+			['deployment.webhook', `deployment.webhook.${event.type}`],
+			{
+				provider: event.provider,
+				project_id: projectId,
+				run_id: runId,
+				external_id: event.deployment_external_id,
+				status: event.status,
+				url: event.url,
+				target: event.target,
+				timestamp: event.timestamp,
+			},
+			null,
+		);
+
+		return runId;
 	}
 
 	/**
