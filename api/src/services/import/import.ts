@@ -30,7 +30,6 @@ import { parseJSON, toArray } from '@directus/utils';
 import { createTmpFile, type TmpFile } from '@directus/utils/node';
 import { queue } from 'async';
 import type { Knex } from 'knex';
-import { set } from 'lodash-es';
 import ms, { type StringValue } from 'ms';
 import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
@@ -50,6 +49,7 @@ import { transaction } from '../../utils/transaction.js';
 import { userName } from '../../utils/user-name.js';
 import { NotificationsService } from '../notifications.js';
 import { UsersService } from '../users.js';
+import { setDeep } from '../utils/set-deep.js';
 import { keyExists } from './key-exists.js';
 import { normalizeKey } from './normalize-key.js';
 import { remapForeignKeys, remapValue, resolveTarget } from './remap-foreign-keys.js';
@@ -528,11 +528,15 @@ export class ImportService {
 								return;
 							}
 
-							const result: Record<string, unknown> = {};
+							// A CSV column header is a user-controlled object path (dotted headers create nested
+							// values). Build the row on a null-prototype object with `setDeep`, so a header like
+							// `toString.call` is just an own key and can never walk into (and corrupt) a shared
+							// builtin the way lodash `set` would. See GHSA-gwvv-rr68-cmv6.
+							const result: Record<string, unknown> = Object.create(null);
 
 							for (const field in obj) {
 								if (obj[field] !== undefined) {
-									set(result, field, obj[field]);
+									setDeep(result, field, obj[field]);
 								}
 							}
 

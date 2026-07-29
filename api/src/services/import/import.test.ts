@@ -529,6 +529,28 @@ describe('ImportService', () => {
 			);
 		});
 
+		test('does not corrupt a builtin via a prototype-polluting header', async () => {
+			const original = Object.prototype.toString.call;
+
+			const mockUpsertOne = vi.fn().mockResolvedValue({ id: 1 });
+
+			vi.mocked(getService).mockReturnValue({
+				upsertOne: mockUpsertOne,
+			} as any);
+
+			const csvData = 'id,toString.call\n1,boom';
+			const stream = Readable.from([csvData]);
+
+			await service.importCSV('test_collection', stream);
+
+			expect(Object.prototype.toString.call).toBe(original);
+			expect(Object.prototype.toString.call([])).toBe('[object Array]');
+
+			const row = mockUpsertOne.mock.calls[0]![0];
+			expect(row).toHaveProperty('id', '1');
+			expect(row['toString']).toEqual({ call: 'boom' });
+		});
+
 		test('stops at MAX_IMPORT_ERRORS', async () => {
 			let callCount = 0;
 
