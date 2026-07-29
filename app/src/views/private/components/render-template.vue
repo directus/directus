@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { DeepPartial, Field } from '@directus/types';
-import { get } from '@directus/utils';
 import { computed } from 'vue';
 import ValueNull from './value-null.vue';
 import VErrorBoundary from '@/components/v-error-boundary.vue';
@@ -8,6 +7,7 @@ import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
+import { getWithArrayIndex } from '@/utils/get-with-array-index';
 import { translate } from '@/utils/translate-literal';
 
 const props = withDefaults(
@@ -39,7 +39,7 @@ const getNestedValues = (data: any, path: string) => {
 			if (!anyCollection || anyCollection !== getM2AJunctionCollectionField(props.collection, itemField)) return;
 		}
 
-		currentData = get(currentData, part) ?? null;
+		currentData = getWithArrayIndex(currentData, part) ?? null;
 	});
 
 	return Array.isArray(currentData) ? currentData : [currentData];

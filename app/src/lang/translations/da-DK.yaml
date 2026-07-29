@@ -443,6 +443,7 @@ functions:
   minute: Minut
   second: Sekund
   count: Antal
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss a'
 date-fns_time_no_seconds: 'HH:mm a'
@@ -737,6 +738,7 @@ operators:
   nintersects: Skærer ikke
   intersects_bbox: Grænsefelt til skæring
   nintersects_bbox: Grænsefeltet skærer ikke op
+  json: JSON
   regex: Matcher RegExp
 custom_validation_message: Brugerdefineret Valideringsbesked
 loading: Indlæser...
@@ -917,12 +919,15 @@ wysiwyg_options:
   bullist: Kugle liste
   numlist: Nummereret liste
   hr: Horisontal regel
+  insertdatetime_date: Dato
+  insertdatetime_time: Tid
   link: Tilføj/Rediger link
   unlink: Fjern link
   media: Tilføj/Rediger medie
   image: Tilføj/Rediger billede
   copy: Kopiér
   cut: Klip
+  default: Standard
   paste: Indsæt
   heading: Overskrift
   h1: Overskrift 1
@@ -945,6 +950,8 @@ wysiwyg_options:
   source_code: Rediger kildekode
   fullscreen: Fuld skærm
   directionality: Retningslinjer
+  ltr: Venstre mod højre
+  rtl: Højre mod venstre
 dropdown: Rulleliste
 choices: Valgmuligheder
 choices_option_configured_incorrectly: Valg konfigureret forkert
@@ -1044,6 +1051,7 @@ fields:
     collection: Samling
     icon: Ikon
     note: Kommentar
+    status: Status
     color: Farve
     display_template: Vis skabelon
     hidden: Skjult
@@ -1609,6 +1617,7 @@ interfaces:
     field_note_placeholder: Indtast felt note...
     incompatible_data: De aktuelle data er ikke kompatible med gentager-grænsefladen og vil blive tilsidesat, når du tilføjer elementer til gentager
     interface_group: Grænsefladeindstillinger
+    edit_mode_inline: Indlejret
   slider:
     slider: Skyder
     description: Vælg et nummer ved hjælp af en skyder
@@ -1679,7 +1688,6 @@ interfaces:
     description: En brødtekst redigeringsværktøj som skriver HTML-indhold
     toolbar: Værktøjslinje
     custom_formats: Brugerdefinerede formater
-    options_override: Tilsidesæt
     folder_note: Mappe for uploadede filer. Påvirker ikke eksisterende filer.
     imageToken: Statisk Adgangstoken
     imageToken_label: Statisk adgangstoken er vedlagt aktivernes URL

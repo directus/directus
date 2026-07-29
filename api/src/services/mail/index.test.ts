@@ -68,6 +68,57 @@ describe('MailService', () => {
 		service = new MailService(mockServiceOptions);
 	});
 
+	describe('renderTemplate', () => {
+		test('should throw InvalidPayloadError for path traversal in template name', async () => {
+			vi.mocked(emitter.emitFilter).mockResolvedValue({
+				to: 'recipient@example.com',
+				subject: 'Test',
+				template: { name: '../uploads/extensions/pwn', data: {} },
+			});
+
+			await expect(
+				service.send({
+					to: 'recipient@example.com',
+					subject: 'Test',
+					template: { name: '../uploads/extensions/pwn', data: {} },
+				}),
+			).rejects.toThrow(InvalidPayloadError);
+		});
+
+		test('should throw InvalidPayloadError for absolute path in template name', async () => {
+			vi.mocked(emitter.emitFilter).mockResolvedValue({
+				to: 'recipient@example.com',
+				subject: 'Test',
+				template: { name: '/etc/passwd', data: {} },
+			});
+
+			await expect(
+				service.send({
+					to: 'recipient@example.com',
+					subject: 'Test',
+					template: { name: '/etc/passwd', data: {} },
+				}),
+			).rejects.toThrow(InvalidPayloadError);
+		});
+
+		test('should allow a valid template name', async () => {
+			vi.mocked(emitter.emitFilter).mockResolvedValue({
+				to: 'recipient@example.com',
+				subject: 'Test',
+				template: { name: 'password-reset', data: {} },
+			});
+
+			// pathExists returns true (mocked at top), so it renders the mocked readFile result
+			await expect(
+				service.send({
+					to: 'recipient@example.com',
+					subject: 'Test',
+					template: { name: 'password-reset', data: {} },
+				}),
+			).resolves.not.toThrow();
+		});
+	});
+
 	describe('send', () => {
 		test('should accept from object with name + address', async () => {
 			vi.mocked(emitter.emitFilter).mockResolvedValue({

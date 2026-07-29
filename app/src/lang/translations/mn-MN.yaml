@@ -502,6 +502,7 @@ functions:
   minute: Минут
   second: Секунд
   count: Тоо ширхэг
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -842,6 +843,7 @@ operators:
   nintersects: Огтлолцоогүй
   intersects_bbox: Хязгаарлах хайрцагтай огтлолцсон
   nintersects_bbox: Хязгаарлах хайрцагтай огтлолцоогүй
+  json: JSON
   regex: RegExp-тэй таарсан
 custom_validation_message: Тохируулгат баталгаажуулалтын мессеж
 loading: Уншиж байна...
@@ -1055,12 +1057,15 @@ wysiwyg_options:
   bullist: Тэмдэглэгдсэн жагсаалт
   numlist: Дугаарлагдсан жагсаалт
   hr: Хэвтээ тусгаарлагч
+  insertdatetime_date: Огноо
+  insertdatetime_time: Цаг
   link: Холбоос нэмэх/засах
   unlink: Холбоос устгах
   media: Медиа нэмэх/засах
   image: Зураг нэмэх/засах
   copy: Хуулах
   cut: Огтлох
+  default: Өгөгдмөл
   paste: Наах
   heading: Гарчиг
   h1: Гарчиг 1
@@ -1083,6 +1088,8 @@ wysiwyg_options:
   source_code: Эх кодыг засах
   fullscreen: Бүтэн дэлгэцлэх
   directionality: Чиглэл
+  ltr: Зүүнээс баруун
+  rtl: Баруунаас зүүн
   lazy_loading: Шаардлагатай үед зургийг ачаалах
   lazy_loading_label: Шаардлагатай үед ачаалах тохиргоог идэвхжүүлэх
 dropdown: Доош унадаг цэс
@@ -1218,6 +1225,7 @@ fields:
     collection: Бүрдэл
     icon: Таних тэмдэг
     note: Тэмдэглэл
+    status: Статус
     color: Өнгө
     display_template: Харагдацын загвар
     hidden: Нуусан
@@ -1882,6 +1890,7 @@ interfaces:
     incompatible_data: Одоогийн өгөгдөл нь давталтын интерфэйстэй тохирохгүй бөгөөд давтагч руу оруулга нэмэх үед хүчингүй болно
     interface_group: Интерфэйс тохиргоо
     display_group: Харагдах байдлын тохиргоо
+    edit_mode_inline: Тасралтгүй шугаманд
   slider:
     slider: Гулсагч
     description: Гулсагч ашиглан тоо сонгох
@@ -1955,9 +1964,6 @@ interfaces:
     description: HTML үүсгэдэг дэвшилтэт засварлагч
     toolbar: Хэрэгслийн самбар
     custom_formats: Тохируулгат форматууд
-    custom_formats_note: TinyMCE контент форматуудын жагсаалт. [Контент формат] талаарх дэлгэрэнгүй мэдээллийг Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) TinyMCE гарын авлагаас авна уу.
-    options_override: Тохиргоо үл хэрэгсэнэ
-    options_override_note: TinyMCE хэрэглэгчийн форматлах түлхүүрүүд ба тэдгээрийн утга. Дэлгэрэнгүй мэдээллийг [Хэрэглэгчийн формат](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) дээрх TinyMCE гарын авлагаас дэлгэрэнгүй мэдээллийг авна уу.
     folder_note: Оруулсан файлуудын хавтас. Одоогийн файлуудад хамаарахгүй.
     imageToken: Статик хандалтын токен
     imageToken_label: Статик хандалтын токенг файлын URL-д нэгтгэсэн

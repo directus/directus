@@ -13,12 +13,10 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import { useInjectNestedValidation } from '@/composables/use-nested-validation';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
-import { useWindowSize } from '@/composables/use-window-size';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
 import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
-import { useSettingsStore } from '@/stores/settings';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
@@ -68,7 +66,6 @@ const { locale } = useI18n();
 const fieldsStore = useFieldsStore();
 const licenseStore = useLicenseStore();
 const serverStore = useServerStore();
-const settingsStore = useSettingsStore();
 const aiStore = useAiStore();
 
 const showTranslateModal = ref(false);
@@ -81,7 +78,7 @@ function openTranslateDrawer() {
 const aiTranslateAvailable = computed(() =>
 	isAiTranslateAvailable({
 		aiEnabled: serverStore.info.ai_enabled,
-		availableProviderCount: settingsStore.availableAiProviders.length,
+		availableProviderCount: serverStore.info.ai_providers?.length ?? 0,
 		availableModelCount: aiStore.models.length,
 		disabled: props.disabled,
 		nonEditable: props.nonEditable,
@@ -113,8 +110,7 @@ function useSplitView() {
 		}
 	});
 
-	const { width } = useWindowSize();
-	const splitViewAvailable = computed(() => width.value > 960 && languageOptions.value.length > 1);
+	const splitViewAvailable = computed(() => languageOptions.value.length > 1);
 	const splitViewEnabled = computed(() => splitViewAvailable.value && splitView.value);
 
 	return {

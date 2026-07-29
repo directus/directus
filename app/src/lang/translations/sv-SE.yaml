@@ -503,6 +503,7 @@ functions:
   minute: Minut
   second: Sekund
   count: Antal
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -812,6 +813,7 @@ operators:
   has: Innehåller några av dessa nycklar
   intersects: Korsar
   nintersects: Korsar inte
+  json: JSON
 loading: Laddar...
 drop_to_upload: Släpp för att ladda upp
 item: Objekt
@@ -998,12 +1000,15 @@ wysiwyg_options:
   bullist: Punktlista
   numlist: Numrerad lista
   hr: Horisontell linje
+  insertdatetime_date: Datum
+  insertdatetime_time: Time
   link: Lägg till/redigera länk
   unlink: Ta bort länk
   media: Lägg till/redigera media
   image: Lägg till/redigera bild
   copy: Kopiera
   cut: Klipp
+  default: Standard
   paste: Klistra in
   heading: Rubrik
   h1: Rubrik 1
@@ -1027,6 +1032,8 @@ wysiwyg_options:
   source_code: Redigera källkod
   fullscreen: Helskärm
   directionality: Riktning
+  ltr: Vänster till höger
+  rtl: Höger till Vänster
 dropdown: Rullgardinsmeny
 choices: Alternativ
 choices_option_configured_incorrectly: Val felaktigt konfigurerade
@@ -1140,6 +1147,7 @@ fields:
     collection: Kollektion
     icon: Ikon
     note: Anteckning
+    status: Status
     color: Färg
     display_template: Visningsmall
     hidden: Dold
@@ -1732,6 +1740,7 @@ interfaces:
     field_note_placeholder: Ange fältanteckning...
     interface_group: Alternativ för gränssnitt
     display_group: Visningsalternativ
+    edit_mode_inline: Infogad
   slider:
     slider: Reglage
     description: Välj ett nummer med ett reglage
@@ -1798,7 +1807,6 @@ interfaces:
     description: En textredigerare som skriver HTML-innehåll
     toolbar: Verktygsfält
     custom_formats: Anpassade format
-    options_override: Skriv över alternativ
     folder_note: Mapp för uppladdade filer. Påverkar inte befintliga filer.
   input-block-editor:
     input-block-editor: Blockredigerare

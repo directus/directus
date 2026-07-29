@@ -12,7 +12,7 @@ export interface PrivateViewProps {
 	/** Render a back button in place of the title prepend icon */
 	showBack?: boolean;
 
-	/** Where to navigate to on back button click. Required when `showBack` is true */
+	/** Where to navigate to on back button click. Defaults to browser history (back) when omitted. */
 	backTo?: string;
 }
 </script>
@@ -74,6 +74,7 @@ const licenseStore = useLicenseStore();
 const showLicenseBanner = computed({
 	get: () =>
 		userStore.isAdmin &&
+		serverStore.info.project_owner_enabled &&
 		!settingsStore.settings?.project_owner &&
 		!showLicenseOnboarding.value &&
 		!licenseStore.isCoreGrace &&

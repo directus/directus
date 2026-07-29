@@ -369,6 +369,7 @@ functions:
   minute: Minuutti
   second: Sekunti
   count: Määrä
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'HH:mm'
@@ -659,6 +660,7 @@ operators:
   nintersects: Ei leikkaa
   intersects_bbox: Leikkaa rajaavaa laatikkoa
   nintersects_bbox: Ei leikkaa rajaavaa laatikkoa
+  json: JSON
 loading: Ladataan...
 drop_to_upload: Pudota ladataksesi
 item: Kohde
@@ -827,12 +829,15 @@ wysiwyg_options:
   bullist: Merkitty lista
   numlist: Numeroitu luettelo
   hr: Vaakaviivain
+  insertdatetime_date: Päivämäärä
+  insertdatetime_time: Aika
   link: Lisää/Muokkaa Linkki
   unlink: Poista linkki
   media: Lisää/Muokkaa Mediaa
   image: Lisää/Muokkaa kuva
   copy: Kopioi
   cut: Leikkaa
+  default: Oletus
   paste: Liitä
   heading: Otsake
   h1: Otsake 1
@@ -855,6 +860,8 @@ wysiwyg_options:
   source_code: Muokkaa lähdekoodia
   fullscreen: Koko näyttö
   directionality: Suuntaus
+  ltr: Vasemmalta oikealle
+  rtl: Oikealta vasemmalle
 dropdown: Pudotusvalikko
 choices: Valinnat
 choices_option_configured_incorrectly: Valinnat määritetty väärin
@@ -948,6 +955,7 @@ fields:
     collection: Kokoelma
     icon: Kuvake
     note: Muistiinpano
+    status: Tila
     color: Väri
     display_template: Esitysmalli
     hidden: Piilotettu
@@ -1422,6 +1430,7 @@ interfaces:
     sort: Järjestä
     field_note_placeholder: Syötä kentän muistiinpano...
     interface_group: Liittymän asetukset
+    edit_mode_inline: Rivitetty
   slider:
     slider: Liukusäädin
     description: Valitse numero käyttäen liukusäädintä
@@ -1487,7 +1496,6 @@ interfaces:
     description: Rikastekstieditori HTML-sisällön kirjoitukseen
     toolbar: Työkalupalkki
     custom_formats: Mukautetut muodot
-    options_override: Valintojen ohitus
     folder_note: Ladattujen tiedostojen kansio. Ei vaikuta olemassa oleviin tiedostoihin.
   input-block-editor:
     tools: Työkalupalkki

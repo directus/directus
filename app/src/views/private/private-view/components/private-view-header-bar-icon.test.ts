@@ -35,10 +35,11 @@ describe('PrivateViewHeaderBarIcon', () => {
 		expect(wrapper.exists()).toBe(true);
 	});
 
-	test('renders back button when backTo is provided', () => {
+	test('renders back button when back is true', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
 			props: {
+				back: true,
 				backTo: '/back',
 			},
 		});
@@ -52,6 +53,7 @@ describe('PrivateViewHeaderBarIcon', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
 			props: {
+				back: true,
 				backTo: '/back',
 			},
 		});
@@ -65,6 +67,7 @@ describe('PrivateViewHeaderBarIcon', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
 			props: {
+				back: true,
 				backTo: '/back',
 			},
 		});
@@ -78,6 +81,7 @@ describe('PrivateViewHeaderBarIcon', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
 			props: {
+				back: true,
 				backTo: '/back',
 			},
 		});
@@ -86,12 +90,13 @@ describe('PrivateViewHeaderBarIcon', () => {
 		expect(actionButton.props('to')).toBe('/back');
 	});
 
-	test('back button never calls router.back when clicked', async () => {
+	test('back button does not call router.back when backTo is provided', async () => {
 		const routerBackSpy = vi.spyOn(router, 'back');
 
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
 			props: {
+				back: true,
 				backTo: '/back',
 			},
 		});
@@ -100,6 +105,25 @@ describe('PrivateViewHeaderBarIcon', () => {
 		await actionButton.trigger('click');
 
 		expect(routerBackSpy).not.toHaveBeenCalled();
+	});
+
+	test('back button calls router.back when backTo is not provided', async () => {
+		const routerBackSpy = vi.spyOn(router, 'back');
+
+		const wrapper = mount(PrivateViewHeaderBarIcon, {
+			...mountOptions,
+			props: {
+				back: true,
+			},
+		});
+
+		const actionButton = wrapper.findComponent({ name: 'PrivateViewHeaderBarActionButton' });
+		expect(actionButton.exists()).toBe(true);
+		expect(actionButton.props('to')).toBeUndefined();
+
+		await actionButton.find('button.button').trigger('click');
+
+		expect(routerBackSpy).toHaveBeenCalled();
 	});
 
 	test('renders icon when icon prop is provided', () => {
@@ -130,7 +154,7 @@ describe('PrivateViewHeaderBarIcon', () => {
 		expect(icon.props('color')).toBe('blue');
 	});
 
-	test('does not render back button when backTo is not provided', () => {
+	test('does not render back button when back is not set', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
 			props: {
@@ -142,10 +166,11 @@ describe('PrivateViewHeaderBarIcon', () => {
 		expect(backButton.exists()).toBe(false);
 	});
 
-	test('does not render icon when backTo is provided', () => {
+	test('does not render icon when back is true', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
 			props: {
+				back: true,
 				backTo: '/back',
 			},
 		});
@@ -154,7 +179,7 @@ describe('PrivateViewHeaderBarIcon', () => {
 		expect(icon.exists()).toBe(false);
 	});
 
-	test('renders nothing when neither backTo nor icon are provided', () => {
+	test('renders nothing when neither back nor icon are provided', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, mountOptions);
 
 		const backButton = wrapper.find('.back-button');
@@ -164,10 +189,11 @@ describe('PrivateViewHeaderBarIcon', () => {
 		expect(icon.exists()).toBe(false);
 	});
 
-	test('prioritizes backTo over icon when both are provided', () => {
+	test('prioritizes back button over icon when both are provided', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
 			props: {
+				back: true,
 				backTo: '/back',
 				icon: 'edit',
 			},

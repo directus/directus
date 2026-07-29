@@ -72,6 +72,45 @@ describe('MSSQL dialect', () => {
 				const result = rawColumnToColumn({ ...baseRawColumn, data_type: 'nvarchar', max_length: null });
 				expect(result.max_length).toBeNull();
 			});
+
+			it('returns null for decimal (storage size in bytes, not a character count)', () => {
+				const result = rawColumnToColumn({
+					...baseRawColumn,
+					data_type: 'decimal',
+					max_length: 9,
+					numeric_precision: 12,
+					numeric_scale: 2,
+				});
+
+				expect(result.max_length).toBeNull();
+			});
+
+			it('returns null for numeric (storage size in bytes, not a character count)', () => {
+				const result = rawColumnToColumn({
+					...baseRawColumn,
+					data_type: 'numeric',
+					max_length: 9,
+					numeric_precision: 12,
+					numeric_scale: 2,
+				});
+
+				expect(result.max_length).toBeNull();
+			});
+
+			it('returns null for bigint (storage size in bytes, not a character count)', () => {
+				const result = rawColumnToColumn({ ...baseRawColumn, data_type: 'bigint', max_length: 8 });
+				expect(result.max_length).toBeNull();
+			});
+
+			it('returns null for uniqueidentifier (storage size in bytes, not a character count)', () => {
+				const result = rawColumnToColumn({ ...baseRawColumn, data_type: 'uniqueidentifier', max_length: 16 });
+				expect(result.max_length).toBeNull();
+			});
+
+			it('keeps max_length for varbinary', () => {
+				const result = rawColumnToColumn({ ...baseRawColumn, data_type: 'varbinary', max_length: 100 });
+				expect(result.max_length).toBe(100);
+			});
 		});
 	});
 

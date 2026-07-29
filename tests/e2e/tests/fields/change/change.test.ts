@@ -1,8 +1,10 @@
 import {
+	createCollection,
 	createDirectus,
 	createField,
 	createItems,
 	createRelation,
+	deleteCollection,
 	deleteField,
 	readField,
 	readItems,
@@ -10,7 +12,7 @@ import {
 	staticToken,
 	updateField,
 } from '@directus/sdk';
-import { port } from '@utils/constants.js';
+import { database, port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { afterAll, describe, expect, test } from 'vitest';
 import type { Schema } from './schema.js';
@@ -33,6 +35,9 @@ afterAll(async () => {
 	await api.request(deleteField(collections.country, 'flag_image'));
 	await api.request(deleteField(collections.country, 'test_divider'));
 	await api.request(deleteField(collections.country, 'to_be_deleted'));
+
+	// Only exists if validation regressed and the injection collection was created
+	await api.request(deleteCollection('geom_injection')).catch(() => {});
 });
 
 await api.request(
@@ -136,6 +141,35 @@ describe('/fields', () => {
 					collection: collections.country,
 				}),
 			);
+		});
+
+		// Skip if oracle as CI option lacks spatial support
+		test.skipIf(database === 'oracle')('SQL injection via geometry subtype does not execute', async () => {
+			// The injection embeds a SELECT against a non-existent table which will error if executed
+			const subtype = `Point, 4326)); SELECT * FROM "directus_geom_injection_canary"; --`;
+
+			await api.request(
+				createCollection({
+					collection: 'geom_injection',
+					fields: [
+						{
+							field: 'id',
+							type: 'integer',
+							schema: { is_primary_key: true, has_auto_increment: true },
+						},
+						{
+							field: 'geom',
+							type: `geometry.${subtype}`,
+							schema: {},
+						},
+					],
+					schema: {},
+				}),
+			);
+
+			// And the column itself fell back to plain geometry
+			const field = await api.request(readField('geom_injection', 'geom'));
+			expect(field.type).toBe('geometry');
 		});
 	});
 

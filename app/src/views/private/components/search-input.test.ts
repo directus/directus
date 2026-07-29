@@ -35,6 +35,21 @@ describe('Component', () => {
 		expect(wrapper.exists()).toBe(true);
 	});
 
+	it.each([
+		[{ _and: [{ metadata: { _json: {} } }] }, 0],
+		[{ _and: [{ metadata: { _json: { author: { _eq: 'jane' } } } }] }, 1],
+	])('counts JSON filter rows as active only when they have a path', (filter, expected) => {
+		const wrapper = mount(SearchInput, {
+			props: {
+				modelValue: '',
+				filter,
+			},
+			global,
+		});
+
+		expect(wrapper.findComponent({ name: 'VBadge' }).props('value')).toBe(expected);
+	});
+
 	describe('emitValue', () => {
 		it('should trim leading and trailing whitespace before emitting', async () => {
 			const wrapper = mount(SearchInput, {

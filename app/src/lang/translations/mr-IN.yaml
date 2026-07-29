@@ -502,6 +502,7 @@ functions:
   minute: मिनिटे
   second: सेकंद
   count: मोजा
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -842,6 +843,7 @@ operators:
   nintersects: एकमेकांना छेदत नाही
   intersects_bbox: बाउंडिंग बॉक्सला छेदतो
   nintersects_bbox: बाउंडिंग बॉक्सला छेदत नाही
+  json: JSON
   regex: RegExp शी जुळते
 custom_validation_message: कस्टम प्रमाणीकरण संदेश
 loading: लोड करत आहे...
@@ -1055,12 +1057,15 @@ wysiwyg_options:
   bullist: बुलेट यादी
   numlist: क्रमांकित यादी
   hr: समांतर नियम
+  insertdatetime_date: दिनांक
+  insertdatetime_time: वेळ
   link: लिंक जोडा/संपादित करा
   unlink: लिंक काढा
   media: मीडिया जोडा/संपादित करा
   image: प्रतिमा जोडा/संपादित करा
   copy: कॉपी
   cut: कट
+  default: डीफॉल्ट
   paste: पेस्ट करा
   heading: शीर्षक
   h1: हेडिंग १
@@ -1083,6 +1088,8 @@ wysiwyg_options:
   source_code: सोर्स कोड एडिट करा
   fullscreen: फुल स्क्रीन
   directionality: दिशाहीनता
+  ltr: डावीकडून उजवीकडे
+  rtl: उजवीकडून डावीकडे
   lazy_loading: लेझी लोड इमेज
   lazy_loading_label: लेझी लोड एनेबल करा
 dropdown: ड्रॉप डाऊन
@@ -1218,6 +1225,7 @@ fields:
     collection: कलेक्शन
     icon: आयकॉन
     note: नोट
+    status: स्टेटस
     color: कलर
     display_template: डिस्प्ले टेम्प्लेट
     hidden: लपलेले
@@ -1882,6 +1890,7 @@ interfaces:
     incompatible_data: वर्तमान डेटा रिपीटर इंटरफेसशी सुसंगत नाही आणि रिपीटरमध्ये आयटम जोडताना ओव्हरराइड केला जाईल
     interface_group: इंटरफेस पर्याय
     display_group: प्रदर्शन पर्याय
+    edit_mode_inline: इनलाईन
   slider:
     slider: स्लाइडर
     description: स्लाइडर वापरून संख्या निवडा
@@ -1955,9 +1964,6 @@ interfaces:
     description: HTML सामग्री लिहिणारा रिच टेक्स्ट एडिटर
     toolbar: टूलबार
     custom_formats: कस्टम स्वरूप
-    custom_formats_note: TinyMCE सामग्री स्वरूपांची सूची. अधिक माहितीसाठी [सामग्री फॉरमॅटिंग](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) बद्दल TinyMCE दस्तऐवजीकरण पहा.
-    options_override: पर्याय ओव्हरराइड
-    options_override_note: TinyMCE वापरकर्ता स्वरूपन की आणि त्यांची मूल्ये. अधिक माहितीसाठी [User Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) बद्दल TinyMCE दस्तऐवज पहा
     folder_note: अपलोड केलेल्या फायलींसाठी फोल्डर. विद्यमान फाइल्सवर परिणाम होत नाही.
     imageToken: स्थिर प्रवेश टोकन
     imageToken_label: स्टॅटिक ऍक्सेस टोकन मालमत्तेच्या URL मध्ये जोडलेले आहे

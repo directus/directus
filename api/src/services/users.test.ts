@@ -37,6 +37,7 @@ vi.mock('@directus/env', () => ({
 }));
 
 vi.mock('../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js');
+vi.mock('../permissions/modules/validate-access/validate-access.js');
 
 const { isEntitledMock } = vi.hoisted(() => ({ isEntitledMock: vi.fn() }));
 
