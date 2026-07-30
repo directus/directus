@@ -94,25 +94,28 @@ export function realtime(config: WebSocketConfig = {}) {
 			return await withStrictAuth(newUrl, currentClient);
 		};
 
-		const reconnect = (self: WebSocketClient<Schema>) => {
+		/**
+		 * Schedules a reconnection attempt. Called for every closed connection, including the ones a
+		 * previous attempt opened, which is what makes the retries a chain.
+		 *
+		 * @returns Whether an attempt was scheduled. When this is false the connection is not coming
+		 * back on its own, and `reconnectState.active` settles to false once the last attempt is done.
+		 */
+		const reconnect = (self: WebSocketClient<Schema>): boolean => {
+			if (!config.reconnect || wasManuallyDisconnected) return false;
+
+			if (reconnectState.attempts >= config.reconnect.retries) {
+				debug('info', `reconnect #${reconnectState.attempts} maximum retries reached`);
+
+				// reset so a later disconnect gets a fresh set of attempts
+				reconnectState.attempts = 0;
+				return false;
+			}
+
+			const delay = Math.max(100, config.reconnect.delay);
+			debug('info', `reconnect #${reconnectState.attempts} trying again in ${delay}ms`);
+
 			const reconnectPromise = new Promise<WebSocketInterface>((resolve, reject) => {
-				if (!config.reconnect || wasManuallyDisconnected) return reject();
-
-				debug(
-					'info',
-					`reconnect #${reconnectState.attempts} ` +
-						(reconnectState.attempts >= config.reconnect.retries
-							? 'maximum retries reached'
-							: `trying again in ${Math.max(100, config.reconnect.delay)}ms`),
-				);
-
-				if (reconnectState.active) return reconnectState.active;
-
-				if (reconnectState.attempts >= config.reconnect.retries) {
-					reconnectState.attempts = -1;
-					return reject();
-				}
-
 				setTimeout(
 					() =>
 						self
@@ -127,17 +130,23 @@ export function realtime(config: WebSocketConfig = {}) {
 							})
 							.then(resolve)
 							.catch(reject),
-					Math.max(100, config.reconnect.delay),
+					delay,
 				);
 			});
 
 			reconnectState.attempts += 1;
 
-			reconnectState.active = reconnectPromise
+			// A failed attempt closes its own connection, which schedules the next one before this
+			// promise settles, so only clear the state if this is still the pending attempt.
+			const attempt: Promise<WebSocketInterface | void> = reconnectPromise
 				.catch(() => {})
 				.finally(() => {
-					reconnectState.active = false;
+					if (reconnectState.active === attempt) reconnectState.active = false;
 				});
+
+			reconnectState.active = attempt;
+
+			return true;
 		};
 
 		const eventHandlers: Record<WebSocketEvents, Set<WebSocketEventHandler>> = {
@@ -371,10 +380,12 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				ws.addEventListener('close', (evt: CloseEvent) => {
 					debug('info', `Connection closed.`);
-					eventHandlers['close'].forEach((handler) => handler.call(ws, evt));
 					uid = generateUid();
 					state = { code: 'closed' };
+					// decide before notifying the handlers, so they can tell whether the connection is coming
+					// back by looking at reconnectState.active instead of working it out for themselves
 					reconnect(this);
+					eventHandlers['close'].forEach((handler) => handler.call(ws, evt));
 					if (!resolved) reject(evt);
 				});
 
@@ -485,18 +496,24 @@ export function realtime(config: WebSocketConfig = {}) {
 				);
 
 				removeListeners.push(
-					this.onWebSocket('close', () => {
-						// Mirrors the condition in reconnect(): as long as a retry follows, the subscription
-						// is re-sent on the new connection and the listener above keeps filling this queue,
-						// so the stream resumes rather than ends.
-						const willReconnect =
-							config.reconnect && !wasManuallyDisconnected && reconnectState.attempts < config.reconnect.retries;
+					this.onWebSocket('close', async () => {
+						// reconnect() has already decided by the time this runs. While an attempt is pending the
+						// subscription is re-sent on the new connection and the listener above keeps filling this
+						// queue, so wait the attempts out and only end once nothing is coming back.
+						while (reconnectState.active) await reconnectState.active;
 
-						if (!willReconnect) messages.end();
+						if (state.code !== 'open') messages.end();
 					}),
 				);
 
-				this.sendMessage(subscriptionMessage);
+				try {
+					this.sendMessage(subscriptionMessage);
+				} catch (error) {
+					// nothing is subscribed, so drop the registration and the listeners with it
+					subscriptions.delete(subscriptionMessage);
+					messages.dispose();
+					throw error;
+				}
 
 				const unsubscribe = () => {
 					subscriptions.delete(subscriptionMessage);

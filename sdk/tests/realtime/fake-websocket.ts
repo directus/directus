@@ -75,10 +75,16 @@ export async function openConnection<Schema = any>(
 	return { client, socket };
 }
 
+/** Wait for the next socket to be constructed, without opening it. */
+export async function nextSocket(index: number = FakeWebSocket.instances.length): Promise<FakeWebSocket> {
+	await vi.waitFor(() => expect(FakeWebSocket.instances.length).toBeGreaterThan(index));
+
+	return FakeWebSocket.instances[index]!;
+}
+
 /** Wait for the next socket to be constructed and complete its handshake. */
 export async function openSocket(index: number = FakeWebSocket.instances.length): Promise<FakeWebSocket> {
-	await vi.waitFor(() => expect(FakeWebSocket.instances.length).toBeGreaterThan(index));
-	const socket = FakeWebSocket.instances[index]!;
+	const socket = await nextSocket(index);
 	socket.emit('open', {});
 	await flush();
 

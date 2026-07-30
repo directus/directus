@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { openConnection, openSocket } from './fake-websocket.js';
+import { FakeWebSocket, nextSocket, openConnection, openSocket } from './fake-websocket.js';
 
 interface Schema {
 	plants: { id: number; name: string }[];
@@ -156,6 +156,43 @@ describe('realtime subscriptions', () => {
 		await reconnected.receive(created('a', 'after reconnect'));
 
 		await expect(parked).resolves.toMatchObject({ value: { data: [{ name: 'after reconnect' }] } });
+
+		client.disconnect();
+	});
+
+	test('keeps the stream open across failing retries and ends when they run out', async () => {
+		const { client, socket } = await openConnection<Schema>({ reconnect: { delay: 100, retries: 2 } });
+		const { subscription } = await client.subscribe('plants', { uid: 'a' });
+
+		const parked = subscription.next();
+		socket.emit('close', { code: 1006 });
+
+		// Every attempt fails, and each failure has to schedule the next one.
+		for (let attempt = 0; attempt < 2; attempt++) {
+			const retried = await nextSocket();
+			retried.emit('close', { code: 1006 });
+		}
+
+		// Two retries, so three sockets in total and no fourth.
+		expect(FakeWebSocket.instances).toHaveLength(3);
+
+		await expect(parked).resolves.toEqual(ended);
+	});
+
+	test('cleans up when the subscribe message cannot be sent', async () => {
+		const { client, socket } = await openConnection<Schema>({ reconnect: { delay: 100, retries: 5 } });
+
+		socket.send.mockImplementationOnce(() => {
+			throw new Error('connection gone');
+		});
+
+		await expect(client.subscribe('plants', { uid: 'a' })).rejects.toThrow('connection gone');
+
+		// Nothing is subscribed, so a reconnect must not re-send it.
+		socket.emit('close', { code: 1006 });
+		const reconnected = await openSocket();
+
+		expect(reconnected.sent).toEqual([]);
 
 		client.disconnect();
 	});
