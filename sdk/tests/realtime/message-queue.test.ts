@@ -47,8 +47,21 @@ describe('createMessageQueue', () => {
 
 		const pull = stream.next();
 		const reason = new Error('boom');
-		queue.fail(reason);
+		queue.dispose(reason);
 
+		await expect(pull).rejects.toBe(reason);
+	});
+
+	test('fail() rejects the consumer with the first reason', async () => {
+		const queue = createMessageQueue<number>();
+		const stream = queue.stream();
+
+		const pull = stream.next();
+		const reason = new Error('boom');
+		queue.dispose(reason);
+		queue.dispose(new Error('splat'));
+
+		await expect(pull).rejects.toBe(reason);
 		await expect(pull).rejects.toBe(reason);
 	});
 

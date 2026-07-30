@@ -442,7 +442,7 @@ export function realtime(config: WebSocketConfig = {}) {
 							message['status'] === 'error' &&
 							(message['uid'] === undefined || message['uid'] === options.uid)
 						) {
-							messages.fail(message);
+							messages.dispose(message);
 						}
 					}),
 				);

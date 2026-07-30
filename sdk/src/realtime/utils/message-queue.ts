@@ -7,13 +7,9 @@ export interface MessageQueue<T> {
 	push(message: T): void;
 	/** No more messages are coming: the consumer drains what is queued and then completes. */
 	end(): void;
-	/** Terminate the stream by rejecting the consumer with `reason`. */
-	fail(reason: unknown): void;
 	/** The consumer is done: drop whatever is queued and complete immediately. */
-	dispose(): void;
-	/**
-	 * The consumer. Async generators serialize `next()` calls
-	 */
+	dispose(reason?: unknown): void;
+	/** The consumer. Async generators serialize `next()` calls */
 	stream(): AsyncGenerator<T, void, unknown>;
 }
 
@@ -48,13 +44,11 @@ export function createMessageQueue<T>(onEnd?: () => void): MessageQueue<T> {
 			notify();
 		},
 		end,
-		fail(reason) {
-			if (ended) return;
-			failure = { reason };
-			messages.length = 0;
-			end();
-		},
-		dispose() {
+		dispose(reason?: unknown) {
+			if (reason && failure === undefined) {
+				failure = { reason };
+			}
+
 			messages.length = 0;
 			end();
 		},
