@@ -42,9 +42,27 @@ license_onboarding_desc: >
 project_usage: برای چه منظور از Directus استفاده می کنید؟
 project_usage_personal: شخصی / پروژه جانبی
 project_usage_commercial: تجاری / شرکتی
-project_usage_community: متن باز / جامعه
+project_usage_community: متن باز / انجمن
+org_name: نام سازمان
+org_name_placeholder: Acme Inc.
+license_key_option: من یک کلید لایسنس دارم
+license_key_option_desc: 'پلن OIG، تیمی یا سازمانی'
+core_option: من از پلن Core استفاده می‌کنم
+core_option_desc: رایگان، کلید نیاز نیست
+remind_later: بعدا یادآوری کن
+remind_next_login: ما به شما در ورود بعدی یادآوری می کنیم
+open_innovation_grant: کمک‌هزینه نوآوری باز
 setup_project: راه‌اندازی پروژه
+enter_license_key: کلید لایسنس خود را وارد کنید
+license_valid: لایسنس معتبر است
+plan_prefix: 'اشتراک شما: {plan}'
+license_key: کلید لایسنس
+no_license_key: آیا شما کلید لایسنس ندارید؟
+get_license_key: دریافت کلید لایسنس
+expires_on: منقضی می شود در
+environment: محیط
 production: تولید
+non_production: غیرعملیاتی
 skip: رد کردن
 continue: ادامه
 first_name: نام
@@ -60,6 +78,7 @@ method: شیوه
 published: منتشر شد
 draft: پیش‌نویس
 archived: بایگانی‌شده
+not_archived: بایگانی نشده
 marketplace: بازارچه
 extensions: افزونه‌ها
 skip_link_nav: پرش به منوی ناوبری
@@ -228,13 +247,19 @@ rename_version: ویرایش نسخه
 reserved_version_key: 'کلید نسخه «{key}» رزرو شده است و امکان استفاده ندارد.'
 compare_version: مقایسه نسخه
 save_version: ذخیره‌سازی نسخه
+publish: انتشار
+version_create_item_less: نسخه‌ها تنها پس از انتشار نسخه پیش‌نویس قابل ایجاد هستند
 apply: اعمال
 discard: لغو
 select_all_differences: انتخاب همه تفاوت‌ها
 show_differences_only: تنها تفاوت‌ها را نشان بده
+published_updated_notice: آیتم منتشرشده از زمان ایجاد این نسخه تاکنون به‌روزرسانی شده است.
 delete_version: حذف نسخه
 delete_version_copy: >-
   آیا از حذف نسخه «{version}» مطمئنید؟ این اقدام غیر قابل بازگشت است.
+auto_save_failed: ذخیره‌سازی خودکار با خطا مواجه شد
+auto_save_failed_copy: در زمانی که ما تلاش می کنیم این صفحه را باز بگذارید!
+auto_save_enabled: ذخیره‌سازی خودکار روشن شد
 content_edited: محتوا ویرایش شده
 reset_bookmark: بازنشانی نشانک
 update_bookmark: به روزرسانی نشانک
@@ -303,6 +328,7 @@ validationError:
   niends_with: مقدار نمی‌تواند با {substring} پایان یابد
   confirm_password: رمزهای عبور مطابقت ندارند
   org_name: لطفا یک نام سازمان ذکر کنید
+  unsafe: مقدار واردشده یک عدد امن نیست
 all_access: دسترسی کامل
 no_access: بدون دسترسی
 use_custom: استفاده از حالت سفارشی
@@ -713,6 +739,11 @@ manual_string: رشته حرفیِ وارد شده به صورت دستی
 save_and_create_new: ذخیره و ساخت آیتم جدید
 save_and_stay: ذخیره و ماندن
 save_and_quit: ذخیره و خروج
+default_save_action_note: عملیاتی که دکمه ذخیره به‌طور پیش‌فرض هنگام ویرایش یک آیتم انجام می‌دهد.
+publish_and_quit: انتشار و خروج
+publish_without_review: انتشار بدون بازبینی
+publish_anyway: در هر صورت انتشار
+save_and_return_to_published: ذخیره و بازگشت به نسخه منتشر شده
 save_as_copy: ذخیره به عنوان کپی
 save_as_new_file: ذخیره به عنوان فایل جدید
 add_existing: اضافه کردن مورد موجود
@@ -746,6 +777,8 @@ list-m2a: سازنده (M2A)
 item_count: 'بدون مقدار | يک آیتم | {count} آیتم'
 filtered_item_count: 'بدون مورد فیلتر شده | یک مورد فیلتر شده | {count} مورد فیلتر شده'
 no_items_copy: هنوز هیچ آیتمی در این مجموعه وجود ندارد.
+no_versions: 'نسخه "{version}" موجود نیست'
+no_versions_copy: 'در این مجموعه هنوز نسخه "{version}" ثبت نشده است.'
 file_count: 'بدون فایل | یک فایل | {count} فایل'
 no_files_copy: فایلی برای نمایش موجود نمیباشد.
 user_count: 'بدون کاربر | یک کاربر | {count} کاربر'
@@ -806,6 +839,7 @@ modified_on: ویرایش شده در
 card_size: سایز کارت
 sort_field: فیلد مرتب سازی
 add_sort_field: افزودن فیلد مرتب سازی
+add_to_ai_context: افزودن به زمینه هوش مصنوعی
 sort: مرتب سازی
 status: وضعیت
 remove: حذف
@@ -858,6 +892,7 @@ errors:
   LIMIT_EXCEEDED: 'از حد مجاز تجاوز شد'
   METHOD_NOT_ALLOWED: روش مجاز نمی باشد
   NOT_NULL_VIOLATION: مقدار نمی تواند خالی (نال) باشد
+  PROJECT_LOCKED: پروژه قفل شده است. برای حل مشکل با مدیر سیستم خود تماس بگیرید.
   RANGE_NOT_SATISFIABLE: محدوده نامعتبر است
   RECORD_NOT_UNIQUE: موارد تکراری یافت شد
   REQUESTS_EXCEEDED: به محدودیت درخواست رسیده است
@@ -1375,10 +1410,14 @@ licensing:
   resolve_section_flows: جریان‌ها
   resolve_sso_admin_email: نشانی ایمیل
   resolve_sso_admin_password: رمز عبور
+  key: کلید لایسنس
   entitlements:
     collections: مجموعه‌ها
     flows: جریان‌ها
     production_enabled: تولید
+  badge:
+    oig: کمک‌هزینه نوآوری باز
+    non_prod: غیرعملیاتی
 settings_appearance: ظاهر
 settings_ai: هوش مصنوعی
 model_context_protocol: دستورالعمل زمینه مدل (MCP)
@@ -2921,6 +2960,8 @@ show_password: نمایش رمز عبور
 hide_password: مخفی کردن رمز عبور
 license_grace_key_modal:
   optional: اختیاری
+license_banner:
+  remind_later: بعدا یادآوری کن
 accepted: پذیرفته شده
 text_direction_auto: خودکار (مطابق زبان)
 text_direction_ltr: چپ به راست (LTR)
