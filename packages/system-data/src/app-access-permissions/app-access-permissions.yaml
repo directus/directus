@@ -80,6 +80,28 @@
 
 - collection: directus_settings
   action: read
+  fields:
+    - id
+    - project_url
+    - project_logo
+    - module_bar
+    - storage_asset_transform
+    - storage_asset_presets
+    - custom_aspect_ratios
+    - basemaps
+    - mapbox_key
+    - visual_editor_urls
+    - collaborative_editing_enabled
+    - report_error_url
+    - ai_openai_compatible_models
+    - ai_openai_allowed_models
+    - ai_anthropic_allowed_models
+    - ai_google_allowed_models
+    - mcp_prompts_collection
+    - default_save_action
+    - ai_translation_default_model
+    - ai_translation_glossary
+    - ai_translation_style_guide
 
 - collection: directus_translations
   action: read

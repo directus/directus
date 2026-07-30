@@ -11,12 +11,13 @@ import type { LoginResult } from './authentication.js';
 import type { ApiCollection, RawCollection } from './collection.js';
 import type { DeploymentConfig, Project, ProviderType, StoredProject } from './deployment.js';
 import type { ActionHandler } from './events.js';
+import type { ExportFormat } from './export.js';
 import type { ApiOutput, ExtensionManager, ExtensionSettings } from './extensions/index.js';
 import type { Field, RawField, Type } from './fields.js';
 import type { BusboyFileStream, File } from './files.js';
 import type { FlowRaw, OperationRaw } from './flows.js';
 import type { GQLScope, GraphQLParams } from './graphql.js';
-import type { ExportFormat } from './import-export.js';
+import type { ImportBatchOptions, ImportBatchResult, ImportCollectionData } from './import.js';
 import type { Item, MutationOptions, PrimaryKey, QueryOptions } from './items.js';
 import type { EmailOptions } from './mail.js';
 import type { CachedResult, DeepPartial } from './misc.js';
@@ -28,7 +29,14 @@ import type { Aggregate, Query } from './query.js';
 import type { Relation } from './relations.js';
 import type { FieldOverview, SchemaOverview } from './schema.js';
 import type { ServerHealth } from './server.js';
-import type { Snapshot, SnapshotDiff, SnapshotDiffWithHash, SnapshotWithHash } from './snapshot.js';
+import type {
+	Snapshot,
+	SnapshotDiff,
+	SnapshotDiffMode,
+	SnapshotDiffWithHash,
+	SnapshotScope,
+	SnapshotWithHash,
+} from './snapshot.js';
 import type { Range, Stat } from './storage.js';
 import type { RegisterUserInput } from './users.js';
 import type { ContentVersion } from './versions.js';
@@ -258,6 +266,7 @@ interface ImportService {
 	import(collection: string, mimetype: string, stream: Readable): Promise<void>;
 	importJSON(collection: string, stream: Readable): Promise<void>;
 	importCSV(collection: string, stream: Readable): Promise<void>;
+	importBatch(input: ImportCollectionData[], options?: ImportBatchOptions): Promise<ImportBatchResult>;
 }
 
 /**
@@ -388,9 +397,12 @@ interface RevisionsService {
  * The SchemaService
  */
 interface SchemaService {
-	snapshot(): Promise<Snapshot>;
+	snapshot(options?: { scope?: SnapshotScope | undefined }): Promise<Snapshot>;
 	apply(payload: SnapshotDiffWithHash, options?: { force?: boolean }): Promise<void>;
-	diff(snapshot: Snapshot, options?: { currentSnapshot?: Snapshot; force?: boolean }): Promise<SnapshotDiff | null>;
+	diff(
+		snapshot: Snapshot,
+		options?: { currentSnapshot?: Snapshot; force?: boolean; mode?: SnapshotDiffMode },
+	): Promise<SnapshotDiff | null>;
 	getHashedSnapshot(snapshot: Snapshot): SnapshotWithHash;
 }
 

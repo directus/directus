@@ -80,13 +80,23 @@ catalog:
   '@rollup/plugin-replace': 6.0.3
   '@rollup/plugin-terser': 1.0.0
   '@rollup/plugin-virtual': 3.0.2
-  '@rollup/plugin-yaml': 4.1.2
+  '@rollup/plugin-yaml': 5.0.0
   '@sesamecare-oss/redlock': 1.4.0
   '@shopify/semaphore': 3.1.0
   '@sindresorhus/slugify': 2.2.1
   '@smithy/node-http-handler': 4.4.5
   '@supabase/storage-js': 2.81.0
-  '@tinymce/tinymce-vue': 6.3.0
+  '@tiptap/core': ^3.26.1
+  '@tiptap/extensions': ^3.26.1
+  '@tiptap/extension-text-style': ^3.26.1
+  '@tiptap/extension-text-align': ^3.26.1
+  '@tiptap/extension-image': ^3.26.1
+  '@tiptap/extension-subscript': ^3.26.1
+  '@tiptap/extension-superscript': ^3.26.1
+  '@tiptap/extension-table': ^3.26.1
+  '@tiptap/pm': ^3.26.1
+  '@tiptap/starter-kit': ^3.26.1
+  '@tiptap/vue-3': ^3.26.1
   '@tresjs/core': ^5.8.0
   '@turf/meta': 7.2.0
   '@tus/server': 2.3.0
@@ -154,7 +164,7 @@ catalog:
   argon2: 0.44.0
   async: 3.2.6
   async-mutex: 0.5.0
-  axios: 1.16.1
+  axios: 1.18.1
   axios-cache-interceptor: 1.11.1
   base-64: 1.0.0
   boxen: 8.0.1
@@ -225,7 +235,7 @@ catalog:
   isolated-vm: 5.0.3
   joi: 18.0.1
   jose: 6.2.3
-  js-yaml: 4.1.1
+  js-yaml: 4.3.0
   js2xmlparser: 5.0.0
   jsdom: 29.1.1
   json-to-graphql-query: 2.3.0
@@ -238,7 +248,7 @@ catalog:
   knex-mock-client: 3.0.2
   ky: 1.14.0
   ldapts: 8.1.3
-  liquidjs: 10.26.0
+  liquidjs: 10.27.2
   lodash: 4.18.1
   lodash-es: 4.18.1
   log-symbols: 7.0.1
@@ -249,7 +259,7 @@ catalog:
   micromustache: 8.0.3
   mime: 4.1.0
   mime-types: 3.0.1
-  minimatch: 10.2.5
+  minimatch: 10.2.6
   mitt: 3.0.1
   mnemonist: 0.40.3
   ms: 2.1.3
@@ -298,7 +308,7 @@ catalog:
   sanitize-html: 2.17.0
   sass-embedded: 1.93.3
   semver: 7.7.3
-  sharp: 0.34.5
+  sharp: 0.35.3
   signal-polyfill: 0.2.2
   snappy: 7.3.3
   sqlite3: 5.1.7
@@ -314,7 +324,6 @@ catalog:
   tar: 7.5.8
   tedious: 18.6.1
   three: ^0.184.0
-  tinymce: 6.8.6
   tmp: 0.2.7
   tsdown: 0.15.11
   tsx: 4.22.4
@@ -334,7 +343,7 @@ catalog:
   vite-plugin-dts: 4.5.4
   vite-plugin-vue-devtools: 7.7.2
   vite-tsconfig-paths: 5.1.4
-  vitest: 3.2.6
+  vitest: 3.2.7
   vue: 3.5.24
   vue-i18n: 11.1.12
   vue-router: 4.6.3

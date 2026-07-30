@@ -23,7 +23,7 @@
 		"argon2": "catalog:",
 		"autocannon": "8.0.0",
 		"smtp-server": "3.19.1",
-		"mailparser": "3.9.12",
+		"mailparser": "3.9.14",
 		"axios": "catalog:",
 		"get-port": "catalog:",
 		"globby": "14.1.0",

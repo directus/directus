@@ -146,4 +146,83 @@ describe('FlowManager', () => {
 
 		expect(manager.getFlow('test-flow-id')).toEqual(mockFlow);
 	});
+
+	describe('runWebhookFlow manual trigger authentication', () => {
+		const manualFlow = {
+			id: 'manual-flow-id',
+			name: 'Manual Flow',
+			status: 'active',
+			trigger: 'manual',
+			operations: [],
+			operation: null,
+			accountability: null,
+			options: { collections: ['articles'], requireSelection: false },
+		} as unknown as Flow;
+
+		const publicAccountability = {
+			role: null,
+			user: null,
+			roles: [],
+			admin: false,
+			app: false,
+		} as any;
+
+		beforeEach(async () => {
+			const { FlowsService } = await import('./services/flows.js');
+
+			vi.mocked(FlowsService).mockImplementation(
+				() =>
+					({
+						readByQuery: vi.fn().mockResolvedValue([manualFlow]),
+					}) as any,
+			);
+		});
+
+		const runArgs = (accountability: any) =>
+			['POST-manual-flow-id', { body: { collection: 'articles' } }, { accountability, schema: {} as any }] as const;
+
+		const REJECTED_CASES = [
+			{ name: 'public/unauthenticated accountability', accountability: publicAccountability },
+			{ name: 'undefined accountability', accountability: undefined },
+			{
+				name: 'share-only accountability',
+				accountability: { ...publicAccountability, share: 'share-id' },
+			},
+		];
+
+		const ALLOWED_CASES = [
+			{
+				name: 'authenticated user accountability',
+				accountability: { ...publicAccountability, user: 'user-id', admin: true },
+			},
+			{
+				name: 'authenticated role-only accountability',
+				accountability: { ...publicAccountability, role: 'role-id', admin: true },
+			},
+		];
+
+		test.each(REJECTED_CASES)('throws ForbiddenError for $name', async ({ accountability }) => {
+			// Arrange
+			const manager = getFlowManager();
+			await manager.initialize();
+
+			// Act
+			const trigger = manager.runWebhookFlow(...runArgs(accountability));
+
+			// Assert
+			await expect(trigger).rejects.toMatchObject({ code: 'FORBIDDEN' });
+		});
+
+		test.each(ALLOWED_CASES)('triggers the flow for $name', async ({ accountability }) => {
+			// Arrange
+			const manager = getFlowManager();
+			await manager.initialize();
+
+			// Act
+			const trigger = manager.runWebhookFlow(...runArgs(accountability));
+
+			// Assert
+			await expect(trigger).resolves.toHaveProperty('result');
+		});
+	});
 });
