@@ -372,6 +372,26 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 		expect(error.message).toContain('metadata.json');
 	});
 
+	it('refuses to write over a symlinked metadata.json', () => {
+		// A symlinked manifest on the write path would feed attacker-chosen ownership into the stale-file
+		// sweep and fold the target's extras into the rewritten manifest, so the write must stop first.
+		const dir = tempDir();
+		writeSnapshotFiles(dir, fixture());
+
+		const outsideDir = tempDir();
+		const target = join(outsideDir, 'metadata.json');
+		writeFileSync(target, readFileSync(join(dir, 'metadata.json'), 'utf8'));
+
+		rmSync(join(dir, 'metadata.json'), { force: true });
+		symlinkSync(target, join(dir, 'metadata.json'));
+
+		const error = expectCliError(() => writeSnapshotFiles(dir, fixture()));
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain('metadata.json');
+		expect(error.message).toMatch(/regular file/i);
+	});
+
 	it('preserves out-of-scope artifacts when a scoped pull refreshes one collection', () => {
 		// Pulling a single collection must never destroy the committed schema around it: A and C are
 		// outside the scope, so their bytes and their manifest entries must survive a scoped refresh of B,
@@ -690,6 +710,27 @@ describe('readSnapshotFiles failures', () => {
 
 		expect(error.code).toBe('STATE');
 		expect(error.message).toContain(name);
+		expect(error.message).toMatch(/regular file/i);
+	});
+
+	it('refuses a metadata.json replaced by a symlink to an outside file', () => {
+		// The manifest decides which files the store reads and owns, so it gets the same regular-file
+		// requirement as the artifacts it names — even when the symlink target is a byte-identical copy,
+		// following it would let repo content redirect reads outside the schema dir.
+		const dir = tempDir();
+		writeSnapshotFiles(dir, fixture());
+
+		const outsideDir = tempDir();
+		const target = join(outsideDir, 'metadata.json');
+		writeFileSync(target, readFileSync(join(dir, 'metadata.json'), 'utf8'));
+
+		rmSync(join(dir, 'metadata.json'), { force: true });
+		symlinkSync(target, join(dir, 'metadata.json'));
+
+		const error = expectCliError(() => readSnapshotFiles(dir));
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain('metadata.json');
 		expect(error.message).toMatch(/regular file/i);
 	});
 

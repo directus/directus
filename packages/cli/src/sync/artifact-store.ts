@@ -104,6 +104,11 @@ function readManifest(dir: string, hint: string): { files: string[]; metadata: u
 
 	if (!existsSync(path)) return { files: [], metadata: undefined };
 
+	// Same regular-file requirement as artifacts (see readArtifact): a symlinked manifest must not be followed.
+	if (!lstatSync(path).isFile()) {
+		throw new CliError('STATE', `${METADATA_FILE} is not a regular file.`, { hint });
+	}
+
 	const metadata = loadJson(path, METADATA_FILE, hint);
 
 	if (!isPlainObject(metadata)) {
@@ -219,6 +224,10 @@ export function readArtifacts<T extends Artifact, M>(
 
 	if (!existsSync(dir) || !existsSync(metadataPath)) {
 		throw new CliError('STATE', missing, { hint: missingHint });
+	}
+
+	if (!lstatSync(metadataPath).isFile()) {
+		throw new CliError('STATE', `${METADATA_FILE} is not a regular file.`);
 	}
 
 	const raw = loadJson(metadataPath, METADATA_FILE);
