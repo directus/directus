@@ -51,14 +51,27 @@ const profileSchema = z.object({
 const scopeList = (name: string) =>
 	z.array(z.string()).min(1, `"${name}" must list at least one name; remove the key to leave it unscoped.`).optional();
 
-const projectSchema = z.strictObject({
-	collections: scopeList('collections'),
-	excludeCollections: scopeList('excludeCollections'),
-	resources: scopeList('resources'),
-	excludeResources: scopeList('excludeResources'),
-	deps: z.boolean().optional(),
-	mode: z.enum(MODES).optional(),
-});
+const projectSchema = z
+	.strictObject({
+		// `schema: false` makes a resource-only project explicit: pull skips the snapshot and push/diff
+		// carry no schema authority. Without it, a project scoped only by `resources` silently committed a
+		// FULL snapshot — handing a mirror-mode ops project delete authority over every collection.
+		schema: z.boolean().optional(),
+		collections: scopeList('collections'),
+		excludeCollections: scopeList('excludeCollections'),
+		resources: scopeList('resources'),
+		excludeResources: scopeList('excludeResources'),
+		deps: z.boolean().optional(),
+		mode: z.enum(MODES).optional(),
+	})
+	.refine(
+		(project) =>
+			project.schema !== false || (project.collections === undefined && project.excludeCollections === undefined),
+		{
+			message:
+				'"schema": false cannot be combined with "collections" or "excludeCollections" — a schema scope on a project that pulls no schema is a contradiction; remove one.',
+		},
+	);
 
 // The kernel owns `profiles`, `directory`, `projects`, and `format`; any other top-level key (e.g. a
 // future `sync` block) passes through untouched for its own consumer to read. All four carry defaults
@@ -79,6 +92,8 @@ interface Profile {
 
 /** Optional project-level sync scope and mode defaults. */
 export interface ProjectConfig {
+	/** false: this project owns no schema — pull skips the snapshot; push and diff skip the schema phase. */
+	readonly schema?: boolean | undefined;
 	readonly collections?: readonly string[] | undefined;
 	readonly excludeCollections?: readonly string[] | undefined;
 	readonly resources?: readonly string[] | undefined;

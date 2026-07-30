@@ -271,6 +271,7 @@ describe('sync push', () => {
 			mode: 'merge',
 			applied: true,
 			changes: true,
+			schemaSkipped: false,
 			added: 1,
 			modified: 1,
 			deleted: 0,
@@ -300,6 +301,7 @@ describe('sync push', () => {
 			mode: 'merge',
 			applied: false,
 			changes: false,
+			schemaSkipped: false,
 			added: 0,
 			modified: 0,
 			deleted: 0,
@@ -924,6 +926,102 @@ describe('sync push with data', () => {
 		expect(err).not.toContain('re-run d6s sync push');
 	});
 
+	it('pushes data only for a "schema": false project — no snapshot needed, no schema wire calls', async () => {
+		// A resource-only ops project must carry NO schema authority. Before the key existed, such a project
+		// silently committed a FULL snapshot, handing a mirror push delete authority over every collection.
+		// No schema files are seeded and no /schema/* intercept exists — reaching either fails the test.
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { staging: { url } }, projects: { default: { schema: false } } }),
+		);
+
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptTarget('/roles', []);
+
+		interceptImport(
+			{ mode: 'merge' },
+			{
+				data: {
+					applied: true,
+					mode: 'merge',
+					collections: { directus_roles: { existing: [], new: ['sr1'], deleted: [], mapped: {} } },
+				},
+			},
+		);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+		expect(stderr.join('')).toContain('Schema — skipped');
+	});
+
+	it('reports applied:true on --json for a data-only push — the target DID change', async () => {
+		// `applied` answered only the schema phase, so a push that imported records while the schemas
+		// already matched reported applied:false — a CI consumer reading that as "nothing happened"
+		// archives a lie about a target it just mutated.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+		interceptTarget('/roles', []);
+
+		interceptImport(
+			{ mode: 'merge' },
+			{
+				data: {
+					applied: true,
+					mode: 'merge',
+					collections: { directus_roles: { existing: [], new: ['sr1'], deleted: [], mapped: {} } },
+				},
+			},
+		);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
+
+		const payload = JSON.parse(stdout.join(''));
+		expect(payload.applied).toBe(true);
+		expect(payload.changes).toBe(true);
+		expect(payload.schemaSkipped).toBe(false);
+	});
+
+	it('refuses a project config pairing "schema": false with a collections scope', async () => {
+		// The pair is a contradiction — a schema scope on a project that pulls no schema — and guessing
+		// which key wins would either resurrect the full-snapshot footgun or silently drop the scope.
+		// Config parse names the mistake before any command half-runs.
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({
+				profiles: { staging: { url } },
+				projects: { default: { schema: false, collections: ['articles'] } },
+			}),
+		);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+		expect(stderr.join('')).toContain('cannot be combined');
+	});
+
+	it('warns when committed schema files exist under "schema": false instead of silently ignoring them', async () => {
+		// Schema files beside a schema:false config usually mean the config changed after a pull; silence
+		// would leave the operator believing those files still push. Zero intercepts: with no data files and
+		// no schema phase, the whole command must complete without a single request.
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { staging: { url } }, projects: { default: { schema: false } } }),
+		);
+
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+
+		const err = stderr.join('');
+		expect(err).toContain('schema phase is skipped');
+		expect(err).toContain('nothing to push');
+	});
+
 	it('emits the PushReport data block with the source and parsed response collections on --json', async () => {
 		// CI reads this shape: the data block is always present, carrying the mode, the source URL, and the
 		// server's per-collection response as parsed at the boundary (unknown fields are stripped by the
@@ -961,9 +1059,9 @@ describe('sync push with data', () => {
 	});
 
 	it('reports changes:true for a data-only push that imported rows', async () => {
-		// A push with a clean schema but a real import mutated the target; `changes` is the overall answer
-		// (schema OR data), so it must not read false just because the schema half was a no-op. `applied`
-		// stays schema-scoped, mirroring the added/modified/deleted counts beside it.
+		// A push with a clean schema but a real import mutated the target: both `changes` and `applied`
+		// answer for the whole push (schema OR data). An `applied: false` here made a CI consumer archive
+		// "nothing happened" about a target the push just mutated.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
@@ -987,7 +1085,7 @@ describe('sync push with data', () => {
 
 		const payload = JSON.parse(stdout.join(''));
 
-		expect(payload).toMatchObject({ kind: 'PushReport', ok: true, applied: false, changes: true, hash: null });
+		expect(payload).toMatchObject({ kind: 'PushReport', ok: true, applied: true, changes: true, hash: null });
 	});
 
 	it('writes a byte-identical id map across two identical push runs', async () => {

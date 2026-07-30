@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs';
+import { existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { MockAgent } from 'undici';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -156,6 +156,8 @@ describe('sync diff', () => {
 			project: 'default',
 			mode: 'merge',
 			changes: true,
+			unresolved: 0,
+			schemaSkipped: false,
 			added: 1,
 			modified: 1,
 			deleted: 1,
@@ -184,7 +186,7 @@ describe('sync diff', () => {
 
 		interceptDiff('merge', null);
 		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
-		expect(stderr.join('')).toContain('staging matches the local snapshot — nothing to do.');
+		expect(stderr.join('')).toContain('staging matches the committed files — nothing to do.');
 
 		interceptDiff('merge', null);
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--json')).toBe(0);
@@ -198,6 +200,8 @@ describe('sync diff', () => {
 			project: 'default',
 			mode: 'merge',
 			changes: false,
+			unresolved: 0,
+			schemaSkipped: false,
 			added: 0,
 			modified: 0,
 			deleted: 0,
@@ -225,7 +229,7 @@ describe('sync diff', () => {
 		interceptDiff('mirror', null);
 
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--mode', 'mirror')).toBe(0);
-		expect(stderr.join('')).toContain('staging matches the local snapshot — nothing to do.');
+		expect(stderr.join('')).toContain('staging matches the committed files — nothing to do.');
 	});
 
 	it('refuses a diff whose collection entry starts with a nested-meta delete (directus#27877)', async () => {
@@ -457,6 +461,61 @@ describe('sync diff with data', () => {
 		expect(err).toContain('a non-interactive push refuses until they are resolved');
 
 		expect(existsSync(idMapPath)).toBe(false);
+	});
+
+	it('counts an all-ambiguous data set as changes:true on --json — CI must not read refusal as convergence', async () => {
+		// Every committed record ambiguous → the preview batch is empty, the dry-run never runs, and the old
+		// payload said changes:false. A CI gate reading that reports "in sync" about a state a
+		// non-interactive push REFUSES to apply. Unresolved identities are changes until someone resolves
+		// them.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+
+		interceptTarget('/roles', [
+			{ id: 't1', name: 'Editor' },
+			{ id: 't2', name: 'Editor' },
+		]);
+
+		expect(await d6s('sync', 'diff', '--to', 'staging', '--json')).toBe(0);
+
+		const report = JSON.parse(stdout.join(''));
+		expect(report.changes).toBe(true);
+		expect(report.unresolved).toBe(1);
+	});
+
+	it('skips the schema phase for a "schema": false project and says so — never "schemas match"', async () => {
+		// A resource-only project carries no schema authority: no committed snapshot exists, no /schema/*
+		// request may leave the machine (no diff intercept — the disabled dispatcher proves none does), and
+		// the no-op copy must not claim the schemas were compared. The JSON carries the same state for CI.
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { staging: { url } }, projects: { default: { schema: false } } }),
+		);
+
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		// The lone committed role matches the target byte-for-byte, so the data phase converges.
+		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+
+		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
+
+		const err = stderr.join('');
+		expect(err).toContain('data matches; nothing to do (schema phase skipped)');
+		expect(err).not.toContain('schema and data match');
+
+		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
+
+		expect(await d6s('sync', 'diff', '--to', 'staging', '--json')).toBe(0);
+
+		const report = JSON.parse(stdout.join(''));
+		expect(report.schemaSkipped).toBe(true);
+		expect(report.changes).toBe(false);
+		expect(report.hash).toBeNull();
 	});
 
 	it('shows data deletes under mirror without applying or writing anything', async () => {

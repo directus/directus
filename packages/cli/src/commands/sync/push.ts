@@ -1,4 +1,5 @@
-import { relative } from 'node:path';
+import { existsSync } from 'node:fs';
+import { join, relative } from 'node:path';
 import { confirm, text } from '@clack/prompts';
 import type { ResolvedCredential } from '../../kernel/config/credentials.js';
 import type { ProjectConfig } from '../../kernel/config/file.js';
@@ -8,6 +9,7 @@ import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
 import { applyDiff, importBatch } from '../../sync/api.js';
+import { METADATA_FILE } from '../../sync/artifact-store.js';
 import type { ImportBatchResult, ImportCollectionData } from '../../sync/contract.js';
 import { withMappings, writeIdMap } from '../../sync/id-map.js';
 import { describeMode, type Mode } from '../../sync/mode.js';
@@ -143,7 +145,20 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	// Refresh an expiring saved session before the first request so an expired token re-auths silently.
 	await refreshSessionIfNeeded(credential);
 
-	const result = await localDiff(target, schemaDiffMode(mode), ctx, options.allowVersionDrift ?? false);
+	// schema: false is an explicit project state, never inferred from absent files (a never-pulled project
+	// still fails loud inside localDiff). Skipping the schema phase also skips the version gate — that
+	// check seals schema semantics, and a data-only push has none to seal.
+	const schemaEnabled = target.projectConfig?.schema !== false;
+
+	if (!schemaEnabled && existsSync(join(target.schemaDir, METADATA_FILE))) {
+		ctx.ui.warn(
+			'Committed schema files exist but this project sets "schema": false — the schema phase is skipped and those files are ignored.',
+		);
+	}
+
+	const result = schemaEnabled
+		? await localDiff(target, schemaDiffMode(mode), ctx, options.allowVersionDrift ?? false)
+		: null;
 
 	// Preparation may persist learned local identities, but all remote mutations remain behind the gates.
 	const dataResult = await prepareDataPush(target, mode, ctx);
@@ -177,6 +192,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 				mode,
 				applied: false,
 				changes: false,
+				schemaSkipped: !schemaEnabled,
 				added: 0,
 				modified: 0,
 				deleted: 0,
@@ -187,8 +203,16 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 			return;
 		}
 
-		const tail = dataResult.skipped ? 'nothing to push.' : 'schema and data match; nothing to push.';
-		ctx.ui.success(`${options.to} already matches the local snapshot — ${tail}`);
+		// A skipped schema phase must never read as "schemas match" — this project never compared them.
+		let tail = 'nothing to push.';
+
+		if (!dataResult.skipped) {
+			tail = schemaEnabled
+				? 'schema and data match; nothing to push.'
+				: 'data matches; nothing to push (schema phase skipped).';
+		}
+
+		ctx.ui.success(`${options.to} already matches the committed files — ${tail}`);
 		return;
 	}
 
@@ -213,6 +237,8 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 			);
 
 			for (const line of schema.lines) ctx.ui.plan(line);
+		} else if (!schemaEnabled) {
+			ctx.ui.info('Schema — skipped ("schema": false in the project config).');
 		}
 
 		if (!dataResult.skipped) {
@@ -361,9 +387,11 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 			profile: options.to,
 			project: target.project,
 			mode,
-			// Schema counts stay schema-scoped; changes includes schema or data work.
-			applied: schemaApplied,
+			// Schema counts stay schema-scoped; `applied` answers "did this push change the target" — a
+			// data-only push that imported records reports true, not the schema phase's false.
+			applied: schemaApplied || importResult !== undefined,
 			changes: result !== null || dataChanged,
+			schemaSkipped: !schemaEnabled,
 			added: schema.added,
 			modified: schema.modified,
 			deleted: schema.deleted,

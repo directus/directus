@@ -53,6 +53,10 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 
 	pullCommand
 		.option('--no-deps', 'Do not pull resource dependencies (dependent children still ride with their parent)')
+		.option(
+			'--no-schema',
+			'Skip the schema snapshot — config resources only ("schema": false in a project config does the same)',
+		)
 		.option('--project <name>', 'Project scope to sync (default: default)', 'default')
 		.action((options: PullOptions) => pull(options, getContext()));
 

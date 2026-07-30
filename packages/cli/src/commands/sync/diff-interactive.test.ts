@@ -102,7 +102,7 @@ describe('interactive sync diff', () => {
 		// the id map unwritten. The ambiguous row is excluded from the preview batch (it is not a create:
 		// interactive push may resolve it into an update, non-interactive push refuses), so with nothing
 		// else to send no dry-run runs — but diff must still surface the unresolved identity and both
-		// resolution paths rather than collapsing into "matches the local snapshot".
+		// resolution paths rather than collapsing into "matches the committed files".
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
 
 		vi.mocked(fetchRecords).mockResolvedValueOnce([
@@ -123,7 +123,7 @@ describe('interactive sync diff', () => {
 		expect(output).toContain('has no target match yet');
 		expect(output).toContain('1 ambiguous');
 		expect(output).toContain('a non-interactive push refuses until they are resolved');
-		expect(output).not.toContain('matches the local snapshot');
+		expect(output).not.toContain('matches the committed files');
 
 		expect(existsSync(join(dir, 'directus', 'default', 'id_map.json'))).toBe(false);
 	});
@@ -170,6 +170,6 @@ describe('interactive sync diff', () => {
 		expect(vi.mocked(importBatch).mock.calls[0]?.[2]).toMatchObject({ dryRun: true });
 
 		expect(stderr.join('')).toContain('Data — 2 changes: 0 created, 0 updated, 2 deleted');
-		expect(stderr.join('')).not.toContain('matches the local snapshot');
+		expect(stderr.join('')).not.toContain('matches the committed files');
 	});
 });

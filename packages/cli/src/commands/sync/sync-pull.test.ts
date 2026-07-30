@@ -6,6 +6,7 @@ import {
 	fullSnapshot,
 	mockDefaultRecords,
 	mockDiff,
+	mockFields,
 	mockList,
 	mockSingleton,
 	mockSnapshot,
@@ -84,6 +85,8 @@ describe('sync pull', () => {
 
 	function interceptSnapshot(): void {
 		mockSnapshot(agent, fullSnapshot());
+		// Every pull that reaches the data phase reads the /fields catalog before its resource loop.
+		mockFields(agent, []);
 	}
 
 	it('writes the source schema as committable files anchored to the config directory', async () => {
@@ -476,6 +479,8 @@ describe('sync pull resources and data', () => {
 
 	function interceptSnapshot(): void {
 		mockSnapshot(agent, schemaBody());
+		// Every pull that reaches the data phase reads the /fields catalog before its resource loop.
+		mockFields(agent, []);
 	}
 
 	function exportedCollections(): string[] {
@@ -507,6 +512,49 @@ describe('sync pull resources and data', () => {
 			'directus_roles',
 			'directus_settings',
 		]);
+	});
+
+	it('skips the snapshot on --no-schema and pulls resources only — secret stripping still guards', async () => {
+		// The explicit escape from schema ownership: before it existed, a resource-only project silently
+		// committed a FULL snapshot, handing a mirror push delete authority over every collection. No
+		// /schema/snapshot intercept is registered, so a fetch would throw on the disabled dispatcher; the
+		// /fields catalog still rides (inside interceptDefaultRecords) because secret stripping must not
+		// lapse just because schema did.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptDefaultRecords();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--no-schema')).toBe(0);
+
+		expect(exportedCollections()).toHaveLength(10);
+		expect(stdout.join('')).toContain('Schema     skipped');
+		expect(existsSync(join(dir, 'directus', 'default', 'schema', 'metadata.json'))).toBe(false);
+	});
+
+	it('reports schemaSkipped with a nulled schema block on --json for a "schema": false project', async () => {
+		// The config key drives the same skip as the flag, and the report must be unmistakable for CI: an
+		// explicit marker plus nulls, never zeros a consumer could read as "empty snapshot pulled".
+		writeConfig({ profiles: { staging: { url } }, projects: { default: { schema: false } } });
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptDefaultRecords();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--json')).toBe(0);
+
+		const report = JSON.parse(stdout.join(''));
+		expect(report.schemaSkipped).toBe(true);
+		expect(report.collections).toBeNull();
+		expect(report.dir).toBeNull();
+		expect(report.data.collections).toBe(10);
+	});
+
+	it('refuses --no-schema combined with a collections scope instead of guessing which wins', async () => {
+		// Honoring the scope resurrects the full-snapshot footgun; dropping it silently ignores an explicit
+		// instruction. Neither is guessable — refuse before any network.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--no-schema', '--collections', 'articles')).toBe(1);
+		expect(stderr.join('')).toContain('skips the schema');
 	});
 
 	it('preserves committed data files a scoped re-pull did not fetch', async () => {
@@ -864,25 +912,24 @@ describe('sync pull resources and data', () => {
 		expect(userBytes).toContain('editor@example.com');
 	});
 
-	it('strips custom conceal/hash fields the snapshot marks sensitive and names them at pull time', async () => {
+	it('strips custom conceal/hash fields the field catalog marks sensitive and names them at pull time', async () => {
 		// The static deny-list knows only the columns the resource catalog was written against; fields users
 		// add to system collections (an API key column on settings) are invisible to it, and a concealed
-		// value committed to git survives its history forever. The just-pulled snapshot's field metadata is
-		// the authority: conceal/hash specials must vanish from the written bytes AND be named on stderr —
+		// value committed to git survives its history forever. The admin GET /fields catalog is the
+		// authority: conceal/hash specials must vanish from the written bytes AND be named on stderr —
 		// a field silently disappearing from the export would read as data loss, not protection.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		mockSnapshot(agent, schemaBody());
 
-		const body = schemaBody();
-
-		body['systemFields'] = [
+		mockFields(agent, [
 			{ collection: 'directus_settings', field: 'api_key', type: 'string', meta: { special: ['conceal'] } },
 			{ collection: 'directus_settings', field: 'webhook_signature', type: 'string', meta: { special: ['hash'] } },
 			// Already on the static strip list — stripped, but never re-announced as a custom find.
 			{ collection: 'directus_settings', field: 'license_key', type: 'string', meta: { special: ['conceal'] } },
-		];
-
-		mockSnapshot(agent, body);
+			// A plain column carries meta: null in the catalog; tolerated, never marked sensitive.
+			{ collection: 'directus_settings', field: 'project_name', type: 'string', meta: null },
+		]);
 
 		for (const path of [
 			'/roles',
@@ -900,6 +947,7 @@ describe('sync pull resources and data', () => {
 
 		interceptSingleton('/settings', {
 			id: 1,
+			project_name: 'Kampala',
 			api_key: 'sk-live-4242',
 			webhook_signature: 'hmac-secret-seed',
 			license_key: 'lic-secret',
@@ -913,12 +961,81 @@ describe('sync pull resources and data', () => {
 		expect(settingsBytes).not.toContain('webhook_signature');
 		expect(settingsBytes).not.toContain('hmac-secret-seed');
 		expect(settingsBytes).not.toContain('lic-secret');
+		expect(settingsBytes).toContain('Kampala');
 
 		const err = stderr.join('');
 		expect(err).toContain('api_key');
 		expect(err).toContain('webhook_signature');
 		// Re-announcing a built-in strip entry on every pull would train operators to skim the warning.
 		expect(err).not.toContain('license_key');
+	});
+
+	it('strips a custom conceal field on directus_settings even when the pull is scoped to another collection', async () => {
+		// The regression that made GET /fields the authority: a `--collections articles` pull fetches a
+		// snapshot WITHOUT system-collection field metadata, yet still exports the default config resources.
+		// A snapshot-derived sensitivity map goes blind here, and the operator's concealed settings column
+		// would sail into the committed artifact unstripped — the catalog is scope-independent, so the strip
+		// must still fire and still be named.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/schema/snapshot',
+				method: 'GET',
+				query: { includeCollections: 'articles' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: schemaBody() }, { headers: { 'content-type': 'application/json' } });
+
+		mockFields(agent, [
+			{ collection: 'directus_settings', field: 'api_key', type: 'string', meta: { special: ['conceal'] } },
+		]);
+
+		for (const path of [
+			'/roles',
+			'/policies',
+			'/access',
+			'/permissions',
+			'/flows',
+			'/operations',
+			'/dashboards',
+			'/panels',
+			'/folders',
+		]) {
+			interceptList(path, []);
+		}
+
+		interceptSingleton('/settings', { id: 1, api_key: 'sk-live-4242' });
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--collections', 'articles')).toBe(0);
+
+		const settingsBytes = readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_settings')), 'utf8');
+		expect(settingsBytes).not.toContain('api_key');
+		expect(settingsBytes).not.toContain('sk-live-4242');
+		expect(stderr.join('')).toContain('api_key');
+	});
+
+	it('fails the pull when the field catalog read fails — secret stripping must not degrade silently', async () => {
+		// Catching this and continuing would fall back to the static strip list alone: a custom conceal
+		// field would land in git on exactly the pull where the instance hiccuped, and a committed secret
+		// survives its history forever. The read precedes every resource write, so nothing lands on disk.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		mockSnapshot(agent, schemaBody());
+
+		agent
+			.get(url)
+			.intercept({ path: '/fields', method: 'GET', headers: { authorization: `Bearer ${token}` } })
+			.reply(
+				500,
+				{ errors: [{ message: 'boom', extensions: { code: 'INTERNAL_SERVER_ERROR' } }] },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
+		expect(existsSync(join(dir, 'directus'))).toBe(false);
 	});
 
 	it('warns when a request operation carries custom headers — credential-bearing and committed verbatim', async () => {

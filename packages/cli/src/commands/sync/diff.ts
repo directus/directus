@@ -1,6 +1,9 @@
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { refreshSessionIfNeeded } from '../../kernel/connection.js';
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
+import { METADATA_FILE } from '../../sync/artifact-store.js';
 import type { ImportBatchResult } from '../../sync/contract.js';
 import { describeMode, type Mode } from '../../sync/mode.js';
 import { emptyImportSummary, hasImportChanges, type ImportSummary, summarizeDiff } from '../../sync/render.js';
@@ -75,7 +78,19 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	// Refresh an expiring saved session before the first request so an expired token re-auths silently.
 	await refreshSessionIfNeeded(target.credential);
 
-	const result = await localDiff(target, schemaDiffMode(mode), ctx, options.allowVersionDrift ?? false);
+	// schema: false is an explicit project state — the diff previews exactly the push, and that push
+	// carries no schema authority for this project.
+	const schemaEnabled = target.projectConfig?.schema !== false;
+
+	if (!schemaEnabled && existsSync(join(target.schemaDir, METADATA_FILE))) {
+		ctx.ui.warn(
+			'Committed schema files exist but this project sets "schema": false — the schema phase is skipped and those files are ignored.',
+		);
+	}
+
+	const result = schemaEnabled
+		? await localDiff(target, schemaDiffMode(mode), ctx, options.allowVersionDrift ?? false)
+		: null;
 
 	// This is conservative when identities are ambiguous: diff never prompts or writes the ID map, while an
 	// interactive push may resolve those identities before importing.
@@ -114,7 +129,9 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	const unresolved = preview.skipped ? 0 : preview.ambiguousCount;
 
 	if (ctx.ui.json) {
-		// The hash lets a later apply detect target-schema drift.
+		// The hash lets a later apply detect target-schema drift. Unresolved identities count as changes:
+		// an all-ambiguous data set is NOT convergence — a non-interactive push refuses it — and a CI gate
+		// reading changes:false would report "in sync" about a state push cannot apply.
 		ctx.ui.data({
 			kind: 'DiffReport',
 			formatVersion: 1,
@@ -123,7 +140,9 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 			profile: options.to,
 			project: target.project,
 			mode,
-			changes: result !== null || dataChanged,
+			changes: result !== null || dataChanged || unresolved > 0,
+			unresolved,
+			schemaSkipped: !schemaEnabled,
 			added: schema.added,
 			modified: schema.modified,
 			deleted: schema.deleted,
@@ -137,8 +156,16 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	// An all-ambiguous data set produces a zero dry-run, but "nothing to do" would hide that push still
 	// prompts (interactive) or refuses (CI) — fall through so the unresolved count and note render.
 	if (result === null && !dataChanged && unresolved === 0) {
-		const tail = preview.skipped ? 'nothing to do.' : 'schema and data match; nothing to do.';
-		ctx.ui.success(`${options.to} matches the local snapshot — ${tail}`);
+		// A skipped schema phase must never read as "schemas match" — this project never compared them.
+		let tail = 'nothing to do.';
+
+		if (!preview.skipped) {
+			tail = schemaEnabled
+				? 'schema and data match; nothing to do.'
+				: 'data matches; nothing to do (schema phase skipped).';
+		}
+
+		ctx.ui.success(`${options.to} matches the committed files — ${tail}`);
 		return;
 	}
 
@@ -148,6 +175,8 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 		);
 
 		for (const line of schema.lines) ctx.ui.plan(line);
+	} else if (!schemaEnabled) {
+		ctx.ui.info('Schema — skipped ("schema": false in the project config).');
 	}
 
 	if (dataSummary !== undefined) {

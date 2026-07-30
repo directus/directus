@@ -9,8 +9,13 @@ import {
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
-import { fetchRecords, fetchSnapshot, type SnapshotScope } from '../../sync/api.js';
-import type { Snapshot } from '../../sync/contract.js';
+import {
+	fetchFields,
+	fetchRecords,
+	fetchSnapshot,
+	type FieldCatalogEntry,
+	type SnapshotScope,
+} from '../../sync/api.js';
 import {
 	assertDataSource,
 	type DataCollection,
@@ -40,6 +45,8 @@ export type PullOptions = {
 	readonly excludeCollections?: readonly string[];
 	readonly all?: boolean;
 	readonly deps: boolean;
+	/** Commander only defines --no-schema, so false means the flag was passed; true is the default. */
+	readonly schema?: boolean;
 	readonly project: string;
 } & Partial<Record<SelectableResourceFlag, boolean>>;
 
@@ -250,17 +257,15 @@ function stripSystemFields(
 
 // The static strip lists know only the columns the catalog was written against; fields users add to
 // system collections are invisible to them, and a concealed value committed to git survives its history
-// forever. The just-fetched snapshot's field metadata names every field the schema itself marks
-// secret-bearing, so derive the rest from it. A scoped snapshot may omit a collection's fields entirely —
-// then only the static list applies.
-function sensitiveFieldsByCollection(snapshot: Snapshot): Map<string, string[]> {
+// forever. The GET /fields catalog names every field the schema marks secret-bearing — the snapshot
+// cannot be the authority here: a scoped pull's snapshot omits system-collection field metadata entirely
+// while the config resources still export, so a snapshot-derived map would let a custom conceal field on
+// e.g. directus_settings sail into the committed artifact unstripped.
+function sensitiveFieldsByCollection(catalog: FieldCatalogEntry[]): Map<string, string[]> {
 	const map = new Map<string, string[]>();
 
-	for (const entry of [...snapshot.fields, ...snapshot.systemFields]) {
-		const meta = entry['meta'];
-		if (meta === null || typeof meta !== 'object' || !('special' in meta)) continue;
-
-		const special = meta.special;
+	for (const entry of catalog) {
+		const special = entry.meta?.['special'];
 		if (!Array.isArray(special)) continue;
 
 		const secret = special.some(
@@ -286,6 +291,19 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 	const scope = resolveScope(options, projectConfig);
 
+	// The explicit opt-out for resource-only projects: without it, such a project silently committed a
+	// FULL snapshot — handing a mirror push delete authority over every collection it never meant to own.
+	const includeSchema = options.schema !== false && projectConfig?.schema !== false;
+
+	// A collections scope names schema to pull; combined with a schema skip it is a contradiction, and
+	// guessing which wins either resurrects the full-snapshot footgun or silently drops the scope. The
+	// config-level pair is already refused at parse; this catches the flag combinations.
+	if (!includeSchema && scope !== undefined) {
+		throw new CliError('USAGE', 'This pull skips the schema, but a collections scope was given.', {
+			hint: 'Remove --collections/--exclude-collections (or the project scope), or drop --no-schema / "schema": false.',
+		});
+	}
+
 	// Fail invalid resource options before the first network request.
 	const resources = resolveResourceSet(options, projectConfig);
 
@@ -296,13 +314,13 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	// Refresh an expiring saved session before the first request so an expired token re-auths silently.
 	await refreshSessionIfNeeded(credential);
 
-	const snapshot = await fetchSnapshot(credential, scope?.api);
+	const snapshot = includeSchema ? await fetchSnapshot(credential, scope?.api) : null;
 
 	// An explicitly requested collection missing from the fetched snapshot was dropped by the source: a typo
 	// or a name that does not exist, or — on Directus without the partial-snapshot folder fix (#27991) — a
 	// named collection folder. Left unsaid, the pull commits a partial snapshot missing exactly what was
 	// asked for, and a later push fails on the dangling reference. Name the gap so it is visible at pull time.
-	if (scope !== undefined && 'include' in scope.payload) {
+	if (snapshot !== null && scope !== undefined && 'include' in scope.payload) {
 		const present = new Set(snapshot.collections.map((entry) => entry.collection));
 		const missing = scope.payload.include.filter((name) => !present.has(name));
 
@@ -319,7 +337,10 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	// unbounded read instead of a read plus an exhaustion probe. Best-effort — undefined keeps the probe.
 	const queryMax = await fetchQueryLimitMax(credential);
 
-	const sensitiveByCollection = sensitiveFieldsByCollection(snapshot);
+	// Secret protection must not degrade silently: when config resources export, the field catalog read is
+	// mandatory and its failure fails the pull. Skipped only when nothing will be exported.
+	const sensitiveByCollection =
+		resources.length > 0 ? sensitiveFieldsByCollection(await fetchFields(credential)) : new Map<string, string[]>();
 
 	const includesUsers = resources.some((resource) => resource.name === 'users');
 
@@ -441,18 +462,21 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		dataCollections.push({ collection: resource.collection, primaryKey: resource.primaryKey, records: rows });
 	}
 
-	const result = writeSnapshotFiles(schemaDir, snapshot, scope?.write);
+	const result = snapshot === null ? null : writeSnapshotFiles(schemaDir, snapshot, scope?.write);
 
 	// Warn about references pointing outside the committed set — a scoped pull can strand a group parent or
 	// relation target the snapshot omits, which fails apply on a fresh target (Chris/Judd thread). Detect over
 	// the committed snapshot, not this fetch: a scoped pull preserves out-of-scope files from a prior full
-	// pull, so the on-disk set is what a later push actually carries.
-	const references = findOutOfScopeReferences(readSnapshotFiles(schemaDir));
-	if (references.length > 0) ctx.ui.warn(formatOutOfScopeReferences(references));
+	// pull, so the on-disk set is what a later push actually carries. A schema-skipping pull commits no
+	// schema, and a schema: false project's push ignores any stale files — nothing to warn over.
+	if (snapshot !== null) {
+		const references = findOutOfScopeReferences(readSnapshotFiles(schemaDir));
+		if (references.length > 0) ctx.ui.warn(formatOutOfScopeReferences(references));
+	}
 
 	const relativeDir = relative(ctx.cwd, schemaDir);
-	const collections = snapshot.collections.length;
-	const removed = result.removed.length;
+	const collections = snapshot?.collections.length ?? 0;
+	const removed = result?.removed.length ?? 0;
 
 	// The source URL selects the correct source→target ID-map bucket during push.
 	const dataResult = writeDataFiles(dataDir, dataCollections, normalizeInstanceUrl(url), incomplete);
@@ -479,13 +503,20 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 			dataResult.removed.length > 0 ? ` (removed ${count(dataResult.removed.length, 'stale file')})` : '';
 
 		ctx.ui.success(`Pulled from ${options.from} — ${url}`);
-		ctx.ui.print(`  Schema     ${count(collections, 'collection')} → ${relativeDir}${schemaNote}`);
+
+		if (snapshot === null) {
+			ctx.ui.print('  Schema     skipped');
+		} else {
+			ctx.ui.print(`  Schema     ${count(collections, 'collection')} → ${relativeDir}${schemaNote}`);
+		}
 
 		ctx.ui.print(
 			`  Resources  ${count(records, 'record')} in ${count(collectionCount, 'resource')} → ${dataDirRelative}${dataNote}`,
 		);
 	}
 
+	// schemaSkipped is the explicit marker; the schema block nulls out with it so a consumer can never
+	// mistake a skipped phase for an empty snapshot.
 	ctx.ui.data({
 		kind: 'PullReport',
 		formatVersion: 1,
@@ -493,13 +524,14 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		source: url,
 		profile: options.from,
 		project,
-		dir: relativeDir,
-		collections,
-		fields: snapshot.fields.length,
-		systemFields: snapshot.systemFields.length,
-		relations: snapshot.relations.length,
-		files: result.written.length,
-		removed: result.removed,
+		schemaSkipped: snapshot === null,
+		dir: snapshot === null ? null : relativeDir,
+		collections: snapshot === null ? null : collections,
+		fields: snapshot === null ? null : snapshot.fields.length,
+		systemFields: snapshot === null ? null : snapshot.systemFields.length,
+		relations: snapshot === null ? null : snapshot.relations.length,
+		files: result === null ? null : result.written.length,
+		removed: result === null ? null : result.removed,
 		scope: scope?.payload ?? null,
 		data,
 	});
