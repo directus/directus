@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { pong } from '../../src/realtime/commands/pong.js';
-import type { FakeWebSocket } from './fake-websocket.js';
-import { flush, openConnection } from './fake-websocket.js';
+import type { FakeWebSocket } from './helpers/fake-websocket.js';
+import { flush, openConnection } from './helpers/fake-websocket.js';
 
 function sendPing(socket: FakeWebSocket) {
 	socket.emit('message', { data: JSON.stringify({ type: 'ping' }) });
