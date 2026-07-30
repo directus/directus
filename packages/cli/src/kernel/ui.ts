@@ -112,7 +112,11 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 			status(c.green(SYMBOLS.success), message);
 		},
 		warn(message) {
-			status(c.yellow(SYMBOLS.warn), message);
+			// Warnings are actionable signals (stripped secrets, stale grants, forced drift), not progress
+			// chatter — and CI runs are exactly where they matter most. Machine consumers parse stdout, so
+			// emitting warnings on stderr keeps --json output pure while the log still carries them; only
+			// info/success stay human-mode-only.
+			writeErr(`${c.yellow(SYMBOLS.warn)} ${message}\n`);
 		},
 		error(error) {
 			if (json) {

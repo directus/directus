@@ -481,18 +481,16 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 		expect([...metadata.files].sort()).toEqual([ownedFileFor(dir, 'a'), ownedFileFor(dir, 'b')].sort());
 	});
 
-	it('heals a manifest entry whose file vanished in the crash window between removal and manifest write', () => {
-		// The write order is: new artifacts, then stale-file removal, then the manifest — last on purpose, so
-		// a torn first write is never readable. A crash between removal and the manifest write leaves the old
-		// manifest naming a deleted file. The next scoped pull must treat that file as already removed and
-		// drop it from the manifest, not throw "listed but missing" and wedge every scoped pull until a full
-		// pull happens to rewrite everything.
+	it('refuses a scoped write over a listed-but-missing file — local damage must not become remote deletion', () => {
+		// A file the manifest lists but the disk lacks is either the crash window of an earlier write (stale
+		// removal happens before the manifest write) or genuine local corruption/hand-deletion — the store
+		// cannot tell which. Silently dropping it from the manifest would forget the collection, and a later
+		// mirror push would then delete its rows on the target. The scoped write must fail loud with the
+		// recovery named; a FULL pull (whose targets re-fetch the file) is the heal, proven below.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, abc());
 
 		const bFile = ownedFileFor(dir, 'b');
-		const cFile = ownedFileFor(dir, 'c');
-		// Simulate the crash window: the stale file is gone, the manifest still lists it.
 		rmSync(join(dir, bFile), { force: true });
 
 		const scopedA: Snapshot = {
@@ -505,21 +503,28 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 			relations: [],
 		};
 
-		const result = writeSnapshotFiles(dir, scopedA, { inScope: (name) => name === 'a' });
+		let error: unknown;
 
-		// This call removed nothing — the ghost was already gone — and the out-of-scope survivor stays.
-		expect(result.removed).toEqual([]);
-		expect(existsSync(join(dir, cFile))).toBe(true);
+		try {
+			writeSnapshotFiles(dir, scopedA, { inScope: (name) => name === 'a' });
+		} catch (caught) {
+			error = caught;
+		}
 
-		const metadata = JSON.parse(readFileSync(join(dir, 'metadata.json'), 'utf8'));
-		expect(metadata.files).not.toContain(bFile);
-		expect(metadata.files).toContain(cFile);
+		expect(error).toBeInstanceOf(CliError);
+		expect((error as CliError).message).toContain(bFile);
+		expect((error as CliError).hint).toContain('full pull');
+
+		// A full write re-fetches every collection, so the ghost lands in targets and is rewritten — the
+		// documented recovery path must actually work.
+		const healed = writeSnapshotFiles(dir, abc());
+		expect(healed.written).toContain(bFile);
 
 		expect(
 			readSnapshotFiles(dir)
 				.collections.map((entry) => entry.collection)
 				.sort(),
-		).toEqual(['a', 'c']);
+		).toEqual(['a', 'b', 'c']);
 	});
 
 	it('reads back the full set, not just the last pull, after a scoped refresh', () => {

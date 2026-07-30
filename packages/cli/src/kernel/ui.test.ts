@@ -56,6 +56,17 @@ describe('createUi', () => {
 		expect(stdout.join('')).toBe('');
 	});
 
+	it('emits warnings on stderr even in --json mode — CI is where they matter most', () => {
+		// Warnings carry actionable signals (stripped secrets, stale grants, forced version drift), and the
+		// --json runs are the unattended ones. Suppressing them alongside info/success made every warning
+		// invisible to CI while stdout never needed protecting — warnings go to stderr.
+		const ui = createUi({ json: true, color: false });
+		ui.warn('operation "notify" carries an Authorization header');
+
+		expect(stderr.join('')).toContain('Authorization header');
+		expect(stdout.join('')).toBe('');
+	});
+
 	it('renders errors as structured stdout in --json mode', () => {
 		const ui = createUi({ json: true, color: false });
 		ui.error(new CliError('USAGE', 'bad input'));

@@ -181,12 +181,16 @@ export function writeArtifacts<T extends Artifact>(options: WriteArtifactsOption
 	for (const name of previous.files) {
 		if (targets.has(name) || !OWNED_FILE.test(name)) continue;
 
-		// Listed but absent is the crash window of a previous write: stale files are removed before the
-		// manifest is rewritten (deliberately — a torn first write must not be readable), so a crash between
-		// the two leaves the old manifest naming a file that is already gone. Only the manifest update was
-		// lost; skipping drops the ghost from the manifest written below, healing it. In readArtifacts the
-		// same gap stays hard corruption — no manifest rewrite follows there to make tolerance safe.
-		if (!existsSync(join(dir, name))) continue;
+		// Listed but absent: the crash window of a previous write (stale files are removed before the
+		// manifest is rewritten), or local corruption, or a hand-deletion — indistinguishable here. Healing
+		// silently would forget the collection from the manifest, and a later mirror push would then DELETE
+		// its rows on the target; local damage must fail loud instead of becoming remote deletion. A pull
+		// whose scope re-fetches this file never reaches this check (targets above) — that is the recovery.
+		if (!existsSync(join(dir, name))) {
+			throw new CliError('STATE', `${METADATA_FILE} lists ${name}, but the file is missing.`, {
+				hint: 'An interrupted pull or a deleted file can leave this state. Run a full pull for this project to rewrite it — a scoped pull cannot tell a crash from lost data.',
+			});
+		}
 
 		if (preserve !== undefined && preserve.when(readArtifact(dir, name, preserve.parse))) {
 			preserved.push(name);
