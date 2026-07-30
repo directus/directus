@@ -481,6 +481,47 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 		expect([...metadata.files].sort()).toEqual([ownedFileFor(dir, 'a'), ownedFileFor(dir, 'b')].sort());
 	});
 
+	it('heals a manifest entry whose file vanished in the crash window between removal and manifest write', () => {
+		// The write order is: new artifacts, then stale-file removal, then the manifest — last on purpose, so
+		// a torn first write is never readable. A crash between removal and the manifest write leaves the old
+		// manifest naming a deleted file. The next scoped pull must treat that file as already removed and
+		// drop it from the manifest, not throw "listed but missing" and wedge every scoped pull until a full
+		// pull happens to rewrite everything.
+		const dir = tempDir();
+		writeSnapshotFiles(dir, abc());
+
+		const bFile = ownedFileFor(dir, 'b');
+		const cFile = ownedFileFor(dir, 'c');
+		// Simulate the crash window: the stale file is gone, the manifest still lists it.
+		rmSync(join(dir, bFile), { force: true });
+
+		const scopedA: Snapshot = {
+			version: 2,
+			directus: '11.5.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'a' }],
+			fields: [{ collection: 'a', field: 'title', type: 'string' }],
+			systemFields: [],
+			relations: [],
+		};
+
+		const result = writeSnapshotFiles(dir, scopedA, { inScope: (name) => name === 'a' });
+
+		// This call removed nothing — the ghost was already gone — and the out-of-scope survivor stays.
+		expect(result.removed).toEqual([]);
+		expect(existsSync(join(dir, cFile))).toBe(true);
+
+		const metadata = JSON.parse(readFileSync(join(dir, 'metadata.json'), 'utf8'));
+		expect(metadata.files).not.toContain(bFile);
+		expect(metadata.files).toContain(cFile);
+
+		expect(
+			readSnapshotFiles(dir)
+				.collections.map((entry) => entry.collection)
+				.sort(),
+		).toEqual(['a', 'c']);
+	});
+
 	it('reads back the full set, not just the last pull, after a scoped refresh', () => {
 		// Readers consume the committed set, not the most recent request: after a scoped refresh of one
 		// collection the reassembled snapshot must still validate and include the preserved collections.

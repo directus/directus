@@ -174,18 +174,20 @@ function describeIdentity(me: unknown, projectName: string | undefined): Identit
  * export completeness check. Best-effort: any failure disables the check, never the caller.
  */
 export async function fetchTotalCount(credential: ResolvedCredential, path: string): Promise<number | undefined> {
-	const token =
-		credential.kind === 'token'
-			? credential.token
-			: (await credentialStorage(credential.url, credential.profileName).get())?.access_token;
-
-	if (token === undefined || token === null) return undefined;
-
-	const url = new URL(`${credential.url.replace(/\/+$/, '')}${path}`);
-	url.searchParams.set('limit', '0');
-	url.searchParams.set('meta', 'total_count');
-
 	try {
+		// The credential-store read stays inside the try: a store corrupted mid-command must degrade this
+		// probe to undefined like any other failure, never crash the command it only enriches.
+		const token =
+			credential.kind === 'token'
+				? credential.token
+				: (await credentialStorage(credential.url, credential.profileName).get())?.access_token;
+
+		if (token === undefined || token === null) return undefined;
+
+		const url = new URL(`${credential.url.replace(/\/+$/, '')}${path}`);
+		url.searchParams.set('limit', '0');
+		url.searchParams.set('meta', 'total_count');
+
 		const response = await fetch(url, {
 			headers: { authorization: `Bearer ${token}` },
 			signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
@@ -241,16 +243,18 @@ export async function fetchQueryLimitMax(credential: ResolvedCredential): Promis
  * SDK strips the response envelope this reads from (same reason as fetchTotalCount).
  */
 export async function fetchCustomPermissionRulesEntitled(credential: ResolvedCredential): Promise<boolean | undefined> {
-	const token =
-		credential.kind === 'token'
-			? credential.token
-			: (await credentialStorage(credential.url, credential.profileName).get())?.access_token;
-
-	if (token === undefined || token === null) return undefined;
-
-	const url = new URL(`${credential.url.replace(/\/+$/, '')}/license`);
-
 	try {
+		// The credential-store read stays inside the try: a store corrupted mid-command must degrade this
+		// probe to undefined like any other failure, never crash the command it only enriches.
+		const token =
+			credential.kind === 'token'
+				? credential.token
+				: (await credentialStorage(credential.url, credential.profileName).get())?.access_token;
+
+		if (token === undefined || token === null) return undefined;
+
+		const url = new URL(`${credential.url.replace(/\/+$/, '')}/license`);
+
 		const response = await fetch(url, {
 			headers: { authorization: `Bearer ${token}` },
 			signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),

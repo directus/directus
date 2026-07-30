@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
@@ -8,6 +8,7 @@ import {
 	fetchCustomPermissionRulesEntitled,
 	fetchQueryLimitMax,
 	fetchServerVersion,
+	fetchTotalCount,
 	loginSession,
 	pingServer,
 	refreshSessionIfNeeded,
@@ -386,5 +387,20 @@ describe('connection', () => {
 			);
 
 		await expect(fetchCustomPermissionRulesEntitled(token)).resolves.toBeUndefined();
+	});
+
+	it('degrades the count and entitlement probes to undefined when the credential store is corrupt', async () => {
+		// Both probes promise best-effort: they only enrich output (export completeness, entitlement
+		// warnings). Their session-token resolution reads the credential store, so a store corrupted
+		// mid-command must degrade them to undefined like any other failure — a STATE throw from that read
+		// would kill the pull the probe merely decorates.
+		const home = isolateHome();
+		seedSession('https://cms.example.com', 'prod', Date.now() + 3_600_000);
+		writeFileSync(join(home, '.directus', 'credentials.json'), '{ not valid json');
+
+		const session = { url: 'https://cms.example.com', profileName: 'prod', kind: 'session' } as const;
+
+		await expect(fetchTotalCount(session, '/users')).resolves.toBeUndefined();
+		await expect(fetchCustomPermissionRulesEntitled(session)).resolves.toBeUndefined();
 	});
 });
