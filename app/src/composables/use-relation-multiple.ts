@@ -7,6 +7,7 @@ import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import sdk, { requestEndpoint } from '@/sdk';
 import { fetchAll } from '@/utils/fetch-all';
+import { containsRelationalChanges, resolveRelationalChanges } from '@/utils/resolve-relational-changes';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export type RelationQueryMultiple = {
@@ -23,6 +24,8 @@ export type DisplayItem = {
 	$index?: number;
 	$type?: 'created' | 'updated' | 'deleted';
 	$edits?: number;
+	/** Values replaced by the display-only resolution of nested relational edits, keyed by field */
+	$staged?: Record<string, any>;
 };
 
 export type ChangesItem = {
@@ -119,13 +122,43 @@ export function useRelationMultiple(
 		return existingItemCount.value + _value.value.create.length;
 	});
 
+	// Collection the individual rows of this relation belong to, which is the junction for m2m/m2a
+	const rowCollection = computed(() => {
+		const info = relation.value;
+		if (!info) return null;
+
+		return info.type === 'o2m' ? info.relatedCollection.collection : info.junctionCollection.collection;
+	});
+
+	/**
+	 * Resolve staged edits to nested relations so display templates can render them. Without this a
+	 * nested `{ create, update, delete }` delta reaches the template as-is and renders as `--`.
+	 *
+	 * The values that were replaced are kept under `$staged` so `cleanItem` can put them back: display
+	 * items are handed straight back to `update()` by some interfaces, which must keep saving the delta.
+	 */
+	function forDisplay(item: Record<string, any>, existing?: Record<string, any>) {
+		if (!rowCollection.value || !containsRelationalChanges(item)) return item;
+
+		const resolved = resolveRelationalChanges(rowCollection.value, item, existing);
+		const staged: Record<string, any> = {};
+
+		for (const [field, value] of Object.entries(item)) {
+			if (resolved[field] !== value) staged[field] = value;
+		}
+
+		if (Object.keys(staged).length === 0) return resolved;
+
+		return { ...resolved, $staged: staged };
+	}
+
 	const createdItems = computed(() => {
 		const info = relation.value;
 		if (info?.type === undefined) return [];
 
 		const items = _value.value.create.map((item, index) => {
 			return {
-				...item,
+				...forDisplay(item),
 				$type: 'created',
 				$index: index,
 			} as DisplayItem;
@@ -151,15 +184,17 @@ export function useRelationMultiple(
 			let updatedItem: Record<string, any> = cloneDeep(item);
 
 			if (edits) {
+				const displayEdits = forDisplay(edits.value, item);
+
 				updatedItem = {
 					...updatedItem,
-					...edits.value,
+					...displayEdits,
 				};
 
 				if (relation.value?.type === 'm2m' || relation.value?.type === 'm2a') {
 					updatedItem[relation.value.junctionField.field] = {
 						...cloneDeep(item)[relation.value.junctionField.field],
-						...edits.value[relation.value.junctionField.field],
+						...displayEdits[relation.value.junctionField.field],
 					};
 				}
 
@@ -681,10 +716,15 @@ export function useRelationMultiple(
 
 	function useUtil() {
 		function cleanItem(item: DisplayItem) {
-			return Object.entries(item).reduce((acc, [key, value]) => {
+			const cleaned = Object.entries(item).reduce((acc, [key, value]) => {
 				if (!key.startsWith('$')) acc[key] = value;
 				return acc;
 			}, {} as DisplayItem);
+
+			// Undo the display-only resolution of nested relational edits
+			if (item.$staged) return { ...cleaned, ...item.$staged };
+
+			return cleaned;
 		}
 
 		/**

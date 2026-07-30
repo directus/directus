@@ -30,6 +30,17 @@ vi.mock('@/utils/unexpected-error', () => {
 	};
 });
 
+vi.mock('@/utils/get-related-collection', () => ({
+	getRelatedCollection: (collection: string, field: string) =>
+		collection === 'worker' && field === 'translations' ? { relatedCollection: 'worker_translations' } : null,
+}));
+
+vi.mock('@/stores/fields', () => ({
+	useFieldsStore: () => ({
+		getPrimaryKeyFieldForCollection: (collection: string) => ({ collection, field: 'id' }),
+	}),
+}));
+
 const relationO2M: RelationO2M = {
 	relatedCollection: {
 		name: 'Worker',
@@ -513,6 +524,108 @@ Article           Many|Any: article_m2a                    ┌─Text
 															                │code     │
 															                └─────────┘
 */
+
+describe('nested relational changes', () => {
+	test('a created item exposes its nested creations as values, not as a delta', async () => {
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		const changes = {
+			create: [{ language: 'en-US', title: 'Prelude' }],
+			update: [],
+			delete: [],
+		};
+
+		wrapper.vm.create({ facility: 1, translations: changes });
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems.at(-1)).toEqual({
+			facility: 1,
+			translations: [{ language: 'en-US', title: 'Prelude' }],
+			$type: 'created',
+			$index: 0,
+			$staged: { translations: changes },
+		});
+	});
+
+	test('resolving for display leaves the saved edits untouched', async () => {
+		const changes = {
+			create: [{ language: 'en-US', title: 'Prelude' }],
+			update: [],
+			delete: [],
+		};
+
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		wrapper.vm.create({ facility: 1, translations: changes });
+
+		await flushPromises();
+
+		expect(wrapper.vm.value).toEqual({
+			create: [{ facility: 1, translations: changes }],
+			update: [],
+			delete: [],
+		});
+	});
+
+	test('handing a display item back to update re-emits the delta, not the resolved values', async () => {
+		const changes = {
+			create: [{ language: 'en-US', title: 'Prelude' }],
+			update: [],
+			delete: [],
+		};
+
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		wrapper.vm.create({ facility: 1, translations: changes });
+
+		await flushPromises();
+
+		// Mirrors interfaces that spread a display item straight into update(), such as the tree view
+		wrapper.vm.update({ ...wrapper.vm.displayItems.at(-1), sort: 1 });
+
+		await flushPromises();
+
+		expect(wrapper.vm.value).toEqual({
+			create: [{ facility: 1, translations: changes, sort: 1 }],
+			update: [],
+			delete: [],
+		});
+	});
+
+	test('an updated item exposes its nested changes as values', async () => {
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		const changes = {
+			create: [{ language: 'de-DE', title: 'Vorspiel' }],
+			update: [],
+			delete: [],
+		};
+
+		wrapper.vm.update({ id: 1, translations: changes });
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems[0]).toEqual({
+			id: 1,
+			name: 'test',
+			facility: 1,
+			translations: [{ language: 'de-DE', title: 'Vorspiel' }],
+			$type: 'updated',
+			$index: 0,
+			$edits: 0,
+			$staged: { translations: changes },
+		});
+	});
+});
 
 describe('test m2a relation', () => {
 	test('sorting an item', async () => {
