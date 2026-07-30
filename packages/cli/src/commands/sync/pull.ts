@@ -24,7 +24,15 @@ import { readSnapshotFiles, type WriteScope, writeSnapshotFiles } from '../../sy
 import { resolveTarget } from './resolve-target.js';
 
 // The selectable resource names, as commander camelCases each --<resource>/--no-<resource> flag onto opts().
-type SelectableResourceFlag = 'dashboards' | 'flows' | 'policies' | 'roles' | 'settings' | 'translations' | 'users';
+type SelectableResourceFlag =
+	| 'dashboards'
+	| 'flows'
+	| 'folders'
+	| 'policies'
+	| 'roles'
+	| 'settings'
+	| 'translations'
+	| 'users';
 
 export type PullOptions = {
 	readonly from: string;
