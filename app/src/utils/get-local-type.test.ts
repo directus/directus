@@ -72,7 +72,7 @@ test('Returns STANDARD with no relations', () => {
 	(fieldsStore.getField as Mock).mockReturnValue({
 		collection: 'test_collection',
 		field: 'test_fields',
-		type: 'unkown',
+		type: 'unknown',
 		meta: {
 			collection: 'test_collection',
 			field: 'test_fields',
