@@ -51,10 +51,10 @@
 		"node": ">=22"
 	},
 	"optionalDependencies": {
+		"better-sqlite3": "catalog:",
 		"mysql2": "catalog:",
 		"oracledb": "catalog:",
 		"pg": "catalog:",
-		"sqlite3": "catalog:",
 		"tedious": "catalog:"
 	}
 }
