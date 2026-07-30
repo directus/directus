@@ -245,6 +245,7 @@
 	"optionalDependencies": {
 		"@keyv/redis": "catalog:",
 		"better-sqlite3": "catalog:",
+		"braintrust": "catalog:",
 		"mysql2": "catalog:",
 		"nodemailer-mailgun-transport": "catalog:",
 		"oracledb": "catalog:",

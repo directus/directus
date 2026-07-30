@@ -169,6 +169,7 @@ catalog:
   base-64: 1.0.0
   better-sqlite3: 13.0.2
   boxen: 8.0.1
+  braintrust: 3.25.0
   busboy: 1.6.0
   bytes: 3.1.2
   camelcase: 8.0.0
