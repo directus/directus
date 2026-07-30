@@ -168,6 +168,23 @@ describe('resolveResources', () => {
 		}
 	});
 
+	it('pins the users strip list by value — a new secret-bearing account column must fail loudly', () => {
+		// The users export is the one artifact where account credentials could reach git. The shape check
+		// above cannot catch a server release adding a secret column the deny-list does not yet name —
+		// pinning by value forces a conscious strip-list review instead of letting the column leak green.
+		const users = resolveResources(['users']).find((resource) => resource.name === 'users');
+
+		expect(users?.strip).toEqual([
+			'password',
+			'token',
+			'tfa_secret',
+			'auth_data',
+			'last_access',
+			'last_page',
+			'avatar',
+		]);
+	});
+
 	it('gives every resource explicit FK facts and an explicit natural-key state', () => {
 		// The resource facts live in three tables (graph, SYSTEM_FK_FIELDS, reconcile's natural keys) and
 		// both lookups fail QUIET on a missing entry: `?? []` skips FK remapping and a missing natural key

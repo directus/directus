@@ -864,6 +864,157 @@ describe('sync pull resources and data', () => {
 		expect(userBytes).toContain('editor@example.com');
 	});
 
+	it('strips custom conceal/hash fields the snapshot marks sensitive and names them at pull time', async () => {
+		// The static deny-list knows only the columns the resource catalog was written against; fields users
+		// add to system collections (an API key column on settings) are invisible to it, and a concealed
+		// value committed to git survives its history forever. The just-pulled snapshot's field metadata is
+		// the authority: conceal/hash specials must vanish from the written bytes AND be named on stderr —
+		// a field silently disappearing from the export would read as data loss, not protection.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		const body = schemaBody();
+
+		body['systemFields'] = [
+			{ collection: 'directus_settings', field: 'api_key', type: 'string', meta: { special: ['conceal'] } },
+			{ collection: 'directus_settings', field: 'webhook_signature', type: 'string', meta: { special: ['hash'] } },
+			// Already on the static strip list — stripped, but never re-announced as a custom find.
+			{ collection: 'directus_settings', field: 'license_key', type: 'string', meta: { special: ['conceal'] } },
+		];
+
+		mockSnapshot(agent, body);
+
+		for (const path of [
+			'/roles',
+			'/policies',
+			'/access',
+			'/permissions',
+			'/flows',
+			'/operations',
+			'/dashboards',
+			'/panels',
+			'/folders',
+		]) {
+			interceptList(path, []);
+		}
+
+		interceptSingleton('/settings', {
+			id: 1,
+			api_key: 'sk-live-4242',
+			webhook_signature: 'hmac-secret-seed',
+			license_key: 'lic-secret',
+		});
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		const settingsBytes = readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_settings')), 'utf8');
+		expect(settingsBytes).not.toContain('api_key');
+		expect(settingsBytes).not.toContain('sk-live-4242');
+		expect(settingsBytes).not.toContain('webhook_signature');
+		expect(settingsBytes).not.toContain('hmac-secret-seed');
+		expect(settingsBytes).not.toContain('lic-secret');
+
+		const err = stderr.join('');
+		expect(err).toContain('api_key');
+		expect(err).toContain('webhook_signature');
+		// Re-announcing a built-in strip entry on every pull would train operators to skim the warning.
+		expect(err).not.toContain('license_key');
+	});
+
+	it('warns when a request operation carries custom headers — credential-bearing and committed verbatim', async () => {
+		// Headers must round-trip untouched (stripping would break every legitimate header on push), so the
+		// only protection for an Authorization value pasted into a flow's request step is a pull-time nudge
+		// naming the operation to review before the value lands in git.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptList('/flows', [{ id: 'f1', name: 'Nightly' }]);
+
+		interceptList('/operations', [
+			{
+				id: 'o1',
+				key: 'notify_slack',
+				type: 'request',
+				flow: 'f1',
+				options: {
+					url: 'https://hooks.example.com',
+					headers: [{ header: 'Authorization', value: 'Bearer live-secret' }],
+				},
+			},
+		]);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
+
+		const err = stderr.join('');
+		expect(err).toContain('notify_slack');
+		expect(err).toMatch(/credential/i);
+
+		// NOT stripped: the header value round-trips so legitimate headers keep working on push.
+		const opsBytes = readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_operations')), 'utf8');
+		expect(opsBytes).toContain('Bearer live-secret');
+	});
+
+	it('stays silent for request operations without headers — an always-on warning trains operators to ignore it', async () => {
+		// The warn is only worth emitting when a header actually exists: an empty headers array carries no
+		// credential, and a non-request operation's options are never the request-header shape.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptList('/flows', []);
+
+		interceptList('/operations', [
+			{ id: 'o1', key: 'fetch_page', type: 'request', options: { url: 'https://example.com', headers: [] } },
+			{ id: 'o2', key: 'log_it', type: 'log', options: { headers: [{ header: 'X-Debug', value: '1' }] } },
+		]);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
+		expect(stderr.join('')).not.toMatch(/credential/i);
+	});
+
+	it('re-pulls byte-identical files from an unchanged source — nondeterministic output makes git diffs lie', async () => {
+		// Determinism is proven at the store layer, but the pipeline above it (fetch order, strip mutation,
+		// manifest assembly) could still reorder or timestamp its way into spurious changes. The operator's
+		// only signal that the source is unchanged is an empty `git diff` after a re-pull, end to end.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		const registerMocks = (): void => {
+			interceptSnapshot();
+			interceptList('/roles', [{ id: 'r1', name: 'Editor' }]);
+			interceptList('/policies', []);
+			interceptList('/access', []);
+			interceptList('/permissions', []);
+
+			interceptList('/flows', [
+				{ id: 'f1', name: 'Nightly' },
+				{ id: 'f2', name: 'Weekly' },
+			]);
+
+			interceptList('/operations', []);
+			interceptList('/dashboards', []);
+			interceptList('/panels', []);
+			interceptList('/folders', []);
+			interceptSingleton('/settings', { id: 1, project_name: 'Kampala' });
+		};
+
+		registerMocks();
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		const schemaDir = join(dir, 'directus', 'default', 'schema');
+
+		const treeOf = (root: string): Record<string, string> =>
+			Object.fromEntries(readdirSync(root).map((name) => [name, readFileSync(join(root, name), 'utf8')]));
+
+		const schemaBefore = treeOf(schemaDir);
+		const dataBefore = treeOf(dataDir);
+
+		registerMocks();
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		expect(treeOf(schemaDir)).toEqual(schemaBefore);
+		expect(treeOf(dataDir)).toEqual(dataBefore);
+	});
+
 	it('writes nothing at all when a data fetch fails — no mixed generations', async () => {
 		// Record fetches finish before either artifact writer starts, so this failure leaves both generations untouched.
 		seedConfig();

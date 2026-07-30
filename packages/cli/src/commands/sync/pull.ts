@@ -10,6 +10,7 @@ import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
 import { fetchRecords, fetchSnapshot, type SnapshotScope } from '../../sync/api.js';
+import type { Snapshot } from '../../sync/contract.js';
 import {
 	assertDataSource,
 	type DataCollection,
@@ -223,8 +224,12 @@ function permissionsShortfallWarning(
 }
 
 // A deny-list preserves new server fields by default while removing secrets, external FKs, and alias views.
-function stripSystemFields(records: Record<string, unknown>[], resource: Resource): Record<string, unknown>[] {
-	const drop = [...resource.strip, ...resource.aliases];
+function stripSystemFields(
+	records: Record<string, unknown>[],
+	resource: Resource,
+	extra: readonly string[],
+): Record<string, unknown>[] {
+	const drop = [...resource.strip, ...resource.aliases, ...extra];
 
 	if (drop.length === 0) return records;
 
@@ -233,6 +238,35 @@ function stripSystemFields(records: Record<string, unknown>[], resource: Resourc
 	}
 
 	return records;
+}
+
+// The static strip lists know only the columns the catalog was written against; fields users add to
+// system collections are invisible to them, and a concealed value committed to git survives its history
+// forever. The just-fetched snapshot's field metadata names every field the schema itself marks
+// secret-bearing, so derive the rest from it. A scoped snapshot may omit a collection's fields entirely —
+// then only the static list applies.
+function sensitiveFieldsByCollection(snapshot: Snapshot): Map<string, string[]> {
+	const map = new Map<string, string[]>();
+
+	for (const entry of [...snapshot.fields, ...snapshot.systemFields]) {
+		const meta = entry['meta'];
+		if (meta === null || typeof meta !== 'object' || !('special' in meta)) continue;
+
+		const special = meta.special;
+		if (!Array.isArray(special)) continue;
+
+		const secret = special.some(
+			(value) => value === 'conceal' || value === 'hash' || (typeof value === 'string' && value.startsWith('encrypt')),
+		);
+
+		if (secret) {
+			const fields = map.get(entry.collection) ?? [];
+			fields.push(entry.field);
+			map.set(entry.collection, fields);
+		}
+	}
+
+	return map;
 }
 
 export async function pull(options: PullOptions, ctx: CliContext): Promise<void> {
@@ -276,6 +310,8 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	// One keystone read for the whole pull: when the source reports no row cap, every fetch below is a single
 	// unbounded read instead of a read plus an exhaustion probe. Best-effort — undefined keeps the probe.
 	const queryMax = await fetchQueryLimitMax(credential);
+
+	const sensitiveByCollection = sensitiveFieldsByCollection(snapshot);
 
 	const includesUsers = resources.some((resource) => resource.name === 'users');
 
@@ -338,7 +374,19 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 			}
 		}
 
-		rows = stripSystemFields(rows, resource);
+		// Custom secret-bearing fields drop alongside the static list, but named — a field the operator
+		// added disappearing from the export without a word would read as data loss, not protection.
+		const derivedSecrets = (sensitiveByCollection.get(resource.collection) ?? []).filter(
+			(field) => !resource.strip.includes(field) && !resource.aliases.includes(field),
+		);
+
+		if (derivedSecrets.length > 0) {
+			ctx.ui.warn(
+				`${resource.name}: stripped ${count(derivedSecrets.length, 'custom field')} the schema marks sensitive (conceal/encrypt/hash): ${derivedSecrets.join(', ')}. The export never carries these values — set them on the target directly.`,
+			);
+		}
+
+		rows = stripSystemFields(rows, resource, derivedSecrets);
 
 		if (resource.collection === 'directus_access') {
 			if (!usersCommitted) {
@@ -351,6 +399,33 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 				// not as a push-time FK failure when a newer source user's grant arrives.
 				ctx.ui.warn(
 					`${resource.name}: kept user-attached grants because directus_users is committed from an earlier --users pull, but this pull did not refresh the user accounts themselves — a grant for a user added on the source since then fails the import. Re-pull with --users to refresh accounts, or delete the users data file to drop accounts from the sync.`,
+				);
+			}
+		}
+
+		// Request-operation headers round-trip verbatim — stripping them would break every legitimate
+		// header on push — yet they are exactly where Authorization values and API keys get pasted. The
+		// warn fires only when a header actually exists, so it stays a signal instead of noise the
+		// operator learns to skim past.
+		if (resource.collection === 'directus_operations') {
+			const carriers = rows.filter((record) => {
+				if (record['type'] !== 'request') return false;
+				const options = record['options'];
+
+				return (
+					options !== null &&
+					typeof options === 'object' &&
+					'headers' in options &&
+					Array.isArray(options.headers) &&
+					options.headers.length > 0
+				);
+			});
+
+			if (carriers.length > 0) {
+				const keys = carriers.map((record) => String(record['key'] ?? record['id']));
+
+				ctx.ui.warn(
+					`${resource.name}: request operations with custom headers export verbatim: ${keys.join(', ')}. Headers routinely embed Authorization values and API keys — review them for credentials before committing.`,
 				);
 			}
 		}
