@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -48,13 +48,88 @@ describe('profile commands', () => {
 		expect(readConfig().profiles['staging']?.url).toBe('https://cms.example.com');
 	});
 
-	it('add is an upsert — re-adding the same name overwrites, not duplicates', async () => {
+	it('add is an upsert — re-adding the same name with --yes overwrites, not duplicates', async () => {
 		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
-		await d6s('profile', 'add', 'staging', '--url', 'https://two.example.com');
+		await d6s('profile', 'add', 'staging', '--url', 'https://two.example.com', '--yes');
 
 		const config = readConfig();
 		expect(config.profiles['staging']?.url).toBe('https://two.example.com');
 		expect(Object.keys(config.profiles)).toHaveLength(1);
+
+		// The warning must name what actually happens: the env token follows the name to the new URL, and
+		// the URL-keyed store credential stops resolving — it is never silently sent to the new host.
+		expect(stderr.join('')).toContain('Repointed "staging"');
+		expect(stderr.join('')).toContain('DIRECTUS_STAGING_TOKEN');
+		expect(stderr.join('')).toContain('no longer resolves');
+	});
+
+	it('refuses to repoint an existing profile to a new URL without --yes', async () => {
+		// The DIRECTUS_<NAME>_TOKEN env var follows the profile NAME: a silent URL overwrite would send that
+		// token to the new host on the next command (the store credential is keyed by URL + name and merely
+		// stops resolving). Non-interactive repoints follow the standard --yes convention, and the hint must
+		// name the env var that actually carries over — not misattribute the risk to the saved credential.
+		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
+
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://two.example.com')).toBe(1);
+
+		expect(stderr.join('')).toContain('https://one.example.com');
+		expect(stderr.join('')).toContain('--yes');
+		expect(stderr.join('')).toContain('DIRECTUS_STAGING_TOKEN');
+		expect(readConfig().profiles['staging']?.url).toBe('https://one.example.com');
+	});
+
+	it('never prints a malformed legacy profile URL — the stored value bypassed schema validation', async () => {
+		// existingProfileUrl reads the raw config on purpose (the upsert path tolerates files loadConfig
+		// would refuse), so a hand-edited profile URL can carry userinfo. The refusal must not leak it.
+		const password = 'super-secret-password';
+
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { staging: { url: `https://user:${password}@old.example.com` } } }),
+		);
+
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://new.example.com')).toBe(1);
+
+		const output = stdout.join('') + stderr.join('');
+		expect(output).not.toContain(password);
+		expect(stderr.join('')).toContain('<saved URL is invalid or unsafe to print>');
+	});
+
+	it('gates overwriting a profile whose stored URL is missing or mangled — existence decides, not URL validity', async () => {
+		// A hand-edited profile with a broken url is still a NAMED profile with a possibly-attached
+		// credential; silently "repairing" it would skip the same consent a repoint requires.
+		const broken = JSON.stringify({ profiles: { staging: { url: 123 } } });
+		writeFileSync(join(dir, 'directus.config.json'), broken);
+
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://new.example.com')).toBe(1);
+		expect(stderr.join('')).toContain('<saved URL is invalid or unsafe to print>');
+
+		// The refusal must leave the file byte-identical — a gate that already wrote would be theater.
+		expect(readFileSync(join(dir, 'directus.config.json'), 'utf8')).toBe(broken);
+
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://new.example.com', '--yes')).toBe(0);
+		expect(readConfig().profiles['staging']?.url).toBe('https://new.example.com');
+	});
+
+	it('rejects URLs carrying control characters the parser would silently strip or encode', async () => {
+		// new URL() strips \t\n\r and percent-encodes other C0s, but the CLI stores and prints the RAW
+		// string — accepted, an ESC sequence in the path would reach the terminal of whoever runs
+		// profile list or reads an error message.
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com/\u001b]0;pwn\u0007')).toBe(1);
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com/a\nb')).toBe(1);
+		// C1s matter too: CSI (U+009B) and NEL (U+0085) are single-codepoint controls many terminals honor.
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com/a\u0085b')).toBe(1);
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com/a\u009bb')).toBe(1);
+		expect(existsSync(join(dir, 'directus.config.json'))).toBe(false);
+	});
+
+	it('re-adding the same URL stays frictionless — no confirmation, no --yes', async () => {
+		// Idempotent re-asserts (e.g. rotating a token for the same host) are the scripting path; only a
+		// URL CHANGE is gated.
+		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
+
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com')).toBe(0);
+		expect(readConfig().profiles['staging']?.url).toBe('https://one.example.com');
 	});
 
 	it('list emits the profiles as JSON on the machine channel', async () => {
@@ -128,9 +203,10 @@ describe('profile commands', () => {
 
 			expect(await d6s('profile', 'remove', 'staging')).toBe(0);
 
-			expect(
-				resolveCredential({ url: 'https://cms.example.com', profileName: 'staging', hasConfiguredProfiles: true }),
-			).toEqual({ found: false, envVar: 'DIRECTUS_STAGING_TOKEN' });
+			expect(resolveCredential({ target: 'profile', url: 'https://cms.example.com', profileName: 'staging' })).toEqual({
+				found: false,
+				envVar: 'DIRECTUS_STAGING_TOKEN',
+			});
 		} finally {
 			rmSync(home, { recursive: true, force: true });
 		}

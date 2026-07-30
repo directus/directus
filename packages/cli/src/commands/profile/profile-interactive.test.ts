@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { confirm, isCancel, password, select, text } from '@clack/prompts';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { loginSession, pingServer, testConnection } from '../../kernel/connection.js';
+import { loginSession, pingServer, refreshSessionIfNeeded, testConnection } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 import { createUi } from '../../kernel/ui.js';
@@ -23,6 +23,7 @@ vi.mock('../../kernel/connection.js', () => ({
 	testConnection: vi.fn(),
 	loginSession: vi.fn(),
 	pingServer: vi.fn(),
+	refreshSessionIfNeeded: vi.fn(),
 }));
 
 function ctxAt(cwd: string): CliContext {
@@ -32,13 +33,19 @@ function ctxAt(cwd: string): CliContext {
 describe('interactive profile flows', () => {
 	let dir: string;
 	let home: string;
+	let stderr: string[];
 
 	beforeEach(() => {
 		dir = mkdtempSync(join(tmpdir(), 'd6s-icwd-'));
 		home = mkdtempSync(join(tmpdir(), 'd6s-ihome-'));
+		stderr = [];
 
 		vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
-		vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+
+		vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
+			stderr.push(String(chunk));
+			return true;
+		});
 
 		vi.stubEnv('HOME', home);
 		vi.stubEnv('USERPROFILE', home);
@@ -52,6 +59,7 @@ describe('interactive profile flows', () => {
 		vi.mocked(testConnection).mockReset();
 		vi.mocked(loginSession).mockReset();
 		vi.mocked(pingServer).mockReset();
+		vi.mocked(refreshSessionIfNeeded).mockReset();
 		vi.mocked(isCancel).mockReset().mockReturnValue(false);
 	});
 
@@ -74,6 +82,41 @@ describe('interactive profile flows', () => {
 		expect(pingServer).toHaveBeenCalledWith('https://cms.example.com');
 	});
 
+	it('confirms before repointing an existing profile to a different URL, and aborts on decline', async () => {
+		// The DIRECTUS_<NAME>_TOKEN env var follows the profile NAME; the confirm is the one human check
+		// before that token starts going to a different host. A decline must leave the profile untouched.
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { staging: { url: 'https://one.example.com', auth: { type: 'token' } } } }),
+		);
+
+		vi.mocked(confirm).mockResolvedValueOnce(false);
+
+		await expect(add('staging', { url: 'https://two.example.com' }, ctxAt(dir))).rejects.toMatchObject({
+			code: 'USAGE',
+		});
+
+		expect(vi.mocked(confirm).mock.calls[0]?.[0]?.message).toContain('https://one.example.com');
+
+		const config = JSON.parse(readFileSync(join(dir, 'directus.config.json'), 'utf8'));
+		expect(config.profiles.staging.url).toBe('https://one.example.com');
+	});
+
+	it('repoints after an accepted confirmation', async () => {
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { staging: { url: 'https://one.example.com', auth: { type: 'token' } } } }),
+		);
+
+		vi.mocked(confirm).mockResolvedValueOnce(true);
+		vi.mocked(select).mockResolvedValueOnce('skip');
+
+		await add('staging', { url: 'https://two.example.com' }, ctxAt(dir));
+
+		const config = JSON.parse(readFileSync(join(dir, 'directus.config.json'), 'utf8'));
+		expect(config.profiles.staging.url).toBe('https://two.example.com');
+	});
+
 	it('add enters and saves a pasted token when interactive and none was passed', async () => {
 		vi.mocked(select).mockResolvedValueOnce('paste');
 		vi.mocked(password).mockResolvedValueOnce('tok-abcdefgh');
@@ -84,7 +127,7 @@ describe('interactive profile flows', () => {
 		expect(testConnection).toHaveBeenCalledWith({
 			url: 'https://cms.example.com',
 			token: 'tok-abcdefgh',
-			source: 'prompt',
+			kind: 'token',
 		});
 
 		const store = JSON.parse(readFileSync(join(home, '.directus', 'credentials.json'), 'utf8'));
@@ -116,7 +159,7 @@ describe('interactive profile flows', () => {
 		expect(testConnection).toHaveBeenLastCalledWith({
 			url: 'https://real.example.com',
 			token: 'tok-abcdefgh',
-			source: 'prompt',
+			kind: 'token',
 		});
 
 		const config = JSON.parse(readFileSync(join(dir, 'directus.config.json'), 'utf8'));
@@ -124,6 +167,10 @@ describe('interactive profile flows', () => {
 
 		const store = JSON.parse(readFileSync(join(home, '.directus', 'credentials.json'), 'utf8'));
 		expect(store['https://real.example.com'].staging).toBe('tok-abcdefgh');
+
+		// The recovery path skips the repoint confirm (the user typed the URL), but the credential
+		// consequence must still be said out loud.
+		expect(stderr.join('')).toContain('Repointed "staging"');
 	});
 
 	it('discards the token on request while keeping the profile', async () => {
@@ -175,7 +222,7 @@ describe('interactive profile flows', () => {
 		await testProfile('prod', {}, ctxAt(dir));
 
 		expect(password).toHaveBeenCalled();
-		expect(testConnection).toHaveBeenCalledWith(expect.objectContaining({ token: 'typed-token', source: 'prompt' }));
+		expect(testConnection).toHaveBeenCalledWith(expect.objectContaining({ token: 'typed-token', kind: 'token' }));
 	});
 
 	it('test can log in with email/password when no token resolves', async () => {
@@ -202,8 +249,23 @@ describe('interactive profile flows', () => {
 		await testProfile(undefined, { url: 'https://oneoff.example.com', token: 'tok-flag' }, ctxAt(dir));
 
 		expect(testConnection).toHaveBeenCalledWith(
-			expect.objectContaining({ url: 'https://oneoff.example.com', token: 'tok-flag', source: 'flag' }),
+			expect.objectContaining({ url: 'https://oneoff.example.com', token: 'tok-flag', kind: 'token' }),
 		);
+	});
+
+	it('refreshes an expiring saved session before testing it, so a live profile is not reported broken', async () => {
+		// profile test is the command users run to validate a profile; it must recover an expiring session the
+		// same way the sync commands do (refreshSessionIfNeeded no-ops on non-session credentials), rather than
+		// reporting a still-valid, refreshable session as a failed authentication.
+		vi.mocked(testConnection).mockResolvedValueOnce({ user: 'Ada', role: 'Admin', projectName: 'Demo' });
+
+		await testProfile(undefined, { url: 'https://cms.example.com', token: 'tok-flag' }, ctxAt(dir));
+
+		expect(refreshSessionIfNeeded).toHaveBeenCalledWith(expect.objectContaining({ url: 'https://cms.example.com' }));
+
+		const refreshOrder = vi.mocked(refreshSessionIfNeeded).mock.invocationCallOrder[0] ?? Infinity;
+		const testOrder = vi.mocked(testConnection).mock.invocationCallOrder[0] ?? 0;
+		expect(refreshOrder).toBeLessThan(testOrder);
 	});
 
 	it('a cancelled prompt aborts cleanly instead of proceeding', async () => {

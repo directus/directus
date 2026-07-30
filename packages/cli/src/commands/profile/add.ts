@@ -1,6 +1,7 @@
-import { select, text } from '@clack/prompts';
+import { confirm, select, text } from '@clack/prompts';
 import type { Command } from 'commander';
-import { isSafeUrl, upsertProfile } from '../../kernel/config/file.js';
+import { envTokenVar } from '../../kernel/config/credentials.js';
+import { existingProfile, isSafeUrl, upsertProfile } from '../../kernel/config/file.js';
 import { pingServer, testConnection } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
 import { ask, orPrompt, promptLogin, promptToken, saveToken } from '../../kernel/prompt.js';
@@ -9,6 +10,7 @@ import type { CliContext } from '../../kernel/run.js';
 export interface AddOptions {
 	readonly url?: string;
 	readonly token?: string;
+	readonly yes?: boolean;
 }
 
 export function registerAdd(profile: Command, getContext: () => CliContext): void {
@@ -18,10 +20,17 @@ export function registerAdd(profile: Command, getContext: () => CliContext): voi
 		.argument('[name]')
 		.option('--url <url>', 'Directus instance URL')
 		.option('--token <token>', 'Static token to save for this profile')
+		.option('--yes', 'Skip the confirmation when repointing an existing profile to a different URL')
 		.action((name: string | undefined, options: AddOptions) => add(name, options, getContext()));
 }
 
 const PROFILE_NAME = /^[A-Za-z0-9_]+$/;
+
+// The env token follows the profile NAME to the new URL; the stored credential is keyed by URL + name, so
+// it stops resolving rather than following (and resolves again if the profile is ever pointed back).
+function repointWarning(name: string, from: string, to: string): string {
+	return `Repointed "${name}": ${from} → ${to} — a ${envTokenVar(name)} env token now goes to the new URL; a credential saved for the old URL no longer resolves (add a token to save one for this URL).`;
+}
 
 export async function add(nameArg: string | undefined, options: AddOptions, ctx: CliContext): Promise<void> {
 	const name = await orPrompt(nameArg, ctx.interactive, 'Name the profile: d6s profile add <name> --url <url>', {
@@ -44,7 +53,41 @@ export async function add(nameArg: string | undefined, options: AddOptions, ctx:
 
 	if (!isSafeUrl(url)) throw new CliError('USAGE', 'Enter a valid http(s) URL.');
 
+	// Repointing an existing name is where the upsert bites: the DIRECTUS_<NAME>_TOKEN env var follows the
+	// profile NAME, so a silent URL change would send that token to the new host on the next command. (The
+	// saved store credential is keyed by URL + name, so it stops resolving instead of following.) Existence,
+	// not URL validity, decides the gate: a profile whose stored URL is missing or mangled is still a
+	// named profile. Same-URL re-adds (e.g. rotating a token) and new names stay frictionless.
+	const previous = existingProfile({ cwd: ctx.cwd, configPath: ctx.configPath }, name);
+	const repointing = previous.exists && previous.url !== url;
+
+	// The stored value bypassed schema validation (a hand-edited config can hold anything, including a
+	// credential-bearing URL every other command would refuse) — never interpolate it raw into output.
+	const previousShown =
+		previous.url !== undefined && isSafeUrl(previous.url) ? previous.url : '<saved URL is invalid or unsafe to print>';
+
+	if (repointing && options.yes !== true) {
+		if (!ctx.interactive) {
+			throw new CliError('USAGE', `Profile "${name}" already points at ${previousShown}.`, {
+				hint: `Pass --yes to repoint it to ${url}. A ${envTokenVar(name)} env token will follow it there; a credential saved for the old URL stops resolving.`,
+			});
+		}
+
+		const proceed = await ask(
+			confirm({
+				message: `Repoint "${name}" from ${previousShown} to ${url}? A ${envTokenVar(name)} env token will follow it there; a credential saved for the old URL stops resolving.`,
+			}),
+		);
+
+		if (!proceed) throw new CliError('USAGE', `Profile "${name}" unchanged.`);
+	}
+
 	upsertProfile({ cwd: ctx.cwd, configPath: ctx.configPath }, name, { url, auth: { type: 'token' } });
+
+	if (repointing) {
+		ctx.ui.warn(repointWarning(name, previousShown, url));
+	}
+
 	ctx.ui.success(`Saved profile "${name}" → ${url}`);
 
 	let token = options.token;
@@ -127,7 +170,7 @@ async function acquireCredential(
 	for (;;) {
 		try {
 			if (token !== undefined) {
-				const identity = await testConnection({ url, token, source: 'prompt' });
+				const identity = await testConnection({ url, token, kind: 'token' });
 				ctx.ui.success(`Authenticated to ${url} as ${identity.user} (${identity.role}).`);
 			} else {
 				await pingServer(url);
@@ -171,6 +214,13 @@ async function editUrl(ctx: CliContext, name: string, current: string): Promise<
 	);
 
 	upsertProfile({ cwd: ctx.cwd, configPath: ctx.configPath }, name, { url, auth: { type: 'token' } });
+
+	// The user typed the new URL themselves, so no second confirmation — but this recovery path skips the
+	// repoint gate above, and the credential consequence still deserves saying out loud.
+	if (url !== current) {
+		ctx.ui.warn(repointWarning(name, current, url));
+	}
+
 	return url;
 }
 
