@@ -25,7 +25,8 @@ export function createDatabase(env: Env, logger: Logger): Knex {
 	const poolConfig: Knex.PoolConfig = {};
 
 	const knexConfig: Knex.Config = {
-		client,
+		// `sqlite3` remains the public driver name; better-sqlite3 is the underlying knex dialect
+		client: client === 'sqlite3' ? 'better-sqlite3' : client,
 		connection,
 		pool: poolConfig,
 		log: {
@@ -51,7 +52,7 @@ export function createDatabase(env: Env, logger: Logger): Knex {
 		poolConfig.afterCreate = (conn: any, callback: any) => {
 			logger.info('Enabling SQLite Foreign Keys support...');
 
-			conn.run('PRAGMA foreign_keys = ON');
+			conn.pragma('foreign_keys = ON');
 
 			callback(null, conn);
 		};

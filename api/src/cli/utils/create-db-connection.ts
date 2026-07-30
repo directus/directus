@@ -53,7 +53,8 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 	}
 
 	const knexConfig: Knex.Config = {
-		client: client,
+		// `sqlite3` remains the public driver name; better-sqlite3 is the underlying knex dialect
+		client: client === 'sqlite3' ? 'better-sqlite3' : client,
 		connection: connection,
 		seeds: {
 			extension: 'js',
