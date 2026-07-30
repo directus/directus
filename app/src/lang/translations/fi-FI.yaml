@@ -1,4 +1,15 @@
 ---
+setup_license_title: Määritä lisenssi
+license_onboarding_title: Onko sinulla lisenssiavain?
+license_onboarding_desc: >
+  Syötä se alle avataksesi koko suunnitelmasi. Yritykset, joiden vuotuinen liikevaihto on alle 5 miljoonaa dollaria, voivat olla oikeutettuja {oig}.
+project_usage: Mihin käytät Directusta?
+project_usage_personal: Henkilökohtainen / sivuprojekti
+project_usage_commercial: Yritys / kaupallinen
+project_usage_community: Avoin lähdekoodi / yhteisö
+org_name: Organisaation Nimi
+org_name_placeholder: Acme Inc.
+license_key_option: Minulla on lisenssiavain
 continue: Jatka
 first_name: Etunimi
 last_name: Sukunimi
