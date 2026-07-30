@@ -567,6 +567,72 @@ describe('fetchRecords', () => {
 		expect((error as CliError).message).toContain('QUERY_LIMIT_MAX is 1');
 	});
 
+	it('refuses an unknown cap concluding at one row when the limit=2 probe is rejected — cap 1 truncates silently', async () => {
+		// With /server/info unreadable the cap is unknown, and a cap-1 instance clamps limit=-1 to one row:
+		// the follow-up page returns only the overlap row, which is EXACTLY the wire signature of a genuine
+		// one-row collection — the loop reads a collection of ANY size as exhausted after row 1, rows 2..N
+		// export as absent, and a later mirror push deletes them. validate-query rejecting an explicit
+		// limit=2 is the only wire-level tell, so the rejection must refuse the fetch instead of exporting.
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
+			.reply(200, { data: [{ id: 1 }] }, { headers: { 'content-type': 'application/json' } });
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id', offset: '0' } })
+			.reply(200, { data: [{ id: 1 }] }, { headers: { 'content-type': 'application/json' } });
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '2', sort: 'id' } })
+			.reply(
+				400,
+				{ errors: [{ message: '"limit" must be less than or equal to 1', extensions: { code: 'INVALID_QUERY' } }] },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		const error = await fetchRecords(credential, {
+			collection: 'articles',
+			endpoint: '/items/articles',
+			primaryKey: 'id',
+			singleton: false,
+		}).catch((error: unknown) => error);
+
+		expect(error).toBeInstanceOf(CliError);
+		expect(error).toMatchObject({ code: 'CONFIG' });
+		expect((error as CliError).message).toContain('QUERY_LIMIT_MAX is 1');
+	});
+
+	it('returns a genuine one-row collection after the limit=2 probe answers 200', async () => {
+		// The paged responses of a real single-record collection and a cap-1 clamp are byte-identical; only
+		// the probe separates them. A healthy instance accepts the explicit limit, so the record stands and
+		// the fetch succeeds — the probe must consume without inventing an error.
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
+			.reply(200, { data: [{ id: 1, title: 'Only' }] }, { headers: { 'content-type': 'application/json' } });
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id', offset: '0' } })
+			.reply(200, { data: [{ id: 1, title: 'Only' }] }, { headers: { 'content-type': 'application/json' } });
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '2', sort: 'id' } })
+			.reply(200, { data: [{ id: 1, title: 'Only' }] }, { headers: { 'content-type': 'application/json' } });
+
+		const result = await fetchRecords(credential, {
+			collection: 'articles',
+			endpoint: '/items/articles',
+			primaryKey: 'id',
+			singleton: false,
+		});
+
+		expect(result).toEqual([{ id: 1, title: 'Only' }]);
+	});
+
 	it('refuses a listed record that lacks the primary key', async () => {
 		// Field permissions can hide the key column. Without it, pull would write artifacts its own
 		// reader refuses and reconcile would key comparisons on the string "undefined" — so the fetch
@@ -657,6 +723,13 @@ describe('fetchRecords', () => {
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/permissions', method: 'GET', query: { limit: '-1', sort: 'id', offset: '0' } })
+			.reply(200, { data: [{ id: 1, policy: 'p1' }, derived] }, { headers: { 'content-type': 'application/json' } });
+
+		// One real row with the cap unknown is ambiguous with a cap-1 clamp; a healthy instance answers
+		// the limit=2 disambiguation probe with 200.
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/permissions', method: 'GET', query: { limit: '2', sort: 'id' } })
 			.reply(200, { data: [{ id: 1, policy: 'p1' }, derived] }, { headers: { 'content-type': 'application/json' } });
 
 		const result = await fetchRecords(credential, {

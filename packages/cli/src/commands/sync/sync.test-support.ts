@@ -140,6 +140,20 @@ export function mockList(agent: MockAgent, path: string, records: Record<string,
 		})
 		.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
 
+	if (records.length === 1 && !KEYSET_ENDPOINTS.has(path)) {
+		// Offset paging concluding at exactly one row is ambiguous with an unknown QUERY_LIMIT_MAX=1
+		// clamp; a healthy instance answers the limit=2 disambiguation probe with 200.
+		agent
+			.get(SYNC_URL)
+			.intercept({
+				path,
+				method: 'GET',
+				query: { limit: '2', sort: 'id' },
+				headers: { authorization: `Bearer ${SYNC_TOKEN}` },
+			})
+			.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
+	}
+
 	if (records.length > 0 && KEYSET_ENDPOINTS.has(path)) {
 		// Keyset paging exhausts with an empty page past the last cursor.
 		agent
@@ -198,6 +212,17 @@ export function mockTotalCount(agent: MockAgent, path: string, total: number): v
 		.reply(200, { data: [], meta: { total_count: total } }, { headers: { 'content-type': 'application/json' } });
 }
 
+/**
+ * Answer the pull-time GET /fields catalog read that authorizes custom secret stripping. Pull requires
+ * this read whenever it exports config resources, so any pull test reaching the data phase needs one.
+ */
+export function mockFields(agent: MockAgent, fields: Record<string, unknown>[]): void {
+	agent
+		.get(SYNC_URL)
+		.intercept({ path: '/fields', method: 'GET', headers: { authorization: `Bearer ${SYNC_TOKEN}` } })
+		.reply(200, { data: fields }, { headers: { 'content-type': 'application/json' } });
+}
+
 export function mockSingleton(agent: MockAgent, path: string, object: Record<string, unknown>): void {
 	agent
 		.get(SYNC_URL)
@@ -208,6 +233,9 @@ export function mockSingleton(agent: MockAgent, path: string, object: Record<str
 // The default resource set every pull exports (users excluded), stubbed empty with settings a lone object,
 // so the data phase of a schema-focused pull has a reply for each request it makes.
 export function mockDefaultRecords(agent: MockAgent): void {
+	// Pull reads the field catalog before the resource loop; an empty catalog means no custom secrets.
+	mockFields(agent, []);
+
 	for (const path of [
 		'/roles',
 		'/policies',

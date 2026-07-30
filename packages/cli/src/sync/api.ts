@@ -89,6 +89,51 @@ export async function applyDiff(credential: ResolvedCredential, result: DiffResu
 }
 
 /**
+ * One entry of the admin-only GET /fields catalog: the collection/field pair and the meta row the server
+ * attached (null when the column has no directus_fields row). Only what secret detection reads is kept.
+ */
+export interface FieldCatalogEntry {
+	readonly collection: string;
+	readonly field: string;
+	readonly meta: Record<string, unknown> | null;
+}
+
+/**
+ * Fetch the full field catalog. GET /fields ignores query params and never paginates — FieldsService.readAll
+ * reads directus_fields with an internal limit=-1 and appends the system rows — so one request names every
+ * field of every collection, including system collections a scoped snapshot omits entirely. Secret stripping
+ * keys on this catalog, so a failure here must propagate: degrading silently would commit concealed values.
+ */
+export async function fetchFields(credential: ResolvedCredential): Promise<FieldCatalogEntry[]> {
+	const client = connect(credential);
+
+	let response: unknown;
+
+	try {
+		response = await client.request(() => ({ path: '/fields', method: 'GET', params: {} }));
+	} catch (error) {
+		throw mapRequestError(error, credential.url);
+	}
+
+	if (!Array.isArray(response) || !response.every((entry) => isPlainObject(entry))) {
+		throw new CliError('HTTP', 'The /fields response was not an array of field entries.');
+	}
+
+	return (response as Record<string, unknown>[]).map((entry) => {
+		const collection = entry['collection'];
+		const field = entry['field'];
+
+		if (typeof collection !== 'string' || typeof field !== 'string') {
+			throw new CliError('HTTP', 'A /fields entry lacks its collection or field name.');
+		}
+
+		const meta = entry['meta'];
+
+		return { collection, field, meta: isPlainObject(meta) ? (meta as Record<string, unknown>) : null };
+	});
+}
+
+/**
  * One collection's data pull: its system endpoint (/roles), the primary key the export keys on, and
  * whether the endpoint is a singleton (settings).
  */
@@ -125,6 +170,37 @@ async function refuseZeroCapEmptiness(
 			`The instance rejected a limit=1 read of ${source.endpoint} after an empty limit=-1 read — QUERY_LIMIT_MAX is 0, so every list reads as empty.`,
 			{
 				hint: 'A zero row cap would export empty collections and let a mirror push delete real target rows. Fix QUERY_LIMIT_MAX on the instance, then re-run.',
+				detail: mapRequestError(error, credential.url).message,
+			},
+		);
+	}
+}
+
+// Concluding with exactly ONE record is ambiguous when the cap is UNKNOWN (/server/info unreadable): a
+// genuine one-row collection, or QUERY_LIMIT_MAX=1 clamping every page to a single row — then each
+// follow-up page returns only its overlap row, the loop reads a collection of ANY size as exhausted after
+// row 1, and that wire signature is IDENTICAL to a real one-row collection. Rows 2..N would export as
+// absent, which a later mirror push turns into target deletions. Same disambiguation as the zero-cap
+// probe: validate-query rejects any explicit limit above the cap, so a limit=2 read answers 400 on a
+// cap-1 instance and 200 on a healthy one. A KNOWN cap >= 2 needs no probe — its first page could not
+// have been clamped to one row.
+async function refuseOneCapTruncation(
+	client: ReturnType<typeof connect>,
+	credential: ResolvedCredential,
+	source: RecordSource,
+): Promise<void> {
+	try {
+		await client.request(() => ({
+			path: source.endpoint,
+			method: 'GET',
+			params: { limit: 2, sort: source.primaryKey },
+		}));
+	} catch (error) {
+		throw new CliError(
+			'CONFIG',
+			`The instance rejected a limit=2 read of ${source.endpoint} after paging concluded at one row — QUERY_LIMIT_MAX is 1, so every list truncates after its first row.`,
+			{
+				hint: 'A one-row cap truncates every export and would let a mirror push delete real target rows. Raise QUERY_LIMIT_MAX on the instance, then re-run.',
 				detail: mapRequestError(error, credential.url).message,
 			},
 		);
@@ -390,8 +466,15 @@ export async function fetchRecords(
 
 			fresh = rows.slice(1);
 
-			// Only the overlap row came back: the real rows are exhausted.
-			if (fresh.length === 0) return records;
+			// Only the overlap row came back: the real rows are exhausted. One record with the cap unknown
+			// is also exactly what an undetected QUERY_LIMIT_MAX=1 produces — disambiguate before trusting it.
+			if (fresh.length === 0) {
+				if (records.length === 1 && queryMax === undefined) {
+					await refuseOneCapTruncation(client, credential, source);
+				}
+
+				return records;
+			}
 		}
 
 		// Every consumer keys on the primary key: pull writes artifacts the reader would refuse without
