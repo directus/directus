@@ -19,7 +19,7 @@ import type {
 } from './types.js';
 import { generateUid } from './utils/generate-uid.js';
 import { messageCallback } from './utils/message-callback.js';
-import { createMessageQueue } from './utils/message-queue.js';
+import { createMessageQueue, MAX_QUEUED_MESSAGES } from './utils/message-queue.js';
 
 type AuthWSClient<Schema> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
 
@@ -203,7 +203,11 @@ export function realtime(config: WebSocketConfig = {}) {
 		const handleMessages = async (currentClient: AuthWSClient<Schema>, connection: WebSocketInterface) => {
 			// A single listener for the lifetime of the connection: a socket can drain several frames
 			// from one read, and re-registering per message would drop everything but the first.
-			const queue = createMessageQueue<Record<string, any> | MessageEvent<string>>();
+			const queue = createMessageQueue<Record<string, any> | MessageEvent<string>>({
+				onDrop: (dropped) => {
+					debug('warn', `Incoming messages are not being handled fast enough, dropped ${dropped} message(s).`);
+				},
+			});
 
 			const receive = (event: MessageEvent<string>) => {
 				try {
@@ -445,8 +449,17 @@ export function realtime(config: WebSocketConfig = {}) {
 				// before (or between) pulls on the stream.
 				const removeListeners: RemoveEventHandler[] = [];
 
-				const messages = createMessageQueue<Message>(() => {
-					removeListeners.forEach((remove) => remove());
+				const messages = createMessageQueue<Message>({
+					onEnd: () => {
+						removeListeners.forEach((remove) => remove());
+					},
+					onDrop: (dropped) => {
+						debug(
+							'warn',
+							`Subscription "${options.uid}" is not being consumed fast enough, ` +
+								`dropped ${dropped} message(s) to stay within ${MAX_QUEUED_MESSAGES}.`,
+						);
+					},
 				});
 
 				removeListeners.push(

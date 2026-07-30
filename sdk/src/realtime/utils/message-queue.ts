@@ -14,15 +14,35 @@ export interface MessageQueue<T> {
 }
 
 /**
- * Creates a message queue.
- *
- * @param onEnd Called once when the stream is over, whether it ended, failed, was disposed or the
- * consumer stopped iterating. Use it to release whatever is feeding the queue.
+ * How many messages a queue holds while the consumer is behind. Past this the oldest are dropped,
+ * so a consumer that never pulls cannot grow the queue without bound.
  */
-export function createMessageQueue<T>(onEnd?: () => void): MessageQueue<T> {
+export const MAX_QUEUED_MESSAGES = 1000;
+
+export interface MessageQueueOptions {
+	/** Maximum number of messages to hold. Defaults to {@link MAX_QUEUED_MESSAGES}. */
+	limit?: number;
+	/**
+	 * Called once when the stream is over, whether it ended, failed, was disposed or the consumer
+	 * stopped iterating. Use it to release whatever is feeding the queue.
+	 */
+	onEnd?: () => void;
+	/** Called with the running total whenever a message is dropped to stay within the limit. */
+	onDrop?: (dropped: number) => void;
+}
+
+/**
+ * Creates a message queue.
+ */
+export function createMessageQueue<T>({
+	limit = MAX_QUEUED_MESSAGES,
+	onEnd,
+	onDrop,
+}: MessageQueueOptions = {}): MessageQueue<T> {
 	const messages: T[] = [];
 	let wake: (() => void) | undefined;
 	let ended = false;
+	let dropped = 0;
 	let failure: { reason: unknown } | undefined;
 
 	const notify = () => {
@@ -41,6 +61,14 @@ export function createMessageQueue<T>(onEnd?: () => void): MessageQueue<T> {
 		push(message) {
 			if (ended) return;
 			messages.push(message);
+
+			// Keep the most recent messages: a consumer that is behind is better served by current
+			// state than by a backlog it will never catch up on.
+			while (messages.length > limit) {
+				messages.shift();
+				onDrop?.(++dropped);
+			}
+
 			notify();
 		},
 		end,

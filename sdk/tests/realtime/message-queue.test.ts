@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { createMessageQueue } from '../../src/realtime/utils/message-queue.js';
+import { createMessageQueue, MAX_QUEUED_MESSAGES } from '../../src/realtime/utils/message-queue.js';
 
 describe('createMessageQueue', () => {
 	test('delivers messages pushed before the consumer pulls, in order', async () => {
@@ -77,7 +77,7 @@ describe('createMessageQueue', () => {
 
 	test('calls onEnd once, whichever way the stream is over', async () => {
 		const onEnd = vi.fn();
-		const queue = createMessageQueue<number>(onEnd);
+		const queue = createMessageQueue<number>({ onEnd });
 		const stream = queue.stream();
 
 		queue.push(1);
@@ -89,5 +89,40 @@ describe('createMessageQueue', () => {
 		queue.dispose();
 
 		expect(onEnd).toHaveBeenCalledTimes(1);
+	});
+
+	test('drops the oldest messages past the limit and reports the total', async () => {
+		const onDrop = vi.fn();
+		const queue = createMessageQueue<number>({ limit: 2, onDrop });
+		const stream = queue.stream();
+
+		// Nobody is pulling, so the consumer only gets the most recent two.
+		queue.push(1);
+		queue.push(2);
+		queue.push(3);
+		queue.push(4);
+
+		expect(onDrop.mock.calls).toEqual([[1], [2]]);
+
+		await expect(stream.next()).resolves.toMatchObject({ value: 3 });
+		await expect(stream.next()).resolves.toMatchObject({ value: 4 });
+	});
+
+	test('holds MAX_QUEUED_MESSAGES by default', async () => {
+		const onDrop = vi.fn();
+		const queue = createMessageQueue<number>({ onDrop });
+		const stream = queue.stream();
+
+		for (let index = 0; index < MAX_QUEUED_MESSAGES; index++) {
+			queue.push(index);
+		}
+
+		expect(onDrop).not.toHaveBeenCalled();
+
+		queue.push(MAX_QUEUED_MESSAGES);
+
+		expect(onDrop).toHaveBeenCalledExactlyOnceWith(1);
+		// The first message made room for the last.
+		await expect(stream.next()).resolves.toMatchObject({ value: 1 });
 	});
 });
