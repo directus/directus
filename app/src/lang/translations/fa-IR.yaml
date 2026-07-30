@@ -20,10 +20,29 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: درباره
+directus_mscl: Directus   MSCL-1.0-GPL
+data_processing_agreement: توافق‌نامه پردازش داده
+contact_support: تماس با پشتیبانی  
 setup_welcome: به دایرکتوس خوش آمدید
 setup_info: بیایید حساب مدیر شما را ایجاد کنیم و پروژه‌تان را راه‌اندازی کنیم.
+setup_license_key_notice: >
+  اگر کلید لایسنس دارید، آن را در زیر وارد کنید تا پلن کامل خود را فعال کنید. کسب‌وکارهای واجد شرایط با درآمد سالانه زیر ۵ میلیون دلار ممکن است مشمول {oig} ما شوند.
+setup_save_accept_license: >
+  با کلیک بر روی ذخیره، شما شرایط {directusMscl} و {privacyPolicy} را می‌پذیرید.
+setup_license_invalid: >
+  لایسنس نامعتبر است. لطفاً برای رفع این مشکل با {contactSupport} تماس بگیرید.
+setup_license_invalid_format: فرمت لایسنس نامعتبر است.
+setup_accept_license: شرایط {directusMscl} و {privacyPolicy} را می‌پذیرم
 setup_marketing_emails: به‌روزرسانی‌های محصول و یادداشت‌های انتشار را برای من بفرست
 setup_launch: راه‌اندازی دایرکتوس
+setup_license_title: لایسنس خود را فعال کنید
+license_onboarding_title: آیا کلید لایسنس دارید؟
+license_onboarding_desc: >
+  آن را در زیر وارد کنید تا پلن کامل خود را قفل‌گشایی کنید. کسب‌وکارهای واجد شرایط با درآمد سالانه زیر ۵ میلیون دلار ممکن است مشمول {oig} ما شوند.
+project_usage: برای چه منظور از Directus استفاده می کنید؟
+project_usage_personal: شخصی / پروژه جانبی
+project_usage_commercial: تجاری / شرکتی
+project_usage_community: متن باز / جامعه
 setup_project: راه‌اندازی پروژه
 production: تولید
 skip: رد کردن
