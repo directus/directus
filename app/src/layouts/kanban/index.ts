@@ -19,6 +19,7 @@ import { useServerStore } from '@/stores/server';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountRelative } from '@/utils/format-items-count';
 import { getRootPath } from '@/utils/get-root-path';
+import { hasActiveRelatedCollection } from '@/utils/is-related-collection-active';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -61,7 +62,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField, versionKey });
 
-		const { fieldGroups } = useFilterFields(fieldsInCollection, {
+		const activeFieldsInCollection = computed(() => fieldsInCollection.value.filter(hasActiveRelatedCollection));
+
+		const { fieldGroups } = useFilterFields(activeFieldsInCollection, {
 			title: (field) => field.type === 'string' || fieldIsRelatedField(field),
 			text: (field) => field.type === 'string' || field.type === 'text' || fieldIsRelatedField(field),
 			group: (field) => fieldHasChoices(field) || fieldIsRelatedField(field, ['m2o']),

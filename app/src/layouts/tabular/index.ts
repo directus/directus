@@ -19,6 +19,7 @@ import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
+import { hasActiveRelatedCollection, isRelatedCollectionActive } from '@/utils/is-related-collection-active';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 
@@ -201,7 +202,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const fieldsDefaultValue = computed(() => {
 				return fieldsInCollection.value
-					.filter((field) => !field.meta?.hidden && !field.meta?.special?.includes('no-data'))
+					.filter(
+						(field) =>
+							!field.meta?.hidden && !field.meta?.special?.includes('no-data') && hasActiveRelatedCollection(field),
+					)
 					.slice(0, 4)
 					.map(({ field }) => field)
 					.sort();
@@ -210,7 +214,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const fields = computed({
 				get() {
 					if (layoutQuery.value?.fields) {
-						return layoutQuery.value.fields.filter((field) => fieldsStore.getField(collection.value!, field));
+						return layoutQuery.value.fields.filter(
+							(field) =>
+								fieldsStore.getField(collection.value!, field) && isRelatedCollectionActive(collection.value, field),
+						);
 					} else {
 						return unref(fieldsDefaultValue);
 					}

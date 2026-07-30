@@ -21,6 +21,7 @@ import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
 import { usePageSize } from '@/composables/use-page-size';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { Collection } from '@/types/collections';
+import { hasActiveRelatedCollection } from '@/utils/is-related-collection-active';
 import RenderDisplay from '@/views/private/components/render-display.vue';
 
 defineOptions({ inheritAttrs: false });
@@ -250,6 +251,7 @@ function removeField(fieldKey: string) {
 							:collection="collection"
 							:disabled-fields="fields"
 							:allow-select-all="false"
+							:field-filter="hasActiveRelatedCollection"
 							@add="addField($event[0])"
 						/>
 					</VMenu>

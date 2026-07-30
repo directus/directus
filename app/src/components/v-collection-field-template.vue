@@ -3,6 +3,7 @@ import { toRefs } from 'vue';
 import VFieldTemplate from '@/components/v-field-template/v-field-template.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useFieldTree } from '@/composables/use-field-tree';
+import { hasActiveRelatedCollection } from '@/utils/is-related-collection-active';
 
 const value = defineModel<string>();
 
@@ -14,7 +15,9 @@ const props = defineProps<{
 
 const { collection } = toRefs(props);
 
-const { treeList, loadFieldRelations } = useFieldTree(collection);
+// Deactivated collections are hidden from the content module, so their fields must not be
+// selectable in layout display templates either
+const { treeList, loadFieldRelations } = useFieldTree(collection, undefined, hasActiveRelatedCollection);
 </script>
 
 <template>
