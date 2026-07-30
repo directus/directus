@@ -92,4 +92,24 @@ describe('realtime heartbeat', () => {
 
 		expect(rejections).toEqual([]);
 	});
+
+	test('allows subscribing to websocket events via onWebSocket', async () => {
+		const { client, socket } = await openConnection();
+
+		const closeHandler = vi.fn();
+		client.onWebSocket('close', closeHandler);
+
+		const errorHandler = vi.fn();
+		client.onWebSocket('error', errorHandler);
+
+		socket.emit('error', new Error('test error'));
+		socket.emit('close', { code: 1000, reason: 'normal close', wasClean: true });
+
+		await flush();
+
+		expect(errorHandler).toHaveBeenCalled();
+		expect(closeHandler).toHaveBeenCalled();
+
+		client.disconnect();
+	});
 });
