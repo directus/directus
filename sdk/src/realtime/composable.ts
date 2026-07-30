@@ -313,7 +313,7 @@ export function realtime(config: WebSocketConfig = {}) {
 						ws.send(auth({ access_token }));
 
 						const confirm = await messageCallback(ws).catch(() => {
-							/* the socket's own error/close listeners already reject the outer connect() promise */
+							/* ignore, the error/close listeners already rejected */
 						});
 
 						if (
