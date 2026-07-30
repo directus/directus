@@ -43,7 +43,7 @@ catalog:
   '@editorjs/raw': 2.5.1
   '@editorjs/table': 2.4.5
   '@editorjs/underline': 1.2.1
-  '@eslint/js': 9.39.1
+  '@eslint/js': 10.0.1
   '@fastify/type-provider-typebox': 6.1.0
   '@fortawesome/fontawesome-svg-core': 6.7.2
   '@fortawesome/free-brands-svg-icons': 6.7.2
@@ -201,10 +201,10 @@ catalog:
   esbuild: 0.28.1
   esbuild-plugin-replace: 1.4.0
   escape-string-regexp: 5.0.0
-  eslint: 9.39.1
+  eslint: 10.8.0
   eslint-config-prettier: 10.1.8
-  eslint-plugin-import: 2.32.0
-  eslint-plugin-vue: 10.5.1
+  eslint-plugin-import-x: 4.17.1
+  eslint-plugin-vue: 10.10.0
   eventemitter2: 6.4.9
   execa: 9.6.0
   exif-reader: 2.0.2
@@ -332,7 +332,7 @@ catalog:
   typedoc: 0.28.19
   typedoc-plugin-markdown: 4.8.1
   typescript: 5.9.3
-  typescript-eslint: 8.46.4
+  typescript-eslint: 8.65.0
   undici: 7.28.0
   universal-cookie: 8.0.1
   unplugin-vue: 7.2.0
@@ -345,6 +345,7 @@ catalog:
   vite-tsconfig-paths: 5.1.4
   vitest: 3.2.7
   vue: 3.5.24
+  vue-eslint-parser: 10.4.1
   vue-i18n: 11.1.12
   vue-router: 4.6.3
   vue-tsc: 3.1.8
