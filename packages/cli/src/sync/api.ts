@@ -64,9 +64,9 @@ export async function fetchDiff(
 	// deleting everything the snapshot omits, so every caller must choose that outcome explicitly.
 	//
 	// `force` bypasses the server's EXACT version/vendor equality gate on /schema/diff (validate-snapshot
-	// rejects even patch drift without it). Callers pass it only after classifying the drift as patch-level
-	// themselves (local-diff); apply stays hash-sealed either way, so a forced diff cannot smuggle changes
-	// past target drift detection.
+	// rejects even patch drift without it). Only the explicit --allow-version-drift consent arrives here as
+	// true (local-diff owns that policy); apply stays hash-sealed either way, so a forced diff cannot
+	// smuggle changes past target drift detection.
 	try {
 		response = await client.request(schemaDiff(snapshot, force ? { mode, force: true } : { mode }));
 	} catch (error) {

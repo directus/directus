@@ -65,6 +65,10 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 				MODES,
 			),
 		)
+		.option(
+			'--allow-version-drift',
+			'Diff despite a snapshot/target Directus version mismatch; without it an exact match is required',
+		)
 		.option('--project <name>', 'Project scope to sync (default: default)', 'default')
 		.action((options: DiffOptions) => diff(options, getContext()));
 
@@ -80,6 +84,10 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 		.option(
 			'--dangerously-allow-delete',
 			'Include deletions; without it deletions are refused outside interactive confirmation',
+		)
+		.option(
+			'--allow-version-drift',
+			'Push despite a snapshot/target Directus version mismatch; without it an exact match is required',
 		)
 		.option('--yes', 'Skip the apply confirmation; never authorizes deletions')
 		.option('--project <name>', 'Project scope to sync (default: default)', 'default')

@@ -16,6 +16,8 @@ export interface DiffOptions {
 	 * precedence push uses.
 	 */
 	readonly mode?: Mode;
+	/** The server's own sanctioned bypass of its exact-version/vendor gate on /schema/diff, made explicit. */
+	readonly allowVersionDrift?: boolean;
 	readonly project: string;
 }
 
@@ -73,7 +75,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	// Refresh an expiring saved session before the first request so an expired token re-auths silently.
 	await refreshSessionIfNeeded(target.credential);
 
-	const result = await localDiff(target, schemaDiffMode(mode), ctx);
+	const result = await localDiff(target, schemaDiffMode(mode), ctx, options.allowVersionDrift ?? false);
 
 	// This is conservative when identities are ambiguous: diff never prompts or writes the ID map, while an
 	// interactive push may resolve those identities before importing.

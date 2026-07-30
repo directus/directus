@@ -213,9 +213,10 @@ describe('fetchDiff', () => {
 
 	it('puts force on the wire only when asked — patch drift needs it, and a plain diff must not carry it', async () => {
 		// The server rejects any EXACT version mismatch on /schema/diff without force (validate-snapshot), so
-		// the verified patch-drift path must send it; but force also bypasses the vendor check, so a plain
-		// diff must never carry it silently. The raw query strings are captured because undici's query
-		// matcher is subset-based and would let a stray force ride an intercept that never named it.
+		// the drift-consent path must send it; but force also bypasses the vendor check, so a plain diff
+		// must never carry it silently. One permissive intercept captures the raw query strings, proving
+		// force's presence AND absence against the same wire evidence, independent of the mock's
+		// query-matching semantics.
 
 		const queries: string[] = [];
 

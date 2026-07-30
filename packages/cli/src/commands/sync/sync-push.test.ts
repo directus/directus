@@ -176,33 +176,32 @@ describe('sync push', () => {
 		};
 	}
 
-	it('refuses when the target major.minor differs from the source the snapshot was pulled from', async () => {
-		// A schema pulled from one major.minor and diffed against another produces spurious changes (#27877
-		// class) — and the server would reject the mismatched snapshot anyway, hinting at a force parameter
-		// the CLI does not expose for skew. Refusing client-side names both versions and the remedy instead
-		// of surfacing a puzzling server error. No diff intercept exists: reaching /schema/diff would hit the
-		// disabled dispatcher, proving the refusal happens first.
+	it('refuses ANY known version mismatch — patch included — naming both versions and the flag', async () => {
+		// The server enforces an exact version match on /schema/diff (historically some patches are
+		// breaking; core's call is to keep that). The CLI mirrors the gate instead of second-guessing it,
+		// refusing client-side with both versions and the sanctioned bypass named — not the server's hint
+		// about a query parameter a CLI user cannot pass. No diff intercept exists: reaching /schema/diff
+		// would hit the disabled dispatcher, proving the refusal happens first.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		interceptServerInfo('11.1.0');
+		interceptServerInfo('11.2.5');
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
 
 		const err = stderr.join('');
-		expect(err).toContain('Version skew');
+		expect(err).toContain('Version mismatch');
 		expect(err).toContain('11.2.0');
-		expect(err).toContain('11.1.0');
-		expect(err).toContain('patch drift is fine');
+		expect(err).toContain('11.2.5');
+		expect(err).toContain('--allow-version-drift');
 	});
 
-	it('pushes through a patch-level version difference instead of warning or failing', async () => {
-		// Patch drift between instances is routine — environments almost never run identical patch versions,
-		// and the in-process `directus schema apply` applies snapshots with no version check at all. But the
-		// server's /schema/diff rejects ANY exact mismatch unless force rides the query, so the CLI must
-		// classify the drift and send force — the raw query is captured because a subset-matched intercept
-		// would pass without it while the real server 400s.
+	it('--allow-version-drift sends force to /schema/diff and says so out loud', async () => {
+		// The flag is the server's own sanctioned bypass (its force query parameter) made explicit. A
+		// permissive intercept captures the raw query so the assertion rests on wire evidence rather than
+		// the mock's query-matching semantics. The forced run must also leave the versions on record — a CI
+		// log reader needs them when a cross-version diff produces a strange plan.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -219,10 +218,36 @@ describe('sync push', () => {
 				return '';
 			});
 
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--allow-version-drift')).toBe(0);
+
+		expect(diffQuery).toContain('force=true');
+		expect(stderr.join('')).toContain('Version drift forced');
+	});
+
+	it('leaves an unparseable version to the server gate instead of refusing on a guess', async () => {
+		// A fork tag or failed /server/info probe is not a KNOWN mismatch: the CLI must not block a push it
+		// cannot prove wrong, and must not send force it was never asked for — the server's exact-match
+		// check stays the authority. The raw query is captured to prove force is absent.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptServerInfo('a-custom-fork');
+
+		let diffQuery: string | undefined;
+
+		agent
+			.get(url)
+			.intercept({ path: (path: string) => path.startsWith('/schema/diff'), method: 'POST' })
+			.reply(204, (opts) => {
+				diffQuery = String(opts.path).split('?')[1];
+				return '';
+			});
+
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
 
-		expect(stderr.join('')).not.toContain('Version skew');
-		expect(diffQuery).toContain('force=true');
+		expect(stderr.join('')).not.toContain('Version mismatch');
+		expect(diffQuery).toBe('mode=merge');
 	});
 
 	it('emits applied:true with the counts and the verified hash on --json', async () => {

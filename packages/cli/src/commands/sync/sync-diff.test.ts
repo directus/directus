@@ -110,6 +110,34 @@ describe('sync diff', () => {
 		expect(out).toContain('(meta.note)');
 	});
 
+	it('honors the version gate and --allow-version-drift like push — diff must not preview what push refuses', async () => {
+		// The gate lives in the shared localDiff, but the flag rides each command's own commander wiring —
+		// a diff that refused while push forced (or vice versa) would break "diff previews push". The refusal
+		// half proves the gate fires on this command; the flag half proves the wiring reaches it.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		agent
+			.get(url)
+			.intercept({ path: /^\/server\/info/, method: 'GET' })
+			.reply(200, { data: { version: '11.0.1' } }, { headers: { 'content-type': 'application/json' } })
+			.times(2);
+
+		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(1);
+		expect(stderr.join('')).toContain('Version mismatch');
+
+		// Plain interceptDiff pins query {mode} exactly, and undici's query matching is exact — the forced
+		// request carries force=true, so a match here also proves the flag actually reached the wire.
+		agent
+			.get(url)
+			.intercept({ path: '/schema/diff', method: 'POST', query: { mode: 'merge', force: 'true' } })
+			.reply(204, '');
+
+		expect(await d6s('sync', 'diff', '--to', 'staging', '--allow-version-drift')).toBe(0);
+		expect(stderr.join('')).toContain('Version drift forced');
+	});
+
 	it('emits a machine payload of changes:true with the counts and diff hash on --json', async () => {
 		// CI reads this shape to decide there is something to push and to persist the hash apply seals against.
 		seedConfig();

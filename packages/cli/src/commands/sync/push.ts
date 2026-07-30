@@ -31,6 +31,8 @@ export interface PushOptions {
 	readonly mode?: Mode;
 	/** Deliberately loud flag name, mirroring the API's import parameter — the one consent for deletions. */
 	readonly dangerouslyAllowDelete?: boolean;
+	/** The server's own sanctioned bypass of its exact-version/vendor gate on /schema/diff, made explicit. */
+	readonly allowVersionDrift?: boolean;
 	readonly yes?: boolean;
 	readonly project: string;
 }
@@ -141,7 +143,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	// Refresh an expiring saved session before the first request so an expired token re-auths silently.
 	await refreshSessionIfNeeded(credential);
 
-	const result = await localDiff(target, schemaDiffMode(mode), ctx);
+	const result = await localDiff(target, schemaDiffMode(mode), ctx, options.allowVersionDrift ?? false);
 
 	// Preparation may persist learned local identities, but all remote mutations remain behind the gates.
 	const dataResult = await prepareDataPush(target, mode, ctx);
