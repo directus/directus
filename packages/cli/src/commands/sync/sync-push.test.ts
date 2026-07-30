@@ -367,8 +367,8 @@ describe('sync push with data', () => {
 		};
 	}
 
-	// Roles matched by natural key (name), an access row referencing that role (FK remap), and a content
-	// collection passed through untouched: the three remap behaviors in one batch.
+	// Roles matched by natural key (name) and an access row referencing that role (FK remap): both remap
+	// behaviors in one batch.
 	function fullFixture(): DataCollection[] {
 		return [
 			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor', icon: 'edit' }] },
@@ -377,7 +377,6 @@ describe('sync push with data', () => {
 				primaryKey: 'id',
 				records: [{ id: 'sa1', role: 'sr1', policy: null, user: null }],
 			},
-			{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] },
 		];
 	}
 
@@ -388,7 +387,6 @@ describe('sync push with data', () => {
 			collections: {
 				directus_access: { existing: [], new: ['na1'], deleted: [], mapped: { sa1: 'na1' } },
 				directus_roles: { existing: ['tr1'], new: [], deleted: [], mapped: {} },
-				articles: { existing: [], new: [1], deleted: [], mapped: {} },
 			},
 		};
 	}
@@ -493,7 +491,6 @@ describe('sync push with data', () => {
 		interceptApply();
 		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
 		interceptTarget('/access', []);
-		interceptTarget('/items/articles', []);
 
 		let sentForm: FormData | undefined;
 
@@ -506,7 +503,6 @@ describe('sync push with data', () => {
 		expect(await decodeBatch(sentForm)).toEqual([
 			{ collection: 'directus_access', items: [{ id: 'sa1', role: 'tr1', policy: null, user: null }] },
 			{ collection: 'directus_roles', items: [{ id: 'tr1', name: 'Editor', icon: 'edit' }] },
-			{ collection: 'articles', items: [{ id: 1, title: 'Hello' }] },
 		]);
 
 		expect(readIdMapFile()).toEqual({
@@ -669,84 +665,25 @@ describe('sync push with data', () => {
 		]);
 	});
 
-	it('skips a changed content row under add instead of inserting a duplicate', async () => {
-		// add never updates: the server resolves an existing-PK conflict by inserting a fresh row (new
-		// auto-increment key), so sending a changed row under add duplicates it. The changed row must be
-		// skipped entirely — the batch empties and push stops before import.
+	it('refuses committed content data files loudly, naming the collection, before any target read or import', async () => {
+		// Content sync is deferred from this release: pull no longer writes content data files, so any that
+		// remain are stale committed artifacts whose rows push can no longer import safely (a raw integer
+		// content PK can overwrite an unrelated target row). The refusal must precede all data-phase network
+		// work — only the schema diff is intercepted, so a reached target read or import would throw on the
+		// disabled dispatcher and change this failure's shape.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
-		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Changed' }] }]);
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-
-		interceptDiff('merge', null);
-		interceptTarget('/items/articles', [{ id: 1, title: 'Old' }]);
-
-		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'add', '--yes')).toBe(0);
-		expect(stderr.join('')).toContain('nothing to push.');
-	});
-
-	it('drops an identical content row from the batch when the target fetch succeeds', async () => {
-		// Every other content test rides the swallowed-fetch path (fetch fails → send everything,
-		// conservative), which would mask a broken /items target fetch or comparison. Here the fetch
-		// succeeds: the identical row must drop out of the batch and the changed row must ride.
-		seedConfig();
-		writeSnapshotFiles(schemaDir, fullSnapshot());
-
-		seedData([
-			{
-				collection: 'articles',
-				primaryKey: 'id',
-				records: [
-					{ id: 1, title: 'Same' },
-					{ id: 2, title: 'New' },
-				],
-			},
-		]);
-
+		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] }]);
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		interceptDiff('merge', null);
 
-		interceptTarget('/items/articles', [
-			{ id: 1, title: 'Same' },
-			{ id: 2, title: 'Old' },
-		]);
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
 
-		let sentForm: FormData | undefined;
-
-		interceptImport(
-			{ mode: 'merge' },
-			{
-				data: {
-					applied: true,
-					mode: 'merge',
-					collections: { articles: { existing: [2], new: [], deleted: [], mapped: {} } },
-				},
-			},
-			200,
-			(form) => {
-				sentForm = form;
-			},
-		);
-
-		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
-
-		expect(await decodeBatch(sentForm)).toEqual([{ collection: 'articles', items: [{ id: 2, title: 'New' }] }]);
-	});
-
-	it('reports a converged content-only push without calling import', async () => {
-		// The clean state must be reachable for content too: when the target fetch proves every content
-		// row identical, the batch empties and push stops. No import intercept — a reached import throws.
-		seedConfig();
-		writeSnapshotFiles(schemaDir, fullSnapshot());
-		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Same' }] }]);
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-
-		interceptDiff('merge', null);
-		interceptTarget('/items/articles', [{ id: 1, title: 'Same' }]);
-
-		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
-		expect(stderr.join('')).toContain('schema and data match; nothing to push.');
+		const err = stderr.join('');
+		expect(err).toContain('content collections: articles');
+		expect(err).toMatch(/deferred/i);
+		expect(err).toMatch(/delete those data files/i);
 	});
 
 	it('carries dangerouslyAllowDelete on the import when mirror runs with --dangerously-allow-delete', async () => {
@@ -795,15 +732,15 @@ describe('sync push with data', () => {
 
 	it('refuses mirror in CI without --dangerously-allow-delete before any apply or import, even with data present', async () => {
 		// Mirror can delete schema and data rows absent from the import set, unknowable in
-		// CI without a dry-run, so it is refused outright. Only the diff and the content target read are registered — a reached apply or
+		// CI without a dry-run, so it is refused outright. Only the diff and the reconcile target read are registered — a reached apply or
 		// import would throw on the disabled dispatcher, proving neither happened.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
-		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] }]);
+		seedData([{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Deploy' }] }]);
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		interceptDiff('mirror', schemaChangesBody());
-		interceptTarget('/items/articles', []);
+		interceptTarget('/flows', []);
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes')).toBe(1);
 
@@ -934,7 +871,6 @@ describe('sync push with data', () => {
 		interceptApply();
 		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
 		interceptTarget('/access', []);
-		interceptTarget('/items/articles', []);
 		interceptImport({ mode: 'merge' }, { data: fullImportResult() });
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
@@ -1001,7 +937,6 @@ describe('sync push with data', () => {
 			interceptApply();
 			interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
 			interceptTarget('/access', []);
-			interceptTarget('/items/articles', []);
 			interceptImport({ mode: 'merge' }, { data: fullImportResult() });
 		}
 

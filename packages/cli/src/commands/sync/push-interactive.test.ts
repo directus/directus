@@ -174,7 +174,7 @@ describe('interactive sync push', () => {
 	it('runs a dry-run import before the committing import in the interactive path', async () => {
 		// The approved plan must come from a rolled-back server import before the committing import.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
-		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hi' }] }]);
+		seedData([{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Deploy' }] }]);
 		vi.mocked(importBatch).mockResolvedValue(importResult());
 		vi.mocked(confirm).mockResolvedValueOnce(true);
 
@@ -185,46 +185,15 @@ describe('interactive sync push', () => {
 		expect(vi.mocked(importBatch).mock.calls[1]?.[2]).not.toHaveProperty('dryRun');
 	});
 
-	it('previews a create for a to-be-created collection without dry-running its absent table', async () => {
-		// A committed content collection the schema plan will create has no table on the target yet, so a data
-		// dry-run of it 403s — which the error mapper renders as an auth failure. Interactive push dry-runs
-		// before it applies schema, so it must preview those rows as creates from the plan and skip the dry-run
-		// for them, then apply schema and import for real. No dry-run import may be sent for the absent table.
-		vi.mocked(fetchDiff).mockResolvedValueOnce({
-			hash: 'h1',
-			diff: {
-				collections: [{ collection: 'qa_content_add', diff: [{ kind: 'N', rhs: { collection: 'qa_content_add' } }] }],
-				fields: [],
-				systemFields: [],
-				relations: [],
-			},
-		});
-
-		seedData([{ collection: 'qa_content_add', primaryKey: 'id', records: [{ id: 1, title: 'New' }] }]);
-
-		vi.mocked(importBatch).mockResolvedValue(
-			importResult({ qa_content_add: { existing: [], new: [1], deleted: [], mapped: {} } }),
-		);
-
-		vi.mocked(confirm).mockResolvedValueOnce(true);
-
-		await push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir));
-
-		// Schema applied once; the only import is the committing one — no dry-run was sent for the absent table.
-		expect(applyDiff).toHaveBeenCalledTimes(1);
-		expect(importBatch).toHaveBeenCalledTimes(1);
-		expect(vi.mocked(importBatch).mock.calls[0]?.[2]).not.toHaveProperty('dryRun');
-	});
-
 	it('demands the typed confirmation for data deletions the dry-run surfaces, even with a clean schema', async () => {
 		// Destruction on the table is not only schema: a mirror data plan that deletes rows triggers the
 		// typed confirmation even when the schema is clean and even under --yes. No schema change means apply
 		// never runs, proving the data plan alone drove the gate.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
-		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hi' }] }]);
+		seedData([{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Deploy' }] }]);
 
 		vi.mocked(importBatch).mockResolvedValue(
-			importResult({ articles: { existing: [], new: [], deleted: [9], mapped: {} } }),
+			importResult({ directus_flows: { existing: [], new: [], deleted: [9], mapped: {} } }),
 		);
 
 		vi.mocked(text).mockResolvedValueOnce('staging');
@@ -242,10 +211,10 @@ describe('interactive sync push', () => {
 		// short-circuit (records === 0) must never swallow it: the dry-run runs and names the doomed rows,
 		// the typed gate fires, and the committing import carries the empty entry to the server.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
-		seedData([{ collection: 'articles', primaryKey: 'id', records: [] }]);
+		seedData([{ collection: 'directus_flows', primaryKey: 'id', records: [] }]);
 
 		vi.mocked(importBatch).mockResolvedValue(
-			importResult({ articles: { existing: [], new: [], deleted: [1, 2], mapped: {} } }),
+			importResult({ directus_flows: { existing: [], new: [], deleted: [1, 2], mapped: {} } }),
 		);
 
 		vi.mocked(text).mockResolvedValueOnce('staging');
@@ -254,14 +223,14 @@ describe('interactive sync push', () => {
 
 		expect(text).toHaveBeenCalledTimes(1);
 		expect(importBatch).toHaveBeenCalledTimes(2);
-		expect(vi.mocked(importBatch).mock.calls[1]?.[1]).toEqual([{ collection: 'articles', items: [] }]);
+		expect(vi.mocked(importBatch).mock.calls[1]?.[1]).toEqual([{ collection: 'directus_flows', items: [] }]);
 	});
 
 	it('short-circuits the same all-empty batch under merge — without the delete semantics it is a no-op', async () => {
 		// The converged exit stays correct for merge: an empty batch entry imports nothing and deletes
 		// nothing, so no import (not even a dry-run) should touch the wire.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
-		seedData([{ collection: 'articles', primaryKey: 'id', records: [] }]);
+		seedData([{ collection: 'directus_flows', primaryKey: 'id', records: [] }]);
 
 		await push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir));
 
@@ -580,7 +549,7 @@ describe('interactive sync push', () => {
 		// A changed schema with a no-op data dry-run must not render "data changes to import" over a
 		// "no data changes" line — the header appears only when the plan contains any.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(changesResult());
-		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hi' }] }]);
+		seedData([{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Deploy' }] }]);
 		vi.mocked(importBatch).mockResolvedValue(importResult());
 		vi.mocked(confirm).mockResolvedValueOnce(true);
 

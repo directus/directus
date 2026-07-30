@@ -8,7 +8,7 @@ import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
 import { applyDiff, importBatch } from '../../sync/api.js';
-import type { DiffResult, ImportBatchResult, ImportCollectionData } from '../../sync/contract.js';
+import type { ImportBatchResult, ImportCollectionData } from '../../sync/contract.js';
 import { withMappings, writeIdMap } from '../../sync/id-map.js';
 import { describeMode, type Mode } from '../../sync/mode.js';
 import {
@@ -76,66 +76,6 @@ export async function dryRunImport(
 	unchanged?: UnchangedRows,
 ): Promise<{ result: ImportBatchResult; summary: ImportSummary }> {
 	const result = await importBatch(credential, batch, { ...dataImportOptions(mode), dryRun: true });
-	return { result, summary: summarizeImport(result, unchanged) };
-}
-
-/**
- * Collections the schema diff will create on the target — a root "N" op on the collection entry. Their table
- * does not exist until apply, so a data dry-run against them fails; a preview treats their rows as creates.
- */
-export function collectionsCreatedOnTarget(result: DiffResult | null): Set<string> {
-	if (result === null) return new Set();
-
-	return new Set(
-		result.diff.collections
-			.filter((entry) => entry.diff.some((op) => op.kind === 'N' && (op.path === undefined || op.path.length === 0)))
-			.map((entry) => entry.collection),
-	);
-}
-
-/**
- * Preview the data import for diff/push, splitting off collections the schema plan will create. Their table
- * does not exist on the target yet, so a dry-run of them fails — the server hides the absent collection
- * behind a 403 that reads as an auth failure. Dry-run the collections that already exist, and preview every
- * row bound for a new collection as a create: the same work push does once it has applied schema first.
- */
-export async function previewImport(
-	credential: ResolvedCredential,
-	batch: ImportCollectionData[],
-	mode: Mode,
-	unchanged: UnchangedRows,
-	created: ReadonlySet<string>,
-	primaryKeys: ReadonlyMap<string, string>,
-): Promise<{ result: ImportBatchResult; summary: ImportSummary }> {
-	const existing = batch.filter((entry) => !created.has(entry.collection));
-	const fresh = batch.filter((entry) => created.has(entry.collection));
-
-	const base = existing.length > 0 ? (await dryRunImport(credential, existing, mode, unchanged)).result : undefined;
-
-	const collections: ImportBatchResult['collections'] = { ...(base?.collections ?? {}) };
-
-	for (const entry of fresh) {
-		const pk = primaryKeys.get(entry.collection);
-
-		// A brand-new collection has no target rows, so every committed row is a create. Carry the real source
-		// PKs when the field is known so the --json preview is honest; the counts drive the rendered summary.
-		collections[entry.collection] = {
-			existing: [],
-			new: entry.items.map((item, index) => {
-				const value = pk === undefined ? undefined : item[pk];
-				return typeof value === 'string' || typeof value === 'number' ? value : index;
-			}),
-			deleted: [],
-			mapped: {},
-		};
-	}
-
-	const result: ImportBatchResult = {
-		applied: base?.applied ?? false,
-		mode: base?.mode ?? dataImportOptions(mode).mode,
-		collections,
-	};
-
 	return { result, summary: summarizeImport(result, unchanged) };
 }
 
@@ -259,16 +199,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	if (ctx.interactive && !dataResult.skipped) {
 		dataSummary = dataPhaseConverged(dataResult, mode)
 			? emptyImportSummary()
-			: (
-					await previewImport(
-						credential,
-						dataResult.batch,
-						mode,
-						dataResult.unchanged,
-						collectionsCreatedOnTarget(result),
-						dataResult.primaryKeys,
-					)
-				).summary;
+			: (await dryRunImport(credential, dataResult.batch, mode, dataResult.unchanged)).summary;
 	}
 
 	const dataDeleted = dataSummary?.deleted ?? 0;

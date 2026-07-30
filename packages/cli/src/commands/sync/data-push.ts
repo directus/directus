@@ -62,8 +62,6 @@ export interface DataPushPlan {
 	readonly collections: number;
 	/** Collections the committed manifest marks as truncated at pull time; mirror must refuse them. */
 	readonly incomplete: readonly string[];
-	/** Each committed collection's primary-key field, so a preview can read the PKs off the batch items. */
-	readonly primaryKeys: ReadonlyMap<string, string>;
 }
 
 /** A schema-only checkout with no committed data generation. */
@@ -345,7 +343,6 @@ interface Reconciled {
 	readonly source: string;
 	readonly targetUrl: string;
 	readonly system: readonly SystemCollection[];
-	readonly content: readonly DataCollection[];
 	readonly map: IdMap;
 	readonly incomplete: readonly string[];
 	// Retained so a resolved ambiguity can trigger another pass without refetching.
@@ -353,8 +350,6 @@ interface Reconciled {
 	readonly results: readonly CollectionReconcile[];
 	// Missing entries disable unchanged detection, keeping every source row in the batch.
 	readonly targets: ReadonlyMap<string, readonly Record<string, unknown>[]>;
-	// Each committed collection's primary-key field, so a preview can read the PKs off the batch items.
-	readonly primaryKeys: ReadonlyMap<string, string>;
 }
 
 async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSkipped> {
@@ -368,14 +363,22 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 
 	const targetUrl = normalizeInstanceUrl(target.url);
 	const { system, content } = partitionCollections(collections);
-	const map = readIdMap(target.idMapPath);
 
-	// The primary-key field for every committed collection. A preview uses it to recover the PKs of rows
-	// bound for a collection the target lacks: schema apply will create that collection, but a data dry-run
-	// against the still-absent table cannot, so those rows are previewed as creates from the committed batch.
-	const primaryKeys = new Map<string, string>();
-	for (const { resource } of system) primaryKeys.set(resource.collection, resource.primaryKey);
-	for (const data of content) primaryKeys.set(data.collection, data.primaryKey);
+	// Content sync is deferred from this release — pull no longer writes content data files, so any that
+	// remain are committed leftovers whose rows this CLI can no longer import safely (a raw integer content
+	// PK can silently overwrite an unrelated target row). Refuse before any target read or import; push and
+	// diff both flow through here, so this one gate covers both.
+	if (content.length > 0) {
+		throw new CliError(
+			'STATE',
+			`The committed data files contain content collections: ${content.map((data) => data.collection).join(', ')}.`,
+			{
+				hint: 'Content sync is deferred in this release — the CLI syncs schema and configuration only. Delete those data files and re-pull.',
+			},
+		);
+	}
+
+	const map = readIdMap(target.idMapPath);
 
 	// One keystone read per push covers every reconcile fetch below (Judd's "2 requests per resource" —
 	// each target read otherwise costs a fetch plus an exhaustion probe). Best-effort; undefined keeps the probe.
@@ -388,33 +391,7 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 		queryMax,
 	);
 
-	for (const data of content) {
-		try {
-			targets.set(
-				data.collection,
-				await fetchRecords(
-					target.credential,
-					{
-						collection: data.collection,
-						endpoint: `/items/${data.collection}`,
-						primaryKey: data.primaryKey,
-						singleton: false,
-					},
-					queryMax,
-				),
-			);
-		} catch (error) {
-			// A collection that does not exist until schema apply reads as 403 FORBIDDEN (existence-hiding),
-			// which maps to AUTH — the one failure with an innocent reading, so only it keeps the batch
-			// intact with the import staying authoritative (a real permission failure fails there, loudly).
-			// Anything else (5xx, network, timeout, CONFIG's zero QUERY_LIMIT_MAX, malformed pages) is a
-			// blind read: treating it as "no targets" makes add resend existing rows, duplicating uuid-keyed
-			// content via server remint.
-			if (!(error instanceof CliError) || error.code !== 'AUTH') throw error;
-		}
-	}
-
-	return { skipped: false, source, targetUrl, system, content, map, incomplete, inputs, results, targets, primaryKeys };
+	return { skipped: false, source, targetUrl, system, map, incomplete, inputs, results, targets };
 }
 
 // Compare only exported fields; target-only defaults and audit columns are outside the sync claim. The PK
@@ -434,7 +411,6 @@ function fieldsEqual(payload: Record<string, unknown>, target: Record<string, un
 // access rows when users are out of scope so deletion does not remove target-local grants.
 function assembleBatch(
 	system: readonly SystemCollection[],
-	content: readonly DataCollection[],
 	bucket: Readonly<Record<string, Readonly<Record<string, string>>>>,
 	mode: Mode,
 	targets: ReadonlyMap<string, readonly Record<string, unknown>[]>,
@@ -535,36 +511,6 @@ function assembleBatch(
 		records += items.length;
 	}
 
-	for (const data of content) {
-		// Without target rows, unchanged detection stays conservative and sends every source row.
-		const targetRows = targets.get(data.collection);
-		const targetByPk = new Map((targetRows ?? []).map((row) => [String(row[data.primaryKey]), row]));
-
-		const items: Record<string, unknown>[] = [];
-
-		for (const record of data.records) {
-			const pk = String(record[data.primaryKey]);
-			const targetRow = targetRows === undefined ? undefined : targetByPk.get(pk);
-
-			// add creates only: a content PK already on the target is skipped even when fields differ —
-			// an add-mode import would not update the existing row but insert a duplicate beside it.
-			if (mode === 'add' && targetRow !== undefined) continue;
-
-			if (
-				targetRow !== undefined &&
-				fieldsEqual(record, targetRow, data.primaryKey) &&
-				!markUnchanged(data.collection, pk)
-			) {
-				continue;
-			}
-
-			items.push(record);
-		}
-
-		batch.push({ collection: data.collection, items });
-		records += items.length;
-	}
-
 	return { batch, systemSent, unchanged, records };
 }
 
@@ -577,7 +523,7 @@ export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContex
 
 	if (reconciled.skipped) return { skipped: true };
 
-	const { source, targetUrl, system, content, inputs, targets } = reconciled;
+	const { source, targetUrl, system, inputs, targets } = reconciled;
 
 	// Persist learned identities even if a later gate aborts. Existing-target answers can unlock child FK
 	// keys, so rerun with cached inputs while excluding every source already prompted.
@@ -614,7 +560,6 @@ export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContex
 
 	const { batch, systemSent, unchanged, records } = assembleBatch(
 		system,
-		content,
 		mappingsFor(map, source, targetUrl),
 		mode,
 		targets,
@@ -632,7 +577,6 @@ export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContex
 		records,
 		collections: batch.length,
 		incomplete: reconciled.incomplete,
-		primaryKeys: reconciled.primaryKeys,
 	};
 }
 
@@ -649,8 +593,6 @@ export interface DataPreviewPlan {
 	readonly unchangedCount: number;
 	/** Collections the committed manifest marks as truncated at pull time; push refuses mirror on them. */
 	readonly incomplete: readonly string[];
-	/** Each committed collection's primary-key field, so a caller can read the PKs off the batch items. */
-	readonly primaryKeys: ReadonlyMap<string, string>;
 }
 
 export type DataPreviewResult = DataPreviewPlan | DataPushSkipped;
@@ -664,7 +606,7 @@ export async function previewData(target: Target, mode: Mode): Promise<DataPrevi
 
 	if (reconciled.skipped) return { skipped: true };
 
-	const { source, targetUrl, system, content, results, targets, primaryKeys } = reconciled;
+	const { source, targetUrl, system, results, targets } = reconciled;
 
 	// Seed only unambiguous matches into the in-memory map; diff never settles identity choices.
 	let map = reconciled.map;
@@ -682,13 +624,7 @@ export async function previewData(target: Target, mode: Mode): Promise<DataPrevi
 		map = withMappings(map, source, targetUrl, result.collection, matchedEntries(result));
 	}
 
-	const { batch, unchanged, records } = assembleBatch(
-		system,
-		content,
-		mappingsFor(map, source, targetUrl),
-		mode,
-		targets,
-	);
+	const { batch, unchanged, records } = assembleBatch(system, mappingsFor(map, source, targetUrl), mode, targets);
 
 	let unchangedCount = 0;
 	for (const set of unchanged.values()) unchangedCount += set.size;
@@ -704,6 +640,5 @@ export async function previewData(target: Target, mode: Mode): Promise<DataPrevi
 		unmatchedCount,
 		unchangedCount,
 		incomplete: reconciled.incomplete,
-		primaryKeys,
 	};
 }

@@ -138,7 +138,7 @@ describe('interactive sync diff', () => {
 		};
 
 		vi.mocked(fetchDiff).mockResolvedValueOnce(schemaChange);
-		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hi' }] }]);
+		seedData([{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Deploy' }] }]);
 		vi.mocked(importBatch).mockResolvedValue(importResult());
 
 		await diff({ to: 'staging', project: 'default' }, ctxAt(dir));
@@ -154,10 +154,10 @@ describe('interactive sync diff', () => {
 		// so a committed-but-empty collection must reach the dry-run — skipping it would make diff report
 		// "matches" while a push would destroy rows. The dry-run names the doomed rows in the plan.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
-		seedData([{ collection: 'articles', primaryKey: 'id', records: [] }]);
+		seedData([{ collection: 'directus_flows', primaryKey: 'id', records: [] }]);
 
 		vi.mocked(importBatch).mockResolvedValue(
-			importResult({ articles: { existing: [], new: [], deleted: [1, 2], mapped: {} } }),
+			importResult({ directus_flows: { existing: [], new: [], deleted: [1, 2], mapped: {} } }),
 		);
 
 		await diff({ to: 'staging', mode: 'mirror', project: 'default' }, ctxAt(dir));

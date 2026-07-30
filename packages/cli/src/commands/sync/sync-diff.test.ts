@@ -271,20 +271,20 @@ describe('sync diff with data', () => {
 	}
 
 	it('dry-runs the remapped batch, renders per-collection data lines, and writes nothing', async () => {
-		// Apply the unambiguous role match in memory without persisting it.
+		// Apply the unambiguous role match in memory without persisting it; the unmatched flow rides verbatim.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 
 		seedData([
 			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor', icon: 'edit' }] },
-			{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] },
+			{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Deploy' }] },
 		]);
 
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		interceptDiff('merge', null);
 		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
-		interceptTarget('/items/articles', [{ id: 1, title: 'Old' }]);
+		interceptTarget('/flows', []);
 
 		let sentForm: FormData | undefined;
 
@@ -296,7 +296,7 @@ describe('sync diff with data', () => {
 					mode: 'merge',
 					collections: {
 						directus_roles: { existing: ['tr1'], new: [], deleted: [], mapped: {} },
-						articles: { existing: [], new: [1], deleted: [], mapped: {} },
+						directus_flows: { existing: [], new: ['f1'], deleted: [], mapped: {} },
 					},
 				},
 			},
@@ -308,14 +308,14 @@ describe('sync diff with data', () => {
 
 		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
 
-		// The dry-run receives the unambiguous role remap in target space.
+		// The dry-run receives the unambiguous role remap in target space, in graph import order.
 		expect(await decodeBatch(sentForm)).toEqual([
+			{ collection: 'directus_flows', items: [{ id: 'f1', name: 'Deploy' }] },
 			{ collection: 'directus_roles', items: [{ id: 'tr1', name: 'Editor', icon: 'edit' }] },
-			{ collection: 'articles', items: [{ id: 1, title: 'Hello' }] },
 		]);
 
 		const out = stdout.join('');
-		expect(out).toContain('articles');
+		expect(out).toContain('directus_flows');
 		expect(out).toContain('+1 new');
 		expect(out).toContain('directus_roles');
 
@@ -325,25 +325,25 @@ describe('sync diff with data', () => {
 	it('reports the reconcile counts and the parsed dry-run response on --json, still writing nothing', async () => {
 		// CI reads the data block: the mode, the source URL, the server's per-collection dry-run response
 		// as parsed at the boundary (unknown fields are stripped — not a verbatim passthrough), and the
-		// reconcile tally (one matched, none pending). The id map stays absent.
+		// reconcile tally (the role matched, the flow still pending). The id map stays absent.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 
 		seedData([
 			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] },
-			{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] },
+			{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Deploy' }] },
 		]);
 
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		const collections = {
 			directus_roles: { existing: ['tr1'], new: [], deleted: [], mapped: {} },
-			articles: { existing: [], new: [1], deleted: [], mapped: {} },
+			directus_flows: { existing: [], new: ['f1'], deleted: [], mapped: {} },
 		};
 
 		interceptDiff('merge', null);
 		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
-		interceptTarget('/items/articles', [{ id: 1, title: 'Old' }]);
+		interceptTarget('/flows', []);
 		interceptImport({ mode: 'merge', dryRun: 'true' }, { data: { applied: false, mode: 'merge', collections } });
 
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--json')).toBe(0);
@@ -361,7 +361,7 @@ describe('sync diff with data', () => {
 				collections,
 				matched: 1,
 				ambiguous: 0,
-				unmatched: 0,
+				unmatched: 1,
 				skipped: false,
 			},
 		});
@@ -438,118 +438,6 @@ describe('sync diff with data', () => {
 		expect(out).toContain('tr9');
 
 		expect(existsSync(idMapPath)).toBe(false);
-	});
-
-	it('treats a 403 on a content target read as not-yet-existing and keeps the batch intact', async () => {
-		// Directus hides unknown collections behind FORBIDDEN, so a 403 is the one read failure with an
-		// innocent meaning: the collection arrives with schema apply. The batch must keep every source row
-		// and let the import stay authoritative (a real permission failure fails there, loudly).
-		seedConfig();
-		writeSnapshotFiles(schemaDir, fullSnapshot());
-		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] }]);
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-
-		interceptDiff('merge', null);
-
-		agent
-			.get(url)
-			.intercept({
-				path: '/items/articles',
-				method: 'GET',
-				query: { limit: '-1', sort: 'id' },
-				headers: { authorization: `Bearer ${token}` },
-			})
-			.reply(
-				403,
-				{ errors: [{ message: "You don't have permission to access this.", extensions: { code: 'FORBIDDEN' } }] },
-				{ headers: { 'content-type': 'application/json' } },
-			);
-
-		interceptImport(
-			{ mode: 'merge', dryRun: 'true' },
-			{
-				data: {
-					applied: false,
-					mode: 'merge',
-					collections: { articles: { existing: [], new: [1], deleted: [], mapped: {} } },
-				},
-			},
-		);
-
-		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
-		expect(stdout.join('')).toContain('+1 new');
-	});
-
-	it('previews creates for a collection the target lacks instead of dry-running it and reporting false auth', async () => {
-		// The reported repro: a new content collection is committed with a row, but the target has no such
-		// table yet — schema apply will create it. A data dry-run of that absent table 403s, which the error
-		// mapper renders as "Authentication failed", so push (which applies schema first) succeeds where diff
-		// died. diff must preview those rows as creates from the schema plan and never dry-run them. No import
-		// intercept is registered: a stray dry-run would throw on the disabled dispatcher and fail this test.
-		seedConfig();
-		writeSnapshotFiles(schemaDir, fullSnapshot());
-		seedData([{ collection: 'qa_content_add', primaryKey: 'id', records: [{ id: 1, title: 'New' }] }]);
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-
-		interceptDiff('merge', {
-			collections: [{ collection: 'qa_content_add', diff: [{ kind: 'N', rhs: { collection: 'qa_content_add' } }] }],
-			fields: [],
-			systemFields: [],
-			relations: [],
-		});
-
-		agent
-			.get(url)
-			.intercept({
-				path: '/items/qa_content_add',
-				method: 'GET',
-				query: { limit: '-1', sort: 'id' },
-				headers: { authorization: `Bearer ${token}` },
-			})
-			.reply(
-				403,
-				{
-					errors: [
-						{
-							message: 'You don\'t have permission to access collection "qa_content_add" or it does not exist.',
-							extensions: { code: 'FORBIDDEN' },
-						},
-					],
-				},
-				{ headers: { 'content-type': 'application/json' } },
-			);
-
-		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
-
-		const out = stdout.join('');
-		expect(out).toContain('qa_content_add');
-		expect(out).toContain('+1 new');
-		expect(stderr.join('')).not.toContain('Authentication failed');
-	});
-
-	it('refuses when a content target read fails for any non-403 reason instead of importing blind', async () => {
-		// A 500/timeout/network failure says nothing about the target's rows. Treating it as "no targets"
-		// would make add resend existing rows — duplicating uuid-keyed content via server remint — so the
-		// fetch error must surface before any import request leaves the client.
-		seedConfig();
-		writeSnapshotFiles(schemaDir, fullSnapshot());
-		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] }]);
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-
-		interceptDiff('merge', null);
-
-		agent
-			.get(url)
-			.intercept({
-				path: '/items/articles',
-				method: 'GET',
-				query: { limit: '-1', sort: 'id' },
-				headers: { authorization: `Bearer ${token}` },
-			})
-			.reply(500, { errors: [{ message: 'boom' }] }, { headers: { 'content-type': 'application/json' } });
-
-		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(1);
-		expect(stderr.join('')).toContain('boom');
 	});
 
 	it('extends the no-op copy when the data was checked and also matches', async () => {

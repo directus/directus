@@ -10,18 +10,13 @@ import { type DataCollection, writeDataFiles } from '../../sync/data-store.js';
 import { partitionCollections, prepareDataPush, previewData, remapSystemRecord } from './data-push.js';
 import type { Target } from './resolve-target.js';
 
-// Keep unit tests off the network. The rejection is AUTH — the not-yet-existing-collection shape, the
-// one failure content reads may swallow — so these tests also exercise conservative unchanged detection;
-// any other rejection would (correctly) refuse the whole preparation as a blind read.
-vi.mock('../../sync/api.js', async () => {
-	// The factory is hoisted above the file's imports, so CliError must arrive via dynamic import.
-	const { CliError: HoistedCliError } = await import('../../kernel/error.js');
-
-	return {
-		fetchRecords: vi.fn(() => Promise.reject(new HoistedCliError('AUTH', 'no network in unit tests'))),
-		importBatch: vi.fn(),
-	};
-});
+// Keep unit tests off the network. System reconcile fetches every committed collection's target rows and
+// propagates any failure (a blind read must never assemble a batch), so the seam resolves empty: "the
+// target has no rows", which lets preparation proceed while keeping every source row in the batch.
+vi.mock('../../sync/api.js', () => ({
+	fetchRecords: vi.fn(() => Promise.resolve([])),
+	importBatch: vi.fn(),
+}));
 
 const bucket = {
 	directus_access: { a1: 'ta1' },
@@ -200,14 +195,12 @@ describe('prepareDataPush skip and precondition', () => {
 		await expect(previewData(target(), 'merge')).resolves.toEqual({ skipped: true });
 	});
 
-	it('previewData assembles the content batch, tallies zero, and never writes the id map', async () => {
-		// Content-only data reconciles nothing (content is never matched), so the preview passes it through
-		// verbatim, reports all-zero counts, and — the read-only invariant — leaves no id_map.json behind.
-		// The content-target fetch for the unchanged comparison fails here (the api seam is mocked to
-		// reject), which must degrade to "compare nothing, keep everything" — never an error.
+	it('previewData assembles the batch, tallies the reconcile counts, and never writes the id map', async () => {
+		// diff's preview must stay read-only: an unmatched flow rides the batch verbatim and counts as
+		// pending, and — the invariant — no id_map.json appears; identity choices belong to push alone.
 		writeDataFiles(
 			join(dir, 'data'),
-			[{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] }],
+			[{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Deploy' }] }],
 			'https://source.example.com',
 		);
 
@@ -216,17 +209,14 @@ describe('prepareDataPush skip and precondition', () => {
 		expect(preview).toEqual({
 			skipped: false,
 			source: 'https://source.example.com',
-			batch: [{ collection: 'articles', items: [{ id: 1, title: 'Hello' }] }],
+			batch: [{ collection: 'directus_flows', items: [{ id: 'f1', name: 'Deploy' }] }],
 			unchanged: new Map(),
 			records: 1,
 			matchedCount: 0,
 			ambiguousCount: 0,
-			unmatchedCount: 0,
+			unmatchedCount: 1,
 			unchangedCount: 0,
 			incomplete: [],
-			// The primary-key field per committed collection, so diff can preview creates into a not-yet-created
-			// target table by reading the PKs off the batch items.
-			primaryKeys: new Map([['articles', 'id']]),
 		});
 
 		expect(existsSync(join(dir, 'id_map.json'))).toBe(false);

@@ -83,8 +83,8 @@ export async function applyDiff(credential: ResolvedCredential, result: DiffResu
 }
 
 /**
- * One collection's data pull: a system endpoint (/roles) or a user-collection endpoint (/items/articles),
- * plus the primary key the export keys on and whether the endpoint is a singleton (settings).
+ * One collection's data pull: its system endpoint (/roles), the primary key the export keys on, and
+ * whether the endpoint is a singleton (settings).
  */
 export interface RecordSource {
 	readonly collection: string;

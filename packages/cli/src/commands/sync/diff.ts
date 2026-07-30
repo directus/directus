@@ -6,7 +6,7 @@ import { describeMode, type Mode } from '../../sync/mode.js';
 import { emptyImportSummary, hasImportChanges, type ImportSummary, summarizeDiff } from '../../sync/render.js';
 import { type DataPreviewResult, previewData } from './data-push.js';
 import { localDiff } from './local-diff.js';
-import { collectionsCreatedOnTarget, dataPhaseConverged, previewImport, resolveMode, schemaDiffMode } from './push.js';
+import { dataPhaseConverged, dryRunImport, resolveMode, schemaDiffMode } from './push.js';
 import { resolveTarget } from './resolve-target.js';
 
 export interface DiffOptions {
@@ -95,19 +95,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 		if (dataPhaseConverged(preview, mode)) {
 			dataSummary = emptyImportSummary();
 		} else {
-			// Collections the schema plan will create do not exist on the target yet, so previewImport dry-runs
-			// only the collections that already exist and previews rows bound for a new collection as creates.
-			// Diff then shows exactly what push applies, instead of dying on a not-yet-created table — a 403 the
-			// error mapper otherwise surfaces as a spurious authentication failure.
-			const dry = await previewImport(
-				target.credential,
-				preview.batch,
-				mode,
-				preview.unchanged,
-				collectionsCreatedOnTarget(result),
-				preview.primaryKeys,
-			);
-
+			const dry = await dryRunImport(target.credential, preview.batch, mode, preview.unchanged);
 			dryRun = dry.result;
 			dataSummary = dry.summary;
 		}
