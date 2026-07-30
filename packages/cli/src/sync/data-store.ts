@@ -4,7 +4,7 @@ import { isPlainObject } from 'lodash-es';
 import { z } from 'zod';
 import { isSafeUrl } from '../kernel/config/file.js';
 import { CliError } from '../kernel/error.js';
-import { type ArtifactWriteResult, METADATA_FILE, readArtifacts, writeArtifacts } from './artifact-store.js';
+import { type ArtifactWriteResult, fileName, METADATA_FILE, readArtifacts, writeArtifacts } from './artifact-store.js';
 import { byCodepoint } from './codepoint.js';
 import { normalizeInstanceUrl } from './id-map.js';
 import { allResources } from './resources.js';
@@ -301,6 +301,31 @@ export function writeDataFiles(
 /** Whether a data artifact manifest exists at the given directory. */
 export function hasDataFiles(dir: string): boolean {
 	return existsSync(dir) && existsSync(join(dir, METADATA_FILE));
+}
+
+/**
+ * Whether the committed data manifest lists a collection's artifact — i.e. the collection is part of the
+ * committed tree that a write not refetching it will preserve. Lenient by design: this is a read-only
+ * premise check consulted during pull, and the strict validators already stop any write that builds on a
+ * corrupt tree — so an unreadable manifest answers false instead of turning a healable tree into a hard
+ * pull failure.
+ */
+export function hasCommittedCollection(dir: string, collection: string): boolean {
+	const path = join(dir, METADATA_FILE);
+	if (!existsSync(path)) return false;
+
+	let parsed: unknown;
+
+	try {
+		parsed = JSON.parse(readFileSync(path, 'utf8'));
+	} catch {
+		return false;
+	}
+
+	if (!isPlainObject(parsed)) return false;
+
+	const files = (parsed as Record<string, unknown>)['files'];
+	return Array.isArray(files) && files.includes(fileName(collection));
 }
 
 /** Read and validate the manifest-owned data artifacts. */

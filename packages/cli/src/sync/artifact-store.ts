@@ -72,7 +72,8 @@ export function serializeCanonical(value: unknown): string {
 	return `${JSON.stringify(canonicalize(value), null, 2)}\n`;
 }
 
-function fileName(collection: string): string {
+/** The deterministic artifact filename for a collection; also how readers probe manifest membership. */
+export function fileName(collection: string): string {
 	const slug = collection
 		.toLowerCase()
 		.replace(/[^a-z0-9]+/g, '-')

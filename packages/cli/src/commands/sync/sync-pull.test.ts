@@ -1328,6 +1328,60 @@ describe('sync pull resources and data', () => {
 		]);
 	});
 
+	it('keeps user-attached access rows on a re-pull that preserves a committed users export, and warns it is stale', async () => {
+		// The mirror-deletion sequence this pins: `pull --users` commits accounts plus their grants; a later
+		// bare pull refetches access while the data writer preserves the committed users file; push then
+		// derives its user echo-protection from the COMMITTED tree (users present → the target's own user
+		// grants are not echoed back). Filtering this re-pull's access on its own fetch set would silently
+		// drop the user-attached grants from the export, and the next mirror push would delete them on the
+		// target. The keep/drop premise must be the committed outcome, not this pull's fetch set.
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		const bothRows = [
+			{ id: 'a1', role: 'r1', user: null },
+			{ id: 'a2', policy: 'p1', user: 'u1' },
+		];
+
+		interceptSnapshot();
+		interceptList('/users', [{ id: 'u1', email: 'editor@example.com' }]);
+		interceptList('/roles', []);
+		interceptList('/policies', []);
+		interceptList('/access', bothRows);
+		interceptList('/permissions', []);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--users')).toBe(0);
+
+		const accessRecords = (): unknown =>
+			JSON.parse(readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_access')), 'utf8')).records;
+
+		expect(accessRecords()).toEqual(bothRows);
+		stderr.length = 0;
+
+		// The bare re-pull: users are NOT in this fetch set, but the committed users file is preserved.
+		interceptSnapshot();
+		interceptList('/roles', []);
+		interceptList('/policies', []);
+		interceptList('/access', bothRows);
+		interceptList('/permissions', []);
+		interceptList('/flows', []);
+		interceptList('/operations', []);
+		interceptList('/dashboards', []);
+		interceptList('/panels', []);
+		interceptList('/folders', []);
+		interceptSingleton('/settings', { id: 1 });
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+
+		expect(exportedCollections()).toContain('directus_users');
+		expect(accessRecords()).toEqual(bothRows);
+
+		// The kept grants reference accounts this pull did not refresh — the operator must hear that now,
+		// because a user added on the source since the --users pull surfaces only as an import FK failure.
+		expect(stderr.join('')).toContain('did not refresh');
+		expect(stderr.join('')).toContain('--users');
+	});
+
 	it('refuses a project that is not declared in config', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);

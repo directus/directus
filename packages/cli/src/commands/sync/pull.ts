@@ -10,7 +10,12 @@ import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
 import { fetchRecords, fetchSnapshot, type SnapshotScope } from '../../sync/api.js';
-import { assertDataSource, type DataCollection, writeDataFiles } from '../../sync/data-store.js';
+import {
+	assertDataSource,
+	type DataCollection,
+	hasCommittedCollection,
+	writeDataFiles,
+} from '../../sync/data-store.js';
 import { normalizeInstanceUrl } from '../../sync/id-map.js';
 import { findOutOfScopeReferences, formatOutOfScopeReferences } from '../../sync/references.js';
 import { resolveResources, type Resource, SELECTABLE_RESOURCES } from '../../sync/resources.js';
@@ -274,6 +279,13 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 	const includesUsers = resources.some((resource) => resource.name === 'users');
 
+	// Whether users are part of the COMMITTED outcome of this pull: in this fetch set, or already committed
+	// on disk where the data writer preserves what a pull does not refetch. The access filter below must
+	// premise on this, not the fetch set alone — push derives its user echo-protection from the committed
+	// tree, so a re-pull that dropped user grants beside a preserved users file would hand a later mirror
+	// push those grants as target-side deletions.
+	const usersCommitted = includesUsers || hasCommittedCollection(dataDir, 'directus_users');
+
 	const dataCollections: DataCollection[] = [];
 	const incomplete: string[] = [];
 
@@ -328,11 +340,19 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 		rows = stripSystemFields(rows, resource);
 
-		if (resource.collection === 'directus_access' && !includesUsers) {
-			// User-attached access rows reference users that are out of scope; importing them fails the
-			// missing-FK check (INVALID_FOREIGN_KEY) and deleting them target-side under mirror is the
-			// directus-sync #148 data-loss class. Ship only the null-user (role/policy-level) grants.
-			rows = rows.filter((record) => record['user'] === null || record['user'] === undefined);
+		if (resource.collection === 'directus_access') {
+			if (!usersCommitted) {
+				// User-attached access rows reference users that are out of scope; importing them fails the
+				// missing-FK check (INVALID_FOREIGN_KEY) and deleting them target-side under mirror is the
+				// directus-sync #148 data-loss class. Ship only the null-user (role/policy-level) grants.
+				rows = rows.filter((record) => record['user'] === null || record['user'] === undefined);
+			} else if (!includesUsers && rows.some((record) => record['user'] !== null && record['user'] !== undefined)) {
+				// The kept grants lean on a users export this pull did not refresh — surface the staleness now,
+				// not as a push-time FK failure when a newer source user's grant arrives.
+				ctx.ui.warn(
+					`${resource.name}: kept user-attached grants because directus_users is committed from an earlier --users pull, but this pull did not refresh the user accounts themselves — a grant for a user added on the source since then fails the import. Re-pull with --users to refresh accounts, or delete the users data file to drop accounts from the sync.`,
+				);
+			}
 		}
 
 		dataCollections.push({ collection: resource.collection, primaryKey: resource.primaryKey, records: rows });

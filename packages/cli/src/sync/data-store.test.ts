@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { CliError } from '../kernel/error.js';
-import { type DataCollection, readDataFiles, writeDataFiles } from './data-store.js';
+import { type DataCollection, hasCommittedCollection, readDataFiles, writeDataFiles } from './data-store.js';
 
 const OWNED = /^[a-z0-9-]*_[0-9a-f]{16}\.json$/;
 
@@ -192,6 +192,36 @@ describe('writeDataFiles / readDataFiles', () => {
 		const { collections: read } = readDataFiles(dir);
 
 		expect(read[0]?.records.map((record) => record['id'])).toEqual(['10', '100', '9']);
+	});
+});
+
+describe('hasCommittedCollection', () => {
+	it("answers from the committed manifest, tracking the writer's own file naming", () => {
+		// Pull consults this to decide whether user-attached access grants ride: a committed users file the
+		// writer will preserve means the grants must be kept, or a later mirror push deletes them on the
+		// target. The probe derives the same filename as the writer, so this round-trip breaks loudly if
+		// the naming scheme ever drifts — a silent false here would re-open that grant drop.
+		const dir = tempDir();
+		expect(hasCommittedCollection(dir, 'directus_roles')).toBe(false);
+
+		writeDataFiles(dir, fixture(), SOURCE);
+
+		expect(hasCommittedCollection(dir, 'directus_roles')).toBe(true);
+		expect(hasCommittedCollection(dir, 'directus_users')).toBe(false);
+	});
+
+	it('answers false, never throws, on a corrupt manifest — pull must stay able to heal it', () => {
+		// The strict validators already stop any write that builds on a corrupt tree; a read-only premise
+		// check must not add a hard-failure path in front of the re-pull that overwrites and heals it.
+		const dir = tempDir();
+		writeDataFiles(dir, fixture(), SOURCE);
+		const metadataPath = join(dir, 'metadata.json');
+
+		writeFileSync(metadataPath, 'not json');
+		expect(hasCommittedCollection(dir, 'directus_roles')).toBe(false);
+
+		writeFileSync(metadataPath, JSON.stringify({ source: SOURCE, incomplete: [], files: 'nope' }));
+		expect(hasCommittedCollection(dir, 'directus_roles')).toBe(false);
 	});
 });
 
