@@ -458,6 +458,9 @@ export function realtime(config: WebSocketConfig = {}) {
 							return;
 						}
 
+						// Subscribe errors carry the uid of the message that caused them, but an older API or an
+						// error the server cannot attribute arrives without one, and then there is no way to
+						// tell whose it is, so every open subscription has to fail.
 						if (
 							message['type'] === 'subscribe' &&
 							message['status'] === 'error' &&

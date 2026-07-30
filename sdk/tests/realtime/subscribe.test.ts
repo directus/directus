@@ -69,18 +69,42 @@ describe('realtime subscriptions', () => {
 		client.disconnect();
 	});
 
-	test('throws when the subscription is rejected', async () => {
+	test('throws on a subscribe error carrying its uid, leaving other subscriptions alone', async () => {
 		const { client, socket } = await openConnection<Schema>();
-		const { subscription } = await client.subscribe('plants', { uid: 'a' });
+		const rejected = await client.subscribe('plants', { uid: 'a' });
+		const other = await client.subscribe('plants', { uid: 'b' });
 
+		// The API sends the uid of the message that caused the error.
 		await socket.receive({
 			type: 'subscribe',
 			status: 'error',
 			uid: 'a',
+			error: { code: 'INVALID_COLLECTION', message: 'The provided collection does not exists or is not accessible.' },
+		});
+
+		await expect(rejected.subscription.next()).rejects.toMatchObject({ type: 'subscribe', status: 'error' });
+
+		await socket.receive(created('b', 'still alive'));
+		await expect(other.subscription.next()).resolves.toMatchObject({ value: { data: [{ name: 'still alive' }] } });
+
+		client.disconnect();
+	});
+
+	test('throws on a subscribe error without a uid, which cannot be targeted', async () => {
+		const { client, socket } = await openConnection<Schema>();
+		const first = await client.subscribe('plants', { uid: 'a' });
+		const second = await client.subscribe('plants', { uid: 'b' });
+
+		// An older API, or an error the server cannot attribute, arrives without a uid, so every open
+		// subscription has to fail.
+		await socket.receive({
+			type: 'subscribe',
+			status: 'error',
 			error: { code: 'INVALID_PAYLOAD', message: 'Invalid query' },
 		});
 
-		await expect(subscription.next()).rejects.toMatchObject({ type: 'subscribe', status: 'error' });
+		await expect(first.subscription.next()).rejects.toMatchObject({ type: 'subscribe', status: 'error' });
+		await expect(second.subscription.next()).rejects.toMatchObject({ type: 'subscribe', status: 'error' });
 
 		client.disconnect();
 	});
