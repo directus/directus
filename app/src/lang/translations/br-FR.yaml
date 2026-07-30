@@ -554,6 +554,8 @@ wysiwyg_options:
   bullist: Roll padelliget
   numlist: Roll niverennet
   hr: Barrenn a-blaen
+  insertdatetime_date: Devezh
+  insertdatetime_time: Devezh hag eur
   link: Ouzhpennañ/kemm ul liamm
   unlink: Dilemel al liamm
   media: Ouzhpennañ/kemm ur media
@@ -1040,7 +1042,6 @@ interfaces:
     description: Un aozer testenn pinvidikaet evit skrivañ danvez e HTML
     toolbar: Barrenn ostilhoù
     custom_formats: Furmadoù personelaet
-    options_override: Erlec'hiañ an dibarzhioù
   input-block-editor:
     tools: Barrenn ostilhoù
     tools_options:

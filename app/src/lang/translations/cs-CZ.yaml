@@ -509,6 +509,7 @@ functions:
   minute: Minuta
   second: Sekunda
   count: Počet
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'H:mm'
@@ -849,6 +850,7 @@ operators:
   nintersects: Neprotíná
   intersects_bbox: Protíná ohraničovací pole
   nintersects_bbox: Neprotíná ohraničovací pole
+  json: JSON
   regex: Shoduje se s RegExp
 custom_validation_message: Vlastní validační zpráva
 loading: Nahrávám...
@@ -1062,12 +1064,15 @@ wysiwyg_options:
   bullist: Seznam s odrážkami
   numlist: Číslovaný seznam
   hr: Vodorovná čára
+  insertdatetime_date: Datum
+  insertdatetime_time: Čas
   link: Přidat/upravit odkaz
   unlink: Odstranit odkaz
   media: Přidat/upravit média
   image: Přidat/upravit obrázek
   copy: Kopírovat
   cut: Vyjmout
+  default: Výchozí
   paste: Vložit
   heading: Nadpis
   h1: Nadpis 1
@@ -1090,6 +1095,8 @@ wysiwyg_options:
   source_code: Upravit zdrojový kód
   fullscreen: Celá obrazovka
   directionality: Směr
+  ltr: Zleva doprava
+  rtl: Zprava doleva
   lazy_loading: Líné načítání obrázků
   lazy_loading_label: Povolit líné načítání
 dropdown: Rozbalovací nabídka
@@ -1961,9 +1968,6 @@ interfaces:
     description: Bohatý textový editor, který píše HTML obsah
     toolbar: Nástrojová lišta
     custom_formats: Vlastní formáty
-    custom_formats_note: Seznam formátů TinyMCE. Pro více informací navštivte dokumentaci [Formátů obsahu](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/).
-    options_override: Přetížení nastavení
-    options_override_note: Seznam formátů TinyMCE. Pro více informací navštivte dokumentaci [Formátů obsahu](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/).
     folder_note: Složka pro nahrané soubory. Nemá vliv na existující soubory.
     imageToken: Statický přístupový token
     imageToken_label: Statický přístupový token je připojen k URL aktiva

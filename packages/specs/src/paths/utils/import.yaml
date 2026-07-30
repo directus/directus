@@ -9,6 +9,14 @@ post:
       required: true
       schema:
         type: string
+    - description: >-
+        When true, the upload is received and the import is processed asynchronously in the background. The endpoint
+        responds once the upload has been received.
+      in: query
+      name: background
+      required: false
+      schema:
+        type: boolean
   requestBody:
     content:
       multipart/form-data:
@@ -20,6 +28,8 @@ post:
               format: binary
   responses:
     '200':
-      description: Successful request
+      description: Successful request (synchronous import completed, or background upload accepted)
+    '413':
+      description: The uploaded file exceeds `IMPORT_MAX_FILE_SIZE`
   tags:
     - Utilities
