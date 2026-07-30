@@ -313,15 +313,13 @@ export function realtime(config: WebSocketConfig = {}) {
 						ws.send(auth({ access_token }));
 						const confirm = await messageCallback(ws);
 
-						if (
-							!(
-								confirm &&
-								'type' in confirm &&
-								'status' in confirm &&
-								confirm['type'] === 'auth' &&
-								confirm['status'] === 'ok'
-							)
-						) {
+						if (!(
+							confirm &&
+							'type' in confirm &&
+							'status' in confirm &&
+							confirm['type'] === 'auth' &&
+							confirm['status'] === 'ok'
+						)) {
 							return reject('Authentication failed while opening websocket connection');
 						} else {
 							debug('info', 'Authentication successful!');
@@ -360,7 +358,10 @@ export function realtime(config: WebSocketConfig = {}) {
 					state.connection.close();
 				}
 			},
-			onWebSocket(event: WebSocketEvents, callback: (this: WebSocketInterface, ev: Event | WebSocketCloseEvent | any) => any) {
+			onWebSocket(
+				event: WebSocketEvents,
+				callback: (this: WebSocketInterface, ev: Event | WebSocketCloseEvent | any) => any,
+			) {
 				if (event === 'message') {
 					// add some message parsing
 					const updatedCallback = function (this: WebSocketInterface, event: MessageEvent<any>) {
