@@ -29,7 +29,16 @@ export async function orPrompt(
 
 /** Register before any later operation can render the token. */
 export async function promptToken(profileName: string): Promise<string> {
-	const token = await ask(password({ message: `Paste a token for "${profileName}"` }));
+	const token = await ask(
+		password({
+			message: `Paste a token for "${profileName}"`,
+			// An empty submit would save a credential resolveCredential skips as not-found — "Saved a
+			// token" now, "No credential found" on the next command. Re-prompt inline instead of aborting
+			// the whole flow over a stray Enter.
+			validate: (value) => (value !== undefined && value.trim() !== '' ? undefined : 'Paste a non-empty token.'),
+		}),
+	);
+
 	registerSecret(token);
 	return token;
 }

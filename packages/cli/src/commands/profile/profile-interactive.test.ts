@@ -132,6 +132,15 @@ describe('interactive profile flows', () => {
 
 		const store = JSON.parse(readFileSync(join(home, '.directus', 'credentials.json'), 'utf8'));
 		expect(store['https://cms.example.com'].staging).toBe('tok-abcdefgh');
+
+		// The prompt must refuse an empty submit inline: resolveCredential skips an empty stored token as
+		// not-found, so accepting one would print "Saved a token" now and "No credential found" on the next
+		// command. The clack mock never runs validators, so exercise the one the prompt registered.
+		const validate = vi.mocked(password).mock.calls[0]?.[0]?.validate;
+		if (typeof validate !== 'function') throw new Error('promptToken must register a callable validator');
+		expect(validate('')).toBeTruthy();
+		expect(validate('   ')).toBeTruthy();
+		expect(validate('tok-abcdefgh')).toBeUndefined();
 	});
 
 	it('lets the user save a token anyway after a failed check', async () => {
