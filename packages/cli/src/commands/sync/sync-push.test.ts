@@ -176,38 +176,53 @@ describe('sync push', () => {
 		};
 	}
 
-	it('warns when the target Directus version differs from the source the snapshot was pulled from', async () => {
-		// A schema pulled from one major.minor and applied to another can produce spurious diffs (#27877
-		// class). The snapshot records its source version, so push compares it to the live target and warns
-		// before apply rather than leaving the operator to puzzle over the plan.
+	it('refuses when the target major.minor differs from the source the snapshot was pulled from', async () => {
+		// A schema pulled from one major.minor and diffed against another produces spurious changes (#27877
+		// class) — and the server would reject the mismatched snapshot anyway, hinting at a force parameter
+		// the CLI does not expose for skew. Refusing client-side names both versions and the remedy instead
+		// of surfacing a puzzling server error. No diff intercept exists: reaching /schema/diff would hit the
+		// disabled dispatcher, proving the refusal happens first.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		interceptServerInfo('11.1.0');
-		interceptDiff('merge', null);
 
-		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
 
 		const err = stderr.join('');
 		expect(err).toContain('Version skew');
 		expect(err).toContain('11.2.0');
 		expect(err).toContain('11.1.0');
+		expect(err).toContain('patch drift is fine');
 	});
 
-	it('does not warn on a patch-level version difference', async () => {
-		// Patch drift between instances is routine and harmless; warning on it would train operators to
-		// ignore the signal that matters. Only a major.minor mismatch is skew worth surfacing.
+	it('pushes through a patch-level version difference instead of warning or failing', async () => {
+		// Patch drift between instances is routine — environments almost never run identical patch versions,
+		// and the in-process `directus schema apply` applies snapshots with no version check at all. But the
+		// server's /schema/diff rejects ANY exact mismatch unless force rides the query, so the CLI must
+		// classify the drift and send force — the raw query is captured because a subset-matched intercept
+		// would pass without it while the real server 400s.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		interceptServerInfo('11.2.5');
-		interceptDiff('merge', null);
+
+		let diffQuery: string | undefined;
+
+		agent
+			.get(url)
+			.intercept({ path: (path: string) => path.startsWith('/schema/diff'), method: 'POST' })
+			.reply(204, (opts) => {
+				diffQuery = String(opts.path).split('?')[1];
+				return '';
+			});
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
 
 		expect(stderr.join('')).not.toContain('Version skew');
+		expect(diffQuery).toContain('force=true');
 	});
 
 	it('emits applied:true with the counts and the verified hash on --json', async () => {
@@ -855,6 +870,33 @@ describe('sync push with data', () => {
 		const err = stderr.join('');
 		expect(err).toMatch(/schema/i);
 		expect(err).toMatch(/re-run|retry/i);
+	});
+
+	it('keeps the diff-first guidance when the import outcome is unknown after a schema apply', async () => {
+		// A dropped connection does NOT stop the server's import transaction — it may still commit, with the
+		// id-map updates in the lost response. The one safety instruction for that scenario is "run diff
+		// before retrying"; the schema-applied wrapper must not replace it with generic re-run advice, which
+		// is exactly the blind retry that duplicates records.
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', schemaChangesBody());
+		interceptApply();
+		interceptTarget('/roles', []);
+
+		agent
+			.get(url)
+			.intercept({ path: (path: string) => path.startsWith('/utils/import'), method: 'POST' })
+			.replyWithError(new Error('socket hang up'));
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+
+		const err = stderr.join('');
+		expect(err).toContain('Schema was applied');
+		expect(err).toContain('diff before retrying');
+		expect(err).not.toContain('re-run d6s sync push');
 	});
 
 	it('emits the PushReport data block with the source and parsed response collections on --json', async () => {

@@ -54,6 +54,7 @@ export async function fetchDiff(
 	credential: ResolvedCredential,
 	snapshot: Snapshot,
 	mode: 'merge' | 'mirror',
+	force = false,
 ): Promise<DiffResult | null> {
 	const client = connect(credential);
 
@@ -61,8 +62,13 @@ export async function fetchDiff(
 
 	// `mode` is required, never defaulted: the server defaults to `mirror`, whose diff proposes
 	// deleting everything the snapshot omits, so every caller must choose that outcome explicitly.
+	//
+	// `force` bypasses the server's EXACT version/vendor equality gate on /schema/diff (validate-snapshot
+	// rejects even patch drift without it). Callers pass it only after classifying the drift as patch-level
+	// themselves (local-diff); apply stays hash-sealed either way, so a forced diff cannot smuggle changes
+	// past target drift detection.
 	try {
-		response = await client.request(schemaDiff(snapshot, { mode }));
+		response = await client.request(schemaDiff(snapshot, force ? { mode, force: true } : { mode }));
 	} catch (error) {
 		throw mapRequestError(error, credential.url);
 	}
@@ -302,14 +308,30 @@ export async function fetchRecords(
 
 	if (source.keyset === true) return fetchKeysetPages(client, credential, source);
 
+	// A one-row cap starves the overlap scheme below: the single row each follow-up page returns IS the
+	// overlap row, so `fresh` is always empty and every collection reads as exhausted after row 1 — rows
+	// 2..N export as absent, which a later mirror push turns into target deletions. The zero-cap probe
+	// cannot see this (its limit=1 read succeeds at cap 1), so refuse the cap outright, same stance as cap 0.
+	if (queryMax === 1) {
+		throw new CliError(
+			'CONFIG',
+			`QUERY_LIMIT_MAX is 1 on the instance — paging cannot advance past the first ${source.endpoint} row.`,
+			{
+				hint: 'A one-row cap truncates every export and would let a mirror push delete real target rows. Raise QUERY_LIMIT_MAX on the instance, then re-run.',
+			},
+		);
+	}
+
 	// QUERY_LIMIT_MAX can silently clamp limit=-1, and a short page is indistinguishable from a clamped one.
 	// Continue until pages are exhausted so mirror never mistakes a truncated fetch for the complete set.
 	//
 	// Pages advance by OFFSET WITH A ONE-ROW OVERLAP: each follow-up page starts at the last row already
 	// kept, and that first row must match it. Offset pages shift under concurrent writes — an insert
 	// re-serves a row, a DELETE silently skips one, and a skipped row exports as absent, which a later
-	// mirror push turns into a target deletion — and a shifted boundary breaks the overlap in both
-	// directions, failing loud instead. Keyset paging (filter PK _gt cursor) is NOT the default: the query
+	// mirror push turns into a target deletion — and a boundary shift that changes what sits at the overlap
+	// offset fails loud. (Not airtight: a compensating insert+delete both landing before the boundary keeps
+	// the offset stable and passes silently — that miscounts mid-fetch churn, not rows that existed
+	// throughout the fetch.) Keyset paging (filter PK _gt cursor) is NOT the default: the query
 	// validator forbids _gt on uuid fields (get-filter-operators-for-type.ts), which most system PKs are —
 	// integer-PK endpoints opt in via `keyset` above.
 	const records: Record<string, unknown>[] = [];

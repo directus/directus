@@ -210,6 +210,31 @@ describe('fetchDiff', () => {
 		expect(error).toBeInstanceOf(CliError);
 		expect(error).toMatchObject({ code: 'HTTP' });
 	});
+
+	it('puts force on the wire only when asked — patch drift needs it, and a plain diff must not carry it', async () => {
+		// The server rejects any EXACT version mismatch on /schema/diff without force (validate-snapshot), so
+		// the verified patch-drift path must send it; but force also bypasses the vendor check, so a plain
+		// diff must never carry it silently. The raw query strings are captured because undici's query
+		// matcher is subset-based and would let a stray force ride an intercept that never named it.
+
+		const queries: string[] = [];
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: (path: string) => path.startsWith('/schema/diff'), method: 'POST' })
+			.reply(204, (opts) => {
+				queries.push(String(opts.path).split('?')[1] ?? '');
+				return '';
+			})
+			.times(2);
+
+		await expect(fetchDiff(credential, snapshot(), 'merge', true)).resolves.toBeNull();
+		await expect(fetchDiff(credential, snapshot(), 'merge', false)).resolves.toBeNull();
+
+		expect(queries[0]).toContain('force=true');
+		expect(queries[0]).toContain('mode=merge');
+		expect(queries[1]).toBe('mode=merge');
+	});
 });
 
 describe('applyDiff', () => {
@@ -523,6 +548,22 @@ describe('fetchRecords', () => {
 		expect(error).toBeInstanceOf(CliError);
 		expect(error).toMatchObject({ code: 'CONFIG' });
 		expect((error as CliError).message).toContain('QUERY_LIMIT_MAX');
+	});
+
+	it('refuses a known one-row cap outright — the overlap scheme cannot make progress at cap 1', async () => {
+		// At QUERY_LIMIT_MAX=1 every follow-up page returns exactly its overlap row, so the loop reads a
+		// collection of ANY size as exhausted after row 1 — rows 2..N export as absent and a later mirror
+		// push deletes them. The zero-cap probe cannot catch this (limit=1 succeeds at cap 1), so the cap is
+		// refused before any request: an intercept-free agent proves no network I/O happens first.
+		const error = await fetchRecords(
+			credential,
+			{ collection: 'articles', endpoint: '/items/articles', primaryKey: 'id', singleton: false },
+			1,
+		).catch((error: unknown) => error);
+
+		expect(error).toBeInstanceOf(CliError);
+		expect(error).toMatchObject({ code: 'CONFIG' });
+		expect((error as CliError).message).toContain('QUERY_LIMIT_MAX is 1');
 	});
 
 	it('refuses a listed record that lacks the primary key', async () => {

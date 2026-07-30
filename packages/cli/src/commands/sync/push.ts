@@ -320,14 +320,19 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		try {
 			importResult = await importBatch(credential, dataResult.batch, dataImportOptions(mode));
 		} catch (error) {
-			// Schema apply has no rollback; make the partial commit and retry path explicit.
+			// Schema apply has no rollback; make the partial commit explicit. But never overwrite a hint the
+			// import failure already carries: a lost response's hint says "run diff before retrying — a blind
+			// retry can duplicate records", and replacing it with generic retry advice inverts the one safety
+			// instruction that scenario exists to deliver. Only a hintless failure gets the retry guidance.
 			if (schemaApplied && error instanceof CliError) {
-				ctx.ui.warn('Schema was applied, but the data import failed. Re-run push to retry the data import.');
+				ctx.ui.warn('Schema was applied, but the data import did not complete.');
 
-				throw withHint(
-					error,
-					'Schema is already applied — re-run d6s sync push to retry the data import against an empty schema diff.',
-				);
+				throw error.hint === undefined
+					? withHint(
+							error,
+							'Schema is already applied — re-run d6s sync push to retry the data import against an empty schema diff.',
+						)
+					: error;
 			}
 
 			throw error;

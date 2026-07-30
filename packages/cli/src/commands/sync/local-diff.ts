@@ -30,22 +30,28 @@ function assertNoMisroutedCollectionDrops(diff: SchemaDiff): void {
 }
 
 // The version's major.minor, or undefined when the string is not a recognizable Directus version (a dev
-// `0.0.0`, a fork tag, a git build). Patch is deliberately dropped — patch drift is not skew worth warning.
+// `0.0.0`, a fork tag, a git build). Patch is deliberately dropped — patch drift is not skew.
 function majorMinor(version: string | undefined): string | undefined {
 	const match = version?.match(/^(\d+)\.(\d+)/);
 	return match ? `${match[1]}.${match[2]}` : undefined;
 }
 
-// Warn when the target's Directus version differs (at major.minor) from the source the snapshot was pulled
-// from. Diffing/applying a schema across versions can surface spurious changes — the proactive form of the
-// reactive #27877 guard below. Best-effort: an unreadable or unparseable version on either side skips.
-function versionSkewWarning(source: string, target: string | undefined): string | undefined {
+// The server's /schema/diff rejects ANY exact-version mismatch unless `force` is passed — but environments
+// almost never run identical patch versions, and the in-process `directus schema apply` CLI applies
+// snapshots with no version check at all. So the CLI owns the policy: patch drift diffs with `force`,
+// major.minor skew is refused here with an actionable message (unforced, the server would reject it anyway,
+// hinting at a `force` parameter the CLI deliberately does not expose wholesale — cross-version diffs
+// surface spurious changes, the proactive form of the reactive #27877 guard below). An unparseable version
+// on either side classifies as aligned-unknown: no force, and the server's exact-match gate stays the
+// authority.
+function classifyVersionDrift(source: string, target: string | undefined): 'aligned' | 'patch' | 'skew' {
+	if (source === target) return 'aligned';
+
 	const a = majorMinor(source);
 	const b = majorMinor(target);
 
-	if (a === undefined || b === undefined || a === b) return undefined;
-
-	return `Version skew: the snapshot was pulled from Directus ${source}, but ${target} is on the target. Schema diff/apply across versions can surface spurious changes — align the versions if the plan looks wrong.`;
+	if (a === undefined || b === undefined) return 'aligned';
+	return a === b ? 'patch' : 'skew';
 }
 
 /**
@@ -55,9 +61,19 @@ export async function localDiff(target: Target, mode: 'merge' | 'mirror', ctx: C
 	const snapshot = readSnapshotFiles(target.schemaDir);
 
 	// The snapshot records the source's version at pull time (snapshot.directus); compare it to the target's
-	// live version so version skew surfaces as a warning before apply, not as a puzzling diff.
-	const skew = versionSkewWarning(snapshot.directus, await fetchServerVersion(target.credential));
-	if (skew !== undefined) ctx.ui.warn(skew);
+	// live version so version skew surfaces as a clear refusal before apply, not as a puzzling server error.
+	const targetVersion = await fetchServerVersion(target.credential);
+	const drift = classifyVersionDrift(snapshot.directus, targetVersion);
+
+	if (drift === 'skew') {
+		throw new CliError(
+			'STATE',
+			`Version skew: the snapshot was pulled from Directus ${snapshot.directus}, but the target runs ${targetVersion ?? 'an unknown version'}.`,
+			{
+				hint: 'Schema diff across major.minor versions surfaces spurious changes. Align both instances at the same major.minor (patch drift is fine), re-pull if the source was upgraded, then re-run.',
+			},
+		);
+	}
 
 	// Warn before apply about references pointing outside the committed snapshot: a scoped export can strand
 	// a group parent or relation target the fresh instance lacks, and apply fails on it. Independent of pull's
@@ -65,7 +81,7 @@ export async function localDiff(target: Target, mode: 'merge' | 'mirror', ctx: C
 	const references = findOutOfScopeReferences(snapshot);
 	if (references.length > 0) ctx.ui.warn(formatOutOfScopeReferences(references));
 
-	const result = await fetchDiff(target.credential, snapshot, mode);
+	const result = await fetchDiff(target.credential, snapshot, mode, drift === 'patch');
 
 	if (result !== null) assertNoMisroutedCollectionDrops(result.diff);
 
