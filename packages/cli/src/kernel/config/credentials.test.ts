@@ -147,6 +147,53 @@ describe('credential store integrity', () => {
 		expect(() => saveCredential('https://cms.example.com', 'prod', 'secret')).toThrow(/not a JSON object/);
 		expect(JSON.parse(readFileSync(path, 'utf8'))).toEqual({ 'https://cms.example.com': 'not-a-profile-map' });
 	});
+
+	it('never resolves "__proto__" to Object.prototype — clearing it must not strip builtins', () => {
+		// On JSON.parse output, an ABSENT store["__proto__"] reads as Object.prototype itself, whose own
+		// properties include every builtin — Object.hasOwn(Object.prototype, "toString") is true, so
+		// clearCredential would delete toString off every object in the process. The store is rebuilt on
+		// null prototypes so a __proto__ URL is only ever plain data.
+		const home = isolateHome();
+		vi.stubEnv('CI', '');
+
+		const path = join(home, '.directus', 'credentials.json');
+		mkdirSync(join(home, '.directus'), { recursive: true });
+		writeFileSync(path, JSON.stringify({ 'https://cms.example.com': { prod: 'tok' } }));
+
+		clearCredential('__proto__', 'toString');
+
+		expect(typeof Object.prototype.toString).toBe('function');
+		expect(JSON.parse(readFileSync(path, 'utf8'))).toEqual({ 'https://cms.example.com': { prod: 'tok' } });
+	});
+
+	it('round-trips a profile literally named __proto__ as plain data', () => {
+		// "__proto__" passes the env-safe profile-name rule, so it is a legal name a user can type — the
+		// save must create an own key (never reparent the store via the inherited setter, which would
+		// silently drop the credential), and resolve/clear must treat it like any other entry.
+		const home = isolateHome();
+		vi.stubEnv('CI', '');
+		vi.stubEnv('DIRECTUS___PROTO___TOKEN', '');
+
+		const url = 'https://cms.example.com';
+		saveCredential(url, '__proto__', 'proto-token');
+
+		const stored = JSON.parse(readFileSync(join(home, '.directus', 'credentials.json'), 'utf8'));
+		expect(Object.hasOwn(stored[url], '__proto__')).toBe(true);
+
+		expect(resolveCredential({ target: 'profile', url, profileName: '__proto__' })).toEqual({
+			found: true,
+			credential: { kind: 'token', url, token: 'proto-token' },
+		});
+
+		clearCredential(url, '__proto__');
+
+		expect(resolveCredential({ target: 'profile', url, profileName: '__proto__' })).toEqual({
+			found: false,
+			envVar: 'DIRECTUS___PROTO___TOKEN',
+		});
+
+		expect(typeof Object.prototype.toString).toBe('function');
+	});
 });
 
 describe('credentialStorage', () => {

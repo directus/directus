@@ -94,7 +94,9 @@ function readStore(): CredentialStore {
 		// (unreadable, permissions) must NOT collapse to {} — saveCredential would
 		// then overwrite a recoverable file and wipe every other saved token.
 		const code = error instanceof Error && 'code' in error ? error.code : undefined;
-		if (code === 'ENOENT') return {};
+		// Null prototype for the same reason as the rebuild below: the first-ever save must not be able to
+		// hit an inherited __proto__ setter either.
+		if (code === 'ENOENT') return Object.create(null) as CredentialStore;
 
 		const hint = error instanceof Error ? error.message : undefined;
 		throw new CliError('STATE', `Cannot read credential store at ${path}.`, hint !== undefined ? { hint } : {});
@@ -120,6 +122,13 @@ function readStore(): CredentialStore {
 
 	const store = parsed as Record<string, unknown>;
 
+	// Rebuilt on null prototypes so a "__proto__" key can only ever be plain data. On JSON.parse output,
+	// reading an ABSENT store["__proto__"] resolves to Object.prototype — clearCredential's delete would
+	// then strip builtins off every object in the process, and saveCredential's assignment would silently
+	// reparent the store instead of writing. (A profile literally named __proto__ is legal — it passes the
+	// env-safe name rule — so this is reachable data, not just a hand-edited file.)
+	const clean = Object.create(null) as CredentialStore;
+
 	for (const [url, profiles] of Object.entries(store)) {
 		if (!isPlainObject(profiles)) {
 			throw new CliError('STATE', `Credential store entry for ${url} at ${path} is not a JSON object.`, {
@@ -132,9 +141,11 @@ function readStore(): CredentialStore {
 			if (isAuthenticationData(credential)) continue;
 			throw invalidStoredCredential(url, profileName);
 		}
+
+		clean[url] = Object.assign(Object.create(null) as Record<string, StoredCredential>, profiles);
 	}
 
-	return store as CredentialStore;
+	return clean;
 }
 
 /** The store is owner-only (0600); register the token before writing it. */
