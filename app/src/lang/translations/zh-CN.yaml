@@ -20,7 +20,6 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 关于
-privacy_policy: 隐私政策
 setup_welcome: 欢迎使用 Directus
 setup_info: 让我们创建您的管理员帐户并启动您的项目。
 setup_marketing_emails: 向我发送产品更新和发行说明
@@ -548,6 +547,7 @@ functions:
   minute: 分
   second: 秒
   count: 总计
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -894,6 +894,7 @@ operators:
   nintersects: 不相交
   intersects_bbox: 相交边框
   nintersects_bbox: 没有相交边框
+  json: JSON
   regex: 匹配正则表达式
 custom_validation_message: 自定义验证消息
 loading: 正在载入...
@@ -1120,12 +1121,15 @@ wysiwyg_options:
   bullist: 符号列表
   numlist: 数字列表
   hr: 水平线
+  insertdatetime_date: Date
+  insertdatetime_time: 时间
   link: 添加/编辑链接
   unlink: 移除链接
   media: 添加/编辑媒体
   image: 添加/编辑图像
   copy: 复制
   cut: 剪切
+  default: 默认值
   paste: 粘帖
   heading: 标题
   h1: 一级标题
@@ -1149,6 +1153,8 @@ wysiwyg_options:
   source_code: 编辑源代码
   fullscreen: 全屏显示
   directionality: 方向
+  ltr: 从左到右
+  rtl: 从右到左
   lazy_loading: "延迟加载图像\n"
   lazy_loading_label: 允许延迟加载
 dropdown: 下拉列表
@@ -1290,6 +1296,7 @@ fields:
     collection: 数据模型
     icon: 图标
     note: 注释
+    status: 状态
     color: 颜色
     display_template: 显示模板
     hidden: 隐藏
@@ -1426,18 +1433,13 @@ fields:
     report_error_url: 用于反馈错误的网址
     collaborative_editing: 共同编辑
     collaborative_editing_note: 共同编辑需要WebSockets才能正常工作。
-    ai_notice: 'AI助手提供一个内置的侧边栏，用于与大型语言模型交谈。启用后，从工具栏中打开此侧边栏，以便询问问题、生成内容、获取帮助。<a href="https://directus.io/docs/guides/ai/assistant" target="_blank">了解更多关于配置和使用AI助手的信息。</a>'
     mcp_enabled: MCP服务器
-    mcp_enabled_note: '通过 <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">模型上下文协议 (MCP)</a> 将 AI/LLM 工具连接到您的 Directus 项目。这使 AI 助手能够安全地读取您的 Directus 数据并与之交互。'
-    mcp_notice: '模型上下文协议（Model Context Protocol）是将大型语言模型（LLM）连接到像 Directus 这样的应用的标准。启用后，Directus MCP 服务器将在 /mcp 可用。<a href="https://directus.io/docs/guides/ai/mcp" target="_blank">了解有关 MCP 及如何连接的更多信息。</a>'
     mcp_allow_deletes: 允许删除
     mcp_allow_deletes_note:
       - 允许通过MCP工具删除条目、文件、流程、字段、关系以及模型。<strong>注意：这可能导致数据丢失。</strong>出于安全考虑，默认为禁用。
     mcp_prompts_collection: AI 提示词集合
-    mcp_prompts_collection_note: '选择用于存储 AI 交互<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">可重复使用的提示词模板</a>的集合。'
     mcp_system_prompt_divider: 系统提示配置
     mcp_system_prompt_enabled: 使用系统提示
-    mcp_system_prompt_enabled_note: "使用<a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>默认系统提示词</a>来指导大型语言模型（LLM）的行为。禁用后可以移除或使用下方您自己的提示词覆盖。"
     mcp_system_prompt: 自定义系统提示
     mcp_system_prompt_note: '自定义系统提示替换默认值。留空则使用默认值(如果已启用)。'
     ai_system_prompt: 用于AI系统的提示词
@@ -1655,7 +1657,6 @@ mcp_prompts_collection_schema:
   messages_role_user: 用户
   messages_role_assistant: 助理
   messages_role_note: 谁正在这个信息中说话。
-  meta_prompts_notice: '提示词是可重复使用的模板，您可以通过 Directus MCP 服务器、流程或其他 AI 应用程序与大型语言模型（LLM）一起使用。<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">了解更多关于创建有效提示词的信息。</a>'
 expired: 已过期
 upcoming: 即将到来的
 share: 分享
@@ -2019,6 +2020,7 @@ interfaces:
     incompatible_data: 当前数据与重复器接口不兼容，添加项目到重复器时将被覆盖
     interface_group: 接口选项
     display_group: 显示选项
+    edit_mode_inline: 内联
   slider:
     slider: 滑块
     description: 使用滑块选择一个数字
@@ -2092,9 +2094,6 @@ interfaces:
     description: 富文本编辑器
     toolbar: 工具栏
     custom_formats: 自定义格式
-    custom_formats_note: TinyMCE 内容格式列表。有关更多信息，请参阅有关 [内容格式](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) 的 TinyMCE 文档。
-    options_override: 覆盖选项
-    options_override_note: TinyMCE 自定义格式快捷键及其值。有关更多信息，请参阅有关 [自定义格式](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) 的 TinyMCE 文档。
     folder_note: 用于上传文件的文件夹。不影响现有文件。
     imageToken: 静态访问令牌
     imageToken_label: 静态访问令牌已被附加到资源的 URL

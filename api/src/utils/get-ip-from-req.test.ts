@@ -1,9 +1,19 @@
 import type { IncomingMessage } from 'http';
 import { useEnv } from '@directus/env';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import { getIPFromReq } from './get-ip-from-req.js';
 
+const warn = vi.fn();
+
 vi.mock('@directus/env');
+
+vi.mock('../logger/index.js', () => ({
+	useLogger: vi.fn(() => ({ warn })),
+}));
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
 
 describe('getIPFromReq', () => {
 	test('Removes null if ip is undefined', () => {
@@ -57,6 +67,114 @@ describe('getIPFromReq', () => {
 		} as unknown as IncomingMessage);
 
 		expect(result).toBe('127.0.0.2');
+	});
+
+	describe('Custom IP header warning', () => {
+		test('Warns when custom header does not return a valid IP', () => {
+			vi.mocked(useEnv).mockReturnValue({
+				IP_TRUST_PROXY: true,
+				IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
+			});
+
+			getIPFromReq({
+				socket: { remoteAddress: '127.0.0.1' },
+				headers: {},
+				url: '/items/articles',
+			} as unknown as IncomingMessage);
+
+			expect(warn).toHaveBeenCalledOnce();
+		});
+
+		test('Does not warn when the custom header returns a valid IP', () => {
+			vi.mocked(useEnv).mockReturnValue({
+				IP_TRUST_PROXY: true,
+				IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
+			});
+
+			getIPFromReq({
+				socket: { remoteAddress: '127.0.0.1' },
+				headers: { 'x-custom-ip': '127.0.0.2' },
+			} as unknown as IncomingMessage);
+
+			expect(warn).not.toHaveBeenCalled();
+		});
+
+		test.each(['/server/ping', '/server/info'])('Suppresses the warning on the no-auth endpoint %s', (path) => {
+			vi.mocked(useEnv).mockReturnValue({
+				IP_TRUST_PROXY: true,
+				IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
+			});
+
+			const result = getIPFromReq({
+				socket: { remoteAddress: '127.0.0.1' },
+				headers: {},
+				originalUrl: path,
+			} as unknown as IncomingMessage);
+
+			expect(warn).not.toHaveBeenCalled();
+			// Falls back to the resolved socket IP
+			expect(result).toBe('127.0.0.1');
+		});
+
+		test('Suppresses the warning on excluded endpoints even with a query string', () => {
+			vi.mocked(useEnv).mockReturnValue({
+				IP_TRUST_PROXY: true,
+				IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
+			});
+
+			getIPFromReq({
+				socket: { remoteAddress: '127.0.0.1' },
+				headers: {},
+				url: '/server/info?foo=bar',
+			} as unknown as IncomingMessage);
+
+			expect(warn).not.toHaveBeenCalled();
+		});
+
+		test('Suppresses the warning regardless of path casing', () => {
+			vi.mocked(useEnv).mockReturnValue({
+				IP_TRUST_PROXY: true,
+				IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
+			});
+
+			getIPFromReq({
+				socket: { remoteAddress: '127.0.0.1' },
+				headers: {},
+				url: '/server/PING',
+			} as unknown as IncomingMessage);
+
+			expect(warn).not.toHaveBeenCalled();
+		});
+
+		test('Does not throw and still warns on a malformed request target', () => {
+			vi.mocked(useEnv).mockReturnValue({
+				IP_TRUST_PROXY: true,
+				IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
+			});
+
+			getIPFromReq({
+				socket: { remoteAddress: '127.0.0.1' },
+				headers: {},
+				url: '//bad url',
+			} as unknown as IncomingMessage);
+
+			expect(warn).toHaveBeenCalledOnce();
+		});
+
+		test('Still warns on other /server endpoints', () => {
+			vi.mocked(useEnv).mockReturnValue({
+				IP_TRUST_PROXY: true,
+				IP_CUSTOM_HEADER: 'X-CUSTOM-IP',
+			});
+
+			getIPFromReq({
+				socket: { remoteAddress: '127.0.0.1' },
+				headers: {},
+				url: '/server/health',
+			} as unknown as IncomingMessage);
+
+			expect(warn).toHaveBeenCalledOnce();
+		});
 	});
 
 	describe('IP_TRUST_PROXY', () => {

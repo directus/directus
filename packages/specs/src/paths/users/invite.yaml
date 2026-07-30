@@ -14,15 +14,8 @@ post:
               description: Email address or array of email addresses of the to-be-invited user(s).
               type: string
   responses:
-    '200':
-      description: Successful request
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: '../../openapi.yaml#/components/schemas/Users'
+    '204':
+      $ref: '../../openapi.yaml#/components/responses/NoContentResponse'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':

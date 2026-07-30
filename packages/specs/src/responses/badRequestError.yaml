@@ -1,0 +1,10 @@
+description: 'Error: Bad request.'
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '../openapi.yaml#/components/schemas/Error'

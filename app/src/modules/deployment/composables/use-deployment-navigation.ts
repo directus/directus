@@ -20,8 +20,8 @@ export function useDeploymentNavigation() {
 		try {
 			const data = await sdk.request<DeploymentConfig[]>(
 				readDeployments({
-					fields: ['provider', 'options', { projects: ['id', 'name', 'external_id', 'deployable'] }],
-				} as Parameters<typeof readDeployments>[0]),
+					fields: ['provider', 'options', { projects: ['id', 'name'] }],
+				}),
 			);
 
 			cache.value = data;
@@ -45,11 +45,6 @@ export function useDeploymentNavigation() {
 		return provider?.projects?.find((p) => p.id === currentProjectId.value) || null;
 	});
 
-	const currentProvider = computed(() => {
-		if (!currentProviderKey.value) return null;
-		return cache.value.find((provider) => provider.provider === currentProviderKey.value) ?? null;
-	});
-
 	return {
 		providers: cache,
 		loading,
@@ -58,7 +53,6 @@ export function useDeploymentNavigation() {
 		refresh,
 		currentProviderKey,
 		currentProjectId,
-		currentProvider,
 		currentProject,
 	};
 }

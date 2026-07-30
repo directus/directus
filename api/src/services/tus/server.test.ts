@@ -98,6 +98,192 @@ describe('createTusServer', () => {
 	});
 
 	describe('onUploadFinish', () => {
+		test('should return early when file is not found', async () => {
+			mockItemsService.readByQuery.mockResolvedValue([]);
+
+			const [server] = await createTusServer({ schema: mockSchema, accountability: mockAccountability });
+			const onUploadFinish = (server as any).options.onUploadFinish;
+
+			const result = await onUploadFinish({}, { id: 'upload-123', metadata: { id: 'nonexistent' } });
+
+			expect(result).toEqual({});
+			expect(mockItemsService.readByQuery).toHaveBeenCalled();
+			expect(mockItemsService.updateOne).not.toHaveBeenCalled();
+			expect(emitter.emitAction).not.toHaveBeenCalled();
+		});
+
+		test('should clear tus fields and extract metadata for new uploads', async () => {
+			const mockFile: Partial<File> = {
+				id: 'new-file-id',
+				storage: 'local',
+				filename_download: 'photo.jpg',
+				filesize: 1024,
+				type: 'image/jpeg',
+				tus_id: 'upload-456',
+				tus_data: { metadata: { id: 'new-file-id' } } as any,
+			};
+
+			mockItemsService.readByQuery.mockResolvedValue([mockFile]);
+			vi.mocked(extractMetadata).mockResolvedValue({ width: 100, height: 200 });
+
+			const [server] = await createTusServer({ schema: mockSchema, accountability: mockAccountability });
+			const onUploadFinish = (server as any).options.onUploadFinish;
+
+			await onUploadFinish({}, { id: 'upload-456', metadata: { id: 'new-file-id' } });
+
+			expect(extractMetadata).toHaveBeenCalledWith('local', expect.objectContaining({ id: 'new-file-id' }));
+
+			expect(mockItemsService.updateOne).toHaveBeenCalledWith('new-file-id', {
+				width: 100,
+				height: 200,
+				tus_id: null,
+				tus_data: null,
+			});
+
+			// Should not attempt to read or delete any existing file since this is a new upload, not a replacement
+			expect(mockItemsService.readOne).not.toHaveBeenCalled();
+			expect(mockItemsService.deleteOne).not.toHaveBeenCalled();
+
+			// Event payload should have tus fields cleared
+			expect(emitter.emitAction).toHaveBeenCalledWith(
+				'files.upload',
+				{
+					payload: expect.objectContaining({
+						id: 'new-file-id',
+						tus_id: null,
+						tus_data: null,
+						width: 100,
+						height: 200,
+					}),
+					key: 'new-file-id',
+					collection: 'directus_files',
+				},
+				expect.anything(),
+			);
+		});
+
+		test('should return Directus-File-Id header with target file id', async () => {
+			const mockFile: Partial<File> = {
+				id: 'file-id',
+				storage: 'local',
+				filename_download: 'test.txt',
+				tus_id: 'upload-abc',
+				tus_data: null,
+			};
+
+			mockItemsService.readByQuery.mockResolvedValue([mockFile]);
+
+			const [server] = await createTusServer({ schema: mockSchema, accountability: mockAccountability });
+			const onUploadFinish = (server as any).options.onUploadFinish;
+
+			const result = await onUploadFinish({}, { id: 'upload-abc', metadata: { id: 'file-id' } });
+
+			expect(result).toEqual({ headers: { 'Directus-File-Id': 'file-id' } });
+		});
+
+		test('should replace existing file when metadata id differs from file id', async () => {
+			const tempFile: Partial<File> = {
+				id: 'temp-file-id',
+				storage: 'local',
+				filename_download: 'updated.png',
+				filesize: 2048,
+				type: 'image/png',
+				tus_id: 'upload-789',
+				tus_data: { metadata: { id: 'original-file-id' } } as any,
+			};
+
+			const originalFile: Partial<File> = {
+				id: 'original-file-id',
+				storage: 'local',
+				filename_download: 'original.jpg',
+				filesize: 512,
+				type: 'image/jpeg',
+			};
+
+			mockItemsService.readByQuery.mockResolvedValue([tempFile]);
+			mockItemsService.readOne.mockResolvedValue(originalFile);
+			vi.mocked(extractMetadata).mockResolvedValue({ width: 400, height: 300 });
+
+			const [server] = await createTusServer({ schema: mockSchema, accountability: mockAccountability });
+			const onUploadFinish = (server as any).options.onUploadFinish;
+
+			await onUploadFinish({}, { id: 'upload-789', metadata: { id: 'original-file-id' } });
+
+			// Should read the original file
+			expect(mockItemsService.readOne).toHaveBeenCalledWith('original-file-id');
+
+			// Should extract metadata using original file's storage with uploaded file's fields
+			expect(extractMetadata).toHaveBeenCalledWith(
+				'local',
+				expect.objectContaining({
+					filename_download: 'updated.png',
+					filesize: 2048,
+					type: 'image/png',
+				}),
+			);
+
+			// Should update the original file with new fields + metadata
+			expect(mockItemsService.updateOne).toHaveBeenCalledWith('original-file-id', {
+				filename_download: 'updated.png',
+				filesize: 2048,
+				type: 'image/png',
+				width: 400,
+				height: 300,
+			});
+
+			// Should delete the temp file
+			expect(mockItemsService.deleteOne).toHaveBeenCalledWith('temp-file-id');
+
+			// Should emit with the original file id and merged payload
+			expect(emitter.emitAction).toHaveBeenCalledWith(
+				'files.upload',
+				{
+					payload: expect.objectContaining({
+						id: 'original-file-id',
+						storage: 'local',
+						filename_download: 'updated.png',
+						filesize: 2048,
+						type: 'image/png',
+						width: 400,
+						height: 300,
+					}),
+					key: 'original-file-id',
+					collection: 'directus_files',
+				},
+				expect.anything(),
+			);
+		});
+
+		test('should return Directus-File-Id header with target id on replacement', async () => {
+			const tempFile: Partial<File> = {
+				id: 'temp-file-id',
+				storage: 'local',
+				filename_download: 'replaced.png',
+				filesize: 2048,
+				type: 'image/png',
+				tus_id: 'upload-replace',
+				tus_data: { metadata: { id: 'original-file-id' } } as any,
+			};
+
+			const originalFile: Partial<File> = {
+				id: 'original-file-id',
+				storage: 'local',
+				filename_download: 'original.jpg',
+				filesize: 512,
+				type: 'image/jpeg',
+			};
+
+			mockItemsService.readByQuery.mockResolvedValue([tempFile]);
+			mockItemsService.readOne.mockResolvedValue(originalFile);
+
+			const [server] = await createTusServer({ schema: mockSchema, accountability: mockAccountability });
+			const onUploadFinish = (server as any).options.onUploadFinish;
+
+			const result = await onUploadFinish({}, { id: 'upload-replace', metadata: { id: 'original-file-id' } });
+
+			expect(result).toEqual({ headers: { 'Directus-File-Id': 'original-file-id' } });
+		});
+
 		test('should pass accountability to emitter.emitAction when accountability is provided (issue #26242)', async () => {
 			const mockFile: Partial<File> = {
 				id: 'test-file-id',
@@ -109,13 +295,12 @@ describe('createTusServer', () => {
 
 			mockItemsService.readByQuery.mockResolvedValue([mockFile]);
 
-			const [server, _cleanup] = await createTusServer({
+			const [server] = await createTusServer({
 				schema: mockSchema,
 				accountability: mockAccountability,
 			});
 
 			const onUploadFinish = (server as any).options.onUploadFinish;
-			expect(onUploadFinish).toBeDefined();
 
 			await onUploadFinish(
 				{},
@@ -157,22 +342,20 @@ describe('createTusServer', () => {
 
 			mockItemsService.readByQuery.mockResolvedValue([mockFile]);
 
-			const [server, _cleanup] = await createTusServer({
+			const [server] = await createTusServer({
 				schema: mockSchema,
 				accountability: undefined,
 			});
 
-			const tusServer = server as any;
-			const onUploadFinish = tusServer.options.onUploadFinish;
+			const onUploadFinish = (server as any).options.onUploadFinish;
 
-			expect(onUploadFinish).toBeDefined();
-
-			const mockUpload = {
-				id: 'upload-123',
-				metadata: { id: 'test-file-id' },
-			};
-
-			await onUploadFinish({}, mockUpload);
+			await onUploadFinish(
+				{},
+				{
+					id: 'upload-123',
+					metadata: { id: 'test-file-id' },
+				},
+			);
 
 			expect(emitter.emitAction).toHaveBeenCalledWith(
 				'files.upload',

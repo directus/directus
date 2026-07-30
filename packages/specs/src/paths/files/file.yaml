@@ -6,7 +6,6 @@ get:
   operationId: getFile
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
   responses:
     '200':
       description: Successful request
@@ -28,7 +27,6 @@ patch:
   operationId: updateFile
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
   requestBody:
     content:
       multipart/data:

@@ -498,6 +498,7 @@ functions:
   minute: دقيقة
   second: ثانية
   count: عدد
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -836,6 +837,7 @@ operators:
   nintersects: لا يتقاطع
   intersects_bbox: يتقاطع مع الصندوق المحيط
   nintersects_bbox: لا يتقاطع مع الصندوق المحيط
+  json: JSON
   regex: مطابقة RegExp
 custom_validation_message: رسالة التحقق المخصصة
 loading: جار التحميل...
@@ -1035,12 +1037,15 @@ wysiwyg_options:
   bullist: قائمة نُقطيّة
   numlist: قائمة مرقّمة
   hr: مسطرة أفقية
+  insertdatetime_date: التاريخ
+  insertdatetime_time: الوقت
   link: إضافة/تحرير الرابط
   unlink: إزالة الرابط
   media: إضافة/تعديل الوسائط
   image: إضافة/تحرير الصورة
   copy: نسخ
   cut: قص
+  default: الافتراضي
   paste: لصق
   heading: العنوان
   h1: العنوان 1
@@ -1063,6 +1068,8 @@ wysiwyg_options:
   source_code: تعديل رمز المصدر
   fullscreen: ملء الشاشة
   directionality: الاتجاهية
+  ltr: من اليسار إلى اليمين
+  rtl: من اليمين إلى اليسار
   lazy_loading: التحميل البطيء للصور
   lazy_loading_label: تمكين التحميل البطيء
 dropdown: قائمة منسدلة
@@ -1185,6 +1192,7 @@ fields:
     collection: المجموعة
     icon: أيقونة
     note: ملحوظة
+    status: حالة
     color: لون
     display_template: عرض القالب
     hidden: مخفي
@@ -1793,6 +1801,7 @@ interfaces:
     incompatible_data: البيانات الحالية غير متوافقة مع واجهة التكرار وسيتم تجاوزها عند إضافة عناصر إلى جهاز التكرار
     interface_group: خيارات الواجهة
     display_group: خيارات العرض
+    edit_mode_inline: ضمن السياق
   slider:
     slider: شريط
     description: حدد رقما باستخدام شريط التمرير
@@ -1863,8 +1872,6 @@ interfaces:
     description: محرر نص يكتب محتوى HTML
     toolbar: شريط الأدوات
     custom_formats: تنسيقات مخصصة
-    custom_formats_note: قائمة بتنسيقات محتوى TinyMCE - راجع وثائق TinyMCE حول [تنسيق المحتوى] (https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) لمزيد من المعلومات.
-    options_override: تجاوز الخيارات
     folder_note: مجلد الملفات التي تم رفعها. لا يؤثر على الملفات الموجودة.
     imageToken: رمز الوصول الثابت
     imageToken_label: تم إلحاق رمز الوصول الثابت إلى عنوان URL للأصول

@@ -502,6 +502,7 @@ functions:
   minute: Minuta
   second: Sekonda
   count: Numri
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -842,6 +843,7 @@ operators:
   nintersects: Nuk Përkryhet
   intersects_bbox: Përkryhet me Kutinë Kufizuese
   nintersects_bbox: Nuk Përkryhet me Kutinë Kufizuese
+  json: JSON
   regex: Përputhet me RegExp
 custom_validation_message: Mesazh i Personalizuar i Validimit
 loading: Po Ngarkohet...
@@ -1055,12 +1057,15 @@ wysiwyg_options:
   bullist: Listë me Pika
   numlist: Listë me Numra
   hr: Rregulli Horizontal
+  insertdatetime_date: Datë
+  insertdatetime_time: Kohë
   link: Shto/Modifiko Lidhjen
   unlink: Hiq Lidhjen
   media: Shto/Modifiko Median
   image: Shto/Modifiko Imazhin
   copy: Kopjo
   cut: Prit
+  default: Parazgjedhur
   paste: Ngjit
   heading: Kryesore
   h1: Kryesore 1
@@ -1083,6 +1088,8 @@ wysiwyg_options:
   source_code: Kodi Burimor
   fullscreen: Kodi Burimor
   directionality: Drejtimi
+  ltr: Nga e Majta në të Djathtë
+  rtl: Nga e Djathta në të Majtë
   lazy_loading: Ngarkim të Përtypur të Imazhit
   lazy_loading_label: Aktivizo Ngarkimin e Përtypur
 dropdown: Zbritëse
@@ -1218,6 +1225,7 @@ fields:
     collection: Koleksion
     icon: Ikona
     note: Shënim
+    status: Statusi
     color: Ngjyra
     display_template: Shabllon i Shfaqjes
     hidden: I Fshehur
@@ -1882,6 +1890,7 @@ interfaces:
     incompatible_data: Të dhënat aktuale nuk janë të përputhshme me ndërfaqen e përsëritësit dhe do të zëvendësohen kur të shtohen artikuj në përsëritës
     interface_group: Opsionet e Ndërfaqes
     display_group: Opsionet e Shfaqjes
+    edit_mode_inline: Në vijë
   slider:
     slider: Rrëshqitës
     description: Zgjidh një numër përmes një rrëshqitësi
@@ -1955,9 +1964,6 @@ interfaces:
     description: Një redaktues teksti të pasur që shkruan përmbajtje HTML
     toolbar: Shirit Mjetesh
     custom_formats: Formate të Personalizuara
-    custom_formats_note: Lista e Formateve të Përmbajtjes TinyMCE. Shih dokumentacionin e TinyMCE për [Formatimin e Përmbajtjes](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) për më shumë informacion.
-    options_override: Opsionet e Parakaluar
-    options_override_note: Çelësat e Formatimit të Përdoruesit TinyMCE dhe vlerat e tyre. Shih dokumentacionin e TinyMCE për [Formatimin e Përdoruesit](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) për më shumë informacion.
     folder_note: Dosje për skedarët e ngarkuar. Nuk ndikon në skedarët ekzistues.
     imageToken: Token i Qasshëm
     imageToken_label: Tokeni i qasshëm shtohet në URL-në e aseteve

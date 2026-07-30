@@ -422,6 +422,7 @@ functions:
   minute: Minutt
   second: Sekund
   count: Antall
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -658,6 +659,7 @@ operators:
   contains: Inneholder
   ncontains: Inneholder ikke
   empty: Er tom
+  json: JSON
 loading: Laster...
 item: Element
 items: Elementer
@@ -680,9 +682,13 @@ flow_name: Navn
 insights: Nøkkeltall
 wysiwyg_options:
   backcolor: Bakgrunnsfarge
+  insertdatetime_date: Dato
+  insertdatetime_time: Tid
   remove: Fjern
   selectall: Merk alt
   table: Tabell
+  ltr: Venstre mot høyre
+  rtl: Høyre til Venstre
 deselect: Velg bort
 creating_in: 'Oppretter element i {collection}'
 editing_in_batch: 'Batch Editing {count} elementer'
@@ -717,6 +723,7 @@ fields:
     collection: Kolleksjon
     icon: Ikon
     note: Notat
+    status: Status
     color: Farge
     hidden: Skjult
     sort_field: Sorter felt

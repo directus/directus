@@ -1,0 +1,40 @@
+post:
+  summary: Generate 2FA Secret
+  description: Generates a TOTP secret and OTPauth URI for the currently authenticated user.
+  operationId: meTfaGenerate
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            password:
+              type: string
+              description: The user's current password. Required when using the default authentication provider.
+              format: password
+              example: password
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  secret:
+                    type: string
+                    description: Base32-encoded TOTP secret to store in the authenticator app.
+                    example: JBSWY3DPEHPK3PXP
+                  otpauth_url:
+                    type: string
+                    description: OTPauth URI for QR code generation.
+                    example: 'otpauth://totp/Directus:admin%40example.com?secret=JBSWY3DPEHPK3PXP&issuer=Directus'
+    '400':
+      $ref: '../../openapi.yaml#/components/responses/BadRequestError'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+  tags:
+    - Users

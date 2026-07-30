@@ -23,7 +23,7 @@ catalog:
   '@changesets/get-github-info': 0.6.0
   '@changesets/types': 6.1.0
   '@directus/errors': 2.3.1
-  '@directus/license': 0.3.0
+  '@directus/license': 0.4.0
   '@directus/schema-builder': workspace:*
   '@directus/tsconfig': 4.0.0
   '@directus/types': workspace:*
@@ -54,7 +54,6 @@ catalog:
   '@fullcalendar/timegrid': 6.1.19
   '@godaddy/terminus': 4.12.1
   '@google-cloud/storage': 7.18.0
-  '@histoire/plugin-vue': 0.17.17
   '@internationalized/date': 3.10.1
   '@joeattardi/emoji-button': 4.6.4
   '@json2csv/plainjs': 7.0.6
@@ -81,13 +80,23 @@ catalog:
   '@rollup/plugin-replace': 6.0.3
   '@rollup/plugin-terser': 1.0.0
   '@rollup/plugin-virtual': 3.0.2
-  '@rollup/plugin-yaml': 4.1.2
+  '@rollup/plugin-yaml': 5.0.0
   '@sesamecare-oss/redlock': 1.4.0
   '@shopify/semaphore': 3.1.0
   '@sindresorhus/slugify': 2.2.1
   '@smithy/node-http-handler': 4.4.5
   '@supabase/storage-js': 2.81.0
-  '@tinymce/tinymce-vue': 6.3.0
+  '@tiptap/core': ^3.26.1
+  '@tiptap/extensions': ^3.26.1
+  '@tiptap/extension-text-style': ^3.26.1
+  '@tiptap/extension-text-align': ^3.26.1
+  '@tiptap/extension-image': ^3.26.1
+  '@tiptap/extension-subscript': ^3.26.1
+  '@tiptap/extension-superscript': ^3.26.1
+  '@tiptap/extension-table': ^3.26.1
+  '@tiptap/pm': ^3.26.1
+  '@tiptap/starter-kit': ^3.26.1
+  '@tiptap/vue-3': ^3.26.1
   '@tresjs/core': ^5.8.0
   '@turf/meta': 7.2.0
   '@tus/server': 2.3.0
@@ -126,7 +135,7 @@ catalog:
   '@types/mime-types': 3.0.1
   '@types/ms': 2.1.0
   '@types/node': 22.13.14
-  '@types/nodemailer': 7.0.3
+  '@types/nodemailer': 8.0.1
   '@types/object-hash': 3.0.6
   '@types/papaparse': 5.5.0
   '@types/proxy-addr': 2.0.3
@@ -150,13 +159,12 @@ catalog:
   '@vueuse/integrations': 14.0.0
   '@vueuse/router': 14.0.0
   ai: 6.0.116
-  ajv: 8.17.1
   apexcharts: 4.7.0
   archiver: 7.0.1
   argon2: 0.44.0
   async: 3.2.6
   async-mutex: 0.5.0
-  axios: 1.16.1
+  axios: 1.18.1
   axios-cache-interceptor: 1.11.1
   base-64: 1.0.0
   boxen: 8.0.1
@@ -189,7 +197,7 @@ catalog:
   dotenv: 17.2.3
   editorjs-toggle-block: 0.3.16
   encodeurl: 2.0.0
-  esbuild: 0.26.0
+  esbuild: 0.28.1
   esbuild-plugin-replace: 1.4.0
   escape-string-regexp: 5.0.0
   eslint: 9.39.1
@@ -207,7 +215,7 @@ catalog:
   find-process: 2.0.0
   flat: 6.0.1
   focus-trap: 7.6.6
-  form-data: 4.0.4
+  form-data: 4.0.6
   fs-extra: 11.3.2
   geojson: 0.5.0
   get-port: 7.1.0
@@ -216,9 +224,8 @@ catalog:
   graphql: 16.12.0
   graphql-compose: 9.1.0
   graphql-ws: 6.0.6
-  happy-dom: 20.8.9
+  happy-dom: 20.10.6
   helmet: 8.1.0
-  histoire: 0.17.17
   html-entities: 2.6.0
   icc: 3.0.0
   inquirer: 12.11.0
@@ -228,8 +235,9 @@ catalog:
   isolated-vm: 5.0.3
   joi: 18.0.1
   jose: 6.2.3
-  js-yaml: 4.1.1
+  js-yaml: 4.3.0
   js2xmlparser: 5.0.0
+  jsdom: 29.1.1
   json-to-graphql-query: 2.3.0
   json2csv: 5.0.7
   jsonlint-mod: 1.7.6
@@ -240,7 +248,7 @@ catalog:
   knex-mock-client: 3.0.2
   ky: 1.14.0
   ldapts: 8.1.3
-  liquidjs: 10.26.0
+  liquidjs: 10.27.2
   lodash: 4.18.1
   lodash-es: 4.18.1
   log-symbols: 7.0.1
@@ -251,7 +259,7 @@ catalog:
   micromustache: 8.0.3
   mime: 4.1.0
   mime-types: 3.0.1
-  minimatch: 10.2.5
+  minimatch: 10.2.6
   mitt: 3.0.1
   mnemonist: 0.40.3
   ms: 2.1.3
@@ -259,7 +267,7 @@ catalog:
   mysql2: 3.15.3
   nanoid: 5.1.6
   node-machine-id: 1.1.12
-  nodemailer: 8.0.5
+  nodemailer: 9.0.3
   nodemailer-mailgun-transport: 2.1.5
   npm-watch: 0.13.0
   object-hash: 3.0.0
@@ -300,7 +308,7 @@ catalog:
   sanitize-html: 2.17.0
   sass-embedded: 1.93.3
   semver: 7.7.3
-  sharp: 0.34.5
+  sharp: 0.35.3
   signal-polyfill: 0.2.2
   snappy: 7.3.3
   sqlite3: 5.1.7
@@ -316,27 +324,26 @@ catalog:
   tar: 7.5.8
   tedious: 18.6.1
   three: ^0.184.0
-  tinymce: 6.8.6
-  tmp: 0.2.6
+  tmp: 0.2.7
   tsdown: 0.15.11
-  tsx: 4.20.6
+  tsx: 4.22.4
   tus-js-client: 4.3.1
   typebox: 1.1.37
-  typedoc: 0.28.12
+  typedoc: 0.28.19
   typedoc-plugin-markdown: 4.8.1
   typescript: 5.9.3
   typescript-eslint: 8.46.4
-  undici: 7.24.5
+  undici: 7.28.0
   universal-cookie: 8.0.1
-  unplugin-vue: 7.1.1
+  unplugin-vue: 7.2.0
   unplugin-yaml: 3.0.7
   update-check: 1.5.4
   uuid: 11.1.0
-  vite: 8.0.8
+  vite: 8.1.2
   vite-plugin-dts: 4.5.4
   vite-plugin-vue-devtools: 7.7.2
   vite-tsconfig-paths: 5.1.4
-  vitest: 3.2.6
+  vitest: 3.2.7
   vue: 3.5.24
   vue-i18n: 11.1.12
   vue-router: 4.6.3
@@ -344,7 +351,7 @@ catalog:
   vue-virtual-scroller: 2.0.0-beta.8
   vuedraggable: 4.1.0
   wellknown: 0.5.0
-  ws: 8.18.3
+  ws: 8.21.0
   zod: 4.1.12
   zod-validation-error: 4.0.2
 
