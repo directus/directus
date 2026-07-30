@@ -200,32 +200,53 @@ export function realtime(config: WebSocketConfig = {}) {
 			}
 		}
 
-		const handleMessages = async (currentClient: AuthWSClient<Schema>) => {
-			while (state.code === 'open') {
-				const message = await messageCallback(state.connection).catch(() => {
+		const handleMessages = async (currentClient: AuthWSClient<Schema>, connection: WebSocketInterface) => {
+			// A single listener for the lifetime of the connection: a socket can drain several frames
+			// from one read, and re-registering per message would drop everything but the first.
+			const queue = createMessageQueue<Record<string, any> | MessageEvent<string>>();
+
+			const receive = (event: MessageEvent<string>) => {
+				try {
+					const message = JSON.parse(event.data);
+
 					/* ignore invalid messages */
-				});
+					if (typeof message !== 'object' || message === null || Array.isArray(message)) return;
 
-				if (!message) continue;
-
-				if (isAuthError(message)) {
-					await handleAuthError(message, currentClient);
-					state.firstMessage = false;
-					continue;
+					queue.push(message);
+				} catch {
+					// pass the original event on to allow customization
+					queue.push(event);
 				}
+			};
 
-				if (config.heartbeat && message['type'] === 'ping') {
-					if (state.code !== 'open') continue;
-					state.connection.send(pong());
-					state.firstMessage = false;
-					continue;
+			const stop = () => queue.end();
+
+			connection.addEventListener('message', receive);
+			connection.addEventListener('close', stop);
+			connection.addEventListener('error', stop);
+
+			try {
+				for await (const message of queue.stream()) {
+					try {
+						if (isAuthError(message)) {
+							await handleAuthError(message, currentClient);
+							continue;
+						}
+
+						if (config.heartbeat && message['type'] === 'ping') {
+							if (state.code === 'open') state.connection.send(pong());
+							continue;
+						}
+
+						eventHandlers['message'].forEach((handler) => handler.call(connection, message));
+					} finally {
+						if (state.code === 'open') state.firstMessage = false;
+					}
 				}
-
-				eventHandlers['message'].forEach((handler) => {
-					if (state.code === 'open') handler.call(state.connection, message);
-				});
-
-				state.firstMessage = false;
+			} finally {
+				connection.removeEventListener('message', receive);
+				connection.removeEventListener('close', stop);
+				connection.removeEventListener('error', stop);
 			}
 		};
 
@@ -301,7 +322,7 @@ export function realtime(config: WebSocketConfig = {}) {
 					reconnectState.attempts = 0;
 					reconnectState.active = false;
 					clearTimeout(connectTimeout);
-					handleMessages(self);
+					handleMessages(self, ws);
 
 					if (config.authMode === 'handshake' && hasAuth(self)) {
 						const access_token = await self.getToken();

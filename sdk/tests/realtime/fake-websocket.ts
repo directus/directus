@@ -41,9 +41,15 @@ export class FakeWebSocket implements WebSocketInterface {
 		this.listeners[type]?.forEach((listener) => listener.call(this, event));
 	}
 
-	/** Deliver a server message and let the client's message loop pick it up. */
-	async receive(message: Record<string, any>): Promise<void> {
-		this.emit('message', { data: JSON.stringify(message) });
+	/**
+	 * Deliver server messages and let the client pick them up. Every message is emitted in the same
+	 * synchronous batch, the way a socket draining several frames from one read does.
+	 */
+	async receive(...messages: Record<string, any>[]): Promise<void> {
+		for (const message of messages) {
+			this.emit('message', { data: JSON.stringify(message) });
+		}
+
 		await flush();
 	}
 

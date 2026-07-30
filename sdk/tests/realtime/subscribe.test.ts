@@ -25,6 +25,20 @@ describe('realtime subscriptions', () => {
 		client.disconnect();
 	});
 
+	test('delivers every frame of a burst arriving in one batch', async () => {
+		const { client, socket } = await openConnection<Schema>();
+		const { subscription } = await client.subscribe('plants', { uid: 'a' });
+
+		// No microtask between the frames, so nothing can re-register a one-shot listener.
+		await socket.receive(init('a'), created('a', 'one'), created('a', 'two'));
+
+		await expect(subscription.next()).resolves.toMatchObject({ value: { event: 'init' } });
+		await expect(subscription.next()).resolves.toMatchObject({ value: { data: [{ name: 'one' }] } });
+		await expect(subscription.next()).resolves.toMatchObject({ value: { data: [{ name: 'two' }] } });
+
+		client.disconnect();
+	});
+
 	test('keeps messages that arrive while the consumer is busy', async () => {
 		const { client, socket } = await openConnection<Schema>();
 		const { subscription } = await client.subscribe('plants', { uid: 'a' });
