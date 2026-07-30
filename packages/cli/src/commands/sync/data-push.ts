@@ -629,9 +629,10 @@ export interface DataPreviewPlan {
 export type DataPreviewResult = DataPreviewPlan | DataPushSkipped;
 
 /**
- * Preview without prompting or writing. Unambiguous matches are applied in memory; ambiguous sources are
- * excluded from the batch and surfaced only through ambiguousCount — an interactive push resolves them
- * (possibly into updates) and a non-interactive push refuses until they are resolved.
+ * Preview without prompting or writing. Unambiguous matches are applied in memory; ambiguous sources —
+ * and every record whose FK chain leads to one — are excluded from the batch and surfaced only through
+ * ambiguousCount: an interactive push resolves them (possibly into updates) and a non-interactive push
+ * refuses until they are resolved.
  */
 export async function previewData(target: Target, mode: Mode): Promise<DataPreviewResult> {
 	const reconciled = await readAndReconcile(target);
@@ -640,20 +641,15 @@ export async function previewData(target: Target, mode: Mode): Promise<DataPrevi
 
 	const { source, targetUrl, system, results, targets } = reconciled;
 
-	// Seed only unambiguous matches into the in-memory map; diff never settles identity choices.
+	// Seed only unambiguous matches into the in-memory map; diff never settles identity choices. Matched
+	// entries stay seeded even when the closure below excludes their record — the seeding writes nothing,
+	// and the pairs point at real target rows, so any remaining row that remaps through them stays valid.
 	let map = reconciled.map;
-	let matchedCount = 0;
-	let ambiguousCount = 0;
-	let unmatchedCount = 0;
-	const ambiguousSources = new Map<string, ReadonlySet<string>>();
+	const excluded = new Map<string, Set<string>>();
 
 	for (const result of results) {
-		matchedCount += result.matched.length;
-		ambiguousCount += result.ambiguous.length;
-		unmatchedCount += result.unmatched.length;
-
 		if (result.ambiguous.length > 0) {
-			ambiguousSources.set(result.collection, new Set(result.ambiguous.map((entry) => entry.sourceId)));
+			excluded.set(result.collection, new Set(result.ambiguous.map((entry) => entry.sourceId)));
 		}
 
 		if (result.matched.length === 0) continue;
@@ -663,17 +659,67 @@ export async function previewData(target: Target, mode: Mode): Promise<DataPrevi
 
 	// An ambiguous source is neither a create nor an update yet: an interactive push resolves it, a
 	// non-interactive push refuses outright. Left in the batch it would ride as a CREATE and the dry-run
-	// would count it — a preview lying in both directions — so it is excluded here and reported unresolved.
-	const previewSystem = system.map((entry) => {
-		const ambiguous = ambiguousSources.get(entry.resource.collection);
+	// would count it — a preview lying in both directions — so it is excluded and reported unresolved.
+	//
+	// Its dependents must drop with it: an excluded source id resolves to NOTHING — the row is out of the
+	// batch and, being ambiguous, unmapped on the target — so a dependent still carrying that FK makes the
+	// server-side dry-run fail on the reference and diff error instead of previewing. A conservative
+	// preview beats one that 400s; diff must never error on a state push can handle. Only an FK actually
+	// holding an excluded source id dangles — null FKs and FKs to non-excluded rows remap or pass through.
+	// Iterate to a fixed point so self-referential chains (directus_folders.parent) drop whole subtrees
+	// regardless of record order.
+	for (let changed = true; changed; ) {
+		changed = false;
 
-		if (ambiguous === undefined) return entry;
+		for (const { data, resource } of system) {
+			const fks = SYSTEM_FK_FIELDS[resource.collection] ?? [];
+
+			if (fks.length === 0) continue;
+
+			const dropped = excluded.get(resource.collection) ?? new Set<string>();
+
+			for (const record of data.records) {
+				if (dropped.has(String(record[resource.primaryKey]))) continue;
+
+				for (const fk of fks) {
+					const value = record[fk.field];
+
+					if (value === null || value === undefined) continue;
+					if (excluded.get(fk.references)?.has(String(value)) !== true) continue;
+
+					dropped.add(String(record[resource.primaryKey]));
+					excluded.set(resource.collection, dropped);
+					changed = true;
+					break;
+				}
+			}
+		}
+	}
+
+	// Every excluded record counts as unresolved and leaves matched/unmatched, so the categories still
+	// partition the committed set and diff's pending total does not double-count.
+	let matchedCount = 0;
+	let ambiguousCount = 0;
+	let unmatchedCount = 0;
+
+	for (const result of results) {
+		const dropped = excluded.get(result.collection);
+		matchedCount += result.matched.filter((entry) => dropped?.has(entry.sourceId) !== true).length;
+		unmatchedCount += result.unmatched.filter((sourceId) => dropped?.has(sourceId) !== true).length;
+	}
+
+	for (const dropped of excluded.values()) ambiguousCount += dropped.size;
+
+	const previewSystem = system.map((entry) => {
+		const dropped = excluded.get(entry.resource.collection);
+
+		if (dropped === undefined) return entry;
 
 		return {
 			...entry,
 			data: {
 				...entry.data,
-				records: entry.data.records.filter((record) => !ambiguous.has(String(record[entry.resource.primaryKey]))),
+				records: entry.data.records.filter((record) => !dropped.has(String(record[entry.resource.primaryKey]))),
 			},
 		};
 	});

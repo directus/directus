@@ -165,6 +165,9 @@ describe('prepareDataPush skip and precondition', () => {
 
 	afterEach(() => {
 		rmSync(dir, { recursive: true, force: true });
+		// Vitest 3 mockReset restores the original empty-target implementation, so per-test target rows
+		// (the ambiguity fixtures below) cannot leak into the next test's reconciliation.
+		vi.mocked(fetchRecords).mockReset();
 	});
 
 	it('returns skipped when the data directory is absent (a schema-only checkout)', async () => {
@@ -281,6 +284,193 @@ describe('prepareDataPush skip and precondition', () => {
 		// An absent data directory is a schema-only checkout: the preview skips exactly as the push path does,
 		// before any network work.
 		await expect(previewData(target(), 'merge')).resolves.toEqual({ skipped: true });
+	});
+
+	it('previewData excludes the dependents of an ambiguous source along with it, keeping unaffected rows', async () => {
+		// The ambiguous role leaves the preview batch, but its access row still carries the role's SOURCE
+		// id — a value that resolves to nothing: the role is out of the batch and unmapped on the target.
+		// The server-side dry-run would fail on that reference, making diff error on a state an interactive
+		// push handles fine. Both must drop and both must count as unresolved; the access row pointing at
+		// the cleanly matched role must stay, FK remapped — dropping it too would hide a real change.
+		writeDataFiles(
+			join(dir, 'data'),
+			[
+				{
+					collection: 'directus_roles',
+					primaryKey: 'id',
+					records: [
+						{ id: 'r-amb', name: 'Editor' },
+						{ id: 'r-ok', name: 'Viewer', icon: 'eye' },
+					],
+				},
+				{
+					collection: 'directus_access',
+					primaryKey: 'id',
+					records: [
+						{ id: 'a-amb', role: 'r-amb', user: null, policy: null },
+						{ id: 'a-ok', role: 'r-ok', user: null, policy: null },
+					],
+				},
+			],
+			'https://source.example.com',
+		);
+
+		// Two target roles named Editor make the source Editor ambiguous; Viewer matches uniquely.
+		vi.mocked(fetchRecords).mockImplementation((_credential, source) =>
+			Promise.resolve(
+				source.collection === 'directus_roles'
+					? [
+							{ id: 't-ed-1', name: 'Editor' },
+							{ id: 't-ed-2', name: 'Editor' },
+							{ id: 't-viewer', name: 'Viewer' },
+						]
+					: [],
+			),
+		);
+
+		const preview = await previewData(target(), 'merge');
+
+		expect(preview).toMatchObject({
+			skipped: false,
+			batch: [
+				{ collection: 'directus_access', items: [{ id: 'a-ok', role: 't-viewer', user: null, policy: null }] },
+				{ collection: 'directus_roles', items: [{ id: 't-viewer', name: 'Viewer', icon: 'eye' }] },
+			],
+			records: 2,
+			matchedCount: 1,
+			ambiguousCount: 2,
+			unmatchedCount: 1,
+		});
+	});
+
+	it('previewData drops a whole folder chain under an ambiguous parent, to a fixed point', async () => {
+		// directus_folders references itself: the child's parent FK dangles once the ambiguous root is
+		// excluded, and the grandchild's dangles once the child is. Records are ordered grandchild-first so
+		// a single filtering pass provably misses the grandchild — only iterating to a fixed point empties
+		// the subtree, and anything left behind fails the server-side dry-run on the parent reference.
+		writeDataFiles(
+			join(dir, 'data'),
+			[
+				{
+					collection: 'directus_folders',
+					primaryKey: 'id',
+					records: [
+						{ id: 'f-grand', name: 'Icons', parent: 'f-child' },
+						{ id: 'f-child', name: 'Images', parent: 'f-amb' },
+						{ id: 'f-amb', name: 'Assets', parent: null },
+					],
+				},
+			],
+			'https://source.example.com',
+		);
+
+		vi.mocked(fetchRecords).mockImplementation((_credential, source) =>
+			Promise.resolve(
+				source.collection === 'directus_folders'
+					? [
+							{ id: 't-a1', name: 'Assets', parent: null },
+							{ id: 't-a2', name: 'Assets', parent: null },
+						]
+					: [],
+			),
+		);
+
+		const preview = await previewData(target(), 'merge');
+
+		expect(preview).toMatchObject({
+			skipped: false,
+			batch: [{ collection: 'directus_folders', items: [] }],
+			records: 0,
+			matchedCount: 0,
+			ambiguousCount: 3,
+			unmatchedCount: 0,
+		});
+	});
+
+	it('previewData excludes a matched child of an ambiguous parent and moves it out of matchedCount', async () => {
+		// The child folder matches its target row by name, but its record still carries the ambiguous
+		// parent's source id — sending it would UPDATE the matched target row with a dangling parent, the
+		// exact reference failure the exclusion exists to prevent. It must leave the batch and count as
+		// unresolved, not matched, so diff's totals partition the committed set.
+		writeDataFiles(
+			join(dir, 'data'),
+			[
+				{
+					collection: 'directus_folders',
+					primaryKey: 'id',
+					records: [
+						{ id: 'f-amb', name: 'Assets', parent: null },
+						{ id: 'f-child', name: 'Images', parent: 'f-amb' },
+					],
+				},
+			],
+			'https://source.example.com',
+		);
+
+		vi.mocked(fetchRecords).mockImplementation((_credential, source) =>
+			Promise.resolve(
+				source.collection === 'directus_folders'
+					? [
+							{ id: 't-a1', name: 'Assets', parent: null },
+							{ id: 't-a2', name: 'Assets', parent: null },
+							{ id: 't-img', name: 'Images', parent: 't-a1' },
+						]
+					: [],
+			),
+		);
+
+		const preview = await previewData(target(), 'merge');
+
+		expect(preview).toMatchObject({
+			skipped: false,
+			batch: [{ collection: 'directus_folders', items: [] }],
+			records: 0,
+			matchedCount: 0,
+			ambiguousCount: 2,
+			unmatchedCount: 0,
+		});
+	});
+
+	it('previewData keeps a null-FK row when its collection has excluded rows', async () => {
+		// Exclusion must fire only when an FK actually holds an excluded source id — a null parent
+		// references nothing, so the row rides the batch as a create. Dropping it would silently shrink
+		// the preview below what push would do.
+		writeDataFiles(
+			join(dir, 'data'),
+			[
+				{
+					collection: 'directus_roles',
+					primaryKey: 'id',
+					records: [
+						{ id: 'r-amb', name: 'Editor', parent: null },
+						{ id: 'r-solo', name: 'Solo', parent: null },
+					],
+				},
+			],
+			'https://source.example.com',
+		);
+
+		vi.mocked(fetchRecords).mockImplementation((_credential, source) =>
+			Promise.resolve(
+				source.collection === 'directus_roles'
+					? [
+							{ id: 't-ed-1', name: 'Editor', parent: null },
+							{ id: 't-ed-2', name: 'Editor', parent: null },
+						]
+					: [],
+			),
+		);
+
+		const preview = await previewData(target(), 'merge');
+
+		expect(preview).toMatchObject({
+			skipped: false,
+			batch: [{ collection: 'directus_roles', items: [{ id: 'r-solo', name: 'Solo', parent: null }] }],
+			records: 1,
+			matchedCount: 0,
+			ambiguousCount: 1,
+			unmatchedCount: 1,
+		});
 	});
 
 	it('previewData assembles the batch, tallies the reconcile counts, and never writes the id map', async () => {
