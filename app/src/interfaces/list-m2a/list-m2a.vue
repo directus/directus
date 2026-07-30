@@ -152,10 +152,17 @@ function isInactiveCollection(item: DisplayItem) {
 
 const visibleItems = computed(() => displayItems.value.filter((item) => !isInactiveCollection(item)));
 
-function sortItems(items: DisplayItem[]) {
+function sortItems(sortedVisibleItems: DisplayItem[]) {
 	const info = relationInfo.value;
 	const sortField = info?.sortField;
 	if (!info || !sortField) return;
+
+	// Only visible items can be dragged, so hidden ones keep their slot while the visible ones fill
+	// the rest in their new order. Renumbering the visible subset alone would reuse positions the
+	// hidden items still hold.
+	const queue = [...sortedVisibleItems];
+
+	const items = displayItems.value.map((item) => (isInactiveCollection(item) ? item : (queue.shift() ?? item)));
 
 	const sortedItems = items.map((item, index) => {
 		const junctionId = item?.[info.junctionPrimaryKeyField.field];
