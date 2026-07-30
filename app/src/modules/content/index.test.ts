@@ -15,6 +15,7 @@ vi.mock('@/stores/permissions', () => ({
 vi.mock('@/api', () => ({ default: { get: vi.fn() } }));
 
 const {
+	blockInactiveCollection,
 	enterDraftContext,
 	redirectSingleton,
 	stripOrphanedVersionId,
@@ -176,6 +177,41 @@ describe('redirectSingleton', () => {
 			params: { collection: 'settings' },
 			query: { version: 'draft' },
 		});
+	});
+});
+
+describe('blockInactiveCollection', () => {
+	beforeEach(() => mockGetCollection.mockReset());
+
+	it('redirects to the not found route when the collection is inactive', () => {
+		mockGetCollection.mockReturnValue({ collection: 'comments', meta: { status: 'inactive' } });
+
+		const to = makeRoute({ collection: 'comments' });
+
+		expect(blockInactiveCollection(to, {} as any, vi.fn())).toEqual({ name: 'content-collection-not-found' });
+	});
+
+	it('passes through when the collection is active', () => {
+		mockGetCollection.mockReturnValue({ collection: 'posts', meta: { status: 'active' } });
+
+		expect(blockInactiveCollection(makeRoute({}), {} as any, vi.fn())).toBeUndefined();
+	});
+
+	it('passes through when the collection is not found, so the route renders its own not found state', () => {
+		mockGetCollection.mockReturnValue(null);
+
+		expect(blockInactiveCollection(makeRoute({ collection: 'unknown' }), {} as any, vi.fn())).toBeUndefined();
+	});
+
+	it('passes through for system collections, which have no status', () => {
+		mockGetCollection.mockReturnValue({ collection: 'directus_files', meta: {} });
+
+		expect(blockInactiveCollection(makeRoute({ collection: 'directus_files' }), {} as any, vi.fn())).toBeUndefined();
+	});
+
+	it('passes through when there is no single collection param', () => {
+		expect(blockInactiveCollection(makeRoute({ collection: ['posts'] }), {} as any, vi.fn())).toBeUndefined();
+		expect(mockGetCollection).not.toHaveBeenCalled();
 	});
 });
 

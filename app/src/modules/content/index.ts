@@ -15,6 +15,7 @@ import { useCollectionsStore } from '@/stores/collections';
 import { usePermissionsStore } from '@/stores/permissions';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getCollectionRoute, getItemRoute, getSystemCollectionRoute } from '@/utils/get-route';
+import { isCollectionActive } from '@/utils/is-collection-active';
 import { removeQueryFromPath } from '@/utils/remove-query-from-path';
 import RouterPass from '@/utils/router-passthrough';
 
@@ -84,6 +85,18 @@ const checkForSystem: NavigationGuard = (to, from) => {
 	}
 
 	return;
+};
+
+export const blockInactiveCollection: NavigationGuard = (to) => {
+	const collection = typeof to.params.collection === 'string' ? to.params.collection : undefined;
+	if (!collection) return;
+
+	const collectionInfo = useCollectionsStore().getCollection(collection);
+
+	// Collections that don't exist fall through, as the route components render their own not found state
+	if (!collectionInfo || isCollectionActive(collectionInfo)) return;
+
+	return { name: 'content-collection-not-found' };
 };
 
 export const stripOrphanedVersionId: NavigationGuard = (to) => {
@@ -181,7 +194,7 @@ export default defineModule({
 				const collectionsStore = useCollectionsStore();
 				const { activeGroups } = useNavigation();
 
-				if (collectionsStore.visibleCollections.length === 0) return;
+				if (collectionsStore.activeVisibleCollections.length === 0) return;
 
 				const rootCollections = collectionsStore.activeVisibleCollections.filter((collection) =>
 					isNil(collection?.meta?.group),
@@ -231,6 +244,12 @@ export default defineModule({
 			},
 		},
 		{
+			// Static path, so it takes precedence over `:collection` below
+			name: 'content-collection-not-found',
+			path: 'not-found',
+			component: ItemNotFound,
+		},
+		{
 			path: ':collection',
 			component: RouterPass,
 			children: [
@@ -248,6 +267,7 @@ export default defineModule({
 					},
 					beforeEnter: [
 						checkForSystem,
+						blockInactiveCollection,
 						trackLastAccessedCollection,
 						redirectSingleton,
 						stripVersionOnNonVersioned,
@@ -264,6 +284,7 @@ export default defineModule({
 					}),
 					beforeEnter: [
 						checkForSystem,
+						blockInactiveCollection,
 						trackLastAccessedCollection,
 						enterDraftContext,
 						stripVersionOnNonVersioned,
@@ -277,6 +298,7 @@ export default defineModule({
 					props: true,
 					beforeEnter: [
 						checkForSystem,
+						blockInactiveCollection,
 						enterDraftContext,
 						stripOrphanedVersionId,
 						stripVersionOnNonVersioned,
@@ -293,6 +315,7 @@ export default defineModule({
 			component: Preview,
 			props: true,
 			beforeEnter: [
+				blockInactiveCollection,
 				enterDraftContext,
 				stripOrphanedVersionId,
 				stripVersionOnNonVersioned,
