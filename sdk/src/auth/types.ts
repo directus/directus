@@ -1,3 +1,5 @@
+import type { RequestCredentialsOption } from '../types/globals.js';
+
 export type AuthenticationMode = 'json' | 'cookie' | 'session';
 
 export type LocalLoginPayload = { email: string; password: string };
@@ -38,7 +40,7 @@ export interface AuthenticationStorage {
 export interface AuthenticationConfig {
 	autoRefresh: boolean;
 	msRefreshBeforeExpires: number;
-	credentials?: RequestCredentials;
+	credentials?: RequestCredentialsOption;
 	storage?: AuthenticationStorage;
 }
 

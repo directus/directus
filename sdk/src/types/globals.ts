@@ -18,8 +18,19 @@ export type WebSocketInterface = {
 	close(code?: number, reason?: string): void;
 };
 
+export type RequestCredentialsOption = 'omit' | 'same-origin' | 'include';
+
+export type WebSocketCloseEvent = {
+	readonly code: number;
+	readonly reason: string;
+	readonly wasClean: boolean;
+	readonly target?: any;
+	readonly type?: string;
+} | any;
+
 export type LogLevels = 'log' | 'info' | 'warn' | 'error';
 
 export type ConsoleInterface = {
 	[level in LogLevels]: (...args: any) => any;
 };
+

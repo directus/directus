@@ -1,3 +1,4 @@
+import type { RequestCredentialsOption } from '../types/globals.js';
 import type { RequestOptions, RequestTransformer, ResponseTransformer } from '../types/request.js';
 
 export interface RestCommand<_Output extends object | unknown, _Schema> {
@@ -9,7 +10,7 @@ export interface RestClient<Schema> {
 }
 
 export interface RestConfig {
-	credentials?: RequestCredentials;
+	credentials?: RequestCredentialsOption;
 	// onError?: (error: any) => any;
 	onRequest?: RequestTransformer;
 	onResponse?: ResponseTransformer;

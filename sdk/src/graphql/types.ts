@@ -1,3 +1,5 @@
+import type { RequestCredentialsOption } from '../types/globals.js';
+
 export interface GraphqlClient<_Schema> {
 	query<Output extends object = Record<string, any>>(
 		query: string,
@@ -7,7 +9,7 @@ export interface GraphqlClient<_Schema> {
 }
 
 export interface GraphqlConfig {
-	credentials?: RequestCredentials;
+	credentials?: RequestCredentialsOption;
 }
 
 // these utility types do not have schema fallback logic
