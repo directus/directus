@@ -24768,7 +24768,7 @@ snapshots:
 
   mailtrap@4.6.1(@types/nodemailer@8.0.1)(nodemailer@9.0.3):
     dependencies:
-      axios: 1.16.1
+      axios: 1.18.1
       qs: 6.15.2
     optionalDependencies:
       '@types/nodemailer': 8.0.1
