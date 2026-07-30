@@ -167,8 +167,8 @@ function sortItems(sortedVisibleItems: DisplayItem[]) {
 	const sortedItems = items.map((item, index) => {
 		const junctionId = item?.[info.junctionPrimaryKeyField.field];
 		const collection = item?.[info.collectionField.field];
-		const pkField = info.relationPrimaryKeyFields[collection]!.field;
-		const relatedId = item?.[info.junctionField.field]?.[pkField];
+		const pkField = info.relationPrimaryKeyFields[collection]?.field;
+		const relatedId = pkField ? item?.[info.junctionField.field]?.[pkField] : undefined;
 
 		const changes: Record<string, any> = {
 			$index: item.$index,
