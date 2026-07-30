@@ -83,8 +83,8 @@ describe('interactive profile flows', () => {
 	});
 
 	it('confirms before repointing an existing profile to a different URL, and aborts on decline', async () => {
-		// The saved credential follows the profile NAME; the confirm is the one human check before that
-		// token starts going to a different host. A decline must leave the profile untouched.
+		// The DIRECTUS_<NAME>_TOKEN env var follows the profile NAME; the confirm is the one human check
+		// before that token starts going to a different host. A decline must leave the profile untouched.
 		writeFileSync(
 			join(dir, 'directus.config.json'),
 			JSON.stringify({ profiles: { staging: { url: 'https://one.example.com', auth: { type: 'token' } } } }),

@@ -55,18 +55,26 @@ describe('profile commands', () => {
 		const config = readConfig();
 		expect(config.profiles['staging']?.url).toBe('https://two.example.com');
 		expect(Object.keys(config.profiles)).toHaveLength(1);
+
+		// The warning must name what actually happens: the env token follows the name to the new URL, and
+		// the URL-keyed store credential stops resolving — it is never silently sent to the new host.
 		expect(stderr.join('')).toContain('Repointed "staging"');
+		expect(stderr.join('')).toContain('DIRECTUS_STAGING_TOKEN');
+		expect(stderr.join('')).toContain('no longer resolves');
 	});
 
 	it('refuses to repoint an existing profile to a new URL without --yes', async () => {
-		// The saved credential follows the profile NAME: a silent URL overwrite would send that token to
-		// the new host on the next command. Non-interactive repoints follow the standard --yes convention.
+		// The DIRECTUS_<NAME>_TOKEN env var follows the profile NAME: a silent URL overwrite would send that
+		// token to the new host on the next command (the store credential is keyed by URL + name and merely
+		// stops resolving). Non-interactive repoints follow the standard --yes convention, and the hint must
+		// name the env var that actually carries over — not misattribute the risk to the saved credential.
 		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
 
 		expect(await d6s('profile', 'add', 'staging', '--url', 'https://two.example.com')).toBe(1);
 
 		expect(stderr.join('')).toContain('https://one.example.com');
 		expect(stderr.join('')).toContain('--yes');
+		expect(stderr.join('')).toContain('DIRECTUS_STAGING_TOKEN');
 		expect(readConfig().profiles['staging']?.url).toBe('https://one.example.com');
 	});
 

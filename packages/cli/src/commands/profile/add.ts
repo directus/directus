@@ -1,5 +1,6 @@
 import { confirm, select, text } from '@clack/prompts';
 import type { Command } from 'commander';
+import { envTokenVar } from '../../kernel/config/credentials.js';
 import { existingProfile, isSafeUrl, upsertProfile } from '../../kernel/config/file.js';
 import { pingServer, testConnection } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
@@ -25,6 +26,12 @@ export function registerAdd(profile: Command, getContext: () => CliContext): voi
 
 const PROFILE_NAME = /^[A-Za-z0-9_]+$/;
 
+// The env token follows the profile NAME to the new URL; the stored credential is keyed by URL + name, so
+// it stops resolving rather than following (and resolves again if the profile is ever pointed back).
+function repointWarning(name: string, from: string, to: string): string {
+	return `Repointed "${name}": ${from} → ${to} — a ${envTokenVar(name)} env token now goes to the new URL; a credential saved for the old URL no longer resolves (add a token to save one for this URL).`;
+}
+
 export async function add(nameArg: string | undefined, options: AddOptions, ctx: CliContext): Promise<void> {
 	const name = await orPrompt(nameArg, ctx.interactive, 'Name the profile: d6s profile add <name> --url <url>', {
 		message: 'Profile name',
@@ -46,8 +53,9 @@ export async function add(nameArg: string | undefined, options: AddOptions, ctx:
 
 	if (!isSafeUrl(url)) throw new CliError('USAGE', 'Enter a valid http(s) URL.');
 
-	// Repointing an existing name is where the upsert bites: the saved credential follows the profile
-	// NAME, so a silent URL change would send that token to the new host on the next command. Existence,
+	// Repointing an existing name is where the upsert bites: the DIRECTUS_<NAME>_TOKEN env var follows the
+	// profile NAME, so a silent URL change would send that token to the new host on the next command. (The
+	// saved store credential is keyed by URL + name, so it stops resolving instead of following.) Existence,
 	// not URL validity, decides the gate: a profile whose stored URL is missing or mangled is still a
 	// named profile. Same-URL re-adds (e.g. rotating a token) and new names stay frictionless.
 	const previous = existingProfile({ cwd: ctx.cwd, configPath: ctx.configPath }, name);
@@ -61,13 +69,13 @@ export async function add(nameArg: string | undefined, options: AddOptions, ctx:
 	if (repointing && options.yes !== true) {
 		if (!ctx.interactive) {
 			throw new CliError('USAGE', `Profile "${name}" already points at ${previousShown}.`, {
-				hint: `Pass --yes to repoint it to ${url}; its saved credential will be sent to the new URL.`,
+				hint: `Pass --yes to repoint it to ${url}. A ${envTokenVar(name)} env token will follow it there; a credential saved for the old URL stops resolving.`,
 			});
 		}
 
 		const proceed = await ask(
 			confirm({
-				message: `Repoint "${name}" from ${previousShown} to ${url}? Its saved credential will be sent to the new URL.`,
+				message: `Repoint "${name}" from ${previousShown} to ${url}? A ${envTokenVar(name)} env token will follow it there; a credential saved for the old URL stops resolving.`,
 			}),
 		);
 
@@ -77,7 +85,7 @@ export async function add(nameArg: string | undefined, options: AddOptions, ctx:
 	upsertProfile({ cwd: ctx.cwd, configPath: ctx.configPath }, name, { url, auth: { type: 'token' } });
 
 	if (repointing) {
-		ctx.ui.warn(`Repointed "${name}": ${previousShown} → ${url} — its saved credential now applies to the new URL.`);
+		ctx.ui.warn(repointWarning(name, previousShown, url));
 	}
 
 	ctx.ui.success(`Saved profile "${name}" → ${url}`);
@@ -210,7 +218,7 @@ async function editUrl(ctx: CliContext, name: string, current: string): Promise<
 	// The user typed the new URL themselves, so no second confirmation — but this recovery path skips the
 	// repoint gate above, and the credential consequence still deserves saying out loud.
 	if (url !== current) {
-		ctx.ui.warn(`Repointed "${name}": ${current} → ${url} — its saved credential now applies to the new URL.`);
+		ctx.ui.warn(repointWarning(name, current, url));
 	}
 
 	return url;
