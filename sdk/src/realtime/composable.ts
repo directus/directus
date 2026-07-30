@@ -19,6 +19,7 @@ import type {
 } from './types.js';
 import { generateUid } from './utils/generate-uid.js';
 import { messageCallback } from './utils/message-callback.js';
+import { createMessageQueue } from './utils/message-queue.js';
 
 type AuthWSClient<Schema> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
 
@@ -420,33 +421,19 @@ export function realtime(config: WebSocketConfig = {}) {
 				type Message = SubscriptionOutput<Schema, Collection, Options['query'], SubscriptionEvents>;
 
 				// Listening starts before the subscription is sent, so no message can slip through
-				// before (or between) pulls on the generator.
-				const queue: Message[] = [];
+				// before (or between) pulls on the stream.
 				const removeListeners: RemoveEventHandler[] = [];
-				let waiting: (() => void) | null;
-				let done = false;
-				let failure: unknown;
 
-				const notify = () => {
-					waiting?.();
-					waiting = null;
-				};
-
-				const end = (reason?: unknown) => {
-					if (done) return;
-					done = true;
-					failure = reason;
+				const messages = createMessageQueue<Message>(() => {
 					removeListeners.forEach((remove) => remove());
-					notify();
-				};
+			});
 
 				removeListeners.push(
 					this.onWebSocket('message', (message: Record<string, any>) => {
 						if (typeof message !== 'object' || message === null || Array.isArray(message)) return;
 
 						if (message['type'] === 'subscription' && message['uid'] === options.uid) {
-							queue.push(message as Message);
-							notify();
+							messages.push(message as Message);
 							return;
 						}
 
@@ -455,7 +442,7 @@ export function realtime(config: WebSocketConfig = {}) {
 							message['status'] === 'error' &&
 							(message['uid'] === undefined || message['uid'] === options.uid)
 						) {
-							end(message);
+							messages.fail(message);
 						}
 					}),
 				);
@@ -468,34 +455,20 @@ export function realtime(config: WebSocketConfig = {}) {
 						const willReconnect =
 							config.reconnect && !wasManuallyDisconnected && reconnectState.attempts < config.reconnect.retries;
 
-						if (!willReconnect) end();
+						if (!willReconnect) messages.end();
 					}),
 				);
 
 				this.sendMessage(subscriptionMessage);
 
-				async function* subscriptionGenerator(): AsyncGenerator<Message, void, unknown> {
-					try {
-						while (true) {
-							while (queue.length > 0) yield queue.shift()!;
-							if (failure) throw failure;
-							if (done) return;
-							await new Promise<void>((resolve) => (waiting = resolve));
-						}
-					} finally {
-						end();
-					}
-				}
-
 				const unsubscribe = () => {
 					subscriptions.delete(subscriptionMessage);
-					queue.length = 0;
-					end();
+					messages.dispose();
 					this.sendMessage({ uid: options.uid, type: 'unsubscribe' });
 				};
 
 				return {
-					subscription: subscriptionGenerator(),
+					subscription: messages.stream(),
 					unsubscribe,
 				};
 			},
