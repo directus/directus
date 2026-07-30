@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
 import {
+	Field,
 	FieldFilter,
 	FieldFilterOperator,
 	FieldFunction,
@@ -63,6 +64,8 @@ interface Props {
 	relationalFieldSelectable?: boolean;
 	rawFieldNames?: boolean;
 	variableInputEnabled: boolean | undefined;
+	/** Resolved by system-filter.vue; hides fields relating to a deactivated collection */
+	fieldFilter?: (field: Field) => boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -74,6 +77,7 @@ const props = withDefaults(defineProps<Props>(), {
 	includeJsonFunction: true,
 	relationalFieldSelectable: true,
 	rawFieldNames: false,
+	fieldFilter: undefined,
 });
 
 const emit = defineEmits(['remove-node', 'update:filter', 'change']);
@@ -336,6 +340,7 @@ function isExistingField(node: Record<string, any>): boolean {
 									:relational-field-selectable="relationalFieldSelectable"
 									:allow-select-all="false"
 									:raw-field-names="rawFieldNames"
+									:field-filter="fieldFilter"
 									@add="updateField(index, $event[0])"
 								/>
 							</VMenu>
@@ -403,6 +408,7 @@ function isExistingField(node: Record<string, any>): boolean {
 						:include-json-function="includeJsonFunction"
 						:raw-field-names="rawFieldNames"
 						:variable-input-enabled="variableInputEnabled"
+						:field-filter="fieldFilter"
 						@change="$emit('change')"
 						@remove-node="$emit('remove-node', [`${index}.${nodeInfoAt(index).name}`, ...$event])"
 						@update:filter="replaceNode(index, { [nodeInfoAt(index).name]: $event })"

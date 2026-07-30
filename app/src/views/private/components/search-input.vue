@@ -195,6 +195,7 @@ function emitValue() {
 							inline
 							:value="filter"
 							:collection-name="collection"
+							hide-inactive-collections
 							@input="$emit('update:filter', $event)"
 						/>
 					</div>

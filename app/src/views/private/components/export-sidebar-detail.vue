@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
-import { Filter } from '@directus/types';
+import { Field, Filter } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import type { AxiosProgressEvent } from 'axios';
 import { debounce, pick } from 'lodash';
@@ -30,6 +30,7 @@ import InterfaceSystemFilter from '@/interfaces/_system/system-filter/system-fil
 import { useServerStore } from '@/stores/server';
 import type { APIError } from '@/types/error';
 import { getPublicURL } from '@/utils/get-root-path';
+import { hasActiveRelatedCollection } from '@/utils/is-related-collection-active';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -81,7 +82,7 @@ const defaultLimit = info.queryLimit !== undefined ? Math.min(25, queryLimitMax)
 
 const isVirtualField = (fieldName: string) => fieldName.startsWith('$');
 
-const isExportableField = (field: { field: string }) => isVirtualField(field.field) === false;
+const isExportableField = (field: Field) => isVirtualField(field.field) === false && hasActiveRelatedCollection(field);
 
 const sanitizeExportFields = (fieldNames: string[] | undefined) => {
 	return fieldNames?.filter((fieldName) => isVirtualField(fieldName) === false) ?? [];
@@ -654,6 +655,7 @@ async function exportDataFiles() {
 					<InterfaceSystemFilter
 						:value="exportSettings.filter"
 						:collection-name="collection"
+						hide-inactive-collections
 						@input="exportSettings.filter = $event"
 					/>
 				</div>

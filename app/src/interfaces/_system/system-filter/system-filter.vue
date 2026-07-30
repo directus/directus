@@ -22,6 +22,7 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
+import { hasActiveRelatedCollection } from '@/utils/is-related-collection-active';
 
 interface Props {
 	value?: Record<string, any> | string;
@@ -47,6 +48,7 @@ interface Props {
 	relationalFieldSelectable?: boolean;
 	rawFieldNames?: boolean;
 	rawEditorEnabled?: boolean;
+	hideInactiveCollections?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -63,9 +65,12 @@ const props = withDefaults(defineProps<Props>(), {
 	injectVersionField: false,
 	relationalFieldSelectable: true,
 	rawFieldNames: false,
+	hideInactiveCollections: false,
 });
 
 const emit = defineEmits(['input']);
+
+const fieldFilter = computed(() => (props.hideInactiveCollections ? hasActiveRelatedCollection : undefined));
 
 const menuEl = ref();
 
@@ -216,6 +221,7 @@ function addKeyAsNode() {
 				:relational-field-selectable="relationalFieldSelectable"
 				:raw-field-names="rawFieldNames"
 				:variable-input-enabled="rawEditorEnabled"
+				:field-filter="fieldFilter"
 				@remove-node="removeNode($event)"
 				@change="emitValue"
 			/>
@@ -245,6 +251,7 @@ function addKeyAsNode() {
 					:inject-version-field="injectVersionField"
 					:allow-select-all="false"
 					:raw-field-names="rawFieldNames"
+					:field-filter="fieldFilter"
 					@add="addNode($event[0])"
 				>
 					<template #prepend>
