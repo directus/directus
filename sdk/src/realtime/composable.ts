@@ -426,7 +426,7 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				const messages = createMessageQueue<Message>(() => {
 					removeListeners.forEach((remove) => remove());
-			});
+				});
 
 				removeListeners.push(
 					this.onWebSocket('message', (message: Record<string, any>) => {
