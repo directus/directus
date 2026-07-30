@@ -281,6 +281,32 @@ describe('connection', () => {
 		expect((error as { hint: string }).hint).toContain('profile test prod');
 	});
 
+	it('surfaces a non-auth refresh failure as itself, never as an expired session', async () => {
+		// A 5xx (or timeout, or unreachable server) during refresh proves nothing about the session, but the
+		// blanket "has expired — sign in again" wording sent operators to re-authenticate against a server
+		// they could not reach. The real failure must keep its own code and message so the actual fix is visible.
+		isolateHome();
+		seedSession('https://cms.example.com', 'prod', Date.now() - 1_000);
+
+		agent
+			.get('https://cms.example.com')
+			.intercept({ path: '/auth/refresh', method: 'POST' })
+			.reply(
+				500,
+				{ errors: [{ message: 'boom', extensions: { code: 'INTERNAL_SERVER_ERROR' } }] },
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		const error = await refreshSessionIfNeeded({
+			url: 'https://cms.example.com',
+			profileName: 'prod',
+			kind: 'session',
+		}).catch((error: unknown) => error);
+
+		expect(error).toMatchObject({ code: 'HTTP' });
+		expect((error as { message: string }).message).not.toContain('expired');
+	});
+
 	const token = { url: 'https://cms.example.com', token: 'tok', kind: 'token' } as const;
 
 	it('reads the Directus version from /server/info', async () => {

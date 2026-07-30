@@ -93,7 +93,7 @@ export async function loginSession(
 // forcing the whole profile to be re-added (Judd's pain). Run once per command: the rotated tokens persist
 // to the shared store, so every later request — SDK client or raw fetch — reads the fresh access token. A
 // static token has nothing to refresh; a session with no saved refresh token is left for the request to
-// 401 on as before. A failed refresh means the refresh token itself is dead, so surface a clear
+// 401 on as before. An auth-rejected refresh means the refresh token itself is dead, so surface a clear
 // re-authenticate error rather than a bare 401.
 const SESSION_REFRESH_SKEW_MS = 60_000;
 
@@ -118,6 +118,11 @@ export async function refreshSessionIfNeeded(credential: ResolvedCredential): Pr
 		await client.refresh();
 	} catch (error) {
 		const mapped = mapRequestError(error, credential.url);
+
+		// Only an auth rejection proves the refresh token is dead. A timeout, 5xx, or unreachable server says
+		// nothing about the session — rewording those as "expired, sign in again" sends the operator to
+		// re-authenticate against a server they cannot reach, hiding the failure they actually need to fix.
+		if (mapped.code !== 'AUTH') throw mapped;
 
 		throw new CliError('AUTH', `The saved session for profile "${credential.profileName}" has expired.`, {
 			hint: `Sign in again: d6s profile test ${credential.profileName}`,
