@@ -40,6 +40,7 @@
 			"tar": "7.5.22",
 			"@vitest/coverage-v8>test-exclude": "8.0.0",
 			"js-beautify>editorconfig": "3.0.2",
+			"js-beautify>glob": "11.1.0",
 			"express@4>path-to-regexp": "0.1.13",
 			"adm-zip": "0.6.0",
 			"js-yaml@4": "4.3.0"

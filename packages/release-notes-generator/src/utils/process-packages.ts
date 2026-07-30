@@ -1,7 +1,8 @@
 import { existsSync, readFileSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
-import { findWorkspacePackagesNoCheck, type Project } from '@pnpm/workspace.find-packages';
+import type { Project } from '@pnpm/types';
 import { createPkgGraph, type PackageNode } from '@pnpm/workspace.pkgs-graph';
+import { findWorkspacePackages } from './find-workspace-packages.js';
 import semver from 'semver';
 import config from '../config.js';
 import type { PackageVersion } from '../types.js';
@@ -13,7 +14,7 @@ export async function processPackages(): Promise<{
 	prereleaseId: string | undefined;
 	packageVersions: PackageVersion[];
 }> {
-	const workspacePackages = await findWorkspacePackagesNoCheck(process.cwd());
+	const workspacePackages = await findWorkspacePackages(process.cwd());
 	const packageVersions = new Map<string, string>();
 	let dependentsMap: Record<string, string[]> | undefined;
 
