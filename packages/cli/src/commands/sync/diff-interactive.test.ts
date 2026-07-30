@@ -96,10 +96,13 @@ describe('interactive sync diff', () => {
 		rmSync(home, { recursive: true, force: true });
 	});
 
-	it('reports an ambiguity as a note and never prompts, dry-runs once, and writes no id map', async () => {
+	it('reports an ambiguity as unresolved without prompting, creating, or calling it "nothing to do"', async () => {
 		// The read-only guarantee proven in the interactive path: two target roles named Editor make the
-		// source ambiguous, yet diff resolves nothing interactively — no select/confirm/text — and instead
-		// renders the reconcile note, dry-runs exactly once, and leaves the id map unwritten.
+		// source ambiguous, yet diff resolves nothing interactively — no select/confirm/text — and leaves
+		// the id map unwritten. The ambiguous row is excluded from the preview batch (it is not a create:
+		// interactive push may resolve it into an update, non-interactive push refuses), so with nothing
+		// else to send no dry-run runs — but diff must still surface the unresolved identity and both
+		// resolution paths rather than collapsing into "matches the local snapshot".
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
 
 		vi.mocked(fetchRecords).mockResolvedValueOnce([
@@ -107,20 +110,21 @@ describe('interactive sync diff', () => {
 			{ id: 't2', name: 'Editor' },
 		]);
 
-		vi.mocked(importBatch).mockResolvedValue(
-			importResult({ directus_roles: { existing: [], new: ['sr1'], deleted: [], mapped: {} } }),
-		);
-
 		await diff({ to: 'staging', project: 'default' }, ctxAt(dir));
 
 		expect(select).not.toHaveBeenCalled();
 		expect(confirm).not.toHaveBeenCalled();
 		expect(text).not.toHaveBeenCalled();
+		expect(importBatch).not.toHaveBeenCalled();
 
-		expect(importBatch).toHaveBeenCalledTimes(1);
-		expect(vi.mocked(importBatch).mock.calls[0]?.[2]).toMatchObject({ dryRun: true });
+		const output = stderr.join('');
 
-		expect(stderr.join('')).toContain('has no target match yet');
+		expect(output).toContain('Data — no changes to import; 1 record unresolved.');
+		expect(output).toContain('has no target match yet');
+		expect(output).toContain('1 ambiguous');
+		expect(output).toContain('a non-interactive push refuses until they are resolved');
+		expect(output).not.toContain('matches the local snapshot');
+
 		expect(existsSync(join(dir, 'directus', 'default', 'id_map.json'))).toBe(false);
 	});
 

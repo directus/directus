@@ -369,13 +369,26 @@ describe('sync diff with data', () => {
 		expect(existsSync(idMapPath)).toBe(false);
 	});
 
-	it('reports an ambiguity as a note rather than resolving it, and never prompts or writes', async () => {
-		// Two target roles named Editor make sr1 ambiguous. diff must REPORT it (the note names the pending
-		// count and how many are ambiguous) rather than stop to ask — CI never prompts — and must leave the
-		// source unremapped and the id map unwritten.
+	it('reports an ambiguous record as unresolved, never as a create, and never prompts or writes', async () => {
+		// Two target roles named Editor make sr1 ambiguous. An operator gates a CI mirror push on these
+		// numbers, and sr1 is NOT a create: an interactive push may resolve it into an UPDATE, and a
+		// non-interactive push REFUSES until it is resolved — counting it as created would lie in both
+		// directions. So sr1 must be excluded from the dry-run batch, surface in its own "unresolved"
+		// segment, and the note must state the non-interactive refusal. diff still never prompts or writes.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
-		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+
+		seedData([
+			{
+				collection: 'directus_roles',
+				primaryKey: 'id',
+				records: [
+					{ id: 'sr1', name: 'Editor' },
+					{ id: 'sr2', name: 'Writer' },
+				],
+			},
+		]);
+
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		interceptDiff('merge', null);
@@ -385,22 +398,35 @@ describe('sync diff with data', () => {
 			{ id: 't2', name: 'Editor' },
 		]);
 
+		let sentForm: FormData | undefined;
+
 		interceptImport(
 			{ mode: 'merge', dryRun: 'true' },
 			{
 				data: {
 					applied: false,
 					mode: 'merge',
-					collections: { directus_roles: { existing: [], new: ['sr1'], deleted: [], mapped: {} } },
+					collections: { directus_roles: { existing: [], new: ['sr2'], deleted: [], mapped: {} } },
 				},
+			},
+			200,
+			(form) => {
+				sentForm = form;
 			},
 		);
 
 		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
 
+		// The ambiguous source never reaches the dry-run, so the server cannot report it as a create.
+		expect(await decodeBatch(sentForm)).toEqual([
+			{ collection: 'directus_roles', items: [{ id: 'sr2', name: 'Writer' }] },
+		]);
+
 		const err = stderr.join('');
-		expect(err).toContain('has no target match yet');
+		expect(err).toContain('1 created, 0 updated, 0 deleted, 1 unresolved');
+		expect(err).toContain('2 committed records have no target match yet');
 		expect(err).toContain('1 ambiguous');
+		expect(err).toContain('a non-interactive push refuses until they are resolved');
 
 		expect(existsSync(idMapPath)).toBe(false);
 	});

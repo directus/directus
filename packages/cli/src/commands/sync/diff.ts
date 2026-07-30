@@ -107,6 +107,10 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	const dataChanged = dataSummary !== undefined && hasImportChanges(dataSummary);
 
+	// Ambiguous sources are excluded from the preview batch (they are not creates: an interactive push may
+	// resolve them into updates, a non-interactive push refuses), so they surface as their own count.
+	const unresolved = preview.skipped ? 0 : preview.ambiguousCount;
+
 	if (ctx.ui.json) {
 		// The hash lets a later apply detect target-schema drift.
 		ctx.ui.data({
@@ -128,7 +132,9 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 		return;
 	}
 
-	if (result === null && !dataChanged) {
+	// An all-ambiguous data set produces a zero dry-run, but "nothing to do" would hide that push still
+	// prompts (interactive) or refuses (CI) — fall through so the unresolved count and note render.
+	if (result === null && !dataChanged && unresolved === 0) {
 		const tail = preview.skipped ? 'nothing to do.' : 'schema and data match; nothing to do.';
 		ctx.ui.success(`${options.to} matches the local snapshot — ${tail}`);
 		return;
@@ -145,12 +151,15 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	if (dataSummary !== undefined) {
 		if (dataChanged) {
 			const total = dataSummary.created + dataSummary.updated + dataSummary.deleted;
+			const unresolvedSegment = unresolved > 0 ? `, ${unresolved} unresolved` : '';
 
 			ctx.ui.info(
-				`Data — ${count(total, 'change')}: ${dataSummary.created} created, ${dataSummary.updated} updated, ${dataSummary.deleted} deleted`,
+				`Data — ${count(total, 'change')}: ${dataSummary.created} created, ${dataSummary.updated} updated, ${dataSummary.deleted} deleted${unresolvedSegment}`,
 			);
 
 			for (const line of dataSummary.lines) ctx.ui.plan(line);
+		} else if (unresolved > 0) {
+			ctx.ui.info(`Data — no changes to import; ${count(unresolved, 'record')} unresolved.`);
 		} else {
 			ctx.ui.info('Data — no changes to import.');
 		}
@@ -163,7 +172,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 		if (pending > 0) {
 			const detail =
 				preview.ambiguousCount > 0
-					? ` (${preview.ambiguousCount} ambiguous — run push in a terminal to choose the match)`
+					? ` (${preview.ambiguousCount} ambiguous — run push in a terminal to choose the match; a non-interactive push refuses until they are resolved)`
 					: '';
 
 			ctx.ui.info(

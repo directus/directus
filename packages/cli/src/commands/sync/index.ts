@@ -58,7 +58,7 @@ export function registerSync(program: Command, getContext: () => CliContext): vo
 
 	sync
 		.command('diff')
-		.description('Show what a push would change on the target. Changes nothing')
+		.description('Show what a push would change on the target. Applies nothing')
 		.requiredOption('--to <profile>', 'Target profile name')
 		.addOption(
 			new Option('--mode <mode>', 'add (only new records), merge (additive), or mirror (includes deletions)').choices(

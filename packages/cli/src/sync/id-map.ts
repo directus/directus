@@ -179,6 +179,24 @@ export function withMappings(
 
 	// Object spread uses define semantics, preserving a "__proto__" ID as an own property.
 	const mergedBucket = { ...bucket, ...entries };
+
+	// Injectivity is enforced on write as well as read (parseBucket): failing here names the operation
+	// that created the conflict, while a write-through would brick the NEXT command and blame it instead.
+	const owners = new Map<string, string>();
+
+	for (const [sourceId, targetId] of Object.entries(mergedBucket)) {
+		const owner = owners.get(targetId);
+
+		if (owner !== undefined) {
+			throw new CliError(
+				'STATE',
+				`${collection} would map source ids "${owner}" and "${sourceId}" to the same target id "${targetId}".`,
+			);
+		}
+
+		owners.set(targetId, sourceId);
+	}
+
 	const mergedCollection = { ...collectionMap, [collection]: mergedBucket };
 	const mergedTarget = { ...targetMap, [target]: mergedCollection };
 

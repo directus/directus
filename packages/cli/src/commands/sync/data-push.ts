@@ -92,6 +92,17 @@ export function partitionCollections(collections: readonly DataCollection[]): {
 		const data = byCollection.get(resource.collection);
 
 		if (data !== undefined) {
+			// The file's declared primaryKey drives row validation and duplicate-PK detection at read time,
+			// while every consumer below keys on the catalog's — a hand-edited declaration would make the
+			// dedup guard watch the wrong column, letting two rows with one real id ship in the batch.
+			if (data.primaryKey !== resource.primaryKey) {
+				throw new CliError(
+					'STATE',
+					`The committed data file for ${data.collection} declares primary key "${data.primaryKey}", but this collection's primary key is "${resource.primaryKey}".`,
+					{ hint: 'Fix or delete the data file, then run d6s sync pull again.' },
+				);
+			}
+
 			system.push({ data, resource });
 			claimed.add(resource.collection);
 		}
@@ -364,6 +375,19 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 	const targetUrl = normalizeInstanceUrl(target.url);
 	const { system, content } = partitionCollections(collections);
 
+	// partitionCollections claims only cataloged system collections, so an unknown directus_* file (hand-
+	// committed, or written by a different CLI version) lands in `content` — but calling it a content
+	// collection would misdirect the operator toward the deferred-content advice. Name it for what it is.
+	const unknownSystem = content.filter((data) => data.collection.startsWith('directus_'));
+
+	if (unknownSystem.length > 0) {
+		throw new CliError(
+			'STATE',
+			`The committed data files contain system collections this CLI version does not sync: ${unknownSystem.map((data) => data.collection).join(', ')}.`,
+			{ hint: 'Delete those data files and re-pull, or use a CLI version that syncs them.' },
+		);
+	}
+
 	// Content sync is deferred from this release — pull no longer writes content data files, so any that
 	// remain are committed leftovers whose rows this CLI can no longer import safely (a raw integer content
 	// PK can silently overwrite an unrelated target row). Refuse before any target read or import; push and
@@ -469,12 +493,19 @@ function assembleBatch(
 			// filter defeats; withhold unconditionally instead. The server inserts fresh and the row is
 			// re-identified by natural key next push (only natural-keyed resources reach here). No map entry
 			// is recorded: the assigned id is unreported and a guess would bind the source to the wrong row.
-			if (
-				mode !== 'add' &&
-				!mapped &&
-				typeof record[resource.primaryKey] === 'number' &&
-				hasNaturalKey(resource.collection)
-			) {
+			if (mode !== 'add' && !mapped && typeof record[resource.primaryKey] === 'number') {
+				// A numeric-PK resource outside the natural-key table could never re-identify the withheld
+				// row, but falling through would send the raw source integer — the exact silent-overwrite
+				// class the withhold exists to prevent. Unreachable with today's catalog; a catalog edit that
+				// breaks the invariant must fail the push, not the target's data.
+				if (!hasNaturalKey(resource.collection)) {
+					throw new CliError(
+						'STATE',
+						`No natural key defined for numeric-primary-key collection "${resource.collection}".`,
+						{ hint: 'The natural-key table is out of date with the synced collection set.' },
+					);
+				}
+
 				delete result.record[resource.primaryKey];
 				items.push(result.record);
 				sent.push({ sourceId, sentPk: null });
@@ -598,8 +629,9 @@ export interface DataPreviewPlan {
 export type DataPreviewResult = DataPreviewPlan | DataPushSkipped;
 
 /**
- * Preview without prompting or writing. Unambiguous matches are applied in memory; ambiguous sources stay
- * unmapped, so an interactive push may produce a different batch after the operator resolves them.
+ * Preview without prompting or writing. Unambiguous matches are applied in memory; ambiguous sources are
+ * excluded from the batch and surfaced only through ambiguousCount — an interactive push resolves them
+ * (possibly into updates) and a non-interactive push refuses until they are resolved.
  */
 export async function previewData(target: Target, mode: Mode): Promise<DataPreviewResult> {
 	const reconciled = await readAndReconcile(target);
@@ -613,18 +645,45 @@ export async function previewData(target: Target, mode: Mode): Promise<DataPrevi
 	let matchedCount = 0;
 	let ambiguousCount = 0;
 	let unmatchedCount = 0;
+	const ambiguousSources = new Map<string, ReadonlySet<string>>();
 
 	for (const result of results) {
 		matchedCount += result.matched.length;
 		ambiguousCount += result.ambiguous.length;
 		unmatchedCount += result.unmatched.length;
 
+		if (result.ambiguous.length > 0) {
+			ambiguousSources.set(result.collection, new Set(result.ambiguous.map((entry) => entry.sourceId)));
+		}
+
 		if (result.matched.length === 0) continue;
 
 		map = withMappings(map, source, targetUrl, result.collection, matchedEntries(result));
 	}
 
-	const { batch, unchanged, records } = assembleBatch(system, mappingsFor(map, source, targetUrl), mode, targets);
+	// An ambiguous source is neither a create nor an update yet: an interactive push resolves it, a
+	// non-interactive push refuses outright. Left in the batch it would ride as a CREATE and the dry-run
+	// would count it — a preview lying in both directions — so it is excluded here and reported unresolved.
+	const previewSystem = system.map((entry) => {
+		const ambiguous = ambiguousSources.get(entry.resource.collection);
+
+		if (ambiguous === undefined) return entry;
+
+		return {
+			...entry,
+			data: {
+				...entry.data,
+				records: entry.data.records.filter((record) => !ambiguous.has(String(record[entry.resource.primaryKey]))),
+			},
+		};
+	});
+
+	const { batch, unchanged, records } = assembleBatch(
+		previewSystem,
+		mappingsFor(map, source, targetUrl),
+		mode,
+		targets,
+	);
 
 	let unchangedCount = 0;
 	for (const set of unchanged.values()) unchangedCount += set.size;

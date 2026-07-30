@@ -124,6 +124,30 @@ describe('withMappings', () => {
 		expect(withMappings(base, A, B, 'directus_roles', {})).toBe(base);
 	});
 
+	it('fails STATE at write when a new entry maps a second source to an already-owned target id', () => {
+		// Failing at WRITE names the operation that created the conflict; with only parseBucket's read-side
+		// check this write would succeed and brick the NEXT command, blaming one that did nothing wrong.
+		const base = withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { s1: 't1' });
+
+		const error = expectCliError(() => withMappings(base, A, B, 'directus_roles', { s2: 't1' }));
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain('"s1"');
+		expect(error.message).toContain('"s2"');
+		expect(error.message).toContain('"t1"');
+	});
+
+	it('fails STATE when a single entries batch maps two sources to the same target id', () => {
+		// The collision can arrive within one call too (e.g. an import response mapping two sent PKs onto
+		// one final id); the write must refuse regardless of which side of the merge supplied the pair.
+		const error = expectCliError(() =>
+			withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { s1: 't1', s2: 't1' }),
+		);
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain('"t1"');
+	});
+
 	it('keeps source→target and target→source in separate buckets', () => {
 		// A remapping only holds one way; if A→B and B→A shared a bucket, a reverse sync would apply the
 		// forward instance's IDs and corrupt every reference.

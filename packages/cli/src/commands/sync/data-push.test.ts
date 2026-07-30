@@ -6,7 +6,9 @@ import type { ResolvedCredential } from '../../kernel/config/credentials.js';
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 import { createUi } from '../../kernel/ui.js';
+import { fetchRecords } from '../../sync/api.js';
 import { type DataCollection, writeDataFiles } from '../../sync/data-store.js';
+import { hasNaturalKey } from '../../sync/reconcile.js';
 import { partitionCollections, prepareDataPush, previewData, remapSystemRecord } from './data-push.js';
 import type { Target } from './resolve-target.js';
 
@@ -17,6 +19,14 @@ vi.mock('../../sync/api.js', () => ({
 	fetchRecords: vi.fn(() => Promise.resolve([])),
 	importBatch: vi.fn(),
 }));
+
+// hasNaturalKey gates the unmatched-numeric-PK withhold; one test flips it to false to reach the
+// static-catalog guard (unreachable with the real table). Everything else stays real so reconciliation
+// behaves as in production.
+vi.mock('../../sync/reconcile.js', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('../../sync/reconcile.js')>();
+	return { ...actual, hasNaturalKey: vi.fn(actual.hasNaturalKey) };
+});
 
 const bucket = {
 	directus_access: { a1: 'ta1' },
@@ -187,6 +197,84 @@ describe('prepareDataPush skip and precondition', () => {
 
 		expect(error).toBeInstanceOf(CliError);
 		expect((error as CliError).code).toBe('STATE');
+	});
+
+	it('refuses a data file whose declared primaryKey contradicts the catalog, before any network', async () => {
+		// parseDataFile validates rows and dedups primary keys against the DECLARED key, but every consumer
+		// downstream keys on the catalog's — a hand-edited `primaryKey: "name"` would make the duplicate-PK
+		// guard watch the wrong column, so two rows with one real id could ship. The mismatch must refuse at
+		// the boundary, before the target is even read; push and diff share this path.
+		writeDataFiles(
+			join(dir, 'data'),
+			[{ collection: 'directus_roles', primaryKey: 'name', records: [{ id: 'r1', name: 'Editor' }] }],
+			'https://source.example.com',
+		);
+
+		vi.mocked(fetchRecords).mockClear();
+
+		const error = await prepareDataPush(target(), 'merge', ctx()).catch((error: unknown) => error);
+
+		expect(error).toBeInstanceOf(CliError);
+		expect((error as CliError).code).toBe('STATE');
+		expect((error as CliError).message).toContain('directus_roles');
+		expect((error as CliError).message).toContain('"name"');
+		expect((error as CliError).message).toContain('"id"');
+		expect(fetchRecords).not.toHaveBeenCalled();
+	});
+
+	it('refuses an unknown directus_* data file as an unsynced system collection, not as content', async () => {
+		// A hand-committed directus_presets file is a SYSTEM collection this CLI version has no catalog
+		// entry for. The old refusal called it a "content collection", sending the operator down the
+		// deferred-content path instead of toward removing the file or changing CLI versions. The refusal
+		// must name it as system and precede any network work.
+		writeDataFiles(
+			join(dir, 'data'),
+			[{ collection: 'directus_presets', primaryKey: 'id', records: [{ id: 1 }] }],
+			'https://source.example.com',
+		);
+
+		vi.mocked(fetchRecords).mockClear();
+
+		const error = await prepareDataPush(target(), 'merge', ctx()).catch((error: unknown) => error);
+
+		expect(error).toBeInstanceOf(CliError);
+		expect((error as CliError).code).toBe('STATE');
+		expect((error as CliError).message).toContain('system collections this CLI version does not sync');
+		expect((error as CliError).message).toContain('directus_presets');
+		expect((error as CliError).message).not.toMatch(/content collection/);
+		expect(fetchRecords).not.toHaveBeenCalled();
+	});
+
+	it('throws STATE for an unmatched numeric PK on a resource without a natural key, never sending it', async () => {
+		// The withhold strips unmatched numeric PKs precisely because a raw source integer silently upserts
+		// whatever target row owns that id. A numeric-PK resource missing from NATURAL_KEYS would skip the
+		// withhold and fall through to that raw-PK send — so the guard must fail the push, not the target's
+		// data. Unreachable with today's catalog; this pins the invariant against catalog edits.
+		writeDataFiles(
+			join(dir, 'data'),
+			[
+				{
+					collection: 'directus_permissions',
+					primaryKey: 'id',
+					records: [{ id: 7, policy: null, collection: 'articles', action: 'read' }],
+				},
+			],
+			'https://source.example.com',
+		);
+
+		vi.mocked(hasNaturalKey).mockReturnValue(false);
+
+		try {
+			const error = await prepareDataPush(target(), 'merge', ctx()).catch((error: unknown) => error);
+
+			expect(error).toBeInstanceOf(CliError);
+			expect((error as CliError).code).toBe('STATE');
+			expect((error as CliError).message).toContain('directus_permissions');
+			expect((error as CliError).message).toMatch(/natural key/i);
+		} finally {
+			// Vitest 3 mockReset restores the implementation originally passed to vi.fn — the real table.
+			vi.mocked(hasNaturalKey).mockReset();
+		}
 	});
 
 	it('previewData skips a schema-only checkout without touching the credential', async () => {
