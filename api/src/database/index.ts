@@ -96,9 +96,7 @@ export function getDatabase(): Knex {
 	validateEnv(requiredEnvVars);
 
 	const knexConfig: Knex.Config = {
-		// `DB_CLIENT=sqlite3` stays the public, documented value, but the underlying driver is
-		// better-sqlite3. node-sqlite3 was marked unmaintained upstream as of its v6 release.
-		client: client === 'sqlite3' ? 'better-sqlite3' : client,
+		client,
 		version,
 		searchPath,
 		connection: connectionString || connectionConfig,
@@ -122,6 +120,7 @@ export function getDatabase(): Knex {
 
 	if (client === 'sqlite3') {
 		knexConfig.useNullAsDefault = true;
+		knexConfig.client = 'better-sqlite3';
 
 		poolConfig.afterCreate = (conn: any, callback: any) => {
 			logger.trace('Enabling SQLite Foreign Keys support...');
