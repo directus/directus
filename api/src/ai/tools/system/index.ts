@@ -16,6 +16,7 @@ export const system = defineTool<z.infer<typeof SystemPromptValidateSchema>>({
 	name: 'system-prompt',
 	description:
 		'Returns the Directus Assistant system instructions. Use first to load role, behavior, and tool guidance.',
+	instructions: 'IMPORTANT! Always call this tool first. It will retrieve important information about your role.\n',
 	keywords: ['instructions', 'role', 'assistant prompt', 'system instructions'],
 	annotations: {
 		title: 'Directus - System Prompt',

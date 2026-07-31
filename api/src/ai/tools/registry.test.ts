@@ -349,6 +349,7 @@ describe('ToolRegistry', () => {
 
 		expect(mounted.search('target').results.map(({ name }) => name)).toEqual(['items']);
 		context.toolNames = [];
+		expect(mounted.search('target').results).toEqual([]);
 
 		await expect(mounted.execute('items', {})).resolves.toMatchObject({
 			ok: false,

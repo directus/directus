@@ -17,7 +17,7 @@ Perform CRUD operations on Directus Collections.
 	"meta": {
 		"collection": "products",
 		"icon": "inventory_2", // Any Material Symbols icons
-		"note": "Main product catalog with inventory tracking" // Helpful 1 sentence description
+		"note": "Main product catalog with inventory tracking", // Helpful 1 sentence description
 		"color": "#6366F1", // Color shown in content module sidebar
 		"singleton": false, // Single-item collections (settings, globals)
 		"hidden": false, // Hide from navigation
@@ -31,7 +31,7 @@ Perform CRUD operations on Directus Collections.
 		"versioning": false, // Enable content versioning for this collection
 		"sort": 2, // Sort order for this collection
 		"group": null, // Parent collection (use to group and nest collections in data model)
-		"collapse": "open" // Default collection to expanded or collapsed if child collections
+		"collapse": "open", // Default collection to expanded or collapsed if child collections
 		"preview_url": "https://store.example.com/products/{{slug}}", // Live preview URL to view items within collection - supports using template variables
 		"translations": [
 			{
@@ -46,7 +46,7 @@ Perform CRUD operations on Directus Collections.
 				"singular": "producto",
 				"plural": "productos"
 			}
-		],
+		]
 	}
 }
 ```

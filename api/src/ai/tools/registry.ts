@@ -54,6 +54,13 @@ export type ToolRegistryMountContext = {
 
 type ToolRegistrySearchInput = { query: string; names?: never } | { names: string[]; query?: never };
 
+type SearchIndexCache = {
+	children: WeakMap<ToolConfig<any>, SearchIndexCache>;
+	index?: SearchIndex;
+};
+
+const searchIndexCache: SearchIndexCache = { children: new WeakMap() };
+
 export class ToolRegistry {
 	readonly #tools = new Map<string, ToolConfig<any>>();
 
@@ -75,7 +82,6 @@ export class ToolRegistry {
 export class MountedToolRegistry {
 	readonly #context: ToolRegistryMountContext;
 	readonly #catalog: Map<string, ToolConfig<any>>;
-	#searchIndex: SearchIndex | undefined;
 
 	constructor(tools: readonly ToolConfig<any>[], context: ToolRegistryMountContext) {
 		this.#context = context;
@@ -87,9 +93,9 @@ export class MountedToolRegistry {
 	}
 
 	search(query: string): ToolSearchResults {
-		this.#searchIndex ??= createSearchIndex(this.#getVisibleTools().filter((tool) => tool.exposure !== 'root'));
+		const tools = this.#getVisibleTools().filter((tool) => tool.exposure !== 'root');
 
-		return this.#searchIndex.search(query);
+		return getSearchIndex(tools).search(query);
 	}
 
 	detail(names: readonly string[]): ToolDetail[] {
@@ -305,6 +311,23 @@ export class MountedToolRegistry {
 			...(tool.instructions && { instructions: tool.instructions }),
 		};
 	}
+}
+
+function getSearchIndex(tools: readonly ToolConfig<any>[]): SearchIndex {
+	let cache = searchIndexCache;
+
+	for (const tool of tools) {
+		let child = cache.children.get(tool);
+
+		if (!child) {
+			child = { children: new WeakMap() };
+			cache.children.set(tool, child);
+		}
+
+		cache = child;
+	}
+
+	return (cache.index ??= createSearchIndex(tools));
 }
 
 const SearchInputSchema = z.object({
