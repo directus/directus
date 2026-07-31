@@ -37,7 +37,7 @@ export default class SQLite implements SchemaInspector {
 
 	async overview(): Promise<SchemaOverview> {
 		const tablesWithAutoIncrementPrimaryKeys = (
-			await this.knex.select('name').from('sqlite_master').whereRaw(`sql LIKE "%AUTOINCREMENT%"`)
+			await this.knex.select('name').from('sqlite_master').where('sql', 'like', '%AUTOINCREMENT%')
 		).map(({ name }) => name);
 
 		const tables = await this.tables();
@@ -159,7 +159,7 @@ export default class SQLite implements SchemaInspector {
 	async columnInfo(table?: string, column?: string) {
 		const getColumnsForTable = async (table: string): Promise<Column[]> => {
 			const tablesWithAutoIncrementPrimaryKeys = (
-				await this.knex.select('name').from('sqlite_master').whereRaw(`sql LIKE "%AUTOINCREMENT%"`)
+				await this.knex.select('name').from('sqlite_master').where('sql', 'like', '%AUTOINCREMENT%')
 			).map(({ name }) => name);
 
 			const columns: RawColumn[] = await this.knex.raw(`PRAGMA table_xinfo(??)`, table);
