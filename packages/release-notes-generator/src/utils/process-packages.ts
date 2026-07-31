@@ -2,10 +2,10 @@ import { existsSync, readFileSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Project } from '@pnpm/types';
 import { createPkgGraph, type PackageNode } from '@pnpm/workspace.pkgs-graph';
-import { findWorkspacePackages } from './find-workspace-packages.js';
 import semver from 'semver';
 import config from '../config.js';
 import type { PackageVersion } from '../types.js';
+import { findWorkspacePackages } from './find-workspace-packages.js';
 import { sortByExternalOrder } from './sort.js';
 
 export async function processPackages(): Promise<{

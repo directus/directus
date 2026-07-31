@@ -4,7 +4,7 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Driver, StorageManager } from '@directus/storage';
 import type { Accountability } from '@directus/types';
 import type { File, SchemaOverview } from '@directus/types';
-import { ZipArchive, type Archiver } from 'archiver';
+import { type Archiver, ZipArchive } from 'archiver';
 import contentDisposition from 'content-disposition';
 import type { Knex } from 'knex';
 import knex from 'knex';
