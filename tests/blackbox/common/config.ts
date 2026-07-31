@@ -1,6 +1,7 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Knex } from 'knex';
+import { Client_BetterSQLite3 } from './better-sqlite3-client';
 import { allVendors, type Vendor } from './get-dbs-to-test';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -230,7 +231,7 @@ const config: Config = {
 			...knexConfig,
 		},
 		sqlite3: {
-			client: 'better-sqlite3',
+			client: Client_BetterSQLite3,
 			connection: {
 				filename: './test.db',
 			},

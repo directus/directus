@@ -98,8 +98,43 @@ describe('getDatabase with DB_CLIENT=sqlite3', () => {
 		const { getDatabase } = await import('./index.js');
 		database = getDatabase();
 
-		expect(database.client.config.client).toBe('better-sqlite3');
+		expect(database.client.driverName).toBe('better-sqlite3');
+
+		// getDatabaseClient() and createInspector() both switch on this name
 		expect(database.client.constructor.name).toBe('Client_BetterSQLite3');
+	});
+
+	test('binds integers as integers, so ids stored in text columns keep their exact form', async () => {
+		const { getDatabase } = await import('./index.js');
+		database = getDatabase();
+
+		await database.schema.createTable('junction', (table) => {
+			table.increments('id');
+			table.string('item', 255);
+		});
+
+		// better-sqlite3 binds every JS number as a double, which a TEXT affinity column would
+		// stringify to "41.0" and break the a2o join against CAST(id AS CHAR(255))
+		await database('junction').insert({ item: 41 });
+
+		expect(await database('junction').select('item')).toEqual([{ item: '41' }]);
+
+		const [{ pk }] = await database.raw(`select item = CAST(? AS CHAR(255)) as pk from junction`, [41]);
+		expect(pk).toBe(1);
+	});
+
+	test('leaves floats and unsafe integers on the double binding path', async () => {
+		const { getDatabase } = await import('./index.js');
+		database = getDatabase();
+
+		await database.schema.createTable('measurements', (table) => {
+			table.float('radius');
+			table.string('label', 255);
+		});
+
+		await database('measurements').insert({ radius: 91.97, label: Number.MAX_SAFE_INTEGER + 2 });
+
+		expect(await database('measurements').select('radius')).toEqual([{ radius: 91.97 }]);
 	});
 
 	test('still reports itself as the sqlite database client', async () => {
