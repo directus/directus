@@ -272,6 +272,33 @@ describe('Integration Tests', () => {
 					});
 				});
 
+				describe('hardcoded-open operations', () => {
+					it('includes POST /users/register for a non-admin caller even without RBAC create-permission on directus_users', async () => {
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_users', action: 'read' } as any,
+						]);
+
+						const usersSchema = new SchemaBuilder()
+							.collection('directus_users', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: usersSchema,
+							accountability: { role: 'editor', admin: false } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						// POST /users/register runs with accountability: null at runtime, so RBAC never
+						// applies to it - its inclusion can't depend on the caller's own create-permission
+						// on directus_users, which nobody grants since registration bypasses RBAC entirely.
+						expect(spec.paths['/users/register']?.post).toBeDefined();
+					});
+				});
+
 				describe('CookieAuth / RefreshTokenCookieAuth scheme coverage', () => {
 					it('includes CookieAuth in the spec-wide security default', async () => {
 						const service = new SpecificationService({

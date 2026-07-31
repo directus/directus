@@ -219,9 +219,15 @@ class OASSpecsService implements SpecificationSubService {
 								paths[path] = {};
 							}
 
+							// A static `security: []` override means the operation runs with no accountability at
+							// all (e.g. POST /users/register), so it can't be gated by the caller's own RBAC access
+							// to the tied collection - it's reachable by anyone regardless of that permission.
+							const isHardcodedOpen = Array.isArray(operation.security) && operation.security.length === 0;
+
 							const hasPermission =
 								this.accountability?.admin === true ||
 								collection === undefined ||
+								isHardcodedOpen ||
 								this.hasCollectionAccess(collectionAccess, collection, this.getActionForMethod(method));
 
 							if (hasPermission) {
