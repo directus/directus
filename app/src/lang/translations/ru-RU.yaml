@@ -20,7 +20,6 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: О программе
-privacy_policy: Политика конфиденциальности
 contact_support: свяжитесь со службой поддержки
 setup_welcome: Добро пожаловать в Directus
 setup_info: Давайте создадим учетную запись администратора и запустим ваш проект.
@@ -559,6 +558,7 @@ functions:
   minute: Минута
   second: Секунда
   count: Количество
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
@@ -820,6 +820,7 @@ unexpected_error_copy: Произошла непредвиденная ошиб�
 copy_details: Скопировать подробности
 no_app_access: Нет доступа к приложению
 no_app_access_copy: Этому пользователю не разрешено использовать приложение администратора.
+password_reset_sent: Если у вас есть учётная запись, поддерживающая сброс пароля, мы отправили безопасную ссылку на вашу электронную почту
 password_reset_successful: Пароль успешно сброшен
 back: Назад
 filter: Фильтр
@@ -910,6 +911,7 @@ operators:
   nintersects: Не пересекает
   intersects_bbox: Пересекает ограничивающую рамку
   nintersects_bbox: Не пересекает ограничивающую рамку
+  json: JSON
   regex: Соответствует RegExp
 custom_validation_message: Пользовательское сообщение проверки
 loading: Загрузка...
@@ -1160,12 +1162,15 @@ wysiwyg_options:
   bullist: Маркированный список
   numlist: Нумерованный список
   hr: Горизонтальный разделитель
+  insertdatetime_date: Дата
+  insertdatetime_time: Время
   link: Добавить/редактировать ссылку
   unlink: Удалить ссылку
   media: Добавить/редактировать медиа
   image: Добавить/редактировать изображ.
   copy: Копировать
   cut: Вырезать
+  default: По умолчанию
   paste: Вставить
   heading: Заголовок
   h1: Заголовок 1
@@ -1189,6 +1194,8 @@ wysiwyg_options:
   source_code: Редактировать исходный код
   fullscreen: Во весь экран
   directionality: Направленность
+  ltr: Слева направо
+  rtl: Справа налево
   lazy_loading: Отложенная загрузка изображения
   lazy_loading_label: Включить отложенную загрузку
 dropdown: Выпадающий список
@@ -1224,8 +1231,11 @@ licensing:
   resolve_continue: Продолжить
   resolve_show_n_more: 'Показать еще {count}'
   resolve_section_flows: Процессы
+  resolve_sso_caption: Пользователи, работающие только через SSO, будут деактивированы при внесении этого изменения. Чтобы восстановить их доступ, вам нужно будет активировать их заново и настроить электронную почту и пароль через каталог пользователей.
+  resolve_sso_admin_description: Пожалуйста, убедитесь, что ваша электронная почта и пароль указаны верно. После отключения SSO для входа в систему вам понадобятся оба параметра.
   resolve_sso_admin_email: Адрес электронной почты
   resolve_sso_admin_password: Пароль
+  resolve_sso_admin_password_placeholder: Задайте пароль...
   entitlements:
     collections: Коллекции
     flows: Процессы
@@ -1461,8 +1471,6 @@ fields:
     public_registration_verify_email_note: Отправить письмо регистрирующему пользователю с просьбой нажать на ссылку подтверждения, прежде чем они смогут войти.
     visual_editor_urls: URL-адреса визуального редактора
     mcp_enabled: MCP сервер
-    mcp_enabled_note: 'Подключите инструменты AI/LLM к вашему проекту Directus через <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. Это позволяет ИИ ассистентам безопасно считывать и взаимодействовать с данными Directus.'
-    mcp_notice: 'Model Context Protocol — это стандарт для подключения LLM к таким приложениям, как Directus. Единожды настроенный, Directus MCP сервер будет доступен по `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Узнать больше про MCP и его установку.</a>'
     mcp_allow_deletes: Разрешить удаления
     mcp_prompts_collection: AI Prompts Collection
     ai_header_name: HTTP-заголовок
@@ -2081,9 +2089,6 @@ interfaces:
     description: Расширенный редактор, генерирующий HTML
     toolbar: Панель инструментов
     custom_formats: Пользовательские форматы
-    custom_formats_note: Список форматов контента TinyMCE. Смотрите документацию TinyMCE о [форматировании контента](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) для получения дополнительной информации.
-    options_override: Переопределение параметров
-    options_override_note: Ключи форматирования пользователей TinyMCE и их значения. Смотрите документацию TinyMCE о [Форматировании пользователей](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) для получения дополнительной информации.
     folder_note: Папка для загруженных файлов. Не влияет на существующие файлы.
     imageToken: Токен Статического Доступа
     imageToken_label: Статический токен доступа добавляется после URL-адреса файла

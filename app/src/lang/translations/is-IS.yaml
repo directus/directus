@@ -267,6 +267,8 @@ wysiwyg_options:
   bold: Feitletrað
   italic: Skáletrað
   codeblock: Kóði
+  insertdatetime_date: Dagsetning
+  insertdatetime_time: Tími
   unlink: Fjarlægja Hlekk
   copy: Afrita
   cut: Klippa
@@ -286,6 +288,8 @@ wysiwyg_options:
   remove: Fjarlægja
   selectall: Velja Allt
   table: Tafla
+  ltr: Vinstri til Hægri
+  rtl: Hægri til Vinstri
 dropdown: Fellilisti
 choices: Val
 deselect_all: Afvelja Allt
