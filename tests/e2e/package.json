@@ -14,7 +14,7 @@
 	"packageManager": "pnpm@10.14.0",
 	"dependencies": {
 		"@directus/license": "catalog:",
-		"@directus/mock-license-server": "workspace:*",
+		"@directus/mock-license-server": "catalog:",
 		"@directus/sandbox": "workspace:*",
 		"@directus/sdk": "workspace:*",
 		"@directus/utils": "workspace:*",

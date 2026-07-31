@@ -1,4 +1,4 @@
-import { activateLicense, CORE_LICENSE, readLicense } from '@directus/license';
+import { activateLicense, DIRECTUS_CORE_LICENSE, readLicense } from '@directus/license';
 import { mockClient } from '@directus/mock-license-server';
 import { sandbox, type Sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
@@ -112,10 +112,10 @@ describe('boot core', () => {
 		const info = await api.request(readLicense());
 
 		expect(info).toMatchObject({
-			name: CORE_LICENSE.meta.name,
+			name: DIRECTUS_CORE_LICENSE.meta.name,
 			source: null,
 			status: 'active',
-			entitlements: CORE_LICENSE.entitlements,
+			entitlements: DIRECTUS_CORE_LICENSE.entitlements,
 		});
 	});
 });

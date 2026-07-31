@@ -2,9 +2,9 @@ import { randomUUID } from 'node:crypto';
 import {
 	activateLicense,
 	applyLicenseResolution,
-	CORE_LICENSE,
 	deactivateLicense,
 	deleteLicenseAddon,
+	DIRECTUS_CORE_LICENSE,
 	generateLicensePendingResolution,
 	previewLicense,
 	readLicense,
@@ -166,11 +166,11 @@ describe('DELETE /licenses', () => {
 		const info = await api.request(readLicense());
 
 		expect(info).toMatchObject({
-			name: CORE_LICENSE.meta.name,
+			name: DIRECTUS_CORE_LICENSE.meta.name,
 			source: null,
 			status: 'active',
 			editable: true,
-			entitlements: CORE_LICENSE.entitlements,
+			entitlements: DIRECTUS_CORE_LICENSE.entitlements,
 		});
 	});
 
