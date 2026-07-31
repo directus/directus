@@ -402,10 +402,16 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		return;
 	}
 
-	const schemaSentence =
-		result !== null
-			? `Applied ${count(schemaTotal, 'schema change')} to ${url}; schema hash verified.`
-			: `Schema already matches ${url}.`;
+	// A skipped schema phase must never read as "already matches" — this push never compared schemas.
+	let schemaSentence: string;
+
+	if (result !== null) {
+		schemaSentence = `Applied ${count(schemaTotal, 'schema change')} to ${url}; schema hash verified.`;
+	} else if (schemaEnabled) {
+		schemaSentence = `Schema already matches ${url}.`;
+	} else {
+		schemaSentence = 'Schema phase skipped ("schema": false).';
+	}
 
 	let dataSentence = ' Data phase skipped (no committed data).';
 

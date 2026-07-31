@@ -952,6 +952,11 @@ describe('sync push with data', () => {
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
 		expect(stderr.join('')).toContain('Schema — skipped');
+
+		// The final sentence must not read "Schema already matches" — nothing was compared. QA hit
+		// exactly this: every earlier line said skipped, then the summary claimed a match.
+		expect(stderr.join('')).toContain('Schema phase skipped');
+		expect(stderr.join('')).not.toContain('already matches');
 	});
 
 	it('reports applied:true on --json for a data-only push — the target DID change', async () => {
