@@ -25,8 +25,6 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	IMPORT_IP_DENY_LIST: 'array',
 	IMPORT_TIMEOUT: 'string',
 	IMPORT_MAX_CONCURRENCY: 'number',
-
-	EXTENSIONS_STORAGE_MAX_CONCURRENCY: 'number',
 	IMPORT_MAX_FILE_SIZE: 'string',
 	IMPORT_EXPORT_NAMESPACE: 'string',
 
@@ -71,6 +69,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	SECRET: 'string',
 
 	EXTENSIONS_ROLLDOWN: 'boolean',
+	EXTENSIONS_STORAGE_MAX_CONCURRENCY: 'number',
 
 	PROJECT_OWNER_ENABLED: 'boolean',
 

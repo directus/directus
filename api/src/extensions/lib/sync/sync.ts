@@ -7,11 +7,11 @@ import { normalizePath } from '@directus/utils';
 import mid from 'node-machine-id';
 import Queue from 'p-queue';
 import { useBus } from '../../../bus/index.js';
+import { EXTENSIONS } from '../../../constants.js';
 import { useLock } from '../../../lock/index.js';
 import { useLogger } from '../../../logger/index.js';
 import { getStorage } from '../../../storage/index.js';
 import { getExtensionsPath } from '../get-extensions-path.js';
-import { getStorageMaxConcurrency } from '../get-storage-max-concurrency.js';
 import { isSynchronizing, setSyncStatus, SyncStatus } from './status.js';
 import { SyncFileTracker } from './tracker.js';
 import { compareFileMetadata, getSyncPaths } from './utils.js';
@@ -71,7 +71,7 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 		}
 
 		// Limit concurrent requests to the storage driver (also bounds open file handles)
-		const queue = new Queue({ concurrency: getStorageMaxConcurrency() });
+		const queue = new Queue({ concurrency: EXTENSIONS.STORAGE_MAX_CONCURRENCY });
 		let syncError: unknown;
 
 		// On the first failure, stop starting new work; a partial sync is invalid anyway

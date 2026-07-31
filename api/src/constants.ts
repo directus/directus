@@ -100,6 +100,14 @@ export const FILE_UPLOADS = {
 	MAX_CONCURRENCY: Number(env['FILES_MAX_UPLOAD_CONCURRENCY']),
 };
 
+const extensionsStorageMaxConcurrency = Number(env['EXTENSIONS_STORAGE_MAX_CONCURRENCY']);
+
+/** Extensions */
+export const EXTENSIONS = {
+	/** p-queue requires a number >=1 or throws type error */
+	STORAGE_MAX_CONCURRENCY: extensionsStorageMaxConcurrency >= 1 ? extensionsStorageMaxConcurrency : 20,
+};
+
 /** Resumable uploads (TUS) */
 export const RESUMABLE_UPLOADS = {
 	ENABLED: toBoolean(env['TUS_ENABLED']),
