@@ -230,14 +230,14 @@ const config: Config = {
 			...knexConfig,
 		},
 		sqlite3: {
-			client: 'sqlite3',
+			client: 'better-sqlite3',
 			connection: {
 				filename: './test.db',
 			},
 			useNullAsDefault: true,
 			pool: {
 				afterCreate: (conn: any, callback: any) => {
-					conn.run('PRAGMA foreign_keys = ON');
+					conn.pragma('foreign_keys = ON');
 					callback(null, conn);
 				},
 			},
