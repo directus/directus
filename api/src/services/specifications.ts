@@ -73,15 +73,15 @@ class OASSpecsService implements SpecificationSubService {
 
 	async generate(host?: string) {
 		let schemaForSpec = this.schema;
-		let collectionAccess: CollectionAccess | undefined;
+		let userCollectionAccess: CollectionAccess | undefined;
 
 		if (this.accountability && this.accountability.admin !== true) {
-			collectionAccess = await fetchAccountabilityCollectionAccess(this.accountability, {
+			userCollectionAccess = await fetchAccountabilityCollectionAccess(this.accountability, {
 				schema: this.schema,
 				knex: this.knex,
 			});
 
-			schemaForSpec = reduceSchema(this.schema, this.toReadFieldMap(collectionAccess));
+			schemaForSpec = reduceSchema(this.schema, this.toReadFieldMap(userCollectionAccess));
 		}
 
 		const publicAccountability = createDefaultAccountability();
@@ -92,7 +92,7 @@ class OASSpecsService implements SpecificationSubService {
 		});
 
 		const tags = await this.generateTags(schemaForSpec);
-		const paths = await this.generatePaths(schemaForSpec, collectionAccess, publicCollectionAccess, tags);
+		const paths = await this.generatePaths(schemaForSpec, userCollectionAccess, publicCollectionAccess, tags);
 		const components = await this.generateComponents(schemaForSpec, tags, paths);
 
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
@@ -175,10 +175,10 @@ class OASSpecsService implements SpecificationSubService {
 	}
 
 	/** Flattens a CollectionAccess map into the field map reduceSchema() expects. */
-	private toReadFieldMap(collectionAccess: CollectionAccess): FieldMap {
+	private toReadFieldMap(userCollectionAccess: CollectionAccess): FieldMap {
 		const fieldMap: FieldMap = {};
 
-		for (const [collection, access] of Object.entries(collectionAccess)) {
+		for (const [collection, access] of Object.entries(userCollectionAccess)) {
 			if (access.read.access === 'none') continue;
 			fieldMap[collection] = access.read.fields ?? [];
 		}
@@ -195,10 +195,10 @@ class OASSpecsService implements SpecificationSubService {
 		return (collectionAccess?.[collection]?.[action]?.access ?? 'none') !== 'none';
 	}
 
-	/** Builds paths gated by collectionAccess, marking publicly-readable operations with optional-auth security. */
+	/** Builds paths gated by the caller's own collection access, marking publicly-readable operations with optional-auth security. */
 	private async generatePaths(
 		schema: SchemaOverview,
-		collectionAccess: CollectionAccess | undefined,
+		userCollectionAccess: CollectionAccess | undefined,
 		publicCollectionAccess: CollectionAccess,
 		tags: OpenAPIObject['tags'],
 	): Promise<OpenAPIObject['paths']> {
@@ -228,7 +228,7 @@ class OASSpecsService implements SpecificationSubService {
 								this.accountability?.admin === true ||
 								collection === undefined ||
 								isHardcodedOpen ||
-								this.hasCollectionAccess(collectionAccess, collection, this.getActionForMethod(method));
+								this.hasCollectionAccess(userCollectionAccess, collection, this.getActionForMethod(method));
 
 							if (hasPermission) {
 								const isPubliclyAccessible =
@@ -261,7 +261,7 @@ class OASSpecsService implements SpecificationSubService {
 				for (const method of methods) {
 					const hasPermission =
 						this.accountability?.admin === true ||
-						this.hasCollectionAccess(collectionAccess, collection, this.getActionForMethod(method));
+						this.hasCollectionAccess(userCollectionAccess, collection, this.getActionForMethod(method));
 
 					const isPubliclyAccessible = this.hasCollectionAccess(
 						publicCollectionAccess,
