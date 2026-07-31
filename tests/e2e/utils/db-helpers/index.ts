@@ -12,6 +12,7 @@ export function getDatabaseClient(database: Knex): DatabaseClient {
 		case 'Client_CockroachDB':
 			return 'cockroachdb';
 		case 'Client_SQLite3':
+		case 'Client_BetterSQLite3':
 			return 'sqlite';
 		case 'Client_Oracledb':
 		case 'Client_Oracle':
