@@ -16,7 +16,7 @@ export function withPreprocessBindings(knex: Knex, dbQuery: Knex.QueryBuilder) {
 
 			if (prop === 'prepBindings') {
 				return (bindings: Knex.Value[]) =>
-					schemaHelper.prepBindings(Reflect.get(target, prop, receiver).bind(dbQuery.client)(bindings));
+					schemaHelper.prepQueryParamBindings(Reflect.get(target, prop, receiver).bind(dbQuery.client)(bindings));
 			}
 
 			return Reflect.get(target, prop, receiver);

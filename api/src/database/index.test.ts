@@ -26,9 +26,8 @@ vi.mock('../extensions/lib/get-extensions-path.js', () => ({
 	getExtensionsPath: vi.fn(() => '/extensions'),
 }));
 
-vi.mock('./helpers/index.js', () => ({
-	getHelpers: vi.fn(() => ({})),
-}));
+// `getHelpers` is deliberately NOT mocked: `applyDialectBindings` dispatches the sqlite binding
+// coercion through the real schema helper, so stubbing it out would make those assertions vacuous
 
 vi.mock('@directus/schema', () => ({
 	createInspector: vi.fn(),

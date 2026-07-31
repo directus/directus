@@ -101,7 +101,7 @@ export class SchemaHelperOracle extends SchemaHelper {
 		return prepQueryParams(queryParams, { format: (index) => `:${index + 1}` });
 	}
 
-	override prepBindings(bindings: Knex.Value[]): any {
+	override prepQueryParamBindings(bindings: Knex.Value[]): any {
 		// Create an object with keys 1, 2, 3, ... and the bindings as values
 		// This will use the "named" binding syntax in the oracledb driver instead of the positional binding
 		return Object.fromEntries(bindings.map((binding: any, index: number) => [index + 1, binding]));

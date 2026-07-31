@@ -199,7 +199,21 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return queryParams;
 	}
 
-	prepBindings(bindings: Knex.Value[]): any {
+	/**
+	 * Dialect-specific rewrite of the bindings that accompany a `prepQueryParams` rewrite, applied
+	 * per query by `withPreprocessBindings`. Only valid in combination with the rewritten SQL, so it
+	 * must not be applied connection-wide.
+	 */
+	prepQueryParamBindings(bindings: Knex.Value[]): any {
+		return bindings;
+	}
+
+	/**
+	 * Dialect-specific coercion of individual binding values, composed onto the knex client by
+	 * `applyDialectBindings` so it covers every query the connection runs: reads, writes and DDL
+	 * alike. Receives `undefined` for queries built from a bare SQL string.
+	 */
+	prepBindings(bindings: unknown): unknown {
 		return bindings;
 	}
 
