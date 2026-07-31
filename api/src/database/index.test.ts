@@ -121,6 +121,17 @@ describe('getDatabase with DB_CLIENT=sqlite3', () => {
 
 		const [{ pk }] = await database.raw(`select item = CAST(? AS CHAR(255)) as pk from junction`, [41]);
 		expect(pk).toBe(1);
+
+		// binding integers as BigInt mustn't leak into reads
+		expect(await database('junction').select('id')).toEqual([{ id: 1 }]);
+	});
+
+	test('runs queries that carry no bindings', async () => {
+		const { getDatabase } = await import('./index.js');
+		database = getDatabase();
+
+		// `prepBindings` is handed `undefined` for these, not an array
+		expect(await database.raw('select 1 as one')).toEqual([{ one: 1 }]);
 	});
 
 	test('leaves floats and unsafe integers on the double binding path', async () => {

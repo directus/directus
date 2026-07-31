@@ -4,7 +4,7 @@ import path from 'path';
 import type { Driver } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { Client_BetterSQLite3 } from '../../database/clients/better-sqlite3.js';
+import { DirectusBetterSQLite3 } from '../../database/clients/sqlite3.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -65,7 +65,7 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 
 	if (client === 'sqlite3') {
 		knexConfig.useNullAsDefault = true;
-		knexConfig.client = Client_BetterSQLite3;
+		knexConfig.client = DirectusBetterSQLite3;
 	}
 
 	if (client === 'cockroachdb') {

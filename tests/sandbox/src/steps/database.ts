@@ -3,7 +3,6 @@ import { default as knex, type Knex } from 'knex';
 import { merge } from 'lodash-es';
 import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';
-import { Client_BetterSQLite3 } from './better-sqlite3-client.js';
 
 /**
  * Build a Knex connection.
@@ -48,7 +47,7 @@ export function createDatabase(env: Env, logger: Logger): Knex {
 
 	if (client === 'sqlite3') {
 		knexConfig.useNullAsDefault = true;
-		knexConfig.client = Client_BetterSQLite3;
+		knexConfig.client = 'better-sqlite3';
 
 		poolConfig.afterCreate = (conn: any, callback: any) => {
 			logger.info('Enabling SQLite Foreign Keys support...');
