@@ -26,6 +26,8 @@ export type DisplayItem = {
 	$edits?: number;
 	/** Values replaced by the display-only resolution of nested relational edits, keyed by field */
 	$staged?: Record<string, any>;
+	/** What each `$staged` field resolved to, so a value the consumer replaced can be told apart from the resolution */
+	$resolved?: Record<string, any>;
 };
 
 export type ChangesItem = {
@@ -152,16 +154,33 @@ export function useRelationMultiple(
 		return { ...resolved, $staged: staged };
 	}
 
+	/**
+	 * Record what each staged field ended up holding on the finished display item, so `cleanItem` can
+	 * tell the resolution apart from a value the consumer replaced on purpose. Has to run once the item
+	 * is fully assembled, since the junction field of an m2m/m2a row is merged after resolution.
+	 */
+	function withResolved(item: DisplayItem): DisplayItem {
+		if (!item.$staged) return item;
+
+		const resolved: Record<string, any> = {};
+
+		for (const field of Object.keys(item.$staged)) {
+			resolved[field] = item[field];
+		}
+
+		return { ...item, $resolved: resolved };
+	}
+
 	const createdItems = computed(() => {
 		const info = relation.value;
 		if (info?.type === undefined) return [];
 
 		const items = _value.value.create.map((item, index) => {
-			return {
+			return withResolved({
 				...forDisplay(item),
 				$type: 'created',
 				$index: index,
-			} as DisplayItem;
+			} as DisplayItem);
 		});
 
 		if (info.type === 'o2m') return items;
@@ -197,6 +216,8 @@ export function useRelationMultiple(
 						...displayEdits[relation.value.junctionField.field],
 					};
 				}
+
+				updatedItem = withResolved(updatedItem);
 
 				updatedItem.$type = 'updated';
 				updatedItem.$index = edits.index;
@@ -721,8 +742,14 @@ export function useRelationMultiple(
 				return acc;
 			}, {} as DisplayItem);
 
-			// Undo the display-only resolution of nested relational edits
-			if (item.$staged) return { ...cleaned, ...item.$staged };
+			// Undo the display-only resolution of nested relational edits, but only where the field still
+			// holds the resolved value: consumers spread a display item and replace a field on it, and
+			// that replacement is the newer of the two.
+			if (item.$staged) {
+				for (const [field, value] of Object.entries(item.$staged)) {
+					if (isEqual(cleaned[field], item.$resolved?.[field])) cleaned[field] = value;
+				}
+			}
 
 			return cleaned;
 		}

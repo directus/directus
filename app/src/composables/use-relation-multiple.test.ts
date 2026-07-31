@@ -31,8 +31,12 @@ vi.mock('@/utils/unexpected-error', () => {
 });
 
 vi.mock('@/utils/get-related-collection', () => ({
-	getRelatedCollection: (collection: string, field: string) =>
-		collection === 'worker' && field === 'translations' ? { relatedCollection: 'worker_translations' } : null,
+	getRelatedCollection: (collection: string, field: string) => {
+		if (collection === 'worker' && field === 'translations') return { relatedCollection: 'worker_translations' };
+		if (collection === 'article_m2a' && field === 'item') return { relatedCollection: 'text' };
+		if (collection === 'text' && field === 'translations') return { relatedCollection: 'text_translations' };
+		return null;
+	},
 }));
 
 vi.mock('@/stores/fields', () => ({
@@ -547,6 +551,7 @@ describe('nested relational changes', () => {
 			$type: 'created',
 			$index: 0,
 			$staged: { translations: changes },
+			$resolved: { translations: [{ language: 'en-US', title: 'Prelude' }] },
 		});
 	});
 
@@ -599,6 +604,33 @@ describe('nested relational changes', () => {
 		});
 	});
 
+	test('a deep-cloned display item handed back to update re-emits the delta', async () => {
+		const changes = {
+			create: [{ language: 'en-US', title: 'Prelude' }],
+			update: [],
+			delete: [],
+		};
+
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		wrapper.vm.create({ facility: 1, translations: changes });
+
+		await flushPromises();
+
+		// Mirrors the sort handlers, which clone the display items before reordering them
+		wrapper.vm.update({ ...cloneDeep(wrapper.vm.displayItems.at(-1)), sort: 1 });
+
+		await flushPromises();
+
+		expect(wrapper.vm.value).toEqual({
+			create: [{ facility: 1, translations: changes, sort: 1 }],
+			update: [],
+			delete: [],
+		});
+	});
+
 	test('an updated item exposes its nested changes as values', async () => {
 		const wrapper = mount(TestComponent, {
 			props: { relation: relationO2M, value: [], id: 1 },
@@ -623,6 +655,101 @@ describe('nested relational changes', () => {
 			$index: 0,
 			$edits: 0,
 			$staged: { translations: changes },
+			$resolved: { translations: [{ language: 'de-DE', title: 'Vorspiel' }] },
+		});
+	});
+
+	test('replacing the field on a display item keeps the new delta', async () => {
+		const oldChanges = {
+			create: [{ language: 'en-US', title: 'Old' }],
+			update: [],
+			delete: [],
+		};
+
+		const newChanges = {
+			create: [{ language: 'en-US', title: 'NEW' }],
+			update: [],
+			delete: [],
+		};
+
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		wrapper.vm.create({ facility: 1, translations: oldChanges });
+
+		await flushPromises();
+
+		// Mirrors NestedDraggable.updateModelValue: spread the display item, then replace the field itself
+		wrapper.vm.update({ ...wrapper.vm.displayItems.at(-1), translations: newChanges });
+
+		await flushPromises();
+
+		expect(wrapper.vm.value).toEqual({
+			create: [{ facility: 1, translations: newChanges }],
+			update: [],
+			delete: [],
+		});
+	});
+
+	test('clearing the field on a display item does not bring the old delta back', async () => {
+		const changes = {
+			create: [{ language: 'en-US', title: 'Prelude' }],
+			update: [],
+			delete: [],
+		};
+
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		wrapper.vm.create({ facility: 1, translations: changes });
+
+		await flushPromises();
+
+		// A nested interface that drops all its changes emits `undefined` back up
+		wrapper.vm.update({ ...wrapper.vm.displayItems.at(-1), translations: undefined });
+
+		await flushPromises();
+
+		expect(wrapper.vm.value).toEqual({
+			create: [{ facility: 1 }],
+			update: [],
+			delete: [],
+		});
+	});
+
+	test('nested changes inside a junction field resolve for display and save as a delta', async () => {
+		const changes = {
+			create: [{ language: 'en-US', title: 'Prelude' }],
+			update: [],
+			delete: [],
+		};
+
+		const wrapper = mount(TestComponentM2A, {
+			props: { relation: relationM2A, value: [], id: 1 },
+		});
+
+		await flushPromises();
+
+		wrapper.vm.update({ id: 1, item: { id: 1, translations: changes } });
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems[0]!.item).toEqual({
+			id: 1,
+			translations: [{ language: 'en-US', title: 'Prelude' }],
+		});
+
+		// Spreading the display item back in must not save the resolved values in place of the delta
+		wrapper.vm.update({ ...wrapper.vm.displayItems[0], sort: 9 });
+
+		await flushPromises();
+
+		expect(wrapper.vm.value).toEqual({
+			create: [],
+			update: [{ id: 1, article_id: 1, collection: 'text', item: { id: 1, translations: changes }, sort: 9 }],
+			delete: [],
 		});
 	});
 });
