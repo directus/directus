@@ -17,6 +17,24 @@ vi.mock('../permissions/lib/fetch-permissions.js', () => ({
 	fetchPermissions: vi.fn().mockResolvedValue([]),
 }));
 
+const mockEnvOverrides = vi.hoisted(() => ({}) as Record<string, unknown>);
+
+vi.mock('@directus/env', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('@directus/env')>();
+	const realEnv = actual.useEnv();
+
+	const envWithOverrides = new Proxy(realEnv as Record<string, unknown>, {
+		get(target, prop: string) {
+			return prop in mockEnvOverrides ? mockEnvOverrides[prop] : target[prop];
+		},
+	});
+
+	return {
+		...actual,
+		useEnv: vi.fn(() => envWithOverrides),
+	};
+});
+
 class Client_PG extends MockClient {}
 
 describe('Integration Tests', () => {
@@ -31,6 +49,10 @@ describe('Integration Tests', () => {
 	afterEach(() => {
 		tracker.reset();
 		vi.clearAllMocks();
+
+		for (const key of Object.keys(mockEnvOverrides)) {
+			delete mockEnvOverrides[key];
+		}
 	});
 
 	const schema = new SchemaBuilder()
@@ -281,6 +303,27 @@ describe('Integration Tests', () => {
 
 						expect(spec.paths['/auth/refresh']?.post?.security).toEqual(expectedSecurity);
 						expect(spec.paths['/auth/logout']?.post?.security).toEqual(expectedSecurity);
+					});
+
+					it('reflects custom SESSION_COOKIE_NAME / REFRESH_TOKEN_COOKIE_NAME env values in the scheme names', async () => {
+						mockEnvOverrides['SESSION_COOKIE_NAME'] = 'custom_session_cookie';
+						mockEnvOverrides['REFRESH_TOKEN_COOKIE_NAME'] = 'custom_refresh_cookie';
+
+						const service = new SpecificationService({
+							knex: db,
+							schema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.components?.securitySchemes?.['CookieAuth']).toMatchObject({
+							name: 'custom_session_cookie',
+						});
+
+						expect(spec.components?.securitySchemes?.['RefreshTokenCookieAuth']).toMatchObject({
+							name: 'custom_refresh_cookie',
+						});
 					});
 				});
 

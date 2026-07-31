@@ -394,6 +394,15 @@ class OASSpecsService implements SpecificationSubService {
 
 		if (!components) components = {};
 
+		const cookieAuthScheme = components.securitySchemes?.['CookieAuth'];
+		if (cookieAuthScheme && 'name' in cookieAuthScheme) cookieAuthScheme.name = env['SESSION_COOKIE_NAME'] as string;
+
+		const refreshTokenCookieAuthScheme = components.securitySchemes?.['RefreshTokenCookieAuth'];
+
+		if (refreshTokenCookieAuthScheme && 'name' in refreshTokenCookieAuthScheme) {
+			refreshTokenCookieAuthScheme.name = env['REFRESH_TOKEN_COOKIE_NAME'] as string;
+		}
+
 		components.schemas = {};
 
 		const tagSchemas = tags.reduce(
