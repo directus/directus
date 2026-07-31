@@ -123,7 +123,7 @@ class OASSpecsService implements SpecificationSubService {
 		if (tags) spec.tags = tags;
 		if (components) spec.components = components;
 
-		spec.security = [{ Auth: [] }, { KeyAuth: [] }, { CookieAuth: [] }];
+		spec.security = staticSpec.security!;
 
 		return spec;
 	}
