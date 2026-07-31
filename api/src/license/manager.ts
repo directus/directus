@@ -3,12 +3,12 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import {
 	activateKey,
 	billingPortal,
-	CORE_LICENSE,
 	COUNTABLE_ENTITLEMENT_KEYS,
 	type CountableEntitlementKey,
 	deactivateKey,
 	deleteAddon,
 	Directus,
+	DIRECTUS_CORE_LICENSE,
 	type FeatureFlagEntitlementKey,
 	type InvalidLicenseStatus,
 	type LicenseAddonsOutput,
@@ -199,13 +199,13 @@ export class LicenseManager {
 
 		if (!token) {
 			this.source = null;
-			licenseCache = CORE_LICENSE;
+			licenseCache = DIRECTUS_CORE_LICENSE;
 		} else {
 			licenseCache = await this.verify(token);
 
 			if (!licenseCache) {
 				this.source = null;
-				licenseCache = CORE_LICENSE;
+				licenseCache = DIRECTUS_CORE_LICENSE;
 			}
 		}
 
