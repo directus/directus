@@ -31,6 +31,7 @@ import type { EventHandler } from './types/index.js';
 import { constructFlowTree } from './utils/construct-flow-tree.js';
 import { getSchema } from './utils/get-schema.js';
 import { getService } from './utils/get-service.js';
+import { isUnauthenticated } from './utils/is-unauthenticated.js';
 import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 
@@ -300,7 +301,7 @@ class FlowManager {
 
 					const accountability = context?.['accountability'] as Accountability | undefined;
 
-					if (!accountability) {
+					if (isUnauthenticated(accountability)) {
 						logger.warn(`Manual flows are only triggerable when authenticated`);
 						throw new ForbiddenError();
 					}
