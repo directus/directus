@@ -1,22 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { CliError } from '../kernel/error.js';
 import { type CollectionReconcile, reconcileCollections, type ReconcileInput } from './reconcile.js';
+import { expectCliError } from './test-support.js';
 
 function forCollection(results: readonly CollectionReconcile[], name: string): CollectionReconcile {
 	const found = results.find((result) => result.collection === name);
 	if (found === undefined) throw new Error(`no result for ${name}`);
 	return found;
-}
-
-function expectCliError(fn: () => unknown): CliError {
-	try {
-		fn();
-	} catch (error) {
-		expect(error).toBeInstanceOf(CliError);
-		return error as CliError;
-	}
-
-	throw new Error('expected a CliError');
 }
 
 describe('reconcileCollections', () => {

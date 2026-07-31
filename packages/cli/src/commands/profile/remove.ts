@@ -11,7 +11,7 @@ export function registerRemove(profile: Command, getContext: () => CliContext): 
 		.action((name: string) => remove(name, getContext()));
 }
 
-export function remove(name: string, ctx: CliContext): void {
+function remove(name: string, ctx: CliContext): void {
 	const url = removeProfile({ cwd: ctx.cwd, configPath: ctx.configPath }, name);
 	ctx.ui.success(`Removed profile "${name}".`);
 

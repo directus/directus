@@ -2,8 +2,8 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { CliError } from '../kernel/error.js';
 import { type IdMap, mappingsFor, normalizeInstanceUrl, readIdMap, withMappings, writeIdMap } from './id-map.js';
+import { expectCliError } from './test-support.js';
 
 const A = 'http://source.example.com';
 const B = 'http://target.example.com';
@@ -23,17 +23,6 @@ function mapPath(): string {
 afterEach(() => {
 	for (const dir of dirs.splice(0)) rmSync(dir, { recursive: true, force: true });
 });
-
-function expectCliError(fn: () => unknown): CliError {
-	try {
-		fn();
-	} catch (error) {
-		expect(error).toBeInstanceOf(CliError);
-		return error as CliError;
-	}
-
-	throw new Error('expected a CliError');
-}
 
 describe('normalizeInstanceUrl', () => {
 	it('lowercases protocol and host so case-variant URLs key one bucket', () => {

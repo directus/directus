@@ -10,7 +10,7 @@ import type { DiffResult, ImportBatchResult } from '../../sync/contract.js';
 import { writeDataFiles } from '../../sync/data-store.js';
 import { writeSnapshotFiles } from '../../sync/store.js';
 import { push } from './push.js';
-import { seedProjectConfig, SYNC_TOKEN, SYNC_URL } from './sync.test-support.js';
+import { fullSnapshot, seedProjectConfig, SYNC_TOKEN, SYNC_URL } from './sync.test-support.js';
 
 // Script prompts and isolate interactive gates/reconciliation from the network.
 vi.mock('@clack/prompts', () => ({
@@ -64,15 +64,7 @@ describe('interactive sync push', () => {
 	let stderr: string[];
 
 	function seedSnapshot(): void {
-		writeSnapshotFiles(join(dir, 'directus', 'default', 'schema'), {
-			version: 1,
-			directus: '11.0.0',
-			vendor: 'postgres',
-			collections: [{ collection: 'articles', meta: { note: null } }],
-			fields: [{ collection: 'articles', field: 'title', type: 'string' }],
-			systemFields: [],
-			relations: [],
-		});
+		writeSnapshotFiles(join(dir, 'directus', 'default', 'schema'), fullSnapshot());
 	}
 
 	beforeEach(() => {

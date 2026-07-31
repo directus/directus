@@ -2,8 +2,8 @@ import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'n
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { CliError } from '../kernel/error.js';
 import { type DataCollection, hasCommittedCollection, readDataFiles, writeDataFiles } from './data-store.js';
+import { expectCliError } from './test-support.js';
 
 const OWNED = /^[a-z0-9-]*_[0-9a-f]{16}\.json$/;
 
@@ -54,17 +54,6 @@ function ownedFileFor(dir: string, collection: string): string {
 	}
 
 	throw new Error(`no owned file for ${collection}`);
-}
-
-function expectCliError(fn: () => unknown): CliError {
-	try {
-		fn();
-	} catch (error) {
-		expect(error).toBeInstanceOf(CliError);
-		return error as CliError;
-	}
-
-	throw new Error('expected a CliError');
 }
 
 describe('writeDataFiles / readDataFiles', () => {

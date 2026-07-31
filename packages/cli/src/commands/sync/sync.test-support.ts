@@ -84,7 +84,6 @@ export function useSyncWorld(): SyncWorld {
 	return world;
 }
 
-/** Return the minimal full snapshot used by sync command tests. */
 export function fullSnapshot(): Snapshot {
 	return {
 		version: 1,
@@ -97,12 +96,10 @@ export function fullSnapshot(): Snapshot {
 	};
 }
 
-/** Run sync through the real command dispatcher. */
 export function runSync(dir: string, argv: string[]): Promise<number> {
 	return run(argv, { registerCommands: [registerSync], cwd: dir });
 }
 
-/** Seed the standard staging profile. */
 export function seedProjectConfig(dir: string): void {
 	writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url: SYNC_URL } } }));
 }

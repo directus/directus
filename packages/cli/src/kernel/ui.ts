@@ -26,7 +26,7 @@ export function writeOut(text: string): void {
 }
 
 /** Write redacted text to stderr. */
-export function writeErr(text: string): void {
+function writeErr(text: string): void {
 	process.stderr.write(redact(text));
 }
 

@@ -66,62 +66,39 @@ interface ResolvedScope {
 	readonly note: string;
 }
 
-type Pair = { readonly include: string[] } | { readonly exclude: string[] } | undefined;
-
-interface PairMessages {
-	readonly bothFlags: string;
-	readonly emptyInclude: string;
-	readonly emptyExclude: string;
-	readonly bothConfig: string;
-}
-
-// Any CLI scope flag overrides the configured pair; include and exclude remain mutually exclusive.
-function resolvePair(
-	flagInclude: readonly string[] | undefined,
-	flagExclude: readonly string[] | undefined,
-	configInclude: readonly string[] | undefined,
-	configExclude: readonly string[] | undefined,
-	messages: PairMessages,
-): Pair {
-	if (flagInclude !== undefined || flagExclude !== undefined) {
-		if (flagInclude !== undefined && flagExclude !== undefined) {
-			throw new CliError('USAGE', messages.bothFlags);
-		}
-
-		if (flagInclude !== undefined) {
-			if (flagInclude.length === 0) throw new CliError('USAGE', messages.emptyInclude);
-			return { include: [...flagInclude] };
-		}
-
-		if (flagExclude !== undefined) {
-			if (flagExclude.length === 0) throw new CliError('USAGE', messages.emptyExclude);
-			return { exclude: [...flagExclude] };
-		}
-	}
-
-	if (configInclude !== undefined && configExclude !== undefined) {
-		throw new CliError('CONFIG', messages.bothConfig);
-	}
-
-	if (configInclude !== undefined) return { include: [...configInclude] };
-	if (configExclude !== undefined) return { exclude: [...configExclude] };
-
-	return undefined;
-}
-
 function resolveScope(options: PullOptions, projectConfig: ProjectConfig | undefined): ResolvedScope | undefined {
-	const pair = resolvePair(
-		options.collections,
-		options.excludeCollections,
-		projectConfig?.collections,
-		projectConfig?.excludeCollections,
-		{
-			bothFlags: 'Pass --collections or --exclude-collections, not both.',
-			emptyInclude: '--collections needs at least one collection name.',
-			emptyExclude: '--exclude-collections needs at least one collection name.',
-			bothConfig: `Project "${options.project}" sets both collections and excludeCollections.`,
-		},
-	);
+	let pair: { readonly include: string[] } | { readonly exclude: string[] } | undefined;
+
+	// Any CLI scope flag overrides the configured pair; include and exclude remain mutually exclusive.
+	if (options.collections !== undefined || options.excludeCollections !== undefined) {
+		if (options.collections !== undefined && options.excludeCollections !== undefined) {
+			throw new CliError('USAGE', 'Pass --collections or --exclude-collections, not both.');
+		}
+
+		if (options.collections !== undefined) {
+			if (options.collections.length === 0) {
+				throw new CliError('USAGE', '--collections needs at least one collection name.');
+			}
+
+			pair = { include: [...options.collections] };
+		} else if (options.excludeCollections !== undefined) {
+			if (options.excludeCollections.length === 0) {
+				throw new CliError('USAGE', '--exclude-collections needs at least one collection name.');
+			}
+
+			pair = { exclude: [...options.excludeCollections] };
+		}
+	} else {
+		const include = projectConfig?.collections;
+		const exclude = projectConfig?.excludeCollections;
+
+		if (include !== undefined && exclude !== undefined) {
+			throw new CliError('CONFIG', `Project "${options.project}" sets both collections and excludeCollections.`);
+		}
+
+		if (include !== undefined) pair = { include: [...include] };
+		if (exclude !== undefined) pair = { exclude: [...exclude] };
+	}
 
 	if (pair === undefined) return undefined;
 
@@ -311,7 +288,6 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	// refusal alone would leave the new source's schema committed beside the old source's data.
 	assertDataSource(dataDir, normalizeInstanceUrl(url));
 
-	// Refresh an expiring saved session before the first request so an expired token re-auths silently.
 	await refreshSessionIfNeeded(credential);
 
 	const snapshot = includeSchema ? await fetchSnapshot(credential, scope?.api) : null;
@@ -354,34 +330,8 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	const dataCollections: DataCollection[] = [];
 	const incomplete: string[] = [];
 
-	// Read the admin-only license entitlement only if a shortfall actually occurs — a clean pull pays
-	// nothing, and the result is memoized so repeated shortfalls share one read. Any failure (non-admin,
-	// older server) leaves it undefined and the message degrades to inference.
-	let entitlementResolved = false;
-	let customRulesEntitled: boolean | undefined;
-
-	const customRulesEntitlement = async (): Promise<boolean | undefined> => {
-		if (!entitlementResolved) {
-			entitlementResolved = true;
-			customRulesEntitled = await fetchCustomPermissionRulesEntitled(credential);
-		}
-
-		return customRulesEntitled;
-	};
-
 	for (const resource of resources) {
-		let rows = await fetchRecords(
-			credential,
-			{
-				collection: resource.collection,
-				endpoint: resource.endpoint,
-				primaryKey: resource.primaryKey,
-				singleton: resource.singleton,
-				drop: resource.drop,
-				keyset: resource.keyset,
-			},
-			queryMax,
-		);
+		let rows = await fetchRecords(credential, resource, queryMax);
 
 		// Unlicensed instances hide custom-rule permissions from every read path, so the fetch above can be
 		// silently short. total_count is computed on the database and still sees them — a shortfall is
@@ -399,7 +349,14 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 			} else if (total !== rows.length) {
 				incomplete.push(resource.collection);
 
-				ctx.ui.warn(permissionsShortfallWarning(resource.name, rows.length, total, await customRulesEntitlement()));
+				ctx.ui.warn(
+					permissionsShortfallWarning(
+						resource.name,
+						rows.length,
+						total,
+						await fetchCustomPermissionRulesEntitled(credential),
+					),
+				);
 			}
 		}
 

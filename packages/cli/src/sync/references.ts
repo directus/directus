@@ -9,7 +9,7 @@ import type { Snapshot } from './contract.js';
  * and apply fails (today a raw 500 — see the server scoped-snapshot writeup). Scoped sync can strand
  * these silently, so the CLI warns rather than refusing or widening the scope on the user's behalf.
  */
-export interface OutOfScopeReference {
+interface OutOfScopeReference {
 	/** How the reference is expressed: a group nesting, a fixed m2o/o2m relation, or an m2a allow-list. */
 	readonly kind: 'group' | 'relation' | 'm2a';
 	/** The pointing site: a collection (group) or `collection.field` (relation/m2a). */

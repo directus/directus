@@ -49,7 +49,7 @@ export function schemaDiffMode(mode: Mode): 'merge' | 'mirror' {
 /**
  * Map a user-facing mode to import options. The API represents mirror as merge plus delete permission.
  */
-export function dataImportOptions(mode: Mode): { mode: 'add' | 'merge'; dangerouslyAllowDelete?: boolean } {
+function dataImportOptions(mode: Mode): { mode: 'add' | 'merge'; dangerouslyAllowDelete?: boolean } {
 	if (mode === 'add') return { mode: 'add' };
 	if (mode === 'mirror') return { mode: 'merge', dangerouslyAllowDelete: true };
 	return { mode: 'merge' };
@@ -142,7 +142,6 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	// must be visible, and "mirror deletes" must never be a surprise learned at the refusal.
 	ctx.ui.info(`Pushing to ${options.to} — ${url} (${describeMode(mode)})`);
 
-	// Refresh an expiring saved session before the first request so an expired token re-auths silently.
 	await refreshSessionIfNeeded(credential);
 
 	// schema: false is an explicit project state, never inferred from absent files (a never-pulled project

@@ -220,18 +220,8 @@ function resource(name: string): ResourceDef {
 }
 
 function toResource(def: ResourceDef): Resource {
-	return {
-		name: def.name,
-		collection: def.collection,
-		endpoint: def.endpoint,
-		primaryKey: def.primaryKey,
-		singleton: def.singleton,
-		strip: def.strip,
-		aliases: def.aliases,
-		drop: def.drop,
-		keyset: def.keyset,
-		verifyCount: def.verifyCount,
-	};
+	const { selectable: _selectable, mustPull: _mustPull, ...resource } = def;
+	return resource;
 }
 
 function parentOf(name: string): string {

@@ -17,13 +17,13 @@ export interface DataCollection {
 }
 
 /** Files written and stale data artifacts removed by a data write, plus the effective incomplete set. */
-export interface DataWriteResult extends ArtifactWriteResult {
+interface DataWriteResult extends ArtifactWriteResult {
 	/** The committed incompleteness after the write: this pull's shortfalls plus markers carried by preserved files. */
 	readonly incomplete: string[];
 }
 
 /** A validated data artifact set and its source instance. */
-export interface DataReadResult {
+interface DataReadResult {
 	readonly source: string;
 	readonly collections: DataCollection[];
 	/**
@@ -138,7 +138,15 @@ function parseDataFile(value: unknown, name: string): DataCollection {
 	return { collection, primaryKey, records };
 }
 
-function parseMetadata(value: unknown): DataMetadata {
+function interpretMetadata(value: unknown, allowUnknownIncomplete: false): DataMetadata;
+function interpretMetadata(
+	value: unknown,
+	allowUnknownIncomplete: true,
+): { source: string; incomplete: string[] | 'unknown' };
+function interpretMetadata(
+	value: unknown,
+	allowUnknownIncomplete: boolean,
+): { source: string; incomplete: string[] | 'unknown' } {
 	const source = sourceSchema.safeParse(value);
 
 	if (!source.success) {
@@ -149,8 +157,10 @@ function parseMetadata(value: unknown): DataMetadata {
 		});
 	}
 
-	// Required, not defaulted: an absent field means the export predates completeness tracking, and
-	// reading it as "verified complete" would let mirror trust a possibly-truncated permissions export.
+	if (allowUnknownIncomplete && isPlainObject(value) && !('incomplete' in (value as Record<string, unknown>))) {
+		return { source: source.data.source, incomplete: 'unknown' };
+	}
+
 	const incomplete = incompleteSchema.safeParse(value);
 
 	if (!incomplete.success) {
@@ -168,6 +178,10 @@ function parseMetadata(value: unknown): DataMetadata {
 	}
 
 	return { source: source.data.source, incomplete: incomplete.data.incomplete };
+}
+
+function parseMetadata(value: unknown): DataMetadata {
+	return interpretMetadata(value, false);
 }
 
 type CommittedState = { exists: false } | { exists: true; source: string; incomplete: string[] | 'unknown' };
@@ -195,37 +209,10 @@ function committedState(dir: string): CommittedState {
 		});
 	}
 
-	const record = parsed as Record<string, unknown>;
-	const source = sourceSchema.safeParse(record);
-
-	if (!source.success) {
-		throw new CliError('STATE', `${METADATA_FILE} does not record a valid source instance URL.`, {
-			hint: 'This data predates source tracking (or the manifest was edited); delete the data directory, then run d6s sync pull again.',
-		});
-	}
-
-	if (!('incomplete' in record)) {
-		return { exists: true, source: source.data.source, incomplete: 'unknown' };
-	}
-
-	const incomplete = incompleteSchema.safeParse(record);
-
-	if (!incomplete.success) {
-		throw new CliError('STATE', `${METADATA_FILE} has an invalid "incomplete" marker.`, {
-			hint: 'Fix or delete the data directory, then run d6s sync pull again.',
-		});
-	}
-
-	return { exists: true, source: source.data.source, incomplete: incomplete.data.incomplete };
+	return { exists: true, ...interpretMetadata(parsed, true) };
 }
 
-/**
- * Refuse when the committed data generation came from a different source instance. Exposed so pull can
- * run it BEFORE any write — a writer-level refusal alone would land after the schema files changed.
- */
-export function assertDataSource(dir: string, source: string): void {
-	const committed = committedState(dir);
-
+function assertMatchingDataSource(committed: CommittedState, dir: string, source: string): void {
 	// Preserved files keep their CONTENT but the manifest records one source for the whole set — so a
 	// pull from a different instance would relabel another instance's records as its own, and push would
 	// remap them through the wrong ID-map bucket. Switching sources is a deliberate act: clear the data
@@ -242,6 +229,14 @@ export function assertDataSource(dir: string, source: string): void {
 	}
 }
 
+/**
+ * Refuse when the committed data generation came from a different source instance. Exposed so pull can
+ * run it BEFORE any write — a writer-level refusal alone would land after the schema files changed.
+ */
+export function assertDataSource(dir: string, source: string): void {
+	assertMatchingDataSource(committedState(dir), dir, source);
+}
+
 /** Write deterministic data artifacts and record the normalized source instance URL. */
 export function writeDataFiles(
 	dir: string,
@@ -249,9 +244,8 @@ export function writeDataFiles(
 	source: string,
 	incomplete: readonly string[] = [],
 ): DataWriteResult {
-	assertDataSource(dir, source);
-
 	const committed = committedState(dir);
+	assertMatchingDataSource(committed, dir, source);
 	const fetched = new Set(collections.map((entry) => entry.collection));
 	const preservedCollections = new Set<string>();
 
@@ -274,13 +268,18 @@ export function writeDataFiles(
 		return [...new Set([...incomplete, ...carried])].sort(byCodepoint);
 	};
 
+	let effectiveIncomplete: string[] | undefined;
+
 	const result = writeArtifacts({
 		dir,
 		artifacts: collections,
 		body: dataFileBody,
 		manifestHint: 'Fix or delete the data directory, then run d6s sync pull again.',
 		// `incomplete` is written unconditionally: its absence is reserved for pre-tracking generations.
-		metadata: ({ files }) => ({ files, source, incomplete: keptIncomplete() }),
+		metadata: ({ files }) => {
+			effectiveIncomplete = keptIncomplete();
+			return { files, source, incomplete: effectiveIncomplete };
+		},
 		// A pull writes only what it fetched, and the fetch set shrinks legitimately all the time: a
 		// resource-scoped or collection-scoped pull fetches a subset of what is committed. Deleting the
 		// rest would wipe committed collections (the data half of the schema store's scope
@@ -295,7 +294,8 @@ export function writeDataFiles(
 		},
 	});
 
-	return { ...result, incomplete: keptIncomplete() };
+	if (effectiveIncomplete === undefined) throw new Error('data store: metadata was not computed');
+	return { ...result, incomplete: effectiveIncomplete };
 }
 
 /** Whether a data artifact manifest exists at the given directory. */

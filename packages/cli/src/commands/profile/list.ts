@@ -9,7 +9,7 @@ export function registerList(profile: Command, getContext: () => CliContext): vo
 		.action(() => list(getContext()));
 }
 
-export function list(ctx: CliContext): void {
+function list(ctx: CliContext): void {
 	const profiles = loadConfig({ cwd: ctx.cwd, configPath: ctx.configPath })?.config.profiles ?? {};
 	const rows = Object.entries(profiles).map(([name, p]) => ({ name, url: p.url }));
 

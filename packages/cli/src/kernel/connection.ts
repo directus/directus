@@ -166,17 +166,12 @@ function describeIdentity(me: unknown, projectName: string | undefined): Identit
 	return { user, role, projectName };
 }
 
-/**
- * Total stored rows behind a list endpoint via `meta=total_count`, or undefined when the server cannot
- * answer. This is a raw request on purpose: the SDK strips the response envelope (extract-data returns
- * `data`), losing `meta`. For an admin token total_count is computed straight on the database — it counts
- * rows that entitlement filtering hides from list reads, which is exactly what makes it usable as an
- * export completeness check. Best-effort: any failure disables the check, never the caller.
- */
-export async function fetchTotalCount(credential: ResolvedCredential, path: string): Promise<number | undefined> {
+async function rawAuthenticatedGet(
+	credential: ResolvedCredential,
+	path: string,
+	query: Readonly<Record<string, string>> = {},
+): Promise<unknown> {
 	try {
-		// The credential-store read stays inside the try: a store corrupted mid-command must degrade this
-		// probe to undefined like any other failure, never crash the command it only enriches.
 		const token =
 			credential.kind === 'token'
 				? credential.token
@@ -185,21 +180,41 @@ export async function fetchTotalCount(credential: ResolvedCredential, path: stri
 		if (token === undefined || token === null) return undefined;
 
 		const url = new URL(`${credential.url.replace(/\/+$/, '')}${path}`);
-		url.searchParams.set('limit', '0');
-		url.searchParams.set('meta', 'total_count');
+		for (const [name, value] of Object.entries(query)) url.searchParams.set(name, value);
 
 		const response = await fetch(url, {
 			headers: { authorization: `Bearer ${token}` },
 			signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
 		});
 
-		if (!response.ok) return undefined;
-
-		const total = get(await response.json(), 'meta.total_count');
-		return typeof total === 'number' ? total : undefined;
+		return response.ok ? await response.json() : undefined;
 	} catch {
 		return undefined;
 	}
+}
+
+async function serverInfoValue(credential: ResolvedCredential, path: string): Promise<unknown> {
+	try {
+		return get(await connect(credential).request(serverInfo()), path);
+	} catch {
+		return undefined;
+	}
+}
+
+/**
+ * Total stored rows behind a list endpoint via `meta=total_count`, or undefined when the server cannot
+ * answer. This is a raw request on purpose: the SDK strips the response envelope (extract-data returns
+ * `data`), losing `meta`. For an admin token total_count is computed straight on the database — it counts
+ * rows that entitlement filtering hides from list reads, which is exactly what makes it usable as an
+ * export completeness check. Best-effort: any failure disables the check, never the caller.
+ */
+export async function fetchTotalCount(credential: ResolvedCredential, path: string): Promise<number | undefined> {
+	const total = get(
+		await rawAuthenticatedGet(credential, path, { limit: '0', meta: 'total_count' }),
+		'meta.total_count',
+	);
+
+	return typeof total === 'number' ? total : undefined;
 }
 
 /**
@@ -209,13 +224,8 @@ export async function fetchTotalCount(credential: ResolvedCredential, path: stri
  * NEVER gates the sync.
  */
 export async function fetchServerVersion(credential: ResolvedCredential): Promise<string | undefined> {
-	try {
-		const info = await connect(credential).request(serverInfo());
-		const version = get(info, 'version');
-		return typeof version === 'string' ? version : undefined;
-	} catch {
-		return undefined;
-	}
+	const version = await serverInfoValue(credential, 'version');
+	return typeof version === 'string' ? version : undefined;
 }
 
 /**
@@ -225,13 +235,8 @@ export async function fetchServerVersion(credential: ResolvedCredential): Promis
  * probe-based paging, so this is best-effort and never gates.
  */
 export async function fetchQueryLimitMax(credential: ResolvedCredential): Promise<number | undefined> {
-	try {
-		const info = await connect(credential).request(serverInfo());
-		const max = get(info, 'queryLimit.max');
-		return typeof max === 'number' ? max : undefined;
-	} catch {
-		return undefined;
-	}
+	const max = await serverInfoValue(credential, 'queryLimit.max');
+	return typeof max === 'number' ? max : undefined;
 }
 
 /**
@@ -243,34 +248,12 @@ export async function fetchQueryLimitMax(credential: ResolvedCredential): Promis
  * SDK strips the response envelope this reads from (same reason as fetchTotalCount).
  */
 export async function fetchCustomPermissionRulesEntitled(credential: ResolvedCredential): Promise<boolean | undefined> {
-	try {
-		// The credential-store read stays inside the try: a store corrupted mid-command must degrade this
-		// probe to undefined like any other failure, never crash the command it only enriches.
-		const token =
-			credential.kind === 'token'
-				? credential.token
-				: (await credentialStorage(credential.url, credential.profileName).get())?.access_token;
+	const body = await rawAuthenticatedGet(credential, '/license');
+	const override = get(body, 'data.entitlements.custom_permission_rules_enabled.override');
+	const fallback = get(body, 'data.entitlements.custom_permission_rules_enabled.default');
+	const value = override ?? fallback;
 
-		if (token === undefined || token === null) return undefined;
-
-		const url = new URL(`${credential.url.replace(/\/+$/, '')}/license`);
-
-		const response = await fetch(url, {
-			headers: { authorization: `Bearer ${token}` },
-			signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-		});
-
-		if (!response.ok) return undefined;
-
-		const body = await response.json();
-		const override = get(body, 'data.entitlements.custom_permission_rules_enabled.override');
-		const fallback = get(body, 'data.entitlements.custom_permission_rules_enabled.default');
-		const value = override ?? fallback;
-
-		return typeof value === 'boolean' ? value : undefined;
-	} catch {
-		return undefined;
-	}
+	return typeof value === 'boolean' ? value : undefined;
 }
 
 const AUTH_CODES = new Set(['INVALID_CREDENTIALS', 'INVALID_TOKEN', 'TOKEN_EXPIRED', 'INVALID_OTP', 'FORBIDDEN']);

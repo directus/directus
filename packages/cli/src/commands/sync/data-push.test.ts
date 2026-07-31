@@ -318,7 +318,7 @@ describe('prepareDataPush skip and precondition', () => {
 		// Two target roles named Editor make the source Editor ambiguous; Viewer matches uniquely.
 		vi.mocked(fetchRecords).mockImplementation((_credential, source) =>
 			Promise.resolve(
-				source.collection === 'directus_roles'
+				source.endpoint === '/roles'
 					? [
 							{ id: 't-ed-1', name: 'Editor' },
 							{ id: 't-ed-2', name: 'Editor' },
@@ -366,7 +366,7 @@ describe('prepareDataPush skip and precondition', () => {
 
 		vi.mocked(fetchRecords).mockImplementation((_credential, source) =>
 			Promise.resolve(
-				source.collection === 'directus_folders'
+				source.endpoint === '/folders'
 					? [
 							{ id: 't-a1', name: 'Assets', parent: null },
 							{ id: 't-a2', name: 'Assets', parent: null },
@@ -409,7 +409,7 @@ describe('prepareDataPush skip and precondition', () => {
 
 		vi.mocked(fetchRecords).mockImplementation((_credential, source) =>
 			Promise.resolve(
-				source.collection === 'directus_folders'
+				source.endpoint === '/folders'
 					? [
 							{ id: 't-a1', name: 'Assets', parent: null },
 							{ id: 't-a2', name: 'Assets', parent: null },
@@ -452,7 +452,7 @@ describe('prepareDataPush skip and precondition', () => {
 
 		vi.mocked(fetchRecords).mockImplementation((_credential, source) =>
 			Promise.resolve(
-				source.collection === 'directus_roles'
+				source.endpoint === '/roles'
 					? [
 							{ id: 't-ed-1', name: 'Editor', parent: null },
 							{ id: 't-ed-2', name: 'Editor', parent: null },

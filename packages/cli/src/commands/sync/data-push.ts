@@ -31,13 +31,13 @@ import type { Target } from './resolve-target.js';
  * A source ID and the primary key sent for it. A null sent PK means the server assigned an ID that its
  * import response cannot report, so the next push must reconcile it by natural key.
  */
-export interface SentRecord {
+interface SentRecord {
 	readonly sourceId: string;
 	readonly sentPk: string | null;
 }
 
 /** Records sent for one system collection, used to update the ID map after import. */
-export interface SystemSent {
+interface SystemSent {
 	readonly collection: string;
 	readonly records: readonly SentRecord[];
 }
@@ -65,7 +65,7 @@ export interface DataPushPlan {
 }
 
 /** A schema-only checkout with no committed data generation. */
-export interface DataPushSkipped {
+interface DataPushSkipped {
 	readonly skipped: true;
 }
 
@@ -165,18 +165,7 @@ async function reconcileSystem(
 	const targets = new Map<string, readonly Record<string, unknown>[]>();
 
 	for (const { data, resource } of [...system].reverse()) {
-		const targetRecords = await fetchRecords(
-			target.credential,
-			{
-				collection: resource.collection,
-				endpoint: resource.endpoint,
-				primaryKey: resource.primaryKey,
-				singleton: resource.singleton,
-				drop: resource.drop,
-				keyset: resource.keyset,
-			},
-			queryMax,
-		);
+		const targetRecords = await fetchRecords(target.credential, resource, queryMax);
 
 		targets.set(resource.collection, targetRecords);
 
@@ -612,7 +601,7 @@ export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContex
 }
 
 /** A read-only, conservative data batch preview plus reconciliation counts. */
-export interface DataPreviewPlan {
+interface DataPreviewPlan {
 	readonly skipped: false;
 	readonly source: string;
 	readonly batch: ImportCollectionData[];

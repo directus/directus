@@ -137,8 +137,7 @@ export async function fetchFields(credential: ResolvedCredential): Promise<Field
  * One collection's data pull: its system endpoint (/roles), the primary key the export keys on, and
  * whether the endpoint is a singleton (settings).
  */
-export interface RecordSource {
-	readonly collection: string;
+interface RecordSource {
 	readonly endpoint: string;
 	readonly primaryKey: string;
 	readonly singleton: boolean;
@@ -146,6 +145,47 @@ export interface RecordSource {
 	readonly drop?: ((record: Record<string, unknown>) => boolean) | undefined;
 	/** Page by PK cursor instead of offset; integer-PK endpoints only (_gt is forbidden on uuid fields). */
 	readonly keyset?: boolean | undefined;
+}
+
+function asRecordArray(response: unknown, source: RecordSource): Record<string, unknown>[] {
+	if (!Array.isArray(response) || !response.every((record) => isPlainObject(record))) {
+		throw new CliError('HTTP', `The ${source.endpoint} response was not an array of records.`);
+	}
+
+	const records = response as Record<string, unknown>[];
+	const drop = source.drop;
+	return drop === undefined ? records : records.filter((record) => !drop(record));
+}
+
+function requirePrimaryKey(record: Record<string, unknown>, source: RecordSource): string | number {
+	const primaryKey = record[source.primaryKey];
+
+	if (typeof primaryKey !== 'string' && typeof primaryKey !== 'number') {
+		throw new CliError('HTTP', `A ${source.endpoint} record has no "${source.primaryKey}" primary key.`, {
+			hint: 'Field permissions may hide the key column; records cannot be keyed without it.',
+		});
+	}
+
+	return primaryKey;
+}
+
+function trackPrimaryKey(
+	record: Record<string, unknown>,
+	source: RecordSource,
+	seen: Set<string>,
+	duplicateHint: string,
+): string | number {
+	const value = requirePrimaryKey(record, source);
+	const key = String(value);
+
+	if (seen.has(key)) {
+		throw new CliError('HTTP', `${source.endpoint} returned primary key "${key}" more than once.`, {
+			hint: duplicateHint,
+		});
+	}
+
+	seen.add(key);
+	return value;
 }
 
 // An empty FIRST page is ambiguous: a genuinely empty collection, or QUERY_LIMIT_MAX=0 — the server
@@ -238,17 +278,7 @@ async function fetchKeysetPages(
 			throw mapRequestError(error, credential.url);
 		}
 
-		if (!Array.isArray(response) || !response.every((record) => isPlainObject(record))) {
-			throw new CliError('HTTP', `The ${source.endpoint} response was not an array of records.`);
-		}
-
-		// Derived rows (see RecordSource.drop) carry no primary key and are appended to every page.
-		const drop = source.drop;
-
-		const rows =
-			drop === undefined
-				? (response as Record<string, unknown>[])
-				: (response as Record<string, unknown>[]).filter((record) => !drop(record));
+		const rows = asRecordArray(response, source);
 
 		if (rows.length === 0) {
 			if (cursor === undefined) await refuseZeroCapEmptiness(client, credential, source);
@@ -256,26 +286,15 @@ async function fetchKeysetPages(
 		}
 
 		for (const record of rows) {
-			const pk = record[source.primaryKey];
+			const value = trackPrimaryKey(
+				record,
+				source,
+				seen,
+				'The server did not honor the cursor filter; pages cannot be trusted.',
+			);
 
-			if (typeof pk !== 'string' && typeof pk !== 'number') {
-				throw new CliError('HTTP', `A ${source.endpoint} record has no "${source.primaryKey}" primary key.`, {
-					hint: 'Field permissions may hide the key column; records cannot be keyed without it.',
-				});
-			}
-
-			const key = String(pk);
-
-			// A repeat means the server ignored the cursor filter; looping on it would never terminate.
-			if (seen.has(key)) {
-				throw new CliError('HTTP', `${source.endpoint} returned primary key "${key}" more than once.`, {
-					hint: 'The server did not honor the cursor filter; pages cannot be trusted.',
-				});
-			}
-
-			seen.add(key);
 			// The raw value, not its string form: the filter must compare in the column's own type.
-			cursor = pk;
+			cursor = value;
 		}
 
 		records.push(...rows);
@@ -304,37 +323,17 @@ async function fetchUnbounded(
 		throw mapRequestError(error, credential.url);
 	}
 
-	if (!Array.isArray(response) || !response.every((record) => isPlainObject(record))) {
-		throw new CliError('HTTP', `The ${source.endpoint} response was not an array of records.`);
-	}
-
-	const drop = source.drop;
-
-	const rows =
-		drop === undefined
-			? (response as Record<string, unknown>[])
-			: (response as Record<string, unknown>[]).filter((record) => !drop(record));
+	const rows = asRecordArray(response, source);
 
 	const seen = new Set<string>();
 
 	for (const record of rows) {
-		const pk = record[source.primaryKey];
-
-		if (typeof pk !== 'string' && typeof pk !== 'number') {
-			throw new CliError('HTTP', `A ${source.endpoint} record has no "${source.primaryKey}" primary key.`, {
-				hint: 'Field permissions may hide the key column; records cannot be keyed without it.',
-			});
-		}
-
-		const key = String(pk);
-
-		if (seen.has(key)) {
-			throw new CliError('HTTP', `${source.endpoint} returned primary key "${key}" more than once.`, {
-				hint: 'The server returned a duplicate primary key in one read; pages cannot be trusted.',
-			});
-		}
-
-		seen.add(key);
+		trackPrimaryKey(
+			record,
+			source,
+			seen,
+			'The server returned a duplicate primary key in one read; pages cannot be trusted.',
+		);
 	}
 
 	return rows;
@@ -367,14 +366,7 @@ export async function fetchRecords(
 		}
 
 		const record = response as Record<string, unknown>;
-		const singletonPk = record[source.primaryKey];
-
-		// Same boundary rule as lists: without a key, pull would write an artifact its own reader refuses.
-		if (typeof singletonPk !== 'string' && typeof singletonPk !== 'number') {
-			throw new CliError('HTTP', `A ${source.endpoint} record has no "${source.primaryKey}" primary key.`, {
-				hint: 'Field permissions may hide the key column; records cannot be keyed without it.',
-			});
-		}
+		requirePrimaryKey(record, source);
 
 		return [record];
 	}
@@ -429,21 +421,7 @@ export async function fetchRecords(
 			throw mapRequestError(error, credential.url);
 		}
 
-		if (!Array.isArray(response) || !response.every((record) => isPlainObject(record))) {
-			throw new CliError('HTTP', `The ${source.endpoint} response was not an array of records.`);
-		}
-
-		// Server-derived rows (e.g. the app-access minimal permissions appended to every authenticated
-		// /permissions read) are runtime state, not config: they carry no primary key and are appended
-		// AFTER limit/offset are applied to the real rows — so they are dropped before validation,
-		// excluded from the paging offset, and a page of only derived rows means the real rows are
-		// exhausted.
-		const drop = source.drop;
-
-		const rows =
-			drop === undefined
-				? (response as Record<string, unknown>[])
-				: (response as Record<string, unknown>[]).filter((record) => !drop(record));
+		const rows = asRecordArray(response, source);
 
 		if (offset === undefined && rows.length === 0) {
 			await refuseZeroCapEmptiness(client, credential, source);
@@ -482,24 +460,7 @@ export async function fetchRecords(
 		// (field permissions can hide columns) fails here, before anything is written or compared; a
 		// repeated key within the fetch means the server broke its sort and pages cannot be trusted.
 		for (const record of fresh) {
-			const pk = record[source.primaryKey];
-
-			if (typeof pk !== 'string' && typeof pk !== 'number') {
-				throw new CliError('HTTP', `A ${source.endpoint} record has no "${source.primaryKey}" primary key.`, {
-					hint: 'Field permissions may hide the key column; records cannot be keyed without it.',
-				});
-			}
-
-			const key = String(pk);
-
-			if (seen.has(key)) {
-				throw new CliError('HTTP', `${source.endpoint} returned primary key "${key}" more than once.`, {
-					hint: 'Unstable pages mid-fetch; re-run the command.',
-				});
-			}
-
-			seen.add(key);
-			last = key;
+			last = String(trackPrimaryKey(record, source, seen, 'Unstable pages mid-fetch; re-run the command.'));
 		}
 
 		records.push(...fresh);
@@ -511,7 +472,7 @@ export async function fetchRecords(
  * so an omitted mode silently changes semantics); dryRun and dangerouslyAllowDelete ride only when set,
  * so the query string carries exactly the flags the CLI chose and stays deterministic for assertions.
  */
-export interface ImportBatchInput {
+interface ImportBatchInput {
 	readonly mode: 'add' | 'merge';
 	readonly dryRun?: boolean;
 	readonly dangerouslyAllowDelete?: boolean;

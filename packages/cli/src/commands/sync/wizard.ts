@@ -4,15 +4,9 @@ import { CliError } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
 import { byCodepoint } from '../../sync/codepoint.js';
-import type { Mode } from '../../sync/mode.js';
+import { describeMode, type Mode } from '../../sync/mode.js';
 import { pull } from './pull.js';
 import { push } from './push.js';
-
-const MODE_LABELS: Record<Mode, string> = {
-	merge: 'merge (additive)',
-	add: 'add (only new records)',
-	mirror: 'mirror (includes deletions)',
-};
 
 /**
  * Prompt for unresolved sync choices, then run the same pull and push commands used by explicit subcommands.
@@ -80,11 +74,10 @@ export async function wizard(ctx: CliContext): Promise<void> {
 	let promptedMode: Mode | undefined;
 
 	if (configuredMode === undefined) {
-		const modeOptions: { value: Mode; label: string }[] = [
-			{ value: 'merge', label: MODE_LABELS.merge },
-			{ value: 'add', label: MODE_LABELS.add },
-			{ value: 'mirror', label: MODE_LABELS.mirror },
-		];
+		const modeOptions = (['merge', 'add', 'mirror'] as const).map((mode) => ({
+			value: mode,
+			label: describeMode(mode),
+		}));
 
 		promptedMode = await ask(select({ message: 'Push mode:', initialValue: 'merge', options: modeOptions }));
 

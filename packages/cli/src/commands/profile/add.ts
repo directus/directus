@@ -7,7 +7,7 @@ import { CliError } from '../../kernel/error.js';
 import { ask, orPrompt, promptLogin, promptToken, saveToken } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
 
-export interface AddOptions {
+interface AddOptions {
 	readonly url?: string;
 	readonly token?: string;
 	readonly yes?: boolean;
@@ -194,13 +194,13 @@ async function acquireCredential(
 }
 
 function recoveryOptions(error: CliError, hasToken: boolean): { value: Recover; label: string }[] {
-	const editUrl = { value: 'url' as const, label: 'Edit the URL' };
+	const editUrlOption = { value: 'url' as const, label: 'Edit the URL' };
 	const editToken = { value: 'token' as const, label: 'Edit the token' };
 	const retry = { value: 'retry' as const, label: 'Retry' };
 
-	if (!hasToken) return [editUrl, retry, { value: 'save', label: 'Continue anyway' }];
+	if (!hasToken) return [editUrlOption, retry, { value: 'save', label: 'Continue anyway' }];
 
-	const edits = error.code === 'AUTH' ? [editToken, editUrl] : [editUrl, editToken];
+	const edits = error.code === 'AUTH' ? [editToken, editUrlOption] : [editUrlOption, editToken];
 	return [...edits, retry, { value: 'save', label: 'Save anyway' }, { value: 'discard', label: 'Discard the token' }];
 }
 

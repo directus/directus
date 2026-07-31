@@ -7,7 +7,7 @@ import { CliError } from '../../kernel/error.js';
 import { ask, promptLogin, promptToken, saveToken } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
 
-export interface TestOptions {
+interface TestOptions {
 	readonly url?: string;
 	readonly token?: string;
 }

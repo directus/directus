@@ -1,5 +1,5 @@
 /** A system field that references another synced collection. */
-export interface FkField {
+interface FkField {
 	readonly field: string;
 	readonly references: string;
 }

@@ -59,14 +59,14 @@ export interface DiffOp {
 }
 
 /** A collection-level schema diff entry. */
-export interface DiffEntry {
+interface DiffEntry {
 	collection: string;
 	diff: DiffOp[];
 	[key: string]: unknown;
 }
 
 /** A field-level schema diff entry. */
-export interface DiffFieldEntry {
+interface DiffFieldEntry {
 	collection: string;
 	field: string;
 	diff: DiffOp[];

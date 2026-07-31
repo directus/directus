@@ -75,7 +75,6 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	// operator diffing the wrong profile notices here, not in the push that follows.
 	ctx.ui.info(`Comparing committed files with ${options.to} — ${url} (${describeMode(mode)})`);
 
-	// Refresh an expiring saved session before the first request so an expired token re-auths silently.
 	await refreshSessionIfNeeded(target.credential);
 
 	// schema: false is an explicit project state — the diff previews exactly the push, and that push

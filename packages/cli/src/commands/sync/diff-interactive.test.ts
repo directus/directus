@@ -10,7 +10,7 @@ import type { DiffResult, ImportBatchResult } from '../../sync/contract.js';
 import { writeDataFiles } from '../../sync/data-store.js';
 import { writeSnapshotFiles } from '../../sync/store.js';
 import { diff } from './diff.js';
-import { seedProjectConfig, SYNC_TOKEN } from './sync.test-support.js';
+import { fullSnapshot, seedProjectConfig, SYNC_TOKEN } from './sync.test-support.js';
 
 // Prompts are mocked to prove diff reports ambiguities instead of resolving them interactively.
 vi.mock('@clack/prompts', () => ({
@@ -40,15 +40,7 @@ describe('interactive sync diff', () => {
 	let stderr: string[];
 
 	function seedSnapshot(): void {
-		writeSnapshotFiles(join(dir, 'directus', 'default', 'schema'), {
-			version: 1,
-			directus: '11.0.0',
-			vendor: 'postgres',
-			collections: [{ collection: 'articles', meta: { note: null } }],
-			fields: [{ collection: 'articles', field: 'title', type: 'string' }],
-			systemFields: [],
-			relations: [],
-		});
+		writeSnapshotFiles(join(dir, 'directus', 'default', 'schema'), fullSnapshot());
 	}
 
 	function seedData(collections: Parameters<typeof writeDataFiles>[1]): void {

@@ -22,7 +22,6 @@ interface RunOptions {
 
 interface GlobalOptions {
 	readonly json?: boolean;
-	readonly color: boolean;
 	readonly interactive: boolean;
 	readonly config?: string;
 }

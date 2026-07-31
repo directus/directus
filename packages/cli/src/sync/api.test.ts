@@ -330,7 +330,6 @@ describe('fetchRecords', () => {
 			.reply(200, { data: [records[1]] }, { headers: { 'content-type': 'application/json' } });
 
 		const result = await fetchRecords(credential, {
-			collection: 'articles',
 			endpoint: '/items/articles',
 			primaryKey: 'id',
 			singleton: false,
@@ -361,7 +360,7 @@ describe('fetchRecords', () => {
 
 		const result = await fetchRecords(
 			credential,
-			{ collection: 'articles', endpoint: '/items/articles', primaryKey: 'id', singleton: false },
+			{ endpoint: '/items/articles', primaryKey: 'id', singleton: false },
 			-1,
 		);
 
@@ -383,7 +382,7 @@ describe('fetchRecords', () => {
 
 		const result = await fetchRecords(
 			credential,
-			{ collection: 'articles', endpoint: '/items/articles', primaryKey: 'id', singleton: false },
+			{ endpoint: '/items/articles', primaryKey: 'id', singleton: false },
 			-1,
 		);
 
@@ -416,7 +415,6 @@ describe('fetchRecords', () => {
 		}
 
 		const result = await fetchRecords(credential, {
-			collection: 'articles',
 			endpoint: '/items/articles',
 			primaryKey: 'id',
 			singleton: false,
@@ -451,7 +449,6 @@ describe('fetchRecords', () => {
 		}
 
 		const result = await fetchRecords(credential, {
-			collection: 'directus_permissions',
 			endpoint: '/permissions',
 			primaryKey: 'id',
 			singleton: false,
@@ -485,7 +482,6 @@ describe('fetchRecords', () => {
 			.reply(200, { data: [{ id: 1 }] }, { headers: { 'content-type': 'application/json' } });
 
 		const error = await fetchRecords(credential, {
-			collection: 'directus_permissions',
 			endpoint: '/permissions',
 			primaryKey: 'id',
 			singleton: false,
@@ -511,7 +507,6 @@ describe('fetchRecords', () => {
 			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
 
 		const result = await fetchRecords(credential, {
-			collection: 'articles',
 			endpoint: '/items/articles',
 			primaryKey: 'id',
 			singleton: false,
@@ -540,7 +535,6 @@ describe('fetchRecords', () => {
 			);
 
 		const error = await fetchRecords(credential, {
-			collection: 'articles',
 			endpoint: '/items/articles',
 			primaryKey: 'id',
 			singleton: false,
@@ -558,7 +552,7 @@ describe('fetchRecords', () => {
 		// refused before any request: an intercept-free agent proves no network I/O happens first.
 		const error = await fetchRecords(
 			credential,
-			{ collection: 'articles', endpoint: '/items/articles', primaryKey: 'id', singleton: false },
+			{ endpoint: '/items/articles', primaryKey: 'id', singleton: false },
 			1,
 		).catch((error: unknown) => error);
 
@@ -593,7 +587,6 @@ describe('fetchRecords', () => {
 			);
 
 		const error = await fetchRecords(credential, {
-			collection: 'articles',
 			endpoint: '/items/articles',
 			primaryKey: 'id',
 			singleton: false,
@@ -624,7 +617,6 @@ describe('fetchRecords', () => {
 			.reply(200, { data: [{ id: 1, title: 'Only' }] }, { headers: { 'content-type': 'application/json' } });
 
 		const result = await fetchRecords(credential, {
-			collection: 'articles',
 			endpoint: '/items/articles',
 			primaryKey: 'id',
 			singleton: false,
@@ -643,7 +635,6 @@ describe('fetchRecords', () => {
 			.reply(200, { data: [{ title: 'No key' }] }, { headers: { 'content-type': 'application/json' } });
 
 		const error = await fetchRecords(credential, {
-			collection: 'articles',
 			endpoint: '/items/articles',
 			primaryKey: 'id',
 			singleton: false,
@@ -676,7 +667,6 @@ describe('fetchRecords', () => {
 		}
 
 		const error = await fetchRecords(credential, {
-			collection: 'articles',
 			endpoint: '/items/articles',
 			primaryKey: 'id',
 			singleton: false,
@@ -696,7 +686,6 @@ describe('fetchRecords', () => {
 			.reply(200, { data: [{ id: 1 }, { id: 1 }] }, { headers: { 'content-type': 'application/json' } });
 
 		const error = await fetchRecords(credential, {
-			collection: 'articles',
 			endpoint: '/items/articles',
 			primaryKey: 'id',
 			singleton: false,
@@ -733,7 +722,6 @@ describe('fetchRecords', () => {
 			.reply(200, { data: [{ id: 1, policy: 'p1' }, derived] }, { headers: { 'content-type': 'application/json' } });
 
 		const result = await fetchRecords(credential, {
-			collection: 'directus_permissions',
 			endpoint: '/permissions',
 			primaryKey: 'id',
 			singleton: false,
@@ -753,7 +741,6 @@ describe('fetchRecords', () => {
 			.reply(200, { data: { id: 1, project_name: 'Acme' } }, { headers: { 'content-type': 'application/json' } });
 
 		const result = await fetchRecords(credential, {
-			collection: 'directus_settings',
 			endpoint: '/settings',
 			primaryKey: 'id',
 			singleton: true,
@@ -771,7 +758,6 @@ describe('fetchRecords', () => {
 			.reply(200, { data: { project_name: 'Acme' } }, { headers: { 'content-type': 'application/json' } });
 
 		const error = await fetchRecords(credential, {
-			collection: 'directus_settings',
 			endpoint: '/settings',
 			primaryKey: 'id',
 			singleton: true,
@@ -792,7 +778,6 @@ describe('fetchRecords', () => {
 			.reply(200, { data: { not: 'an array' } }, { headers: { 'content-type': 'application/json' } });
 
 		const error = await fetchRecords(credential, {
-			collection: 'articles',
 			endpoint: '/items/articles',
 			primaryKey: 'id',
 			singleton: false,

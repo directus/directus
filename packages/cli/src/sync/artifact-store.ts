@@ -99,29 +99,39 @@ function loadJson(path: string, name: string, hint?: string): unknown {
 	}
 }
 
-function readManifest(dir: string, hint: string): { files: string[]; metadata: unknown } {
+function loadManifest(dir: string, invalidMessage: string, hint?: string): { files: string[]; metadata: unknown } {
 	const path = join(dir, METADATA_FILE);
 
-	if (!existsSync(path)) return { files: [], metadata: undefined };
-
-	// Same regular-file requirement as artifacts (see readArtifact): a symlinked manifest must not be followed.
+	// lstat, not stat: a symlinked manifest must fail the regular-file check rather than be followed.
 	if (!lstatSync(path).isFile()) {
-		throw new CliError('STATE', `${METADATA_FILE} is not a regular file.`, { hint });
+		throw new CliError('STATE', `${METADATA_FILE} is not a regular file.`, hint === undefined ? {} : { hint });
 	}
 
 	const metadata = loadJson(path, METADATA_FILE, hint);
 
 	if (!isPlainObject(metadata)) {
-		throw new CliError('STATE', `${METADATA_FILE} is not a valid manifest.`, { hint });
+		throw new CliError('STATE', invalidMessage, hint === undefined ? {} : { hint });
 	}
 
-	const parsed = manifestSchema.safeParse(metadata);
+	const manifest = manifestSchema.safeParse(metadata);
 
-	if (!parsed.success) {
-		throw new CliError('STATE', `${METADATA_FILE} is missing a valid "files" manifest.`, { hint });
+	if (!manifest.success) {
+		throw new CliError(
+			'STATE',
+			`${METADATA_FILE} is missing a valid "files" manifest.`,
+			hint === undefined ? {} : { hint },
+		);
 	}
 
-	return { files: parsed.data.files, metadata };
+	return { files: manifest.data.files, metadata };
+}
+
+function readManifest(dir: string, hint: string): { files: string[]; metadata: unknown } {
+	const path = join(dir, METADATA_FILE);
+
+	if (!existsSync(path)) return { files: [], metadata: undefined };
+
+	return loadManifest(dir, `${METADATA_FILE} is not a valid manifest.`, hint);
 }
 
 function readArtifact<T extends Artifact>(dir: string, name: string, parse: (value: unknown, name: string) => T): T {
@@ -226,27 +236,12 @@ export function readArtifacts<T extends Artifact, M>(
 		throw new CliError('STATE', missing, { hint: missingHint });
 	}
 
-	if (!lstatSync(metadataPath).isFile()) {
-		throw new CliError('STATE', `${METADATA_FILE} is not a regular file.`);
-	}
-
-	const raw = loadJson(metadataPath, METADATA_FILE);
-
-	if (!isPlainObject(raw)) {
-		throw new CliError('STATE', `${METADATA_FILE} is not a ${kind} file.`);
-	}
-
-	const manifest = manifestSchema.safeParse(raw);
-
-	if (!manifest.success) {
-		throw new CliError('STATE', `${METADATA_FILE} is missing a valid "files" manifest.`);
-	}
-
-	const metadata = parseMetadata(raw);
+	const manifest = loadManifest(dir, `${METADATA_FILE} is not a ${kind} file.`);
+	const metadata = parseMetadata(manifest.metadata);
 	const artifacts: T[] = [];
 	const seen = new Set<string>();
 
-	for (const name of manifest.data.files) {
+	for (const name of manifest.files) {
 		if (!OWNED_FILE.test(name)) {
 			throw new CliError('STATE', `${METADATA_FILE} lists ${name}, which is not an owned ${kind} file.`);
 		}

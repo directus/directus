@@ -1,22 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { CliError } from '../kernel/error.js';
 import { SYSTEM_FK_FIELDS } from './fk-map.js';
 import { hasNaturalKey } from './reconcile.js';
 import { allResources, resolveResources, SELECTABLE_RESOURCES } from './resources.js';
+import { expectCliError } from './test-support.js';
 
 function names(requested: string[], options?: { deps?: boolean }): string[] {
 	return resolveResources(requested, options).map((resource) => resource.name);
-}
-
-function expectCliError(fn: () => unknown): CliError {
-	try {
-		fn();
-	} catch (error) {
-		expect(error).toBeInstanceOf(CliError);
-		return error as CliError;
-	}
-
-	throw new Error('expected a CliError');
 }
 
 describe('resolveResources', () => {

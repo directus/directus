@@ -12,9 +12,6 @@ import {
 	type SnapshotRelationEntry,
 } from './contract.js';
 
-/** Files written and stale schema artifacts removed by a snapshot write. */
-export type WriteResult = ArtifactWriteResult;
-
 /** Controls which collections a scoped snapshot write may replace or remove. */
 export interface WriteScope {
 	/** Whether a collection is inside the pull scope and may be replaced or removed. */
@@ -147,7 +144,7 @@ function previousVersion(value: unknown): number | undefined {
 }
 
 /** Write a snapshot as deterministic, manifest-owned collection artifacts. */
-export function writeSnapshotFiles(dir: string, snapshot: Snapshot, scope?: WriteScope): WriteResult {
+export function writeSnapshotFiles(dir: string, snapshot: Snapshot, scope?: WriteScope): ArtifactWriteResult {
 	const manifestHint = 'Fix or delete the schema directory, then run d6s sync pull again.';
 
 	return writeArtifacts({

@@ -2,7 +2,7 @@ import { byCodepoint } from './codepoint.js';
 import type { DiffOp, DiffRelationEntry, ImportBatchResult, SchemaDiff } from './contract.js';
 
 /** Counts and deterministic terminal lines for a schema diff. */
-export interface DiffSummary {
+interface DiffSummary {
 	readonly added: number;
 	readonly modified: number;
 	readonly deleted: number;
@@ -168,9 +168,6 @@ export function emptyImportSummary(): ImportSummary {
 	return { created: 0, updated: 0, deleted: 0, lines: ['no data changes'] };
 }
 
-/**
- * Whether an import summary contains any created, updated, or deleted rows.
- */
 export function hasImportChanges(summary: ImportSummary): boolean {
 	return summary.created > 0 || summary.updated > 0 || summary.deleted > 0;
 }
