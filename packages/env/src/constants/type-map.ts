@@ -26,7 +26,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	IMPORT_TIMEOUT: 'string',
 	IMPORT_MAX_CONCURRENCY: 'number',
 
-	EXTENSIONS_SYNC_MAX_CONCURRENCY: 'number',
+	EXTENSIONS_STORAGE_MAX_CONCURRENCY: 'number',
 	IMPORT_MAX_FILE_SIZE: 'string',
 	IMPORT_EXPORT_NAMESPACE: 'string',
 

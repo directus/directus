@@ -11,6 +11,7 @@ import { useLock } from '../../../lock/index.js';
 import { useLogger } from '../../../logger/index.js';
 import { getStorage } from '../../../storage/index.js';
 import { getExtensionsPath } from '../get-extensions-path.js';
+import { getStorageMaxConcurrency } from '../get-storage-max-concurrency.js';
 import { isSynchronizing, setSyncStatus, SyncStatus } from './status.js';
 import { SyncFileTracker } from './tracker.js';
 import { compareFileMetadata, getSyncPaths } from './utils.js';
@@ -70,7 +71,7 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 		}
 
 		// Limit concurrent requests to the storage driver (also bounds open file handles)
-		const queue = new Queue({ concurrency: Number(env['EXTENSIONS_SYNC_MAX_CONCURRENCY']) });
+		const queue = new Queue({ concurrency: getStorageMaxConcurrency() });
 		let syncError: unknown;
 
 		// On the first failure, stop starting new work; a partial sync is invalid anyway

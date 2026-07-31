@@ -3,4 +3,4 @@
 '@directus/env': patch
 ---
 
-Fixed slow extension sync from remote storage on startup by downloading files concurrently instead of one at a time. The number of concurrent downloads is configurable via the new `EXTENSIONS_SYNC_MAX_CONCURRENCY` environment variable (default 20).
+Fixed slow extension sync from remote storage during startup. Added `EXTENSIONS_STORAGE_MAX_CONCURRENCY` to configure the maximum number of concurrent downloads.

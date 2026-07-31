@@ -21,7 +21,7 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn(() => ({
 		EXTENSIONS_LOCATION: 'test-location',
 		EXTENSIONS_PATH: 'remote/extensions',
-		EXTENSIONS_SYNC_MAX_CONCURRENCY: 2,
+		EXTENSIONS_STORAGE_MAX_CONCURRENCY: 2,
 		REFRESH_TOKEN_COOKIE_DOMAIN: 'localhost',
 		REFRESH_TOKEN_TTL: '7d',
 		REFRESH_TOKEN_COOKIE_SECURE: false,
@@ -61,7 +61,7 @@ describe('syncExtensions', () => {
 			{
 				EXTENSIONS_LOCATION: 'test-location',
 				EXTENSIONS_PATH: 'remote/extensions',
-				EXTENSIONS_SYNC_MAX_CONCURRENCY: 2,
+				EXTENSIONS_STORAGE_MAX_CONCURRENCY: 2,
 			},
 			{
 				get: (target, prop) => {
