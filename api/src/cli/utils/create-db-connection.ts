@@ -53,9 +53,8 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 	}
 
 	const knexConfig: Knex.Config = {
-		// `sqlite3` remains the public driver name; better-sqlite3 is the underlying knex dialect
-		client: client === 'sqlite3' ? 'better-sqlite3' : client,
-		connection: connection,
+		client,
+		connection,
 		seeds: {
 			extension: 'js',
 			directory: path.resolve(__dirname, '../../database/seeds/'),
@@ -65,6 +64,7 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 
 	if (client === 'sqlite3') {
 		knexConfig.useNullAsDefault = true;
+		knexConfig.client = 'better-sqlite3';
 	}
 
 	if (client === 'cockroachdb') {

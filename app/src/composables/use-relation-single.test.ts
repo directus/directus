@@ -75,6 +75,38 @@ describe('useRelationSingle', () => {
 		expect(wrapper.vm.displayItem).toEqual({ id: 'tenant-a', name: 'Tenant A' });
 	});
 
+	test('does not request the temporary "+" primary key of an unsaved parent item', async () => {
+		const wrapper = mount(TestComponent, {
+			props: {
+				value: '+',
+			},
+		});
+
+		await flushPromises();
+
+		expect(sdk.request).not.toHaveBeenCalled();
+		expect(wrapper.vm.displayItem).toBeNull();
+		expect(unexpectedError).not.toHaveBeenCalled();
+	});
+
+	test('displays edits staged against an unsaved parent item', async () => {
+		const wrapper = mount(TestComponent, {
+			props: {
+				value: '+',
+			},
+		});
+
+		await flushPromises();
+
+		wrapper.vm.update({ name: 'Typed Name' });
+
+		await flushPromises();
+
+		expect(sdk.request).not.toHaveBeenCalled();
+		expect(wrapper.vm.displayItem).toEqual({ id: '+', name: 'Typed Name' });
+		expect(unexpectedError).not.toHaveBeenCalled();
+	});
+
 	test('falls back to the scalar primary key when the related item is forbidden', async () => {
 		vi.mocked(sdk.request).mockRejectedValueOnce({ errors: [{ extensions: { code: 'FORBIDDEN' } }] });
 
