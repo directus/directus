@@ -69,6 +69,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	SECRET: 'string',
 
 	EXTENSIONS_ROLLDOWN: 'boolean',
+	EXTENSIONS_STORAGE_MAX_CONCURRENCY: 'number',
 
 	PROJECT_OWNER_ENABLED: 'boolean',
 
