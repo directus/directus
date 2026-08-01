@@ -11,6 +11,7 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useItem } from '@/composables/use-item';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -45,14 +46,17 @@ async function revokeClient() {
 
 <template>
 	<PrivateView :title="item?.client_name ?? '...'" icon="key" show-back back-to="/settings/mcp-oauth-clients">
-		<template #headline>
-			<VBreadcrumb
-				:items="[
-					{ name: $t('settings'), to: '/settings' },
-					{ name: $t('settings_ai'), to: '/settings/ai' },
-					{ name: $t('mcp_oauth_clients'), to: '/settings/mcp-oauth-clients' },
-				]"
-			/>
+		<template #title:prepend>
+			<span class="breadcrumb">
+				<VBreadcrumb
+					:items="[
+						{ name: $t('settings'), to: '/settings' },
+						{ name: $t('settings_ai'), to: '/settings/ai' },
+						{ name: $t('mcp_oauth_clients'), to: '/settings/mcp-oauth-clients' },
+					]"
+				/>
+				<VIcon class="breadcrumb-divider" name="chevron_right" small />
+			</span>
 		</template>
 
 		<template #actions>
@@ -102,6 +106,17 @@ async function revokeClient() {
 </template>
 
 <style lang="scss" scoped>
+.breadcrumb {
+	display: flex;
+	align-items: center;
+}
+
+.breadcrumb-divider {
+	--v-icon-color: var(--theme--foreground-subdued);
+
+	margin-inline: 0.25rem;
+}
+
 .content {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);

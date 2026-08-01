@@ -11,6 +11,7 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VError from '@/components/v-error.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
@@ -84,13 +85,16 @@ function useBatch() {
 		:clear-filters="clearFilters"
 	>
 		<PrivateView :title="$t('mcp_oauth_clients')" icon="key" show-back back-to="/settings/ai">
-			<template #headline>
-				<VBreadcrumb
-					:items="[
-						{ name: $t('settings'), to: '/settings' },
-						{ name: $t('settings_ai'), to: '/settings/ai' },
-					]"
-				/>
+			<template #title:prepend>
+				<span class="breadcrumb">
+					<VBreadcrumb
+						:items="[
+							{ name: $t('settings'), to: '/settings' },
+							{ name: $t('settings_ai'), to: '/settings/ai' },
+						]"
+					/>
+					<VIcon class="breadcrumb-divider" name="chevron_right" small />
+				</span>
 			</template>
 
 			<template #actions:prepend>
@@ -163,6 +167,17 @@ function useBatch() {
 </template>
 
 <style lang="scss" scoped>
+.breadcrumb {
+	display: flex;
+	align-items: center;
+}
+
+.breadcrumb-divider {
+	--v-icon-color: var(--theme--foreground-subdued);
+
+	margin-inline: 0.25rem;
+}
+
 .action-delete {
 	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
