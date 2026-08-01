@@ -270,6 +270,36 @@ describe('Integration Tests', () => {
 							{ CookieAuth: [] },
 						]);
 					});
+
+					it('stamps optional-auth security on GET /assets/{id} via its operation-level x-collection override', async () => {
+						// The Assets tag has no x-collection of its own - GET /assets/{id} is actually
+						// governed by RBAC read access to directus_files at runtime (AssetsService.getAsset()),
+						// same as GET /files/{id}, via an operation-level x-collection override.
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_files', action: 'read' } as any,
+						]);
+
+						const systemSchema = new SchemaBuilder()
+							.collection('directus_files', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: systemSchema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/assets/{id}']?.get?.security).toEqual([
+							{},
+							{ Auth: [] },
+							{ KeyAuth: [] },
+							{ CookieAuth: [] },
+						]);
+					});
 				});
 
 				describe('hardcoded-open operations', () => {
@@ -455,6 +485,28 @@ describe('Integration Tests', () => {
 
 						expect(spec.paths?.['/files']?.get).toBeDefined();
 						expect(spec.paths?.['/files']?.post).toBeUndefined();
+					});
+
+					it('excludes GET /assets/{id} when the caller lacks directus_files read access, even when the public role has it', async () => {
+						vi.mocked(fetchPermissions)
+							.mockResolvedValueOnce([{ collection: 'directus_files', action: 'create', fields: ['*'] } as any])
+							.mockResolvedValueOnce([{ collection: 'directus_files', action: 'read', fields: ['*'] } as any]);
+
+						const systemSchema = new SchemaBuilder()
+							.collection('directus_files', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: systemSchema,
+							accountability: { role: 'some-role', admin: false } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths?.['/assets/{id}']?.get).toBeUndefined();
 					});
 				});
 
