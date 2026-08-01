@@ -411,6 +411,7 @@ functions:
   minute: Minut
   second: Segon
   count: Conta
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h.mm a'
@@ -704,6 +705,7 @@ operators:
   nintersects: No intersecta
   intersects_bbox: Intersecta la caixa delimitadora
   nintersects_bbox: No intersecta la caixa delimitadora
+  json: JSON
   regex: Correspon a expresió regular
 custom_validation_message: Missatge de validació personalitzat
 loading: Carregant...
@@ -843,12 +845,15 @@ wysiwyg_options:
   bullist: Llista amb vinyetes
   numlist: Llista ordenada
   hr: Regle horitzontal
+  insertdatetime_date: Data
+  insertdatetime_time: Time
   link: Afegeix / Edita l'enllaç
   unlink: Elimina l'enllaç
   media: Afegeix / Edita el mèdia
   image: Afegeix / Edita la imatge
   copy: Copia
   cut: Retalla
+  default: Predeterminat
   paste: Enganxa
   heading: Encapçalament
   h1: Capçalera 1
@@ -871,6 +876,8 @@ wysiwyg_options:
   source_code: Edita el codi font
   fullscreen: Pantalla completa
   directionality: Direcció
+  ltr: D'esquerra a dreta
+  rtl: De dreta a esquerra
 dropdown: Desplegable
 choices: Opcions
 choices_option_configured_incorrectly: Opcions configurades incorrectament
@@ -1553,7 +1560,6 @@ interfaces:
     description: Un editor de text enriquit escrivint contingut HTML
     toolbar: Barra d'eines
     custom_formats: Formats personalitzats
-    options_override: Sobreescriptura d'opcions
   input-block-editor:
     tools: Barra d'eines
     tools_options:

@@ -7,6 +7,7 @@ export enum ErrorCode {
 	EmailLimitExceeded = 'EMAIL_LIMIT_EXCEEDED',
 	Forbidden = 'FORBIDDEN',
 	IllegalAssetTransformation = 'ILLEGAL_ASSET_TRANSFORMATION',
+	ImportCyclicalRelation = 'IMPORT_CYCLICAL_RELATION',
 	Internal = 'INTERNAL_SERVER_ERROR',
 	InvalidCredentials = 'INVALID_CREDENTIALS',
 	InvalidForeignKey = 'INVALID_FOREIGN_KEY',

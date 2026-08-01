@@ -7,6 +7,7 @@ import { normalizePath } from '@directus/utils';
 import mid from 'node-machine-id';
 import Queue from 'p-queue';
 import { useBus } from '../../../bus/index.js';
+import { EXTENSIONS } from '../../../constants.js';
 import { useLock } from '../../../lock/index.js';
 import { useLogger } from '../../../logger/index.js';
 import { getStorage } from '../../../storage/index.js';
@@ -69,39 +70,62 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 			}
 		}
 
-		// Make sure we don't overload the file handles
-		const queue = new Queue({ concurrency: 1000 });
+		// Limit concurrent requests to the storage driver (also bounds open file handles)
+		const queue = new Queue({ concurrency: EXTENSIONS.STORAGE_MAX_CONCURRENCY });
+		let syncError: unknown;
+
+		// On the first failure, stop starting new work; a partial sync is invalid anyway
+		const onTaskError = (error: unknown) => {
+			syncError ??= error;
+			queue.clear();
+		};
 
 		// start file tracker
 		const fileTracker = new SyncFileTracker();
 		const localFileCount = await fileTracker.readLocalFiles(localExtensionsPath);
 		const hasLocalFiles = localFileCount > 0;
 
-		for await (const filepath of disk.list(remoteExtensionsPath)) {
-			// We want files to be stored in the root of `$TEMP_PATH/extensions`, so gotta remove the
-			// extensions path on disk from the start of the file path
-			const relativePath = relative(resolve(sep, remoteExtensionsPath), resolve(sep, filepath));
-			const destinationPath = join(localExtensionsPath, relativePath);
+		try {
+			for await (const filepath of disk.list(remoteExtensionsPath)) {
+				if (syncError) break;
 
-			await fileTracker.passedFile(relativePath);
+				// We want files to be stored in the root of `$TEMP_PATH/extensions`, so gotta remove the
+				// extensions path on disk from the start of the file path
+				const relativePath = relative(resolve(sep, remoteExtensionsPath), resolve(sep, filepath));
+				const destinationPath = join(localExtensionsPath, relativePath);
 
-			// No need to check metadata when force is enabled
-			if (options?.forceSync !== true && hasLocalFiles) {
-				const fileUnchanged = await compareFileMetadata(destinationPath, filepath, disk);
-				if (fileUnchanged) continue;
+				await fileTracker.passedFile(relativePath);
+
+				const syncFile = async () => {
+					// No need to check metadata when force is enabled
+					if (options?.forceSync !== true && hasLocalFiles) {
+						const fileUnchanged = await compareFileMetadata(destinationPath, filepath, disk);
+						if (fileUnchanged) return;
+					}
+
+					// Ensure that the directory path exists
+					await mkdir(dirname(destinationPath), { recursive: true });
+
+					// write remote file to the local filesystem
+					const readStream = await disk.read(filepath);
+					const writeStream = createWriteStream(destinationPath);
+					await pipeline(readStream, writeStream);
+				};
+
+				// Queue the whole per-file sync so the remote stat/read round trips run concurrently.
+				// Failures are recorded inside the task so the queue is cleared before it starts more work.
+				queue.add(() => syncFile().catch(onTaskError));
 			}
-
-			// Ensure that the directory path exists
-			await mkdir(dirname(destinationPath), { recursive: true });
-
-			// write remote file to the local filesystem
-			const readStream = await disk.read(filepath);
-			const writeStream = createWriteStream(destinationPath);
-			queue.add(() => pipeline(readStream, writeStream));
+		} catch (error) {
+			// The listing itself failed; stop queued work
+			onTaskError(error);
 		}
 
-		// wait for the queue to finish
+		// wait for in-flight tasks to finish; on failure the queued tasks were already cleared
 		await queue.onIdle();
+
+		if (syncError) throw syncError;
+
 		// cleanup dangling local files
 		await fileTracker.cleanup(localExtensionsPath);
 	} finally {

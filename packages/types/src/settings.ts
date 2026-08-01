@@ -42,6 +42,7 @@ export type Settings = {
 	report_bug_url: string | null;
 	report_feature_url: string | null;
 	default_language: string;
+	default_save_action: 'save-and-quit' | 'save-and-stay' | 'save-and-create-new';
 	project_color: string;
 	project_logo: string | null;
 	public_foreground: string | null;
