@@ -536,6 +536,54 @@ describe('Integration Tests', () => {
 					});
 				});
 
+				describe('tag pruning', () => {
+					it('drops the Assets tag when GET /assets/{id} has no matching path for anyone', async () => {
+						// Assets has no x-collection of its own, so nothing in generateTags() would otherwise
+						// exclude it - it must be pruned because no generated operation references it.
+						vi.mocked(fetchPermissions).mockResolvedValue([]);
+
+						const systemSchema = new SchemaBuilder()
+							.collection('directus_files', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: systemSchema,
+							accountability: { role: 'some-role', admin: false } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths?.['/assets/{id}']?.get).toBeUndefined();
+						expect(spec.tags?.some((tag) => tag.name === 'Assets')).toBe(false);
+					});
+
+					it('keeps the Assets tag when GET /assets/{id} is accessible', async () => {
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_files', action: 'read', fields: ['*'] } as any,
+						]);
+
+						const systemSchema = new SchemaBuilder()
+							.collection('directus_files', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: systemSchema,
+							accountability: { role: 'some-role', admin: false } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths?.['/assets/{id}']?.get).toBeDefined();
+						expect(spec.tags?.some((tag) => tag.name === 'Assets')).toBe(true);
+					});
+				});
+
 				describe('transitive schema $ref resolution', () => {
 					it('backfills schemas that are only reachable via a $ref inside another required schema', async () => {
 						const service = new SpecificationService({
