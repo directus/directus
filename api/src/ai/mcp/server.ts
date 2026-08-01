@@ -1,4 +1,4 @@
-import { isDirectusError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import {
 	type CallToolRequest,
@@ -24,6 +24,8 @@ import type { RootTool, ToolResult } from '../tools/types.js';
 import { DirectusTransport } from './transport.js';
 import type { MCPOptions, Prompt } from './types.js';
 import { buildMcpWWWAuthenticateHeader, getMcpUrls, MCP_ACCESS_SCOPE } from './utils.js';
+
+type McpToolMode = 'legacy' | 'registry';
 
 export class DirectusMCP {
 	promptsCollection?: string | null;
@@ -245,13 +247,13 @@ export class DirectusMCP {
 			systemPromptEnabled: this.systemPromptEnabled,
 		});
 
-		const useRegistryTools = req.query?.['tool_mode'] === 'registry';
+		const toolMode: McpToolMode = req.query?.['tool_mode'] === 'registry' ? 'registry' : 'legacy';
 
 		// listing tools
 		this.server.setRequestHandler(ListToolsRequestSchema, () => {
 			return {
-				tools: (useRegistryTools ? mountedRegistry.getRootTools() : mountedRegistry.tools).map((tool) =>
-					this.toMcpTool(tool),
+				tools: (toolMode === 'registry' ? mountedRegistry.getRootTools() : mountedRegistry.tools).map((tool) =>
+					this.toMcpTool(tool, toolMode),
 				),
 			};
 		});
@@ -259,11 +261,24 @@ export class DirectusMCP {
 		// calling tools
 		this.server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest) => {
 			try {
-				const result = useRegistryTools
-					? await mountedRegistry.executeRoot(request.params.name, request.params.arguments)
-					: await mountedRegistry.execute(request.params.name, request.params.arguments);
+				if (toolMode === 'legacy') {
+					const tool = ALL_TOOLS.find(({ name }) => name === request.params.name);
 
-				return this.toToolResponse(result);
+					if (!tool || (tool.name === 'system-prompt' && this.systemPromptEnabled === false)) {
+						throw new InvalidPayloadError({ reason: `"${request.params.name}" doesn't exist in the toolset` });
+					}
+
+					if (req.accountability?.admin !== true && tool.admin === true) {
+						throw new ForbiddenError({ reason: 'You must be an admin to access this tool' });
+					}
+				}
+
+				const result =
+					toolMode === 'registry'
+						? await mountedRegistry.executeRoot(request.params.name, request.params.arguments)
+						: await mountedRegistry.execute(request.params.name, request.params.arguments);
+
+				return this.toToolResponse(result, toolMode);
 			} catch (error) {
 				return this.toExecutionError(error);
 			}
@@ -298,42 +313,43 @@ export class DirectusMCP {
 		return response;
 	}
 
-	toMcpTool(tool: RootTool) {
+	toMcpTool(tool: RootTool, mode: McpToolMode = 'legacy') {
 		return {
 			name: tool.name,
-			description: tool.description,
+			description: mode === 'legacy' && tool.instructions ? tool.instructions : tool.description,
 			inputSchema: z.toJSONSchema(tool.inputSchema),
 			annotations: tool.annotations,
-			...(tool.output && { outputSchema: z.toJSONSchema(tool.output) }),
+			...(mode === 'registry' && tool.output && { outputSchema: z.toJSONSchema(tool.output) }),
 		};
 	}
 
-	toToolResponse(executeResult: RegistryExecuteResult): CallToolResult {
+	toToolResponse(executeResult: RegistryExecuteResult, mode: McpToolMode = 'legacy'): CallToolResult {
 		if (!executeResult.ok) {
-			return this.toRegistryErrorResponse(executeResult.error);
+			return this.toRegistryErrorResponse(executeResult.error, mode);
 		}
 
-		return this.toResultResponse(executeResult.result, executeResult.structuredContent);
+		return this.toResultResponse(executeResult.result, executeResult.structuredContent, mode);
 	}
 
-	toResultResponse(result?: ToolResult, structuredContent?: unknown): CallToolResult {
+	toResultResponse(result?: ToolResult, structuredContent?: unknown, mode: McpToolMode = 'legacy'): CallToolResult {
 		const response: CallToolResult = {
 			content: [],
 		};
 
-		if (!result || typeof result.data === 'undefined' || result.data === null) return response;
-
-		if (structuredContent !== undefined) {
+		if (mode === 'registry' && structuredContent !== undefined) {
 			response.structuredContent = structuredContent as CallToolResult['structuredContent'];
 		}
+
+		if (!result || typeof result.data === 'undefined' || result.data === null) return response;
 
 		if (result.type === 'text') {
 			response.content.push({
 				type: 'text',
-				text: JSON.stringify({
-					data: result.data,
-					...(result.url && { url: result.url }),
-				}),
+				text: JSON.stringify(
+					mode === 'legacy'
+						? { raw: result.data, url: result.url }
+						: { data: result.data, ...(result.url && { url: result.url }) },
+				),
 			});
 		} else {
 			response.content.push(result);
@@ -342,20 +358,23 @@ export class DirectusMCP {
 		return response;
 	}
 
-	toRegistryErrorResponse(error: RegistryError): CallToolResult {
+	toRegistryErrorResponse(error: RegistryError, mode: McpToolMode = 'legacy'): CallToolResult {
+		const serializedError =
+			mode === 'legacy'
+				? { error: error.message, ...(error.code !== 'TOOL_EXECUTION_FAILED' && { code: error.code }) }
+				: {
+						error: error.message,
+						code: error.code,
+						recoverable: error.recoverable,
+						...(error.next && { next: error.next }),
+					};
+
 		return {
 			isError: true,
 			content: [
 				{
 					type: 'text',
-					text: JSON.stringify([
-						{
-							error: error.message,
-							code: error.code,
-							recoverable: error.recoverable,
-							...(error.next && { next: error.next }),
-						},
-					]),
+					text: JSON.stringify([serializedError]),
 				},
 			],
 		};

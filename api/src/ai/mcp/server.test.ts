@@ -50,6 +50,7 @@ vi.mock('../tools/index.js', async (importOriginal) => {
 			{
 				name: 'test-tool',
 				description: 'A test tool',
+				instructions: 'Full test tool instructions',
 				inputSchema: z.strictObject({
 					collection: z.string().optional(),
 					data: z.unknown().optional(),
@@ -231,6 +232,14 @@ describe('mcp server', () => {
 				'system-prompt',
 				'schema',
 			]);
+
+			expect(result.result.tools.find((tool: { name: string }) => tool.name === 'test-tool')).toMatchObject({
+				description: 'Full test tool instructions',
+			});
+
+			expect(result.result.tools.find((tool: { name: string }) => tool.name === 'schema')).not.toHaveProperty(
+				'outputSchema',
+			);
 		});
 
 		test('should list only MCP root tools in registry mode', async () => {
@@ -308,7 +317,7 @@ describe('mcp server', () => {
 						content: expect.arrayContaining([
 							expect.objectContaining({
 								type: 'text',
-								text: JSON.stringify({ data: 'test result' }),
+								text: JSON.stringify({ raw: 'test result' }),
 							}),
 						]),
 					}),
@@ -382,7 +391,7 @@ describe('mcp server', () => {
 						content: expect.arrayContaining([
 							expect.objectContaining({
 								type: 'text',
-								text: expect.stringContaining('UNKNOWN_TOOL'),
+								text: expect.stringContaining('INVALID_PAYLOAD'),
 							}),
 						]),
 					}),
@@ -419,12 +428,32 @@ describe('mcp server', () => {
 						content: expect.arrayContaining([
 							expect.objectContaining({
 								type: 'text',
-								text: expect.stringContaining("doesn't exist in the toolset"),
+								text: expect.stringMatching(/doesn't exist in the toolset.*INVALID_PAYLOAD/),
 							}),
 						]),
 					}),
 				}),
 			);
+		});
+
+		test('should preserve the forbidden error for non-admin callers of admin tools', async () => {
+			mockReq.body = {
+				jsonrpc: '2.0',
+				id: 1,
+				method: 'tools/call',
+				params: {
+					name: 'admin-tool',
+					arguments: {},
+				},
+			};
+
+			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
+
+			await awaitJsonResponse(directusMCP);
+
+			const response = vi.mocked(mockRes.json).mock.calls[0]![0] as any;
+			expect(response.result.content[0].text).toContain('FORBIDDEN');
+			expect(toolMocks.adminHandler).not.toHaveBeenCalled();
 		});
 
 		test('should return error for calling system-prompt if it is disabled', async () => {
@@ -494,7 +523,7 @@ describe('mcp server', () => {
 						content: expect.arrayContaining([
 							expect.objectContaining({
 								type: 'text',
-								text: JSON.stringify({ data: 'admin result' }),
+								text: JSON.stringify({ raw: 'admin result' }),
 							}),
 						]),
 					}),
@@ -1105,7 +1134,7 @@ describe('mcp server', () => {
 			expect(response).toEqual({ content: [] });
 		});
 
-		test('should format text type responses', () => {
+		test('should preserve the legacy text payload', () => {
 			const result = { type: 'text' as const, data: { message: 'hello' } };
 			const response = directusMCP.toResultResponse(result);
 
@@ -1113,19 +1142,19 @@ describe('mcp server', () => {
 				content: [
 					{
 						type: 'text',
-						text: JSON.stringify({ data: { message: 'hello' } }),
+						text: JSON.stringify({ raw: { message: 'hello' } }),
 					},
 				],
 			});
 		});
 
-		test('should attach structured content alongside the text payload', () => {
+		test('should attach structured content alongside the registry text payload', () => {
 			const result = {
 				type: 'text' as const,
 				data: [{ id: 1 }],
 			};
 
-			const response = directusMCP.toResultResponse(result, { data: [{ id: 1 }] });
+			const response = directusMCP.toResultResponse(result, { data: [{ id: 1 }] }, 'registry');
 
 			expect(response).toEqual({
 				content: [
@@ -1138,19 +1167,31 @@ describe('mcp server', () => {
 			});
 		});
 
+		test('should preserve structured content when registry data is null', () => {
+			const response = directusMCP.toResultResponse({ type: 'text', data: null }, { data: null }, 'registry');
+
+			expect(response).toEqual({
+				content: [],
+				structuredContent: { data: null },
+			});
+		});
+
 		test('should map registry errors to tool errors', () => {
-			const response = directusMCP.toToolResponse({
-				ok: false,
-				error: {
-					code: 'UNKNOWN_TOOL',
-					message: '"missing" does not exist',
-					recoverable: true,
-					next: {
-						tool: 'search',
-						input: { query: 'missing' },
+			const response = directusMCP.toToolResponse(
+				{
+					ok: false,
+					error: {
+						code: 'UNKNOWN_TOOL',
+						message: '"missing" does not exist',
+						recoverable: true,
+						next: {
+							tool: 'search',
+							input: { query: 'missing' },
+						},
 					},
 				},
-			});
+				'registry',
+			);
 
 			expect(response).toEqual({
 				isError: true,

@@ -108,6 +108,8 @@ describe('schema tool', () => {
 					accountability: mockAccountability,
 				});
 
+				expect(schema.output?.safeParse({ data: result?.data }).success).toBe(true);
+
 				expect(result).toEqual({
 					type: 'text',
 					data: {
@@ -224,6 +226,8 @@ describe('schema tool', () => {
 					schema: mockSchema,
 					accountability: mockAccountability,
 				});
+
+				expect(schema.output?.safeParse({ data: result?.data }).success).toBe(true);
 
 				expect(result).toEqual({
 					type: 'text',
