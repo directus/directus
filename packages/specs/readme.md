@@ -28,7 +28,9 @@ src/
 - `x-authentication`: `admin` | `user`; restricts a system tag (and its paths) to being included in the generated spec
   only when the requesting accountability meets that level.
 - `x-collection`: links a tag (and its associated schema component) to the system collection it documents (e.g.
-  `directus_presets`). Used to resolve permissions/field-filtering per collection at generation time.
+  `directus_presets`). Used to resolve permissions/field-filtering per collection at generation time. Can also be set on
+  a single operation to override the tag's collection (or supply one, if the tag has none) for that operation's own RBAC
+  check - e.g. `GET /assets/{id}` is tagged `Assets` (no collection) but is gated by `directus_files` read access.
 - `x-schemas`: extra `components.schemas` names a tag's operations `$ref` but that aren't picked up automatically (only
   collection-backed tags get their schema included by default). Add the schema name here if your tag's operations
   reference a schema that isn't its own `x-collection`, e.g. `Utilities`' `x-schemas: [Files, Folders, Users, Roles]`
@@ -42,8 +44,9 @@ By default, a path/operation needs no `security:` declaration at all: the docume
 inheritance rather than restating the default explicitly. Only add an operation-level `security` override when the
 operation's actual requirement differs from that default. The cases where it differs:
 
-- **Always public, no auth accepted or required (`security: []`)**: for endpoints that are genuinely public with no
-  authenticated variant, e.g. `/auth/login`, `/server/ping`, `/users/invite/accept`.
+- **Always public, no auth accepted or required (`security: []`)**: required for endpoints that run with no
+  accountability at all (e.g. `/auth/login`, `/server/ping`, `/users/register/verify-email`) - the dynamic generator
+  never overwrites this override with the public-access stamp, unlike the others below.
 - **Restricted to admin/user (`x-authentication`)**: `admin` | `user`. Set on the tag for system collections that should
   only appear in the generated spec at all when the requester meets that authentication level, e.g.
   `x-authentication: admin` on the `Schema` tag. This gates whether the path is included, not which security schemes it
