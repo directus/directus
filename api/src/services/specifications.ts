@@ -237,7 +237,12 @@ class OASSpecsService implements SpecificationSubService {
 								this.hasCollectionAccess(userCollectionAccess, operationCollection, this.getActionForMethod(method));
 
 							if (hasPermission) {
+								// A hardcoded-open operation's own `security: []` already says "no auth, ever" -
+								// stamping OPTIONAL_AUTH_SECURITY on top would overwrite that with a set of
+								// schemes that implies auth is consulted, when the operation never checks
+								// accountability at all (e.g. GET /users/register/verify-email).
 								const isPubliclyAccessible =
+									!isHardcodedOpen &&
 									operationCollection !== undefined &&
 									this.hasCollectionAccess(
 										publicCollectionAccess,

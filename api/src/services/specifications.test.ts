@@ -327,6 +327,32 @@ describe('Integration Tests', () => {
 						// on directus_users, which nobody grants since registration bypasses RBAC entirely.
 						expect(spec.paths['/users/register']?.post).toBeDefined();
 					});
+
+					it('does not overwrite a hardcoded-open operation static security: [] with the optional-auth stamp', async () => {
+						// GET /users/register/verify-email runs with accountability: null at runtime (its
+						// own security: [] already says "no auth, ever"). Public having read access on
+						// directus_users must not cause the generator to overwrite that with
+						// OPTIONAL_AUTH_SECURITY, which would misleadingly imply auth is consulted.
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_users', action: 'read' } as any,
+						]);
+
+						const usersSchema = new SchemaBuilder()
+							.collection('directus_users', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: usersSchema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/users/register/verify-email']?.get?.security).toEqual([]);
+					});
 				});
 
 				describe('CookieAuth / RefreshTokenCookieAuth scheme coverage', () => {
