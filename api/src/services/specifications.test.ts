@@ -1,4 +1,5 @@
 import { SchemaBuilder } from '@directus/schema-builder';
+import { spec as staticSpec } from '@directus/specs';
 import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -271,13 +272,13 @@ describe('Integration Tests', () => {
 						]);
 					});
 
-					it('stamps optional-auth security on GET /assets/{id} via its operation-level x-collection override', async () => {
-						// The Assets tag has no x-collection of its own - GET /assets/{id} is actually
-						// governed by RBAC read access to directus_files at runtime (AssetsService.getAsset()),
-						// same as GET /files/{id}, via an operation-level x-collection override.
-						vi.mocked(fetchPermissions).mockResolvedValueOnce([
-							{ collection: 'directus_files', action: 'read' } as any,
-						]);
+					it('always carries optional-auth security on GET /assets/{id}, regardless of directus_files RBAC', async () => {
+						// AssetsService.getAsset() always serves the four branding file IDs referenced by
+						// directus_settings (project_logo, public_background, public_foreground,
+						// public_favicon) to anyone, regardless of directus_files RBAC - so this is a
+						// statically-declared optional-auth operation (like GET /server/info), not one the
+						// generator conditionally stamps based on the public role's access.
+						vi.mocked(fetchPermissions).mockResolvedValue([]);
 
 						const systemSchema = new SchemaBuilder()
 							.collection('directus_files', (c) => {
@@ -288,7 +289,7 @@ describe('Integration Tests', () => {
 						const service = new SpecificationService({
 							knex: db,
 							schema: systemSchema,
-							accountability: { role: 'admin', admin: true } as Accountability,
+							accountability: { role: 'some-role', admin: false } as Accountability,
 						});
 
 						const spec = await service.oas.generate();
@@ -512,27 +513,38 @@ describe('Integration Tests', () => {
 						expect(spec.paths?.['/files']?.get).toBeDefined();
 						expect(spec.paths?.['/files']?.post).toBeUndefined();
 					});
+				});
 
-					it('excludes GET /assets/{id} when the caller lacks directus_files read access, even when the public role has it', async () => {
-						vi.mocked(fetchPermissions)
-							.mockResolvedValueOnce([{ collection: 'directus_files', action: 'create', fields: ['*'] } as any])
-							.mockResolvedValueOnce([{ collection: 'directus_files', action: 'read', fields: ['*'] } as any]);
+				describe('x-action operation-level override', () => {
+					it('gates a POST operation on its x-action instead of the create action implied by its verb', async () => {
+						// POST /files is normally gated on 'create'; temporarily flag it as 'read' to prove the
+						// override is honored, the way a future zip/archive-style endpoint would need it.
+						const filesPost = staticSpec.paths['/files']?.post as Record<string, unknown> | undefined;
+						filesPost!['x-action'] = 'read';
 
-						const systemSchema = new SchemaBuilder()
-							.collection('directus_files', (c) => {
-								c.field('id').uuid().primary();
-							})
-							.build();
+						try {
+							vi.mocked(fetchPermissions).mockResolvedValueOnce([
+								{ collection: 'directus_files', action: 'read', fields: ['*'] } as any,
+							]);
 
-						const service = new SpecificationService({
-							knex: db,
-							schema: systemSchema,
-							accountability: { role: 'some-role', admin: false } as Accountability,
-						});
+							const systemSchema = new SchemaBuilder()
+								.collection('directus_files', (c) => {
+									c.field('id').uuid().primary();
+								})
+								.build();
 
-						const spec = await service.oas.generate();
+							const service = new SpecificationService({
+								knex: db,
+								schema: systemSchema,
+								accountability: { role: 'some-role', admin: false } as Accountability,
+							});
 
-						expect(spec.paths?.['/assets/{id}']?.get).toBeUndefined();
+							const spec = await service.oas.generate();
+
+							expect(spec.paths?.['/files']?.post).toBeDefined();
+						} finally {
+							delete filesPost!['x-action'];
+						}
 					});
 				});
 

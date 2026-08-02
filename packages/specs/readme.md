@@ -30,7 +30,7 @@ src/
 - `x-collection`: links a tag (and its associated schema component) to the system collection it documents (e.g.
   `directus_presets`). Used to resolve permissions/field-filtering per collection at generation time. Can also be set on
   a single operation to override the tag's collection (or supply one, if the tag has none) for that operation's own RBAC
-  check - e.g. `GET /assets/{id}` is tagged `Assets` (no collection) but is gated by `directus_files` read access.
+  check, for a tag whose operations don't all share one collection.
 - `x-schemas`: extra `components.schemas` names a tag's operations `$ref` but that aren't picked up automatically (only
   collection-backed tags get their schema included by default). Add the schema name here if your tag's operations
   reference a schema that isn't its own `x-collection`, e.g. `Utilities`' `x-schemas: [Files, Folders, Users, Roles]`
@@ -53,8 +53,11 @@ operation's actual requirement differs from that default. The cases where it dif
   lists.
 - **Optionally authenticated, response may differ (`security: [{}, {Auth: []}, {KeyAuth: []}, {CookieAuth: []}]`)**: for
   endpoints the public role can reach but that return more/different data to an authenticated caller (e.g. a
-  publicly-readable collection). The dynamic generator stamps this onto generated operations via
-  `OPTIONAL_AUTH_SECURITY` when it determines the public role has read access to the underlying collection.
+  publicly-readable collection). Usually the dynamic generator stamps this onto generated operations via
+  `OPTIONAL_AUTH_SECURITY` when it determines the public role has read access to the underlying collection - but declare
+  it statically instead, like `/server/info` and `/assets/{id}` do, for an endpoint that's always reachable one way or
+  another regardless of RBAC (e.g. `/assets/{id}` always serves the four branding files referenced by
+  `directus_settings` to anyone, on top of whatever `directus_files` read access allows).
 
 ## Development
 
