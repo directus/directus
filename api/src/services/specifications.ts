@@ -17,7 +17,6 @@ import { cloneDeep, mergeWith } from 'lodash-es';
 import hash from 'object-hash';
 import type {
 	OpenAPIObject,
-	OperationObject,
 	ParameterObject,
 	PathItemObject,
 	ReferenceObject,
@@ -94,13 +93,7 @@ class OASSpecsService implements SpecificationSubService {
 
 		const tags = await this.generateTags(schemaForSpec);
 		const paths = await this.generatePaths(schemaForSpec, userCollectionAccess, publicCollectionAccess, tags);
-
-		// Collection-less tags (e.g. Assets) skip the RBAC check in generateTags(), but the operation
-		// they apply to can still be dropped by generatePaths() via a per-operation x-collection override.
-		const usedTagNames = this.collectUsedTagNames(paths);
-		const includedTags = tags?.filter((tag) => usedTagNames.has(tag.name));
-
-		const components = await this.generateComponents(schemaForSpec, includedTags, paths);
+		const components = await this.generateComponents(schemaForSpec, tags, paths);
 
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
 		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
@@ -127,7 +120,7 @@ class OASSpecsService implements SpecificationSubService {
 			paths,
 		};
 
-		if (includedTags) spec.tags = includedTags;
+		if (tags) spec.tags = tags;
 		if (components) spec.components = components;
 
 		spec.security = staticSpec.security!;
@@ -409,20 +402,6 @@ class OASSpecsService implements SpecificationSubService {
 		}
 
 		return paths;
-	}
-
-	private collectUsedTagNames(paths: OpenAPIObject['paths']): Set<string> {
-		const tagNames = new Set<string>();
-
-		for (const pathItem of Object.values(paths ?? {})) {
-			for (const operation of Object.values(pathItem as PathItemObject)) {
-				for (const tagName of (operation as OperationObject)?.tags ?? []) {
-					tagNames.add(tagName);
-				}
-			}
-		}
-
-		return tagNames;
 	}
 
 	private async generateComponents(
