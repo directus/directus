@@ -90,6 +90,11 @@ export function useRelationMultiple(
 		},
 	});
 
+	// True after the parent item is cleared (e.g. refresh/flow) so we can refetch once
+	// the relation value is restored. Avoids an extra mount-time fetch that would
+	// duplicate the immediate previewQuery/itemId/relation watcher.
+	const pendingExternalRefresh = ref(false);
+
 	// Fetch new items when the value gets changed by the external "save and stay"
 	// We don't want to refresh when we ourself reset the value (when we have no more changes)
 	watch(value, (newValue, oldValue) => {
@@ -100,11 +105,21 @@ export function useRelationMultiple(
 				('update' in oldValue && Array.isArray(oldValue.update) && oldValue.update.length > 0) ||
 				('delete' in oldValue && Array.isArray(oldValue.delete) && oldValue.delete.length > 0))
 		) {
+			pendingExternalRefresh.value = false;
 			updateFetchedItems();
-		} else if (Array.isArray(newValue) && oldValue === null) {
-			// Refetch when the value transitions from null to an array, which happens
-			// when a refresh (e.g. after running a manual flow) nulls the item then
-			// re-fetches it with updated relation data.
+			return;
+		}
+
+		// Parent refresh clears the item (and this field) before reloading it.
+		if ((newValue === null || newValue === undefined) && oldValue != null) {
+			pendingExternalRefresh.value = true;
+			return;
+		}
+
+		// After a refresh, the field is restored to an array of PKs — refetch rows so
+		// O2M/M2M UIs pick up server-side changes (e.g. manual flow updates).
+		if (pendingExternalRefresh.value && Array.isArray(newValue)) {
+			pendingExternalRefresh.value = false;
 			updateFetchedItems();
 		}
 	});

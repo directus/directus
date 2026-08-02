@@ -135,6 +135,50 @@ Facility                 Worker
  */
 
 describe('test o2m relation', () => {
+	test('does not double-fetch on initial null-to-array mount transition', async () => {
+		const requestSpy = vi.spyOn(sdk, 'request');
+
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: null, id: 1 },
+		});
+
+		await flushPromises();
+
+		// Immediate previewQuery watch should fetch once on mount.
+		const mountCalls = requestSpy.mock.calls.length;
+		expect(mountCalls).toBeGreaterThan(0);
+
+		// Simulate first item load: form field goes from null -> array.
+		// This must NOT trigger a second relation fetch (ComfortablyCoding review).
+		wrapper.vm.value = [];
+		await flushPromises();
+
+		expect(requestSpy.mock.calls.length).toBe(mountCalls);
+		requestSpy.mockRestore();
+	});
+
+	test('refetches after refresh null-to-array transition', async () => {
+		const requestSpy = vi.spyOn(sdk, 'request');
+
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		await flushPromises();
+		const afterMountCalls = requestSpy.mock.calls.length;
+		expect(afterMountCalls).toBeGreaterThan(0);
+
+		// refresh() path: item.value = null, then re-fetched array payload.
+		wrapper.vm.value = null;
+		await flushPromises();
+		wrapper.vm.value = [1, 2];
+		await flushPromises();
+
+		expect(requestSpy.mock.calls.length).toBeGreaterThan(afterMountCalls);
+		expect(wrapper.vm.displayItems).toEqual(workerData);
+		requestSpy.mockRestore();
+	});
+
 	test('creating an item', async () => {
 		const wrapper = mount(TestComponent, {
 			props: { relation: relationO2M, value: [], id: 1 },
