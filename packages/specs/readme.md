@@ -25,6 +25,11 @@ src/
 
 ## Custom (`x-*`) Extension Fields
 
+- `x-action`: `create` | `read` | `update` | `delete`; overrides the RBAC action an operation with an `x-collection`
+  override is checked against, for the (uncommon) case where the operation's HTTP method doesn't match what it actually
+  does - e.g. a `POST` that only reads and archives existing items shouldn't be gated on `create` access. Defaults to
+  the action implied by the HTTP method (`post` → `create`, `get` → `read`, `patch` → `update`, `delete` → `delete`);
+  only set this when that default is wrong for the specific operation.
 - `x-authentication`: `admin` | `user`; restricts a system tag (and its paths) to being included in the generated spec
   only when the requesting accountability meets that level.
 - `x-collection`: links a tag (and its associated schema component) to the system collection it documents (e.g.
