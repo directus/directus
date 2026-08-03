@@ -2,6 +2,7 @@ get:
   summary: Retrieve Current User
   description: Retrieve the currently authenticated user.
   operationId: getMe
+  x-authentication: self
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
   responses:
@@ -25,6 +26,7 @@ patch:
   summary: Update Current User
   description: Update the currently authenticated user.
   operationId: updateMe
+  x-authentication: self
   responses:
     '200':
       description: Successful request
