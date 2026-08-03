@@ -351,7 +351,14 @@ onKeyStroke('Escape', () => {
 			@input="$emit('input', $event)"
 		/>
 
-		<EditorContent v-show="!rawMode" class="editor-content" :editor="editor" :dir="editorDir" @click="onEditorClick" />
+		<EditorContent
+			v-show="!rawMode"
+			class="editor-content"
+			:editor="editor"
+			:dir="editorDir"
+			@click="onEditorClick"
+			@touchstart.prevent="onEditorClick"
+		/>
 
 		<span
 			v-if="softLength && !comparisonMode && !rawMode"
@@ -506,6 +513,7 @@ onKeyStroke('Escape', () => {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	text-rendering: optimizeLegibility;
+	touch-action: manipulation;
 
 	h1,
 	h2,
