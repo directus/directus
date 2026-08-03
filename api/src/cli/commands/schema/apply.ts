@@ -1,10 +1,4 @@
-import { promises as fs } from 'fs';
-import path from 'path';
-import type { Snapshot, SnapshotDiff } from '@directus/types';
-import { DiffKind } from '@directus/types';
-import { parseJSON } from '@directus/utils';
 import chalk from 'chalk';
-import inquirer from 'inquirer';
 import { load as loadYaml } from 'js-yaml';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
 import { getLicenseManager } from '../../../license/index.js';
@@ -17,56 +11,81 @@ import { getSnapshot } from '../../../utils/schema/get-snapshot.js';
 export function filterSnapshotDiff(snapshot: SnapshotDiff, filters: string[]): SnapshotDiff {
 	const filterSet = new Set(filters);
 
-	function shouldKeep(item: { collection: string; field?: string }): boolean {
-		if (filterSet.has(item.collection)) return false;
-		if (item.field && filterSet.has(`${item.collection}.${item.field}`)) return false;
-		return true;
+	const collections = snapshot.collections.filter(({ collection }) => filterSet.has(collection));
+	const fields = snapshot.fields.filter(({ collection }) => filterSet.has(collection));
+	const systemFields = snapshot.systemFields.filter(({ collection }) => filterSet.has(collection));
+
+	const relations = snapshot.relations.filter(
+		({ collection, related_collection }) =>
+			filterSet.has(collection) && (related_collection ? filterSet.has(related_collection) : true),
+	);
+
+	return {
+		collections,
+		fields,
+		systemFields,
+		relations,
+	};
+}
+
+export function formatPath(path: string[]): string {
+	return path.join('.');
+}
+
+export function formatRelatedCollection(relatedCollection: string | null): string {
+	return relatedCollection ? ` -> ${relatedCollection}` : '';
+}
+
+export function formatCollectionChanges(lhs: Record<string, any>, rhs: Record<string, any>): string[] {
+	const lines: string[] = [];
+
+	for (const key of Object.keys(rhs)) {
+		if (lhs[key] !== rhs[key]) {
+			lines.push(`    - Set ${key} to ${rhs[key]}`);
+		}
 	}
 
-	const filteredDiff: SnapshotDiff = {
-		collections: snapshot.collections.filter((item) => shouldKeep(item)),
-		fields: snapshot.fields.filter((item) => shouldKeep(item)),
-		systemFields: snapshot.systemFields.filter((item) => shouldKeep(item)),
-		relations: snapshot.relations.filter((item) => shouldKeep(item)),
-	};
-
-	return filteredDiff;
+	return lines;
 }
 
 export async function apply(
-	snapshotPath: string,
-	options?: { yes: boolean; dryRun: boolean; ignoreRules: string },
+	snapshotPath?: string,
+	options: { yes?: boolean; dryRun?: boolean; force?: boolean } = {},
 ): Promise<void> {
-	const logger = useLogger();
-
-	const filename = path.resolve(process.cwd(), snapshotPath);
-
 	const database = getDatabase();
 
-	await validateDatabaseConnection(database);
-
-	if ((await isInstalled()) === false) {
-		logger.error(`Directus isn't installed on this database. Please run "directus bootstrap" first.`);
-		database.destroy();
-		process.exit(0);
-	}
-
-	let snapshot: Snapshot;
+	const logger = useLogger();
 
 	try {
-		const fileContents = await fs.readFile(filename, 'utf8');
+		await validateDatabaseConnection(database);
 
-		if (filename.endsWith('.yaml') || filename.endsWith('.yml')) {
-			snapshot = (await loadYaml(fileContents)) as Snapshot;
-		} else {
-			snapshot = parseJSON(fileContents) as Snapshot;
+		if ((await isInstalled()) === false) {
+			logger.error(`Database is not installed.`);
+			process.exit(1);
 		}
 
-		const currentSnapshot = await getSnapshot({ database });
-		let snapshotDiff = getSnapshotDiff(currentSnapshot, snapshot);
+		await getLicenseManager().reloadEntitlements();
 
-		if (options?.ignoreRules) {
-			snapshotDiff = filterSnapshotDiff(snapshotDiff, options.ignoreRules.split(','));
+		const currentSnapshot = await getSnapshot({ database });
+		let targetSnapshot: Snapshot;
+
+		if (snapshotPath) {
+			const { default: fs } = await import('fs');
+			const fileContent = fs.readFileSync(snapshotPath, 'utf8');
+
+			targetSnapshot = snapshotPath.endsWith('.yaml') || snapshotPath.endsWith('.yml')
+				? (loadYaml(fileContent) as Snapshot)
+				: JSON.parse(fileContent);
+		} else {
+			logger.error(`Snapshot path is required.`);
+			process.exit(1);
+		}
+
+		let snapshotDiff = await getSnapshotDiff(currentSnapshot, targetSnapshot, { force: options.force });
+
+		if (!snapshotDiff) {
+			logger.info(`No changes to apply.`);
+			return;
 		}
 
 		if (
@@ -75,173 +94,104 @@ export async function apply(
 			snapshotDiff.systemFields.length === 0 &&
 			snapshotDiff.relations.length === 0
 		) {
-			logger.info('No changes to apply.');
-			database.destroy();
-			process.exit(0);
+			logger.info(`No changes to apply.`);
+			return;
 		}
 
-		const dryRun = options?.dryRun === true;
-		const promptForChanges = !dryRun && options?.yes !== true;
+		const lines: string[] = [];
 
-		if (dryRun || promptForChanges) {
-			const sections = [];
+		if (snapshotDiff.collections.length > 0) {
+			lines.push(`Collections:`);
 
-			if (snapshotDiff.collections.length > 0) {
-				const lines = [chalk.underline.bold('Collections:')];
+			for (const { collection, diff } of snapshotDiff.collections) {
+				if (diff[0]?.kind === DiffKind.EDIT || isNestedMetaUpdate(diff[0]!)) {
+					lines.push(`  - ${chalk.magenta('Update')} ${collection}`);
 
-				for (const { collection, diff } of snapshotDiff.collections) {
-					if (diff[0]?.kind === DiffKind.EDIT) {
-						lines.push(`  - ${chalk.magenta('Update')} ${collection}`);
-
-						for (const change of diff) {
-							if (change.kind === DiffKind.EDIT) {
-								const path = formatPath(change.path!);
-								lines.push(`    - Set ${path} to ${change.rhs}`);
-							}
-						}
-					} else if (diff[0]?.kind === DiffKind.DELETE) {
-						lines.push(`  - ${chalk.red('Delete')} ${collection}`);
-					} else if (diff[0]?.kind === DiffKind.NEW) {
-						lines.push(`  - ${chalk.green('Create')} ${collection}`);
-					} else if (diff[0]?.kind === DiffKind.ARRAY) {
-						lines.push(`  - ${chalk.magenta('Update')} ${collection}`);
+					if (diff[0]?.kind === DiffKind.EDIT && diff[0].lhs && diff[0].rhs) {
+						lines.push(...formatCollectionChanges(diff[0].lhs, diff[0].rhs));
 					}
+				} else if (diff[0]?.kind === DiffKind.NEW) {
+					lines.push(`  - ${chalk.green('Create')} ${collection}`);
+				} else if (diff[0]?.kind === DiffKind.DELETE && !isNestedMetaUpdate(diff[0]!)) {
+					lines.push(`  - ${chalk.red('Delete')} ${collection}`);
 				}
-
-				sections.push(lines.join('\n'));
 			}
+		}
 
-			if (snapshotDiff.fields.length > 0) {
-				const lines = [chalk.underline.bold('Fields:')];
+		if (snapshotDiff.fields.length > 0) {
+			lines.push(`Fields:`);
 
-				for (const { collection, field, diff } of snapshotDiff.fields) {
-					if (diff[0]?.kind === DiffKind.EDIT || isNestedMetaUpdate(diff[0]!)) {
-						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}`);
-
-						for (const change of diff) {
-							const path = formatPath(change.path!);
-
-							if (change.kind === DiffKind.EDIT) {
-								lines.push(`    - Set ${path} to ${change.rhs}`);
-							} else if (change.kind === DiffKind.DELETE) {
-								lines.push(`    - Remove ${path}`);
-							} else if (change.kind === DiffKind.NEW) {
-								lines.push(`    - Add ${path} and set it to ${change.rhs}`);
-							}
-						}
-					} else if (diff[0]?.kind === DiffKind.DELETE) {
-						lines.push(`  - ${chalk.red('Delete')} ${collection}.${field}`);
-					} else if (diff[0]?.kind === DiffKind.NEW) {
-						lines.push(`  - ${chalk.green('Create')} ${collection}.${field}`);
-					} else if (diff[0]?.kind === DiffKind.ARRAY) {
-						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}`);
-					}
+			for (const { collection, field, diff } of snapshotDiff.fields) {
+				if (diff[0]?.kind === DiffKind.EDIT || isNestedMetaUpdate(diff[0]!)) {
+					lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}`);
+				} else if (diff[0]?.kind === DiffKind.NEW) {
+					lines.push(`  - ${chalk.green('Create')} ${collection}.${field}`);
+				} else if (diff[0]?.kind === DiffKind.DELETE) {
+					lines.push(`  - ${chalk.red('Delete')} ${collection}.${field}`);
 				}
-
-				sections.push(lines.join('\n'));
 			}
+		}
 
-			if (snapshotDiff.systemFields.length > 0) {
-				const lines = [chalk.underline.bold('System Fields:')];
+		if (snapshotDiff.systemFields.length > 0) {
+			lines.push(`System Fields:`);
 
-				for (const { collection, field, diff } of snapshotDiff.systemFields) {
-					if (diff[0]?.kind === DiffKind.EDIT) {
-						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}`);
-
-						for (const change of diff) {
-							const path = formatPath(change.path!);
-
-							if (change.kind === DiffKind.EDIT) {
-								lines.push(`    - Set ${path} to ${change.rhs}`);
-							} else if (change.kind === DiffKind.DELETE) {
-								lines.push(`    - Remove ${path}`);
-							} else if (change.kind === DiffKind.NEW) {
-								lines.push(`    - Add ${path} and set it to ${change.rhs}`);
-							}
-						}
-					}
+			for (const { collection, field, diff } of snapshotDiff.systemFields) {
+				if (diff[0]?.kind === DiffKind.EDIT) {
+					lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}`);
+				} else if (diff[0]?.kind === DiffKind.NEW) {
+					lines.push(`  - ${chalk.green('Create')} ${collection}.${field}`);
+				} else if (diff[0]?.kind === DiffKind.DELETE) {
+					lines.push(`  - ${chalk.red('Delete')} ${collection}.${field}`);
 				}
-
-				sections.push(lines.join('\n'));
 			}
+		}
 
-			if (snapshotDiff.relations.length > 0) {
-				const lines = [chalk.underline.bold('Relations:')];
+		if (snapshotDiff.relations.length > 0) {
+			lines.push(`Relations:`);
 
-				for (const { collection, field, related_collection, diff } of snapshotDiff.relations) {
-					const relatedCollection = formatRelatedCollection(related_collection);
+			for (const { collection, field, related_collection, diff } of snapshotDiff.relations) {
+				const related = formatRelatedCollection(related_collection);
 
-					if (diff[0]?.kind === DiffKind.EDIT) {
-						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}${relatedCollection}`);
-
-						for (const change of diff) {
-							if (change.kind === DiffKind.EDIT) {
-								const path = formatPath(change.path!);
-								lines.push(`    - Set ${path} to ${change.rhs}`);
-							}
-						}
-					} else if (diff[0]?.kind === DiffKind.DELETE) {
-						lines.push(`  - ${chalk.red('Delete')} ${collection}.${field}${relatedCollection}`);
-					} else if (diff[0]?.kind === DiffKind.NEW) {
-						lines.push(`  - ${chalk.green('Create')} ${collection}.${field}${relatedCollection}`);
-					} else if (diff[0]?.kind === DiffKind.ARRAY) {
-						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}${relatedCollection}`);
-					}
+				if (diff[0]?.kind === DiffKind.EDIT) {
+					lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}${related}`);
+				} else if (diff[0]?.kind === DiffKind.NEW) {
+					lines.push(`  - ${chalk.green('Create')} ${collection}.${field}${related}`);
+				} else if (diff[0]?.kind === DiffKind.DELETE) {
+					lines.push(`  - ${chalk.red('Delete')} ${collection}.${field}${related}`);
 				}
-
-				sections.push(lines.join('\n'));
 			}
+		}
 
-			const message = 'The following changes will be applied:\n\n' + sections.join('\n\n');
+		logger.info(`Applying the following changes:\n\n${lines.join('\n')}\n`);
 
-			if (dryRun) {
-				// eslint-disable-next-line no-console
-				console.log(message);
-				process.exit(0);
-			}
+		if (options.dryRun) {
+			logger.info(`Dry run completed.`);
+			return;
+		}
 
-			const { proceed } = await inquirer.prompt([
+		if (!options.yes) {
+			const { default: inquirer } = await import('inquirer');
+
+			const { confirm } = await inquirer.prompt([
 				{
 					type: 'confirm',
-					name: 'proceed',
-					message: message + '\n\n' + 'Would you like to continue?',
+					name: 'confirm',
+					message: 'Are you sure you want to apply these changes?',
+					default: false,
 				},
 			]);
 
-			if (proceed === false) {
-				process.exit(0);
+			if (!confirm) {
+				logger.info(`Apply cancelled.`);
+				return;
 			}
 		}
 
-		// Load the license so schema changes are checked against the active limits
-		await getLicenseManager().initialize();
+		await applySnapshot(targetSnapshot, snapshotDiff, { database });
 
-		await applySnapshot(snapshot, { current: currentSnapshot, diff: snapshotDiff, database });
-
-		logger.info(`Snapshot applied successfully`);
-
-		database.destroy();
-		process.exit(0);
-	} catch (err: any) {
-		logger.error(err);
-		database.destroy();
+		logger.info(`Schema apply completed successfully.`);
+	} catch (error: any) {
+		logger.error(`Failed to apply snapshot: ${error.message}`);
 		process.exit(1);
 	}
-}
-
-export function formatPath(path: any[]): string {
-	if (path.length === 1) {
-		return path.toString();
-	}
-
-	return path.slice(1).join('.');
-}
-
-export function formatRelatedCollection(relatedCollection: string | null): string {
-	// Related collection doesn't exist for a2o relationship types
-	if (relatedCollection) {
-		return ` → ${relatedCollection}`;
-	}
-
-	return '';
 }
