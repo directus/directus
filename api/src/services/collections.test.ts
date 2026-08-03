@@ -122,13 +122,29 @@ describe('Integration Tests', () => {
 			const invalidPayloads: Array<[any, string]> = [
 				[{}, 'collection name is missing'],
 				[{ collection: '' }, 'collection name is empty'],
+				[{ collection: '   ' }, 'collection name is only whitespace'],
 				[{ collection: 'directus_test' }, 'collection names start with "directus_"'],
+				[{ collection: ' directus_test' }, 'collection names start with "directus_" after trimming leading whitespace'],
+				[{ collection: 'directus_test ' }, 'collection names start with "directus_" after trimming trailing whitespace'],
 				[{ collection: 'Folder/Test' }, 'collection name contains "/"'],
 			];
 
 			test.each(invalidPayloads)('should throw InvalidPayloadError when %s', async (payload, _description) => {
 				const service = new CollectionsService({ knex: db, schema, accountability: null });
 				await expect(service.createOne(payload)).rejects.toThrow(InvalidPayloadError);
+			});
+
+			test('should trim whitespace from collection name before creating', async () => {
+				tracker.on.select('directus_collections').response([]);
+				const service = new CollectionsService({ knex: db, schema, accountability: null });
+
+				const result = await service.createOne({
+					collection: '  padded_collection  ',
+					schema: {},
+				});
+
+				expect(result).toBe('padded_collection');
+				expect(mockSchemaBuilder.createTable).toHaveBeenCalledWith('padded_collection', expect.any(Function));
 			});
 
 			test('should throw InvalidPayloadError for existing collection', async () => {

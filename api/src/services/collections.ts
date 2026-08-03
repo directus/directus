@@ -69,9 +69,11 @@ export class CollectionsService {
 
 		if (!('collection' in payload)) throw new InvalidPayloadError({ reason: `"collection" is required` });
 
-		if (typeof payload.collection !== 'string' || payload.collection === '') {
+		if (typeof payload.collection !== 'string' || payload.collection.trim() === '') {
 			throw new InvalidPayloadError({ reason: `"collection" must be a non-empty string` });
 		}
+
+		payload.collection = payload.collection.trim();
 
 		if (payload.collection.startsWith('directus_')) {
 			throw new InvalidPayloadError({ reason: `Collections can't start with "directus_"` });
