@@ -7,7 +7,7 @@ export type Comment = {
 	item: PrimaryKey;
 	comment: string;
 	date_created: string;
-	date_updated: string;
-	user_created: string | Partial<User>;
-	user_updated: string | Partial<User>;
+	date_updated: string | null;
+	user_created: string | Partial<User> | null;
+	user_updated: string | Partial<User> | null;
 };
