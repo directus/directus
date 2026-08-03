@@ -2,9 +2,10 @@ post:
   tags:
     - Assets
   x-collection: directus_files
+  x-action: read
   operationId: archiveFiles
   summary: Archive Files
-  description: Archives an arbitrary set of files into a zip file and streams it back.
+  description: Archives the specified files into a zip file and streams it back.
   requestBody:
     content:
       application/json:

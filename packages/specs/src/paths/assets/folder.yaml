@@ -2,6 +2,7 @@ post:
   tags:
     - Assets
   x-collection: directus_folders
+  x-action: read
   operationId: archiveFolder
   summary: Archive a Folder
   description: Archives every file within a folder (recursively) into a zip file and streams it back.
@@ -21,5 +22,5 @@ post:
           schema:
             type: string
             format: binary
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    '403':
+      $ref: '../../openapi.yaml#/components/responses/ForbiddenError'

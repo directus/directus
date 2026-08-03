@@ -114,12 +114,12 @@ paths:
     $ref: './paths/activity/activity.yaml'
 
   # Assets
+  /assets/{id}:
+    $ref: './paths/assets/assets.yaml'
   /assets/files:
     $ref: './paths/assets/files.yaml'
   /assets/folder/{pk}:
     $ref: './paths/assets/folder.yaml'
-  /assets/{id}:
-    $ref: './paths/assets/assets.yaml'
 
   # Authentication
   /auth/login:
