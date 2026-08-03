@@ -1,3 +1,5 @@
+import { Extension } from '@tiptap/core';
+import { Plugin } from '@tiptap/pm/state';
 import { Editor } from '@tiptap/vue-3';
 import { afterEach, describe, expect, test } from 'vitest';
 import { editorExtensions } from './index';
@@ -45,6 +47,33 @@ function focusEndOf(editor: Editor, type: string) {
 	const node = editor.state.doc.nodeAt(pos)!;
 	editor.commands.setTextSelection(pos + node.nodeSize - 1);
 }
+
+const REPLACE_DOC_META = 'test-replace-doc';
+
+/**
+ * Stands in for any plugin that appends a whole-document replacement: registered last so its plugin
+ * runs before the figure one, which then sees the replacement as a *later* transaction in the batch.
+ */
+const replaceDocOnMeta = Extension.create({
+	name: 'testReplaceDocOnMeta',
+
+	addProseMirrorPlugins() {
+		return [
+			new Plugin({
+				appendTransaction: (transactions, _oldState, newState) => {
+					if (!transactions.some((transaction) => transaction.getMeta(REPLACE_DOC_META))) return null;
+
+					const { schema } = newState;
+
+					return newState.tr.replaceWith(0, newState.doc.content.size, [
+						schema.nodes['figure']!.create(null, schema.nodes['figcaption']!.create(null, schema.text('A caption'))),
+						schema.nodes['paragraph']!.create(null, schema.text('after')),
+					]);
+				},
+			}),
+		];
+	},
+});
 
 describe('setFigure', () => {
 	test('wraps the selected image', () => {
@@ -275,5 +304,18 @@ describe('orphan caption cleanup', () => {
 		editor.commands.setContent('<figure class="media-left"><figcaption>A caption</figcaption></figure>' + TAIL);
 
 		expect(html(editor)).toBe('<figure class="media-left"><figcaption>A caption</figcaption></figure>');
+	});
+
+	test('a whole-document replacement appended by another plugin is left alone', () => {
+		const editor = new Editor({
+			extensions: [...editorExtensions, replaceDocOnMeta],
+			content: '<figure><img src="/assets/abc" alt="photo"><figcaption>A caption</figcaption></figure>' + TAIL,
+		});
+
+		editors.push(editor);
+
+		editor.view.dispatch(editor.state.tr.setMeta(REPLACE_DOC_META, true));
+
+		expect(html(editor)).toBe('<figure><figcaption>A caption</figcaption></figure>');
 	});
 });

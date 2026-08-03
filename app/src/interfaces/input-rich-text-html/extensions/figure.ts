@@ -265,7 +265,7 @@ function orphanCaptionCleanup(): Plugin {
 
 			// setContent (value sync, revert, version switch) and select-all-delete replace the whole doc:
 			// positions there say nothing about what the user removed
-			if (replacesWholeDoc(transactions, oldState)) return null;
+			if (replacesWholeDoc(transactions)) return null;
 
 			const toOldPos = combinedMapping(transactions).invert();
 			const orphans: FoundNode[] = [];
@@ -301,11 +301,13 @@ function combinedMapping(transactions: readonly Transaction[]): Mapping {
 	return mapping;
 }
 
-function replacesWholeDoc(transactions: readonly Transaction[], oldState: EditorState): boolean {
-	const [first] = transactions;
-	if (!first) return false;
-
-	return first.steps.some(
-		(step) => step instanceof ReplaceStep && step.from === 0 && step.to === oldState.doc.content.size,
+function replacesWholeDoc(transactions: readonly Transaction[]): boolean {
+	// `transaction.docs[index]` is the doc that step ran against, so a replacement appended by another
+	// plugin is measured against its own doc rather than the one the batch started from
+	return transactions.some((transaction) =>
+		transaction.steps.some(
+			(step, index) =>
+				step instanceof ReplaceStep && step.from === 0 && step.to === transaction.docs[index]!.content.size,
+		),
 	);
 }
