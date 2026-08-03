@@ -22,6 +22,19 @@ vi.mock('@/sdk', async () => {
 	});
 });
 
+// Rows that exist but are not related to the item yet, as reached through "Add Existing"
+const selectableData: Record<string, Record<string, any>[]> = {
+	'/items/worker': [{ id: 99, name: 'unlinked' }],
+	'/items/text': [{ id: 5, text: 'lorem' }],
+};
+
+vi.mock('@/utils/fetch-all', () => ({
+	fetchAll: (url: string, config: Record<string, any>) => {
+		const ids: (string | number)[] = config?.params?.filter?.id?._in ?? [];
+		return Promise.resolve((selectableData[url] ?? []).filter((item) => ids.includes(item.id)));
+	},
+}));
+
 vi.mock('@/utils/unexpected-error', () => {
 	return {
 		unexpectedError: (error: unknown) => {
@@ -714,6 +727,112 @@ describe('nested relational changes', () => {
 
 		expect(wrapper.vm.value).toEqual({
 			create: [{ facility: 1 }],
+			update: [],
+			delete: [],
+		});
+	});
+
+	test('a selected item exposes its nested changes as values', async () => {
+		const changes = {
+			create: [{ language: 'en-US', title: 'Prelude' }],
+			update: [],
+			delete: [],
+		};
+
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		await flushPromises();
+
+		// "Add Existing" on an o2m stages the row in `update`, not in `create`
+		wrapper.vm.select([99]);
+
+		await flushPromises();
+
+		const selected = wrapper.vm.displayItems.find((item) => item.id === 99)!;
+
+		// Mirrors the drawer flow, which stages the form edits on top of the raw item edits
+		wrapper.vm.update({ ...wrapper.vm.getItemEdits(selected), translations: changes });
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems.find((item) => item.id === 99)).toEqual(
+			expect.objectContaining({
+				id: 99,
+				name: 'unlinked',
+				translations: [{ language: 'en-US', title: 'Prelude' }],
+			}),
+		);
+
+		expect(wrapper.vm.value).toEqual({
+			create: [],
+			update: [{ id: 99, facility: 1, translations: changes }],
+			delete: [],
+		});
+	});
+
+	test('a selected item resolves nested changes against the values it already has', async () => {
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		await flushPromises();
+
+		wrapper.vm.select([99]);
+
+		await flushPromises();
+
+		const selected = wrapper.vm.displayItems.find((item) => item.id === 99)!;
+
+		// A field the fetched row already holds must survive the resolution
+		wrapper.vm.update({ ...selected, translations: { create: [], update: [], delete: [] } });
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems.find((item) => item.id === 99)).toEqual(
+			expect.objectContaining({ id: 99, name: 'unlinked', translations: [] }),
+		);
+	});
+
+	test('a selected junction row exposes the nested changes of its related item as values', async () => {
+		const changes = {
+			create: [{ language: 'en-US', title: 'Prelude' }],
+			update: [],
+			delete: [],
+		};
+
+		const wrapper = mount(TestComponentM2A, {
+			props: { relation: relationM2A, value: [], id: 1 },
+		});
+
+		await flushPromises();
+
+		// "Add Existing" on an m2a stages the junction row in `create`
+		wrapper.vm.select([5], 'text');
+
+		await flushPromises();
+
+		const selected = wrapper.vm.displayItems.find((item) => item.item?.id === 5)!;
+
+		wrapper.vm.update({ ...selected, item: { id: 5, translations: changes } });
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems.find((item) => item.item?.id === 5)!.item).toEqual({
+			id: 5,
+			text: 'lorem',
+			translations: [{ language: 'en-US', title: 'Prelude' }],
+		});
+
+		expect(wrapper.vm.value).toEqual({
+			create: [
+				{
+					article_id: 1,
+					collection: 'text',
+					item: { id: 5, translations: changes },
+				},
+			],
 			update: [],
 			delete: [],
 		});

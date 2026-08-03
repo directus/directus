@@ -1,6 +1,6 @@
 import { ContentVersion, Filter, Item } from '@directus/types';
 import { getEndpoint, toArray } from '@directus/utils';
-import { clamp, cloneDeep, get, isEqual, merge } from 'lodash';
+import { clamp, cloneDeep, get, isEqual, merge, mergeWith } from 'lodash';
 import { computed, ref, Ref, watch } from 'vue';
 import { RelationM2A } from '@/composables/use-relation-m2a';
 import { RelationM2M } from '@/composables/use-relation-m2m';
@@ -264,8 +264,17 @@ export function useRelationMultiple(
 				return;
 			});
 
-			if (!fetchedItem) return edit;
-			return merge({}, fetchedItem, edit);
+			if (!fetchedItem) return withResolved(forDisplay(edit) as DisplayItem);
+
+			const displayEdit = forDisplay(edit, fetchedItem);
+
+			// The resolution already applied the delta against the fetched values, so a plain `merge` would
+			// fold them back in index by index; an array on the edit is the complete value for that field
+			const merged = mergeWith({}, fetchedItem, displayEdit, (_target, source) =>
+				Array.isArray(source) ? source : undefined,
+			);
+
+			return withResolved(merged as DisplayItem);
 		});
 
 		const newItems = getPage(existingItemCount.value + selected.value.length, createdItems.value);
