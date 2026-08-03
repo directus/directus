@@ -78,7 +78,6 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=Test@123
-      - MSSQL_PID=Express
     ports:
       - 6105:1433
 

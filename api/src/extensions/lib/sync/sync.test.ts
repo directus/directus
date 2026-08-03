@@ -3,6 +3,7 @@ import { mkdir, rm } from 'node:fs/promises';
 import { sep } from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
+import { setTimeout } from 'node:timers/promises';
 import { useEnv } from '@directus/env';
 import type { Driver } from '@directus/storage';
 import mid from 'node-machine-id';
@@ -21,6 +22,7 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn(() => ({
 		EXTENSIONS_LOCATION: 'test-location',
 		EXTENSIONS_PATH: 'remote/extensions',
+		EXTENSIONS_STORAGE_MAX_CONCURRENCY: 2,
 		REFRESH_TOKEN_COOKIE_DOMAIN: 'localhost',
 		REFRESH_TOKEN_TTL: '7d',
 		REFRESH_TOKEN_COOKIE_SECURE: false,
@@ -331,6 +333,44 @@ describe('syncExtensions', () => {
 			expect(setSyncStatus).toHaveBeenCalledWith(SyncStatus.IDLE);
 		});
 
+		test('should drain in-flight sync tasks before releasing locks when a task fails', async () => {
+			mockLock.increment.mockResolvedValue(1);
+
+			let resolveSecondRead!: () => void;
+			const secondReadHeld = new Promise<void>((resolve) => (resolveSecondRead = resolve));
+
+			vi.mocked(createWriteStream).mockReturnValue({ pipe: vi.fn() } as any);
+			vi.mocked(pipeline).mockResolvedValue(undefined);
+
+			vi.mocked(mockDisk.read).mockImplementation(async (filepath) => {
+				if (filepath.includes('file1')) throw new Error('File read error');
+				await secondReadHeld;
+				return new Readable() as any;
+			});
+
+			vi.mocked(mockDisk.list).mockImplementation(async function* () {
+				yield 'remote/extensions/file1.js';
+				yield 'remote/extensions/file2.js';
+			});
+
+			const syncPromise = syncExtensions();
+
+			await vi.waitFor(() => expect(mockDisk.read).toHaveBeenCalledTimes(2));
+			await setTimeout(0);
+
+			expect(mockMessenger.publish).not.toHaveBeenCalled();
+			expect(mockLock.delete).not.toHaveBeenCalled();
+			expect(setSyncStatus).not.toHaveBeenCalledWith(SyncStatus.IDLE);
+
+			resolveSecondRead();
+
+			await expect(syncPromise).rejects.toThrow('File read error');
+
+			expect(mockMessenger.publish).toHaveBeenCalledWith('extensions-sync/test-machine-id', { ready: true });
+			expect(mockLock.delete).toHaveBeenCalledWith('extensions-sync/test-machine-id');
+			expect(setSyncStatus).toHaveBeenCalledWith(SyncStatus.IDLE);
+		});
+
 		test('should set sync status to IDLE in finally block', async () => {
 			mockLock.increment.mockResolvedValue(1);
 			vi.mocked(mockDisk.list).mockImplementation(async function* () {});
@@ -352,6 +392,22 @@ describe('syncExtensions', () => {
 			// Should still cleanup
 			expect(mockLock.delete).toHaveBeenCalled();
 			expect(setSyncStatus).toHaveBeenCalledWith(SyncStatus.IDLE);
+		});
+
+		test('should stop scheduling further files after a sync task fails', async () => {
+			mockLock.increment.mockResolvedValue(1);
+			vi.mocked(mockDisk.read).mockRejectedValue(new Error('File read error'));
+
+			vi.mocked(mockDisk.list).mockImplementation(async function* () {
+				yield 'remote/extensions/file1.js';
+				await vi.waitFor(() => expect(mockDisk.read).toHaveBeenCalledTimes(1));
+				await setTimeout(0);
+				yield 'remote/extensions/file2.js';
+			});
+
+			await expect(syncExtensions()).rejects.toThrow('File read error');
+
+			expect(mockDisk.read).toHaveBeenCalledTimes(1);
 		});
 
 		test('should handle file read errors gracefully', async () => {
