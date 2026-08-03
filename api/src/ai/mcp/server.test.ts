@@ -1214,6 +1214,27 @@ describe('mcp server', () => {
 			});
 		});
 
+		test('should preserve native error codes in legacy responses', () => {
+			const response = directusMCP.toToolResponse({
+				ok: false,
+				error: {
+					code: 'ER_DUP_ENTRY',
+					message: 'Duplicate entry',
+					recoverable: false,
+				},
+			});
+
+			expect(response).toEqual({
+				isError: true,
+				content: [
+					{
+						type: 'text',
+						text: JSON.stringify([{ error: 'Duplicate entry', code: 'ER_DUP_ENTRY' }]),
+					},
+				],
+			});
+		});
+
 		test('should return result directly for non-text types', () => {
 			const result = { type: 'image' as const, data: 'base64data', mimeType: 'image/png' };
 			const response = directusMCP.toResultResponse(result);

@@ -178,6 +178,33 @@ describe('ToolRegistry', () => {
 		});
 	});
 
+	test.each([
+		[
+			'coded errors',
+			Object.assign(new Error('Duplicate entry'), { code: 'ER_DUP_ENTRY' }),
+			'ER_DUP_ENTRY',
+			'Duplicate entry',
+		],
+		['plain objects', { code: 'DRIVER_ERROR', message: 'Driver failed' }, 'DRIVER_ERROR', 'Driver failed'],
+		['strings', 'String error', 'TOOL_EXECUTION_FAILED', 'String error'],
+	])('preserves generic %s for transport serialization', async (_label, thrown, code, message) => {
+		const registry = new ToolRegistry([
+			createTool({
+				name: 'failing',
+				description: 'Failing',
+				handler: async () => {
+					throw thrown;
+				},
+				readOnly: true,
+			}),
+		]);
+
+		await expect(registry.mount({ schema }).execute('failing', {})).resolves.toMatchObject({
+			ok: false,
+			error: { code, message, recoverable: false },
+		});
+	});
+
 	test('consent blocks writes and allows reads', async () => {
 		const registry = new ToolRegistry([
 			createTool({

@@ -26,6 +26,8 @@ type IndexedTool = {
 	documentLength: number;
 };
 
+const indexedToolCache = new WeakMap<ToolConfig<any>, IndexedTool>();
+
 const BM25_K1 = 1.2;
 const BM25_B = 0.75;
 
@@ -38,7 +40,7 @@ const FIELD_WEIGHTS = {
 } as const;
 
 export function createSearchIndex(tools: readonly ToolConfig<any>[]): SearchIndex {
-	const indexedTools = tools.map(indexTool).sort((a, b) => a.tool.name.localeCompare(b.tool.name));
+	const indexedTools = tools.map(getIndexedTool).sort((a, b) => a.tool.name.localeCompare(b.tool.name));
 	const availableToolNames = indexedTools.map(({ tool }) => tool.name);
 
 	return {
@@ -67,6 +69,17 @@ export function createSearchIndex(tools: readonly ToolConfig<any>[]): SearchInde
 			};
 		},
 	};
+}
+
+function getIndexedTool(tool: ToolConfig<any>): IndexedTool {
+	let indexedTool = indexedToolCache.get(tool);
+
+	if (!indexedTool) {
+		indexedTool = indexTool(tool);
+		indexedToolCache.set(tool, indexedTool);
+	}
+
+	return indexedTool;
 }
 
 function indexTool(tool: ToolConfig<any>): IndexedTool {

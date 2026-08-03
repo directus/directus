@@ -7,7 +7,7 @@ import { fromZodError } from 'zod-validation-error';
 import { Url } from '../../utils/url.js';
 import { schema as schemaTool } from './schema/index.js';
 import { getToolTypeStrings } from './schema-to-type-string.js';
-import { createSearchIndex, type SearchIndex, type ToolSearchResults } from './search-index.js';
+import { createSearchIndex, type ToolSearchResults } from './search-index.js';
 import type { RootTool, ToolConfig, ToolResult } from './types.js';
 import { coerceJsonFields } from './utils.js';
 
@@ -54,13 +54,6 @@ export type ToolRegistryMountContext = {
 
 type ToolRegistrySearchInput = { query: string; names?: never } | { names: string[]; query?: never };
 
-type SearchIndexCache = {
-	children: WeakMap<ToolConfig<any>, SearchIndexCache>;
-	index?: SearchIndex;
-};
-
-const searchIndexCache: SearchIndexCache = { children: new WeakMap() };
-
 export class ToolRegistry {
 	readonly #tools = new Map<string, ToolConfig<any>>();
 
@@ -95,7 +88,7 @@ export class MountedToolRegistry {
 	search(query: string): ToolSearchResults {
 		const tools = this.#getVisibleTools().filter((tool) => tool.exposure !== 'root');
 
-		return getSearchIndex(tools).search(query);
+		return createSearchIndex(tools).search(query);
 	}
 
 	detail(names: readonly string[]): ToolDetail[] {
@@ -313,23 +306,6 @@ export class MountedToolRegistry {
 	}
 }
 
-function getSearchIndex(tools: readonly ToolConfig<any>[]): SearchIndex {
-	let cache = searchIndexCache;
-
-	for (const tool of tools) {
-		let child = cache.children.get(tool);
-
-		if (!child) {
-			child = { children: new WeakMap() };
-			cache.children.set(tool, child);
-		}
-
-		cache = child;
-	}
-
-	return (cache.index ??= createSearchIndex(tools));
-}
-
 const SearchInputSchema = z.object({
 	query: z
 		.union([z.string(), z.null()])
@@ -418,17 +394,30 @@ function toRegistryError(error: unknown, tool?: ToolConfig<any>): RegistryError 
 		};
 	}
 
+	const code =
+		typeof error === 'object' && error !== null && 'code' in error && error.code
+			? String(error.code)
+			: 'TOOL_EXECUTION_FAILED';
+
 	if (error instanceof Error) {
 		return {
-			code: 'TOOL_EXECUTION_FAILED',
+			code,
 			message: error.message,
 			recoverable: false,
 		};
 	}
 
+	if (typeof error === 'object' && error !== null) {
+		return {
+			code,
+			message: 'message' in error ? String(error.message) : 'An unknown error occurred.',
+			recoverable: false,
+		};
+	}
+
 	return {
-		code: 'TOOL_EXECUTION_FAILED',
-		message: 'An unknown error occurred.',
+		code,
+		message: typeof error === 'string' ? error : 'An unknown error occurred.',
 		recoverable: false,
 	};
 }
