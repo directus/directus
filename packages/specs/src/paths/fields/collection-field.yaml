@@ -23,6 +23,7 @@ patch:
   summary: Update a Field
   description: Update an existing field.
   operationId: updateField
+  x-authentication: admin
   requestBody:
     content:
       application/json:
@@ -206,6 +207,7 @@ delete:
   summary: Delete a Field
   description: Delete an existing field.
   operationId: deleteField
+  x-authentication: admin
   responses:
     '200':
       description: Successful request

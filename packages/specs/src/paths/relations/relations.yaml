@@ -25,6 +25,7 @@ post:
   summary: Create a Relation
   description: Create a new relation.
   operationId: createRelation
+  x-authentication: admin
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
     - $ref: '../../openapi.yaml#/components/parameters/Meta'
