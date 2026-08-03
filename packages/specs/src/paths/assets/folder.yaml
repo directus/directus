@@ -1,0 +1,34 @@
+post:
+  tags:
+    - Assets
+  summary: Archive Folder
+  description: >-
+    Archives every file within the specified folder recursively into a zip archive and streams it back.
+  operationId: archiveFolder
+  x-collection: directus_folders
+  parameters:
+    - name: pk
+      in: path
+      required: true
+      description: Unique identifier of the folder.
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/zip:
+          schema:
+            type: string
+            format: binary
+      headers:
+        Content-Disposition:
+          schema:
+            type: string
+          example: attachment; filename="folder-documents-1700000000000.zip"
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '403':
+      $ref: '../../openapi.yaml#/components/responses/ForbiddenError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'

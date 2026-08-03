@@ -1,0 +1,42 @@
+post:
+  tags:
+    - Assets
+  summary: Archive Multiple Files
+  description: >-
+    Archives an arbitrary set of files into a zip archive and streams it back.
+  operationId: archiveFiles
+  x-collection: directus_files
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - ids
+          properties:
+            ids:
+              type: array
+              minItems: 1
+              items:
+                type: string
+                format: uuid
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/zip:
+          schema:
+            type: string
+            format: binary
+      headers:
+        Content-Disposition:
+          schema:
+            type: string
+          example: attachment; filename="files-1700000000000.zip"
+    '400':
+      $ref: '../../openapi.yaml#/components/responses/BadRequestError'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '403':
+      $ref: '../../openapi.yaml#/components/responses/ForbiddenError'
