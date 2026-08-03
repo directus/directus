@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { HARDCODED_AUTH_REQUIREMENTS } from '@directus/constants';
 import { appAccessMinimalPermissions } from '@directus/system-data';
 import { Permission, Policy, PrimaryKey } from '@directus/types';
 import { computed, ref, toRefs, watch } from 'vue';
@@ -11,6 +12,7 @@ import Tabs from './components/tabs.vue';
 import Validation from './components/validation.vue';
 import api from '@/api';
 import VDrawer from '@/components/v-drawer.vue';
+import VNotice from '@/components/v-notice.vue';
 import { isPermissionEmpty } from '@/utils/is-permission-empty';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -128,6 +130,19 @@ const appMinimal = computed(() => {
 	);
 });
 
+// These operations require accountability.admin directly in the service layer, so a permission
+// configured for them never has any effect on any policy.
+const hardcodedAdminOnly = computed(() => {
+	if (!permission.value) return false;
+
+	return HARDCODED_AUTH_REQUIREMENTS.some(
+		(requirement) =>
+			requirement.requiredAuth === 'admin' &&
+			requirement.collection === permission.value!.collection &&
+			requirement.action === permission.value!.action,
+	);
+});
+
 function close() {
 	internalActive.value = false;
 	permission.value = null;
@@ -205,6 +220,9 @@ function save() {
 		</template>
 
 		<div v-if="!loading && permission && policy" class="content">
+			<VNotice v-if="hardcodedAdminOnly" type="warning">
+				{{ $t('hardcoded_admin_only_permission') }}
+			</VNotice>
 			<Permissions
 				v-if="currentTab === 'permissions'"
 				v-model:permission="permission"
@@ -236,5 +254,9 @@ function save() {
 .content {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding);
+}
+
+.v-notice {
+	margin-block-end: 1.375rem;
 }
 </style>
