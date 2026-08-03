@@ -3,7 +3,7 @@ import { Editor } from '@tiptap/vue-3';
 import { afterEach, expect, test } from 'vitest';
 import { ref, shallowRef } from 'vue';
 import { editorExtensions } from '../extensions';
-import { useImage } from './use-image';
+import { type ImageSelection, useImage } from './use-image';
 
 const imageFile: File = {
 	id: 'unique_id',
@@ -166,6 +166,135 @@ test('openImageDrawer prefills the selection from the active image node', () => 
 		width: 100,
 		height: 80,
 	});
+});
+
+test('openImageDrawer prefills the caption from the figure the image sits in', () => {
+	const { editor, imageSelection, openImageDrawer } = setup({
+		content: '<figure><img src="/assets/abc.jpg" alt="My alt"><figcaption>A caption</figcaption></figure>',
+	});
+
+	editor.value.commands.setNodeSelection(1);
+
+	openImageDrawer();
+
+	expect(imageSelection.value?.caption).toBe('A caption');
+});
+
+test('openImageDrawer reports an empty caption for an image outside a figure', () => {
+	const { editor, imageSelection, openImageDrawer } = setup({
+		content: '<img src="/assets/abc.jpg" alt="My alt">',
+	});
+
+	editor.value.commands.setNodeSelection(0);
+
+	openImageDrawer();
+
+	expect(imageSelection.value?.caption).toBe('');
+});
+
+// the caption tests reuse one transformed src so the assertions stay about the figure structure
+const SRC = 'http://localhost:3000/assets/abc.jpg';
+const TRANSFORMED_SRC = `${SRC}?width=100&amp;height=80`;
+
+function captionedSelection(overrides: Partial<ImageSelection> = {}): ImageSelection {
+	return {
+		imageUrl: SRC,
+		alt: 'My alt',
+		caption: 'A caption',
+		lazy: false,
+		width: 100,
+		height: 80,
+		transformationKey: null,
+		...overrides,
+	};
+}
+
+test('saveImage wraps a new image in a figure when a caption is set', () => {
+	const { editor, imageSelection, saveImage } = setup();
+
+	imageSelection.value = captionedSelection({ lazy: true });
+
+	saveImage();
+
+	expect(editor.value.getHTML()).toContain(
+		`<figure><img src="${TRANSFORMED_SRC}" alt="My alt" loading="lazy"><figcaption>A caption</figcaption></figure>`,
+	);
+});
+
+test('saveImage wraps an existing image when a caption is added', () => {
+	const { editor, imageSelection, saveImage } = setup({ content: `<img src="${SRC}" alt="My alt">` });
+
+	editor.value.commands.setNodeSelection(0);
+
+	imageSelection.value = captionedSelection({ alt: 'New alt' });
+
+	saveImage();
+
+	expect(editor.value.getHTML()).toContain(
+		`<figure><img src="${TRANSFORMED_SRC}" alt="New alt"><figcaption>A caption</figcaption></figure>`,
+	);
+});
+
+test('saveImage updates the caption of an image already inside a figure', () => {
+	const { editor, imageSelection, saveImage } = setup({
+		content: `<figure><img src="${SRC}" alt="My alt"><figcaption>Old</figcaption></figure>`,
+	});
+
+	editor.value.commands.setNodeSelection(1);
+
+	imageSelection.value = captionedSelection({ caption: 'New' });
+
+	saveImage();
+
+	expect(editor.value.getHTML()).toContain(
+		`<figure><img src="${TRANSFORMED_SRC}" alt="My alt"><figcaption>New</figcaption></figure>`,
+	);
+});
+
+test('saveImage unwraps the figure when the caption is cleared', () => {
+	const { editor, imageSelection, saveImage } = setup({
+		content: `<figure><img src="${SRC}" alt="My alt"><figcaption>A caption</figcaption></figure>`,
+	});
+
+	editor.value.commands.setNodeSelection(1);
+
+	imageSelection.value = captionedSelection({ caption: '' });
+
+	saveImage();
+
+	const html = editor.value.getHTML();
+	expect(html).toContain(`<img src="${TRANSFORMED_SRC}" alt="My alt">`);
+	expect(html).not.toContain('figure');
+});
+
+test('saveImage keeps a figure that carries a class when the caption is cleared', () => {
+	const { editor, imageSelection, saveImage } = setup({
+		content: `<figure class="float-left"><img src="${SRC}" alt="My alt"><figcaption>A caption</figcaption></figure>`,
+	});
+
+	editor.value.commands.setNodeSelection(1);
+
+	imageSelection.value = captionedSelection({ caption: '' });
+
+	saveImage();
+
+	expect(editor.value.getHTML()).toContain(
+		`<figure class="float-left"><img src="${TRANSFORMED_SRC}" alt="My alt"></figure>`,
+	);
+});
+
+test('saveImage keeps the preserved attributes of the image it edits', () => {
+	const { editor, imageSelection, saveImage } = setup({
+		content: `<img class="rounded" src="${SRC}" alt="My alt">`,
+	});
+
+	editor.value.commands.setNodeSelection(0);
+
+	imageSelection.value = captionedSelection({ alt: 'New alt', caption: '' });
+
+	saveImage();
+
+	expect(editor.value.getHTML()).toContain(`<img class="rounded" src="${TRANSFORMED_SRC}" alt="New alt">`);
 });
 
 test('openImageDrawer leaves the selection empty when no image is active', () => {

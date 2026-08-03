@@ -2,6 +2,7 @@ import { CharacterCount } from '@tiptap/extensions';
 import StarterKit from '@tiptap/starter-kit';
 import { Direction } from './direction';
 import { DropCursor } from './drop-cursor';
+import { figureExtensions } from './figure';
 import { CustomImage } from './image';
 import { Media } from './media';
 import { PageBreak } from './page-break';
@@ -40,6 +41,7 @@ export const editorExtensions = [
 	Table,
 	PreKeymap,
 	CharacterCount,
+	...figureExtensions,
 	...semanticHtml,
 	PreservedAttributes,
 ];

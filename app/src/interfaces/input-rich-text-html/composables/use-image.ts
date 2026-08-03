@@ -1,7 +1,9 @@
 import type { File, SettingsStorageAssetPreset } from '@directus/types';
+import type { EditorState } from '@tiptap/pm/state';
 import type { Editor } from '@tiptap/vue-3';
 import mime from 'mime/lite';
 import { Ref, ref, watch } from 'vue';
+import { FIGCAPTION_NODE, FIGURE_NODE, findFigure, getFigureCaption } from '../extensions/figure';
 import { replaceUrlAccessToken } from './replace-url-access-token';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
@@ -10,6 +12,8 @@ import { readableMimeType } from '@/utils/readable-mime-type';
 export type ImageSelection = {
 	imageUrl: string;
 	alt: string;
+	/** Non-empty wraps the image in `<figure>` with a `<figcaption>`; empty keeps/reverts to a bare `<img>`. */
+	caption?: string;
 	lazy?: boolean;
 	width?: number;
 	height?: number;
@@ -72,6 +76,7 @@ export function useImage(
 		}
 
 		const imageUrlParams = safeUrlParams(imageUrl);
+		const figure = findFigure(editor.value.state.selection);
 		const lazy = attrs.loading === 'lazy';
 		const width = Number(imageUrlParams?.get('width') || undefined) || undefined;
 		const height = Number(imageUrlParams?.get('height') || undefined) || undefined;
@@ -86,6 +91,7 @@ export function useImage(
 		imageSelection.value = {
 			imageUrl,
 			alt,
+			caption: figure ? getFigureCaption(figure.node) : '',
 			lazy,
 			width: selectedPreset.value ? (selectedPreset.value.width ?? undefined) : width,
 			height: selectedPreset.value ? (selectedPreset.value.height ?? undefined) : height,
@@ -113,6 +119,7 @@ export function useImage(
 		imageSelection.value = {
 			imageUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
 			alt: image.title!,
+			caption: '',
 			lazy: false,
 			width: image.width ?? undefined,
 			height: image.height ?? undefined,
@@ -149,9 +156,48 @@ export function useImage(
 		// `loading` is added by the extended Image node (extensions/image.ts), beyond SetImageOptions' base type
 		const attrs = { src: resizedImageUrl, alt: img.alt, loading: img.lazy ? 'lazy' : null };
 
-		editor.value.chain().focus().setImage(attrs).run();
+		const caption = img.caption?.trim() ?? '';
+		const imagePos = findImagePos(editor.value.state);
+		const chain = editor.value.chain().focus();
+
+		if (imagePos === undefined) {
+			// fresh insert: with a caption the whole figure goes in at once, so there is no intermediate
+			// state where a wrap could catch the wrong block
+			if (caption) {
+				chain.insertContent({
+					type: FIGURE_NODE,
+					content: [
+						{ type: 'image', attrs },
+						{ type: FIGCAPTION_NODE, content: [{ type: 'text', text: caption }] },
+					],
+				});
+			} else {
+				chain.setImage(attrs);
+			}
+		} else {
+			// editing an existing image: update in place rather than replacing the node, so its own
+			// preserved attributes (class/id/data-*) and any surrounding figure survive the edit
+			chain.setNodeSelection(imagePos).updateAttributes('image', attrs);
+
+			if (caption) chain.setFigureCaption(caption);
+			else chain.unsetFigureCaption();
+		}
+
+		chain.run();
 
 		closeImageDrawer();
+	}
+
+	/** Position of the image the drawer is editing, or `undefined` when inserting a new one. */
+	function findImagePos(state: EditorState): number | undefined {
+		const { from, to } = state.selection;
+		let imagePos: number | undefined;
+
+		state.doc.nodesBetween(from, to, (node, pos) => {
+			if (imagePos === undefined && node.type.name === 'image') imagePos = pos;
+		});
+
+		return imagePos;
 	}
 
 	function safeUrlParams(url: string): URLSearchParams | undefined {
