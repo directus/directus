@@ -89,7 +89,7 @@ export async function useSnapshot<Schema>(
 
 	while (tries > 0) {
 		try {
-			const diff = await api.request(schemaDiff(schemaSnapshot, true));
+			const diff = await api.request(schemaDiff(schemaSnapshot, { force: true }));
 
 			if (diff) {
 				diff.diff['collections'] = diff.diff['collections'].filter(

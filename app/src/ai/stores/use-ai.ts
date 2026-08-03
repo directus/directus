@@ -13,6 +13,7 @@ import { getAvailableModels, getModelKey, resolveModelByKey } from '../utils/ava
 import { unwrapToolCall } from '../utils/unwrap-tool-call';
 import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
+import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
@@ -58,6 +59,7 @@ const getEffectiveToolPartState = (part: ToolPartLike) => {
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
+	const serverStore = useServerStore();
 	const sidebarStore = useSidebarStore();
 	const contextStore = useAiContextStore();
 	const toolsStore = useAiToolsStore();
@@ -92,7 +94,9 @@ export const useAiStore = defineStore('ai-store', () => {
 	});
 
 	// Model selection
-	const models = computed<AppModelDefinition[]>(() => getAvailableModels(settingsStore.settings));
+	const models = computed<AppModelDefinition[]>(() =>
+		getAvailableModels(settingsStore.settings, serverStore.info.ai_providers ?? []),
+	);
 
 	const defaultModel = computed(() => models.value[0] ?? null);
 
