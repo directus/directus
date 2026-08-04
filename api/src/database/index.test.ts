@@ -125,6 +125,25 @@ describe('getDatabase with DB_CLIENT=sqlite3', () => {
 		expect(await database('junction').select('id')).toEqual([{ id: 1 }]);
 	});
 
+	test('binds integers as integers inside a transaction too', async () => {
+		const { getDatabase } = await import('./index.js');
+		database = getDatabase();
+
+		await database.schema.createTable('junction', (table) => {
+			table.increments('id');
+			table.string('item', 255);
+		});
+
+		// knex gives a transaction its own client, built from `client.constructor.prototype` with only
+		// a fixed set of properties copied over. Every mutation runs in a transaction, so a coercion
+		// that only reached the outer client would leave every written id as "41.0"
+		await database.transaction(async (trx) => {
+			await trx('junction').insert({ item: 41 });
+		});
+
+		expect(await database('junction').select('item')).toEqual([{ item: '41' }]);
+	});
+
 	test('runs queries that carry no bindings', async () => {
 		const { getDatabase } = await import('./index.js');
 		database = getDatabase();
