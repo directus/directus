@@ -1,7 +1,5 @@
 type: object
-# Runtime: Revision type (no exported type; shape follows directus_revisions)
-# Seed schema: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/database/seeds/11-revisions.yaml
-# `version` column added in: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/database/migrations/20230823A-add-content-versioning.ts#L35
+# No exported TS type for Revision; shape follows the directus_revisions table directly.
 properties:
   id:
     description: Unique identifier for the revision.

@@ -1,10 +1,4 @@
 type: object
-# Runtime: FieldRaw/Field/FieldMeta types
-# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/fields.ts
-# Column shape: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/schema/src/types/column.ts
-# TYPES enum: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/constants/src/fields.ts#L18-L57
-# RawField requires field + type (and collection for the create endpoint):
-# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/fields.ts#L74
 required: [collection, field, type]
 properties:
   collection:

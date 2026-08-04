@@ -1,7 +1,5 @@
 type: object
-# Runtime shape: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/snapshot.ts#L8-L16
-# Required vs optional fields come from the validate-snapshot Joi schema:
-# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/utils/validate-snapshot.ts#L10-L60
+# Required vs optional fields come from the validate-snapshot Joi schema (api/src/utils/schema/validate-snapshot.ts).
 required: [version, directus]
 properties:
   version:
@@ -13,7 +11,6 @@ properties:
     example: 12.0.2
     type: string
   vendor:
-    # DatabaseClient: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/database.ts#L3
     description: Database vendor.
     type: string
     enum: [cockroachdb, mssql, mysql, oracle, postgres, redshift, sqlite]
@@ -29,7 +26,6 @@ properties:
     items:
       $ref: '../openapi.yaml#/components/schemas/Fields'
   systemFields:
-    # System field shape: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/snapshot.ts#L22-L28
     description: Indexed system fields per collection (date_created/date_updated/user_created/user_updated).
     type: array
     items:

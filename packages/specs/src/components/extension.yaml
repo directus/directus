@@ -1,7 +1,4 @@
 type: object
-# Runtime shape: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/extensions/app-extension-config.ts#L74-L79
-# Service populates from ExtensionsManager: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/services/extensions.ts#L145-L199
-# Required-field check: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/services/extensions.ts#L201-L205
 required: [id]
 properties:
   id:
@@ -45,7 +42,6 @@ properties:
         description: Name of the extension.
         type: string
       type:
-        # EXTENSION_TYPES from https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/constants/src/extensions.ts#L9-L20
         description: Type of the extension.
         type: string
         enum:

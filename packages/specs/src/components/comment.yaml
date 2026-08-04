@@ -1,9 +1,4 @@
 type: object
-# Runtime: createOne requires id, collection, item, comment
-# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/services/comments.ts#L32-L42
-# id is required so the controller can accept client-supplied PKs (singleton/explicit assignment)
-# Type: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/comments.ts
-# DB: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/database/migrations/20240909A-separate-comments.ts
 required: [id, collection, item, comment]
 properties:
   id:
@@ -35,8 +30,6 @@ properties:
     type: string
     example: '2024-01-23T12:34:56Z'
     format: date-time
-  # User is nullable on user delete edge case for user_created and user_udpated
-  # https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/services/users.ts#L394-L397
   user_created:
     description: User that created the Comment.
     example: 81dfa7e0-56d2-471f-b96a-1cf8a62bdf28

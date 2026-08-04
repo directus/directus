@@ -1,9 +1,4 @@
 type: object
-# Runtime: Policy type
-# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/policies.ts
-# PoliciesService: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/services/policies.ts
-# directus_policies table: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/database/migrations/20240806A-permissions-policies.ts#L78-L87
-# Note: Policy.enforce_tfa is typed `null | boolean` but the DB column is `notNullable().defaultTo(false)`. The runtime never produces null. This is a type-vs-DB drift tracked under directus/directus#20972.
 properties:
   id:
     description: Unique identifier for the policy.
@@ -23,6 +18,7 @@ properties:
     example: Admins have access to all managed data within the system by default.
     type: string
     nullable: true
+  # Typed nullable in packages/types, but the DB column is notNullable/defaultTo(false); runtime never produces null.
   enforce_tfa:
     description: Whether or not this policy enforces the use of 2FA.
     example: false

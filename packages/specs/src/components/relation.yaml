@@ -1,8 +1,4 @@
 type: object
-# Runtime: Relation type
-# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/relations.ts
-# Response shape is the outer Relation envelope; meta is the inner RelationMeta row
-# stored on directus_relations. schema is a ForeignKey per @directus/schema.
 properties:
   collection:
     description: Collection on the _many_ side of the relationship. This is where the foreign key is stored.

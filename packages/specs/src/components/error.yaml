@@ -1,5 +1,4 @@
 type: object
-# Wire shape: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/middleware/error-handler.ts#L72-L79
 required:
   - message
   - extensions

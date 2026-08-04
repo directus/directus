@@ -1,8 +1,4 @@
 type: object
-# Runtime: Activity type
-# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/activity.ts
-# DB schema: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/database/seeds/10-activity.yaml
-# `revisions` relation added in: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/database/migrations/20230823A-add-content-versioning.ts
 properties:
   id:
     description: Unique identifier for the object.

@@ -1,7 +1,4 @@
 type: object
-# Runtime: Operation and OperationRaw types
-# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/flows.ts#L17
-# DB schema: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/database/migrations/20220429A-add-flows.ts
 properties:
   id:
     description: Unique identifier for the operation.

@@ -1,5 +1,4 @@
 type: object
-# Runtime shape: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/snapshot.ts#L55
 properties:
   hash:
     description: Hash of the current snapshot, used to detect drift before apply.

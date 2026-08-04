@@ -1,9 +1,4 @@
 type: object
-# Runtime: Permission type
-# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/permissions.ts
-# role was renamed to policy in 20240806A-permissions-policies:
-# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/database/migrations/20240806A-permissions-policies.ts#L132-L168
-# PERMISSION_ACTIONS: https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/constants/src/permissions.ts
 properties:
   id:
     description: Unique identifier for the permission.

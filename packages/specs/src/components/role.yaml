@@ -1,8 +1,4 @@
 type: object
-# Runtime: Role type
-# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/users.ts
-# ip_access / enforce_tfa / admin_access / app_access moved to directus_policies in:
-# https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/api/src/database/migrations/20240806A-permissions-policies.ts#L122-L126
 properties:
   id:
     description: Unique identifier for the role.
