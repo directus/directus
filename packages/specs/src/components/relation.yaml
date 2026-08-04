@@ -91,8 +91,7 @@ properties:
       one_deselect_action:
         description: What happens to the foreign key when the related row is deselected.
         type: string
-        enum: [delete, nullify, null]
-        nullable: true
+        enum: [delete, nullify]
       junction_field:
         description: Field on the junction table that holds the many field of the related relation.
         type: string
