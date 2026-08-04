@@ -1,6 +1,7 @@
 type: object
 # Runtime: Preset type
 # https://github.com/directus/directus/blob/240b801568b4cd99676dc69adc22682800215654/packages/types/src/presets.ts
+required: [collection]
 properties:
   id:
     description: Unique identifier for this single collection preset.
