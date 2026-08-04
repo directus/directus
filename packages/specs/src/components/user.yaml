@@ -29,10 +29,9 @@ properties:
     format: email
     nullable: true
   password:
-    description: Password of the user.
+    description: Password of the user. Returned masked when set.
     type: string
     nullable: true
-    writeOnly: true
   location:
     description: The user's location.
     type: string
@@ -86,10 +85,9 @@ properties:
     type: object
     nullable: true
   tfa_secret:
-    description: The 2FA secret string that's used to generate one time passwords. Never returned on read.
+    description: The 2FA secret string that's used to generate one time passwords. Returned masked when set.
     type: string
     nullable: true
-    writeOnly: true
   role:
     description: Role assigned to this user.
     example: 2f24211d-d928-469a-aea3-3c8f53d4e426
@@ -107,10 +105,9 @@ properties:
           format: uuid
         - $ref: '../openapi.yaml#/components/schemas/Policies'
   token:
-    description: Static token for the user.
+    description: Static token for the user. Returned masked when set.
     type: string
     nullable: true
-    writeOnly: true
   last_access:
     description: When this user used the API last.
     example: '2020-05-31T14:32:37Z'
