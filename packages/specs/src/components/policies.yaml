@@ -18,12 +18,10 @@ properties:
     example: Admins have access to all managed data within the system by default.
     type: string
     nullable: true
-  # Typed nullable in packages/types, but the DB column is notNullable/defaultTo(false); runtime never produces null.
   enforce_tfa:
     description: Whether or not this policy enforces the use of 2FA.
     example: false
     type: boolean
-    nullable: true
   ip_access:
     description: Array of IP addresses that are allowed to connect to the API as a user of this policy.
     type: array
