@@ -1,27 +1,55 @@
 import { PassThrough } from 'node:stream';
 import { Readable } from 'node:stream';
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import type { Driver, StorageManager } from '@directus/storage';
 import type { Accountability } from '@directus/types';
-import type { File, SchemaOverview } from '@directus/types';
+import type { File, SchemaOverview, TransformationSet } from '@directus/types';
 import archiver, { type Archiver } from 'archiver';
 import contentDisposition from 'content-disposition';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, test, vi } from 'vitest';
+import sharp, { type Sharp } from 'sharp';
+import {
+	afterEach,
+	beforeAll,
+	beforeEach,
+	describe,
+	expect,
+	it,
+	type Mock,
+	type MockedFunction,
+	test,
+	vi,
+} from 'vitest';
 import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
 import { AssetsService } from './assets.js';
 import { FilesService } from './files.js';
+import { getSharpInstance } from './files/lib/get-sharp-instance.js';
 import { FoldersService } from './folders.js';
 
 vi.mock('@directus/storage');
 vi.mock('../permissions/modules/validate-access/lib/validate-item-access.js');
 vi.mock('archiver');
 
+/**
+ * `assets.ts` reads `useEnv()` once at module scope, so tests need a stable object they can write
+ * env vars into rather than a fresh one per call.
+ */
+const { mockEnv } = vi.hoisted(() => ({ mockEnv: {} as Record<string, unknown> }));
+
 vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({}),
+	useEnv: () => mockEnv,
+}));
+
+/** Only `counters()` is used directly; the transformer itself comes from `getSharpInstance()`. */
+vi.mock('sharp', () => ({
+	default: { counters: vi.fn(() => ({ queue: 0, process: 0 })) },
+}));
+
+vi.mock('./files/lib/get-sharp-instance.js', () => ({
+	getSharpInstance: vi.fn(),
 }));
 
 vi.mock('./items.js', async () => {
@@ -376,6 +404,93 @@ describe('AssetsService', () => {
 
 				expect(result.file.type).toBe(mockFile.type);
 				expect(result.file.filesize).toBe(mockFile.filesize);
+			});
+		});
+
+		describe('transform concurrency limit', () => {
+			const imageFile = {
+				...mockFile,
+				filename_disk: 'test-image.png',
+				filename_download: 'my-image.png',
+				type: 'image/png',
+				// Keeps `resolvePreset` on its plain resize path rather than focal point cropping
+				focal_point_x: null,
+				focal_point_y: null,
+			};
+
+			const transformation: TransformationSet = {
+				transformationParams: { width: 800, height: 600 },
+			};
+
+			let transformer: PassThrough & { timeout: Mock; rotate: Mock; resize: Mock };
+
+			beforeEach(() => {
+				mockEnv['ASSETS_TRANSFORM_MAX_CONCURRENT'] = 2;
+
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+				});
+
+				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(imageFile as any);
+
+				// The original is on disk but its derivative isn't, so the transform is reached
+				vi.mocked(mockDriver.exists!).mockImplementation(async (filepath) => filepath === imageFile.filename_disk);
+
+				mockDriver.write = vi.fn().mockResolvedValue(undefined);
+
+				transformer = Object.assign(new PassThrough(), {
+					timeout: vi.fn(),
+					rotate: vi.fn(),
+					resize: vi.fn(),
+				});
+
+				vi.mocked(getSharpInstance).mockReturnValue(transformer as unknown as Sharp);
+			});
+
+			afterEach(() => {
+				delete mockEnv['ASSETS_TRANSFORM_MAX_CONCURRENT'];
+			});
+
+			it.each([
+				{ limit: 2, counters: { queue: 3, process: 0 }, state: 'queued behind a saturated threadpool' },
+				{ limit: 2, counters: { queue: 0, process: 3 }, state: 'actively processing' },
+				{ limit: 2, counters: { queue: 2, process: 1 }, state: 'split between the queue and the threadpool' },
+				{ limit: 0, counters: { queue: 1, process: 0 }, state: 'in flight at all, with the limit set to 0' },
+			])('sheds load when transforms are $state', async ({ limit, counters }) => {
+				mockEnv['ASSETS_TRANSFORM_MAX_CONCURRENT'] = limit;
+				vi.mocked(sharp.counters).mockReturnValue(counters);
+
+				await expect(service.getAsset(mockFileId, transformation)).rejects.toThrow(ServiceUnavailableError);
+
+				// Shed before any further work is handed to sharp
+				expect(getSharpInstance).not.toHaveBeenCalled();
+				expect(mockDriver.write).not.toHaveBeenCalled();
+			});
+
+			it.each([
+				{ limit: 2, counters: { queue: 0, process: 0 }, state: 'idle' },
+				{ limit: 2, counters: { queue: 1, process: 1 }, state: 'exactly at the limit' },
+				{ limit: 10, counters: { queue: 4, process: 5 }, state: 'busy but under a raised limit' },
+			])('transforms when sharp is $state', async ({ limit, counters }) => {
+				mockEnv['ASSETS_TRANSFORM_MAX_CONCURRENT'] = limit;
+				vi.mocked(sharp.counters).mockReturnValue(counters);
+
+				const result = await service.getAsset(mockFileId, transformation);
+
+				expect(result.stat).toEqual({ size: imageFile.filesize });
+				expect(transformer.resize).toHaveBeenCalledWith(expect.objectContaining({ width: 800, height: 600 }));
+				expect(mockDriver.write).toHaveBeenCalled();
+			});
+
+			it('re-reads the counters per request, so load is shed only while sharp is busy', async () => {
+				vi.mocked(sharp.counters).mockReturnValueOnce({ queue: 0, process: 0 });
+
+				await expect(service.getAsset(mockFileId, transformation)).resolves.toBeDefined();
+
+				vi.mocked(sharp.counters).mockReturnValueOnce({ queue: 0, process: 5 });
+
+				await expect(service.getAsset(mockFileId, transformation)).rejects.toThrow(ServiceUnavailableError);
 			});
 		});
 	});
