@@ -56,14 +56,6 @@ describe('/assets', () => {
 					);
 				});
 			});
-
-			/*
-			 * Load shedding above the limit is covered by a unit test in
-			 * `api/src/services/assets.test.ts`. Asserting it over HTTP made the outcome depend on how
-			 * many requests happen to sit in sharp's queue at once, which is a property of event loop
-			 * and libuv threadpool scheduling rather than of the limit itself. Switching sqlite off the
-			 * threadpool-bound `sqlite3` driver was enough to make it never trip.
-			 */
 		});
 	});
 });
