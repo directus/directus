@@ -123,7 +123,7 @@ class OASSpecsService implements SpecificationSubService {
 		if (tags) spec.tags = tags;
 		if (components) spec.components = components;
 
-		spec.security = staticSpec.security!;
+		spec.security = cloneDeep(staticSpec.security)!;
 
 		return spec;
 	}
@@ -230,16 +230,11 @@ class OASSpecsService implements SpecificationSubService {
 							// access to directus_files, same as GET /files/{id}.
 							const operationCollection = operation['x-collection'] ?? collection;
 
-							// x-action overrides the HTTP-method-derived action for an operation whose real RBAC
-							// check doesn't match its verb, e.g. a POST that only reads and archives existing
-							// items shouldn't be gated on create access.
-							const operationAction: PermissionsAction = operation['x-action'] ?? this.getActionForMethod(method);
-
 							const hasPermission =
 								this.accountability?.admin === true ||
 								operationCollection === undefined ||
 								isHardcodedOpen ||
-								this.hasCollectionAccess(userCollectionAccess, operationCollection, operationAction);
+								this.hasCollectionAccess(userCollectionAccess, operationCollection, this.getActionForMethod(method));
 
 							if (hasPermission) {
 								// A hardcoded-open operation's own `security: []` already says "no auth, ever" -
@@ -249,10 +244,14 @@ class OASSpecsService implements SpecificationSubService {
 								const isPubliclyAccessible =
 									!isHardcodedOpen &&
 									operationCollection !== undefined &&
-									this.hasCollectionAccess(publicCollectionAccess, operationCollection, operationAction);
+									this.hasCollectionAccess(
+										publicCollectionAccess,
+										operationCollection,
+										this.getActionForMethod(method),
+									);
 
 								const operationWithSecurity = isPubliclyAccessible
-									? { ...operation, security: OPTIONAL_AUTH_SECURITY }
+									? { ...operation, security: cloneDeep(OPTIONAL_AUTH_SECURITY) }
 									: operation;
 
 								if ('parameters' in pathItem) {
@@ -348,7 +347,7 @@ class OASSpecsService implements SpecificationSubService {
 									this.mergePathItemCustomizer,
 								),
 								tags: [tag.name],
-								...(isPubliclyAccessible && { security: OPTIONAL_AUTH_SECURITY }),
+								...(isPubliclyAccessible && { security: cloneDeep(OPTIONAL_AUTH_SECURITY) }),
 							};
 						}
 
@@ -394,7 +393,7 @@ class OASSpecsService implements SpecificationSubService {
 									this.mergePathItemCustomizer,
 								),
 								tags: [tag.name],
-								...(isPubliclyAccessible && { security: OPTIONAL_AUTH_SECURITY }),
+								...(isPubliclyAccessible && { security: cloneDeep(OPTIONAL_AUTH_SECURITY) }),
 							};
 						}
 					}

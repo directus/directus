@@ -515,39 +515,6 @@ describe('Integration Tests', () => {
 					});
 				});
 
-				describe('x-action operation-level override', () => {
-					it('gates a POST operation on its x-action instead of the create action implied by its verb', async () => {
-						// POST /files is normally gated on 'create'; temporarily flag it as 'read' to prove the
-						// override is honored, the way a future zip/archive-style endpoint would need it.
-						const filesPost = staticSpec.paths['/files']?.post as Record<string, unknown> | undefined;
-						filesPost!['x-action'] = 'read';
-
-						try {
-							vi.mocked(fetchPermissions).mockResolvedValueOnce([
-								{ collection: 'directus_files', action: 'read', fields: ['*'] } as any,
-							]);
-
-							const systemSchema = new SchemaBuilder()
-								.collection('directus_files', (c) => {
-									c.field('id').uuid().primary();
-								})
-								.build();
-
-							const service = new SpecificationService({
-								knex: db,
-								schema: systemSchema,
-								accountability: { role: 'some-role', admin: false } as Accountability,
-							});
-
-							const spec = await service.oas.generate();
-
-							expect(spec.paths?.['/files']?.post).toBeDefined();
-						} finally {
-							delete filesPost!['x-action'];
-						}
-					});
-				});
-
 				describe('transitive schema $ref resolution', () => {
 					it('backfills schemas that are only reachable via a $ref inside another required schema', async () => {
 						const service = new SpecificationService({
