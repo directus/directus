@@ -17,6 +17,7 @@ import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { Collection } from '@/types/collections';
+import { getCollectionUnusableReason, isCollectionUsable } from '@/utils/collection-status';
 import { getCollectionRoute } from '@/utils/get-route';
 
 const props = defineProps<{
@@ -47,8 +48,12 @@ const { active: isGroupOpen } = useGroupable({
 
 const isBookmarkActive = computed(() => 'bookmark' in route.query);
 
+const isInactive = computed(() => !isCollectionUsable(props.collection));
+
+const inactiveReason = computed(() => getCollectionUnusableReason(props.collection));
+
 const to = computed(() => {
-	if (!props.collection.schema) return '';
+	if (!props.collection.schema || isInactive.value) return '';
 
 	if (props.collection.meta?.singleton) {
 		return { name: 'content-singleton', params: { collection: props.collection.collection } };
@@ -108,6 +113,7 @@ function getChildBookmarks(collection: Collection) {
 		v-if="isGroup && matchesSearch"
 		v-context-menu="hasContextMenu ? 'contextMenu' : null"
 		:to="to"
+		:class="{ inactive: isInactive }"
 		:scope="groupScope"
 		:value="groupValue"
 		:query="isGroupOpen && isBookmarkActive"
@@ -134,8 +140,10 @@ function getChildBookmarks(collection: Collection) {
 
 	<VListItem
 		v-else-if="matchesSearch"
+		v-tooltip="inactiveReason"
 		v-context-menu="hasContextMenu ? 'contextMenu' : null"
 		:to="to"
+		:disabled="isInactive"
 		:value="collection.collection"
 		:class="{ hidden: collection.meta?.hidden }"
 	>
@@ -163,5 +171,15 @@ function getChildBookmarks(collection: Collection) {
 <style scoped>
 .hidden {
 	--v-list-item-color: var(--theme--foreground-subdued);
+}
+
+/*
+	A group can't use the disabled prop, as that would also block expanding it to reach children
+	that are still active. Only the activator is styled, so those children stay unaffected.
+*/
+.inactive :deep(.activator) {
+	--v-list-item-color: var(--theme--foreground-subdued);
+
+	cursor: not-allowed;
 }
 </style>

@@ -14,6 +14,7 @@ import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePermissionsStore } from '@/stores/permissions';
 import { addQueryToPath } from '@/utils/add-query-to-path';
+import { isCollectionUsable } from '@/utils/collection-status';
 import { getCollectionRoute, getItemRoute, getSystemCollectionRoute } from '@/utils/get-route';
 import { removeQueryFromPath } from '@/utils/remove-query-from-path';
 import RouterPass from '@/utils/router-passthrough';
@@ -181,18 +182,19 @@ export default defineModule({
 				const collectionsStore = useCollectionsStore();
 				const { activeGroups } = useNavigation();
 
-				if (collectionsStore.visibleCollections.length === 0) return;
+				// Inactive collections render as not found, so never auto-redirect into one
+				const selectableCollections = collectionsStore.visibleCollections.filter(isCollectionUsable);
 
-				const rootCollections = collectionsStore.visibleCollections.filter((collection) =>
-					isNil(collection?.meta?.group),
-				);
+				if (selectableCollections.length === 0) return;
+
+				const rootCollections = selectableCollections.filter((collection) => isNil(collection?.meta?.group));
 
 				const lastAccessedCollection = useLocalStorage<string | null>('directus-last-accessed-collection', null);
 
 				if (
 					typeof lastAccessedCollection.value === 'string' &&
-					collectionsStore.visibleCollections.find(
-						(visibleCollection) => visibleCollection.collection === lastAccessedCollection.value,
+					selectableCollections.find(
+						(selectableCollection) => selectableCollection.collection === lastAccessedCollection.value,
 					)
 				) {
 					return getCollectionRoute(lastAccessedCollection.value);
@@ -217,7 +219,7 @@ export default defineModule({
 						if (skipClosed && activeGroups.value.includes(collection.collection) === false) continue;
 
 						const children = orderBy(
-							collectionsStore.visibleCollections.filter((childCollection) => {
+							selectableCollections.filter((childCollection) => {
 								return collection.collection === childCollection.meta?.group;
 							}),
 							['meta.sort', 'collection'],
