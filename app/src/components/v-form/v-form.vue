@@ -18,10 +18,9 @@ import { CollabContext } from '@/composables/use-collab';
 import { useFieldsStore } from '@/stores/fields';
 import type { ContentVersionMaybeNew } from '@/types/versions';
 import { applyConditions } from '@/utils/apply-conditions';
-import { isCollectionInactive } from '@/utils/collection-status';
+import { isFieldCollectionInactive } from '@/utils/collection-status';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { getRelatedCollection } from '@/utils/get-related-collection';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 
 const props = withDefaults(
@@ -226,18 +225,11 @@ function useForm() {
 	});
 
 	/**
-	 * Fields relating to an inactive collection. Resolved once per field set rather than inside
-	 * isDisabled, which is called on every render and for every field.
+	 * Fields belonging or relating to an inactive collection. Resolved once per field set rather
+	 * than inside isDisabled, which is called on every render and for every field.
 	 */
 	const fieldsWithInactiveRelation = computed(() => {
-		const inactive = fields.value.filter((field) => {
-			const related = getRelatedCollection(field.collection, field.field);
-			if (!related) return false;
-
-			return isCollectionInactive(related.relatedCollection) || isCollectionInactive(related.junctionCollection);
-		});
-
-		return new Set(inactive.map((field) => field.field));
+		return new Set(fields.value.filter(isFieldCollectionInactive).map((field) => field.field));
 	});
 
 	return { fields, fieldNames, fieldsMap, fieldsForGroup, isDisabled, getFieldsForGroup, isFieldVisible };

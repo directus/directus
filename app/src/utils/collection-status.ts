@@ -1,4 +1,5 @@
 import type { CollectionMeta } from '@directus/types';
+import { getRelatedCollection } from './get-related-collection';
 import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
 import type { Collection } from '@/types/collections';
@@ -37,6 +38,19 @@ export function getCollectionInactiveReason(collection: CollectionRef): string |
 
 	const key = `collection_status.${getCollectionStatus(collection)}.tooltip`;
 	return i18n.global.te(key) ? i18n.global.t(key) : i18n.global.t('collection_status.unavailable.tooltip');
+}
+
+/**
+ * Whether a field can't be interacted with because of a collection status: either the field
+ * belongs to an inactive collection, or it relates to one.
+ */
+export function isFieldCollectionInactive(field: { collection: string; field: string }): boolean {
+	if (isCollectionInactive(field.collection)) return true;
+
+	const related = getRelatedCollection(field.collection, field.field);
+	if (!related) return false;
+
+	return isCollectionInactive(related.relatedCollection) || isCollectionInactive(related.junctionCollection);
 }
 
 function resolveCollection(collection: CollectionRef): Collection | null {

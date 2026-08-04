@@ -1,12 +1,40 @@
-import type { Collection } from '@directus/types';
+import type { Collection, Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
-import { getCollectionInactiveReason, getCollectionStatus, isCollectionInactive } from './collection-status';
+import {
+	getCollectionInactiveReason,
+	getCollectionStatus,
+	isCollectionInactive,
+	isFieldCollectionInactive,
+} from './collection-status';
 import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 function makeCollection(collection: string, meta: Record<string, unknown> | null): Collection {
 	return { collection, meta, schema: {} } as Collection;
+}
+
+function makeField(collection: string, field: string): Field {
+	return {
+		collection,
+		field,
+		name: field,
+		type: 'integer',
+		schema: {},
+		meta: { collection, field, special: null, group: null },
+	} as unknown as Field;
+}
+
+function makeRelation(collection: string, field: string, relatedCollection: string): Relation {
+	return {
+		collection,
+		field,
+		related_collection: relatedCollection,
+		schema: null,
+		meta: { many_collection: collection, many_field: field, one_collection: relatedCollection, one_field: null },
+	} as unknown as Relation;
 }
 
 beforeEach(() => {
@@ -52,4 +80,31 @@ test('getCollectionInactiveReason returns a status specific reason, falling back
 
 	expect(getCollectionInactiveReason('inactive_collection')).toBe('This collection is inactive');
 	expect(getCollectionInactiveReason('archived_collection')).toBe('This collection is unavailable');
+});
+
+test('isFieldCollectionInactive covers a field of, and a field relating to, an inactive collection', () => {
+	const fieldsStore = useFieldsStore();
+	const relationsStore = useRelationsStore();
+
+	fieldsStore.fields = [
+		makeField('active_collection', 'title'),
+		makeField('active_collection', 'inactive_m2o'),
+		makeField('active_collection', 'active_m2o'),
+		makeField('inactive_collection', 'title'),
+	];
+
+	relationsStore.relations = [
+		makeRelation('active_collection', 'inactive_m2o', 'inactive_collection'),
+		makeRelation('active_collection', 'active_m2o', 'active_collection'),
+	];
+
+	// Plain field of an active collection
+	expect(isFieldCollectionInactive({ collection: 'active_collection', field: 'title' })).toBe(false);
+	// Relates to an active collection
+	expect(isFieldCollectionInactive({ collection: 'active_collection', field: 'active_m2o' })).toBe(false);
+
+	// Relates to an inactive collection
+	expect(isFieldCollectionInactive({ collection: 'active_collection', field: 'inactive_m2o' })).toBe(true);
+	// Belongs to an inactive collection, e.g. a nested column like `inactive_m2o.title`
+	expect(isFieldCollectionInactive({ collection: 'inactive_collection', field: 'title' })).toBe(true);
 });
