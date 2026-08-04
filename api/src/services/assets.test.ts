@@ -25,8 +25,8 @@ import {
 import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
 import { AssetsService } from './assets.js';
-import { FilesService } from './files.js';
 import { getSharpInstance } from './files/lib/get-sharp-instance.js';
+import { FilesService } from './files.js';
 import { FoldersService } from './folders.js';
 
 vi.mock('@directus/storage');

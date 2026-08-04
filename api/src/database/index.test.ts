@@ -225,6 +225,87 @@ describe('getDatabase with DB_CLIENT=sqlite3', () => {
 
 		expect(foreignKeys).toBe(1);
 	});
+
+	test('opts out of compiling a failed query for its error message', async () => {
+		const { getDatabase } = await import('./index.js');
+		database = getDatabase();
+
+		expect(database.client.config.compileSqlOnError).toBe(false);
+	});
+
+	/**
+	 * knex annotates a failed query's error by interpolating that query's bindings back into the SQL,
+	 * and the escape helper it uses to do so switches on `typeof` with no `bigint` case, so it throws
+	 * on the bigint bindings this client produces. That happens inside knex's own catch handler, which
+	 * discards the driver error it was annotating and rejects with the `TypeError` instead — leaving
+	 * `extractError` nothing it can recognise, so every constraint violation carrying an id would
+	 * surface as a 500 rather than as its own error.
+	 */
+	describe('constraint violations stay translatable', () => {
+		async function attempt(run: (db: Knex) => Promise<unknown>): Promise<any> {
+			const { getDatabase } = await import('./index.js');
+			database = getDatabase();
+
+			await database.schema.createTable('authors', (table) => {
+				table.increments('id');
+			});
+
+			await database.schema.createTable('articles', (table) => {
+				table.increments('id');
+				table.integer('author').references('id').inTable('authors');
+				table.integer('serial').unique();
+				table.integer('views').notNullable();
+			});
+
+			return run(database).then(
+				() => null,
+				(error) => error,
+			);
+		}
+
+		test('a foreign key violation', async () => {
+			const { extractError } = await import('./errors/dialects/sqlite.js');
+			const { InvalidForeignKeyError } = await import('@directus/errors');
+
+			// author 999 doesn't exist, and both bindings are integers
+			const error = await attempt((db) => db('articles').insert({ author: 999, views: 1 }));
+
+			expect(error.code).toBe('SQLITE_CONSTRAINT_FOREIGNKEY');
+			expect(extractError(error, {})).toBeInstanceOf(InvalidForeignKeyError);
+		});
+
+		test('a unique violation', async () => {
+			const { extractError } = await import('./errors/dialects/sqlite.js');
+			const { RecordNotUniqueError } = await import('@directus/errors');
+
+			const error = await attempt(async (db) => {
+				await db('articles').insert({ serial: 7, views: 1 });
+				await db('articles').insert({ serial: 7, views: 1 });
+			});
+
+			expect(error.code).toBe('SQLITE_CONSTRAINT_UNIQUE');
+
+			const translated = extractError(error, { serial: 7 });
+			expect(translated).toBeInstanceOf(RecordNotUniqueError);
+
+			// the collection/field are parsed out of the text sqlite itself appends
+			expect((translated as any).extensions).toMatchObject({ collection: 'articles', field: 'serial', value: 7 });
+		});
+
+		test('a not null violation', async () => {
+			const { extractError } = await import('./errors/dialects/sqlite.js');
+			const { NotNullViolationError } = await import('@directus/errors');
+
+			// `serial` keeps an integer binding in the query that fails on `views`
+			const error = await attempt((db) => db('articles').insert({ serial: 7, views: null }));
+
+			expect(error.code).toBe('SQLITE_CONSTRAINT_NOTNULL');
+
+			const translated = extractError(error, {});
+			expect(translated).toBeInstanceOf(NotNullViolationError);
+			expect((translated as any).extensions).toMatchObject({ collection: 'articles', field: 'views' });
+		});
+	});
 });
 
 describe('getDatabase with other clients', () => {

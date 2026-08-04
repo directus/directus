@@ -123,6 +123,22 @@ export function getDatabase(): Knex {
 		knexConfig.useNullAsDefault = true;
 		knexConfig.client = getClientBetterSQLite3();
 
+		/**
+		 * knex rewrites the message of every failed query by interpolating that query's bindings back
+		 * into the SQL, and the escape helper it uses to do so switches on `typeof` with no `bigint`
+		 * case, so a bigint binding falls through to its string escaper and throws. That happens inside
+		 * knex's own catch handler, which discards the database error it was in the middle of annotating
+		 * and rejects with the `TypeError` instead — so every constraint violation carrying an id would
+		 * reach `extractError` unrecognisable and surface as a 500 rather than its own error.
+		 *
+		 * Opting out of the interpolation keeps the driver's error intact. The message keeps its
+		 * placeholders (`values (?, ?)`) instead of the values, and the trailing text SQLite itself
+		 * produces — which is the part `./errors/dialects/sqlite.ts` matches on — is unaffected.
+		 *
+		 * @see {@link getClientBetterSQLite3} for why integers are bound as bigint in the first place
+		 */
+		knexConfig.compileSqlOnError = false;
+
 		poolConfig.afterCreate = (conn: any, callback: any) => {
 			logger.trace('Enabling SQLite Foreign Keys support...');
 

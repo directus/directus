@@ -66,6 +66,8 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 	if (client === 'sqlite3') {
 		knexConfig.useNullAsDefault = true;
 		knexConfig.client = getClientBetterSQLite3();
+		// Keeps a failed query's own error intact; see the note in `database/index.ts`
+		knexConfig.compileSqlOnError = false;
 	}
 
 	if (client === 'cockroachdb') {
