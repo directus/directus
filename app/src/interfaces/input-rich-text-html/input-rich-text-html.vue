@@ -626,7 +626,9 @@ onKeyStroke('Escape', () => {
 		border-radius: var(--theme--border-radius);
 	}
 
-	:is(img, hr, .page-break).ProseMirror-selectednode {
+	// `.range-selected` (RangeSelectedAtoms) covers selections that merely span the leaf, which
+	// ProseMirror leaves unstyled — without it a select-all looks like it skipped the image
+	:is(img, hr, .page-break):is(.ProseMirror-selectednode, .range-selected) {
 		outline: 2px solid var(--theme--primary);
 	}
 
