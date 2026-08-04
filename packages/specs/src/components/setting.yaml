@@ -289,22 +289,18 @@ properties:
     description: OpenAI API key. Returned masked when set.
     type: string
     nullable: true
-    writeOnly: true
   ai_anthropic_api_key:
     description: Anthropic API key. Returned masked when set.
     type: string
     nullable: true
-    writeOnly: true
   ai_google_api_key:
     description: Google AI API key. Returned masked when set.
     type: string
     nullable: true
-    writeOnly: true
   ai_openai_compatible_api_key:
     description: OpenAI-compatible API key. Returned masked when set.
     type: string
     nullable: true
-    writeOnly: true
   ai_openai_compatible_base_url:
     description: Base URL for the OpenAI-compatible API.
     type: string
@@ -395,12 +391,10 @@ properties:
     description: Directus license key. Returned masked when set.
     type: string
     nullable: true
-    writeOnly: true
   license_token:
     description: Directus license token. Returned masked when set.
     type: string
     nullable: true
-    writeOnly: true
   project_owner:
     description: Project owner name (from `OwnerInformation`).
     type: string
