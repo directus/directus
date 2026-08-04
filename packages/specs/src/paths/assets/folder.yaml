@@ -7,7 +7,7 @@ post:
   summary: Archive a Folder
   description: Archives every file within a folder (recursively) into a zip file and streams it back.
   parameters:
-    - name: pk
+    - name: id
       in: path
       description: The id of the folder to archive.
       required: true
