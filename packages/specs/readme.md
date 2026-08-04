@@ -61,8 +61,8 @@ operation's actual requirement differs from that default. The cases where it dif
   never overwrites this override with the public-access stamp, unlike the others below.
 - **Restricted to admin/user/self (`x-authentication`)**: `admin` | `user` | `self`. Set on a tag for system collections
   that should only appear in the generated spec at all when the requester meets that authentication level, e.g.
-  `x-authentication: admin` on the `Schema` tag. Also settable on an individual operation whose authorization check
-  is hardcoded in the service layer independent of RBAC, e.g. `x-authentication: admin` on `POST /collections`,
+  `x-authentication: admin` on the `Schema` tag. Also settable on an individual operation whose authorization check is
+  hardcoded in the service layer independent of RBAC, e.g. `x-authentication: admin` on `POST /collections`,
   `x-authentication: user` on `POST /comments`, `x-authentication: self` on `GET /users/me`. This gates whether the path
   is included, not which security schemes it lists, and an operation-level override also stops the public-access stamp
   below from ever applying to it.
