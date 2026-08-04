@@ -34,9 +34,10 @@ properties:
         description: Extension folder name on disk. Used by the extension manager to look up the installed extension.
         type: string
   schema:
-    description: Read-only metadata about the installed extension. Null when the extension is missing on disk.
+    description: Metadata about the installed extension. Null when the extension is missing on disk.
     type: object
     nullable: true
+    readOnly: true
     properties:
       name:
         description: Name of the extension.

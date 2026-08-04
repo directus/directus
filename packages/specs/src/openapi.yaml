@@ -354,6 +354,7 @@ components:
       $ref: './components/version.yaml'
     x-metadata:
       type: object
+      readOnly: true
       properties:
         total_count:
           description: Returns the total item count of the collection you're querying.
