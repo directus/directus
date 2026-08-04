@@ -29,9 +29,7 @@ src/
   On an operation, `none`; the operation runs with no accountability at all, so the generator stamps `security: []` onto
   it (e.g. `/auth/login`, `/users/register`).
 - `x-collection`: links a tag (and its associated schema component) to the system collection it documents (e.g.
-  `directus_presets`). Used to resolve permissions/field-filtering per collection at generation time. Can also be set on
-  a single operation to override the tag's collection (or supply one, if the tag has none) for that operation's own RBAC
-  check, for a tag whose operations don't all share one collection.
+  `directus_presets`). Used to resolve permissions/field-filtering per collection at generation time.
 - `x-schemas`: extra `components.schemas` names a tag's operations `$ref` but that aren't picked up automatically (only
   collection-backed tags get their schema included by default). Add the schema name here if your tag's operations
   reference a schema that isn't its own `x-collection`, e.g. `Utilities`' `x-schemas: [Files, Folders, Users, Roles]`

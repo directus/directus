@@ -223,28 +223,18 @@ class OASSpecsService implements SpecificationSubService {
 							// so it can't be gated by the caller's RBAC access to the tied collection.
 							const isHardcodedOpen = operation['x-authentication'] === 'none';
 
-							// An operation-level override lets an operation whose tag has no (or a different)
-							// x-collection still be gated by RBAC on a specific collection, e.g. GET /assets/{id}
-							// is tagged Assets (no collection of its own) but is actually governed by RBAC read
-							// access to directus_files, same as GET /files/{id}.
-							const operationCollection = operation['x-collection'] ?? collection;
-
 							const hasPermission =
 								this.accountability?.admin === true ||
-								operationCollection === undefined ||
+								collection === undefined ||
 								isHardcodedOpen ||
-								this.hasCollectionAccess(userCollectionAccess, operationCollection, this.getActionForMethod(method));
+								this.hasCollectionAccess(userCollectionAccess, collection, this.getActionForMethod(method));
 
 							if (hasPermission) {
 								// A hardcoded-open operation is unconditionally open, not "optionally" public.
 								const isPubliclyAccessible =
 									!isHardcodedOpen &&
-									operationCollection !== undefined &&
-									this.hasCollectionAccess(
-										publicCollectionAccess,
-										operationCollection,
-										this.getActionForMethod(method),
-									);
+									collection !== undefined &&
+									this.hasCollectionAccess(publicCollectionAccess, collection, this.getActionForMethod(method));
 
 								let operationWithSecurity = operation;
 
