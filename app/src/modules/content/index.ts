@@ -14,7 +14,7 @@ import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePermissionsStore } from '@/stores/permissions';
 import { addQueryToPath } from '@/utils/add-query-to-path';
-import { isCollectionUsable } from '@/utils/collection-status';
+import { isCollectionInactive } from '@/utils/collection-status';
 import { getCollectionRoute, getItemRoute, getSystemCollectionRoute } from '@/utils/get-route';
 import { removeQueryFromPath } from '@/utils/remove-query-from-path';
 import RouterPass from '@/utils/router-passthrough';
@@ -183,7 +183,9 @@ export default defineModule({
 				const { activeGroups } = useNavigation();
 
 				// Inactive collections render as not found, so never auto-redirect into one
-				const selectableCollections = collectionsStore.visibleCollections.filter(isCollectionUsable);
+				const selectableCollections = collectionsStore.visibleCollections.filter(
+					(collection) => !isCollectionInactive(collection),
+				);
 
 				if (selectableCollections.length === 0) return;
 

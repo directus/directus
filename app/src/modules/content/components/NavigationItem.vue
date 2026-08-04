@@ -17,7 +17,7 @@ import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { Collection } from '@/types/collections';
-import { getCollectionUnusableReason, isCollectionUsable } from '@/utils/collection-status';
+import { getCollectionInactiveReason, isCollectionInactive } from '@/utils/collection-status';
 import { getCollectionRoute } from '@/utils/get-route';
 
 const props = defineProps<{
@@ -48,9 +48,9 @@ const { active: isGroupOpen } = useGroupable({
 
 const isBookmarkActive = computed(() => 'bookmark' in route.query);
 
-const isInactive = computed(() => !isCollectionUsable(props.collection));
+const isInactive = computed(() => isCollectionInactive(props.collection));
 
-const inactiveReason = computed(() => getCollectionUnusableReason(props.collection));
+const inactiveReason = computed(() => getCollectionInactiveReason(props.collection));
 
 const to = computed(() => {
 	if (!props.collection.schema || isInactive.value) return '';

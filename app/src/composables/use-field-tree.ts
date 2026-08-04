@@ -5,7 +5,7 @@ import { Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { isCollectionUsable } from '@/utils/collection-status';
+import { isCollectionInactive } from '@/utils/collection-status';
 
 export type FieldNode = {
 	name: string;
@@ -86,7 +86,7 @@ export function useFieldTree(
 
 	function makeNode(field: Field, parent?: FieldNode): FieldNode | FieldNode[] {
 		const pathContext = parent?.path ? parent.path + '.' : '';
-		const ownCollectionInactive = !isCollectionUsable(field.collection);
+		const ownCollectionInactive = isCollectionInactive(field.collection);
 
 		if (field?.meta?.special?.includes('group')) {
 			const node: FieldNode = {
@@ -144,7 +144,7 @@ export function useFieldTree(
 				key: keyContext + field.field,
 				path: pathContext + field.field,
 				type: field.type,
-				...inactiveFlag(ownCollectionInactive || !isCollectionUsable(relatedCollections[0])),
+				...inactiveFlag(ownCollectionInactive || isCollectionInactive(relatedCollections[0])),
 			};
 		}
 
@@ -157,7 +157,7 @@ export function useFieldTree(
 				key: keyContext + `${field.field}:${collection}`,
 				path: pathContext + `${field.field}:${collection}`,
 				type: field.type,
-				...inactiveFlag(ownCollectionInactive || !isCollectionUsable(collection)),
+				...inactiveFlag(ownCollectionInactive || isCollectionInactive(collection)),
 			};
 		});
 	}

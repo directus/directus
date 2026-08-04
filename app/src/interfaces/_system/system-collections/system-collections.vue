@@ -4,7 +4,7 @@ import { computed } from 'vue';
 import VNotice from '@/components/v-notice.vue';
 import InterfaceSelectMultipleCheckbox from '@/interfaces/select-multiple-checkbox/select-multiple-checkbox.vue';
 import { useCollectionsStore } from '@/stores/collections';
-import { isCollectionUsable } from '@/utils/collection-status';
+import { isCollectionInactive } from '@/utils/collection-status';
 
 const props = withDefaults(
 	defineProps<{
@@ -41,7 +41,7 @@ const items = computed(() => {
 		text: collection.name,
 		value: collection.collection,
 		// Keep an already selected collection togglable, so a stale selection can still be removed
-		disabled: !isCollectionUsable(collection) && !props.value?.includes(collection.collection),
+		disabled: isCollectionInactive(collection) && !props.value?.includes(collection.collection),
 	}));
 });
 </script>

@@ -2,7 +2,7 @@ import type { Collection } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
-import { getCollectionStatus, getCollectionUnusableReason, isCollectionUsable } from './collection-status';
+import { getCollectionInactiveReason, getCollectionStatus, isCollectionInactive } from './collection-status';
 import { useCollectionsStore } from '@/stores/collections';
 
 function makeCollection(collection: string, meta: Record<string, unknown> | null): Collection {
@@ -36,20 +36,20 @@ test('getCollectionStatus resolves the status by key, by collection object, and 
 	expect(getCollectionStatus(undefined)).toBeUndefined();
 });
 
-test('isCollectionUsable treats anything but an active or absent status as unusable', () => {
-	expect(isCollectionUsable('active_collection')).toBe(true);
-	expect(isCollectionUsable('unconfigured_collection')).toBe(true);
-	expect(isCollectionUsable('directus_users')).toBe(true);
-	expect(isCollectionUsable('does_not_exist')).toBe(true);
+test('isCollectionInactive treats any status other than active as inactive', () => {
+	expect(isCollectionInactive('inactive_collection')).toBe(true);
+	expect(isCollectionInactive('archived_collection')).toBe(true);
 
-	expect(isCollectionUsable('inactive_collection')).toBe(false);
-	expect(isCollectionUsable('archived_collection')).toBe(false);
+	expect(isCollectionInactive('active_collection')).toBe(false);
+	expect(isCollectionInactive('unconfigured_collection')).toBe(false);
+	expect(isCollectionInactive('directus_users')).toBe(false);
+	expect(isCollectionInactive('does_not_exist')).toBe(false);
 });
 
-test('getCollectionUnusableReason returns a status specific reason, falling back for unknown statuses', () => {
-	expect(getCollectionUnusableReason('active_collection')).toBeUndefined();
-	expect(getCollectionUnusableReason('does_not_exist')).toBeUndefined();
+test('getCollectionInactiveReason returns a status specific reason, falling back for unknown statuses', () => {
+	expect(getCollectionInactiveReason('active_collection')).toBeUndefined();
+	expect(getCollectionInactiveReason('does_not_exist')).toBeUndefined();
 
-	expect(getCollectionUnusableReason('inactive_collection')).toBe('This collection is inactive');
-	expect(getCollectionUnusableReason('archived_collection')).toBe('This collection is unavailable');
+	expect(getCollectionInactiveReason('inactive_collection')).toBe('This collection is inactive');
+	expect(getCollectionInactiveReason('archived_collection')).toBe('This collection is unavailable');
 });

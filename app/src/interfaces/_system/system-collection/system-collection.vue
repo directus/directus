@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { useCollectionsStore } from '@/stores/collections';
-import { isCollectionUsable } from '@/utils/collection-status';
+import { isCollectionInactive } from '@/utils/collection-status';
 
 const props = withDefaults(
 	defineProps<{
@@ -37,7 +37,7 @@ const items = computed(() => {
 			acc.push({
 				text: collection.name,
 				value: collection.collection,
-				disabled: !isCollectionUsable(collection),
+				disabled: isCollectionInactive(collection),
 			});
 		}
 

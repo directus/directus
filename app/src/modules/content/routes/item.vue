@@ -53,7 +53,7 @@ import { useNotificationsStore } from '@/stores/notifications';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
-import { isCollectionUsable } from '@/utils/collection-status';
+import { isCollectionInactive } from '@/utils/collection-status';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { getPreviewVersionKey } from '@/utils/get-preview-version-key';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
@@ -1050,7 +1050,7 @@ function useAutoSwitchToDraft() {
 		v-if="
 			error ||
 			!collectionInfo ||
-			!isCollectionUsable(collectionInfo) ||
+			isCollectionInactive(collectionInfo) ||
 			(collectionInfo?.meta?.singleton === true && primaryKeyParam !== null)
 		"
 	/>
