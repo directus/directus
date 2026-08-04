@@ -6,9 +6,12 @@ export default {
 
 <script setup lang="ts">
 import { useSync } from '@directus/extensions-sdk';
+import { computed } from 'vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDetail from '@/components/v-detail.vue';
 import VSelect from '@/components/v-select/v-select.vue';
+import { getCollectionInactiveReason, isFieldCollectionInactive } from '@/utils/collection-status';
+import { getRelatedCollection } from '@/utils/get-related-collection';
 
 const props = withDefaults(
 	defineProps<{
@@ -66,6 +69,20 @@ const groupTitleSync = useSync(props, 'groupTitle', emit);
 const dateFieldSync = useSync(props, 'dateField', emit);
 const tagsFieldSync = useSync(props, 'tagsField', emit);
 const userFieldSync = useSync(props, 'userField', emit);
+
+const groupFieldItems = computed(() =>
+	(props.fieldGroups.group ?? []).map((field) => ({ ...field, disabled: isFieldCollectionInactive(field) })),
+);
+
+/** Group titles come from the collection the selected group field relates to */
+const groupsCollection = computed(() => {
+	const groupField = props.fieldGroups.group?.find((field) => field.field === props.groupField);
+	if (!groupField) return null;
+
+	return getRelatedCollection(groupField.collection, groupField.field)?.relatedCollection ?? null;
+});
+
+const groupTitleInactiveReason = computed(() => getCollectionInactiveReason(groupsCollection.value));
 </script>
 
 <template>
@@ -75,18 +92,20 @@ const userFieldSync = useSync(props, 'userField', emit);
 			v-model="groupFieldSync"
 			item-value="field"
 			item-text="name"
-			:items="fieldGroups.group"
+			item-disabled="disabled"
+			:items="groupFieldItems"
 			:placeholder="$t('layouts.kanban.group_field_placeholder')"
 		/>
 	</div>
 
-	<div v-if="groupFieldSync && isRelational" class="field">
+	<div v-if="groupFieldSync && isRelational" v-tooltip="groupTitleInactiveReason" class="field">
 		<div class="type-label">{{ $t('layouts.kanban.group_title') }}</div>
 		<VSelect
 			v-model="groupTitleSync"
 			item-value="field"
 			item-text="name"
 			:items="groupTitleFields"
+			:disabled="!!groupTitleInactiveReason"
 			:placeholder="$t('layouts.kanban.group_title_placeholder')"
 		/>
 	</div>
