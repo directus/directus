@@ -504,6 +504,7 @@ functions:
   minute: Minuti
   second: Secondi
   count: Quantità
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -845,6 +846,7 @@ operators:
   nintersects: Non interseca
   intersects_bbox: Interseca il riquadro di delimitazione
   nintersects_bbox: Non interseca il riquadro di delimitazione
+  json: JSON
   regex: Corrisponde all'espressione regolare
 custom_validation_message: Messaggio di validazione personalizzato
 loading: Caricamento in corso...
@@ -1066,12 +1068,15 @@ wysiwyg_options:
   bullist: Elenco Puntato
   numlist: Elenco Numerato
   hr: Riga Orizzontale
+  insertdatetime_date: Data
+  insertdatetime_time: Ora
   link: Aggiungi/Modifica Collegamento
   unlink: Rimuovi link
   media: Aggiungi/Modifica Media
   image: Aggiungi/Modifica Immagine
   copy: Copia
   cut: Taglia
+  default: Predefinito
   paste: Incolla
   heading: Intestazione
   h1: Intestazione 1
@@ -1094,6 +1099,8 @@ wysiwyg_options:
   source_code: Modifica Codice Sorgente
   fullscreen: Schermo Intero
   directionality: Direzionalità
+  ltr: Da sinistra a destra
+  rtl: Da destra a sinistra
   lazy_loading: Carica l'immagine in modalità lazy
   lazy_loading_label: Abilita Lazy Loading
 dropdown: Menu a tendina
@@ -1971,9 +1978,6 @@ interfaces:
     description: Un editor di testo formattato per scrivere contenuto HTML
     toolbar: Barra degli strumenti
     custom_formats: Formati personalizzati
-    custom_formats_note: Elenco dei formati dei contenuti di TinyMCE. Per maggiori informazioni, consultare la documentazione di TinyMCE sulla [formattazione dei contenuti](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/).
-    options_override: Ridefinizione delle impostazioni
-    options_override_note: Chiavi e valori di formattazione utente di TinyMCE. Per maggiori informazioni, consultare la documentazione di TinyMCE sulle [opzioni di formattazione utente](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/).
     folder_note: Cartella per i file caricati. Non influisce sui file esistenti.
     imageToken: Token di accesso statico
     imageToken_label: Il token di accesso statico sarà aggiunto all'URL degli asset

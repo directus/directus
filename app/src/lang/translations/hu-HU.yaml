@@ -20,7 +20,6 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Rólunk
-privacy_policy: Adatvédelmi irányelvek
 setup_welcome: Üdvözöljük a Directusnál
 setup_info: Hozza létre rendszergazda fiókját, és indítsa el projektjét
 setup_marketing_emails: Küldjenek részemre információkat a termék frissítéséről és az új verziók módosításairól
@@ -531,6 +530,7 @@ functions:
   minute: Perc
   second: Másodperc
   count: Mennyiség
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -824,6 +824,7 @@ operators:
   nintersects: Nem metszi
   intersects_bbox: Metszi a határoló dobozt
   nintersects_bbox: Nem metszi a határoló dobozt
+  json: JSON
   regex: Megfelel a RegExp-nek
 custom_validation_message: Egyéni érvényesítési üzenet
 loading: Betöltés...
@@ -1012,12 +1013,15 @@ wysiwyg_options:
   bullist: Felsorolás lista
   numlist: Számozott lista
   hr: Vízszintes vonal
+  insertdatetime_date: Dátum
+  insertdatetime_time: Idő
   link: Link hozzáadása/szerkesztése
   unlink: Hivatkozás törlése
   media: Média hozzáadása/szerkesztése
   image: Kép hozzáadása/szerkesztése
   copy: Másolás
   cut: Kivágás
+  default: Alapértelmezett
   paste: Beillesztés
   heading: Címsor
   h1: Címsor 1
@@ -1040,6 +1044,8 @@ wysiwyg_options:
   source_code: Forráskód szerkesztése
   fullscreen: Teljes képernyő
   directionality: Irányítottság
+  ltr: Balról jobbra
+  rtl: Jobbról balra
 dropdown: Legördülő lista
 choices: Lehetőségek
 choices_option_configured_incorrectly: Helytelenül konfigurált választási ehetőségek
@@ -1796,9 +1802,6 @@ interfaces:
     description: Rich-text editor HTML tartalom írásához
     toolbar: Eszköztár
     custom_formats: Egyéni formátumok
-    custom_formats_note: TinyMCE tartalomformátumok listája. További információkért lásd a TinyMCE dokumentációját a [Content Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/).
-    options_override: Beállítások felülírása
-    options_override_note: A TinyMCE felhasználói formázási kulcsai és értékeik. További információkért lásd a TinyMCE dokumentációját a [User Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/).
     folder_note: Mappa a feltöltött fájlok számára. Nem érinti a meglévő fájlokat.
     imageToken: Statikus hozzáférési token
     imageToken_label: A statikus hozzáférési token hozzá van rendelve az eszközök URL-jéhez

@@ -509,6 +509,7 @@ functions:
   minute: წუთი
   second: წამი
   count: რაოდენობა
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -854,6 +855,7 @@ operators:
   nintersects: არ კვეთს
   intersects_bbox: კვეთს შემოსაზღვრულ ყუთს
   nintersects_bbox: არ კვეთს შემოსაზღვრულ ყუთს
+  json: JSON
   regex: ემთხვევა RegExp-ს
 custom_validation_message: მორგებული ვალიდაციის შეტყობინება
 loading: იტვირთება...
@@ -1075,12 +1077,15 @@ wysiwyg_options:
   bullist: პუნქტებიანი სია
   numlist: დანომრილი სია
   hr: ჰორიზონტალური ხაზი
+  insertdatetime_date: თარიღი
+  insertdatetime_time: დრო
   link: ბმულის დამატება/რედაქტირება
   unlink: ბმულის წაშლა
   media: მედიის დამატება/რედაქტირება
   image: სურათის დამატება/რედაქტირება
   copy: კოპირება
   cut: ამოჭრა
+  default: ნაგულისხმევი
   paste: ჩასმა
   heading: სათაური
   h1: სათაური 1
@@ -1104,6 +1109,8 @@ wysiwyg_options:
   source_code: წყაროს კოდის რედაქტირება
   fullscreen: სრული ეკრანი
   directionality: მიმართულება
+  ltr: მარცხნიდან მარჯვნივ
+  rtl: მარჯვნიდან მარცხნივ
   lazy_loading: ზარმაცი ჩატვირთვა
   lazy_loading_label: ზარმაცი ჩატვირთვის ჩართვა
 dropdown: ჩამოსაშლელი
@@ -1981,9 +1988,6 @@ interfaces:
     description: მდიდარი ტექსტის რედაქტორი HTML კონტენტის დასაწერად
     toolbar: ხელსაწყოთა პანელი
     custom_formats: მორგებული ფორმატები
-    custom_formats_note: TinyMCE კონტენტის ფორმატების სია. დამატებითი ინფორმაციისთვის იხილეთ TinyMCE დოკუმენტაცია [კონტენტის ფორმატირების](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) შესახებ.
-    options_override: ოფციების გადაფარვა
-    options_override_note: TinyMCE მომხმარებლის ფორმატირების გასაღებები და მათი მნიშვნელობები. დამატებითი ინფორმაციისთვის იხილეთ TinyMCE დოკუმენტაცია [მომხმარებლის ფორმატირების](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) შესახებ.
     folder_note: საქაღალდე ატვირთული ფაილებისთვის. არ მოქმედებს არსებულ ფაილებზე.
     imageToken: სტატიკური წვდომის ტოკენი
     imageToken_label: სტატიკური წვდომის ტოკენი ემატება რესურსების URL-ს
