@@ -124,6 +124,8 @@ describe('Integration Tests', () => {
 				[{ collection: '' }, 'collection name is empty'],
 				[{ collection: 'directus_test' }, 'collection names start with "directus_"'],
 				[{ collection: 'Folder/Test' }, 'collection name contains "/"'],
+				[{ collection: '   ' }, 'collection name only contains whitespace'],
+				[{ collection: ' directus_test' }, 'collection name starts with "directus_" after trimming'],
 			];
 
 			test.each(invalidPayloads)('should throw InvalidPayloadError when %s', async (payload, _description) => {
@@ -144,6 +146,19 @@ describe('Integration Tests', () => {
 
 				const result = await service.createOne({
 					collection: 'new_collection',
+					schema: {},
+				});
+
+				expect(result).toBe('new_collection');
+				expect(mockSchemaBuilder.createTable).toHaveBeenCalledWith('new_collection', expect.any(Function));
+			});
+
+			test('should trim the collection name before creating', async () => {
+				tracker.on.select('directus_collections').response([]);
+				const service = new CollectionsService({ knex: db, schema, accountability: null });
+
+				const result = await service.createOne({
+					collection: ' new_collection ',
 					schema: {},
 				});
 
