@@ -222,9 +222,11 @@ test('saveImage wraps a new image in a figure when a caption is set', () => {
 });
 
 test('saveImage wraps an existing image when a caption is added', () => {
-	const { editor, imageSelection, saveImage } = setup({ content: `<img src="${SRC}" alt="My alt">` });
+	const { editor, imageSelection, openImageDrawer, saveImage } = setup({ content: `<img src="${SRC}" alt="My alt">` });
 
 	editor.value.commands.setNodeSelection(0);
+
+	openImageDrawer();
 
 	imageSelection.value = captionedSelection({ alt: 'New alt' });
 
@@ -236,11 +238,13 @@ test('saveImage wraps an existing image when a caption is added', () => {
 });
 
 test('saveImage updates the caption of an image already inside a figure', () => {
-	const { editor, imageSelection, saveImage } = setup({
+	const { editor, imageSelection, openImageDrawer, saveImage } = setup({
 		content: `<figure><img src="${SRC}" alt="My alt"><figcaption>Old</figcaption></figure>`,
 	});
 
 	editor.value.commands.setNodeSelection(1);
+
+	openImageDrawer();
 
 	imageSelection.value = captionedSelection({ caption: 'New' });
 
@@ -252,11 +256,13 @@ test('saveImage updates the caption of an image already inside a figure', () => 
 });
 
 test('saveImage unwraps the figure when the caption is cleared', () => {
-	const { editor, imageSelection, saveImage } = setup({
+	const { editor, imageSelection, openImageDrawer, saveImage } = setup({
 		content: `<figure><img src="${SRC}" alt="My alt"><figcaption>A caption</figcaption></figure>`,
 	});
 
 	editor.value.commands.setNodeSelection(1);
+
+	openImageDrawer();
 
 	imageSelection.value = captionedSelection({ caption: '' });
 
@@ -268,11 +274,13 @@ test('saveImage unwraps the figure when the caption is cleared', () => {
 });
 
 test('saveImage keeps a figure that carries a class when the caption is cleared', () => {
-	const { editor, imageSelection, saveImage } = setup({
+	const { editor, imageSelection, openImageDrawer, saveImage } = setup({
 		content: `<figure class="float-left"><img src="${SRC}" alt="My alt"><figcaption>A caption</figcaption></figure>`,
 	});
 
 	editor.value.commands.setNodeSelection(1);
+
+	openImageDrawer();
 
 	imageSelection.value = captionedSelection({ caption: '' });
 
@@ -284,17 +292,63 @@ test('saveImage keeps a figure that carries a class when the caption is cleared'
 });
 
 test('saveImage keeps the preserved attributes of the image it edits', () => {
-	const { editor, imageSelection, saveImage } = setup({
+	const { editor, imageSelection, openImageDrawer, saveImage } = setup({
 		content: `<img class="rounded" src="${SRC}" alt="My alt">`,
 	});
 
 	editor.value.commands.setNodeSelection(0);
+
+	openImageDrawer();
 
 	imageSelection.value = captionedSelection({ alt: 'New alt', caption: '' });
 
 	saveImage();
 
 	expect(editor.value.getHTML()).toContain(`<img class="rounded" src="${TRANSFORMED_SRC}" alt="New alt">`);
+});
+
+test('saveImage replaces a range selection that only partially covers an image', () => {
+	const { editor, imageSelection, openImageDrawer, saveImage } = setup({
+		content: `<p>hello</p><img src="/assets/old.jpg" alt="Old alt"><p>world</p>`,
+	});
+
+	editor.value.commands.selectAll();
+
+	openImageDrawer();
+	expect(imageSelection.value).toBeNull();
+
+	imageSelection.value = captionedSelection({ alt: 'New alt', caption: '' });
+
+	saveImage();
+
+	const html = editor.value.getHTML();
+	expect(html).toContain(`<img src="${TRANSFORMED_SRC}" alt="New alt">`);
+	expect(html).not.toContain('old.jpg');
+	expect(html).not.toContain('hello');
+	expect(html).not.toContain('world');
+});
+
+test('saveImage replaces a range selection covering an image with a captioned figure', () => {
+	const { editor, imageSelection, openImageDrawer, saveImage } = setup({
+		content: `<p>hello</p><img src="/assets/old.jpg" alt="Old alt"><p>world</p>`,
+	});
+
+	editor.value.commands.selectAll();
+
+	openImageDrawer();
+
+	imageSelection.value = captionedSelection({ alt: 'New alt' });
+
+	saveImage();
+
+	const html = editor.value.getHTML();
+
+	expect(html).toContain(
+		`<figure><img src="${TRANSFORMED_SRC}" alt="New alt"><figcaption>A caption</figcaption></figure>`,
+	);
+
+	expect(html).not.toContain('old.jpg');
+	expect(html).not.toContain('hello');
 });
 
 test('openImageDrawer leaves the selection empty when no image is active', () => {

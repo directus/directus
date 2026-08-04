@@ -41,6 +41,8 @@ export function useImage(
 	const imageDrawerOpen = ref(false);
 	const imageSelection = ref<ImageSelection | null>(null);
 	const selectedPreset = ref<SettingsStorageAssetPreset | undefined>();
+	/** Whether the drawer was prefilled from an existing image, so saving edits it instead of inserting. */
+	const editingImage = ref(false);
 
 	watch(
 		() => imageSelection.value?.transformationKey,
@@ -60,20 +62,16 @@ export function useImage(
 
 	function openImageDrawer() {
 		imageDrawerOpen.value = true;
+		imageSelection.value = null;
+		editingImage.value = false;
 
-		if (!editor.value.isActive('image')) {
-			imageSelection.value = null;
-			return;
-		}
+		if (!editor.value.isActive('image')) return;
 
 		const attrs = editor.value.getAttributes('image');
 		const imageUrl = attrs.src ?? null;
 		const alt = attrs.alt ?? null;
 
-		if (imageUrl === null || alt === null) {
-			imageSelection.value = null;
-			return;
-		}
+		if (imageUrl === null || alt === null) return;
 
 		const imageUrlParams = safeUrlParams(imageUrl);
 		const figure = findFigure(editor.value.state.selection);
@@ -98,10 +96,13 @@ export function useImage(
 			transformationKey,
 			previewUrl: replaceUrlAccessToken(imageUrl, imageToken.value),
 		};
+
+		editingImage.value = true;
 	}
 
 	function closeImageDrawer() {
 		imageSelection.value = null;
+		editingImage.value = false;
 		imageDrawerOpen.value = false;
 	}
 
@@ -157,7 +158,9 @@ export function useImage(
 		const attrs = { src: resizedImageUrl, alt: img.alt, loading: img.lazy ? 'lazy' : null };
 
 		const caption = img.caption?.trim() ?? '';
-		const imagePos = findImagePos(editor.value.state);
+		// insert-vs-edit is decided when the drawer opens, so saving does what the form showed the user;
+		// re-resolving the position here keeps it valid if the doc was re-synced while the drawer was open
+		const imagePos = editingImage.value ? findImagePos(editor.value.state) : undefined;
 		const chain = editor.value.chain().focus();
 
 		if (imagePos === undefined) {
@@ -188,7 +191,7 @@ export function useImage(
 		closeImageDrawer();
 	}
 
-	/** Position of the image the drawer is editing, or `undefined` when inserting a new one. */
+	/** Position of the first image overlapping the selection, or `undefined` when there is none. */
 	function findImagePos(state: EditorState): number | undefined {
 		const { from, to } = state.selection;
 		let imagePos: number | undefined;

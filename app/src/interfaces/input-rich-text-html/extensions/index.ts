@@ -8,6 +8,7 @@ import { Media } from './media';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
 import { PreservedAttributes } from './preserved-attributes';
+import { RangeSelectedAtoms } from './range-selected-atoms';
 import { semanticHtml } from './semantic-html';
 import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
 import { Table } from './table';
@@ -38,6 +39,7 @@ export const editorExtensions = [
 	CustomSuperscript,
 	...TextStyle,
 	PageBreak,
+	RangeSelectedAtoms,
 	Table,
 	PreKeymap,
 	CharacterCount,
