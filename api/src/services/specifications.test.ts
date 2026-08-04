@@ -1,5 +1,4 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-import { spec as staticSpec } from '@directus/specs';
 import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';

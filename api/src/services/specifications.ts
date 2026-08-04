@@ -246,11 +246,13 @@ class OASSpecsService implements SpecificationSubService {
 										this.getActionForMethod(method),
 									);
 
-								const operationWithSecurity = isHardcodedOpen
-									? { ...operation, security: [] }
-									: isPubliclyAccessible
-										? { ...operation, security: cloneDeep(OPTIONAL_AUTH_SECURITY) }
-										: operation;
+								let operationWithSecurity = operation;
+
+								if (isHardcodedOpen) {
+									operationWithSecurity = { ...operation, security: [] };
+								} else if (isPubliclyAccessible) {
+									operationWithSecurity = { ...operation, security: cloneDeep(OPTIONAL_AUTH_SECURITY) };
+								}
 
 								if ('parameters' in pathItem) {
 									paths[path]![method as keyof PathItemObject] = {
