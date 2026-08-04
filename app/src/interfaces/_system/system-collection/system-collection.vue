@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { useCollectionsStore } from '@/stores/collections';
+import { isCollectionUsable } from '@/utils/collection-status';
 
 const props = withDefaults(
 	defineProps<{
@@ -31,11 +32,12 @@ const collections = computed(() => {
 });
 
 const items = computed(() => {
-	return collections.value.reduce<{ text: string; value: string }[]>((acc, collection) => {
+	return collections.value.reduce<{ text: string; value: string; disabled: boolean }[]>((acc, collection) => {
 		if (collection.type !== 'alias') {
 			acc.push({
 				text: collection.name,
 				value: collection.collection,
+				disabled: !isCollectionUsable(collection),
 			});
 		}
 
