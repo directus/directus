@@ -233,7 +233,7 @@ function captionlessContent(figure: ProseMirrorNode): ProseMirrorNode[] {
 	return kept;
 }
 
-/** True when the figure carries any preserved attribute (class, id, title, role, lang, dir, data-, aria-). */
+/** True when the figure carries any non-null attribute eg:(class, id, title, role, lang, dir, data-, aria-). */
 function hasOwnAttributes(figure: ProseMirrorNode): boolean {
 	return Object.values(figure.attrs).some((value) => value !== null && value !== undefined);
 }
