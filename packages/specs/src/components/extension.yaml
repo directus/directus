@@ -5,7 +5,7 @@ type: object
 required: [id]
 properties:
   id:
-    description: Unique identifier for the extension in the database (UUID).
+    description: Unique identifier for the extension in the database.
     example: 0cf0e03d-4364-45df-b77b-ca61f61869d2
     type: string
     format: uuid
