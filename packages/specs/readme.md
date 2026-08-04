@@ -25,8 +25,9 @@ src/
 
 ## Custom (`x-*`) Extension Fields
 
-- `x-authentication`: `admin` | `user`; restricts a system tag (and its paths) to being included in the generated spec
-  only when the requesting accountability meets that level.
+- `x-authentication`: on a tag, `admin` | `user`; restricts inclusion to requesters meeting that authentication level.
+  On an operation, `none`; the operation runs with no accountability at all, so the generator stamps `security: []` onto
+  it (e.g. `/auth/login`, `/users/register`).
 - `x-collection`: links a tag (and its associated schema component) to the system collection it documents (e.g.
   `directus_presets`). Used to resolve permissions/field-filtering per collection at generation time. Can also be set on
   a single operation to override the tag's collection (or supply one, if the tag has none) for that operation's own RBAC

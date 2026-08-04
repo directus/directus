@@ -1,5 +1,5 @@
 post:
-  security: []
+  x-authentication: none
   summary: Retrieve a Temporary Access Token
   description: Retrieve a Temporary Access Token
   tags:

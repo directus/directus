@@ -219,10 +219,9 @@ class OASSpecsService implements SpecificationSubService {
 								paths[path] = {};
 							}
 
-							// A static `security: []` override means the operation runs with no accountability at
-							// all (e.g. POST /users/register), so it can't be gated by the caller's own RBAC access
-							// to the tied collection - it's reachable by anyone regardless of that permission.
-							const isHardcodedOpen = Array.isArray(operation.security) && operation.security.length === 0;
+							// x-authentication: none runs with no accountability at all (e.g. POST /users/register),
+							// so it can't be gated by the caller's RBAC access to the tied collection.
+							const isHardcodedOpen = operation['x-authentication'] === 'none';
 
 							// An operation-level override lets an operation whose tag has no (or a different)
 							// x-collection still be gated by RBAC on a specific collection, e.g. GET /assets/{id}
@@ -237,10 +236,7 @@ class OASSpecsService implements SpecificationSubService {
 								this.hasCollectionAccess(userCollectionAccess, operationCollection, this.getActionForMethod(method));
 
 							if (hasPermission) {
-								// A hardcoded-open operation's own `security: []` already says "no auth, ever" -
-								// stamping OPTIONAL_AUTH_SECURITY on top would overwrite that with a set of
-								// schemes that implies auth is consulted, when the operation never checks
-								// accountability at all (e.g. GET /users/register/verify-email).
+								// A hardcoded-open operation is unconditionally open, not "optionally" public.
 								const isPubliclyAccessible =
 									!isHardcodedOpen &&
 									operationCollection !== undefined &&
@@ -250,9 +246,11 @@ class OASSpecsService implements SpecificationSubService {
 										this.getActionForMethod(method),
 									);
 
-								const operationWithSecurity = isPubliclyAccessible
-									? { ...operation, security: cloneDeep(OPTIONAL_AUTH_SECURITY) }
-									: operation;
+								const operationWithSecurity = isHardcodedOpen
+									? { ...operation, security: [] }
+									: isPubliclyAccessible
+										? { ...operation, security: cloneDeep(OPTIONAL_AUTH_SECURITY) }
+										: operation;
 
 								if ('parameters' in pathItem) {
 									paths[path]![method as keyof PathItemObject] = {
