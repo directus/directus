@@ -90,6 +90,9 @@ const SEMANTIC: Record<string, string> = {
 	'figure with figcaption': '<figure><img src="/assets/abc" alt="photo"><figcaption>A caption</figcaption></figure>',
 	'figure with figcaption first':
 		'<figure><figcaption>A caption</figcaption><img src="/assets/abc" alt="photo"></figure>',
+	'figure without figcaption': '<figure><img src="/assets/abc" alt="photo"></figure>',
+	'figure with a non-image block child':
+		'<figure><pre><code>const x = 1;</code></pre><figcaption>A caption</figcaption></figure>',
 	'details with summary': '<details><summary>More info</summary><p>Hidden content</p></details>',
 	'details open': '<details open=""><summary>More info</summary><p>Visible content</p></details>',
 	'description list':
@@ -153,6 +156,8 @@ const PRESERVED_ATTRIBUTES: Record<string, string> = {
 	'link class and data': '<p><a class="button" data-track="cta" href="https://directus.io">link</a></p>',
 	'section class and data': '<section class="wrapper" data-module="faq"><p>text</p></section>',
 	'figure class': '<figure class="media-left"><figcaption>A caption</figcaption></figure>',
+	'figure class with image and figcaption':
+		'<figure class="float-left"><img src="/assets/abc" alt="photo"><figcaption class="cap">A caption</figcaption></figure>',
 	'details class': '<details class="faq-item" open=""><summary>t</summary><p>c</p></details>',
 	'mark class': '<p>text with <mark class="hl-yellow">highlight</mark></p>',
 	'abbr class before own title': '<p><abbr class="term" title="HyperText Markup Language">HTML</abbr> x</p>',
