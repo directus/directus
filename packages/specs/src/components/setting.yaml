@@ -148,6 +148,7 @@ properties:
         key:
           description: Key for the asset. Used in the assets endpoint.
           type: string
+          nullable: true
         fit:
           description: Whether to crop the thumbnail to match the size, or maintain the aspect ratio.
           type: string
@@ -239,7 +240,7 @@ properties:
               type: boolean
               nullable: true
         - type: object
-          required: [type, id, url, enabled]
+          required: [type, id, url, icon, name, enabled]
           properties:
             type:
               type: string
@@ -313,10 +314,36 @@ properties:
     description: OpenAI-compatible model definitions.
     type: array
     nullable: true
+    items:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        context:
+          type: integer
+        output:
+          type: integer
+        attachment:
+          type: boolean
+        reasoning:
+          type: boolean
+        providerOptions:
+          type: object
   ai_openai_compatible_headers:
     description: OpenAI-compatible custom headers.
     type: array
     nullable: true
+    items:
+      type: object
+      required: [header, value]
+      properties:
+        header:
+          type: string
+        value:
+          type: string
   ai_openai_allowed_models:
     description: OpenAI model ids allowed for selection.
     type: array
