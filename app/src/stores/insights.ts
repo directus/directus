@@ -12,6 +12,7 @@ import api from '@/api';
 import { useExtensions } from '@/extensions';
 import { usePermissionsStore } from '@/stores/permissions';
 import { Dashboard } from '@/types/insights';
+import { isCollectionInactive } from '@/utils/collection-status';
 import { fetchAll } from '@/utils/fetch-all';
 import { queryToGqlString } from '@/utils/query-to-gql-string';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -215,6 +216,12 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			if (!req) continue;
 
 			if (hasEmptyRelation(panel)) {
+				data.value[panel.id] = {};
+				continue;
+			}
+
+			// Don't query a collection that can't be interacted with; the panel renders a notice instead
+			if (toArray(req).some(({ collection }) => isCollectionInactive(collection))) {
 				data.value[panel.id] = {};
 				continue;
 			}

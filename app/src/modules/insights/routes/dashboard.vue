@@ -25,6 +25,7 @@ import { useItemPermissions } from '@/composables/use-permissions';
 import { useExtensions } from '@/extensions';
 import { router } from '@/router';
 import { useInsightsStore } from '@/stores/insights';
+import { getCollectionInactiveReason } from '@/utils/collection-status';
 import { pointOnLine } from '@/utils/point-on-line';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
@@ -52,6 +53,10 @@ const { updateAllowed } = useItemPermissions('directus_panels', props.primaryKey
 const now = new Date();
 
 const editMode = ref(false);
+
+function getPanelInactiveReason(tile: AppTile) {
+	return getCollectionInactiveReason(tile.data?.options?.collection);
+}
 
 const tiles = computed<AppTile[]>(() => {
 	const panels = insightsStore.getPanelsForDashboard(props.primaryKey);
@@ -286,7 +291,14 @@ const refreshInterval = computed({
 					indeterminate
 				/>
 				<div v-else class="panel-container" :class="{ loading: loading.includes(tile.id) }">
-					<div v-if="errors[tile.id]" class="panel-error">
+					<div
+						v-if="getPanelInactiveReason(tile)"
+						class="panel-no-data type-note"
+						:class="{ 'header-offset': tile.showHeader }"
+					>
+						{{ getPanelInactiveReason(tile) }}
+					</div>
+					<div v-else-if="errors[tile.id]" class="panel-error">
 						<VIcon name="warning" />
 						{{ $t('unexpected_error') }}
 						<VError :error="errors[tile.id]" />
