@@ -16,7 +16,7 @@ import { useLogger } from '../logger/index.js';
 import { useMetrics } from '../metrics/index.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { validateEnv } from '../utils/validate-env.js';
-import { applyDialectBindings } from './apply-dialect-bindings.js';
+import { getClientBetterSQLite3 } from './clients/better-sqlite3.js';
 import { getHelpers } from './helpers/index.js';
 
 type QueryInfo = Partial<Knex.Sql> & {
@@ -121,7 +121,7 @@ export function getDatabase(): Knex {
 
 	if (client === 'sqlite3') {
 		knexConfig.useNullAsDefault = true;
-		knexConfig.client = 'better-sqlite3';
+		knexConfig.client = getClientBetterSQLite3();
 
 		poolConfig.afterCreate = (conn: any, callback: any) => {
 			logger.trace('Enabling SQLite Foreign Keys support...');
@@ -173,7 +173,6 @@ export function getDatabase(): Knex {
 
 	database = knex.default(knexConfig);
 
-	applyDialectBindings(database);
 	validateDatabaseCharset(database);
 
 	const times = new Map<string, number>();
@@ -266,6 +265,7 @@ export function getDatabaseClient(database?: Knex): DatabaseClient {
 			return 'cockroachdb';
 		case 'Client_SQLite3':
 		case 'Client_BetterSQLite3':
+		case 'DirectusBetterSQLite3':
 			return 'sqlite';
 		case 'Client_Oracledb':
 		case 'Client_Oracle':

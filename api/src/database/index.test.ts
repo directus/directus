@@ -26,8 +26,9 @@ vi.mock('../extensions/lib/get-extensions-path.js', () => ({
 	getExtensionsPath: vi.fn(() => '/extensions'),
 }));
 
-// `getHelpers` is deliberately NOT mocked: `applyDialectBindings` dispatches the sqlite binding
-// coercion through the real schema helper, so stubbing it out would make those assertions vacuous
+vi.mock('./helpers/index.js', () => ({
+	getHelpers: vi.fn(() => ({})),
+}));
 
 vi.mock('@directus/schema', () => ({
 	createInspector: vi.fn(),
@@ -55,9 +56,8 @@ afterEach(() => {
 
 describe('getDatabaseClient', () => {
 	test.each([
-		// SQLite is served by the better-sqlite3 driver, but callers still see `sqlite`
+		['DirectusBetterSQLite3', 'sqlite'],
 		['Client_BetterSQLite3', 'sqlite'],
-		// node-sqlite3 stays mapped, so an externally supplied Knex still resolves
 		['Client_SQLite3', 'sqlite'],
 		['Client_MySQL2', 'mysql'],
 		['Client_PG', 'postgres'],
@@ -100,7 +100,7 @@ describe('getDatabase with DB_CLIENT=sqlite3', () => {
 		expect(database.client.driverName).toBe('better-sqlite3');
 
 		// getDatabaseClient() and createInspector() both switch on this name
-		expect(database.client.constructor.name).toBe('Client_BetterSQLite3');
+		expect(database.client.constructor.name).toBe('DirectusBetterSQLite3');
 	});
 
 	test('binds integers as integers, so ids stored in text columns keep their exact form', async () => {

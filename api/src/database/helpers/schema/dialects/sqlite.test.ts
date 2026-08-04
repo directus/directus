@@ -65,31 +65,4 @@ describe('SchemaHelperSQLite', () => {
 			'name',
 		]);
 	});
-
-	describe('prepBindings', () => {
-		test('hands integers to better-sqlite3 as BigInt, so text columns keep their exact form', () => {
-			const { helper } = createHelper();
-
-			expect(helper.prepBindings([41, 0, -7])).toEqual([41n, 0n, -7n]);
-		});
-
-		test('leaves every other binding untouched', () => {
-			const { helper } = createHelper();
-
-			// floats and unsafe integers can't round-trip through BigInt, so they keep the double path
-			expect(helper.prepBindings([91.97, Number.MAX_SAFE_INTEGER + 2])).toEqual([91.97, Number.MAX_SAFE_INTEGER + 2]);
-
-			expect(helper.prepBindings(['41', null, undefined, true, 12n])).toEqual(['41', null, undefined, true, 12n]);
-		});
-
-		test('passes through what knex hands it for queries without positional bindings', () => {
-			const { helper } = createHelper();
-
-			// a query built from a bare SQL string has no bindings at all
-			expect(helper.prepBindings(undefined)).toBeUndefined();
-
-			// and a dialect using named bindings gets an object
-			expect(helper.prepBindings({ 1: 41 })).toEqual({ 1: 41 });
-		});
-	});
 });

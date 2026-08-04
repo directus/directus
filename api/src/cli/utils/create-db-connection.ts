@@ -4,7 +4,7 @@ import path from 'path';
 import type { Driver } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { applyDialectBindings } from '../../database/apply-dialect-bindings.js';
+import { getClientBetterSQLite3 } from '../../database/clients/better-sqlite3.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -65,7 +65,7 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 
 	if (client === 'sqlite3') {
 		knexConfig.useNullAsDefault = true;
-		knexConfig.client = 'better-sqlite3';
+		knexConfig.client = getClientBetterSQLite3();
 	}
 
 	if (client === 'cockroachdb') {
@@ -77,8 +77,5 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 		};
 	}
 
-	const db = knex.default(knexConfig);
-	applyDialectBindings(db);
-
-	return db;
+	return knex.default(knexConfig);
 }

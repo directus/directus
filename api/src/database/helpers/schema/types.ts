@@ -208,15 +208,6 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return bindings;
 	}
 
-	/**
-	 * Dialect-specific coercion of individual binding values, composed onto the knex client by
-	 * `applyDialectBindings` so it covers every query the connection runs: reads, writes and DDL
-	 * alike. Receives `undefined` for queries built from a bare SQL string.
-	 */
-	prepBindings(bindings: unknown): unknown {
-		return bindings;
-	}
-
 	addInnerSortFieldsToGroupBy(
 		_groupByFields: (string | Knex.Raw)[],
 		_sortRecords: SortRecord[],
