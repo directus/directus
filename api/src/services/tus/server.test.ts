@@ -129,7 +129,12 @@ describe('createTusServer', () => {
 			const [server] = await createTusServer({ schema: mockSchema, accountability: mockAccountability });
 			const onUploadFinish = (server as any).options.onUploadFinish;
 
+			const mockDate = new Date();
+			vi.setSystemTime(mockDate);
+
 			await onUploadFinish({}, { id: 'upload-456', metadata: { id: 'new-file-id' } });
+
+			vi.useRealTimers();
 
 			expect(extractMetadata).toHaveBeenCalledWith('local', expect.objectContaining({ id: 'new-file-id' }));
 
@@ -138,6 +143,7 @@ describe('createTusServer', () => {
 				height: 200,
 				tus_id: null,
 				tus_data: null,
+				uploaded_on: mockDate.toISOString(),
 			});
 
 			// Should not attempt to read or delete any existing file since this is a new upload, not a replacement
@@ -207,7 +213,12 @@ describe('createTusServer', () => {
 			const [server] = await createTusServer({ schema: mockSchema, accountability: mockAccountability });
 			const onUploadFinish = (server as any).options.onUploadFinish;
 
+			const mockDate = new Date();
+			vi.setSystemTime(mockDate);
+
 			await onUploadFinish({}, { id: 'upload-789', metadata: { id: 'original-file-id' } });
+
+			vi.useRealTimers();
 
 			// Should read the original file
 			expect(mockItemsService.readOne).toHaveBeenCalledWith('original-file-id');
@@ -229,6 +240,7 @@ describe('createTusServer', () => {
 				type: 'image/png',
 				width: 400,
 				height: 300,
+				uploaded_on: mockDate.toISOString(),
 			});
 
 			// Should delete the temp file
@@ -302,6 +314,9 @@ describe('createTusServer', () => {
 
 			const onUploadFinish = (server as any).options.onUploadFinish;
 
+			const mockDate = new Date();
+			vi.setSystemTime(mockDate);
+
 			await onUploadFinish(
 				{},
 				{
@@ -309,6 +324,8 @@ describe('createTusServer', () => {
 					metadata: { id: 'test-file-id' },
 				},
 			);
+
+			vi.useRealTimers();
 
 			expect(emitter.emitAction).toHaveBeenCalledWith(
 				'files.upload',
@@ -319,6 +336,7 @@ describe('createTusServer', () => {
 						filename_download: 'test.txt',
 						tus_id: null,
 						tus_data: null,
+						uploaded_on: mockDate.toISOString(),
 					},
 					key: 'test-file-id',
 					collection: 'directus_files',
@@ -349,6 +367,9 @@ describe('createTusServer', () => {
 
 			const onUploadFinish = (server as any).options.onUploadFinish;
 
+			const mockDate = new Date();
+			vi.setSystemTime(mockDate);
+
 			await onUploadFinish(
 				{},
 				{
@@ -356,6 +377,8 @@ describe('createTusServer', () => {
 					metadata: { id: 'test-file-id' },
 				},
 			);
+
+			vi.useRealTimers();
 
 			expect(emitter.emitAction).toHaveBeenCalledWith(
 				'files.upload',
@@ -366,6 +389,7 @@ describe('createTusServer', () => {
 						filename_download: 'test.txt',
 						tus_id: null,
 						tus_data: null,
+						uploaded_on: mockDate.toISOString(),
 					},
 					key: 'test-file-id',
 					collection: 'directus_files',
