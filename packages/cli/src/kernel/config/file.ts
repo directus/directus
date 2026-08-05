@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
 import { dirname, join, parse as parsePath, resolve } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import { z } from 'zod';
@@ -183,7 +183,8 @@ export interface ConfigStore {
 	 * overwriting a valid URL. Tolerant like the upsert path: a not-yet-created explicit config is a fresh start.
 	 */
 	existingProfile(name: string): { url: string | undefined } | undefined;
-	upsertProfile(name: string, profile: Profile): void;
+	/** Write a profile and return an operation that restores the preceding file state. */
+	upsertProfile(name: string, profile: Profile): () => void;
 	upsertProjectMode(project: string, mode: SyncMode): void;
 	removeProfile(name: string): string | undefined;
 }
@@ -241,12 +242,26 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 			return { url: typeof url === 'string' ? url : undefined };
 		},
 		upsertProfile(name, profile) {
+			const previousPath = path;
 			const target = path ?? join(cwd, CONFIG_FILENAME);
+			const previousContents = existsSync(target) ? readFileSync(target, 'utf8') : undefined;
 			const raw = readRawConfig(target);
 			const profiles = { ...existingProfiles(raw, target), [name]: profile };
 			mkdirSync(dirname(target), { recursive: true });
 			writeFileAtomic(target, `${JSON.stringify({ ...raw, profiles }, null, 2)}\n`, 0o644);
 			persisted(target);
+
+			return () => {
+				if (previousContents === undefined) {
+					rmSync(target, { force: true });
+				} else {
+					writeFileAtomic(target, previousContents, 0o644);
+				}
+
+				path = previousPath;
+				loaded = undefined;
+				read = false;
+			};
 		},
 		upsertProjectMode(project, mode) {
 			const target = require().path;

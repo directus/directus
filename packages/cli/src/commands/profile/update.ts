@@ -5,7 +5,7 @@ import { isSafeUrl } from '../../kernel/config/file.js';
 import { CliError } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
-import { resolveProfileName, resolveProfileUrl, saveProfile } from '../../profile/save.js';
+import { resolveExistingProfileName, resolveProfileUrl, saveProfile } from '../../profile/save.js';
 
 interface UpdateOptions {
 	readonly url?: string;
@@ -37,7 +37,7 @@ function overwriteWarning(name: string, from: string, to: string): string {
 }
 
 export async function update(nameArg: string | undefined, options: UpdateOptions, ctx: CliContext): Promise<void> {
-	const name = await resolveProfileName(
+	const name = await resolveExistingProfileName(
 		nameArg,
 		'Name the profile: d6s profile update <name> [--url <url>] [--token <token>]',
 		ctx,

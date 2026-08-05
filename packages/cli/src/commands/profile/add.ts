@@ -1,7 +1,7 @@
 import type { Command } from 'commander';
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
-import { resolveProfileName, resolveProfileUrl, saveProfile } from '../../profile/save.js';
+import { resolveNewProfileName, resolveProfileUrl, saveProfile } from '../../profile/save.js';
 
 interface AddOptions {
 	readonly url?: string;
@@ -19,7 +19,7 @@ export function registerAdd(profile: Command, getContext: () => CliContext): voi
 }
 
 export async function add(nameArg: string | undefined, options: AddOptions, ctx: CliContext): Promise<void> {
-	const name = await resolveProfileName(nameArg, 'Name the profile: d6s profile add <name> --url <url>', ctx);
+	const name = await resolveNewProfileName(nameArg, 'Name the profile: d6s profile add <name> --url <url>', ctx);
 
 	// Cheapest precondition first: a taken name creates nothing, so ask for no further input.
 	if (ctx.config.existingProfile(name) !== undefined) {

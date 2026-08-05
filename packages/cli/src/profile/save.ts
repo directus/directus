@@ -12,7 +12,11 @@ const PROFILE_NAME = /^[A-Za-z0-9_]+$/;
 const PROFILE_NAME_RULE = 'Use letters, numbers, and underscores.';
 
 /** Resolve the profile name from the argument or a prompt, rejecting names no environment variable could carry. */
-export async function resolveProfileName(nameArg: string | undefined, usage: string, ctx: CliContext): Promise<string> {
+export async function resolveNewProfileName(
+	nameArg: string | undefined,
+	usage: string,
+	ctx: CliContext,
+): Promise<string> {
 	const name = await orPrompt(nameArg, ctx.interactive, usage, {
 		message: 'Profile name',
 		placeholder: 'production',
@@ -24,6 +28,15 @@ export async function resolveProfileName(nameArg: string | undefined, usage: str
 	}
 
 	return name;
+}
+
+/** Resolve an existing profile key without applying the stricter creation policy to hand-written config. */
+export function resolveExistingProfileName(
+	nameArg: string | undefined,
+	usage: string,
+	ctx: CliContext,
+): Promise<string> {
+	return orPrompt(nameArg, ctx.interactive, usage, { message: 'Profile name', placeholder: 'production' });
 }
 
 /**
@@ -58,8 +71,8 @@ export interface SavedProfile {
 }
 
 /**
- * Verify a credential, then write the profile, and only afterwards the credential it authenticates with — a
- * failed config write must never leave behind a credential entry no profile can reach.
+ * Verify a credential, then write the profile followed by its credential. Either write failing restores the
+ * previous config state, so a failed command never leaves an unreachable credential or a partial profile update.
  */
 export async function saveProfile(
 	name: string,
@@ -78,18 +91,19 @@ export async function saveProfile(
 		session = acquired.session;
 	}
 
-	ctx.config.upsertProfile(name, { url, auth: { type: 'token' } });
+	const rollback = ctx.config.upsertProfile(name, { url, auth: { type: 'token' } });
+
+	try {
+		if (session !== undefined) credentialStorage(url, name).set(session);
+		if (token !== undefined) saveCredential(url, name, token);
+	} catch (error) {
+		rollback();
+		throw error;
+	}
+
 	ctx.ui.success(`Saved profile "${name}" → ${url}`);
-
-	if (session !== undefined) {
-		credentialStorage(url, name).set(session);
-		ctx.ui.success(`Saved a session for "${name}" to the credential store.`);
-	}
-
-	if (token !== undefined) {
-		saveCredential(url, name, token);
-		ctx.ui.success(savedTokenMessage(name));
-	}
+	if (session !== undefined) ctx.ui.success(`Saved a session for "${name}" to the credential store.`);
+	if (token !== undefined) ctx.ui.success(savedTokenMessage(name));
 
 	return { url, credentialSaved: session !== undefined || token !== undefined };
 }

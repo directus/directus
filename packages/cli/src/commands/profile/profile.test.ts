@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -62,6 +62,17 @@ describe('profile commands', () => {
 		expect(readConfig().profiles['staging']?.url).toBe('https://one.example.com');
 	});
 
+	it('add removes the new profile when its credential cannot be persisted', async () => {
+		mkdirSync(join(dir, '.directus', 'credentials.json'), { recursive: true });
+
+		expect(
+			await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com', '--token', 'token-value-abcdefgh'),
+		).toBe(1);
+
+		expect(existsSync(join(dir, 'directus.config.json'))).toBe(false);
+		expect(stderr.join('')).not.toContain('Saved profile');
+	});
+
 	it('update replaces the URL with --yes and clears the credential bound to the old URL', async () => {
 		vi.stubEnv('CI', '');
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
@@ -81,6 +92,30 @@ describe('profile commands', () => {
 		expect(
 			resolveCredential({ target: 'profile', url: 'https://one.example.com', profileName: 'staging' }),
 		).toBeUndefined();
+	});
+
+	it('update restores the previous profile when its new credential cannot be persisted', async () => {
+		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
+		const configPath = join(dir, 'directus.config.json');
+		const before = readFileSync(configPath, 'utf8');
+		mkdirSync(join(dir, '.directus', 'credentials.json'), { recursive: true });
+		stderr.length = 0;
+
+		expect(
+			await d6s(
+				'profile',
+				'update',
+				'staging',
+				'--url',
+				'https://two.example.com',
+				'--token',
+				'token-value-abcdefgh',
+				'--yes',
+			),
+		).toBe(1);
+
+		expect(readFileSync(configPath, 'utf8')).toBe(before);
+		expect(stderr.join('')).not.toContain('Saved profile');
 	});
 
 	it('update refuses to move a profile to a new URL without --yes', async () => {
@@ -166,6 +201,19 @@ describe('profile commands', () => {
 		expect(readConfig().profiles['staging']?.url).toBe('https://one.example.com');
 	});
 
+	it('updates and removes an existing profile whose name is not valid for new profiles', async () => {
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { 'prod-us': { url: 'https://one.example.com' } } }),
+		);
+
+		expect(await d6s('profile', 'update', 'prod-us', '--url', 'https://two.example.com', '--yes')).toBe(0);
+		expect(readConfig().profiles['prod-us']?.url).toBe('https://two.example.com');
+
+		expect(await d6s('profile', 'remove', 'prod-us', '--yes')).toBe(0);
+		expect(readConfig().profiles).toEqual({});
+	});
+
 	it('list emits the profiles as JSON on the machine channel', async () => {
 		await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
 		stdout.length = 0;
@@ -177,6 +225,43 @@ describe('profile commands', () => {
 			formatVersion: 1,
 			ok: true,
 			profiles: [{ name: 'staging', url: 'https://cms.example.com' }],
+		});
+	});
+
+	it('emits tagged JSON contracts for add, update, and remove', async () => {
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com', '--json')).toBe(0);
+
+		expect(JSON.parse(stdout.join(''))).toEqual({
+			kind: 'ProfileAddReport',
+			formatVersion: 1,
+			ok: true,
+			name: 'staging',
+			url: 'https://one.example.com',
+			credentialSaved: false,
+		});
+
+		stdout.length = 0;
+
+		expect(await d6s('profile', 'update', 'staging', '--url', 'https://two.example.com', '--yes', '--json')).toBe(0);
+
+		expect(JSON.parse(stdout.join(''))).toEqual({
+			kind: 'ProfileUpdateReport',
+			formatVersion: 1,
+			ok: true,
+			name: 'staging',
+			url: 'https://two.example.com',
+			credentialSaved: false,
+		});
+
+		stdout.length = 0;
+
+		expect(await d6s('profile', 'remove', 'staging', '--yes', '--json')).toBe(0);
+
+		expect(JSON.parse(stdout.join(''))).toEqual({
+			kind: 'ProfileRemoveReport',
+			formatVersion: 1,
+			ok: true,
+			removed: 'staging',
 		});
 	});
 

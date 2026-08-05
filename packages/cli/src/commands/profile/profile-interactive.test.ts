@@ -376,6 +376,30 @@ describe('interactive profile flows', () => {
 		expect(refreshOrder).toBeLessThan(testOrder);
 	});
 
+	it('emits the tagged ProfileTestReport contract on the JSON channel', async () => {
+		const stdout: string[] = [];
+
+		vi.mocked(process.stdout.write).mockImplementation((chunk) => {
+			stdout.push(String(chunk));
+			return true;
+		});
+
+		vi.mocked(testConnection).mockResolvedValueOnce(IDENTITY);
+		const ctx = { ...ctxAt(dir), ui: createUi({ json: true, color: false }) };
+
+		await testProfile(undefined, { url: 'https://oneoff.example.com', token: 'tok-flag' }, ctx);
+
+		expect(JSON.parse(stdout.join(''))).toEqual({
+			kind: 'ProfileTestReport',
+			formatVersion: 1,
+			ok: true,
+			url: 'https://oneoff.example.com',
+			user: 'Ada',
+			role: 'Admin',
+			project: 'Demo',
+		});
+	});
+
 	it('a cancelled prompt aborts cleanly instead of proceeding', async () => {
 		vi.mocked(text).mockResolvedValueOnce('anything');
 		vi.mocked(isCancel).mockReturnValueOnce(true);
