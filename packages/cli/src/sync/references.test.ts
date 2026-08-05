@@ -24,12 +24,17 @@ describe('findOutOfScopeReferences', () => {
 		expect(references).toEqual([{ kind: 'group', from: 'pages', missing: ['website'] }]);
 	});
 
-	it('does not flag a group parent that is included, since the nesting resolves on apply', () => {
+	it('ignores references that are present, system-owned, or targetless', () => {
 		const references = findOutOfScopeReferences(
 			snapshot({
 				collections: [
 					{ collection: 'website', meta: { group: null } },
 					{ collection: 'pages', meta: { group: 'website' } },
+				],
+				relations: [
+					{ collection: 'pages', field: 'site', related_collection: 'website' },
+					{ collection: 'pages', field: 'owner', related_collection: 'directus_users' },
+					{ collection: 'pages', field: 'translations', related_collection: null },
 				],
 			}),
 		);
@@ -48,17 +53,6 @@ describe('findOutOfScopeReferences', () => {
 		expect(references).toEqual([{ kind: 'relation', from: 'pages.author', missing: ['authors'] }]);
 	});
 
-	it('never flags a system collection target, because every instance already has it', () => {
-		const references = findOutOfScopeReferences(
-			snapshot({
-				collections: [{ collection: 'pages' }],
-				relations: [{ collection: 'pages', field: 'owner', related_collection: 'directus_users' }],
-			}),
-		);
-
-		expect(references).toEqual([]);
-	});
-
 	it('reports only the m2a allowed collections that are missing, keeping the included ones out', () => {
 		const references = findOutOfScopeReferences(
 			snapshot({
@@ -75,31 +69,6 @@ describe('findOutOfScopeReferences', () => {
 		);
 
 		expect(references).toEqual([{ kind: 'm2a', from: 'pages.blocks', missing: ['gallery', 'hero'] }]);
-	});
-
-	it('ignores a null-target relation with no allow-list rather than crashing', () => {
-		const references = findOutOfScopeReferences(
-			snapshot({
-				collections: [{ collection: 'pages' }],
-				relations: [{ collection: 'pages', field: 'translations', related_collection: null }],
-			}),
-		);
-
-		expect(references).toEqual([]);
-	});
-
-	it('returns nothing for a full snapshot where every reference resolves internally', () => {
-		const references = findOutOfScopeReferences(
-			snapshot({
-				collections: [
-					{ collection: 'website', meta: { group: null } },
-					{ collection: 'pages', meta: { group: 'website' } },
-				],
-				relations: [{ collection: 'pages', field: 'site', related_collection: 'website' }],
-			}),
-		);
-
-		expect(references).toEqual([]);
 	});
 
 	it('sorts output deterministically so warnings do not depend on snapshot row order', () => {

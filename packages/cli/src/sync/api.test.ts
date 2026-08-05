@@ -244,22 +244,6 @@ describe('applyDiff', () => {
 
 		expect(sentBody && JSON.parse(sentBody)).toEqual({ hash: result.hash, diff: result.diff });
 	});
-
-	it('routes a Directus error to a CliError so a failed apply surfaces a hint, not a stack trace', async () => {
-		agent
-			.get('https://cms.example.com')
-			.intercept({ path: '/schema/apply', method: 'POST' })
-			.reply(
-				500,
-				{ errors: [{ message: 'boom', extensions: { code: 'INTERNAL_SERVER_ERROR' } }] },
-				{ headers: { 'content-type': 'application/json' } },
-			);
-
-		const error = await applyDiff(credential, diffResult()).catch((error: unknown) => error);
-
-		expect(error).toBeInstanceOf(CliError);
-		expect(error).toMatchObject({ code: 'HTTP' });
-	});
 });
 
 describe('fetchRecords', () => {

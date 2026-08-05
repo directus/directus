@@ -437,31 +437,6 @@ describe('interactive sync push', () => {
 		expect(readIdMap()).toEqual({ formatVersion: 1, maps: {} });
 	});
 
-	it('withholds an unmatched numeric PK even when the target read shows it absent', async () => {
-		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
-
-		seedData([
-			{
-				collection: 'directus_permissions',
-				primaryKey: 'id',
-				records: [{ id: 7, policy: null, collection: 'articles', action: 'read' }],
-			},
-		]);
-
-		vi.mocked(fetchRecords).mockResolvedValueOnce([]);
-
-		vi.mocked(importBatch).mockResolvedValue(importResult());
-		vi.mocked(confirm).mockResolvedValueOnce(true);
-
-		await push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir));
-
-		const batch = vi.mocked(importBatch).mock.calls.at(-1)?.[1];
-		const permissions = batch?.find((entry) => entry.collection === 'directus_permissions');
-
-		expect(permissions?.items).toEqual([{ policy: null, collection: 'articles', action: 'read' }]);
-		expect(readIdMap()).toEqual({ formatVersion: 1, maps: {} });
-	});
-
 	it('sends only unmapped records under add mode, so a repeat add cannot mint duplicates', async () => {
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 

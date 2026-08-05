@@ -62,8 +62,12 @@ describe('profile commands', () => {
 		expect(readConfig().profiles['staging']?.url).toBe('https://one.example.com');
 	});
 
-	it('update replaces the URL of the existing profile with --yes, rather than adding a second one', async () => {
+	it('update replaces the URL with --yes and clears the credential bound to the old URL', async () => {
+		vi.stubEnv('CI', '');
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
 		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
+		saveCredential('https://one.example.com', 'staging', 'stored-token');
+
 		expect(await d6s('profile', 'update', 'staging', '--url', 'https://two.example.com', '--yes')).toBe(0);
 
 		const config = readConfig();
@@ -73,15 +77,6 @@ describe('profile commands', () => {
 		expect(stderr.join('')).toContain('Overwrote the URL of "staging"');
 		expect(stderr.join('')).toContain('DIRECTUS_STAGING_TOKEN');
 		expect(stderr.join('')).toContain('will be cleared');
-	});
-
-	it('update clears the credential bound to the old URL', async () => {
-		vi.stubEnv('CI', '');
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
-		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
-		saveCredential('https://one.example.com', 'staging', 'stored-token');
-
-		expect(await d6s('profile', 'update', 'staging', '--url', 'https://two.example.com', '--yes')).toBe(0);
 
 		expect(
 			resolveCredential({ target: 'profile', url: 'https://one.example.com', profileName: 'staging' }),
@@ -185,11 +180,18 @@ describe('profile commands', () => {
 		});
 	});
 
-	it('remove deletes the named profile', async () => {
+	it('remove deletes the profile and its saved credential', async () => {
+		vi.stubEnv('CI', '');
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
 		await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
+		saveCredential('https://cms.example.com', 'staging', 'stored-token');
 
 		expect(await d6s('profile', 'remove', 'staging', '--yes')).toBe(0);
 		expect(readConfig().profiles).toEqual({});
+
+		expect(
+			resolveCredential({ target: 'profile', url: 'https://cms.example.com', profileName: 'staging' }),
+		).toBeUndefined();
 	});
 
 	it('refuses to remove without confirmation, because removal takes the saved credential with it', async () => {
@@ -253,27 +255,6 @@ describe('profile commands', () => {
 		expect(await d6s('profile', 'add', 'staging', '--url', `https://user:${password}@cms.example.com`)).toBe(1);
 		expect(stdout.join('')).not.toContain(password);
 		expect(stderr.join('')).not.toContain(password);
-	});
-
-	it('clears the saved credential when a profile is removed, so re-adding cannot resurrect it', async () => {
-		const home = mkdtempSync(join(tmpdir(), 'd6s-home-'));
-		vi.stubEnv('HOME', home);
-		vi.stubEnv('USERPROFILE', home);
-		vi.stubEnv('CI', '');
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
-
-		try {
-			await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
-			saveCredential('https://cms.example.com', 'staging', 'stored-token');
-
-			expect(await d6s('profile', 'remove', 'staging', '--yes')).toBe(0);
-
-			expect(
-				resolveCredential({ target: 'profile', url: 'https://cms.example.com', profileName: 'staging' }),
-			).toBeUndefined();
-		} finally {
-			rmSync(home, { recursive: true, force: true });
-		}
 	});
 
 	it('remove of an unknown profile is a config error', async () => {

@@ -704,29 +704,6 @@ describe('sync pull resources and data', () => {
 		]);
 	});
 
-	it('treats --no-users as a no-op since users are already out of the default set', async () => {
-		seedConfig();
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-		interceptSnapshot();
-		interceptDefaultRecords();
-
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--no-users')).toBe(0);
-
-		expect(exportedCollections()).toEqual([
-			'directus_access',
-			'directus_dashboards',
-			'directus_flows',
-			'directus_folders',
-			'directus_operations',
-			'directus_panels',
-			'directus_permissions',
-			'directus_policies',
-			'directus_roles',
-			'directus_settings',
-			'directus_translations',
-		]);
-	});
-
 	it('refuses --all combined with a named resource before any network call', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);

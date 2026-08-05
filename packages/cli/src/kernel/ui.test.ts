@@ -29,13 +29,14 @@ describe('createUi', () => {
 		clearSecrets();
 	});
 
-	it('routes status to stderr and suppresses machine data outside --json', () => {
+	it('routes uncolored status to stderr and suppresses machine data outside --json', () => {
 		const ui = createUi({ json: false, color: false });
 		ui.info('working');
 		ui.data({ ok: true });
 
 		expect(stderr.join('')).toContain('working');
 		expect(stdout.join('')).toBe('');
+		expect(stderr.join('')).not.toContain(ESC);
 	});
 
 	it('routes machine data to stdout in --json mode', () => {
@@ -89,13 +90,6 @@ describe('createUi', () => {
 		const text = stderr.join('');
 		expect(text).toContain('bad input');
 		expect(text).toContain('try --from');
-	});
-
-	it('emits no ANSI escape codes when color is disabled', () => {
-		const ui = createUi({ json: false, color: false });
-		ui.info('careful');
-
-		expect(stderr.join('')).not.toContain(ESC);
 	});
 
 	it('redacts a registered token from a human error, even if it reaches the message', () => {

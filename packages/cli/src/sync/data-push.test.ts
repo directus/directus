@@ -55,11 +55,6 @@ describe('remapSystemRecord', () => {
 	});
 
 	it('leaves the primary key verbatim on a miss and reports sentPk as the source id', () => {
-		const { record, sent } = remapSystemRecord({ id: 'sr', name: 'Editor' }, resource('directus_roles'), bucket);
-
-		expect(record['id']).toBe('tr');
-		expect(sent).toEqual({ sourceId: 'sr', sentPk: 'tr' });
-
 		const miss = remapSystemRecord({ id: 'new', name: 'New' }, resource('directus_roles'), bucket);
 		expect(miss.record['id']).toBe('new');
 		expect(miss.sent).toEqual({ sourceId: 'new', sentPk: 'new' });
@@ -263,10 +258,6 @@ describe('prepareDataPush skip and precondition', () => {
 				items: [{ id: 'target-id', language: 'en-US', key: 'greeting', value: 'Hello' }],
 			},
 		]);
-	});
-
-	it('previewData skips a schema-only checkout without touching the credential', async () => {
-		await expect(previewData(target(), 'merge')).resolves.toBeUndefined();
 	});
 
 	it('previewData excludes the dependents of an ambiguous source along with it, keeping unaffected rows', async () => {

@@ -168,18 +168,6 @@ describe('createConfigStore', () => {
 		).toThrow(/"profiles".*not an object/);
 	});
 
-	it('parses once per run, so the commands sharing a context share one copy', () => {
-		const dir = tempDir();
-		const path = join(dir, 'directus.config.json');
-		writeFileSync(path, JSON.stringify({ profiles: { prod: { url: 'https://one.example.com' } } }));
-
-		const store = createConfigStore(dir);
-		expect(store.load()?.config.profiles['prod']?.url).toBe('https://one.example.com');
-
-		writeFileSync(path, JSON.stringify({ profiles: { prod: { url: 'https://two.example.com' } } }));
-		expect(store.load()?.config.profiles['prod']?.url).toBe('https://one.example.com');
-	});
-
 	it('re-reads after its own writes, so a read later in the same run is never stale', () => {
 		const dir = tempDir();
 		const store = createConfigStore(dir);

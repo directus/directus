@@ -89,7 +89,7 @@ describe('sync push', () => {
 		};
 	}
 
-	it('applies the sealed diff and sends { hash, diff } to /schema/apply byte-for-byte', async () => {
+	it('prints the resolved target before applying the sealed diff byte-for-byte', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -105,17 +105,6 @@ describe('sync push', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
 
 		expect(applied).toEqual({ hash: 'h1', diff: mergeDiffBody() });
-	});
-
-	it('prints the resolved target and mode on the human channel before the diff summary', async () => {
-		seedConfig();
-		writeSnapshotFiles(schemaDir, fullSnapshot());
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-
-		interceptDiff('merge', mergeDiffBody());
-		interceptApply();
-
-		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
 
 		const err = stderr.join('');
 

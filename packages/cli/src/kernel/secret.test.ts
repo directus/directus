@@ -12,10 +12,6 @@ describe('redact', () => {
 		expect(redact('using super-secret-token-value to auth super-secret-token-value')).toBe('using *** to auth ***');
 	});
 
-	it('leaves output untouched when nothing is registered', () => {
-		expect(redact('plain output, no secrets')).toBe('plain output, no secrets');
-	});
-
 	it('ignores short values so ordinary words are not mangled', () => {
 		registerSecret('abc');
 

@@ -146,7 +146,7 @@ function diffResult(overrides: Record<string, unknown> = {}): Record<string, unk
 }
 
 describe('parseDiffResult', () => {
-	it('parses the sealed hash and the typed diff across the four change kinds', () => {
+	it('parses the sealed hash and all four diff sections', () => {
 		const parsed = parseDiffResult(diffResult());
 
 		expect(parsed?.hash).toBe('abc123');

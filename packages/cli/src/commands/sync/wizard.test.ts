@@ -107,6 +107,9 @@ describe('sync wizard', () => {
 		const messages = vi.mocked(select).mock.calls.map((call) => call[0].message);
 		expect(messages).not.toContain('Project scope:');
 
+		const targetOptions = (vi.mocked(select).mock.calls[1]?.[0].options ?? []) as { value: string; label: string }[];
+		expect(targetOptions.map((option) => option.value)).toEqual(['prod']);
+
 		const saved = JSON.parse(readFileSync(join(dir, 'directus.config.json'), 'utf8'));
 		expect(saved.projects).toEqual({ default: { mode: 'merge' } });
 	});
@@ -123,16 +126,5 @@ describe('sync wizard', () => {
 
 		const saved = JSON.parse(readFileSync(join(dir, 'directus.config.json'), 'utf8'));
 		expect(saved.projects).toEqual({ default: { mode: 'mirror' } });
-	});
-
-	it('excludes the chosen source from the target options so one profile can never be both ends', async () => {
-		twoProfiles();
-
-		vi.mocked(select).mockResolvedValueOnce('staging').mockResolvedValueOnce('prod').mockResolvedValueOnce('merge');
-
-		await wizard(ctxAt(dir, true));
-
-		const targetOptions = (vi.mocked(select).mock.calls[1]?.[0].options ?? []) as { value: string; label: string }[];
-		expect(targetOptions.map((option) => option.value)).toEqual(['prod']);
 	});
 });

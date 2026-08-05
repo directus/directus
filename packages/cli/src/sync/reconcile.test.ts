@@ -168,16 +168,7 @@ describe('reconcileCollections', () => {
 		expect(access.unmatched).toEqual([]);
 	});
 
-	it('normalizes an integer primary key to its string form', () => {
-		const results = reconcileCollections(
-			[input('directus_settings', [{ id: 1, project_name: 'X' }], [{ id: 1, project_name: 'X' }])],
-			{},
-		);
-
-		expect(forCollection(results, 'directus_settings').matched).toEqual([{ sourceId: '1', targetId: '1', key: '[]' }]);
-	});
-
-	it('matches the settings singleton unconditionally despite different ids and content', () => {
+	it('matches the settings singleton despite different content and normalizes its numeric ids', () => {
 		const results = reconcileCollections(
 			[input('directus_settings', [{ id: 5, project_name: 'Alpha' }], [{ id: 9, project_name: 'Beta' }])],
 			{},

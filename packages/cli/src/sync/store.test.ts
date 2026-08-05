@@ -350,7 +350,7 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 		expect(error.message).toMatch(/regular file/i);
 	});
 
-	it('preserves out-of-scope artifacts when a scoped pull refreshes one collection', () => {
+	it('preserves out-of-scope artifacts and reads the full set after a scoped refresh', () => {
 		const dir = tempDir();
 		writeSnapshotFiles(dir, abc());
 
@@ -384,6 +384,18 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 		expect(metadata.files).toContain(aFile);
 		expect(metadata.files).toContain(cFile);
 		expect(metadata.snapshot.version).toBe(1);
+
+		const read = readSnapshotFiles(dir);
+		expect(read.collections.map((entry) => entry.collection).sort()).toEqual(['a', 'b', 'c']);
+
+		expect(
+			read.fields
+				.filter((entry) => entry.collection === 'b')
+				.map((entry) => entry.field)
+				.sort(),
+		).toEqual(['body', 'title']);
+
+		expect(read.version).toBe(1);
 	});
 
 	it('removes an in-scope collection absent from the response but preserves out-of-scope files', () => {
@@ -490,39 +502,6 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 				.collections.map((entry) => entry.collection)
 				.sort(),
 		).toEqual(['a', 'b', 'c']);
-	});
-
-	it('reads back the full set, not just the last pull, after a scoped refresh', () => {
-		const dir = tempDir();
-		writeSnapshotFiles(dir, abc());
-
-		const scopedB: Snapshot = {
-			version: 2,
-			directus: '11.5.0',
-			vendor: 'postgres',
-			collections: [{ collection: 'b' }],
-			fields: [
-				{ collection: 'b', field: 'title', type: 'string' },
-				{ collection: 'b', field: 'subtitle', type: 'string' },
-			],
-			systemFields: [],
-			relations: [],
-		};
-
-		writeSnapshotFiles(dir, scopedB, { inScope: (name) => name === 'b' });
-
-		const read = readSnapshotFiles(dir);
-
-		expect(read.collections.map((entry) => entry.collection).sort()).toEqual(['a', 'b', 'c']);
-
-		expect(
-			read.fields
-				.filter((entry) => entry.collection === 'b')
-				.map((entry) => entry.field)
-				.sort(),
-		).toEqual(['subtitle', 'title']);
-
-		expect(read.version).toBe(1);
 	});
 });
 

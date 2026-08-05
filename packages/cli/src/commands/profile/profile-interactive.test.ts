@@ -360,7 +360,7 @@ describe('interactive profile flows', () => {
 		expect(store['https://cms.example.com'].prod.refresh_token).toBe(SESSION.refresh_token);
 	});
 
-	it('test --url works with no config file at all', async () => {
+	it('test --url works without config and refreshes the resolved credential before testing', async () => {
 		vi.mocked(testConnection).mockResolvedValueOnce({ user: 'Ada', role: 'Admin', projectName: 'Demo' });
 
 		await testProfile(undefined, { url: 'https://oneoff.example.com', token: 'tok-flag' }, ctxAt(dir));
@@ -368,14 +368,8 @@ describe('interactive profile flows', () => {
 		expect(testConnection).toHaveBeenCalledWith(
 			expect.objectContaining({ url: 'https://oneoff.example.com', token: 'tok-flag', kind: 'token' }),
 		);
-	});
 
-	it('refreshes an expiring saved session before testing it, so a live profile is not reported broken', async () => {
-		vi.mocked(testConnection).mockResolvedValueOnce({ user: 'Ada', role: 'Admin', projectName: 'Demo' });
-
-		await testProfile(undefined, { url: 'https://cms.example.com', token: 'tok-flag' }, ctxAt(dir));
-
-		expect(refreshSessionIfNeeded).toHaveBeenCalledWith(expect.objectContaining({ url: 'https://cms.example.com' }));
+		expect(refreshSessionIfNeeded).toHaveBeenCalledWith(expect.objectContaining({ url: 'https://oneoff.example.com' }));
 
 		const refreshOrder = vi.mocked(refreshSessionIfNeeded).mock.invocationCallOrder[0] ?? Infinity;
 		const testOrder = vi.mocked(testConnection).mock.invocationCallOrder[0] ?? 0;

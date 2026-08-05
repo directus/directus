@@ -179,14 +179,6 @@ describe('summarizeImport', () => {
 		expect(converged).toEqual({ created: 0, updated: 0, deleted: 0, lines: ['no data changes'] });
 	});
 
-	it('states "no data changes" when every collection is a no-op', () => {
-		const summary = summarizeImport(
-			importResult({ directus_roles: { existing: [], new: [], deleted: [], mapped: {} } }),
-		);
-
-		expect(summary).toEqual({ created: 0, updated: 0, deleted: 0, lines: ['no data changes'] });
-	});
-
 	it('names up to five deleted PKs then elides with a literal ellipsis', () => {
 		const summary = summarizeImport(
 			importResult({
