@@ -150,11 +150,9 @@ describe('prepareDataPush skip and precondition', () => {
 		vi.mocked(fetchRecords).mockReset();
 	});
 
-	it('plans nothing when the data directory is absent (a schema-only checkout)', async () => {
+	it('plans nothing for a schema-only checkout or an empty committed data set', async () => {
 		await expect(prepareDataPush(target(), 'merge', ctx())).resolves.toBeUndefined();
-	});
 
-	it('plans nothing when the committed data set is empty', async () => {
 		writeDataFiles(join(dir, 'data'), [], 'https://source.example.com');
 
 		await expect(prepareDataPush(target(), 'merge', ctx())).resolves.toBeUndefined();

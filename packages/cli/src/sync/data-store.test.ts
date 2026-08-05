@@ -61,12 +61,13 @@ function ownedFileFor(dir: string, collection: string): string {
 }
 
 describe('writeDataFiles / readDataFiles', () => {
-	it('round-trips records verbatim, including unknown nested keys, sorted by primary key', () => {
+	it('round-trips records and the source instance URL verbatim, sorted by primary key', () => {
 		const dir = tempDir();
 		writeDataFiles(dir, fixture(), SOURCE);
 
-		const { collections: read } = committed(dir);
+		const { collections: read, source } = committed(dir);
 
+		expect(source).toBe(SOURCE);
 		expect(read.map((collection) => collection.collection)).toEqual(['articles', 'directus_roles']);
 
 		const roles = read.find((collection) => collection.collection === 'directus_roles');
@@ -75,13 +76,6 @@ describe('writeDataFiles / readDataFiles', () => {
 			{ id: 'a', name: 'Admin', admin_access: true },
 			{ id: 'b', name: 'Editor', meta: { nested: { order: [3, 1, 2] } } },
 		]);
-	});
-
-	it('records the source instance URL and returns it on read', () => {
-		const dir = tempDir();
-		writeDataFiles(dir, fixture(), SOURCE);
-
-		expect(committed(dir).source).toBe(SOURCE);
 	});
 
 	it('preserves committed files whose collection is outside the current write set', () => {

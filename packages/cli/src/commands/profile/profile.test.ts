@@ -228,16 +228,23 @@ describe('profile commands', () => {
 		});
 	});
 
-	it('add without a name is a usage error', async () => {
-		expect(await d6s('profile', 'add', '--url', 'https://cms.example.com')).toBe(1);
-	});
+	it('rejects each malformed invocation for its own stated reason, writing no config', async () => {
+		const cases: [argv: string[], reason: RegExp][] = [
+			[['profile', 'add', '--url', 'https://cms.example.com'], /Name the profile/],
+			// An env-unsafe name would derive a DIRECTUS_<NAME>_TOKEN that no shell can export.
+			[['profile', 'add', 'my-staging', '--url', 'https://cms.example.com'], /Invalid profile name: "my-staging"/],
+			[['profile', 'add', 'staging', '--url', 'not-a-url'], /valid http\(s\) URL/],
+			[['profile', 'test', 'staging', '--url', 'https://oneoff.example.com'], /not both/],
+		];
 
-	it('rejects an env-unsafe profile name so DIRECTUS_<NAME>_TOKEN stays a valid var', async () => {
-		expect(await d6s('profile', 'add', 'my-staging', '--url', 'https://cms.example.com')).toBe(1);
-	});
+		for (const [argv, reason] of cases) {
+			stderr.length = 0;
 
-	it('add with an invalid URL is a usage error', async () => {
-		expect(await d6s('profile', 'add', 'staging', '--url', 'not-a-url')).toBe(1);
+			expect(await d6s(...argv)).toBe(1);
+			expect(stderr.join('')).toMatch(reason);
+		}
+
+		expect(existsSync(join(dir, 'directus.config.json'))).toBe(false);
 	});
 
 	it('rejects a credential-bearing url instead of writing it to committable config', async () => {
@@ -307,9 +314,5 @@ describe('profile commands', () => {
 		expect(stdout.join('')).not.toContain(password);
 		expect(stderr.join('')).not.toContain(password);
 		expect(JSON.parse(stdout.join('')).error.code).toBe('USAGE');
-	});
-
-	it('test rejects a profile name combined with --url instead of guessing which target wins', async () => {
-		expect(await d6s('profile', 'test', 'staging', '--url', 'https://oneoff.example.com')).toBe(1);
 	});
 });

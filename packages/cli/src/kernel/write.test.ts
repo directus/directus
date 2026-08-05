@@ -60,7 +60,7 @@ describe('writeFileAtomic', () => {
 			actualFs.fsyncSync(fd);
 		});
 
-		expect(() => writeFileAtomic(path, 'data\n', 0o644)).not.toThrow();
+		writeFileAtomic(path, 'data\n', 0o644);
 		expect(readFileSync(path, 'utf8')).toBe('data\n');
 		expect(dirFds.size).toBeGreaterThan(0);
 	});

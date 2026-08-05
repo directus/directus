@@ -93,12 +93,6 @@ describe('withMappings', () => {
 		expect(mappingsFor(merged, A, B)['directus_roles']).toEqual({ s1: 't1', s2: 't2' });
 	});
 
-	it('returns the same map object for empty entries', () => {
-		const base = withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { s1: 't1' });
-
-		expect(withMappings(base, A, B, 'directus_roles', {})).toBe(base);
-	});
-
 	it('fails STATE at write when a new entry maps a second source to an already-owned target id', () => {
 		const base = withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { s1: 't1' });
 

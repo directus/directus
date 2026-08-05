@@ -193,10 +193,13 @@ describe('run', () => {
 			vi.unstubAllEnvs();
 		});
 
-		it('prompts on a TTY, and stops when NO_INTERACTIVE is set', async () => {
+		it('prompts on a TTY, and stops for any NO_INTERACTIVE value — presence is the signal, like NO_COLOR', async () => {
 			expect(await interactivityOf(['probe'])).toBe(true);
 
 			vi.stubEnv('NO_INTERACTIVE', '1');
+			expect(await interactivityOf(['probe'])).toBe(false);
+
+			vi.stubEnv('NO_INTERACTIVE', '0');
 			expect(await interactivityOf(['probe'])).toBe(false);
 		});
 

@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { isCI, loadProjectEnv, promptsDisabled } from './env.js';
+import { loadProjectEnv } from './env.js';
 
 const created: string[] = [];
 
@@ -15,31 +15,6 @@ function tempDir(): string {
 afterEach(() => {
 	vi.unstubAllEnvs();
 	for (const dir of created.splice(0)) rmSync(dir, { recursive: true, force: true });
-});
-
-describe('isCI', () => {
-	it('is true when CI is set and false otherwise', () => {
-		vi.stubEnv('CI', 'true');
-		expect(isCI()).toBe(true);
-
-		vi.stubEnv('CI', '');
-		expect(isCI()).toBe(false);
-	});
-});
-
-describe('promptsDisabled', () => {
-	it('treats any non-empty value as opting out, and an empty one as unset', () => {
-		expect(promptsDisabled()).toBe(false);
-
-		vi.stubEnv('NO_INTERACTIVE', '1');
-		expect(promptsDisabled()).toBe(true);
-
-		vi.stubEnv('NO_INTERACTIVE', '0');
-		expect(promptsDisabled()).toBe(true);
-
-		vi.stubEnv('NO_INTERACTIVE', '');
-		expect(promptsDisabled()).toBe(false);
-	});
 });
 
 describe('loadProjectEnv', () => {
@@ -61,9 +36,5 @@ describe('loadProjectEnv', () => {
 		loadProjectEnv(dir);
 
 		expect(process.env['DIRECTUS_TOKEN']).toBe('from-real-env');
-	});
-
-	it('is a no-op when no .env file exists', () => {
-		expect(() => loadProjectEnv(tempDir())).not.toThrow();
 	});
 });

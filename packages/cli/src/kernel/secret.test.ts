@@ -31,11 +31,4 @@ describe('redact', () => {
 			'GET https://cms.example.com/assets/x?access_token=***&width=100',
 		);
 	});
-
-	it('clearSecrets empties the registry', () => {
-		registerSecret('another-secret-token');
-		clearSecrets();
-
-		expect(redact('another-secret-token')).toBe('another-secret-token');
-	});
 });

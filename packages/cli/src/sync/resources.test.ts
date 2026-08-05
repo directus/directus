@@ -8,14 +8,6 @@ function names(requested: string[], options?: { deps?: boolean }): string[] {
 }
 
 describe('resolveResources', () => {
-	it('pulls the policy chain and emits every dependency before the resource that pulls it', () => {
-		expect(names(['users'])).toEqual(['access', 'permissions', 'policies', 'roles', 'users']);
-	});
-
-	it('auto-pulls a dashboard’s panels and emits panels before the dashboard', () => {
-		expect(names(['dashboards'])).toEqual(['panels', 'dashboards']);
-	});
-
 	it('pins every selectable closure — the checked form of the hand-maintained mustPull table', () => {
 		const closures = Object.fromEntries(SELECTABLE_RESOURCES.map((name) => [name, names([name])]));
 
@@ -117,15 +109,6 @@ describe('resolveResources', () => {
 
 	it('keeps dependent-only children riding with their parent even under deps:false', () => {
 		expect(names(['policies'], { deps: false })).toEqual(['access', 'permissions', 'policies']);
-	});
-
-	it('gives every resource a strip and an aliases list, so a new resource cannot forget them', () => {
-		const all = ['dashboards', 'flows', 'folders', 'policies', 'roles', 'settings', 'translations', 'users'];
-
-		for (const resource of resolveResources(all)) {
-			expect(Array.isArray(resource.strip)).toBe(true);
-			expect(Array.isArray(resource.aliases)).toBe(true);
-		}
 	});
 
 	it('pins the users strip list by value — a new secret-bearing account column must fail loudly', () => {

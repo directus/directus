@@ -860,7 +860,7 @@ describe('sync push with data', () => {
 		expect(stderr.join('')).not.toContain('already matches');
 	});
 
-	it('reports applied:true on --json for a data-only push — the target DID change', async () => {
+	it('reports a data-only push as applied and changed on --json — the target DID change, with no schema hash', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
@@ -882,10 +882,14 @@ describe('sync push with data', () => {
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
 
-		const payload = JSON.parse(stdout.join(''));
-		expect(payload.applied).toBe(true);
-		expect(payload.changes).toBe(true);
-		expect(payload.schemaSkipped).toBe(false);
+		expect(JSON.parse(stdout.join(''))).toMatchObject({
+			kind: 'PushReport',
+			ok: true,
+			applied: true,
+			changes: true,
+			schemaSkipped: false,
+			hash: null,
+		});
 	});
 
 	it('refuses a project config pairing "schema": false with a collections scope', async () => {
@@ -949,33 +953,6 @@ describe('sync push with data', () => {
 				collections: fullImportResult()['collections'],
 			},
 		});
-	});
-
-	it('reports changes:true for a data-only push that imported rows', async () => {
-		seedConfig();
-		writeSnapshotFiles(schemaDir, fullSnapshot());
-		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-
-		interceptDiff('merge', null);
-		interceptTarget('/roles', []);
-
-		interceptImport(
-			{ mode: 'merge' },
-			{
-				data: {
-					applied: true,
-					mode: 'merge',
-					collections: { directus_roles: { existing: [], new: ['sr1'], deleted: [], mapped: {} } },
-				},
-			},
-		);
-
-		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
-
-		const payload = JSON.parse(stdout.join(''));
-
-		expect(payload).toMatchObject({ kind: 'PushReport', ok: true, applied: true, changes: true, hash: null });
 	});
 
 	it('writes a byte-identical id map across two identical push runs', async () => {

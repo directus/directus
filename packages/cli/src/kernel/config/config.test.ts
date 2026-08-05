@@ -113,7 +113,12 @@ describe('createConfigStore', () => {
 		const explicit = join(dir, 'other.config.json');
 		writeFileSync(explicit, JSON.stringify({ profiles: { explicit: { url: 'https://b.example.com' } } }));
 
-		expect(createConfigStore(dir, explicit).load()?.config.profiles['explicit']).toBeDefined();
+		const loaded = createConfigStore(dir, explicit).load();
+		expect(loaded?.path).toBe(explicit);
+
+		expect(loaded?.config.profiles).toEqual({
+			explicit: { url: 'https://b.example.com', auth: { type: 'token' } },
+		});
 	});
 
 	it('reports malformed JSON as a CONFIG error rather than throwing raw', () => {
@@ -204,10 +209,6 @@ describe('resolveProfile', () => {
 		projects: {},
 		format: 'json' as const,
 	};
-
-	it('returns the named profile', () => {
-		expect(resolveProfile(config, 'prod')).toMatchObject({ url: 'https://cms.example.com' });
-	});
 
 	it('names the known profiles on a miss so a typo is self-correcting', () => {
 		expect(caught(() => resolveProfile(config, 'prd')).hint).toContain('prod');

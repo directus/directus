@@ -64,22 +64,22 @@ describe('createUi', () => {
 		expect(stdout.join('')).toBe('');
 	});
 
-	it('renders errors as structured stdout in --json mode', () => {
+	it('emits a complete tagged ErrorReport on stdout only in --json mode', () => {
 		const ui = createUi({ json: true, color: false });
-		ui.error(new CliError('USAGE', 'bad input'));
+		ui.error(new CliError('USAGE', 'bad input', { hint: 'try --from', detail: 'received --to only' }));
 
-		expect(stdout.join('')).toContain('"code":"USAGE"');
+		expect(JSON.parse(stdout.join(''))).toEqual({
+			kind: 'ErrorReport',
+			formatVersion: 1,
+			error: {
+				code: 'USAGE',
+				message: 'bad input',
+				hint: 'try --from',
+				detail: 'received --to only',
+			},
+		});
+
 		expect(stderr.join('')).toBe('');
-	});
-
-	it('tags the --json error payload with kind ErrorReport and formatVersion so consumers can dispatch on it', () => {
-		const ui = createUi({ json: true, color: false });
-		ui.error(new CliError('USAGE', 'bad input'));
-
-		const payload = JSON.parse(stdout.join(''));
-		expect(payload.kind).toBe('ErrorReport');
-		expect(payload.formatVersion).toBe(1);
-		expect(payload.error.code).toBe('USAGE');
 	});
 
 	it('renders errors with a hint on stderr in human mode', () => {
@@ -113,15 +113,7 @@ describe('createUi', () => {
 		const ui = createUi({ json: true, color: false });
 		ui.error(new CliError('AUTH', 'boom leaked-token-abc123'));
 
-		expect(stdout.join('')).not.toContain('leaked-token-abc123');
-	});
-
-	it('redacts a token that appears in machine data output', () => {
-		registerSecret('leaked-token-abc123');
-		const ui = createUi({ json: true, color: false });
-		ui.data({ token: 'leaked-token-abc123' });
-
-		expect(stdout.join('')).not.toContain('leaked-token-abc123');
+		expect(JSON.parse(stdout.join('')).error.message).toBe('boom ***');
 	});
 
 	it('redacts a registered secret used as an object KEY in machine data output', () => {
@@ -160,19 +152,5 @@ describe('createUi', () => {
 		const out = stdout.join('');
 		expect(out).not.toContain('abc');
 		expect(JSON.parse(out)).toEqual({ token: '***' });
-	});
-
-	it('carries error detail on the --json channel so nothing is silently dropped', () => {
-		const ui = createUi({ json: true, color: false });
-		ui.error(new CliError('AUTH', 'auth failed', { detail: 'HTTP 401 from server' }));
-
-		expect(stdout.join('')).toContain('"detail":"HTTP 401 from server"');
-	});
-
-	it('carries the hint on the --json channel so a script sees the actionable fix', () => {
-		const ui = createUi({ json: true, color: false });
-		ui.error(new CliError('AUTH', 'no token', { hint: 'Set DIRECTUS_PROD_TOKEN or pass --token.' }));
-
-		expect(JSON.parse(stdout.join('')).error.hint).toBe('Set DIRECTUS_PROD_TOKEN or pass --token.');
 	});
 });

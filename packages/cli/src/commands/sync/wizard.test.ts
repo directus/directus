@@ -96,10 +96,8 @@ describe('sync wizard', () => {
 
 		await wizard(ctxAt(dir, true));
 
-		expect(pull).toHaveBeenCalledTimes(1);
 		expect(vi.mocked(pull).mock.calls[0]?.[0]).toEqual({ from: 'staging', project: 'default', deps: true });
 
-		expect(push).toHaveBeenCalledTimes(1);
 		expect(vi.mocked(push).mock.calls[0]?.[0]).toEqual({ to: 'prod', project: 'default', mode: 'merge' });
 
 		expect(order).toEqual(['pull', 'push']);

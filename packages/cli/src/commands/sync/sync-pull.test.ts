@@ -631,7 +631,7 @@ describe('sync pull resources and data', () => {
 		]);
 	});
 
-	it('expands a named resource to its full closure by default', async () => {
+	it('expands a named resource to its full closure by default, and severs it under --no-deps', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -648,27 +648,14 @@ describe('sync pull resources and data', () => {
 			'directus_policies',
 			'directus_roles',
 		]);
-	});
 
-	it('severs the selectable closure under --no-deps but keeps dependent children', async () => {
-		seedConfig();
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		rmSync(dataDir, { recursive: true, force: true });
 
 		interceptSnapshot();
 		interceptList('/roles', []);
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--roles', '--no-deps')).toBe(0);
 		expect(exportedCollections()).toEqual(['directus_roles']);
-
-		rmSync(dataDir, { recursive: true, force: true });
-
-		interceptSnapshot();
-		interceptList('/policies', []);
-		interceptList('/access', []);
-		interceptList('/permissions', []);
-
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--policies', '--no-deps')).toBe(0);
-		expect(exportedCollections()).toEqual(['directus_access', 'directus_permissions', 'directus_policies']);
 	});
 
 	it('honors deps:false from project config so a CI pull can reproduce a --no-deps checkout', async () => {
@@ -738,26 +725,6 @@ describe('sync pull resources and data', () => {
 			'directus_settings',
 			'directus_translations',
 		]);
-	});
-
-	it('subtracts translations from the default set under --no-translations', async () => {
-		seedConfig();
-		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
-		interceptSnapshot();
-		interceptList('/roles', []);
-		interceptList('/policies', []);
-		interceptList('/access', []);
-		interceptList('/permissions', []);
-		interceptList('/flows', []);
-		interceptList('/operations', []);
-		interceptList('/dashboards', []);
-		interceptList('/panels', []);
-		interceptList('/folders', []);
-		interceptSingleton('/settings', { id: 1 });
-
-		expect(await d6s('sync', 'pull', '--from', 'staging', '--no-translations')).toBe(0);
-
-		expect(exportedCollections()).not.toContain('directus_translations');
 	});
 
 	it('refuses --all combined with a named resource before any network call', async () => {

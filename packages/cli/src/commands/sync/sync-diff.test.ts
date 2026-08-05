@@ -209,14 +209,21 @@ describe('sync diff', () => {
 		});
 	});
 
-	it('diffs a partial snapshot in mirror mode by sending it to the wire', async () => {
+	it('diffs a partial snapshot in mirror mode, keeping its partial tag on the wire', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, partialSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		interceptDiff('mirror', null);
+		let sent: unknown;
+
+		interceptDiff('mirror', null, (body) => {
+			sent = body;
+		});
 
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--mode', 'mirror')).toBe(0);
+
+		// Downgrading the tag to a full snapshot would let mirror read the omitted collections as deletions.
+		expect(sent).toEqual(partialSnapshot());
 		expect(stderr.join('')).toContain('staging matches the committed files — nothing to do.');
 	});
 

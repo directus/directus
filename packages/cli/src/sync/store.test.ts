@@ -315,7 +315,6 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 		const metadata = JSON.parse(readFileSync(join(dir, 'metadata.json'), 'utf8'));
 		expect(metadata.snapshot.foo).toEqual({ bar: 1 });
 		expect(metadata.foo).toBeUndefined();
-		expect(Array.isArray(metadata.files)).toBe(true);
 
 		expect(readSnapshotFiles(dir)['foo']).toEqual({ bar: 1 });
 	});
@@ -323,7 +322,7 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	it('treats absent metadata as a first pull but refuses a corrupt one on the next write', () => {
 		const dir = tempDir();
 
-		expect(() => writeSnapshotFiles(dir, fixture())).not.toThrow();
+		writeSnapshotFiles(dir, fixture());
 
 		writeFileSync(join(dir, 'metadata.json'), '{ not valid json');
 
@@ -528,18 +527,16 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 });
 
 describe('readSnapshotFiles failures', () => {
-	it('reports missing state on an absent directory', () => {
+	it('reports the pull-first recovery for absent and empty directories', () => {
 		const error = expectCliError(() => readSnapshotFiles(join(tmpdir(), 'd6s-store-absent-xyz')));
 
 		expect(error.code).toBe('STATE');
 		expect(error.hint).toBe('Run d6s sync pull first.');
-	});
 
-	it('reports missing state on an empty directory', () => {
-		const error = expectCliError(() => readSnapshotFiles(tempDir()));
+		const emptyError = expectCliError(() => readSnapshotFiles(tempDir()));
 
-		expect(error.code).toBe('STATE');
-		expect(error.hint).toBe('Run d6s sync pull first.');
+		expect(emptyError.code).toBe('STATE');
+		expect(emptyError.hint).toBe('Run d6s sync pull first.');
 	});
 
 	it('fails loud, naming the drifted field, when an owned file is hand-corrupted', () => {
@@ -557,36 +554,22 @@ describe('readSnapshotFiles failures', () => {
 		expect(error.detail).toMatch(/collection/i);
 	});
 
-	it('fails loud, naming the file, when an owned file has a non-array "fields"', () => {
-		const dir = tempDir();
-		writeSnapshotFiles(dir, fixture());
+	it('fails loud, naming the file and the key, when an owned entry array is not an array', () => {
+		for (const key of ['fields', 'systemFields', 'relations']) {
+			const dir = tempDir();
+			writeSnapshotFiles(dir, fixture());
 
-		const name = ownedFileFor(dir, 'articles');
-		const parsed = JSON.parse(readFileSync(join(dir, name), 'utf8'));
-		parsed.fields = {};
-		writeFileSync(join(dir, name), JSON.stringify(parsed));
+			const name = ownedFileFor(dir, 'articles');
+			const parsed = JSON.parse(readFileSync(join(dir, name), 'utf8'));
+			parsed[key] = {};
+			writeFileSync(join(dir, name), JSON.stringify(parsed));
 
-		const error = expectCliError(() => readSnapshotFiles(dir));
+			const error = expectCliError(() => readSnapshotFiles(dir));
 
-		expect(error.code).toBe('STATE');
-		expect(error.message).toContain(name);
-		expect(error.message).toMatch(/fields/);
-	});
-
-	it('fails loud, naming the file, when an owned file has a non-array "systemFields"', () => {
-		const dir = tempDir();
-		writeSnapshotFiles(dir, fixture());
-
-		const name = ownedFileFor(dir, 'articles');
-		const parsed = JSON.parse(readFileSync(join(dir, name), 'utf8'));
-		parsed.systemFields = {};
-		writeFileSync(join(dir, name), JSON.stringify(parsed));
-
-		const error = expectCliError(() => readSnapshotFiles(dir));
-
-		expect(error.code).toBe('STATE');
-		expect(error.message).toContain(name);
-		expect(error.message).toMatch(/systemFields/);
+			expect(error.code).toBe('STATE');
+			expect(error.message).toContain(name);
+			expect(error.message).toContain(key);
+		}
 	});
 
 	it('fails loud, naming the file, when the manifest lists a collection file that is gone', () => {

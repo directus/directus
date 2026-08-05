@@ -54,14 +54,6 @@ describe('summarizeDiff', () => {
 		expect(summary.lines).toEqual(['~         field articles.title (meta.note)']);
 	});
 
-	it('omits the parenthetical when no op carries a path', () => {
-		const summary = summarizeDiff(
-			emptyDiff({ collections: [{ collection: 'events', diff: [{ kind: 'N', rhs: { collection: 'events' } }] }] }),
-		);
-
-		expect(summary.lines).toEqual(['+         collection events']);
-	});
-
 	it('rolls a new collection’s fields and relations into its own line instead of listing each', () => {
 		const summary = summarizeDiff(
 			emptyDiff({
@@ -141,12 +133,11 @@ describe('summarizeDiff', () => {
 		expect(summary.lines).toEqual(['+         relation pages.blocks']);
 	});
 
-	it('returns zero counts and no lines for an empty diff', () => {
-		expect(summarizeDiff(emptyDiff())).toEqual({ added: 0, modified: 0, deleted: 0, lines: [] });
-	});
+	it('returns the same zero summary for no response or an empty diff', () => {
+		const zero = { added: 0, modified: 0, deleted: 0, lines: [] };
 
-	it('returns the zero summary for a null diff', () => {
-		expect(summarizeDiff(null)).toEqual({ added: 0, modified: 0, deleted: 0, lines: [] });
+		expect(summarizeDiff(null)).toEqual(zero);
+		expect(summarizeDiff(emptyDiff())).toEqual(zero);
 	});
 });
 

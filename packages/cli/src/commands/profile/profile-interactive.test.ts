@@ -167,8 +167,8 @@ describe('interactive profile flows', () => {
 
 		const validate = vi.mocked(password).mock.calls[0]?.[0]?.validate;
 		if (typeof validate !== 'function') throw new Error('promptToken must register a callable validator');
-		expect(validate('')).toBeTruthy();
-		expect(validate('   ')).toBeTruthy();
+		expect(validate('')).toBe('Paste a non-empty token.');
+		expect(validate('   ')).toBe('Paste a non-empty token.');
 		expect(validate('tok-abcdefgh')).toBeUndefined();
 	});
 
