@@ -84,32 +84,45 @@ function applyChanges(collection: string, existing: unknown, changes: Relational
 	const updates = changes.update ?? [];
 	const deletions = new Set(changes.delete ?? []);
 
-	const items = (Array.isArray(existing) ? existing : [])
+	const fetched = (Array.isArray(existing) ? existing : [])
 		// Nested values may come back as bare primary keys rather than objects
 		.map((entry) => {
 			if (isPlainObject(entry)) return entry as Record<string, any>;
 			return primaryKeyField ? { [primaryKeyField]: entry } : null;
 		})
-		.filter((entry): entry is Record<string, any> => entry !== null)
-		.filter((entry) => !primaryKeyField || !deletions.has(entry[primaryKeyField]))
-		.map((entry) => {
-			if (!primaryKeyField) return entry;
+		.filter((entry): entry is Record<string, any> => entry !== null);
 
-			const edits = updates.find(
-				(update) => isPlainObject(update) && update[primaryKeyField] === entry[primaryKeyField],
-			);
+	const primaryKeyOf = (entry: Record<string, any>) => (primaryKeyField ? entry[primaryKeyField] : undefined);
+
+	// Both sides need a primary key to be matched up. A multi-hop template such as
+	// `translations.language.name` only augments the leaf primary key, so the rows in between can come
+	// back without one, and appending their updates would duplicate them instead of merging.
+	const matchable = fetched.every((entry) => primaryKeyOf(entry) !== undefined);
+
+	const items = fetched
+		.filter((entry) => !matchable || !deletions.has(primaryKeyOf(entry)))
+		.map((entry) => {
+			if (!matchable) return entry;
+
+			const edits = updates.find((update) => isPlainObject(update) && primaryKeyOf(update) === primaryKeyOf(entry));
 
 			return edits ? resolveRelationalChanges(collection, { ...entry, ...edits }, entry) : entry;
 		});
 
-	// Existing items newly related to this one only live in `update`, so they have no fetched counterpart
-	const present = new Set(primaryKeyField ? items.map((entry) => entry[primaryKeyField]) : []);
+	if (matchable) {
+		// Existing items newly related to this one only live in `update`, so they have no fetched counterpart
+		const present = new Set(items.map((entry) => primaryKeyOf(entry)));
 
-	for (const update of updates) {
-		if (!isPlainObject(update)) continue;
-		if (primaryKeyField && present.has(update[primaryKeyField])) continue;
+		for (const update of updates) {
+			if (!isPlainObject(update)) continue;
 
-		items.push(resolveRelationalChanges(collection, update));
+			const primaryKey = primaryKeyOf(update);
+
+			// A row edited and then removed before saving sits in both `update` and `delete`; removal wins
+			if (present.has(primaryKey) || deletions.has(primaryKey)) continue;
+
+			items.push(resolveRelationalChanges(collection, update));
+		}
 	}
 
 	for (const creation of changes.create ?? []) {

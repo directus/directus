@@ -98,6 +98,44 @@ test('drops nested deletions and appends nested creations', () => {
 	});
 });
 
+test('keeps a nested entry dropped when it is both updated and deleted', () => {
+	const item = {
+		id: 'abc',
+		translations: {
+			create: [],
+			update: [{ id: 1, title: 'Renamed' }],
+			delete: [1],
+		},
+	};
+
+	const existing = { id: 'abc', translations: [{ id: 1, title: 'Introduction' }] };
+
+	expect(resolveRelationalChanges('page_content_part', item, existing)).toEqual({
+		id: 'abc',
+		translations: [],
+	});
+});
+
+test('does not duplicate nested entries whose fetched values carry no primary key', () => {
+	const item = {
+		id: 'abc',
+		translations: {
+			create: [{ page_languages_code: 'de-DE' }],
+			update: [{ id: 1, page_languages_code: 'en-GB' }],
+			delete: [],
+		},
+	};
+
+	// A multi-hop template such as `translations.page_languages_code.name` only augments the leaf
+	// primary key, so the rows in between come back without one and cannot be matched
+	const existing = { id: 'abc', translations: [{ page_languages_code: { code: 'en-US', name: 'English' } }] };
+
+	expect(resolveRelationalChanges('page_content_part', item, existing)).toEqual({
+		id: 'abc',
+		translations: [{ page_languages_code: { code: 'en-US', name: 'English' } }, { page_languages_code: 'de-DE' }],
+	});
+});
+
 test('leaves non-relational fields that happen to match the changes shape untouched', () => {
 	const item = { payload: { create: [{ a: 1 }], update: [], delete: [] } };
 
