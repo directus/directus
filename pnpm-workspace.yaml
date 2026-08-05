@@ -69,7 +69,7 @@ catalog:
   '@opentelemetry/sdk-trace-node': 2.1.0
   '@pinia/testing': 1.0.3
   '@pnpm/logger': 1001.0.1
-  '@pnpm/workspace.find-packages': 1000.0.43
+  '@pnpm/types': 1000.7.0
   '@pnpm/workspace.pkgs-graph': 1000.0.25
   '@popperjs/core': 2.11.8
   '@reach/observe-rect': 1.2.0
