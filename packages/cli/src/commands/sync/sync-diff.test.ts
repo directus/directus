@@ -2,9 +2,6 @@ import { existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { MockAgent } from 'undici';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Snapshot } from '../../sync/contract.js';
-import { type DataCollection, writeDataFiles } from '../../sync/data-store.js';
-import { writeSnapshotFiles } from '../../sync/store.js';
 import {
 	decodeBatch,
 	fullSnapshot,
@@ -17,6 +14,9 @@ import {
 	SYNC_URL,
 	useSyncWorld,
 } from './sync.test-support.js';
+import type { Snapshot } from './utils/contract.js';
+import { type DataCollection, writeDataFiles } from './utils/data-store.js';
+import { writeSnapshotFiles } from './utils/store.js';
 
 const world = useSyncWorld();
 const url = SYNC_URL;
@@ -157,7 +157,7 @@ describe('sync diff', () => {
 			data: {
 				mode: 'merge',
 				source: null,
-				collections: null,
+				resultsByCollection: null,
 				matched: null,
 				ambiguous: null,
 				unmatched: null,
@@ -175,7 +175,7 @@ describe('sync diff', () => {
 
 		interceptDiff('merge', null);
 		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
-		expect(stderr.join('')).toContain('staging matches the committed files — nothing to do.');
+		expect(stderr.join('')).toContain('staging matches the commit-ready files — nothing to do.');
 
 		interceptDiff('merge', null);
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--json')).toBe(0);
@@ -198,7 +198,7 @@ describe('sync diff', () => {
 			data: {
 				mode: 'merge',
 				source: null,
-				collections: null,
+				resultsByCollection: null,
 				matched: null,
 				ambiguous: null,
 				unmatched: null,
@@ -224,7 +224,7 @@ describe('sync diff', () => {
 
 		// Downgrading the tag to a full snapshot would let mirror read the omitted collections as deletions.
 		expect(sent).toEqual(partialSnapshot());
-		expect(stderr.join('')).toContain('staging matches the committed files — nothing to do.');
+		expect(stderr.join('')).toContain('staging matches the commit-ready files — nothing to do.');
 	});
 
 	it('refuses a diff whose collection entry starts with a nested-meta delete (directus#27877)', async () => {
@@ -371,7 +371,7 @@ describe('sync diff with data', () => {
 			data: {
 				mode: 'merge',
 				source,
-				collections,
+				resultsByCollection: collections,
 				matched: 1,
 				ambiguous: 0,
 				unmatched: 1,
@@ -431,7 +431,7 @@ describe('sync diff with data', () => {
 
 		const err = stderr.join('');
 		expect(err).toContain('1 created, 0 updated, 0 deleted, 1 unresolved');
-		expect(err).toContain('2 committed records have no target match yet');
+		expect(err).toContain('2 configuration records have no target match yet');
 		expect(err).toContain('1 ambiguous');
 		expect(err).toContain('a non-interactive push refuses until they are resolved');
 
@@ -472,8 +472,8 @@ describe('sync diff with data', () => {
 		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
 
 		const err = stderr.join('');
-		expect(err).toContain('data matches; nothing to do (schema phase skipped)');
-		expect(err).not.toContain('schema and data match');
+		expect(err).toContain('configuration matches; nothing to do (schema phase skipped)');
+		expect(err).not.toContain('schema and configuration match');
 
 		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
 
@@ -539,7 +539,7 @@ describe('sync diff with data', () => {
 		);
 
 		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
-		expect(stderr.join('')).toContain('schema and data match; nothing to do.');
+		expect(stderr.join('')).toContain('schema and configuration match; nothing to do.');
 		expect(existsSync(idMapPath)).toBe(false);
 	});
 });

@@ -141,7 +141,7 @@ describe('run', () => {
 		expect(stdout.join('')).not.toContain('leaked-token-abc123');
 	});
 
-	it('loads project environment variables relative to discovered config', async () => {
+	it('loads project environment variables relative to discovered configuration', async () => {
 		const root = mkdtempSync(join(tmpdir(), 'd6s-env-'));
 
 		try {

@@ -6,12 +6,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createConfigStore } from '../../kernel/config/file.js';
 import type { CliContext } from '../../kernel/run.js';
 import { createUi } from '../../kernel/ui.js';
-import { fetchDiff, fetchRecords, importBatch } from '../../sync/api.js';
-import type { DiffResult, ImportBatchResult } from '../../sync/contract.js';
-import { writeDataFiles } from '../../sync/data-store.js';
-import { writeSnapshotFiles } from '../../sync/store.js';
 import { diff } from './diff.js';
 import { fullSnapshot, seedProjectConfig, SYNC_TOKEN } from './sync.test-support.js';
+import { fetchDiff, fetchRecords, importBatch } from './utils/api.js';
+import type { DiffResult, ImportBatchResult } from './utils/contract.js';
+import { writeDataFiles } from './utils/data-store.js';
+import { writeSnapshotFiles } from './utils/store.js';
 
 vi.mock('@clack/prompts', () => ({
 	confirm: vi.fn(),
@@ -20,7 +20,7 @@ vi.mock('@clack/prompts', () => ({
 	isCancel: vi.fn(() => false),
 }));
 
-vi.mock('../../sync/api.js', () => ({
+vi.mock('./utils/api.js', () => ({
 	fetchDiff: vi.fn(),
 	applyDiff: vi.fn(),
 	fetchRecords: vi.fn(),
@@ -104,11 +104,11 @@ describe('interactive sync diff', () => {
 
 		const output = stderr.join('');
 
-		expect(output).toContain('Data — no changes to import; 1 record unresolved.');
+		expect(output).toContain('Configuration — no changes to push; 1 record unresolved.');
 		expect(output).toContain('has no target match yet');
 		expect(output).toContain('1 ambiguous');
 		expect(output).toContain('a non-interactive push refuses until they are resolved');
-		expect(output).not.toContain('matches the committed files');
+		expect(output).not.toContain('matches the commit-ready files');
 
 		expect(existsSync(join(dir, 'directus', 'default', 'id_map.json'))).toBe(false);
 	});
@@ -132,7 +132,7 @@ describe('interactive sync diff', () => {
 
 		const output = stderr.join('');
 
-		expect(output).toContain('Data — no changes to import.');
+		expect(output).toContain('Configuration — no changes to push.');
 		expect(output).not.toContain('changes a push would import');
 	});
 
@@ -149,7 +149,7 @@ describe('interactive sync diff', () => {
 		expect(importBatch).toHaveBeenCalledTimes(1);
 		expect(vi.mocked(importBatch).mock.calls[0]?.[2]).toMatchObject({ dryRun: true });
 
-		expect(stderr.join('')).toContain('Data — 2 changes: 0 created, 0 updated, 2 deleted');
-		expect(stderr.join('')).not.toContain('matches the committed files');
+		expect(stderr.join('')).toContain('Configuration — 2 changes: 0 created, 0 updated, 2 deleted');
+		expect(stderr.join('')).not.toContain('matches the commit-ready files');
 	});
 });

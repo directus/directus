@@ -6,10 +6,10 @@ import { registerPush } from './push.js';
 import { registerWizard } from './wizard.js';
 
 export function registerSync(program: Command, getContext: () => CliContext): void {
-	const sync = program.command('sync').description('Sync schema and configuration between Directus instances');
+	const command = program.command('sync').description('Sync schema and configuration between Directus instances');
 
-	registerWizard(sync, getContext);
-	registerPull(sync, getContext);
-	registerDiff(sync, getContext);
-	registerPush(sync, getContext);
+	registerWizard(command, getContext);
+	registerPull(command, getContext);
+	registerDiff(command, getContext);
+	registerPush(command, getContext);
 }

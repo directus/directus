@@ -1,9 +1,9 @@
 import { type Command, Option } from 'commander';
+import { describeMode, MODES, type SyncMode } from '../../kernel/config/mode.js';
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
-import type { ImportBatchResult } from '../../sync/contract.js';
-import { type DataPreviewPlan, previewData } from '../../sync/data-push.js';
-import { describeMode, MODES, type SyncMode } from '../../sync/mode.js';
+import type { ImportBatchResult } from './utils/contract.js';
+import { type DataPreviewPlan, previewData } from './utils/data-push.js';
 import {
 	convergedMessage,
 	dataPhaseConverged,
@@ -14,14 +14,14 @@ import {
 	renderDataPlan,
 	renderSchemaPlan,
 	resolveMode,
-} from '../../sync/plan.js';
-import { emptyImportSummary, hasImportChanges, type ImportSummary } from '../../sync/render.js';
-import { resolveTarget } from '../../sync/resolve-target.js';
+} from './utils/plan.js';
+import { emptyImportSummary, hasImportChanges, type ImportSummary } from './utils/render.js';
+import { resolveTarget } from './utils/resolve-target.js';
 
 export interface DiffOptions {
 	readonly to: string;
 	/**
-	 * No commander default: an absent flag resolves to the project config's mode, then merge — the same
+	 * No commander default: an absent flag resolves to the project configuration's mode, then merge — the same
 	 * precedence push uses.
 	 */
 	readonly mode?: SyncMode;
@@ -30,8 +30,8 @@ export interface DiffOptions {
 	readonly project: string;
 }
 
-export function registerDiff(sync: Command, getContext: () => CliContext): void {
-	sync
+export function registerDiff(command: Command, getContext: () => CliContext): void {
+	command
 		.command('diff')
 		.description('Show what a push would change on the target. Applies nothing')
 		.requiredOption('--to <profile>', 'Target profile name')
@@ -67,7 +67,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	const mode: SyncMode = resolveMode(options.mode, projectConfig);
 
-	ctx.ui.info(`Comparing committed files with ${options.to} — ${url} (${describeMode(mode)})`);
+	ctx.ui.info(`Comparing commit-ready files with ${options.to} — ${url} (${describeMode(mode)})`);
 
 	const schema = await planSchema(target, mode, options.allowVersionDrift ?? false, ctx);
 
@@ -76,7 +76,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	// A truncated source cannot prove mirror deletions, even though the dry-run can display them.
 	if (mode === 'mirror' && preview !== undefined && preview.incomplete.length > 0) {
 		ctx.ui.warn(
-			`The committed export is incomplete for ${preview.incomplete.join(', ')} — the source hid rows from reads at pull time, and push will refuse mirror. Push with --mode merge, or license the source and re-pull.`,
+			`The commit-ready configuration is incomplete for ${preview.incomplete.join(', ')} — the source hid records from reads at pull time, and push will refuse mirror. Push with --mode merge, or license the source and re-pull.`,
 		);
 	}
 
@@ -84,7 +84,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	let dataSummary: ImportSummary | undefined;
 
 	if (preview !== undefined) {
-		// Under mirror, an empty collection entry can still delete target rows.
+		// Under mirror, an empty collection entry can still delete target records.
 		if (dataPhaseConverged(preview.records, mode)) {
 			dataSummary = emptyImportSummary();
 		} else {
@@ -142,7 +142,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 					: '';
 
 			ctx.ui.info(
-				`${count(pending, 'committed record')} ${pending === 1 ? 'has' : 'have'} no target match yet — the first push will match or create them${detail}.`,
+				`${count(pending, 'configuration record')} ${pending === 1 ? 'has' : 'have'} no target match yet — the first push will match or create them${detail}.`,
 			);
 		}
 	}

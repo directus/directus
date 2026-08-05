@@ -1,8 +1,16 @@
 import { Chalk } from 'chalk';
 import { isPlainObject } from 'lodash-es';
-import { DELETED_MARK, KIND_TOKENS } from '../sync/render.js';
 import type { CliError } from './error.js';
 import { redact } from './secret.js';
+
+/**
+ * The leading tokens of a plan line. They live here, not with the renderer, because painting and
+ * rendering must agree on them exactly — and the kernel cannot import a feature domain to find out.
+ */
+export const KIND_TOKENS = { added: '+', modified: '~', deleted: '✖ DELETE' } as const;
+
+/** The marker opening the deleted count of an import line; the line's tail is painted from it. */
+export const DELETED_MARK = '✖';
 
 // Fancy glyphs on capable terminals; ASCII on legacy Windows consoles that would
 // render them as mojibake. Modern Windows terminals set these vars; elsewhere is
@@ -76,7 +84,7 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 	}
 
 	// Color carries the change semantics a scanning eye reads first: deletions whole-line red (they are
-	// the rows an approval must not miss), additions' token green, modifications' token yellow — plus the
+	// the records an approval must not miss), additions' token green, modifications' token yellow — plus the
 	// destructive tail of a data line (`✖N deleted (…)`) red whenever N is non-zero.
 	function paintPlan(line: string): string {
 		if (line.startsWith(KIND_TOKENS.deleted)) return c.red(line);

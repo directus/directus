@@ -163,7 +163,7 @@ describe('summarizeImport', () => {
 		]);
 	});
 
-	it('subtracts client-known unchanged rows from existing before calling them updated', () => {
+	it('subtracts client-known unchanged records from existing before calling them updated', () => {
 		const summary = summarizeImport(
 			importResult({ directus_roles: { existing: ['t1', 't2', 't3'], new: [], deleted: [], mapped: {} } }),
 			new Map([['directus_roles', new Set(['t1', 't3'])]]),

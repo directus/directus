@@ -1,10 +1,10 @@
-import { fetchServerVersion } from '../kernel/connection.js';
-import { CliError } from '../kernel/error.js';
-import type { CliContext } from '../kernel/run.js';
-import { count } from '../kernel/text.js';
+import type { SchemaDiffMode } from '../../../kernel/config/mode.js';
+import { fetchServerVersion } from '../../../kernel/connection.js';
+import { CliError } from '../../../kernel/error.js';
+import type { CliContext } from '../../../kernel/run.js';
+import { count } from '../../../kernel/text.js';
 import { fetchDiff } from './api.js';
 import type { DiffResult, SchemaDiff, Snapshot } from './contract.js';
-import type { SchemaDiffMode } from './mode.js';
 import { findOutOfScopeReferences, formatOutOfScopeReferences } from './references.js';
 import type { Target } from './resolve-target.js';
 
@@ -38,7 +38,7 @@ function knownVersionMismatch(source: string, target: string | undefined): boole
 }
 
 /**
- * Compare an already-read committed snapshot with a target using the same fetch path for diff and push.
+ * Compare an already-read stored snapshot with a target using the same fetch path for diff and push.
  * Callers read the snapshot themselves so a never-pulled project fails before any request is made.
  */
 export async function fetchSnapshotDiff(

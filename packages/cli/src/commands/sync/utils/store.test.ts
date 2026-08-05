@@ -11,7 +11,7 @@ import {
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { CliError } from '../kernel/error.js';
+import { CliError } from '../../../kernel/error.js';
 import type { Snapshot, SnapshotEntry, SnapshotFieldEntry, SnapshotRelationEntry } from './contract.js';
 import { readSnapshotFiles, writeSnapshotFiles } from './store.js';
 import { expectCliError } from './test-support.js';

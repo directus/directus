@@ -1,4 +1,5 @@
-import { count } from '../kernel/text.js';
+import { count } from '../../../kernel/text.js';
+import { DELETED_MARK, KIND_TOKENS } from '../../../kernel/ui.js';
 import { byCodepoint } from './codepoint.js';
 import type { DiffOp, DiffRelationEntry, ImportBatchResult, SchemaDiff } from './contract.js';
 
@@ -13,10 +14,6 @@ type Change = 'added' | 'modified' | 'deleted';
 
 // Exported because ui.ts colors a plan line by matching these exact tokens: a rename here would
 // silently kill the coloring there.
-export const KIND_TOKENS: Record<Change, string> = { added: '+', modified: '~', deleted: '✖ DELETE' };
-
-/** The marker opening the deleted count of an import line; ui.ts paints the line's tail from it. */
-export const DELETED_MARK = '✖';
 
 const TOKEN_WIDTH = Math.max(...Object.values(KIND_TOKENS).map((token) => token.length));
 
@@ -173,7 +170,7 @@ export function hasImportChanges(summary: ImportSummary): boolean {
 	return summary.created > 0 || summary.updated > 0 || summary.deleted > 0;
 }
 
-/** Summarize an import response, subtracting rows known to have been unchanged. */
+/** Summarize an import response, subtracting records known to have been unchanged. */
 export function summarizeImport(
 	result: ImportBatchResult,
 	unchanged?: ReadonlyMap<string, ReadonlySet<string>>,
@@ -187,8 +184,8 @@ export function summarizeImport(
 		const collection = result.collections[name];
 		if (collection === undefined) continue;
 
-		// The server reports every PK-present row as `existing` whether or not anything differed; the
-		// caller's client-side unchanged set is what turns that into an honest "updated" count. Rows a
+		// The server reports every PK-present record as `existing` whether or not anything differed; the
+		// caller's client-side unchanged set is what turns that into an honest "updated" count. Records a
 		// mirror batch carried only to survive the delete are not updates.
 		const unchangedSet = unchanged?.get(name);
 

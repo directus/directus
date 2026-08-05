@@ -1,8 +1,8 @@
 import type { Command } from 'commander';
 import type { CliContext } from '../../kernel/run.js';
 
-export function registerList(profile: Command, getContext: () => CliContext): void {
-	profile
+export function registerList(command: Command, getContext: () => CliContext): void {
+	command
 		.command('list')
 		.description('List configured profiles')
 		.action(() => list(getContext()));

@@ -136,7 +136,7 @@ describe('reconcileCollections', () => {
 		expect(operations.unmatched).toEqual(['oOrphan']);
 	});
 
-	it('does not cross-match access rows whose null FK component sits in a different slot', () => {
+	it('does not cross-match access records whose null FK component sits in a different slot', () => {
 		const results = reconcileCollections(
 			[
 				input('directus_roles', [{ id: 'rS', name: 'R' }], [{ id: 'rT', name: 'R' }]),

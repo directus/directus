@@ -1,9 +1,9 @@
 import { existsSync, realpathSync } from 'node:fs';
 import { dirname, join, sep } from 'node:path';
-import { envTokenVar, resolveCredential, type ResolvedCredential } from '../kernel/config/credentials.js';
-import { type ProjectConfig, resolveProfile } from '../kernel/config/file.js';
-import { CliError } from '../kernel/error.js';
-import type { CliContext } from '../kernel/run.js';
+import { envTokenVar, resolveCredential, type ResolvedCredential } from '../../../kernel/config/credentials.js';
+import type { ProjectConfig } from '../../../kernel/config/file.js';
+import { CliError } from '../../../kernel/error.js';
+import type { CliContext } from '../../../kernel/run.js';
 
 /** A resolved sync endpoint and its project-scoped artifact paths. */
 export interface Target {
@@ -14,13 +14,13 @@ export interface Target {
 	readonly dataDir: string;
 	readonly idMapPath: string;
 	/**
-	 * The config entry for this project, or undefined when the project is not declared (only `default`
+	 * The configuration entry for this project, or undefined when the project is not declared (only `default`
 	 * may go undeclared).
 	 */
 	readonly projectConfig: ProjectConfig | undefined;
 }
 
-/** The one project scope that needs no config entry. */
+/** The one project scope that needs no configuration entry. */
 export const DEFAULT_PROJECT = 'default';
 
 const PROJECT_NAME = /^[a-z0-9][a-z0-9-_]*$/i;
@@ -63,7 +63,7 @@ export function resolveTarget(profileName: string, projectName: string, ctx: Cli
 		});
 	}
 
-	const { url } = resolveProfile(loaded.config, profileName);
+	const { url } = ctx.config.requireProfile(profileName);
 
 	const projectRoot = dirname(loaded.path);
 	const directoryRoot = join(projectRoot, loaded.config.directory);

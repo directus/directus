@@ -1,6 +1,6 @@
 import { isPlainObject } from 'lodash-es';
 import { z } from 'zod';
-import { CliError } from '../kernel/error.js';
+import { CliError } from '../../../kernel/error.js';
 import { type ArtifactWriteResult, METADATA_FILE, readArtifacts, writeArtifacts } from './artifact-store.js';
 import { byCodepoint } from './codepoint.js';
 import {
@@ -170,7 +170,7 @@ export function writeSnapshotFiles(dir: string, snapshot: Snapshot, scope?: Writ
 	});
 }
 
-/** Read and reassemble a validated snapshot from its committed artifacts. */
+/** Read and reassemble a validated snapshot from its stored artifacts. */
 export function readSnapshotFiles(dir: string): Snapshot {
 	const { metadata, artifacts: files } = readArtifacts({
 		dir,

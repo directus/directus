@@ -2,8 +2,8 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import { z } from 'zod';
-import { isSafeUrl } from '../kernel/config/file.js';
-import { CliError } from '../kernel/error.js';
+import { isSafeUrl } from '../../../kernel/config/file.js';
+import { CliError } from '../../../kernel/error.js';
 import { type ArtifactWriteResult, fileName, METADATA_FILE, readArtifacts, writeArtifacts } from './artifact-store.js';
 import { byCodepoint } from './codepoint.js';
 import { normalizeInstanceUrl } from './id-map.js';
@@ -19,7 +19,7 @@ export interface DataCollection {
 }
 
 interface DataWriteResult extends ArtifactWriteResult {
-	/** The committed incompleteness after the write: this pull's shortfalls plus markers carried by preserved files. */
+	/** The stored incompleteness after the write: this pull's shortfalls plus markers carried by preserved files. */
 	readonly incomplete: string[];
 }
 
@@ -27,8 +27,8 @@ interface DataReadResult {
 	readonly source: string;
 	readonly collections: DataCollection[];
 	/**
-	 * Collections whose export the source instance is known to have silently truncated (reads filtered by
-	 * license entitlements). Recorded in the committed manifest so the knowledge survives to whoever
+	 * Collections whose pull the source instance is known to have silently truncated (reads filtered by
+	 * license entitlements). Recorded in stored metadata so the knowledge survives to whoever
 	 * pushes: merge/add stay safe, mirror must refuse — absence from an incomplete batch is not deletion
 	 * consent.
 	 */
@@ -128,7 +128,7 @@ function parseDataFile(value: unknown, name: string): DataCollection {
 	return { collection, primaryKey, records };
 }
 
-/** A committed generation's provenance; `'unknown'` means the manifest predates completeness tracking. */
+/** A stored generation's provenance; `'unknown'` means the metadata predates completeness tracking. */
 interface CommittedData {
 	readonly source: string;
 	readonly incomplete: string[] | 'unknown';
@@ -188,7 +188,7 @@ function assertMatchingDataSource(committed: CommittedData | undefined, dir: str
 	if (committed !== undefined && committed.source !== source) {
 		throw new CliError(
 			'STATE',
-			`The committed data in ${dir} came from ${committed.source}; this pull is from ${source}.`,
+			`The commit-ready files in ${dir} came from ${committed.source}; this pull is from ${source}.`,
 			{
 				hint: 'Mixed sources corrupt identity mapping. Delete the data directory to switch this project to the new source, or declare a separate project for it.',
 			},
@@ -197,7 +197,7 @@ function assertMatchingDataSource(committed: CommittedData | undefined, dir: str
 }
 
 /**
- * Refuse when the committed data generation came from a different source instance. Exposed so pull can
+ * Refuse when the stored data generation came from a different source instance. Exposed so pull can
  * run it BEFORE any write — a writer-level refusal alone would land after the schema files changed.
  */
 export function assertDataSource(dir: string, source: string): void {
@@ -260,8 +260,8 @@ export function writeDataFiles(
 }
 
 /**
- * Whether the committed data manifest lists a collection's artifact — i.e. the collection is part of the
- * committed tree that a write not refetching it will preserve. Lenient by design: this is a read-only
+ * Whether the stored data metadata lists a collection's artifact — i.e. the collection is part of the
+ * stored tree that a write not refetching it will preserve. Lenient by design: this is a read-only
  * premise check consulted during pull, and the strict validators already stop any write that builds on a
  * corrupt tree — so an unreadable manifest answers false instead of turning a healable tree into a hard
  * pull failure.
@@ -284,7 +284,7 @@ export function hasCommittedCollection(dir: string, collection: string): boolean
 	return Array.isArray(files) && files.includes(fileName(collection));
 }
 
-/** Read and validate the manifest-owned data artifacts, or undefined when nothing is committed. */
+/** Read and validate the metadata-owned data artifacts, or undefined when nothing is stored. */
 export function readDataFiles(dir: string): DataReadResult | undefined {
 	if (!existsSync(join(dir, METADATA_FILE))) return undefined;
 
@@ -297,7 +297,7 @@ export function readDataFiles(dir: string): DataReadResult | undefined {
 			const committed = interpretMetadata(value);
 
 			if (committed.incomplete === 'unknown') {
-				throw new CliError('STATE', `${METADATA_FILE} does not record export completeness.`, {
+				throw new CliError('STATE', `${METADATA_FILE} does not record pull completeness.`, {
 					hint: 'This data predates completeness tracking; run d6s sync pull again to record it.',
 				});
 			}

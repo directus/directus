@@ -1,15 +1,15 @@
 import type { Command } from 'commander';
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
-import { resolveNewProfileName, resolveProfileUrl, saveProfile } from '../../profile/save.js';
+import { resolveNewProfileName, resolveProfileUrl, saveProfile } from './utils/save.js';
 
 interface AddOptions {
 	readonly url?: string;
 	readonly token?: string;
 }
 
-export function registerAdd(profile: Command, getContext: () => CliContext): void {
-	profile
+export function registerAdd(command: Command, getContext: () => CliContext): void {
+	command
 		.command('add')
 		.description('Create a profile; use "profile update" to change one that already exists')
 		.argument('[name]', 'Profile name; prompted when omitted')

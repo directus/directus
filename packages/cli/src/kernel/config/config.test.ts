@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { CliError } from '../error.js';
-import { createConfigStore, resolveProfile } from './file.js';
+import { createConfigStore } from './file.js';
 
 const created: string[] = [];
 
@@ -29,7 +29,7 @@ afterEach(() => {
 });
 
 describe('createConfigStore', () => {
-	it('returns undefined when no config exists so profile-less operation stays first-class', () => {
+	it('returns undefined when no configuration exists so profile-less operation stays first-class', () => {
 		expect(createConfigStore(tempDir()).load()).toBeUndefined();
 	});
 
@@ -51,7 +51,7 @@ describe('createConfigStore', () => {
 		expect((loaded?.config as Record<string, unknown>)['sync']).toEqual({ defaultMode: 'merge' });
 	});
 
-	it('fills directory, projects, and format with defaults so a config predating them parses unchanged', () => {
+	it('fills directory, projects, and format with defaults so older configuration parses unchanged', () => {
 		const dir = tempDir();
 		writeFileSync(join(dir, 'directus.config.json'), '{ "profiles": {} }');
 
@@ -135,7 +135,7 @@ describe('createConfigStore', () => {
 		expect(caught(() => createConfigStore(dir).load()).code).toBe('CONFIG');
 	});
 
-	it('rejects a credential-bearing url so a secret never lands in committable config', () => {
+	it('rejects a credential-bearing URL so a secret never lands in commit-ready configuration', () => {
 		const dir = tempDir();
 
 		writeFileSync(
@@ -150,7 +150,7 @@ describe('createConfigStore', () => {
 		expect(caught(() => createConfigStore(tempDir(), join(tempDir(), 'missing.json')).load()).code).toBe('CONFIG');
 	});
 
-	it('refuses to write over an existing non-object config', () => {
+	it('refuses to write over existing non-object configuration', () => {
 		const dir = tempDir();
 		writeFileSync(join(dir, 'directus.config.json'), '[]');
 
@@ -190,25 +190,24 @@ describe('createConfigStore', () => {
 	});
 });
 
-describe('resolveProfile', () => {
-	const config = {
-		profiles: { prod: { url: 'https://cms.example.com', auth: { type: 'token' as const } } },
-		directory: 'directus',
-		projects: {},
-		format: 'json' as const,
-	};
+describe('requireProfile', () => {
+	function storeWith(profiles: Record<string, unknown>) {
+		const dir = tempDir();
+		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles }));
+		return createConfigStore(dir);
+	}
 
 	it('names the known profiles on a miss so a typo is self-correcting', () => {
-		expect(caught(() => resolveProfile(config, 'prd')).hint).toContain('prod');
+		const store = storeWith({ prod: { url: 'https://cms.example.com', auth: { type: 'token' } } });
+		expect(caught(() => store.requireProfile('prd')).hint).toContain('prod');
 	});
 
 	it('hints that none are defined when the profile set is empty', () => {
-		expect(
-			caught(() => resolveProfile({ profiles: {}, directory: 'directus', projects: {}, format: 'json' }, 'prod')).hint,
-		).toContain('No profiles');
+		expect(caught(() => storeWith({}).requireProfile('prod')).hint).toContain('No profiles');
 	});
 
 	it('does not match inherited object properties like "toString"', () => {
-		expect(caught(() => resolveProfile(config, 'toString')).code).toBe('CONFIG');
+		const store = storeWith({ prod: { url: 'https://cms.example.com', auth: { type: 'token' } } });
+		expect(caught(() => store.requireProfile('toString')).code).toBe('CONFIG');
 	});
 });

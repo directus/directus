@@ -5,7 +5,7 @@ import { isSafeUrl } from '../../kernel/config/file.js';
 import { CliError } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
-import { resolveExistingProfileName, resolveProfileUrl, saveProfile } from '../../profile/save.js';
+import { resolveExistingProfileName, resolveProfileUrl, saveProfile } from './utils/save.js';
 
 interface UpdateOptions {
 	readonly url?: string;
@@ -13,11 +13,11 @@ interface UpdateOptions {
 	readonly yes?: boolean;
 }
 
-export function registerUpdate(profile: Command, getContext: () => CliContext): void {
-	profile
+export function registerUpdate(command: Command, getContext: () => CliContext): void {
+	command
 		.command('update')
 		.description(
-			'Change an existing profile. A different --url moves it to another host: the credential saved for the old URL is cleared and the profile-specific env token follows the profile',
+			'Change an existing profile. A different --url moves it to another instance: the credential saved for the old URL is cleared and the profile-specific env token follows the profile',
 		)
 		.argument('[name]', 'Profile name; prompted when omitted')
 		.option('--url <url>', 'New Directus instance URL; keeps the current one when omitted')
@@ -51,7 +51,7 @@ export async function update(nameArg: string | undefined, options: UpdateOptions
 		});
 	}
 
-	// Raw config may contain credentials or terminal controls, so only display a validated URL.
+	// Raw configuration may contain credentials or terminal controls, so only display a validated URL.
 	const currentUrl = existing.url !== undefined && isSafeUrl(existing.url) ? existing.url : undefined;
 	const currentShown = currentUrl ?? UNPRINTABLE_URL;
 

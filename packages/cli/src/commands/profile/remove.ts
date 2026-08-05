@@ -4,14 +4,14 @@ import { clearCredential } from '../../kernel/config/credentials.js';
 import { CliError } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
-import { resolveExistingProfileName } from '../../profile/save.js';
+import { resolveExistingProfileName } from './utils/save.js';
 
 interface RemoveOptions {
 	readonly yes?: boolean;
 }
 
-export function registerRemove(profile: Command, getContext: () => CliContext): void {
-	profile
+export function registerRemove(command: Command, getContext: () => CliContext): void {
+	command
 		.command('remove')
 		.description('Remove a profile and clear its saved credential')
 		.argument('[name]', 'Profile name; prompted when omitted')

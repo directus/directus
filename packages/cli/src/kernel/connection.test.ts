@@ -218,7 +218,7 @@ describe('connection', () => {
 			testConnection({ url: 'https://cms.example.com', token: 'token', kind: 'token' }),
 		).rejects.toMatchObject({
 			code: 'HTTP',
-			message: 'Target limit exceeded for https://cms.example.com.',
+			message: 'Instance limit exceeded for https://cms.example.com.',
 			detail: 'LIMIT_EXCEEDED: flows limit exceeded',
 		});
 	});

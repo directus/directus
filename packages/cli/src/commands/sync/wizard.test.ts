@@ -89,7 +89,7 @@ describe('sync wizard', () => {
 		expect((error as CliError).message).toMatch(/two profiles/i);
 	});
 
-	it('runs pull then push with the gathered options when config answers neither project nor mode', async () => {
+	it('runs pull then push with the gathered options when configuration answers neither project nor mode', async () => {
 		twoProfiles();
 
 		vi.mocked(select).mockResolvedValueOnce('staging').mockResolvedValueOnce('prod').mockResolvedValueOnce('merge');
@@ -114,7 +114,7 @@ describe('sync wizard', () => {
 		expect(saved.projects).toEqual({ default: { mode: 'merge' } });
 	});
 
-	it('skips the mode prompt and omits mode from push when the project config sets it', async () => {
+	it('skips the mode prompt and omits mode from push when the project configuration sets it', async () => {
 		twoProfiles({ projects: { default: { mode: 'mirror' } } });
 
 		vi.mocked(select).mockResolvedValueOnce('staging').mockResolvedValueOnce('prod');

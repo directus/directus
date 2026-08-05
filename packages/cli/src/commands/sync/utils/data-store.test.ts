@@ -45,7 +45,7 @@ function fixture(): DataCollection[] {
 
 function committed(dir: string): NonNullable<ReturnType<typeof readDataFiles>> {
 	const result = readDataFiles(dir);
-	if (result === undefined) throw new Error(`no committed data in ${dir}`);
+	if (result === undefined) throw new Error(`no stored data in ${dir}`);
 	return result;
 }
 
@@ -78,7 +78,7 @@ describe('writeDataFiles / readDataFiles', () => {
 		]);
 	});
 
-	it('preserves committed files whose collection is outside the current write set', () => {
+	it('preserves stored files whose collection is outside the current write set', () => {
 		const dir = tempDir();
 		writeDataFiles(dir, fixture(), SOURCE);
 
@@ -98,7 +98,7 @@ describe('writeDataFiles / readDataFiles', () => {
 		expect(read.map((collection) => collection.collection)).toEqual(['articles', 'directus_flows', 'directus_roles']);
 	});
 
-	it('refuses to write over committed data from a different source instance', () => {
+	it('refuses to write over stored data from a different source instance', () => {
 		const dir = tempDir();
 		writeDataFiles(dir, fixture(), SOURCE);
 
@@ -162,7 +162,7 @@ describe('writeDataFiles / readDataFiles', () => {
 });
 
 describe('hasCommittedCollection', () => {
-	it("answers from the committed manifest, tracking the writer's own file naming", () => {
+	it("answers from stored metadata, tracking the writer's own file naming", () => {
 		const dir = tempDir();
 		expect(hasCommittedCollection(dir, 'directus_roles')).toBe(false);
 
@@ -340,7 +340,7 @@ describe('readDataFiles failures', () => {
 		expect(error.message).toMatch(/records/);
 	});
 
-	it('fails loud when a record is not an object or has no primary key — junk rows must not import', () => {
+	it('fails loud when a record is not an object or has no primary key — junk records must not reach a push', () => {
 		const dir = tempDir();
 		writeDataFiles(dir, fixture(), SOURCE);
 

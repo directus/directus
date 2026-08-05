@@ -1,15 +1,15 @@
 import { select } from '@clack/prompts';
 import { isEqual } from 'lodash-es';
-import { fetchQueryLimitMax } from '../kernel/connection.js';
-import { CliError } from '../kernel/error.js';
-import { ask } from '../kernel/prompt.js';
-import type { CliContext } from '../kernel/run.js';
+import type { SyncMode } from '../../../kernel/config/mode.js';
+import { fetchQueryLimitMax } from '../../../kernel/connection.js';
+import { CliError } from '../../../kernel/error.js';
+import { ask } from '../../../kernel/prompt.js';
+import type { CliContext } from '../../../kernel/run.js';
 import { fetchRecords } from './api.js';
 import { byCodepoint } from './codepoint.js';
 import type { ImportCollectionData } from './contract.js';
 import { type DataCollection, readDataFiles } from './data-store.js';
 import { type IdMap, mappingsFor, normalizeInstanceUrl, readIdMap, withMappings, writeIdMap } from './id-map.js';
-import type { SyncMode } from './mode.js';
 import { type CollectionReconcile, reconcileCollections, type ReconcileInput } from './reconcile.js';
 import type { Target } from './resolve-target.js';
 import { allResources, type Resource } from './resources.js';
@@ -29,8 +29,8 @@ interface SystemSent {
 }
 
 /**
- * Target rows whose exported fields already match. The server reports every PK-present row as `existing`,
- * so this set distinguishes actual updates from rows sent only to survive mirror deletion.
+ * Target records whose synced fields already match. The server reports every PK-present record as `existing`,
+ * so this set distinguishes actual updates from records sent only to survive mirror deletion.
  */
 export type UnchangedRows = ReadonlyMap<string, ReadonlySet<string>>;
 
@@ -45,7 +45,7 @@ export interface DataPushPlan {
 	readonly unchanged: UnchangedRows;
 	readonly records: number;
 	readonly collections: number;
-	/** Collections the committed manifest marks as truncated at pull time; mirror must refuse them. */
+	/** Collections the stored metadata marks as truncated at pull time; mirror must refuse them. */
 	readonly incomplete: readonly string[];
 }
 
@@ -55,7 +55,7 @@ interface SystemCollection {
 }
 
 /**
- * Partition committed collections into known system resources and user content. System resources follow
+ * Partition stored collections into known system resources and user content. System resources follow
  * graph order; content collections are codepoint-sorted.
  */
 export function partitionCollections(collections: readonly DataCollection[]): {
@@ -74,7 +74,7 @@ export function partitionCollections(collections: readonly DataCollection[]): {
 			if (data.primaryKey !== resource.primaryKey) {
 				throw new CliError(
 					'STATE',
-					`The committed data file for ${data.collection} declares primary key "${data.primaryKey}", but this collection's primary key is "${resource.primaryKey}".`,
+					`The commit-ready file for ${data.collection} declares primary key "${data.primaryKey}", but this collection's primary key is "${resource.primaryKey}".`,
 					{ hint: 'Fix or delete the data file, then run d6s sync pull again.' },
 				);
 			}
@@ -244,7 +244,7 @@ async function resolveMatches(
 		});
 
 		throw new CliError('STATE', `Ambiguous target matches:\n  ${lines.join('\n  ')}`, {
-			hint: 'Run d6s sync push interactively once to choose, then commit the updated id map.',
+			hint: 'Run d6s sync push interactively once to choose, then commit the updated ID map.',
 		});
 	}
 
@@ -333,17 +333,17 @@ async function readAndReconcile(target: Target): Promise<Reconciled | undefined>
 	if (unknownSystem.length > 0) {
 		throw new CliError(
 			'STATE',
-			`The committed data files contain system collections this CLI version does not sync: ${unknownSystem.map((data) => data.collection).join(', ')}.`,
-			{ hint: 'Delete those data files and re-pull, or use a CLI version that syncs them.' },
+			`The commit-ready files contain system collections this CLI version does not sync: ${unknownSystem.map((data) => data.collection).join(', ')}.`,
+			{ hint: 'Delete those files and re-pull, or use a CLI version that syncs them.' },
 		);
 	}
 
 	if (content.length > 0) {
 		throw new CliError(
 			'STATE',
-			`The committed data files contain content collections: ${content.map((data) => data.collection).join(', ')}.`,
+			`The commit-ready files contain content collections: ${content.map((data) => data.collection).join(', ')}.`,
 			{
-				hint: 'Content sync is deferred in this release — the CLI syncs schema and configuration only. Delete those data files and re-pull.',
+				hint: 'Content sync is deferred in this release — the CLI syncs schema and configuration only. Delete those files and re-pull.',
 			},
 		);
 	}
@@ -387,7 +387,7 @@ function assembleBatch(
 
 	const includesUsers = system.some((entry) => entry.resource.collection === 'directus_users');
 
-	// Rows the target already matches: the import reports every PK-present row as `existing`, so this set is
+	// Records the target already matches: the import reports every PK-present record as `existing`, so this set is
 	// what keeps them out of the rendered "updated" count.
 	function markUnchanged(collection: string, pk: string): void {
 		const set = unchanged.get(collection) ?? new Set<string>();
@@ -408,7 +408,7 @@ function assembleBatch(
 			const mapped = Object.hasOwn(collectionBucket, sourceId);
 
 			if (mode === 'add' && mapped) {
-				// Re-send a mapped row deleted from the target; otherwise add mode could never restore it.
+				// Re-send a mapped record deleted from the target; otherwise add mode could never restore it.
 				const mappedPk = collectionBucket[sourceId];
 
 				if (mappedPk === undefined || targetByPk.has(mappedPk)) continue;
@@ -416,12 +416,12 @@ function assembleBatch(
 
 			const result = remapSystemRecord(record, resource, bucket);
 
-			// Add-mode PK conflicts create duplicates instead of updating existing rows.
+			// Add-mode PK conflicts create duplicates instead of updating existing records.
 			if (mode === 'add' && result.sent.sentPk !== null && targetByPk.has(result.sent.sentPk)) continue;
 
-			// Never treat an unmatched source integer as target identity; hidden or same-batch rows may own it.
+			// Never treat an unmatched source integer as target identity; hidden or same-batch records may own it.
 			// The server assigns a fresh key instead, which a later natural-key reconciliation discovers safely:
-			// the catalog admits no integer-PK resource without a natural key, so the row stays identifiable.
+			// the catalog admits no integer-PK resource without a natural key, so the record stays identifiable.
 			if (mode !== 'add' && !mapped && resource.primaryKeyType === 'integer') {
 				delete result.record[resource.primaryKey];
 				items.push(result.record);
@@ -435,7 +435,7 @@ function assembleBatch(
 				if (targetRow !== undefined && fieldsEqual(result.record, targetRow, resource.primaryKey)) {
 					markUnchanged(resource.collection, result.sent.sentPk);
 
-					// Mirror still sends the row: absence from the batch is the deletion order.
+					// Mirror still sends the record: absence from the batch is the deletion order.
 					if (mode !== 'mirror') continue;
 				}
 			}
@@ -569,7 +569,7 @@ export async function previewData(target: Target, mode: SyncMode): Promise<DataP
 		map = withMappings(map, source, targetUrl, result.collection, matchedEntries(result));
 	}
 
-	// Ambiguous rows are neither creates nor updates, so exclude and report them separately.
+	// Ambiguous records are neither creates nor updates, so exclude and report them separately.
 	// Exclude dependents whose foreign keys would dangle, iterating to cover self-referential chains.
 	for (let changed = true; changed; ) {
 		changed = false;

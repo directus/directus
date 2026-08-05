@@ -55,7 +55,7 @@ function keyComponents(
 	return components;
 }
 
-// Never offer a target already claimed by the committed map or an earlier match.
+// Never offer a target already claimed by the ID map or an earlier match.
 function groupTargets(
 	input: ReconcileInput,
 	references: ReadonlyMap<string, string>,

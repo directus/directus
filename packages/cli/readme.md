@@ -15,19 +15,19 @@ dynamic loading. Environment Sync is the first command group.
     pnpm --filter @directus/cli test     # vitest
     node packages/cli/dist/bin.js --version
 
-Bins: `directus-cli` and the short alias `d6s`.
+Primary bin: `d6s`. The longer `directus-cli` alias is also available.
 
 ## Environment Sync invariants
 
-- Record IDs belong to an instance. The committed ID map translates source IDs to target IDs; natural-key reconciliation
-  may extend it, but ambiguous identities require an explicit choice.
+- Record IDs belong to an instance. The commit-ready ID map translates source IDs to target IDs; natural-key
+  reconciliation may extend it, but ambiguous identities require an explicit choice.
 - Mirror batches are complete desired state for every included collection. An included empty collection therefore means
-  delete its target rows; an omitted collection is outside that batch.
-- A bare pull includes every selectable config resource except users. Translations sync by default; use
+  delete its target records; an omitted collection is outside that batch.
+- A bare pull includes every selectable configuration resource except users. Translations sync by default; use
   `--no-translations` to exclude them. Users require `--users` or `--all`.
 - Preview is conservative when record identity is ambiguous. Unlike an interactive push, it never prompts or updates the
   ID map while deciding what appears unchanged.
-- Artifact ownership comes only from each directory's `metadata.json`; matching filenames do not imply ownership. The
-  manifest is written last, but updates to an existing artifact set are not transactional.
+- Sync-file ownership comes only from each directory's `metadata.json`; matching filenames do not imply ownership. The
+  metadata file is written last, but updates to an existing sync-file set are not transactional.
 - Schema drift is gated by the server-issued diff hash. Remote mutations wait for validation and approval, although
   reconciliation may persist local ID-map decisions first.

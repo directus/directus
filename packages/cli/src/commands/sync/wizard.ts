@@ -1,17 +1,17 @@
 import { select } from '@clack/prompts';
 import type { Command } from 'commander';
+import { describeMode, MODES, type SyncMode } from '../../kernel/config/mode.js';
 import { CliError } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
-import { byCodepoint } from '../../sync/codepoint.js';
-import { describeMode, MODES, type SyncMode } from '../../sync/mode.js';
-import { DEFAULT_PROJECT } from '../../sync/resolve-target.js';
 import { pull } from './pull.js';
 import { push } from './push.js';
+import { byCodepoint } from './utils/codepoint.js';
+import { DEFAULT_PROJECT } from './utils/resolve-target.js';
 
 /** The wizard is what a bare `d6s sync` runs, so it registers as the parent's action rather than a subcommand. */
-export function registerWizard(sync: Command, getContext: () => CliContext): void {
-	sync.action(() => wizard(getContext()));
+export function registerWizard(command: Command, getContext: () => CliContext): void {
+	command.action(() => wizard(getContext()));
 }
 
 /**
@@ -33,7 +33,7 @@ export async function wizard(ctx: CliContext): Promise<void> {
 		});
 	}
 
-	ctx.ui.info('Sync a source instance to a target through committed files.');
+	ctx.ui.info('Sync a source instance to a target through commit-ready files.');
 
 	const from = await ask(
 		select({
@@ -79,7 +79,7 @@ export async function wizard(ctx: CliContext): Promise<void> {
 	await pull({ from, project, deps: true }, ctx);
 	await push({ to, project, ...(promptedMode !== undefined ? { mode: promptedMode } : {}) }, ctx);
 
-	// Persist only after a successful push; aborted pushes must not change config.
+	// Persist only after a successful push; aborted pushes must not change configuration.
 	if (promptedMode !== undefined) {
 		ctx.config.upsertProjectMode(project, promptedMode);
 		ctx.ui.info(`Saved mode "${promptedMode}" for project "${project}" to directus.config.json.`);

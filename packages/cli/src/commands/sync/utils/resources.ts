@@ -1,4 +1,4 @@
-import { CliError } from '../kernel/error.js';
+import { CliError } from '../../../kernel/error.js';
 import { byCodepoint } from './codepoint.js';
 
 /** A system field that references another synced collection. */
@@ -7,7 +7,7 @@ export interface FkField {
 	readonly references: string;
 }
 
-/** The export rules a syncable Directus system resource declares, apart from how its records are identified. */
+/** The pull rules a syncable Directus system resource declares, apart from how its records are identified. */
 interface ResourceFields {
 	readonly name: string;
 	readonly collection: string;
@@ -17,11 +17,11 @@ interface ResourceFields {
 	readonly strip: readonly string[];
 	readonly aliases: readonly string[];
 	/**
-	 * Export-surviving system FKs used by reconciliation and import remapping. Derived from
+	 * Pull-surviving system FKs used by reconciliation and push remapping. Derived from
 	 * `packages/system-data/src/relations/relations.yaml`.
 	 */
 	readonly fkFields: readonly FkField[];
-	/** Rows the server derives at read time (never real records); dropped at fetch, before export. */
+	/** Records the server derives at read time (never persisted records); dropped during pull. */
 	readonly drop?: ((record: Record<string, unknown>) => boolean) | undefined;
 	/**
 	 * Page by PK cursor (filter _gt) instead of offset. Only integer-PK endpoints may opt in — the query
@@ -29,8 +29,8 @@ interface ResourceFields {
 	 */
 	readonly keyset?: boolean | undefined;
 	/**
-	 * Verify the fetched row count against the server's total_count at pull time. Opt-in for endpoints
-	 * whose reads can be silently filtered, so an incomplete export is detected instead of committed.
+	 * Verify the fetched record count against the server's total_count at pull time. Opt-in for endpoints
+	 * whose reads can be silently filtered, so an incomplete pull is detected before files become commit-ready.
 	 */
 	readonly verifyCount?: boolean | undefined;
 }
@@ -40,8 +40,8 @@ interface ResourceFields {
  * instances with different primary keys; an omitted key means the resource has no stable cross-instance
  * identity, so its records are never reconciled by key.
  *
- * The two variants encode the import rule the push depends on: an unmatched auto-increment key is never
- * sent, because the target may have given that same integer to an unrelated row and the import would
+ * The two variants encode the record rule the push depends on: an unmatched auto-increment key is never
+ * sent, because the target may have given that same integer to an unrelated record and the push would
  * overwrite it. The server assigns a fresh key instead, and only a natural key can rediscover it — so an
  * integer-PK resource must declare one. A uuid is globally unique, safe to send verbatim, and may go
  * unkeyed.
@@ -223,7 +223,7 @@ const RESOURCE_LIST = [
 			'ai_openai_compatible_headers',
 		],
 		aliases: [],
-		// The singleton is its own identity: an empty key matches the one source row to the one target row.
+		// The singleton is its own identity: an empty key matches the one source record to the one target record.
 		naturalKey: [],
 		fkFields: [{ field: 'public_registration_role', references: 'directus_roles' }],
 	},
@@ -266,7 +266,7 @@ export type SelectableResource = SelectableEntry['name'];
 // The list keeps its literal names so flags and help text can be typed against them (which rules out
 // `satisfies` on the list itself — isolatedDeclarations cannot infer through it). This lookup is where each
 // entry is checked against ResourceDef, so an incomplete resource — or an integer-PK resource declaring no
-// natural key, which the push could not import without risking an overwrite — fails to compile here.
+// natural key, which the push could not send without risking an overwrite — fails to compile here.
 const RESOURCES: Record<string, ResourceDef> = Object.fromEntries(RESOURCE_LIST.map((def) => [def.name, def] as const));
 
 /** Sorted resource names users may select directly. */

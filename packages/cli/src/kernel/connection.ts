@@ -69,7 +69,7 @@ export interface VerifiedLogin {
 
 /**
  * Log in and prove the session works, without storing anything. The caller persists it — after whatever
- * config write binds it to a profile, so a failed write cannot orphan a credential no profile can reach.
+ * configuration write binds it to a profile, so a failed write cannot orphan a credential no profile can reach.
  */
 export async function loginSession(url: string, email: string, password: string): Promise<VerifiedLogin> {
 	registerSecret(password);
@@ -213,11 +213,11 @@ async function serverInfoValue(credential: ResolvedCredential, path: string): Pr
 }
 
 /**
- * Total stored rows behind a list endpoint via `meta=total_count`, or undefined when the server cannot
+ * Total stored records behind a list endpoint via `meta=total_count`, or undefined when the server cannot
  * answer. This is a raw request on purpose: the SDK strips the response envelope (extract-data returns
  * `data`), losing `meta`. For an admin token total_count is computed straight on the database — it counts
- * rows that entitlement filtering hides from list reads, which is exactly what makes it usable as an
- * export completeness check. Best-effort: any failure disables the check, never the caller.
+ * records that entitlement filtering hides from list reads, which is exactly what makes it usable as an
+ * pull completeness check. Best-effort: any failure disables the check, never the caller.
  */
 export async function fetchTotalCount(credential: ResolvedCredential, path: string): Promise<number | undefined> {
 	const total = get(
@@ -253,7 +253,7 @@ export async function fetchQueryLimitMax(credential: ResolvedCredential): Promis
 /**
  * Whether the instance is licensed for custom permission rules, read from the admin-only `/license`
  * endpoint (`entitlements.custom_permission_rules_enabled`, `override ?? default`). When false the server
- * filters custom-rule permissions out of reads, which is exactly what makes a `/permissions` export
+ * filters custom-rule permissions out of reads, which is exactly what makes a `/permissions` pull
  * incomplete. Best-effort: a non-admin 403, an older server without the endpoint, or any transient failure
  * returns undefined, and the caller degrades to inference — it NEVER gates on this. Raw fetch because the
  * SDK strips the response envelope this reads from (same reason as fetchTotalCount).
@@ -288,8 +288,8 @@ export function mapRequestError(error: unknown, url: string): CliError {
 		}
 
 		if (code === 'LIMIT_EXCEEDED') {
-			return new CliError('HTTP', `Target limit exceeded for ${url}.`, {
-				hint: 'Reduce the limited resources or update the target license, then retry.',
+			return new CliError('HTTP', `Instance limit exceeded for ${url}.`, {
+				hint: 'Reduce the limited resources or update the instance license, then retry.',
 				...(detail !== '' ? { detail } : {}),
 			});
 		}

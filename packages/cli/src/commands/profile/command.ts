@@ -7,11 +7,11 @@ import { registerTest } from './test.js';
 import { registerUpdate } from './update.js';
 
 export function registerProfile(program: Command, getContext: () => CliContext): void {
-	const profile = program.command('profile').description('Manage connection profiles');
+	const command = program.command('profile').description('Manage connection profiles');
 
-	registerAdd(profile, getContext);
-	registerUpdate(profile, getContext);
-	registerList(profile, getContext);
-	registerTest(profile, getContext);
-	registerRemove(profile, getContext);
+	registerAdd(command, getContext);
+	registerUpdate(command, getContext);
+	registerList(command, getContext);
+	registerTest(command, getContext);
+	registerRemove(command, getContext);
 }

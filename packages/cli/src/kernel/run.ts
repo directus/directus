@@ -8,7 +8,7 @@ import { createUi, type Ui, writeOut } from './ui.js';
 
 export interface CliContext {
 	readonly cwd: string;
-	/** The one config of this run: commands read and write it here instead of loading the file again. */
+	/** The one configuration of this run: commands read and write it here instead of loading the file again. */
 	readonly config: ConfigStore;
 	readonly ui: Ui;
 	readonly interactive: boolean;
@@ -96,6 +96,9 @@ function createProgram(options: RunOptions, ui: Ui): Command {
 		});
 
 	const cwd = options.cwd ?? process.cwd();
+
+	// A thunk, not a context: registration runs before Commander parses argv, so --config and --json are not
+	// known yet. Each command calls this in its action, once the globals it depends on exist.
 	const getContext = (): CliContext => createContext(cwd, ui, program.opts<GlobalOptions>());
 
 	for (const register of options.registerCommands) register(program, getContext);

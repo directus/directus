@@ -71,7 +71,7 @@ describe('findOutOfScopeReferences', () => {
 		expect(references).toEqual([{ kind: 'm2a', from: 'pages.blocks', missing: ['gallery', 'hero'] }]);
 	});
 
-	it('sorts output deterministically so warnings do not depend on snapshot row order', () => {
+	it('sorts output deterministically so warnings do not depend on snapshot entry order', () => {
 		const references = findOutOfScopeReferences(
 			snapshot({
 				collections: [

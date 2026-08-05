@@ -14,8 +14,13 @@ export type ResolvedCredential =
 	| { readonly kind: 'session'; readonly url: string; readonly profileName: string };
 
 type CredentialQuery =
-	| { readonly target: 'profile'; readonly url: string; readonly profileName: string; readonly tokenFlag?: string }
-	| { readonly target: 'url'; readonly url: string; readonly tokenFlag?: string };
+	| {
+			readonly target: 'profile';
+			readonly url: string;
+			readonly profileName: string;
+			readonly tokenFlag?: string | undefined;
+	  }
+	| { readonly target: 'url'; readonly url: string; readonly tokenFlag?: string | undefined };
 
 /** Return the profile-specific `DIRECTUS_<PROFILE>_TOKEN` variable name. */
 export function envTokenVar(profileName: string): string {

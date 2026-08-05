@@ -1,5 +1,5 @@
 import { isPlainObject } from 'lodash-es';
-import { count } from '../kernel/text.js';
+import { count } from '../../../kernel/text.js';
 import { byCodepoint } from './codepoint.js';
 import type { Snapshot } from './contract.js';
 
@@ -31,7 +31,7 @@ function readMeta(entry: Record<string, unknown>, key: string): unknown {
 /**
  * Find every reference in the snapshot that targets a collection the snapshot does not include. Pure over
  * the assembled snapshot — the CLI already holds all of this, so there is no extra fetch. Output is sorted
- * for deterministic warnings regardless of the source snapshot's row order.
+ * for deterministic warnings regardless of the source snapshot's entry order.
  */
 export function findOutOfScopeReferences(snapshot: Snapshot): OutOfScopeReference[] {
 	const present = new Set(snapshot.collections.map((entry) => entry.collection));
@@ -87,7 +87,7 @@ function describeReference(reference: OutOfScopeReference): string {
 
 /**
  * Render out-of-scope references as one warning block: a lead line stating the consequence, then one line
- * per reference naming the pointing site and its missing target(s). Same wording on export and apply — the
+ * per reference naming the pointing site and its missing target(s). Same wording on pull and push — the
  * fact ("these point outside the sync; a fresh target will fail") holds in both phases.
  */
 export function formatOutOfScopeReferences(references: readonly OutOfScopeReference[]): string {

@@ -1,11 +1,11 @@
 import { select, text } from '@clack/prompts';
 import type { AuthenticationData } from '@directus/sdk';
-import { credentialStorage, saveCredential, savedTokenMessage } from '../kernel/config/credentials.js';
-import { INVALID_URL_MESSAGE, isSafeUrl } from '../kernel/config/file.js';
-import { loginSession, pingServer, testConnection } from '../kernel/connection.js';
-import { CliError } from '../kernel/error.js';
-import { ask, orPrompt, promptLogin, promptToken } from '../kernel/prompt.js';
-import type { CliContext } from '../kernel/run.js';
+import { credentialStorage, saveCredential, savedTokenMessage } from '../../../kernel/config/credentials.js';
+import { INVALID_URL_MESSAGE, isSafeUrl } from '../../../kernel/config/file.js';
+import { loginSession, pingServer, testConnection } from '../../../kernel/connection.js';
+import { CliError } from '../../../kernel/error.js';
+import { ask, orPrompt, promptLogin, promptToken } from '../../../kernel/prompt.js';
+import type { CliContext } from '../../../kernel/run.js';
 
 // The name becomes part of DIRECTUS_<NAME>_TOKEN, so it has to stay a valid environment variable segment.
 const PROFILE_NAME = /^[A-Za-z0-9_]+$/;
@@ -30,7 +30,7 @@ export async function resolveNewProfileName(
 	return name;
 }
 
-/** Resolve an existing profile key without applying the stricter creation policy to hand-written config. */
+/** Resolve an existing profile key without applying the stricter creation policy to hand-written configuration. */
 export function resolveExistingProfileName(
 	nameArg: string | undefined,
 	usage: string,
@@ -72,7 +72,7 @@ export interface SavedProfile {
 
 /**
  * Verify a credential, then write the profile followed by its credential. Either write failing restores the
- * previous config state, so a failed command never leaves an unreachable credential or a partial profile update.
+ * previous configuration state, so a failed command never leaves an unreachable credential or a partial profile update.
  */
 export async function saveProfile(
 	name: string,
@@ -124,6 +124,8 @@ async function acquireCredential(
 	let url = startUrl;
 	let token = flagToken;
 
+	// A profile is a named URL, not a credential: tokens also resolve from DIRECTUS_<NAME>_TOKEN and the
+	// credential store, so skipping here is how you create a profile whose secret only ever lives in CI.
 	if (token === undefined) {
 		const method = await ask(
 			select({
@@ -173,6 +175,8 @@ async function acquireCredential(
 				const identity = await testConnection({ url, token, kind: 'token' });
 				ctx.ui.success(`Authenticated to ${url} as ${identity.user} (${identity.role}).`);
 			} else {
+				// No token to authenticate with, but the URL is about to be committed — ping so a typo or an
+				// unreachable host is caught here, while it is still one keystroke to fix, not on first sync.
 				await pingServer(url);
 			}
 
@@ -181,9 +185,22 @@ async function acquireCredential(
 			if (!isConnectionFailure(error)) throw error;
 			ctx.ui.warn(error.message);
 
-			const next = await ask(
-				select({ message: 'How do you want to proceed?', options: recoveryOptions(error, token !== undefined) }),
-			);
+			const editUrlOption = { value: 'url' as const, label: 'Edit the URL' };
+			const editToken = { value: 'token' as const, label: 'Edit the token' };
+			const retry = { value: 'retry' as const, label: 'Retry' };
+
+			// Lead with the field the failure implicates, so the likely fix is the default choice.
+			const options: { value: Recover; label: string }[] =
+				token === undefined
+					? [editUrlOption, retry, { value: 'save', label: 'Continue anyway' }]
+					: [
+							...(error.code === 'AUTH' ? [editToken, editUrlOption] : [editUrlOption, editToken]),
+							retry,
+							{ value: 'save', label: 'Save anyway' },
+							{ value: 'discard', label: 'Discard the token' },
+						];
+
+			const next = await ask(select({ message: 'How do you want to proceed?', options }));
 
 			if (next === 'save') return token === undefined ? { url } : { url, token };
 			if (next === 'discard') return { url };
@@ -191,17 +208,6 @@ async function acquireCredential(
 			if (next === 'token') token = await promptToken(name);
 		}
 	}
-}
-
-function recoveryOptions(error: CliError, hasToken: boolean): { value: Recover; label: string }[] {
-	const editUrlOption = { value: 'url' as const, label: 'Edit the URL' };
-	const editToken = { value: 'token' as const, label: 'Edit the token' };
-	const retry = { value: 'retry' as const, label: 'Retry' };
-
-	if (!hasToken) return [editUrlOption, retry, { value: 'save', label: 'Continue anyway' }];
-
-	const edits = error.code === 'AUTH' ? [editToken, editUrlOption] : [editUrlOption, editToken];
-	return [...edits, retry, { value: 'save', label: 'Save anyway' }, { value: 'discard', label: 'Discard the token' }];
 }
 
 async function editUrl(current: string): Promise<string> {

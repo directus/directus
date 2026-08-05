@@ -4,9 +4,9 @@ import { join } from 'node:path';
 import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
 import { afterEach, beforeEach, vi } from 'vitest';
 import { run } from '../../kernel/run.js';
-import type { Snapshot } from '../../sync/contract.js';
-import { allResources } from '../../sync/resources.js';
-import { registerSync } from './sync.js';
+import { registerSync } from './command.js';
+import type { Snapshot } from './utils/contract.js';
+import { allResources } from './utils/resources.js';
 
 export const SYNC_URL = 'https://cms.example.com';
 export const SYNC_TOKEN = 'super-secret-static-token';
@@ -194,7 +194,7 @@ export function mockTotalCount(agent: MockAgent, path: string, total: number): v
 
 /**
  * Answer the pull-time GET /fields catalog read that authorizes custom secret stripping. Pull requires
- * this read whenever it exports config resources, so any pull test reaching the data phase needs one.
+ * this read whenever it pulls configuration resources, so any pull test reaching the data phase needs one.
  */
 export function mockFields(agent: MockAgent, fields: Record<string, unknown>[]): void {
 	agent

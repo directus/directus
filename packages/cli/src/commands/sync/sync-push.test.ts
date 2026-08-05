@@ -2,9 +2,6 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { MockAgent } from 'undici';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Snapshot } from '../../sync/contract.js';
-import { type DataCollection, writeDataFiles } from '../../sync/data-store.js';
-import { writeSnapshotFiles } from '../../sync/store.js';
 import {
 	decodeBatch,
 	fullSnapshot,
@@ -19,6 +16,9 @@ import {
 	SYNC_URL,
 	useSyncWorld,
 } from './sync.test-support.js';
+import type { Snapshot } from './utils/contract.js';
+import { type DataCollection, writeDataFiles } from './utils/data-store.js';
+import { writeSnapshotFiles } from './utils/store.js';
 
 const world = useSyncWorld();
 const url = SYNC_URL;
@@ -117,7 +117,7 @@ describe('sync push', () => {
 		expect(summaryAt).toBeGreaterThan(resolutionAt);
 	});
 
-	it('warns before apply when the committed schema references a collection it does not include', async () => {
+	it('warns before apply when the commit-ready schema references a collection it does not include', async () => {
 		const grouped: Snapshot = {
 			version: 2,
 			directus: '11.0.0',
@@ -247,7 +247,7 @@ describe('sync push', () => {
 			modified: 1,
 			deleted: 0,
 			hash: 'h1',
-			data: { mode: 'merge', source: null, collections: null, incomplete: null, skipped: true },
+			data: { mode: 'merge', source: null, resultsByCollection: null, incomplete: null, skipped: true },
 		});
 	});
 
@@ -275,7 +275,7 @@ describe('sync push', () => {
 			modified: 0,
 			deleted: 0,
 			hash: null,
-			data: { mode: 'merge', source: null, collections: null, incomplete: null, skipped: true },
+			data: { mode: 'merge', source: null, resultsByCollection: null, incomplete: null, skipped: true },
 		});
 	});
 
@@ -323,7 +323,7 @@ describe('sync push', () => {
 		expect(err).toContain('--dangerously-allow-delete');
 	});
 
-	it('resolves mode from project config when no flag is given, and lets the flag win', async () => {
+	it('resolves mode from project configuration when no flag is given, and lets the flag win', async () => {
 		writeFileSync(
 			join(dir, 'directus.config.json'),
 			JSON.stringify({ profiles: { staging: { url } }, projects: { default: { mode: 'mirror' } } }),
@@ -395,7 +395,7 @@ describe('sync push with data', () => {
 		return JSON.parse(readFileSync(idMapPath, 'utf8'));
 	}
 
-	it('refuses a mirror push whose committed export is marked incomplete — no flag overrides it', async () => {
+	it('refuses a mirror push whose commit-ready configuration is marked incomplete — no flag overrides it', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 
@@ -426,7 +426,7 @@ describe('sync push with data', () => {
 		expect(output).toContain('re-pull');
 	});
 
-	it('pushes an incomplete export under merge — upserting visible rows touches nothing hidden', async () => {
+	it('pushes an incomplete pull under merge — upserting visible records touches nothing hidden', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 
@@ -526,7 +526,7 @@ describe('sync push with data', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--mode', 'add', '--yes')).toBe(0);
 	});
 
-	it('recreates a mapped record under add when its target row is gone, still skipping present ones', async () => {
+	it('recreates a mapped record under add when its target record is gone, still skipping present ones', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 
@@ -635,7 +635,7 @@ describe('sync push with data', () => {
 		]);
 	});
 
-	it('refuses committed content data files loudly, naming the collection, before any target read or import', async () => {
+	it('refuses content files loudly, naming the collection, before any target read or import', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] }]);
@@ -648,7 +648,7 @@ describe('sync push with data', () => {
 		const err = stderr.join('');
 		expect(err).toContain('content collections: articles');
 		expect(err).toMatch(/deferred/i);
-		expect(err).toMatch(/delete those data files/i);
+		expect(err).toMatch(/delete those files/i);
 	});
 
 	it('carries dangerouslyAllowDelete on the import when mirror runs with --dangerously-allow-delete', async () => {
@@ -772,7 +772,7 @@ describe('sync push with data', () => {
 		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
-		expect(stderr.join('')).toContain('schema and data match; nothing to push.');
+		expect(stderr.join('')).toContain('schema and configuration match; nothing to push.');
 	});
 
 	it('reports schema-applied and a data-retry path when the import fails after a schema apply', async () => {
@@ -881,7 +881,7 @@ describe('sync push with data', () => {
 		});
 	});
 
-	it('refuses a project config pairing "schema": false with a collections scope', async () => {
+	it('refuses a project configuration pairing "schema": false with a collections scope', async () => {
 		writeFileSync(
 			join(dir, 'directus.config.json'),
 			JSON.stringify({
@@ -896,7 +896,7 @@ describe('sync push with data', () => {
 		expect(stderr.join('')).toContain('cannot be combined');
 	});
 
-	it('warns when committed schema files exist under "schema": false instead of silently ignoring them', async () => {
+	it('warns when commit-ready schema files exist under "schema": false instead of silently ignoring them', async () => {
 		writeFileSync(
 			join(dir, 'directus.config.json'),
 			JSON.stringify({ profiles: { staging: { url } }, projects: { default: { schema: false } } }),
@@ -912,7 +912,7 @@ describe('sync push with data', () => {
 		expect(err).toContain('nothing to push');
 	});
 
-	it('emits the PushReport data block with the source and parsed response collections on --json', async () => {
+	it('emits the PushReport data block with the source and per-collection results on --json', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData(fullFixture());
@@ -939,12 +939,12 @@ describe('sync push with data', () => {
 				source,
 				skipped: false,
 				incomplete: [],
-				collections: fullImportResult()['collections'],
+				resultsByCollection: fullImportResult()['collections'],
 			},
 		});
 	});
 
-	it('writes a byte-identical id map across two identical push runs', async () => {
+	it('writes a byte-identical ID map across two identical push runs', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData(fullFixture());

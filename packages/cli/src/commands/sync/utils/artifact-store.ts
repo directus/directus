@@ -3,8 +3,8 @@ import { existsSync, lstatSync, mkdirSync, readFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import { z } from 'zod';
-import { CliError } from '../kernel/error.js';
-import { writeFileAtomic } from '../kernel/write.js';
+import { CliError } from '../../../kernel/error.js';
+import { writeFileAtomic } from '../../../kernel/write.js';
 import { byCodepoint } from './codepoint.js';
 
 /** The artifact ownership manifest filename. */

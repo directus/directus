@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CliError } from '../kernel/error.js';
+import { CliError } from '../../../kernel/error.js';
 import { parseDiffResult, parseImportResult, parseSnapshot, SNAPSHOT_PARTIAL } from './contract.js';
 
 function fullSnapshot(overrides: Record<string, unknown> = {}): Record<string, unknown> {

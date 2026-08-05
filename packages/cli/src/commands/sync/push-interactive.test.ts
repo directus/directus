@@ -6,12 +6,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createConfigStore } from '../../kernel/config/file.js';
 import type { CliContext } from '../../kernel/run.js';
 import { createUi } from '../../kernel/ui.js';
-import { applyDiff, fetchDiff, fetchRecords, importBatch } from '../../sync/api.js';
-import type { DiffResult, ImportBatchResult } from '../../sync/contract.js';
-import { writeDataFiles } from '../../sync/data-store.js';
-import { writeSnapshotFiles } from '../../sync/store.js';
 import { push } from './push.js';
 import { fullSnapshot, seedProjectConfig, SYNC_TOKEN, SYNC_URL } from './sync.test-support.js';
+import { applyDiff, fetchDiff, fetchRecords, importBatch } from './utils/api.js';
+import type { DiffResult, ImportBatchResult } from './utils/contract.js';
+import { writeDataFiles } from './utils/data-store.js';
+import { writeSnapshotFiles } from './utils/store.js';
 
 vi.mock('@clack/prompts', () => ({
 	confirm: vi.fn(),
@@ -20,7 +20,7 @@ vi.mock('@clack/prompts', () => ({
 	isCancel: vi.fn(() => false),
 }));
 
-vi.mock('../../sync/api.js', () => ({
+vi.mock('./utils/api.js', () => ({
 	fetchDiff: vi.fn(),
 	applyDiff: vi.fn(),
 	fetchRecords: vi.fn(),
@@ -217,7 +217,7 @@ describe('interactive sync push', () => {
 		expect(confirm).not.toHaveBeenCalled();
 	});
 
-	it('persists an ambiguity choice into the committed map before importing', async () => {
+	it('persists an ambiguity choice into the ID map before pushing', async () => {
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
 
@@ -382,7 +382,7 @@ describe('interactive sync push', () => {
 		});
 	});
 
-	it("echoes the target's user-attached access rows into a mirror batch so they survive the delete", async () => {
+	it("echoes the target's user-attached access records into a mirror batch so they survive the delete", async () => {
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 
 		seedData([
@@ -412,7 +412,7 @@ describe('interactive sync push', () => {
 		]);
 	});
 
-	it('withholds an occupied numeric PK instead of overwriting the unrelated target row', async () => {
+	it('withholds an occupied numeric PK instead of overwriting the unrelated target record', async () => {
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 
 		seedData([
@@ -478,8 +478,8 @@ describe('interactive sync push', () => {
 
 		const output = stderr.join('');
 
-		expect(output).toContain('Data — no changes to import.');
-		expect(output).not.toMatch(/Data — \d+ changes?:/);
+		expect(output).toContain('Configuration — no changes to push.');
+		expect(output).not.toMatch(/Configuration — \d+ changes?:/);
 	});
 
 	it('aborts the push and touches neither apply nor import when the operator aborts an ambiguity', async () => {

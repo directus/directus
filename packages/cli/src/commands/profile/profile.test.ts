@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { resolveCredential, saveCredential } from '../../kernel/config/credentials.js';
 import { run } from '../../kernel/run.js';
-import { registerProfile } from './profile.js';
+import { registerProfile } from './command.js';
 
 describe('profile commands', () => {
 	let dir: string;
@@ -43,7 +43,7 @@ describe('profile commands', () => {
 		return JSON.parse(readFileSync(join(dir, 'directus.config.json'), 'utf8'));
 	}
 
-	it('add creates the config file and writes the profile', async () => {
+	it('add creates the configuration file and writes the profile', async () => {
 		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com')).toBe(0);
 		expect(readConfig().profiles['staging']?.url).toBe('https://cms.example.com');
 	});
@@ -315,7 +315,7 @@ describe('profile commands', () => {
 		});
 	});
 
-	it('rejects each malformed invocation for its own stated reason, writing no config', async () => {
+	it('rejects each malformed invocation for its own stated reason, writing no configuration', async () => {
 		const cases: [argv: string[], reason: RegExp][] = [
 			[['profile', 'add', '--url', 'https://cms.example.com'], /Name the profile/],
 			// An env-unsafe name would derive a DIRECTUS_<NAME>_TOKEN that no shell can export.
@@ -334,7 +334,7 @@ describe('profile commands', () => {
 		expect(existsSync(join(dir, 'directus.config.json'))).toBe(false);
 	});
 
-	it('rejects a credential-bearing url instead of writing it to committable config', async () => {
+	it('rejects a credential-bearing URL instead of writing it to commit-ready configuration', async () => {
 		const password = 'super-secret-password';
 
 		expect(await d6s('profile', 'add', 'staging', '--url', `https://user:${password}@cms.example.com`)).toBe(1);
@@ -342,7 +342,7 @@ describe('profile commands', () => {
 		expect(stderr.join('')).not.toContain(password);
 	});
 
-	it('remove of an unknown profile is a config error', async () => {
+	it('remove of an unknown profile is a configuration error', async () => {
 		await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
 
 		expect(await d6s('profile', 'remove', 'ghost', '--yes')).toBe(1);
@@ -359,7 +359,7 @@ describe('profile commands', () => {
 		expect(stderr.join('')).toContain('DIRECTUS_STAGING_TOKEN');
 	});
 
-	it('test --url does not borrow the ambient DIRECTUS_TOKEN, so a typo cannot leak it to that host', async () => {
+	it('test --url does not borrow the ambient DIRECTUS_TOKEN, so a typo cannot leak it to that instance', async () => {
 		vi.stubEnv('DIRECTUS_TOKEN', 'ambient-secret-token');
 		vi.stubEnv('CI', 'true');
 

@@ -7,7 +7,7 @@ import {
 	saveCredential,
 	savedTokenMessage,
 } from '../../kernel/config/credentials.js';
-import { INVALID_URL_MESSAGE, isSafeUrl, resolveProfile } from '../../kernel/config/file.js';
+import { INVALID_URL_MESSAGE, isSafeUrl } from '../../kernel/config/file.js';
 import { type Identity, loginSession, refreshSessionIfNeeded, testConnection } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
 import { ask, orPrompt, promptLogin, promptToken } from '../../kernel/prompt.js';
@@ -18,12 +18,12 @@ interface TestOptions {
 	readonly token?: string;
 }
 
-export function registerTest(profile: Command, getContext: () => CliContext): void {
-	profile
+export function registerTest(command: Command, getContext: () => CliContext): void {
+	command
 		.command('test')
 		.description('Verify a profile can authenticate. Name a profile or pass --url — one is required, never both')
 		.argument('[name]', 'Profile name; prompted when omitted and no --url is given')
-		.option('--url <url>', 'Test a URL directly, without a profile or config file')
+		.option('--url <url>', 'Test a URL directly, without a profile or configuration file')
 		.option('--token <token>', 'Override the resolved token')
 		.action((name: string | undefined, options: TestOptions) => testProfile(name, options, getContext()));
 }
@@ -48,18 +48,13 @@ export async function testProfile(nameArg: string | undefined, options: TestOpti
 			'Or test without one: d6s profile test --url <url> --token <token>',
 		);
 
-		url = resolveProfile(ctx.config.require().config, name).url;
+		url = ctx.config.requireProfile(name).url;
 	}
 
 	const credential = resolveCredential(
 		name !== undefined
-			? {
-					target: 'profile',
-					url,
-					profileName: name,
-					...(options.token !== undefined ? { tokenFlag: options.token } : {}),
-				}
-			: { target: 'url', url, ...(options.token !== undefined ? { tokenFlag: options.token } : {}) },
+			? { target: 'profile', url, profileName: name, tokenFlag: options.token }
+			: { target: 'url', url, tokenFlag: options.token },
 	);
 
 	let identity: Identity;
@@ -89,7 +84,7 @@ export async function testProfile(nameArg: string | undefined, options: TestOpti
 			const { email, password } = await promptLogin();
 			const login = await loginSession(url, email, password);
 
-			// A login here is the profile's new credential: it already has a config entry to belong to.
+			// A login here is the profile's new credential: it already has a configuration entry to belong to.
 			credentialStorage(url, name).set(login.session);
 			identity = login.identity;
 		} else {
@@ -112,6 +107,6 @@ export async function testProfile(nameArg: string | undefined, options: TestOpti
 		url,
 		user: identity.user,
 		role: identity.role,
-		project: identity.projectName,
+		instanceName: identity.projectName,
 	});
 }

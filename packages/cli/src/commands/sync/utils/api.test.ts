@@ -3,8 +3,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from 'undici';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { ResolvedCredential } from '../kernel/config/credentials.js';
-import { CliError } from '../kernel/error.js';
+import type { ResolvedCredential } from '../../../kernel/config/credentials.js';
+import { CliError } from '../../../kernel/error.js';
 import { applyDiff, fetchDiff, fetchRecords, fetchSnapshot, importBatch } from './api.js';
 import type { DiffResult, ImportCollectionData, Snapshot } from './contract.js';
 
@@ -327,7 +327,7 @@ describe('fetchRecords', () => {
 		expect(result).toEqual([]);
 	});
 
-	it('pages past a server row cap until an empty response, so a clamped fetch cannot truncate', async () => {
+	it('pages past a server record limit until an empty response, so a clamped fetch cannot truncate', async () => {
 		const pages: { offset: string | undefined; rows: { id: number }[] }[] = [
 			{ offset: undefined, rows: [{ id: 1 }, { id: 2 }] },
 			{ offset: '1', rows: [{ id: 2 }, { id: 3 }] },
@@ -355,7 +355,7 @@ describe('fetchRecords', () => {
 		expect(result).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
 	});
 
-	it('pages a keyset endpoint by PK cursor, so server-side row hiding cannot shift a page boundary', async () => {
+	it('pages a keyset endpoint by PK cursor, so server-side record hiding cannot shift a page boundary', async () => {
 		const pages = [
 			{ filter: undefined, rows: [{ id: 1 }, { id: 2 }] },
 			{ filter: JSON.stringify({ id: { _gt: 2 } }), rows: [{ id: 4 }] },
@@ -437,7 +437,7 @@ describe('fetchRecords', () => {
 		expect(result).toEqual([]);
 	});
 
-	it('refuses when the limit=1 probe is rejected — a zero cap masks every row as emptiness', async () => {
+	it('refuses when the limit=1 probe is rejected — a zero limit masks every record as emptiness', async () => {
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
@@ -463,7 +463,7 @@ describe('fetchRecords', () => {
 		expect((error as CliError).message).toContain('QUERY_LIMIT_MAX');
 	});
 
-	it('refuses a known one-row cap outright — the overlap scheme cannot make progress at cap 1', async () => {
+	it('refuses a known one-record limit outright — the overlap scheme cannot make progress at limit 1', async () => {
 		const error = await fetchRecords(
 			credential,
 			{ endpoint: '/items/articles', primaryKey: 'id', singleton: false },
@@ -475,7 +475,7 @@ describe('fetchRecords', () => {
 		expect((error as CliError).message).toContain('QUERY_LIMIT_MAX is 1');
 	});
 
-	it('refuses an unknown cap concluding at one row when the limit=2 probe is rejected — cap 1 truncates silently', async () => {
+	it('refuses an unknown limit concluding at one record when the limit=2 probe is rejected — limit 1 truncates silently', async () => {
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
@@ -506,7 +506,7 @@ describe('fetchRecords', () => {
 		expect((error as CliError).message).toContain('QUERY_LIMIT_MAX is 1');
 	});
 
-	it('returns a genuine one-row collection after the limit=2 probe answers 200', async () => {
+	it('returns a genuine one-record collection after the limit=2 probe answers 200', async () => {
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
@@ -548,7 +548,7 @@ describe('fetchRecords', () => {
 		expect((error as CliError).message).toContain('"id" primary key');
 	});
 
-	it('refuses when the overlap row changes between pages — the pages shifted mid-fetch', async () => {
+	it('refuses when the overlap record changes between pages — the pages shifted mid-fetch', async () => {
 		const pages: { offset: string | undefined; rows: { id: number }[] }[] = [
 			{ offset: undefined, rows: [{ id: 1 }] },
 			{ offset: '0', rows: [{ id: 2 }] },
@@ -593,7 +593,7 @@ describe('fetchRecords', () => {
 		expect((error as CliError).message).toContain('more than once');
 	});
 
-	it('drops server-derived rows before validation and ends paging when only derived rows remain', async () => {
+	it('drops server-derived records before validation and ends paging when only derived records remain', async () => {
 		const derived = { policy: null, collection: 'directus_settings', action: 'read', system: true };
 
 		agent

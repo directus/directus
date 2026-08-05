@@ -2,11 +2,11 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'no
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { ResolvedCredential } from '../kernel/config/credentials.js';
-import { createConfigStore } from '../kernel/config/file.js';
-import { CliError } from '../kernel/error.js';
-import type { CliContext } from '../kernel/run.js';
-import { createUi } from '../kernel/ui.js';
+import type { ResolvedCredential } from '../../../kernel/config/credentials.js';
+import { createConfigStore } from '../../../kernel/config/file.js';
+import { CliError } from '../../../kernel/error.js';
+import type { CliContext } from '../../../kernel/run.js';
+import { createUi } from '../../../kernel/ui.js';
 import { fetchRecords } from './api.js';
 import { partitionCollections, prepareDataPush, previewData, remapSystemRecord } from './data-push.js';
 import { type DataCollection, writeDataFiles } from './data-store.js';
@@ -145,7 +145,7 @@ describe('prepareDataPush skip and precondition', () => {
 		vi.mocked(fetchRecords).mockReset();
 	});
 
-	it('plans nothing for a schema-only checkout or an empty committed data set', async () => {
+	it('plans nothing for a schema-only checkout or an empty stored data set', async () => {
 		await expect(prepareDataPush(target(), 'merge', ctx())).resolves.toBeUndefined();
 
 		writeDataFiles(join(dir, 'data'), [], 'https://source.example.com');
@@ -153,7 +153,7 @@ describe('prepareDataPush skip and precondition', () => {
 		await expect(prepareDataPush(target(), 'merge', ctx())).resolves.toBeUndefined();
 	});
 
-	it('refuses loud when the committed data predates source tracking', async () => {
+	it('refuses loud when the stored data predates source tracking', async () => {
 		writeDataFiles(
 			join(dir, 'data'),
 			[{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'r1' }] }],
@@ -233,7 +233,7 @@ describe('prepareDataPush skip and precondition', () => {
 		]);
 	});
 
-	it('reconciles a translation and sends its full single-row update to the target ID', async () => {
+	it('reconciles a translation and sends its full single-record update to the target ID', async () => {
 		writeDataFiles(
 			join(dir, 'data'),
 			[
@@ -260,7 +260,7 @@ describe('prepareDataPush skip and precondition', () => {
 		]);
 	});
 
-	it('previewData excludes the dependents of an ambiguous source along with it, keeping unaffected rows', async () => {
+	it('previewData excludes the dependents of an ambiguous source along with it, keeping unaffected records', async () => {
 		writeDataFiles(
 			join(dir, 'data'),
 			[
@@ -388,7 +388,7 @@ describe('prepareDataPush skip and precondition', () => {
 		});
 	});
 
-	it('previewData keeps a null-FK row when its collection has excluded rows', async () => {
+	it('previewData keeps a null-FK record when its collection has excluded records', async () => {
 		writeDataFiles(
 			join(dir, 'data'),
 			[
@@ -426,7 +426,7 @@ describe('prepareDataPush skip and precondition', () => {
 		});
 	});
 
-	it('previewData assembles the batch, tallies the reconcile counts, and never writes the id map', async () => {
+	it('previewData assembles the batch, tallies the reconcile counts, and never writes the ID map', async () => {
 		writeDataFiles(
 			join(dir, 'data'),
 			[{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Deploy' }] }],

@@ -1,8 +1,8 @@
 import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { isPlainObject } from 'lodash-es';
-import { CliError } from '../kernel/error.js';
-import { writeFileAtomic } from '../kernel/write.js';
+import { CliError } from '../../../kernel/error.js';
+import { writeFileAtomic } from '../../../kernel/write.js';
 import { serializeCanonical } from './artifact-store.js';
 
 type CollectionMap = Readonly<Record<string, Readonly<Record<string, string>>>>;

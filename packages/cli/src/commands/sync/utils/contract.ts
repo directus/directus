@@ -1,6 +1,6 @@
 import type { ImportBatchResult, ImportCollectionData } from '@directus/types';
 import { z } from 'zod';
-import { CliError } from '../kernel/error.js';
+import { CliError } from '../../../kernel/error.js';
 
 /**
  * Snapshot version tags (mirror the API's SNAPSHOT_VERSION): 1 = a full instance snapshot, 2 = a

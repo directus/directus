@@ -1,5 +1,5 @@
 import { expect } from 'vitest';
-import { CliError } from '../kernel/error.js';
+import { CliError } from '../../../kernel/error.js';
 
 export function expectCliError(fn: () => unknown): CliError {
 	try {

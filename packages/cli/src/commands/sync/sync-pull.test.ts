@@ -88,7 +88,7 @@ describe('sync pull', () => {
 		mockFields(agent, []);
 	}
 
-	it('writes the source schema as committable files anchored to the config directory', async () => {
+	it('writes the source schema as commit-ready files anchored to the configuration directory', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -111,12 +111,12 @@ describe('sync pull', () => {
 		expect(stderr.join('')).toContain('Pulled from staging');
 
 		const report = stdout.join('');
-		expect(report).toMatch(/Schema {5}1 collection/);
+		expect(report).toMatch(/Schema {9}1 collection/);
 		expect(report).toContain('directus/default/schema');
-		expect(report).toContain('Resources');
+		expect(report).toContain('Configuration');
 	});
 
-	it('emits a machine payload of ok:true, the snapshot counts, and the default data export on --json', async () => {
+	it('emits the schema and configuration pull report on --json', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -143,10 +143,25 @@ describe('sync pull', () => {
 			scope: null,
 		});
 
-		expect(payload.data.collections).toBe(11);
-		expect(payload.data.records).toBe(1);
+		expect(payload.data).toMatchObject({ recordCount: 1, collectionCount: 11, fileCount: 12 });
 
 		expect(new Set(payload.data.resources)).toEqual(
+			new Set([
+				'access',
+				'dashboards',
+				'flows',
+				'folders',
+				'operations',
+				'panels',
+				'permissions',
+				'policies',
+				'roles',
+				'settings',
+				'translations',
+			]),
+		);
+
+		expect(new Set(payload.data.collections)).toEqual(
 			new Set([
 				'directus_access',
 				'directus_dashboards',
@@ -163,7 +178,7 @@ describe('sync pull', () => {
 		);
 	});
 
-	it('fails with a CONFIG error before any network call when no config exists', async () => {
+	it('fails with a CONFIG error before any network call when no configuration exists', async () => {
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
@@ -293,7 +308,7 @@ describe('sync pull', () => {
 		expect(err).not.toContain('does not include');
 	});
 
-	it('does not warn when the out-of-scope group parent is already committed from a prior full pull', async () => {
+	it('does not warn when the out-of-scope group parent is stored from a prior full pull', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -441,14 +456,14 @@ describe('sync pull resources and data', () => {
 		mockFields(agent, []);
 	}
 
-	function exportedCollections(): string[] {
+	function pulledCollections(): string[] {
 		return readdirSync(dataDir)
 			.filter((name) => OWNED.test(name))
 			.map((name) => JSON.parse(readFileSync(join(dataDir, name), 'utf8')).collection)
 			.sort();
 	}
 
-	it('exports every default resource but never users on a bare pull', async () => {
+	it('pulls every default resource but never users on a bare pull', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -456,7 +471,7 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
 
-		expect(exportedCollections()).toEqual([
+		expect(pulledCollections()).toEqual([
 			'directus_access',
 			'directus_dashboards',
 			'directus_flows',
@@ -471,6 +486,31 @@ describe('sync pull resources and data', () => {
 		]);
 	});
 
+	it('excludes translations when --no-translations is passed', async () => {
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+
+		for (const path of [
+			'/roles',
+			'/policies',
+			'/access',
+			'/permissions',
+			'/flows',
+			'/operations',
+			'/dashboards',
+			'/panels',
+			'/folders',
+		]) {
+			interceptList(path, []);
+		}
+
+		interceptSingleton('/settings', { id: 1 });
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--no-translations')).toBe(0);
+		expect(pulledCollections()).not.toContain('directus_translations');
+	});
+
 	it('skips the snapshot on --no-schema and pulls resources only — secret stripping still guards', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -478,8 +518,8 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--no-schema')).toBe(0);
 
-		expect(exportedCollections()).toHaveLength(11);
-		expect(stdout.join('')).toContain('Schema     skipped');
+		expect(pulledCollections()).toHaveLength(11);
+		expect(stdout.join('')).toContain('Schema         skipped');
 		expect(existsSync(join(dir, 'directus', 'default', 'schema', 'metadata.json'))).toBe(false);
 	});
 
@@ -494,7 +534,7 @@ describe('sync pull resources and data', () => {
 		expect(report.schemaSkipped).toBe(true);
 		expect(report.collections).toBeNull();
 		expect(report.dir).toBeNull();
-		expect(report.data.collections).toBe(11);
+		expect(report.data.collectionCount).toBe(11);
 	});
 
 	it('refuses --no-schema combined with a collections scope instead of guessing which wins', async () => {
@@ -505,7 +545,7 @@ describe('sync pull resources and data', () => {
 		expect(stderr.join('')).toContain('skips the schema');
 	});
 
-	it('preserves committed data files a scoped re-pull did not fetch', async () => {
+	it('preserves stored data files a scoped re-pull did not fetch', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -519,7 +559,7 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
 
-		expect(exportedCollections()).toEqual([
+		expect(pulledCollections()).toEqual([
 			'directus_access',
 			'directus_dashboards',
 			'directus_flows',
@@ -537,7 +577,7 @@ describe('sync pull resources and data', () => {
 		expect(flowsBytes).toContain('Nightly');
 	});
 
-	it('strips creation stamps from flow exports — the server assigns them on create, breaking convergence', async () => {
+	it('strips creation stamps from pulled flows — the server assigns them on create, breaking convergence', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -566,7 +606,7 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--users')).toBe(0);
 
-		expect(exportedCollections()).toEqual([
+		expect(pulledCollections()).toEqual([
 			'directus_access',
 			'directus_permissions',
 			'directus_policies',
@@ -575,7 +615,7 @@ describe('sync pull resources and data', () => {
 		]);
 	});
 
-	it('exports every config resource including users under --all', async () => {
+	it('pulls every configuration resource including users under --all', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -584,7 +624,7 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--all')).toBe(0);
 
-		expect(exportedCollections()).toEqual([
+		expect(pulledCollections()).toEqual([
 			'directus_access',
 			'directus_dashboards',
 			'directus_flows',
@@ -617,7 +657,7 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--all', '--no-flows')).toBe(0);
 
-		expect(exportedCollections()).toEqual([
+		expect(pulledCollections()).toEqual([
 			'directus_access',
 			'directus_dashboards',
 			'directus_folders',
@@ -642,7 +682,7 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--roles')).toBe(0);
 
-		expect(exportedCollections()).toEqual([
+		expect(pulledCollections()).toEqual([
 			'directus_access',
 			'directus_permissions',
 			'directus_policies',
@@ -655,10 +695,10 @@ describe('sync pull resources and data', () => {
 		interceptList('/roles', []);
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--roles', '--no-deps')).toBe(0);
-		expect(exportedCollections()).toEqual(['directus_roles']);
+		expect(pulledCollections()).toEqual(['directus_roles']);
 	});
 
-	it('honors deps:false from project config so a CI pull can reproduce a --no-deps checkout', async () => {
+	it('honors deps:false from project configuration so a CI pull can reproduce a --no-deps checkout', async () => {
 		writeFileSync(
 			join(dir, 'directus.config.json'),
 			JSON.stringify({
@@ -672,7 +712,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/roles', []);
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
-		expect(exportedCollections()).toEqual(['directus_roles']);
+		expect(pulledCollections()).toEqual(['directus_roles']);
 	});
 
 	it('subtracts a resource and any child that only rode in through it under --no-flows', async () => {
@@ -691,7 +731,7 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--no-flows')).toBe(0);
 
-		expect(exportedCollections()).toEqual([
+		expect(pulledCollections()).toEqual([
 			'directus_access',
 			'directus_dashboards',
 			'directus_folders',
@@ -883,7 +923,7 @@ describe('sync pull resources and data', () => {
 		expect(existsSync(join(dir, 'directus'))).toBe(false);
 	});
 
-	it('warns when a request operation carries custom headers — credential-bearing and committed verbatim', async () => {
+	it('warns when a request operation carries custom headers — credential-bearing and pulled verbatim', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1021,7 +1061,7 @@ describe('sync pull resources and data', () => {
 		expect(existsSync(join(dir, 'directus'))).toBe(false);
 	});
 
-	it('exports only stored permissions — appended app-access rows never reach disk', async () => {
+	it('pulls only stored permissions — appended app-access records never reach disk', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1073,7 +1113,7 @@ describe('sync pull resources and data', () => {
 		expect(permissions.records).toEqual([stored]);
 	});
 
-	it('marks a truncated permissions export incomplete instead of committing the shortfall silently', async () => {
+	it('marks a truncated permissions pull incomplete instead of storing the shortfall silently', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1120,7 +1160,7 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
 
-		expect(stderr.join('')).toContain('exported 1 of 3 rows');
+		expect(stderr.join('')).toContain('pulled 1 of 3 records');
 		expect(stderr.join('')).toContain('mirror pushes will refuse');
 
 		const metadata = JSON.parse(readFileSync(join(dataDir, 'metadata.json'), 'utf8'));
@@ -1184,7 +1224,7 @@ describe('sync pull resources and data', () => {
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
 
 		const err = stderr.join('');
-		expect(err).toContain('exported 1 of 3 rows');
+		expect(err).toContain('pulled 1 of 3 records');
 		expect(err).toContain('Confirmed: this instance is unlicensed for custom permission rules');
 	});
 
@@ -1217,7 +1257,7 @@ describe('sync pull resources and data', () => {
 		expect(treeOf(dataDir)).toEqual(dataBefore);
 	});
 
-	it('marks the export incomplete when the completeness probe cannot answer — unknown is not complete', async () => {
+	it('marks the pull incomplete when the completeness probe cannot answer — unknown is not complete', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1347,7 +1387,7 @@ describe('sync pull resources and data', () => {
 		expect(stderr.join('')).toContain('directus_permissions');
 	});
 
-	it('drops user-attached access rows when users are out of scope', async () => {
+	it('drops user-attached access records when users are out of scope', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1374,7 +1414,7 @@ describe('sync pull resources and data', () => {
 		expect(access.records).toEqual([{ id: 'a1', role: 'r1', user: null }]);
 	});
 
-	it('keeps user-attached access rows when users are in scope', async () => {
+	it('keeps user-attached access records when users are in scope', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1399,7 +1439,7 @@ describe('sync pull resources and data', () => {
 		]);
 	});
 
-	it('keeps user-attached access rows on a re-pull that preserves a committed users export, and warns it is stale', async () => {
+	it('keeps user-attached access records on a re-pull that preserves commit-ready users, and warns it is stale', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -1438,14 +1478,14 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
 
-		expect(exportedCollections()).toContain('directus_users');
+		expect(pulledCollections()).toContain('directus_users');
 		expect(accessRecords()).toEqual(bothRows);
 
 		expect(stderr.join('')).toContain('did not refresh');
 		expect(stderr.join('')).toContain('--users');
 	});
 
-	it('refuses a project that is not declared in config', async () => {
+	it('refuses a project that is not declared in configuration', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -1477,7 +1517,7 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
 
-		expect(exportedCollections()).toEqual([
+		expect(pulledCollections()).toEqual([
 			'directus_access',
 			'directus_permissions',
 			'directus_policies',
@@ -1490,7 +1530,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/translations', []);
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--translations')).toBe(0);
-		expect(exportedCollections()).toEqual(['directus_translations']);
+		expect(pulledCollections()).toEqual(['directus_translations']);
 	});
 
 	it('subtracts a configured excludeResources list from the default set', async () => {
@@ -1513,7 +1553,7 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
 
-		expect(exportedCollections()).toEqual([
+		expect(pulledCollections()).toEqual([
 			'directus_access',
 			'directus_dashboards',
 			'directus_folders',

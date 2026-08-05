@@ -8,7 +8,7 @@ function names(requested: string[], options?: { deps?: boolean }): string[] {
 }
 
 describe('resolveResources', () => {
-	it('pins every selectable closure — the checked form of the hand-maintained mustPull table', () => {
+	it('pins every selectable closure — the checked form of the hand-maintained mustPull mapping', () => {
 		const closures = Object.fromEntries(SELECTABLE_RESOURCES.map((name) => [name, names([name])]));
 
 		expect(closures).toEqual({
@@ -176,7 +176,7 @@ describe('fkFields drift pin', () => {
 		expect(known.filter((entry) => !declared.has(entry))).toEqual([]);
 	});
 
-	it('lists every export-surviving foreign key between synced collections', () => {
+	it('lists every pull-surviving foreign key between synced collections', () => {
 		const missing = systemRelationRows
 			.filter((row) => {
 				const owner = synced.get(row.many_collection);

@@ -276,7 +276,7 @@ describe('interactive profile flows', () => {
 
 	it('does not strand an issued session when the profile write fails', async () => {
 		const blocker = join(dir, 'blocker');
-		writeFileSync(blocker, 'a regular file, so no config can be written beneath it');
+		writeFileSync(blocker, 'a regular file, so no configuration can be written beneath it');
 
 		vi.mocked(select).mockResolvedValueOnce('login');
 		vi.mocked(text).mockResolvedValueOnce('ada@example.com');
@@ -360,7 +360,7 @@ describe('interactive profile flows', () => {
 		expect(store['https://cms.example.com'].prod.refresh_token).toBe(SESSION.refresh_token);
 	});
 
-	it('test --url works without config and refreshes the resolved credential before testing', async () => {
+	it('test --url works without configuration and refreshes the resolved credential before testing', async () => {
 		vi.mocked(testConnection).mockResolvedValueOnce({ user: 'Ada', role: 'Admin', projectName: 'Demo' });
 
 		await testProfile(undefined, { url: 'https://oneoff.example.com', token: 'tok-flag' }, ctxAt(dir));
@@ -396,7 +396,7 @@ describe('interactive profile flows', () => {
 			url: 'https://oneoff.example.com',
 			user: 'Ada',
 			role: 'Admin',
-			project: 'Demo',
+			instanceName: 'Demo',
 		});
 	});
 

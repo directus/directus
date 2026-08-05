@@ -11,30 +11,19 @@ import {
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 import { count, parseList } from '../../kernel/text.js';
-import {
-	fetchFields,
-	fetchRecords,
-	fetchSnapshot,
-	type FieldCatalogEntry,
-	type SnapshotScope,
-} from '../../sync/api.js';
-import {
-	assertDataSource,
-	type DataCollection,
-	hasCommittedCollection,
-	writeDataFiles,
-} from '../../sync/data-store.js';
-import { normalizeInstanceUrl } from '../../sync/id-map.js';
-import { findOutOfScopeReferences, formatOutOfScopeReferences } from '../../sync/references.js';
-import { resolveTarget } from '../../sync/resolve-target.js';
+import { fetchFields, fetchRecords, fetchSnapshot, type FieldCatalogEntry, type SnapshotScope } from './utils/api.js';
+import { assertDataSource, type DataCollection, hasCommittedCollection, writeDataFiles } from './utils/data-store.js';
+import { normalizeInstanceUrl } from './utils/id-map.js';
+import { findOutOfScopeReferences, formatOutOfScopeReferences } from './utils/references.js';
+import { resolveTarget } from './utils/resolve-target.js';
 import {
 	resolveResources,
 	type Resource,
 	RESOURCE_FLAG_PHRASES,
 	SELECTABLE_RESOURCES,
 	type SelectableResource,
-} from '../../sync/resources.js';
-import { readSnapshotFiles, type WriteScope, writeSnapshotFiles } from '../../sync/store.js';
+} from './utils/resources.js';
+import { readSnapshotFiles, type WriteScope, writeSnapshotFiles } from './utils/store.js';
 
 export type PullOptions = {
 	readonly from: string;
@@ -48,10 +37,10 @@ export type PullOptions = {
 	// Commander camel-cases each --<resource>/--no-<resource> flag onto opts().
 } & Partial<Record<SelectableResource, boolean>>;
 
-export function registerPull(sync: Command, getContext: () => CliContext): void {
-	const pullCommand = sync
+export function registerPull(command: Command, getContext: () => CliContext): void {
+	const pullCommand = command
 		.command('pull')
-		.description('Snapshot schema and config resources from a source instance into committable files')
+		.description('Pull schema and configuration from a source instance into commit-ready files')
 		.requiredOption('--from <profile>', 'Source profile name')
 		.option('--collections <list>', 'Only these collections (comma-separated); pulls a partial snapshot', parseList)
 		.option(
@@ -59,20 +48,23 @@ export function registerPull(sync: Command, getContext: () => CliContext): void 
 			'All collections except these (comma-separated); pulls a partial snapshot',
 			parseList,
 		)
-		.option('--all', 'Every config resource, including users');
+		.option('--all', 'Every configuration resource, including users');
 
 	// Positive flags must precede their --no-* twins to preserve undefined as the default.
 	for (const name of SELECTABLE_RESOURCES) {
 		pullCommand
-			.option(`--${name}`, `Only the named resources — ${RESOURCE_FLAG_PHRASES[name]}`)
+			.option(`--${name}`, `Only the named configuration resources — ${RESOURCE_FLAG_PHRASES[name]}`)
 			.option(`--no-${name}`, `Exclude ${name} from the default set`);
 	}
 
 	pullCommand
-		.option('--no-deps', 'Do not pull resource dependencies (dependent children still ride with their parent)')
+		.option(
+			'--no-deps',
+			'Do not pull configuration-resource dependencies (dependent children still ride with their parent)',
+		)
 		.option(
 			'--no-schema',
-			'Skip the schema snapshot — config resources only ("schema": false in a project config does the same)',
+			'Skip the schema snapshot — configuration resources only ("schema": false in a project configuration does the same)',
 		)
 		.option('--project <name>', 'Project scope to sync (default: default)', 'default')
 		.action((options: PullOptions) => pull(options, getContext()));
@@ -80,9 +72,10 @@ export function registerPull(sync: Command, getContext: () => CliContext): void 
 
 interface PullDataReport {
 	readonly resources: string[];
-	readonly collections: number;
-	readonly records: number;
-	readonly files: number;
+	readonly collections: string[];
+	readonly recordCount: number;
+	readonly collectionCount: number;
+	readonly fileCount: number;
 	readonly removed: string[];
 	readonly incomplete: string[];
 }
@@ -148,11 +141,11 @@ function resolveScope(options: PullOptions, projectConfig: ProjectConfig | undef
 	};
 }
 
-// Users require explicit selection; every other config resource is included by default.
+// Users require explicit selection; every other configuration resource is included by default.
 const DEFAULT_RESOURCE_NAMES = SELECTABLE_RESOURCES.filter((name) => name !== 'users');
 
 function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig | undefined): Resource[] {
-	// Commander defines only the negative flag, preserving config/default precedence when it is absent.
+	// Commander defines only the negative flag, preserving configuration/default precedence when it is absent.
 	const deps = options.deps === false ? false : (projectConfig?.deps ?? true);
 
 	const positives = SELECTABLE_RESOURCES.filter((name) => options[name] === true);
@@ -215,18 +208,18 @@ function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig |
 // Attribute a permissions shortfall to licensing only when the entitlement confirms it.
 function permissionsShortfallWarning(
 	name: string,
-	exported: number,
+	pulled: number,
 	total: number,
 	entitled: boolean | undefined,
 ): string {
-	const base = `${name}: exported ${exported} of ${total} rows — the export is incomplete: merge and add pushes stay safe, mirror pushes will refuse it.`;
+	const base = `${name}: pulled ${pulled} of ${total} records — the pull is incomplete: merge and add pushes stay safe, mirror pushes will refuse it.`;
 
 	if (entitled === false) {
-		return `${base} Confirmed: this instance is unlicensed for custom permission rules (custom_permission_rules_enabled), so it hides them from reads. License the instance to export these rows.`;
+		return `${base} Confirmed: this instance is unlicensed for custom permission rules (custom_permission_rules_enabled), so it hides them from reads. License the instance to pull these records.`;
 	}
 
 	if (entitled === true) {
-		return `${base} This instance IS licensed for custom permission rules, so the missing rows are unexpected — investigate before trusting a mirror push.`;
+		return `${base} This instance IS licensed for custom permission rules, so the missing records are unexpected — investigate before trusting a mirror push.`;
 	}
 
 	return `${base} This instance likely hides custom permission rules from reads (unlicensed custom_permission_rules_enabled); the license entitlement could not be confirmed.`;
@@ -299,7 +292,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 	const snapshot = includeSchema ? await fetchSnapshot(credential, scope?.api) : null;
 
-	// A scoped snapshot that omits requested names is unsafe to commit as a complete answer to that scope.
+	// A scoped snapshot that omits requested names is unsafe to write as a complete answer to that scope.
 	if (snapshot !== null && scope !== undefined && 'include' in scope.api) {
 		const present = new Set(snapshot.collections.map((entry) => entry.collection));
 		const missing = scope.api.include.filter((name) => !present.has(name));
@@ -316,13 +309,13 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	// One best-effort limit read can remove an exhaustion probe from every collection fetch.
 	const queryMax = await fetchQueryLimitMax(credential);
 
-	// Secret stripping must fail closed when config resources are exported.
+	// Secret stripping must fail closed when configuration resources are pulled.
 	const sensitiveByCollection =
 		resources.length > 0 ? sensitiveFieldsByCollection(await fetchFields(credential)) : new Map<string, string[]>();
 
 	const includesUsers = resources.some((resource) => resource.name === 'users');
 
-	// Access filtering follows the committed outcome, including preserved users from earlier pulls.
+	// Access filtering follows the stored outcome, including preserved users from earlier pulls.
 	// Using only this fetch set could turn preserved grants into mirror deletions.
 	const usersCommitted = includesUsers || hasCommittedCollection(dataDir, 'directus_users');
 
@@ -340,7 +333,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 				incomplete.push(resource.collection);
 
 				ctx.ui.warn(
-					`${resource.name}: could not verify the export is complete (total_count unavailable) — marked incomplete. Merge and add pushes stay safe, mirror pushes will refuse it; re-pull to retry the check.`,
+					`${resource.name}: could not verify the pull is complete (total_count unavailable) — marked incomplete. Merge and add pushes stay safe, mirror pushes will refuse it; re-pull to retry the check.`,
 				);
 			} else if (total !== rows.length) {
 				incomplete.push(resource.collection);
@@ -363,7 +356,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 		if (derivedSecrets.length > 0) {
 			ctx.ui.warn(
-				`${resource.name}: stripped ${count(derivedSecrets.length, 'custom field')} the schema marks sensitive (conceal/encrypt/hash): ${derivedSecrets.join(', ')}. The export never carries these values — set them on the target directly.`,
+				`${resource.name}: stripped ${count(derivedSecrets.length, 'custom field')} the schema marks sensitive (conceal/encrypt/hash): ${derivedSecrets.join(', ')}. Commit-ready files never carry these values — set them on the target directly.`,
 			);
 		}
 
@@ -371,12 +364,12 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 		if (resource.collection === 'directus_access') {
 			if (!usersCommitted) {
-				// User-attached grants cannot be imported safely when their users are out of scope.
+				// User-attached grants cannot be pushed safely when their users are out of scope.
 				rows = rows.filter((record) => record['user'] === null || record['user'] === undefined);
 			} else if (!includesUsers && rows.some((record) => record['user'] !== null && record['user'] !== undefined)) {
 				// Preserved users may be stale relative to newly fetched grants.
 				ctx.ui.warn(
-					`${resource.name}: kept user-attached grants because directus_users is committed from an earlier --users pull, but this pull did not refresh the user accounts themselves — a grant for a user added on the source since then fails the import. Re-pull with --users to refresh accounts, or delete the users data file to drop accounts from the sync.`,
+					`${resource.name}: kept user-attached grants because directus_users is present in commit-ready files from an earlier --users pull, but this pull did not refresh the user accounts themselves — a grant for a user added on the source since then fails the push. Re-pull with --users to refresh accounts, or delete the users configuration file to drop accounts from the sync.`,
 				);
 			}
 		}
@@ -397,7 +390,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 				const keys = carriers.map((record) => String(record['key'] ?? record['id']));
 
 				ctx.ui.warn(
-					`${resource.name}: request operations with custom headers export verbatim: ${keys.join(', ')}. Headers routinely embed Authorization values and API keys — review them for credentials before committing.`,
+					`${resource.name}: request operations with custom headers are pulled verbatim: ${keys.join(', ')}. Headers routinely embed Authorization values and API keys — review them for credentials before committing.`,
 				);
 			}
 		}
@@ -407,26 +400,27 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 	const result = snapshot === null ? null : writeSnapshotFiles(schemaDir, snapshot, scope?.write);
 
-	// Validate references against the committed set because scoped pulls preserve earlier artifacts.
+	// Validate references against the stored set because scoped pulls preserve earlier artifacts.
 	if (snapshot !== null) {
 		const references = findOutOfScopeReferences(readSnapshotFiles(schemaDir));
 		if (references.length > 0) ctx.ui.warn(formatOutOfScopeReferences(references));
 	}
 
 	const relativeDir = relative(ctx.cwd, schemaDir);
-	const collections = snapshot?.collections.length ?? 0;
+	const schemaCollectionCount = snapshot?.collections.length ?? 0;
 	const removed = result?.removed.length ?? 0;
 
 	const dataResult = writeDataFiles(dataDir, dataCollections, normalizeInstanceUrl(url), incomplete);
-	const records = dataCollections.reduce((total, entry) => total + entry.records.length, 0);
+	const recordCount = dataCollections.reduce((total, entry) => total + entry.records.length, 0);
 	const dataDirRelative = relative(ctx.cwd, dataDir);
 	const collectionCount = dataCollections.length;
 
 	const data: PullDataReport = {
-		resources: dataCollections.map((entry) => entry.collection),
-		collections: collectionCount,
-		records,
-		files: dataResult.written.length,
+		resources: resources.map((resource) => resource.name),
+		collections: dataCollections.map((entry) => entry.collection),
+		recordCount,
+		collectionCount,
+		fileCount: dataResult.written.length,
 		removed: dataResult.removed,
 		incomplete: dataResult.incomplete,
 	};
@@ -440,13 +434,13 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		ctx.ui.success(`Pulled from ${options.from} — ${url}`);
 
 		if (snapshot === null) {
-			ctx.ui.print('  Schema     skipped');
+			ctx.ui.print('  Schema         skipped');
 		} else {
-			ctx.ui.print(`  Schema     ${count(collections, 'collection')} → ${relativeDir}${schemaNote}`);
+			ctx.ui.print(`  Schema         ${count(schemaCollectionCount, 'collection')} → ${relativeDir}${schemaNote}`);
 		}
 
 		ctx.ui.print(
-			`  Resources  ${count(records, 'record')} in ${count(collectionCount, 'resource')} → ${dataDirRelative}${dataNote}`,
+			`  Configuration  ${count(recordCount, 'record')} across ${count(collectionCount, 'collection')} → ${dataDirRelative}${dataNote}`,
 		);
 	}
 
@@ -460,7 +454,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		project,
 		schemaSkipped: snapshot === null,
 		dir: snapshot === null ? null : relativeDir,
-		collections: snapshot === null ? null : collections,
+		collections: snapshot === null ? null : schemaCollectionCount,
 		fields: snapshot === null ? null : snapshot.fields.length,
 		systemFields: snapshot === null ? null : snapshot.systemFields.length,
 		relations: snapshot === null ? null : snapshot.relations.length,
