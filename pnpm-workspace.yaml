@@ -168,6 +168,7 @@ catalog:
   axios-cache-interceptor: 1.11.1
   base-64: 1.0.0
   boxen: 8.0.1
+  braintrust: 3.27.0
   busboy: 1.6.0
   bytes: 3.1.2
   camelcase: 8.0.0
