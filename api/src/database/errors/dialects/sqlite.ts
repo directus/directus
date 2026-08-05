@@ -11,14 +11,6 @@ import type { SQLiteError } from './types.js';
 // - Sqlite doesn't have varchar with length support, so no ValueTooLongError
 // - Sqlite doesn't have a max range for numbers, so no ValueOutOfRangeError
 
-/**
- * NOTE:
- * Constraint violations are matched on the message SQLite itself produces, because the two drivers
- * report them differently: node-sqlite3 prefixes the message with the generic `SQLITE_CONSTRAINT`
- * code, while better-sqlite3 leaves the message unprefixed and puts the extended code
- * (`SQLITE_CONSTRAINT_NOTNULL` and friends) on `error.code`. The extended code is checked first
- * where it exists, since it's the more precise signal.
- */
 export function extractError(error: SQLiteError, data: Partial<Item>): SQLiteError | Error {
 	if (error.code === 'SQLITE_CONSTRAINT_NOTNULL' || error.message.includes('NOT NULL constraint failed')) {
 		return notNullConstraint(error);
