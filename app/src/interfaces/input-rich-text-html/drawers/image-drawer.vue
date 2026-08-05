@@ -41,6 +41,10 @@ const selection = defineModel<ImageSelection | null>('imageSelection', { require
 						<div class="type-label">{{ $t('alt_text') }}</div>
 						<VInput v-model="selection.alt" :nullable="false" />
 					</div>
+					<div class="field full">
+						<div class="type-label">{{ $t('caption') }}</div>
+						<VInput v-model="selection.caption" :nullable="false" />
+					</div>
 					<template v-if="storageAssetTransform === 'all'">
 						<div class="field half">
 							<div class="type-label">{{ $t('width') }}</div>
