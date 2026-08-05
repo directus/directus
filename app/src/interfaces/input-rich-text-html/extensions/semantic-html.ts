@@ -24,7 +24,7 @@ function blockContainer(name: string, tag: string, content = 'block+') {
 	});
 }
 
-/** Inline-content child node only valid inside its parent container (`<figcaption>`, `<dt>`, …). */
+/** Inline-content child node only valid inside its parent container (`<summary>`, `<dt>`, …). */
 function inlineChild(name: string, tag: string) {
 	return Node.create({
 		name,
@@ -44,11 +44,6 @@ function inlineChild(name: string, tag: string) {
 export const Section = blockContainer('section', 'section');
 
 export const Article = blockContainer('article', 'article');
-
-// `(block | figcaption)+` instead of the spec's caption-first-or-last so any authored order survives
-export const Figure = blockContainer('figure', 'figure', '(block | figcaption)+');
-
-export const Figcaption = inlineChild('figcaption', 'figcaption');
 
 export const Details = Node.create({
 	name: 'details',
@@ -133,8 +128,6 @@ export const Abbreviation = Mark.create({
 export const semanticHtml: AnyExtension[] = [
 	Section,
 	Article,
-	Figure,
-	Figcaption,
 	Details,
 	DetailsSummary,
 	DescriptionList,
