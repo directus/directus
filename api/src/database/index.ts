@@ -123,7 +123,7 @@ export function getDatabase(): Knex {
 		knexConfig.useNullAsDefault = true;
 		knexConfig.compileSqlOnError = false;
 		knexConfig.client = getClientBetterSQLite3();
-		
+
 		poolConfig.afterCreate = (conn: any, callback: any) => {
 			logger.trace('Enabling SQLite Foreign Keys support...');
 
