@@ -25,7 +25,7 @@ import { useItemPermissions } from '@/composables/use-permissions';
 import { useExtensions } from '@/extensions';
 import { router } from '@/router';
 import { useInsightsStore } from '@/stores/insights';
-import { getCollectionInactiveReason } from '@/utils/collection-status';
+import { isCollectionInactive } from '@/utils/collection-status';
 import { pointOnLine } from '@/utils/point-on-line';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
@@ -54,8 +54,8 @@ const now = new Date();
 
 const editMode = ref(false);
 
-function getPanelInactiveReason(tile: AppTile) {
-	return getCollectionInactiveReason(tile.data?.options?.collection);
+function isPanelInactive(tile: AppTile) {
+	return isCollectionInactive(tile.data?.options?.collection);
 }
 
 const tiles = computed<AppTile[]>(() => {
@@ -292,11 +292,11 @@ const refreshInterval = computed({
 				/>
 				<div v-else class="panel-container" :class="{ loading: loading.includes(tile.id) }">
 					<div
-						v-if="getPanelInactiveReason(tile)"
+						v-if="isPanelInactive(tile)"
 						class="panel-no-data type-note"
 						:class="{ 'header-offset': tile.showHeader }"
 					>
-						{{ getPanelInactiveReason(tile) }}
+						{{ $t('collection_inactive') }}
 					</div>
 					<div v-else-if="errors[tile.id]" class="panel-error">
 						<VIcon name="warning" />

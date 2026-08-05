@@ -2,12 +2,7 @@ import type { Collection, Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
-import {
-	getCollectionInactiveReason,
-	getCollectionStatus,
-	isCollectionInactive,
-	isFieldCollectionInactive,
-} from './collection-status';
+import { getCollectionStatus, isCollectionInactive, isFieldCollectionInactive } from './collection-status';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
@@ -72,14 +67,6 @@ test('isCollectionInactive treats any status other than active as inactive', () 
 	expect(isCollectionInactive('unconfigured_collection')).toBe(false);
 	expect(isCollectionInactive('directus_users')).toBe(false);
 	expect(isCollectionInactive('does_not_exist')).toBe(false);
-});
-
-test('getCollectionInactiveReason returns a status specific reason, falling back for unknown statuses', () => {
-	expect(getCollectionInactiveReason('active_collection')).toBeUndefined();
-	expect(getCollectionInactiveReason('does_not_exist')).toBeUndefined();
-
-	expect(getCollectionInactiveReason('inactive_collection')).toBe('This collection is inactive');
-	expect(getCollectionInactiveReason('archived_collection')).toBe('This collection is unavailable');
 });
 
 test('isFieldCollectionInactive covers a field of, and a field relating to, an inactive collection', () => {

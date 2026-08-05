@@ -1,6 +1,5 @@
 import type { CollectionMeta } from '@directus/types';
 import { getRelatedCollection } from './get-related-collection';
-import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
 import type { Collection } from '@/types/collections';
 
@@ -23,21 +22,6 @@ export function getCollectionStatus(collection: CollectionRef): CollectionStatus
 export function isCollectionInactive(collection: CollectionRef): boolean {
 	const status = getCollectionStatus(collection);
 	return status !== undefined && status !== 'active';
-}
-
-/**
- * Translated explanation of why a collection can't be interacted with, for use as a tooltip.
- * Undefined when the collection is active.
- *
- * Only for surfaces that can already show a tooltip. Elements rendered as a native disabled
- * button (`v-list-item`, `v-checkbox`) don't dispatch mouse events, so a tooltip there never
- * fires — those surfaces are disabled without an explanation.
- */
-export function getCollectionInactiveReason(collection: CollectionRef): string | undefined {
-	if (!isCollectionInactive(collection)) return undefined;
-
-	const key = `collection_status.${getCollectionStatus(collection)}.tooltip`;
-	return i18n.global.te(key) ? i18n.global.t(key) : i18n.global.t('collection_status.unavailable.tooltip');
 }
 
 /**

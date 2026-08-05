@@ -17,7 +17,7 @@ import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { Collection } from '@/types/collections';
-import { getCollectionInactiveReason, isCollectionInactive } from '@/utils/collection-status';
+import { isCollectionInactive } from '@/utils/collection-status';
 import { getCollectionRoute } from '@/utils/get-route';
 
 const props = defineProps<{
@@ -49,8 +49,6 @@ const { active: isGroupOpen } = useGroupable({
 const isBookmarkActive = computed(() => 'bookmark' in route.query);
 
 const isInactive = computed(() => isCollectionInactive(props.collection));
-
-const inactiveReason = computed(() => getCollectionInactiveReason(props.collection));
 
 const to = computed(() => {
 	if (!props.collection.schema || isInactive.value) return '';
@@ -140,7 +138,6 @@ function getChildBookmarks(collection: Collection) {
 
 	<VListItem
 		v-else-if="matchesSearch"
-		v-tooltip="inactiveReason"
 		v-context-menu="hasContextMenu ? 'contextMenu' : null"
 		:to="to"
 		:disabled="isInactive"

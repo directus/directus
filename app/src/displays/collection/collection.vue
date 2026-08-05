@@ -2,7 +2,7 @@
 import { useCollection } from '@directus/composables';
 import { computed, toRefs } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import { getCollectionInactiveReason } from '@/utils/collection-status';
+import { isCollectionInactive } from '@/utils/collection-status';
 import ValueNull from '@/views/private/components/value-null.vue';
 
 const props = withDefaults(
@@ -19,12 +19,12 @@ const props = withDefaults(
 const collection = toRefs(props).value;
 const { info } = useCollection(collection);
 
-const inactiveReason = computed(() => getCollectionInactiveReason(collection.value));
+const isInactive = computed(() => isCollectionInactive(collection.value));
 </script>
 
 <template>
 	<ValueNull v-if="value === null || !info" />
-	<div v-else v-tooltip="inactiveReason" :class="{ inactive: inactiveReason }">
+	<div v-else :class="{ inactive: isInactive }">
 		<VIcon v-if="icon" :name="info.icon" left small />
 		{{ info.name }}
 	</div>

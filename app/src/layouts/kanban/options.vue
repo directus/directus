@@ -10,7 +10,7 @@ import { computed } from 'vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDetail from '@/components/v-detail.vue';
 import VSelect from '@/components/v-select/v-select.vue';
-import { getCollectionInactiveReason, isFieldCollectionInactive } from '@/utils/collection-status';
+import { isCollectionInactive, isFieldCollectionInactive } from '@/utils/collection-status';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 
 const props = withDefaults(
@@ -82,7 +82,7 @@ const groupsCollection = computed(() => {
 	return getRelatedCollection(groupField.collection, groupField.field)?.relatedCollection ?? null;
 });
 
-const groupTitleInactiveReason = computed(() => getCollectionInactiveReason(groupsCollection.value));
+const groupTitleIsInactive = computed(() => isCollectionInactive(groupsCollection.value));
 </script>
 
 <template>
@@ -98,14 +98,14 @@ const groupTitleInactiveReason = computed(() => getCollectionInactiveReason(grou
 		/>
 	</div>
 
-	<div v-if="groupFieldSync && isRelational" v-tooltip="groupTitleInactiveReason" class="field">
+	<div v-if="groupFieldSync && isRelational" class="field">
 		<div class="type-label">{{ $t('layouts.kanban.group_title') }}</div>
 		<VSelect
 			v-model="groupTitleSync"
 			item-value="field"
 			item-text="name"
 			:items="groupTitleFields"
-			:disabled="!!groupTitleInactiveReason"
+			:disabled="groupTitleIsInactive"
 			:placeholder="$t('layouts.kanban.group_title_placeholder')"
 		/>
 	</div>
