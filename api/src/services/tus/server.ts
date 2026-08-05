@@ -122,6 +122,8 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 			if (isDirectusError(err)) {
 				return { status_code: err.status, body: err.message + '\n' };
 			}
+
+			return undefined;
 		},
 		generateUrl(_req, opts) {
 			return env['PUBLIC_URL'] + '/files/tus/' + opts.id;
