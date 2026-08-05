@@ -76,6 +76,7 @@ patch:
     - $ref: '../../openapi.yaml#/components/parameters/Sort'
     - $ref: '../../openapi.yaml#/components/parameters/Limit'
     - $ref: '../../openapi.yaml#/components/parameters/Offset'
+    - $ref: '../../openapi.yaml#/components/parameters/Page'
   requestBody:
     content:
       application/json:
