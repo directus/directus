@@ -1,3 +1,4 @@
+import { MAX_SAFE_INT64, MIN_SAFE_INT64 } from '@directus/constants';
 import knex, { type Knex } from 'knex';
 
 let client: typeof Knex.Client | undefined;
@@ -13,37 +14,11 @@ let client: typeof Knex.Client | undefined;
  * That silently breaks everything that stores an id as a string: the a2o junction `item` column
  * (`item = CAST(??.?? AS CHAR(255))` no longer matches), and the `item` columns on activity,
  * revisions, comments, notifications, shares and versions.
- *
- * `Client.prepBindings` is the seam for the correction rather than the dialect's own
- * `_formatBindings`: it's part of knex's published `Knex.Client` surface, knex's own oracledb dialect
- * overrides it for the same kind of driver quirk, and every query passes through it via
- * `enrichQueryObject`, whether it came from the query builder, from `knex.raw`, or from the schema
- * builder.
- *
- * Handing knex a subclass as `config.client` is the only install site that covers writes as well as
- * reads, and it's knex's documented extension point for customising a dialect. The alternatives
- * don't reach far enough:
- *
- * - Assigning to `database.client.prepBindings` after `knex()` returns misses every transaction.
- *   `makeTxClient` builds a transaction's client with `Object.create(client.constructor.prototype)`
- *   and copies over only `version`, `config`, `driver`, `connectionSettings`, `transacting`,
- *   `valueForUndefined` and `logger`, so own properties on the outer client are invisible inside it —
- *   and every mutation runs in a transaction.
- * - A per-query `client` proxy, the way `withPreprocessBindings` does it, needs a query builder to
- *   swap the client on. Reads have one; writes and DDL don't.
- * - The `query` event can't be used to fix bindings. `enrichQueryObject` calls `prepBindings` first
- *   and only then emits a shallow copy of the query object, so a listener is both too late and
- *   working on a copy.
  */
 export function getClientBetterSQLite3(): typeof Knex.Client {
 	if (client) return client;
 
-	/**
-	 * knex resolves dialect classes internally and exports only the base `Client`, so the way to get
-	 * hold of one without reaching into `knex/lib` is to let knex resolve it and read it back off the
-	 * client it built. A config without `connection` initialises neither a driver nor a pool, so this
-	 * knex holds no resources and needs no teardown.
-	 */
+	// knex only exports the base `Client`, so we read the dialect class off a connectionless knex instance
 	const createKnex: typeof knex.default = (knex as any).default ?? knex;
 
 	const BaseBetterSQLite3 = createKnex({ client: 'better-sqlite3', useNullAsDefault: true }).client
@@ -57,9 +32,18 @@ export function getClientBetterSQLite3(): typeof Knex.Client {
 	class DirectusBetterSQLite3 extends BaseBetterSQLite3 {
 		/**
 		 * Hand better-sqlite3 a BigInt whenever a binding is an integer, so ids keep their exact form.
-		 * Anything outside the safe integer range stays on the double path, since it can't round-trip
-		 * through a JS number anyway. Reads are unaffected: `safeIntegers` governs how values come out
-		 * of SQLite and stays off, so integers still read back as numbers.
+		 * Integral doubles are the only bindings that need it: SQLite renders a REAL into a TEXT column
+		 * as the shortest decimal that round-trips, which for `91.97` is already `"91.97"`, but for `41`
+		 * has to keep a decimal point.
+		 *
+		 * Past int64 the driver rejects the BigInt outright (`RangeError: The bound string, buffer, or
+		 * bigint is too big`), so those stay on the double path, along with `Infinity` and `NaN`, which
+		 * `Number.isInteger` already excludes.
+		 *
+		 * This can't rescue an id beyond 2^53. `safeIntegers` governs how values come out of SQLite and
+		 * stays off, so such an id is already an imprecise number by the time it is rebound, and its
+		 * stored text still won't match `CAST(id AS CHAR(255))`. Fixing that means turning `safeIntegers`
+		 * on and handling BigInt across every read path.
 		 */
 		override prepBindings(bindings: Knex.Value[]): any {
 			const prepared = super.prepBindings(bindings);
@@ -68,11 +52,17 @@ export function getClientBetterSQLite3(): typeof Knex.Client {
 			if (!Array.isArray(prepared)) return prepared;
 
 			return prepared.map((binding) => {
-				if (typeof binding === 'number' && Number.isSafeInteger(binding)) {
-					return BigInt(binding);
+				if (typeof binding !== 'number' || !Number.isInteger(binding)) {
+					return binding;
 				}
 
-				return binding;
+				const asBigInt = BigInt(binding);
+
+				if (asBigInt < MIN_SAFE_INT64 || asBigInt > MAX_SAFE_INT64) {
+					return binding;
+				}
+
+				return asBigInt;
 			});
 		}
 	}
