@@ -17,7 +17,7 @@ describe('redact', () => {
 	});
 
 	it('ignores short values so ordinary words are not mangled', () => {
-		registerSecret('abc'); // below the min length
+		registerSecret('abc');
 
 		expect(redact('abc def abc')).toBe('abc def abc');
 	});

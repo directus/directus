@@ -3,7 +3,7 @@ import { CliError } from './error.js';
 import { clearSecrets, registerSecret } from './secret.js';
 import { createUi } from './ui.js';
 
-const ESC = String.fromCodePoint(27); // start byte of every ANSI escape sequence
+const ESC = String.fromCodePoint(27);
 
 describe('createUi', () => {
 	let stdout: string[];
@@ -57,9 +57,6 @@ describe('createUi', () => {
 	});
 
 	it('emits warnings on stderr even in --json mode — CI is where they matter most', () => {
-		// Warnings carry actionable signals (stripped secrets, stale grants, forced version drift), and the
-		// --json runs are the unattended ones. Suppressing them alongside info/success made every warning
-		// invisible to CI while stdout never needed protecting — warnings go to stderr.
 		const ui = createUi({ json: true, color: false });
 		ui.warn('operation "notify" carries an Authorization header');
 
@@ -76,8 +73,6 @@ describe('createUi', () => {
 	});
 
 	it('tags the --json error payload with kind ErrorReport and formatVersion so consumers can dispatch on it', () => {
-		// Consumers dispatch on the leading tag; an untagged error is unparseable to them, and adding
-		// the tag later would be a breaking change, so it must lead the envelope from the start.
 		const ui = createUi({ json: true, color: false });
 		ui.error(new CliError('USAGE', 'bad input'));
 
@@ -130,8 +125,6 @@ describe('createUi', () => {
 	});
 
 	it('redacts a registered secret used as an object KEY in machine data output', () => {
-		// A replacer only rewrites values, so a secret surfacing as a key printed verbatim.
-		// Keys are attacker-reachable: payloads embed remote-controlled record maps.
 		registerSecret('leaked-token-abc123');
 		const ui = createUi({ json: true, color: false });
 		ui.data({ 'leaked-token-abc123': 'value' });
@@ -152,8 +145,6 @@ describe('createUi', () => {
 	});
 
 	it('preserves a `__proto__` key in machine data output instead of losing it to the prototype setter', () => {
-		// Rebuilding objects with assignment would route a `__proto__` key to the
-		// prototype setter and drop it; Object.fromEntries keeps it as an own property.
 		const ui = createUi({ json: true, color: false });
 		ui.data(JSON.parse('{"__proto__":"present"}'));
 
@@ -161,9 +152,6 @@ describe('createUi', () => {
 	});
 
 	it('redacts a secret that JSON-escaping would otherwise hide on the machine channel', () => {
-		// A token containing a quote serializes as `abc\"def`; redacting the finished
-		// JSON string by substring would miss the escaped form. Redacting values before
-		// serialization catches the raw secret regardless of how it would be escaped.
 		const secret = 'abc"def\\ghi';
 		registerSecret(secret);
 		const ui = createUi({ json: true, color: false });

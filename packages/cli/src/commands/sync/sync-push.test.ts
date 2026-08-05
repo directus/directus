@@ -90,9 +90,6 @@ describe('sync push', () => {
 	}
 
 	it('applies the sealed diff and sends { hash, diff } to /schema/apply byte-for-byte', async () => {
-		// The entire safety model rests on the exact diff the server sealed reaching /schema/apply
-		// unmodified — the server re-checks that hash — so the apply body must deep-equal the { hash, diff }
-		// the diff returned. Any mutation between diff and apply would break the seal.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -111,9 +108,6 @@ describe('sync push', () => {
 	});
 
 	it('prints the resolved target and mode on the human channel before the diff summary', async () => {
-		// A profile named staging but pointing at prod's URL must be visible before anything mutates, so
-		// the resolution line lands on stderr ahead of the change summary — and it carries the mode gloss,
-		// because "mirror deletes" must never be a surprise learned at the refusal.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -124,16 +118,17 @@ describe('sync push', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
 
 		const err = stderr.join('');
-		const resolutionAt = err.indexOf(`Pushing to staging — ${url} (merge — additive, no deletions)`);
+
+		const resolutionAt = err.indexOf(
+			`Pushing to staging — ${url} (merge — creates and updates records, never deletes)`,
+		);
+
 		const summaryAt = err.indexOf('Schema — ');
 		expect(resolutionAt).toBeGreaterThanOrEqual(0);
 		expect(summaryAt).toBeGreaterThan(resolutionAt);
 	});
 
 	it('warns before apply when the committed schema references a collection it does not include', async () => {
-		// A scoped export can strand a group parent the target lacks, and apply then 500s server-side
-		// (server scoped-snapshot bug). Push must warn about the dangling reference before the apply so the
-		// operator can widen scope, rather than only learning at the crash.
 		const grouped: Snapshot = {
 			version: 2,
 			directus: '11.0.0',
@@ -177,11 +172,6 @@ describe('sync push', () => {
 	}
 
 	it('refuses ANY known version mismatch — patch included — naming both versions and the flag', async () => {
-		// The server enforces an exact version match on /schema/diff (historically some patches are
-		// breaking; core's call is to keep that). The CLI mirrors the gate instead of second-guessing it,
-		// refusing client-side with both versions and the sanctioned bypass named — not the server's hint
-		// about a query parameter a CLI user cannot pass. No diff intercept exists: reaching /schema/diff
-		// would hit the disabled dispatcher, proving the refusal happens first.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -198,10 +188,6 @@ describe('sync push', () => {
 	});
 
 	it('--allow-version-drift sends force to /schema/diff and says so out loud', async () => {
-		// The flag is the server's own sanctioned bypass (its force query parameter) made explicit. A
-		// permissive intercept captures the raw query so the assertion rests on wire evidence rather than
-		// the mock's query-matching semantics. The forced run must also leave the versions on record — a CI
-		// log reader needs them when a cross-version diff produces a strange plan.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -225,9 +211,6 @@ describe('sync push', () => {
 	});
 
 	it('leaves an unparseable version to the server gate instead of refusing on a guess', async () => {
-		// A fork tag or failed /server/info probe is not a KNOWN mismatch: the CLI must not block a push it
-		// cannot prove wrong, and must not send force it was never asked for — the server's exact-match
-		// check stays the authority. The raw query is captured to prove force is absent.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -251,7 +234,6 @@ describe('sync push', () => {
 	});
 
 	it('emits applied:true with the counts and the verified hash on --json', async () => {
-		// CI reads this exact shape to confirm the push landed and to record the hash it applied against.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -281,8 +263,6 @@ describe('sync push', () => {
 	});
 
 	it('reports applied:false on a no-change diff and never calls apply', async () => {
-		// A 204 diff is "nothing to push": the command must exit 0 with applied:false and issue no apply
-		// request at all. No apply intercept is registered, so the disabled dispatcher would throw on one.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -311,8 +291,6 @@ describe('sync push', () => {
 	});
 
 	it('refuses to apply without --yes in a non-interactive context', async () => {
-		// No TTY and no --yes: the push cannot silently apply, so it fails pointing at --yes. No apply
-		// intercept — reaching exit 1 proves nothing was applied.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -324,8 +302,6 @@ describe('sync push', () => {
 	});
 
 	it('surfaces a re-run hint when the target hash changed between diff and apply', async () => {
-		// The diff was generated moments earlier, so a hash mismatch on apply means a concurrent schema
-		// change: the error must tell the operator to re-run the push, not just echo the raw payload error.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -338,9 +314,6 @@ describe('sync push', () => {
 	});
 
 	it('refuses a deletion-bearing MERGE diff in CI without --dangerously-allow-delete', async () => {
-		// The backstop behind the mirror gate: a merge diff should never carry deletions, but if the
-		// server returns one anyway it must not ride in under --yes — the deletion consent is
-		// --dangerously-allow-delete, in every mode. No apply intercept: the refusal precedes any apply request.
 		const deletionDiff = {
 			collections: [],
 			fields: [{ collection: 'articles', field: 'old_slug', diff: [{ kind: 'D', lhs: { field: 'old_slug' } }] }],
@@ -362,10 +335,6 @@ describe('sync push', () => {
 	});
 
 	it('resolves mode from project config when no flag is given, and lets the flag win', async () => {
-		// A committed config can select mirror — deletion behavior — so precedence must be pinned. Run 1:
-		// no flag, projects.default.mode=mirror; the mode-bearing diff intercept only matches mode=mirror
-		// on the wire, and the CI mirror gate must fire off the config-resolved mode. Run 2: an explicit
-		// --mode merge overrides the config; the merge intercept matching (204) proves the flag won.
 		writeFileSync(
 			join(dir, 'directus.config.json'),
 			JSON.stringify({ profiles: { staging: { url } }, projects: { default: { mode: 'mirror' } } }),
@@ -387,8 +356,6 @@ describe('sync push', () => {
 });
 
 describe('sync push with data', () => {
-	// A distinct source URL (the instance the data was pulled from) so the ID map's source→target bucket
-	// keys are visibly different — the exact keying push must reproduce from the committed metadata.
 	const source = 'https://source.example.com';
 	let schemaDir: string;
 	let dataDir: string;
@@ -409,8 +376,6 @@ describe('sync push with data', () => {
 		};
 	}
 
-	// Roles matched by natural key (name) and an access row referencing that role (FK remap): both remap
-	// behaviors in one batch.
 	function fullFixture(): DataCollection[] {
 		return [
 			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor', icon: 'edit' }] },
@@ -442,10 +407,6 @@ describe('sync push with data', () => {
 	}
 
 	it('refuses a mirror push whose committed export is marked incomplete — no flag overrides it', async () => {
-		// The pull-time manifest flag exists for exactly this moment: under mirror, absence from the batch
-		// IS the deletion order, and an export the source truncated (unlicensed instances hide custom-rule
-		// permissions from reads) is full of absences that are lies. Even the full deletion consent
-		// (--dangerously-allow-delete) cannot authorize deletions no plan can name.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 
@@ -477,8 +438,6 @@ describe('sync push with data', () => {
 	});
 
 	it('pushes an incomplete export under merge — upserting visible rows touches nothing hidden', async () => {
-		// The flag gates only deletion semantics. Merge sends what the export has and deletes nothing, so
-		// a degraded (unlicensed) source can still sync everything it CAN read.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 
@@ -512,18 +471,12 @@ describe('sync push with data', () => {
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
 
-		// The report must carry the marker: a CI consumer of a merge push needs to know the export it just
-		// applied was partial, without re-reading the manifest.
 		const payload = JSON.parse(stdout.join(''));
 		expect(payload.ok).toBe(true);
 		expect(payload.data).toMatchObject({ incomplete: ['directus_permissions'], skipped: false });
 	});
 
 	it('uploads the remapped batch and writes the map from reconcile matches and the import response', async () => {
-		// The safety core of a repeat import: the multipart body must decode to records rewritten into target
-		// space — role sr1→tr1 (reconciled by name), access.role remapped to tr1, content untouched — in
-		// system-then-content order; and the committed map must fold in the reconcile match, the server's
-		// sa1→na1 remap, and the identity roles entry. All against one target URL keyed under the source URL.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData(fullFixture());
@@ -561,8 +514,6 @@ describe('sync push with data', () => {
 	});
 
 	it('sends a schema MERGE diff and a data ADD import under --mode add', async () => {
-		// add maps to an additive schema diff (mode=merge on the wire) and an add-mode import (existing rows
-		// untouched). The two query matchers assert both wire modes exactly.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
@@ -570,8 +521,6 @@ describe('sync push with data', () => {
 
 		interceptDiff('merge', schemaChangesBody());
 		interceptApply();
-		// No target match: a matched role would be skipped under add (already on the target), and the
-		// import this test exists to assert would never fire.
 		interceptTarget('/roles', []);
 
 		interceptImport(
@@ -589,10 +538,6 @@ describe('sync push with data', () => {
 	});
 
 	it('recreates a mapped record under add when its target row is gone, still skipping present ones', async () => {
-		// add skips mapped rows to avoid duplicate inserts, but the skip must be conditional on the target
-		// row existing: a mapped row deleted on the target would otherwise stay missing forever with no
-		// signal (merge/mirror self-heal by sending the mapped PK). sr1→t9 is absent from the target, so
-		// its record must ride the batch under the mapped PK; sr2→tr1 is present, so it stays skipped.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 
@@ -645,12 +590,6 @@ describe('sync push with data', () => {
 	});
 
 	it('fetches unkeyed system targets under add so occupied panels are skipped, not duplicated', async () => {
-		// Panels have no natural key, so they never enter reconciliation — but their target rows MUST still
-		// be fetched: an unfetched collection reads as "all rows missing", the mapped-row self-heal resends
-		// every mapped panel, and the server resolves each add-mode conflict by minting a fresh UUID. That
-		// duplicated every mapped panel on every repeated add push. Here sp1 is mapped and present (skip),
-		// sp2 is unmapped but its PK already exists on the target — shared seed ancestry — (skip), and only
-		// the genuinely new sp3 may ride the batch.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 
@@ -708,11 +647,6 @@ describe('sync push with data', () => {
 	});
 
 	it('refuses committed content data files loudly, naming the collection, before any target read or import', async () => {
-		// Content sync is deferred from this release: pull no longer writes content data files, so any that
-		// remain are stale committed artifacts whose rows push can no longer import safely (a raw integer
-		// content PK can overwrite an unrelated target row). The refusal must precede all data-phase network
-		// work — only the schema diff is intercepted, so a reached target read or import would throw on the
-		// disabled dispatcher and change this failure's shape.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData([{ collection: 'articles', primaryKey: 'id', records: [{ id: 1, title: 'Hello' }] }]);
@@ -729,10 +663,6 @@ describe('sync push with data', () => {
 	});
 
 	it('carries dangerouslyAllowDelete on the import when mirror runs with --dangerously-allow-delete', async () => {
-		// mirror maps to a merge import plus dangerouslyAllowDelete (the server has no wire "mirror"); the
-		// exact query match proves the destructive flag rode along only because --dangerously-allow-delete consented.
-		// The schema diff carries a DELETION, so this also pins the schema half of the consent: with
-		// --dangerously-allow-delete the sealed { hash, diff } reaches apply byte-for-byte, deletions included.
 		const deletionDiff = {
 			collections: [],
 			fields: [{ collection: 'articles', field: 'old_slug', diff: [{ kind: 'D', lhs: { field: 'old_slug' } }] }],
@@ -773,9 +703,6 @@ describe('sync push with data', () => {
 	});
 
 	it('refuses mirror in CI without --dangerously-allow-delete before any apply or import, even with data present', async () => {
-		// Mirror can delete schema and data rows absent from the import set, unknowable in
-		// CI without a dry-run, so it is refused outright. Only the diff and the reconcile target read are registered — a reached apply or
-		// import would throw on the disabled dispatcher, proving neither happened.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData([{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Deploy' }] }]);
@@ -792,10 +719,6 @@ describe('sync push with data', () => {
 	});
 
 	it('refuses an ambiguous reconcile in CI, naming the collision, before any import', async () => {
-		// Reconcile never guesses and CI cannot prompt: two target roles named Editor make sr1 ambiguous,
-		// so push must fail STATE naming the collision and routing to an interactive run. Only the diff
-		// and the target fetch are registered — a reached apply or import would throw on the disabled
-		// dispatcher, proving the refusal preceded any mutation.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
@@ -817,17 +740,12 @@ describe('sync push with data', () => {
 	});
 
 	it('renders the cycle when the import fails with IMPORT_CYCLICAL_RELATION', async () => {
-		// A cyclical failure must name the collections and non-nullable relations forming the cycle and point
-		// at the fix (make one nullable). Schema is clean here, so the import is the only failure and its
-		// enriched error surfaces directly rather than under a partial-failure wrap.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		interceptDiff('merge', null);
-		// No target match: an identical matched role would be dropped as unchanged and the failing import
-		// this test asserts would never fire.
 		interceptTarget('/roles', []);
 
 		interceptImport(
@@ -856,10 +774,6 @@ describe('sync push with data', () => {
 	});
 
 	it('reports a converged data push as nothing-to-push without calling import', async () => {
-		// When every committed record's exported non-PK fields match the target, the batch empties and push
-		// must stop instead of upserting every row again (the server
-		// reports any PK-present row as "existing" whether or not it changed, so only this client-side
-		// comparison can close the loop). No import intercept is registered: a reached import would throw.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
@@ -873,8 +787,6 @@ describe('sync push with data', () => {
 	});
 
 	it('reports schema-applied and a data-retry path when the import fails after a schema apply', async () => {
-		// Partial failure: the schema landed but the import threw. There is no rollback, so the operator must
-		// be told the schema is already applied and that a re-run retries only the data (empty schema diff).
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
@@ -882,8 +794,6 @@ describe('sync push with data', () => {
 
 		interceptDiff('merge', schemaChangesBody());
 		interceptApply();
-		// No target match: an identical matched role would be dropped as unchanged and the failing import
-		// this test asserts would never fire.
 		interceptTarget('/roles', []);
 
 		interceptImport(
@@ -900,10 +810,6 @@ describe('sync push with data', () => {
 	});
 
 	it('keeps the diff-first guidance when the import outcome is unknown after a schema apply', async () => {
-		// A dropped connection does NOT stop the server's import transaction — it may still commit, with the
-		// id-map updates in the lost response. The one safety instruction for that scenario is "run diff
-		// before retrying"; the schema-applied wrapper must not replace it with generic re-run advice, which
-		// is exactly the blind retry that duplicates records.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
@@ -927,9 +833,6 @@ describe('sync push with data', () => {
 	});
 
 	it('pushes data only for a "schema": false project — no snapshot needed, no schema wire calls', async () => {
-		// A resource-only ops project must carry NO schema authority. Before the key existed, such a project
-		// silently committed a FULL snapshot, handing a mirror push delete authority over every collection.
-		// No schema files are seeded and no /schema/* intercept exists — reaching either fails the test.
 		writeFileSync(
 			join(dir, 'directus.config.json'),
 			JSON.stringify({ profiles: { staging: { url } }, projects: { default: { schema: false } } }),
@@ -953,16 +856,11 @@ describe('sync push with data', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
 		expect(stderr.join('')).toContain('Schema — skipped');
 
-		// The final sentence must not read "Schema already matches" — nothing was compared. QA hit
-		// exactly this: every earlier line said skipped, then the summary claimed a match.
 		expect(stderr.join('')).toContain('Schema phase skipped');
 		expect(stderr.join('')).not.toContain('already matches');
 	});
 
 	it('reports applied:true on --json for a data-only push — the target DID change', async () => {
-		// `applied` answered only the schema phase, so a push that imported records while the schemas
-		// already matched reported applied:false — a CI consumer reading that as "nothing happened"
-		// archives a lie about a target it just mutated.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
@@ -991,9 +889,6 @@ describe('sync push with data', () => {
 	});
 
 	it('refuses a project config pairing "schema": false with a collections scope', async () => {
-		// The pair is a contradiction — a schema scope on a project that pulls no schema — and guessing
-		// which key wins would either resurrect the full-snapshot footgun or silently drop the scope.
-		// Config parse names the mistake before any command half-runs.
 		writeFileSync(
 			join(dir, 'directus.config.json'),
 			JSON.stringify({
@@ -1009,9 +904,6 @@ describe('sync push with data', () => {
 	});
 
 	it('warns when committed schema files exist under "schema": false instead of silently ignoring them', async () => {
-		// Schema files beside a schema:false config usually mean the config changed after a pull; silence
-		// would leave the operator believing those files still push. Zero intercepts: with no data files and
-		// no schema phase, the whole command must complete without a single request.
 		writeFileSync(
 			join(dir, 'directus.config.json'),
 			JSON.stringify({ profiles: { staging: { url } }, projects: { default: { schema: false } } }),
@@ -1028,10 +920,6 @@ describe('sync push with data', () => {
 	});
 
 	it('emits the PushReport data block with the source and parsed response collections on --json', async () => {
-		// CI reads this shape: the data block is always present, carrying the mode, the source URL, and the
-		// server's per-collection response as parsed at the boundary (unknown fields are stripped by the
-		// strict contract schema — this is NOT a verbatim passthrough), alongside the project and schema
-		// fields.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData(fullFixture());
@@ -1064,9 +952,6 @@ describe('sync push with data', () => {
 	});
 
 	it('reports changes:true for a data-only push that imported rows', async () => {
-		// A push with a clean schema but a real import mutated the target: both `changes` and `applied`
-		// answer for the whole push (schema OR data). An `applied: false` here made a CI consumer archive
-		// "nothing happened" about a target the push just mutated.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
@@ -1094,9 +979,6 @@ describe('sync push with data', () => {
 	});
 
 	it('writes a byte-identical id map across two identical push runs', async () => {
-		// Determinism through the whole path: a second push against the same source must reproduce the exact
-		// committed map (reconcile skips settled records, the response folds back to the same entries), so a
-		// no-op push is a no-op diff in the repo.
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData(fullFixture());

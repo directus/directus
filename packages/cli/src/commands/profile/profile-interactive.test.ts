@@ -3,14 +3,16 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { confirm, isCancel, password, select, text } from '@clack/prompts';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { createConfigStore } from '../../kernel/config/file.js';
 import { loginSession, pingServer, refreshSessionIfNeeded, testConnection } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
 import { createUi } from '../../kernel/ui.js';
 import { add } from './add.js';
+import { remove } from './remove.js';
 import { testProfile } from './test.js';
+import { update } from './update.js';
 
-// vitest hoists these above the imports, so the bindings above resolve to the mocks.
 vi.mock('@clack/prompts', () => ({
 	text: vi.fn(),
 	password: vi.fn(),
@@ -26,9 +28,23 @@ vi.mock('../../kernel/connection.js', () => ({
 	refreshSessionIfNeeded: vi.fn(),
 }));
 
-function ctxAt(cwd: string): CliContext {
-	return { cwd, configPath: undefined, interactive: true, ui: createUi({ json: false, color: false }) };
+function ctxAt(cwd: string, configPath?: string): CliContext {
+	return {
+		cwd,
+		config: createConfigStore(cwd, configPath),
+		interactive: true,
+		ui: createUi({ json: false, color: false }),
+	};
 }
+
+const IDENTITY = { user: 'Ada', role: 'Admin', projectName: 'Demo' };
+
+const SESSION = {
+	access_token: 'session-access-value',
+	refresh_token: 'session-refresh-value',
+	expires: 900_000,
+	expires_at: Date.now() + 900_000,
+};
 
 describe('interactive profile flows', () => {
 	let dir: string;
@@ -82,9 +98,7 @@ describe('interactive profile flows', () => {
 		expect(pingServer).toHaveBeenCalledWith('https://cms.example.com');
 	});
 
-	it('confirms before repointing an existing profile to a different URL, and aborts on decline', async () => {
-		// The DIRECTUS_<NAME>_TOKEN env var follows the profile NAME; the confirm is the one human check
-		// before that token starts going to a different host. A decline must leave the profile untouched.
+	it('update confirms before moving a profile to a new URL, and aborts on decline', async () => {
 		writeFileSync(
 			join(dir, 'directus.config.json'),
 			JSON.stringify({ profiles: { staging: { url: 'https://one.example.com', auth: { type: 'token' } } } }),
@@ -92,7 +106,7 @@ describe('interactive profile flows', () => {
 
 		vi.mocked(confirm).mockResolvedValueOnce(false);
 
-		await expect(add('staging', { url: 'https://two.example.com' }, ctxAt(dir))).rejects.toMatchObject({
+		await expect(update('staging', { url: 'https://two.example.com' }, ctxAt(dir))).rejects.toMatchObject({
 			code: 'USAGE',
 		});
 
@@ -102,7 +116,7 @@ describe('interactive profile flows', () => {
 		expect(config.profiles.staging.url).toBe('https://one.example.com');
 	});
 
-	it('repoints after an accepted confirmation', async () => {
+	it('update overwrites the URL after an accepted confirmation', async () => {
 		writeFileSync(
 			join(dir, 'directus.config.json'),
 			JSON.stringify({ profiles: { staging: { url: 'https://one.example.com', auth: { type: 'token' } } } }),
@@ -111,10 +125,28 @@ describe('interactive profile flows', () => {
 		vi.mocked(confirm).mockResolvedValueOnce(true);
 		vi.mocked(select).mockResolvedValueOnce('skip');
 
-		await add('staging', { url: 'https://two.example.com' }, ctxAt(dir));
+		await update('staging', { url: 'https://two.example.com' }, ctxAt(dir));
 
 		const config = JSON.parse(readFileSync(join(dir, 'directus.config.json'), 'utf8'));
 		expect(config.profiles.staging.url).toBe('https://two.example.com');
+	});
+
+	it('update seeds the URL prompt with the URL the profile already has, so enter keeps it', async () => {
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { staging: { url: 'https://one.example.com', auth: { type: 'token' } } } }),
+		);
+
+		vi.mocked(text).mockResolvedValueOnce('https://one.example.com');
+		vi.mocked(select).mockResolvedValueOnce('skip');
+
+		await update('staging', {}, ctxAt(dir));
+
+		expect(vi.mocked(text).mock.calls[0]?.[0]?.initialValue).toBe('https://one.example.com');
+		expect(confirm).not.toHaveBeenCalled();
+
+		const config = JSON.parse(readFileSync(join(dir, 'directus.config.json'), 'utf8'));
+		expect(config.profiles.staging.url).toBe('https://one.example.com');
 	});
 
 	it('add enters and saves a pasted token when interactive and none was passed', async () => {
@@ -133,9 +165,6 @@ describe('interactive profile flows', () => {
 		const store = JSON.parse(readFileSync(join(home, '.directus', 'credentials.json'), 'utf8'));
 		expect(store['https://cms.example.com'].staging).toBe('tok-abcdefgh');
 
-		// The prompt must refuse an empty submit inline: resolveCredential skips an empty stored token as
-		// not-found, so accepting one would print "Saved a token" now and "No credential found" on the next
-		// command. The clack mock never runs validators, so exercise the one the prompt registered.
 		const validate = vi.mocked(password).mock.calls[0]?.[0]?.validate;
 		if (typeof validate !== 'function') throw new Error('promptToken must register a callable validator');
 		expect(validate('')).toBeTruthy();
@@ -177,9 +206,34 @@ describe('interactive profile flows', () => {
 		const store = JSON.parse(readFileSync(join(home, '.directus', 'credentials.json'), 'utf8'));
 		expect(store['https://real.example.com'].staging).toBe('tok-abcdefgh');
 
-		// The recovery path skips the repoint confirm (the user typed the URL), but the credential
-		// consequence must still be said out loud.
-		expect(stderr.join('')).toContain('Repointed "staging"');
+		expect(stderr.join('')).not.toContain('Overwrote the URL');
+	});
+
+	it('update warns about the overwrite it actually performed — the URL the user settled on, not the one typed first', async () => {
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { staging: { url: 'https://one.example.com', auth: { type: 'token' } } } }),
+		);
+
+		vi.mocked(confirm).mockResolvedValueOnce(true);
+		vi.mocked(select).mockResolvedValueOnce('paste').mockResolvedValueOnce('url');
+		vi.mocked(password).mockResolvedValueOnce('tok-abcdefgh');
+		vi.mocked(text).mockResolvedValueOnce('https://three.example.com');
+
+		vi.mocked(testConnection)
+			.mockRejectedValueOnce(new CliError('HTTP', 'Could not reach.'))
+			.mockResolvedValueOnce({ user: 'Ada', role: 'Admin', projectName: 'Demo' });
+
+		await update('staging', { url: 'https://two.example.com' }, ctxAt(dir));
+
+		const config = JSON.parse(readFileSync(join(dir, 'directus.config.json'), 'utf8'));
+		expect(config.profiles.staging.url).toBe('https://three.example.com');
+
+		expect(stderr.join('')).toContain(
+			'Overwrote the URL of "staging": https://one.example.com → https://three.example.com',
+		);
+
+		expect(stderr.join('')).not.toContain('https://two.example.com');
 	});
 
 	it('discards the token on request while keeping the profile', async () => {
@@ -209,11 +263,62 @@ describe('interactive profile flows', () => {
 		vi.mocked(select).mockResolvedValueOnce('login');
 		vi.mocked(text).mockResolvedValueOnce('ada@example.com');
 		vi.mocked(password).mockResolvedValueOnce('hunter2-pass');
-		vi.mocked(loginSession).mockResolvedValueOnce({ user: 'Ada', role: 'Admin', projectName: 'Demo' });
+		vi.mocked(loginSession).mockResolvedValueOnce({ identity: IDENTITY, session: SESSION });
 
 		await add('staging', { url: 'https://cms.example.com' }, ctxAt(dir));
 
-		expect(loginSession).toHaveBeenCalledWith('https://cms.example.com', 'staging', 'ada@example.com', 'hunter2-pass');
+		expect(loginSession).toHaveBeenCalledWith('https://cms.example.com', 'ada@example.com', 'hunter2-pass');
+
+		const raw = readFileSync(join(home, '.directus', 'credentials.json'), 'utf8');
+		expect(JSON.parse(raw)['https://cms.example.com'].staging.refresh_token).toBe(SESSION.refresh_token);
+		expect(raw).not.toContain('hunter2-pass');
+	});
+
+	it('does not strand an issued session when the profile write fails', async () => {
+		const blocker = join(dir, 'blocker');
+		writeFileSync(blocker, 'a regular file, so no config can be written beneath it');
+
+		vi.mocked(select).mockResolvedValueOnce('login');
+		vi.mocked(text).mockResolvedValueOnce('ada@example.com');
+		vi.mocked(password).mockResolvedValueOnce('hunter2-pass');
+		vi.mocked(loginSession).mockResolvedValueOnce({ identity: IDENTITY, session: SESSION });
+
+		const ctx = ctxAt(dir, join(blocker, 'directus.config.json'));
+
+		await expect(add('staging', { url: 'https://cms.example.com' }, ctx)).rejects.toThrow();
+
+		expect(loginSession).toHaveBeenCalled();
+		expect(existsSync(join(home, '.directus', 'credentials.json'))).toBe(false);
+	});
+
+	it('remove confirms first and keeps the profile on decline — the credential goes with it', async () => {
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { staging: { url: 'https://cms.example.com', auth: { type: 'token' } } } }),
+		);
+
+		vi.mocked(confirm).mockResolvedValueOnce(false);
+
+		await expect(remove('staging', {}, ctxAt(dir))).rejects.toMatchObject({ code: 'USAGE' });
+
+		expect(vi.mocked(confirm).mock.calls[0]?.[0]?.message).toContain('saved credential');
+
+		const config = JSON.parse(readFileSync(join(dir, 'directus.config.json'), 'utf8'));
+		expect(config.profiles.staging.url).toBe('https://cms.example.com');
+	});
+
+	it('remove rejects an unknown profile before it asks anything', async () => {
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { staging: { url: 'https://cms.example.com', auth: { type: 'token' } } } }),
+		);
+
+		await expect(remove('stagign', {}, ctxAt(dir))).rejects.toMatchObject({
+			code: 'USAGE',
+			message: 'Unknown profile: "stagign"',
+		});
+
+		expect(confirm).not.toHaveBeenCalled();
 	});
 
 	it('test prompts for a token when none resolves, tagging its source', async () => {
@@ -225,7 +330,7 @@ describe('interactive profile flows', () => {
 		vi.stubEnv('DIRECTUS_PROD_TOKEN', '');
 		vi.mocked(select).mockResolvedValueOnce('paste');
 		vi.mocked(password).mockResolvedValueOnce('typed-token');
-		vi.mocked(confirm).mockResolvedValueOnce(false); // don't persist it
+		vi.mocked(confirm).mockResolvedValueOnce(false);
 		vi.mocked(testConnection).mockResolvedValueOnce({ user: 'Ada', role: 'Admin', projectName: 'Demo' });
 
 		await testProfile('prod', {}, ctxAt(dir));
@@ -244,12 +349,15 @@ describe('interactive profile flows', () => {
 		vi.mocked(select).mockResolvedValueOnce('login');
 		vi.mocked(text).mockResolvedValueOnce('ada@example.com');
 		vi.mocked(password).mockResolvedValueOnce('pw-secret');
-		vi.mocked(loginSession).mockResolvedValueOnce({ user: 'Ada', role: 'Admin', projectName: 'Demo' });
+		vi.mocked(loginSession).mockResolvedValueOnce({ identity: IDENTITY, session: SESSION });
 
 		await testProfile('prod', {}, ctxAt(dir));
 
-		expect(loginSession).toHaveBeenCalledWith('https://cms.example.com', 'prod', 'ada@example.com', 'pw-secret');
+		expect(loginSession).toHaveBeenCalledWith('https://cms.example.com', 'ada@example.com', 'pw-secret');
 		expect(testConnection).not.toHaveBeenCalled();
+
+		const store = JSON.parse(readFileSync(join(home, '.directus', 'credentials.json'), 'utf8'));
+		expect(store['https://cms.example.com'].prod.refresh_token).toBe(SESSION.refresh_token);
 	});
 
 	it('test --url works with no config file at all', async () => {
@@ -263,9 +371,6 @@ describe('interactive profile flows', () => {
 	});
 
 	it('refreshes an expiring saved session before testing it, so a live profile is not reported broken', async () => {
-		// profile test is the command users run to validate a profile; it must recover an expiring session the
-		// same way the sync commands do (refreshSessionIfNeeded no-ops on non-session credentials), rather than
-		// reporting a still-valid, refreshable session as a failed authentication.
 		vi.mocked(testConnection).mockResolvedValueOnce({ user: 'Ada', role: 'Admin', projectName: 'Demo' });
 
 		await testProfile(undefined, { url: 'https://cms.example.com', token: 'tok-flag' }, ctxAt(dir));
@@ -279,7 +384,7 @@ describe('interactive profile flows', () => {
 
 	it('a cancelled prompt aborts cleanly instead of proceeding', async () => {
 		vi.mocked(text).mockResolvedValueOnce('anything');
-		vi.mocked(isCancel).mockReturnValueOnce(true); // user hit Ctrl+C on the first prompt
+		vi.mocked(isCancel).mockReturnValueOnce(true);
 
 		await expect(add(undefined, {}, ctxAt(dir))).rejects.toThrow(/Cancelled/);
 	});

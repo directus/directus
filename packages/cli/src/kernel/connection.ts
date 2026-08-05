@@ -1,5 +1,6 @@
 import {
 	authentication,
+	type AuthenticationData,
 	type CoreSchema,
 	createDirectus,
 	isDirectusError,
@@ -11,7 +12,7 @@ import {
 	staticToken,
 } from '@directus/sdk';
 import { get } from 'lodash-es';
-import { credentialStorage, type ResolvedCredential } from './config/credentials.js';
+import { credentialStorage, registerSession, type ResolvedCredential } from './config/credentials.js';
 import { CliError } from './error.js';
 import { registerSecret } from './secret.js';
 
@@ -60,18 +61,39 @@ export async function pingServer(url: string): Promise<void> {
 	}
 }
 
-export async function loginSession(
-	url: string,
-	profileName: string,
-	email: string,
-	password: string,
-): Promise<Identity> {
+/** A verified login: the identity it proved, plus the session the caller persists once its profile is written. */
+export interface VerifiedLogin {
+	readonly identity: Identity;
+	readonly session: AuthenticationData;
+}
+
+/**
+ * Log in and prove the session works, without storing anything. The caller persists it — after whatever
+ * config write binds it to a profile, so a failed write cannot orphan a credential no profile can reach.
+ */
+export async function loginSession(url: string, email: string, password: string): Promise<VerifiedLogin> {
 	registerSecret(password);
 
-	const storage = credentialStorage(url, profileName);
+	// Log in against memory so nothing is written until the session is proven usable: a failed identify
+	// leaves nothing behind, and a transient one can no longer delete a working saved session.
+	let session: AuthenticationData | null = null;
 
 	const client = createDirectus<CoreSchema>(url)
-		.with(authentication('json', { autoRefresh: false, storage }))
+		.with(
+			authentication('json', {
+				autoRefresh: false,
+				storage: {
+					get: () => session,
+					set: (value) => {
+						session = value;
+						// Redaction is the credential store's job when it persists, but identify() runs long before
+						// the caller gets there — register at issue time so a failing /users/me that echoes the
+						// token cannot print it in the clear.
+						if (value !== null) registerSession(value);
+					},
+				},
+			}),
+		)
 		.with(restWithTimeout());
 
 	try {
@@ -80,21 +102,13 @@ export async function loginSession(
 		throw mapRequestError(error, url);
 	}
 
-	try {
-		return await identify(client, url);
-	} catch (error) {
-		storage.set(null);
-		throw error;
-	}
+	// The SDK hands the issued tokens to the storage above; nothing there means there is no session to keep.
+	if (session === null) throw new CliError('AUTH', `Login to ${url} returned no session.`);
+
+	return { identity: await identify(client, url), session };
 }
 
-// A saved session's access token expires; the refresh token outlives it. Before the first request of a
-// command, refresh an expired (or near-expiry) session so it re-auths silently instead of failing hard and
-// forcing the whole profile to be re-added (Judd's pain). Run once per command: the rotated tokens persist
-// to the shared store, so every later request — SDK client or raw fetch — reads the fresh access token. A
-// static token has nothing to refresh; a session with no saved refresh token is left for the request to
-// 401 on as before. An auth-rejected refresh means the refresh token itself is dead, so surface a clear
-// re-authenticate error rather than a bare 401.
+// Refresh once per command so every later client reads the rotated session from shared storage.
 const SESSION_REFRESH_SKEW_MS = 60_000;
 
 export async function refreshSessionIfNeeded(credential: ResolvedCredential): Promise<void> {
@@ -114,14 +128,11 @@ export async function refreshSessionIfNeeded(credential: ResolvedCredential): Pr
 		.with(restWithTimeout());
 
 	try {
-		// json mode reads the refresh token from storage and persists the rotated tokens back through it.
 		await client.refresh();
 	} catch (error) {
 		const mapped = mapRequestError(error, credential.url);
 
-		// Only an auth rejection proves the refresh token is dead. A timeout, 5xx, or unreachable server says
-		// nothing about the session — rewording those as "expired, sign in again" sends the operator to
-		// re-authenticate against a server they cannot reach, hiding the failure they actually need to fix.
+		// Only an auth rejection proves the refresh token is dead.
 		if (mapped.code !== 'AUTH') throw mapped;
 
 		throw new CliError('AUTH', `The saved session for profile "${credential.profileName}" has expired.`, {
@@ -288,7 +299,6 @@ export function mapRequestError(error: unknown, url: string): CliError {
 		});
 	}
 
-	// No Response at all — DNS failure, connection refused, TLS, etc.
 	const reason = error instanceof Error ? error.message : String(error);
 	return new CliError('HTTP', `Could not reach ${url}.`, { detail: reason });
 }

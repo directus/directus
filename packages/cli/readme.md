@@ -23,6 +23,8 @@ Bins: `directus-cli` and the short alias `d6s`.
   may extend it, but ambiguous identities require an explicit choice.
 - Mirror batches are complete desired state for every included collection. An included empty collection therefore means
   delete its target rows; an omitted collection is outside that batch.
+- A bare pull includes every selectable config resource except users. Translations sync by default; use
+  `--no-translations` to exclude them. Users require `--users` or `--all`.
 - Preview is conservative when record identity is ambiguous. Unlike an interactive push, it never prompts or updates the
   ID map while deciding what appears unchanged.
 - Artifact ownership comes only from each directory's `metadata.json`; matching filenames do not imply ownership. The

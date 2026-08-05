@@ -4,8 +4,6 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { writeFileAtomic } from './write.js';
 
-// Passthrough spies only: every fs call keeps its real behavior, with openSync/fsyncSync observable so the
-// directory-flush contract can be asserted without faking filesystem semantics.
 vi.mock('node:fs', async (importOriginal) => {
 	const actual = await importOriginal<typeof import('node:fs')>();
 	return { ...actual, fsyncSync: vi.fn(actual.fsyncSync), openSync: vi.fn(actual.openSync) };
@@ -29,9 +27,6 @@ describe('writeFileAtomic', () => {
 	});
 
 	it('fsyncs the containing directory after the rename so the entry itself is power-loss durable', () => {
-		// The temp-file fsync makes the bytes durable, but the rename lives in the directory: without a
-		// directory flush the new entry can reach disk late or out of order with sibling renames, widening
-		// the sync store's crash window between stale-artifact removal and its manifest write.
 		const dir = tempDir();
 		const path = join(dir, 'artifact.json');
 
@@ -43,8 +38,6 @@ describe('writeFileAtomic', () => {
 		const dirOpen = open.calls.findIndex(([target]) => target === dir);
 		expect(dirOpen).toBeGreaterThanOrEqual(0);
 
-		// First fsync flushes the temp file; the second must target the directory fd, after its open. The
-		// order check matters because closed fd numbers get reused — equality alone could match the temp fd.
 		const dirFd = open.results[dirOpen]?.value as number;
 		const fsync = vi.mocked(fsyncSync).mock;
 		expect(fsync.calls).toEqual([[expect.any(Number)], [dirFd]]);
@@ -52,9 +45,6 @@ describe('writeFileAtomic', () => {
 	});
 
 	it('still succeeds when the platform cannot fsync a directory', () => {
-		// Directory fsync is durability hardening and is unsupported on some platforms/filesystems
-		// (Windows). Once the rename has happened the write itself is complete, so a failing directory
-		// flush must be swallowed — surfacing it would turn every working write into a failure there.
 		const dir = tempDir();
 		const path = join(dir, 'artifact.json');
 		const dirFds = new Set<number>();
@@ -72,7 +62,6 @@ describe('writeFileAtomic', () => {
 
 		expect(() => writeFileAtomic(path, 'data\n', 0o644)).not.toThrow();
 		expect(readFileSync(path, 'utf8')).toBe('data\n');
-		// The failing directory-fsync path actually executed; otherwise this test proves nothing.
 		expect(dirFds.size).toBeGreaterThan(0);
 	});
 });

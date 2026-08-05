@@ -2,17 +2,21 @@
 export const MODES = ['add', 'merge', 'mirror'] as const;
 
 /** A supported user-facing sync mode. */
-export type Mode = (typeof MODES)[number];
+export type SyncMode = (typeof MODES)[number];
 
-// One gloss per mode, shown wherever a mode is echoed: a first-time operator must never need to already
-// know that "mirror" deletes.
-const MODE_GLOSSES: Record<Mode, string> = {
+/** The subset the schema diff endpoint accepts; `add` has no schema meaning. */
+export type SchemaDiffMode = 'merge' | 'mirror';
+
+/** The subset the import endpoint accepts; mirror rides as merge plus delete permission. */
+export type ImportMode = 'add' | 'merge';
+
+const MODE_GLOSSES: Record<SyncMode, string> = {
 	add: 'add — only creates new records',
-	merge: 'merge — additive, no deletions',
+	merge: 'merge — creates and updates records, never deletes',
 	mirror: 'mirror — INCLUDES DELETIONS',
 };
 
 /** The mode with its one-line meaning, for target lines and prompts. */
-export function describeMode(mode: Mode): string {
+export function describeMode(mode: SyncMode): string {
 	return MODE_GLOSSES[mode];
 }

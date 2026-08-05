@@ -13,11 +13,6 @@ export type ResolvedCredential =
 	| { readonly kind: 'token'; readonly url: string; readonly token: string }
 	| { readonly kind: 'session'; readonly url: string; readonly profileName: string };
 
-// Callers decide whether a missing credential can prompt or must fail.
-type CredentialResolution =
-	| { readonly found: true; readonly credential: ResolvedCredential }
-	| { readonly found: false; readonly envVar: string | undefined };
-
 type CredentialQuery =
 	| { readonly target: 'profile'; readonly url: string; readonly profileName: string; readonly tokenFlag?: string }
 	| { readonly target: 'url'; readonly url: string; readonly tokenFlag?: string };
@@ -33,23 +28,21 @@ export function envTokenVar(profileName: string): string {
  * credential is bound to a named profile or passed explicitly, so it can never be
  * borrowed for a target the user didn't mean to authenticate.
  */
-export function resolveCredential(query: CredentialQuery): CredentialResolution {
+export function resolveCredential(query: CredentialQuery): ResolvedCredential | undefined {
 	const { url, tokenFlag } = query;
 
-	// Register the token the instant it materializes, so it is redacted from all
-	// output regardless of which consumer touches it next.
-	function hit(token: string): CredentialResolution {
+	// Register before any downstream error can expose the token.
+	function hit(token: string): ResolvedCredential {
 		registerSecret(token);
-		return { found: true, credential: { kind: 'token', url, token } };
+		return { kind: 'token', url, token };
 	}
 
 	if (tokenFlag !== undefined && tokenFlag !== '') {
 		return hit(tokenFlag);
 	}
 
-	// A direct URL has no profile binding, so nothing to resolve from env or store.
 	if (query.target === 'url') {
-		return { found: false, envVar: undefined };
+		return undefined;
 	}
 
 	const { profileName } = query;
@@ -59,9 +52,7 @@ export function resolveCredential(query: CredentialQuery): CredentialResolution 
 		return hit(specific);
 	}
 
-	// The saved store is machine-global but never consulted in CI, so a stray dev
-	// token cannot leak into an automated run. Only bare strings are static tokens;
-	// persisted sessions are read through credentialStorage.
+	// Never let a developer's machine-global credential leak into CI.
 	if (!isCI()) {
 		const stored = readStore()[url]?.[profileName];
 
@@ -69,11 +60,11 @@ export function resolveCredential(query: CredentialQuery): CredentialResolution 
 			if (stored !== '') return hit(stored);
 		} else if (stored !== undefined) {
 			const session = requireSession(stored, url, profileName);
-			if (session.refresh_token !== null) return { found: true, credential: { kind: 'session', url, profileName } };
+			if (session.refresh_token !== null) return { kind: 'session', url, profileName };
 		}
 	}
 
-	return { found: false, envVar: envTokenVar(profileName) };
+	return undefined;
 }
 
 type StoredCredential = string | AuthenticationData;
@@ -90,12 +81,8 @@ function readStore(): CredentialStore {
 	try {
 		raw = readFileSync(path, 'utf8');
 	} catch (error) {
-		// A missing store is the normal "nothing saved yet" case. Anything else
-		// (unreadable, permissions) must NOT collapse to {} — saveCredential would
-		// then overwrite a recoverable file and wipe every other saved token.
+		// Only a missing file means an empty store; treating other failures as empty could wipe credentials.
 		const code = error instanceof Error && 'code' in error ? error.code : undefined;
-		// Null prototype for the same reason as the rebuild below: the first-ever save must not be able to
-		// hit an inherited __proto__ setter either.
 		if (code === 'ENOENT') return Object.create(null) as CredentialStore;
 
 		const hint = error instanceof Error ? error.message : undefined;
@@ -112,8 +99,7 @@ function readStore(): CredentialStore {
 		});
 	}
 
-	// A present-but-wrong-shape store is corrupt, not empty — refuse rather than
-	// silently overwrite it on the next save.
+	// Refuse corruption before a later save can overwrite recoverable credentials.
 	if (!isPlainObject(parsed)) {
 		throw new CliError('STATE', `Credential store at ${path} is not a JSON object.`, {
 			hint: 'Fix or remove the file, then retry.',
@@ -122,11 +108,7 @@ function readStore(): CredentialStore {
 
 	const store = parsed as Record<string, unknown>;
 
-	// Rebuilt on null prototypes so a "__proto__" key can only ever be plain data. On JSON.parse output,
-	// reading an ABSENT store["__proto__"] resolves to Object.prototype — clearCredential's delete would
-	// then strip builtins off every object in the process, and saveCredential's assignment would silently
-	// reparent the store instead of writing. (A profile literally named __proto__ is legal — it passes the
-	// env-safe name rule — so this is reachable data, not just a hand-edited file.)
+	// Legal "__proto__" keys must remain data instead of invoking inherited prototype behavior.
 	const clean = Object.create(null) as CredentialStore;
 
 	for (const [url, profiles] of Object.entries(store)) {
@@ -146,6 +128,11 @@ function readStore(): CredentialStore {
 	}
 
 	return clean;
+}
+
+/** The single confirmation every caller reports after `saveCredential`. */
+export function savedTokenMessage(profileName: string): string {
+	return `Saved a token for "${profileName}" to the credential store.`;
 }
 
 /** The store is owner-only (0600); register the token before writing it. */
@@ -201,7 +188,8 @@ function invalidStoredCredential(url: string, profileName: string): CliError {
 	});
 }
 
-function registerSession(data: AuthenticationData): void {
+/** Redact a session's tokens from all output. Must run before any request carrying them. */
+export function registerSession(data: AuthenticationData): void {
 	if (data.access_token !== null) registerSecret(data.access_token);
 	if (data.refresh_token !== null) registerSecret(data.refresh_token);
 }
@@ -209,8 +197,7 @@ function registerSession(data: AuthenticationData): void {
 function writeStored(url: string, profileName: string, value: StoredCredential | null): void {
 	const path = storePath();
 
-	// Read first, outside the write try: a corrupt store must surface its precise
-	// error and abort before we mkdir/write, never get rewrapped or overwritten.
+	// Surface corruption before any filesystem mutation or error rewrapping.
 	const store = readStore();
 
 	if (value === null) {

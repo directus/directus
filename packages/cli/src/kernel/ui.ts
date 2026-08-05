@@ -1,5 +1,6 @@
 import { Chalk } from 'chalk';
 import { isPlainObject } from 'lodash-es';
+import { DELETED_MARK, KIND_TOKENS } from '../sync/render.js';
 import type { CliError } from './error.js';
 import { redact } from './secret.js';
 
@@ -25,7 +26,6 @@ export function writeOut(text: string): void {
 	process.stdout.write(redact(text));
 }
 
-/** Write redacted text to stderr. */
 function writeErr(text: string): void {
 	process.stderr.write(redact(text));
 }
@@ -61,12 +61,12 @@ export interface Ui {
 	success(message: string): void;
 	warn(message: string): void;
 	error(error: CliError): void;
+	/** Emit tagged and versioned JSON for machine consumers. */
 	data(payload: unknown): void;
 }
 
 /** Create human or JSON CLI output with final-boundary secret redaction. */
 export function createUi(options: { json: boolean; color: boolean }): Ui {
-	// Level 0 honors --no-color; otherwise Chalk performs its normal environment detection.
 	const c = new Chalk(options.color ? {} : { level: 0 });
 	const { json } = options;
 
@@ -79,14 +79,15 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 	// the rows an approval must not miss), additions' token green, modifications' token yellow — plus the
 	// destructive tail of a data line (`✖N deleted (…)`) red whenever N is non-zero.
 	function paintPlan(line: string): string {
-		if (line.startsWith('✖ DELETE')) return c.red(line);
-		if (line.startsWith('+')) return `${c.green('+')}${line.slice(1)}`;
+		if (line.startsWith(KIND_TOKENS.deleted)) return c.red(line);
+		if (line.startsWith(KIND_TOKENS.added))
+			return `${c.green(KIND_TOKENS.added)}${line.slice(KIND_TOKENS.added.length)}`;
 
-		if (line.startsWith('~')) {
-			const painted = `${c.yellow('~')}${line.slice(1)}`;
-			const tail = painted.indexOf('✖');
+		if (line.startsWith(KIND_TOKENS.modified)) {
+			const painted = `${c.yellow(KIND_TOKENS.modified)}${line.slice(KIND_TOKENS.modified.length)}`;
+			const tail = painted.indexOf(DELETED_MARK);
 
-			if (tail !== -1 && !painted.slice(tail).startsWith('✖0 ')) {
+			if (tail !== -1 && !painted.slice(tail).startsWith(`${DELETED_MARK}0 `)) {
 				return painted.slice(0, tail) + c.red(painted.slice(tail));
 			}
 
@@ -112,10 +113,7 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 			status(c.green(SYMBOLS.success), message);
 		},
 		warn(message) {
-			// Warnings are actionable signals (stripped secrets, stale grants, forced drift), not progress
-			// chatter — and CI runs are exactly where they matter most. Machine consumers parse stdout, so
-			// emitting warnings on stderr keeps --json output pure while the log still carries them; only
-			// info/success stay human-mode-only.
+			// Keep warnings visible in CI without contaminating JSON stdout.
 			writeErr(`${c.yellow(SYMBOLS.warn)} ${message}\n`);
 		},
 		error(error) {
@@ -127,7 +125,6 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 					...(error.detail !== undefined ? { detail: error.detail } : {}),
 				};
 
-				// Stable leading tags let machine consumers dispatch before reading the payload.
 				writeJson({ kind: 'ErrorReport', formatVersion: 1, error: body });
 				return;
 			}

@@ -1,6 +1,25 @@
 import { describe, expect, it } from 'vitest';
 import { type CollectionReconcile, reconcileCollections, type ReconcileInput } from './reconcile.js';
-import { expectCliError } from './test-support.js';
+import { allResources } from './resources.js';
+
+function input(
+	collection: string,
+	sourceRecords: Record<string, unknown>[],
+	targetRecords: Record<string, unknown>[],
+): ReconcileInput {
+	const resource = allResources().find((entry) => entry.collection === collection);
+
+	if (resource?.naturalKey === undefined) throw new Error(`no natural key for ${collection}`);
+
+	return {
+		collection,
+		primaryKey: resource.primaryKey,
+		naturalKey: resource.naturalKey,
+		fkFields: resource.fkFields,
+		sourceRecords,
+		targetRecords,
+	};
+}
 
 function forCollection(results: readonly CollectionReconcile[], name: string): CollectionReconcile {
 	const found = results.find((result) => result.collection === name);
@@ -10,17 +29,8 @@ function forCollection(results: readonly CollectionReconcile[], name: string): C
 
 describe('reconcileCollections', () => {
 	it('matches a unique natural key and seeds that pair', () => {
-		// The base case reconcile exists for: two instances gave one role different IDs; without this match a
-		// merge import would create a second "Editor" instead of updating the first.
 		const results = reconcileCollections(
-			[
-				{
-					collection: 'directus_roles',
-					primaryKey: 'id',
-					sourceRecords: [{ id: 's1', name: 'Editor' }],
-					targetRecords: [{ id: 't1', name: 'Editor' }],
-				},
-			],
+			[input('directus_roles', [{ id: 's1', name: 'Editor' }], [{ id: 't1', name: 'Editor' }])],
 			{},
 		);
 
@@ -32,19 +42,16 @@ describe('reconcileCollections', () => {
 	});
 
 	it('marks a source ambiguous when two targets share its key', () => {
-		// mirror-delete safety: two target "Editor" rows mean the match is genuinely undecidable; guessing one
-		// would seed a wrong ID and let a later mirror delete destroy the other real record.
 		const results = reconcileCollections(
 			[
-				{
-					collection: 'directus_roles',
-					primaryKey: 'id',
-					sourceRecords: [{ id: 's1', name: 'Editor' }],
-					targetRecords: [
+				input(
+					'directus_roles',
+					[{ id: 's1', name: 'Editor' }],
+					[
 						{ id: 't2', name: 'Editor' },
 						{ id: 't1', name: 'Editor' },
 					],
-				},
+				),
 			],
 			{},
 		);
@@ -57,19 +64,16 @@ describe('reconcileCollections', () => {
 	});
 
 	it('marks both sources ambiguous when two of them collide on one target', () => {
-		// The mirror image of target-side ambiguity: two source rows want the single "Dup" target and neither
-		// can claim it, so both must stop for a human rather than one silently winning.
 		const results = reconcileCollections(
 			[
-				{
-					collection: 'directus_roles',
-					primaryKey: 'id',
-					sourceRecords: [
+				input(
+					'directus_roles',
+					[
 						{ id: 's2', name: 'Dup' },
 						{ id: 's1', name: 'Dup' },
 					],
-					targetRecords: [{ id: 't1', name: 'Dup' }],
-				},
+					[{ id: 't1', name: 'Dup' }],
+				),
 			],
 			{},
 		);
@@ -85,19 +89,16 @@ describe('reconcileCollections', () => {
 	});
 
 	it('skips a source already in the map and never re-offers its claimed target', () => {
-		// The committed map wins: s1 is already mapped, so it appears in no bucket, and its target t1 is
-		// claimed — so a second source with the same name cannot be matched onto it and would only duplicate.
 		const results = reconcileCollections(
 			[
-				{
-					collection: 'directus_roles',
-					primaryKey: 'id',
-					sourceRecords: [
+				input(
+					'directus_roles',
+					[
 						{ id: 's1', name: 'Admin' },
 						{ id: 's2', name: 'Admin' },
 					],
-					targetRecords: [{ id: 't1', name: 'Admin' }],
-				},
+					[{ id: 't1', name: 'Admin' }],
+				),
 			],
 			{ directus_roles: { s1: 't1' } },
 		);
@@ -110,26 +111,17 @@ describe('reconcileCollections', () => {
 	});
 
 	it('translates an FK key component through a parent matched earlier in the run', () => {
-		// Operations key on flow+key, and flow is an FK: the operation can only match once its flow has a
-		// target-space ID. Inputs come parents-first; an operation whose flow never matched cannot equal any
-		// target row and must land unmatched, not be paired by an untranslated source ID.
 		const results = reconcileCollections(
 			[
-				{
-					collection: 'directus_flows',
-					primaryKey: 'id',
-					sourceRecords: [{ id: 'fS', name: 'MyFlow' }],
-					targetRecords: [{ id: 'fT', name: 'MyFlow' }],
-				},
-				{
-					collection: 'directus_operations',
-					primaryKey: 'id',
-					sourceRecords: [
+				input('directus_flows', [{ id: 'fS', name: 'MyFlow' }], [{ id: 'fT', name: 'MyFlow' }]),
+				input(
+					'directus_operations',
+					[
 						{ id: 'oS', flow: 'fS', key: 'trigger' },
 						{ id: 'oOrphan', flow: 'fUnknown', key: 'x' },
 					],
-					targetRecords: [{ id: 'oT', flow: 'fT', key: 'trigger' }],
-				},
+					[{ id: 'oT', flow: 'fT', key: 'trigger' }],
+				),
 			],
 			{},
 		);
@@ -145,41 +137,22 @@ describe('reconcileCollections', () => {
 	});
 
 	it('does not cross-match access rows whose null FK component sits in a different slot', () => {
-		// access rows key on role+user+policy, one of role/user always null. A role-set/user-null row and a
-		// null-role/user-set row must never collide, or reconcile would seed a policy grant onto the wrong
-		// principal — the directus-sync #148 data-loss class.
 		const results = reconcileCollections(
 			[
-				{
-					collection: 'directus_roles',
-					primaryKey: 'id',
-					sourceRecords: [{ id: 'rS', name: 'R' }],
-					targetRecords: [{ id: 'rT', name: 'R' }],
-				},
-				{
-					collection: 'directus_users',
-					primaryKey: 'id',
-					sourceRecords: [{ id: 'uS', email: 'u@example.com' }],
-					targetRecords: [{ id: 'uT', email: 'u@example.com' }],
-				},
-				{
-					collection: 'directus_policies',
-					primaryKey: 'id',
-					sourceRecords: [{ id: 'pS', name: 'P' }],
-					targetRecords: [{ id: 'pT', name: 'P' }],
-				},
-				{
-					collection: 'directus_access',
-					primaryKey: 'id',
-					sourceRecords: [
+				input('directus_roles', [{ id: 'rS', name: 'R' }], [{ id: 'rT', name: 'R' }]),
+				input('directus_users', [{ id: 'uS', email: 'u@example.com' }], [{ id: 'uT', email: 'u@example.com' }]),
+				input('directus_policies', [{ id: 'pS', name: 'P' }], [{ id: 'pT', name: 'P' }]),
+				input(
+					'directus_access',
+					[
 						{ id: 'aRole', role: 'rS', user: null, policy: 'pS' },
 						{ id: 'aUser', role: null, user: 'uS', policy: 'pS' },
 					],
-					targetRecords: [
+					[
 						{ id: 'aRoleT', role: 'rT', user: null, policy: 'pT' },
 						{ id: 'aUserT', role: null, user: 'uT', policy: 'pT' },
 					],
-				},
+				),
 			],
 			{},
 		);
@@ -196,17 +169,8 @@ describe('reconcileCollections', () => {
 	});
 
 	it('normalizes an integer primary key to its string form', () => {
-		// settings ids are integers; the seeded map is keyed by strings, so a match must record '1', not 1,
-		// or the later import would look up the mapping under the wrong key type and miss it.
 		const results = reconcileCollections(
-			[
-				{
-					collection: 'directus_settings',
-					primaryKey: 'id',
-					sourceRecords: [{ id: 1, project_name: 'X' }],
-					targetRecords: [{ id: 1, project_name: 'X' }],
-				},
-			],
+			[input('directus_settings', [{ id: 1, project_name: 'X' }], [{ id: 1, project_name: 'X' }])],
 			{},
 		);
 
@@ -214,67 +178,36 @@ describe('reconcileCollections', () => {
 	});
 
 	it('matches the settings singleton unconditionally despite different ids and content', () => {
-		// settings is one row per instance with no natural key; the singleton must pair regardless of field
-		// values, or a first push would create a second settings row the server rejects.
 		const results = reconcileCollections(
-			[
-				{
-					collection: 'directus_settings',
-					primaryKey: 'id',
-					sourceRecords: [{ id: 5, project_name: 'Alpha' }],
-					targetRecords: [{ id: 9, project_name: 'Beta' }],
-				},
-			],
+			[input('directus_settings', [{ id: 5, project_name: 'Alpha' }], [{ id: 9, project_name: 'Beta' }])],
 			{},
 		);
 
 		expect(forCollection(results, 'directus_settings').matched).toEqual([{ sourceId: '5', targetId: '9', key: '[]' }]);
 	});
 
-	it('fails STATE naming a collection with no natural-key entry', () => {
-		// Table drift must be loud: a collection reconcile does not know how to key must halt, not silently
-		// report everything unmatched and let a later mirror delete wipe real target records.
-		const error = expectCliError(() =>
-			reconcileCollections(
-				[{ collection: 'directus_mystery', primaryKey: 'id', sourceRecords: [], targetRecords: [] }],
-				{},
-			),
-		);
-
-		expect(error.code).toBe('STATE');
-		expect(error.message).toContain('directus_mystery');
-	});
-
 	it('produces identical output when record order is shuffled', () => {
-		// The committed seed and any diff derived from it must depend only on the records, not their export
-		// order; a reshuffle that changed the result would make reconcile non-reproducible in review and CI.
 		const base: ReconcileInput[] = [
-			{
-				collection: 'directus_roles',
-				primaryKey: 'id',
-				sourceRecords: [
+			input(
+				'directus_roles',
+				[
 					{ id: 'r1', name: 'Alpha' },
 					{ id: 'r2', name: 'Dup' },
 					{ id: 'r3', name: 'Dup' },
 					{ id: 'r4', name: 'Ghost' },
 				],
-				targetRecords: [
+				[
 					{ id: 't1', name: 'Alpha' },
 					{ id: 't2', name: 'Dup' },
 				],
-			},
-			{
-				collection: 'directus_operations',
-				primaryKey: 'id',
-				sourceRecords: [{ id: 'o1', flow: 'f1', key: 'run' }],
-				targetRecords: [{ id: 'oT', flow: 'f1', key: 'run' }],
-			},
+			),
+			input('directus_operations', [{ id: 'o1', flow: 'f1', key: 'run' }], [{ id: 'oT', flow: 'f1', key: 'run' }]),
 		];
 
-		const reversed = base.map((input) => ({
-			...input,
-			sourceRecords: [...input.sourceRecords].reverse(),
-			targetRecords: [...input.targetRecords].reverse(),
+		const reversed = base.map((entry) => ({
+			...entry,
+			sourceRecords: [...entry.sourceRecords].reverse(),
+			targetRecords: [...entry.targetRecords].reverse(),
 		}));
 
 		expect(reconcileCollections(reversed, {})).toEqual(reconcileCollections(base, {}));

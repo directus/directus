@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { CliError } from '../error.js';
-import { loadConfig, resolveProfile, upsertProfile } from './file.js';
+import { createConfigStore, resolveProfile } from './file.js';
 
 const created: string[] = [];
 
@@ -13,7 +13,6 @@ function tempDir(): string {
 	return dir;
 }
 
-// Run fn and return the CliError it throws, so a test can assert on code/hint.
 function caught(fn: () => unknown): CliError {
 	try {
 		fn();
@@ -29,9 +28,9 @@ afterEach(() => {
 	for (const dir of created.splice(0)) rmSync(dir, { recursive: true, force: true });
 });
 
-describe('loadConfig', () => {
+describe('createConfigStore', () => {
 	it('returns undefined when no config exists so profile-less operation stays first-class', () => {
-		expect(loadConfig({ cwd: tempDir() })).toBeUndefined();
+		expect(createConfigStore(tempDir()).load()).toBeUndefined();
 	});
 
 	it('walks up from a nested subdirectory like git, so the CLI works anywhere in a project', () => {
@@ -40,25 +39,23 @@ describe('loadConfig', () => {
 		const nested = join(root, 'a', 'b');
 		mkdirSync(nested, { recursive: true });
 
-		expect(loadConfig({ cwd: nested })?.path).toBe(join(root, 'directus.config.json'));
+		expect(createConfigStore(nested).load()?.path).toBe(join(root, 'directus.config.json'));
 	});
 
 	it('preserves namespaces the kernel does not own', () => {
 		const dir = tempDir();
 		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: {}, sync: { defaultMode: 'merge' } }));
 
-		const loaded = loadConfig({ cwd: dir });
+		const loaded = createConfigStore(dir).load();
 
 		expect((loaded?.config as Record<string, unknown>)['sync']).toEqual({ defaultMode: 'merge' });
 	});
 
 	it('fills directory, projects, and format with defaults so a config predating them parses unchanged', () => {
-		// The three CLI-owned keys must all default, or adding them would break every config already
-		// committed without them.
 		const dir = tempDir();
 		writeFileSync(join(dir, 'directus.config.json'), '{ "profiles": {} }');
 
-		const loaded = loadConfig({ cwd: dir });
+		const loaded = createConfigStore(dir).load();
 
 		expect(loaded?.config.directory).toBe('directus');
 		expect(loaded?.config.projects).toEqual({});
@@ -66,7 +63,6 @@ describe('loadConfig', () => {
 	});
 
 	it('parses a declared project scope, keeping every scope key optional', () => {
-		// An empty object validly declares a project without overriding any sync defaults.
 		const dir = tempDir();
 
 		writeFileSync(
@@ -74,15 +70,13 @@ describe('loadConfig', () => {
 			JSON.stringify({ projects: { staging: { resources: ['roles'], mode: 'mirror' }, empty: {} } }),
 		);
 
-		const loaded = loadConfig({ cwd: dir });
+		const loaded = createConfigStore(dir).load();
 
 		expect(loaded?.config.projects['staging']).toEqual({ resources: ['roles'], mode: 'mirror' });
 		expect(loaded?.config.projects['empty']).toEqual({});
 	});
 
 	it('rejects an unknown key inside a project scope', () => {
-		// Scope config must fail loud, not fail open: a typo'd key ("colections") silently dropped would
-		// widen the pull to everything instead of the intended subset.
 		const dir = tempDir();
 
 		writeFileSync(
@@ -90,26 +84,22 @@ describe('loadConfig', () => {
 			JSON.stringify({ projects: { staging: { colections: ['articles'] } } }),
 		);
 
-		expect(caught(() => loadConfig({ cwd: dir })).code).toBe('CONFIG');
+		expect(caught(() => createConfigStore(dir).load()).code).toBe('CONFIG');
 	});
 
 	it('rejects an empty scope array instead of silently widening to everything', () => {
-		// `collections: []` cannot reach the wire (the SDK drops the empty param), so it degraded to a FULL
-		// snapshot printed as "(scoped to: )" — a mirror project with it holds delete authority over every
-		// collection. Fail loud; "unscoped" is expressed by omitting the key. Found in QA.
 		const dir = tempDir();
 
 		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ projects: { staging: { collections: [] } } }));
 
-		expect(caught(() => loadConfig({ cwd: dir })).code).toBe('CONFIG');
+		expect(caught(() => createConfigStore(dir).load()).code).toBe('CONFIG');
 	});
 
 	it('rejects format: yaml, the reserved-but-not-yet-serialized artifact format', () => {
-		// Unsupported formats must fail instead of silently being treated as JSON.
 		const dir = tempDir();
 		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ format: 'yaml' }));
 
-		expect(caught(() => loadConfig({ cwd: dir })).code).toBe('CONFIG');
+		expect(caught(() => createConfigStore(dir).load()).code).toBe('CONFIG');
 	});
 
 	it('prefers an explicit configPath over walk-up discovery', () => {
@@ -123,21 +113,21 @@ describe('loadConfig', () => {
 		const explicit = join(dir, 'other.config.json');
 		writeFileSync(explicit, JSON.stringify({ profiles: { explicit: { url: 'https://b.example.com' } } }));
 
-		expect(loadConfig({ cwd: dir, configPath: explicit })?.config.profiles['explicit']).toBeDefined();
+		expect(createConfigStore(dir, explicit).load()?.config.profiles['explicit']).toBeDefined();
 	});
 
 	it('reports malformed JSON as a CONFIG error rather than throwing raw', () => {
 		const dir = tempDir();
 		writeFileSync(join(dir, 'directus.config.json'), '{ not json');
 
-		expect(caught(() => loadConfig({ cwd: dir })).code).toBe('CONFIG');
+		expect(caught(() => createConfigStore(dir).load()).code).toBe('CONFIG');
 	});
 
 	it('rejects a profile with an invalid url so a bad target never reaches the network', () => {
 		const dir = tempDir();
 		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { prod: { url: 'not-a-url' } } }));
 
-		expect(caught(() => loadConfig({ cwd: dir })).code).toBe('CONFIG');
+		expect(caught(() => createConfigStore(dir).load()).code).toBe('CONFIG');
 	});
 
 	it('rejects a credential-bearing url so a secret never lands in committable config', () => {
@@ -148,13 +138,11 @@ describe('loadConfig', () => {
 			JSON.stringify({ profiles: { prod: { url: 'https://user:pass@cms.example.com' } } }),
 		);
 
-		expect(caught(() => loadConfig({ cwd: dir })).code).toBe('CONFIG');
+		expect(caught(() => createConfigStore(dir).load()).code).toBe('CONFIG');
 	});
 
 	it('errors when an explicit --config path cannot be read instead of silently skipping', () => {
-		expect(caught(() => loadConfig({ cwd: tempDir(), configPath: join(tempDir(), 'missing.json') })).code).toBe(
-			'CONFIG',
-		);
+		expect(caught(() => createConfigStore(tempDir(), join(tempDir(), 'missing.json')).load()).code).toBe('CONFIG');
 	});
 
 	it('refuses to write over an existing non-object config', () => {
@@ -162,7 +150,7 @@ describe('loadConfig', () => {
 		writeFileSync(join(dir, 'directus.config.json'), '[]');
 
 		expect(() =>
-			upsertProfile({ cwd: dir }, 'prod', { url: 'https://cms.example.com', auth: { type: 'token' } }),
+			createConfigStore(dir).upsertProfile('prod', { url: 'https://cms.example.com', auth: { type: 'token' } }),
 		).toThrow(/not a JSON object/);
 	});
 
@@ -171,8 +159,41 @@ describe('loadConfig', () => {
 		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: [] }));
 
 		expect(() =>
-			upsertProfile({ cwd: dir }, 'prod', { url: 'https://cms.example.com', auth: { type: 'token' } }),
+			createConfigStore(dir).upsertProfile('prod', { url: 'https://cms.example.com', auth: { type: 'token' } }),
 		).toThrow(/"profiles".*not an object/);
+	});
+
+	it('parses once per run, so the commands sharing a context share one copy', () => {
+		const dir = tempDir();
+		const path = join(dir, 'directus.config.json');
+		writeFileSync(path, JSON.stringify({ profiles: { prod: { url: 'https://one.example.com' } } }));
+
+		const store = createConfigStore(dir);
+		expect(store.load()?.config.profiles['prod']?.url).toBe('https://one.example.com');
+
+		writeFileSync(path, JSON.stringify({ profiles: { prod: { url: 'https://two.example.com' } } }));
+		expect(store.load()?.config.profiles['prod']?.url).toBe('https://one.example.com');
+	});
+
+	it('re-reads after its own writes, so a read later in the same run is never stale', () => {
+		const dir = tempDir();
+		const store = createConfigStore(dir);
+
+		expect(store.load()).toBeUndefined();
+
+		store.upsertProfile('prod', { url: 'https://cms.example.com', auth: { type: 'token' } });
+		expect(store.load()?.config.profiles['prod']?.url).toBe('https://cms.example.com');
+
+		expect(store.removeProfile('prod')).toBe('https://cms.example.com');
+		expect(store.load()?.config.profiles).toEqual({});
+	});
+
+	it('names the missing file for the commands that cannot run without one', () => {
+		const error = caught(() => createConfigStore(tempDir()).require());
+
+		expect(error.code).toBe('CONFIG');
+		expect(error.message).toBe('No directus.config.json found.');
+		expect(error.hint).toBe('Create one first: d6s profile add <name> --url <url>');
 	});
 });
 

@@ -22,14 +22,14 @@ import {
 	parseSnapshot,
 	type Snapshot,
 } from './contract.js';
+import type { ImportMode, SchemaDiffMode } from './mode.js';
 
 /**
  * A snapshot scope that makes include/exclude mutually exclusive by construction.
  */
 export type SnapshotScope = { readonly include: string[] } | { readonly exclude: string[] };
 
-// The CLI is schema-agnostic, while the SDK expects collection literals from a typed schema. Contain that
-// mismatch at the wire boundary.
+// Contain the schema-agnostic CLI's mismatch with the SDK's literal collection types at the wire boundary.
 function snapshotOptions(scope: SnapshotScope): SchemaSnapshotOptions<CoreSchema> {
 	if ('include' in scope) return { includeCollections: scope.include as AllCollections<CoreSchema>[] };
 	return { excludeCollections: scope.exclude as AllCollections<CoreSchema>[] };
@@ -41,7 +41,6 @@ export async function fetchSnapshot(credential: ResolvedCredential, scope?: Snap
 	let response: unknown;
 
 	try {
-		// Omit options for a full snapshot; the server alone owns the returned version tag.
 		response = await client.request(scope === undefined ? schemaSnapshot() : schemaSnapshot(snapshotOptions(scope)));
 	} catch (error) {
 		throw mapRequestError(error, credential.url);
@@ -53,20 +52,15 @@ export async function fetchSnapshot(credential: ResolvedCredential, scope?: Snap
 export async function fetchDiff(
 	credential: ResolvedCredential,
 	snapshot: Snapshot,
-	mode: 'merge' | 'mirror',
+	mode: SchemaDiffMode,
 	force = false,
 ): Promise<DiffResult | null> {
 	const client = connect(credential);
 
 	let response: unknown;
 
-	// `mode` is required, never defaulted: the server defaults to `mirror`, whose diff proposes
-	// deleting everything the snapshot omits, so every caller must choose that outcome explicitly.
-	//
-	// `force` bypasses the server's EXACT version/vendor equality gate on /schema/diff (validate-snapshot
-	// rejects even patch drift without it). Only the explicit --allow-version-drift consent arrives here as
-	// true (local-diff owns that policy); apply stays hash-sealed either way, so a forced diff cannot
-	// smuggle changes past target drift detection.
+	// Never inherit the server's destructive mirror default; every caller chooses a mode explicitly.
+	// Force bypasses version/vendor equality only for an explicitly consented diff; apply remains hash-sealed.
 	try {
 		response = await client.request(schemaDiff(snapshot, force ? { mode, force: true } : { mode }));
 	} catch (error) {
@@ -80,8 +74,7 @@ export async function applyDiff(credential: ResolvedCredential, result: DiffResu
 	const client = connect(credential);
 
 	try {
-		// Preserve the server-issued hash seal and contain the SDK's broad diff typing at the wire boundary.
-		// `force` is intentionally unavailable because it bypasses drift detection.
+		// Preserve the server-issued hash seal; apply never exposes the diff's force bypass.
 		await client.request(schemaApply({ hash: result.hash, diff: result.diff as SchemaDiffOutput['diff'] }));
 	} catch (error) {
 		throw mapRequestError(error, credential.url);
@@ -133,10 +126,6 @@ export async function fetchFields(credential: ResolvedCredential): Promise<Field
 	});
 }
 
-/**
- * One collection's data pull: its system endpoint (/roles), the primary key the export keys on, and
- * whether the endpoint is a singleton (settings).
- */
 interface RecordSource {
 	readonly endpoint: string;
 	readonly primaryKey: string;
@@ -188,11 +177,7 @@ function trackPrimaryKey(
 	return value;
 }
 
-// An empty FIRST page is ambiguous: a genuinely empty collection, or QUERY_LIMIT_MAX=0 — the server
-// accepts a zero cap (sanitize-query checks `>= 0`) and clamps limit=-1 to zero rows, which reads exactly
-// like emptiness. Mirror would turn that into "delete every target row", so the two must be split:
-// validate-query rejects any explicit limit above the cap, so a limit=1 probe answers 400 on a zero-cap
-// instance and 200 on a healthy one.
+// A zero query cap makes a populated collection look empty; an explicit limit=1 probe distinguishes it.
 async function refuseZeroCapEmptiness(
 	client: ReturnType<typeof connect>,
 	credential: ResolvedCredential,
@@ -216,14 +201,8 @@ async function refuseZeroCapEmptiness(
 	}
 }
 
-// Concluding with exactly ONE record is ambiguous when the cap is UNKNOWN (/server/info unreadable): a
-// genuine one-row collection, or QUERY_LIMIT_MAX=1 clamping every page to a single row — then each
-// follow-up page returns only its overlap row, the loop reads a collection of ANY size as exhausted after
-// row 1, and that wire signature is IDENTICAL to a real one-row collection. Rows 2..N would export as
-// absent, which a later mirror push turns into target deletions. Same disambiguation as the zero-cap
-// probe: validate-query rejects any explicit limit above the cap, so a limit=2 read answers 400 on a
-// cap-1 instance and 200 on a healthy one. A KNOWN cap >= 2 needs no probe — its first page could not
-// have been clamped to one row.
+// With an unknown cap, one returned row is indistinguishable from QUERY_LIMIT_MAX=1 truncation.
+// A limit=2 probe separates a real singleton from a mirror-deletion hazard.
 async function refuseOneCapTruncation(
 	client: ReturnType<typeof connect>,
 	credential: ResolvedCredential,
@@ -247,11 +226,8 @@ async function refuseOneCapTruncation(
 	}
 }
 
-// Keyset pages advance by PK cursor (filter PK _gt last), naming the boundary row by VALUE — so neither
-// concurrent writes nor server-side row hiding can silently re-serve or skip a visible row. This exists
-// because /permissions breaks the offset contract on unlicensed instances: custom-rule rows are filtered
-// AFTER limit/offset (services/permissions.ts), which shifts every offset past the hidden rows and made
-// the overlap check refuse deterministically. Integer-PK endpoints only; _gt is forbidden on uuid fields.
+// Keyset paging avoids offset drift where server-side filtering hides rows after pagination.
+// Only integer PKs opt in because UUID fields do not support _gt.
 async function fetchKeysetPages(
 	client: ReturnType<typeof connect>,
 	credential: ResolvedCredential,
@@ -261,7 +237,7 @@ async function fetchKeysetPages(
 	const seen = new Set<string>();
 	let cursor: string | number | undefined;
 
-	for (;;) {
+	while (true) {
 		let response: unknown;
 
 		try {
@@ -301,11 +277,7 @@ async function fetchKeysetPages(
 	}
 }
 
-// A known-unbounded instance (queryLimit.max === -1) returns every row in a single consistent limit=-1
-// read: no cap can clamp it to empty and there are no page boundaries to shift, so neither the offset
-// overlap probe nor the zero-cap probe is needed. This halves the requests per resource on a standard
-// instance — the paging machinery below exists only because, without the server's cap, a short page is
-// indistinguishable from a clamped one.
+// A known-unbounded instance needs one read; paging exists only when a short response might be clamped.
 async function fetchUnbounded(
 	client: ReturnType<typeof connect>,
 	credential: ResolvedCredential,
@@ -371,15 +343,11 @@ export async function fetchRecords(
 		return [record];
 	}
 
-	// The server told us it has no row cap, so one read is the whole collection (see fetchUnbounded).
 	if (queryMax === -1) return fetchUnbounded(client, credential, source);
 
 	if (source.keyset === true) return fetchKeysetPages(client, credential, source);
 
-	// A one-row cap starves the overlap scheme below: the single row each follow-up page returns IS the
-	// overlap row, so `fresh` is always empty and every collection reads as exhausted after row 1 — rows
-	// 2..N export as absent, which a later mirror push turns into target deletions. The zero-cap probe
-	// cannot see this (its limit=1 read succeeds at cap 1), so refuse the cap outright, same stance as cap 0.
+	// A cap below two cannot prove exhaustion safely and could turn truncated rows into mirror deletions.
 	if (queryMax === 1) {
 		throw new CliError(
 			'CONFIG',
@@ -390,23 +358,14 @@ export async function fetchRecords(
 		);
 	}
 
-	// QUERY_LIMIT_MAX can silently clamp limit=-1, and a short page is indistinguishable from a clamped one.
-	// Continue until pages are exhausted so mirror never mistakes a truncated fetch for the complete set.
-	//
-	// Pages advance by OFFSET WITH A ONE-ROW OVERLAP: each follow-up page starts at the last row already
-	// kept, and that first row must match it. Offset pages shift under concurrent writes — an insert
-	// re-serves a row, a DELETE silently skips one, and a skipped row exports as absent, which a later
-	// mirror push turns into a target deletion — and a boundary shift that changes what sits at the overlap
-	// offset fails loud. (Not airtight: a compensating insert+delete both landing before the boundary keeps
-	// the offset stable and passes silently — that miscounts mid-fetch churn, not rows that existed
-	// throughout the fetch.) Keyset paging (filter PK _gt cursor) is NOT the default: the query
-	// validator forbids _gt on uuid fields (get-filter-operators-for-type.ts), which most system PKs are —
-	// integer-PK endpoints opt in via `keyset` above.
+	// QUERY_LIMIT_MAX may silently clamp limit=-1, so fetch until a page proves exhaustion.
+	// Offset pages overlap by one row; a shifted boundary fails instead of silently skipping visible data.
+	// Integer-PK resources use keyset paging because most UUID fields reject _gt.
 	const records: Record<string, unknown>[] = [];
 	const seen = new Set<string>();
 	let last: string | undefined;
 
-	for (;;) {
+	while (true) {
 		const offset = records.length === 0 ? undefined : records.length - 1;
 
 		let response: unknown;
@@ -431,9 +390,7 @@ export async function fetchRecords(
 		let fresh = rows;
 
 		if (offset !== undefined) {
-			// The overlap row is the consistency check: any concurrent insert or delete before the boundary
-			// shifts what lives at this offset, and a silent shift either re-serves or SKIPS a row — a
-			// skipped row exports as absent, which a later mirror push turns into a target deletion.
+			// A changed overlap means the offset boundary shifted during the fetch.
 			const overlapPk = rows[0]?.[source.primaryKey];
 
 			if (overlapPk === undefined || String(overlapPk) !== last) {
@@ -444,8 +401,7 @@ export async function fetchRecords(
 
 			fresh = rows.slice(1);
 
-			// Only the overlap row came back: the real rows are exhausted. One record with the cap unknown
-			// is also exactly what an undetected QUERY_LIMIT_MAX=1 produces — disambiguate before trusting it.
+			// One record with an unknown cap still needs the cap-1 disambiguation probe.
 			if (fresh.length === 0) {
 				if (records.length === 1 && queryMax === undefined) {
 					await refuseOneCapTruncation(client, credential, source);
@@ -455,10 +411,7 @@ export async function fetchRecords(
 			}
 		}
 
-		// Every consumer keys on the primary key: pull writes artifacts the reader would refuse without
-		// one, and reconcile/unchanged comparisons would key on the string "undefined". A missing key
-		// (field permissions can hide columns) fails here, before anything is written or compared; a
-		// repeated key within the fetch means the server broke its sort and pages cannot be trusted.
+		// Missing or repeated primary keys make artifacts and paging identity unsafe.
 		for (const record of fresh) {
 			last = String(trackPrimaryKey(record, source, seen, 'Unstable pages mid-fetch; re-run the command.'));
 		}
@@ -473,12 +426,11 @@ export async function fetchRecords(
  * so the query string carries exactly the flags the CLI chose and stays deterministic for assertions.
  */
 interface ImportBatchInput {
-	readonly mode: 'add' | 'merge';
+	readonly mode: ImportMode;
 	readonly dryRun?: boolean;
 	readonly dangerouslyAllowDelete?: boolean;
 }
 
-// Import-specific extensions are optional; shape drift falls back to the generic mapped error.
 function importErrorExtensions(error: unknown): Record<string, unknown> | undefined {
 	if (!isDirectusError(error)) return undefined;
 
@@ -514,11 +466,8 @@ function renderCycle(extensions: Record<string, unknown>): string {
 	return `Cycle among ${collectionText}${suffix}.`;
 }
 
-// Add actionable context for import failures whose raw server messages do not identify the remedy.
 function enrichImportError(mapped: CliError, error: unknown): CliError {
-	// No server response (timeout, abort, dropped connection): aborting the request does NOT stop the
-	// server's import transaction, so it may still have committed — with the id-map updates in the lost
-	// response. A blind retry can duplicate records in collections with no natural key to reconcile by.
+	// Losing the response does not stop the server transaction; a blind retry may duplicate committed rows.
 	if (!isDirectusError(error)) {
 		return withHint(
 			mapped,
@@ -543,9 +492,7 @@ function enrichImportError(mapped: CliError, error: unknown): CliError {
 	);
 }
 
-// The server runs an import for up to its IMPORT_TIMEOUT (default 1h) inside one transaction, and a
-// client-side abort does not stop that transaction — a short timeout only widens the window where the
-// import commits but the response (and its id-map entries) is lost.
+// A client abort does not stop the server transaction, so use the server's long import timeout.
 const IMPORT_TIMEOUT_MS = 600_000;
 
 /**

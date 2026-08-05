@@ -155,8 +155,7 @@ export function writeSnapshotFiles(dir: string, snapshot: Snapshot, scope?: Writ
 		metadata: ({ files, preserved, previousMetadata }) => {
 			const metadata = header(snapshot, files);
 
-			// Metadata describes the assembled artifact set, not only this response. Preserving files from a
-			// prior full set must preserve its full tag or a later mirror diff could delete omitted collections.
+			// Metadata describes the assembled set; preserved full snapshots must retain full authority.
 			if (scope !== undefined && preserved.length > 0 && previousVersion(previousMetadata) === SNAPSHOT_FULL) {
 				metadata.snapshot['version'] = SNAPSHOT_FULL;
 			}
@@ -200,11 +199,7 @@ export function readSnapshotFiles(dir: string): Snapshot {
 		return parseSnapshot(assembled);
 	} catch (error) {
 		if (error instanceof CliError) {
-			throw new CliError(
-				'STATE',
-				`Schema files in ${dir} do not form a valid snapshot.`,
-				error.detail === undefined ? {} : { detail: error.detail },
-			);
+			throw new CliError('STATE', `Schema files in ${dir} do not form a valid snapshot.`, { detail: error.detail });
 		}
 
 		throw error;

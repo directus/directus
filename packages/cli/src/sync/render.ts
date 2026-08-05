@@ -1,7 +1,7 @@
+import { count } from '../kernel/text.js';
 import { byCodepoint } from './codepoint.js';
 import type { DiffOp, DiffRelationEntry, ImportBatchResult, SchemaDiff } from './contract.js';
 
-/** Counts and deterministic terminal lines for a schema diff. */
 interface DiffSummary {
 	readonly added: number;
 	readonly modified: number;
@@ -11,8 +11,13 @@ interface DiffSummary {
 
 type Change = 'added' | 'modified' | 'deleted';
 
-// A deletion carries a loud token so the operator's eye snags on it before approving a push.
-const KIND_TOKENS: Record<Change, string> = { added: '+', modified: '~', deleted: '✖ DELETE' };
+// Exported because ui.ts colors a plan line by matching these exact tokens: a rename here would
+// silently kill the coloring there.
+export const KIND_TOKENS: Record<Change, string> = { added: '+', modified: '~', deleted: '✖ DELETE' };
+
+/** The marker opening the deleted count of an import line; ui.ts paints the line's tail from it. */
+export const DELETED_MARK = '✖';
+
 const TOKEN_WIDTH = Math.max(...Object.values(KIND_TOKENS).map((token) => token.length));
 
 interface RenderItem {
@@ -23,7 +28,6 @@ interface RenderItem {
 
 /** Summarize a schema diff for deterministic terminal output. */
 export function summarizeDiff(diff: SchemaDiff | null): DiffSummary {
-	// Normalize the server's no-change response to the same summary shape.
 	if (diff === null) return { added: 0, modified: 0, deleted: 0, lines: [] };
 
 	// A collection added or deleted wholesale brings every one of its fields and relations with it, so
@@ -62,13 +66,12 @@ export function summarizeDiff(diff: SchemaDiff | null): DiffSummary {
 		}
 
 		const parts: string[] = [];
-		if (counts.fields > 0) parts.push(`${counts.fields} field${counts.fields === 1 ? '' : 's'}`);
-		if (counts.relations > 0) parts.push(`${counts.relations} relation${counts.relations === 1 ? '' : 's'}`);
+		if (counts.fields > 0) parts.push(count(counts.fields, 'field'));
+		if (counts.relations > 0) parts.push(count(counts.relations, 'relation'));
 
 		return `collection ${entry.collection} (${parts.join(', ')})`;
 	}
 
-	// Preserve group order and sort within each group for deterministic output.
 	const items: RenderItem[] = [
 		...toItems(diff.collections, nameCollection),
 		...toItems(keptFields, (item) => `field ${item.collection}.${item.field}`),
@@ -114,7 +117,6 @@ function isRoot(op: DiffOp): boolean {
 	return op.path === undefined || op.path.length === 0;
 }
 
-// Preserve first-seen wire order while removing duplicate paths.
 function changedPaths(ops: DiffOp[]): string[] {
 	const seen = new Set<string>();
 
@@ -145,7 +147,6 @@ export interface ImportSummary {
 	readonly lines: string[];
 }
 
-// Keep destructive plans recognizable without flooding the terminal.
 const MAX_SHOWN_DELETED = 5;
 
 function renderImportLine(
@@ -158,7 +159,7 @@ function renderImportLine(
 	const shown = deletedIds.slice(0, MAX_SHOWN_DELETED).join(', ');
 	const ellipsis = deletedIds.length > MAX_SHOWN_DELETED ? ', …' : '';
 	const deletedDetail = deleted > 0 ? ` (${shown}${ellipsis})` : '';
-	return `~ ${name}  +${created} new  ~${updated} updated  ✖${deleted} deleted${deletedDetail}`;
+	return `~ ${name}  +${created} new  ~${updated} updated  ${DELETED_MARK}${deleted} deleted${deletedDetail}`;
 }
 
 /**
@@ -182,7 +183,6 @@ export function summarizeImport(
 	let deleted = 0;
 	const lines: string[] = [];
 
-	// Server response object order must not affect terminal output.
 	for (const name of Object.keys(result.collections).sort(byCodepoint)) {
 		const collection = result.collections[name];
 		if (collection === undefined) continue;
@@ -215,7 +215,6 @@ export function summarizeImport(
 		);
 	}
 
-	// Never leave a rendered data section blank and ambiguous.
 	if (lines.length === 0) lines.push('no data changes');
 
 	return { created, updated, deleted, lines };

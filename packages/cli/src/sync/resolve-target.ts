@@ -1,9 +1,9 @@
 import { existsSync, realpathSync } from 'node:fs';
 import { dirname, join, sep } from 'node:path';
-import { resolveCredential, type ResolvedCredential } from '../../kernel/config/credentials.js';
-import { loadConfig, type ProjectConfig, resolveProfile } from '../../kernel/config/file.js';
-import { CliError } from '../../kernel/error.js';
-import type { CliContext } from '../../kernel/run.js';
+import { envTokenVar, resolveCredential, type ResolvedCredential } from '../kernel/config/credentials.js';
+import { type ProjectConfig, resolveProfile } from '../kernel/config/file.js';
+import { CliError } from '../kernel/error.js';
+import type { CliContext } from '../kernel/run.js';
 
 /** A resolved sync endpoint and its project-scoped artifact paths. */
 export interface Target {
@@ -20,11 +20,12 @@ export interface Target {
 	readonly projectConfig: ProjectConfig | undefined;
 }
 
-// Project names become path segments, so separators and traversal components are forbidden.
+/** The one project scope that needs no config entry. */
+export const DEFAULT_PROJECT = 'default';
+
 const PROJECT_NAME = /^[a-z0-9][a-z0-9-_]*$/i;
 
-// Resolve the deepest existing ancestor: a symlinked ancestor with a not-yet-created tail could otherwise
-// redirect mkdir and every later write outside the project.
+// A symlinked ancestor can redirect a not-yet-created tail outside the project.
 function assertContained(dir: string, realRoot: string): void {
 	let probe = dir;
 
@@ -39,36 +40,19 @@ function assertContained(dir: string, realRoot: string): void {
 	}
 }
 
-export function resolveTarget(profileName: string, ctx: CliContext, projectName: string): Target {
-	const loaded = loadConfig({ cwd: ctx.cwd, configPath: ctx.configPath });
+export function resolveTarget(profileName: string, projectName: string, ctx: CliContext): Target {
+	const loaded = ctx.config.require();
 
-	if (loaded === undefined) {
-		throw new CliError('CONFIG', 'No directus.config.json found.', {
-			hint: 'Create one first: d6s profile add <name> --url <url>',
-		});
-	}
-
-	const { url } = resolveProfile(loaded.config, profileName);
-
-	const resolution = resolveCredential({ target: 'profile', url, profileName });
-
-	if (!resolution.found) {
-		throw new CliError('AUTH', `No credential found for profile "${profileName}".`, {
-			hint: `Set ${resolution.envVar}, or run d6s profile test ${profileName} to add one.`,
-		});
-	}
-
+	// The free checks first: neither costs a credential-store read that can fail on its own.
 	if (!PROJECT_NAME.test(projectName)) {
 		throw new CliError('CONFIG', `Invalid project name: "${projectName}".`, {
 			hint: 'Use letters, digits, dashes, and underscores; start with a letter or digit.',
 		});
 	}
 
-	// `default` is always valid without being declared; any other name must appear in config.projects so
-	// a typo fails loudly rather than silently seeding a fresh, empty scope tree beside the real one.
 	const declared = Object.hasOwn(loaded.config.projects, projectName) ? loaded.config.projects[projectName] : undefined;
 
-	if (projectName !== 'default' && declared === undefined) {
+	if (projectName !== DEFAULT_PROJECT && declared === undefined) {
 		const defined = Object.keys(loaded.config.projects);
 
 		throw new CliError('CONFIG', `Unknown project: "${projectName}".`, {
@@ -79,7 +63,8 @@ export function resolveTarget(profileName: string, ctx: CliContext, projectName:
 		});
 	}
 
-	// Anchor artifacts to the config directory so invocation cwd cannot move committed output.
+	const { url } = resolveProfile(loaded.config, profileName);
+
 	const projectRoot = dirname(loaded.path);
 	const directoryRoot = join(projectRoot, loaded.config.directory);
 	const projectDir = join(directoryRoot, projectName);
@@ -87,7 +72,6 @@ export function resolveTarget(profileName: string, ctx: CliContext, projectName:
 	const dataDir = join(projectDir, 'data');
 	const idMapPath = join(projectDir, 'id_map.json');
 
-	// Check each write root independently because any component may already be a symlink.
 	const realRoot = realpathSync(projectRoot);
 
 	assertContained(directoryRoot, realRoot);
@@ -95,9 +79,17 @@ export function resolveTarget(profileName: string, ctx: CliContext, projectName:
 	assertContained(dataDir, realRoot);
 	assertContained(dirname(idMapPath), realRoot);
 
+	const credential = resolveCredential({ target: 'profile', url, profileName });
+
+	if (credential === undefined) {
+		throw new CliError('AUTH', `No credential found for profile "${profileName}".`, {
+			hint: `Set ${envTokenVar(profileName)}, or run d6s profile test ${profileName} to add one.`,
+		});
+	}
+
 	return {
 		url,
-		credential: resolution.credential,
+		credential,
 		project: projectName,
 		schemaDir,
 		dataDir,

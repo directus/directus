@@ -166,4 +166,43 @@ describe('run', () => {
 			rmSync(root, { recursive: true, force: true });
 		}
 	});
+
+	describe('interactivity', () => {
+		async function interactivityOf(argv: readonly string[]): Promise<boolean | undefined> {
+			let interactive: boolean | undefined;
+
+			const registrar: CommandRegistrar = (program, getContext) => {
+				program.command('probe').action(() => void (interactive = getContext().interactive));
+			};
+
+			await run(argv, { registerCommands: [registrar] });
+			return interactive;
+		}
+
+		const realTTY = { stdout: process.stdout.isTTY, stdin: process.stdin.isTTY };
+
+		beforeEach(() => {
+			process.stdout.isTTY = true;
+			process.stdin.isTTY = true;
+			vi.stubEnv('CI', '');
+		});
+
+		afterEach(() => {
+			process.stdout.isTTY = realTTY.stdout;
+			process.stdin.isTTY = realTTY.stdin;
+			vi.unstubAllEnvs();
+		});
+
+		it('prompts on a TTY, and stops when NO_INTERACTIVE is set', async () => {
+			expect(await interactivityOf(['probe'])).toBe(true);
+
+			vi.stubEnv('NO_INTERACTIVE', '1');
+			expect(await interactivityOf(['probe'])).toBe(false);
+		});
+
+		it('stops prompting for --no-interactive and --json on the same TTY', async () => {
+			expect(await interactivityOf(['probe', '--no-interactive'])).toBe(false);
+			expect(await interactivityOf(['probe', '--json'])).toBe(false);
+		});
+	});
 });

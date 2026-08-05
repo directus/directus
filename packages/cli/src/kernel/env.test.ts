@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { isCI, loadProjectEnv } from './env.js';
+import { isCI, loadProjectEnv, promptsDisabled } from './env.js';
 
 const created: string[] = [];
 
@@ -24,6 +24,21 @@ describe('isCI', () => {
 
 		vi.stubEnv('CI', '');
 		expect(isCI()).toBe(false);
+	});
+});
+
+describe('promptsDisabled', () => {
+	it('treats any non-empty value as opting out, and an empty one as unset', () => {
+		expect(promptsDisabled()).toBe(false);
+
+		vi.stubEnv('NO_INTERACTIVE', '1');
+		expect(promptsDisabled()).toBe(true);
+
+		vi.stubEnv('NO_INTERACTIVE', '0');
+		expect(promptsDisabled()).toBe(true);
+
+		vi.stubEnv('NO_INTERACTIVE', '');
+		expect(promptsDisabled()).toBe(false);
 	});
 });
 

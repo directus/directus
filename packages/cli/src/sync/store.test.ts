@@ -99,9 +99,6 @@ function fieldEntry(snapshot: Snapshot, name: string): SnapshotFieldEntry {
 	return found;
 }
 
-// The order the store reassembles into: collections by name, fields by field within each
-// collection, system fields split out. Spelled explicitly so a sort regression fails here
-// rather than being masked by reusing the module's own ordering.
 function canonical(snapshot: Snapshot): Snapshot {
 	return {
 		version: snapshot.version,
@@ -158,8 +155,6 @@ function ownedFileFor(dir: string, collection: string): string {
 
 describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	it('round-trips a snapshot without losing unknown nested keys', () => {
-		// The CLI stores and forwards entries verbatim; anything dropped on the way through
-		// the file store is schema data silently lost from the committed artifact.
 		const dir = tempDir();
 		const fx = fixture();
 
@@ -169,8 +164,6 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	});
 
 	it('writes byte-identical files regardless of array order or key insertion order', () => {
-		// This is the module's reason to exist: a committed artifact must depend only on the
-		// schema, so PR diffs surface real changes and never incidental reordering.
 		const a = tempDir();
 		const b = tempDir();
 
@@ -192,8 +185,6 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	});
 
 	it('removes the owned file of a dropped collection but never a foreign file', () => {
-		// Pull mirrors the source; a leftover owned file would resurrect a deleted collection
-		// on the next push, while user-authored files must survive untouched.
 		const dir = tempDir();
 		const fx = fixture();
 		writeSnapshotFiles(dir, fx);
@@ -215,8 +206,6 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	});
 
 	it('keeps case-variant collections in separate files on case-insensitive filesystems', () => {
-		// `Articles` and `articles` slug identically; only the name hash keeps them apart, so
-		// a merge here would silently collapse two distinct collections into one.
 		const dir = tempDir();
 
 		writeSnapshotFiles(dir, {
@@ -235,8 +224,6 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	});
 
 	it('round-trips a systemFields entry back into systemFields, never into fields', () => {
-		// The fields/systemFields split is server provenance; /schema/apply treats the two buckets
-		// differently, so a system field leaking into `fields` would be applied as a user field.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, fixture());
 
@@ -248,11 +235,6 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	});
 
 	it('round-trips an indexed system field on an ordinary collection through systemFields', () => {
-		// systemFields carries indexed system-owned fields that live on ordinary collections — an
-		// `articles.id`, not just `directus_*` names (see api get-snapshot: `test.id`/`articles.id`
-		// land in systemFields). The collection name never tells the two buckets apart, so the
-		// split is provenance that must round-trip verbatim: folding this entry into `fields` would
-		// make an apply treat system state as user schema.
 		const dir = tempDir();
 
 		const systemField: SnapshotFieldEntry = {
@@ -280,10 +262,6 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	});
 
 	it('never deletes or reads an owned-shaped file it did not write', () => {
-		// Ownership is manifest-recorded, not pattern-inferred: a user's own file that happens to
-		// match `${slug}_${hash}.json` is absent from metadata's manifest, so a rewrite must not
-		// delete it and a read must not fold it in — its corrupt contents would otherwise blow up
-		// an otherwise valid read.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, fixture());
 
@@ -298,10 +276,6 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	});
 
 	it('preserves a field option literally named __proto__ through write and read', () => {
-		// `__proto__` is a legal SQL column and Directus option name. Assigning it with
-		// `obj[key] = value` hits the prototype setter and drops the key, so the canonicalizer
-		// must create it as an own property — otherwise a committed schema silently loses a real
-		// option and the next push would propose removing it from the target.
 		const dir = tempDir();
 
 		writeSnapshotFiles(dir, {
@@ -333,8 +307,6 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	});
 
 	it('round-trips an unknown top-level snapshot key, namespaced under snapshot in metadata.json', () => {
-		// The CLI's verbatim promise reaches the top level: a future server-side key must survive
-		// write→read and live under `snapshot` so it can never collide with the `files` manifest key.
 		const dir = tempDir();
 		const fx: Snapshot = { ...fixture(), foo: { bar: 1 } };
 
@@ -349,7 +321,6 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	});
 
 	it('treats absent metadata as a first pull but refuses a corrupt one on the next write', () => {
-		// Corrupt ownership state must not orphan files that a later push could resurrect.
 		const dir = tempDir();
 
 		expect(() => writeSnapshotFiles(dir, fixture())).not.toThrow();
@@ -363,8 +334,6 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	});
 
 	it('refuses to write over a symlinked metadata.json', () => {
-		// A symlinked manifest on the write path would feed attacker-chosen ownership into the stale-file
-		// sweep and fold the target's extras into the rewritten manifest, so the write must stop first.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, fixture());
 
@@ -383,9 +352,6 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	});
 
 	it('preserves out-of-scope artifacts when a scoped pull refreshes one collection', () => {
-		// Pulling a single collection must never destroy the committed schema around it: A and C are
-		// outside the scope, so their bytes and their manifest entries must survive a scoped refresh of B,
-		// and the set — still a full schema — must stay tagged version 1.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, abc());
 
@@ -422,8 +388,6 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	});
 
 	it('removes an in-scope collection absent from the response but preserves out-of-scope files', () => {
-		// Within its scope a pull is still a mirror: a scoped collection missing from the response was
-		// deleted at source and must be removed, while collections outside the scope are left intact.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, abc());
 
@@ -453,9 +417,6 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	});
 
 	it('tags a partial artifact set version 2 across successive scoped pulls of different collections', () => {
-		// A partial set must say so, or a later mirror diff would mass-delete everything it omits. The
-		// first scoped pull into an empty dir writes version 2, and pulling a disjoint scope keeps the
-		// union tagged version 2 — the response's tag, since nothing here descends from a full set.
 		const dir = tempDir();
 
 		const scopedA: Snapshot = {
@@ -492,23 +453,19 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	});
 
 	it('refuses a scoped write over a listed-but-missing file — local damage must not become remote deletion', () => {
-		// A file the manifest lists but the disk lacks is either the crash window of an earlier write (stale
-		// removal happens before the manifest write) or genuine local corruption/hand-deletion — the store
-		// cannot tell which. Silently dropping it from the manifest would forget the collection, and a later
-		// mirror push would then delete its rows on the target. The scoped write must fail loud with the
-		// recovery named; a FULL pull (whose targets re-fetch the file) is the heal, proven below.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, abc());
 
 		const bFile = ownedFileFor(dir, 'b');
 		rmSync(join(dir, bFile), { force: true });
+		const before = readAll(dir);
 
 		const scopedA: Snapshot = {
 			version: 2,
 			directus: '11.5.0',
 			vendor: 'postgres',
 			collections: [{ collection: 'a' }],
-			fields: [{ collection: 'a', field: 'title', type: 'string' }],
+			fields: [{ collection: 'a', field: 'changed-before-refusal', type: 'string' }],
 			systemFields: [],
 			relations: [],
 		};
@@ -524,9 +481,8 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 		expect(error).toBeInstanceOf(CliError);
 		expect((error as CliError).message).toContain(bFile);
 		expect((error as CliError).hint).toContain('full pull');
+		expect(readAll(dir)).toEqual(before);
 
-		// A full write re-fetches every collection, so the ghost lands in targets and is rewritten — the
-		// documented recovery path must actually work.
 		const healed = writeSnapshotFiles(dir, abc());
 		expect(healed.written).toContain(bFile);
 
@@ -538,8 +494,6 @@ describe('writeSnapshotFiles / readSnapshotFiles', () => {
 	});
 
 	it('reads back the full set, not just the last pull, after a scoped refresh', () => {
-		// Readers consume the committed set, not the most recent request: after a scoped refresh of one
-		// collection the reassembled snapshot must still validate and include the preserved collections.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, abc());
 
@@ -589,8 +543,6 @@ describe('readSnapshotFiles failures', () => {
 	});
 
 	it('fails loud, naming the drifted field, when an owned file is hand-corrupted', () => {
-		// A hand-edited artifact that no longer forms a valid snapshot must fail as local
-		// STATE with the offending field named, not flow downstream as a plausible object.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, fixture());
 
@@ -606,9 +558,6 @@ describe('readSnapshotFiles failures', () => {
 	});
 
 	it('fails loud, naming the file, when an owned file has a non-array "fields"', () => {
-		// A hand-corrupted `"fields": {}` must not read back as a collection with zero fields:
-		// parseSnapshot would accept the empty array and the next mirror push would apply it as
-		// deleting every real field. Corruption has to stop at read, naming the offending file.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, fixture());
 
@@ -625,9 +574,6 @@ describe('readSnapshotFiles failures', () => {
 	});
 
 	it('fails loud, naming the file, when an owned file has a non-array "systemFields"', () => {
-		// systemFields is required in every owned file — write always emits it, even as []. A
-		// hand-corrupted `"systemFields": {}` must fail at read like a corrupted `fields`, not read
-		// back as "no system-field state" that the next mirror push would apply as a deletion.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, fixture());
 
@@ -644,9 +590,6 @@ describe('readSnapshotFiles failures', () => {
 	});
 
 	it('fails loud, naming the file, when the manifest lists a collection file that is gone', () => {
-		// The manifest is the authority on membership: a listed file that has vanished from disk is
-		// corrupted local state, not an empty collection, and must stop the read naming what is
-		// missing rather than silently dropping the collection.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, fixture());
 
@@ -660,9 +603,6 @@ describe('readSnapshotFiles failures', () => {
 	});
 
 	it('refuses a manifest entry that escapes the schema directory and never reads the outside file', () => {
-		// Repo content must never point a sync read outside the schema dir: a hand-edited manifest
-		// naming `../<name>/outside.json` would read a planted file above the dir. The owned-file
-		// charset cannot match a traversal, so the read fails naming the entry before touching it.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, fixture());
 
@@ -683,8 +623,6 @@ describe('readSnapshotFiles failures', () => {
 	});
 
 	it('refuses an owned file replaced by a symlink to an outside file', () => {
-		// A symlinked artifact could smuggle content from outside the tree into the snapshot, so the
-		// read requires a regular file — a planted symlink under an owned name must fail naming it.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, fixture());
 
@@ -704,9 +642,6 @@ describe('readSnapshotFiles failures', () => {
 	});
 
 	it('refuses a metadata.json replaced by a symlink to an outside file', () => {
-		// The manifest decides which files the store reads and owns, so it gets the same regular-file
-		// requirement as the artifacts it names — even when the symlink target is a byte-identical copy,
-		// following it would let repo content redirect reads outside the schema dir.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, fixture());
 
@@ -725,9 +660,6 @@ describe('readSnapshotFiles failures', () => {
 	});
 
 	it('refuses a renamed owned file whose name no longer identifies its collection', () => {
-		// The filename is derived from the collection name; renaming the file (and its manifest entry)
-		// breaks that identity, so the read must refuse rather than fold the collection in under a
-		// foreign name — this also kills collision-duplication confusion.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, fixture());
 
@@ -748,8 +680,6 @@ describe('readSnapshotFiles failures', () => {
 	});
 
 	it('refuses a manifest that lists the same owned file twice', () => {
-		// Duplicate ownership entries are corruption; folding one file in twice would double its
-		// collection into the reassembled snapshot, so a repeated name must stop the read naming it.
 		const dir = tempDir();
 		writeSnapshotFiles(dir, fixture());
 

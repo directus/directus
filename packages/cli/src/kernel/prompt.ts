@@ -1,9 +1,6 @@
 import { isCancel, password, text, type TextOptions } from '@clack/prompts';
-import { saveCredential } from './config/credentials.js';
-import { type Identity, loginSession } from './connection.js';
 import { CliError } from './error.js';
 import { registerSecret } from './secret.js';
-import type { Ui } from './ui.js';
 
 /**
  * Await a clack prompt and unwrap it, turning a cancel (Ctrl+C / Esc) into a clean
@@ -15,15 +12,20 @@ export async function ask<T>(prompt: Promise<T | symbol>): Promise<T> {
 	return value as T;
 }
 
-/** Resolve a required value from arguments or an interactive prompt. */
+/**
+ * Resolve a required value from arguments or an interactive prompt. Without a terminal the value can only
+ * come from the arguments, so `usage` — and `hint`, when the value has more than one invocation shape —
+ * is what the resulting error says instead.
+ */
 export async function orPrompt(
 	value: string | undefined,
 	interactive: boolean,
 	usage: string,
 	options: TextOptions,
+	hint?: string,
 ): Promise<string> {
 	if (value !== undefined) return value;
-	if (!interactive) throw new CliError('USAGE', usage);
+	if (!interactive) throw new CliError('USAGE', usage, { hint });
 	return ask(text(options));
 }
 
@@ -32,9 +34,6 @@ export async function promptToken(profileName: string): Promise<string> {
 	const token = await ask(
 		password({
 			message: `Paste a token for "${profileName}"`,
-			// An empty submit would save a credential resolveCredential skips as not-found — "Saved a
-			// token" now, "No credential found" on the next command. Re-prompt inline instead of aborting
-			// the whole flow over a stray Enter.
 			validate: (value) => (value !== undefined && value.trim() !== '' ? undefined : 'Paste a non-empty token.'),
 		}),
 	);
@@ -43,18 +42,12 @@ export async function promptToken(profileName: string): Promise<string> {
 	return token;
 }
 
-/** Persist a token and report success. */
-export function saveToken(ui: Ui, url: string, profileName: string, token: string): void {
-	saveCredential(url, profileName, token);
-	ui.success(`Saved a token for "${profileName}" to the credential store.`);
-}
-
-/** Prompt for credentials and open a persisted login session. */
-export async function promptLogin(url: string, profileName: string): Promise<Identity> {
+/** Collect login credentials; the caller opens the session with them. */
+export async function promptLogin(): Promise<{ email: string; password: string }> {
 	const email = await ask(
 		text({ message: 'Email', validate: (v) => (v?.includes('@') ? undefined : 'Enter a valid email.') }),
 	);
 
-	const pass = await ask(password({ message: 'Password' }));
-	return loginSession(url, profileName, email, pass);
+	const secret = await ask(password({ message: 'Password' }));
+	return { email, password: secret };
 }

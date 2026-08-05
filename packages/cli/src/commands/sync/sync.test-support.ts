@@ -6,17 +6,13 @@ import { afterEach, beforeEach, vi } from 'vitest';
 import { run } from '../../kernel/run.js';
 import type { Snapshot } from '../../sync/contract.js';
 import { allResources } from '../../sync/resources.js';
-import { registerSync } from './index.js';
-
-// The filename keeps shared scaffolding out of Vitest collection.
+import { registerSync } from './sync.js';
 
 export const SYNC_URL = 'https://cms.example.com';
 export const SYNC_TOKEN = 'super-secret-static-token';
 
-// The owned-file shape written by src/sync/artifact-store.ts: `${slug}_${hash}.json`.
 export const OWNED: RegExp = /^[a-z0-9-]*_[0-9a-f]{16}\.json$/;
 
-/** Isolated filesystem, network, environment, and output state for a sync test. */
 export interface SyncWorld {
 	dir: string;
 	agent: MockAgent;
@@ -25,9 +21,6 @@ export interface SyncWorld {
 	outsideDir(): string;
 }
 
-/**
- * Register fresh filesystem, network, environment, and output isolation for each test.
- */
 export function useSyncWorld(): SyncWorld {
 	const realDispatcher = getGlobalDispatcher();
 	const cleanup: string[] = [];
@@ -104,7 +97,6 @@ export function seedProjectConfig(dir: string): void {
 	writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url: SYNC_URL } } }));
 }
 
-// Require authentication on the admin-only snapshot endpoint.
 export function mockSnapshot(agent: MockAgent, body: unknown): void {
 	agent
 		.get(SYNC_URL)
@@ -112,7 +104,6 @@ export function mockSnapshot(agent: MockAgent, body: unknown): void {
 		.reply(200, { data: body }, { headers: { 'content-type': 'application/json' } });
 }
 
-// Endpoint behaviors mirrored from the resource table so mocks stay honest about the wire protocol.
 const KEYSET_ENDPOINTS = new Set(
 	allResources()
 		.filter((resource) => resource.keyset === true)
@@ -125,7 +116,6 @@ const VERIFIED_ENDPOINTS = new Set(
 		.map((resource) => resource.endpoint),
 );
 
-// Register the empty exhaustion probe because QUERY_LIMIT_MAX can silently clamp the first page.
 export function mockList(agent: MockAgent, path: string, records: Record<string, unknown>[]): void {
 	agent
 		.get(SYNC_URL)
@@ -138,8 +128,6 @@ export function mockList(agent: MockAgent, path: string, records: Record<string,
 		.reply(200, { data: records }, { headers: { 'content-type': 'application/json' } });
 
 	if (records.length === 1 && !KEYSET_ENDPOINTS.has(path)) {
-		// Offset paging concluding at exactly one row is ambiguous with an unknown QUERY_LIMIT_MAX=1
-		// clamp; a healthy instance answers the limit=2 disambiguation probe with 200.
 		agent
 			.get(SYNC_URL)
 			.intercept({
@@ -152,7 +140,6 @@ export function mockList(agent: MockAgent, path: string, records: Record<string,
 	}
 
 	if (records.length > 0 && KEYSET_ENDPOINTS.has(path)) {
-		// Keyset paging exhausts with an empty page past the last cursor.
 		agent
 			.get(SYNC_URL)
 			.intercept({
@@ -167,7 +154,6 @@ export function mockList(agent: MockAgent, path: string, records: Record<string,
 			})
 			.reply(200, { data: [] }, { headers: { 'content-type': 'application/json' } });
 	} else if (records.length > 0) {
-		// Pages overlap by one row: the exhaustion probe starts at the last kept row and returns only it.
 		agent
 			.get(SYNC_URL)
 			.intercept({
@@ -178,7 +164,6 @@ export function mockList(agent: MockAgent, path: string, records: Record<string,
 			})
 			.reply(200, { data: [records[records.length - 1]] }, { headers: { 'content-type': 'application/json' } });
 	} else {
-		// An empty first page triggers the zero-cap probe (limit=1); a healthy instance answers 200.
 		agent
 			.get(SYNC_URL)
 			.intercept({
@@ -191,12 +176,10 @@ export function mockList(agent: MockAgent, path: string, records: Record<string,
 	}
 
 	if (VERIFIED_ENDPOINTS.has(path)) {
-		// Pull verifies export completeness against total_count; a healthy instance hides nothing.
 		mockTotalCount(agent, path, records.length);
 	}
 }
 
-/** Answer the pull-time completeness probe with a server-side total row count. */
 export function mockTotalCount(agent: MockAgent, path: string, total: number): void {
 	agent
 		.get(SYNC_URL)
@@ -227,10 +210,7 @@ export function mockSingleton(agent: MockAgent, path: string, object: Record<str
 		.reply(200, { data: object }, { headers: { 'content-type': 'application/json' } });
 }
 
-// The default resource set every pull exports (users excluded), stubbed empty with settings a lone object,
-// so the data phase of a schema-focused pull has a reply for each request it makes.
 export function mockDefaultRecords(agent: MockAgent): void {
-	// Pull reads the field catalog before the resource loop; an empty catalog means no custom secrets.
 	mockFields(agent, []);
 
 	for (const path of [
@@ -251,7 +231,6 @@ export function mockDefaultRecords(agent: MockAgent): void {
 	mockSingleton(agent, '/settings', { id: 1 });
 }
 
-// Match mode exactly because omitting it selects the server's destructive mirror default.
 export function mockDiff(
 	agent: MockAgent,
 	mode: 'merge' | 'mirror',
@@ -276,7 +255,6 @@ export function mockDiff(
 	}
 }
 
-// Capture apply bodies for hash-seal fidelity checks.
 export function mockApply(agent: MockAgent, capture?: (body: unknown) => void): void {
 	agent
 		.get(SYNC_URL)
@@ -292,7 +270,6 @@ export function mockApply(agent: MockAgent, capture?: (body: unknown) => void): 
 		.reply(204, '');
 }
 
-// Match the server hash-mismatch shape that triggers push's rerun hint.
 export function mockApplyHashMismatch(agent: MockAgent): void {
 	agent
 		.get(SYNC_URL)
@@ -312,7 +289,6 @@ export function mockApplyHashMismatch(agent: MockAgent): void {
 		);
 }
 
-// Undici matches the complete query, proving no unregistered import flags were sent.
 export function mockImport(
 	agent: MockAgent,
 	query: Record<string, string>,
@@ -345,8 +321,6 @@ export async function decodeBatch(form: FormData | undefined): Promise<unknown> 
 	return JSON.parse(await (file as Blob).text());
 }
 
-// The owned artifact whose authoritative `collection` key names the collection — found by content, not
-// filename, so a test never hard-codes the hash the store derives.
 export function ownedFileFor(dir: string, collection: string): string {
 	for (const name of readdirSync(dir).filter((entry) => OWNED.test(entry))) {
 		if (JSON.parse(readFileSync(join(dir, name), 'utf8')).collection === collection) return name;

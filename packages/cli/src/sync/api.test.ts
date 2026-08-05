@@ -8,8 +8,6 @@ import { CliError } from '../kernel/error.js';
 import { applyDiff, fetchDiff, fetchRecords, fetchSnapshot, importBatch } from './api.js';
 import type { DiffResult, ImportCollectionData, Snapshot } from './contract.js';
 
-// One setup for every suite in this file: isolate HOME so nothing reads the developer's real ~/.directus,
-// and pin the wire with a fresh MockAgent per test — net connect disabled, so a stray request throws.
 const realDispatcher = getGlobalDispatcher();
 const token = 'super-secret-static-token';
 const credential: ResolvedCredential = { kind: 'token', url: 'https://cms.example.com', token };
@@ -50,9 +48,6 @@ describe('fetchSnapshot', () => {
 	}
 
 	it('carries the resolved credential on the admin-only snapshot request and returns a parsed snapshot', async () => {
-		// /schema/snapshot is admin-only, so the request must present the resolved token;
-		// the intercept only matches when the Authorization header is on the wire.
-
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/schema/snapshot', method: 'GET', headers: { authorization: `Bearer ${token}` } })
@@ -62,15 +57,10 @@ describe('fetchSnapshot', () => {
 
 		expect(snapshot.version).toBe(1);
 		expect(snapshot.collections[0]?.collection).toBe('articles');
-		// Present as [] on the wire; the parse preserves it verbatim (never defaulted) so callers
-		// map over the value the server actually sent.
 		expect(snapshot.systemFields).toEqual([]);
 	});
 
 	it('sends includeCollections on the wire and returns the parsed partial snapshot', async () => {
-		// A scoped pull must reach the query string as a comma-joined list; the intercept only matches
-		// when includeCollections is on the wire, and the server tags the reply version 2.
-
 		agent
 			.get('https://cms.example.com')
 			.intercept({
@@ -88,9 +78,6 @@ describe('fetchSnapshot', () => {
 	});
 
 	it('sends excludeCollections on the wire for the mutually-exclusive exclude scope', async () => {
-		// The exclude variant maps to the other query param; the response is still parsed and its
-		// version-2 tag is preserved verbatim, never fabricated.
-
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/schema/snapshot', method: 'GET', query: { excludeCollections: 'drafts' } })
@@ -115,9 +102,6 @@ describe('fetchSnapshot', () => {
 	});
 
 	it('fails at the transport boundary, naming the drifted field, when the snapshot shape breaks', async () => {
-		// A 200 that omits a required field is a protocol break; routing the response through
-		// the contract parse makes drift fail loud here rather than downstream.
-
 		const { collections: _collections, ...withoutCollections } = fullSnapshot();
 
 		agent
@@ -156,9 +140,6 @@ describe('fetchDiff', () => {
 	}
 
 	it('sends the local snapshot unmodified with the mode on the wire, and returns the parsed diff', async () => {
-		// The mode must reach the query string: an absent mode silently means destructive `mirror`. And
-		// /schema/diff computes against exactly the snapshot the CLI captured, so it must arrive byte-for-byte.
-
 		const local = snapshot();
 		let sentBody: string | undefined;
 
@@ -184,9 +165,6 @@ describe('fetchDiff', () => {
 	});
 
 	it('resolves null on a 204 empty reply, the "no changes" outcome the command keys off', async () => {
-		// When the snapshots already match the server answers 204 with no body; that must resolve to null
-		// (the diff command's short-circuit), never a failed parse.
-
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/schema/diff', method: 'POST', query: { mode: 'mirror' } })
@@ -212,12 +190,6 @@ describe('fetchDiff', () => {
 	});
 
 	it('puts force on the wire only when asked — patch drift needs it, and a plain diff must not carry it', async () => {
-		// The server rejects any EXACT version mismatch on /schema/diff without force (validate-snapshot), so
-		// the drift-consent path must send it; but force also bypasses the vendor check, so a plain diff
-		// must never carry it silently. One permissive intercept captures the raw query strings, proving
-		// force's presence AND absence against the same wire evidence, independent of the mock's
-		// query-matching semantics.
-
 		const queries: string[] = [];
 
 		agent
@@ -252,10 +224,6 @@ describe('applyDiff', () => {
 	}
 
 	it('carries the resolved credential and sends the sealed { hash, diff } to /schema/apply unmodified', async () => {
-		// The whole safety model is that the exact diff the server sealed reaches /schema/apply
-		// byte-faithful — the server re-checks the hash — so the body must deep-equal the DiffResult,
-		// hash and diff untouched. The admin-only intercept only matches with the token on the wire.
-
 		const result = diffResult();
 		let sentBody: string | undefined;
 
@@ -296,14 +264,6 @@ describe('applyDiff', () => {
 
 describe('fetchRecords', () => {
 	it('pulls the whole collection with limit -1 and the token on the wire, returning records verbatim', async () => {
-		// A data pull must fetch the entire set (limit -1) keyed by the primary key; the intercept only
-		// matches when both ride the query, and the endpoint is authenticated so the token must be present.
-		// The follow-up probe overlaps by one row (offset at the last kept row) and must return ONLY that
-		// row before fetch trusts the set is complete — a QUERY_LIMIT_MAX clamp is silent, so a single
-		// response can never prove exhaustion.
-
-		// Records carrying a nested object: fetch returns them untouched.
-		// Collection records pass through unchanged; canonicalization is the store's job.
 		const records = [
 			{ id: 1, title: 'First', meta: { note: null } },
 			{ id: 2, title: 'Second' },
@@ -339,10 +299,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('reads an unbounded instance in a single request, skipping the exhaustion probe', async () => {
-		// queryMax === -1 means the server has no row cap, so limit=-1 provably returns the whole set in one
-		// consistent read — the overlap/exhaustion probe exists only to detect a silent clamp, which cannot
-		// happen here. Only the single read is intercepted: if the code still probed, the unmatched offset
-		// request would throw on the disabled dispatcher and fail this test.
 		const records = [
 			{ id: 1, title: 'First' },
 			{ id: 2, title: 'Second' },
@@ -368,8 +324,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('does not treat an empty unbounded read as needing a zero-cap probe', async () => {
-		// With queryMax === -1 the instance is known not to be zero-capped, so an empty collection is just
-		// empty — no limit=1 probe. Only the single read is intercepted.
 		agent
 			.get('https://cms.example.com')
 			.intercept({
@@ -390,12 +344,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('pages past a server row cap until an empty response, so a clamped fetch cannot truncate', async () => {
-		// A deployment with QUERY_LIMIT_MAX clamps limit -1 down to the cap WITHOUT an error — a single
-		// request would silently drop every later row, and downstream that is data loss (mirror deletes
-		// what it did not see; the collision guard cannot see an occupied PK beyond the cap). The fetch
-		// must keep paging past short pages, each follow-up overlapping one row — only a page carrying
-		// nothing beyond its overlap row proves exhaustion.
-
 		const pages: { offset: string | undefined; rows: { id: number }[] }[] = [
 			{ offset: undefined, rows: [{ id: 1 }, { id: 2 }] },
 			{ offset: '1', rows: [{ id: 2 }, { id: 3 }] },
@@ -424,12 +372,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('pages a keyset endpoint by PK cursor, so server-side row hiding cannot shift a page boundary', async () => {
-		// /permissions on unlicensed instances filters custom-rule rows AFTER limit/offset
-		// (api services/permissions.ts), which deterministically breaks offset arithmetic — the QA repro:
-		// CMS template plus one new policy made every pull refuse with the overlap error. A cursor names
-		// the boundary row by VALUE; the intercepts here only match cursor queries, so a regression to
-		// offset paging throws on the disabled dispatcher. Row 3 is server-hidden: the cursor just moves
-		// past the gap where an offset would have re-served or skipped a visible row.
 		const pages = [
 			{ filter: undefined, rows: [{ id: 1 }, { id: 2 }] },
 			{ filter: JSON.stringify({ id: { _gt: 2 } }), rows: [{ id: 4 }] },
@@ -459,8 +401,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('refuses when a keyset page repeats a primary key — the server ignored the cursor filter', async () => {
-		// A server that ignores the _gt filter re-serves the same rows forever; without this refusal the
-		// loop would never terminate. A repeated PK is the loud, cheap witness.
 		agent
 			.get('https://cms.example.com')
 			.intercept({
@@ -494,8 +434,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('probes limit=1 on an empty first page and returns empty when the probe succeeds', async () => {
-		// An empty first page could also be QUERY_LIMIT_MAX=0 clamping limit=-1 to zero rows; only a
-		// successful explicit-limit read proves the collection is genuinely empty.
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
@@ -516,10 +454,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('refuses when the limit=1 probe is rejected — a zero cap masks every row as emptiness', async () => {
-		// sanitize-query accepts QUERY_LIMIT_MAX=0 (`>= 0`) and clamps limit=-1 to zero rows, while
-		// validate-query rejects any explicit limit above the cap. Empty page + rejected probe therefore
-		// means a zero cap; continuing would export empty collections that a later mirror push turns into
-		// target-row deletions.
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
@@ -546,10 +480,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('refuses a known one-row cap outright — the overlap scheme cannot make progress at cap 1', async () => {
-		// At QUERY_LIMIT_MAX=1 every follow-up page returns exactly its overlap row, so the loop reads a
-		// collection of ANY size as exhausted after row 1 — rows 2..N export as absent and a later mirror
-		// push deletes them. The zero-cap probe cannot catch this (limit=1 succeeds at cap 1), so the cap is
-		// refused before any request: an intercept-free agent proves no network I/O happens first.
 		const error = await fetchRecords(
 			credential,
 			{ endpoint: '/items/articles', primaryKey: 'id', singleton: false },
@@ -562,11 +492,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('refuses an unknown cap concluding at one row when the limit=2 probe is rejected — cap 1 truncates silently', async () => {
-		// With /server/info unreadable the cap is unknown, and a cap-1 instance clamps limit=-1 to one row:
-		// the follow-up page returns only the overlap row, which is EXACTLY the wire signature of a genuine
-		// one-row collection — the loop reads a collection of ANY size as exhausted after row 1, rows 2..N
-		// export as absent, and a later mirror push deletes them. validate-query rejecting an explicit
-		// limit=2 is the only wire-level tell, so the rejection must refuse the fetch instead of exporting.
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
@@ -598,9 +523,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('returns a genuine one-row collection after the limit=2 probe answers 200', async () => {
-		// The paged responses of a real single-record collection and a cap-1 clamp are byte-identical; only
-		// the probe separates them. A healthy instance accepts the explicit limit, so the record stands and
-		// the fetch succeeds — the probe must consume without inventing an error.
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
@@ -626,9 +548,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('refuses a listed record that lacks the primary key', async () => {
-		// Field permissions can hide the key column. Without it, pull would write artifacts its own
-		// reader refuses and reconcile would key comparisons on the string "undefined" — so the fetch
-		// fails before anything downstream sees the rows.
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
@@ -646,10 +565,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('refuses when the overlap row changes between pages — the pages shifted mid-fetch', async () => {
-		// Each follow-up page starts at the last row already kept, so its first row must BE that row. A
-		// concurrent insert or delete before the boundary shifts what lives at the offset — silently
-		// re-serving or SKIPPING a row (a skipped row exports as absent, which mirror turns into a target
-		// deletion). The broken overlap fails the fetch; the fix is simply re-running.
 		const pages: { offset: string | undefined; rows: { id: number }[] }[] = [
 			{ offset: undefined, rows: [{ id: 1 }] },
 			{ offset: '0', rows: [{ id: 2 }] },
@@ -678,8 +593,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('refuses a primary key repeated within a page', async () => {
-		// A duplicate inside one response means the server broke its sort or served junk; writing it would
-		// produce a duplicate-PK artifact the data-store reader refuses anyway — fail at the boundary.
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
@@ -697,11 +610,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('drops server-derived rows before validation and ends paging when only derived rows remain', async () => {
-		// The server appends the app-access minimal permissions (system: true, NO id) to every
-		// authenticated /permissions read, AFTER the query is applied to the real rows. So every page
-		// carries them: they must not trip the key-less refusal, must not count toward the paging offset
-		// (the follow-up request starts at offset 0 — one real row kept — not 1), and a page carrying
-		// nothing real beyond its overlap row means the real rows are exhausted.
 		const derived = { policy: null, collection: 'directus_settings', action: 'read', system: true };
 
 		agent
@@ -714,8 +622,6 @@ describe('fetchRecords', () => {
 			.intercept({ path: '/permissions', method: 'GET', query: { limit: '-1', sort: 'id', offset: '0' } })
 			.reply(200, { data: [{ id: 1, policy: 'p1' }, derived] }, { headers: { 'content-type': 'application/json' } });
 
-		// One real row with the cap unknown is ambiguous with a cap-1 clamp; a healthy instance answers
-		// the limit=2 disambiguation probe with 200.
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/permissions', method: 'GET', query: { limit: '2', sort: 'id' } })
@@ -732,9 +638,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('wraps a singleton object response in a one-element array', async () => {
-		// A singleton endpoint (settings) returns one object, not an array; fetchRecords normalizes it to a
-		// single-record collection so the store treats it like any other. No limit/sort on the wire.
-
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/settings', method: 'GET', headers: { authorization: `Bearer ${token}` } })
@@ -750,8 +653,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('refuses a singleton response that lacks the primary key', async () => {
-		// The singleton path must apply the same boundary rule as lists: a key-less settings object would
-		// produce a successful pull whose artifact the data-store reader later refuses — a fail-late trap.
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/settings', method: 'GET' })
@@ -769,9 +670,6 @@ describe('fetchRecords', () => {
 	});
 
 	it('fails loud, naming the endpoint, when a list endpoint returns a non-array', async () => {
-		// A list endpoint that answers with an object is a protocol break; the boundary check fails HTTP
-		// naming the endpoint rather than letting a malformed shape corrupt the export downstream.
-
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/items/articles', method: 'GET', query: { limit: '-1', sort: 'id' } })
@@ -792,8 +690,6 @@ describe('fetchRecords', () => {
 describe('importBatch', () => {
 	const batch: ImportCollectionData[] = [{ collection: 'directus_roles', items: [{ id: 't1', name: 'Editor' }] }];
 
-	// A Directus error reply shaped like the SDK reconstructs it: errors[].extensions carries the code and,
-	// for a cyclical failure, the cycle's collections and relations.
 	function errorReply(status: number, extensions: Record<string, unknown>, message = 'failed'): void {
 		agent
 			.get('https://cms.example.com')
@@ -802,10 +698,6 @@ describe('importBatch', () => {
 	}
 
 	it('uploads the batch as an application/json file with mode on the wire and returns the parsed result', async () => {
-		// The server reads the FIRST file part (any field name) and requires its mimetype to be
-		// application/json; the batch array is its content. mode always rides so the server never falls back
-		// to its `add` default. The response is parsed at the boundary.
-
 		let sentForm: FormData | undefined;
 
 		agent
@@ -838,9 +730,6 @@ describe('importBatch', () => {
 	});
 
 	it('rides dryRun and dangerouslyAllowDelete on the query only when set', async () => {
-		// The exact query match (undici rejects an extra param) proves both flags reached the wire together —
-		// the mirror dry-run's exact option set.
-
 		agent
 			.get('https://cms.example.com')
 			.intercept({
@@ -864,9 +753,6 @@ describe('importBatch', () => {
 	});
 
 	it('enriches a missing-foreign-key failure with the likely cause', async () => {
-		// INVALID_FOREIGN_KEY has no dedicated server check — it surfaces as the DB constraint — so push
-		// cannot diagnose it. api.ts adds the actionable cause: an out-of-scope reference or unsynced dependency.
-
 		errorReply(400, { code: 'INVALID_FOREIGN_KEY' });
 
 		const error = await importBatch(credential, batch, { mode: 'merge' }).catch((error: unknown) => error);
@@ -876,9 +762,6 @@ describe('importBatch', () => {
 	});
 
 	it('enriches a cyclical-relation failure by naming the cycle and pointing at the nullable fix', async () => {
-		// A cycle of non-nullable FKs is unresolvable; the CLI must name the collections and relations forming
-		// it (from the error extensions) and point at the fix — make one relation nullable.
-
 		errorReply(422, {
 			code: 'IMPORT_CYCLICAL_RELATION',
 			collections: ['directus_flows', 'directus_operations'],
@@ -894,10 +777,6 @@ describe('importBatch', () => {
 	});
 
 	it('marks a lost-response import as unknown outcome, steering to diff before any retry', async () => {
-		// Aborting or losing the connection does NOT stop the server's import transaction: it may still
-		// commit, with the id-map entries in the response that never arrived. The failure must say the
-		// outcome is unknown and route through diff — a blind retry duplicates records in collections
-		// that have no natural key to reconcile by.
 		agent
 			.get('https://cms.example.com')
 			.intercept({ path: '/utils/import', method: 'POST', query: { mode: 'merge' } })

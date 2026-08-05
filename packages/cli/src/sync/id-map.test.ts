@@ -26,8 +26,6 @@ afterEach(() => {
 
 describe('normalizeInstanceUrl', () => {
 	it('lowercases protocol and host so case-variant URLs key one bucket', () => {
-		// A profile spelled HTTPS://Example.COM and https://example.com are the same instance; keying them
-		// apart would strand the second import with no seeded mappings and reduplicate every record.
 		expect(normalizeInstanceUrl('HTTPS://Example.COM')).toBe('https://example.com');
 	});
 
@@ -37,24 +35,18 @@ describe('normalizeInstanceUrl', () => {
 	});
 
 	it('strips trailing slashes at the root and after a real path', () => {
-		// `/directus` and `/directus/` are SDK-equivalent; keying them apart would orphan two ID-map
-		// buckets for one instance and reduplicate every record pushed under the second spelling.
 		expect(normalizeInstanceUrl('http://example.com/')).toBe('http://example.com');
 		expect(normalizeInstanceUrl('http://example.com/directus')).toBe('http://example.com/directus');
 		expect(normalizeInstanceUrl('http://example.com/directus/')).toBe('http://example.com/directus');
 	});
 
 	it('keeps an IPv6 host and its non-default port intact', () => {
-		// The whole reason the map nests URLs instead of joining them on a delimiter: an IPv6 host embeds
-		// colons, so a composite key would split mid-address. The brackets and port must survive verbatim.
 		expect(normalizeInstanceUrl('http://[::1]:8055')).toBe('http://[::1]:8055');
 	});
 });
 
 describe('readIdMap / writeIdMap', () => {
 	it('reads an absent file as the empty map', () => {
-		// A first sync has no map yet; treating the missing file as empty is what lets reconcile seed it,
-		// rather than failing before the very run that would create it.
 		expect(readIdMap(mapPath())).toEqual({ formatVersion: 1, maps: {} });
 	});
 
@@ -68,8 +60,6 @@ describe('readIdMap / writeIdMap', () => {
 	});
 
 	it('writes byte-identical bytes regardless of key insertion order', () => {
-		// The map is committed; its bytes must depend only on the mappings so a PR diff shows a real remap
-		// and never incidental key ordering from however the entries were accumulated.
 		const first = withMappings(
 			withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { s2: 't2' }),
 			A,
@@ -97,8 +87,6 @@ describe('readIdMap / writeIdMap', () => {
 
 describe('withMappings', () => {
 	it('merges new entries into a collection bucket without dropping existing ones', () => {
-		// Reconcile and successive imports append mappings; replacing the bucket would forget every record
-		// mapped before this call and reduplicate it on the next import.
 		const base = withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { s1: 't1' });
 		const merged = withMappings(base, A, B, 'directus_roles', { s2: 't2' });
 
@@ -106,16 +94,12 @@ describe('withMappings', () => {
 	});
 
 	it('returns the same map object for empty entries', () => {
-		// A reconcile that seeds nothing must produce no write; returning the input unchanged lets the
-		// caller detect the no-op by identity and skip touching the committed file.
 		const base = withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { s1: 't1' });
 
 		expect(withMappings(base, A, B, 'directus_roles', {})).toBe(base);
 	});
 
 	it('fails STATE at write when a new entry maps a second source to an already-owned target id', () => {
-		// Failing at WRITE names the operation that created the conflict; with only parseBucket's read-side
-		// check this write would succeed and brick the NEXT command, blaming one that did nothing wrong.
 		const base = withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { s1: 't1' });
 
 		const error = expectCliError(() => withMappings(base, A, B, 'directus_roles', { s2: 't1' }));
@@ -127,8 +111,6 @@ describe('withMappings', () => {
 	});
 
 	it('fails STATE when a single entries batch maps two sources to the same target id', () => {
-		// The collision can arrive within one call too (e.g. an import response mapping two sent PKs onto
-		// one final id); the write must refuse regardless of which side of the merge supplied the pair.
 		const error = expectCliError(() =>
 			withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { s1: 't1', s2: 't1' }),
 		);
@@ -138,8 +120,6 @@ describe('withMappings', () => {
 	});
 
 	it('keeps source→target and target→source in separate buckets', () => {
-		// A remapping only holds one way; if A→B and B→A shared a bucket, a reverse sync would apply the
-		// forward instance's IDs and corrupt every reference.
 		const map = withMappings(
 			withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { x: 'forward' }),
 			B,
@@ -159,8 +139,6 @@ describe('mappingsFor', () => {
 	});
 
 	it('finds the bucket for a differently-spelled but equivalent URL', () => {
-		// Callers pass whatever the profile holds; normalizing on lookup means http://host:80 finds the
-		// bucket seeded under http://host, instead of missing it and reduplicating.
 		const map = withMappings(readIdMap(mapPath()), 'http://host', 'http://target', 'directus_roles', { s1: 't1' });
 
 		expect(mappingsFor(map, 'http://host:80/', 'http://target')['directus_roles']).toEqual({ s1: 't1' });
@@ -169,9 +147,6 @@ describe('mappingsFor', () => {
 
 describe('prototype safety', () => {
 	it('round-trips a record ID literally named __proto__ without polluting Object.prototype', () => {
-		// A Directus primary key can be the string "__proto__". Building the map with obj[key] = value would
-		// hit the prototype setter, dropping the mapping and risking global pollution; the id must survive as
-		// an own key through write and read.
 		const path = mapPath();
 		const entries = JSON.parse('{"__proto__": "target-x"}') as Record<string, string>;
 		const map = withMappings(readIdMap(path), A, B, 'directus_roles', entries);
@@ -203,8 +178,6 @@ describe('readIdMap failures', () => {
 	});
 
 	it('fails STATE naming the path on an unsupported formatVersion', () => {
-		// A future on-disk format the current CLI cannot read must stop loud, not be reinterpreted as
-		// version 1 and seed imports from a shape it does not understand.
 		const path = mapPath();
 		writeFileSync(mkdirForFile(path), JSON.stringify({ formatVersion: 2, maps: {} }));
 
@@ -216,10 +189,6 @@ describe('readIdMap failures', () => {
 	});
 
 	it('fails STATE when two sources map to the same target id — a bucket must be injective', () => {
-		// Two sources sharing one target row have no single identity: both would import onto the same row
-		// (last write wins) and unchanged detection would lie for one of them. Reconcile cannot produce
-		// this (committed targets are excluded from matching), so it is hand-edit/merge corruption and the
-		// map must be refused, not trusted.
 		const path = mapPath();
 
 		writeFileSync(
@@ -236,8 +205,6 @@ describe('readIdMap failures', () => {
 	});
 
 	it('fails STATE naming the path when a leaf is not a string', () => {
-		// A non-string target ID means a hand-edited or corrupt map; coercing it would seed an import with a
-		// bogus primary key, so it must fail loud rather than flow downstream.
 		const path = mapPath();
 
 		writeFileSync(

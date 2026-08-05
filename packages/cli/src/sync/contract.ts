@@ -41,7 +41,7 @@ export interface SnapshotRelationEntry {
  * A validated snapshot whose unknown server fields remain available for round-tripping.
  */
 export interface Snapshot {
-	version: 1 | 2;
+	version: typeof SNAPSHOT_FULL | typeof SNAPSHOT_PARTIAL;
 	directus: string;
 	vendor: string;
 	collections: SnapshotEntry[];
@@ -58,14 +58,12 @@ export interface DiffOp {
 	[key: string]: unknown;
 }
 
-/** A collection-level schema diff entry. */
 interface DiffEntry {
 	collection: string;
 	diff: DiffOp[];
 	[key: string]: unknown;
 }
 
-/** A field-level schema diff entry. */
 interface DiffFieldEntry {
 	collection: string;
 	field: string;
@@ -99,27 +97,23 @@ export interface DiffResult {
 const snapshotEntrySchema = z.looseObject({ collection: z.string() });
 const snapshotFieldSchema = z.looseObject({ collection: z.string(), field: z.string() });
 
-// Relation rendering requires the nullable related collection in addition to collection and field.
 const snapshotRelationSchema = z.looseObject({
 	collection: z.string(),
 	field: z.string(),
 	related_collection: z.string().nullable(),
 });
 
-// Loose parsing preserves unknown server fields for write/read/apply round trips.
 const snapshotSchema = z.looseObject({
 	version: z.union([z.literal(SNAPSHOT_FULL), z.literal(SNAPSHOT_PARTIAL)]),
 	directus: z.string(),
 	vendor: z.string(),
 	collections: z.array(snapshotEntrySchema),
 	fields: z.array(snapshotFieldSchema),
-	// Missing systemFields is a protocol break; [] is meaningful state.
 	systemFields: z.array(snapshotFieldSchema),
 	relations: z.array(snapshotRelationSchema),
 });
 
 const diffOpSchema = z.looseObject({
-	// Refuse unknown protocol operations instead of forwarding them to schema apply.
 	kind: z.enum(['N', 'D', 'E', 'A']),
 	path: z.array(z.union([z.string(), z.number()])).optional(),
 });
@@ -137,7 +131,6 @@ const diffRelationEntrySchema = z.looseObject({
 const schemaDiffSchema = z.object({
 	collections: z.array(diffEntrySchema),
 	fields: z.array(diffFieldEntrySchema),
-	// Missing groups are protocol breaks, not empty change sets.
 	systemFields: z.array(diffFieldEntrySchema),
 	relations: z.array(diffRelationEntrySchema),
 });
@@ -153,7 +146,6 @@ const importCollectionResultSchema = z.object({
 	existing: z.array(primaryKey),
 	new: z.array(primaryKey),
 	deleted: z.array(primaryKey),
-	// Persisted as sync identity so a rerun does not insert the same record again.
 	mapped: z.record(z.string(), primaryKey),
 });
 
@@ -182,7 +174,6 @@ export function parseSnapshot(value: unknown): Snapshot {
 
 /** Parse a schema diff response; null is the SDK representation of HTTP 204. */
 export function parseDiffResult(value: unknown): DiffResult | null {
-	// Accept only the SDK's 204 representation; an empty 200 body remains malformed.
 	if (value === null) return null;
 
 	// zod infers an optional key as `T | undefined`; DiffOp.path is exact-optional (`T?`, never an

@@ -1,32 +1,30 @@
 import { select } from '@clack/prompts';
-import { loadConfig, upsertProjectMode } from '../../kernel/config/file.js';
+import type { Command } from 'commander';
 import { CliError } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
 import { byCodepoint } from '../../sync/codepoint.js';
-import { describeMode, type Mode } from '../../sync/mode.js';
+import { describeMode, MODES, type SyncMode } from '../../sync/mode.js';
+import { DEFAULT_PROJECT } from '../../sync/resolve-target.js';
 import { pull } from './pull.js';
 import { push } from './push.js';
+
+/** The wizard is what a bare `d6s sync` runs, so it registers as the parent's action rather than a subcommand. */
+export function registerWizard(sync: Command, getContext: () => CliContext): void {
+	sync.action(() => wizard(getContext()));
+}
 
 /**
  * Prompt for unresolved sync choices, then run the same pull and push commands used by explicit subcommands.
  */
 export async function wizard(ctx: CliContext): Promise<void> {
-	// Refuse non-interactive use rather than waiting forever on a prompt.
 	if (!ctx.interactive) {
 		throw new CliError('USAGE', 'd6s sync needs a terminal.', {
 			hint: 'Run the subcommands explicitly: d6s sync pull / diff / push.',
 		});
 	}
 
-	const loaded = loadConfig({ cwd: ctx.cwd, configPath: ctx.configPath });
-
-	if (loaded === undefined) {
-		throw new CliError('CONFIG', 'No directus.config.json found.', {
-			hint: 'Create one first: d6s profile add <name> --url <url>',
-		});
-	}
-
+	const loaded = ctx.config.require();
 	const profiles = Object.keys(loaded.config.profiles).sort(byCodepoint);
 
 	if (profiles.length < 2) {
@@ -52,12 +50,12 @@ export async function wizard(ctx: CliContext): Promise<void> {
 	);
 
 	const declared = Object.keys(loaded.config.projects)
-		.filter((name) => name !== 'default')
+		.filter((name) => name !== DEFAULT_PROJECT)
 		.sort(byCodepoint);
 
-	const projectChoices = ['default', ...declared];
+	const projectChoices = [DEFAULT_PROJECT, ...declared];
 
-	let project = 'default';
+	let project: string = DEFAULT_PROJECT;
 
 	if (projectChoices.length > 1) {
 		project = await ask(
@@ -68,25 +66,22 @@ export async function wizard(ctx: CliContext): Promise<void> {
 		);
 	}
 
-	// Omit a configured mode so push remains the single owner of mode precedence.
 	const configuredMode = loaded.config.projects[project]?.mode;
 
-	let promptedMode: Mode | undefined;
+	let promptedMode: SyncMode | undefined;
 
 	if (configuredMode === undefined) {
-		const modeOptions = (['merge', 'add', 'mirror'] as const).map((mode) => ({
-			value: mode,
-			label: describeMode(mode),
-		}));
+		const modeOptions = MODES.map((mode) => ({ value: mode, label: describeMode(mode) }));
 
 		promptedMode = await ask(select({ message: 'Push mode:', initialValue: 'merge', options: modeOptions }));
-
-		// Persist the answer so later pushes default to it (and later wizard runs stop asking); an explicit
-		// --mode flag still overrides.
-		upsertProjectMode(loaded.path, project, promptedMode);
-		ctx.ui.info(`Saved mode "${promptedMode}" for project "${project}" to directus.config.json.`);
 	}
 
 	await pull({ from, project, deps: true }, ctx);
 	await push({ to, project, ...(promptedMode !== undefined ? { mode: promptedMode } : {}) }, ctx);
+
+	// Persist only after a successful push; aborted pushes must not change config.
+	if (promptedMode !== undefined) {
+		ctx.config.upsertProjectMode(project, promptedMode);
+		ctx.ui.info(`Saved mode "${promptedMode}" for project "${project}" to directus.config.json.`);
+	}
 }

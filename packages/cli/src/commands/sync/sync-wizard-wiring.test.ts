@@ -24,8 +24,6 @@ describe('sync bare wizard wiring', () => {
 	});
 
 	it('does NOT fire the wizard when a subcommand is given (sync pull still routes to pull)', async () => {
-		// A subcommand present means the parent action must not fire: `sync pull` with no --from is pull's own
-		// required-option error, not the wizard's terminal refusal.
 		expect(await d6s('sync', 'pull')).toBe(1);
 
 		const err = stderr.join('');

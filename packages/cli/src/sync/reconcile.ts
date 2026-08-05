@@ -1,34 +1,13 @@
-import { CliError } from '../kernel/error.js';
 import { byCodepoint } from './codepoint.js';
-import { SYSTEM_FK_FIELDS } from './fk-map.js';
+import type { FkField } from './resources.js';
 
-// These fields identify the same system record across instances with different primary keys. Settings is
-// a singleton, so its empty key matches a lone source and target but remains ambiguous for duplicates.
-const NATURAL_KEYS: Readonly<Record<string, readonly string[]>> = {
-	directus_roles: ['name'],
-	directus_folders: ['name'],
-	directus_policies: ['name'],
-	directus_flows: ['name'],
-	directus_dashboards: ['name'],
-	directus_operations: ['flow', 'key'],
-	directus_permissions: ['policy', 'collection', 'action'],
-	directus_access: ['role', 'user', 'policy'],
-	directus_translations: ['language', 'key'],
-	directus_users: ['email'],
-	directus_settings: [],
-};
-
-/**
- * Whether a collection has a stable cross-instance natural key. Panels intentionally do not.
- */
-export function hasNaturalKey(collection: string): boolean {
-	return Object.hasOwn(NATURAL_KEYS, collection);
-}
-
-/** Source and target records for one collection reconciliation. */
+/** Source and target records for one collection reconciliation, with the resource facts that identify them. */
 export interface ReconcileInput {
 	readonly collection: string;
 	readonly primaryKey: string;
+	/** The resource's natural key: the fields that identify the same record across instances. */
+	readonly naturalKey: readonly string[];
+	readonly fkFields: readonly FkField[];
 	readonly sourceRecords: readonly Record<string, unknown>[];
 	readonly targetRecords: readonly Record<string, unknown>[];
 }
@@ -43,7 +22,7 @@ export interface CollectionReconcile {
 
 const UNTRANSLATABLE: unique symbol = Symbol('untranslatable');
 
-// Null is a real key component; a non-null source FK with no target mapping makes the whole key unusable.
+// Null is a real key component; an unmapped non-null foreign key makes the natural key unusable.
 function keyComponents(
 	record: Record<string, unknown>,
 	naturalKey: readonly string[],
@@ -76,11 +55,9 @@ function keyComponents(
 	return components;
 }
 
-// Group target rows by natural key, skipping any target already claimed (by the committed map or an
-// earlier match) so a claimed record can never be offered as a candidate a second time.
+// Never offer a target already claimed by the committed map or an earlier match.
 function groupTargets(
 	input: ReconcileInput,
-	naturalKey: readonly string[],
 	references: ReadonlyMap<string, string>,
 	claimed: ReadonlySet<string>,
 ): Map<string, string[]> {
@@ -91,7 +68,7 @@ function groupTargets(
 
 		if (claimed.has(targetId)) continue;
 
-		const components = keyComponents(record, naturalKey, references, (_referenced, id) => id);
+		const components = keyComponents(record, input.naturalKey, references, (_referenced, id) => id);
 		const key = JSON.stringify(components);
 		const bucket = byKey.get(key);
 
@@ -111,17 +88,9 @@ function reconcileOne(
 	progress: Map<string, Map<string, string>>,
 	claimed: Map<string, Set<string>>,
 ): CollectionReconcile {
-	const naturalKey = NATURAL_KEYS[input.collection];
-
-	if (naturalKey === undefined) {
-		throw new CliError('STATE', `No natural key defined for collection "${input.collection}".`, {
-			hint: 'The reconcile table is out of date with the synced collection set.',
-		});
-	}
-
 	const references = new Map<string, string>();
 
-	for (const fk of SYSTEM_FK_FIELDS[input.collection] ?? []) {
+	for (const fk of input.fkFields) {
 		references.set(fk.field, fk.references);
 	}
 
@@ -132,7 +101,7 @@ function reconcileOne(
 
 	if (!claimed.has(input.collection)) claimed.set(input.collection, collectionClaimed);
 
-	const targetsByKey = groupTargets(input, naturalKey, references, collectionClaimed);
+	const targetsByKey = groupTargets(input, references, collectionClaimed);
 	const existingBucket = existing[input.collection] ?? {};
 	const sourcesByKey = new Map<string, string[]>();
 	const unmatched: string[] = [];
@@ -140,10 +109,9 @@ function reconcileOne(
 	for (const record of input.sourceRecords) {
 		const sourceId = String(record[input.primaryKey]);
 
-		// The committed map wins: a source already mapped is skipped entirely, landing in no result bucket.
 		if (Object.hasOwn(existingBucket, sourceId)) continue;
 
-		const components = keyComponents(record, naturalKey, references, (referenced, id) => {
+		const components = keyComponents(record, input.naturalKey, references, (referenced, id) => {
 			return progress.get(referenced)?.get(id) ?? UNTRANSLATABLE;
 		});
 
@@ -180,8 +148,7 @@ function reconcileOne(
 			if (sourceId !== undefined && targetId !== undefined) {
 				matched.push({ sourceId, targetId, key });
 
-				// Commit immediately so a later collection's FK translation sees this pair, and so the target
-				// is claimed and can never be matched again.
+				// Later child keys need this mapping during the same reconciliation pass.
 				collectionProgress.set(sourceId, targetId);
 				collectionClaimed.add(targetId);
 			}
@@ -189,7 +156,7 @@ function reconcileOne(
 			continue;
 		}
 
-		// Never guess among duplicate natural keys; a wrong identity can corrupt import or mirror deletion.
+		// Never guess among duplicate natural keys.
 		const targetIdsSorted = [...targetIds].sort(byCodepoint);
 
 		for (const sourceId of sourceIds) {
@@ -212,7 +179,6 @@ export function reconcileCollections(
 	inputs: readonly ReconcileInput[],
 	existing: Readonly<Record<string, Readonly<Record<string, string>>>>,
 ): CollectionReconcile[] {
-	// Normalize IDs to strings so numeric primary keys match persisted map keys.
 	const progress = new Map<string, Map<string, string>>();
 	const claimed = new Map<string, Set<string>>();
 

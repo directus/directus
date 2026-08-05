@@ -49,8 +49,6 @@ describe('findOutOfScopeReferences', () => {
 	});
 
 	it('never flags a system collection target, because every instance already has it', () => {
-		// A relation to directus_users/directus_files can never dangle on a target — refusing to warn about
-		// system references is what keeps the warning about the user's own missing collections.
 		const references = findOutOfScopeReferences(
 			snapshot({
 				collections: [{ collection: 'pages' }],
@@ -105,8 +103,6 @@ describe('findOutOfScopeReferences', () => {
 	});
 
 	it('sorts output deterministically so warnings do not depend on snapshot row order', () => {
-		// Pull reads a server-ordered snapshot; push reads a disk-ordered one. A stable sort keeps the same
-		// warning text in both phases and makes assertions meaningful.
 		const references = findOutOfScopeReferences(
 			snapshot({
 				collections: [
@@ -128,8 +124,6 @@ describe('formatOutOfScopeReferences', () => {
 			{ kind: 'm2a', from: 'pages.blocks', missing: ['gallery', 'hero'] },
 		]);
 
-		// Four distinct targets (website, authors, gallery, hero) across three sites — the count reflects the
-		// work to include them, not the number of references.
 		expect(message).toContain('references 4 collections');
 		expect(message).toContain('pages → website (group parent)');
 		expect(message).toContain('pages.author → authors (relation)');

@@ -89,38 +89,34 @@ function loadJson(path: string, name: string, hint?: string): unknown {
 	try {
 		raw = readFileSync(path, 'utf8');
 	} catch {
-		throw new CliError('STATE', `Cannot read ${name}.`, hint === undefined ? {} : { hint });
+		throw new CliError('STATE', `Cannot read ${name}.`, { hint });
 	}
 
 	try {
 		return JSON.parse(raw) as unknown;
 	} catch {
-		throw new CliError('STATE', `${name} is not valid JSON.`, hint === undefined ? {} : { hint });
+		throw new CliError('STATE', `${name} is not valid JSON.`, { hint });
 	}
 }
 
 function loadManifest(dir: string, invalidMessage: string, hint?: string): { files: string[]; metadata: unknown } {
 	const path = join(dir, METADATA_FILE);
 
-	// lstat, not stat: a symlinked manifest must fail the regular-file check rather than be followed.
+	// lstat prevents manifest symlinks from escaping the artifact root.
 	if (!lstatSync(path).isFile()) {
-		throw new CliError('STATE', `${METADATA_FILE} is not a regular file.`, hint === undefined ? {} : { hint });
+		throw new CliError('STATE', `${METADATA_FILE} is not a regular file.`, { hint });
 	}
 
 	const metadata = loadJson(path, METADATA_FILE, hint);
 
 	if (!isPlainObject(metadata)) {
-		throw new CliError('STATE', invalidMessage, hint === undefined ? {} : { hint });
+		throw new CliError('STATE', invalidMessage, { hint });
 	}
 
 	const manifest = manifestSchema.safeParse(metadata);
 
 	if (!manifest.success) {
-		throw new CliError(
-			'STATE',
-			`${METADATA_FILE} is missing a valid "files" manifest.`,
-			hint === undefined ? {} : { hint },
-		);
+		throw new CliError('STATE', `${METADATA_FILE} is missing a valid "files" manifest.`, { hint });
 	}
 
 	return { files: manifest.data.files, metadata };
@@ -141,7 +137,6 @@ function readArtifact<T extends Artifact>(dir: string, name: string, parse: (val
 		throw new CliError('STATE', `${METADATA_FILE} lists ${name}, but it is missing.`);
 	}
 
-	// lstat, not stat: a symlinked artifact must fail the regular-file check rather than be followed.
 	if (!lstatSync(path).isFile()) {
 		throw new CliError('STATE', `${name} is not a regular file.`);
 	}
@@ -161,8 +156,6 @@ function readArtifact<T extends Artifact>(dir: string, name: string, parse: (val
 /** Write artifact files, remove stale owned files, then update the ownership manifest. */
 export function writeArtifacts<T extends Artifact>(options: WriteArtifactsOptions<T>): ArtifactWriteResult {
 	const { dir, artifacts, body, manifestHint, metadata, preserve } = options;
-	mkdirSync(dir, { recursive: true });
-
 	const previous = readManifest(dir, manifestHint);
 	const byName = new Map<string, T>();
 
@@ -180,27 +173,15 @@ export function writeArtifacts<T extends Artifact>(options: WriteArtifactsOption
 		byName.set(name, artifact);
 	}
 
-	const targets = new Set<string>();
-	const written: string[] = [];
-
-	for (const [name, artifact] of byName) {
-		targets.add(name);
-		written.push(name);
-		writeFileAtomic(join(dir, name), serializeCanonical(body(artifact)), 0o644);
-	}
-
+	const targets = new Set(byName.keys());
 	const preserved: string[] = [];
 	const removed: string[] = [];
 
-	// Never infer ownership from the filename pattern alone; user files absent from the manifest survive.
+	// Validate the previous generation before changing any file.
 	for (const name of previous.files) {
 		if (targets.has(name) || !OWNED_FILE.test(name)) continue;
 
-		// Listed but absent: the crash window of a previous write (stale files are removed before the
-		// manifest is rewritten), or local corruption, or a hand-deletion — indistinguishable here. Healing
-		// silently would forget the collection from the manifest, and a later mirror push would then DELETE
-		// its rows on the target; local damage must fail loud instead of becoming remote deletion. A pull
-		// whose scope re-fetches this file never reaches this check (targets above) — that is the recovery.
+		// Forgetting a missing owned file could turn local corruption into remote mirror deletion.
 		if (!existsSync(join(dir, name))) {
 			throw new CliError('STATE', `${METADATA_FILE} lists ${name}, but the file is missing.`, {
 				hint: 'An interrupted pull or a deleted file can leave this state. Run a full pull for this project to rewrite it — a scoped pull cannot tell a crash from lost data.',
@@ -212,15 +193,25 @@ export function writeArtifacts<T extends Artifact>(options: WriteArtifactsOption
 			continue;
 		}
 
-		rmSync(join(dir, name), { force: true });
 		removed.push(name);
 	}
 
-	// Write the manifest last so a first interrupted write is not readable and ownership never names files
-	// this call has not processed. Existing generations are updated file-by-file, not transactionally.
+	const written = [...byName.keys()];
+
+	const serialized = new Map(
+		[...byName].map(([name, artifact]) => [name, serializeCanonical(body(artifact))] as const),
+	);
+
+	// Write ownership last so it never names files this call has not processed.
 	const files = [...written, ...preserved].sort(byCodepoint);
-	const meta = metadata({ files, preserved, previousMetadata: previous.metadata });
-	writeFileAtomic(join(dir, METADATA_FILE), serializeCanonical(meta), 0o644);
+	const serializedMetadata = serializeCanonical(metadata({ files, preserved, previousMetadata: previous.metadata }));
+
+	mkdirSync(dir, { recursive: true });
+
+	for (const [name, contents] of serialized) writeFileAtomic(join(dir, name), contents, 0o644);
+	for (const name of removed) rmSync(join(dir, name), { force: true });
+
+	writeFileAtomic(join(dir, METADATA_FILE), serializedMetadata, 0o644);
 
 	return { written: [METADATA_FILE, ...written].sort(byCodepoint), removed: removed.sort(byCodepoint) };
 }

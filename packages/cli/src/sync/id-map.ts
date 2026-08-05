@@ -31,15 +31,13 @@ export function normalizeInstanceUrl(url: string): string {
 	}
 
 	const host = port === '' ? hostname : `${hostname}:${port}`;
-	// Trailing slashes are SDK-equivalent everywhere, so `/directus/` and `/directus` (and root `/`)
-	// must land in one ID-map bucket, not orphan two.
+	// SDK-equivalent trailing slashes must share one identity bucket.
 	const pathname = parsed.pathname.replace(/\/+$/, '');
 
 	return `${protocol}//${host}${pathname}`;
 }
 
-// Parsers rebuild every level with Object.fromEntries so a legal "__proto__" record ID cannot invoke the
-// prototype setter or disappear.
+// Rebuild maps with define semantics so legal "__proto__" IDs remain data.
 function readObject(value: unknown, path: string, what: string): Record<string, unknown> {
 	if (!isPlainObject(value)) {
 		throw new CliError('STATE', `${path} has a ${what} that is not an object.`, { hint: REPAIR_HINT });
@@ -62,10 +60,7 @@ function parseBucket(value: unknown, path: string): Readonly<Record<string, stri
 				});
 			}
 
-			// A bucket must be injective: two sources sharing one target row have no single identity — both
-			// would import onto the same row (last write wins) and unchanged detection would lie for one.
-			// Reconcile never produces this (committed targets are excluded from matching), so it can only
-			// arrive by hand-edit or a bad merge, and a corrupt map is refused rather than trusted.
+			// Two sources cannot safely share one target identity.
 			const owner = owners.get(targetId);
 
 			if (owner !== undefined) {
@@ -177,11 +172,9 @@ export function withMappings(
 	const collectionMap = targetMap[target] ?? {};
 	const bucket = collectionMap[collection] ?? {};
 
-	// Object spread uses define semantics, preserving a "__proto__" ID as an own property.
 	const mergedBucket = { ...bucket, ...entries };
 
-	// Injectivity is enforced on write as well as read (parseBucket): failing here names the operation
-	// that created the conflict, while a write-through would brick the NEXT command and blame it instead.
+	// Refuse an injectivity conflict at the operation that creates it, not on the next read.
 	const owners = new Map<string, string>();
 
 	for (const [sourceId, targetId] of Object.entries(mergedBucket)) {

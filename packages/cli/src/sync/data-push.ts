@@ -1,31 +1,18 @@
 import { select } from '@clack/prompts';
 import { isEqual } from 'lodash-es';
-import { fetchQueryLimitMax } from '../../kernel/connection.js';
-import { CliError } from '../../kernel/error.js';
-import { ask } from '../../kernel/prompt.js';
-import type { CliContext } from '../../kernel/run.js';
-import { fetchRecords } from '../../sync/api.js';
-import { byCodepoint } from '../../sync/codepoint.js';
-import type { ImportCollectionData } from '../../sync/contract.js';
-import { type DataCollection, hasDataFiles, readDataFiles } from '../../sync/data-store.js';
-import { SYSTEM_FK_FIELDS } from '../../sync/fk-map.js';
-import {
-	type IdMap,
-	mappingsFor,
-	normalizeInstanceUrl,
-	readIdMap,
-	withMappings,
-	writeIdMap,
-} from '../../sync/id-map.js';
-import type { Mode } from '../../sync/mode.js';
-import {
-	type CollectionReconcile,
-	hasNaturalKey,
-	reconcileCollections,
-	type ReconcileInput,
-} from '../../sync/reconcile.js';
-import { allResources, type Resource } from '../../sync/resources.js';
+import { fetchQueryLimitMax } from '../kernel/connection.js';
+import { CliError } from '../kernel/error.js';
+import { ask } from '../kernel/prompt.js';
+import type { CliContext } from '../kernel/run.js';
+import { fetchRecords } from './api.js';
+import { byCodepoint } from './codepoint.js';
+import type { ImportCollectionData } from './contract.js';
+import { type DataCollection, readDataFiles } from './data-store.js';
+import { type IdMap, mappingsFor, normalizeInstanceUrl, readIdMap, withMappings, writeIdMap } from './id-map.js';
+import type { SyncMode } from './mode.js';
+import { type CollectionReconcile, reconcileCollections, type ReconcileInput } from './reconcile.js';
 import type { Target } from './resolve-target.js';
+import { allResources, type Resource } from './resources.js';
 
 /**
  * A source ID and the primary key sent for it. A null sent PK means the server assigned an ID that its
@@ -36,7 +23,6 @@ interface SentRecord {
 	readonly sentPk: string | null;
 }
 
-/** Records sent for one system collection, used to update the ID map after import. */
 interface SystemSent {
 	readonly collection: string;
 	readonly records: readonly SentRecord[];
@@ -50,7 +36,6 @@ export type UnchangedRows = ReadonlyMap<string, ReadonlySet<string>>;
 
 /** A prepared data import and the identity state needed to process its response. */
 export interface DataPushPlan {
-	readonly skipped: false;
 	readonly source: string;
 	readonly target: string;
 	readonly idMapPath: string;
@@ -63,13 +48,6 @@ export interface DataPushPlan {
 	/** Collections the committed manifest marks as truncated at pull time; mirror must refuse them. */
 	readonly incomplete: readonly string[];
 }
-
-/** A schema-only checkout with no committed data generation. */
-interface DataPushSkipped {
-	readonly skipped: true;
-}
-
-export type DataPushResult = DataPushPlan | DataPushSkipped;
 
 interface SystemCollection {
 	readonly data: DataCollection;
@@ -92,9 +70,7 @@ export function partitionCollections(collections: readonly DataCollection[]): {
 		const data = byCollection.get(resource.collection);
 
 		if (data !== undefined) {
-			// The file's declared primaryKey drives row validation and duplicate-PK detection at read time,
-			// while every consumer below keys on the catalog's — a hand-edited declaration would make the
-			// dedup guard watch the wrong column, letting two rows with one real id ship in the batch.
+			// A hand-edited key could make validation and import disagree about record identity.
 			if (data.primaryKey !== resource.primaryKey) {
 				throw new CliError(
 					'STATE',
@@ -121,17 +97,16 @@ export function partitionCollections(collections: readonly DataCollection[]): {
  */
 export function remapSystemRecord(
 	record: Record<string, unknown>,
-	collection: string,
-	primaryKey: string,
+	resource: Resource,
 	bucket: Readonly<Record<string, Readonly<Record<string, string>>>>,
 ): { record: Record<string, unknown>; sent: SentRecord } {
 	const remapped: Record<string, unknown> = { ...record };
-	const sourceId = String(record[primaryKey]);
-	const targetPk = bucket[collection]?.[sourceId];
+	const sourceId = String(record[resource.primaryKey]);
+	const targetPk = bucket[resource.collection]?.[sourceId];
 
-	if (targetPk !== undefined) remapped[primaryKey] = targetPk;
+	if (targetPk !== undefined) remapped[resource.primaryKey] = targetPk;
 
-	for (const fk of SYSTEM_FK_FIELDS[collection] ?? []) {
+	for (const fk of resource.fkFields) {
 		const value = record[fk.field];
 
 		if (value === null || value === undefined) continue;
@@ -144,13 +119,8 @@ export function remapSystemRecord(
 	return { record: remapped, sent: { sourceId, sentPk: targetPk ?? sourceId } };
 }
 
-// Reconcile parents before children so FK components can be translated through matches made earlier in
-// this run. Resource import order is children-first, so reconciliation consumes it in reverse.
-//
-// EVERY system target is fetched — not just the natural-keyed ones — because batch assembly needs to see
-// which PKs exist on the target: the add-mode skips and the mapped-row self-heal read that set, and an
-// unfetched collection (panels has no natural key) would read as "all rows missing", resending mapped
-// rows that add-mode then duplicates under fresh UUIDs.
+// Reconcile parents first so child natural keys can translate foreign keys through earlier matches.
+// Fetch every target collection because add-mode identity checks also cover resources without natural keys.
 async function reconcileSystem(
 	system: readonly SystemCollection[],
 	target: Target,
@@ -169,21 +139,21 @@ async function reconcileSystem(
 
 		targets.set(resource.collection, targetRecords);
 
-		if (!hasNaturalKey(resource.collection)) continue;
+		if (resource.naturalKey === undefined) continue;
 
 		inputs.push({
 			collection: resource.collection,
 			primaryKey: resource.primaryKey,
+			naturalKey: resource.naturalKey,
+			fkFields: resource.fkFields,
 			sourceRecords: data.records,
 			targetRecords,
 		});
 	}
 
-	// Keep the inputs so resolving a parent ambiguity can rerun reconciliation without refetching.
 	return { inputs, results: reconcileCollections(inputs, existing), targets };
 }
 
-// Prefix target IDs so arbitrary IDs cannot collide with the create/abort prompt sentinels.
 const TARGET_PREFIX = 'target:';
 
 function scalar(value: unknown): string | undefined {
@@ -243,13 +213,10 @@ function matchedEntries(result: CollectionReconcile): Record<string, string> {
 
 interface ResolvedMatches {
 	readonly seeds: ReadonlyMap<string, Record<string, string>>;
-	// Excluded from later passes so an ambiguity is never prompted twice.
 	readonly decided: readonly { collection: string; sourceId: string }[];
-	// Only an existing-target answer can unlock a child's FK reconciliation.
 	readonly resolvedExisting: boolean;
 }
 
-// Interactive pushes resolve ambiguities; non-interactive pushes report all of them and stop.
 async function resolveMatches(
 	results: readonly CollectionReconcile[],
 	inputs: readonly ReconcileInput[],
@@ -284,7 +251,7 @@ async function resolveMatches(
 	const decided: { collection: string; sourceId: string }[] = [];
 	let resolvedExisting = false;
 
-	// One target cannot represent two sources; remove targets claimed by earlier answers in this pass.
+	// A target can represent only one source.
 	const taken = new Map<string, Set<string>>();
 
 	for (const [index, item] of ambiguities.entries()) {
@@ -339,34 +306,28 @@ async function resolveMatches(
 }
 
 interface Reconciled {
-	readonly skipped: false;
 	readonly source: string;
 	readonly targetUrl: string;
 	readonly system: readonly SystemCollection[];
 	readonly map: IdMap;
 	readonly incomplete: readonly string[];
-	// Retained so a resolved ambiguity can trigger another pass without refetching.
 	readonly inputs: readonly ReconcileInput[];
 	readonly results: readonly CollectionReconcile[];
-	// Missing entries disable unchanged detection, keeping every source row in the batch.
 	readonly targets: ReadonlyMap<string, readonly Record<string, unknown>[]>;
 }
 
-async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSkipped> {
-	if (!hasDataFiles(target.dataDir)) {
-		return { skipped: true };
-	}
+async function readAndReconcile(target: Target): Promise<Reconciled | undefined> {
+	const committed = readDataFiles(target.dataDir);
 
-	const { source, collections, incomplete } = readDataFiles(target.dataDir);
+	if (committed === undefined) return undefined;
 
-	if (collections.length === 0) return { skipped: true };
+	const { source, collections, incomplete } = committed;
+
+	if (collections.length === 0) return undefined;
 
 	const targetUrl = normalizeInstanceUrl(target.url);
 	const { system, content } = partitionCollections(collections);
 
-	// partitionCollections claims only cataloged system collections, so an unknown directus_* file (hand-
-	// committed, or written by a different CLI version) lands in `content` — but calling it a content
-	// collection would misdirect the operator toward the deferred-content advice. Name it for what it is.
 	const unknownSystem = content.filter((data) => data.collection.startsWith('directus_'));
 
 	if (unknownSystem.length > 0) {
@@ -377,10 +338,6 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 		);
 	}
 
-	// Content sync is deferred from this release — pull no longer writes content data files, so any that
-	// remain are committed leftovers whose rows this CLI can no longer import safely (a raw integer content
-	// PK can silently overwrite an unrelated target row). Refuse before any target read or import; push and
-	// diff both flow through here, so this one gate covers both.
 	if (content.length > 0) {
 		throw new CliError(
 			'STATE',
@@ -393,8 +350,7 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 
 	const map = readIdMap(target.idMapPath);
 
-	// One keystone read per push covers every reconcile fetch below (Judd's "2 requests per resource" —
-	// each target read otherwise costs a fetch plus an exhaustion probe). Best-effort; undefined keeps the probe.
+	// One best-effort limit read can remove an exhaustion probe from every collection fetch.
 	const queryMax = await fetchQueryLimitMax(target.credential);
 
 	const { inputs, results, targets } = await reconcileSystem(
@@ -404,11 +360,10 @@ async function readAndReconcile(target: Target): Promise<Reconciled | DataPushSk
 		queryMax,
 	);
 
-	return { skipped: false, source, targetUrl, system, map, incomplete, inputs, results, targets };
+	return { source, targetUrl, system, map, incomplete, inputs, results, targets };
 }
 
-// Compare only exported fields; target-only defaults and audit columns are outside the sync claim. The PK
-// is excluded because mapped rows already establish identity and wire/map representations may differ.
+// Target-only defaults and audit columns are outside the sync claim; the map already establishes identity.
 function fieldsEqual(payload: Record<string, unknown>, target: Record<string, unknown>, pkField: string): boolean {
 	for (const [key, value] of Object.entries(payload)) {
 		if (key === pkField) continue;
@@ -418,14 +373,11 @@ function fieldsEqual(payload: Record<string, unknown>, target: Record<string, un
 	return true;
 }
 
-// Three server behaviors shape the batch: add skips every row whose PK already exists on the target
-// (mapped or not — an add-mode conflict inserts a duplicate, never an update); merge/mirror withhold an
-// unmatched auto-increment PK so the server never treats a colliding id as identity; mirror echoes user-attached
-// access rows when users are out of scope so deletion does not remove target-local grants.
+// Batch identity rules prevent add-mode duplicates, numeric-PK collisions, and mirror deletion of local grants.
 function assembleBatch(
 	system: readonly SystemCollection[],
 	bucket: Readonly<Record<string, Readonly<Record<string, string>>>>,
-	mode: Mode,
+	mode: SyncMode,
 	targets: ReadonlyMap<string, readonly Record<string, unknown>[]>,
 ): { batch: ImportCollectionData[]; systemSent: SystemSent[]; unchanged: UnchangedRows; records: number } {
 	const batch: ImportCollectionData[] = [];
@@ -435,13 +387,12 @@ function assembleBatch(
 
 	const includesUsers = system.some((entry) => entry.resource.collection === 'directus_users');
 
-	// Mirror must carry unchanged rows to prevent deletion; merge/add can omit them.
-	function markUnchanged(collection: string, pk: string): boolean {
+	// Rows the target already matches: the import reports every PK-present row as `existing`, so this set is
+	// what keeps them out of the rendered "updated" count.
+	function markUnchanged(collection: string, pk: string): void {
 		const set = unchanged.get(collection) ?? new Set<string>();
 		set.add(pk);
 		unchanged.set(collection, set);
-
-		return mode === 'mirror';
 	}
 
 	for (const { data, resource } of system) {
@@ -457,44 +408,21 @@ function assembleBatch(
 			const mapped = Object.hasOwn(collectionBucket, sourceId);
 
 			if (mode === 'add' && mapped) {
-				// add skips mapped rows to avoid duplicate inserts — but only while the mapped target row
-				// still exists. A row deleted on the target would otherwise stay missing forever with no
-				// signal (merge/mirror self-heal by sending the mapped PK; add's skip never would). When the
-				// fetched target set proves the row absent, fall through: the remapped record imports under
-				// its mapped PK, restoring the row without minting a new identity.
+				// Re-send a mapped row deleted from the target; otherwise add mode could never restore it.
 				const mappedPk = collectionBucket[sourceId];
 
 				if (mappedPk === undefined || targetByPk.has(mappedPk)) continue;
 			}
 
-			const result = remapSystemRecord(record, resource.collection, resource.primaryKey, bucket);
+			const result = remapSystemRecord(record, resource, bucket);
 
-			// add creates only: an unmapped row whose PK already exists on the target must be skipped, not
-			// sent — the server resolves an add-mode conflict by minting a fresh UUID (or a fresh
-			// auto-increment key), materializing a duplicate on every run.
+			// Add-mode PK conflicts create duplicates instead of updating existing rows.
 			if (mode === 'add' && result.sent.sentPk !== null && targetByPk.has(result.sent.sentPk)) continue;
 
-			// merge/mirror never send a raw source auto-increment PK for an unmatched row. The server's
-			// existence check runs inside the import transaction, so a source id can collide with a row this
-			// same batch just inserted — or with an entitlement-hidden target row the fetched set never
-			// showed (unlicensed /permissions reads filter custom-rule rows) — and silently overwrite it.
-			// The earlier guard only fired when the fetched target set proved the id occupied, which that
-			// filter defeats; withhold unconditionally instead. The server inserts fresh and the row is
-			// re-identified by natural key next push (only natural-keyed resources reach here). No map entry
-			// is recorded: the assigned id is unreported and a guess would bind the source to the wrong row.
-			if (mode !== 'add' && !mapped && typeof record[resource.primaryKey] === 'number') {
-				// A numeric-PK resource outside the natural-key table could never re-identify the withheld
-				// row, but falling through would send the raw source integer — the exact silent-overwrite
-				// class the withhold exists to prevent. Unreachable with today's catalog; a catalog edit that
-				// breaks the invariant must fail the push, not the target's data.
-				if (!hasNaturalKey(resource.collection)) {
-					throw new CliError(
-						'STATE',
-						`No natural key defined for numeric-primary-key collection "${resource.collection}".`,
-						{ hint: 'The natural-key table is out of date with the synced collection set.' },
-					);
-				}
-
+			// Never treat an unmatched source integer as target identity; hidden or same-batch rows may own it.
+			// The server assigns a fresh key instead, which a later natural-key reconciliation discovers safely:
+			// the catalog admits no integer-PK resource without a natural key, so the row stays identifiable.
+			if (mode !== 'add' && !mapped && resource.primaryKeyType === 'integer') {
 				delete result.record[resource.primaryKey];
 				items.push(result.record);
 				sent.push({ sourceId, sentPk: null });
@@ -504,12 +432,11 @@ function assembleBatch(
 			if (mapped && result.sent.sentPk !== null) {
 				const targetRow = targetByPk.get(result.sent.sentPk);
 
-				if (
-					targetRow !== undefined &&
-					fieldsEqual(result.record, targetRow, resource.primaryKey) &&
-					!markUnchanged(resource.collection, result.sent.sentPk)
-				) {
-					continue;
+				if (targetRow !== undefined && fieldsEqual(result.record, targetRow, resource.primaryKey)) {
+					markUnchanged(resource.collection, result.sent.sentPk);
+
+					// Mirror still sends the row: absence from the batch is the deletion order.
+					if (mode !== 'mirror') continue;
 				}
 			}
 
@@ -538,20 +465,23 @@ function assembleBatch(
  * Reconcile system identities, persist resolved matches, and prepare the import batch. An existing-target
  * ambiguity answer reruns reconciliation so newly translatable child keys do not import as duplicates.
  */
-export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContext): Promise<DataPushResult> {
+export async function prepareDataPush(
+	target: Target,
+	mode: SyncMode,
+	ctx: CliContext,
+): Promise<DataPushPlan | undefined> {
 	const reconciled = await readAndReconcile(target);
 
-	if (reconciled.skipped) return { skipped: true };
+	if (reconciled === undefined) return undefined;
 
 	const { source, targetUrl, system, inputs, targets } = reconciled;
 
-	// Persist learned identities even if a later gate aborts. Existing-target answers can unlock child FK
-	// keys, so rerun with cached inputs while excluding every source already prompted.
+	// Persist identity decisions even if a later gate aborts, then retry child reconciliation in memory.
 	let map = reconciled.map;
 	let results = reconciled.results;
 	const decided = new Map<string, Set<string>>();
 
-	for (;;) {
+	while (true) {
 		const resolved = await resolveMatches(results, inputs, ctx);
 
 		for (const item of resolved.decided) {
@@ -586,7 +516,6 @@ export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContex
 	);
 
 	return {
-		skipped: false,
 		source,
 		target: targetUrl,
 		idMapPath: target.idMapPath,
@@ -600,9 +529,8 @@ export async function prepareDataPush(target: Target, mode: Mode, ctx: CliContex
 	};
 }
 
-/** A read-only, conservative data batch preview plus reconciliation counts. */
-interface DataPreviewPlan {
-	readonly skipped: false;
+/** A preview of the data phase: the batch a push would send, plus its reconcile tallies. */
+export interface DataPreviewPlan {
 	readonly source: string;
 	readonly batch: ImportCollectionData[];
 	readonly unchanged: UnchangedRows;
@@ -611,11 +539,8 @@ interface DataPreviewPlan {
 	readonly ambiguousCount: number;
 	readonly unmatchedCount: number;
 	readonly unchangedCount: number;
-	/** Collections the committed manifest marks as truncated at pull time; push refuses mirror on them. */
 	readonly incomplete: readonly string[];
 }
-
-export type DataPreviewResult = DataPreviewPlan | DataPushSkipped;
 
 /**
  * Preview without prompting or writing. Unambiguous matches are applied in memory; ambiguous sources —
@@ -623,16 +548,14 @@ export type DataPreviewResult = DataPreviewPlan | DataPushSkipped;
  * ambiguousCount: an interactive push resolves them (possibly into updates) and a non-interactive push
  * refuses until they are resolved.
  */
-export async function previewData(target: Target, mode: Mode): Promise<DataPreviewResult> {
+export async function previewData(target: Target, mode: SyncMode): Promise<DataPreviewPlan | undefined> {
 	const reconciled = await readAndReconcile(target);
 
-	if (reconciled.skipped) return { skipped: true };
+	if (reconciled === undefined) return undefined;
 
 	const { source, targetUrl, system, results, targets } = reconciled;
 
-	// Seed only unambiguous matches into the in-memory map; diff never settles identity choices. Matched
-	// entries stay seeded even when the closure below excludes their record — the seeding writes nothing,
-	// and the pairs point at real target rows, so any remaining row that remaps through them stays valid.
+	// Diff may use unambiguous matches in memory but never persist identity choices.
 	let map = reconciled.map;
 	const excluded = new Map<string, Set<string>>();
 
@@ -646,22 +569,13 @@ export async function previewData(target: Target, mode: Mode): Promise<DataPrevi
 		map = withMappings(map, source, targetUrl, result.collection, matchedEntries(result));
 	}
 
-	// An ambiguous source is neither a create nor an update yet: an interactive push resolves it, a
-	// non-interactive push refuses outright. Left in the batch it would ride as a CREATE and the dry-run
-	// would count it — a preview lying in both directions — so it is excluded and reported unresolved.
-	//
-	// Its dependents must drop with it: an excluded source id resolves to NOTHING — the row is out of the
-	// batch and, being ambiguous, unmapped on the target — so a dependent still carrying that FK makes the
-	// server-side dry-run fail on the reference and diff error instead of previewing. A conservative
-	// preview beats one that 400s; diff must never error on a state push can handle. Only an FK actually
-	// holding an excluded source id dangles — null FKs and FKs to non-excluded rows remap or pass through.
-	// Iterate to a fixed point so self-referential chains (directus_folders.parent) drop whole subtrees
-	// regardless of record order.
+	// Ambiguous rows are neither creates nor updates, so exclude and report them separately.
+	// Exclude dependents whose foreign keys would dangle, iterating to cover self-referential chains.
 	for (let changed = true; changed; ) {
 		changed = false;
 
 		for (const { data, resource } of system) {
-			const fks = SYSTEM_FK_FIELDS[resource.collection] ?? [];
+			const fks = resource.fkFields;
 
 			if (fks.length === 0) continue;
 
@@ -685,8 +599,6 @@ export async function previewData(target: Target, mode: Mode): Promise<DataPrevi
 		}
 	}
 
-	// Every excluded record counts as unresolved and leaves matched/unmatched, so the categories still
-	// partition the committed set and diff's pending total does not double-count.
 	let matchedCount = 0;
 	let ambiguousCount = 0;
 	let unmatchedCount = 0;
@@ -724,7 +636,6 @@ export async function previewData(target: Target, mode: Mode): Promise<DataPrevi
 	for (const set of unchanged.values()) unchangedCount += set.size;
 
 	return {
-		skipped: false,
 		source,
 		batch,
 		unchanged,

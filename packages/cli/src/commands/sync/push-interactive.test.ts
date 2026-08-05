@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { confirm, isCancel, select, text } from '@clack/prompts';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { createConfigStore } from '../../kernel/config/file.js';
 import type { CliContext } from '../../kernel/run.js';
 import { createUi } from '../../kernel/ui.js';
 import { applyDiff, fetchDiff, fetchRecords, importBatch } from '../../sync/api.js';
@@ -12,7 +13,6 @@ import { writeSnapshotFiles } from '../../sync/store.js';
 import { push } from './push.js';
 import { fullSnapshot, seedProjectConfig, SYNC_TOKEN, SYNC_URL } from './sync.test-support.js';
 
-// Script prompts and isolate interactive gates/reconciliation from the network.
 vi.mock('@clack/prompts', () => ({
 	confirm: vi.fn(),
 	text: vi.fn(),
@@ -31,7 +31,7 @@ const url = SYNC_URL;
 const token = SYNC_TOKEN;
 
 function ctxAt(cwd: string): CliContext {
-	return { cwd, configPath: undefined, interactive: true, ui: createUi({ json: false, color: false }) };
+	return { cwd, config: createConfigStore(cwd), interactive: true, ui: createUi({ json: false, color: false }) };
 }
 
 function changesResult(): DiffResult {
@@ -79,7 +79,6 @@ describe('interactive sync push', () => {
 			return true;
 		});
 
-		// Interactive resolution still authenticates through the profile-specific environment variable.
 		vi.stubEnv('HOME', home);
 		vi.stubEnv('USERPROFILE', home);
 		vi.stubEnv('CI', '');
@@ -140,8 +139,6 @@ describe('interactive sync push', () => {
 	});
 
 	it('still demands the typed confirmation for deletions even with --yes, then applies on an exact match', async () => {
-		// The invariant in the interactive path: --yes skips the generic confirm but can never skip the
-		// typed deletion confirmation. Typing the profile name exactly is the human consent that unlocks it.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(deletionResult());
 		vi.mocked(text).mockResolvedValueOnce('staging');
 
@@ -164,7 +161,6 @@ describe('interactive sync push', () => {
 	});
 
 	it('runs a dry-run import before the committing import in the interactive path', async () => {
-		// The approved plan must come from a rolled-back server import before the committing import.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 		seedData([{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Deploy' }] }]);
 		vi.mocked(importBatch).mockResolvedValue(importResult());
@@ -178,9 +174,6 @@ describe('interactive sync push', () => {
 	});
 
 	it('demands the typed confirmation for data deletions the dry-run surfaces, even with a clean schema', async () => {
-		// Destruction on the table is not only schema: a mirror data plan that deletes rows triggers the
-		// typed confirmation even when the schema is clean and even under --yes. No schema change means apply
-		// never runs, proving the data plan alone drove the gate.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 		seedData([{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Deploy' }] }]);
 
@@ -198,10 +191,6 @@ describe('interactive sync push', () => {
 	});
 
 	it('imports an all-empty mirror batch instead of calling it converged — emptiness IS the deletion', async () => {
-		// Under mirror, { collection, items: [] } instructs the server to delete EVERY target row in that
-		// collection, so a committed-but-empty collection is the opposite of a no-op. The converged
-		// short-circuit (records === 0) must never swallow it: the dry-run runs and names the doomed rows,
-		// the typed gate fires, and the committing import carries the empty entry to the server.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 		seedData([{ collection: 'directus_flows', primaryKey: 'id', records: [] }]);
 
@@ -219,8 +208,6 @@ describe('interactive sync push', () => {
 	});
 
 	it('short-circuits the same all-empty batch under merge — without the delete semantics it is a no-op', async () => {
-		// The converged exit stays correct for merge: an empty batch entry imports nothing and deletes
-		// nothing, so no import (not even a dry-run) should touch the wire.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 		seedData([{ collection: 'directus_flows', primaryKey: 'id', records: [] }]);
 
@@ -231,9 +218,6 @@ describe('interactive sync push', () => {
 	});
 
 	it('persists an ambiguity choice into the committed map before importing', async () => {
-		// Reconcile stops on an ambiguous match rather than guessing; the operator's pick is seeded into the
-		// committed map immediately (identity facts survive even an aborted push) so a future reconcile skips
-		// the now-settled record.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
 
@@ -281,9 +265,6 @@ describe('interactive sync push', () => {
 	});
 
 	it('withholds a target already claimed by an earlier ambiguity answer in the same pass', async () => {
-		// Two sources sharing a natural key are offered the same candidate list; if both could claim one
-		// target, two sources would bind to a single row and every later push would have them overwriting
-		// each other on it (last write wins). The second prompt must not offer what the first answer took.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 
 		seedData([
@@ -325,10 +306,6 @@ describe('interactive sync push', () => {
 	});
 
 	it('re-reconciles children after an ambiguity is resolved to an existing target', async () => {
-		// While a parent is ambiguous, a child keyed through its FK is untranslatable and cannot match. The
-		// operator's answer supplies the missing mapping, so reconcile must run again: the child then UPDATES
-		// the target's own child row instead of inserting a look-alike duplicate beside it. The answer is
-		// never asked twice, and the second pass reuses the fetched records rather than re-fetching.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 
 		seedData([
@@ -368,9 +345,6 @@ describe('interactive sync push', () => {
 	});
 
 	it('asks once and cascades nothing when an ambiguity is answered with create', async () => {
-		// 'create' adds no mapping, so a second reconcile pass could translate nothing new — it must not run,
-		// and above all it must not re-ask the question it already had answered. The child keeps its
-		// source-space FK for the server to link against the parent inserted in the same batch.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 
 		seedData([
@@ -409,10 +383,6 @@ describe('interactive sync push', () => {
 	});
 
 	it("echoes the target's user-attached access rows into a mirror batch so they survive the delete", async () => {
-		// The server's mirror delete removes every target row absent from the batch, and pull deliberately
-		// exports only null-user access grants — so without the echo, a mirror push would destroy every user
-		// grant on the target (the directus-sync #148 data-loss class). The target's own user rows ride along
-		// verbatim, upsert onto themselves, and survive.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 
 		seedData([
@@ -443,11 +413,6 @@ describe('interactive sync push', () => {
 	});
 
 	it('withholds an occupied numeric PK instead of overwriting the unrelated target row', async () => {
-		// The server's merge treats an occupied PK as "the same record" — for autoincrement ids that is zero
-		// identity evidence, and sending id 7 would silently replace an unrelated permission. The guard sends
-		// the record without its PK (the server inserts fresh) and records NO map entry: the response cannot
-		// report the assigned id, and a wrong entry would bind the source to the wrong row forever. The next
-		// push reconciles the created row by natural key.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 
 		seedData([
@@ -473,11 +438,6 @@ describe('interactive sync push', () => {
 	});
 
 	it('withholds an unmatched numeric PK even when the target read shows it absent', async () => {
-		// The old guard only withheld when the fetched target set proved the id occupied. But the server's
-		// existence check runs inside the import transaction and the target read is entitlement-filterable
-		// (unlicensed /permissions hides custom-rule rows) — so a raw source id could collide with a row
-		// this batch just inserted, or a hidden target row, and silently overwrite it. Withhold regardless:
-		// the server inserts fresh, and natural-key reconcile re-identifies the row next push.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 
 		seedData([
@@ -488,7 +448,6 @@ describe('interactive sync push', () => {
 			},
 		]);
 
-		// Target read returns nothing — the id looks free, yet sending it raw is still unsafe.
 		vi.mocked(fetchRecords).mockResolvedValueOnce([]);
 
 		vi.mocked(importBatch).mockResolvedValue(importResult());
@@ -504,9 +463,6 @@ describe('interactive sync push', () => {
 	});
 
 	it('sends only unmapped records under add mode, so a repeat add cannot mint duplicates', async () => {
-		// The server's add path inserts unconditionally — an occupied uuid is regenerated — so re-sending a
-		// record that is already mapped to a target row would create another copy on every run and chase the
-		// map to the newest duplicate. "add (only new records)" means exactly the unmapped ones.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 
 		seedData([
@@ -538,8 +494,6 @@ describe('interactive sync push', () => {
 	});
 
 	it('states an all-zero data plan plainly instead of a contradictory header', async () => {
-		// A changed schema with a no-op data dry-run must not render "data changes to import" over a
-		// "no data changes" line — the header appears only when the plan contains any.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(changesResult());
 		seedData([{ collection: 'directus_flows', primaryKey: 'id', records: [{ id: 'f1', name: 'Deploy' }] }]);
 		vi.mocked(importBatch).mockResolvedValue(importResult());
@@ -554,7 +508,6 @@ describe('interactive sync push', () => {
 	});
 
 	it('aborts the push and touches neither apply nor import when the operator aborts an ambiguity', async () => {
-		// Aborting identity resolution must stop before any remote mutation.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
 

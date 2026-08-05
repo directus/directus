@@ -4,10 +4,8 @@ import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { resolveCredential, saveCredential } from '../../kernel/config/credentials.js';
 import { run } from '../../kernel/run.js';
-import { registerProfile } from './index.js';
+import { registerProfile } from './profile.js';
 
-// Drive the real dispatcher against a throwaway project dir, so these exercise
-// the whole path: parse → command → config file on disk.
 describe('profile commands', () => {
 	let dir: string;
 	let stdout: string[];
@@ -15,6 +13,8 @@ describe('profile commands', () => {
 
 	beforeEach(() => {
 		dir = mkdtempSync(join(tmpdir(), 'd6s-profile-'));
+		vi.stubEnv('HOME', dir);
+		vi.stubEnv('USERPROFILE', dir);
 		stdout = [];
 		stderr = [];
 
@@ -48,29 +48,50 @@ describe('profile commands', () => {
 		expect(readConfig().profiles['staging']?.url).toBe('https://cms.example.com');
 	});
 
-	it('add is an upsert — re-adding the same name with --yes overwrites, not duplicates', async () => {
+	it('add refuses a taken name outright, so a second add can never overwrite the first', async () => {
 		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
-		await d6s('profile', 'add', 'staging', '--url', 'https://two.example.com', '--yes');
+
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://two.example.com', '--json')).toBe(1);
+
+		expect(JSON.parse(stdout.join('')).error).toMatchObject({
+			code: 'USAGE',
+			message: 'Profile "staging" already exists.',
+			hint: 'Change it instead: d6s profile update staging --url <url>',
+		});
+
+		expect(readConfig().profiles['staging']?.url).toBe('https://one.example.com');
+	});
+
+	it('update replaces the URL of the existing profile with --yes, rather than adding a second one', async () => {
+		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
+		expect(await d6s('profile', 'update', 'staging', '--url', 'https://two.example.com', '--yes')).toBe(0);
 
 		const config = readConfig();
 		expect(config.profiles['staging']?.url).toBe('https://two.example.com');
 		expect(Object.keys(config.profiles)).toHaveLength(1);
 
-		// The warning must name what actually happens: the env token follows the name to the new URL, and
-		// the URL-keyed store credential stops resolving — it is never silently sent to the new host.
-		expect(stderr.join('')).toContain('Repointed "staging"');
+		expect(stderr.join('')).toContain('Overwrote the URL of "staging"');
 		expect(stderr.join('')).toContain('DIRECTUS_STAGING_TOKEN');
-		expect(stderr.join('')).toContain('no longer resolves');
+		expect(stderr.join('')).toContain('will be cleared');
 	});
 
-	it('refuses to repoint an existing profile to a new URL without --yes', async () => {
-		// The DIRECTUS_<NAME>_TOKEN env var follows the profile NAME: a silent URL overwrite would send that
-		// token to the new host on the next command (the store credential is keyed by URL + name and merely
-		// stops resolving). Non-interactive repoints follow the standard --yes convention, and the hint must
-		// name the env var that actually carries over — not misattribute the risk to the saved credential.
+	it('update clears the credential bound to the old URL', async () => {
+		vi.stubEnv('CI', '');
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
+		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
+		saveCredential('https://one.example.com', 'staging', 'stored-token');
+
+		expect(await d6s('profile', 'update', 'staging', '--url', 'https://two.example.com', '--yes')).toBe(0);
+
+		expect(
+			resolveCredential({ target: 'profile', url: 'https://one.example.com', profileName: 'staging' }),
+		).toBeUndefined();
+	});
+
+	it('update refuses to move a profile to a new URL without --yes', async () => {
 		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
 
-		expect(await d6s('profile', 'add', 'staging', '--url', 'https://two.example.com')).toBe(1);
+		expect(await d6s('profile', 'update', 'staging', '--url', 'https://two.example.com')).toBe(1);
 
 		expect(stderr.join('')).toContain('https://one.example.com');
 		expect(stderr.join('')).toContain('--yes');
@@ -78,9 +99,29 @@ describe('profile commands', () => {
 		expect(readConfig().profiles['staging']?.url).toBe('https://one.example.com');
 	});
 
+	it('update of an unknown profile points at add instead of silently creating it', async () => {
+		await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
+
+		expect(await d6s('profile', 'update', 'ghost', '--url', 'https://new.example.com', '--json')).toBe(1);
+
+		expect(JSON.parse(stdout.join('')).error).toMatchObject({
+			code: 'USAGE',
+			message: 'Unknown profile: "ghost"',
+			hint: 'Create it first: d6s profile add ghost --url <url>',
+		});
+
+		expect(readConfig().profiles['ghost']).toBeUndefined();
+	});
+
+	it('update keeps the current URL when --url is omitted', async () => {
+		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
+
+		expect(await d6s('profile', 'update', 'staging')).toBe(0);
+		expect(readConfig().profiles['staging']?.url).toBe('https://one.example.com');
+		expect(stderr.join('')).not.toContain('Overwrote the URL');
+	});
+
 	it('never prints a malformed legacy profile URL — the stored value bypassed schema validation', async () => {
-		// existingProfileUrl reads the raw config on purpose (the upsert path tolerates files loadConfig
-		// would refuse), so a hand-edited profile URL can carry userinfo. The refusal must not leak it.
 		const password = 'super-secret-password';
 
 		writeFileSync(
@@ -88,47 +129,45 @@ describe('profile commands', () => {
 			JSON.stringify({ profiles: { staging: { url: `https://user:${password}@old.example.com` } } }),
 		);
 
-		expect(await d6s('profile', 'add', 'staging', '--url', 'https://new.example.com')).toBe(1);
+		expect(await d6s('profile', 'update', 'staging', '--url', 'https://new.example.com')).toBe(1);
 
 		const output = stdout.join('') + stderr.join('');
 		expect(output).not.toContain(password);
 		expect(stderr.join('')).toContain('<saved URL is invalid or unsafe to print>');
 	});
 
-	it('gates overwriting a profile whose stored URL is missing or mangled — existence decides, not URL validity', async () => {
-		// A hand-edited profile with a broken url is still a NAMED profile with a possibly-attached
-		// credential; silently "repairing" it would skip the same consent a repoint requires.
+	it('gates a profile whose stored URL is missing or mangled — existence decides, not URL validity', async () => {
 		const broken = JSON.stringify({ profiles: { staging: { url: 123 } } });
 		writeFileSync(join(dir, 'directus.config.json'), broken);
 
-		expect(await d6s('profile', 'add', 'staging', '--url', 'https://new.example.com')).toBe(1);
+		expect(await d6s('profile', 'update', 'staging', '--url', 'https://new.example.com')).toBe(1);
 		expect(stderr.join('')).toContain('<saved URL is invalid or unsafe to print>');
 
-		// The refusal must leave the file byte-identical — a gate that already wrote would be theater.
 		expect(readFileSync(join(dir, 'directus.config.json'), 'utf8')).toBe(broken);
 
-		expect(await d6s('profile', 'add', 'staging', '--url', 'https://new.example.com', '--yes')).toBe(0);
+		expect(await d6s('profile', 'update', 'staging', '--url', 'https://new.example.com', '--yes')).toBe(0);
 		expect(readConfig().profiles['staging']?.url).toBe('https://new.example.com');
 	});
 
+	it('update without a usable saved URL still demands one, because there is nothing to keep', async () => {
+		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { staging: { url: 123 } } }));
+
+		expect(await d6s('profile', 'update', 'staging')).toBe(1);
+		expect(stderr.join('')).toContain('--url <url>');
+	});
+
 	it('rejects URLs carrying control characters the parser would silently strip or encode', async () => {
-		// new URL() strips \t\n\r and percent-encodes other C0s, but the CLI stores and prints the RAW
-		// string — accepted, an ESC sequence in the path would reach the terminal of whoever runs
-		// profile list or reads an error message.
 		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com/\u001b]0;pwn\u0007')).toBe(1);
 		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com/a\nb')).toBe(1);
-		// C1s matter too: CSI (U+009B) and NEL (U+0085) are single-codepoint controls many terminals honor.
 		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com/a\u0085b')).toBe(1);
 		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com/a\u009bb')).toBe(1);
 		expect(existsSync(join(dir, 'directus.config.json'))).toBe(false);
 	});
 
-	it('re-adding the same URL stays frictionless — no confirmation, no --yes', async () => {
-		// Idempotent re-asserts (e.g. rotating a token for the same host) are the scripting path; only a
-		// URL CHANGE is gated.
+	it('updating to the URL a profile already has stays frictionless — no confirmation, no --yes', async () => {
 		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
 
-		expect(await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com')).toBe(0);
+		expect(await d6s('profile', 'update', 'staging', '--url', 'https://one.example.com')).toBe(0);
 		expect(readConfig().profiles['staging']?.url).toBe('https://one.example.com');
 	});
 
@@ -137,14 +176,29 @@ describe('profile commands', () => {
 		stdout.length = 0;
 
 		expect(await d6s('profile', 'list', '--json')).toBe(0);
-		expect(JSON.parse(stdout.join(''))).toEqual([{ name: 'staging', url: 'https://cms.example.com' }]);
+
+		expect(JSON.parse(stdout.join(''))).toEqual({
+			kind: 'ProfileListReport',
+			formatVersion: 1,
+			ok: true,
+			profiles: [{ name: 'staging', url: 'https://cms.example.com' }],
+		});
 	});
 
 	it('remove deletes the named profile', async () => {
 		await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
 
-		expect(await d6s('profile', 'remove', 'staging')).toBe(0);
+		expect(await d6s('profile', 'remove', 'staging', '--yes')).toBe(0);
 		expect(readConfig().profiles).toEqual({});
+	});
+
+	it('refuses to remove without confirmation, because removal takes the saved credential with it', async () => {
+		await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
+
+		expect(await d6s('profile', 'remove', 'staging')).toBe(1);
+		expect(stderr.join('')).toContain('also clears its saved credential');
+		expect(stderr.join('')).toContain('--yes');
+		expect(readConfig().profiles['staging']?.url).toBe('https://cms.example.com');
 	});
 
 	it('write preserves namespaces the kernel does not own', async () => {
@@ -167,7 +221,11 @@ describe('profile commands', () => {
 
 		stdout.length = 0;
 		expect(await d6s('profile', 'list', '--json', '--config', explicit)).toBe(0);
-		expect(JSON.parse(stdout.join(''))).toEqual([{ name: 'staging', url: 'https://cms.example.com' }]);
+
+		expect(JSON.parse(stdout.join(''))).toMatchObject({
+			kind: 'ProfileListReport',
+			profiles: [{ name: 'staging', url: 'https://cms.example.com' }],
+		});
 	});
 
 	it('add without a name is a usage error', async () => {
@@ -201,12 +259,11 @@ describe('profile commands', () => {
 			await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
 			saveCredential('https://cms.example.com', 'staging', 'stored-token');
 
-			expect(await d6s('profile', 'remove', 'staging')).toBe(0);
+			expect(await d6s('profile', 'remove', 'staging', '--yes')).toBe(0);
 
-			expect(resolveCredential({ target: 'profile', url: 'https://cms.example.com', profileName: 'staging' })).toEqual({
-				found: false,
-				envVar: 'DIRECTUS_STAGING_TOKEN',
-			});
+			expect(
+				resolveCredential({ target: 'profile', url: 'https://cms.example.com', profileName: 'staging' }),
+			).toBeUndefined();
 		} finally {
 			rmSync(home, { recursive: true, force: true });
 		}
@@ -214,13 +271,15 @@ describe('profile commands', () => {
 
 	it('remove of an unknown profile is a config error', async () => {
 		await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
-		expect(await d6s('profile', 'remove', 'ghost')).toBe(1);
+
+		expect(await d6s('profile', 'remove', 'ghost', '--yes')).toBe(1);
+		expect(stderr.join('')).toContain('Unknown profile: "ghost"');
 	});
 
 	it('test names the env var to set when no token resolves', async () => {
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
 		vi.stubEnv('DIRECTUS_TOKEN', '');
-		vi.stubEnv('CI', 'true'); // skip the credential store so the run is hermetic
+		vi.stubEnv('CI', 'true');
 		await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
 
 		expect(await d6s('profile', 'test', 'staging')).toBe(1);

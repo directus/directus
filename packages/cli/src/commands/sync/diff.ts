@@ -1,16 +1,22 @@
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
-import { refreshSessionIfNeeded } from '../../kernel/connection.js';
+import { type Command, Option } from 'commander';
 import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
-import { METADATA_FILE } from '../../sync/artifact-store.js';
 import type { ImportBatchResult } from '../../sync/contract.js';
-import { describeMode, type Mode } from '../../sync/mode.js';
-import { emptyImportSummary, hasImportChanges, type ImportSummary, summarizeDiff } from '../../sync/render.js';
-import { type DataPreviewResult, previewData } from './data-push.js';
-import { localDiff } from './local-diff.js';
-import { dataPhaseConverged, dryRunImport, resolveMode, schemaDiffMode } from './push.js';
-import { resolveTarget } from './resolve-target.js';
+import { type DataPreviewPlan, previewData } from '../../sync/data-push.js';
+import { describeMode, MODES, type SyncMode } from '../../sync/mode.js';
+import {
+	convergedMessage,
+	dataPhaseConverged,
+	dataReport,
+	dryRunImport,
+	planSchema,
+	type ReconcileCounts,
+	renderDataPlan,
+	renderSchemaPlan,
+	resolveMode,
+} from '../../sync/plan.js';
+import { emptyImportSummary, hasImportChanges, type ImportSummary } from '../../sync/render.js';
+import { resolveTarget } from '../../sync/resolve-target.js';
 
 export interface DiffOptions {
 	readonly to: string;
@@ -18,86 +24,57 @@ export interface DiffOptions {
 	 * No commander default: an absent flag resolves to the project config's mode, then merge — the same
 	 * precedence push uses.
 	 */
-	readonly mode?: Mode;
+	readonly mode?: SyncMode;
 	/** The server's own sanctioned bypass of its exact-version/vendor gate on /schema/diff, made explicit. */
 	readonly allowVersionDrift?: boolean;
 	readonly project: string;
 }
 
-interface DiffDataReport {
-	mode: Mode;
-	source: string | null;
-	collections: ImportBatchResult['collections'] | null;
-	matched: number | null;
-	ambiguous: number | null;
-	unmatched: number | null;
-	unchanged: number | null;
-	/** Collections the committed manifest marks as truncated; push refuses mirror while any are present. */
-	incomplete: string[] | null;
-	skipped: boolean;
+export function registerDiff(sync: Command, getContext: () => CliContext): void {
+	sync
+		.command('diff')
+		.description('Show what a push would change on the target. Applies nothing')
+		.requiredOption('--to <profile>', 'Target profile name')
+		.addOption(
+			new Option(
+				'--mode <mode>',
+				'add (only new records), merge (creates and updates, never deletes), or mirror (includes deletions)',
+			).choices(MODES),
+		)
+		.option(
+			'--allow-version-drift',
+			'Diff despite a snapshot/target Directus version mismatch; without it an exact match is required',
+		)
+		.option('--project <name>', 'Project scope to sync (default: default)', 'default')
+		.action((options: DiffOptions) => diff(options, getContext()));
 }
 
-function dataReport(mode: Mode, preview: DataPreviewResult, dryRun: ImportBatchResult | undefined): DiffDataReport {
-	if (preview.skipped) {
-		return {
-			mode,
-			source: null,
-			collections: null,
-			matched: null,
-			ambiguous: null,
-			unmatched: null,
-			unchanged: null,
-			incomplete: null,
-			skipped: true,
-		};
-	}
+// Nulls, not zeros, when no data was previewed: the report must not read as a reconcile that found nothing.
+function reconcileCounts(preview: DataPreviewPlan | undefined): ReconcileCounts {
+	if (preview === undefined) return { matched: null, ambiguous: null, unmatched: null, unchanged: null };
 
 	return {
-		mode,
-		source: preview.source,
-		collections: dryRun?.collections ?? {},
 		matched: preview.matchedCount,
 		ambiguous: preview.ambiguousCount,
 		unmatched: preview.unmatchedCount,
 		unchanged: preview.unchangedCount,
-		incomplete: [...preview.incomplete],
-		skipped: false,
 	};
 }
 
 export async function diff(options: DiffOptions, ctx: CliContext): Promise<void> {
-	const target = resolveTarget(options.to, ctx, options.project);
-	const { url } = target;
+	const target = resolveTarget(options.to, options.project, ctx);
+	const { url, credential, project, projectConfig } = target;
 
-	const mode: Mode = resolveMode(options.mode, target.projectConfig);
+	const mode: SyncMode = resolveMode(options.mode, projectConfig);
 
-	// Same disclosure as push: which instance, and what the mode would mean — BEFORE any results, so an
-	// operator diffing the wrong profile notices here, not in the push that follows.
 	ctx.ui.info(`Comparing committed files with ${options.to} — ${url} (${describeMode(mode)})`);
 
-	await refreshSessionIfNeeded(target.credential);
+	const schema = await planSchema(target, mode, options.allowVersionDrift ?? false, ctx);
 
-	// schema: false is an explicit project state — the diff previews exactly the push, and that push
-	// carries no schema authority for this project.
-	const schemaEnabled = target.projectConfig?.schema !== false;
-
-	if (!schemaEnabled && existsSync(join(target.schemaDir, METADATA_FILE))) {
-		ctx.ui.warn(
-			'Committed schema files exist but this project sets "schema": false — the schema phase is skipped and those files are ignored.',
-		);
-	}
-
-	const result = schemaEnabled
-		? await localDiff(target, schemaDiffMode(mode), ctx, options.allowVersionDrift ?? false)
-		: null;
-
-	// This is conservative when identities are ambiguous: diff never prompts or writes the ID map, while an
-	// interactive push may resolve those identities before importing.
 	const preview = await previewData(target, mode);
 
-	// Diff stays read-only, so it shows the mirror consequences but names the lie: deletions counted below
-	// include rows the source hid at pull time, and push will refuse this mirror outright.
-	if (mode === 'mirror' && !preview.skipped && preview.incomplete.length > 0) {
+	// A truncated source cannot prove mirror deletions, even though the dry-run can display them.
+	if (mode === 'mirror' && preview !== undefined && preview.incomplete.length > 0) {
 		ctx.ui.warn(
 			`The committed export is incomplete for ${preview.incomplete.join(', ')} — the source hid rows from reads at pull time, and push will refuse mirror. Push with --mode merge, or license the source and re-pull.`,
 		);
@@ -106,97 +83,56 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	let dryRun: ImportBatchResult | undefined;
 	let dataSummary: ImportSummary | undefined;
 
-	if (!preview.skipped) {
-		// Mirror always dry-runs because an empty collection entry can still delete target rows.
-		if (dataPhaseConverged(preview, mode)) {
+	if (preview !== undefined) {
+		// Under mirror, an empty collection entry can still delete target rows.
+		if (dataPhaseConverged(preview.records, mode)) {
 			dataSummary = emptyImportSummary();
 		} else {
-			const dry = await dryRunImport(target.credential, preview.batch, mode, preview.unchanged);
+			const dry = await dryRunImport(credential, preview.batch, mode, preview.unchanged);
 			dryRun = dry.result;
 			dataSummary = dry.summary;
 		}
 	}
 
-	const schema = summarizeDiff(result === null ? null : result.diff);
-
-	const schemaTotal = schema.added + schema.modified + schema.deleted;
-
 	const dataChanged = dataSummary !== undefined && hasImportChanges(dataSummary);
 
-	// Ambiguous sources are excluded from the preview batch (they are not creates: an interactive push may
-	// resolve them into updates, a non-interactive push refuses), so they surface as their own count.
-	const unresolved = preview.skipped ? 0 : preview.ambiguousCount;
+	const unresolved = preview?.ambiguousCount ?? 0;
 
 	if (ctx.ui.json) {
-		// The hash lets a later apply detect target-schema drift. Unresolved identities count as changes:
-		// an all-ambiguous data set is NOT convergence — a non-interactive push refuses it — and a CI gate
-		// reading changes:false would report "in sync" about a state push cannot apply.
+		// Unresolved identities count as changes because a non-interactive push cannot apply them.
 		ctx.ui.data({
 			kind: 'DiffReport',
 			formatVersion: 1,
 			ok: true,
 			target: url,
 			profile: options.to,
-			project: target.project,
+			project,
 			mode,
-			changes: result !== null || dataChanged || unresolved > 0,
+			changes: schema.result !== null || dataChanged || unresolved > 0,
 			unresolved,
-			schemaSkipped: !schemaEnabled,
+			schemaSkipped: !schema.enabled,
 			added: schema.added,
 			modified: schema.modified,
 			deleted: schema.deleted,
-			hash: result?.hash ?? null,
-			data: dataReport(mode, preview, dryRun),
+			hash: schema.result?.hash ?? null,
+			data: dataReport(mode, preview, dryRun, reconcileCounts(preview)),
 		});
 
 		return;
 	}
 
-	// An all-ambiguous data set produces a zero dry-run, but "nothing to do" would hide that push still
-	// prompts (interactive) or refuses (CI) — fall through so the unresolved count and note render.
-	if (result === null && !dataChanged && unresolved === 0) {
-		// A skipped schema phase must never read as "schemas match" — this project never compared them.
-		let tail = 'nothing to do.';
-
-		if (!preview.skipped) {
-			tail = schemaEnabled
-				? 'schema and data match; nothing to do.'
-				: 'data matches; nothing to do (schema phase skipped).';
-		}
-
-		ctx.ui.success(`${options.to} matches the committed files — ${tail}`);
+	// An all-ambiguous set has a zero dry-run but is not converged.
+	if (schema.result === null && !dataChanged && unresolved === 0) {
+		ctx.ui.success(convergedMessage('diff', options.to, schema, preview !== undefined));
 		return;
 	}
 
-	if (result !== null) {
-		ctx.ui.info(
-			`Schema — ${count(schemaTotal, 'change')}: ${schema.added} added, ${schema.modified} modified, ${schema.deleted} deleted`,
-		);
+	renderSchemaPlan(schema, ctx);
 
-		for (const line of schema.lines) ctx.ui.plan(line);
-	} else if (!schemaEnabled) {
-		ctx.ui.info('Schema — skipped ("schema": false in the project config).');
-	}
+	// Diff always dry-runs, so there is never an unpriced batch to describe instead.
+	renderDataPlan(dataSummary, unresolved, undefined, ctx);
 
-	if (dataSummary !== undefined) {
-		if (dataChanged) {
-			const total = dataSummary.created + dataSummary.updated + dataSummary.deleted;
-			const unresolvedSegment = unresolved > 0 ? `, ${unresolved} unresolved` : '';
-
-			ctx.ui.info(
-				`Data — ${count(total, 'change')}: ${dataSummary.created} created, ${dataSummary.updated} updated, ${dataSummary.deleted} deleted${unresolvedSegment}`,
-			);
-
-			for (const line of dataSummary.lines) ctx.ui.plan(line);
-		} else if (unresolved > 0) {
-			ctx.ui.info(`Data — no changes to import; ${count(unresolved, 'record')} unresolved.`);
-		} else {
-			ctx.ui.info('Data — no changes to import.');
-		}
-	}
-
-	// Diff reports unresolved identities but leaves every choice for an interactive push.
-	if (!preview.skipped) {
+	if (preview !== undefined) {
 		const pending = preview.ambiguousCount + preview.unmatchedCount;
 
 		if (pending > 0) {

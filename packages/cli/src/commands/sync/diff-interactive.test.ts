@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { confirm, isCancel, select, text } from '@clack/prompts';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { createConfigStore } from '../../kernel/config/file.js';
 import type { CliContext } from '../../kernel/run.js';
 import { createUi } from '../../kernel/ui.js';
 import { fetchDiff, fetchRecords, importBatch } from '../../sync/api.js';
@@ -12,7 +13,6 @@ import { writeSnapshotFiles } from '../../sync/store.js';
 import { diff } from './diff.js';
 import { fullSnapshot, seedProjectConfig, SYNC_TOKEN } from './sync.test-support.js';
 
-// Prompts are mocked to prove diff reports ambiguities instead of resolving them interactively.
 vi.mock('@clack/prompts', () => ({
 	confirm: vi.fn(),
 	text: vi.fn(),
@@ -31,7 +31,7 @@ const token = SYNC_TOKEN;
 const source = 'https://source.example.com';
 
 function ctxAt(cwd: string): CliContext {
-	return { cwd, configPath: undefined, interactive: true, ui: createUi({ json: false, color: false }) };
+	return { cwd, config: createConfigStore(cwd), interactive: true, ui: createUi({ json: false, color: false }) };
 }
 
 describe('interactive sync diff', () => {
@@ -63,7 +63,6 @@ describe('interactive sync diff', () => {
 			return true;
 		});
 
-		// Interactive resolution still authenticates through the profile-specific environment variable.
 		vi.stubEnv('HOME', home);
 		vi.stubEnv('USERPROFILE', home);
 		vi.stubEnv('CI', '');
@@ -89,12 +88,6 @@ describe('interactive sync diff', () => {
 	});
 
 	it('reports an ambiguity as unresolved without prompting, creating, or calling it "nothing to do"', async () => {
-		// The read-only guarantee proven in the interactive path: two target roles named Editor make the
-		// source ambiguous, yet diff resolves nothing interactively — no select/confirm/text — and leaves
-		// the id map unwritten. The ambiguous row is excluded from the preview batch (it is not a create:
-		// interactive push may resolve it into an update, non-interactive push refuses), so with nothing
-		// else to send no dry-run runs — but diff must still surface the unresolved identity and both
-		// resolution paths rather than collapsing into "matches the committed files".
 		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
 
 		vi.mocked(fetchRecords).mockResolvedValueOnce([
@@ -121,8 +114,6 @@ describe('interactive sync diff', () => {
 	});
 
 	it('states an all-zero data plan plainly instead of a contradictory header', async () => {
-		// A changed schema with a no-op data dry-run must not render "data changes to import" over a
-		// "no data changes" line — the header appears only when the plan contains any.
 		const schemaChange: DiffResult = {
 			hash: 'h1',
 			diff: {
@@ -146,9 +137,6 @@ describe('interactive sync diff', () => {
 	});
 
 	it('dry-runs an all-empty mirror batch instead of calling it a match — emptiness IS the deletion', async () => {
-		// Under mirror, { collection, items: [] } deletes every target row in that collection server-side,
-		// so a committed-but-empty collection must reach the dry-run — skipping it would make diff report
-		// "matches" while a push would destroy rows. The dry-run names the doomed rows in the plan.
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 		seedData([{ collection: 'directus_flows', primaryKey: 'id', records: [] }]);
 

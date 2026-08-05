@@ -1,4 +1,6 @@
 import { relative } from 'node:path';
+import type { Command } from 'commander';
+import { isPlainObject } from 'lodash-es';
 import type { ProjectConfig } from '../../kernel/config/file.js';
 import {
 	fetchCustomPermissionRulesEntitled,
@@ -8,7 +10,7 @@ import {
 } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
-import { count } from '../../kernel/text.js';
+import { count, parseList } from '../../kernel/text.js';
 import {
 	fetchFields,
 	fetchRecords,
@@ -24,20 +26,15 @@ import {
 } from '../../sync/data-store.js';
 import { normalizeInstanceUrl } from '../../sync/id-map.js';
 import { findOutOfScopeReferences, formatOutOfScopeReferences } from '../../sync/references.js';
-import { resolveResources, type Resource, SELECTABLE_RESOURCES } from '../../sync/resources.js';
+import { resolveTarget } from '../../sync/resolve-target.js';
+import {
+	resolveResources,
+	type Resource,
+	RESOURCE_FLAG_PHRASES,
+	SELECTABLE_RESOURCES,
+	type SelectableResource,
+} from '../../sync/resources.js';
 import { readSnapshotFiles, type WriteScope, writeSnapshotFiles } from '../../sync/store.js';
-import { resolveTarget } from './resolve-target.js';
-
-// The selectable resource names, as commander camelCases each --<resource>/--no-<resource> flag onto opts().
-type SelectableResourceFlag =
-	| 'dashboards'
-	| 'flows'
-	| 'folders'
-	| 'policies'
-	| 'roles'
-	| 'settings'
-	| 'translations'
-	| 'users';
 
 export type PullOptions = {
 	readonly from: string;
@@ -48,7 +45,38 @@ export type PullOptions = {
 	/** Commander only defines --no-schema, so false means the flag was passed; true is the default. */
 	readonly schema?: boolean;
 	readonly project: string;
-} & Partial<Record<SelectableResourceFlag, boolean>>;
+	// Commander camel-cases each --<resource>/--no-<resource> flag onto opts().
+} & Partial<Record<SelectableResource, boolean>>;
+
+export function registerPull(sync: Command, getContext: () => CliContext): void {
+	const pullCommand = sync
+		.command('pull')
+		.description('Snapshot schema and config resources from a source instance into committable files')
+		.requiredOption('--from <profile>', 'Source profile name')
+		.option('--collections <list>', 'Only these collections (comma-separated); pulls a partial snapshot', parseList)
+		.option(
+			'--exclude-collections <list>',
+			'All collections except these (comma-separated); pulls a partial snapshot',
+			parseList,
+		)
+		.option('--all', 'Every config resource, including users');
+
+	// Positive flags must precede their --no-* twins to preserve undefined as the default.
+	for (const name of SELECTABLE_RESOURCES) {
+		pullCommand
+			.option(`--${name}`, `Only the named resources — ${RESOURCE_FLAG_PHRASES[name]}`)
+			.option(`--no-${name}`, `Exclude ${name} from the default set`);
+	}
+
+	pullCommand
+		.option('--no-deps', 'Do not pull resource dependencies (dependent children still ride with their parent)')
+		.option(
+			'--no-schema',
+			'Skip the schema snapshot — config resources only ("schema": false in a project config does the same)',
+		)
+		.option('--project <name>', 'Project scope to sync (default: default)', 'default')
+		.action((options: PullOptions) => pull(options, getContext()));
+}
 
 interface PullDataReport {
 	readonly resources: string[];
@@ -62,14 +90,13 @@ interface PullDataReport {
 interface ResolvedScope {
 	readonly api: SnapshotScope;
 	readonly write: WriteScope;
-	readonly payload: { include: string[] } | { exclude: string[] };
 	readonly note: string;
 }
 
 function resolveScope(options: PullOptions, projectConfig: ProjectConfig | undefined): ResolvedScope | undefined {
 	let pair: { readonly include: string[] } | { readonly exclude: string[] } | undefined;
 
-	// Any CLI scope flag overrides the configured pair; include and exclude remain mutually exclusive.
+	// CLI scope overrides configured scope wholesale.
 	if (options.collections !== undefined || options.excludeCollections !== undefined) {
 		if (options.collections !== undefined && options.excludeCollections !== undefined) {
 			throw new CliError('USAGE', 'Pass --collections or --exclude-collections, not both.');
@@ -108,7 +135,6 @@ function resolveScope(options: PullOptions, projectConfig: ProjectConfig | undef
 		return {
 			api: { include },
 			write: { inScope: (name) => include.includes(name) },
-			payload: { include },
 			note: ` (scoped to: ${include.join(', ')})`,
 		};
 	}
@@ -118,27 +144,20 @@ function resolveScope(options: PullOptions, projectConfig: ProjectConfig | undef
 	return {
 		api: { exclude },
 		write: { inScope: (name) => !exclude.includes(name) },
-		payload: { exclude },
 		note: ` (excluding: ${exclude.join(', ')})`,
 	};
 }
 
-// Users and translations require explicit selection. A bare pull never commits accounts (users), and it
-// omits translations because the server's translations updateMany throws "Duplicate key and language
-// combination" on any mirror push of them (api services/translations.ts) — shipping them by default would
-// break an otherwise clean mirror. Opt in with --translations (or --all); merge and add are unaffected.
-const DEFAULT_RESOURCE_NAMES = SELECTABLE_RESOURCES.filter((name) => name !== 'users' && name !== 'translations');
+// Users require explicit selection; every other config resource is included by default.
+const DEFAULT_RESOURCE_NAMES = SELECTABLE_RESOURCES.filter((name) => name !== 'users');
 
-// Resolve boolean flags over --all over project config over defaults, then expand the selected closure.
 function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig | undefined): Resource[] {
-	// Commander only defines the negative flag, so options.deps is false exactly when --no-deps was
-	// passed; otherwise the project config's deps (when set) decides, defaulting to the full closure.
+	// Commander defines only the negative flag, preserving config/default precedence when it is absent.
 	const deps = options.deps === false ? false : (projectConfig?.deps ?? true);
 
-	const positives = SELECTABLE_RESOURCES.filter((name) => options[name as SelectableResourceFlag] === true);
-	const negatives = SELECTABLE_RESOURCES.filter((name) => options[name as SelectableResourceFlag] === false);
+	const positives = SELECTABLE_RESOURCES.filter((name) => options[name] === true);
+	const negatives = SELECTABLE_RESOURCES.filter((name) => options[name] === false);
 
-	// Any boolean flag or --all overrides project config wholesale — no merging.
 	if (options.all === true || positives.length > 0 || negatives.length > 0) {
 		if (options.all === true && positives.length > 0) {
 			throw new CliError(
@@ -177,7 +196,7 @@ function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig |
 
 	if (configExclude !== undefined) {
 		for (const name of configExclude) {
-			if (!SELECTABLE_RESOURCES.includes(name)) {
+			if (!SELECTABLE_RESOURCES.some((selectable) => selectable === name)) {
 				throw new CliError('USAGE', `Cannot exclude "${name}": not a selectable resource.`, {
 					hint: `Selectable resources: ${SELECTABLE_RESOURCES.join(', ')}.`,
 				});
@@ -193,9 +212,7 @@ function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig |
 	return resolveResources(DEFAULT_RESOURCE_NAMES, { deps });
 }
 
-// Word a permissions shortfall by what the license entitlement actually says, not by assumption. The
-// total_count probe proves the export is short; the entitlement (when readable) proves WHY, so we never
-// blame licensing for a shortfall we couldn't confirm, and we flag a licensed shortfall as unexpected.
+// Attribute a permissions shortfall to licensing only when the entitlement confirms it.
 function permissionsShortfallWarning(
 	name: string,
 	exported: number,
@@ -225,19 +242,15 @@ function stripSystemFields(
 
 	if (drop.length === 0) return records;
 
-	for (const record of records) {
-		for (const field of drop) delete record[field];
-	}
-
-	return records;
+	return records.map((record) => {
+		const stripped = { ...record };
+		for (const field of drop) delete stripped[field];
+		return stripped;
+	});
 }
 
-// The static strip lists know only the columns the catalog was written against; fields users add to
-// system collections are invisible to them, and a concealed value committed to git survives its history
-// forever. The GET /fields catalog names every field the schema marks secret-bearing — the snapshot
-// cannot be the authority here: a scoped pull's snapshot omits system-collection field metadata entirely
-// while the config resources still export, so a snapshot-derived map would let a custom conceal field on
-// e.g. directus_settings sail into the committed artifact unstripped.
+// The field catalog catches custom secret-bearing fields that static strip lists cannot know about.
+// It remains authoritative for scoped pulls whose snapshots omit system-collection field metadata.
 function sensitiveFieldsByCollection(catalog: FieldCatalogEntry[]): Map<string, string[]> {
 	const map = new Map<string, string[]>();
 
@@ -262,43 +275,34 @@ function sensitiveFieldsByCollection(catalog: FieldCatalogEntry[]): Map<string, 
 export async function pull(options: PullOptions, ctx: CliContext): Promise<void> {
 	const { url, credential, schemaDir, dataDir, project, projectConfig } = resolveTarget(
 		options.from,
-		ctx,
 		options.project,
+		ctx,
 	);
 
 	const scope = resolveScope(options, projectConfig);
 
-	// The explicit opt-out for resource-only projects: without it, such a project silently committed a
-	// FULL snapshot — handing a mirror push delete authority over every collection it never meant to own.
 	const includeSchema = options.schema !== false && projectConfig?.schema !== false;
 
-	// A collections scope names schema to pull; combined with a schema skip it is a contradiction, and
-	// guessing which wins either resurrects the full-snapshot footgun or silently drops the scope. The
-	// config-level pair is already refused at parse; this catches the flag combinations.
+	// A schema scope and schema skip are contradictory; neither can safely win by precedence.
 	if (!includeSchema && scope !== undefined) {
 		throw new CliError('USAGE', 'This pull skips the schema, but a collections scope was given.', {
 			hint: 'Remove --collections/--exclude-collections (or the project scope), or drop --no-schema / "schema": false.',
 		});
 	}
 
-	// Fail invalid resource options before the first network request.
 	const resources = resolveResourceSet(options, projectConfig);
 
-	// Provenance preflight BEFORE any network or write: the schema files land first, so a writer-level
-	// refusal alone would leave the new source's schema committed beside the old source's data.
+	// Refuse source changes before schema writes can mix provenance with preserved data.
 	assertDataSource(dataDir, normalizeInstanceUrl(url));
 
 	await refreshSessionIfNeeded(credential);
 
 	const snapshot = includeSchema ? await fetchSnapshot(credential, scope?.api) : null;
 
-	// An explicitly requested collection missing from the fetched snapshot was dropped by the source: a typo
-	// or a name that does not exist, or — on Directus without the partial-snapshot folder fix (#27991) — a
-	// named collection folder. Left unsaid, the pull commits a partial snapshot missing exactly what was
-	// asked for, and a later push fails on the dangling reference. Name the gap so it is visible at pull time.
-	if (snapshot !== null && scope !== undefined && 'include' in scope.payload) {
+	// A scoped snapshot that omits requested names is unsafe to commit as a complete answer to that scope.
+	if (snapshot !== null && scope !== undefined && 'include' in scope.api) {
 		const present = new Set(snapshot.collections.map((entry) => entry.collection));
-		const missing = scope.payload.include.filter((name) => !present.has(name));
+		const missing = scope.api.include.filter((name) => !present.has(name));
 
 		if (missing.length > 0) {
 			ctx.ui.warn(
@@ -309,22 +313,17 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		}
 	}
 
-	// One keystone read for the whole pull: when the source reports no row cap, every fetch below is a single
-	// unbounded read instead of a read plus an exhaustion probe. Best-effort — undefined keeps the probe.
+	// One best-effort limit read can remove an exhaustion probe from every collection fetch.
 	const queryMax = await fetchQueryLimitMax(credential);
 
-	// Secret protection must not degrade silently: when config resources export, the field catalog read is
-	// mandatory and its failure fails the pull. Skipped only when nothing will be exported.
+	// Secret stripping must fail closed when config resources are exported.
 	const sensitiveByCollection =
 		resources.length > 0 ? sensitiveFieldsByCollection(await fetchFields(credential)) : new Map<string, string[]>();
 
 	const includesUsers = resources.some((resource) => resource.name === 'users');
 
-	// Whether users are part of the COMMITTED outcome of this pull: in this fetch set, or already committed
-	// on disk where the data writer preserves what a pull does not refetch. The access filter below must
-	// premise on this, not the fetch set alone — push derives its user echo-protection from the committed
-	// tree, so a re-pull that dropped user grants beside a preserved users file would hand a later mirror
-	// push those grants as target-side deletions.
+	// Access filtering follows the committed outcome, including preserved users from earlier pulls.
+	// Using only this fetch set could turn preserved grants into mirror deletions.
 	const usersCommitted = includesUsers || hasCommittedCollection(dataDir, 'directus_users');
 
 	const dataCollections: DataCollection[] = [];
@@ -333,10 +332,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	for (const resource of resources) {
 		let rows = await fetchRecords(credential, resource, queryMax);
 
-		// Unlicensed instances hide custom-rule permissions from every read path, so the fetch above can be
-		// silently short. total_count is computed on the database and still sees them — a shortfall is
-		// recorded in the committed manifest (merge/add stay safe; mirror refuses an incomplete export).
-		// An UNANSWERED probe marks incomplete too: unknown cannot vouch for a mirror's deletions.
+		// Unknown or truncated reads cannot authorize mirror deletions.
 		if (resource.verifyCount === true) {
 			const total = await fetchTotalCount(credential, resource.endpoint);
 
@@ -360,8 +356,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 			}
 		}
 
-		// Custom secret-bearing fields drop alongside the static list, but named — a field the operator
-		// added disappearing from the export without a word would read as data loss, not protection.
+		// Name custom stripped fields so their absence is not mistaken for data loss.
 		const derivedSecrets = (sensitiveByCollection.get(resource.collection) ?? []).filter(
 			(field) => !resource.strip.includes(field) && !resource.aliases.includes(field),
 		);
@@ -376,35 +371,26 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 		if (resource.collection === 'directus_access') {
 			if (!usersCommitted) {
-				// User-attached access rows reference users that are out of scope; importing them fails the
-				// missing-FK check (INVALID_FOREIGN_KEY) and deleting them target-side under mirror is the
-				// directus-sync #148 data-loss class. Ship only the null-user (role/policy-level) grants.
+				// User-attached grants cannot be imported safely when their users are out of scope.
 				rows = rows.filter((record) => record['user'] === null || record['user'] === undefined);
 			} else if (!includesUsers && rows.some((record) => record['user'] !== null && record['user'] !== undefined)) {
-				// The kept grants lean on a users export this pull did not refresh — surface the staleness now,
-				// not as a push-time FK failure when a newer source user's grant arrives.
+				// Preserved users may be stale relative to newly fetched grants.
 				ctx.ui.warn(
 					`${resource.name}: kept user-attached grants because directus_users is committed from an earlier --users pull, but this pull did not refresh the user accounts themselves — a grant for a user added on the source since then fails the import. Re-pull with --users to refresh accounts, or delete the users data file to drop accounts from the sync.`,
 				);
 			}
 		}
 
-		// Request-operation headers round-trip verbatim — stripping them would break every legitimate
-		// header on push — yet they are exactly where Authorization values and API keys get pasted. The
-		// warn fires only when a header actually exists, so it stays a signal instead of noise the
-		// operator learns to skim past.
+		// Headers must round-trip, so warn instead of stripping possible credentials.
 		if (resource.collection === 'directus_operations') {
 			const carriers = rows.filter((record) => {
 				if (record['type'] !== 'request') return false;
-				const options = record['options'];
 
-				return (
-					options !== null &&
-					typeof options === 'object' &&
-					'headers' in options &&
-					Array.isArray(options.headers) &&
-					options.headers.length > 0
-				);
+				const options = record['options'];
+				if (!isPlainObject(options)) return false;
+
+				const headers = (options as Record<string, unknown>)['headers'];
+				return Array.isArray(headers) && headers.length > 0;
 			});
 
 			if (carriers.length > 0) {
@@ -421,11 +407,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 	const result = snapshot === null ? null : writeSnapshotFiles(schemaDir, snapshot, scope?.write);
 
-	// Warn about references pointing outside the committed set — a scoped pull can strand a group parent or
-	// relation target the snapshot omits, which fails apply on a fresh target (Chris/Judd thread). Detect over
-	// the committed snapshot, not this fetch: a scoped pull preserves out-of-scope files from a prior full
-	// pull, so the on-disk set is what a later push actually carries. A schema-skipping pull commits no
-	// schema, and a schema: false project's push ignores any stale files — nothing to warn over.
+	// Validate references against the committed set because scoped pulls preserve earlier artifacts.
 	if (snapshot !== null) {
 		const references = findOutOfScopeReferences(readSnapshotFiles(schemaDir));
 		if (references.length > 0) ctx.ui.warn(formatOutOfScopeReferences(references));
@@ -435,7 +417,6 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	const collections = snapshot?.collections.length ?? 0;
 	const removed = result?.removed.length ?? 0;
 
-	// The source URL selects the correct source→target ID-map bucket during push.
 	const dataResult = writeDataFiles(dataDir, dataCollections, normalizeInstanceUrl(url), incomplete);
 	const records = dataCollections.reduce((total, entry) => total + entry.records.length, 0);
 	const dataDirRelative = relative(ctx.cwd, dataDir);
@@ -447,12 +428,9 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		records,
 		files: dataResult.written.length,
 		removed: dataResult.removed,
-		// The COMMITTED state, not just this pull's findings: preserved files carry their markers forward.
 		incomplete: dataResult.incomplete,
 	};
 
-	// One line per axis so "collection" never means two things in one sentence: Schema is structure for
-	// every collection, Resources are the directus_* config records.
 	if (!ctx.ui.json) {
 		const schemaNote = `${scope?.note ?? ''}${removed > 0 ? ` (removed ${count(removed, 'stale file')})` : ''}`;
 
@@ -472,8 +450,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		);
 	}
 
-	// schemaSkipped is the explicit marker; the schema block nulls out with it so a consumer can never
-	// mistake a skipped phase for an empty snapshot.
+	// Null schema fields distinguish a skipped phase from an empty snapshot.
 	ctx.ui.data({
 		kind: 'PullReport',
 		formatVersion: 1,
@@ -489,7 +466,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		relations: snapshot === null ? null : snapshot.relations.length,
 		files: result === null ? null : result.written.length,
 		removed: result === null ? null : result.removed,
-		scope: scope?.payload ?? null,
+		scope: scope?.api ?? null,
 		data,
 	});
 }

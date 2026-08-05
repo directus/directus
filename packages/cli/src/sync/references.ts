@@ -18,8 +18,7 @@ interface OutOfScopeReference {
 	readonly missing: readonly string[];
 }
 
-// System collections exist on every Directus instance, so a reference to directus_users/directus_files is
-// never dangling on a target — only user collections can be genuinely out of scope.
+// System collections exist on every target and cannot be genuinely out of scope.
 function isSystem(collection: string): boolean {
 	return collection.startsWith('directus_');
 }
@@ -37,14 +36,11 @@ function readMeta(entry: Record<string, unknown>, key: string): unknown {
 export function findOutOfScopeReferences(snapshot: Snapshot): OutOfScopeReference[] {
 	const present = new Set(snapshot.collections.map((entry) => entry.collection));
 
-	// A target resolves if it is in the snapshot or is a system collection present on every instance.
 	const resolvable = (collection: string): boolean => present.has(collection) || isSystem(collection);
 
 	const references: OutOfScopeReference[] = [];
 
-	// Group parents: meta.group nests one collection under another in the Studio sidebar. It is a plain FK
-	// to any directus_collections.collection; an out-of-scope parent leaves the collection with a dangling
-	// group that the server cannot resolve on a fresh target.
+	// Studio group nesting is a foreign key to another collection.
 	for (const entry of snapshot.collections) {
 		const group = readMeta(entry, 'group');
 
@@ -53,8 +49,7 @@ export function findOutOfScopeReferences(snapshot: Snapshot): OutOfScopeReferenc
 		}
 	}
 
-	// Relations: m2o/o2m name their one target in related_collection; m2a leaves it null and lists the
-	// allowed targets in meta.one_allowed_collections instead.
+	// M2A targets live in one_allowed_collections instead of related_collection.
 	for (const relation of snapshot.relations) {
 		const from = `${relation.collection}.${relation.field}`;
 

@@ -1,5 +1,4 @@
 import type { Command } from 'commander';
-import { loadConfig } from '../../kernel/config/file.js';
 import type { CliContext } from '../../kernel/run.js';
 
 export function registerList(profile: Command, getContext: () => CliContext): void {
@@ -10,10 +9,10 @@ export function registerList(profile: Command, getContext: () => CliContext): vo
 }
 
 function list(ctx: CliContext): void {
-	const profiles = loadConfig({ cwd: ctx.cwd, configPath: ctx.configPath })?.config.profiles ?? {};
+	const profiles = ctx.config.load()?.config.profiles ?? {};
 	const rows = Object.entries(profiles).map(([name, p]) => ({ name, url: p.url }));
 
-	ctx.ui.data(rows);
+	ctx.ui.data({ kind: 'ProfileListReport', formatVersion: 1, ok: true, profiles: rows });
 
 	if (rows.length === 0) {
 		ctx.ui.info('No profiles configured.');

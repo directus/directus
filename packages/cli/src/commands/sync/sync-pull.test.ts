@@ -85,13 +85,10 @@ describe('sync pull', () => {
 
 	function interceptSnapshot(): void {
 		mockSnapshot(agent, fullSnapshot());
-		// Every pull that reaches the data phase reads the /fields catalog before its resource loop.
 		mockFields(agent, []);
 	}
 
 	it('writes the source schema as committable files anchored to the config directory', async () => {
-		// Proves the full path lands deterministic files under directus/default/schema and that
-		// the human line names the count and destination the operator will commit.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -111,8 +108,6 @@ describe('sync pull', () => {
 		const parsed = JSON.parse(readFileSync(join(schemaDir, ownedFile), 'utf8'));
 		expect(parsed.collection).toBe('articles');
 
-		// The headline names source and URL on the status channel; the per-axis report lines (schema /
-		// resources) print to stdout with the destinations the operator will commit.
 		expect(stderr.join('')).toContain('Pulled from staging');
 
 		const report = stdout.join('');
@@ -122,8 +117,6 @@ describe('sync pull', () => {
 	});
 
 	it('emits a machine payload of ok:true, the snapshot counts, and the default data export on --json', async () => {
-		// CI consumes this shape to decide whether a pull produced changes. `data` is always an object
-		// (every pull exports the default resource set), and `project` is top-level.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -150,9 +143,7 @@ describe('sync pull', () => {
 			scope: null,
 		});
 
-		// The default set is every selectable resource except users and translations; settings contributes
-		// its one singleton row, the rest are stubbed empty.
-		expect(payload.data.collections).toBe(10);
+		expect(payload.data.collections).toBe(11);
 		expect(payload.data.records).toBe(1);
 
 		expect(new Set(payload.data.resources)).toEqual(
@@ -167,13 +158,12 @@ describe('sync pull', () => {
 				'directus_policies',
 				'directus_roles',
 				'directus_settings',
+				'directus_translations',
 			]),
 		);
 	});
 
 	it('fails with a CONFIG error before any network call when no config exists', async () => {
-		// Pull must fail actionably before touching the network; disableNetConnect turns any stray
-		// request into a throw, so reaching exit 1 with the CONFIG message proves nothing was sent.
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
@@ -181,8 +171,6 @@ describe('sync pull', () => {
 	});
 
 	it('fails with an AUTH error naming the env var and never prompts when no credential resolves', async () => {
-		// The CI operator's fix must be in the error itself; and pull is prompt-free, so no
-		// interactive artifact may reach either stream even when the credential is missing.
 		seedConfig();
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
@@ -194,10 +182,6 @@ describe('sync pull', () => {
 	});
 
 	it('refuses a schema directory that symlinks outside the project and writes nothing outside', async () => {
-		// Repo content must never redirect sync writes outside the repo: a schema dir symlinked to a
-		// directory outside the project tree is a containment escape, so pull must refuse before the
-		// fetch and leave the outside target empty. No intercept is registered — the disabled dispatcher
-		// would throw on any stray request, so reaching exit 1 proves nothing was fetched or written.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -211,10 +195,6 @@ describe('sync pull', () => {
 	});
 
 	it('refuses a symlinked ANCESTOR of the schema dir, not just the leaf', async () => {
-		// The escape the leaf check misses: `directus` symlinks to an existing outside dir while
-		// `default/schema` does not exist yet, so an exists-only check on the full path never fires
-		// and mkdir would create the tail through the symlink. Containment must anchor on the
-		// deepest existing ancestor.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -227,8 +207,6 @@ describe('sync pull', () => {
 	});
 
 	it('carries the include scope to the server and names it on the success line', async () => {
-		// The scope must reach the wire or a "scoped" pull silently pulls everything: the intercept only
-		// matches when includeCollections=articles rides the query, and the human line must name the scope.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -242,7 +220,6 @@ describe('sync pull', () => {
 			})
 			.reply(200, { data: scopedArticles() }, { headers: { 'content-type': 'application/json' } });
 
-		// The schema scope narrows only the schema; the default resource data export still runs.
 		interceptDefaultRecords();
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--collections', 'articles')).toBe(0);
@@ -250,9 +227,6 @@ describe('sync pull', () => {
 	});
 
 	it('warns when a scoped pull commits a collection whose group parent is out of scope', async () => {
-		// The CMS-starter repro: everything sits under a `website` folder, so a `--collections pages` pull
-		// commits pages pointing at a website group it did not fetch. That dangling reference 500s on a fresh
-		// target, so the pull must warn the operator now, at authoring time, not leave it for the push crash.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -286,9 +260,6 @@ describe('sync pull', () => {
 	});
 
 	it('warns when an explicitly requested collection is dropped from the snapshot (a typo or an old-server folder)', async () => {
-		// A requested collection missing from the returned snapshot — a typo, or a named collection folder on
-		// Directus without the #27991 partial-snapshot fix — would otherwise silently commit a snapshot missing
-		// exactly what was asked for. Name the gap at authoring time instead of leaving a push to fail on it.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -318,15 +289,11 @@ describe('sync pull', () => {
 
 		const err = stderr.join('');
 		expect(err).toContain('not in the pulled schema: website_folder');
-		// pages WAS returned, so only the dropped name is named, and no group-parent warning fires here.
 		expect(err).not.toContain('pages,');
 		expect(err).not.toContain('does not include');
 	});
 
 	it('does not warn when the out-of-scope group parent is already committed from a prior full pull', async () => {
-		// The reason the reference check runs over the committed set, not this fetch: after a full pull that
-		// committed website, a later `--collections pages` scoped pull preserves the website artifact on disk.
-		// The reference resolves against what is actually committed, so warning here would be a false alarm.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -383,10 +350,6 @@ describe('sync pull', () => {
 	});
 
 	it('preserves out-of-scope siblings end to end when pulling a single collection', async () => {
-		// Pulling one collection must never destroy the committed schema around it: a full pull writes
-		// articles + authors, then a scoped pull of only
-		// articles must leave the authors artifact byte-identical on disk and still owned in the manifest,
-		// and its --json payload must carry the scope it pulled.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -401,8 +364,6 @@ describe('sync pull', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
 
-		// The first (human-mode) pull prints its report to stdout; clear it so the --json run's payload
-		// is the only stdout content parsed below.
 		stdout.length = 0;
 
 		const authorsFile = ownedFileFor(schemaDir, 'authors');
@@ -431,8 +392,6 @@ describe('sync pull', () => {
 	});
 
 	it('refuses --collections with --exclude-collections before any network call', async () => {
-		// Mutual exclusivity is a client-side contract, not a server 400: passing both fails USAGE with a
-		// clean message and never reaches the wire. No intercept — the disabled dispatcher would throw on one.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -479,7 +438,6 @@ describe('sync pull resources and data', () => {
 
 	function interceptSnapshot(): void {
 		mockSnapshot(agent, schemaBody());
-		// Every pull that reaches the data phase reads the /fields catalog before its resource loop.
 		mockFields(agent, []);
 	}
 
@@ -491,8 +449,6 @@ describe('sync pull resources and data', () => {
 	}
 
 	it('exports every default resource but never users on a bare pull', async () => {
-		// A bare pull ships the config graph except users. /users is not
-		// registered, so a stray fetch of it would throw on the disabled dispatcher.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -511,29 +467,23 @@ describe('sync pull resources and data', () => {
 			'directus_policies',
 			'directus_roles',
 			'directus_settings',
+			'directus_translations',
 		]);
 	});
 
 	it('skips the snapshot on --no-schema and pulls resources only — secret stripping still guards', async () => {
-		// The explicit escape from schema ownership: before it existed, a resource-only project silently
-		// committed a FULL snapshot, handing a mirror push delete authority over every collection. No
-		// /schema/snapshot intercept is registered, so a fetch would throw on the disabled dispatcher; the
-		// /fields catalog still rides (inside interceptDefaultRecords) because secret stripping must not
-		// lapse just because schema did.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptDefaultRecords();
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--no-schema')).toBe(0);
 
-		expect(exportedCollections()).toHaveLength(10);
+		expect(exportedCollections()).toHaveLength(11);
 		expect(stdout.join('')).toContain('Schema     skipped');
 		expect(existsSync(join(dir, 'directus', 'default', 'schema', 'metadata.json'))).toBe(false);
 	});
 
 	it('reports schemaSkipped with a nulled schema block on --json for a "schema": false project', async () => {
-		// The config key drives the same skip as the flag, and the report must be unmistakable for CI: an
-		// explicit marker plus nulls, never zeros a consumer could read as "empty snapshot pulled".
 		writeConfig({ profiles: { staging: { url } }, projects: { default: { schema: false } } });
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptDefaultRecords();
@@ -544,12 +494,10 @@ describe('sync pull resources and data', () => {
 		expect(report.schemaSkipped).toBe(true);
 		expect(report.collections).toBeNull();
 		expect(report.dir).toBeNull();
-		expect(report.data.collections).toBe(10);
+		expect(report.data.collections).toBe(11);
 	});
 
 	it('refuses --no-schema combined with a collections scope instead of guessing which wins', async () => {
-		// Honoring the scope resurrects the full-snapshot footgun; dropping it silently ignores an explicit
-		// instruction. Neither is guessable — refuse before any network.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -558,9 +506,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('preserves committed data files a scoped re-pull did not fetch', async () => {
-		// The QA repro: full pull, then `pull --flows`. The scoped pull fetches only flows + operations, and
-		// the committed tree is what a later push applies — so the data writer replacing the whole directory
-		// with the scoped subset silently deleted roles, policies, dashboards, settings and the rest.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -585,17 +530,14 @@ describe('sync pull resources and data', () => {
 			'directus_policies',
 			'directus_roles',
 			'directus_settings',
+			'directus_translations',
 		]);
 
-		// The preserved files stay manifest-owned, so a later read still returns them.
 		const flowsBytes = readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_flows')), 'utf8');
 		expect(flowsBytes).toContain('Nightly');
 	});
 
 	it('strips creation stamps from flow exports — the server assigns them on create, breaking convergence', async () => {
-		// The server replaces user_created/date_created with import-time values on the CREATE path but
-		// honors them on update. Committing them made every first push report phantom "updates" (the
-		// timestamps) that only a second push wrote through — found in QA as first-push non-convergence.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -613,8 +555,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('includes users only when --users is named', async () => {
-		// Users ride in exactly via --users, dragging their role/policy closure with them; a bare pull never
-		// commits accounts, so the account export must require this explicit flag.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -636,8 +576,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('exports every config resource including users under --all', async () => {
-		// --all is the one selection that commits accounts alongside every other config resource, so a leak
-		// (a dropped resource) or a miss would change this exact set.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -663,8 +601,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('composes --all with --no-flows to subtract a resource and its dependent child', async () => {
-		// The subtraction path off --all: everything (users included) except the flows closure, so a
-		// stray /flows fetch or a dropped user export would both break this set.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -696,8 +632,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('expands a named resource to its full closure by default', async () => {
-		// A single positive flag is exclusive — only that resource and its dependency closure, nothing from the
-		// default set rides along — so naming roles must not pull dashboards, flows, settings, or translations.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -717,9 +651,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('severs the selectable closure under --no-deps but keeps dependent children', async () => {
-		// --no-deps drops the selectable edge roles→policies, so roles resolves alone; but policies→access/
-		// permissions is selection semantics and still rides. Two pulls prove both halves; only the endpoints
-		// each pull should hit are registered, so a leak would throw.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -741,9 +672,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('honors deps:false from project config so a CI pull can reproduce a --no-deps checkout', async () => {
-		// The spec promises every selection key on flags is available in project config; deps had no config
-		// equivalent, so a configured scope could not sever the selectable closure without someone
-		// remembering to pass --no-deps on every invocation.
 		writeFileSync(
 			join(dir, 'directus.config.json'),
 			JSON.stringify({
@@ -761,8 +689,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('subtracts a resource and any child that only rode in through it under --no-flows', async () => {
-		// A lone negative starts from the default set and drops the named closure: flows and its operations
-		// child both leave, and because negatives never add users, the account export stays absent.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -787,12 +713,11 @@ describe('sync pull resources and data', () => {
 			'directus_policies',
 			'directus_roles',
 			'directus_settings',
+			'directus_translations',
 		]);
 	});
 
 	it('treats --no-users as a no-op since users are already out of the default set', async () => {
-		// Subtracting users can never remove what the default never included; the negative must resolve to the
-		// same set as a bare pull, so /users stays unregistered and a stray fetch would throw.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -811,14 +736,11 @@ describe('sync pull resources and data', () => {
 			'directus_policies',
 			'directus_roles',
 			'directus_settings',
+			'directus_translations',
 		]);
 	});
 
-	it('omits translations from the default set so a bare pull never sets up a broken mirror', async () => {
-		// The server's translations updateMany throws "Duplicate key and language combination" on any mirror
-		// push of translations (api services/translations.ts), so committing them by default would break an
-		// otherwise clean mirror. Translations ride only via --translations. /translations is deliberately left
-		// unregistered, so a stray fetch would throw on the disabled dispatcher — proving a bare pull skips it.
+	it('subtracts translations from the default set under --no-translations', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -833,14 +755,12 @@ describe('sync pull resources and data', () => {
 		interceptList('/folders', []);
 		interceptSingleton('/settings', { id: 1 });
 
-		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--no-translations')).toBe(0);
 
 		expect(exportedCollections()).not.toContain('directus_translations');
 	});
 
 	it('refuses --all combined with a named resource before any network call', async () => {
-		// --all already selects everything, so also naming a resource is a contradiction the user must resolve;
-		// it fails USAGE client-side and never reaches the wire (the disabled dispatcher would throw otherwise).
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -849,8 +769,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('refuses a positive resource combined with a negative before any network call', async () => {
-		// Naming what you want and subtracting from the default are two different mental models; mixing them is
-		// ambiguous, so it fails USAGE client-side rather than guessing which the operator meant.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -859,9 +777,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('never writes secrets or alias views to disk', async () => {
-		// The secrets-never-on-disk property, checked against the written BYTES not just the parsed shape: a
-		// role's alias arrays (users/policies/children) and a user's sensitive columns (token/password/…)
-		// must be absent from the artifacts entirely.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -913,11 +828,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('strips custom conceal/hash fields the field catalog marks sensitive and names them at pull time', async () => {
-		// The static deny-list knows only the columns the resource catalog was written against; fields users
-		// add to system collections (an API key column on settings) are invisible to it, and a concealed
-		// value committed to git survives its history forever. The admin GET /fields catalog is the
-		// authority: conceal/hash specials must vanish from the written bytes AND be named on stderr —
-		// a field silently disappearing from the export would read as data loss, not protection.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		mockSnapshot(agent, schemaBody());
@@ -925,9 +835,7 @@ describe('sync pull resources and data', () => {
 		mockFields(agent, [
 			{ collection: 'directus_settings', field: 'api_key', type: 'string', meta: { special: ['conceal'] } },
 			{ collection: 'directus_settings', field: 'webhook_signature', type: 'string', meta: { special: ['hash'] } },
-			// Already on the static strip list — stripped, but never re-announced as a custom find.
 			{ collection: 'directus_settings', field: 'license_key', type: 'string', meta: { special: ['conceal'] } },
-			// A plain column carries meta: null in the catalog; tolerated, never marked sensitive.
 			{ collection: 'directus_settings', field: 'project_name', type: 'string', meta: null },
 		]);
 
@@ -941,6 +849,7 @@ describe('sync pull resources and data', () => {
 			'/dashboards',
 			'/panels',
 			'/folders',
+			'/translations',
 		]) {
 			interceptList(path, []);
 		}
@@ -966,16 +875,10 @@ describe('sync pull resources and data', () => {
 		const err = stderr.join('');
 		expect(err).toContain('api_key');
 		expect(err).toContain('webhook_signature');
-		// Re-announcing a built-in strip entry on every pull would train operators to skim the warning.
 		expect(err).not.toContain('license_key');
 	});
 
 	it('strips a custom conceal field on directus_settings even when the pull is scoped to another collection', async () => {
-		// The regression that made GET /fields the authority: a `--collections articles` pull fetches a
-		// snapshot WITHOUT system-collection field metadata, yet still exports the default config resources.
-		// A snapshot-derived sensitivity map goes blind here, and the operator's concealed settings column
-		// would sail into the committed artifact unstripped — the catalog is scope-independent, so the strip
-		// must still fire and still be named.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -1003,6 +906,7 @@ describe('sync pull resources and data', () => {
 			'/dashboards',
 			'/panels',
 			'/folders',
+			'/translations',
 		]) {
 			interceptList(path, []);
 		}
@@ -1018,9 +922,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('fails the pull when the field catalog read fails — secret stripping must not degrade silently', async () => {
-		// Catching this and continuing would fall back to the static strip list alone: a custom conceal
-		// field would land in git on exactly the pull where the instance hiccuped, and a committed secret
-		// survives its history forever. The read precedes every resource write, so nothing lands on disk.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		mockSnapshot(agent, schemaBody());
@@ -1039,9 +940,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('warns when a request operation carries custom headers — credential-bearing and committed verbatim', async () => {
-		// Headers must round-trip untouched (stripping would break every legitimate header on push), so the
-		// only protection for an Authorization value pasted into a flow's request step is a pull-time nudge
-		// naming the operation to review before the value lands in git.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1066,14 +964,11 @@ describe('sync pull resources and data', () => {
 		expect(err).toContain('notify_slack');
 		expect(err).toMatch(/credential/i);
 
-		// NOT stripped: the header value round-trips so legitimate headers keep working on push.
 		const opsBytes = readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_operations')), 'utf8');
 		expect(opsBytes).toContain('Bearer live-secret');
 	});
 
 	it('stays silent for request operations without headers — an always-on warning trains operators to ignore it', async () => {
-		// The warn is only worth emitting when a header actually exists: an empty headers array carries no
-		// credential, and a non-request operation's options are never the request-header shape.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1089,9 +984,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('re-pulls byte-identical files from an unchanged source — nondeterministic output makes git diffs lie', async () => {
-		// Determinism is proven at the store layer, but the pipeline above it (fetch order, strip mutation,
-		// manifest assembly) could still reorder or timestamp its way into spurious changes. The operator's
-		// only signal that the source is unchanged is an empty `git diff` after a re-pull, end to end.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -1111,6 +1003,7 @@ describe('sync pull resources and data', () => {
 			interceptList('/dashboards', []);
 			interceptList('/panels', []);
 			interceptList('/folders', []);
+			interceptList('/translations', []);
 			interceptSingleton('/settings', { id: 1, project_name: 'Kampala' });
 		};
 
@@ -1133,7 +1026,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('writes nothing at all when a data fetch fails — no mixed generations', async () => {
-		// Record fetches finish before either artifact writer starts, so this failure leaves both generations untouched.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1158,9 +1050,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('writes nothing when a fetched record lacks its primary key', async () => {
-		// A key-less row (field permissions can hide the column) would land on disk as an artifact the
-		// reader refuses — a pull that "succeeds" but leaves diff/push failing STATE. The fetch boundary
-		// refuses first, and because every fetch precedes every write, the committed tree stays untouched.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1189,9 +1078,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('exports only stored permissions — appended app-access rows never reach disk', async () => {
-		// Real instances append the app-access minimal permissions (system: true, no id) to every
-		// authenticated /permissions read, on every page. Exporting them would commit derived runtime
-		// state and a later push would materialize duplicates of built-in behavior as real target rows.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1209,7 +1095,6 @@ describe('sync pull resources and data', () => {
 			})
 			.reply(200, { data: [stored, derived] }, { headers: { 'content-type': 'application/json' } });
 
-		// The keyset exhaustion page carries the derived rows too — appended to EVERY page.
 		agent
 			.get(url)
 			.intercept({
@@ -1220,7 +1105,6 @@ describe('sync pull resources and data', () => {
 			})
 			.reply(200, { data: [derived] }, { headers: { 'content-type': 'application/json' } });
 
-		// One stored row; the derived rows are not stored, so a matching count means a complete export.
 		mockTotalCount(agent, '/permissions', 1);
 
 		for (const path of [
@@ -1246,10 +1130,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('marks a truncated permissions export incomplete instead of committing the shortfall silently', async () => {
-		// Unlicensed instances hide custom-rule permissions from reads (post-pagination filtering in
-		// services/permissions.ts) — the fetch "succeeds" while missing rows. total_count is computed on
-		// the database and still counts them; the mismatch must land in the committed manifest, because
-		// whoever pushes mirror later has no other way to know the absences are lies.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1270,8 +1150,6 @@ describe('sync pull resources and data', () => {
 
 		interceptSingleton('/settings', { id: 1 });
 
-		// One visible row; the server holds three. mockList would answer the probe with a matching count,
-		// so the shortfall is registered raw.
 		const visible = { id: 5, policy: 'p1', collection: 'articles', action: 'read' };
 
 		agent
@@ -1306,9 +1184,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('confirms an unlicensed cause of a permissions shortfall from the /license entitlement', async () => {
-		// The probe proves the export is short; the license entitlement proves WHY. When the instance is
-		// unlicensed for custom permission rules, the warning must say so with certainty rather than inferring
-		// it — that is the decisive upgrade over hardcoding "unlicensed" for every shortfall.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1353,7 +1228,6 @@ describe('sync pull resources and data', () => {
 
 		mockTotalCount(agent, '/permissions', 3);
 
-		// The shortfall triggers the lazy /license read; the instance reports the entitlement disabled.
 		agent
 			.get(url)
 			.intercept({ path: '/license', method: 'GET', headers: { authorization: `Bearer ${token}` } })
@@ -1371,10 +1245,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('refuses a cross-source pull before ANY write or request — schema and data stay byte-identical', async () => {
-		// The writer-level refusal alone fired after the schema files were already replaced, leaving the
-		// new source's schema beside the old source's data. The preflight must run first: no intercepts
-		// are registered for the second profile, so any network request would throw on the disabled
-		// dispatcher instead of producing this exact refusal.
 		writeFileSync(
 			join(dir, 'directus.config.json'),
 			JSON.stringify({ profiles: { staging: { url }, other: { url: 'https://other.example.com' } } }),
@@ -1404,9 +1274,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('marks the export incomplete when the completeness probe cannot answer — unknown is not complete', async () => {
-		// A timed-out, erroring, or meta-less probe proves nothing either way, and mirror deletions ride on
-		// this answer. Unknown must degrade to incomplete (mirror refuses; re-pull retries), never to
-		// "verified complete".
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1468,13 +1335,9 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('carries the incomplete marker through a scoped re-pull, and mirror push still refuses', async () => {
-		// The review-found hole: a scoped pull preserved the truncated permissions FILE but erased its
-		// marker, so a later mirror would have deleted the hidden rows after all. The marker must ride
-		// with the preserved file all the way to the push refusal.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		// Pull 1: permissions truncated (1 visible of 3) — marked incomplete.
 		interceptSnapshot();
 
 		for (const path of [
@@ -1519,7 +1382,6 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
 
-		// Pull 2: flows only — the permissions file is preserved, and so must be its marker.
 		interceptSnapshot();
 		interceptList('/flows', []);
 		interceptList('/operations', []);
@@ -1529,7 +1391,6 @@ describe('sync pull resources and data', () => {
 		const metadata = JSON.parse(readFileSync(join(dataDir, 'metadata.json'), 'utf8'));
 		expect(metadata.incomplete).toEqual(['directus_permissions']);
 
-		// Mirror push refuses on the carried marker — even with full deletion consent.
 		mockDiff(agent, 'mirror', null);
 		mockDefaultRecords(agent);
 		stderr.length = 0;
@@ -1543,8 +1404,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('drops user-attached access rows when users are out of scope', async () => {
-		// directus-sync #148: a user-attached access row references an unsynced user (missing-FK on import).
-		// A bare pull (users out of scope) must keep only the null-user grant.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1597,12 +1456,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('keeps user-attached access rows on a re-pull that preserves a committed users export, and warns it is stale', async () => {
-		// The mirror-deletion sequence this pins: `pull --users` commits accounts plus their grants; a later
-		// bare pull refetches access while the data writer preserves the committed users file; push then
-		// derives its user echo-protection from the COMMITTED tree (users present → the target's own user
-		// grants are not echoed back). Filtering this re-pull's access on its own fetch set would silently
-		// drop the user-attached grants from the export, and the next mirror push would delete them on the
-		// target. The keep/drop premise must be the committed outcome, not this pull's fetch set.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -1626,7 +1479,6 @@ describe('sync pull resources and data', () => {
 		expect(accessRecords()).toEqual(bothRows);
 		stderr.length = 0;
 
-		// The bare re-pull: users are NOT in this fetch set, but the committed users file is preserved.
 		interceptSnapshot();
 		interceptList('/roles', []);
 		interceptList('/policies', []);
@@ -1637,6 +1489,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/dashboards', []);
 		interceptList('/panels', []);
 		interceptList('/folders', []);
+		interceptList('/translations', []);
 		interceptSingleton('/settings', { id: 1 });
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
@@ -1644,8 +1497,6 @@ describe('sync pull resources and data', () => {
 		expect(exportedCollections()).toContain('directus_users');
 		expect(accessRecords()).toEqual(bothRows);
 
-		// The kept grants reference accounts this pull did not refresh — the operator must hear that now,
-		// because a user added on the source since the --users pull surfaces only as an import FK failure.
 		expect(stderr.join('')).toContain('did not refresh');
 		expect(stderr.join('')).toContain('--users');
 	});
@@ -1659,9 +1510,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('refuses a path-like project name before any filesystem or network work', async () => {
-		// The project name becomes a path segment of the artifact tree; a "../"-bearing or slash-bearing
-		// name would escape or nest the containment root, so anything outside the safe charset is refused.
-		// No intercept is registered — the disabled dispatcher would throw on a stray request.
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
@@ -1670,10 +1518,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('drives a bare pull from a declared project scope, and lets a boolean flag override it', async () => {
-		// A project's scope config supplies the resource set when no boolean flag is present; any flag overrides
-		// it wholesale. First pull: config resources ['roles'] → only the roles closure. Second: --translations
-		// wins outright (no merge with config). Endpoints outside each expected set are unregistered, so a leak
-		// would throw.
 		writeConfig({
 			profiles: { staging: { url } },
 			projects: { default: { resources: ['roles'] } },
@@ -1706,8 +1550,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('subtracts a configured excludeResources list from the default set', async () => {
-		// The config exclude path mirrors --no-<resource>: the default set minus the named closure, so a
-		// configured CI checkout can drop flows without anyone passing a flag on every run.
 		writeConfig({
 			profiles: { staging: { url } },
 			projects: { default: { excludeResources: ['flows'] } },
@@ -1736,12 +1578,11 @@ describe('sync pull resources and data', () => {
 			'directus_policies',
 			'directus_roles',
 			'directus_settings',
+			'directus_translations',
 		]);
 	});
 
 	it('refuses a project that sets both resources and excludeResources', async () => {
-		// The two config lists are mutually exclusive like their flag equivalents; setting both is a config
-		// defect that must fail before the fetch rather than silently pick one.
 		writeConfig({
 			profiles: { staging: { url } },
 			projects: { default: { resources: ['roles'], excludeResources: ['flows'] } },
@@ -1754,8 +1595,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('refuses a configured excludeResources naming a non-selectable resource', async () => {
-		// Only selectable resources can be subtracted; naming a dependent-only child like operations is a config
-		// error caught before the fetch, since excluding it could never be honored on its own.
 		writeConfig({
 			profiles: { staging: { url } },
 			projects: { default: { excludeResources: ['operations'] } },
@@ -1768,7 +1607,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('lands artifacts under a configured directory key', async () => {
-		// The `directory` key relocates the artifact root; schema and data land under it, not the default.
 		writeConfig({ profiles: { staging: { url } }, directory: 'cms' });
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -1781,8 +1619,6 @@ describe('sync pull resources and data', () => {
 	});
 
 	it('enforces containment against a configured directory that symlinks outside the project', async () => {
-		// Containment is re-checked on whatever `directory` resolves to: a configured root symlinked outside
-		// the project must be refused before the fetch, leaving the outside target empty.
 		writeConfig({ profiles: { staging: { url } }, directory: 'cms' });
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 

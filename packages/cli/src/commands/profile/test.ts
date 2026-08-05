@@ -1,10 +1,16 @@
 import { confirm, select } from '@clack/prompts';
 import type { Command } from 'commander';
-import { resolveCredential } from '../../kernel/config/credentials.js';
-import { isSafeUrl, loadConfig, resolveProfile } from '../../kernel/config/file.js';
-import { type Identity, refreshSessionIfNeeded, testConnection } from '../../kernel/connection.js';
+import {
+	credentialStorage,
+	envTokenVar,
+	resolveCredential,
+	saveCredential,
+	savedTokenMessage,
+} from '../../kernel/config/credentials.js';
+import { INVALID_URL_MESSAGE, isSafeUrl, resolveProfile } from '../../kernel/config/file.js';
+import { type Identity, loginSession, refreshSessionIfNeeded, testConnection } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
-import { ask, promptLogin, promptToken, saveToken } from '../../kernel/prompt.js';
+import { ask, orPrompt, promptLogin, promptToken } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
 
 interface TestOptions {
@@ -15,37 +21,37 @@ interface TestOptions {
 export function registerTest(profile: Command, getContext: () => CliContext): void {
 	profile
 		.command('test')
-		.description('Verify a profile can authenticate')
-		.argument('[name]')
+		.description('Verify a profile can authenticate. Name a profile or pass --url — one is required, never both')
+		.argument('[name]', 'Profile name; prompted when omitted and no --url is given')
 		.option('--url <url>', 'Test a URL directly, without a profile or config file')
 		.option('--token <token>', 'Override the resolved token')
 		.action((name: string | undefined, options: TestOptions) => testProfile(name, options, getContext()));
 }
 
-export async function testProfile(name: string | undefined, options: TestOptions, ctx: CliContext): Promise<void> {
-	if (name !== undefined && options.url !== undefined) {
+export async function testProfile(nameArg: string | undefined, options: TestOptions, ctx: CliContext): Promise<void> {
+	if (nameArg !== undefined && options.url !== undefined) {
 		throw new CliError('USAGE', 'Pass a profile name or --url, not both.');
 	}
 
+	let name = nameArg;
 	let url: string;
 
 	if (options.url !== undefined) {
-		if (!isSafeUrl(options.url)) throw new CliError('USAGE', 'Enter a valid http(s) URL.');
+		if (!isSafeUrl(options.url)) throw new CliError('USAGE', INVALID_URL_MESSAGE);
 		url = options.url;
 	} else {
-		if (name === undefined) {
-			throw new CliError('USAGE', 'Name the profile: d6s profile test <name>', {
-				hint: 'Or test without one: d6s profile test --url <url> --token <token>',
-			});
-		}
+		name = await orPrompt(
+			nameArg,
+			ctx.interactive,
+			'Name the profile: d6s profile test <name>',
+			{ message: 'Profile name', placeholder: 'production' },
+			'Or test without one: d6s profile test --url <url> --token <token>',
+		);
 
-		const loaded = loadConfig({ cwd: ctx.cwd, configPath: ctx.configPath });
-		if (loaded === undefined) throw new CliError('CONFIG', 'No directus.config.json found.');
-
-		url = resolveProfile(loaded.config, name).url;
+		url = resolveProfile(ctx.config.require().config, name).url;
 	}
 
-	const resolution = resolveCredential(
+	const credential = resolveCredential(
 		name !== undefined
 			? {
 					target: 'profile',
@@ -58,15 +64,12 @@ export async function testProfile(name: string | undefined, options: TestOptions
 
 	let identity: Identity;
 
-	if (resolution.found) {
-		// A saved session whose access token has expired is recoverable from its refresh token; refresh
-		// before testing so `profile test` validates the profile the same way the sync commands reach it,
-		// rather than reporting a live session as broken.
-		await refreshSessionIfNeeded(resolution.credential);
-		identity = await testConnection(resolution.credential);
+	if (credential !== undefined) {
+		await refreshSessionIfNeeded(credential);
+		identity = await testConnection(credential);
 	} else if (!ctx.interactive) {
 		throw new CliError('AUTH', `No token found for ${name !== undefined ? `"${name}"` : url}.`, {
-			hint: name !== undefined ? `Set ${resolution.envVar} or pass --token.` : 'Pass --token to test a URL directly.',
+			hint: name !== undefined ? `Set ${envTokenVar(name)} or pass --token.` : 'Pass --token to test a URL directly.',
 		});
 	} else {
 		const method =
@@ -83,13 +86,19 @@ export async function testProfile(name: string | undefined, options: TestOptions
 				: 'paste';
 
 		if (method === 'login' && name !== undefined) {
-			identity = await promptLogin(url, name);
+			const { email, password } = await promptLogin();
+			const login = await loginSession(url, email, password);
+
+			// A login here is the profile's new credential: it already has a config entry to belong to.
+			credentialStorage(url, name).set(login.session);
+			identity = login.identity;
 		} else {
 			const token = await promptToken(name ?? url);
 			identity = await testConnection({ url, token, kind: 'token' });
 
 			if (name !== undefined && (await ask(confirm({ message: 'Save this token for next time?' })))) {
-				saveToken(ctx.ui, url, name, token);
+				saveCredential(url, name, token);
+				ctx.ui.success(savedTokenMessage(name));
 			}
 		}
 	}
@@ -97,6 +106,8 @@ export async function testProfile(name: string | undefined, options: TestOptions
 	ctx.ui.success(`Authenticated to ${url} as ${identity.user} (${identity.role}).`);
 
 	ctx.ui.data({
+		kind: 'ProfileTestReport',
+		formatVersion: 1,
 		ok: true,
 		url,
 		user: identity.user,

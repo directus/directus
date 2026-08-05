@@ -1,14 +1,15 @@
-import { dirname, resolve } from 'node:path';
+import { dirname } from 'node:path';
 import { Command, CommanderError } from 'commander';
 import { version } from '../version.js';
-import { findConfigPath } from './config/file.js';
-import { isCI, loadProjectEnv } from './env.js';
+import { type ConfigStore, createConfigStore } from './config/file.js';
+import { isCI, loadProjectEnv, promptsDisabled } from './env.js';
 import { CliError } from './error.js';
 import { createUi, type Ui, writeOut } from './ui.js';
 
 export interface CliContext {
 	readonly cwd: string;
-	readonly configPath: string | undefined;
+	/** The one config of this run: commands read and write it here instead of loading the file again. */
+	readonly config: ConfigStore;
 	readonly ui: Ui;
 	readonly interactive: boolean;
 }
@@ -53,43 +54,45 @@ function toCliError(error: unknown): CliError {
 }
 
 function createContext(cwd: string, ui: Ui, globals: GlobalOptions): CliContext {
-	const configPath = globals.config !== undefined ? resolve(cwd, globals.config) : findConfigPath(cwd);
+	const config = createConfigStore(cwd, globals.config);
+	const configPath = config.path();
 	loadProjectEnv(configPath !== undefined ? dirname(configPath) : cwd);
 
 	const interactive =
-		Boolean(process.stdout.isTTY) && Boolean(process.stdin.isTTY) && !isCI() && !globals.json && globals.interactive;
+		Boolean(process.stdout.isTTY) &&
+		Boolean(process.stdin.isTTY) &&
+		!isCI() &&
+		!promptsDisabled() &&
+		!globals.json &&
+		globals.interactive;
 
-	return { cwd, configPath, ui, interactive };
+	return { cwd, config, ui, interactive };
 }
 
 function normalizeHelpOption(command: Command): void {
 	command.helpOption('-h, --help', 'Display help for command');
 
-	// Only where an implicit help subcommand already exists; a bare nameAndArgs call would ADD one to leaves.
+	// Calling nameAndArgs on leaf commands would add an unwanted help subcommand.
 	if (command.commands.length > 0) command.helpCommand('help [command]', 'Display help for command');
 
 	for (const sub of command.commands) normalizeHelpOption(sub);
 }
 
 function createProgram(options: RunOptions, ui: Ui): Command {
-	// Help-text convention: sentence case, no trailing period — including Commander's built-ins, whose
-	// lowercase defaults would sit inconsistently next to every registered description.
+	// Align Commander's built-ins with the CLI help-text convention.
 	const program = new Command('d6s')
 		.exitOverride()
 		.version(version, '-v, --version', 'Output the version number')
 		.option('--json', 'Output machine-readable JSON')
 		.option('--no-color', 'Disable colored output')
-		.option('--no-interactive', 'Disable interactive prompts')
+		// TTYs can exist without a human, so provide per-run and environment-wide prompt opt-outs.
+		.option('--no-interactive', 'Disable interactive prompts (or set NO_INTERACTIVE)')
 		.option('--config <path>', 'Path to directus.config.json')
 		.configureOutput({
-			// Commander sends bare-parent help to writeErr before throwing
-			// commander.help. Route it to redacted stdout; actual errors are suppressed
-			// below and rendered through Ui. Subcommands inherit this configuration.
+			// Commander routes bare-parent help through writeErr before throwing commander.help.
 			writeOut,
 			writeErr: writeOut,
-			outputError() {
-				// Commander errors are rendered by the run() boundary as CliError.
-			},
+			outputError() {},
 		});
 
 	const cwd = options.cwd ?? process.cwd();
@@ -97,7 +100,6 @@ function createProgram(options: RunOptions, ui: Ui): Command {
 
 	for (const register of options.registerCommands) register(program, getContext);
 
-	// Commander creates a lowercase "display help for command" option per command; align every level.
 	normalizeHelpOption(program);
 
 	return program;
@@ -111,8 +113,7 @@ export async function run(argv: readonly string[], options: RunOptions): Promise
 		await program.parseAsync([...argv], { from: 'user' });
 		return 0;
 	} catch (thrown) {
-		// Explicit help/version exit 0. Commander emits bare parent help as a
-		// commander.help exit 1; it is still a successful request for guidance.
+		// Commander reports bare-parent help as exit 1 even though it is a successful help request.
 		if (thrown instanceof CommanderError && (thrown.exitCode === 0 || thrown.code === 'commander.help')) return 0;
 
 		const error = toCliError(thrown);
