@@ -69,7 +69,7 @@ export class CollectionsService {
 
 		if (!('collection' in payload)) throw new InvalidPayloadError({ reason: `"collection" is required` });
 
-		if (typeof payload.collection !== 'string' || payload.collection === '') {
+		if (typeof payload.collection !== 'string' || payload.collection.trim() === '') {
 			throw new InvalidPayloadError({ reason: `"collection" must be a non-empty string` });
 		}
 
