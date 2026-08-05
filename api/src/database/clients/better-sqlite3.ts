@@ -1,8 +1,6 @@
 import { MAX_SAFE_INT64, MIN_SAFE_INT64 } from '@directus/constants';
 import knex, { type Knex } from 'knex';
 
-let client: typeof Knex.Client | undefined;
-
 /**
  * The knex client Directus uses for SQLite: the better-sqlite3 dialect, with integer bindings kept
  * off the driver's double path.
@@ -16,8 +14,6 @@ let client: typeof Knex.Client | undefined;
  * revisions, comments, notifications, shares and versions.
  */
 export function getClientBetterSQLite3(): typeof Knex.Client {
-	if (client) return client;
-
 	// knex only exports the base `Client`, so we read the dialect class off a connectionless knex instance
 	const createKnex: typeof knex.default = (knex as any).default ?? knex;
 
@@ -67,7 +63,5 @@ export function getClientBetterSQLite3(): typeof Knex.Client {
 		}
 	}
 
-	client = DirectusBetterSQLite3;
-
-	return client;
+	return DirectusBetterSQLite3;
 }
