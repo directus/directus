@@ -181,7 +181,6 @@ catalog:
   content-disposition: 0.5.4
   cookie: 1.0.2
   cookie-parser: 1.4.7
-  copyfiles: 2.4.1
   cors: 2.8.5
   cron: 4.3.4
   cropperjs: 1.6.2
@@ -266,6 +265,7 @@ catalog:
   mysql: 2.18.1
   mysql2: 3.15.3
   nanoid: 5.1.6
+  native-copyfiles: 2.0.3
   node-machine-id: 1.1.12
   nodemailer: 9.0.3
   nodemailer-mailgun-transport: 2.1.5
