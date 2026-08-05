@@ -116,6 +116,10 @@ paths:
   # Assets
   /assets/{id}:
     $ref: './paths/assets/assets.yaml'
+  /assets/files:
+    $ref: './paths/assets/files.yaml'
+  /assets/folder/{id}:
+    $ref: './paths/assets/folder.yaml'
 
   # Authentication
   /auth/login:
