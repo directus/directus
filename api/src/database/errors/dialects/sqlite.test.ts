@@ -4,9 +4,7 @@ import { extractError } from './sqlite.js';
 import type { SQLiteError } from './types.js';
 
 /**
- * SQLite ships behind two drivers with different error shapes: node-sqlite3 prefixes the message
- * with the generic `SQLITE_CONSTRAINT` code, better-sqlite3 leaves the message unprefixed and
- * reports an extended code. Both have to translate to the same Directus error.
+ * Backwards compatibility test
  */
 const nodeSqlite3 = (message: string): SQLiteError => ({ message, code: 'SQLITE_CONSTRAINT', errno: 19 });
 
