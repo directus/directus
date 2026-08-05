@@ -12,7 +12,6 @@
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"ldapts": "catalog:",
-		"tus-js-client": "catalog:",
 		"@types/js-yaml": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/mailparser": "3.4.6",
