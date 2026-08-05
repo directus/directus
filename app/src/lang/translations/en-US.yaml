@@ -1332,6 +1332,7 @@ right_align: Right Align
 fit_to_screen: Fit to Screen
 image_url: Image Url
 alt_text: Alternative Text
+caption: Caption
 media: Media
 quality: Quality
 width: Width
