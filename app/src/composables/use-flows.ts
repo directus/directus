@@ -44,7 +44,7 @@ export function useFlows(options: UseFlowsOptions) {
 	const currentFlow = computed(() => {
 		if (!currentFlowId.value) return null;
 
-		return manualFlows.value.find((flow) => flow.id === currentFlowId.value);
+		return allManualFlows.value.find((flow) => flow.id === currentFlowId.value);
 	});
 
 	const currentFlowConfirmations = computed(() => {
@@ -126,19 +126,14 @@ export function useFlows(options: UseFlowsOptions) {
 		return false;
 	});
 
-	const manualFlows = computed<ManualFlow[]>(() => {
-		const manualFlows = flowsStore
-			.getManualFlowsForCollection(collection.value)
-			.filter(
-				(flow) => !flow.options?.location || flow.options?.location === 'both' || flow.options?.location === location,
-			)
-			.map((flow) => ({
-				...flow,
-				name: translateLiteral(flow.name),
-				options: flow.options ? translate(flow.options) : null,
-				tooltip: getFlowTooltip(flow),
-				isFlowDisabled: checkFlowDisabled(flow),
-			}));
+	const allManualFlows = computed<ManualFlow[]>(() => {
+		const manualFlows = flowsStore.getManualFlowsForCollection(collection.value).map((flow) => ({
+			...flow,
+			name: translateLiteral(flow.name),
+			options: flow.options ? translate(flow.options) : null,
+			tooltip: getFlowTooltip(flow),
+			isFlowDisabled: checkFlowDisabled(flow),
+		}));
 
 		function getFlowTooltip(manualFlow: FlowRaw) {
 			if (location === 'item') return t('run_flow_on_current');
@@ -158,8 +153,14 @@ export function useFlows(options: UseFlowsOptions) {
 		return manualFlows;
 	});
 
+	const sidebarManualFlows = computed<ManualFlow[]>(() =>
+		allManualFlows.value.filter(
+			(flow) => !flow.options?.location || flow.options?.location === 'both' || flow.options?.location === location,
+		),
+	);
+
 	function isActiveFlow(flowId: string) {
-		const flow = manualFlows.value.find((flow) => flow.id === flowId);
+		const flow = allManualFlows.value.find((flow) => flow.id === flowId);
 
 		return flow && flow.status === 'active';
 	}
@@ -261,9 +262,9 @@ export function useFlows(options: UseFlowsOptions) {
 
 	return {
 		flowDialogsContext,
-		manualFlows,
 		provideRunManualFlow,
 		runManualFlow,
+		sidebarManualFlows,
 	};
 }
 
