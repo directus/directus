@@ -18,7 +18,7 @@ import {
 	resolveMode,
 } from './utils/plan.js';
 import { emptyImportSummary, hasImportChanges, type ImportSummary } from './utils/render.js';
-import { displayProjectPath, resolveTarget } from './utils/resolve-target.js';
+import { DEFAULT_PROJECT, displayProjectPath, resolveTarget } from './utils/resolve-target.js';
 
 export interface DiffOptions {
 	readonly to: string;
@@ -47,7 +47,7 @@ export function registerDiff(command: Command, getContext: () => CliContext): vo
 			'--allow-drift',
 			'Diff despite a snapshot/target Directus version or database vendor mismatch; without it both must match',
 		)
-		.option('--project <name>', 'Project scope to sync (default: default)', 'default')
+		.option('--project <name>', 'Project scope to sync (default: default)', DEFAULT_PROJECT)
 		.action((options: DiffOptions) => diff(options, getContext()));
 }
 
@@ -113,27 +113,25 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	const ambiguous = preview?.ambiguousCount ?? 0;
 
-	if (ctx.ui.json) {
-		// Ambiguous matches count as changes because a non-interactive push cannot apply them.
-		ctx.ui.data({
-			kind: 'DiffReport',
-			formatVersion: 1,
-			ok: true,
-			target: url,
-			profile: options.to,
-			project,
-			mode,
-			changes: schema.result !== null || dataChanged || ambiguous > 0,
-			schemaSkipped: !schema.enabled,
-			added: schema.added,
-			modified: schema.modified,
-			deleted: schema.deleted,
-			hash: schema.result?.hash ?? null,
-			data: dataReport(mode, preview, dryRun, comparisonCounts(preview)),
-		});
+	// Ambiguous matches count as changes because a non-interactive push cannot apply them.
+	ctx.ui.data({
+		kind: 'DiffReport',
+		formatVersion: 1,
+		ok: true,
+		target: url,
+		profile: options.to,
+		project,
+		mode,
+		changes: schema.result !== null || dataChanged || ambiguous > 0,
+		schemaSkipped: !schema.enabled,
+		added: schema.added,
+		modified: schema.modified,
+		deleted: schema.deleted,
+		hash: schema.result?.hash ?? null,
+		data: dataReport(mode, preview, dryRun, comparisonCounts(preview)),
+	});
 
-		return;
-	}
+	if (ctx.ui.json) return;
 
 	// An all-ambiguous set has a zero dry-run but is not converged.
 	if (schema.result === null && !dataChanged && ambiguous === 0) {
