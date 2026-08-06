@@ -2779,9 +2779,9 @@ interfaces:
     toolbar: Toolbar
     custom_formats: Custom Formats
     custom_formats_note:
-      A list of custom formats. Each entry needs a `title` plus an `inline` tag, a `block` tag, a `selector` of block
-      tags, or `items` to group entries into a submenu, with optional `classes`, `styles`, and `attributes`. When set, a
-      Formats dropdown is added to the toolbar. `block` converts between paragraphs and headings only, and `wrapper`
+      A list of custom formats. Each entry needs a `title` plus either an `inline` tag, a `block` tag, a `selector` of block
+      tags, or `items` to group entries into a submenu. Optional `classes`, `styles`, and `attributes` can also be added. When set, a
+      Formats dropdown is added to the toolbar. Formatting with `block` converts between paragraphs and headings only, and `wrapper`
       entries are not supported.
     options_override: Options Override (Deprecated)
     options_override_note:
