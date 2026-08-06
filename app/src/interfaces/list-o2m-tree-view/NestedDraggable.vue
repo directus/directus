@@ -232,7 +232,7 @@ function stageEdits(item: Record<string, any>) {
 				/>
 				<NestedDraggable
 					v-if="open[element[relationInfo.relatedPrimaryKeyField.field]]"
-					:model-value="element[field]"
+					:model-value="element.$staged?.[field] ?? element[field]"
 					:template="template"
 					:collection="collection"
 					:disabled="disabled"
