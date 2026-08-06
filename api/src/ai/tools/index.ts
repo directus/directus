@@ -27,8 +27,6 @@ export const ALL_TOOLS: ToolConfig<any>[] = [
 	relations,
 ];
 
-export const getAllMcpTools = () => ALL_TOOLS;
-
-export const findMcpTool = (name: string) => ALL_TOOLS.find((tool) => tool.name === name);
-
 export { collections, fields, files, flows, items, operations, relations, schema, system, triggerFlow };
+export { MountedToolRegistry, ToolRegistry } from './registry.js';
+export type { RegistryError, RegistryExecuteResult } from './registry.js';
