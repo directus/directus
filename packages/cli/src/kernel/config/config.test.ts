@@ -135,7 +135,7 @@ describe('createConfigStore', () => {
 		expect(caught(() => createConfigStore(dir).load()).code).toBe('CONFIG');
 	});
 
-	it('rejects a credential-bearing URL so a secret never lands in commit-ready configuration', () => {
+	it('rejects a credential-bearing URL so a secret never lands in local configuration', () => {
 		const dir = tempDir();
 
 		writeFileSync(
@@ -187,6 +187,59 @@ describe('createConfigStore', () => {
 		expect(error.code).toBe('CONFIG');
 		expect(error.message).toBe('No directus.config.json found.');
 		expect(error.hint).toBe('Create one first: d6s profile add <name> --url <url>');
+	});
+
+	// A rename that appended would reorder a hand-maintained file, so every rename would show up in review
+	// as a move plus an edit rather than an edit.
+	it('renames a profile in place, leaving its neighbours where the author put them', () => {
+		const dir = tempDir();
+
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({
+				profiles: {
+					local: { url: 'https://local.example.com' },
+					staging: { url: 'https://staging.example.com' },
+					prod: { url: 'https://prod.example.com' },
+				},
+			}),
+		);
+
+		const store = createConfigStore(dir);
+		const restore = store.renameProfile('staging', 'preview');
+
+		expect(Object.keys(store.load()!.config.profiles)).toEqual(['local', 'preview', 'prod']);
+		expect(store.load()?.config.profiles['preview']?.url).toBe('https://staging.example.com');
+
+		restore();
+		expect(Object.keys(store.load()!.config.profiles)).toEqual(['local', 'staging', 'prod']);
+	});
+
+	// Rebuilding the block by key means a live destination would swallow the source entry and drop a profile.
+	it('refuses to rename onto a name already in use rather than dropping one of the two', () => {
+		const dir = tempDir();
+
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({
+				profiles: { staging: { url: 'https://one.example.com' }, prod: { url: 'https://two.example.com' } },
+			}),
+		);
+
+		const store = createConfigStore(dir);
+		const error = caught(() => store.renameProfile('staging', 'prod'));
+
+		expect(error.code).toBe('CONFIG');
+		expect(error.message).toBe('Profile "prod" already exists.');
+		expect(store.load()?.config.profiles['staging']?.url).toBe('https://one.example.com');
+		expect(store.load()?.config.profiles['prod']?.url).toBe('https://two.example.com');
+	});
+
+	it('refuses to rename an unknown profile', () => {
+		const dir = tempDir();
+		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { prod: {} } }));
+
+		expect(caught(() => createConfigStore(dir).renameProfile('staging', 'preview')).code).toBe('CONFIG');
 	});
 });
 

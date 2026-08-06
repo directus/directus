@@ -13,7 +13,7 @@ const CONTROL_CHARACTER = /\p{Cc}/u;
 export const INVALID_URL_MESSAGE = 'Enter a valid http(s) URL.';
 
 /**
- * A commit-ready base URL must carry no secrets: http(s) only, no userinfo and no
+ * A stored base URL must carry no secrets: http(s) only, no userinfo and no
  * query/fragment — so `https://user:pass@host` or `?token=…` can never be written
  * to configuration or printed by `profile list`. Also serves as the prompt validator.
  */
@@ -193,6 +193,8 @@ export interface ConfigStore {
 	requireProfile(name: string): Profile;
 	/** Write a profile and return an operation that restores the preceding file state. */
 	upsertProfile(name: string, profile: Profile): () => void;
+	/** Move a profile to a new name, returning an operation that restores the preceding file state. */
+	renameProfile(from: string, to: string): () => void;
 	upsertProjectMode(project: string, mode: SyncMode): void;
 	removeProfile(name: string): string | undefined;
 }
@@ -283,6 +285,35 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 				}
 
 				path = previousPath;
+				loaded = undefined;
+				read = false;
+			};
+		},
+		renameProfile(from, to) {
+			// Capture the path: the restore runs later, and the outer binding can move on to another file.
+			const target = path;
+
+			if (target === undefined) throw new CliError('CONFIG', `No ${CONFIG_FILENAME} found.`);
+
+			const previousContents = readFileSync(target, 'utf8');
+			const raw = readRawConfig(target);
+			const profiles = existingProfiles(raw, target);
+
+			if (!Object.hasOwn(profiles, from)) throw new CliError('CONFIG', `Unknown profile: "${from}"`);
+
+			// Renaming onto a live name would collapse two entries into one and silently drop a profile.
+			if (Object.hasOwn(profiles, to)) throw new CliError('CONFIG', `Profile "${to}" already exists.`);
+
+			// Rebuild in place so the renamed profile keeps its position instead of jumping to the end.
+			const renamed = Object.fromEntries(
+				Object.entries(profiles).map(([key, value]) => [key === from ? to : key, value]),
+			);
+
+			writeFileAtomic(target, `${JSON.stringify({ ...raw, profiles: renamed }, null, 2)}\n`, 0o644);
+			persisted(target);
+
+			return () => {
+				writeFileAtomic(target, previousContents, 0o644);
 				loaded = undefined;
 				read = false;
 			};

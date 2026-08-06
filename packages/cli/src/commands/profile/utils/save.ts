@@ -11,6 +11,13 @@ import type { CliContext } from '../../../kernel/run.js';
 const PROFILE_NAME = /^[A-Za-z0-9_]+$/;
 const PROFILE_NAME_RULE = 'Use letters, numbers, and underscores.';
 
+/** Reject a name no environment variable could carry. */
+export function assertProfileName(name: string): void {
+	if (!PROFILE_NAME.test(name)) {
+		throw new CliError('USAGE', `Invalid profile name: "${name}".`, { hint: PROFILE_NAME_RULE });
+	}
+}
+
 /** Resolve the profile name from the argument or a prompt, rejecting names no environment variable could carry. */
 export async function resolveNewProfileName(
 	nameArg: string | undefined,
@@ -23,9 +30,7 @@ export async function resolveNewProfileName(
 		validate: (value) => (value !== undefined && PROFILE_NAME.test(value) ? undefined : PROFILE_NAME_RULE),
 	});
 
-	if (!PROFILE_NAME.test(name)) {
-		throw new CliError('USAGE', `Invalid profile name: "${name}".`, { hint: PROFILE_NAME_RULE });
-	}
+	assertProfileName(name);
 
 	return name;
 }
@@ -71,8 +76,8 @@ export interface SavedProfile {
 }
 
 /**
- * Verify a credential, then write the profile followed by its credential. Either write failing restores the
- * previous configuration state, so a failed command never leaves an unreachable credential or a partial profile update.
+ * Verify a credential, then write the profile followed by its credential. A credential failure restores the
+ * previous configuration; if that second write also fails, the caller gets both failures and a partial-state warning.
  */
 export async function saveProfile(
 	name: string,
@@ -97,7 +102,24 @@ export async function saveProfile(
 		if (session !== undefined) credentialStorage(url, name).set(session);
 		if (token !== undefined) saveCredential(url, name, token);
 	} catch (error) {
-		rollback();
+		try {
+			rollback();
+		} catch (rollbackError) {
+			// Restoring configuration is another filesystem write that can fail independently. Preserve both
+			// errors so the operator knows the profile may still point at the new URL.
+			const credentialMessage = error instanceof Error ? error.message : String(error);
+			const rollbackMessage = rollbackError instanceof Error ? rollbackError.message : String(rollbackError);
+
+			throw new CliError(
+				'STATE',
+				'Could not save the profile credential, and restoring the previous profile also failed.',
+				{
+					hint: 'The profile may be partially updated. Inspect the configuration and credential store before retrying.',
+					detail: `Credential error: ${credentialMessage}\nRollback error: ${rollbackMessage}`,
+				},
+			);
+		}
+
 		throw error;
 	}
 

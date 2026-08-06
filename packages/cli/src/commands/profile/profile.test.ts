@@ -73,6 +73,93 @@ describe('profile commands', () => {
 		expect(stderr.join('')).not.toContain('Saved profile');
 	});
 
+	// Credentials are keyed by URL and profile name, so a rename that moved only the profile would leave a
+	// token behind under a name nothing resolves — the exact breakage that made remove-and-re-add lossy.
+	it('update --name carries the saved credential to the new name', async () => {
+		vi.stubEnv('CI', '');
+		vi.stubEnv('DIRECTUS_PRODUCTION_TOKEN', '');
+		await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
+		saveCredential('https://cms.example.com', 'staging', 'stored-token');
+
+		expect(await d6s('profile', 'update', 'staging', '--name', 'production', '--yes')).toBe(0);
+
+		const config = readConfig();
+		expect(Object.keys(config.profiles)).toEqual(['production']);
+		expect(config.profiles['production']?.url).toBe('https://cms.example.com');
+
+		expect(
+			resolveCredential({ target: 'profile', url: 'https://cms.example.com', profileName: 'production' }),
+		).toMatchObject({ token: 'stored-token' });
+
+		expect(
+			resolveCredential({ target: 'profile', url: 'https://cms.example.com', profileName: 'staging' }),
+		).toBeUndefined();
+	});
+
+	// The partial state is the dangerous one: a config renamed but a credential left behind is exactly the
+	// unreachable-credential bug rename exists to prevent, so a failed move has to put the old name back.
+	it('update --name restores the old name when the credential cannot be moved', async () => {
+		await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
+		mkdirSync(join(dir, '.directus', 'credentials.json'), { recursive: true });
+
+		expect(await d6s('profile', 'update', 'staging', '--name', 'production', '--yes')).toBe(1);
+
+		const config = readConfig();
+		expect(Object.keys(config.profiles)).toEqual(['staging']);
+		expect(config.profiles['staging']?.url).toBe('https://cms.example.com');
+	});
+
+	it('update --name refuses a name already in use rather than merging two profiles', async () => {
+		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
+		await d6s('profile', 'add', 'production', '--url', 'https://two.example.com');
+
+		expect(await d6s('profile', 'update', 'staging', '--name', 'production', '--yes', '--json')).toBe(1);
+
+		expect(JSON.parse(stdout.join('')).error).toMatchObject({
+			code: 'USAGE',
+			message: 'Profile "production" already exists.',
+		});
+
+		const config = readConfig();
+		expect(config.profiles['staging']?.url).toBe('https://one.example.com');
+		expect(config.profiles['production']?.url).toBe('https://two.example.com');
+	});
+
+	// The name becomes DIRECTUS_<NAME>_TOKEN, so a name no env var could carry has to be refused at the flag
+	// too — not only at the creation prompt, which a rename never reaches.
+	it('update --name rejects a name no environment variable could carry', async () => {
+		await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
+
+		expect(await d6s('profile', 'update', 'staging', '--name', 'my-prod', '--yes')).toBe(1);
+
+		expect(stderr.join('')).toContain('Invalid profile name: "my-prod".');
+		expect(Object.keys(readConfig().profiles)).toEqual(['staging']);
+	});
+
+	// Falling through to the repoint path would prompt for a URL the user never asked to change.
+	it('update --name refuses a rename to the current name instead of asking for a URL', async () => {
+		await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
+
+		expect(await d6s('profile', 'update', 'staging', '--name', 'staging', '--yes')).toBe(1);
+
+		expect(stderr.join('')).toContain('Profile "staging" already has that name.');
+		expect(readConfig().profiles['staging']?.url).toBe('https://cms.example.com');
+	});
+
+	// Renaming re-keys the profile and its credential; repointing rewrites a value under an unchanged key.
+	// Combined, a failure part-way needs one to unwind the other, and the profile can end up under a new
+	// name pointing at an old URL with no credential. Refusing keeps every failure recoverable by re-running.
+	it('update refuses a combined rename and repoint, so no failure can leave a half-moved profile', async () => {
+		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
+
+		expect(
+			await d6s('profile', 'update', 'staging', '--name', 'production', '--url', 'https://two.example.com', '--yes'),
+		).toBe(1);
+
+		expect(stderr.join('')).toContain('Rename a profile on its own.');
+		expect(readConfig().profiles['staging']?.url).toBe('https://one.example.com');
+	});
+
 	it('update replaces the URL with --yes and clears the credential bound to the old URL', async () => {
 		vi.stubEnv('CI', '');
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
@@ -250,6 +337,8 @@ describe('profile commands', () => {
 			ok: true,
 			name: 'staging',
 			url: 'https://two.example.com',
+			// Always present so a consumer reads one shape; only a rename fills it in.
+			renamedFrom: null,
 			credentialSaved: false,
 		});
 
@@ -334,7 +423,7 @@ describe('profile commands', () => {
 		expect(existsSync(join(dir, 'directus.config.json'))).toBe(false);
 	});
 
-	it('rejects a credential-bearing URL instead of writing it to commit-ready configuration', async () => {
+	it('rejects a credential-bearing URL instead of writing it to local configuration', async () => {
 		const password = 'super-secret-password';
 
 		expect(await d6s('profile', 'add', 'staging', '--url', `https://user:${password}@cms.example.com`)).toBe(1);

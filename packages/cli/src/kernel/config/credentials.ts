@@ -151,6 +151,19 @@ export function clearCredential(url: string, profileName: string): void {
 	writeStored(url, profileName, null);
 }
 
+/**
+ * Move a saved credential to a new profile name. Credentials are keyed by URL and profile name, so a rename
+ * that skipped this would strand the old entry under a name nothing looks up.
+ */
+export function renameCredential(url: string, from: string, to: string): void {
+	const stored = readStore()[url]?.[from];
+
+	if (stored === undefined) return;
+
+	writeStored(url, to, stored);
+	writeStored(url, from, null);
+}
+
 /** SDK authentication storage backed by the profile credential store. */
 export function credentialStorage(url: string, profileName: string): AuthenticationStorage {
 	return {

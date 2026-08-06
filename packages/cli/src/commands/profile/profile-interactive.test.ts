@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { confirm, isCancel, password, select, text } from '@clack/prompts';
@@ -12,6 +12,7 @@ import { add } from './add.js';
 import { remove } from './remove.js';
 import { testProfile } from './test.js';
 import { update } from './update.js';
+import { saveProfile } from './utils/save.js';
 
 vi.mock('@clack/prompts', () => ({
 	text: vi.fn(),
@@ -289,6 +290,36 @@ describe('interactive profile flows', () => {
 
 		expect(loginSession).toHaveBeenCalled();
 		expect(existsSync(join(home, '.directus', 'credentials.json'))).toBe(false);
+	});
+
+	it('reports both failures when credential persistence and configuration rollback fail', async () => {
+		mkdirSync(join(home, '.directus', 'credentials.json'), { recursive: true });
+
+		const base = ctxAt(dir);
+
+		const rollback = vi.fn(() => {
+			throw new Error('configuration restore failed');
+		});
+
+		const ctx: CliContext = {
+			...base,
+			interactive: false,
+			config: { ...base.config, upsertProfile: vi.fn(() => rollback) },
+		};
+
+		const error = await saveProfile('staging', 'https://cms.example.com', 'token-value-abcdefgh', ctx).catch(
+			(error: unknown) => error,
+		);
+
+		expect(error).toMatchObject({
+			code: 'STATE',
+			message: 'Could not save the profile credential, and restoring the previous profile also failed.',
+			hint: 'The profile may be partially updated. Inspect the configuration and credential store before retrying.',
+		});
+
+		expect((error as CliError).detail).toContain('Cannot read credential store');
+		expect((error as CliError).detail).toContain('configuration restore failed');
+		expect(rollback).toHaveBeenCalledOnce();
 	});
 
 	it('remove confirms first and keeps the profile on decline — the credential goes with it', async () => {
