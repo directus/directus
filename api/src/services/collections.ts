@@ -69,16 +69,21 @@ export class CollectionsService {
 
 		if (!('collection' in payload)) throw new InvalidPayloadError({ reason: `"collection" is required` });
 
-		if (typeof payload.collection !== 'string' || payload.collection === '') {
+		if (typeof payload.collection !== 'string' || payload.collection.trim() === '') {
 			throw new InvalidPayloadError({ reason: `"collection" must be a non-empty string` });
 		}
 
+		// Reject rather than trim: knex trims table identifiers, so a padded name would mismatch between `directus_collections.collection` and table name
+		if (payload.collection !== payload.collection.trim()) {
+			throw new InvalidPayloadError({ reason: `"collection" can't start or end with whitespace` });
+		}
+
 		if (payload.collection.startsWith('directus_')) {
-			throw new InvalidPayloadError({ reason: `Collections can't start with "directus_"` });
+			throw new InvalidPayloadError({ reason: `"collection" can't start with "directus_"` });
 		}
 
 		if (payload.collection.includes('/')) {
-			throw new InvalidPayloadError({ reason: `Collection name can't contain "/"` });
+			throw new InvalidPayloadError({ reason: `"collection" can't contain "/"` });
 		}
 
 		if (payload.schema && payload.meta && (!('status' in payload.meta) || payload.meta.status === 'active')) {
