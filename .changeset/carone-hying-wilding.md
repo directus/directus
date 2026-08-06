@@ -2,4 +2,4 @@
 '@directus/specs': patch
 ---
 
-Fixed OpenAPI spec drift on query parameters across list endpoints. Parameter lists are now consistently ordered to match the [query parameters documentation](https://directus.com/docs/guides/connect/query-parameters).
+Fixed OpenAPI spec drift, added missing query parameters, and ensured consistent parameter ordering across list endpoints.
