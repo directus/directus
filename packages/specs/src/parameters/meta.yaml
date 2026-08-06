@@ -14,3 +14,9 @@ schema:
         enum:
           - total_count
           - filter_count
+examples:
+  none:
+    summary: No metadata specified (default)
+  shorthand:
+    summary: Both total and filtered counts
+    value: '*'

@@ -57,6 +57,7 @@ properties:
             - filter_count
     description: >
       What metadata to return. `*` is shorthand for both `total_count` and `filter_count`.
+    example: '*'
   aggregate:
     type: object
     description: >
@@ -142,6 +143,7 @@ properties:
     description: >
       Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content
       Version.
+    example: site-redesign-2027
   versionRaw:
     type: boolean
     default: false
