@@ -97,8 +97,6 @@ const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, relatedPrim
 
 const { internalEdits, loading, initialValues, refresh, refreshSignal } = useItem();
 
-// Let interfaces holding data of their own (relational rows, for instance) refetch whenever this item
-// is re-read, e.g. after a manual flow updated it
 provideRefreshSignal(refreshSignal);
 
 const { save, cancel, overlayActive, applyShortcutFormatted } = useActions();

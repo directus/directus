@@ -48,8 +48,7 @@ export function useRelationMultiple(
 	const fetchedItems = ref<Record<string, any>[]>([]);
 	const existingItemCount = ref(0);
 
-	// These rows are fetched separately from the item they belong to, so a refresh of that item (after
-	// running a flow, for instance) has to be picked up here or the interface keeps showing stale rows
+	// Signal to the interface to that the parent item was refreshed and should refresh it's value
 	const refreshSignal = useRefreshSignal();
 
 	const { cleanItem, getPage, isLocalItem, getItemEdits, isEmpty } = useUtil();

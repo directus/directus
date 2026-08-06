@@ -199,8 +199,6 @@ const {
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKeyParam, currentVersion, isItemlessVersion);
 
-// Let interfaces holding data of their own (relational rows, for instance) refetch whenever the item
-// is re-read, e.g. after a manual flow updated it
 provideRefreshSignal(refreshSignal);
 
 watch(

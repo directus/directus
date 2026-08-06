@@ -550,8 +550,6 @@ export function useItem<T extends Item>(
 
 		item.value = null;
 
-		// Only bumped here, not on the initial load or on silent refetches, so consumers watching it
-		// don't duplicate the request they already make when they mount
 		refreshSignal.value++;
 
 		refreshItem();
