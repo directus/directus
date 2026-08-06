@@ -20,12 +20,16 @@ const AssetsInputSchema = z.object({
 
 export const assets = defineTool<z.infer<typeof AssetsValidateSchema>>({
 	name: 'assets',
-	description: requireText(resolve(__dirname, './prompt.md')),
+	description:
+		'Retrieves image or audio file bytes for model inspection. Use after finding a Directus file id that needs visual or audio analysis.',
+	instructions: requireText(resolve(__dirname, './prompt.md')),
+	keywords: ['image', 'audio', 'media', 'vision', 'base64', 'file contents'],
 	annotations: {
 		title: 'Directus - Assets',
 	},
 	inputSchema: AssetsInputSchema,
 	validateSchema: AssetsValidateSchema,
+	readOnly: true,
 	async handler({ args, schema, accountability }) {
 		const serviceOptions = {
 			accountability,

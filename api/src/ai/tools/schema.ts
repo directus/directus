@@ -3,6 +3,7 @@ import { z } from 'zod';
 // PK
 export const PrimaryKeyInputSchema = z.union([z.number(), z.string()]);
 export const PrimaryKeyValidateSchema = z.union([z.number(), z.string()]);
+export const PrimaryKeyOutputSchema = PrimaryKeyInputSchema;
 
 // item
 export const ItemInputSchema = z.record(z.string(), z.any());
@@ -60,6 +61,7 @@ export const FieldItemInputSchema = z.object({
 });
 
 export const FieldItemValidateSchema = FieldItemInputSchema;
+export const FieldItemOutputSchema = RawFieldItemInputSchema.partial().passthrough();
 
 // collection
 export const CollectionItemInputSchema = z.object({
@@ -78,6 +80,9 @@ export const CollectionItemValidateUpdateSchema = z.object({
 	meta: z.union([z.record(z.string(), z.any()), z.null()]).optional(),
 	schema: z.union([z.record(z.string(), z.any()), z.null()]).optional(),
 });
+export const CollectionItemOutputSchema = CollectionItemInputSchema.partial()
+	.required({ collection: true })
+	.passthrough();
 
 // file
 export const FileItemInputSchema = z
@@ -112,6 +117,7 @@ export const FileItemInputSchema = z
 	.partial();
 
 export const FileItemValidateSchema = FileItemInputSchema;
+export const FileItemOutputSchema = FileItemInputSchema.passthrough();
 
 export const FileImportItemInputSchema = z.object({
 	url: z.string(),
@@ -191,6 +197,9 @@ export const FolderItemInputSchema = z.object({
 });
 
 export const FolderItemValidateSchema = FolderItemInputSchema;
+export const FolderItemOutputSchema = FolderItemInputSchema.extend({
+	parent: z.union([z.string(), z.null()]).optional(),
+}).passthrough();
 
 // relation
 export const RelationItemInputSchema = z.object({
@@ -200,6 +209,9 @@ export const RelationItemInputSchema = z.object({
 	schema: z.union([z.record(z.string(), z.any()), z.null()]),
 	meta: z.union([z.record(z.string(), z.any()), z.null()]),
 });
+export const RelationItemOutputSchema = RelationItemInputSchema.partial()
+	.required({ collection: true, field: true })
+	.passthrough();
 
 const RelationMetaSchema = z.object({
 	id: z.number(),
