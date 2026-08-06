@@ -45,6 +45,18 @@ describe('getClientBetterSQLite3', () => {
 			]);
 		});
 
+		test('unwraps a Date, which knex would otherwise reduce to an epoch double downstream of here', () => {
+			const when = new Date('2026-08-06T12:34:56.789Z');
+
+			expect(createClient().prepBindings([when])).toEqual([1786019696789n]);
+		});
+
+		test('leaves an invalid Date to knex, whose _formatBindings reduces it to NaN', () => {
+			const invalid = new Date('nope');
+
+			expect(createClient().prepBindings([invalid])).toEqual([invalid]);
+		});
+
 		test('leaves every other binding untouched', () => {
 			// a non-integral double already renders as the digits we want, and can't convert anyway
 			expect(createClient().prepBindings([91.97, Infinity, NaN])).toEqual([91.97, Infinity, NaN]);

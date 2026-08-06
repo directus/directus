@@ -152,6 +152,37 @@ describe('getDatabase with DB_CLIENT=sqlite3', () => {
 		expect(await database.raw('select 1 as one')).toEqual([{ one: 1 }]);
 	});
 
+	test('binds a Date as an integer epoch, ahead of the dialect reducing it to a double', async () => {
+		const { getDatabase } = await import('./index.js');
+		database = getDatabase();
+
+		// knex compiles every Directus date field type to `date` or `datetime`, both NUMERIC affinity,
+		// which stores a lossless REAL back as an INTEGER. `label` stands in for a TEXT affinity column,
+		// where the epoch would otherwise land as "1786019696789.0"
+		await database.schema.createTable('events', (table) => {
+			table.timestamp('occurred_at');
+			table.date('occurred_on');
+			table.string('label', 255);
+		});
+
+		const when = new Date('2026-08-06T12:34:56.789Z');
+
+		await database('events').insert({ occurred_at: when, occurred_on: when, label: when });
+
+		const [row] = await database.raw(
+			`select occurred_at, typeof(occurred_at) as at_type, occurred_on, label from events`,
+		);
+
+		expect(row).toEqual({
+			occurred_at: when.valueOf(),
+			at_type: 'integer',
+			occurred_on: when.valueOf(),
+			label: String(when.valueOf()),
+		});
+
+		expect(new Date(row.occurred_at).toISOString()).toBe(when.toISOString());
+	});
+
 	test('leaves floats and unsafe integers on the double binding path', async () => {
 		const { getDatabase } = await import('./index.js');
 		database = getDatabase();

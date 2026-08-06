@@ -29,6 +29,10 @@ export function getClientBetterSQLite3(): typeof Knex.Client {
 		 * so `91.97` already stringifies to `"91.97"`. Past int64 the driver rejects the BigInt outright,
 		 * so those keep the double path, as do `Infinity` and `NaN` via `Number.isInteger`.
 		 *
+		 * A `Date` is unwrapped here as well. knex's own `_formatBindings` reduces one to `valueOf()`, but
+		 * that runs in `_query`, downstream of this, so the epoch would otherwise reach the driver as a
+		 * double.
+		 *
 		 * An id beyond 2^53 is past rescuing here: `safeIntegers` stays off, so SQLite hands it back
 		 * imprecise before it is ever rebound.
 		 */
@@ -39,11 +43,14 @@ export function getClientBetterSQLite3(): typeof Knex.Client {
 			if (!Array.isArray(prepared)) return prepared;
 
 			return prepared.map((binding) => {
-				if (typeof binding !== 'number' || !Number.isInteger(binding)) {
+				// An invalid Date falls through to knex's own handling
+				const value = binding instanceof Date ? binding.valueOf() : binding;
+
+				if (typeof value !== 'number' || !Number.isInteger(value)) {
 					return binding;
 				}
 
-				const asBigInt = BigInt(binding);
+				const asBigInt = BigInt(value);
 
 				if (asBigInt < MIN_SAFE_INT64 || asBigInt > MAX_SAFE_INT64) {
 					return binding;
