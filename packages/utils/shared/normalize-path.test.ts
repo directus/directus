@@ -88,6 +88,10 @@ describe('normalizePath', () => {
 		it('handles path without leading slash with removeLeading true', () => {
 			expect(normalizePath('a/b/c', { removeLeading: true })).toBe('a/b/c');
 		});
+
+		it('removes the leading slash from a backslash-rooted path', () => {
+			expect(normalizePath('\\a\\b\\c', { removeLeading: true })).toBe('a/b/c');
+		});
 	});
 
 	describe('edge cases', () => {

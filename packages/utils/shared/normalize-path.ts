@@ -32,7 +32,10 @@ export const normalizePath = (
 
 	const normalizedPath = prefix + segments.join('/');
 
-	if (removeLeading && path.startsWith('/')) {
+	// Check the normalized path, not the raw input: a backslash-rooted path such
+	// as `\a\b\c` becomes `/a/b/c` after normalization, and its leading slash
+	// should be removed too. The UNC prefix (`prefix`) is left untouched.
+	if (removeLeading && !prefix && normalizedPath.startsWith('/')) {
 		return normalizedPath.substring(1);
 	}
 
