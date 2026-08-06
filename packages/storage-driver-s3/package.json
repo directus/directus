@@ -34,7 +34,10 @@
 		"@shopify/semaphore": "catalog:",
 		"@smithy/node-http-handler": "catalog:",
 		"@tus/utils": "catalog:",
-		"ms": "catalog:"
+		"http-proxy-agent": "catalog:",
+		"https-proxy-agent": "catalog:",
+		"ms": "catalog:",
+		"proxy-from-env": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
