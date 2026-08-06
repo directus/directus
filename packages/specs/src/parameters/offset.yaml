@@ -1,6 +1,5 @@
 description: >
-  How many items to skip when fetching data. Can be used for pagination. If `page` is also provided, `page` silently
-  overrides this value.
+  How many items to skip when fetching data. Can be used for pagination. Overridden by `page` if both are provided.
 in: query
 name: offset
 required: false

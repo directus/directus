@@ -1,6 +1,5 @@
 description: >
-  What metadata to return. `*` is shorthand for both `total_count` (unfiltered count) and `filter_count` (count after
-  filters and search are applied). Omit to skip metadata.
+  What metadata to return. `*` is shorthand for both `total_count` and `filter_count`.
 in: query
 name: meta
 required: false

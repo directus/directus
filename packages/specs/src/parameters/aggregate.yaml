@@ -1,10 +1,6 @@
 description: >
-  Aggregate functions allow you to perform calculations on a set of values, returning a single result. Each key is an
-  aggregate function name, and each value is an array of field names to apply it to.
-
-
-  `count` also accepts `*` in place of a field name, to count all items regardless of field. `countAll` exists in
-  GraphQL only; it is not usable via REST.
+  Perform calculations on a set of values. Each key is an aggregate function name, and each value is the field(s) to
+  apply it to. `count` also accepts `*` to count all items regardless of field.
 in: query
 name: aggregate
 required: false

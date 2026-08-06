@@ -1,6 +1,5 @@
 description: >
-  Deep allows you to set any of the other query parameters on a nested relational dataset. URL form:
-  `?deep[related_articles][_limit]=3`.
+  Set any other query parameter, except `fields` and `deep` itself, on a nested relational dataset.
 in: query
 name: deep
 required: false

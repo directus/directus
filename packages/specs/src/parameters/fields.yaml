@@ -1,13 +1,6 @@
 description: >
-  Control what fields are returned in the response.
-
-
-  Supports dot notation for related fields (e.g. `author.name`) and wildcards (`*` for all fields, `*.*` for one level
-  of relations).
-
-
-  Also supports Many-to-Any (M2A) collection-scoping (`field:collection.field`) and field functions (e.g.
-  `year(date_published)`). Nested functions are not supported.
+  Control what fields are returned in the response. Supports dot notation for related fields, wildcards (`*`, `*.*`),
+  Many-to-Any (M2A) collection-scoping (`field:collection.field`), and field functions (`year(date_published)`).
 in: query
 name: fields
 required: false

@@ -1,6 +1,5 @@
 description: >
-  Set the maximum number of items that will be returned. Defaults to 100. `-1` returns all items, unless the
-  `QUERY_LIMIT_MAX` environment variable is configured, in which case the limit is capped there instead.
+  Set the maximum number of items that will be returned. Defaults to 100. `-1` returns all items.
 in: query
 name: limit
 required: false
@@ -14,5 +13,5 @@ examples:
     summary: Fixed limit
     value: 50
   unlimited:
-    summary: All items (unless QUERY_LIMIT_MAX is configured)
+    summary: All items
     value: -1

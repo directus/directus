@@ -1,7 +1,6 @@
 description: >
-  An alternative to `offset`. The returned page is `limit` items wide; the first page is `1`. Uses `limit` if provided,
-  otherwise the `QUERY_LIMIT_DEFAULT` environment variable - unless `limit` is `-1` (unlimited), in which case `page`
-  has no effect. If `offset` is also provided, this value silently overrides it.
+  An alternative to `offset`. Pages through results in `limit`-sized increments starting at page `1`. Overrides `offset`
+  if both are provided.
 in: query
 name: page
 required: false

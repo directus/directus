@@ -1,8 +1,7 @@
 description: >
-  Filter by items that contain the given search query in one of their fields. Matches case-insensitively against
-  `string`/`text` fields. Search is limited to fields that are tagged as searchable in the data studio (*2m fields are
-  not searched). If the search value itself parses as a number or a valid UUID, numeric and UUID fields are also matched
-  (exactly, not as a substring).
+  Filter by items that contain the given search query. Matches case-insensitively against `string`/`text` fields;
+  relational fields are not searched. If the value parses as a number or UUID, numeric and UUID fields are also matched
+  exactly.
 in: query
 name: search
 required: false

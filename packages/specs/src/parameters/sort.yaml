@@ -1,7 +1,6 @@
 description: >
-  How to sort the returned items. Sorting defaults to ascending order; prefix a field with `-` to reverse to descending.
-  Fields are prioritized in the order given. Dot notation is used to sort by values of related fields. Field functions
-  (e.g. `year(date_created)`) are also supported.
+  How to sort the returned items. Prefix a field with `-` for descending order. Supports dot notation for related fields
+  and field functions (`year(date_created)`).
 in: query
 name: sort
 required: false

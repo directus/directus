@@ -1,6 +1,4 @@
-description: >
-  Select items in the collection that match the given filter conditions.
-  https://directus.com/docs/guides/connect/filter-rules#available-operators
+description: Select items in the collection that match the given filter conditions.
 in: query
 name: filter
 required: false

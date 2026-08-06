@@ -7,50 +7,44 @@ properties:
     description: >
       Control what fields are returned in the response. Supports dot notation for related fields, wildcards (`*`,
       `*.*`), Many-to-Any (M2A) collection-scoping (`field:collection.field`), and field functions
-      (`year(date_published)`). Nested functions are not supported.
+      (`year(date_published)`).
     example: ['title', 'author.name', '*.*']
   filter:
     type: object
-    description: >
-      Select items in the collection that match the given filter conditions.
-      https://directus.com/docs/guides/connect/filter-rules#available-operators
+    description: Select items in the collection that match the given filter conditions.
+    example: { 'title': { '_eq': 'Hello' } }
   search:
     type: string
     description: >
-      Filter by items that contain the given search query in one of their fields. Matches case-insensitively against
-      `string`/`text` fields. Search is limited to fields that are tagged as searchable in the data studio (*2m fields
-      are not searched). If the search value itself parses as a number or a valid UUID, numeric and UUID fields are also
-      matched (exactly, not as a substring).
+      Filter by items that contain the given search query. Matches case-insensitively against `string`/`text` fields;
+      relational fields are not searched. If the value parses as a number or UUID, numeric and UUID fields are also
+      matched exactly.
   sort:
     type: array
     items:
       type: string
     description: >
-      How to sort the returned items. Sorting defaults to ascending order; prefix a field with `-` to reverse to
-      descending. Fields are prioritized in the order given. Dot notation is used to sort by values of related fields.
-      Field functions (e.g. `year(date_created)`) are also supported.
+      How to sort the returned items. Prefix a field with `-` for descending order. Supports dot notation for related
+      fields and field functions (`year(date_created)`).
     example: ['-date_created']
   limit:
     type: integer
     minimum: -1
     description: >
-      Set the maximum number of items that will be returned. Defaults to 100. `-1` returns all items, unless the
-      `QUERY_LIMIT_MAX` environment variable is configured, in which case the limit is capped there instead.
+      Set the maximum number of items that will be returned. Defaults to 100. `-1` returns all items.
     example: 50
   offset:
     type: integer
     minimum: 0
     description: >
-      How many items to skip when fetching data. Can be used for pagination. If `page` is also provided, `page` silently
-      overrides this value.
+      How many items to skip when fetching data. Can be used for pagination. Overridden by `page` if both are provided.
     example: 100
   page:
     type: integer
     minimum: 0
     description: >
-      An alternative to `offset`. The returned page is `limit` items wide; the first page is `1`. Uses `limit` if
-      provided, otherwise the `QUERY_LIMIT_DEFAULT` environment variable - unless `limit` is `-1` (unlimited), in which
-      case `page` has no effect. If `offset` is also provided, this value silently overrides it.
+      An alternative to `offset`. Pages through results in `limit`-sized increments starting at page `1`. Overrides
+      `offset` if both are provided.
     example: 2
   meta:
     type: array
@@ -60,15 +54,12 @@ properties:
         - total_count
         - filter_count
     description: >
-      What metadata to return. `*` is shorthand for both `total_count` (unfiltered count) and `filter_count` (count
-      after filters and search are applied). Omit to skip metadata.
+      What metadata to return. `*` is shorthand for both `total_count` and `filter_count`.
   aggregate:
     type: object
     description: >
-      Aggregate functions allow you to perform calculations on a set of values, returning a single result. Each key is
-      an aggregate function name, and each value is an array of field names to apply it to. `count` also accepts `*` in
-      place of a field name, to count all items regardless of field. `countAll` exists in GraphQL only; it is not usable
-      via REST.
+      Perform calculations on a set of values. Each key is an aggregate function name, and each value is the field(s) to
+      apply it to. `count` also accepts `*` to count all items regardless of field.
     properties:
       count:
         type: array
@@ -111,13 +102,13 @@ properties:
     example: ['status']
   deep:
     type: object
-    description: Deep allows you to set any of the other query parameters on a nested relational dataset.
+    description: Set any other query parameter, except `fields` and `deep` itself, on a nested relational dataset.
     example: { 'related_articles': { '_limit': 3 } }
   alias:
     type: object
     description: >
-      Rename fields on the fly, so you can request the same field multiple times using different relational paths,
-      filters, or aggregations.
+      Rename fields on the fly, so the same field can be requested multiple times under different paths, filters, or
+      aggregations. The alias must reference a same-collection field or field function; it cannot contain a period.
     example: { 'author_name': 'author.name' }
   export:
     type: string
@@ -142,5 +133,4 @@ properties:
     default: true
     description: >
       Toggle whether reverse-relational fields are included when expanding a `*.*` wildcard. Explicitly specified field
-      names are not affected, so `fields=author.articles` still includes the reverse relation even when `backlink` is
-      `false`.
+      names are not affected.
