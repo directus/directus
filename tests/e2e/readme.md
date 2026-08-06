@@ -60,7 +60,7 @@ test('Pinging the API', async () => {
 To make it simpler to write tests that require custom tables, the test suite provides a `useSnapshot` function. This
 function loads the `snaphot.json` file located in the same folder the test is located and applies the schema to the
 database when called. The function ensures uniqueness of collection names by replacing all `_1234` suffixes with a
-unique prefix. To improve type savety, an additional Schema can be provided. All collection names can be then accessed
+unique prefix. To improve type safety, an additional Schema can be provided. All collection names can be then accessed
 through the `collections` property of the returned snapshot.
 
 ```ts
