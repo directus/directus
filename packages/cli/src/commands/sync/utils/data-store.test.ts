@@ -2,7 +2,13 @@ import { mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileS
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { assertDataSource, type DataCollection, hasCommittedCollection, readDataFiles, writeDataFiles } from './data-store.js';
+import {
+	assertDataSource,
+	type DataCollection,
+	hasCommittedCollection,
+	readDataFiles,
+	writeDataFiles,
+} from './data-store.js';
 import { expectCliError } from './test-support.js';
 
 const OWNED = /^[a-z0-9-]*_[0-9a-f]{16}\.json$/;
