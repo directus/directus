@@ -7,7 +7,7 @@ name: page
 required: false
 schema:
   type: integer
-  minimum: 1
+  minimum: 0
 examples:
   none:
     summary: No page specified (default)
