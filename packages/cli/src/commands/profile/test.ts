@@ -57,15 +57,18 @@ export async function testProfile(nameArg: string | undefined, options: TestOpti
 			: { target: 'url', url, tokenFlag: options.token },
 	);
 
+	// Without a credential the only way forward is to ask for one, so a terminal is a precondition here.
+	if (credential === undefined && !ctx.interactive) {
+		throw new CliError('AUTH', `No token found for ${name !== undefined ? `"${name}"` : url}.`, {
+			hint: name !== undefined ? `Set ${envTokenVar(name)} or pass --token.` : 'Pass --token to test a URL directly.',
+		});
+	}
+
 	let identity: Identity;
 
 	if (credential !== undefined) {
 		await refreshSessionIfNeeded(credential);
 		identity = await testConnection(credential);
-	} else if (!ctx.interactive) {
-		throw new CliError('AUTH', `No token found for ${name !== undefined ? `"${name}"` : url}.`, {
-			hint: name !== undefined ? `Set ${envTokenVar(name)} or pass --token.` : 'Pass --token to test a URL directly.',
-		});
 	} else {
 		const method =
 			name !== undefined

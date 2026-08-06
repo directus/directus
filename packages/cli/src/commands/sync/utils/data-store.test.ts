@@ -1,8 +1,8 @@
-import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { type DataCollection, hasCommittedCollection, readDataFiles, writeDataFiles } from './data-store.js';
+import { assertDataSource, type DataCollection, hasCommittedCollection, readDataFiles, writeDataFiles } from './data-store.js';
 import { expectCliError } from './test-support.js';
 
 const OWNED = /^[a-z0-9-]*_[0-9a-f]{16}\.json$/;
@@ -170,6 +170,29 @@ describe('hasCommittedCollection', () => {
 
 		expect(hasCommittedCollection(dir, 'directus_roles')).toBe(true);
 		expect(hasCommittedCollection(dir, 'directus_users')).toBe(false);
+	});
+
+	// A cloned repo can carry a symlink where the manifest belongs. The write path already refused one; the
+	// read path used to follow it, so a manifest outside the project could decide what the pull preserved.
+	it('refuses a symlinked manifest instead of reading through it', () => {
+		const dir = tempDir();
+		writeDataFiles(dir, fixture(), SOURCE);
+
+		const outside = tempDir();
+		const escaped = join(outside, 'metadata.json');
+		const metadataPath = join(dir, 'metadata.json');
+
+		writeFileSync(escaped, readFileSync(metadataPath, 'utf8'));
+		rmSync(metadataPath, { force: true });
+		symlinkSync(escaped, metadataPath);
+
+		const error = expectCliError(() => assertDataSource(dir, SOURCE));
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain('metadata.json is not a regular file');
+
+		// Tolerant readers stay tolerant: a symlink is untrustworthy, not a reason to block the healing pull.
+		expect(hasCommittedCollection(dir, 'directus_roles')).toBe(false);
 	});
 
 	it('answers false, never throws, on a corrupt manifest — pull must stay able to heal it', () => {

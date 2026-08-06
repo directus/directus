@@ -99,8 +99,25 @@ function loadJson(path: string, name: string, hint?: string): unknown {
 	}
 }
 
-function loadManifest(dir: string, invalidMessage: string, hint?: string): { files: string[]; metadata: unknown } {
+/** The ownership manifest as stored: the file list it claims, and the metadata its store wrote alongside. */
+export interface Manifest {
+	readonly files: string[];
+	readonly metadata: unknown;
+}
+
+/**
+ * The stored manifest, or undefined when the directory holds none. Throws when one exists but cannot be
+ * trusted: a symlink out of the artifact root, unreadable, not JSON, not an object, or no `files` array.
+ * Every manifest read goes through here so a store cannot accidentally read one on laxer terms.
+ */
+export function readManifest(
+	dir: string,
+	options: { invalid?: string | undefined; hint?: string | undefined } = {},
+): Manifest | undefined {
+	const { invalid = `${METADATA_FILE} is not a valid manifest.`, hint } = options;
 	const path = join(dir, METADATA_FILE);
+
+	if (!existsSync(path)) return undefined;
 
 	// lstat prevents manifest symlinks from escaping the artifact root.
 	if (!lstatSync(path).isFile()) {
@@ -110,7 +127,7 @@ function loadManifest(dir: string, invalidMessage: string, hint?: string): { fil
 	const metadata = loadJson(path, METADATA_FILE, hint);
 
 	if (!isPlainObject(metadata)) {
-		throw new CliError('STATE', invalidMessage, { hint });
+		throw new CliError('STATE', invalid, { hint });
 	}
 
 	const manifest = manifestSchema.safeParse(metadata);
@@ -122,12 +139,16 @@ function loadManifest(dir: string, invalidMessage: string, hint?: string): { fil
 	return { files: manifest.data.files, metadata };
 }
 
-function readManifest(dir: string, hint: string): { files: string[]; metadata: unknown } {
-	const path = join(dir, METADATA_FILE);
-
-	if (!existsSync(path)) return { files: [], metadata: undefined };
-
-	return loadManifest(dir, `${METADATA_FILE} is not a valid manifest.`, hint);
+/**
+ * The stored manifest, or undefined when there is none *and* when it cannot be trusted. For the readers
+ * that must survive corruption so a later pull can still heal the directory.
+ */
+export function readIntactManifest(dir: string): Manifest | undefined {
+	try {
+		return readManifest(dir);
+	} catch {
+		return undefined;
+	}
 }
 
 function readArtifact<T extends Artifact>(dir: string, name: string, parse: (value: unknown, name: string) => T): T {
@@ -156,7 +177,7 @@ function readArtifact<T extends Artifact>(dir: string, name: string, parse: (val
 /** Write artifact files, remove stale owned files, then update the ownership manifest. */
 export function writeArtifacts<T extends Artifact>(options: WriteArtifactsOptions<T>): ArtifactWriteResult {
 	const { dir, artifacts, body, manifestHint, metadata, preserve } = options;
-	const previous = readManifest(dir, manifestHint);
+	const previous = readManifest(dir, { hint: manifestHint });
 	const byName = new Map<string, T>();
 
 	for (const artifact of artifacts) {
@@ -178,7 +199,7 @@ export function writeArtifacts<T extends Artifact>(options: WriteArtifactsOption
 	const removed: string[] = [];
 
 	// Validate the previous generation before changing any file.
-	for (const name of previous.files) {
+	for (const name of previous?.files ?? []) {
 		if (targets.has(name) || !OWNED_FILE.test(name)) continue;
 
 		// Forgetting a missing owned file could turn local corruption into remote mirror deletion.
@@ -204,7 +225,7 @@ export function writeArtifacts<T extends Artifact>(options: WriteArtifactsOption
 
 	// Write ownership last so it never names files this call has not processed.
 	const files = [...written, ...preserved].sort(byCodepoint);
-	const serializedMetadata = serializeCanonical(metadata({ files, preserved, previousMetadata: previous.metadata }));
+	const serializedMetadata = serializeCanonical(metadata({ files, preserved, previousMetadata: previous?.metadata }));
 
 	mkdirSync(dir, { recursive: true });
 
@@ -221,13 +242,12 @@ export function readArtifacts<T extends Artifact, M>(
 	options: ReadArtifactsOptions<T, M>,
 ): { metadata: M; artifacts: T[] } {
 	const { dir, kind, missing, missingHint, parseMetadata, parseArtifact } = options;
-	const metadataPath = join(dir, METADATA_FILE);
+	const manifest = readManifest(dir, { invalid: `${METADATA_FILE} is not a ${kind} file.` });
 
-	if (!existsSync(dir) || !existsSync(metadataPath)) {
+	if (manifest === undefined) {
 		throw new CliError('STATE', missing, { hint: missingHint });
 	}
 
-	const manifest = loadManifest(dir, `${METADATA_FILE} is not a ${kind} file.`);
 	const metadata = parseMetadata(manifest.metadata);
 	const artifacts: T[] = [];
 	const seen = new Set<string>();

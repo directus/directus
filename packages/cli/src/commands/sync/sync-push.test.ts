@@ -173,10 +173,10 @@ describe('sync push', () => {
 		expect(err).toContain('Version mismatch');
 		expect(err).toContain('11.2.0');
 		expect(err).toContain('11.2.5');
-		expect(err).toContain('--allow-version-drift');
+		expect(err).toContain('--allow-drift');
 	});
 
-	it('--allow-version-drift sends force to /schema/diff and says so out loud', async () => {
+	it('--allow-drift sends force to /schema/diff and says so out loud', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -193,10 +193,96 @@ describe('sync push', () => {
 				return '';
 			});
 
-		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--allow-version-drift')).toBe(0);
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--allow-drift')).toBe(0);
 
 		expect(diffQuery).toContain('force=true');
-		expect(stderr.join('')).toContain('Version drift forced');
+		expect(stderr.join('')).toContain('Compatibility check bypassed');
+	});
+
+	// The vendor gate is the half the CLI cannot see, so the flag has to clear it on a version the CLI CAN see
+	// matching — the version-conditioned bypass this replaced left cross-vendor pushes with no way through.
+	it('--allow-drift sends force even when the versions match, so the vendor gate is reachable', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptServerInfo('11.2.0');
+
+		let diffQuery: string | undefined;
+
+		agent
+			.get(url)
+			.intercept({ path: (path: string) => path.startsWith('/schema/diff'), method: 'POST' })
+			.reply(204, (opts) => {
+				diffQuery = String(opts.path).split('?')[1];
+				return '';
+			});
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--allow-drift')).toBe(0);
+
+		expect(diffQuery).toContain('force=true');
+		expect(stderr.join('')).toContain('Compatibility check bypassed');
+	});
+
+	it('names the flag when the target refuses the snapshot over its vendor', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptServerInfo('11.2.0');
+
+		agent
+			.get(url)
+			.intercept({ path: (path: string) => path.startsWith('/schema/diff'), method: 'POST' })
+			.reply(
+				400,
+				{
+					errors: [
+						{
+							message: `Provided snapshot's vendor postgres does not match the current instance's vendor sqlite. You can bypass this check by passing the "force" query parameter`,
+							extensions: { code: 'INVALID_PAYLOAD' },
+						},
+					],
+				},
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+
+		const err = stderr.join('');
+		expect(err).toContain('refused the snapshot as incompatible');
+		expect(err).toContain('--allow-drift');
+		expect(err).toContain('vendor sqlite');
+	});
+
+	it('leaves a payload error force cannot clear without the flag hint', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptServerInfo('11.2.0');
+
+		agent
+			.get(url)
+			.intercept({ path: (path: string) => path.startsWith('/schema/diff'), method: 'POST' })
+			.reply(
+				400,
+				{
+					errors: [
+						{
+							message: `"fields[0].type" must be one of [string, text, boolean]`,
+							extensions: { code: 'INVALID_PAYLOAD' },
+						},
+					],
+				},
+				{ headers: { 'content-type': 'application/json' } },
+			);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+
+		const err = stderr.join('');
+		expect(err).toContain('must be one of');
+		expect(err).not.toContain('--allow-drift');
 	});
 
 	it('leaves an unparseable version to the server gate instead of refusing on a guess', async () => {

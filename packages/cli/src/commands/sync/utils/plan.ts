@@ -92,6 +92,13 @@ export function claimedTemporaryKeys(
 	return claimed;
 }
 
+/** Name the claimed records. Shared so the diff preview and the push refusal cannot describe them differently. */
+export function claimedKeyLines(claimed: readonly ClaimedTemporaryKey[]): string[] {
+	return claimed.map(
+		(key) => `${key.collection}: source ${key.sourceId} — temporary key ${key.sentPk} is already a target record`,
+	);
+}
+
 /** The schema half of a sync plan: what the target would change, and whether the phase ran at all. */
 export interface SchemaPlan {
 	/** null when the target already matches the stored snapshot, or when the phase is disabled. */
@@ -107,12 +114,12 @@ export interface SchemaPlan {
 
 /**
  * Build the schema plan both sync commands work from. Diff must not preview what push refuses, so the
- * version gate, the disabled-phase disclosure, and the snapshot being compared are decided in one place.
+ * compatibility gate, the disabled-phase disclosure, and the snapshot being compared are decided in one place.
  */
 export async function planSchema(
 	target: Target,
 	mode: SyncMode,
-	allowVersionDrift: boolean,
+	allowDrift: boolean,
 	ctx: CliContext,
 ): Promise<SchemaPlan> {
 	const { credential, projectConfig, schemaDir } = target;
@@ -132,7 +139,7 @@ export async function planSchema(
 	await refreshSessionIfNeeded(credential);
 
 	const result =
-		snapshot === null ? null : await fetchSnapshotDiff(target, snapshot, schemaDiffMode(mode), allowVersionDrift, ctx);
+		snapshot === null ? null : await fetchSnapshotDiff(target, snapshot, schemaDiffMode(mode), allowDrift, ctx);
 
 	const summary = summarizeDiff(result === null ? null : result.diff);
 

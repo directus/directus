@@ -5,6 +5,7 @@ import { count } from '../../kernel/text.js';
 import type { ImportBatchResult } from './utils/contract.js';
 import { type DataPreviewPlan, previewData } from './utils/data-push.js';
 import {
+	claimedKeyLines,
 	claimedTemporaryKeys,
 	convergedMessage,
 	type DataComparisonCounts,
@@ -26,8 +27,8 @@ export interface DiffOptions {
 	 * precedence push uses.
 	 */
 	readonly mode?: SyncMode;
-	/** The server's own sanctioned bypass of its exact-version/vendor gate on /schema/diff, made explicit. */
-	readonly allowVersionDrift?: boolean;
+	/** The server's own sanctioned bypass of its version and vendor gates on /schema/diff, made explicit. */
+	readonly allowDrift?: boolean;
 	readonly project: string;
 }
 
@@ -43,8 +44,8 @@ export function registerDiff(command: Command, getContext: () => CliContext): vo
 			).choices(MODES),
 		)
 		.option(
-			'--allow-version-drift',
-			'Diff despite a snapshot/target Directus version mismatch; without it an exact match is required',
+			'--allow-drift',
+			'Diff despite a snapshot/target Directus version or database vendor mismatch; without it both must match',
 		)
 		.option('--project <name>', 'Project scope to sync (default: default)', 'default')
 		.action((options: DiffOptions) => diff(options, getContext()));
@@ -73,7 +74,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	ctx.ui.info(`Comparing ${projectPath} with ${options.to} — ${url} (${describeMode(mode)})`);
 
-	const schema = await planSchema(target, mode, options.allowVersionDrift ?? false, ctx);
+	const schema = await planSchema(target, mode, options.allowDrift ?? false, ctx);
 
 	const preview = await previewData(target, mode);
 
@@ -99,12 +100,10 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 			const claimed = claimedTemporaryKeys(dry.result, preview.systemSent);
 
 			if (claimed.length > 0) {
+				const lines = claimedKeyLines(claimed);
+
 				ctx.ui.warn(
-					`The dry run matched ${count(claimed.length, 'temporary key')} to real target records hidden from list reads (${claimed
-						.map((key) => `${key.collection} ${key.sentPk}`)
-						.join(
-							', ',
-						)}) — the plan prices ${claimed.length === 1 ? 'it' : 'them'} as ${claimed.length === 1 ? 'an update' : 'updates'}, and push will refuse this state.`,
+					`The dry run matched ${count(claimed.length, 'temporary key')} to real target records hidden from list reads, so the plan prices ${claimed.length === 1 ? 'it' : 'them'} as ${claimed.length === 1 ? 'an update' : 'updates'}. Push will refuse this state.\n  ${lines.join('\n  ')}`,
 				);
 			}
 		}

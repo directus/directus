@@ -108,7 +108,7 @@ describe('sync diff', () => {
 		expect(out).toContain('(meta.note)');
 	});
 
-	it('honors the version gate and --allow-version-drift like push — diff must not preview what push refuses', async () => {
+	it('honors the version gate and --allow-drift like push — diff must not preview what push refuses', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
@@ -127,8 +127,8 @@ describe('sync diff', () => {
 			.intercept({ path: '/schema/diff', method: 'POST', query: { mode: 'merge', force: 'true' } })
 			.reply(204, '');
 
-		expect(await d6s('sync', 'diff', '--to', 'staging', '--allow-version-drift')).toBe(0);
-		expect(stderr.join('')).toContain('Version drift forced');
+		expect(await d6s('sync', 'diff', '--to', 'staging', '--allow-drift')).toBe(0);
+		expect(stderr.join('')).toContain('Compatibility check bypassed');
 	});
 
 	it('emits a machine payload of changes:true with the counts and diff hash on --json', async () => {
@@ -365,8 +365,11 @@ describe('sync diff with data', () => {
 		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
 
 		const warned = stderr.join('');
-		expect(warned).toContain('directus_permissions -1');
-		expect(warned).toContain('push will refuse');
+
+		// The same line push refuses with, source id included: a preview that named fewer records than the
+		// refusal would leave the reader unable to find what push is about to stop on.
+		expect(warned).toContain('directus_permissions: source 4 — temporary key -1 is already a target record');
+		expect(warned).toContain('Push will refuse');
 		expect(existsSync(idMapPath)).toBe(false);
 	});
 

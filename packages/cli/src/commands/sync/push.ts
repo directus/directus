@@ -10,6 +10,7 @@ import type { ImportBatchResult } from './utils/contract.js';
 import { prepareDataPush, recordImportedIds } from './utils/data-push.js';
 import { readDataFiles } from './utils/data-store.js';
 import {
+	claimedKeyLines,
 	claimedTemporaryKeys,
 	convergedMessage,
 	dataImportOptions,
@@ -33,8 +34,8 @@ export interface PushOptions {
 	readonly mode?: SyncMode;
 	/** Deliberately loud flag name, mirroring the API's import parameter — the one consent for deletions. */
 	readonly dangerouslyAllowDelete?: boolean;
-	/** The server's own sanctioned bypass of its exact-version/vendor gate on /schema/diff, made explicit. */
-	readonly allowVersionDrift?: boolean;
+	/** The server's own sanctioned bypass of its version and vendor gates on /schema/diff, made explicit. */
+	readonly allowDrift?: boolean;
 	readonly yes?: boolean;
 	readonly project: string;
 }
@@ -55,8 +56,8 @@ export function registerPush(command: Command, getContext: () => CliContext): vo
 			'Include deletions; without it deletions are refused outside interactive confirmation',
 		)
 		.option(
-			'--allow-version-drift',
-			'Push despite a snapshot/target Directus version mismatch; without it an exact match is required',
+			'--allow-drift',
+			'Push despite a snapshot/target Directus version or database vendor mismatch; without it both must match',
 		)
 		.option('--yes', 'Skip the apply confirmation; never authorizes deletions')
 		.option('--project <name>', 'Project scope to sync (default: default)', 'default')
@@ -91,7 +92,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		if (committed !== undefined && committed.collections.length > 0) throw mirrorConsentRefusal(projectPath);
 	}
 
-	const schema = await planSchema(target, mode, options.allowVersionDrift ?? false, ctx);
+	const schema = await planSchema(target, mode, options.allowDrift ?? false, ctx);
 
 	const dataResult = await prepareDataPush(target, mode, ctx);
 
@@ -145,9 +146,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 			const claimed = claimedTemporaryKeys(dry.result, dataResult.systemSent);
 
 			if (claimed.length > 0) {
-				const lines = claimed.map(
-					(key) => `${key.collection}: source ${key.sourceId} — temporary key ${key.sentPk} is already a target record`,
-				);
+				const lines = claimedKeyLines(claimed);
 
 				throw new CliError(
 					'STATE',

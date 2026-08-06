@@ -1,10 +1,18 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import { z } from 'zod';
 import { isSafeUrl } from '../../../kernel/config/file.js';
 import { CliError } from '../../../kernel/error.js';
-import { type ArtifactWriteResult, fileName, METADATA_FILE, readArtifacts, writeArtifacts } from './artifact-store.js';
+import {
+	type ArtifactWriteResult,
+	fileName,
+	METADATA_FILE,
+	readArtifacts,
+	readIntactManifest,
+	readManifest,
+	writeArtifacts,
+} from './artifact-store.js';
 import { byCodepoint } from './codepoint.js';
 import { normalizeInstanceUrl } from './id-map.js';
 import { allResources } from './resources.js';
@@ -161,26 +169,11 @@ function interpretMetadata(value: unknown): CommittedData {
 
 // Validate provenance and completeness before a write can relabel preserved records or erase warnings.
 function committedState(dir: string): CommittedData | undefined {
-	const path = join(dir, METADATA_FILE);
-	if (!existsSync(path)) return undefined;
+	const manifest = readManifest(dir, { invalid: `${METADATA_FILE} is not a data manifest.`, hint: REPAIR_HINT });
 
-	let parsed: unknown;
+	if (manifest === undefined) return undefined;
 
-	try {
-		parsed = JSON.parse(readFileSync(path, 'utf8'));
-	} catch {
-		throw new CliError('STATE', `${METADATA_FILE} is not valid JSON.`, {
-			hint: REPAIR_HINT,
-		});
-	}
-
-	if (!isPlainObject(parsed)) {
-		throw new CliError('STATE', `${METADATA_FILE} is not a data manifest.`, {
-			hint: REPAIR_HINT,
-		});
-	}
-
-	return interpretMetadata(parsed);
+	return interpretMetadata(manifest.metadata);
 }
 
 function assertMatchingDataSource(committed: CommittedData | undefined, dir: string, source: string): void {
@@ -263,21 +256,10 @@ export function writeDataFiles(
  * pull failure.
  */
 export function hasCommittedCollection(dir: string, collection: string): boolean {
-	const path = join(dir, METADATA_FILE);
-	if (!existsSync(path)) return false;
+	// Tolerant on purpose: a corrupt manifest must not stop the pull that would heal it.
+	const manifest = readIntactManifest(dir);
 
-	let parsed: unknown;
-
-	try {
-		parsed = JSON.parse(readFileSync(path, 'utf8'));
-	} catch {
-		return false;
-	}
-
-	if (!isPlainObject(parsed)) return false;
-
-	const files = (parsed as Record<string, unknown>)['files'];
-	return Array.isArray(files) && files.includes(fileName(collection));
+	return manifest !== undefined && manifest.files.includes(fileName(collection));
 }
 
 /** Read and validate the metadata-owned data artifacts, or undefined when nothing is stored. */
