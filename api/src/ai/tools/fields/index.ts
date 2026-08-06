@@ -14,6 +14,7 @@ import { transaction } from '../../../utils/transaction.js';
 import { defineTool } from '../define-tool.js';
 import {
 	FieldItemInputSchema,
+	FieldItemOutputSchema,
 	FieldItemValidateSchema,
 	RawFieldItemInputSchema,
 	RawFieldItemValidateSchema,
@@ -71,15 +72,29 @@ export const FieldsInputSchema = z.object({
 		.optional(),
 });
 
-export const fields = defineTool<z.infer<typeof FieldsValidateSchema>>({
+const FieldsOutputSchema = z.object({
+	data: z.union([
+		z.array(FieldItemOutputSchema),
+		FieldItemOutputSchema,
+		z.object({ collection: z.string(), field: z.string() }),
+		z.null(),
+	]),
+});
+
+export const fields = defineTool<z.infer<typeof FieldsValidateSchema>, z.infer<typeof FieldsOutputSchema>>({
 	name: 'fields',
 	admin: true,
-	description: requireText(resolve(__dirname, './prompt.md')),
+	description:
+		'Reads and changes Directus fields. Use to inspect, add, update, or delete fields on collections, including relational and alias fields.',
+	instructions: requireText(resolve(__dirname, './prompt.md')),
+	keywords: ['columns', 'properties', 'field types', 'interfaces', 'aliases', 'database fields'],
 	annotations: {
 		title: 'Directus - Fields',
 	},
 	inputSchema: FieldsInputSchema,
 	validateSchema: FieldsValidateSchema,
+	output: FieldsOutputSchema,
+	readOnly: (input) => input.action === 'read',
 	async handler({ args, schema, accountability }) {
 		let service = new FieldsService({
 			schema,
