@@ -2,9 +2,9 @@
  * Unwrap the standard Directus API response envelope (`{ data: T }`) from a request body.
  *
  * When a user pipes the JSON output of `GET /schema/snapshot` directly into
- * `POST /schema/diff` or `POST /schema/apply`, the body is already wrapped in
- * `{ "data": <payload> }` by the respond middleware. Both the raw form and the
- * envelope form are accepted transparently.
+ * `POST /schema/diff` or `POST /schema/apply`, the body is wrapped in
+ * `{ "data": <payload> }` by the API controller response payload. Both the raw form
+ * and the envelope form are accepted transparently.
  */
 export function unwrapDataEnvelope<T extends object>(body: T | { data: T }): T {
 	if (
