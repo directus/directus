@@ -27,7 +27,6 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"@directus/storage": "workspace:*",
 		"ms": "catalog:"
 	},
 	"devDependencies": {
