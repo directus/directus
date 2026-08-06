@@ -22,7 +22,8 @@ post:
               $ref: '../../openapi.yaml#/components/schemas/Query'
             file:
               description: Optional file metadata to apply to the created file.
-              $ref: '../../openapi.yaml#/components/schemas/Files'
+              allOf:
+                - $ref: '../../openapi.yaml#/components/schemas/Files'
           required: ['format', 'query']
   responses:
     '200':
