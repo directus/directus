@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { unwrapDataEnvelope } from './schema.js';
+import { unwrapDataEnvelope } from './unwrap-data-envelope.js';
 
 describe('unwrapDataEnvelope', () => {
 	test('returns raw snapshot object directly when not wrapped in envelope', () => {
