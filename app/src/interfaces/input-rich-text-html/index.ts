@@ -301,11 +301,11 @@ export default defineInterface({
 								{
 									title: 'My Custom Block',
 									block: 'p',
-									classes: 'dropcap',
+									classes: 'lead-paragraph',
 								},
 								{
 									title: 'My Custom Group',
-									items: [{ title: 'Eyebrow', selector: 'h2', classes: 'eyebrow' }],
+									items: [{ title: 'Subheading', selector: 'h2', classes: 'subheading' }],
 								},
 							],
 							null,

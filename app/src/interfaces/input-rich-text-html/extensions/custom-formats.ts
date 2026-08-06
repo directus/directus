@@ -79,6 +79,10 @@ const TAG_TARGETS: Record<string, BlockTarget> = {
 	figure: { type: 'figure' },
 	figcaption: { type: 'figcaption' },
 	details: { type: 'details' },
+	summary: { type: 'detailsSummary' },
+	dl: { type: 'descriptionList' },
+	dt: { type: 'descriptionTerm' },
+	dd: { type: 'descriptionDetails' },
 	hr: { type: 'horizontalRule' },
 	img: { type: 'image' },
 	ul: { type: 'bulletList' },
@@ -226,7 +230,14 @@ function buildInline(entry: InlineFormatEntry, name: string): BuiltEntry | null 
 
 function buildBlock(entry: BlockFormatEntry, name: string): BuiltEntry | null {
 	const convert = typeof entry.block === 'string';
-	const tags = (convert ? entry.block! : entry.selector!).split(',');
+
+	if (convert && entry.block!.includes(',')) {
+		warn('customFormats entry skipped — `block` takes a single tag; use `selector` for a list of tags:', entry);
+		return null;
+	}
+
+	// a `block` entry names the one tag it converts to; only `selector` takes a list
+	const tags = convert ? [entry.block!] : entry.selector!.split(',');
 	const targets: BlockTarget[] = [];
 
 	for (const tag of tags) {

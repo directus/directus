@@ -291,6 +291,15 @@ describe('buildCustomFormats: block entries', () => {
 		]);
 	});
 
+	test('skips a `block` entry naming more than one tag — it can only convert to one', () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+		const { formats } = buildCustomFormats([{ title: 'Eyebrow', block: 'h2,h3', classes: 'eyebrow' }]);
+
+		expect(formats).toHaveLength(0);
+		expect(warn).toHaveBeenCalledTimes(1);
+	});
+
 	// The community thread asks for a `float-left` class on an image and TinyMCE configs routinely
 	// target list items and table cells, so every node type the editor models must be selectable.
 	test.each([
@@ -306,6 +315,10 @@ describe('buildCustomFormats: block entries', () => {
 		['video', { type: 'media', attrs: { tag: 'video' } }],
 		['audio', { type: 'media', attrs: { tag: 'audio' } }],
 		['iframe', { type: 'media', attrs: { tag: 'iframe' } }],
+		['summary', { type: 'detailsSummary' }],
+		['dl', { type: 'descriptionList' }],
+		['dt', { type: 'descriptionTerm' }],
+		['dd', { type: 'descriptionDetails' }],
 	])('maps the `%s` selector to the node type the editor models', (tag, target) => {
 		const { formats } = buildCustomFormats([{ title: 'T', selector: tag, classes: 'x' }]);
 

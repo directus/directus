@@ -104,6 +104,14 @@ describe('applyBlockFormat', () => {
 		expect(editor.getHTML()).toBe('<blockquote class="pull"><p>hello</p></blockquote><p></p>');
 	});
 
+	test('a selector format applies to a node the semantic-html extensions model', () => {
+		const editor = editorWith('<dl><dt>term</dt><dd><p>definition</p></dd></dl>');
+		editor.commands.selectAll();
+		applyBlockFormat(editor, blockFormat({ title: 'Term', selector: 'dt', classes: 'term' }));
+
+		expect(editor.getHTML()).toContain('<dt class="term">term</dt>');
+	});
+
 	test('applies to every block in a multi-block selection', () => {
 		const editor = editorWith('<p>one</p><p>two</p>');
 		editor.commands.selectAll();
