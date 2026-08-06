@@ -4,7 +4,7 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Driver, StorageManager } from '@directus/storage';
 import type { Accountability } from '@directus/types';
 import type { File, SchemaOverview } from '@directus/types';
-import archiver, { type Archiver } from 'archiver';
+import { type Archiver, ZipArchive } from 'archiver';
 import contentDisposition from 'content-disposition';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -410,7 +410,7 @@ describe('AssetsService', () => {
 			};
 
 			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
-			vi.mocked(archiver).mockReturnValue(mockArchiver as unknown as Archiver);
+			vi.mocked(ZipArchive).mockReturnValue(mockArchiver as unknown as Archiver);
 		});
 
 		test('should throw error when no files provided', async () => {
@@ -626,7 +626,7 @@ describe('AssetsService', () => {
 			};
 
 			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
-			vi.mocked(archiver).mockReturnValue(mockArchiver as unknown as Archiver);
+			vi.mocked(ZipArchive).mockReturnValue(mockArchiver as unknown as Archiver);
 		});
 
 		test('should zip multiple files', async () => {
@@ -716,7 +716,7 @@ describe('AssetsService', () => {
 			};
 
 			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
-			vi.mocked(archiver).mockReturnValue(mockArchiver as unknown as Archiver);
+			vi.mocked(ZipArchive).mockReturnValue(mockArchiver as unknown as Archiver);
 		});
 
 		test('should zip folder with files', async () => {
