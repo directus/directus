@@ -10,7 +10,7 @@ import {
 import { INVALID_URL_MESSAGE, isSafeUrl } from '../../kernel/config/file.js';
 import { type Identity, loginSession, refreshSessionIfNeeded, testConnection } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
-import { ask, orPrompt, promptLogin, promptToken } from '../../kernel/prompt.js';
+import { ask, orPrompt, promptAndRegisterToken, promptLogin } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
 
 interface TestOptions {
@@ -91,7 +91,7 @@ export async function testProfile(nameArg: string | undefined, options: TestOpti
 			credentialStorage(url, name).set(login.session);
 			identity = login.identity;
 		} else {
-			const token = await promptToken(name ?? url);
+			const token = await promptAndRegisterToken(name ?? url);
 			identity = await testConnection({ url, token, kind: 'token' });
 
 			if (name !== undefined && (await ask(confirm({ message: 'Save this token for next time?' })))) {

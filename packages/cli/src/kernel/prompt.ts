@@ -29,8 +29,11 @@ export async function orPrompt(
 	return ask(text(options));
 }
 
-/** Register before any later operation can render the token. */
-export async function promptToken(profileName: string): Promise<string> {
+/**
+ * Registration is part of this call, not the caller's job: a token that reached the process without
+ * reaching the redaction registry can print in full, and a caller that has to remember will eventually not.
+ */
+export async function promptAndRegisterToken(profileName: string): Promise<string> {
 	const token = await ask(
 		password({
 			message: `Paste a token for "${profileName}"`,

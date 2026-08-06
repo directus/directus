@@ -4,7 +4,7 @@ import { credentialStorage, saveCredential, savedTokenMessage } from '../../../k
 import { INVALID_URL_MESSAGE, isSafeUrl } from '../../../kernel/config/file.js';
 import { loginSession, pingServer, testConnection } from '../../../kernel/connection.js';
 import { CliError } from '../../../kernel/error.js';
-import { ask, orPrompt, promptLogin, promptToken } from '../../../kernel/prompt.js';
+import { ask, orPrompt, promptAndRegisterToken, promptLogin } from '../../../kernel/prompt.js';
 import type { CliContext } from '../../../kernel/run.js';
 
 // The name becomes part of DIRECTUS_<NAME>_TOKEN, so it has to stay a valid environment variable segment.
@@ -188,7 +188,7 @@ async function acquireCredential(
 			}
 		}
 
-		if (method === 'paste') token = await promptToken(name);
+		if (method === 'paste') token = await promptAndRegisterToken(name);
 	}
 
 	while (true) {
@@ -227,7 +227,7 @@ async function acquireCredential(
 			if (next === 'save') return token === undefined ? { url } : { url, token };
 			if (next === 'discard') return { url };
 			if (next === 'url') url = await editUrl(url);
-			if (next === 'token') token = await promptToken(name);
+			if (next === 'token') token = await promptAndRegisterToken(name);
 		}
 	}
 }

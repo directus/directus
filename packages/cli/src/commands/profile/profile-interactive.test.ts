@@ -167,7 +167,7 @@ describe('interactive profile flows', () => {
 		expect(store['https://cms.example.com'].staging).toBe('tok-abcdefgh');
 
 		const validate = vi.mocked(password).mock.calls[0]?.[0]?.validate;
-		if (typeof validate !== 'function') throw new Error('promptToken must register a callable validator');
+		if (typeof validate !== 'function') throw new Error('the token prompt must supply a callable validator');
 		expect(validate('')).toBe('Paste a non-empty token.');
 		expect(validate('   ')).toBe('Paste a non-empty token.');
 		expect(validate('tok-abcdefgh')).toBeUndefined();
