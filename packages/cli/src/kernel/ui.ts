@@ -62,6 +62,12 @@ function writeJson(payload: unknown): void {
 /** Human status uses stderr. JSON results and errors use stdout exclusively. */
 export interface Ui {
 	readonly json: boolean;
+	/** Semantic text styles that honor the global color setting. */
+	readonly style: {
+		strong(text: string): string;
+		muted(text: string): string;
+		warning(text: string): string;
+	};
 	print(text: string): void;
 	/** Print a schema/data plan line with its change token colored (green +, yellow ~, red deletions). */
 	plan(text: string): void;
@@ -75,7 +81,7 @@ export interface Ui {
 
 /** Create human or JSON CLI output with final-boundary secret redaction. */
 export function createUi(options: { json: boolean; color: boolean }): Ui {
-	const c = new Chalk(options.color ? {} : { level: 0 });
+	const c = new Chalk(options.color && !options.json ? {} : { level: 0 });
 	const { json } = options;
 
 	function status(symbol: string, message: string): void {
@@ -107,6 +113,17 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 
 	return {
 		json,
+		style: {
+			strong(text) {
+				return c.bold(text);
+			},
+			muted(text) {
+				return c.dim(text);
+			},
+			warning(text) {
+				return c.yellow(text);
+			},
+		},
 		print(text) {
 			if (json) return;
 			writeOut(`${text}\n`);

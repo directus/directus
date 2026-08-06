@@ -201,6 +201,10 @@ describe('run', () => {
 
 			vi.stubEnv('NO_INTERACTIVE', '0');
 			expect(await interactivityOf(['probe'])).toBe(false);
+
+			// Empty still means unset, so `NO_INTERACTIVE=` left in a .env cannot silently kill every prompt.
+			vi.stubEnv('NO_INTERACTIVE', '');
+			expect(await interactivityOf(['probe'])).toBe(true);
 		});
 
 		it('stops prompting for --no-interactive and --json on the same TTY', async () => {

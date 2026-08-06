@@ -87,8 +87,15 @@ describe('interactive sync diff', () => {
 		rmSync(home, { recursive: true, force: true });
 	});
 
-	it('reports an ambiguity as unresolved without prompting, creating, or calling it "nothing to do"', async () => {
-		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+	it('reports an ambiguous target match without prompting, creating, or calling it "nothing to do"', async () => {
+		seedData([
+			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] },
+			{
+				collection: 'directus_access',
+				primaryKey: 'id',
+				records: [{ id: 'sa1', role: 'sr1', user: null, policy: null }],
+			},
+		]);
 
 		vi.mocked(fetchRecords).mockResolvedValueOnce([
 			{ id: 't1', name: 'Editor' },
@@ -104,11 +111,12 @@ describe('interactive sync diff', () => {
 
 		const output = stderr.join('');
 
-		expect(output).toContain('Configuration — no changes to push; 1 record unresolved.');
-		expect(output).toContain('has no target match yet');
-		expect(output).toContain('1 ambiguous');
-		expect(output).toContain('a non-interactive push refuses until they are resolved');
-		expect(output).not.toContain('matches the commit-ready files');
+		expect(output).toContain('1 configuration record has an ambiguous target match; 1 record depends on that choice.');
+
+		expect(output).toContain('Run d6s sync push interactively to choose.');
+		expect(output).not.toContain('no target match');
+		expect(output).not.toContain('no changes to push');
+		expect(output).not.toContain('nothing to do');
 
 		expect(existsSync(join(dir, 'directus', 'default', 'id_map.json'))).toBe(false);
 	});
@@ -150,6 +158,6 @@ describe('interactive sync diff', () => {
 		expect(vi.mocked(importBatch).mock.calls[0]?.[2]).toMatchObject({ dryRun: true });
 
 		expect(stderr.join('')).toContain('Configuration — 2 changes: 0 created, 0 updated, 2 deleted');
-		expect(stderr.join('')).not.toContain('matches the commit-ready files');
+		expect(stderr.join('')).not.toContain('nothing to do');
 	});
 });

@@ -1,7 +1,7 @@
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { confirm, isCancel, select, text } from '@clack/prompts';
+import { confirm, isCancel, note, select, text } from '@clack/prompts';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createConfigStore } from '../../kernel/config/file.js';
 import type { CliContext } from '../../kernel/run.js';
@@ -16,6 +16,7 @@ import { writeSnapshotFiles } from './utils/store.js';
 vi.mock('@clack/prompts', () => ({
 	confirm: vi.fn(),
 	text: vi.fn(),
+	note: vi.fn(),
 	select: vi.fn(),
 	isCancel: vi.fn(() => false),
 }));
@@ -86,6 +87,7 @@ describe('interactive sync push', () => {
 
 		vi.mocked(confirm).mockReset();
 		vi.mocked(text).mockReset();
+		vi.mocked(note).mockReset();
 		vi.mocked(select).mockReset();
 		vi.mocked(isCancel).mockReset().mockReturnValue(false);
 		vi.mocked(fetchDiff).mockReset();
@@ -236,24 +238,24 @@ describe('interactive sync push', () => {
 
 		expect(select).toHaveBeenCalledWith(
 			expect.objectContaining({
-				message: 'Resolve identity 1 of 1: directus_roles source "Editor" — sr1 matches multiple target records',
+				message: 'Which target role does this represent?',
 				options: [
 					{
 						value: 'target:t1',
-						label: 'Use "Editor" — t1',
-						hint: 'Same synced values as source; only the ID differs',
+						label: 'Existing target role "Editor" — t1',
+						hint: 'Same synced values; only the ID differs',
 					},
 					{
 						value: 'target:t2',
-						label: 'Use "Editor" — t2',
-						hint: 'Same synced values as source; only the ID differs',
+						label: 'Existing target role "Editor" — t2',
+						hint: 'Same synced values; only the ID differs',
 					},
 					{
 						value: 'create',
-						label: 'Create a separate record',
-						hint: 'Adds one record; leaves every existing match unchanged',
+						label: 'No existing role — create a new one on the target',
+						hint: 'Creates another "Editor" role',
 					},
-					{ value: 'abort', label: 'Abort the push', hint: 'Applies no remote changes' },
+					{ value: 'abort', label: 'Abort push', hint: 'Applies no remote changes' },
 				],
 			}),
 		);
@@ -303,6 +305,122 @@ describe('interactive sync push', () => {
 			formatVersion: 1,
 			maps: { [source]: { [url]: { directus_roles: { sr1: 't1', sr2: 't2' } } } },
 		});
+	});
+
+	it('explains when two local policies compete for one target and why the second cannot reuse it', async () => {
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+
+		seedData([
+			{
+				collection: 'directus_policies',
+				primaryKey: 'id',
+				records: [
+					{ id: 'sp1', name: 'Administrator', description: 'Local one' },
+					{ id: 'sp2', name: 'Administrator', description: 'Local two' },
+				],
+			},
+		]);
+
+		vi.mocked(fetchRecords).mockResolvedValueOnce([{ id: 'tp1', name: 'Administrator', description: 'Target' }]);
+
+		vi.mocked(select).mockResolvedValueOnce('target:tp1').mockResolvedValueOnce('create');
+		vi.mocked(importBatch).mockResolvedValue(importResult());
+		vi.mocked(confirm).mockResolvedValueOnce(true);
+
+		await push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir));
+
+		expect(note).toHaveBeenNthCalledWith(
+			1,
+			[
+				'./directus/default contains 2 policies named "Administrator".',
+				'staging — https://cms.example.com contains 1 matching policy.',
+				'',
+				'Policy: "Administrator" — sp1',
+				'Source UI: https://source.example.com/admin/settings/policies/sp1',
+				'Target UI: https://cms.example.com/admin/settings/policies/tp1',
+			].join('\n'),
+			'directus_policies — 1 of 2',
+		);
+
+		expect(select).toHaveBeenNthCalledWith(1, {
+			message: 'Which target policy does this represent?',
+			options: [
+				{
+					value: 'target:tp1',
+					label: 'Existing target policy "Administrator" — tp1',
+					hint: 'Merge updates the target; description: local "Local one", target "Target"',
+				},
+				{
+					value: 'create',
+					label: 'No existing policy — create a new one on the target',
+					hint: 'Creates another "Administrator" policy',
+				},
+				{ value: 'abort', label: 'Abort push', hint: 'Applies no remote changes' },
+			],
+		});
+
+		expect(note).toHaveBeenNthCalledWith(
+			2,
+			[
+				'./directus/default contains 2 policies named "Administrator".',
+				'staging — https://cms.example.com contains 1 matching policy.',
+				'',
+				'Policy: "Administrator" — sp2',
+				'Source UI: https://source.example.com/admin/settings/policies/sp2',
+				'',
+				'The only matching target policy "Administrator" — tp1 was already matched to',
+				'"Administrator" — sp1 earlier in this push.',
+				'Target UI: https://cms.example.com/admin/settings/policies/tp1',
+			].join('\n'),
+			'directus_policies — 2 of 2',
+		);
+
+		expect(select).toHaveBeenNthCalledWith(2, {
+			message: 'Which target policy does this represent?',
+			options: [
+				{
+					value: 'create',
+					label: 'No existing policy — create a new one on the target',
+					hint: 'Creates another "Administrator" policy',
+				},
+				{ value: 'abort', label: 'Abort push', hint: 'Applies no remote changes' },
+			],
+		});
+
+		expect(note).toHaveBeenNthCalledWith(
+			3,
+			[
+				'directus_policies "Administrator" — sp1 → existing target "Administrator" — tp1',
+				'directus_policies "Administrator" — sp2 → new target policy',
+			].join('\n'),
+			'Identity choices',
+		);
+	});
+
+	it('warns that creating during mirror can still delete unmatched target records', async () => {
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+
+		vi.mocked(fetchRecords).mockResolvedValueOnce([
+			{ id: 't1', name: 'Editor' },
+			{ id: 't2', name: 'Editor' },
+		]);
+
+		vi.mocked(select).mockResolvedValueOnce('abort');
+
+		await expect(push({ to: 'staging', mode: 'mirror', project: 'default' }, ctxAt(dir))).rejects.toThrow(/abort/i);
+
+		expect(select).toHaveBeenCalledWith(
+			expect.objectContaining({
+				options: expect.arrayContaining([
+					{
+						value: 'create',
+						label: 'No existing role — create a new one on the target',
+						hint: 'Creates another "Editor" role; unmatched target records may be deleted',
+					},
+				]),
+			}),
+		);
 	});
 
 	it('re-reconciles children after an ambiguity is resolved to an existing target', async () => {
@@ -412,7 +530,7 @@ describe('interactive sync push', () => {
 		]);
 	});
 
-	it('withholds an occupied numeric PK instead of overwriting the unrelated target record', async () => {
+	it('uses a temporary numeric PK instead of overwriting an unrelated target record', async () => {
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 
 		seedData([
@@ -425,7 +543,12 @@ describe('interactive sync push', () => {
 
 		vi.mocked(fetchRecords).mockResolvedValueOnce([{ id: 7, policy: null, collection: 'articles', action: 'update' }]);
 
-		vi.mocked(importBatch).mockResolvedValue(importResult());
+		vi.mocked(importBatch).mockResolvedValue(
+			importResult({
+				directus_permissions: { existing: [], new: [27], deleted: [], mapped: { '-1': 27 } },
+			}),
+		);
+
 		vi.mocked(confirm).mockResolvedValueOnce(true);
 
 		await push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir));
@@ -433,8 +556,12 @@ describe('interactive sync push', () => {
 		const batch = vi.mocked(importBatch).mock.calls.at(-1)?.[1];
 		const permissions = batch?.find((entry) => entry.collection === 'directus_permissions');
 
-		expect(permissions?.items).toEqual([{ policy: null, collection: 'articles', action: 'read' }]);
-		expect(readIdMap()).toEqual({ formatVersion: 1, maps: {} });
+		expect(permissions?.items).toEqual([{ id: -1, policy: null, collection: 'articles', action: 'read' }]);
+
+		expect(readIdMap()).toEqual({
+			formatVersion: 1,
+			maps: { [source]: { [url]: { directus_permissions: { '7': '27' } } } },
+		});
 	});
 
 	it('sends only unmapped records under add mode, so a repeat add cannot mint duplicates', async () => {

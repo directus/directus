@@ -76,6 +76,8 @@ describe('resolveResources', () => {
 		expect(resolveResources(['settings'])).toEqual([
 			{
 				name: 'settings',
+				singular: 'settings record',
+				plural: 'settings records',
 				collection: 'directus_settings',
 				endpoint: '/settings',
 				primaryKey: 'id',

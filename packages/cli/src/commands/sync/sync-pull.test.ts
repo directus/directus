@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, symlinkSync, 
 import { join } from 'node:path';
 import type { MockAgent } from 'undici';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { saveCredential } from '../../kernel/config/credentials.js';
 import {
 	fullSnapshot,
 	mockDefaultRecords,
@@ -88,7 +89,7 @@ describe('sync pull', () => {
 		mockFields(agent, []);
 	}
 
-	it('writes the source schema as commit-ready files anchored to the configuration directory', async () => {
+	it('writes the source schema into local files anchored to the configuration directory', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
@@ -185,12 +186,19 @@ describe('sync pull', () => {
 		expect(stderr.join('')).toContain('No directus.config.json found.');
 	});
 
-	it('fails with an AUTH error naming the env var and never prompts when no credential resolves', async () => {
+	it('explains that CI ignores a saved credential and requires the profile env token', async () => {
 		seedConfig();
+		saveCredential(url, 'staging', 'stored-token');
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
 
-		expect(stderr.join('')).toContain('DIRECTUS_STAGING_TOKEN');
+		expect(stderr.join('')).toContain('CI token missing for profile "staging".');
+
+		expect(stderr.join('')).toContain(
+			'Set DIRECTUS_STAGING_TOKEN in your CI environment. Saved profile credentials are local-only and are not read in CI.',
+		);
+
+		expect(stderr.join('')).not.toContain('profile test');
 
 		const output = stdout.join('') + stderr.join('');
 		expect(output).not.toMatch(/paste|log in|password/i);
@@ -932,6 +940,7 @@ describe('sync pull resources and data', () => {
 		interceptList('/operations', [
 			{
 				id: 'o1',
+				name: 'Notify Slack',
 				key: 'notify_slack',
 				type: 'request',
 				flow: 'f1',
@@ -940,12 +949,22 @@ describe('sync pull resources and data', () => {
 					headers: [{ header: 'Authorization', value: 'Bearer live-secret' }],
 				},
 			},
+			{
+				id: 'o2',
+				name: null,
+				key: 'call_billing',
+				type: 'request',
+				flow: 'f1',
+				options: { url: 'https://billing.example.com', headers: [{ header: 'X-Api-Key', value: 'live-key' }] },
+			},
 		]);
 
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
 
+		// Operators locate the operation by the name the Data Studio shows; an unnamed one falls back to its key.
 		const err = stderr.join('');
-		expect(err).toContain('notify_slack');
+		expect(err).toContain('Notify Slack');
+		expect(err).toContain('call_billing');
 		expect(err).toMatch(/credential/i);
 
 		const opsBytes = readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_operations')), 'utf8');
@@ -1439,7 +1458,7 @@ describe('sync pull resources and data', () => {
 		]);
 	});
 
-	it('keeps user-attached access records on a re-pull that preserves commit-ready users, and warns it is stale', async () => {
+	it('keeps user-attached access records on a re-pull that preserves local users, and warns it is stale', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 

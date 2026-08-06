@@ -1,15 +1,18 @@
 import { existsSync, realpathSync } from 'node:fs';
-import { dirname, join, sep } from 'node:path';
+import { dirname, join, relative, sep } from 'node:path';
 import { envTokenVar, resolveCredential, type ResolvedCredential } from '../../../kernel/config/credentials.js';
 import type { ProjectConfig } from '../../../kernel/config/file.js';
+import { isCI } from '../../../kernel/env.js';
 import { CliError } from '../../../kernel/error.js';
 import type { CliContext } from '../../../kernel/run.js';
 
 /** A resolved sync endpoint and its project-scoped artifact paths. */
 export interface Target {
+	readonly profile: string;
 	readonly url: string;
 	readonly credential: ResolvedCredential;
 	readonly project: string;
+	readonly projectDir: string;
 	readonly schemaDir: string;
 	readonly dataDir: string;
 	readonly idMapPath: string;
@@ -24,6 +27,13 @@ export interface Target {
 export const DEFAULT_PROJECT = 'default';
 
 const PROJECT_NAME = /^[a-z0-9][a-z0-9-_]*$/i;
+
+/** Render a project path relative to the invocation directory, with an explicit local `./` prefix. */
+export function displayProjectPath(cwd: string, projectDir: string): string {
+	const local = relative(cwd, projectDir);
+	if (local === '') return '.';
+	return local.startsWith('.') ? local : `./${local}`;
+}
 
 // A symlinked ancestor can redirect a not-yet-created tail outside the project.
 function assertContained(dir: string, realRoot: string): void {
@@ -82,15 +92,23 @@ export function resolveTarget(profileName: string, projectName: string, ctx: Cli
 	const credential = resolveCredential({ target: 'profile', url, profileName });
 
 	if (credential === undefined) {
+		if (isCI()) {
+			throw new CliError('AUTH', `CI token missing for profile "${profileName}".`, {
+				hint: `Set ${envTokenVar(profileName)} in your CI environment. Saved profile credentials are local-only and are not read in CI.`,
+			});
+		}
+
 		throw new CliError('AUTH', `No credential found for profile "${profileName}".`, {
 			hint: `Set ${envTokenVar(profileName)}, or run d6s profile test ${profileName} to add one.`,
 		});
 	}
 
 	return {
+		profile: profileName,
 		url,
 		credential,
 		project: projectName,
+		projectDir,
 		schemaDir,
 		dataDir,
 		idMapPath,

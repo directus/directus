@@ -14,9 +14,7 @@ export function registerWizard(command: Command, getContext: () => CliContext): 
 	command.action(() => wizard(getContext()));
 }
 
-/**
- * Prompt for unresolved sync choices, then run the same pull and push commands used by explicit subcommands.
- */
+/** Prompt for sync direction and mode, then run the same commands used by explicit subcommands. */
 export async function wizard(ctx: CliContext): Promise<void> {
 	if (!ctx.interactive) {
 		throw new CliError('USAGE', 'd6s sync needs a terminal.', {
@@ -33,7 +31,7 @@ export async function wizard(ctx: CliContext): Promise<void> {
 		});
 	}
 
-	ctx.ui.info('Sync a source instance to a target through commit-ready files.');
+	ctx.ui.info('Sync a source instance to a target through local project files.');
 
 	const from = await ask(
 		select({

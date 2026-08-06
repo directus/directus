@@ -10,8 +10,12 @@ export interface FkField {
 /** The pull rules a syncable Directus system resource declares, apart from how its records are identified. */
 interface ResourceFields {
 	readonly name: string;
+	readonly singular: string;
+	readonly plural: string;
 	readonly collection: string;
 	readonly endpoint: string;
+	/** Verified Admin App route for inspecting an individual record; omitted when no stable item route exists. */
+	readonly appRoute?: string | undefined;
 	readonly primaryKey: string;
 	readonly singleton: boolean;
 	readonly strip: readonly string[];
@@ -30,7 +34,7 @@ interface ResourceFields {
 	readonly keyset?: boolean | undefined;
 	/**
 	 * Verify the fetched record count against the server's total_count at pull time. Opt-in for endpoints
-	 * whose reads can be silently filtered, so an incomplete pull is detected before files become commit-ready.
+	 * whose reads can be silently filtered, so an incomplete pull is detected before local files are written.
 	 */
 	readonly verifyCount?: boolean | undefined;
 }
@@ -41,10 +45,9 @@ interface ResourceFields {
  * identity, so its records are never reconciled by key.
  *
  * The two variants encode the record rule the push depends on: an unmatched auto-increment key is never
- * sent, because the target may have given that same integer to an unrelated record and the push would
- * overwrite it. The server assigns a fresh key instead, and only a natural key can rediscover it — so an
- * integer-PK resource must declare one. A uuid is globally unique, safe to send verbatim, and may go
- * unkeyed.
+ * sent as target identity, because the target may have given it to an unrelated record. A temporary key
+ * correlates the server-assigned ID, while the natural key reconciles pre-existing rows — so an integer-PK
+ * resource must declare one. A uuid is globally unique, safe to send verbatim, and may go unkeyed.
  */
 export type Resource =
 	| (ResourceFields & { readonly primaryKeyType: 'uuid'; readonly naturalKey?: readonly string[] })
@@ -60,8 +63,11 @@ type ResourceDef = Resource & {
 const RESOURCE_LIST = [
 	{
 		name: 'users',
+		singular: 'user',
+		plural: 'users',
 		collection: 'directus_users',
 		endpoint: '/users',
+		appRoute: '/admin/users',
 		primaryKey: 'id',
 		primaryKeyType: 'uuid',
 		singleton: false,
@@ -74,8 +80,11 @@ const RESOURCE_LIST = [
 	},
 	{
 		name: 'roles',
+		singular: 'role',
+		plural: 'roles',
 		collection: 'directus_roles',
 		endpoint: '/roles',
+		appRoute: '/admin/settings/roles',
 		primaryKey: 'id',
 		primaryKeyType: 'uuid',
 		singleton: false,
@@ -88,8 +97,11 @@ const RESOURCE_LIST = [
 	},
 	{
 		name: 'policies',
+		singular: 'policy',
+		plural: 'policies',
 		collection: 'directus_policies',
 		endpoint: '/policies',
+		appRoute: '/admin/settings/policies',
 		primaryKey: 'id',
 		primaryKeyType: 'uuid',
 		singleton: false,
@@ -102,6 +114,8 @@ const RESOURCE_LIST = [
 	},
 	{
 		name: 'access',
+		singular: 'access rule',
+		plural: 'access rules',
 		collection: 'directus_access',
 		endpoint: '/access',
 		primaryKey: 'id',
@@ -121,6 +135,8 @@ const RESOURCE_LIST = [
 	},
 	{
 		name: 'permissions',
+		singular: 'permission',
+		plural: 'permissions',
 		collection: 'directus_permissions',
 		endpoint: '/permissions',
 		primaryKey: 'id',
@@ -140,8 +156,11 @@ const RESOURCE_LIST = [
 	},
 	{
 		name: 'flows',
+		singular: 'flow',
+		plural: 'flows',
 		collection: 'directus_flows',
 		endpoint: '/flows',
+		appRoute: '/admin/settings/flows',
 		primaryKey: 'id',
 		primaryKeyType: 'uuid',
 		singleton: false,
@@ -154,6 +173,8 @@ const RESOURCE_LIST = [
 	},
 	{
 		name: 'operations',
+		singular: 'operation',
+		plural: 'operations',
 		collection: 'directus_operations',
 		endpoint: '/operations',
 		primaryKey: 'id',
@@ -173,8 +194,11 @@ const RESOURCE_LIST = [
 	},
 	{
 		name: 'dashboards',
+		singular: 'dashboard',
+		plural: 'dashboards',
 		collection: 'directus_dashboards',
 		endpoint: '/dashboards',
+		appRoute: '/admin/insights',
 		primaryKey: 'id',
 		primaryKeyType: 'uuid',
 		singleton: false,
@@ -187,6 +211,8 @@ const RESOURCE_LIST = [
 	},
 	{
 		name: 'panels',
+		singular: 'panel',
+		plural: 'panels',
 		collection: 'directus_panels',
 		endpoint: '/panels',
 		primaryKey: 'id',
@@ -201,6 +227,8 @@ const RESOURCE_LIST = [
 	},
 	{
 		name: 'settings',
+		singular: 'settings record',
+		plural: 'settings records',
 		collection: 'directus_settings',
 		endpoint: '/settings',
 		primaryKey: 'id',
@@ -230,8 +258,11 @@ const RESOURCE_LIST = [
 	{
 		// Folder parents require the same self-referential remapping as roles.
 		name: 'folders',
+		singular: 'folder',
+		plural: 'folders',
 		collection: 'directus_folders',
 		endpoint: '/folders',
+		appRoute: '/admin/files/folders',
 		primaryKey: 'id',
 		primaryKeyType: 'uuid',
 		singleton: false,
@@ -244,8 +275,11 @@ const RESOURCE_LIST = [
 	},
 	{
 		name: 'translations',
+		singular: 'translation',
+		plural: 'translations',
 		collection: 'directus_translations',
 		endpoint: '/translations',
+		appRoute: '/admin/settings/translations',
 		primaryKey: 'id',
 		primaryKeyType: 'uuid',
 		singleton: false,

@@ -148,7 +148,6 @@ describe('sync diff', () => {
 			project: 'default',
 			mode: 'merge',
 			changes: true,
-			unresolved: 0,
 			schemaSkipped: false,
 			added: 1,
 			modified: 1,
@@ -158,9 +157,7 @@ describe('sync diff', () => {
 				mode: 'merge',
 				source: null,
 				resultsByCollection: null,
-				matched: null,
-				ambiguous: null,
-				unmatched: null,
+				reconciliation: null,
 				unchanged: null,
 				incomplete: null,
 				skipped: true,
@@ -175,7 +172,7 @@ describe('sync diff', () => {
 
 		interceptDiff('merge', null);
 		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
-		expect(stderr.join('')).toContain('staging matches the commit-ready files — nothing to do.');
+		expect(stderr.join('')).toContain(`${url} matches ./directus/default — nothing to do.`);
 
 		interceptDiff('merge', null);
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--json')).toBe(0);
@@ -189,7 +186,6 @@ describe('sync diff', () => {
 			project: 'default',
 			mode: 'merge',
 			changes: false,
-			unresolved: 0,
 			schemaSkipped: false,
 			added: 0,
 			modified: 0,
@@ -199,9 +195,7 @@ describe('sync diff', () => {
 				mode: 'merge',
 				source: null,
 				resultsByCollection: null,
-				matched: null,
-				ambiguous: null,
-				unmatched: null,
+				reconciliation: null,
 				unchanged: null,
 				incomplete: null,
 				skipped: true,
@@ -224,7 +218,7 @@ describe('sync diff', () => {
 
 		// Downgrading the tag to a full snapshot would let mirror read the omitted collections as deletions.
 		expect(sent).toEqual(partialSnapshot());
-		expect(stderr.join('')).toContain('staging matches the commit-ready files — nothing to do.');
+		expect(stderr.join('')).toContain(`${url} matches ./directus/default — nothing to do.`);
 	});
 
 	it('refuses a diff whose collection entry starts with a nested-meta delete (directus#27877)', async () => {
@@ -372,9 +366,8 @@ describe('sync diff with data', () => {
 				mode: 'merge',
 				source,
 				resultsByCollection: collections,
-				matched: 1,
-				ambiguous: 0,
-				unmatched: 1,
+				reconciliation: { matched: 1, unmatched: 1, ambiguous: 0, dependent: 0 },
+				unchanged: 1,
 				skipped: false,
 			},
 		});
@@ -382,7 +375,7 @@ describe('sync diff with data', () => {
 		expect(existsSync(idMapPath)).toBe(false);
 	});
 
-	it('reports an ambiguous record as unresolved, never as a create, and never prompts or writes', async () => {
+	it('reports ambiguous and unmatched records as distinct states without prompting or writing', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 
@@ -430,18 +423,28 @@ describe('sync diff with data', () => {
 		]);
 
 		const err = stderr.join('');
-		expect(err).toContain('1 created, 0 updated, 0 deleted, 1 unresolved');
-		expect(err).toContain('2 configuration records have no target match yet');
-		expect(err).toContain('1 ambiguous');
-		expect(err).toContain('a non-interactive push refuses until they are resolved');
+		expect(err).toContain('1 created, 0 updated, 0 deleted');
+		expect(err).toContain('1 configuration record has an ambiguous target match.');
+		expect(err).toContain('1 configuration record has no target match — push would create it.');
+		expect(err).toContain('Run d6s sync push interactively to choose.');
+		expect(err).not.toContain('unresolved');
 
 		expect(existsSync(idMapPath)).toBe(false);
 	});
 
-	it('counts an all-ambiguous data set as changes:true on --json — CI must not read refusal as convergence', async () => {
+	it('reports direct ambiguity and dependent records separately on --json', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
-		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+
+		seedData([
+			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] },
+			{
+				collection: 'directus_access',
+				primaryKey: 'id',
+				records: [{ id: 'sa1', role: 'sr1', user: null, policy: null }],
+			},
+		]);
+
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		interceptDiff('merge', null);
@@ -451,11 +454,15 @@ describe('sync diff with data', () => {
 			{ id: 't2', name: 'Editor' },
 		]);
 
+		interceptTarget('/access', []);
+
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--json')).toBe(0);
 
 		const report = JSON.parse(stdout.join(''));
 		expect(report.changes).toBe(true);
-		expect(report.unresolved).toBe(1);
+		expect(report).not.toHaveProperty('unresolved');
+		expect(report.data.reconciliation).toEqual({ matched: 0, unmatched: 0, ambiguous: 1, dependent: 1 });
+		expect(report.data.unchanged).toBe(0);
 	});
 
 	it('skips the schema phase for a "schema": false project and says so — never "schemas match"', async () => {

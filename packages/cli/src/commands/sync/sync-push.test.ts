@@ -109,7 +109,7 @@ describe('sync push', () => {
 		const err = stderr.join('');
 
 		const resolutionAt = err.indexOf(
-			`Pushing to staging — ${url} (merge — creates and updates records, never deletes)`,
+			`Pushing ./directus/default to staging — ${url} (merge — creates and updates records, never deletes)`,
 		);
 
 		const summaryAt = err.indexOf('Schema — ');
@@ -117,7 +117,7 @@ describe('sync push', () => {
 		expect(summaryAt).toBeGreaterThan(resolutionAt);
 	});
 
-	it('warns before apply when the commit-ready schema references a collection it does not include', async () => {
+	it('warns before apply when the local schema references a collection it does not include', async () => {
 		const grouped: Snapshot = {
 			version: 2,
 			directus: '11.0.0',
@@ -247,7 +247,15 @@ describe('sync push', () => {
 			modified: 1,
 			deleted: 0,
 			hash: 'h1',
-			data: { mode: 'merge', source: null, resultsByCollection: null, incomplete: null, skipped: true },
+			data: {
+				mode: 'merge',
+				source: null,
+				resultsByCollection: null,
+				reconciliation: null,
+				unchanged: null,
+				incomplete: null,
+				skipped: true,
+			},
 		});
 	});
 
@@ -275,7 +283,15 @@ describe('sync push', () => {
 			modified: 0,
 			deleted: 0,
 			hash: null,
-			data: { mode: 'merge', source: null, resultsByCollection: null, incomplete: null, skipped: true },
+			data: {
+				mode: 'merge',
+				source: null,
+				resultsByCollection: null,
+				reconciliation: null,
+				unchanged: null,
+				incomplete: null,
+				skipped: true,
+			},
 		});
 	});
 
@@ -395,7 +411,7 @@ describe('sync push with data', () => {
 		return JSON.parse(readFileSync(idMapPath, 'utf8'));
 	}
 
-	it('refuses a mirror push whose commit-ready configuration is marked incomplete — no flag overrides it', async () => {
+	it('refuses a mirror push whose local configuration is marked incomplete — no flag overrides it', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 
@@ -453,7 +469,7 @@ describe('sync push with data', () => {
 				data: {
 					applied: true,
 					mode: 'merge',
-					collections: { directus_permissions: { existing: [], new: [1], deleted: [], mapped: {} } },
+					collections: { directus_permissions: { existing: [], new: [1], deleted: [], mapped: { '-1': 1 } } },
 				},
 			},
 		);
@@ -463,6 +479,128 @@ describe('sync push with data', () => {
 		const payload = JSON.parse(stdout.join(''));
 		expect(payload.ok).toBe(true);
 		expect(payload.data).toMatchObject({ incomplete: ['directus_permissions'], skipped: false });
+	});
+
+	it('persists created numeric mappings so identical records do not become ambiguous later', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		seedData([
+			{
+				collection: 'directus_permissions',
+				primaryKey: 'id',
+				records: [
+					{ id: 4, policy: null, collection: 'articles', action: 'read' },
+					{ id: 5, policy: null, collection: 'articles', action: 'read' },
+				],
+			},
+		]);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptDiff('merge', null);
+
+		interceptTarget('/permissions', [
+			{ id: 4, policy: null, collection: 'posts', action: 'read' },
+			{ id: 5, policy: null, collection: 'comments', action: 'read' },
+		]);
+
+		let sentForm: FormData | undefined;
+
+		interceptImport(
+			{ mode: 'merge' },
+			{
+				data: {
+					applied: true,
+					mode: 'merge',
+					collections: {
+						directus_permissions: {
+							existing: [],
+							new: [27, 28],
+							deleted: [],
+							mapped: { '-1': 27, '-2': 28 },
+						},
+					},
+				},
+			},
+			200,
+			(form) => {
+				sentForm = form;
+			},
+		);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+
+		expect(await decodeBatch(sentForm)).toEqual([
+			{
+				collection: 'directus_permissions',
+				items: [
+					{ id: -1, policy: null, collection: 'articles', action: 'read' },
+					{ id: -2, policy: null, collection: 'articles', action: 'read' },
+				],
+			},
+		]);
+
+		expect(readIdMapFile()).toEqual({
+			formatVersion: 1,
+			maps: { [source]: { [url]: { directus_permissions: { '4': '27', '5': '28' } } } },
+		});
+
+		interceptDiff('merge', null);
+
+		interceptTarget('/permissions', [
+			{ id: 4, policy: null, collection: 'posts', action: 'read' },
+			{ id: 5, policy: null, collection: 'comments', action: 'read' },
+			{ id: 27, policy: null, collection: 'articles', action: 'read' },
+			{ id: 28, policy: null, collection: 'articles', action: 'read' },
+		]);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
+	});
+
+	it('refuses to persist a temporary key the import response left unmapped — a wrong entry breeds duplicates', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		seedData([
+			{
+				collection: 'directus_permissions',
+				primaryKey: 'id',
+				records: [
+					{ id: 4, policy: null, collection: 'articles', action: 'read' },
+					{ id: 5, policy: null, collection: 'articles', action: 'read' },
+				],
+			},
+		]);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptDiff('merge', null);
+		interceptTarget('/permissions', []);
+
+		// A contract-skewed server: both records were created, but only one temporary key came back mapped.
+		interceptImport(
+			{ mode: 'merge' },
+			{
+				data: {
+					applied: true,
+					mode: 'merge',
+					collections: {
+						directus_permissions: { existing: [], new: [27, 28], deleted: [], mapped: { '-1': 27 } },
+					},
+				},
+			},
+		);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+
+		// The resolved mapping is still recorded; the unmapped temporary key is refused, not written as "-2".
+		expect(readIdMapFile()).toEqual({
+			formatVersion: 1,
+			maps: { [source]: { [url]: { directus_permissions: { '4': '27' } } } },
+		});
+
+		const output = stderr.join('') + stdout.join('');
+		expect(output).toContain('temporary key');
+		expect(output).toContain('-2');
 	});
 
 	it('uploads the remapped batch and writes the map from reconcile matches and the import response', async () => {
@@ -723,9 +861,130 @@ describe('sync push with data', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
 
 		const err = stderr.join('');
-		expect(err).toContain('Ambiguous target matches');
-		expect(err).toContain('directus_roles source "Editor" — sr1');
+		expect(err).toContain('Push refused: 1 target match needs a choice.');
+		expect(err).toContain('./directus/default contains 1 role named "Editor".');
+		expect(err).toContain(`staging — ${url} contains 2 matching roles.`);
 		expect(err).toMatch(/interactively/i);
+	});
+
+	it('pluralizes the ambiguity refusal', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		seedData([
+			{
+				collection: 'directus_roles',
+				primaryKey: 'id',
+				records: [
+					{ id: 'sr1', name: 'Editor' },
+					{ id: 'sr2', name: 'Viewer' },
+				],
+			},
+		]);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+
+		interceptTarget('/roles', [
+			{ id: 't1', name: 'Editor' },
+			{ id: 't2', name: 'Editor' },
+			{ id: 't3', name: 'Viewer' },
+			{ id: 't4', name: 'Viewer' },
+		]);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+		expect(stderr.join('')).toContain('Push refused: 2 target matches need a choice.');
+	});
+
+	// A CI operator cannot see the interactive prompt, so the refusal is their only account of how much the
+	// push is holding back. Counting the ambiguity alone understates it by every record waiting on that choice.
+	it('names the dependent records a refused ambiguity holds back, not just the ambiguity', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		seedData([
+			{
+				collection: 'directus_folders',
+				primaryKey: 'id',
+				records: [
+					{ id: 'f-amb', name: 'Assets', parent: null },
+					{ id: 'f-child', name: 'Images', parent: 'f-amb' },
+					{ id: 'f-grand', name: 'Icons', parent: 'f-child' },
+				],
+			},
+		]);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+
+		interceptTarget('/folders', [
+			{ id: 't1', name: 'Assets', parent: null },
+			{ id: 't2', name: 'Assets', parent: null },
+		]);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+
+		const err = stderr.join('');
+		expect(err).toContain('Push refused: 1 target match needs a choice; 2 records depend on that choice.');
+	});
+
+	// Resources needing several fields to identify a record are the ones with no human-readable name, so a
+	// composite key must name every field it matched on: "with this identity" would leave nothing to search for.
+	it('names every field of a composite natural key when the collided records have no name', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		seedData([
+			{
+				collection: 'directus_permissions',
+				primaryKey: 'id',
+				records: [{ id: 7, policy: null, collection: 'articles', action: 'read' }],
+			},
+		]);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptDiff('merge', null);
+
+		interceptTarget('/permissions', [
+			{ id: 4, policy: null, collection: 'articles', action: 'read' },
+			{ id: 5, policy: null, collection: 'articles', action: 'read' },
+		]);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+
+		const err = stderr.join('');
+		expect(err).toContain('./directus/default contains 1 permission with collection "articles", action "read".');
+		expect(err).not.toContain('with this identity');
+	});
+
+	it('reports the actual local and target counts when two local policies match one target policy', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		seedData([
+			{
+				collection: 'directus_policies',
+				primaryKey: 'id',
+				records: [
+					{ id: 'sp1', name: 'Administrator' },
+					{ id: 'sp2', name: 'Administrator' },
+				],
+			},
+		]);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptDiff('merge', null);
+		interceptTarget('/policies', [{ id: 'tp1', name: 'Administrator' }]);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+
+		const err = stderr.join('');
+		expect(err).toContain('./directus/default contains 2 policies named "Administrator".');
+		expect(err).toContain(`staging — ${url} contains 1 matching policy.`);
+		expect(err).not.toContain('source "Administrator"');
+		expect(err).not.toContain('one of tp1');
 	});
 
 	it('renders the cycle when the import fails with IMPORT_CYCLICAL_RELATION', async () => {
@@ -796,6 +1055,39 @@ describe('sync push with data', () => {
 		const err = stderr.join('');
 		expect(err).toMatch(/schema/i);
 		expect(err).toMatch(/re-run|retry/i);
+	});
+
+	// Identity decisions are settled before the import so a later refusal never re-asks for them. That makes
+	// a failed push write a tracked file, and the operator finds it in git status either way — so the failed
+	// command has to be the thing that tells them, not the diff they run afterwards.
+	it('names the ID map it wrote even when the push then fails', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		// The icon makes the matched role a real update, so the batch is non-empty and the import runs.
+		seedData([
+			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor', icon: 'edit' }] },
+		]);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+		interceptTarget('/roles', [{ id: 't1', name: 'Editor' }]);
+
+		interceptImport(
+			{ mode: 'merge' },
+			{ errors: [{ message: 'boom', extensions: { code: 'INTERNAL_SERVER_ERROR' } }] },
+			500,
+		);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+
+		expect(stderr.join('')).toContain('Identity matches saved: directus/default/id_map.json');
+
+		expect(readIdMapFile()).toEqual({
+			formatVersion: 1,
+			maps: { [source]: { [url]: { directus_roles: { sr1: 't1' } } } },
+		});
 	});
 
 	it('keeps the diff-first guidance when the import outcome is unknown after a schema apply', async () => {
@@ -896,7 +1188,7 @@ describe('sync push with data', () => {
 		expect(stderr.join('')).toContain('cannot be combined');
 	});
 
-	it('warns when commit-ready schema files exist under "schema": false instead of silently ignoring them', async () => {
+	it('warns when local schema files exist under "schema": false instead of silently ignoring them', async () => {
 		writeFileSync(
 			join(dir, 'directus.config.json'),
 			JSON.stringify({ profiles: { staging: { url } }, projects: { default: { schema: false } } }),

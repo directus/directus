@@ -186,13 +186,9 @@ function committedState(dir: string): CommittedData | undefined {
 function assertMatchingDataSource(committed: CommittedData | undefined, dir: string, source: string): void {
 	// One manifest cannot safely relabel preserved records from another source instance.
 	if (committed !== undefined && committed.source !== source) {
-		throw new CliError(
-			'STATE',
-			`The commit-ready files in ${dir} came from ${committed.source}; this pull is from ${source}.`,
-			{
-				hint: 'Mixed sources corrupt identity mapping. Delete the data directory to switch this project to the new source, or declare a separate project for it.',
-			},
-		);
+		throw new CliError('STATE', `The files in ${dir} came from ${committed.source}; this pull is from ${source}.`, {
+			hint: 'Mixed sources corrupt identity mapping. Delete the data directory to switch this project to the new source, or declare a separate project for it.',
+		});
 	}
 }
 

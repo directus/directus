@@ -6,17 +6,17 @@ import type { ImportBatchResult } from './utils/contract.js';
 import { type DataPreviewPlan, previewData } from './utils/data-push.js';
 import {
 	convergedMessage,
+	type DataComparisonCounts,
 	dataPhaseConverged,
 	dataReport,
 	dryRunImport,
 	planSchema,
-	type ReconcileCounts,
 	renderDataPlan,
 	renderSchemaPlan,
 	resolveMode,
 } from './utils/plan.js';
 import { emptyImportSummary, hasImportChanges, type ImportSummary } from './utils/render.js';
-import { resolveTarget } from './utils/resolve-target.js';
+import { displayProjectPath, resolveTarget } from './utils/resolve-target.js';
 
 export interface DiffOptions {
 	readonly to: string;
@@ -49,14 +49,16 @@ export function registerDiff(command: Command, getContext: () => CliContext): vo
 		.action((options: DiffOptions) => diff(options, getContext()));
 }
 
-// Nulls, not zeros, when no data was previewed: the report must not read as a reconcile that found nothing.
-function reconcileCounts(preview: DataPreviewPlan | undefined): ReconcileCounts {
-	if (preview === undefined) return { matched: null, ambiguous: null, unmatched: null, unchanged: null };
+function comparisonCounts(preview: DataPreviewPlan | undefined): DataComparisonCounts | undefined {
+	if (preview === undefined) return undefined;
 
 	return {
-		matched: preview.matchedCount,
-		ambiguous: preview.ambiguousCount,
-		unmatched: preview.unmatchedCount,
+		reconciliation: {
+			matched: preview.matchedCount,
+			unmatched: preview.unmatchedCount,
+			ambiguous: preview.ambiguousCount,
+			dependent: preview.dependentCount,
+		},
 		unchanged: preview.unchangedCount,
 	};
 }
@@ -66,8 +68,9 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	const { url, credential, project, projectConfig } = target;
 
 	const mode: SyncMode = resolveMode(options.mode, projectConfig);
+	const projectPath = displayProjectPath(ctx.cwd, target.projectDir);
 
-	ctx.ui.info(`Comparing commit-ready files with ${options.to} — ${url} (${describeMode(mode)})`);
+	ctx.ui.info(`Comparing ${projectPath} with ${options.to} — ${url} (${describeMode(mode)})`);
 
 	const schema = await planSchema(target, mode, options.allowVersionDrift ?? false, ctx);
 
@@ -76,7 +79,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	// A truncated source cannot prove mirror deletions, even though the dry-run can display them.
 	if (mode === 'mirror' && preview !== undefined && preview.incomplete.length > 0) {
 		ctx.ui.warn(
-			`The commit-ready configuration is incomplete for ${preview.incomplete.join(', ')} — the source hid records from reads at pull time, and push will refuse mirror. Push with --mode merge, or license the source and re-pull.`,
+			`The configuration in ${projectPath} is incomplete for ${preview.incomplete.join(', ')} — the source hid records from reads at pull time, and push will refuse mirror. Push with --mode merge, or license the source and re-pull.`,
 		);
 	}
 
@@ -96,10 +99,10 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	const dataChanged = dataSummary !== undefined && hasImportChanges(dataSummary);
 
-	const unresolved = preview?.ambiguousCount ?? 0;
+	const ambiguous = preview?.ambiguousCount ?? 0;
 
 	if (ctx.ui.json) {
-		// Unresolved identities count as changes because a non-interactive push cannot apply them.
+		// Ambiguous matches count as changes because a non-interactive push cannot apply them.
 		ctx.ui.data({
 			kind: 'DiffReport',
 			formatVersion: 1,
@@ -108,42 +111,55 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 			profile: options.to,
 			project,
 			mode,
-			changes: schema.result !== null || dataChanged || unresolved > 0,
-			unresolved,
+			changes: schema.result !== null || dataChanged || ambiguous > 0,
 			schemaSkipped: !schema.enabled,
 			added: schema.added,
 			modified: schema.modified,
 			deleted: schema.deleted,
 			hash: schema.result?.hash ?? null,
-			data: dataReport(mode, preview, dryRun, reconcileCounts(preview)),
+			data: dataReport(mode, preview, dryRun, comparisonCounts(preview)),
 		});
 
 		return;
 	}
 
 	// An all-ambiguous set has a zero dry-run but is not converged.
-	if (schema.result === null && !dataChanged && unresolved === 0) {
-		ctx.ui.success(convergedMessage('diff', options.to, schema, preview !== undefined));
+	if (schema.result === null && !dataChanged && ambiguous === 0) {
+		ctx.ui.success(convergedMessage('diff', target, ctx.cwd, schema, preview !== undefined));
 		return;
 	}
 
 	renderSchemaPlan(schema, ctx);
 
+	// An ambiguity holds its records out of the batch, so the dry run can come back empty for a diff that
+	// is anything but converged. Printing "no changes" there contradicts the lines that follow it.
+	const ambiguityEmptiedThePlan = ambiguous > 0 && dataSummary !== undefined && !hasImportChanges(dataSummary);
+
 	// Diff always dry-runs, so there is never an unpriced batch to describe instead.
-	renderDataPlan(dataSummary, unresolved, undefined, ctx);
+	if (!ambiguityEmptiedThePlan) renderDataPlan(dataSummary, undefined, ctx);
 
-	if (preview !== undefined) {
-		const pending = preview.ambiguousCount + preview.unmatchedCount;
+	if (preview === undefined) return;
 
-		if (pending > 0) {
-			const detail =
-				preview.ambiguousCount > 0
-					? ` (${preview.ambiguousCount} ambiguous — run push in a terminal to choose the match; a non-interactive push refuses until they are resolved)`
-					: '';
+	const { ambiguousCount, dependentCount, unmatchedCount } = preview;
 
-			ctx.ui.info(
-				`${count(pending, 'configuration record')} ${pending === 1 ? 'has' : 'have'} no target match yet — the first push will match or create them${detail}.`,
-			);
-		}
+	if (ambiguousCount > 0) {
+		const subject = count(ambiguousCount, 'configuration record');
+		const match = ambiguousCount === 1 ? 'has an ambiguous target match' : 'have ambiguous target matches';
+
+		const dependent =
+			dependentCount === 0
+				? ''
+				: `; ${count(dependentCount, 'record')} ${dependentCount === 1 ? 'depends' : 'depend'} on ${ambiguousCount === 1 ? 'that choice' : 'those choices'}`;
+
+		ctx.ui.info(`${subject} ${match}${dependent}.`);
 	}
+
+	if (unmatchedCount > 0) {
+		ctx.ui.info(
+			`${count(unmatchedCount, 'configuration record')} ${unmatchedCount === 1 ? 'has' : 'have'} no target match — push would create ${unmatchedCount === 1 ? 'it' : 'them'}.`,
+		);
+	}
+
+	// Last, so the instruction closes the report rather than interrupting the facts.
+	if (ambiguousCount > 0) ctx.ui.info('Run d6s sync push interactively to choose.');
 }

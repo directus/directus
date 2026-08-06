@@ -1,26 +1,27 @@
-import { select } from '@clack/prompts';
+import { relative } from 'node:path';
+import { note, select } from '@clack/prompts';
 import { isEqual } from 'lodash-es';
 import type { SyncMode } from '../../../kernel/config/mode.js';
 import { fetchQueryLimitMax } from '../../../kernel/connection.js';
 import { CliError } from '../../../kernel/error.js';
 import { ask } from '../../../kernel/prompt.js';
 import type { CliContext } from '../../../kernel/run.js';
+import { count } from '../../../kernel/text.js';
 import { fetchRecords } from './api.js';
 import { byCodepoint } from './codepoint.js';
 import type { ImportCollectionData } from './contract.js';
 import { type DataCollection, readDataFiles } from './data-store.js';
 import { type IdMap, mappingsFor, normalizeInstanceUrl, readIdMap, withMappings, writeIdMap } from './id-map.js';
 import { type CollectionReconcile, reconcileCollections, type ReconcileInput } from './reconcile.js';
-import type { Target } from './resolve-target.js';
+import { displayProjectPath, type Target } from './resolve-target.js';
 import { allResources, type Resource } from './resources.js';
 
-/**
- * A source ID and the primary key sent for it. A null sent PK means the server assigned an ID that its
- * import response cannot report, so the next push must reconcile it by natural key.
- */
+/** A source ID and the primary key sent for it. */
 interface SentRecord {
 	readonly sourceId: string;
-	readonly sentPk: string | null;
+	readonly sentPk: string;
+	/** The sent key is an invented temporary; only a `mapped` response entry can supply the real target ID. */
+	readonly temporary?: true;
 }
 
 interface SystemSent {
@@ -74,7 +75,7 @@ export function partitionCollections(collections: readonly DataCollection[]): {
 			if (data.primaryKey !== resource.primaryKey) {
 				throw new CliError(
 					'STATE',
-					`The commit-ready file for ${data.collection} declares primary key "${data.primaryKey}", but this collection's primary key is "${resource.primaryKey}".`,
+					`The local file for ${data.collection} declares primary key "${data.primaryKey}", but this collection's primary key is "${resource.primaryKey}".`,
 					{ hint: 'Fix or delete the data file, then run d6s sync pull again.' },
 				);
 			}
@@ -177,10 +178,147 @@ function recordLabel(record: Record<string, unknown> | undefined, primaryKey: st
 	return String(record[primaryKey] ?? fallbackId);
 }
 
+/** One source record whose natural key matches several target records, tagged with the collection it came from. */
+type Ambiguity = CollectionReconcile['ambiguous'][number] & { readonly collection: string };
+
+const UNNAMED_IDENTITY = 'with this identity';
+
+/**
+ * Name the natural key that made records collide, in the resource's own field names. Composite keys name
+ * every field: a resource that needs three fields to identify a record is exactly the one whose records
+ * carry no human-readable label, so `UNNAMED_IDENTITY` would leave the reader nothing to search for.
+ */
+function identityPhrase(input: ReconcileInput | undefined, source: Record<string, unknown> | undefined): string {
+	if (input === undefined || source === undefined) return UNNAMED_IDENTITY;
+
+	const rendered: { field: string; value: string }[] = [];
+
+	for (const field of input.naturalKey) {
+		const value = scalar(source[field]);
+
+		// The unused half of an either/or key (an access grant carries a role or a user) names nothing.
+		if (value === undefined || value === 'null') continue;
+
+		rendered.push({ field, value });
+	}
+
+	if (rendered.length === 0) return UNNAMED_IDENTITY;
+
+	const only = rendered.length === 1 ? rendered[0] : undefined;
+
+	if (only?.field === 'name') return `named ${only.value}`;
+
+	return `with ${rendered.map((entry) => `${entry.field} ${entry.value}`).join(', ')}`;
+}
+
+/**
+ * Grow a set of excluded source IDs until it is closed under foreign keys: a record pointing at an excluded
+ * record cannot be sent either, or its FK would dangle. Iterates because self-referential chains (a folder
+ * under a folder) deepen one level per pass. Mutates `excluded` in place.
+ */
+function excludeDependents(system: readonly SystemCollection[], excluded: Map<string, Set<string>>): void {
+	for (let changed = true; changed; ) {
+		changed = false;
+
+		for (const { data, resource } of system) {
+			const fks = resource.fkFields;
+
+			if (fks.length === 0) continue;
+
+			const dropped = excluded.get(resource.collection) ?? new Set<string>();
+
+			for (const record of data.records) {
+				if (dropped.has(String(record[resource.primaryKey]))) continue;
+
+				for (const fk of fks) {
+					const value = record[fk.field];
+
+					if (value === null || value === undefined) continue;
+					if (excluded.get(fk.references)?.has(String(value)) !== true) continue;
+
+					dropped.add(String(record[resource.primaryKey]));
+					excluded.set(resource.collection, dropped);
+					changed = true;
+					break;
+				}
+			}
+		}
+	}
+}
+
+/** How many records a set of ambiguities holds back beyond the ambiguous records themselves. */
+function dependentCountOf(
+	system: readonly SystemCollection[],
+	ambiguities: readonly { collection: string; sourceId: string }[],
+): number {
+	const excluded = new Map<string, Set<string>>();
+
+	for (const item of ambiguities) {
+		const dropped = excluded.get(item.collection) ?? new Set<string>();
+		dropped.add(item.sourceId);
+		excluded.set(item.collection, dropped);
+	}
+
+	excludeDependents(system, excluded);
+
+	let total = 0;
+	for (const dropped of excluded.values()) total += dropped.size;
+
+	return total - ambiguities.length;
+}
+
+function itemUiUrl(instance: string, resource: Resource | undefined, id: string): string | undefined {
+	if (resource?.appRoute === undefined) return undefined;
+	return `${normalizeInstanceUrl(instance)}${resource.appRoute}/${encodeURIComponent(id)}`;
+}
+
+/**
+ * Hand out negative primary keys the import response can correlate back to their source records. Only
+ * descends, so a key is never reissued; `reserved` keeps it clear of keys the source or target already uses.
+ */
+function temporaryPkAllocator(reserved: ReadonlySet<string>): () => number {
+	let next = -1;
+
+	return () => {
+		while (reserved.has(String(next))) next--;
+		return next--;
+	};
+}
+
+/**
+ * State where a collision sits: how many local records claim one identity, and how many target records
+ * answer to it. Both the refusal and the prompt open with these, so they cannot drift apart.
+ */
+function collisionLines(
+	item: Ambiguity,
+	ambiguities: readonly Ambiguity[],
+	inputs: readonly ReconcileInput[],
+	target: Target,
+	ctx: CliContext,
+): [string, string] {
+	const input = inputs.find((candidate) => candidate.collection === item.collection);
+	const source = input?.sourceRecords.find((record) => String(record[input.primaryKey]) === item.sourceId);
+	const resource = allResources().find((candidate) => candidate.collection === item.collection);
+	const singular = resource?.singular ?? 'record';
+	const plural = resource?.plural ?? 'records';
+
+	const local = ambiguities.filter(
+		(candidate) => candidate.collection === item.collection && candidate.key === item.key,
+	).length;
+
+	const projectPath = ctx.ui.style.strong(displayProjectPath(ctx.cwd, target.projectDir));
+
+	return [
+		`${projectPath} contains ${local} ${local === 1 ? singular : plural} ${identityPhrase(input, source)}.`,
+		`${ctx.ui.style.strong(target.profile)} — ${ctx.ui.style.muted(target.url)} contains ${item.targetIds.length} matching ${item.targetIds.length === 1 ? singular : plural}.`,
+	];
+}
+
 function differenceHint(
 	source: Record<string, unknown> | undefined,
 	target: Record<string, unknown> | undefined,
 	primaryKey: string,
+	mode: SyncMode,
 ): string {
 	if (source === undefined || target === undefined) return 'Uses this existing target record';
 
@@ -195,14 +333,19 @@ function differenceHint(
 		differences.push(
 			before === undefined || after === undefined
 				? `${field}: values differ`
-				: `${field}: source ${before}, target ${after}`,
+				: `${field}: local ${before}, target ${after}`,
 		);
 	}
 
-	if (differences.length === 0) return 'Same synced values as source; only the ID differs';
+	if (differences.length === 0) return 'Same synced values; only the ID differs';
 
 	const shown = differences.slice(0, 2).join('; ');
-	return differences.length > 2 ? `${shown}; +${differences.length - 2} more differences` : shown;
+	const detail = differences.length > 2 ? `${shown}; +${differences.length - 2} more differences` : shown;
+
+	const effect =
+		mode === 'add' ? 'Add keeps the target unchanged' : `${mode === 'merge' ? 'Merge' : 'Mirror'} updates the target`;
+
+	return `${effect}; ${detail}`;
 }
 
 function matchedEntries(result: CollectionReconcile): Record<string, string> {
@@ -213,13 +356,17 @@ function matchedEntries(result: CollectionReconcile): Record<string, string> {
 
 interface ResolvedMatches {
 	readonly seeds: ReadonlyMap<string, Record<string, string>>;
-	readonly decided: readonly { collection: string; sourceId: string }[];
+	readonly decided: readonly { collection: string; sourceId: string; targetId: string | null }[];
 	readonly resolvedExisting: boolean;
 }
 
 async function resolveMatches(
 	results: readonly CollectionReconcile[],
 	inputs: readonly ReconcileInput[],
+	system: readonly SystemCollection[],
+	target: Target,
+	sourceUrl: string,
+	mode: SyncMode,
 	ctx: CliContext,
 ): Promise<ResolvedMatches> {
 	const seeds = new Map<string, Record<string, string>>();
@@ -236,29 +383,99 @@ async function resolveMatches(
 	if (ambiguities.length === 0) return { seeds, decided: [], resolvedExisting: false };
 
 	if (!ctx.interactive) {
-		const lines = ambiguities.map((item) => {
-			const input = inputs.find((candidate) => candidate.collection === item.collection);
-			const source = input?.sourceRecords.find((record) => String(record[input.primaryKey]) === item.sourceId);
-			const label = recordLabel(source, input?.primaryKey ?? 'id', item.sourceId);
-			return `${item.collection} source ${label} → one of ${item.targetIds.join(', ')}`;
-		});
+		const lines: string[] = [];
+		const rendered = new Set<string>();
 
-		throw new CliError('STATE', `Ambiguous target matches:\n  ${lines.join('\n  ')}`, {
-			hint: 'Run d6s sync push interactively once to choose, then commit the updated ID map.',
-		});
+		for (const item of ambiguities) {
+			const groupKey = `${item.collection}\0${item.key}`;
+			if (rendered.has(groupKey)) continue;
+			rendered.add(groupKey);
+
+			const [local, remote] = collisionLines(item, ambiguities, inputs, target, ctx);
+			lines.push(`${item.collection}: ${local}`, remote);
+		}
+
+		// Name what else is held back: the dependents need no decision of their own, so a bare ambiguity
+		// count understates the push by every record waiting on one.
+		const dependents = dependentCountOf(system, ambiguities);
+
+		const held =
+			dependents === 0
+				? ''
+				: `; ${count(dependents, 'record')} ${dependents === 1 ? 'depends' : 'depend'} on ${ambiguities.length === 1 ? 'that choice' : 'those choices'}`;
+
+		throw new CliError(
+			'STATE',
+			`Push refused: ${ambiguities.length} target ${ambiguities.length === 1 ? 'match needs' : 'matches need'} a choice${held}.\n  ${lines.join('\n  ')}`,
+			{ hint: 'Run d6s sync push interactively once to choose, then commit the updated ID map.' },
+		);
 	}
 
-	const decided: { collection: string; sourceId: string }[] = [];
+	const decided: { collection: string; sourceId: string; targetId: string | null }[] = [];
 	let resolvedExisting = false;
 
-	// A target can represent only one source.
-	const taken = new Map<string, Set<string>>();
+	// Keep the owner, not only occupancy, so a later prompt can explain where its candidate went.
+	const taken = new Map<string, Map<string, string>>();
 
 	for (const [index, item] of ambiguities.entries()) {
-		const claimed = taken.get(item.collection) ?? new Set<string>();
+		const claimed = taken.get(item.collection) ?? new Map<string, string>();
 		const input = inputs.find((candidate) => candidate.collection === item.collection);
 		const primaryKey = input?.primaryKey ?? 'id';
 		const source = input?.sourceRecords.find((record) => String(record[primaryKey]) === item.sourceId);
+		const resource = allResources().find((candidate) => candidate.collection === item.collection);
+		const singular = resource?.singular ?? 'record';
+		const plural = resource?.plural ?? 'records';
+
+		const context = [
+			...collisionLines(item, ambiguities, inputs, target, ctx),
+			'',
+			`${ctx.ui.style.strong(`${singular[0]?.toUpperCase() ?? ''}${singular.slice(1)}:`)} ${recordLabel(source, primaryKey, item.sourceId)}`,
+		];
+
+		const sourceLink = itemUiUrl(sourceUrl, resource, item.sourceId);
+		if (sourceLink !== undefined) context.push(`Source UI: ${ctx.ui.style.muted(sourceLink)}`);
+
+		const claimedIds = item.targetIds.filter((id) => claimed.has(id));
+
+		if (claimedIds.length > 0) {
+			context.push('');
+
+			if (claimedIds.length === 1 && item.targetIds.length === 1) {
+				const targetId = claimedIds[0]!;
+				const ownerId = claimed.get(targetId)!;
+				const targetRecord = input?.targetRecords.find((record) => String(record[primaryKey]) === targetId);
+				const owner = input?.sourceRecords.find((record) => String(record[primaryKey]) === ownerId);
+
+				context.push(
+					ctx.ui.style.warning(
+						`The only matching target ${singular} ${recordLabel(targetRecord, primaryKey, targetId)} was already matched to`,
+					),
+					ctx.ui.style.warning(`${recordLabel(owner, primaryKey, ownerId)} earlier in this push.`),
+				);
+			} else {
+				context.push(
+					ctx.ui.style.warning(
+						`${claimedIds.length} matching target ${claimedIds.length === 1 ? singular : plural} already matched earlier in this push.`,
+					),
+				);
+			}
+		}
+
+		const targetLinks = item.targetIds
+			.map((id) => itemUiUrl(target.url, resource, id))
+			.filter((url): url is string => url !== undefined);
+
+		for (const [linkIndex, link] of targetLinks.entries()) {
+			const styledLink = ctx.ui.style.muted(link);
+			context.push(targetLinks.length === 1 ? `Target UI: ${styledLink}` : `Target UI ${linkIndex + 1}: ${styledLink}`);
+		}
+
+		note(context.join('\n'), `${item.collection} — ${index + 1} of ${ambiguities.length}`);
+
+		const identity = scalar(source?.['name']);
+
+		const createHint =
+			identity === undefined ? `Creates another ${singular}` : `Creates another ${identity} ${singular}`;
 
 		const options: { value: string; label: string; hint: string }[] = [
 			...item.targetIds
@@ -267,32 +484,32 @@ async function resolveMatches(
 					const target = input?.targetRecords.find((record) => String(record[primaryKey]) === id);
 					return {
 						value: `${TARGET_PREFIX}${id}`,
-						label: `Use ${recordLabel(target, primaryKey, id)}`,
-						hint: differenceHint(source, target, primaryKey),
+						label: `Existing target ${singular} ${recordLabel(target, primaryKey, id)}`,
+						hint: differenceHint(source, target, primaryKey, mode),
 					};
 				}),
 			{
 				value: 'create',
-				label: 'Create a separate record',
-				hint: 'Adds one record; leaves every existing match unchanged',
+				label: `No existing ${singular} — create a new one on the target`,
+				hint: mode === 'mirror' ? `${createHint}; unmatched target records may be deleted` : createHint,
 			},
-			{ value: 'abort', label: 'Abort the push', hint: 'Applies no remote changes' },
+			{ value: 'abort', label: 'Abort push', hint: 'Applies no remote changes' },
 		];
 
 		const choice = await ask(
 			select({
-				message: `Resolve identity ${index + 1} of ${ambiguities.length}: ${item.collection} source ${recordLabel(source, primaryKey, item.sourceId)} matches multiple target records`,
+				message: `Which target ${singular} does this represent?`,
 				options,
 			}),
 		);
 
 		if (choice === 'abort') throw new CliError('STATE', 'Push aborted.');
 
-		decided.push({ collection: item.collection, sourceId: item.sourceId });
+		const targetId = choice.startsWith(TARGET_PREFIX) ? choice.slice(TARGET_PREFIX.length) : null;
+		decided.push({ collection: item.collection, sourceId: item.sourceId, targetId });
 
-		if (choice.startsWith(TARGET_PREFIX)) {
-			const targetId = choice.slice(TARGET_PREFIX.length);
-			claimed.add(targetId);
+		if (targetId !== null) {
+			claimed.set(targetId, item.sourceId);
 			taken.set(item.collection, claimed);
 
 			const entries = seeds.get(item.collection) ?? {};
@@ -333,7 +550,7 @@ async function readAndReconcile(target: Target): Promise<Reconciled | undefined>
 	if (unknownSystem.length > 0) {
 		throw new CliError(
 			'STATE',
-			`The commit-ready files contain system collections this CLI version does not sync: ${unknownSystem.map((data) => data.collection).join(', ')}.`,
+			`The local files contain system collections this CLI version does not sync: ${unknownSystem.map((data) => data.collection).join(', ')}.`,
 			{ hint: 'Delete those files and re-pull, or use a CLI version that syncs them.' },
 		);
 	}
@@ -341,7 +558,7 @@ async function readAndReconcile(target: Target): Promise<Reconciled | undefined>
 	if (content.length > 0) {
 		throw new CliError(
 			'STATE',
-			`The commit-ready files contain content collections: ${content.map((data) => data.collection).join(', ')}.`,
+			`The local files contain content collections: ${content.map((data) => data.collection).join(', ')}.`,
 			{
 				hint: 'Content sync is deferred in this release — the CLI syncs schema and configuration only. Delete those files and re-pull.',
 			},
@@ -400,6 +617,14 @@ function assembleBatch(
 		const targetRows = targets.get(resource.collection);
 		const targetByPk = new Map((targetRows ?? []).map((row) => [String(row[resource.primaryKey]), row]));
 
+		const takeTemporaryPk = temporaryPkAllocator(
+			new Set([
+				...targetByPk.keys(),
+				...Object.values(collectionBucket),
+				...data.records.map((record) => String(record[resource.primaryKey])),
+			]),
+		);
+
 		const items: Record<string, unknown>[] = [];
 		const sent: SentRecord[] = [];
 
@@ -417,19 +642,25 @@ function assembleBatch(
 			const result = remapSystemRecord(record, resource, bucket);
 
 			// Add-mode PK conflicts create duplicates instead of updating existing records.
-			if (mode === 'add' && result.sent.sentPk !== null && targetByPk.has(result.sent.sentPk)) continue;
+			if (mode === 'add' && targetByPk.has(result.sent.sentPk)) continue;
 
-			// Never treat an unmatched source integer as target identity; hidden or same-batch records may own it.
-			// The server assigns a fresh key instead, which a later natural-key reconciliation discovers safely:
-			// the catalog admits no integer-PK resource without a natural key, so the record stays identifiable.
+			// An unmatched integer may belong to an unrelated target or a record created earlier in this batch.
+			// Singletons cannot report a remap; otherwise a temporary negative key gives the response a safe correlation.
 			if (mode !== 'add' && !mapped && resource.primaryKeyType === 'integer') {
-				delete result.record[resource.primaryKey];
+				if (resource.singleton) {
+					delete result.record[resource.primaryKey];
+					items.push(result.record);
+					continue;
+				}
+
+				const temporaryPk = takeTemporaryPk();
+				result.record[resource.primaryKey] = temporaryPk;
 				items.push(result.record);
-				sent.push({ sourceId, sentPk: null });
+				sent.push({ sourceId, sentPk: String(temporaryPk), temporary: true });
 				continue;
 			}
 
-			if (mapped && result.sent.sentPk !== null) {
+			if (mapped) {
 				const targetRow = targetByPk.get(result.sent.sentPk);
 
 				if (targetRow !== undefined && fieldsEqual(result.record, targetRow, resource.primaryKey)) {
@@ -480,14 +711,16 @@ export async function prepareDataPush(
 	let map = reconciled.map;
 	let results = reconciled.results;
 	const decided = new Map<string, Set<string>>();
+	const decisions: { collection: string; sourceId: string; targetId: string | null }[] = [];
 
 	while (true) {
-		const resolved = await resolveMatches(results, inputs, ctx);
+		const resolved = await resolveMatches(results, inputs, system, target, source, mode, ctx);
 
 		for (const item of resolved.decided) {
 			const settled = decided.get(item.collection) ?? new Set<string>();
 			settled.add(item.sourceId);
 			decided.set(item.collection, settled);
+			decisions.push(item);
 		}
 
 		for (const [collection, entries] of resolved.seeds) {
@@ -506,7 +739,35 @@ export async function prepareDataPush(
 		results = reconcileCollections(remaining, mappingsFor(map, source, targetUrl));
 	}
 
-	if (map !== reconciled.map) writeIdMap(target.idMapPath, map);
+	if (ctx.interactive && decisions.length > 0) {
+		const lines = decisions.map((decision) => {
+			const input = inputs.find((candidate) => candidate.collection === decision.collection);
+			const primaryKey = input?.primaryKey ?? 'id';
+			const sourceRecord = input?.sourceRecords.find((record) => String(record[primaryKey]) === decision.sourceId);
+
+			const sourceLabel = recordLabel(sourceRecord, primaryKey, decision.sourceId);
+			const resource = allResources().find((candidate) => candidate.collection === decision.collection);
+			const singular = resource?.singular ?? 'record';
+
+			if (decision.targetId === null) {
+				return `${decision.collection} ${sourceLabel} → new target ${singular}`;
+			}
+
+			const targetRecord = input?.targetRecords.find((record) => String(record[primaryKey]) === decision.targetId);
+
+			return `${decision.collection} ${sourceLabel} → existing target ${recordLabel(targetRecord, primaryKey, decision.targetId)}`;
+		});
+
+		note(lines.join('\n'), 'Identity choices');
+	}
+
+	// Identity is settled before anything is sent, and stays settled: a gate further down can still refuse
+	// the push, and re-asking for the same decisions would be worse than keeping them. Say so, because this
+	// writes a tracked file and the command it belongs to may yet fail.
+	if (map !== reconciled.map) {
+		writeIdMap(target.idMapPath, map);
+		ctx.ui.info(`Identity matches saved: ${relative(ctx.cwd, target.idMapPath)}`);
+	}
 
 	const { batch, systemSent, unchanged, records } = assembleBatch(
 		system,
@@ -537,16 +798,16 @@ export interface DataPreviewPlan {
 	readonly records: number;
 	readonly matchedCount: number;
 	readonly ambiguousCount: number;
+	readonly dependentCount: number;
 	readonly unmatchedCount: number;
 	readonly unchangedCount: number;
 	readonly incomplete: readonly string[];
 }
 
 /**
- * Preview without prompting or writing. Unambiguous matches are applied in memory; ambiguous sources —
- * and every record whose FK chain leads to one — are excluded from the batch and surfaced only through
- * ambiguousCount: an interactive push resolves them (possibly into updates) and a non-interactive push
- * refuses until they are resolved.
+ * Preview without prompting or writing. Unambiguous matches are applied in memory; ambiguous sources and
+ * every record whose FK chain leads to one are excluded from the batch. The direct collisions are counted
+ * as ambiguous; records waiting on those choices are counted as dependent.
  */
 export async function previewData(target: Target, mode: SyncMode): Promise<DataPreviewPlan | undefined> {
 	const reconciled = await readAndReconcile(target);
@@ -569,39 +830,12 @@ export async function previewData(target: Target, mode: SyncMode): Promise<DataP
 		map = withMappings(map, source, targetUrl, result.collection, matchedEntries(result));
 	}
 
-	// Ambiguous records are neither creates nor updates, so exclude and report them separately.
-	// Exclude dependents whose foreign keys would dangle, iterating to cover self-referential chains.
-	for (let changed = true; changed; ) {
-		changed = false;
-
-		for (const { data, resource } of system) {
-			const fks = resource.fkFields;
-
-			if (fks.length === 0) continue;
-
-			const dropped = excluded.get(resource.collection) ?? new Set<string>();
-
-			for (const record of data.records) {
-				if (dropped.has(String(record[resource.primaryKey]))) continue;
-
-				for (const fk of fks) {
-					const value = record[fk.field];
-
-					if (value === null || value === undefined) continue;
-					if (excluded.get(fk.references)?.has(String(value)) !== true) continue;
-
-					dropped.add(String(record[resource.primaryKey]));
-					excluded.set(resource.collection, dropped);
-					changed = true;
-					break;
-				}
-			}
-		}
-	}
+	excludeDependents(system, excluded);
 
 	let matchedCount = 0;
-	let ambiguousCount = 0;
 	let unmatchedCount = 0;
+	let excludedCount = 0;
+	const ambiguousCount = results.reduce((total, result) => total + result.ambiguous.length, 0);
 
 	for (const result of results) {
 		const dropped = excluded.get(result.collection);
@@ -609,7 +843,9 @@ export async function previewData(target: Target, mode: SyncMode): Promise<DataP
 		unmatchedCount += result.unmatched.filter((sourceId) => dropped?.has(sourceId) !== true).length;
 	}
 
-	for (const dropped of excluded.values()) ambiguousCount += dropped.size;
+	for (const dropped of excluded.values()) excludedCount += dropped.size;
+
+	const dependentCount = excludedCount - ambiguousCount;
 
 	const previewSystem = system.map((entry) => {
 		const dropped = excluded.get(entry.resource.collection);
@@ -642,6 +878,7 @@ export async function previewData(target: Target, mode: SyncMode): Promise<DataP
 		records,
 		matchedCount,
 		ambiguousCount,
+		dependentCount,
 		unmatchedCount,
 		unchangedCount,
 		incomplete: reconciled.incomplete,

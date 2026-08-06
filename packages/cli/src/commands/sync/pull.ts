@@ -40,7 +40,7 @@ export type PullOptions = {
 export function registerPull(command: Command, getContext: () => CliContext): void {
 	const pullCommand = command
 		.command('pull')
-		.description('Pull schema and configuration from a source instance into commit-ready files')
+		.description('Pull schema and configuration from a source instance into the configured project directory')
 		.requiredOption('--from <profile>', 'Source profile name')
 		.option('--collections <list>', 'Only these collections (comma-separated); pulls a partial snapshot', parseList)
 		.option(
@@ -356,7 +356,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 		if (derivedSecrets.length > 0) {
 			ctx.ui.warn(
-				`${resource.name}: stripped ${count(derivedSecrets.length, 'custom field')} the schema marks sensitive (conceal/encrypt/hash): ${derivedSecrets.join(', ')}. Commit-ready files never carry these values — set them on the target directly.`,
+				`${resource.name}: stripped ${count(derivedSecrets.length, 'custom field')} the schema marks sensitive (conceal/encrypt/hash): ${derivedSecrets.join(', ')}. The local files never carry these values — set them on the target directly.`,
 			);
 		}
 
@@ -369,7 +369,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 			} else if (!includesUsers && rows.some((record) => record['user'] !== null && record['user'] !== undefined)) {
 				// Preserved users may be stale relative to newly fetched grants.
 				ctx.ui.warn(
-					`${resource.name}: kept user-attached grants because directus_users is present in commit-ready files from an earlier --users pull, but this pull did not refresh the user accounts themselves — a grant for a user added on the source since then fails the push. Re-pull with --users to refresh accounts, or delete the users configuration file to drop accounts from the sync.`,
+					`${resource.name}: kept user-attached grants because directus_users is present in local files from an earlier --users pull, but this pull did not refresh the user accounts themselves — a grant for a user added on the source since then fails the push. Re-pull with --users to refresh accounts, or delete the users configuration file to drop accounts from the sync.`,
 				);
 			}
 		}
@@ -387,10 +387,14 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 			});
 
 			if (carriers.length > 0) {
-				const keys = carriers.map((record) => String(record['key'] ?? record['id']));
+				// A key is only unique per flow, so name the operation the way the Data Studio does.
+				const names = carriers.map((record) => {
+					const name = record['name'];
+					return typeof name === 'string' && name !== '' ? name : String(record['key'] ?? record['id']);
+				});
 
 				ctx.ui.warn(
-					`${resource.name}: request operations with custom headers are pulled verbatim: ${keys.join(', ')}. Headers routinely embed Authorization values and API keys — review them for credentials before committing.`,
+					`${resource.name}: request operations with custom headers are pulled verbatim: ${names.join(', ')}. Headers routinely embed Authorization values and API keys — review them for credentials before committing.`,
 				);
 			}
 		}

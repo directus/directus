@@ -117,9 +117,11 @@ describe('prepareDataPush skip and precondition', () => {
 
 	function target(): Target {
 		return {
+			profile: 'staging',
 			url: 'https://cms.example.com',
 			credential,
 			project: 'default',
+			projectDir: dir,
 			schemaDir: join(dir, 'schema'),
 			dataDir: join(dir, 'data'),
 			idMapPath: join(dir, 'id_map.json'),
@@ -209,7 +211,7 @@ describe('prepareDataPush skip and precondition', () => {
 		expect(fetchRecords).not.toHaveBeenCalled();
 	});
 
-	it('withholds an unmatched numeric PK so the server assigns one the next pull can reconcile', async () => {
+	it('uses a temporary numeric PK so the import response can map the assigned target ID', async () => {
 		writeDataFiles(
 			join(dir, 'data'),
 			[
@@ -225,12 +227,77 @@ describe('prepareDataPush skip and precondition', () => {
 		const plan = await prepareDataPush(target(), 'merge', ctx());
 
 		expect(plan?.batch).toEqual([
-			{ collection: 'directus_permissions', items: [{ policy: null, collection: 'articles', action: 'read' }] },
+			{
+				collection: 'directus_permissions',
+				items: [{ id: -1, policy: null, collection: 'articles', action: 'read' }],
+			},
 		]);
 
 		expect(plan?.systemSent).toEqual([
-			{ collection: 'directus_permissions', records: [{ sourceId: '7', sentPk: null }] },
+			{ collection: 'directus_permissions', records: [{ sourceId: '7', sentPk: '-1', temporary: true }] },
 		]);
+	});
+
+	it('skips temporary keys the target already occupies, so an import can never match a real negative row', async () => {
+		writeDataFiles(
+			join(dir, 'data'),
+			[
+				{
+					collection: 'directus_permissions',
+					primaryKey: 'id',
+					records: [
+						{ id: 7, policy: null, collection: 'articles', action: 'read' },
+						{ id: 8, policy: null, collection: 'articles', action: 'create' },
+					],
+				},
+			],
+			'https://source.example.com',
+		);
+
+		// A real target row at -1: sending it as a temporary key would make the server update that row.
+		vi.mocked(fetchRecords).mockResolvedValue([{ id: -1, policy: null, collection: 'posts', action: 'update' }]);
+
+		const plan = await prepareDataPush(target(), 'merge', ctx());
+
+		expect(plan?.batch).toEqual([
+			{
+				collection: 'directus_permissions',
+				items: [
+					{ id: -2, policy: null, collection: 'articles', action: 'read' },
+					{ id: -3, policy: null, collection: 'articles', action: 'create' },
+				],
+			},
+		]);
+
+		expect(plan?.systemSent).toEqual([
+			{
+				collection: 'directus_permissions',
+				records: [
+					{ sourceId: '7', sentPk: '-2', temporary: true },
+					{ sourceId: '8', sentPk: '-3', temporary: true },
+				],
+			},
+		]);
+	});
+
+	it('does not invent a mapping for a newly created singleton whose response cannot correlate its ID', async () => {
+		writeDataFiles(
+			join(dir, 'data'),
+			[
+				{
+					collection: 'directus_settings',
+					primaryKey: 'id',
+					records: [{ id: 7, project_name: 'Example' }],
+				},
+			],
+			'https://source.example.com',
+		);
+
+		const plan = await prepareDataPush(target(), 'merge', ctx());
+
+		expect(plan?.batch).toEqual([{ collection: 'directus_settings', items: [{ project_name: 'Example' }] }]);
+
+		expect(plan?.systemSent).toEqual([{ collection: 'directus_settings', records: [] }]);
 	});
 
 	it('reconciles a translation and sends its full single-record update to the target ID', async () => {
@@ -305,12 +372,13 @@ describe('prepareDataPush skip and precondition', () => {
 			],
 			records: 2,
 			matchedCount: 1,
-			ambiguousCount: 2,
+			ambiguousCount: 1,
+			dependentCount: 1,
 			unmatchedCount: 1,
 		});
 	});
 
-	it('previewData drops a whole folder chain under an ambiguous parent, to a fixed point', async () => {
+	it('reports one ambiguous folder and three dependent descendants separately', async () => {
 		writeDataFiles(
 			join(dir, 'data'),
 			[
@@ -318,6 +386,7 @@ describe('prepareDataPush skip and precondition', () => {
 					collection: 'directus_folders',
 					primaryKey: 'id',
 					records: [
+						{ id: 'f-great', name: 'Logos', parent: 'f-grand' },
 						{ id: 'f-grand', name: 'Icons', parent: 'f-child' },
 						{ id: 'f-child', name: 'Images', parent: 'f-amb' },
 						{ id: 'f-amb', name: 'Assets', parent: null },
@@ -344,7 +413,8 @@ describe('prepareDataPush skip and precondition', () => {
 			batch: [{ collection: 'directus_folders', items: [] }],
 			records: 0,
 			matchedCount: 0,
-			ambiguousCount: 3,
+			ambiguousCount: 1,
+			dependentCount: 3,
 			unmatchedCount: 0,
 		});
 	});
@@ -383,7 +453,8 @@ describe('prepareDataPush skip and precondition', () => {
 			batch: [{ collection: 'directus_folders', items: [] }],
 			records: 0,
 			matchedCount: 0,
-			ambiguousCount: 2,
+			ambiguousCount: 1,
+			dependentCount: 1,
 			unmatchedCount: 0,
 		});
 	});
@@ -422,6 +493,7 @@ describe('prepareDataPush skip and precondition', () => {
 			records: 1,
 			matchedCount: 0,
 			ambiguousCount: 1,
+			dependentCount: 0,
 			unmatchedCount: 1,
 		});
 	});
@@ -442,6 +514,7 @@ describe('prepareDataPush skip and precondition', () => {
 			records: 1,
 			matchedCount: 0,
 			ambiguousCount: 0,
+			dependentCount: 0,
 			unmatchedCount: 1,
 			unchangedCount: 0,
 			incomplete: [],

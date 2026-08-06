@@ -23,7 +23,7 @@ import {
 	resolveMode,
 } from './utils/plan.js';
 import { emptyImportSummary, hasImportChanges, type ImportSummary, summarizeImport } from './utils/render.js';
-import { resolveTarget } from './utils/resolve-target.js';
+import { displayProjectPath, resolveTarget } from './utils/resolve-target.js';
 
 export interface PushOptions {
 	readonly to: string;
@@ -43,7 +43,7 @@ export interface PushOptions {
 export function registerPush(command: Command, getContext: () => CliContext): void {
 	command
 		.command('push')
-		.description('Push commit-ready schema and configuration to a target instance')
+		.description('Push local schema and configuration files to a target instance')
 		.requiredOption('--to <profile>', 'Target profile name')
 		.addOption(
 			new Option(
@@ -64,34 +64,76 @@ export function registerPush(command: Command, getContext: () => CliContext): vo
 		.action((options: PushOptions) => push(options, getContext()));
 }
 
-function mirrorConsentRefusal(): CliError {
+function mirrorConsentRefusal(projectPath: string): CliError {
 	return new CliError(
 		'USAGE',
 		'Refusing mirror mode in a non-interactive context without --dangerously-allow-delete.',
 		{
-			hint: 'mirror can delete schema and configuration records absent from the commit-ready files; pass --dangerously-allow-delete to consent, or use --mode merge.',
+			hint: `mirror can delete schema and configuration records absent from ${projectPath}; pass --dangerously-allow-delete to consent, or use --mode merge.`,
 		},
 	);
 }
 
-function updateIdMap(dataResult: DataPushPlan, importResult: ImportBatchResult): void {
+function updateIdMap(dataResult: DataPushPlan, importResult: ImportBatchResult, ctx: CliContext): void {
 	let map = dataResult.map;
 
+	const unmapped: { collection: string; sourceId: string; sentPk: string; updatedExisting: boolean }[] = [];
+
 	for (const { collection, records } of dataResult.systemSent) {
-		const mapped = importResult.collections[collection]?.mapped ?? {};
+		const result = importResult.collections[collection];
 		const entries: Record<string, string> = {};
 
-		for (const { sourceId, sentPk } of records) {
-			if (sentPk === null) continue;
+		for (const { sourceId, sentPk, temporary } of records) {
+			const finalPk = result?.mapped?.[sentPk];
 
-			const finalPk = mapped[sentPk];
-			entries[sourceId] = finalPk === undefined ? sentPk : String(finalPk);
+			if (finalPk !== undefined) {
+				entries[sourceId] = String(finalPk);
+				continue;
+			}
+
+			// A temporary key's only meaning is its `mapped` entry. Persisting the key itself would commit
+			// an identity no target record has, and merge would then duplicate the record on every push.
+			if (temporary) {
+				unmapped.push({
+					collection,
+					sourceId,
+					sentPk,
+					updatedExisting: (result?.existing ?? []).some((pk) => String(pk) === sentPk),
+				});
+
+				continue;
+			}
+
+			entries[sourceId] = sentPk;
 		}
 
 		map = withMappings(map, dataResult.source, dataResult.target, collection, entries);
 	}
 
-	writeIdMap(dataResult.idMapPath, map);
+	// The resolved mappings are real whatever else went wrong, so record them before refusing the rest —
+	// and report the write here rather than on the success path, which the refusal below never reaches.
+	if (map !== dataResult.map) {
+		writeIdMap(dataResult.idMapPath, map);
+		ctx.ui.info(`ID map updated: ${relative(ctx.cwd, dataResult.idMapPath)}`);
+	}
+
+	if (unmapped.length > 0) {
+		const lines = unmapped.map((miss) =>
+			miss.updatedExisting
+				? `${miss.collection}: source ${miss.sourceId} — temporary key ${miss.sentPk} matched and updated an existing target record`
+				: `${miss.collection}: source ${miss.sourceId} — temporary key ${miss.sentPk} came back unmapped`,
+		);
+
+		throw new CliError(
+			'STATE',
+			`The import response left ${count(unmapped.length, 'temporary key')} unmapped, so the ID map has no entry for ${unmapped.length === 1 ? 'that record' : 'those records'}.\n  ${lines.join('\n  ')}`,
+			{
+				hint: unmapped.some((miss) => miss.updatedExisting)
+					? 'A target record already used a temporary key — inspect those target records before pushing again.'
+					: 'The push itself was applied. If the target Directus predates batch import key remapping, upgrade it; otherwise the next push re-matches the created records by natural key.',
+			},
+		);
+	}
 }
 
 export async function push(options: PushOptions, ctx: CliContext): Promise<void> {
@@ -100,15 +142,16 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	const mode: SyncMode = resolveMode(options.mode, projectConfig);
 	const allowDeletes = options.dangerouslyAllowDelete ?? false;
+	const projectPath = displayProjectPath(ctx.cwd, target.projectDir);
 
-	ctx.ui.info(`Pushing to ${options.to} — ${url} (${describeMode(mode)})`);
+	ctx.ui.info(`Pushing ${projectPath} to ${options.to} — ${url} (${describeMode(mode)})`);
 
-	// CI mirror requires explicit deletion consent because it skips the dry-run transaction. Commit-ready
-	// data makes that refusal certain whatever the schema phase finds, so settle it from local state
+	// CI mirror requires explicit deletion consent because it skips the dry-run transaction. Local data makes
+	// that refusal certain whatever the schema phase finds, so settle it from local state
 	// before any remote work; the data-less case still needs the convergence check further down.
 	if (!ctx.interactive && mode === 'mirror' && !allowDeletes) {
 		const committed = readDataFiles(dataDir);
-		if (committed !== undefined && committed.collections.length > 0) throw mirrorConsentRefusal();
+		if (committed !== undefined && committed.collections.length > 0) throw mirrorConsentRefusal(projectPath);
 	}
 
 	const schema = await planSchema(target, mode, options.allowVersionDrift ?? false, ctx);
@@ -119,7 +162,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	if (mode === 'mirror' && dataResult !== undefined && dataResult.incomplete.length > 0) {
 		throw new CliError(
 			'STATE',
-			`Refusing mirror: the commit-ready configuration is incomplete for ${dataResult.incomplete.join(', ')}.`,
+			`Refusing mirror: the configuration in ${projectPath} is incomplete for ${dataResult.incomplete.join(', ')}.`,
 			{
 				hint: 'The source instance hid records from reads when this configuration was pulled (unlicensed custom permission rules), so mirror would delete those records on the target. Push with --mode merge, or license the source and re-pull.',
 			},
@@ -149,7 +192,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 			return;
 		}
 
-		ctx.ui.success(convergedMessage('push', options.to, schema, dataResult !== undefined));
+		ctx.ui.success(convergedMessage('push', target, ctx.cwd, schema, dataResult !== undefined));
 		return;
 	}
 
@@ -168,12 +211,12 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	if (!ctx.ui.json) {
 		renderSchemaPlan(schema, ctx);
 
-		// prepareDataPush resolves every ambiguous identity or refuses, so a push never carries unresolved ones.
-		renderDataPlan(dataSummary, 0, dataResult, ctx);
+		// prepareDataPush resolves every ambiguous identity or refuses before rendering the plan.
+		renderDataPlan(dataSummary, dataResult, ctx);
 	}
 
-	// Reached only when no commit-ready configuration exists: this push still changes the schema.
-	if (!ctx.interactive && mode === 'mirror' && !allowDeletes) throw mirrorConsentRefusal();
+	// Reached only when no local configuration exists: this push still changes the schema.
+	if (!ctx.interactive && mode === 'mirror' && !allowDeletes) throw mirrorConsentRefusal(projectPath);
 
 	if (!ctx.interactive && schema.deleted > 0 && !allowDeletes) {
 		throw new CliError('USAGE', `This push includes ${count(schema.deleted, 'schema deletion')}.`, {
@@ -260,9 +303,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 			throw error;
 		}
 
-		updateIdMap(dataResult, importResult);
-
-		ctx.ui.info(`ID map updated: ${relative(ctx.cwd, dataResult.idMapPath)}`);
+		updateIdMap(dataResult, importResult, ctx);
 	}
 
 	const importSummary =
@@ -305,7 +346,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		schemaSentence = 'Schema phase skipped ("schema": false).';
 	}
 
-	let dataSentence = ' Configuration phase skipped (no commit-ready configuration files).';
+	let dataSentence = ` Configuration phase skipped (no configuration files in ${projectPath}).`;
 
 	if (dataResult !== undefined && dataPhaseConverged(dataResult.records, mode)) {
 		dataSentence = ' No configuration changes to push.';

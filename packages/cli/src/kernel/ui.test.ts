@@ -47,6 +47,14 @@ describe('createUi', () => {
 		expect(stdout).toEqual(['{"ok":true}\n', '"done"\n']);
 	});
 
+	it('keeps semantic styles out of JSON strings even when color is enabled', () => {
+		const ui = createUi({ json: true, color: true });
+
+		expect(ui.style.strong('profile')).toBe('profile');
+		expect(ui.style.muted('https://example.com')).toBe('https://example.com');
+		expect(ui.style.warning('claimed')).toBe('claimed');
+	});
+
 	it('suppresses human status in --json mode so stdout stays a clean channel', () => {
 		const ui = createUi({ json: true, color: false });
 		ui.info('working');

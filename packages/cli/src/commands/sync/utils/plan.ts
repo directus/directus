@@ -11,7 +11,7 @@ import { METADATA_FILE } from './artifact-store.js';
 import type { DiffResult, ImportBatchResult, ImportCollectionData } from './contract.js';
 import type { UnchangedRows } from './data-push.js';
 import { hasImportChanges, type ImportSummary, summarizeDiff, summarizeImport } from './render.js';
-import type { Target } from './resolve-target.js';
+import { displayProjectPath, type Target } from './resolve-target.js';
 import { fetchSnapshotDiff } from './snapshot-diff.js';
 import { readSnapshotFiles } from './store.js';
 
@@ -87,7 +87,7 @@ export async function planSchema(
 
 	if (!enabled && existsSync(join(schemaDir, METADATA_FILE))) {
 		ctx.ui.warn(
-			'Committed schema files exist but this project sets "schema": false — the schema phase is skipped and those files are ignored.',
+			`Schema files exist in ${displayProjectPath(ctx.cwd, target.projectDir)}/schema but this project sets "schema": false — the schema phase is skipped and those files are ignored.`,
 		);
 	}
 
@@ -116,17 +116,20 @@ const CONVERGED_COPY: Record<SyncCommand, { verdict: string; outcome: string }> 
  */
 export function convergedMessage(
 	command: SyncCommand,
-	profile: string,
+	target: Target,
+	cwd: string,
 	plan: SchemaPlan,
 	dataChecked: boolean,
 ): string {
 	const { verdict, outcome } = CONVERGED_COPY[command];
+	const subject = `${target.profile} — ${target.url}`;
+	const projectPath = displayProjectPath(cwd, target.projectDir);
 
-	if (!dataChecked) return `${profile} ${verdict} the commit-ready files — ${outcome}.`;
+	if (!dataChecked) return `${subject} ${verdict} ${projectPath} — ${outcome}.`;
 
 	return plan.enabled
-		? `${profile} ${verdict} the commit-ready files — schema and configuration match; ${outcome}.`
-		: `${profile} ${verdict} the commit-ready files — configuration matches; ${outcome} (schema phase skipped).`;
+		? `${subject} ${verdict} ${projectPath} — schema and configuration match; ${outcome}.`
+		: `${subject} ${verdict} ${projectPath} — configuration matches; ${outcome} (schema phase skipped).`;
 }
 
 /**
@@ -154,12 +157,9 @@ export interface BatchSize {
 /**
  * Render the user-facing configuration section of a data plan. `summary` is a priced dry run; a non-interactive push has none
  * because it skips the dry-run transaction, so it can only state the size of what it will send.
- * `unresolved` counts sources whose target identity is still ambiguous — neither creates nor updates,
- * so they are reported beside the plan rather than inside it.
  */
 export function renderDataPlan(
 	summary: ImportSummary | undefined,
-	unresolved: number,
 	batch: BatchSize | undefined,
 	ctx: CliContext,
 ): void {
@@ -175,18 +175,12 @@ export function renderDataPlan(
 
 	if (hasImportChanges(summary)) {
 		const total = summary.created + summary.updated + summary.deleted;
-		const unresolvedSegment = unresolved > 0 ? `, ${unresolved} unresolved` : '';
 
 		ctx.ui.info(
-			`Configuration — ${count(total, 'change')}: ${summary.created} created, ${summary.updated} updated, ${summary.deleted} deleted${unresolvedSegment}`,
+			`Configuration — ${count(total, 'change')}: ${summary.created} created, ${summary.updated} updated, ${summary.deleted} deleted`,
 		);
 
 		for (const line of summary.lines) ctx.ui.plan(line);
-		return;
-	}
-
-	if (unresolved > 0) {
-		ctx.ui.info(`Configuration — no changes to push; ${count(unresolved, 'record')} unresolved.`);
 		return;
 	}
 
@@ -194,14 +188,20 @@ export function renderDataPlan(
 }
 
 /**
- * What identity reconciliation found. Diff-only: a push resolves ambiguity — by prompt or by refusal —
- * rather than counting it, and its report has no such keys.
+ * What the diff's natural-key reconciliation found. Existing ID-map entries and resources without natural
+ * keys are outside these counts, so they are not an exhaustive partition of stored records.
  */
-export interface ReconcileCounts {
-	readonly matched: number | null;
-	readonly ambiguous: number | null;
-	readonly unmatched: number | null;
-	readonly unchanged: number | null;
+export interface ReconciliationCounts {
+	readonly matched: number;
+	readonly unmatched: number;
+	readonly ambiguous: number;
+	readonly dependent: number;
+}
+
+/** Diff-only comparison counts; unchanged is a content state, not a reconciliation state. */
+export interface DataComparisonCounts {
+	readonly reconciliation: ReconciliationCounts;
+	readonly unchanged: number;
 }
 
 /** The report-facing surface a push plan and a diff preview share. */
@@ -214,36 +214,45 @@ export interface ReportedPlan {
  * The data half of a machine report. A phase that never ran reports nulls and `skipped: true`, never
  * zeros: a consumer must never read "no data was compared" as "the data matched".
  */
-export interface DataReport extends Partial<ReconcileCounts> {
+export interface DataReport {
 	readonly mode: SyncMode;
 	readonly source: string | null;
 	readonly resultsByCollection: ImportBatchResult['collections'] | null;
+	readonly reconciliation: ReconciliationCounts | null;
+	readonly unchanged: number | null;
 	readonly incomplete: string[] | null;
 	readonly skipped: boolean;
 }
 
 /**
  * Build the data report. Key insertion order is the emitted JSON's key order, and both commands'
- * payloads are published contracts — the reconcile counts belong between `resultsByCollection` and
+ * payloads are published contracts — comparison details belong between `resultsByCollection` and
  * `incomplete`, not appended.
  */
 export function dataReport(
 	mode: SyncMode,
 	plan: ReportedPlan | undefined,
 	result: ImportBatchResult | undefined,
-	counts?: ReconcileCounts,
+	counts?: DataComparisonCounts,
 ): DataReport {
-	const counters: Partial<ReconcileCounts> = counts ?? {};
-
 	if (plan === undefined) {
-		return { mode, source: null, resultsByCollection: null, ...counters, incomplete: null, skipped: true };
+		return {
+			mode,
+			source: null,
+			resultsByCollection: null,
+			reconciliation: null,
+			unchanged: null,
+			incomplete: null,
+			skipped: true,
+		};
 	}
 
 	return {
 		mode,
 		source: plan.source,
 		resultsByCollection: result?.collections ?? {},
-		...counters,
+		reconciliation: counts?.reconciliation ?? null,
+		unchanged: counts?.unchanged ?? null,
 		incomplete: [...plan.incomplete],
 		skipped: false,
 	};
