@@ -348,9 +348,6 @@ catalogs:
     '@types/js-yaml':
       specifier: 4.0.9
       version: 4.0.9
-    '@types/json-schema':
-      specifier: 7.0.15
-      version: 7.0.15
     '@types/json2csv':
       specifier: 5.0.7
       version: 5.0.7
@@ -432,9 +429,6 @@ catalogs:
     '@vitest/ui':
       specifier: 3.2.6
       version: 3.2.6
-    '@vue/compiler-dom':
-      specifier: 3.5.25
-      version: 3.5.25
     '@vue/test-utils':
       specifier: 2.4.6
       version: 2.4.6
@@ -540,9 +534,6 @@ catalogs:
     deep-diff:
       specifier: 1.0.2
       version: 1.0.2
-    detect-port:
-      specifier: 2.1.0
-      version: 2.1.0
     diacritics:
       specifier: 1.3.0
       version: 1.3.0
@@ -564,9 +555,6 @@ catalogs:
     esbuild:
       specifier: 0.28.1
       version: 0.28.1
-    esbuild-plugin-replace:
-      specifier: 1.4.0
-      version: 1.4.0
     escape-string-regexp:
       specifier: 5.0.0
       version: 5.0.0
@@ -597,9 +585,6 @@ catalogs:
     fastify:
       specifier: 5.8.5
       version: 5.8.5
-    fastify-type-provider-zod:
-      specifier: 6.1.0
-      version: 6.1.0
     file-saver:
       specifier: 2.0.5
       version: 2.0.5
@@ -723,9 +708,6 @@ catalogs:
     lru-cache:
       specifier: 11.2.2
       version: 11.2.2
-    mapbox-gl:
-      specifier: 1.13.3
-      version: 1.13.3
     maplibre-gl:
       specifier: 1.15.3
       version: 1.15.3
@@ -1121,9 +1103,6 @@ importers:
       '@directus/extensions-registry':
         specifier: workspace:*
         version: link:../packages/extensions-registry
-      '@directus/extensions-sdk':
-        specifier: workspace:*
-        version: link:../packages/extensions-sdk
       '@directus/format-title':
         specifier: workspace:*
         version: link:../packages/format-title
@@ -1262,9 +1241,6 @@ importers:
       directus:
         specifier: workspace:*
         version: link:../directus
-      dotenv:
-        specifier: 'catalog:'
-        version: 17.2.3
       encodeurl:
         specifier: 'catalog:'
         version: 2.0.0
@@ -1765,9 +1741,6 @@ importers:
       '@mapbox/mapbox-gl-geocoder':
         specifier: 'catalog:'
         version: 5.1.2
-      '@ngneat/falso':
-        specifier: 'catalog:'
-        version: 8.0.2
       '@pinia/testing':
         specifier: 'catalog:'
         version: 1.0.3(pinia@2.3.1(typescript@5.9.3)(vue@3.5.24(typescript@5.9.3)))
@@ -1840,9 +1813,6 @@ importers:
       '@types/geojson':
         specifier: 'catalog:'
         version: 7946.0.16
-      '@types/json-schema':
-        specifier: 'catalog:'
-        version: 7.0.15
       '@types/lodash':
         specifier: 'catalog:'
         version: 4.17.20
@@ -1879,9 +1849,6 @@ importers:
       '@vitest/ui':
         specifier: 'catalog:'
         version: 3.2.6(vitest@3.2.7)
-      '@vue/compiler-dom':
-        specifier: 'catalog:'
-        version: 3.5.25
       '@vue/test-utils':
         specifier: 'catalog:'
         version: 2.4.6
@@ -1966,9 +1933,6 @@ importers:
       lodash:
         specifier: 'catalog:'
         version: 4.18.1
-      mapbox-gl:
-        specifier: 'catalog:'
-        version: 1.13.3
       maplibre-gl:
         specifier: 'catalog:'
         version: 1.15.3(mapbox-gl@1.13.3)
@@ -2151,9 +2115,6 @@ importers:
         specifier: 'catalog:'
         version: 5.1.6
     devDependencies:
-      '@directus/extensions':
-        specifier: workspace:*
-        version: link:../extensions
       '@directus/sdk':
         specifier: workspace:*
         version: link:../../sdk
@@ -2298,9 +2259,6 @@ importers:
 
   packages/errors:
     dependencies:
-      '@directus/storage':
-        specifier: workspace:*
-        version: link:../storage
       ms:
         specifier: 'catalog:'
         version: 2.1.3
@@ -2338,9 +2296,6 @@ importers:
       '@directus/utils':
         specifier: workspace:*
         version: link:../utils
-      '@types/express':
-        specifier: 'catalog:'
-        version: 4.17.21
       fs-extra:
         specifier: 'catalog:'
         version: 11.3.2
@@ -2396,9 +2351,6 @@ importers:
       '@directus/errors':
         specifier: workspace:*
         version: link:../errors
-      '@directus/extensions':
-        specifier: workspace:*
-        version: link:../extensions
       ky:
         specifier: 'catalog:'
         version: 1.14.0
@@ -2970,10 +2922,6 @@ importers:
         version: 3.2.7(@types/node@26.1.2)(@vitest/ui@3.2.6)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
 
   packages/stores:
-    dependencies:
-      '@vueuse/core':
-        specifier: 'catalog:'
-        version: 14.0.0(vue@3.5.24(typescript@5.9.3))
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -3218,9 +3166,6 @@ importers:
       micromustache:
         specifier: 'catalog:'
         version: 8.0.3
-      zod:
-        specifier: 'catalog:'
-        version: 4.1.12
     devDependencies:
       '@directus/errors':
         specifier: workspace:*
@@ -3344,9 +3289,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.6(vitest@3.2.7(@types/node@26.1.2)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
-      esbuild-plugin-replace:
-        specifier: 'catalog:'
-        version: 1.4.0
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -3440,9 +3382,6 @@ importers:
       supertest:
         specifier: 7.1.4
         version: 7.1.4
-      tus-js-client:
-        specifier: 'catalog:'
-        version: 4.3.1
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -3473,27 +3412,9 @@ importers:
       '@directus/sdk':
         specifier: workspace:*
         version: link:../../sdk
-      '@directus/utils':
-        specifier: workspace:*
-        version: link:../../packages/utils
-      async-mutex:
-        specifier: 'catalog:'
-        version: 0.5.0
-      chalk:
-        specifier: 'catalog:'
-        version: 5.6.2
-      commander:
-        specifier: 'catalog:'
-        version: 14.0.2
       date-fns:
         specifier: 'catalog:'
         version: 4.1.0
-      get-port:
-        specifier: 'catalog:'
-        version: 7.1.0
-      jose:
-        specifier: 'catalog:'
-        version: 6.2.3
       knex:
         specifier: 'catalog:'
         version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
@@ -3503,9 +3424,6 @@ importers:
       tus-js-client:
         specifier: 'catalog:'
         version: 4.3.1
-      zod:
-        specifier: 'catalog:'
-        version: 4.1.12
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -3555,9 +3473,6 @@ importers:
       fastify:
         specifier: 'catalog:'
         version: 5.8.5
-      fastify-type-provider-zod:
-        specifier: 'catalog:'
-        version: 6.1.0(@fastify/swagger@9.7.0)(fastify@5.8.5)(openapi-types@12.1.3)(zod@4.1.12)
       jose:
         specifier: 'catalog:'
         version: 6.2.3
@@ -3576,9 +3491,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
-      zod:
-        specifier: 'catalog:'
-        version: 4.1.12
 
   tests/sandbox:
     dependencies:
@@ -3606,9 +3518,6 @@ importers:
       copyfiles:
         specifier: 'catalog:'
         version: 2.4.1
-      detect-port:
-        specifier: 'catalog:'
-        version: 2.1.0
       get-port:
         specifier: 'catalog:'
         version: 7.1.0
@@ -4825,9 +4734,6 @@ packages:
 
   '@fastify/proxy-addr@5.1.0':
     resolution: {integrity: sha512-INS+6gh91cLUjB+PVHfu1UqcB76Sqtpyp7bnL+FYojhjygvOPA9ctiD/JDKsyD9Xgu4hUhCSJBPig/w7duNajw==}
-
-  '@fastify/swagger@9.7.0':
-    resolution: {integrity: sha512-Vp1SC1GC2Hrkd3faFILv86BzUNyFz5N4/xdExqtCgkGASOzn/x+eMe4qXIGq7cdT6wif/P/oa6r1Ruqx19paZA==}
 
   '@fastify/type-provider-typebox@6.1.0':
     resolution: {integrity: sha512-k29cOitDRcZhMXVjtRq0+caKxdWoArz7su+dQWGzGWnFG+fSKhevgiZ7nexHWuXOEEQzgJlh6cptIMu69beaTA==}
@@ -8351,10 +8257,6 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  address@2.0.3:
-    resolution: {integrity: sha512-XNAb/a6TCqou+TufU8/u11HCu9x1gYvOoxLwtlXgIqmkrYQADVv6ljyW2zwiPhHz9R1gItAWpuDrdJMmrOBFEA==}
-    engines: {node: '>= 16.0.0'}
-
   adm-zip@0.6.0:
     resolution: {integrity: sha512-XleryMhbuksdKtofnWZ9Sk+4CUTbms4Mb/EU32SZwToAyZ5RgVos/ki8n+yr0LWHOGKuakbXTuuYNHLQjhddgg==}
     engines: {node: '>=14.0'}
@@ -9708,11 +9610,6 @@ packages:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
 
-  detect-port@2.1.0:
-    resolution: {integrity: sha512-epZuWb/6Q62L+nDHJc/hQAqf8pylsqgk3BpZXVBx1CDnr3nkrVNn73Uu1rXcFzkNcc+hkP3whuOg7JZYaQB65Q==}
-    engines: {node: '>= 16.0.0'}
-    hasBin: true
-
   dezalgo@1.0.4:
     resolution: {integrity: sha512-rXSP0bf+5n0Qonsb+SVVfNfIsimO4HEtmnIpPHY8Q1UCzKlQrDMfdobr8nJOOsRgWCyMRqeSBQzmWUMq7zvVig==}
 
@@ -9912,9 +9809,6 @@ packages:
   es-to-primitive@1.3.4:
     resolution: {integrity: sha512-yPDz7wqpg1/mmHLmS3tcfTfbw5f1eryXvyghYBffGdERwe+mV7ZcWzTR8LR17Kvqt3qfPurjlonmnq3MKXIOXw==}
     engines: {node: '>= 0.4'}
-
-  esbuild-plugin-replace@1.4.0:
-    resolution: {integrity: sha512-lP3ZAyzyRa5JXoOd59lJbRKNObtK8pJ/RO7o6vdjwLi71GfbL32NR22ZuS7/cLZkr10/L1lutoLma8E4DLngYg==}
 
   esbuild@0.27.7:
     resolution: {integrity: sha512-IxpibTjyVnmrIQo5aqNpCgoACA/dTKLTlhMHihVHhdkxKyPO1uBBthumT0rdHmcsk9uMonIWS0m4FljWzILh3w==}
@@ -10215,17 +10109,6 @@ packages:
   fastest-levenshtein@1.0.16:
     resolution: {integrity: sha512-eRnCtTTtGZFpQCwhJiUOuxPQWRXVKYDn0b2PeHfXL6/Zi53SLAzAHfVhVWK2AryC/WH05kGfxhFIPvTF0SXQzg==}
     engines: {node: '>= 4.9.1'}
-
-  fastify-plugin@5.1.0:
-    resolution: {integrity: sha512-FAIDA8eovSt5qcDgcBvDuX/v0Cjz0ohGhENZ/wpc3y+oZCY2afZ9Baqql3g/lC+OHRnciQol4ww7tuthOb9idw==}
-
-  fastify-type-provider-zod@6.1.0:
-    resolution: {integrity: sha512-Sl19VZFSX4W/+AFl3hkL5YgWk3eDXZ4XYOdrq94HunK+o7GQBCAqgk7+3gPXoWkF0bNxOiIgfnFGJJ3i9a2BtQ==}
-    peerDependencies:
-      '@fastify/swagger': '>=9.5.1'
-      fastify: ^5.5.0
-      openapi-types: ^12.1.3
-      zod: '>=4.1.5'
 
   fastify@5.8.5:
     resolution: {integrity: sha512-Yqptv59pQzPgQUSIm87hMqHJmdkb1+GPxdE6vW6FRyVE9G86mt7rOghitiU4JHRaTyDUk9pfeKmDeu70lAwM4Q==}
@@ -11351,10 +11234,6 @@ packages:
   json-schema-ref-resolver@3.0.0:
     resolution: {integrity: sha512-hOrZIVL5jyYFjzk7+y7n5JDzGlU8rfWDuYyHwGa2WA8/pcmMHezp2xsVwxrebD/Q9t8Nc5DboieySDpCp4WG4A==}
 
-  json-schema-resolver@3.0.0:
-    resolution: {integrity: sha512-HqMnbz0tz2DaEJ3ntsqtx3ezzZyDE7G56A/pPY/NGmrPu76UzsWquOpHFRAf5beTNXoH2LU5cQePVvRli1nchA==}
-    engines: {node: '>=20'}
-
   json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
 
@@ -11774,9 +11653,6 @@ packages:
   magic-string-ast@0.7.1:
     resolution: {integrity: sha512-ub9iytsEbT7Yw/Pd29mSo/cNQpaEu67zR1VVcXDiYjSFwzeBxNdTd0FMnSslLQXiRj8uGPzwsaoefrMD5XAmdw==}
     engines: {node: '>=16.14.0'}
-
-  magic-string@0.25.9:
-    resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
 
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
@@ -14068,10 +13944,6 @@ packages:
   source-map@0.7.6:
     resolution: {integrity: sha512-i5uvt8C3ikiWeNZSVZNWcfZPItFQOsYTUAOkcUPGd8DqDy1uOUikjt5dG+uRlwyvR108Fb9DOd4GvXfT0N2/uQ==}
     engines: {node: '>= 12'}
-
-  sourcemap-codec@1.4.8:
-    resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
-    deprecated: Please use @jridgewell/sourcemap-codec instead
 
   spawndamnit@3.0.1:
     resolution: {integrity: sha512-MmnduQUuHCoFckZoWnXsTg7JaiLBJrKFj9UI2MbRPGaJeVpsLcVBu6P/IGZovziM/YBsellCmsprgNA+w0CzVg==}
@@ -17286,16 +17158,6 @@ snapshots:
     dependencies:
       '@fastify/forwarded': 3.0.1
       ipaddr.js: 2.4.0
-
-  '@fastify/swagger@9.7.0':
-    dependencies:
-      fastify-plugin: 5.1.0
-      json-schema-resolver: 3.0.0
-      openapi-types: 12.1.3
-      rfdc: 1.4.1
-      yaml: 2.9.0
-    transitivePeerDependencies:
-      - supports-color
 
   '@fastify/type-provider-typebox@6.1.0(typebox@1.1.37)':
     dependencies:
@@ -21515,8 +21377,6 @@ snapshots:
 
   acorn@8.18.0: {}
 
-  address@2.0.3: {}
-
   adm-zip@0.6.0: {}
 
   agent-base@6.0.2:
@@ -22814,10 +22674,6 @@ snapshots:
 
   detect-libc@2.1.2: {}
 
-  detect-port@2.1.0:
-    dependencies:
-      address: 2.0.3
-
   dezalgo@1.0.4:
     dependencies:
       asap: 2.0.6
@@ -23054,10 +22910,6 @@ snapshots:
       is-callable: 1.2.7
       is-date-object: 1.1.0
       is-symbol: 1.1.1
-
-  esbuild-plugin-replace@1.4.0:
-    dependencies:
-      magic-string: 0.25.9
 
   esbuild@0.27.7:
     optionalDependencies:
@@ -23530,16 +23382,6 @@ snapshots:
       xml-naming: 0.3.0
 
   fastest-levenshtein@1.0.16: {}
-
-  fastify-plugin@5.1.0: {}
-
-  fastify-type-provider-zod@6.1.0(@fastify/swagger@9.7.0)(fastify@5.8.5)(openapi-types@12.1.3)(zod@4.1.12):
-    dependencies:
-      '@fastify/error': 4.2.0
-      '@fastify/swagger': 9.7.0
-      fastify: 5.8.5
-      openapi-types: 12.1.3
-      zod: 4.1.12
 
   fastify@5.8.5:
     dependencies:
@@ -24756,14 +24598,6 @@ snapshots:
     dependencies:
       dequal: 2.0.3
 
-  json-schema-resolver@3.0.0:
-    dependencies:
-      debug: 4.4.3(supports-color@5.5.0)
-      fast-uri: 3.1.4
-      rfdc: 1.4.1
-    transitivePeerDependencies:
-      - supports-color
-
   json-schema-traverse@0.4.1: {}
 
   json-schema-traverse@1.0.0: {}
@@ -25146,10 +24980,6 @@ snapshots:
   magic-string-ast@0.7.1:
     dependencies:
       magic-string: 0.30.21
-
-  magic-string@0.25.9:
-    dependencies:
-      sourcemap-codec: 1.4.8
 
   magic-string@0.30.21:
     dependencies:
@@ -27992,8 +27822,6 @@ snapshots:
   source-map@0.6.1: {}
 
   source-map@0.7.6: {}
-
-  sourcemap-codec@1.4.8: {}
 
   spawndamnit@3.0.1:
     dependencies:
