@@ -332,6 +332,44 @@ describe('sync diff with data', () => {
 		expect(existsSync(idMapPath)).toBe(false);
 	});
 
+	it('warns when the dry run matches a temporary key to a hidden target record, and still applies nothing', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		seedData([
+			{
+				collection: 'directus_permissions',
+				primaryKey: 'id',
+				records: [{ id: 4, policy: null, collection: 'articles', action: 'delete' }],
+			},
+		]);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+		// An empty list read makes the allocator pick -1; the dry run then reports that key as existing —
+		// a row the target hides from lists but the import still matches by key.
+		interceptTarget('/permissions', []);
+
+		interceptImport(
+			{ mode: 'merge', dryRun: 'true' },
+			{
+				data: {
+					applied: false,
+					mode: 'merge',
+					collections: { directus_permissions: { existing: [-1], new: [], deleted: [], mapped: {} } },
+				},
+			},
+		);
+
+		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
+
+		const warned = stderr.join('');
+		expect(warned).toContain('directus_permissions -1');
+		expect(warned).toContain('push will refuse');
+		expect(existsSync(idMapPath)).toBe(false);
+	});
+
 	it('reports the reconcile counts and the parsed dry-run response on --json, still writing nothing', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());

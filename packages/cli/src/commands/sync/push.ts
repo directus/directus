@@ -1,4 +1,3 @@
-import { relative } from 'node:path';
 import { confirm, text } from '@clack/prompts';
 import { type Command, Option } from 'commander';
 import { describeMode, MODES, type SyncMode } from '../../kernel/config/mode.js';
@@ -8,10 +7,10 @@ import type { CliContext } from '../../kernel/run.js';
 import { count } from '../../kernel/text.js';
 import { applyDiff, importBatch } from './utils/api.js';
 import type { ImportBatchResult } from './utils/contract.js';
-import { type DataPushPlan, prepareDataPush } from './utils/data-push.js';
+import { prepareDataPush, recordImportedIds } from './utils/data-push.js';
 import { readDataFiles } from './utils/data-store.js';
-import { withMappings, writeIdMap } from './utils/id-map.js';
 import {
+	claimedTemporaryKeys,
 	convergedMessage,
 	dataImportOptions,
 	dataPhaseConverged,
@@ -74,75 +73,13 @@ function mirrorConsentRefusal(projectPath: string): CliError {
 	);
 }
 
-function updateIdMap(dataResult: DataPushPlan, importResult: ImportBatchResult, ctx: CliContext): void {
-	let map = dataResult.map;
-
-	const unmapped: { collection: string; sourceId: string; sentPk: string; updatedExisting: boolean }[] = [];
-
-	for (const { collection, records } of dataResult.systemSent) {
-		const result = importResult.collections[collection];
-		const entries: Record<string, string> = {};
-
-		for (const { sourceId, sentPk, temporary } of records) {
-			const finalPk = result?.mapped?.[sentPk];
-
-			if (finalPk !== undefined) {
-				entries[sourceId] = String(finalPk);
-				continue;
-			}
-
-			// A temporary key's only meaning is its `mapped` entry. Persisting the key itself would commit
-			// an identity no target record has, and merge would then duplicate the record on every push.
-			if (temporary) {
-				unmapped.push({
-					collection,
-					sourceId,
-					sentPk,
-					updatedExisting: (result?.existing ?? []).some((pk) => String(pk) === sentPk),
-				});
-
-				continue;
-			}
-
-			entries[sourceId] = sentPk;
-		}
-
-		map = withMappings(map, dataResult.source, dataResult.target, collection, entries);
-	}
-
-	// The resolved mappings are real whatever else went wrong, so record them before refusing the rest —
-	// and report the write here rather than on the success path, which the refusal below never reaches.
-	if (map !== dataResult.map) {
-		writeIdMap(dataResult.idMapPath, map);
-		ctx.ui.info(`ID map updated: ${relative(ctx.cwd, dataResult.idMapPath)}`);
-	}
-
-	if (unmapped.length > 0) {
-		const lines = unmapped.map((miss) =>
-			miss.updatedExisting
-				? `${miss.collection}: source ${miss.sourceId} — temporary key ${miss.sentPk} matched and updated an existing target record`
-				: `${miss.collection}: source ${miss.sourceId} — temporary key ${miss.sentPk} came back unmapped`,
-		);
-
-		throw new CliError(
-			'STATE',
-			`The import response left ${count(unmapped.length, 'temporary key')} unmapped, so the ID map has no entry for ${unmapped.length === 1 ? 'that record' : 'those records'}.\n  ${lines.join('\n  ')}`,
-			{
-				hint: unmapped.some((miss) => miss.updatedExisting)
-					? 'A target record already used a temporary key — inspect those target records before pushing again.'
-					: 'The push itself was applied. If the target Directus predates batch import key remapping, upgrade it; otherwise the next push re-matches the created records by natural key.',
-			},
-		);
-	}
-}
-
 export async function push(options: PushOptions, ctx: CliContext): Promise<void> {
 	const target = resolveTarget(options.to, options.project, ctx);
-	const { url, credential, project, projectConfig, dataDir } = target;
+	const { url, credential, project, projectConfig, dataDir, projectDir } = target;
 
 	const mode: SyncMode = resolveMode(options.mode, projectConfig);
 	const allowDeletes = options.dangerouslyAllowDelete ?? false;
-	const projectPath = displayProjectPath(ctx.cwd, target.projectDir);
+	const projectPath = displayProjectPath(ctx.cwd, projectDir);
 
 	ctx.ui.info(`Pushing ${projectPath} to ${options.to} — ${url} (${describeMode(mode)})`);
 
@@ -201,9 +138,28 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	let dataSummary: ImportSummary | undefined;
 
 	if (ctx.interactive && dataResult !== undefined) {
-		dataSummary = dataPhaseConverged(dataResult.records, mode)
-			? emptyImportSummary()
-			: (await dryRunImport(credential, dataResult.batch, mode, dataResult.unchanged)).summary;
+		if (dataPhaseConverged(dataResult.records, mode)) {
+			dataSummary = emptyImportSummary();
+		} else {
+			const dry = await dryRunImport(credential, dataResult.batch, mode, dataResult.unchanged);
+			const claimed = claimedTemporaryKeys(dry.result, dataResult.systemSent);
+
+			if (claimed.length > 0) {
+				const lines = claimed.map(
+					(key) => `${key.collection}: source ${key.sourceId} — temporary key ${key.sentPk} is already a target record`,
+				);
+
+				throw new CliError(
+					'STATE',
+					`Refusing to push: applying would overwrite ${count(claimed.length, 'real target record')} whose ${claimed.length === 1 ? 'key' : 'keys'} this push chose as temporary.\n  ${lines.join('\n  ')}`,
+					{
+						hint: 'Nothing was applied. The target hides these records from list reads (unlicensed instances hide custom-rule permissions), so the CLI could not steer around their keys. Inspect the listed IDs on the target directly, then remove or repair those records and push again.',
+					},
+				);
+			}
+
+			dataSummary = dry.summary;
+		}
 	}
 
 	const dataDeleted = dataSummary?.deleted ?? 0;
@@ -303,7 +259,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 			throw error;
 		}
 
-		updateIdMap(dataResult, importResult, ctx);
+		recordImportedIds(dataResult, importResult, ctx);
 	}
 
 	const importSummary =

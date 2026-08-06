@@ -1,39 +1,22 @@
 import { relative } from 'node:path';
 import { note, select } from '@clack/prompts';
-import { isEqual } from 'lodash-es';
 import type { SyncMode } from '../../../kernel/config/mode.js';
 import { fetchQueryLimitMax } from '../../../kernel/connection.js';
 import { CliError } from '../../../kernel/error.js';
 import { ask } from '../../../kernel/prompt.js';
 import type { CliContext } from '../../../kernel/run.js';
 import { count } from '../../../kernel/text.js';
+import { collisionLines, differenceHint, itemUiUrl, recordLabel, scalar } from './ambiguity-copy.js';
 import { fetchRecords } from './api.js';
-import { byCodepoint } from './codepoint.js';
-import type { ImportCollectionData } from './contract.js';
-import { type DataCollection, readDataFiles } from './data-store.js';
+import { assembleBatch, type SystemSent, type UnchangedRows } from './batch.js';
+import type { ImportBatchResult, ImportCollectionData } from './contract.js';
+import { readDataFiles } from './data-store.js';
+import { dependentCountOf, excludeDependents } from './dependents.js';
 import { type IdMap, mappingsFor, normalizeInstanceUrl, readIdMap, withMappings, writeIdMap } from './id-map.js';
 import { type CollectionReconcile, reconcileCollections, type ReconcileInput } from './reconcile.js';
-import { displayProjectPath, type Target } from './resolve-target.js';
-import { allResources, type Resource } from './resources.js';
-
-/** A source ID and the primary key sent for it. */
-interface SentRecord {
-	readonly sourceId: string;
-	readonly sentPk: string;
-	/** The sent key is an invented temporary; only a `mapped` response entry can supply the real target ID. */
-	readonly temporary?: true;
-}
-
-interface SystemSent {
-	readonly collection: string;
-	readonly records: readonly SentRecord[];
-}
-
-/**
- * Target records whose synced fields already match. The server reports every PK-present record as `existing`,
- * so this set distinguishes actual updates from records sent only to survive mirror deletion.
- */
-export type UnchangedRows = ReadonlyMap<string, ReadonlySet<string>>;
+import type { Target } from './resolve-target.js';
+import { allResources } from './resources.js';
+import { partitionCollections, type SystemCollection } from './system-collections.js';
 
 /** A prepared data import and the identity state needed to process its response. */
 export interface DataPushPlan {
@@ -48,76 +31,6 @@ export interface DataPushPlan {
 	readonly collections: number;
 	/** Collections the stored metadata marks as truncated at pull time; mirror must refuse them. */
 	readonly incomplete: readonly string[];
-}
-
-interface SystemCollection {
-	readonly data: DataCollection;
-	readonly resource: Resource;
-}
-
-/**
- * Partition stored collections into known system resources and user content. System resources follow
- * graph order; content collections are codepoint-sorted.
- */
-export function partitionCollections(collections: readonly DataCollection[]): {
-	system: SystemCollection[];
-	content: DataCollection[];
-} {
-	const byCollection = new Map(collections.map((collection) => [collection.collection, collection]));
-	const system: SystemCollection[] = [];
-	const claimed = new Set<string>();
-
-	for (const resource of allResources()) {
-		const data = byCollection.get(resource.collection);
-
-		if (data !== undefined) {
-			// A hand-edited key could make validation and import disagree about record identity.
-			if (data.primaryKey !== resource.primaryKey) {
-				throw new CliError(
-					'STATE',
-					`The local file for ${data.collection} declares primary key "${data.primaryKey}", but this collection's primary key is "${resource.primaryKey}".`,
-					{ hint: 'Fix or delete the data file, then run d6s sync pull again.' },
-				);
-			}
-
-			system.push({ data, resource });
-			claimed.add(resource.collection);
-		}
-	}
-
-	const content = collections
-		.filter((collection) => !claimed.has(collection.collection))
-		.sort((a, b) => byCodepoint(a.collection, b.collection));
-
-	return { system, content };
-}
-
-/**
- * Rewrite a system record into target ID space without mutating the input. Missing mappings and nullish
- * foreign keys remain unchanged; the server must resolve or reject them.
- */
-export function remapSystemRecord(
-	record: Record<string, unknown>,
-	resource: Resource,
-	bucket: Readonly<Record<string, Readonly<Record<string, string>>>>,
-): { record: Record<string, unknown>; sent: SentRecord } {
-	const remapped: Record<string, unknown> = { ...record };
-	const sourceId = String(record[resource.primaryKey]);
-	const targetPk = bucket[resource.collection]?.[sourceId];
-
-	if (targetPk !== undefined) remapped[resource.primaryKey] = targetPk;
-
-	for (const fk of resource.fkFields) {
-		const value = record[fk.field];
-
-		if (value === null || value === undefined) continue;
-
-		const targetFk = bucket[fk.references]?.[String(value)];
-
-		if (targetFk !== undefined) remapped[fk.field] = targetFk;
-	}
-
-	return { record: remapped, sent: { sourceId, sentPk: targetPk ?? sourceId } };
 }
 
 // Reconcile parents first so child natural keys can translate foreign keys through earlier matches.
@@ -156,197 +69,6 @@ async function reconcileSystem(
 }
 
 const TARGET_PREFIX = 'target:';
-
-function scalar(value: unknown): string | undefined {
-	let rendered: string | undefined;
-
-	if (typeof value === 'string') rendered = value === '' ? undefined : JSON.stringify(value);
-	if (typeof value === 'number' || typeof value === 'boolean' || value === null) rendered = String(value);
-	if (rendered === undefined) return undefined;
-
-	return rendered.length > 60 ? `${rendered.slice(0, 59)}…` : rendered;
-}
-
-function recordLabel(record: Record<string, unknown> | undefined, primaryKey: string, fallbackId: string): string {
-	if (record === undefined) return fallbackId;
-
-	for (const field of ['name', 'email', 'key', 'title', 'collection', 'action']) {
-		const value = scalar(record[field]);
-		if (value !== undefined) return `${value} — ${String(record[primaryKey] ?? fallbackId)}`;
-	}
-
-	return String(record[primaryKey] ?? fallbackId);
-}
-
-/** One source record whose natural key matches several target records, tagged with the collection it came from. */
-type Ambiguity = CollectionReconcile['ambiguous'][number] & { readonly collection: string };
-
-const UNNAMED_IDENTITY = 'with this identity';
-
-/**
- * Name the natural key that made records collide, in the resource's own field names. Composite keys name
- * every field: a resource that needs three fields to identify a record is exactly the one whose records
- * carry no human-readable label, so `UNNAMED_IDENTITY` would leave the reader nothing to search for.
- */
-function identityPhrase(input: ReconcileInput | undefined, source: Record<string, unknown> | undefined): string {
-	if (input === undefined || source === undefined) return UNNAMED_IDENTITY;
-
-	const rendered: { field: string; value: string }[] = [];
-
-	for (const field of input.naturalKey) {
-		const value = scalar(source[field]);
-
-		// The unused half of an either/or key (an access grant carries a role or a user) names nothing.
-		if (value === undefined || value === 'null') continue;
-
-		rendered.push({ field, value });
-	}
-
-	if (rendered.length === 0) return UNNAMED_IDENTITY;
-
-	const only = rendered.length === 1 ? rendered[0] : undefined;
-
-	if (only?.field === 'name') return `named ${only.value}`;
-
-	return `with ${rendered.map((entry) => `${entry.field} ${entry.value}`).join(', ')}`;
-}
-
-/**
- * Grow a set of excluded source IDs until it is closed under foreign keys: a record pointing at an excluded
- * record cannot be sent either, or its FK would dangle. Iterates because self-referential chains (a folder
- * under a folder) deepen one level per pass. Mutates `excluded` in place.
- */
-function excludeDependents(system: readonly SystemCollection[], excluded: Map<string, Set<string>>): void {
-	for (let changed = true; changed; ) {
-		changed = false;
-
-		for (const { data, resource } of system) {
-			const fks = resource.fkFields;
-
-			if (fks.length === 0) continue;
-
-			const dropped = excluded.get(resource.collection) ?? new Set<string>();
-
-			for (const record of data.records) {
-				if (dropped.has(String(record[resource.primaryKey]))) continue;
-
-				for (const fk of fks) {
-					const value = record[fk.field];
-
-					if (value === null || value === undefined) continue;
-					if (excluded.get(fk.references)?.has(String(value)) !== true) continue;
-
-					dropped.add(String(record[resource.primaryKey]));
-					excluded.set(resource.collection, dropped);
-					changed = true;
-					break;
-				}
-			}
-		}
-	}
-}
-
-/** How many records a set of ambiguities holds back beyond the ambiguous records themselves. */
-function dependentCountOf(
-	system: readonly SystemCollection[],
-	ambiguities: readonly { collection: string; sourceId: string }[],
-): number {
-	const excluded = new Map<string, Set<string>>();
-
-	for (const item of ambiguities) {
-		const dropped = excluded.get(item.collection) ?? new Set<string>();
-		dropped.add(item.sourceId);
-		excluded.set(item.collection, dropped);
-	}
-
-	excludeDependents(system, excluded);
-
-	let total = 0;
-	for (const dropped of excluded.values()) total += dropped.size;
-
-	return total - ambiguities.length;
-}
-
-function itemUiUrl(instance: string, resource: Resource | undefined, id: string): string | undefined {
-	if (resource?.appRoute === undefined) return undefined;
-	return `${normalizeInstanceUrl(instance)}${resource.appRoute}/${encodeURIComponent(id)}`;
-}
-
-/**
- * Hand out negative primary keys the import response can correlate back to their source records. Only
- * descends, so a key is never reissued; `reserved` keeps it clear of keys the source or target already uses.
- */
-function temporaryPkAllocator(reserved: ReadonlySet<string>): () => number {
-	let next = -1;
-
-	return () => {
-		while (reserved.has(String(next))) next--;
-		return next--;
-	};
-}
-
-/**
- * State where a collision sits: how many local records claim one identity, and how many target records
- * answer to it. Both the refusal and the prompt open with these, so they cannot drift apart.
- */
-function collisionLines(
-	item: Ambiguity,
-	ambiguities: readonly Ambiguity[],
-	inputs: readonly ReconcileInput[],
-	target: Target,
-	ctx: CliContext,
-): [string, string] {
-	const input = inputs.find((candidate) => candidate.collection === item.collection);
-	const source = input?.sourceRecords.find((record) => String(record[input.primaryKey]) === item.sourceId);
-	const resource = allResources().find((candidate) => candidate.collection === item.collection);
-	const singular = resource?.singular ?? 'record';
-	const plural = resource?.plural ?? 'records';
-
-	const local = ambiguities.filter(
-		(candidate) => candidate.collection === item.collection && candidate.key === item.key,
-	).length;
-
-	const projectPath = ctx.ui.style.strong(displayProjectPath(ctx.cwd, target.projectDir));
-
-	return [
-		`${projectPath} contains ${local} ${local === 1 ? singular : plural} ${identityPhrase(input, source)}.`,
-		`${ctx.ui.style.strong(target.profile)} — ${ctx.ui.style.muted(target.url)} contains ${item.targetIds.length} matching ${item.targetIds.length === 1 ? singular : plural}.`,
-	];
-}
-
-function differenceHint(
-	source: Record<string, unknown> | undefined,
-	target: Record<string, unknown> | undefined,
-	primaryKey: string,
-	mode: SyncMode,
-): string {
-	if (source === undefined || target === undefined) return 'Uses this existing target record';
-
-	const differences: string[] = [];
-
-	for (const field of [...new Set([...Object.keys(source), ...Object.keys(target)])].sort(byCodepoint)) {
-		if (field === primaryKey || isEqual(source[field], target[field])) continue;
-
-		const before = scalar(source[field]);
-		const after = scalar(target[field]);
-
-		differences.push(
-			before === undefined || after === undefined
-				? `${field}: values differ`
-				: `${field}: local ${before}, target ${after}`,
-		);
-	}
-
-	if (differences.length === 0) return 'Same synced values; only the ID differs';
-
-	const shown = differences.slice(0, 2).join('; ');
-	const detail = differences.length > 2 ? `${shown}; +${differences.length - 2} more differences` : shown;
-
-	const effect =
-		mode === 'add' ? 'Add keeps the target unchanged' : `${mode === 'merge' ? 'Merge' : 'Mirror'} updates the target`;
-
-	return `${effect}; ${detail}`;
-}
 
 function matchedEntries(result: CollectionReconcile): Record<string, string> {
 	const entries: Record<string, string> = {};
@@ -581,115 +303,70 @@ async function readAndReconcile(target: Target): Promise<Reconciled | undefined>
 }
 
 // Target-only defaults and audit columns are outside the sync claim; the map already establishes identity.
-function fieldsEqual(payload: Record<string, unknown>, target: Record<string, unknown>, pkField: string): boolean {
-	for (const [key, value] of Object.entries(payload)) {
-		if (key === pkField) continue;
-		if (!isEqual(value, target[key])) return false;
-	}
+/**
+ * Record what the import assigned. Closes the lifecycle `prepareDataPush` opened: that call settled which
+ * local record is which target record, this one settles the IDs only the server could supply.
+ */
+export function recordImportedIds(dataResult: DataPushPlan, importResult: ImportBatchResult, ctx: CliContext): void {
+	let map = dataResult.map;
 
-	return true;
-}
+	const unmapped: { collection: string; sourceId: string; sentPk: string; updatedExisting: boolean }[] = [];
 
-// Batch identity rules prevent add-mode duplicates, numeric-PK collisions, and mirror deletion of local grants.
-function assembleBatch(
-	system: readonly SystemCollection[],
-	bucket: Readonly<Record<string, Readonly<Record<string, string>>>>,
-	mode: SyncMode,
-	targets: ReadonlyMap<string, readonly Record<string, unknown>[]>,
-): { batch: ImportCollectionData[]; systemSent: SystemSent[]; unchanged: UnchangedRows; records: number } {
-	const batch: ImportCollectionData[] = [];
-	const systemSent: SystemSent[] = [];
-	const unchanged = new Map<string, Set<string>>();
-	let records = 0;
+	for (const { collection, records } of dataResult.systemSent) {
+		const result = importResult.collections[collection];
+		const entries: Record<string, string> = {};
 
-	const includesUsers = system.some((entry) => entry.resource.collection === 'directus_users');
+		for (const { sourceId, sentPk, temporary } of records) {
+			const finalPk = result?.mapped?.[sentPk];
 
-	// Records the target already matches: the import reports every PK-present record as `existing`, so this set is
-	// what keeps them out of the rendered "updated" count.
-	function markUnchanged(collection: string, pk: string): void {
-		const set = unchanged.get(collection) ?? new Set<string>();
-		set.add(pk);
-		unchanged.set(collection, set);
-	}
-
-	for (const { data, resource } of system) {
-		const collectionBucket = bucket[resource.collection] ?? {};
-		const targetRows = targets.get(resource.collection);
-		const targetByPk = new Map((targetRows ?? []).map((row) => [String(row[resource.primaryKey]), row]));
-
-		const takeTemporaryPk = temporaryPkAllocator(
-			new Set([
-				...targetByPk.keys(),
-				...Object.values(collectionBucket),
-				...data.records.map((record) => String(record[resource.primaryKey])),
-			]),
-		);
-
-		const items: Record<string, unknown>[] = [];
-		const sent: SentRecord[] = [];
-
-		for (const record of data.records) {
-			const sourceId = String(record[resource.primaryKey]);
-			const mapped = Object.hasOwn(collectionBucket, sourceId);
-
-			if (mode === 'add' && mapped) {
-				// Re-send a mapped record deleted from the target; otherwise add mode could never restore it.
-				const mappedPk = collectionBucket[sourceId];
-
-				if (mappedPk === undefined || targetByPk.has(mappedPk)) continue;
-			}
-
-			const result = remapSystemRecord(record, resource, bucket);
-
-			// Add-mode PK conflicts create duplicates instead of updating existing records.
-			if (mode === 'add' && targetByPk.has(result.sent.sentPk)) continue;
-
-			// An unmatched integer may belong to an unrelated target or a record created earlier in this batch.
-			// Singletons cannot report a remap; otherwise a temporary negative key gives the response a safe correlation.
-			if (mode !== 'add' && !mapped && resource.primaryKeyType === 'integer') {
-				if (resource.singleton) {
-					delete result.record[resource.primaryKey];
-					items.push(result.record);
-					continue;
-				}
-
-				const temporaryPk = takeTemporaryPk();
-				result.record[resource.primaryKey] = temporaryPk;
-				items.push(result.record);
-				sent.push({ sourceId, sentPk: String(temporaryPk), temporary: true });
+			if (finalPk !== undefined) {
+				entries[sourceId] = String(finalPk);
 				continue;
 			}
 
-			if (mapped) {
-				const targetRow = targetByPk.get(result.sent.sentPk);
+			// A temporary key's only meaning is its `mapped` entry. Persisting the key itself would commit
+			// an identity no target record has, and merge would then duplicate the record on every push.
+			if (temporary) {
+				unmapped.push({
+					collection,
+					sourceId,
+					sentPk,
+					updatedExisting: (result?.existing ?? []).some((pk) => String(pk) === sentPk),
+				});
 
-				if (targetRow !== undefined && fieldsEqual(result.record, targetRow, resource.primaryKey)) {
-					markUnchanged(resource.collection, result.sent.sentPk);
-
-					// Mirror still sends the record: absence from the batch is the deletion order.
-					if (mode !== 'mirror') continue;
-				}
+				continue;
 			}
 
-			items.push(result.record);
-			sent.push(result.sent);
+			entries[sourceId] = sentPk;
 		}
 
-		if (mode === 'mirror' && resource.collection === 'directus_access' && !includesUsers) {
-			for (const row of targetRows ?? []) {
-				if (row['user'] !== null && row['user'] !== undefined) {
-					items.push({ ...row });
-					markUnchanged(resource.collection, String(row[resource.primaryKey]));
-				}
-			}
-		}
-
-		batch.push({ collection: resource.collection, items });
-		systemSent.push({ collection: resource.collection, records: sent });
-		records += items.length;
+		map = withMappings(map, dataResult.source, dataResult.target, collection, entries);
 	}
 
-	return { batch, systemSent, unchanged, records };
+	// The resolved mappings are real whatever else went wrong, so record them before refusing the rest —
+	// and report the write here rather than on the success path, which the refusal below never reaches.
+	if (map !== dataResult.map) {
+		writeIdMap(dataResult.idMapPath, map);
+		ctx.ui.info(`ID map updated: ${relative(ctx.cwd, dataResult.idMapPath)}`);
+	}
+
+	if (unmapped.length > 0) {
+		const lines = unmapped.map((miss) =>
+			miss.updatedExisting
+				? `${miss.collection}: source ${miss.sourceId} — temporary key ${miss.sentPk} matched and updated an existing target record`
+				: `${miss.collection}: source ${miss.sourceId} — temporary key ${miss.sentPk} came back unmapped`,
+		);
+
+		throw new CliError(
+			'STATE',
+			`The import response left ${count(unmapped.length, 'temporary key')} unmapped, so the ID map has no entry for ${unmapped.length === 1 ? 'that record' : 'those records'}.\n  ${lines.join('\n  ')}`,
+			{
+				hint: unmapped.some((miss) => miss.updatedExisting)
+					? 'A target record already used a temporary key — inspect those target records before pushing again.'
+					: 'The push itself was applied. If the target Directus predates batch import key remapping, upgrade it; otherwise the next push re-matches the created records by natural key.',
+			},
+		);
+	}
 }
 
 /**
@@ -794,6 +471,7 @@ export async function prepareDataPush(
 export interface DataPreviewPlan {
 	readonly source: string;
 	readonly batch: ImportCollectionData[];
+	readonly systemSent: readonly SystemSent[];
 	readonly unchanged: UnchangedRows;
 	readonly records: number;
 	readonly matchedCount: number;
@@ -861,7 +539,7 @@ export async function previewData(target: Target, mode: SyncMode): Promise<DataP
 		};
 	});
 
-	const { batch, unchanged, records } = assembleBatch(
+	const { batch, systemSent, unchanged, records } = assembleBatch(
 		previewSystem,
 		mappingsFor(map, source, targetUrl),
 		mode,
@@ -874,6 +552,7 @@ export async function previewData(target: Target, mode: SyncMode): Promise<DataP
 	return {
 		source,
 		batch,
+		systemSent,
 		unchanged,
 		records,
 		matchedCount,

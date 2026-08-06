@@ -8,108 +8,14 @@ import { CliError } from '../../../kernel/error.js';
 import type { CliContext } from '../../../kernel/run.js';
 import { createUi } from '../../../kernel/ui.js';
 import { fetchRecords } from './api.js';
-import { partitionCollections, prepareDataPush, previewData, remapSystemRecord } from './data-push.js';
-import { type DataCollection, writeDataFiles } from './data-store.js';
+import { prepareDataPush, previewData } from './data-push.js';
+import { writeDataFiles } from './data-store.js';
 import type { Target } from './resolve-target.js';
-import { allResources, type Resource } from './resources.js';
 
 vi.mock('./api.js', () => ({
 	fetchRecords: vi.fn(() => Promise.resolve([])),
 	importBatch: vi.fn(),
 }));
-
-function resource(collection: string): Resource {
-	const found = allResources().find((entry) => entry.collection === collection);
-	if (found === undefined) throw new Error(`no resource for ${collection}`);
-	return found;
-}
-
-const bucket = {
-	directus_access: { a1: 'ta1' },
-	directus_roles: { sr: 'tr' },
-	directus_policies: { sp: 'tp' },
-	directus_folders: { fChild: 'tChild', fParent: 'tParent' },
-};
-
-describe('remapSystemRecord', () => {
-	it('replaces the primary key and every static FK with its target-space id, reporting the send pair', () => {
-		const { record, sent } = remapSystemRecord(
-			{ id: 'a1', role: 'sr', policy: 'sp', user: null },
-			resource('directus_access'),
-			bucket,
-		);
-
-		expect(record).toEqual({ id: 'ta1', role: 'tr', policy: 'tp', user: null });
-		expect(sent).toEqual({ sourceId: 'a1', sentPk: 'ta1' });
-	});
-
-	it('leaves an FK with no mapping verbatim — an in-batch new record or a genuine dangle, never a guess', () => {
-		const { record } = remapSystemRecord(
-			{ id: 'a1', role: 'unmapped', policy: 'sp', user: null },
-			resource('directus_access'),
-			bucket,
-		);
-
-		expect(record['role']).toBe('unmapped');
-		expect(record['policy']).toBe('tp');
-	});
-
-	it('leaves the primary key verbatim on a miss and reports sentPk as the source id', () => {
-		const miss = remapSystemRecord({ id: 'new', name: 'New' }, resource('directus_roles'), bucket);
-		expect(miss.record['id']).toBe('new');
-		expect(miss.sent).toEqual({ sourceId: 'new', sentPk: 'new' });
-	});
-
-	it('remaps a folder onto its target id and its parent onto the target parent — the self-ref tree survives', () => {
-		const { record, sent } = remapSystemRecord(
-			{ id: 'fChild', name: 'Images', parent: 'fParent' },
-			resource('directus_folders'),
-			bucket,
-		);
-
-		expect(record).toEqual({ id: 'tChild', name: 'Images', parent: 'tParent' });
-		expect(sent).toEqual({ sourceId: 'fChild', sentPk: 'tChild' });
-	});
-
-	it('never mutates the input record and leaves non-key fields untouched', () => {
-		const input = { id: 'sr', name: 'Editor', icon: 'shield', parent: null };
-		const { record } = remapSystemRecord(input, resource('directus_roles'), bucket);
-
-		expect(input.id).toBe('sr');
-		expect(record).toEqual({ id: 'tr', name: 'Editor', icon: 'shield', parent: null });
-	});
-});
-
-function content(collection: string): DataCollection {
-	return { collection, primaryKey: 'id', records: [] };
-}
-
-describe('partitionCollections', () => {
-	it('orders system collections dependencies-first and codepoint-sorts content after them', () => {
-		const { system, content: contentOut } = partitionCollections([
-			content('zebra'),
-			content('directus_roles'),
-			content('apple'),
-			content('directus_access'),
-			content('directus_policies'),
-		]);
-
-		expect(system.map((entry) => entry.data.collection)).toEqual([
-			'directus_access',
-			'directus_policies',
-			'directus_roles',
-		]);
-
-		expect(contentOut.map((entry) => entry.collection)).toEqual(['apple', 'zebra']);
-	});
-
-	it('keeps a system collection without a natural key (directus_panels) in the system partition', () => {
-		const { system, content: contentOut } = partitionCollections([content('directus_panels'), content('notes')]);
-
-		expect(system.map((entry) => entry.data.collection)).toEqual(['directus_panels']);
-		expect(contentOut.map((entry) => entry.collection)).toEqual(['notes']);
-	});
-});
 
 describe('prepareDataPush skip and precondition', () => {
 	const credential: ResolvedCredential = { kind: 'token', url: 'https://cms.example.com', token: 't' };
@@ -510,6 +416,7 @@ describe('prepareDataPush skip and precondition', () => {
 		expect(preview).toEqual({
 			source: 'https://source.example.com',
 			batch: [{ collection: 'directus_flows', items: [{ id: 'f1', name: 'Deploy' }] }],
+			systemSent: [{ collection: 'directus_flows', records: [{ sourceId: 'f1', sentPk: 'f1' }] }],
 			unchanged: new Map(),
 			records: 1,
 			matchedCount: 0,

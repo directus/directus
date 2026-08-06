@@ -5,6 +5,7 @@ import { count } from '../../kernel/text.js';
 import type { ImportBatchResult } from './utils/contract.js';
 import { type DataPreviewPlan, previewData } from './utils/data-push.js';
 import {
+	claimedTemporaryKeys,
 	convergedMessage,
 	type DataComparisonCounts,
 	dataPhaseConverged,
@@ -65,10 +66,10 @@ function comparisonCounts(preview: DataPreviewPlan | undefined): DataComparisonC
 
 export async function diff(options: DiffOptions, ctx: CliContext): Promise<void> {
 	const target = resolveTarget(options.to, options.project, ctx);
-	const { url, credential, project, projectConfig } = target;
+	const { url, credential, project, projectConfig, projectDir } = target;
 
 	const mode: SyncMode = resolveMode(options.mode, projectConfig);
-	const projectPath = displayProjectPath(ctx.cwd, target.projectDir);
+	const projectPath = displayProjectPath(ctx.cwd, projectDir);
 
 	ctx.ui.info(`Comparing ${projectPath} with ${options.to} — ${url} (${describeMode(mode)})`);
 
@@ -94,6 +95,18 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 			const dry = await dryRunImport(credential, preview.batch, mode, preview.unchanged);
 			dryRun = dry.result;
 			dataSummary = dry.summary;
+
+			const claimed = claimedTemporaryKeys(dry.result, preview.systemSent);
+
+			if (claimed.length > 0) {
+				ctx.ui.warn(
+					`The dry run matched ${count(claimed.length, 'temporary key')} to real target records hidden from list reads (${claimed
+						.map((key) => `${key.collection} ${key.sentPk}`)
+						.join(
+							', ',
+						)}) — the plan prices ${claimed.length === 1 ? 'it' : 'them'} as ${claimed.length === 1 ? 'an update' : 'updates'}, and push will refuse this state.`,
+				);
+			}
 		}
 	}
 

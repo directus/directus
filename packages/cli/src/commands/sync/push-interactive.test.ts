@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { confirm, isCancel, note, select, text } from '@clack/prompts';
@@ -562,6 +562,33 @@ describe('interactive sync push', () => {
 			formatVersion: 1,
 			maps: { [source]: { [url]: { directus_permissions: { '7': '27' } } } },
 		});
+	});
+
+	it('refuses before applying when the dry run matches a temporary key to a target record hidden from list reads', async () => {
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+
+		seedData([
+			{
+				collection: 'directus_permissions',
+				primaryKey: 'id',
+				records: [{ id: 7, policy: null, collection: 'articles', action: 'read' }],
+			},
+		]);
+
+		// The target list read returns nothing, so the allocator picks -1 — but the dry run reports that key
+		// as an existing record: a row the target's API hides from lists but the import still matches by key.
+		vi.mocked(importBatch).mockResolvedValue(
+			importResult({ directus_permissions: { existing: [-1], new: [], deleted: [], mapped: {} } }),
+		);
+
+		await expect(push({ to: 'staging', mode: 'merge', project: 'default' }, ctxAt(dir))).rejects.toThrow(
+			/temporary key -1 is already a target record/,
+		);
+
+		expect(importBatch).toHaveBeenCalledTimes(1);
+		expect(vi.mocked(importBatch).mock.calls[0]?.[2]).toMatchObject({ dryRun: true });
+		expect(confirm).not.toHaveBeenCalled();
+		expect(existsSync(join(dir, 'directus', 'default', 'id_map.json'))).toBe(false);
 	});
 
 	it('sends only unmapped records under add mode, so a repeat add cannot mint duplicates', async () => {

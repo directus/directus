@@ -8,8 +8,8 @@ import type { CliContext } from '../../../kernel/run.js';
 import { count } from '../../../kernel/text.js';
 import { importBatch } from './api.js';
 import { METADATA_FILE } from './artifact-store.js';
+import type { SystemSent, UnchangedRows } from './batch.js';
 import type { DiffResult, ImportBatchResult, ImportCollectionData } from './contract.js';
-import type { UnchangedRows } from './data-push.js';
 import { hasImportChanges, type ImportSummary, summarizeDiff, summarizeImport } from './render.js';
 import { displayProjectPath, type Target } from './resolve-target.js';
 import { fetchSnapshotDiff } from './snapshot-diff.js';
@@ -55,6 +55,41 @@ export async function dryRunImport(
 ): Promise<{ result: ImportBatchResult; summary: ImportSummary }> {
 	const result = await importBatch(credential, batch, { ...dataImportOptions(mode), dryRun: true });
 	return { result, summary: summarizeImport(result, unchanged) };
+}
+
+/** A temporary key the dry run matched to a real target record. */
+export interface ClaimedTemporaryKey {
+	readonly collection: string;
+	readonly sourceId: string;
+	readonly sentPk: string;
+}
+
+/**
+ * Temporary keys the import would treat as updates of real target records. The allocator only steers
+ * around rows its list read returned, and a target can hide rows from lists (unlicensed instances hide
+ * custom-rule permissions), so the dry run is the first place a squatted key becomes visible. Only the
+ * paths that dry-run get this check; a non-interactive push skips the dry-run transaction and relies on
+ * the post-import guard in `recordImportedIds`.
+ */
+export function claimedTemporaryKeys(
+	result: ImportBatchResult,
+	systemSent: readonly SystemSent[],
+): ClaimedTemporaryKey[] {
+	const claimed: ClaimedTemporaryKey[] = [];
+
+	for (const { collection, records } of systemSent) {
+		const existing = result.collections[collection]?.existing;
+
+		if (existing === undefined || existing.length === 0) continue;
+
+		const pks = new Set(existing.map((pk) => String(pk)));
+
+		for (const { sourceId, sentPk, temporary } of records) {
+			if (temporary && pks.has(sentPk)) claimed.push({ collection, sourceId, sentPk });
+		}
+	}
+
+	return claimed;
 }
 
 /** The schema half of a sync plan: what the target would change, and whether the phase ran at all. */
