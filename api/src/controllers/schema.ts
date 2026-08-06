@@ -19,6 +19,29 @@ const router = express.Router();
 
 const IMPORT_MAX_FILE_SIZE = bytes.parse(env['IMPORT_MAX_FILE_SIZE'] as string) ?? undefined;
 
+/**
+ * Unwrap the standard Directus API response envelope (`{ data: T }`) from a request body.
+ *
+ * When a user pipes the JSON output of `GET /schema/snapshot` directly into
+ * `POST /schema/diff` or `POST /schema/apply`, the body is already wrapped in
+ * `{ "data": <payload> }` by the respond middleware. Both the raw form and the
+ * envelope form are accepted transparently.
+ */
+export function unwrapDataEnvelope<T extends object>(body: T | { data: T }): T {
+	if (
+		body !== null &&
+		typeof body === 'object' &&
+		'data' in body &&
+		Object.keys(body).length === 1 &&
+		typeof (body as { data?: unknown }).data === 'object' &&
+		(body as { data?: unknown }).data !== null
+	) {
+		return (body as { data: T }).data;
+	}
+
+	return body as T;
+}
+
 /** Accepts a single collection name or a list, always normalizing to a string array. */
 const collectionList = z.union([z.string(), z.array(z.string())]).transform((value) => toArray(value));
 
@@ -60,7 +83,7 @@ router.post(
 		if (!parsed.success) throw new InvalidPayloadError({ reason: fromZodError(parsed.error).message });
 
 		const service = new SchemaService({ accountability: req.accountability });
-		const snapshot: Snapshot = req.body;
+		const snapshot: Snapshot = unwrapDataEnvelope(req.body);
 		const currentSnapshot = await service.snapshot();
 
 		const snapshotDiff = await service.diff(snapshot, {
@@ -84,7 +107,7 @@ router.post(
 	readFileUploadBody({ allowYaml: true, maxFileSize: IMPORT_MAX_FILE_SIZE }),
 	asyncHandler(async (req, _res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
-		const diff: SnapshotDiffWithHash = req.body;
+		const diff: SnapshotDiffWithHash = unwrapDataEnvelope(req.body);
 		await service.apply(diff, { force: queryFlag(req.query['force']) });
 		return next();
 	}),

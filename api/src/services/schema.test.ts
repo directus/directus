@@ -181,8 +181,8 @@ describe('Services / Schema', () => {
 			await expect(service.diff(testSnapshot, { currentSnapshot: testSnapshot, force: true })).resolves.toBeNull();
 		});
 
-		test('should return null for missing systeFields', async () => {
-			const testSnapshot = {
+		test('should return null for missing systemFields', async () => {
+			const snapshotWithoutSystemFields = {
 				directus: '0.0.0',
 				version: 1,
 				vendor: 'postgres',
@@ -193,7 +193,9 @@ describe('Services / Schema', () => {
 
 			const service = new SchemaService({ knex: db, accountability: { role: 'admin', admin: true } as Accountability });
 
-			await expect(service.diff(testSnapshot, { currentSnapshot: testSnapshot, force: true })).resolves.toBeNull();
+			await expect(
+				service.diff(snapshotWithoutSystemFields, { currentSnapshot: snapshotWithoutSystemFields, force: true }),
+			).resolves.toBeNull();
 		});
 
 		test('should return null in merge mode when the only change is a deletion', async () => {
