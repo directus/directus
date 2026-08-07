@@ -58,34 +58,32 @@ properties:
     nullable: true
   project_logo:
     description: The logo of the project.
-    type: string
-    nullable: true
-  public_foreground:
-    description: UUID of the asset shown on the foreground of public pages.
-    type: string
-    format: uuid
-    nullable: true
-  public_background:
-    description:
-      Asset shown on the background of public pages. m2o relation to `directus_files`; `type` is the file's MIME type.
-    type: object
-    properties:
-      id:
-        description: UUID of the asset file.
-        type: string
+    oneOf:
+      - type: string
         format: uuid
         nullable: true
-      type:
-        description: MIME type of the asset file.
-        type: string
-        example: image/jpeg
+      - $ref: '../openapi.yaml#/components/schemas/Files'
+  public_foreground:
+    description: Asset shown on the foreground of public pages.
+    oneOf:
+      - type: string
+        format: uuid
         nullable: true
-    nullable: true
+      - $ref: '../openapi.yaml#/components/schemas/Files'
+  public_background:
+    description: Asset shown on the background of public pages.
+    oneOf:
+      - type: string
+        format: uuid
+        nullable: true
+      - $ref: '../openapi.yaml#/components/schemas/Files'
   public_favicon:
-    description: UUID of the favicon asset.
-    type: string
-    format: uuid
-    nullable: true
+    description: The favicon of the project.
+    oneOf:
+      - type: string
+        format: uuid
+        nullable: true
+      - $ref: '../openapi.yaml#/components/schemas/Files'
   public_note:
     description: Note rendered on the public pages of the app.
     type: string
@@ -107,9 +105,9 @@ properties:
         nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Roles'
   public_registration_email_filter:
-    description: >-
-      Directus `Filter` evaluated against `{ email }` to gate public registration. A non-empty validation result denies
-      registration. Accepts the same operators and nesting (`_and`, `_or`) as the `?filter=` query parameter.
+    description:
+      Directus `Filter` evaluated against `{ email }` to gate public registration; a non-empty result denies
+      registration.
     type: object
     example:
       email:
@@ -208,12 +206,33 @@ properties:
     nullable: true
   storage_default_folder:
     description: Default folder to place files.
-    type: string
-    format: uuid
-    nullable: true
+    oneOf:
+      - type: string
+        format: uuid
+        nullable: true
+      - $ref: '../openapi.yaml#/components/schemas/Folders'
   basemaps:
     description: Map basemap definitions.
     type: array
+    items:
+      type: object
+      properties:
+        name:
+          description: Display name for the basemap.
+          type: string
+        type:
+          description: Basemap type.
+          type: string
+          enum: [raster, tile, style]
+        url:
+          description: Tile source URL.
+          type: string
+        tileSize:
+          description: Tile size in pixels.
+          type: integer
+        attribution:
+          description: Attribution text shown on the map.
+          type: string
     nullable: true
   mapbox_key:
     description: Mapbox access token.
