@@ -145,7 +145,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 	async verifyHash(
 		collection: string,
 		item: PrimaryKey,
-		hash: string,
+		hash: string | null,
 	): Promise<{ outdated: boolean; mainHash: string }> {
 		const mainItem = await this.getMainItem(collection, item);
 

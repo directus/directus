@@ -1,4 +1,4 @@
-import type { MergeCoreCollection } from '../index.js';
+import type { CompleteSchema, MergeCoreCollection } from '../index.js';
 import type { DirectusCollection } from './collection.js';
 import type { DirectusUser } from './user.js';
 
@@ -7,7 +7,7 @@ export type DirectusComment<Schema> = MergeCoreCollection<
 	'directus_comments',
 	{
 		id: string;
-		collection: DirectusCollection<Schema> | string;
+		collection: DirectusCollection<Schema> | keyof CompleteSchema<Schema>;
 		item: string;
 		comment: string;
 		date_created: 'datetime' | null;

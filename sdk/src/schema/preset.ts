@@ -1,4 +1,4 @@
-import type { MergeCoreCollection } from '../index.js';
+import type { CompleteSchema, MergeCoreCollection } from '../index.js';
 import type { DirectusRole } from './role.js';
 import type { DirectusUser } from './user.js';
 
@@ -10,7 +10,7 @@ export type DirectusPreset<Schema = any> = MergeCoreCollection<
 		bookmark: string | null;
 		user: DirectusUser<Schema> | string | null;
 		role: DirectusRole<Schema> | string | null;
-		collection: string | null; // TODO keyof complete schema
+		collection: keyof CompleteSchema<Schema> | null;
 		search: string | null;
 		layout: string | null;
 		layout_query: Record<string, any> | null;
