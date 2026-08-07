@@ -4,8 +4,6 @@ get:
   operationId: getPresets
   summary: List Presets
   description: List the presets.
-  security:
-    - Auth: []
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
     - $ref: '../../openapi.yaml#/components/parameters/Limit'

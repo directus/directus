@@ -1,4 +1,5 @@
 get:
+  x-authentication: none
   summary: Ping
   description: Ping, pong. Ping.. pong.
   operationId: ping

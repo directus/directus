@@ -1,6 +1,11 @@
 get:
   tags:
     - Assets
+  security:
+    - {}
+    - Auth: []
+    - KeyAuth: []
+    - CookieAuth: []
   operationId: getAsset
   summary: Get an Asset
   description: Image typed files can be dynamically resized and transformed to fit any need.
