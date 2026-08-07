@@ -14,7 +14,7 @@ export type DirectusDeployment<Schema = any> = MergeCoreCollection<
 		options: Record<string, any> | null;
 		webhook_ids: string[] | null;
 		webhook_secret: string | null;
-		last_synced_at: string | null;
+		last_synced_at: 'datetime' | null;
 		date_created: 'datetime' | null;
 		user_created: DirectusUser<Schema> | string | null;
 		projects: DirectusDeploymentProject<Schema>[] | string[];
