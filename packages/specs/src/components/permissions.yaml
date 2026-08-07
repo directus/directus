@@ -4,11 +4,13 @@ properties:
     description: Unique identifier for the permission.
     example: 1
     type: integer
-  role:
-    description: Unique identifier of the role this permission applies to.
+  policy:
+    description: Unique identifier of the policy this permission applies to.
     example: 2f24211d-d928-469a-aea3-3c8f53d4e426
-    type: string
-    nullable: true
+    oneOf:
+      - type: string
+        format: uuid
+      - $ref: '../openapi.yaml#/components/schemas/Policies'
   collection:
     description: What collection this permission applies to.
     example: customers
@@ -17,26 +19,29 @@ properties:
     description: What action this permission applies to.
     example: create
     type: string
-    enum:
-      - create
-      - read
-      - update
-      - delete
+    enum: [create, read, update, delete, share]
   permissions:
     description: JSON structure containing the permissions checks for this permission.
     type: object
+    example: { <field>: { <operator>: <value> } }
     nullable: true
   validation:
     description: JSON structure containing the validation checks for this permission.
     type: object
+    example: { <field>: { <operator>: <value> } }
     nullable: true
   presets:
     description: JSON structure containing the preset value for created/updated items.
     type: object
+    example: { <field>: <value> }
     nullable: true
   fields:
-    description: CSV of fields that the user is allowed to interact with.
+    description: Fields that the user is allowed to interact with.
     type: array
     items:
       type: string
+    nullable: true
+  system:
+    description: True if this is a Directus-managed system permission.
+    type: boolean
     nullable: true

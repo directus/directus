@@ -1,11 +1,7 @@
 get:
-  tags:
-    - Presets
-  operationId: getPreset
-  summary: Retrieve a Preset
-  description: Retrieve a single preset by unique identifier.
-  security:
-    - Auth: []
+  summary: Retrieve a Policy
+  description: Retrieve a single policy by unique identifier.
+  operationId: getPolicy
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
   responses:
@@ -17,24 +13,25 @@ get:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Presets'
+                $ref: '../../openapi.yaml#/components/schemas/Policies'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Policies
 
 patch:
-  tags:
-    - Presets
-  operationId: updatePreset
-  summary: Update a Preset
-  description: Update an existing preset.
+  summary: Update a Policy
+  description: Update an existing policy.
+  operationId: updatePolicy
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
   requestBody:
     content:
       application/json:
         schema:
-          anyOf:
-            - $ref: '../../openapi.yaml#/components/schemas/Presets'
+          $ref: '../../openapi.yaml#/components/schemas/Policies'
   responses:
     '200':
       description: Successful request
@@ -44,22 +41,26 @@ patch:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Presets'
+                $ref: '../../openapi.yaml#/components/schemas/Policies'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Policies
 
 delete:
-  tags:
-    - Presets
-  operationId: deletePreset
-  summary: Delete a Preset
-  description: Delete an existing preset.
-  security:
-    - Auth: []
+  summary: Delete a Policy
+  description: Delete an existing policy.
+  operationId: deletePolicy
   responses:
     '200':
       description: Successful request
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Policies
 parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Id'
+  - $ref: '../../openapi.yaml#/components/parameters/UUId'

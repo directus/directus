@@ -4,78 +4,106 @@ properties:
     description: Unique identifier for the user.
     example: 63716273-0f29-4648-8a2a-2af2948f6f78
     type: string
+    format: uuid
+  status:
+    description: Status of the user.
+    example: active
+    type: string
+    enum: [active, archived, draft, invited, suspended, unverified]
   first_name:
     description: First name of the user.
     example: Admin
     type: string
+    nullable: true
   last_name:
     description: Last name of the user.
     example: User
     type: string
+    nullable: true
   email:
     description: Unique email address for the user.
     example: admin@example.com
     type: string
     format: email
+    nullable: true
   password:
-    description: Password of the user.
+    description: Password of the user. Returned masked when set.
     type: string
+    nullable: true
   location:
     description: The user's location.
-    example: null
     type: string
     nullable: true
   title:
     description: The user's title.
-    example: null
     type: string
     nullable: true
   description:
     description: The user's description.
-    example: null
     type: string
     nullable: true
   tags:
     description: The user's tags.
-    example: null
     type: array
     nullable: true
     items:
       type: string
   avatar:
     description: The user's avatar.
-    example: null
     oneOf:
       - type: string
+        format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Files'
-    nullable: true
   language:
     description: The user's language used in Directus.
     example: en-US
     type: string
-  theme:
-    description: What theme the user is using.
+    nullable: true
+  appearance:
+    description: Theme appearance used by the Data Studio for this user.
     example: auto
     type: string
-    enum: [light, dark, auto]
-  tfa_secret:
-    description: The 2FA secret string that's used to generate one time passwords.
-    example: null
+    enum: [auto, dark, light, null]
+    nullable: true
+  theme_light:
+    description: Theme id to use as the light theme for this user.
     type: string
     nullable: true
-  status:
-    description: Status of the user.
-    example: active
+  theme_dark:
+    description: Theme id to use as the dark theme for this user.
     type: string
-    enum: [active, invited, draft, suspended, deleted]
+    nullable: true
+  theme_light_overrides:
+    description: CSS variable overrides applied on top of the light theme for this user.
+    type: object
+    nullable: true
+  theme_dark_overrides:
+    description: CSS variable overrides applied on top of the dark theme for this user.
+    type: object
+    nullable: true
+  tfa_secret:
+    description: The 2FA secret string that's used to generate one time passwords. Returned masked when set.
+    type: string
+    nullable: true
   role:
-    description: Unique identifier of the role of this user.
+    description: Role assigned to this user.
     example: 2f24211d-d928-469a-aea3-3c8f53d4e426
     oneOf:
       - type: string
+        format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Roles'
+  policies:
+    description: Policies assigned to this user.
+    type: array
+    items:
+      oneOf:
+        - type: string
+          format: uuid
+        - $ref: '../openapi.yaml#/components/schemas/Policies'
   token:
-    description: Static token for the user.
+    description: Static token for the user. Returned masked when set.
     type: string
     nullable: true
   last_access:
@@ -89,3 +117,24 @@ properties:
     example: /my-project/settings/collections/a
     type: string
     nullable: true
+  external_identifier:
+    description: External SSO provider identifier for this user.
+    type: string
+    nullable: true
+  auth_data:
+    description: Opaque data blob stored by SSO providers.
+    type: object
+    nullable: true
+  provider:
+    description: SSO provider name. `default` for the built-in credential provider.
+    example: default
+    type: string
+  text_direction:
+    description: Text direction used in the Data Studio.
+    example: auto
+    type: string
+    enum: [auto, ltr, rtl]
+  email_notifications:
+    description: Whether the user receives system email notifications.
+    example: true
+    type: boolean

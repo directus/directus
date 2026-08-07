@@ -1,7 +1,7 @@
 get:
-  summary: List Roles
-  description: List the roles.
-  operationId: getRoles
+  summary: List Policies
+  description: List the policies.
+  operationId: getPolicies
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
     - $ref: '../../openapi.yaml#/components/parameters/Filter'
@@ -10,12 +10,6 @@ get:
     - $ref: '../../openapi.yaml#/components/parameters/Limit'
     - $ref: '../../openapi.yaml#/components/parameters/Offset'
     - $ref: '../../openapi.yaml#/components/parameters/Page'
-    - $ref: '../../openapi.yaml#/components/parameters/Aggregate'
-    - $ref: '../../openapi.yaml#/components/parameters/GroupBy'
-    - $ref: '../../openapi.yaml#/components/parameters/Deep'
-    - $ref: '../../openapi.yaml#/components/parameters/Alias'
-    - $ref: '../../openapi.yaml#/components/parameters/Export'
-    - $ref: '../../openapi.yaml#/components/parameters/Backlink'
     - $ref: '../../openapi.yaml#/components/parameters/Meta'
   responses:
     '200':
@@ -28,7 +22,7 @@ get:
               data:
                 type: array
                 items:
-                  $ref: '../../openapi.yaml#/components/schemas/Roles'
+                  $ref: '../../openapi.yaml#/components/schemas/Policies'
               meta:
                 $ref: '../../openapi.yaml#/components/schemas/x-metadata'
     '401':
@@ -36,19 +30,19 @@ get:
     '404':
       $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
-    - Roles
+    - Policies
 
 post:
-  summary: Create a Role
-  description: Create a new role.
-  operationId: createRole
+  summary: Create a Policy
+  description: Create a new policy.
+  operationId: createPolicy
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
   requestBody:
     content:
       application/json:
         schema:
-          $ref: '../../openapi.yaml#/components/schemas/Roles'
+          $ref: '../../openapi.yaml#/components/schemas/Policies'
   responses:
     '200':
       description: Successful request
@@ -58,20 +52,20 @@ post:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Roles'
+                $ref: '../../openapi.yaml#/components/schemas/Policies'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':
       $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
-    - Roles
+    - Policies
 
 patch:
-  summary: Update Multiple Roles
-  description: Update multiple roles at the same time.
+  summary: Update Multiple Policies
+  description: Update multiple policies at the same time.
   tags:
-    - Roles
-  operationId: updateRoles
+    - Policies
+  operationId: updatePolicies
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
     - $ref: '../../openapi.yaml#/components/parameters/Filter'
@@ -79,20 +73,18 @@ patch:
     - $ref: '../../openapi.yaml#/components/parameters/Sort'
     - $ref: '../../openapi.yaml#/components/parameters/Limit'
     - $ref: '../../openapi.yaml#/components/parameters/Offset'
-    - $ref: '../../openapi.yaml#/components/parameters/Page'
   requestBody:
     content:
       application/json:
         schema:
+          type: object
           properties:
             keys:
               type: array
               items:
                 type: string
             data:
-              $ref: '../../openapi.yaml#/components/schemas/Roles'
-          type: object
-
+              $ref: '../../openapi.yaml#/components/schemas/Policies'
   responses:
     '200':
       description: Successful request
@@ -104,16 +96,16 @@ patch:
               data:
                 type: array
                 items:
-                  $ref: '../../openapi.yaml#/components/schemas/Roles'
+                  $ref: '../../openapi.yaml#/components/schemas/Policies'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
 
 delete:
-  summary: Delete Multiple Roles
-  description: Delete multiple existing roles.
+  summary: Delete Multiple Policies
+  description: Delete multiple existing policies.
   tags:
-    - Roles
-  operationId: deleteRoles
+    - Policies
+  operationId: deletePolicies
   responses:
     '200':
       description: Successful request
