@@ -31,6 +31,7 @@
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@supabase/storage-js": "catalog:",
+		"proxy-from-env": "catalog:",
 		"tus-js-client": "catalog:",
 		"undici": "catalog:"
 	},
@@ -38,6 +39,7 @@
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "catalog:",
+		"@types/proxy-from-env": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",

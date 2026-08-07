@@ -15,7 +15,7 @@ import {
 	randGitShortSha as randUnique,
 } from '@ngneat/falso';
 import { StorageClient } from '@supabase/storage-js';
-import { fetch, Response } from 'undici';
+import { fetch, ProxyAgent, Response } from 'undici';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverSupabaseConfig } from './index.js';
 import { DriverSupabase } from './index.js';
@@ -165,12 +165,62 @@ describe('#getClient', () => {
 	});
 
 	test('Creates storage client', () => {
-		expect(StorageClient).toHaveBeenCalledWith(`https://${sample.config.projectId}.supabase.co/storage/v1`, {
-			apikey: sample.config.serviceRole,
-			Authorization: `Bearer ${sample.config.serviceRole}`,
-		});
+		expect(StorageClient).toHaveBeenCalledWith(
+			`https://${sample.config.projectId}.supabase.co/storage/v1`,
+			{
+				apikey: sample.config.serviceRole,
+				Authorization: `Bearer ${sample.config.serviceRole}`,
+			},
+			undefined,
+		);
 
 		expect(driver['client']).toBeInstanceOf(StorageClient);
+	});
+});
+
+describe('#getClient proxy support', () => {
+	const ORIGINAL_ENV = process.env;
+
+	beforeEach(() => {
+		process.env = { ...ORIGINAL_ENV };
+		delete process.env['HTTP_PROXY'];
+		delete process.env['HTTPS_PROXY'];
+		delete process.env['NO_PROXY'];
+		delete process.env['http_proxy'];
+		delete process.env['https_proxy'];
+		delete process.env['no_proxy'];
+	});
+
+	afterEach(() => {
+		process.env = ORIGINAL_ENV;
+	});
+
+	test('Passes undefined fetch to StorageClient when no proxy env vars are set', () => {
+		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project' });
+
+		expect(ProxyAgent).not.toHaveBeenCalled();
+
+		expect(StorageClient).toHaveBeenLastCalledWith(expect.any(String), expect.any(Object), undefined);
+	});
+
+	test('Passes a proxy-aware fetch to StorageClient when HTTPS_PROXY is set', () => {
+		process.env['HTTPS_PROXY'] = 'http://proxy.example.com:8080';
+
+		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project' });
+
+		expect(ProxyAgent).toHaveBeenCalledWith('http://proxy.example.com:8080');
+
+		expect(StorageClient).toHaveBeenLastCalledWith(expect.any(String), expect.any(Object), expect.any(Function));
+	});
+
+	test('Does not proxy an endpoint covered by NO_PROXY', () => {
+		process.env['HTTPS_PROXY'] = 'http://proxy.example.com:8080';
+		process.env['NO_PROXY'] = 'example.supabase.co';
+
+		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', endpoint: 'https://example.supabase.co/storage/v1' });
+
+		expect(ProxyAgent).not.toHaveBeenCalled();
+		expect(StorageClient).toHaveBeenLastCalledWith(expect.any(String), expect.any(Object), undefined);
 	});
 });
 
