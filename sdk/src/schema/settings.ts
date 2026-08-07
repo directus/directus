@@ -1,6 +1,7 @@
 import type { MergeCoreCollection } from '../index.js';
 import type { DirectusFile } from './file.js';
 import type { DirectusFolder } from './folder.js';
+import type { DirectusRole } from './role.js';
 
 export type DirectusSettings<Schema = any> = MergeCoreCollection<
 	Schema,
@@ -16,11 +17,15 @@ export type DirectusSettings<Schema = any> = MergeCoreCollection<
 		default_language: string;
 		default_save_action: 'save-and-quit' | 'save-and-stay' | 'save-and-create-new';
 		project_color: string;
-		project_logo: string | null;
-		public_foreground: string | null;
-		public_background: { id: string; type: string } | null;
+		project_logo: DirectusFile<Schema> | string | null;
+		public_foreground: DirectusFile<Schema> | string | null;
+		public_background: DirectusFile<Schema> | string | null;
 		public_favicon: DirectusFile<Schema> | string | null;
 		public_note: string | null;
+		public_registration: boolean;
+		public_registration_verify_email: boolean;
+		public_registration_role: DirectusRole<Schema> | string | null;
+		public_registration_email_filter: Record<string, any> | null;
 		visual_editor_urls: Array<{ url: string }> | null;
 		auth_login_attempts: number;
 		auth_password_policy: string | null;
@@ -35,10 +40,18 @@ export type DirectusSettings<Schema = any> = MergeCoreCollection<
 					withoutEnlargement: boolean;
 			  }[]
 			| null;
-		custom_aspect_ratios: Record<string, any> | null;
+		custom_aspect_ratios: { text: string; value: number }[] | null;
 		custom_css: string | null;
 		storage_default_folder: DirectusFolder<Schema> | string | null;
-		basemaps: Record<string, any> | null;
+		basemaps:
+			| {
+					name: string;
+					tileSize?: number;
+					attribution?: string;
+					url?: string;
+					type?: string;
+			  }[]
+			| null;
 		mapbox_key: string | null;
 		module_bar: 'json' | null;
 		default_appearance: 'auto' | 'light' | 'dark';
