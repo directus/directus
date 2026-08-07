@@ -49,9 +49,9 @@ async function fetchUser() {
 }
 
 async function hydrateAndLogin() {
+	const redirectQuery = router.currentRoute.value.query.redirect as string;
 	await hydrate();
 	await userPromise;
-	const redirectQuery = router.currentRoute.value.query.redirect as string;
 	navigateAfterLogin(router, redirectQuery || lastPage.value || `/content`);
 }
 </script>
