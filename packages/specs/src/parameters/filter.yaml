@@ -11,19 +11,26 @@ content:
         summary: No filter (default)
       basicField:
         summary: Basic field filter
-        value: 'filter={"title":{"_eq":"Hello"}}'
+        value: { 'title': { '_eq': 'Hello' } }
       manyToOne:
         summary: Many-to-One relational filter
-        value: 'filter={"author":{"name":{"_eq":"Rijk van Zanten"}}}'
+        value: { 'author': { 'name': { '_eq': 'Rijk van Zanten' } } }
       manyToMany:
         summary: Many-to-Many relational filter (through junction collection)
-        value: 'filter={"authors":{"authors_id":{"name":{"_eq":"Rijk van Zanten"}}}}'
+        value: { 'authors': { 'authors_id': { 'name': { '_eq': 'Rijk van Zanten' } } } }
       logicalCombination:
         summary: '`_and`/`_or` logical combination'
-        value: 'filter={"_or":[{"status":{"_eq":"published"}},{"_and":[{"status":{"_eq":"draft"}},{"owner":{"_eq":"$CURRENT_USER"}}]}]}'
+        value:
+          {
+            '_or':
+              [
+                { 'status': { '_eq': 'published' } },
+                { '_and': [{ 'status': { '_eq': 'draft' } }, { 'owner': { '_eq': '$CURRENT_USER' } }] },
+              ],
+          }
       dynamicVariable:
         summary: Dynamic variable
-        value: 'filter={"date_created":{"_gte":"$NOW(-1 year)"}}'
+        value: { 'date_created': { '_gte': '$NOW(-1 year)' } }
       relationalSomeNone:
         summary: '`_some`/`_none` relational filter'
-        value: 'filter={"categories":{"_none":{"name":{"_eq":"Recipe"}}}}'
+        value: { 'categories': { '_none': { 'name': { '_eq': 'Recipe' } } } }

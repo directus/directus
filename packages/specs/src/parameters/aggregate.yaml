@@ -62,7 +62,7 @@ content:
         summary: No aggregation specified (default)
       countAll:
         summary: Count all items
-        value: 'aggregate={"count":["*"]}'
+        value: { 'count': ['*'] }
       multiField:
         summary: Multiple aggregate functions
-        value: 'aggregate={"count":["views","comments"],"avg":["rating"]}'
+        value: { 'count': ['views', 'comments'], 'avg': ['rating'] }

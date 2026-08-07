@@ -13,10 +13,10 @@ content:
         summary: No aliasing (default)
       singleRename:
         summary: Rename a field
-        value: 'alias={"user_id":"id"}'
+        value: { 'user_id': 'id' }
       functionAlias:
         summary: Alias a field function
-        value: 'alias={"release_year":"year(date_created)"}'
+        value: { 'release_year': 'year(date_created)' }
       multipleRenames:
         summary: Multiple renames in one request
-        value: 'alias={"user_id":"id","user_status":"status"}'
+        value: { 'user_id': 'id', 'user_status': 'status' }
