@@ -12,7 +12,7 @@ export type DirectusShare<Schema = any> = MergeCoreCollection<
 		collection: DirectusCollection<Schema> | string;
 		item: string;
 		role: DirectusRole<Schema> | string | null;
-		password: string | null;
+		password: string | null; // will just be *s
 		user_created: DirectusUser<Schema> | string | null;
 		date_created: 'datetime' | null;
 		date_start: 'datetime' | null;
