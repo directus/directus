@@ -118,7 +118,7 @@ const isSaveDisabled = computed(() => {
 	return false;
 });
 
-function valueToPreview(value: Settings['module_bar']): PreviewValue[] {
+function valueToPreview(value: NonNullable<Settings['module_bar']>): PreviewValue[] {
 	return value.flatMap((part): PreviewValue[] => {
 		if (part.type === 'link') {
 			return [{ ...part, to: part.url, icon: part.icon, name: translate(part.name) }];
