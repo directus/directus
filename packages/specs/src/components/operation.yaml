@@ -15,9 +15,7 @@ properties:
     type: string
     example: log_console
   type:
-    description:
-      Type of operation. One of `log`, `mail`, `notification`, `create`, `read`, `request`, `sleep`, `transform`,
-      `trigger`, `condition`, or any type of custom operation extensions.
+    description: Type of operation. Matches the operation extension's registered key.
     type: string
     example: log
   options:
