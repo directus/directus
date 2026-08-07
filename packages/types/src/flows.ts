@@ -38,7 +38,7 @@ export interface FlowRaw {
 	operation: string | null;
 	operations: OperationRaw[];
 	date_created: string;
-	user_created: string;
+	user_created: string | null;
 	accountability: 'all' | 'activity' | null;
 }
 
@@ -54,5 +54,5 @@ export interface OperationRaw {
 	reject: string | null;
 	flow: string;
 	date_created: string;
-	user_created: string;
+	user_created: string | null;
 }
