@@ -116,7 +116,6 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	// Ambiguous matches count as changes because a non-interactive push cannot apply them.
 	ctx.ui.data({
 		kind: 'DiffReport',
-		formatVersion: 1,
 		ok: true,
 		target: url,
 		profile: options.to,

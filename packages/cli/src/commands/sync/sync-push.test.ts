@@ -320,7 +320,6 @@ describe('sync push', () => {
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
 			kind: 'PushReport',
-			formatVersion: 1,
 			ok: true,
 			target: url,
 			profile: 'staging',
@@ -356,7 +355,6 @@ describe('sync push', () => {
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
 			kind: 'PushReport',
-			formatVersion: 1,
 			ok: true,
 			target: url,
 			profile: 'staging',

@@ -33,7 +33,6 @@ export async function add(nameArg: string | undefined, options: AddOptions, ctx:
 
 	ctx.ui.data({
 		kind: 'ProfileAddReport',
-		formatVersion: 1,
 		ok: true,
 		name,
 		url: saved.url,

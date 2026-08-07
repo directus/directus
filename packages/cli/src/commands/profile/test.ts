@@ -105,7 +105,6 @@ export async function testProfile(nameArg: string | undefined, options: TestOpti
 
 	ctx.ui.data({
 		kind: 'ProfileTestReport',
-		formatVersion: 1,
 		ok: true,
 		url,
 		user: identity.user,

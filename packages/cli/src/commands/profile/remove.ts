@@ -51,5 +51,5 @@ export async function remove(nameArg: string | undefined, options: RemoveOptions
 		}
 	}
 
-	ctx.ui.data({ kind: 'ProfileRemoveReport', formatVersion: 1, ok: true, removed: name });
+	ctx.ui.data({ kind: 'ProfileRemoveReport', ok: true, removed: name });
 }

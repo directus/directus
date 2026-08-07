@@ -79,7 +79,6 @@ describe('createUi', () => {
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
 			kind: 'ErrorReport',
-			formatVersion: 1,
 			error: {
 				code: 'USAGE',
 				message: 'bad input',

@@ -150,7 +150,7 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 					...(error.detail !== undefined ? { detail: error.detail } : {}),
 				};
 
-				writeJson({ kind: 'ErrorReport', formatVersion: 1, error: body });
+				writeJson({ kind: 'ErrorReport', error: body });
 				return;
 			}
 

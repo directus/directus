@@ -12,7 +12,7 @@ function list(ctx: CliContext): void {
 	const profiles = ctx.config.load()?.config.profiles ?? {};
 	const rows = Object.entries(profiles).map(([name, p]) => ({ name, url: p.url }));
 
-	ctx.ui.data({ kind: 'ProfileListReport', formatVersion: 1, ok: true, profiles: rows });
+	ctx.ui.data({ kind: 'ProfileListReport', ok: true, profiles: rows });
 
 	if (rows.length === 0) {
 		ctx.ui.info('No profiles configured.');

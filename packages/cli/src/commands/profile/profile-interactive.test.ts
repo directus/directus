@@ -422,7 +422,6 @@ describe('interactive profile flows', () => {
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
 			kind: 'ProfileTestReport',
-			formatVersion: 1,
 			ok: true,
 			url: 'https://oneoff.example.com',
 			user: 'Ada',

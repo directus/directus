@@ -309,7 +309,6 @@ describe('profile commands', () => {
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
 			kind: 'ProfileListReport',
-			formatVersion: 1,
 			ok: true,
 			profiles: [{ name: 'staging', url: 'https://cms.example.com' }],
 		});
@@ -320,7 +319,6 @@ describe('profile commands', () => {
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
 			kind: 'ProfileAddReport',
-			formatVersion: 1,
 			ok: true,
 			name: 'staging',
 			url: 'https://one.example.com',
@@ -333,7 +331,6 @@ describe('profile commands', () => {
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
 			kind: 'ProfileUpdateReport',
-			formatVersion: 1,
 			ok: true,
 			name: 'staging',
 			url: 'https://two.example.com',
@@ -348,7 +345,6 @@ describe('profile commands', () => {
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
 			kind: 'ProfileRemoveReport',
-			formatVersion: 1,
 			ok: true,
 			removed: 'staging',
 		});

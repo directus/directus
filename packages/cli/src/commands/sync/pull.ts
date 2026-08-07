@@ -461,7 +461,6 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	// Null schema fields distinguish a skipped phase from an empty snapshot.
 	ctx.ui.data({
 		kind: 'PullReport',
-		formatVersion: 1,
 		ok: true,
 		source: url,
 		profile: options.from,

@@ -111,7 +111,6 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		if (ctx.ui.json) {
 			ctx.ui.data({
 				kind: 'PushReport',
-				formatVersion: 1,
 				ok: true,
 				target: url,
 				profile: options.to,
@@ -271,7 +270,6 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	if (ctx.ui.json) {
 		ctx.ui.data({
 			kind: 'PushReport',
-			formatVersion: 1,
 			ok: true,
 			target: url,
 			profile: options.to,

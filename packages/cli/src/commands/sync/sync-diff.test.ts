@@ -141,7 +141,6 @@ describe('sync diff', () => {
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
 			kind: 'DiffReport',
-			formatVersion: 1,
 			ok: true,
 			target: url,
 			profile: 'staging',
@@ -179,7 +178,6 @@ describe('sync diff', () => {
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
 			kind: 'DiffReport',
-			formatVersion: 1,
 			ok: true,
 			target: url,
 			profile: 'staging',

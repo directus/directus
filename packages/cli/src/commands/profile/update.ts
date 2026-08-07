@@ -50,7 +50,7 @@ function report(
 	ctx: CliContext,
 	fields: { name: string; url: string | null; renamedFrom: string | null; credentialSaved: boolean },
 ): void {
-	ctx.ui.data({ kind: 'ProfileUpdateReport', formatVersion: 1, ok: true, ...fields });
+	ctx.ui.data({ kind: 'ProfileUpdateReport', ok: true, ...fields });
 }
 
 /**

@@ -129,7 +129,6 @@ describe('sync pull', () => {
 
 		expect(payload).toMatchObject({
 			kind: 'PullReport',
-			formatVersion: 1,
 			ok: true,
 			source: url,
 			profile: 'staging',
