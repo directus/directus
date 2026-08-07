@@ -80,7 +80,7 @@ describe('applyAnthropicConversationCaching', () => {
 		});
 	});
 
-	test('does not append context after a tool-result continuation', () => {
+	test('caches a tool-result continuation but does not append context after it', () => {
 		const continuationMessages: ModelMessage[] = [
 			{ role: 'user', content: 'Run the tool' },
 			{
