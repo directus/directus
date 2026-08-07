@@ -23,6 +23,7 @@ patch:
   summary: Update a Relation
   description: Update an existing relation
   operationId: updateRelation
+  x-authentication: admin
   requestBody:
     content:
       application/json:
@@ -66,6 +67,7 @@ delete:
   summary: Delete a Relation
   description: Delete an existing relation.
   operationId: deleteRelation
+  x-authentication: admin
   responses:
     '200':
       description: Successful request

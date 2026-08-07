@@ -303,6 +303,8 @@ reset_system_permissions_copy:
 the_following_are_minimum_permissions:
   The following minimum permissions are automatically applied when "App Access" is enabled. You can grant additional
   permissions if needed, but you cannot reduce permissions below this level.
+hardcoded_admin_only_permission:
+  This action always requires full admin access. Permissions configured here have no effect for non-admin users.
 app_access_minimum: App Access Minimum
 recommended_defaults: Recommended Defaults
 unarchive: Unarchive

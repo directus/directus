@@ -4,8 +4,6 @@ get:
   operationId: getComments
   summary: List Comments
   description: List the comments.
-  security:
-    - Auth: []
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
     - $ref: '../../openapi.yaml#/components/parameters/Limit'
@@ -37,6 +35,7 @@ post:
   tags:
     - Comments
   operationId: createComment
+  x-authentication: user
   summary: Create a Comment
   description: Create a new comment.
   parameters:
@@ -77,6 +76,7 @@ patch:
   tags:
     - Comments
   operationId: updateComments
+  x-authentication: user
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
     - $ref: '../../openapi.yaml#/components/parameters/Limit'
@@ -130,6 +130,7 @@ delete:
   tags:
     - Comments
   operationId: deleteComments
+  x-authentication: user
   responses:
     '200':
       description: Successful request

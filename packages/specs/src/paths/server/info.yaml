@@ -2,6 +2,11 @@ get:
   summary: System Info
   description: Perform a system status check and return the options.
   operationId: serverInfo
+  security:
+    - {}
+    - Auth: []
+    - KeyAuth: []
+    - CookieAuth: []
   responses:
     '200':
       content:

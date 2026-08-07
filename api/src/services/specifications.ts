@@ -1,12 +1,13 @@
 import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
-import { spec } from '@directus/specs';
+import { spec as staticSpec } from '@directus/specs';
 import { isSystemCollection } from '@directus/system-data';
 import type {
 	AbstractServiceOptions,
 	Accountability,
+	CollectionAccess,
 	FieldOverview,
-	Permission,
+	PermissionsAction,
 	SchemaOverview,
 	Type,
 } from '@directus/types';
@@ -24,13 +25,17 @@ import type {
 } from 'openapi3-ts/oas30';
 import { OAS_REQUIRED_SCHEMAS } from '../constants.js';
 import getDatabase from '../database/index.js';
-import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
-import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
-import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
+import { fetchAccountabilityCollectionAccess } from '../permissions/modules/fetch-accountability-collection-access/fetch-accountability-collection-access.js';
+import type { FieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
 
 const env = useEnv();
+
+// Documents that a path is reachable both without authentication and with it (an authenticated
+// caller may see a broader response than the public role, e.g. more fields).
+const OPTIONAL_AUTH_SECURITY: OpenAPIObject['security'] = [{}, { Auth: [] }, { KeyAuth: [] }, { CookieAuth: [] }];
 
 export class SpecificationService {
 	accountability: Accountability | null;
@@ -68,30 +73,27 @@ class OASSpecsService implements SpecificationSubService {
 
 	async generate(host?: string) {
 		let schemaForSpec = this.schema;
-		let permissions: Permission[] = [];
+		let userCollectionAccess: CollectionAccess | undefined;
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const allowedFields = await fetchAllowedFieldMap(
-				{
-					accountability: this.accountability,
-					action: 'read',
-				},
-				{ schema: this.schema, knex: this.knex },
-			);
+			userCollectionAccess = await fetchAccountabilityCollectionAccess(this.accountability, {
+				schema: this.schema,
+				knex: this.knex,
+			});
 
-			schemaForSpec = reduceSchema(this.schema, allowedFields);
-
-			const policies = await fetchPolicies(this.accountability, { schema: this.schema, knex: this.knex });
-
-			permissions = await fetchPermissions(
-				{ policies, accountability: this.accountability },
-				{ schema: this.schema, knex: this.knex },
-			);
+			schemaForSpec = reduceSchema(this.schema, this.toReadFieldMap(userCollectionAccess));
 		}
 
+		const publicAccountability = createDefaultAccountability();
+
+		const publicCollectionAccess = await fetchAccountabilityCollectionAccess(publicAccountability, {
+			schema: this.schema,
+			knex: this.knex,
+		});
+
 		const tags = await this.generateTags(schemaForSpec);
-		const paths = await this.generatePaths(schemaForSpec, permissions, tags);
-		const components = await this.generateComponents(schemaForSpec, tags);
+		const paths = await this.generatePaths(schemaForSpec, userCollectionAccess, publicCollectionAccess, tags);
+		const components = await this.generateComponents(schemaForSpec, tags, paths);
 
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
 		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
@@ -121,11 +123,13 @@ class OASSpecsService implements SpecificationSubService {
 		if (tags) spec.tags = tags;
 		if (components) spec.components = components;
 
+		spec.security = staticSpec.security!;
+
 		return spec;
 	}
 
 	private async generateTags(schema: SchemaOverview): Promise<OpenAPIObject['tags']> {
-		const systemTags = cloneDeep(spec.tags)!;
+		const systemTags = cloneDeep(staticSpec.tags)!;
 
 		const collections = Object.values(schema.collections);
 		const tags: OpenAPIObject['tags'] = [];
@@ -146,7 +150,7 @@ class OASSpecsService implements SpecificationSubService {
 
 			// If the collection is one of the system collections, pull the tag from the static spec
 			if (isSystem) {
-				for (const tag of spec.tags!) {
+				for (const tag of staticSpec.tags!) {
 					if (tag['x-collection'] === collection.collection) {
 						tags.push(tag);
 						break;
@@ -166,13 +170,65 @@ class OASSpecsService implements SpecificationSubService {
 			}
 		}
 
-		// Filter out the generic Items information
-		return tags.filter((tag) => tag.name !== 'Items');
+		// Filter out the generic Items information, then sort alphabetically for consistent output
+		return tags.filter((tag) => tag.name !== 'Items').sort((a, b) => a.name.localeCompare(b.name));
 	}
 
+	/** Flattens a CollectionAccess map into the field map reduceSchema() expects. */
+	private toReadFieldMap(userCollectionAccess: CollectionAccess): FieldMap {
+		const fieldMap: FieldMap = {};
+
+		for (const [collection, access] of Object.entries(userCollectionAccess)) {
+			if (access.read.access === 'none') continue;
+			fieldMap[collection] = access.read.fields ?? [];
+		}
+
+		return fieldMap;
+	}
+
+	/** Treats a collection absent from CollectionAccess the same as explicit 'none' access. */
+	private hasCollectionAccess(
+		collectionAccess: CollectionAccess | undefined,
+		collection: string,
+		action: PermissionsAction,
+	): boolean {
+		return (collectionAccess?.[collection]?.[action]?.access ?? 'none') !== 'none';
+	}
+
+	/** Gates an operation flagged with x-authentication on that requirement instead of, or in addition to, RBAC. */
+	private hasOperationAccess(
+		requiredAuth: 'admin' | 'user' | 'self' | undefined,
+		userCollectionAccess: CollectionAccess | undefined,
+		operationCollection: string | undefined,
+		operationAction: PermissionsAction,
+		isHardcodedOpen: boolean,
+	): boolean {
+		if (requiredAuth === 'admin') return this.accountability?.admin === true;
+		if (requiredAuth === 'self') return !!this.accountability?.user;
+
+		// requiredAuth: 'user' is enforced alongside RBAC, not instead of it, so both are still required.
+		if (requiredAuth === 'user') {
+			return (
+				!!this.accountability?.user &&
+				(this.accountability?.admin === true ||
+					operationCollection === undefined ||
+					this.hasCollectionAccess(userCollectionAccess, operationCollection, operationAction))
+			);
+		}
+
+		return (
+			this.accountability?.admin === true ||
+			operationCollection === undefined ||
+			isHardcodedOpen ||
+			this.hasCollectionAccess(userCollectionAccess, operationCollection, operationAction)
+		);
+	}
+
+	/** Builds paths gated by the caller's own collection access, marking publicly-readable operations with optional-auth security. */
 	private async generatePaths(
 		schema: SchemaOverview,
-		permissions: Permission[],
+		userCollectionAccess: CollectionAccess | undefined,
+		publicCollectionAccess: CollectionAccess,
 		tags: OpenAPIObject['tags'],
 	): Promise<OpenAPIObject['paths']> {
 		const paths: OpenAPIObject['paths'] = {};
@@ -183,38 +239,74 @@ class OASSpecsService implements SpecificationSubService {
 			const isSystem = 'x-collection' in tag === false || isSystemCollection(tag['x-collection']);
 
 			if (isSystem) {
-				for (const [path, pathItem] of Object.entries<PathItemObject>(spec.paths)) {
+				const collection = 'x-collection' in tag ? tag['x-collection'] : undefined;
+
+				for (const [path, pathItem] of Object.entries<PathItemObject>(staticSpec.paths)) {
 					for (const [method, operation] of Object.entries(pathItem)) {
 						if (operation.tags?.includes(tag.name)) {
 							if (!paths[path]) {
 								paths[path] = {};
 							}
 
-							const hasPermission =
-								this.accountability?.admin === true ||
-								'x-collection' in tag === false ||
-								!!permissions.find(
-									(permission) =>
-										permission.collection === tag['x-collection'] &&
-										permission.action === this.getActionForMethod(method),
-								);
+							// A static `security: []` override means the operation runs with no accountability at
+							// all (e.g. POST /users/register), so it can't be gated by the caller's own RBAC access
+							// to the tied collection - it's reachable by anyone regardless of that permission.
+							const isHardcodedOpen = Array.isArray(operation.security) && operation.security.length === 0;
+
+							// An operation-level override lets an operation whose tag has no (or a different)
+							// x-collection still be gated by RBAC on a specific collection, e.g. GET /assets/{id}
+							// is tagged Assets (no collection of its own) but is actually governed by RBAC read
+							// access to directus_files, same as GET /files/{id}.
+							const operationCollection = operation['x-collection'] ?? collection;
+
+							// x-action overrides the HTTP-method-derived action for an operation whose real RBAC
+							// check doesn't match its verb, e.g. a POST that only reads and archives existing
+							// items shouldn't be gated on create access.
+							const operationAction: PermissionsAction = operation['x-action'] ?? this.getActionForMethod(method);
+
+							// x-authentication marks an operation with a hardcoded auth requirement enforced in
+							// the service layer, independent of RBAC (e.g. CollectionsService requires
+							// accountability.admin regardless of directus_collections permissions).
+							const requiredAuth = operation['x-authentication'] as 'admin' | 'user' | 'self' | undefined;
+
+							const hasPermission = this.hasOperationAccess(
+								requiredAuth,
+								userCollectionAccess,
+								operationCollection,
+								operationAction,
+								isHardcodedOpen,
+							);
 
 							if (hasPermission) {
+								// A hardcoded-open operation's own `security: []` already says "no auth, ever";
+								// stamping OPTIONAL_AUTH_SECURITY on top would overwrite that. An x-authentication
+								// operation is never publicly accessible either, since the hardcoded check
+								// supersedes whatever publicCollectionAccess says about the tied collection.
+								const isPubliclyAccessible =
+									!isHardcodedOpen &&
+									requiredAuth === undefined &&
+									operationCollection !== undefined &&
+									this.hasCollectionAccess(publicCollectionAccess, operationCollection, operationAction);
+
+								const operationWithSecurity = isPubliclyAccessible
+									? { ...operation, security: OPTIONAL_AUTH_SECURITY }
+									: operation;
+
 								if ('parameters' in pathItem) {
 									paths[path]![method as keyof PathItemObject] = {
-										...operation,
-										parameters: [...(pathItem.parameters ?? []), ...(operation?.parameters ?? [])],
+										...operationWithSecurity,
+										parameters: [...(pathItem.parameters ?? []), ...(operationWithSecurity?.parameters ?? [])],
 									};
 								} else {
-									paths[path]![method as keyof PathItemObject] = operation;
+									paths[path]![method as keyof PathItemObject] = operationWithSecurity;
 								}
 							}
 						}
 					}
 				}
 			} else {
-				const listBase = cloneDeep(spec.paths['/items/{collection}']);
-				const detailBase = cloneDeep(spec.paths['/items/{collection}/{id}']);
+				const listBase = cloneDeep(staticSpec.paths['/items/{collection}']);
+				const detailBase = cloneDeep(staticSpec.paths['/items/{collection}/{id}']);
 				const collection = tag['x-collection'];
 
 				const methods: (keyof PathItemObject)[] = ['post', 'get', 'patch', 'delete'];
@@ -222,121 +314,125 @@ class OASSpecsService implements SpecificationSubService {
 				for (const method of methods) {
 					const hasPermission =
 						this.accountability?.admin === true ||
-						!!permissions.find(
-							(permission) =>
-								permission.collection === collection && permission.action === this.getActionForMethod(method),
-						);
+						this.hasCollectionAccess(userCollectionAccess, collection, this.getActionForMethod(method));
+
+					const isPubliclyAccessible = this.hasCollectionAccess(
+						publicCollectionAccess,
+						collection,
+						this.getActionForMethod(method),
+					);
 
 					if (hasPermission) {
 						if (!paths[`/items/${collection}`]) paths[`/items/${collection}`] = {};
 						if (!paths[`/items/${collection}/{id}`]) paths[`/items/${collection}/{id}`] = {};
 
 						if (listBase?.[method]) {
-							paths[`/items/${collection}`]![method] = mergeWith(
-								cloneDeep(listBase[method]),
-								{
-									description: listBase[method].description.replace('item', collection + ' item'),
-									tags: [tag.name],
-									parameters: 'parameters' in listBase ? this.filterCollectionFromParams(listBase.parameters) : [],
-									operationId: `${this.getActionForMethod(method)}${tag.name}`,
-									requestBody: ['get', 'delete'].includes(method)
-										? undefined
-										: {
-												content: {
-													'application/json': {
-														schema: {
-															oneOf: [
-																{
-																	type: 'array',
-																	items: {
+							paths[`/items/${collection}`]![method] = {
+								...mergeWith(
+									cloneDeep(listBase[method]),
+									{
+										description: listBase[method].description.replace('item', collection + ' item'),
+										parameters: 'parameters' in listBase ? this.filterCollectionFromParams(listBase.parameters) : [],
+										operationId: `${this.getActionForMethod(method)}${tag.name}`,
+										requestBody: ['get', 'delete'].includes(method)
+											? undefined
+											: {
+													content: {
+														'application/json': {
+															schema: {
+																oneOf: [
+																	{
+																		type: 'array',
+																		items: {
+																			$ref: `#/components/schemas/${tag.name}`,
+																		},
+																	},
+																	{
 																		$ref: `#/components/schemas/${tag.name}`,
 																	},
-																},
-																{
-																	$ref: `#/components/schemas/${tag.name}`,
-																},
-															],
-														},
-													},
-												},
-											},
-									responses: {
-										'200': {
-											description: 'Successful request',
-											content:
-												method === 'delete'
-													? undefined
-													: {
-															'application/json': {
-																schema: {
-																	properties: {
-																		data: schema.collections[collection]?.singleton
-																			? {
-																					$ref: `#/components/schemas/${tag.name}`,
-																				}
-																			: {
-																					type: 'array',
-																					items: {
-																						$ref: `#/components/schemas/${tag.name}`,
-																					},
-																				},
-																	},
-																},
+																],
 															},
 														},
-										},
-									},
-								},
-								(obj, src) => {
-									if (Array.isArray(obj)) return obj.concat(src);
-									return undefined;
-								},
-							);
-						}
-
-						if (detailBase?.[method]) {
-							paths[`/items/${collection}/{id}`]![method] = mergeWith(
-								cloneDeep(detailBase[method]),
-								{
-									description: detailBase[method].description.replace('item', collection + ' item'),
-									tags: [tag.name],
-									operationId: `${this.getActionForMethod(method)}Single${tag.name}`,
-									parameters: 'parameters' in detailBase ? this.filterCollectionFromParams(detailBase.parameters) : [],
-									requestBody: ['get', 'delete'].includes(method)
-										? undefined
-										: {
-												content: {
-													'application/json': {
-														schema: {
-															$ref: `#/components/schemas/${tag.name}`,
-														},
 													},
 												},
-											},
-									responses: {
-										'200': {
-											content:
-												method === 'delete'
-													? undefined
-													: {
-															'application/json': {
-																schema: {
-																	properties: {
-																		data: {
-																			$ref: `#/components/schemas/${tag.name}`,
+										responses: {
+											'200': {
+												description: 'Successful request',
+												content:
+													method === 'delete'
+														? undefined
+														: {
+																'application/json': {
+																	schema: {
+																		properties: {
+																			data: schema.collections[collection]?.singleton
+																				? {
+																						$ref: `#/components/schemas/${tag.name}`,
+																					}
+																				: {
+																						type: 'array',
+																						items: {
+																							$ref: `#/components/schemas/${tag.name}`,
+																						},
+																					},
 																		},
 																	},
 																},
 															},
-														},
+											},
 										},
 									},
-								},
-								(obj, src) => {
-									if (Array.isArray(obj)) return obj.concat(src);
-									return undefined;
-								},
-							);
+									this.mergePathItemCustomizer,
+								),
+								tags: [tag.name],
+								...(isPubliclyAccessible && { security: OPTIONAL_AUTH_SECURITY }),
+							};
+						}
+
+						if (detailBase?.[method]) {
+							paths[`/items/${collection}/{id}`]![method] = {
+								...mergeWith(
+									cloneDeep(detailBase[method]),
+									{
+										description: detailBase[method].description.replace('item', collection + ' item'),
+										operationId: `${this.getActionForMethod(method)}Single${tag.name}`,
+										parameters:
+											'parameters' in detailBase ? this.filterCollectionFromParams(detailBase.parameters) : [],
+										requestBody: ['get', 'delete'].includes(method)
+											? undefined
+											: {
+													content: {
+														'application/json': {
+															schema: {
+																$ref: `#/components/schemas/${tag.name}`,
+															},
+														},
+													},
+												},
+										responses: {
+											'200': {
+												content:
+													method === 'delete'
+														? undefined
+														: {
+																'application/json': {
+																	schema: {
+																		properties: {
+																			data: {
+																				$ref: `#/components/schemas/${tag.name}`,
+																			},
+																		},
+																	},
+																},
+															},
+											},
+										},
+									},
+									this.mergePathItemCustomizer,
+								),
+								tags: [tag.name],
+								...(isPubliclyAccessible && { security: OPTIONAL_AUTH_SECURITY }),
+							};
 						}
 					}
 				}
@@ -349,12 +445,22 @@ class OASSpecsService implements SpecificationSubService {
 	private async generateComponents(
 		schema: SchemaOverview,
 		tags: OpenAPIObject['tags'],
+		paths: OpenAPIObject['paths'],
 	): Promise<OpenAPIObject['components']> {
 		if (!tags) return;
 
-		let components: OpenAPIObject['components'] = cloneDeep(spec.components);
+		let components: OpenAPIObject['components'] = cloneDeep(staticSpec.components);
 
 		if (!components) components = {};
+
+		const cookieAuthScheme = components.securitySchemes?.['CookieAuth'];
+		if (cookieAuthScheme && 'name' in cookieAuthScheme) cookieAuthScheme.name = env['SESSION_COOKIE_NAME'] as string;
+
+		const refreshTokenCookieAuthScheme = components.securitySchemes?.['RefreshTokenCookieAuth'];
+
+		if (refreshTokenCookieAuthScheme && 'name' in refreshTokenCookieAuthScheme) {
+			refreshTokenCookieAuthScheme.name = env['REFRESH_TOKEN_COOKIE_NAME'] as string;
+		}
 
 		components.schemas = {};
 
@@ -365,9 +471,9 @@ class OASSpecsService implements SpecificationSubService {
 
 		const requiredSchemas = [...OAS_REQUIRED_SCHEMAS, ...tagSchemas];
 
-		for (const [name, schema] of Object.entries(spec.components?.schemas ?? {})) {
+		for (const [name, schema] of Object.entries(staticSpec.components?.schemas ?? {})) {
 			if (requiredSchemas.includes(name)) {
-				const collection = spec.tags?.find((tag) => tag.name === name)?.['x-collection'];
+				const collection = staticSpec.tags?.find((tag) => tag.name === name)?.['x-collection'];
 
 				components.schemas[name] = {
 					...cloneDeep(schema),
@@ -388,7 +494,7 @@ class OASSpecsService implements SpecificationSubService {
 			const fieldsInCollection = Object.values(collection.fields);
 
 			if (isSystem) {
-				const schemaComponent = cloneDeep(spec.components!.schemas![tag.name]) as SchemaObject;
+				const schemaComponent = cloneDeep(staticSpec.components!.schemas![tag.name]) as SchemaObject;
 
 				schemaComponent.properties = {};
 				schemaComponent['x-collection'] = collection.collection;
@@ -396,7 +502,7 @@ class OASSpecsService implements SpecificationSubService {
 				for (const field of fieldsInCollection) {
 					schemaComponent.properties[field.field] =
 						(cloneDeep(
-							(spec.components!.schemas![tag.name] as SchemaObject).properties![field.field],
+							(staticSpec.components!.schemas![tag.name] as SchemaObject).properties![field.field],
 						) as SchemaObject) || this.generateField(schema, collection.collection, field, tags);
 				}
 
@@ -430,7 +536,60 @@ class OASSpecsService implements SpecificationSubService {
 			}
 		}
 
+		// Resolve transitive schema-to-schema dependencies (e.g. Files → Folders/Users when
+		// the public role has no access to those collections), plus any schema referenced only
+		// from a generated path (not from another schema).
+		this.resolveSchemaRefs([paths, components.schemas], components.schemas);
+
+		components.schemas = Object.fromEntries(Object.entries(components.schemas).sort(([a], [b]) => a.localeCompare(b)));
+
 		return components;
+	}
+
+	/**
+	 * Recursively collects the names of every schema referenced via `$ref: '#/components/schemas/NAME'`
+	 * within the given node.
+	 */
+	private collectSchemaRefs(node: unknown, refs: Set<string> = new Set()): Set<string> {
+		if (Array.isArray(node)) {
+			for (const item of node) {
+				this.collectSchemaRefs(item, refs);
+			}
+		} else if (node && typeof node === 'object') {
+			for (const [key, value] of Object.entries(node as Record<string, unknown>)) {
+				if (key === '$ref' && typeof value === 'string' && value.startsWith('#/components/schemas/')) {
+					refs.add(value.slice('#/components/schemas/'.length));
+				} else {
+					this.collectSchemaRefs(value, refs);
+				}
+			}
+		}
+
+		return refs;
+	}
+
+	private resolveSchemaRefs(source: unknown, schemas: NonNullable<OpenAPIObject['components']>['schemas']): void {
+		const staticSchemas = staticSpec.components?.schemas ?? {};
+		const queue = [...this.collectSchemaRefs(source)];
+
+		while (queue.length > 0) {
+			const name = queue.shift()!;
+
+			if (name in schemas! || !(name in staticSchemas)) continue;
+
+			const schema = cloneDeep(staticSchemas[name]!);
+			schemas![name] = schema;
+
+			// The schema we just pulled in may itself reference further schemas transitively.
+			queue.push(...this.collectSchemaRefs(schema));
+		}
+	}
+
+	/** Prevents mergeWith from corrupting $refs and overwriting array items by index. */
+	private mergePathItemCustomizer(obj: unknown, src: unknown): unknown {
+		if (src !== null && typeof src === 'object' && !Array.isArray(src) && '$ref' in src) return src;
+		if (Array.isArray(obj)) return obj.concat(src);
+		return undefined;
 	}
 
 	private filterCollectionFromParams(

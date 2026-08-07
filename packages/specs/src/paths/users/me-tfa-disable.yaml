@@ -2,6 +2,7 @@ post:
   summary: Disable 2FA
   description: Disables two-factor authentication for the currently authenticated user.
   operationId: meTfaDisable
+  x-authentication: self
   responses:
     '204':
       $ref: '../../openapi.yaml#/components/responses/NoContentResponse'

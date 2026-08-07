@@ -4,8 +4,6 @@ get:
   operationId: getPreset
   summary: Retrieve a Preset
   description: Retrieve a single preset by unique identifier.
-  security:
-    - Auth: []
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
   responses:
@@ -102,8 +100,6 @@ delete:
   operationId: deletePreset
   summary: Delete a Preset
   description: Delete an existing preset.
-  security:
-    - Auth: []
   responses:
     '200':
       description: Successful request

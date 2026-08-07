@@ -1,4 +1,5 @@
 post:
+  security: []
   summary: Retrieve a Temporary Access Token
   description: Retrieve a Temporary Access Token
   tags:
