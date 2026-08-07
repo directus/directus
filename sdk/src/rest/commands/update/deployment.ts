@@ -1,6 +1,6 @@
 import type {
 	DirectusDeployment,
-	DirectusDeploymentCredentialsInput,
+	DirectusDeploymentCredentials,
 	DirectusDeploymentProject,
 } from '../../../schema/deployment.js';
 import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
@@ -26,7 +26,9 @@ export type UpdateDeploymentOutput<
 export const updateDeployment =
 	<Schema, const TQuery extends Query<Schema, DirectusDeployment<Schema>>>(
 		provider: string,
-		item: NestedPartial<Omit<DirectusDeployment<Schema>, 'credentials'>> & DirectusDeploymentCredentialsInput,
+		item: NestedPartial<Omit<DirectusDeployment<Schema>, 'credentials'>> & {
+			credentials?: DirectusDeploymentCredentials;
+		},
 		query?: TQuery,
 	): RestCommand<UpdateDeploymentOutput<Schema, TQuery>, Schema> =>
 	() => {

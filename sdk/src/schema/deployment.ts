@@ -25,9 +25,7 @@ export type DirectusDeployment<Schema = any> = MergeCoreCollection<
  * Credentials are redacted to `'**********'` on read, so create/update commands
  * override the field to accept the real, provider-specific credentials object.
  */
-export type DirectusDeploymentCredentialsInput = {
-	credentials?: Record<string, any>;
-};
+export type DirectusDeploymentCredentials = Record<string, any>;
 
 /**
  * Directus Deployment Project
