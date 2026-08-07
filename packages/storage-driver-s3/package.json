@@ -44,6 +44,7 @@
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "catalog:",
 		"@types/ms": "catalog:",
+		"@types/proxy-from-env": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",

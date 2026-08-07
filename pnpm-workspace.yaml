@@ -136,6 +136,7 @@ catalog:
   '@types/object-hash': 3.0.6
   '@types/papaparse': 5.5.0
   '@types/proxy-addr': 2.0.3
+  '@types/proxy-from-env': 1.0.4
   '@types/qrcode': 1.5.6
   '@types/qs': 6.14.0
   '@types/sanitize-html': 2.16.0
