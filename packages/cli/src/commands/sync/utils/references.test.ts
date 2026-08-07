@@ -105,7 +105,15 @@ describe('findSplitRelations', () => {
 			}),
 		);
 
-		expect(splits).toEqual([{ kind: 'relation', from: 'articles.author', detail: 'authors.articles' }]);
+		expect(splits).toEqual([
+			{
+				kind: 'relation',
+				from: 'articles.author',
+				fromCollection: 'articles',
+				relatedCollection: 'authors',
+				pairedField: 'authors.articles',
+			},
+		]);
 	});
 
 	it('flags a relational alias field with no relation behind it — the same tear from the other side', () => {
@@ -116,7 +124,7 @@ describe('findSplitRelations', () => {
 			}),
 		);
 
-		expect(splits).toEqual([{ kind: 'alias', from: 'authors.articles', detail: 'o2m' }]);
+		expect(splits).toEqual([{ kind: 'alias', from: 'authors.articles', special: 'o2m' }]);
 	});
 
 	it('stays quiet when both halves are present', () => {
@@ -183,7 +191,15 @@ describe('findSplitRelations', () => {
 			}),
 		);
 
-		expect(splits).toEqual([{ kind: 'relation', from: 'articles.owner', detail: 'directus_users.articles' }]);
+		expect(splits).toEqual([
+			{
+				kind: 'relation',
+				from: 'articles.owner',
+				fromCollection: 'articles',
+				relatedCollection: 'directus_users',
+				pairedField: 'directus_users.articles',
+			},
+		]);
 	});
 
 	it('flags an m2m alias whose junction is out of scope, since its relation rides in the junction file', () => {
@@ -194,7 +210,7 @@ describe('findSplitRelations', () => {
 			}),
 		);
 
-		expect(splits).toEqual([{ kind: 'alias', from: 'articles.tags', detail: 'm2m' }]);
+		expect(splits).toEqual([{ kind: 'alias', from: 'articles.tags', special: 'm2m' }]);
 	});
 
 	it('sorts output deterministically so warnings do not depend on snapshot entry order', () => {
@@ -228,14 +244,40 @@ describe('formatOutOfScopeReferences', () => {
 });
 
 describe('formatSplitRelations', () => {
-	it('leads with the consequence and names the missing half of each pair', () => {
+	it('shows the literal --collections fix when every missing half has a known home', () => {
 		const message = formatSplitRelations([
-			{ kind: 'relation', from: 'articles.author', detail: 'authors.articles' },
-			{ kind: 'alias', from: 'authors.articles', detail: 'o2m' },
+			{
+				kind: 'relation',
+				from: 'articles.author',
+				fromCollection: 'articles',
+				relatedCollection: 'authors',
+				pairedField: 'authors.articles',
+			},
+			{
+				kind: 'relation',
+				from: 'articles.tags',
+				fromCollection: 'articles',
+				relatedCollection: 'tags',
+				pairedField: 'tags.tagged',
+			},
 		]);
 
-		expect(message).toContain('one side of 2 relations without the other');
-		expect(message).toContain('articles.author (relation) — missing its paired field authors.articles');
-		expect(message).toContain('authors.articles (o2m field) — missing its relation');
+		expect(message).toContain(
+			'This sync is missing half of 2 relations. Pushing it leaves those relations broken on the target:',
+		);
+
+		expect(message).toContain('articles.author → authors: the corresponding field authors.articles is not in the sync');
+		expect(message).toContain('Fix: pull with --collections articles,authors,tags');
+	});
+
+	it('falls back to a full pull when an alias cannot name the file its relation lives in', () => {
+		const message = formatSplitRelations([{ kind: 'alias', from: 'authors.articles', special: 'o2m' }]);
+
+		expect(message).toContain(
+			'This sync is missing half of 1 relation. Pushing it leaves that relation broken on the target:',
+		);
+
+		expect(message).toContain('authors.articles (o2m): the relation that defines it is not in the sync');
+		expect(message).toContain('Fix: pull the full schema (drop --collections)');
 	});
 });
