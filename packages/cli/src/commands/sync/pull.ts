@@ -14,7 +14,12 @@ import { count, parseList } from '../../kernel/text.js';
 import { fetchFields, fetchRecords, fetchSnapshot, type FieldCatalogEntry, type SnapshotScope } from './utils/api.js';
 import { assertDataSource, type DataCollection, hasCommittedCollection, writeDataFiles } from './utils/data-store.js';
 import { normalizeInstanceUrl } from './utils/id-map.js';
-import { findOutOfScopeReferences, formatOutOfScopeReferences } from './utils/references.js';
+import {
+	findOutOfScopeReferences,
+	findSplitRelations,
+	formatOutOfScopeReferences,
+	formatSplitRelations,
+} from './utils/references.js';
 import { resolveTarget } from './utils/resolve-target.js';
 import {
 	resolveResources,
@@ -406,8 +411,13 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 	// Validate references against the stored set because scoped pulls preserve earlier artifacts.
 	if (snapshot !== null) {
-		const references = findOutOfScopeReferences(readSnapshotFiles(schemaDir));
+		const stored = readSnapshotFiles(schemaDir);
+
+		const references = findOutOfScopeReferences(stored);
 		if (references.length > 0) ctx.ui.warn(formatOutOfScopeReferences(references));
+
+		const splits = findSplitRelations(stored);
+		if (splits.length > 0) ctx.ui.warn(formatSplitRelations(splits));
 	}
 
 	const relativeDir = relative(ctx.cwd, schemaDir);

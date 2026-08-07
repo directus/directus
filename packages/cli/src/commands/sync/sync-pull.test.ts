@@ -372,6 +372,69 @@ describe('sync pull', () => {
 		expect(stderr.join('')).not.toContain('does not include');
 	});
 
+	it('warns when a scoped pull brings a new relation but leaves the paired field stale on disk', async () => {
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		const fullWithoutRelation = {
+			version: 1,
+			directus: '11.0.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'articles' }, { collection: 'authors' }],
+			fields: [
+				{ collection: 'articles', field: 'title', type: 'string' },
+				{ collection: 'authors', field: 'name', type: 'string' },
+			],
+			systemFields: [],
+			relations: [],
+		};
+
+		agent
+			.get(url)
+			.intercept({ path: '/schema/snapshot', method: 'GET', headers: { authorization: `Bearer ${token}` } })
+			.reply(200, { data: fullWithoutRelation }, { headers: { 'content-type': 'application/json' } });
+
+		interceptDefaultRecords();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
+		stderr.length = 0;
+
+		// The source has since gained articles.author with its corresponding o2m field on authors, but this
+		// pull only rewrites articles — the authors file on disk still predates the relation.
+		const scopedArticlesWithRelation = {
+			version: 2,
+			directus: '11.0.0',
+			vendor: 'postgres',
+			collections: [{ collection: 'articles' }],
+			fields: [
+				{ collection: 'articles', field: 'title', type: 'string' },
+				{ collection: 'articles', field: 'author', type: 'uuid' },
+			],
+			systemFields: [],
+			relations: [
+				{ collection: 'articles', field: 'author', related_collection: 'authors', meta: { one_field: 'articles' } },
+			],
+		};
+
+		agent
+			.get(url)
+			.intercept({
+				path: '/schema/snapshot',
+				method: 'GET',
+				query: { includeCollections: 'articles' },
+				headers: { authorization: `Bearer ${token}` },
+			})
+			.reply(200, { data: scopedArticlesWithRelation }, { headers: { 'content-type': 'application/json' } });
+
+		interceptDefaultRecords();
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--collections', 'articles')).toBe(0);
+
+		const err = stderr.join('');
+		expect(err).toContain('one side of 1 relation without the other');
+		expect(err).toContain('articles.author (relation) — missing its paired field authors.articles');
+	});
+
 	it('preserves out-of-scope siblings end to end when pulling a single collection', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);

@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import type { Snapshot } from './contract.js';
-import { findOutOfScopeReferences, formatOutOfScopeReferences } from './references.js';
+import {
+	findOutOfScopeReferences,
+	findSplitRelations,
+	formatOutOfScopeReferences,
+	formatSplitRelations,
+} from './references.js';
 
 function snapshot(overrides: Partial<Snapshot> = {}): Snapshot {
 	return {
@@ -85,6 +90,128 @@ describe('findOutOfScopeReferences', () => {
 	});
 });
 
+describe('findSplitRelations', () => {
+	it('flags a relation whose paired field is not in the snapshot, because the partner file is stale', () => {
+		const splits = findSplitRelations(
+			snapshot({
+				collections: [{ collection: 'articles' }, { collection: 'authors' }],
+				fields: [
+					{ collection: 'articles', field: 'author', type: 'uuid' },
+					{ collection: 'authors', field: 'name', type: 'string' },
+				],
+				relations: [
+					{ collection: 'articles', field: 'author', related_collection: 'authors', meta: { one_field: 'articles' } },
+				],
+			}),
+		);
+
+		expect(splits).toEqual([{ kind: 'relation', from: 'articles.author', detail: 'authors.articles' }]);
+	});
+
+	it('flags a relational alias field with no relation behind it — the same tear from the other side', () => {
+		const splits = findSplitRelations(
+			snapshot({
+				collections: [{ collection: 'authors' }],
+				fields: [{ collection: 'authors', field: 'articles', type: 'alias', meta: { special: ['o2m'] } }],
+			}),
+		);
+
+		expect(splits).toEqual([{ kind: 'alias', from: 'authors.articles', detail: 'o2m' }]);
+	});
+
+	it('stays quiet when both halves are present', () => {
+		const splits = findSplitRelations(
+			snapshot({
+				collections: [{ collection: 'articles' }, { collection: 'authors' }],
+				fields: [
+					{ collection: 'articles', field: 'author', type: 'uuid' },
+					{ collection: 'authors', field: 'articles', type: 'alias', meta: { special: ['o2m'] } },
+				],
+				relations: [
+					{ collection: 'articles', field: 'author', related_collection: 'authors', meta: { one_field: 'articles' } },
+				],
+			}),
+		);
+
+		expect(splits).toEqual([]);
+	});
+
+	it('ignores relations without a paired field and non-relational specials', () => {
+		const splits = findSplitRelations(
+			snapshot({
+				collections: [{ collection: 'articles' }, { collection: 'authors' }],
+				fields: [
+					{ collection: 'articles', field: 'author', type: 'uuid', meta: { special: ['m2o'] } },
+					{ collection: 'articles', field: 'divider', type: 'alias', meta: { special: ['alias', 'no-data'] } },
+				],
+				relations: [
+					{ collection: 'articles', field: 'author', related_collection: 'authors', meta: { one_field: null } },
+				],
+			}),
+		);
+
+		expect(splits).toEqual([]);
+	});
+
+	it('leaves a fully absent related collection to the out-of-scope warning', () => {
+		const splits = findSplitRelations(
+			snapshot({
+				collections: [{ collection: 'articles' }],
+				fields: [{ collection: 'articles', field: 'author', type: 'uuid' }],
+				relations: [
+					{ collection: 'articles', field: 'author', related_collection: 'authors', meta: { one_field: 'articles' } },
+				],
+			}),
+		);
+
+		expect(splits).toEqual([]);
+	});
+
+	it('checks pairs reaching into system collections, whose custom fields travel in the snapshot', () => {
+		const splits = findSplitRelations(
+			snapshot({
+				collections: [{ collection: 'articles' }],
+				fields: [{ collection: 'articles', field: 'owner', type: 'uuid' }],
+				relations: [
+					{
+						collection: 'articles',
+						field: 'owner',
+						related_collection: 'directus_users',
+						meta: { one_field: 'articles' },
+					},
+				],
+			}),
+		);
+
+		expect(splits).toEqual([{ kind: 'relation', from: 'articles.owner', detail: 'directus_users.articles' }]);
+	});
+
+	it('flags an m2m alias whose junction is out of scope, since its relation rides in the junction file', () => {
+		const splits = findSplitRelations(
+			snapshot({
+				collections: [{ collection: 'articles' }],
+				fields: [{ collection: 'articles', field: 'tags', type: 'alias', meta: { special: ['m2m'] } }],
+			}),
+		);
+
+		expect(splits).toEqual([{ kind: 'alias', from: 'articles.tags', detail: 'm2m' }]);
+	});
+
+	it('sorts output deterministically so warnings do not depend on snapshot entry order', () => {
+		const splits = findSplitRelations(
+			snapshot({
+				collections: [{ collection: 'zeta' }, { collection: 'alpha' }],
+				fields: [{ collection: 'zeta', field: 'items', type: 'alias', meta: { special: ['o2m'] } }],
+				relations: [
+					{ collection: 'alpha', field: 'parent', related_collection: 'zeta', meta: { one_field: 'children' } },
+				],
+			}),
+		);
+
+		expect(splits.map((split) => split.from)).toEqual(['alpha.parent', 'zeta.items']);
+	});
+});
+
 describe('formatOutOfScopeReferences', () => {
 	it('leads with the distinct missing-collection count and lists each pointing site', () => {
 		const message = formatOutOfScopeReferences([
@@ -97,5 +224,18 @@ describe('formatOutOfScopeReferences', () => {
 		expect(message).toContain('pages → website (group parent)');
 		expect(message).toContain('pages.author → authors (relation)');
 		expect(message).toContain('pages.blocks → gallery, hero (m2a)');
+	});
+});
+
+describe('formatSplitRelations', () => {
+	it('leads with the consequence and names the missing half of each pair', () => {
+		const message = formatSplitRelations([
+			{ kind: 'relation', from: 'articles.author', detail: 'authors.articles' },
+			{ kind: 'alias', from: 'authors.articles', detail: 'o2m' },
+		]);
+
+		expect(message).toContain('one side of 2 relations without the other');
+		expect(message).toContain('articles.author (relation) — missing its paired field authors.articles');
+		expect(message).toContain('authors.articles (o2m field) — missing its relation');
 	});
 });

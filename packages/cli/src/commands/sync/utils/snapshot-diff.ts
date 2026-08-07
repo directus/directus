@@ -5,7 +5,12 @@ import type { CliContext } from '../../../kernel/run.js';
 import { count } from '../../../kernel/text.js';
 import { fetchDiff } from './api.js';
 import type { DiffResult, SchemaDiff, Snapshot } from './contract.js';
-import { findOutOfScopeReferences, formatOutOfScopeReferences } from './references.js';
+import {
+	findOutOfScopeReferences,
+	findSplitRelations,
+	formatOutOfScopeReferences,
+	formatSplitRelations,
+} from './references.js';
 import type { Target } from './resolve-target.js';
 
 // A nested collection delete is misrouted as a whole collection drop by the server (#27877), while the
@@ -92,6 +97,9 @@ export async function fetchSnapshotDiff(
 	// A user may push scoped artifacts without having seen the corresponding pull warning.
 	const references = findOutOfScopeReferences(snapshot);
 	if (references.length > 0) ctx.ui.warn(formatOutOfScopeReferences(references));
+
+	const splits = findSplitRelations(snapshot);
+	if (splits.length > 0) ctx.ui.warn(formatSplitRelations(splits));
 
 	const result = await fetchDiff(target.credential, snapshot, mode, allowDrift).catch((error: unknown) => {
 		throw enrichDiffError(error, target.url);
