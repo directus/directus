@@ -446,6 +446,7 @@ functions:
   minute: Minut
   second: Secundă
   count: Numărătoare
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -712,6 +713,7 @@ operators:
   nintersects: Nu intersectează
   intersects_bbox: Intersectează caseta de încadrare
   nintersects_bbox: Nu intersectează caseta de încadrare
+  json: JSON
 loading: Se încarcă...
 drop_to_upload: Plasează pentru a încărca
 item: Element
@@ -850,12 +852,15 @@ wysiwyg_options:
   bullist: Listă punctată
   numlist: Listă numerotată
   hr: Linie orizontală
+  insertdatetime_date: Data
+  insertdatetime_time: Timp
   link: Adaugă/editează link
   unlink: Șterge link
   media: Adaugă/editează media
   image: Adaugă/editează imagine
   copy: Copiază
   cut: Taie
+  default: Implicit
   paste: Lipește
   heading: Titlu
   h1: Titlu 1
@@ -878,6 +883,8 @@ wysiwyg_options:
   source_code: Editează codul sursă
   fullscreen: Pe tot ecranul
   directionality: Direcționalitate
+  ltr: Stânga-dreapta
+  rtl: Dreapta-Stânga
 dropdown: Listă verticală
 choices: Opțiuni
 choices_option_configured_incorrectly: Opțiuni configurate incorect
@@ -1599,7 +1606,6 @@ interfaces:
     description: Un editor de text formatat care scrie conţinut HTML
     toolbar: Bară de instrumente
     custom_formats: Formate personalizate
-    options_override: Suprascriere opțiuni
     folder_note: Dosar pentru fișierele încărcate. Nu afectează fișierele existente.
     imageToken: Token acces static
     imageToken_label: Token-ul de acces static este adăugat la URL-ul obiectelor

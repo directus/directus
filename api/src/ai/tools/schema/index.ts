@@ -70,14 +70,35 @@ export const SchemaInputSchema = z.object({
 		),
 });
 
-export const schema = defineTool<z.infer<typeof SchemaValidateSchema>>({
+const LightweightOverviewOutputSchema = z.object({
+	collections: z.array(z.string()),
+	collection_folders: z.array(z.string()),
+	notes: z.record(z.string(), z.string()),
+});
+
+// Keys mode returns collection → field → overview maps. The per-field shape (see
+// fieldOverviewOutput above) stays loose here so the same structure isn't maintained twice.
+const SchemaOutputSchema = z.object({
+	data: z.union([
+		LightweightOverviewOutputSchema,
+		z.record(z.string(), z.record(z.string(), z.record(z.string(), z.unknown()))),
+	]),
+});
+
+export const schema = defineTool<z.infer<typeof SchemaValidateSchema>, z.infer<typeof SchemaOutputSchema>>({
 	name: 'schema',
-	description: requireText(resolve(__dirname, './prompt.md')),
+	description:
+		'Reads a compact Directus schema overview. Use first to discover collections, fields, relationships, and field semantics before reading or changing data.',
+	instructions: requireText(resolve(__dirname, './prompt.md')),
+	keywords: ['data model', 'collections', 'fields', 'relationships', 'structure', 'discovery'],
 	annotations: {
 		title: 'Directus - Schema',
 	},
 	inputSchema: SchemaInputSchema,
 	validateSchema: SchemaValidateSchema,
+	output: SchemaOutputSchema,
+	readOnly: true,
+	exposure: 'root',
 	async handler({ args, accountability, schema }) {
 		const serviceOptions = {
 			schema,

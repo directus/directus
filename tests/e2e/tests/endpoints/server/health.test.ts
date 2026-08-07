@@ -15,6 +15,29 @@ const dbMapped = {
 	mysql: 'mysql',
 }[database];
 
+/**
+ * The `*:responseTime` checks compare measured latency against a threshold, so a loaded runner
+ * legitimately reports `warn`. Only `error` signals an actual failure, so that's all we exclude.
+ */
+const healthStatus = expect.stringMatching(/^(ok|warn)$/);
+
+const latencyCheck = (componentType: string) => ({
+	componentType,
+	observedUnit: 'ms',
+	observedValue: expect.any(Number),
+	threshold: expect.any(Number),
+});
+
+const expectedChecks: Record<string, Record<string, unknown>> = {
+	'email:connection': { componentType: 'email' },
+	[`${dbMapped}:connectionsAvailable`]: { componentType: 'datastore', observedValue: expect.any(Number) },
+	[`${dbMapped}:connectionsUsed`]: { componentType: 'datastore', observedValue: expect.any(Number) },
+	[`${dbMapped}:responseTime`]: latencyCheck('datastore'),
+	'storage:local:responseTime': latencyCheck('objectstore'),
+	...(env.REDIS_ENABLED === 'true' ? { 'redis:responseTime': latencyCheck('cache') } : {}),
+	...(options.extras?.minio ? { 'storage:minio:responseTime': latencyCheck('objectstore') } : {}),
+};
+
 describe('health access', () => {
 	test('deny reading health as public user', async () => {
 		const userApi = createDirectus(`http://localhost:${port}`).with(rest()).with(graphql());
@@ -44,100 +67,38 @@ describe('health access', () => {
 		const userApi = createDirectus(`http://localhost:${port}`).with(rest()).with(graphql()).with(staticToken(token));
 
 		const restResult = await userApi.request(serverHealth());
-		const gqlResult = await userApi.query(`query { server_health }`, {}, 'system');
 
-		expect(restResult).toEqual({
-			status: 'ok',
-		});
+		const gqlResult = await userApi.query<{ server_health: Record<string, any> }>(
+			`query { server_health }`,
+			{},
+			'system',
+		);
 
-		expect(gqlResult).toEqual({
-			server_health: { status: 'ok' },
-		});
+		// `status` must be the only key: the rest of the payload leaks infrastructure details.
+		for (const result of [restResult, gqlResult.server_health]) {
+			expect(Object.keys(result)).toEqual(['status']);
+			expect(result).toEqual({ status: healthStatus });
+		}
 	});
 
 	test('full health information returned reading as admin', async () => {
-		const result = await api.request(serverHealth());
-		const gqlResult = await api.query(`query { server_health }`, {}, 'system');
+		const restResult = await api.request(serverHealth());
+		const gqlResult = await api.query<{ server_health: Record<string, any> }>(`query { server_health }`, {}, 'system');
 
-		expect(result).toEqual({
-			checks: {
-				'email:connection': [
-					{
-						componentType: 'email',
-						status: 'ok',
-					},
-				],
-				[`${dbMapped}:connectionsAvailable`]: [
-					{
-						componentType: 'datastore',
-						observedValue: expect.any(Number),
-						status: 'ok',
-					},
-				],
-				[`${dbMapped}:connectionsUsed`]: [
-					{
-						componentType: 'datastore',
-						observedValue: expect.any(Number),
-						status: 'ok',
-					},
-				],
-				[`${dbMapped}:responseTime`]: [
-					{
-						componentType: 'datastore',
-						observedUnit: 'ms',
-						observedValue: expect.any(Number),
-						status: 'ok',
-						threshold: 150,
-					},
-				],
-				'storage:local:responseTime': [
-					{
-						componentType: 'objectstore',
-						observedUnit: 'ms',
-						observedValue: expect.any(Number),
-						status: 'ok',
-						threshold: 750,
-					},
-				],
-				...(env.REDIS_ENABLED === 'true'
-					? {
-							'redis:responseTime': [
-								{
-									componentType: 'cache',
-									observedUnit: 'ms',
-									observedValue: expect.any(Number),
-									status: 'ok',
-									threshold: 150,
-								},
-							],
-						}
-					: {}),
-				...(options.extras?.minio
-					? {
-							'storage:minio:responseTime': [
-								{
-									componentType: 'objectstore',
-									observedUnit: 'ms',
-									observedValue: expect.any(Number),
-									status: 'ok',
-									threshold: 750,
-								},
-							],
-						}
-					: {}),
-			},
-			releaseId: expect.any(String),
-			serviceId: expect.any(String),
-			status: 'ok',
-		});
-
-		expect(gqlResult).toEqual({
-			server_health: {
+		for (const result of [restResult, gqlResult.server_health] as Record<string, any>[]) {
+			expect(result).toEqual({
 				checks: expect.any(Object),
 				releaseId: expect.any(String),
 				serviceId: expect.any(String),
-				status: 'ok',
-			},
-		});
+				status: healthStatus,
+			});
+
+			expect(Object.keys(result['checks']).sort()).toEqual(Object.keys(expectedChecks).sort());
+
+			for (const [name, expected] of Object.entries(expectedChecks)) {
+				// A failing check adds an `output` field and an `error` status, so this reports the cause.
+				expect(result['checks'][name], name).toEqual([{ ...expected, status: healthStatus }]);
+			}
+		}
 	});
 });

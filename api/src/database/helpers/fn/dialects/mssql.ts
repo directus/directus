@@ -1,5 +1,6 @@
 import { InvalidQueryError } from '@directus/errors';
 import type { Knex } from 'knex';
+import { convertToJsonPath } from '../json/convert-json-path.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -68,7 +69,7 @@ export class FnHelperMSSQL extends FnHelper {
 		}
 
 		// ".items[0].name" → "$.items[0].name"
-		const jsonPath = '$' + options?.jsonPath;
+		const jsonPath = convertToJsonPath(options.jsonPath);
 
 		// JSON_VALUE only returns scalar values (returns NULL for objects/arrays)
 		// JSON_QUERY only returns objects/arrays (returns NULL for scalars)
