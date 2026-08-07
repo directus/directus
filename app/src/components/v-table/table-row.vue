@@ -128,6 +128,7 @@ function onKeydown(e: KeyboardEvent) {
 
 	.drag-handle {
 		--v-icon-color: var(--theme--foreground-subdued);
+		touch-action: none;
 
 		&.sorted-manually {
 			--v-icon-color: var(--theme--foreground);
