@@ -11,7 +11,7 @@ export type DirectusUser<Schema = any> = MergeCoreCollection<
 	'directus_users',
 	{
 		id: string; // uuid
-		status: 'draft' | 'invited' | 'unverified' | 'active' | 'suspended' | 'archived' | 'inactive-license';
+		status: string;
 		first_name: string | null;
 		last_name: string | null;
 		email: string | null;
