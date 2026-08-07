@@ -154,7 +154,8 @@ export function mappingsFor(map: IdMap, sourceUrl: string, targetUrl: string): C
 }
 
 /**
- * Merge entries into one collection bucket without mutating the map. Empty entries preserve identity.
+ * Merge entries into one collection bucket without mutating the map. No-op merges — empty entries, or
+ * entries the bucket already holds — preserve identity, so callers can treat `!==` as "the map changed".
  */
 export function withMappings(
 	map: IdMap,
@@ -163,14 +164,14 @@ export function withMappings(
 	collection: string,
 	entries: Readonly<Record<string, string>>,
 ): IdMap {
-	if (Object.keys(entries).length === 0) return map;
-
 	const source = normalizeInstanceUrl(sourceUrl);
 	const target = normalizeInstanceUrl(targetUrl);
 
 	const targetMap = map.maps[source] ?? {};
 	const collectionMap = targetMap[target] ?? {};
 	const bucket = collectionMap[collection] ?? {};
+
+	if (Object.entries(entries).every(([sourceId, targetId]) => bucket[sourceId] === targetId)) return map;
 
 	const mergedBucket = { ...bucket, ...entries };
 

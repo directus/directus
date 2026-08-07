@@ -1322,7 +1322,7 @@ describe('sync push with data', () => {
 		});
 	});
 
-	it('writes a byte-identical ID map across two identical push runs', async () => {
+	it('leaves the ID map alone on a repeat push instead of claiming an update', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData(fullFixture());
@@ -1341,9 +1341,11 @@ describe('sync push with data', () => {
 		const first = readFileSync(idMapPath, 'utf8');
 
 		register();
+		const mark = stderr.length;
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
 		const second = readFileSync(idMapPath, 'utf8');
 
 		expect(second).toBe(first);
+		expect(stderr.slice(mark).join('')).not.toContain('ID map updated');
 	});
 });

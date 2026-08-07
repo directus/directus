@@ -108,6 +108,14 @@ describe('withMappings', () => {
 		expect(error.message).toContain('"t1"');
 	});
 
+	it('preserves map identity when every entry is already in the bucket', () => {
+		const base = withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { s1: 't1', s2: 't2' });
+
+		expect(withMappings(base, A, B, 'directus_roles', { s1: 't1' })).toBe(base);
+		expect(withMappings(base, A, B, 'directus_roles', {})).toBe(base);
+		expect(withMappings(base, A, B, 'directus_roles', { s1: 't9' })).not.toBe(base);
+	});
+
 	it('keeps source→target and target→source in separate buckets', () => {
 		const map = withMappings(
 			withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { x: 'forward' }),
