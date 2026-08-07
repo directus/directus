@@ -10,7 +10,7 @@ export type DirectusDeployment<Schema = any> = MergeCoreCollection<
 	{
 		id: string;
 		provider: 'vercel' | 'netlify';
-		credentials: '**********' | null;
+		credentials: Record<string, any>;
 		options: Record<string, any> | null;
 		webhook_ids: string[] | null;
 		webhook_secret: string | null;
@@ -20,12 +20,6 @@ export type DirectusDeployment<Schema = any> = MergeCoreCollection<
 		projects: DirectusDeploymentProject<Schema>[] | string[];
 	}
 >;
-
-/**
- * Credentials are redacted to `'**********'` on read, so create/update commands
- * override the field to accept the real, provider-specific credentials object.
- */
-export type DirectusDeploymentCredentials = Record<string, any>;
 
 /**
  * Directus Deployment Project

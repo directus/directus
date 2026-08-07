@@ -60,10 +60,10 @@ export type DirectusSettings<Schema = any> = MergeCoreCollection<
 		theme_light_overrides: Record<string, unknown> | null;
 		theme_dark_overrides: Record<string, unknown> | null;
 		project_id: string | null;
-		ai_openai_api_key: '**********' | null;
-		ai_anthropic_api_key: '**********' | null;
-		ai_google_api_key: '**********' | null;
-		ai_openai_compatible_api_key: '**********' | null;
+		ai_openai_api_key: string | null; // will be *'s
+		ai_anthropic_api_key: string | null; // will be *'s
+		ai_google_api_key: string | null; // will be *'s
+		ai_openai_compatible_api_key: string | null; // will be *'s
 		ai_openai_compatible_base_url: string | null;
 		ai_openai_compatible_name: string | null;
 		ai_openai_compatible_models: Record<string, any>[] | null;
