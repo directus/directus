@@ -2,6 +2,7 @@ import { createRequire } from 'node:module';
 import { useEnv } from '@directus/env';
 import type { Transporter } from 'nodemailer';
 import nodemailer from 'nodemailer';
+import type { Logger } from 'pino';
 import { useLogger } from './logger/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
@@ -67,9 +68,63 @@ export default function getMailer(): Transporter {
 				host: env['EMAIL_MAILGUN_HOST'] || 'api.mailgun.net',
 			}) as any,
 		);
+	} else if (transportName === 'mailtrap') {
+		transporter = createMailtrapTransport(env, logger);
 	} else {
 		logger.warn('Illegal transport given for email. Check the EMAIL_TRANSPORT env var.');
 	}
 
 	return transporter;
+}
+
+function createMailtrapTransport(env: Record<string, unknown>, logger: Logger): Transporter {
+	const { MailtrapTransport } = require('mailtrap') as typeof import('mailtrap');
+
+	const token = env['EMAIL_MAILTRAP_TOKEN'];
+
+	if (typeof token !== 'string' || token.trim() === '') {
+		throw new Error('A valid EMAIL_MAILTRAP_TOKEN environment variable is required');
+	}
+
+	const mailtrapOptions: import('mailtrap').MailtrapClientConfig = {
+		token,
+	};
+
+	const inboxId = env['EMAIL_MAILTRAP_INBOX_ID'];
+
+	if (typeof inboxId === 'number' && Number.isSafeInteger(inboxId) && inboxId > 0) {
+		mailtrapOptions.testInboxId = inboxId;
+	} else if (inboxId !== undefined) {
+		logger.warn('Illegal inbox ID given for email. Check the EMAIL_MAILTRAP_INBOX_ID env var.');
+	}
+
+	const sandbox = env['EMAIL_MAILTRAP_SANDBOX'];
+
+	if (sandbox === true) {
+		// Mailtrap validates this only when sending, so fail during startup instead.
+		if (mailtrapOptions.testInboxId === undefined) {
+			throw new Error(
+				`Sandbox mode requires a valid EMAIL_MAILTRAP_INBOX_ID environment variable, received: ${inboxId}`,
+			);
+		}
+
+		mailtrapOptions.sandbox = true;
+	} else if (sandbox !== undefined && sandbox !== false) {
+		logger.warn('Illegal sandbox flag given for email. Check the EMAIL_MAILTRAP_SANDBOX env var.');
+	}
+
+	const bulk = env['EMAIL_MAILTRAP_BULK'];
+
+	if (bulk === true) {
+		// Mailtrap rejects this combination when sending, not when building the client.
+		if (mailtrapOptions.sandbox === true) {
+			throw new Error('Bulk mode cannot be combined with sandbox mode for email');
+		}
+
+		mailtrapOptions.bulk = true;
+	} else if (bulk !== undefined && bulk !== false) {
+		logger.warn('Illegal bulk flag given for email. Check the EMAIL_MAILTRAP_BULK env var.');
+	}
+
+	return nodemailer.createTransport(MailtrapTransport(mailtrapOptions));
 }
