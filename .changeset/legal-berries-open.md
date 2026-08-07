@@ -5,4 +5,4 @@
 '@directus/sdk': patch
 ---
 
-Updated outdated type definitions for `directus_comments`, `directus_flows`, `directus_operations`, `directus_presets`, `directus_roles`, `directus_shares`, and `directus_versions`
+Updated outdated type definitions for `directus_comments`, `directus_flows`, `directus_operations`, `directus_presets`, `directus_roles`, and `directus_versions`
