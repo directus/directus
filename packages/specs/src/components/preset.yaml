@@ -1,5 +1,4 @@
 type: object
-required: [collection]
 properties:
   id:
     description: Unique identifier for this single collection preset.
@@ -41,6 +40,7 @@ properties:
     example: articles
     oneOf:
       - type: string
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Collections'
   search:
     description: Search query.

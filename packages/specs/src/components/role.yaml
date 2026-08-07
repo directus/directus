@@ -17,6 +17,7 @@ properties:
     description: Description of the role.
     example: Admins have access to all managed data within the system by default.
     type: string
+    nullable: true
   users:
     description: Users assigned to this role.
     type: array

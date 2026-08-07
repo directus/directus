@@ -40,6 +40,7 @@ properties:
   options:
     description: Options of the selected trigger for the flow.
     type: object
+    nullable: true
   accountability:
     description:
       The permission used during the flow. One of `all`, `activity`, or null (uses the triggering user's permissions).
@@ -59,6 +60,7 @@ properties:
     oneOf:
       - type: string
         format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Users'
   operation:
     description: The operation connected to the trigger in the flow.

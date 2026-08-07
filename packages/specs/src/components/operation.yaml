@@ -23,6 +23,7 @@ properties:
   options:
     description: Options depending on the type of the operation.
     type: object
+    nullable: true
   position_x:
     description: Position of the operation on the X axis within the flow workspace.
     type: integer
@@ -43,6 +44,7 @@ properties:
     oneOf:
       - type: string
         format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Users'
   resolve:
     description: The operation triggered when the current operation succeeds (or `then` logic of a condition operation).

@@ -28,6 +28,7 @@ properties:
   hash:
     description: Hash of the Content Version state, used to detect drift before save/promote.
     type: string
+    nullable: true
   date_created:
     description: When the Content Version was created.
     type: string
