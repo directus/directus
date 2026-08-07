@@ -15,7 +15,7 @@ export type DirectusSettings<Schema = any> = MergeCoreCollection<
 		report_bug_url: string | null;
 		report_feature_url: string | null;
 		default_language: string;
-		default_save_action: 'save-and-quit' | 'save-and-stay' | 'save-and-create-new';
+		default_save_action: 'save-and-quit' | 'save-and-stay' | 'save-and-create-new' | string;
 		project_color: string;
 		project_logo: DirectusFile<Schema> | string | null;
 		public_foreground: DirectusFile<Schema> | string | null;
@@ -29,7 +29,7 @@ export type DirectusSettings<Schema = any> = MergeCoreCollection<
 		visual_editor_urls: Array<{ url: string }> | null;
 		auth_login_attempts: number;
 		auth_password_policy: string | null;
-		storage_asset_transform: 'all' | 'none' | 'presets';
+		storage_asset_transform: 'all' | 'none' | 'presets' | string;
 		storage_asset_presets:
 			| {
 					fit: string;
@@ -49,12 +49,12 @@ export type DirectusSettings<Schema = any> = MergeCoreCollection<
 					tileSize?: number;
 					attribution?: string;
 					url?: string;
-					type?: 'raster' | 'tile' | 'style';
+					type?: 'raster' | 'tile' | 'style' | string;
 			  }[]
 			| null;
 		mapbox_key: string | null;
 		module_bar: 'json' | null;
-		default_appearance: 'auto' | 'light' | 'dark';
+		default_appearance: 'auto' | 'light' | 'dark' | string;
 		default_theme_light: string | null;
 		default_theme_dark: string | null;
 		theme_light_overrides: Record<string, unknown> | null;
@@ -88,7 +88,7 @@ export type DirectusSettings<Schema = any> = MergeCoreCollection<
 		license_token: string | null;
 		project_owner: string | null;
 		product_updates: boolean | null;
-		project_usage: 'personal' | 'commercial' | 'community' | null;
+		project_usage: 'personal' | 'commercial' | 'community' | string | null;
 		org_name: string | null;
 		project_status: string | null;
 	}
