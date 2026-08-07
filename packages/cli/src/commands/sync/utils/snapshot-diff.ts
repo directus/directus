@@ -71,6 +71,7 @@ export async function fetchSnapshotDiff(
 	target: Target,
 	snapshot: Snapshot,
 	mode: SchemaDiffMode,
+	command: 'diff' | 'push',
 	allowDrift: boolean,
 	ctx: CliContext,
 ): Promise<DiffResult | null> {
@@ -99,7 +100,7 @@ export async function fetchSnapshotDiff(
 	if (references.length > 0) ctx.ui.warn(formatOutOfScopeReferences(references));
 
 	const splits = findSplitRelations(snapshot);
-	if (splits.length > 0) ctx.ui.warn(formatSplitRelations(splits));
+	if (splits.length > 0) ctx.ui.warn(formatSplitRelations(splits, command));
 
 	const result = await fetchDiff(target.credential, snapshot, mode, allowDrift).catch((error: unknown) => {
 		throw enrichDiffError(error, target.url);

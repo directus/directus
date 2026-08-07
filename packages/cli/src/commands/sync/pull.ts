@@ -417,7 +417,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		if (references.length > 0) ctx.ui.warn(formatOutOfScopeReferences(references));
 
 		const splits = findSplitRelations(stored);
-		if (splits.length > 0) ctx.ui.warn(formatSplitRelations(splits));
+		if (splits.length > 0) ctx.ui.warn(formatSplitRelations(splits, 'pull'));
 	}
 
 	const relativeDir = relative(ctx.cwd, schemaDir);

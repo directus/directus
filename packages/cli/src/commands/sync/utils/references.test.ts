@@ -245,39 +245,42 @@ describe('formatOutOfScopeReferences', () => {
 
 describe('formatSplitRelations', () => {
 	it('shows the literal --collections fix when every missing half has a known home', () => {
-		const message = formatSplitRelations([
-			{
-				kind: 'relation',
-				from: 'articles.author',
-				fromCollection: 'articles',
-				relatedCollection: 'authors',
-				pairedField: 'authors.articles',
-			},
-			{
-				kind: 'relation',
-				from: 'articles.tags',
-				fromCollection: 'articles',
-				relatedCollection: 'tags',
-				pairedField: 'tags.tagged',
-			},
-		]);
-
-		expect(message).toContain(
-			'This sync is missing half of 2 relations. Pushing it leaves those relations broken on the target:',
+		const message = formatSplitRelations(
+			[
+				{
+					kind: 'relation',
+					from: 'articles.author',
+					fromCollection: 'articles',
+					relatedCollection: 'authors',
+					pairedField: 'authors.articles',
+				},
+				{
+					kind: 'relation',
+					from: 'articles.tags',
+					fromCollection: 'articles',
+					relatedCollection: 'tags',
+					pairedField: 'tags.tagged',
+				},
+			],
+			'pull',
 		);
 
-		expect(message).toContain('articles.author → authors: the corresponding field authors.articles is not in the sync');
-		expect(message).toContain('Fix: pull with --collections articles,authors,tags');
+		expect(message).toContain(
+			'This pull is missing half of 2 relations. Pushing may leave these relations broken on the target:',
+		);
+
+		expect(message).toContain('articles.author → authors: missing the corresponding field authors.articles');
+		expect(message).toContain('To include the relations: pull with --collections articles,authors,tags');
 	});
 
 	it('falls back to a full pull when an alias cannot name the file its relation lives in', () => {
-		const message = formatSplitRelations([{ kind: 'alias', from: 'authors.articles', special: 'o2m' }]);
+		const message = formatSplitRelations([{ kind: 'alias', from: 'authors.articles', special: 'o2m' }], 'push');
 
 		expect(message).toContain(
-			'This sync is missing half of 1 relation. Pushing it leaves that relation broken on the target:',
+			'This push is missing half of 1 relation. Pushing may leave this relation broken on the target:',
 		);
 
-		expect(message).toContain('authors.articles (o2m): the relation that defines it is not in the sync');
-		expect(message).toContain('Fix: pull the full schema (drop --collections)');
+		expect(message).toContain('authors.articles (o2m): missing the relation that defines it');
+		expect(message).toContain('To include the relation: pull the full schema (drop --collections)');
 	});
 });

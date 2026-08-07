@@ -118,6 +118,7 @@ export interface SchemaPlan {
  */
 export async function planSchema(
 	target: Target,
+	command: SyncCommand,
 	mode: SyncMode,
 	allowDrift: boolean,
 	ctx: CliContext,
@@ -139,7 +140,9 @@ export async function planSchema(
 	await refreshSessionIfNeeded(credential);
 
 	const result =
-		snapshot === null ? null : await fetchSnapshotDiff(target, snapshot, schemaDiffMode(mode), allowDrift, ctx);
+		snapshot === null
+			? null
+			: await fetchSnapshotDiff(target, snapshot, schemaDiffMode(mode), command, allowDrift, ctx);
 
 	const summary = summarizeDiff(result === null ? null : result.diff);
 

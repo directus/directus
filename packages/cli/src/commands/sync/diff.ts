@@ -74,7 +74,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	ctx.ui.info(`Comparing ${projectPath} with ${options.to} — ${url} (${describeMode(mode)})`);
 
-	const schema = await planSchema(target, mode, options.allowDrift ?? false, ctx);
+	const schema = await planSchema(target, 'diff', mode, options.allowDrift ?? false, ctx);
 
 	const preview = await previewData(target, mode);
 

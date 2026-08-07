@@ -187,22 +187,22 @@ export function formatOutOfScopeReferences(references: readonly OutOfScopeRefere
 
 function describeSplit(split: SplitRelation): string {
 	return split.kind === 'relation'
-		? `  ${split.from} → ${split.relatedCollection}: the corresponding field ${split.pairedField} is not in the sync`
-		: `  ${split.from} (${split.special}): the relation that defines it is not in the sync`;
+		? `  ${split.from} → ${split.relatedCollection}: missing the corresponding field ${split.pairedField}`
+		: `  ${split.from} (${split.special}): missing the relation that defines it`;
 }
 
 /**
  * Render split relation pairs the way a developer reads them: what is broken, then the exact argument
  * that fixes it. When every missing half has a known home the fix is a literal --collections value; an
- * alias's defining relation lives in a file the sync lacks, so only a full pull can restore it. Same
- * wording on pull and push — the fact ("half of this relation is not in the sync") holds in both.
+ * alias's defining relation lives in a file the sync lacks, so only a full pull can restore it. The
+ * subject names the command that ran the check, so the warning reads in the user's own context.
  */
-export function formatSplitRelations(splits: readonly SplitRelation[]): string {
+export function formatSplitRelations(splits: readonly SplitRelation[], subject: 'pull' | 'diff' | 'push'): string {
 	const one = splits.length === 1;
 
 	const lead =
-		`This sync is missing half of ${count(splits.length, 'relation')}. ` +
-		`Pushing it leaves ${one ? 'that relation' : 'those relations'} broken on the target:`;
+		`This ${subject} is missing half of ${count(splits.length, 'relation')}. ` +
+		`Pushing may leave ${one ? 'this relation' : 'these relations'} broken on the target:`;
 
 	const pair = [
 		...new Set(
@@ -210,9 +210,11 @@ export function formatSplitRelations(splits: readonly SplitRelation[]): string {
 		),
 	].sort(byCodepoint);
 
+	const include = `To include ${one ? 'the relation' : 'the relations'}`;
+
 	const fix = splits.every((split) => split.kind === 'relation')
-		? `  Fix: pull with --collections ${pair.join(',')}`
-		: '  Fix: pull the full schema (drop --collections)';
+		? `  ${include}: pull with --collections ${pair.join(',')}`
+		: `  ${include}: pull the full schema (drop --collections)`;
 
 	return [lead, ...splits.map(describeSplit), fix].join('\n');
 }

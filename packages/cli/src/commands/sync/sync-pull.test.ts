@@ -431,9 +431,13 @@ describe('sync pull', () => {
 		expect(await d6s('sync', 'pull', '--from', 'staging', '--collections', 'articles')).toBe(0);
 
 		const err = stderr.join('');
-		expect(err).toContain('This sync is missing half of 1 relation.');
-		expect(err).toContain('articles.author → authors: the corresponding field authors.articles is not in the sync');
-		expect(err).toContain('Fix: pull with --collections articles,authors');
+
+		expect(err).toContain(
+			'This pull is missing half of 1 relation. Pushing may leave this relation broken on the target:',
+		);
+
+		expect(err).toContain('articles.author → authors: missing the corresponding field authors.articles');
+		expect(err).toContain('To include the relation: pull with --collections articles,authors');
 	});
 
 	it('preserves out-of-scope siblings end to end when pulling a single collection', async () => {

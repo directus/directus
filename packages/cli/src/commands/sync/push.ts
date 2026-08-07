@@ -92,7 +92,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		if (committed !== undefined && committed.collections.length > 0) throw mirrorConsentRefusal(projectPath);
 	}
 
-	const schema = await planSchema(target, mode, options.allowDrift ?? false, ctx);
+	const schema = await planSchema(target, 'push', mode, options.allowDrift ?? false, ctx);
 
 	const dataResult = await prepareDataPush(target, mode, ctx);
 
