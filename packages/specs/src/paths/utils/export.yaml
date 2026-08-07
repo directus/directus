@@ -15,14 +15,16 @@ post:
         schema:
           properties:
             format:
-              description: What file format to save the export to. One of csv, csv_utf8, xml, json, yaml
+              description: What file format to save the export to.
               type: string
               enum: ['csv', 'csv_utf8', 'xml', 'json', 'yaml']
             query:
               $ref: '../../openapi.yaml#/components/schemas/Query'
             file:
-              $ref: '../../openapi.yaml#/components/schemas/Files'
-          required: ['format', 'query', 'file']
+              description: Optional file metadata to apply to the created file.
+              allOf:
+                - $ref: '../../openapi.yaml#/components/schemas/Files'
+          required: ['format', 'query']
   responses:
     '200':
       description: Successful request

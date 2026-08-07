@@ -1,6 +1,15 @@
-description: Cursor for use in pagination. Often used in combination with limit.
+description: >
+  An alternative to `offset`. Pages through results in `limit`-sized increments starting at page `1`. Overrides `offset`
+  if both are provided.
 in: query
 name: page
 required: false
 schema:
   type: integer
+  minimum: 0
+examples:
+  none:
+    summary: No page specified (default)
+  second:
+    summary: Second page
+    value: 2
