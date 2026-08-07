@@ -90,6 +90,18 @@ export function useRelationMultiple(
 		},
 	});
 
+	// Promoting a version commits its changes to the main item and then clears the version back
+	// to main. The item's primary key doesn't change, so the query/itemId/relation watchers below
+	// won't re-run and the related items would render stale until a manual reload (#27832). The
+	// fetch always reads the main item, so only the version -> main transition needs a refetch;
+	// switching between versions returns the same data and is left alone.
+	watch(version, (newVersion, oldVersion) => {
+		if (oldVersion !== null && newVersion === null) {
+			updateFetchedItems();
+			updateItemCount();
+		}
+	});
+
 	// Fetch new items when the value gets changed by the external "save and stay"
 	// We don't want to refresh when we ourself reset the value (when we have no more changes)
 	watch(value, (newValue, oldValue) => {
