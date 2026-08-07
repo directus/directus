@@ -49,7 +49,7 @@ export type DirectusSettings<Schema = any> = MergeCoreCollection<
 					tileSize?: number;
 					attribution?: string;
 					url?: string;
-					type?: string;
+					type?: 'raster' | 'tile' | 'style';
 			  }[]
 			| null;
 		mapbox_key: string | null;
