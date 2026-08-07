@@ -43,7 +43,7 @@ catalog:
   '@editorjs/raw': 2.5.1
   '@editorjs/table': 2.4.5
   '@editorjs/underline': 1.2.1
-  '@eslint/js': 9.39.1
+  '@eslint/js': 10.0.1
   '@fastify/type-provider-typebox': 6.1.0
   '@fortawesome/fontawesome-svg-core': 6.7.2
   '@fortawesome/free-brands-svg-icons': 6.7.2
@@ -111,7 +111,6 @@ catalog:
   '@types/content-disposition': 0.5.9
   '@types/cookie-parser': 1.4.10
   '@types/cors': 2.8.19
-  '@types/cron': 3.0.11
   '@types/deep-diff': 1.0.5
   '@types/diacritics': 1.3.3
   '@types/diff': 7.0.1
@@ -119,13 +118,11 @@ catalog:
   '@types/express': 4.17.21
   '@types/express-serve-static-core': 4.19.6
   '@types/file-saver': 2.0.7
-  '@types/find-process': 1.2.2
   '@types/fs-extra': 11.0.4
   '@types/geojson': 7946.0.16
   '@types/glob-to-regexp': 0.4.4
   '@types/inquirer': 9.0.9
   '@types/js-yaml': 4.0.9
-  '@types/json-schema': 7.0.15
   '@types/json2csv': 5.0.7
   '@types/jsonwebtoken': 9.0.10
   '@types/lodash': 4.17.20
@@ -153,7 +150,6 @@ catalog:
   '@vitejs/plugin-vue': 6.0.1
   '@vitest/coverage-v8': 3.2.6
   '@vitest/ui': 3.2.6
-  '@vue/compiler-dom': 3.5.25
   '@vue/test-utils': 2.4.6
   '@vueuse/core': 14.0.0
   '@vueuse/integrations': 14.0.0
@@ -189,8 +185,6 @@ catalog:
   date-fns-tz: 3.2.0
   decamelize: 6.0.1
   deep-diff: 1.0.2
-  destroy: 1.2.0
-  detect-port: 2.1.0
   diacritics: 1.3.0
   diff: 7.0.0
   dompurify: 3.3.2
@@ -198,21 +192,18 @@ catalog:
   editorjs-toggle-block: 0.3.16
   encodeurl: 2.0.0
   esbuild: 0.28.1
-  esbuild-plugin-replace: 1.4.0
   escape-string-regexp: 5.0.0
-  eslint: 9.39.1
+  eslint: 10.8.0
   eslint-config-prettier: 10.1.8
-  eslint-plugin-import: 2.32.0
-  eslint-plugin-vue: 10.5.1
+  eslint-plugin-import-x: 4.17.1
+  eslint-plugin-vue: 10.10.0
   eventemitter2: 6.4.9
   execa: 9.6.0
   exif-reader: 2.0.2
   express: 4.21.2
   fastify: 5.8.5
-  fastify-type-provider-zod: 6.1.0
   file-saver: 2.0.5
   find-cache-directory: 6.0.0
-  find-process: 2.0.0
   flat: 6.0.1
   focus-trap: 7.6.6
   form-data: 4.0.6
@@ -241,7 +232,6 @@ catalog:
   json-to-graphql-query: 2.3.0
   json2csv: 5.0.7
   jsonlint-mod: 1.7.6
-  jsonschema: 1.5.0
   jsonwebtoken: 9.0.3
   keyv: 5.5.3
   knex: 3.1.0
@@ -253,7 +243,6 @@ catalog:
   lodash-es: 4.18.1
   log-symbols: 7.0.1
   lru-cache: 11.2.2
-  mapbox-gl: 1.13.3
   maplibre-gl: 1.15.3
   marked: 16.4.1
   micromustache: 8.0.3
@@ -263,7 +252,6 @@ catalog:
   mitt: 3.0.1
   mnemonist: 0.40.3
   ms: 2.1.3
-  mysql: 2.18.1
   mysql2: 3.15.3
   nanoid: 5.1.6
   node-machine-id: 1.1.12
@@ -281,7 +269,6 @@ catalog:
   p-queue: 8.1.0
   papaparse: 5.5.3
   pg: 8.16.3
-  pid-port: 1.0.2
   pinia: 2.3.1
   pino: 9.7.0
   pino-http: 10.5.0
@@ -295,13 +282,11 @@ catalog:
   qrcode: 1.5.4
   qs: 6.14.2
   rate-limiter-flexible: 7.2.0
-  redlock: 5.0.0-beta.2
   reka-ui: 2.8.2
   rimraf: 6.1.0
   rolldown: 1.0.0-beta.31
   rollup: 4.59.0
   rollup-plugin-esbuild: 6.2.1
-  rollup-plugin-node-externals: 8.1.2
   rollup-plugin-styler: 2.0.0
   samlify: 2.13.1
   sanitize-filename: 1.6.3
@@ -309,7 +294,6 @@ catalog:
   sass-embedded: 1.93.3
   semver: 7.7.3
   sharp: 0.35.3
-  signal-polyfill: 0.2.2
   snappy: 7.3.3
   sqlite3: 5.1.7
   stream-json: 1.9.1
@@ -332,7 +316,7 @@ catalog:
   typedoc: 0.28.19
   typedoc-plugin-markdown: 4.8.1
   typescript: 5.9.3
-  typescript-eslint: 8.46.4
+  typescript-eslint: 8.66.0
   undici: 7.28.0
   universal-cookie: 8.0.1
   unplugin-vue: 7.2.0
@@ -340,11 +324,11 @@ catalog:
   update-check: 1.5.4
   uuid: 11.1.0
   vite: 8.1.2
-  vite-plugin-dts: 4.5.4
   vite-plugin-vue-devtools: 7.7.2
   vite-tsconfig-paths: 5.1.4
   vitest: 3.2.7
   vue: 3.5.24
+  vue-eslint-parser: 10.4.1
   vue-i18n: 11.1.12
   vue-router: 4.6.3
   vue-tsc: 3.1.8
