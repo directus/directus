@@ -86,8 +86,9 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 			}
 
 			const metadata = await extractMetadata(targetFile.storage, { ...targetFile, ...uploadFields });
+			const uploadedOn = new Date().toISOString();
 
-			await service.updateOne(targetId, { ...uploadFields, ...metadata });
+			await service.updateOne(targetId, { ...uploadFields, ...metadata, uploaded_on: uploadedOn });
 
 			// Remove the tmp db record created for replacement
 			if (isReplacement) {
@@ -95,7 +96,7 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 			}
 
 			// Reconstruct full data for event payload
-			const fileData = { ...targetFile, ...uploadFields, ...metadata, id: targetId };
+			const fileData = { ...targetFile, ...uploadFields, ...metadata, uploaded_on: uploadedOn, id: targetId };
 
 			emitter.emitAction(
 				'files.upload',
@@ -121,6 +122,8 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 			if (isDirectusError(err)) {
 				return { status_code: err.status, body: err.message + '\n' };
 			}
+
+			return undefined;
 		},
 		generateUrl(_req, opts) {
 			return env['PUBLIC_URL'] + '/files/tus/' + opts.id;
