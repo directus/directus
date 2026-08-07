@@ -11,7 +11,7 @@ export type DirectusUser<Schema = any> = MergeCoreCollection<
 	'directus_users',
 	{
 		id: string; // uuid
-		status: string;
+		status: 'draft' | 'invited' | 'unverified' | 'active' | 'suspended' | 'archived' | 'inactive-license' | string;
 		first_name: string | null;
 		last_name: string | null;
 		email: string | null;
@@ -23,7 +23,7 @@ export type DirectusUser<Schema = any> = MergeCoreCollection<
 		tfa_secret: string | null;
 		auth_data: Record<string, any> | null;
 		provider: string;
-		appearance: 'auto' | 'dark' | 'light' | null;
+		appearance: 'auto' | 'dark' | 'light' | string | null;
 		theme_light: string | null;
 		theme_dark: string | null;
 		theme_light_overrides: Record<string, unknown> | null;
@@ -31,7 +31,7 @@ export type DirectusUser<Schema = any> = MergeCoreCollection<
 		role: DirectusRole<Schema> | string | null;
 		policies: string[] | DirectusAccess<Schema>[];
 		language: string | null;
-		text_direction: 'ltr' | 'rtl' | 'auto';
+		text_direction: 'ltr' | 'rtl' | 'auto' | string;
 		avatar: DirectusFile<Schema> | string | null;
 		title: string | null;
 		description: string | null;
