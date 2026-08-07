@@ -5,5 +5,4 @@
 '@directus/sdk': patch
 ---
 
-Fixed nullability of `operation.options`, `preset.collection`, and `version.hash` to match the database schema, and
-updated their consumers to handle `null` correctly.
+Updated outdated type definitions for `directus_comments`, `directus_flows`, `directus_operations`, `directus_presets`, `directus_roles`, `directus_shares`, and `directus_versions`
