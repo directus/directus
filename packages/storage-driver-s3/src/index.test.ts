@@ -30,6 +30,8 @@ import {
 	randWord,
 } from '@ngneat/falso';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
+import { HttpProxyAgent } from 'http-proxy-agent';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverS3Config } from './index.js';
 import { DriverS3 } from './index.js';
@@ -39,6 +41,8 @@ vi.mock('@directus/utils');
 vi.mock('@aws-sdk/client-s3');
 vi.mock('@aws-sdk/lib-storage');
 vi.mock('node:path');
+vi.mock('http-proxy-agent');
+vi.mock('https-proxy-agent');
 
 let sample: {
 	config: DriverS3Config & Required<Pick<DriverS3Config, 'key' | 'secret' | 'root' | 'region' | 'forcePathStyle'>>;
@@ -290,6 +294,56 @@ describe('#getClient', () => {
 			},
 			requestHandler: expect.any(NodeHttpHandler),
 		});
+	});
+});
+
+describe('#getClient proxy support', () => {
+	const ORIGINAL_ENV = process.env;
+
+	beforeEach(() => {
+		process.env = { ...ORIGINAL_ENV };
+		delete process.env['HTTP_PROXY'];
+		delete process.env['HTTPS_PROXY'];
+		delete process.env['NO_PROXY'];
+		delete process.env['http_proxy'];
+		delete process.env['https_proxy'];
+		delete process.env['no_proxy'];
+	});
+
+	afterEach(() => {
+		process.env = ORIGINAL_ENV;
+	});
+
+	test('Uses plain http(s) agents when no proxy env vars are set', () => {
+		new DriverS3({ bucket: 'bucket' });
+
+		expect(HttpsProxyAgent).not.toHaveBeenCalled();
+		expect(HttpProxyAgent).not.toHaveBeenCalled();
+	});
+
+	test('Uses HttpsProxyAgent for an https endpoint when HTTPS_PROXY is set', () => {
+		process.env['HTTPS_PROXY'] = 'http://proxy.example.com:8080';
+
+		new DriverS3({ bucket: 'bucket', region: 'us-east-1' });
+
+		expect(HttpsProxyAgent).toHaveBeenCalledWith('http://proxy.example.com:8080');
+	});
+
+	test('Uses HttpProxyAgent for a plain http endpoint when HTTP_PROXY is set', () => {
+		process.env['HTTP_PROXY'] = 'http://proxy.example.com:8080';
+
+		new DriverS3({ bucket: 'bucket', endpoint: 'http://minio.local:9000' });
+
+		expect(HttpProxyAgent).toHaveBeenCalledWith('http://proxy.example.com:8080');
+	});
+
+	test('Does not proxy an endpoint covered by NO_PROXY', () => {
+		process.env['HTTPS_PROXY'] = 'http://proxy.example.com:8080';
+		process.env['NO_PROXY'] = 'minio.local';
+
+		new DriverS3({ bucket: 'bucket', endpoint: 'https://minio.local:9000' });
+
+		expect(HttpsProxyAgent).not.toHaveBeenCalled();
 	});
 });
 

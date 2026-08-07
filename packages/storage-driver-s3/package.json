@@ -34,13 +34,17 @@
 		"@shopify/semaphore": "catalog:",
 		"@smithy/node-http-handler": "catalog:",
 		"@tus/utils": "catalog:",
-		"ms": "catalog:"
+		"http-proxy-agent": "catalog:",
+		"https-proxy-agent": "catalog:",
+		"ms": "catalog:",
+		"proxy-from-env": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "catalog:",
 		"@types/ms": "catalog:",
+		"@types/proxy-from-env": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
