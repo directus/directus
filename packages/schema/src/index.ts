@@ -28,6 +28,8 @@ export const createInspector = (knex: Knex): SchemaInspector => {
 			constructor = CockroachDBSchemaInspector;
 			break;
 		case 'Client_SQLite3':
+		case 'Client_BetterSQLite3':
+		case 'DirectusBetterSQLite3':
 			constructor = SqliteSchemaInspector;
 			break;
 		case 'Client_Oracledb':

@@ -163,6 +163,7 @@ catalog:
   axios: 1.18.1
   axios-cache-interceptor: 1.11.1
   base-64: 1.0.0
+  better-sqlite3: 13.0.2
   boxen: 8.0.1
   busboy: 1.6.0
   bytes: 3.1.2
@@ -295,7 +296,6 @@ catalog:
   semver: 7.7.3
   sharp: 0.35.3
   snappy: 7.3.3
-  sqlite3: 5.1.7
   stream-json: 1.9.1
   string-width: 7.2.0
   strip-ansi: 7.1.2
@@ -351,5 +351,5 @@ onlyBuiltDependencies:
   - isolated-vm
   - oracledb
   - sharp
-  - sqlite3
+  - better-sqlite3
   - vue-demi

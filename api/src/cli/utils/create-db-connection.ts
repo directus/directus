@@ -4,6 +4,7 @@ import path from 'path';
 import type { Driver } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
+import { getClientBetterSQLite3 } from '../../database/clients/better-sqlite3.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -53,8 +54,8 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 	}
 
 	const knexConfig: Knex.Config = {
-		client: client,
-		connection: connection,
+		client,
+		connection,
 		seeds: {
 			extension: 'js',
 			directory: path.resolve(__dirname, '../../database/seeds/'),
@@ -64,6 +65,8 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 
 	if (client === 'sqlite3') {
 		knexConfig.useNullAsDefault = true;
+		knexConfig.compileSqlOnError = false;
+		knexConfig.client = getClientBetterSQLite3();
 	}
 
 	if (client === 'cockroachdb') {
@@ -75,6 +78,5 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 		};
 	}
 
-	const db = knex.default(knexConfig);
-	return db;
+	return knex.default(knexConfig);
 }

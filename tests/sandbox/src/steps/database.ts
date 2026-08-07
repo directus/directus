@@ -47,11 +47,12 @@ export function createDatabase(env: Env, logger: Logger): Knex {
 
 	if (client === 'sqlite3') {
 		knexConfig.useNullAsDefault = true;
+		knexConfig.client = 'better-sqlite3';
 
 		poolConfig.afterCreate = (conn: any, callback: any) => {
 			logger.info('Enabling SQLite Foreign Keys support...');
 
-			conn.run('PRAGMA foreign_keys = ON');
+			conn.pragma('foreign_keys = ON');
 
 			callback(null, conn);
 		};
