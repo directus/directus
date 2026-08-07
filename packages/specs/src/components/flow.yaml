@@ -67,8 +67,8 @@ properties:
     oneOf:
       - type: string
         format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Operations'
-    nullable: true
   operations:
     description: Operations that belong to this flow (o2m relation via `directus_operations.flow`).
     type: array
