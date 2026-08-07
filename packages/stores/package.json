@@ -24,9 +24,6 @@
 		"build": "tsdown src/index.ts --dts",
 		"dev": "tsdown src/index.ts --dts --watch"
 	},
-	"dependencies": {
-		"@vueuse/core": "catalog:"
-	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"pinia": "catalog:",

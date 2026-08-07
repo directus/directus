@@ -397,10 +397,10 @@ const menuActive = computed(() => imageDialogOpen.value);
 				mandatory
 				@update:model-value="([value]: ['editor' | 'preview']) => (view = value)"
 			>
-				<VButton x-small value="editor" :disabled="disabled && !nonEditable" :class="[{ active: view !== 'preview' }]">
+				<VButton x-small value="editor" :disabled="disabled && !nonEditable" :active="view !== 'preview'">
 					{{ $t('interfaces.input-rich-text-md.edit') }}
 				</VButton>
-				<VButton x-small value="preview" :disabled="disabled && !nonEditable" :class="[{ active: view === 'preview' }]">
+				<VButton x-small value="preview" :disabled="disabled && !nonEditable" :active="view === 'preview'">
 					{{ $t('interfaces.input-rich-text-md.preview') }}
 				</VButton>
 			</VItemGroup>

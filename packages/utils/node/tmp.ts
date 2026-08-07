@@ -16,10 +16,12 @@ async function createTmpDirectory() {
 	};
 }
 
-export async function createTmpFile(): Promise<{
+export interface TmpFile {
 	path: string;
 	cleanup: () => Promise<void>;
-}> {
+}
+
+export async function createTmpFile(): Promise<TmpFile> {
 	const dir = await createTmpDirectory();
 	const filename = createHash('sha1').update(new Date().toString()).digest('hex').substring(0, 8);
 	const path = join(dir.path, filename);

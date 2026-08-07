@@ -669,3 +669,124 @@ test('parse fields distinguishes json function from relational fields', async ()
 
 	expect(result[2]?.type).toBe('m2o');
 });
+
+const schemaM2A = new SchemaBuilder()
+	.collection('blog', (c) => {
+		c.field('id').id();
+		c.field('blocks').m2a(['text']);
+	})
+	.collection('text', (c) => {
+		c.field('id').id();
+		c.field('author').m2o('users');
+	})
+	.collection('users', (c) => {
+		c.field('id').id();
+		c.field('name').string();
+	})
+	.build();
+
+test('parse fields with an aliased m2o nested inside an m2a block (#27772)', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const result = await parseFields(
+		{
+			accountability,
+			parentCollection: 'blog_builder',
+			fields: ['item:text.a.name'],
+			query: { alias: {} },
+			deep: { 'item:text': { _alias: { a: 'author' } } },
+		},
+		{ knex: db, schema: schemaM2A },
+	);
+
+	expect(result).toEqual([
+		{
+			type: 'a2o',
+			names: ['text'],
+			children: {
+				text: [
+					{
+						type: 'm2o',
+						name: 'users',
+						fieldKey: 'a',
+						parentKey: 'id',
+						relatedKey: 'id',
+						relation: getRelation(schemaM2A.relations, 'text', 'author'),
+						query: {},
+						children: [
+							{
+								type: 'field',
+								name: 'name',
+								fieldKey: 'name',
+								whenCase: [],
+								alias: false,
+							},
+						],
+						cases: [],
+						whenCase: [],
+					},
+				],
+			},
+			query: { text: { alias: { a: 'author' } } },
+			relatedKey: { text: 'id' },
+			parentKey: 'id',
+			fieldKey: 'item',
+			relation: getRelation(schemaM2A.relations, 'blog_builder', 'item'),
+			cases: {},
+			whenCase: [],
+		},
+	]);
+});
+
+test('parse fields with a non-aliased m2o nested inside an m2a block', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const result = await parseFields(
+		{
+			accountability,
+			parentCollection: 'blog_builder',
+			fields: ['item:text.author.name'],
+			query: { alias: {} },
+			deep: {},
+		},
+		{ knex: db, schema: schemaM2A },
+	);
+
+	expect(result).toEqual([
+		{
+			type: 'a2o',
+			names: ['text'],
+			children: {
+				text: [
+					{
+						type: 'm2o',
+						name: 'users',
+						fieldKey: 'author',
+						parentKey: 'id',
+						relatedKey: 'id',
+						relation: getRelation(schemaM2A.relations, 'text', 'author'),
+						query: {},
+						children: [
+							{
+								type: 'field',
+								name: 'name',
+								fieldKey: 'name',
+								whenCase: [],
+								alias: false,
+							},
+						],
+						cases: [],
+						whenCase: [],
+					},
+				],
+			},
+			query: { text: {} },
+			relatedKey: { text: 'id' },
+			parentKey: 'id',
+			fieldKey: 'item',
+			relation: getRelation(schemaM2A.relations, 'blog_builder', 'item'),
+			cases: {},
+			whenCase: [],
+		},
+	]);
+});
