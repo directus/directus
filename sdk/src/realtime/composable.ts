@@ -7,6 +7,7 @@ import { pong } from './commands/pong.js';
 import type {
 	ConnectionState,
 	ReconnectState,
+	RemoveEventHandler,
 	SubscribeOptions,
 	SubscriptionEvents,
 	SubscriptionOutput,
@@ -18,6 +19,7 @@ import type {
 } from './types.js';
 import { generateUid } from './utils/generate-uid.js';
 import { messageCallback } from './utils/message-callback.js';
+import { createMessageQueue, MAX_QUEUED_MESSAGES } from './utils/message-queue.js';
 
 type AuthWSClient<Schema> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
 
@@ -92,25 +94,28 @@ export function realtime(config: WebSocketConfig = {}) {
 			return await withStrictAuth(newUrl, currentClient);
 		};
 
-		const reconnect = (self: WebSocketClient<Schema>) => {
+		/**
+		 * Schedules a reconnection attempt. Called for every closed connection, including the ones a
+		 * previous attempt opened, which is what makes the retries a chain.
+		 *
+		 * @returns Whether an attempt was scheduled. When this is false the connection is not coming
+		 * back on its own, and `reconnectState.active` settles to false once the last attempt is done.
+		 */
+		const reconnect = (self: WebSocketClient<Schema>): boolean => {
+			if (!config.reconnect || wasManuallyDisconnected) return false;
+
+			if (reconnectState.attempts >= config.reconnect.retries) {
+				debug('info', `reconnect #${reconnectState.attempts} maximum retries reached`);
+
+				// reset so a later disconnect gets a fresh set of attempts
+				reconnectState.attempts = 0;
+				return false;
+			}
+
+			const delay = Math.max(100, config.reconnect.delay);
+			debug('info', `reconnect #${reconnectState.attempts} trying again in ${delay}ms`);
+
 			const reconnectPromise = new Promise<WebSocketInterface>((resolve, reject) => {
-				if (!config.reconnect || wasManuallyDisconnected) return reject();
-
-				debug(
-					'info',
-					`reconnect #${reconnectState.attempts} ` +
-						(reconnectState.attempts >= config.reconnect.retries
-							? 'maximum retries reached'
-							: `trying again in ${Math.max(100, config.reconnect.delay)}ms`),
-				);
-
-				if (reconnectState.active) return reconnectState.active;
-
-				if (reconnectState.attempts >= config.reconnect.retries) {
-					reconnectState.attempts = -1;
-					return reject();
-				}
-
 				setTimeout(
 					() =>
 						self
@@ -125,17 +130,23 @@ export function realtime(config: WebSocketConfig = {}) {
 							})
 							.then(resolve)
 							.catch(reject),
-					Math.max(100, config.reconnect.delay),
+					delay,
 				);
 			});
 
 			reconnectState.attempts += 1;
 
-			reconnectState.active = reconnectPromise
+			// A failed attempt closes its own connection, which schedules the next one before this
+			// promise settles, so only clear the state if this is still the pending attempt.
+			const attempt: Promise<WebSocketInterface | void> = reconnectPromise
 				.catch(() => {})
 				.finally(() => {
-					reconnectState.active = false;
+					if (reconnectState.active === attempt) reconnectState.active = false;
 				});
+
+			reconnectState.active = attempt;
+
+			return true;
 		};
 
 		const eventHandlers: Record<WebSocketEvents, Set<WebSocketEventHandler>> = {
@@ -198,32 +209,57 @@ export function realtime(config: WebSocketConfig = {}) {
 			}
 		}
 
-		const handleMessages = async (currentClient: AuthWSClient<Schema>) => {
-			while (state.code === 'open') {
-				const message = await messageCallback(state.connection).catch(() => {
+		const handleMessages = async (currentClient: AuthWSClient<Schema>, connection: WebSocketInterface) => {
+			// A single listener for the lifetime of the connection: a socket can drain several frames
+			// from one read, and re-registering per message would drop everything but the first.
+			const queue = createMessageQueue<Record<string, any> | MessageEvent<string>>({
+				onDrop: (dropped) => {
+					debug('warn', `Incoming messages are not being handled fast enough, dropped ${dropped} message(s).`);
+				},
+			});
+
+			const receive = (event: MessageEvent<string>) => {
+				try {
+					const message = JSON.parse(event.data);
+
 					/* ignore invalid messages */
-				});
+					if (typeof message !== 'object' || message === null || Array.isArray(message)) return;
 
-				if (!message) continue;
-
-				if (isAuthError(message)) {
-					await handleAuthError(message, currentClient);
-					state.firstMessage = false;
-					continue;
+					queue.push(message);
+				} catch {
+					// pass the original event on to allow customization
+					queue.push(event);
 				}
+			};
 
-				if (config.heartbeat && message['type'] === 'ping') {
-					if (state.code !== 'open') continue;
-					state.connection.send(pong());
-					state.firstMessage = false;
-					continue;
+			const stop = () => queue.end();
+
+			connection.addEventListener('message', receive);
+			connection.addEventListener('close', stop);
+			connection.addEventListener('error', stop);
+
+			try {
+				for await (const message of queue.stream()) {
+					try {
+						if (isAuthError(message)) {
+							await handleAuthError(message, currentClient);
+							continue;
+						}
+
+						if (config.heartbeat && message['type'] === 'ping') {
+							if (state.code === 'open') state.connection.send(pong());
+							continue;
+						}
+
+						eventHandlers['message'].forEach((handler) => handler.call(connection, message));
+					} finally {
+						if (state.code === 'open') state.firstMessage = false;
+					}
 				}
-
-				eventHandlers['message'].forEach((handler) => {
-					if (state.code === 'open') handler.call(state.connection, message);
-				});
-
-				state.firstMessage = false;
+			} finally {
+				connection.removeEventListener('message', receive);
+				connection.removeEventListener('close', stop);
+				connection.removeEventListener('error', stop);
 			}
 		};
 
@@ -299,7 +335,7 @@ export function realtime(config: WebSocketConfig = {}) {
 					reconnectState.attempts = 0;
 					reconnectState.active = false;
 					clearTimeout(connectTimeout);
-					handleMessages(self);
+					handleMessages(self, ws);
 
 					if (config.authMode === 'handshake' && hasAuth(self)) {
 						const access_token = await self.getToken();
@@ -347,10 +383,12 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				ws.addEventListener('close', (evt: CloseEvent) => {
 					debug('info', `Connection closed.`);
-					eventHandlers['close'].forEach((handler) => handler.call(ws, evt));
 					uid = generateUid();
 					state = { code: 'closed' };
+					// decide before notifying the handlers, so they can tell whether the connection is coming
+					// back by looking at reconnectState.active instead of working it out for themselves
 					reconnect(this);
+					eventHandlers['close'].forEach((handler) => handler.call(ws, evt));
 					if (!resolved) reject(evt);
 				});
 
@@ -411,67 +449,83 @@ export function realtime(config: WebSocketConfig = {}) {
 					options.query = queryToParams(options.query as ExtendedQuery<Schema, Schema[Collection]>);
 				}
 
-				subscriptions.add({ ...options, collection, type: 'subscribe' });
+				const subscriptionMessage = { ...options, collection, type: 'subscribe' };
+				subscriptions.add(subscriptionMessage);
 
 				if (state.code !== 'open') {
 					debug('info', 'No connection available for subscribing!');
 					await this.connect();
 				}
 
-				this.sendMessage({ ...options, collection, type: 'subscribe' });
-				let subscribed = true;
+				type Message = SubscriptionOutput<Schema, Collection, Options['query'], SubscriptionEvents>;
 
-				async function* subscriptionGenerator(): AsyncGenerator<
-					SubscriptionOutput<Schema, Collection, Options['query'], SubscriptionEvents>,
-					void,
-					unknown
-				> {
-					while (subscribed && state.code === 'open') {
-						const message = await messageCallback(state.connection).catch(() => {
-							/* let the loop continue */
-						});
+				// Listening starts before the subscription is sent, so no message can slip through
+				// before (or between) pulls on the stream.
+				const removeListeners: RemoveEventHandler[] = [];
 
-						if (!message) continue;
+				const messages = createMessageQueue<Message>({
+					onEnd: () => {
+						removeListeners.forEach((remove) => remove());
+					},
+					onDrop: (dropped) => {
+						debug(
+							'warn',
+							`Subscription "${options.uid}" is not being consumed fast enough, ` +
+								`dropped ${dropped} message(s) to stay within ${MAX_QUEUED_MESSAGES}.`,
+						);
+					},
+				});
 
+				removeListeners.push(
+					this.onWebSocket('message', (message: Record<string, any>) => {
+						if (typeof message !== 'object' || message === null || Array.isArray(message)) return;
+
+						if (message['type'] === 'subscription' && message['uid'] === options.uid) {
+							messages.push(message as Message);
+							return;
+						}
+
+						// Subscribe errors carry the uid of the message that caused them, but an older API or an
+						// error the server cannot attribute arrives without one, and then there is no way to
+						// tell whose it is, so every open subscription has to fail.
 						if (
-							'type' in message &&
-							'status' in message &&
 							message['type'] === 'subscribe' &&
-							message['status'] === 'error'
+							message['status'] === 'error' &&
+							(message['uid'] === undefined || message['uid'] === options.uid)
 						) {
-							throw message;
+							messages.dispose(message);
 						}
+					}),
+				);
 
-						if (
-							'type' in message &&
-							'uid' in message &&
-							message['type'] === 'subscription' &&
-							message['uid'] === options.uid
-						) {
-							yield message as SubscriptionOutput<Schema, Collection, Options['query'], SubscriptionEvents>;
-						}
-					}
+				removeListeners.push(
+					this.onWebSocket('close', async () => {
+						// reconnect() has already decided by the time this runs. While an attempt is pending the
+						// subscription is re-sent on the new connection and the listener above keeps filling this
+						// queue, so wait the attempts out and only end once nothing is coming back.
+						while (reconnectState.active) await reconnectState.active;
 
-					if (config.reconnect && reconnectState.active) {
-						await reconnectState.active;
+						if (state.code !== 'open') messages.end();
+					}),
+				);
 
-						if (state.code === 'open') {
-							// re-subscribe on the new connection
-							state.connection.send(JSON.stringify({ ...options, collection, type: 'subscribe' }));
-
-							yield* subscriptionGenerator();
-						}
-					}
+				try {
+					this.sendMessage(subscriptionMessage);
+				} catch (error) {
+					// nothing is subscribed, so drop the registration and the listeners with it
+					subscriptions.delete(subscriptionMessage);
+					messages.dispose();
+					throw error;
 				}
 
 				const unsubscribe = () => {
-					subscriptions.delete({ ...options, collection, type: 'subscribe' });
+					subscriptions.delete(subscriptionMessage);
+					messages.dispose();
 					this.sendMessage({ uid: options.uid, type: 'unsubscribe' });
-					subscribed = false;
 				};
 
 				return {
-					subscription: subscriptionGenerator(),
+					subscription: messages.stream(),
 					unsubscribe,
 				};
 			},

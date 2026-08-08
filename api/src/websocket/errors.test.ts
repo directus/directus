@@ -1,7 +1,7 @@
 import { createError, InvalidPayloadError } from '@directus/errors';
 import { type Logger } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { ZodError } from 'zod';
+import { z, ZodError } from 'zod';
 import { useLogger } from '../logger/index.js';
 import { handleWebSocketError, WebSocketError } from './errors.js';
 import type { WebSocketClient } from './types.js';
@@ -110,6 +110,36 @@ describe('handleWebSocketError', () => {
 		handleWebSocketError(client, error, type);
 		expect(client.send).toBeCalledWith(expected);
 		expect(mockLogger.error).not.toBeCalled();
+	});
+
+	test('handle BaseException with uid', () => {
+		const client = mockClient();
+		const error = new TestError();
+		handleWebSocketError(client, error, type, 123);
+		expect(client.send).toBeCalledWith(WebSocketError.fromError(error, type, 123).toMessage());
+		expect(JSON.parse(vi.mocked(client.send).mock.calls[0]![0] as string)).toMatchObject({ uid: 123 });
+	});
+
+	test('handle ZodError with uid', () => {
+		const client = mockClient();
+		const error = z.object({ path: z.array(z.string()) }).safeParse({ path: 'test' }).error!;
+
+		handleWebSocketError(client, error, type, 123);
+		expect(client.send).toBeCalledWith(WebSocketError.fromZodError(error, type, 123).toMessage());
+	});
+
+	test('handle WebSocketError keeps its own uid', () => {
+		const client = mockClient();
+		const error = new WebSocketError('type', 'code', 'message', 123);
+		handleWebSocketError(client, error, type, 456);
+		expect(client.send).toBeCalledWith(error.toMessage());
+	});
+
+	test('handle WebSocketError without a uid adopts the one it is given', () => {
+		const client = mockClient();
+		const error = new WebSocketError('type', 'code', 'message');
+		handleWebSocketError(client, error, type, 456);
+		expect(client.send).toBeCalledWith(new WebSocketError('type', 'code', 'message', 456).toMessage());
 	});
 
 	test('unhandled exception', () => {
