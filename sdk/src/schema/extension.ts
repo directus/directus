@@ -3,7 +3,7 @@ import type { MergeCoreCollection } from '../index.js';
 export type DirectusExtension<Schema = any> = {
 	id: string;
 	bundle: string | null;
-	schema: ExtensionSchema | null;
+	schema: ExtensionSchema | ExtensionSchemaEntry | null;
 	meta: MergeCoreCollection<
 		Schema,
 		'directus_extensions',
@@ -11,10 +11,21 @@ export type DirectusExtension<Schema = any> = {
 	>;
 };
 
-export type ExtensionSchema = {
-	type: ExtensionTypes;
+export type ExtensionSchema = Partial<{
+	path: string;
+	name: string;
 	local: boolean;
-	version?: string;
+	version: string;
+	host: string;
+	type: ExtensionTypes;
+	entrypoint: string | { app: string; api: string };
+	partial: boolean;
+	entries: ExtensionSchemaEntry[];
+}>;
+
+export type ExtensionSchemaEntry = {
+	name: string;
+	type: ExtensionTypes;
 };
 
 export type ExtensionTypes =
