@@ -1,4 +1,4 @@
-import type { MergeCoreCollection } from '../index.js';
+import type { CompleteSchema, MergeCoreCollection } from '../index.js';
 import type { DirectusUser } from './user.js';
 
 export type DirectusNotification<Schema = any> = MergeCoreCollection<
@@ -12,7 +12,7 @@ export type DirectusNotification<Schema = any> = MergeCoreCollection<
 		sender: DirectusUser<Schema> | string | null;
 		subject: string;
 		message: string | null;
-		collection: string | null; // TODO keyof complete schema
+		collection: keyof CompleteSchema<Schema> | null;
 		item: string | null;
 	}
 >;

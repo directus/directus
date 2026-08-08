@@ -1,7 +1,7 @@
-import type { MergeCoreCollection } from '../index.js';
+import type { CompleteSchema, MergeCoreCollection } from '../index.js';
 
 export type DirectusField<Schema = any> = {
-	collection: string; // TODO keyof complete schema
+	collection: keyof CompleteSchema<Schema>;
 	field: string;
 	type: string;
 	meta: MergeCoreCollection<
@@ -9,7 +9,7 @@ export type DirectusField<Schema = any> = {
 		'directus_fields',
 		{
 			id: number;
-			collection: string; // TODO keyof complete schema
+			collection: keyof CompleteSchema<Schema>;
 			field: string;
 			special: string[] | null;
 			interface: string | null;
