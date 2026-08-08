@@ -6,7 +6,7 @@ export type DirectusPermission<Schema = any> = MergeCoreCollection<
 	'directus_permissions',
 	{
 		id: number;
-		policy: DirectusPolicy<Schema> | string | null;
+		policy: DirectusPolicy<Schema> | string;
 		collection: keyof CompleteSchema<Schema>;
 		action: string;
 		permissions: Record<string, any> | null;
