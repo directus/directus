@@ -1723,6 +1723,7 @@ source_local: Local
 source_module: Node Module
 collection: Collection
 collections: Collections
+collection_inactive: This collection is inactive
 content: Content
 singleton: Singleton
 singleton_label: Treat as single object
