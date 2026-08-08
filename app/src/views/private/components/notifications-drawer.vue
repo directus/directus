@@ -50,10 +50,10 @@ const notificationsStore = useNotificationsStore();
 const router = useRouter();
 
 const collection = ref<string | null>(null);
-const selection = ref<string[]>([]);
+const selection = ref<number[]>([]);
 const confirmDelete = ref(false);
 const tab = ref(['inbox']);
-const openNotifications = ref<string[]>([]);
+const openNotifications = ref<number[]>([]);
 const page = ref(1);
 const limit = ref(25);
 const search = ref<string | null>(null);
@@ -162,7 +162,7 @@ async function selectAll() {
 	}
 }
 
-function toggleSelected(id: string) {
+function toggleSelected(id: number) {
 	if (selection.value.includes(id)) {
 		selection.value.splice(selection.value.indexOf(id), 1);
 	} else {
@@ -170,7 +170,7 @@ function toggleSelected(id: string) {
 	}
 }
 
-function toggleNotification(id: string) {
+function toggleNotification(id: number) {
 	if (openNotifications.value.includes(id)) {
 		openNotifications.value.splice(openNotifications.value.indexOf(id), 1);
 	} else {
@@ -374,7 +374,13 @@ function clearFilters() {
 								@update:model-value="toggleSelected(notification.id)"
 							/>
 							<VTextOverflow class="title" :highlight="search" :text="notification.subject" />
-							<UseDatetime v-slot="{ datetime }" :value="notification.timestamp" type="timestamp" relative>
+							<UseDatetime
+								v-if="notification.timestamp"
+								v-slot="{ datetime }"
+								:value="notification.timestamp"
+								type="timestamp"
+								relative
+							>
 								<VTextOverflow class="datetime" :text="datetime" />
 							</UseDatetime>
 							<VIcon
