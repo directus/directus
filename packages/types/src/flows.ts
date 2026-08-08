@@ -1,30 +1,4 @@
-export type TriggerType = 'event' | 'schedule' | 'operation' | 'webhook' | 'manual';
-
-type Status = 'active' | 'inactive';
-
-export interface Flow {
-	id: string;
-	name: string | null;
-	icon: string | null;
-	description: string | null;
-	status: Status;
-	trigger: TriggerType | null;
-	options: Record<string, any>;
-	operation: Operation | null;
-	accountability: 'all' | 'activity' | null;
-}
-
-export interface Operation {
-	id: string;
-	name: string | null;
-	key: string;
-	type: string;
-	position_x: number;
-	position_y: number;
-	options: Record<string, any>;
-	resolve: Operation | null;
-	reject: Operation | null;
-}
+import type { User } from './users.js';
 
 export interface FlowRaw {
 	id: string;
@@ -32,14 +6,18 @@ export interface FlowRaw {
 	icon: string | null;
 	color: string | null;
 	description: string | null;
-	status: Status;
-	trigger: TriggerType | null;
+	status: 'active' | 'inactive';
+	trigger: string | null;
+	accountability: 'all' | 'activity' | null;
 	options: Record<string, any> | null;
 	operation: string | null;
-	operations: OperationRaw[];
 	date_created: string;
-	user_created: string;
-	accountability: 'all' | 'activity' | null;
+	user_created: string | null;
+}
+
+export interface Flow extends Omit<FlowRaw, 'user_created'> {
+	user_created: User | null;
+	operations: Operation[];
 }
 
 export interface OperationRaw {
@@ -49,10 +27,16 @@ export interface OperationRaw {
 	type: string;
 	position_x: number;
 	position_y: number;
-	options: Record<string, any>;
+	options: Record<string, any> | null;
 	resolve: string | null;
 	reject: string | null;
 	flow: string;
 	date_created: string;
-	user_created: string;
+	user_created: string | null;
+}
+
+export interface Operation extends Omit<OperationRaw, 'user_created' | 'resolve' | 'reject'> {
+	user_created: User | null;
+	resolve: Operation | null;
+	reject: Operation | null;
 }
