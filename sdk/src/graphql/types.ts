@@ -1,3 +1,5 @@
+import type { RequestCredentials } from '../types/globals.js';
+
 export interface GraphqlClient<_Schema> {
 	query<Output extends object = Record<string, any>>(
 		query: string,
