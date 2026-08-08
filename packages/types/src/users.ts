@@ -31,3 +31,13 @@ export type User = {
 	tfa_secret: string | null;
 	role: Role | null;
 };
+
+export enum UserIntegrityCheckFlag {
+		None = 0,
+		RemainingAdmins = 1 << 0,
+		ActiveStatus = 1 << 1,
+		Role = 1 << 2,
+		Email = 1 << 3,
+		MfaSecret = 1 << 4,
+		All = ~0,
+}
