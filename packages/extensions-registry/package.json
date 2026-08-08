@@ -29,7 +29,6 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/errors": "workspace:*",
-		"@directus/extensions": "workspace:*",
 		"ky": "catalog:",
 		"zod": "catalog:"
 	},
