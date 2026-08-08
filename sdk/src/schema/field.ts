@@ -28,26 +28,28 @@ export type DirectusField<Schema = any> = {
 			group: string | null;
 			validation: Record<string, any> | null;
 			validation_message: string | null;
+			system?: true;
+			clear_hidden_value_on_save?: boolean;
 		}
 	>;
 	schema: {
 		name: string;
 		table: string;
-		schema: string;
+		schema?: string;
 		data_type: string;
 		is_nullable: boolean;
 		default_value: any | null;
 		is_indexed: boolean;
 		is_generated: boolean;
-		generation_expression: unknown | null;
+		generation_expression?: string | null;
 		max_length: number | null;
-		comment: string | null;
+		comment?: string | null;
 		numeric_precision: number | null;
 		numeric_scale: number | null;
 		is_unique: boolean;
 		is_primary_key: boolean;
 		has_auto_increment: boolean;
-		foreign_key_schema: string | null;
+		foreign_key_schema?: string | null;
 		foreign_key_table: string | null;
 		foreign_key_column: string | null;
 	};
