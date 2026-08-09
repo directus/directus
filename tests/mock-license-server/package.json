@@ -25,14 +25,12 @@
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
 		"fastify": "catalog:",
-		"fastify-type-provider-zod": "catalog:",
 		"jose": "catalog:",
 		"lodash-es": "catalog:",
 		"tsdown": "catalog:",
 		"tsx": "catalog:",
 		"typebox": "catalog:",
-		"typescript": "catalog:",
-		"zod": "catalog:"
+		"typescript": "catalog:"
 	},
 	"engines": {
 		"node": ">=22"
