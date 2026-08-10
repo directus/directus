@@ -9,7 +9,6 @@ properties:
     description: The name of the flow.
     type: string
     example: Update Articles Flow
-    nullable: true
   icon:
     description: Icon displayed in the Data Studio for the flow.
     type: string
