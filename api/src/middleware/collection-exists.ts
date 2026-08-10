@@ -15,22 +15,20 @@ const collectionExists: RequestHandler = asyncHandler(async (req, _res, next) =>
 	if (!req.params['collection']) return next();
 
 	if (req.params['collection'] in req.schema.collections === false) {
-		if (
-			req.accountability &&
-			req.accountability.admin !== true &&
-			req.schema.inactiveCollections?.has(req.params['collection'])
-		) {
-			const hasAccess = await validateCollectionAccess(
-				{
-					accountability: req.accountability,
-					collection: req.params['collection'],
-					action: mapMethod(req.method),
-				},
-				{
-					schema: req.schema,
-					knex: getDatabase(),
-				},
-			);
+		if (req.accountability && req.schema.inactiveCollections?.has(req.params['collection'])) {
+			const hasAccess =
+				req.accountability.admin === true ||
+				(await validateCollectionAccess(
+					{
+						accountability: req.accountability,
+						collection: req.params['collection'],
+						action: mapMethod(req.method),
+					},
+					{
+						schema: req.schema,
+						knex: getDatabase(),
+					},
+				));
 
 			if (hasAccess) {
 				throw new CollectionInactiveError({
