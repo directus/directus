@@ -99,4 +99,3 @@ properties:
       system:
         description: True if this is a Directus-managed system relation.
         type: boolean
-        nullable: true
