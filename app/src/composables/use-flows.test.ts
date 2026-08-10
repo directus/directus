@@ -317,7 +317,12 @@ describe('runManualFlow', () => {
 
 		vi.mocked(api.post).mockResolvedValue({});
 
-		const { sidebarManualFlows, runManualFlow } = useFlows({ ...useFlowsOptions, hasEdits: ref(false) });
+		// Hidden flows are only triggerable through a header or links button, which live in the item form
+		const { sidebarManualFlows, runManualFlow } = useFlows({
+			...useFlowsOptions,
+			location: 'item',
+			hasEdits: ref(false),
+		});
 
 		expect(sidebarManualFlows.value.map((flow) => flow.id)).not.toContain('flow-6');
 
@@ -325,6 +330,7 @@ describe('runManualFlow', () => {
 
 		expect(api.post).toHaveBeenCalledWith('/flows/trigger/flow-6', {
 			collection: 'test_collection',
+			keys: ['item_1'],
 		});
 	});
 
