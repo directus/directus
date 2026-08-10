@@ -51,6 +51,8 @@ export function remapSystemRecord(
 	return { record: remapped, sent: { sourceId, sentPk: targetPk ?? sourceId } };
 }
 
+// Not lodash isMatch: its partial comparison calls a shrunken or reordered array field a match, which
+// would report a changed record as unchanged and drop it from the batch.
 function fieldsEqual(payload: Record<string, unknown>, target: Record<string, unknown>, pkField: string): boolean {
 	for (const [key, value] of Object.entries(payload)) {
 		if (key === pkField) continue;

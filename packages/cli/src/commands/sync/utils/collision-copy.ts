@@ -16,6 +16,9 @@ const UNNAMED_IDENTITY = 'with this identity';
 export function scalar(value: unknown): string | undefined {
 	let rendered: string | undefined;
 
+	// JSON.stringify, not String: the quotes distinguish the string "null" from null and "42" from 42, and
+	// remote record values print to the operator's terminal, so an ESC byte must arrive escaped, not as a live
+	// ANSI sequence.
 	if (typeof value === 'string') rendered = value === '' ? undefined : JSON.stringify(value);
 	if (typeof value === 'number' || typeof value === 'boolean' || value === null) rendered = String(value);
 	if (rendered === undefined) return undefined;
