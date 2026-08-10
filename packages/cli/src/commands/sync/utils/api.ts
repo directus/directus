@@ -9,6 +9,7 @@ import {
 	type SchemaSnapshotOptions,
 	utilsImportBatch,
 } from '@directus/sdk';
+import type { PrimaryKey } from '@directus/types';
 import { isPlainObject } from 'lodash-es';
 import type { ResolvedCredential } from '../../../kernel/config/credentials.js';
 import type { ImportMode, SchemaDiffMode } from '../../../kernel/config/mode.js';
@@ -146,7 +147,7 @@ function asRecordArray(response: unknown, source: RecordSource): Record<string, 
 	return drop === undefined ? records : records.filter((record) => !drop(record));
 }
 
-function requirePrimaryKey(record: Record<string, unknown>, source: RecordSource): string | number {
+function requirePrimaryKey(record: Record<string, unknown>, source: RecordSource): PrimaryKey {
 	const primaryKey = record[source.primaryKey];
 
 	if (typeof primaryKey !== 'string' && typeof primaryKey !== 'number') {
@@ -163,7 +164,7 @@ function trackPrimaryKey(
 	source: RecordSource,
 	seen: Set<string>,
 	duplicateHint: string,
-): string | number {
+): PrimaryKey {
 	const value = requirePrimaryKey(record, source);
 	const key = String(value);
 
@@ -235,7 +236,7 @@ async function fetchKeysetPages(
 ): Promise<Record<string, unknown>[]> {
 	const records: Record<string, unknown>[] = [];
 	const seen = new Set<string>();
-	let cursor: string | number | undefined;
+	let cursor: PrimaryKey | undefined;
 
 	while (true) {
 		let response: unknown;

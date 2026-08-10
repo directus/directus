@@ -1,4 +1,4 @@
-import type { ImportBatchResult, ImportCollectionData } from '@directus/types';
+import { DiffKind, type ImportBatchResult, type ImportCollectionData } from '@directus/types';
 import { z } from 'zod';
 import { CliError } from '../../../kernel/error.js';
 
@@ -39,6 +39,11 @@ export interface SnapshotRelationEntry {
 
 /**
  * A validated snapshot whose unknown server fields remain available for round-tripping.
+ *
+ * Deliberately not the `@directus/types` Snapshot: that type describes the server's own full structures,
+ * while the CLI talks to arbitrary server versions and may only claim the fields it validates — and it
+ * pins `version` to the known literals, where the server type's `number` would let an unknown future
+ * format through silently.
  */
 export interface Snapshot {
 	version: typeof SNAPSHOT_FULL | typeof SNAPSHOT_PARTIAL;
@@ -53,7 +58,7 @@ export interface Snapshot {
 
 /** A validated deep-diff operation with its opaque server payload preserved. */
 export interface DiffOp {
-	kind: 'N' | 'D' | 'E' | 'A';
+	kind: (typeof DiffKind)[keyof typeof DiffKind];
 	path?: (string | number)[];
 	[key: string]: unknown;
 }
@@ -114,7 +119,7 @@ const snapshotSchema = z.looseObject({
 });
 
 const diffOpSchema = z.looseObject({
-	kind: z.enum(['N', 'D', 'E', 'A']),
+	kind: z.enum([DiffKind.NEW, DiffKind.DELETE, DiffKind.EDIT, DiffKind.ARRAY]),
 	path: z.array(z.union([z.string(), z.number()])).optional(),
 });
 
