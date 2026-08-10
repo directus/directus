@@ -57,13 +57,7 @@ function report(
  * Re-key the profile and its credential together. Credentials are keyed by URL and profile name, so moving
  * only the profile would strand the credential under a name nothing looks up — hence the rollback.
  */
-async function rename(
-	from: string,
-	to: string,
-	url: string | undefined,
-	skipConfirmation: boolean,
-	ctx: CliContext,
-): Promise<void> {
+async function rename(from: string, to: string, skipConfirmation: boolean, ctx: CliContext): Promise<void> {
 	assertProfileName(to);
 
 	if (ctx.config.existingProfile(to) !== undefined) {
@@ -84,13 +78,14 @@ async function rename(
 		if (!proceed) throw new CliError('USAGE', `Profile "${from}" unchanged.`);
 	}
 
-	const restoreConfig = ctx.config.renameProfile(from, to);
+	const write = ctx.config.renameProfile(from, to);
+	const url = write.profile.url !== undefined && isSafeUrl(write.profile.url) ? write.profile.url : undefined;
 
 	try {
 		// A profile with no usable URL has no credential key to move; the configuration rename is the whole rename.
 		if (url !== undefined) renameCredential(url, from, to);
 	} catch (error) {
-		restoreConfig();
+		write.rollback();
 		throw error;
 	}
 
@@ -128,7 +123,7 @@ export async function update(nameArg: string | undefined, options: UpdateOptions
 
 		if (options.name === name) throw new CliError('USAGE', `Profile "${name}" already has that name.`);
 
-		await rename(name, options.name, currentUrl, options.yes === true, ctx);
+		await rename(name, options.name, options.yes === true, ctx);
 		report(ctx, { name: options.name, url: currentUrl ?? null, renamedFrom: name, credentialSaved: false });
 		return;
 	}

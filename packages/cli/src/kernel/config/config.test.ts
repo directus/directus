@@ -174,10 +174,11 @@ describe('createConfigStore', () => {
 
 		expect(store.load()).toBeUndefined();
 
-		store.upsertProfile('prod', { url: 'https://cms.example.com', auth: { type: 'token' } });
+		const write = store.upsertProfile('prod', { url: 'https://cms.example.com', auth: { type: 'token' } });
+		expect(write.profile).toEqual({ url: 'https://cms.example.com', auth: { type: 'token' } });
 		expect(store.load()?.config.profiles['prod']?.url).toBe('https://cms.example.com');
 
-		expect(store.removeProfile('prod')).toBe('https://cms.example.com');
+		expect(store.removeProfile('prod')).toEqual({ url: 'https://cms.example.com' });
 		expect(store.load()?.config.profiles).toEqual({});
 	});
 
@@ -206,12 +207,13 @@ describe('createConfigStore', () => {
 		);
 
 		const store = createConfigStore(dir);
-		const restore = store.renameProfile('staging', 'preview');
+		const write = store.renameProfile('staging', 'preview');
 
+		expect(write.profile).toEqual({ url: 'https://staging.example.com' });
 		expect(Object.keys(store.load()!.config.profiles)).toEqual(['local', 'preview', 'prod']);
 		expect(store.load()?.config.profiles['preview']?.url).toBe('https://staging.example.com');
 
-		restore();
+		write.rollback();
 		expect(Object.keys(store.load()!.config.profiles)).toEqual(['local', 'staging', 'prod']);
 	});
 

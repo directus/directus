@@ -40,12 +40,12 @@ export async function remove(nameArg: string | undefined, options: RemoveOptions
 		if (!proceed) throw new CliError('USAGE', `Profile "${name}" unchanged.`);
 	}
 
-	const url = ctx.config.removeProfile(name);
+	const removed = ctx.config.removeProfile(name);
 	ctx.ui.success(`Removed profile "${name}".`);
 
-	if (url !== undefined) {
+	if (removed.url !== undefined) {
 		try {
-			clearCredential(url, name);
+			clearCredential(removed.url, name);
 		} catch {
 			ctx.ui.warn('Removed the profile, but could not clear its saved credential.');
 		}

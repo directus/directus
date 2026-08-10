@@ -96,14 +96,14 @@ export async function saveProfile(
 		session = acquired.session;
 	}
 
-	const rollback = ctx.config.upsertProfile(name, { url, auth: { type: 'token' } });
+	const write = ctx.config.upsertProfile(name, { url, auth: { type: 'token' } });
 
 	try {
 		if (session !== undefined) credentialStorage(url, name).set(session);
 		if (token !== undefined) saveCredential(url, name, token);
 	} catch (error) {
 		try {
-			rollback();
+			write.rollback();
 		} catch (rollbackError) {
 			// Restoring configuration is another filesystem write that can fail independently. Preserve both
 			// errors so the operator knows the profile may still point at the new URL.
@@ -127,7 +127,7 @@ export async function saveProfile(
 	if (session !== undefined) ctx.ui.success(`Saved a session for "${name}" to the credential store.`);
 	if (token !== undefined) ctx.ui.success(savedTokenMessage(name));
 
-	return { url, credentialSaved: session !== undefined || token !== undefined };
+	return { url: write.profile.url, credentialSaved: session !== undefined || token !== undefined };
 }
 
 type Acquired =

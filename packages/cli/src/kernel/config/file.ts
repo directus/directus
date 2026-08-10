@@ -76,9 +76,18 @@ const configSchema = z.looseObject({
 });
 
 // Explicit types keep isolated declaration emit independent of schema inference.
+interface StoredProfile {
+	readonly url: string | undefined;
+}
+
 interface Profile {
 	readonly url: string;
 	readonly auth: { readonly type: 'token' };
+}
+
+interface ProfileWrite<T extends StoredProfile> {
+	readonly profile: T;
+	readonly rollback: () => void;
 }
 
 /** Optional project-level sync scope and mode defaults. */
@@ -171,6 +180,11 @@ function existingProfiles(raw: Record<string, unknown>, path: string): Record<st
 	return profiles as Record<string, unknown>;
 }
 
+function storedProfile(value: unknown): StoredProfile {
+	const url = isPlainObject(value) ? (value as Record<string, unknown>)['url'] : undefined;
+	return { url: typeof url === 'string' ? url : undefined };
+}
+
 /** The configuration file of one CLI run: every read and write of it goes through here. */
 export interface ConfigStore {
 	/** The resolved configuration path without reading the file, so env loading never depends on a parse. */
@@ -184,19 +198,19 @@ export interface ConfigStore {
 	 * NAMED profile (with a possibly-attached credential), so replacing it must clear the same gate as
 	 * overwriting a valid URL. Tolerant like the upsert path: a not-yet-created explicit configuration is a fresh start.
 	 */
-	existingProfile(name: string): { url: string | undefined } | undefined;
+	existingProfile(name: string): StoredProfile | undefined;
 	/**
 	 * The validated profile for a name, or a CONFIG error naming the known profiles. The strict counterpart
 	 * to `existingProfile`: commands that USE a profile need a parsed URL, commands that EDIT one need the
 	 * tolerant raw read so a hand-broken entry stays repairable.
 	 */
 	requireProfile(name: string): Profile;
-	/** Write a profile and return an operation that restores the preceding file state. */
-	upsertProfile(name: string, profile: Profile): () => void;
-	/** Move a profile to a new name, returning an operation that restores the preceding file state. */
-	renameProfile(from: string, to: string): () => void;
+	/** Write a profile and return it with an operation that restores the preceding file state. */
+	upsertProfile(name: string, profile: Profile): ProfileWrite<Profile>;
+	/** Move a profile to a new name and return it with an operation that restores the preceding file state. */
+	renameProfile(from: string, to: string): ProfileWrite<StoredProfile>;
 	upsertProjectMode(project: string, mode: SyncMode): void;
-	removeProfile(name: string): string | undefined;
+	removeProfile(name: string): StoredProfile;
 }
 
 /**
@@ -246,10 +260,7 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 			const profiles = existingProfiles(readRawConfig(path), path);
 			if (!Object.hasOwn(profiles, name)) return undefined;
 
-			const profile = profiles[name];
-			const url = isPlainObject(profile) ? (profile as Record<string, unknown>)['url'] : undefined;
-
-			return { url: typeof url === 'string' ? url : undefined };
+			return storedProfile(profiles[name]);
 		},
 		requireProfile(name) {
 			const { config } = require();
@@ -277,16 +288,19 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 			writeFileAtomic(target, `${JSON.stringify({ ...raw, profiles }, null, 2)}\n`, 0o644);
 			persisted(target);
 
-			return () => {
-				if (previousContents === undefined) {
-					rmSync(target, { force: true });
-				} else {
-					writeFileAtomic(target, previousContents, 0o644);
-				}
+			return {
+				profile,
+				rollback() {
+					if (previousContents === undefined) {
+						rmSync(target, { force: true });
+					} else {
+						writeFileAtomic(target, previousContents, 0o644);
+					}
 
-				path = previousPath;
-				loaded = undefined;
-				read = false;
+					path = previousPath;
+					loaded = undefined;
+					read = false;
+				},
 			};
 		},
 		renameProfile(from, to) {
@@ -304,6 +318,8 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 			// Renaming onto a live name would collapse two entries into one and silently drop a profile.
 			if (Object.hasOwn(profiles, to)) throw new CliError('CONFIG', `Profile "${to}" already exists.`);
 
+			const profile = storedProfile(profiles[from]);
+
 			// Rebuild in place so the renamed profile keeps its position instead of jumping to the end.
 			const renamed = Object.fromEntries(
 				Object.entries(profiles).map(([key, value]) => [key === from ? to : key, value]),
@@ -312,10 +328,13 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 			writeFileAtomic(target, `${JSON.stringify({ ...raw, profiles: renamed }, null, 2)}\n`, 0o644);
 			persisted(target);
 
-			return () => {
-				writeFileAtomic(target, previousContents, 0o644);
-				loaded = undefined;
-				read = false;
+			return {
+				profile,
+				rollback() {
+					writeFileAtomic(target, previousContents, 0o644);
+					loaded = undefined;
+					read = false;
+				},
 			};
 		},
 		upsertProjectMode(project, mode) {
@@ -342,14 +361,12 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 			if (!Object.hasOwn(profiles, name))
 				throw new CliError('CONFIG', `Unknown profile: "${name}"`, { hint: 'Nothing to remove.' });
 
-			const removed = profiles[name];
+			const profile = storedProfile(profiles[name]);
 			delete profiles[name];
 			writeFileAtomic(path, `${JSON.stringify({ ...raw, profiles }, null, 2)}\n`, 0o644);
 			persisted(path);
 
-			return isPlainObject(removed) && typeof (removed as Record<string, unknown>)['url'] === 'string'
-				? ((removed as Record<string, unknown>)['url'] as string)
-				: undefined;
+			return profile;
 		},
 	};
 }
