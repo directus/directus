@@ -169,7 +169,7 @@ describe('sidebarManualFlows', () => {
 
 		const { sidebarManualFlows } = useFlows(useFlowsOptions);
 
-		expect(sidebarManualFlows.value.length).toEqual(3);
+		expect(sidebarManualFlows.value.map((flow) => flow.id)).toEqual(['flow-1', 'flow-4', 'flow-5']);
 		expect(mockFlowsStore.getManualFlowsForCollection).toHaveBeenCalledWith('test_collection');
 	});
 
@@ -188,7 +188,7 @@ describe('sidebarManualFlows', () => {
 
 		const { sidebarManualFlows } = useFlows({ ...useFlowsOptions, collection: testCollection });
 
-		expect(sidebarManualFlows.value.length).toEqual(3);
+		expect(sidebarManualFlows.value.map((flow) => flow.id)).toEqual(['flow-1', 'flow-4', 'flow-5']);
 		expect(mockGetManualFlows).toHaveBeenLastCalledWith('test_collection');
 
 		mockGetManualFlows.mockReturnValue([]);
@@ -211,7 +211,9 @@ describe('sidebarManualFlows', () => {
 
 		const { sidebarManualFlows } = useFlows({ ...useFlowsOptions, location });
 
-		expect(sidebarManualFlows.value.map((flow) => flow.id)).not.toContain('flow-6');
+		expect(sidebarManualFlows.value.map((flow) => flow.id)).toEqual(
+			location === 'collection' ? ['flow-1', 'flow-4', 'flow-5'] : ['flow-2', 'flow-3'],
+		);
 	});
 });
 
