@@ -1,11 +1,8 @@
 const secrets = new Set<string>();
 
-// Redacting short common values as bare substrings could corrupt ordinary output.
-// The patterns below still cover short tokens in bearer headers and URLs.
-const MIN_SECRET_LENGTH = 8;
-
 export function registerSecret(value: string): void {
-	if (value.length >= MIN_SECRET_LENGTH) secrets.add(value);
+	// An empty value would match between every character; every actual secret must be redacted regardless of length.
+	if (value !== '') secrets.add(value);
 }
 
 /** Test/reset hook — the registry is process-global. */

@@ -12,10 +12,16 @@ describe('redact', () => {
 		expect(redact('using super-secret-token-value to auth super-secret-token-value')).toBe('using *** to auth ***');
 	});
 
-	it('ignores short values so ordinary words are not mangled', () => {
+	it('redacts short registered secrets', () => {
 		registerSecret('abc');
 
-		expect(redact('abc def abc')).toBe('abc def abc');
+		expect(redact('abc def abc')).toBe('*** def ***');
+	});
+
+	it('ignores an empty registered value', () => {
+		registerSecret('');
+
+		expect(redact('plain output')).toBe('plain output');
 	});
 
 	it('scrubs a bearer header even for an unregistered token (backstop)', () => {
