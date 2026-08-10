@@ -113,7 +113,7 @@ function blockTarget(tag: string): BlockTarget | null {
  * can never produce an invalid document; coercing into `blockquote`/`codeBlock` content models is
  * wrapper territory (out of scope), so those formats apply to already-matching blocks only.
  */
-const CONVERTIBLE_TYPES = new Set(['paragraph', 'heading']);
+export const CONVERTIBLE_TYPES = new Set(['paragraph', 'heading']);
 
 const PRESERVED_ATTRIBUTES = new Set(['id', 'title', 'role', 'lang', 'dir']);
 
@@ -160,6 +160,26 @@ function classList(classes: string | undefined): string[] {
 /** A format needs a class or attribute anchor, or it can't be recognized again after a reload. */
 function hasAnchor(entry: { classes?: string; attributes?: Record<string, string> }): boolean {
 	return classList(entry.classes).length > 0 || Object.keys(entry.attributes ?? {}).length > 0;
+}
+
+/** What a block format ends up storing: `classes` merged with `attributes.class`, preserved attributes only. */
+function blockAnchors(entry: BlockFormatEntry): {
+	classes: string[];
+	attributes: Record<string, string>;
+	ignored: string[];
+} {
+	const attributes: Record<string, string> = {};
+	const classes = classList(entry.classes);
+	const ignored: string[] = [];
+
+	for (const [attribute, value] of Object.entries(entry.attributes ?? {})) {
+		// `attributes: { class }` is the same intent as `classes`; merge so toggling off strips it too
+		if (attribute === 'class') classes.push(...classList(String(value)));
+		else if (isPreservedAttribute(attribute)) attributes[attribute] = String(value);
+		else ignored.push(attribute);
+	}
+
+	return { classes: [...new Set(classes)], attributes, ignored };
 }
 
 /** Static HTML attributes an inline format renders, derived from its config (not the parsed DOM). */
@@ -244,15 +264,16 @@ function buildBlock(entry: BlockFormatEntry, name: string): BuiltEntry | null {
 		const target = blockTarget(tag);
 
 		if (!target) {
-			warn(`customFormats entry skipped — \`${tag.trim()}\` is not a block the editor models:`, entry);
-			return null;
+			// a `selector` list keeps its remaining tags; a single-tag `block` has nothing left to apply to
+			warn(`customFormats: \`${tag.trim()}\` is not a block the editor models and was skipped:`, entry);
+			continue;
 		}
 
 		targets.push(target);
 	}
 
-	if (!hasAnchor(entry)) {
-		warn('customFormats entry skipped — `classes` or `attributes` is required:', entry);
+	if (targets.length === 0) {
+		warn('customFormats entry skipped — none of its tags are blocks the editor models:', entry);
 		return null;
 	}
 
@@ -266,19 +287,17 @@ function buildBlock(entry: BlockFormatEntry, name: string): BuiltEntry | null {
 		);
 	}
 
-	const attributes: Record<string, string> = {};
-	const classes = classList(entry.classes);
-	const ignored: string[] = [];
-
-	for (const [attribute, value] of Object.entries(entry.attributes ?? {})) {
-		// `attributes: { class }` is the same intent as `classes`; merge so toggling off strips it too
-		if (attribute === 'class') classes.push(...classList(String(value)));
-		else if (isPreservedAttribute(attribute)) attributes[attribute] = String(value);
-		else ignored.push(attribute);
-	}
+	// anchors are checked on what actually lands on the node: unsupported attributes are dropped first,
+	// so an entry anchored only on e.g. `style` would store nothing and could never read as active
+	const { classes, attributes, ignored } = blockAnchors(entry);
 
 	if (ignored.length > 0) {
 		warn(`customFormats: attributes not stored on block nodes were ignored (${ignored.join(', ')}):`, entry);
+	}
+
+	if (classes.length === 0 && Object.keys(attributes).length === 0) {
+		warn('customFormats entry skipped — `classes` or a preserved `attributes` entry is required:', entry);
+		return null;
 	}
 
 	return {
@@ -290,7 +309,7 @@ function buildBlock(entry: BlockFormatEntry, name: string): BuiltEntry | null {
 			previewStyle: serializeStyles(entry.styles),
 			targets,
 			convert: convertible,
-			classes: [...new Set(classes)],
+			classes,
 			attributes,
 		},
 	};

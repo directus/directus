@@ -171,6 +171,36 @@ describe('clearBlockFormat', () => {
 	});
 });
 
+// `listItem` is `paragraph block*`, so re-typing its leading paragraph is not a valid transform
+describe('blocks whose parent rejects the converted type', () => {
+	test('leaves a list item alone and still formats the rest of the selection', () => {
+		const editor = editorWith('<p>lead</p><ul><li><p>item</p></li></ul>');
+		editor.commands.setTextSelection({ from: 0, to: 14 });
+
+		applyBlockFormat(editor, blockFormat(EYEBROW));
+
+		const html = editor.getHTML();
+		expect(html).toContain('<h2 class="eyebrow">lead</h2>');
+		expect(html).toContain('<li><p>item</p></li>');
+	});
+
+	test('does not read as active from a list item the format cannot reach', () => {
+		const editor = editorWith('<ul><li><p>item</p></li></ul>');
+		editor.commands.setTextSelection(4);
+
+		expect(isBlockFormatActive(editor, blockFormat(EYEBROW))).toBe(false);
+	});
+
+	test('converts a non-leading paragraph in a list item, which the parent does accept', () => {
+		const editor = editorWith('<ul><li><p>one</p><p>two</p></li></ul>');
+		editor.commands.setTextSelection(11);
+
+		applyBlockFormat(editor, blockFormat(EYEBROW));
+
+		expect(editor.getHTML()).toContain('<li><p>one</p><h2 class="eyebrow">two</h2></li>');
+	});
+});
+
 describe('isBlockFormatActive', () => {
 	test('false on an unformatted block, true once applied', () => {
 		const editor = editorWith('<p>hello</p>');

@@ -382,6 +382,18 @@ describe('buildCustomFormats: block entries', () => {
 		expect(blockAt(formats, 0).classes).toEqual([]);
 	});
 
+	test('skips a block entry left without an anchor once unsupported attributes are dropped', () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+		const { formats } = buildCustomFormats([
+			{ title: 'Red', block: 'h2', attributes: { style: 'color: red' } },
+			{ title: 'Empty class', block: 'h2', attributes: { class: '' } },
+		]);
+
+		expect(formats).toHaveLength(0);
+		expect(warn).toHaveBeenCalled();
+	});
+
 	test('downgrades a block entry whose tag cannot be converted to, with a warning', () => {
 		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
@@ -406,7 +418,23 @@ describe('buildCustomFormats: block entries', () => {
 		]);
 
 		expect(formats).toHaveLength(0);
-		expect(warn).toHaveBeenCalledTimes(3);
+		// each entry warns twice: once for the unmodelled tag, once for the entry left without targets
+		expect(warn).toHaveBeenCalledTimes(6);
+	});
+
+	test('keeps a selector entry when only some of its tags are unmodelled', () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+		const { formats } = buildCustomFormats([{ title: 'Lead', selector: 'h2,div,p', classes: 'lead' }]);
+
+		expect(formats).toHaveLength(1);
+
+		expect(blockAt(formats, 0)).toMatchObject({
+			convert: false,
+			targets: [{ type: 'heading', attrs: { level: 2 } }, { type: 'paragraph' }],
+		});
+
+		expect(warn).toHaveBeenCalledTimes(1);
 	});
 
 	test('skips compound CSS selectors instead of silently no-opping', () => {
@@ -421,7 +449,7 @@ describe('buildCustomFormats: block entries', () => {
 		]);
 
 		expect(formats).toHaveLength(0);
-		expect(warn).toHaveBeenCalledTimes(5);
+		expect(warn).toHaveBeenCalledTimes(10);
 	});
 
 	test('still skips wrapper entries (out of scope) with a warning', () => {

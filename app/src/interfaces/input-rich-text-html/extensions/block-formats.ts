@@ -1,7 +1,7 @@
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
 import type { EditorState } from '@tiptap/pm/state';
 import type { Editor } from '@tiptap/vue-3';
-import type { BlockCustomFormat, BlockTarget } from './custom-formats';
+import { type BlockCustomFormat, type BlockTarget, CONVERTIBLE_TYPES } from './custom-formats';
 
 /**
  * Commands for block-level custom formats. Unlike inline formats (dynamic marks) these need no
@@ -9,9 +9,6 @@ import type { BlockCustomFormat, BlockTarget } from './custom-formats';
  * round-trips on every node type. Toggling off strips only what the format configured, so unrelated
  * classes, ids and `data-`/`aria-` attributes survive.
  */
-
-/** Node types a `block` entry converts to; see CONVERTIBLE_TYPES in custom-formats.ts. */
-const CONVERTIBLE_TYPES = new Set(['paragraph', 'heading']);
 
 function classesOf(node: ProseMirrorNode): string[] {
 	const value = node.attrs['class'];
@@ -48,11 +45,22 @@ function isTarget(node: ProseMirrorNode, target: BlockTarget): boolean {
 	return Object.entries(target.attrs ?? {}).every(([name, value]) => node.attrs[name] === value);
 }
 
-/** Blocks a format can act on: its own targets, plus convertible blocks a `block` entry re-types. */
-function isEligible(node: ProseMirrorNode, format: BlockCustomFormat): boolean {
+/**
+ * Blocks a format can act on: its own targets (attributes only, no re-typing), plus convertible
+ * blocks a `block` entry re-types — but only where the parent's content expression accepts the
+ * target type. `listItem` is `paragraph block*`, so re-typing its first paragraph to a heading
+ * would make `setNodeMarkup` throw; skipping it here keeps the active state and the apply in sync.
+ */
+function isEligible(state: EditorState, node: ProseMirrorNode, pos: number, format: BlockCustomFormat): boolean {
 	if (!node.isBlock) return false;
 	if (format.targets.some((target) => isTarget(node, target))) return true;
-	return format.convert && CONVERTIBLE_TYPES.has(node.type.name);
+	if (!format.convert || !CONVERTIBLE_TYPES.has(node.type.name)) return false;
+
+	const targetType = state.schema.nodes[format.targets[0]!.type];
+	if (!targetType) return false;
+
+	const $pos = state.doc.resolve(pos);
+	return $pos.parent.canReplaceWith($pos.index(), $pos.index() + 1, targetType);
 }
 
 /**
@@ -83,7 +91,7 @@ function eligibleBlocks(state: EditorState, format: BlockCustomFormat): Eligible
 	const blocks: EligibleBlock[] = [];
 
 	state.doc.nodesBetween(from, to, (node, pos) => {
-		if (isEligible(node, format)) blocks.push({ pos, node });
+		if (isEligible(state, node, pos, format)) blocks.push({ pos, node });
 	});
 
 	return blocks;
