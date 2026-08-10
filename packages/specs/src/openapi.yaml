@@ -306,6 +306,8 @@ paths:
 
 components:
   schemas:
+    Access:
+      $ref: './components/access.yaml'
     Activity:
       $ref: './components/activity.yaml'
     Collections:

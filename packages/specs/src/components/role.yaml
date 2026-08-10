@@ -35,13 +35,13 @@ properties:
           format: uuid
         - $ref: '../openapi.yaml#/components/schemas/Roles'
   policies:
-    description: Policy UUIDs attached to this role.
+    description: Access records connecting this role to policies.
     type: array
     items:
       oneOf:
         - type: string
           format: uuid
-        - $ref: '../openapi.yaml#/components/schemas/Policies'
+        - $ref: '../openapi.yaml#/components/schemas/Access'
   parent:
     description: UUID of the parent role, or null for top-level roles.
     oneOf:

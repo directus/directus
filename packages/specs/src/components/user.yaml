@@ -95,13 +95,13 @@ properties:
         nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Roles'
   policies:
-    description: Policies assigned to this user.
+    description: Access records connecting this user to policies.
     type: array
     items:
       oneOf:
         - type: string
           format: uuid
-        - $ref: '../openapi.yaml#/components/schemas/Policies'
+        - $ref: '../openapi.yaml#/components/schemas/Access'
   token:
     description: Static token for the user. Returned masked when set.
     type: string

@@ -36,3 +36,26 @@ properties:
     description: Admin policy. If true, skips all permission checks.
     example: false
     type: boolean
+  permissions:
+    description: Permissions attached to this policy.
+    type: array
+    items:
+      oneOf:
+        - type: integer
+        - $ref: '../openapi.yaml#/components/schemas/Permissions'
+  users:
+    description: Access records connecting this policy to individual users.
+    type: array
+    items:
+      oneOf:
+        - type: string
+          format: uuid
+        - $ref: '../openapi.yaml#/components/schemas/Access'
+  roles:
+    description: Access records connecting this policy to roles.
+    type: array
+    items:
+      oneOf:
+        - type: string
+          format: uuid
+        - $ref: '../openapi.yaml#/components/schemas/Access'
