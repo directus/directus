@@ -1,5 +1,6 @@
 import type { ContentVersion, Field, Item, PrimaryKey, User } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
+import type { AnyExtension } from '@tiptap/vue-3';
 import { has, isEqual, mergeWith, orderBy } from 'lodash';
 import { computed, type Ref, ref, watch } from 'vue';
 import type {
@@ -11,7 +12,9 @@ import type {
 	VersionComparisonResponse,
 } from './types';
 import api from '@/api';
-import { isHtmlString, useComparisonDiff } from '@/composables/use-comparison-diff';
+import { isHtmlString, sanitizeDropsContent, useComparisonDiff } from '@/composables/use-comparison-diff';
+import { computeValueNormalizationDiff } from '@/interfaces/input-rich-text-html/composables/normalization-diff';
+import { buildCustomFormats } from '@/interfaces/input-rich-text-html/extensions/custom-formats';
 import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
 import type { Revision } from '@/types/revisions';
@@ -271,15 +274,21 @@ export function useComparison(options: UseComparisonOptions) {
 		}
 	}
 
+	/**
+	 * Builds the diff-marked copies the comparison form renders. Diff marking is display-only: it
+	 * sanitizes the HTML and injects diff spans, so the originals are left untouched for restoring.
+	 */
 	function processRichTextHtmlFields(
 		base: Record<string, any>,
 		incoming: Record<string, any>,
 		collectionName: string,
-	): { base: Record<string, any>; incoming: Record<string, any> } {
+	): { displayBase: Record<string, any>; displayIncoming: Record<string, any> } {
+		const displayBase = { ...base };
+		const displayIncoming = { ...incoming };
 		const fields = fieldsStore.getFieldsForCollection(collectionName);
 
 		if (!fields || fields.length === 0) {
-			return { base, incoming };
+			return { displayBase, displayIncoming };
 		}
 
 		const { computeDiff } = useComparisonDiff();
@@ -297,6 +306,13 @@ export function useComparison(options: UseComparisonOptions) {
 				shouldShowComparisonDiff(true, 'base', baseValue, incomingValue) &&
 				(isHtmlString(baseValue) || isHtmlString(incomingValue))
 			) {
+				// Diff marking would drop the very content a revision is opened for — markup the editor
+				// can't represent (shown verbatim in the interface's source fallback) or nodes the diff's
+				// sanitizer removes. Those values are compared without highlighting instead.
+				const { extensions } = buildCustomFormats(field.meta?.options?.['customFormats']);
+				if (isLossyForEditor(baseValue, extensions) || isLossyForEditor(incomingValue, extensions)) continue;
+				if (sanitizeDropsContent(baseValue) || sanitizeDropsContent(incomingValue)) continue;
+
 				const changes = computeDiff(baseValue, incomingValue, field);
 
 				if (changes.length > 0) {
@@ -304,17 +320,22 @@ export function useComparison(options: UseComparisonOptions) {
 					const incomingHtml = reconstructComparisonHtml(changes, 'incoming', false);
 
 					if (baseHtml !== null) {
-						base[fieldKey] = baseHtml;
+						displayBase[fieldKey] = baseHtml;
 					}
 
 					if (incomingHtml !== null) {
-						incoming[fieldKey] = incomingHtml;
+						displayIncoming[fieldKey] = incomingHtml;
 					}
 				}
 			}
 		}
 
-		return { base, incoming };
+		return { displayBase, displayIncoming };
+	}
+
+	function isLossyForEditor(value: unknown, extensions: AnyExtension[]): boolean {
+		if (typeof value !== 'string' || value === '') return false;
+		return computeValueNormalizationDiff(value, extensions) !== null;
 	}
 
 	async function buildVersionComparison(version: ContentVersion): Promise<ComparisonData> {
@@ -326,15 +347,13 @@ export function useComparison(options: UseComparisonOptions) {
 
 			const mainVersionMeta = await fetchLatestRevisionActivityOfMainVersion(collection.value, primaryKey.value);
 
-			const { base: processedBase, incoming: processedIncoming } = processRichTextHtmlFields(
-				base,
-				incomingMerged,
-				collection.value,
-			);
+			const { displayBase, displayIncoming } = processRichTextHtmlFields(base, incomingMerged, collection.value);
 
 			return {
-				base: processedBase,
-				incoming: processedIncoming,
+				base,
+				incoming: incomingMerged,
+				displayBase,
+				displayIncoming,
 				mainVersionMeta,
 				selectableDeltas: [version],
 				comparisonType: 'version',
@@ -435,15 +454,13 @@ export function useComparison(options: UseComparisonOptions) {
 		const specialFields = applyValuesToSpecialFields(fields, incoming, base, activity);
 		incoming = mergeWith({}, incoming, specialFields, replaceArraysInMergeCustomizer);
 
-		const { base: processedBase, incoming: processedIncoming } = processRichTextHtmlFields(
-			base,
-			incoming,
-			targetCollection,
-		);
+		const { displayBase, displayIncoming } = processRichTextHtmlFields(base, incoming, targetCollection);
 
 		return {
-			base: processedBase,
-			incoming: processedIncoming,
+			base,
+			incoming,
+			displayBase,
+			displayIncoming,
 			selectableDeltas: revisionsList,
 			revisionFields,
 			comparisonType: 'revision',

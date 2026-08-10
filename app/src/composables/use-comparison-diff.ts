@@ -19,6 +19,39 @@ export function isHtmlString(value: any): boolean {
 	return /<[a-z][\s\S]*>/i.test(value);
 }
 
+/**
+ * True when sanitizing would remove nodes (iframes, comments, …), which the diff view would then
+ * hide from the compared values. Callers skip diff marking for those and show them verbatim.
+ */
+export function sanitizeDropsContent(value: any): boolean {
+	if (typeof value !== 'string' || value === '') return false;
+
+	const sanitized = dompurify.sanitize(value);
+
+	// comments (the legacy page-break marker) never survive sanitizing
+	if (value.includes('<!--') && !sanitized.includes('<!--')) return true;
+
+	// DOMParser is inert: nothing executes and no resource loads while the raw markup is inspected
+	const parse = (html: string) => new DOMParser().parseFromString(html, 'text/html').body;
+	return nodeSignature(parse(value)) !== nodeSignature(parse(sanitized));
+}
+
+// attribute-level normalization is ignored on purpose — only missing nodes matter here
+function nodeSignature(root: HTMLElement): string {
+	const parts: string[] = [];
+
+	function walk(node: Node) {
+		for (const child of Array.from(node.childNodes)) {
+			if (child.nodeType === Node.ELEMENT_NODE) parts.push((child as HTMLElement).tagName);
+			else if (child.nodeType === Node.TEXT_NODE) parts.push(`#text:${child.textContent}`);
+			walk(child);
+		}
+	}
+
+	walk(root);
+	return parts.join('|');
+}
+
 function isFormattingElement(node: Node): boolean {
 	if (node.nodeType !== Node.ELEMENT_NODE) return false;
 	const tag = (node as HTMLElement).tagName;

@@ -45,8 +45,12 @@ export type NormalizedComparison = {
 };
 
 export type ComparisonData = {
+	/** Raw stored values — what a restore writes back. Never diff-marked. */
 	base: Record<string, any>;
 	incoming: Record<string, any>;
+	/** Same values with rich text diff-marked for rendering; falls back to the raw ones when absent. */
+	displayBase?: Record<string, any>;
+	displayIncoming?: Record<string, any>;
 	mainVersionMeta?: Pick<Activity, 'timestamp' | 'user'>;
 	selectableDeltas?: Revision[] | ContentVersion[];
 	revisionFields?: Set<string>;
