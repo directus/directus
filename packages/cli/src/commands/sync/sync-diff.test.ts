@@ -108,6 +108,20 @@ describe('sync diff', () => {
 		expect(out).toContain('(meta.note)');
 	});
 
+	it('refuses a target below the Environment Sync floor, naming both versions', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		agent
+			.get(url)
+			.intercept({ path: /^\/server\/info/, method: 'GET' })
+			.reply(200, { data: { version: '12.1.0' } }, { headers: { 'content-type': 'application/json' } });
+
+		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(1);
+		expect(stderr.join('')).toContain('Environment Sync needs Directus 12.2.0 or later; "staging" runs 12.1.0.');
+	});
+
 	it('honors the version gate and --allow-drift like push — diff must not preview what push refuses', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
@@ -116,7 +130,7 @@ describe('sync diff', () => {
 		agent
 			.get(url)
 			.intercept({ path: /^\/server\/info/, method: 'GET' })
-			.reply(200, { data: { version: '11.0.1' } }, { headers: { 'content-type': 'application/json' } })
+			.reply(200, { data: { version: '12.2.1' } }, { headers: { 'content-type': 'application/json' } })
 			.times(2);
 
 		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(1);

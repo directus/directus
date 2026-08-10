@@ -162,26 +162,26 @@ describe('sync push', () => {
 
 	it('refuses ANY known version mismatch — patch included — naming both versions and the flag', async () => {
 		seedConfig();
-		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
+		writeSnapshotFiles(schemaDir, versionedSnapshot('12.2.0'));
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		interceptServerInfo('11.2.5');
+		interceptServerInfo('12.2.5');
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
 
 		const err = stderr.join('');
 		expect(err).toContain('Version mismatch');
-		expect(err).toContain('11.2.0');
-		expect(err).toContain('11.2.5');
+		expect(err).toContain('12.2.0');
+		expect(err).toContain('12.2.5');
 		expect(err).toContain('--allow-drift');
 	});
 
 	it('--allow-drift sends force to /schema/diff and says so out loud', async () => {
 		seedConfig();
-		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
+		writeSnapshotFiles(schemaDir, versionedSnapshot('12.2.0'));
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		interceptServerInfo('11.2.5');
+		interceptServerInfo('12.2.5');
 
 		let diffQuery: string | undefined;
 
@@ -201,10 +201,10 @@ describe('sync push', () => {
 
 	it('--allow-drift sends force even when the versions match, so the vendor gate is reachable', async () => {
 		seedConfig();
-		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
+		writeSnapshotFiles(schemaDir, versionedSnapshot('12.2.0'));
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		interceptServerInfo('11.2.0');
+		interceptServerInfo('12.2.0');
 
 		let diffQuery: string | undefined;
 
@@ -224,10 +224,10 @@ describe('sync push', () => {
 
 	it('names the flag when the target refuses the snapshot over its vendor', async () => {
 		seedConfig();
-		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
+		writeSnapshotFiles(schemaDir, versionedSnapshot('12.2.0'));
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		interceptServerInfo('11.2.0');
+		interceptServerInfo('12.2.0');
 
 		agent
 			.get(url)
@@ -255,10 +255,10 @@ describe('sync push', () => {
 
 	it('leaves a payload error force cannot clear without the flag hint', async () => {
 		seedConfig();
-		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
+		writeSnapshotFiles(schemaDir, versionedSnapshot('12.2.0'));
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		interceptServerInfo('11.2.0');
+		interceptServerInfo('12.2.0');
 
 		agent
 			.get(url)
@@ -285,7 +285,7 @@ describe('sync push', () => {
 
 	it('leaves an unparseable version to the server gate instead of refusing on a guess', async () => {
 		seedConfig();
-		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
+		writeSnapshotFiles(schemaDir, versionedSnapshot('12.2.0'));
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
 		interceptServerInfo('a-custom-fork');
@@ -1079,6 +1079,25 @@ describe('sync push with data', () => {
 		expect(err).toContain('directus_flows');
 		expect(err).toContain('directus_operations');
 		expect(err).toMatch(/nullable/i);
+	});
+
+	it('hints at the Environment Sync floor when the import endpoint is missing', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		seedData([{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] }]);
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		interceptDiff('merge', null);
+		interceptTarget('/roles', []);
+
+		interceptImport(
+			{ mode: 'merge' },
+			{ errors: [{ message: 'Route /utils/import does not exist.', extensions: { code: 'ROUTE_NOT_FOUND' } }] },
+			404,
+		);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+		expect(stderr.join('')).toContain('older than 12.2.0');
 	});
 
 	it('reports a converged data push as nothing-to-push without calling import', async () => {

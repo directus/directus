@@ -10,7 +10,7 @@ import {
 	utilsImportBatch,
 } from '@directus/sdk';
 import type { PrimaryKey } from '@directus/types';
-import { isPlainObject } from 'lodash-es';
+import { get, isPlainObject } from 'lodash-es';
 import type { ResolvedCredential } from '../../../kernel/config/credentials.js';
 import type { ImportMode, SchemaDiffMode } from '../../../kernel/config/mode.js';
 import { connect, mapRequestError } from '../../../kernel/connection.js';
@@ -24,6 +24,7 @@ import {
 	parseSnapshot,
 	type Snapshot,
 } from './contract.js';
+import { SYNC_MIN_DIRECTUS } from './preflight.js';
 
 export type SnapshotScope = { readonly include: string[] } | { readonly exclude: string[] };
 
@@ -447,6 +448,14 @@ function enrichImportError(mapped: CliError, error: unknown): CliError {
 		return withHint(
 			mapped,
 			'The push may still have been applied on the server. Run d6s sync diff before retrying — a blind retry can duplicate records.',
+		);
+	}
+
+	// A 404 here is the endpoint itself missing, which no referenced-record hint should explain away.
+	if (get(error.response, 'status') === 404) {
+		return withHint(
+			mapped,
+			`The batch import endpoint was not found — the target may be running Directus older than ${SYNC_MIN_DIRECTUS}, which Environment Sync requires.`,
 		);
 	}
 

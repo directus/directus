@@ -1,5 +1,4 @@
 import type { SchemaDiffMode } from '../../../kernel/config/mode.js';
-import { fetchServerVersion } from '../../../kernel/connection.js';
 import { CliError } from '../../../kernel/error.js';
 import type { CliContext } from '../../../kernel/run.js';
 import { maybePluralize } from '../../../kernel/text.js';
@@ -62,6 +61,8 @@ export interface SnapshotDiffOptions {
 	readonly mode: SchemaDiffMode;
 	readonly command: 'diff' | 'push';
 	readonly allowDrift: boolean;
+	/** Read once by the sync preflight; undefined when the server would not say. */
+	readonly targetVersion: string | undefined;
 }
 
 export async function fetchSnapshotDiff(
@@ -70,8 +71,7 @@ export async function fetchSnapshotDiff(
 	options: SnapshotDiffOptions,
 	ctx: CliContext,
 ): Promise<DiffResult | null> {
-	const { mode, command, allowDrift } = options;
-	const targetVersion = await fetchServerVersion(target.credential);
+	const { mode, command, allowDrift, targetVersion } = options;
 
 	if (!allowDrift && knownVersionMismatch(snapshot.directus, targetVersion)) {
 		throw new CliError(

@@ -201,6 +201,19 @@ describe('sync pull', () => {
 		expect(output).not.toMatch(/paste|log in|password/i);
 	});
 
+	it('refuses a source below the Environment Sync floor, naming both versions', async () => {
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		agent
+			.get(url)
+			.intercept({ path: '/server/info', method: 'GET' })
+			.reply(200, { data: { version: '12.1.0' } }, { headers: { 'content-type': 'application/json' } });
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
+		expect(stderr.join('')).toContain('Environment Sync needs Directus 12.2.0 or later; "staging" runs 12.1.0.');
+	});
+
 	it('refuses a schema directory that symlinks outside the project and writes nothing outside', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
