@@ -6,14 +6,17 @@ import { useI18n } from 'vue-i18n';
 import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
+import { useDuplicate } from './use-duplicate';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
 import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
+import VInput from '@/components/v-input.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
@@ -117,6 +120,33 @@ const flows = computed(() => {
 
 function updateSort(sort: Sort | null) {
 	internalSort.value = sort ?? { by: 'name', desc: false };
+}
+
+const duplicateDialogActive = ref(false);
+const duplicateSource = ref<FlowRaw | null>(null);
+const duplicateName = ref('');
+
+const { duplicating, duplicate } = useDuplicate({
+	source: duplicateSource,
+	name: duplicateName,
+	onSuccess: async () => {
+		duplicateDialogActive.value = false;
+		await flowsStore.hydrate();
+		licenseStore.hydrate();
+	},
+});
+
+function openDuplicateFlow(item: FlowRaw) {
+	if (!licenseStore.limits.flows.hasRemaining) {
+		flowsLimitModalOpen.value = true;
+		return;
+	}
+
+	const flow = flowsStore.flows.find(({ id }) => id === item.id) ?? item;
+
+	duplicateSource.value = flow;
+	duplicateName.value = `${flow.name} (copy)`;
+	duplicateDialogActive.value = true;
 }
 
 function navigateToFlow({ item: flow, event }: { item: FlowRaw; event: MouseEvent }) {
@@ -248,6 +278,15 @@ function onFlowDrawerCompletion(id: string) {
 								</VListItemContent>
 							</VListItem>
 
+							<VListItem :disabled="createAllowed === false" clickable @click="openDuplicateFlow(item)">
+								<VListItemIcon>
+									<VIcon name="content_copy" />
+								</VListItemIcon>
+								<VListItemContent>
+									{{ $t('duplicate_flow') }}
+								</VListItemContent>
+							</VListItem>
+
 							<VListItem class="danger" clickable @click="confirmDelete = item">
 								<VListItemIcon>
 									<VIcon name="delete" outline />
@@ -272,6 +311,21 @@ function onFlowDrawerCompletion(id: string) {
 					</VButton>
 					<VButton danger :loading="deletingFlow" @click="deleteFlow">
 						{{ $t('delete_label') }}
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+
+		<VDialog v-model="duplicateDialogActive" @esc="duplicateDialogActive = false" @apply="duplicate">
+			<VCard>
+				<VCardTitle>{{ $t('duplicate_flow') }}</VCardTitle>
+				<VCardText>
+					<VInput v-model="duplicateName" autofocus />
+				</VCardText>
+				<VCardActions>
+					<VButton secondary @click="duplicateDialogActive = false">{{ $t('cancel') }}</VButton>
+					<VButton :disabled="!duplicateName" :loading="duplicating" @click="duplicate">
+						{{ $t('duplicate') }}
 					</VButton>
 				</VCardActions>
 			</VCard>

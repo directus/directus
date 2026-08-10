@@ -12,6 +12,7 @@ import { i18n } from '@/lang';
 vi.mock('@/api', () => ({
 	default: {
 		get: vi.fn(),
+		post: vi.fn(),
 		delete: vi.fn(),
 		patch: vi.fn(),
 	},
