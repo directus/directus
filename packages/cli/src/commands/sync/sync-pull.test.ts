@@ -197,7 +197,7 @@ describe('sync pull', () => {
 			'Set DIRECTUS_STAGING_TOKEN in your CI environment. Saved profile credentials are local-only and are not read in CI.',
 		);
 
-		expect(stderr.join('')).not.toContain('profile test');
+		expect(stderr.join('')).not.toContain('profile test-connection');
 
 		const output = stdout.join('') + stderr.join('');
 		expect(output).not.toMatch(/paste|log in|password/i);

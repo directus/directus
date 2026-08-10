@@ -99,7 +99,7 @@ export function resolveTarget(profileName: string, projectName: string, ctx: Cli
 		}
 
 		throw new CliError('AUTH', `No credential found for profile "${profileName}".`, {
-			hint: `Set ${envTokenVar(profileName)}, or run d6s profile test ${profileName} to add one.`,
+			hint: `Set ${envTokenVar(profileName)}, or run d6s profile test-connection ${profileName} to add one.`,
 		});
 	}
 

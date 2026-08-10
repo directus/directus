@@ -13,22 +13,28 @@ import { CliError } from '../../kernel/error.js';
 import { ask, orPrompt, promptAndRegisterToken, promptLogin } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
 
-interface TestOptions {
+interface TestConnectionOptions {
 	readonly url?: string;
 	readonly token?: string;
 }
 
-export function registerTest(command: Command, getContext: () => CliContext): void {
+export function registerTestConnection(command: Command, getContext: () => CliContext): void {
 	command
-		.command('test')
+		.command('test-connection')
 		.description('Verify a profile can authenticate. Name a profile or pass --url — one is required, never both')
 		.argument('[name]', 'Profile name; prompted when omitted and no --url is given')
 		.option('--url <url>', 'Test a URL directly, without a profile or configuration file')
 		.option('--token <token>', 'Override the resolved token')
-		.action((name: string | undefined, options: TestOptions) => testProfile(name, options, getContext()));
+		.action((name: string | undefined, options: TestConnectionOptions) =>
+			testProfileConnection(name, options, getContext()),
+		);
 }
 
-export async function testProfile(nameArg: string | undefined, options: TestOptions, ctx: CliContext): Promise<void> {
+export async function testProfileConnection(
+	nameArg: string | undefined,
+	options: TestConnectionOptions,
+	ctx: CliContext,
+): Promise<void> {
 	if (nameArg !== undefined && options.url !== undefined) {
 		throw new CliError('USAGE', 'Pass a profile name or --url, not both.');
 	}
@@ -43,9 +49,9 @@ export async function testProfile(nameArg: string | undefined, options: TestOpti
 		name = await orPrompt(
 			nameArg,
 			ctx.interactive,
-			'Name the profile: d6s profile test <name>',
+			'Name the profile: d6s profile test-connection <name>',
 			{ message: 'Profile name', placeholder: 'production' },
-			'Or test without one: d6s profile test --url <url> --token <token>',
+			'Or test without one: d6s profile test-connection --url <url> --token <token>',
 		);
 
 		url = ctx.config.requireProfile(name).url;
@@ -104,7 +110,7 @@ export async function testProfile(nameArg: string | undefined, options: TestOpti
 	ctx.ui.success(`Authenticated to ${url} as ${identity.user} (${identity.role}).`);
 
 	ctx.ui.data({
-		kind: 'ProfileTestReport',
+		kind: 'ProfileTestConnectionReport',
 		ok: true,
 		url,
 		user: identity.user,

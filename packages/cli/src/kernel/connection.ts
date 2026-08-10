@@ -136,7 +136,7 @@ export async function refreshSessionIfNeeded(credential: ResolvedCredential): Pr
 		if (mapped.code !== 'AUTH') throw mapped;
 
 		throw new CliError('AUTH', `The saved session for profile "${credential.profileName}" has expired.`, {
-			hint: `Sign in again: d6s profile test ${credential.profileName}`,
+			hint: `Sign in again: d6s profile test-connection ${credential.profileName}`,
 			...(mapped.detail !== undefined ? { detail: mapped.detail } : {}),
 		});
 	}

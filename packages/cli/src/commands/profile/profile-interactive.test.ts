@@ -10,7 +10,7 @@ import type { CliContext } from '../../kernel/run.js';
 import { createUi } from '../../kernel/ui.js';
 import { add } from './add.js';
 import { remove } from './remove.js';
-import { testProfile } from './test.js';
+import { testProfileConnection } from './test-connection.js';
 import { update } from './update.js';
 import { saveProfile } from './utils/save.js';
 
@@ -304,7 +304,10 @@ describe('interactive profile flows', () => {
 		const ctx: CliContext = {
 			...base,
 			interactive: false,
-			config: { ...base.config, upsertProfile: vi.fn(() => rollback) },
+			config: {
+				...base.config,
+				upsertProfile: vi.fn((_, profile) => ({ profile, rollback })),
+			},
 		};
 
 		const error = await saveProfile('staging', 'https://cms.example.com', 'token-value-abcdefgh', ctx).catch(
@@ -352,7 +355,7 @@ describe('interactive profile flows', () => {
 		expect(confirm).not.toHaveBeenCalled();
 	});
 
-	it('test prompts for a token when none resolves, tagging its source', async () => {
+	it('test-connection prompts for a token when none resolves, tagging its source', async () => {
 		writeFileSync(
 			join(dir, 'directus.config.json'),
 			JSON.stringify({ profiles: { prod: { url: 'https://cms.example.com', auth: { type: 'token' } } } }),
@@ -364,13 +367,13 @@ describe('interactive profile flows', () => {
 		vi.mocked(confirm).mockResolvedValueOnce(false);
 		vi.mocked(testConnection).mockResolvedValueOnce({ user: 'Ada', role: 'Admin', projectName: 'Demo' });
 
-		await testProfile('prod', {}, ctxAt(dir));
+		await testProfileConnection('prod', {}, ctxAt(dir));
 
 		expect(password).toHaveBeenCalled();
 		expect(testConnection).toHaveBeenCalledWith(expect.objectContaining({ token: 'typed-token', kind: 'token' }));
 	});
 
-	it('test can log in with email/password when no token resolves', async () => {
+	it('test-connection can log in with email/password when no token resolves', async () => {
 		writeFileSync(
 			join(dir, 'directus.config.json'),
 			JSON.stringify({ profiles: { prod: { url: 'https://cms.example.com', auth: { type: 'token' } } } }),
@@ -382,7 +385,7 @@ describe('interactive profile flows', () => {
 		vi.mocked(password).mockResolvedValueOnce('pw-secret');
 		vi.mocked(loginSession).mockResolvedValueOnce({ identity: IDENTITY, session: SESSION });
 
-		await testProfile('prod', {}, ctxAt(dir));
+		await testProfileConnection('prod', {}, ctxAt(dir));
 
 		expect(loginSession).toHaveBeenCalledWith('https://cms.example.com', 'ada@example.com', 'pw-secret');
 		expect(testConnection).not.toHaveBeenCalled();
@@ -391,10 +394,10 @@ describe('interactive profile flows', () => {
 		expect(store['https://cms.example.com'].prod.refresh_token).toBe(SESSION.refresh_token);
 	});
 
-	it('test --url works without configuration and refreshes the resolved credential before testing', async () => {
+	it('test-connection --url works without configuration and refreshes the resolved credential before testing', async () => {
 		vi.mocked(testConnection).mockResolvedValueOnce({ user: 'Ada', role: 'Admin', projectName: 'Demo' });
 
-		await testProfile(undefined, { url: 'https://oneoff.example.com', token: 'tok-flag' }, ctxAt(dir));
+		await testProfileConnection(undefined, { url: 'https://oneoff.example.com', token: 'tok-flag' }, ctxAt(dir));
 
 		expect(testConnection).toHaveBeenCalledWith(
 			expect.objectContaining({ url: 'https://oneoff.example.com', token: 'tok-flag', kind: 'token' }),
@@ -407,7 +410,7 @@ describe('interactive profile flows', () => {
 		expect(refreshOrder).toBeLessThan(testOrder);
 	});
 
-	it('emits the tagged ProfileTestReport contract on the JSON channel', async () => {
+	it('emits the tagged ProfileTestConnectionReport contract on the JSON channel', async () => {
 		const stdout: string[] = [];
 
 		vi.mocked(process.stdout.write).mockImplementation((chunk) => {
@@ -418,10 +421,10 @@ describe('interactive profile flows', () => {
 		vi.mocked(testConnection).mockResolvedValueOnce(IDENTITY);
 		const ctx = { ...ctxAt(dir), ui: createUi({ json: true, color: false }) };
 
-		await testProfile(undefined, { url: 'https://oneoff.example.com', token: 'tok-flag' }, ctx);
+		await testProfileConnection(undefined, { url: 'https://oneoff.example.com', token: 'tok-flag' }, ctx);
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
-			kind: 'ProfileTestReport',
+			kind: 'ProfileTestConnectionReport',
 			ok: true,
 			url: 'https://oneoff.example.com',
 			user: 'Ada',

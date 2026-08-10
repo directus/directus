@@ -303,7 +303,7 @@ describe('connection', () => {
 		}).catch((error: unknown) => error);
 
 		expect(error).toMatchObject({ code: 'AUTH' });
-		expect((error as { hint: string }).hint).toContain('profile test prod');
+		expect((error as { hint: string }).hint).toContain('profile test-connection prod');
 	});
 
 	it('surfaces a non-auth refresh failure as itself, never as an expired session', async () => {

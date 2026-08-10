@@ -406,7 +406,7 @@ describe('profile commands', () => {
 			// An env-unsafe name would derive a DIRECTUS_<NAME>_TOKEN that no shell can export.
 			[['profile', 'add', 'my-staging', '--url', 'https://cms.example.com'], /Invalid profile name: "my-staging"/],
 			[['profile', 'add', 'staging', '--url', 'not-a-url'], /valid http\(s\) URL/],
-			[['profile', 'test', 'staging', '--url', 'https://oneoff.example.com'], /not both/],
+			[['profile', 'test-connection', 'staging', '--url', 'https://oneoff.example.com'], /not both/],
 		];
 
 		for (const [argv, reason] of cases) {
@@ -434,21 +434,21 @@ describe('profile commands', () => {
 		expect(stderr.join('')).toContain('Unknown profile: "ghost"');
 	});
 
-	it('test names the env var to set when no token resolves', async () => {
+	it('test-connection names the env var to set when no token resolves', async () => {
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', '');
 		vi.stubEnv('DIRECTUS_TOKEN', '');
 		vi.stubEnv('CI', 'true');
 		await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
 
-		expect(await d6s('profile', 'test', 'staging')).toBe(1);
+		expect(await d6s('profile', 'test-connection', 'staging')).toBe(1);
 		expect(stderr.join('')).toContain('DIRECTUS_STAGING_TOKEN');
 	});
 
-	it('test --url does not borrow the ambient DIRECTUS_TOKEN, so a typo cannot leak it to that instance', async () => {
+	it('test-connection --url does not borrow the ambient DIRECTUS_TOKEN, so a typo cannot leak it to that instance', async () => {
 		vi.stubEnv('DIRECTUS_TOKEN', 'ambient-secret-token');
 		vi.stubEnv('CI', 'true');
 
-		expect(await d6s('profile', 'test', '--url', 'https://oneoff.example.com', '--json')).toBe(1);
+		expect(await d6s('profile', 'test-connection', '--url', 'https://oneoff.example.com', '--json')).toBe(1);
 
 		expect(JSON.parse(stdout.join('')).error).toMatchObject({
 			code: 'AUTH',
@@ -458,10 +458,13 @@ describe('profile commands', () => {
 		expect(stderr.join('')).toBe('');
 	});
 
-	it('test rejects a credential-bearing --url so a secret is never used or printed', async () => {
+	it('test-connection rejects a credential-bearing --url so a secret is never used or printed', async () => {
 		const password = 'super-secret-password';
 
-		expect(await d6s('profile', 'test', '--url', `https://user:${password}@oneoff.example.com`, '--json')).toBe(1);
+		expect(
+			await d6s('profile', 'test-connection', '--url', `https://user:${password}@oneoff.example.com`, '--json'),
+		).toBe(1);
+
 		expect(stdout.join('')).not.toContain(password);
 		expect(stderr.join('')).not.toContain(password);
 		expect(JSON.parse(stdout.join('')).error.code).toBe('USAGE');

@@ -3,7 +3,7 @@ import type { CliContext } from '../../kernel/run.js';
 import { registerAdd } from './add.js';
 import { registerList } from './list.js';
 import { registerRemove } from './remove.js';
-import { registerTest } from './test.js';
+import { registerTestConnection } from './test-connection.js';
 import { registerUpdate } from './update.js';
 
 export function registerProfile(program: Command, getContext: () => CliContext): void {
@@ -12,6 +12,6 @@ export function registerProfile(program: Command, getContext: () => CliContext):
 	registerAdd(command, getContext);
 	registerUpdate(command, getContext);
 	registerList(command, getContext);
-	registerTest(command, getContext);
+	registerTestConnection(command, getContext);
 	registerRemove(command, getContext);
 }
