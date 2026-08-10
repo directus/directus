@@ -35,3 +35,8 @@ Run `d6s --help` for the full command reference.
 
 Requires Directus 12.2.0 or later. The CLI is versioned independently of Directus, so you don't need matching version
 numbers between the CLI and your instances.
+
+## License
+
+This package is licensed under the MIT License. See the
+[LICENSE](https://github.com/directus/directus/blob/main/packages/cli/license) file for more information.
