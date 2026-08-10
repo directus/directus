@@ -110,10 +110,9 @@ properties:
         type: string
         nullable: true
       schema:
-        description: Database schema (pg only).
+        description: Database schema. Absent outside Postgres.
         example: public
         type: string
-        nullable: true
       foreign_key_schema:
         description: Related schema from the foreign key constraint (pg only).
         type: string

@@ -60,14 +60,12 @@ properties:
         description: Whether the extension is loaded from the local `extensions/` folder.
         type: boolean
       version:
-        description: Version of the installed extension, if available.
+        description: Version of the installed extension. Absent if not available.
         example: 1.0.0
         type: string
-        nullable: true
       host:
-        description: Host package or publisher, if available.
+        description: Host package or publisher. Absent if not available.
         type: string
-        nullable: true
       path:
         description: On-disk path or module path to the extension entrypoint.
         type: string
@@ -84,7 +82,6 @@ properties:
       sandbox:
         description: Sandbox configuration for API extensions. Absent if the extension is not sandboxed.
         type: object
-        nullable: true
         properties:
           enabled:
             type: boolean
