@@ -16,11 +16,11 @@ export const deleteField =
 		field: DirectusField<Schema>['field'],
 	): RestCommand<void, Schema> =>
 	() => {
-		throwIfEmpty(collection, 'Collection cannot be empty');
+		throwIfEmpty(String(collection), 'Collection cannot be empty');
 		throwIfEmpty(field, 'Field cannot be empty');
 
 		return {
-			path: `/fields/${collection}/${field}`,
+			path: `/fields/${collection as string}/${field}`,
 			method: 'DELETE',
 		};
 	};
