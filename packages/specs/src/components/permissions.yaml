@@ -10,6 +10,7 @@ properties:
     oneOf:
       - type: string
         format: uuid
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Policies'
   collection:
     description: What collection this permission applies to.
