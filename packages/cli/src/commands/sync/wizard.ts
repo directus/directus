@@ -22,7 +22,7 @@ export async function wizard(ctx: CliContext): Promise<void> {
 		});
 	}
 
-	const loaded = ctx.config.require();
+	const loaded = ctx.config.requireConfig();
 	const profiles = Object.keys(loaded.config.profiles).sort(byCodepoint);
 
 	if (profiles.length < 2) {

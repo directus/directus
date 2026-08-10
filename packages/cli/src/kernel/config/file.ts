@@ -191,7 +191,7 @@ export interface ConfigStore {
 	path(): string | undefined;
 	/** The parsed configuration, or undefined when there is none — profile-less operation stays first-class. */
 	load(): LoadedConfig | undefined;
-	require(): LoadedConfig;
+	requireConfig(): LoadedConfig;
 	/**
 	 * The stored profile for a name, or undefined when the name is free. A present result means the name is
 	 * taken even when its `url` is undefined: a hand-edited profile with a missing or mangled `url` is still a
@@ -215,7 +215,7 @@ export interface ConfigStore {
 
 /**
  * An explicit configuration path wins over discovery. Parsing stays lazy so profile add/remove can repair raw
- * configuration files that fail schema validation; a missing discovered configuration remains valid until `require()`.
+ * configuration files that fail schema validation; a missing discovered configuration remains valid until `requireConfig()`.
  */
 export function createConfigStore(cwd: string, configOption?: string): ConfigStore {
 	let path = configOption === undefined ? findConfigPath(cwd) : resolve(cwd, configOption);
@@ -231,7 +231,7 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 		return loaded;
 	}
 
-	function require(): LoadedConfig {
+	function requireConfig(): LoadedConfig {
 		const config = load();
 
 		if (config === undefined) {
@@ -253,7 +253,7 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 	return {
 		path: () => path,
 		load,
-		require,
+		requireConfig,
 		existingProfile(name) {
 			if (path === undefined) return undefined;
 
@@ -263,7 +263,7 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 			return storedProfile(profiles[name]);
 		},
 		requireProfile(name) {
-			const { config } = require();
+			const { config } = requireConfig();
 			const profile = Object.hasOwn(config.profiles, name) ? config.profiles[name] : undefined;
 
 			if (profile === undefined) {
@@ -338,7 +338,7 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 			};
 		},
 		upsertProjectMode(project, mode) {
-			const target = require().path;
+			const target = requireConfig().path;
 			const raw = readRawConfig(target);
 			const projects = isPlainObject(raw['projects']) ? (raw['projects'] as Record<string, unknown>) : {};
 			const current = isPlainObject(projects[project]) ? (projects[project] as Record<string, unknown>) : {};

@@ -51,7 +51,7 @@ function assertContained(dir: string, realRoot: string): void {
 }
 
 export function resolveTarget(profileName: string, projectName: string, ctx: CliContext): Target {
-	const loaded = ctx.config.require();
+	const loaded = ctx.config.requireConfig();
 
 	// The free checks first: neither costs a credential-store read that can fail on its own.
 	if (!PROJECT_NAME.test(projectName)) {

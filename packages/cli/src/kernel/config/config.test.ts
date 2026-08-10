@@ -183,7 +183,7 @@ describe('createConfigStore', () => {
 	});
 
 	it('names the missing file for the commands that cannot run without one', () => {
-		const error = caught(() => createConfigStore(tempDir()).require());
+		const error = caught(() => createConfigStore(tempDir()).requireConfig());
 
 		expect(error.code).toBe('CONFIG');
 		expect(error.message).toBe('No directus.config.json found.');
