@@ -37,4 +37,5 @@ export type CollectionsOverview = {
 export type SchemaOverview = {
 	collections: CollectionsOverview;
 	relations: Relation[];
+	inactiveCollections?: Set<string>;
 };

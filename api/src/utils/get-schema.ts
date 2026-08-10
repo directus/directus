@@ -119,6 +119,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 	const result: SchemaOverview = {
 		collections: {},
 		relations: [],
+		inactiveCollections: new Set(),
 	};
 
 	const systemFieldRows = getSystemFieldRowsWithAuthProviders();
@@ -150,6 +151,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 		// db-only tables will not have a collectionMeta
 		// system collections will not have the `status` field set
 		if (collectionMeta && 'status' in collectionMeta && collectionMeta?.status !== 'active') {
+			result.inactiveCollections?.add(collection);
 			continue;
 		}
 
