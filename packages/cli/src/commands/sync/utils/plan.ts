@@ -112,17 +112,18 @@ export interface SchemaPlan {
 	readonly lines: readonly string[];
 }
 
+export interface SchemaPlanOptions {
+	readonly command: SyncCommand;
+	readonly mode: SyncMode;
+	readonly allowDrift: boolean;
+}
+
 /**
  * Build the schema plan both sync commands work from. Diff must not preview what push refuses, so the
  * compatibility gate, the disabled-phase disclosure, and the snapshot being compared are decided in one place.
  */
-export async function planSchema(
-	target: Target,
-	command: SyncCommand,
-	mode: SyncMode,
-	allowDrift: boolean,
-	ctx: CliContext,
-): Promise<SchemaPlan> {
+export async function planSchema(target: Target, options: SchemaPlanOptions, ctx: CliContext): Promise<SchemaPlan> {
+	const { command, mode, allowDrift } = options;
 	const { credential, projectConfig, schemaDir } = target;
 
 	// A disabled schema phase carries no version gate and must not be reported as a match.
@@ -142,7 +143,7 @@ export async function planSchema(
 	const result =
 		snapshot === null
 			? null
-			: await fetchSnapshotDiff(target, snapshot, schemaDiffMode(mode), command, allowDrift, ctx);
+			: await fetchSnapshotDiff(target, snapshot, { mode: schemaDiffMode(mode), command, allowDrift }, ctx);
 
 	const summary = summarizeDiff(result === null ? null : result.diff);
 

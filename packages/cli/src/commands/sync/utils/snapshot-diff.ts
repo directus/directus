@@ -63,6 +63,13 @@ function enrichDiffError(error: unknown, url: string): unknown {
 	return error;
 }
 
+export interface SnapshotDiffOptions {
+	readonly mode: SchemaDiffMode;
+	/** The command that ran the check; scoped-sync warnings name it as their subject. */
+	readonly command: 'diff' | 'push';
+	readonly allowDrift: boolean;
+}
+
 /**
  * Compare an already-read stored snapshot with a target using the same fetch path for diff and push.
  * Callers read the snapshot themselves so a never-pulled project fails before any request is made.
@@ -70,11 +77,10 @@ function enrichDiffError(error: unknown, url: string): unknown {
 export async function fetchSnapshotDiff(
 	target: Target,
 	snapshot: Snapshot,
-	mode: SchemaDiffMode,
-	command: 'diff' | 'push',
-	allowDrift: boolean,
+	options: SnapshotDiffOptions,
 	ctx: CliContext,
 ): Promise<DiffResult | null> {
+	const { mode, command, allowDrift } = options;
 	const targetVersion = await fetchServerVersion(target.credential);
 
 	if (!allowDrift && knownVersionMismatch(snapshot.directus, targetVersion)) {

@@ -166,7 +166,7 @@ const REFERENCE_LABELS: Record<OutOfScopeReference['kind'], string> = {
 	m2a: 'm2a',
 };
 
-function describeReference(reference: OutOfScopeReference): string {
+function formatReference(reference: OutOfScopeReference): string {
 	return `  ${reference.from} → ${reference.missing.join(', ')} (${REFERENCE_LABELS[reference.kind]})`;
 }
 
@@ -182,10 +182,10 @@ export function formatOutOfScopeReferences(references: readonly OutOfScopeRefere
 		`This sync references ${count(missing.size, 'collection')} it does not include. ` +
 		`Applying it to a target that lacks them will fail; add them to the scope to include them:`;
 
-	return [lead, ...references.map(describeReference)].join('\n');
+	return [lead, ...references.map(formatReference)].join('\n');
 }
 
-function describeSplit(split: SplitRelation): string {
+function formatSplit(split: SplitRelation): string {
 	return split.kind === 'relation'
 		? `  ${split.from} → ${split.relatedCollection}: missing the corresponding field ${split.pairedField}`
 		: `  ${split.from} (${split.special}): missing the relation that defines it`;
@@ -216,5 +216,5 @@ export function formatSplitRelations(splits: readonly SplitRelation[], subject: 
 		? `  ${include}: pull with --collections ${pair.join(',')}`
 		: `  ${include}: pull the full schema (drop --collections)`;
 
-	return [lead, ...splits.map(describeSplit), fix].join('\n');
+	return [lead, ...splits.map(formatSplit), fix].join('\n');
 }

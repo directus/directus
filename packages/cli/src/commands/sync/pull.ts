@@ -92,27 +92,25 @@ interface ResolvedScope {
 }
 
 function resolveScope(options: PullOptions, projectConfig: ProjectConfig | undefined): ResolvedScope | undefined {
+	if (options.collections !== undefined && options.excludeCollections !== undefined) {
+		throw new CliError('USAGE', 'Pass --collections or --exclude-collections, not both.');
+	}
+
+	if (options.collections?.length === 0) {
+		throw new CliError('USAGE', '--collections needs at least one collection name.');
+	}
+
+	if (options.excludeCollections?.length === 0) {
+		throw new CliError('USAGE', '--exclude-collections needs at least one collection name.');
+	}
+
 	let pair: { readonly include: string[] } | { readonly exclude: string[] } | undefined;
 
 	// CLI scope overrides configured scope wholesale.
-	if (options.collections !== undefined || options.excludeCollections !== undefined) {
-		if (options.collections !== undefined && options.excludeCollections !== undefined) {
-			throw new CliError('USAGE', 'Pass --collections or --exclude-collections, not both.');
-		}
-
-		if (options.collections !== undefined) {
-			if (options.collections.length === 0) {
-				throw new CliError('USAGE', '--collections needs at least one collection name.');
-			}
-
-			pair = { include: [...options.collections] };
-		} else if (options.excludeCollections !== undefined) {
-			if (options.excludeCollections.length === 0) {
-				throw new CliError('USAGE', '--exclude-collections needs at least one collection name.');
-			}
-
-			pair = { exclude: [...options.excludeCollections] };
-		}
+	if (options.collections !== undefined) {
+		pair = { include: [...options.collections] };
+	} else if (options.excludeCollections !== undefined) {
+		pair = { exclude: [...options.excludeCollections] };
 	} else {
 		const include = projectConfig?.collections;
 		const exclude = projectConfig?.excludeCollections;
@@ -459,9 +457,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	}
 
 	// Null schema fields distinguish a skipped phase from an empty snapshot.
-	ctx.ui.data({
-		kind: 'PullReport',
-		ok: true,
+	ctx.ui.result({
 		source: url,
 		profile: options.from,
 		project,

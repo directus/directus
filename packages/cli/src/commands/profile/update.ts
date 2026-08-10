@@ -5,7 +5,7 @@ import { isSafeUrl } from '../../kernel/config/file.js';
 import { CliError } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
-import { assertProfileName, resolveExistingProfileName, resolveProfileUrl, saveProfile } from './utils/save.js';
+import { assertProfileName, resolveProfileName, resolveProfileUrl, saveProfile } from './utils/save.js';
 
 interface UpdateOptions {
 	readonly name?: string;
@@ -33,15 +33,15 @@ export function registerUpdate(command: Command, getContext: () => CliContext): 
 
 const UNPRINTABLE_URL = '<saved URL is invalid or unsafe to print>';
 
-function overwriteConsequence(name: string): string {
+function urlOverwriteConsequence(name: string): string {
 	return `A ${envTokenVar(name)} env token will follow the profile to the new URL; a credential saved for the old URL will be cleared.`;
 }
 
-function overwriteWarning(name: string, from: string, to: string): string {
-	return `Overwrote the URL of "${name}": ${from} → ${to} — ${overwriteConsequence(name)}`;
+function urlOverwriteWarning(name: string, from: string, to: string): string {
+	return `Overwrote the URL of "${name}": ${from} → ${to} — ${urlOverwriteConsequence(name)}`;
 }
 
-function renameConsequence(from: string, to: string): string {
+function profileRenameConsequence(from: string, to: string): string {
 	return `Its saved credential moves with it, and the env token it reads becomes ${envTokenVar(to)} instead of ${envTokenVar(from)}.`;
 }
 
@@ -50,7 +50,7 @@ function report(
 	ctx: CliContext,
 	fields: { name: string; url: string | null; renamedFrom: string | null; credentialSaved: boolean },
 ): void {
-	ctx.ui.data({ kind: 'ProfileUpdateReport', ok: true, ...fields });
+	ctx.ui.result(fields);
 }
 
 /**
@@ -58,22 +58,16 @@ function report(
  * only the profile would strand the credential under a name nothing looks up — hence the rollback.
  */
 async function rename(from: string, to: string, skipConfirmation: boolean, ctx: CliContext): Promise<void> {
-	assertProfileName(to);
-
-	if (ctx.config.existingProfile(to) !== undefined) {
-		throw new CliError('USAGE', `Profile "${to}" already exists.`, {
-			hint: `Pick a free name, or remove that one first: d6s profile remove ${to}`,
-		});
-	}
+	assertProfileName(to, 'new', ctx, `Pick a free name, or remove that one first: d6s profile remove ${to}`);
 
 	if (!skipConfirmation) {
 		if (!ctx.interactive) {
 			throw new CliError('USAGE', `Renaming "${from}" to "${to}" also moves its saved credential.`, {
-				hint: `Pass --yes to confirm. ${renameConsequence(from, to)}`,
+				hint: `Pass --yes to confirm. ${profileRenameConsequence(from, to)}`,
 			});
 		}
 
-		const proceed = await ask(confirm({ message: `Rename "${from}" to "${to}"? ${renameConsequence(from, to)}` }));
+		const proceed = await ask(confirm({ message: `Rename "${from}" to "${to}"? ${profileRenameConsequence(from, to)}` }));
 
 		if (!proceed) throw new CliError('USAGE', `Profile "${from}" unchanged.`);
 	}
@@ -90,23 +84,16 @@ async function rename(from: string, to: string, skipConfirmation: boolean, ctx: 
 	}
 
 	ctx.ui.success(`Renamed profile "${from}" to "${to}".`);
-	ctx.ui.warn(renameConsequence(from, to));
+	ctx.ui.warn(profileRenameConsequence(from, to));
 }
 
 export async function update(nameArg: string | undefined, options: UpdateOptions, ctx: CliContext): Promise<void> {
-	const name = await resolveExistingProfileName(
+	const { name, profile: existing } = await resolveProfileName(
 		nameArg,
+		'existing',
 		'Name the profile: d6s profile update <name> [--url <url>] [--token <token>]',
 		ctx,
 	);
-
-	const existing = ctx.config.existingProfile(name);
-
-	if (existing === undefined) {
-		throw new CliError('USAGE', `Unknown profile: "${name}"`, {
-			hint: `Create it first: d6s profile add ${name} --url <url>`,
-		});
-	}
 
 	// Raw configuration may contain credentials or terminal controls, so only display a validated URL.
 	const currentUrl = existing.url !== undefined && isSafeUrl(existing.url) ? existing.url : undefined;
@@ -134,13 +121,13 @@ export async function update(nameArg: string | undefined, options: UpdateOptions
 	if (requestedUrl !== existing.url && options.yes !== true) {
 		if (!ctx.interactive) {
 			throw new CliError('USAGE', `Profile "${name}" already points at ${currentShown}.`, {
-				hint: `Pass --yes to overwrite its URL with ${requestedUrl}. ${overwriteConsequence(name)}`,
+				hint: `Pass --yes to overwrite its URL with ${requestedUrl}. ${urlOverwriteConsequence(name)}`,
 			});
 		}
 
 		const proceed = await ask(
 			confirm({
-				message: `Overwrite the URL of "${name}" — ${currentShown} → ${requestedUrl}? ${overwriteConsequence(name)}`,
+				message: `Overwrite the URL of "${name}" — ${currentShown} → ${requestedUrl}? ${urlOverwriteConsequence(name)}`,
 			}),
 		);
 
@@ -158,7 +145,7 @@ export async function update(nameArg: string | undefined, options: UpdateOptions
 			}
 		}
 
-		ctx.ui.warn(overwriteWarning(name, currentShown, saved.url));
+		ctx.ui.warn(urlOverwriteWarning(name, currentShown, saved.url));
 	}
 
 	report(ctx, { name, url: saved.url, renamedFrom: null, credentialSaved: saved.credentialSaved });

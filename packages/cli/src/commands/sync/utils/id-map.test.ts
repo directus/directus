@@ -7,6 +7,8 @@ import { expectCliError } from './test-support.js';
 
 const A = 'http://source.example.com';
 const B = 'http://target.example.com';
+const A_TO_B = { sourceUrl: A, targetUrl: B };
+const B_TO_A = { sourceUrl: B, targetUrl: A };
 
 const dirs: string[] = [];
 
@@ -47,7 +49,7 @@ describe('readIdMap / writeIdMap', () => {
 
 	it('round-trips a written map through read', () => {
 		const path = mapPath();
-		const map = withMappings(readIdMap(path), A, B, 'directus_roles', { s1: 't1', s2: 't2' });
+		const map = withMappings(readIdMap(path), A_TO_B, 'directus_roles', { s1: 't1', s2: 't2' });
 
 		writeIdMap(path, map);
 
@@ -56,17 +58,15 @@ describe('readIdMap / writeIdMap', () => {
 
 	it('writes byte-identical bytes regardless of key insertion order', () => {
 		const first = withMappings(
-			withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { s2: 't2' }),
-			A,
-			B,
+			withMappings(readIdMap(mapPath()), A_TO_B, 'directus_roles', { s2: 't2' }),
+			A_TO_B,
 			'directus_roles',
 			{ s1: 't1' },
 		);
 
 		const second = withMappings(
-			withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { s1: 't1' }),
-			A,
-			B,
+			withMappings(readIdMap(mapPath()), A_TO_B, 'directus_roles', { s1: 't1' }),
+			A_TO_B,
 			'directus_roles',
 			{ s2: 't2' },
 		);
@@ -82,16 +82,16 @@ describe('readIdMap / writeIdMap', () => {
 
 describe('withMappings', () => {
 	it('merges new entries into a collection bucket without dropping existing ones', () => {
-		const base = withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { s1: 't1' });
-		const merged = withMappings(base, A, B, 'directus_roles', { s2: 't2' });
+		const base = withMappings(readIdMap(mapPath()), A_TO_B, 'directus_roles', { s1: 't1' });
+		const merged = withMappings(base, A_TO_B, 'directus_roles', { s2: 't2' });
 
-		expect(mappingsFor(merged, A, B)['directus_roles']).toEqual({ s1: 't1', s2: 't2' });
+		expect(mappingsFor(merged, A_TO_B)['directus_roles']).toEqual({ s1: 't1', s2: 't2' });
 	});
 
 	it('fails STATE at write when a new entry maps a second source to an already-owned target id', () => {
-		const base = withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { s1: 't1' });
+		const base = withMappings(readIdMap(mapPath()), A_TO_B, 'directus_roles', { s1: 't1' });
 
-		const error = expectCliError(() => withMappings(base, A, B, 'directus_roles', { s2: 't1' }));
+		const error = expectCliError(() => withMappings(base, A_TO_B, 'directus_roles', { s2: 't1' }));
 
 		expect(error.code).toBe('STATE');
 		expect(error.message).toContain('"s1"');
@@ -101,7 +101,7 @@ describe('withMappings', () => {
 
 	it('fails STATE when a single entries batch maps two sources to the same target id', () => {
 		const error = expectCliError(() =>
-			withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { s1: 't1', s2: 't1' }),
+			withMappings(readIdMap(mapPath()), A_TO_B, 'directus_roles', { s1: 't1', s2: 't1' }),
 		);
 
 		expect(error.code).toBe('STATE');
@@ -109,32 +109,40 @@ describe('withMappings', () => {
 	});
 
 	it('preserves map identity when every entry is already in the bucket', () => {
-		const base = withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { s1: 't1', s2: 't2' });
+		const base = withMappings(readIdMap(mapPath()), A_TO_B, 'directus_roles', { s1: 't1', s2: 't2' });
 
-		expect(withMappings(base, A, B, 'directus_roles', { s1: 't1' })).toBe(base);
-		expect(withMappings(base, A, B, 'directus_roles', {})).toBe(base);
-		expect(withMappings(base, A, B, 'directus_roles', { s1: 't9' })).not.toBe(base);
+		expect(withMappings(base, A_TO_B, 'directus_roles', { s1: 't1' })).toBe(base);
+		expect(withMappings(base, A_TO_B, 'directus_roles', {})).toBe(base);
+		expect(withMappings(base, A_TO_B, 'directus_roles', { s1: 't9' })).not.toBe(base);
 	});
 
 	it('keeps source→target and target→source in separate buckets', () => {
 		const map = withMappings(
-			withMappings(readIdMap(mapPath()), A, B, 'directus_roles', { x: 'forward' }),
-			B,
-			A,
+			withMappings(readIdMap(mapPath()), A_TO_B, 'directus_roles', { x: 'forward' }),
+			B_TO_A,
 			'directus_roles',
 			{ x: 'reverse' },
 		);
 
-		expect(mappingsFor(map, A, B)['directus_roles']).toEqual({ x: 'forward' });
-		expect(mappingsFor(map, B, A)['directus_roles']).toEqual({ x: 'reverse' });
+		expect(mappingsFor(map, A_TO_B)['directus_roles']).toEqual({ x: 'forward' });
+		expect(mappingsFor(map, B_TO_A)['directus_roles']).toEqual({ x: 'reverse' });
 	});
 });
 
 describe('mappingsFor', () => {
 	it('finds the bucket for a differently-spelled but equivalent URL', () => {
-		const map = withMappings(readIdMap(mapPath()), 'http://host', 'http://target', 'directus_roles', { s1: 't1' });
+		const map = withMappings(
+			readIdMap(mapPath()),
+			{ sourceUrl: 'http://host', targetUrl: 'http://target' },
+			'directus_roles',
+			{
+				s1: 't1',
+			},
+		);
 
-		expect(mappingsFor(map, 'http://host:80/', 'http://target')['directus_roles']).toEqual({ s1: 't1' });
+		expect(mappingsFor(map, { sourceUrl: 'http://host:80/', targetUrl: 'http://target' })['directus_roles']).toEqual({
+			s1: 't1',
+		});
 	});
 });
 
@@ -142,14 +150,14 @@ describe('prototype safety', () => {
 	it('round-trips a record ID literally named __proto__ without polluting Object.prototype', () => {
 		const path = mapPath();
 		const entries = JSON.parse('{"__proto__": "target-x"}') as Record<string, string>;
-		const map = withMappings(readIdMap(path), A, B, 'directus_roles', entries);
+		const map = withMappings(readIdMap(path), A_TO_B, 'directus_roles', entries);
 
 		writeIdMap(path, map);
 
 		const serialized = readFileSync(path, 'utf8');
 		expect(serialized).toContain('"__proto__"');
 
-		const bucket = mappingsFor(readIdMap(path), A, B)['directus_roles'] ?? {};
+		const bucket = mappingsFor(readIdMap(path), A_TO_B)['directus_roles'] ?? {};
 
 		expect(Object.keys(bucket)).toContain('__proto__');
 		expect(Object.getPrototypeOf(bucket)).toBe(Object.prototype);

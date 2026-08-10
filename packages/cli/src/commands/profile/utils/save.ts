@@ -10,38 +10,101 @@ import type { CliContext } from '../../../kernel/run.js';
 // The name becomes part of DIRECTUS_<NAME>_TOKEN, so it has to stay a valid environment variable segment.
 const PROFILE_NAME = /^[A-Za-z0-9_]+$/;
 const PROFILE_NAME_RULE = 'Use letters, numbers, and underscores.';
+type ProfileNamePolicy = 'new' | 'existing';
+type StoredProfile = NonNullable<ReturnType<CliContext['config']['existingProfile']>>;
 
-/** Reject a name no environment variable could carry. */
-export function assertProfileName(name: string): void {
-	if (!PROFILE_NAME.test(name)) {
+/** Assert the creation or lookup rules for a profile name, returning the stored profile when one must exist. */
+export function assertProfileName(name: string, policy: 'new', ctx: CliContext, hint?: string): void;
+export function assertProfileName(name: string, policy: 'existing', ctx: CliContext, hint?: string): StoredProfile;
+export function assertProfileName(
+	name: string,
+	policy: ProfileNamePolicy,
+	ctx: CliContext,
+	hint?: string,
+): StoredProfile | undefined {
+	if (policy === 'new' && !PROFILE_NAME.test(name)) {
 		throw new CliError('USAGE', `Invalid profile name: "${name}".`, { hint: PROFILE_NAME_RULE });
+	}
+
+	const profile = ctx.config.existingProfile(name);
+
+	if (policy === 'new' && profile !== undefined) {
+		throw new CliError('USAGE', `Profile "${name}" already exists.`, {
+			hint: hint ?? `Change it instead: d6s profile update ${name} --url <url>`,
+		});
+	}
+
+	if (policy === 'existing' && profile === undefined) {
+		throw new CliError('USAGE', `Unknown profile: "${name}"`, {
+			hint: hint ?? 'See what exists: d6s profile list',
+		});
+	}
+
+	return profile;
+}
+
+interface ResolvedNewProfileName {
+	readonly name: string;
+	readonly profile: undefined;
+}
+
+interface ResolvedExistingProfileName {
+	readonly name: string;
+	readonly profile: StoredProfile;
+}
+
+function profileNameValidationMessage(
+	value: string | undefined,
+	policy: ProfileNamePolicy,
+	ctx: CliContext,
+): string | undefined {
+	if (value === undefined) return policy === 'new' ? PROFILE_NAME_RULE : 'Enter a profile name.';
+
+	try {
+		if (policy === 'new') assertProfileName(value, policy, ctx);
+		else assertProfileName(value, policy, ctx);
+
+		return undefined;
+	} catch (error) {
+		if (error instanceof CliError && error.code === 'USAGE') return error.message;
+		throw error;
 	}
 }
 
-/** Resolve the profile name from the argument or a prompt, rejecting names no environment variable could carry. */
-export async function resolveNewProfileName(
+/**
+ * Resolve the profile name from the argument or a prompt. Creating a profile ('new') rejects names no
+ * environment variable could carry; resolving an existing key accepts hand-written configuration as-is.
+ */
+export function resolveProfileName(
 	nameArg: string | undefined,
+	policy: 'new',
 	usage: string,
 	ctx: CliContext,
-): Promise<string> {
+): Promise<ResolvedNewProfileName>;
+export function resolveProfileName(
+	nameArg: string | undefined,
+	policy: 'existing',
+	usage: string,
+	ctx: CliContext,
+): Promise<ResolvedExistingProfileName>;
+export async function resolveProfileName(
+	nameArg: string | undefined,
+	policy: ProfileNamePolicy,
+	usage: string,
+	ctx: CliContext,
+): Promise<ResolvedNewProfileName | ResolvedExistingProfileName> {
 	const name = await orPrompt(nameArg, ctx.interactive, usage, {
 		message: 'Profile name',
 		placeholder: 'production',
-		validate: (value) => (value !== undefined && PROFILE_NAME.test(value) ? undefined : PROFILE_NAME_RULE),
+		validate: (value) => profileNameValidationMessage(value, policy, ctx),
 	});
 
-	assertProfileName(name);
+	if (policy === 'new') {
+		assertProfileName(name, policy, ctx);
+		return { name, profile: undefined };
+	}
 
-	return name;
-}
-
-/** Resolve an existing profile key without applying the stricter creation policy to hand-written configuration. */
-export function resolveExistingProfileName(
-	nameArg: string | undefined,
-	usage: string,
-	ctx: CliContext,
-): Promise<string> {
-	return orPrompt(nameArg, ctx.interactive, usage, { message: 'Profile name', placeholder: 'production' });
+	return { name, profile: assertProfileName(name, policy, ctx) };
 }
 
 /**
@@ -222,6 +285,8 @@ async function acquireCredential(
 							{ value: 'discard', label: 'Discard the token' },
 						];
 
+			// A cancel here (the only error these prompts throw) escapes the loop on purpose:
+			// Ctrl+C must abort the command, not land back in this menu.
 			const next = await ask(select({ message: 'How do you want to proceed?', options }));
 
 			if (next === 'save') return token === undefined ? { url } : { url, token };

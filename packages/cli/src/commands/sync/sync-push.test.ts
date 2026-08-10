@@ -319,8 +319,6 @@ describe('sync push', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
-			kind: 'PushReport',
-			ok: true,
 			target: url,
 			profile: 'staging',
 			project: 'default',
@@ -354,8 +352,6 @@ describe('sync push', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
-			kind: 'PushReport',
-			ok: true,
 			target: url,
 			profile: 'staging',
 			project: 'default',
@@ -561,7 +557,7 @@ describe('sync push with data', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
 
 		const payload = JSON.parse(stdout.join(''));
-		expect(payload.ok).toBe(true);
+		expect(payload.applied).toBe(true);
 		expect(payload.data).toMatchObject({ incomplete: ['directus_permissions'], skipped: false });
 	});
 
@@ -1248,8 +1244,6 @@ describe('sync push with data', () => {
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes', '--json')).toBe(0);
 
 		expect(JSON.parse(stdout.join(''))).toMatchObject({
-			kind: 'PushReport',
-			ok: true,
 			applied: true,
 			changes: true,
 			schemaSkipped: false,
@@ -1288,7 +1282,7 @@ describe('sync push with data', () => {
 		expect(err).toContain('nothing to push');
 	});
 
-	it('emits the PushReport data block with the source and per-collection results on --json', async () => {
+	it('emits the push data block with the source and per-collection results on --json', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		seedData(fullFixture());
@@ -1305,8 +1299,6 @@ describe('sync push with data', () => {
 		const payload = JSON.parse(stdout.join(''));
 
 		expect(payload).toMatchObject({
-			kind: 'PushReport',
-			ok: true,
 			project: 'default',
 			mode: 'merge',
 			applied: true,

@@ -224,7 +224,7 @@ describe('profile commands', () => {
 		expect(JSON.parse(stdout.join('')).error).toMatchObject({
 			code: 'USAGE',
 			message: 'Unknown profile: "ghost"',
-			hint: 'Create it first: d6s profile add ghost --url <url>',
+			hint: 'See what exists: d6s profile list',
 		});
 
 		expect(readConfig().profiles['ghost']).toBeUndefined();
@@ -308,18 +308,14 @@ describe('profile commands', () => {
 		expect(await d6s('profile', 'list', '--json')).toBe(0);
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
-			kind: 'ProfileListReport',
-			ok: true,
 			profiles: [{ name: 'staging', url: 'https://cms.example.com' }],
 		});
 	});
 
-	it('emits tagged JSON contracts for add, update, and remove', async () => {
+	it('emits JSON results for add, update, and remove', async () => {
 		expect(await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com', '--json')).toBe(0);
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
-			kind: 'ProfileAddReport',
-			ok: true,
 			name: 'staging',
 			url: 'https://one.example.com',
 			credentialSaved: false,
@@ -330,8 +326,6 @@ describe('profile commands', () => {
 		expect(await d6s('profile', 'update', 'staging', '--url', 'https://two.example.com', '--yes', '--json')).toBe(0);
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
-			kind: 'ProfileUpdateReport',
-			ok: true,
 			name: 'staging',
 			url: 'https://two.example.com',
 			// Always present so a consumer reads one shape; only a rename fills it in.
@@ -344,8 +338,6 @@ describe('profile commands', () => {
 		expect(await d6s('profile', 'remove', 'staging', '--yes', '--json')).toBe(0);
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
-			kind: 'ProfileRemoveReport',
-			ok: true,
 			removed: 'staging',
 		});
 	});
@@ -395,7 +387,6 @@ describe('profile commands', () => {
 		expect(await d6s('profile', 'list', '--json', '--config', explicit)).toBe(0);
 
 		expect(JSON.parse(stdout.join(''))).toMatchObject({
-			kind: 'ProfileListReport',
 			profiles: [{ name: 'staging', url: 'https://cms.example.com' }],
 		});
 	});

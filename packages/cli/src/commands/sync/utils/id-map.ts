@@ -144,11 +144,20 @@ export function readIdMap(path: string): IdMap {
 }
 
 /**
+ * One directional source→target pairing, addressing one group of collection buckets in the map. An
+ * object rather than two positional URLs: a transposed pair still type-checks but corrupts identities.
+ */
+export interface InstancePair {
+	readonly sourceUrl: string;
+	readonly targetUrl: string;
+}
+
+/**
  * Return the collection buckets for one normalized, directional source/target pair.
  */
-export function mappingsFor(map: IdMap, sourceUrl: string, targetUrl: string): CollectionMap {
-	const source = normalizeInstanceUrl(sourceUrl);
-	const target = normalizeInstanceUrl(targetUrl);
+export function mappingsFor(map: IdMap, pair: InstancePair): CollectionMap {
+	const source = normalizeInstanceUrl(pair.sourceUrl);
+	const target = normalizeInstanceUrl(pair.targetUrl);
 
 	return map.maps[source]?.[target] ?? {};
 }
@@ -159,13 +168,12 @@ export function mappingsFor(map: IdMap, sourceUrl: string, targetUrl: string): C
  */
 export function withMappings(
 	map: IdMap,
-	sourceUrl: string,
-	targetUrl: string,
+	pair: InstancePair,
 	collection: string,
 	entries: Readonly<Record<string, string>>,
 ): IdMap {
-	const source = normalizeInstanceUrl(sourceUrl);
-	const target = normalizeInstanceUrl(targetUrl);
+	const source = normalizeInstanceUrl(pair.sourceUrl);
+	const target = normalizeInstanceUrl(pair.targetUrl);
 
 	const targetMap = map.maps[source] ?? {};
 	const collectionMap = targetMap[target] ?? {};

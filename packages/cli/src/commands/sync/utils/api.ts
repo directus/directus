@@ -449,7 +449,7 @@ function importErrorExtensions(error: unknown): Record<string, unknown> | undefi
 	return undefined;
 }
 
-function renderCycle(extensions: Record<string, unknown>): string {
+function formatCycle(extensions: Record<string, unknown>): string {
 	const collections = Array.isArray(extensions['collections']) ? (extensions['collections'] as unknown[]) : [];
 	const relations = Array.isArray(extensions['relations']) ? (extensions['relations'] as unknown[]) : [];
 
@@ -482,7 +482,7 @@ function enrichImportError(mapped: CliError, error: unknown): CliError {
 	if (extensions['code'] === 'IMPORT_CYCLICAL_RELATION') {
 		return new CliError(mapped.code, mapped.message, {
 			hint: 'A relation in the cycle must be nullable so the importer can defer it.',
-			detail: renderCycle(extensions),
+			detail: formatCycle(extensions),
 		});
 	}
 

@@ -29,22 +29,22 @@ describe('createUi', () => {
 		clearSecrets();
 	});
 
-	it('routes uncolored status to stderr and suppresses machine data outside --json', () => {
+	it('routes uncolored status to stderr and suppresses machine results outside --json', () => {
 		const ui = createUi({ json: false, color: false });
 		ui.info('working');
-		ui.data({ ok: true });
+		ui.result({ value: 'done' });
 
 		expect(stderr.join('')).toContain('working');
 		expect(stdout.join('')).toBe('');
 		expect(stderr.join('')).not.toContain(ESC);
 	});
 
-	it('routes machine data to stdout in --json mode', () => {
+	it('routes machine results to stdout in --json mode', () => {
 		const ui = createUi({ json: true, color: false });
-		ui.data({ ok: true });
-		ui.data('done');
+		ui.result({ value: 'done' });
+		ui.result('done');
 
-		expect(stdout).toEqual(['{"ok":true}\n', '"done"\n']);
+		expect(stdout).toEqual(['{"value":"done"}\n', '"done"\n']);
 	});
 
 	it('keeps semantic styles out of JSON strings even when color is enabled', () => {
@@ -73,12 +73,11 @@ describe('createUi', () => {
 		expect(stdout.join('')).toBe('');
 	});
 
-	it('emits a complete tagged ErrorReport on stdout only in --json mode', () => {
+	it('emits a complete error result on stdout only in --json mode', () => {
 		const ui = createUi({ json: true, color: false });
 		ui.error(new CliError('USAGE', 'bad input', { hint: 'try --from', detail: 'received --to only' }));
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
-			kind: 'ErrorReport',
 			error: {
 				code: 'USAGE',
 				message: 'bad input',
@@ -120,7 +119,7 @@ describe('createUi', () => {
 	it('redacts a registered secret used as an object KEY in machine data output', () => {
 		registerSecret('leaked-token-abc123');
 		const ui = createUi({ json: true, color: false });
-		ui.data({ 'leaked-token-abc123': 'value' });
+		ui.result({ 'leaked-token-abc123': 'value' });
 
 		const out = stdout.join('');
 		expect(out).not.toContain('leaked-token-abc123');
@@ -130,7 +129,7 @@ describe('createUi', () => {
 	it('redacts a secret nested deep inside arrays and objects on the machine channel', () => {
 		registerSecret('leaked-token-abc123');
 		const ui = createUi({ json: true, color: false });
-		ui.data({ items: [{ nested: { token: 'leaked-token-abc123' } }] });
+		ui.result({ items: [{ nested: { token: 'leaked-token-abc123' } }] });
 
 		const out = stdout.join('');
 		expect(out).not.toContain('leaked-token-abc123');
@@ -139,7 +138,7 @@ describe('createUi', () => {
 
 	it('preserves a `__proto__` key in machine data output instead of losing it to the prototype setter', () => {
 		const ui = createUi({ json: true, color: false });
-		ui.data(JSON.parse('{"__proto__":"present"}'));
+		ui.result(JSON.parse('{"__proto__":"present"}'));
 
 		expect(JSON.parse(stdout.join(''))).toEqual(JSON.parse('{"__proto__":"present"}'));
 	});
@@ -148,7 +147,7 @@ describe('createUi', () => {
 		const secret = 'abc"def\\ghi';
 		registerSecret(secret);
 		const ui = createUi({ json: true, color: false });
-		ui.data({ token: secret });
+		ui.result({ token: secret });
 
 		const out = stdout.join('');
 		expect(out).not.toContain('abc');

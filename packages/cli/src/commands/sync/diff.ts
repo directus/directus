@@ -74,7 +74,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	ctx.ui.info(`Comparing ${projectPath} with ${options.to} — ${url} (${describeMode(mode)})`);
 
-	const schema = await planSchema(target, 'diff', mode, options.allowDrift ?? false, ctx);
+	const schema = await planSchema(target, { command: 'diff', mode, allowDrift: options.allowDrift ?? false }, ctx);
 
 	const preview = await previewData(target, mode);
 
@@ -114,9 +114,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	const ambiguous = preview?.ambiguousCount ?? 0;
 
 	// Ambiguous matches count as changes because a non-interactive push cannot apply them.
-	ctx.ui.data({
-		kind: 'DiffReport',
-		ok: true,
+	ctx.ui.result({
 		target: url,
 		profile: options.to,
 		project,

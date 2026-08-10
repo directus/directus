@@ -73,7 +73,7 @@ export function summarizeDiff(diff: SchemaDiff | null): DiffSummary {
 		...toItems(diff.collections, nameCollection),
 		...toItems(keptFields, (item) => `field ${item.collection}.${item.field}`),
 		...toItems(keptSystemFields, (item) => `system field ${item.collection}.${item.field}`),
-		...toItems(keptRelations, nameRelation),
+		...toItems(keptRelations, relationLabel),
 	];
 
 	let added = 0;
@@ -90,7 +90,7 @@ export function summarizeDiff(diff: SchemaDiff | null): DiffSummary {
 		else modified++;
 	}
 
-	return { added, modified, deleted, lines: items.map((item) => renderLine(item)) };
+	return { added, modified, deleted, lines: items.map((item) => formatLine(item)) };
 }
 
 function toItems<T extends { diff: DiffOp[] }>(entries: T[], name: (entry: T) => string): RenderItem[] {
@@ -125,12 +125,12 @@ function changedPaths(ops: DiffOp[]): string[] {
 	return [...seen];
 }
 
-function nameRelation(entry: DiffRelationEntry): string {
+function relationLabel(entry: DiffRelationEntry): string {
 	const target = entry.related_collection === null ? '' : ` → ${entry.related_collection}`;
 	return `relation ${entry.collection}.${entry.field}${target}`;
 }
 
-function renderLine(item: RenderItem): string {
+function formatLine(item: RenderItem): string {
 	const token = KIND_TOKENS[item.change].padEnd(TOKEN_WIDTH);
 	const paths = item.paths.length > 0 ? ` (${item.paths.join(', ')})` : '';
 	return `${token}  ${item.name}${paths}`;
@@ -146,7 +146,7 @@ export interface ImportSummary {
 
 const MAX_SHOWN_DELETED = 5;
 
-function renderImportLine(
+function formatImportLine(
 	name: string,
 	created: number,
 	updated: number,
@@ -202,7 +202,7 @@ export function summarizeImport(
 		if (collectionCreated === 0 && collectionUpdated === 0 && collectionDeleted === 0) continue;
 
 		lines.push(
-			renderImportLine(
+			formatImportLine(
 				name,
 				collectionCreated,
 				collectionUpdated,

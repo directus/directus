@@ -99,6 +99,47 @@ describe('interactive profile flows', () => {
 		expect(pingServer).toHaveBeenCalledWith('https://cms.example.com');
 	});
 
+	it('validates prompted new profile names against syntax and existing keys', async () => {
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { staging: { url: 'https://one.example.com', auth: { type: 'token' } } } }),
+		);
+
+		vi.mocked(text).mockResolvedValueOnce('production').mockResolvedValueOnce('https://two.example.com');
+		vi.mocked(select).mockResolvedValueOnce('skip');
+
+		await add(undefined, {}, ctxAt(dir));
+
+		const validate = vi.mocked(text).mock.calls[0]?.[0]?.validate;
+		if (typeof validate !== 'function') throw new Error('the profile name prompt must supply a callable validator');
+
+		expect(validate('my-prod')).toBe('Invalid profile name: "my-prod".');
+		expect(validate('staging')).toBe('Profile "staging" already exists.');
+		expect(validate('preview')).toBeUndefined();
+	});
+
+	it('validates prompted existing profile names while accepting legacy keys', async () => {
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({
+				profiles: {
+					staging: { url: 'https://one.example.com', auth: { type: 'token' } },
+					'legacy-name': { url: 'https://two.example.com', auth: { type: 'token' } },
+				},
+			}),
+		);
+
+		vi.mocked(text).mockResolvedValueOnce('staging');
+
+		await remove(undefined, { yes: true }, ctxAt(dir));
+
+		const validate = vi.mocked(text).mock.calls[0]?.[0]?.validate;
+		if (typeof validate !== 'function') throw new Error('the profile name prompt must supply a callable validator');
+
+		expect(validate('ghost')).toBe('Unknown profile: "ghost"');
+		expect(validate('legacy-name')).toBeUndefined();
+	});
+
 	it('update confirms before moving a profile to a new URL, and aborts on decline', async () => {
 		writeFileSync(
 			join(dir, 'directus.config.json'),
@@ -410,7 +451,7 @@ describe('interactive profile flows', () => {
 		expect(refreshOrder).toBeLessThan(testOrder);
 	});
 
-	it('emits the tagged ProfileTestConnectionReport contract on the JSON channel', async () => {
+	it('emits the connection result on the JSON channel', async () => {
 		const stdout: string[] = [];
 
 		vi.mocked(process.stdout.write).mockImplementation((chunk) => {
@@ -424,8 +465,6 @@ describe('interactive profile flows', () => {
 		await testProfileConnection(undefined, { url: 'https://oneoff.example.com', token: 'tok-flag' }, ctx);
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
-			kind: 'ProfileTestConnectionReport',
-			ok: true,
 			url: 'https://oneoff.example.com',
 			user: 'Ada',
 			role: 'Admin',

@@ -140,8 +140,6 @@ describe('sync diff', () => {
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--json')).toBe(0);
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
-			kind: 'DiffReport',
-			ok: true,
 			target: url,
 			profile: 'staging',
 			project: 'default',
@@ -177,8 +175,6 @@ describe('sync diff', () => {
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--json')).toBe(0);
 
 		expect(JSON.parse(stdout.join(''))).toEqual({
-			kind: 'DiffReport',
-			ok: true,
 			target: url,
 			profile: 'staging',
 			project: 'default',
@@ -397,7 +393,6 @@ describe('sync diff with data', () => {
 		const payload = JSON.parse(stdout.join(''));
 
 		expect(payload).toMatchObject({
-			kind: 'DiffReport',
 			project: 'default',
 			mode: 'merge',
 			changes: true,

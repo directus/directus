@@ -92,7 +92,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		if (committed !== undefined && committed.collections.length > 0) throw mirrorConsentRefusal(projectPath);
 	}
 
-	const schema = await planSchema(target, 'push', mode, options.allowDrift ?? false, ctx);
+	const schema = await planSchema(target, { command: 'push', mode, allowDrift: options.allowDrift ?? false }, ctx);
 
 	const dataResult = await prepareDataPush(target, mode, ctx);
 
@@ -109,9 +109,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	if (schema.result === null && dataPhaseConverged(dataResult?.records, mode)) {
 		if (ctx.ui.json) {
-			ctx.ui.data({
-				kind: 'PushReport',
-				ok: true,
+			ctx.ui.result({
 				target: url,
 				profile: options.to,
 				project,
@@ -268,9 +266,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	const dataChanged = importSummary !== undefined && hasImportChanges(importSummary);
 
 	if (ctx.ui.json) {
-		ctx.ui.data({
-			kind: 'PushReport',
-			ok: true,
+		ctx.ui.result({
 			target: url,
 			profile: options.to,
 			project,

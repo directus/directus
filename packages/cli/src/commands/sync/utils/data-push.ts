@@ -295,7 +295,7 @@ async function readAndReconcile(target: Target): Promise<Reconciled | undefined>
 	const { inputs, results, targets } = await reconcileSystem(
 		system,
 		target,
-		mappingsFor(map, source, targetUrl),
+		mappingsFor(map, { sourceUrl: source, targetUrl }),
 		queryMax,
 	);
 
@@ -340,7 +340,7 @@ export function recordImportedIds(dataResult: DataPushPlan, importResult: Import
 			entries[sourceId] = sentPk;
 		}
 
-		map = withMappings(map, dataResult.source, dataResult.target, collection, entries);
+		map = withMappings(map, { sourceUrl: dataResult.source, targetUrl: dataResult.target }, collection, entries);
 	}
 
 	// The resolved mappings are real whatever else went wrong, so record them before refusing the rest —
@@ -401,7 +401,7 @@ export async function prepareDataPush(
 		}
 
 		for (const [collection, entries] of resolved.seeds) {
-			map = withMappings(map, source, targetUrl, collection, entries);
+			map = withMappings(map, { sourceUrl: source, targetUrl }, collection, entries);
 		}
 
 		if (!resolved.resolvedExisting) break;
@@ -413,7 +413,7 @@ export async function prepareDataPush(
 			),
 		}));
 
-		results = reconcileCollections(remaining, mappingsFor(map, source, targetUrl));
+		results = reconcileCollections(remaining, mappingsFor(map, { sourceUrl: source, targetUrl }));
 	}
 
 	if (ctx.interactive && decisions.length > 0) {
@@ -448,7 +448,7 @@ export async function prepareDataPush(
 
 	const { batch, systemSent, unchanged, records } = assembleBatch(
 		system,
-		mappingsFor(map, source, targetUrl),
+		mappingsFor(map, { sourceUrl: source, targetUrl }),
 		mode,
 		targets,
 	);
@@ -505,7 +505,7 @@ export async function previewData(target: Target, mode: SyncMode): Promise<DataP
 
 		if (result.matched.length === 0) continue;
 
-		map = withMappings(map, source, targetUrl, result.collection, matchedEntries(result));
+		map = withMappings(map, { sourceUrl: source, targetUrl }, result.collection, matchedEntries(result));
 	}
 
 	excludeDependents(system, excluded);
@@ -541,7 +541,7 @@ export async function previewData(target: Target, mode: SyncMode): Promise<DataP
 
 	const { batch, systemSent, unchanged, records } = assembleBatch(
 		previewSystem,
-		mappingsFor(map, source, targetUrl),
+		mappingsFor(map, { sourceUrl: source, targetUrl }),
 		mode,
 		targets,
 	);

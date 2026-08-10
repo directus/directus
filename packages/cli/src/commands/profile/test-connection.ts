@@ -39,11 +39,14 @@ export async function testProfileConnection(
 		throw new CliError('USAGE', 'Pass a profile name or --url, not both.');
 	}
 
+	if (options.url !== undefined && !isSafeUrl(options.url)) {
+		throw new CliError('USAGE', INVALID_URL_MESSAGE);
+	}
+
 	let name = nameArg;
 	let url: string;
 
 	if (options.url !== undefined) {
-		if (!isSafeUrl(options.url)) throw new CliError('USAGE', INVALID_URL_MESSAGE);
 		url = options.url;
 	} else {
 		name = await orPrompt(
@@ -109,9 +112,7 @@ export async function testProfileConnection(
 
 	ctx.ui.success(`Authenticated to ${url} as ${identity.user} (${identity.role}).`);
 
-	ctx.ui.data({
-		kind: 'ProfileTestConnectionReport',
-		ok: true,
+	ctx.ui.result({
 		url,
 		user: identity.user,
 		role: identity.role,

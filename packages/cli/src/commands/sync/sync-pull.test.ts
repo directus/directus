@@ -128,8 +128,6 @@ describe('sync pull', () => {
 		const payload = JSON.parse(stdout.join(''));
 
 		expect(payload).toMatchObject({
-			kind: 'PullReport',
-			ok: true,
 			source: url,
 			profile: 'staging',
 			project: 'default',

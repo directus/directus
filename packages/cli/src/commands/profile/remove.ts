@@ -4,7 +4,7 @@ import { clearCredential } from '../../kernel/config/credentials.js';
 import { CliError } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
-import { resolveExistingProfileName } from './utils/save.js';
+import { resolveProfileName } from './utils/save.js';
 
 interface RemoveOptions {
 	readonly yes?: boolean;
@@ -20,12 +20,7 @@ export function registerRemove(command: Command, getContext: () => CliContext): 
 }
 
 export async function remove(nameArg: string | undefined, options: RemoveOptions, ctx: CliContext): Promise<void> {
-	const name = await resolveExistingProfileName(nameArg, 'Name the profile: d6s profile remove <name>', ctx);
-
-	// Cheapest precondition first, like add and update: never ask to confirm a removal that cannot happen.
-	if (ctx.config.existingProfile(name) === undefined) {
-		throw new CliError('USAGE', `Unknown profile: "${name}"`, { hint: 'See what exists: d6s profile list' });
-	}
+	const { name } = await resolveProfileName(nameArg, 'existing', 'Name the profile: d6s profile remove <name>', ctx);
 
 	// Confirm before any write so a mistyped name changes nothing.
 	if (options.yes !== true) {
@@ -51,5 +46,5 @@ export async function remove(nameArg: string | undefined, options: RemoveOptions
 		}
 	}
 
-	ctx.ui.data({ kind: 'ProfileRemoveReport', ok: true, removed: name });
+	ctx.ui.result({ removed: name });
 }

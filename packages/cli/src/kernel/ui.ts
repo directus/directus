@@ -75,8 +75,8 @@ export interface Ui {
 	success(message: string): void;
 	warn(message: string): void;
 	error(error: CliError): void;
-	/** Emit tagged and versioned JSON for machine consumers. */
-	data(payload: unknown): void;
+	/** Emit a JSON command result for machine consumers. */
+	result(payload: unknown): void;
 }
 
 /** Create human or JSON CLI output with final-boundary secret redaction. */
@@ -150,7 +150,7 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 					...(error.detail !== undefined ? { detail: error.detail } : {}),
 				};
 
-				writeJson({ kind: 'ErrorReport', error: body });
+				writeJson({ error: body });
 				return;
 			}
 
@@ -158,7 +158,7 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 			if (error.hint !== undefined) writeErr(`  ${c.dim(error.hint)}\n`);
 			if (error.detail !== undefined) writeErr(`  ${c.dim(error.detail)}\n`);
 		},
-		data(payload) {
+		result(payload) {
 			if (!json) return;
 			writeJson(payload);
 		},

@@ -10,7 +10,7 @@ export type SchemaDiffMode = 'merge' | 'mirror';
 /** The subset the import endpoint accepts; mirror rides as merge plus delete permission. */
 export type ImportMode = 'add' | 'merge';
 
-const MODE_GLOSSES: Record<SyncMode, string> = {
+const MODE_DESCRIPTIONS: Record<SyncMode, string> = {
 	add: 'add — only creates new records',
 	merge: 'merge — creates and updates records, never deletes',
 	mirror: 'mirror — INCLUDES DELETIONS',
@@ -18,5 +18,5 @@ const MODE_GLOSSES: Record<SyncMode, string> = {
 
 /** The mode with its one-line meaning, for target lines and prompts. */
 export function describeMode(mode: SyncMode): string {
-	return MODE_GLOSSES[mode];
+	return MODE_DESCRIPTIONS[mode];
 }
