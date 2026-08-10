@@ -4,7 +4,7 @@ import { describeMode, MODES, type SyncMode } from '../../kernel/config/mode.js'
 import { CliError, withHint } from '../../kernel/error.js';
 import { ask } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
-import { count } from '../../kernel/text.js';
+import { maybePluralize } from '../../kernel/text.js';
 import { applyDiff, importBatch } from './utils/api.js';
 import type { ImportBatchResult } from './utils/contract.js';
 import { prepareDataPush, recordImportedIds } from './utils/data-push.js';
@@ -147,7 +147,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 				throw new CliError(
 					'STATE',
-					`Refusing to push: applying would overwrite ${count(claimed.length, 'real target record')} whose ${claimed.length === 1 ? 'key' : 'keys'} this push chose as temporary.\n  ${lines.join('\n  ')}`,
+					`Refusing to push: applying would overwrite ${maybePluralize(claimed.length, 'real target record')} whose ${claimed.length === 1 ? 'key' : 'keys'} this push chose as temporary.\n  ${lines.join('\n  ')}`,
 					{
 						hint: 'Nothing was applied. The target hides these records from list reads (unlicensed instances hide custom-rule permissions), so the CLI could not steer around their keys. Inspect the listed IDs on the target directly, then remove or repair those records and push again.',
 					},
@@ -171,7 +171,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	if (!ctx.interactive && mode === 'mirror' && !allowDeletes) throw mirrorConsentRefusal(projectPath);
 
 	if (!ctx.interactive && schema.deleted > 0 && !allowDeletes) {
-		throw new CliError('USAGE', `This push includes ${count(schema.deleted, 'schema deletion')}.`, {
+		throw new CliError('USAGE', `This push includes ${maybePluralize(schema.deleted, 'schema deletion')}.`, {
 			hint: '--yes does not cover deletions; pass --dangerously-allow-delete or use --mode merge.',
 		});
 	}
@@ -185,8 +185,8 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	if (ctx.interactive && !yes) {
 		const dataTotal = dataSummary === undefined ? 0 : dataSummary.created + dataSummary.updated + dataSummary.deleted;
 		const planned: string[] = [];
-		if (schema.total > 0) planned.push(count(schema.total, 'schema change'));
-		if (dataTotal > 0) planned.push(count(dataTotal, 'configuration change'));
+		if (schema.total > 0) planned.push(maybePluralize(schema.total, 'schema change'));
+		if (dataTotal > 0) planned.push(maybePluralize(dataTotal, 'configuration change'));
 
 		const proceed = await ask(confirm({ message: `Apply ${planned.join(' and ')} to ${options.to} — ${url}?` }));
 
@@ -195,8 +195,8 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	if (ctx.interactive && (schema.deleted > 0 || dataDeleted > 0) && !allowDeletes) {
 		const parts: string[] = [];
-		if (dataDeleted > 0) parts.push(count(dataDeleted, 'configuration record'));
-		if (schema.deleted > 0) parts.push(count(schema.deleted, 'schema deletion'));
+		if (dataDeleted > 0) parts.push(maybePluralize(dataDeleted, 'configuration record'));
+		if (schema.deleted > 0) parts.push(maybePluralize(schema.deleted, 'schema deletion'));
 
 		const typed = await ask(
 			text({
@@ -235,7 +235,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	if (dataResult !== undefined && dataPhaseConverged(dataResult.records, mode)) {
 		if (dataSummary === undefined) ctx.ui.info('Configuration — no changes to push.');
 	} else if (dataResult !== undefined) {
-		ctx.ui.info(`Pushing configuration (${count(dataResult.collections, 'collection')})…`);
+		ctx.ui.info(`Pushing configuration (${maybePluralize(dataResult.collections, 'collection')})…`);
 
 		try {
 			importResult = await importBatch(credential, dataResult.batch, dataImportOptions(mode));
@@ -288,7 +288,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	let schemaSentence: string;
 
 	if (schema.result !== null) {
-		schemaSentence = `Applied ${count(schema.total, 'schema change')} to ${url}; schema hash verified.`;
+		schemaSentence = `Applied ${maybePluralize(schema.total, 'schema change')} to ${url}; schema hash verified.`;
 	} else if (schema.enabled) {
 		schemaSentence = `Schema already matches ${url}.`;
 	} else {
@@ -302,7 +302,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	}
 
 	if (dataResult !== undefined && importSummary !== undefined) {
-		dataSentence = ` Pushed ${count(dataResult.records, 'configuration record')} across ${count(dataResult.collections, 'collection')}: ${importSummary.created} created, ${importSummary.updated} updated, ${importSummary.deleted} deleted.`;
+		dataSentence = ` Pushed ${maybePluralize(dataResult.records, 'configuration record')} across ${maybePluralize(dataResult.collections, 'collection')}: ${importSummary.created} created, ${importSummary.updated} updated, ${importSummary.deleted} deleted.`;
 	}
 
 	ctx.ui.success(`Push complete. ${schemaSentence}${dataSentence}`);

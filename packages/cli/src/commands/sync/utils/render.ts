@@ -1,4 +1,4 @@
-import { count } from '../../../kernel/text.js';
+import { maybePluralize } from '../../../kernel/text.js';
 import { DELETED_MARK, KIND_TOKENS } from '../../../kernel/ui.js';
 import { byCodepoint } from './codepoint.js';
 import type { DiffOp, DiffRelationEntry, ImportBatchResult, SchemaDiff } from './contract.js';
@@ -63,8 +63,8 @@ export function summarizeDiff(diff: SchemaDiff | null): DiffSummary {
 		}
 
 		const parts: string[] = [];
-		if (counts.fields > 0) parts.push(count(counts.fields, 'field'));
-		if (counts.relations > 0) parts.push(count(counts.relations, 'relation'));
+		if (counts.fields > 0) parts.push(maybePluralize(counts.fields, 'field'));
+		if (counts.relations > 0) parts.push(maybePluralize(counts.relations, 'relation'));
 
 		return `collection ${entry.collection} (${parts.join(', ')})`;
 	}

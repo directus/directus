@@ -2,7 +2,7 @@ import type { SchemaDiffMode } from '../../../kernel/config/mode.js';
 import { fetchServerVersion } from '../../../kernel/connection.js';
 import { CliError } from '../../../kernel/error.js';
 import type { CliContext } from '../../../kernel/run.js';
-import { count } from '../../../kernel/text.js';
+import { maybePluralize } from '../../../kernel/text.js';
 import { fetchDiff } from './api.js';
 import type { DiffResult, SchemaDiff, Snapshot } from './contract.js';
 import {
@@ -24,7 +24,7 @@ function assertNoMisroutedCollectionDrops(diff: SchemaDiff): void {
 
 	throw new CliError(
 		'STATE',
-		`Refusing this diff: applying it would DROP ${count(misrouted.length, 'collection')} (${misrouted.join(', ')}) from a metadata-only change (directus/directus#27877).`,
+		`Refusing this diff: applying it would DROP ${maybePluralize(misrouted.length, 'collection')} (${misrouted.join(', ')}) from a metadata-only change (directus/directus#27877).`,
 		{
 			hint: 'This diff shape comes from migration skew — the instances carry different collection metadata columns despite matching version strings. Run the same Directus version and migrations on both instances, then re-run.',
 		},

@@ -10,7 +10,7 @@ import {
 } from '../../kernel/connection.js';
 import { CliError } from '../../kernel/error.js';
 import type { CliContext } from '../../kernel/run.js';
-import { count, parseList } from '../../kernel/text.js';
+import { maybePluralize, parseList } from '../../kernel/text.js';
 import { fetchFields, fetchRecords, fetchSnapshot, type FieldCatalogEntry, type SnapshotScope } from './utils/api.js';
 import { assertDataSource, type DataCollection, hasCommittedCollection, writeDataFiles } from './utils/data-store.js';
 import { normalizeInstanceUrl } from './utils/id-map.js';
@@ -302,7 +302,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 		if (missing.length > 0) {
 			ctx.ui.warn(
-				`Requested ${count(missing.length, 'collection')} not in the pulled schema: ${missing.join(', ')}. ` +
+				`Requested ${maybePluralize(missing.length, 'collection')} not in the pulled schema: ${missing.join(', ')}. ` +
 					`Check the spelling and that each collection exists on the source. ` +
 					`Older Directus also omits a named collection folder from the snapshot — pull the whole schema instead.`,
 			);
@@ -359,7 +359,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 		if (derivedSecrets.length > 0) {
 			ctx.ui.warn(
-				`${resource.name}: stripped ${count(derivedSecrets.length, 'custom field')} the schema marks sensitive (conceal/encrypt/hash): ${derivedSecrets.join(', ')}. The local files never carry these values — set them on the target directly.`,
+				`${resource.name}: stripped ${maybePluralize(derivedSecrets.length, 'custom field')} the schema marks sensitive (conceal/encrypt/hash): ${derivedSecrets.join(', ')}. The local files never carry these values — set them on the target directly.`,
 			);
 		}
 
@@ -438,21 +438,21 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	};
 
 	if (!ctx.ui.json) {
-		const schemaNote = `${scope?.note ?? ''}${removed > 0 ? ` (removed ${count(removed, 'stale file')})` : ''}`;
+		const schemaNote = `${scope?.note ?? ''}${removed > 0 ? ` (removed ${maybePluralize(removed, 'stale file')})` : ''}`;
 
 		const dataNote =
-			dataResult.removed.length > 0 ? ` (removed ${count(dataResult.removed.length, 'stale file')})` : '';
+			dataResult.removed.length > 0 ? ` (removed ${maybePluralize(dataResult.removed.length, 'stale file')})` : '';
 
 		ctx.ui.success(`Pulled from ${options.from} — ${url}`);
 
 		if (snapshot === null) {
 			ctx.ui.print('  Schema         skipped');
 		} else {
-			ctx.ui.print(`  Schema         ${count(schemaCollectionCount, 'collection')} → ${relativeDir}${schemaNote}`);
+			ctx.ui.print(`  Schema         ${maybePluralize(schemaCollectionCount, 'collection')} → ${relativeDir}${schemaNote}`);
 		}
 
 		ctx.ui.print(
-			`  Configuration  ${count(recordCount, 'record')} across ${count(collectionCount, 'collection')} → ${dataDirRelative}${dataNote}`,
+			`  Configuration  ${maybePluralize(recordCount, 'record')} across ${maybePluralize(collectionCount, 'collection')} → ${dataDirRelative}${dataNote}`,
 		);
 	}
 

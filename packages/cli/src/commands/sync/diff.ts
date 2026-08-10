@@ -1,7 +1,7 @@
 import { type Command, Option } from 'commander';
 import { describeMode, MODES, type SyncMode } from '../../kernel/config/mode.js';
 import type { CliContext } from '../../kernel/run.js';
-import { count } from '../../kernel/text.js';
+import { maybePluralize } from '../../kernel/text.js';
 import type { ImportBatchResult } from './utils/contract.js';
 import { type DataPreviewPlan, previewData } from './utils/data-push.js';
 import {
@@ -103,7 +103,7 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 				const lines = claimedKeyLines(claimed);
 
 				ctx.ui.warn(
-					`The dry run matched ${count(claimed.length, 'temporary key')} to real target records hidden from list reads, so the plan prices ${claimed.length === 1 ? 'it' : 'them'} as ${claimed.length === 1 ? 'an update' : 'updates'}. Push will refuse this state.\n  ${lines.join('\n  ')}`,
+					`The dry run matched ${maybePluralize(claimed.length, 'temporary key')} to real target records hidden from list reads, so the plan prices ${claimed.length === 1 ? 'it' : 'them'} as ${claimed.length === 1 ? 'an update' : 'updates'}. Push will refuse this state.\n  ${lines.join('\n  ')}`,
 				);
 			}
 		}
@@ -150,20 +150,20 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	const { ambiguousCount, dependentCount, unmatchedCount } = preview;
 
 	if (ambiguousCount > 0) {
-		const subject = count(ambiguousCount, 'configuration record');
+		const subject = maybePluralize(ambiguousCount, 'configuration record');
 		const match = ambiguousCount === 1 ? 'has an ambiguous target match' : 'have ambiguous target matches';
 
 		const dependent =
 			dependentCount === 0
 				? ''
-				: `; ${count(dependentCount, 'record')} ${dependentCount === 1 ? 'depends' : 'depend'} on ${ambiguousCount === 1 ? 'that choice' : 'those choices'}`;
+				: `; ${maybePluralize(dependentCount, 'record')} ${dependentCount === 1 ? 'depends' : 'depend'} on ${ambiguousCount === 1 ? 'that choice' : 'those choices'}`;
 
 		ctx.ui.info(`${subject} ${match}${dependent}.`);
 	}
 
 	if (unmatchedCount > 0) {
 		ctx.ui.info(
-			`${count(unmatchedCount, 'configuration record')} ${unmatchedCount === 1 ? 'has' : 'have'} no target match — push would create ${unmatchedCount === 1 ? 'it' : 'them'}.`,
+			`${maybePluralize(unmatchedCount, 'configuration record')} ${unmatchedCount === 1 ? 'has' : 'have'} no target match — push would create ${unmatchedCount === 1 ? 'it' : 'them'}.`,
 		);
 	}
 

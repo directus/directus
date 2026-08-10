@@ -1,5 +1,5 @@
 import { isPlainObject } from 'lodash-es';
-import { count } from '../../../kernel/text.js';
+import { maybePluralize } from '../../../kernel/text.js';
 import { byCodepoint } from './codepoint.js';
 import type { Snapshot } from './contract.js';
 
@@ -179,7 +179,7 @@ export function formatOutOfScopeReferences(references: readonly OutOfScopeRefere
 	const missing = new Set(references.flatMap((reference) => reference.missing));
 
 	const lead =
-		`This sync references ${count(missing.size, 'collection')} it does not include. ` +
+		`This sync references ${maybePluralize(missing.size, 'collection')} it does not include. ` +
 		`Applying it to a target that lacks them will fail; add them to the scope to include them:`;
 
 	return [lead, ...references.map(formatReference)].join('\n');
@@ -201,7 +201,7 @@ export function formatSplitRelations(splits: readonly SplitRelation[], subject: 
 	const one = splits.length === 1;
 
 	const lead =
-		`This ${subject} is missing half of ${count(splits.length, 'relation')}. ` +
+		`This ${subject} is missing half of ${maybePluralize(splits.length, 'relation')}. ` +
 		`Pushing may leave ${one ? 'this relation' : 'these relations'} broken on the target:`;
 
 	const pair = [

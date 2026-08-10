@@ -5,7 +5,7 @@ import type { ProjectConfig } from '../../../kernel/config/file.js';
 import type { ImportMode, SchemaDiffMode, SyncMode } from '../../../kernel/config/mode.js';
 import { refreshSessionIfNeeded } from '../../../kernel/connection.js';
 import type { CliContext } from '../../../kernel/run.js';
-import { count } from '../../../kernel/text.js';
+import { maybePluralize } from '../../../kernel/text.js';
 import { importBatch } from './api.js';
 import { ARTIFACT_MANIFEST_FILE } from './artifact-store.js';
 import type { SystemSent, UnchangedRows } from './batch.js';
@@ -185,7 +185,7 @@ export function convergedMessage(
 export function renderSchemaPlan(plan: SchemaPlan, ctx: CliContext): void {
 	if (plan.result !== null) {
 		ctx.ui.info(
-			`Schema — ${count(plan.total, 'change')}: ${plan.added} added, ${plan.modified} modified, ${plan.deleted} deleted`,
+			`Schema — ${maybePluralize(plan.total, 'change')}: ${plan.added} added, ${plan.modified} modified, ${plan.deleted} deleted`,
 		);
 
 		for (const line of plan.lines) ctx.ui.plan(line);
@@ -212,7 +212,7 @@ export function renderDataPlan(
 	if (summary === undefined) {
 		if (batch !== undefined && batch.records > 0) {
 			ctx.ui.info(
-				`Configuration — ${count(batch.records, 'record')} across ${count(batch.collections, 'collection')} to push.`,
+				`Configuration — ${maybePluralize(batch.records, 'record')} across ${maybePluralize(batch.collections, 'collection')} to push.`,
 			);
 		}
 
@@ -223,7 +223,7 @@ export function renderDataPlan(
 		const total = summary.created + summary.updated + summary.deleted;
 
 		ctx.ui.info(
-			`Configuration — ${count(total, 'change')}: ${summary.created} created, ${summary.updated} updated, ${summary.deleted} deleted`,
+			`Configuration — ${maybePluralize(total, 'change')}: ${summary.created} created, ${summary.updated} updated, ${summary.deleted} deleted`,
 		);
 
 		for (const line of summary.lines) ctx.ui.plan(line);

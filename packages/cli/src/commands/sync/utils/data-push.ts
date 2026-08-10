@@ -5,7 +5,7 @@ import { fetchQueryLimitMax } from '../../../kernel/connection.js';
 import { CliError } from '../../../kernel/error.js';
 import { ask } from '../../../kernel/prompt.js';
 import type { CliContext } from '../../../kernel/run.js';
-import { count } from '../../../kernel/text.js';
+import { maybePluralize } from '../../../kernel/text.js';
 import { collisionLines, differenceHint, itemUiUrl, recordLabel, scalar } from './ambiguity-copy.js';
 import { fetchRecords } from './api.js';
 import { assembleBatch, type SystemSent, type UnchangedRows } from './batch.js';
@@ -124,7 +124,7 @@ async function resolveMatches(
 		const held =
 			dependents === 0
 				? ''
-				: `; ${count(dependents, 'record')} ${dependents === 1 ? 'depends' : 'depend'} on ${ambiguities.length === 1 ? 'that choice' : 'those choices'}`;
+				: `; ${maybePluralize(dependents, 'record')} ${dependents === 1 ? 'depends' : 'depend'} on ${ambiguities.length === 1 ? 'that choice' : 'those choices'}`;
 
 		throw new CliError(
 			'STATE',
@@ -359,7 +359,7 @@ export function recordImportedIds(dataResult: DataPushPlan, importResult: Import
 
 		throw new CliError(
 			'STATE',
-			`The import response left ${count(unmapped.length, 'temporary key')} unmapped, so the ID map has no entry for ${unmapped.length === 1 ? 'that record' : 'those records'}.\n  ${lines.join('\n  ')}`,
+			`The import response left ${maybePluralize(unmapped.length, 'temporary key')} unmapped, so the ID map has no entry for ${unmapped.length === 1 ? 'that record' : 'those records'}.\n  ${lines.join('\n  ')}`,
 			{
 				hint: unmapped.some((miss) => miss.updatedExisting)
 					? 'A target record already used a temporary key — inspect those target records before pushing again.'
