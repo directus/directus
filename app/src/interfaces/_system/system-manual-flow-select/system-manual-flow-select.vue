@@ -21,7 +21,8 @@ const flows = computed(() =>
 				flow.options &&
 				flow.options.collections &&
 				flow.options.collections.includes(props.collectionName) &&
-				flow.options.location !== 'collection',
+				// Only flows that can be triggered from an item-page button
+				['both', 'item', 'hidden'].includes(flow.options.location ?? 'both'),
 		)
 		.map((flow: FlowRaw) => ({
 			value: flow.id,
