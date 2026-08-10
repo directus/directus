@@ -451,8 +451,8 @@ function enrichImportError(mapped: CliError, error: unknown): CliError {
 		);
 	}
 
-	// A 404 here is the endpoint itself missing, which no referenced-record hint should explain away.
-	if (get(error.response, 'status') === 404) {
+	// Only a route-level 404 means the endpoint itself is missing; any other 404 keeps its own story.
+	if (get(error.response, 'status') === 404 && error.errors[0]?.extensions.code === 'ROUTE_NOT_FOUND') {
 		return withHint(
 			mapped,
 			`The batch import endpoint was not found — the target may be running Directus older than ${SYNC_MIN_DIRECTUS}, which Environment Sync requires.`,

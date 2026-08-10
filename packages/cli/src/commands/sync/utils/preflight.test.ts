@@ -36,9 +36,14 @@ describe('assertSyncServerVersion', () => {
 		await expect(assertSyncServerVersion(credential, 'staging')).resolves.toBe('12.10.0');
 	});
 
-	it('ignores a prerelease suffix', async () => {
+	it('refuses a prerelease of the floor itself — SemVer places it below', async () => {
 		serverReports('12.2.0-beta.1');
-		await expect(assertSyncServerVersion(credential, 'staging')).resolves.toBe('12.2.0-beta.1');
+		await expect(assertSyncServerVersion(credential, 'staging')).rejects.toMatchObject({ code: 'STATE' });
+	});
+
+	it('passes a prerelease above the floor', async () => {
+		serverReports('12.3.0-beta.1');
+		await expect(assertSyncServerVersion(credential, 'staging')).resolves.toBe('12.3.0-beta.1');
 	});
 
 	it('gates nothing when the version is unreadable', async () => {

@@ -7,19 +7,22 @@ export const SYNC_MIN_DIRECTUS = '12.2.0';
 
 const [FLOOR_MAJOR, FLOOR_MINOR, FLOOR_PATCH] = SYNC_MIN_DIRECTUS.split('.').map(Number) as [number, number, number];
 
-// A prerelease of the floor passes; an unparseable version gates nothing rather than refusing on a guess.
+// An unparseable version gates nothing rather than refusing on a guess.
 function belowFloor(version: string): boolean {
-	const match = /^(\d+)\.(\d+)\.(\d+)/.exec(version);
+	const match = /^(\d+)\.(\d+)\.(\d+)(-)?/.exec(version);
 
 	if (match === null) return false;
 
 	const major = Number(match[1]);
 	const minor = Number(match[2]);
+	const patch = Number(match[3]);
 
 	if (major !== FLOOR_MAJOR) return major < FLOOR_MAJOR;
 	if (minor !== FLOOR_MINOR) return minor < FLOOR_MINOR;
+	if (patch !== FLOOR_PATCH) return patch < FLOOR_PATCH;
 
-	return Number(match[3]) < FLOOR_PATCH;
+	// SemVer: a prerelease of the floor itself precedes it.
+	return match[4] === '-';
 }
 
 /**

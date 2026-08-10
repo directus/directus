@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { loadProjectEnv } from './env.js';
+import { isCI, loadProjectEnv } from './env.js';
 
 const created: string[] = [];
 
@@ -15,6 +15,21 @@ function tempDir(): string {
 afterEach(() => {
 	vi.unstubAllEnvs();
 	for (const dir of created.splice(0)) rmSync(dir, { recursive: true, force: true });
+});
+
+describe('isCI', () => {
+	it('treats any non-empty CI value as CI', () => {
+		vi.stubEnv('CI', 'true');
+		expect(isCI()).toBe(true);
+
+		vi.stubEnv('CI', '1');
+		expect(isCI()).toBe(true);
+	});
+
+	it('is not CI when the variable is empty or unset', () => {
+		vi.stubEnv('CI', '');
+		expect(isCI()).toBe(false);
+	});
 });
 
 describe('loadProjectEnv', () => {
