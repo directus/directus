@@ -1,7 +1,12 @@
 import { isPlainObject } from 'lodash-es';
 import { z } from 'zod';
 import { CliError } from '../../../kernel/error.js';
-import { type ArtifactWriteResult, METADATA_FILE, readArtifacts, writeArtifacts } from './artifact-store.js';
+import {
+	ARTIFACT_MANIFEST_FILE,
+	type ArtifactWriteResult,
+	readArtifactStore,
+	writeArtifactStore,
+} from './artifact-store.js';
 import { byCodepoint } from './codepoint.js';
 import {
 	parseSnapshot,
@@ -127,7 +132,7 @@ function parseMetadata(value: unknown): { snapshot: Record<string, unknown> } {
 	const result = metadataSchema.safeParse(value);
 
 	if (!result.success) {
-		throw new CliError('STATE', `${METADATA_FILE} is missing a valid "snapshot" header.`, {
+		throw new CliError('STATE', `${ARTIFACT_MANIFEST_FILE} is missing a valid "snapshot" header.`, {
 			detail: z.prettifyError(result.error),
 		});
 	}
@@ -147,7 +152,7 @@ function previousVersion(value: unknown): number | undefined {
 export function writeSnapshotFiles(dir: string, snapshot: Snapshot, scope?: WriteScope): ArtifactWriteResult {
 	const manifestHint = 'Fix or delete the schema directory, then run d6s sync pull again.';
 
-	return writeArtifacts({
+	return writeArtifactStore({
 		dir,
 		artifacts: collectionFiles(snapshot),
 		body: (file) => file,
@@ -172,7 +177,7 @@ export function writeSnapshotFiles(dir: string, snapshot: Snapshot, scope?: Writ
 
 /** Read and reassemble a validated snapshot from its stored artifacts. */
 export function readSnapshotFiles(dir: string): Snapshot {
-	const { metadata, artifacts: files } = readArtifacts({
+	const { metadata, artifacts: files } = readArtifactStore({
 		dir,
 		kind: 'schema',
 		missing: `No schema snapshot found in ${dir}.`,

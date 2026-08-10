@@ -5,13 +5,13 @@ import { z } from 'zod';
 import { isSafeUrl } from '../../../kernel/config/file.js';
 import { CliError } from '../../../kernel/error.js';
 import {
+	ARTIFACT_MANIFEST_FILE,
+	artifactFileName,
 	type ArtifactWriteResult,
-	fileName,
-	METADATA_FILE,
-	readArtifacts,
-	readIntactManifest,
-	readManifest,
-	writeArtifacts,
+	readArtifactManifest,
+	readArtifactStore,
+	tryReadArtifactManifest,
+	writeArtifactStore,
 } from './artifact-store.js';
 import { byCodepoint } from './codepoint.js';
 import { normalizeInstanceUrl } from './id-map.js';
@@ -146,7 +146,7 @@ function interpretMetadata(value: unknown): CommittedData {
 	const source = sourceSchema.safeParse(value);
 
 	if (!source.success) {
-		throw new CliError('STATE', `${METADATA_FILE} does not record a valid source instance URL.`, {
+		throw new CliError('STATE', `${ARTIFACT_MANIFEST_FILE} does not record a valid source instance URL.`, {
 			hint: 'This data predates source tracking (or the manifest was edited); delete the data directory, then run d6s sync pull again.',
 		});
 	}
@@ -159,7 +159,7 @@ function interpretMetadata(value: unknown): CommittedData {
 	const incomplete = incompleteSchema.safeParse(value);
 
 	if (!incomplete.success) {
-		throw new CliError('STATE', `${METADATA_FILE} has an invalid "incomplete" marker.`, {
+		throw new CliError('STATE', `${ARTIFACT_MANIFEST_FILE} has an invalid "incomplete" marker.`, {
 			hint: REPAIR_HINT,
 		});
 	}
@@ -169,7 +169,10 @@ function interpretMetadata(value: unknown): CommittedData {
 
 // Validate provenance and completeness before a write can relabel preserved records or erase warnings.
 function committedState(dir: string): CommittedData | undefined {
-	const manifest = readManifest(dir, { invalid: `${METADATA_FILE} is not a data manifest.`, hint: REPAIR_HINT });
+	const manifest = readArtifactManifest(dir, {
+		invalid: `${ARTIFACT_MANIFEST_FILE} is not a data manifest.`,
+		hint: REPAIR_HINT,
+	});
 
 	if (manifest === undefined) return undefined;
 
@@ -224,7 +227,7 @@ export function writeDataFiles(
 
 	let effectiveIncomplete: string[] | undefined;
 
-	const result = writeArtifacts({
+	const result = writeArtifactStore({
 		dir,
 		artifacts: collections,
 		body: dataFileBody,
@@ -257,16 +260,16 @@ export function writeDataFiles(
  */
 export function hasCommittedCollection(dir: string, collection: string): boolean {
 	// Tolerant on purpose: a corrupt manifest must not stop the pull that would heal it.
-	const manifest = readIntactManifest(dir);
+	const manifest = tryReadArtifactManifest(dir);
 
-	return manifest !== undefined && manifest.files.includes(fileName(collection));
+	return manifest !== undefined && manifest.files.includes(artifactFileName(collection));
 }
 
 /** Read and validate the metadata-owned data artifacts, or undefined when nothing is stored. */
 export function readDataFiles(dir: string): DataReadResult | undefined {
-	if (!existsSync(join(dir, METADATA_FILE))) return undefined;
+	if (!existsSync(join(dir, ARTIFACT_MANIFEST_FILE))) return undefined;
 
-	const { metadata, artifacts } = readArtifacts({
+	const { metadata, artifacts } = readArtifactStore({
 		dir,
 		kind: 'data',
 		missing: `No data found in ${dir}.`,
@@ -275,7 +278,7 @@ export function readDataFiles(dir: string): DataReadResult | undefined {
 			const committed = interpretMetadata(value);
 
 			if (committed.incomplete === 'unknown') {
-				throw new CliError('STATE', `${METADATA_FILE} does not record pull completeness.`, {
+				throw new CliError('STATE', `${ARTIFACT_MANIFEST_FILE} does not record pull completeness.`, {
 					hint: 'This data predates completeness tracking; run d6s sync pull again to record it.',
 				});
 			}

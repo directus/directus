@@ -7,7 +7,7 @@ import { refreshSessionIfNeeded } from '../../../kernel/connection.js';
 import type { CliContext } from '../../../kernel/run.js';
 import { count } from '../../../kernel/text.js';
 import { importBatch } from './api.js';
-import { METADATA_FILE } from './artifact-store.js';
+import { ARTIFACT_MANIFEST_FILE } from './artifact-store.js';
 import type { SystemSent, UnchangedRows } from './batch.js';
 import type { DiffResult, ImportBatchResult, ImportCollectionData } from './contract.js';
 import { hasImportChanges, type ImportSummary, summarizeDiff, summarizeImport } from './render.js';
@@ -129,7 +129,7 @@ export async function planSchema(target: Target, options: SchemaPlanOptions, ctx
 	// A disabled schema phase carries no version gate and must not be reported as a match.
 	const enabled = projectConfig?.schema !== false;
 
-	if (!enabled && existsSync(join(schemaDir, METADATA_FILE))) {
+	if (!enabled && existsSync(join(schemaDir, ARTIFACT_MANIFEST_FILE))) {
 		ctx.ui.warn(
 			`Schema files exist in ${displayProjectPath(ctx.cwd, target.projectDir)}/schema but this project sets "schema": false — the schema phase is skipped and those files are ignored.`,
 		);

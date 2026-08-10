@@ -3,7 +3,7 @@ import { dirname } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import { CliError } from '../../../kernel/error.js';
 import { writeFileAtomic } from '../../../kernel/write.js';
-import { serializeCanonical } from './artifact-store.js';
+import { serializeCanonicalJson } from './artifact-store.js';
 
 type CollectionMap = Readonly<Record<string, Readonly<Record<string, string>>>>;
 type TargetMap = Readonly<Record<string, CollectionMap>>;
@@ -210,5 +210,5 @@ export function withMappings(
  */
 export function writeIdMap(path: string, map: IdMap): void {
 	mkdirSync(dirname(path), { recursive: true });
-	writeFileAtomic(path, serializeCanonical(map), 0o644);
+	writeFileAtomic(path, serializeCanonicalJson(map), 0o644);
 }
