@@ -192,52 +192,64 @@ async function acquireCredential(
 	flagToken: string | undefined,
 	ctx: CliContext,
 ): Promise<Acquired> {
-	let url = startUrl;
-	let token = flagToken;
+	if (flagToken !== undefined) return verifyWithRecovery(name, startUrl, flagToken, ctx);
 
 	// Skippable: a profile is a named URL, not a credential — a CI-only secret lives in DIRECTUS_<NAME>_TOKEN.
-	if (token === undefined) {
-		const method = await ask(
-			select({
-				message: `Add a credential for "${name}" now?`,
-				options: [
-					{ value: 'paste', label: 'Paste a static token' },
-					{ value: 'login', label: 'Log in with email & password' },
-					{ value: 'skip', label: 'Skip for now' },
-				],
-			}),
-		);
+	const method = await ask(
+		select({
+			message: `Add a credential for "${name}" now?`,
+			options: [
+				{ value: 'paste', label: 'Paste a static token' },
+				{ value: 'login', label: 'Log in with email & password' },
+				{ value: 'skip', label: 'Skip for now' },
+			],
+		}),
+	);
 
-		if (method === 'login') {
-			while (true) {
-				try {
-					const { email, password } = await promptLogin();
-					const { identity, session } = await loginSession(url, email, password);
-					ctx.ui.success(`Logged in to ${url} as ${identity.user} (${identity.role}).`);
-					return { url, session };
-				} catch (error) {
-					if (!isConnectionFailure(error)) throw error;
-					ctx.ui.warn(error.message);
+	if (method === 'login') return loginWithRecovery(startUrl, ctx);
 
-					const next = await ask(
-						select({
-							message: 'How do you want to proceed?',
-							options: [
-								{ value: 'retry', label: 'Re-enter email & password' },
-								{ value: 'url', label: 'Edit the URL' },
-								{ value: 'skip', label: 'Skip for now' },
-							],
-						}),
-					);
+	const token = method === 'paste' ? await promptAndRegisterToken(name) : undefined;
+	return verifyWithRecovery(name, startUrl, token, ctx);
+}
 
-					if (next === 'skip') return { url };
-					if (next === 'url') url = await editUrl(url);
-				}
-			}
+async function loginWithRecovery(startUrl: string, ctx: CliContext): Promise<Acquired> {
+	let url = startUrl;
+
+	while (true) {
+		try {
+			const { email, password } = await promptLogin();
+			const { identity, session } = await loginSession(url, email, password);
+			ctx.ui.success(`Logged in to ${url} as ${identity.user} (${identity.role}).`);
+			return { url, session };
+		} catch (error) {
+			if (!isConnectionFailure(error)) throw error;
+			ctx.ui.warn(error.message);
+
+			const next = await ask(
+				select({
+					message: 'How do you want to proceed?',
+					options: [
+						{ value: 'retry', label: 'Re-enter email & password' },
+						{ value: 'url', label: 'Edit the URL' },
+						{ value: 'skip', label: 'Skip for now' },
+					],
+				}),
+			);
+
+			if (next === 'skip') return { url };
+			if (next === 'url') url = await editUrl(url);
 		}
-
-		if (method === 'paste') token = await promptAndRegisterToken(name);
 	}
+}
+
+async function verifyWithRecovery(
+	name: string,
+	startUrl: string,
+	flagToken: string | undefined,
+	ctx: CliContext,
+): Promise<Acquired> {
+	let url = startUrl;
+	let token = flagToken;
 
 	while (true) {
 		try {

@@ -42,10 +42,9 @@ function toCliError(error: unknown): CliError {
 		const code = error.code === 'commander.unknownCommand' ? 'UNKNOWN_COMMAND' : 'USAGE';
 		let message = error.message.replace(/^error: /, '');
 
-		if (error.code === 'commander.unknownOption') {
+		if (error.code === 'commander.unknownOption' && message.includes('=')) {
 			const option = /^unknown option '([^'=]+)=/.exec(message)?.[1];
-			if (message.includes('='))
-				message = option === undefined ? 'unknown option with inline value' : `unknown option '${option}=***'`;
+			message = option === undefined ? 'unknown option with inline value' : `unknown option '${option}=***'`;
 		}
 
 		return new CliError(code, message);

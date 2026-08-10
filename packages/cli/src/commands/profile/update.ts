@@ -1,9 +1,8 @@
-import { confirm } from '@clack/prompts';
 import type { Command } from 'commander';
 import { clearCredential, envTokenVar, renameCredential } from '../../kernel/config/credentials.js';
 import { isSafeUrl } from '../../kernel/config/file.js';
 import { CliError } from '../../kernel/error.js';
-import { ask } from '../../kernel/prompt.js';
+import { requireConsent } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
 import { assertProfileName, resolveProfileName, resolveProfileUrl, saveProfile } from './utils/save.js';
 
@@ -53,19 +52,14 @@ function report(
 }
 
 async function rename(from: string, to: string, skipConfirmation: boolean, ctx: CliContext): Promise<void> {
-	if (!skipConfirmation) {
-		if (!ctx.interactive) {
-			throw new CliError('USAGE', `Renaming "${from}" to "${to}" also moves its saved credential.`, {
-				hint: `Pass --yes to confirm. ${profileRenameConsequence(from, to)}`,
-			});
-		}
-
-		const proceed = await ask(
-			confirm({ message: `Rename "${from}" to "${to}"? ${profileRenameConsequence(from, to)}` }),
-		);
-
-		if (!proceed) throw new CliError('USAGE', `Profile "${from}" unchanged.`);
-	}
+	await requireConsent({
+		skip: skipConfirmation,
+		interactive: ctx.interactive,
+		question: `Rename "${from}" to "${to}"? ${profileRenameConsequence(from, to)}`,
+		refusal: `Renaming "${from}" to "${to}" also moves its saved credential.`,
+		refusalHint: `Pass --yes to confirm. ${profileRenameConsequence(from, to)}`,
+		declined: `Profile "${from}" unchanged.`,
+	});
 
 	const write = ctx.config.renameProfile(from, to);
 	const url = write.profile.url !== undefined && isSafeUrl(write.profile.url) ? write.profile.url : undefined;
@@ -118,20 +112,16 @@ export async function update(nameArg: string | undefined, options: UpdateOptions
 
 	const requestedUrl = await resolveProfileUrl(options.url, currentUrl, 'Provide the instance URL: --url <url>', ctx);
 
-	if (requestedUrl !== existing.url && options.yes !== true) {
-		if (!ctx.interactive) {
-			throw new CliError('USAGE', `Profile "${name}" already points at ${currentShown}.`, {
-				hint: `Pass --yes to overwrite its URL with ${requestedUrl}. ${urlOverwriteConsequence(name)}`,
-			});
-		}
-
-		const proceed = await ask(
-			confirm({
-				message: `Overwrite the URL of "${name}" — ${currentShown} → ${requestedUrl}? ${urlOverwriteConsequence(name)}`,
-			}),
-		);
-
-		if (!proceed) throw new CliError('USAGE', `Profile "${name}" unchanged.`);
+	// Confirm before gathering credentials so a rejected move wastes no input.
+	if (requestedUrl !== existing.url) {
+		await requireConsent({
+			skip: options.yes === true,
+			interactive: ctx.interactive,
+			question: `Overwrite the URL of "${name}" — ${currentShown} → ${requestedUrl}? ${urlOverwriteConsequence(name)}`,
+			refusal: `Profile "${name}" already points at ${currentShown}.`,
+			refusalHint: `Pass --yes to overwrite its URL with ${requestedUrl}. ${urlOverwriteConsequence(name)}`,
+			declined: `Profile "${name}" unchanged.`,
+		});
 	}
 
 	const saved = await saveProfile(name, requestedUrl, options.token, ctx);

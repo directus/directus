@@ -54,18 +54,15 @@ export function resolveCredential(query: CredentialQuery): ResolvedCredential | 
 	}
 
 	// Never let a developer's machine-global credential leak into CI.
-	if (!isCI()) {
-		const stored = readStore()[url]?.[profileName];
+	if (isCI()) return undefined;
 
-		if (typeof stored === 'string') {
-			if (stored !== '') return hit(stored);
-		} else if (stored !== undefined) {
-			const session = requireSession(stored, url, profileName);
-			if (session.refresh_token !== null) return { kind: 'session', url, profileName };
-		}
-	}
+	const stored = readStore()[url]?.[profileName];
 
-	return undefined;
+	if (stored === undefined) return undefined;
+	if (typeof stored === 'string') return stored === '' ? undefined : hit(stored);
+
+	const session = requireSession(stored, url, profileName);
+	return session.refresh_token !== null ? { kind: 'session', url, profileName } : undefined;
 }
 
 type StoredCredential = string | AuthenticationData;

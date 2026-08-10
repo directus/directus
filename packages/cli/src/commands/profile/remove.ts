@@ -1,8 +1,6 @@
-import { confirm } from '@clack/prompts';
 import type { Command } from 'commander';
 import { clearCredential } from '../../kernel/config/credentials.js';
-import { CliError } from '../../kernel/error.js';
-import { ask } from '../../kernel/prompt.js';
+import { requireConsent } from '../../kernel/prompt.js';
 import type { CliContext } from '../../kernel/run.js';
 import { resolveProfileName } from './utils/save.js';
 
@@ -22,17 +20,14 @@ export function registerRemove(command: Command, getContext: () => CliContext): 
 export async function remove(nameArg: string | undefined, options: RemoveOptions, ctx: CliContext): Promise<void> {
 	const { name } = await resolveProfileName(nameArg, 'existing', 'Name the profile: d6s profile remove <name>', ctx);
 
-	if (options.yes !== true) {
-		if (!ctx.interactive) {
-			throw new CliError('USAGE', `Removing profile "${name}" also clears its saved credential.`, {
-				hint: 'Pass --yes to confirm.',
-			});
-		}
-
-		const proceed = await ask(confirm({ message: `Remove profile "${name}" and its saved credential?` }));
-
-		if (!proceed) throw new CliError('USAGE', `Profile "${name}" unchanged.`);
-	}
+	await requireConsent({
+		skip: options.yes === true,
+		interactive: ctx.interactive,
+		question: `Remove profile "${name}" and its saved credential?`,
+		refusal: `Removing profile "${name}" also clears its saved credential.`,
+		refusalHint: 'Pass --yes to confirm.',
+		declined: `Profile "${name}" unchanged.`,
+	});
 
 	const removed = ctx.config.removeProfile(name);
 	ctx.ui.success(`Removed profile "${name}".`);

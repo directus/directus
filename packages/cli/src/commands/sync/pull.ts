@@ -153,27 +153,28 @@ function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig |
 	const positives = SELECTABLE_RESOURCES.filter((name) => options[name] === true);
 	const negatives = SELECTABLE_RESOURCES.filter((name) => options[name] === false);
 
-	if (options.all === true || positives.length > 0 || negatives.length > 0) {
-		if (options.all === true && positives.length > 0) {
-			throw new CliError(
-				'USAGE',
-				'--all already includes every resource; drop the named resources or subtract with --no-<resource>.',
-			);
-		}
+	if (options.all === true && positives.length > 0) {
+		throw new CliError(
+			'USAGE',
+			'--all already includes every resource; drop the named resources or subtract with --no-<resource>.',
+		);
+	}
 
-		if (positives.length > 0 && negatives.length > 0) {
-			throw new CliError('USAGE', 'Name the resources you want, or subtract them with --no-<resource> — not both.');
-		}
+	if (positives.length > 0 && negatives.length > 0) {
+		throw new CliError('USAGE', 'Name the resources you want, or subtract them with --no-<resource> — not both.');
+	}
 
-		if (options.all === true) {
-			return resolveResources(
-				SELECTABLE_RESOURCES.filter((name) => !negatives.includes(name)),
-				{ deps },
-			);
-		}
+	// Any resource flag overrides configured resources wholesale.
+	if (options.all === true) {
+		return resolveResources(
+			SELECTABLE_RESOURCES.filter((name) => !negatives.includes(name)),
+			{ deps },
+		);
+	}
 
-		if (positives.length > 0) return resolveResources(positives, { deps });
+	if (positives.length > 0) return resolveResources(positives, { deps });
 
+	if (negatives.length > 0) {
 		return resolveResources(
 			DEFAULT_RESOURCE_NAMES.filter((name) => !negatives.includes(name)),
 			{ deps },

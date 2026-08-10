@@ -1,4 +1,4 @@
-import { isCancel, password, text, type TextOptions } from '@clack/prompts';
+import { confirm, isCancel, password, text, type TextOptions } from '@clack/prompts';
 import { CliError } from './error.js';
 import { registerSecret } from './secret.js';
 
@@ -20,6 +20,26 @@ export async function orPrompt(
 	if (value !== undefined) return value;
 	if (!interactive) throw new CliError('USAGE', usage, { hint });
 	return ask(text(options));
+}
+
+/** A destructive step's gate: skipped with consent given, refused without a terminal, aborted on decline. */
+export async function requireConsent(input: {
+	skip: boolean;
+	interactive: boolean;
+	question: string;
+	refusal: string;
+	refusalHint: string;
+	declined: string;
+}): Promise<void> {
+	if (input.skip) return;
+
+	if (!input.interactive) {
+		throw new CliError('USAGE', input.refusal, { hint: input.refusalHint });
+	}
+
+	if (!(await ask(confirm({ message: input.question })))) {
+		throw new CliError('USAGE', input.declined);
+	}
 }
 
 /** Registers the token here, because an unregistered token prints in full. */
