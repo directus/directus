@@ -131,7 +131,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		return;
 	}
 
-	const yes = options.yes ?? false;
+	const skipConfirmation = options.yes ?? false;
 
 	let dataSummary: ImportSummary | undefined;
 
@@ -176,13 +176,13 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		});
 	}
 
-	if (!ctx.interactive && !yes) {
+	if (!ctx.interactive && !skipConfirmation) {
 		throw new CliError('USAGE', 'Refusing to apply changes without confirmation.', {
 			hint: 'Pass --yes to apply in a non-interactive context.',
 		});
 	}
 
-	if (ctx.interactive && !yes) {
+	if (ctx.interactive && !skipConfirmation) {
 		const dataTotal = dataSummary === undefined ? 0 : dataSummary.created + dataSummary.updated + dataSummary.deleted;
 		const planned: string[] = [];
 		if (schema.total > 0) planned.push(maybePluralize(schema.total, 'schema change'));
