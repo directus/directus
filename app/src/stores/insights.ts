@@ -94,6 +94,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		clearEdits,
 		getDashboard,
 		getPanelsForDashboard,
+		isPanelInactive,
 		refresh,
 		stagePanelCreate,
 		stagePanelUpdate,
@@ -221,7 +222,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			}
 
 			// Don't query a collection that can't be interacted with; the panel renders a notice instead
-			if (toArray(req).some(({ collection }) => isCollectionInactive(collection))) {
+			if (isPanelInactive(panel, req)) {
 				data.value[panel.id] = {};
 				continue;
 			}
@@ -327,6 +328,17 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		return (
 			panelType?.query?.(applyOptionsData(panel.options ?? {}, unref(variables), panelType.skipUndefinedKeys)) ?? null
 		);
+	}
+
+	/**
+	 * Whether a panel reads from a collection that can't be interacted with. Covers the collection in
+	 * the panel's own settings as well as any extra collections its query pulls in, such as the
+	 * related collection behind a bar chart's x-axis display field.
+	 */
+	function isPanelInactive(panel: Pick<Panel, 'options' | 'type'>, req = prepareQuery(panel)) {
+		if (isCollectionInactive(panel.options?.['collection'])) return true;
+		if (!req) return false;
+		return toArray(req).some(({ collection }) => isCollectionInactive(collection));
 	}
 
 	function stagePanelCreate(panel: CreatePanel) {

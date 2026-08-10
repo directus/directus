@@ -25,7 +25,6 @@ import { useItemPermissions } from '@/composables/use-permissions';
 import { useExtensions } from '@/extensions';
 import { router } from '@/router';
 import { useInsightsStore } from '@/stores/insights';
-import { isCollectionInactive } from '@/utils/collection-status';
 import { pointOnLine } from '@/utils/point-on-line';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
@@ -54,9 +53,15 @@ const now = new Date();
 
 const editMode = ref(false);
 
-function isPanelInactive(tile: AppTile) {
-	return isCollectionInactive(tile.data?.options?.collection);
-}
+const inactivePanelIds = computed(
+	() =>
+		new Set(
+			insightsStore
+				.getPanelsForDashboard(props.primaryKey)
+				.filter((panel) => insightsStore.isPanelInactive(panel))
+				.map(({ id }) => id),
+		),
+);
 
 const tiles = computed<AppTile[]>(() => {
 	const panels = insightsStore.getPanelsForDashboard(props.primaryKey);
@@ -292,7 +297,7 @@ const refreshInterval = computed({
 				/>
 				<div v-else class="panel-container" :class="{ loading: loading.includes(tile.id) }">
 					<div
-						v-if="isPanelInactive(tile)"
+						v-if="inactivePanelIds.has(tile.id)"
 						class="panel-no-data type-note"
 						:class="{ 'header-offset': tile.showHeader }"
 					>
