@@ -99,15 +99,11 @@ function readJsonFile(path: string, name: string, hint?: string): unknown {
 }
 
 export interface ArtifactManifest {
-	/** The files the store claims ownership of. */
 	readonly files: string[];
 	readonly metadata: unknown;
 }
 
-/**
- * undefined when the directory holds no manifest; throws when one exists but cannot be trusted. Every
- * manifest read goes through here, so no store can accidentally read one on laxer terms.
- */
+/** undefined when the directory holds no manifest; throws when one exists but cannot be trusted. */
 export function readArtifactManifest(
 	dir: string,
 	options: { invalid?: string | undefined; hint?: string | undefined } = {},
@@ -137,7 +133,7 @@ export function readArtifactManifest(
 	return { files: manifest.data.files, metadata };
 }
 
-/** For the readers that must survive corruption so a later pull can still heal the directory. */
+/** For readers that must survive corruption so a later pull can heal the directory. */
 export function tryReadArtifactManifest(dir: string): ArtifactManifest | undefined {
 	try {
 		return readArtifactManifest(dir);

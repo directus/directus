@@ -26,9 +26,8 @@ export function envTokenVar(profileName: string): string {
 }
 
 /**
- * --token, then DIRECTUS_<NAME>_TOKEN, then the saved store (never in CI). There is deliberately no
- * unprefixed fallback: a credential is bound to a named profile or passed explicitly, so it can never be
- * borrowed for a target the user did not mean to authenticate.
+ * --token, then DIRECTUS_<NAME>_TOKEN, then the saved store (never in CI). No unprefixed fallback, so a
+ * credential can never be borrowed for a target the user did not mean to authenticate.
  */
 export function resolveCredential(query: CredentialQuery): ResolvedCredential | undefined {
 	const { url, tokenFlag } = query;
@@ -132,7 +131,6 @@ function readStore(): CredentialStore {
 	return clean;
 }
 
-/** Shared so every caller reports the same confirmation after `saveCredential`. */
 export function savedTokenMessage(profileName: string): string {
 	return `Saved a token for "${profileName}" to the credential store.`;
 }
@@ -146,10 +144,7 @@ export function clearCredential(url: string, profileName: string): void {
 	writeStored(url, profileName, null);
 }
 
-/**
- * Credentials are keyed by URL and profile name, so a rename that skipped this would strand the old entry
- * under a name nothing looks up.
- */
+/** Credentials are keyed by URL and profile name, so a rename has to move the entry too. */
 export function renameCredential(url: string, from: string, to: string): void {
 	const stored = readStore()[url]?.[from];
 

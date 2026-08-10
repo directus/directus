@@ -142,8 +142,6 @@ describe('profile commands', () => {
 		expect(readConfig().profiles['staging']?.url).toBe('https://cms.example.com');
 	});
 
-	// Combined, a part-way failure leaves the profile under a new name pointing at an old URL with no
-	// credential. Refusing keeps every failure recoverable by re-running.
 	it('update refuses a combined rename and repoint, so no failure can leave a half-moved profile', async () => {
 		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
 

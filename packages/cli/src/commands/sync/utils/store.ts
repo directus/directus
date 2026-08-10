@@ -17,9 +17,8 @@ import {
 	type SnapshotRelationEntry,
 } from './contract.js';
 
-/** Absent means an unscoped write, which may replace or remove anything. */
+/** Absent, the write is unscoped and may replace or remove anything; out-of-scope collections are preserved. */
 export interface WriteScope {
-	/** Out-of-scope collections are preserved rather than replaced or removed. */
 	readonly inScope: (collection: string) => boolean;
 }
 
@@ -175,7 +174,6 @@ export function writeSnapshotFiles(dir: string, snapshot: Snapshot, scope?: Writ
 	});
 }
 
-/** The inverse of `writeSnapshotFiles`: reassembles one snapshot from its per-collection files. */
 export function readSnapshotFiles(dir: string): Snapshot {
 	const { metadata, artifacts: files } = readArtifactStore({
 		dir,

@@ -35,8 +35,8 @@ interface DataReadResult {
 	readonly collections: DataCollection[];
 	/**
 	 * Collections the source silently truncated at pull time (reads filtered by license entitlements).
-	 * Stored so the knowledge survives to whoever pushes: absence from an incomplete batch is not deletion
-	 * consent, so merge and add stay safe but mirror must refuse.
+	 * Absence from an incomplete batch is not deletion consent, so merge and add stay safe but mirror
+	 * must refuse.
 	 */
 	readonly incomplete: string[];
 }
@@ -65,7 +65,7 @@ function isCommittedSource(value: string): boolean {
 
 const sourceSchema = z.object({ source: z.string().refine(isCommittedSource) });
 
-// Only verified collections may carry incompleteness markers that later reach terminal output.
+// Only verified collections may carry incompleteness markers.
 const incompleteSchema = z.object({
 	incomplete: z.array(z.string().refine((collection) => VERIFY_TRACKED.has(collection))),
 });
@@ -165,7 +165,6 @@ function interpretMetadata(value: unknown): CommittedData {
 	return { source: source.data.source, incomplete: incomplete.data.incomplete };
 }
 
-// Validate provenance and completeness before a write can relabel preserved records or erase warnings.
 function committedState(dir: string): CommittedData | undefined {
 	const manifest = readArtifactManifest(dir, {
 		invalid: `${ARTIFACT_MANIFEST_FILE} is not a data manifest.`,
@@ -178,7 +177,6 @@ function committedState(dir: string): CommittedData | undefined {
 }
 
 function assertMatchingDataSource(committed: CommittedData | undefined, dir: string, source: string): void {
-	// One manifest cannot safely relabel preserved records from another source instance.
 	if (committed !== undefined && committed.source !== source) {
 		throw new CliError('STATE', `The files in ${dir} came from ${committed.source}; this pull is from ${source}.`, {
 			hint: 'Mixed sources corrupt identity mapping. Delete the data directory to switch this project to the new source, or declare a separate project for it.',
@@ -186,10 +184,7 @@ function assertMatchingDataSource(committed: CommittedData | undefined, dir: str
 	}
 }
 
-/**
- * Exposed so pull can run this BEFORE any write. `writeDataFiles` refuses too, but by then the schema
- * files have already changed.
- */
+/** Pull checks before any write: `writeDataFiles` refuses too, but by then the schema files have changed. */
 export function assertDataSource(dir: string, source: string): void {
 	assertMatchingDataSource(committedState(dir), dir, source);
 }
@@ -249,9 +244,9 @@ export function writeDataFiles(
 }
 
 /**
- * Whether a write that does not refetch this collection would preserve it. A corrupt manifest answers
- * false rather than throwing: this is a read-only premise check during pull, the strict validators
- * already stop any write onto a corrupt tree, and a hard failure here would block the healing pull.
+ * Whether a write that skips this collection would preserve it. A corrupt manifest answers false rather
+ * than throwing: strict validators already stop writes onto a corrupt tree, and throwing here would block
+ * the healing pull.
  */
 export function hasCommittedCollection(dir: string, collection: string): boolean {
 	const manifest = tryReadArtifactManifest(dir);

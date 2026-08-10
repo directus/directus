@@ -18,9 +18,8 @@ export function writeFileAtomic(path: string, data: string, mode: number): void 
 		renameSync(tmp, path);
 		chmodSync(path, mode);
 
-		// The rename is only power-loss durable once the directory entry is flushed too; without this,
-		// sibling renames can reach disk out of order. Best-effort, because directory fsync is unsupported
-		// on some platforms and hardening must not fail a write that already succeeded.
+		// The rename is power-loss durable only once the directory entry is flushed too. Best-effort:
+		// directory fsync is unsupported on some platforms, and must not fail a write that succeeded.
 		try {
 			const dirFd = openSync(dirname(path), 'r');
 

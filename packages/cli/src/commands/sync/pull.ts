@@ -106,7 +106,6 @@ function resolveScope(options: PullOptions, projectConfig: ProjectConfig | undef
 
 	let pair: { readonly include: string[] } | { readonly exclude: string[] } | undefined;
 
-	// CLI scope overrides configured scope wholesale.
 	if (options.collections !== undefined) {
 		pair = { include: [...options.collections] };
 	} else if (options.excludeCollections !== undefined) {
@@ -148,7 +147,7 @@ function resolveScope(options: PullOptions, projectConfig: ProjectConfig | undef
 const DEFAULT_RESOURCE_NAMES = SELECTABLE_RESOURCES.filter((name) => name !== 'users');
 
 function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig | undefined): Resource[] {
-	// Commander defines only the negative flag, preserving configuration/default precedence when it is absent.
+	// Only --no-deps exists, so undefined leaves configuration precedence intact.
 	const deps = options.deps === false ? false : (projectConfig?.deps ?? true);
 
 	const positives = SELECTABLE_RESOURCES.filter((name) => options[name] === true);
@@ -208,7 +207,6 @@ function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig |
 	return resolveResources(DEFAULT_RESOURCE_NAMES, { deps });
 }
 
-// Attribute a permissions shortfall to licensing only when the entitlement confirms it.
 function permissionsShortfallWarning(
 	name: string,
 	pulled: number,
@@ -245,8 +243,7 @@ function stripSystemFields(
 	});
 }
 
-// Catches custom secret-bearing fields no static strip list could know about, and stays authoritative
-// for scoped pulls whose snapshots omit system-collection field metadata.
+// Catches secret-bearing custom fields no static strip list could know about.
 function sensitiveFieldsByCollection(catalog: FieldCatalogEntry[]): Map<string, string[]> {
 	const map = new Map<string, string[]>();
 
@@ -279,7 +276,6 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 	const includeSchema = options.schema !== false && projectConfig?.schema !== false;
 
-	// A schema scope and schema skip are contradictory; neither can safely win by precedence.
 	if (!includeSchema && scope !== undefined) {
 		throw new CliError('USAGE', 'This pull skips the schema, but a collections scope was given.', {
 			hint: 'Remove --collections/--exclude-collections (or the project scope), or drop --no-schema / "schema": false.',
@@ -295,7 +291,6 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 	const snapshot = includeSchema ? await fetchSnapshot(credential, scope?.api) : null;
 
-	// A scoped snapshot that omits requested names is unsafe to write as a complete answer to that scope.
 	if (snapshot !== null && scope !== undefined && 'include' in scope.api) {
 		const present = new Set(snapshot.collections.map((entry) => entry.collection));
 		const missing = scope.api.include.filter((name) => !present.has(name));
@@ -309,7 +304,6 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		}
 	}
 
-	// One best-effort limit read can remove an exhaustion probe from every collection fetch.
 	const queryMax = await fetchQueryLimitMax(credential);
 
 	// Secret stripping must fail closed when configuration resources are pulled.
@@ -318,8 +312,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 	const includesUsers = resources.some((resource) => resource.name === 'users');
 
-	// Users preserved by an earlier pull still count: judging by this fetch set alone could turn their
-	// grants into mirror deletions.
+	// Users preserved by an earlier pull still count; judging by this fetch alone could delete their grants.
 	const usersCommitted = includesUsers || hasCommittedCollection(dataDir, 'directus_users');
 
 	const dataCollections: DataCollection[] = [];
@@ -328,7 +321,6 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	for (const resource of resources) {
 		let rows = await fetchRecords(credential, resource, queryMax);
 
-		// Unknown or truncated reads cannot authorize mirror deletions.
 		if (resource.verifyCount === true) {
 			const total = await fetchTotalCount(credential, resource.endpoint);
 
@@ -352,7 +344,6 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 			}
 		}
 
-		// Name custom stripped fields so their absence is not mistaken for data loss.
 		const derivedSecrets = (sensitiveByCollection.get(resource.collection) ?? []).filter(
 			(field) => !resource.strip.includes(field) && !resource.aliases.includes(field),
 		);
@@ -370,7 +361,6 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 				// User-attached grants cannot be pushed safely when their users are out of scope.
 				rows = rows.filter((record) => record['user'] === null || record['user'] === undefined);
 			} else if (!includesUsers && rows.some((record) => record['user'] !== null && record['user'] !== undefined)) {
-				// Preserved users may be stale relative to newly fetched grants.
 				ctx.ui.warn(
 					`${resource.name}: kept user-attached grants because directus_users is present in local files from an earlier --users pull, but this pull did not refresh the user accounts themselves — a grant for a user added on the source since then fails the push. Re-pull with --users to refresh accounts, or delete the users configuration file to drop accounts from the sync.`,
 				);

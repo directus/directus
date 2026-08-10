@@ -1,14 +1,11 @@
-/** Shared by configuration validation and the commands' `--mode` choices. */
+import type { ImportBatchMode, SnapshotDiffMode } from '@directus/types';
+
 export const MODES = ['add', 'merge', 'mirror'] as const;
 
 export type SyncMode = (typeof MODES)[number];
 
-import type { ImportBatchMode, SnapshotDiffMode } from '@directus/types';
-
-/** Narrower than SyncMode: `add` has no schema meaning. */
 export type SchemaDiffMode = SnapshotDiffMode;
 
-/** Narrower than SyncMode: mirror rides as merge plus delete permission. */
 export type ImportMode = ImportBatchMode;
 
 const MODE_DESCRIPTIONS: Record<SyncMode, string> = {

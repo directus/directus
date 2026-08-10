@@ -178,8 +178,7 @@ describe('hasCommittedCollection', () => {
 		expect(hasCommittedCollection(dir, 'directus_users')).toBe(false);
 	});
 
-	// A cloned repo can carry a symlink where the manifest belongs. The write path already refused one; the
-	// read path used to follow it, so a manifest outside the project could decide what the pull preserved.
+	// A cloned repo can carry a symlink where the manifest belongs; reading through it trusts a file outside the project.
 	it('refuses a symlinked manifest instead of reading through it', () => {
 		const dir = tempDir();
 		writeDataFiles(dir, fixture(), SOURCE);

@@ -29,9 +29,9 @@ export interface PushOptions {
 	readonly to: string;
 	/** No commander default: an absent flag falls through to the project configuration, then `merge`. */
 	readonly mode?: SyncMode;
-	/** Named after the API's own import parameter. The one consent for deletions. */
+	/** Named after the API's own import parameter; the one consent for deletions. */
 	readonly dangerouslyAllowDelete?: boolean;
-	/** Surfaces the server's own sanctioned bypass of its version and vendor gates on /schema/diff. */
+	/** The server's own sanctioned bypass of its version and vendor gates on /schema/diff. */
 	readonly allowDrift?: boolean;
 	readonly yes?: boolean;
 	readonly project: string;
@@ -81,9 +81,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	ctx.ui.info(`Pushing ${projectPath} to ${options.to} — ${url} (${describeMode(mode)})`);
 
-	// A non-interactive mirror has no dry run, so it needs explicit consent. Local data makes the refusal
-	// certain whatever the schema phase finds, so settle it here rather than after remote work. A push with
-	// no local data still needs the convergence check further down.
+	// A non-interactive mirror has no dry run, so it needs consent; local data settles that before remote work.
 	if (!ctx.interactive && mode === 'mirror' && !allowDeletes) {
 		const committed = readDataFiles(dataDir);
 		if (committed !== undefined && committed.collections.length > 0) throw mirrorConsentRefusal(projectPath);
@@ -93,7 +91,6 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	const dataResult = await prepareDataPush(target, mode, ctx);
 
-	// Truncated source reads cannot authorize mirror deletions no plan can name.
 	if (mode === 'mirror' && dataResult !== undefined && dataResult.incomplete.length > 0) {
 		throw new CliError(
 			'STATE',
@@ -160,7 +157,6 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	if (!ctx.ui.json) {
 		renderSchemaPlan(schema, ctx);
 
-		// prepareDataPush resolves every ambiguous identity or refuses before rendering the plan.
 		renderDataPlan(dataSummary, dataResult, ctx);
 	}
 
@@ -212,7 +208,6 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 		try {
 			await applyDiff(credential, schema.result);
 		} catch (error) {
-			// A fresh hash mismatch means the target schema changed concurrently.
 			if (error instanceof CliError && /INVALID_PAYLOAD/.test(error.detail ?? '') && /hash/i.test(error.detail ?? '')) {
 				throw withHint(
 					error,

@@ -24,7 +24,6 @@ export const DEFAULT_PROJECT = 'default';
 
 const PROJECT_NAME = /^[a-z0-9][a-z0-9-_]*$/i;
 
-/** Relative to the invocation directory, with an explicit `./` so it reads as a path. */
 export function displayProjectPath(cwd: string, projectDir: string): string {
 	const local = relative(cwd, projectDir);
 	if (local === '') return '.';

@@ -24,7 +24,7 @@ export interface DiffOptions {
 	readonly to: string;
 	/** No commander default: an absent flag falls through the same precedence push uses. */
 	readonly mode?: SyncMode;
-	/** Surfaces the server's own sanctioned bypass of its version and vendor gates on /schema/diff. */
+	/** The server's own sanctioned bypass of its version and vendor gates on /schema/diff. */
 	readonly allowDrift?: boolean;
 	readonly project: string;
 }
@@ -75,7 +75,6 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	const preview = await previewData(target, mode);
 
-	// A truncated source cannot prove mirror deletions, even though the dry-run can display them.
 	if (mode === 'mirror' && preview !== undefined && preview.incomplete.length > 0) {
 		ctx.ui.warn(
 			`The configuration in ${projectPath} is incomplete for ${preview.incomplete.join(', ')} — the source hid records from reads at pull time, and push will refuse mirror. Push with --mode merge, or license the source and re-pull.`,
@@ -86,7 +85,6 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 	let dataSummary: ImportSummary | undefined;
 
 	if (preview !== undefined) {
-		// Under mirror, an empty collection entry can still delete target records.
 		if (dataPhaseConverged(preview.records, mode)) {
 			dataSummary = emptyImportSummary();
 		} else {
@@ -127,7 +125,6 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	if (ctx.ui.json) return;
 
-	// An all-ambiguous set has a zero dry-run but is not converged.
 	if (schema.result === null && !dataChanged && ambiguous === 0) {
 		ctx.ui.success(convergedMessage('diff', target, ctx.cwd, schema, preview !== undefined));
 		return;
@@ -135,11 +132,10 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	renderSchemaPlan(schema, ctx);
 
-	// An ambiguity holds its records out of the batch, so the dry run can come back empty for a diff that is
-	// anything but converged. Printing "no changes" there would contradict the lines that follow it.
+	// An ambiguity holds records out of the batch, so a dry run can be empty for a diff that is not converged.
 	const ambiguityEmptiedThePlan = ambiguous > 0 && dataSummary !== undefined && !hasImportChanges(dataSummary);
 
-	// No batch size to pass: diff always dry-runs, so there is never an unpriced batch.
+	// No batch size: diff always dry-runs, so nothing is unpriced.
 	if (!ambiguityEmptiedThePlan) renderDataPlan(dataSummary, undefined, ctx);
 
 	if (preview === undefined) return;
@@ -164,6 +160,5 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 		);
 	}
 
-	// Last, so the instruction closes the report rather than interrupting the facts.
 	if (ambiguousCount > 0) ctx.ui.info('Run d6s sync push interactively to choose.');
 }

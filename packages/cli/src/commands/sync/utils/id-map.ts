@@ -29,7 +29,7 @@ export function normalizeInstanceUrl(url: string): string {
 	}
 
 	const host = port === '' ? hostname : `${hostname}:${port}`;
-	// The SDK treats a trailing slash as equivalent, so both spellings must land in one identity bucket.
+	// The SDK treats a trailing slash as equivalent, so both spellings share one identity bucket.
 	const pathname = parsed.pathname.replace(/\/+$/, '');
 
 	return `${protocol}//${host}${pathname}`;
@@ -58,7 +58,6 @@ function parseBucket(value: unknown, path: string): Readonly<Record<string, stri
 				});
 			}
 
-			// Two sources cannot safely share one target identity.
 			const owner = owners.get(targetId);
 
 			if (owner !== undefined) {

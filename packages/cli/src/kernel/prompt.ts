@@ -9,10 +9,7 @@ export async function ask<T>(prompt: Promise<T | symbol>): Promise<T> {
 	return value as T;
 }
 
-/**
- * Without a terminal the value can only come from the arguments, so `usage` (plus `hint`, when the value
- * has more than one invocation shape) is what the resulting error says instead.
- */
+/** Without a terminal the value can only come from the arguments, so `usage` becomes the error. */
 export async function orPrompt(
 	value: string | undefined,
 	interactive: boolean,
@@ -25,10 +22,7 @@ export async function orPrompt(
 	return ask(text(options));
 }
 
-/**
- * Registers the token here rather than leaving it to the caller: a caller that has to remember will
- * eventually not, and an unregistered token prints in full.
- */
+/** Registers the token here, because an unregistered token prints in full. */
 export async function promptAndRegisterToken(profileName: string): Promise<string> {
 	const token = await ask(
 		password({

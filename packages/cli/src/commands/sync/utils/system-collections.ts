@@ -3,7 +3,6 @@ import { byCodepoint } from './codepoint.js';
 import type { DataCollection } from './data-store.js';
 import { allResources, type Resource } from './resources.js';
 
-/** A stored data file paired with the resource definition that governs how it syncs. */
 export interface SystemCollection {
 	readonly data: DataCollection;
 	readonly resource: Resource;

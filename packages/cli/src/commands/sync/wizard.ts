@@ -14,7 +14,6 @@ export function registerWizard(command: Command, getContext: () => CliContext): 
 	command.action(() => wizard(getContext()));
 }
 
-/** Calls the same functions the explicit subcommands do, so the two paths cannot diverge. */
 export async function wizard(ctx: CliContext): Promise<void> {
 	if (!ctx.interactive) {
 		throw new CliError('USAGE', 'd6s sync needs a terminal.', {

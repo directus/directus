@@ -22,7 +22,6 @@ export function registerRemove(command: Command, getContext: () => CliContext): 
 export async function remove(nameArg: string | undefined, options: RemoveOptions, ctx: CliContext): Promise<void> {
 	const { name } = await resolveProfileName(nameArg, 'existing', 'Name the profile: d6s profile remove <name>', ctx);
 
-	// Confirm before any write so a mistyped name changes nothing.
 	if (options.yes !== true) {
 		if (!ctx.interactive) {
 			throw new CliError('USAGE', `Removing profile "${name}" also clears its saved credential.`, {

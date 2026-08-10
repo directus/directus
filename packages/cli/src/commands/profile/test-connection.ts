@@ -66,7 +66,6 @@ export async function testProfileConnection(
 			: { target: 'url', url, tokenFlag: options.token },
 	);
 
-	// Without a credential the only way forward is to ask for one, so a terminal is a precondition here.
 	if (credential === undefined && !ctx.interactive) {
 		throw new CliError('AUTH', `No token found for ${name !== undefined ? `"${name}"` : url}.`, {
 			hint: name !== undefined ? `Set ${envTokenVar(name)} or pass --token.` : 'Pass --token to test a URL directly.',
@@ -96,7 +95,6 @@ export async function testProfileConnection(
 			const { email, password } = await promptLogin();
 			const login = await loginSession(url, email, password);
 
-			// A login here is the profile's new credential: it already has a configuration entry to belong to.
 			credentialStorage(url, name).set(login.session);
 			identity = login.identity;
 		} else {

@@ -9,13 +9,9 @@ import { MODES, type SyncMode } from './mode.js';
 const CONFIG_FILENAME = 'directus.config.json';
 const CONTROL_CHARACTER = /\p{Cc}/u;
 
-/** One rejection message for every `isSafeUrl` failure, in prompts and usage errors alike. */
 export const INVALID_URL_MESSAGE = 'Enter a valid http(s) URL.';
 
-/**
- * A stored base URL must carry no secrets, so `https://user:pass@host` or `?token=…` can never be written
- * to configuration or printed by `profile list`. Doubles as the prompt validator.
- */
+/** A stored base URL must carry no secrets: no `user:pass@`, no `?token=…`. */
 export function isSafeUrl(value: string): boolean {
 	// URL parsing normalizes control characters away, but callers store and print the raw value.
 	if (CONTROL_CHARACTER.test(value)) return false;
@@ -42,7 +38,7 @@ const profileSchema = z.object({
 	auth: z.object({ type: z.literal('token') }).default({ type: 'token' }),
 });
 
-// An empty list reads as "scope to nothing" but would behave as unscoped, widening a mirror's reach.
+// An empty list reads as "scope to nothing" but would behave as unscoped.
 const scopeList = (name: string) =>
 	z.array(z.string()).min(1, `"${name}" must list at least one name; remove the key to leave it unscoped.`).optional();
 
@@ -65,8 +61,7 @@ const projectSchema = z
 		},
 	);
 
-// Loose, not strict: a `"templates"` or `"extensions"` block written by another Directus tool has to
-// survive a round trip through any write we make here.
+// Loose so blocks written by other Directus tools survive a round trip through our writes.
 const configSchema = z.looseObject({
 	profiles: z.record(z.string(), profileSchema).default({}),
 	directory: z.string().min(1).default('directus'),
@@ -74,7 +69,7 @@ const configSchema = z.looseObject({
 	format: z.enum(['json']).default('json'),
 });
 
-// Written out rather than inferred from the schemas above, so isolated declaration emit stays possible.
+// Written out rather than inferred, so isolated declaration emit stays possible.
 interface StoredProfile {
 	readonly url: string | undefined;
 }
@@ -86,11 +81,12 @@ interface Profile {
 
 interface ProfileWrite<T extends StoredProfile> {
 	readonly profile: T;
+	/** Restores the file to its state before the write. */
 	readonly rollback: () => void;
 }
 
 export interface ProjectConfig {
-	/** false: this project owns no schema — pull skips the snapshot; push and diff skip the schema phase. */
+	/** false: pull skips the snapshot; push and diff skip the schema phase. */
 	readonly schema?: boolean | undefined;
 	readonly collections?: readonly string[] | undefined;
 	readonly excludeCollections?: readonly string[] | undefined;
@@ -180,33 +176,26 @@ function storedProfile(value: unknown): StoredProfile {
 	return { url: typeof url === 'string' ? url : undefined };
 }
 
-/** The configuration file of one CLI run: every read and write of it goes through here. */
+/** Every read and write of the configuration file in one CLI run. */
 export interface ConfigStore {
 	/** Resolved without reading the file, so env loading never depends on a parse. */
 	path(): string | undefined;
-	/** undefined when there is no configuration file — profile-less operation stays first-class. */
+	/** undefined when there is no configuration file — running without one is valid. */
 	load(): LoadedConfig | undefined;
 	requireConfig(): LoadedConfig;
 	/**
-	 * A raw read: a present result means the name is taken even when `url` is undefined, because a
-	 * hand-broken entry is still a named profile with a possibly-attached credential. Commands that EDIT a
-	 * profile use this, so a broken entry stays repairable; commands that USE one need `requireProfile`.
+	 * A raw read: a present result means the name is taken even when `url` is undefined, so a hand-broken
+	 * entry stays repairable. Commands that use a profile rather than edit one need `requireProfile`.
 	 */
 	existingProfile(name: string): StoredProfile | undefined;
-	/** Throws a CONFIG error naming the known profiles when the name is unknown. */
 	requireProfile(name: string): Profile;
-	/** `rollback` restores the file to its state before this write. */
 	upsertProfile(name: string, profile: Profile): ProfileWrite<Profile>;
-	/** `rollback` restores the file to its state before this write. */
 	renameProfile(from: string, to: string): ProfileWrite<StoredProfile>;
 	upsertProjectMode(project: string, mode: SyncMode): void;
 	removeProfile(name: string): StoredProfile;
 }
 
-/**
- * An explicit path wins over discovery. Parsing stays lazy so profile add/remove can repair a file that
- * fails schema validation, and a missing configuration stays valid until something calls `requireConfig`.
- */
+/** Parsing stays lazy, so profile add/remove can repair a file that fails schema validation. */
 export function createConfigStore(cwd: string, configOption?: string): ConfigStore {
 	let path = configOption === undefined ? findConfigPath(cwd) : resolve(cwd, configOption);
 	let loaded: LoadedConfig | undefined;
@@ -233,7 +222,7 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 		return config;
 	}
 
-	// Invalidate the cache after every write; new files also become the resolved path.
+	// Invalidate the cache after a write; a new file also becomes the resolved path.
 	function persisted(written: string): void {
 		path = written;
 		loaded = undefined;
@@ -257,7 +246,6 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 			const profile = Object.hasOwn(config.profiles, name) ? config.profiles[name] : undefined;
 
 			if (profile === undefined) {
-				// Name the alternatives so a typo is fixable without opening the file.
 				const known = Object.keys(config.profiles);
 
 				throw new CliError('CONFIG', `Unknown profile: "${name}"`, {
@@ -294,7 +282,7 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 			};
 		},
 		renameProfile(from, to) {
-			// Capture the path: the restore runs later, and the outer binding can move on to another file.
+			// Capture the path: rollback runs later, and the outer binding can move to another file.
 			const target = path;
 
 			if (target === undefined) throw new CliError('CONFIG', `No ${CONFIG_FILENAME} found.`);
@@ -305,12 +293,12 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 
 			if (!Object.hasOwn(profiles, from)) throw new CliError('CONFIG', `Unknown profile: "${from}"`);
 
-			// Renaming onto a live name would collapse two entries into one and silently drop a profile.
+			// Renaming onto a live name would silently drop a profile.
 			if (Object.hasOwn(profiles, to)) throw new CliError('CONFIG', `Profile "${to}" already exists.`);
 
 			const profile = storedProfile(profiles[from]);
 
-			// Rebuild in place so the renamed profile keeps its position instead of jumping to the end.
+			// Rebuild in place so the renamed profile keeps its position.
 			const renamed = Object.fromEntries(
 				Object.entries(profiles).map(([key, value]) => [key === from ? to : key, value]),
 			);

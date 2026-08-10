@@ -3,9 +3,8 @@ import { z } from 'zod';
 import { CliError } from '../../../kernel/error.js';
 
 /**
- * The API's SNAPSHOT_VERSION tags. The distinction is load-bearing on the server — a full snapshot diffed
- * in `mirror` mode proposes deleting every collection it omits — so the CLI never fabricates or edits it,
- * and an unknown future version fails loud rather than being read under a format it does not understand.
+ * The API's SNAPSHOT_VERSION tags. Load-bearing: a full snapshot diffed in `mirror` mode proposes deleting
+ * every collection it omits, so the CLI never fabricates or edits this value.
  */
 export const SNAPSHOT_FULL = 1;
 
@@ -31,9 +30,8 @@ export interface SnapshotRelationEntry {
 }
 
 /**
- * Deliberately not the `@directus/types` Snapshot. That type describes the server's own full structures,
- * while the CLI talks to arbitrary server versions and may only claim the fields it validates. It also
- * types `version` as `number`, which would let an unknown future format through silently.
+ * Not the `@directus/types` Snapshot: that describes one server's own structures, while the CLI talks to
+ * arbitrary versions and claims only the fields it validates. It also types `version` as a plain `number`.
  */
 export interface Snapshot {
 	version: typeof SNAPSHOT_FULL | typeof SNAPSHOT_PARTIAL;
@@ -46,7 +44,6 @@ export interface Snapshot {
 	[key: string]: unknown;
 }
 
-/** A validated deep-diff operation with its opaque server payload preserved. */
 export interface DiffOp {
 	kind: (typeof DiffKind)[keyof typeof DiffKind];
 	path?: (string | number)[];
@@ -168,8 +165,7 @@ export function parseSnapshot(value: unknown): Snapshot {
 export function parseDiffResult(value: unknown): DiffResult | null {
 	if (value === null) return null;
 
-	// zod infers an optional key as `T | undefined`, but DiffOp.path is exact-optional and the wire only
-	// ever omits the key, so narrow to the public shape here.
+	// zod infers an optional key as `T | undefined`; DiffOp.path is exact-optional and the wire omits it.
 	return parseResponse(diffResultSchema, value, 'schema diff') as DiffResult;
 }
 

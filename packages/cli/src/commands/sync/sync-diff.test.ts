@@ -344,8 +344,7 @@ describe('sync diff with data', () => {
 
 		const warned = stderr.join('');
 
-		// The same line push refuses with, source id included: a preview that named fewer records than the
-		// refusal would leave the reader unable to find what push is about to stop on.
+		// The same line push refuses with, source id included, so the preview names what push stops on.
 		expect(warned).toContain('directus_permissions: source 4 — temporary key -1 is already a target record');
 		expect(warned).toContain('Push will refuse');
 		expect(existsSync(idMapPath)).toBe(false);

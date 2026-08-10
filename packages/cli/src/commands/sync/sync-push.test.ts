@@ -199,8 +199,6 @@ describe('sync push', () => {
 		expect(stderr.join('')).toContain('Compatibility check bypassed');
 	});
 
-	// The vendor gate is the half the CLI cannot see, so the flag has to clear it on a version the CLI CAN see
-	// matching — the version-conditioned bypass this replaced left cross-vendor pushes with no way through.
 	it('--allow-drift sends force even when the versions match, so the vendor gate is reachable', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, versionedSnapshot('11.2.0'));
@@ -1119,8 +1117,6 @@ describe('sync push with data', () => {
 		expect(err).toMatch(/re-run|retry/i);
 	});
 
-	// A failed push still writes a tracked file, and the operator finds it in git status either way — so the
-	// failed command has to be what tells them, not the diff they run afterwards.
 	it('names the ID map it wrote even when the push then fails', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());

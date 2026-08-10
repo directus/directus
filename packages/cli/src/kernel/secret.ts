@@ -1,8 +1,7 @@
 const secrets = new Set<string>();
 
 export function registerSecret(value: string): void {
-	// Empty is the only rejection: it would match between every character. Length is not a filter — a short
-	// secret is still a secret.
+	// Empty is the only rejection: it would match between every character. Short secrets still count.
 	if (value !== '') secrets.add(value);
 }
 

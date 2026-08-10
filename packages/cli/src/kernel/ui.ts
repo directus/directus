@@ -3,17 +3,13 @@ import { isPlainObject } from 'lodash-es';
 import type { CliError } from './error.js';
 import { redact } from './secret.js';
 
-/**
- * Here rather than with the renderer, because painting and rendering must agree on these exactly and the
- * kernel cannot import a feature domain to find out.
- */
+/** Shared with the renderer: painting and rendering must agree on these tokens exactly. */
 export const KIND_TOKENS = { added: '+', modified: '~', deleted: '✖ DELETE' } as const;
 
 /** Opens the deleted count of an import line; the line's tail is painted from it. */
 export const DELETED_MARK = '✖';
 
-// ASCII on legacy Windows consoles, which render the fancy glyphs as mojibake. Modern Windows terminals
-// set these vars; everything else is assumed capable.
+// Legacy Windows consoles render the fancy glyphs as mojibake; modern ones set these vars.
 const unicode =
 	process.platform !== 'win32' || Boolean(process.env['WT_SESSION']) || process.env['TERM_PROGRAM'] === 'vscode';
 
@@ -52,7 +48,7 @@ function redactValue(value: unknown): unknown {
 	return value;
 }
 
-// Keep final-boundary redaction as a backstop for anything the structured transform misses.
+// Final-boundary redaction, as a backstop for anything the structured pass misses.
 function writeJson(payload: unknown): void {
 	const body = JSON.stringify(redactValue(payload));
 	writeOut(`${body ?? 'null'}\n`);
@@ -61,7 +57,6 @@ function writeJson(payload: unknown): void {
 /** Human status goes to stderr; JSON results and errors go to stdout, exclusively. */
 export interface Ui {
 	readonly json: boolean;
-	/** Honors the global color setting. */
 	readonly style: {
 		strong(text: string): string;
 		muted(text: string): string;
@@ -87,8 +82,8 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 		writeErr(`${symbol} ${message}\n`);
 	}
 
-	// Deletions are painted whole-line, not just their token: they are what an approval must not miss. The
-	// destructive tail of a data line (`✖N deleted (…)`) goes red too, whenever N is non-zero.
+	// Deletions are painted whole-line, not just their token: an approval must not miss them. A data line's
+	// `✖N deleted` tail goes red too whenever N is non-zero.
 	function paintPlan(line: string): string {
 		if (line.startsWith(KIND_TOKENS.deleted)) return c.red(line);
 		if (line.startsWith(KIND_TOKENS.added))

@@ -16,8 +16,8 @@ const UNNAMED_IDENTITY = 'with this identity';
 export function scalar(value: unknown): string | undefined {
 	let rendered: string | undefined;
 
-	// JSON.stringify, not String: the quotes distinguish the string "null" from null and "42" from 42, and
-	// these are remote values headed for a terminal, so an ESC byte must arrive escaped rather than live.
+	// JSON.stringify, not String: quotes tell the string "null" from null, and it escapes ESC bytes headed
+	// for a terminal.
 	if (typeof value === 'string') rendered = value === '' ? undefined : JSON.stringify(value);
 	if (typeof value === 'number' || typeof value === 'boolean' || value === null) rendered = String(value);
 	if (rendered === undefined) return undefined;
@@ -41,10 +41,7 @@ export function recordLabel(
 	return String(record[primaryKey] ?? fallbackId);
 }
 
-/**
- * Composite keys name every field. A resource needing three fields to identify a record is exactly the
- * one whose records carry no readable label, so `UNNAMED_IDENTITY` would leave nothing to search for.
- */
+/** Composite keys name every field: a record needing three fields to identify it has no readable label. */
 function identityPhrase(input: ReconcileInput | undefined, source: Record<string, unknown> | undefined): string {
 	if (input === undefined || source === undefined) return UNNAMED_IDENTITY;
 
@@ -74,7 +71,6 @@ export function itemUiUrl(instance: string, resource: Resource | undefined, id: 
 	return `${normalizeInstanceUrl(instance)}${resource.appRoute}/${encodeURIComponent(id)}`;
 }
 
-/** Both the refusal and the prompt open with these two lines, so the wording cannot drift apart. */
 export function collisionLines(
 	item: Ambiguity,
 	ambiguities: readonly Ambiguity[],
@@ -100,7 +96,6 @@ export function collisionLines(
 	];
 }
 
-/** The label for one prompt choice: what picking this target record would do to it. */
 export function differenceHint(
 	source: Record<string, unknown> | undefined,
 	target: Record<string, unknown> | undefined,

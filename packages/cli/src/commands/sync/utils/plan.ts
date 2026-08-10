@@ -15,10 +15,8 @@ import { displayProjectPath, type Target } from './resolve-target.js';
 import { fetchSnapshotDiff } from './snapshot-diff.js';
 import { readSnapshotFiles } from './store.js';
 
-/** The two commands built on this plan. They differ only in the wording of their no-op sentence. */
 export type SyncCommand = 'diff' | 'push';
 
-/** Flag over project configuration over `merge`, so deletions are never the default. */
 export function resolveMode(flag: SyncMode | undefined, projectConfig: ProjectConfig | undefined): SyncMode {
 	return flag ?? projectConfig?.mode ?? 'merge';
 }
@@ -57,9 +55,8 @@ export interface ClaimedTemporaryKey {
 }
 
 /**
- * The allocator only steers around rows its list read returned, and a target can hide rows from lists
- * (unlicensed instances hide custom-rule permissions), so the dry run is the first place a squatted key
- * shows. A non-interactive push has no dry run and relies on the guard in `recordImportedIds` instead.
+ * The allocator only steers around rows its list read returned, and a target can hide rows (unlicensed
+ * instances hide custom-rule permissions), so the dry run is the first place a squatted key shows.
  */
 export function claimedTemporaryKeys(
 	result: ImportBatchResult,
@@ -82,7 +79,6 @@ export function claimedTemporaryKeys(
 	return claimed;
 }
 
-/** Shared so the diff preview and the push refusal cannot describe the same records differently. */
 export function claimedKeyLines(claimed: readonly ClaimedTemporaryKey[]): string[] {
 	return claimed.map(
 		(key) => `${key.collection}: source ${key.sourceId} — temporary key ${key.sentPk} is already a target record`,
@@ -92,7 +88,7 @@ export function claimedKeyLines(claimed: readonly ClaimedTemporaryKey[]): string
 export interface SchemaPlan {
 	/** null when the target already matches the stored snapshot, or when the phase is disabled. */
 	readonly result: DiffResult | null;
-	/** False under `"schema": false`; the phase never ran, so it must never be reported as a match. */
+	/** False under `"schema": false` — a phase that never ran is not a match. */
 	readonly enabled: boolean;
 	readonly added: number;
 	readonly modified: number;
@@ -107,7 +103,6 @@ export interface SchemaPlanOptions {
 	readonly allowDrift: boolean;
 }
 
-/** Diff must not preview what push would refuse, so both commands decide all of this in one place. */
 export async function planSchema(target: Target, options: SchemaPlanOptions, ctx: CliContext): Promise<SchemaPlan> {
 	const { command, mode, allowDrift } = options;
 	const { credential, projectConfig, schemaDir } = target;
@@ -140,7 +135,6 @@ const CONVERGED_COPY: Record<SyncCommand, { verdict: string; outcome: string }> 
 	push: { verdict: 'already matches', outcome: 'nothing to push' },
 };
 
-/** Only a phase that actually ran may be named as matching, or "nothing compared" reads as "match". */
 export function convergedMessage(
 	command: SyncCommand,
 	target: Target,
@@ -159,7 +153,6 @@ export function convergedMessage(
 		: `${subject} ${verdict} ${projectPath} — configuration matches; ${outcome} (schema phase skipped).`;
 }
 
-/** A skipped phase says so out loud, because silence reads as "nothing changed". */
 export function renderSchemaPlan(plan: SchemaPlan, ctx: CliContext): void {
 	if (plan.result !== null) {
 		ctx.ui.info(
@@ -172,16 +165,12 @@ export function renderSchemaPlan(plan: SchemaPlan, ctx: CliContext): void {
 	}
 }
 
-/** How much a batch will send, for a plan that has no priced dry run to show instead. */
 export interface BatchSize {
 	readonly records: number;
 	readonly collections: number;
 }
 
-/**
- * `summary` is a priced dry run. A non-interactive push has none, so it can only state the size of what
- * it will send.
- */
+/** `summary` is a priced dry run; a non-interactive push has none and can only state the size it sends. */
 export function renderDataPlan(
 	summary: ImportSummary | undefined,
 	batch: BatchSize | undefined,
@@ -211,10 +200,7 @@ export function renderDataPlan(
 	ctx.ui.info('Configuration — no changes to push.');
 }
 
-/**
- * Not an exhaustive partition of stored records: existing ID-map entries and resources without a natural
- * key fall outside these counts.
- */
+/** Not a partition: existing ID-map entries and resources without a natural key fall outside these counts. */
 export interface ReconciliationCounts {
 	readonly matched: number;
 	readonly unmatched: number;
@@ -222,22 +208,18 @@ export interface ReconciliationCounts {
 	readonly dependent: number;
 }
 
-/** Diff-only comparison counts; unchanged is a content state, not a reconciliation state. */
+/** `unchanged` sits outside reconciliation: it is a content state, not a match state. */
 export interface DataComparisonCounts {
 	readonly reconciliation: ReconciliationCounts;
 	readonly unchanged: number;
 }
 
-/** The report-facing surface a push plan and a diff preview share. */
 export interface ReportedPlan {
 	readonly source: string;
 	readonly incomplete: readonly string[];
 }
 
-/**
- * A phase that never ran reports `data: null`, never zeros: nothing may read "no data was compared" as
- * "the data matched". `reconciliation` and `unchanged` are diff-only; push reports them as null.
- */
+/** A phase that never ran reports `data: null`, never zeros. `reconciliation` and `unchanged` are diff-only. */
 export interface DataReport {
 	readonly mode: SyncMode;
 	readonly source: string;
@@ -247,10 +229,7 @@ export interface DataReport {
 	readonly incomplete: string[];
 }
 
-/**
- * Key insertion order is the emitted JSON's key order, and both payloads are published contracts — new
- * comparison details belong between `resultsByCollection` and `incomplete`, not appended.
- */
+/** Key order here is the emitted JSON's key order, and that JSON is a published contract. */
 export function dataReport(
 	mode: SyncMode,
 	plan: ReportedPlan | undefined,

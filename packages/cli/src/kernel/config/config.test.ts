@@ -190,8 +190,7 @@ describe('createConfigStore', () => {
 		expect(error.hint).toBe('Create one first: d6s profile add <name> --url <url>');
 	});
 
-	// A rename that appended would reorder a hand-maintained file, so every rename would show up in review
-	// as a move plus an edit rather than an edit.
+	// A rename that appended would reorder a hand-maintained file, showing up in review as a move.
 	it('renames a profile in place, leaving its neighbours where the author put them', () => {
 		const dir = tempDir();
 

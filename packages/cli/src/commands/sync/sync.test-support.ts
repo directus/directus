@@ -192,10 +192,7 @@ export function mockTotalCount(agent: MockAgent, path: string, total: number): v
 		.reply(200, { data: [], meta: { total_count: total } }, { headers: { 'content-type': 'application/json' } });
 }
 
-/**
- * Answer the pull-time GET /fields catalog read that authorizes custom secret stripping. Pull requires
- * this read whenever it pulls configuration resources, so any pull test reaching the data phase needs one.
- */
+/** Pull reads GET /fields whenever it pulls configuration resources, so any test reaching that phase needs this. */
 export function mockFields(agent: MockAgent, fields: Record<string, unknown>[]): void {
 	agent
 		.get(SYNC_URL)

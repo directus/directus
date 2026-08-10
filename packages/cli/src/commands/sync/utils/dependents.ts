@@ -1,9 +1,8 @@
 import type { SystemCollection } from './system-collections.js';
 
 /**
- * Grows `excluded` in place until it is closed under foreign keys: a record pointing at an excluded
- * record cannot be sent either, or its FK would dangle. Iterates because a self-referential chain (a
- * folder under a folder) only deepens one level per pass.
+ * Grows `excluded` until it is closed under foreign keys: a record pointing at an excluded one would
+ * dangle. Iterates because a self-referential chain (a folder in a folder) deepens one level per pass.
  */
 export function excludeDependents(system: readonly SystemCollection[], excluded: Map<string, Set<string>>): void {
 	for (let changed = true; changed; ) {
@@ -35,7 +34,7 @@ export function excludeDependents(system: readonly SystemCollection[], excluded:
 	}
 }
 
-/** Excludes the ambiguous records themselves; this is only what waits on them. */
+/** Counts only the records waiting on an ambiguity, not the ambiguous records themselves. */
 export function dependentCountOf(
 	system: readonly SystemCollection[],
 	ambiguities: readonly { collection: string; sourceId: string }[],

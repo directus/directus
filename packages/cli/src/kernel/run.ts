@@ -8,7 +8,7 @@ import { createUi, type Ui, writeOut } from './ui.js';
 
 export interface CliContext {
 	readonly cwd: string;
-	/** One per run: commands read and write it here instead of loading the file again. */
+	/** One per run, so every command shares a single read of the file. */
 	readonly config: ConfigStore;
 	readonly ui: Ui;
 	readonly interactive: boolean;
@@ -73,15 +73,14 @@ function createContext(cwd: string, ui: Ui, globals: GlobalOptions): CliContext 
 function normalizeHelpOption(command: Command): void {
 	command.helpOption('-h, --help', 'Display help for command');
 
-	// Only parents: calling helpCommand on a leaf would give it a help subcommand it should not have.
+	// Only parents: helpCommand on a leaf would give it a help subcommand of its own.
 	if (command.commands.length > 0) command.helpCommand('help [command]', 'Display help for command');
 
 	for (const sub of command.commands) normalizeHelpOption(sub);
 }
 
 function createProgram(options: RunOptions, ui: Ui): Command {
-	// The explicit flags and descriptions override Commander's built-in wording, which does not match the
-	// CLI's help-text convention.
+	// Explicit flags and descriptions, because Commander's built-in wording breaks the help-text convention.
 	const program = new Command('d6s')
 		.exitOverride()
 		.version(version, '-v, --version', 'Output the version number')
@@ -91,8 +90,7 @@ function createProgram(options: RunOptions, ui: Ui): Command {
 		.option('--no-interactive', 'Disable interactive prompts (or set NO_INTERACTIVE)')
 		.option('--config <path>', 'Path to directus.config.json')
 		.configureOutput({
-			// writeErr is writeOut because Commander routes bare-parent help through it, and that is a
-			// successful help request, not an error.
+			// writeErr is writeOut: Commander routes bare-parent help through it, and that is not an error.
 			writeOut,
 			writeErr: writeOut,
 			outputError() {},
@@ -100,8 +98,8 @@ function createProgram(options: RunOptions, ui: Ui): Command {
 
 	const cwd = options.cwd ?? process.cwd();
 
-	// A thunk, not a context: registration runs before Commander parses argv, so --config and --json are
-	// not known yet. Each command calls this from its action, once the globals exist.
+	// A thunk, not a context: registration runs before Commander parses argv, so the globals are unknown
+	// until a command action calls it.
 	const getContext = (): CliContext => createContext(cwd, ui, program.opts<GlobalOptions>());
 
 	for (const register of options.registerCommands) register(program, getContext);

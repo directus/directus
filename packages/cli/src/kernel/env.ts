@@ -7,7 +7,7 @@ export function isCI(): boolean {
 	return Boolean(process.env['CI']);
 }
 
-/** For unattended TTYs, where a per-command flag cannot be threaded. Presence is the signal, like NO_COLOR. */
+/** For unattended TTYs where a flag cannot be threaded; presence is the signal, like NO_COLOR. */
 export function promptsDisabled(): boolean {
 	return Boolean(process.env['NO_INTERACTIVE']);
 }

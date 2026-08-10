@@ -71,10 +71,6 @@ function profileNameValidationMessage(
 	}
 }
 
-/**
- * `'new'` rejects names no environment variable could carry; `'existing'` takes hand-written
- * configuration as it finds it.
- */
 export function resolveProfileName(
 	nameArg: string | undefined,
 	policy: 'new',
@@ -107,10 +103,7 @@ export async function resolveProfileName(
 	return { name, profile: assertProfileName(name, policy, ctx) };
 }
 
-/**
- * `currentUrl` is what the profile already has: it seeds the prompt and is what the profile keeps when
- * `--url` is omitted, so only a profile without a usable URL of its own makes the flag mandatory.
- */
+/** `currentUrl` seeds the prompt and is what the profile keeps when `--url` is omitted. */
 export async function resolveProfileUrl(
 	urlFlag: string | undefined,
 	currentUrl: string | undefined,
@@ -132,15 +125,11 @@ export async function resolveProfileUrl(
 }
 
 export interface SavedProfile {
-	/** What was actually written: interactive recovery can settle on a different URL than the caller resolved. */
+	/** What was written: interactive recovery can settle on a different URL than the caller resolved. */
 	readonly url: string;
 	readonly credentialSaved: boolean;
 }
 
-/**
- * The profile is written before its credential, and a credential failure rolls the profile back. If the
- * rollback fails too, the caller gets both errors and a partial-state warning.
- */
 export async function saveProfile(
 	name: string,
 	requestedUrl: string,
@@ -167,8 +156,6 @@ export async function saveProfile(
 		try {
 			write.rollback();
 		} catch (rollbackError) {
-			// The rollback is its own filesystem write and can fail independently. Preserve both errors, so
-			// the operator knows the profile may still point at the new URL.
 			const credentialMessage = error instanceof Error ? error.message : String(error);
 			const rollbackMessage = rollbackError instanceof Error ? rollbackError.message : String(rollbackError);
 
@@ -208,8 +195,7 @@ async function acquireCredential(
 	let url = startUrl;
 	let token = flagToken;
 
-	// Skippable: a profile is a named URL, not a credential. Tokens also resolve from DIRECTUS_<NAME>_TOKEN,
-	// so skipping is how you create a profile whose secret only ever lives in CI.
+	// Skippable: a profile is a named URL, not a credential — a CI-only secret lives in DIRECTUS_<NAME>_TOKEN.
 	if (token === undefined) {
 		const method = await ask(
 			select({
@@ -259,8 +245,7 @@ async function acquireCredential(
 				const identity = await testConnection({ url, token, kind: 'token' });
 				ctx.ui.success(`Authenticated to ${url} as ${identity.user} (${identity.role}).`);
 			} else {
-				// Nothing to authenticate with, but the URL is about to be committed. Ping it, so a typo is
-				// caught while it is still one keystroke to fix rather than on the first sync.
+				// Nothing to authenticate with, but ping anyway so a URL typo surfaces now, not on the first sync.
 				await pingServer(url);
 			}
 
@@ -284,8 +269,7 @@ async function acquireCredential(
 							{ value: 'discard', label: 'Discard the token' },
 						];
 
-			// Uncaught on purpose: cancel is the only error these prompts throw, and Ctrl+C must abort the
-			// command rather than land back in this menu.
+			// Uncaught on purpose: cancel is the only error here, and Ctrl+C must abort rather than reopen this menu.
 			const next = await ask(select({ message: 'How do you want to proceed?', options }));
 
 			if (next === 'save') return token === undefined ? { url } : { url, token };

@@ -45,7 +45,6 @@ function profileRenameConsequence(from: string, to: string): string {
 	return `Its saved credential moves with it, and the env token it reads becomes ${envTokenVar(to)} instead of ${envTokenVar(from)}.`;
 }
 
-/** Shared so a rename and a repoint emit the same shape, and nothing has to branch on which one ran. */
 function report(
 	ctx: CliContext,
 	fields: { name: string; url: string | null; renamedFrom: string | null; credentialSaved: boolean },
@@ -53,7 +52,6 @@ function report(
 	ctx.ui.result(fields);
 }
 
-/** Rolls back on failure: a profile that moved without its credential is worse than a rename that did not happen. */
 async function rename(from: string, to: string, skipConfirmation: boolean, ctx: CliContext): Promise<void> {
 	if (!skipConfirmation) {
 		if (!ctx.interactive) {
@@ -85,8 +83,7 @@ async function rename(from: string, to: string, skipConfirmation: boolean, ctx: 
 }
 
 export async function update(nameArg: string | undefined, options: UpdateOptions, ctx: CliContext): Promise<void> {
-	// A rename re-keys the profile and its credential; a repoint rewrites a value under an unchanged key.
-	// Kept to separate invocations so neither has to unwind the other when it fails.
+	// A rename re-keys the profile and its credential, so combining it with a repoint would unwind two writes.
 	if (options.name !== undefined && (options.url !== undefined || options.token !== undefined)) {
 		throw new CliError('USAGE', 'Rename a profile on its own.', {
 			hint: `d6s profile update ${nameArg ?? '<name>'} --name ${options.name}, then d6s profile update ${options.name} --url <url>`,
@@ -121,7 +118,6 @@ export async function update(nameArg: string | undefined, options: UpdateOptions
 
 	const requestedUrl = await resolveProfileUrl(options.url, currentUrl, 'Provide the instance URL: --url <url>', ctx);
 
-	// Confirm before gathering credentials so a rejected move wastes no input.
 	if (requestedUrl !== existing.url && options.yes !== true) {
 		if (!ctx.interactive) {
 			throw new CliError('USAGE', `Profile "${name}" already points at ${currentShown}.`, {

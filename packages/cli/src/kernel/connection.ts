@@ -66,15 +66,11 @@ export interface VerifiedLogin {
 	readonly session: AuthenticationData;
 }
 
-/**
- * Stores nothing: the caller persists the session only after the configuration write that binds it to a
- * profile, so a failed write cannot orphan a credential no profile can reach.
- */
+/** Stores nothing: the caller persists only after the profile write, so a failed write cannot orphan a session. */
 export async function loginSession(url: string, email: string, password: string): Promise<VerifiedLogin> {
 	registerSecret(password);
 
-	// In-memory storage, so a failed identify leaves nothing behind and a transient one can no longer
-	// delete a working saved session.
+	// In-memory storage: a failed identify must not clobber the saved session.
 	let session: AuthenticationData | null = null;
 
 	const client = createDirectus<CoreSchema>(url)
@@ -85,8 +81,7 @@ export async function loginSession(url: string, email: string, password: string)
 					get: () => session,
 					set: (value) => {
 						session = value;
-						// The credential store redacts when it persists, but identify() runs long before that:
-						// register at issue time so a failing /users/me cannot echo the token in the clear.
+						// Register at issue time: identify() runs before the store persists (and redacts) the token.
 						if (value !== null) registerSession(value);
 					},
 				},
@@ -100,7 +95,6 @@ export async function loginSession(url: string, email: string, password: string)
 		throw mapRequestError(error, url);
 	}
 
-	// The SDK writes the issued tokens to the storage above; nothing there means no session was issued.
 	if (session === null) throw new CliError('AUTH', `Login to ${url} returned no session.`);
 
 	return { identity: await identify(client, url), session };
@@ -152,7 +146,7 @@ async function identify(client: RestClient<CoreSchema>, url: string): Promise<Id
 			const name = get(await client.request(serverInfo()), 'project.project_name');
 			if (typeof name === 'string') projectName = name;
 		} catch {
-			// Server info is best-effort; readMe already proved authentication.
+			// Best-effort; readMe already proved authentication.
 		}
 
 		return describeIdentity(me, projectName);
@@ -161,7 +155,7 @@ async function identify(client: RestClient<CoreSchema>, url: string): Promise<Id
 	}
 }
 
-// Defensive because the SDK types are loose without a schema, and a raw object must never reach output.
+// The SDK types are loose without a schema, so nothing here trusts the shape.
 function describeIdentity(me: unknown, projectName: string | undefined): Identity {
 	const asString = (value: unknown): string => (typeof value === 'string' ? value : '');
 
@@ -211,8 +205,8 @@ async function serverInfoValue(credential: ResolvedCredential, path: string): Pr
 
 /**
  * A raw request because the SDK strips the response envelope, losing `meta`. For an admin token
- * total_count is computed on the database, so it counts records that entitlement filtering hides from list
- * reads — which is what makes it a pull completeness check. Best-effort: failure disables the check only.
+ * total_count is computed in the database, so it counts records that entitlement filtering hides from
+ * list reads — which is what makes it a completeness check.
  */
 export async function fetchTotalCount(credential: ResolvedCredential, path: string): Promise<number | undefined> {
 	const total = get(
@@ -223,25 +217,21 @@ export async function fetchTotalCount(credential: ResolvedCredential, path: stri
 	return typeof total === 'number' ? total : undefined;
 }
 
-/** Best-effort: this only feeds a version-skew warning, so an unreadable value never gates the sync. */
+/** Best-effort: an unreadable version only skips the skew warning. */
 export async function fetchServerVersion(credential: ResolvedCredential): Promise<string | undefined> {
 	const version = await serverInfoValue(credential, 'version');
 	return typeof version === 'string' ? version : undefined;
 }
 
-/**
- * `queryLimit.max`: -1 is no cap, a positive N is the hard page cap, 0 refuses everything. Lets the fetch
- * layer skip its exhaustion probe on an unbounded instance; undefined just falls back to probing.
- */
+/** `queryLimit.max`: -1 is no cap, N is the hard page cap, 0 refuses every read. */
 export async function fetchQueryLimitMax(credential: ResolvedCredential): Promise<number | undefined> {
 	const max = await serverInfoValue(credential, 'queryLimit.max');
 	return typeof max === 'number' ? max : undefined;
 }
 
 /**
- * Read from the admin-only `/license` endpoint. When false the server filters custom-rule permissions out
- * of reads, which is what makes a `/permissions` pull incomplete. Best-effort: a non-admin 403, an older
- * server without the endpoint, or any transient failure returns undefined and the caller infers instead.
+ * When false the server filters custom-rule permissions out of reads, which is what makes a `/permissions`
+ * pull incomplete. Undefined when `/license` is unreadable (non-admin, older server); the caller infers.
  */
 export async function fetchCustomPermissionRulesEntitled(credential: ResolvedCredential): Promise<boolean | undefined> {
 	const body = await rawAuthenticatedGet(credential, '/license');
@@ -261,8 +251,7 @@ export function mapRequestError(error: unknown, url: string): CliError {
 		const status = typeof rawStatus === 'number' ? rawStatus : undefined;
 		const code = error.errors[0]?.extensions.code;
 		const detail = error.errors.map((entry) => `${entry.extensions.code}: ${entry.message}`).join('; ');
-		// Directus also uses 403 for non-auth refusals such as license limits, so the status alone is not
-		// enough; prefer the structured code so those failures keep their real cause and remediation.
+		// Directus also uses 403 for non-auth refusals like license limits, so prefer the structured code.
 		const isAuth = status === 401 || (code !== undefined ? AUTH_CODES.has(code) : status === 403);
 
 		if (isAuth) {

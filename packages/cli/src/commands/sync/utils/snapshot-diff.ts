@@ -35,23 +35,18 @@ function parseableVersion(version: string | undefined): boolean {
 	return version !== undefined && /^\d+\.\d+/.test(version);
 }
 
-// Mirrors the server's exact-version gate, patch versions included. The only compatibility gate the CLI
-// can answer locally; unparseable versions and the vendor gate stay the server's to enforce.
+// Mirrors the server's exact-version gate, patch versions included. Unparseable versions and the vendor
+// gate stay the server's to enforce.
 function knownVersionMismatch(source: string, target: string | undefined): boolean {
 	if (source === target) return false;
 	return parseableVersion(source) && parseableVersion(target);
 }
 
-// Every gate a diff can trip closes with this sentence. Keying on the server's own marker rather than
-// each gate's wording means a gate added later still points at the flag that clears it, while a payload
-// error force cannot help never gets the hint.
+// Every gate a diff can trip closes with this sentence, so keying on it covers gates added later without
+// hinting at errors force cannot clear.
 const BYPASS_MARKER = 'You can bypass this check by passing the "force" query parameter';
 
-/**
- * The vendor gate cannot be pre-checked the way the version gate can — `/server/info` does not carry the
- * vendor, and the only endpoint that does builds an entire snapshot to answer — so the server's refusal
- * is the first place it can be named.
- */
+/** The vendor gate cannot be pre-checked: `/server/info` omits the vendor, so the refusal names it first. */
 function enrichDiffError(error: unknown, url: string): unknown {
 	if (error instanceof CliError && error.detail !== undefined && error.detail.includes(BYPASS_MARKER)) {
 		return new CliError('STATE', `${url} refused the snapshot as incompatible with this instance.`, {
@@ -65,12 +60,10 @@ function enrichDiffError(error: unknown, url: string): unknown {
 
 export interface SnapshotDiffOptions {
 	readonly mode: SchemaDiffMode;
-	/** The command that ran the check; scoped-sync warnings name it as their subject. */
 	readonly command: 'diff' | 'push';
 	readonly allowDrift: boolean;
 }
 
-/** Callers read the snapshot themselves, so a never-pulled project fails before any request is made. */
 export async function fetchSnapshotDiff(
 	target: Target,
 	snapshot: Snapshot,
@@ -90,8 +83,7 @@ export async function fetchSnapshotDiff(
 		);
 	}
 
-	// Warned whenever the flag is armed, not only when the CLI can see what it cleared: the vendor half of
-	// the gate is invisible from here, so an unmentioned mismatch would still be waved through silently.
+	// Warned whenever the flag is armed: the vendor half of the gate is invisible from here.
 	if (allowDrift) {
 		ctx.ui.warn(
 			`Compatibility check bypassed (--allow-drift): the snapshot is from Directus ${snapshot.directus} on ${snapshot.vendor} → target runs ${targetVersion ?? 'an unknown version'}. Cross-version and cross-vendor diffs can surface spurious changes; read the plan closely.`,

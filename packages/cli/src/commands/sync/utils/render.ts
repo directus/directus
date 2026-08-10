@@ -23,10 +23,9 @@ interface RenderItem {
 export function summarizeDiff(diff: SchemaDiff | null): DiffSummary {
 	if (diff === null) return { added: 0, modified: 0, deleted: 0, lines: [] };
 
-	// A collection added or deleted wholesale brings every field and relation with it, and listing each
-	// one buries the signal (a first sync's 25-line story rendered as 366 lines). Those children collapse
-	// to a count on the collection's line; children of existing collections keep theirs. Counts still
-	// tally per item, so the deletion gate and the --json report are unaffected.
+	// A collection added or deleted wholesale brings every field and relation with it, and listing each one
+	// buries the signal, so those children collapse to a count on the collection's line. Counts still tally
+	// per item, so the deletion gate and the --json report are unaffected.
 	const wholesale = new Set<string>();
 
 	for (const entry of diff.collections) {
@@ -75,8 +74,7 @@ export function summarizeDiff(diff: SchemaDiff | null): DiffSummary {
 	let modified = 0;
 	let deleted = 0;
 
-	// Counted per item, not per op or per line: one field with three ops is one modification, and a
-	// rolled-up child still counts even though it has no line.
+	// Counted per item, not per op or per line: a rolled-up child still counts though it has no line.
 	for (const entry of [...diff.collections, ...diff.fields, ...diff.systemFields, ...diff.relations]) {
 		const change = classify(entry.diff);
 
@@ -97,8 +95,7 @@ function toItems<T extends { diff: DiffOp[] }>(entries: T[], name: (entry: T) =>
 		.sort((a, b) => byCodepoint(a.name, b.name));
 }
 
-// Only a root op (no path) adds or deletes the item itself. Everything else — a keyed edit, an array op,
-// a nested add or delete — modifies an item that already exists.
+// Only a root op (no path) adds or deletes the item itself; anything nested modifies an existing item.
 function classify(ops: DiffOp[]): Change {
 	if (ops.some((op) => op.kind === 'N' && isRoot(op))) return 'added';
 	if (ops.some((op) => op.kind === 'D' && isRoot(op))) return 'deleted';
@@ -153,7 +150,7 @@ function formatImportLine(
 	return `~ ${name}  +${created} new  ~${updated} updated  ${DELETED_MARK}${deleted} deleted${deletedDetail}`;
 }
 
-/** For the paths that send no import request at all, which still owe the plan a summary. */
+/** For paths that send no import request but still owe the plan a summary. */
 export function emptyImportSummary(): ImportSummary {
 	return { created: 0, updated: 0, deleted: 0, lines: ['no data changes'] };
 }
@@ -175,9 +172,8 @@ export function summarizeImport(
 		const collection = result.collections[name];
 		if (collection === undefined) continue;
 
-		// The server calls every PK-present record `existing` whether or not anything differed, so the
-		// caller's `unchanged` set is what turns that into an honest "updated" count. Records a mirror
-		// batch carried only to survive the delete are not updates.
+		// The server calls every PK-present record `existing` whether or not anything differed, so `unchanged`
+		// is what turns that into an honest "updated" count.
 		const unchangedSet = unchanged?.get(name);
 
 		const collectionCreated = collection.new.length;

@@ -25,10 +25,9 @@ import {
 	type Snapshot,
 } from './contract.js';
 
-/** A union, so include and exclude cannot both be set. */
 export type SnapshotScope = { readonly include: string[] } | { readonly exclude: string[] };
 
-// The CLI is schema-agnostic; the SDK types collections as literals. Keep the cast at this one boundary.
+// The SDK types collections as literals; the CLI is schema-agnostic. Keep the cast at this one boundary.
 function snapshotOptions(scope: SnapshotScope): SchemaSnapshotOptions<CoreSchema> {
 	if ('include' in scope) return { includeCollections: scope.include as AllCollections<CoreSchema>[] };
 	return { excludeCollections: scope.exclude as AllCollections<CoreSchema>[] };
@@ -72,17 +71,14 @@ export async function applyDiff(credential: ResolvedCredential, result: DiffResu
 	const client = connect(credential);
 
 	try {
-		// The server-issued hash seals the diff; apply never gets the force bypass a diff may have used.
+		// No force here: the server-issued hash already seals the diff.
 		await client.request(schemaApply({ hash: result.hash, diff: result.diff as SchemaDiffOutput['diff'] }));
 	} catch (error) {
 		throw mapRequestError(error, credential.url);
 	}
 }
 
-/**
- * One entry of the admin-only GET /fields catalog. `meta` is null when the field has no directus_fields
- * record. Only what secret detection reads is kept.
- */
+/** One GET /fields entry, trimmed to what secret detection reads. `meta` is null without a directus_fields row. */
 export interface FieldCatalogEntry {
 	readonly collection: string;
 	readonly field: string;
@@ -90,9 +86,8 @@ export interface FieldCatalogEntry {
 }
 
 /**
- * Fetch the full field catalog. GET /fields ignores query params and never paginates, so one request names
- * every field of every collection — including system collections a scoped snapshot omits. Secret stripping
- * keys on this catalog, so a failure must propagate: degrading silently would write concealed values.
+ * GET /fields ignores query params and never paginates, so one request names every field of every
+ * collection — including system collections a scoped snapshot omits.
  */
 export async function fetchFields(credential: ResolvedCredential): Promise<FieldCatalogEntry[]> {
 	const client = connect(credential);
@@ -127,9 +122,9 @@ interface RecordSource {
 	readonly endpoint: string;
 	readonly primaryKey: string;
 	readonly singleton: boolean;
-	/** Records the server derives at read time (never stored records); dropped before validation and paging. */
+	/** Server-derived rows to discard before validation and paging. */
 	readonly drop?: ((record: Record<string, unknown>) => boolean) | undefined;
-	/** Page by PK cursor instead of offset; integer-PK endpoints only (_gt is forbidden on uuid fields). */
+	/** Page by PK cursor instead of offset. Integer PKs only — _gt is forbidden on uuid fields. */
 	readonly keyset?: boolean | undefined;
 }
 
@@ -174,7 +169,7 @@ function trackPrimaryKey(
 	return value;
 }
 
-// A zero query cap makes a populated collection look empty; an explicit limit=1 probe distinguishes it.
+// A zero query cap makes a populated collection look empty; a limit=1 read tells the two apart.
 async function refuseZeroCapEmptiness(
 	client: ReturnType<typeof connect>,
 	credential: ResolvedCredential,
@@ -272,7 +267,7 @@ async function fetchKeysetPages(
 	}
 }
 
-// A known-unbounded instance needs one read; paging exists only when a short response might be clamped.
+// An unbounded instance cannot clamp limit=-1, so one read is exhaustive.
 async function fetchUnbounded(
 	client: ReturnType<typeof connect>,
 	credential: ResolvedCredential,
@@ -306,10 +301,7 @@ async function fetchUnbounded(
 	return rows;
 }
 
-/**
- * Fetch system or content records; collection-specific fields pass through unvalidated. `queryMax` is the
- * instance's `queryLimit.max`: -1 means one unbounded read, anything else (including unknown) pages.
- */
+/** `queryMax` is the instance's `queryLimit.max`: -1 reads once, anything else (including unknown) pages. */
 export async function fetchRecords(
 	credential: ResolvedCredential,
 	source: RecordSource,
@@ -340,7 +332,6 @@ export async function fetchRecords(
 
 	if (source.keyset === true) return fetchKeysetPages(client, credential, source);
 
-	// A limit below two cannot prove exhaustion safely and could turn truncated records into mirror deletions.
 	if (queryMax === 1) {
 		throw new CliError(
 			'CONFIG',
@@ -352,7 +343,7 @@ export async function fetchRecords(
 	}
 
 	// QUERY_LIMIT_MAX may silently clamp limit=-1, so page until a response proves exhaustion. Pages overlap
-	// by one record so a boundary that shifts mid-fetch fails instead of silently skipping visible data.
+	// by one record to catch a boundary that shifts mid-fetch.
 	const records: Record<string, unknown>[] = [];
 	const seen = new Set<string>();
 	let last: string | undefined;
@@ -382,7 +373,6 @@ export async function fetchRecords(
 		let fresh = rows;
 
 		if (offset !== undefined) {
-			// A changed overlap means the offset boundary shifted during the fetch.
 			const overlapPk = rows[0]?.[source.primaryKey];
 
 			if (overlapPk === undefined || String(overlapPk) !== last) {
@@ -393,7 +383,6 @@ export async function fetchRecords(
 
 			fresh = rows.slice(1);
 
-			// One record with an unknown cap still needs the cap-1 disambiguation probe.
 			if (fresh.length === 0) {
 				if (records.length === 1 && queryMax === undefined) {
 					await refuseOneCapTruncation(client, credential, source);
@@ -403,7 +392,6 @@ export async function fetchRecords(
 			}
 		}
 
-		// Missing or repeated primary keys make artifacts and paging identity unsafe.
 		for (const record of fresh) {
 			last = String(trackPrimaryKey(record, source, seen, 'Unstable pages mid-fetch; re-run the command.'));
 		}
@@ -412,10 +400,7 @@ export async function fetchRecords(
 	}
 }
 
-/**
- * mode is always sent, because an omitted mode silently means `add`. The optional flags ride only when
- * set, so the query string carries exactly what the CLI chose.
- */
+/** Mode is required: an omitted mode silently means `add` on the server. */
 interface ImportBatchInput {
 	readonly mode: ImportMode;
 	readonly dryRun?: boolean;
@@ -458,7 +443,6 @@ function formatCycle(extensions: Record<string, unknown>): string {
 }
 
 function enrichImportError(mapped: CliError, error: unknown): CliError {
-	// Losing the response does not stop the server transaction; a blind retry may duplicate records already created.
 	if (!isDirectusError(error)) {
 		return withHint(
 			mapped,
@@ -483,13 +467,10 @@ function enrichImportError(mapped: CliError, error: unknown): CliError {
 	);
 }
 
-// A client abort does not stop the server transaction, so an import gets far longer than a normal request.
+// A client abort does not stop the server transaction, so wait far longer than a normal request.
 const IMPORT_TIMEOUT_MS = 600_000;
 
-/**
- * Sent as a file rather than a JSON body: `/utils/import` accepts either, but the multipart path is capped
- * by IMPORT_MAX_FILE_SIZE and the body by the far smaller MAX_PAYLOAD_SIZE.
- */
+/** Sent as a file, not a JSON body: the body path is capped by MAX_PAYLOAD_SIZE, far below IMPORT_MAX_FILE_SIZE. */
 export async function importBatch(
 	credential: ResolvedCredential,
 	batch: ImportCollectionData[],

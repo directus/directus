@@ -32,8 +32,8 @@ export interface DataPushPlan {
 	readonly incomplete: readonly string[];
 }
 
-// Parents first, so child natural keys can translate their foreign keys through earlier matches. Every
-// target collection is fetched, because add-mode identity checks cover resources without natural keys too.
+// Parents first (hence the reverse), so child natural keys translate their FKs through earlier matches.
+// Every target collection is fetched: add-mode identity checks cover resources without natural keys too.
 async function reconcileSystem(
 	system: readonly SystemCollection[],
 	target: Target,
@@ -116,8 +116,7 @@ async function resolveMatches(
 			lines.push(`${item.collection}: ${local}`, remote);
 		}
 
-		// Dependents need no decision of their own, so the ambiguity count alone understates what is held
-		// back by every record waiting on one.
+		// Dependents need no decision of their own, so the ambiguity count alone understates what is held back.
 		const dependents = dependentCountOf(system, ambiguities);
 
 		const held =
@@ -288,7 +287,6 @@ async function readAndReconcile(target: Target): Promise<Reconciled | undefined>
 
 	const map = readIdMap(target.idMapPath);
 
-	// One best-effort limit read can remove an exhaustion probe from every collection fetch.
 	const queryMax = await fetchQueryLimitMax(target.credential);
 
 	const { inputs, results, targets } = await reconcileSystem(
@@ -301,10 +299,7 @@ async function readAndReconcile(target: Target): Promise<Reconciled | undefined>
 	return { source, targetUrl, system, map, incomplete, inputs, results, targets };
 }
 
-/**
- * Closes the lifecycle `prepareDataPush` opened: that call settled which local record is which target
- * record, this one settles the IDs only the server could supply.
- */
+/** Settles the IDs only the server could supply; `prepareDataPush` already settled which record is which. */
 export function recordImportedIds(dataResult: DataPushPlan, importResult: ImportBatchResult, ctx: CliContext): void {
 	let map = dataResult.map;
 
@@ -322,8 +317,7 @@ export function recordImportedIds(dataResult: DataPushPlan, importResult: Import
 				continue;
 			}
 
-			// A temporary key's only meaning is its `mapped` entry. Persisting the key itself would commit
-			// an identity no target record has, and merge would then duplicate the record on every push.
+			// A temporary key's only meaning is its `mapped` entry; the key itself names no target record.
 			if (temporary) {
 				unmapped.push({
 					collection,
@@ -342,7 +336,6 @@ export function recordImportedIds(dataResult: DataPushPlan, importResult: Import
 	}
 
 	// The resolved mappings are real whatever else went wrong, so record them before refusing the rest.
-	// Reported here rather than on the success path, which the refusal below never reaches.
 	if (map !== dataResult.map) {
 		writeIdMap(dataResult.idMapPath, map);
 		ctx.ui.info(`ID map updated: ${relative(ctx.cwd, dataResult.idMapPath)}`);
@@ -367,10 +360,7 @@ export function recordImportedIds(dataResult: DataPushPlan, importResult: Import
 	}
 }
 
-/**
- * An existing-target ambiguity answer reruns reconciliation, so child keys it just made translatable do
- * not import as duplicates.
- */
+/** An answered ambiguity reruns reconciliation, so newly translatable child keys never import twice. */
 export async function prepareDataPush(
 	target: Target,
 	mode: SyncMode,
@@ -382,7 +372,6 @@ export async function prepareDataPush(
 
 	const { source, targetUrl, system, inputs, targets } = reconciled;
 
-	// Persist identity decisions even if a later gate aborts, then retry child reconciliation in memory.
 	let map = reconciled.map;
 	let results = reconciled.results;
 	const decided = new Map<string, Set<string>>();
@@ -436,9 +425,8 @@ export async function prepareDataPush(
 		note(lines.join('\n'), 'Identity choices');
 	}
 
-	// Identity is settled before anything is sent, and stays settled even if a gate further down refuses
-	// the push: re-asking would be worse than keeping the answers. Announced because it writes a tracked
-	// file and the command it belongs to may yet fail.
+	// Identity stays settled even if a gate below refuses the push; re-asking would be worse. Announced
+	// because it writes a tracked file and the push may still fail.
 	if (map !== reconciled.map) {
 		writeIdMap(target.idMapPath, map);
 		ctx.ui.info(`Identity matches saved: ${relative(ctx.cwd, target.idMapPath)}`);
@@ -480,8 +468,8 @@ export interface DataPreviewPlan {
 }
 
 /**
- * Never prompts or writes. Unambiguous matches are applied in memory; ambiguous sources and every record
- * whose FK chain leads to one are left out of the batch, counted as ambiguous and dependent respectively.
+ * Never prompts or writes. Unambiguous matches apply in memory; ambiguous sources and every record whose
+ * FK chain leads to one leave the batch, counted as ambiguous and dependent respectively.
  */
 export async function previewData(target: Target, mode: SyncMode): Promise<DataPreviewPlan | undefined> {
 	const reconciled = await readAndReconcile(target);
@@ -490,7 +478,6 @@ export async function previewData(target: Target, mode: SyncMode): Promise<DataP
 
 	const { source, targetUrl, system, results, targets } = reconciled;
 
-	// Diff may use unambiguous matches in memory but never persist identity choices.
 	let map = reconciled.map;
 	const excluded = new Map<string, Set<string>>();
 

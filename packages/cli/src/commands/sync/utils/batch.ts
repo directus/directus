@@ -19,10 +19,7 @@ export interface SystemSent {
 /** Target records whose synced fields already match, keyed by collection. */
 export type UnchangedRows = ReadonlyMap<string, ReadonlySet<string>>;
 
-/**
- * Does not mutate. A missing mapping or a nullish foreign key is left as-is for the server to resolve or
- * reject.
- */
+/** Does not mutate. A missing mapping or nullish foreign key is left for the server to resolve or reject. */
 export function remapSystemRecord(
 	record: Record<string, unknown>,
 	resource: Resource,
@@ -47,8 +44,7 @@ export function remapSystemRecord(
 	return { record: remapped, sent: { sourceId, sentPk: targetPk ?? sourceId } };
 }
 
-// Not lodash isMatch: its partial comparison calls a shrunken or reordered array a match, which would
-// report a changed record as unchanged and drop it from the batch.
+// Not lodash isMatch: its partial comparison calls a shrunken or reordered array a match.
 function fieldsEqual(payload: Record<string, unknown>, target: Record<string, unknown>, pkField: string): boolean {
 	for (const [key, value] of Object.entries(payload)) {
 		if (key === pkField) continue;
@@ -58,10 +54,7 @@ function fieldsEqual(payload: Record<string, unknown>, target: Record<string, un
 	return true;
 }
 
-/**
- * Negative keys the import response can correlate back to their source records. Only descends, so a key
- * is never reissued; `reserved` holds the keys the source or target already uses.
- */
+/** Negative keys the import response can correlate back to source records. Only descends, so none repeats. */
 function temporaryPkAllocator(reserved: ReadonlySet<string>): () => number {
 	let next = -1;
 
