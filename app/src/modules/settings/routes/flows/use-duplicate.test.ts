@@ -92,9 +92,11 @@ function mockCreateResponses() {
 
 beforeEach(async () => {
 	api = (await vi.importMock('@/api')).default as typeof api;
+
 	({ unexpectedError } = (await vi.importMock('@/utils/unexpected-error')) as {
 		unexpectedError: typeof unexpectedError;
 	});
+
 	vi.clearAllMocks();
 });
 
