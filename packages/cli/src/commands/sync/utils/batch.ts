@@ -4,11 +4,10 @@ import type { ImportCollectionData } from './contract.js';
 import type { Resource } from './resources.js';
 import type { SystemCollection } from './system-collections.js';
 
-/** A source ID and the primary key sent for it. */
 export interface SentRecord {
 	readonly sourceId: string;
 	readonly sentPk: string;
-	/** The sent key is an invented temporary; only a `mapped` response entry can supply the real target ID. */
+	/** `sentPk` is an invented key; only a `mapped` response entry can supply the real target ID. */
 	readonly temporary?: true;
 }
 
@@ -17,15 +16,12 @@ export interface SystemSent {
 	readonly records: readonly SentRecord[];
 }
 
-/**
- * Target records whose synced fields already match. The server reports every PK-present record as `existing`,
- * so this set distinguishes actual updates from records sent only to survive mirror deletion.
- */
+/** Target records whose synced fields already match, keyed by collection. */
 export type UnchangedRows = ReadonlyMap<string, ReadonlySet<string>>;
 
 /**
- * Rewrite a system record into target ID space without mutating the input. Missing mappings and nullish
- * foreign keys remain unchanged; the server must resolve or reject them.
+ * Does not mutate. A missing mapping or a nullish foreign key is left as-is for the server to resolve or
+ * reject.
  */
 export function remapSystemRecord(
 	record: Record<string, unknown>,
@@ -51,8 +47,8 @@ export function remapSystemRecord(
 	return { record: remapped, sent: { sourceId, sentPk: targetPk ?? sourceId } };
 }
 
-// Not lodash isMatch: its partial comparison calls a shrunken or reordered array field a match, which
-// would report a changed record as unchanged and drop it from the batch.
+// Not lodash isMatch: its partial comparison calls a shrunken or reordered array a match, which would
+// report a changed record as unchanged and drop it from the batch.
 function fieldsEqual(payload: Record<string, unknown>, target: Record<string, unknown>, pkField: string): boolean {
 	for (const [key, value] of Object.entries(payload)) {
 		if (key === pkField) continue;
@@ -63,8 +59,8 @@ function fieldsEqual(payload: Record<string, unknown>, target: Record<string, un
 }
 
 /**
- * Hand out negative primary keys the import response can correlate back to their source records. Only
- * descends, so a key is never reissued; `reserved` keeps it clear of keys the source or target already uses.
+ * Negative keys the import response can correlate back to their source records. Only descends, so a key
+ * is never reissued; `reserved` holds the keys the source or target already uses.
  */
 function temporaryPkAllocator(reserved: ReadonlySet<string>): () => number {
 	let next = -1;
@@ -75,7 +71,6 @@ function temporaryPkAllocator(reserved: ReadonlySet<string>): () => number {
 	};
 }
 
-// Batch identity rules prevent add-mode duplicates, numeric-PK collisions, and mirror deletion of local grants.
 export function assembleBatch(
 	system: readonly SystemCollection[],
 	bucket: Readonly<Record<string, Readonly<Record<string, string>>>>,
@@ -89,8 +84,6 @@ export function assembleBatch(
 
 	const includesUsers = system.some((entry) => entry.resource.collection === 'directus_users');
 
-	// Records the target already matches: the import reports every PK-present record as `existing`, so this set is
-	// what keeps them out of the rendered "updated" count.
 	function markUnchanged(collection: string, pk: string): void {
 		const set = unchanged.get(collection) ?? new Set<string>();
 		set.add(pk);
@@ -129,8 +122,8 @@ export function assembleBatch(
 			// Add-mode PK conflicts create duplicates instead of updating existing records.
 			if (mode === 'add' && targetByPk.has(result.sent.sentPk)) continue;
 
-			// An unmatched integer may belong to an unrelated target or a record created earlier in this batch.
-			// Singletons cannot report a remap; otherwise a temporary negative key gives the response a safe correlation.
+			// An unmatched integer may belong to an unrelated target record, or to one created earlier in this
+			// batch, so a temporary key is sent instead. A singleton drops its key: it cannot report a remap.
 			if (mode !== 'add' && !mapped && resource.primaryKeyType === 'integer') {
 				if (resource.singleton) {
 					delete result.record[resource.primaryKey];

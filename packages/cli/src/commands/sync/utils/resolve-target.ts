@@ -6,7 +6,6 @@ import { isCI } from '../../../kernel/env.js';
 import { CliError } from '../../../kernel/error.js';
 import type { CliContext } from '../../../kernel/run.js';
 
-/** A resolved sync endpoint and its project-scoped artifact paths. */
 export interface Target {
 	readonly profile: string;
 	readonly url: string;
@@ -16,26 +15,23 @@ export interface Target {
 	readonly schemaDir: string;
 	readonly dataDir: string;
 	readonly idMapPath: string;
-	/**
-	 * The configuration entry for this project, or undefined when the project is not declared (only `default`
-	 * may go undeclared).
-	 */
+	/** undefined when the project is undeclared, which only `default` may be. */
 	readonly projectConfig: ProjectConfig | undefined;
 }
 
-/** The one project scope that needs no configuration entry. */
+/** The one project that needs no configuration entry. */
 export const DEFAULT_PROJECT = 'default';
 
 const PROJECT_NAME = /^[a-z0-9][a-z0-9-_]*$/i;
 
-/** Render a project path relative to the invocation directory, with an explicit local `./` prefix. */
+/** Relative to the invocation directory, with an explicit `./` so it reads as a path. */
 export function displayProjectPath(cwd: string, projectDir: string): string {
 	const local = relative(cwd, projectDir);
 	if (local === '') return '.';
 	return local.startsWith('.') ? local : `./${local}`;
 }
 
-// A symlinked ancestor can redirect a not-yet-created tail outside the project.
+// Walks up to the first directory that exists: a symlinked ancestor can redirect a tail that does not.
 function assertContained(dir: string, realRoot: string): void {
 	let probe = dir;
 
@@ -53,7 +49,7 @@ function assertContained(dir: string, realRoot: string): void {
 export function resolveTarget(profileName: string, projectName: string, ctx: CliContext): Target {
 	const loaded = ctx.config.requireConfig();
 
-	// The free checks first: neither costs a credential-store read that can fail on its own.
+	// These first: neither costs a credential-store read, which can fail on its own.
 	if (!PROJECT_NAME.test(projectName)) {
 		throw new CliError('CONFIG', `Invalid project name: "${projectName}".`, {
 			hint: 'Use letters, digits, dashes, and underscores; start with a letter or digit.',

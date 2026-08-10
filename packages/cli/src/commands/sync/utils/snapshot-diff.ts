@@ -13,8 +13,8 @@ import {
 } from './references.js';
 import type { Target } from './resolve-target.js';
 
-// A nested collection delete is misrouted as a whole collection drop by the server (#27877), while the
-// plan classifies it as a modification. Refuse that shape; root deletes remain valid.
+// The server misroutes a nested collection delete as a whole collection drop (#27877), while the plan
+// classifies the same op as a modification. Only that shape is refused; root deletes stay valid.
 function assertNoMisroutedCollectionDrops(diff: SchemaDiff): void {
 	const misrouted = diff.collections
 		.filter((entry) => entry.diff[0]?.kind === 'D' && (entry.diff[0].path?.length ?? 0) > 0)
@@ -35,22 +35,22 @@ function parseableVersion(version: string | undefined): boolean {
 	return version !== undefined && /^\d+\.\d+/.test(version);
 }
 
-// Mirror the server's exact-version gate, including patch versions. This is the only compatibility gate
-// the CLI can answer locally: unparseable versions and the vendor gate both stay the server's to enforce.
+// Mirrors the server's exact-version gate, patch versions included. The only compatibility gate the CLI
+// can answer locally; unparseable versions and the vendor gate stay the server's to enforce.
 function knownVersionMismatch(source: string, target: string | undefined): boolean {
 	if (source === target) return false;
 	return parseableVersion(source) && parseableVersion(target);
 }
 
-// Every gate validateSnapshot can bypass closes with this sentence. Keying on the server's own bypass
-// marker rather than each gate's wording means a gate added later still points at the flag that clears
-// it, while a payload error force cannot help (the schema validation runs first) never gets the hint.
+// Every gate a diff can trip closes with this sentence. Keying on the server's own marker rather than
+// each gate's wording means a gate added later still points at the flag that clears it, while a payload
+// error force cannot help never gets the hint.
 const BYPASS_MARKER = 'You can bypass this check by passing the "force" query parameter';
 
 /**
- * Re-raise a target's snapshot refusal as the flag that clears it. The vendor gate cannot be pre-checked
- * the way the version gate can — `/server/info` does not carry the vendor and the only endpoint that does
- * builds an entire snapshot to answer — so the server's refusal is the first place it can be named.
+ * The vendor gate cannot be pre-checked the way the version gate can — `/server/info` does not carry the
+ * vendor, and the only endpoint that does builds an entire snapshot to answer — so the server's refusal
+ * is the first place it can be named.
  */
 function enrichDiffError(error: unknown, url: string): unknown {
 	if (error instanceof CliError && error.detail !== undefined && error.detail.includes(BYPASS_MARKER)) {
@@ -70,10 +70,7 @@ export interface SnapshotDiffOptions {
 	readonly allowDrift: boolean;
 }
 
-/**
- * Compare an already-read stored snapshot with a target using the same fetch path for diff and push.
- * Callers read the snapshot themselves so a never-pulled project fails before any request is made.
- */
+/** Callers read the snapshot themselves, so a never-pulled project fails before any request is made. */
 export async function fetchSnapshotDiff(
 	target: Target,
 	snapshot: Snapshot,
@@ -93,15 +90,15 @@ export async function fetchSnapshotDiff(
 		);
 	}
 
-	// Keep the bypass visible in CI logs whenever it is armed, not only when the CLI can see what it cleared:
-	// the vendor half of the gate is invisible from here, so an unmentioned mismatch is still being waved through.
+	// Warned whenever the flag is armed, not only when the CLI can see what it cleared: the vendor half of
+	// the gate is invisible from here, so an unmentioned mismatch would still be waved through silently.
 	if (allowDrift) {
 		ctx.ui.warn(
 			`Compatibility check bypassed (--allow-drift): the snapshot is from Directus ${snapshot.directus} on ${snapshot.vendor} → target runs ${targetVersion ?? 'an unknown version'}. Cross-version and cross-vendor diffs can surface spurious changes; read the plan closely.`,
 		);
 	}
 
-	// A user may push scoped artifacts without having seen the corresponding pull warning.
+	// Repeated from pull: whoever pushes these artifacts may never have seen the pull warning.
 	const references = findOutOfScopeReferences(snapshot);
 	if (references.length > 0) ctx.ui.warn(formatOutOfScopeReferences(references));
 

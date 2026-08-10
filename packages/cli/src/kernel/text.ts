@@ -1,11 +1,8 @@
-/**
- * Format a count and its noun with the regular English singular or `s` plural used by CLI copy.
- */
+/** Regular `s` plurals only. Any CLI copy needing an irregular one has to spell it out itself. */
 export function maybePluralize(n: number, noun: string): string {
 	return `${n} ${noun}${n === 1 ? '' : 's'}`;
 }
 
-/** Split a comma-separated option value, dropping surrounding whitespace and empty entries. */
 export function parseList(value: string): string[] {
 	return value
 		.split(',')

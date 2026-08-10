@@ -8,7 +8,7 @@ import { createUi, type Ui, writeOut } from './ui.js';
 
 export interface CliContext {
 	readonly cwd: string;
-	/** The one configuration of this run: commands read and write it here instead of loading the file again. */
+	/** One per run: commands read and write it here instead of loading the file again. */
 	readonly config: ConfigStore;
 	readonly ui: Ui;
 	readonly interactive: boolean;
@@ -27,7 +27,8 @@ interface GlobalOptions {
 	readonly config?: string;
 }
 
-// Parse errors need their output mode before Commander parses the arguments.
+// A hand-rolled scan because a parse error has to be reported in the right output mode, and Commander
+// has not parsed anything yet when one happens.
 function scanGlobals(argv: readonly string[]): { json: boolean; color: boolean } {
 	const terminator = argv.indexOf('--');
 	const tokens = terminator === -1 ? argv : argv.slice(0, terminator);
@@ -72,24 +73,26 @@ function createContext(cwd: string, ui: Ui, globals: GlobalOptions): CliContext 
 function normalizeHelpOption(command: Command): void {
 	command.helpOption('-h, --help', 'Display help for command');
 
-	// Calling nameAndArgs on leaf commands would add an unwanted help subcommand.
+	// Only parents: calling helpCommand on a leaf would give it a help subcommand it should not have.
 	if (command.commands.length > 0) command.helpCommand('help [command]', 'Display help for command');
 
 	for (const sub of command.commands) normalizeHelpOption(sub);
 }
 
 function createProgram(options: RunOptions, ui: Ui): Command {
-	// Align Commander's built-ins with the CLI help-text convention.
+	// The explicit flags and descriptions override Commander's built-in wording, which does not match the
+	// CLI's help-text convention.
 	const program = new Command('d6s')
 		.exitOverride()
 		.version(version, '-v, --version', 'Output the version number')
 		.option('--json', 'Output machine-readable JSON')
 		.option('--no-color', 'Disable colored output')
-		// TTYs can exist without a human, so provide per-run and environment-wide prompt opt-outs.
+		// A TTY can exist without a human, so isTTY alone cannot decide this.
 		.option('--no-interactive', 'Disable interactive prompts (or set NO_INTERACTIVE)')
 		.option('--config <path>', 'Path to directus.config.json')
 		.configureOutput({
-			// Commander routes bare-parent help through writeErr before throwing commander.help.
+			// writeErr is writeOut because Commander routes bare-parent help through it, and that is a
+			// successful help request, not an error.
 			writeOut,
 			writeErr: writeOut,
 			outputError() {},
@@ -97,8 +100,8 @@ function createProgram(options: RunOptions, ui: Ui): Command {
 
 	const cwd = options.cwd ?? process.cwd();
 
-	// A thunk, not a context: registration runs before Commander parses argv, so --config and --json are not
-	// known yet. Each command calls this in its action, once the globals it depends on exist.
+	// A thunk, not a context: registration runs before Commander parses argv, so --config and --json are
+	// not known yet. Each command calls this from its action, once the globals exist.
 	const getContext = (): CliContext => createContext(cwd, ui, program.opts<GlobalOptions>());
 
 	for (const register of options.registerCommands) register(program, getContext);

@@ -16,9 +16,7 @@ export interface IdMap {
 
 const REPAIR_HINT = 'Fix or delete the ID map file, then re-run.';
 
-/**
- * Normalize equivalent profile URLs to one ID-map key while preserving non-default ports and paths.
- */
+/** Collapses equivalent profile URLs onto one map key, while keeping non-default ports and paths apart. */
 export function normalizeInstanceUrl(url: string): string {
 	const parsed = new URL(url);
 	const protocol = parsed.protocol.toLowerCase();
@@ -31,13 +29,12 @@ export function normalizeInstanceUrl(url: string): string {
 	}
 
 	const host = port === '' ? hostname : `${hostname}:${port}`;
-	// SDK-equivalent trailing slashes must share one identity bucket.
+	// The SDK treats a trailing slash as equivalent, so both spellings must land in one identity bucket.
 	const pathname = parsed.pathname.replace(/\/+$/, '');
 
 	return `${protocol}//${host}${pathname}`;
 }
 
-// Rebuild maps with define semantics so legal "__proto__" IDs remain data.
 function readObject(value: unknown, path: string, what: string): Record<string, unknown> {
 	if (!isPlainObject(value)) {
 		throw new CliError('STATE', `${path} has a ${what} that is not an object.`, { hint: REPAIR_HINT });
@@ -50,6 +47,7 @@ function parseBucket(value: unknown, path: string): Readonly<Record<string, stri
 	const record = readObject(value, path, 'collection bucket');
 	const owners = new Map<string, string>();
 
+	// fromEntries, not assignment: a record whose ID really is "__proto__" has to stay data.
 	return Object.fromEntries(
 		Object.keys(record).map((sourceId): [string, string] => {
 			const targetId = record[sourceId];
@@ -108,9 +106,7 @@ function parseMaps(value: unknown, path: string): Readonly<Record<string, Target
 	);
 }
 
-/**
- * Read a strict ID map. A missing file is an empty first-sync state; malformed state is never trusted.
- */
+/** A missing file is an empty first-sync state; a malformed one throws rather than being repaired. */
 export function readIdMap(path: string): IdMap {
 	if (!existsSync(path)) return { formatVersion: 1, maps: {} };
 
@@ -143,18 +139,12 @@ export function readIdMap(path: string): IdMap {
 	return { formatVersion: 1, maps: parseMaps(record['maps'], path) };
 }
 
-/**
- * One directional source→target pairing, addressing one group of collection buckets in the map. An
- * object rather than two positional URLs: a transposed pair still type-checks but corrupts identities.
- */
+/** An object rather than two positional URLs: a transposed pair type-checks but corrupts identities. */
 export interface InstancePair {
 	readonly sourceUrl: string;
 	readonly targetUrl: string;
 }
 
-/**
- * Return the collection buckets for one normalized, directional source/target pair.
- */
 export function mappingsFor(map: IdMap, pair: InstancePair): CollectionMap {
 	const source = normalizeInstanceUrl(pair.sourceUrl);
 	const target = normalizeInstanceUrl(pair.targetUrl);
@@ -163,8 +153,7 @@ export function mappingsFor(map: IdMap, pair: InstancePair): CollectionMap {
 }
 
 /**
- * Merge entries into one collection bucket without mutating the map. No-op merges — empty entries, or
- * entries the bucket already holds — preserve identity, so callers can treat `!==` as "the map changed".
+ * Does not mutate. A no-op merge returns the same object, so callers can treat `!==` as "the map changed".
  */
 export function withMappings(
 	map: IdMap,
@@ -183,7 +172,7 @@ export function withMappings(
 
 	const mergedBucket = { ...bucket, ...entries };
 
-	// Refuse an injectivity conflict at the operation that creates it, not on the next read.
+	// Refuse a two-sources-one-target conflict at the merge that creates it, not on the next read.
 	const owners = new Map<string, string>();
 
 	for (const [sourceId, targetId] of Object.entries(mergedBucket)) {
@@ -205,9 +194,6 @@ export function withMappings(
 	return { formatVersion: 1, maps: { ...map.maps, [source]: mergedTarget } };
 }
 
-/**
- * Write an ID map atomically in canonical key order.
- */
 export function writeIdMap(path: string, map: IdMap): void {
 	mkdirSync(dirname(path), { recursive: true });
 	writeFileAtomic(path, serializeCanonicalJson(map), 0o644);

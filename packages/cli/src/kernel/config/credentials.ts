@@ -8,7 +8,6 @@ import { CliError } from '../error.js';
 import { registerSecret } from '../secret.js';
 import { writeFileAtomic } from '../write.js';
 
-/** A static token or persisted login session bound to one Directus URL. */
 export type ResolvedCredential =
 	| { readonly kind: 'token'; readonly url: string; readonly token: string }
 	| { readonly kind: 'session'; readonly url: string; readonly profileName: string };
@@ -22,16 +21,14 @@ type CredentialQuery =
 	  }
 	| { readonly target: 'url'; readonly url: string; readonly tokenFlag?: string | undefined };
 
-/** Return the profile-specific `DIRECTUS_<PROFILE>_TOKEN` variable name. */
 export function envTokenVar(profileName: string): string {
 	return `DIRECTUS_${profileName.toUpperCase()}_TOKEN`;
 }
 
 /**
- * Resolution order: explicit --token flag → profile-specific DIRECTUS_<NAME>_TOKEN
- * → saved store (never in CI). There is no unprefixed/ambient token fallback: a
- * credential is bound to a named profile or passed explicitly, so it can never be
- * borrowed for a target the user didn't mean to authenticate.
+ * --token, then DIRECTUS_<NAME>_TOKEN, then the saved store (never in CI). There is deliberately no
+ * unprefixed fallback: a credential is bound to a named profile or passed explicitly, so it can never be
+ * borrowed for a target the user did not mean to authenticate.
  */
 export function resolveCredential(query: CredentialQuery): ResolvedCredential | undefined {
 	const { url, tokenFlag } = query;
@@ -104,7 +101,7 @@ function readStore(): CredentialStore {
 		});
 	}
 
-	// Refuse corruption before a later save can overwrite recoverable credentials.
+	// Throw rather than treating this as empty: a later save would overwrite recoverable credentials.
 	if (!isPlainObject(parsed)) {
 		throw new CliError('STATE', `Credential store at ${path} is not a JSON object.`, {
 			hint: 'Fix or remove the file, then retry.',
@@ -113,7 +110,7 @@ function readStore(): CredentialStore {
 
 	const store = parsed as Record<string, unknown>;
 
-	// Legal "__proto__" keys must remain data instead of invoking inherited prototype behavior.
+	// Null-prototype, so a URL or profile named "__proto__" stays data.
 	const clean = Object.create(null) as CredentialStore;
 
 	for (const [url, profiles] of Object.entries(store)) {
@@ -135,25 +132,23 @@ function readStore(): CredentialStore {
 	return clean;
 }
 
-/** The single confirmation every caller reports after `saveCredential`. */
+/** Shared so every caller reports the same confirmation after `saveCredential`. */
 export function savedTokenMessage(profileName: string): string {
 	return `Saved a token for "${profileName}" to the credential store.`;
 }
 
-/** The store is owner-only (0600); register the token before writing it. */
 export function saveCredential(url: string, profileName: string, token: string): void {
 	registerSecret(token);
 	writeStored(url, profileName, token);
 }
 
-/** Remove a saved credential if present. */
 export function clearCredential(url: string, profileName: string): void {
 	writeStored(url, profileName, null);
 }
 
 /**
- * Move a saved credential to a new profile name. Credentials are keyed by URL and profile name, so a rename
- * that skipped this would strand the old entry under a name nothing looks up.
+ * Credentials are keyed by URL and profile name, so a rename that skipped this would strand the old entry
+ * under a name nothing looks up.
  */
 export function renameCredential(url: string, from: string, to: string): void {
 	const stored = readStore()[url]?.[from];
@@ -164,7 +159,7 @@ export function renameCredential(url: string, from: string, to: string): void {
 	writeStored(url, from, null);
 }
 
-/** SDK authentication storage backed by the profile credential store. */
+/** The SDK's `AuthenticationStorage`, backed by the profile credential store. */
 export function credentialStorage(url: string, profileName: string): AuthenticationStorage {
 	return {
 		get() {
@@ -206,7 +201,7 @@ function invalidStoredCredential(url: string, profileName: string): CliError {
 	});
 }
 
-/** Redact a session's tokens from all output. Must run before any request carrying them. */
+/** Must run before any request that carries these tokens, or they can reach output unredacted. */
 export function registerSession(data: AuthenticationData): void {
 	if (data.access_token !== null) registerSecret(data.access_token);
 	if (data.refresh_token !== null) registerSecret(data.refresh_token);

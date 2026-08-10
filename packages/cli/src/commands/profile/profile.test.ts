@@ -73,8 +73,7 @@ describe('profile commands', () => {
 		expect(stderr.join('')).not.toContain('Saved profile');
 	});
 
-	// Credentials are keyed by URL and profile name, so a rename that moved only the profile would leave a
-	// token behind under a name nothing resolves — the exact breakage that made remove-and-re-add lossy.
+	// The breakage that made remove-and-re-add lossy: a token left behind under a name nothing resolves.
 	it('update --name carries the saved credential to the new name', async () => {
 		vi.stubEnv('CI', '');
 		vi.stubEnv('DIRECTUS_PRODUCTION_TOKEN', '');
@@ -96,8 +95,6 @@ describe('profile commands', () => {
 		).toBeUndefined();
 	});
 
-	// The partial state is the dangerous one: a config renamed but a credential left behind is exactly the
-	// unreachable-credential bug rename exists to prevent, so a failed move has to put the old name back.
 	it('update --name restores the old name when the credential cannot be moved', async () => {
 		await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
 		mkdirSync(join(dir, '.directus', 'credentials.json'), { recursive: true });
@@ -125,8 +122,7 @@ describe('profile commands', () => {
 		expect(config.profiles['production']?.url).toBe('https://two.example.com');
 	});
 
-	// The name becomes DIRECTUS_<NAME>_TOKEN, so a name no env var could carry has to be refused at the flag
-	// too — not only at the creation prompt, which a rename never reaches.
+	// The flag has to refuse it too, not only the creation prompt, which a rename never reaches.
 	it('update --name rejects a name no environment variable could carry', async () => {
 		await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com');
 
@@ -146,9 +142,8 @@ describe('profile commands', () => {
 		expect(readConfig().profiles['staging']?.url).toBe('https://cms.example.com');
 	});
 
-	// Renaming re-keys the profile and its credential; repointing rewrites a value under an unchanged key.
-	// Combined, a failure part-way needs one to unwind the other, and the profile can end up under a new
-	// name pointing at an old URL with no credential. Refusing keeps every failure recoverable by re-running.
+	// Combined, a part-way failure leaves the profile under a new name pointing at an old URL with no
+	// credential. Refusing keeps every failure recoverable by re-running.
 	it('update refuses a combined rename and repoint, so no failure can leave a half-moved profile', async () => {
 		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
 

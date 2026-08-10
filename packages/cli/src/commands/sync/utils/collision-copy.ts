@@ -7,18 +7,17 @@ import type { CollectionReconcile, ReconcileInput } from './reconcile.js';
 import { displayProjectPath, type Target } from './resolve-target.js';
 import { allResources, type Resource } from './resources.js';
 
-/** One source record whose natural key matches several target records, tagged with the collection it came from. */
+/** One source record whose natural key matches several target records. */
 export type Ambiguity = CollectionReconcile['ambiguous'][number] & { readonly collection: string };
 
 const UNNAMED_IDENTITY = 'with this identity';
 
-/** Render a field value for display, or undefined when it carries nothing a reader could search for. */
+/** undefined when the value carries nothing a reader could search for. */
 export function scalar(value: unknown): string | undefined {
 	let rendered: string | undefined;
 
 	// JSON.stringify, not String: the quotes distinguish the string "null" from null and "42" from 42, and
-	// remote record values print to the operator's terminal, so an ESC byte must arrive escaped, not as a live
-	// ANSI sequence.
+	// these are remote values headed for a terminal, so an ESC byte must arrive escaped rather than live.
 	if (typeof value === 'string') rendered = value === '' ? undefined : JSON.stringify(value);
 	if (typeof value === 'number' || typeof value === 'boolean' || value === null) rendered = String(value);
 	if (rendered === undefined) return undefined;
@@ -26,7 +25,7 @@ export function scalar(value: unknown): string | undefined {
 	return rendered.length > 60 ? `${rendered.slice(0, 59)}…` : rendered;
 }
 
-/** Name a record the way its Data Studio list would, falling back to the bare ID. */
+/** Names a record the way its Data Studio list would, falling back to the bare ID. */
 export function recordLabel(
 	record: Record<string, unknown> | undefined,
 	primaryKey: string,
@@ -43,9 +42,8 @@ export function recordLabel(
 }
 
 /**
- * Name the natural key that made records collide, in the resource's own field names. Composite keys name
- * every field: a resource that needs three fields to identify a record is exactly the one whose records
- * carry no human-readable label, so `UNNAMED_IDENTITY` would leave the reader nothing to search for.
+ * Composite keys name every field. A resource needing three fields to identify a record is exactly the
+ * one whose records carry no readable label, so `UNNAMED_IDENTITY` would leave nothing to search for.
  */
 function identityPhrase(input: ReconcileInput | undefined, source: Record<string, unknown> | undefined): string {
 	if (input === undefined || source === undefined) return UNNAMED_IDENTITY;
@@ -70,16 +68,13 @@ function identityPhrase(input: ReconcileInput | undefined, source: Record<string
 	return `with ${rendered.map((entry) => `${entry.field} ${entry.value}`).join(', ')}`;
 }
 
-/** The Data Studio URL for one record, or undefined for a resource with no stable item route. */
+/** undefined for a resource with no stable item route. */
 export function itemUiUrl(instance: string, resource: Resource | undefined, id: string): string | undefined {
 	if (resource?.appRoute === undefined) return undefined;
 	return `${normalizeInstanceUrl(instance)}${resource.appRoute}/${encodeURIComponent(id)}`;
 }
 
-/**
- * State where a collision sits: how many local records claim one identity, and how many target records
- * answer to it. Both the refusal and the prompt open with these, so they cannot drift apart.
- */
+/** Both the refusal and the prompt open with these two lines, so the wording cannot drift apart. */
 export function collisionLines(
 	item: Ambiguity,
 	ambiguities: readonly Ambiguity[],
@@ -105,7 +100,7 @@ export function collisionLines(
 	];
 }
 
-/** What choosing one existing target record would do to it, and how it differs from the local record. */
+/** The label for one prompt choice: what picking this target record would do to it. */
 export function differenceHint(
 	source: Record<string, unknown> | undefined,
 	target: Record<string, unknown> | undefined,

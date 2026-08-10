@@ -4,17 +4,15 @@ import { byCodepoint } from './codepoint.js';
 import type { Snapshot } from './contract.js';
 
 /**
- * A reference inside the snapshot that points at a collection the snapshot does not include. It is
- * harmless where the target already has that collection, but on a fresh target the collection is absent
- * and apply fails (today a raw 500 — see the server scoped-snapshot writeup). Scoped sync can strand
- * these silently, so the CLI warns rather than refusing or widening the scope on the user's behalf.
+ * A reference pointing at a collection the snapshot omits. Harmless where the target already has that
+ * collection; on a fresh target apply fails. Scoped sync strands these silently, so the CLI warns rather
+ * than refusing or widening the scope on the user's behalf.
  */
 interface OutOfScopeReference {
-	/** How the reference is expressed: a group nesting, a fixed m2o/o2m relation, or an m2a allow-list. */
 	readonly kind: 'group' | 'relation' | 'm2a';
 	/** The pointing site: a collection (group) or `collection.field` (relation/m2a). */
 	readonly from: string;
-	/** The referenced collections absent from the snapshot, sorted. */
+	/** Sorted, for deterministic warnings. */
 	readonly missing: readonly string[];
 }
 
@@ -28,11 +26,7 @@ function readMeta(entry: Record<string, unknown>, key: string): unknown {
 	return isPlainObject(meta) ? (meta as Record<string, unknown>)[key] : undefined;
 }
 
-/**
- * Find every reference in the snapshot that targets a collection the snapshot does not include. Pure over
- * the assembled snapshot — the CLI already holds all of this, so there is no extra fetch. Output is sorted
- * for deterministic warnings regardless of the source snapshot's entry order.
- */
+/** Pure over the assembled snapshot: the CLI already holds all of this, so there is no extra fetch. */
 export function findOutOfScopeReferences(snapshot: Snapshot): OutOfScopeReference[] {
 	const present = new Set(snapshot.collections.map((entry) => entry.collection));
 
@@ -77,30 +71,25 @@ export function findOutOfScopeReferences(snapshot: Snapshot): OutOfScopeReferenc
 
 /**
  * One half of a relation pair the snapshot carries without the other. A relation entry lives in the
- * many-side collection's file while the corresponding field it names via meta.one_field belongs to the
- * related collection, so a scoped pull can rewrite one file and leave its partner stale. A target that
- * lacks the missing half shows the relationship broken in the Data Studio; as with out-of-scope
- * references, the CLI warns rather than widening the scope on the user's behalf.
+ * many-side collection's file while the field it names via meta.one_field belongs to the related
+ * collection, so a scoped pull can rewrite one file and leave its partner stale — which shows up as a
+ * broken relationship in the Data Studio. The CLI warns rather than widening the scope on its own.
  */
 export type SplitRelation =
 	| {
-			/** A relation entry whose corresponding field is missing — pulling both collections restores it. */
 			readonly kind: 'relation';
-			/** The present half: `collection.field`. */
+			/** The present half, as `collection.field`. */
 			readonly from: string;
-			/** The collection the relation lives in. */
 			readonly fromCollection: string;
-			/** The collection holding the missing corresponding field. */
 			readonly relatedCollection: string;
-			/** The missing corresponding field as `collection.field`. */
+			/** The missing corresponding field, as `collection.field`. */
 			readonly pairedField: string;
 	  }
 	| {
-			/** A relational alias field whose defining relation is missing — its home file is unknown here. */
+			/** An alias field with no relation behind it; the file that would define it is unknown here. */
 			readonly kind: 'alias';
-			/** The present half: `collection.field`. */
+			/** The present half, as `collection.field`. */
 			readonly from: string;
-			/** The relational special that requires a defining relation. */
 			readonly special: string;
 	  };
 
@@ -108,10 +97,8 @@ export type SplitRelation =
 const RELATIONAL_SPECIALS = new Set(['o2m', 'm2m', 'm2a', 'translations', 'files']);
 
 /**
- * Find every relation pair the snapshot splits: a relation whose meta.one_field names a field the snapshot
- * lacks, or a relational alias field with no relation behind it. Pure over the assembled snapshot, like
- * findOutOfScopeReferences. Built-in system fields and relations are outside the snapshot contract, but
- * custom fields on system collections travel in `fields`, so pairs reaching into them are still checked.
+ * Built-in system fields and relations are outside the snapshot contract, but custom fields on system
+ * collections travel in `fields`, so pairs reaching into them are still checked.
  */
 export function findSplitRelations(snapshot: Snapshot): SplitRelation[] {
 	const present = new Set(snapshot.collections.map((entry) => entry.collection));
@@ -170,11 +157,7 @@ function formatReference(reference: OutOfScopeReference): string {
 	return `  ${reference.from} → ${reference.missing.join(', ')} (${REFERENCE_LABELS[reference.kind]})`;
 }
 
-/**
- * Render out-of-scope references as one warning block: a lead line stating the consequence, then one line
- * per reference naming the pointing site and its missing target(s). Same wording on pull and push — the
- * fact ("these point outside the sync; a fresh target will fail") holds in both phases.
- */
+/** Deliberately worded the same on pull and push: the fact it states holds in both phases. */
 export function formatOutOfScopeReferences(references: readonly OutOfScopeReference[]): string {
 	const missing = new Set(references.flatMap((reference) => reference.missing));
 
@@ -192,10 +175,8 @@ function formatSplit(split: SplitRelation): string {
 }
 
 /**
- * Render split relation pairs the way a developer reads them: what is broken, then the exact argument
- * that fixes it. When every missing half has a known home the fix is a literal --collections value; an
- * alias's defining relation lives in a file the sync lacks, so only a full pull can restore it. The
- * subject names the command that ran the check, so the warning reads in the user's own context.
+ * Closes with the exact argument that fixes it: a literal --collections value when every missing half has
+ * a known home, otherwise a full pull, because an alias's defining relation lives in a file the sync lacks.
  */
 export function formatSplitRelations(splits: readonly SplitRelation[], subject: 'pull' | 'diff' | 'push'): string {
 	const one = splits.length === 1;

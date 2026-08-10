@@ -45,7 +45,7 @@ function profileRenameConsequence(from: string, to: string): string {
 	return `Its saved credential moves with it, and the env token it reads becomes ${envTokenVar(to)} instead of ${envTokenVar(from)}.`;
 }
 
-/** Both outcomes report the same shape, so a consumer never has to branch on which one ran. */
+/** Shared so a rename and a repoint emit the same shape, and nothing has to branch on which one ran. */
 function report(
 	ctx: CliContext,
 	fields: { name: string; url: string | null; renamedFrom: string | null; credentialSaved: boolean },
@@ -53,10 +53,7 @@ function report(
 	ctx.ui.result(fields);
 }
 
-/**
- * Re-key the profile and its credential together. Credentials are keyed by URL and profile name, so moving
- * only the profile would strand the credential under a name nothing looks up — hence the rollback.
- */
+/** Rolls back on failure: a profile that moved without its credential is worse than a rename that did not happen. */
 async function rename(from: string, to: string, skipConfirmation: boolean, ctx: CliContext): Promise<void> {
 	if (!skipConfirmation) {
 		if (!ctx.interactive) {
@@ -76,7 +73,7 @@ async function rename(from: string, to: string, skipConfirmation: boolean, ctx: 
 	const url = write.profile.url !== undefined && isSafeUrl(write.profile.url) ? write.profile.url : undefined;
 
 	try {
-		// A profile with no usable URL has no credential key to move; the configuration rename is the whole rename.
+		// No usable URL means no credential key to move, so the configuration rename is the whole rename.
 		if (url !== undefined) renameCredential(url, from, to);
 	} catch (error) {
 		write.rollback();
@@ -88,6 +85,14 @@ async function rename(from: string, to: string, skipConfirmation: boolean, ctx: 
 }
 
 export async function update(nameArg: string | undefined, options: UpdateOptions, ctx: CliContext): Promise<void> {
+	// A rename re-keys the profile and its credential; a repoint rewrites a value under an unchanged key.
+	// Kept to separate invocations so neither has to unwind the other when it fails.
+	if (options.name !== undefined && (options.url !== undefined || options.token !== undefined)) {
+		throw new CliError('USAGE', 'Rename a profile on its own.', {
+			hint: `d6s profile update ${nameArg ?? '<name>'} --name ${options.name}, then d6s profile update ${options.name} --url <url>`,
+		});
+	}
+
 	const { name, profile: existing } = await resolveProfileName(
 		nameArg,
 		'existing',
@@ -95,13 +100,11 @@ export async function update(nameArg: string | undefined, options: UpdateOptions
 		ctx,
 	);
 
-	if (options.name !== undefined) {
-		if (options.url !== undefined || options.token !== undefined) {
-			throw new CliError('USAGE', 'Rename a profile on its own.', {
-				hint: `d6s profile update ${name} --name ${options.name}, then d6s profile update ${options.name} --url <url>`,
-			});
-		}
+	// Raw configuration may contain credentials or terminal controls, so only display a validated URL.
+	const currentUrl = existing.url !== undefined && isSafeUrl(existing.url) ? existing.url : undefined;
+	const currentShown = currentUrl ?? UNPRINTABLE_URL;
 
+	if (options.name !== undefined) {
 		if (options.name === name) throw new CliError('USAGE', `Profile "${name}" already has that name.`);
 
 		assertProfileName(
@@ -110,15 +113,7 @@ export async function update(nameArg: string | undefined, options: UpdateOptions
 			ctx,
 			`Pick a free name, or remove that one first: d6s profile remove ${options.name}`,
 		);
-	}
 
-	// Raw configuration may contain credentials or terminal controls, so only display a validated URL.
-	const currentUrl = existing.url !== undefined && isSafeUrl(existing.url) ? existing.url : undefined;
-	const currentShown = currentUrl ?? UNPRINTABLE_URL;
-
-	// A rename re-keys the profile and its credential; a repoint rewrites the value under an unchanged key.
-	// Keeping them to separate invocations means neither has to unwind the other when it fails.
-	if (options.name !== undefined) {
 		await rename(name, options.name, options.yes === true, ctx);
 		report(ctx, { name: options.name, url: currentUrl ?? null, renamedFrom: name, credentialSaved: false });
 		return;

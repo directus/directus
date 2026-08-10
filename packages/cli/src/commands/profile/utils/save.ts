@@ -13,7 +13,7 @@ const PROFILE_NAME_RULE = 'Use letters, numbers, and underscores.';
 type ProfileNamePolicy = 'new' | 'existing';
 type StoredProfile = NonNullable<ReturnType<CliContext['config']['existingProfile']>>;
 
-/** Assert the creation or lookup rules for a profile name, returning the stored profile when one must exist. */
+/** `'new'` rejects a taken name, `'existing'` rejects a free one and returns what it found. */
 export function assertProfileName(name: string, policy: 'new', ctx: CliContext, hint?: string): void;
 export function assertProfileName(name: string, policy: 'existing', ctx: CliContext, hint?: string): StoredProfile;
 export function assertProfileName(
@@ -72,8 +72,8 @@ function profileNameValidationMessage(
 }
 
 /**
- * Resolve the profile name from the argument or a prompt. Creating a profile ('new') rejects names no
- * environment variable could carry; resolving an existing key accepts hand-written configuration as-is.
+ * `'new'` rejects names no environment variable could carry; `'existing'` takes hand-written
+ * configuration as it finds it.
  */
 export function resolveProfileName(
 	nameArg: string | undefined,
@@ -108,9 +108,8 @@ export async function resolveProfileName(
 }
 
 /**
- * Resolve the instance URL from `--url` or a prompt. `currentUrl` is the URL the profile already has: it
- * seeds the prompt and is what the profile keeps when the flag is omitted, so only a profile without a
- * usable URL of its own makes `--url` mandatory.
+ * `currentUrl` is what the profile already has: it seeds the prompt and is what the profile keeps when
+ * `--url` is omitted, so only a profile without a usable URL of its own makes the flag mandatory.
  */
 export async function resolveProfileUrl(
 	urlFlag: string | undefined,
@@ -133,14 +132,14 @@ export async function resolveProfileUrl(
 }
 
 export interface SavedProfile {
-	/** The URL actually written: interactive recovery can settle on a different one than the caller resolved. */
+	/** What was actually written: interactive recovery can settle on a different URL than the caller resolved. */
 	readonly url: string;
 	readonly credentialSaved: boolean;
 }
 
 /**
- * Verify a credential, then write the profile followed by its credential. A credential failure restores the
- * previous configuration; if that second write also fails, the caller gets both failures and a partial-state warning.
+ * The profile is written before its credential, and a credential failure rolls the profile back. If the
+ * rollback fails too, the caller gets both errors and a partial-state warning.
  */
 export async function saveProfile(
 	name: string,
@@ -168,8 +167,8 @@ export async function saveProfile(
 		try {
 			write.rollback();
 		} catch (rollbackError) {
-			// Restoring configuration is another filesystem write that can fail independently. Preserve both
-			// errors so the operator knows the profile may still point at the new URL.
+			// The rollback is its own filesystem write and can fail independently. Preserve both errors, so
+			// the operator knows the profile may still point at the new URL.
 			const credentialMessage = error instanceof Error ? error.message : String(error);
 			const rollbackMessage = rollbackError instanceof Error ? rollbackError.message : String(rollbackError);
 
@@ -209,8 +208,8 @@ async function acquireCredential(
 	let url = startUrl;
 	let token = flagToken;
 
-	// A profile is a named URL, not a credential: tokens also resolve from DIRECTUS_<NAME>_TOKEN and the
-	// credential store, so skipping here is how you create a profile whose secret only ever lives in CI.
+	// Skippable: a profile is a named URL, not a credential. Tokens also resolve from DIRECTUS_<NAME>_TOKEN,
+	// so skipping is how you create a profile whose secret only ever lives in CI.
 	if (token === undefined) {
 		const method = await ask(
 			select({
@@ -260,8 +259,8 @@ async function acquireCredential(
 				const identity = await testConnection({ url, token, kind: 'token' });
 				ctx.ui.success(`Authenticated to ${url} as ${identity.user} (${identity.role}).`);
 			} else {
-				// No token to authenticate with, but the URL is about to be committed — ping so a typo or an
-				// unreachable host is caught here, while it is still one keystroke to fix, not on first sync.
+				// Nothing to authenticate with, but the URL is about to be committed. Ping it, so a typo is
+				// caught while it is still one keystroke to fix rather than on the first sync.
 				await pingServer(url);
 			}
 
@@ -285,8 +284,8 @@ async function acquireCredential(
 							{ value: 'discard', label: 'Discard the token' },
 						];
 
-			// A cancel here (the only error these prompts throw) escapes the loop on purpose:
-			// Ctrl+C must abort the command, not land back in this menu.
+			// Uncaught on purpose: cancel is the only error these prompts throw, and Ctrl+C must abort the
+			// command rather than land back in this menu.
 			const next = await ask(select({ message: 'How do you want to proceed?', options }));
 
 			if (next === 'save') return token === undefined ? { url } : { url, token };

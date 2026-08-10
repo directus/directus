@@ -2,10 +2,7 @@ import { isCancel, password, text, type TextOptions } from '@clack/prompts';
 import { CliError } from './error.js';
 import { registerSecret } from './secret.js';
 
-/**
- * Await a clack prompt and unwrap it, turning a cancel (Ctrl+C / Esc) into a clean
- * exit through the normal error boundary instead of clack's own process.exit.
- */
+/** Routes a cancel (Ctrl+C / Esc) through the normal error boundary, not clack's own process.exit. */
 export async function ask<T>(prompt: Promise<T | symbol>): Promise<T> {
 	const value = await prompt;
 	if (isCancel(value)) throw new CliError('USAGE', 'Cancelled.');
@@ -13,9 +10,8 @@ export async function ask<T>(prompt: Promise<T | symbol>): Promise<T> {
 }
 
 /**
- * Resolve a required value from arguments or an interactive prompt. Without a terminal the value can only
- * come from the arguments, so `usage` — and `hint`, when the value has more than one invocation shape —
- * is what the resulting error says instead.
+ * Without a terminal the value can only come from the arguments, so `usage` (plus `hint`, when the value
+ * has more than one invocation shape) is what the resulting error says instead.
  */
 export async function orPrompt(
 	value: string | undefined,
@@ -30,8 +26,8 @@ export async function orPrompt(
 }
 
 /**
- * Registration is part of this call, not the caller's job: a token that reached the process without
- * reaching the redaction registry can print in full, and a caller that has to remember will eventually not.
+ * Registers the token here rather than leaving it to the caller: a caller that has to remember will
+ * eventually not, and an unregistered token prints in full.
  */
 export async function promptAndRegisterToken(profileName: string): Promise<string> {
 	const token = await ask(
@@ -45,7 +41,6 @@ export async function promptAndRegisterToken(profileName: string): Promise<strin
 	return token;
 }
 
-/** Collect login credentials; the caller opens the session with them. */
 export async function promptLogin(): Promise<{ email: string; password: string }> {
 	const email = await ask(
 		text({ message: 'Email', validate: (v) => (v?.includes('@') ? undefined : 'Enter a valid email.') }),

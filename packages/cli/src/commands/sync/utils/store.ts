@@ -17,9 +17,9 @@ import {
 	type SnapshotRelationEntry,
 } from './contract.js';
 
-/** Controls which collections a scoped snapshot write may replace or remove. */
+/** Absent means an unscoped write, which may replace or remove anything. */
 export interface WriteScope {
-	/** Whether a collection is inside the pull scope and may be replaced or removed. */
+	/** Out-of-scope collections are preserved rather than replaced or removed. */
 	readonly inScope: (collection: string) => boolean;
 }
 
@@ -148,7 +148,7 @@ function previousVersion(value: unknown): number | undefined {
 	return typeof version === 'number' ? version : undefined;
 }
 
-/** Write a snapshot as deterministic, manifest-owned collection artifacts. */
+/** One file per collection, owned by the manifest. */
 export function writeSnapshotFiles(dir: string, snapshot: Snapshot, scope?: WriteScope): ArtifactWriteResult {
 	const manifestHint = 'Fix or delete the schema directory, then run d6s sync pull again.';
 
@@ -160,7 +160,7 @@ export function writeSnapshotFiles(dir: string, snapshot: Snapshot, scope?: Writ
 		metadata: ({ files, preserved, previousMetadata }) => {
 			const metadata = header(snapshot, files);
 
-			// Metadata describes the assembled set; preserved full snapshots must retain full authority.
+			// The metadata describes the assembled set, so a preserved full snapshot keeps full authority.
 			if (scope !== undefined && preserved.length > 0 && previousVersion(previousMetadata) === SNAPSHOT_FULL) {
 				metadata.snapshot['version'] = SNAPSHOT_FULL;
 			}
@@ -175,7 +175,7 @@ export function writeSnapshotFiles(dir: string, snapshot: Snapshot, scope?: Writ
 	});
 }
 
-/** Read and reassemble a validated snapshot from its stored artifacts. */
+/** The inverse of `writeSnapshotFiles`: reassembles one snapshot from its per-collection files. */
 export function readSnapshotFiles(dir: string): Snapshot {
 	const { metadata, artifacts: files } = readArtifactStore({
 		dir,

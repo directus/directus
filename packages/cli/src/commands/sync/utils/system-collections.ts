@@ -3,16 +3,13 @@ import { byCodepoint } from './codepoint.js';
 import type { DataCollection } from './data-store.js';
 import { allResources, type Resource } from './resources.js';
 
-/** A stored data file paired with the catalog entry that governs how it syncs. */
+/** A stored data file paired with the resource definition that governs how it syncs. */
 export interface SystemCollection {
 	readonly data: DataCollection;
 	readonly resource: Resource;
 }
 
-/**
- * Partition stored collections into known system resources and user content. System resources follow
- * graph order; content collections are codepoint-sorted.
- */
+/** System resources come back in dependency order; content collections are codepoint-sorted. */
 export function partitionCollections(collections: readonly DataCollection[]): {
 	system: SystemCollection[];
 	content: DataCollection[];

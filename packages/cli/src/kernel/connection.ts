@@ -61,21 +61,20 @@ export async function pingServer(url: string): Promise<void> {
 	}
 }
 
-/** A verified login: the identity it proved, plus the session the caller persists once its profile is written. */
 export interface VerifiedLogin {
 	readonly identity: Identity;
 	readonly session: AuthenticationData;
 }
 
 /**
- * Log in and prove the session works, without storing anything. The caller persists it — after whatever
- * configuration write binds it to a profile, so a failed write cannot orphan a credential no profile can reach.
+ * Stores nothing: the caller persists the session only after the configuration write that binds it to a
+ * profile, so a failed write cannot orphan a credential no profile can reach.
  */
 export async function loginSession(url: string, email: string, password: string): Promise<VerifiedLogin> {
 	registerSecret(password);
 
-	// Log in against memory so nothing is written until the session is proven usable: a failed identify
-	// leaves nothing behind, and a transient one can no longer delete a working saved session.
+	// In-memory storage, so a failed identify leaves nothing behind and a transient one can no longer
+	// delete a working saved session.
 	let session: AuthenticationData | null = null;
 
 	const client = createDirectus<CoreSchema>(url)
@@ -86,9 +85,8 @@ export async function loginSession(url: string, email: string, password: string)
 					get: () => session,
 					set: (value) => {
 						session = value;
-						// Redaction is the credential store's job when it persists, but identify() runs long before
-						// the caller gets there — register at issue time so a failing /users/me that echoes the
-						// token cannot print it in the clear.
+						// The credential store redacts when it persists, but identify() runs long before that:
+						// register at issue time so a failing /users/me cannot echo the token in the clear.
 						if (value !== null) registerSession(value);
 					},
 				},
@@ -102,13 +100,13 @@ export async function loginSession(url: string, email: string, password: string)
 		throw mapRequestError(error, url);
 	}
 
-	// The SDK hands the issued tokens to the storage above; nothing there means there is no session to keep.
+	// The SDK writes the issued tokens to the storage above; nothing there means no session was issued.
 	if (session === null) throw new CliError('AUTH', `Login to ${url} returned no session.`);
 
 	return { identity: await identify(client, url), session };
 }
 
-// Refresh once per command so every later client reads the rotated session from shared storage.
+// A session refreshes once per command, so anything expiring inside this window would die mid-run.
 const SESSION_REFRESH_SKEW_MS = 60_000;
 
 export async function refreshSessionIfNeeded(credential: ResolvedCredential): Promise<void> {
@@ -163,8 +161,7 @@ async function identify(client: RestClient<CoreSchema>, url: string): Promise<Id
 	}
 }
 
-// Turn a /users/me-shaped record into display strings, defensively — the SDK
-// types are loose without a schema and we never want to render a raw object.
+// Defensive because the SDK types are loose without a schema, and a raw object must never reach output.
 function describeIdentity(me: unknown, projectName: string | undefined): Identity {
 	const asString = (value: unknown): string => (typeof value === 'string' ? value : '');
 
@@ -213,11 +210,9 @@ async function serverInfoValue(credential: ResolvedCredential, path: string): Pr
 }
 
 /**
- * Total stored records behind a list endpoint via `meta=total_count`, or undefined when the server cannot
- * answer. This is a raw request on purpose: the SDK strips the response envelope (extract-data returns
- * `data`), losing `meta`. For an admin token total_count is computed straight on the database — it counts
- * records that entitlement filtering hides from list reads, which is exactly what makes it usable as an
- * pull completeness check. Best-effort: any failure disables the check, never the caller.
+ * A raw request because the SDK strips the response envelope, losing `meta`. For an admin token
+ * total_count is computed on the database, so it counts records that entitlement filtering hides from list
+ * reads — which is what makes it a pull completeness check. Best-effort: failure disables the check only.
  */
 export async function fetchTotalCount(credential: ResolvedCredential, path: string): Promise<number | undefined> {
 	const total = get(
@@ -228,22 +223,15 @@ export async function fetchTotalCount(credential: ResolvedCredential, path: stri
 	return typeof total === 'number' ? total : undefined;
 }
 
-/**
- * The instance's Directus version from `/server/info` (`version` is visible to any authenticated user),
- * or undefined when it cannot be read. Best-effort on purpose: this only feeds a source/target version
- * skew warning, so a missing field, an older server, or any transient failure degrades to "no warning" and
- * NEVER gates the sync.
- */
+/** Best-effort: this only feeds a version-skew warning, so an unreadable value never gates the sync. */
 export async function fetchServerVersion(credential: ResolvedCredential): Promise<string | undefined> {
 	const version = await serverInfoValue(credential, 'version');
 	return typeof version === 'string' ? version : undefined;
 }
 
 /**
- * The instance's `queryLimit.max` from `/server/info` (visible to any authenticated user): `-1` means no
- * cap, a positive N is the hard page cap, `0` refuses everything. Undefined when it can't be read. Lets the
- * fetch layer skip the exhaustion probe on an unbounded instance; a missing value degrades to today's
- * probe-based paging, so this is best-effort and never gates.
+ * `queryLimit.max`: -1 is no cap, a positive N is the hard page cap, 0 refuses everything. Lets the fetch
+ * layer skip its exhaustion probe on an unbounded instance; undefined just falls back to probing.
  */
 export async function fetchQueryLimitMax(credential: ResolvedCredential): Promise<number | undefined> {
 	const max = await serverInfoValue(credential, 'queryLimit.max');
@@ -251,12 +239,9 @@ export async function fetchQueryLimitMax(credential: ResolvedCredential): Promis
 }
 
 /**
- * Whether the instance is licensed for custom permission rules, read from the admin-only `/license`
- * endpoint (`entitlements.custom_permission_rules_enabled`, `override ?? default`). When false the server
- * filters custom-rule permissions out of reads, which is exactly what makes a `/permissions` pull
- * incomplete. Best-effort: a non-admin 403, an older server without the endpoint, or any transient failure
- * returns undefined, and the caller degrades to inference — it NEVER gates on this. Raw fetch because the
- * SDK strips the response envelope this reads from (same reason as fetchTotalCount).
+ * Read from the admin-only `/license` endpoint. When false the server filters custom-rule permissions out
+ * of reads, which is what makes a `/permissions` pull incomplete. Best-effort: a non-admin 403, an older
+ * server without the endpoint, or any transient failure returns undefined and the caller infers instead.
  */
 export async function fetchCustomPermissionRulesEntitled(credential: ResolvedCredential): Promise<boolean | undefined> {
 	const body = await rawAuthenticatedGet(credential, '/license');
@@ -276,8 +261,8 @@ export function mapRequestError(error: unknown, url: string): CliError {
 		const status = typeof rawStatus === 'number' ? rawStatus : undefined;
 		const code = error.errors[0]?.extensions.code;
 		const detail = error.errors.map((entry) => `${entry.extensions.code}: ${entry.message}`).join('; ');
-		// Directus also uses 403 for non-auth refusals such as license limits. Prefer the structured
-		// error code whenever present so those failures keep their real cause and remediation.
+		// Directus also uses 403 for non-auth refusals such as license limits, so the status alone is not
+		// enough; prefer the structured code so those failures keep their real cause and remediation.
 		const isAuth = status === 401 || (code !== undefined ? AUTH_CODES.has(code) : status === 403);
 
 		if (isAuth) {

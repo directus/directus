@@ -22,12 +22,9 @@ import { DEFAULT_PROJECT, displayProjectPath, resolveTarget } from './utils/reso
 
 export interface DiffOptions {
 	readonly to: string;
-	/**
-	 * No commander default: an absent flag resolves to the project configuration's mode, then merge — the same
-	 * precedence push uses.
-	 */
+	/** No commander default: an absent flag falls through the same precedence push uses. */
 	readonly mode?: SyncMode;
-	/** The server's own sanctioned bypass of its version and vendor gates on /schema/diff, made explicit. */
+	/** Surfaces the server's own sanctioned bypass of its version and vendor gates on /schema/diff. */
 	readonly allowDrift?: boolean;
 	readonly project: string;
 }
@@ -138,11 +135,11 @@ export async function diff(options: DiffOptions, ctx: CliContext): Promise<void>
 
 	renderSchemaPlan(schema, ctx);
 
-	// An ambiguity holds its records out of the batch, so the dry run can come back empty for a diff that
-	// is anything but converged. Printing "no changes" there contradicts the lines that follow it.
+	// An ambiguity holds its records out of the batch, so the dry run can come back empty for a diff that is
+	// anything but converged. Printing "no changes" there would contradict the lines that follow it.
 	const ambiguityEmptiedThePlan = ambiguous > 0 && dataSummary !== undefined && !hasImportChanges(dataSummary);
 
-	// Diff always dry-runs, so there is never an unpriced batch to describe instead.
+	// No batch size to pass: diff always dry-runs, so there is never an unpriced batch.
 	if (!ambiguityEmptiedThePlan) renderDataPlan(dataSummary, undefined, ctx);
 
 	if (preview === undefined) return;

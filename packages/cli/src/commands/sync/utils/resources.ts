@@ -1,53 +1,40 @@
 import { CliError } from '../../../kernel/error.js';
 import { byCodepoint } from './codepoint.js';
 
-/** A system field that references another synced collection. */
 export interface FkField {
 	readonly field: string;
+	/** The collection the field points at. */
 	readonly references: string;
 }
 
-/** The pull rules a syncable Directus system resource declares, apart from how its records are identified. */
 interface ResourceFields {
 	readonly name: string;
 	readonly singular: string;
 	readonly plural: string;
 	readonly collection: string;
 	readonly endpoint: string;
-	/** Verified Admin App route for inspecting an individual record; omitted when no stable item route exists. */
+	/** Data Studio item route; omitted when the resource has no stable one. */
 	readonly appRoute?: string | undefined;
 	readonly primaryKey: string;
 	readonly singleton: boolean;
 	readonly strip: readonly string[];
 	readonly aliases: readonly string[];
-	/**
-	 * Pull-surviving system FKs used by reconciliation and push remapping. Derived from
-	 * `packages/system-data/src/relations/relations.yaml`.
-	 */
+	/** The FKs that survive a pull, derived from `packages/system-data/src/relations/relations.yaml`. */
 	readonly fkFields: readonly FkField[];
-	/** Records the server derives at read time (never persisted records); dropped during pull. */
+	/** Matches records the server derives at read time; they are never persisted, so pull drops them. */
 	readonly drop?: ((record: Record<string, unknown>) => boolean) | undefined;
-	/**
-	 * Page by PK cursor (filter _gt) instead of offset. Only integer-PK endpoints may opt in — the query
-	 * validator forbids _gt on uuid fields (get-filter-operators-for-type.ts).
-	 */
+	/** Page by PK cursor. Integer-PK endpoints only: the query validator forbids _gt on uuid fields. */
 	readonly keyset?: boolean | undefined;
-	/**
-	 * Verify the fetched record count against the server's total_count at pull time. Opt-in for endpoints
-	 * whose reads can be silently filtered, so an incomplete pull is detected before local files are written.
-	 */
+	/** Check the fetched count against total_count. For endpoints whose reads can be silently filtered. */
 	readonly verifyCount?: boolean | undefined;
 }
 
 /**
- * A syncable Directus system resource. `naturalKey` names the fields that identify the same record across
- * instances with different primary keys; an omitted key means the resource has no stable cross-instance
- * identity, so its records are never reconciled by key.
+ * `naturalKey` names the fields that identify the same record across instances with different primary
+ * keys; omitting it means the resource has no stable cross-instance identity and is never reconciled.
  *
- * The two variants encode the record rule the push depends on: an unmatched auto-increment key is never
- * sent as target identity, because the target may have given it to an unrelated record. A temporary key
- * correlates the server-assigned ID, while the natural key reconciles pre-existing rows — so an integer-PK
- * resource must declare one. A uuid is globally unique, safe to send verbatim, and may go unkeyed.
+ * An integer PK must declare one, because the target may have handed that auto-increment key to an
+ * unrelated record. A uuid is globally unique, safe to send verbatim, and may go unkeyed.
  */
 export type Resource =
 	| (ResourceFields & { readonly primaryKeyType: 'uuid'; readonly naturalKey?: readonly string[] })
@@ -294,16 +281,13 @@ const RESOURCE_LIST = [
 
 type SelectableEntry = Extract<(typeof RESOURCE_LIST)[number], { selectable: true }>;
 
-/** A resource name users may select directly. */
 export type SelectableResource = SelectableEntry['name'];
 
-// The list keeps its literal names so flags and help text can be typed against them (which rules out
-// `satisfies` on the list itself — isolatedDeclarations cannot infer through it). This lookup is where each
-// entry is checked against ResourceDef, so an incomplete resource — or an integer-PK resource declaring no
-// natural key, which the push could not send without risking an overwrite — fails to compile here.
+// The list keeps its literal names so flags and help text can be typed against them, which rules out
+// `satisfies` on the list itself (isolatedDeclarations cannot infer through it). This lookup is where an
+// entry is checked against ResourceDef, so a malformed resource fails to compile here.
 const RESOURCES: Record<string, ResourceDef> = Object.fromEntries(RESOURCE_LIST.map((def) => [def.name, def] as const));
 
-/** Sorted resource names users may select directly. */
 export const SELECTABLE_RESOURCES: readonly SelectableResource[] = RESOURCE_LIST.filter(
 	(def): def is SelectableEntry => def.selectable,
 )
@@ -364,7 +348,7 @@ function dependencyOrder(closure: Set<string>): ResourceDef[] {
 	return ordered;
 }
 
-/** Expand selected resources and return them in deterministic dependency order. */
+/** Expands to the dependency closure, in deterministic order. */
 export function resolveResources(requested: string[], options?: { deps?: boolean }): Resource[] {
 	const deps = options?.deps ?? true;
 
@@ -402,7 +386,6 @@ export function resolveResources(requested: string[], options?: { deps?: boolean
 	return dependencyOrder(closure).map(toResource);
 }
 
-/** Return the full resource graph in dependency order. */
 export function allResources(): Resource[] {
 	return resolveResources([...SELECTABLE_RESOURCES]);
 }

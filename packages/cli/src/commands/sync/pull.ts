@@ -245,8 +245,8 @@ function stripSystemFields(
 	});
 }
 
-// The field catalog catches custom secret-bearing fields that static strip lists cannot know about.
-// It remains authoritative for scoped pulls whose snapshots omit system-collection field metadata.
+// Catches custom secret-bearing fields no static strip list could know about, and stays authoritative
+// for scoped pulls whose snapshots omit system-collection field metadata.
 function sensitiveFieldsByCollection(catalog: FieldCatalogEntry[]): Map<string, string[]> {
 	const map = new Map<string, string[]>();
 
@@ -318,8 +318,8 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 
 	const includesUsers = resources.some((resource) => resource.name === 'users');
 
-	// Access filtering follows the stored outcome, including preserved users from earlier pulls.
-	// Using only this fetch set could turn preserved grants into mirror deletions.
+	// Users preserved by an earlier pull still count: judging by this fetch set alone could turn their
+	// grants into mirror deletions.
 	const usersCommitted = includesUsers || hasCommittedCollection(dataDir, 'directus_users');
 
 	const dataCollections: DataCollection[] = [];
@@ -448,7 +448,9 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		if (snapshot === null) {
 			ctx.ui.print('  Schema         skipped');
 		} else {
-			ctx.ui.print(`  Schema         ${maybePluralize(schemaCollectionCount, 'collection')} → ${relativeDir}${schemaNote}`);
+			ctx.ui.print(
+				`  Schema         ${maybePluralize(schemaCollectionCount, 'collection')} → ${relativeDir}${schemaNote}`,
+			);
 		}
 
 		ctx.ui.print(

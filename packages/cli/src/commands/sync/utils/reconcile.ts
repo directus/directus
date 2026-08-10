@@ -1,18 +1,16 @@
 import { byCodepoint } from './codepoint.js';
 import type { FkField } from './resources.js';
 
-/** Source and target records for one collection reconciliation, with the resource facts that identify them. */
 export interface ReconcileInput {
 	readonly collection: string;
 	readonly primaryKey: string;
-	/** The resource's natural key: the fields that identify the same record across instances. */
+	/** The fields that identify the same record across instances. */
 	readonly naturalKey: readonly string[];
 	readonly fkFields: readonly FkField[];
 	readonly sourceRecords: readonly Record<string, unknown>[];
 	readonly targetRecords: readonly Record<string, unknown>[];
 }
 
-/** Matched, ambiguous, and unmatched source identities for one collection. */
 export interface CollectionReconcile {
 	readonly collection: string;
 	readonly matched: readonly { sourceId: string; targetId: string; key: string }[];
@@ -22,7 +20,7 @@ export interface CollectionReconcile {
 
 const UNTRANSLATABLE: unique symbol = Symbol('untranslatable');
 
-// Null is a real key component; an unmapped non-null foreign key makes the natural key unusable.
+// Null is a real key component, not a gap. An unmapped non-null FK is what makes a key unusable.
 function keyComponents(
 	record: Record<string, unknown>,
 	naturalKey: readonly string[],
@@ -172,8 +170,8 @@ function reconcileOne(
 }
 
 /**
- * Reconcile collections in parent-first order. Existing source IDs are skipped and their targets claimed;
- * new matches become available to later child FK keys.
+ * Parent-first: already-mapped source IDs are skipped but their targets claimed, and each new match
+ * becomes available to the child FK keys reconciled after it.
  */
 export function reconcileCollections(
 	inputs: readonly ReconcileInput[],

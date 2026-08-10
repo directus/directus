@@ -1,16 +1,17 @@
 const secrets = new Set<string>();
 
 export function registerSecret(value: string): void {
-	// An empty value would match between every character; every actual secret must be redacted regardless of length.
+	// Empty is the only rejection: it would match between every character. Length is not a filter — a short
+	// secret is still a secret.
 	if (value !== '') secrets.add(value);
 }
 
-/** Test/reset hook — the registry is process-global. */
+/** Test hook. The registry is process-global, so suites must reset it between cases. */
 export function clearSecrets(): void {
 	secrets.clear();
 }
 
-// Backstops for secrets embedded by dependencies before registration.
+// Backstops for secrets a dependency embeds before anything could register them.
 const BEARER = /(\bBearer\s+)\S+/gi;
 const TOKEN_QUERY = /([?&](?:access_token|token)=)[^&\s"']+/gi;
 

@@ -7,7 +7,6 @@ import { CliError } from '../../../kernel/error.js';
 import { writeFileAtomic } from '../../../kernel/write.js';
 import { byCodepoint } from './codepoint.js';
 
-/** The artifact ownership manifest filename. */
 export const ARTIFACT_MANIFEST_FILE = 'metadata.json';
 
 const OWNED_FILE = /^[a-z0-9-]*_[0-9a-f]{16}\.json$/;
@@ -17,7 +16,7 @@ interface Artifact {
 	readonly collection: string;
 }
 
-/** Files written and stale owned files removed by an artifact write. */
+/** `removed` lists stale files the store owned, never files it did not write. */
 export interface ArtifactWriteResult {
 	readonly written: string[];
 	readonly removed: string[];
@@ -46,7 +45,7 @@ interface ReadArtifactsOptions<T extends Artifact, M> {
 	readonly kind: string;
 	readonly missing: string;
 	readonly missingHint: string;
-	/** Parses the store's own metadata extras; the `files` manifest is validated here, not by adapters. */
+	/** Only the store's own metadata extras; `files` is validated here, not by adapters. */
 	readonly parseMetadata: (value: unknown) => M;
 	readonly parseArtifact: (value: unknown, name: string) => T;
 }
@@ -67,12 +66,12 @@ function canonicalize(value: unknown): unknown {
 	return value;
 }
 
-/** Serialize an artifact deterministically with sorted object keys and a trailing newline. */
+/** Sorted keys and a trailing newline, so an unchanged artifact produces an unchanged file. */
 export function serializeCanonicalJson(value: unknown): string {
 	return `${JSON.stringify(canonicalize(value), null, 2)}\n`;
 }
 
-/** The deterministic artifact filename for a collection; also how readers probe manifest membership. */
+/** Deterministic, so readers can also use it to probe manifest membership. */
 export function artifactFileName(collection: string): string {
 	const slug = collection
 		.toLowerCase()
@@ -99,16 +98,15 @@ function readJsonFile(path: string, name: string, hint?: string): unknown {
 	}
 }
 
-/** The ownership manifest as stored: the file list it claims, and the metadata its store wrote alongside. */
 export interface ArtifactManifest {
+	/** The files the store claims ownership of. */
 	readonly files: string[];
 	readonly metadata: unknown;
 }
 
 /**
- * The stored manifest, or undefined when the directory holds none. Throws when one exists but cannot be
- * trusted: a symlink out of the artifact root, unreadable, not JSON, not an object, or no `files` array.
- * Every manifest read goes through here so a store cannot accidentally read one on laxer terms.
+ * undefined when the directory holds no manifest; throws when one exists but cannot be trusted. Every
+ * manifest read goes through here, so no store can accidentally read one on laxer terms.
  */
 export function readArtifactManifest(
 	dir: string,
@@ -139,10 +137,7 @@ export function readArtifactManifest(
 	return { files: manifest.data.files, metadata };
 }
 
-/**
- * The stored manifest, or undefined when there is none *and* when it cannot be trusted. For the readers
- * that must survive corruption so a later pull can still heal the directory.
- */
+/** For the readers that must survive corruption so a later pull can still heal the directory. */
 export function tryReadArtifactManifest(dir: string): ArtifactManifest | undefined {
 	try {
 		return readArtifactManifest(dir);
@@ -178,7 +173,6 @@ function readArtifactFile<T extends Artifact>(
 	return artifact;
 }
 
-/** Write artifact files, remove stale owned files, then update the ownership manifest. */
 export function writeArtifactStore<T extends Artifact>(options: WriteArtifactsOptions<T>): ArtifactWriteResult {
 	const { dir, artifacts, body, manifestHint, metadata, preserve } = options;
 	const previous = readArtifactManifest(dir, { hint: manifestHint });
@@ -202,7 +196,7 @@ export function writeArtifactStore<T extends Artifact>(options: WriteArtifactsOp
 	const preserved: string[] = [];
 	const removed: string[] = [];
 
-	// Validate the previous generation before changing any file.
+	// Validate the whole previous generation before changing any file.
 	for (const name of previous?.files ?? []) {
 		if (targets.has(name) || !OWNED_FILE.test(name)) continue;
 
@@ -244,7 +238,6 @@ export function writeArtifactStore<T extends Artifact>(options: WriteArtifactsOp
 	return { written: [ARTIFACT_MANIFEST_FILE, ...written].sort(byCodepoint), removed: removed.sort(byCodepoint) };
 }
 
-/** Read and validate the artifact set named by its ownership manifest. */
 export function readArtifactStore<T extends Artifact, M>(
 	options: ReadArtifactsOptions<T, M>,
 ): { metadata: M; artifacts: T[] } {

@@ -19,7 +19,6 @@ import { allResources } from './resources.js';
 
 const REPAIR_HINT = 'Fix or delete the data directory, then run d6s sync pull again.';
 
-/** One collection and its records in the data artifact set. */
 export interface DataCollection {
 	readonly collection: string;
 	readonly primaryKey: string;
@@ -27,7 +26,7 @@ export interface DataCollection {
 }
 
 interface DataWriteResult extends ArtifactWriteResult {
-	/** The stored incompleteness after the write: this pull's shortfalls plus markers carried by preserved files. */
+	/** This pull's shortfalls plus the markers carried by preserved files. */
 	readonly incomplete: string[];
 }
 
@@ -35,10 +34,9 @@ interface DataReadResult {
 	readonly source: string;
 	readonly collections: DataCollection[];
 	/**
-	 * Collections whose pull the source instance is known to have silently truncated (reads filtered by
-	 * license entitlements). Recorded in stored metadata so the knowledge survives to whoever
-	 * pushes: merge/add stay safe, mirror must refuse — absence from an incomplete batch is not deletion
-	 * consent.
+	 * Collections the source silently truncated at pull time (reads filtered by license entitlements).
+	 * Stored so the knowledge survives to whoever pushes: absence from an incomplete batch is not deletion
+	 * consent, so merge and add stay safe but mirror must refuse.
 	 */
 	readonly incomplete: string[];
 }
@@ -136,7 +134,7 @@ function parseDataFile(value: unknown, name: string): DataCollection {
 	return { collection, primaryKey, records };
 }
 
-/** A stored generation's provenance; `'unknown'` means the metadata predates completeness tracking. */
+/** `'unknown'` means the stored metadata predates completeness tracking. */
 interface CommittedData {
 	readonly source: string;
 	readonly incomplete: string[] | 'unknown';
@@ -189,14 +187,13 @@ function assertMatchingDataSource(committed: CommittedData | undefined, dir: str
 }
 
 /**
- * Refuse when the stored data generation came from a different source instance. Exposed so pull can
- * run it BEFORE any write — a writer-level refusal alone would land after the schema files changed.
+ * Exposed so pull can run this BEFORE any write. `writeDataFiles` refuses too, but by then the schema
+ * files have already changed.
  */
 export function assertDataSource(dir: string, source: string): void {
 	assertMatchingDataSource(committedState(dir), dir, source);
 }
 
-/** Write deterministic data artifacts and record the normalized source instance URL. */
 export function writeDataFiles(
 	dir: string,
 	collections: DataCollection[],
@@ -208,8 +205,8 @@ export function writeDataFiles(
 	const fetched = new Set(collections.map((entry) => entry.collection));
 	const preservedCollections = new Set<string>();
 
-	// Fetched collections replace their marker; preserved collections keep it.
-	// Pre-tracking preserved data stays incomplete until re-fetched and verified.
+	// Fetched collections replace their marker; preserved ones keep it. Pre-tracking data has no marker to
+	// keep, so it stays incomplete until a fetch verifies it.
 	const keptIncomplete = (): string[] => {
 		let carried: string[] = [];
 
@@ -252,20 +249,16 @@ export function writeDataFiles(
 }
 
 /**
- * Whether the stored data metadata lists a collection's artifact — i.e. the collection is part of the
- * stored tree that a write not refetching it will preserve. Lenient by design: this is a read-only
- * premise check consulted during pull, and the strict validators already stop any write that builds on a
- * corrupt tree — so an unreadable manifest answers false instead of turning a healable tree into a hard
- * pull failure.
+ * Whether a write that does not refetch this collection would preserve it. A corrupt manifest answers
+ * false rather than throwing: this is a read-only premise check during pull, the strict validators
+ * already stop any write onto a corrupt tree, and a hard failure here would block the healing pull.
  */
 export function hasCommittedCollection(dir: string, collection: string): boolean {
-	// Tolerant on purpose: a corrupt manifest must not stop the pull that would heal it.
 	const manifest = tryReadArtifactManifest(dir);
 
 	return manifest !== undefined && manifest.files.includes(artifactFileName(collection));
 }
 
-/** Read and validate the metadata-owned data artifacts, or undefined when nothing is stored. */
 export function readDataFiles(dir: string): DataReadResult | undefined {
 	if (!existsSync(join(dir, ARTIFACT_MANIFEST_FILE))) return undefined;
 

@@ -962,7 +962,7 @@ describe('sync push with data', () => {
 	});
 
 	// A CI operator cannot see the interactive prompt, so the refusal is their only account of how much the
-	// push is holding back. Counting the ambiguity alone understates it by every record waiting on that choice.
+	// push is holding back.
 	it('names the dependent records a refused ambiguity holds back, not just the ambiguity', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
@@ -994,8 +994,6 @@ describe('sync push with data', () => {
 		expect(err).toContain('Push refused: 1 target match needs a choice; 2 records depend on that choice.');
 	});
 
-	// Resources needing several fields to identify a record are the ones with no human-readable name, so a
-	// composite key must name every field it matched on: "with this identity" would leave nothing to search for.
 	it('names every field of a composite natural key when the collided records have no name', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());
@@ -1121,9 +1119,8 @@ describe('sync push with data', () => {
 		expect(err).toMatch(/re-run|retry/i);
 	});
 
-	// Identity decisions are settled before the import so a later refusal never re-asks for them. That makes
-	// a failed push write a tracked file, and the operator finds it in git status either way — so the failed
-	// command has to be the thing that tells them, not the diff they run afterwards.
+	// A failed push still writes a tracked file, and the operator finds it in git status either way — so the
+	// failed command has to be what tells them, not the diff they run afterwards.
 	it('names the ID map it wrote even when the push then fails', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());

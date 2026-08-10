@@ -27,14 +27,11 @@ import { displayProjectPath, resolveTarget } from './utils/resolve-target.js';
 
 export interface PushOptions {
 	readonly to: string;
-	/**
-	 * No commander default: an absent flag resolves to the project configuration's mode, then 'merge'. Choices
-	 * are validated by commander (add|merge|mirror), so a present value is always one of the three.
-	 */
+	/** No commander default: an absent flag falls through to the project configuration, then `merge`. */
 	readonly mode?: SyncMode;
-	/** Deliberately loud flag name, mirroring the API's import parameter — the one consent for deletions. */
+	/** Named after the API's own import parameter. The one consent for deletions. */
 	readonly dangerouslyAllowDelete?: boolean;
-	/** The server's own sanctioned bypass of its version and vendor gates on /schema/diff, made explicit. */
+	/** Surfaces the server's own sanctioned bypass of its version and vendor gates on /schema/diff. */
 	readonly allowDrift?: boolean;
 	readonly yes?: boolean;
 	readonly project: string;
@@ -84,9 +81,9 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 
 	ctx.ui.info(`Pushing ${projectPath} to ${options.to} — ${url} (${describeMode(mode)})`);
 
-	// CI mirror requires explicit deletion consent because it skips the dry-run transaction. Local data makes
-	// that refusal certain whatever the schema phase finds, so settle it from local state
-	// before any remote work; the data-less case still needs the convergence check further down.
+	// A non-interactive mirror has no dry run, so it needs explicit consent. Local data makes the refusal
+	// certain whatever the schema phase finds, so settle it here rather than after remote work. A push with
+	// no local data still needs the convergence check further down.
 	if (!ctx.interactive && mode === 'mirror' && !allowDeletes) {
 		const committed = readDataFiles(dataDir);
 		if (committed !== undefined && committed.collections.length > 0) throw mirrorConsentRefusal(projectPath);

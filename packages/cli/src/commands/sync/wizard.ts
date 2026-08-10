@@ -9,12 +9,12 @@ import { push } from './push.js';
 import { byCodepoint } from './utils/codepoint.js';
 import { DEFAULT_PROJECT } from './utils/resolve-target.js';
 
-/** The wizard is what a bare `d6s sync` runs, so it registers as the parent's action rather than a subcommand. */
+/** The parent's action, not a subcommand: the wizard is what a bare `d6s sync` runs. */
 export function registerWizard(command: Command, getContext: () => CliContext): void {
 	command.action(() => wizard(getContext()));
 }
 
-/** Prompt for sync direction and mode, then run the same commands used by explicit subcommands. */
+/** Calls the same functions the explicit subcommands do, so the two paths cannot diverge. */
 export async function wizard(ctx: CliContext): Promise<void> {
 	if (!ctx.interactive) {
 		throw new CliError('USAGE', 'd6s sync needs a terminal.', {

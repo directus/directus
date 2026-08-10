@@ -2,27 +2,17 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseEnv } from 'node:util';
 
-/**
- * True in CI so credential resolution skips the interactive store and prompt —
- * pipelines authenticate from the environment only.
- */
+/** Gates credential resolution: pipelines authenticate from the environment, never the saved store. */
 export function isCI(): boolean {
 	return Boolean(process.env['CI']);
 }
 
-/**
- * Disable prompts for unattended TTYs where a per-command flag cannot be threaded. Presence, like
- * `NO_COLOR`, is the signal.
- */
+/** For unattended TTYs, where a per-command flag cannot be threaded. Presence is the signal, like NO_COLOR. */
 export function promptsDisabled(): boolean {
 	return Boolean(process.env['NO_INTERACTIVE']);
 }
 
-/**
- * Load a project-root `.env` into process.env without clobbering values already
- * set, so the real / CI environment stays authoritative. Uses the stdlib parser
- * (no dotenv dependency); a missing file is a no-op.
- */
+/** Never clobbers a value already set, so the real (or CI) environment stays authoritative. */
 export function loadProjectEnv(dir: string): void {
 	const path = join(dir, '.env');
 	if (!existsSync(path)) return;

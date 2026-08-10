@@ -12,9 +12,6 @@ interface DiffSummary {
 
 type Change = 'added' | 'modified' | 'deleted';
 
-// Exported because ui.ts colors a plan line by matching these exact tokens: a rename here would
-// silently kill the coloring there.
-
 const TOKEN_WIDTH = Math.max(...Object.values(KIND_TOKENS).map((token) => token.length));
 
 interface RenderItem {
@@ -23,15 +20,13 @@ interface RenderItem {
 	paths: string[];
 }
 
-/** Summarize a schema diff for deterministic terminal output. */
 export function summarizeDiff(diff: SchemaDiff | null): DiffSummary {
 	if (diff === null) return { added: 0, modified: 0, deleted: 0, lines: [] };
 
-	// A collection added or deleted wholesale brings every one of its fields and relations with it, so
-	// listing each child buries the real signal (a first sync's 25-line story rendered as 366 lines).
-	// Children of wholesale collections collapse to a count on the collection's own line; children of
-	// existing collections keep their lines. Counts still tally per item, so the deletion gate and the
-	// --json report are unchanged by the grouping.
+	// A collection added or deleted wholesale brings every field and relation with it, and listing each
+	// one buries the signal (a first sync's 25-line story rendered as 366 lines). Those children collapse
+	// to a count on the collection's line; children of existing collections keep theirs. Counts still
+	// tally per item, so the deletion gate and the --json report are unaffected.
 	const wholesale = new Set<string>();
 
 	for (const entry of diff.collections) {
@@ -80,8 +75,8 @@ export function summarizeDiff(diff: SchemaDiff | null): DiffSummary {
 	let modified = 0;
 	let deleted = 0;
 
-	// Counts are per changed item, never per op or per line: one edited field with three ops is one
-	// modification, and a rolled-up child still counts.
+	// Counted per item, not per op or per line: one field with three ops is one modification, and a
+	// rolled-up child still counts even though it has no line.
 	for (const entry of [...diff.collections, ...diff.fields, ...diff.systemFields, ...diff.relations]) {
 		const change = classify(entry.diff);
 
@@ -102,8 +97,8 @@ function toItems<T extends { diff: DiffOp[] }>(entries: T[], name: (entry: T) =>
 		.sort((a, b) => byCodepoint(a.name, b.name));
 }
 
-// A root op (no path) with kind N adds the item and kind D deletes it; anything else — a keyed
-// edit, an array op, a nested add/delete — is a modification of an existing item.
+// Only a root op (no path) adds or deletes the item itself. Everything else — a keyed edit, an array op,
+// a nested add or delete — modifies an item that already exists.
 function classify(ops: DiffOp[]): Change {
 	if (ops.some((op) => op.kind === 'N' && isRoot(op))) return 'added';
 	if (ops.some((op) => op.kind === 'D' && isRoot(op))) return 'deleted';
@@ -136,7 +131,6 @@ function formatLine(item: RenderItem): string {
 	return `${token}  ${item.name}${paths}`;
 }
 
-/** Counts and deterministic terminal lines for a data import. */
 export interface ImportSummary {
 	readonly created: number;
 	readonly updated: number;
@@ -159,9 +153,7 @@ function formatImportLine(
 	return `~ ${name}  +${created} new  ~${updated} updated  ${DELETED_MARK}${deleted} deleted${deletedDetail}`;
 }
 
-/**
- * Return an explicit zero summary when no import request was needed.
- */
+/** For the paths that send no import request at all, which still owe the plan a summary. */
 export function emptyImportSummary(): ImportSummary {
 	return { created: 0, updated: 0, deleted: 0, lines: ['no data changes'] };
 }
@@ -170,7 +162,6 @@ export function hasImportChanges(summary: ImportSummary): boolean {
 	return summary.created > 0 || summary.updated > 0 || summary.deleted > 0;
 }
 
-/** Summarize an import response, subtracting records known to have been unchanged. */
 export function summarizeImport(
 	result: ImportBatchResult,
 	unchanged?: ReadonlyMap<string, ReadonlySet<string>>,
@@ -184,9 +175,9 @@ export function summarizeImport(
 		const collection = result.collections[name];
 		if (collection === undefined) continue;
 
-		// The server reports every PK-present record as `existing` whether or not anything differed; the
-		// caller's client-side unchanged set is what turns that into an honest "updated" count. Records a
-		// mirror batch carried only to survive the delete are not updates.
+		// The server calls every PK-present record `existing` whether or not anything differed, so the
+		// caller's `unchanged` set is what turns that into an honest "updated" count. Records a mirror
+		// batch carried only to survive the delete are not updates.
 		const unchangedSet = unchanged?.get(name);
 
 		const collectionCreated = collection.new.length;

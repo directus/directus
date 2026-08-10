@@ -9,16 +9,15 @@ import { MODES, type SyncMode } from './mode.js';
 const CONFIG_FILENAME = 'directus.config.json';
 const CONTROL_CHARACTER = /\p{Cc}/u;
 
-/** The single rejection message for every `isSafeUrl` failure, in prompts and usage errors alike. */
+/** One rejection message for every `isSafeUrl` failure, in prompts and usage errors alike. */
 export const INVALID_URL_MESSAGE = 'Enter a valid http(s) URL.';
 
 /**
- * A stored base URL must carry no secrets: http(s) only, no userinfo and no
- * query/fragment — so `https://user:pass@host` or `?token=…` can never be written
- * to configuration or printed by `profile list`. Also serves as the prompt validator.
+ * A stored base URL must carry no secrets, so `https://user:pass@host` or `?token=…` can never be written
+ * to configuration or printed by `profile list`. Doubles as the prompt validator.
  */
 export function isSafeUrl(value: string): boolean {
-	// URL parsing normalizes controls, but callers store and print the raw value.
+	// URL parsing normalizes control characters away, but callers store and print the raw value.
 	if (CONTROL_CHARACTER.test(value)) return false;
 
 	let parsed: URL;
@@ -43,7 +42,7 @@ const profileSchema = z.object({
 	auth: z.object({ type: z.literal('token') }).default({ type: 'token' }),
 });
 
-// Reject scope mistakes that could silently widen a mirror pull and its delete authority.
+// An empty list reads as "scope to nothing" but would behave as unscoped, widening a mirror's reach.
 const scopeList = (name: string) =>
 	z.array(z.string()).min(1, `"${name}" must list at least one name; remove the key to leave it unscoped.`).optional();
 
@@ -66,8 +65,8 @@ const projectSchema = z
 		},
 	);
 
-// Preserve top-level namespaces owned by other consumers — a `"templates"` or `"extensions"` block written
-// by another Directus tool has to survive a round trip through any profile or project write we make here.
+// Loose, not strict: a `"templates"` or `"extensions"` block written by another Directus tool has to
+// survive a round trip through any write we make here.
 const configSchema = z.looseObject({
 	profiles: z.record(z.string(), profileSchema).default({}),
 	directory: z.string().min(1).default('directus'),
@@ -75,7 +74,7 @@ const configSchema = z.looseObject({
 	format: z.enum(['json']).default('json'),
 });
 
-// Explicit types keep isolated declaration emit independent of schema inference.
+// Written out rather than inferred from the schemas above, so isolated declaration emit stays possible.
 interface StoredProfile {
 	readonly url: string | undefined;
 }
@@ -90,7 +89,6 @@ interface ProfileWrite<T extends StoredProfile> {
 	readonly rollback: () => void;
 }
 
-/** Optional project-level sync scope and mode defaults. */
 export interface ProjectConfig {
 	/** false: this project owns no schema — pull skips the snapshot; push and diff skip the schema phase. */
 	readonly schema?: boolean | undefined;
@@ -115,10 +113,7 @@ export interface LoadedConfig {
 	readonly config: Config;
 }
 
-/**
- * Walk up from the starting dir like git, so the CLI works from any subdirectory.
- * undefined means nothing was found — profile-less operation stays first-class.
- */
+/** Walks up like git, so the CLI works from any subdirectory. */
 function findConfigPath(startDir: string): string | undefined {
 	const { root } = parsePath(startDir);
 	let dir = startDir;
@@ -187,35 +182,30 @@ function storedProfile(value: unknown): StoredProfile {
 
 /** The configuration file of one CLI run: every read and write of it goes through here. */
 export interface ConfigStore {
-	/** The resolved configuration path without reading the file, so env loading never depends on a parse. */
+	/** Resolved without reading the file, so env loading never depends on a parse. */
 	path(): string | undefined;
-	/** The parsed configuration, or undefined when there is none — profile-less operation stays first-class. */
+	/** undefined when there is no configuration file — profile-less operation stays first-class. */
 	load(): LoadedConfig | undefined;
 	requireConfig(): LoadedConfig;
 	/**
-	 * The stored profile for a name, or undefined when the name is free. A present result means the name is
-	 * taken even when its `url` is undefined: a hand-edited profile with a missing or mangled `url` is still a
-	 * NAMED profile (with a possibly-attached credential), so replacing it must clear the same gate as
-	 * overwriting a valid URL. Tolerant like the upsert path: a not-yet-created explicit configuration is a fresh start.
+	 * A raw read: a present result means the name is taken even when `url` is undefined, because a
+	 * hand-broken entry is still a named profile with a possibly-attached credential. Commands that EDIT a
+	 * profile use this, so a broken entry stays repairable; commands that USE one need `requireProfile`.
 	 */
 	existingProfile(name: string): StoredProfile | undefined;
-	/**
-	 * The validated profile for a name, or a CONFIG error naming the known profiles. The strict counterpart
-	 * to `existingProfile`: commands that USE a profile need a parsed URL, commands that EDIT one need the
-	 * tolerant raw read so a hand-broken entry stays repairable.
-	 */
+	/** Throws a CONFIG error naming the known profiles when the name is unknown. */
 	requireProfile(name: string): Profile;
-	/** Write a profile and return it with an operation that restores the preceding file state. */
+	/** `rollback` restores the file to its state before this write. */
 	upsertProfile(name: string, profile: Profile): ProfileWrite<Profile>;
-	/** Move a profile to a new name and return it with an operation that restores the preceding file state. */
+	/** `rollback` restores the file to its state before this write. */
 	renameProfile(from: string, to: string): ProfileWrite<StoredProfile>;
 	upsertProjectMode(project: string, mode: SyncMode): void;
 	removeProfile(name: string): StoredProfile;
 }
 
 /**
- * An explicit configuration path wins over discovery. Parsing stays lazy so profile add/remove can repair raw
- * configuration files that fail schema validation; a missing discovered configuration remains valid until `requireConfig()`.
+ * An explicit path wins over discovery. Parsing stays lazy so profile add/remove can repair a file that
+ * fails schema validation, and a missing configuration stays valid until something calls `requireConfig`.
  */
 export function createConfigStore(cwd: string, configOption?: string): ConfigStore {
 	let path = configOption === undefined ? findConfigPath(cwd) : resolve(cwd, configOption);

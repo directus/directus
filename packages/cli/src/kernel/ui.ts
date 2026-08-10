@@ -4,17 +4,16 @@ import type { CliError } from './error.js';
 import { redact } from './secret.js';
 
 /**
- * The leading tokens of a plan line. They live here, not with the renderer, because painting and
- * rendering must agree on them exactly — and the kernel cannot import a feature domain to find out.
+ * Here rather than with the renderer, because painting and rendering must agree on these exactly and the
+ * kernel cannot import a feature domain to find out.
  */
 export const KIND_TOKENS = { added: '+', modified: '~', deleted: '✖ DELETE' } as const;
 
-/** The marker opening the deleted count of an import line; the line's tail is painted from it. */
+/** Opens the deleted count of an import line; the line's tail is painted from it. */
 export const DELETED_MARK = '✖';
 
-// Fancy glyphs on capable terminals; ASCII on legacy Windows consoles that would
-// render them as mojibake. Modern Windows terminals set these vars; elsewhere is
-// assumed capable.
+// ASCII on legacy Windows consoles, which render the fancy glyphs as mojibake. Modern Windows terminals
+// set these vars; everything else is assumed capable.
 const unicode =
 	process.platform !== 'win32' || Boolean(process.env['WT_SESSION']) || process.env['TERM_PROGRAM'] === 'vscode';
 
@@ -29,7 +28,7 @@ const SYMBOLS = {
 	error: glyph('✖', 'x'),
 };
 
-/** Keep redaction at the final output boundary, including Commander output. */
+/** Exported so Commander's own output goes through the same redaction boundary. */
 export function writeOut(text: string): void {
 	process.stdout.write(redact(text));
 }
@@ -59,27 +58,26 @@ function writeJson(payload: unknown): void {
 	writeOut(`${body ?? 'null'}\n`);
 }
 
-/** Human status uses stderr. JSON results and errors use stdout exclusively. */
+/** Human status goes to stderr; JSON results and errors go to stdout, exclusively. */
 export interface Ui {
 	readonly json: boolean;
-	/** Semantic text styles that honor the global color setting. */
+	/** Honors the global color setting. */
 	readonly style: {
 		strong(text: string): string;
 		muted(text: string): string;
 		warning(text: string): string;
 	};
 	print(text: string): void;
-	/** Print a schema/data plan line with its change token colored (green +, yellow ~, red deletions). */
+	/** A plan line, with its change token colored: green +, yellow ~, red deletions. */
 	plan(text: string): void;
 	info(message: string): void;
 	success(message: string): void;
 	warn(message: string): void;
 	error(error: CliError): void;
-	/** Emit a JSON command result for machine consumers. */
+	/** JSON only; a no-op in human mode. */
 	result(payload: unknown): void;
 }
 
-/** Create human or JSON CLI output with final-boundary secret redaction. */
 export function createUi(options: { json: boolean; color: boolean }): Ui {
 	const c = new Chalk(options.color && !options.json ? {} : { level: 0 });
 	const { json } = options;
@@ -89,9 +87,8 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 		writeErr(`${symbol} ${message}\n`);
 	}
 
-	// Color carries the change semantics a scanning eye reads first: deletions whole-line red (they are
-	// the records an approval must not miss), additions' token green, modifications' token yellow — plus the
-	// destructive tail of a data line (`✖N deleted (…)`) red whenever N is non-zero.
+	// Deletions are painted whole-line, not just their token: they are what an approval must not miss. The
+	// destructive tail of a data line (`✖N deleted (…)`) goes red too, whenever N is non-zero.
 	function paintPlan(line: string): string {
 		if (line.startsWith(KIND_TOKENS.deleted)) return c.red(line);
 		if (line.startsWith(KIND_TOKENS.added))
@@ -138,7 +135,7 @@ export function createUi(options: { json: boolean; color: boolean }): Ui {
 			status(c.green(SYMBOLS.success), message);
 		},
 		warn(message) {
-			// Keep warnings visible in CI without contaminating JSON stdout.
+			// stderr even in JSON mode: visible in CI without contaminating the JSON on stdout.
 			writeErr(`${c.yellow(SYMBOLS.warn)} ${message}\n`);
 		},
 		error(error) {

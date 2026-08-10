@@ -25,12 +25,10 @@ import {
 	type Snapshot,
 } from './contract.js';
 
-/**
- * A snapshot scope that makes include/exclude mutually exclusive by construction.
- */
+/** A union, so include and exclude cannot both be set. */
 export type SnapshotScope = { readonly include: string[] } | { readonly exclude: string[] };
 
-// Contain the schema-agnostic CLI's mismatch with the SDK's literal collection types at the wire boundary.
+// The CLI is schema-agnostic; the SDK types collections as literals. Keep the cast at this one boundary.
 function snapshotOptions(scope: SnapshotScope): SchemaSnapshotOptions<CoreSchema> {
 	if ('include' in scope) return { includeCollections: scope.include as AllCollections<CoreSchema>[] };
 	return { excludeCollections: scope.exclude as AllCollections<CoreSchema>[] };
@@ -60,8 +58,7 @@ export async function fetchDiff(
 
 	let response: unknown;
 
-	// Never inherit the server's destructive mirror default; every caller chooses a mode explicitly.
-	// Force bypasses version/vendor equality only for an explicitly consented diff; apply remains hash-sealed.
+	// Always send a mode: the server's own default is the destructive mirror.
 	try {
 		response = await client.request(schemaDiff(snapshot, force ? { mode, force: true } : { mode }));
 	} catch (error) {
@@ -75,7 +72,7 @@ export async function applyDiff(credential: ResolvedCredential, result: DiffResu
 	const client = connect(credential);
 
 	try {
-		// Preserve the server-issued hash seal; apply never exposes the diff's force bypass.
+		// The server-issued hash seals the diff; apply never gets the force bypass a diff may have used.
 		await client.request(schemaApply({ hash: result.hash, diff: result.diff as SchemaDiffOutput['diff'] }));
 	} catch (error) {
 		throw mapRequestError(error, credential.url);
@@ -83,8 +80,8 @@ export async function applyDiff(credential: ResolvedCredential, result: DiffResu
 }
 
 /**
- * One entry of the admin-only GET /fields catalog: the collection/field pair and the metadata record the server
- * attached (null when the field has no directus_fields record). Only what secret detection reads is kept.
+ * One entry of the admin-only GET /fields catalog. `meta` is null when the field has no directus_fields
+ * record. Only what secret detection reads is kept.
  */
 export interface FieldCatalogEntry {
 	readonly collection: string;
@@ -93,10 +90,9 @@ export interface FieldCatalogEntry {
 }
 
 /**
- * Fetch the full field catalog. GET /fields ignores query params and never paginates — FieldsService.readAll
- * reads directus_fields with an internal limit=-1 and appends the system records — so one request names every
- * field of every collection, including system collections a scoped snapshot omits entirely. Secret stripping
- * keys on this catalog, so a failure here must propagate: degrading silently would write concealed values.
+ * Fetch the full field catalog. GET /fields ignores query params and never paginates, so one request names
+ * every field of every collection — including system collections a scoped snapshot omits. Secret stripping
+ * keys on this catalog, so a failure must propagate: degrading silently would write concealed values.
  */
 export async function fetchFields(credential: ResolvedCredential): Promise<FieldCatalogEntry[]> {
 	const client = connect(credential);
@@ -202,8 +198,7 @@ async function refuseZeroCapEmptiness(
 	}
 }
 
-// With an unknown limit, one returned record is indistinguishable from QUERY_LIMIT_MAX=1 truncation.
-// A limit=2 probe separates a real singleton from a mirror-deletion hazard.
+// With an unknown cap, one returned record could be a real singleton or QUERY_LIMIT_MAX=1 truncation.
 async function refuseOneCapTruncation(
 	client: ReturnType<typeof connect>,
 	credential: ResolvedCredential,
@@ -227,8 +222,7 @@ async function refuseOneCapTruncation(
 	}
 }
 
-// Keyset paging avoids offset drift where server-side filtering hides records after pagination.
-// Only integer PKs opt in because UUID fields do not support _gt.
+// Offsets drift when server-side filtering hides records after pagination; a PK cursor does not.
 async function fetchKeysetPages(
 	client: ReturnType<typeof connect>,
 	credential: ResolvedCredential,
@@ -313,10 +307,8 @@ async function fetchUnbounded(
 }
 
 /**
- * Fetch system or content records. The envelope and record object shape are validated, while collection-
- * specific fields pass through unchanged. `queryMax` is the instance's `queryLimit.max` (from the keystone
- * `/server/info` read): when it is -1 the fetch is a single unbounded read; otherwise, or when unknown, the
- * probe-based paging below stands.
+ * Fetch system or content records; collection-specific fields pass through unvalidated. `queryMax` is the
+ * instance's `queryLimit.max`: -1 means one unbounded read, anything else (including unknown) pages.
  */
 export async function fetchRecords(
 	credential: ResolvedCredential,
@@ -359,9 +351,8 @@ export async function fetchRecords(
 		);
 	}
 
-	// QUERY_LIMIT_MAX may silently clamp limit=-1, so fetch until a page proves exhaustion.
-	// Offset pages overlap by one record; a shifted boundary fails instead of silently skipping visible data.
-	// Integer-PK resources use keyset paging because most UUID fields reject _gt.
+	// QUERY_LIMIT_MAX may silently clamp limit=-1, so page until a response proves exhaustion. Pages overlap
+	// by one record so a boundary that shifts mid-fetch fails instead of silently skipping visible data.
 	const records: Record<string, unknown>[] = [];
 	const seen = new Set<string>();
 	let last: string | undefined;
@@ -422,9 +413,8 @@ export async function fetchRecords(
 }
 
 /**
- * The import options the batch endpoint understands. mode is ALWAYS sent (the server defaults to `add`,
- * so an omitted mode silently changes semantics); dryRun and dangerouslyAllowDelete ride only when set,
- * so the query string carries exactly the flags the CLI chose and stays deterministic for assertions.
+ * mode is always sent, because an omitted mode silently means `add`. The optional flags ride only when
+ * set, so the query string carries exactly what the CLI chose.
  */
 interface ImportBatchInput {
 	readonly mode: ImportMode;
@@ -493,12 +483,12 @@ function enrichImportError(mapped: CliError, error: unknown): CliError {
 	);
 }
 
-// A client abort does not stop the server transaction, so use the server's long import timeout.
+// A client abort does not stop the server transaction, so an import gets far longer than a normal request.
 const IMPORT_TIMEOUT_MS = 600_000;
 
 /**
- * Import a flat record batch as the JSON multipart file required by `/utils/import`, validating the
- * response and enriching actionable import failures at the boundary.
+ * Sent as a file rather than a JSON body: `/utils/import` accepts either, but the multipart path is capped
+ * by IMPORT_MAX_FILE_SIZE and the body by the far smaller MAX_PAYLOAD_SIZE.
  */
 export async function importBatch(
 	credential: ResolvedCredential,

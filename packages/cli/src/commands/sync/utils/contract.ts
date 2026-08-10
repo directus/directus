@@ -3,33 +3,26 @@ import { z } from 'zod';
 import { CliError } from '../../../kernel/error.js';
 
 /**
- * Snapshot version tags (mirror the API's SNAPSHOT_VERSION): 1 = a full instance snapshot, 2 = a
- * partial, collection-scoped one. The distinction is load-bearing on the server — a full snapshot
- * diffed in `mirror` mode proposes deleting every collection it omits — so the CLI never fabricates
- * or edits it: it parses, stores, and forwards it, and an unknown future version fails loud rather
- * than being processed under a snapshot format the CLI does not understand.
+ * The API's SNAPSHOT_VERSION tags. The distinction is load-bearing on the server — a full snapshot diffed
+ * in `mirror` mode proposes deleting every collection it omits — so the CLI never fabricates or edits it,
+ * and an unknown future version fails loud rather than being read under a format it does not understand.
  */
 export const SNAPSHOT_FULL = 1;
 
-/** Collection-scoped snapshot version. */
 export const SNAPSHOT_PARTIAL = 2;
 
-/** A snapshot collection entry with unknown server fields preserved. */
 export interface SnapshotEntry {
 	collection: string;
 	[key: string]: unknown;
 }
 
-/** A snapshot field entry with unknown server fields preserved. */
 export interface SnapshotFieldEntry {
 	collection: string;
 	field: string;
 	[key: string]: unknown;
 }
 
-/**
- * A relation's sortable address. `related_collection` is null for relations without one fixed target.
- */
+/** `related_collection` is null for relations without one fixed target. */
 export interface SnapshotRelationEntry {
 	collection: string;
 	field: string;
@@ -38,12 +31,9 @@ export interface SnapshotRelationEntry {
 }
 
 /**
- * A validated snapshot whose unknown server fields remain available for round-tripping.
- *
- * Deliberately not the `@directus/types` Snapshot: that type describes the server's own full structures,
- * while the CLI talks to arbitrary server versions and may only claim the fields it validates — and it
- * pins `version` to the known literals, where the server type's `number` would let an unknown future
- * format through silently.
+ * Deliberately not the `@directus/types` Snapshot. That type describes the server's own full structures,
+ * while the CLI talks to arbitrary server versions and may only claim the fields it validates. It also
+ * types `version` as `number`, which would let an unknown future format through silently.
  */
 export interface Snapshot {
 	version: typeof SNAPSHOT_FULL | typeof SNAPSHOT_PARTIAL;
@@ -76,7 +66,6 @@ interface DiffFieldEntry {
 	[key: string]: unknown;
 }
 
-/** A relation-level schema diff entry. */
 export interface DiffRelationEntry {
 	collection: string;
 	field: string;
@@ -85,7 +74,6 @@ export interface DiffRelationEntry {
 	[key: string]: unknown;
 }
 
-/** The four schema diff groups returned by Directus. */
 export interface SchemaDiff {
 	collections: DiffEntry[];
 	fields: DiffFieldEntry[];
@@ -93,7 +81,7 @@ export interface SchemaDiff {
 	relations: DiffRelationEntry[];
 }
 
-/** A schema diff sealed against the target schema hash. */
+/** `hash` seals the diff against the target schema it was computed from. */
 export interface DiffResult {
 	hash: string;
 	diff: SchemaDiff;
@@ -172,21 +160,19 @@ function parseResponse<T>(schema: z.ZodType<T>, value: unknown, what: string): T
 	return result.data;
 }
 
-/** Parse a schema snapshot response, preserving unknown fields. */
 export function parseSnapshot(value: unknown): Snapshot {
 	return parseResponse(snapshotSchema, value, 'schema snapshot');
 }
 
-/** Parse a schema diff response; null is the SDK representation of HTTP 204. */
+/** null is the SDK's representation of HTTP 204 — no diff. */
 export function parseDiffResult(value: unknown): DiffResult | null {
 	if (value === null) return null;
 
-	// zod infers an optional key as `T | undefined`; DiffOp.path is exact-optional (`T?`, never an
-	// explicit undefined). The wire only ever omits the key, so narrow to the public shape here.
+	// zod infers an optional key as `T | undefined`, but DiffOp.path is exact-optional and the wire only
+	// ever omits the key, so narrow to the public shape here.
 	return parseResponse(diffResultSchema, value, 'schema diff') as DiffResult;
 }
 
-/** Parse a data import response. */
 export function parseImportResult(value: unknown): ImportBatchResult {
 	return parseResponse(importResultSchema, value, 'data import');
 }
