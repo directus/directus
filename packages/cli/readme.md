@@ -1,33 +1,37 @@
 # @directus/cli
 
-Client-side CLI for Directus. Talks to instances over HTTP via `@directus/sdk`.
+Command-line tool for moving Directus schema and configuration between instances.
 
-> **Status: internal.** Not published.
+## Description
 
-Distinct from `api/src/cli` (the server-process CLI that runs inside the Directus Node process). This one runs on a
-developer or CI machine and drives Directus instances remotely. Commands are built-in, statically registered groups — no
-dynamic loading. Environment Sync is the first command group.
+Sync schema and configuration (data models, roles, policies, permissions, flows, dashboards, settings, and more) between
+Directus instances through JSON files you can commit to git. Pull a snapshot from a source instance, preview exactly
+what would change on a target, then push. Move work from staging to production, keep environments in step, or review
+every change to an instance in a pull request first.
 
-## Development
+For more information about Directus, visit the [official website](https://directus.com).
 
-    pnpm --filter @directus/cli build    # bundle to dist/ (tsdown)
-    pnpm --filter @directus/cli dev      # watch build
-    pnpm --filter @directus/cli test     # vitest
-    node packages/cli/dist/bin.js --version
+## Installation
 
-Primary bin: `d6s`. The longer `directus-cli` alias is also available.
+```shell
+npm install -g @directus/cli
+```
 
-## Environment Sync invariants
+This installs the `d6s` command (and `directus-cli` as a longer alias).
 
-- Record IDs belong to an instance. The commit-ready ID map translates source IDs to target IDs; natural-key
-  reconciliation may extend it, but ambiguous identities require an explicit choice.
-- Mirror batches are complete desired state for every included collection. An included empty collection therefore means
-  delete its target records; an omitted collection is outside that batch.
-- A bare pull includes every selectable configuration resource except users. Translations sync by default; use
-  `--no-translations` to exclude them. Users require `--users` or `--all`.
-- Preview is conservative when record identity is ambiguous. Unlike an interactive push, it never prompts or updates the
-  ID map while deciding what appears unchanged.
-- Sync-file ownership comes only from each directory's `metadata.json`; matching filenames do not imply ownership. The
-  metadata file is written last, but updates to an existing sync-file set are not transactional.
-- Schema drift is gated by the server-issued diff hash. Remote mutations wait for validation and approval, although
-  reconciliation may persist local ID-map decisions first.
+## Usage
+
+```shell
+d6s profile add staging          # name an instance URL and save a credential for it
+d6s sync pull --from staging     # snapshot schema + configuration into committed files
+d6s sync diff --to production    # read-only preview of exactly what a push would do
+d6s sync push --to production    # apply the committed files to the target
+d6s sync                         # interactive wizard: pull → push
+```
+
+Run `d6s --help` for the full command reference.
+
+## Compatibility
+
+Requires Directus 12.2.0 or later. The CLI is versioned independently of Directus, so you don't need matching version
+numbers between the CLI and your instances.
