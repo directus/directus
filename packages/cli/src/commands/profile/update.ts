@@ -58,8 +58,6 @@ function report(
  * only the profile would strand the credential under a name nothing looks up — hence the rollback.
  */
 async function rename(from: string, to: string, skipConfirmation: boolean, ctx: CliContext): Promise<void> {
-	assertProfileName(to, 'new', ctx, `Pick a free name, or remove that one first: d6s profile remove ${to}`);
-
 	if (!skipConfirmation) {
 		if (!ctx.interactive) {
 			throw new CliError('USAGE', `Renaming "${from}" to "${to}" also moves its saved credential.`, {
@@ -67,7 +65,9 @@ async function rename(from: string, to: string, skipConfirmation: boolean, ctx: 
 			});
 		}
 
-		const proceed = await ask(confirm({ message: `Rename "${from}" to "${to}"? ${profileRenameConsequence(from, to)}` }));
+		const proceed = await ask(
+			confirm({ message: `Rename "${from}" to "${to}"? ${profileRenameConsequence(from, to)}` }),
+		);
 
 		if (!proceed) throw new CliError('USAGE', `Profile "${from}" unchanged.`);
 	}
@@ -95,12 +95,6 @@ export async function update(nameArg: string | undefined, options: UpdateOptions
 		ctx,
 	);
 
-	// Raw configuration may contain credentials or terminal controls, so only display a validated URL.
-	const currentUrl = existing.url !== undefined && isSafeUrl(existing.url) ? existing.url : undefined;
-	const currentShown = currentUrl ?? UNPRINTABLE_URL;
-
-	// A rename re-keys the profile and its credential; a repoint rewrites the value under an unchanged key.
-	// Keeping them to separate invocations means neither has to unwind the other when it fails.
 	if (options.name !== undefined) {
 		if (options.url !== undefined || options.token !== undefined) {
 			throw new CliError('USAGE', 'Rename a profile on its own.', {
@@ -110,6 +104,21 @@ export async function update(nameArg: string | undefined, options: UpdateOptions
 
 		if (options.name === name) throw new CliError('USAGE', `Profile "${name}" already has that name.`);
 
+		assertProfileName(
+			options.name,
+			'new',
+			ctx,
+			`Pick a free name, or remove that one first: d6s profile remove ${options.name}`,
+		);
+	}
+
+	// Raw configuration may contain credentials or terminal controls, so only display a validated URL.
+	const currentUrl = existing.url !== undefined && isSafeUrl(existing.url) ? existing.url : undefined;
+	const currentShown = currentUrl ?? UNPRINTABLE_URL;
+
+	// A rename re-keys the profile and its credential; a repoint rewrites the value under an unchanged key.
+	// Keeping them to separate invocations means neither has to unwind the other when it fails.
+	if (options.name !== undefined) {
 		await rename(name, options.name, options.yes === true, ctx);
 		report(ctx, { name: options.name, url: currentUrl ?? null, renamedFrom: name, credentialSaved: false });
 		return;
