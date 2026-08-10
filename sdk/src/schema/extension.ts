@@ -21,11 +21,21 @@ export type ExtensionSchema = Partial<{
 	entrypoint: string | { app: string; api: string };
 	partial: boolean;
 	entries: ExtensionSchemaEntry[];
+	sandbox: ExtensionSandboxOptions;
 }>;
 
 export type ExtensionSchemaEntry = {
 	name: string;
 	type: ExtensionTypes;
+};
+
+export type ExtensionSandboxOptions = {
+	enabled: boolean;
+	requestedScopes: {
+		request?: { urls: string[]; methods: ('GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE')[] };
+		log?: Record<string, never>;
+		sleep?: Record<string, never>;
+	};
 };
 
 export type ExtensionTypes =
