@@ -150,15 +150,7 @@ describe('sync diff', () => {
 			modified: 1,
 			deleted: 1,
 			hash: 'h1',
-			data: {
-				mode: 'merge',
-				source: null,
-				resultsByCollection: null,
-				reconciliation: null,
-				unchanged: null,
-				incomplete: null,
-				skipped: true,
-			},
+			data: null,
 		});
 	});
 
@@ -185,15 +177,7 @@ describe('sync diff', () => {
 			modified: 0,
 			deleted: 0,
 			hash: null,
-			data: {
-				mode: 'merge',
-				source: null,
-				resultsByCollection: null,
-				reconciliation: null,
-				unchanged: null,
-				incomplete: null,
-				skipped: true,
-			},
+			data: null,
 		});
 	});
 
@@ -402,7 +386,6 @@ describe('sync diff with data', () => {
 				resultsByCollection: collections,
 				reconciliation: { matched: 1, unmatched: 1, ambiguous: 0, dependent: 0 },
 				unchanged: 1,
-				skipped: false,
 			},
 		});
 

@@ -330,15 +330,7 @@ describe('sync push', () => {
 			modified: 1,
 			deleted: 0,
 			hash: 'h1',
-			data: {
-				mode: 'merge',
-				source: null,
-				resultsByCollection: null,
-				reconciliation: null,
-				unchanged: null,
-				incomplete: null,
-				skipped: true,
-			},
+			data: null,
 		});
 	});
 
@@ -363,15 +355,7 @@ describe('sync push', () => {
 			modified: 0,
 			deleted: 0,
 			hash: null,
-			data: {
-				mode: 'merge',
-				source: null,
-				resultsByCollection: null,
-				reconciliation: null,
-				unchanged: null,
-				incomplete: null,
-				skipped: true,
-			},
+			data: null,
 		});
 	});
 
@@ -558,7 +542,7 @@ describe('sync push with data', () => {
 
 		const payload = JSON.parse(stdout.join(''));
 		expect(payload.applied).toBe(true);
-		expect(payload.data).toMatchObject({ incomplete: ['directus_permissions'], skipped: false });
+		expect(payload.data).toMatchObject({ incomplete: ['directus_permissions'] });
 	});
 
 	it('persists created numeric mappings so identical records do not become ambiguous later', async () => {
@@ -1305,7 +1289,6 @@ describe('sync push with data', () => {
 			data: {
 				mode: 'merge',
 				source,
-				skipped: false,
 				incomplete: [],
 				resultsByCollection: fullImportResult()['collections'],
 			},

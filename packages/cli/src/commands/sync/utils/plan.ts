@@ -257,17 +257,17 @@ export interface ReportedPlan {
 }
 
 /**
- * The data half of a machine report. A phase that never ran reports nulls and `skipped: true`, never
- * zeros: a consumer must never read "no data was compared" as "the data matched".
+ * The data half of a machine report; a phase that never ran reports `data: null`, never zeros — a
+ * consumer must never read "no data was compared" as "the data matched". `reconciliation` and
+ * `unchanged` are diff comparison counts; push reports them as null.
  */
 export interface DataReport {
 	readonly mode: SyncMode;
-	readonly source: string | null;
-	readonly resultsByCollection: ImportBatchResult['collections'] | null;
+	readonly source: string;
+	readonly resultsByCollection: ImportBatchResult['collections'];
 	readonly reconciliation: ReconciliationCounts | null;
 	readonly unchanged: number | null;
-	readonly incomplete: string[] | null;
-	readonly skipped: boolean;
+	readonly incomplete: string[];
 }
 
 /**
@@ -280,18 +280,8 @@ export function dataReport(
 	plan: ReportedPlan | undefined,
 	result: ImportBatchResult | undefined,
 	counts?: DataComparisonCounts,
-): DataReport {
-	if (plan === undefined) {
-		return {
-			mode,
-			source: null,
-			resultsByCollection: null,
-			reconciliation: null,
-			unchanged: null,
-			incomplete: null,
-			skipped: true,
-		};
-	}
+): DataReport | null {
+	if (plan === undefined) return null;
 
 	return {
 		mode,
@@ -300,6 +290,5 @@ export function dataReport(
 		reconciliation: counts?.reconciliation ?? null,
 		unchanged: counts?.unchanged ?? null,
 		incomplete: [...plan.incomplete],
-		skipped: false,
 	};
 }
