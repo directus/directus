@@ -29,7 +29,8 @@ d6s sync push --to production    # apply the committed files to the target
 d6s sync                         # interactive wizard: pull → push
 ```
 
-Run `d6s --help` for the full command reference.
+Run `d6s --help` for the full command reference, or read the
+[Environment Sync guide](https://directus.com/docs/guides/environment-sync) for workflows, CI setup, and every flag.
 
 ## Compatibility
 
