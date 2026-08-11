@@ -1,6 +1,6 @@
 import { inject, InjectionKey, provide, Ref, ref } from 'vue';
 
-const refreshSignalSymbol: InjectionKey<Ref<number>> = Symbol();
+const refreshSignalSymbol: InjectionKey<Ref<number>> = Symbol('refresh-signal');
 
 /**
  * Broadcast that the item rendered by this form was re-read from the API, so descendants holding
@@ -15,5 +15,5 @@ export function provideRefreshSignal(signal: Ref<number>) {
  * no ancestor provides one, in which case it never triggers anything.
  */
 export function useRefreshSignal(): Ref<number> {
-	return inject(refreshSignalSymbol, ref(0));
+	return inject(refreshSignalSymbol, () => ref(0), true);
 }
