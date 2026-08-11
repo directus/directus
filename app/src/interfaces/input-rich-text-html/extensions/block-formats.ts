@@ -46,6 +46,21 @@ function isTarget(node: ProseMirrorNode, target: BlockTarget): boolean {
 }
 
 /**
+ * `nodesBetween` also reports blocks a selection merely spans, and after a conversion that includes
+ * the empty paragraph TrailingNode appends: re-typing that one appends another, so the doc grows on
+ * every click and the format can never read as active (Select All is where this shows). An empty text
+ * block is a target only when the selection actually reaches into it. Leaf blocks (`img`, `hr`) hold
+ * no content by nature, so they stay eligible.
+ */
+function isReached(state: EditorState, node: ProseMirrorNode, pos: number): boolean {
+	if (!node.isTextblock || node.content.size > 0) return true;
+
+	const { from, to } = state.selection;
+	const inside = pos + 1;
+	return from === inside || to === inside;
+}
+
+/**
  * Blocks a format can act on: its own targets (attributes only, no re-typing), plus convertible
  * blocks a `block` entry re-types — but only where the parent's content expression accepts the
  * target type. `listItem` is `paragraph block*`, so re-typing its first paragraph to a heading
@@ -53,6 +68,7 @@ function isTarget(node: ProseMirrorNode, target: BlockTarget): boolean {
  */
 function isEligible(state: EditorState, node: ProseMirrorNode, pos: number, format: BlockCustomFormat): boolean {
 	if (!node.isBlock) return false;
+	if (!isReached(state, node, pos)) return false;
 	if (format.targets.some((target) => isTarget(node, target))) return true;
 	if (!format.convert || !CONVERTIBLE_TYPES.has(node.type.name)) return false;
 

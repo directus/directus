@@ -201,6 +201,60 @@ describe('blocks whose parent rejects the converted type', () => {
 	});
 });
 
+// A conversion makes TrailingNode append an empty paragraph, and the mapped Select All end drifts
+// past it. Counting that paragraph as a target would grow the doc on every click and keep the format
+// from ever reading as active.
+describe('select all', () => {
+	test('a converting format reads as active and toggles back off', () => {
+		const editor = editorWith('<p>hello</p>');
+		const format = blockFormat(EYEBROW);
+		editor.commands.selectAll();
+
+		toggleBlockFormat(editor, format);
+		expect(editor.getHTML()).toBe('<h2 class="eyebrow">hello</h2><p></p>');
+		expect(isBlockFormatActive(editor, format)).toBe(true);
+
+		toggleBlockFormat(editor, format);
+		expect(editor.getHTML()).toBe('<h2>hello</h2><p></p>');
+	});
+
+	test('applying a converting format twice does not grow the doc', () => {
+		const editor = editorWith('<p>hello</p>');
+		const format = blockFormat(EYEBROW);
+		editor.commands.selectAll();
+
+		applyBlockFormat(editor, format);
+		applyBlockFormat(editor, format);
+
+		expect(editor.getHTML()).toBe('<h2 class="eyebrow">hello</h2><p></p>');
+	});
+
+	test('reading a stored converted block does not offer the trailing paragraph as a target', () => {
+		const editor = editorWith('<h2 class="eyebrow">hello</h2>');
+		editor.commands.selectAll();
+
+		expect(isBlockFormatActive(editor, blockFormat(EYEBROW))).toBe(true);
+	});
+
+	test('still formats an empty block the cursor sits in', () => {
+		const editor = editorWith('<p>hello</p><p></p>');
+		editor.commands.setTextSelection(9);
+
+		applyBlockFormat(editor, blockFormat(DROPCAP));
+
+		expect(editor.getHTML()).toBe('<p>hello</p><p class="dropcap"></p>');
+	});
+
+	test('still formats an empty block a drag selection ends in', () => {
+		const editor = editorWith('<p>hello</p><p></p>');
+		editor.commands.setTextSelection({ from: 1, to: 9 });
+
+		applyBlockFormat(editor, blockFormat(DROPCAP));
+
+		expect(editor.getHTML()).toBe('<p class="dropcap">hello</p><p class="dropcap"></p>');
+	});
+});
+
 describe('isBlockFormatActive', () => {
 	test('false on an unformatted block, true once applied', () => {
 		const editor = editorWith('<p>hello</p>');
