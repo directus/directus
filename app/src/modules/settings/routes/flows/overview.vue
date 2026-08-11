@@ -142,10 +142,8 @@ function openDuplicateFlow(item: FlowRaw) {
 		return;
 	}
 
-	const flow = flowsStore.flows.find(({ id }) => id === item.id) ?? item;
-
-	duplicateSource.value = flow;
-	duplicateName.value = `${flow.name} (copy)`;
+	duplicateSource.value = item;
+	duplicateName.value = `${item.name} (copy)`;
 	duplicateDialogActive.value = true;
 }
 
