@@ -2,11 +2,13 @@ import { CharacterCount } from '@tiptap/extensions';
 import StarterKit from '@tiptap/starter-kit';
 import { Direction } from './direction';
 import { DropCursor } from './drop-cursor';
+import { figureExtensions } from './figure';
 import { CustomImage } from './image';
 import { Media } from './media';
 import { PageBreak } from './page-break';
 import { PreKeymap } from './pre-keymap';
 import { PreservedAttributes } from './preserved-attributes';
+import { RangeSelectedAtoms } from './range-selected-atoms';
 import { semanticHtml } from './semantic-html';
 import { CustomSubscript, CustomSuperscript } from './subscript-superscript';
 import { Table } from './table';
@@ -37,9 +39,11 @@ export const editorExtensions = [
 	CustomSuperscript,
 	...TextStyle,
 	PageBreak,
+	RangeSelectedAtoms,
 	Table,
 	PreKeymap,
 	CharacterCount,
+	...figureExtensions,
 	...semanticHtml,
 	PreservedAttributes,
 ];
