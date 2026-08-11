@@ -36,7 +36,6 @@
 		"nanoid": "catalog:"
 	},
 	"devDependencies": {
-		"@directus/extensions": "workspace:*",
 		"@directus/sdk": "workspace:*",
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
