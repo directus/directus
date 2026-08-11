@@ -17,6 +17,9 @@ const loading = ref(false);
 const name = ref<string | null>(null);
 const lastPage = ref<string | null>(null);
 
+const redirectQuery = router.currentRoute.value.query.redirect;
+const initialRedirect = Array.isArray(redirectQuery) ? redirectQuery[0] : redirectQuery;
+
 const userPromise = fetchUser();
 
 onMounted(() => {
@@ -51,8 +54,10 @@ async function fetchUser() {
 async function hydrateAndLogin() {
 	await hydrate();
 	await userPromise;
-	const redirectQuery = router.currentRoute.value.query.redirect as string;
-	navigateAfterLogin(router, redirectQuery || lastPage.value || `/content`);
+
+	if (router.currentRoute.value.name !== 'login') return;
+
+	navigateAfterLogin(router, initialRedirect || lastPage.value || `/content`);
 }
 </script>
 
