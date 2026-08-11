@@ -310,6 +310,23 @@ describe('runManualFlow', () => {
 		expect(api.post).not.toHaveBeenCalled();
 	});
 
+	test('returns early when the flow is not runnable from this location', async () => {
+		const mockFlowsStore = {
+			getManualFlowsForCollection: vi.fn().mockReturnValue(mockFlows),
+		};
+
+		vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
+
+		vi.mocked(api.post).mockResolvedValue({});
+
+		// flow-5 is collection-only, so an item page button must not be able to trigger it
+		const { runManualFlow } = useFlows({ ...useFlowsOptions, location: 'item', hasEdits: ref(false) });
+
+		await runManualFlow('flow-5');
+
+		expect(api.post).not.toHaveBeenCalled();
+	});
+
 	test('runs flows that are omitted from the sidebar, such as hidden ones', async () => {
 		const mockFlowsStore = {
 			getManualFlowsForCollection: vi.fn().mockReturnValue(mockFlows),
