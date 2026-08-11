@@ -38,6 +38,24 @@ export type IsDateTime<T, Y, N> = T extends 'datetime' | 'date' | 'time' ? Y : N
 export type IsNumber<T, Y, N> = T extends number ? Y : N;
 export type IsString<T, Y, N> = T extends string ? Y : N;
 
+declare const readWriteField: unique symbol;
+
+/**
+ * Define a field whose API response and request types differ.
+ */
+export type ReadWriteField<Read, Write = Read> = {
+	readonly [readWriteField]: {
+		read: Read;
+		write: Write;
+	};
+};
+
+/** Resolve the response type of a field. */
+export type ReadField<Field> = Field extends ReadWriteField<infer Read, any> ? Read : Field;
+
+/** Resolve the request type of a field. */
+export type WriteField<Field> = Field extends ReadWriteField<any, infer Write> ? Write : Field;
+
 /**
  * Helpers for working with unions
  */
@@ -64,9 +82,11 @@ export type NestedPartial<Item> = Item extends any[]
 	? UnpackList<Item> extends infer RawItem
 		? NestedPartial<RawItem>[]
 		: never
-	: Item extends object
-		? { [Key in keyof Item]?: NestedUnion<Item[Key]> }
-		: Item;
+	: Item extends ReadWriteField<any, infer Write>
+		? NestedPartial<Write>
+		: Item extends object
+			? { [Key in keyof Item]?: NestedUnion<Item[Key]> }
+			: Item;
 
 type NestedUnion<Item> = TupleToUnion<ToTuplePartial<Item>>;
 

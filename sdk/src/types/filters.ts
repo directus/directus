@@ -1,7 +1,7 @@
 import type { MappedFieldNames } from './functions.js';
 import type { FieldOutputMap } from './output.js';
 import type { ItemType, RelationalFields } from './schema.js';
-import type { IfNever, IsDateTime, IsNullable, IsNumber, IsString, Merge, UnpackList } from './utils.js';
+import type { IfNever, IsDateTime, IsNullable, IsNumber, IsString, Merge, ReadField, UnpackList } from './utils.js';
 
 /**
  * Filters
@@ -38,7 +38,7 @@ export type NestedRelationalFilter<Schema, Item, Field extends keyof Item> =
 	| (Field extends RelationalFields<Schema, Item>
 			? WrapRelationalFilters<NestedQueryFilter<Schema, Extract<Item[Field], ItemType<Schema>>>>
 			: never)
-	| FilterOperators<Item[Field]>;
+	| FilterOperators<ReadField<Item[Field]>>;
 
 /**
  * All regular filter operators

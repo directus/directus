@@ -1,7 +1,7 @@
 import type { FieldsWildcard, HasManyToAnyRelation, PickRelationalFields } from './fields.js';
 import type { JsonFieldAlias, MappedFunctionFields } from './functions.js';
 import type { ItemType, RemoveRelationships } from './schema.js';
-import type { IfAny, IsNullable, Merge, Mutable, Prettify, UnpackList } from './utils.js';
+import type { IfAny, IsNullable, Merge, Mutable, Prettify, ReadField, UnpackList } from './utils.js';
 
 /**
  * Apply the configured fields query parameter on a given Item type
@@ -111,13 +111,13 @@ export type MapFlatFields<
 > = {
 	[F in Fields as F extends keyof FunctionMap ? FunctionMap[F] : F]: F extends keyof FunctionMap
 		? FunctionOutputType
-		: Extract<Item[F], keyof FieldOutputMap> extends infer A
+		: Extract<ReadField<Item[F]>, keyof FieldOutputMap> extends infer A
 			? A[] extends never[]
-				? Item[F]
+				? ReadField<Item[F]>
 				: A extends keyof FieldOutputMap
-					? FieldOutputMap[A] | Exclude<Item[F], A>
-					: Item[F]
-			: Item[F];
+					? FieldOutputMap[A] | Exclude<ReadField<Item[F]>, A>
+					: ReadField<Item[F]>
+			: ReadField<Item[F]>;
 };
 
 // Possible JSON types

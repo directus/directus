@@ -1,7 +1,7 @@
 import type { FunctionFields } from './functions.js';
 import type { ExtractItem } from './query.js';
 import type { ItemType, RelationalFields, RemoveRelationships } from './schema.js';
-import type { IfNever, UnpackList } from './utils.js';
+import type { IfNever, ReadField, UnpackList } from './utils.js';
 
 /**
  * Fields querying, including nested relational fields
@@ -122,5 +122,5 @@ export type PickFlatFields<Schema, Item, Fields> =
  * Extract a specific literal type from a collection
  */
 export type LiteralFields<Item, Type extends string> = {
-	[Key in keyof Item]: Extract<Item[Key], Type>[] extends never[] ? never : Key;
+	[Key in keyof Item]: Extract<ReadField<Item[Key]>, Type>[] extends never[] ? never : Key;
 }[keyof Item];

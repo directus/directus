@@ -1,4 +1,4 @@
-import type { MergeCoreCollection } from '../index.js';
+import type { MergeCoreCollection, ReadWriteField } from '../index.js';
 import type { DirectusUser } from './user.js';
 
 /**
@@ -10,7 +10,7 @@ export type DirectusDeployment<Schema = any> = MergeCoreCollection<
 	{
 		id: string;
 		provider: 'vercel' | 'netlify';
-		credentials: Record<string, any>;
+		credentials: ReadWriteField<'**********' | null, Record<string, any>>;
 		options: Record<string, any> | null;
 		webhook_ids: string[] | null;
 		webhook_secret: string | null;
