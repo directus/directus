@@ -105,10 +105,7 @@ export class DriverSupabase implements TusDriver {
 		return Readable.fromWeb(response.body);
 	}
 
-	async stat(filepath: string): Promise<{
-		size: any;
-		modified: Date;
-	}> {
+	private async find(filepath: string) {
 		let rootPath = join(this.config.root, dirname(filepath));
 		// Supabase expects an empty string for current directory
 		if (rootPath === '.') rootPath = '';
@@ -120,23 +117,29 @@ export class DriverSupabase implements TusDriver {
 			limit: 1,
 		});
 
-		if (error || data.length === 0) {
+		if (error) throw error;
+
+		return data[0];
+	}
+
+	async stat(filepath: string): Promise<{
+		size: any;
+		modified: Date;
+	}> {
+		const file = await this.find(filepath);
+
+		if (!file) {
 			throw new Error('File not found');
 		}
 
 		return {
-			size: data[0]?.metadata['contentLength'] ?? 0,
-			modified: new Date(data[0]?.metadata['lastModified'] || null),
+			size: file.metadata['contentLength'] ?? 0,
+			modified: new Date(file.metadata['lastModified'] || null),
 		};
 	}
 
 	async exists(filepath: string): Promise<boolean> {
-		try {
-			await this.stat(filepath);
-			return true;
-		} catch {
-			return false;
-		}
+		return (await this.find(filepath)) !== undefined;
 	}
 
 	async move(src: string, dest: string): Promise<void> {

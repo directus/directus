@@ -55,6 +55,13 @@ router.post(
 			}
 		});
 
+		// Client disconnected while the archive was being built, so `close` fired before the handler above existed
+		if (res.closed || res.destroyed) {
+			archive.destroy();
+			archive.abort();
+			return;
+		}
+
 		archive.pipe(res);
 
 		try {
@@ -123,6 +130,13 @@ router.post(
 				archive.abort();
 			}
 		});
+
+		// Client disconnected while the archive was being built, so `close` fired before the handler above existed
+		if (res.closed || res.destroyed) {
+			archive.destroy();
+			archive.abort();
+			return;
+		}
 
 		archive.pipe(res);
 
@@ -439,6 +453,12 @@ router.get(
 				sourceStream.destroy();
 			}
 		});
+
+		// Client disconnected while the stream was being opened, so `close` fired before the handler above existed
+		if (res.closed || res.destroyed) {
+			sourceStream.destroy();
+			return undefined;
+		}
 
 		sourceStream
 			.on('error', (error) => {

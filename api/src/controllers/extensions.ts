@@ -342,7 +342,23 @@ router.get(
 		);
 
 		res.setHeader('Vary', 'Origin, Cache-Control');
-		source.pipe(res);
+
+		const sourceStream = source;
+
+		// Clean up the source stream if the client disconnects
+		res.on('close', () => {
+			if (!res.writableEnded) {
+				sourceStream.destroy();
+			}
+		});
+
+		// Client disconnected while the stream was being opened, so `close` fired before the handler above existed
+		if (res.closed || res.destroyed) {
+			sourceStream.destroy();
+			return;
+		}
+
+		sourceStream.pipe(res);
 	}),
 );
 

@@ -670,6 +670,17 @@ describe('#stat', () => {
 		}
 	});
 
+	/** An unread response body holds its connection open */
+	test('Cancels the response body it never reads', async () => {
+		const cancel = vi.fn().mockResolvedValue(undefined);
+		mockResponse.status = randNumber({ min: 400, max: 599 });
+		(mockResponse as unknown as { body: unknown }).body = { cancel };
+
+		await expect(driver.stat(sample.path.input)).rejects.toThrowError();
+
+		expect(cancel).toHaveBeenCalled();
+	});
+
 	test('Returns size/modified from bytes/created_at from Cloudinary', async () => {
 		const result = await driver.stat(sample.path.input);
 
@@ -681,24 +692,47 @@ describe('#stat', () => {
 });
 
 describe('#exists', () => {
+	let requestResource: Mock;
+	let cancel: Mock;
+
 	beforeEach(() => {
-		driver['stat'] = vi.fn().mockResolvedValue({ size: sample.file.size, modified: sample.file.modified });
+		cancel = vi.fn().mockResolvedValue(undefined);
+		requestResource = vi.fn().mockResolvedValue({ status: 200, body: { cancel } });
+		driver['requestResource'] = requestResource;
 	});
 
-	test('Calls stat', async () => {
+	test('Requests the resource for the given filepath', async () => {
 		await driver.exists(sample.path.input);
-		expect(driver['stat']).toHaveBeenCalledWith(sample.path.input);
+		expect(requestResource).toHaveBeenCalledWith(sample.path.input);
 	});
 
-	test('Returns true if stat returns the stats', async () => {
+	test('Returns true if the resource is returned', async () => {
 		const exists = await driver.exists(sample.path.input);
 		expect(exists).toBe(true);
 	});
 
-	test('Returns false if stat throws an error', async () => {
-		vi.mocked(driver.stat).mockRejectedValue(new Error());
+	test('Returns false if the resource is not found', async () => {
+		requestResource.mockResolvedValue({ status: 404, body: { cancel } });
 		const exists = await driver.exists(sample.path.input);
 		expect(exists).toBe(false);
+	});
+
+	/**
+	 * Reporting a failed lookup as "the file isn't there" makes callers act on a wrong answer, for
+	 * example by serving a permission error for a file that does exist.
+	 */
+	test.each([401, 420, 503])('Throws if the lookup failed with a %i', async (status) => {
+		requestResource.mockResolvedValue({ status, body: { cancel } });
+
+		await expect(driver.exists(sample.path.input)).rejects.toThrowError(
+			new Error(`Couldn't check whether file "${sample.path.input}" exists (${status})`),
+		);
+	});
+
+	/** An unread response body holds its connection open */
+	test('Cancels the response body it never reads', async () => {
+		await driver.exists(sample.path.input);
+		expect(cancel).toHaveBeenCalled();
 	});
 });
 
