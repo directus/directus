@@ -1074,6 +1074,7 @@ function useAutoSwitchToDraft() {
 					:collection="collectionInfo.collection"
 					:item="templateData"
 					:template="collectionInfo.meta!.display_template"
+					show-collection-name
 				/>
 			</h1>
 		</template>
