@@ -3247,6 +3247,8 @@ operations:
   mail:
     name: Send Email
     description: Send an email to one or more people
+    from_name: From Name
+    from_name_placeholder: Defaults to the project name
     to: To
     to_placeholder: Add email addresses and press enter...
     body: Body
