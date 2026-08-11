@@ -5,6 +5,7 @@ import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
+import { createCollectionForbiddenError } from '../../../permissions/modules/process-ast/utils/validate-path/create-error.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../../types/index.js';
 import { splitFieldPath } from '../../../utils/split-field-path.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
@@ -213,7 +214,9 @@ export async function parseFields(
 		let child: NestedCollectionNode | null = null;
 
 		if (relationType === 'a2o') {
-			let allowedCollections = relation.meta!.one_allowed_collections!;
+			let allowedCollections = relation.meta!.one_allowed_collections!.filter(
+				(collection) => collection in context.schema.collections,
+			);
 
 			if (options.accountability && options.accountability.admin === false && policies) {
 				const permissions = await fetchPermissions(
@@ -288,6 +291,10 @@ export async function parseFields(
 				if (permissions.length === 0) {
 					continue;
 				}
+			}
+
+			if (relatedCollection in context.schema.collections === false) {
+				throw createCollectionForbiddenError(fieldKey, relatedCollection);
 			}
 
 			const childQuery = { ...options.query };

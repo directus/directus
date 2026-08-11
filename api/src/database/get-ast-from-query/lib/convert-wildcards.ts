@@ -6,6 +6,7 @@ import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-f
 import { extractFunctionName } from '../../../utils/extract-function-name.js';
 import { parseFilterKey } from '../../../utils/parse-filter-key.js';
 import { parseJsonFunction } from '../../helpers/fn/json/parse-function.js';
+import { isRelationTraversable } from '../utils/is-relation-traversable.js';
 
 export interface ConvertWildcardsOptions {
 	collection: string;
@@ -109,6 +110,10 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 						getRelation(context.schema.relations, options.collection, relationField) !== context.parentRelation,
 				);
 			}
+
+			relationalFields = relationalFields.filter((relationField) =>
+				isRelationTraversable(context.schema, options.collection, relationField),
+			);
 
 			const nonRelationalFields = allowedFields.filter((fieldKey) => relationalFields.includes(fieldKey) === false);
 

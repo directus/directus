@@ -27,10 +27,22 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getFunctions, getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
+import { createCollectionForbiddenError } from '../permissions/modules/process-ast/utils/validate-path/create-error.js';
 import { decrypt, encrypt } from '../utils/encrypt.js';
 import { extractFunctionName } from '../utils/extract-function-name.js';
 import { generateHash } from '../utils/generate-hash.js';
 import { getSecret } from '../utils/get-secret.js';
+
+/**
+ * A relation outlives its related collection's presence in the schema, an inactive collection for
+ * example. A nested payload for one of those has no collection to be written against, so it's
+ * rejected the same way the read side rejects traversing into it.
+ */
+function assertRelatedCollectionInSchema(schema: SchemaOverview, collection: string, field: string) {
+	if (collection in schema.collections === false) {
+		throw createCollectionForbiddenError(field, collection);
+	}
+}
 
 type Transformers = {
 	[type: string]: (context: {
@@ -592,6 +604,8 @@ export class PayloadService {
 				});
 			}
 
+			assertRelatedCollectionInSchema(this.schema, relatedCollection, relation.field);
+
 			const { getService } = await import('../utils/get-service.js');
 
 			const service = getService(relatedCollection, {
@@ -691,6 +705,9 @@ export class PayloadService {
 		for (const relation of relationsToProcess) {
 			// If no "one collection" exists, this is a A2O, not a M2O
 			if (!relation.related_collection) continue;
+
+			assertRelatedCollectionInSchema(this.schema, relation.related_collection, relation.field);
+
 			const relatedPrimaryKeyField = this.schema.collections[relation.related_collection]!.primary;
 
 			const { getService } = await import('../utils/get-service.js');
@@ -792,6 +809,8 @@ export class PayloadService {
 
 		for (const relation of relationsToProcess) {
 			if (!relation.meta) continue;
+
+			assertRelatedCollectionInSchema(this.schema, relation.collection, relation.meta.one_field!);
 
 			const currentPrimaryKeyField = this.schema.collections[relation.related_collection!]!.primary;
 			const relatedPrimaryKeyField = this.schema.collections[relation.collection]!.primary;
