@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import { schemaPermissions } from '@directus/system-data';
 import type { Accountability, Filter, Permission, SchemaOverview } from '@directus/types';
 import { set, uniq } from 'lodash-es';
@@ -27,6 +28,10 @@ export async function getPermissionsForShare(
 	};
 
 	const { collection, item, role, user_created } = await fetchShareInfo(accountability.share!, context);
+
+	if (collection in context.schema.collections === false) {
+		throw new ForbiddenError();
+	}
 
 	const userAccountability: Accountability = {
 		user: user_created.id,
