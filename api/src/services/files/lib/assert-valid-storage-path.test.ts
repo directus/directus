@@ -75,4 +75,32 @@ describe('assertValidStoragePath', () => {
 			expect(() => assertValidStoragePath('extensions/x.js', 's3')).not.toThrow();
 		});
 	});
+
+	describe('local extension sync source', () => {
+		beforeEach(() => {
+			Object.assign(state.env, {
+				STORAGE_LOCATIONS: 'local,extstore',
+				STORAGE_EXTSTORE_DRIVER: 'local',
+				STORAGE_EXTSTORE_ROOT: './extstore',
+				EXTENSIONS_LOCATION: 'extstore',
+			});
+		});
+
+		test('blocks keys under the EXTENSIONS_PATH prefix on the sync-source location', () => {
+			expect(() => assertValidStoragePath('extensions/evil/index.mjs', 'extstore')).toThrow(ForbiddenError);
+		});
+
+		test('blocks irrespective of the storage root', () => {
+			state.env['STORAGE_EXTSTORE_ROOT'] = './some/deeply/nested/root';
+			expect(() => assertValidStoragePath('extensions/evil/index.mjs', 'extstore')).toThrow(ForbiddenError);
+		});
+
+		test('does not over-block a sibling folder that shares the extensions prefix', () => {
+			expect(() => assertValidStoragePath('extensions-backup/x.jpg', 'extstore')).not.toThrow();
+		});
+
+		test('allows extension-prefixed keys on a local location that is not the extensions location', () => {
+			expect(() => assertValidStoragePath('extensions/x.jpg', 'local')).not.toThrow();
+		});
+	});
 });

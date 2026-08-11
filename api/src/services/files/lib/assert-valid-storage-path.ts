@@ -27,9 +27,9 @@ export function assertValidStoragePath(filepath: string, storage?: string): void
 
 	const extensionPath = sanitizeFilepath((env['EXTENSIONS_PATH'] as string | undefined) ?? '');
 
-	// Block setting path to extension path on remote
+	// Block setting path to the extension path on the extensions storage location.
 	if (env['EXTENSIONS_LOCATION'] && env['EXTENSIONS_LOCATION'] === location) {
-		if (extensionPath && filePath.startsWith(extensionPath + '/')) {
+		if (extensionPath && normalizedFilePath.startsWith(extensionPath + '/')) {
 			throw new ForbiddenError();
 		}
 	}
