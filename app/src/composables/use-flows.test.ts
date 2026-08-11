@@ -326,7 +326,7 @@ describe('runManualFlow', () => {
 			hasEdits: ref(false),
 		});
 
-		expect(sidebarManualFlows.value.map((flow) => flow.id)).not.toContain('flow-6');
+		expect(sidebarManualFlows.value.map((flow) => flow.id)).toEqual(['flow-2', 'flow-3']);
 
 		await runManualFlow('flow-6');
 
