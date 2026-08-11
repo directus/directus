@@ -1445,8 +1445,8 @@ wysiwyg_options:
     edit it.
   normalization_locked_learn_more: Learn what changed
   normalization_comparison_notice:
-    This version includes formatting the new editor can't display, so the stored HTML is shown as is. Applying it
-    restores the content unchanged.
+    This version includes formatting the editor can't display, so the stored HTML is shown as is. Applying it restores
+    the content unchanged.
   fullscreen: Full Screen
   directionality: Directionality
   ltr: Left to Right

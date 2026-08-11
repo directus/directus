@@ -13,8 +13,10 @@ import type {
 } from './types';
 import api from '@/api';
 import { isHtmlString, sanitizeDropsContent, useComparisonDiff } from '@/composables/use-comparison-diff';
-import { computeValueNormalizationDiff } from '@/interfaces/input-rich-text-html/composables/normalization-diff';
-import { buildCustomFormats } from '@/interfaces/input-rich-text-html/extensions/custom-formats';
+import {
+	comparisonSchema,
+	computeValueNormalizationDiff,
+} from '@/interfaces/input-rich-text-html/composables/normalization-diff';
 import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
 import type { Revision } from '@/types/revisions';
@@ -274,10 +276,7 @@ export function useComparison(options: UseComparisonOptions) {
 		}
 	}
 
-	/**
-	 * Builds the diff-marked copies the comparison form renders. Diff marking is display-only: it
-	 * sanitizes the HTML and injects diff spans, so the originals are left untouched for restoring.
-	 */
+	/** Diff-marked copies for the form to render; the originals stay untouched for restoring. */
 	function processRichTextHtmlFields(
 		base: Record<string, any>,
 		incoming: Record<string, any>,
@@ -306,12 +305,15 @@ export function useComparison(options: UseComparisonOptions) {
 				shouldShowComparisonDiff(true, 'base', baseValue, incomingValue) &&
 				(isHtmlString(baseValue) || isHtmlString(incomingValue))
 			) {
-				// Diff marking would drop the very content a revision is opened for — markup the editor
-				// can't represent (shown verbatim in the interface's source fallback) or nodes the diff's
-				// sanitizer removes. Those values are compared without highlighting instead.
-				const { extensions } = buildCustomFormats(field.meta?.options?.['customFormats']);
-				if (isLossyForEditor(baseValue, extensions) || isLossyForEditor(incomingValue, extensions)) continue;
+				// diff marking would drop the very content a revision is opened for: nodes the diff's
+				// sanitizer removes, or markup the editor can't represent (rendered verbatim as source
+				// instead). Those values are compared without highlighting.
 				if (sanitizeDropsContent(baseValue) || sanitizeDropsContent(incomingValue)) continue;
+
+				const { extensions, schemaKey } = comparisonSchema(field.meta?.options?.['customFormats']);
+				const isLossy = (value: unknown) => isLossyForEditor(value, extensions, schemaKey);
+
+				if (isLossy(baseValue) || isLossy(incomingValue)) continue;
 
 				const changes = computeDiff(baseValue, incomingValue, field);
 
@@ -333,9 +335,9 @@ export function useComparison(options: UseComparisonOptions) {
 		return { displayBase, displayIncoming };
 	}
 
-	function isLossyForEditor(value: unknown, extensions: AnyExtension[]): boolean {
+	function isLossyForEditor(value: unknown, extensions: AnyExtension[], schemaKey: string): boolean {
 		if (typeof value !== 'string' || value === '') return false;
-		return computeValueNormalizationDiff(value, extensions) !== null;
+		return computeValueNormalizationDiff(value, extensions, schemaKey) !== null;
 	}
 
 	async function buildVersionComparison(version: ContentVersion): Promise<ComparisonData> {

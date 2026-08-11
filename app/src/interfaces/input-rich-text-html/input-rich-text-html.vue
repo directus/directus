@@ -4,6 +4,7 @@ import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
 import { computed, nextTick, ref, type Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { comparisonSchema } from './composables/normalization-diff';
 import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
 import { useMedia } from './composables/use-media';
@@ -78,7 +79,11 @@ if (
 }
 
 // built once at init: `customFormats` is design-time config, not reactive
-const { extensions: customFormatExtensions, formats: customFormatList } = buildCustomFormats(props.customFormats);
+const {
+	extensions: customFormatExtensions,
+	formats: customFormatList,
+	key: customFormatsKey,
+} = buildCustomFormats(props.customFormats);
 
 const pageBreakLabel = computed(() => `"${t('wysiwyg_options.pagebreak')}"`);
 
@@ -88,10 +93,10 @@ const fontFamily = computed(() => {
 	return `var(--theme--fonts--${token}--font-family)`;
 });
 
-// ComparisonDiff joins the check in comparison mode so the precomputed diff spans don't read as loss
-const normalizationExtensions = props.comparisonMode
-	? [...customFormatExtensions, ComparisonDiff]
-	: customFormatExtensions;
+// in comparison mode ComparisonDiff joins the check, so precomputed diff spans don't read as loss
+const { extensions: normalizationExtensions, schemaKey: normalizationSchemaKey } = props.comparisonMode
+	? comparisonSchema(props.customFormats)
+	: { extensions: customFormatExtensions, schemaKey: customFormatsKey };
 
 const {
 	normalizationLocked,
@@ -101,7 +106,7 @@ const {
 	onLockedClick,
 	confirmNormalizationWarning,
 	cancelNormalizationWarning,
-} = useNormalizationWarning(value, normalizationExtensions);
+} = useNormalizationWarning(value, normalizationExtensions, normalizationSchemaKey);
 
 // comparison runs it to pick the source fallback below; plain read-only display has nothing to act on
 if (!props.nonEditable || props.comparisonMode) checkValue();

@@ -19,16 +19,12 @@ export function isHtmlString(value: any): boolean {
 	return /<[a-z][\s\S]*>/i.test(value);
 }
 
-/**
- * True when sanitizing would remove nodes (iframes, comments, …), which the diff view would then
- * hide from the compared values. Callers skip diff marking for those and show them verbatim.
- */
+/** True when sanitizing removes nodes (iframes, comments, …), which the diff view would then hide. */
 export function sanitizeDropsContent(value: any): boolean {
 	if (typeof value !== 'string' || value === '') return false;
 
 	const sanitized = dompurify.sanitize(value);
 
-	// comments (the legacy page-break marker) never survive sanitizing
 	if (value.includes('<!--') && !sanitized.includes('<!--')) return true;
 
 	// DOMParser is inert: nothing executes and no resource loads while the raw markup is inspected
@@ -36,7 +32,7 @@ export function sanitizeDropsContent(value: any): boolean {
 	return nodeSignature(parse(value)) !== nodeSignature(parse(sanitized));
 }
 
-// attribute-level normalization is ignored on purpose — only missing nodes matter here
+// only missing nodes matter here, attribute-level normalization is ignored
 function nodeSignature(root: HTMLElement): string {
 	const parts: string[] = [];
 
