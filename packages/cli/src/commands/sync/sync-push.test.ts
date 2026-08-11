@@ -665,6 +665,53 @@ describe('sync push with data', () => {
 		expect(output).toContain('-2');
 	});
 
+	it('keeps the other collections’ mappings when one collection’s import response conflicts', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+
+		seedData([
+			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor', icon: 'edit' }] },
+			{
+				collection: 'directus_permissions',
+				primaryKey: 'id',
+				records: [
+					{ id: 4, policy: null, collection: 'articles', action: 'read' },
+					{ id: 5, policy: null, collection: 'articles', action: 'update' },
+				],
+			},
+		]);
+
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptDiff('merge', null);
+		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor', icon: 'edit' }]);
+		interceptTarget('/permissions', []);
+
+		// A contract-skewed server maps both temporary keys to one target record.
+		interceptImport(
+			{ mode: 'merge' },
+			{
+				data: {
+					applied: true,
+					mode: 'merge',
+					collections: {
+						directus_roles: { existing: ['tr1'], new: [], deleted: [], mapped: {} },
+						directus_permissions: { existing: [], new: [27], deleted: [], mapped: { '-1': 27, '-2': 27 } },
+					},
+				},
+			},
+		);
+
+		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(1);
+
+		// The import was applied server-side; the conflict refuses only the conflicted collection's entries.
+		expect(readIdMapFile()).toEqual({
+			formatVersion: 1,
+			maps: { [source]: { [url]: { directus_roles: { sr1: 'tr1' } } } },
+		});
+
+		expect(stderr.join('') + stdout.join('')).toContain('same target id "27"');
+	});
+
 	it('uploads the remapped batch and writes the map from reconcile matches and the import response', async () => {
 		seedConfig();
 		writeSnapshotFiles(schemaDir, fullSnapshot());

@@ -274,6 +274,14 @@ describe('profile commands', () => {
 		expect(existsSync(join(dir, 'directus.config.json'))).toBe(false);
 	});
 
+	it('rejects surrounding spaces and a bare trailing ? or # the parser would forgive but raw requests break on', async () => {
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com ')).toBe(1);
+		expect(await d6s('profile', 'add', 'staging', '--url', ' https://cms.example.com')).toBe(1);
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com?')).toBe(1);
+		expect(await d6s('profile', 'add', 'staging', '--url', 'https://cms.example.com#')).toBe(1);
+		expect(existsSync(join(dir, 'directus.config.json'))).toBe(false);
+	});
+
 	it('updating to the URL a profile already has stays frictionless — no confirmation, no --yes', async () => {
 		await d6s('profile', 'add', 'staging', '--url', 'https://one.example.com');
 

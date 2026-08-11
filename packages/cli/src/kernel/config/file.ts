@@ -13,8 +13,11 @@ export const INVALID_URL_MESSAGE = 'Enter a valid http(s) URL.';
 
 /** A stored base URL must carry no secrets: no `user:pass@`, no `?token=…`. */
 export function isSafeUrl(value: string): boolean {
-	// URL parsing normalizes control characters away, but callers store and print the raw value.
-	if (CONTROL_CHARACTER.test(value)) return false;
+	// The parser forgives control characters, surrounding spaces, and a bare trailing `?` or `#`,
+	// but callers store and concatenate the raw value, where the forgiven characters break requests.
+	if (CONTROL_CHARACTER.test(value) || value !== value.trim() || value.endsWith('?') || value.endsWith('#')) {
+		return false;
+	}
 
 	let parsed: URL;
 

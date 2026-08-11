@@ -302,6 +302,7 @@ async function readAndReconcile(target: Target): Promise<Reconciled | undefined>
 /** Settles the IDs only the server could supply; `prepareDataPush` already settled which record is which. */
 export function recordImportedIds(dataResult: DataPushPlan, importResult: ImportBatchResult, ctx: CliContext): void {
 	let map = dataResult.map;
+	let conflict: unknown;
 
 	const unmapped: { collection: string; sourceId: string; sentPk: string; updatedExisting: boolean }[] = [];
 
@@ -332,7 +333,12 @@ export function recordImportedIds(dataResult: DataPushPlan, importResult: Import
 			entries[sourceId] = sentPk;
 		}
 
-		map = withMappings(map, { sourceUrl: dataResult.source, targetUrl: dataResult.target }, collection, entries);
+		try {
+			map = withMappings(map, { sourceUrl: dataResult.source, targetUrl: dataResult.target }, collection, entries);
+		} catch (error) {
+			// One collection's conflict does not falsify the others' mappings; keep merging, refuse below.
+			conflict ??= error;
+		}
 	}
 
 	// The resolved mappings are real whatever else went wrong, so record them before refusing the rest.
@@ -340,6 +346,8 @@ export function recordImportedIds(dataResult: DataPushPlan, importResult: Import
 		writeIdMap(dataResult.idMapPath, map);
 		ctx.ui.info(`ID map updated: ${relative(ctx.cwd, dataResult.idMapPath)}`);
 	}
+
+	if (conflict !== undefined) throw conflict;
 
 	if (unmapped.length > 0) {
 		const lines = unmapped.map((miss) =>
