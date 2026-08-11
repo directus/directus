@@ -37,7 +37,7 @@ export function registerDiff(command: Command, getContext: () => CliContext): vo
 		.addOption(
 			new Option(
 				'--mode <mode>',
-				'add (only new records), merge (creates and updates, never deletes), or mirror (includes deletions)',
+				'add (only new configuration records; schema still merges), merge (creates and updates, never deletes), or mirror (includes deletions)',
 			).choices(MODES),
 		)
 		.option(

@@ -4,6 +4,7 @@ import { isPlainObject } from 'lodash-es';
 import { z } from 'zod';
 import { CliError } from '../error.js';
 import { writeFileAtomic } from '../write.js';
+import { envTokenVar } from './credentials.js';
 import { MODES, type SyncMode } from './mode.js';
 
 const CONFIG_FILENAME = 'directus.config.json';
@@ -64,11 +65,46 @@ const projectSchema = z
 		},
 	);
 
+/** The keys land in case-insensitive stores — uppercased env token variables, project directories on
+ * case-folding filesystems — where two case-variant names silently share one slot. */
+function caseFoldedDuplicates(names: readonly string[]): [string, string][] {
+	const seen = new Map<string, string>();
+	const duplicates: [string, string][] = [];
+
+	for (const name of names) {
+		const kept = seen.get(name.toLowerCase());
+		if (kept === undefined) seen.set(name.toLowerCase(), name);
+		else duplicates.push([kept, name]);
+	}
+
+	return duplicates;
+}
+
 // Loose so blocks written by other Directus tools survive a round trip through our writes.
 const configSchema = z.looseObject({
-	profiles: z.record(z.string(), profileSchema).default({}),
+	profiles: z
+		.record(z.string(), profileSchema)
+		.superRefine((profiles, ctx) => {
+			for (const [kept, duplicate] of caseFoldedDuplicates(Object.keys(profiles))) {
+				ctx.addIssue({
+					code: 'custom',
+					message: `Profiles "${kept}" and "${duplicate}" differ only by case and would read the same ${envTokenVar(kept)} variable; rename one.`,
+				});
+			}
+		})
+		.default({}),
 	directory: z.string().min(1).default('directus'),
-	projects: z.record(z.string(), projectSchema).default({}),
+	projects: z
+		.record(z.string(), projectSchema)
+		.superRefine((projects, ctx) => {
+			for (const [kept, duplicate] of caseFoldedDuplicates(Object.keys(projects))) {
+				ctx.addIssue({
+					code: 'custom',
+					message: `Projects "${kept}" and "${duplicate}" differ only by case and would share one directory on a case-insensitive filesystem; rename one.`,
+				});
+			}
+		})
+		.default({}),
 	format: z.enum(['json']).default('json'),
 });
 
@@ -264,7 +300,17 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 			const target = path ?? join(cwd, CONFIG_FILENAME);
 			const previousContents = existsSync(target) ? readFileSync(target, 'utf8') : undefined;
 			const raw = readRawConfig(target);
-			const profiles = { ...existingProfiles(raw, target), [name]: profile };
+			const existing = existingProfiles(raw, target);
+			const variant = Object.keys(existing).find((key) => key !== name && key.toLowerCase() === name.toLowerCase());
+
+			if (variant !== undefined) {
+				throw new CliError(
+					'CONFIG',
+					`Profile "${variant}" already exists; "${name}" differs only by case and would read the same ${envTokenVar(name)} variable.`,
+				);
+			}
+
+			const profiles = { ...existing, [name]: profile };
 			mkdirSync(dirname(target), { recursive: true });
 			writeFileAtomic(target, `${JSON.stringify({ ...raw, profiles }, null, 2)}\n`, 0o644);
 			persisted(target);
@@ -296,8 +342,9 @@ export function createConfigStore(cwd: string, configOption?: string): ConfigSto
 
 			if (!Object.hasOwn(profiles, from)) throw new CliError('CONFIG', `Unknown profile: "${from}"`);
 
-			// Renaming onto a live name would silently drop a profile.
-			if (Object.hasOwn(profiles, to)) throw new CliError('CONFIG', `Profile "${to}" already exists.`);
+			// Renaming onto a live name would silently drop a profile; a case variant would share its env token variable.
+			const taken = Object.keys(profiles).find((key) => key !== from && key.toLowerCase() === to.toLowerCase());
+			if (taken !== undefined) throw new CliError('CONFIG', `Profile "${taken}" already exists.`);
 
 			const profile = storedProfile(profiles[from]);
 

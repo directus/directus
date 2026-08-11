@@ -236,6 +236,83 @@ describe('createConfigStore', () => {
 		expect(store.load()?.config.profiles['prod']?.url).toBe('https://two.example.com');
 	});
 
+	// prod/PROD read one DIRECTUS_PROD_TOKEN; Prod/prod projects share a directory on case-folding filesystems.
+	it('rejects profile and project names that differ only by case', () => {
+		const dir = tempDir();
+
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({
+				profiles: { prod: { url: 'https://one.example.com' }, PROD: { url: 'https://two.example.com' } },
+			}),
+		);
+
+		const error = caught(() => createConfigStore(dir).load());
+		expect(error.code).toBe('CONFIG');
+		expect(error.message).toContain('"prod" and "PROD" differ only by case');
+		expect(error.message).toContain('DIRECTUS_PROD_TOKEN');
+
+		const projects = tempDir();
+
+		writeFileSync(
+			join(projects, 'directus.config.json'),
+			JSON.stringify({ profiles: {}, projects: { Prod: {}, prod: {} } }),
+		);
+
+		const projectError = caught(() => createConfigStore(projects).load());
+		expect(projectError.code).toBe('CONFIG');
+		expect(projectError.message).toContain('"Prod" and "prod" differ only by case');
+	});
+
+	it('refuses to create a profile whose name differs from an existing one only by case', () => {
+		const dir = tempDir();
+
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { prod: { url: 'https://one.example.com' } } }),
+		);
+
+		const store = createConfigStore(dir);
+
+		const error = caught(() =>
+			store.upsertProfile('PROD', { url: 'https://two.example.com', auth: { type: 'token' } }),
+		);
+
+		expect(error.code).toBe('CONFIG');
+		expect(error.message).toContain('DIRECTUS_PROD_TOKEN');
+		expect(store.load()?.config.profiles['prod']?.url).toBe('https://one.example.com');
+	});
+
+	it('renames a profile onto its own case variant, which frees the old name in the same write', () => {
+		const dir = tempDir();
+
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({ profiles: { prod: { url: 'https://one.example.com' } } }),
+		);
+
+		const store = createConfigStore(dir);
+		store.renameProfile('prod', 'PROD');
+
+		expect(Object.keys(store.load()!.config.profiles)).toEqual(['PROD']);
+	});
+
+	it('refuses to rename onto a case variant of another live profile', () => {
+		const dir = tempDir();
+
+		writeFileSync(
+			join(dir, 'directus.config.json'),
+			JSON.stringify({
+				profiles: { staging: { url: 'https://one.example.com' }, prod: { url: 'https://two.example.com' } },
+			}),
+		);
+
+		const error = caught(() => createConfigStore(dir).renameProfile('staging', 'PROD'));
+
+		expect(error.code).toBe('CONFIG');
+		expect(error.message).toBe('Profile "prod" already exists.');
+	});
+
 	it('refuses to rename an unknown profile', () => {
 		const dir = tempDir();
 		writeFileSync(join(dir, 'directus.config.json'), JSON.stringify({ profiles: { prod: {} } }));

@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -54,6 +54,22 @@ describe('readIdMap / writeIdMap', () => {
 		writeIdMap(path, map);
 
 		expect(readIdMap(path)).toEqual(map);
+	});
+
+	// A cloned repo can carry a symlink where the ID map belongs; reading through it trusts a file outside the project.
+	it('refuses a symlinked id_map.json instead of reading through it', () => {
+		const path = mapPath();
+		writeIdMap(path, withMappings(readIdMap(path), A_TO_B, 'directus_roles', { s1: 't1' }));
+
+		const escaped = join(tempDir(), 'id_map.json');
+		writeFileSync(escaped, readFileSync(path, 'utf8'));
+		rmSync(path, { force: true });
+		symlinkSync(escaped, path);
+
+		const error = expectCliError(() => readIdMap(path));
+
+		expect(error.code).toBe('STATE');
+		expect(error.message).toContain('is not a regular file');
 	});
 
 	it('writes byte-identical bytes regardless of key insertion order', () => {

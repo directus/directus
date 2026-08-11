@@ -251,7 +251,15 @@ function sensitiveFieldsByCollection(catalog: FieldCatalogEntry[]): Map<string, 
 
 	for (const entry of catalog) {
 		const special = entry.meta?.['special'];
-		if (!Array.isArray(special)) continue;
+		if (special === undefined || special === null) continue;
+
+		// A malformed special could hide "conceal"; skipping it would silently commit a secret.
+		if (!Array.isArray(special)) {
+			throw new CliError(
+				'HTTP',
+				`The /fields entry for ${entry.collection}.${entry.field} has a malformed "special" value, so sensitive fields cannot be determined.`,
+			);
+		}
 
 		const secret = special.some(
 			(value) => value === 'conceal' || value === 'hash' || (typeof value === 'string' && value.startsWith('encrypt')),

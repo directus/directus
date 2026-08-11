@@ -9,7 +9,7 @@ export type SchemaDiffMode = SnapshotDiffMode;
 export type ImportMode = ImportBatchMode;
 
 const MODE_DESCRIPTIONS: Record<SyncMode, string> = {
-	add: 'add — only creates new records',
+	add: 'add — only creates new configuration records; schema still merges',
 	merge: 'merge — creates and updates records, never deletes',
 	mirror: 'mirror — INCLUDES DELETIONS',
 };

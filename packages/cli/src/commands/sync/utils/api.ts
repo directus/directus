@@ -115,6 +115,11 @@ export async function fetchFields(credential: ResolvedCredential): Promise<Field
 
 		const meta = entry['meta'];
 
+		// Secret detection reads meta, so a malformed shape must fail rather than pass as "not sensitive".
+		if (meta !== null && meta !== undefined && !isPlainObject(meta)) {
+			throw new CliError('HTTP', `The /fields entry for ${collection}.${field} has malformed metadata.`);
+		}
+
 		return { collection, field, meta: isPlainObject(meta) ? (meta as Record<string, unknown>) : null };
 	});
 }

@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync } from 'node:fs';
+import { existsSync, lstatSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { isPlainObject } from 'lodash-es';
 import { CliError } from '../../../kernel/error.js';
@@ -108,6 +108,11 @@ function parseMaps(value: unknown, path: string): Readonly<Record<string, Target
 /** A missing file is an empty first-sync state; a malformed one throws rather than being repaired. */
 export function readIdMap(path: string): IdMap {
 	if (!existsSync(path)) return { formatVersion: 1, maps: {} };
+
+	// lstat refuses a committed symlink that would read a file outside the project, like the artifact stores do.
+	if (!lstatSync(path).isFile()) {
+		throw new CliError('STATE', `${path} is not a regular file.`, { hint: REPAIR_HINT });
+	}
 
 	let raw: string;
 

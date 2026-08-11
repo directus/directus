@@ -1009,6 +1009,33 @@ describe('sync pull resources and data', () => {
 		expect(existsSync(join(dir, 'directus'))).toBe(false);
 	});
 
+	// A malformed catalog entry could hide "conceal"; passing it as non-sensitive would commit a secret.
+	it('fails the pull on malformed field catalog metadata instead of treating the field as non-sensitive', async () => {
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		mockSnapshot(agent, schemaBody());
+
+		mockFields(agent, [{ collection: 'directus_settings', field: 'api_key', type: 'string', meta: 'conceal' }]);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
+		expect(stderr.join('')).toContain('directus_settings.api_key');
+		expect(existsSync(join(dir, 'directus'))).toBe(false);
+	});
+
+	it('fails the pull when a field catalog "special" is not an array instead of skipping it', async () => {
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		mockSnapshot(agent, schemaBody());
+
+		mockFields(agent, [
+			{ collection: 'directus_settings', field: 'api_key', type: 'string', meta: { special: 'conceal' } },
+		]);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
+		expect(stderr.join('')).toContain('directus_settings.api_key');
+		expect(existsSync(join(dir, 'directus'))).toBe(false);
+	});
+
 	it('warns when a request operation carries custom headers — credential-bearing and pulled verbatim', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
