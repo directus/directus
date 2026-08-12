@@ -1,0 +1,117 @@
+name: Close PRs without a Signed CLA
+
+on:
+  schedule:
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: Log what would happen without closing anything
+        type: boolean
+        default: true
+
+permissions:
+  actions: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  close-unsigned-prs:
+    if: github.repository == 'directus/directus'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        env:
+          DRY_RUN: ${{ inputs.dry-run || false }}
+        with:
+          script: |
+            const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+            const LABEL_NAME = 'CLA Required';
+            const DOCS_URL = 'https://directus.com/docs/community/contribution/pull-requests#copyright-license-agreement-cla';
+            const dryRun = process.env.DRY_RUN === 'true';
+            const now = new Date();
+
+            const prs = await github.paginate(github.rest.pulls.list, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100,
+            });
+
+            for (const pr of prs) {
+              try {
+                if (pr.draft) continue;
+                if (!pr.labels.some((label) => label.name === LABEL_NAME)) continue;
+
+                const events = await github.paginate(github.rest.issues.listEventsForTimeline, {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: pr.number,
+                  per_page: 100,
+                });
+
+                // Find the most recent time this label was applied
+                const [labeledAt] = events
+                  .filter((event) => event.event === 'labeled' && event.label?.name === LABEL_NAME)
+                  .map((event) => new Date(event.created_at))
+                  .sort((a, b) => b - a);
+
+                if (!labeledAt || now - labeledAt < ONE_WEEK_MS) continue;
+
+                // The label only refreshes when the PR is pushed to, so confirm against
+                // the CLA check for the commit the PR currently points at
+                const runs = await github.rest.actions.listWorkflowRuns({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  workflow_id: 'cla.yml',
+                  head_sha: pr.head.sha,
+                  per_page: 100,
+                });
+
+                const [latestRun] = runs.data.workflow_runs
+                  .filter((run) => run.status === 'completed')
+                  .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+                if (!latestRun) {
+                  core.warning(`Skipped PR #${pr.number} — no completed CLA check for ${pr.head.sha}`);
+                  continue;
+                }
+
+                if (latestRun.conclusion === 'success') {
+                  if (!dryRun) {
+                    await github.rest.issues.removeLabel({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      issue_number: pr.number,
+                      name: LABEL_NAME,
+                    });
+                  }
+
+                  core.info(`Removed label from PR #${pr.number} — the CLA has since been signed: ${pr.title}`);
+                  continue;
+                }
+
+                if (dryRun) {
+                  core.info(`Would close PR #${pr.number}: ${pr.title}`);
+                  continue;
+                }
+
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: pr.number,
+                  body: `Hi @${pr.user.login}! 👋 We're closing this PR because the Contributor License Agreement (CLA) hasn't been signed in the past week. We can't consider a contribution until every contributor on it has signed. To sign it, add the missing GitHub username(s) to \`contributors.yml\` — see [our contribution docs](${DOCS_URL}) for details. Feel free to reopen this PR once that's done. Thank you for contributing to Directus! 🐰`,
+                });
+
+                await github.rest.pulls.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number,
+                  state: 'closed',
+                });
+
+                core.info(`Closed PR #${pr.number}: ${pr.title}`);
+              } catch (error) {
+                core.warning(`Failed to process PR #${pr.number}: ${error.message}`);
+              }
+            }
