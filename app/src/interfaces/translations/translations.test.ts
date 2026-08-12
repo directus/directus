@@ -161,13 +161,7 @@ function mountTranslations() {
 						info: {
 							ai_enabled: true,
 							ai_providers: ['anthropic'],
-						},
-					},
-					licenseStore: {
-						info: {
-							entitlements: {
-								ai_translations_enabled: { default: true },
-							},
+							license: { entitlements: { ai_translations_enabled: true } },
 						},
 					},
 				},

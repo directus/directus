@@ -79,6 +79,13 @@ export function useRelationSingle<T extends Record<string, any>>(
 			return;
 		}
 
+		// Selecting into a One-to-Many field of an unsaved item stages that item's temporary primary
+		// key here. Don't try to fetch it, but do display any edits staged against it.
+		if (id === '+') {
+			displayItem.value = typeof val === 'object' ? (val as T) : null;
+			return;
+		}
+
 		const fields = new Set(previewQuery.value.fields);
 		fields.add(pkField);
 

@@ -1332,6 +1332,7 @@ right_align: Right Align
 fit_to_screen: Fit to Screen
 image_url: Image Url
 alt_text: Alternative Text
+caption: Caption
 media: Media
 quality: Quality
 width: Width
@@ -1433,7 +1434,8 @@ wysiwyg_options:
   normalization_warning_body:
     This content includes items the new editor doesn't support, so the field is read-only for now. If you edit anyway,
     those items will be removed when you save. To keep the stored HTML exactly as is, edit the raw HTML instead. This
-    warning will go away once the unsupported items are gone.
+    warning will go away once the unsupported items are gone. If you already saved without them, you can bring the
+    original content back from Revisions.
   normalization_warning_view_changes: View changes
   normalization_warning_keep_readonly: Keep Read-only
   normalization_warning_edit_anyway: Edit Anyway
@@ -1442,6 +1444,9 @@ wysiwyg_options:
     This field includes formatting the new editor doesn't support, so it's read-only. Select the field to choose how to
     edit it.
   normalization_locked_learn_more: Learn what changed
+  normalization_comparison_notice:
+    This version includes formatting the editor can't display, so the stored HTML is shown as is. Applying it restores
+    the content unchanged.
   fullscreen: Full Screen
   directionality: Directionality
   ltr: Left to Right
@@ -2778,9 +2783,10 @@ interfaces:
     toolbar: Toolbar
     custom_formats: Custom Formats
     custom_formats_note:
-      A list of custom inline formats. Each entry needs a `title` and an `inline` tag, with optional `classes`,
-      `styles`, and `attributes`. When set, a Formats dropdown is added to the toolbar. Block-level and nested formats
-      are not supported.
+      A list of custom formats. Each entry needs a `title` plus either an `inline` tag, a `block` tag, a `selector` of
+      block tags, or `items` to group entries into a submenu. Optional `classes`, `styles`, and `attributes` can also be
+      added. When set, a Formats dropdown is added to the toolbar. Formatting with `block` converts between paragraphs
+      and headings only, and `wrapper` entries are not supported.
     options_override: Options Override (Deprecated)
     options_override_note:
       Deprecated legacy TinyMCE overrides. This value is no longer applied by the editor and is kept for reference only.
