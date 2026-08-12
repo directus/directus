@@ -651,7 +651,12 @@ function popoverClickOutsideMiddleware(e: Event) {
 			<VSkeletonLoader v-if="loading || templateDataLoading" class="title-loader" type="text" />
 
 			<h1 v-else class="type-title">
-				<RenderTemplate :collection="templateCollection?.collection" :item="templateData" :template="template" />
+				<RenderTemplate
+					:collection="templateCollection?.collection"
+					:item="templateData"
+					:template="template"
+					show-collection-name
+				/>
 			</h1>
 		</template>
 
