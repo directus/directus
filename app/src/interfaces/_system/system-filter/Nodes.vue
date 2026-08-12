@@ -543,6 +543,7 @@ function isExistingField(node: Record<string, any>): boolean {
 
 	.drag-handle {
 		--v-icon-color: var(--theme--form--field--input--foreground-subdued);
+		touch-action: none;
 
 		margin-inline-end: 0.25rem;
 		cursor: grab;

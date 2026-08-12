@@ -414,6 +414,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 .drag-handle {
 	cursor: grab !important;
+	touch-action: none;
 }
 
 .duplicate {

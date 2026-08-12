@@ -433,6 +433,7 @@ function emitValue(value?: Record<string, unknown>[]) {
 
 .drag-handle {
 	cursor: grab;
+	touch-action: none;
 
 	&:active {
 		cursor: grabbing;

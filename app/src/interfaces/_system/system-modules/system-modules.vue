@@ -273,6 +273,7 @@ function remove(id: string) {
 
 .drag-handle {
 	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
+	touch-action: none;
 }
 
 .to {

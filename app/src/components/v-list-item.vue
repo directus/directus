@@ -300,6 +300,7 @@ function onClick(event: PointerEvent) {
 		&:not(.disabled) {
 			:slotted(.drag-handle) {
 				cursor: grab;
+				touch-action: none;
 
 				&:hover {
 					color: var(--foreground-color);

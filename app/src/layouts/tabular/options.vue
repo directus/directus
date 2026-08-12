@@ -58,6 +58,7 @@ const tableSpacingWritable = useSync(props, 'tableSpacing', emit);
 	--v-icon-color: var(--theme--foreground-subdued);
 
 	cursor: ns-resize;
+	touch-action: none;
 
 	&:hover {
 		--v-icon-color: var(--theme--foreground);

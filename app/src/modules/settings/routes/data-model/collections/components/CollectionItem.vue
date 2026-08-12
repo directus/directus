@@ -182,6 +182,7 @@ function onGroupSortChange(collections: Collection[]) {
 
 .drag-handle {
 	cursor: grab;
+	touch-action: none;
 }
 
 .collapse-toggle {
