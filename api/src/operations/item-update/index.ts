@@ -31,12 +31,12 @@ export default defineOperationApi<Options>({
 	) => {
 		const payloadObject: Partial<Item> | Partial<Item>[] | null = optionToObject(payload) ?? null;
 		const queryObject = query ? optionToObject(query) : null;
-		const keys = isNil(key) ? null : toArray(key);
 
 		// Without a payload there is nothing to update, so this is a no-op
 		if (!payloadObject) {
 			return null;
 		}
+		const keys = isNil(key) || key === '' ? null : toArray(key);
 
 		const validation = inputSchema.safeParse({ keys, query: queryObject, payload: payloadObject });
 

@@ -25,7 +25,7 @@ export default defineOperationApi<Options>({
 	id: 'item-delete',
 	handler: async ({ collection, key, query, emitEvents, permissions }, { accountability, database, getSchema }) => {
 		const queryObject = query ? optionToObject(query) : null;
-		const keys = isNil(key) ? null : toArray(key);
+		const keys = isNil(key) || key === '' ? null : toArray(key);
 
 		const validation = inputSchema.safeParse({ keys, query: queryObject });
 
