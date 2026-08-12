@@ -253,9 +253,7 @@ class OASSpecsService implements SpecificationSubService {
 							const isHardcodedOpen = operation['x-authentication'] === 'none';
 
 							// An operation-level override lets an operation whose tag has no (or a different)
-							// x-collection still be gated by RBAC on a specific collection, e.g. GET /assets/{id}
-							// is tagged Assets (no collection of its own) but is actually governed by RBAC read
-							// access to directus_files, same as GET /files/{id}.
+							// x-collection still be gated by RBAC on a specific collection.
 							const operationCollection = operation['x-collection'] ?? collection;
 
 							// x-action overrides the HTTP-method-derived action for an operation whose real RBAC
