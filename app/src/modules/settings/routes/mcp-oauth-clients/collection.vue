@@ -86,10 +86,7 @@ function useBatch() {
 		<PrivateView :title="$t('mcp_oauth_clients')" icon="key" show-back back-to="/settings/ai">
 			<template #headline>
 				<VBreadcrumb
-					:items="[
-						{ name: $t('settings'), to: '/settings' },
-						{ name: $t('settings_ai'), to: '/settings/ai' },
-					]"
+					:items="[{ name: $t('settings'), to: '/settings' }]"
 				/>
 			</template>
 
