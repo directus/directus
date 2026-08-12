@@ -2783,9 +2783,10 @@ interfaces:
     toolbar: Toolbar
     custom_formats: Custom Formats
     custom_formats_note:
-      A list of custom inline formats. Each entry needs a `title` and an `inline` tag, with optional `classes`,
-      `styles`, and `attributes`. When set, a Formats dropdown is added to the toolbar. Block-level and nested formats
-      are not supported.
+      A list of custom formats. Each entry needs a `title` plus either an `inline` tag, a `block` tag, a `selector` of
+      block tags, or `items` to group entries into a submenu. Optional `classes`, `styles`, and `attributes` can also be
+      added. When set, a Formats dropdown is added to the toolbar. Formatting with `block` converts between paragraphs
+      and headings only, and `wrapper` entries are not supported.
     options_override: Options Override (Deprecated)
     options_override_note:
       Deprecated legacy TinyMCE overrides. This value is no longer applied by the editor and is kept for reference only.

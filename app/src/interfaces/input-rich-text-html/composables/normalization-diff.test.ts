@@ -69,12 +69,31 @@ describe('computeNormalizationDiff', () => {
 	test('still flags custom-format markup when the extensions are missing', () => {
 		expect(removedText('<p><cite class="src">b</cite></p>')).toContain('cite');
 	});
+
+	// Block formats are plain preserved attributes rather than instance-only marks, so they need no
+	// extensions passed in and must never surface in the unsupported-content warning.
+	test('returns null for block-level custom-format markup without any extensions', () => {
+		const { extensions } = buildCustomFormats([
+			{ title: 'Dropcap', block: 'p', classes: 'dropcap' },
+			{ title: 'Eyebrow', selector: 'h2', classes: 'eyebrow' },
+		]);
+
+		expect(extensions).toHaveLength(0);
+
+		expect(
+			computeNormalizationDiff('<p class="intro dropcap" data-latex="true">a</p><h2 class="eyebrow">b</h2>'),
+		).toBeNull();
+	});
 });
 
 describe('computeValueNormalizationDiff', () => {
 	test('returns null for custom-format markup when its extensions are supplied', () => {
 		const { extensions } = buildCustomFormats([{ title: 'Cite', inline: 'cite', classes: 'src' }]);
 		expect(computeValueNormalizationDiff('<p><cite class="src">b</cite></p>', extensions)).toBeNull();
+	});
+
+	test('returns null for a stored value carrying block-level custom-format classes', () => {
+		expect(computeValueNormalizationDiff('<p class="dropcap">a</p><h2 class="eyebrow">b</h2>')).toBeNull();
 	});
 
 	test('reuses the verdict for a value already checked against the same schema', () => {
