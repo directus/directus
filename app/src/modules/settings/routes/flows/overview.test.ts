@@ -279,3 +279,26 @@ describe('FlowsOverview - openDuplicateFlow', () => {
 		expect(vm.duplicateDialogActive).toBe(false);
 	});
 });
+
+describe('FlowsOverview - toggleFlowStatusById', () => {
+	test('opens the limit modal when activating a Flow exceeds the license limit', async () => {
+		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
+
+		api.patch.mockRejectedValue({
+			response: { data: { errors: [{ extensions: { code: 'LIMIT_EXCEEDED' } }] } },
+		});
+
+		const { unexpectedError } = (await vi.importMock('@/utils/unexpected-error')) as {
+			unexpectedError: ReturnType<typeof vi.fn>;
+		};
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		const vm = wrapper.vm as any;
+		await vm.toggleFlowStatusById('flow-1', 'inactive');
+
+		expect(api.patch).toHaveBeenCalledWith('/flows/flow-1', { status: 'active' });
+		expect(vm.flowsLimitModalOpen).toBe(true);
+		expect(unexpectedError).not.toHaveBeenCalled();
+	});
+});

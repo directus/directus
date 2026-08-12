@@ -29,6 +29,7 @@ import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vu
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { useLicenseStore } from '@/stores/license';
+import { extractErrorCode } from '@/utils/extract-error-code';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -182,7 +183,12 @@ async function toggleFlowStatusById(id: string, value: string) {
 		await flowsStore.hydrate();
 		licenseStore.hydrate();
 	} catch (error) {
-		unexpectedError(error);
+		// Activating a Flow beyond the license limit is a plan problem, not an unexpected one
+		if (extractErrorCode(error) === 'LIMIT_EXCEEDED') {
+			flowsLimitModalOpen.value = true;
+		} else {
+			unexpectedError(error);
+		}
 	}
 }
 
