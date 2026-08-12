@@ -39,6 +39,15 @@ vi.mock('@/composables/use-permissions', () => ({
 	}),
 }));
 
+const flowsLimit = { remaining: 1, hasRemaining: true };
+
+vi.mock('@/stores/license', () => ({
+	useLicenseStore: () => ({
+		limits: { flows: flowsLimit },
+		hydrate: vi.fn(),
+	}),
+}));
+
 vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),
 }));
@@ -106,6 +115,10 @@ beforeEach(async () => {
 			'v-card-actions',
 			'flow-drawer',
 			'router-view',
+			'v-input',
+			'v-card-text',
+			'max-capacity-alert',
+			'entitlement-limit-modal',
 		],
 		plugins: [router, i18n, createTestingPinia({ createSpy: vi.fn, stubActions: false })],
 		directives: {
@@ -115,6 +128,9 @@ beforeEach(async () => {
 
 	// Mock i18n.t to return the key to avoid translation warnings
 	vi.spyOn(i18n.global, 't').mockImplementation((key: string | number) => String(key) as any);
+
+	flowsLimit.remaining = 1;
+	flowsLimit.hasRemaining = true;
 });
 
 describe('FlowsOverview - navigateToFlow', () => {
@@ -227,5 +243,59 @@ describe('FlowsOverview - navigateToFlow', () => {
 		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/settings/flows/flow-1'), '_blank');
 
 		expect(routerPushSpy).not.toHaveBeenCalled();
+	});
+});
+
+describe('FlowsOverview - openDuplicateFlow', () => {
+	const mockFlow = {
+		id: 'flow-1',
+		name: 'Test Flow',
+		status: 'active',
+	} as FlowRaw;
+
+	test('opens the duplicate dialog with the name prefilled while Flow capacity remains', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+
+		const vm = wrapper.vm as any;
+		vm.openDuplicateFlow(mockFlow);
+
+		expect(vm.duplicateDialogActive).toBe(true);
+		expect(vm.duplicateName).toBe('Test Flow (copy)');
+		expect(vm.duplicateSource).toEqual(mockFlow);
+		expect(vm.flowsLimitModalOpen).toBe(false);
+	});
+
+	test('opens the limit modal instead once Flow capacity is exhausted', async () => {
+		flowsLimit.remaining = 0;
+		flowsLimit.hasRemaining = false;
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		const vm = wrapper.vm as any;
+		vm.openDuplicateFlow(mockFlow);
+
+		expect(vm.flowsLimitModalOpen).toBe(true);
+		expect(vm.duplicateDialogActive).toBe(false);
+		expect(vm.duplicateSource).toBeNull();
+	});
+
+	test('duplicating closes the dialog once the new Flow is created', async () => {
+		const api = (await vi.importMock<{ default: { post: ReturnType<typeof vi.fn> } }>('@/api')).default;
+		api.post.mockResolvedValue({ data: { data: { id: 'new-flow-id' } } });
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		const vm = wrapper.vm as any;
+		vm.openDuplicateFlow(mockFlow);
+
+		await vm.duplicate();
+
+		expect(api.post).toHaveBeenCalledWith(
+			'/flows',
+			expect.objectContaining({ name: 'Test Flow (copy)', status: 'inactive' }),
+			expect.any(Object),
+		);
+
+		expect(vm.duplicateDialogActive).toBe(false);
 	});
 });
