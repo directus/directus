@@ -549,7 +549,7 @@ watch(
 	{ immediate: true },
 );
 
-const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
+const { flowDialogsContext, provideRunManualFlow, sidebarManualFlows } = useFlows({
 	collection,
 	primaryKey: existingPrimaryKey,
 	location: 'item',
@@ -1412,7 +1412,7 @@ function useAutoSwitchToDraft() {
 					:primary-key="resolvedPrimaryKey"
 					:allowed="shareAllowed"
 				/>
-				<FlowSidebarDetail v-if="currentVersion === null" :manual-flows />
+				<FlowSidebarDetail v-if="currentVersion === null" :manual-flows="sidebarManualFlows" />
 			</template>
 		</template>
 

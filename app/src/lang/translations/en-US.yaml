@@ -3184,6 +3184,7 @@ triggers:
     collection_and_item: Collection & Item Pages
     collection_only: Collection Page Only
     item_only: Item Page Only
+    hidden: None (Hidden)
     collection_page: Collection Page
     require_selection: Requires Selection
 a_flow_uuid: Select a Flow to trigger...
