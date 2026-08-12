@@ -16,7 +16,9 @@ export function useDuplicate({ source, name, onSuccess }: UseDuplicateOptions) {
 	return { duplicating, duplicate };
 
 	async function duplicate() {
-		if (!source.value || !name.value || duplicating.value) return;
+		const newName = name.value.trim();
+
+		if (!source.value || !newName || duplicating.value) return;
 
 		const flow = source.value;
 		duplicating.value = true;
@@ -27,7 +29,7 @@ export function useDuplicate({ source, name, onSuccess }: UseDuplicateOptions) {
 			const newFlowResponse = await api.post(
 				'/flows',
 				{
-					name: name.value,
+					name: newName,
 					icon: flow.icon,
 					color: flow.color,
 					description: flow.description,

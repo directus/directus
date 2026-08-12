@@ -268,6 +268,41 @@ describe('useDuplicate', () => {
 		expect(unexpectedError).toHaveBeenCalled();
 	});
 
+	it('trims the given name', async () => {
+		mockCreateResponses();
+
+		const { duplicate } = useDuplicate({
+			source: ref(source),
+			name: ref('  Notify (copy)  '),
+			onSuccess: vi.fn(),
+		});
+
+		await duplicate();
+
+		expect(api.post).toHaveBeenCalledWith(
+			'/flows',
+			expect.objectContaining({ name: 'Notify (copy)' }),
+			expect.any(Object),
+		);
+	});
+
+	it('does nothing when the given name is only whitespace', async () => {
+		mockCreateResponses();
+
+		const onSuccess = vi.fn();
+
+		const { duplicate } = useDuplicate({
+			source: ref(source),
+			name: ref('   '),
+			onSuccess,
+		});
+
+		await duplicate();
+
+		expect(api.post).not.toHaveBeenCalled();
+		expect(onSuccess).not.toHaveBeenCalled();
+	});
+
 	it('still reports the original failure when the rollback fails', async () => {
 		mockCreateResponses();
 		api.patch.mockRejectedValue(new Error('Nope'));
