@@ -58,31 +58,48 @@ describe('Operations / Item Delete', () => {
 	});
 
 	describe('cross-field validation', () => {
-		test('should throw when neither keys nor query is provided', async () => {
-			await expect(run({})).rejects.toThrow('Must provide "keys" or "query"');
-			expect(ItemsService.prototype.deleteByQuery).not.toHaveBeenCalled();
-			expect(ItemsService.prototype.deleteMany).not.toHaveBeenCalled();
-		});
-
-		test('should throw when keys is an empty array and no query is provided', async () => {
-			await expect(run({ key: [] })).rejects.toThrow('"keys" cannot be empty');
-			expect(ItemsService.prototype.deleteByQuery).not.toHaveBeenCalled();
-			expect(ItemsService.prototype.deleteMany).not.toHaveBeenCalled();
-		});
-
 		test.each([
-			{ key: [1], label: 'a single key' },
-			{ key: [1, 2], label: 'multiple keys' },
-		])('should throw when both $label and query are provided', async ({ key }) => {
-			await expect(run({ key, query: testQuery })).rejects.toThrow('Cannot use both "keys" and "query"');
+			{
+				scenario: 'both a single key and query are provided',
+				options: { key: [1], query: testQuery },
+				reason: 'Cannot use both "keys" and "query"',
+			},
+			{
+				scenario: 'both multiple keys and query are provided',
+				options: { key: [1, 2], query: testQuery },
+				reason: 'Cannot use both "keys" and "query"',
+			},
+		])('should throw when $scenario', async ({ options, reason }) => {
+			await expect(run(options)).rejects.toThrow(reason);
+
+			expect(ItemsService.prototype.deleteByQuery).not.toHaveBeenCalled();
+			expect(ItemsService.prototype.deleteMany).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('no-op', () => {
+		test.each([
+			{ scenario: 'nothing at all', options: {} },
+			{ scenario: 'only an empty keys array', options: { key: [] } },
+			{ scenario: 'only an empty key string', options: { key: '' } },
+			{ scenario: 'empty keys and a null query', options: { key: [], query: null } },
+			{ scenario: 'an empty query object', options: { query: {} } },
+			{ scenario: 'empty keys and an empty query object', options: { key: [], query: {} } },
+			{ scenario: 'an empty query object as a JSON string', options: { query: '{}' } },
+		])('should return null and call nothing when given $scenario', async ({ options }) => {
+			const result = await run(options);
+
+			expect(result).toBe(null);
 			expect(ItemsService.prototype.deleteByQuery).not.toHaveBeenCalled();
 			expect(ItemsService.prototype.deleteMany).not.toHaveBeenCalled();
 		});
 	});
 
 	describe('routing', () => {
-		// Regression guard for the reported bug: empty keys must never fall through to deleteByQuery (delete-all)
-		test.each([undefined, []])('should call deleteByQuery when query is set and key is %s', async (key) => {
+		test.each([
+			{ scenario: 'undefined', key: undefined },
+			{ scenario: 'an empty array', key: [] },
+		])('should call deleteByQuery when query is set and key is $scenario', async ({ key }) => {
 			await run({ query: testQuery, key });
 
 			expect(ItemsService.prototype.deleteByQuery).toHaveBeenCalledWith(testQuery, expect.anything());
@@ -100,10 +117,26 @@ describe('Operations / Item Delete', () => {
 			expect(ItemsService.prototype.deleteMany).toHaveBeenCalledWith(expected, expect.anything());
 			expect(ItemsService.prototype.deleteByQuery).not.toHaveBeenCalled();
 		});
+
+		test('should call deleteByQuery when query is a JSON string', async () => {
+			await run({ query: '{"limit":-1}' });
+
+			expect(ItemsService.prototype.deleteByQuery).toHaveBeenCalledWith({ limit: -1 }, expect.anything());
+		});
+
+		test('should call deleteMany when keys are combined with an empty query object', async () => {
+			await run({ key: [1, 2], query: {} });
+
+			expect(ItemsService.prototype.deleteMany).toHaveBeenCalledWith([1, 2], expect.anything());
+			expect(ItemsService.prototype.deleteByQuery).not.toHaveBeenCalled();
+		});
 	});
 
 	describe('return value', () => {
-		test.each([1, [1]])('should return the scalar key for a single-key delete (key %s)', async (key) => {
+		test.each([
+			{ scenario: 'a scalar', key: 1 },
+			{ scenario: 'an array', key: [1] },
+		])('should return the scalar key for a single-key delete when key is $scenario', async ({ key }) => {
 			const result = await run({ key });
 			expect(result).toBe(1);
 		});

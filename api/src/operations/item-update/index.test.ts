@@ -38,7 +38,7 @@ describe('Operations / Item Update', () => {
 		{ permissions: '$public', expected: null },
 		{ permissions: 'test', expected: 'test' },
 	])('accountability for permissions "$permissions" should be $expected', async ({ permissions, expected }) => {
-		await run({ payload: testPayload, permissions });
+		await run({ payload: testPayload, key: 1, permissions });
 
 		expect(vi.mocked(ItemsService)).toHaveBeenCalledWith(
 			testCollection,
@@ -61,25 +61,60 @@ describe('Operations / Item Update', () => {
 
 	describe('cross-field validation', () => {
 		test.each([
-			{ key: [1], label: 'a single key' },
-			{ key: [1, 2], label: 'multiple keys' },
-		])('should throw when both $label and query are provided', async ({ key }) => {
-			await expect(run({ payload: testPayload, key, query: { limit: -1 } })).rejects.toThrow(
-				'Cannot use both "keys" and "query"',
-			);
+			{
+				scenario: 'both a single key and query are provided',
+				options: { key: [1], query: { limit: -1 } },
+				reason: 'Cannot use both "keys" and "query"',
+			},
+			{
+				scenario: 'both multiple keys and query are provided',
+				options: { key: [1, 2], query: { limit: -1 } },
+				reason: 'Cannot use both "keys" and "query"',
+			},
+			{
+				scenario: 'a batch payload is combined with keys',
+				options: { payload: [{ id: 1, foo: 'a' }], key: [1] },
+				reason: 'Cannot use "keys" or "query" with a batch payload',
+			},
+			{
+				scenario: 'a batch payload is combined with a query',
+				options: { payload: [{ id: 1, foo: 'a' }], query: { limit: -1 } },
+				reason: 'Cannot use "keys" or "query" with a batch payload',
+			},
+			{
+				scenario: 'a batch payload is combined with both keys and a query',
+				options: { payload: [{ id: 1, foo: 'a' }], key: [1], query: { limit: -1 } },
+				reason: 'Cannot use both "keys" and "query"',
+			},
+		])('should throw when $scenario', async ({ options, reason }) => {
+			await expect(run({ payload: testPayload, ...options })).rejects.toThrow(reason);
 
 			expect(ItemsService.prototype.updateByQuery).not.toHaveBeenCalled();
 			expect(ItemsService.prototype.updateMany).not.toHaveBeenCalled();
+			expect(ItemsService.prototype.updateBatch).not.toHaveBeenCalled();
 		});
 	});
 
-	describe('routing', () => {
-		// Without a payload there is nothing to update, so the operation is a no-op returning null
+	describe('no-op', () => {
 		test.each([
-			{ scenario: 'a key but no payload', options: { key: 1 } },
 			{ scenario: 'nothing at all', options: {} },
-			{ scenario: 'only an empty keys array', options: { key: [] } },
+			{ scenario: 'a key but no payload', options: { key: 1 } },
 			{ scenario: 'a query but no payload', options: { query: { limit: -1 } } },
+			{ scenario: 'only an empty keys array', options: { key: [] } },
+			{ scenario: 'an empty payload object', options: { payload: {}, key: 1 } },
+			{ scenario: 'an empty payload object and a query', options: { payload: {}, query: { limit: -1 } } },
+			{ scenario: 'an empty payload object as a JSON string', options: { payload: '{}', key: 1 } },
+			{ scenario: 'an empty batch payload', options: { payload: [] } },
+			{ scenario: 'a payload but no keys or query', options: { payload: testPayload } },
+			{ scenario: 'a payload and empty keys', options: { payload: testPayload, key: [] } },
+			{ scenario: 'a payload and an empty key string', options: { payload: testPayload, key: '' } },
+			{ scenario: 'a payload, empty keys and a null query', options: { payload: testPayload, key: [], query: null } },
+			{ scenario: 'a payload and an empty query object', options: { payload: testPayload, query: {} } },
+			{
+				scenario: 'a payload and an empty query object as a JSON string',
+				options: { payload: testPayload, query: '{}' },
+			},
+			{ scenario: 'a payload, empty keys and an empty query', options: { payload: testPayload, key: [], query: {} } },
 		])('should return null and call nothing when given $scenario', async ({ options }) => {
 			const result = await run(options);
 
@@ -88,7 +123,9 @@ describe('Operations / Item Update', () => {
 			expect(ItemsService.prototype.updateMany).not.toHaveBeenCalled();
 			expect(ItemsService.prototype.updateBatch).not.toHaveBeenCalled();
 		});
+	});
 
+	describe('routing', () => {
 		test('should call updateBatch when payload is an array', async () => {
 			const batchPayload = [
 				{ id: 1, foo: 'a' },
@@ -102,7 +139,10 @@ describe('Operations / Item Update', () => {
 			expect(ItemsService.prototype.updateMany).not.toHaveBeenCalled();
 		});
 
-		test.each([undefined, []])('should call updateByQuery when query is set and key is %s', async (key) => {
+		test.each([
+			{ scenario: 'undefined', key: undefined },
+			{ scenario: 'an empty array', key: [] },
+		])('should call updateByQuery when query is set and key is $scenario', async ({ key }) => {
 			const query = { limit: -1 };
 
 			await run({ payload: testPayload, query, key });
@@ -125,25 +165,41 @@ describe('Operations / Item Update', () => {
 			expect(ItemsService.prototype.updateBatch).not.toHaveBeenCalled();
 		});
 
-		// Regression guard for the reported bug: empty keys must never fall through to updateByQuery (update-all)
-		test.each([
-			{ scenario: 'empty keys with payload, no query', options: { payload: testPayload, key: [] } },
-			{ scenario: 'payload only, no keys, no query', options: { payload: testPayload } },
-			{
-				scenario: 'empty keys, payload and null query (reported case)',
-				options: { payload: testPayload, key: [], query: null },
-			},
-		])('should be a no-op updateMany([]) for $scenario', async ({ options }) => {
-			await run(options);
+		test('should call updateMany when payload is a JSON string', async () => {
+			await run({ payload: JSON.stringify(testPayload), key: [1, 2] });
 
-			expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith([], testPayload, expect.anything());
+			expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith([1, 2], testPayload, expect.anything());
+		});
+
+		test('should call updateByQuery when query is a JSON string', async () => {
+			await run({ payload: testPayload, query: '{"limit":-1}' });
+
+			expect(ItemsService.prototype.updateByQuery).toHaveBeenCalledWith({ limit: -1 }, testPayload, expect.anything());
+		});
+
+		test('should call updateMany when keys are combined with an empty query object', async () => {
+			await run({ payload: testPayload, key: [1, 2], query: {} });
+
+			expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith([1, 2], testPayload, expect.anything());
 			expect(ItemsService.prototype.updateByQuery).not.toHaveBeenCalled();
-			expect(ItemsService.prototype.updateBatch).not.toHaveBeenCalled();
+		});
+
+		test('should call updateBatch when a batch payload is combined with empty keys and an empty query', async () => {
+			const batchPayload = [{ id: 1, foo: 'a' }];
+
+			await run({ payload: batchPayload, key: [], query: {} });
+
+			expect(ItemsService.prototype.updateBatch).toHaveBeenCalledWith(batchPayload, expect.anything());
+			expect(ItemsService.prototype.updateMany).not.toHaveBeenCalled();
+			expect(ItemsService.prototype.updateByQuery).not.toHaveBeenCalled();
 		});
 	});
 
 	describe('return value', () => {
-		test.each([1, [1]])('should return the scalar key for a single-key update (key %s)', async (key) => {
+		test.each([
+			{ scenario: 'a scalar', key: 1 },
+			{ scenario: 'an array', key: [1] },
+		])('should return the scalar key for a single-key update when key is $scenario', async ({ key }) => {
 			const result = await run({ payload: testPayload, key });
 			expect(result).toBe(1);
 		});
