@@ -63,7 +63,7 @@ async function hydrateAndLogin() {
 	try {
 		await hydrate();
 		await userPromise;
-		navigateAfterLogin(router, initialRedirect || lastPage.value || `/content`);
+		await navigateAfterLogin(router, initialRedirect || lastPage.value || `/content`);
 	} finally {
 		navigating = false;
 	}

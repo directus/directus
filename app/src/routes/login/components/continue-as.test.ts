@@ -104,6 +104,37 @@ test('navigates only once to the redirect query when the component re-mounts whi
 	expect(router.currentRoute.value.fullPath).toBe('/settings/data-model');
 });
 
+test('navigates only once when the component re-mounts while the navigation is still pending', async () => {
+	// Slow guard on the target, so the navigation stays in flight while we re-mount
+	router.addRoute({
+		name: 'slow-target',
+		path: '/settings/data-model',
+		component: { template: '<div />' },
+		beforeEnter: () => new Promise<void>((resolve) => setTimeout(resolve, 10)).then(() => true),
+	});
+
+	const push = vi.spyOn(router, 'push');
+
+	mountContinueAs();
+	await flushPromises();
+	await resolveHydrate();
+
+	// Navigation has been started but has not settled yet
+	expect(push).toHaveBeenCalledOnce();
+	expect(router.currentRoute.value.name).toBe('login');
+
+	mountContinueAs();
+	await flushPromises();
+	await resolveHydrate();
+
+	expect(push).toHaveBeenCalledOnce();
+
+	await vi.waitUntil(() => router.currentRoute.value.name === 'slow-target');
+
+	expect(push).toHaveBeenCalledOnce();
+	expect(router.currentRoute.value.fullPath).toBe('/settings/data-model');
+});
+
 test('navigates again on a later mount once the previous login finished', async () => {
 	mountContinueAs();
 	await flushPromises();
