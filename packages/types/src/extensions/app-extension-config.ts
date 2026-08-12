@@ -52,7 +52,7 @@ export type ExtensionSandboxRequestedScopes = z.infer<typeof ExtensionSandboxReq
 export const ExtensionSandboxOptions = z.optional(
 	z.object({
 		enabled: z.boolean(),
-		requestedScopes: ExtensionSandboxRequestedScopes,
+		requestedScopes: z.optional(ExtensionSandboxRequestedScopes),
 	}),
 );
 
