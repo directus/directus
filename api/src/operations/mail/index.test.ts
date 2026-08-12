@@ -1,4 +1,3 @@
-import { useEnv } from '@directus/env';
 import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
@@ -180,7 +179,7 @@ describe('Operations / Mail', () => {
 
 		expect(mailServiceSendSpy).toHaveBeenCalledWith(
 			expect.objectContaining({
-				from: { name: 'Acme Support', address: useEnv()['EMAIL_FROM'] },
+				from: { name: 'Acme Support', address: 'no-reply@example.com' },
 			}),
 		);
 	});
