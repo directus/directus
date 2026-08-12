@@ -400,27 +400,39 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 			}
 		}
 
-		// Headers must round-trip, so warn instead of stripping possible credentials.
+		// The options must round-trip, so warn instead of stripping possible credentials.
 		if (resource.collection === 'directus_operations') {
-			const carriers = rows.filter((record) => {
-				if (record['type'] !== 'request') return false;
+			const carriers: string[] = [];
+
+			for (const record of rows) {
+				if (record['type'] !== 'request') continue;
 
 				const options = record['options'];
-				if (!isPlainObject(options)) return false;
+				if (!isPlainObject(options)) continue;
 
-				const headers = (options as Record<string, unknown>)['headers'];
-				return Array.isArray(headers) && headers.length > 0;
-			});
+				const opts = options as Record<string, unknown>;
+				const parts: string[] = [];
+
+				const headers = opts['headers'];
+				if (Array.isArray(headers) && headers.length > 0) parts.push('headers');
+
+				const url = opts['url'];
+				if (typeof url === 'string' && (url.includes('?') || url.includes('@'))) parts.push('URL');
+
+				const body = opts['body'];
+				if ((typeof body === 'string' && body !== '') || isPlainObject(body)) parts.push('body');
+
+				if (parts.length === 0) continue;
+
+				// A key is only unique per flow, so name the operation the way the Data Studio does.
+				const name = record['name'];
+				const label = typeof name === 'string' && name !== '' ? name : String(record['key'] ?? record['id']);
+				carriers.push(`${label} (${parts.join(', ')})`);
+			}
 
 			if (carriers.length > 0) {
-				// A key is only unique per flow, so name the operation the way the Data Studio does.
-				const names = carriers.map((record) => {
-					const name = record['name'];
-					return typeof name === 'string' && name !== '' ? name : String(record['key'] ?? record['id']);
-				});
-
 				ctx.ui.warn(
-					`${resource.name}: request operations with custom headers are pulled verbatim: ${names.join(', ')}. Headers routinely embed Authorization values and API keys — review them for credentials before committing.`,
+					`${resource.name}: request operations are pulled verbatim, and headers, URL parameters, and bodies routinely embed Authorization values and API keys: ${carriers.join(', ')}. Review them for credentials before committing.`,
 				);
 			}
 		}

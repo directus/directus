@@ -1105,6 +1105,30 @@ describe('sync pull resources and data', () => {
 		expect(opsBytes).toContain('Bearer live-secret');
 	});
 
+	it('warns for credentials carried in a request operation URL or body, naming what carries them', async () => {
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+		interceptList('/flows', [{ id: 'f1', name: 'Nightly' }]);
+
+		interceptList('/operations', [
+			{
+				id: 'o1',
+				name: 'Call Billing',
+				key: 'call_billing',
+				type: 'request',
+				flow: 'f1',
+				options: { url: 'https://billing.example.com?api_key=live-key', headers: [], body: '{"token":"live-token"}' },
+			},
+		]);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--flows')).toBe(0);
+
+		const err = stderr.join('');
+		expect(err).toContain('Call Billing (URL, body)');
+		expect(err).toMatch(/credential/i);
+	});
+
 	it('stays silent for request operations without headers — an always-on warning trains operators to ignore it', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
