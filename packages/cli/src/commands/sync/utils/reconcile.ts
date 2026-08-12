@@ -99,67 +99,89 @@ function reconcileOne(
 
 	if (!claimed.has(input.collection)) claimed.set(input.collection, collectionClaimed);
 
-	const targetsByKey = groupTargets(input, references, collectionClaimed);
 	const existingBucket = existing[input.collection] ?? {};
-	const sourcesByKey = new Map<string, string[]>();
-	const unmatched: string[] = [];
-
-	for (const record of input.sourceRecords) {
-		const sourceId = String(record[input.primaryKey]);
-
-		if (Object.hasOwn(existingBucket, sourceId)) continue;
-
-		const components = keyComponents(record, input.naturalKey, references, (referenced, id) => {
-			return progress.get(referenced)?.get(id) ?? UNTRANSLATABLE;
-		});
-
-		if (components === null) {
-			unmatched.push(sourceId);
-			continue;
-		}
-
-		const key = JSON.stringify(components);
-		const bucket = sourcesByKey.get(key);
-
-		if (bucket === undefined) {
-			sourcesByKey.set(key, [sourceId]);
-		} else {
-			bucket.push(sourceId);
-		}
-	}
 
 	const matched: { sourceId: string; targetId: string; key: string }[] = [];
 	const ambiguous: { sourceId: string; key: string; targetIds: readonly string[] }[] = [];
+	const unmatched: string[] = [];
 
-	for (const [key, sourceIds] of sourcesByKey) {
-		const targetIds = targetsByKey.get(key) ?? [];
+	// A self-referential key component (a folder's parent) only resolves once the parent itself has
+	// matched, so keys are recomputed until a pass matches nothing new; the last pass classifies the rest.
+	let pending = input.sourceRecords.filter(
+		(record) => !Object.hasOwn(existingBucket, String(record[input.primaryKey])),
+	);
 
-		if (targetIds.length === 0) {
-			for (const sourceId of sourceIds) unmatched.push(sourceId);
-			continue;
-		}
+	while (true) {
+		const targetsByKey = groupTargets(input, references, collectionClaimed);
+		const unresolved: Record<string, unknown>[] = [];
+		const sourcesByKey = new Map<string, { record: Record<string, unknown>; sourceId: string }[]>();
 
-		if (sourceIds.length === 1 && targetIds.length === 1) {
-			const [sourceId] = sourceIds;
-			const [targetId] = targetIds;
+		for (const record of pending) {
+			const sourceId = String(record[input.primaryKey]);
 
-			if (sourceId !== undefined && targetId !== undefined) {
-				matched.push({ sourceId, targetId, key });
+			const components = keyComponents(record, input.naturalKey, references, (referenced, id) => {
+				return progress.get(referenced)?.get(id) ?? UNTRANSLATABLE;
+			});
 
-				// Later child keys need this mapping during the same reconciliation pass.
-				collectionProgress.set(sourceId, targetId);
-				collectionClaimed.add(targetId);
+			if (components === null) {
+				unresolved.push(record);
+				continue;
 			}
 
-			continue;
+			const key = JSON.stringify(components);
+			const bucket = sourcesByKey.get(key);
+
+			if (bucket === undefined) {
+				sourcesByKey.set(key, [{ record, sourceId }]);
+			} else {
+				bucket.push({ record, sourceId });
+			}
 		}
 
-		// Never guess among duplicate natural keys.
-		const targetIdsSorted = [...targetIds].sort(byCodepoint);
+		const rest: Record<string, unknown>[] = [];
+		let matchedThisPass = 0;
 
-		for (const sourceId of sourceIds) {
-			ambiguous.push({ sourceId, key, targetIds: targetIdsSorted });
+		for (const [key, entries] of sourcesByKey) {
+			const targetIds = targetsByKey.get(key) ?? [];
+			const [entry] = entries;
+			const [targetId] = targetIds;
+
+			if (entries.length === 1 && targetIds.length === 1 && entry !== undefined && targetId !== undefined) {
+				matched.push({ sourceId: entry.sourceId, targetId, key });
+
+				// Later child keys need this mapping during the same reconciliation pass.
+				collectionProgress.set(entry.sourceId, targetId);
+				collectionClaimed.add(targetId);
+				matchedThisPass += 1;
+				continue;
+			}
+
+			// Unmatched and ambiguous stay pending: a later pass can free a target or resolve a parent.
+			rest.push(...entries.map((item) => item.record));
 		}
+
+		if (matchedThisPass === 0) {
+			for (const record of unresolved) unmatched.push(String(record[input.primaryKey]));
+
+			for (const [key, entries] of sourcesByKey) {
+				const targetIds = targetsByKey.get(key) ?? [];
+
+				if (targetIds.length === 0) {
+					for (const item of entries) unmatched.push(item.sourceId);
+					continue;
+				}
+
+				const targetIdsSorted = [...targetIds].sort(byCodepoint);
+
+				for (const item of entries) {
+					ambiguous.push({ sourceId: item.sourceId, key, targetIds: targetIdsSorted });
+				}
+			}
+
+			break;
+		}
+
+		pending = [...rest, ...unresolved];
 	}
 
 	matched.sort((a, b) => byCodepoint(a.sourceId, b.sourceId));

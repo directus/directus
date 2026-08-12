@@ -177,6 +177,63 @@ describe('reconcileCollections', () => {
 		expect(forCollection(results, 'directus_settings').matched).toEqual([{ sourceId: '5', targetId: '9', key: '[]' }]);
 	});
 
+	it('leaves same-name folders under different parents unmatched instead of moving the target tree', () => {
+		const results = reconcileCollections(
+			[
+				input(
+					'directus_folders',
+					[
+						{ id: 'sa', name: 'Assets', parent: null },
+						{ id: 'si', name: 'Images', parent: 'sa' },
+					],
+					[
+						{ id: 'tr', name: 'Archive', parent: null },
+						{ id: 'ti', name: 'Images', parent: 'tr' },
+					],
+				),
+			],
+			{},
+		);
+
+		const folders = forCollection(results, 'directus_folders');
+
+		expect(folders.matched).toEqual([]);
+		expect(folders.ambiguous).toEqual([]);
+		expect(folders.unmatched).toEqual(['sa', 'si']);
+	});
+
+	it('matches a folder child through a parent matched in the same pass — ancestry resolves depth-first', () => {
+		const results = reconcileCollections(
+			[
+				input(
+					'directus_folders',
+					[
+						{ id: 'si', name: 'Images', parent: 'sa' },
+						{ id: 'sd', name: 'Deep', parent: 'si' },
+						{ id: 'sa', name: 'Assets', parent: null },
+					],
+					[
+						{ id: 'td', name: 'Deep', parent: 'ti' },
+						{ id: 'ta', name: 'Assets', parent: null },
+						{ id: 'ti', name: 'Images', parent: 'ta' },
+					],
+				),
+			],
+			{},
+		);
+
+		const folders = forCollection(results, 'directus_folders');
+
+		expect(folders.matched).toEqual([
+			{ sourceId: 'sa', targetId: 'ta', key: JSON.stringify(['Assets', null]) },
+			{ sourceId: 'sd', targetId: 'td', key: JSON.stringify(['Deep', 'ti']) },
+			{ sourceId: 'si', targetId: 'ti', key: JSON.stringify(['Images', 'ta']) },
+		]);
+
+		expect(folders.ambiguous).toEqual([]);
+		expect(folders.unmatched).toEqual([]);
+	});
+
 	it('produces identical output when record order is shuffled', () => {
 		const base: ReconcileInput[] = [
 			input(

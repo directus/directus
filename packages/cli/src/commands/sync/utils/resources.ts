@@ -254,7 +254,8 @@ const RESOURCE_LIST = [
 		mustPull: [],
 		strip: [],
 		aliases: [],
-		naturalKey: ['name'],
+		// Ancestry included: one source and target folder sharing a name under different parents must not match.
+		naturalKey: ['name', 'parent'],
 		fkFields: [{ field: 'parent', references: 'directus_folders' }],
 	},
 	{
