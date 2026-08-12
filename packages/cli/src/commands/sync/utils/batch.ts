@@ -83,6 +83,26 @@ export function assembleBatch(
 		unchanged.set(collection, set);
 	}
 
+	// Preserving a user-attached grant is empty if its policy dies: directus_access.policy cascades on
+	// delete, so a target-only policy those grants reference must ride the keep set too, with its
+	// permission rules. Policies the sync files already map need no echo — the batch keeps them itself.
+	const echoPolicyIds = new Set<string>();
+
+	if (mode === 'mirror' && !includesUsers) {
+		for (const row of targets.get('directus_access') ?? []) {
+			if (row['user'] !== null && row['user'] !== undefined && row['policy'] !== null && row['policy'] !== undefined) {
+				echoPolicyIds.add(String(row['policy']));
+			}
+		}
+
+		const policies = system.find((entry) => entry.resource.collection === 'directus_policies');
+
+		for (const record of policies?.data.records ?? []) {
+			const mappedPk = bucket['directus_policies']?.[String(record[policies!.resource.primaryKey])];
+			if (mappedPk !== undefined) echoPolicyIds.delete(mappedPk);
+		}
+	}
+
 	for (const { data, resource } of system) {
 		const collectionBucket = bucket[resource.collection] ?? {};
 		const targetRows = targets.get(resource.collection);
@@ -146,9 +166,16 @@ export function assembleBatch(
 			sent.push(result.sent);
 		}
 
-		if (mode === 'mirror' && resource.collection === 'directus_access' && !includesUsers) {
+		if (mode === 'mirror' && !includesUsers) {
+			const shouldEcho = (row: Record<string, unknown>): boolean => {
+				if (resource.collection === 'directus_access') return row['user'] !== null && row['user'] !== undefined;
+				if (resource.collection === 'directus_policies') return echoPolicyIds.has(String(row[resource.primaryKey]));
+				if (resource.collection === 'directus_permissions') return echoPolicyIds.has(String(row['policy']));
+				return false;
+			};
+
 			for (const row of targetRows ?? []) {
-				if (row['user'] !== null && row['user'] !== undefined) {
+				if (shouldEcho(row)) {
 					items.push({ ...row });
 					markUnchanged(resource.collection, String(row[resource.primaryKey]));
 				}

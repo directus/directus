@@ -500,21 +500,85 @@ describe('interactive sync push', () => {
 		});
 	});
 
-	it("echoes the target's user-attached access records into a mirror batch so they survive the delete", async () => {
+	it("echoes the target's user-attached grants AND their target-only policies with rules into a mirror batch", async () => {
 		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
 
 		seedData([
 			{ collection: 'directus_roles', primaryKey: 'id', records: [{ id: 'sr1', name: 'Editor' }] },
+			{ collection: 'directus_policies', primaryKey: 'id', records: [{ id: 'sp1', name: 'Editor Policy' }] },
 			{
 				collection: 'directus_access',
 				primaryKey: 'id',
-				records: [{ id: 'sa1', role: 'sr1', user: null, policy: null }],
+				records: [{ id: 'sa1', role: 'sr1', user: null, policy: 'sp1' }],
+			},
+			{
+				collection: 'directus_permissions',
+				primaryKey: 'id',
+				records: [{ id: 4, policy: 'sp1', collection: 'articles', action: 'read' }],
 			},
 		]);
 
-		vi.mocked(fetchRecords)
-			.mockResolvedValueOnce([{ id: 't1', name: 'Editor' }])
-			.mockResolvedValueOnce([{ id: 'ta-user', role: 't1', user: 'u9', policy: null }]);
+		// A policy attached directly to a target user, with its own permission rule — neither is in local files.
+		const targetsByEndpoint: Record<string, Record<string, unknown>[]> = {
+			'/roles': [{ id: 't1', name: 'Editor' }],
+			'/policies': [{ id: 'tp-user', name: 'Local Ops' }],
+			'/access': [{ id: 'ta-user', role: null, user: 'u9', policy: 'tp-user' }],
+			'/permissions': [{ id: 9, policy: 'tp-user', collection: 'articles', action: 'update' }],
+		};
+
+		vi.mocked(fetchRecords).mockImplementation(async (_credential, source) => targetsByEndpoint[source.endpoint] ?? []);
+
+		vi.mocked(importBatch).mockResolvedValue(
+			importResult({
+				directus_permissions: { existing: [9], new: [31], deleted: [], mapped: { '-1': 31 } },
+			}),
+		);
+
+		vi.mocked(confirm).mockResolvedValueOnce(true);
+
+		await push({ to: 'staging', mode: 'mirror', project: 'default' }, ctxAt(dir));
+
+		const batch = vi.mocked(importBatch).mock.calls.at(-1)?.[1];
+		const byCollection = (name: string) => batch?.find((entry) => entry.collection === name)?.items;
+
+		expect(byCollection('directus_access')).toEqual([
+			{ id: 'sa1', role: 't1', user: null, policy: 'sp1' },
+			{ id: 'ta-user', role: null, user: 'u9', policy: 'tp-user' },
+		]);
+
+		// The policy deletion pass would cascade the preserved grant away without this echo.
+		expect(byCollection('directus_policies')).toEqual([
+			{ id: 'sp1', name: 'Editor Policy' },
+			{ id: 'tp-user', name: 'Local Ops' },
+		]);
+
+		// And the permissions pass would strip the echoed policy of its rules.
+		expect(byCollection('directus_permissions')).toEqual([
+			{ id: -1, policy: 'sp1', collection: 'articles', action: 'read' },
+			{ id: 9, policy: 'tp-user', collection: 'articles', action: 'update' },
+		]);
+	});
+
+	it('does not echo a policy the sync files already keep — the mapped record is its keep entry', async () => {
+		vi.mocked(fetchDiff).mockResolvedValueOnce(null);
+
+		seedData([
+			{ collection: 'directus_policies', primaryKey: 'id', records: [{ id: 'sp1', name: 'Editor Policy' }] },
+			{ collection: 'directus_access', primaryKey: 'id', records: [] },
+		]);
+
+		writeFileSync(
+			join(dir, 'directus', 'default', 'id_map.json'),
+			`${JSON.stringify({ formatVersion: 1, maps: { [source]: { [url]: { directus_policies: { sp1: 'tp1' } } } } })}\n`,
+		);
+
+		const targetsByEndpoint: Record<string, Record<string, unknown>[]> = {
+			'/policies': [{ id: 'tp1', name: 'Editor Policy' }],
+			'/access': [{ id: 'ta-user', role: null, user: 'u9', policy: 'tp1' }],
+			'/permissions': [],
+		};
+
+		vi.mocked(fetchRecords).mockImplementation(async (_credential, source) => targetsByEndpoint[source.endpoint] ?? []);
 
 		vi.mocked(importBatch).mockResolvedValue(importResult());
 		vi.mocked(confirm).mockResolvedValueOnce(true);
@@ -522,12 +586,9 @@ describe('interactive sync push', () => {
 		await push({ to: 'staging', mode: 'mirror', project: 'default' }, ctxAt(dir));
 
 		const batch = vi.mocked(importBatch).mock.calls.at(-1)?.[1];
-		const access = batch?.find((entry) => entry.collection === 'directus_access');
+		const policies = batch?.find((entry) => entry.collection === 'directus_policies');
 
-		expect(access?.items).toEqual([
-			{ id: 'sa1', role: 't1', user: null, policy: null },
-			{ id: 'ta-user', role: 't1', user: 'u9', policy: null },
-		]);
+		expect(policies?.items).toEqual([{ id: 'tp1', name: 'Editor Policy' }]);
 	});
 
 	it('uses a temporary numeric PK instead of overwriting an unrelated target record', async () => {
