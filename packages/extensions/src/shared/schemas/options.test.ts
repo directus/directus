@@ -27,6 +27,30 @@ describe('ExtensionOptions', () => {
 		expect(result.success).toBe(true);
 	});
 
+	it('accepts an empty sandbox object', () => {
+		const result = ExtensionOptions.safeParse({
+			host: '^11.0.0',
+			type: 'hook',
+			path: 'dist/index.js',
+			source: 'src/index.js',
+			sandbox: {},
+		});
+
+		expect(result.success).toBe(true);
+	});
+
+	it('accepts requested scopes without the enabled flag', () => {
+		const result = ExtensionOptions.safeParse({
+			host: '^11.0.0',
+			type: 'hook',
+			path: 'dist/index.js',
+			source: 'src/index.js',
+			sandbox: { requestedScopes: { log: {} } },
+		});
+
+		expect(result.success).toBe(true);
+	});
+
 	it('keeps requested scopes when they are provided', () => {
 		const result = ExtensionOptions.safeParse({
 			host: '^11.0.0',

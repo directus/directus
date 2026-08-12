@@ -97,7 +97,7 @@ const checkDirectusConfig = {
 
 		spinner.text = 'Checking if it will publish to the Directus Marketplace';
 
-		if (type === 'bundle' || (sandbox && !sandbox?.enabled && API_EXTENSION_TYPES.findIndex(type) >= 0)) {
+		if (type === 'bundle' || (sandbox && !sandbox.enabled && API_EXTENSION_TYPES.includes(type))) {
 			reports.push({
 				level: 'warn',
 				message: `${checkDirectusConfig.name}: Extension won't be generally visible in the Directus Marketplace`,

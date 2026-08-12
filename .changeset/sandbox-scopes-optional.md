@@ -3,4 +3,4 @@
 '@directus/types': patch
 ---
 
-Fixed extensions that set `sandbox` without `requestedScopes` being rejected as invalid
+Fixed extensions that set `sandbox` without `requestedScopes` or without `enabled` being rejected as invalid
