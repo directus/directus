@@ -2,7 +2,7 @@ name: CLA Assistant Comment
 
 # Keep this separate from the CLA check workflow: fork PR runs are intentionally
 # read-only, while this trusted workflow can write the sticky CLA comment after
-# reading only the minimal artifact signal from the completed check run.
+# reading only the minimal artifact signal from the completed check run. test
 on:
   workflow_run:
     workflows: [CLA Assistant]
