@@ -1434,7 +1434,8 @@ wysiwyg_options:
   normalization_warning_body:
     This content includes items the new editor doesn't support, so the field is read-only for now. If you edit anyway,
     those items will be removed when you save. To keep the stored HTML exactly as is, edit the raw HTML instead. This
-    warning will go away once the unsupported items are gone.
+    warning will go away once the unsupported items are gone. If you already saved without them, you can bring the
+    original content back from Revisions.
   normalization_warning_view_changes: View changes
   normalization_warning_keep_readonly: Keep Read-only
   normalization_warning_edit_anyway: Edit Anyway
@@ -1443,6 +1444,9 @@ wysiwyg_options:
     This field includes formatting the new editor doesn't support, so it's read-only. Select the field to choose how to
     edit it.
   normalization_locked_learn_more: Learn what changed
+  normalization_comparison_notice:
+    This version includes formatting the editor can't display, so the stored HTML is shown as is. Applying it restores
+    the content unchanged.
   fullscreen: Full Screen
   directionality: Directionality
   ltr: Left to Right
@@ -3184,6 +3188,7 @@ triggers:
     collection_and_item: Collection & Item Pages
     collection_only: Collection Page Only
     item_only: Item Page Only
+    hidden: None (Hidden)
     collection_page: Collection Page
     require_selection: Requires Selection
 a_flow_uuid: Select a Flow to trigger...
