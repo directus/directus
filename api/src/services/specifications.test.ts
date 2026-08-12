@@ -534,6 +534,94 @@ describe('Integration Tests', () => {
 						expect(spec.components?.schemas?.['Relations']).toBeDefined();
 					});
 				});
+
+				describe('info.version (hashedVersion)', () => {
+					it('is deterministic across repeated calls for the same caller', async () => {
+						const service = new SpecificationService({
+							knex: db,
+							schema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const first = await service.oas.generate();
+						const second = await service.oas.generate();
+
+						expect(first.info.version).toEqual(second.info.version);
+					});
+
+					it('is stable across callers with identical effective RBAC access', async () => {
+						vi.mocked(fetchPermissions).mockResolvedValue([
+							{ collection: 'test_table', action: 'read', fields: ['id'] } as any,
+						]);
+
+						const serviceA = new SpecificationService({
+							knex: db,
+							schema,
+							accountability: { role: 'role-a', user: 'user-a', admin: false } as Accountability,
+						});
+
+						const serviceB = new SpecificationService({
+							knex: db,
+							schema,
+							accountability: { role: 'role-b', user: 'user-b', admin: false } as Accountability,
+						});
+
+						const specA = await serviceA.oas.generate();
+						const specB = await serviceB.oas.generate();
+
+						expect(specA.info.version).toEqual(specB.info.version);
+					});
+
+					it('changes when the underlying spec shape changes', async () => {
+						const serviceWithBlob = new SpecificationService({
+							knex: db,
+							schema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const serviceWithoutBlob = new SpecificationService({
+							knex: db,
+							schema: schema2,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const specWithBlob = await serviceWithBlob.oas.generate();
+						const specWithoutBlob = await serviceWithoutBlob.oas.generate();
+
+						expect(specWithBlob.info.version).not.toEqual(specWithoutBlob.info.version);
+					});
+
+					it("changes when the caller's RBAC-visible paths change", async () => {
+						vi.mocked(fetchPermissions)
+							.mockResolvedValueOnce([{ collection: 'test_table', action: 'read', fields: ['id'] } as any])
+							.mockResolvedValueOnce([]);
+
+						const serviceReadOnly = new SpecificationService({
+							knex: db,
+							schema,
+							accountability: { role: 'some-role', admin: false } as Accountability,
+						});
+
+						const specReadOnly = await serviceReadOnly.oas.generate();
+
+						vi.mocked(fetchPermissions)
+							.mockResolvedValueOnce([
+								{ collection: 'test_table', action: 'read', fields: ['id'] } as any,
+								{ collection: 'test_table', action: 'create', fields: ['id'] } as any,
+							])
+							.mockResolvedValueOnce([]);
+
+						const serviceReadWrite = new SpecificationService({
+							knex: db,
+							schema,
+							accountability: { role: 'some-role', admin: false } as Accountability,
+						});
+
+						const specReadWrite = await serviceReadWrite.oas.generate();
+
+						expect(specReadOnly.info.version).not.toEqual(specReadWrite.info.version);
+					});
+				});
 			});
 		});
 	});
