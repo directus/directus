@@ -846,6 +846,35 @@ describe('sync pull resources and data', () => {
 		expect(stderr.join('')).toContain('Name the resources you want');
 	});
 
+	// Dependency expansion would otherwise pull the excluded resource back in without a word.
+	it('refuses an exclusion a retained resource would pull back, naming the dependent', async () => {
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--no-policies')).toBe(1);
+
+		const err = stderr.join('');
+		expect(err).toContain('Cannot exclude "policies"');
+		expect(err).toContain('"roles" requires it');
+		expect(err).toContain('Exclude "roles" as well');
+	});
+
+	it('excludes cleanly when the dependent is excluded along with its dependency', async () => {
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+
+		for (const path of ['/flows', '/operations', '/dashboards', '/panels', '/folders', '/translations']) {
+			interceptList(path, []);
+		}
+
+		interceptSingleton('/settings', { id: 1 });
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--no-policies', '--no-roles')).toBe(0);
+		expect(pulledCollections()).not.toContain('directus_policies');
+		expect(pulledCollections()).not.toContain('directus_roles');
+	});
+
 	it('never writes secrets or alias views to disk', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);

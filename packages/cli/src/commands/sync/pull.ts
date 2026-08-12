@@ -147,6 +147,25 @@ function resolveScope(options: PullOptions, projectConfig: ProjectConfig | undef
 // Users require explicit selection; every other configuration resource is included by default.
 const DEFAULT_RESOURCE_NAMES = SELECTABLE_RESOURCES.filter((name) => name !== 'users');
 
+/** Dependency expansion would silently pull an excluded resource back in. */
+function resolveWithoutExcluded(kept: string[], excluded: readonly string[], deps: boolean): Resource[] {
+	const resources = resolveResources(kept, { deps });
+
+	for (const entry of resources) {
+		if (!excluded.includes(entry.name)) continue;
+
+		const dependent = kept.find((name) =>
+			resolveResources([name], { deps }).some((required) => required.name === entry.name),
+		);
+
+		throw new CliError('USAGE', `Cannot exclude "${entry.name}": "${dependent}" requires it and would pull it back.`, {
+			hint: `Exclude "${dependent}" as well, or keep "${entry.name}".`,
+		});
+	}
+
+	return resources;
+}
+
 function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig | undefined): Resource[] {
 	// Only --no-deps exists, so undefined leaves configuration precedence intact.
 	const deps = options.deps === false ? false : (projectConfig?.deps ?? true);
@@ -167,18 +186,20 @@ function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig |
 
 	// Any resource flag overrides configured resources wholesale.
 	if (options.all === true) {
-		return resolveResources(
+		return resolveWithoutExcluded(
 			SELECTABLE_RESOURCES.filter((name) => !negatives.includes(name)),
-			{ deps },
+			negatives,
+			deps,
 		);
 	}
 
 	if (positives.length > 0) return resolveResources(positives, { deps });
 
 	if (negatives.length > 0) {
-		return resolveResources(
+		return resolveWithoutExcluded(
 			DEFAULT_RESOURCE_NAMES.filter((name) => !negatives.includes(name)),
-			{ deps },
+			negatives,
+			deps,
 		);
 	}
 
@@ -200,9 +221,10 @@ function resolveResourceSet(options: PullOptions, projectConfig: ProjectConfig |
 			}
 		}
 
-		return resolveResources(
+		return resolveWithoutExcluded(
 			DEFAULT_RESOURCE_NAMES.filter((name) => !configExclude.includes(name)),
-			{ deps },
+			configExclude,
+			deps,
 		);
 	}
 
