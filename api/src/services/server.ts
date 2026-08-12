@@ -127,6 +127,9 @@ export class ServerService {
 				});
 
 				info['ai_providers'] = providerConfigs.map((config) => config.type);
+
+				// Expose AI translation entitlement so non-admin users can see the Translate with AI button.
+				info['ai_translations_enabled'] = getEntitlementManager().getAppEntitlements().ai_translations_enabled;
 			}
 
 			info['files'] = {

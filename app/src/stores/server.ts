@@ -30,6 +30,7 @@ export type Info = {
 	mcp_enabled: boolean;
 	ai_enabled: boolean;
 	ai_providers?: string[];
+	ai_translations_enabled: boolean;
 	mcp_oauth_enabled: boolean;
 	mcp_oauth_dcr_enabled: boolean;
 	mcp_oauth_cimd_enabled: boolean;
@@ -157,6 +158,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		info.mcp_enabled = serverInfoResponse.data.data?.mcp_enabled;
 		info.ai_enabled = serverInfoResponse.data.data?.ai_enabled;
 		info.ai_providers = serverInfoResponse.data.data?.ai_providers ?? [];
+		info.ai_translations_enabled = serverInfoResponse.data.data?.ai_translations_enabled ?? false;
 		info.mcp_oauth_enabled = serverInfoResponse.data.data?.mcp_oauth_enabled;
 		info.mcp_oauth_dcr_enabled = serverInfoResponse.data.data?.mcp_oauth_dcr_enabled;
 		info.mcp_oauth_cimd_enabled = serverInfoResponse.data.data?.mcp_oauth_cimd_enabled;
