@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { saveCredential } from '../../kernel/config/credentials.js';
 import {
 	fullSnapshot,
+	mockAdminGlobals,
 	mockDefaultRecords,
 	mockDiff,
 	mockFields,
@@ -212,6 +213,21 @@ describe('sync pull', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
 		expect(stderr.join('')).toContain('Environment Sync needs Directus 12.2.0 or later; "staging" runs 12.1.0.');
+	});
+
+	// Non-admin reads return 200 with permission-filtered subsets, and total_count counts with the
+	// same filter, so a partial pull would look complete. Refuse before writing anything.
+	it('refuses a non-admin token before writing anything', async () => {
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		mockAdminGlobals(agent, false);
+
+		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(1);
+
+		const err = stderr.join('');
+		expect(err).toContain('Environment Sync needs an admin token; "staging" resolves to a non-admin user.');
+		expect(err).toContain('d6s profile update staging --token');
+		expect(existsSync(join(dir, 'directus'))).toBe(false);
 	});
 
 	it('refuses a schema directory that symlinks outside the project and writes nothing outside', async () => {

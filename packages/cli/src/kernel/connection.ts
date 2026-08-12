@@ -223,6 +223,12 @@ export async function fetchServerVersion(credential: ResolvedCredential): Promis
 	return typeof version === 'string' ? version : undefined;
 }
 
+/** `/policies/me/globals` answers for any authenticated user. Undefined when unreadable; the caller decides. */
+export async function fetchAdminAccess(credential: ResolvedCredential): Promise<boolean | undefined> {
+	const value = get(await rawAuthenticatedGet(credential, '/policies/me/globals'), 'data.admin_access');
+	return typeof value === 'boolean' ? value : undefined;
+}
+
 /** `queryLimit.max`: -1 is no cap, N is the hard page cap, 0 refuses every read. */
 export async function fetchQueryLimitMax(credential: ResolvedCredential): Promise<number | undefined> {
 	const max = await serverInfoValue(credential, 'queryLimit.max');

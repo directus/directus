@@ -286,6 +286,18 @@ export function mockApplyHashMismatch(agent: MockAgent): void {
 		);
 }
 
+/** The sync preflight's admin probe; unmocked it reads as unverifiable, which warns and continues. */
+export function mockAdminGlobals(agent: MockAgent, adminAccess: boolean): void {
+	agent
+		.get(SYNC_URL)
+		.intercept({
+			path: '/policies/me/globals',
+			method: 'GET',
+			headers: { authorization: `Bearer ${SYNC_TOKEN}` },
+		})
+		.reply(200, { data: { admin_access: adminAccess } }, { headers: { 'content-type': 'application/json' } });
+}
+
 export function mockImport(
 	agent: MockAgent,
 	query: Record<string, string>,

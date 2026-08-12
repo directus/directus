@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	decodeBatch,
 	fullSnapshot,
+	mockAdminGlobals,
 	mockDiff,
 	mockImport,
 	mockList,
@@ -120,6 +121,17 @@ describe('sync diff', () => {
 
 		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(1);
 		expect(stderr.join('')).toContain('Environment Sync needs Directus 12.2.0 or later; "staging" runs 12.1.0.');
+	});
+
+	// Same preflight as pull, reached through planSchema — diff and push share the gate.
+	it('refuses a non-admin token with the same message as pull', async () => {
+		seedConfig();
+		writeSnapshotFiles(schemaDir, fullSnapshot());
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		mockAdminGlobals(agent, false);
+
+		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(1);
+		expect(stderr.join('')).toContain('Environment Sync needs an admin token; "staging" resolves to a non-admin user.');
 	});
 
 	it('honors the version gate and --allow-drift like push — diff must not preview what push refuses', async () => {

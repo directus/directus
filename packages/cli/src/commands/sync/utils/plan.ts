@@ -10,7 +10,7 @@ import { importBatch } from './api.js';
 import { ARTIFACT_MANIFEST_FILE } from './artifact-store.js';
 import type { SystemSent, UnchangedRows } from './batch.js';
 import type { DiffResult, ImportBatchResult, ImportCollectionData } from './contract.js';
-import { assertSyncServerVersion } from './preflight.js';
+import { assertSyncPreflight } from './preflight.js';
 import { hasImportChanges, type ImportSummary, summarizeDiff, summarizeImport } from './render.js';
 import { displayProjectPath, type Target } from './resolve-target.js';
 import { fetchSnapshotDiff } from './snapshot-diff.js';
@@ -120,7 +120,7 @@ export async function planSchema(target: Target, options: SchemaPlanOptions, ctx
 	const snapshot = enabled ? readSnapshotFiles(schemaDir) : null;
 
 	await refreshSessionIfNeeded(credential);
-	const targetVersion = await assertSyncServerVersion(credential, target.profile);
+	const targetVersion = await assertSyncPreflight(credential, target.profile, (message) => ctx.ui.warn(message));
 
 	const result =
 		snapshot === null

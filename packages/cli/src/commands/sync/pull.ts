@@ -14,7 +14,7 @@ import { maybePluralize, parseList } from '../../kernel/text.js';
 import { fetchFields, fetchRecords, fetchSnapshot, type FieldCatalogEntry, type SnapshotScope } from './utils/api.js';
 import { assertDataSource, type DataCollection, hasCommittedCollection, writeDataFiles } from './utils/data-store.js';
 import { normalizeInstanceUrl } from './utils/id-map.js';
-import { assertSyncServerVersion } from './utils/preflight.js';
+import { assertSyncPreflight } from './utils/preflight.js';
 import {
 	findOutOfScopeReferences,
 	findSplitRelations,
@@ -320,7 +320,7 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	assertDataSource(dataDir, normalizeInstanceUrl(url));
 
 	await refreshSessionIfNeeded(credential);
-	await assertSyncServerVersion(credential, options.from);
+	await assertSyncPreflight(credential, options.from, (message) => ctx.ui.warn(message));
 
 	const snapshot = includeSchema ? await fetchSnapshot(credential, scope?.api) : null;
 
