@@ -139,12 +139,8 @@ const { duplicating, duplicate } = useDuplicate({
 	},
 });
 
+// Copies are always created inactive, and inactive Flows don't count against the license limit
 function openDuplicateFlow(item: FlowRaw) {
-	if (!licenseStore.limits.flows.hasRemaining) {
-		flowsLimitModalOpen.value = true;
-		return;
-	}
-
 	duplicateSource.value = item;
 	duplicateName.value = `${item.name} (copy)`;
 	duplicateDialogActive.value = true;
