@@ -40,7 +40,10 @@ import MaxCapacityAlert from '@/views/private/components/license/max-capacity-al
 const { t } = useI18n();
 
 const { createAllowed } = useCollectionPermissions('directus_flows');
+const { createAllowed: operationsCreateAllowed } = useCollectionPermissions('directus_operations');
 const licenseStore = useLicenseStore();
+
+const duplicateAllowed = computed(() => createAllowed.value && operationsCreateAllowed.value);
 
 const confirmDelete = ref<FlowRaw | null>(null);
 const deletingFlow = ref(false);
@@ -276,7 +279,7 @@ function onFlowDrawerCompletion(id: string) {
 								</VListItemContent>
 							</VListItem>
 
-							<VListItem :disabled="createAllowed === false" clickable @click="openDuplicateFlow(item)">
+							<VListItem :disabled="!duplicateAllowed" clickable @click="openDuplicateFlow(item)">
 								<VListItemIcon>
 									<VIcon name="content_copy" />
 								</VListItemIcon>
