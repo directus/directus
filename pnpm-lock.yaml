@@ -1990,6 +1990,9 @@ importers:
       universal-cookie:
         specifier: 'catalog:'
         version: 8.0.1
+      uuid:
+        specifier: 'catalog:'
+        version: 11.1.0
       vite:
         specifier: 'catalog:'
         version: 8.1.2(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
@@ -18400,8 +18403,8 @@ snapshots:
     dependencies:
       '@pnpm/graceful-fs': 1000.1.0
       '@pnpm/logger': 1001.0.1
-      path-temp: 2.1.0
-      rename-overwrite: 6.0.3
+      path-temp: 2.1.1
+      rename-overwrite: 6.0.6
 
   '@pnpm/fs.indexed-pkg-importer@1000.1.14(@pnpm/logger@1001.0.1)':
     dependencies:

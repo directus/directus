@@ -81,18 +81,30 @@ const source = {
 let api: { post: ReturnType<typeof vi.fn>; patch: ReturnType<typeof vi.fn>; delete: ReturnType<typeof vi.fn> };
 let unexpectedError: ReturnType<typeof vi.fn>;
 
-/** Returns a new ID per created Operation, so the old -> new mapping is observable */
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * The API reads created items back with an `_in` filter, so it returns them in an arbitrary
+ * order. The mock reverses them to make sure that order is never relied upon.
+ */
 function mockCreateResponses() {
 	api.post.mockImplementation((endpoint: string, payload: Record<string, any>) => {
 		if (endpoint === '/flows') return Promise.resolve({ data: { data: { id: 'new-flow-id' } } });
 
 		return Promise.resolve({
-			data: { data: (payload as Record<string, any>[]).map((operation) => ({ id: `new-${operation['key']}` })) },
+			data: { data: (payload as Record<string, any>[]).map(({ id }) => ({ id })).reverse() },
 		});
 	});
 
 	api.patch.mockResolvedValue({ data: { data: {} } });
 	api.delete.mockResolvedValue({ data: { data: {} } });
+}
+
+/** The IDs the composable generated for each source Operation key */
+function newIdsByKey() {
+	const [, operations] = api.post.mock.calls.find(([endpoint]) => endpoint === '/operations')!;
+
+	return Object.fromEntries((operations as Record<string, any>[]).map(({ key, id }) => [key, id]));
 }
 
 beforeEach(async () => {
@@ -158,6 +170,7 @@ describe('useDuplicate', () => {
 		expect(operations).toHaveLength(3);
 
 		expect(operations[0]).toEqual({
+			id: expect.stringMatching(UUID),
 			name: 'Condition',
 			key: 'condition',
 			type: 'condition',
@@ -168,11 +181,14 @@ describe('useDuplicate', () => {
 		});
 
 		for (const payload of operations) {
-			expect(payload).not.toHaveProperty('id');
 			expect(payload).not.toHaveProperty('resolve');
 			expect(payload).not.toHaveProperty('reject');
 			expect(payload.flow).toBe('new-flow-id');
 		}
+
+		const ids = operations.map(({ id }: { id: string }) => id);
+		expect(new Set(ids).size).toBe(3);
+		expect(ids).not.toContain('op-condition');
 	});
 
 	it('relinks the Operation tree and the root Operation to the newly created IDs', async () => {
@@ -186,10 +202,39 @@ describe('useDuplicate', () => {
 
 		await duplicate();
 
+		// Taken from the create request, not its response, which comes back in an arbitrary order
+		const newIds = newIdsByKey();
+
 		expect(api.patch).toHaveBeenCalledWith('/flows/new-flow-id', {
-			operation: 'new-condition',
+			operation: newIds['condition'],
 			operations: {
-				update: [{ id: 'new-condition', resolve: 'new-log_success', reject: 'new-log_failure' }],
+				update: [{ id: newIds['condition'], resolve: newIds['log_success'], reject: newIds['log_failure'] }],
+			},
+		});
+	});
+
+	it('relinks correctly even when the create response is empty or out of order', async () => {
+		mockCreateResponses();
+
+		api.post.mockImplementation((endpoint: string) => {
+			if (endpoint === '/flows') return Promise.resolve({ data: { data: { id: 'new-flow-id' } } });
+			return Promise.resolve({ data: { data: [] } });
+		});
+
+		const { duplicate } = useDuplicate({
+			source: ref(source),
+			name: ref('Notify (copy)'),
+			onSuccess: vi.fn(),
+		});
+
+		await duplicate();
+
+		const newIds = newIdsByKey();
+
+		expect(api.patch).toHaveBeenCalledWith('/flows/new-flow-id', {
+			operation: newIds['condition'],
+			operations: {
+				update: [{ id: newIds['condition'], resolve: newIds['log_success'], reject: newIds['log_failure'] }],
 			},
 		});
 	});

@@ -1,4 +1,5 @@
 import type { FlowRaw } from '@directus/types';
+import { v4 as uuid } from 'uuid';
 import type { Ref } from 'vue';
 import { ref } from 'vue';
 import api from '@/api';
@@ -45,13 +46,16 @@ export function useDuplicate({ source, name, onSuccess }: UseDuplicateOptions) {
 			newFlowId = newFlowResponse.data.data.id as string;
 
 			const operations = flow.operations ?? [];
-			const newIds = new Map<string, string>();
 
-			// Links are added later once every ID is known
+			// The IDs are generated up front, since the API returns created items in an arbitrary order
+			const newIds = new Map(operations.map((operation) => [operation.id, uuid()]));
+
+			// Links are added later once every Operation exists, as they reference one another
 			if (operations.length > 0) {
-				const newOperationsResponse = await api.post(
+				await api.post(
 					'/operations',
 					operations.map((operation) => ({
+						id: newIds.get(operation.id),
 						name: operation.name,
 						key: operation.key,
 						type: operation.type,
@@ -62,11 +66,6 @@ export function useDuplicate({ source, name, onSuccess }: UseDuplicateOptions) {
 					})),
 					{ params: { fields: ['id'] } },
 				);
-
-				// Created items are returned in payload order
-				operations.forEach((operation, index) => {
-					newIds.set(operation.id, newOperationsResponse.data.data[index].id);
-				});
 			}
 
 			const updates = operations
