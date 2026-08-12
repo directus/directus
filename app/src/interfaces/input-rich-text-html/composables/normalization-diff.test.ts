@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { buildCustomFormats } from '../extensions/custom-formats';
-import { computeNormalizationDiff, computeValueNormalizationDiff } from './normalization-diff';
+import { comparisonSchema, computeNormalizationDiff, computeValueNormalizationDiff } from './normalization-diff';
 
 function removedText(code: string): string {
 	const changes = computeNormalizationDiff(code);
@@ -94,5 +94,39 @@ describe('computeValueNormalizationDiff', () => {
 
 	test('returns null for a stored value carrying block-level custom-format classes', () => {
 		expect(computeValueNormalizationDiff('<p class="dropcap">a</p><h2 class="eyebrow">b</h2>')).toBeNull();
+	});
+
+	test('reuses the verdict for a value already checked against the same schema', () => {
+		const value = '<p><cite class="src">b</cite></p>';
+		const first = computeValueNormalizationDiff(value);
+
+		expect(first).not.toBeNull();
+		expect(computeValueNormalizationDiff(value)).toBe(first);
+	});
+
+	test('keeps the verdicts of two custom-format schemas apart', () => {
+		const cite = buildCustomFormats([{ title: 'Cite', inline: 'cite', classes: 'src' }]);
+		const highlight = buildCustomFormats([{ title: 'Highlight', inline: 'span', classes: 'highlight' }]);
+		const value = '<p><cite class="src">b</cite></p>';
+
+		expect(computeValueNormalizationDiff(value, cite.extensions, cite.key)).toBeNull();
+		expect(computeValueNormalizationDiff(value, highlight.extensions, highlight.key)).not.toBeNull();
+	});
+
+	test('does not cache a schema it cannot identify', () => {
+		const { extensions } = buildCustomFormats([{ title: 'Cite', inline: 'cite', classes: 'src' }]);
+		const value = '<p><cite class="other">b</cite></p>';
+
+		expect(computeValueNormalizationDiff(value, extensions)).not.toBe(computeValueNormalizationDiff(value, extensions));
+	});
+});
+
+describe('comparisonSchema', () => {
+	test('accepts the diff spans the comparison view feeds the editor', () => {
+		const value = '<p><span class="comparison-diff--added">a</span></p>';
+		const { extensions, schemaKey } = comparisonSchema(null);
+
+		expect(computeValueNormalizationDiff(value, extensions, schemaKey)).toBeNull();
+		expect(computeValueNormalizationDiff(value)).not.toBeNull();
 	});
 });

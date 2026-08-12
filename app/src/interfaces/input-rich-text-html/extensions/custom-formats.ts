@@ -63,6 +63,8 @@ export type CustomFormat = InlineCustomFormat | BlockCustomFormat | GroupCustomF
 export interface BuiltCustomFormats {
 	extensions: AnyExtension[];
 	formats: CustomFormat[];
+	/** identifies the built schema; the generated mark names don't, they're positional */
+	key: string;
 }
 
 /**
@@ -368,13 +370,16 @@ function buildGroup(title: string, items: unknown[], name: string): BuiltEntry |
 export function buildCustomFormats(raw: unknown): BuiltCustomFormats {
 	const extensions: AnyExtension[] = [];
 	const formats: CustomFormat[] = [];
+	const parsed = parseOption(raw);
 
-	parseOption(raw).forEach((entry, index) => {
+	parsed.forEach((entry, index) => {
 		const built = buildEntry(entry, `customFormat_${index}`, false);
 		if (!built) return;
 		formats.push(built.format);
 		extensions.push(...built.extensions);
 	});
 
-	return { extensions, formats };
+	// positional mark names don't identify the schema; the parsed config does. Only dynamic marks
+	// (inline formats) alter the round-trip schema, so a config with none keys as the base schema.
+	return { extensions, formats, key: extensions.length > 0 ? JSON.stringify(parsed) : '' };
 }
