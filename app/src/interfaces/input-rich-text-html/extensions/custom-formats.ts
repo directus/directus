@@ -23,6 +23,8 @@ export interface CustomFormat {
 export interface BuiltCustomFormats {
 	extensions: AnyExtension[];
 	formats: CustomFormat[];
+	/** identifies the built schema; the generated mark names don't, they're positional */
+	key: string;
 }
 
 /** `type: json` field meta may hand back an already-parsed array or a raw JSON string. */
@@ -113,6 +115,7 @@ function buildMark(entry: CustomFormatEntry, name: string): AnyExtension {
 export function buildCustomFormats(raw: unknown): BuiltCustomFormats {
 	const extensions: AnyExtension[] = [];
 	const formats: CustomFormat[] = [];
+	const accepted: CustomFormatEntry[] = [];
 
 	parseOption(raw).forEach((entry, index) => {
 		if (!isSupported(entry)) {
@@ -133,7 +136,8 @@ export function buildCustomFormats(raw: unknown): BuiltCustomFormats {
 		const name = `customFormat_${index}`;
 		extensions.push(buildMark(entry, name));
 		formats.push({ name, title: entry.title, previewStyle: serializeStyles(entry.styles) });
+		accepted.push(entry);
 	});
 
-	return { extensions, formats };
+	return { extensions, formats, key: accepted.length > 0 ? JSON.stringify(accepted) : '' };
 }
