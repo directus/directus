@@ -7,6 +7,7 @@ vi.mock('@/api', () => ({
 	default: {
 		post: vi.fn(),
 		patch: vi.fn(),
+		delete: vi.fn(),
 	},
 }));
 
@@ -77,17 +78,21 @@ const source = {
 	],
 } as unknown as FlowRaw;
 
-let api: { post: ReturnType<typeof vi.fn>; patch: ReturnType<typeof vi.fn> };
+let api: { post: ReturnType<typeof vi.fn>; patch: ReturnType<typeof vi.fn>; delete: ReturnType<typeof vi.fn> };
 let unexpectedError: ReturnType<typeof vi.fn>;
 
 /** Returns a new ID per created Operation, so the old -> new mapping is observable */
 function mockCreateResponses() {
 	api.post.mockImplementation((endpoint: string, payload: Record<string, any>) => {
 		if (endpoint === '/flows') return Promise.resolve({ data: { data: { id: 'new-flow-id' } } });
-		return Promise.resolve({ data: { data: { id: `new-${payload['key']}` } } });
+
+		return Promise.resolve({
+			data: { data: (payload as Record<string, any>[]).map((operation) => ({ id: `new-${operation['key']}` })) },
+		});
 	});
 
 	api.patch.mockResolvedValue({ data: { data: {} } });
+	api.delete.mockResolvedValue({ data: { data: {} } });
 }
 
 beforeEach(async () => {
@@ -135,7 +140,7 @@ describe('useDuplicate', () => {
 		expect(postedFlow).not.toHaveProperty('operations');
 	});
 
-	it('creates every Operation against the new Flow without its resolve/reject links', async () => {
+	it('creates every Operation against the new Flow in one request without its resolve/reject links', async () => {
 		mockCreateResponses();
 
 		const { duplicate } = useDuplicate({
@@ -147,9 +152,12 @@ describe('useDuplicate', () => {
 		await duplicate();
 
 		const operationCalls = api.post.mock.calls.filter(([endpoint]) => endpoint === '/operations');
-		expect(operationCalls).toHaveLength(3);
+		expect(operationCalls).toHaveLength(1);
 
-		expect(operationCalls[0]![1]).toEqual({
+		const operations = operationCalls[0]![1];
+		expect(operations).toHaveLength(3);
+
+		expect(operations[0]).toEqual({
 			name: 'Condition',
 			key: 'condition',
 			type: 'condition',
@@ -159,7 +167,7 @@ describe('useDuplicate', () => {
 			flow: 'new-flow-id',
 		});
 
-		for (const [, payload] of operationCalls) {
+		for (const payload of operations) {
 			expect(payload).not.toHaveProperty('id');
 			expect(payload).not.toHaveProperty('resolve');
 			expect(payload).not.toHaveProperty('reject');
@@ -216,6 +224,64 @@ describe('useDuplicate', () => {
 
 		expect(unexpectedError).toHaveBeenCalled();
 		expect(onSuccess).not.toHaveBeenCalled();
+		expect(duplicating.value).toBe(false);
+		// Nothing was created, so there is nothing to roll back
+		expect(api.delete).not.toHaveBeenCalled();
+	});
+
+	it('deletes the new Flow when creating its Operations fails', async () => {
+		mockCreateResponses();
+
+		api.post.mockImplementation((endpoint: string) => {
+			if (endpoint === '/flows') return Promise.resolve({ data: { data: { id: 'new-flow-id' } } });
+			return Promise.reject(new Error('Nope'));
+		});
+
+		const onSuccess = vi.fn();
+
+		const { duplicate } = useDuplicate({
+			source: ref(source),
+			name: ref('Notify (copy)'),
+			onSuccess,
+		});
+
+		await duplicate();
+
+		expect(api.delete).toHaveBeenCalledWith('/flows/new-flow-id');
+		expect(unexpectedError).toHaveBeenCalled();
+		expect(onSuccess).not.toHaveBeenCalled();
+	});
+
+	it('deletes the new Flow when relinking its Operations fails', async () => {
+		mockCreateResponses();
+		api.patch.mockRejectedValue(new Error('Nope'));
+
+		const { duplicate } = useDuplicate({
+			source: ref(source),
+			name: ref('Notify (copy)'),
+			onSuccess: vi.fn(),
+		});
+
+		await duplicate();
+
+		expect(api.delete).toHaveBeenCalledWith('/flows/new-flow-id');
+		expect(unexpectedError).toHaveBeenCalled();
+	});
+
+	it('still reports the original failure when the rollback fails', async () => {
+		mockCreateResponses();
+		api.patch.mockRejectedValue(new Error('Nope'));
+		api.delete.mockRejectedValue(new Error('Also nope'));
+
+		const { duplicate, duplicating } = useDuplicate({
+			source: ref(source),
+			name: ref('Notify (copy)'),
+			onSuccess: vi.fn(),
+		});
+
+		await duplicate();
+
+		expect(unexpectedError).toHaveBeenCalledTimes(1);
 		expect(duplicating.value).toBe(false);
 	});
 });

@@ -21,6 +21,8 @@ export function useDuplicate({ source, name, onSuccess }: UseDuplicateOptions) {
 		const flow = source.value;
 		duplicating.value = true;
 
+		let newFlowId: string | null = null;
+
 		try {
 			const newFlowResponse = await api.post(
 				'/flows',
@@ -38,16 +40,16 @@ export function useDuplicate({ source, name, onSuccess }: UseDuplicateOptions) {
 				{ params: { fields: ['id'] } },
 			);
 
-			const newFlowId: string = newFlowResponse.data.data.id;
+			newFlowId = newFlowResponse.data.data.id as string;
 
 			const operations = flow.operations ?? [];
 			const newIds = new Map<string, string>();
 
 			// Links are added later once every ID is known
-			for (const operation of operations) {
-				const newOperationResponse = await api.post(
+			if (operations.length > 0) {
+				const newOperationsResponse = await api.post(
 					'/operations',
-					{
+					operations.map((operation) => ({
 						name: operation.name,
 						key: operation.key,
 						type: operation.type,
@@ -55,11 +57,14 @@ export function useDuplicate({ source, name, onSuccess }: UseDuplicateOptions) {
 						position_y: operation.position_y,
 						options: operation.options,
 						flow: newFlowId,
-					},
+					})),
 					{ params: { fields: ['id'] } },
 				);
 
-				newIds.set(operation.id, newOperationResponse.data.data.id);
+				// Created items are returned in payload order
+				operations.forEach((operation, index) => {
+					newIds.set(operation.id, newOperationsResponse.data.data[index].id);
+				});
 			}
 
 			const updates = operations
@@ -81,6 +86,9 @@ export function useDuplicate({ source, name, onSuccess }: UseDuplicateOptions) {
 
 			await onSuccess();
 		} catch (error) {
+			// Operations cascade, so removing the new Flow leaves nothing half-copied behind
+			if (newFlowId) await api.delete(`/flows/${newFlowId}`).catch(() => {});
+
 			unexpectedError(error);
 		} finally {
 			duplicating.value = false;
