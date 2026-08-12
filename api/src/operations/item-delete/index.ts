@@ -34,19 +34,15 @@ export default defineOperationApi<Options>({
 		}
 
 		const hasKeys = keys !== null && keys.length > 0;
-		const hasEmptyKeys = keys !== null && keys.length === 0;
 		const hasQuery = queryObject !== null && Object.keys(queryObject).length > 0;
 
 		if (hasKeys && hasQuery) {
 			throw new InvalidPayloadError({ reason: 'Cannot use both "keys" and "query"' });
 		}
 
-		if (keys === null && !hasQuery) {
-			throw new InvalidPayloadError({ reason: 'Must provide "keys" or "query"' });
-		}
-
-		if (hasEmptyKeys && !hasQuery) {
-			throw new InvalidPayloadError({ reason: '"keys" cannot be empty' });
+		// Nothing to target, so this is a no-op
+		if (!hasKeys && !hasQuery) {
+			return null;
 		}
 
 		const schema = await getSchema({ database });
@@ -68,16 +64,16 @@ export default defineOperationApi<Options>({
 			knex: database,
 		});
 
-		let result: PrimaryKey | PrimaryKey[] | null;
+		let result: PrimaryKey | PrimaryKey[] | null = null;
 
 		if (hasQuery) {
 			const sanitizedQueryObject = await sanitizeQuery(queryObject, schema, customAccountability);
 			result = await itemsService.deleteByQuery(sanitizedQueryObject, { emitEvents: !!emitEvents });
-		} else {
-			const deleted = await itemsService.deleteMany(keys ?? [], { emitEvents: !!emitEvents });
+		} else if (hasKeys) {
+			const deleted = await itemsService.deleteMany(keys, { emitEvents: !!emitEvents });
 
 			// Ensure scalar return for single-key deletes (previously deleteOne)
-			result = keys !== null && keys.length === 1 ? keys[0]! : deleted;
+			result = keys.length === 1 ? keys[0]! : deleted;
 		}
 
 		return result;

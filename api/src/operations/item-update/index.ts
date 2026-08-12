@@ -2,7 +2,7 @@ import { InvalidPayloadError } from '@directus/errors';
 import { defineOperationApi } from '@directus/extensions';
 import type { Accountability, Item, PrimaryKey } from '@directus/types';
 import { optionToObject, toArray } from '@directus/utils';
-import { isNil } from 'lodash-es';
+import { isEmpty, isNil } from 'lodash-es';
 import { z } from 'zod';
 import { ItemsService } from '../../services/items.js';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role.js';
@@ -31,11 +31,6 @@ export default defineOperationApi<Options>({
 	) => {
 		const payloadObject: Partial<Item> | Partial<Item>[] | null = optionToObject(payload) ?? null;
 		const queryObject = query ? optionToObject(query) : null;
-
-		// Without a payload there is nothing to update, so this is a no-op
-		if (!payloadObject) {
-			return null;
-		}
 		const keys = isNil(key) || key === '' ? null : toArray(key);
 
 		const validation = inputSchema.safeParse({ keys, query: queryObject, payload: payloadObject });
@@ -44,11 +39,22 @@ export default defineOperationApi<Options>({
 			throw new InvalidPayloadError({ reason: validation.error.issues[0]?.message ?? 'Invalid input' });
 		}
 
+		const isBatch = Array.isArray(payloadObject);
 		const hasKeys = keys !== null && keys.length > 0;
 		const hasQuery = queryObject !== null && Object.keys(queryObject).length > 0;
 
 		if (hasKeys && hasQuery) {
 			throw new InvalidPayloadError({ reason: 'Cannot use both "keys" and "query"' });
+		}
+
+		if (isBatch && (hasKeys || hasQuery)) {
+			// A batch payload carries its own keys
+			throw new InvalidPayloadError({ reason: 'Cannot use "keys" or "query" with a batch payload' });
+		}
+
+		// Nothing to update, so this is a no-op
+		if (!payloadObject || isEmpty(payloadObject) || (!isBatch && !hasKeys && !hasQuery)) {
+			return null;
 		}
 
 		const schema = await getSchema({ database });
@@ -70,18 +76,18 @@ export default defineOperationApi<Options>({
 			knex: database,
 		});
 
-		let result: PrimaryKey | PrimaryKey[] | null;
+		let result: PrimaryKey | PrimaryKey[] | null = null;
 
-		if (Array.isArray(payloadObject)) {
+		if (isBatch) {
 			result = await itemsService.updateBatch(payloadObject, { emitEvents: !!emitEvents });
 		} else if (hasQuery) {
 			const sanitizedQueryObject = await sanitizeQuery(queryObject, schema, customAccountability);
 			result = await itemsService.updateByQuery(sanitizedQueryObject, payloadObject, { emitEvents: !!emitEvents });
-		} else {
-			const updated = await itemsService.updateMany(keys ?? [], payloadObject, { emitEvents: !!emitEvents });
+		} else if (hasKeys) {
+			const updated = await itemsService.updateMany(keys, payloadObject, { emitEvents: !!emitEvents });
 
 			// Ensure scalar return for single-key updates (previously updateOne)
-			result = keys !== null && keys.length === 1 ? keys[0]! : updated;
+			result = keys.length === 1 ? keys[0]! : updated;
 		}
 
 		return result;
