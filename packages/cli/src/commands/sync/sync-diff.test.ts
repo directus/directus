@@ -47,7 +47,7 @@ const interceptTarget = interceptList;
 function interceptDiff(
 	mode: 'merge' | 'mirror',
 	body: Record<string, unknown> | null,
-	capture?: (body: unknown) => void,
+	capture?: (form: FormData) => void,
 ): void {
 	mockDiff(agent, mode, body, capture);
 }
@@ -93,15 +93,15 @@ describe('sync diff', () => {
 		writeSnapshotFiles(schemaDir, fullSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		let sent: unknown;
+		let sent: FormData | undefined;
 
-		interceptDiff('merge', diffBody(), (body) => {
-			sent = body;
+		interceptDiff('merge', diffBody(), (form) => {
+			sent = form;
 		});
 
 		expect(await d6s('sync', 'diff', '--to', 'staging')).toBe(0);
 
-		expect(sent).toEqual(fullSnapshot());
+		expect(await decodeBatch(sent)).toEqual(fullSnapshot());
 
 		const out = stdout.join('');
 		expect(out).toContain('✖ DELETE');
@@ -200,16 +200,16 @@ describe('sync diff', () => {
 		writeSnapshotFiles(schemaDir, partialSnapshot());
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 
-		let sent: unknown;
+		let sent: FormData | undefined;
 
-		interceptDiff('mirror', null, (body) => {
-			sent = body;
+		interceptDiff('mirror', null, (form) => {
+			sent = form;
 		});
 
 		expect(await d6s('sync', 'diff', '--to', 'staging', '--mode', 'mirror')).toBe(0);
 
 		// Downgrading the tag to a full snapshot would let mirror read the omitted collections as deletions.
-		expect(sent).toEqual(partialSnapshot());
+		expect(await decodeBatch(sent)).toEqual(partialSnapshot());
 		expect(stderr.join('')).toContain(`${url} matches ./directus/default — nothing to do.`);
 	});
 

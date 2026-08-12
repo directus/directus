@@ -49,12 +49,12 @@ const interceptTarget = interceptList;
 function interceptDiff(
 	mode: 'merge' | 'mirror',
 	body: Record<string, unknown> | null,
-	capture?: (body: unknown) => void,
+	capture?: (form: FormData) => void,
 ): void {
 	mockDiff(agent, mode, body, capture);
 }
 
-function interceptApply(capture?: (body: unknown) => void): void {
+function interceptApply(capture?: (form: FormData) => void): void {
 	mockApply(agent, capture);
 }
 
@@ -96,15 +96,15 @@ describe('sync push', () => {
 
 		interceptDiff('merge', mergeDiffBody());
 
-		let applied: unknown;
+		let applied: FormData | undefined;
 
-		interceptApply((body) => {
-			applied = body;
+		interceptApply((form) => {
+			applied = form;
 		});
 
 		expect(await d6s('sync', 'push', '--to', 'staging', '--yes')).toBe(0);
 
-		expect(applied).toEqual({ hash: 'h1', diff: mergeDiffBody() });
+		expect(await decodeBatch(applied)).toEqual({ hash: 'h1', diff: mergeDiffBody() });
 
 		const err = stderr.join('');
 
@@ -914,10 +914,10 @@ describe('sync push with data', () => {
 		interceptDiff('mirror', deletionDiff);
 		interceptTarget('/roles', [{ id: 'tr1', name: 'Editor' }]);
 
-		let applied: unknown;
+		let applied: FormData | undefined;
 
-		interceptApply((body) => {
-			applied = body;
+		interceptApply((form) => {
+			applied = form;
 		});
 
 		interceptImport(
@@ -935,7 +935,7 @@ describe('sync push with data', () => {
 			await d6s('sync', 'push', '--to', 'staging', '--mode', 'mirror', '--yes', '--dangerously-allow-delete'),
 		).toBe(0);
 
-		expect(applied).toEqual({ hash: 'h1', diff: deletionDiff });
+		expect(await decodeBatch(applied)).toEqual({ hash: 'h1', diff: deletionDiff });
 	});
 
 	it('refuses mirror in CI without --dangerously-allow-delete before any apply or import, even with data present', async () => {

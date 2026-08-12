@@ -139,9 +139,9 @@ describe('fetchDiff', () => {
 		};
 	}
 
-	it('sends the local snapshot unmodified with the mode on the wire, and returns the parsed diff', async () => {
+	it('sends the local snapshot unmodified as an application/json file with the mode on the wire, and returns the parsed diff', async () => {
 		const local = snapshot();
-		let sentBody: string | undefined;
+		let sentForm: FormData | undefined;
 
 		agent
 			.get('https://cms.example.com')
@@ -150,8 +150,8 @@ describe('fetchDiff', () => {
 				method: 'POST',
 				query: { mode: 'merge' },
 				headers: { authorization: `Bearer ${token}` },
-				body(raw: string) {
-					sentBody = raw;
+				body(raw: unknown) {
+					sentForm = raw as FormData;
 					return true;
 				},
 			})
@@ -159,7 +159,11 @@ describe('fetchDiff', () => {
 
 		const result = await fetchDiff(credential, local, 'merge');
 
-		expect(sentBody && JSON.parse(sentBody)).toEqual(local);
+		const file = sentForm?.get('file');
+		if (file === null || file === undefined) throw new Error('no file part');
+
+		expect((file as Blob).type).toBe('application/json');
+		expect(JSON.parse(await (file as Blob).text())).toEqual(local);
 		expect(result?.hash).toBe('abc123');
 		expect(result?.diff.collections[0]?.collection).toBe('events');
 	});
@@ -223,9 +227,9 @@ describe('applyDiff', () => {
 		};
 	}
 
-	it('carries the resolved credential and sends the sealed { hash, diff } to /schema/apply unmodified', async () => {
+	it('carries the resolved credential and sends the sealed { hash, diff } to /schema/apply as a file unmodified', async () => {
 		const result = diffResult();
-		let sentBody: string | undefined;
+		let sentForm: FormData | undefined;
 
 		agent
 			.get('https://cms.example.com')
@@ -233,8 +237,8 @@ describe('applyDiff', () => {
 				path: '/schema/apply',
 				method: 'POST',
 				headers: { authorization: `Bearer ${token}` },
-				body(raw: string) {
-					sentBody = raw;
+				body(raw: unknown) {
+					sentForm = raw as FormData;
 					return true;
 				},
 			})
@@ -242,7 +246,11 @@ describe('applyDiff', () => {
 
 		await applyDiff(credential, result);
 
-		expect(sentBody && JSON.parse(sentBody)).toEqual({ hash: result.hash, diff: result.diff });
+		const file = sentForm?.get('file');
+		if (file === null || file === undefined) throw new Error('no file part');
+
+		expect((file as Blob).type).toBe('application/json');
+		expect(JSON.parse(await (file as Blob).text())).toEqual({ hash: result.hash, diff: result.diff });
 	});
 });
 

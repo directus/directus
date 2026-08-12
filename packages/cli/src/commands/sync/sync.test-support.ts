@@ -232,15 +232,15 @@ export function mockDiff(
 	agent: MockAgent,
 	mode: 'merge' | 'mirror',
 	body: Record<string, unknown> | null,
-	capture?: (body: unknown) => void,
+	capture?: (form: FormData) => void,
 ): void {
 	const reply = agent.get(SYNC_URL).intercept({
 		path: '/schema/diff',
 		method: 'POST',
 		query: { mode },
 		headers: { authorization: `Bearer ${SYNC_TOKEN}` },
-		body(raw: string) {
-			capture?.(JSON.parse(raw));
+		body(raw: unknown) {
+			capture?.(raw as FormData);
 			return true;
 		},
 	});
@@ -252,15 +252,15 @@ export function mockDiff(
 	}
 }
 
-export function mockApply(agent: MockAgent, capture?: (body: unknown) => void): void {
+export function mockApply(agent: MockAgent, capture?: (form: FormData) => void): void {
 	agent
 		.get(SYNC_URL)
 		.intercept({
 			path: '/schema/apply',
 			method: 'POST',
 			headers: { authorization: `Bearer ${SYNC_TOKEN}` },
-			body(raw: string) {
-				capture?.(JSON.parse(raw));
+			body(raw: unknown) {
+				capture?.(raw as FormData);
 				return true;
 			},
 		})

@@ -2,9 +2,6 @@ import {
 	type AllCollections,
 	type CoreSchema,
 	isDirectusError,
-	schemaApply,
-	schemaDiff,
-	type SchemaDiffOutput,
 	schemaSnapshot,
 	type SchemaSnapshotOptions,
 	utilsImportBatch,
@@ -48,6 +45,13 @@ export async function fetchSnapshot(credential: ResolvedCredential, scope?: Snap
 	return parseSnapshot(response);
 }
 
+/** Sent as a file, not a JSON body: the body path is capped by MAX_PAYLOAD_SIZE, far below IMPORT_MAX_FILE_SIZE. */
+function jsonFileForm(payload: unknown): FormData {
+	const form = new FormData();
+	form.append('file', new Blob([JSON.stringify(payload)], { type: 'application/json' }), 'payload.json');
+	return form;
+}
+
 export async function fetchDiff(
 	credential: ResolvedCredential,
 	snapshot: Snapshot,
@@ -60,7 +64,13 @@ export async function fetchDiff(
 
 	// Always send a mode: the server's own default is the destructive mirror.
 	try {
-		response = await client.request(schemaDiff(snapshot, force ? { mode, force: true } : { mode }));
+		response = await client.request(() => ({
+			path: '/schema/diff',
+			method: 'POST',
+			params: force ? { mode, force: true } : { mode },
+			body: jsonFileForm(snapshot),
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}));
 	} catch (error) {
 		throw mapRequestError(error, credential.url);
 	}
@@ -73,7 +83,12 @@ export async function applyDiff(credential: ResolvedCredential, result: DiffResu
 
 	try {
 		// No force here: the server-issued hash already seals the diff.
-		await client.request(schemaApply({ hash: result.hash, diff: result.diff as SchemaDiffOutput['diff'] }));
+		await client.request(() => ({
+			path: '/schema/apply',
+			method: 'POST',
+			body: jsonFileForm({ hash: result.hash, diff: result.diff }),
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}));
 	} catch (error) {
 		throw mapRequestError(error, credential.url);
 	}
@@ -484,7 +499,6 @@ function enrichImportError(mapped: CliError, error: unknown): CliError {
 // A client abort does not stop the server transaction, so wait far longer than a normal request.
 const IMPORT_TIMEOUT_MS = 600_000;
 
-/** Sent as a file, not a JSON body: the body path is capped by MAX_PAYLOAD_SIZE, far below IMPORT_MAX_FILE_SIZE. */
 export async function importBatch(
 	credential: ResolvedCredential,
 	batch: ImportCollectionData[],
@@ -498,14 +512,10 @@ export async function importBatch(
 		...(options.dangerouslyAllowDelete === true ? { dangerouslyAllowDelete: true } : {}),
 	};
 
-	const file = new Blob([JSON.stringify(batch)], { type: 'application/json' });
-	const form = new FormData();
-	form.append('file', file, 'import.json');
-
 	let response: unknown;
 
 	try {
-		response = await client.request(utilsImportBatch(form, params));
+		response = await client.request(utilsImportBatch(jsonFileForm(batch), params));
 	} catch (error) {
 		throw enrichImportError(mapRequestError(error, credential.url), error);
 	}
