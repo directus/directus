@@ -62,6 +62,7 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>, z.infer
 	keywords: ['directories', 'media folders', 'file organization', 'parent folder'],
 	annotations: {
 		title: 'Directus - Folders',
+		destructiveHint: true,
 	},
 	inputSchema: FoldersInputSchema,
 	validateSchema: FoldersValidateSchema,

@@ -26,6 +26,7 @@ export const assets = defineTool<z.infer<typeof AssetsValidateSchema>>({
 	keywords: ['image', 'audio', 'media', 'vision', 'base64', 'file contents'],
 	annotations: {
 		title: 'Directus - Assets',
+		readOnlyHint: true,
 	},
 	inputSchema: AssetsInputSchema,
 	validateSchema: AssetsValidateSchema,
