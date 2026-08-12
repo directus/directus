@@ -12,6 +12,10 @@ vi.mock('codemirror', () => {
 			on: vi.fn(),
 			getValue: vi.fn(() => ''),
 			setValue: vi.fn(),
+			getCursor: vi.fn(() => ({ line: 0, ch: 0 })),
+			setCursor: vi.fn(),
+			getScrollInfo: vi.fn(() => ({ top: 0, left: 0 })),
+			scrollTo: vi.fn(),
 		})),
 		Pos: vi.fn(),
 		registerHelper: vi.fn(),
@@ -151,5 +155,35 @@ describe('InputCode', () => {
 		`);
 
 		expect(wrapper.find('.input-code v-button-stub').attributes('disabled')).toBe('true');
+	});
+
+	it('should preserve cursor position when setValue replaces editor content', async () => {
+		wrapper = mount(InputCode, {
+			props: {
+				language: 'json',
+				value: '{"hello": "world"}',
+			},
+			global,
+		});
+
+		// Simulate CodeMirror being mounted
+		const cm = (wrapper.vm as any).codemirror;
+		expect(cm).toBeTruthy();
+
+		// Simulate cursor at line 10, column 5
+		cm.getCursor.mockReturnValue({ line: 10, ch: 5 });
+		cm.getScrollInfo.mockReturnValue({ top: 200, left: 0, width: 800, height: 600 });
+
+		// Simulate a value change that triggers the watcher
+		await wrapper.setProps({ value: { hello: 'world' } });
+
+		// Verify setValue was called
+		expect(cm.setValue).toHaveBeenCalled();
+
+		// Verify cursor was restored to its previous position
+		expect(cm.setCursor).toHaveBeenCalledWith({ line: 10, ch: 5 });
+
+		// Verify scroll position was restored
+		expect(cm.scrollTo).toHaveBeenCalledWith(null, 200);
 	});
 });

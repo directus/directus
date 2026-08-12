@@ -117,7 +117,18 @@ watch(stringValue, () => {
 	if (props.type === 'json' && codemirror?.getValue() === props.value) return;
 
 	if (codemirror?.getValue() !== stringValue.value) {
+		// Preserve cursor & scroll position when replacing editor content,
+		// so that auto-format (JSON.stringify re-serialization) after paste
+		// does not reset the cursor to the top of the document.
+		const cursor = codemirror?.getCursor();
+		const scrollInfo = codemirror?.getScrollInfo();
+
 		codemirror?.setValue(stringValue.value || '');
+
+		if (cursor && codemirror) {
+			codemirror.setCursor(cursor);
+			codemirror.scrollTo(null, scrollInfo?.top ?? 0);
+		}
 	}
 });
 
