@@ -24,6 +24,29 @@ const displayInfo = useExtension('display', display);
 <template>
 	<ValueNull v-if="value === null || value === undefined" />
 	<VTextOverflow v-else-if="displayInfo === null" class="display" :text="value" />
+	<template v-else-if="Array.isArray(value) && !['alias', 'json'].includes(type)">
+		<ValueNull v-if="value.length === 0" />
+		<template v-else>
+			<template v-for="(item, i) in value" :key="i">
+				<VErrorBoundary :name="`display-${display}-${i}`">
+					<component
+						:is="`display-${display}`"
+						v-bind="options"
+						:interface="interface"
+						:interface-options="interfaceOptions"
+						:value="item"
+						:type="type"
+						:collection="collection"
+						:field="field"
+					/>
+					<template #fallback>
+						<VTextOverflow class="display" :text="item" />
+					</template>
+				</VErrorBoundary>
+				<span v-if="i < value.length - 1">, </span>
+			</template>
+		</template>
+	</template>
 	<VErrorBoundary v-else :name="`display-${display}`">
 		<component
 			:is="`display-${display}`"
