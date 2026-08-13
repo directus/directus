@@ -12,6 +12,7 @@ import { i18n } from '@/lang';
 vi.mock('@/api', () => ({
 	default: {
 		get: vi.fn(),
+		post: vi.fn(),
 		delete: vi.fn(),
 		patch: vi.fn(),
 	},
@@ -35,6 +36,13 @@ vi.mock('@/stores/flows', () => ({
 vi.mock('@/composables/use-permissions', () => ({
 	useCollectionPermissions: () => ({
 		createAllowed: true,
+	}),
+}));
+
+vi.mock('@/stores/license', () => ({
+	useLicenseStore: () => ({
+		limits: { flows: { remaining: 1, hasRemaining: true } },
+		hydrate: vi.fn(),
 	}),
 }));
 
@@ -105,6 +113,10 @@ beforeEach(async () => {
 			'v-card-actions',
 			'flow-drawer',
 			'router-view',
+			'v-input',
+			'v-card-text',
+			'max-capacity-alert',
+			'entitlement-limit-modal',
 		],
 		plugins: [router, i18n, createTestingPinia({ createSpy: vi.fn, stubActions: false })],
 		directives: {
@@ -226,5 +238,67 @@ describe('FlowsOverview - navigateToFlow', () => {
 		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/settings/flows/flow-1'), '_blank');
 
 		expect(routerPushSpy).not.toHaveBeenCalled();
+	});
+});
+
+describe('FlowsOverview - openDuplicateFlow', () => {
+	const mockFlow = {
+		id: 'flow-1',
+		name: 'Test Flow',
+		status: 'active',
+	} as FlowRaw;
+
+	test('opens the duplicate dialog with the name prefilled', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+
+		const vm = wrapper.vm as any;
+		vm.openDuplicateFlow(mockFlow);
+
+		expect(vm.duplicateDialogActive).toBe(true);
+		expect(vm.duplicateName).toBe('Test Flow (copy)');
+		expect(vm.duplicateSource).toEqual(mockFlow);
+	});
+
+	test('duplicating closes the dialog once the new Flow is created', async () => {
+		const api = (await vi.importMock<{ default: { post: ReturnType<typeof vi.fn> } }>('@/api')).default;
+		api.post.mockResolvedValue({ data: { data: { id: 'new-flow-id' } } });
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		const vm = wrapper.vm as any;
+		vm.openDuplicateFlow(mockFlow);
+
+		await vm.duplicate();
+
+		expect(api.post).toHaveBeenCalledWith(
+			'/flows',
+			expect.objectContaining({ name: 'Test Flow (copy)', status: 'inactive' }),
+			expect.any(Object),
+		);
+
+		expect(vm.duplicateDialogActive).toBe(false);
+	});
+});
+
+describe('FlowsOverview - toggleFlowStatusById', () => {
+	test('opens the limit modal when activating a Flow exceeds the license limit', async () => {
+		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
+
+		api.patch.mockRejectedValue({
+			response: { data: { errors: [{ extensions: { code: 'LIMIT_EXCEEDED' } }] } },
+		});
+
+		const { unexpectedError } = (await vi.importMock('@/utils/unexpected-error')) as {
+			unexpectedError: ReturnType<typeof vi.fn>;
+		};
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		const vm = wrapper.vm as any;
+		await vm.toggleFlowStatusById('flow-1', 'inactive');
+
+		expect(api.patch).toHaveBeenCalledWith('/flows/flow-1', { status: 'active' });
+		expect(vm.flowsLimitModalOpen).toBe(true);
+		expect(unexpectedError).not.toHaveBeenCalled();
 	});
 });

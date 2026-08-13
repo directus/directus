@@ -3351,6 +3351,7 @@ date_precision: Date Precision
 export_dashboard: Export Dashboard
 duplicate_dashboard: Duplicate Dashboard
 duplicate_policy: Duplicate Policy
+duplicate_flow: Duplicate Flow
 search_dashboard: Search Dashboard...
 search_flow: Search Flow...
 percent: Percent

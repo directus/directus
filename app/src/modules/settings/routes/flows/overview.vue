@@ -6,14 +6,17 @@ import { useI18n } from 'vue-i18n';
 import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
+import { useDuplicate } from './use-duplicate';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
 import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
+import VInput from '@/components/v-input.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
@@ -26,6 +29,7 @@ import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vu
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { useLicenseStore } from '@/stores/license';
+import { extractErrorCode } from '@/utils/extract-error-code';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -37,7 +41,10 @@ import MaxCapacityAlert from '@/views/private/components/license/max-capacity-al
 const { t } = useI18n();
 
 const { createAllowed } = useCollectionPermissions('directus_flows');
+const { createAllowed: operationsCreateAllowed } = useCollectionPermissions('directus_operations');
 const licenseStore = useLicenseStore();
+
+const duplicateAllowed = computed(() => createAllowed.value && operationsCreateAllowed.value);
 
 const confirmDelete = ref<FlowRaw | null>(null);
 const deletingFlow = ref(false);
@@ -119,6 +126,27 @@ function updateSort(sort: Sort | null) {
 	internalSort.value = sort ?? { by: 'name', desc: false };
 }
 
+const duplicateDialogActive = ref(false);
+const duplicateSource = ref<FlowRaw | null>(null);
+const duplicateName = ref('');
+
+const { duplicating, duplicate } = useDuplicate({
+	source: duplicateSource,
+	name: duplicateName,
+	onSuccess: async () => {
+		duplicateDialogActive.value = false;
+		await flowsStore.hydrate();
+		licenseStore.hydrate();
+	},
+});
+
+// Copies are always created inactive, and inactive Flows don't count against the license limit
+function openDuplicateFlow(item: FlowRaw) {
+	duplicateSource.value = item;
+	duplicateName.value = `${item.name} (copy)`;
+	duplicateDialogActive.value = true;
+}
+
 function navigateToFlow({ item: flow, event }: { item: FlowRaw; event: MouseEvent }) {
 	const route = { name: 'settings-flows-item', params: { primaryKey: flow.id } };
 
@@ -155,7 +183,12 @@ async function toggleFlowStatusById(id: string, value: string) {
 		await flowsStore.hydrate();
 		licenseStore.hydrate();
 	} catch (error) {
-		unexpectedError(error);
+		// Activating a Flow beyond the license limit is a plan problem, not an unexpected one
+		if (extractErrorCode(error) === 'LIMIT_EXCEEDED') {
+			flowsLimitModalOpen.value = true;
+		} else {
+			unexpectedError(error);
+		}
 	}
 }
 
@@ -248,6 +281,15 @@ function onFlowDrawerCompletion(id: string) {
 								</VListItemContent>
 							</VListItem>
 
+							<VListItem :disabled="!duplicateAllowed" clickable @click="openDuplicateFlow(item)">
+								<VListItemIcon>
+									<VIcon name="content_copy" />
+								</VListItemIcon>
+								<VListItemContent>
+									{{ $t('duplicate_flow') }}
+								</VListItemContent>
+							</VListItem>
+
 							<VListItem class="danger" clickable @click="confirmDelete = item">
 								<VListItemIcon>
 									<VIcon name="delete" outline />
@@ -272,6 +314,21 @@ function onFlowDrawerCompletion(id: string) {
 					</VButton>
 					<VButton danger :loading="deletingFlow" @click="deleteFlow">
 						{{ $t('delete_label') }}
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+
+		<VDialog v-model="duplicateDialogActive" @esc="duplicateDialogActive = false" @apply="duplicate">
+			<VCard>
+				<VCardTitle>{{ $t('duplicate_flow') }}</VCardTitle>
+				<VCardText>
+					<VInput v-model="duplicateName" autofocus />
+				</VCardText>
+				<VCardActions>
+					<VButton secondary @click="duplicateDialogActive = false">{{ $t('cancel') }}</VButton>
+					<VButton :disabled="!duplicateName.trim()" :loading="duplicating" @click="duplicate">
+						{{ $t('duplicate') }}
 					</VButton>
 				</VCardActions>
 			</VCard>
