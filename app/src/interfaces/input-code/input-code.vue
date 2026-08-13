@@ -117,7 +117,9 @@ watch(stringValue, () => {
 	if (props.type === 'json' && codemirror?.getValue() === props.value) return;
 
 	if (codemirror?.getValue() !== stringValue.value) {
+		const cursor = codemirror?.getCursor();
 		codemirror?.setValue(stringValue.value || '');
+		if (cursor) codemirror?.setCursor(cursor);
 	}
 });
 
