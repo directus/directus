@@ -93,6 +93,7 @@ export const schema = defineTool<z.infer<typeof SchemaValidateSchema>, z.infer<t
 	keywords: ['data model', 'collections', 'fields', 'relationships', 'structure', 'discovery'],
 	annotations: {
 		title: 'Directus - Schema',
+		readOnlyHint: true,
 	},
 	inputSchema: SchemaInputSchema,
 	validateSchema: SchemaValidateSchema,
