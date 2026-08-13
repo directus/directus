@@ -58,6 +58,7 @@ export const collections = defineTool<
 	keywords: ['data model', 'content model', 'tables', 'schema folders', 'collection metadata'],
 	annotations: {
 		title: 'Directus - Collections',
+		destructiveHint: true,
 	},
 	inputSchema: CollectionsInputSchema,
 	validateSchema: CollectionsValidateSchema,
