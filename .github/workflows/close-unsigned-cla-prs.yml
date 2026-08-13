@@ -2,7 +2,7 @@ name: Close PRs without a Signed CLA
 
 on:
   schedule:
-    - cron: '30 2 * * *'
+    - cron: '30 3 * * *'
   workflow_dispatch:
     inputs:
       dry-run:
@@ -15,6 +15,9 @@ permissions:
   pull-requests: write
   issues: write
 
+env:
+  CLA_LABEL: CLA Required
+
 jobs:
   close-unsigned-prs:
     if: github.repository == 'directus/directus'
@@ -26,7 +29,7 @@ jobs:
         with:
           script: |
             const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
-            const LABEL_NAME = 'CLA Required';
+            const LABEL_NAME = process.env.CLA_LABEL;
             const DOCS_URL = 'https://directus.com/docs/community/contribution/pull-requests#copyright-license-agreement-cla';
             const dryRun = process.env.DRY_RUN === 'true';
             const now = new Date();

@@ -31,11 +31,19 @@ jobs:
             // request from the head branch instead of trusting anything the fork sends
             const run = context.payload.workflow_run;
 
+            // Null when the fork is deleted or made private between the check run and this event
+            const headOwner = run.head_repository?.owner?.login;
+
+            if (!headOwner) {
+              core.info('No head repository on the run, skipping');
+              return;
+            }
+
             const prs = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
-              head: `${run.head_repository.owner.login}:${run.head_branch}`,
+              head: `${headOwner}:${run.head_branch}`,
               per_page: 100,
             });
 
@@ -47,10 +55,16 @@ jobs:
             }
 
             core.setOutput('number', pr.number);
+            core.setOutput('draft', String(pr.draft));
 
+      # Drafts are not gated: close-unsigned-cla-prs.yml skips them, so promising a
+      # deadline would be a lie. The check re-runs on ready_for_review, and the comment
+      # and label land then. Skipping the download also skips every step keyed off it.
       - name: Download CLA handoff
         id: cla-missing
-        if: steps.pr.outputs.number && github.event.workflow_run.conclusion == 'failure'
+        if:
+          steps.pr.outputs.number && steps.pr.outputs.draft == 'false' && github.event.workflow_run.conclusion ==
+          'failure'
         continue-on-error: true
         uses: actions/download-artifact@v4
         with:
