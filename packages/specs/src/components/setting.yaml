@@ -179,6 +179,7 @@ properties:
           nullable: true
           items:
             type: array
+            items: {}
           example:
             - - blur
               - 45
