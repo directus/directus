@@ -18,6 +18,7 @@ import { AssetsService } from '../services/assets.js';
 import { FilesService } from '../services/files.js';
 import { PayloadService } from '../services/payload.js';
 import asyncHandler from '../utils/async-handler.js';
+import { destroyOnDisconnect } from '../utils/destroy-on-disconnect.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
@@ -47,20 +48,13 @@ router.post(
 		const folderName = `folder-${metadata['name'] ? metadata['name'] : 'unknown'}-${getDateTimeFormatted()}.zip`;
 		res.setHeader('Content-Disposition', contentDisposition(folderName, { type: 'attachment' }));
 
-		// Clean up the archive stream if the client disconnects
-		res.on('close', () => {
-			if (!res.writableEnded) {
-				archive.destroy();
-				archive.abort();
-			}
-		});
-
-		// Client disconnected while the archive was being built, so `close` fired before the handler above existed
-		if (res.closed || res.destroyed) {
+		// Clean up the archive stream if the client disconnects, or is already gone
+		const gone = destroyOnDisconnect(res, () => {
 			archive.destroy();
 			archive.abort();
-			return;
-		}
+		});
+
+		if (gone) return;
 
 		archive.pipe(res);
 
@@ -123,20 +117,13 @@ router.post(
 		res.setHeader('Content-Type', 'application/zip');
 		res.setHeader('Content-Disposition', `attachment; filename="files-${getDateTimeFormatted()}.zip"`);
 
-		// Clean up the archive stream if the client disconnects
-		res.on('close', () => {
-			if (!res.writableEnded) {
-				archive.destroy();
-				archive.abort();
-			}
-		});
-
-		// Client disconnected while the archive was being built, so `close` fired before the handler above existed
-		if (res.closed || res.destroyed) {
+		// Clean up the archive stream if the client disconnects, or is already gone
+		const gone = destroyOnDisconnect(res, () => {
 			archive.destroy();
 			archive.abort();
-			return;
-		}
+		});
+
+		if (gone) return;
 
 		archive.pipe(res);
 
@@ -447,16 +434,8 @@ router.get(
 
 		const sourceStream = await stream();
 
-		// Clean up the source stream if the client disconnects
-		res.on('close', () => {
-			if (!res.writableEnded) {
-				sourceStream.destroy();
-			}
-		});
-
-		// Client disconnected while the stream was being opened, so `close` fired before the handler above existed
-		if (res.closed || res.destroyed) {
-			sourceStream.destroy();
+		// Clean up the source stream if the client disconnects, or is already gone
+		if (destroyOnDisconnect(res, () => sourceStream.destroy())) {
 			return undefined;
 		}
 

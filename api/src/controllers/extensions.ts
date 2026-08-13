@@ -21,6 +21,7 @@ import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { ExtensionReadError, ExtensionsService } from '../services/extensions.js';
 import asyncHandler from '../utils/async-handler.js';
+import { destroyOnDisconnect } from '../utils/destroy-on-disconnect.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { handleRegistryError } from './utils/handle-registry-error.js';
@@ -345,16 +346,8 @@ router.get(
 
 		const sourceStream = source;
 
-		// Clean up the source stream if the client disconnects
-		res.on('close', () => {
-			if (!res.writableEnded) {
-				sourceStream.destroy();
-			}
-		});
-
-		// Client disconnected while the stream was being opened, so `close` fired before the handler above existed
-		if (res.closed || res.destroyed) {
-			sourceStream.destroy();
+		// Clean up the source stream if the client disconnects, or is already gone
+		if (destroyOnDisconnect(res, () => sourceStream.destroy())) {
 			return;
 		}
 

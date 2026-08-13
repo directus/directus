@@ -320,6 +320,19 @@ describe('#read', () => {
 		);
 	});
 
+	/** An unread response body holds its connection open */
+	test('Cancels the response body it never reads', async () => {
+		const cancel = vi.fn().mockResolvedValue(undefined);
+
+		vi.mocked(fetch).mockReturnValue({ status: 400, body: { cancel } } as unknown as Promise<Response>);
+
+		await expect(driver.read(sample.path.input)).rejects.toThrowError(
+			new Error(`No stream returned for file "${sample.path.input}"`),
+		);
+
+		expect(cancel).toHaveBeenCalled();
+	});
+
 	test('Returns stream', async () => {
 		const stream = await driver.read(sample.path.input, { range: sample.range });
 

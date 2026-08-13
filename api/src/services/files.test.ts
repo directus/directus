@@ -852,6 +852,21 @@ describe('Service / Files', () => {
 			expect(body.destroyed).toBe(true);
 		});
 
+		test('destroys the response body when the downloaded filename cannot be parsed', async () => {
+			const body = new PassThrough();
+
+			mockAxiosGet.mockResolvedValue({
+				headers: { 'content-type': 'image/png' },
+				data: body,
+				// Malformed percent-encoding, so decoding the filename throws
+				request: { res: { responseUrl: 'https://example.com/%E0%A4%A' } },
+			});
+
+			await expect(service.importOne('https://example.com/image.png', {})).rejects.toThrow();
+
+			expect(body.destroyed).toBe(true);
+		});
+
 		test('succeeds when MIME type is permitted by filterMimeType', async () => {
 			mockAxiosGet.mockResolvedValue({
 				headers: { 'content-type': 'image/png' },

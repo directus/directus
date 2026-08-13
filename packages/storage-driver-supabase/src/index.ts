@@ -99,6 +99,9 @@ export class DriverSupabase implements TusDriver {
 		const response = await fetch(this.getAuthenticatedUrl(filepath), requestInit);
 
 		if (response.status >= 400 || !response.body) {
+			// An unread body holds its connection open
+			await response.body?.cancel();
+
 			throw new Error(`No stream returned for file "${filepath}"`);
 		}
 

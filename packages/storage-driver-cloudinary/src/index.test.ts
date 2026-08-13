@@ -575,6 +575,17 @@ describe('#read', () => {
 		}
 	});
 
+	/** An unread response body holds its connection open */
+	test('Cancels the response body it never reads', async () => {
+		const cancel = vi.fn().mockResolvedValue(undefined);
+		mockResponse.status = randNumber({ min: 400, max: 599 });
+		(mockResponse as unknown as { body: unknown }).body = { cancel };
+
+		await expect(driver.read(sample.path.input)).rejects.toThrowError();
+
+		expect(cancel).toHaveBeenCalled();
+	});
+
 	test('Returns readable stream from web stream', async () => {
 		const stream = await driver.read(sample.path.input);
 		expect(Readable.fromWeb).toHaveBeenCalledWith(mockResponse.body);

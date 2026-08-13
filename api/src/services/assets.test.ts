@@ -816,6 +816,31 @@ describe('AssetsService', () => {
 			expect(mockArchiver.append).not.toHaveBeenCalled();
 			expect(mockDriver.read).toHaveBeenCalledTimes(1);
 		});
+
+		/**
+		 * A storage location that can't be reached is not the same answer as a missing file, which is
+		 * reported as forbidden.
+		 */
+		test('should report a failed storage lookup as unavailable, not forbidden', async () => {
+			vi.mocked(mockDriver.exists as Mock).mockRejectedValue(new Error('socket timed out'));
+
+			vi.spyOn(FilesService.prototype, 'readByQuery').mockResolvedValue([
+				{ id: 'file1', folder: null, filename_download: 'file1.txt', storage: 'local' },
+			] as unknown as File[]);
+
+			vi.spyOn(FilesService.prototype, 'readOne').mockResolvedValue({
+				id: 'file1',
+				filename_download: 'file1.txt',
+			} as unknown as File);
+
+			const assetsService = new AssetsService({
+				schema: mockSchema,
+			});
+
+			const result = await assetsService.zipFiles(['file1']);
+
+			await expect(result.complete()).rejects.toThrow(ServiceUnavailableError);
+		});
 	});
 
 	describe('zipFiles', () => {

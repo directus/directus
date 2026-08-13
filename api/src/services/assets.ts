@@ -111,7 +111,17 @@ export class AssetsService {
 						fields: ['id', 'storage', 'filename_disk', 'filename_download', 'modified_on', 'type'],
 					});
 
-					const exists = await storage.location(file.storage).exists(file.filename_disk);
+					let exists: boolean;
+
+					try {
+						exists = await storage.location(file.storage).exists(file.filename_disk);
+					} catch (error) {
+						// The file may well be there, we just couldn't reach the storage location to find out
+						throw new ServiceUnavailableError(
+							{ service: 'assets', reason: `Couldn't reach the storage location` },
+							{ cause: error },
+						);
+					}
 
 					if (!exists) throw new ForbiddenError();
 
