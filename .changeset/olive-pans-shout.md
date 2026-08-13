@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed dragging & dropping files with an unrecognized extension into the file library failing silently
+Fixed silent failure of dragging & dropping files with an unrecognized extension into the file library
