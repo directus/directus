@@ -208,6 +208,92 @@ describe('useComparison', () => {
 		});
 	});
 
+	// Diff-marked HTML is display-only: it is sanitized (dropping iframes, custom elements, …) and
+	// carries comparison-diff spans, so restoring from it would rewrite the field. The raw revision
+	// values stay on `base`/`incoming`, which is what the restore payload is built from.
+	describe('rich text fields', () => {
+		function getRichTextTestCase(baseBody: string, incomingBody: string) {
+			return getTestData('revision', {
+				currentRevisionOverwrites: {
+					id: 1234,
+					data: { body: incomingBody },
+					delta: { body: incomingBody },
+				},
+				revisionsListOverwrites: [
+					{
+						id: 1233,
+						collection: 'test_collection',
+						item: 1,
+						data: { body: baseBody },
+						delta: { body: baseBody },
+						activity: { action: 'update', timestamp: '2025-10-29T09:00:00.000Z', user: null },
+					},
+					{
+						id: 1234,
+						collection: 'test_collection',
+						item: 1,
+						data: { body: incomingBody },
+						delta: { body: incomingBody },
+						activity: { action: 'update', timestamp: '2025-10-29T10:00:00.000Z', user: null },
+					},
+				],
+			});
+		}
+
+		it('should keep the raw values and expose the diff-marked ones separately', async () => {
+			const testCase = getRichTextTestCase('<p>hello there</p>', '<p>hello world</p>');
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { comparisonData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			expect(comparisonData.value?.base.body).toBe('<p>hello there</p>');
+			expect(comparisonData.value?.incoming.body).toBe('<p>hello world</p>');
+
+			expect(comparisonData.value?.displayBase?.body).toContain('comparison-diff--removed');
+			expect(comparisonData.value?.displayIncoming?.body).toContain('comparison-diff--added');
+		});
+
+		it('should not diff-mark values the editor cannot represent, so nothing is stripped', async () => {
+			const lossy = '<p>hello</p><marquee>legacy</marquee>';
+			const testCase = getRichTextTestCase(lossy, '<p>hello edited</p>');
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { comparisonData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			expect(comparisonData.value?.base.body).toBe(lossy);
+			expect(comparisonData.value?.displayBase?.body).toBe(lossy);
+			expect(comparisonData.value?.displayIncoming?.body).toBe('<p>hello edited</p>');
+		});
+
+		it('should not diff-mark values whose nodes the diff sanitizer drops, like embeds', async () => {
+			const withEmbed = '<p>hello</p><iframe src="https://example.com"></iframe>';
+			const testCase = getRichTextTestCase(withEmbed, '<p>hello world</p><iframe src="https://example.com"></iframe>');
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { comparisonData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			expect(comparisonData.value?.displayBase?.body).toBe(withEmbed);
+			expect(comparisonData.value?.displayIncoming?.body).toContain('<iframe src="https://example.com"></iframe>');
+		});
+
+		it('should list the field as different when only the unsupported markup was removed', async () => {
+			const testCase = getRichTextTestCase('<p>hello</p><marquee>legacy</marquee>', '<p>hello</p>');
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { comparisonFields, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			expect(Array.from(comparisonFields.value ?? [])).toContain('body');
+		});
+	});
+
 	describe('revision mode with Previous compareTo option', () => {
 		it('should compare current revision with previous revision data', async () => {
 			const previousRevisionData = {
@@ -1433,6 +1519,51 @@ function getFieldData({
 				validation_message: null,
 			},
 			name: 'Description',
+		},
+		{
+			collection: collection,
+			field: 'body',
+			type: 'text',
+			schema: {
+				name: 'body',
+				table: collection,
+				data_type: 'text',
+				default_value: null,
+				max_length: null,
+				numeric_precision: null,
+				numeric_scale: null,
+				is_generated: false,
+				generation_expression: null,
+				is_nullable: true,
+				is_unique: false,
+				is_indexed: false,
+				is_primary_key: false,
+				has_auto_increment: false,
+				foreign_key_column: null,
+				foreign_key_table: null,
+			},
+			meta: {
+				id: 203,
+				collection: collection,
+				field: 'body',
+				special: null,
+				interface: 'input-rich-text-html',
+				options: null,
+				display: null,
+				display_options: null,
+				readonly: false,
+				hidden: false,
+				sort: 9,
+				width: 'full',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: null,
+				validation: null,
+				validation_message: null,
+			},
+			name: 'Body',
 		},
 		{
 			collection: collection,
