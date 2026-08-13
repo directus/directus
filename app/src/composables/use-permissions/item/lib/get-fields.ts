@@ -33,9 +33,28 @@ export function getFields(
 			fields = fields.filter((field) => readableFields.includes(field.field));
 		}
 
-		// Version editing bypasses underlying collection write permissions entirely.
-		// Field-level access is enforced by the backend at promote time.
-		if (unref(isVersion)) return fields;
+		// For version editing, item-level conditions (e.g. "can update only when status=draft") are
+		// deferred to promote time because they depend on the live item state. However, field-level
+		// access lists are static and can be resolved up-front. Marking non-updatable fields as
+		// readonly in the editor prevents them from silently entering the version delta and making
+		// the version impossible to promote.
+		if (unref(isVersion)) {
+			const updatePermission = getPermission(collectionValue, 'update');
+
+			if (updatePermission?.fields && !updatePermission.fields.includes('*')) {
+				for (const field of fields) {
+					if (!updatePermission.fields.includes(field.field)) {
+						(field as FormField).meta = {
+							...(field.meta || {}),
+							readonly: true,
+							non_editable: true,
+						};
+					}
+				}
+			}
+
+			return fields;
+		}
 
 		let permission;
 
