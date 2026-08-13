@@ -1,4 +1,3 @@
-import type { ReadStream } from 'node:fs';
 import { EXTENSION_TYPES } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
@@ -323,13 +322,8 @@ router.get(
 		const chunk = req.params['chunk'] as string;
 		const extensionManager = getExtensionManager();
 
-		let source: ReadStream | null;
-
-		if (chunk === 'index.js') {
-			source = await extensionManager.getAppExtensionChunk();
-		} else {
-			source = await extensionManager.getAppExtensionChunk(chunk);
-		}
+		const chunkName = chunk === 'index.js' ? undefined : chunk;
+		const source = await extensionManager.getAppExtensionChunk(chunkName);
 
 		if (source === null) {
 			throw new RouteNotFoundError({ path: req.path });
@@ -344,14 +338,12 @@ router.get(
 
 		res.setHeader('Vary', 'Origin, Cache-Control');
 
-		const sourceStream = source;
-
 		// Clean up the source stream if the client disconnects, or is already gone
-		if (destroyOnDisconnect(res, () => sourceStream.destroy())) {
+		if (destroyOnDisconnect(res, () => source.destroy())) {
 			return;
 		}
 
-		sourceStream.pipe(res);
+		source.pipe(res);
 	}),
 );
 
