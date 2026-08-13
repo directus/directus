@@ -19,7 +19,7 @@ export default defineOperationApp({
 			text: type || 'markdown',
 		},
 		...[
-			fromName && {
+			fromName?.trim() && {
 				label: '$t:operations.mail.from_name',
 				text: fromName,
 			},
