@@ -18,7 +18,7 @@ describe('checkRequirements', () => {
 		// Mock process.versions
 		mockProcessVersions = vi.spyOn(process, 'versions', 'get').mockReturnValue({
 			...process.versions,
-			node: '24.0.0', // default value
+			node: '26.0.0', // default value
 		});
 	});
 
@@ -30,9 +30,9 @@ describe('checkRequirements', () => {
 	});
 
 	describe('when Node.js version is correct', () => {
-		it('should pass without errors for Node.js 24.x.x', () => {
+		it('should pass without errors for Node.js 26.x.x', () => {
 			// Arrange
-			mockProcessVersions.mockReturnValue({ ...process.versions, node: '24.0.0' });
+			mockProcessVersions.mockReturnValue({ ...process.versions, node: '26.0.0' });
 
 			// Act
 			checkRequirements();
@@ -42,9 +42,9 @@ describe('checkRequirements', () => {
 			expect(mockConsoleError).not.toHaveBeenCalled();
 		});
 
-		it('should pass without errors for Node.js 24.1.0', () => {
+		it('should pass without errors for Node.js 26.1.0', () => {
 			// Arrange
-			mockProcessVersions.mockReturnValue({ ...process.versions, node: '24.1.0' });
+			mockProcessVersions.mockReturnValue({ ...process.versions, node: '26.1.0' });
 
 			// Act
 			checkRequirements();
@@ -54,9 +54,9 @@ describe('checkRequirements', () => {
 			expect(mockConsoleError).not.toHaveBeenCalled();
 		});
 
-		it('should pass without errors for Node.js 24.10.5', () => {
+		it('should pass without errors for Node.js 26.10.5', () => {
 			// Arrange
-			mockProcessVersions.mockReturnValue({ ...process.versions, node: '24.10.5' });
+			mockProcessVersions.mockReturnValue({ ...process.versions, node: '26.10.5' });
 
 			// Act
 			checkRequirements();
@@ -98,9 +98,19 @@ describe('checkRequirements', () => {
 			expect(mockConsoleError).toHaveBeenCalledTimes(3);
 		});
 
-		it('should exit with code 1 for Node.js 26.x.x (future version)', () => {
+		it('should exit with code 1 for Node.js 24.x.x', () => {
 			// Arrange
-			mockProcessVersions.mockReturnValue({ ...process.versions, node: '26.0.0' });
+			mockProcessVersions.mockReturnValue({ ...process.versions, node: '24.10.5' });
+
+			// Act & Assert
+			expect(() => checkRequirements()).toThrow('process.exit called');
+			expect(mockExit).toHaveBeenCalledWith(1);
+			expect(mockConsoleError).toHaveBeenCalledTimes(3);
+		});
+
+		it('should exit with code 1 for Node.js 28.x.x (future version)', () => {
+			// Arrange
+			mockProcessVersions.mockReturnValue({ ...process.versions, node: '28.0.0' });
 
 			// Act & Assert
 			expect(() => checkRequirements()).toThrow('process.exit called');
@@ -119,7 +129,7 @@ describe('checkRequirements', () => {
 			expect(mockConsoleError).toHaveBeenNthCalledWith(1, expect.stringContaining('You are running'));
 			expect(mockConsoleError).toHaveBeenNthCalledWith(1, expect.stringContaining('Node.js 18.17.0'));
 			expect(mockConsoleError).toHaveBeenNthCalledWith(2, expect.stringContaining('Directus requires'));
-			expect(mockConsoleError).toHaveBeenNthCalledWith(2, expect.stringContaining('Node.js 24'));
+			expect(mockConsoleError).toHaveBeenNthCalledWith(2, expect.stringContaining('Node.js 26'));
 			expect(mockConsoleError).toHaveBeenNthCalledWith(3, 'Please adjust your Node.js version and try again.');
 		});
 
@@ -137,7 +147,7 @@ describe('checkRequirements', () => {
 	describe('edge cases', () => {
 		it('should handle version strings with pre-release identifiers', () => {
 			// Arrange
-			mockProcessVersions.mockReturnValue({ ...process.versions, node: '24.0.0-pre' });
+			mockProcessVersions.mockReturnValue({ ...process.versions, node: '26.0.0-pre' });
 
 			// Act
 			checkRequirements();
@@ -149,7 +159,7 @@ describe('checkRequirements', () => {
 
 		it('should handle version strings with build metadata', () => {
 			// Arrange
-			mockProcessVersions.mockReturnValue({ ...process.versions, node: '24.1.0+build.123' });
+			mockProcessVersions.mockReturnValue({ ...process.versions, node: '26.1.0+build.123' });
 
 			// Act
 			checkRequirements();
@@ -161,7 +171,7 @@ describe('checkRequirements', () => {
 
 		it('should correctly parse single digit minor and patch versions', () => {
 			// Arrange
-			mockProcessVersions.mockReturnValue({ ...process.versions, node: '24.0.0' });
+			mockProcessVersions.mockReturnValue({ ...process.versions, node: '26.0.0' });
 
 			// Act
 			checkRequirements();

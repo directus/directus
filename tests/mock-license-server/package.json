@@ -35,6 +35,6 @@
 		"zod": "catalog:"
 	},
 	"engines": {
-		"node": ">=24"
+		"node": ">=26"
 	}
 }
