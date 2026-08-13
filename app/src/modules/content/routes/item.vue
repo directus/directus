@@ -44,12 +44,14 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
 import { useCollectionPermissions, useItemPermissions } from '@/composables/use-permissions';
+import { provideRefreshSignal } from '@/composables/use-refresh-signal';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
 import { useAutoSave } from '@/modules/content/composables/use-auto-save';
 import { useNotificationsStore } from '@/stores/notifications';
+import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -101,6 +103,7 @@ const { collectionRoute, backRoute } = useItemNavigation();
 
 const userStore = useUserStore();
 const notificationsStore = useNotificationsStore();
+const settingsStore = useSettingsStore();
 
 const isCurrentVersionNew = computed(() => currentVersion.value?.id === '+');
 
@@ -191,9 +194,12 @@ const {
 	isArchived,
 	saveAsCopy,
 	refresh,
+	refreshSignal,
 	getItem,
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKeyParam, currentVersion, isItemlessVersion);
+
+provideRefreshSignal(refreshSignal);
 
 watch(
 	[item, isSingleton, primaryKeyParam],
@@ -400,11 +406,26 @@ const isFormNonEditable = computed(
 		!canAutoSwitchToDraft.value,
 );
 
-const disabledOptions = computed(() => {
+const baseDisabledOptions = computed(() => {
 	if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];
 	if (isNew.value) return ['save-as-copy'];
 	return [];
 });
+
+const defaultSaveAction = computed(() => {
+	const action = settingsStore.settings?.default_save_action;
+	const isSingleton = collectionInfo.value?.meta?.singleton === true;
+
+	if (action === 'save-and-stay') return 'save-and-stay';
+
+	if (action === 'save-and-create-new' && !isSingleton && !baseDisabledOptions.value.includes('save-and-add-new')) {
+		return 'save-and-add-new';
+	}
+
+	return 'save-and-quit';
+});
+
+const disabledOptions = computed(() => [...baseDisabledOptions.value, defaultSaveAction.value]);
 
 const currentVersionId = computed(() => currentVersion.value?.id ?? null);
 
@@ -657,6 +678,16 @@ async function saveAndQuit() {
 		if (props.singleton === false) router.push(collectionRoute.value);
 	} catch {
 		// Save shows unexpected error dialog
+	}
+}
+
+function saveDefault() {
+	if (defaultSaveAction.value === 'save-and-stay') {
+		saveAndStay();
+	} else if (defaultSaveAction.value === 'save-and-add-new') {
+		saveAndAddNew();
+	} else {
+		saveAndQuit();
 	}
 }
 
@@ -1043,6 +1074,7 @@ function useAutoSwitchToDraft() {
 					:collection="collectionInfo.collection"
 					:item="templateData"
 					:template="collectionInfo.meta!.display_template"
+					show-collection-name
 				/>
 			</h1>
 		</template>
@@ -1208,11 +1240,12 @@ function useAutoSwitchToDraft() {
 					icon="check"
 					:loading="saving"
 					:disabled="!isSavable"
-					@click="saveAndQuit()"
+					@click="saveDefault()"
 				>
 					<template v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true" #split-menu>
 						<SaveOptions
 							:disabled-options="disabledOptions"
+							@save-and-quit="saveAndQuit"
 							@save-and-stay="saveAndStay"
 							@save-and-add-new="saveAndAddNew"
 							@save-as-copy="saveAsCopyAndNavigate"
@@ -1256,6 +1289,7 @@ function useAutoSwitchToDraft() {
 					:collab-context="collabContext"
 					:validation-errors="validationErrors"
 					:version="currentVersion"
+					:can-auto-switch-to-draft="canAutoSwitchToDraft"
 					:direction="userStore.textDirection"
 				/>
 			</template>

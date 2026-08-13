@@ -253,45 +253,15 @@ Provides cache system mocking utilities.
 
 #### `mockCache()`
 
-Creates a standard cache module mock with getCache, getCacheValue, setCacheValue, and clearSystemCache. Returns both the
-mocks for vi.mock() declarations and spies for testing cache behavior.
+Creates a standard cache module mock with getCache, getCacheValue, setCacheValue, and clearSystemCache for vi.mock()
+declarations.
 
-**Returns:** Object with mock functions and spies
+**Returns:** Object with mock functions
 
 - `getCache`: Mock function returning cache object
 - `getCacheValue`: Mock function returning null
 - `setCacheValue`: Mock function returning undefined
 - `clearSystemCache`: Mock function
-- `spies`: Spy functions for testing cache behavior
-  - `clearSpy`: Spy for cache.clear()
-  - `systemClearSpy`: Spy for systemCache.clear()
-  - `getCacheSpy`: Spy for localSchemaCache.get()
-  - `setCacheSpy`: Spy for localSchemaCache.set()
-  - `mockCacheReturn`: The mock cache object to pass to vi.mocked()
-
-**Example:**
-
-```typescript
-// Standard usage for vi.mock()
-vi.mock('../cache.js', async () => {
-	const { mockCache } = await import('../test-utils/cache.js');
-	return mockCache();
-});
-
-// Testing cache clearing with spies
-import { getCache } from '../cache.js';
-import { mockCache } from '../test-utils/cache.js';
-
-test('should clear cache after update', async () => {
-	const { spies } = mockCache();
-	vi.mocked(getCache).mockReturnValue(spies.mockCacheReturn as any);
-
-	const service = new YourService({ knex: db, schema });
-	await service.updateOne('1', { name: 'Updated' });
-
-	expect(spies.clearSpy).toHaveBeenCalled();
-});
-```
 
 ---
 
@@ -962,23 +932,6 @@ test('should alter table to add column', async () => {
 	await service.addField('users', { field: 'email', type: 'string' });
 
 	expect(alterTableSpy).toHaveBeenCalledWith('users', expect.any(Function));
-});
-```
-
-### Testing Cache Clearing
-
-```typescript
-import { getCache } from '../cache.js';
-import { mockCache } from '../test-utils/cache.js';
-
-test('should clear cache after update', async () => {
-	const { spies } = mockCache();
-	vi.mocked(getCache).mockReturnValue(spies.mockCacheReturn as any);
-
-	const service = new YourService({ knex: db, schema });
-	await service.updateOne('1', { name: 'Updated' });
-
-	expect(spies.clearSpy).toHaveBeenCalled();
 });
 ```
 

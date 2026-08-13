@@ -15,9 +15,7 @@ import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
-import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
-import { useSettingsStore } from '@/stores/settings';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
@@ -65,9 +63,7 @@ const { relationInfo } = useRelationM2M(collection, field);
 const { locale } = useI18n();
 
 const fieldsStore = useFieldsStore();
-const licenseStore = useLicenseStore();
 const serverStore = useServerStore();
-const settingsStore = useSettingsStore();
 const aiStore = useAiStore();
 
 const showTranslateModal = ref(false);
@@ -80,11 +76,11 @@ function openTranslateDrawer() {
 const aiTranslateAvailable = computed(() =>
 	isAiTranslateAvailable({
 		aiEnabled: serverStore.info.ai_enabled,
-		availableProviderCount: settingsStore.availableAiProviders.length,
+		availableProviderCount: serverStore.info.ai_providers?.length ?? 0,
 		availableModelCount: aiStore.models.length,
 		disabled: props.disabled,
 		nonEditable: props.nonEditable,
-		licenseEntitlement: licenseStore.aiTranslationsEnabled,
+		licenseEntitlement: serverStore.info.license?.entitlements.ai_translations_enabled as boolean,
 	}),
 );
 

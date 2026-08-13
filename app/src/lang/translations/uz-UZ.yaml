@@ -447,6 +447,8 @@ errors:
 wysiwyg_options:
   forecolor: Old fon rangi
   backcolor: Fon rangi
+  ltr: Chapdan o'ngga
+  rtl: O'ngdan chapga
 licensing:
   addon_manage: Boshqarish
   resolve_sso_admin_email: Elektron pochta manzili
