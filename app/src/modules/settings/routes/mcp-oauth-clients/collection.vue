@@ -89,6 +89,7 @@ function useBatch() {
 					:items="[
 						{ name: $t('settings'), to: '/settings' },
 						{ name: $t('settings_ai'), to: '/settings/ai' },
+						{ name: $t('mcp_oauth_clients'), to: '/settings/mcp-oauth-clients' },
 					]"
 				/>
 			</template>
