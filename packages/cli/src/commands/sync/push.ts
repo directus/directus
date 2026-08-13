@@ -189,7 +189,7 @@ export async function push(options: PushOptions, ctx: CliContext): Promise<void>
 	if (ctx.interactive && (schema.deleted > 0 || dataDeleted > 0) && !allowDeletes) {
 		const parts: string[] = [];
 		if (dataDeleted > 0) parts.push(maybePluralize(dataDeleted, 'configuration record'));
-		if (schema.deleted > 0) parts.push(maybePluralize(schema.deleted, 'schema deletion'));
+		if (schema.deleted > 0) parts.push(maybePluralize(schema.deleted, 'schema item'));
 
 		const typed = await ask(
 			text({
