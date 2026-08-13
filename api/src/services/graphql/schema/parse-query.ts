@@ -58,13 +58,20 @@ export async function getQuery(
 			if (selection.kind === 'InlineFragment') {
 				if (selection.typeCondition!.name.value.startsWith('__')) continue;
 
-				const isM2A = getRelationInfo(schema.relations, currentCollection, parentFieldName).relationType === 'a2o';
+				const relationInfo = getRelationInfo(schema.relations, currentCollection, parentFieldName);
+				const isM2A = relationInfo.relationType === 'a2o';
 
-				if (isM2A) {
+				// A named fragment declared on the union itself reaches this point as an inline fragment
+				// whose type condition is the generated union type rather than one of the related
+				// collections, so only prefix the path when the condition names a related collection.
+				const isRelatedCollection =
+					relationInfo.relation?.meta?.one_allowed_collections?.includes(selection.typeCondition!.name.value) ?? false;
+
+				if (isM2A && isRelatedCollection) {
 					current = `${parent}:${selection.typeCondition!.name.value}`;
 					childCollection = selection.typeCondition!.name.value;
 				} else {
-					// Non-M2A fragment: inline children with same parent
+					// Non-M2A fragment, or a fragment on the union type: inline children with same parent
 					const children = await parseFields(
 						selection.selectionSet?.selections ?? [],
 						parent,

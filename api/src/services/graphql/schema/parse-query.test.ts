@@ -131,6 +131,20 @@ describe('parseFields', () => {
 		expect(query.fields).toEqual(['parent:child.id']);
 	});
 
+	test('should inline a fragment declared on the M2A union type itself', async () => {
+		// parent { ...frag } where `fragment frag on test_collection_parent_union { ... on child { id } }`.
+		// replaceFragmentsInSelections turns the spread into an inline fragment carrying the union's
+		// type condition, which is not one of the related collections.
+		const selections = [
+			field('parent', {
+				children: [inlineFragment('test_collection_parent_union', [inlineFragment('child', [field('id')])])],
+			}),
+		];
+
+		const query = await getQuery({}, m2aSchema, selections, mockVariableValues, mockAccountability, 'test_collection');
+		expect(query.fields).toEqual(['parent:child.id']);
+	});
+
 	test('should inline non-M2A InlineFragment without type prefix', async () => {
 		// Page { ...PageFragment } at root level, not M2A
 		const selections = [inlineFragment('Page', [field('id'), field('title')])];
