@@ -3,6 +3,8 @@
 '@directus/storage-driver-s3': major
 '@directus/storage-driver-local': major
 '@directus/storage-driver-supabase': major
+'@directus/storage-driver-azure': patch
+'@directus/storage-driver-gcs': patch
 ---
 
 ::: notice
