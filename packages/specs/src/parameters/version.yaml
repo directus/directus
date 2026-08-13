@@ -5,3 +5,12 @@ in: query
 required: false
 schema:
   type: string
+examples:
+  none:
+    summary: No version specified (default)
+  named:
+    summary: A named Content Version
+    value: site-redesign-2027
+  draft:
+    summary: Reserved key for itemless Content Versions (e.g. Visual Editor live edits)
+    value: draft
