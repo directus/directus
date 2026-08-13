@@ -33,8 +33,10 @@ patch:
     content:
       application/json:
         schema:
-          anyOf:
+          allOf:
             - $ref: '../../openapi.yaml#/components/schemas/Presets'
+            - type: object
+              required: [collection]
   responses:
     '200':
       description: Successful request
