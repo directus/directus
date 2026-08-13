@@ -19,10 +19,6 @@ export default defineOperationApp({
 			text: type || 'markdown',
 		},
 		...[
-			fromName?.trim() && {
-				label: '$t:operations.mail.from_name',
-				text: fromName,
-			},
 			cc && {
 				label: '$t:operations.mail.cc',
 				text: Array.isArray(cc) ? cc.join(', ') : cc,
@@ -35,23 +31,14 @@ export default defineOperationApp({
 				label: '$t:operations.mail.reply_to',
 				text: Array.isArray(replyTo) ? replyTo.join(', ') : replyTo,
 			},
+			fromName?.trim() && {
+				label: '$t:operations.mail.from_name',
+				text: fromName,
+			},
 		].filter((v) => v),
 	],
 	options: (panel) => {
 		return [
-			{
-				field: 'fromName',
-				name: '$t:operations.mail.from_name',
-				type: 'string',
-				meta: {
-					width: 'full',
-					interface: 'input',
-					options: {
-						placeholder: '$t:operations.mail.from_name_placeholder',
-						iconRight: 'badge',
-					},
-				},
-			},
 			{
 				field: 'to',
 				name: '$t:operations.mail.to',
@@ -114,6 +101,19 @@ export default defineOperationApp({
 					options: {
 						placeholder: '$t:operations.mail.reply_to_placeholder',
 						iconRight: 'reply',
+					},
+				},
+			},
+			{
+				field: 'fromName',
+				name: '$t:operations.mail.from_name',
+				type: 'string',
+				meta: {
+					width: 'full',
+					interface: 'input',
+					options: {
+						placeholder: '$t:operations.mail.from_name_placeholder',
+						iconRight: 'badge',
 					},
 				},
 			},
