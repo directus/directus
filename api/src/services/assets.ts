@@ -92,11 +92,16 @@ export class AssetsService {
 			pendingStreams.clear();
 		};
 
-		archive.on('close', releaseStreams);
-
 		// `finalize()` never settles once the archive stops reading, which it does on both of these
 		const failed = new Promise<never>((_, reject) => archive.once('error', reject));
-		const closed = new Promise<void>((resolve) => archive.once('close', () => resolve()));
+
+		const closed = new Promise<void>((resolve) =>
+			archive.once('close', () => {
+				releaseStreams();
+				resolve();
+			}),
+		);
+
 		failed.catch(() => {});
 
 		const complete = async () => {
