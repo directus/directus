@@ -90,7 +90,7 @@ jobs:
                     });
                   }
 
-                  core.info(`Removed label from PR #${pr.number} — the CLA has since been signed: ${pr.title}`);
+                  core.info(`${dryRun ? 'Would remove' : 'Removed'} label from PR #${pr.number} — the CLA has since been signed: ${pr.title}`);
                   continue;
                 }
 
