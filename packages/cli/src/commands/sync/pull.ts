@@ -1,6 +1,7 @@
 import { relative } from 'node:path';
+import { appAccessMinimalPermissions } from '@directus/system-data';
 import type { Command } from 'commander';
-import { isPlainObject } from 'lodash-es';
+import { isEqual, isPlainObject } from 'lodash-es';
 import type { ProjectConfig } from '../../kernel/config/file.js';
 import {
 	fetchCustomPermissionRulesEntitled,
@@ -237,17 +238,25 @@ function permissionsShortfallWarning(
 	total: number,
 	entitled: boolean | undefined,
 ): string {
-	const base = `${name}: pulled ${pulled} of ${total} records — the pull is incomplete: merge and add pushes stay safe, mirror pushes will refuse it.`;
+	const missing = Math.max(total - pulled, 0);
+	const base = `${name}: Directus returned ${pulled} of ${total} stored permission records — the API withheld ${maybePluralize(missing, 'stored row')} the CLI cannot inspect.`;
+
+	// The hidden rows never reach the CLI, so "may only be minimums" is the strongest honest claim.
+	const maybeMinimums =
+		'Some hidden rows may only be the app-access minimums Directus recreates automatically, but the CLI cannot verify that.';
+
+	const safety =
+		'Merge and add continue with the visible records. Mirror is blocked so hidden permissions are not deleted on the target.';
 
 	if (entitled === false) {
-		return `${base} Confirmed: this instance is unlicensed for custom permission rules (custom_permission_rules_enabled), so it hides them from reads. License the instance to pull these records.`;
+		return `${base} This instance is not licensed for custom permission rules, so Directus hides stored permissions that use filters, field restrictions, validation, or presets. ${maybeMinimums} ${safety} License the source instance and re-pull to include authored rules.`;
 	}
 
 	if (entitled === true) {
-		return `${base} This instance IS licensed for custom permission rules, so the missing records are unexpected — investigate before trusting a mirror push.`;
+		return `${base} This instance is licensed for custom permission rules, so the omission is unexpected. ${safety} Investigate the source before pushing.`;
 	}
 
-	return `${base} This instance likely hides custom permission rules from reads (unlicensed custom_permission_rules_enabled); the license entitlement could not be confirmed.`;
+	return `${base} This usually means the source is not licensed for custom permission rules, which hides stored permissions that use filters, field restrictions, validation, or presets; the license status could not be confirmed. ${maybeMinimums} ${safety}`;
 }
 
 // A deny-list preserves new server fields by default while removing secrets, external FKs, and alias views.
@@ -265,6 +274,62 @@ function stripSystemFields(
 		for (const field of drop) delete stripped[field];
 		return stripped;
 	});
+}
+
+/**
+ * Stored duplicates of the static app-access minimums are noise: the server recreates them for any
+ * app-access policy. Only an exact match against the compiled-in list is dropped — a drifted row is
+ * kept. If a future Directus removes an entry from its minimums this list must follow, or a mirror
+ * push would delete a stored row nothing recreates.
+ */
+function withoutRedundantAppAccessMinimums(collections: DataCollection[]): {
+	collections: DataCollection[];
+	dropped: number;
+} {
+	const policies = collections.find((entry) => entry.collection === 'directus_policies');
+	if (policies === undefined) return { collections, dropped: 0 };
+
+	const appAccessPolicyIds = new Set(
+		policies.records
+			.filter((record) => record['app_access'] === true)
+			.map((record) => record[policies.primaryKey])
+			.filter((id): id is string | number => typeof id === 'string' || typeof id === 'number')
+			.map(String),
+	);
+
+	if (appAccessPolicyIds.size === 0) return { collections, dropped: 0 };
+
+	let dropped = 0;
+
+	const normalized = collections.map((entry) => {
+		if (entry.collection !== 'directus_permissions') return entry;
+
+		const records = entry.records.filter((record) => {
+			const policy = record['policy'];
+
+			if ((typeof policy !== 'string' && typeof policy !== 'number') || !appAccessPolicyIds.has(String(policy))) {
+				return true;
+			}
+
+			const redundant = appAccessMinimalPermissions.some(
+				(minimum) =>
+					record['collection'] === minimum.collection &&
+					record['action'] === minimum.action &&
+					isEqual(record['fields'], minimum.fields) &&
+					isEqual(record['permissions'], minimum.permissions) &&
+					isEqual(record['validation'], minimum.validation) &&
+					isEqual(record['presets'], minimum.presets),
+			);
+
+			if (redundant) dropped += 1;
+
+			return !redundant;
+		});
+
+		return { ...entry, records };
+	});
+
+	return { collections: normalized, dropped };
 }
 
 // Catches secret-bearing custom fields no static strip list could know about.
@@ -440,6 +505,14 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 		dataCollections.push({ collection: resource.collection, primaryKey: resource.primaryKey, records: rows });
 	}
 
+	const { collections: normalizedDataCollections, dropped } = withoutRedundantAppAccessMinimums(dataCollections);
+
+	if (dropped > 0) {
+		ctx.ui.info(
+			`permissions: dropped ${maybePluralize(dropped, 'stored row')} identical to the app-access minimums — app-access policies recreate them on the target.`,
+		);
+	}
+
 	const result = snapshot === null ? null : writeSnapshotFiles(schemaDir, snapshot, scope?.write);
 
 	// Validate references against the stored set because scoped pulls preserve earlier artifacts.
@@ -457,14 +530,14 @@ export async function pull(options: PullOptions, ctx: CliContext): Promise<void>
 	const schemaCollectionCount = snapshot?.collections.length ?? 0;
 	const removed = result?.removed.length ?? 0;
 
-	const dataResult = writeDataFiles(dataDir, dataCollections, normalizeInstanceUrl(url), incomplete);
-	const recordCount = dataCollections.reduce((total, entry) => total + entry.records.length, 0);
+	const dataResult = writeDataFiles(dataDir, normalizedDataCollections, normalizeInstanceUrl(url), incomplete);
+	const recordCount = normalizedDataCollections.reduce((total, entry) => total + entry.records.length, 0);
 	const dataDirRelative = relative(ctx.cwd, dataDir);
-	const collectionCount = dataCollections.length;
+	const collectionCount = normalizedDataCollections.length;
 
 	const data: PullDataReport = {
 		resources: resources.map((resource) => resource.name),
-		collections: dataCollections.map((entry) => entry.collection),
+		collections: normalizedDataCollections.map((entry) => entry.collection),
 		recordCount,
 		collectionCount,
 		fileCount: dataResult.written.length,

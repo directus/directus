@@ -28,6 +28,7 @@
 	"dependencies": {
 		"@clack/prompts": "catalog:",
 		"@directus/sdk": "workspace:*",
+		"@directus/system-data": "workspace:*",
 		"@directus/types": "workspace:*",
 		"chalk": "catalog:",
 		"commander": "catalog:",
@@ -35,7 +36,6 @@
 		"zod": "catalog:"
 	},
 	"devDependencies": {
-		"@directus/system-data": "workspace:*",
 		"@directus/tsconfig": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",

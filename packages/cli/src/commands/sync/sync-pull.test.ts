@@ -1254,13 +1254,27 @@ describe('sync pull resources and data', () => {
 		expect(existsSync(join(dir, 'directus'))).toBe(false);
 	});
 
-	it('pulls only stored permissions — appended app-access records never reach disk', async () => {
+	it('omits derived and redundant app-access minimums from permission artifacts', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
 		interceptSnapshot();
 
 		const derived = { policy: null, collection: 'directus_settings', action: 'read', system: true };
 		const stored = { id: 1, policy: 'p1', collection: 'articles', action: 'read' };
+
+		const redundant = {
+			id: 2,
+			policy: 'p1',
+			collection: 'directus_collections',
+			action: 'read',
+			fields: ['*'],
+			permissions: {},
+			validation: null,
+			presets: null,
+		};
+
+		const nonAppMinimum = { ...redundant, id: 3, policy: 'p2' };
+		const customizedMinimum = { ...redundant, id: 4, fields: ['id'] };
 
 		agent
 			.get(url)
@@ -1270,23 +1284,31 @@ describe('sync pull resources and data', () => {
 				query: { limit: '-1', sort: 'id' },
 				headers: { authorization: `Bearer ${token}` },
 			})
-			.reply(200, { data: [stored, derived] }, { headers: { 'content-type': 'application/json' } });
+			.reply(
+				200,
+				{ data: [stored, redundant, nonAppMinimum, customizedMinimum, derived] },
+				{ headers: { 'content-type': 'application/json' } },
+			);
 
 		agent
 			.get(url)
 			.intercept({
 				path: '/permissions',
 				method: 'GET',
-				query: { limit: '-1', sort: 'id', filter: JSON.stringify({ id: { _gt: 1 } }) },
+				query: { limit: '-1', sort: 'id', filter: JSON.stringify({ id: { _gt: 4 } }) },
 				headers: { authorization: `Bearer ${token}` },
 			})
 			.reply(200, { data: [derived] }, { headers: { 'content-type': 'application/json' } });
 
-		mockTotalCount(agent, '/permissions', 1);
+		mockTotalCount(agent, '/permissions', 4);
+
+		interceptList('/policies', [
+			{ id: 'p1', app_access: true },
+			{ id: 'p2', app_access: false },
+		]);
 
 		for (const path of [
 			'/roles',
-			'/policies',
 			'/access',
 			'/flows',
 			'/operations',
@@ -1303,7 +1325,10 @@ describe('sync pull resources and data', () => {
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
 
 		const permissions = JSON.parse(readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_permissions')), 'utf8'));
-		expect(permissions.records).toEqual([stored]);
+		expect(permissions.records).toEqual([stored, nonAppMinimum, customizedMinimum]);
+
+		// A record vanishing from the pull is never silent.
+		expect(stderr.join('')).toContain('dropped 1 stored row identical to the app-access minimums');
 	});
 
 	it('marks a truncated permissions pull incomplete instead of storing the shortfall silently', async () => {
@@ -1353,8 +1378,11 @@ describe('sync pull resources and data', () => {
 
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
 
-		expect(stderr.join('')).toContain('pulled 1 of 3 records');
-		expect(stderr.join('')).toContain('mirror pushes will refuse');
+		const err = stderr.join('');
+		expect(err).toContain('Directus returned 1 of 3 stored permission records');
+		expect(err).toContain('the API withheld 2 stored rows the CLI cannot inspect');
+		expect(err).toContain('may only be the app-access minimums Directus recreates automatically');
+		expect(err).toContain('Mirror is blocked so hidden permissions are not deleted on the target');
 
 		const metadata = JSON.parse(readFileSync(join(dataDir, 'metadata.json'), 'utf8'));
 		expect(metadata.incomplete).toEqual(['directus_permissions']);
@@ -1417,8 +1445,10 @@ describe('sync pull resources and data', () => {
 		expect(await d6s('sync', 'pull', '--from', 'staging')).toBe(0);
 
 		const err = stderr.join('');
-		expect(err).toContain('pulled 1 of 3 records');
-		expect(err).toContain('Confirmed: this instance is unlicensed for custom permission rules');
+		expect(err).toContain('Directus returned 1 of 3 stored permission records');
+		expect(err).toContain('This instance is not licensed for custom permission rules');
+		expect(err).toContain('filters, field restrictions, validation, or presets');
+		expect(err).toContain('may only be the app-access minimums Directus recreates automatically');
 	});
 
 	it('refuses a cross-source pull before ANY write or request — schema and data stay byte-identical', async () => {
