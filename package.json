@@ -18,7 +18,7 @@
 		"@eslint/js": "catalog:",
 		"eslint": "catalog:",
 		"eslint-config-prettier": "catalog:",
-		"eslint-plugin-import": "catalog:",
+		"eslint-plugin-import-x": "catalog:",
 		"eslint-plugin-vue": "catalog:",
 		"globals": "catalog:",
 		"postcss-html": "catalog:",
@@ -30,7 +30,8 @@
 		"stylelint-config-standard-vue": "catalog:",
 		"stylelint-use-logical": "catalog:",
 		"typescript": "catalog:",
-		"typescript-eslint": "catalog:"
+		"typescript-eslint": "catalog:",
+		"vue-eslint-parser": "catalog:"
 	},
 	"pnpm": {
 		"overrides": {
