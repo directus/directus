@@ -21,7 +21,5 @@ get:
                     type: boolean
                   enforce_tfa:
                     type: boolean
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
   tags:
     - Policies
