@@ -6,6 +6,12 @@ import * as mdUtil from '../../utils/md.js';
 import type { Options } from './index.js';
 import config from './index.js';
 
+// Pin EMAIL_FROM so a local .env can't change what the sender address is asserted against
+vi.mock('@directus/env', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('@directus/env')>();
+	return { ...actual, useEnv: () => ({ ...actual.useEnv(), EMAIL_FROM: 'no-reply@example.com' }) };
+});
+
 describe('Operations / Mail', () => {
 	let mockOperationContext: any;
 	let mailServiceSendSpy: MockInstance;
@@ -164,5 +170,40 @@ describe('Operations / Mail', () => {
 				replyTo: options.replyTo,
 			}),
 		);
+	});
+
+	test('use fromName as sender name with the EMAIL_FROM address', async () => {
+		const options: Options = {
+			to: 'test@example.com',
+			subject: 'Test',
+			type: 'wysiwyg',
+			body: 'test body',
+			fromName: 'Acme Support',
+		};
+
+		await config.handler(options, mockOperationContext);
+
+		expect(mailServiceSendSpy).toHaveBeenCalledWith(
+			expect.objectContaining({
+				from: { name: 'Acme Support', address: 'no-reply@example.com' },
+			}),
+		);
+	});
+
+	test.each([
+		{ scenario: 'unset', fromName: {} },
+		{ scenario: 'whitespace only', fromName: { fromName: '   ' } },
+	])('omit sender when fromName is $scenario', async ({ fromName }) => {
+		const options: Options = {
+			to: 'test@example.com',
+			subject: 'Test',
+			type: 'wysiwyg',
+			body: 'test body',
+			...fromName,
+		};
+
+		await config.handler(options, mockOperationContext);
+
+		expect(mailServiceSendSpy).toHaveBeenCalledWith(expect.not.objectContaining({ from: expect.anything() }));
 	});
 });

@@ -5,7 +5,7 @@ export default defineOperationApp({
 	icon: 'mail',
 	name: '$t:operations.mail.name',
 	description: '$t:operations.mail.description',
-	overview: ({ subject, to, type, cc, bcc, replyTo }) => [
+	overview: ({ subject, to, fromName, type, cc, bcc, replyTo }) => [
 		{
 			label: '$t:subject',
 			text: subject,
@@ -30,6 +30,10 @@ export default defineOperationApp({
 			replyTo && {
 				label: '$t:operations.mail.reply_to',
 				text: Array.isArray(replyTo) ? replyTo.join(', ') : replyTo,
+			},
+			fromName?.trim() && {
+				label: '$t:operations.mail.from_name',
+				text: fromName,
 			},
 		].filter((v) => v),
 	],
@@ -97,6 +101,19 @@ export default defineOperationApp({
 					options: {
 						placeholder: '$t:operations.mail.reply_to_placeholder',
 						iconRight: 'reply',
+					},
+				},
+			},
+			{
+				field: 'fromName',
+				name: '$t:operations.mail.from_name',
+				type: 'string',
+				meta: {
+					width: 'full',
+					interface: 'input',
+					options: {
+						placeholder: '$t:operations.mail.from_name_placeholder',
+						iconRight: 'badge',
 					},
 				},
 			},
