@@ -3,6 +3,7 @@ get:
   description: Verifies the email address for a newly registered user via the token from the verification email.
   operationId: registerUserVerifyEmail
   x-authentication: none
+  security: []
   parameters:
     - name: token
       in: query

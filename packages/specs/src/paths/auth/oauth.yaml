@@ -1,5 +1,6 @@
 get:
   x-authentication: none
+  security: []
   tags:
     - Authentication
   operationId: oauth

@@ -1,5 +1,6 @@
 post:
   x-authentication: none
+  security: []
   summary: Accept User Invite
   description: Accepts and enables an invited user using a JWT invitation token.
   operationId: acceptInvite
