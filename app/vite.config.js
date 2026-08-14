@@ -28,7 +28,7 @@ const EXTENSIONS_PATH = process.env.EXTENSIONS_LOCATION
 const extensionsPathExists = fs.existsSync(EXTENSIONS_PATH);
 
 const DEFAULT_PORT = 8080;
-const APP_PORT = process.env.NODE_ENV === 'development' ? resolveAppPort(process.env.APP_PORT) : null;
+const DEV_APP_PORT = process.env.NODE_ENV === 'development' ? resolveAppPort(process.env.DEV_APP_PORT) : null;
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -69,8 +69,8 @@ export default defineConfig({
 	},
 	base: process.env.NODE_ENV === 'production' ? '' : '/admin',
 	server: {
-		port: APP_PORT ?? DEFAULT_PORT,
-		strictPort: APP_PORT !== null,
+		port: DEV_APP_PORT ?? DEFAULT_PORT,
+		strictPort: DEV_APP_PORT !== null,
 		proxy: {
 			'^/(?!admin)': {
 				target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
@@ -110,7 +110,7 @@ function resolveAppPort(value) {
 
 	if (!Number.isInteger(port) || port < 1 || port > 65535) {
 		// eslint-disable-next-line no-console
-		console.warn(`[vite.config] Ignoring invalid APP_PORT "${value}", falling back to ${DEFAULT_PORT}`);
+		console.warn(`[vite.config] Ignoring invalid DEV_APP_PORT "${value}", falling back to ${DEFAULT_PORT}`);
 		return null;
 	}
 
