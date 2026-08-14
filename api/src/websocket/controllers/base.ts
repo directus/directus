@@ -16,6 +16,7 @@ import { getLicenseManager } from '../../license/manager.js';
 import { useLogger } from '../../logger/index.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { createRateLimiter } from '../../rate-limiter.js';
+import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { isUnauthenticated } from '../../utils/is-unauthenticated.js';
 import { authenticateConnection, authenticationSuccess } from '../authenticate.js';
@@ -94,7 +95,7 @@ export default abstract class SocketController {
 		const env = useEnv();
 
 		if (toBoolean(env['RATE_LIMITER_ENABLED']) === true) {
-			return createRateLimiter('RATE_LIMITER_WEBSOCKETS');
+			return createRateLimiter('RATE_LIMITER', getConfigFromEnv('RATE_LIMITER_WEBSOCKETS_'));
 		}
 
 		return null;
