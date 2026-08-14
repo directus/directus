@@ -1,4 +1,4 @@
-import type { AllCollections, MergeCoreCollection, SingletonCollections } from '../index.js';
+import type { CollectionName, MergeCoreCollection } from '../index.js';
 import type { DirectusUser } from './user.js';
 
 export type DirectusVersion<Schema = any> = MergeCoreCollection<
@@ -8,7 +8,7 @@ export type DirectusVersion<Schema = any> = MergeCoreCollection<
 		id: string;
 		key: string;
 		name: string | null;
-		collection: AllCollections<Schema> | SingletonCollections<Schema>;
+		collection: CollectionName<Schema>;
 		item: string | null;
 		hash: string | null;
 		date_created: 'datetime' | null;
