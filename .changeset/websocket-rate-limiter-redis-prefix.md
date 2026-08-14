@@ -1,0 +1,6 @@
+---
+'@directus/api': patch
+'@directus/env': patch
+---
+
+Fixed WebSocket rate limiting breaking on shared Redis setups where keys must start with a per-project prefix
