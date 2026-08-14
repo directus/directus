@@ -1,4 +1,4 @@
-import type { AllCollections, MergeCoreCollection, SingletonCollections } from '../index.js';
+import type { AllCollections, MergeCoreCollection, SingletonCollections, StringLiteralUnion } from '../index.js';
 
 export type DirectusRelation<Schema = any> = {
 	collection: AllCollections<Schema> | SingletonCollections<Schema>;
@@ -15,7 +15,7 @@ export type DirectusRelation<Schema = any> = {
 			one_allowed_collections: (AllCollections<Schema> | SingletonCollections<Schema>)[] | null;
 			one_collection: (AllCollections<Schema> | SingletonCollections<Schema>) | null;
 			one_collection_field: string | null;
-			one_deselect_action: 'nullify' | 'delete';
+			one_deselect_action: StringLiteralUnion<'nullify' | 'delete'>;
 			one_field: string | null;
 			sort_field: string | null;
 			system?: boolean;
