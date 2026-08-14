@@ -2,6 +2,7 @@ post:
   summary: Register a New User
   description: Register a new user with the configured self-registration settings.
   operationId: registerUser
+  x-authentication: none
   security: []
   requestBody:
     content:
