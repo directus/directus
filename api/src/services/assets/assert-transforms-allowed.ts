@@ -10,14 +10,14 @@ export type Size = { width: number; height: number };
  * Projects the running size through one sharp transform step.
  *
  * Calculates size for resize, extract, extend and rotate. Excluding trim, all other operations are no op for dimension.
- * Trim will only ever crop borders, so leaving as is keeps it within upper bound
+ * Trim will only ever crop borders, so skipping it keeps it within upper bound
  *
  * @param size - Dimensions entering the step
  * @param method - Sharp transform name
  * @param args - The transform's positional arguments
- * @returns upper bound for the given step
+ * @returns upper bound for the given step, or undefined on neutral (e.g. format) transforms
  */
-export function calculateStep(size: Size, method: string, args: unknown[]): Size {
+export function calculateStep(size: Size, method: string, args: unknown[]): Size | undefined {
 	switch (method) {
 		case 'resize':
 			return calculateResize(size, args);
@@ -28,7 +28,7 @@ export function calculateStep(size: Size, method: string, args: unknown[]): Size
 		case 'rotate':
 			return calculateRotate(size, args[0]);
 		default:
-			return size;
+			return undefined;
 	}
 }
 
@@ -39,6 +39,9 @@ export function calculateStep(size: Size, method: string, args: unknown[]): Size
  * Validating only the final dimensions is not sufficient, since intermediate transformations are fully applied before subsequent steps.
  * For example, an image scaled up to 10,000 pixels and then reduced to 5,000 pixels would end within the limit, but would still exceed
  * the allowed dimension during processing.
+ *
+ * Only dimension-changing steps are checked. A neutral step leaves the running size untouched, so checking it would
+ * measure the source against the cap instead of anything the transform produced.
  *
  * @param sourceWidth - Original image width
  * @param sourceHeight - Original image height
@@ -53,7 +56,11 @@ export function assertTransformsAllowed(sourceWidth: number, sourceHeight: numbe
 	let size: Size = { width: sourceWidth, height: sourceHeight };
 
 	for (const [method, ...args] of transforms) {
-		size = calculateStep(size, method, args);
+		const projected = calculateStep(size, method, args);
+
+		if (projected === undefined) continue;
+
+		size = projected;
 
 		if (size.width > maxOutputDimension || size.height > maxOutputDimension) {
 			throw new IllegalAssetTransformationError({ invalidTransformations: ['width', 'height'] });
