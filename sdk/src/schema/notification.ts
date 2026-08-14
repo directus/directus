@@ -1,4 +1,4 @@
-import type { AllCollections, MergeCoreCollection, SingletonCollections } from '../index.js';
+import type { AllCollections, MergeCoreCollection, SingletonCollections, StringLiteralUnion } from '../index.js';
 import type { DirectusUser } from './user.js';
 
 export type DirectusNotification<Schema = any> = MergeCoreCollection<
@@ -7,7 +7,7 @@ export type DirectusNotification<Schema = any> = MergeCoreCollection<
 	{
 		id: number;
 		timestamp: 'datetime' | null;
-		status: string | null;
+		status: StringLiteralUnion<'inbox' | 'archived'> | null;
 		recipient: DirectusUser<Schema> | string;
 		sender: DirectusUser<Schema> | string | null;
 		subject: string;
