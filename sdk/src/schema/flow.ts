@@ -1,4 +1,4 @@
-import type { MergeCoreCollection } from '../index.js';
+import type { MergeCoreCollection, StringLiteralUnion } from '../index.js';
 import type { DirectusOperation } from './operation.js';
 import type { DirectusUser } from './user.js';
 
@@ -11,9 +11,9 @@ export type DirectusFlow<Schema = any> = MergeCoreCollection<
 		icon: string | null;
 		color: string | null;
 		description: string | null;
-		status: 'active' | 'inactive' | string;
-		trigger: ('event' | 'schedule' | 'operation' | 'webhook' | 'manual' | string) | null;
-		accountability: ('all' | 'activity' | string) | null;
+		status: StringLiteralUnion<'active' | 'inactive'>;
+		trigger: StringLiteralUnion<'event' | 'schedule' | 'operation' | 'webhook' | 'manual'> | null;
+		accountability: StringLiteralUnion<'all' | 'activity'> | null;
 		options: Record<string, any> | null;
 		operation: DirectusOperation<Schema> | string | null;
 		date_created: 'datetime' | null;
