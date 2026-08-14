@@ -1,7 +1,7 @@
-import type { AllCollections, MergeCoreCollection, SingletonCollections } from '../index.js';
+import type { CollectionName, MergeCoreCollection } from '../index.js';
 
 export type DirectusField<Schema = any> = {
-	collection: AllCollections<Schema> | SingletonCollections<Schema>;
+	collection: CollectionName<Schema>;
 	field: string;
 	type: string;
 	meta: MergeCoreCollection<
@@ -9,7 +9,7 @@ export type DirectusField<Schema = any> = {
 		'directus_fields',
 		{
 			id: number;
-			collection: AllCollections<Schema> | SingletonCollections<Schema>;
+			collection: CollectionName<Schema>;
 			field: string;
 			special: string[] | null;
 			interface: string | null;

@@ -1,4 +1,4 @@
-import type { AllCollections, MergeCoreCollection, SingletonCollections } from '../index.js';
+import type { CollectionName, MergeCoreCollection } from '../index.js';
 import type { DirectusRevision } from './revision.js';
 import type { DirectusUser } from './user.js';
 
@@ -12,7 +12,7 @@ export type DirectusActivity<Schema = any> = MergeCoreCollection<
 		timestamp: 'datetime';
 		ip: string | null;
 		user_agent: string | null;
-		collection: AllCollections<Schema> | SingletonCollections<Schema>;
+		collection: CollectionName<Schema>;
 		item: string;
 		origin: string | null;
 		revisions: DirectusRevision<Schema>[] | number[] | null;

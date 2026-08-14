@@ -1,18 +1,12 @@
-import type {
-	AllCollections,
-	DirectusField,
-	MergeCoreCollection,
-	NestedPartial,
-	SingletonCollections,
-} from '../index.js';
+import type { CollectionName, DirectusField, MergeCoreCollection, NestedPartial } from '../index.js';
 
 export type DirectusCollection<Schema = any> = {
-	collection: AllCollections<Schema> | SingletonCollections<Schema>;
+	collection: CollectionName<Schema>;
 	meta: MergeCoreCollection<
 		Schema,
 		'directus_collections',
 		{
-			collection: AllCollections<Schema> | SingletonCollections<Schema>;
+			collection: CollectionName<Schema>;
 			icon: string | null;
 			note: string | null;
 			display_template: string | null;
