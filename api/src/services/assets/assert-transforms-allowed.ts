@@ -18,19 +18,16 @@ export type Size = { width: number; height: number };
  * @returns upper bound for the given step
  */
 export function calculateStep(size: Size, method: string, args: unknown[]): Size {
-	switch (method) {
-		case 'resize':
-			return calculateResize(size, args);
-		case 'extract':
-			return calculateExtract(size, args[0]);
-		case 'extend':
-			return calculateExtend(size, args[0]);
-		case 'rotate':
-			return calculateRotate(size, args[0]);
-		default:
-			return size;
-	}
+	const calculate = dimensionSteps.get(method);
+	return calculate ? calculate(size, args) : size;
 }
+
+const dimensionSteps = new Map<string, (size: Size, args: unknown[]) => Size>([
+	['resize', (size, args) => calculateResize(size, args)],
+	['extract', (size, args) => calculateExtract(size, args[0])],
+	['extend', (size, args) => calculateExtend(size, args[0])],
+	['rotate', (size, args) => calculateRotate(size, args[0])],
+]);
 
 /**
  * Rejects a transform if its projected output exceeds the `ASSETS_TRANSFORM_IMAGE_MAX_OUTPUT_DIMENSION`
@@ -53,6 +50,10 @@ export function assertTransformsAllowed(sourceWidth: number, sourceHeight: numbe
 	let size: Size = { width: sourceWidth, height: sourceHeight };
 
 	for (const [method, ...args] of transforms) {
+		// Steps like `toFormat` leave the dimensions alone, so measuring them would test the source
+		// against the output cap. The source is bound by `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION` instead.
+		if (!dimensionSteps.has(method)) continue;
+
 		size = calculateStep(size, method, args);
 
 		if (size.width > maxOutputDimension || size.height > maxOutputDimension) {

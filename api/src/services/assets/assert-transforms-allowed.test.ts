@@ -60,6 +60,26 @@ describe('assertTransformsAllowed', () => {
 		expect(() => assertTransformsAllowed(1, 1, transforms)).toThrow(IllegalAssetTransformationError);
 	});
 
+	test('When a dimension-neutral step precedes a resize, then the oversized source does not throw', () => {
+		const transforms: Transformation[] = [
+			['toFormat', 'webp', { quality: undefined }],
+			['resize', { width: undefined, height: 8 }],
+		];
+
+		expect(() => assertTransformsAllowed(MAX_DIM + 1, MAX_DIM + 1, transforms)).not.toThrow();
+	});
+
+	test('When a resize projects the oversized source back at its own size, then it still throws', () => {
+		const transforms: Transformation[] = [
+			['toFormat', 'webp', { quality: undefined }],
+			['resize', { width: MAX_DIM + 1, height: undefined }],
+		];
+
+		expect(() => assertTransformsAllowed(MAX_DIM + 1, MAX_DIM + 1, transforms)).toThrow(
+			IllegalAssetTransformationError,
+		);
+	});
+
 	test('When a source dimension is zero, then it does not divide by zero or throw', () => {
 		const transforms: Transformation[] = [['resize', { width: 100 }]];
 		expect(() => assertTransformsAllowed(0, 0, transforms)).not.toThrow();
