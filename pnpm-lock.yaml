@@ -940,8 +940,8 @@ catalogs:
       specifier: 1.5.4
       version: 1.5.4
     uuid:
-      specifier: 11.1.0
-      version: 11.1.0
+      specifier: 11.1.1
+      version: 11.1.1
     vite:
       specifier: 8.1.2
       version: 8.1.2
@@ -1439,7 +1439,7 @@ importers:
         version: 4.22.4
       uuid:
         specifier: 'catalog:'
-        version: 11.1.0
+        version: 11.1.1
       wellknown:
         specifier: 'catalog:'
         version: 0.5.0
@@ -3339,7 +3339,7 @@ importers:
         version: 5.9.3
       uuid:
         specifier: 'catalog:'
-        version: 11.1.0
+        version: 11.1.1
       vite-tsconfig-paths:
         specifier: 5.1.4
         version: 5.1.4(typescript@5.9.3)(vite@8.1.2(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
@@ -14511,10 +14511,6 @@ packages:
 
   uuid-parse@1.1.0:
     resolution: {integrity: sha512-OdmXxA8rDsQ7YpNVbKSJkNzTw2I+S5WsbMDnCtIWSQaosNAcWtFuI/YK1TjzUI6nbkgiqEyh8gWngfcv8Asd9A==}
-
-  uuid@11.1.0:
-    resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
-    hasBin: true
 
   uuid@11.1.1:
     resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
@@ -28129,8 +28125,6 @@ snapshots:
   utils-merge@1.0.1: {}
 
   uuid-parse@1.1.0: {}
-
-  uuid@11.1.0: {}
 
   uuid@11.1.1: {}
 
