@@ -226,7 +226,7 @@ catalog:
   isolated-vm: 5.0.3
   joi: 18.0.1
   jose: 6.2.3
-  js-yaml: 4.3.0
+  js-yaml: 4.3.1
   js2xmlparser: 5.0.0
   jsdom: 29.1.1
   json-to-graphql-query: 2.3.0
