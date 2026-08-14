@@ -42,7 +42,8 @@
 			"express@4>path-to-regexp": "0.1.13",
 			"adm-zip": "0.6.0",
 			"js-yaml@4": "4.3.1",
-			"js-yaml@3": "3.15.1"
+			"js-yaml@3": "3.15.1",
+			"unplugin-yaml>yaml": "2.9.0"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",
