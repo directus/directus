@@ -37,7 +37,7 @@ export default defineOperationApi<Options>({
 		const hasQuery = queryObject !== null && Object.keys(queryObject).length > 0;
 
 		if (hasKeys && hasQuery) {
-			throw new InvalidPayloadError({ reason: 'Cannot use both "keys" and "query"' });
+			throw new InvalidPayloadError({ reason: 'Cannot use both "key" and "query"' });
 		}
 
 		// Nothing to target, so this is a no-op

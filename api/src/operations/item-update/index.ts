@@ -44,12 +44,12 @@ export default defineOperationApi<Options>({
 		const hasQuery = queryObject !== null && Object.keys(queryObject).length > 0;
 
 		if (hasKeys && hasQuery) {
-			throw new InvalidPayloadError({ reason: 'Cannot use both "keys" and "query"' });
+			throw new InvalidPayloadError({ reason: 'Cannot use both "key" and "query"' });
 		}
 
 		if (isBatch && (hasKeys || hasQuery)) {
 			// A batch payload carries its own keys
-			throw new InvalidPayloadError({ reason: 'Cannot use "keys" or "query" with a batch payload' });
+			throw new InvalidPayloadError({ reason: 'Cannot use "key" or "query" with a batch payload' });
 		}
 
 		// Nothing to update, so this is a no-op

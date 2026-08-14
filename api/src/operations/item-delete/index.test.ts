@@ -62,12 +62,12 @@ describe('Operations / Item Delete', () => {
 			{
 				scenario: 'both a single key and query are provided',
 				options: { key: [1], query: testQuery },
-				reason: 'Cannot use both "keys" and "query"',
+				reason: 'Cannot use both "key" and "query"',
 			},
 			{
 				scenario: 'both multiple keys and query are provided',
 				options: { key: [1, 2], query: testQuery },
-				reason: 'Cannot use both "keys" and "query"',
+				reason: 'Cannot use both "key" and "query"',
 			},
 		])('should throw when $scenario', async ({ options, reason }) => {
 			await expect(run(options)).rejects.toThrow(reason);

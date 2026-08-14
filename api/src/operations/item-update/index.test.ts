@@ -64,27 +64,27 @@ describe('Operations / Item Update', () => {
 			{
 				scenario: 'both a single key and query are provided',
 				options: { key: [1], query: { limit: -1 } },
-				reason: 'Cannot use both "keys" and "query"',
+				reason: 'Cannot use both "key" and "query"',
 			},
 			{
 				scenario: 'both multiple keys and query are provided',
 				options: { key: [1, 2], query: { limit: -1 } },
-				reason: 'Cannot use both "keys" and "query"',
+				reason: 'Cannot use both "key" and "query"',
 			},
 			{
 				scenario: 'a batch payload is combined with keys',
 				options: { payload: [{ id: 1, foo: 'a' }], key: [1] },
-				reason: 'Cannot use "keys" or "query" with a batch payload',
+				reason: 'Cannot use "key" or "query" with a batch payload',
 			},
 			{
 				scenario: 'a batch payload is combined with a query',
 				options: { payload: [{ id: 1, foo: 'a' }], query: { limit: -1 } },
-				reason: 'Cannot use "keys" or "query" with a batch payload',
+				reason: 'Cannot use "key" or "query" with a batch payload',
 			},
 			{
 				scenario: 'a batch payload is combined with both keys and a query',
 				options: { payload: [{ id: 1, foo: 'a' }], key: [1], query: { limit: -1 } },
-				reason: 'Cannot use both "keys" and "query"',
+				reason: 'Cannot use both "key" and "query"',
 			},
 		])('should throw when $scenario', async ({ options, reason }) => {
 			await expect(run({ payload: testPayload, ...options })).rejects.toThrow(reason);
