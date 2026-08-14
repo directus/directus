@@ -224,7 +224,7 @@ catalog:
   ip-matching: 2.1.2
   ipaddr.js: 2.4.0
   isolated-vm: 5.0.3
-  joi: 18.0.1
+  joi: 18.2.3
   jose: 6.2.3
   js-yaml: 4.3.1
   js2xmlparser: 5.0.0
