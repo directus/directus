@@ -95,7 +95,10 @@ export default abstract class SocketController {
 		const env = useEnv();
 
 		if (toBoolean(env['RATE_LIMITER_ENABLED']) === true) {
-			return createRateLimiter('RATE_LIMITER', getConfigFromEnv('RATE_LIMITER_WEBSOCKETS_'));
+			return createRateLimiter('RATE_LIMITER', {
+				keyPrefix: 'websocket',
+				...getConfigFromEnv('RATE_LIMITER_WEBSOCKETS_'),
+			});
 		}
 
 		return null;
