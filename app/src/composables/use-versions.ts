@@ -11,7 +11,7 @@ import type { ContentVersionMaybeNew, ContentVersionWithType, NewContentVersion 
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export interface PublishVersionOptions {
-	mainHash?: string | null;
+	mainHash?: string;
 	fields?: string[];
 }
 
