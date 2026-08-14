@@ -28,7 +28,7 @@ const EXTENSIONS_PATH = process.env.EXTENSIONS_LOCATION
 const extensionsPathExists = fs.existsSync(EXTENSIONS_PATH);
 
 const DEFAULT_PORT = 8080;
-const APP_PORT = resolveAppPort(process.env.APP_PORT);
+const APP_PORT = process.env.NODE_ENV === 'development' ? resolveAppPort(process.env.APP_PORT) : null;
 
 // https://vitejs.dev/config/
 export default defineConfig({
