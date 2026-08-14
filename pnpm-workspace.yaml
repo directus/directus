@@ -87,13 +87,13 @@ catalog:
   '@smithy/node-http-handler': 4.4.5
   '@supabase/storage-js': 2.81.0
   '@tiptap/core': ^3.26.1
-  '@tiptap/extensions': ^3.26.1
-  '@tiptap/extension-text-style': ^3.26.1
-  '@tiptap/extension-text-align': ^3.26.1
   '@tiptap/extension-image': ^3.26.1
   '@tiptap/extension-subscript': ^3.26.1
   '@tiptap/extension-superscript': ^3.26.1
   '@tiptap/extension-table': ^3.26.1
+  '@tiptap/extension-text-align': ^3.26.1
+  '@tiptap/extension-text-style': ^3.26.1
+  '@tiptap/extensions': ^3.26.1
   '@tiptap/pm': ^3.26.1
   '@tiptap/starter-kit': ^3.26.1
   '@tiptap/vue-3': ^3.26.1
@@ -317,7 +317,7 @@ catalog:
   typedoc-plugin-markdown: 4.8.1
   typescript: 5.9.3
   typescript-eslint: 8.66.0
-  undici: 7.28.0
+  undici: 7.29.0
   universal-cookie: 8.0.1
   unplugin-vue: 7.2.0
   unplugin-yaml: 3.0.7
