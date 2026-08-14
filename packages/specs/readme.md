@@ -43,7 +43,7 @@ By default, a path/operation needs no `security:` declaration at all: the docume
 inheritance rather than restating the default explicitly. Only add an operation-level `security` override when the
 operation's actual requirement differs from that default. The cases where it differs:
 
-- **Always public, no auth accepted or required (`security: []`)**: required for endpoints that run with no
+- **Always public, no auth accepted or required (`x-authentication: none`)**: required for endpoints that run with no
   accountability at all (e.g. `/auth/login`, `/server/ping`, `/users/register/verify-email`) - the dynamic generator
   never overwrites this override with the public-access stamp, unlike the others below.
 - **Restricted to admin/user (`x-authentication`)**: `admin` | `user`. Set on the tag for system collections that should
