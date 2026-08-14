@@ -50,6 +50,12 @@ describe('Operations / Item Update', () => {
 		test.each([
 			{ scenario: 'query is not an object', options: { payload: testPayload, query: 5 } },
 			{ scenario: 'payload is not an object or array', options: { payload: 5 } },
+			{ scenario: 'payload is not an object or array as a JSON string', options: { payload: '5' } },
+			{ scenario: 'payload is a falsy number', options: { payload: 0 } },
+			{ scenario: 'payload is a falsy number as a JSON string', options: { payload: '0' } },
+			{ scenario: 'payload is a falsy boolean', options: { payload: false } },
+			{ scenario: 'payload is a falsy boolean as a JSON string', options: { payload: 'false' } },
+			{ scenario: 'payload is an empty string as a JSON string', options: { payload: '""' } },
 			{ scenario: 'keys contains a non-primary-key value', options: { payload: testPayload, key: [{ id: 1 }] } },
 		])('should throw when $scenario', async ({ options }) => {
 			await expect(run(options)).rejects.toThrow(InvalidPayloadError);
@@ -99,6 +105,8 @@ describe('Operations / Item Update', () => {
 		test.each([
 			{ scenario: 'nothing at all', options: {} },
 			{ scenario: 'a key but no payload', options: { key: 1 } },
+			{ scenario: 'a key and a null payload', options: { key: 1, payload: null } },
+			{ scenario: 'a key and a null payload as a JSON string', options: { key: 1, payload: 'null' } },
 			{ scenario: 'a query but no payload', options: { query: { limit: -1 } } },
 			{ scenario: 'only an empty keys array', options: { key: [] } },
 			{ scenario: 'an empty payload object', options: { payload: {}, key: 1 } },
