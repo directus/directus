@@ -1,6 +1,7 @@
+import { EventEmitter } from 'node:events';
 import { PassThrough } from 'node:stream';
 import { Readable } from 'node:stream';
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import type { Driver, StorageManager } from '@directus/storage';
 import type { Accountability } from '@directus/types';
 import type { File, SchemaOverview } from '@directus/types';
@@ -9,7 +10,18 @@ import contentDisposition from 'content-disposition';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, test, vi } from 'vitest';
+import {
+	afterEach,
+	beforeAll,
+	beforeEach,
+	describe,
+	expect,
+	it,
+	type Mock,
+	type MockedFunction,
+	test,
+	vi,
+} from 'vitest';
 import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
 import { AssetsService } from './assets.js';
@@ -48,6 +60,17 @@ vi.mock('../utils/get-schema.js', () => ({
 }));
 
 vi.mock('../storage/index.js');
+
+/**
+ * An emitter, because the service listens for the archive closing to release streams it never read
+ */
+function createMockArchiver() {
+	return Object.assign(new EventEmitter(), {
+		append: vi.fn(),
+		finalize: vi.fn().mockResolvedValue(undefined),
+		destroyed: false,
+	}) as unknown as Partial<Archiver>;
+}
 
 describe('AssetsService', () => {
 	let db: MockedFunction<Knex>;
@@ -312,6 +335,23 @@ describe('AssetsService', () => {
 
 				await expect(service.getAsset(mockFileId)).rejects.toThrow(ForbiddenError);
 			});
+
+			/**
+			 * A storage location that can't be reached is not the same answer as a missing file. Reporting
+			 * it as a permission error is what made the connection leak behind this so hard to diagnose.
+			 */
+			it('should report a failed storage lookup as unavailable, not forbidden', async () => {
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+				});
+
+				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
+
+				vi.mocked(mockDriver.exists as any).mockRejectedValue(new Error('socket timed out'));
+
+				await expect(service.getAsset(mockFileId)).rejects.toThrow(ServiceUnavailableError);
+			});
 		});
 
 		describe('unauthenticated access', () => {
@@ -378,6 +418,43 @@ describe('AssetsService', () => {
 				expect(result.file.filesize).toBe(mockFile.filesize);
 			});
 		});
+
+		describe('failed transformation', () => {
+			/**
+			 * The read stream holds a connection from the storage driver's pool. Nothing consumes it once
+			 * the upload of the transformed asset failed, so leaving it open costs a connection for the
+			 * lifetime of the process and eventually starves every other storage call.
+			 */
+			it('should destroy the read stream when writing the transformed asset fails', async () => {
+				const readStream = new PassThrough();
+
+				mockDriver.read = vi.fn().mockResolvedValue(readStream);
+				mockDriver.write = vi.fn().mockRejectedValue(new Error('Upload failed'));
+				mockDriver.delete = vi.fn().mockResolvedValue(undefined);
+
+				// The original file is there, the transformed asset isn't cached yet
+				vi.mocked(mockDriver.exists as any)
+					.mockResolvedValueOnce(true)
+					.mockResolvedValueOnce(false);
+
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+				});
+
+				vi.mocked(FilesService.prototype.readOne).mockResolvedValue({
+					...mockFile,
+					type: 'image/jpeg',
+					filename_disk: 'test-file.jpg',
+				} as any);
+
+				await expect(
+					service.getAsset(mockFileId, { transformationParams: { transforms: [['resize', { width: 100 }]] } }),
+				).rejects.toThrow('Upload failed');
+
+				expect(readStream.destroyed).toBe(true);
+			});
+		});
 	});
 
 	describe('zip (private)', () => {
@@ -394,11 +471,7 @@ describe('AssetsService', () => {
 		beforeEach(() => {
 			vi.resetAllMocks();
 
-			mockArchiver = {
-				append: vi.fn(),
-				finalize: vi.fn().mockResolvedValue(undefined),
-				destroyed: false,
-			};
+			mockArchiver = createMockArchiver();
 
 			mockDriver = {
 				read: vi.fn().mockResolvedValue(Readable.from(['stream'])),
@@ -594,6 +667,180 @@ describe('AssetsService', () => {
 				name: '1.txt',
 			});
 		});
+
+		/**
+		 * Every stream handed to the archive holds a connection from the storage driver's pool. The
+		 * archive stops reading them when the client disconnects, so they have to be released or they
+		 * cost a connection for the lifetime of the process.
+		 */
+		test('should destroy streams the archive never read when it closes mid-build', async () => {
+			const assetStreams = [new PassThrough(), new PassThrough()];
+
+			mockDriver.read = vi.fn().mockImplementation(async () => {
+				const call = (mockDriver.read as Mock).mock.calls.length;
+
+				// The client disconnected while the second file was being opened
+				if (call === 2) (mockArchiver as unknown as EventEmitter).emit('close');
+
+				return assetStreams[call - 1];
+			});
+
+			vi.spyOn(FilesService.prototype, 'readByQuery').mockResolvedValue([
+				{ id: 'file1', folder: null, filename_download: 'file1.txt', storage: 'local' },
+				{ id: 'file2', folder: null, filename_download: 'file2.txt', storage: 'local' },
+			] as unknown as File[]);
+
+			vi.spyOn(FilesService.prototype, 'readOne').mockImplementation(
+				async (key) => ({ id: key, filename_download: `${key}.txt` }) as unknown as File,
+			);
+
+			const assetsService = new AssetsService({
+				schema: mockSchema,
+			});
+
+			const result = await assetsService.zipFiles(['file1', 'file2']);
+			await result.complete();
+
+			expect(assetStreams[0]!.destroyed).toBe(true);
+		});
+
+		/**
+		 * The release above hangs off the archive's `close` event, which is only worth anything if a real
+		 * archive emits it when the request handler destroys it on a client disconnect.
+		 */
+		test('should destroy streams a real archive never read once it is destroyed', async () => {
+			const { default: actualArchiver } = await vi.importActual<{ default: typeof archiver }>('archiver');
+			vi.mocked(archiver).mockImplementation(actualArchiver);
+
+			const assetStream = new PassThrough();
+			// Left open, so the archive is still waiting on it when it gets destroyed
+			assetStream.write('file contents');
+
+			mockDriver.read = vi.fn().mockResolvedValue(assetStream);
+
+			vi.spyOn(FilesService.prototype, 'readByQuery').mockResolvedValue([
+				{ id: 'file1', folder: null, filename_download: 'file1.txt', storage: 'local' },
+			] as unknown as File[]);
+
+			vi.spyOn(FilesService.prototype, 'readOne').mockResolvedValue({
+				id: 'file1',
+				filename_download: 'file1.txt',
+			} as unknown as File);
+
+			const assetsService = new AssetsService({
+				schema: mockSchema,
+			});
+
+			const result = await assetsService.zipFiles(['file1']);
+
+			const client = new PassThrough();
+			client.resume();
+			result.archive.pipe(client);
+
+			const running = result.complete();
+			running.catch(() => {});
+
+			await vi.waitFor(() => expect(mockDriver.read).toHaveBeenCalled());
+
+			// What the request handler does when the client disconnects
+			result.archive.destroy();
+
+			// `finalize()` stays pending once the archive is destroyed, so this would hang the request
+			await expect(running).resolves.toBeUndefined();
+
+			expect(assetStream.destroyed).toBe(true);
+		});
+
+		/**
+		 * archiver reports a failed entry as an `error` event and then stops reading, so without this the
+		 * request would hang on `finalize()` while holding every stream it was handed.
+		 */
+		test('should reject and release the streams when the archive errors', async () => {
+			const assetStream = new PassThrough();
+
+			mockDriver.read = vi.fn().mockResolvedValue(assetStream);
+			vi.mocked(mockArchiver.finalize as Mock).mockImplementation(() => new Promise(() => {}));
+
+			vi.spyOn(FilesService.prototype, 'readByQuery').mockResolvedValue([
+				{ id: 'file1', folder: null, filename_download: 'file1.txt', storage: 'local' },
+			] as unknown as File[]);
+
+			vi.spyOn(FilesService.prototype, 'readOne').mockResolvedValue({
+				id: 'file1',
+				filename_download: 'file1.txt',
+			} as unknown as File);
+
+			const assetsService = new AssetsService({
+				schema: mockSchema,
+			});
+
+			const result = await assetsService.zipFiles(['file1']);
+
+			const running = result.complete();
+
+			await vi.waitFor(() => expect(mockArchiver.append).toHaveBeenCalled());
+
+			(mockArchiver as unknown as EventEmitter).emit('error', new Error('Failed to read entry'));
+
+			await expect(running).rejects.toThrow('Failed to read entry');
+
+			expect(assetStream.destroyed).toBe(true);
+		});
+
+		test('should stop and destroy the stream if the archive closed while the file was being read', async () => {
+			const assetStream = new PassThrough();
+
+			mockDriver.read = vi.fn().mockImplementation(async () => {
+				// The client disconnected while the file was being opened
+				(mockArchiver as any).destroyed = true;
+				return assetStream;
+			});
+
+			vi.spyOn(FilesService.prototype, 'readByQuery').mockResolvedValue([
+				{ id: 'file1', folder: null, filename_download: 'file1.txt', storage: 'local' },
+				{ id: 'file2', folder: null, filename_download: 'file2.txt', storage: 'local' },
+			] as unknown as File[]);
+
+			vi.spyOn(FilesService.prototype, 'readOne').mockImplementation(
+				async (key) => ({ id: key, filename_download: `${key}.txt` }) as unknown as File,
+			);
+
+			const assetsService = new AssetsService({
+				schema: mockSchema,
+			});
+
+			const result = await assetsService.zipFiles(['file1', 'file2']);
+			await result.complete();
+
+			expect(assetStream.destroyed).toBe(true);
+			expect(mockArchiver.append).not.toHaveBeenCalled();
+			expect(mockDriver.read).toHaveBeenCalledTimes(1);
+		});
+
+		/**
+		 * A storage location that can't be reached is not the same answer as a missing file, which is
+		 * reported as forbidden.
+		 */
+		test('should report a failed storage lookup as unavailable, not forbidden', async () => {
+			vi.mocked(mockDriver.exists as Mock).mockRejectedValue(new Error('socket timed out'));
+
+			vi.spyOn(FilesService.prototype, 'readByQuery').mockResolvedValue([
+				{ id: 'file1', folder: null, filename_download: 'file1.txt', storage: 'local' },
+			] as unknown as File[]);
+
+			vi.spyOn(FilesService.prototype, 'readOne').mockResolvedValue({
+				id: 'file1',
+				filename_download: 'file1.txt',
+			} as unknown as File);
+
+			const assetsService = new AssetsService({
+				schema: mockSchema,
+			});
+
+			const result = await assetsService.zipFiles(['file1']);
+
+			await expect(result.complete()).rejects.toThrow(ServiceUnavailableError);
+		});
 	});
 
 	describe('zipFiles', () => {
@@ -610,11 +857,7 @@ describe('AssetsService', () => {
 		beforeEach(() => {
 			vi.resetAllMocks();
 
-			mockArchiver = {
-				append: vi.fn(),
-				finalize: vi.fn().mockResolvedValue(undefined),
-				destroyed: false,
-			};
+			mockArchiver = createMockArchiver();
 
 			mockDriver = {
 				read: vi.fn().mockResolvedValue(Readable.from(['stream'])),
@@ -700,11 +943,7 @@ describe('AssetsService', () => {
 		beforeEach(() => {
 			vi.resetAllMocks();
 
-			mockArchiver = {
-				append: vi.fn(),
-				finalize: vi.fn().mockResolvedValue(undefined),
-				destroyed: false,
-			};
+			mockArchiver = createMockArchiver();
 
 			mockDriver = {
 				read: vi.fn().mockResolvedValue(Readable.from(['stream'])),

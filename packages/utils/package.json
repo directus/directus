@@ -39,7 +39,6 @@
 		"fs-extra": "catalog:",
 		"ipaddr.js": "catalog:",
 		"joi": "catalog:",
-		"zod": "catalog:",
 		"js-yaml": "catalog:",
 		"lodash-es": "catalog:",
 		"micromustache": "catalog:"

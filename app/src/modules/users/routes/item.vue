@@ -427,7 +427,9 @@ function revert(values: Record<string, any>) {
 			>
 				<template #split-menu>
 					<SaveOptions
-						:disabled-options="createAllowed ? [] : ['save-and-add-new', 'save-as-copy']"
+						:disabled-options="
+							createAllowed ? ['save-and-quit'] : ['save-and-quit', 'save-and-add-new', 'save-as-copy']
+						"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"

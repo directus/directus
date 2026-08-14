@@ -35,7 +35,6 @@
 		"@directus/constants": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@types/express": "catalog:",
 		"fs-extra": "catalog:",
 		"lodash-es": "catalog:",
 		"zod": "catalog:"
