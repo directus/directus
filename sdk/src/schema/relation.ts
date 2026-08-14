@@ -8,7 +8,7 @@ export type DirectusRelation<Schema = any> = {
 		Schema,
 		'directus_relations',
 		{
-			id?: number;
+			id: number;
 			junction_field: string | null;
 			many_collection: keyof CompleteSchema<Schema>;
 			many_field: string;
