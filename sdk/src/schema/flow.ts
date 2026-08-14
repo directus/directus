@@ -11,9 +11,9 @@ export type DirectusFlow<Schema = any> = MergeCoreCollection<
 		icon: string | null;
 		color: string | null;
 		description: string | null;
-		status: 'active' | 'inactive';
-		trigger: 'event' | 'schedule' | 'operation' | 'webhook' | 'manual' | null;
-		accountability: 'all' | 'activity' | null;
+		status: 'active' | 'inactive' | string;
+		trigger: ('event' | 'schedule' | 'operation' | 'webhook' | 'manual' | string) | null;
+		accountability: ('all' | 'activity' | string) | null;
 		options: Record<string, any> | null;
 		operation: DirectusOperation<Schema> | string | null;
 		date_created: 'datetime' | null;
