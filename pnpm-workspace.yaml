@@ -99,8 +99,8 @@ catalog:
   '@tiptap/vue-3': ^3.26.1
   '@tresjs/core': ^5.8.0
   '@turf/meta': 7.2.0
-  '@tus/server': 2.3.0
-  '@tus/utils': 0.6.0
+  '@tus/server': 2.4.4
+  '@tus/utils': 0.7.1
   '@types/archiver': 7.0.0
   '@types/async': 3.2.25
   '@types/base-64': 1.0.2

@@ -274,11 +274,11 @@ catalogs:
       specifier: 7.2.0
       version: 7.2.0
     '@tus/server':
-      specifier: 2.3.0
-      version: 2.3.0
+      specifier: 2.4.4
+      version: 2.4.4
     '@tus/utils':
-      specifier: 0.6.0
-      version: 0.6.0
+      specifier: 0.7.1
+      version: 0.7.1
     '@types/archiver':
       specifier: 7.0.0
       version: 7.0.0
@@ -1181,10 +1181,10 @@ importers:
         version: 3.0.2(rollup@4.59.0)
       '@tus/server':
         specifier: 'catalog:'
-        version: 2.3.0
+        version: 2.4.4(@opentelemetry/api@1.9.0)
       '@tus/utils':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.7.1
       ai:
         specifier: 'catalog:'
         version: 6.0.116(zod@4.1.12)
@@ -2800,7 +2800,7 @@ importers:
         version: 4.4.5
       '@tus/utils':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.7.1
       ms:
         specifier: 'catalog:'
         version: 2.1.3
@@ -6140,9 +6140,17 @@ packages:
   '@reach/observe-rect@1.2.0':
     resolution: {integrity: sha512-Ba7HmkFgfQxZqqaeIWWkNK0rEhpxVQHIoVyW1YDSkGsGIXzcaW4deC8B0pZrNSSyLTdIk7y+5olKt5+g0GmFIQ==}
 
-  '@redis/client@1.6.1':
-    resolution: {integrity: sha512-/KCsg3xSlR+nCK8/8ZYSknYxvXHwubJrU82F3Lm1Fp6789VQ0/3RJKfsmRXjqfaTA++23CvC3hqmqe/2GEt6Kw==}
-    engines: {node: '>=14'}
+  '@redis/client@5.12.1':
+    resolution: {integrity: sha512-7aPGWeqA3uFm43o19umzdl16CEjK/JQGtSXVPevplTaOU3VJA/rseBC1QvYUz9lLDIMBimc4SW/zrW4S89BaCA==}
+    engines: {node: '>= 18.19.0'}
+    peerDependencies:
+      '@node-rs/xxhash': ^1.1.0
+      '@opentelemetry/api': '>=1 <2'
+    peerDependenciesMeta:
+      '@node-rs/xxhash':
+        optional: true
+      '@opentelemetry/api':
+        optional: true
 
   '@reflink/reflink-darwin-arm64@0.1.19':
     resolution: {integrity: sha512-ruy44Lpepdk1FqDz38vExBY/PVUsjxZA+chd9wozjUH9JjuDT/HEaQYA6wYN9mf041l0yLVar6BCZuWABJvHSA==}
@@ -7201,12 +7209,12 @@ packages:
   '@turf/projection@7.2.0':
     resolution: {integrity: sha512-/qke5vJScv8Mu7a+fU3RSChBRijE6EVuFHU3RYihMuYm04Vw8dBMIs0enEpoq0ke/IjSbleIrGQNZIMRX9EwZQ==}
 
-  '@tus/server@2.3.0':
-    resolution: {integrity: sha512-7sj4Q3EPvMjS5z9JaNOZ8gvT6HZvDeg/RjEP0ebbfpAo1V095ivkzpKqV/mDIK/ioBwOKj+bOhTtNuueTjVCfw==}
+  '@tus/server@2.4.4':
+    resolution: {integrity: sha512-Qqhu4IqRKHP3ycGc/fjmzTqrytJjpnHt4BChljla0FZgTU4kxSAS52Z++GlSw/6qlNwkd7vHAf5YQphn+nfewQ==}
     engines: {node: '>=20.19.0'}
 
-  '@tus/utils@0.6.0':
-    resolution: {integrity: sha512-GpMpAQfVdC4UDhpsZrRPjGpdXg+JW5MquqMqtObUVsORwLBV6XI67iTT5be+z98THdqb6dl3bTLIElIdgPeo2g==}
+  '@tus/utils@0.7.1':
+    resolution: {integrity: sha512-KXKK6mhsRto7cApRtJFoIovd6rAXJBUd1qR6S1ynVXApdd+jT1eBHprKP0D9oZtJwwD/B8+n3DLAm68DYPqfuQ==}
     engines: {node: '>=20.19.0'}
 
   '@tweenjs/tween.js@23.1.3':
@@ -10089,10 +10097,6 @@ packages:
   generator-function@2.0.1:
     resolution: {integrity: sha512-SFdFmIJi+ybC0vjlHN0ZGVGHc3lgE0DxPAT0djjVg+kjOnSqclqmj0KQ7ykTOLP6YxoqOvuAODGdcHJn+43q3g==}
     engines: {node: '>= 0.4'}
-
-  generic-pool@3.9.0:
-    resolution: {integrity: sha512-hymDOu5B53XvN4QT9dBmZxPX4CWhBPPLguTZ9MMFeFa/Kg0xWVfylOVNlJji/E7yTZWFd/q9GO5TxDLq156D7g==}
-    engines: {node: '>= 4'}
 
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -13632,8 +13636,8 @@ packages:
     resolution: {integrity: sha512-qC9iz2FlN7DQl3+wjwn3802RTyjCx7sDvfQEXchwa6CWOx07/WVfh91gBmQ9fahw8snwGEWU3xGzOt4tFyHLxg==}
     engines: {node: '>= 0.6'}
 
-  srvx@0.8.16:
-    resolution: {integrity: sha512-hmcGW4CgroeSmzgF1Ihwgl+Ths0JqAJ7HwjP2X7e3JzY7u4IydLMcdnlqGQiQGUswz+PO9oh/KtCpOISIvs9QQ==}
+  srvx@0.11.22:
+    resolution: {integrity: sha512-LqZxxBDMKuMAZzFzJnDCkFOrs9MZQZr0LvHiO/SuSZVdQaXD7xQ5UWTUxheJrQPve1qk9MG2B/yttUvJxw8egQ==}
     engines: {node: '>=20.16.0'}
     hasBin: true
 
@@ -18849,11 +18853,11 @@ snapshots:
 
   '@reach/observe-rect@1.2.0': {}
 
-  '@redis/client@1.6.1':
+  '@redis/client@5.12.1(@opentelemetry/api@1.9.0)':
     dependencies:
       cluster-key-slot: 1.1.2
-      generic-pool: 3.9.0
-      yallist: 4.0.0
+    optionalDependencies:
+      '@opentelemetry/api': 1.9.0
     optional: true
 
   '@reflink/reflink-darwin-arm64@0.1.19':
@@ -19856,20 +19860,22 @@ snapshots:
       '@types/geojson': 7946.0.16
       tslib: 2.8.1
 
-  '@tus/server@2.3.0':
+  '@tus/server@2.4.4(@opentelemetry/api@1.9.0)':
     dependencies:
-      '@tus/utils': 0.6.0
+      '@tus/utils': 0.7.1
       debug: 4.4.3(supports-color@5.5.0)
       lodash.throttle: 4.1.1
       set-cookie-parser: 2.7.1
-      srvx: 0.8.16
+      srvx: 0.11.22
     optionalDependencies:
-      '@redis/client': 1.6.1
+      '@redis/client': 5.12.1(@opentelemetry/api@1.9.0)
       ioredis: 5.8.2
     transitivePeerDependencies:
+      - '@node-rs/xxhash'
+      - '@opentelemetry/api'
       - supports-color
 
-  '@tus/utils@0.6.0': {}
+  '@tus/utils@0.7.1': {}
 
   '@tweenjs/tween.js@23.1.3': {}
 
@@ -23041,9 +23047,6 @@ snapshots:
     optional: true
 
   generator-function@2.0.1:
-    optional: true
-
-  generic-pool@3.9.0:
     optional: true
 
   gensync@1.0.0-beta.2: {}
@@ -27133,7 +27136,7 @@ snapshots:
   sqlstring@2.3.3:
     optional: true
 
-  srvx@0.8.16: {}
+  srvx@0.11.22: {}
 
   ssri@10.0.5:
     dependencies:
