@@ -14,7 +14,7 @@ import {
 	type Query,
 	type QueryOptions,
 } from '@directus/types';
-import { deepMapWithSchema } from '@directus/utils';
+import { deepMapWithSchema, getRelationInfo, isDetailedUpdateSyntax } from '@directus/utils';
 import Joi from 'joi';
 import { assign, get, isEqual, isNil, isPlainObject, pick } from 'lodash-es';
 import objectHash from 'object-hash';
@@ -404,7 +404,12 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		const helpers = getHelpers(this.knex);
 		const date = new Date(helpers.date.writeTimestamp(new Date().toISOString()));
 
+		const trackableObjects = this.collectTrackableObjects(revisionDelta, collection);
+
 		deepMapObjects(revisionDelta, (object, path) => {
+			// Objects inside a field's own value (e.g. the blocks of a json field) are content, not items to track
+			if (!trackableObjects.has(object)) return;
+
 			const existing = get(existingDelta, path);
 
 			if (existing && isEqual(existing, object)) return;
@@ -535,6 +540,59 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		);
 
 		return updatedItemKey;
+	}
+
+	/**
+	 * Collects the objects of a delta that represent items: the item itself plus any related items
+	 * reached through relational fields. Values of non-relational fields are not traversed, so nested
+	 * objects within them (e.g. the blocks of a json field) are left out.
+	 */
+	private collectTrackableObjects(delta: Partial<Item> | null, collection: string): Set<Record<string, any>> {
+		const objects = new Set<Record<string, any>>();
+
+		const walk = (value: unknown, collection: string) => {
+			if (Array.isArray(value)) {
+				for (const entry of value) walk(entry, collection);
+				return;
+			}
+
+			if (!isPlainObject(value)) return;
+
+			const object = value as Record<string, any>;
+
+			objects.add(object);
+
+			if (isDetailedUpdateSyntax(object)) {
+				for (const action of ['create', 'update', 'delete'] as const) walk(object[action], collection);
+				return;
+			}
+
+			for (const [field, child] of Object.entries(object)) {
+				const relatedCollection = this.getRelatedCollection(collection, field, object);
+
+				if (relatedCollection) walk(child, relatedCollection);
+			}
+		};
+
+		walk(delta, collection);
+
+		return objects;
+	}
+
+	private getRelatedCollection(collection: string, field: string, object: Record<string, any>): string | null {
+		const { relation, relationType } = getRelationInfo(this.schema.relations, collection, field);
+
+		if (!relation) return null;
+
+		let related: unknown = relation.collection;
+
+		if (relationType === 'm2o') related = relation.related_collection;
+		// The related collection of an m2a is stored on the item itself, which may not be part of the delta
+		if (relationType === 'a2o') related = object[relation.meta!.one_collection_field!];
+
+		if (typeof related !== 'string' || !(related in this.schema.collections)) return null;
+
+		return related;
 	}
 
 	private async assertSingletonEmpty(collection: string): Promise<void> {
