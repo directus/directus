@@ -75,7 +75,10 @@ export type NestedPartial<Item> = Item extends any[]
 		? { [Key in keyof Item]?: NestedUnion<Item[Key]> }
 		: Item;
 
-type NestedUnion<Item> = TupleToUnion<ToTuplePartial<Item>>;
+// Skip the tuple round-trip for string-only (optionally nullable) unions: it collapses StringLiteralUnion's literals into `string`, losing autocomplete.
+type NestedUnion<Item> = [Exclude<Item, string | null | undefined>] extends [never]
+	? Item
+	: TupleToUnion<ToTuplePartial<Item>>;
 
 type ToTuplePartial<Union> = ToTuplePartialRec<Union, []>;
 type ToTuplePartialRec<Union, Rslt extends any[]> =
