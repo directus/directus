@@ -33,6 +33,13 @@ export type IfNever<T, Y, N = T> = [T] extends [never] ? Y : N;
 export type IfAny<T, Y, N> = 0 extends 1 & T ? Y : N;
 export type IsAny<T> = IfAny<T, true, never>;
 
+/**
+ * Suggests known literal values via autocomplete while still accepting any other string.
+ * For fields whose value set isn't enforced by the API (e.g. an unconstrained DB column),
+ * so values outside the known set aren't rejected.
+ */
+export type StringLiteralUnion<T extends string> = T | (string & {});
+
 export type IsNullable<T, Y = true, N = never> = T | null extends T ? Y : N;
 export type IsDateTime<T, Y, N> = T extends 'datetime' | 'date' | 'time' ? Y : N;
 export type IsNumber<T, Y, N> = T extends number ? Y : N;
