@@ -37,6 +37,10 @@ const env = useEnv();
 // caller may see a broader response than the public role, e.g. more fields).
 const OPTIONAL_AUTH_SECURITY: OpenAPIObject['security'] = [{}, { Auth: [] }, { KeyAuth: [] }, { CookieAuth: [] }];
 
+// Internal authoring directives read during generation (auth/RBAC gating, schema inclusion) but
+// not meant for consumers, so stripped from every emitted tag, operation, and schema.
+const INTERNAL_EXTENSIONS = ['x-collection', 'x-schemas', 'x-authentication'] as const;
+
 export class SpecificationService {
 	accountability: Accountability | null;
 	knex: Knex;
@@ -120,8 +124,16 @@ class OASSpecsService implements SpecificationSubService {
 			paths,
 		};
 
-		if (tags) spec.tags = tags;
+		if (tags) spec.tags = tags.map((tag) => this.omitInternalExtensions({ ...tag }));
 		if (components) spec.components = components;
+
+		// generateComponents stamps each schema with x-collection (its collection name); strip it so the
+		// internal collection name doesn't reach consumers.
+		if (spec.components?.schemas) {
+			for (const name of Object.keys(spec.components.schemas)) {
+				spec.components.schemas[name] = this.omitInternalExtensions({ ...spec.components.schemas[name] });
+			}
+		}
 
 		spec.security = cloneDeep(staticSpec.security)!;
 
@@ -244,6 +256,10 @@ class OASSpecsService implements SpecificationSubService {
 									operationWithSecurity = { ...operation, security: cloneDeep(OPTIONAL_AUTH_SECURITY) };
 								}
 
+								// operation may be a direct staticSpec reference, so copy before stripping; security already
+								// encodes the x-authentication gating result.
+								operationWithSecurity = this.omitInternalExtensions({ ...operationWithSecurity });
+
 								if ('parameters' in pathItem) {
 									paths[path]![method as keyof PathItemObject] = {
 										...operationWithSecurity,
@@ -279,7 +295,7 @@ class OASSpecsService implements SpecificationSubService {
 						if (!paths[`/items/${collection}/{id}`]) paths[`/items/${collection}/{id}`] = {};
 
 						if (listBase?.[method]) {
-							paths[`/items/${collection}`]![method] = {
+							paths[`/items/${collection}`]![method] = this.omitInternalExtensions({
 								...mergeWith(
 									cloneDeep(listBase[method]),
 									{
@@ -338,11 +354,11 @@ class OASSpecsService implements SpecificationSubService {
 								),
 								tags: [tag.name],
 								...(isPubliclyAccessible && { security: cloneDeep(OPTIONAL_AUTH_SECURITY) }),
-							};
+							});
 						}
 
 						if (detailBase?.[method]) {
-							paths[`/items/${collection}/{id}`]![method] = {
+							paths[`/items/${collection}/{id}`]![method] = this.omitInternalExtensions({
 								...mergeWith(
 									cloneDeep(detailBase[method]),
 									{
@@ -384,7 +400,7 @@ class OASSpecsService implements SpecificationSubService {
 								),
 								tags: [tag.name],
 								...(isPubliclyAccessible && { security: cloneDeep(OPTIONAL_AUTH_SECURITY) }),
-							};
+							});
 						}
 					}
 				}
@@ -535,6 +551,17 @@ class OASSpecsService implements SpecificationSubService {
 			// The schema we just pulled in may itself reference further schemas transitively.
 			queue.push(...this.collectSchemaRefs(schema));
 		}
+	}
+
+	/** Mutates obj in place; callers must pass a shallow copy so the static spec source isn't changed. */
+	private omitInternalExtensions<T>(obj: T): T {
+		const target = obj as Record<string, unknown>;
+
+		for (const key of INTERNAL_EXTENSIONS) {
+			delete target[key];
+		}
+
+		return obj;
 	}
 
 	/** Prevents mergeWith from corrupting $refs and overwriting array items by index. */
