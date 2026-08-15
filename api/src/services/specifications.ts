@@ -39,7 +39,7 @@ const OPTIONAL_AUTH_SECURITY: OpenAPIObject['security'] = [{}, { Auth: [] }, { K
 
 // Internal authoring directives read during generation (auth/RBAC gating, schema inclusion) but
 // not meant for consumers, so stripped from every emitted tag, operation, and schema.
-const INTERNAL_EXTENSIONS = ['x-collection', 'x-schemas', 'x-authentication'] as const;
+export const INTERNAL_EXTENSIONS = ['x-collection', 'x-schemas', 'x-authentication'] as const;
 
 export class SpecificationService {
 	accountability: Accountability | null;
