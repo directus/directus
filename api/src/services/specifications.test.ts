@@ -1,13 +1,61 @@
+import { HARDCODED_AUTH_REQUIREMENTS } from '@directus/constants';
 import { SchemaBuilder } from '@directus/schema-builder';
+import { spec as staticSpec } from '@directus/specs';
 import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import type { RequestBodyObject, SchemaObject } from 'openapi3-ts/oas30';
+import type { PathItemObject, RequestBodyObject, SchemaObject, TagObject } from 'openapi3-ts/oas30';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { SpecificationService } from './index.js';
+
+function getActionForMethod(method: string): 'create' | 'read' | 'update' | 'delete' {
+	switch (method) {
+		case 'post':
+			return 'create';
+		case 'patch':
+			return 'update';
+		case 'delete':
+			return 'delete';
+		default:
+			return 'read';
+	}
+}
+
+function getTagCollection(tagName: string): string | undefined {
+	return staticSpec.tags?.find((tag: TagObject) => tag.name === tagName)?.['x-collection'];
+}
+
+// Inherits the POST -> create fallback below but isn't a real create permission on directus_users
+// (the actual create action is ungated), so it's excluded from HARDCODED_AUTH_REQUIREMENTS.
+const NOT_A_PERMISSION_ROW = new Set(['disableUserTfa']);
+
+// Every x-authentication: admin/user operation in the static spec, deduped by collection+action.
+function collectMarkedOperations() {
+	const found = new Map<string, { collection: string; action: string; requiredAuth: 'admin' | 'user' }>();
+
+	for (const pathItem of Object.values<PathItemObject>(staticSpec.paths)) {
+		for (const [method, operation] of Object.entries(pathItem)) {
+			const requiredAuth = operation?.['x-authentication'];
+
+			if (requiredAuth !== 'admin' && requiredAuth !== 'user') continue;
+			if (operation.operationId && NOT_A_PERMISSION_ROW.has(operation.operationId)) continue;
+
+			const tagCollection = operation.tags?.map(getTagCollection).find((collection: string | undefined) => collection);
+			const collection = operation['x-collection'] ?? tagCollection;
+
+			if (!collection) continue;
+
+			const action = operation['x-action'] ?? getActionForMethod(method);
+
+			found.set(`${collection}.${action}.${requiredAuth}`, { collection, action, requiredAuth });
+		}
+	}
+
+	return [...found.values()];
+}
 
 vi.mock('../permissions/lib/fetch-policies.js', () => ({
 	fetchPolicies: vi.fn().mockResolvedValue([]),
@@ -355,6 +403,205 @@ describe('Integration Tests', () => {
 					});
 				});
 
+				describe('x-authentication operation-level override', () => {
+					it('excludes an x-authentication: admin operation for a non-admin caller with matching RBAC permission', async () => {
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_fields', action: 'update' } as any,
+						]);
+
+						const fieldsSchema = new SchemaBuilder()
+							.collection('directus_fields', (c) => {
+								c.field('id').integer().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: fieldsSchema,
+							accountability: { role: 'editor', admin: false } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/fields/{collection}/{field}']?.patch).toBeUndefined();
+					});
+
+					it('includes an x-authentication: admin operation for an admin caller', async () => {
+						const collectionsSchema = new SchemaBuilder()
+							.collection('directus_collections', (c) => {
+								c.field('collection').string().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: collectionsSchema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/collections']?.post).toBeDefined();
+					});
+
+					it('excludes an x-authentication: user operation for a public/unauthenticated caller with matching RBAC permission', async () => {
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_comments', action: 'create' } as any,
+						]);
+
+						const commentsSchema = new SchemaBuilder()
+							.collection('directus_comments', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: commentsSchema,
+							accountability: null,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/comments']?.post).toBeUndefined();
+					});
+
+					it('includes an x-authentication: user operation for an authenticated non-admin caller with matching RBAC permission', async () => {
+						// A read permission is required too: without it the collection is stripped from
+						// the schema entirely, hiding the Comments tag before the x-authentication check
+						// even runs.
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_comments', action: 'create' } as any,
+							{ collection: 'directus_comments', action: 'read', fields: ['*'] } as any,
+						]);
+
+						const commentsSchema = new SchemaBuilder()
+							.collection('directus_comments', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: commentsSchema,
+							accountability: { role: 'editor', admin: false, user: 'test-user' } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/comments']?.post).toBeDefined();
+					});
+
+					it('excludes an x-authentication: user operation for an authenticated non-admin caller without matching RBAC permission', async () => {
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_comments', action: 'read', fields: ['*'] } as any,
+						]);
+
+						const commentsSchema = new SchemaBuilder()
+							.collection('directus_comments', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: commentsSchema,
+							accountability: { role: 'editor', admin: false, user: 'test-user' } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/comments']?.post).toBeUndefined();
+					});
+
+					it('includes an x-authentication: self operation for an authenticated caller regardless of RBAC on the tied collection', async () => {
+						// 'read' only keeps the Permissions tag from being stripped; no create/update/delete
+						// permission is granted, since requiredAuth: 'self' replaces RBAC, not adds to it.
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_permissions', action: 'read', fields: ['*'] } as any,
+						]);
+
+						const permissionsSchema = new SchemaBuilder()
+							.collection('directus_permissions', (c) => {
+								c.field('id').integer().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: permissionsSchema,
+							accountability: { role: 'editor', admin: false, user: 'test-user' } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/permissions/me']?.get).toBeDefined();
+					});
+
+					it('excludes an x-authentication: self operation for an unauthenticated caller', async () => {
+						const permissionsSchema = new SchemaBuilder()
+							.collection('directus_permissions', (c) => {
+								c.field('id').integer().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: permissionsSchema,
+							accountability: null,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/permissions/me']?.get).toBeUndefined();
+					});
+
+					it('does not stamp optional-auth security on /users/me even when the public role can read directus_users', async () => {
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_users', action: 'read' } as any,
+						]);
+
+						const usersSchema = new SchemaBuilder()
+							.collection('directus_users', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: usersSchema,
+							accountability: { role: 'admin', admin: true, user: 'test-user' } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/users/me']?.get).toBeDefined();
+						expect(spec.paths['/users/me']?.get?.security).toBeUndefined();
+					});
+
+					it('does not stamp optional-auth security on POST /collections even when the public role can create directus_collections', async () => {
+						vi.mocked(fetchPermissions).mockResolvedValueOnce([
+							{ collection: 'directus_collections', action: 'create' } as any,
+						]);
+
+						const collectionsSchema = new SchemaBuilder()
+							.collection('directus_collections', (c) => {
+								c.field('collection').string().primary();
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: collectionsSchema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.paths['/collections']?.post?.security).toBeUndefined();
+					});
+				});
+
 				describe('CookieAuth / RefreshTokenCookieAuth scheme coverage', () => {
 					it('carries the static security declaration through for /auth/refresh and /auth/logout', async () => {
 						const service = new SpecificationService({
@@ -536,5 +783,14 @@ describe('Integration Tests', () => {
 				});
 			});
 		});
+	});
+});
+
+describe('HARDCODED_AUTH_REQUIREMENTS', () => {
+	it('matches every x-authentication: admin/user permission row in the static spec', () => {
+		const sort = (entries: Array<{ collection: string; action: string; requiredAuth: string }>) =>
+			[...entries].sort((a, b) => `${a.collection}.${a.action}`.localeCompare(`${b.collection}.${b.action}`));
+
+		expect(sort(collectMarkedOperations())).toEqual(sort([...HARDCODED_AUTH_REQUIREMENTS]));
 	});
 });

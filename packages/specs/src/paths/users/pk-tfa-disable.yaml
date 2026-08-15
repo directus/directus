@@ -2,6 +2,7 @@ post:
   summary: Disable 2FA for User
   description: Disables two-factor authentication for a specific user. Requires admin access.
   operationId: disableUserTfa
+  x-authentication: admin
   responses:
     '204':
       $ref: '../../openapi.yaml#/components/responses/NoContentResponse'
