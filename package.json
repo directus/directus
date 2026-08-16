@@ -18,7 +18,7 @@
 		"@eslint/js": "catalog:",
 		"eslint": "catalog:",
 		"eslint-config-prettier": "catalog:",
-		"eslint-plugin-import": "catalog:",
+		"eslint-plugin-import-x": "catalog:",
 		"eslint-plugin-vue": "catalog:",
 		"globals": "catalog:",
 		"postcss-html": "catalog:",
@@ -30,7 +30,8 @@
 		"stylelint-config-standard-vue": "catalog:",
 		"stylelint-use-logical": "catalog:",
 		"typescript": "catalog:",
-		"typescript-eslint": "catalog:"
+		"typescript-eslint": "catalog:",
+		"vue-eslint-parser": "catalog:"
 	},
 	"pnpm": {
 		"overrides": {
@@ -40,7 +41,9 @@
 			"minimatch@9": "9.0.9",
 			"express@4>path-to-regexp": "0.1.13",
 			"adm-zip": "0.6.0",
-			"js-yaml@4": "4.3.0"
+			"js-yaml@4": "4.3.1",
+			"js-yaml@3": "3.15.1",
+			"unplugin-yaml>yaml": "2.9.0"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",
