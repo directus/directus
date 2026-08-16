@@ -210,6 +210,7 @@ function addKeyAsNode() {
 				:collection="collection"
 				:field="fieldName"
 				:depth="1"
+				:inline="inline"
 				:include-validation="includeValidation"
 				:include-json-function="jsonFunctionEnabled"
 				:include-relations="includeRelations"
