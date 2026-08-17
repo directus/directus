@@ -16,8 +16,26 @@ FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS builder
 
 RUN apk --no-cache add python3 py3-setuptools build-base
 
-# Install pm2 here so the hardened runtime image can copy it
-RUN npm install --global pm2@6
+# pm2 is installed as a dependency of a private package rather than with
+# `npm install --global`, because npm accepts `overrides` only for a project
+# install. pm2 pins its dependencies exactly.
+COPY <<-'JSON' /opt/pm2/package.json
+	{
+	  "name": "directus-pm2-runtime",
+	  "private": true,
+	  "dependencies": {
+	    "pm2": "6"
+	  },
+	  "overrides": {
+	    "js-yaml": "4.3.1",
+	    "ip-address": "10.3.1"
+	  }
+	}
+JSON
+
+# Installed here so the hardened runtime image can copy it.
+# `--omit=dev` keeps pm2's devDependencies out of the image.
+RUN npm --prefix /opt/pm2 install --omit=dev --no-audit --no-fund
 
 WORKDIR /directus
 
@@ -74,7 +92,7 @@ ENV \
 	PM2_HOME="/directus/.pm2" \
 	PIDUSAGE_SILENT="true"
 
-COPY --from=builder --chown=node:node /usr/local/lib/node_modules/pm2 /directus/pm2
+COPY --from=builder --chown=node:node /opt/pm2/node_modules /directus/pm2/node_modules
 COPY --from=builder --chown=node:node /directus/ecosystem.config.cjs .
 COPY --from=builder --chown=node:node /directus/dist .
 COPY --chown=node:node docker-entrypoint.cjs .

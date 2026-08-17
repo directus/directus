@@ -11,8 +11,9 @@
  *   1. `directus bootstrap` - idempotent DB install/migrate + ensure admin.
  *   2. Hand off to pm2-runtime as the long-lived process supervisor.
  *
- * pm2 is copied into /directus/pm2 from the build stage (see Dockerfile), so we
- * invoke its bin directly rather than relying on a global shim on PATH.
+ * pm2 is copied into /directus/pm2/node_modules from the build stage, so we invoke
+ * its bin directly. It keeps the `node_modules` directory name because pm2's own
+ * dependencies sit alongside it there, and module resolution needs to find them.
  */
 
 const { spawnSync, spawn } = require('node:child_process');
@@ -25,7 +26,9 @@ if (bootstrap.status !== 0) {
 	process.exit(bootstrap.status ?? 1);
 }
 
-const pm2 = spawn(node, ['pm2/bin/pm2-runtime', 'start', 'ecosystem.config.cjs'], { stdio: 'inherit' });
+const pm2 = spawn(node, ['pm2/node_modules/pm2/bin/pm2-runtime', 'start', 'ecosystem.config.cjs'], {
+	stdio: 'inherit',
+});
 
 for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT']) {
 	process.on(signal, () => pm2.kill(signal));
