@@ -709,8 +709,8 @@ describe('AssetsService', () => {
 		 * archive emits it when the request handler destroys it on a client disconnect.
 		 */
 		test('should destroy streams a real archive never read once it is destroyed', async () => {
-			const { default: actualArchiver } = await vi.importActual<{ default: typeof archiver }>('archiver');
-			vi.mocked(archiver).mockImplementation(actualArchiver);
+			const { ZipArchive: ActualZipArchive } = await vi.importActual<typeof import('archiver')>('archiver');
+			vi.mocked(ZipArchive).mockImplementation((...args) => new ActualZipArchive(...args));
 
 			const assetStream = new PassThrough();
 			// Left open, so the archive is still waiting on it when it gets destroyed
