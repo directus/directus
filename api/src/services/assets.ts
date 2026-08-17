@@ -149,8 +149,10 @@ export class AssetsService {
 
 					const folderName = folder ? options.folders?.get(folder) : undefined;
 
-        
-				  archive.append(assetStream, { name: dedupedFileName, ...(folderName !== undefined && { prefix: folderName }) });
+					archive.append(assetStream, {
+						name: dedupedFileName,
+						...(folderName !== undefined && { prefix: folderName }),
+					});
 				}
 
 				// add any empty folders, does not override already filled folder
