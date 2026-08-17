@@ -63,7 +63,7 @@ catalog:
   '@mapbox/mapbox-gl-draw': 1.5.1
   '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
   '@mapbox/mapbox-gl-geocoder': 5.1.2
-  '@modelcontextprotocol/sdk': 1.29.0
+  '@modelcontextprotocol/sdk': 1.30.0
   '@netlify/api': 14.0.14
   '@ngneat/falso': 8.0.2
   '@npm/types': 2.1.0
@@ -88,20 +88,20 @@ catalog:
   '@smithy/node-http-handler': 4.4.5
   '@supabase/storage-js': 2.81.0
   '@tiptap/core': ^3.26.1
-  '@tiptap/extensions': ^3.26.1
-  '@tiptap/extension-text-style': ^3.26.1
-  '@tiptap/extension-text-align': ^3.26.1
   '@tiptap/extension-image': ^3.26.1
   '@tiptap/extension-subscript': ^3.26.1
   '@tiptap/extension-superscript': ^3.26.1
   '@tiptap/extension-table': ^3.26.1
+  '@tiptap/extension-text-align': ^3.26.1
+  '@tiptap/extension-text-style': ^3.26.1
+  '@tiptap/extensions': ^3.26.1
   '@tiptap/pm': ^3.26.1
   '@tiptap/starter-kit': ^3.26.1
   '@tiptap/vue-3': ^3.26.1
   '@tresjs/core': ^5.8.0
   '@turf/meta': 7.2.0
-  '@tus/server': 2.3.0
-  '@tus/utils': 0.6.0
+  '@tus/server': 2.4.4
+  '@tus/utils': 0.7.1
   '@types/archiver': 7.0.0
   '@types/async': 3.2.25
   '@types/base-64': 1.0.2
@@ -201,7 +201,7 @@ catalog:
   eventemitter2: 6.4.9
   execa: 9.6.0
   exif-reader: 2.0.2
-  express: 4.21.2
+  express: 4.22.2
   fastify: 5.8.5
   file-saver: 2.0.5
   find-cache-directory: 6.0.0
@@ -225,9 +225,9 @@ catalog:
   ip-matching: 2.1.2
   ipaddr.js: 2.4.0
   isolated-vm: 5.0.3
-  joi: 18.0.1
+  joi: 18.2.3
   jose: 6.2.3
-  js-yaml: 4.3.0
+  js-yaml: 4.3.1
   js2xmlparser: 5.0.0
   jsdom: 29.1.1
   json-to-graphql-query: 2.3.0
@@ -254,7 +254,7 @@ catalog:
   mnemonist: 0.40.3
   ms: 2.1.3
   mysql2: 3.15.3
-  nanoid: 5.1.6
+  nanoid: 5.1.16
   node-machine-id: 1.1.12
   nodemailer: 9.0.3
   nodemailer-mailgun-transport: 2.1.5
@@ -276,12 +276,12 @@ catalog:
   pino-http-print: 3.1.0
   pino-pretty: 13.1.2
   pm2: 6.0.14
-  postcss-html: 1.8.0
+  postcss-html: 2.0.0
   prettier: 3.6.2
   prom-client: 15.1.3
   proxy-addr: 2.0.7
   qrcode: 1.5.4
-  qs: 6.14.2
+  qs: 6.15.3
   rate-limiter-flexible: 7.2.0
   reka-ui: 2.8.2
   rimraf: 6.1.0
@@ -291,7 +291,7 @@ catalog:
   rollup-plugin-styler: 2.0.0
   samlify: 2.13.1
   sanitize-filename: 1.6.3
-  sanitize-html: 2.17.0
+  sanitize-html: 2.17.7
   sass-embedded: 1.93.3
   semver: 7.7.3
   sharp: 0.35.3
@@ -318,12 +318,12 @@ catalog:
   typedoc-plugin-markdown: 4.8.1
   typescript: 5.9.3
   typescript-eslint: 8.66.0
-  undici: 7.28.0
+  undici: 7.29.0
   universal-cookie: 8.0.1
   unplugin-vue: 7.2.0
   unplugin-yaml: 3.0.7
   update-check: 1.5.4
-  uuid: 11.1.0
+  uuid: 11.1.1
   vite: 8.1.2
   vite-plugin-vue-devtools: 7.7.2
   vite-tsconfig-paths: 5.1.4
