@@ -19,8 +19,8 @@ const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticT
 
 const collectionName = `inactive_status_${randomUUID()}`;
 
-const forbidden = {
-	errors: [expect.objectContaining({ extensions: expect.objectContaining({ code: 'FORBIDDEN' }) })],
+const inactive = {
+	errors: [expect.objectContaining({ extensions: expect.objectContaining({ code: 'COLLECTION_INACTIVE' }) })],
 };
 
 beforeAll(async () => {
@@ -82,9 +82,9 @@ test('blocks item crud once the collection is set to inactive', async () => {
 	expect(updated.meta).toMatchObject({ status: 'inactive' });
 
 	// Every item operation must now be rejected because the inactive collection is excluded from the schema.
-	await expect(api.request(createItem(collectionName, { title: 'Nope' }))).rejects.toMatchObject(forbidden);
-	await expect(api.request(readItems(collectionName))).rejects.toMatchObject(forbidden);
-	await expect(api.request(readItem(collectionName, seedItemId))).rejects.toMatchObject(forbidden);
-	await expect(api.request(updateItem(collectionName, seedItemId, { title: 'Nope' }))).rejects.toMatchObject(forbidden);
-	await expect(api.request(deleteItem(collectionName, seedItemId))).rejects.toMatchObject(forbidden);
+	await expect(api.request(createItem(collectionName, { title: 'Nope' }))).rejects.toMatchObject(inactive);
+	await expect(api.request(readItems(collectionName))).rejects.toMatchObject(inactive);
+	await expect(api.request(readItem(collectionName, seedItemId))).rejects.toMatchObject(inactive);
+	await expect(api.request(updateItem(collectionName, seedItemId, { title: 'Nope' }))).rejects.toMatchObject(inactive);
+	await expect(api.request(deleteItem(collectionName, seedItemId))).rejects.toMatchObject(inactive);
 });
