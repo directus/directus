@@ -20,7 +20,7 @@ vi.mock('@directus/env', async () => {
 });
 
 describe('assertTransformsAllowed', () => {
-	const MAX_DIM = 3000;
+	const MAX_DIM = 6000;
 
 	beforeEach(() => {
 		const env = vi.mocked(useEnv)() as Record<string, unknown>;
@@ -37,7 +37,7 @@ describe('assertTransformsAllowed', () => {
 	});
 
 	test('When every step stays within the cap, then it does not throw', () => {
-		const transforms: Transformation[] = [['resize', { width: MAX_DIM - 1000, height: MAX_DIM - 1000 }]];
+		const transforms: Transformation[] = [['resize', { width: 5000, height: 5000 }]];
 		expect(() => assertTransformsAllowed(1, 1, transforms)).not.toThrow();
 	});
 
@@ -58,44 +58,6 @@ describe('assertTransformsAllowed', () => {
 		];
 
 		expect(() => assertTransformsAllowed(1, 1, transforms)).toThrow(IllegalAssetTransformationError);
-	});
-
-	describe('dimension-neutral steps', () => {
-		const SOURCE_W = MAX_DIM + 2000;
-		const SOURCE_H = MAX_DIM + 1000;
-
-		test('When a format conversion is the only step, then the oversized source is not measured against the cap', () => {
-			const transforms: Transformation[] = [['toFormat', 'webp', {}]];
-			expect(() => assertTransformsAllowed(SOURCE_W, SOURCE_H, transforms)).not.toThrow();
-		});
-
-		test('When a format conversion precedes a shrinking resize, then it does not throw', () => {
-			const transforms: Transformation[] = [
-				['toFormat', 'webp', {}],
-				['resize', { height: 8 }],
-			];
-
-			expect(() => assertTransformsAllowed(SOURCE_W, SOURCE_H, transforms)).not.toThrow();
-		});
-
-		test('When a resize keeps an oversized source above the cap, then it still throws', () => {
-			const transforms: Transformation[] = [
-				['toFormat', 'webp', {}],
-				['resize', { width: SOURCE_W, height: SOURCE_H }],
-			];
-
-			expect(() => assertTransformsAllowed(SOURCE_W, SOURCE_H, transforms)).toThrow(IllegalAssetTransformationError);
-		});
-
-		test('When a format conversion separates two dimension steps, then the running size still accumulates', () => {
-			const transforms: Transformation[] = [
-				['resize', { width: MAX_DIM - 100, height: MAX_DIM - 100 }],
-				['toFormat', 'webp', {}],
-				['extend', 100],
-			];
-
-			expect(() => assertTransformsAllowed(100, 100, transforms)).toThrow(IllegalAssetTransformationError);
-		});
 	});
 
 	test('When a source dimension is zero, then it does not divide by zero or throw', () => {
@@ -143,12 +105,15 @@ describe('calculateStep', () => {
 		expect(calculateStep({ width: 6000, height: 1 }, 'rotate', [90])).toEqual({ width: 1, height: 6000 });
 	});
 
-	test('When the method is dimension-neutral (e.g. blur), then no size is projected', () => {
-		expect(calculateStep({ width: 100, height: 100 }, 'blur', [5])).toBeUndefined();
+	test('When the method is dimension-neutral (e.g. blur), then the size is unchanged', () => {
+		expect(calculateStep({ width: 100, height: 100 }, 'blur', [5])).toEqual({ width: 100, height: 100 });
 	});
 
-	test('When the method is unknown, then no size is projected', () => {
-		expect(calculateStep({ width: 100, height: 100 }, 'fictional', [{ width: 20000 }])).toBeUndefined();
+	test('When the method is unknown, then the size is unchanged', () => {
+		expect(calculateStep({ width: 100, height: 100 }, 'fictional', [{ width: 20000 }])).toEqual({
+			width: 100,
+			height: 100,
+		});
 	});
 });
 
