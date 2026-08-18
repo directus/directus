@@ -1053,6 +1053,7 @@ items: Items
 upload_file: Upload File
 upload_file_indeterminate: Uploading File...
 upload_file_success: File Uploaded
+upload_files_empty: No Files to Upload
 upload_files_indeterminate: 'Uploading files {done}/{total}'
 upload_files_success: '{count} Files Uploaded'
 upload_pending: Upload Pending
