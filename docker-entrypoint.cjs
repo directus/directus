@@ -16,9 +16,7 @@
  * pm2 comes from @directus/api's own dependencies rather than a separate copy
  * installed into the image, so it is subject to the workspace's
  * `pnpm.overrides`. It gets resolved rather than hardcoded because its only
- * literal path in the deployed bundle contains the pm2 version. The api package
- * has to be resolved through its real path first, because pnpm links it in from
- * the virtual store and only the real location can see pm2.
+ * literal path in the deployed bundle contains the pm2 version.
  */
 
 const { spawnSync, spawn } = require('node:child_process');
