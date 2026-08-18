@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "13.5.2",
+	"version": "13.5.3",
 	"description": "Utilities shared between the Directus packages",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -39,7 +39,6 @@
 		"fs-extra": "catalog:",
 		"ipaddr.js": "catalog:",
 		"joi": "catalog:",
-		"zod": "catalog:",
 		"js-yaml": "catalog:",
 		"lodash-es": "catalog:",
 		"micromustache": "catalog:"

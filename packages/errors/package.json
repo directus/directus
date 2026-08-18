@@ -1,6 +1,6 @@
 {
 	"name": "@directus/errors",
-	"version": "2.5.0",
+	"version": "2.5.1",
 	"description": "Create consistent error objects around the codebase",
 	"repository": {
 		"type": "git",
@@ -27,7 +27,6 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"@directus/storage": "workspace:*",
 		"ms": "catalog:"
 	},
 	"devDependencies": {

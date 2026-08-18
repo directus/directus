@@ -201,12 +201,32 @@ describe('#exists', () => {
 		expect(result).toBe(true);
 	});
 
-	test('Returns false if access rejects', async () => {
-		vi.mocked(access).mockRejectedValueOnce(null);
+	test('Returns false if the file does not exist', async () => {
+		vi.mocked(access).mockRejectedValueOnce(Object.assign(new Error(), { code: 'ENOENT' }));
 
 		const result = await driver.exists(sample.path.input);
 
 		expect(result).toBe(false);
+	});
+
+	test('Returns false if a parent of the path is a file', async () => {
+		vi.mocked(access).mockRejectedValueOnce(Object.assign(new Error(), { code: 'ENOTDIR' }));
+
+		const result = await driver.exists(sample.path.input);
+
+		expect(result).toBe(false);
+	});
+
+	/**
+	 * Reporting an unreadable path as "the file isn't there" makes callers act on a wrong answer, for
+	 * example by serving a permission error for a file that does exist.
+	 */
+	test('Throws if the path could not be checked', async () => {
+		const error = Object.assign(new Error('permission denied'), { code: 'EACCES' });
+
+		vi.mocked(access).mockRejectedValueOnce(error);
+
+		await expect(driver.exists(sample.path.input)).rejects.toThrow(error);
 	});
 });
 
