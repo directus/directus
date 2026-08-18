@@ -52,6 +52,7 @@ export const operations = defineTool<z.infer<typeof OperationsValidationSchema>>
 	keywords: ['flow steps', 'automation steps', 'data chain', 'resolve', 'reject', 'operation key'],
 	annotations: {
 		title: 'Directus - Operations',
+		destructiveHint: true,
 	},
 	inputSchema: OperationsInputSchema,
 	validateSchema: OperationsValidationSchema,
