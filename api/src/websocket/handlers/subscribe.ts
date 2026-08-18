@@ -49,7 +49,11 @@ export class SubscribeHandler {
 			try {
 				this.onMessage(client, WebSocketSubscribeMessage.parse(message));
 			} catch (error) {
-				handleWebSocketError(client, error, 'subscribe');
+				// the message failed to parse, so only trust a uid that is a string or a number
+				const uid =
+					typeof message['uid'] === 'string' || typeof message['uid'] === 'number' ? message['uid'] : undefined;
+
+				handleWebSocketError(client, error, 'subscribe', uid);
 			}
 		});
 
@@ -130,7 +134,7 @@ export class SubscribeHandler {
 
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
-				handleWebSocketError(client, err, 'subscribe');
+				handleWebSocketError(client, err, 'subscribe', subscription.uid);
 			}
 		}
 	}
@@ -185,7 +189,7 @@ export class SubscribeHandler {
 				// send an initial response
 				client.send(fmtMessage('subscription', data, subscription.uid));
 			} catch (err) {
-				handleWebSocketError(client, err, 'subscribe');
+				handleWebSocketError(client, err, 'subscribe', message.uid);
 			}
 		}
 
@@ -195,7 +199,7 @@ export class SubscribeHandler {
 
 				client.send(fmtMessage('subscription', { event: 'unsubscribe' }, message.uid));
 			} catch (err) {
-				handleWebSocketError(client, err, 'unsubscribe');
+				handleWebSocketError(client, err, 'unsubscribe', message.uid);
 			}
 		}
 	}

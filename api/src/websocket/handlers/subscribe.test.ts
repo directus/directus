@@ -92,6 +92,29 @@ describe('WebSocket heartbeat handler', () => {
 		expect(subscribe).not.toBeCalled();
 	});
 
+	test('should report the uid of a message that failed to parse', async () => {
+		const client = mockClient();
+
+		// "collection" is required, so this fails before onMessage gets to run
+		emitter.emitAction('websocket.message', {
+			client,
+			message: {
+				type: 'subscribe',
+				uid: '123',
+			},
+		});
+
+		await delay(10);
+
+		const [payload] = vi.mocked(client.send).mock.calls[0]!;
+
+		expect(JSON.parse(String(payload))).toMatchObject({
+			type: 'subscribe',
+			status: 'error',
+			uid: '123',
+		});
+	});
+
 	test('should subscribe/unsubscribe to collection', async () => {
 		const client = mockClient();
 

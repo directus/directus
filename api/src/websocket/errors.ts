@@ -38,31 +38,42 @@ export class WebSocketError extends Error {
 		return JSON.stringify(this.toJSON());
 	}
 
-	static fromError(error: DirectusError<unknown>, type = 'unknown') {
-		return new WebSocketError(type, error.code, error.message);
+	static fromError(error: DirectusError<unknown>, type = 'unknown', uid?: string | number) {
+		return new WebSocketError(type, error.code, error.message, uid);
 	}
 
-	static fromZodError(error: ZodError, type = 'unknown') {
+	static fromZodError(error: ZodError, type = 'unknown', uid?: string | number) {
 		const zError = fromZodError(error);
-		return new WebSocketError(type, 'INVALID_PAYLOAD', zError.message);
+		return new WebSocketError(type, 'INVALID_PAYLOAD', zError.message, uid);
 	}
 }
 
-export function handleWebSocketError(client: WebSocketClient | WebSocket, error: unknown, type?: string): void {
+/**
+ * Send an error to a client.
+ *
+ * @param uid The uid of the message that caused the error, so the client can tell which of its
+ * requests or subscriptions failed. Ignored when the error already carries one.
+ */
+export function handleWebSocketError(
+	client: WebSocketClient | WebSocket,
+	error: unknown,
+	type?: string,
+	uid?: string | number,
+): void {
 	const logger = useLogger();
 
 	if (isDirectusError(error)) {
-		client.send(WebSocketError.fromError(error, type).toMessage());
+		client.send(WebSocketError.fromError(error, type, uid).toMessage());
 		return;
 	}
 
 	if (error instanceof WebSocketError) {
-		client.send(error.toMessage());
+		client.send(new WebSocketError(error.type, error.code, error.message, error.uid ?? uid).toMessage());
 		return;
 	}
 
 	if (error instanceof ZodError) {
-		client.send(WebSocketError.fromZodError(error, type).toMessage());
+		client.send(WebSocketError.fromZodError(error, type, uid).toMessage());
 		return;
 	}
 
