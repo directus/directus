@@ -187,6 +187,66 @@ describe('relations into an inactive collection', () => {
 	});
 });
 
+describe('o2m alias into an inactive collection', () => {
+	const parent = `inactive_o2m_parent_${uid()}`;
+	const child = `inactive_o2m_child_${uid()}`;
+
+	let childId: number;
+
+	beforeAll(async () => {
+		await api.request(createCollection({ collection: parent, fields: [idField], schema: {}, meta: {} }));
+		await api.request(createCollection({ collection: child, fields: [idField], schema: {}, meta: {} }));
+
+		// o2m: parent.children <- child.parent_id
+		await api.request(createField(child, { field: 'parent_id', type: 'integer', meta: {}, schema: {} }));
+
+		await api.request(
+			createField(parent, { field: 'children', type: 'alias', meta: { special: ['o2m'] }, schema: null as any }),
+		);
+
+		await api.request(
+			createRelation({
+				collection: child,
+				field: 'parent_id',
+				related_collection: parent,
+				meta: { one_field: 'children' },
+				schema: {},
+			}),
+		);
+
+		const created = await api.request(createItem(parent, {}));
+		const createdChild = await api.request(createItem(child, { parent_id: created['id'] }));
+		childId = createdChild['id'];
+	});
+
+	afterAll(async () => {
+		await setStatus(child, 'active').catch(() => {});
+		await api.request(deleteCollection(child)).catch(() => {});
+		await api.request(deleteCollection(parent)).catch(() => {});
+	});
+
+	test('expands the alias while the related collection is active', async () => {
+		await expect(api.request(readItems(parent, { fields: ['*'] }))).resolves.toEqual([
+			{ id: expect.any(Number), children: [childId] },
+		]);
+	});
+
+	test('drops the alias from wildcards once the related collection is inactive', async () => {
+		await setStatus(child, 'inactive');
+
+		// Unlike an m2o, an o2m alias has no column to degrade to, so a wildcard has to omit it
+		// entirely. Leaving it in made every wildcard read of the parent fail with a forbidden.
+		await expect(api.request(readItems(parent, { fields: ['*'] }))).resolves.toEqual([{ id: expect.any(Number) }]);
+		await expect(api.request(readItems(parent, { fields: ['*.*'] }))).resolves.toEqual([{ id: expect.any(Number) }]);
+	});
+
+	test('still rejects explicitly requesting the alias', async () => {
+		await setStatus(child, 'inactive');
+
+		await expect(api.request(readItems(parent, { fields: ['children.*'] }))).rejects.toMatchObject(forbidden);
+	});
+});
+
 describe('stored references to a collection that later went inactive', () => {
 	const collection = `inactive_refs_${uid()}`;
 

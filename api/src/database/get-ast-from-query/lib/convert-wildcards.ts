@@ -47,6 +47,16 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 	// In case of full read permissions
 	if (allowedFields[0] === '*') allowedFields = fieldsInCollection;
 
+	allowedFields = allowedFields.filter((fieldKey) => {
+		const relation = getRelation(context.schema.relations, options.collection, fieldKey);
+
+		if (!relation || (relation.collection === options.collection && relation.field === fieldKey)) {
+			return true;
+		}
+
+		return isRelationTraversable(context.schema, options.collection, fieldKey);
+	});
+
 	for (let index = 0; index < fields.length; index++) {
 		const fieldKey = fields[index]!;
 
