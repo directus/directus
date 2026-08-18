@@ -2,8 +2,7 @@
 'directus': patch
 ---
 
-Used the `pm2` bundled with `@directus/api` in the Docker images instead of installing a separate
-copy, so its dependencies follow the versions pinned by the workspace
+Used the `pm2` bundled with `@directus/api` in the Docker images instead of installing a separate copy, so its dependencies follow the versions pinned by the workspace
 
 ::: notice
 
