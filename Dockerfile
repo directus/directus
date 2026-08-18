@@ -56,6 +56,8 @@ RUN apk --no-cache upgrade \
 		/usr/local/bin/corepack \
 		/root/.npm
 
+USER node
+
 WORKDIR /directus
 
 ENV \
@@ -69,8 +71,9 @@ COPY --from=builder --chown=node:node /directus/dist .
 COPY --chown=node:node docker-entrypoint.cjs .
 
 # Put pm2 on the path so `docker exec <container> pm2 ...` keeps working for diagnostics.
-RUN ln -s /directus/node_modules/.pnpm/pm2@*/node_modules/pm2/bin/pm2 /usr/local/bin/pm2
 
+USER root
+RUN ln -s /directus/node_modules/.pnpm/pm2@*/node_modules/pm2/bin/pm2 /usr/local/bin/pm2
 USER node
 
 EXPOSE 8055
