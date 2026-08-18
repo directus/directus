@@ -15,7 +15,7 @@ const collectionExists: RequestHandler = asyncHandler(async (req, _res, next) =>
 	if (!req.params['collection']) return next();
 
 	if (req.params['collection'] in req.schema.collections === false) {
-		if (req.accountability && req.schema.inactiveCollections?.has(req.params['collection'])) {
+		if (req.accountability && req.schema.inactiveCollections?.includes(req.params['collection'])) {
 			const hasAccess =
 				req.accountability.admin === true ||
 				(await validateCollectionAccess(
