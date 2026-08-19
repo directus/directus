@@ -21,8 +21,8 @@ import objectHash from 'object-hash';
 import { getCache } from '../cache.js';
 import { getHelpers } from '../database/helpers/index.js';
 import emitter from '../emitter.js';
-import { createCollectionForbiddenError } from '../permissions/modules/process-ast/utils/validate-path/create-error.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { getCollectionFromSchema } from '../utils/schema/get-collection-from-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { splitRecursive } from '../utils/versioning/split-recursive.js';
 import { ActivityService } from './activity.js';
@@ -133,15 +133,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		}
 	}
 
-	private assertCollectionInSchema(collection: string) {
-		if (collection in this.schema.collections === false) {
-			throw createCollectionForbiddenError('', collection);
-		}
-	}
-
 	async getMainItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item> {
-		this.assertCollectionInSchema(collection);
-
 		const itemsService = new ItemsService(collection, {
 			knex: this.knex,
 			accountability: this.accountability,
@@ -333,14 +325,14 @@ export class VersionsService extends ItemsService<ContentVersion> {
 
 		const { item, collection, delta: existingDelta } = version;
 
-		this.assertCollectionInSchema(collection);
+		const collectionInfo = getCollectionFromSchema(this.schema, collection);
 
 		let revisionDelta = await payloadService.prepareDelta(delta);
 
 		// Only store activity and revisions for versions associated with an item,
 		// and only when the underlying collection's tracking is enabled.
 		if (item) {
-			const trackingAccountability = this.schema.collections[collection]?.accountability ?? null;
+			const trackingAccountability = collectionInfo.accountability;
 
 			if (trackingAccountability !== null) {
 				const revisionsService = new RevisionsService({
@@ -563,10 +555,9 @@ export class VersionsService extends ItemsService<ContentVersion> {
 	}
 
 	private mapDelta(version: ContentVersion) {
-		this.assertCollectionInSchema(version.collection);
-
 		const delta = version.delta ?? {};
-		delta[this.schema.collections[version.collection]!.primary] = version.item;
+		const collectionInfo = getCollectionFromSchema(this.schema, version.collection);
+		delta[collectionInfo.primary] = version.item;
 
 		return deepMapWithSchema(
 			delta,
