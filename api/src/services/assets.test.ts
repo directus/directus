@@ -5,7 +5,7 @@ import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@d
 import type { Driver, StorageManager } from '@directus/storage';
 import type { Accountability } from '@directus/types';
 import type { File, SchemaOverview } from '@directus/types';
-import archiver, { type Archiver } from 'archiver';
+import { type Archiver, ZipArchive } from 'archiver';
 import contentDisposition from 'content-disposition';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -483,7 +483,7 @@ describe('AssetsService', () => {
 			};
 
 			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
-			vi.mocked(archiver).mockReturnValue(mockArchiver as unknown as Archiver);
+			vi.mocked(ZipArchive).mockReturnValue(mockArchiver as unknown as Archiver);
 		});
 
 		test('should throw error when no files provided', async () => {
@@ -709,8 +709,8 @@ describe('AssetsService', () => {
 		 * archive emits it when the request handler destroys it on a client disconnect.
 		 */
 		test('should destroy streams a real archive never read once it is destroyed', async () => {
-			const { default: actualArchiver } = await vi.importActual<{ default: typeof archiver }>('archiver');
-			vi.mocked(archiver).mockImplementation(actualArchiver);
+			const { ZipArchive: ActualZipArchive } = await vi.importActual<typeof import('archiver')>('archiver');
+			vi.mocked(ZipArchive).mockImplementation((...args) => new ActualZipArchive(...args));
 
 			const assetStream = new PassThrough();
 			// Left open, so the archive is still waiting on it when it gets destroyed
@@ -869,7 +869,7 @@ describe('AssetsService', () => {
 			};
 
 			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
-			vi.mocked(archiver).mockReturnValue(mockArchiver as unknown as Archiver);
+			vi.mocked(ZipArchive).mockReturnValue(mockArchiver as unknown as Archiver);
 		});
 
 		test('should zip multiple files', async () => {
@@ -955,7 +955,7 @@ describe('AssetsService', () => {
 			};
 
 			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
-			vi.mocked(archiver).mockReturnValue(mockArchiver as unknown as Archiver);
+			vi.mocked(ZipArchive).mockReturnValue(mockArchiver as unknown as Archiver);
 		});
 
 		test('should zip folder with files', async () => {
