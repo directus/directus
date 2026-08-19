@@ -9,6 +9,7 @@ import SettingsNavigation from '../../components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
 import FlowFolderSidebar from './flow-folder-sidebar.vue';
 import { useDuplicate } from './use-duplicate';
+import { useMoveToFolder } from './use-move-to-folder';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -37,6 +38,7 @@ import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
 import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
 import EntitlementRemaining from '@/views/private/components/license/entitlement-remaining.vue';
 import MaxCapacityAlert from '@/views/private/components/license/max-capacity-alert.vue';
@@ -170,6 +172,28 @@ function openDuplicateFlow(item: FlowRaw) {
 	duplicateDialogActive.value = true;
 }
 
+const selectedKeys = ref<string[]>([]);
+const moveDialogActive = ref(false);
+const moveTarget = ref<string | null>(null);
+
+const { moving, move } = useMoveToFolder({
+	onSuccess: async () => {
+		moveDialogActive.value = false;
+		selectedKeys.value = [];
+		moveTarget.value = null;
+		await flowsStore.hydrate();
+	},
+});
+
+function openMoveToFolder() {
+	moveTarget.value = props.folder ?? null;
+	moveDialogActive.value = true;
+}
+
+function applyMoveToFolder() {
+	move(selectedKeys.value, moveTarget.value);
+}
+
 function navigateToFlow({ item: flow, event }: { item: FlowRaw; event: MouseEvent }) {
 	const route = { name: 'settings-flows-item', params: { primaryKey: flow.id } };
 
@@ -237,6 +261,12 @@ function onFlowDrawerCompletion(id: string) {
 				icon="folder"
 				@click="folderDrawerOpen = true"
 			/>
+			<PrivateViewHeaderBarActionButton
+				v-if="selectedKeys.length > 0"
+				:label="$t('move_to_folder')"
+				icon="folder_move"
+				@click="openMoveToFolder"
+			/>
 			<EntitlementRemaining entitlement-key="flows" />
 		</template>
 
@@ -269,8 +299,11 @@ function onFlowDrawerCompletion(id: string) {
 
 				<VTable
 					v-model:headers="tableHeaders"
+					v-model="selectedKeys"
 					:items="flows"
 					:sort="internalSort"
+					show-select="multiple"
+					selection-use-keys
 					show-resize
 					fixed-header
 					@click:row="navigateToFlow"
@@ -339,6 +372,19 @@ function onFlowDrawerCompletion(id: string) {
 				</VTable>
 			</div>
 		</FlowFolderSidebar>
+
+		<VDialog v-model="moveDialogActive" @esc="moveDialogActive = false" @apply="applyMoveToFolder">
+			<VCard>
+				<VCardTitle>{{ $t('move_to_folder') }}</VCardTitle>
+				<VCardText>
+					<FolderPicker v-model="moveTarget" type="flows" :root-label="$t('all_flows')" />
+				</VCardText>
+				<VCardActions>
+					<VButton secondary @click="moveDialogActive = false">{{ $t('cancel') }}</VButton>
+					<VButton :loading="moving" @click="applyMoveToFolder">{{ $t('save') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
 		<VDialog :model-value="!!confirmDelete" @esc="confirmDelete = null" @apply="deleteFlow">
 			<VCard>
