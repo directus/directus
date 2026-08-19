@@ -39,7 +39,12 @@ function onTarget(target: FolderTarget) {
 
 			<template v-if="!collapsed">
 				<span class="title">{{ t('folders') }}</span>
-				<AddFolder type="flows" :disabled="actionsDisabled" @created="emit('navigate', $event)" />
+				<AddFolder
+					type="flows"
+					:parent="currentFolder"
+					:disabled="actionsDisabled"
+					@created="emit('navigate', $event)"
+				/>
 			</template>
 		</div>
 
