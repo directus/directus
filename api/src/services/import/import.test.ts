@@ -1127,6 +1127,30 @@ describe('ImportService.importBatch', () => {
 		});
 	});
 
+	test('merge mode maps a negative temporary key like any non-existent auto-increment key', async () => {
+		const schema = new SchemaBuilder()
+			.collection('authors', (c) => {
+				c.field('id').id();
+				c.field('name').string();
+			})
+			.build();
+
+		// Sync clients send unused negative keys purely so this response can correlate the assigned id.
+		const { result, calls } = await run(schema, [{ collection: 'authors', items: [{ id: -1, name: 'A' }] }], {
+			mode: 'merge',
+		});
+
+		expect(calls[0]).toMatchObject({ collection: 'authors', method: 'upsertOne' });
+		expect(calls[0]!.payload).not.toHaveProperty('id');
+
+		expect(result.collections['authors']).toEqual({
+			existing: [],
+			new: ['authors-new-1'],
+			deleted: [],
+			mapped: { '-1': 'authors-new-1' },
+		});
+	});
+
 	test('add mode regenerates a conflicting UUID primary key', async () => {
 		const schema = new SchemaBuilder()
 			.collection('authors', (c) => {

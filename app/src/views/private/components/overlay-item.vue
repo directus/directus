@@ -28,6 +28,7 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { usePermissions } from '@/composables/use-permissions';
+import { provideRefreshSignal } from '@/composables/use-refresh-signal';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useFieldsStore } from '@/stores/fields';
 import { useNotificationsStore } from '@/stores/notifications';
@@ -94,7 +95,9 @@ const { internalActive } = useActiveState();
 
 const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, relatedPrimaryKeyField } = useRelation();
 
-const { internalEdits, loading, initialValues, refresh } = useItem();
+const { internalEdits, loading, initialValues, refresh, refreshSignal } = useItem();
+
+provideRefreshSignal(refreshSignal);
 
 const { save, cancel, overlayActive, applyShortcutFormatted } = useActions();
 
@@ -327,6 +330,7 @@ function useItem() {
 	const internalEdits = ref<Record<string, any>>({});
 	const loading = ref(false);
 	const initialValues = ref<Record<string, any> | null>(null);
+	const refreshSignal = ref(0);
 
 	const notificationsStore = useNotificationsStore();
 
@@ -348,11 +352,16 @@ function useItem() {
 		{ immediate: true },
 	);
 
-	return { internalEdits, loading, initialValues, refresh };
+	return { internalEdits, loading, initialValues, refresh, refreshSignal };
 
 	async function refresh() {
 		if (props.active) {
 			loading.value = false;
+
+			// Not bumped by the initial fetch on open, so interfaces watching it don't duplicate the
+			// request they already make when they mount
+			refreshSignal.value++;
+
 			if (props.primaryKey !== '+') fetchItem();
 			if (props.relatedPrimaryKey !== '+') fetchRelatedItem();
 		}
@@ -642,7 +651,12 @@ function popoverClickOutsideMiddleware(e: Event) {
 			<VSkeletonLoader v-if="loading || templateDataLoading" class="title-loader" type="text" />
 
 			<h1 v-else class="type-title">
-				<RenderTemplate :collection="templateCollection?.collection" :item="templateData" :template="template" />
+				<RenderTemplate
+					:collection="templateCollection?.collection"
+					:item="templateData"
+					:template="template"
+					show-collection-name
+				/>
 			</h1>
 		</template>
 

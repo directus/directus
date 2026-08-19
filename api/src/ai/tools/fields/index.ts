@@ -90,6 +90,7 @@ export const fields = defineTool<z.infer<typeof FieldsValidateSchema>, z.infer<t
 	keywords: ['columns', 'properties', 'field types', 'interfaces', 'aliases', 'database fields'],
 	annotations: {
 		title: 'Directus - Fields',
+		destructiveHint: true,
 	},
 	inputSchema: FieldsInputSchema,
 	validateSchema: FieldsValidateSchema,

@@ -1,6 +1,22 @@
-description: What metadata to return in the response.
+description: >
+  What metadata to return. `*` is shorthand for both `total_count` and `filter_count`.
 in: query
 name: meta
 required: false
+style: form
+explode: false
 schema:
-  type: string
+  oneOf:
+    - type: string
+    - type: array
+      items:
+        type: string
+        enum:
+          - total_count
+          - filter_count
+examples:
+  none:
+    summary: No metadata specified (default)
+  shorthand:
+    summary: Both total and filtered counts
+    value: '*'

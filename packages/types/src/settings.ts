@@ -41,14 +41,18 @@ export type Settings = {
 	report_error_url: string | null;
 	report_bug_url: string | null;
 	report_feature_url: string | null;
-	default_language: string | null;
+	default_language: string;
 	default_save_action: 'save-and-quit' | 'save-and-stay' | 'save-and-create-new';
-	project_color: string | null;
+	project_color: string;
 	project_logo: string | null;
 	public_foreground: string | null;
 	public_background: { id: string; type: string } | null;
 	public_favicon: string | null;
 	public_note: string | null;
+	public_registration: boolean;
+	public_registration_verify_email: boolean;
+	public_registration_role: string | null;
+	public_registration_email_filter: Record<string, any> | null;
 	visual_editor_urls: Array<{ url: string }> | null;
 	auth_login_attempts: number;
 	auth_password_policy: string | null;
@@ -59,7 +63,7 @@ export type Settings = {
 	storage_default_folder: string | null;
 	basemaps: any[] | null;
 	mapbox_key: string | null;
-	module_bar: (SettingsModuleBarLink | SettingsModuleBarModule)[];
+	module_bar: (SettingsModuleBarLink | SettingsModuleBarModule)[] | null;
 	default_appearance: 'auto' | 'light' | 'dark';
 	default_theme_light: string | null;
 	default_theme_dark: string | null;
@@ -83,6 +87,8 @@ export type Settings = {
 	ai_translation_style_guide: string | null;
 	mcp_enabled: boolean;
 	mcp_oauth_enabled: boolean;
+	mcp_oauth_dcr_enabled: boolean;
+	mcp_oauth_cimd_enabled: boolean;
 	mcp_allow_deletes: boolean;
 	mcp_prompts_collection: string | null;
 	mcp_system_prompt_enabled: boolean;
@@ -90,11 +96,12 @@ export type Settings = {
 	collaborative_editing_enabled: boolean;
 	license_key: string | null;
 	license_token: string | null;
+	project_status: string | null;
 } & OwnerInformation;
 
 export type OwnerInformation = {
 	project_owner: string | null;
-	product_updates: boolean;
+	product_updates: boolean | null;
 	project_usage: 'personal' | 'commercial' | 'community' | null;
 	org_name: string | null;
 };

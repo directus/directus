@@ -97,8 +97,8 @@ async function save() {
 	<VDrawer :model-value="isOpen" :title="title" persistent @cancel="cancel" @apply="save" @update:model-value="cancel">
 		<FieldDetailSimple
 			v-if="!showAdvanced"
+			v-model:search="search"
 			:collection="collectionInfo"
-			:search="search"
 			@save="save"
 			@toggle-advanced="simple = false"
 		/>

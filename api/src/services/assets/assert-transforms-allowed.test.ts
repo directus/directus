@@ -37,7 +37,7 @@ describe('assertTransformsAllowed', () => {
 	});
 
 	test('When every step stays within the cap, then it does not throw', () => {
-		const transforms: Transformation[] = [['resize', { width: 5000, height: 5000 }]];
+		const transforms: Transformation[] = [['resize', { width: MAX_DIM / 2, height: MAX_DIM / 2 }]];
 		expect(() => assertTransformsAllowed(1, 1, transforms)).not.toThrow();
 	});
 
@@ -47,13 +47,13 @@ describe('assertTransformsAllowed', () => {
 	});
 
 	test('When a step exceeds the cap, then it throws', () => {
-		const transforms: Transformation[] = [['resize', { width: 20000, height: 20000 }]];
+		const transforms: Transformation[] = [['resize', { width: MAX_DIM + 1, height: MAX_DIM + 1 }]];
 		expect(() => assertTransformsAllowed(1, 1, transforms)).toThrow(IllegalAssetTransformationError);
 	});
 
 	test('When an intermediate step exceeds the cap, then it throws even though a later step shrinks back under it', () => {
 		const transforms: Transformation[] = [
-			['resize', { width: 20000, height: 20000 }],
+			['resize', { width: MAX_DIM + 1, height: MAX_DIM + 1 }],
 			['extract', { left: 0, top: 0, width: 100, height: 100 }],
 		];
 
@@ -74,10 +74,10 @@ describe('assertTransformsAllowed', () => {
 		const env = vi.mocked(useEnv)() as Record<string, unknown>;
 		env['ASSETS_TRANSFORM_IMAGE_MAX_OUTPUT_DIMENSION'] = value;
 
-		const within: Transformation[] = [['resize', { width: 3000 }]];
+		const within: Transformation[] = [['resize', { width: MAX_DIM }]];
 		expect(() => assertTransformsAllowed(1, 1, within)).not.toThrow();
 
-		const exceeds: Transformation[] = [['resize', { width: 3001 }]];
+		const exceeds: Transformation[] = [['resize', { width: MAX_DIM + 1 }]];
 		expect(() => assertTransformsAllowed(1, 1, exceeds)).toThrow(IllegalAssetTransformationError);
 	});
 });

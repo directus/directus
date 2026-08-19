@@ -1,0 +1,65 @@
+import { confirm, isCancel, password, text, type TextOptions } from '@clack/prompts';
+import { CliError } from './error.js';
+import { registerSecret } from './secret.js';
+
+/** Routes a cancel (Ctrl+C / Esc) through the normal error boundary, not clack's own process.exit. */
+export async function ask<T>(prompt: Promise<T | symbol>): Promise<T> {
+	const value = await prompt;
+	if (isCancel(value)) throw new CliError('USAGE', 'Cancelled.');
+	return value as T;
+}
+
+/** Without a terminal the value can only come from the arguments, so `usage` becomes the error. */
+export async function orPrompt(
+	value: string | undefined,
+	interactive: boolean,
+	usage: string,
+	options: TextOptions,
+	hint?: string,
+): Promise<string> {
+	if (value !== undefined) return value;
+	if (!interactive) throw new CliError('USAGE', usage, { hint });
+	return ask(text(options));
+}
+
+/** A destructive step's gate: skipped with consent given, refused without a terminal, aborted on decline. */
+export async function requireConsent(input: {
+	skip: boolean;
+	interactive: boolean;
+	question: string;
+	refusal: string;
+	refusalHint: string;
+	declined: string;
+}): Promise<void> {
+	if (input.skip) return;
+
+	if (!input.interactive) {
+		throw new CliError('USAGE', input.refusal, { hint: input.refusalHint });
+	}
+
+	if (!(await ask(confirm({ message: input.question })))) {
+		throw new CliError('USAGE', input.declined);
+	}
+}
+
+/** Registers the token here, because an unregistered token prints in full. */
+export async function promptAndRegisterToken(profileName: string): Promise<string> {
+	const token = await ask(
+		password({
+			message: `Paste a token for "${profileName}"`,
+			validate: (value) => (value !== undefined && value.trim() !== '' ? undefined : 'Paste a non-empty token.'),
+		}),
+	);
+
+	registerSecret(token);
+	return token;
+}
+
+export async function promptLogin(): Promise<{ email: string; password: string }> {
+	const email = await ask(
+		text({ message: 'Email', validate: (v) => (v?.includes('@') ? undefined : 'Enter a valid email.') }),
+	);
+
+	const secret = await ask(password({ message: 'Password' }));
+	return { email, password: secret };
+}

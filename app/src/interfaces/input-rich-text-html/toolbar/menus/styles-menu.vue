@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3';
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { isBlockFormatActive, toggleBlockFormat } from '../../extensions/block-formats';
 import type { CustomFormat } from '../../extensions/custom-formats';
 import ToolbarCaret from '../toolbar-caret.vue';
+import SubmenuListItem from './submenu-list-item.vue';
 import VButton from '@/components/v-button.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
+
+/** A format that can be applied — i.e. anything but a group row. */
+type LeafFormat = Extract<CustomFormat, { name: string }>;
 
 const props = withDefaults(
 	defineProps<{
@@ -25,22 +30,53 @@ const props = withDefaults(
 
 const { t } = useI18n();
 
+/**
+ * Editor state is not a Vue dependency, so the label/active computeds would cache their first read
+ * forever. Bumping this on each transaction is what makes them follow the selection.
+ */
+const revision = ref(0);
+
+watch(
+	() => props.editor,
+	(editor, _previous, onCleanup) => {
+		if (!editor) return;
+		const bump = (): void => void revision.value++;
+		editor.on('transaction', bump);
+		onCleanup(() => editor.off('transaction', bump));
+	},
+	{ immediate: true },
+);
+
+/** Group rows aren't selectable themselves, so label/active state read the leaves. */
+const leaves = computed<LeafFormat[]>(() =>
+	props.formats.flatMap((format) => (format.kind === 'group' ? format.items : [format])),
+);
+
 // Read on each render (mirrors toolbar-button's isActive pattern) — editor state isn't a Vue dep.
 function isFormatActive(format: CustomFormat): boolean {
-	return props.editor ? props.editor.isActive(format.name) : false;
+	if (!props.editor || format.kind === 'group') return false;
+	// block formats live on node attributes, so `isActive` (marks + node types) can't see them
+	if (format.kind === 'block') return isBlockFormatActive(props.editor, format);
+	return props.editor.isActive(format.name);
 }
 
 /** The active format's title, or the generic label when nothing applies. */
 const currentLabel = computed(() => {
-	const active = props.formats.find((format) => isFormatActive(format));
+	void revision.value;
+	const active = leaves.value.find((format) => isFormatActive(format));
 	return active ? active.title : t(props.label);
 });
 
-const anyActive = computed(() => props.formats.some((format) => isFormatActive(format)));
+const anyActive = computed(() => {
+	void revision.value;
+	return leaves.value.some((format) => isFormatActive(format));
+});
 
-/** Toggle a format mark by name. Exposed for unit testing without opening the teleported menu. */
-function select(name: string): void {
-	props.editor?.chain().focus().toggleMark(name).run();
+/** Toggle a format on the selection. Exposed for unit testing without opening the teleported menu. */
+function select(format: CustomFormat): void {
+	if (!props.editor || format.kind === 'group') return;
+	if (format.kind === 'block') toggleBlockFormat(props.editor, format);
+	else props.editor.chain().focus().toggleMark(format.name).run();
 }
 
 defineExpose({ select, isFormatActive, currentLabel });
@@ -64,17 +100,26 @@ defineExpose({ select, isFormatActive, currentLabel });
 			</VButton>
 		</template>
 		<VList class="style-list">
-			<VListItem
-				v-for="format in formats"
-				:key="format.name"
-				clickable
-				:active="isFormatActive(format)"
-				@click="select(format.name)"
-			>
-				<VListItemContent>
-					<span :style="format.previewStyle">{{ format.title }}</span>
-				</VListItemContent>
-			</VListItem>
+			<template v-for="(format, index) in formats" :key="format.kind === 'group' ? `group-${index}` : format.name">
+				<SubmenuListItem v-if="format.kind === 'group'" :label="format.title">
+					<VListItem
+						v-for="item in format.items"
+						:key="item.name"
+						clickable
+						:active="isFormatActive(item)"
+						@click="select(item)"
+					>
+						<VListItemContent>
+							<span :style="item.previewStyle">{{ item.title }}</span>
+						</VListItemContent>
+					</VListItem>
+				</SubmenuListItem>
+				<VListItem v-else clickable :active="isFormatActive(format)" @click="select(format)">
+					<VListItemContent>
+						<span :style="format.previewStyle">{{ format.title }}</span>
+					</VListItemContent>
+				</VListItem>
+			</template>
 		</VList>
 	</VMenu>
 </template>

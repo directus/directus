@@ -62,7 +62,15 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 
 		// check if we are only removing the local directory
 		if (options?.partialSync) {
-			const remoteExists = await disk.exists(normalizePath(join(remoteExtensionsPath, 'package.json')));
+			let remoteExists: boolean;
+
+			try {
+				remoteExists = await disk.exists(normalizePath(join(remoteExtensionsPath, 'package.json')));
+			} catch (error) {
+				// Only remove the local copy when the extension is known to be gone, not when the check failed
+				logger.warn(error, `Couldn't check whether the extension still exists in storage, keeping local copy`);
+				return;
+			}
 
 			if (remoteExists === false) {
 				await rm(localExtensionsPath, { recursive: true, force: true });

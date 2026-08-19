@@ -1,3 +1,8 @@
+<script lang="ts">
+/** Shared between instances: hydrating re-mounts this component, so only the first should navigate. */
+let navigating = false;
+</script>
+
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { I18nT } from 'vue-i18n';
@@ -16,6 +21,9 @@ const router = useRouter();
 const loading = ref(false);
 const name = ref<string | null>(null);
 const lastPage = ref<string | null>(null);
+
+const redirectQuery = router.currentRoute.value.query.redirect;
+const initialRedirect = Array.isArray(redirectQuery) ? redirectQuery[0] : redirectQuery;
 
 const userPromise = fetchUser();
 
@@ -49,10 +57,16 @@ async function fetchUser() {
 }
 
 async function hydrateAndLogin() {
-	await hydrate();
-	await userPromise;
-	const redirectQuery = router.currentRoute.value.query.redirect as string;
-	navigateAfterLogin(router, redirectQuery || lastPage.value || `/content`);
+	if (navigating) return;
+	navigating = true;
+
+	try {
+		await hydrate();
+		await userPromise;
+		await navigateAfterLogin(router, initialRedirect || lastPage.value || `/content`);
+	} finally {
+		navigating = false;
+	}
 }
 </script>
 

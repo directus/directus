@@ -185,8 +185,11 @@ export class DriverS3 implements TusDriver {
 		try {
 			await this.stat(filepath);
 			return true;
-		} catch {
-			return false;
+		} catch (error) {
+			// A HEAD response has no body, so 404 is the only answer that confirms the object is missing
+			if ((error as { $metadata?: { httpStatusCode?: number } })?.$metadata?.httpStatusCode === 404) return false;
+
+			throw error;
 		}
 	}
 

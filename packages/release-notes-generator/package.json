@@ -1,6 +1,6 @@
 {
 	"name": "@directus/release-notes-generator",
-	"version": "3.0.0",
+	"version": "3.0.1",
 	"description": "Directus tailored release notes generator for changesets",
 	"homepage": "https://directus.com",
 	"type": "module",
@@ -29,13 +29,15 @@
 	"dependencies": {
 		"@changesets/get-github-info": "catalog:",
 		"@pnpm/logger": "catalog:",
-		"@pnpm/workspace.find-packages": "catalog:",
+		"@pnpm/types": "catalog:",
 		"@pnpm/workspace.pkgs-graph": "catalog:",
+		"js-yaml": "catalog:",
 		"semver": "catalog:"
 	},
 	"devDependencies": {
 		"@changesets/types": "catalog:",
 		"@directus/tsconfig": "catalog:",
+		"@types/js-yaml": "catalog:",
 		"@types/node": "catalog:",
 		"@types/semver": "catalog:",
 		"@vitest/coverage-v8": "catalog:",

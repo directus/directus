@@ -1,5 +1,5 @@
 name: export
-description: Saves the API response to a file. Accepts one of "csv", "csv_utf8", "json", "xml", "yaml".
+description: Saves the API response to a file.
 in: query
 required: false
 schema:

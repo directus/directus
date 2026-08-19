@@ -268,25 +268,35 @@ export class FilesService extends ItemsService<File> {
 			});
 		}
 
-		const parsedURL = url.parse(fileResponse.request.res.responseUrl);
-		const filename = decodeURI(path.basename(parsedURL.pathname as string));
+		let filename: string;
+		let mimeType: string;
 
-		const mimeType = fileResponse.headers['content-type']?.split(';')[0]?.trim() || 'application/octet-stream';
+		try {
+			const parsedURL = url.parse(fileResponse.request.res.responseUrl);
+			filename = decodeURI(path.basename(parsedURL.pathname as string));
 
-		// Check against global MIME type allow list from env
-		if (isMimeTypeAllowed(mimeType, env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]) === false) {
-			throw new InvalidPayloadError({
-				reason: `File content type "${mimeType}" is not allowed for upload by your global file type restrictions`,
-			});
-		}
+			mimeType = fileResponse.headers['content-type']?.split(';')[0]?.trim() || 'application/octet-stream';
 
-		const { filterMimeType } = options;
+			// Check against global MIME type allow list from env
+			if (isMimeTypeAllowed(mimeType, env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]) === false) {
+				throw new InvalidPayloadError({
+					reason: `File content type "${mimeType}" is not allowed for upload by your global file type restrictions`,
+				});
+			}
 
-		// Check against interface-level MIME type restrictions if provided
-		if (filterMimeType && filterMimeType.length > 0 && isMimeTypeAllowed(mimeType, filterMimeType) === false) {
-			throw new InvalidPayloadError({
-				reason: `File content type "${mimeType}" is not allowed for upload by this field's file type restrictions`,
-			});
+			const { filterMimeType } = options;
+
+			// Check against interface-level MIME type restrictions if provided
+			if (filterMimeType && filterMimeType.length > 0 && isMimeTypeAllowed(mimeType, filterMimeType) === false) {
+				throw new InvalidPayloadError({
+					reason: `File content type "${mimeType}" is not allowed for upload by this field's file type restrictions`,
+				});
+			}
+		} catch (error) {
+			// Nothing reads the response body once the import is rejected, so it would hold its connection open
+			fileResponse.data.destroy();
+
+			throw error;
 		}
 
 		const payload = {
@@ -386,7 +396,17 @@ export class FilesService extends ItemsService<File> {
 						const { name: filePrefix, dir: fileDir } = path.parse(existingFilePath);
 						const updatedFilePath = sanitizeFilepath(data.filename_disk);
 
-						const remoteFileExists = await disk.exists(data.filename_disk);
+						let remoteFileExists: boolean;
+
+						try {
+							remoteFileExists = await disk.exists(data.filename_disk);
+						} catch (error) {
+							// A failed lookup is not the same answer as a missing file, and both branches below act on it
+							throw new ServiceUnavailableError(
+								{ service: 'files', reason: `Couldn't reach the storage location` },
+								{ cause: error },
+							);
+						}
 
 						const filePrefixPath = fileDir ? normalizePath(path.join(fileDir, filePrefix)) : filePrefix;
 

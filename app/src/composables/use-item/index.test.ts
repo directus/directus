@@ -1,6 +1,7 @@
 import { useCollection } from '@directus/composables';
 import { AppCollection, Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
+import { flushPromises } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { computed, ref } from 'vue';
@@ -392,6 +393,52 @@ describe('Query merging', () => {
 				}),
 			}),
 		);
+	});
+});
+
+describe('refreshSignal', () => {
+	const mockCollection = {
+		collection: 'test',
+	} as AppCollection;
+
+	const mockPrimaryKeyField = {
+		field: 'id',
+	} as Field;
+
+	beforeEach(() => {
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => [mockPrimaryKeyField]),
+		} as any);
+	});
+
+	test('should not be bumped by the initial load', async () => {
+		const { refreshSignal } = useItem(ref('test'), ref(1));
+
+		await flushPromises();
+
+		expect(refreshSignal.value).toBe(0);
+	});
+
+	test('should be bumped on refresh', async () => {
+		const { refresh, refreshSignal } = useItem(ref('test'), ref(1));
+
+		await flushPromises();
+
+		refresh();
+
+		expect(refreshSignal.value).toBe(1);
+	});
+
+	test('should not be bumped by a silent refetch', async () => {
+		const { getItem, refreshSignal } = useItem(ref('test'), ref(1));
+
+		await flushPromises();
+
+		await getItem({ silent: true });
+
+		expect(refreshSignal.value).toBe(0);
 	});
 });
 

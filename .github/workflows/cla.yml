@@ -4,7 +4,9 @@ on:
   pull_request:
     types:
       - opened
+      - reopened
       - synchronize
+      - ready_for_review
 
 permissions:
   contents: read
@@ -21,9 +23,11 @@ jobs:
 
       - name: Create missing CLA handoff
         if: steps.check.outcome == 'failure' && steps.check.outputs.missing
+        env:
+          MISSING: ${{ steps.check.outputs.missing }}
         run: |
           mkdir -p cla-missing
-          touch cla-missing/missing
+          printf '%s' "$MISSING" > cla-missing/missing
 
       - name: Upload missing CLA handoff
         if: steps.check.outcome == 'failure' && steps.check.outputs.missing

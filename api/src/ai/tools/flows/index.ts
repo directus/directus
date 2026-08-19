@@ -48,6 +48,7 @@ export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 	keywords: ['automation', 'workflow', 'webhook', 'schedule', 'event hook', 'manual flow'],
 	annotations: {
 		title: 'Directus - Flows',
+		destructiveHint: true,
 	},
 	inputSchema: FlowsInputSchema,
 	validateSchema: FlowsValidateSchema,
