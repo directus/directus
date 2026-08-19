@@ -9,7 +9,7 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VRadio from '@/components/v-radio.vue';
 import { Folder } from '@/composables/use-folders';
-import { moveAndDelete, recursiveDelete } from '@/utils/delete-folder';
+import { DeleteFolderConfig, moveAndDelete, recursiveDelete } from '@/utils/delete-folder';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 const modelValue = defineModel<boolean>({ required: true });
@@ -17,6 +17,9 @@ const modelValue = defineModel<boolean>({ required: true });
 const props = defineProps<{
 	folders: Folder[];
 	allFolders: Folder[];
+	config?: DeleteFolderConfig;
+	moveContentLabel?: string;
+	deleteContentLabel?: string;
 }>();
 
 const emit = defineEmits<{
@@ -35,8 +38,8 @@ watch(modelValue, (val) => {
 });
 
 const radioOptions = [
-	{ value: 'move', label: t('delete_folder_dialog.move_content') },
-	{ value: 'delete', label: t('delete_folder_dialog.delete_content') },
+	{ value: 'move', label: props.moveContentLabel ?? t('delete_folder_dialog.move_content') },
+	{ value: 'delete', label: props.deleteContentLabel ?? t('delete_folder_dialog.delete_content') },
 ];
 
 async function save() {
@@ -45,9 +48,9 @@ async function save() {
 
 	try {
 		if (deleteMode.value === 'move') {
-			await moveAndDelete(props.folders);
+			await moveAndDelete(props.folders, props.config);
 		} else {
-			await recursiveDelete(props.folders, props.allFolders);
+			await recursiveDelete(props.folders, props.allFolders, props.config);
 		}
 
 		modelValue.value = false;

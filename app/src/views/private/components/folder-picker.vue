@@ -8,6 +8,7 @@ import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VList from '@/components/v-list.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import type { FolderType } from '@/composables/use-folders';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -23,10 +24,17 @@ type Folder = {
 	children: Folder[];
 };
 
-const props = defineProps<{
-	modelValue: string | null;
-	disabledFolders?: string[];
-}>();
+const props = withDefaults(
+	defineProps<{
+		modelValue: string | null;
+		disabledFolders?: string[];
+		type?: FolderType;
+		rootLabel?: string;
+	}>(),
+	{
+		type: 'assets',
+	},
+);
 
 defineEmits<{
 	'update:modelValue': [value: string | null];
@@ -89,6 +97,7 @@ async function fetchFolders() {
 			params: {
 				limit: -1,
 				sort: 'name',
+				filter: { type: { _eq: props.type } },
 			},
 		});
 	} catch (error) {
@@ -127,7 +136,7 @@ function parseFolder(id: string) {
 						<VListItemIcon>
 							<VIcon name="folder_special" outline />
 						</VListItemIcon>
-						<VListItemContent>{{ $t('file_library') }}</VListItemContent>
+						<VListItemContent>{{ rootLabel ?? $t('file_library') }}</VListItemContent>
 					</template>
 
 					<FolderPickerListItem
