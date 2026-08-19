@@ -13,23 +13,39 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
+import type { DeleteFolderConfig, FolderType } from '@/composables/use-folders';
 import { useFolders } from '@/composables/use-folders';
 import { FolderTarget, SpecialFolder } from '@/types/folders';
 
 const router = useRouter();
 
-const props = defineProps<{
-	rootFolder?: string;
-	currentFolder?: string;
-	currentSpecial?: SpecialFolder;
-	customTargetHandler?: (target: FolderTarget) => void;
-	localOpenFolders?: boolean;
-	actionsDisabled?: boolean;
-}>();
+const props = withDefaults(
+	defineProps<{
+		rootFolder?: string;
+		currentFolder?: string;
+		currentSpecial?: SpecialFolder;
+		customTargetHandler?: (target: FolderTarget) => void;
+		localOpenFolders?: boolean;
+		actionsDisabled?: boolean;
+		type?: FolderType;
+		rootLabel?: string;
+		showSpecialFolders?: boolean;
+		showDownload?: boolean;
+		deleteConfig?: DeleteFolderConfig;
+		moveContentLabel?: string;
+		deleteContentLabel?: string;
+		deletedHandler?: (parent: string | null) => void;
+	}>(),
+	{
+		type: 'assets',
+		showSpecialFolders: true,
+		showDownload: true,
+	},
+);
 
 const { rootFolder, localOpenFolders } = toRefs(props);
 
-const { nestedFolders, folders, loading, openFolders } = useFolders(rootFolder, localOpenFolders);
+const { nestedFolders, folders, loading, openFolders } = useFolders(rootFolder, localOpenFolders, props.type);
 
 watch([() => props.currentFolder, loading], setOpenFolders, { immediate: true });
 
@@ -114,7 +130,7 @@ function setOpenFolders() {
 						</VListItemIcon>
 						<VListItemContent>
 							<VTextOverflow v-if="rootFolderInfo" :text="rootFolderInfo.name" />
-							<VTextOverflow v-else :text="$t('file_library')" />
+							<VTextOverflow v-else :text="rootLabel ?? $t('file_library')" />
 						</VListItemContent>
 					</template>
 
@@ -125,33 +141,41 @@ function setOpenFolders() {
 						:folder="folder"
 						:current-folder="currentFolder"
 						:actions-disabled="actionsDisabled"
+						:type="type"
+						:show-download="showDownload"
+						:delete-config="deleteConfig"
+						:move-content-label="moveContentLabel"
+						:delete-content-label="deleteContentLabel"
+						:deleted-handler="deletedHandler"
 					/>
 				</VListGroup>
 			</VItemGroup>
 		</div>
 
-		<VDivider />
+		<template v-if="showSpecialFolders">
+			<VDivider />
 
-		<VListItem clickable :active="currentSpecial === 'all'" @click="onClick({ special: 'all' })">
-			<VListItemIcon><VIcon name="file_copy" outline /></VListItemIcon>
-			<VListItemContent>
-				<VTextOverflow :text="$t('all_files')" />
-			</VListItemContent>
-		</VListItem>
+			<VListItem clickable :active="currentSpecial === 'all'" @click="onClick({ special: 'all' })">
+				<VListItemIcon><VIcon name="file_copy" outline /></VListItemIcon>
+				<VListItemContent>
+					<VTextOverflow :text="$t('all_files')" />
+				</VListItemContent>
+			</VListItem>
 
-		<VListItem clickable :active="currentSpecial === 'mine'" @click="onClick({ special: 'mine' })">
-			<VListItemIcon><VIcon name="folder_shared" /></VListItemIcon>
-			<VListItemContent>
-				<VTextOverflow :text="$t('my_files')" />
-			</VListItemContent>
-		</VListItem>
+			<VListItem clickable :active="currentSpecial === 'mine'" @click="onClick({ special: 'mine' })">
+				<VListItemIcon><VIcon name="folder_shared" /></VListItemIcon>
+				<VListItemContent>
+					<VTextOverflow :text="$t('my_files')" />
+				</VListItemContent>
+			</VListItem>
 
-		<VListItem clickable :active="currentSpecial === 'recent'" @click="onClick({ special: 'recent' })">
-			<VListItemIcon><VIcon name="history" /></VListItemIcon>
-			<VListItemContent>
-				<VTextOverflow :text="$t('recent_files')" />
-			</VListItemContent>
-		</VListItem>
+			<VListItem clickable :active="currentSpecial === 'recent'" @click="onClick({ special: 'recent' })">
+				<VListItemIcon><VIcon name="history" /></VListItemIcon>
+				<VListItemContent>
+					<VTextOverflow :text="$t('recent_files')" />
+				</VListItemContent>
+			</VListItem>
+		</template>
 	</VList>
 </template>
 
