@@ -58,7 +58,7 @@ export type NestedPartial<Item> = Item extends any[]
 
 // Distributes NestedPartial over each member of a union individually, so mixed unions
 // (e.g. a relation object | string | null) keep their non-object members untouched.
-type NestedUnion<Item> = Item extends any ? NestedPartial<Item> : never;
+export type NestedUnion<Item> = Item extends any ? NestedPartial<Item> : never;
 
 /**
  * Reduces a complex object type to make it readable in IDEs.
