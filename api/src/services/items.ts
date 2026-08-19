@@ -320,11 +320,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
-			if (
-				opts.skipTracking !== true &&
-				this.accountability &&
-				collectionInfo.accountability !== null
-			) {
+			if (opts.skipTracking !== true && this.accountability && collectionInfo.accountability !== null) {
 				const { ActivityService } = await import('./activity.js');
 				const { RevisionsService } = await import('./revisions.js');
 
@@ -878,11 +874,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
-			if (
-				opts.skipTracking !== true &&
-				this.accountability &&
-				collectionInfo.accountability !== null
-			) {
+			if (opts.skipTracking !== true && this.accountability && collectionInfo.accountability !== null) {
 				const { ActivityService } = await import('./activity.js');
 				const { RevisionsService } = await import('./revisions.js');
 
@@ -1163,11 +1155,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				}
 			}
 
-			if (
-				opts.skipTracking !== true &&
-				this.accountability &&
-				collectionInfo.accountability !== null
-			) {
+			if (opts.skipTracking !== true && this.accountability && collectionInfo.accountability !== null) {
 				const { ActivityService } = await import('./activity.js');
 
 				const activityService = new ActivityService({
@@ -1271,7 +1259,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.createOne` / `this.updateOne` under the hood.
 	 */
 	async upsertSingleton(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const primaryKeyField =getCollectionFromSchema(this.schema, this.collection).primary;
+		const primaryKeyField = getCollectionFromSchema(this.schema, this.collection).primary;
 
 		const record = await this.knex.select(primaryKeyField).from(this.collection).limit(1).first();
 
