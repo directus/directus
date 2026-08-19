@@ -3,4 +3,4 @@
 '@directus/api': patch
 ---
 
-Removed permission to change user_created on directus_shares update
+Removed `user_created` and `date_created` for `update` from recommended permissions for `directus_shares`
