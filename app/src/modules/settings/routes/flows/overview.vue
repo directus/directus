@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FlowRaw } from '@directus/types';
 import { sortBy } from 'lodash';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
@@ -168,6 +168,14 @@ function openDuplicateFlow(item: FlowRaw) {
 }
 
 const selectedKeys = ref<string[]>([]);
+
+// The same component renders every folder, so drop the selection when the folder changes to avoid
+// acting on flows that are no longer in view
+watch(
+	() => props.folder,
+	() => (selectedKeys.value = []),
+);
+
 const moveDialogActive = ref(false);
 const moveTarget = ref<string | null>(null);
 

@@ -280,6 +280,19 @@ describe('FlowsOverview - openDuplicateFlow', () => {
 	});
 });
 
+describe('FlowsOverview - selection', () => {
+	test('clears the selection when the folder changes', async () => {
+		const wrapper = mount(FlowsOverview, { global, props: { folder: 'folder-a' } });
+
+		const vm = wrapper.vm as any;
+		vm.selectedKeys = ['flow-1', 'flow-2'];
+
+		await wrapper.setProps({ folder: 'folder-b' });
+
+		expect(vm.selectedKeys).toEqual([]);
+	});
+});
+
 describe('FlowsOverview - toggleFlowStatusById', () => {
 	test('opens the limit modal when activating a Flow exceeds the license limit', async () => {
 		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
