@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { FlowRaw } from '@directus/types';
-import { useBreakpoints } from '@vueuse/core';
 import { sortBy } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -28,7 +27,6 @@ import VMenu from '@/components/v-menu.vue';
 import { Header, Sort } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
-import { BREAKPOINTS } from '@/constants';
 import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vue';
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
@@ -48,10 +46,6 @@ const { t } = useI18n();
 const props = defineProps<{
 	folder?: string;
 }>();
-
-const breakpoints = useBreakpoints(BREAKPOINTS);
-const isMobile = breakpoints.smallerOrEqual('sm');
-const folderDrawerOpen = ref(false);
 
 const { createAllowed } = useCollectionPermissions('directus_flows');
 const { createAllowed: operationsCreateAllowed } = useCollectionPermissions('directus_operations');
@@ -256,15 +250,10 @@ function onFlowDrawerCompletion(id: string) {
 
 		<template #actions:prepend>
 			<PrivateViewHeaderBarActionButton
-				v-if="isMobile"
-				:label="$t('folders')"
-				icon="folder"
-				@click="folderDrawerOpen = true"
-			/>
-			<PrivateViewHeaderBarActionButton
 				v-if="selectedKeys.length > 0"
-				:label="$t('move_to_folder')"
+				v-tooltip.bottom="$t('move_to_folder')"
 				icon="folder_move"
+				variant="ghost"
 				@click="openMoveToFolder"
 			/>
 			<EntitlementRemaining entitlement-key="flows" />
@@ -281,7 +270,6 @@ function onFlowDrawerCompletion(id: string) {
 		</template>
 
 		<FlowFolderSidebar
-			v-model:drawer-open="folderDrawerOpen"
 			:current-folder="folder"
 			:actions-disabled="createAllowed === false"
 			@navigate="navigateToFolder"

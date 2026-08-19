@@ -4,11 +4,12 @@ import { useBreakpoints, useLocalStorage } from '@vueuse/core';
 import { computed, ref } from 'vue';
 import FlowFolderNavigation from './flow-folder-navigation.vue';
 import { BREAKPOINTS } from '@/constants';
-import PrivateViewDrawer from '@/views/private/private-view/components/private-view-drawer.vue';
 import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
 
 const SIDEBAR_DEFAULT_SIZE = 260;
 const SIDEBAR_MIN_SIZE = 200;
+// When collapsed the sidebar shrinks to a rail that still shows the toggle, mirroring the main sidebar
+const SIDEBAR_RAIL_SIZE = 52;
 
 defineProps<{
 	currentFolder?: string;
@@ -19,9 +20,6 @@ const emit = defineEmits<{
 	navigate: [folderId: string | null];
 }>();
 
-// Mobile opens the sidebar as an overlay drawer instead of an inline split
-const drawerOpen = defineModel<boolean>('drawerOpen', { default: false });
-
 const breakpoints = useBreakpoints(BREAKPOINTS);
 const isMobile = breakpoints.smallerOrEqual('sm');
 
@@ -29,15 +27,11 @@ const sizeStorage = useLocalStorage<number>('flows-folder-sidebar-size', SIDEBAR
 const collapsedStorage = useLocalStorage<boolean>('flows-folder-sidebar-collapsed', false);
 const enforceDefault = ref(false);
 
-const minSize = computed(() => (isMobile.value ? 0 : SIDEBAR_MIN_SIZE));
-
 const collapsed = computed({
 	get() {
-		// The inline panel is always hidden on mobile; the drawer takes over there
-		return isMobile.value ? true : collapsedStorage.value;
+		return collapsedStorage.value;
 	},
 	set(value: boolean) {
-		if (isMobile.value) return;
 		if (!value) enforceDefault.value = true;
 		collapsedStorage.value = value;
 	},
@@ -45,8 +39,6 @@ const collapsed = computed({
 
 const size = computed({
 	get() {
-		if (isMobile.value) return 0;
-
 		const storedValue = sizeStorage.value || SIDEBAR_DEFAULT_SIZE;
 
 		// Enforce the default size when the panel is dragged below the minimum
@@ -67,8 +59,13 @@ const size = computed({
 	},
 });
 
+function toggle() {
+	collapsed.value = !collapsed.value;
+}
+
 function onNavigate(folderId: string | null) {
-	drawerOpen.value = false;
+	// Collapsing after a pick gets the folder tree out of the way on narrow screens
+	if (isMobile.value) collapsed.value = true;
 	emit('navigate', folderId);
 }
 </script>
@@ -80,9 +77,9 @@ function onNavigate(folderId: string | null) {
 		primary="start"
 		size-unit="px"
 		collapsible
-		:collapsed-size="0"
+		:collapsed-size="SIDEBAR_RAIL_SIZE"
 		:collapse-threshold="70"
-		:min-size="minSize"
+		:min-size="SIDEBAR_MIN_SIZE"
 		:max-size="400"
 		:snap-points="[SIDEBAR_DEFAULT_SIZE]"
 		:snap-threshold="6"
@@ -92,19 +89,12 @@ function onNavigate(folderId: string | null) {
 	>
 		<template #start>
 			<FlowFolderNavigation
-				v-if="!isMobile"
 				:current-folder="currentFolder"
 				:actions-disabled="actionsDisabled"
+				:collapsed="collapsed"
 				@navigate="onNavigate"
+				@toggle="toggle"
 			/>
-
-			<PrivateViewDrawer v-else :collapsed="!drawerOpen" placement="left" @update:collapsed="drawerOpen = !$event">
-				<FlowFolderNavigation
-					:current-folder="currentFolder"
-					:actions-disabled="actionsDisabled"
-					@navigate="onNavigate"
-				/>
-			</PrivateViewDrawer>
 		</template>
 
 		<template #divider>
@@ -128,9 +118,5 @@ function onNavigate(folderId: string | null) {
 
 .flow-folder-split :deep(.sp-end) {
 	overflow: auto;
-}
-
-.flow-folder-split.sp-collapsed :deep(.sp-divider) {
-	display: none;
 }
 </style>
