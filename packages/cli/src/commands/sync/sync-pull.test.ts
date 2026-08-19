@@ -942,6 +942,25 @@ describe('sync pull resources and data', () => {
 		expect(userBytes).toContain('editor@example.com');
 	});
 
+	it('never writes the instance project_id to disk', async () => {
+		seedConfig();
+		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
+		interceptSnapshot();
+
+		interceptSingleton('/settings', {
+			id: 1,
+			project_name: 'Kampala',
+			project_id: '11111111-2222-3333-4444-555555555555',
+		});
+
+		expect(await d6s('sync', 'pull', '--from', 'staging', '--settings')).toBe(0);
+
+		const settingsBytes = readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_settings')), 'utf8');
+		expect(settingsBytes).not.toContain('project_id');
+		expect(settingsBytes).not.toContain('11111111-2222-3333-4444-555555555555');
+		expect(settingsBytes).toContain('Kampala');
+	});
+
 	it('strips custom conceal/hash fields the field catalog marks sensitive and names them at pull time', async () => {
 		seedConfig();
 		vi.stubEnv('DIRECTUS_STAGING_TOKEN', token);
