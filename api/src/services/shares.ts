@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
+import { ForbiddenError, InvalidCredentialsError, InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, Item, LoginResult, MutationOptions, PrimaryKey } from '@directus/types';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
@@ -46,6 +46,10 @@ export class SharesService extends ItemsService {
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if ('user_created' in data) {
+			throw new InvalidPayloadError({ reason: `You can't change the "user_created" value manually` });
+		}
+
 		const primaryKeys = await super.updateMany(keys, data, opts);
 
 		await clearPermissionsCache();
