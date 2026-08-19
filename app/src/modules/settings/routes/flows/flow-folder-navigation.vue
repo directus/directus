@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import AddFolder from '@/modules/files/components/add-folder.vue';
 import { FolderTarget } from '@/types/folders';
 import type { DeleteFolderConfig } from '@/utils/delete-folder';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -30,22 +29,14 @@ function onTarget(target: FolderTarget) {
 <template>
 	<div class="flow-folder-navigation" :class="{ collapsed }">
 		<div class="header" :class="{ collapsed }">
+			<span v-if="!collapsed" class="title">{{ t('folders') }}</span>
+
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="collapsed ? t('folders') : undefined"
 				:icon="collapsed ? 'left_panel_open' : 'left_panel_close'"
 				variant="ghost"
 				@click="emit('toggle')"
 			/>
-
-			<template v-if="!collapsed">
-				<span class="title">{{ t('folders') }}</span>
-				<AddFolder
-					type="flows"
-					:parent="currentFolder"
-					:disabled="actionsDisabled"
-					@created="emit('navigate', $event)"
-				/>
-			</template>
 		</div>
 
 		<FilesNavigation
@@ -66,6 +57,11 @@ function onTarget(target: FolderTarget) {
 
 <style scoped>
 .flow-folder-navigation {
+	/* Match the file library's folder icon colors, which come from the shell navigation */
+	--v-list-item-icon-color: var(--theme--navigation--list--icon--foreground);
+	--v-list-item-icon-color-hover: var(--theme--navigation--list--icon--foreground-hover);
+	--v-list-item-icon-color-active: var(--theme--navigation--list--icon--foreground-active);
+
 	block-size: 100%;
 	overflow: hidden;
 }
@@ -89,7 +85,7 @@ function onTarget(target: FolderTarget) {
 
 .title {
 	flex-grow: 1;
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--foreground);
 	font-weight: 600;
 }
 </style>

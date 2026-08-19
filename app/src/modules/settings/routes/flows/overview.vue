@@ -28,6 +28,7 @@ import { Header, Sort } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vue';
+import AddFolder from '@/modules/files/components/add-folder.vue';
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { useLicenseStore } from '@/stores/license';
@@ -249,6 +250,7 @@ function onFlowDrawerCompletion(id: string) {
 		</template>
 
 		<template #actions:prepend>
+			<AddFolder type="flows" :parent="folder" :disabled="createAllowed === false" @created="navigateToFolder" />
 			<PrivateViewHeaderBarActionButton
 				v-if="selectedKeys.length > 0"
 				v-tooltip.bottom="$t('move_to_folder')"

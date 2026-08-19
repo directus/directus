@@ -114,6 +114,11 @@ function onNavigate(folderId: string | null) {
 
 .flow-folder-split :deep(.sp-start) {
 	overflow: hidden;
+	border-inline-end: var(--theme--border-width) solid var(--theme--border-color);
+}
+
+.flow-folder-split :deep(.sp-divider) {
+	z-index: 8;
 }
 
 .flow-folder-split :deep(.sp-end) {
