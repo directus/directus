@@ -312,6 +312,8 @@ delete_folder_dialog:
   move_content: Move content one level up
   delete_content: Delete all content
   content_behavior: What should happen to the folder contents?
+delete_flow_folder_dialog:
+  delete_content: Delete the folder (Flows move to the root level)
 validation_errors_notice: 'The following fields have invalid values:'
 validation_value_is_invalid: Value is invalid
 validationError:
@@ -1076,6 +1078,7 @@ translations_display_template: Translations Display Template
 n_items_selected: 'No Items Selected | One Item Selected | {n} Items Selected'
 per_page: Per Page
 all_files: All Files
+all_flows: All Flows
 my_files: My Files
 recent_files: Recent Files
 create_folder: Create Folder

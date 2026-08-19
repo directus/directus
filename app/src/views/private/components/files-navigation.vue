@@ -13,9 +13,10 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
-import type { DeleteFolderConfig, FolderType } from '@/composables/use-folders';
+import type { FolderType } from '@/composables/use-folders';
 import { useFolders } from '@/composables/use-folders';
 import { FolderTarget, SpecialFolder } from '@/types/folders';
+import type { DeleteFolderConfig } from '@/utils/delete-folder';
 
 const router = useRouter();
 
