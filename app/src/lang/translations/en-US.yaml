@@ -886,6 +886,7 @@ account_created_successfully: Account Created Successfully
 auto_fill: Auto Fill
 corresponding_field: Corresponding Field
 errors:
+  COLLECTION_INACTIVE: Collection is inactive
   COLLECTION_NOT_FOUND: "Collection doesn't exist"
   CONTAINS_NULL_VALUES: Field contains null values
   CONTENT_TOO_LARGE: Submitted item/file is too large

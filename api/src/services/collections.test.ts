@@ -124,6 +124,9 @@ describe('Integration Tests', () => {
 				[{ collection: '' }, 'collection name is empty'],
 				[{ collection: 'directus_test' }, 'collection names start with "directus_"'],
 				[{ collection: 'Folder/Test' }, 'collection name contains "/"'],
+				[{ collection: '   ' }, 'collection name only contains whitespace'],
+				[{ collection: ' new_collection' }, 'collection name starts with whitespace'],
+				[{ collection: 'new_collection ' }, 'collection name ends with whitespace'],
 			];
 
 			test.each(invalidPayloads)('should throw InvalidPayloadError when %s', async (payload, _description) => {

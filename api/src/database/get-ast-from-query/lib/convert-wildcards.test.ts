@@ -274,3 +274,45 @@ test('backlink set to false', async () => {
 
 	expect(result).toEqual(['tags_id.*', 'id', 'articles_id']);
 });
+
+/** `links` is inactive, so it's absent from `collections` while its relations stay behind */
+const schemaInactiveRelated = (() => {
+	const built = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('title').string();
+			c.field('author').m2o('users');
+			c.field('links').o2m('links', 'article_id');
+		})
+		.collection('users', (c) => {
+			c.field('id').id();
+			c.field('name').string();
+		})
+		.build();
+
+	delete (built.collections as Record<string, unknown>)['links'];
+
+	return built;
+})();
+
+test('converting * drops an o2m alias whose collection is gone, but keeps an m2o foreign key', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce(['*']);
+
+	const result = await convertWildcards(
+		{ collection: 'articles', fields: ['*'], alias: {}, accountability, backlink: true },
+		{ knex: db, schema: schemaInactiveRelated },
+	);
+
+	expect(result).toEqual(['id', 'title', 'author']);
+});
+
+test('converting *.* drops an o2m alias whose collection is gone, but still expands a live relation', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce(['*']);
+
+	const result = await convertWildcards(
+		{ collection: 'articles', fields: ['*.*'], alias: {}, accountability, backlink: true },
+		{ knex: db, schema: schemaInactiveRelated },
+	);
+
+	expect(result).toEqual(['author.*', 'id', 'title']);
+});
