@@ -3,4 +3,4 @@
 '@directus/api': patch
 ---
 
-Removed permission to change the "created by" value of an existing share
+Removed permission to change user_created on directus_shares update
