@@ -83,6 +83,10 @@ function onTarget(target: FolderTarget) {
 	justify-content: center;
 }
 
+.flow-folder-navigation :deep(.nav) {
+	--v-list-padding: 0;
+}
+
 .title {
 	flex-grow: 1;
 	color: var(--theme--foreground);

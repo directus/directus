@@ -29,6 +29,7 @@ const source = {
 	accountability: 'all',
 	trigger: 'event',
 	options: { type: 'action', scope: ['items.update'] },
+	folder: 'folder-1',
 	operation: 'op-condition',
 	date_created: '2026-01-01T00:00:00Z',
 	user_created: 'user-1',
@@ -140,6 +141,7 @@ describe('useDuplicate', () => {
 				accountability: 'all',
 				trigger: 'event',
 				options: { type: 'action', scope: ['items.update'] },
+				folder: 'folder-1',
 			},
 			{ params: { fields: ['id'] } },
 		);
