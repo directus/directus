@@ -1,4 +1,4 @@
-import { createDirectus, createItem, graphql, rest, staticToken } from '@directus/sdk';
+import { createDirectus, createItem, createRole, createUser, graphql, rest, staticToken } from '@directus/sdk';
 import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
@@ -168,7 +168,8 @@ test('fragment in a mutation selection set', async () => {
 
 // Guards the m2a filter handling of #25895 / #26148 / #26233 against fragment changes
 test('fragment alongside an m2a filter', async () => {
-	const id = await seed({ blocks: [{ collection: collections.text_blocks, item: { text: 'Filtered Block' } }] });
+	const block = await api.request(createItem(collections.text_blocks, { text: 'Filtered Block' }));
+	const id = await seed({ blocks: [{ collection: collections.text_blocks, item: { id: block.id } }] });
 
 	const result = (
 		await api.query(`
@@ -178,7 +179,7 @@ test('fragment alongside an m2a filter', async () => {
 
 			query {
 				${collections.articles} (
-					filter: { id: { _eq: "${id}" }, blocks: { item__${collections.text_blocks}: { text: { _eq: "Filtered Block" } } } }
+					filter: { id: { _eq: "${id}" }, blocks: { item__${collections.text_blocks}: { id: { _eq: "${block.id}" } } } }
 				) {
 					blocks { item { ...BlockItem } }
 				}
@@ -251,22 +252,28 @@ test('the same fragment spread twice', async () => {
 
 // The system scope has its own resolvers, and they resolve fragments through the same path
 test('fragment on a system collection', async () => {
-	const result = await api.query<{ users: { id: string; role: { name: string } | null }[] }>(
+	const role = await api.request(createRole({ name: 'Fragments Role' }));
+
+	const user = await api.request(
+		createUser({ email: `fragments-${role.id}@example.com`, password: 'password', role: role.id }),
+	);
+
+	const result = await api.query<{ users: { id: string; assigned: { name: string } }[] }>(
 		`
-			fragment CurrentUser on directus_users {
+			fragment Member on directus_users {
 				id
 				assigned: role { name }
 			}
 
 			query {
-				users (limit: 1) { ...CurrentUser }
+				users (filter: { id: { _eq: "${user.id}" }}) { ...Member }
 			}
 		`,
 		undefined,
 		'system',
 	);
 
-	expect(result.users[0]).toEqual({ id: expect.any(String), assigned: expect.anything() });
+	expect(result.users).toEqual([{ id: user.id, assigned: { name: 'Fragments Role' } }]);
 });
 
 test('fragment on a system aggregation', async () => {
