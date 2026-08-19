@@ -46,25 +46,6 @@ export type IsNumber<T, Y, N> = T extends number ? Y : N;
 export type IsString<T, Y, N> = T extends string ? Y : N;
 
 /**
- * Helpers for working with unions
- */
-type UnionToParm<U> = U extends any ? (k: U) => void : never;
-type UnionToSect<U> = UnionToParm<U> extends (k: infer I) => void ? I : never;
-type ExtractParm<F> = F extends { (a: infer A): void } ? A : never;
-
-type SpliceOne<Union> = Exclude<Union, ExtractOne<Union>>;
-type ExtractOne<Union> = ExtractParm<UnionToSect<UnionToParm<Union>>>;
-
-export type ToTuple<Union> = ToTupleRec<Union, []>;
-
-type ToTupleRec<Union, Rslt extends any[]> =
-	SpliceOne<Union> extends never
-		? [ExtractOne<Union>, ...Rslt]
-		: ToTupleRec<SpliceOne<Union>, [ExtractOne<Union>, ...Rslt]>;
-
-export type TupleToUnion<T extends unknown[]> = T[number];
-
-/**
  * Recursively make properties optional
  */
 export type NestedPartial<Item> = Item extends any[]
@@ -75,16 +56,9 @@ export type NestedPartial<Item> = Item extends any[]
 		? { [Key in keyof Item]?: NestedUnion<Item[Key]> }
 		: Item;
 
-// Skip the tuple round-trip for string-only (optionally nullable) unions: it collapses StringLiteralUnion's literals into `string`, losing autocomplete.
-type NestedUnion<Item> = [Exclude<Item, string | null | undefined>] extends [never]
-	? Item
-	: TupleToUnion<ToTuplePartial<Item>>;
-
-type ToTuplePartial<Union> = ToTuplePartialRec<Union, []>;
-type ToTuplePartialRec<Union, Rslt extends any[]> =
-	SpliceOne<Union> extends never
-		? [NestedPartial<ExtractOne<Union>>, ...Rslt]
-		: ToTuplePartialRec<SpliceOne<Union>, [NestedPartial<ExtractOne<Union>>, ...Rslt]>;
+// Distributes NestedPartial over each member of a union individually, so mixed unions
+// (e.g. a relation object | string | null) keep their non-object members untouched.
+type NestedUnion<Item> = Item extends any ? NestedPartial<Item> : never;
 
 /**
  * Reduces a complex object type to make it readable in IDEs.
