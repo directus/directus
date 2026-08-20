@@ -125,8 +125,6 @@ const internalSort = ref<Sort>({ by: 'name', desc: false });
 
 const flowsStore = useFlowsStore();
 
-const hasAnyFlows = computed(() => flowsStore.flows.length > 0);
-
 const flows = computed(() => {
 	const source = props.folder ? flowsStore.flows.filter((flow) => flow.folder === props.folder) : flowsStore.flows;
 
@@ -285,7 +283,7 @@ function onFlowDrawerCompletion(id: string) {
 			:actions-disabled="createFolderAllowed !== true"
 			@navigate="navigateToFolder"
 		>
-			<VInfo v-if="!hasAnyFlows" icon="bolt" :title="$t('no_flows')" center>
+			<VInfo v-if="flows.length === 0" icon="bolt" :title="$t('no_flows')" center>
 				{{ $t('no_flows_copy') }}
 
 				<template v-if="createAllowed" #append>

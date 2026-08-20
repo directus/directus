@@ -340,3 +340,19 @@ describe('FlowsOverview - folder permissions', () => {
 		expect(wrapper.find('add-folder-stub').attributes('disabled')).toBe('false');
 	});
 });
+
+describe('FlowsOverview - empty state', () => {
+	test('renders the empty state in a folder with no Flows, even when other folders have Flows', async () => {
+		const wrapper = mount(FlowsOverview, { global, props: { folder: 'folder-empty' } });
+
+		expect(wrapper.find('v-info-stub').exists()).toBe(true);
+		expect(wrapper.find('v-table-stub').exists()).toBe(false);
+	});
+
+	test('renders the table when the current folder has Flows', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+
+		expect(wrapper.find('v-table-stub').exists()).toBe(true);
+		expect(wrapper.find('v-info-stub').exists()).toBe(false);
+	});
+});
