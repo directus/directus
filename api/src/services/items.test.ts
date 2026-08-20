@@ -1,5 +1,5 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-import { UserIntegrityCheckFlag } from '@directus/types';
+import { type Accountability, UserIntegrityCheckFlag } from '@directus/types';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, test, vi } from 'vitest';
@@ -184,6 +184,24 @@ describe('Integration Tests', () => {
 				await service.deleteMany([1], { userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
 
 				expect(validateUserCountIntegrity).toHaveBeenCalled();
+			});
+		});
+
+		describe('getKeysByQuery', () => {
+			it('should resolve the keys through an authenticated read', async () => {
+				const accountability = { user: 'test-user' } as Accountability;
+				const authenticatedService = new ItemsService('test', { knex: db, schema, accountability });
+
+				const readByQuery = vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([{ id: 1 }, { id: 2 }]);
+
+				const keys = await authenticatedService.getKeysByQuery({ filter: { id: { _gt: 0 } } });
+
+				expect(keys).toEqual([1, 2]);
+				expect(readByQuery).toHaveBeenCalledExactlyOnceWith({ filter: { id: { _gt: 0 } }, fields: ['id'] });
+
+				expect((readByQuery.mock.contexts[0] as ItemsService).accountability).toBe(accountability);
+
+				readByQuery.mockRestore();
 			});
 		});
 	});
