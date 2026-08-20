@@ -179,7 +179,7 @@ export class DriverSupabase implements TusDriver {
 	async *listGenerator(prefix: string): AsyncIterable<string> {
 		const limit = 1000;
 		let offset = 0;
-		let itemCount = 0;
+		let itemCount;
 
 		/*
 		 *	The Supabase API only returns the directories and files directly within the queried location
