@@ -416,6 +416,7 @@ function onFlowDrawerCompletion(id: string) {
 		<FlowDrawer
 			:active="editFlow !== undefined"
 			:primary-key="editFlow"
+			:folder="folder"
 			@cancel="editFlow = undefined"
 			@done="onFlowDrawerCompletion"
 		/>
