@@ -28,6 +28,8 @@ const props = withDefaults(
 		customTargetHandler?: (target: FolderTarget) => void;
 		localOpenFolders?: boolean;
 		actionsDisabled?: boolean;
+		updateDisabled?: boolean;
+		deleteDisabled?: boolean;
 		type?: FolderType;
 		rootLabel?: string;
 		showSpecialFolders?: boolean;
@@ -142,6 +144,8 @@ function setOpenFolders() {
 						:folder="folder"
 						:current-folder="currentFolder"
 						:actions-disabled="actionsDisabled"
+						:update-disabled="updateDisabled"
+						:delete-disabled="deleteDisabled"
 						:type="type"
 						:show-download="showDownload"
 						:delete-config="deleteConfig"

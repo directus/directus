@@ -14,6 +14,8 @@ const SIDEBAR_RAIL_SIZE = 52;
 defineProps<{
 	currentFolder?: string;
 	actionsDisabled?: boolean;
+	updateDisabled?: boolean;
+	deleteDisabled?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -91,6 +93,8 @@ function onNavigate(folderId: string | null) {
 			<FlowFolderNavigation
 				:current-folder="currentFolder"
 				:actions-disabled="actionsDisabled"
+				:update-disabled="updateDisabled"
+				:delete-disabled="deleteDisabled"
 				:collapsed="collapsed"
 				@navigate="onNavigate"
 				@toggle="toggle"

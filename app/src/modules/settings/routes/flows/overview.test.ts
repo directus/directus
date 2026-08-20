@@ -33,11 +33,15 @@ vi.mock('@/stores/flows', () => ({
 	}),
 }));
 
-const createAllowedByCollection: Record<string, boolean> = {};
+type CollectionActions = Partial<Record<'create' | 'update' | 'delete', boolean>>;
+
+const permissionsByCollection: Record<string, CollectionActions> = {};
 
 vi.mock('@/composables/use-permissions', () => ({
 	useCollectionPermissions: (collection: string) => ({
-		createAllowed: createAllowedByCollection[collection] ?? true,
+		createAllowed: permissionsByCollection[collection]?.create ?? true,
+		updateAllowed: permissionsByCollection[collection]?.update ?? true,
+		deleteAllowed: permissionsByCollection[collection]?.delete ?? true,
 	}),
 }));
 
@@ -70,7 +74,7 @@ vi.mock('@/router', () => {
 });
 
 beforeEach(async () => {
-	for (const collection of Object.keys(createAllowedByCollection)) delete createAllowedByCollection[collection];
+	for (const collection of Object.keys(permissionsByCollection)) delete permissionsByCollection[collection];
 
 	router = generateRouter([
 		{
@@ -99,7 +103,10 @@ beforeEach(async () => {
 	global = {
 		stubs: {
 			'private-view': { template: '<div><slot name="actions:prepend" /><slot /></div>' },
-			'flow-folder-sidebar': { template: '<div><slot /></div>' },
+			'flow-folder-sidebar': {
+				props: ['actionsDisabled'],
+				template: '<div :data-actions-disabled="actionsDisabled"><slot /></div>',
+			},
 			'v-button': true,
 			'v-icon': true,
 			'settings-navigation': true,
@@ -324,7 +331,7 @@ describe('FlowsOverview - toggleFlowStatusById', () => {
 
 describe('FlowsOverview - folder permissions', () => {
 	test('folder creation follows directus_folders, not directus_flows', async () => {
-		createAllowedByCollection['directus_folders'] = false;
+		permissionsByCollection['directus_folders'] = { create: false };
 
 		const wrapper = mount(FlowsOverview, { global });
 
@@ -333,11 +340,27 @@ describe('FlowsOverview - folder permissions', () => {
 	});
 
 	test('folder creation is enabled when directus_folders create is allowed', async () => {
-		createAllowedByCollection['directus_flows'] = false;
+		permissionsByCollection['directus_flows'] = { create: false };
 
 		const wrapper = mount(FlowsOverview, { global });
 
 		expect(wrapper.find('add-folder-stub').attributes('disabled')).toBe('false');
+	});
+
+	test('folder context actions stay enabled with only update or only delete on directus_folders', async () => {
+		permissionsByCollection['directus_folders'] = { create: false, delete: false };
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		expect(wrapper.find('[data-actions-disabled]').attributes('data-actions-disabled')).toBe('false');
+	});
+
+	test('folder context actions are disabled without update or delete on directus_folders', async () => {
+		permissionsByCollection['directus_folders'] = { update: false, delete: false };
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		expect(wrapper.find('[data-actions-disabled]').attributes('data-actions-disabled')).toBe('true');
 	});
 });
 

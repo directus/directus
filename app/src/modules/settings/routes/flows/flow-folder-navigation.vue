@@ -8,6 +8,8 @@ import FilesNavigation from '@/views/private/components/files-navigation.vue';
 defineProps<{
 	currentFolder?: string;
 	actionsDisabled?: boolean;
+	updateDisabled?: boolean;
+	deleteDisabled?: boolean;
 	collapsed?: boolean;
 }>();
 
@@ -47,6 +49,8 @@ function onTarget(target: FolderTarget) {
 			:show-download="false"
 			:current-folder="currentFolder"
 			:actions-disabled="actionsDisabled"
+			:update-disabled="updateDisabled"
+			:delete-disabled="deleteDisabled"
 			:custom-target-handler="onTarget"
 			:delete-config="deleteConfig"
 			:delete-content-label="t('delete_flow_folder_dialog.delete_content')"

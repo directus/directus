@@ -33,6 +33,8 @@ const props = withDefaults(
 		folder: Folder;
 		currentFolder?: string;
 		actionsDisabled?: boolean;
+		updateDisabled?: boolean;
+		deleteDisabled?: boolean;
 		clickHandler?: (target: FolderTarget) => void;
 		type?: FolderType;
 		showDownload?: boolean;
@@ -188,6 +190,8 @@ async function downloadFolder() {
 				:current-folder="currentFolder"
 				:click-handler="clickHandler"
 				:actions-disabled="actionsDisabled"
+				:update-disabled="updateDisabled"
+				:delete-disabled="deleteDisabled"
 				:type="type"
 				:show-download="showDownload"
 				:delete-config="deleteConfig"
@@ -199,7 +203,7 @@ async function downloadFolder() {
 
 		<VMenu ref="contextMenu" show-arrow placement="bottom-start">
 			<VList>
-				<VListItem clickable @click="renameActive = true">
+				<VListItem :disabled="updateDisabled" clickable @click="renameActive = true">
 					<VListItemIcon>
 						<VIcon name="edit" outline />
 					</VListItemIcon>
@@ -207,7 +211,7 @@ async function downloadFolder() {
 						<VTextOverflow :text="$t('rename_folder')" />
 					</VListItemContent>
 				</VListItem>
-				<VListItem clickable @click="moveActive = true">
+				<VListItem :disabled="updateDisabled" clickable @click="moveActive = true">
 					<VListItemIcon>
 						<VIcon name="folder_move" />
 					</VListItemIcon>
@@ -223,7 +227,7 @@ async function downloadFolder() {
 						<VTextOverflow :text="$t('download_folder')" />
 					</VListItemContent>
 				</VListItem>
-				<VListItem class="danger" clickable @click="deleteActive = true">
+				<VListItem class="danger" :disabled="deleteDisabled" clickable @click="deleteActive = true">
 					<VListItemIcon>
 						<VIcon name="delete" outline />
 					</VListItemIcon>
