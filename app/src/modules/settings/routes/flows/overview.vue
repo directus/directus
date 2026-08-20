@@ -50,6 +50,7 @@ const props = defineProps<{
 
 const { createAllowed } = useCollectionPermissions('directus_flows');
 const { createAllowed: operationsCreateAllowed } = useCollectionPermissions('directus_operations');
+const { createAllowed: createFolderAllowed } = useCollectionPermissions('directus_folders');
 const licenseStore = useLicenseStore();
 
 const duplicateAllowed = computed(() => createAllowed.value && operationsCreateAllowed.value);
@@ -258,7 +259,7 @@ function onFlowDrawerCompletion(id: string) {
 		</template>
 
 		<template #actions:prepend>
-			<AddFolder type="flows" :parent="folder" :disabled="createAllowed === false" @created="navigateToFolder" />
+			<AddFolder type="flows" :parent="folder" :disabled="createFolderAllowed !== true" @created="navigateToFolder" />
 			<PrivateViewHeaderBarActionButton
 				v-if="selectedKeys.length > 0"
 				v-tooltip.bottom="$t('move_to_folder')"
@@ -281,7 +282,7 @@ function onFlowDrawerCompletion(id: string) {
 
 		<FlowFolderSidebar
 			:current-folder="folder"
-			:actions-disabled="createAllowed === false"
+			:actions-disabled="createFolderAllowed !== true"
 			@navigate="navigateToFolder"
 		>
 			<VInfo v-if="!hasAnyFlows" icon="bolt" :title="$t('no_flows')" center>

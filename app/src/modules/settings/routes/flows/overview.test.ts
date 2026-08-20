@@ -33,9 +33,11 @@ vi.mock('@/stores/flows', () => ({
 	}),
 }));
 
+const createAllowedByCollection: Record<string, boolean> = {};
+
 vi.mock('@/composables/use-permissions', () => ({
-	useCollectionPermissions: () => ({
-		createAllowed: true,
+	useCollectionPermissions: (collection: string) => ({
+		createAllowed: createAllowedByCollection[collection] ?? true,
 	}),
 }));
 
@@ -68,6 +70,8 @@ vi.mock('@/router', () => {
 });
 
 beforeEach(async () => {
+	for (const collection of Object.keys(createAllowedByCollection)) delete createAllowedByCollection[collection];
+
 	router = generateRouter([
 		{
 			path: '/settings/flows',
@@ -93,31 +97,33 @@ beforeEach(async () => {
 	windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 
 	global = {
-		stubs: [
-			'private-view',
-			'v-button',
-			'v-icon',
-			'settings-navigation',
-			'sidebar-detail',
-			'v-info',
-			'v-table',
-			'display-formatted-value',
-			'v-menu',
-			'v-list',
-			'v-list-item',
-			'v-list-item-icon',
-			'v-list-item-content',
-			'v-dialog',
-			'v-card',
-			'v-card-title',
-			'v-card-actions',
-			'flow-drawer',
-			'router-view',
-			'v-input',
-			'v-card-text',
-			'max-capacity-alert',
-			'entitlement-limit-modal',
-		],
+		stubs: {
+			'private-view': { template: '<div><slot name="actions:prepend" /><slot /></div>' },
+			'flow-folder-sidebar': { template: '<div><slot /></div>' },
+			'v-button': true,
+			'v-icon': true,
+			'settings-navigation': true,
+			'sidebar-detail': true,
+			'v-info': true,
+			'v-table': true,
+			'display-formatted-value': true,
+			'v-menu': true,
+			'v-list': true,
+			'v-list-item': true,
+			'v-list-item-icon': true,
+			'v-list-item-content': true,
+			'v-dialog': true,
+			'v-card': true,
+			'v-card-title': true,
+			'v-card-actions': true,
+			'flow-drawer': true,
+			'add-folder': true,
+			'router-view': true,
+			'v-input': true,
+			'v-card-text': true,
+			'max-capacity-alert': true,
+			'entitlement-limit-modal': true,
+		},
 		plugins: [router, i18n, createTestingPinia({ createSpy: vi.fn, stubActions: false })],
 		directives: {
 			tooltip: Tooltip,
@@ -313,5 +319,24 @@ describe('FlowsOverview - toggleFlowStatusById', () => {
 		expect(api.patch).toHaveBeenCalledWith('/flows/flow-1', { status: 'active' });
 		expect(vm.flowsLimitModalOpen).toBe(true);
 		expect(unexpectedError).not.toHaveBeenCalled();
+	});
+});
+
+describe('FlowsOverview - folder permissions', () => {
+	test('folder creation follows directus_folders, not directus_flows', async () => {
+		createAllowedByCollection['directus_folders'] = false;
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		expect(wrapper.find('add-folder-stub').attributes('disabled')).toBe('true');
+		expect((wrapper.vm as any).createAllowed).toBe(true);
+	});
+
+	test('folder creation is enabled when directus_folders create is allowed', async () => {
+		createAllowedByCollection['directus_flows'] = false;
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		expect(wrapper.find('add-folder-stub').attributes('disabled')).toBe('false');
 	});
 });
