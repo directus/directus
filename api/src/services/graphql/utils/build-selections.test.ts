@@ -34,10 +34,15 @@ const gqlSchema = buildSchema(`
 	type Query { Page: [Page], Page_aggregated: [Page_aggregated] }
 `);
 
-const buildInfo = (selections: SelectionNode[], fragments?: Record<string, FragmentDefinitionNode>) =>
+const buildInfo = (
+	selections: SelectionNode[],
+	fragments?: Record<string, FragmentDefinitionNode>,
+	mergedSelections?: SelectionNode[][],
+) =>
 	buildResolveInfo({
 		selections,
 		...(fragments && { fragments }),
+		...(mergedSelections && { mergedSelections }),
 		schema: gqlSchema,
 		returnType: gqlSchema.getQueryType()!.getFields()['Page']!.type,
 	});
@@ -254,16 +259,12 @@ describe('buildSelections', () => {
 	});
 
 	test('gathers the selections of every occurrence of the field', () => {
-		const info = buildResolveInfo({
-			selections: [buildFragmentSpread('First')],
-			mergedSelections: [[buildFragmentSpread('Second')]],
-			fragments: {
-				First: buildFragmentDefinition('First', 'Page', [buildField('id')]),
-				Second: buildFragmentDefinition('Second', 'Page', [buildField('title')]),
-			},
-			schema: gqlSchema,
-			returnType: gqlSchema.getQueryType()!.getFields()['Page']!.type,
-		});
+		const fragments = {
+			First: buildFragmentDefinition('First', 'Page', [buildField('id')]),
+			Second: buildFragmentDefinition('Second', 'Page', [buildField('title')]),
+		};
+
+		const info = buildInfo([buildFragmentSpread('First')], fragments, [[buildFragmentSpread('Second')]]);
 
 		expect(buildSelections(info)).toEqual([buildField('id'), buildField('title')]);
 	});

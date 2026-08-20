@@ -13,10 +13,7 @@ function makeInfo(fieldName: string, selectionSetSource?: string): GraphQLResolv
 
 /** Builds a minimal GraphQLResolveInfo carrying one field node per selection set, as merged fields do. */
 function makeMergedInfo(fieldName: string, selectionSetSources: string[]): GraphQLResolveInfo {
-	const fieldNodes = selectionSetSources.map(
-		(selectionSetSource) =>
-			(parse(`{ ${fieldName} ${selectionSetSource} }`).definitions[0] as any).selectionSet.selections[0],
-	);
+	const fieldNodes = selectionSetSources.map((source) => makeInfo(fieldName, source).fieldNodes[0]!);
 
 	return { fieldName, fieldNodes } as unknown as GraphQLResolveInfo;
 }
@@ -58,6 +55,12 @@ describe('resolverCacheKey', () => {
 		const merged = resolverCacheKey({}, makeMergedInfo('page', ['{ id }', '{ title }']));
 		const single = resolverCacheKey({}, makeInfo('page', '{ id }'));
 		expect(merged).not.toBe(single);
+	});
+
+	test('produces the same key for the same merged selections', () => {
+		const key1 = resolverCacheKey({}, makeMergedInfo('page', ['{ id }', '{ title }']));
+		const key2 = resolverCacheKey({}, makeMergedInfo('page', ['{ id }', '{ title }']));
+		expect(key1).toBe(key2);
 	});
 
 	test('produces different keys for different field names', () => {

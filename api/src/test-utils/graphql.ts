@@ -92,7 +92,6 @@ export function buildFilterArgument(filter: Record<string, any>): ArgumentNode {
 /** Stand in for the resolve info a resolver receives for the field it is resolving */
 export function buildResolveInfo(options: {
 	selections: readonly SelectionNode[];
-	/** Selections of any further occurrences of the same field, which resolve in the same call */
 	mergedSelections?: readonly (readonly SelectionNode[])[];
 	fragments?: Record<string, FragmentDefinitionNode>;
 	schema: GraphQLSchema;
