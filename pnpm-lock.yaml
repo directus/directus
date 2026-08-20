@@ -1589,7 +1589,7 @@ importers:
         version: 3.0.1
       braintrust:
         specifier: 'catalog:'
-        version: 3.27.0(@aws-sdk/credential-provider-web-identity@3.928.0)(zod@4.1.12)
+        version: 3.27.0(@aws-sdk/credential-provider-web-identity@3.972.75)(zod@4.1.12)
       mysql2:
         specifier: 'catalog:'
         version: 3.15.3
