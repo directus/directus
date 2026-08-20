@@ -5,9 +5,28 @@ import type { TusDriver } from '@directus/storage';
 import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 import { normalizePath } from '@directus/utils';
 import { StorageClient } from '@supabase/storage-js';
+import { getProxyForUrl } from 'proxy-from-env';
 import * as tus from 'tus-js-client';
 import type { RequestInit } from 'undici';
-import { fetch } from 'undici';
+import { fetch, ProxyAgent } from 'undici';
+
+/**
+ * The Supabase SDK (and our own direct calls in `read`) fall back to the ambient global `fetch`
+ * when no custom implementation is given, which silently ignores HTTP_PROXY/HTTPS_PROXY. This
+ * returns a proxy-aware fetch only when a proxy actually applies to the given endpoint (respecting
+ * NO_PROXY), so behavior is unchanged for anyone not using a proxy.
+ */
+function createProxyAwareFetch(endpoint: string): typeof fetch | undefined {
+	const proxyUrl = getProxyForUrl(endpoint);
+
+	if (!proxyUrl) {
+		return undefined;
+	}
+
+	const dispatcher = new ProxyAgent(proxyUrl);
+
+	return (input, init) => fetch(input, { ...init, dispatcher });
+}
 
 export type DriverSupabaseConfig = {
 	bucket: string;
@@ -25,6 +44,7 @@ export class DriverSupabase implements TusDriver {
 	private config: DriverSupabaseConfig & { root: string };
 	private client: StorageClient;
 	private bucket: ReturnType<StorageClient['from']>;
+	private readonly proxyAwareFetch: typeof fetch | undefined;
 
 	// TUS specific members
 	private readonly preferredChunkSize: number;
@@ -36,6 +56,7 @@ export class DriverSupabase implements TusDriver {
 		};
 
 		this.preferredChunkSize = this.config.tus?.chunkSize ?? DEFAULT_CHUNK_SIZE;
+		this.proxyAwareFetch = createProxyAwareFetch(this.endpoint);
 
 		this.client = this.getClient();
 		this.bucket = this.getBucket();
@@ -54,10 +75,17 @@ export class DriverSupabase implements TusDriver {
 			throw new Error('`service_role` is required');
 		}
 
-		return new StorageClient(this.endpoint, {
-			apikey: this.config.serviceRole,
-			Authorization: `Bearer ${this.config.serviceRole}`,
-		});
+		return new StorageClient(
+			this.endpoint,
+			{
+				apikey: this.config.serviceRole,
+				Authorization: `Bearer ${this.config.serviceRole}`,
+			},
+			// `StorageClient` types its `fetch` param against the ambient global `fetch`, which
+			// doesn't structurally match undici's own exported `fetch` type (a known mismatch
+			// between the two). The runtime shapes are compatible; only the declarations differ.
+			this.proxyAwareFetch as unknown as typeof globalThis.fetch | undefined,
+		);
 	}
 
 	private getBucket() {
@@ -96,7 +124,7 @@ export class DriverSupabase implements TusDriver {
 			requestInit.headers['Range'] = `bytes=${range.start ?? ''}-${range.end ?? ''}`;
 		}
 
-		const response = await fetch(this.getAuthenticatedUrl(filepath), requestInit);
+		const response = await (this.proxyAwareFetch ?? fetch)(this.getAuthenticatedUrl(filepath), requestInit);
 
 		if (response.status >= 400 || !response.body) {
 			// An unread body holds its connection open

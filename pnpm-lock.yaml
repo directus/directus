@@ -387,6 +387,9 @@ catalogs:
     '@types/proxy-addr':
       specifier: 2.0.3
       version: 2.0.3
+    '@types/proxy-from-env':
+      specifier: 1.0.4
+      version: 1.0.4
     '@types/qrcode':
       specifier: 1.5.6
       version: 1.5.6
@@ -819,6 +822,9 @@ catalogs:
     proxy-addr:
       specifier: 2.0.7
       version: 2.0.7
+    proxy-from-env:
+      specifier: 2.1.0
+      version: 2.1.0
     qrcode:
       specifier: 1.5.4
       version: 1.5.4
@@ -2913,6 +2919,9 @@ importers:
       '@supabase/storage-js':
         specifier: 'catalog:'
         version: 2.81.0
+      proxy-from-env:
+        specifier: 'catalog:'
+        version: 2.1.0
       tus-js-client:
         specifier: 'catalog:'
         version: 4.3.1
@@ -2929,6 +2938,9 @@ importers:
       '@ngneat/falso':
         specifier: 'catalog:'
         version: 8.0.2
+      '@types/proxy-from-env':
+        specifier: 'catalog:'
+        version: 1.0.4
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
@@ -6963,6 +6975,9 @@ packages:
 
   '@types/proxy-addr@2.0.3':
     resolution: {integrity: sha512-TgAHHO4tNG3HgLTUhB+hM4iwW6JUNeQHCLnF1DjaDA9c69PN+IasoFu2MYDhubFc+ZIw5c5t9DMtjvrD6R3Egg==}
+
+  '@types/proxy-from-env@1.0.4':
+    resolution: {integrity: sha512-TPR9/bCZAr3V1eHN4G3LD3OLicdJjqX1QRXWuNcCYgE66f/K8jO2ZRtHxI2D9MbnuUP6+qiKSS8eUHp6TFHGCw==}
 
   '@types/qrcode@1.5.6':
     resolution: {integrity: sha512-te7NQcV2BOvdj2b1hCAHzAoMNuj65kNBMz0KBaxM6c3VGBOhU0dURQKOtH8CFNI/dsKkwlv32p26qYQTWoB5bw==}
@@ -18038,6 +18053,10 @@ snapshots:
   '@types/proxy-addr@2.0.3':
     dependencies:
       '@types/node': 26.2.0
+
+  '@types/proxy-from-env@1.0.4':
+    dependencies:
+      '@types/node': 26.1.2
 
   '@types/qrcode@1.5.6':
     dependencies:
