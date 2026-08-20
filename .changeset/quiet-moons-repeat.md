@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed public registration verification email being sent to the address provided rather than the one stored on the matched account
+Fixed public registration verification using the provided email instead of the stored one
