@@ -154,7 +154,10 @@ const RESOURCE_LIST = [
 		strip: ['user_created', 'date_created'],
 		aliases: ['operations'],
 		naturalKey: ['name'],
-		fkFields: [{ field: 'operation', references: 'directus_operations' }],
+		fkFields: [
+			{ field: 'operation', references: 'directus_operations' },
+			{ field: 'folder', references: 'directus_folders' },
+		],
 	},
 	{
 		name: 'operations',

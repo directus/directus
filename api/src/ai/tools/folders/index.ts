@@ -76,7 +76,9 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>, z.infer
 
 		if (args.action === 'create') {
 			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
-			const data = toArray(args.data);
+
+			// This tool manages file-library folders only; force the asset type.
+			const data = toArray(args.data).map((item) => ({ ...item, type: 'assets' }));
 
 			const savedKeys = await service.createMany(data as Partial<Folder>[]);
 
@@ -90,6 +92,12 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>, z.infer
 
 		if (args.action === 'read') {
 			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
+
+			// This tool manages file-library folders only; scope reads to the asset type.
+			const assetFilter = { type: { _eq: 'assets' } };
+
+			sanitizedQuery.filter = sanitizedQuery.filter ? { _and: [sanitizedQuery.filter, assetFilter] } : assetFilter;
+
 			let result = null;
 
 			if (args.keys) {

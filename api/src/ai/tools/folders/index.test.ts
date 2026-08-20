@@ -61,7 +61,7 @@ describe('folders tool', () => {
 					accountability: mockAccountability,
 				});
 
-				expect(mockFoldersService.createMany).toHaveBeenCalledWith([folderData]);
+				expect(mockFoldersService.createMany).toHaveBeenCalledWith([{ ...folderData, type: 'assets' }]);
 				expect(mockFoldersService.readMany).toHaveBeenCalledWith(savedKeys, {});
 
 				expect(result).toEqual({
@@ -87,7 +87,9 @@ describe('folders tool', () => {
 					accountability: mockAccountability,
 				});
 
-				expect(mockFoldersService.createMany).toHaveBeenCalledWith(foldersData);
+				expect(mockFoldersService.createMany).toHaveBeenCalledWith(
+					foldersData.map((folder) => ({ ...folder, type: 'assets' })),
+				);
 			});
 		});
 
@@ -107,7 +109,7 @@ describe('folders tool', () => {
 					accountability: mockAccountability,
 				});
 
-				expect(mockFoldersService.readMany).toHaveBeenCalledWith(keys, {});
+				expect(mockFoldersService.readMany).toHaveBeenCalledWith(keys, { filter: { type: { _eq: 'assets' } } });
 				expect(mockFoldersService.readByQuery).not.toHaveBeenCalled();
 
 				expect(result).toEqual({
@@ -129,7 +131,7 @@ describe('folders tool', () => {
 					accountability: mockAccountability,
 				});
 
-				expect(mockFoldersService.readByQuery).toHaveBeenCalledWith({});
+				expect(mockFoldersService.readByQuery).toHaveBeenCalledWith({ filter: { type: { _eq: 'assets' } } });
 				expect(mockFoldersService.readMany).not.toHaveBeenCalled();
 
 				expect(result).toEqual({
