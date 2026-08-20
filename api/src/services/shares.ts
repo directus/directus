@@ -50,6 +50,37 @@ export class SharesService extends ItemsService {
 			throw new InvalidPayloadError({ reason: `You can't change the "user_created" value manually` });
 		}
 
+		if (('item' in data || 'collection' in data) && this.accountability) {
+			let shares = [data];
+
+			if (!('item' in data) || !('collection' in data)) {
+				shares = await this.knex.select('collection', 'item').from('directus_shares').whereIn('id', keys);
+			}
+
+			const itemsByCollection = new Map<string, Set<PrimaryKey>>();
+
+			for (const share of shares) {
+				const collection = 'collection' in data ? data['collection'] : share['collection'];
+				const item = 'item' in data ? data['item'] : share['item'];
+				itemsByCollection.set(collection, (itemsByCollection.get(collection) ?? new Set()).add(item));
+			}
+
+			for (const [collection, items] of itemsByCollection) {
+				await validateAccess(
+					{
+						accountability: this.accountability,
+						action: 'share',
+						collection,
+						primaryKeys: [...items],
+					},
+					{
+						schema: this.schema,
+						knex: this.knex,
+					},
+				);
+			}
+		}
+
 		const primaryKeys = await super.updateMany(keys, data, opts);
 
 		await clearPermissionsCache();
