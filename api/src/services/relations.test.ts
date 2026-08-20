@@ -1,7 +1,7 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { RelationMeta } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import { createMockKnex, createMockTableBuilder, resetKnexMocks } from '../test-utils/knex.js';
 import { RelationsService } from './relations.js';
 
 vi.mock('@directus/env', () => ({
@@ -46,7 +46,6 @@ vi.mock('../database/helpers/index.js', () => ({
 	getHelpers: vi.fn(() => ({
 		schema: {
 			preColumnChange: vi.fn().mockResolvedValue(false),
-			postColumnChange: vi.fn().mockResolvedValue(undefined),
 			preRelationChange: vi.fn(),
 			constraintName: vi.fn((name) => name),
 		},
@@ -64,22 +63,6 @@ const schema = new SchemaBuilder()
 	})
 	.build();
 
-function createMockForeignKeyBuilder() {
-	return {
-		dropForeign: vi.fn().mockReturnThis(),
-		foreign: vi.fn().mockReturnValue({
-			references: vi.fn().mockReturnValue({
-				onDelete: vi.fn().mockReturnThis(),
-				onUpdate: vi.fn().mockReturnThis(),
-			}),
-		}),
-		specificType: vi.fn().mockReturnValue({
-			notNullable: vi.fn().mockReturnThis(),
-			alter: vi.fn().mockReturnThis(),
-		}),
-	};
-}
-
 describe('Integration Tests', () => {
 	const { db, tracker, mockSchemaBuilder } = createMockKnex();
 
@@ -89,14 +72,23 @@ describe('Integration Tests', () => {
 
 	describe('Services / Relations', () => {
 		describe('updateOne', () => {
-			let table: ReturnType<typeof createMockForeignKeyBuilder>;
-
-			beforeEach(() => {
-				table = createMockForeignKeyBuilder();
-				mockSchemaBuilder.alterTable.mockImplementation(async (_tableName, callback) => callback(table));
-			});
-
 			test('should re-add the foreign key when the payload only contains meta', async () => {
+				const foreignKeyBuilder = {
+					onDelete: vi.fn().mockReturnThis(),
+					onUpdate: vi.fn().mockReturnThis(),
+				};
+
+				const table = {
+					...createMockTableBuilder(),
+					dropForeign: vi.fn().mockReturnThis(),
+					foreign: vi.fn().mockReturnValue({ references: vi.fn().mockReturnValue(foreignKeyBuilder) }),
+				};
+
+				mockSchemaBuilder.alterTable.mockImplementation((_tableName, callback) => {
+					callback(table);
+					return Promise.resolve();
+				});
+
 				const service = new RelationsService({ knex: db, schema });
 
 				await service.updateOne('articles_authors', 'authors_id', {
