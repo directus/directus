@@ -363,7 +363,11 @@ export class RelationsService {
 							existingRelation.schema.constraint_name = constraintName;
 						}
 
-						this.alterType(table, relation, fieldSchema.nullable);
+						this.alterType(
+							table,
+							{ collection, field, related_collection: existingRelation.related_collection },
+							fieldSchema.nullable,
+						);
 
 						const builder = table
 							.foreign(field, constraintName || undefined)
