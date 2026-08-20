@@ -252,4 +252,19 @@ describe('buildSelections', () => {
 	test('returns null when the field has no selections', () => {
 		expect(buildSelections({ fieldNodes: [{}], fragments: {}, schema: gqlSchema } as any)).toBeNull();
 	});
+
+	test('gathers the selections of every occurrence of the field', () => {
+		const info = buildResolveInfo({
+			selections: [buildFragmentSpread('First')],
+			mergedSelections: [[buildFragmentSpread('Second')]],
+			fragments: {
+				First: buildFragmentDefinition('First', 'Page', [buildField('id')]),
+				Second: buildFragmentDefinition('Second', 'Page', [buildField('title')]),
+			},
+			schema: gqlSchema,
+			returnType: gqlSchema.getQueryType()!.getFields()['Page']!.type,
+		});
+
+		expect(buildSelections(info)).toEqual([buildField('id'), buildField('title')]);
+	});
 });
