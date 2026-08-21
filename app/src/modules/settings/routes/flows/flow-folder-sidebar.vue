@@ -20,6 +20,7 @@ defineProps<{
 
 const emit = defineEmits<{
 	navigate: [folderId: string | null];
+	deleted: [parent: string | null];
 }>();
 
 const breakpoints = useBreakpoints(BREAKPOINTS);
@@ -97,6 +98,7 @@ function onNavigate(folderId: string | null) {
 				:delete-disabled="deleteDisabled"
 				:collapsed="collapsed"
 				@navigate="onNavigate"
+				@deleted="emit('deleted', $event)"
 				@toggle="toggle"
 			/>
 		</template>

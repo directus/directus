@@ -15,6 +15,7 @@ defineProps<{
 
 const emit = defineEmits<{
 	navigate: [folderId: string | null];
+	deleted: [parent: string | null];
 	toggle: [];
 }>();
 
@@ -54,7 +55,7 @@ function onTarget(target: FolderTarget) {
 			:custom-target-handler="onTarget"
 			:delete-config="deleteConfig"
 			:delete-content-label="t('delete_flow_folder_dialog.delete_content')"
-			:deleted-handler="(parent) => emit('navigate', parent)"
+			:deleted-handler="(parent) => emit('deleted', parent)"
 		/>
 	</div>
 </template>
