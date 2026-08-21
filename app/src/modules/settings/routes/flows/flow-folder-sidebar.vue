@@ -119,6 +119,8 @@ function onNavigate(folderId: string | null) {
 }
 
 .flow-folder-split :deep(.sp-start) {
+	position: relative;
+	z-index: 2;
 	overflow: hidden;
 	border-inline-end: var(--theme--border-width) solid var(--theme--border-color);
 }

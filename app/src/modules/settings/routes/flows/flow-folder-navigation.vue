@@ -69,6 +69,7 @@ function onTarget(target: FolderTarget) {
 
 	block-size: 100%;
 	overflow: hidden;
+	background-color: var(--theme--background);
 }
 
 .flow-folder-navigation:not(.collapsed) {
