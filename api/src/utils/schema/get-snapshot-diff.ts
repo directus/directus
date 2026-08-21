@@ -3,6 +3,7 @@ import { DiffKind } from '@directus/types';
 import deepDiff from 'deep-diff';
 import { SNAPSHOT_VERSION } from '../../constants.js';
 import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from '../sanitize-schema.js';
+import { isNestedMetaUpdate } from './apply-diff.js';
 import { isChanged } from './is-changed.js';
 import { isDeleteAllowed } from './is-delete-allowed.js';
 import { isInScope } from './is-in-scope.js';
@@ -203,7 +204,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: Ge
 	 */
 
 	const deletedCollections = diffedSnapshot.collections
-		.filter((collection) => collection.diff?.[0]?.kind === DiffKind.DELETE)
+		.filter((collection) => collection.diff?.[0]?.kind === DiffKind.DELETE && !isNestedMetaUpdate(collection.diff[0]))
 		.map(({ collection }) => collection);
 
 	diffedSnapshot.fields = diffedSnapshot.fields.filter(
