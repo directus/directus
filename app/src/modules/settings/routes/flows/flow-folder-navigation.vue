@@ -92,6 +92,10 @@ function onTarget(target: FolderTarget) {
 	--v-list-padding: 0;
 }
 
+.flow-folder-navigation :deep(.v-list-item) {
+	max-inline-size: 100%;
+}
+
 .title {
 	flex-grow: 1;
 	color: var(--theme--foreground);
