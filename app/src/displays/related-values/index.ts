@@ -3,10 +3,11 @@ import { defineDisplay } from '@directus/extensions';
 import type { Field } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { get, set } from 'lodash';
+import { ref } from 'vue';
 import DisplayRelatedValues from './related-values.vue';
 import { useExtension } from '@/composables/use-extension';
+import { useRelationM2A } from '@/composables/use-relation-m2a';
 import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
@@ -125,14 +126,31 @@ export default defineDisplay({
 		const fieldStoreField = fieldsStore.getField(collection, field);
 
 		if (fieldStoreField?.meta?.special?.includes('m2a')) {
-			const relationsStore = useRelationsStore();
-			const relations = relationsStore.getRelationsForField(collection, field);
+			const { relationInfo } = useRelationM2A(ref(collection), ref(field));
+			const info = relationInfo.value;
 
-			const collectionField = relations.find((relation) => relation.meta?.one_collection_field)?.meta
-				?.one_collection_field;
+			if (!info) return fields;
 
-			if (collectionField && !fields.find((field) => field === collectionField)) {
-				fields.push(collectionField);
+			if (!fields.includes(info.collectionField.field)) fields.push(info.collectionField.field);
+
+			if (!options?.template) {
+				for (const allowedCollection of info.allowedCollections) {
+					const primaryKeyField = info.relationPrimaryKeyFields[allowedCollection.collection];
+					if (!primaryKeyField) continue;
+
+					const template = allowedCollection.meta?.display_template || `{{ ${primaryKeyField.field} }}`;
+
+					const relatedFields = adjustFieldsForDisplays(
+						getFieldsFromTemplate(template),
+						allowedCollection.collection,
+					).map((field) => `${info.junctionField.field}:${allowedCollection.collection}.${field}`);
+
+					const relatedPrimaryKey = `${info.junctionField.field}:${allowedCollection.collection}.${primaryKeyField.field}`;
+
+					for (const relatedField of [...relatedFields, relatedPrimaryKey]) {
+						if (!fields.includes(relatedField)) fields.push(relatedField);
+					}
+				}
 			}
 		}
 
