@@ -3,7 +3,6 @@ import { type Bus } from '@directus/memory';
 import { useBus } from '../../bus/index.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { handleWebSocketError, WebSocketError } from '../errors.js';
@@ -12,6 +11,7 @@ import { WebSocketSubscribeMessage } from '../messages.js';
 import type { Subscription, SubscriptionEvent, WebSocketClient } from '../types.js';
 import { getPayload } from '../utils/items.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
+import { validateSubscriptionAccess } from '../utils/validate-subscription-access.js';
 
 /**
  * Handler responsible for subscriptions
@@ -125,6 +125,16 @@ export class SubscribeHandler {
 			}
 
 			try {
+				await validateSubscriptionAccess(
+					{ accountability: client.accountability, collection: subscription.collection },
+					{ knex: getDatabase(), schema },
+				);
+			} catch {
+				// don't notify the client of permission errors, as that would leak the existence of the event
+				continue;
+			}
+
+			try {
 				const result = await getPayload(subscription, client.accountability, schema, event);
 
 				if (Array.isArray(result?.['data']) && result?.['data']?.length === 0) continue;
@@ -170,24 +180,15 @@ export class SubscribeHandler {
 
 				if ('item' in message) subscription.item = String(message.item);
 
+				await validateSubscriptionAccess(
+					{ accountability, collection, item: subscription.item },
+					{ knex: getDatabase(), schema },
+				);
+
 				if ('uid' in message) {
 					subscription.uid = String(message.uid);
 					// remove the subscription if it already exists
 					this.unsubscribe(client, subscription.uid);
-				}
-
-				if (accountability) {
-					await validateAccess(
-						{
-							accountability,
-							action: 'read',
-							collection,
-						},
-						{
-							knex: getDatabase(),
-							schema,
-						},
-					);
 				}
 
 				const data =

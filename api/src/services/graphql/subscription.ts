@@ -1,11 +1,11 @@
 import { EventEmitter, on } from 'events';
 import type { GraphQLResolveInfo, SelectionNode } from 'graphql';
 import { useBus } from '../../bus/index.js';
-import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { WebSocketEvent } from '../../websocket/messages.js';
 import type { Subscription } from '../../websocket/types.js';
 import { getPayload } from '../../websocket/utils/items.js';
+import { validateSubscriptionAccess } from '../../websocket/utils/validate-subscription-access.js';
 import { getQuery } from './schema/parse-query.js';
 import type { GraphQLService } from './index.js';
 
@@ -40,23 +40,14 @@ export function createSubscriptionGenerator(gql: GraphQLService, event: string) 
 			};
 
 			if (eventData['action'] === 'delete') {
-				if (gql.accountability) {
-					try {
-						await validateAccess(
-							{
-								accountability: gql.accountability,
-								action: 'read',
-								collection: eventData['collection'],
-							},
-							{
-								knex: gql.knex,
-								schema,
-							},
-						);
-					} catch {
-						// dont notify the subscription of permission errors
-						continue;
-					}
+				try {
+					await validateSubscriptionAccess(
+						{ accountability: gql.accountability, collection: eventData['collection'] },
+						{ knex: gql.knex, schema },
+					);
+				} catch {
+					// dont notify the subscription of permission errors
+					continue;
 				}
 
 				// we have no data to send besides the key
