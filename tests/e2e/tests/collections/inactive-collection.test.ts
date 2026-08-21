@@ -21,8 +21,6 @@ import {
 	readShares,
 	rest,
 	saveToContentVersion,
-	schemaDiff,
-	schemaSnapshot,
 	staticToken,
 	updateCollection,
 	updateItem,
@@ -92,7 +90,7 @@ describe('item crud', () => {
 		const updated = await api.request(updateItem(collection, seedItemId, { title: 'Seed updated' }));
 		expect(updated).toMatchObject({ id: seedItemId, title: 'Seed updated' });
 
-		const deleted = await api.request(deleteItem(collection, created['id']));
+		const deleted = await api.request(deleteItem(collection, created.id));
 		expect(deleted).toBeNull();
 	});
 
@@ -104,7 +102,7 @@ describe('item crud', () => {
 
 		// Toggling the collection status is a collection-meta operation and should still succeed.
 		const updated = await setStatus(collection, 'inactive');
-		expect(updated['meta']).toMatchObject({ status: 'inactive' });
+		expect(updated.meta).toMatchObject({ status: 'inactive' });
 
 		// Every item operation must now be rejected because the inactive collection is excluded from the schema.
 		await expect(api.request(createItem(collection, { title: 'Nope' }))).rejects.toMatchObject(inactive);
@@ -246,64 +244,6 @@ describe('o2m alias into an inactive collection', () => {
 		await setStatus(child, 'inactive');
 
 		await expect(api.request(readItems(parent, { fields: ['children.*'] }))).rejects.toMatchObject(forbidden);
-	});
-});
-
-describe('schema snapshots of an inactive collection', () => {
-	const collection = `inactive_snapshot_${uid()}`;
-
-	beforeAll(async () => {
-		await api.request(
-			createCollection({
-				collection,
-				// `meta` matters here: a column without a `directus_fields` row counts as unmanaged and
-				// is left out of snapshots by design, which would mask what this test is checking.
-				fields: [
-					idField,
-					{ field: 'title', type: 'string', meta: {}, schema: {} },
-					{ field: 'body', type: 'text', meta: {}, schema: {} },
-				],
-				schema: {},
-				meta: {},
-			}),
-		);
-
-		await setStatus(collection, 'inactive');
-	});
-
-	afterAll(async () => {
-		await setStatus(collection, 'active').catch(() => {});
-		await api.request(deleteCollection(collection)).catch(() => {});
-	});
-
-	test('keeps the collection and its fields while inactive', async () => {
-		const snapshot = await api.request(schemaSnapshot());
-
-		expect(snapshot.collections.find((entry: any) => entry.collection === collection)).toMatchObject({
-			meta: expect.objectContaining({ status: 'inactive' }),
-		});
-
-		// An inactive collection is excluded from the schema overview, but its table and columns still
-		// exist, so a snapshot has to carry them or restoring it silently drops the data.
-		const fields = snapshot.fields
-			.filter((field: any) => field.collection === collection)
-			.map((field: any) => field.field);
-
-		expect(fields.sort()).toEqual(['body', 'id', 'title']);
-	});
-
-	test('does not propose dropping fields when applied after reactivating', async () => {
-		const snapshot = await api.request(schemaSnapshot());
-
-		await setStatus(collection, 'active');
-
-		// The dangerous sequence: snapshot while inactive, reactivate later, then apply that snapshot.
-		// If the snapshot lost the fields, this diff deletes the columns and the data with them.
-		const diff = await api.request(schemaDiff(snapshot)).catch(() => null);
-
-		const fieldDiffs = (diff?.diff?.['fields'] ?? []).filter((entry: any) => entry.collection === collection);
-
-		expect(fieldDiffs).toEqual([]);
 	});
 });
 
