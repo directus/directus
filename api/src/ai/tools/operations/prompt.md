@@ -161,6 +161,30 @@ flow entry point.
 
 **Patterns:** Linear (19,1)→(37,1)→(55,1). Branching: success (37,1), error (37,19). </positioning_system>
 
+<inserting_operations>
+
+## Inserting Operations Without Overlap
+
+Before inserting an operation into an existing flow, read all operations in the flow, including `id`, `resolve`,
+`reject`, `position_x`, and `position_y`. Never create an operation at occupied coordinates.
+
+To insert an operation before an existing operation:
+
+1. Shift the existing operation and every operation after it on the affected branch 18 units to the right. Update the
+   rightmost operation first so no intermediate positions overlap.
+2. Create the new operation in the vacated position, using the same `position_y` as the existing operation.
+3. Link the new operation to the existing operation, then update its parent (or the flow entry point) to link to the new
+   operation.
+
+Example: to insert `validate` between `read` at (19,1) and `send` at (37,1), with `log` at (55,1):
+
+1. Move `log` to (73,1), then move `send` to (55,1).
+2. Create `validate` at (37,1) with `resolve` set to the `send` UUID.
+3. Update `read.resolve` to the `validate` UUID.
+
+After changing a flow, read its operations again and verify that every `(position_x, position_y)` pair is unique.
+</inserting_operations>
+
 <operation_examples> **condition** - Evaluates filter rules
 
 ```json
