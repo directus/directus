@@ -19,8 +19,11 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 import { useLicenseStore } from '@/stores/license';
+import { useRelationsStore } from '@/stores/relations';
 import { Collection } from '@/types/collections';
+import type { CollectionStatus } from '@/utils/collection-status';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -37,6 +40,8 @@ const collectionDialogActive = ref(false);
 const editCollection = ref<Collection | null>();
 
 const collectionsStore = useCollectionsStore();
+const fieldsStore = useFieldsStore();
+const relationsStore = useRelationsStore();
 const licenseStore = useLicenseStore();
 
 const { limitModalOpen: collectionsLimitModalOpen, navigate } = useLicenseGuard(
@@ -62,23 +67,25 @@ const deactivatedRootCollections = computed(() => {
 	return collections.value.filter((collection) => !collection.meta?.group && collection.meta?.status !== 'active');
 });
 
-async function activateCollection(collectionKey: string) {
+async function setCollectionStatus(collectionKey: string, status: CollectionStatus) {
 	try {
-		await api.patch(`/collections/${collectionKey}`, { meta: { status: 'active' } });
-		await collectionsStore.hydrate();
-	} catch (error: any) {
-		unexpectedError(error);
-	}
-}
+		await api.patch(`/collections/${collectionKey}`, { meta: { status } });
 
-async function deactivateCollection(collectionKey: string) {
-	try {
-		await api.patch(`/collections/${collectionKey}`, { meta: { status: 'inactive' } });
-		await collectionsStore.hydrate();
+		// Inactive collections are left out of the schema, so their fields and relations disappear
+		// from those endpoints as well. Rehydrate everything to avoid holding on to a stale copy.
+		await Promise.all([
+			collectionsStore.hydrate(),
+			fieldsStore.hydrate(),
+			relationsStore.hydrate(),
+			licenseStore.hydrate(),
+		]);
 	} catch (error) {
 		unexpectedError(error);
 	}
 }
+
+const activateCollection = (collectionKey: string) => setCollectionStatus(collectionKey, 'active');
+const deactivateCollection = (collectionKey: string) => setCollectionStatus(collectionKey, 'inactive');
 
 export type CollectionTree = {
 	collection: string;

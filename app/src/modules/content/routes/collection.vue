@@ -35,6 +35,7 @@ import { useVersionQuery } from '@/composables/use-version-query';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
+import { isCollectionInactive } from '@/utils/collection-status';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -414,7 +415,7 @@ function clearFilters() {
 		:reset-preset="resetPreset"
 		:clear-filters="clearFilters"
 	>
-		<ContentNotFound v-if="!currentCollection || isSystemCollection(collection)" />
+		<ContentNotFound v-if="!currentCollection || isSystemCollection(collection) || isCollectionInactive(collection)" />
 
 		<PrivateView v-else :title="headerTitle" :icon="headerIcon" :icon-color="headerIconColor">
 			<template #title-outer:append>
