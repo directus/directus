@@ -73,7 +73,6 @@ function onTarget(target: FolderTarget) {
 
 .flow-folder-navigation:not(.collapsed) {
 	overflow-y: auto;
-	padding: 0 0.75rem;
 }
 
 .header {
@@ -84,16 +83,16 @@ function onTarget(target: FolderTarget) {
 	block-size: 3.75rem;
 }
 
+.header:not(.collapsed) {
+	padding-inline: 0.75rem;
+}
+
 .header.collapsed {
 	justify-content: center;
 }
 
 .flow-folder-navigation :deep(.nav) {
-	--v-list-padding: 0;
-}
-
-.flow-folder-navigation :deep(.v-list-item) {
-	max-inline-size: 100%;
+	--v-list-padding: 0.75rem;
 }
 
 .title {
