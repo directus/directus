@@ -5,11 +5,14 @@ import hash from 'object-hash';
 
 /**
  * Builds a stable deduplication key for a GraphQL resolver call by combining
- * the field name, a hash of its arguments, and the printed selection set.
+ * the field name, a hash of its arguments, and the printed selection sets.
  * Used to identify structurally identical resolver invocations within a request.
  */
 export function resolverCacheKey(args: Record<string, unknown>, info: GraphQLResolveInfo): string {
-	const selectionKey = info.fieldNodes[0]?.selectionSet ? print(info.fieldNodes[0].selectionSet) : '';
+	const selectionKey = info.fieldNodes
+		.map((fieldNode) => (fieldNode.selectionSet ? print(fieldNode.selectionSet) : ''))
+		.join('');
+
 	const cacheKey = `${info.fieldName}:${hash(args ?? {})}:${selectionKey}`;
 	return cacheKey;
 }

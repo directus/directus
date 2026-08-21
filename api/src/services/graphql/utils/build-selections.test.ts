@@ -34,10 +34,15 @@ const gqlSchema = buildSchema(`
 	type Query { Page: [Page], Page_aggregated: [Page_aggregated] }
 `);
 
-const buildInfo = (selections: SelectionNode[], fragments?: Record<string, FragmentDefinitionNode>) =>
+const buildInfo = (
+	selections: SelectionNode[],
+	fragments?: Record<string, FragmentDefinitionNode>,
+	mergedSelections?: SelectionNode[][],
+) =>
 	buildResolveInfo({
 		selections,
 		...(fragments && { fragments }),
+		...(mergedSelections && { mergedSelections }),
 		schema: gqlSchema,
 		returnType: gqlSchema.getQueryType()!.getFields()['Page']!.type,
 	});
@@ -251,5 +256,16 @@ describe('buildSelections', () => {
 
 	test('returns null when the field has no selections', () => {
 		expect(buildSelections({ fieldNodes: [{}], fragments: {}, schema: gqlSchema } as any)).toBeNull();
+	});
+
+	test('gathers the selections of every occurrence of the field', () => {
+		const fragments = {
+			First: buildFragmentDefinition('First', 'Page', [buildField('id')]),
+			Second: buildFragmentDefinition('Second', 'Page', [buildField('title')]),
+		};
+
+		const info = buildInfo([buildFragmentSpread('First')], fragments, [[buildFragmentSpread('Second')]]);
+
+		expect(buildSelections(info)).toEqual([buildField('id'), buildField('title')]);
 	});
 });

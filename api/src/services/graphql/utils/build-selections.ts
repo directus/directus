@@ -75,9 +75,18 @@ function replaceInSelections(
  * Build a flat selection set of the field being resolved, with every fragment in it swapped for the
  * selections it holds. Fragments can hold fragments, so this is done recursively.
  *
+ * A field requested more than once resolves in a single call with one node per occurrence, so this
+ * gathers the selections of every node.
+ *
  * @param info The resolve info of the field being resolved
- * @returns The selections asked for on that field, or null when it has no selection set
+ * @returns The selections asked for on that field, or null when none of its nodes carry selections
  */
 export function buildSelections(info: GraphQLResolveInfo): readonly SelectionNode[] | null {
-	return replaceInSelections(info.fieldNodes[0]?.selectionSet?.selections, getNamedType(info.returnType), info);
+	const parentType = getNamedType(info.returnType);
+
+	const selections = info.fieldNodes.flatMap(
+		(fieldNode) => replaceInSelections(fieldNode.selectionSet?.selections, parentType, info) ?? [],
+	);
+
+	return selections.length > 0 ? selections : null;
 }
