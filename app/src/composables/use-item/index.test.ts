@@ -1063,3 +1063,183 @@ describe('Save As Copy with M2M relation', () => {
 		expect(saveBody.children.update).toEqual([]);
 	});
 });
+
+describe('Save As Copy with M2M relation nested in a related collection', () => {
+	const mockCollection = {
+		collection: 'test',
+	} as AppCollection;
+
+	const mockPrimaryKeyField = {
+		field: 'id',
+		schema: { has_auto_increment: true },
+	} as Field;
+
+	/**
+	 * Sets up a translations style relation (`test` -> `test_translations` -> `languages`) where the
+	 * related collection holds an M2M relation of its own (`test_translations` ->
+	 * `test_translations_tags` -> `tags`).
+	 */
+	function setupNestedM2MMocks(parentPrimaryKeyField: Field = mockPrimaryKeyField) {
+		const sdkSpy = vi.spyOn(sdk, 'request');
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => parentPrimaryKeyField),
+			fields: computed(() => [parentPrimaryKeyField] as Field[]),
+		} as any);
+
+		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
+
+		const autoIncrementPk = { field: 'id', schema: { has_auto_increment: true } } as Field;
+		const manualPk = { field: 'code' } as Field;
+
+		vi.mocked(fieldsStore.getPrimaryKeyFieldForCollection).mockImplementation((collection: string) =>
+			collection === 'languages' ? manualPk : autoIncrementPk,
+		);
+
+		const translationsRelation = {
+			collection: 'test_translations',
+			field: 'test_id',
+			related_collection: 'test',
+			meta: { one_field: 'translations', junction_field: 'language' },
+		} as unknown as Relation;
+
+		const nestedTagsRelation = {
+			collection: 'test_translations_tags',
+			field: 'test_translations_id',
+			related_collection: 'test_translations',
+			meta: { one_field: 'tags', junction_field: 'tag_id' },
+		} as unknown as Relation;
+
+		vi.mocked(relationsStore.getRelationsForCollection).mockReturnValue([translationsRelation]);
+
+		vi.mocked(relationsStore).relations = [
+			translationsRelation,
+			{
+				collection: 'test_translations',
+				field: 'language',
+				related_collection: 'languages',
+				meta: { many_field: 'language', junction_field: null },
+			} as unknown as Relation,
+			nestedTagsRelation,
+			{
+				collection: 'test_translations_tags',
+				field: 'tag_id',
+				related_collection: 'tags',
+				meta: { many_field: 'tag_id', junction_field: null },
+			} as unknown as Relation,
+		];
+
+		return sdkSpy;
+	}
+
+	test('should fetch the nested relational fields of the related items expanded', async () => {
+		const sdkSpy = setupNestedM2MMocks();
+
+		sdkSpy
+			.mockResolvedValueOnce({}) // initial getItem
+			.mockResolvedValueOnce({ item: { id: 1, translations: [{ id: 10 }] } }) // graphql duplication fetch
+			.mockResolvedValueOnce([{ id: 10 }]) // findExistingRelatedItems
+			.mockResolvedValueOnce({ id: 2 }); // save
+
+		const { saveAsCopy } = useItem(ref('test'), ref(1));
+		await saveAsCopy();
+
+		const findCall = sdkSpy.mock.calls[2]?.[0]() as any;
+
+		expect(findCall.params.fields).toEqual(['*', 'tags.*']);
+	});
+
+	test('should duplicate the nested junction rows instead of relinking them', async () => {
+		const sdkSpy = setupNestedM2MMocks();
+
+		sdkSpy
+			.mockResolvedValueOnce({}) // initial getItem
+			.mockResolvedValueOnce({ item: { id: 1, translations: [{ id: 10 }] } }) // graphql duplication fetch
+			.mockResolvedValueOnce([
+				{
+					id: 10,
+					test_id: 1,
+					language: 'en-US',
+					tags: [{ id: 100, test_translations_id: 10, tag_id: 5 }],
+				},
+			]) // findExistingRelatedItems
+			.mockResolvedValueOnce({ id: 2 }); // save
+
+		const { saveAsCopy } = useItem(ref('test'), ref(1));
+		await saveAsCopy();
+
+		const saveBody = (sdkSpy.mock.lastCall?.[0]() as any).body;
+
+		// The junction PK is dropped so new junction rows are created for the copy, leaving the
+		// junction rows of the original item untouched
+		expect(saveBody.translations).toEqual([
+			{
+				test_id: 1,
+				language: 'en-US',
+				tags: [{ test_translations_id: 10, tag_id: 5 }],
+			},
+		]);
+	});
+
+	test('should duplicate the nested junction rows of edited related items', async () => {
+		const sdkSpy = setupNestedM2MMocks();
+
+		sdkSpy
+			.mockResolvedValueOnce({}) // initial getItem
+			.mockResolvedValueOnce({ item: { id: 1, translations: [{ id: 10 }] } }) // graphql duplication fetch
+			.mockResolvedValueOnce([
+				{
+					id: 10,
+					test_id: 1,
+					language: 'en-US',
+					tags: [{ id: 100, test_translations_id: 10, tag_id: 5 }],
+				},
+			]) // findExistingRelatedItems
+			.mockResolvedValueOnce({ id: 2 }); // save
+
+		const { saveAsCopy, edits } = useItem(ref('test'), ref(1));
+
+		edits.value = {
+			translations: {
+				create: [],
+				update: [{ id: 10, title: 'edited' }],
+				delete: [],
+			},
+		};
+
+		await saveAsCopy();
+
+		const saveBody = (sdkSpy.mock.lastCall?.[0]() as any).body;
+
+		expect(saveBody.translations.create).toEqual([
+			{
+				test_id: 1,
+				language: 'en-US',
+				title: 'edited',
+				tags: [{ test_translations_id: 10, tag_id: 5 }],
+			},
+		]);
+
+		expect(saveBody.translations.update).toEqual([]);
+	});
+
+	test('should omit the primary key of the related collection when the parent primary key is manually entered', async () => {
+		const sdkSpy = setupNestedM2MMocks({ field: 'code' } as Field);
+
+		sdkSpy
+			.mockResolvedValueOnce({}) // initial getItem
+			.mockResolvedValueOnce({ item: { code: 'abc', translations: [{ id: 10 }] } }) // graphql duplication fetch
+			.mockResolvedValueOnce([{ id: 10, test_id: 'abc', language: 'en-US' }]) // findExistingRelatedItems
+			.mockResolvedValueOnce({ code: 'def' }); // save
+
+		const { saveAsCopy } = useItem(ref('test'), ref(1));
+		await saveAsCopy();
+
+		const saveBody = (sdkSpy.mock.lastCall?.[0]() as any).body;
+
+		expect(saveBody.code).toBe('abc');
+		expect(saveBody.translations).toEqual([{ test_id: 'abc', language: 'en-US' }]);
+	});
+});

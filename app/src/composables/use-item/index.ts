@@ -299,8 +299,9 @@ export function useItem<T extends Item>(
 						);
 
 						if (existingItem) {
-							clearPrimaryKey(primaryKeyField.value, existingItem);
+							clearPrimaryKey(relatedPrimaryKeyField, existingItem);
 							clearJunctionRelatedKey(relation, existsJunctionRelated, existingItem);
+							clearNestedRelatedKeys(relation.collection, existingItem);
 							relatedItem = existingItem;
 						}
 
@@ -334,12 +335,14 @@ export function useItem<T extends Item>(
 
 					clearPrimaryKey(relatedPrimaryKeyField, data);
 					clearJunctionRelatedKey(relation, existsJunctionRelated, data);
+					clearNestedRelatedKeys(relation.collection, data);
 
 					newRelatedItem.create.push(data);
 				}
 
 				for (const item of existingItems) {
 					clearPrimaryKey(relatedPrimaryKeyField, item);
+					clearNestedRelatedKeys(relation.collection, item);
 
 					newRelatedItem.create.push(item);
 				}
@@ -401,7 +404,19 @@ export function useItem<T extends Item>(
 				}, [] as string[]),
 			);
 
+			const nestedOneFields = getNestedRelations(relation.collection).map((relation) => relation.meta!.one_field!);
+
 			if (fieldsToFetch.size > 0) fieldsToFetch.add(relatedPrimaryKeyField.field);
+			else if (nestedOneFields.length > 0) fieldsToFetch.add('*');
+
+			// Without expanding them, nested relational fields are returned as plain keys which would
+			// relink the existing nested items to the copy instead of duplicating them
+			for (const nestedOneField of nestedOneFields) {
+				if (!fieldsToFetch.has(nestedOneField) && !fieldsToFetch.has('*')) continue;
+
+				fieldsToFetch.delete(nestedOneField);
+				fieldsToFetch.add(`${nestedOneField}.*`);
+			}
 
 			const endpoint = getEndpoint(relation.collection);
 			const requestFields = Array.from(fieldsToFetch);
@@ -423,6 +438,37 @@ export function useItem<T extends Item>(
 		function clearPrimaryKey(primaryKeyField: Field | null, item: Item) {
 			if (primaryKeyField?.schema?.has_auto_increment || primaryKeyField?.meta?.special?.includes('uuid')) {
 				delete item[primaryKeyField.field];
+			}
+		}
+
+		function getNestedRelations(collection: string) {
+			return relationsStore.relations.filter(
+				(relation) => relation.related_collection === collection && relation.meta?.one_field,
+			);
+		}
+
+		function clearNestedRelatedKeys(collection: string, item: Item) {
+			for (const nestedRelation of getNestedRelations(collection)) {
+				const nestedOneField = nestedRelation.meta!.one_field!;
+
+				if (!Array.isArray(item[nestedOneField])) continue;
+
+				const nestedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(nestedRelation.collection);
+				if (!nestedPrimaryKeyField) continue;
+
+				const existsNestedJunctionRelated = relationsStore.relations.find(
+					(r) =>
+						r.collection === nestedRelation.collection && r.meta?.many_field === nestedRelation.meta?.junction_field,
+				);
+
+				// Nested items that were not fetched expanded are dropped, as keeping their keys would
+				// move them from the original item to the copy
+				item[nestedOneField] = item[nestedOneField].filter(isObject).map((nestedItem: Item) => {
+					clearPrimaryKey(nestedPrimaryKeyField, nestedItem);
+					clearJunctionRelatedKey(nestedRelation, existsNestedJunctionRelated, nestedItem);
+
+					return nestedItem;
+				});
 			}
 		}
 
