@@ -1,0 +1,53 @@
+@use '@/styles/mixins';
+
+@mixin stats-bar($margin-block-end: 0.875rem) {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 0.875rem;
+	margin-block-end: $margin-block-end;
+
+	@media (width < 85.0625rem) {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	@include mixins.breakpoint-down('lg') {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	@media (width < 43.1875rem) {
+		grid-template-columns: 1fr;
+	}
+}
+
+@mixin stat-card {
+	display: flex;
+	align-items: center;
+	gap: 0.4375rem;
+	padding: 0.3125rem 0.5625rem;
+	background-color: var(--theme--background-subdued);
+	border-radius: var(--theme--border-radius);
+	overflow: hidden;
+
+	&.danger {
+		background-color: var(--danger-10);
+		color: var(--theme--danger);
+
+		.stat-icon {
+			--v-icon-color: var(--theme--danger);
+		}
+	}
+
+	&.success {
+		background-color: var(--success-10);
+		color: var(--theme--success);
+
+		.stat-icon {
+			--v-icon-color: var(--theme--success);
+		}
+	}
+}
+
+@mixin stat-icon {
+	--v-icon-color: var(--theme--foreground-subdued);
+	flex-shrink: 0;
+}

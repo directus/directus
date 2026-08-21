@@ -18,6 +18,12 @@ export type DirectusDeployment<Schema = any> = MergeCoreCollection<
 		date_created: 'datetime' | null;
 		user_created: DirectusUser<Schema> | string | null;
 		projects: DirectusDeploymentProject<Schema>[] | string[];
+		capabilities?: {
+			eventsTransport: 'webhook' | 'poll';
+			supportsPreviewDeploy: boolean;
+			supportsDeployHookUrl: boolean;
+			needsRunStatusPolling: boolean;
+		};
 	}
 >;
 

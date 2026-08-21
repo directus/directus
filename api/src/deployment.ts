@@ -1,68 +1,89 @@
-import type { Credentials, Options, ProviderType } from '@directus/types';
+import { ForbiddenError } from '@directus/errors';
+import type { Credentials, DeploymentConfig, Options, ProviderType, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import getDatabase from './database/index.js';
 import type { DeploymentDriver } from './deployment/deployment.js';
-import { NetlifyDriver, VercelDriver } from './deployment/drivers/index.js';
+import {
+	type CloudflareCredentials,
+	CloudflareDriver,
+	type CloudflareOptions,
+	type NetlifyCredentials,
+	NetlifyDriver,
+	type NetlifyOptions,
+	type VercelCredentials,
+	VercelDriver,
+	type VercelOptions,
+} from './deployment/drivers/index.js';
 import { useLogger } from './logger/index.js';
 import { DeploymentService } from './services/deployment.js';
+import { ItemsService } from './services/items.js';
 import { getSchema } from './utils/get-schema.js';
+import { parseValue } from './utils/parse-value.js';
 
-// Driver constructor type - uses any for credentials to allow provider-specific types
-type DriverConstructor = new (credentials: any, options?: Options) => DeploymentDriver;
+type DriverConstructor = new (credentials: any, options?: any) => DeploymentDriver;
 
-/**
- * Registry of deployment driver constructors
- */
 const drivers: Map<ProviderType, DriverConstructor> = new Map();
 
-/**
- * Register all deployment drivers
- */
 export function registerDeploymentDrivers(): void {
 	drivers.set('vercel', VercelDriver);
 	drivers.set('netlify', NetlifyDriver);
+	drivers.set('cloudflare-workers', CloudflareDriver);
 }
 
-/**
- * Get a deployment driver instance
- *
- * @param provider Provider name (vercel, netlify, aws, etc.)
- * @param credentials Provider credentials (decrypted from DB)
- * @param options Additional provider options
- * @returns Deployment driver instance
- * @throws Error if provider is not supported
- */
 export function getDeploymentDriver(
 	provider: ProviderType,
 	credentials: Credentials,
 	options?: Options,
 ): DeploymentDriver {
-	const Driver = drivers.get(provider);
+	switch (provider) {
+		case 'vercel':
+			return new VercelDriver(credentials as VercelCredentials, options as VercelOptions);
+		case 'netlify':
+			return new NetlifyDriver(credentials as NetlifyCredentials, options as NetlifyOptions);
+		case 'cloudflare-workers':
+			return new CloudflareDriver(credentials as CloudflareCredentials, options as CloudflareOptions);
 
-	if (!Driver) {
-		throw new Error(`Deployment driver "${provider}" is not supported`);
+		default: {
+			const unsupported: never = provider;
+			throw new ForbiddenError({ reason: `Deployment driver "${unsupported}" is not supported` });
+		}
 	}
-
-	return new Driver(credentials, options);
 }
 
-/**
- * Check if a provider is supported
- */
-export function isValidProviderType(provider: string): provider is ProviderType {
-	return drivers.has(provider as ProviderType);
-}
-
-/**
- * Get list of supported provider types
- */
 export function getSupportedProviderTypes(): ProviderType[] {
 	return Array.from(drivers.keys());
 }
 
-/**
- * Sync webhooks for existing deployment configs that don't have one yet.
- * Called at startup to handle configs created before webhook support was added.
- */
+export function buildDriverFromConfig(config: DeploymentConfig): DeploymentDriver {
+	const credentials = parseValue<Credentials>(config.credentials, {});
+	const options = parseValue<Options>(config.options, {});
+
+	return getDeploymentDriver(config.provider, credentials, options);
+}
+
+export async function readDeploymentConfig(
+	knex: Knex,
+	schema: SchemaOverview,
+	provider: ProviderType,
+): Promise<DeploymentConfig> {
+	const internalService = new ItemsService<DeploymentConfig>('directus_deployments', {
+		knex,
+		schema,
+		accountability: null, // bypass field redaction for encrypted credentials
+	});
+
+	const results = await internalService.readByQuery({
+		filter: { provider: { _eq: provider } },
+		limit: 1,
+	});
+
+	if (!results || results.length === 0) {
+		throw new ForbiddenError({ reason: `Deployment config for "${provider}" not found` });
+	}
+
+	return results[0]!;
+}
+
 export async function ensureDeploymentWebhooks(): Promise<void> {
 	const logger = useLogger();
 	const knex = getDatabase();
@@ -88,8 +109,8 @@ export async function ensureDeploymentWebhooks(): Promise<void> {
 	for (const config of configs) {
 		try {
 			await service.syncWebhook(config.provider);
-		} catch (err) {
-			logger.error(`[webhook] Failed to sync webhook for ${config.provider}: ${err}`);
+		} catch (error) {
+			logger.error(error, `[webhook:${config.provider}] Failed to sync webhook`);
 		}
 	}
 }

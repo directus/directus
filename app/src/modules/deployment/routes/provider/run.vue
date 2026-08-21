@@ -3,12 +3,13 @@ import { cancelDeployment, type DeploymentRunsOutput, readDeploymentRun } from '
 import type { Log as DeploymentLog } from '@directus/types';
 import { format } from 'date-fns';
 import { saveAs } from 'file-saver';
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
-import { useProviderConfigs } from '../../config/providers';
+import { usePollWhile } from '../../composables/use-poll-while';
+import { formatDeploymentTargetLabel, useProviderConfigs } from '../../config/providers';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardTitle from '@/components/v-card-title.vue';
@@ -35,9 +36,11 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const { currentProject, providers } = useDeploymentNavigation();
+
 const { providerConfigs } = useProviderConfigs();
 
-const canCancel = usePermissionsStore().hasPermission('directus_deployment_runs', 'update');
+const permissionsStore = usePermissionsStore();
+const canCancel = computed(() => permissionsStore.hasPermission('directus_deployment_runs', 'update'));
 
 const loading = ref(true);
 const canceling = ref(false);
@@ -48,9 +51,7 @@ const lastLogTimestamp = ref<string | null>(null);
 const logsDisplay = ref<InstanceType<typeof LogsDisplay>>();
 const shouldAutoScroll = ref(true);
 
-// Polling
 const POLL_INTERVAL = 3000;
-let pollTimer: ReturnType<typeof setInterval> | null = null;
 
 // Filters
 const logLevels = [
@@ -221,50 +222,15 @@ function openDeployment() {
 	window.open(run.value!.url, '_blank');
 }
 
-function startPolling() {
-	if (pollTimer) return;
-
-	pollTimer = setInterval(() => {
-		if (isBuilding.value) {
-			loadRun();
-		} else {
-			stopPolling();
-		}
-	}, POLL_INTERVAL);
-}
-
-function stopPolling() {
-	if (pollTimer) {
-		clearInterval(pollTimer);
-		pollTimer = null;
-	}
-}
-
-// Watch for status changes to start/stop polling
-watch(isBuilding, (building, wasBuilding) => {
-	if (building) {
-		startPolling();
-	} else {
-		stopPolling();
-
-		// If build just finished, do a final fetch to get remaining logs (Vercel may return status before all logs)
-		if (wasBuilding) {
-			setTimeout(() => loadRun(), 1000);
-		}
-	}
+usePollWhile(isBuilding, loadRun, {
+	intervalMs: POLL_INTERVAL,
+	immediate: false,
+	onStop: () => {
+		setTimeout(() => loadRun(), 1000);
+	},
 });
 
-onMounted(async () => {
-	await loadRun();
-
-	if (isBuilding.value) {
-		startPolling();
-	}
-});
-
-onUnmounted(() => {
-	stopPolling();
-});
+onMounted(loadRun);
 </script>
 
 <template>
@@ -350,7 +316,7 @@ onUnmounted(() => {
 				<div class="stat-card">
 					<VIcon name="assignment" class="stat-icon" />
 					<span class="stat-label">{{ $t('deployment.target') }}</span>
-					<span class="stat-value">{{ $t(`deployment.target_value.${run.target}`) }}</span>
+					<span class="stat-value">{{ formatDeploymentTargetLabel(run.target, t) }}</span>
 				</div>
 			</div>
 

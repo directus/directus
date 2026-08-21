@@ -1,5 +1,6 @@
 import CustomIconBookmarkSave from './custom-icons/bookmark_save.vue';
 import CustomIconBox from './custom-icons/box.vue';
+import CustomIconCloudflareWorkers from './custom-icons/cloudflare-workers.vue';
 import CustomIconCommitNode from './custom-icons/commit_node.vue';
 import CustomIconDeleteColumn from './custom-icons/delete_column.vue';
 import CustomIconDeleteRow from './custom-icons/delete_row.vue';
@@ -33,6 +34,7 @@ export const components: Record<string, any> = {
 	CustomIconBookmarkSave,
 	CustomIconBox,
 	CustomIconCommitNode,
+	CustomIconCloudflareWorkers,
 	CustomIconDeleteColumn,
 	CustomIconDeleteRow,
 	CustomIconDeleteTable,
