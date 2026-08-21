@@ -29,7 +29,7 @@ import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 type FormattedPreset = {
 	id: number;
 	scope: string;
-	collection: string;
+	collection: string | null;
 	layout: string | null;
 	name: string | null;
 	search: string | null;
