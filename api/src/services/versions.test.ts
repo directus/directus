@@ -78,6 +78,33 @@ const schema = new SchemaBuilder()
 		c.field('title').string();
 	})
 	.options({ singleton: true })
+	.collection('articles_with_json', (c) => {
+		c.field('id').id();
+		c.field('title').string();
+		c.field('body').json();
+		c.field('blocks').o2m('article_blocks', 'article_id');
+	})
+	.options({ accountability: 'all' })
+	.collection('article_blocks', (c) => {
+		c.field('id').id();
+		c.field('article_id').m2o('articles_with_json');
+		c.field('author').m2o('block_authors');
+		c.field('tags').o2m('block_tags', 'block_id');
+		c.field('content').json();
+		c.field('label').string();
+	})
+	.options({ accountability: 'all' })
+	.collection('block_authors', (c) => {
+		c.field('id').id();
+		c.field('name').string();
+	})
+	.options({ accountability: 'all' })
+	.collection('block_tags', (c) => {
+		c.field('id').id();
+		c.field('block_id').m2o('article_blocks');
+		c.field('name').string();
+	})
+	.options({ accountability: 'all' })
 	.build();
 
 describe('Integration Tests', () => {
@@ -137,6 +164,117 @@ describe('Integration Tests', () => {
 				expect(RevisionsService.prototype.createOne).toHaveBeenCalledWith(
 					expect.objectContaining({ collection: 'articles_track_all', item: 2, version: 1, activity: 1 }),
 				);
+			});
+		});
+
+		describe('save change tracking on json fields', () => {
+			const body = {
+				time: 1786711000000,
+				version: '2.31.2',
+				blocks: [
+					{ id: 'blk-one', type: 'paragraph', data: { text: 'First block' } },
+					{ id: 'blk-two', type: 'paragraph', data: { text: 'Second block' } },
+				],
+			};
+
+			test('should not inject change tracking into json field values', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_with_json',
+					item: 1,
+				});
+
+				const result = await service.save(1, { body: structuredClone(body) });
+
+				expect(result['body']).toEqual(body);
+			});
+
+			test('should still track changes on the item itself when a json field changes', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_with_json',
+					item: 1,
+				});
+
+				const result = await service.save(1, { body: structuredClone(body) });
+
+				expect(result).toHaveProperty('_date');
+			});
+
+			test('should still track changes on related items while leaving their json values alone', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_with_json',
+					item: 1,
+				});
+
+				const result = await service.save(1, {
+					blocks: {
+						create: [],
+						update: [{ id: 5, label: 'Updated', content: structuredClone(body) }],
+						delete: [],
+					},
+				});
+
+				const block = result['blocks'].update[0];
+
+				expect(block).toHaveProperty('_date');
+				expect(block.content).toEqual(body);
+			});
+
+			test('should track changes on related items nested at any depth', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_with_json',
+					item: 1,
+				});
+
+				const result = await service.save(1, {
+					blocks: {
+						create: [
+							{
+								label: 'Nested',
+								author: { name: 'New author' },
+								tags: { create: [{ name: 'New tag' }], update: [], delete: [] },
+							},
+						],
+						update: [],
+						delete: [],
+					},
+				});
+
+				const block = result['blocks'].create[0];
+
+				expect(block).toHaveProperty('_date');
+				expect(block.author).toHaveProperty('_date');
+				expect(block.tags.create[0]).toHaveProperty('_date');
+			});
+
+			test('should track changes on related items passed as a plain array', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_with_json',
+					item: 1,
+				});
+
+				const result = await service.save(1, { blocks: [{ id: 5, label: 'Updated' }] });
+
+				expect(result['blocks'][0]).toHaveProperty('_date');
+			});
+
+			test('should return json field values unchanged when saved repeatedly', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_with_json',
+					item: 1,
+				});
+
+				const first = await service.save(1, { body: structuredClone(body) });
+
+				// Second save starts from the delta the first one persisted, as consecutive auto-saves do
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_with_json',
+					item: 1,
+					delta: structuredClone(first),
+				});
+
+				const second = await service.save(1, { body: structuredClone(body) });
+
+				expect(second['body']).toEqual(first['body']);
 			});
 		});
 
