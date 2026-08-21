@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Collection } from '@directus/types';
 import { orderBy } from 'lodash';
-import { computed, toRefs, watch } from 'vue';
+import { computed, nextTick, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store/';
 import FieldConfiguration from './field-configuration.vue';
@@ -10,22 +10,18 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useExtensions } from '@/extensions';
 
-const props = withDefaults(
-	defineProps<{
-		collection: Collection;
-		search?: string | null;
-	}>(),
-	{
-		search: null,
-	},
-);
+const props = defineProps<{
+	collection: Collection;
+}>();
+
+const search = defineModel<string | null>('search', { default: null });
 
 defineEmits<{
 	(e: 'save'): void;
 	(e: 'toggleAdvanced'): void;
 }>();
 
-const { collection, search } = toRefs(props);
+const { collection } = toRefs(props);
 
 const { t } = useI18n();
 
@@ -91,6 +87,31 @@ const groups = computed(() => {
 
 const chosenInterface = syncFieldDetailStoreProperty('field.meta.interface');
 
+const interfaceEls = ref<Record<string, Element | null>>({});
+
+let interfaceChosenByUser = false;
+
+/**
+ * Configuring a field can switch the chosen interface automatically, for example selecting
+ * `directus_files` as the related collection of an m2m switches the interface to `files`. Clear the
+ * search in that case, as the configuration would otherwise be hidden by the active filter, and
+ * scroll to the newly chosen interface as it is likely to be in a different spot than the previous one.
+ */
+watch(chosenInterface, async (newInterface) => {
+	const chosenByUser = interfaceChosenByUser;
+	interfaceChosenByUser = false;
+
+	if (!newInterface || chosenByUser) return;
+	if (!interfacesSorted.value.some((inter) => inter.id === newInterface)) return;
+
+	const isVisible = groups.value.some((group) => group.interfaces.some((inter) => inter.id === newInterface));
+	if (!isVisible) search.value = null;
+
+	await nextTick();
+
+	interfaceEls.value[newInterface]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
 const configRow = computed(() => {
 	if (!chosenInterface.value) return null;
 
@@ -127,6 +148,8 @@ function isSVG(path: string) {
 }
 
 function toggleInterface(id: string) {
+	interfaceChosenByUser = true;
+
 	if (chosenInterface.value === id) {
 		chosenInterface.value = null;
 	} else {
@@ -144,6 +167,11 @@ function toggleInterface(id: string) {
 				<button
 					v-for="inter of group.interfaces"
 					:key="inter.id"
+					:ref="
+						(el) => {
+							interfaceEls[inter.id] = el as Element | null;
+						}
+					"
 					class="interface"
 					:class="{ active: chosenInterface === inter.id, gray: chosenInterface && chosenInterface !== inter.id }"
 					@click="toggleInterface(inter.id)"
