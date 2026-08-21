@@ -222,7 +222,7 @@ export class FieldsService {
 			return data;
 		}) as Field[];
 
-		const knownCollections = Object.keys(this.schema.collections);
+		const knownCollections = [...Object.keys(this.schema.collections), ...(this.schema.inactiveCollections ?? [])];
 
 		let result = [...columnsWithSystem, ...aliasFieldsAsField].filter((field) =>
 			knownCollections.includes(field.collection),
