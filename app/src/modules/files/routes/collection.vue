@@ -16,6 +16,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VInfo from '@/components/v-info.vue';
 import { useEventListener } from '@/composables/use-event-listener';
 import { Folder, useFolders } from '@/composables/use-folders';
+import { useMoveToFolder } from '@/composables/use-move-to-folder';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { emitter, Events } from '@/events';
@@ -197,38 +198,27 @@ function useTitle() {
 
 function useMovetoFolder() {
 	const moveToDialogActive = ref(false);
-	const moving = ref(false);
 	const selectedFolder = ref<string | null>(null);
 
-	return { moveToDialogActive, moving, moveToFolder, selectedFolder };
-
-	async function moveToFolder() {
-		if (moving.value) return;
-
-		moving.value = true;
-
-		try {
-			await api.patch(`/files`, {
-				keys: selection.value,
-				data: {
-					folder: selectedFolder.value,
-				},
-			});
-
+	const { moving, move } = useMoveToFolder({
+		collection: 'files',
+		onSuccess: async (folder) => {
 			selection.value = [];
 
-			if (selectedFolder.value) {
-				router.push({ name: 'folders-collection', params: { folder: selectedFolder.value } });
+			if (folder) {
+				router.push({ name: 'folders-collection', params: { folder } });
 			}
 
 			await nextTick();
 			await refresh();
-		} catch (error) {
-			unexpectedError(error);
-		} finally {
-			moveToDialogActive.value = false;
-			moving.value = false;
-		}
+		},
+	});
+
+	return { moveToDialogActive, moving, moveToFolder, selectedFolder };
+
+	async function moveToFolder() {
+		await move(selection.value, selectedFolder.value);
+		moveToDialogActive.value = false;
 	}
 }
 

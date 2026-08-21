@@ -29,7 +29,7 @@ describe('useMoveToFolder', () => {
 		api.patch.mockResolvedValue({ data: { data: {} } });
 		const onSuccess = vi.fn();
 
-		const { move, moving } = useMoveToFolder({ onSuccess });
+		const { move, moving } = useMoveToFolder({ collection: 'flows', onSuccess });
 		await move(['flow-1', 'flow-2'], 'folder-a');
 
 		expect(api.patch).toHaveBeenCalledWith('/flows', { keys: ['flow-1', 'flow-2'], data: { folder: 'folder-a' } });
@@ -40,7 +40,7 @@ describe('useMoveToFolder', () => {
 	it('moves flows back to root with a null folder', async () => {
 		api.patch.mockResolvedValue({ data: { data: {} } });
 
-		const { move } = useMoveToFolder({ onSuccess: vi.fn() });
+		const { move } = useMoveToFolder({ collection: 'flows', onSuccess: vi.fn() });
 		await move(['flow-1'], null);
 
 		expect(api.patch).toHaveBeenCalledWith('/flows', { keys: ['flow-1'], data: { folder: null } });
@@ -49,7 +49,7 @@ describe('useMoveToFolder', () => {
 	it('does nothing when no flows are selected', async () => {
 		const onSuccess = vi.fn();
 
-		const { move } = useMoveToFolder({ onSuccess });
+		const { move } = useMoveToFolder({ collection: 'flows', onSuccess });
 		await move([], 'folder-a');
 
 		expect(api.patch).not.toHaveBeenCalled();
@@ -59,7 +59,7 @@ describe('useMoveToFolder', () => {
 	it('reports errors and resets the loading flag', async () => {
 		api.patch.mockRejectedValue(new Error('nope'));
 
-		const { move, moving } = useMoveToFolder({ onSuccess: vi.fn() });
+		const { move, moving } = useMoveToFolder({ collection: 'flows', onSuccess: vi.fn() });
 		await move(['flow-1'], 'folder-a');
 
 		expect(unexpectedError).toHaveBeenCalledOnce();

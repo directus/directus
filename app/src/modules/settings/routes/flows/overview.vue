@@ -8,7 +8,6 @@ import SettingsNavigation from '../../components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
 import FlowFolderSidebar from './flow-folder-sidebar.vue';
 import { useDuplicate } from './use-duplicate';
-import { useMoveToFolder } from './use-move-to-folder';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -26,6 +25,7 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import { Header, Sort } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
+import { useMoveToFolder } from '@/composables/use-move-to-folder';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vue';
 import { router } from '@/router';
@@ -191,6 +191,7 @@ const moveDialogActive = ref(false);
 const moveTarget = ref<string | null>(null);
 
 const { moving, move } = useMoveToFolder({
+	collection: 'flows',
 	onSuccess: async () => {
 		moveDialogActive.value = false;
 		selectedKeys.value = [];
