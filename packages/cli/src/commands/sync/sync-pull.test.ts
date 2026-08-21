@@ -949,7 +949,7 @@ describe('sync pull resources and data', () => {
 
 		interceptSingleton('/settings', {
 			id: 1,
-			project_name: 'Kampala',
+			project_name: 'Directus',
 			project_id: '11111111-2222-3333-4444-555555555555',
 		});
 
@@ -958,7 +958,7 @@ describe('sync pull resources and data', () => {
 		const settingsBytes = readFileSync(join(dataDir, ownedFileFor(dataDir, 'directus_settings')), 'utf8');
 		expect(settingsBytes).not.toContain('project_id');
 		expect(settingsBytes).not.toContain('11111111-2222-3333-4444-555555555555');
-		expect(settingsBytes).toContain('Kampala');
+		expect(settingsBytes).toContain('Directus');
 	});
 
 	it('strips custom conceal/hash fields the field catalog marks sensitive and names them at pull time', async () => {
