@@ -9,13 +9,24 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VInput from '@/components/v-input.vue';
+import type { FolderType } from '@/composables/use-folders';
 import { useFolders } from '@/composables/use-folders';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
-const props = defineProps<{
-	parent?: string;
-	disabled?: boolean;
+const props = withDefaults(
+	defineProps<{
+		parent?: string;
+		disabled?: boolean;
+		type?: FolderType;
+	}>(),
+	{
+		type: 'assets',
+	},
+);
+
+const emit = defineEmits<{
+	created: [folderId: string];
 }>();
 
 const router = useRouter();
@@ -24,7 +35,7 @@ const dialogActive = ref(false);
 const saving = ref(false);
 const newFolderName = ref(null);
 
-const { fetchFolders } = useFolders();
+const { fetchFolders } = useFolders(props.type);
 
 async function addFolder() {
 	if (newFolderName.value === null || saving.value) return;
@@ -35,6 +46,7 @@ async function addFolder() {
 		const newFolder = await api.post(`/folders`, {
 			name: newFolderName.value,
 			parent: props.parent === 'root' ? null : props.parent,
+			type: props.type,
 		});
 
 		await fetchFolders();
@@ -42,7 +54,13 @@ async function addFolder() {
 		dialogActive.value = false;
 		newFolderName.value = null;
 
-		router.push({ name: 'folders-collection', params: { folder: newFolder.data.data.id } });
+		const newFolderId = newFolder.data.data.id;
+		emit('created', newFolderId);
+
+		// The file library navigates into the newly created folder; other consumers handle it via @created
+		if (props.type === 'assets') {
+			router.push({ name: 'folders-collection', params: { folder: newFolderId } });
+		}
 	} catch (error) {
 		unexpectedError(error);
 	} finally {

@@ -228,6 +228,12 @@ export default defineModule({
 					component: FlowsOverview,
 				},
 				{
+					name: 'settings-flows-folder',
+					path: 'folder/:folder',
+					component: FlowsOverview,
+					props: true,
+				},
+				{
 					name: 'settings-flows-item',
 					path: ':primaryKey',
 					component: FlowsDetail,

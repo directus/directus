@@ -18,9 +18,11 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
+import type { FolderType } from '@/composables/use-folders';
 import { Folder, useFolders } from '@/composables/use-folders';
 import DeleteFolderDialog from '@/modules/files/components/delete-folder-dialog.vue';
 import { FolderTarget } from '@/types/folders';
+import type { DeleteFolderConfig } from '@/utils/delete-folder';
 import { getFolderUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
 import NavigationFolder from '@/views/private/components/files-navigation-folder.vue';
@@ -31,10 +33,20 @@ const props = withDefaults(
 		folder: Folder;
 		currentFolder?: string;
 		actionsDisabled?: boolean;
+		updateDisabled?: boolean;
+		deleteDisabled?: boolean;
 		clickHandler?: (target: FolderTarget) => void;
+		type?: FolderType;
+		showDownload?: boolean;
+		deleteConfig?: DeleteFolderConfig;
+		moveContentLabel?: string;
+		deleteContentLabel?: string;
+		deletedHandler?: (parent: string | null) => void;
 	}>(),
 	{
 		clickHandler: () => () => undefined,
+		type: 'assets',
+		showDownload: true,
 	},
 );
 
@@ -45,7 +57,7 @@ const { moveActive, moveValue, moveSave, moveSaving } = useMoveFolder();
 
 const deleteActive = ref(false);
 
-const { fetchFolders, folders } = useFolders();
+const { fetchFolders, folders } = useFolders(props.type);
 
 function useRenameFolder() {
 	const renameActive = ref(false);
@@ -102,7 +114,9 @@ function useMoveFolder() {
 function onDeleted() {
 	const newParent = props.folder.parent;
 
-	if (newParent) {
+	if (props.deletedHandler) {
+		props.deletedHandler(newParent);
+	} else if (newParent) {
 		router.replace({ name: 'folders-collection', params: { folder: newParent } });
 	} else {
 		router.replace({ name: 'files-collection' });
@@ -176,12 +190,20 @@ async function downloadFolder() {
 				:current-folder="currentFolder"
 				:click-handler="clickHandler"
 				:actions-disabled="actionsDisabled"
+				:update-disabled="updateDisabled"
+				:delete-disabled="deleteDisabled"
+				:type="type"
+				:show-download="showDownload"
+				:delete-config="deleteConfig"
+				:move-content-label="moveContentLabel"
+				:delete-content-label="deleteContentLabel"
+				:deleted-handler="deletedHandler"
 			/>
 		</VListGroup>
 
 		<VMenu ref="contextMenu" show-arrow placement="bottom-start">
 			<VList>
-				<VListItem clickable @click="renameActive = true">
+				<VListItem :disabled="updateDisabled" clickable @click="renameActive = true">
 					<VListItemIcon>
 						<VIcon name="edit" outline />
 					</VListItemIcon>
@@ -189,7 +211,7 @@ async function downloadFolder() {
 						<VTextOverflow :text="$t('rename_folder')" />
 					</VListItemContent>
 				</VListItem>
-				<VListItem clickable @click="moveActive = true">
+				<VListItem :disabled="updateDisabled" clickable @click="moveActive = true">
 					<VListItemIcon>
 						<VIcon name="folder_move" />
 					</VListItemIcon>
@@ -197,7 +219,7 @@ async function downloadFolder() {
 						<VTextOverflow :text="$t('move_to_folder')" />
 					</VListItemContent>
 				</VListItem>
-				<VListItem clickable @click="downloadFolder">
+				<VListItem v-if="showDownload" clickable @click="downloadFolder">
 					<VListItemIcon>
 						<VIcon name="download" />
 					</VListItemIcon>
@@ -205,7 +227,7 @@ async function downloadFolder() {
 						<VTextOverflow :text="$t('download_folder')" />
 					</VListItemContent>
 				</VListItem>
-				<VListItem class="danger" clickable @click="deleteActive = true">
+				<VListItem class="danger" :disabled="deleteDisabled" clickable @click="deleteActive = true">
 					<VListItemIcon>
 						<VIcon name="delete" outline />
 					</VListItemIcon>
@@ -235,7 +257,7 @@ async function downloadFolder() {
 			<VCard>
 				<VCardTitle>{{ $t('move_to_folder') }}</VCardTitle>
 				<VCardText>
-					<FolderPicker v-model="moveValue" :disabled-folders="[folder.id]" />
+					<FolderPicker v-model="moveValue" :disabled-folders="[folder.id]" :type="type" />
 				</VCardText>
 				<VCardActions>
 					<VButton secondary @click="moveActive = false">{{ $t('cancel') }}</VButton>
@@ -244,7 +266,15 @@ async function downloadFolder() {
 			</VCard>
 		</VDialog>
 
-		<DeleteFolderDialog v-model="deleteActive" :folders="[folder]" :all-folders="folders ?? []" @done="onDeleted" />
+		<DeleteFolderDialog
+			v-model="deleteActive"
+			:folders="[folder]"
+			:all-folders="folders ?? []"
+			:config="deleteConfig"
+			:move-content-label="moveContentLabel"
+			:delete-content-label="deleteContentLabel"
+			@done="onDeleted"
+		/>
 	</div>
 </template>
 

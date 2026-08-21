@@ -103,4 +103,17 @@ describe('recursiveDelete', () => {
 		expect(apiDelete).not.toHaveBeenCalledWith('/files', expect.anything());
 		expect(apiDelete).toHaveBeenCalledWith('/folders', { data: ['root'] });
 	});
+
+	// Flows use a detach config: contained items must survive folder deletion
+	it('detaches contained items instead of deleting them when configured', async () => {
+		const config = { collection: 'flows', field: 'folder', onDeleteContents: 'detach' } as const;
+
+		apiGet.mockResolvedValueOnce({ data: { data: [{ id: 'flow-1' }, { id: 'flow-2' }] } });
+
+		await recursiveDelete([folder('root')], [folder('root')], config);
+
+		expect(apiPatch).toHaveBeenCalledWith('/flows', { keys: ['flow-1', 'flow-2'], data: { folder: null } });
+		expect(apiDelete).not.toHaveBeenCalledWith('/flows', expect.anything());
+		expect(apiDelete).toHaveBeenCalledWith('/folders', { data: ['root'] });
+	});
 });
