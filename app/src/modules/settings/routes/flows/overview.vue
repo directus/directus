@@ -268,8 +268,8 @@ function onFlowDrawerCompletion(id: string) {
 			<SettingsNavigation />
 		</template>
 
-		<template #actions:prepend>
-			<AddFolder type="flows" :parent="folder" :disabled="createFolderAllowed === false" @created="navigateToFolder" />
+		<template #actions>
+			<AddFolder type="flows" :parent="folder" :disabled="createFolderAllowed !== true" @created="navigateToFolder" />
 			<PrivateViewHeaderBarActionButton
 				v-if="selectedKeys.length > 0"
 				v-tooltip.bottom="$t('move_to_folder')"
