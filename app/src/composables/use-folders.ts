@@ -54,9 +54,9 @@ function getState(type: FolderType): FolderState {
 }
 
 export function useFolders(
+	type: FolderType,
 	rootFolder?: Ref<string | undefined>,
 	local?: Ref<boolean>,
-	type: FolderType = 'assets',
 ): UsableFolders {
 	const { loading, folders, globalNestedFolders, globalOpenFolders } = getState(type);
 

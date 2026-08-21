@@ -35,7 +35,7 @@ const dialogActive = ref(false);
 const saving = ref(false);
 const newFolderName = ref(null);
 
-const { fetchFolders } = useFolders(undefined, undefined, props.type);
+const { fetchFolders } = useFolders(props.type);
 
 async function addFolder() {
 	if (newFolderName.value === null || saving.value) return;

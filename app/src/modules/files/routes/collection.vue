@@ -49,7 +49,7 @@ const router = useRouter();
 
 const notificationsStore = useNotificationsStore();
 const { info } = useServerStore();
-const { folders, fetchFolders } = useFolders();
+const { folders, fetchFolders } = useFolders('assets');
 
 const layoutRef = ref();
 const selection = ref<string[]>([]);

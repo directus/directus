@@ -48,7 +48,7 @@ const props = withDefaults(
 
 const { rootFolder, localOpenFolders } = toRefs(props);
 
-const { nestedFolders, folders, loading, openFolders } = useFolders(rootFolder, localOpenFolders, props.type);
+const { nestedFolders, folders, loading, openFolders } = useFolders(props.type, rootFolder, localOpenFolders);
 
 watch([() => props.currentFolder, loading], setOpenFolders, { immediate: true });
 

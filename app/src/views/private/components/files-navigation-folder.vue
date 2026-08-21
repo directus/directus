@@ -57,7 +57,7 @@ const { moveActive, moveValue, moveSave, moveSaving } = useMoveFolder();
 
 const deleteActive = ref(false);
 
-const { fetchFolders, folders } = useFolders(undefined, undefined, props.type);
+const { fetchFolders, folders } = useFolders(props.type);
 
 function useRenameFolder() {
 	const renameActive = ref(false);
