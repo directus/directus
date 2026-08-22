@@ -79,5 +79,12 @@ function replaceInSelections(
  * @returns The selections asked for on that field, or null when it has no selection set
  */
 export function buildSelections(info: GraphQLResolveInfo): readonly SelectionNode[] | null {
-	return replaceInSelections(info.fieldNodes[0]?.selectionSet?.selections, getNamedType(info.returnType), info);
+	// graphql-js merges same-name fields from separate fragments into a single
+	// resolver call and passes every AST node for that field in fieldNodes
+	// (#28133). Reading only the first node drops the merged siblings'
+	// selections — `...A ...B` where both spread the same field silently
+	// lost everything the later fragments selected — so concatenate every
+	// node's selection set before fragment replacement.
+	const selections = info.fieldNodes.flatMap((node) => node.selectionSet?.selections ?? []);
+	return replaceInSelections(selections.length > 0 ? selections : undefined, getNamedType(info.returnType), info);
 }

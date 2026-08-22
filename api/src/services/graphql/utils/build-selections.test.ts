@@ -252,4 +252,68 @@ describe('buildSelections', () => {
 	test('returns null when the field has no selections', () => {
 		expect(buildSelections({ fieldNodes: [{}], fragments: {}, schema: gqlSchema } as any)).toBeNull();
 	});
+
+	test('returns null when every merged field node lacks a selection set', () => {
+		expect(buildSelections({ fieldNodes: [{}, {}], fragments: {}, schema: gqlSchema } as any)).toBeNull();
+	});
+});
+
+describe('buildSelections with merged field nodes (#28133)', () => {
+	const pageReturnType = gqlSchema.getQueryType()!.getFields()['Page']!.type;
+
+	// graphql-js merges same-name fields from separate fragments into a single
+	// resolver call and passes every AST node for the field in fieldNodes:
+	//   fragment A on Query { page { id } }
+	//   fragment B on Query { page { title } }
+	// reaches the page resolver as TWO field nodes. Reading only the first
+	// dropped everything the later fragments selected (#28133).
+	test('merges fragment-spread selections from every merged field node', () => {
+		const info = buildResolveInfo({
+			selections: [],
+			fieldNodes: [
+				buildField('Page', { children: [buildFragmentSpread('A')] }),
+				buildField('Page', { children: [buildFragmentSpread('B')] }),
+			],
+			fragments: {
+				A: buildFragmentDefinition('A', 'Page', [buildField('id')]),
+				B: buildFragmentDefinition('B', 'Page', [buildField('title')]),
+			},
+			schema: gqlSchema,
+			returnType: pageReturnType,
+		});
+
+		expect(buildSelections(info)).toEqual([buildField('id'), buildField('title')]);
+	});
+
+	test('merges plain and fragment selections from different field nodes', () => {
+		const info = buildResolveInfo({
+			selections: [],
+			fieldNodes: [
+				buildField('Page', { children: [buildField('id')] }),
+				buildField('Page', { children: [buildFragmentSpread('B')] }),
+			],
+			fragments: {
+				B: buildFragmentDefinition('B', 'Page', [buildField('title')]),
+			},
+			schema: gqlSchema,
+			returnType: pageReturnType,
+		});
+
+		expect(buildSelections(info)).toEqual([buildField('id'), buildField('title')]);
+	});
+
+	test('survives a merged field node that carries no selection set', () => {
+		const info = buildResolveInfo({
+			selections: [],
+			fieldNodes: [
+				buildField('Page', { children: [buildField('id')] }),
+				{ kind: 'Field', name: { kind: 'Name', value: 'Page' } } as any,
+			],
+			fragments: {},
+			schema: gqlSchema,
+			returnType: pageReturnType,
+		});
+
+		expect(buildSelections(info)).toEqual([buildField('id')]);
+	});
 });
