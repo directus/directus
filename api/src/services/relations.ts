@@ -363,7 +363,24 @@ export class RelationsService {
 							existingRelation.schema.constraint_name = constraintName;
 						}
 
-						this.alterType(table, relation, fieldSchema.nullable);
+						// A partial update (e.g. a meta-only PATCH) does not carry the
+						// relation's collection/field/related_collection. Fall back to
+						// the existing relation so alterType and the FK re-add below
+						// keep operating on the relation's actual endpoints, and keep
+						// the constraint's existing on_delete/on_update unless the
+						// payload overrides them. Previously alterType read `.fields`
+						// of undefined for a meta-only PATCH, crashed the table
+						// builder callback after the FK was already dropped, and the
+						// constraint never came back (#28135).
+						const effectiveRelation: Partial<Relation> = {
+							...existingRelation,
+							...relation,
+							collection,
+							field,
+							schema: relation.schema ?? existingRelation.schema,
+						};
+
+						this.alterType(table, effectiveRelation, fieldSchema.nullable);
 
 						const builder = table
 							.foreign(field, constraintName || undefined)
@@ -373,12 +390,12 @@ export class RelationsService {
 								}`,
 							);
 
-						if (relation.schema?.on_delete) {
-							builder.onDelete(relation.schema.on_delete);
+						if (effectiveRelation.schema?.on_delete) {
+							builder.onDelete(effectiveRelation.schema.on_delete);
 						}
 
-						if (relation.schema?.on_update) {
-							builder.onUpdate(relation.schema.on_update);
+						if (effectiveRelation.schema?.on_update) {
+							builder.onUpdate(effectiveRelation.schema.on_update);
 						}
 					});
 				}
