@@ -92,12 +92,15 @@ export function buildFilterArgument(filter: Record<string, any>): ArgumentNode {
 /** Stand in for the resolve info a resolver receives for the field it is resolving */
 export function buildResolveInfo(options: {
 	selections: readonly SelectionNode[];
+	/** Overrides the single synthesized field node — pass several to model
+	 * same-name fields merged across fragments (#28133). */
+	fieldNodes?: FieldNode[];
 	fragments?: Record<string, FragmentDefinitionNode>;
 	schema: GraphQLSchema;
 	returnType: GraphQLOutputType;
 }): GraphQLResolveInfo {
 	return {
-		fieldNodes: [buildField('resolved', { children: options.selections })],
+		fieldNodes: options.fieldNodes ?? [buildField('resolved', { children: options.selections })],
 		fragments: options.fragments ?? {},
 		schema: options.schema,
 		returnType: options.returnType,
