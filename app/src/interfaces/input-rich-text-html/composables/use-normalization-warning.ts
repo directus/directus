@@ -22,6 +22,7 @@ type UsableNormalizationWarning = {
 export function useNormalizationWarning(
 	value: Ref<string | null>,
 	extraExtensions: AnyExtension[] = [],
+	schemaKey?: string,
 ): UsableNormalizationWarning {
 	const normalizationLocked = ref(false);
 	const normalizationWarningOpen = ref(false);
@@ -46,7 +47,7 @@ export function useNormalizationWarning(
 			return;
 		}
 
-		const diff = computeValueNormalizationDiff(value.value, extraExtensions);
+		const diff = computeValueNormalizationDiff(value.value, extraExtensions, schemaKey);
 		normalizationLocked.value = diff !== null;
 		normalizationWarningDiff.value = diff ?? [];
 	}

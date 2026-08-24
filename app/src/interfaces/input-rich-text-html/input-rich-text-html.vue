@@ -4,6 +4,7 @@ import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3';
 import { onKeyStroke } from '@vueuse/core';
 import { computed, nextTick, ref, type Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { comparisonSchema } from './composables/normalization-diff';
 import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
 import { useMedia } from './composables/use-media';
@@ -78,7 +79,11 @@ if (
 }
 
 // built once at init: `customFormats` is design-time config, not reactive
-const { extensions: customFormatExtensions, formats: customFormatList } = buildCustomFormats(props.customFormats);
+const {
+	extensions: customFormatExtensions,
+	formats: customFormatList,
+	key: customFormatsKey,
+} = buildCustomFormats(props.customFormats);
 
 const pageBreakLabel = computed(() => `"${t('wysiwyg_options.pagebreak')}"`);
 
@@ -88,6 +93,11 @@ const fontFamily = computed(() => {
 	return `var(--theme--fonts--${token}--font-family)`;
 });
 
+// in comparison mode ComparisonDiff joins the check, so precomputed diff spans don't read as loss
+const { extensions: normalizationExtensions, schemaKey: normalizationSchemaKey } = props.comparisonMode
+	? comparisonSchema(props.customFormats)
+	: { extensions: customFormatExtensions, schemaKey: customFormatsKey };
+
 const {
 	normalizationLocked,
 	normalizationWarningOpen,
@@ -96,10 +106,13 @@ const {
 	onLockedClick,
 	confirmNormalizationWarning,
 	cancelNormalizationWarning,
-} = useNormalizationWarning(value, customFormatExtensions);
+} = useNormalizationWarning(value, normalizationExtensions, normalizationSchemaKey);
 
-// skipped for display-only modes; comparison values carry diff spans the base schema would flag as loss
-if (!props.comparisonMode && !props.nonEditable) checkValue();
+// comparison runs it to pick the source fallback below; plain read-only display has nothing to act on
+if (!props.nonEditable || props.comparisonMode) checkValue();
+
+// the editor would drop what it can't represent, hiding the content a revision is opened for
+const comparisonSource = computed(() => props.comparisonMode && normalizationLocked.value);
 
 // surface the lock to the form so the field menu can gate raw editing, which would bypass this guard
 watch(normalizationLocked, (locked) => emit('readonly', locked), { immediate: true });
@@ -302,7 +315,7 @@ watch(
 		// compare the encoded (stored) form so a re-emitted page-break marker doesn't look like a change
 		if (encodePageBreaks(editor.value.getHTML()) === props.value) return;
 		syncValue(editor.value, props.value);
-		if (!props.comparisonMode && !props.nonEditable) checkValue();
+		if (!props.nonEditable || props.comparisonMode) checkValue();
 	},
 );
 
@@ -316,8 +329,8 @@ onKeyStroke('Escape', () => {
 
 <template>
 	<VNotice v-if="normalizationLocked && !rawMode" type="warning" multiline class="normalization-notice">
-		{{ t('wysiwyg_options.normalization_locked_notice') }}
-		<a :href="normalizationDocsUrl" target="_blank" rel="noopener noreferrer">
+		{{ t(`wysiwyg_options.${comparisonMode ? 'normalization_comparison_notice' : 'normalization_locked_notice'}`) }}
+		<a v-if="!comparisonMode" :href="normalizationDocsUrl" target="_blank" rel="noopener noreferrer">
 			{{ t('wysiwyg_options.normalization_locked_learn_more') }}
 		</a>
 	</VNotice>
@@ -343,15 +356,21 @@ onKeyStroke('Escape', () => {
 			@open-source-code="openSourceCodeDrawer"
 		/>
 		<InterfaceInputCode
-			v-if="rawMode"
+			v-if="rawMode || comparisonSource"
 			:value="value"
 			language="htmlmixed"
 			:line-number="false"
-			:disabled="disabled"
+			:disabled="disabled || comparisonSource"
 			@input="$emit('input', $event)"
 		/>
 
-		<EditorContent v-show="!rawMode" class="editor-content" :editor="editor" :dir="editorDir" @click="onEditorClick" />
+		<EditorContent
+			v-show="!rawMode && !comparisonSource"
+			class="editor-content"
+			:editor="editor"
+			:dir="editorDir"
+			@click="onEditorClick"
+		/>
 
 		<span
 			v-if="softLength && !comparisonMode && !rawMode"
@@ -626,7 +645,9 @@ onKeyStroke('Escape', () => {
 		border-radius: var(--theme--border-radius);
 	}
 
-	:is(img, hr, .page-break).ProseMirror-selectednode {
+	// `.range-selected` (RangeSelectedAtoms) covers selections that merely span the leaf, which
+	// ProseMirror leaves unstyled — without it a select-all looks like it skipped the image
+	:is(img, hr, .page-break):is(.ProseMirror-selectednode, .range-selected) {
 		outline: 2px solid var(--theme--primary);
 	}
 

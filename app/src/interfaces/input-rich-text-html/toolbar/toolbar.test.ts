@@ -6,11 +6,12 @@ import { createPinia } from 'pinia';
 import { afterEach, describe, expect, test } from 'vitest';
 import { createI18n } from 'vue-i18n';
 import { createMemoryHistory, createRouter } from 'vue-router';
+import { buildCustomFormats, type CustomFormat } from '../extensions/custom-formats';
 import Toolbar from './toolbar.vue';
 
 let editor: Editor;
 
-function mountToolbar(toolbar: string[], customFormats: { name: string; title: string }[] = []) {
+function mountToolbar(toolbar: string[], customFormats: CustomFormat[] = []) {
 	editor = new Editor({
 		extensions: [StarterKit, TextAlign.configure({ types: ['heading', 'paragraph'] })],
 		content: '<p>x</p>',
@@ -67,7 +68,14 @@ describe('Toolbar', () => {
 	});
 
 	test('auto-appends a styles dropdown when customFormats are provided', () => {
-		const wrapper = mountToolbar(['bold'], [{ name: 'customFormat_0', title: 'Highlight' }]);
+		const formats = buildCustomFormats([{ title: 'Highlight', inline: 'span', classes: 'hl' }]).formats;
+		const wrapper = mountToolbar(['bold'], formats);
+		expect(wrapper.find('.style-list-button').exists()).toBe(true);
+	});
+
+	test('auto-appends a styles dropdown for a block-only customFormats config', () => {
+		const formats = buildCustomFormats([{ title: 'Dropcap', block: 'p', classes: 'dropcap' }]).formats;
+		const wrapper = mountToolbar(['bold'], formats);
 		expect(wrapper.find('.style-list-button').exists()).toBe(true);
 	});
 
