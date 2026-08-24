@@ -20,11 +20,11 @@ import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import type { FolderType } from '@/composables/use-folders';
 import { Folder, useFolders } from '@/composables/use-folders';
-import DeleteFolderDialog from '@/modules/files/components/delete-folder-dialog.vue';
 import { FolderTarget } from '@/types/folders';
 import type { DeleteFolderConfig } from '@/utils/delete-folder';
 import { getFolderUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
+import DeleteFolderDialog from '@/views/private/components/delete-folder-dialog.vue';
 import NavigationFolder from '@/views/private/components/files-navigation-folder.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 
