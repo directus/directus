@@ -2,13 +2,6 @@ import { useEnv } from '@directus/env';
 import { InvalidProviderConfigError } from '@directus/errors';
 import { toArray, toBoolean } from '@directus/utils';
 import type { AuthDriver } from './auth/auth.js';
-import {
-	LDAPAuthDriver,
-	LocalAuthDriver,
-	OAuth2AuthDriver,
-	OpenIDAuthDriver,
-	SAMLAuthDriver,
-} from './auth/drivers/index.js';
 import { DEFAULT_AUTH_PROVIDER } from './constants.js';
 import getDatabase from './database/index.js';
 import { getEntitlementManager } from './license/index.js';
@@ -33,9 +26,7 @@ export async function registerAuthProviders(): Promise<void> {
 	const env = useEnv();
 	const logger = useLogger();
 	const options = { knex: getDatabase() };
-
 	const providerNames = toArray(env['AUTH_PROVIDERS'] as string);
-
 	const sso_allowed = getEntitlementManager().isEntitled('sso_enabled');
 
 	if (sso_allowed === false && env['AUTH_PROVIDERS'] && providerNames.length > 0) {
@@ -47,7 +38,7 @@ export async function registerAuthProviders(): Promise<void> {
 	}
 
 	// Always register default provider
-	const defaultProvider = getProviderInstance('local', options)!;
+	const defaultProvider = await getProviderInstance('local', options)!;
 	providers.set(DEFAULT_AUTH_PROVIDER, defaultProvider);
 
 	if (!env['AUTH_PROVIDERS']) {
@@ -55,7 +46,7 @@ export async function registerAuthProviders(): Promise<void> {
 	}
 
 	// Register configured providers
-	providerNames.forEach((name: string) => {
+	for (let name of providerNames) {
 		name = name.trim();
 
 		if (name === DEFAULT_AUTH_PROVIDER) {
@@ -67,40 +58,58 @@ export async function registerAuthProviders(): Promise<void> {
 
 		if (!driver) {
 			logger.warn(`Missing driver definition for "${name}" auth provider.`);
-			return;
+			continue;
 		}
 
-		const provider = getProviderInstance(driver, options, { provider: name, ...config });
+		const provider = await getProviderInstance(driver, options, { provider: name, ...config });
 
 		if (!provider) {
 			logger.warn(`Invalid "${driver}" auth driver.`);
-			return;
+			continue;
 		}
 
 		providers.set(name, provider);
-	});
+	}
 }
 
-function getProviderInstance(
+/**
+ * Lazily imports and instantiates the auth driver matching the given type.
+ *
+ * Auth drivers (LDAP, OAuth2, OpenID, SAML) pull in heavyweight dependencies
+ * (ldapjs, openid-client, etc). Dynamically importing them here ensures that
+ * only the drivers actually configured via AUTH_PROVIDERS get loaded into
+ * memory, instead of all drivers being loaded eagerly on every boot.
+ */
+async function getProviderInstance(
 	driver: string,
 	options: AuthDriverOptions,
 	config: Record<string, any> = {},
-): AuthDriver | undefined {
+): Promise<AuthDriver | undefined> {
 	switch (driver) {
-		case 'local':
+		case 'local': {
+			const { LocalAuthDriver } = await import('./auth/drivers/local.js');
 			return new LocalAuthDriver(options, config);
+		}
 
-		case 'oauth2':
+		case 'oauth2': {
+			const { OAuth2AuthDriver } = await import('./auth/drivers/oauth2.js');
 			return new OAuth2AuthDriver(options, config);
+		}
 
-		case 'openid':
+		case 'openid': {
+			const { OpenIDAuthDriver } = await import('./auth/drivers/openid.js');
 			return new OpenIDAuthDriver(options, config);
+		}
 
-		case 'ldap':
+		case 'ldap': {
+			const { LDAPAuthDriver } = await import('./auth/drivers/ldap.js');
 			return new LDAPAuthDriver(options, config);
+		}
 
-		case 'saml':
+		case 'saml': {
+			const { SAMLAuthDriver } = await import('./auth/drivers/saml.js');
 			return new SAMLAuthDriver(options, config);
+		}
 	}
 
 	return undefined;
