@@ -93,8 +93,8 @@ function handleSubmit() {
 	flex-direction: column;
 	align-items: flex-end;
 	cursor: text;
-	gap: 12px;
-	padding: 12px;
+	gap: 0.6875rem;
+	padding: 0.6875rem;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--form--field--input--background);
@@ -120,17 +120,12 @@ function handleSubmit() {
 	min-inline-size: 0;
 	align-self: flex-start;
 	overflow: hidden;
-
-	.v-chip {
-		--v-chip-close-color: var(--theme--background-normal);
-		--v-chip-close-color-hover: var(--theme--foreground-subdued);
-	}
 }
 
 .input-controls {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 	flex-shrink: 0;
 	inline-size: 100%;
 

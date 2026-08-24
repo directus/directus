@@ -74,7 +74,8 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 		query,
 		variables,
 		operationName,
-		contextValue: { req, res },
+		// context is scoped per request
+		contextValue: { req, res, cache: new Map() },
 	} as GraphQLParams;
 
 	return next();

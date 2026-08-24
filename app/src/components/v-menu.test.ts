@@ -347,6 +347,38 @@ test('should place menu arrow right when using placement "top-start" and using r
 	expect(menuArrow.attributes('style')).toContain('transform: translate3d(-6px, 0px, 0)');
 });
 
+test('v-menu-content should have tabindex="-1" to act as focus trap fallback target', async () => {
+	const wrapper = mount(VMenu, {
+		...mountOptions,
+		props: {
+			modelValue: true,
+		},
+		slots: {
+			// no tabbable elements
+			default: { template: '<span>non-interactive content</span>' },
+		},
+	});
+
+	const menuContent = wrapper.findComponent(TransitionBounce).find('.v-menu-content');
+
+	expect(menuContent.attributes('tabindex')).toBe('-1');
+});
+
+test('should not throw when menu opens with no tabbable elements', async () => {
+	const wrapper = mount(VMenu, {
+		...mountOptions,
+		props: {
+			trigger: 'click',
+		},
+		slots: {
+			activator: { template: '<button type="button">Open</button>' },
+			default: { template: '<span>non-interactive content</span>' },
+		},
+	});
+
+	await expect(wrapper.find('.v-menu').trigger('click')).resolves.not.toThrow();
+});
+
 test('should place menu arrow right when using placement "bottom-start" and using rtl', async () => {
 	const button = { template: '<button type="button">Content</button>' };
 

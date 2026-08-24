@@ -161,12 +161,12 @@ const columnStyle = computed<{ header: string; rows: string }>(() => {
 	function generate(useVal?: 'auto') {
 		let gridTemplateColumns = internalHeaders.value
 			.map((header) => {
-				return header.width ? (useVal ?? `${header.width}px`) : '160px';
+				return header.width ? (useVal ?? `${header.width}px`) : '8.125rem';
 			})
 			.reduce((acc, val) => (acc += ' ' + val), '');
 
-		if (props.showSelect !== 'none') gridTemplateColumns = '36px ' + gridTemplateColumns;
-		if (props.showManualSort) gridTemplateColumns = '36px ' + gridTemplateColumns;
+		if (props.showSelect !== 'none') gridTemplateColumns = '2rem ' + gridTemplateColumns;
+		if (props.showManualSort) gridTemplateColumns = '2rem ' + gridTemplateColumns;
 
 		gridTemplateColumns = gridTemplateColumns + ' 1fr';
 
@@ -443,11 +443,11 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .loading .loading-indicator .v-progress-linear {
-	--v-progress-linear-height: 2px;
+	--v-progress-linear-height: 0.125rem;
 	--v-progress-linear-color: var(--theme--form--field--input--border-color-hover);
 
 	position: absolute;
-	inset-block-start: -2px;
+	inset-block-start: -0.125rem;
 	inset-inline-start: 0;
 	inline-size: 100%;
 }
@@ -458,7 +458,7 @@ table :deep(.sortable-ghost .cell) {
 
 .loading .loading-indicator.sticky th {
 	position: sticky;
-	inset-block-start: 48px;
+	inset-block-start: 2.6875rem;
 	z-index: 2;
 }
 
@@ -469,7 +469,7 @@ table :deep(.sortable-ghost .cell) {
 
 .loading-text td,
 .no-items-text td {
-	padding: 16px;
+	padding: 0.875rem;
 	color: var(--theme--foreground-subdued);
 }
 

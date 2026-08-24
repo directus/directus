@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { InvalidQueryError } from '@directus/errors';
 import type { Accountability, Aggregate, Query, SchemaOverview } from '@directus/types';
 import { parseFilter, parseJSON } from '@directus/utils';
-import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
+import { flatten, isPlainObject } from 'lodash-es';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
@@ -74,7 +74,9 @@ export async function sanitizeQuery(
 	}
 
 	if (rawQuery['search'] && typeof rawQuery['search'] === 'string') {
-		query.search = rawQuery['search'];
+		const trimmed = rawQuery['search'].trim();
+		if (trimmed) query.search = trimmed;
+		else query.search = rawQuery['search'];
 	}
 
 	if (rawQuery['version']) {
@@ -131,7 +133,7 @@ function sanitizeFields(rawFields: any) {
 function sanitizeSort(rawSort: any) {
 	let fields: string[] = [];
 
-	if (typeof rawSort === 'string') fields = rawSort.split(',');
+	if (typeof rawSort === 'string') fields = splitFields(rawSort);
 	else if (Array.isArray(rawSort)) fields = rawSort as string[];
 
 	fields = fields.map((field) => field.trim());
@@ -240,8 +242,6 @@ function sanitizeBacklink(rawBacklink: unknown) {
 async function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, accountability?: Accountability | null) {
 	const logger = useLogger();
 
-	const result: Record<string, any> = {};
-
 	if (typeof deep === 'string') {
 		try {
 			deep = parseJSON(deep);
@@ -250,13 +250,11 @@ async function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, a
 		}
 	}
 
-	await parse(deep);
+	return parse(deep);
 
-	return result;
-
-	async function parse(level: Record<string, any>, path: string[] = []) {
+	async function parse(level: Record<string, any>, isRoot = true): Promise<Record<string, any>> {
+		const node: Record<string, any> = Object.create(null);
 		const subQuery: Record<string, any> = {};
-		const parsedLevel: Record<string, any> = {};
 
 		for (const [key, value] of Object.entries(level)) {
 			if (!key) break;
@@ -265,22 +263,26 @@ async function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, a
 				// Collect all sub query parameters without the leading underscore
 				subQuery[key.substring(1)] = value;
 			} else if (isPlainObject(value)) {
-				parse(value, [...path, key]);
+				const child = await parse(value, false);
+
+				// Only attach relations that actually contributed something, matching the previous
+				// behavior where empty branches never appeared in the result.
+				if (Object.keys(child).length > 0) {
+					node[key] = child;
+				}
 			}
 		}
 
-		if (Object.keys(subQuery).length > 0) {
-			// Sanitize the entire sub query
+		// Sub query parameters only apply to a nested relation, not to the top-level deep object.
+		if (!isRoot && Object.keys(subQuery).length > 0) {
 			const parsedSubQuery = await sanitizeQuery(subQuery, schema, accountability);
 
 			for (const [parsedKey, parsedValue] of Object.entries(parsedSubQuery)) {
-				parsedLevel[`_${parsedKey}`] = parsedValue;
+				node[`_${parsedKey}`] = parsedValue;
 			}
 		}
 
-		if (Object.keys(parsedLevel).length > 0) {
-			set(result, path, merge({}, get(result, path, {}), parsedLevel));
-		}
+		return node;
 	}
 }
 

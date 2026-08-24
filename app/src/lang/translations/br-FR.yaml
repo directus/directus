@@ -228,6 +228,7 @@ related_collection: Dastumad liammet
 related_collections: Dastumadoù liammet
 translations_collection: Dastumad troidigezhioù
 languages_collection: Dastumad yezhoù
+translations_preview_collections: Dastumadoù
 format: Furmad
 last_page: Pajenn ziwezhañ
 last_access: Mont diwezhañ
@@ -332,7 +333,6 @@ no_collections: Dastumad ebet
 create_collection: Krouiñ un dastumad
 no_collections_copy_admin: N'ho peus ket a zastumad evit poent. Klikit war ar bouton dindan evit kregiñ ganti.
 no_collections_copy: N'ho peus ket a zastumad evit poent. Kit e darempred gant ar merour sistem.
-relationship_not_setup: An darempred n'eo ket bet reoliet mat
 display_template_not_setup: Dibarzh diskwell ar patrom a zo reoliet fall
 collection_field_not_setup: Dibarzh maezienn an dastumad a zo reoliet fall
 select_a_collection: Dibab un dastumad
@@ -554,6 +554,8 @@ wysiwyg_options:
   bullist: Roll padelliget
   numlist: Roll niverennet
   hr: Barrenn a-blaen
+  insertdatetime_date: Devezh
+  insertdatetime_time: Devezh hag eur
   link: Ouzhpennañ/kemm ul liamm
   unlink: Dilemel al liamm
   media: Ouzhpennañ/kemm ur media
@@ -598,6 +600,13 @@ editing_in_batch: 'Kemm a-stroll {count} elfenn'
 no_options_available: N'eus dibarzh ebet
 settings_data_model: Patrom roadennoù
 settings_project: Arventennoù
+licensing:
+  unlimited: Didermen
+  addon_update: Hizivaat
+  resolve_show_n_more: 'Diskwel {count} ouzhpenn'
+  resolve_sso_admin_password: Ger-tremen
+  entitlements:
+    collections: Dastumadoù
 settings_presets: Pennrolloù
 settings_translations: Troidigezhioù
 one_or_more_options_are_missing: Mankout a ra un dibarzh pe meur a hini
@@ -643,6 +652,7 @@ fields:
     collection: Dastumad
     icon: Arlun
     note: Evezhiadenn
+    status: Stad
     color: Liv
     display_template: Patrom diskwel
     hidden: Kuzhet
@@ -842,6 +852,8 @@ interfaces:
   filter:
     add_filter: Ouzhpenn ur sil
     all: Holl
+  group-tabs:
+    fill_width: Ledander leun
   presentation-links:
     presentation-links: Boutonoù
     style: Stil
@@ -970,6 +982,7 @@ interfaces:
     sort: Rummañ
     field_note_placeholder: Bizskrivit notenn ar vaezienn...
     interface_group: Dibarzhioù an etrefas
+    edit_mode_inline: En linenn
   slider:
     slider: Reti
     description: Dibab un niverenn gant ar reti
@@ -1029,7 +1042,6 @@ interfaces:
     description: Un aozer testenn pinvidikaet evit skrivañ danvez e HTML
     toolbar: Barrenn ostilhoù
     custom_formats: Furmadoù personelaet
-    options_override: Erlec'hiañ an dibarzhioù
   input-block-editor:
     tools: Barrenn ostilhoù
     tools_options:

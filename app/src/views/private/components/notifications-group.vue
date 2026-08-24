@@ -35,13 +35,13 @@ const overlayIsActive = computed(() => notificationsStore.overlayIsActive);
 <style lang="scss" scoped>
 .notifications-group {
 	position: absolute;
-	inset-block-end: 16px;
-	inset-inline-end: 16px;
+	inset-block-end: 0.875rem;
+	inset-inline-end: 0.875rem;
 	z-index: 50;
 	display: flex;
 	flex-direction: column;
 	align-items: end;
-	inline-size: 256px;
+	inline-size: 14.375rem;
 
 	&.overlay {
 		z-index: 700;
@@ -59,13 +59,13 @@ const overlayIsActive = computed(() => notificationsStore.overlayIsActive);
 }
 
 .slide-fade-enter-from {
-	transform: translateX(50px) scaleY(0) scaleX(0);
+	transform: translateX(2.8125rem) scaleY(0) scaleX(0);
 	transform-origin: right bottom;
 	opacity: 0;
 }
 
 .slide-fade-leave-to {
-	transform: translateX(50px) scaleX(0);
+	transform: translateX(2.8125rem) scaleX(0);
 	transform-origin: right;
 	opacity: 0;
 	transition-timing-function: cubic-bezier(0.4, 0, 1, 1);

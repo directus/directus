@@ -66,7 +66,7 @@ watchEffect(async () => {
 .extension-content {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
-	max-inline-size: 1200px;
+	max-inline-size: 67.5rem;
 	inline-size: 100%;
 }
 
@@ -77,7 +77,7 @@ watchEffect(async () => {
 
 .grid {
 	display: grid;
-	gap: 40px;
+	gap: 2.25rem;
 	grid-template-areas: 'banner' 'metadata' 'readme';
 	grid-template-columns: minmax(0, 1fr);
 
@@ -93,8 +93,8 @@ watchEffect(async () => {
 		grid-area: metadata;
 	}
 
-	@container item (width > 800px) {
-		grid-template-columns: minmax(0, 1fr) 320px;
+	@container item (width > 45rem) {
+		grid-template-columns: minmax(0, 1fr) 18rem;
 		grid-template-areas:
 			'banner banner'
 			'readme metadata';

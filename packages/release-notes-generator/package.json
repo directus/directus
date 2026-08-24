@@ -1,8 +1,9 @@
 {
 	"name": "@directus/release-notes-generator",
-	"version": "2.0.3",
+	"version": "3.0.1",
 	"description": "Directus tailored release notes generator for changesets",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
+	"type": "module",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -20,25 +21,28 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
+		"build": "tsdown --tsconfig tsconfig.prod.json",
+		"dev": "tsdown --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
 		"@changesets/get-github-info": "catalog:",
 		"@pnpm/logger": "catalog:",
-		"@pnpm/workspace.find-packages": "catalog:",
+		"@pnpm/types": "catalog:",
 		"@pnpm/workspace.pkgs-graph": "catalog:",
+		"js-yaml": "catalog:",
 		"semver": "catalog:"
 	},
 	"devDependencies": {
 		"@changesets/types": "catalog:",
 		"@directus/tsconfig": "catalog:",
+		"@types/js-yaml": "catalog:",
 		"@types/node": "catalog:",
 		"@types/semver": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"typescript": "catalog:",
+		"tsdown": "catalog:",
 		"vitest": "catalog:"
 	}
 }

@@ -312,9 +312,7 @@ describe('v-date-picker', () => {
 			expect(formatDatePickerModelValue).toHaveBeenCalledWith('time', expect.any(Object));
 		});
 
-		it('resets to default time (12:00) when modelValue is null', async () => {
-			let capturedTimeValue: { hour?: number; minute?: number } | undefined;
-
+		it('clears the time to a placeholder when modelValue is null', async () => {
 			const wrapper = createWrapper({
 				type: 'time',
 				modelValue: '14:30:00',
@@ -325,22 +323,8 @@ describe('v-date-picker', () => {
 			await wrapper.setProps({ modelValue: null });
 			await nextTick();
 
-			vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
-				if (options.timeValue && 'hour' in options.timeValue) {
-					capturedTimeValue = options.timeValue as { hour: number; minute: number };
-				}
-
-				return '12:00:00';
-			});
-
-			// Trigger time field emission to check reset value (not setToNow which uses current time)
-			const timeField = wrapper.findComponent(TimeFieldRoot);
-			await timeField.vm.$emit('update:modelValue', new Time(12, 0, 0));
-			await nextTick();
-
-			expect(capturedTimeValue).toBeDefined();
-			expect(capturedTimeValue?.hour).toBe(12);
-			expect(capturedTimeValue?.minute).toBe(0);
+			// Empty (not seeded to 12:00) so the time segments render as placeholders.
+			expect(wrapper.findComponent(TimeFieldRoot).props('modelValue')).toBeFalsy();
 		});
 	});
 
@@ -399,6 +383,245 @@ describe('v-date-picker', () => {
 			expect(capturedCalendarValue).toBeDefined();
 			expect(capturedTimeValue).toBeDefined();
 			expect(formatDatePickerModelValue).toHaveBeenCalledWith('timestamp', expect.any(Object));
+		});
+	});
+
+	describe('dynamic variable handling', () => {
+		it('does not throw when modelValue is $NOW for any picker type', () => {
+			for (const type of ['date', 'dateTime', 'timestamp', 'time'] as const) {
+				expect(() => {
+					createWrapper({ type, modelValue: '$NOW' });
+				}).not.toThrow();
+			}
+		});
+
+		it('resolves $NOW to current date for type: date', async () => {
+			let capturedCalendarValue: { year?: number; month?: number; day?: number } | undefined;
+
+			vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
+				if (options.calendarValue && 'year' in options.calendarValue) {
+					capturedCalendarValue = options.calendarValue as { year: number; month: number; day: number };
+				}
+
+				return '2024-01-15';
+			});
+
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: '$NOW',
+			});
+
+			await nextTick();
+
+			// Trigger emission via calendar change (not setToNow) to capture watcher-resolved state
+			const calendarRoot = wrapper.findComponent(CalendarRoot);
+			await calendarRoot.vm.$emit('update:modelValue', calendarRoot.props('modelValue'));
+			await nextTick();
+
+			expect(capturedCalendarValue).toBeDefined();
+			expect(capturedCalendarValue?.year).toBeGreaterThan(0);
+			expect(capturedCalendarValue?.month).toBeGreaterThanOrEqual(1);
+			expect(capturedCalendarValue?.month).toBeLessThanOrEqual(12);
+		});
+
+		it('resolves $NOW to current date and time for type: dateTime', async () => {
+			let capturedTimeValue: { hour?: number; minute?: number } | undefined;
+
+			vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
+				if (options.timeValue && 'hour' in options.timeValue) {
+					capturedTimeValue = options.timeValue as { hour: number; minute: number };
+				}
+
+				return '2024-01-15T14:30:00';
+			});
+
+			const wrapper = createWrapper({
+				type: 'dateTime',
+				modelValue: '$NOW',
+			});
+
+			await nextTick();
+
+			// Trigger emission via time field change to capture watcher-resolved time
+			const timeField = wrapper.findComponent(TimeFieldRoot);
+			await timeField.vm.$emit('update:modelValue', timeField.props('modelValue'));
+			await nextTick();
+
+			expect(capturedTimeValue).toBeDefined();
+			expect(capturedTimeValue?.hour).toBeGreaterThanOrEqual(0);
+			expect(capturedTimeValue?.hour).toBeLessThanOrEqual(23);
+		});
+
+		it('does not throw when modelValue is $NOW with adjustment', () => {
+			expect(() => {
+				createWrapper({
+					type: 'date',
+					modelValue: '$NOW(-7 days)',
+				});
+			}).not.toThrow();
+		});
+
+		it('resolves $NOW(-7 days) to a date 7 days in the past for type: date', async () => {
+			vi.useFakeTimers();
+
+			try {
+				vi.setSystemTime(new Date('2026-03-24T12:00:00Z'));
+
+				const expected = new Date();
+				expected.setDate(expected.getDate() - 7);
+
+				let capturedCalendarValue: { year?: number; month?: number; day?: number } | undefined;
+
+				vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
+					if (options.calendarValue && 'year' in options.calendarValue) {
+						capturedCalendarValue = options.calendarValue as { year: number; month: number; day: number };
+					}
+
+					return '2026-03-17';
+				});
+
+				const wrapper = createWrapper({
+					type: 'date',
+					modelValue: '$NOW(-7 days)',
+				});
+
+				await nextTick();
+
+				const calendarRoot = wrapper.findComponent(CalendarRoot);
+				await calendarRoot.vm.$emit('update:modelValue', calendarRoot.props('modelValue'));
+				await nextTick();
+
+				expect(capturedCalendarValue).toBeDefined();
+				expect(capturedCalendarValue?.year).toBe(expected.getFullYear());
+				expect(capturedCalendarValue?.month).toBe(expected.getMonth() + 1);
+				expect(capturedCalendarValue?.day).toBe(expected.getDate());
+			} finally {
+				vi.useRealTimers();
+			}
+		});
+
+		it('resolves $NOW(-2 hours) to the correct time for type: dateTime', async () => {
+			vi.useFakeTimers();
+
+			try {
+				vi.setSystemTime(new Date('2026-03-24T14:30:00Z'));
+
+				const expected = new Date();
+				expected.setHours(expected.getHours() - 2);
+
+				let capturedCalendarValue: { year?: number; month?: number; day?: number } | undefined;
+				let capturedTimeValue: { hour?: number; minute?: number } | undefined;
+
+				vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
+					if (options.calendarValue && 'year' in options.calendarValue) {
+						capturedCalendarValue = options.calendarValue as { year: number; month: number; day: number };
+					}
+
+					if (options.timeValue && 'hour' in options.timeValue) {
+						capturedTimeValue = options.timeValue as { hour: number; minute: number };
+					}
+
+					return '2026-03-24T12:30:00';
+				});
+
+				const wrapper = createWrapper({
+					type: 'dateTime',
+					modelValue: '$NOW(-2 hours)',
+				});
+
+				await nextTick();
+
+				const timeField = wrapper.findComponent(TimeFieldRoot);
+				await timeField.vm.$emit('update:modelValue', timeField.props('modelValue'));
+				await nextTick();
+
+				expect(capturedCalendarValue).toBeDefined();
+				expect(capturedCalendarValue?.year).toBe(expected.getFullYear());
+				expect(capturedCalendarValue?.month).toBe(expected.getMonth() + 1);
+				expect(capturedCalendarValue?.day).toBe(expected.getDate());
+
+				expect(capturedTimeValue).toBeDefined();
+				expect(capturedTimeValue?.hour).toBe(expected.getHours());
+				expect(capturedTimeValue?.minute).toBe(expected.getMinutes());
+			} finally {
+				vi.useRealTimers();
+			}
+		});
+
+		it('resolves $NOW(-30 minutes) to the correct time for type: time', async () => {
+			vi.useFakeTimers();
+
+			try {
+				vi.setSystemTime(new Date('2026-03-24T14:30:00Z'));
+
+				const expected = new Date();
+				expected.setMinutes(expected.getMinutes() - 30);
+
+				let capturedTimeValue: { hour?: number; minute?: number } | undefined;
+
+				vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
+					if (options.timeValue && 'hour' in options.timeValue) {
+						capturedTimeValue = options.timeValue as { hour: number; minute: number };
+					}
+
+					return '14:00:00';
+				});
+
+				const wrapper = createWrapper({
+					type: 'time',
+					modelValue: '$NOW(-30 minutes)',
+				});
+
+				await nextTick();
+
+				const timeField = wrapper.findComponent(TimeFieldRoot);
+				await timeField.vm.$emit('update:modelValue', timeField.props('modelValue'));
+				await nextTick();
+
+				expect(capturedTimeValue).toBeDefined();
+				expect(capturedTimeValue?.hour).toBe(expected.getHours());
+				expect(capturedTimeValue?.minute).toBe(expected.getMinutes());
+			} finally {
+				vi.useRealTimers();
+			}
+		});
+
+		it('handles transition from valid date to $NOW without throwing', async () => {
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: '2024-06-15',
+			});
+
+			await nextTick();
+
+			await wrapper.setProps({ modelValue: '$NOW' });
+			await nextTick();
+
+			expect(wrapper.exists()).toBe(true);
+		});
+
+		it('leaves picker empty for non-date dynamic variables', async () => {
+			let capturedCalendarValue: unknown = 'not-cleared';
+
+			vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
+				capturedCalendarValue = options.calendarValue;
+				return null;
+			});
+
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: '$CURRENT_USER',
+			});
+
+			await nextTick();
+
+			// Trigger emission to capture state
+			const calendarRoot = wrapper.findComponent(CalendarRoot);
+			await calendarRoot.vm.$emit('update:modelValue', calendarRoot.props('modelValue'));
+			await nextTick();
+
+			// calendarValue should be undefined — not resolved to today's date
+			expect(capturedCalendarValue).toBeUndefined();
 		});
 	});
 
@@ -490,16 +713,18 @@ describe('v-date-picker', () => {
 
 			const monthSelect = wrapper.find('#calendar-month-select');
 			await monthSelect.setValue('3');
-			await monthSelect.trigger('change');
 			await nextTick();
 
-			// Trigger emission to capture the new calendar value
-			const nowButton = wrapper.find('.calendar-today-button');
-			await nowButton.trigger('click');
-			await nextTick();
-
-			// Verify month was updated in internal state
+			// Verify value is emitted immediately without needing further interaction
+			expect(wrapper.emitted('update:modelValue')).toEqual([['2024-03-15']]);
 			expect(capturedCalendarValue).toBeDefined();
+
+			expect(formatDatePickerModelValue).toHaveBeenCalledWith(
+				'date',
+				expect.objectContaining({
+					calendarValue: expect.objectContaining({ month: 3 }),
+				}),
+			);
 		});
 
 		it('updates year when year input changes', async () => {
@@ -519,15 +744,18 @@ describe('v-date-picker', () => {
 
 			const yearInput = wrapper.find('.calendar-year-input');
 			await yearInput.setValue('2025');
-			await yearInput.trigger('change');
 			await nextTick();
 
-			// Trigger emission to capture the new calendar value
-			const nowButton = wrapper.find('.calendar-today-button');
-			await nowButton.trigger('click');
-			await nextTick();
-
+			// Verify value is emitted immediately without needing further interaction
+			expect(wrapper.emitted('update:modelValue')).toEqual([['2025-01-15']]);
 			expect(capturedCalendarValue).toBeDefined();
+
+			expect(formatDatePickerModelValue).toHaveBeenCalledWith(
+				'date',
+				expect.objectContaining({
+					calendarValue: expect.objectContaining({ year: 2025 }),
+				}),
+			);
 		});
 
 		it('ignores invalid month values (out of range)', async () => {
@@ -544,7 +772,6 @@ describe('v-date-picker', () => {
 
 			// Simulate invalid value (out of range) - the handler should reject this
 			await monthSelect.setValue('13');
-			await monthSelect.trigger('change');
 			await nextTick();
 
 			// The formatDatePickerModelValue should not have been called again
@@ -568,7 +795,6 @@ describe('v-date-picker', () => {
 
 			// Simulate invalid value - the handler should reject this
 			await yearInput.setValue('0');
-			await yearInput.trigger('change');
 			await nextTick();
 
 			// The formatDatePickerModelValue should not have been called again
@@ -591,13 +817,94 @@ describe('v-date-picker', () => {
 
 			// Simulate non-numeric value that parses to NaN
 			await yearInput.setValue('abc');
-			await yearInput.trigger('change');
 			await nextTick();
 
 			// The formatDatePickerModelValue should not have been called again
 			const finalCallCount = vi.mocked(formatDatePickerModelValue).mock.calls.length;
 
 			expect(finalCallCount).toBe(initialCallCount);
+		});
+
+		it('ignores partial years (under 1000) while the year is being typed', async () => {
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: '2024-01-15',
+			});
+
+			await nextTick();
+
+			const yearInput = wrapper.find('.calendar-year-input');
+			const initialCallCount = vi.mocked(formatDatePickerModelValue).mock.calls.length;
+
+			// The input emits on each keystroke, so partial years must not be applied.
+			await yearInput.setValue('2');
+			await yearInput.setValue('202');
+			await nextTick();
+
+			expect(vi.mocked(formatDatePickerModelValue).mock.calls.length).toBe(initialCallCount);
+
+			// Once all four digits are entered the value is applied.
+			await yearInput.setValue('2025');
+			await nextTick();
+
+			expect(formatDatePickerModelValue).toHaveBeenLastCalledWith(
+				'date',
+				expect.objectContaining({
+					calendarValue: expect.objectContaining({ year: 2025 }),
+				}),
+			);
+		});
+
+		it('ignores years beyond four digits', async () => {
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: '2024-01-15',
+			});
+
+			await nextTick();
+
+			const yearInput = wrapper.find('.calendar-year-input');
+			const initialCallCount = vi.mocked(formatDatePickerModelValue).mock.calls.length;
+
+			await yearInput.setValue('20245');
+			await nextTick();
+
+			expect(vi.mocked(formatDatePickerModelValue).mock.calls.length).toBe(initialCallCount);
+		});
+
+		it('ignores out-of-range year values (too large) to avoid NaN day', async () => {
+			let capturedCalendarValue: { year?: number; month?: number; day?: number } | undefined;
+
+			vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
+				if (options.calendarValue && 'year' in options.calendarValue) {
+					capturedCalendarValue = options.calendarValue as { year: number; month: number; day: number };
+				}
+
+				return '2024-01-15';
+			});
+
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: '2024-01-15',
+			});
+
+			await nextTick();
+
+			const initialCallCount = vi.mocked(formatDatePickerModelValue).mock.calls.length;
+
+			const yearInput = wrapper.find('.calendar-year-input');
+
+			// Entering many digits produces a year beyond what JS Date can represent,
+			// which previously made `new Date(year, month, 0).getDate()` return NaN and
+			// emitted an invalid ISO string like "9999-06-NaN".
+			await yearInput.setValue('999999999');
+			await nextTick();
+
+			// The out-of-range year must be ignored: no emission happens, so no invalid value
+			// (and no NaN day) can leak through.
+			const finalCallCount = vi.mocked(formatDatePickerModelValue).mock.calls.length;
+			expect(finalCallCount).toBe(initialCallCount);
+			expect(capturedCalendarValue).toBeUndefined();
 		});
 
 		it('clamps day when changing to month with fewer days', async () => {
@@ -622,15 +929,9 @@ describe('v-date-picker', () => {
 			const monthSelect = wrapper.find('#calendar-month-select');
 			// Change to February (which has 29 days in 2024, a leap year)
 			await monthSelect.setValue('2');
-			await monthSelect.trigger('change');
 			await nextTick();
 
-			// Trigger emission to capture the clamped value
-			const nowButton = wrapper.find('.calendar-today-button');
-			await nowButton.trigger('click');
-			await nextTick();
-
-			// Day should be clamped to 29 (max for Feb 2024)
+			// setCalendarMonth now calls emitValue() directly, so the clamped value is captured
 			expect(capturedDay).toBeDefined();
 			expect(capturedDay).toBeLessThanOrEqual(29);
 		});
@@ -657,15 +958,9 @@ describe('v-date-picker', () => {
 			const yearInput = wrapper.find('.calendar-year-input');
 			// Change to non-leap year
 			await yearInput.setValue('2023');
-			await yearInput.trigger('change');
 			await nextTick();
 
-			// Trigger emission to capture the clamped value
-			const nowButton = wrapper.find('.calendar-today-button');
-			await nowButton.trigger('click');
-			await nextTick();
-
-			// Day should be clamped to 28 (max for Feb 2023)
+			// setCalendarYear now calls emitValue() directly, so the clamped value is captured
 			expect(capturedDay).toBeDefined();
 			expect(capturedDay).toBeLessThanOrEqual(28);
 		});
@@ -687,7 +982,6 @@ describe('v-date-picker', () => {
 
 			const monthSelect = wrapper.find('#calendar-month-select');
 			await monthSelect.setValue('6');
-			await monthSelect.trigger('change');
 			await nextTick();
 
 			// Trigger emission to capture the value

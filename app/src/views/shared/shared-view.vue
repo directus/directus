@@ -42,7 +42,7 @@ const logoURL = computed<string | null>(() => {
 						<div class="title">
 							<p class="subtitle">{{ serverInfo?.project?.project_name }}</p>
 							<slot name="title">
-								<h1 class="type-title">{{ title ?? $t('share_access_page') }}</h1>
+								<h1 class="title-heading">{{ title ?? $t('share_access_page') }}</h1>
 							</slot>
 						</div>
 					</div>
@@ -59,10 +59,12 @@ const logoURL = computed<string | null>(() => {
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
 .shared {
 	inline-size: 100%;
 	block-size: 100%;
-	padding-block-end: 64px;
+	padding-block-end: 3.625rem;
 	overflow: auto;
 	background-color: var(--theme--background-subdued);
 }
@@ -72,14 +74,14 @@ const logoURL = computed<string | null>(() => {
 }
 
 header {
-	margin-block-end: 32px;
-	padding: 10px;
+	margin-block-end: 1.8125rem;
+	padding: 0.5625rem;
 	background-color: var(--theme--background);
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .container {
-	max-inline-size: 856px;
+	max-inline-size: 48.125rem;
 	margin: 0 auto;
 }
 
@@ -88,17 +90,16 @@ header {
 	align-items: center;
 	inline-size: max-content;
 	max-inline-size: 100%;
-	block-size: 60px;
-	margin-block-start: 2px;
+	block-size: 3.375rem;
+	margin-block-start: 0.125rem;
 
 	.title {
-		margin-inline-start: 16px;
+		margin-inline-start: 0.875rem;
 
-		h1 {
+		.title-heading {
+			@include mixins.type-display;
+
 			color: var(--theme--foreground);
-			font-weight: 700;
-			font-size: 24px;
-			line-height: 24px;
 		}
 
 		.subtitle {
@@ -112,21 +113,21 @@ header {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 60px;
-	block-size: 60px;
+	inline-size: 3.375rem;
+	block-size: 3.375rem;
 	background-color: var(--project-color);
 	border-radius: var(--theme--border-radius);
 
 	img {
-		inline-size: 40px;
-		block-size: 40px;
+		inline-size: 2.25rem;
+		block-size: 2.25rem;
 		object-fit: contain;
 		object-position: center center;
 	}
 }
 
 .content {
-	padding: 32px;
+	padding: 1.8125rem;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
 	box-shadow: 0 4px 12px rgb(38 50 56 / 0.1);
@@ -140,14 +141,14 @@ header {
 	.inline-container {
 		display: block;
 		inline-size: 100%;
-		max-inline-size: 856px;
-		padding: 32px;
+		max-inline-size: 48.125rem;
+		padding: 1.8125rem;
 		background-color: var(--theme--background);
 		border-radius: var(--theme--border-radius);
 		box-shadow: 0 4px 12px rgb(38 50 56 / 0.1);
 
-		@media (min-width: 618px) {
-			inline-size: 618px;
+		@media (width >= 34.75rem) {
+			inline-size: 34.75rem;
 		}
 	}
 

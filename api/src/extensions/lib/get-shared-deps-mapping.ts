@@ -10,7 +10,7 @@ import { Url } from '../../utils/url.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export const getSharedDepsMapping = async (deps: string[]): Promise<Record<string, string>> => {
+export const getSharedDepsMapping = async (deps: readonly string[]): Promise<Record<string, string>> => {
 	const env = useEnv();
 	const logger = useLogger();
 

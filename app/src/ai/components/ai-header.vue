@@ -23,7 +23,7 @@ const aiStore = useAiStore();
 .ai-header {
 	display: flex;
 	align-items: center;
-	padding-block-end: 6px;
+	padding-block-end: 0.3125rem;
 }
 
 .spacer {
@@ -31,6 +31,6 @@ const aiStore = useAiStore();
 }
 
 .settings-menu {
-	margin-inline-start: 4px;
+	margin-inline-start: 0.25rem;
 }
 </style>

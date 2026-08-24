@@ -192,6 +192,48 @@ describe('SelectListItemGroup', () => {
 	});
 });
 
+describe('attached and showArrow props', () => {
+	const items = [{ text: 'Item 1', value: 'item1' }];
+
+	test('inline=false (default) → attached=true, showArrow=false', () => {
+		const wrapper = mount(VSelect, { props: { items }, global });
+		expect(wrapper.find('#v-menu-stub').attributes('attached')).toBe('true');
+		expect(wrapper.find('#v-menu-stub').attributes('show-arrow')).toBe('false');
+	});
+
+	test('inline=true → attached=false, showArrow=true', () => {
+		const wrapper = mount(VSelect, { props: { items, inline: true }, global });
+		expect(wrapper.find('#v-menu-stub').attributes('attached')).toBe('false');
+		expect(wrapper.find('#v-menu-stub').attributes('show-arrow')).toBe('true');
+	});
+
+	test('explicit attached=true overrides inline=true default', () => {
+		const wrapper = mount(VSelect, { props: { items, inline: true, attached: true }, global });
+		expect(wrapper.find('#v-menu-stub').attributes('attached')).toBe('true');
+	});
+
+	test('explicit attached=false overrides inline=false default', () => {
+		const wrapper = mount(VSelect, { props: { items, inline: false, attached: false }, global });
+		expect(wrapper.find('#v-menu-stub').attributes('attached')).toBe('false');
+	});
+
+	test('explicit showArrow=true overrides inline=false default', () => {
+		const wrapper = mount(VSelect, { props: { items, inline: false, showArrow: true }, global });
+		expect(wrapper.find('#v-menu-stub').attributes('show-arrow')).toBe('true');
+	});
+
+	test('explicit showArrow=false overrides inline=true default', () => {
+		const wrapper = mount(VSelect, { props: { items, inline: true, showArrow: false }, global });
+		expect(wrapper.find('#v-menu-stub').attributes('show-arrow')).toBe('false');
+	});
+
+	test('inline=true with attached=true and showArrow=false', () => {
+		const wrapper = mount(VSelect, { props: { items, inline: true, attached: true, showArrow: false }, global });
+		expect(wrapper.find('#v-menu-stub').attributes('attached')).toBe('true');
+		expect(wrapper.find('#v-menu-stub').attributes('show-arrow')).toBe('false');
+	});
+});
+
 describe('should hide items not matching search value', () => {
 	// There have to be >10 items to enable search
 

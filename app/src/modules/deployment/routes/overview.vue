@@ -5,7 +5,6 @@ import DeploymentNavigation from '../components/navigation.vue';
 import ProviderSetupDrawer from '../components/provider-setup-drawer.vue';
 import { useDeploymentNavigation } from '../composables/use-deployment-navigation';
 import { availableProviders } from '../config/providers';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
@@ -59,9 +58,9 @@ const providersList = computed(() => {
 function onProviderClick(provider: (typeof providersList.value)[number]) {
 	if (provider.configured) {
 		if (provider.projectsCount === 0) {
-			router.push(`/deployments/${provider.type}/settings`);
+			router.push({ name: 'deployments-provider-settings', params: { provider: provider.type } });
 		} else {
-			router.push(`/deployments/${provider.type}`);
+			router.push({ name: 'deployments-provider-dashboard', params: { provider: provider.type } });
 		}
 	} else {
 		selectedProvider.value = provider.type;
@@ -73,16 +72,12 @@ function onSetupComplete() {
 	selectedProvider.value = null;
 	fetch(true);
 	// Navigate to settings to select projects (no projects after initial setup)
-	if (provider) router.push(`/deployments/${provider}/settings`);
+	if (provider) router.push({ name: 'deployments-provider-settings', params: { provider } });
 }
 </script>
 
 <template>
 	<PrivateView :title="$t('deployment.overview.overview')" icon="rocket_launch">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployments' }]" />
-		</template>
-
 		<template #navigation>
 			<DeploymentNavigation />
 		</template>
@@ -148,7 +143,7 @@ function onSetupComplete() {
 }
 
 .spinner {
-	margin: 120px auto;
+	margin: 6.75rem auto;
 }
 
 :deep(.presentation-divider) {
@@ -156,18 +151,18 @@ function onSetupComplete() {
 }
 
 .provider-list-item {
-	--v-list-item-padding: 20px;
+	--v-list-item-padding: 1.125rem;
 }
 
 .icon {
-	inline-size: 44px;
-	block-size: 44px;
-	border-radius: 24px;
+	inline-size: 2.5rem;
+	block-size: 2.5rem;
+	border-radius: 1.375rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	background-color: var(--theme--primary);
-	margin-inline-end: 20px;
+	margin-inline-end: 1.125rem;
 
 	--v-icon-color: var(--foreground-inverted);
 }
@@ -175,16 +170,16 @@ function onSetupComplete() {
 .name {
 	color: var(--theme--foreground-accent);
 	font-weight: 600;
-	font-size: 15px;
+	font-size: 0.875rem;
 }
 
 .description {
 	color: var(--theme--foreground-subdued);
-	font-size: 15px;
+	font-size: 0.875rem;
 }
 
 .meta {
-	margin-inline-start: 20px;
+	margin-inline-start: 1.125rem;
 	color: var(--theme--foreground-subdued);
 	text-align: end;
 }
@@ -192,6 +187,6 @@ function onSetupComplete() {
 .projects {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 }
 </style>

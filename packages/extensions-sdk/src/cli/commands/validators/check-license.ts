@@ -5,7 +5,7 @@ import type { Report } from '../../types.js';
 
 const checkLicense = {
 	name: 'license',
-	handler: async (spinner: Ora, reports: Array<Report>) => {
+	handler: async (spinner: Ora, reports: Array<Report>): Promise<string> => {
 		spinner.text = 'Check for license';
 
 		const packagePath = path.resolve('package.json');

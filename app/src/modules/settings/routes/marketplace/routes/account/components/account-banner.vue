@@ -66,8 +66,8 @@ const hasMeta = computed(() => {
 
 .meta {
 	.icon {
-		vertical-align: -4px;
-		margin-inline-end: 4px;
+		vertical-align: -0.25rem;
+		margin-inline-end: 0.25rem;
 		display: inline-block;
 	}
 

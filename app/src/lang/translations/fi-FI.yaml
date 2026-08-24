@@ -1,4 +1,51 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Tietoja
+data_processing_agreement: Tiedon Käsittely Sopimus
+setup_welcome: Tervetuloa Directukseen
+setup_info: Luodaan järjestelmänvalvojatilisi ja saat projektisi valmiiksi ja käyntiin.
+setup_license_key_notice: >
+  Jos sinulla on lisenssiavain syötä se alla avataksesi koko tilauksesi. Vaatimukset täyttäviä yrityksiä alle $5M vuosittaiset tulot voivat olla oikeutettuja meidän {oig}.
+setup_save_accept_license: >
+  Tallentamalla, hyväksyt {directusMscl} ja {privacyPolicy} ehdot.
+setup_license_invalid: >
+  Lisenssi ei kelpaa. {contactSupport} Ratkaistaksesi tämän ongelman.
+setup_license_invalid_format: Virheellinen lisenssiavaimen muoto.
+setup_accept_license: Hyväksyn ehdot {directusMscl} ja {privacyPolicy}
+setup_marketing_emails: Lähetä minulle tuotepäivitykset ja julkaisutiedot
+setup_launch: Käynnistä Directus
+setup_license_title: Määritä lisenssi
+license_onboarding_title: Onko sinulla lisenssiavain?
+license_onboarding_desc: >
+  Syötä se alle avataksesi koko suunnitelmasi. Yritykset, joiden vuotuinen liikevaihto on alle 5 miljoonaa dollaria, voivat olla oikeutettuja {oig}.
+project_usage: Mihin käytät Directusta?
+project_usage_personal: Henkilökohtainen / sivuprojekti
+project_usage_commercial: Yritys / kaupallinen
+project_usage_community: Avoin lähdekoodi / yhteisö
+org_name: Organisaation Nimi
+org_name_placeholder: Acme Inc.
+license_key_option: Minulla on lisenssiavain
+license_key_option_desc: 'OIG, Tiimi tai Enterprise palvelupaketti'
+continue: Jatka
 first_name: Etunimi
 last_name: Sukunimi
 identifier: Tunniste
@@ -331,6 +378,7 @@ related_collection: Liittyvät kokoelmat
 related_collections: Liittyvät kokoelmat
 translations_collection: Käännöskokoelma
 languages_collection: Kielten kokoelma
+translations_preview_collections: Kokoelmat
 import_data_input_placeholder: CSV tai JSON...
 import_data_button: Aloita tuonti
 import_data_indeterminate: Tuodaan tietoja...
@@ -367,6 +415,7 @@ functions:
   minute: Minuutti
   second: Sekunti
   count: Määrä
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'HH:mm'
@@ -477,7 +526,6 @@ no_collections: Ei kokoelmia
 create_collection: Luo kokoelma
 no_collections_copy_admin: Sinulla ei ole vielä kokoelmia. Aloita painamalla alla olevaa painiketta.
 no_collections_copy: Sinulla ei ole vielä kokoelmia. Ota yhteyttä järjestelmänvalvojaan.
-relationship_not_setup: Suhdetta ei ole määritetty oikein
 display_template_not_setup: Näyttöpohjan asetus on konfiguroitu väärin
 collection_field_not_setup: Kokoelmakentän asetus on konfiguroitu virheellisesti
 select_a_collection: Valitse kokoelma
@@ -658,6 +706,7 @@ operators:
   nintersects: Ei leikkaa
   intersects_bbox: Leikkaa rajaavaa laatikkoa
   nintersects_bbox: Ei leikkaa rajaavaa laatikkoa
+  json: JSON
 loading: Ladataan...
 drop_to_upload: Pudota ladataksesi
 item: Kohde
@@ -826,12 +875,15 @@ wysiwyg_options:
   bullist: Merkitty lista
   numlist: Numeroitu luettelo
   hr: Vaakaviivain
+  insertdatetime_date: Päivämäärä
+  insertdatetime_time: Aika
   link: Lisää/Muokkaa Linkki
   unlink: Poista linkki
   media: Lisää/Muokkaa Mediaa
   image: Lisää/Muokkaa kuva
   copy: Kopioi
   cut: Leikkaa
+  default: Oletus
   paste: Liitä
   heading: Otsake
   h1: Otsake 1
@@ -854,6 +906,8 @@ wysiwyg_options:
   source_code: Muokkaa lähdekoodia
   fullscreen: Koko näyttö
   directionality: Suuntaus
+  ltr: Vasemmalta oikealle
+  rtl: Oikealta vasemmalle
 dropdown: Pudotusvalikko
 choices: Valinnat
 choices_option_configured_incorrectly: Valinnat määritetty väärin
@@ -870,6 +924,16 @@ editing_in_batch: 'Muokataan {count} kohdetta erässä'
 no_options_available: Ei valintoja saatavilla
 settings_data_model: Tietorakenne
 settings_project: Asetukset
+licensing:
+  unlimited: Rajoittamaton
+  addon_update: Päivitä
+  resolve_continue: Jatka
+  resolve_show_n_more: 'Näytä {count} lisää'
+  resolve_section_flows: Toiminnot
+  resolve_sso_admin_password: Salasana
+  entitlements:
+    collections: Kokoelmat
+    flows: Toiminnot
 settings_flows: Toiminnot
 settings_presets: Kirjainmerkit
 settings_translations: Käännökset
@@ -937,6 +1001,7 @@ fields:
     collection: Kokoelma
     icon: Kuvake
     note: Muistiinpano
+    status: Tila
     color: Väri
     display_template: Esitysmalli
     hidden: Piilotettu
@@ -1249,6 +1314,8 @@ interfaces:
     first_opened: Ensimmäinen avattuna
     all_opened: Kaikki avattuna
     accordion_mode: Haitarin tila
+  group-tabs:
+    fill_width: Täysleveä
   presentation-links:
     presentation-links: Painikkeet
     style: Tyyli
@@ -1409,6 +1476,7 @@ interfaces:
     sort: Järjestä
     field_note_placeholder: Syötä kentän muistiinpano...
     interface_group: Liittymän asetukset
+    edit_mode_inline: Rivitetty
   slider:
     slider: Liukusäädin
     description: Valitse numero käyttäen liukusäädintä
@@ -1474,7 +1542,6 @@ interfaces:
     description: Rikastekstieditori HTML-sisällön kirjoitukseen
     toolbar: Työkalupalkki
     custom_formats: Mukautetut muodot
-    options_override: Valintojen ohitus
     folder_note: Ladattujen tiedostojen kansio. Ei vaikuta olemassa oleviin tiedostoihin.
   input-block-editor:
     tools: Työkalupalkki

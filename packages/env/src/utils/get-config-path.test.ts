@@ -27,6 +27,6 @@ test('Resolves configured CONFIG_PATH from env', () => {
 test('Resolves configured CONFIG_PATH from defaults if it does not exist in env', () => {
 	process.env['CONFIG_PATH'] = undefined;
 	const res = getConfigPath();
-	expect(resolve).toHaveBeenCalledWith(DEFAULTS.CONFIG_PATH);
+	expect(resolve).toHaveBeenCalledWith(DEFAULTS['CONFIG_PATH']);
 	expect(res).toBe('test-resolved-path');
 });

@@ -124,10 +124,10 @@ const stageChanges = () => {
 		createPanel.options ??= {};
 
 		insightsStore.stagePanelCreate(unref(createPanel as CreatePanel));
-		router.push(`/insights/${props.dashboardKey}`);
+		router.push({ name: 'insights-dashboard', params: { primaryKey: props.dashboardKey } });
 	} else {
 		insightsStore.stagePanelUpdate({ id: props.panelKey, edits: unref(panel) });
-		router.push(`/insights/${props.dashboardKey}`);
+		router.push({ name: 'insights-dashboard', params: { primaryKey: props.dashboardKey } });
 	}
 };
 </script>
@@ -135,16 +135,15 @@ const stageChanges = () => {
 <template>
 	<VDrawer
 		:model-value="isOpen"
-		:title="panel?.name || $t('panel')"
-		:subtitle="$t('panel_options')"
+		:title="panel?.name || $t('panel_options')"
 		:icon="panel?.icon || 'insert_chart'"
 		persistent
-		@cancel="router.push(`/insights/${dashboardKey}`)"
+		@cancel="router.push({ name: 'insights-dashboard', params: { primaryKey: dashboardKey } })"
 		@apply="stageChanges"
 	>
-		<template #actions>
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('done')"
+				:label="$t('done')"
 				:disabled="!panel.type"
 				icon="check"
 				@click="stageChanges"
@@ -249,24 +248,26 @@ const stageChanges = () => {
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
 .content {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
 }
 
 .v-divider {
-	margin: 68px 0 48px;
+	margin: 3.8125rem 0 2.6875rem;
 }
 
 .group h2 {
-	margin-block-end: 40px;
-	padding-block-end: 2px;
+	margin-block-end: 2.25rem;
+	padding-block-end: 0.125rem;
 	font-weight: 700;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .group + .group {
-	margin-block-start: 80px;
+	margin-block-start: 4.5rem;
 }
 
 .panel-grid {
@@ -274,23 +275,23 @@ const stageChanges = () => {
 
 	display: grid;
 	grid-template-columns: repeat(var(--columns), 1fr);
-	gap: 32px;
+	gap: 1.8125rem;
 
-	@media (min-width: 400px) {
+	@media (width >= 22.5rem) {
 		--columns: 2;
 	}
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 3;
 	}
 
-	@media (min-width: 840px) {
+	@media (width >= 47.25rem) {
 		--columns: 4;
 	}
 }
 
 .interface {
-	min-block-size: 100px;
+	min-block-size: 5.625rem;
 	overflow: hidden;
 	text-align: start;
 }
@@ -301,9 +302,9 @@ const stageChanges = () => {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 160px;
-	block-size: 100px;
-	margin-block-end: 8px;
+	inline-size: 9rem;
+	block-size: 5.625rem;
+	margin-block-end: 0.4375rem;
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
@@ -326,14 +327,14 @@ const stageChanges = () => {
 }
 
 .preview :deep(svg) .glow {
-	filter: drop-shadow(0 0 4px var(--theme--primary-subdued));
+	filter: drop-shadow(0 0 0.25rem var(--theme--primary-subdued));
 }
 
 .preview .fallback {
 	--v-icon-color: var(--theme--primary-75);
 
 	display: block;
-	padding: 8px 16px;
+	padding: 0.4375rem 0.875rem;
 	background-color: var(--background-page);
 	border: var(--theme--border-width) solid var(--theme--primary);
 	border-radius: var(--theme--border-radius);
@@ -368,15 +369,15 @@ const stageChanges = () => {
 	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
-	@media (min-width: 400px) {
+	@media (width >= 22.5rem) {
 		--columns: 2;
 	}
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 3;
 	}
 
-	@media (min-width: 840px) {
+	@media (width >= 47.25rem) {
 		--columns: 4;
 	}
 }
@@ -390,7 +391,7 @@ const stageChanges = () => {
 }
 
 .setup {
-	--theme--form--row-gap: 20px;
-	margin: 34px;
+	--theme--form--row-gap: 1.125rem;
+	margin: 1.9375rem;
 }
 </style>

@@ -159,7 +159,9 @@ defineProps<{
 	</div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@use '@/styles/mixins';
+
 .v-banner {
 	container-type: inline-size;
 	inline-size: 100%;
@@ -174,8 +176,8 @@ defineProps<{
 
 	.avatar {
 		flex-shrink: 0;
-		inline-size: 120px;
-		block-size: 120px;
+		inline-size: 6.75rem;
+		block-size: 6.75rem;
 		position: relative;
 		overflow: hidden;
 		align-items: center;
@@ -189,7 +191,7 @@ defineProps<{
 			background: transparent;
 		}
 
-		@container (width > 700px) {
+		@container (width > 39.375rem) {
 			display: flex;
 		}
 	}
@@ -203,12 +205,13 @@ defineProps<{
 		}
 
 		.title {
+			@include mixins.type-display;
+
 			--theme--foreground: var(--theme--banner--foreground);
 			color: var(--theme--banner--title--foreground);
 			font-family: var(--theme--banner--title--font-family);
 			font-weight: var(--theme--banner--title--font-weight);
-			font-size: 24px;
-			line-height: 34px;
+			line-height: 1.4091;
 		}
 
 		.subtitle {

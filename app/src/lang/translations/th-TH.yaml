@@ -1,4 +1,5 @@
 ---
+continue: ดำเนินการต่อ
 first_name: ชื่อ
 last_name: นามสกุล
 identifier: ตัวบ่งชี้
@@ -287,6 +288,7 @@ related_collection: คอลเลกชันที่เกี่ยวข้
 related_collections: คอลเลกชันที่เกี่ยวข้อง
 translations_collection: การแปลตาราง
 languages_collection: คอลเลกชันภาษา
+translations_preview_collections: คอลเลกชัน
 import_data_input_placeholder: CSV หรือ JSON
 import_data_button: เริ่มการนำเข้า
 import_data_indeterminate: กำลังนำเข้าข้อมูล...
@@ -323,6 +325,7 @@ functions:
   minute: นาที
   second: วินาที
   count: นับจำนวน
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -426,7 +429,6 @@ no_collections: ไม่มีคอลเลกชัน
 create_collection: สร้างคอลเลกชัน
 no_collections_copy_admin: ยังไม่มีคอลเลกชันใดๆ คลิ๊กที่ปุ่มด้านล่างเพื่อสร้าง
 no_collections_copy: ยังไม่มีคอลเลกชันใดๆ กรุณาติดต่อผู้ดูแลระบบ
-relationship_not_setup: ความสัมพันธ์ยังไม่ถูกตั้งค่าให้ถูกต้อง
 display_template_not_setup: การตั้งค่าของการแสดงผลไม่ถูกต้อง
 collection_field_not_setup: การตั้งค่าของฟิลด์ยังไม่ถูกต้อง
 select_a_collection: เลือกคอลเลกชัน
@@ -580,6 +582,7 @@ operators:
   nintersects: ไม่ตัดกัน
   intersects_bbox: ตัดขอบกล่อง
   nintersects_bbox: ไม่ตัดขอบกล่อง
+  json: JSON
 loading: กำลังโหลด...
 drop_to_upload: วางเพื่ออัพโหลด
 item: รายการ
@@ -703,12 +706,15 @@ wysiwyg_options:
   bullist: รายการแบบไม่มีลําดับ
   numlist: รายการแบบมีลำดับ
   hr: เส้นคั่นแนวนอน
+  insertdatetime_date: วันที่
+  insertdatetime_time: เวลา
   link: เพิ่ม/แก้ไข ลิงค์
   unlink: ลบลิงค์
   media: เพิ่ม/แก้ไข สื่อ
   image: เพิ่ม/แก้ไขภาพ
   copy: คัดลอก
   cut: ตัด
+  default: ค่าเริ่มต้น
   paste: วาง
   heading: หัวข้อ
   h1: หัวข้อที่ 1
@@ -731,6 +737,8 @@ wysiwyg_options:
   source_code: แก้ไข Source Code
   fullscreen: เต็มจอ
   directionality: อย่างมีทิศทาง
+  ltr: ซ้ายไปขวา
+  rtl: ขวาไปซ้าย
 dropdown: ตัวเลือกแบบดรอปดาวน์
 choices: ตัวเลือกแบบช้อยส์
 choices_option_configured_incorrectly: ตั้งค่าตัวเลือกแบบช้อยส์ไม่ถูกต้อง
@@ -747,6 +755,14 @@ editing_in_batch: 'กำลังแก้ไข {count} ไอเท็ม'
 no_options_available: ไม่มีตัวเลือกให้ใช้
 settings_data_model: รูปแบบข้อมูล
 settings_project: การตั้งค่า
+licensing:
+  unlimited: ไม่จำกัด
+  addon_update: แก้ไข
+  resolve_continue: ดำเนินการต่อ
+  resolve_show_n_more: 'แสดงเพิ่มอีก {count}'
+  resolve_sso_admin_password: รหัสผ่าน
+  entitlements:
+    collections: คอลเลกชัน
 settings_presets: บุ๊กมาร์ก
 settings_translations: การแปลภาษา
 one_or_more_options_are_missing: ไม่พบตัวเลือกรายการ
@@ -797,6 +813,7 @@ fields:
     collection: คอลเลกชัน
     icon: ไอคอน
     note: หมายเหตุ
+    status: สถานะ
     color: สี
     display_template: แม่แบบการแสดงผล
     hidden: ซ่อน
@@ -1038,6 +1055,8 @@ interfaces:
     and: และ
   group-accordion:
     start: เริ่มต้น
+  group-tabs:
+    fill_width: กว้างเติมเต็ม
   presentation-links:
     presentation-links: ปุ่ม
     style: สไตล์
@@ -1181,6 +1200,7 @@ interfaces:
     sort: เรียง
     field_note_placeholder: กรอกโน้ตให้ฟิลด์
     interface_group: ตัวเลือกอินเทอร์เฟส
+    edit_mode_inline: แบบอินไลน์
   slider:
     slider: แถบเลื่อน
     description: เลือกตัวเลขโดยใช้แถบเลื่อน
@@ -1243,7 +1263,6 @@ interfaces:
     description: เขียนข้อความที่สามารถตกแต่งได้ด้วย HTML
     toolbar: แถบเครื่องมือ
     custom_formats: รูปแบบที่กำหนดเอง
-    options_override: ตัวเลือกแทนที่
   input-block-editor:
     tools: แถบเครื่องมือ
     tools_options:

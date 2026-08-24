@@ -50,20 +50,20 @@ const npmLink = computed(() => {
 }
 
 .grid {
-	@container metadata (width > 580px) {
+	@container metadata (width > 32.625rem) {
 		--v-list-item-margin: 0;
 
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
-		gap: 10px;
+		gap: 0.5625rem;
 	}
 }
 
 .about {
-	padding: 0 8px;
+	padding: 0 0.4375rem;
 
 	.divider {
-		margin: 16px 0;
+		margin: 0.875rem 0;
 	}
 }
 </style>

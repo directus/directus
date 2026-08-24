@@ -79,13 +79,13 @@ function closeDialog() {
 
 <style scoped>
 .prompt-description {
-	margin-block-end: 1rem;
+	margin-block-end: 0.8125rem;
 	color: var(--theme--foreground-subdued);
 }
 
 .variables-form {
 	display: flex;
 	flex-direction: column;
-	gap: 1rem;
+	gap: 0.8125rem;
 }
 </style>

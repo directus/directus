@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Относно
+continue: Продължаване
 first_name: Име
 last_name: Фамилия
 identifier: Идентификатор
@@ -154,14 +155,12 @@ keep: Запази
 version: Версия
 version_key: Ключ на версията
 version_name: Име на версията
-main_version: Основен
 switch_version: Превключване на версията
 switch_version_copy: Сигурни ли сте, че искате да преминете към версията "{version}"? Незапазените промени ще бъдат загубени.
 create_version: Създаване на версия
 rename_version: Преименуване на версията
 compare_version: Сравнете версията
 save_version: Запазване на версията
-promote_version: Популяризирайте версията
 delete_version: Изтриване на версията
 delete_version_copy: >-
   Сигурни ли сте, че искате да изтриете версията „{version}“? Това действие не може да бъде отменено.
@@ -451,6 +450,8 @@ related_collection: Релативна колекция
 related_collections: Релационни колекции
 translations_collection: Колекция с преводи
 languages_collection: Колекция с езици
+translations_preview_collections: Колекции
+translations_preview_fields: Полета
 import_data_input_placeholder: CSV или JSON...
 import_data_button: Започване на импортирането
 import_data_indeterminate: Импортиране на данните...
@@ -487,6 +488,7 @@ functions:
   minute: Минута
   second: Секунда
   count: Брой
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
@@ -614,7 +616,6 @@ no_collections: Няма колекции
 create_collection: Създаване на колекция
 no_collections_copy_admin: Все още няма колекции. Натиснете бутона по-долу за да започнете.
 no_collections_copy: Все още нямате никакви колекции. Свържете се със системния администратор.
-relationship_not_setup: Релацията не е конфигурирана правилно
 no_singleton_relations: Връзките към Singletons не се поддържат
 display_template_not_setup: Настройките за показване не са конфигурирани правилно
 collection_field_not_setup: Настройките на полето от колекцията, не са конфигурирани правилно
@@ -814,6 +815,7 @@ operators:
   nintersects: Няма пресичане
   intersects_bbox: Прилежащи към границите
   nintersects_bbox: Не са прилежащи към границите
+  json: JSON
   regex: Отговаря на RegExp
 custom_validation_message: Собствено съобщение при валидация
 loading: Зареждане...
@@ -1007,12 +1009,15 @@ wysiwyg_options:
   bullist: Списък
   numlist: Номериран списък
   hr: Хоризонтална линия
+  insertdatetime_date: Дата
+  insertdatetime_time: Час
   link: Добавяне/редактиране на връзка
   unlink: Премахване на връзка
   media: Добавяне/редактиране на медия
   image: Добавяне/редактиране на изображение
   copy: Копиране
   cut: Изрязване
+  default: По подразбиране
   paste: Поставяне
   heading: Заглавие
   h1: Заглавие 1
@@ -1035,6 +1040,8 @@ wysiwyg_options:
   source_code: Редактиране на изходния код
   fullscreen: Пълен екран
   directionality: Подравняване
+  ltr: От ляво на дясно
+  rtl: От дясно на ляво
   lazy_loading: Бавно зареждане на изображение
   lazy_loading_label: Разрешете бавно зареждане
 dropdown: Падащо меню
@@ -1060,6 +1067,17 @@ editing_in_batch: 'Множествено редактиране на {count} з
 no_options_available: Не са налични настройки
 settings_data_model: Модел на данните
 settings_project: Настройки
+licensing:
+  unlimited: Неограничен
+  addon_manage: Управление
+  addon_update: Обновяване
+  resolve_continue: Продължаване
+  resolve_show_n_more: 'Показване на още {count}'
+  resolve_section_flows: Автоматизирани процеси
+  resolve_sso_admin_password: Парола
+  entitlements:
+    collections: Колекции
+    flows: Автоматизирани процеси
 settings_appearance: Външен вид
 settings_flows: Автоматизирани процеси
 settings_presets: Отметки
@@ -1152,6 +1170,7 @@ fields:
     collection: Колекция
     icon: Икона
     note: Бележка
+    status: Статус
     color: Цвят
     display_template: Шаблон при показване
     hidden: Скриване
@@ -1587,6 +1606,8 @@ interfaces:
     all_opened: Всички са отворени
     accordion_mode: Акордионен режим
     max_one_section_open: До 1 отворена секция
+  group-tabs:
+    fill_width: Изпълване по ширина
   presentation-links:
     presentation-links: Бутони
     style: Стил
@@ -1774,6 +1795,7 @@ interfaces:
     incompatible_data: Текущите данни не са съвместими с интерфейсът за повторение и ще бъдат заместени при добавяне на нов запис
     interface_group: Настройки на интерфейса
     display_group: Опции на дисплея
+    edit_mode_inline: Вложен
   slider:
     slider: Плъзгач
     description: Избор на число чрез плъзгач
@@ -1847,9 +1869,6 @@ interfaces:
     description: Визуален редактор на HTML съдържание
     toolbar: Лента с инструменти
     custom_formats: Собтсвени формати
-    custom_formats_note: Списък с формати на съдържание на TinyMCE. Вижте документацията на TinyMCE относно [Форматиране на съдържание](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) за повече информация.
-    options_override: Преопределяне на настройки
-    options_override_note: Ключовете за потребителско форматиране на TinyMCE и техните стойности. Вижте документацията на TinyMCE относно [Потребителско форматиране](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) за повече информация.
     folder_note: Папка за качване на файловете. Съществуващите файлове не се променят.
     imageToken: Статичен токен за достъп
     imageToken_label: Статичния токен за достъп се добавя след URL-a на файла
@@ -1900,8 +1919,9 @@ interfaces:
     value_securely_saved: Стойността е запазена подсигурено
     generate: Генериране на токен
     regenerate: Регенериране на токен
-    generate_success_copy: Поради мерки за сигурност, след запазване и напускане на тази страница, токенът няма да бъде достъпен за повторно показване. Уверете се, че сте го записали странично.
+    regenerate_confirm_title: Регенериране на токен
     remove_token: Изтриване на токен
+    remove_confirm_title: Изтриване на токен
   system-raw-editor:
     system-raw-editor: Редактор в суров вид
     description: Позволява въвеждане на сурови стойности или mustache шаблони
@@ -2350,4 +2370,6 @@ search_flow: Поток на търсене...
 percent: Процент
 show_password: Показване на паролата
 hide_password: Скриване на паролата
+license_grace_key_modal:
+  optional: По желание
 set_to_now: Сегашно време

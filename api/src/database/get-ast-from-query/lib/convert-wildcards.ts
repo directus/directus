@@ -3,7 +3,9 @@ import { getRelation } from '@directus/utils';
 import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
+import { extractFunctionName } from '../../../utils/extract-function-name.js';
 import { parseFilterKey } from '../../../utils/parse-filter-key.js';
+import { parseJsonFunction } from '../../helpers/fn/json/parse-function.js';
 
 export interface ConvertWildcardsOptions {
 	collection: string;
@@ -58,8 +60,19 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 			} else {
 				// Set to all allowed fields
 				const allowedAliases = aliases.filter((fieldKey) => {
-					const { fieldName } = parseFilterKey(options.alias![fieldKey]!);
-					return allowedFields!.includes(fieldName);
+					const aliasValue = options.alias![fieldKey]!;
+
+					if (extractFunctionName(aliasValue) === 'json') {
+						try {
+							const { field } = parseJsonFunction(aliasValue);
+							return allowedFields.includes(field);
+						} catch {
+							return false;
+						}
+					}
+
+					const { fieldName } = parseFilterKey(aliasValue);
+					return allowedFields.includes(fieldName);
 				});
 
 				fields.splice(index, 1, ...allowedFields, ...allowedAliases);

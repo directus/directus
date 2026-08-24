@@ -267,6 +267,8 @@ wysiwyg_options:
   bold: Feitletrað
   italic: Skáletrað
   codeblock: Kóði
+  insertdatetime_date: Dagsetning
+  insertdatetime_time: Tími
   unlink: Fjarlægja Hlekk
   copy: Afrita
   cut: Klippa
@@ -286,12 +288,20 @@ wysiwyg_options:
   remove: Fjarlægja
   selectall: Velja Allt
   table: Tafla
+  ltr: Vinstri til Hægri
+  rtl: Hægri til Vinstri
 dropdown: Fellilisti
 choices: Val
 deselect_all: Afvelja Allt
 other: Annað...
 unknown_user: Óþekktur Notandi
 settings_project: Stillingar
+licensing:
+  addon_update: Uppfæra
+  resolve_section_flows: Flæðir
+  resolve_sso_admin_password: Lykilorð
+  entitlements:
+    flows: Flæðir
 settings_flows: Flæðir
 settings_translations: Þýðingar
 select: Velja...
@@ -315,6 +325,7 @@ fields:
     collection: Safn
     icon: Íkon
     note: Minnispunktur
+    status: Staða
     color: Litur
     hidden: Falið
   directus_files:
@@ -424,6 +435,8 @@ interfaces:
     name: Sía
     add_filter: Bæta við Síu
     all: Allt
+  group-tabs:
+    fill_width: Fylla Breidd
   presentation-links:
     primary: Aðal
   select-multiple-checkbox:
@@ -642,3 +655,5 @@ fonts:
   bold: Feitletrað
   italic: Skáletrað
   auto: Sjálfvirkt
+license_grace_key_modal:
+  optional: Valkvætt

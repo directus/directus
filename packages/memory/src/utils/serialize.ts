@@ -8,7 +8,7 @@ import { uint8ArrayToString } from './uint8array-to-string.js';
  * @param val - JS value to serialize
  * @returns Uint8Array of serialized value
  */
-export const serialize = (val: unknown) => {
+export const serialize = (val: unknown): Uint8Array => {
 	const valueString = JSON.stringify(val);
 	return stringToUint8Array(valueString);
 };
@@ -19,7 +19,7 @@ export const serialize = (val: unknown) => {
  * @param val - Binary array to deserialize
  * @returns JavaScript value
  */
-export const deserialize = <T = unknown>(val: Uint8Array) => {
+export const deserialize = <T = unknown>(val: Uint8Array): T => {
 	// Handle empty buffers to prevent errors during race conditions or disconnects such shutdowns
 	if (val.length === 0) {
 		return undefined as T;

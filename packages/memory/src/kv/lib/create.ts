@@ -2,7 +2,7 @@ import type { KvConfig } from '../types/config.js';
 import { KvLocal } from './local.js';
 import { KvRedis } from './redis.js';
 
-export const createKv = (config: KvConfig) => {
+export const createKv = (config: KvConfig): KvLocal | KvRedis => {
 	if (config.type === 'local') {
 		return new KvLocal(config);
 	}

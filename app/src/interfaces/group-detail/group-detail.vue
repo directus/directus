@@ -10,6 +10,7 @@ import type { ComparisonContext } from '@/components/v-form/types';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { CollabContext } from '@/composables/use-collab';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 
 const props = withDefaults(
 	defineProps<{
@@ -31,6 +32,7 @@ const props = withDefaults(
 		headerIcon?: string;
 		headerColor?: string;
 		direction?: string;
+		version?: ContentVersionMaybeNew | null;
 	}>(),
 	{
 		batchActiveFields: () => [],
@@ -169,6 +171,7 @@ function useComparisonIndicator() {
 			:show-validation-errors="false"
 			:comparison="comparison"
 			:collab-context="collabContext"
+			:version="version"
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</VDetail>
@@ -229,22 +232,22 @@ function useComparisonIndicator() {
 
 .v-divider.edited:not(.active) .edit-dot {
 	position: absolute;
-	inset-block-start: 7px;
-	inset-inline-start: -7px;
+	inset-block-start: 0.375rem;
+	inset-inline-start: -0.375rem;
 	display: block;
-	inline-size: 4px;
-	block-size: 4px;
+	inline-size: 0.25rem;
+	block-size: 0.25rem;
 	background-color: var(--theme--form--field--input--foreground-subdued);
-	border-radius: 4px;
+	border-radius: 0.25rem;
 	content: '';
 }
 
 .header-icon {
-	margin-inline-end: 12px !important;
+	margin-inline-end: 0.6875rem !important;
 }
 
 .warning {
-	margin-inline-start: 8px;
+	margin-inline-start: 0.4375rem;
 	color: var(--theme--danger);
 }
 </style>

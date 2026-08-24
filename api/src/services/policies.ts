@@ -12,7 +12,7 @@ export class PoliciesService extends ItemsService<Policy> {
 	}
 
 	private async clearCaches(opts?: MutationOptions) {
-		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache, autoPurgeSchema: false });
 
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();

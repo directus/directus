@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Collection } from '@directus/types';
 import { orderBy } from 'lodash';
-import { computed, toRefs, watch } from 'vue';
+import { computed, nextTick, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store/';
 import FieldConfiguration from './field-configuration.vue';
@@ -10,22 +10,18 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useExtensions } from '@/extensions';
 
-const props = withDefaults(
-	defineProps<{
-		collection: Collection;
-		search?: string | null;
-	}>(),
-	{
-		search: null,
-	},
-);
+const props = defineProps<{
+	collection: Collection;
+}>();
+
+const search = defineModel<string | null>('search', { default: null });
 
 defineEmits<{
 	(e: 'save'): void;
 	(e: 'toggleAdvanced'): void;
 }>();
 
-const { collection, search } = toRefs(props);
+const { collection } = toRefs(props);
 
 const { t } = useI18n();
 
@@ -91,6 +87,31 @@ const groups = computed(() => {
 
 const chosenInterface = syncFieldDetailStoreProperty('field.meta.interface');
 
+const interfaceEls = ref<Record<string, Element | null>>({});
+
+let interfaceChosenByUser = false;
+
+/**
+ * Configuring a field can switch the chosen interface automatically, for example selecting
+ * `directus_files` as the related collection of an m2m switches the interface to `files`. Clear the
+ * search in that case, as the configuration would otherwise be hidden by the active filter, and
+ * scroll to the newly chosen interface as it is likely to be in a different spot than the previous one.
+ */
+watch(chosenInterface, async (newInterface) => {
+	const chosenByUser = interfaceChosenByUser;
+	interfaceChosenByUser = false;
+
+	if (!newInterface || chosenByUser) return;
+	if (!interfacesSorted.value.some((inter) => inter.id === newInterface)) return;
+
+	const isVisible = groups.value.some((group) => group.interfaces.some((inter) => inter.id === newInterface));
+	if (!isVisible) search.value = null;
+
+	await nextTick();
+
+	interfaceEls.value[newInterface]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
 const configRow = computed(() => {
 	if (!chosenInterface.value) return null;
 
@@ -127,6 +148,8 @@ function isSVG(path: string) {
 }
 
 function toggleInterface(id: string) {
+	interfaceChosenByUser = true;
+
 	if (chosenInterface.value === id) {
 		chosenInterface.value = null;
 	} else {
@@ -144,6 +167,11 @@ function toggleInterface(id: string) {
 				<button
 					v-for="inter of group.interfaces"
 					:key="inter.id"
+					:ref="
+						(el) => {
+							interfaceEls[inter.id] = el as Element | null;
+						}
+					"
 					class="interface"
 					:class="{ active: chosenInterface === inter.id, gray: chosenInterface && chosenInterface !== inter.id }"
 					@click="toggleInterface(inter.id)"
@@ -176,20 +204,22 @@ function toggleInterface(id: string) {
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
 .content {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
 }
 
 .group h2 {
-	margin-block-end: 40px;
-	padding-block-end: 2px;
+	margin-block-end: 2.25rem;
+	padding-block-end: 0.125rem;
 	font-weight: 700;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .group + .group {
-	margin-block-start: 80px;
+	margin-block-start: 4.5rem;
 }
 
 .grid {
@@ -197,23 +227,23 @@ function toggleInterface(id: string) {
 
 	display: grid;
 	grid-template-columns: repeat(var(--columns), 1fr);
-	gap: 32px;
+	gap: 1.8125rem;
 
-	@media (min-width: 400px) {
+	@media (width >= 22.5rem) {
 		--columns: 2;
 	}
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 3;
 	}
 
-	@media (min-width: 840px) {
+	@media (width >= 47.25rem) {
 		--columns: 4;
 	}
 }
 
 .interface {
-	min-block-size: 100px;
+	min-block-size: 5.625rem;
 	overflow: hidden;
 	text-align: start;
 }
@@ -224,10 +254,10 @@ function toggleInterface(id: string) {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 160px;
-	block-size: 100px;
-	margin-block-end: 8px;
-	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	inline-size: 9rem;
+	block-size: 5.625rem;
+	margin-block-end: 0.4375rem;
+	border: var(--theme--border-width) solid var(--theme--border-color);
 	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, border-color;
@@ -249,14 +279,14 @@ function toggleInterface(id: string) {
 }
 
 .preview :deep(svg) .glow {
-	filter: drop-shadow(0 0 4px var(--theme--primary-subdued));
+	filter: drop-shadow(0 0 0.25rem var(--theme--primary-subdued));
 }
 
 .preview .fallback {
 	--v-icon-color: var(--theme--primary-subdued);
 
 	display: block;
-	padding: 8px 16px;
+	padding: 0.4375rem 0.875rem;
 	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--primary);
 	border-radius: var(--theme--border-radius);
@@ -264,7 +294,7 @@ function toggleInterface(id: string) {
 }
 
 .interface:hover .preview {
-	border-color: var(--theme--form--field--input--border-color);
+	border-color: var(--theme--border-color-accent);
 }
 
 .interface.active .preview {

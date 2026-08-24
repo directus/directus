@@ -1,107 +1,117 @@
-Licensor:             Monospace, Inc.
+# Monospace Sustainable Core License, Version 1.0
 
-Licensed Work:        Directus
-                      The Licensed Work is Copyright © 2025 Monospace, Inc.
+## Abbreviation
 
-Additional Use Grant: You may use the Licensed Work in production as long as
-                      your Total Finances do not exceed US $5,000,000 for the
-                      most recent 12-month period, provided that Monospace, Inc.
-                      will not be liable to you in any way, including for any
-                      damages, including general, special, incidental or
-                      consequential damages, arising out of such use.
+MSCL-1.0-GPL
 
-                      References to: “Total Finances” mean the largest of your
-                      aggregate gross revenues, entire budget, and/or funding
-                      (no matter the source); “you” and “your” include (without
-                      limitation) any individual or entity agreeing to these
-                      terms and any affiliates of such individual or entity; and
-                      “production” mean any use other than (i) development of
-                      (including evaluation of the Licensed Work), debugging, or
-                      testing your offerings, or (ii) making the Licensed Work
-                      available standalone in unmodified object code form.
+## Notice
 
-Change Date:          Three years from release date
+Copyright 2026 Monospace Inc.
 
-Change License:       GNU General Public License (GPL) v3
+## Terms and Conditions
 
-For information about alternative licensing arrangements, please visit
-https://directus.io/pricing.
+### Licensor ("We")
 
---------------------------------------------------------------------------------
+The party offering the Software under these Terms and Conditions.
 
-Business Source License 1.1
+### The Software
 
-Terms
+The "Software" is each version of the software that we make available under
+these Terms and Conditions, as indicated by our inclusion of these Terms and
+Conditions with the Software.
 
-The Licensor hereby grants you the right to copy, modify, create derivative
-works, redistribute, and make non-production use of the Licensed Work. The
-Licensor may make an Additional Use Grant, above, permitting limited production
-use.
+### License Grant
 
-Effective on the Change Date, or the fourth anniversary of the first publicly
-available distribution of a specific version of the Licensed Work under this
-License, whichever comes first, the Licensor hereby grants you rights under the
-terms of the Change License, and the rights granted in the paragraph above
-terminate.
+Subject to your compliance with this License Grant and the Limitations, Patents,
+Redistribution, Disclaimer and Trademark clauses below, we hereby grant you the
+right to use, copy, modify, create derivative works, publicly perform, publicly
+display and redistribute the Software for any Permitted Purpose identified
+below.
 
-If your use of the Licensed Work does not comply with the requirements currently
-in effect as described in this License, you must purchase a commercial license
-from the Licensor, its affiliated entities, or authorized resellers, or you must
-refrain from using the Licensed Work.
+### Permitted Purpose
 
-All copies of the original and modified Licensed Work, and derivative works of
-the Licensed Work, are subject to this License. This License applies separately
-for each version of the Licensed Work and the Change Date may vary for each
-version of the Licensed Work released by Licensor.
+A Permitted Purpose is any purpose other than a Competing Use.
 
-You must conspicuously display this License on each original or modified copy of
-the Licensed Work. If you receive the Licensed Work in original or modified form
-from a third party, the terms and conditions set forth in this License apply to
-your use of that work.
+A Competing Use means making the Software available to any party (on a stand
+alone basis or together with your products or services) that competes with the
+Licensor's commercial offerings of the Software itself, where Licensor imposes a
+license fee, royalty, or other charge for exercise of any rights to the
+Software.
 
-Any use of the Licensed Work in violation of this License will automatically
-terminate your rights under this License for the current and all other versions
-of the Licensed Work.
+Permitted Purposes specifically include using the Software, subject to the
+Limitations below:
 
-This License does not grant you any right in any trademark or logo of Licensor
-or its affiliates (provided that you may use a trademark or logo of Licensor as
-expressly required by this License).
+1. for your internal use and access;
+2. for non-commercial education;
+3. for non-commercial research; and
+4. in connection with professional services that you provide to a licensee using
+   the Software in accordance with these Terms and Conditions, including
+   professional services to deploy the Software or host the Software for the
+   licensee.
 
-TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE LICENSED WORK IS PROVIDED ON AN
-“AS IS” BASIS. LICENSOR HEREBY DISCLAIMS ALL WARRANTIES AND CONDITIONS, EXPRESS
-OR IMPLIED, INCLUDING (WITHOUT LIMITATION) WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, AND TITLE.
+### Limitations
 
-MariaDB hereby grants you permission to use this License’s text to license your
-works, and to refer to it using the trademark “Business Source License”, as long
-as you comply with the Covenants of Licensor below.
+You must not move, change, disable or circumvent the license key functionality
+of the Software or modify any portion of the Software protected by the license
+key to:
 
-Covenants of Licensor
+- enable access to the protected functionality without a valid license key or
+- remove the protected functionality.
 
-In consideration of the right to use this License’s text and the “Business
-Source License” name and trademark, Licensor covenants to MariaDB, and to all
-other recipients of the licensed work to be provided by Licensor:
+### Patents
 
-1. To specify as the Change License the GPL Version 2.0 or any later version,
-   or a license that is compatible with GPL Version 2.0 or a later version,
-   where “compatible” means that software provided under the Change License can
-   be included in a program with software provided under GPL Version 2.0 or a
-   later version. Licensor may specify additional Change Licenses without
-   limitation.
+To the extent your use for a Permitted Purpose would necessarily infringe our
+patents, the license grant above includes a license under our patents. If you
+make a claim against any party that the Software infringes or contributes to the
+infringement of any patent, then your patent license to the Software ends
+immediately.
 
-2. To either: (a) specify an additional grant of rights to use that does not
-   impose any additional restriction on the right granted in this License, as
-   the Additional Use Grant; or (b) insert the text “None”.
+### Redistribution
 
-3. To specify a Change Date.
+The Terms and Conditions apply to all copies, modifications and derivatives of
+the Software.
 
-4. Not to modify this License in any other way.
+If you redistribute any copies, modifications or derivatives of the Software,
+then (A) you must include a copy of or a link to these Terms and Conditions and
+not remove any copyright notices provided in or with the Software and (B) you
+may not impose any further restrictions on the exercise of the rights granted or
+affirmed under this License. For example, you may not impose a license fee,
+royalty, or other charge for exercise of rights granted under this License.
 
-Notice
+### Disclaimer
 
-The Business Source License (this document, or the "License") is not an Open
-Source license. However, the Licensed Work will eventually be made available
-under an Open Source License, as stated in this License.
+THE SOFTWARE IS PROVIDED "AS IS" AND WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING WITHOUT LIMITATION WARRANTIES OF FITNESS FOR A PARTICULAR
+PURPOSE, MERCHANTABILITY, TITLE OR NON-INFRINGEMENT.
 
-License text copyright © 2023 MariaDB plc, All Rights Reserved.
-“Business Source License” is a trademark of MariaDB plc.
+IN NO EVENT WILL WE HAVE ANY LIABILITY TO YOU ARISING OUT OF OR RELATED TO THE
+SOFTWARE, INCLUDING INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES, EVEN
+IF WE HAVE BEEN INFORMED OF THEIR POSSIBILITY IN ADVANCE.
+
+### Trademarks
+
+Except for displaying the License Details and identifying us as the origin of
+the Software, you have no right under these Terms and Conditions to use our
+trademarks, trade names, service marks or product names.
+
+## Grant of Future License
+
+We hereby irrevocably grant you an additional license to use the Software under
+the GNU General Public License version 3 (GPL-3.0), effective on the fourth
+anniversary of the date we make the Software available.
+
+On or after that date, you may use the Software under GPL-3.0, in which case the
+following will apply:
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+The full text of the GPL-3.0 license is available at:
+https://www.gnu.org/licenses/gpl-3.0.html

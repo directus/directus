@@ -1,0 +1,6 @@
+services:
+  redis:
+    image: redis:6-alpine
+    platform: linux/amd64
+    ports:
+      - ${REDIS_PORT}:6379

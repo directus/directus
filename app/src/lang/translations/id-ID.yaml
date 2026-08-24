@@ -1,4 +1,5 @@
 ---
+continue: Lanjut
 first_name: Nama Depan
 last_name: Nama belakang
 identifier: Pengenal
@@ -94,7 +95,6 @@ keep: Jaga
 version: Versi
 version_key: Versi kunci
 version_name: Nama Versi
-main_version: Utama
 reset_bookmark: Hapus Markah
 update_bookmark: Hapus Markah
 delete_bookmark: Hapus Markah
@@ -353,6 +353,7 @@ related_collection: Pengumpulan Terkait
 related_collections: Koleksi Terkait
 translations_collection: Koleksi Terjemahan
 languages_collection: Koleksi Bahasa
+translations_preview_collections: Pengumpulan
 import_data_input_placeholder: CSV atau JSON...
 import_data_button: Mulai Impor
 import_data_indeterminate: Mengimpor Data...
@@ -389,6 +390,7 @@ functions:
   minute: Menit
   second: Detik
   count: Hitung
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -499,7 +501,6 @@ no_collections: Tidak ada koleksi
 create_collection: Buat Pengumpulan
 no_collections_copy_admin: Kamu belum punya Koleksi. Klik tombol di bawah ini untuk memulai.
 no_collections_copy: Kamu belum memiliki Koleksi. Silakan hubungi administrator sistem.
-relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
 no_singleton_relations: Hubungan dengan Singletons tidak didukung
 display_template_not_setup: Opsi templat tampilan disalahkonfigurasikan
 collection_field_not_setup: Opsi bidang koleksi disalahkonfigurasikan
@@ -685,6 +686,7 @@ operators:
   nintersects: Tidak beririsan
   intersects_bbox: Memotong kotak pembatas
   nintersects_bbox: Tidak memotong kotak pembatas
+  json: JSON
   regex: Mencocokkan RegExp
 custom_validation_message: Pesan Validasi Kustom
 loading: Memuat...
@@ -870,6 +872,8 @@ wysiwyg_options:
   bullist: Daftar Bullet
   numlist: Daftar Nomor
   hr: Garis Horizontal
+  insertdatetime_date: Tanggal
+  insertdatetime_time: Time
   link: Tambah/Sunting Tautan
   unlink: Hapus Tautan
   media: Tambah /Sunting Media
@@ -898,6 +902,8 @@ wysiwyg_options:
   source_code: Edit Kode Sumber
   fullscreen: Layar Penuh
   directionality: Keterarahan
+  ltr: Kiri ke Kanan
+  rtl: Kanan ke Kiri
 dropdown: Dropwdown
 choices: Pilihan
 choices_option_configured_incorrectly: Pilihan dikonfigurasi dengan tidak benar
@@ -915,6 +921,16 @@ editing_in_batch: 'Mengedit Masal {count} item'
 no_options_available: Tidak ada opsi tersedia
 settings_data_model: Model Data
 settings_project: Pengaturan
+licensing:
+  unlimited: Tak terbatas
+  addon_update: Perbarui
+  resolve_continue: Lanjut
+  resolve_show_n_more: 'Tampilkan {count} lebih banyak'
+  resolve_section_flows: Kumpulan Alur
+  resolve_sso_admin_password: Kata Sandi
+  entitlements:
+    collections: Pengumpulan
+    flows: Kumpulan Alur
 settings_flows: Kumpulan Alur
 settings_presets: Markah
 settings_translations: Terjemahan
@@ -990,6 +1006,7 @@ fields:
     collection: Koleksi
     icon: Ikon
     note: Catatan
+    status: Status
     color: Warna
     display_template: Tampilan Template
     hidden: Tersembunyi
@@ -1299,6 +1316,8 @@ interfaces:
     all_opened: Semua Dibuka
     accordion_mode: Mode Akordeon
     max_one_section_open: Maks 1 Bagian Dibuka
+  group-tabs:
+    fill_width: Lebar Penuh
   presentation-links:
     presentation-links: Tombol
     style: Gaya
@@ -1383,6 +1402,7 @@ interfaces:
     description: Pilih folder
   list:
     sort: Sortir
+    edit_mode_inline: Inline
   tags:
     tags: Tagar
   boolean:

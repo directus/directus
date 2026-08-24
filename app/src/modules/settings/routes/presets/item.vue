@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useLayout } from '@directus/composables';
+import { useShortcut } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { DeepPartial, Field, Filter, Preset } from '@directus/types';
 import { isEqual } from 'lodash';
@@ -7,7 +8,6 @@ import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -18,7 +18,6 @@ import VForm from '@/components/v-form/v-form.vue';
 import VInfo from '@/components/v-info.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useExtensions } from '@/extensions';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
@@ -144,7 +143,7 @@ function useSave() {
 			unexpectedError(error);
 		} finally {
 			saving.value = false;
-			router.push(`/settings/presets`);
+			router.push({ name: 'settings-presets-collection' });
 		}
 	}
 }
@@ -163,7 +162,7 @@ function useDelete() {
 		try {
 			await presetsStore.delete([Number(props.id)]);
 			edits.value = {};
-			router.replace(`/settings/presets`);
+			router.replace({ name: 'settings-presets-collection' });
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
@@ -480,10 +479,6 @@ function discardAndLeave() {
 		readonly
 	>
 		<PrivateView :title="$t('editing_preset')" show-back back-to="/settings/presets">
-			<template #headline>
-				<VBreadcrumb :items="[{ name: $t('settings_presets'), to: '/settings/presets' }]" />
-			</template>
-
 			<template #navigation>
 				<SettingsNavigation />
 			</template>
@@ -493,8 +488,8 @@ function discardAndLeave() {
 					<template #activator="{ on }">
 						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="$t('delete_label')"
-							class="action-delete"
-							secondary
+							kind="danger"
+							variant="ghost"
 							:disabled="preset === null || id === '+'"
 							icon="delete"
 							@click="on"
@@ -514,9 +509,11 @@ function discardAndLeave() {
 						</VCardActions>
 					</VCard>
 				</VDialog>
+			</template>
 
+			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="$t('save')"
+					:label="$t('save')"
 					:disabled="hasEdits === false"
 					:loading="saving"
 					icon="check"
@@ -594,43 +591,37 @@ function discardAndLeave() {
 	--v-button-color-hover: var(--theme--primary);
 }
 
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
 .preset-item {
 	padding: var(--content-padding);
 }
 
 .layout {
-	--content-padding: 0px;
-	--content-padding-bottom: 0px;
-	--layout-offset-top: 0;
+	--content-padding: 0;
+	--content-padding-bottom: 0;
 
 	position: relative;
 	inline-size: 100%;
-	margin-block-start: 32px;
+	margin-block-start: 1.8125rem;
 
 	:deep(#map-container) {
-		min-block-size: 360px;
+		min-block-size: 20.25rem;
 	}
 }
 
 .layout-sidebar {
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 
 	display: contents;
 }
 
 :deep(.layout-options) {
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 
 	@include mixins.form-grid;
 }
 
 :deep(.layout-options .type-label) {
-	font-size: 1rem;
+	font-size: 0.8125rem;
 }
 
 .subdued {

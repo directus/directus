@@ -138,12 +138,12 @@ async function loadRoles() {
 @use '@/styles/mixins';
 
 .grid {
-	--theme--form--row-gap: 20px;
+	--theme--form--row-gap: 1.125rem;
 
 	@include mixins.form-grid;
 }
 
 .v-card-title {
-	font-size: 20px;
+	font-size: 1.125rem;
 }
 </style>

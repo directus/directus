@@ -40,11 +40,11 @@ function getAnswer(questionId: string): string | undefined {
 <style scoped>
 .ask-user-summary {
 	inline-size: 100%;
-	padding: 0.25rem;
+	padding: 0.1875rem;
 }
 
 .completed-answer {
-	padding: 0.375rem 0;
+	padding: 0.3125rem 0;
 
 	& + & {
 		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
@@ -52,19 +52,19 @@ function getAnswer(questionId: string): string | undefined {
 }
 
 .completed-question {
-	font-size: 0.75rem;
+	font-size: 0.5625rem;
 	color: var(--theme--foreground-subdued);
 	margin-block-end: 0.125rem;
 }
 
 .completed-value {
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 	font-weight: 500;
 	color: var(--theme--foreground);
 }
 
 .completed-skipped {
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 	font-style: italic;
 	color: var(--theme--foreground-subdued);
 }

@@ -31,18 +31,14 @@ const sidebarStore = useSidebarStore();
 	overflow: hidden;
 	background-color: var(--theme--sidebar--background);
 	font-family: var(--theme--sidebar--font-family);
-	border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
-	min-inline-size: 280px;
 
-	/* Explicitly render the border outside of the width of the bar itself */
-	box-sizing: content-box;
+	/* Border set by parent; hidden on mobile */
 }
 
 .accordion-root {
-	/* 60px leaves space for the the AI toggle at the bottom */
-	block-size: calc(100% - 60px);
-	display: flex;
-	flex-direction: column;
+	block-size: calc(100% - var(--sidebar-section-trigger-height));
+	overflow: hidden auto;
+	display: block;
 }
 
 .accordion-root.ai-disabled {

@@ -415,7 +415,7 @@ defineExpose({ abort });
 					v-if="fromUser"
 					v-tooltip="!disabled && $t('click_to_browse')"
 					icon
-					rounded
+					small
 					secondary
 					:disabled
 					@click="openFileBrowser"
@@ -436,7 +436,7 @@ defineExpose({ abort });
 					v-if="fromLibrary"
 					v-tooltip="!disabled && $t('choose_from_library')"
 					icon
-					rounded
+					small
 					secondary
 					:disabled
 					@click="activeDialog = 'choose'"
@@ -447,7 +447,7 @@ defineExpose({ abort });
 					v-if="fromUrl && fromUser"
 					v-tooltip="!disabled && $t('import_from_url')"
 					icon
-					rounded
+					small
 					secondary
 					:disabled
 					@click="activeDialog = 'url'"
@@ -502,7 +502,7 @@ defineExpose({ abort });
 	flex-direction: column;
 	justify-content: center;
 	min-block-size: var(--input-height-md);
-	padding: 32px;
+	padding: 1.8125rem;
 	color: var(--theme--foreground-subdued);
 	text-align: center;
 	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
@@ -521,20 +521,18 @@ defineExpose({ abort });
 	&:not(.uploading):not(.disabled):hover {
 		border-color: var(--theme--form--field--input--border-color-hover);
 	}
+
+	&:not(.uploading):not(.disabled):focus-within {
+		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+		outline-offset: var(--focus-ring-offset-invert);
+	}
 }
 
 .actions {
 	display: flex;
 	justify-content: center;
-	margin-block-end: 18px;
-
-	.v-button {
-		margin-inline-end: 12px;
-
-		&:last-child {
-			margin-inline-end: 0;
-		}
-	}
+	margin-block-end: 0.625rem;
+	gap: 0.625rem;
 }
 
 .browse {
@@ -552,7 +550,7 @@ defineExpose({ abort });
 .dragging {
 	color: var(--theme--primary);
 	background-color: var(--theme--primary-background);
-	border-color: var(--theme--form--field--input--border-color-focus);
+	border-color: var(--theme--primary);
 
 	* {
 		pointer-events: none;
@@ -560,25 +558,25 @@ defineExpose({ abort });
 
 	.upload-icon {
 		margin: 0 auto;
-		margin-block-end: 12px;
+		margin-block-end: 0.6875rem;
 	}
 }
 
 .uploading {
 	--v-progress-linear-color: var(--white);
 	--v-progress-linear-background-color: rgb(255 255 255 / 0.25);
-	--v-progress-linear-height: 8px;
+	--v-progress-linear-height: 0.4375rem;
 
 	color: var(--white);
 	background-color: var(--theme--primary);
-	border-color: var(--theme--form--field--input--border-color-focus);
+	border-color: var(--theme--primary);
 	border-style: solid;
 
 	.v-progress-linear {
 		position: absolute;
-		inset-block-end: 30px;
-		inset-inline-start: 32px;
-		inline-size: calc(100% - 64px);
+		inset-block-end: 1.6875rem;
+		inset-inline-start: 1.8125rem;
+		inline-size: calc(100% - 3.625rem);
 	}
 }
 </style>

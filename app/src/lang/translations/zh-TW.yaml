@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 關於
+continue: 繼續
 first_name: 名字
 last_name: 姓氏
 identifier: 識別
@@ -161,14 +162,12 @@ keep: 保留
 version: 版本
 version_key: 版本鍵值
 version_name: 版本名稱
-main_version: 主要
 switch_version: 切換版本
 switch_version_copy: 您確定要切換到 「{version}」 版本嗎？未保存的變更將會遺失。
 create_version: 創建新版本
 rename_version: 重新命名版本
 compare_version: 比較版本
 save_version: 儲存版本
-promote_version: 發布版本
 delete_version: 刪除版本
 reset_bookmark: 重設書籤
 update_bookmark: 更新書籤
@@ -437,6 +436,8 @@ related_collection: 相關收藏
 related_collections: 關聯的集合
 translations_collection: 翻譯集
 languages_collection: 語系集合
+translations_preview_collections: 資料集
+translations_preview_fields: 欄位
 import_data_input_placeholder: CSV 或 JSON...
 import_data_button: 開始匯入
 import_data_indeterminate: 正在匯入資料...
@@ -473,6 +474,7 @@ functions:
   minute: 分
   second: 秒
   count: 數量
+  json: JSON
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 minutes: 分
@@ -577,7 +579,6 @@ no_collections: 沒有集合
 create_collection: 新建集合
 no_collections_copy_admin: 你還沒有任何集合，點擊下方按鈕開始。
 no_collections_copy: 你還沒有任何集合，請與你的系統管理員聯絡。
-relationship_not_setup: 關聯配置不正確
 display_template_not_setup: 顯示範本選項設定錯誤。
 collection_field_not_setup: 集合中有欄位設定錯誤
 select_a_collection: 選擇一個集合
@@ -759,6 +760,7 @@ operators:
   nintersects: 無交集
   intersects_bbox: 區域交集
   nintersects_bbox: 區域不交集
+  json: JSON
   regex: 符合正規表示式
 custom_validation_message: 自訂驗證訊息
 loading: 載入中...
@@ -943,12 +945,15 @@ wysiwyg_options:
   bullist: 項目列表
   numlist: 編號列表
   hr: 分隔線
+  insertdatetime_date: 日期
+  insertdatetime_time: 時間
   link: 新增/修改連結
   unlink: 移除連結
   media: 新增/修改媒體
   image: 新增/修改圖片
   copy: 複製
   cut: 剪下
+  default: 預設
   paste: 貼上
   heading: 標頭
   h1: 標題1
@@ -971,6 +976,8 @@ wysiwyg_options:
   source_code: 編輯原始碼
   fullscreen: 全螢幕
   directionality: 方向
+  ltr: 由左至右
+  rtl: 由右至左
 dropdown: 下拉選單
 choices: 選擇
 choices_option_configured_incorrectly: 選項設定錯誤
@@ -988,6 +995,17 @@ editing_in_batch: '批次編輯 {count} 個項目'
 no_options_available: 沒有可用的選項
 settings_data_model: 資料模型
 settings_project: 設定
+licensing:
+  unlimited: 無限制
+  addon_manage: 管理
+  addon_update: 更新
+  resolve_continue: 繼續
+  resolve_show_n_more: '顯示其餘 {count} 項'
+  resolve_section_flows: 流程
+  resolve_sso_admin_password: 密碼
+  entitlements:
+    collections: 資料集
+    flows: 流程
 ai_assistant: AI助手
 settings_flows: 流程
 settings_presets: 書籤
@@ -1065,6 +1083,7 @@ fields:
     collection: 集合
     icon: 圖示
     note: 備註
+    status: 狀態
     color: 顏色
     display_template: 顯示模板
     hidden: 隱藏
@@ -1168,7 +1187,6 @@ fields:
     custom_aspect_ratios: 自訂比例
     collaborative_editing: 共同編輯
     collaborative_editing_note: 共同編輯需要WebSockets才能正常工作。
-    ai_notice: 'AI助手提供一個內建的側邊欄，用於與大型語言模型對話。啟用後，從工具列中開啟此側邊欄，以便詢問問題、生成內容、獲取協助。<a href="https://directus.io/docs/guides/ai/assistant" target="_blank">了解更多關於配置和使用AI助手的資訊。</a>'
     mcp_allow_deletes_note:
       - 允許通過MCP工具刪除項目、檔案、流程、欄位、關聯以及資料集。<strong>注意：這可能導致資料遺失。</strong>基於安全考量，預設為停用。
     ai_system_prompt: 用於AI系統的提示詞
@@ -1478,6 +1496,8 @@ interfaces:
     all_opened: 全部展開
     accordion_mode: 收合模式
     max_one_section_open: 最多開啟一個區塊
+  group-tabs:
+    fill_width: 填滿寬度
   presentation-links:
     presentation-links: 按鈕
     style: 樣式
@@ -1652,6 +1672,7 @@ interfaces:
     field_note_placeholder: 輸入欄位備註...
     incompatible_data: 目前的資料與重複器不相容，在將資料加入重複器時將會被覆寫
     interface_group: 介面選項
+    edit_mode_inline: 行內
   slider:
     slider: 滑塊
     description: 使用滑塊選擇一個數字
@@ -1723,7 +1744,6 @@ interfaces:
     description: 可以編輯HTML內容的編輯器
     toolbar: 工具列
     custom_formats: 自訂格式
-    options_override: 覆蓋選項
     folder_note: 供上傳檔案用的資料夾。並不會影響已存在的其他檔案。
     imageToken: 永久的 Access Token
     imageToken_label: 永久的 Access Token 將會附在網址後方
@@ -1763,8 +1783,9 @@ interfaces:
     value_securely_saved: 值已安全加密
     generate: 產生 Token
     regenerate: 重新產生 token
-    generate_success_copy: 請記得備份下方的 token ，由於安全問題，在離開此頁之後您將無法再看到這個 token 。
+    regenerate_confirm_title: 重新產生 token
     remove_token: 移除 Token
+    remove_confirm_title: 移除 Token
   system-raw-editor:
     system-raw-editor: 原始資料編輯器
     description: 讓您透過編輯器編輯範本
@@ -2102,4 +2123,6 @@ fonts:
   black: 黑色
   italic: 斜體
   auto: 自動
+license_grace_key_modal:
+  optional: 非必填
 set_to_now: 設為現在

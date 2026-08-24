@@ -554,7 +554,7 @@ export class FieldsService {
 					}
 				}
 
-				// Sanitize column only when applying snapshot diff as opts is only passed from /utils/apply-diff.ts
+				// Sanitize column only when applying snapshot diff as opts is only passed from /utils/schema/apply-diff.ts
 				const columnToCompare =
 					opts?.bypassLimits && opts.autoPurgeSystemCache === false ? sanitizeColumn(existingColumn) : existingColumn;
 
@@ -922,7 +922,17 @@ export class FieldsService {
 				column = table.increments(field.field);
 			}
 		} else if (field.type === 'string') {
-			column = table.string(field.field, field.schema?.max_length ?? existing?.max_length ?? undefined);
+			// Use !== undefined so an explicit null (meaning MAX / unbounded) is not swallowed by ??.
+			const maxLength =
+				field.schema?.max_length !== undefined ? field.schema.max_length : (existing?.max_length ?? undefined);
+
+			// On MSSQL, null max_length means nvarchar(MAX). Knex's table.text() is the correct way
+			// to emit that; table.string(col, null) falls back to nvarchar(255).
+			if (maxLength === null && this.helpers.schema.isOneOfClients(['mssql'])) {
+				column = table.text(field.field);
+			} else {
+				column = table.string(field.field, maxLength ?? undefined);
+			}
 		} else if (['float', 'decimal'].includes(field.type)) {
 			const type = field.type as 'float' | 'decimal';
 

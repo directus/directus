@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Derbarê
+continue: Berdewam Bike
 first_name: Navê Pêşîn
 last_name: Navê Paşîn
 identifier: Nasname
@@ -157,14 +158,12 @@ keep: Hêlan
 version: Guherto
 version_key: Mifteya Guhertoye
 version_name: Navê Guhertoye
-main_version: Guhertoya Sereke
 switch_version: Guhertoye Biguherîne
 switch_version_copy: Tu bi rastî dixwazî derbazî guhertoya "{version}" bibî? Guherînên tomarnekirî wê winda bibin.
 create_version: Guherto Biafirîne
 rename_version: Navê Guhertoye Biguherîne
 compare_version: Guhertoyê Berhev Bike
 save_version: Guhertoye Tomar Bike
-promote_version: Guhertoye Bilind Bike
 delete_version: Guhertoye Jê Bibe
 delete_version_copy: >-
   Tu bi rastî dixwazî guhertoya "{version}" jê bibî? Ev çalakî nayê vegerandin.
@@ -465,6 +464,8 @@ related_collection: Koleksiyona Têkildar
 related_collections: Koleksiyonên Têkildar
 translations_collection: Koleksiyona Wergerandinê
 languages_collection: Koleksiyona Zimanan
+translations_preview_collections: Koleksiyon
+translations_preview_fields: Qad
 import_data_input_placeholder: CSV an JSON...
 import_data_button: Împortkirinê Destpê Bike
 import_data_indeterminate: Daneyê Tê Împortkirin...
@@ -501,6 +502,7 @@ functions:
   minute: Deqîqe
   second: Saniye
   count: Hejmar
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -593,7 +595,6 @@ manual_string: Rêzeka bi destî
 save_and_create_new: Tomar Bike û Nû Biafirîne
 save_and_stay: Tomar Bike û Bimîne
 save_and_quit: Tomar Bike û Derkeve
-save_and_return_to_main: Tomar Bike û Vegere Serekê
 save_as_copy: Wek Kopiyê Tomar Bike
 add_existing: Yê Heyî Zêde Bike
 creating_items: Afirandina Hêmanan
@@ -640,7 +641,6 @@ no_collections: Ti Koleksiyon Tune
 create_collection: Koleksiyonê Biafirîne
 no_collections_copy_admin: Te hîn ti koleksiyon tune ne. Li bişkoka jêrîn bitikîne da ku dest pê bikî.
 no_collections_copy: Te hîn ti koleksiyon tune ne. Ji kerema xwe bi rêveberê pergala xwe re têkilî dayne.
-relationship_not_setup: Têkilî bi rastî nehatiye mîhengkirin
 no_singleton_relations: Têkiliyên li Yektayan nayê piştgirîkirin
 display_template_not_setup: Vebijêrka şablona nîşanê şaş hatiye mîhengkirin
 collection_field_not_setup: Vebijêrka qada koleksiyonê şaş hatiye mîhengkirin
@@ -844,6 +844,7 @@ operators:
   nintersects: Naqelişe
   intersects_bbox: Qutiya sînordar diqelişe
   nintersects_bbox: Qutiya sînordar naqelişe
+  json: JSON
   regex: Bi RegExp re lihev dike
 custom_validation_message: Peyama Rastkirina Taybet
 loading: Tê barkirin...
@@ -1063,12 +1064,15 @@ wysiwyg_options:
   bullist: Lîsteya Xalî
   numlist: Lîsteya Hejmarkirî
   hr: Xêza Asoyî
+  insertdatetime_date: Dîrok
+  insertdatetime_time: Dem
   link: Girêdanê Zêde Bike/Biguherîne
   unlink: Girêdanê Rake
   media: Medyayê Zêde Bike/Biguherîne
   image: Wêneyê Zêde Bike/Biguherîne
   copy: Kopî Bike
   cut: Jê Bike
+  default: Standard
   paste: Pêveke
   heading: Sernav
   h1: Sernav 1
@@ -1091,6 +1095,8 @@ wysiwyg_options:
   source_code: Çavkaniyê Biguherîne
   fullscreen: Ekrana Tije
   directionality: Alîgirî
+  ltr: Çep-bo-Rast
+  rtl: Rast-bo-Çep
   lazy_loading: Wêneyê Tembel-Bar Bike
   lazy_loading_label: Tembel-Barkirinê Çalak Bike
 dropdown: Dropdown
@@ -1118,6 +1124,17 @@ settings_data_model: Modela Daneyê
 settings_roles: Rolên Bikarhêner
 settings_permissions: Polîtîkayên Gihîştinê
 settings_project: Mîhengkarî
+licensing:
+  unlimited: Bêsînor
+  addon_manage: Birêve Bibe
+  addon_update: Nûbike
+  resolve_continue: Berdewam Bike
+  resolve_show_n_more: '{count} bêtir nîşan bide'
+  resolve_section_flows: Herikîn
+  resolve_sso_admin_password: Şîfre
+  entitlements:
+    collections: Koleksiyon
+    flows: Herikîn
 settings_appearance: Xuyang
 settings_flows: Herikîn
 settings_system_logs: Têketinên Pergalê
@@ -1215,6 +1232,7 @@ fields:
     collection: Koleksiyon
     icon: Îkon
     note: Not
+    status: Rewş
     color: Reng
     display_template: Şablona Nîşanê
     hidden: Veşartî
@@ -1689,6 +1707,8 @@ interfaces:
     all_opened: Hemû Vekirî
     accordion_mode: Moda Akordionê
     max_one_section_open: Herî Zêde 1 Beş Vekirî
+  group-tabs:
+    fill_width: Firehî Dagire
   presentation-links:
     presentation-links: Bişkok
     style: Şêwaz
@@ -1878,6 +1898,7 @@ interfaces:
     incompatible_data: Daneyên heyî bi navrûya dubarekê re ne lihev in û dema ku hêman li dubarekê tên zêdekirin dê werin guhertin
     interface_group: Vebijêrkên Navrûyê
     display_group: Vebijêrkên Nîşandanê
+    edit_mode_inline: Navxêz
   slider:
     slider: Lîstik
     description: Hejmarek bi lîstikê hilbijêre
@@ -1951,9 +1972,6 @@ interfaces:
     description: Edîtorek nivîsa dewlemend a ku naveroka HTML dinivîse
     toolbar: Darika Amûran
     custom_formats: Formatên Taybet
-    custom_formats_note: Lîsteya Formatên Naveroka TinyMCE. Ji bo bêtir agahdariyê, belgeya TinyMCE ya derbarê [Formata Naveroka](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) binêre.
-    options_override: Serdabiriya Vebijêrkan
-    options_override_note: Mifteyen Formatkarina Bikarhêner a TinyMCE û nirxên wan. Ji bo bêtir agahdariyê, belgeya TinyMCE ya derbarê [Vebijêrkên Formatkarina Bikarhêner](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) binêre.
     folder_note: Peldank ji bo pelên barkirî. Bandorê li pelên heyî nake.
     imageToken: Tokena Gihîştina Girtî
     imageToken_label: Tokena gihîştina girtî li URLa tiştê tê zêdekirin
@@ -2004,8 +2022,9 @@ interfaces:
     value_securely_saved: Nirx bi Ewlehî Tê Tomarkirin
     generate: Tokena Biafirîne
     regenerate: Tokena Dîsa Biafirîne
-    generate_success_copy: Piştrast be ku tu tokena jorîn kopî dikî û rezerv dikî. Ji ber sedemên ewlehiyê, piştî tomarkirinê û dûrketina ji vê rûpelê, tu nikarî tokenê cardin bibînî.
+    regenerate_confirm_title: Tokena Dîsa Biafirîne
     remove_token: Tokenê Rake
+    remove_confirm_title: Tokenê Rake
   system-raw-editor:
     system-raw-editor: Edîtora Xav
     description: Destûr dide nivîsandina nirxên xav an şablonsaziya bi mustacheê
@@ -2468,4 +2487,6 @@ search_flow: Herikînê Bigere...
 percent: Rêje
 show_password: Şîfreyê nîşan bide
 hide_password: Şîfreyê veşêre
+license_grace_key_modal:
+  optional: Nebicî
 set_to_now: Dayne li Niha

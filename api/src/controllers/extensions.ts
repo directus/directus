@@ -1,4 +1,3 @@
-import type { ReadStream } from 'node:fs';
 import { EXTENSION_TYPES } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
@@ -21,8 +20,10 @@ import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { ExtensionReadError, ExtensionsService } from '../services/extensions.js';
 import asyncHandler from '../utils/async-handler.js';
+import { destroyOnDisconnect } from '../utils/destroy-on-disconnect.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { handleRegistryError } from './utils/handle-registry-error.js';
 
 const router = express.Router();
 const env = useEnv();
@@ -104,7 +105,13 @@ router.get(
 			options.registry = env['MARKETPLACE_REGISTRY'];
 		}
 
-		const payload = await list(query, options);
+		let payload;
+
+		try {
+			payload = await list(query, options);
+		} catch (error) {
+			handleRegistryError(error);
+		}
 
 		res.locals['payload'] = payload;
 		return next();
@@ -129,7 +136,13 @@ router.get(
 			options.registry = env['MARKETPLACE_REGISTRY'];
 		}
 
-		const payload = await account(req.params['pk'], options);
+		let payload;
+
+		try {
+			payload = await account(req.params['pk'], options);
+		} catch (error) {
+			handleRegistryError(error);
+		}
 
 		res.locals['payload'] = payload;
 		return next();
@@ -154,7 +167,13 @@ router.get(
 			options.registry = env['MARKETPLACE_REGISTRY'];
 		}
 
-		const payload = await describe(req.params['pk'], options);
+		let payload;
+
+		try {
+			payload = await describe(req.params['pk'], options);
+		} catch (error) {
+			handleRegistryError(error);
+		}
 
 		res.locals['payload'] = payload;
 		return next();
@@ -303,13 +322,8 @@ router.get(
 		const chunk = req.params['chunk'] as string;
 		const extensionManager = getExtensionManager();
 
-		let source: ReadStream | null;
-
-		if (chunk === 'index.js') {
-			source = await extensionManager.getAppExtensionChunk();
-		} else {
-			source = await extensionManager.getAppExtensionChunk(chunk);
-		}
+		const chunkName = chunk === 'index.js' ? undefined : chunk;
+		const source = await extensionManager.getAppExtensionChunk(chunkName);
 
 		if (source === null) {
 			throw new RouteNotFoundError({ path: req.path });
@@ -323,6 +337,12 @@ router.get(
 		);
 
 		res.setHeader('Vary', 'Origin, Cache-Control');
+
+		// Clean up the source stream if the client disconnects, or is already gone
+		if (destroyOnDisconnect(res, () => source.destroy())) {
+			return;
+		}
+
 		source.pipe(res);
 	}),
 );

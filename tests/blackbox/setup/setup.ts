@@ -17,6 +17,38 @@ export async function setup() {
 
 	await new Listr([
 		{
+			title: 'start mock license server',
+			task: async () => {
+				const license = spawn('node', [join(paths.license, 'dist', 'run.js')], {
+					cwd: paths.cwd,
+					env: {
+						...process.env,
+						LICENSE_PORT: '7000',
+					},
+				});
+
+				global.mockLicenseServer = license;
+
+				let licenseOutput = '';
+				license.stdout?.setEncoding('utf8');
+
+				license.stdout?.on('data', (data) => {
+					licenseOutput += data.toString();
+				});
+
+				license.stderr?.on('data', (data) => {
+					licenseOutput += data.toString();
+					console.log(`[LICENSE] ${data.toString()}`);
+				});
+
+				license.on('exit', (code) => {
+					if (code !== null && code !== 0) {
+						throw new Error(`Mock license server failed (${code}): \n ${licenseOutput}`);
+					}
+				});
+			},
+		},
+		{
 			title: 'Bootstrap databases and start servers',
 			task: async () => {
 				return new Listr(
@@ -24,6 +56,27 @@ export async function setup() {
 						return {
 							title: config.names[vendor],
 							task: async () => {
+								if (vendor === 'mssql') {
+									const adminDb = knex({
+										client: 'mssql',
+										connection: { ...(config.knexConfig.mssql.connection as object), database: 'master' } as never,
+										pool: { min: 1, max: 1 },
+									});
+
+									try {
+										await awaitDatabaseConnection(adminDb, config.knexConfig.mssql.waitTestSQL);
+										await adminDb.raw("IF DB_ID('directus') IS NULL CREATE DATABASE [directus]");
+										await adminDb.raw('ALTER DATABASE [directus] SET COMPATIBILITY_LEVEL = 150');
+										await adminDb.raw('ALTER DATABASE [directus] SET RECOVERY SIMPLE');
+
+										await adminDb.raw(
+											'ALTER DATABASE [directus] SET READ_COMMITTED_SNAPSHOT ON WITH ROLLBACK IMMEDIATE',
+										);
+									} finally {
+										await adminDb.destroy();
+									}
+								}
+
 								const database = knex(config.knexConfig[vendor]);
 								await awaitDatabaseConnection(database, config.knexConfig[vendor].waitTestSQL);
 
@@ -151,6 +204,8 @@ export async function setup() {
 				serverNoCache?.kill();
 			}
 
+			global.mockLicenseServer?.kill();
+
 			throw new Error(reason);
 		});
 
@@ -184,6 +239,12 @@ export async function teardown() {
 						}),
 						{ concurrent: true, exitOnError: false },
 					);
+				},
+			},
+			{
+				title: 'Stop mock license server',
+				task: async () => {
+					global.mockLicenseServer?.kill();
 				},
 			},
 		]).run();

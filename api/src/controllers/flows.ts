@@ -3,6 +3,7 @@ import type { PrimaryKey } from '@directus/types';
 import express from 'express';
 import { UUID_REGEX } from '../constants.js';
 import { getFlowManager } from '../flows.js';
+import checkIsLocked from '../middleware/is-locked.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -41,8 +42,8 @@ const webhookFlowHandler = asyncHandler(async (req, res, next) => {
 	return next();
 });
 
-router.get(`/trigger/:pk(${UUID_REGEX})`, webhookFlowHandler, respond);
-router.post(`/trigger/:pk(${UUID_REGEX})`, webhookFlowHandler, respond);
+router.get(`/trigger/:pk(${UUID_REGEX})`, checkIsLocked('flows'), webhookFlowHandler, respond);
+router.post(`/trigger/:pk(${UUID_REGEX})`, checkIsLocked('flows'), webhookFlowHandler, respond);
 
 router.post(
 	'/',

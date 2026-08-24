@@ -4,14 +4,18 @@ import { getEndpoint } from '@directus/utils';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { buildAiTranslationDraft, isAiTranslateAvailable } from './ai-translation';
+import TranslateModal from './translate-modal.vue';
 import TranslationForm from './translation-form.vue';
+import { useTranslationJob } from './use-translation-job';
+import { useAiStore } from '@/ai/stores/use-ai';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useInjectNestedValidation } from '@/composables/use-nested-validation';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
-import { useWindowSize } from '@/composables/use-window-size';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
+import { useServerStore } from '@/stores/server';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
@@ -59,6 +63,26 @@ const { relationInfo } = useRelationM2M(collection, field);
 const { locale } = useI18n();
 
 const fieldsStore = useFieldsStore();
+const serverStore = useServerStore();
+const aiStore = useAiStore();
+
+const showTranslateModal = ref(false);
+
+function openTranslateDrawer() {
+	document.documentElement.dispatchEvent(new Event('click'));
+	showTranslateModal.value = true;
+}
+
+const aiTranslateAvailable = computed(() =>
+	isAiTranslateAvailable({
+		aiEnabled: serverStore.info.ai_enabled,
+		availableProviderCount: serverStore.info.ai_providers?.length ?? 0,
+		availableModelCount: aiStore.models.length,
+		disabled: props.disabled,
+		nonEditable: props.nonEditable,
+		licenseEntitlement: serverStore.info.license?.entitlements.ai_translations_enabled as boolean,
+	}),
+);
 
 const { languageOptions, firstLang, secondLang, loading: languagesLoading } = useLanguages();
 
@@ -84,8 +108,7 @@ function useSplitView() {
 		}
 	});
 
-	const { width } = useWindowSize();
-	const splitViewAvailable = computed(() => width.value > 960 && languageOptions.value.length > 1);
+	const splitViewAvailable = computed(() => languageOptions.value.length > 1);
 	const splitViewEnabled = computed(() => splitViewAvailable.value && splitView.value);
 
 	return {
@@ -157,11 +180,28 @@ function updateValue(item: DisplayItem | undefined, lang: string | undefined) {
 	}
 }
 
+function applyTranslatedFields(translatedFields: Record<string, string>, lang: string | undefined) {
+	const itemInfo = getItemWithLang(displayItems.value, lang);
+
+	if (itemInfo?.$type === 'deleted') {
+		return;
+	}
+
+	const draft = buildAiTranslationDraft(itemInfo, getItemEdits, translatedFields);
+	updateValue(draft, lang);
+}
+
+const translationJob = useTranslationJob({
+	applyTranslatedFields,
+	languageOptions: computed(() => languageOptions.value),
+});
+
 const translationProps = computed(() => ({
 	languageOptions: languageOptions.value,
 	disabled: props.disabled,
 	nonEditable: props.nonEditable,
 	autofocus: props.autofocus,
+	keepLanguageMenuBehind: showTranslateModal.value,
 	relationInfo: relationInfo.value,
 	getItemWithLang,
 	loading: languagesLoading.value || itemsLoading.value,
@@ -171,6 +211,8 @@ const translationProps = computed(() => ({
 	isLocalItem,
 	updateValue,
 	remove,
+	translationJob,
+	showAiTranslate: aiTranslateAvailable.value,
 }));
 
 function useLanguages() {
@@ -364,7 +406,12 @@ function useNestedValidation() {
 
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
-		<TranslationForm v-model:lang="firstLang" v-bind="translationProps" :class="splitViewEnabled ? 'half' : 'full'">
+		<TranslationForm
+			v-model:lang="firstLang"
+			v-bind="translationProps"
+			:class="splitViewEnabled ? 'half' : 'full'"
+			@open-translate-drawer="openTranslateDrawer"
+		>
 			<template #split-view="{ active, toggle }">
 				<VIcon
 					v-if="splitViewAvailable && !splitViewEnabled"
@@ -380,7 +427,14 @@ function useNestedValidation() {
 			</template>
 		</TranslationForm>
 
-		<TranslationForm v-if="splitViewEnabled" v-model:lang="secondLang" v-bind="translationProps" secondary class="half">
+		<TranslationForm
+			v-if="splitViewEnabled"
+			v-model:lang="secondLang"
+			v-bind="translationProps"
+			secondary
+			class="half"
+			@open-translate-drawer="openTranslateDrawer"
+		>
 			<template #split-view>
 				<VIcon
 					v-tooltip="$t('interfaces.translations.toggle_split_view')"
@@ -391,6 +445,17 @@ function useNestedValidation() {
 				/>
 			</template>
 		</TranslationForm>
+
+		<TranslateModal
+			v-model="showTranslateModal"
+			:language-options="languageOptions"
+			:display-items="displayItems"
+			:fields="fields"
+			:relation-info="relationInfo"
+			:get-item-with-lang="getItemWithLang"
+			:default-source-language="firstLang"
+			:translation-job="translationJob"
+		/>
 	</div>
 </template>
 
@@ -401,11 +466,11 @@ function useNestedValidation() {
 	@include mixins.form-grid;
 
 	.v-form {
-		--theme--form--row-gap: 32px;
+		--theme--form--row-gap: 1.8125rem;
 		--v-chip-color: var(--theme--primary);
 		--v-chip-background-color: var(--theme--primary-background);
 
-		margin-block-start: 32px;
+		margin-block-start: 1.8125rem;
 	}
 
 	.primary {

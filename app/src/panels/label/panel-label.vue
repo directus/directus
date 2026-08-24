@@ -37,7 +37,7 @@ let resizeObserver: ResizeObserver | null = null;
 
 function adjustPadding() {
 	const container = labelContainer.value;
-	if (!container) return '0px';
+	if (!container) return;
 
 	const paddingWidth = container.offsetWidth * 0.05;
 	const paddingHeight = container.offsetHeight * 0.05;
@@ -45,7 +45,7 @@ function adjustPadding() {
 	const padding = Math.round(Math.max(12, Math.min(paddingWidth, paddingHeight)));
 
 	if (props.showHeader == true) {
-		container.style.padding = '0px 12px 12px 12px';
+		container.style.padding = '0 0.6875rem 0.6875rem 0.6875rem';
 	} else {
 		container.style.padding = `${padding}px`;
 	}
@@ -99,12 +99,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-	<div
-		ref="labelContainer"
-		class="label type-title"
-		:class="[font, { 'has-header': showHeader }]"
-		:style="{ color: color }"
-	>
+	<div ref="labelContainer" class="label" :class="[font, { 'has-header': showHeader }]" :style="{ color: color }">
 		<p
 			ref="labelText"
 			class="label-text"

@@ -7,17 +7,28 @@ export type SchemaDiffOutput = {
 	diff: Record<string, any>;
 };
 
+export type SchemaDiffMode = 'merge' | 'mirror';
+
+export type SchemaDiffOptions = {
+	force?: boolean;
+	mode?: SchemaDiffMode;
+};
+
 /**
  * Compare the current instance's schema against the schema snapshot in JSON request body and retrieve the difference. This endpoint is only available to admin users.
  * @param snapshot JSON object containing collections, fields, and relations to apply.
- * @param force Bypass version and database vendor restrictions.
+ * @param options Optional diff settings.
+ * @param options.force Bypass version and database vendor restrictions.
+ * @param options.mode `mirror` (default) returns all operations; `merge` excludes deletions for an additive diff.
  * @returns Returns the differences between the current instance's schema and the schema passed in the request body.
  */
 export const schemaDiff =
-	<Schema>(snapshot: SchemaSnapshotOutput, force = false): RestCommand<SchemaDiffOutput, Schema> =>
-	() => ({
-		method: 'POST',
-		path: '/schema/diff',
-		params: force ? { force } : {},
-		body: JSON.stringify(snapshot),
-	});
+	<Schema>(snapshot: SchemaSnapshotOutput, options: SchemaDiffOptions = {}): RestCommand<SchemaDiffOutput, Schema> =>
+	() => {
+		return {
+			method: 'POST',
+			path: '/schema/diff',
+			params: options,
+			body: JSON.stringify(snapshot),
+		};
+	};

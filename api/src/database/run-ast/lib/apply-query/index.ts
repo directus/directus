@@ -35,6 +35,7 @@ export default function applyQuery(
 	const aliasMap: AliasMap = options?.aliasMap ?? Object.create(null);
 	let hasJoins = false;
 	let hasMultiRelationalFilter = false;
+	let hasMultiRelationalSort = options?.hasMultiRelationalSort ?? false;
 
 	applyLimit(knex, dbQuery, query.limit);
 
@@ -47,11 +48,16 @@ export default function applyQuery(
 	}
 
 	if (query.sort && !options?.isInnerQuery && !options?.hasMultiRelationalSort) {
-		const sortResult = applySort(knex, schema, dbQuery, query.sort, query.aggregate, collection, aliasMap);
+		const sortResult = applySort(knex, schema, dbQuery, query.sort, collection, aliasMap, {
+			aggregate: query.aggregate,
+			fieldAliasMap: { ...(query.alias ?? {}) },
+		});
 
 		if (!hasJoins) {
 			hasJoins = sortResult.hasJoins;
 		}
+
+		hasMultiRelationalSort = sortResult.hasMultiRelationalSort;
 	}
 
 	// `cases` are the permissions cases that are required for the current data set. We're
@@ -129,7 +135,11 @@ export default function applyQuery(
 	}
 
 	if (query.aggregate) {
-		applyAggregate(schema, dbQuery, query.aggregate, collection, hasJoins);
+		applyAggregate(schema, dbQuery, query.aggregate, collection, {
+			hasJoins,
+			hasMultiRelationalFilter,
+			hasMultiRelationalSort,
+		});
 	}
 
 	return { query: dbQuery, hasJoins, hasMultiRelationalFilter };

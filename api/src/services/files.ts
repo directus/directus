@@ -20,19 +20,23 @@ import type {
 	Query,
 	QueryOptions,
 } from '@directus/types';
-import { toArray } from '@directus/utils';
+import { normalizePath, toArray, toBoolean } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
 import { clone, cloneDeep } from 'lodash-es';
 import { extension } from 'mime-types';
-import { minimatch } from 'minimatch';
 import { RESUMABLE_UPLOADS } from '../constants.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
+import { transaction } from '../utils/transaction.js';
+import { assertUniqueFilename } from './files/lib/assert-unique-filename.js';
+import { assertValidStoragePath } from './files/lib/assert-valid-storage-path.js';
 import { extractMetadata } from './files/lib/extract-metadata.js';
+import { isMimeTypeAllowed } from './files/lib/is-mime-type-allowed.js';
+import { sanitizeFilepath } from './files/lib/sanitize-filepath.js';
 import { ItemsService } from './items.js';
 
 const env = useEnv();
@@ -48,7 +52,7 @@ export class FilesService extends ItemsService<File> {
 	 */
 	async uploadOne(
 		stream: BusboyFileStream | Readable,
-		data: Partial<File> & { storage: string },
+		data: Partial<File>,
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey> {
@@ -61,14 +65,18 @@ export class FilesService extends ItemsService<File> {
 			// If the file you're uploading already exists, we'll consider this upload a replace so we'll fetch the existing file's folder and filename_download
 			existingFile =
 				(await this.knex
-					.select('folder', 'filename_download', 'filename_disk', 'title', 'description', 'metadata')
+					.select('folder', 'filename_download', 'filename_disk', 'title', 'description', 'metadata', 'storage')
 					.from('directus_files')
 					.where({ id: primaryKey })
 					.first()) ?? null;
 		}
 
 		// Merge the existing file's folder and filename_download with the new payload
-		const payload = { ...(existingFile ?? {}), ...clone(data) };
+		const payload = {
+			storage: toArray(env['STORAGE_LOCATIONS'] as string)[0]!,
+			...(existingFile ?? {}),
+			...clone(data),
+		};
 
 		const disk = storage.location(payload.storage);
 
@@ -180,10 +188,10 @@ export class FilesService extends ItemsService<File> {
 			}
 		}
 
-		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
+		const { size } = await storage.location(payload.storage).stat(payload.filename_disk);
 		payload.filesize = size;
 
-		const metadata = await extractMetadata(data.storage, payload as Parameters<typeof extractMetadata>[1]);
+		const metadata = await extractMetadata(payload.storage, payload as Parameters<typeof extractMetadata>[1]);
 
 		payload.uploaded_on = new Date().toISOString();
 
@@ -260,37 +268,39 @@ export class FilesService extends ItemsService<File> {
 			});
 		}
 
-		const parsedURL = url.parse(fileResponse.request.res.responseUrl);
-		const filename = decodeURI(path.basename(parsedURL.pathname as string));
+		let filename: string;
+		let mimeType: string;
 
-		const mimeType = fileResponse.headers['content-type']?.split(';')[0]?.trim() || 'application/octet-stream';
+		try {
+			const parsedURL = url.parse(fileResponse.request.res.responseUrl);
+			filename = decodeURI(path.basename(parsedURL.pathname as string));
 
-		// Check against global MIME type allow list from env
-		const globalAllowedPatterns = toArray(env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]);
-		const globalMimeTypeAllowed = globalAllowedPatterns.some((pattern) => minimatch(mimeType, pattern));
+			mimeType = fileResponse.headers['content-type']?.split(';')[0]?.trim() || 'application/octet-stream';
 
-		if (globalMimeTypeAllowed === false) {
-			throw new InvalidPayloadError({
-				reason: `File content type "${mimeType}" is not allowed for upload by your global file type restrictions`,
-			});
-		}
+			// Check against global MIME type allow list from env
+			if (isMimeTypeAllowed(mimeType, env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]) === false) {
+				throw new InvalidPayloadError({
+					reason: `File content type "${mimeType}" is not allowed for upload by your global file type restrictions`,
+				});
+			}
 
-		const { filterMimeType } = options;
+			const { filterMimeType } = options;
 
-		// Check against interface-level MIME type restrictions if provided
-		if (filterMimeType && filterMimeType.length > 0) {
-			const interfaceMimeTypeAllowed = filterMimeType.some((pattern: string) => minimatch(mimeType, pattern));
-
-			if (interfaceMimeTypeAllowed === false) {
+			// Check against interface-level MIME type restrictions if provided
+			if (filterMimeType && filterMimeType.length > 0 && isMimeTypeAllowed(mimeType, filterMimeType) === false) {
 				throw new InvalidPayloadError({
 					reason: `File content type "${mimeType}" is not allowed for upload by this field's file type restrictions`,
 				});
 			}
+		} catch (error) {
+			// Nothing reads the response body once the import is rejected, so it would hold its connection open
+			fileResponse.data.destroy();
+
+			throw error;
 		}
 
 		const payload = {
 			filename_download: filename,
-			storage: toArray(env['STORAGE_LOCATIONS'] as string)[0]!,
 			type: mimeType,
 			title: formatTitle(filename),
 			...(body || {}),
@@ -300,16 +310,144 @@ export class FilesService extends ItemsService<File> {
 	}
 
 	/**
-	 * Create a file (only applicable when it is not a multipart/data POST request)
-	 * Useful for associating metadata with existing file in storage
+	 * Create a file
 	 */
-	override async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createOne(data: Partial<File>, opts: MutationOptions = {}): Promise<PrimaryKey> {
 		if (!data.type) {
 			throw new InvalidPayloadError({ reason: `"type" is required` });
 		}
 
+		if (data.filename_disk) {
+			data.filename_disk = sanitizeFilepath(data.filename_disk);
+
+			try {
+				assertValidStoragePath(data.filename_disk, data.storage);
+				await assertUniqueFilename(this.knex, data.filename_disk);
+			} catch (err: any) {
+				// Defer the error to be thrown until after permission checks
+				opts.preMutationError = err;
+			}
+		}
+
 		const key = await super.createOne(data, opts);
 		return key;
+	}
+
+	/**
+	 * Update many files
+	 */
+	override async updateMany(
+		keys: PrimaryKey[],
+		data: Partial<File>,
+		opts: MutationOptions = {},
+	): Promise<PrimaryKey[]> {
+		if (keys.length === 1 && data.filename_disk) {
+			data.filename_disk = sanitizeFilepath(data.filename_disk);
+
+			try {
+				assertValidStoragePath(data.filename_disk, data.storage);
+				await assertUniqueFilename(this.knex, data.filename_disk, keys[0]);
+			} catch (err: any) {
+				// Defer the error to be thrown until after permission checks
+				opts.preMutationError = err;
+			}
+
+			// Fetch existing records to have data prior to change, dont require read permissions.
+			const sudoFilesItemsService = new FilesService({
+				knex: this.knex,
+				schema: this.schema,
+			});
+
+			const updatedFiles: Map<PrimaryKey, File> = new Map();
+
+			const changedFiles = await sudoFilesItemsService.readMany(keys, {
+				fields: ['id', 'storage', 'filename_disk'],
+			});
+
+			for (const file of changedFiles) {
+				updatedFiles.set(file.id, file);
+			}
+
+			for (const key of keys) {
+				// Transaction per file to ensure we only rollback changes related to that file on error
+				await transaction(this.knex, async (trx) => {
+					const filesItemService = new ItemsService(this.collection, {
+						knex: trx,
+						schema: this.schema,
+						accountability: this.accountability,
+					});
+
+					await filesItemService.updateMany([key], data, opts);
+
+					// if filename is present and was updated rename files it was changed
+					if (data.filename_disk) {
+						const storage = await getStorage();
+						const file = updatedFiles.get(key);
+
+						if (!file || !file.filename_disk) return;
+
+						// For backwards compatibility it must be resolved first to ensure consistent path
+						const existingFilePath = sanitizeFilepath(file.filename_disk);
+
+						if (existingFilePath === data.filename_disk) return;
+
+						const disk = storage.location(file['storage']);
+
+						const { name: filePrefix, dir: fileDir } = path.parse(existingFilePath);
+						const updatedFilePath = sanitizeFilepath(data.filename_disk);
+
+						let remoteFileExists: boolean;
+
+						try {
+							remoteFileExists = await disk.exists(data.filename_disk);
+						} catch (error) {
+							// A failed lookup is not the same answer as a missing file, and both branches below act on it
+							throw new ServiceUnavailableError(
+								{ service: 'files', reason: `Couldn't reach the storage location` },
+								{ cause: error },
+							);
+						}
+
+						const filePrefixPath = fileDir ? normalizePath(path.join(fileDir, filePrefix)) : filePrefix;
+
+						for await (const filePath of disk.list(filePrefixPath)) {
+							/**
+							 * If the remote file exists, repoint the primary asset to it (i.e. db update only).
+							 * If the remote file does not exist, move the primary asset to location.
+							 *
+							 * NOTE
+							 * - On repoint the original asset will be deleted if `FILES_DELETE_ORIGINAL_ON_MOVE` is true.
+							 * - Any associated generated assets are deleted.
+							 */
+							if (filePath === existingFilePath) {
+								if (!remoteFileExists) {
+									await disk.move(filePath, updatedFilePath);
+									continue;
+								} else if (toBoolean(env['FILES_DELETE_ORIGINAL_ON_MOVE']) === false) {
+									continue;
+								}
+							}
+
+							// always delete generated assets
+							await disk.delete(filePath);
+						}
+					}
+				});
+			}
+
+			return keys;
+		}
+
+		if (keys.length > 1 && data.filename_disk) {
+			// Defer the error to be thrown until after permission checks
+			opts.preMutationError = new InvalidPayloadError({
+				reason: '"filename_disk" cannot be modified in bulk operations',
+			});
+		}
+
+		await super.updateMany(keys, data, opts);
+
+		return keys;
 	}
 
 	/**

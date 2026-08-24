@@ -1,5 +1,5 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { Accountability, Item } from '@directus/types';
+import type { Accountability, Item, PayloadAction } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
@@ -8,17 +8,12 @@ import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vi
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import { useLogger } from '../logger/index.js';
-import { decrypt } from '../utils/encrypt.js';
+import { decrypt, encrypt } from '../utils/encrypt.js';
 import { getSecret } from '../utils/get-secret.js';
 import { PayloadService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('sqlite'),
-}));
-
-vi.mock('../utils/encrypt.js', () => ({
-	encrypt: vi.fn(),
-	decrypt: vi.fn(),
 }));
 
 vi.mock('../utils/get-secret.js', () => ({
@@ -28,6 +23,8 @@ vi.mock('../utils/get-secret.js', () => ({
 vi.mock('../logger/index.js', () => ({
 	useLogger: vi.fn(),
 }));
+
+vi.mock('../utils/encrypt.js');
 
 describe('Integration Tests', () => {
 	let db: MockedFunction<Knex>;
@@ -41,6 +38,7 @@ describe('Integration Tests', () => {
 
 	afterEach(() => {
 		tracker.reset();
+		vi.clearAllMocks();
 	});
 
 	describe('Services / PayloadService', () => {
@@ -66,6 +64,7 @@ describe('Integration Tests', () => {
 						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
+						overwriteDefaults: undefined,
 					});
 
 					expect(result).toBe(undefined);
@@ -79,6 +78,7 @@ describe('Integration Tests', () => {
 						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
+						overwriteDefaults: undefined,
 					});
 
 					expect(result).toMatchObject([]);
@@ -92,6 +92,7 @@ describe('Integration Tests', () => {
 						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
+						overwriteDefaults: undefined,
 					});
 
 					expect(result).toEqual(['test', 'directus']);
@@ -105,6 +106,7 @@ describe('Integration Tests', () => {
 						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
+						overwriteDefaults: undefined,
 					});
 
 					expect(result).toMatchObject(['test', 'directus']);
@@ -118,6 +120,7 @@ describe('Integration Tests', () => {
 						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
+						overwriteDefaults: undefined,
 					});
 
 					expect(result).toBe('test,directus');
@@ -131,6 +134,7 @@ describe('Integration Tests', () => {
 						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
+						overwriteDefaults: undefined,
 					});
 
 					expect(result).toBe('test,directus');
@@ -156,26 +160,92 @@ describe('Integration Tests', () => {
 						accountability: null,
 						specials: ['encrypt'],
 						helpers,
+						overwriteDefaults: undefined,
 					});
 
 					expect(result).toBeNull();
 					expect(warn).toHaveBeenCalledWith(expect.stringContaining('bad key'));
 				});
 
-				test('returns decrypted value when decrypt succeeds', async () => {
-					vi.mocked(decrypt).mockResolvedValue('plaintext');
+				test.each([null, '', false, undefined])('Returns falsy value (%s) as-is', async (value) => {
+					const result = await service.transformers['encrypt']!({
+						value,
+						action: 'read',
+						payload: {},
+						accountability: { role: null } as Accountability,
+						specials: [],
+						helpers,
+						overwriteDefaults: undefined,
+					});
+
+					expect(result).toBe(value);
+					expect(decrypt).not.toHaveBeenCalled();
+					expect(encrypt).not.toHaveBeenCalled();
+				});
+
+				test('Returns redacted value on read when accountability is set', async () => {
+					const result = await service.transformers['encrypt']!({
+						value: 'some-encrypted-value',
+						action: 'read',
+						payload: {},
+						accountability: { role: null } as Accountability,
+						specials: [],
+						helpers,
+						overwriteDefaults: undefined,
+					});
+
+					expect(result).toBe('**********');
+					expect(decrypt).not.toHaveBeenCalled();
+				});
+
+				test('Decrypts value on read when accountability is null', async () => {
+					vi.mocked(decrypt).mockResolvedValue('decrypted');
 
 					const result = await service.transformers['encrypt']!({
-						value: 'some-encrypted-blob',
+						value: 'some-encrypted-value',
 						action: 'read',
 						payload: {},
 						accountability: null,
-						specials: ['encrypt'],
+						specials: [],
 						helpers,
+						overwriteDefaults: undefined,
 					});
 
-					expect(result).toBe('plaintext');
+					expect(result).toBe('decrypted');
+					expect(decrypt).toHaveBeenCalledWith('some-encrypted-value', 'test-secret');
 					expect(warn).not.toHaveBeenCalled();
+				});
+
+				test.each<PayloadAction>(['create', 'update'])('Encrypts string value on %s', async (action) => {
+					vi.mocked(encrypt).mockResolvedValue('encrypted');
+
+					const result = await service.transformers['encrypt']!({
+						value: 'plain-text',
+						action,
+						payload: {},
+						accountability: { role: null } as Accountability,
+						specials: [],
+						helpers,
+						overwriteDefaults: undefined,
+					});
+
+					expect(result).toBe('encrypted');
+					expect(encrypt).toHaveBeenCalledWith('plain-text', 'test-secret');
+				});
+
+				test('Returns non-string value as-is on non-read action', async () => {
+					const result = await service.transformers['encrypt']!({
+						value: 123,
+						action: 'create',
+						payload: {},
+						accountability: { role: null } as Accountability,
+						specials: [],
+						helpers,
+						overwriteDefaults: undefined,
+					});
+
+					expect(result).toBe(123);
+					expect(encrypt).not.toHaveBeenCalled();
 				});
 			});
 		});
@@ -468,6 +538,15 @@ describe('Integration Tests', () => {
 					},
 				]);
 			});
+
+			test('payload should handle count(*) aggregate', () => {
+				// When count(*) is used, the DB returns { count: '1' } not { 'count->*': '1' }
+				const payload = [{ count: '1' }];
+
+				service.processAggregates(payload, { count: ['*'] });
+
+				expect(payload).toMatchObject([{ count: '1' }]);
+			});
 		});
 
 		describe('processValues', () => {
@@ -516,6 +595,63 @@ describe('Integration Tests', () => {
 				);
 
 				expect(result).toMatchObject({ other_string: 'not-redacted', other_hidden: REDACT_STR });
+			});
+		});
+
+		describe('prepareDelta', () => {
+			let service: PayloadService;
+
+			const REDACT_STR = '**********';
+
+			const schema = new SchemaBuilder()
+				.collection('test', (c) => {
+					c.field('id').id();
+					c.field('string').string();
+
+					c.field('hidden')
+						.hash()
+						.options({
+							special: ['hash', 'conceal'],
+						});
+				})
+				.build();
+
+			beforeEach(() => {
+				service = new PayloadService('test', {
+					knex: db,
+					schema,
+				});
+			});
+
+			test('should return an object for non-empty delta', async () => {
+				const result = await service.prepareDelta({ string: 'test-value' });
+
+				expect(result).toEqual({ string: 'test-value' });
+			});
+
+			test('should return null for empty delta', async () => {
+				const result = await service.prepareDelta({});
+				expect(result).toBeNull();
+			});
+
+			test('should process concealed fields through read transformation', async () => {
+				const result = await service.prepareDelta({ string: 'visible', hidden: 'secret' });
+				expect(result).toMatchObject({ string: 'visible', hidden: REDACT_STR });
+			});
+
+			test('should extract bindings from raw instances', async () => {
+				const result = await service.prepareDelta({
+					string: { isRawInstance: true, bindings: ['raw-value'] } as any,
+				});
+
+				expect(result).toEqual({ string: 'raw-value' });
+			});
+
+			test('should not mutate the original delta', async () => {
+				const original = { hidden: 'test' };
+				await service.prepareDelta(original);
+
+				expect(original).toEqual({ hidden: 'test' });
 			});
 		});
 
@@ -703,6 +839,79 @@ describe('Integration Tests', () => {
 
 				// Numeric strings should remain as strings since parseJSON returns primitives
 				expect(payload[0]!.metadata_value_json).toBe('123');
+			});
+		});
+
+		describe('processAggregates', () => {
+			let service: PayloadService;
+
+			const REDACT_STR = '**********';
+
+			const schema = new SchemaBuilder()
+				.collection('test', (c) => {
+					c.field('id').id();
+					c.field('name').string();
+
+					c.field('secret')
+						.string()
+						.options({ special: ['conceal'] });
+				})
+				.build();
+
+			beforeEach(() => {
+				service = new PayloadService('test', {
+					knex: db,
+					schema,
+				});
+			});
+
+			test('redacts concealed fields in aggregate results', async () => {
+				const payload: Record<string, unknown>[] = [{ 'min->secret': 'actual-secret' }];
+
+				await service.processAggregates(payload, { min: ['secret'] });
+
+				expect(payload[0]!['min']).toMatchObject({ secret: REDACT_STR });
+			});
+
+			test('redacts concealed fields with a null value', async () => {
+				const payload: Record<string, unknown>[] = [{ 'max->secret': null }];
+
+				await service.processAggregates(payload, { max: ['secret'] });
+
+				expect(payload[0]!['max']).toMatchObject({ secret: null });
+			});
+
+			test('does not modify non-special fields', async () => {
+				const payload: Record<string, unknown>[] = [{ 'count->name': 42 }];
+
+				await service.processAggregates(payload, { count: ['name'] });
+
+				expect(payload[0]!['count']).toMatchObject({ name: 42 });
+			});
+
+			test('removes the flat arrow-delimited keys from the payload', async () => {
+				const payload: Record<string, unknown>[] = [{ 'min->secret': 'actual-secret' }];
+
+				await service.processAggregates(payload, { min: ['secret'] });
+
+				expect(payload[0]).not.toHaveProperty('min->secret');
+			});
+
+			test('handles multiple aggregate operations on the same concealed field', async () => {
+				const payload: Record<string, unknown>[] = [{ 'min->secret': 'min-value', 'max->secret': 'max-value' }];
+
+				await service.processAggregates(payload, { min: ['secret'], max: ['secret'] });
+
+				expect(payload[0]!['min']).toMatchObject({ secret: REDACT_STR });
+				expect(payload[0]!['max']).toMatchObject({ secret: REDACT_STR });
+			});
+
+			test('preserves all fields when multiple fields share the same aggregate operation', async () => {
+				const payload: Record<string, unknown>[] = [{ 'min->secret': 'actual-secret', 'min->name': 'Alice' }];
+
+				await service.processAggregates(payload, { min: ['secret', 'name'] });
+
+				expect(payload[0]!['min']).toMatchObject({ secret: REDACT_STR, name: 'Alice' });
 			});
 		});
 	});

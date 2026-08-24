@@ -28,7 +28,7 @@ duplicate_field: डुप्लिकेट फ़ील्ड
 half_width: आधी चौड़ाई
 full_width: पुरी चौड़ाई
 group: समूह
-previous: पहले का 
+previous: पहले का
 export_items: निर्यात आइटम
 and: और
 or: या
@@ -296,6 +296,7 @@ functions:
   minute: मिनट
   second: सेकंड
   count: गिनती
+  json: JSON
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
@@ -369,6 +370,7 @@ color: Color
 circle: Circle
 operators:
   eq: Equals
+  json: JSON
 loading: लोड हो रहा है...
 item: समान
 columns: कॉलमस
@@ -392,7 +394,12 @@ flow_name: नाम
 wysiwyg_options:
   forecolor: अग्रभूमि रंग
   backcolor: पृष्ठभूमि रंग
+  insertdatetime_date: Date
+  insertdatetime_time: Time
   selectall: सभी चुनें
+  ltr: बाएं से दायां
+licensing:
+  addon_update: Update
 settings_presets: पृष्टस्मृतियाँ
 fields:
   directus_collections:
@@ -439,6 +446,8 @@ ai:
 mcp_prompts_collection_schema:
   messages_role_user: यूज़र
 interfaces:
+  group-tabs:
+    fill_width: संपूर्ण चौड़ाई
   presentation-links:
     primary: प्राइमरी
   select-color:

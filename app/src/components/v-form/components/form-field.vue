@@ -39,6 +39,7 @@ const props = withDefaults(
 		disabledMenu?: boolean;
 		direction?: string;
 		version?: ContentVersionMaybeNew | null;
+		canAutoSwitchToDraft?: boolean;
 		collabFieldContext?: CollabFieldContext;
 	}>(),
 	{
@@ -82,6 +83,10 @@ const isLabelHidden = computed(() => {
 	if ((props.batchMode || !!props.comparison) && !props.field.meta?.special?.includes('no-data')) return false;
 	return props.field.hideLabel;
 });
+
+// set by interfaces that lock themselves read-only for a data-integrity reason (not permissions),
+// e.g. WYSIWYG content the editor can't represent; gates the field menu's raw-value editing
+const interfaceLocked = ref(false);
 
 const { internalValue, isEdited, defaultValue } = useComputedValues();
 
@@ -239,6 +244,7 @@ function useComputedValues() {
 				:model-value="internalValue"
 				:initial-value="initialValue"
 				:restricted="isDisabled"
+				:interface-locked="interfaceLocked"
 				:disabled-options="disabledMenuOptions"
 				@update:model-value="emitValue($event)"
 				@unset="unsetValue"
@@ -266,8 +272,10 @@ function useComputedValues() {
 			:comparison="comparison"
 			:comparison-active="comparisonActive"
 			:version
+			:can-auto-switch-to-draft="canAutoSwitchToDraft"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
+			@readonly="interfaceLocked = $event"
 			@focusin="onFocus"
 			@focusout="onBlur"
 		/>
@@ -276,7 +284,7 @@ function useComputedValues() {
 			:show-modal="showRaw"
 			:field="field"
 			:current-value="internalValue"
-			:disabled="isDisabled"
+			:disabled="isDisabled || interfaceLocked"
 			@cancel="showRaw = false"
 			@set-raw-value="onRawValueSubmit"
 		/>
@@ -300,18 +308,19 @@ function useComputedValues() {
 	> .avatars {
 		position: absolute;
 		inset-inline-end: 0;
-		inset-block-end: calc(100% + 8px);
+		inset-block-end: calc(100% + 0.4375rem);
 	}
 }
 
 .type-note {
 	position: relative;
 	display: block;
-	max-inline-size: 520px;
-	margin-block-start: 4px;
+	max-inline-size: 29.25rem;
+	margin-block-start: 0.25rem;
 
 	:deep(a) {
 		color: var(--theme--primary);
+		text-decoration: underline;
 
 		&:hover {
 			color: var(--theme--primary-accent);
@@ -320,8 +329,8 @@ function useComputedValues() {
 }
 
 .invalid {
-	margin: -12px;
-	padding: 12px;
+	margin: -0.6875rem;
+	padding: 0.6875rem;
 	background-color: var(--danger-alt);
 	border-radius: var(--theme--border-radius);
 	transition: var(--medium) var(--transition);
@@ -331,12 +340,12 @@ function useComputedValues() {
 .validation-error {
 	display: flex;
 	align-items: center;
-	margin-block-start: 4px;
+	margin-block-start: 0.25rem;
 	color: var(--theme--danger);
 	font-style: italic;
 }
 
 .label-spacer {
-	block-size: 28px;
+	block-size: 1.5625rem;
 }
 </style>

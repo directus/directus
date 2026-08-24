@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import type { TransformationParams } from '@directus/types';
+import type { Settings, TransformationParams } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import bytes from 'bytes';
 import type { CookieOptions } from 'express';
@@ -57,19 +57,14 @@ export const FILTER_VARIABLES = ['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'];
 
 export const ALIAS_TYPES = ['alias', 'o2m', 'm2m', 'm2a', 'o2a', 'files', 'translations'];
 
+export const SNAPSHOT_VERSION = {
+	FULL: 1,
+	PARTIAL: 2,
+} as const;
+
 export const DEFAULT_AUTH_PROVIDER = 'default';
 
 export const COLUMN_TRANSFORMS = ['year', 'month', 'day', 'weekday', 'hour', 'minute', 'second'];
-
-export const GENERATE_SPECIAL = [
-	'uuid',
-	'date-created',
-	'date-updated',
-	'role-created',
-	'role-updated',
-	'user-created',
-	'user-updated',
-] as const;
 
 export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
 
@@ -89,7 +84,7 @@ export const SESSION_COOKIE_OPTIONS: CookieOptions = {
 	sameSite: (env['SESSION_COOKIE_SAME_SITE'] || 'strict') as 'lax' | 'strict' | 'none',
 };
 
-export const OAS_REQUIRED_SCHEMAS = ['Query', 'x-metadata'];
+export const OAS_REQUIRED_SCHEMAS = ['Error', 'Query', 'x-metadata'];
 
 /** Formats from which transformation is supported */
 export const SUPPORTED_IMAGE_TRANSFORM_FORMATS = ['image/jpeg', 'image/png', 'image/webp', 'image/tiff', 'image/avif'];
@@ -110,6 +105,14 @@ export const FILE_UPLOADS = {
 	MAX_CONCURRENCY: Number(env['FILES_MAX_UPLOAD_CONCURRENCY']),
 };
 
+const extensionsStorageMaxConcurrency = Number(env['EXTENSIONS_STORAGE_MAX_CONCURRENCY']);
+
+/** Extensions */
+export const EXTENSIONS = {
+	/** p-queue requires a number >=1 or throws type error */
+	STORAGE_MAX_CONCURRENCY: extensionsStorageMaxConcurrency >= 1 ? extensionsStorageMaxConcurrency : 20,
+};
+
 /** Resumable uploads (TUS) */
 export const RESUMABLE_UPLOADS = {
 	ENABLED: toBoolean(env['TUS_ENABLED']),
@@ -119,3 +122,11 @@ export const RESUMABLE_UPLOADS = {
 };
 
 export const ALLOWED_DB_DEFAULT_FUNCTIONS = ['gen_random_uuid()'];
+
+export const CUSTOM_LLM_FIELDS = [
+	'ai_openai_compatible_api_key',
+	'ai_openai_compatible_base_url',
+	'ai_openai_compatible_name',
+	'ai_openai_compatible_models',
+	'ai_openai_compatible_headers',
+] as const satisfies readonly (keyof Settings)[];

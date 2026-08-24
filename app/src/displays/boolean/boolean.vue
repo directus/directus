@@ -52,7 +52,7 @@ const styles = computed(() => {
 	align-items: center;
 
 	.v-icon {
-		margin-inline-end: 4px;
+		margin-inline-end: 0.25rem;
 	}
 }
 </style>

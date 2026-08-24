@@ -20,31 +20,17 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Sobre
-directus_bsl: Directus BSL 1.1
-privacy_policy: Política de Privacidade
-contact_our_team: Contate nosso Time
 setup_welcome: Bem-Vindo ao Directus
 setup_info: Vamos criar sua conta de administrador e começar seu projeto.
-setup_license_notice: >
-  Directus é gratuito para ser usado por entidades com lucro, doação ou orçamento de operação anual inferior a 5 milhões de dólares.
-setup_license_follow_up: >
-  Entidades acima deste limite requerem uma licença paga. Você pode continuar a avaliar a Directus agora e {contactOurTeam} quando estiver pronto para discutir o uso em produção.
-setup_save_accept_license: >
-  Clicando em salvar você aceita os termos de {directusBsl} e {privacyPolicy}.
-setup_accept_license: Eu aceito os termos de {directusBsl} e {privacyPolicy}
 setup_marketing_emails: Receber novidades do produto e notas de lançamento
 setup_launch: Iniciar Directus
 setup_project: Configurar Projeto
+continue: Continuar
 first_name: Primeiro Nome
 last_name: Sobrenome
 admin_email: Email de Administrador
 owner_email: Email de Proprietário
 email_address: Endereço de Email
-organization_name: Nome da Organização
-how_do_you_use_directus: Para quê você está usando o Directus?
-usage_personal: Pessoal / Aprendizagem
-usage_commercial: Empresarial / Comercial
-usage_community: Código Aberto / Comunitário
 identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
@@ -122,7 +108,7 @@ extension_missing: Não encontrado
 extension_reload_required: Atualização de página necessária
 extension_reload_required_copy: É necessário recarregar a página para ver as alterações após ativar ou desativar extensões de aplicativo.
 extension_reload_now: Recarregar agora
-published_relative: Publicado em {relativeTime}
+published_relative: Publicado {relativeTime}
 compatible_with_your_project: Compatível com seu projeto
 compatible_with_your_project_copy: O autor indicou que a compatibilidade desta extensão é {hostVersion}, o que corresponde à versão do seu projeto ({currentVersion})
 last_updated_relative: Última atualização em {relativeTime}
@@ -201,22 +187,23 @@ keep: Manter
 version: Versão
 version_key: Chave da Versão
 version_name: Nome da Versão
-main_version: Main
+your_version: Sua Versão
 switch_version: Trocar Versão
 switch_version_copy: Tem certeza que deseja mudar para a versão "{version}"? Alterações não salvas serão perdidas.
 create_version: Criar Versão
 rename_version: Renomear Versão
+reserved_version_key: 'A chave da versão "{key}" é reservada e não pode ser usada.'
 compare_version: Comparar Versão
 save_version: Salvar Versão
-promote_version: Promover Versão
+publish: Publicar
+version_create_item_less: Versões só podem ser criadas quando a versão de rascunho for publicada
 apply: Aplicar
 select_all_differences: Selecionar Todas as Diferenças
-main_updated_notice: O 'item' principal foi atualizado desde que essa versão foi criada.
+show_differences_only: Mostrar Apenas Diferenças
+published_updated_notice: O item publicado foi atualizado desde que esta versão foi criada.
 delete_version: Deletar Versão
 delete_version_copy: >-
   Tem certeza que deseja excluir a versão "{version}"? Esta ação não pode ser desfeita.
-delete_on_apply_copy: >-
-  Você está prestes a promover "{version}" a Principal. O que deve acontecer com "{version}" depois da promoção?
 reset_bookmark: Redefinir Favoritos
 update_bookmark: Atualizar Favorito
 delete_bookmark: Deletar Favorito
@@ -525,6 +512,8 @@ related_collection: Coleções relacionadas
 related_collections: Coleções relacionadas
 translations_collection: Coleção de Traduções
 languages_collection: Coleção de idiomas
+translations_preview_collections: Coleções
+translations_preview_fields: Campos
 import_data_input_placeholder: CSV ou JSON...
 import_data_button: Iniciar Importação
 import_data_indeterminate: Importando Dados...
@@ -569,6 +558,7 @@ functions:
   minute: Minuto
   second: Segundo
   count: Contagem
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -664,7 +654,10 @@ manual_string: String inserida manualmente
 save_and_create_new: Salvar e criar novo
 save_and_stay: Salvar e manter aqui
 save_and_quit: Salvar e sair
-save_and_return_to_main: Salvar e Retornar ao Principal
+publish_and_quit: Publicar e sair
+publish_without_review: Publicar sem revisão
+publish_anyway: Publicar mesmo assim
+save_and_return_to_published: Salvar e voltar para Publicado
 save_as_copy: Salvar e Copiar
 add_existing: Adicionar existente
 creating_items: Criando Itens
@@ -697,10 +690,15 @@ list-m2a: Construtor (M2A)
 item_count: 'Sem Itens | Um Item | {count} Itens'
 filtered_item_count: 'Nenhum item filtrado | Um item filtrado | {count} itens filtrados'
 no_items_copy: Ainda não há itens nesta coleção.
+no_versions: 'Nenhuma versão "{version}"'
+no_versions_copy: 'Ainda não existem versões "{version}" nesta coleção.'
 file_count: 'Nenhum arquivo | Um arquivo | {count} arquivos'
 no_files_copy: Ainda não há arquivos aqui.
 user_count: 'Nenhum usuário | Um usuário | {count} usuários'
 no_users_copy: Não há usuários neste cargo ainda.
+no_active_users: Nenhum usuário ativo
+no_suspended_users: Nenhum usuário suspenso
+no_invited_users: Nenhum usuário convidado
 no_notifications: Sem Notificações
 no_notifications_copy: Você está em dia!
 activity_log: Registro de atividades
@@ -712,7 +710,6 @@ no_collections: Sem coleções
 create_collection: Criar Coleção
 no_collections_copy_admin: Você ainda não tem nenhuma coleção. Clique no botão abaixo para começar.
 no_collections_copy: Você ainda não tem nenhuma coleção. Entre em contato com o administrador do sistema.
-relationship_not_setup: O relacionamento não foi configurado corretamente
 no_singleton_relations: Relações com Singletons não são suportadas
 display_template_not_setup: A opção do modelo de exibição está configurada incorretamente
 collection_field_not_setup: A opção do campo de coleção está configurada incorretamente
@@ -845,6 +842,9 @@ flip_vertical: Inverter verticalmente
 aspect_ratio: Proporção da imagem
 rotate: Girar
 all_users: Todos os usuários
+active_users: Usuário ativos
+suspended_users: Usuários suspensos
+invited_users: Usuários convidados
 delete_collection: Excluir coleção
 update_collection_success: Coleção atualizada
 delete_collection_success: Coleção excluída
@@ -919,6 +919,7 @@ operators:
   nintersects: Não interceptado
   intersects_bbox: Cruza a caixa delimitadora
   nintersects_bbox: Não cruza a caixa delimitadora
+  json: JSON
   regex: Coincide RegExp
 custom_validation_message: Mensagem personalizada de validação
 loading: Carregando...
@@ -1040,12 +1041,16 @@ visual_editor: Editor Visual
 toggle_navigation: Alternar Navegação
 toggle_sidebar: Alternar barra lateral
 toggle_editable_elements: Alternar Elementos Editáveis
+editing_draft_version: Editando na versão de rascunho
 no_url: Nenhum URL foi fornecido
 no_url_copy: Por favor, adicione um URL nas configurações.
 invalid_url: URL Inválido
 invalid_url_copy: O URL específico não combina com nenhum URL das configurações.
 insights: Estatísticas
+overview: Visão geral
 deployment:
+  overview:
+    overview: Visão geral
   provider:
     settings:
       delete_confirm: Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
@@ -1144,12 +1149,15 @@ wysiwyg_options:
   bullist: Lista de itens
   numlist: Lista numerada
   hr: Linha Horizontal
+  insertdatetime_date: Data
+  insertdatetime_time: Hora
   link: Adicionar/Editar link
   unlink: Excluir Link
   media: Adicionar/Editar mídia
   image: Adicionar/Editar imagem
   copy: Copiar
   cut: Recortar
+  default: Padrão
   paste: Colar
   heading: Cabeçalho
   h1: Cabeçalho 1
@@ -1173,6 +1181,8 @@ wysiwyg_options:
   source_code: Editar o código-fonte
   fullscreen: Tela cheia
   directionality: Direcionalidade
+  ltr: Esquerda para Direita
+  rtl: Direita para esquerda
   lazy_loading: Carregar imagens por demanda
   lazy_loading_label: Habilitar carregamento lento
 dropdown: Seleção
@@ -1202,9 +1212,22 @@ settings_data_model: Modelo de dados
 settings_roles: Funções do usuário
 settings_permissions: Políticas de acesso
 settings_project: Configurações
+licensing:
+  unlimited: Ilimitado
+  addon_manage: Gerenciar
+  addon_update: Alteração
+  resolve_continue: Continuar
+  resolve_show_n_more: 'Exibir {count} mais'
+  resolve_section_flows: Fluxos
+  resolve_sso_admin_email: Endereço de Email
+  resolve_sso_admin_password: Senha
+  entitlements:
+    collections: Coleções
+    flows: Fluxos
 settings_appearance: Aparência
 settings_ai: IA
 model_context_protocol: Protocolo de Contexto de Modelo (MCP)
+ai_assistant: Assistente de IA
 mcp_disabled_by_env: Os recursos de MCP foram desabilitados via ambiente variável.
 settings_flows: Fluxos
 settings_system_logs: Registro de Sistema
@@ -1230,6 +1253,8 @@ unsaved_changes_copy: Tem certeza que deseja sair desta página?
 discard_changes: Descartar Mudanças
 discard_all_changes: Descartar Todas as Alterações
 discard_changes_copy: Tem certeza que deseja descartar todas as alterações?
+published_item_has_changed: Item publicado foi alterado
+published_item_has_changed_copy: O item publicado foi atualizado desde a criação desta versão. Publicar agora irá substituir essas alterações.
 show_x_axis: Mostrar eixo X
 show_y_axis: Mostrar eixo Y
 keep_editing: Continuar editando
@@ -1303,6 +1328,7 @@ fields:
     collection: Coleção
     icon: Ícone
     note: Nota
+    status: Status
     color: Cor
     display_template: Modelo de exibição
     hidden: Oculto
@@ -1790,6 +1816,8 @@ interfaces:
     all_opened: Todos abertos
     accordion_mode: Modo do Acordeão
     max_one_section_open: Máximo 1 Seção Aberta
+  group-tabs:
+    fill_width: Preencher Largura
   presentation-links:
     presentation-links: Botões
     style: Estilo
@@ -1981,6 +2009,7 @@ interfaces:
     incompatible_data: Os dados atuais não são compatíveis com a interface de repetição e serão substituídos ao adicionar novos itens
     interface_group: Opções de Interface
     display_group: Opções de exibição
+    edit_mode_inline: Em linha
   slider:
     slider: Slider
     description: Selecione um número usando um controle deslizante
@@ -2054,9 +2083,6 @@ interfaces:
     description: Um editor de rich-text que gera HTML
     toolbar: Barra de ferramentas
     custom_formats: Formatos Personalizados
-    custom_formats_note: Lista de formatos do TinyMCE. Consulte a documentação do TinyMCE sobre [Formatação de Conteúdo](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) para mais informações.
-    options_override: Sobrescrever opções
-    options_override_note: Chaves e valores da formatação de usuário do TinyMCE. Consulte a documentação sobre [Formatação do Usuário](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) para mais informações.
     folder_note: Pasta para arquivos carregados. Não afeta os arquivos existentes.
     imageToken: Token de Acesso Estático
     imageToken_label: Token de acesso estático é adicionado à URL dos conteúdos
@@ -2107,8 +2133,9 @@ interfaces:
     value_securely_saved: Valor secretamente salvo
     generate: Gerar token
     regenerate: Regerar token
-    generate_success_copy: Certifique-se de fazer backup e copiar o token acima. Por motivos de segurança, você não poderá visualizar o token novamente depois de salvar e sair desta página.
+    regenerate_confirm_title: Regerar token
     remove_token: Remover token
+    remove_confirm_title: Remover token
   system-raw-editor:
     system-raw-editor: Editor "Raw"
     description: Permitir valores com templates "raw" ou "mustache"
@@ -2560,11 +2587,14 @@ series_grouping: Agrupamento de Série
 date_precision: Precisão de Data
 export_dashboard: Exportar Painel
 duplicate_dashboard: Duplicar Painel
+duplicate_policy: Duplicar Política
 search_dashboard: Procurar Painel...
 search_flow: Procurar Fluxo...
 percent: Porcentagem
 show_password: Mostrar senha
 hide_password: Ocultar Senha
+license_grace_key_modal:
+  optional: Opcional
 accepted: Aceitado
 text_direction_auto: Automático (Adequar o Idioma)
 text_direction_ltr: Da Esquerda para a Direita (EPD)

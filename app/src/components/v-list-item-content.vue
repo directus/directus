@@ -9,7 +9,7 @@
 
 	Available Variables:
 
-		--v-list-item-content-padding      [9px 0]
+		--v-list-item-content-padding      [0.5rem 0]
 		--v-list-item-content-font-family  [inherit]
 
 */
@@ -20,7 +20,7 @@
 	flex-wrap: wrap;
 	align-items: center;
 	align-self: center;
-	padding: var(--v-list-item-content-padding, 9px 0);
+	padding: var(--v-list-item-content-padding, 0.5rem 0);
 	overflow: hidden;
 	font-family: var(--v-list-item-content-font-family, inherit);
 }
@@ -36,11 +36,11 @@
 }
 
 .v-list-item-content > :slotted(*:not(:last-child)) {
-	margin-block-end: 2px;
+	margin-block-end: 0.125rem;
 }
 
 .v-list:not(.nav) .v-list-item-content,
 .v-list-item:not(.nav) .v-list-item-content {
-	--v-list-item-content-padding: 4px 0;
+	--v-list-item-content-padding: 0.25rem 0;
 }
 </style>

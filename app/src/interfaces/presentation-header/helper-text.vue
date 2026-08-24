@@ -44,29 +44,29 @@ const sanitizedContent = computed(() => dompurify.sanitize(props.content));
 }
 
 :deep(h1) {
-	font-size: 28px;
+	font-size: 1.5625rem;
 	font-family: var(--theme--fonts--display--font-family);
 }
 
 :deep(h2) {
-	font-size: 24px;
+	font-size: 1.375rem;
 	font-family: var(--theme--fonts--display--font-family);
 }
 
 :deep(h3) {
-	font-size: 20px;
+	font-size: 1.125rem;
 }
 
 :deep(h4) {
-	font-size: 18px;
+	font-size: 1rem;
 }
 
 :deep(h5) {
-	font-size: 16px;
+	font-size: 0.875rem;
 }
 
 :deep(h6) {
-	font-size: 14px;
+	font-size: 0.8125rem;
 }
 
 :deep(p) {
@@ -114,7 +114,7 @@ const sanitizedContent = computed(() => dompurify.sanitize(props.content));
 	background-color: var(--theme--background-subdued);
 	padding: calc(var(--theme--form--field--input--padding) / 2);
 	border-radius: var(--theme--border-radius);
-	font-size: 14px;
+	font-size: 0.8125rem;
 	color: var(--theme--foreground);
 	overflow-x: auto;
 }

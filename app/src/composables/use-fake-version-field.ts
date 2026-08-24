@@ -40,7 +40,7 @@ export function useFakeVersionField(
 				note: null,
 				options: {
 					allowOther: false,
-					choices: [{ text: t('main_version'), value: null }, ...choices],
+					choices: [{ text: t('published'), value: null }, ...choices],
 				},
 				readonly: true,
 				required: false,

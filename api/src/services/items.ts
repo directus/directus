@@ -1,5 +1,4 @@
-import { Action } from '@directus/constants';
-import { useEnv } from '@directus/env';
+import { Action, isPublishedVersionKey } from '@directus/constants';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type {
@@ -16,9 +15,10 @@ import type {
 	SchemaOverview,
 } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
+import { getRelationsForCollection } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
+import { assign, clone, cloneDeep, difference, omit, pick, without } from 'lodash-es';
 import { getCache } from '../cache.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import { getAstFromQuery } from '../database/get-ast-from-query/get-ast-from-query.js';
@@ -29,14 +29,13 @@ import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
 import { processPayload } from '../permissions/modules/process-payload/process-payload.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { createMutationTracker } from '../utils/create-mutation-tracker.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
-import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
+import { captureSeatCount, validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { handleVersion } from '../utils/versioning/handle-version.js';
 import { PayloadService } from './payload.js';
-
-const env = useEnv();
 
 export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
 	implements AbstractService<Item>
@@ -86,21 +85,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		return new (Service as new (options: AbstractServiceOptions) => this)(newOptions);
 	}
 
+	/**
+	 * @deprecated
+	 */
 	createMutationTracker(initialCount = 0): MutationTracker {
-		const maxCount = Number(env['MAX_BATCH_MUTATION']);
-		let mutationCount = initialCount;
-		return {
-			trackMutations(count: number) {
-				mutationCount += count;
-
-				if (mutationCount > maxCount) {
-					throw new InvalidPayloadError({ reason: `Exceeded max batch mutation limit of ${maxCount}` });
-				}
-			},
-			getCount() {
-				return mutationCount;
-			},
-		};
+		return createMutationTracker(initialCount);
 	}
 
 	async getKeysByQuery(query: Query): Promise<PrimaryKey[]> {
@@ -121,10 +110,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Create a single new item.
 	 */
 	async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		if (!opts.bypassLimits) {
 			opts.mutationTracker.trackMutations(1);
+		}
+
+		if (this.collection === 'directus_users') {
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 		}
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
@@ -145,6 +139,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		 * update tree
 		 */
 		const primaryKey: PrimaryKey = await transaction(this.knex, async (trx) => {
+			const previousSeatCount = await captureSeatCount(trx, opts.userIntegrityCheckFlags);
+
 			// Run all hooks that are attached to this event so the end user has the chance to augment the
 			// item that is about to be saved
 			const payloadAfterHooks =
@@ -242,8 +238,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			try {
 				let returningOptions = undefined;
 
-				// Support MSSQL tables that have triggers.
-				if (getDatabaseClient(trx) === 'mssql') {
+				// Support MSSQL tables that have triggers, but only when they actually have one.
+				if (getDatabaseClient(trx) === 'mssql' && (await getHelpers(trx).schema.hasTriggers(this.collection))) {
 					returningOptions = { includeTriggerModifications: true };
 				}
 
@@ -310,7 +306,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				if (opts.onRequireUserIntegrityCheck) {
 					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
 				} else {
-					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
+					await validateUserCountIntegrity({
+						flags: userIntegrityCheckFlags,
+						knex: trx,
+						previousSeatCount,
+					});
 				}
 			}
 
@@ -345,14 +345,16 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						schema: this.schema,
 					});
 
-					const revisionDelta = await payloadService.prepareDelta(payloadAfterHooks);
+					const relationalFields = getRelationsForCollection(this.schema, this.collection);
+
+					const revisionPayload = await payloadService.prepareDelta(omit(payloadWithPresets, relationalFields));
 
 					const revision = await revisionsService.createOne({
 						activity: activity,
 						collection: this.collection,
 						item: primaryKey,
-						data: revisionDelta,
-						delta: revisionDelta,
+						data: revisionPayload,
+						delta: revisionPayload,
 					});
 
 					// Make sure to set the parent field of the child-revision rows
@@ -425,9 +427,16 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.createOne` under the hood.
 	 */
 	async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
+
+		if (this.collection === 'directus_users') {
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
+		}
 
 		const { primaryKeys, nestedActionEvents } = await transaction(this.knex, async (knex) => {
+			const previousSeatCount = await captureSeatCount(knex, opts.userIntegrityCheckFlags);
+
 			const service = this.fork({ knex });
 
 			let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
@@ -463,7 +472,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				if (opts.onRequireUserIntegrityCheck) {
 					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
 				} else {
-					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex });
+					await validateUserCountIntegrity({
+						flags: userIntegrityCheckFlags,
+						knex,
+						previousSeatCount,
+					});
 				}
 			}
 
@@ -491,6 +504,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Get items by query.
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
+		if (query.version && !isPublishedVersionKey(query.version)) {
+			return (await handleVersion(this, opts?.key ?? null, query, opts)) as Item[];
+		}
+
 		const updatedQuery =
 			opts?.emitEvents !== false
 				? await emitter.emitFilter(
@@ -580,18 +597,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 */
 	async readOne(key: PrimaryKey, query: Query = {}, opts?: QueryOptions): Promise<Item> {
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+
 		validateKeys(this.schema, this.collection, primaryKeyField, key);
 
 		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
-		let results: Item[] = [];
-
-		if (query.version && query.version !== 'main') {
-			results = [await handleVersion(this, key, queryWithKey, opts)];
-		} else {
-			results = await this.readByQuery(queryWithKey, opts);
-		}
+		const results: Item[] = await this.readByQuery(queryWithKey, { ...opts, key });
 
 		if (results.length === 0) {
 			throw new ForbiddenError();
@@ -617,9 +629,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			queryWithKey.limit = keys.length;
 		}
 
-		const results = await this.readByQuery(queryWithKey, opts);
-
-		return results;
+		return await this.readByQuery(queryWithKey, opts);
 	}
 
 	/**
@@ -653,7 +663,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			throw new InvalidPayloadError({ reason: 'Input should be an array of items' });
 		}
 
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 
@@ -661,6 +671,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		try {
 			await transaction(this.knex, async (knex) => {
+				const previousSeatCount = await captureSeatCount(knex, opts.userIntegrityCheckFlags);
+
 				const service = this.fork({ knex });
 
 				let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
@@ -684,7 +696,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					if (opts.onRequireUserIntegrityCheck) {
 						opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
 					} else {
-						await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex });
+						await validateUserCountIntegrity({
+							flags: userIntegrityCheckFlags,
+							knex,
+							previousSeatCount,
+						});
 					}
 				}
 			});
@@ -701,10 +717,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Update many items by primary key, setting all items to the same change.
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		if (!opts.bypassLimits) {
 			opts.mutationTracker.trackMutations(keys.length);
+		}
+
+		if (this.collection === 'directus_users' && data['status'] === 'active') {
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 		}
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
@@ -780,6 +801,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		}
 
 		await transaction(this.knex, async (trx) => {
+			const previousSeatCount = await captureSeatCount(trx, opts.userIntegrityCheckFlags);
+
 			const payloadService = new PayloadService(this.collection, {
 				accountability: this.accountability,
 				knex: trx,
@@ -840,7 +863,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				} else {
 					// Having no onRequireUserIntegrityCheck callback indicates that
 					// this is the top level invocation of the nested updates, so perform the user integrity check
-					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
+					await validateUserCountIntegrity({
+						flags: userIntegrityCheckFlags,
+						knex: trx,
+						previousSeatCount,
+					});
 				}
 			}
 
@@ -877,7 +904,14 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						schema: this.schema,
 					});
 
-					const snapshots = await itemsService.readMany(keys);
+					const relationalFields = getRelationsForCollection(this.schema, this.collection);
+					const snapshotFields = difference(fields, relationalFields);
+
+					const snapshots = await itemsService.readMany(keys, {
+						fields: snapshotFields.length > 0 ? snapshotFields : ['*'],
+					});
+
+					const snapshotsByKey = new Map(snapshots.map((snapshot) => [String(snapshot[primaryKeyField]), snapshot]));
 
 					const revisionsService = new RevisionsService({
 						knex: trx,
@@ -886,14 +920,18 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 					const revisions = (
 						await Promise.all(
-							activity.map(async (activity, index) => ({
-								activity: activity,
-								collection: this.collection,
-								item: keys[index],
-								data:
-									snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots[index]) : JSON.stringify(snapshots),
-								delta: await payloadService.prepareDelta(payloadWithTypeCasting),
-							})),
+							activity.map(async (activity, index) => {
+								const key = keys[index];
+								const snapshot = snapshotsByKey.get(String(key));
+
+								return {
+									activity: activity,
+									collection: this.collection,
+									item: key,
+									data: snapshot ? await payloadService.prepareDelta(snapshot) : null,
+									delta: await payloadService.prepareDelta(payloadWithTypeCasting),
+								};
+							}),
 						)
 					).filter((revision) => revision.delta);
 
@@ -995,7 +1033,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.upsertOne` under the hood.
 	 */
 	async upsertMany(payloads: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		const primaryKeys = await transaction(this.knex, async (knex) => {
 			const service = this.fork({ knex });
@@ -1055,7 +1093,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Delete multiple items by primary key.
 	 */
 	async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		if (!opts.bypassLimits) {
 			opts.mutationTracker.trackMutations(keys.length);
@@ -1102,13 +1140,19 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		}
 
 		await transaction(this.knex, async (trx) => {
+			const previousSeatCount = await captureSeatCount(trx, opts.userIntegrityCheckFlags);
+
 			await trx(this.collection).whereIn(primaryKeyField, keysAfterHooks).delete();
 
 			if (opts.userIntegrityCheckFlags) {
 				if (opts.onRequireUserIntegrityCheck) {
 					opts.onRequireUserIntegrityCheck(opts.userIntegrityCheckFlags);
 				} else {
-					await validateUserCountIntegrity({ flags: opts.userIntegrityCheckFlags, knex: trx });
+					await validateUserCountIntegrity({
+						flags: opts.userIntegrityCheckFlags,
+						knex: trx,
+						previousSeatCount,
+					});
 				}
 			}
 
@@ -1179,18 +1223,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		query.limit = 1;
 
-		let record;
-
-		if (query.version && query.version !== 'main') {
+		if (query.version && !isPublishedVersionKey(query.version)) {
 			const primaryKeyField = this.schema.collections[this.collection]!.primary;
 			const key = (await this.knex.select(primaryKeyField).from(this.collection).first())?.[primaryKeyField];
-
-			if (key) {
-				record = await handleVersion(this, key, query, opts);
-			}
-		} else {
-			record = (await this.readByQuery(query, opts))[0];
+			opts = { ...opts, key };
 		}
+
+		const record = (await this.readByQuery(query, opts))[0];
 
 		if (!record) {
 			let fields = Object.entries(this.schema.collections[this.collection]!.fields);

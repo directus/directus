@@ -4,6 +4,7 @@ import { useEnv } from '@directus/env';
 import {
 	InvalidCredentialsError,
 	InvalidOtpError,
+	ResourceRestrictedError,
 	ServiceUnavailableError,
 	UserSuspendedError,
 } from '@directus/errors';
@@ -16,6 +17,8 @@ import { getAuthProvider } from '../auth.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { getEntitlementManager } from '../license/index.js';
+import { getLicenseManager } from '../license/manager.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { createRateLimiter, RateLimiterRes } from '../rate-limiter.js';
@@ -24,6 +27,7 @@ import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { getSecret } from '../utils/get-secret.js';
 import { stall } from '../utils/stall.js';
 import { ActivityService } from './activity.js';
+import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
 import { SettingsService } from './settings.js';
 import { TFAService } from './tfa.js';
@@ -146,7 +150,7 @@ export class AuthenticationService {
 			} catch (error) {
 				if (error instanceof RateLimiterRes && error.remainingPoints === 0) {
 					await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
-					user.status = 'suspended';
+					await getEntitlementManager().clearCache('sso_enabled', 'seats');
 
 					if (this.accountability) {
 						const activity = await this.activityService.createOne({
@@ -161,14 +165,22 @@ export class AuthenticationService {
 
 						const revisionsService = new RevisionsService({ knex: this.knex, schema: this.schema });
 
+						const payloadService = new PayloadService('directus_users', {
+							accountability: this.accountability,
+							knex: this.knex,
+							schema: this.schema,
+						});
+
 						await revisionsService.createOne({
 							activity: activity,
 							collection: 'directus_users',
 							item: user.id,
-							data: user,
+							data: await payloadService.prepareDelta(user),
 							delta: { status: 'suspended' },
 						});
 					}
+
+					user.status = 'suspended';
 
 					// This means that new attempts after the user has been re-activated will be accepted
 					await loginAttemptsLimiter.set(user.id, 0, 0);
@@ -214,6 +226,12 @@ export class AuthenticationService {
 			{ roles, user: user.id, ip: this.accountability?.ip ?? null },
 			{ knex: this.knex },
 		);
+
+		if ((await getLicenseManager().isLocked()) && globalAccess.admin === false) {
+			throw new ResourceRestrictedError({
+				category: 'login',
+			});
+		}
 
 		const tokenPayload: DirectusTokenPayload = {
 			id: user.id,
@@ -343,6 +361,7 @@ export class AuthenticationService {
 			.leftJoin('directus_shares AS d', 's.share', 'd.id')
 			.where('s.token', refreshToken)
 			.andWhere('s.expires', '>=', new Date())
+			.andWhere('s.oauth_client', null)
 			.andWhere((subQuery) => {
 				subQuery.whereNull('d.date_end').orWhere('d.date_end', '>=', new Date());
 			})
@@ -373,6 +392,12 @@ export class AuthenticationService {
 			{ user: record.user_id, roles, ip: this.accountability?.ip ?? null },
 			{ knex: this.knex },
 		);
+
+		if ((await getLicenseManager().isLocked()) && globalAccess.admin === false) {
+			throw new ResourceRestrictedError({
+				category: 'login',
+			});
+		}
 
 		if (record.user_id) {
 			const provider = getAuthProvider(record.user_provider);
@@ -524,6 +549,7 @@ export class AuthenticationService {
 			ip: this.accountability?.ip,
 			user_agent: this.accountability?.userAgent,
 			origin: this.accountability?.origin,
+			oauth_client: sessionRecord['oauth_client'],
 		});
 
 		return newSessionToken;
@@ -537,6 +563,7 @@ export class AuthenticationService {
 			.from('directus_sessions as s')
 			.innerJoin('directus_users as u', 's.user', 'u.id')
 			.where('s.token', refreshToken)
+			.andWhere('s.oauth_client', null)
 			.first();
 
 		if (record) {

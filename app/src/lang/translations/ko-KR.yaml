@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 앱 정보
+continue: 계속
 first_name: 이름/별명
 last_name: 성
 identifier: 식별자
@@ -169,14 +170,12 @@ keep: 유지
 version: 버전
 version_key: 버전 키
 version_name: 버전 이름
-main_version: 메인
 switch_version: 버전 전환
 switch_version_copy: '"{version}" 버전으로 전환하시겠습니까? 저장되지 않은 변경 사항은 손실됩니다.'
 create_version: 버전 생성
 rename_version: 버전 이름 변경
 compare_version: 버전 비교
 save_version: 버전 저장
-promote_version: 버전 승격
 delete_version: 버전 삭제
 delete_version_copy: >-
   "{version}" 버전을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
@@ -482,6 +481,8 @@ related_collection: 관계 컬렉션
 related_collections: 관계 컬렉션
 translations_collection: 번역 컬렉션
 languages_collection: 언어 컬렉션
+translations_preview_collections: 컬렉션
+translations_preview_fields: 필드
 import_data_input_placeholder: CSV 또는 JSON...
 import_data_button: 가져오기 시작
 import_data_indeterminate: 데이터를 가져오는 중...
@@ -522,6 +523,7 @@ functions:
   minute: 분
   second: 초
   count: 카운팅(횟수)
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -617,7 +619,6 @@ manual_string: 수동으로 입력한 문자열
 save_and_create_new: 저장하고 새로 만들기
 save_and_stay: 저장 및 유지
 save_and_quit: 저장하고 종료
-save_and_return_to_main: 저장하고 메인으로 돌아가기
 save_as_copy: 사본으로 저장
 add_existing: 데이터 선택
 creating_items: 데이터 추가
@@ -664,7 +665,6 @@ no_collections: 컬렉션 없음
 create_collection: 목록 생성
 no_collections_copy_admin: 아직 컬렉션이 없습니다. 시작하려면 아래 버튼을 클릭하세요.
 no_collections_copy: 아직 컬렉션이 없습니다. 시스템 관리자에게 문의하십시오.
-relationship_not_setup: 관계형이 올바르게 구성되지 않았습니다.
 no_singleton_relations: 싱글톤과의 관계는 지원되지 않습니다
 display_template_not_setup: 표시 템플릿 옵션이 잘못 구성됨
 collection_field_not_setup: 컬렉션 필드 옵션이 잘못 구성되었습니다.
@@ -870,6 +870,7 @@ operators:
   nintersects: '이(가) 교차하지 않음 :'
   intersects_bbox: 이(가) 경계 상자와 교차함
   nintersects_bbox: 이(가) 경계 상자와 교차하지 않음
+  json: JSON
   regex: '이(가) 정규표현식과 일치 :'
 custom_validation_message: 사용자 지정 유효성 검사 메시지
 loading: 로드 중...
@@ -1092,12 +1093,15 @@ wysiwyg_options:
   bullist: 글머리기호 목록
   numlist: 번호 매기기 목록
   hr: 가로줄
+  insertdatetime_date: 날짜형
+  insertdatetime_time: 시간
   link: 링크 추가/편집
   unlink: 링크 제거
   media: 미디어 추가/편집
   image: 이미지 추가/편집
   copy: 복사
   cut: 자르다
+  default: 기본
   paste: 반죽
   heading: 표제
   h1: 제목 1
@@ -1121,6 +1125,8 @@ wysiwyg_options:
   source_code: 소스 코드 편집
   fullscreen: 전체화면
   directionality: 방향성
+  ltr: 왼쪽에서 오른쪽으로
+  rtl: 오른쪽에서 왼쪽으로
   lazy_loading: 이미지 지연 로드
   lazy_loading_label: 지연 로드 활성화하기
 dropdown: 드롭다운
@@ -1148,6 +1154,17 @@ settings_data_model: 데이터 모델
 settings_roles: 사용자 역할
 settings_permissions: 액세스 정책
 settings_project: 설정
+licensing:
+  unlimited: 제한 없는
+  addon_manage: 관리
+  addon_update: 수정
+  resolve_continue: 계속
+  resolve_show_n_more: '{count}개 더 보기'
+  resolve_section_flows: 플로우
+  resolve_sso_admin_password: 비밀번호
+  entitlements:
+    collections: 컬렉션
+    flows: 플로우
 settings_appearance: 외관
 settings_ai: AI
 model_context_protocol: 모델 컨텍스트 프로토콜
@@ -1247,6 +1264,7 @@ fields:
     collection: 컬렉션
     icon: 아이콘
     note: 메모
+    status: 상태
     color: 색상
     display_template: 표시 형식
     hidden: 숨김
@@ -1378,16 +1396,12 @@ fields:
     public_registration_verify_email_note: 등록하는 사용자에게 로그인하기 전에 인증 링크를 클릭하도록 요청하는 이메일을 보냅니다.
     visual_editor_urls: 비주얼 에디터 URL
     mcp_enabled: MCP 서버
-    mcp_enabled_note: '<a href="https://directus.io/docs/guides/ai/mcp" target="_blank">모델 컨텍스트 프로토콜(MCP)</a> 을 통해 AI/LLM 도구를 Directus 프로젝트에 연결하세요. 이를 통해 AI 어시스턴트가 Directus 데이터를 안전하게 읽고 상호 작용할 수 있습니다.'
-    mcp_notice: '모델 컨텍스트 프로토콜(MCP)은 Directus와 같은 애플리케이션에 LLM을 연결하는 표준입니다. 활성화되면 Directus MCP 서버를 `/mcp`에서 사용할 수 있습니다. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">MCP 및 연결 방법에 대해 자세히 알아보세요.</a>'
     mcp_allow_deletes: 삭제 허용
     mcp_allow_deletes_note:
       - 데이터 손실이 발생할 수 있습니다. 안전을 위해 기본적으로 비활성화되어 있습니다.
     mcp_prompts_collection: AI 프롬프트 컬렉션
-    mcp_prompts_collection_note: 'AI 상호작용을 위한 <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">재사용 가능한 프롬프트 템플릿을</a> 저장하기 위한 컬렉션을 선택하세요.'
     mcp_system_prompt_divider: 시스템 프롬프트 구성
     mcp_system_prompt_enabled: 시스템 프롬프트 사용
-    mcp_system_prompt_enabled_note: "LLM 동작을 안내하려면 <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>기본 시스템 프롬프트를</a> 사용하세요. 아래의 프롬프트를 제거하거나 재정의하려면 비활성화하세요."
     mcp_system_prompt: 사용자 정의 시스템 프롬프트
     mcp_system_prompt_note: '기본값을 대체할 사용자 지정 시스템 프롬프트입니다. 기본값을 사용하려면 비워 두세요(위에서 활성화한 경우).'
     ai_header_name: 머리글
@@ -1593,7 +1607,6 @@ mcp_prompts_collection_schema:
   messages_role_user: 사용자
   messages_role_assistant: 어시스턴트
   messages_role_note: 이 메시지에서 말하는 사람은 누구입니까?
-  meta_prompts_notice: '프롬프트는 Directus MCP 서버, Flows 또는 기타 AI 애플리케이션을 통해 LLM과 함께 사용할 수 있는 재사용 가능한 템플릿입니다. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">효과적인 프롬프트 생성에 대해 자세히 알아보세요.</a>'
 expired: 만료됨
 upcoming: 다가오는
 share: 공유하다
@@ -1761,6 +1774,8 @@ interfaces:
     all_opened: 모두 열림
     accordion_mode: 아코디언 모드
     max_one_section_open: 최대 1개 섹션 열기
+  group-tabs:
+    fill_width: 전체 폭
   presentation-links:
     presentation-links: 버튼
     style: 스타일
@@ -1953,6 +1968,7 @@ interfaces:
     incompatible_data: 현재 데이터는 리피터 레이아웃과 호환되지 않으며 리피터 레이아웃에 항목을 추가할 때 재정의됩니다.
     interface_group: 인터페이스 옵션
     display_group: 디스플레이 옵션
+    edit_mode_inline: 인라인
   slider:
     slider: 슬라이더
     description: 슬라이더를 사용하여 숫자 선택
@@ -2026,9 +2042,6 @@ interfaces:
     description: HTML 형식으로 작성할 수 있는 리치텍스트 에디터
     toolbar: 툴바
     custom_formats: 맞춤 형식
-    custom_formats_note: TinyMCE 콘텐츠 형식의 목록은 다음과 같습니다. 자세한 내용은 TinyMCE의 [사용자 서식 문서](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/)를 참조하십시오.
-    options_override: 옵션 재정의
-    options_override_note: TinyMCE 사용자 서식 키와 그 값들은 다음과 같습니다. 자세한 내용은 TinyMCE의 [사용자 서식 문서](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/)를 참조하십시오.
     folder_note: 업로드된 파일의 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
     imageToken: 정적 액세스 토큰
     imageToken_label: 정적 액세스 토큰이 자산의 URL에 추가됩니다.
@@ -2080,8 +2093,9 @@ interfaces:
     value_securely_saved: 값이 안전하기 저장 됨
     generate: 토큰 생성
     regenerate: 토큰 재생성
-    generate_success_copy: 위의 토큰을 백업하고 복사하십시오. 보안상의 이유로 이 페이지를 저장하고 탐색한 후에는 토큰을 다시 볼 수 없습니다.
+    regenerate_confirm_title: 토큰 재생성
     remove_token: 토큰 제거
+    remove_confirm_title: 토큰 제거
   system-raw-editor:
     system-raw-editor: RAW 편집기
     description: RAW 또는 콧수염 템플릿 값 입력 허용
@@ -2562,10 +2576,8 @@ search_flow: 흐름 검색...
 percent: 퍼센트
 show_password: 비밀번호 보이기
 hide_password: 비밀번호 숨기기
-bsl_banner:
-  title: 프로젝트 담당자를 지정하지 않으셨습니다.
-  license: 이는 BSL 1.1 라이선스 준수를 위해 필요합니다. 해당 담당자가 프로젝트 책임자가 되어야 합니다.
-  remind_next_login: 다음 로그인 시 다시 알려드리겠습니다.
+license_grace_key_modal:
+  optional: 선택 과목
 accepted: 수락됨
 text_direction_auto: 자동(일치 언어)
 text_direction_ltr: 왼쪽에서 오른쪽으로(LTR)

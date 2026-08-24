@@ -57,7 +57,7 @@ export class FieldBuilder {
 	}
 
 	/** Shorthand for creating an integer field and marking it as the primary field */
-	id() {
+	id(): this {
 		this._data = {
 			field: this._data.field,
 			...ID_FIELD,
@@ -69,7 +69,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	options(options: FieldOveriewBuilderOptions) {
+	options(options: FieldOveriewBuilderOptions): this {
 		assert(this._data._kind !== 'initial', 'Cannot configure field before specifing a type');
 
 		Object.assign(this._data, options);
@@ -78,7 +78,7 @@ export class FieldBuilder {
 	}
 
 	/** Resets the field to it's initial state of only the name */
-	overwrite() {
+	overwrite(): this {
 		this._data = {
 			field: this._data.field,
 			_kind: 'initial',
@@ -88,7 +88,7 @@ export class FieldBuilder {
 	}
 
 	/** Marks the field as the primary field of the collection */
-	primary() {
+	primary(): this {
 		assert(this._collection, 'Can only set to primary on a collection');
 
 		assert(
@@ -105,7 +105,7 @@ export class FieldBuilder {
 	}
 
 	/** Marks the field as the sort_field of the collection */
-	sort() {
+	sort(): void {
 		assert(this._collection, 'Can only set to sort on a collection');
 		assert(this._collection._data.sortField === null, 'Can only set a sort field once');
 
@@ -115,7 +115,7 @@ export class FieldBuilder {
 		};
 	}
 
-	boolean() {
+	boolean(): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 
 		this._data = {
@@ -127,7 +127,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	bigInteger() {
+	bigInteger(): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 
 		this._data = {
@@ -139,7 +139,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	date() {
+	date(): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 
 		this._data = {
@@ -151,7 +151,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	dateTime() {
+	dateTime(): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 
 		this._data = {
@@ -163,7 +163,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	decimal() {
+	decimal(): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 
 		this._data = {
@@ -175,7 +175,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	float() {
+	float(): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 
 		this._data = {
@@ -187,7 +187,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	integer() {
+	integer(): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 
 		this._data = {
@@ -199,7 +199,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	json() {
+	json(): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 
 		this._data = {
@@ -211,7 +211,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	string() {
+	string(): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 
 		this._data = {
@@ -223,7 +223,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	text() {
+	text(): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 
 		this._data = {
@@ -235,7 +235,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	time() {
+	time(): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 
 		this._data = {
@@ -247,7 +247,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	timestamp() {
+	timestamp(): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 
 		this._data = {
@@ -259,7 +259,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	uuid() {
+	uuid(): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 
 		this._data = {
@@ -271,7 +271,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	hash() {
+	hash(): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 
 		this._data = {
@@ -283,7 +283,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	csv() {
+	csv(): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 
 		this._data = {
@@ -295,7 +295,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	m2a(related_collections: string[], relation_callback?: (options: M2AOptions) => M2AOptions | void) {
+	m2a(related_collections: string[], relation_callback?: (options: M2AOptions) => M2AOptions | void): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
@@ -339,7 +339,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	m2m(related_collection: string, relation_callback?: (options: M2MOptions) => M2MOptions | void) {
+	m2m(related_collection: string, relation_callback?: (options: M2MOptions) => M2MOptions | void): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
@@ -386,7 +386,7 @@ export class FieldBuilder {
 	translations(
 		language_collection: string = 'languages',
 		relation_callback?: (options: M2MOptions) => M2MOptions | void,
-	) {
+	): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
@@ -442,7 +442,7 @@ export class FieldBuilder {
 		related_collection: string,
 		related_field: string,
 		relation_callback?: (relation: RelationBuilder) => RelationBuilder | void,
-	) {
+	): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
@@ -477,7 +477,7 @@ export class FieldBuilder {
 		related_collection: string,
 		related_field?: string,
 		relation_callback?: (relation: RelationBuilder) => RelationBuilder | void,
-	) {
+	): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
@@ -508,7 +508,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	a2o(related_collections: string[], relation_callback?: (relation: RelationBuilder) => RelationBuilder | void) {
+	a2o(related_collections: string[], relation_callback?: (relation: RelationBuilder) => RelationBuilder | void): this {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
@@ -536,7 +536,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	get_name() {
+	get_name(): string {
 		return this._data.field;
 	}
 

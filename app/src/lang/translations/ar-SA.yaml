@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: حول
+continue: متابعة
 first_name: الاسم الأول
 last_name: الاسم الأخير
 identifier: المعرِّف
@@ -158,14 +159,12 @@ keep: احتفظ
 version: إصدار
 version_key: مفتاح الإصدار
 version_name: اسم الإصدار
-main_version: رئيسي
 switch_version: تبديل الإصدار
 switch_version_copy: هل أنت متأكد من أنك تريد التبديل إلى الإصدار "{version}"؟ سيتم فقدان التغييرات الغير محفوظة.
 create_version: إنشاء إصدار
 rename_version: إعادة تسمية الإصدار
 compare_version: مقارنة الإصدار
 save_version: حفظ الإصدار
-promote_version: تحديث الإصدار
 delete_version: حذف الإصدار
 delete_version_copy: >-
   هل أنت متأكد من أنك تريد حذف الإصدار "{version}"؟ لا يمكن التراجع عن هذا الإجراء.
@@ -461,6 +460,8 @@ related_collection: مجموعة ذات صلة
 related_collections: مجموعات ذات صلة
 translations_collection: مجموعة الترجمة
 languages_collection: مجموعة اللغات
+translations_preview_collections: مجموعات
+translations_preview_fields: حقول
 import_data_input_placeholder: CSV أو JSON...
 import_data_button: بدء الاستيراد
 import_data_indeterminate: استيراد البيانات...
@@ -497,6 +498,7 @@ functions:
   minute: دقيقة
   second: ثانية
   count: عدد
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -633,7 +635,6 @@ no_collections: مجموعات
 create_collection: إنشاء مجموعة
 no_collections_copy_admin: ليس لديك أي مجموعات حتى الآن. انقر على الزر أدناه للبدء.
 no_collections_copy: ليس لديك أي مجموعات حتى الآن. الرجاء الاتصال بمدير النظام الخاص بك.
-relationship_not_setup: لم يتم إعداد العلاقة بشكل صحيح
 no_singleton_relations: العلاقات مع القراشيع غير مدعومة
 display_template_not_setup: خيار قالب العرض خاطئ التكوين
 collection_field_not_setup: خيار حقل المجموعة خاطئ التكوين
@@ -836,6 +837,7 @@ operators:
   nintersects: لا يتقاطع
   intersects_bbox: يتقاطع مع الصندوق المحيط
   nintersects_bbox: لا يتقاطع مع الصندوق المحيط
+  json: JSON
   regex: مطابقة RegExp
 custom_validation_message: رسالة التحقق المخصصة
 loading: جار التحميل...
@@ -1035,12 +1037,15 @@ wysiwyg_options:
   bullist: قائمة نُقطيّة
   numlist: قائمة مرقّمة
   hr: مسطرة أفقية
+  insertdatetime_date: التاريخ
+  insertdatetime_time: الوقت
   link: إضافة/تحرير الرابط
   unlink: إزالة الرابط
   media: إضافة/تعديل الوسائط
   image: إضافة/تحرير الصورة
   copy: نسخ
   cut: قص
+  default: الافتراضي
   paste: لصق
   heading: العنوان
   h1: العنوان 1
@@ -1063,6 +1068,8 @@ wysiwyg_options:
   source_code: تعديل رمز المصدر
   fullscreen: ملء الشاشة
   directionality: الاتجاهية
+  ltr: من اليسار إلى اليمين
+  rtl: من اليمين إلى اليسار
   lazy_loading: التحميل البطيء للصور
   lazy_loading_label: تمكين التحميل البطيء
 dropdown: قائمة منسدلة
@@ -1090,6 +1097,17 @@ settings_data_model: نموذج البيانات
 settings_roles: أدوار المستخدم
 settings_permissions: سياسات الوصول
 settings_project: إعدادات
+licensing:
+  unlimited: غير محدود
+  addon_manage: إدارة
+  addon_update: تحديث
+  resolve_continue: متابعة
+  resolve_show_n_more: 'أظهر {count} أكثر'
+  resolve_section_flows: التدفقات
+  resolve_sso_admin_password: كلمة المرور
+  entitlements:
+    collections: مجموعات
+    flows: التدفقات
 settings_appearance: المظهر
 settings_flows: التدفقات
 settings_system_logs: سجلات النظام
@@ -1174,6 +1192,7 @@ fields:
     collection: المجموعة
     icon: أيقونة
     note: ملحوظة
+    status: حالة
     color: لون
     display_template: عرض القالب
     hidden: مخفي
@@ -1608,6 +1627,8 @@ interfaces:
     all_opened: تم فتح الكل
     accordion_mode: قائمة منسدلة
     max_one_section_open: قسم واحد مفتوح كحد أقصى
+  group-tabs:
+    fill_width: العرض الكامل
   presentation-links:
     presentation-links: أزرار
     style: النمط
@@ -1780,6 +1801,7 @@ interfaces:
     incompatible_data: البيانات الحالية غير متوافقة مع واجهة التكرار وسيتم تجاوزها عند إضافة عناصر إلى جهاز التكرار
     interface_group: خيارات الواجهة
     display_group: خيارات العرض
+    edit_mode_inline: ضمن السياق
   slider:
     slider: شريط
     description: حدد رقما باستخدام شريط التمرير
@@ -1850,8 +1872,6 @@ interfaces:
     description: محرر نص يكتب محتوى HTML
     toolbar: شريط الأدوات
     custom_formats: تنسيقات مخصصة
-    custom_formats_note: قائمة بتنسيقات محتوى TinyMCE - راجع وثائق TinyMCE حول [تنسيق المحتوى] (https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) لمزيد من المعلومات.
-    options_override: تجاوز الخيارات
     folder_note: مجلد الملفات التي تم رفعها. لا يؤثر على الملفات الموجودة.
     imageToken: رمز الوصول الثابت
     imageToken_label: تم إلحاق رمز الوصول الثابت إلى عنوان URL للأصول

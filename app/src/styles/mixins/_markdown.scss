@@ -11,48 +11,48 @@
 		margin-block: 1em 0;
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
-		font-size: 36px;
-		line-height: 46px;
+		font-size: 2rem;
+		line-height: 1.2813;
 	}
 
 	h2 {
 		margin-block: 1.25em 0;
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
-		font-size: 24px;
-		line-height: 34px;
+		font-size: 1.375rem;
+		line-height: 1.4091;
 	}
 
 	h3 {
 		margin-block: 1.25em 0;
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
-		font-size: 19px;
-		line-height: 29px;
+		font-size: 1.0625rem;
+		line-height: 1.5294;
 	}
 
 	h4 {
 		margin-block: 1.5em 0;
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
-		font-size: 16px;
-		line-height: 26px;
+		font-size: 0.875rem;
+		line-height: 1.6429;
 	}
 
 	h5 {
 		margin-block: 2em 0;
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
-		font-size: 14px;
-		line-height: 24px;
+		font-size: 0.8125rem;
+		line-height: 1.6923;
 	}
 
 	h6 {
 		margin-block: 2em 0;
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
-		font-size: 12px;
-		line-height: 22px;
+		font-size: 0.6875rem;
+		line-height: 1.8182;
 	}
 
 	a {
@@ -63,10 +63,10 @@
 	p,
 	ul,
 	ol {
-		margin: 1.6em 0; // 24px (line-height) / 15px (font-size) = 1.6
+		margin: 1.5714em 0; // 1.5714 = line-height
 		font-weight: 500;
-		font-size: 15px;
-		line-height: 24px;
+		font-size: 0.875rem;
+		line-height: 1.5714;
 	}
 
 	ul ul,
@@ -82,11 +82,11 @@
 	}
 
 	code {
-		padding: 2px 4px;
+		padding: 0.125rem 0.25rem;
 		font-weight: 500;
-		font-size: 15px;
 		font-family: var(--theme--fonts--monospace--font-family), monospace;
-		line-height: 24px;
+		font-size: 0.875rem;
+		line-height: 1.5714;
 		overflow-wrap: break-word;
 		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
@@ -96,9 +96,9 @@
 		padding: 1em;
 		overflow: auto;
 		font-weight: 500;
-		font-size: 15px;
 		font-family: var(--theme--fonts--monospace--font-family), monospace;
-		line-height: 24px;
+		font-size: 0.875rem;
+		line-height: 1.5714;
 		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
 	}
@@ -107,13 +107,13 @@
 		margin-inline-start: 0;
 		padding-inline-start: 1em;
 		font-weight: 500;
-		font-size: 15px;
-		line-height: 24px;
+		font-size: 0.875rem;
+		line-height: 1.5714;
 		border-inline-start: 2px solid var(--theme--form--field--input--border-color);
 	}
 
 	blockquote blockquote {
-		margin-inline-start: 10px;
+		margin-inline-start: 0.5625rem;
 	}
 
 	video,
@@ -125,7 +125,7 @@
 	}
 
 	hr {
-		block-size: 1px;
+		block-size: 0.0625rem;
 		margin-block: 2em;
 		background-color: var(--theme--form--field--input--border-color);
 		border: none;
@@ -133,25 +133,25 @@
 
 	table {
 		font-weight: 500;
-		font-size: 15px;
-		line-height: 24px;
+		font-size: 0.875rem;
+		line-height: 1.5714;
 		border-collapse: collapse;
 	}
 
 	table th,
 	table td {
-		padding: 0.4rem;
+		padding: 0.3125rem;
 		border: 1px solid var(--theme--form--field--input--border-color);
 	}
 
 	figure {
 		display: table;
-		margin: 1rem auto;
+		margin: 0.8125rem auto;
 	}
 
 	figure figcaption {
 		display: block;
-		margin-block-start: 0.25rem;
+		margin-block-start: 0.1875rem;
 		color: #999;
 		text-align: center;
 	}

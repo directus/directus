@@ -7,10 +7,6 @@ ARG NODE_VERSION=22
 
 FROM node:${NODE_VERSION}-alpine AS builder
 
-# Remove again once corepack >= 0.31 made it into base image
-# (see https://github.com/directus/directus/issues/24514)
-RUN npm install --global corepack@latest
-
 RUN apk --no-cache add python3 py3-setuptools build-base
 
 WORKDIR /directus
@@ -49,9 +45,16 @@ EOF
 
 FROM node:${NODE_VERSION}-alpine AS runtime
 
-RUN npm install --global \
-	pm2@5 \
-	corepack@latest # Remove again once corepack >= 0.31 made it into base image
+# Apply outstanding OS-level security patches (openssl, zlib, busybox, ...),
+# then purge npm, npx, corepack, and the npm cache from the final image.
+RUN apk --no-cache upgrade \
+	&& rm -rf \
+		/usr/local/lib/node_modules/npm \
+		/usr/local/lib/node_modules/corepack \
+		/usr/local/bin/npm \
+		/usr/local/bin/npx \
+		/usr/local/bin/corepack \
+		/root/.npm
 
 USER node
 
@@ -65,10 +68,14 @@ ENV \
 
 COPY --from=builder --chown=node:node /directus/ecosystem.config.cjs .
 COPY --from=builder --chown=node:node /directus/dist .
+COPY --chown=node:node docker-entrypoint.cjs .
+
+# Put pm2 on the path so `docker exec <container> pm2 ...` keeps working for diagnostics.
+
+USER root
+RUN ln -s /directus/node_modules/.pnpm/pm2@*/node_modules/pm2/bin/pm2 /usr/local/bin/pm2
+USER node
 
 EXPOSE 8055
 
-CMD : \
-	&& node cli.js bootstrap \
-	&& pm2-runtime start ecosystem.config.cjs \
-	;
+CMD ["node", "docker-entrypoint.cjs"]

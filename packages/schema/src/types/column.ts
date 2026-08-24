@@ -24,3 +24,8 @@ export interface Column {
 	schema?: string;
 	foreign_key_schema?: string | null;
 }
+
+export type TableColumn = {
+	table: string;
+	column: string;
+};

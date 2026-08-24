@@ -6,6 +6,7 @@ import AccordionSection from './accordion-section.vue';
 import type { ComparisonContext } from '@/components/v-form/types';
 import VItemGroup from '@/components/v-item-group.vue';
 import { CollabContext } from '@/composables/use-collab';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 
 const props = withDefaults(
 	defineProps<{
@@ -27,6 +28,7 @@ const props = withDefaults(
 		accordionMode?: boolean;
 		start?: 'opened' | 'closed' | 'first';
 		direction?: string;
+		version?: ContentVersionMaybeNew | null;
 	}>(),
 	{
 		batchActiveFields: () => [],
@@ -137,6 +139,7 @@ function useComputedGroup() {
 			:group="field.meta!.field"
 			:multiple="accordionMode === false"
 			:direction="direction"
+			:version="version"
 			@apply="$emit('apply', $event)"
 			@toggle-all="toggleAll"
 		/>

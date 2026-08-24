@@ -60,4 +60,4 @@ export default [
 	'without',
 	'with regard to',
 	'with respect to',
-];
+] as string[];

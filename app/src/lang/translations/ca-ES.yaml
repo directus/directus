@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Quant a
+continue: Continua
 first_name: Nom
 last_name: Cognoms
 identifier: Indentificador
@@ -372,6 +373,8 @@ related_collection: Col·lecció relacionada
 related_collections: Col·leccions relacionades
 translations_collection: Col·lecció de traduccions
 languages_collection: Col·lecció de idiomes
+translations_preview_collections: Col·leccions
+translations_preview_fields: Camps
 import_data_input_placeholder: CVS o JSON...
 import_data_button: Comença la importació
 import_data_indeterminate: Important dades...
@@ -408,6 +411,7 @@ functions:
   minute: Minut
   second: Segon
   count: Conta
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h.mm a'
@@ -520,7 +524,6 @@ no_collections: No hi ha col·leccions
 create_collection: Crea una col·lecció
 no_collections_copy_admin: Encara no hi ha cap col·lecció. Fes clic al botó següent per començar.
 no_collections_copy: Encara no hi ha cap col·lecció. Posa't en contacte amb l'administrador del sistema.
-relationship_not_setup: La relació no s'ha configurat correctament
 display_template_not_setup: L'opció de plantilla de disposió no està configurada
 collection_field_not_setup: L'opció de camp de col·lecció no està configurada
 select_a_collection: Selecciona una col·lecció
@@ -702,6 +705,7 @@ operators:
   nintersects: No intersecta
   intersects_bbox: Intersecta la caixa delimitadora
   nintersects_bbox: No intersecta la caixa delimitadora
+  json: JSON
   regex: Correspon a expresió regular
 custom_validation_message: Missatge de validació personalitzat
 loading: Carregant...
@@ -841,12 +845,15 @@ wysiwyg_options:
   bullist: Llista amb vinyetes
   numlist: Llista ordenada
   hr: Regle horitzontal
+  insertdatetime_date: Data
+  insertdatetime_time: Time
   link: Afegeix / Edita l'enllaç
   unlink: Elimina l'enllaç
   media: Afegeix / Edita el mèdia
   image: Afegeix / Edita la imatge
   copy: Copia
   cut: Retalla
+  default: Predeterminat
   paste: Enganxa
   heading: Encapçalament
   h1: Capçalera 1
@@ -869,6 +876,8 @@ wysiwyg_options:
   source_code: Edita el codi font
   fullscreen: Pantalla completa
   directionality: Direcció
+  ltr: D'esquerra a dreta
+  rtl: De dreta a esquerra
 dropdown: Desplegable
 choices: Opcions
 choices_option_configured_incorrectly: Opcions configurades incorrectament
@@ -886,6 +895,16 @@ editing_in_batch: 'Editant {count} elements'
 no_options_available: Sense opcions disponibles
 settings_data_model: Model de dades
 settings_project: Configuració
+licensing:
+  unlimited: Il·limitat
+  addon_update: Actualitzar
+  resolve_continue: Continua
+  resolve_show_n_more: 'Mostra {count} més'
+  resolve_section_flows: Fluxes
+  resolve_sso_admin_password: Contrasenya
+  entitlements:
+    collections: Col·leccions
+    flows: Fluxes
 settings_flows: Fluxes
 settings_presets: Favorits
 settings_translations: Traduccions
@@ -961,6 +980,7 @@ fields:
     collection: Coŀlecció
     icon: Icona
     note: Nota
+    status: Estat
     color: Color
     display_template: Mostra la plantilla
     hidden: Amagat
@@ -1312,6 +1332,8 @@ interfaces:
     all_opened: Tots oberts
     accordion_mode: Mode d'acordió
     max_one_section_open: Màxim 1 secció oberta
+  group-tabs:
+    fill_width: Amplada de l'emplenat
   presentation-links:
     presentation-links: Botons
     style: Estil
@@ -1477,6 +1499,7 @@ interfaces:
     sort: Ordre
     field_note_placeholder: Introdueix una nota sobre el camp...
     interface_group: Opcions d'Interfície
+    edit_mode_inline: Inline
   slider:
     slider: Lliscador
     description: Selecciona un número utilitzant el lliscador
@@ -1537,7 +1560,6 @@ interfaces:
     description: Un editor de text enriquit escrivint contingut HTML
     toolbar: Barra d'eines
     custom_formats: Formats personalitzats
-    options_override: Sobreescriptura d'opcions
   input-block-editor:
     tools: Barra d'eines
     tools_options:

@@ -1,5 +1,5 @@
 import { Chat } from '@ai-sdk/vue';
-import { type ContextAttachment, type PrimaryKey, type StandardProviderType, type SystemTool } from '@directus/ai';
+import { type ContextAttachment, type PrimaryKey, type SystemTool } from '@directus/ai';
 import { createEventHook, useLocalStorage, useSessionStorage } from '@vueuse/core';
 import { DefaultChatTransport, type FileUIPart, lastAssistantMessageIsCompleteWithToolCalls, type UIMessage } from 'ai';
 import { defineStore } from 'pinia';
@@ -7,10 +7,13 @@ import { computed, reactive, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { z } from 'zod';
 import type { StaticToolDefinition } from '../composables/define-tool';
-import { AI_MODELS, type AppModelDefinition, buildCustomModelDefinition, buildCustomModels } from '../models';
+import type { AppModelDefinition } from '../models';
 import { isVisualElement, type UploadedFileResult } from '../types/context';
+import { getAvailableModels, getModelKey, resolveModelByKey } from '../utils/available-models';
+import { unwrapToolCall } from '../utils/unwrap-tool-call';
 import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
+import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
@@ -56,6 +59,7 @@ const getEffectiveToolPartState = (part: ToolPartLike) => {
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
+	const serverStore = useServerStore();
 	const sidebarStore = useSidebarStore();
 	const contextStore = useAiContextStore();
 	const toolsStore = useAiToolsStore();
@@ -90,66 +94,22 @@ export const useAiStore = defineStore('ai-store', () => {
 	});
 
 	// Model selection
-	const models = computed(() => {
-		const customModels = buildCustomModels(settingsStore.settings?.ai_openai_compatible_models ?? null);
-		const allModels = [...AI_MODELS, ...customModels];
-
-		const allowedModelsMap: Record<StandardProviderType, string[] | null> = {
-			openai: settingsStore.settings?.ai_openai_allowed_models ?? null,
-			anthropic: settingsStore.settings?.ai_anthropic_allowed_models ?? null,
-			google: settingsStore.settings?.ai_google_allowed_models ?? null,
-		};
-
-		const result: AppModelDefinition[] = [];
-
-		// Add models that are allowed or explicitly configured
-		for (const modelDef of allModels) {
-			if (!settingsStore.availableAiProviders.includes(modelDef.provider)) continue;
-
-			// openai-compatible models are always allowed (user explicitly configured them)
-			if (modelDef.provider === 'openai-compatible') {
-				result.push(modelDef);
-				continue;
-			}
-
-			const allowedModels = allowedModelsMap[modelDef.provider];
-
-			if (!allowedModels || allowedModels.length === 0) continue;
-
-			if (allowedModels.includes(modelDef.model)) {
-				result.push(modelDef);
-			}
-		}
-
-		// Add custom model IDs that are in allowed list but not in predefined models
-		for (const [provider, allowedModels] of Object.entries(allowedModelsMap)) {
-			if (!allowedModels || allowedModels.length === 0) continue;
-			if (!settingsStore.availableAiProviders.includes(provider)) continue;
-
-			for (const modelId of allowedModels) {
-				const exists = result.some((m) => m.provider === provider && m.model === modelId);
-
-				if (!exists) {
-					result.push(buildCustomModelDefinition(provider as StandardProviderType, modelId));
-				}
-			}
-		}
-
-		return result;
-	});
+	const models = computed<AppModelDefinition[]>(() =>
+		getAvailableModels(settingsStore.settings, serverStore.info.ai_providers ?? []),
+	);
 
 	const defaultModel = computed(() => models.value[0] ?? null);
 
 	const selectedModelId = useLocalStorage<string | null>(
 		'selected-ai-model',
-		defaultModel.value ? `${defaultModel.value.provider}:${defaultModel.value.model}` : null,
+		defaultModel.value ? getModelKey(defaultModel.value) : null,
 	);
 
 	watch(
 		() => defaultModel.value,
 		(newDefaultModel) => {
 			if (selectedModelId.value === null && newDefaultModel) {
-				selectedModelId.value = `${newDefaultModel.provider}:${newDefaultModel.model}`;
+				selectedModelId.value = getModelKey(newDefaultModel);
 			}
 		},
 		{ immediate: true },
@@ -158,23 +118,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	const selectedModel = computed(() => {
 		if (!selectedModelId.value) return null;
 
-		// Split only on first colon - model IDs may contain colons (e.g., "gpt-oss:20b")
-		const colonIndex = selectedModelId.value.indexOf(':');
-
-		if (colonIndex === -1) return null;
-
-		const provider = selectedModelId.value.slice(0, colonIndex);
-		const model = selectedModelId.value.slice(colonIndex + 1);
-
-		if (!provider || !model) return null;
-
-		return (
-			models.value.find((modelDefinition) => {
-				return modelDefinition.provider === provider && modelDefinition.model === model;
-			}) ??
-			defaultModel.value ??
-			null
-		);
+		return resolveModelByKey(selectedModelId.value, models.value) ?? defaultModel.value ?? null;
 	});
 
 	const supportsFileUpload = computed(() => selectedModel.value?.provider !== 'openai-compatible');
@@ -184,7 +128,7 @@ export const useAiStore = defineStore('ai-store', () => {
 			return;
 		}
 
-		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
+		selectedModelId.value = getModelKey(modelDefinition);
 	};
 
 	const sanitizeMessages = (messageList: UIMessage[]): UIMessage[] =>
@@ -232,11 +176,14 @@ export const useAiStore = defineStore('ai-store', () => {
 		credentials: 'include',
 		body: () => {
 			const tools = [...toolsStore.enabledSystemTools, ...toolsStore.localTools.map(toApiTool)];
+			const approvalToolNames = new Set(tools.map((tool) => (typeof tool === 'string' ? tool : tool.name)));
 
 			// Filter toolApprovals to only include 'always' and 'ask' (not 'disabled')
 			const approvals: Record<string, 'always' | 'ask'> = {};
 
 			for (const [toolName, mode] of Object.entries(toolsStore.toolApprovals)) {
+				if (!approvalToolNames.has(toolName)) continue;
+
 				if (mode === 'always' || mode === 'ask') {
 					approvals[toolName] = mode;
 				}
@@ -300,7 +247,7 @@ export const useAiStore = defineStore('ai-store', () => {
 			}
 		},
 		onToolCall: async ({ toolCall }) => {
-			const isServerTool = toolCall.dynamic || toolsStore.isSystemTool(toolCall.toolName);
+			const isServerTool = toolCall.dynamic || toolsStore.isServerTool(toolCall.toolName);
 
 			if (isServerTool) {
 				return;
@@ -406,12 +353,15 @@ export const useAiStore = defineStore('ai-store', () => {
 			if ('toolCallId' in part && part.state === 'output-available' && !processedToolCallIds.has(part.toolCallId)) {
 				processedToolCallIds.add(part.toolCallId);
 
-				const tool = part.type.substring('tool-'.length) as SystemTool;
+				// Unwrap execute parts so the system-tool-result hooks fire for registry-dispatched
+				// tools — otherwise stores/forms never refresh after the AI changes schema or items.
+				const { toolName, input } = unwrapToolCall(part);
+				const tool = toolName as SystemTool;
 
 				if (toolsStore.isSystemTool(tool)) {
 					toolsStore.triggerSystemToolResult(
 						tool,
-						part.input as Record<string, unknown>,
+						input as Record<string, unknown>,
 						part.output as Record<string, unknown>,
 					);
 				}
@@ -498,6 +448,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	};
 
 	const reset = () => {
+		chat.stop();
 		chat.clearError();
 		chat.messages.splice(0, chat.messages.length);
 		storedMessages.value = [];
@@ -513,7 +464,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	const dehydrate = async () => {
 		reset();
 		input.value = '';
-		selectedModelId.value = defaultModel.value ? `${defaultModel.value.provider}:${defaultModel.value.model}` : null;
+		selectedModelId.value = defaultModel.value ? getModelKey(defaultModel.value) : null;
 		chatOpen.value = false;
 
 		// Dehydrate sub-stores

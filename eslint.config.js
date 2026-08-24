@@ -3,7 +3,7 @@
 import process from 'node:process';
 import eslintJs from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
-import eslintImportPlugin from 'eslint-plugin-import';
+import eslintImportPlugin from 'eslint-plugin-import-x';
 import eslintPluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
 import typescriptEslint from 'typescript-eslint';
@@ -23,7 +23,13 @@ export default typescriptEslint.config(
 
 	// Ignored files
 	{
-		ignores: ['**/dist/', 'packages/extensions-sdk/templates/', 'api/extensions/'],
+		ignores: [
+			'**/dist/',
+			'packages/extensions-sdk/templates/',
+			'api/extensions/',
+			'packages/visual-editing/test-website/**',
+			'docker-entrypoint.cjs',
+		],
 	},
 
 	// Enable recommended rules for JS files
@@ -75,6 +81,11 @@ export default typescriptEslint.config(
 			curly: ['error', 'multi-line'],
 			// Disallow expressions where the operation doesn't affect the value
 			'no-constant-binary-expression': 'error',
+			// Added to eslint:recommended in ESLint 10. Downgraded to warnings so the toolchain
+			// upgrade lands on its own; the existing hits need case-by-case review (some are dead
+			// initializers, others are load-bearing guard flags) in a dedicated pass.
+			'no-useless-assignment': 'warn',
+			'preserve-caught-error': 'warn',
 			// Sort members
 			'sort-imports': [
 				'error',
@@ -152,12 +163,15 @@ export default typescriptEslint.config(
 			'vue/prefer-true-attribute-shorthand': 'error',
 			// Allow unused variables when they begin with an underscore
 			'vue/no-unused-vars': ['error', { ignorePattern: '^_' }],
+			// The core rule only sees the <script> scope, so it flags every binding that is
+			// consumed solely by the <template> (defineEmits, computed, ...)
+			'no-useless-assignment': 'off',
 			// Require components to be imported in the script block
 			'vue/no-undef-components': [
 				'error',
 				{
-					// Histoire components in *.story.vue files
-					ignorePatterns: ['Story', 'Variant', 'Hst*'],
+					// TresJS custom-renderer elements
+					ignorePatterns: ['Tres*'],
 				},
 			],
 			// Require <PascalCase /> components in templates

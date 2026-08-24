@@ -124,6 +124,37 @@ describe('authenticateConnection', () => {
 	});
 });
 
+describe('authenticateConnection - OAuth guard', () => {
+	test('WebSocket connect with regular bearer token succeeds', async () => {
+		(getAccountabilityForToken as Mock).mockResolvedValueOnce({
+			role: 'some-role',
+			user: 'some-user',
+		} as Accountability);
+
+		const result = await authenticateConnection({
+			type: 'auth',
+			access_token: 'regular-token',
+		} as WebSocketAuthMessage);
+
+		expect(result.accountability).toMatchObject({ role: 'some-role' });
+	});
+
+	test('WebSocket connect with OAuth bearer token is rejected', async () => {
+		(getAccountabilityForToken as Mock).mockResolvedValueOnce({
+			role: 'some-role',
+			user: 'some-user',
+			oauth: { client: 'my-mcp-client', scopes: ['mcp:access'], aud: ['https://example.com/mcp'] },
+		} as Accountability);
+
+		await expect(() =>
+			authenticateConnection({
+				type: 'auth',
+				access_token: 'oauth-token',
+			} as WebSocketAuthMessage),
+		).rejects.toThrow('Authentication failed.');
+	});
+});
+
 describe('authenticationSuccess', () => {
 	test('without uid', async () => {
 		const result = authenticationSuccess();

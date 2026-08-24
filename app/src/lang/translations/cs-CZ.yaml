@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: O nás
+continue: Pokračovat
 first_name: Křestní jméno
 last_name: Příjmení
 identifier: Identifikátor
@@ -164,14 +165,12 @@ keep: Ponechat
 version: Verze
 version_key: Klíč verze
 version_name: Název verze
-main_version: Hlavní
 switch_version: Přepnout verzi
 switch_version_copy: Opravdu chcete přepnout na verzi "{version}"? Neuložené změny budou ztraceny.
 create_version: Vytvořit verzi
 rename_version: Přejmenovat verzi
 compare_version: Porovnat verzi
 save_version: Uložit verzi
-promote_version: Povýšit verzi
 delete_version: Smazat verzi
 delete_version_copy: >-
   Opravdu chcete smazat verzi "{version}"? Tuto akci nelze vrátit zpět.
@@ -472,6 +471,8 @@ related_collection: Související kategorie
 related_collections: Související kolekce
 translations_collection: Kolekce překladů
 languages_collection: Kolekce jazyků
+translations_preview_collections: Kategorie
+translations_preview_fields: Pole
 import_data_input_placeholder: CSV nebo JSON...
 import_data_button: Zahájit import
 import_data_indeterminate: Importuji data...
@@ -508,6 +509,7 @@ functions:
   minute: Minuta
   second: Sekunda
   count: Počet
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'H:mm'
@@ -645,7 +647,6 @@ no_collections: Žádné kolekce
 create_collection: Vytvořit kategorii
 no_collections_copy_admin: Zatím nemáte žádné kolekce. Začněte kliknutím na tlačítko níže.
 no_collections_copy: Zatím nemáte žádné kolekce. Obraťte se na správce systému.
-relationship_not_setup: Vztah nebyl správně nakonfigurován
 no_singleton_relations: Vztahy se singletony nejsou podporovány
 display_template_not_setup: Šablona zobrazení je špatně nakonfigurována
 collection_field_not_setup: Volba pole kolekce je špatně nastavena
@@ -849,6 +850,7 @@ operators:
   nintersects: Neprotíná
   intersects_bbox: Protíná ohraničovací pole
   nintersects_bbox: Neprotíná ohraničovací pole
+  json: JSON
   regex: Shoduje se s RegExp
 custom_validation_message: Vlastní validační zpráva
 loading: Nahrávám...
@@ -1062,12 +1064,15 @@ wysiwyg_options:
   bullist: Seznam s odrážkami
   numlist: Číslovaný seznam
   hr: Vodorovná čára
+  insertdatetime_date: Datum
+  insertdatetime_time: Čas
   link: Přidat/upravit odkaz
   unlink: Odstranit odkaz
   media: Přidat/upravit média
   image: Přidat/upravit obrázek
   copy: Kopírovat
   cut: Vyjmout
+  default: Výchozí
   paste: Vložit
   heading: Nadpis
   h1: Nadpis 1
@@ -1090,6 +1095,8 @@ wysiwyg_options:
   source_code: Upravit zdrojový kód
   fullscreen: Celá obrazovka
   directionality: Směr
+  ltr: Zleva doprava
+  rtl: Zprava doleva
   lazy_loading: Líné načítání obrázků
   lazy_loading_label: Povolit líné načítání
 dropdown: Rozbalovací nabídka
@@ -1117,6 +1124,17 @@ settings_data_model: Datový model
 settings_roles: Uživatelské role
 settings_permissions: Přístupová práva
 settings_project: Nastavení
+licensing:
+  unlimited: Bez omezení
+  addon_manage: Spravovat
+  addon_update: Úpravy
+  resolve_continue: Pokračovat
+  resolve_show_n_more: 'Zobrazit dalších {count}'
+  resolve_section_flows: Toky
+  resolve_sso_admin_password: Heslo
+  entitlements:
+    collections: Kategorie
+    flows: Toky
 settings_appearance: Vzhled
 settings_flows: Toky
 settings_system_logs: Systémové protokoly
@@ -1213,6 +1231,7 @@ fields:
     collection: Kategorie
     icon: Ikona
     note: Poznámka
+    status: Stav
     color: Barva
     display_template: Šablona zobrazení
     hidden: Skryté
@@ -1686,6 +1705,8 @@ interfaces:
     all_opened: Všechny otevřené
     accordion_mode: Režim harmoniky
     max_one_section_open: Max. 1 otevřená sekce
+  group-tabs:
+    fill_width: Celá šířka
   presentation-links:
     presentation-links: Tlačítka
     style: Styl
@@ -1873,6 +1894,7 @@ interfaces:
     incompatible_data: Aktuální data nejsou kompatibilní s rozhraním opakovače a budou přepsána při přidávání položek do opakovače
     interface_group: Možnosti rozhraní
     display_group: Volby zobrazení
+    edit_mode_inline: Řádek
   slider:
     slider: Posuvník
     description: Vyberte číslo pomocí posuvníku
@@ -1946,9 +1968,6 @@ interfaces:
     description: Bohatý textový editor, který píše HTML obsah
     toolbar: Nástrojová lišta
     custom_formats: Vlastní formáty
-    custom_formats_note: Seznam formátů TinyMCE. Pro více informací navštivte dokumentaci [Formátů obsahu](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/).
-    options_override: Přetížení nastavení
-    options_override_note: Seznam formátů TinyMCE. Pro více informací navštivte dokumentaci [Formátů obsahu](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/).
     folder_note: Složka pro nahrané soubory. Nemá vliv na existující soubory.
     imageToken: Statický přístupový token
     imageToken_label: Statický přístupový token je připojen k URL aktiva
@@ -1999,8 +2018,9 @@ interfaces:
     value_securely_saved: Hodnota bezpečně uložena
     generate: Generovat token
     regenerate: Obnovit token
-    generate_success_copy: Ujistěte se, že si zálohujete a zkopírujete token uvedený výše. Z bezpečnostních důvodů nebudete moci znovu zobrazit token po uložení a opuštění této stránky.
+    regenerate_confirm_title: Obnovit token
     remove_token: Odstranit token
+    remove_confirm_title: Odstranit token
   system-raw-editor:
     system-raw-editor: Editor surových hodnot
     description: Povolit zadávání syrových hodnot nebo mustache šablon
@@ -2452,4 +2472,6 @@ search_flow: Prohledat tok...
 percent: '%'
 show_password: Zobrazit heslo
 hide_password: Skrýt heslo
+license_grace_key_modal:
+  optional: Nepovinné
 set_to_now: Nastavit na teď

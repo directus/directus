@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Om
+continue: Fortsätt
 first_name: Förnamn
 last_name: Efternamn
 identifier: Identifierare
@@ -169,14 +170,12 @@ keep: Behåll
 version: Version
 version_key: Versionsnyckel
 version_name: Versionsnamn
-main_version: Huvud
 switch_version: Byt Version
 switch_version_copy: Är du säker på att du vill byta till "{version}" versionen? Osparade ändringar kommer att försvinna.
 create_version: Skapa Version
 rename_version: Byt namn på version
 compare_version: Jämför versioner
 save_version: Spara version
-promote_version: Promota version
 delete_version: Ta bort version
 delete_version_copy: >-
   Är du säker på att du vill ta bort versionen "{version}"? Denna åtgärd kan inte ångras.
@@ -466,6 +465,8 @@ related_collection: Relaterad kollektion
 related_collections: Relaterade kollektioner
 translations_collection: Kollektion för översättningar
 languages_collection: Kollektion med språk
+translations_preview_collections: Kollektioner
+translations_preview_fields: Fält
 import_data_input_placeholder: CSV eller JSON...
 import_data_button: Starta import
 import_data_indeterminate: Importerar data...
@@ -502,6 +503,7 @@ functions:
   minute: Minut
   second: Sekund
   count: Antal
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -623,7 +625,6 @@ no_collections: Inga kollektioner
 create_collection: Skapa samling
 no_collections_copy_admin: Du har inga kollektioner än. Klicka på knappen nedan för att komma igång.
 no_collections_copy: Du har inga kollektioner än. Kontakta din systemadministratör.
-relationship_not_setup: Relationen har inte konfigurerats korrekt
 display_template_not_setup: Visningsmallens alternativ är felaktigt konfigurerad
 collection_field_not_setup: Kollektionsfältets alternativ är felaktigt konfigurerad
 select_a_collection: Välj en kollektion
@@ -812,6 +813,7 @@ operators:
   has: Innehåller några av dessa nycklar
   intersects: Korsar
   nintersects: Korsar inte
+  json: JSON
 loading: Laddar...
 drop_to_upload: Släpp för att ladda upp
 item: Objekt
@@ -998,12 +1000,15 @@ wysiwyg_options:
   bullist: Punktlista
   numlist: Numrerad lista
   hr: Horisontell linje
+  insertdatetime_date: Datum
+  insertdatetime_time: Time
   link: Lägg till/redigera länk
   unlink: Ta bort länk
   media: Lägg till/redigera media
   image: Lägg till/redigera bild
   copy: Kopiera
   cut: Klipp
+  default: Standard
   paste: Klistra in
   heading: Rubrik
   h1: Rubrik 1
@@ -1027,6 +1032,8 @@ wysiwyg_options:
   source_code: Redigera källkod
   fullscreen: Helskärm
   directionality: Riktning
+  ltr: Vänster till höger
+  rtl: Höger till Vänster
 dropdown: Rullgardinsmeny
 choices: Alternativ
 choices_option_configured_incorrectly: Val felaktigt konfigurerade
@@ -1049,6 +1056,17 @@ settings_data_model: Datamodell
 settings_roles: Användarroller
 settings_permissions: Åtkomstpolicyer
 settings_project: Inställningar
+licensing:
+  unlimited: Obegränsad
+  addon_manage: Hantera
+  addon_update: Uppdatera
+  resolve_continue: Fortsätt
+  resolve_show_n_more: 'Visa {count} till'
+  resolve_section_flows: Flöden
+  resolve_sso_admin_password: Lösenord
+  entitlements:
+    collections: Kollektioner
+    flows: Flöden
 settings_appearance: Utseende
 settings_flows: Flöden
 settings_system_logs: Systemloggar
@@ -1129,6 +1147,7 @@ fields:
     collection: Kollektion
     icon: Ikon
     note: Anteckning
+    status: Status
     color: Färg
     display_template: Visningsmall
     hidden: Dold
@@ -1549,6 +1568,8 @@ interfaces:
     all_opened: Alla öppnade
     accordion_mode: Läge för dragspel
     max_one_section_open: Max 1 sektion öppen
+  group-tabs:
+    fill_width: Full bredd
   presentation-links:
     presentation-links: Knappar
     style: Stil
@@ -1719,6 +1740,7 @@ interfaces:
     field_note_placeholder: Ange fältanteckning...
     interface_group: Alternativ för gränssnitt
     display_group: Visningsalternativ
+    edit_mode_inline: Infogad
   slider:
     slider: Reglage
     description: Välj ett nummer med ett reglage
@@ -1785,7 +1807,6 @@ interfaces:
     description: En textredigerare som skriver HTML-innehåll
     toolbar: Verktygsfält
     custom_formats: Anpassade format
-    options_override: Skriv över alternativ
     folder_note: Mapp för uppladdade filer. Påverkar inte befintliga filer.
   input-block-editor:
     input-block-editor: Blockredigerare
@@ -1822,7 +1843,9 @@ interfaces:
     description: Hantera statisk åtkomsttoken
     generate: Generera token
     regenerate: Regenerera token
+    regenerate_confirm_title: Regenerera token
     remove_token: Ta bort token
+    remove_confirm_title: Ta bort token
   system-raw-editor:
     system-raw-editor: Råredigerare
   input-password:
@@ -2164,5 +2187,7 @@ date_precision: Datumprecision
 percent: Procent
 show_password: Visa lösenord
 hide_password: Dölj lösenord
+license_grace_key_modal:
+  optional: Valfri
 accepted: Accepterad
 set_to_now: Ställ in till nu

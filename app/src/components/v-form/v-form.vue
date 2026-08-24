@@ -47,6 +47,8 @@ const props = withDefaults(
 		showDivider?: boolean;
 		inline?: boolean;
 		version?: ContentVersionMaybeNew | null;
+		// when true, an edit moves the item to a Draft version; interfaces use it to gate edit-on-open intents
+		canAutoSwitchToDraft?: boolean;
 		comparison?: ComparisonContext;
 		collabContext?: CollabContext;
 	}>(),
@@ -101,8 +103,9 @@ const { width } = useElementSize(el);
 const gridClass = computed<string | null>(() => {
 	if (el.value === null) return null;
 
-	// 856 (drawer width) - 2 * 24 (content-padding) = 808
-	if (width.value > 808) {
+	// 342px (--form-column-max-width) * 2 + 28 (--theme--form--column-gap) = 712 (44.5rem)
+	// Keep the value in sync with the `@container (inline-size > 44.5rem)` breakpoint in the app/src/styles/mixins/_form-grid.scss
+	if (width.value > 712) {
 		return 'grid with-fill';
 	} else {
 		return 'grid';
@@ -280,6 +283,10 @@ function useForm() {
 	}
 
 	function isFieldVisible(field: Field | TFormField): boolean {
+		if (props.comparison?.showDifferencesOnly) {
+			return !!props.comparison.fields.has(field.field);
+		}
+
 		return (
 			field.meta?.hidden !== true ||
 			!!props.comparison?.fields?.has(field.field) ||
@@ -414,6 +421,14 @@ function getFirstVisibleFieldClass(index: number) {
 	return index === firstVisibleFieldIndex.value ? 'first-visible-field' : '';
 }
 
+function isGroupFieldVisible(field: TFormField, groupFields: Field[]): boolean {
+	if (props.comparison?.showDifferencesOnly) {
+		return groupFields.some((f) => props.comparison!.fields.has(f.field));
+	}
+
+	return isFieldVisible(field);
+}
+
 function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 	if (isComparisonDiff()) {
 		if (field.indicatorStyle === 'active') return 'indicator-active';
@@ -456,7 +471,10 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 			<template v-if="fieldsMap[fieldName]">
 				<component
 					:is="`interface-${fieldsMap[fieldName]!.meta?.interface || 'group-standard'}`"
-					v-if="fieldsMap[fieldName]!.meta?.special?.includes('group') && isFieldVisible(fieldsMap[fieldName])"
+					v-if="
+						fieldsMap[fieldName]!.meta?.special?.includes('group') &&
+						isGroupFieldVisible(fieldsMap[fieldName]!, fieldsForGroup[index] || [])
+					"
 					:ref="
 						(el: Element) => {
 							formFieldEls[fieldName] = el;
@@ -523,6 +541,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:disabled-menu="disabledMenu"
 					:direction="direction"
 					:version
+					:can-auto-switch-to-draft="canAutoSwitchToDraft"
 					@update:model-value="setValue(fieldName, $event)"
 					@set-field-value="setValue($event.field, $event.value, { force: true })"
 					@unset="unsetValue(fieldsMap[fieldName]!)"
@@ -551,7 +570,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 }
 
 .v-divider {
-	margin-block-end: 50px;
+	margin-block-end: 2.8125rem;
 	grid-column: 1 / 3;
 }
 

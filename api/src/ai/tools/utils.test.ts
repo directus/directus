@@ -1,9 +1,34 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
-import { buildSanitizedQueryFromArgs } from './utils.js';
+import { buildSanitizedQueryFromArgs, coerceJsonFields } from './utils.js';
 
 vi.mock('../../utils/sanitize-query.js');
+
+describe('coerceJsonFields', () => {
+	test('parses stringified JSON in known fields', () => {
+		const result = coerceJsonFields({ data: '[{"name":"Test"}]', collection: 'brands' });
+		expect(result.data).toEqual([{ name: 'Test' }]);
+		expect(result.collection).toBe('brands');
+	});
+
+	test('leaves already-parsed fields untouched', () => {
+		const data = [{ name: 'Test' }];
+		const result = coerceJsonFields({ data });
+		expect(result.data).toBe(data);
+	});
+
+	test('leaves invalid JSON as-is', () => {
+		const result = coerceJsonFields({ data: 'not json' });
+		expect(result.data).toBe('not json');
+	});
+
+	test('does not mutate original args', () => {
+		const original = { data: '{"name":"Test"}' };
+		coerceJsonFields(original);
+		expect(typeof original.data).toBe('string');
+	});
+});
 
 describe('buildSanitizedQueryFromArgs', () => {
 	let mockSchema: SchemaOverview;

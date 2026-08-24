@@ -76,7 +76,7 @@ const showAdvanced = computed(() => {
 });
 
 async function cancel() {
-	await router.push(`/settings/data-model/${props.collection}`);
+	await router.push({ name: 'settings-fields', params: { collection: props.collection } });
 	fieldDetail.$reset();
 }
 
@@ -88,7 +88,7 @@ async function save() {
 		return;
 	}
 
-	router.push(`/settings/data-model/${props.collection}`);
+	router.push({ name: 'settings-fields', params: { collection: props.collection } });
 	fieldDetail.$reset();
 }
 </script>
@@ -97,8 +97,8 @@ async function save() {
 	<VDrawer :model-value="isOpen" :title="title" persistent @cancel="cancel" @apply="save" @update:model-value="cancel">
 		<FieldDetailSimple
 			v-if="!showAdvanced"
+			v-model:search="search"
 			:collection="collectionInfo"
-			:search="search"
 			@save="save"
 			@toggle-advanced="simple = false"
 		/>
@@ -134,17 +134,18 @@ async function save() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 :deep(.required-mark) {
 	--v-icon-color: var(--theme--primary);
 }
 
 .v-input.search {
-	--v-input-border-radius: calc(44px / 2);
-	inline-size: 200px;
+	inline-size: 11.25rem;
 	margin-inline-start: auto;
 
-	@media (width > 640px) {
-		inline-size: 300px;
+	@include mixins.breakpoint-up('sm') {
+		inline-size: 16.875rem;
 		margin-block-start: 0;
 	}
 }

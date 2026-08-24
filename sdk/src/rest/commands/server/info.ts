@@ -8,6 +8,14 @@ export type ServerInfoOutput = {
 		public_registration: boolean;
 		public_registration_verify_email: boolean;
 	};
+	license: {
+		source: string | null;
+		entitlements: {
+			production_enabled: boolean;
+			ai_translations_enabled: boolean;
+			display_powered_by: string;
+		};
+	};
 	mcp_enabled?: boolean;
 	ai_enabled?: boolean;
 	rateLimit?:

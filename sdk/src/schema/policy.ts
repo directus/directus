@@ -1,7 +1,6 @@
 import type { MergeCoreCollection } from '../index.js';
+import type { DirectusAccess } from './access.js';
 import type { DirectusPermission } from './permission.js';
-import type { DirectusRole } from './role.js';
-import type { DirectusUser } from './user.js';
 
 export type DirectusPolicy<Schema> = MergeCoreCollection<
 	Schema,
@@ -16,7 +15,7 @@ export type DirectusPolicy<Schema> = MergeCoreCollection<
 		admin_access: boolean;
 		app_access: boolean;
 		permissions: number[] | DirectusPermission<Schema>[];
-		users: string[] | DirectusUser<Schema>[];
-		roles: string[] | DirectusRole<Schema>[];
+		users: string[] | DirectusAccess<Schema>[];
+		roles: string[] | DirectusAccess<Schema>[];
 	}
 >;

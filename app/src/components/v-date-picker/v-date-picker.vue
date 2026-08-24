@@ -1,16 +1,5 @@
 <script setup lang="ts">
-import {
-	CalendarDate,
-	CalendarDateTime,
-	DateFormatter,
-	DateValue,
-	parseAbsoluteToLocal,
-	parseDate,
-	parseDateTime,
-	parseTime,
-	Time,
-	ZonedDateTime,
-} from '@internationalized/date';
+import { CalendarDate, DateFormatter, DateValue } from '@internationalized/date';
 import {
 	CalendarCell,
 	CalendarCellTrigger,
@@ -27,13 +16,12 @@ import {
 	TimeFieldInput,
 	TimeFieldRoot,
 } from 'reka-ui';
-import { computed, ref, watch } from 'vue';
-import { TimeValue } from './types';
+import { computed } from 'vue';
+import { useDatePickerValue } from './use-date-picker-value';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { useUserStore } from '@/stores/user';
-import { formatDatePickerModelValue } from '@/utils/format-date-picker-model-value';
 
 interface Props {
 	type: 'date' | 'time' | 'dateTime' | 'timestamp';
@@ -55,50 +43,27 @@ const emit = defineEmits<{
 	close: [];
 }>();
 
-// Internal state using @internationalized/date types
-const calendarValue = ref<DateValue | undefined>();
-
 const userStore = useUserStore();
 
 const isRTL = computed(() => userStore.textDirection === 'rtl');
 
-// Computed props for Reka UI
-// We set undefined instead of 12 to avoid the default value of 12:00 PM goes 0:00 PM
-const hourCycle = computed(() => (props.use24 ? 24 : undefined));
-const granularity = computed(() => (props.includeSeconds ? 'second' : 'minute'));
-const showCalendar = computed(() => props.type !== 'time');
-const hasTime = computed(() => ['time', 'dateTime', 'timestamp'].includes(props.type));
-
-/**
- * Default time (12:00) when the picker supports time.
- *
- * Why 12:00:
- * - It’s a neutral default (avoids implicit "start of day" midnight)
- * - Prevents emitting `00:00:00` unless the user explicitly selects it
- */
-function getDefaultTimeValue(): Time {
-	return new Time(12, 0, 0);
-}
-
-/**
- * Internal time value state.
- * Initialized with a default time (12:00) when the picker type supports time.
- */
-const internalTimeValue = ref<Time | CalendarDateTime | ZonedDateTime | null | undefined>(
-	['time', 'dateTime', 'timestamp'].includes(props.type) ? getDefaultTimeValue() : undefined,
-);
-
-/**
- * Computed property that provides proper type compatibility for the TimeFieldRoot component.
- * This works around nominal typing issues with @internationalized/date classes that have private fields.
- */
-const timeValue = computed<TimeValue | null | undefined>({
-	get() {
-		return internalTimeValue.value as TimeValue | null | undefined;
-	},
-	set(value: TimeValue | null | undefined) {
-		internalTimeValue.value = value;
-	},
+const {
+	calendarValue,
+	timeValue,
+	hasTime,
+	hourCycle,
+	granularity,
+	showCalendar,
+	applyDate,
+	applyTime,
+	emitValue,
+	setToNow: applyNow,
+} = useDatePickerValue({
+	type: () => props.type,
+	modelValue: () => props.modelValue,
+	includeSeconds: () => props.includeSeconds,
+	use24: () => props.use24,
+	onUpdate: (value) => emit('update:modelValue', value),
 });
 
 const monthFormatter = computed(() => {
@@ -120,77 +85,12 @@ const monthOptions = computed(() => {
 	});
 });
 
-watch(
-	() => props.modelValue,
-	(newValue) => {
-		if (!newValue) {
-			calendarValue.value = undefined;
-
-			// Reset time to a sensible default when the picker supports time.
-			internalTimeValue.value = hasTime.value ? getDefaultTimeValue() : undefined;
-
-			return;
-		}
-
-		// Parse based on type
-		switch (props.type) {
-			case 'date':
-				calendarValue.value = parseDate(newValue);
-				break;
-			case 'time':
-				internalTimeValue.value = parseTime(newValue);
-				break;
-
-			case 'dateTime': {
-				// Matches legacy Flatpickr format: "yyyy-MM-dd'T'HH:mm:ss"
-				const dt = parseDateTime(newValue);
-				calendarValue.value = new CalendarDate(dt.year, dt.month, dt.day);
-				internalTimeValue.value = new Time(dt.hour, dt.minute, dt.second);
-				break;
-			}
-
-			case 'timestamp': {
-				// Matches legacy Flatpickr format: Date.toISOString() (absolute timestamp)
-				const dt = parseAbsoluteToLocal(newValue);
-				calendarValue.value = new CalendarDate(dt.year, dt.month, dt.day);
-				internalTimeValue.value = new Time(dt.hour, dt.minute, dt.second);
-				break;
-			}
-		}
-	},
-	{ immediate: true },
-);
-
-// Data binding to the model value and emitting the value to the parent component
-
-function emitValue(): void {
-	const value = formatDatePickerModelValue(props.type, {
-		calendarValue: calendarValue.value,
-		timeValue: internalTimeValue.value,
-		includeSeconds: props.includeSeconds,
-	});
-
-	emit('update:modelValue', value);
-}
-
 function handleDateChange(value: DateValue | undefined) {
-	calendarValue.value = value;
-	emitValue();
+	applyDate(value);
 
 	if (props.type === 'date') {
 		emit('close');
 	}
-}
-
-/**
- * Handle time field changes and emit the updated value.
- * Reka UI's TimeFieldRoot emits TimeValue which is Time | CalendarDateTime | ZonedDateTime.
- *
- * @param value - The new time value from the TimeFieldRoot component
- */
-function handleTimeChange(value: TimeValue | undefined) {
-	internalTimeValue.value = value ?? null;
-	emitValue();
 }
 
 function setCalendarMonth(month: number): void {
@@ -202,6 +102,7 @@ function setCalendarMonth(month: number): void {
 	// Note: This changes the selected date (not just the view month).
 	// If later we decide to decouple “view month” from “selected date”, we can introduce separate state.
 	calendarValue.value = new CalendarDate(year, month, day);
+	emitValue();
 }
 
 function setCalendarYear(year: number): void {
@@ -212,6 +113,7 @@ function setCalendarYear(year: number): void {
 
 	// Note: This changes the selected date (not just the view year).
 	calendarValue.value = new CalendarDate(year, month, day);
+	emitValue();
 }
 
 function handleMonthChange(value: number | null): void {
@@ -219,26 +121,29 @@ function handleMonthChange(value: number | null): void {
 	setCalendarMonth(value);
 }
 
+/**
+ * Largest year the picker accepts.
+ *
+ * Bounded to a 4-digit ISO 8601 year.
+ * Without this cap, typing many digits yields a year
+ * beyond JS Date's representable range, making `new Date(year, month, 0).getDate()` return NaN
+ * in `setCalendarYear` and emitting an invalid string like "9999-06-NaN".
+ */
+const MAX_YEAR = 9999;
+
 function handleYearChange(value: number | string | undefined): void {
 	const numValue = typeof value === 'string' ? Number.parseInt(value, 10) : value;
-	if (numValue === undefined || !Number.isFinite(numValue) || numValue < 1) return;
+	// The input emits on every keystroke; only apply complete four-digit years. Below 1000 a partial
+	// value like 2 would format to nonsense (near 1900); above MAX_YEAR it exceeds a valid four-digit year.
+	if (numValue === undefined || !Number.isFinite(numValue) || numValue < 1000 || numValue > MAX_YEAR) return;
 	setCalendarYear(numValue);
 }
 
 /**
- * Sets the picker to the current date and time.
- * If the picker supports time, also sets the current time value.
+ * Sets the picker to the current date and time, then closes the popup.
  */
 function setToNow() {
-	const now = new Date();
-	calendarValue.value = new CalendarDate(now.getFullYear(), now.getMonth() + 1, now.getDate());
-
-	// If the picker supports time, also set the current time
-	if (hasTime.value) {
-		internalTimeValue.value = new Time(now.getHours(), now.getMinutes(), now.getSeconds());
-	}
-
-	emitValue();
+	applyNow();
 	emit('close');
 }
 </script>
@@ -270,11 +175,12 @@ function setToNow() {
 							@update:model-value="handleMonthChange"
 						/>
 						<VInput
-							type="number"
+							type="text"
+							inputmode="numeric"
 							:model-value="date?.year"
+							:max-length="4"
 							class="calendar-year-input"
 							:full-width="false"
-							hide-arrows
 							@update:model-value="handleYearChange"
 						/>
 					</div>
@@ -320,7 +226,7 @@ function setToNow() {
 						:hour-cycle
 						:dir="isRTL ? 'rtl' : 'ltr'"
 						class="time-field"
-						@update:model-value="handleTimeChange"
+						@update:model-value="applyTime"
 					>
 						<template v-for="item in segments" :key="item.part">
 							<TimeFieldInput v-if="item.part === 'literal'" :part="item.part" class="time-field-literal">
@@ -344,13 +250,13 @@ function setToNow() {
 <style lang="scss" scoped>
 .v-date-picker {
 	.icon {
-		inline-size: 1.5rem;
-		block-size: 1.5rem;
+		inline-size: 1.1875rem;
+		block-size: 1.1875rem;
 	}
 
 	.calendar {
 		font-family: var(--v-input-font-family);
-		font-size: 1rem;
+		font-size: 0.8125rem;
 		background: var(--theme--form--field--input--background);
 		border-radius: var(--theme--border-radius);
 		box-shadow: none;
@@ -362,15 +268,15 @@ function setToNow() {
 		align-items: center;
 		color: var(--theme--foreground-accent);
 		background: var(--theme--background-normal);
-		padding: 0.5rem;
+		padding: 0.375rem;
 	}
 
 	.calendar-nav-button {
 		display: inline-flex;
 		justify-content: center;
 		align-items: center;
-		inline-size: 2.5rem;
-		block-size: 2.5rem;
+		inline-size: 2rem;
+		block-size: 2rem;
 		color: var(--theme--foreground-accent);
 		background-color: transparent;
 		cursor: pointer;
@@ -382,7 +288,7 @@ function setToNow() {
 
 	.calendar-heading {
 		font-weight: 600;
-		font-size: 1.25rem;
+		font-size: 1rem;
 		color: var(--theme--primary);
 	}
 
@@ -402,28 +308,28 @@ function setToNow() {
 	}
 
 	.calendar-grid-body {
-		margin-block-start: 0.25rem;
+		margin-block-start: 0.1875rem;
 	}
 
 	.calendar-grid-row {
 		display: grid;
-		margin-block-end: 0.25rem;
+		margin-block-end: 0.1875rem;
 		grid-template-columns: repeat(7, minmax(0, 1fr));
 		inline-size: 100%;
 	}
 
 	.calendar-head-cell {
-		border-radius: 0.375rem;
-		font-size: 0.85rem;
-		line-height: 1rem;
+		border-radius: 0.3125rem;
+		font-size: 0.6875rem;
+		line-height: 1.1818;
 		color: var(--theme--foreground-accent);
 		font-weight: 600;
 	}
 
 	.calendar-cell {
 		position: relative;
-		font-size: 0.875rem;
-		line-height: 1.25rem;
+		font-size: 0.6875rem;
+		line-height: 1.4545;
 		text-align: center;
 	}
 
@@ -432,11 +338,11 @@ function setToNow() {
 		position: relative;
 		justify-content: center;
 		align-items: center;
-		border-width: 2px;
+		border-width: var(--theme--border-width);
 		border-style: solid;
 		border-color: transparent;
-		font-size: 1rem;
-		line-height: 2.65rem;
+		font-size: 0.8125rem;
+		line-height: 2.5385;
 		font-weight: 500;
 		border-radius: var(--theme--border-radius);
 		color: var(--theme--foreground);
@@ -467,7 +373,7 @@ function setToNow() {
 	}
 
 	.calendar-cell-trigger[data-selected]:focus {
-		--focus-ring-offset: 2px; // Avoid reset by _base.scss L52-60
+		--focus-ring-offset: 2px; /* stylelint-disable-line unit-disallowed-list */ // Avoid reset by _base.scss L52-60
 		outline: var(--focus-ring-width) solid var(--focus-ring-color);
 		outline-offset: var(--focus-ring-offset);
 	}
@@ -483,18 +389,18 @@ function setToNow() {
 
 	.calendar-header-inputgroup {
 		display: inline-flex;
-		gap: 0.5rem;
+		gap: 0.375rem;
 		align-items: center;
 		justify-content: center;
-		padding: 0.5rem 0;
+		padding: 0.375rem 0;
 		inline-size: auto;
-		font-size: 16px;
+		font-size: 0.875rem;
 		font-weight: 600;
 	}
 
 	.calendar-year-input {
 		--v-input-font-family: inherit;
-		block-size: 28px;
+		block-size: 1.5625rem;
 		background-color: transparent;
 
 		:deep(.input) {
@@ -517,15 +423,14 @@ function setToNow() {
 	.time-field {
 		display: flex;
 		align-items: center;
-		border-radius: 0.25rem;
-		gap: 0.25rem;
-		border-width: 1px;
+		border-radius: 0.1875rem;
+		gap: 0.1875rem;
 		text-align: center;
 		user-select: none;
 	}
 
 	.time-field-segment {
-		padding: 1rem 1.5rem;
+		padding: 0.8125rem 1.1875rem;
 		background: var(--theme--form--field--input--background-subdued);
 	}
 
@@ -540,7 +445,7 @@ function setToNow() {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding: 0.5rem;
+		padding: 0.375rem;
 	}
 
 	.calendar-today-button {
@@ -549,9 +454,9 @@ function setToNow() {
 		inline-size: 100%;
 		cursor: pointer;
 		color: var(--theme--primary);
-		font-size: 1rem;
+		font-size: 0.8125rem;
 		font-weight: 600;
-		padding: 0.5rem;
+		padding: 0.375rem;
 	}
 
 	.calendar-today-button:focus,

@@ -14,6 +14,7 @@ import { transaction } from '../../../utils/transaction.js';
 import { defineTool } from '../define-tool.js';
 import {
 	FieldItemInputSchema,
+	FieldItemOutputSchema,
 	FieldItemValidateSchema,
 	RawFieldItemInputSchema,
 	RawFieldItemValidateSchema,
@@ -42,7 +43,7 @@ export const FieldsValidateSchema = z.discriminatedUnion('action', [
 	}),
 	FieldsBaseValidateSchema.extend({
 		action: z.literal('update'),
-		data: z.array(RawFieldItemValidateSchema),
+		data: z.array(RawFieldItemValidateSchema.partial({ type: true })),
 	}),
 	FieldsBaseValidateSchema.extend({
 		action: z.literal('delete'),
@@ -53,25 +54,48 @@ export const FieldsValidateSchema = z.discriminatedUnion('action', [
 export const FieldsInputSchema = z.object({
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
 	collection: z.string().describe('The name of the collection').optional(),
-	field: z.string().optional(),
+	field: z
+		.string()
+		.describe(
+			'The name of the field. Required for delete. Optional for read (omit to read all fields). Do not use for create or update.',
+		)
+		.optional(),
 	data: z
 		.array(
 			FieldItemInputSchema.extend({
 				children: RawFieldItemInputSchema.shape.children,
-			}).partial(),
+			})
+				.partial()
+				.required({ field: true }),
 		)
+		.describe('Array of field objects for create/update actions. Each object must include "field" (the field name).')
 		.optional(),
 });
 
-export const fields = defineTool<z.infer<typeof FieldsValidateSchema>>({
+const FieldsOutputSchema = z.object({
+	data: z.union([
+		z.array(FieldItemOutputSchema),
+		FieldItemOutputSchema,
+		z.object({ collection: z.string(), field: z.string() }),
+		z.null(),
+	]),
+});
+
+export const fields = defineTool<z.infer<typeof FieldsValidateSchema>, z.infer<typeof FieldsOutputSchema>>({
 	name: 'fields',
 	admin: true,
-	description: requireText(resolve(__dirname, './prompt.md')),
+	description:
+		'Reads and changes Directus fields. Use to inspect, add, update, or delete fields on collections, including relational and alias fields.',
+	instructions: requireText(resolve(__dirname, './prompt.md')),
+	keywords: ['columns', 'properties', 'field types', 'interfaces', 'aliases', 'database fields'],
 	annotations: {
 		title: 'Directus - Fields',
+		destructiveHint: true,
 	},
 	inputSchema: FieldsInputSchema,
 	validateSchema: FieldsValidateSchema,
+	output: FieldsOutputSchema,
+	readOnly: (input) => input.action === 'read',
 	async handler({ args, schema, accountability }) {
 		let service = new FieldsService({
 			schema,

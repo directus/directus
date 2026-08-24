@@ -41,18 +41,22 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 	},
 	directus_users: {
 		collection: 'directus_users',
-		layout: 'cards',
+		layout: 'tabular',
 		layout_query: {
-			cards: {
+			tabular: {
 				sort: ['email'],
+				fields: ['avatar', 'first_name', 'last_name', 'email', 'role'],
 			},
 		},
 		layout_options: {
-			cards: {
-				icon: 'account_circle',
-				title: '{{ first_name }} {{ last_name }}',
-				subtitle: '{{ email }}',
-				size: 4,
+			tabular: {
+				widths: {
+					avatar: 36,
+					first_name: 200,
+					last_name: 200,
+					email: 300,
+					role: 200,
+				},
 			},
 		},
 	},

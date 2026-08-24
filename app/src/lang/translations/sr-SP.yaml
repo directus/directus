@@ -132,6 +132,7 @@ this_collection: Ova zbirka
 display_label: Pokazatelj
 functions:
   count: Zbir
+  json: JSON
 months:
   january: Јануар
   february: Фебруар
@@ -163,6 +164,7 @@ bookmarks: Сачуване странице
 back: Назад
 operators:
   contains: Садржи
+  json: JSON
 role: Рола
 create: Креирај
 flow_name: Име
@@ -171,9 +173,13 @@ width: Ширина
 height: Висина
 wysiwyg_options:
   codeblock: Код
+  insertdatetime_date: Datum
+  insertdatetime_time: Vreme
   table: Табела
 choices: Избори
 deselect: Поништи избор
+licensing:
+  resolve_sso_admin_password: Лозинка
 settings_presets: Сачуване странице
 discard_changes: Одбаци промене
 keep_editing: Наставите уређивање
@@ -195,6 +201,7 @@ fields:
     ip: ИП адреса
   directus_collections:
     collection: Колекција
+    status: Стање
   directus_files:
     title: Наслов
     description: Опис
@@ -255,6 +262,8 @@ table: Табела
 interfaces:
   filter:
     all: Sve
+  group-tabs:
+    fill_width: Попуни ширину
   input-code:
     code: Код
   system-collection:

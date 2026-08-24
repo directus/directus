@@ -10,6 +10,8 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
+import { useLicenseStore } from '@/stores/license';
+import LicenseUpgradeModal from '@/views/private/components/license-upgrade-modal.vue';
 
 const props = defineProps<{
 	collection: Collection;
@@ -26,6 +28,18 @@ const emit = defineEmits<{
 }>();
 
 const { permission } = toRefs(props);
+
+const licenseStore = useLicenseStore();
+const showUpgradeModal = ref(false);
+
+function handleEditClick() {
+	if (licenseStore.customPermissionRulesEnabled === false) {
+		showUpgradeModal.value = true;
+		return;
+	}
+
+	emit('edit');
+}
 
 const permissionLevel = computed<'all' | 'none' | 'custom'>(() => {
 	if (permission.value === undefined) return 'none';
@@ -100,7 +114,7 @@ const appMinimalLevel = computed(() => {
 
 				<VDivider />
 
-				<VListItem clickable @click="emit('edit')">
+				<VListItem clickable @click="handleEditClick">
 					<VListItemIcon>
 						<VIcon name="rule" />
 					</VListItemIcon>
@@ -108,11 +122,13 @@ const appMinimalLevel = computed(() => {
 						{{ $t('use_custom') }}
 					</VListItemContent>
 					<VListItemIcon>
-						<VIcon name="launch" />
+						<VIcon :name="licenseStore.customPermissionRulesEnabled === false ? 'diamond' : 'launch'" />
 					</VListItemIcon>
 				</VListItem>
 			</VList>
 		</VMenu>
+
+		<LicenseUpgradeModal v-model="showUpgradeModal" />
 	</div>
 </template>
 

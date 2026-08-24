@@ -209,7 +209,7 @@ function clearVariable() {
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: flex-start;
-	padding: 4px 0 0;
+	padding: 0.25rem 0 0;
 
 	span.tag-container {
 		display: contents;
@@ -217,8 +217,8 @@ function clearVariable() {
 
 	.custom-tags-delimiter,
 	.tag {
-		margin-block-start: 8px;
-		margin-inline-end: 8px;
+		margin-block-start: 0.4375rem;
+		margin-inline-end: 0.4375rem;
 	}
 
 	.custom-tags-delimiter.disabled {
@@ -247,19 +247,10 @@ function clearVariable() {
 			--v-chip-background-color: var(--theme--primary);
 			--v-chip-color: var(--foreground-inverted);
 			--v-chip-background-color-hover: var(--theme--danger);
+			--v-chip-color-hover: var(--foreground-inverted);
 			--v-chip-border-color-hover: var(--v-chip-background-color-hover);
-			--v-chip-close-color: var(--v-chip-background-color, var(--theme--background-normal));
-			--v-chip-close-color-hover: var(--white);
 
 			transition: all var(--fast) var(--transition);
-
-			&:hover {
-				--v-chip-close-color: var(--white);
-
-				:deep(.chip-content .close-outline .close:hover) {
-					--v-icon-color: var(--theme--danger);
-				}
-			}
 		}
 	}
 	.presets,

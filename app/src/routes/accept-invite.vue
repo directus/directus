@@ -61,7 +61,7 @@ useHead({
 
 <template>
 	<PublicView>
-		<h1 class="type-title">{{ $t('create_account') }}</h1>
+		<h1 class="type-display type-display-public">{{ $t('create_account') }}</h1>
 
 		<form @submit.prevent="onSubmit">
 			<VInput :model-value="email" disabled />
@@ -94,11 +94,11 @@ useHead({
 
 <style lang="scss" scoped>
 h1 {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .v-input,
 .v-notice {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 </style>

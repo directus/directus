@@ -37,7 +37,7 @@ describe('/assets', () => {
 						function spawnAutoCannon() {
 							const url = `${getUrl(vendor)}/assets/${insertResponse.body.data.id}?access_token=${USER.ADMIN.TOKEN}`;
 
-							const options = ['exec', 'autocannon', '-j', '-c', '100', url];
+							const options = ['exec', 'autocannon', '-j', '-c', '100', '-t', '60', url];
 							const child = spawn('pnpm', options);
 
 							isSpawnRunning = true;

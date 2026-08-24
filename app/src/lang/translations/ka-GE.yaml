@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: შესახებ
+continue: გაგრძელება
 first_name: სახელი
 last_name: გვარი
 identifier: იდენტიფიკატორი
@@ -161,14 +162,12 @@ keep: შენარჩუნება
 version: ვერსია
 version_key: ვერსიის გასაღები
 version_name: ვერსიის სახელი
-main_version: მთავარი
 switch_version: ვერსიის ცვლილება
 switch_version_copy: დარწმუნებული ხართ, რომ გსურთ "{version}" ვერსიაზე გადართვა? შეუნახავი ცვლილებები დაიკარგება.
 create_version: ვერსიის შექმნა
 rename_version: ვერსიის სახელის გადარქმევა
 compare_version: ვერსიების შეადარება
 save_version: ვერსიის შენახვა
-promote_version: ვერსიის დაწინაურება
 delete_version: ვერსიის წაშლა
 delete_version_copy: >-
   დარწმუნებული ხართ, რომ გსურთ წაშალოთ "{version}" ვერსია? ამ მოქმედების გაუქმება შეუძლებელი იქნება.
@@ -472,6 +471,8 @@ related_collection: დაკავშირებული კოლექც�
 related_collections: დაკავშირებული კოლექციები
 translations_collection: თარგმანების კოლექცია
 languages_collection: ენების კოლექცია
+translations_preview_collections: კოლექციები
+translations_preview_fields: ველები
 import_data_input_placeholder: CSV ან JSON...
 import_data_button: იმპორტის დაწყება
 import_data_indeterminate: მონაცემების იმპორტი...
@@ -508,6 +509,7 @@ functions:
   minute: წუთი
   second: წამი
   count: რაოდენობა
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -603,7 +605,6 @@ manual_string: ხელით შეყვანილი სტრიქონ
 save_and_create_new: შენახვა და ახლის შექმნა
 save_and_stay: შენახვა და დარჩენა
 save_and_quit: შენახვა და გასვლა
-save_and_return_to_main: შენახვა და მთავარზე დაბრუნება
 save_as_copy: ასლად შენახვა
 add_existing: არსებულის დამატება
 creating_items: ჩანაწერების შექმნა
@@ -650,7 +651,6 @@ no_collections: კოლექციები არ არის
 create_collection: შექმენით კოლექცია
 no_collections_copy_admin: თქვენ ჯერ არ გაქვთ კოლექციები. დასაწყებად დააკლიკეთ ქვემოთ მოცემულ ღილაკს.
 no_collections_copy: თქვენ ჯერ არ გაქვთ კოლექციები. გთხოვთ, დაუკავშირდეთ თქვენს სისტემის ადმინისტრატორს.
-relationship_not_setup: დამოკიდებულება სწორად არ არის დაკონფიგურირებული
 no_singleton_relations: სინგლტონებთან დამოკიდებულებები არ არის მხარდაჭერილი
 display_template_not_setup: ჩვენების შაბლონის ოფცია არასწორად არის დაკონფიგურირებული
 collection_field_not_setup: კოლექციის ველის ოფცია არასწორად არის დაკონფიგურირებული
@@ -855,6 +855,7 @@ operators:
   nintersects: არ კვეთს
   intersects_bbox: კვეთს შემოსაზღვრულ ყუთს
   nintersects_bbox: არ კვეთს შემოსაზღვრულ ყუთს
+  json: JSON
   regex: ემთხვევა RegExp-ს
 custom_validation_message: მორგებული ვალიდაციის შეტყობინება
 loading: იტვირთება...
@@ -1076,12 +1077,15 @@ wysiwyg_options:
   bullist: პუნქტებიანი სია
   numlist: დანომრილი სია
   hr: ჰორიზონტალური ხაზი
+  insertdatetime_date: თარიღი
+  insertdatetime_time: დრო
   link: ბმულის დამატება/რედაქტირება
   unlink: ბმულის წაშლა
   media: მედიის დამატება/რედაქტირება
   image: სურათის დამატება/რედაქტირება
   copy: კოპირება
   cut: ამოჭრა
+  default: ნაგულისხმევი
   paste: ჩასმა
   heading: სათაური
   h1: სათაური 1
@@ -1105,6 +1109,8 @@ wysiwyg_options:
   source_code: წყაროს კოდის რედაქტირება
   fullscreen: სრული ეკრანი
   directionality: მიმართულება
+  ltr: მარცხნიდან მარჯვნივ
+  rtl: მარჯვნიდან მარცხნივ
   lazy_loading: ზარმაცი ჩატვირთვა
   lazy_loading_label: ზარმაცი ჩატვირთვის ჩართვა
 dropdown: ჩამოსაშლელი
@@ -1132,6 +1138,17 @@ settings_data_model: მონაცემთა მოდელი
 settings_roles: მომხმარებლის როლები
 settings_permissions: წვდომის პოლიტიკები
 settings_project: პარამეტრები
+licensing:
+  unlimited: შეუზღუდავი
+  addon_manage: მართვა
+  addon_update: განახლება
+  resolve_continue: გაგრძელება
+  resolve_show_n_more: '{count} მეტის ჩვენება'
+  resolve_section_flows: ნაკადები
+  resolve_sso_admin_password: პაროლი
+  entitlements:
+    collections: კოლექციები
+    flows: ნაკადები
 settings_appearance: გარეგნობა
 settings_flows: ნაკადები
 settings_system_logs: სისტემის ჟურნალები
@@ -1229,6 +1246,7 @@ fields:
     collection: კოლექცია
     icon: ხატულა
     note: შენიშვნა
+    status: სტატუსი
     color: ფერი
     display_template: ჩვენების შაბლონი
     hidden: დამალული
@@ -1705,6 +1723,8 @@ interfaces:
     all_opened: ყველა გახსნილია
     accordion_mode: აკორდეონის რეჟიმი
     max_one_section_open: მაქს. 1 სექცია ღია
+  group-tabs:
+    fill_width: სიგანის შევსება
   presentation-links:
     presentation-links: ღილაკები
     style: სტილი
@@ -1894,6 +1914,7 @@ interfaces:
     incompatible_data: მიმდინარე მონაცემები არ არის თავსებადი გამეორების ინტერფეისთან და გადაიწერება გამეორებაში ჩანაწერების დამატებისას
     interface_group: ინტერფეისის ოფციები
     display_group: ჩვენების ოფციები
+    edit_mode_inline: შიდა
   slider:
     slider: სლაიდერი
     description: აირჩიეთ რიცხვი სლაიდერის გამოყენებით
@@ -1967,9 +1988,6 @@ interfaces:
     description: მდიდარი ტექსტის რედაქტორი HTML კონტენტის დასაწერად
     toolbar: ხელსაწყოთა პანელი
     custom_formats: მორგებული ფორმატები
-    custom_formats_note: TinyMCE კონტენტის ფორმატების სია. დამატებითი ინფორმაციისთვის იხილეთ TinyMCE დოკუმენტაცია [კონტენტის ფორმატირების](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) შესახებ.
-    options_override: ოფციების გადაფარვა
-    options_override_note: TinyMCE მომხმარებლის ფორმატირების გასაღებები და მათი მნიშვნელობები. დამატებითი ინფორმაციისთვის იხილეთ TinyMCE დოკუმენტაცია [მომხმარებლის ფორმატირების](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) შესახებ.
     folder_note: საქაღალდე ატვირთული ფაილებისთვის. არ მოქმედებს არსებულ ფაილებზე.
     imageToken: სტატიკური წვდომის ტოკენი
     imageToken_label: სტატიკური წვდომის ტოკენი ემატება რესურსების URL-ს
@@ -2020,8 +2038,9 @@ interfaces:
     value_securely_saved: მნიშვნელობა უსაფრთხოდ შეინახა
     generate: ტოკენის გენერირება
     regenerate: ტოკენის ხელახლა გენერირება
-    generate_success_copy: აუცილებლად შექმენით სარეზერვო ასლი და დააკოპირეთ ზემოთ მოცემული ტოკენი. უსაფრთხოების მიზნით, თქვენ ვეღარ შეძლებთ ტოკენის ნახვას შენახვისა და ამ გვერდიდან გასვლის შემდეგ.
+    regenerate_confirm_title: ტოკენის ხელახლა გენერირება
     remove_token: ტოკენის წაშლა
+    remove_confirm_title: ტოკენის წაშლა
   system-raw-editor:
     system-raw-editor: პირველადი რედაქტორი
     description: პირველადი ან mustache შაბლონური მნიშვნელობების შეყვანის დაშვება
@@ -2485,5 +2504,7 @@ search_flow: Flow-ს ძებნა...
 percent: პროცენტი
 show_password: პაროლის ჩვენება
 hide_password: პაროლის დამალვა
+license_grace_key_modal:
+  optional: არჩევითი
 accepted: დათანხმება
 set_to_now: ახლანდელ დროზე დაყენება

@@ -31,25 +31,25 @@
 	opacity: 0;
 
 	&.center > *:not(.v-overlay) {
-		transform: translateY(50px);
+		transform: translateY(2.8125rem);
 		transition: transform var(--medium) var(--transition-out);
 	}
 
 	&.left > *:not(.v-overlay) {
-		transform: translateX(-50px);
+		transform: translateX(-2.8125rem);
 		transition: transform var(--medium) var(--transition-out);
 
 		html[dir='rtl'] & {
-			transform: translateX(50px);
+			transform: translateX(2.8125rem);
 		}
 	}
 
 	&.right > *:not(.v-overlay) {
-		transform: translateX(50px);
+		transform: translateX(2.8125rem);
 		transition: transform var(--medium) var(--transition-out);
 
 		html[dir='rtl'] & {
-			transform: translateX(-50px);
+			transform: translateX(-2.8125rem);
 		}
 	}
 }

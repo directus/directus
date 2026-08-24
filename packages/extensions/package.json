@@ -1,8 +1,8 @@
 {
 	"name": "@directus/extensions",
-	"version": "3.0.20",
+	"version": "4.0.3",
 	"description": "Utilities and types for Directus extensions",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -35,7 +35,6 @@
 		"@directus/constants": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@types/express": "catalog:",
 		"fs-extra": "catalog:",
 		"lodash-es": "catalog:",
 		"zod": "catalog:"

@@ -18,7 +18,15 @@ const props = defineProps<{
 	disableDrag?: boolean;
 }>();
 
-const emit = defineEmits(['setNestedSort', 'editCollection', 'toggleCollapse']);
+const emit = defineEmits([
+	'setNestedSort',
+	'editCollection',
+	'toggleCollapse',
+	'activateCollection',
+	'deactivateCollection',
+]);
+
+const isDeactivated = computed(() => props.collection.meta?.status === 'inactive');
 
 const toggleCollapse = () => {
 	emit('toggleCollapse', props.collection.collection);
@@ -45,10 +53,10 @@ function onGroupSortChange(collections: Collection[]) {
 		<VListItem
 			block
 			dense
-			clickable
-			:class="{ hidden: collection.meta?.hidden }"
-			:to="collection.schema ? `/settings/data-model/${collection.collection}` : undefined"
-			@click.self="!collection.schema ? $emit('editCollection', collection) : null"
+			:clickable="!isDeactivated"
+			:class="{ hidden: collection.meta?.hidden, deactivated: isDeactivated }"
+			:to="!isDeactivated && collection.schema ? `/settings/data-model/${collection.collection}` : undefined"
+			@click.self="!isDeactivated && !collection.schema ? $emit('editCollection', collection) : null"
 		>
 			<VListItemIcon>
 				<VIcon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
@@ -82,6 +90,8 @@ function onGroupSortChange(collections: Collection[]) {
 				:has-nested-collections="nestedCollections.length > 0"
 				:collection="collection"
 				@collection-toggle="toggleCollapse"
+				@activate-collection="$emit('activateCollection', $event)"
+				@deactivate-collection="$emit('deactivateCollection', $event)"
 			/>
 		</VListItem>
 
@@ -106,6 +116,8 @@ function onGroupSortChange(collections: Collection[]) {
 						@edit-collection="$emit('editCollection', $event)"
 						@set-nested-sort="$emit('setNestedSort', $event)"
 						@toggle-collapse="$emit('toggleCollapse', $event)"
+						@activate-collection="$emit('activateCollection', $event)"
+						@deactivate-collection="$emit('deactivateCollection', $event)"
 					/>
 				</template>
 			</Draggable>
@@ -115,12 +127,12 @@ function onGroupSortChange(collections: Collection[]) {
 
 <style scoped lang="scss">
 .drag-container {
-	margin-block-start: 8px;
-	margin-inline-start: 20px;
+	margin-block-start: 0.4375rem;
+	margin-inline-start: 1.125rem;
 }
 
 .collection-item {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 }
 
 .collection-item-detail {
@@ -141,8 +153,17 @@ function onGroupSortChange(collections: Collection[]) {
 	color: var(--theme--foreground-subdued);
 }
 
+.deactivated {
+	opacity: 0.6;
+
+	.collection-icon,
+	.collection-name {
+		color: var(--theme--foreground-subdued);
+	}
+}
+
 .collection-note {
-	margin-inline-start: 16px;
+	margin-inline-start: 0.875rem;
 	overflow: hidden;
 	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
@@ -156,7 +177,7 @@ function onGroupSortChange(collections: Collection[]) {
 }
 
 .collection-icon {
-	margin-inline-end: 8px;
+	margin-inline-end: 0.4375rem;
 }
 
 .drag-handle {

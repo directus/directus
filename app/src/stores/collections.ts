@@ -5,6 +5,7 @@ import { getCollectionType } from '@directus/utils';
 import { isEqual, isNil, omit } from 'lodash';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { useLicenseStore } from './license';
 import { useRelationsStore } from './relations';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
@@ -209,10 +210,11 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 
 	async function deleteCollection(collection: string) {
 		const relationsStore = useRelationsStore();
+		const licenseStore = useLicenseStore();
 
 		try {
 			await api.delete(`/collections/${collection}`);
-			await Promise.all([hydrate(), relationsStore.hydrate()]);
+			await Promise.all([hydrate(), relationsStore.hydrate(), licenseStore.hydrate()]);
 
 			notify({
 				title: i18n.global.t('delete_collection_success'),

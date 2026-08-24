@@ -83,7 +83,7 @@ export class DriverSupabase implements TusDriver {
 		return `${this.endpoint}/upload/resumable`;
 	}
 
-	async read(filepath: string, options?: ReadOptions) {
+	async read(filepath: string, options?: ReadOptions): Promise<Readable> {
 		const { range } = options || {};
 
 		const requestInit: RequestInit = { method: 'GET' };
@@ -99,13 +99,16 @@ export class DriverSupabase implements TusDriver {
 		const response = await fetch(this.getAuthenticatedUrl(filepath), requestInit);
 
 		if (response.status >= 400 || !response.body) {
+			// An unread body holds its connection open
+			await response.body?.cancel();
+
 			throw new Error(`No stream returned for file "${filepath}"`);
 		}
 
 		return Readable.fromWeb(response.body);
 	}
 
-	async stat(filepath: string) {
+	private async find(filepath: string) {
 		let rootPath = join(this.config.root, dirname(filepath));
 		// Supabase expects an empty string for current directory
 		if (rootPath === '.') rootPath = '';
@@ -117,34 +120,41 @@ export class DriverSupabase implements TusDriver {
 			limit: 1,
 		});
 
-		if (error || data.length === 0) {
+		if (error) throw error;
+
+		return data[0];
+	}
+
+	async stat(filepath: string): Promise<{
+		size: any;
+		modified: Date;
+	}> {
+		const file = await this.find(filepath);
+
+		if (!file) {
 			throw new Error('File not found');
 		}
 
+		// metadata is null for folders
 		return {
-			size: data[0]?.metadata['contentLength'] ?? 0,
-			modified: new Date(data[0]?.metadata['lastModified'] || null),
+			size: file.metadata?.['contentLength'] ?? 0,
+			modified: new Date(file.metadata?.['lastModified'] || 0),
 		};
 	}
 
-	async exists(filepath: string) {
-		try {
-			await this.stat(filepath);
-			return true;
-		} catch {
-			return false;
-		}
+	async exists(filepath: string): Promise<boolean> {
+		return (await this.find(filepath)) !== undefined;
 	}
 
-	async move(src: string, dest: string) {
+	async move(src: string, dest: string): Promise<void> {
 		await this.bucket.move(this.fullPath(src), this.fullPath(dest));
 	}
 
-	async copy(src: string, dest: string) {
+	async copy(src: string, dest: string): Promise<void> {
 		await this.bucket.copy(this.fullPath(src), this.fullPath(dest));
 	}
 
-	async write(filepath: string, content: Readable, type?: string) {
+	async write(filepath: string, content: Readable, type?: string): Promise<void> {
 		const { error } = await this.bucket.upload(this.fullPath(filepath), content, {
 			contentType: type ?? '',
 			cacheControl: '3600',
@@ -157,7 +167,7 @@ export class DriverSupabase implements TusDriver {
 		}
 	}
 
-	async delete(filepath: string) {
+	async delete(filepath: string): Promise<void> {
 		await this.bucket.remove([this.fullPath(filepath)]);
 	}
 
@@ -169,7 +179,7 @@ export class DriverSupabase implements TusDriver {
 	async *listGenerator(prefix: string): AsyncIterable<string> {
 		const limit = 1000;
 		let offset = 0;
-		let itemCount = 0;
+		let itemCount;
 
 		/*
 		 *	The Supabase API only returns the directories and files directly within the queried location
@@ -227,15 +237,20 @@ export class DriverSupabase implements TusDriver {
 		} while (itemCount === limit);
 	}
 
-	get tusExtensions() {
+	get tusExtensions(): string[] {
 		return ['creation', 'termination', 'expiration'];
 	}
 
-	async createChunkedUpload(_filepath: string, context: ChunkedUploadContext) {
+	async createChunkedUpload(_filepath: string, context: ChunkedUploadContext): Promise<ChunkedUploadContext> {
 		return context;
 	}
 
-	async writeChunk(filepath: string, content: Readable, offset: number, context: ChunkedUploadContext) {
+	async writeChunk(
+		filepath: string,
+		content: Readable,
+		offset: number,
+		context: ChunkedUploadContext,
+	): Promise<number> {
 		let bytesUploaded = offset || 0;
 
 		const metadata = {
@@ -291,9 +306,9 @@ export class DriverSupabase implements TusDriver {
 		return bytesUploaded;
 	}
 
-	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext) {}
+	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext): Promise<void> {}
 
-	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext) {
+	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext): Promise<void> {
 		await this.delete(filepath);
 	}
 }

@@ -31,6 +31,7 @@ export type CollectionMeta = {
 	display_template: string | null;
 	preview_url: string | null;
 	versioning: boolean;
+	autosave_revision_interval: number | null;
 	sort_field: string | null;
 	archive_field: string | null;
 	archive_value: string | null;
@@ -42,6 +43,7 @@ export type CollectionMeta = {
 	sort: number | null;
 	group: string | null;
 	collapse: 'open' | 'closed' | 'locked';
+	status: 'active' | 'inactive';
 };
 
 export type BaseCollectionMeta = Pick<
@@ -53,10 +55,12 @@ export type BaseCollectionMeta = Pick<
 	| 'icon'
 	| 'translations'
 	| 'versioning'
+	| 'autosave_revision_interval'
 	| 'item_duplication_fields'
 	| 'accountability'
 	| 'group'
 	| 'system'
+	| 'status'
 >;
 
 export type DataCollectionMeta = Partial<BaseCollectionMeta> & Pick<BaseCollectionMeta, 'collection' | 'note'>;

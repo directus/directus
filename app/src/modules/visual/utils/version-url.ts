@@ -1,4 +1,4 @@
-import { sameOrigin } from './same-origin';
+import { sameOrigin } from '@directus/utils/browser';
 import { parseUrl } from '@/utils/parse-url';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 

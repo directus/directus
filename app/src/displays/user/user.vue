@@ -61,7 +61,7 @@ const src = computed(() => {
 		inline-size: auto;
 		block-size: 100%;
 		vertical-align: -67%;
-		border-radius: 4px;
+		border-radius: 0.25rem;
 
 		&.circle {
 			border-radius: 100%;
@@ -70,7 +70,7 @@ const src = computed(() => {
 
 	&.both {
 		img {
-			margin-inline-end: 8px;
+			margin-inline-end: 0.4375rem;
 		}
 	}
 }

@@ -16,15 +16,20 @@ export const sequentialTestsList: Record<'db' | 'common', SequentialTestsList> =
 			'/tests/db/routes/collections/crud.test.ts',
 			'/tests/db/routes/fields/change-fields.test.ts',
 			'/tests/db/routes/fields/crud.test.ts',
-			'/tests/db/routes/items/version.test.ts',
 		],
 		after: [
+			// Websocket/collab tests are timing-sensitive: they assert that messages arrive within a
+			// deadline. Putting the websocket/collab files here keeps only one WS-heavy file running at once.
+			'/tests/db/websocket/collab/core.test.ts',
+			'/tests/db/websocket/collab/relational.test.ts',
+			'/tests/db/websocket/collab/singleton.test.ts',
+			'/tests/db/websocket/collab/permissions.test.ts',
 			'/tests/db/websocket/collab/multi-instance.test.ts',
+			'/tests/db/websocket/auth.test.ts',
+			'/tests/db/websocket/general.test.ts',
 			'/tests/db/schema/timezone/timezone.test.ts',
 			'/tests/db/schema/timezone/timezone-changed-node-tz-america.test.ts',
 			'/tests/db/schema/timezone/timezone-changed-node-tz-asia.test.ts',
-			'/tests/db/websocket/auth.test.ts',
-			'/tests/db/websocket/general.test.ts',
 			'/tests/db/routes/permissions/cache-purge.test.ts',
 			'/tests/db/routes/flows/webhook.test.ts',
 			'/tests/db/app/cache.test.ts',
@@ -33,7 +38,7 @@ export const sequentialTestsList: Record<'db' | 'common', SequentialTestsList> =
 		// If specified, only run these tests sequentially
 		only: [
 			// '/tests/db/seed-database.test.ts',
-			// '/common/common.test.ts',
+			// '/common/common.test.ts'
 		],
 	},
 };

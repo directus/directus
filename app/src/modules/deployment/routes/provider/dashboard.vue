@@ -6,7 +6,6 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
@@ -42,7 +41,7 @@ const rangeOptions = [
 const projectItems = computed(() =>
 	projects.value.map((project) => ({
 		...project,
-		to: `/deployments/${props.provider}/${project.id}/runs`,
+		to: { name: 'deployments-provider-runs', params: { provider: props.provider, projectId: project.id } },
 		formattedDeployTime: project.latest_deployment?.created_at
 			? formatDistanceToNow(new Date(project.latest_deployment.created_at), { addSuffix: true })
 			: '',
@@ -72,10 +71,6 @@ watch(range, loadDashboard);
 
 <template>
 	<PrivateView :title="$t(`deployment.provider.${provider}.name`)" :icon="provider">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployments' }]" />
-		</template>
-
 		<template #navigation>
 			<DeploymentNavigation />
 		</template>
@@ -172,30 +167,32 @@ watch(range, loadDashboard);
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
 .container {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
 }
 
 .spinner {
-	margin: 120px auto;
+	margin: 6.75rem auto;
 }
 
 .stats-bar {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
-	gap: 16px;
-	margin-block-end: 40px;
+	gap: 0.875rem;
+	margin-block-end: 2.25rem;
 
-	@media (max-width: 1512px) {
+	@media (width < 85.0625rem) {
 		grid-template-columns: repeat(3, 1fr);
 	}
 
-	@media (max-width: 1024px) {
+	@include mixins.breakpoint-down('lg') {
 		grid-template-columns: repeat(2, 1fr);
 	}
 
-	@media (max-width: 768px) {
+	@media (width < 43.1875rem) {
 		grid-template-columns: 1fr;
 	}
 }
@@ -203,8 +200,8 @@ watch(range, loadDashboard);
 .stat-card {
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	padding: 6px 10px;
+	gap: 0.4375rem;
+	padding: 0.3125rem 0.5625rem;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
 	overflow: hidden;
@@ -244,7 +241,7 @@ watch(range, loadDashboard);
 
 .range-select {
 	display: block;
-	margin-block-end: 16px;
+	margin-block-end: 0.875rem;
 }
 
 .projects-divider {
@@ -258,26 +255,26 @@ watch(range, loadDashboard);
 .project-list-item {
 	display: flex;
 	align-items: center;
-	gap: 16px;
-	block-size: 98px !important;
-	padding: 0 20px !important;
+	gap: 0.875rem;
+	block-size: 5.5rem !important;
+	padding: 0 1.125rem !important;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 
-	@media (max-width: 768px) {
+	@media (width < 43.1875rem) {
 		flex-wrap: wrap;
 		block-size: auto !important;
-		padding: 16px 20px !important;
+		padding: 0.875rem 1.125rem !important;
 	}
 
 	.icon {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		inline-size: 44px;
-		block-size: 44px;
-		border-radius: 24px;
+		inline-size: 2.5rem;
+		block-size: 2.5rem;
+		border-radius: 1.375rem;
 		background-color: var(--theme--primary);
 		flex-shrink: 0;
 
@@ -287,7 +284,7 @@ watch(range, loadDashboard);
 	.name-wrapper {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: 0.4375rem;
 	}
 
 	.name {
@@ -298,7 +295,7 @@ watch(range, loadDashboard);
 		flex: 0 0 auto;
 		color: var(--theme--primary);
 		text-decoration: none;
-		font-size: 14px;
+		font-size: 0.8125rem;
 
 		&:hover {
 			text-decoration: underline;
@@ -309,20 +306,20 @@ watch(range, loadDashboard);
 		margin-inline-start: auto;
 		flex-shrink: 0;
 
-		@media (max-width: 768px) {
+		@media (width < 43.1875rem) {
 			inline-size: 100%;
 			margin-inline-start: 0;
-			padding-inline-start: 60px; // icon width + gap
-			margin-block-start: 4px;
+			padding-inline-start: 3.375rem; // icon width + gap
+			margin-block-start: 0.25rem;
 		}
 	}
 
 	.deploy-time {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: 0.4375rem;
 		color: var(--theme--foreground-subdued);
-		font-size: 14px;
+		font-size: 0.8125rem;
 	}
 }
 </style>

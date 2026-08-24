@@ -99,11 +99,11 @@ function onSelection(data: (number | string)[] | null) {
 
 <style lang="scss" scope>
 .relational-variable {
-	padding: 12px;
+	padding: 0.6875rem;
 	block-size: 100%;
 
 	&.show-header {
-		padding-block-start: 6px;
+		padding-block-start: 0.3125rem;
 	}
 
 	&.centered {

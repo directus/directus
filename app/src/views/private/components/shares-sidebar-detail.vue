@@ -357,7 +357,7 @@ async function copy(id: string) {
 			</VCard>
 		</VDialog>
 
-		<VButton v-if="allowed" full-width @click="select('+')">
+		<VButton v-if="allowed" full-width small @click="select('+')">
 			{{ $t('new_share') }}
 		</VButton>
 	</SidebarDetail>
@@ -367,28 +367,28 @@ async function copy(id: string) {
 @use '@/styles/mixins';
 
 .v-progress-linear {
-	margin: 24px 0;
+	margin: 1.375rem 0;
 }
 
 .v-divider {
 	position: sticky;
 	inset-block-start: 0;
 	z-index: 2;
-	margin-block: 8px;
-	padding-block: 8px;
+	margin-block: 0.4375rem;
+	padding-block: 0.4375rem;
 	background-color: var(--theme--background-normal);
 	box-shadow: 0 0 4px 2px var(--theme--background-normal);
 }
 
 .empty {
-	margin-block: 16px;
-	margin-inline-start: 2px;
+	margin-block-end: 0.875rem;
+	margin-inline-start: 0.125rem;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 
 .grid {
-	--theme--form--row-gap: 20px;
+	--theme--form--row-gap: 1.125rem;
 
 	@include mixins.form-grid;
 }

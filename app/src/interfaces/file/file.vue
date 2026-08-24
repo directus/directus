@@ -334,7 +334,7 @@ function useURLImport() {
 					icon="download"
 					:href="getAssetUrl(file.id, { isDownload: true })"
 					:download="file.filename_download"
-					secondary
+					variant="ghost"
 				/>
 			</template>
 		</DrawerItem>
@@ -408,18 +408,15 @@ function useURLImport() {
 	&.active:not(.disabled),
 	&:focus-within:not(.disabled),
 	&:focus-visible:not(.disabled) {
-		--v-list-item-border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
-		--v-list-item-border-color-hover: var(--v-list-item-border-color);
-
-		offset: 0;
-		box-shadow: var(--theme--form--field--input--box-shadow-focus);
+		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+		outline-offset: var(--focus-ring-offset-invert);
 	}
 }
 
 .item-actions {
 	@include mixins.list-interface-item-actions;
 
-	padding-inline-start: 8px;
+	padding-inline-start: 0.4375rem;
 }
 
 .preview {
@@ -428,9 +425,9 @@ function useURLImport() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 40px;
-	block-size: 40px;
-	margin-inline-start: -8px;
+	inline-size: 2.25rem;
+	block-size: 2.25rem;
+	margin-inline-start: -0.4375rem;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
@@ -446,7 +443,7 @@ function useURLImport() {
 	}
 
 	&.is-svg {
-		padding: 4px;
+		padding: 0.25rem;
 
 		img {
 			object-fit: contain;
@@ -462,7 +459,7 @@ function useURLImport() {
 .extension {
 	color: var(--theme--primary);
 	font-weight: 600;
-	font-size: 11px;
+	font-size: 0.625rem;
 	text-transform: uppercase;
 }
 </style>

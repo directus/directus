@@ -1,31 +1,48 @@
 <script setup lang="ts">
-import { Field } from '@directus/types';
-import { get } from '@directus/utils';
+import type { DeepPartial, Field } from '@directus/types';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import ValueNull from './value-null.vue';
 import VErrorBoundary from '@/components/v-error-boundary.vue';
 import { useExtension } from '@/composables/use-extension';
+import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
+import { getWithArrayIndex } from '@/utils/get-with-array-index';
 import { translate } from '@/utils/translate-literal';
 
 const props = withDefaults(
 	defineProps<{
 		template: string;
 		collection?: string;
-		fields?: Field[];
+		fields?: DeepPartial<Field>[];
 		item?: Record<string, any>;
 		direction?: string;
+		showCollectionName?: boolean;
 	}>(),
 	{
 		fields: () => [],
 		item: () => ({}),
+		showCollectionName: false,
 	},
 );
 
+const { t, te } = useI18n();
+
+const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
+
+const collectionName = computed(() => {
+	if (!props.showCollectionName || !props.collection) return null;
+
+	if (te(`collection_names_singular.${props.collection}`)) {
+		return t(`collection_names_singular.${props.collection}`);
+	}
+
+	return collectionsStore.getCollection(props.collection)?.name ?? null;
+});
 
 const regex = /({{.*?}})/g;
 
@@ -39,7 +56,7 @@ const getNestedValues = (data: any, path: string) => {
 			if (!anyCollection || anyCollection !== getM2AJunctionCollectionField(props.collection, itemField)) return;
 		}
 
-		currentData = get(currentData, part) ?? null;
+		currentData = getWithArrayIndex(currentData, part) ?? null;
 	});
 
 	return Array.isArray(currentData) ? currentData : [currentData];
@@ -76,7 +93,7 @@ const parts = computed(() =>
 			// Try getting the value from the item
 			let value = getNestedValues(props.item, fieldKey);
 
-			let field: Field | null = props.fields?.find((field) => field.field === fieldKey) ?? null;
+			let field: DeepPartial<Field> | null = props.fields?.find((field) => field.field === fieldKey) ?? null;
 
 			if (props.collection) {
 				field = fieldsStore.getField(props.collection, fieldKey);
@@ -88,7 +105,7 @@ const parts = computed(() =>
 				value = value.map(translate);
 			}
 
-			const component = field?.meta?.display || getDefaultDisplayForType(field.type);
+			const component = field?.meta?.display || (field.type ? getDefaultDisplayForType(field.type) : null);
 			const options = field?.meta?.display_options;
 
 			// No need to render the empty display overhead in this case
@@ -140,8 +157,9 @@ const parts = computed(() =>
 </script>
 
 <template>
-	<div class="render-template">
-		<span class="vertical-aligner" />
+	<div class="render-template" :class="{ 'has-collection-name': collectionName }">
+		<span v-if="!collectionName" class="vertical-aligner" />
+		<span v-else class="collection-name">{{ collectionName }}:&nbsp;</span>
 		<template v-for="(part, index) in parts" :key="index">
 			<template v-for="(subPart, subIndex) in part" :key="subIndex">
 				<VErrorBoundary>
@@ -177,7 +195,6 @@ const parts = computed(() =>
 	block-size: 100%;
 	position: relative;
 	max-inline-size: 100%;
-	padding-inline-end: 8px;
 	@include mixins.no-wrap;
 
 	.vertical-aligner {
@@ -193,6 +210,14 @@ const parts = computed(() =>
 
 	.render-template {
 		display: inline;
+	}
+
+	&.has-collection-name > * {
+		vertical-align: baseline;
+	}
+
+	.collection-name {
+		color: var(--theme--foreground-subdued);
 	}
 }
 

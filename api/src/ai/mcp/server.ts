@@ -1,6 +1,4 @@
-import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
-import { isObject, parseJSON, toArray } from '@directus/utils';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import {
 	type CallToolRequest,
@@ -20,13 +18,14 @@ import {
 import type { Request, Response } from 'express';
 import { render, tokenize } from 'micromustache';
 import { z } from 'zod';
-import { fromZodError } from 'zod-validation-error';
 import { ItemsService } from '../../services/index.js';
-import { Url } from '../../utils/url.js';
-import { findMcpTool, getAllMcpTools } from '../tools/index.js';
-import type { ToolConfig, ToolResult } from '../tools/types.js';
+import { ALL_TOOLS, type RegistryError, type RegistryExecuteResult, ToolRegistry } from '../tools/index.js';
+import type { RootTool, ToolResult } from '../tools/types.js';
 import { DirectusTransport } from './transport.js';
 import type { MCPOptions, Prompt } from './types.js';
+import { buildMcpWWWAuthenticateHeader, getMcpUrls, MCP_ACCESS_SCOPE } from './utils.js';
+
+type McpToolMode = 'legacy' | 'registry';
 
 export class DirectusMCP {
 	promptsCollection?: string | null;
@@ -56,12 +55,60 @@ export class DirectusMCP {
 	}
 
 	/**
-	 * This handleRequest function is not awaiting lower level logic resulting in the actual
-	 * response being an asynchronous side effect happening after the function has returned
+	 * Send a 401 with WWW-Authenticate per RFC 6750 / RFC 9728.
+	 * Includes `resource_metadata` pointing to `/.well-known/oauth-protected-resource/mcp`
+	 * so clients can discover the authorization server from a 401 response.
+	 */
+	private sendUnauthorized(res: Response, error?: string, status = 401): void {
+		const { metadataUrl } = getMcpUrls();
+
+		res
+			.set('WWW-Authenticate', buildMcpWWWAuthenticateHeader(metadataUrl, error))
+			.set('Access-Control-Expose-Headers', 'WWW-Authenticate')
+			.status(status)
+			.send();
+	}
+
+	/**
+	 * Handle an incoming MCP JSON-RPC request.
+	 *
+	 * OAuth-specific checks (when `accountability.oauth` is set):
+	 * - Transport restriction: token must be in Authorization header (RFC 6750), not cookie/query
+	 * - Scope check: must include mcp:access
+	 * - Audience check: must match the canonical MCP resource URL (PUBLIC_URL/mcp)
+	 *
+	 * Note: this function does not await lower-level logic; the actual response is an
+	 * asynchronous side effect happening after the function returns.
+	 *
+	 * @see sendUnauthorized for WWW-Authenticate format (RFC 9728 `resource_metadata` attribute)
 	 */
 	handleRequest(req: Request, res: Response) {
+		const oauth = req.accountability?.oauth;
+
+		// Unauthenticated: no user, no role, not admin
 		if (!req.accountability?.user && !req.accountability?.role && req.accountability?.admin !== true) {
-			throw new ForbiddenError();
+			this.sendUnauthorized(res);
+			return;
+		}
+
+		// OAuth-specific restrictions (scope, audience, transport already resolved onto accountability)
+		if (oauth) {
+			if (req.tokenSource !== 'header') {
+				this.sendUnauthorized(res, 'invalid_request');
+				return;
+			}
+
+			if (!oauth.scopes.includes(MCP_ACCESS_SCOPE)) {
+				this.sendUnauthorized(res, 'insufficient_scope', 403);
+				return;
+			}
+
+			const { resourceUrl } = getMcpUrls();
+
+			if (!oauth.aud.includes(resourceUrl)) {
+				this.sendUnauthorized(res, 'invalid_token');
+				return;
+			}
 		}
 
 		if (!req.accepts('application/json')) {
@@ -191,88 +238,47 @@ export class DirectusMCP {
 			});
 		});
 
+		const mountedRegistry = new ToolRegistry(ALL_TOOLS).mount({
+			accountability: req.accountability,
+			allowDeletes: this.allowDeletes,
+			isToolCallApproved: () => true,
+			schema: req.schema,
+			systemPrompt: this.systemPrompt,
+			systemPromptEnabled: this.systemPromptEnabled,
+		});
+
+		const toolMode: McpToolMode = req.query?.['tool_mode'] === 'registry' ? 'registry' : 'legacy';
+
 		// listing tools
 		this.server.setRequestHandler(ListToolsRequestSchema, () => {
-			const tools = [];
-
-			for (const tool of getAllMcpTools()) {
-				if (req.accountability?.admin !== true && tool.admin === true) continue;
-				if (tool.name === 'system-prompt' && this.systemPromptEnabled === false) continue;
-
-				tools.push({
-					name: tool.name,
-					description: tool.description,
-					inputSchema: z.toJSONSchema(tool.inputSchema),
-					annotations: tool.annotations,
-				});
-			}
-
-			return { tools };
+			return {
+				tools: (toolMode === 'registry' ? mountedRegistry.getRootTools() : mountedRegistry.tools).map((tool) =>
+					this.toMcpTool(tool, toolMode),
+				),
+			};
 		});
 
 		// calling tools
 		this.server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest) => {
-			const tool = findMcpTool(request.params.name);
-
 			try {
-				if (!tool || (tool.name === 'system-prompt' && this.systemPromptEnabled === false)) {
-					throw new InvalidPayloadError({ reason: `"${request.params.name}" doesn't exist in the toolset` });
-				}
+				if (toolMode === 'legacy') {
+					const tool = ALL_TOOLS.find(({ name }) => name === request.params.name);
 
-				if (req.accountability?.admin !== true && tool.admin === true) {
-					throw new ForbiddenError({ reason: 'You must be an admin to access this tool' });
-				}
+					if (!tool || (tool.name === 'system-prompt' && this.systemPromptEnabled === false)) {
+						throw new InvalidPayloadError({ reason: `"${request.params.name}" doesn't exist in the toolset` });
+					}
 
-				if (tool.name === 'system-prompt') {
-					request.params.arguments = { promptOverride: this.systemPrompt };
-				}
-
-				// ensure json expected fields are not stringified
-				if (request.params.arguments) {
-					for (const field of ['data', 'keys', 'query']) {
-						const arg = request.params.arguments[field];
-
-						if (typeof arg === 'string') {
-							request.params.arguments[field] = parseJSON(arg);
-						}
+					if (req.accountability?.admin !== true && tool.admin === true) {
+						throw new ForbiddenError({ reason: 'You must be an admin to access this tool' });
 					}
 				}
 
-				const { error, data: args } = tool.validateSchema?.safeParse(request.params.arguments) ?? {
-					data: request.params.arguments,
-				};
+				const result =
+					toolMode === 'registry'
+						? await mountedRegistry.executeRoot(request.params.name, request.params.arguments)
+						: await mountedRegistry.execute(request.params.name, request.params.arguments);
 
-				if (error) {
-					throw new InvalidPayloadError({ reason: fromZodError(error).message });
-				}
-
-				if (!isObject(args)) {
-					throw new InvalidPayloadError({ reason: '"arguments" must be an object' });
-				}
-
-				if (this.allowDeletes === false && 'action' in args && args['action'] === 'delete') {
-					throw new InvalidPayloadError({ reason: 'Delete actions are disabled' });
-				}
-
-				const result = await tool.handler({
-					args,
-					schema: req.schema,
-					accountability: req.accountability,
-				});
-
-				// if single item and create/read/update/import add url
-				const data = toArray(result?.data);
-
-				if (
-					'action' in args &&
-					['create', 'update', 'read', 'import'].includes(args['action'] as string) &&
-					result?.data &&
-					data.length === 1
-				) {
-					result.url = this.buildURL(tool, args, data[0]);
-				}
-
-				return this.toToolResponse(result);
+				return this.toToolResponse(result, toolMode);
 			} catch (error) {
 				return this.toExecutionError(error);
 			}
@@ -292,22 +298,6 @@ export class DirectusMCP {
 		}
 	}
 
-	buildURL(tool: ToolConfig<unknown>, input: unknown, data: unknown) {
-		const env = useEnv();
-
-		const publicURL = env['PUBLIC_URL'] as string | undefined;
-
-		if (!publicURL) return;
-
-		if (!tool.endpoint) return;
-
-		const path = tool.endpoint({ input, data });
-
-		if (!path) return;
-
-		return new Url(env['PUBLIC_URL'] as string).addPath('admin', ...path).toString();
-	}
-
 	toPromptResponse(result: {
 		description?: string | undefined;
 		messages: GetPromptResult['messages'];
@@ -323,23 +313,71 @@ export class DirectusMCP {
 		return response;
 	}
 
-	toToolResponse(result?: ToolResult) {
+	toMcpTool(tool: RootTool, mode: McpToolMode = 'legacy') {
+		return {
+			name: tool.name,
+			description: mode === 'legacy' && tool.instructions ? tool.instructions : tool.description,
+			inputSchema: z.toJSONSchema(tool.inputSchema),
+			annotations: tool.annotations,
+			...(mode === 'registry' && tool.output && { outputSchema: z.toJSONSchema(tool.output) }),
+		};
+	}
+
+	toToolResponse(executeResult: RegistryExecuteResult, mode: McpToolMode = 'legacy'): CallToolResult {
+		if (!executeResult.ok) {
+			return this.toRegistryErrorResponse(executeResult.error, mode);
+		}
+
+		return this.toResultResponse(executeResult.result, executeResult.structuredContent, mode);
+	}
+
+	toResultResponse(result?: ToolResult, structuredContent?: unknown, mode: McpToolMode = 'legacy'): CallToolResult {
 		const response: CallToolResult = {
 			content: [],
 		};
+
+		if (mode === 'registry' && structuredContent !== undefined) {
+			response.structuredContent = structuredContent as CallToolResult['structuredContent'];
+		}
 
 		if (!result || typeof result.data === 'undefined' || result.data === null) return response;
 
 		if (result.type === 'text') {
 			response.content.push({
 				type: 'text',
-				text: JSON.stringify({ raw: result.data, url: result.url }),
+				text: JSON.stringify(
+					mode === 'legacy'
+						? { raw: result.data, url: result.url }
+						: { data: result.data, ...(result.url && { url: result.url }) },
+				),
 			});
 		} else {
 			response.content.push(result);
 		}
 
 		return response;
+	}
+
+	toRegistryErrorResponse(error: RegistryError, mode: McpToolMode = 'legacy'): CallToolResult {
+		const serializedError =
+			mode === 'legacy'
+				? { error: error.message, ...(error.code !== 'TOOL_EXECUTION_FAILED' && { code: error.code }) }
+				: {
+						error: error.message,
+						code: error.code,
+						recoverable: error.recoverable,
+						...(error.next && { next: error.next }),
+					};
+
+		return {
+			isError: true,
+			content: [
+				{
+					type: 'text',
+					text: JSON.stringify([serializedError]),
+				},
+			],
+		};
 	}
 
 	toExecutionError(err: unknown) {

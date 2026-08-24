@@ -103,7 +103,7 @@ describe('trigger flow tool', () => {
 			vi.mocked(FlowsService).mockImplementation(() => mockFlowsService as unknown as FlowsService);
 		});
 
-		test('should propogate error from flowService', async () => {
+		test('should propagate error from flowService', async () => {
 			mockFlowsService.readOne.mockImplementation(() => Promise.reject('Forbidden'));
 
 			const mockArgs = {

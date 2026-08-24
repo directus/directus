@@ -81,10 +81,10 @@ const generateCollectionDialogActive = ref(false);
 
 <style scoped>
 .notice-content {
-	padding-block: 10px 4px;
+	padding-block: 0.5625rem 0.25rem;
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+	gap: 0.5625rem;
 }
 
 .mono {

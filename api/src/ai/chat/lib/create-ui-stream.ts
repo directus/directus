@@ -2,22 +2,33 @@ import type { ProviderType } from '@directus/ai';
 import { ServiceUnavailableError } from '@directus/errors';
 import {
 	convertToModelMessages,
-	type LanguageModelUsage,
 	stepCountIs,
 	streamText,
 	type StreamTextResult,
 	type Tool,
 	type UIMessage,
+	wrapLanguageModel,
 } from 'ai';
+import { useLogger } from '../../../logger/index.js';
+import { getDevToolsMiddleware } from '../../devtools/index.js';
 import {
 	type AISettings,
 	buildProviderConfigs,
 	createAIProviderRegistry,
 	getProviderOptions,
 } from '../../providers/index.js';
+import { getAITelemetryConfig } from '../../telemetry/index.js';
 import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
 import type { ChatContext } from '../models/chat-request.js';
 import { formatContextForSystemPrompt } from '../utils/format-context.js';
+import {
+	applyAnthropicConversationCaching,
+	buildCacheAwareSystemPrompt,
+	formatUsageWithCacheTokens,
+	type PromptCachingUsage,
+	sortToolsByName,
+} from '../utils/prompt-caching.js';
+import { ipValidatedDownload } from './ip-validated-download.js';
 import { transformFilePartsForProvider } from './transform-file-parts.js';
 
 export interface CreateUiStreamOptions {
@@ -26,13 +37,15 @@ export interface CreateUiStreamOptions {
 	tools: { [x: string]: Tool };
 	aiSettings: AISettings;
 	systemPrompt?: string;
+	userId?: string | null;
+	role?: string | null;
 	context?: ChatContext;
-	onUsage?: (usage: Pick<LanguageModelUsage, 'inputTokens' | 'outputTokens' | 'totalTokens'>) => void | Promise<void>;
+	onUsage?: (usage: PromptCachingUsage) => void | Promise<void>;
 }
 
 export const createUiStream = async (
 	messages: UIMessage[],
-	{ provider, model, tools, aiSettings, systemPrompt, context, onUsage }: CreateUiStreamOptions,
+	{ provider, model, tools, aiSettings, systemPrompt, userId, role, context, onUsage }: CreateUiStreamOptions,
 ): Promise<StreamTextResult<Record<string, Tool<any, any>>, any>> => {
 	const configs = buildProviderConfigs(aiSettings);
 	const providerConfig = configs.find((c) => c.type === provider);
@@ -46,33 +59,46 @@ export const createUiStream = async (
 	const baseSystemPrompt = systemPrompt || SYSTEM_PROMPT;
 	const contextBlock = context ? formatContextForSystemPrompt(context) : null;
 	const providerOptions = getProviderOptions(provider, model, aiSettings);
-	// Compute the full system prompt once to avoid re-computing on each step
-	const fullSystemPrompt = contextBlock ? baseSystemPrompt + contextBlock : baseSystemPrompt;
+	let languageModel = registry.languageModel(`${provider}:${model}`);
+	const devToolsMiddleware = getDevToolsMiddleware();
+
+	if (devToolsMiddleware) {
+		languageModel = wrapLanguageModel({
+			model: languageModel,
+			middleware: devToolsMiddleware,
+		});
+	}
+
+	// For Anthropic, keep `system` as the stable base prompt only (so the tools+system prefix
+	// caches across page changes) and inject context after a cache breakpoint on the last
+	// existing message. For other providers, keep context inside `system` as before.
+	const systemPromptText =
+		provider === 'anthropic' || !contextBlock ? baseSystemPrompt : baseSystemPrompt + contextBlock;
+
+	const streamSystemPrompt = buildCacheAwareSystemPrompt(provider, systemPromptText);
+
+	const finalTools = sortToolsByName(tools);
+	const telemetryConfig = getAITelemetryConfig({ provider, model, userId, role });
+	const logger = useLogger();
+
+	const modelMessages = await convertToModelMessages(transformFilePartsForProvider(messages));
+	const streamMessages = applyAnthropicConversationCaching(provider, modelMessages, contextBlock);
 
 	const stream = streamText({
-		system: baseSystemPrompt,
-		model: registry.languageModel(`${provider}:${model}`),
-		messages: await convertToModelMessages(transformFilePartsForProvider(messages)),
+		system: streamSystemPrompt,
+		model: languageModel,
+		messages: streamMessages,
 		stopWhen: [stepCountIs(10)],
+		experimental_download: ipValidatedDownload,
 		providerOptions,
-		tools,
-		/**
-		 * prepareStep is called before each AI step to prepare the system prompt.
-		 * When context exists, we override the system prompt to include context attachments.
-		 * This allows the initial system prompt to be simple while ensuring all steps
-		 * (including tool continuation steps) receive the full context.
-		 */
-		prepareStep: () => {
-			if (contextBlock) {
-				return { system: fullSystemPrompt };
-			}
-
-			return {};
+		tools: finalTools,
+		...(telemetryConfig ? { experimental_telemetry: telemetryConfig } : {}),
+		onError(error) {
+			logger.error({ error }, 'AI chat stream failed');
 		},
-		onFinish({ usage }) {
+		onFinish(result) {
 			if (onUsage) {
-				const { inputTokens, outputTokens, totalTokens } = usage;
-				onUsage({ inputTokens, outputTokens, totalTokens });
+				onUsage(formatUsageWithCacheTokens(result));
 			}
 		},
 	});

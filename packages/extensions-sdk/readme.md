@@ -6,7 +6,7 @@ A toolkit to develop extensions to extend Directus
 
 This package is a toolkit to help developers create extensions for use in Directus, an open-source headless CMS.
 
-For more information about Directus, visit the [official website](https://directus.io).
+For more information about Directus, visit the [official website](https://directus.com).
 
 ## License
 
@@ -15,5 +15,5 @@ This package is licensed under the MIT License. See the
 
 ## Additional Resources
 
-- [Directus Website](https://directus.io)
+- [Directus Website](https://directus.com)
 - [Directus GitHub Repository](https://github.com/directus/directus)

@@ -1,4 +1,4 @@
-import type { ReadStream } from 'node:fs';
+import type { ReadStream, Stats } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import os from 'node:os';
 import { dirname, join, relative, resolve, sep } from 'node:path';
@@ -36,6 +36,7 @@ import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import ivm from 'isolated-vm';
 import { clone, debounce, isPlainObject } from 'lodash-es';
+import PQueue from 'p-queue';
 import { rolldown } from 'rolldown';
 import { rollup } from 'rollup';
 import { useBus } from '../bus/index.js';
@@ -48,7 +49,6 @@ import { deleteFromRequireCache } from '../utils/delete-from-require-cache.js';
 import getModuleDefault from '../utils/get-module-default.js';
 import { getSchema } from '../utils/get-schema.js';
 import { importFileUrl } from '../utils/import-file-url.js';
-import { JobQueue } from '../utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 import { getExtensionsPath } from './lib/get-extensions-path.js';
 import { getExtensionsSettings } from './lib/get-extensions-settings.js';
@@ -135,7 +135,7 @@ export class ExtensionManager {
 	 * Used to prevent race conditions when reloading extensions. Forces each reload to happen in
 	 * sequence.
 	 */
-	private reloadQueue: JobQueue = new JobQueue();
+	private reloadQueue: PQueue = new PQueue({ concurrency: 1 });
 
 	/**
 	 * Used to prevent race condition when reading extension data while reloading extensions
@@ -351,7 +351,7 @@ export class ExtensionManager {
 			reject = rej;
 		});
 
-		this.reloadQueue.enqueue(async () => {
+		this.reloadQueue.add(async () => {
 			if (this.isLoaded) {
 				const prevExtensions = clone(this.extensions);
 
@@ -442,6 +442,33 @@ export class ExtensionManager {
 	}
 
 	/**
+	 * Check if a file path matches a watched extension's dist entrypoint
+	 * by looking up the folder name in the existing extension maps
+	 */
+	private isWatchedExtensionPath(filePath: string): boolean {
+		const extensionDir = path.resolve(getExtensionsPath());
+
+		const folderName = path.relative(extensionDir, filePath).split(path.sep).shift();
+
+		if (!folderName) return false;
+
+		const extension = this.localExtensions.get(folderName);
+
+		if (!extension) return false;
+
+		const resolvedPath = path.resolve(filePath);
+
+		if (isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle') {
+			return (
+				path.resolve(extension.path, extension.entrypoint.app) === resolvedPath ||
+				path.resolve(extension.path, extension.entrypoint.api) === resolvedPath
+			);
+		}
+
+		return path.resolve(extension.path, extension.entrypoint) === resolvedPath;
+	}
+
+	/**
 	 * Start the chokidar watcher for extensions on the local filesystem
 	 */
 	private initializeWatcher(): void {
@@ -449,18 +476,39 @@ export class ExtensionManager {
 
 		logger.info('Watching extensions for changes...');
 
-		const extensionDirUrl = pathToRelativeUrl(getExtensionsPath());
+		const extensionDirPath = pathToRelativeUrl(getExtensionsPath());
 
-		this.watcher = chokidar.watch(
-			[path.resolve('package.json'), path.posix.join(extensionDirUrl, '*', 'package.json')],
-			{
-				ignoreInitial: true,
-				// dotdirs are watched by default and frequently found in 'node_modules'
-				ignored: `${extensionDirUrl}/**/node_modules/**`,
-				// on macOS dotdirs in linked extensions are watched too
-				followSymlinks: os.platform() === 'darwin' ? false : true,
+		const resolvedExtDir = path.resolve(extensionDirPath);
+
+		this.watcher = chokidar.watch([path.resolve('package.json'), extensionDirPath], {
+			ignoreInitial: true,
+			// Only top level watch inside extensions folder is necessary, "dist" paths are added via updateWatchedExtensions
+			depth: 1,
+			ignored: (val: string, stats?: Stats) => {
+				if (val.includes('node_modules')) return true;
+
+				// allow directory traversal so chokidar can reach nested package.json files
+				if (!stats || stats.isDirectory()) return false;
+
+				// allow root package.json and package.json in direct extension dirs (extensionsDir/*/package.json)
+				if (val.endsWith('package.json')) {
+					const resolvedVal = path.resolve(val);
+
+					// root package.json
+					if (!resolvedVal.startsWith(resolvedExtDir + path.sep)) return false;
+
+					// allow if within an extension folder dir
+					return path.dirname(resolvedVal) === resolvedExtDir;
+				}
+
+				// allow "dist" entrypoints added via updateWatchedExtensions
+				if (this.isWatchedExtensionPath(val)) return false;
+
+				return true;
 			},
-		);
+			// on macOS dotdirs in linked extensions are watched too
+			followSymlinks: os.platform() === 'darwin' ? false : true,
+		});
 
 		this.watcher
 			.on(

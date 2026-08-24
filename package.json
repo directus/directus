@@ -1,7 +1,7 @@
 {
 	"name": "directus-monorepo",
 	"private": true,
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"type": "module",
 	"scripts": {
 		"build": "pnpm --recursive run build",
@@ -18,7 +18,7 @@
 		"@eslint/js": "catalog:",
 		"eslint": "catalog:",
 		"eslint-config-prettier": "catalog:",
-		"eslint-plugin-import": "catalog:",
+		"eslint-plugin-import-x": "catalog:",
 		"eslint-plugin-vue": "catalog:",
 		"globals": "catalog:",
 		"postcss-html": "catalog:",
@@ -30,18 +30,20 @@
 		"stylelint-config-standard-vue": "catalog:",
 		"stylelint-use-logical": "catalog:",
 		"typescript": "catalog:",
-		"typescript-eslint": "catalog:"
+		"typescript-eslint": "catalog:",
+		"vue-eslint-parser": "catalog:"
 	},
 	"pnpm": {
 		"overrides": {
-			"fast-xml-parser": "5.3.8",
 			"@yarnpkg/shell>cross-spawn": "7.0.6",
-			"@rollup/plugin-terser>serialize-javascript": "7.0.3",
-			"tar": "7.5.8",
-			"qs": "6.14.2",
-			"minimatch@10": "10.2.3",
-			"minimatch@9": "9.0.7",
-			"basic-ftp": "5.2.0"
+			"tar": "7.5.22",
+			"js-beautify>editorconfig": "3.0.2",
+			"js-beautify>glob": "11.1.0",
+			"express@4>path-to-regexp": "0.1.13",
+			"adm-zip": "0.6.0",
+			"js-yaml@4": "4.3.1",
+			"js-yaml@3": "3.15.1",
+			"unplugin-yaml>yaml": "2.9.0"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",

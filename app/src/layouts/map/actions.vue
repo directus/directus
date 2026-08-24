@@ -15,13 +15,15 @@ defineProps<{
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .item-count {
 	position: relative;
 	display: none;
 	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		display: inline;
 	}
 }

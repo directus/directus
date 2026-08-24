@@ -1,5 +1,28 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
+import { parseJSON } from '@directus/utils';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
+
+const JSON_COERCE_FIELDS = ['data', 'keys', 'query', 'headers'];
+
+/**
+ * LLMs sometimes return object/array arguments as stringified JSON.
+ * Coerce known fields back to native values before validation.
+ */
+export function coerceJsonFields(args: Record<string, unknown>): Record<string, unknown> {
+	const coerced = { ...args };
+
+	for (const field of JSON_COERCE_FIELDS) {
+		if (typeof coerced[field] === 'string') {
+			try {
+				coerced[field] = parseJSON(coerced[field] as string);
+			} catch {
+				// Leave as-is if not valid JSON
+			}
+		}
+	}
+
+	return coerced;
+}
 
 /**
  * Build a sanitized query object from a tool's args payload.

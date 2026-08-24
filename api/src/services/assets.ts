@@ -19,7 +19,7 @@ import type {
 	Transformation,
 	TransformationSet,
 } from '@directus/types';
-import archiver from 'archiver';
+import { ZipArchive } from 'archiver';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
 import { contentType, extension } from 'mime-types';
@@ -33,6 +33,7 @@ import { getStorage } from '../storage/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
+import { assertTransformsAllowed, toDimension } from './assets/assert-transforms-allowed.js';
 import { NameDeduper } from './assets/name-deduper.js';
 import { getSharpInstance } from './files/lib/get-sharp-instance.js';
 import { FilesService } from './files.js';
@@ -78,42 +79,95 @@ export class AssetsService {
 			throw new InvalidPayloadError({ reason: 'No files found in the selected folders tree' });
 		}
 
-		const archive = archiver('zip');
+		const archive = new ZipArchive();
+
+		// Streams the archive was handed but hasn't finished reading, so they can be released if it dies early
+		const pendingStreams = new Set<Readable>();
+
+		const releaseStreams = () => {
+			for (const stream of pendingStreams) {
+				stream.destroy();
+			}
+
+			pendingStreams.clear();
+		};
+
+		// `finalize()` never settles once the archive stops reading, which it does on both of these
+		const failed = new Promise<never>((_, reject) => archive.once('error', reject));
+
+		const closed = new Promise<void>((resolve) =>
+			archive.once('close', () => {
+				releaseStreams();
+				resolve();
+			}),
+		);
+
+		failed.catch(() => {});
 
 		const complete = async () => {
 			const deduper = new NameDeduper();
 			const storage = await getStorage();
 
-			for (const { id, folder, filename_download } of options.files) {
-				const file = await this.sudoFilesService.readOne(id, {
-					fields: ['id', 'storage', 'filename_disk', 'filename_download', 'modified_on', 'type'],
-				});
+			try {
+				for (const { id, folder, filename_download } of options.files) {
+					if (archive.destroyed) break;
 
-				const exists = await storage.location(file.storage).exists(file.filename_disk);
+					const file = await this.sudoFilesService.readOne(id, {
+						fields: ['id', 'storage', 'filename_disk', 'filename_download', 'modified_on', 'type'],
+					});
 
-				if (!exists) throw new ForbiddenError();
+					let exists: boolean;
 
-				const version = file.modified_on ? (new Date(file.modified_on).getTime() / 1000).toFixed() : undefined;
+					try {
+						exists = await storage.location(file.storage).exists(file.filename_disk);
+					} catch (error) {
+						// The file may well be there, we just couldn't reach the storage location to find out
+						throw new ServiceUnavailableError(
+							{ service: 'assets', reason: `Couldn't reach the storage location` },
+							{ cause: error },
+						);
+					}
 
-				const assetStream = await storage.location(file.storage).read(file.filename_disk, { version });
+					if (!exists) throw new ForbiddenError();
 
-				const fileExtension = path.extname(file.filename_download) || (file.type && '.' + extension(file.type)) || '';
+					const version = file.modified_on ? (new Date(file.modified_on).getTime() / 1000).toFixed() : undefined;
 
-				const dedupedFileName = deduper.add(filename_download, { group: folder, fallback: file.id + fileExtension });
+					const assetStream = await storage.location(file.storage).read(file.filename_disk, { version });
 
-				const folderName = folder ? options.folders?.get(folder) : undefined;
+					// The archive can have died while the file was being opened, in which case nothing reads this
+					if (archive.destroyed) {
+						assetStream.destroy();
+						break;
+					}
 
-				archive.append(assetStream, { name: dedupedFileName, prefix: folderName });
-			}
+					pendingStreams.add(assetStream);
+					assetStream.on('close', () => pendingStreams.delete(assetStream));
 
-			// add any empty folders, does not override already filled folder
-			if (options.folders) {
-				for (const [, folder] of options.folders) {
-					archive.append('', { name: folder + '/' });
+					const fileExtension = path.extname(file.filename_download) || (file.type && '.' + extension(file.type)) || '';
+
+					const dedupedFileName = deduper.add(filename_download, { group: folder, fallback: file.id + fileExtension });
+
+					const folderName = folder ? options.folders?.get(folder) : undefined;
+
+					archive.append(assetStream, {
+						name: dedupedFileName,
+						...(folderName !== undefined && { prefix: folderName }),
+					});
 				}
-			}
 
-			await archive.finalize();
+				// add any empty folders, does not override already filled folder
+				if (options.folders) {
+					for (const [, folder] of options.folders) {
+						if (archive.destroyed) break;
+
+						archive.append('', { name: folder + '/' });
+					}
+				}
+
+				await Promise.race([archive.finalize(), failed, closed]);
+			} finally {
+				releaseStreams();
+			}
 		};
 
 		return { archive, complete };
@@ -248,7 +302,17 @@ export class AssetsService {
 
 		const file = (await this.sudoFilesService.readOne(id, { limit: 1 })) as File;
 
-		const exists = await storage.location(file.storage).exists(file.filename_disk);
+		let exists: boolean;
+
+		try {
+			exists = await storage.location(file.storage).exists(file.filename_disk);
+		} catch (error) {
+			// The file may well be there, we just couldn't reach the storage location to find out
+			throw new ServiceUnavailableError(
+				{ service: 'assets', reason: `Couldn't reach the storage location` },
+				{ cause: error },
+			);
+		}
 
 		if (!exists) throw new ForbiddenError();
 
@@ -304,7 +368,14 @@ export class AssetsService {
 				getAssetSuffix(transforms) +
 				(maybeNewFormat ? `.${maybeNewFormat}` : path.extname(file.filename_disk));
 
-			const exists = await storage.location(file.storage).exists(assetFilename);
+			// Only a cache probe: if it can't be answered, fall through and transform the file again
+			const exists = await storage
+				.location(file.storage)
+				.exists(assetFilename)
+				.catch((error) => {
+					logger.warn(error, `Couldn't check whether a transform of file ${file.id} was already cached`);
+					return false;
+				});
 
 			if (maybeNewFormat) {
 				file.type = contentType(assetFilename) || null;
@@ -313,10 +384,13 @@ export class AssetsService {
 			if (exists) {
 				const assetStream = () => storage.location(file.storage).read(assetFilename, { range });
 
+				// Before the stream, so a failing stat can't orphan an already open stream
+				const stat = await storage.location(file.storage).stat(assetFilename);
+
 				return {
 					stream: deferStream ? assetStream : await assetStream(),
 					file: this.sanitizeFields(file, allowedFields),
-					stat: await storage.location(file.storage).stat(assetFilename),
+					stat,
 				};
 			}
 
@@ -325,15 +399,15 @@ export class AssetsService {
 			// limitInputPixels, but we should have that check applied before starting the read streams
 			const { width, height } = file;
 
-			if (
-				!width ||
-				!height ||
-				width > (env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] as number) ||
-				height > (env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] as number)
-			) {
+			const maxInputDimension = toDimension(env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION']) ?? 6000;
+
+			if (!width || !height || width > maxInputDimension || height > maxInputDimension) {
 				logger.warn(`Image is too large to be transformed, or image size couldn't be determined.`);
 				throw new IllegalAssetTransformationError({ invalidTransformations: ['width', 'height'] });
 			}
+
+			// Ensure transforms are within output limits
+			assertTransformsAllowed(width, height, transforms);
 
 			const { queue, process } = sharp.counters();
 
@@ -368,12 +442,17 @@ export class AssetsService {
 
 			readStream.on('error', (e: Error) => {
 				logger.error(e, `Couldn't transform file ${file.id}`);
-				readStream.unpipe(transformer);
+				// Fail the transform, otherwise the write below never settles and the request hangs
+				transformer.destroy(e);
 			});
 
 			try {
 				await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
 			} catch (error) {
+				// Neither stream is consumed any further, and the read stream holds a storage connection
+				readStream.destroy();
+				transformer.destroy();
+
 				try {
 					await storage.location(file.storage).delete(assetFilename);
 				} catch {
@@ -382,16 +461,19 @@ export class AssetsService {
 
 				if ((error as Error)?.message?.includes('timeout')) {
 					throw new ServiceUnavailableError({ service: 'assets', reason: `Transformation timed out` });
-				} else {
-					throw error;
 				}
+
+				throw error;
 			}
 
 			const assetStream = () => storage.location(file.storage).read(assetFilename, { range, version });
 
+			// Before the stream, so a failing stat can't orphan an already open stream
+			const stat = await storage.location(file.storage).stat(assetFilename);
+
 			return {
 				stream: deferStream ? assetStream : await assetStream(),
-				stat: await storage.location(file.storage).stat(assetFilename),
+				stat,
 				file: this.sanitizeFields(file, allowedFields),
 			};
 		} else {

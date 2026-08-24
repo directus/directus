@@ -41,16 +41,16 @@ describe('generateArrows', () => {
 		mockGetPoints.mockImplementation((panel, offset, toPanel) => {
 			if (toPanel) {
 				return {
-					x: panel.x * 20 + offset.x,
-					y: panel.y * 20 + offset.y,
-					toX: toPanel.x * 20,
-					toY: toPanel.y * 20,
+					x: panel.x * GRID_SIZE + offset.x,
+					y: panel.y * GRID_SIZE + offset.y,
+					toX: toPanel.x * GRID_SIZE,
+					toY: toPanel.y * GRID_SIZE,
 				};
 			}
 
 			return {
-				x: panel.x * 20 + offset.x,
-				y: panel.y * 20 + offset.y,
+				x: panel.x * GRID_SIZE + offset.x,
+				y: panel.y * GRID_SIZE + offset.y,
 			};
 		});
 

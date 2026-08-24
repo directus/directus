@@ -269,6 +269,7 @@ related_collection: Povezane Kolekcije
 related_collections: Povezane Kolekcije
 translations_collection: Prevod Kolekcije
 languages_collection: Jezička Kolekcija
+translations_preview_collections: Kolekcije
 format: Format
 last_page: Posljednja Stranica
 last_access: Posljednji Pristup
@@ -289,6 +290,7 @@ delete_comment: Obriši komentar
 functions:
   year: Godina
   month: Mjesec
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -382,7 +384,6 @@ no_collections: Nema Kolekcija
 create_collection: Napravi Kolekciju
 no_collections_copy_admin: Trenutno nemate Kolekcija. Kliknite na dugme ispod da započnete dodavanje.
 no_collections_copy: Trenutno nemate Kolekcija. Molimo kontaktirajte Vašeg sistemskog administratora.
-relationship_not_setup: Relacija nije konfigurisana ispravno
 display_template_not_setup: Šablon za grafički prikaz nije ispravno konfigurisan
 collection_field_not_setup: Polje u kolekciji nije ispravno konfigurisano
 select_a_collection: Izaberi Kolekciju
@@ -506,6 +507,7 @@ operators:
   nempty: Nije Prazno
   all: Sadrži sljedeće ključeve
   has: Sadrži neke od sljedećih ključeva
+  json: JSON
 loading: Učitavanje...
 drop_to_upload: Prenesi za Otpremanje
 item: Stavka
@@ -602,6 +604,8 @@ wysiwyg_options:
   bullist: Tačkasta Lista
   numlist: Numerisana lista
   hr: Vodoravno pravilo
+  insertdatetime_date: Date
+  insertdatetime_time: Time
   link: Dodaj/Uredi Vezu
   unlink: Ukloni link
   media: Dodaj/Uredi Multimediju
@@ -646,6 +650,13 @@ editing_in_batch: 'Grupna izmjena {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model Podataka
 settings_project: Podešavanja
+licensing:
+  unlimited: Neograničeno
+  addon_update: Ažuriranje
+  resolve_show_n_more: 'Prikaži {count} više'
+  resolve_sso_admin_password: Lozinka
+  entitlements:
+    collections: Kolekcije
 settings_presets: Oznake
 settings_translations: Prevodi
 one_or_more_options_are_missing: Jedna ili više opcija nedostaje
@@ -692,6 +703,7 @@ fields:
     collection: Kolekcija
     icon: Ikonica
     note: Napomena
+    status: Status
     color: Boja
     display_template: Šablon za Prikaz
     hidden: Sakriveno
@@ -893,6 +905,8 @@ interfaces:
   filter:
     add_filter: Dodaj Filter
     all: Svi
+  group-tabs:
+    fill_width: Popunjeno
   presentation-links:
     presentation-links: Dugmad
     style: Stil
@@ -1022,6 +1036,7 @@ interfaces:
     sort: Sortiranje
     field_note_placeholder: Unesi napomenu polja...
     interface_group: Opcije Interfejsa
+    edit_mode_inline: Linijski
   slider:
     slider: Slajder
     description: Odaberi broj uz pomoć slajdera
@@ -1082,7 +1097,6 @@ interfaces:
     description: Uređivač teksta koji piše HTML sadržaj
     toolbar: Traka sa alatkama
     custom_formats: Prilagođeni Formati
-    options_override: Opcije Prepisivanja
   input-block-editor:
     tools: Traka sa alatkama
     tools_options:

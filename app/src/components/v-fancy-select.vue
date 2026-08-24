@@ -104,11 +104,11 @@ function toggle(item: Record<string, any>) {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	margin-block-end: 8px;
-	padding: 12px;
+	margin-block-end: 0.4375rem;
+	padding: 0.6875rem;
 	background-color: var(--theme--background-normal);
 	border: var(--theme--border-width) solid var(--theme--background-normal);
-	border-radius: 6px;
+	border-radius: 0.3125rem;
 	backface-visibility: hidden;
 	text-align: start;
 	transition-timing-function: var(--transition);
@@ -119,6 +119,11 @@ function toggle(item: Record<string, any>) {
 		border-color: var(--theme--border-color-accent);
 	}
 
+	&:not(.disabled):focus-visible {
+		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+		outline-offset: var(--focus-ring-offset-invert);
+	}
+
 	&.disabled {
 		cursor: not-allowed;
 	}
@@ -127,9 +132,9 @@ function toggle(item: Record<string, any>) {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		inline-size: 44px;
-		block-size: 44px;
-		margin-inline-end: 12px;
+		inline-size: 2.5rem;
+		block-size: 2.5rem;
+		margin-inline-end: 0.6875rem;
 		background-color: var(--theme--background);
 		border-radius: 50%;
 	}
@@ -146,14 +151,14 @@ function toggle(item: Record<string, any>) {
 		z-index: 2;
 		color: var(--theme--primary);
 		background-color: var(--theme--primary-background);
-		border-color: var(--theme--form--field--input--border-color-focus);
+		border-color: var(--theme--primary);
 
 		.v-icon {
 			--v-icon-color: var(--theme--primary);
 		}
 
 		&:hover {
-			border-color: var(--theme--form--field--input--border-color-focus);
+			border-color: var(--theme--primary);
 		}
 	}
 }
@@ -181,6 +186,6 @@ function toggle(item: Record<string, any>) {
 }
 
 .v-divider {
-	margin: 24px 0;
+	margin: 1.375rem 0;
 }
 </style>

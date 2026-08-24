@@ -313,7 +313,7 @@ function cancelAndClose() {
 }
 
 .loader {
-	margin: 100px auto;
+	margin: 5.625rem auto;
 }
 
 .qr {
@@ -323,14 +323,14 @@ function cancelAndClose() {
 
 .secret {
 	display: block;
-	margin: 0 auto 16px;
+	margin: 0 auto 0.875rem;
 	color: var(--theme--form--field--input--foreground-subdued);
 	font-family: var(--theme--fonts--monospace--font-family);
-	letter-spacing: 2.6px;
+	letter-spacing: 0.1463rem;
 	text-align: center;
 }
 
 .v-error {
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 }
 </style>

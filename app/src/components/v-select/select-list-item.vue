@@ -55,7 +55,7 @@ const isActive = computed(() => {
 		@click="multiple ? undefined : $emit('update:modelValue', item.value)"
 	>
 		<VListItemIcon v-if="multiple === false && allowOther === false && (item.icon || item.color)">
-			<VIcon v-if="item.icon" :name="item.icon" :color="item.color" />
+			<VIcon v-if="item.icon" :name="item.icon" :color="item.color" small />
 			<DisplayColor v-else :value="item.color" />
 		</VListItemIcon>
 		<VListItemContent>
@@ -87,10 +87,10 @@ const isActive = computed(() => {
 }
 
 .item-text-margin {
-	margin-inline-start: 32px;
+	margin-inline-start: 1.8125rem;
 }
 
 .color-dot {
-	margin-inline: 6px;
+	margin-inline: 0.3125rem;
 }
 </style>

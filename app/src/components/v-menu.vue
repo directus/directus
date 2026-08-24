@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import { detectOverflow, Instance, Modifier, Placement } from '@popperjs/core';
 import arrow from '@popperjs/core/lib/modifiers/arrow';
 import computeStyles from '@popperjs/core/lib/modifiers/computeStyles';
@@ -13,10 +14,9 @@ import { debounce } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
 import { computed, nextTick, onUnmounted, type Ref, ref, useTemplateRef, watch } from 'vue';
 import TransitionBounce from '@/components/transition/bounce.vue';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useUserStore } from '@/stores/user';
 
-interface Props {
+export interface VMenuProps {
 	/** Where to position the popper */
 	placement?: Placement;
 	/** Model the open state */
@@ -51,11 +51,9 @@ interface Props {
 	keepBehind?: boolean;
 	/** Do not focus activator when deactivating focus trap */
 	noFocusReturn?: boolean;
-	/** Invert the menu colors */
-	invert?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<VMenuProps>(), {
 	placement: 'bottom',
 	modelValue: undefined,
 	closeOnClick: true,
@@ -65,7 +63,6 @@ const props = withDefaults(defineProps<Props>(), {
 	delay: 0,
 	offsetY: 8,
 	offsetX: 0,
-	invert: false,
 });
 
 const emit = defineEmits(['update:modelValue']);
@@ -152,6 +149,7 @@ function useActiveState() {
 	const { activate: activateFocusTrap, deactivate: deactivateFocusTrap } = useFocusTrap([menuEl, activator], {
 		escapeDeactivates: false,
 		initialFocus: false,
+		fallbackFocus: () => menuEl.value!,
 		returnFocusOnDeactivate: !props.noFocusReturn,
 		allowOutsideClick: true,
 		clickOutsideDeactivates: props.closeOnClick,
@@ -351,7 +349,10 @@ function usePopper(
 			{
 				...offset,
 				options: {
-					offset: options.value.attached ? [0, 0] : [options.value.offsetX ?? 0, options.value.offsetY ?? padding],
+					offset:
+						options.value.attached && !options.value.arrow
+							? [0, 0]
+							: [options.value.offsetX ?? 0, options.value.offsetY ?? padding],
 				},
 			},
 			{
@@ -390,7 +391,7 @@ function usePopper(
 						padding,
 					});
 
-					if (state.placement.startsWith('top') && overflow.top < 0) {
+					if (state.placement.startsWith('top') && overflow.top > 0) {
 						forceMaxHeight.value = state.elements.popper.offsetHeight - Math.ceil(overflow.top);
 					} else if (state.placement.startsWith('bottom') && overflow.bottom > 0) {
 						forceMaxHeight.value = state.elements.popper.offsetHeight - Math.floor(overflow.bottom);
@@ -486,7 +487,7 @@ function usePopper(
 						events: ['click'],
 					}"
 					class="v-menu-popper"
-					:class="{ active: isActive, attached, 'keep-behind': keepBehind, invert }"
+					:class="{ active: isActive, attached, 'keep-behind': keepBehind }"
 					:data-placement="popperPlacement"
 					:style="styles"
 				>
@@ -495,6 +496,7 @@ function usePopper(
 					</div>
 					<div
 						ref="menuEl"
+						tabindex="-1"
 						class="v-menu-content"
 						:class="{ seamless }"
 						v-on="{
@@ -528,10 +530,10 @@ function usePopper(
 
 .v-menu-popper {
 	position: fixed;
-	inset-inline-start: -999px;
+	inset-inline-start: -56.1875rem;
 	z-index: 600;
-	min-inline-size: 100px;
-	transform: translateY(2px);
+	min-inline-size: 5.625rem;
+	transform: translateY(0.125rem);
 	pointer-events: none;
 
 	&.active {
@@ -541,11 +543,6 @@ function usePopper(
 	&.keep-behind {
 		z-index: 490;
 	}
-
-	&.invert {
-		--theme--popover--menu--background: var(--background-inverted);
-		--theme--popover--menu--foreground: var(--foreground-inverted);
-	}
 }
 
 .arrow,
@@ -553,8 +550,8 @@ function usePopper(
 .arrow-triangle::before,
 .arrow-triangle::after {
 	position: absolute;
-	inline-size: 10px;
-	block-size: 10px;
+	inline-size: 0.5625rem;
+	block-size: 0.5625rem;
 }
 
 .arrow {
@@ -593,64 +590,64 @@ function usePopper(
 }
 
 [data-placement^='top'] .arrow {
-	inset-block-end: -10px;
+	inset-block-end: -0.5625rem;
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			inset-block-end: 7px;
+			inset-block-end: 0.375rem;
 		}
 	}
 }
 
 [data-placement^='bottom'] .arrow {
-	inset-block-start: -10px;
+	inset-block-start: -0.5625rem;
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			inset-block-start: 7px;
+			inset-block-start: 0.375rem;
 		}
 	}
 }
 
 [data-placement^='right'] .arrow {
-	inset-inline-start: -10px;
+	inset-inline-start: -0.5625rem;
 
 	html[dir='rtl'] & {
 		inset-inline-start: unset;
-		inset-inline-end: -10px;
+		inset-inline-end: -0.5625rem;
 	}
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			inset-inline-start: 7px;
+			inset-inline-start: 0.375rem;
 
 			html[dir='rtl'] & {
 				inset-inline-start: unset;
-				inset-inline-end: 7px;
+				inset-inline-end: 0.375rem;
 			}
 		}
 	}
 }
 
 [data-placement^='left'] .arrow {
-	inset-inline-end: -10px;
+	inset-inline-end: -0.5625rem;
 
 	html[dir='rtl'] & {
 		inset-inline-end: unset;
-		inset-inline-start: -10px;
+		inset-inline-start: -0.5625rem;
 	}
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			inset-inline-end: 7px;
+			inset-inline-end: 0.375rem;
 
 			html[dir='rtl'] & {
 				inset-inline-end: unset;
-				inset-inline-start: 7px;
+				inset-inline-start: 0.375rem;
 			}
 		}
 	}
@@ -658,7 +655,7 @@ function usePopper(
 
 .v-menu-content {
 	max-block-size: v-bind(maxHeight);
-	padding: 0 4px;
+	padding: 0 0.25rem;
 	overflow: hidden auto;
 	color: var(--theme--popover--menu--foreground);
 	background-color: var(--theme--popover--menu--background);
@@ -728,15 +725,15 @@ function usePopper(
 }
 
 .attached {
-	&[data-placement^='top'] {
+	&:not(:has(.arrow))[data-placement^='top'] {
 		> .v-menu-content {
-			transform: translateY(-2px);
+			transform: translateY(-0.125rem);
 		}
 	}
 
-	&[data-placement^='bottom'] {
+	&:not(:has(.arrow))[data-placement^='bottom'] {
 		> .v-menu-content {
-			transform: translateY(2px);
+			transform: translateY(0.125rem);
 		}
 	}
 }

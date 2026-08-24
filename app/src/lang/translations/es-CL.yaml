@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Acerca de
+continue: Continuar
 first_name: Primer nombre
 last_name: Apellido
 identifier: Identificador
@@ -163,14 +164,12 @@ keep: Mantener
 version: Versión
 version_key: Clave de Versión
 version_name: Nombre de Versión
-main_version: Principal
 switch_version: Cambiar Versión
 switch_version_copy: '¿Está seguro de que desea cambiar a la versión ''{version}''? Los cambios sin guardar se perderán.'
 create_version: Crear Versión
 rename_version: Renombrar Versión
 compare_version: Comparar Versión
 save_version: Guardar Versión
-promote_version: Promocionar Versión
 delete_version: Eliminar Versión
 delete_version_copy: >-
   ¿Está seguro de que desea eliminar la versión '{version}'? Esta acción no se puede deshacer.
@@ -474,6 +473,8 @@ related_collection: Colección relacionada
 related_collections: Colecciones Relacionadas
 translations_collection: Traducción de Colección
 languages_collection: Colección de Idiomas
+translations_preview_collections: Colecciones
+translations_preview_fields: Campos
 import_data_input_placeholder: CSV o JSON...
 import_data_button: Comenzar importación
 import_data_indeterminate: Importando datos...
@@ -510,6 +511,7 @@ functions:
   minute: Minuto
   second: Segundo
   count: Contar
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -605,7 +607,6 @@ manual_string: Cadena de Texto introducida Manualmente
 save_and_create_new: Guardar y Crear Nuevo
 save_and_stay: Guardar y quedarse
 save_and_quit: Guardar y Salir
-save_and_return_to_main: Guardar y volver al principio
 save_as_copy: Guardar como copia
 add_existing: Agregar Existente
 creating_items: Creando elementos
@@ -652,7 +653,6 @@ no_collections: Sin Colecciones
 create_collection: Crear colección
 no_collections_copy_admin: Aún no tiene alguna Colección. Haga clic en el botón para empezar.
 no_collections_copy: Aún no tiene alguna Colección. Por favor contacte al administrador del sistema.
-relationship_not_setup: La relación no se ha configurado correctamente
 no_singleton_relations: Las relaciones con Singletons no están soportadas
 display_template_not_setup: La opción de plantilla de Presentación está mal configurada
 collection_field_not_setup: La opción del campo de colección está mal configurada
@@ -857,6 +857,7 @@ operators:
   nintersects: No se intersecta
   intersects_bbox: Caja delimitadora de intersecciones
   nintersects_bbox: No intersecta la caja delimitadora
+  json: JSON
   regex: Coincidir RegExp
 custom_validation_message: Mensaje de validación personalizado
 loading: Cargando...
@@ -1078,12 +1079,15 @@ wysiwyg_options:
   bullist: Lista con viñetas
   numlist: Lista Numerada
   hr: Regla Horizontal
+  insertdatetime_date: Fecha
+  insertdatetime_time: Hora
   link: Añadir/Editar enlace
   unlink: Remover Enlace
   media: Añadir/Editar medios
   image: Añadir/Editar Imagen
   copy: Copiar
   cut: Cortar
+  default: Por defecto
   paste: Pegar
   heading: Título
   h1: Título 1
@@ -1107,6 +1111,8 @@ wysiwyg_options:
   source_code: Editar código fuente
   fullscreen: Pantalla Completa
   directionality: Direccionalidad
+  ltr: De izquierda a derecha
+  rtl: De derecha a izquierda
   lazy_loading: Imagen de carga diferida
   lazy_loading_label: Habilitar carga diferida
 dropdown: Lista Desplegable
@@ -1134,6 +1140,17 @@ settings_data_model: Modelo de Datos
 settings_roles: Roles de Usuario
 settings_permissions: Reglas de Acceso
 settings_project: Configuración
+licensing:
+  unlimited: Ilimitado
+  addon_manage: Administrar
+  addon_update: Actualizar
+  resolve_continue: Continuar
+  resolve_show_n_more: 'Mostrar {count} más'
+  resolve_section_flows: Flujos
+  resolve_sso_admin_password: Contraseña
+  entitlements:
+    collections: Colecciones
+    flows: Flujos
 settings_appearance: Apariencia
 settings_flows: Flujos
 settings_system_logs: Registros del Sistema
@@ -1231,6 +1248,7 @@ fields:
     collection: Colección
     icon: Icono
     note: Nota
+    status: Estado
     color: Color
     display_template: Plantilla de Presentación
     hidden: Oculto
@@ -1709,6 +1727,8 @@ interfaces:
     all_opened: Todo Abierto
     accordion_mode: Modo Accordion
     max_one_section_open: Máximo de una sección abierta
+  group-tabs:
+    fill_width: Rellenar ancho
   presentation-links:
     presentation-links: Botones
     style: Estilo
@@ -1898,6 +1918,7 @@ interfaces:
     incompatible_data: Los datos actuales no son compatibles con la interfaz del repetidor y serán reemplazados al agregar elementos al repetidor
     interface_group: Opciones de Interfaz
     display_group: Opciones de Visualización
+    edit_mode_inline: Alineado
   slider:
     slider: Deslizador
     description: Seleccionar un número usando un deslizador
@@ -1971,9 +1992,6 @@ interfaces:
     description: Un editor de texto rich escribiendo contenido HTML
     toolbar: Barra de Herramientas
     custom_formats: Formatos Personalizados
-    custom_formats_note: Lista de Formatos de Contenido de TinyMCE. Consulte la documentación de TinyMCE acerca de [Formateo de Contenido](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) para más información.
-    options_override: Sobrescribir Opciones
-    options_override_note: Lista de Formatos de Contenido de TinyMCE. Consulte la documentación de TinyMCE acerca de [Formateo de Contenido](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) para más información.
     folder_note: Carpeta para los archivos subidos. No afecta a los archivos existentes.
     imageToken: Token de acceso estático
     imageToken_label: Token de acceso estático a añadir la URL de los recursos
@@ -2025,8 +2043,9 @@ interfaces:
     value_securely_saved: Valor guardado de forma segura
     generate: Generar token
     regenerate: Regenerar token
-    generate_success_copy: Asegúrese de hacer una copia de seguridad y copiar el token de arriba. Por razones de seguridad, no podrá volver a ver el token después de guardar y navegar fuera de esta página.
+    regenerate_confirm_title: Regenerar token
     remove_token: Remover token
+    remove_confirm_title: Remover token
   system-raw-editor:
     system-raw-editor: Editor bruto
     description: Permitir la introducción de valores de plantillas en crudo o en mostacho
@@ -2496,6 +2515,8 @@ search_flow: Buscar Flujo...
 percent: Porcentaje
 show_password: Mostrar Contraseña
 hide_password: Ocultar Contraseña
+license_grace_key_modal:
+  optional: Opcional
 accepted: Aceptado
 text_direction_auto: Automático (coincidir idioma)
 text_direction_ltr: Izquierda a derecha (LTR)

@@ -36,6 +36,7 @@ import { useUserStore } from '@/stores/user';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import SearchInput from '@/views/private/components/search-input.vue';
+import SubHeader from '@/views/private/components/sub-header.vue';
 
 type LocalNotification = Notification & {
 	to?: string;
@@ -250,8 +251,8 @@ function clearFilters() {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('delete_label')"
-						class="action-delete"
-						secondary
+						kind="danger"
+						variant="ghost"
 						:disabled="selection.length === 0"
 						icon="delete"
 						@click="on"
@@ -275,7 +276,7 @@ function clearFilters() {
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="tab[0] === 'inbox' ? $t('archive') : $t('unarchive')"
 				:disabled="selection.length === 0"
-				secondary
+				variant="ghost"
 				:icon="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'"
 				@click="toggleArchive"
 			/>
@@ -300,7 +301,12 @@ function clearFilters() {
 			<VDivider class="nav-divider" />
 
 			<VList nav>
-				<VListItem clickable to="/activity" :active="!notificationsDrawerOpen" @click="notificationsDrawerOpen = false">
+				<VListItem
+					clickable
+					:to="{ name: 'activity-collection' }"
+					:active="!notificationsDrawerOpen"
+					@click="notificationsDrawerOpen = false"
+				>
 					<VListItemIcon>
 						<VIcon name="manage_search" />
 					</VListItemIcon>
@@ -336,18 +342,16 @@ function clearFilters() {
 			</VList>
 
 			<div v-else class="notifications-block">
-				<VDivider class="select-all-divider" :class="{ dense: totalPages > 1 }" />
-
-				<VCheckbox
-					class="select-all"
-					:class="{ dense: totalPages > 1 }"
-					:label="!allItemsSelected ? $t('select_all') : $t('deselect_all')"
-					:model-value="allItemsSelected"
-					:indeterminate="someItemsSelected"
-					@update:model-value="selectAll"
-				/>
-
-				<VDivider class="select-all-divider" :class="{ dense: totalPages > 1 }" />
+				<SubHeader class="sub-header">
+					<template #start>
+						<VCheckbox
+							:label="!allItemsSelected ? $t('select_all') : $t('deselect_all')"
+							:model-value="allItemsSelected"
+							:indeterminate="someItemsSelected"
+							@update:model-value="selectAll"
+						/>
+					</template>
+				</SubHeader>
 
 				<VList class="notifications">
 					<VListItem
@@ -409,7 +413,7 @@ function clearFilters() {
 	white-space: nowrap;
 	align-self: center;
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		display: inline;
 	}
 }
@@ -418,14 +422,18 @@ function clearFilters() {
 	padding: 0 var(--content-padding) var(--content-padding-bottom) var(--content-padding);
 }
 
+.sub-header {
+	margin-block-end: var(--content-padding);
+}
+
 .notifications {
-	margin-block-end: 16px;
+	margin-block-end: 0.875rem;
 
 	.v-skeleton-loader {
-		margin-block-end: 8px;
+		margin-block-end: 0.4375rem;
 
 		&.dense {
-			block-size: 44px;
+			block-size: 2.5rem;
 		}
 	}
 
@@ -434,11 +442,11 @@ function clearFilters() {
 			block-size: unset;
 			min-block-size: var(--theme--form--field--input--height);
 			flex-flow: wrap;
-			padding: 16px var(--theme--form--field--input--padding) 16px var(--theme--form--field--input--padding);
+			padding: 0.875rem var(--theme--form--field--input--padding) 0.875rem var(--theme--form--field--input--padding);
 
 			&.dense {
-				min-block-size: 44px;
-				padding: 10px 8px;
+				min-block-size: 2.5rem;
+				padding: 0.5625rem 0.4375rem;
 			}
 		}
 
@@ -446,7 +454,7 @@ function clearFilters() {
 			inline-size: 100%;
 			display: flex;
 			align-items: center;
-			gap: 8px;
+			gap: 0.4375rem;
 
 			.title {
 				flex-grow: 1;
@@ -458,7 +466,7 @@ function clearFilters() {
 
 		.message {
 			inline-size: 100%;
-			margin-block-start: 8px;
+			margin-block-start: 0.4375rem;
 			cursor: auto;
 
 			:deep() {
@@ -466,31 +474,6 @@ function clearFilters() {
 			}
 		}
 	}
-}
-
-.select-all {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	block-size: 24px;
-	margin: 0 calc(var(--theme--form--field--input--padding) + var(--theme--border-width));
-
-	&.dense {
-		margin: 0 calc(8px + var(--theme--border-width)) 12px;
-	}
-}
-
-.select-all-divider {
-	margin: 8px 0;
-
-	&.dense {
-		margin: 4px 0;
-	}
-}
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
 }
 
 .fade-enter-active,
@@ -504,6 +487,7 @@ function clearFilters() {
 }
 
 .nav-divider {
-	margin-inline: 12px;
+	margin-inline: 0.4375rem;
+	padding-block: 0.25rem;
 }
 </style>

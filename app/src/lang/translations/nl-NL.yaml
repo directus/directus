@@ -20,31 +20,17 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Over
-directus_bsl: Directus BSL 1.1
-privacy_policy: Privacybeleid
-contact_our_team: Contacteer ons Team
 setup_welcome: Welkom bij Directus
 setup_info: Laten we je beheerdersaccount aanmaken en je project opstarten
-setup_license_notice: >
-  Directus is gratis te gebruiken voor entiteiten met een jaarlijkse omzet, financiering of operationeel budget onder de $ 5 miljoen.
-setup_license_follow_up: >
-  Voor entiteiten die deze grens overschrijden is een betaalde licentie vereist. Je kunt Directus blijven proberen en {contactOurTeam} wanneer je klaar bent om het productiegebruik te bespreken.
-setup_save_accept_license: >
-  Door op te slaan accepteer je de algemene voorwaarden van de {directusBsl} en {privacyPolicy}.
-setup_accept_license: Ik accepteer de voorwaarden van de {directusBsl} en {privacyPolicy}
 setup_marketing_emails: Stuur mij productupdates en release-info
 setup_launch: Start Directus
 setup_project: Project Setup
+continue: Doorgaan
 first_name: Voornaam
 last_name: Achternaam
 admin_email: E-mailadres Beheerder
 owner_email: E-mailadres Eigenaar
 email_address: E-mailadres
-organization_name: Naam Organisatie
-how_do_you_use_directus: Waar gebruik je Directus voor?
-usage_personal: Persoonlijk / Leren
-usage_commercial: Zakelijk / Commercieel
-usage_community: Open Source / Community
 identifier: ID
 avatar: Profielafbeelding
 application: Applicatie
@@ -197,22 +183,17 @@ keep: Behouden
 version: Versie
 version_key: Versie sleutel
 version_name: Versienaam
-main_version: Hoofd
 switch_version: Versie wisselen
 switch_version_copy: Weet u zeker dat u wilt overschakelen naar de "{version}" versie? Niet-opgeslagen wijzigingen gaan verloren.
 create_version: Versie aanmaken
 rename_version: Versie hernoemen
 compare_version: Versies vergelijken
 save_version: Versie opslaan
-promote_version: Versie promoveren
 apply: Toepassen
 select_all_differences: Selecteer Alle Verschillen
-main_updated_notice: Het hoofditem is bijgewerkt sinds deze versie is aangemaakt.
 delete_version: Versie verwijderen
 delete_version_copy: >-
   Weet je zeker dat je de versie "{version}" wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
-delete_on_apply_copy: >-
-  Je staat op het punt "{version}" te promoten naar Main. Wat moet er gebeuren met "{version}" na promotie?
 reset_bookmark: Reset Bladwijzer
 update_bookmark: Update Bladwijzer
 delete_bookmark: Verwijder Bladwijzer
@@ -520,6 +501,9 @@ related_collection: Gerelateerde collecties
 related_collections: Gerelateerde collecties
 translations_collection: Vertalingscollectie
 languages_collection: Talen Collectie
+translations_preview_collections: Collecties
+translations_preview_fields: Velden
+translations_preview_relations: Relaties
 import_data_input_placeholder: CSV of JSON...
 import_data_button: Importeren starten
 import_data_indeterminate: Gegevens importeren...
@@ -563,6 +547,7 @@ functions:
   minute: Minuut
   second: Seconde
   count: Aantal
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'H:mm'
@@ -658,7 +643,6 @@ manual_string: Handmatig ingevoerde tekst
 save_and_create_new: Opslaan en nieuwe aanmaken
 save_and_stay: Sla op en blijf bewerken
 save_and_quit: Opslaan en Afsluiten
-save_and_return_to_main: Opslaan en Terug naar Hoofdscherm
 save_as_copy: Sla op als een kopie
 add_existing: Bestaande toevoegen
 creating_items: Items aanmaken
@@ -706,7 +690,6 @@ no_collections: Geen collecties
 create_collection: Maak collectie
 no_collections_copy_admin: Je hebt nog geen Collecties. Klik op de knop hieronder om te beginnen.
 no_collections_copy: Je hebt nog geen collecties. Neem contact op met je systeembeheerder.
-relationship_not_setup: De relatie is niet correct geconfigureerd
 no_singleton_relations: Relaties met Singletons worden niet ondersteund
 display_template_not_setup: De weergavesjabloon optie is onjuist geconfigureerd
 collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
@@ -913,6 +896,7 @@ operators:
   nintersects: Overlapt niet
   intersects_bbox: Overlapt begrenzingsvak
   nintersects_bbox: Overlapt niet met begrenzingsvak
+  json: JSON
   regex: Komt overeen met RegExp
 custom_validation_message: Aangepaste validatiemelding
 loading: Aan het laden...
@@ -1140,12 +1124,15 @@ wysiwyg_options:
   bullist: Opsomming
   numlist: Genummerde lijst
   hr: Horizontale lijn
+  insertdatetime_date: Datum
+  insertdatetime_time: Tijd
   link: Link toevoegen/bewerken
   unlink: Link verwijderen
   media: Media toevoegen/bewerken
   image: Afbeelding toevoegen/bewerken
   copy: Kopieer
   cut: Knippen
+  default: Standaard
   paste: Plakken
   heading: Titel
   h1: Titel 1
@@ -1169,6 +1156,8 @@ wysiwyg_options:
   source_code: Broncode bewerken
   fullscreen: Volledig scherm
   directionality: Richting
+  ltr: Links naar rechts
+  rtl: Rechts naar links
   lazy_loading: Afbeelding reactief laden
   lazy_loading_label: Reactief laden inschakelen
 dropdown: Keuzemenu
@@ -1198,6 +1187,18 @@ settings_data_model: Datamodel
 settings_roles: Gebruikersrollen
 settings_permissions: Toegangsbeleid
 settings_project: Instellingen
+licensing:
+  unlimited: Onbeperkt
+  addon_manage: Beheren
+  addon_update: Updaten
+  resolve_continue: Doorgaan
+  resolve_show_n_more: 'Toon {count} meer'
+  resolve_section_flows: Flows
+  resolve_sso_admin_email: E-mailadres
+  resolve_sso_admin_password: Wachtwoord
+  entitlements:
+    collections: Collecties
+    flows: Flows
 settings_appearance: Uiterlijk
 settings_ai: AI
 model_context_protocol: Model Context Protocol
@@ -1298,6 +1299,7 @@ fields:
     collection: Collectie
     icon: Icoon
     note: Notitie
+    status: Status
     color: Kleur
     display_template: Weergavesjabloon
     hidden: Verborgen
@@ -1429,16 +1431,12 @@ fields:
     public_registration_verify_email_note: Stuurt een e-mail naar de registrerende gebruiker waarin wordt gevraagd om op een verificatielink te klikken voordat ze kunnen inloggen.
     visual_editor_urls: Visual Editor URLs
     mcp_enabled: MCP-server
-    mcp_enabled_note: 'Sluit AI/LM tools aan op uw Directus project via <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. Hierdoor kunnen AI-assistenten veilig lezen en communiceren met uw Directusgegevens.'
-    mcp_notice: 'Model Context Protocol is een standaard om LLMs te verbinden met toepassingen zoals Directus. Eenmaal ingeschakeld, zal de Directus MCP-server beschikbaar zijn op `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Meer informatie over MCP en hoe te verbinden.</a>'
     mcp_allow_deletes: Verwijderen Toestaan
     mcp_allow_deletes_note:
       - Kan dataverlies veroorzaken.</strong> Standaard uitgeschakeld voor veiligheid.'
     mcp_prompts_collection: AI Prompts collectie
-    mcp_prompts_collection_note: 'Selecteer collectie voor het opslaan van <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">herbruikbare prompt templates</a> voor AI-interacties.'
     mcp_system_prompt_divider: Systeemprompt Configuratie
     mcp_system_prompt_enabled: Gebruik Systeemprompt
-    mcp_system_prompt_enabled_note: "Gebruik het <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>standaard systeem prompt</a> om LLM-gedrag te begeleiden. Uitschakelen om dit te verwijderen of te overschrijven met uw eigen prompt hieronder."
     mcp_system_prompt: Aangepast Systeemprompt
     mcp_system_prompt_note: 'Aangepast systeemprompt om de standaard te vervangen. Laat leeg om standaard te gebruiken (indien ingeschakeld).'
     ai_system_prompt: AI Systeemprompt
@@ -1620,7 +1618,6 @@ ai:
   always_allow: Altijd Toestaan
   deny: Weigeren
   approve_tool_execution: Uitvoering Tool goedkeuren?
-  retry: Probeer Opnieuw
   prompt_input_placeholder: Typ je bericht hier...
   clear_conversation: Gesprek Wissen
   responses_may_be_inaccurate: AI--reacties zijn mogelijk onjuist
@@ -1683,7 +1680,6 @@ mcp_prompts_collection_schema:
   messages_role_user: Gebruiker
   messages_role_assistant: Assistent
   messages_role_note: Wie spreekt in dit bericht.
-  meta_prompts_notice: 'Prompts zijn herbruikbare sjablonen die je kunt gebruiken met LLMs via de Directus MCP-server, Flows, of andere AI applicaties. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">Leer meer over het maken van effectieve prompts.</a>'
 expired: Verlopen
 upcoming: Aankomend
 share: Delen
@@ -1851,6 +1847,8 @@ interfaces:
     all_opened: Alle geopende
     accordion_mode: Accordeonmodus
     max_one_section_open: Max 1 sectie open
+  group-tabs:
+    fill_width: Vul Breedte
   presentation-links:
     presentation-links: Knoppen
     description: Configureerbare linkknoppen om dynamische URLs te openen of Flows te activeren
@@ -2051,6 +2049,7 @@ interfaces:
     incompatible_data: De huidige gegevens zijn niet compatibel met de repeaterinterface en zullen worden overschreven bij het toevoegen van items aan de repeater
     interface_group: Interface-opties
     display_group: Weergave Opties
+    edit_mode_inline: Doorlopend
   slider:
     slider: Schuifregelaar
     description: Selecteer een nummer met een slider
@@ -2124,9 +2123,6 @@ interfaces:
     description: Een rich-text editor voor HTML-inhoud
     toolbar: Werkbalk
     custom_formats: Aangepaste vorm
-    custom_formats_note: Lijst van TinyMCE inhoud formaten. Zie de TinyMCE documentatie over [Content Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) voor meer informatie.
-    options_override: Overschrijf opties
-    options_override_note: De TinyMCE gebruikers opmaaksleutels en hun waarden. Zie de TinyMCE documentatie over [Gebruiker Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) voor meer informatie.
     folder_note: Map voor geüploade bestanden. Heeft geen invloed op bestaande bestanden.
     imageToken: Statische toegangstoken
     imageToken_label: Statisch toegangstoken wordt toegevoegd aan de assets URL
@@ -2178,8 +2174,9 @@ interfaces:
     value_securely_saved: Waarde veilig opgeslagen
     generate: Genereer Token
     regenerate: Token opnieuw genereren
-    generate_success_copy: Zorg ervoor dat je de token hierboven back-upt en kopieert. Om veiligheidsredenen kun je de token niet meer bekijken na het opslaan en verlaten van deze pagina.
+    regenerate_confirm_title: Token opnieuw genereren
     remove_token: Verwijder Token
+    remove_confirm_title: Verwijder Token
   system-raw-editor:
     system-raw-editor: Ruwe Editor
     description: Sta invoer van ruwe of mustache sjabloonwaarden toe
@@ -2655,6 +2652,8 @@ search_flow: Zoek Flow...
 percent: Procent
 show_password: Toon wachtwoord
 hide_password: Verberg wachtwoord
+license_grace_key_modal:
+  optional: Optioneel
 accepted: Geaccepteerd
 text_direction_auto: Automatisch (gelijk aan taal)
 text_direction_ltr: Links naar rechts (LTR)

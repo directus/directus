@@ -1,4 +1,4 @@
-import { createError } from '@directus/errors';
+import { createError, type DirectusErrorConstructor } from '@directus/errors';
 import type { ClientFilterOperator } from '@directus/types';
 import { toArray } from '@directus/utils';
 
@@ -16,7 +16,7 @@ export type ImportRowRange = {
 export interface FailedValidationErrorExtensions {
 	field: string;
 	path: (string | number)[];
-	type: ClientFilterOperator | 'required' | 'email';
+	type: ClientFilterOperator | 'required' | 'email' | 'unsafe';
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;
@@ -101,13 +101,13 @@ export const messageConstructor = (extensions: FailedValidationErrorExtensions):
 		case 'email':
 			message += ` Value has to be a valid email address.`;
 			break;
+		case 'unsafe':
+			message += ` Value is not a safe number.`;
+			break;
 	}
 
 	return message;
 };
 
-export const FailedValidationError = createError<FailedValidationErrorExtensions>(
-	'FAILED_VALIDATION',
-	messageConstructor,
-	400,
-);
+export const FailedValidationError: DirectusErrorConstructor<FailedValidationErrorExtensions> =
+	createError<FailedValidationErrorExtensions>('FAILED_VALIDATION', messageConstructor, 400);

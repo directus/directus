@@ -7,4 +7,6 @@ export * from './use-items.js';
 export * from './use-layout.js';
 export * from './use-size-class.js';
 export * from './use-sync.js';
+export * from './translate-shortcut.js';
+export * from './use-shortcut.js';
 export * from './use-system.js';

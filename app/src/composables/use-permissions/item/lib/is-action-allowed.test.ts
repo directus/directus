@@ -155,4 +155,28 @@ describe('non-admin users', () => {
 			expect(fetchedItemPermissionsSpy).toHaveBeenCalled();
 		});
 	});
+
+	describe('update', () => {
+		it('should be allowed for versions regardless of store permissions', () => {
+			const permissionsStore = mockedStore(usePermissionsStore());
+			permissionsStore.getPermission.mockReturnValue(null);
+
+			const result = isActionAllowed(sample.collection, false, fetchedItemPermissions, 'update', true);
+
+			expect(result.value).toBe(true);
+			expect(fetchedItemPermissionsSpy).not.toHaveBeenCalled();
+		});
+	});
+
+	describe.each(['delete', 'share'] as const)('%s', (action) => {
+		it('should not bypass permissions for versions', () => {
+			const permissionsStore = mockedStore(usePermissionsStore());
+			permissionsStore.getPermission.mockReturnValue(null);
+
+			const result = isActionAllowed(sample.collection, false, fetchedItemPermissions, action, true);
+
+			expect(result.value).toBe(false);
+			expect(fetchedItemPermissionsSpy).not.toHaveBeenCalled();
+		});
+	});
 });

@@ -15,9 +15,11 @@ const extractToken: RequestHandler = (req, _res, next) => {
 	const env = useEnv();
 
 	let token: string | null = null;
+	let tokenSource: 'cookie' | 'header' | 'query' | null = null;
 
 	if (req.query && req.query['access_token']) {
 		token = req.query['access_token'] as string;
+		tokenSource = 'query';
 	}
 
 	if (req.headers && req.headers.authorization) {
@@ -35,6 +37,7 @@ const extractToken: RequestHandler = (req, _res, next) => {
 			}
 
 			token = parts[1]!;
+			tokenSource = 'header';
 		}
 	}
 
@@ -46,10 +49,12 @@ const extractToken: RequestHandler = (req, _res, next) => {
 		 */
 		if (token === null) {
 			token = req.cookies[env['SESSION_COOKIE_NAME'] as string];
+			tokenSource = 'cookie';
 		}
 	}
 
 	req.token = token;
+	req.tokenSource = tokenSource;
 	next();
 };
 

@@ -44,6 +44,8 @@ export function calculateFieldDepth(obj?: Record<string, any> | null, dotNotatio
 	for (const key of keys) {
 		const nestedValue = obj[key];
 
+		if (key === '_json') continue;
+
 		if (dotNotationKeys.includes(key) && nestedValue) {
 			let sortDepth = 0;
 

@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, test, vi } from 'vitest';
+import { RequestError } from './error.js';
 import { request } from './request.js';
 
 const fetchMock = vi.fn(async () => ({}));
@@ -39,25 +40,23 @@ describe('Request', () => {
 				ok: false,
 			});
 
-			await expect(async () => await request('https://example.com', {}, fetchMock)).rejects.toStrictEqual({
-				errors: 'Error',
-				message: '',
-				response: expect.objectContaining({
-					ok: false,
+			await expect(async () => await request('https://example.com', {}, fetchMock)).rejects.toThrowError(
+				new RequestError('', {
+					response: expect.objectContaining({ ok: false }) as unknown as Response,
+					errors: 'Error' as any,
 				}),
-			});
+			);
 		});
 
 		it('should handle reason with errors array', async () => {
 			vi.mocked(fetchMock).mockResolvedValue({ errors: [] });
 
-			await expect(async () => await request('https://example.com', {}, fetchMock)).rejects.toStrictEqual({
-				errors: [],
-				message: '',
-				response: {
+			await expect(async () => await request('https://example.com', {}, fetchMock)).rejects.toThrowError(
+				new RequestError('', {
+					response: expect.objectContaining({ errors: [] }) as unknown as Response,
 					errors: [],
-				},
-			});
+				}),
+			);
 		});
 
 		describe('should handle reason with errors array and data property', () => {
@@ -66,40 +65,36 @@ describe('Request', () => {
 			test.each(types)('Check %o', async (type) => {
 				vi.mocked(fetchMock).mockResolvedValue({ errors: [], data: type });
 
-				await expect(async () => await request('https://example.com', {}, fetchMock)).rejects.toStrictEqual({
-					errors: [],
-					message: '',
-					response: {
-						data: type,
+				await expect(async () => await request('https://example.com', {}, fetchMock)).rejects.toThrowError(
+					new RequestError('', {
+						response: expect.objectContaining({ errors: [], data: type }) as unknown as Response,
 						errors: [],
-					},
-					data: type,
-				});
+						data: type,
+					}),
+				);
 			});
 		});
 
 		it('should handle reason with non array errors', async () => {
 			vi.mocked(fetchMock).mockResolvedValue({ errors: 'Error' });
 
-			await expect(async () => await request('https://example.com', {}, fetchMock)).rejects.toStrictEqual({
-				errors: 'Error',
-				message: '',
-				response: {
-					errors: 'Error',
-				},
-			});
+			await expect(async () => await request('https://example.com', {}, fetchMock)).rejects.toThrowError(
+				new RequestError('', {
+					response: expect.objectContaining({ errors: 'Error' }) as unknown as Response,
+					errors: 'Error' as any,
+				}),
+			);
 		});
 
 		it('should handle reason with message property in errors array', async () => {
 			vi.mocked(fetchMock).mockResolvedValue({ errors: [{ message: 'Error' }] });
 
-			await expect(async () => await request('https://example.com', {}, fetchMock)).rejects.toStrictEqual({
-				errors: [{ message: 'Error' }],
-				message: 'Error',
-				response: {
-					errors: [{ message: 'Error' }],
-				},
-			});
+			await expect(async () => await request('https://example.com', {}, fetchMock)).rejects.toThrowError(
+				new RequestError('Error', {
+					response: expect.objectContaining({ errors: [{ message: 'Error' }] }) as unknown as Response,
+					errors: [{ message: 'Error' }] as any,
+				}),
+			);
 		});
 	});
 });

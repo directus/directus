@@ -213,6 +213,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				}
 
 				if (config.heartbeat && message['type'] === 'ping') {
+					if (state.code !== 'open') continue;
 					state.connection.send(pong());
 					state.firstMessage = false;
 					continue;
@@ -310,7 +311,10 @@ export function realtime(config: WebSocketConfig = {}) {
 						}
 
 						ws.send(auth({ access_token }));
-						const confirm = await messageCallback(ws);
+
+						const confirm = await messageCallback(ws).catch(() => {
+							/* ignore, the error/close listeners already rejected */
+						});
 
 						if (
 							!(
@@ -407,14 +411,15 @@ export function realtime(config: WebSocketConfig = {}) {
 					options.query = queryToParams(options.query as ExtendedQuery<Schema, Schema[Collection]>);
 				}
 
-				subscriptions.add({ ...options, collection, type: 'subscribe' });
+				const subscription = { ...options, collection, type: 'subscribe' };
+				subscriptions.add(subscription);
 
 				if (state.code !== 'open') {
 					debug('info', 'No connection available for subscribing!');
 					await this.connect();
 				}
 
-				this.sendMessage({ ...options, collection, type: 'subscribe' });
+				this.sendMessage(subscription);
 				let subscribed = true;
 
 				async function* subscriptionGenerator(): AsyncGenerator<
@@ -453,7 +458,7 @@ export function realtime(config: WebSocketConfig = {}) {
 
 						if (state.code === 'open') {
 							// re-subscribe on the new connection
-							state.connection.send(JSON.stringify({ ...options, collection, type: 'subscribe' }));
+							state.connection.send(JSON.stringify(subscription));
 
 							yield* subscriptionGenerator();
 						}
@@ -461,7 +466,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				}
 
 				const unsubscribe = () => {
-					subscriptions.delete({ ...options, collection, type: 'subscribe' });
+					subscriptions.delete(subscription);
 					this.sendMessage({ uid: options.uid, type: 'unsubscribe' });
 					subscribed = false;
 				};

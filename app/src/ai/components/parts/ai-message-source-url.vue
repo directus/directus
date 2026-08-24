@@ -18,18 +18,18 @@ defineProps<{
 
 <style scoped>
 .message-source {
-	margin: 0.5rem 0;
+	margin: 0.375rem 0;
 
 	a {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.375rem;
-		padding: 0.5rem 0.75rem;
+		gap: 0.3125rem;
+		padding: 0.375rem 0.5625rem;
 		border-radius: var(--theme--border-radius);
 		background-color: var(--theme--background-subdued);
 		color: var(--theme--primary);
 		text-decoration: none;
-		font-size: 0.875rem;
+		font-size: 0.6875rem;
 		transition: background-color var(--fast) var(--transition);
 
 		&:hover {

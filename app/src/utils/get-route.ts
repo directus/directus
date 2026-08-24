@@ -11,6 +11,7 @@ const accessibleSystemCollections = {
 	directus_presets: { route: '/settings/presets' },
 	directus_translations: { route: '/settings/translations' },
 	directus_flows: { route: '/settings/flows' },
+	directus_oauth_clients: { route: '/settings/mcp-oauth-clients' },
 } as const;
 
 function isAccessibleSystemCollection(collection: string): collection is keyof typeof accessibleSystemCollections {
@@ -49,12 +50,14 @@ export function getCollectionRoute(collection: string | null) {
  * @param collection - Collection name
  * @param primaryKey - Primary key of item
  * @param versionKey - Optional version key to append as query parameter
+ * @param versionId - Optional version ID; only appended when primaryKey is '+' and versionKey is also provided
  * @returns - URL route for the item
  */
 export function getItemRoute(
 	collection: string | null,
 	primaryKey: string | number,
 	versionKey?: string | null | undefined,
+	versionId?: string | undefined,
 ) {
 	if (collection === null) return '';
 
@@ -69,5 +72,11 @@ export function getItemRoute(
 
 	const base = `${collectionRoute}/${itemRoute}`;
 
-	return versionKey ? `${base}?version=${versionKey}` : base;
+	if (!versionKey) return base;
+
+	if (primaryKey === '+' && versionId) {
+		return `${base}?version=${versionKey}&versionId=${versionId}`;
+	}
+
+	return `${base}?version=${versionKey}`;
 }

@@ -3,6 +3,7 @@ import type { Request } from 'express';
 import type { Knex } from 'knex';
 import { afterEach, beforeAll, beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
 import { getDatabase } from '../database/index.js';
+import { getFlowManager } from '../flows.js';
 import { fetchPoliciesIpAccess } from '../permissions/modules/fetch-policies-ip-access/fetch-policies-ip-access.js';
 import { getCacheKey } from './get-cache-key.js';
 import * as getGraphqlQueryUtil from './get-graphql-query-and-variables.js';
@@ -10,6 +11,12 @@ import * as getGraphqlQueryUtil from './get-graphql-query-and-variables.js';
 vi.mock('../database/index.js');
 
 vi.mock('../permissions/modules/fetch-policies-ip-access/fetch-policies-ip-access.js');
+
+vi.mock('../flows.js', () => ({
+	getFlowManager: vi.fn().mockReturnValue({
+		getFlow: vi.fn().mockReturnValue(undefined),
+	}),
+}));
 
 vi.mock('directus/version', () => ({ version: '1.2.3' }));
 
@@ -25,6 +32,7 @@ beforeEach(() => {
 
 const baseUrl = 'http://localhost';
 const restUrl = `${baseUrl}/items/example`;
+const flowTriggerUrl = `${baseUrl}/flows/trigger/00000000-0000-0000-0000-000000000001`;
 const graphQlUrl = `${baseUrl}/graphql`;
 const accountability = { user: '00000000-0000-0000-0000-000000000000' };
 const method = 'GET';
@@ -70,6 +78,15 @@ const requests = [
 		params: { method: 'POST', originalUrl: graphQlUrl, accountability, body: { query: 'query { test { name } }' } },
 		key: '358336a2c61f7ea2b41b5c1566bbebe692be601d',
 	},
+	{
+		name: 'a share request',
+		params: {
+			method,
+			originalUrl: restUrl,
+			accountability: { user: null, share: '11111111-1111-1111-1111-111111111111' },
+		},
+		key: '442ab20e367c8c6a9f996e9bbccd844b8dd2de12',
+	},
 ];
 
 const cases = requests.map(({ name, params, key }) => [name, params, key]);
@@ -109,10 +126,9 @@ describe('get cache key', async () => {
 	});
 
 	test('should create a unique key for each request', async () => {
-		const keys = cases.map(async ([, params]) => await getCacheKey(params as unknown as Request));
-		const hasDuplicate = keys.some((key) => keys.indexOf(key) !== keys.lastIndexOf(key));
+		const keys = await Promise.all(cases.map(([, params]) => getCacheKey(params as unknown as Request)));
 
-		expect(hasDuplicate).toBeFalsy();
+		expect(new Set(keys).size).toBe(keys.length);
 	});
 
 	test('should create a unique key for GraphQL requests with different variables', async () => {
@@ -129,6 +145,156 @@ describe('get cache key', async () => {
 		expect(await getCacheKey(postReq1)).not.toEqual(await getCacheKey(postReq2));
 		expect(await getCacheKey(req1)).toEqual(await getCacheKey(postReq1));
 		expect(await getCacheKey(req2)).toEqual(await getCacheKey(postReq2));
+	});
+
+	test('should not create a unique key for flow trigger requests with different custom query params', async () => {
+		const reqWithCustomQuery1: any = {
+			method,
+			originalUrl: `${flowTriggerUrl}?region=us`,
+			query: { region: 'us' },
+			sanitizedQuery: {},
+		};
+
+		const reqWithCustomQuery2: any = {
+			method,
+			originalUrl: `${flowTriggerUrl}?region=eu`,
+			query: { region: 'eu' },
+			sanitizedQuery: {},
+		};
+
+		const reqWithoutCustomQuery: any = {
+			method,
+			originalUrl: flowTriggerUrl,
+			sanitizedQuery: {},
+		};
+
+		expect(await getCacheKey(reqWithCustomQuery1)).toEqual(await getCacheKey(reqWithCustomQuery2));
+		expect(await getCacheKey(reqWithCustomQuery1)).toEqual(await getCacheKey(reqWithoutCustomQuery));
+	});
+
+	test('should not include raw query params for standard REST endpoints', async () => {
+		const reqWithCustomQuery: any = {
+			method,
+			originalUrl: `${restUrl}?custom=foo`,
+			query: { custom: 'foo' },
+			sanitizedQuery: {},
+		};
+
+		const reqWithoutCustomQuery: any = {
+			method,
+			originalUrl: restUrl,
+			sanitizedQuery: {},
+		};
+
+		expect(await getCacheKey(reqWithCustomQuery)).toEqual(await getCacheKey(reqWithoutCustomQuery));
+	});
+
+	test('should not change cache key when req.query is empty on flow trigger', async () => {
+		const reqWithEmptyQuery: any = {
+			method,
+			originalUrl: flowTriggerUrl,
+			query: {},
+			sanitizedQuery: {},
+		};
+
+		const reqWithoutQuery: any = {
+			method,
+			originalUrl: flowTriggerUrl,
+			sanitizedQuery: {},
+		};
+
+		expect(await getCacheKey(reqWithEmptyQuery)).toEqual(await getCacheKey(reqWithoutQuery));
+	});
+
+	test('should only include allowed query params when cacheQueryParams is configured', async () => {
+		const flowId = '00000000-0000-0000-0000-000000000001';
+
+		vi.mocked(getFlowManager).mockReturnValue({
+			getFlow: vi.fn().mockReturnValue({
+				options: {
+					cacheQueryParams: ['region'],
+				},
+			}),
+		} as any);
+
+		const reqWithAllowed: any = {
+			method,
+			originalUrl: `${baseUrl}/flows/trigger/${flowId}?region=us&noise=123`,
+			query: { region: 'us', noise: '123' },
+			sanitizedQuery: {},
+		};
+
+		const reqWithDifferentAllowed: any = {
+			method,
+			originalUrl: `${baseUrl}/flows/trigger/${flowId}?region=eu&noise=456`,
+			query: { region: 'eu', noise: '456' },
+			sanitizedQuery: {},
+		};
+
+		const reqWithSameAllowedDifferentNoise: any = {
+			method,
+			originalUrl: `${baseUrl}/flows/trigger/${flowId}?region=us&noise=789`,
+			query: { region: 'us', noise: '789' },
+			sanitizedQuery: {},
+		};
+
+		// Different allowed param values should produce different keys
+		expect(await getCacheKey(reqWithAllowed)).not.toEqual(await getCacheKey(reqWithDifferentAllowed));
+
+		// Same allowed param, different noise should produce the SAME key (noise is filtered out)
+		expect(await getCacheKey(reqWithAllowed)).toEqual(await getCacheKey(reqWithSameAllowedDifferentNoise));
+
+		// Reset mock to default (no allowlist)
+		vi.mocked(getFlowManager).mockReturnValue({
+			getFlow: vi.fn().mockReturnValue(undefined),
+		} as any);
+	});
+
+	test('should not include raw query params for GraphQL requests', async () => {
+		const gqlReqWithQuery: any = {
+			method,
+			originalUrl: graphQlUrl,
+			query: { query: 'query { test { id } }', custom: 'foo' },
+		};
+
+		const gqlReqWithoutCustom: any = {
+			method,
+			originalUrl: graphQlUrl,
+			query: { query: 'query { test { id } }' },
+		};
+
+		expect(await getCacheKey(gqlReqWithQuery)).toEqual(await getCacheKey(gqlReqWithoutCustom));
+	});
+
+	describe('share scoping', async () => {
+		const shareA = '11111111-1111-1111-1111-111111111111';
+		const shareB = '22222222-2222-2222-2222-222222222222';
+
+		const anonReq: any = { method, originalUrl: restUrl };
+		const shareAReq: any = { method, originalUrl: restUrl, accountability: { user: null, share: shareA } };
+		const userReq: any = { method, originalUrl: restUrl, accountability };
+
+		test('two different shares on the same URL produce different keys', async () => {
+			const shareBReq: any = { method, originalUrl: restUrl, accountability: { user: null, share: shareB } };
+			expect(await getCacheKey(shareAReq)).not.toEqual(await getCacheKey(shareBReq));
+		});
+
+		test('a share request does not collide with an anonymous request on the same URL', async () => {
+			expect(await getCacheKey(shareAReq)).not.toEqual(await getCacheKey(anonReq));
+		});
+
+		test('a share request does not collide with an authenticated user on the same URL', async () => {
+			expect(await getCacheKey(shareAReq)).not.toEqual(await getCacheKey(userReq));
+		});
+
+		test('anonymous requests continue to share a bucket with each other', async () => {
+			const anonReq2: any = { method, originalUrl: restUrl };
+			expect(await getCacheKey(anonReq)).toEqual(await getCacheKey(anonReq2));
+		});
+
+		test('the same share token hitting the same URL hits the same bucket', async () => {
+			expect(await getCacheKey(shareAReq)).toEqual(await getCacheKey(shareAReq));
+		});
 	});
 
 	test('it should create a unique key for requests which match a policy ip_access filter', async () => {

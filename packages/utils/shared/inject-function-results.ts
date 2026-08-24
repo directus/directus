@@ -17,7 +17,7 @@ import { functions } from './functions.js';
  * // { date: '2022-03-29T11:37:56Z', 'year(date)': 2022 }
  * ```
  */
-export function injectFunctionResults(payload: Record<string, any>, filter: Filter) {
+export function injectFunctionResults(payload: Record<string, any>, filter: Filter): Record<string, any> {
 	const newInput = cloneDeep(payload);
 
 	processFilterLevel(filter);

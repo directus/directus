@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Тухай
+continue: Үргэлжлүүлэх
 first_name: Нэр
 last_name: Овог
 identifier: Тодохойлогч
@@ -157,14 +158,12 @@ keep: Үлдээх
 version: Хувилбар
 version_key: Хувилбарын түлхүүр
 version_name: Хувилбарын нэр
-main_version: Үндсэн
 switch_version: Хувилбар солих
 switch_version_copy: Та {version} хувилбар руу солихыг хүсэж байна уу? Хадгалаагүй өөрчлөлтүүд нь алдагдах болно.
 create_version: Хувилбар үүсгэх
 rename_version: Хувилбарын нэр солих
 compare_version: Хувилбар харьцуулах
 save_version: Хувилбар хадгалах
-promote_version: Хувилбар дэвшүүлэх
 delete_version: Хувилбар устгах
 delete_version_copy: >-
   Хувилбар {version}-ийг устгахдаа итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүйг анхаарна уу.
@@ -465,6 +464,8 @@ related_collection: Хамааралтай бүрдэл
 related_collections: Хамааралтай бүрдлүүд
 translations_collection: Орчуулгын бүрдлүүд
 languages_collection: Хэлний бүрдлүүд
+translations_preview_collections: Бүрдлүүд
+translations_preview_fields: Талбарууд
 import_data_input_placeholder: CSV эсвэл JSON...
 import_data_button: Импортлож эхлэх
 import_data_indeterminate: Өгөгдлийг импортлож байна...
@@ -501,6 +502,7 @@ functions:
   minute: Минут
   second: Секунд
   count: Тоо ширхэг
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -638,7 +640,6 @@ no_collections: Бүрдэл байхгүй байна
 create_collection: Бүрдэл үүсгэх
 no_collections_copy_admin: Бүрдэл одоогоор үүсгэгдээгүй байна. Доорх товчлуурыг дарж үүсгэнэ үү.
 no_collections_copy: Бүрдэл одоогоор үүсгэгдээгүй байна. Тухайн системийн админтай холбогдоно уу.
-relationship_not_setup: Харилцаа нь зөв тохируулагдаагүй байна
 no_singleton_relations: Синглтонтой харгалзах харилцаа дэмжигддэггүй
 display_template_not_setup: Харагдах байдлын загвар буруу тохируулагдсан байна
 collection_field_not_setup: Бүрдлийн талбар буруу тохируулагдсан байна
@@ -842,6 +843,7 @@ operators:
   nintersects: Огтлолцоогүй
   intersects_bbox: Хязгаарлах хайрцагтай огтлолцсон
   nintersects_bbox: Хязгаарлах хайрцагтай огтлолцоогүй
+  json: JSON
   regex: RegExp-тэй таарсан
 custom_validation_message: Тохируулгат баталгаажуулалтын мессеж
 loading: Уншиж байна...
@@ -1055,12 +1057,15 @@ wysiwyg_options:
   bullist: Тэмдэглэгдсэн жагсаалт
   numlist: Дугаарлагдсан жагсаалт
   hr: Хэвтээ тусгаарлагч
+  insertdatetime_date: Огноо
+  insertdatetime_time: Цаг
   link: Холбоос нэмэх/засах
   unlink: Холбоос устгах
   media: Медиа нэмэх/засах
   image: Зураг нэмэх/засах
   copy: Хуулах
   cut: Огтлох
+  default: Өгөгдмөл
   paste: Наах
   heading: Гарчиг
   h1: Гарчиг 1
@@ -1083,6 +1088,8 @@ wysiwyg_options:
   source_code: Эх кодыг засах
   fullscreen: Бүтэн дэлгэцлэх
   directionality: Чиглэл
+  ltr: Зүүнээс баруун
+  rtl: Баруунаас зүүн
   lazy_loading: Шаардлагатай үед зургийг ачаалах
   lazy_loading_label: Шаардлагатай үед ачаалах тохиргоог идэвхжүүлэх
 dropdown: Доош унадаг цэс
@@ -1110,6 +1117,17 @@ settings_data_model: Өгөгдлийн загвар
 settings_roles: Хэрэглэгчийн үүргүүд
 settings_permissions: Хандах бодлогууд
 settings_project: Тохиргоо
+licensing:
+  unlimited: Хязгааргүй
+  addon_manage: Удирдах
+  addon_update: Шинэчлэх
+  resolve_continue: Үргэлжлүүлэх
+  resolve_show_n_more: '{count}-г нэмж харуулах'
+  resolve_section_flows: Урсгалууд
+  resolve_sso_admin_password: Нууц үг
+  entitlements:
+    collections: Бүрдлүүд
+    flows: Урсгалууд
 settings_appearance: Харагдах байдал
 settings_flows: Урсгалууд
 settings_system_logs: Системийн логууд
@@ -1207,6 +1225,7 @@ fields:
     collection: Бүрдэл
     icon: Таних тэмдэг
     note: Тэмдэглэл
+    status: Статус
     color: Өнгө
     display_template: Харагдацын загвар
     hidden: Нуусан
@@ -1680,6 +1699,8 @@ interfaces:
     all_opened: Бүгд нээгдсэн
     accordion_mode: Аккордеон горим
     max_one_section_open: Ихдээ 1 нээлттэй хэсэг
+  group-tabs:
+    fill_width: Өргөн дүүрэн
   presentation-links:
     presentation-links: Товчлуур
     style: Хэв маяг
@@ -1869,6 +1890,7 @@ interfaces:
     incompatible_data: Одоогийн өгөгдөл нь давталтын интерфэйстэй тохирохгүй бөгөөд давтагч руу оруулга нэмэх үед хүчингүй болно
     interface_group: Интерфэйс тохиргоо
     display_group: Харагдах байдлын тохиргоо
+    edit_mode_inline: Тасралтгүй шугаманд
   slider:
     slider: Гулсагч
     description: Гулсагч ашиглан тоо сонгох
@@ -1942,9 +1964,6 @@ interfaces:
     description: HTML үүсгэдэг дэвшилтэт засварлагч
     toolbar: Хэрэгслийн самбар
     custom_formats: Тохируулгат форматууд
-    custom_formats_note: TinyMCE контент форматуудын жагсаалт. [Контент формат] талаарх дэлгэрэнгүй мэдээллийг Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) TinyMCE гарын авлагаас авна уу.
-    options_override: Тохиргоо үл хэрэгсэнэ
-    options_override_note: TinyMCE хэрэглэгчийн форматлах түлхүүрүүд ба тэдгээрийн утга. Дэлгэрэнгүй мэдээллийг [Хэрэглэгчийн формат](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) дээрх TinyMCE гарын авлагаас дэлгэрэнгүй мэдээллийг авна уу.
     folder_note: Оруулсан файлуудын хавтас. Одоогийн файлуудад хамаарахгүй.
     imageToken: Статик хандалтын токен
     imageToken_label: Статик хандалтын токенг файлын URL-д нэгтгэсэн
@@ -1995,8 +2014,9 @@ interfaces:
     value_securely_saved: Утгыг аюулгүй хадгалсан
     generate: Токен үүсгэх
     regenerate: Токен дахин үүсгэх
-    generate_success_copy: Дээрх токеныг хуулж авч, нөөцлөнө үү. Аюулгүй байдлын үүднээс та энэ хуудсыг орхисны дараагаар токеныг дахин харах боломжгүй болно.
+    regenerate_confirm_title: Токен дахин үүсгэх
     remove_token: Токен устгах
+    remove_confirm_title: Токен устгах
   system-raw-editor:
     system-raw-editor: Raw засварлагч
     description: Логикгүйгээр энгийн эсвэл орлуулагч тэмдэгтийн утгыг оруулахыг зөвшөөрөх
@@ -2448,4 +2468,6 @@ search_flow: Урсгал хайх...
 percent: Хувь
 show_password: Нууц үг харуулах
 hide_password: Нууц үг нуух
+license_grace_key_modal:
+  optional: Нэмэлт
 set_to_now: Одоогоор тохируулах

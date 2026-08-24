@@ -2,64 +2,112 @@ import { createError, ErrorCode } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import type { Request, Response } from 'express';
 import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
-import { z } from 'zod';
 import { ItemsService } from '../../services/items.js';
-import { findMcpTool } from '../tools/index.js';
-import type { ToolConfig } from '../tools/types.js';
+import { expectMcpBearerChallenge } from '../../test-utils/mcp-oauth.js';
 import { DirectusMCP } from './server.js';
 import { DirectusTransport } from './transport.js';
 
-vi.mock('../../services/items.js');
-
-vi.mock('zod-validation-error', () => ({
-	fromZodError: vi.fn((_error) => ({ message: 'Validation error' })),
+const toolMocks = vi.hoisted(() => ({
+	adminHandler: vi.fn(),
+	deleteHandler: vi.fn(),
+	systemHandler: vi.fn(),
+	testHandler: vi.fn(),
 }));
 
-vi.mock('../tools/index.js', () => ({
-	getAllMcpTools: vi.fn(() => [
-		{
-			name: 'test-tool',
-			description: 'A test tool',
-			inputSchema: z.strictObject({}),
-			admin: false,
-			annotations: {},
-		},
-		{
-			name: 'admin-tool',
-			description: 'An admin tool',
-			inputSchema: z.strictObject({}),
-			admin: true,
-			annotations: {},
-		},
-	]),
-	findMcpTool: vi.fn((name: string) => {
-		const tools = {
-			'test-tool': {
-				name: 'test-tool',
-				description: 'A test tool',
-				validateSchema: { safeParse: vi.fn(() => ({ data: { test: 'value' } })) },
-				admin: false,
-				handler: vi.fn(() => Promise.resolve({ type: 'text', data: 'test result' })),
-			},
-			'admin-tool': {
-				name: 'admin-tool',
-				description: 'An admin tool',
-				validateSchema: { safeParse: vi.fn(() => ({ data: { admin: 'value' } })) },
-				admin: true,
-				handler: vi.fn(() => Promise.resolve({ type: 'text', data: 'admin result' })),
-			},
-			'delete-tool': {
-				name: 'delete-tool',
-				description: 'A delete tool',
-				validateSchema: { safeParse: vi.fn(() => ({ data: { action: 'delete' } })) },
-				admin: false,
-				handler: vi.fn(() => Promise.resolve({ type: 'text', data: 'deleted' })),
-			},
-		};
-
-		return tools[name as keyof typeof tools] || null;
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn().mockReturnValue({
+		PUBLIC_URL: 'https://directus.example.com',
+		MCP_OAUTH_ENABLED: true,
+		SECRET: 'test-secret',
+		// Required by transitive module-level useEnv() calls:
+		EMAIL_TEMPLATES_PATH: './templates',
+		EXTENSIONS_PATH: './extensions',
+		SESSION_COOKIE_NAME: 'directus_session',
+		REFRESH_TOKEN_COOKIE_DOMAIN: '',
+		REFRESH_TOKEN_TTL: '15m',
+		REFRESH_TOKEN_COOKIE_SECURE: false,
+		SESSION_COOKIE_DOMAIN: '',
+		SESSION_COOKIE_TTL: '1d',
+		SESSION_COOKIE_SECURE: false,
+		IP_TRUST_PROXY: true,
+		CACHE_ENABLED: false,
+		RATE_LIMITER_ENABLED: false,
+		ACCESS_TOKEN_TTL: '15m',
+		EMAIL_FROM: 'no-reply@example.com',
+		EMAIL_TRANSPORT: 'sendmail',
 	}),
 }));
+
+vi.mock('../../services/items.js');
+
+vi.mock('../tools/index.js', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('../tools/index.js')>();
+	const { z } = await import('zod');
+
+	return {
+		...actual,
+		ALL_TOOLS: [
+			{
+				name: 'test-tool',
+				description: 'A test tool',
+				instructions: 'Full test tool instructions',
+				inputSchema: z.strictObject({
+					collection: z.string().optional(),
+					data: z.unknown().optional(),
+					test: z.string().optional(),
+				}),
+				validateSchema: z.object({
+					collection: z.string().optional(),
+					data: z.unknown().optional(),
+					test: z.string().optional(),
+				}),
+				admin: false,
+				annotations: {},
+				readOnly: true,
+				handler: toolMocks.testHandler,
+			},
+			{
+				name: 'admin-tool',
+				description: 'An admin tool',
+				inputSchema: z.strictObject({}),
+				validateSchema: z.strictObject({}),
+				admin: true,
+				annotations: {},
+				readOnly: true,
+				handler: toolMocks.adminHandler,
+			},
+			{
+				name: 'delete-tool',
+				description: 'A delete tool',
+				inputSchema: z.strictObject({ action: z.literal('delete') }),
+				validateSchema: z.strictObject({ action: z.literal('delete') }),
+				admin: false,
+				readOnly: false,
+				handler: toolMocks.deleteHandler,
+			},
+			{
+				name: 'system-prompt',
+				description: 'System prompt',
+				inputSchema: z.strictObject({}),
+				validateSchema: z.strictObject({ promptOverride: z.string().nullable() }),
+				admin: false,
+				readOnly: true,
+				handler: toolMocks.systemHandler,
+			},
+			{
+				name: 'schema',
+				description: 'Schema tool',
+				inputSchema: z.strictObject({ keys: z.array(z.string()).optional() }),
+				validateSchema: z.strictObject({ keys: z.array(z.string()).optional() }),
+				output: z.object({ data: z.object({ collections: z.array(z.string()) }) }),
+				admin: false,
+				readOnly: true,
+				exposure: 'root',
+				handler: vi.fn(() => Promise.resolve({ type: 'text', data: { collections: [] } })),
+			},
+		],
+	};
+});
 
 function awaitJsonResponse(mcp: DirectusMCP): Promise<void> {
 	return new Promise<void>((res) => {
@@ -77,6 +125,13 @@ describe('mcp server', () => {
 	let mockReq: Partial<Request>;
 	let mockRes: Response;
 
+	beforeEach(() => {
+		toolMocks.testHandler.mockResolvedValue({ type: 'text', data: 'test result' });
+		toolMocks.adminHandler.mockResolvedValue({ type: 'text', data: 'admin result' });
+		toolMocks.deleteHandler.mockResolvedValue({ type: 'text', data: 'deleted' });
+		toolMocks.systemHandler.mockResolvedValue({ type: 'text', data: 'system prompt' });
+	});
+
 	afterEach(() => {
 		vi.clearAllMocks();
 	});
@@ -88,6 +143,7 @@ describe('mcp server', () => {
 			mockRes = {
 				json: vi.fn(),
 				status: vi.fn().mockReturnThis(),
+				set: vi.fn().mockReturnThis(),
 				send: vi.fn(),
 			} as unknown as Response;
 
@@ -102,6 +158,8 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false } as Accountability,
 				schema: {} as SchemaOverview,
+				token: null,
+				tokenSource: null,
 			};
 		});
 
@@ -114,10 +172,14 @@ describe('mcp server', () => {
 			expect(mockRes.send).toHaveBeenCalled();
 		});
 
-		test('should reject public request', async () => {
-			mockReq.accountability!.user = null;
+		test('unauthenticated /mcp request returns 401 with WWW-Authenticate', () => {
+			mockReq.accountability = { user: null, role: null, roles: [], admin: false, app: false, ip: null };
+			mockReq.token = null;
+			mockReq.tokenSource = null;
 
-			expect(() => directusMCP.handleRequest(mockReq as Request, mockRes as Response)).toThrow();
+			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
+
+			expectMcpBearerChallenge(mockRes, { status: 401, resourceMetadata: true });
 		});
 
 		test('should accept JSON requests', async () => {
@@ -155,73 +217,50 @@ describe('mcp server', () => {
 			};
 		});
 
-		test('should filter admin tools for non-admin users', async () => {
+		test('should list individual MCP tools by default', async () => {
 			mockReq.accountability = { admin: false, user: 'user' } as Accountability;
 
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
 
 			await awaitJsonResponse(directusMCP);
 
-			expect(mockRes.json).toHaveBeenCalledWith({
-				id: 1,
-				jsonrpc: '2.0',
-				result: {
-					tools: [
-						{
-							annotations: {},
-							description: 'A test tool',
-							inputSchema: {
-								$schema: 'https://json-schema.org/draft/2020-12/schema',
-								additionalProperties: false,
-								properties: {},
-								type: 'object',
-							},
-							name: 'test-tool',
-						},
-					],
-				},
+			const result = vi.mocked(mockRes.json).mock.calls[0]![0] as any;
+
+			expect(result.result.tools.map((tool: { name: string }) => tool.name)).toEqual([
+				'test-tool',
+				'delete-tool',
+				'system-prompt',
+				'schema',
+			]);
+
+			expect(result.result.tools.find((tool: { name: string }) => tool.name === 'test-tool')).toMatchObject({
+				description: 'Full test tool instructions',
 			});
+
+			expect(result.result.tools.find((tool: { name: string }) => tool.name === 'schema')).not.toHaveProperty(
+				'outputSchema',
+			);
 		});
 
-		test('should include admin tools for admin users', async () => {
-			// Simulate admin user
-			mockReq.accountability = { admin: true, user: 'user' } as Accountability;
+		test('should list only MCP root tools in registry mode', async () => {
+			mockReq.accountability = { admin: false, user: 'user' } as Accountability;
+			mockReq.query = { tool_mode: 'registry' };
 
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
 
 			await awaitJsonResponse(directusMCP);
 
-			expect(mockRes.json).toHaveBeenCalledWith({
-				id: 1,
-				jsonrpc: '2.0',
-				result: {
-					tools: [
-						{
-							annotations: {},
-							description: 'A test tool',
-							inputSchema: {
-								$schema: 'https://json-schema.org/draft/2020-12/schema',
-								additionalProperties: false,
-								properties: {},
-								type: 'object',
-							},
-							name: 'test-tool',
-						},
-						{
-							annotations: {},
-							description: 'An admin tool',
-							inputSchema: {
-								$schema: 'https://json-schema.org/draft/2020-12/schema',
-								additionalProperties: false,
-								properties: {},
+			const result = vi.mocked(mockRes.json).mock.calls[0]![0] as any;
 
-								type: 'object',
-							},
-							name: 'admin-tool',
-						},
-					],
-				},
-			});
+			expect(result.result.tools.map((tool: { name: string }) => tool.name)).toEqual(['search', 'execute', 'schema']);
+
+			expect(result.result.tools.find((tool: { name: string }) => tool.name === 'schema')).toHaveProperty(
+				'outputSchema',
+			);
+
+			expect(result.result.tools.find((tool: { name: string }) => tool.name === 'execute')).not.toHaveProperty(
+				'outputSchema',
+			);
 		});
 	});
 
@@ -286,9 +325,81 @@ describe('mcp server', () => {
 			);
 		});
 
-		test('should return error for non-existent tool', async () => {
-			vi.mocked(findMcpTool).mockReturnValueOnce(undefined);
+		test('should execute tools through the registry root execute tool in registry mode', async () => {
+			const mockReq = {
+				accepts: vi.fn(() => 'application/json'),
+				body: {
+					jsonrpc: '2.0',
+					id: 1,
+					method: 'tools/call',
+					params: {
+						name: 'execute',
+						arguments: { name: 'test-tool', input: { test: 'value' } },
+					},
+				},
+				query: { tool_mode: 'registry' },
+				accountability: { user: 'user', admin: false },
+				schema: {},
+			} as unknown as Request;
 
+			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
+
+			await awaitJsonResponse(directusMCP);
+
+			expect(mockRes.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					jsonrpc: '2.0',
+					id: 1,
+					result: expect.objectContaining({
+						content: expect.arrayContaining([
+							expect.objectContaining({
+								type: 'text',
+								text: JSON.stringify({ data: 'test result' }),
+							}),
+						]),
+					}),
+				}),
+			);
+		});
+
+		test('should not accept the registry root execute tool by default', async () => {
+			const mockReq = {
+				accepts: vi.fn(() => 'application/json'),
+				body: {
+					jsonrpc: '2.0',
+					id: 1,
+					method: 'tools/call',
+					params: {
+						name: 'execute',
+						arguments: { name: 'test-tool', input: { test: 'value' } },
+					},
+				},
+				accountability: { user: 'user', admin: false },
+				schema: {},
+			} as unknown as Request;
+
+			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
+
+			await awaitJsonResponse(directusMCP);
+
+			expect(mockRes.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					jsonrpc: '2.0',
+					id: 1,
+					result: expect.objectContaining({
+						isError: true,
+						content: expect.arrayContaining([
+							expect.objectContaining({
+								type: 'text',
+								text: expect.stringContaining('INVALID_PAYLOAD'),
+							}),
+						]),
+					}),
+				}),
+			);
+		});
+
+		test('should return error for non-existent tool', async () => {
 			const mockReq = {
 				accepts: vi.fn(() => 'application/json'),
 				body: {
@@ -317,7 +428,7 @@ describe('mcp server', () => {
 						content: expect.arrayContaining([
 							expect.objectContaining({
 								type: 'text',
-								text: expect.stringContaining("doesn't exist in the toolset"),
+								text: expect.stringMatching(/doesn't exist in the toolset.*INVALID_PAYLOAD/),
 							}),
 						]),
 					}),
@@ -325,20 +436,27 @@ describe('mcp server', () => {
 			);
 		});
 
-		test('should return error for calling system-prompt if it is disabled', async () => {
-			const mockTool = {
-				name: 'system-prompt',
-				validateSchema: {
-					safeParse: vi.fn(() => ({
-						data: {},
-					})),
+		test('should preserve the forbidden error for non-admin callers of admin tools', async () => {
+			mockReq.body = {
+				jsonrpc: '2.0',
+				id: 1,
+				method: 'tools/call',
+				params: {
+					name: 'admin-tool',
+					arguments: {},
 				},
-				admin: false,
-				handler: vi.fn(),
-			} as unknown as ToolConfig<any>;
+			};
 
-			vi.mocked(findMcpTool).mockReturnValueOnce(mockTool);
+			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
 
+			await awaitJsonResponse(directusMCP);
+
+			const response = vi.mocked(mockRes.json).mock.calls[0]![0] as any;
+			expect(response.result.content[0].text).toContain('FORBIDDEN');
+			expect(toolMocks.adminHandler).not.toHaveBeenCalled();
+		});
+
+		test('should return error for calling system-prompt if it is disabled', async () => {
 			const mockReq = {
 				accepts: vi.fn(() => 'application/json'),
 				body: {
@@ -370,43 +488,6 @@ describe('mcp server', () => {
 							expect.objectContaining({
 								type: 'text',
 								text: expect.stringContaining("doesn't exist in the toolset"),
-							}),
-						]),
-					}),
-				}),
-			);
-		});
-
-		test('should prevent non-admin users from accessing admin tools', async () => {
-			const mockReq = {
-				accepts: vi.fn(() => 'application/json'),
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'tools/call',
-					params: {
-						name: 'admin-tool',
-						arguments: {},
-					},
-				},
-				accountability: { user: 'user', admin: false }, // Non-admin user
-				schema: {},
-			} as unknown as Request;
-
-			directusMCP.handleRequest(mockReq, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(mockRes.json).toHaveBeenCalledWith(
-				expect.objectContaining({
-					jsonrpc: '2.0',
-					id: 1,
-					result: expect.objectContaining({
-						isError: true,
-						content: expect.arrayContaining([
-							expect.objectContaining({
-								type: 'text',
-								text: expect.stringContaining('FORBIDDEN'),
 							}),
 						]),
 					}),
@@ -450,70 +531,7 @@ describe('mcp server', () => {
 			);
 		});
 
-		test('should handle validation errors', async () => {
-			// Mock the tool to return validation error
-			const mockTool = {
-				name: 'validation-tool',
-				validateSchema: {
-					safeParse: vi.fn(() => ({
-						error: { issues: [{ message: 'Invalid input' }] },
-					})),
-				},
-				admin: false,
-				handler: vi.fn(),
-			} as unknown as ToolConfig<any>;
-
-			vi.mocked(findMcpTool).mockReturnValueOnce(mockTool);
-
-			const mockReq = {
-				accepts: vi.fn(() => 'application/json'),
-				body: {
-					jsonrpc: '2.0',
-					id: 1,
-					method: 'tools/call',
-					params: {
-						name: 'validation-tool',
-						arguments: { invalid: 'data' },
-					},
-				},
-				accountability: { user: 'user', admin: false },
-				schema: {},
-			} as unknown as Request;
-
-			directusMCP.handleRequest(mockReq, mockRes as Response);
-
-			await awaitJsonResponse(directusMCP);
-
-			expect(mockRes.json).toHaveBeenCalledWith(
-				expect.objectContaining({
-					jsonrpc: '2.0',
-					id: 1,
-					result: expect.objectContaining({
-						isError: true,
-						content: expect.arrayContaining([
-							expect.objectContaining({
-								type: 'text',
-								text: expect.stringContaining('Validation error'),
-							}),
-						]),
-					}),
-				}),
-			);
-		});
-
 		test('should error on delete action if deletes disabled', async () => {
-			// Mock the tool to return validation error
-			const mockTool = {
-				name: 'deletes-tool',
-				validateSchema: {
-					safeParse: vi.fn(() => ({ data: { action: 'delete' } })),
-				},
-				admin: false,
-				handler: vi.fn(),
-			} as unknown as ToolConfig<any>;
-
-			vi.mocked(findMcpTool).mockReturnValueOnce(mockTool);
-
 			const mockReq = {
 				accepts: vi.fn(() => 'application/json'),
 				body: {
@@ -521,7 +539,7 @@ describe('mcp server', () => {
 					id: 1,
 					method: 'tools/call',
 					params: {
-						name: 'deletes-tool',
+						name: 'delete-tool',
 						arguments: { action: 'delete' },
 					},
 				},
@@ -1097,24 +1115,28 @@ describe('mcp server', () => {
 	});
 
 	describe('toToolResponse', () => {
+		beforeEach(() => {
+			directusMCP = new DirectusMCP();
+		});
+
 		test('should return empty content for undefined result', () => {
-			const response = directusMCP.toToolResponse(undefined);
+			const response = directusMCP.toResultResponse(undefined);
 			expect(response).toEqual({ content: [] });
 		});
 
 		test('should return empty content for null data', () => {
-			const response = directusMCP.toToolResponse({ type: 'text', data: null });
+			const response = directusMCP.toResultResponse({ type: 'text', data: null });
 			expect(response).toEqual({ content: [] });
 		});
 
 		test('should return empty content for undefined data', () => {
-			const response = directusMCP.toToolResponse({ type: 'text', data: undefined });
+			const response = directusMCP.toResultResponse({ type: 'text', data: undefined });
 			expect(response).toEqual({ content: [] });
 		});
 
-		test('should format text type responses', () => {
+		test('should preserve the legacy text payload', () => {
 			const result = { type: 'text' as const, data: { message: 'hello' } };
-			const response = directusMCP.toToolResponse(result);
+			const response = directusMCP.toResultResponse(result);
 
 			expect(response).toEqual({
 				content: [
@@ -1126,9 +1148,96 @@ describe('mcp server', () => {
 			});
 		});
 
+		test('should attach structured content alongside the registry text payload', () => {
+			const result = {
+				type: 'text' as const,
+				data: [{ id: 1 }],
+			};
+
+			const response = directusMCP.toResultResponse(result, { data: [{ id: 1 }] }, 'registry');
+
+			expect(response).toEqual({
+				content: [
+					{
+						type: 'text',
+						text: JSON.stringify({ data: [{ id: 1 }] }),
+					},
+				],
+				structuredContent: { data: [{ id: 1 }] },
+			});
+		});
+
+		test('should preserve structured content when registry data is null', () => {
+			const response = directusMCP.toResultResponse({ type: 'text', data: null }, { data: null }, 'registry');
+
+			expect(response).toEqual({
+				content: [],
+				structuredContent: { data: null },
+			});
+		});
+
+		test('should map registry errors to tool errors', () => {
+			const response = directusMCP.toToolResponse(
+				{
+					ok: false,
+					error: {
+						code: 'UNKNOWN_TOOL',
+						message: '"missing" does not exist',
+						recoverable: true,
+						next: {
+							tool: 'search',
+							input: { query: 'missing' },
+						},
+					},
+				},
+				'registry',
+			);
+
+			expect(response).toEqual({
+				isError: true,
+				content: [
+					{
+						type: 'text',
+						text: JSON.stringify([
+							{
+								error: '"missing" does not exist',
+								code: 'UNKNOWN_TOOL',
+								recoverable: true,
+								next: {
+									tool: 'search',
+									input: { query: 'missing' },
+								},
+							},
+						]),
+					},
+				],
+			});
+		});
+
+		test('should preserve native error codes in legacy responses', () => {
+			const response = directusMCP.toToolResponse({
+				ok: false,
+				error: {
+					code: 'ER_DUP_ENTRY',
+					message: 'Duplicate entry',
+					recoverable: false,
+				},
+			});
+
+			expect(response).toEqual({
+				isError: true,
+				content: [
+					{
+						type: 'text',
+						text: JSON.stringify([{ error: 'Duplicate entry', code: 'ER_DUP_ENTRY' }]),
+					},
+				],
+			});
+		});
+
 		test('should return result directly for non-text types', () => {
 			const result = { type: 'image' as const, data: 'base64data', mimeType: 'image/png' };
-			const response = directusMCP.toToolResponse(result);
+			const response = directusMCP.toResultResponse(result);
 
 			expect(response).toEqual({
 				content: [result],
@@ -1314,6 +1423,143 @@ describe('mcp server', () => {
 
 				expect(messageHandler).toHaveBeenCalledWith(message, extraInfo);
 			});
+		});
+	});
+
+	describe('auth guard', () => {
+		const MCP_RESOURCE_URL = 'https://directus.example.com/mcp';
+
+		const regularAccountability = {
+			user: 'user-id',
+			role: 'role-id',
+			roles: ['role-id'],
+			admin: false,
+			app: false,
+			ip: null,
+		};
+
+		const oauthAccountability = {
+			...regularAccountability,
+			oauth: { client: 'client-id', scopes: ['mcp:access'], aud: [MCP_RESOURCE_URL] },
+		};
+
+		let mockRes: Response;
+
+		beforeEach(() => {
+			mockRes = {
+				json: vi.fn(),
+				status: vi.fn().mockReturnThis(),
+				set: vi.fn().mockReturnThis(),
+				send: vi.fn(),
+			} as unknown as Response;
+		});
+
+		function makeAuthReq(overrides: Partial<Request> = {}): Request {
+			return {
+				accepts: vi.fn((type: string) =>
+					type === 'application/json' ? 'application/json' : false,
+				) as unknown as Request['accepts'],
+				body: { jsonrpc: '2.0', id: 1, method: 'tools/list' },
+				accountability: regularAccountability,
+				schema: {} as SchemaOverview,
+				token: null,
+				tokenSource: null,
+				...overrides,
+			} as unknown as Request;
+		}
+
+		test('unauthenticated request returns 401 with WWW-Authenticate', () => {
+			const directusMCP = new DirectusMCP();
+
+			const req = makeAuthReq({
+				accountability: { user: null, role: null, roles: [], admin: false, app: false, ip: null },
+			});
+
+			directusMCP.handleRequest(req, mockRes);
+			expectMcpBearerChallenge(mockRes, { status: 401, resourceMetadata: true });
+		});
+
+		test('regular session passes through without OAuth checks', () => {
+			const directusMCP = new DirectusMCP();
+			const req = makeAuthReq({ tokenSource: 'cookie' });
+
+			expect(() => directusMCP.handleRequest(req, mockRes)).not.toThrow();
+			expect(mockRes.status).not.toHaveBeenCalledWith(401);
+		});
+
+		test('valid OAuth session with correct scope and aud via header returns JSON-RPC result', async () => {
+			const directusMCP = new DirectusMCP();
+			const req = makeAuthReq({ accountability: oauthAccountability, tokenSource: 'header' });
+
+			expect(() => directusMCP.handleRequest(req, mockRes)).not.toThrow();
+			await awaitJsonResponse(directusMCP);
+
+			expect(mockRes.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					id: 1,
+					jsonrpc: '2.0',
+					result: expect.objectContaining({
+						tools: expect.any(Array),
+					}),
+				}),
+			);
+
+			expect(mockRes.status).not.toHaveBeenCalledWith(401);
+			expect(mockRes.status).not.toHaveBeenCalledWith(403);
+			expect(mockRes.set).not.toHaveBeenCalledWith('WWW-Authenticate', expect.any(String));
+		});
+
+		test('OAuth session with wrong aud returns 401', () => {
+			const directusMCP = new DirectusMCP();
+
+			const req = makeAuthReq({
+				accountability: {
+					...regularAccountability,
+					oauth: { client: 'client-id', scopes: ['mcp:access'], aud: ['https://other.example.com/mcp'] },
+				},
+				tokenSource: 'header',
+			});
+
+			directusMCP.handleRequest(req, mockRes);
+			expectMcpBearerChallenge(mockRes, { status: 401, error: 'invalid_token' });
+		});
+
+		test.each([
+			['query', 'via query-string'],
+			['cookie', 'via cookie'],
+		] as const)('%s: OAuth session %s returns 401 invalid_request', (tokenSource) => {
+			const directusMCP = new DirectusMCP();
+			const req = makeAuthReq({ accountability: oauthAccountability, tokenSource });
+
+			directusMCP.handleRequest(req, mockRes);
+			expectMcpBearerChallenge(mockRes, { status: 401, error: 'invalid_request' });
+		});
+
+		test.each([
+			['query (legacy compat)', 'static-or-jwt-token', 'query' as const],
+			['cookie', undefined, 'cookie' as const],
+			['query (static token)', 'static-token', 'query' as const],
+		])('regular session via %s passes through', (_label, token, tokenSource) => {
+			const directusMCP = new DirectusMCP();
+			const req = makeAuthReq({ token, tokenSource });
+
+			expect(() => directusMCP.handleRequest(req, mockRes)).not.toThrow();
+			expect(mockRes.status).not.toHaveBeenCalledWith(401);
+		});
+
+		test('OAuth session without mcp:access scope returns 403 insufficient_scope', () => {
+			const directusMCP = new DirectusMCP();
+
+			const req = makeAuthReq({
+				accountability: {
+					...regularAccountability,
+					oauth: { client: 'client-id', scopes: ['other:scope'], aud: [MCP_RESOURCE_URL] },
+				},
+				tokenSource: 'header',
+			});
+
+			directusMCP.handleRequest(req, mockRes);
+			expectMcpBearerChallenge(mockRes, { status: 403, error: 'insufficient_scope' });
 		});
 	});
 });

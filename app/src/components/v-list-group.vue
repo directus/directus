@@ -117,7 +117,17 @@ function onClick(event: MouseEvent) {
 
 <style lang="scss" scoped>
 .v-list-group {
-	margin-block-end: 4px;
+	margin-block-end: 0.25rem;
+
+	$this: &;
+
+	@at-root {
+		.v-list.nav {
+			#{$this} {
+				margin-block-end: 0;
+			}
+		}
+	}
 
 	&:last-child {
 		margin-block-end: 0;
@@ -141,7 +151,7 @@ function onClick(event: MouseEvent) {
 	}
 
 	.items {
-		padding-inline-start: 18px;
+		padding-inline-start: var(--icon-size-default);
 		list-style: none;
 	}
 }
