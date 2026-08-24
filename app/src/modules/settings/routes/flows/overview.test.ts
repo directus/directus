@@ -102,7 +102,7 @@ beforeEach(async () => {
 
 	global = {
 		stubs: {
-			'private-view': { template: '<div><slot name="actions:prepend" /><slot /></div>' },
+			'private-view': { template: '<div><slot name="actions" /><slot /></div>' },
 			'flow-folder-sidebar': {
 				props: ['actionsDisabled'],
 				template: '<div :data-actions-disabled="actionsDisabled"><slot /></div>',
