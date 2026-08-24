@@ -13,16 +13,11 @@ import { useFolders } from '@/composables/use-folders';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
-const props = withDefaults(
-	defineProps<{
-		parent?: string;
-		disabled?: boolean;
-		type?: FolderType;
-	}>(),
-	{
-		type: 'assets',
-	},
-);
+const props = defineProps<{
+	type: FolderType;
+	parent?: string;
+	disabled?: boolean;
+}>();
 
 const emit = defineEmits<{
 	created: [folderId: string];

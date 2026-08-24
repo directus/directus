@@ -445,7 +445,12 @@ async function downloadFiles() {
 			<template #actions>
 				<SearchInput v-model="search" v-model:filter="filter" collection="directus_files" small />
 
-				<AddFolder :parent="folder" :disabled="createFolderAllowed !== true" @created="navigateToFolder" />
+				<AddFolder
+					type="assets"
+					:parent="folder"
+					:disabled="createFolderAllowed !== true"
+					@created="navigateToFolder"
+				/>
 
 				<VDialog
 					v-if="selection.length > 0 && folderSelection.length === 0"
