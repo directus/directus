@@ -204,7 +204,6 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 			},
 		},
 		fields: [
-			'id',
 			'name',
 			'collection',
 			'item',
