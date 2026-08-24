@@ -203,17 +203,7 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 				_eq: '$CURRENT_USER',
 			},
 		},
-		fields: [
-			'name',
-			'collection',
-			'item',
-			'role',
-			'password',
-			'date_start',
-			'date_end',
-			'max_uses',
-			'times_used',
-		],
+		fields: ['name', 'collection', 'item', 'role', 'password', 'date_start', 'date_end', 'max_uses', 'times_used'],
 	},
 	{
 		collection: 'directus_shares',
