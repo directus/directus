@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -29,8 +28,6 @@ const emit = defineEmits<{
 	created: [folderId: string];
 }>();
 
-const router = useRouter();
-
 const dialogActive = ref(false);
 const saving = ref(false);
 const newFolderName = ref(null);
@@ -54,13 +51,7 @@ async function addFolder() {
 		dialogActive.value = false;
 		newFolderName.value = null;
 
-		const newFolderId = newFolder.data.data.id;
-		emit('created', newFolderId);
-
-		// The file library navigates into the newly created folder; other consumers handle it via @created
-		if (props.type === 'assets') {
-			router.push({ name: 'folders-collection', params: { folder: newFolderId } });
-		}
+		emit('created', newFolder.data.data.id);
 	} catch (error) {
 		unexpectedError(error);
 	} finally {

@@ -206,7 +206,7 @@ function useMovetoFolder() {
 			selection.value = [];
 
 			if (folder) {
-				router.push({ name: 'folders-collection', params: { folder } });
+				navigateToFolder(folder);
 			}
 
 			await nextTick();
@@ -224,6 +224,10 @@ function useMovetoFolder() {
 
 async function refresh() {
 	await layoutRef.value?.state?.refresh?.();
+}
+
+function navigateToFolder(folder: string) {
+	router.push({ name: 'folders-collection', params: { folder } });
 }
 
 function clearFilters() {
@@ -441,7 +445,7 @@ async function downloadFiles() {
 			<template #actions>
 				<SearchInput v-model="search" v-model:filter="filter" collection="directus_files" small />
 
-				<AddFolder :parent="folder" :disabled="createFolderAllowed !== true" />
+				<AddFolder :parent="folder" :disabled="createFolderAllowed !== true" @created="navigateToFolder" />
 
 				<VDialog
 					v-if="selection.length > 0 && folderSelection.length === 0"
