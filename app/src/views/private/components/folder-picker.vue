@@ -24,17 +24,12 @@ type Folder = {
 	children: Folder[];
 };
 
-const props = withDefaults(
-	defineProps<{
-		modelValue: string | null;
-		disabledFolders?: string[];
-		type?: FolderType;
-		rootLabel?: string;
-	}>(),
-	{
-		type: 'assets',
-	},
-);
+const props = defineProps<{
+	modelValue: string | null;
+	type: FolderType;
+	disabledFolders?: string[];
+	rootLabel?: string;
+}>();
 
 defineEmits<{
 	'update:modelValue': [value: string | null];
