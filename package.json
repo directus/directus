@@ -35,7 +35,6 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"fast-xml-parser": "5.10.1",
 			"@yarnpkg/shell>cross-spawn": "7.0.6",
 			"tar": "7.5.22",
 			"js-beautify>editorconfig": "3.0.2",

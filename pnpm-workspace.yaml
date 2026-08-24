@@ -14,10 +14,10 @@ catalog:
   '@ai-sdk/openai-compatible': 2.0.35
   '@ai-sdk/vue': 3.0.116
   '@authenio/samlify-node-xmllint': 2.0.0
-  '@aws-sdk/client-s3': 3.928.0
-  '@aws-sdk/client-sesv2': 3.928.0
-  '@aws-sdk/lib-storage': 3.928.0
-  '@azure/storage-blob': 12.29.1
+  '@aws-sdk/client-s3': 3.1111.0
+  '@aws-sdk/client-sesv2': 3.1111.0
+  '@aws-sdk/lib-storage': 3.1111.0
+  '@azure/storage-blob': 12.33.0
   '@braintrust/otel': 0.2.0
   '@changesets/cli': 2.29.7
   '@changesets/get-github-info': 0.6.0
@@ -54,7 +54,7 @@ catalog:
   '@fullcalendar/list': 6.1.19
   '@fullcalendar/timegrid': 6.1.19
   '@godaddy/terminus': 4.12.1
-  '@google-cloud/storage': 7.18.0
+  '@google-cloud/storage': 8.0.0
   '@internationalized/date': 3.10.1
   '@joeattardi/emoji-button': 4.6.4
   '@json2csv/plainjs': 7.0.6
@@ -85,8 +85,8 @@ catalog:
   '@sesamecare-oss/redlock': 1.4.0
   '@shopify/semaphore': 3.1.0
   '@sindresorhus/slugify': 2.2.1
-  '@smithy/node-http-handler': 4.4.5
-  '@supabase/storage-js': 2.81.0
+  '@smithy/node-http-handler': 4.11.2
+  '@supabase/storage-js': 2.112.3
   '@tiptap/core': ^3.26.1
   '@tiptap/extension-image': ^3.26.1
   '@tiptap/extension-subscript': ^3.26.1
