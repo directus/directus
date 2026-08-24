@@ -58,8 +58,8 @@ catalogs:
       specifier: 0.5.6
       version: 0.5.6
     '@directus/mock-license-server':
-      specifier: 0.5.7
-      version: 0.5.7
+      specifier: 0.5.11
+      version: 0.5.11
     '@directus/tsconfig':
       specifier: 4.0.0
       version: 4.0.0
@@ -999,10 +999,6 @@ overrides:
 importers:
 
   .:
-    dependencies:
-      license-monorepo:
-        specifier: link:../license
-        version: link:../license
     devDependencies:
       '@changesets/cli':
         specifier: 'catalog:'
@@ -3420,7 +3416,7 @@ importers:
         version: 0.5.6(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
       '@directus/mock-license-server':
         specifier: 'catalog:'
-        version: 0.5.7(deep-diff@1.0.2)(graphql@16.12.0)(knex@3.1.0)(openapi3-ts@4.5.0)(pino@9.7.0)(vue-router@4.6.3(vue@3.5.24(typescript@5.9.3)))(vue@3.5.24(typescript@5.9.3))
+        version: 0.5.11(deep-diff@1.0.2)(graphql@16.12.0)(knex@3.1.0)(openapi3-ts@4.5.0)(pino@9.7.0)(vue-router@4.6.3(vue@3.5.24(typescript@5.9.3)))(vue@3.5.24(typescript@5.9.3))
       '@directus/sandbox':
         specifier: workspace:*
         version: link:../sandbox
@@ -4176,14 +4172,11 @@ packages:
   '@directus/errors@2.3.1':
     resolution: {integrity: sha512-lTFCIBRirQa7gH1Nr6EpNiM0cFeIUMfBMrRzGDmgCqe56MnQ6+ZG0f7czY35+5uCKeIsLcrOVVv7NM3XGBQZ9w==}
 
-  '@directus/license@0.5.3':
-    resolution: {integrity: sha512-xKqlcHYU7GxVNobhy/StC7IgiZ+zTBufvTcuJzSUylWHqOdNjQMoAtlBS7WTKVpKc+kOX/N8N7sZlMYNTK9m6g==}
-
   '@directus/license@0.5.6':
     resolution: {integrity: sha512-wURPzFv5OYZoxZGm8M/M2tCRr8OREPVjl+vpbMupe/wOvPJYub2FAiUPRNxBneoW8uyd5MBbUbUHjn6udpPrOw==}
 
-  '@directus/mock-license-server@0.5.7':
-    resolution: {integrity: sha512-fX6e9sFa9SHCTBTC8ySDuI9tTm/u75QsmXwMizhUYAvEPMLhP2QP7YA24xu0isGs8G9pv63pptKINsujuq/O/g==}
+  '@directus/mock-license-server@0.5.11':
+    resolution: {integrity: sha512-tTyFp2cU9WhP8E/J11Z3N7Uho3Z5Bwr7Ip7DgZJRp/uvr6BUDo0XPNU+vcTpSP2wln9GFlJ1X+rVKgXvyyV8Yw==}
     engines: {node: '>=22'}
 
   '@directus/schema@13.0.8':
@@ -14748,24 +14741,6 @@ snapshots:
       '@directus/storage': 12.0.4
       ms: 2.1.3
 
-  '@directus/license@0.5.3':
-    dependencies:
-      '@directus/errors': 2.3.1
-      '@directus/sdk': 21.3.0
-      jose: 6.2.3
-      knex: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
-      lodash-es: 4.18.1
-      zod: 4.1.1
-    transitivePeerDependencies:
-      - better-sqlite3
-      - mysql
-      - mysql2
-      - pg
-      - pg-native
-      - sqlite3
-      - supports-color
-      - tedious
-
   '@directus/license@0.5.6(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)':
     dependencies:
       '@directus/errors': 2.3.1
@@ -14784,9 +14759,9 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/mock-license-server@0.5.7(deep-diff@1.0.2)(graphql@16.12.0)(knex@3.1.0)(openapi3-ts@4.5.0)(pino@9.7.0)(vue-router@4.6.3(vue@3.5.24(typescript@5.9.3)))(vue@3.5.24(typescript@5.9.3))':
+  '@directus/mock-license-server@0.5.11(deep-diff@1.0.2)(graphql@16.12.0)(knex@3.1.0)(openapi3-ts@4.5.0)(pino@9.7.0)(vue-router@4.6.3(vue@3.5.24(typescript@5.9.3)))(vue@3.5.24(typescript@5.9.3))':
     dependencies:
-      '@directus/license': 0.5.3
+      '@directus/license': 0.5.6(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
       '@directus/types': 15.0.3(deep-diff@1.0.2)(graphql@16.12.0)(knex@3.1.0)(openapi3-ts@4.5.0)(pino@9.7.0)(vue-router@4.6.3(vue@3.5.24(typescript@5.9.3)))(vue@3.5.24(typescript@5.9.3))
       fastify: 5.8.5
       jose: 6.2.3

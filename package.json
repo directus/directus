@@ -50,8 +50,5 @@
 	"engines": {
 		"node": "22",
 		"pnpm": ">=10 <11"
-	},
-	"dependencies": {
-		"license-monorepo": "link:../license"
 	}
 }
