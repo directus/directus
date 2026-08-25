@@ -16,7 +16,6 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 import type { FolderType } from '@/composables/use-folders';
 import { useFolders } from '@/composables/use-folders';
 import { FolderTarget, SpecialFolder } from '@/types/folders';
-import type { DeleteFolderConfig } from '@/utils/delete-folder';
 
 const router = useRouter();
 
@@ -34,9 +33,6 @@ const props = withDefaults(
 		rootLabel?: string;
 		showSpecialFolders?: boolean;
 		showDownload?: boolean;
-		deleteConfig?: DeleteFolderConfig;
-		moveContentLabel?: string;
-		deleteContentLabel?: string;
 		deletedHandler?: (parent: string | null) => void;
 	}>(),
 	{
@@ -148,9 +144,6 @@ function setOpenFolders() {
 						:delete-disabled="deleteDisabled"
 						:type="type"
 						:show-download="showDownload"
-						:delete-config="deleteConfig"
-						:move-content-label="moveContentLabel"
-						:delete-content-label="deleteContentLabel"
 						:deleted-handler="deletedHandler"
 					/>
 				</VListGroup>

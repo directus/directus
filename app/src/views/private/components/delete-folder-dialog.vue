@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -8,19 +8,20 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VRadio from '@/components/v-radio.vue';
-import { Folder } from '@/composables/use-folders';
-import { DeleteFolderConfig, moveAndDelete, recursiveDelete } from '@/utils/delete-folder';
+import { Folder, FolderType } from '@/composables/use-folders';
+import { moveAndDelete, recursiveDelete } from '@/utils/delete-folder';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 const modelValue = defineModel<boolean>({ required: true });
 
-const props = defineProps<{
-	folders: Folder[];
-	allFolders: Folder[];
-	config?: DeleteFolderConfig;
-	moveContentLabel?: string;
-	deleteContentLabel?: string;
-}>();
+const props = withDefaults(
+	defineProps<{
+		folders: Folder[];
+		allFolders: Folder[];
+		type?: FolderType;
+	}>(),
+	{ type: 'assets' },
+);
 
 const emit = defineEmits<{
 	done: [];
@@ -37,10 +38,18 @@ watch(modelValue, (val) => {
 	if (val) deleteMode.value = 'move';
 });
 
-const radioOptions = [
-	{ value: 'move', label: props.moveContentLabel ?? t('delete_folder_dialog.move_content') },
-	{ value: 'delete', label: props.deleteContentLabel ?? t('delete_folder_dialog.delete_content') },
-];
+// Each folder type words the delete options differently — see the matching blocks in the translations
+const TRANSLATION_KEYS: Record<FolderType, string> = {
+	assets: 'delete_folder_dialog',
+	flows: 'delete_flow_folder_dialog',
+};
+
+const translationKey = computed(() => TRANSLATION_KEYS[props.type]);
+
+const radioOptions = computed(() => [
+	{ value: 'move', label: t(`${translationKey.value}.move_content`) },
+	{ value: 'delete', label: t(`${translationKey.value}.delete_content`) },
+]);
 
 async function save() {
 	if (saving.value) return;
@@ -48,9 +57,9 @@ async function save() {
 
 	try {
 		if (deleteMode.value === 'move') {
-			await moveAndDelete(props.folders, props.config);
+			await moveAndDelete(props.folders, props.type);
 		} else {
-			await recursiveDelete(props.folders, props.allFolders, props.config);
+			await recursiveDelete(props.folders, props.allFolders, props.type);
 		}
 
 		modelValue.value = false;
@@ -69,7 +78,7 @@ async function save() {
 			<VCardTitle>{{ $t('delete_folder') }}</VCardTitle>
 
 			<VCardText>
-				<p>{{ $t('delete_folder_dialog.content_behavior') }}</p>
+				<p>{{ t(`${translationKey}.content_behavior`) }}</p>
 				<div class="radio-options">
 					<VRadio
 						v-for="option in radioOptions"

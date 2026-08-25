@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { FolderTarget } from '@/types/folders';
-import type { DeleteFolderConfig } from '@/utils/delete-folder';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
 
@@ -17,9 +16,6 @@ const emit = defineEmits<{
 	deleted: [parent: string | null];
 	toggle: [];
 }>();
-
-// Flow folders never delete their contained flows — a deleted folder drops its flows back to root
-const deleteConfig: DeleteFolderConfig = { collection: 'flows', field: 'folder', onDeleteContents: 'detach' };
 
 function onTarget(target: FolderTarget) {
 	emit('navigate', target.folder ?? null);
@@ -50,8 +46,6 @@ function onTarget(target: FolderTarget) {
 			:update-disabled="updateDisabled"
 			:delete-disabled="deleteDisabled"
 			:custom-target-handler="onTarget"
-			:delete-config="deleteConfig"
-			:delete-content-label="$t('delete_flow_folder_dialog.delete_content')"
 			:deleted-handler="(parent) => emit('deleted', parent)"
 		/>
 	</div>

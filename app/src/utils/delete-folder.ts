@@ -1,28 +1,29 @@
 import api from '@/api';
-import { Folder } from '@/composables/use-folders';
+import { Folder, FolderType } from '@/composables/use-folders';
 import { collectAllFolderIds } from '@/utils/collect-folder-ids';
 
 /**
  * Describes which items a folder contains and what happens to them when the folder is deleted.
  *
  * - `collection`/`field`: the collection holding the folder's items and the field pointing at the
- *   folder (files via `folder`, flows via `folder`).
- * - `onDeleteContents`: `'delete'` removes contained items with the folder (file library),
- *   `'detach'` keeps them and clears their folder so they fall back to root level (flows).
+ *   folder.
+ * - `onDeleteContents`: `'delete'` removes contained items with the folder,
+ *   `'detach'` keeps them and clears their folder so they fall back to root level.
  */
-export type DeleteFolderConfig = {
+type DeleteFolderConfig = {
 	collection: string;
 	field: string;
 	onDeleteContents: 'delete' | 'detach';
 };
 
-const DEFAULT_CONFIG: DeleteFolderConfig = {
-	collection: 'files',
-	field: 'folder',
-	onDeleteContents: 'delete',
+const CONFIGS: Record<FolderType, DeleteFolderConfig> = {
+	assets: { collection: 'files', field: 'folder', onDeleteContents: 'delete' },
+	// Flow folders never delete their contained flows — a deleted folder drops its flows back to root
+	flows: { collection: 'flows', field: 'folder', onDeleteContents: 'detach' },
 };
 
-export async function moveSingleFolder(folder: Folder, config: DeleteFolderConfig = DEFAULT_CONFIG): Promise<void> {
+export async function moveSingleFolder(folder: Folder, type: FolderType): Promise<void> {
+	const config = CONFIGS[type];
 	const newParent = folder.parent;
 
 	const [foldersRes, itemsRes] = await Promise.all([
@@ -47,16 +48,14 @@ export async function moveSingleFolder(folder: Folder, config: DeleteFolderConfi
 	]);
 }
 
-export async function moveAndDelete(folders: Folder[], config: DeleteFolderConfig = DEFAULT_CONFIG): Promise<void> {
-	await Promise.all(folders.map((folder) => moveSingleFolder(folder, config)));
+export async function moveAndDelete(folders: Folder[], type: FolderType): Promise<void> {
+	await Promise.all(folders.map((folder) => moveSingleFolder(folder, type)));
 	await api.delete('/folders', { data: folders.map((f) => f.id) });
 }
 
-export async function recursiveDelete(
-	folders: Folder[],
-	allFolders: Folder[],
-	config: DeleteFolderConfig = DEFAULT_CONFIG,
-): Promise<void> {
+export async function recursiveDelete(folders: Folder[], allFolders: Folder[], type: FolderType): Promise<void> {
+	const config = CONFIGS[type];
+
 	const allFolderIds = collectAllFolderIds(
 		allFolders,
 		folders.map((f) => f.id),
@@ -73,19 +72,64 @@ export async function recursiveDelete(
 	}
 
 	const itemsRes = await api.get(`/${config.collection}`, {
-		params: { filter: { [config.field]: { _in: allFolderIds } }, fields: ['id'], limit: -1 },
+		params: { filter: { [config.field]: { _in: allFolderIds } }, fields: ['id', config.field], limit: -1 },
 	});
 
-	const itemIds: string[] = itemsRes.data.data.map((f: { id: string }) => f.id);
+	const items: Record<string, string>[] = itemsRes.data.data;
 
-	if (itemIds.length > 0) {
+	if (items.length > 0) {
 		if (config.onDeleteContents === 'detach') {
-			// Contained items are never deleted with the folder — they fall back to root level
-			await api.patch(`/${config.collection}`, { keys: itemIds, data: { [config.field]: null } });
+			await detachItems(items, allFolders, allFolderIdSet, config);
 		} else {
-			await api.delete(`/${config.collection}`, { data: itemIds });
+			await api.delete(`/${config.collection}`, { data: items.map((item) => item.id) });
 		}
 	}
 
 	await api.delete('/folders', { data: allFolderIds });
+}
+
+/**
+ * Walks up from `folderId` until it finds an ancestor that isn't being deleted, or runs out of
+ * ancestors. Returns `null` when nothing above survives, which puts the item at root level.
+ */
+function findSurvivingParent(folderId: string, parentById: Map<string, string | null>, deleted: Set<string>) {
+	let candidate = parentById.get(folderId) ?? null;
+
+	while (candidate !== null && deleted.has(candidate)) {
+		candidate = parentById.get(candidate) ?? null;
+	}
+
+	return candidate;
+}
+
+/**
+ * Contained items are never deleted with their folder — each one moves to the nearest folder that
+ * survives the delete, so a flow nested three levels deep resurfaces beside the deleted subtree
+ * rather than at root level.
+ */
+async function detachItems(
+	items: Record<string, string>[],
+	allFolders: Folder[],
+	deleted: Set<string>,
+	config: DeleteFolderConfig,
+): Promise<void> {
+	const parentById = new Map(allFolders.map((folder) => [folder.id, folder.parent]));
+	const keysByDestination = new Map<string | null, string[]>();
+
+	for (const item of items) {
+		const destination = findSurvivingParent(item[config.field]!, parentById, deleted);
+		const keys = keysByDestination.get(destination);
+
+		if (keys) {
+			keys.push(item.id!);
+		} else {
+			keysByDestination.set(destination, [item.id!]);
+		}
+	}
+
+	await Promise.all(
+		[...keysByDestination].map(([destination, keys]) =>
+			api.patch(`/${config.collection}`, { keys, data: { [config.field]: destination } }),
+		),
+	);
 }

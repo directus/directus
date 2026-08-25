@@ -21,7 +21,6 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 import type { FolderType } from '@/composables/use-folders';
 import { Folder, useFolders } from '@/composables/use-folders';
 import { FolderTarget } from '@/types/folders';
-import type { DeleteFolderConfig } from '@/utils/delete-folder';
 import { getFolderUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DeleteFolderDialog from '@/views/private/components/delete-folder-dialog.vue';
@@ -38,9 +37,6 @@ const props = withDefaults(
 		clickHandler?: (target: FolderTarget) => void;
 		type?: FolderType;
 		showDownload?: boolean;
-		deleteConfig?: DeleteFolderConfig;
-		moveContentLabel?: string;
-		deleteContentLabel?: string;
 		deletedHandler?: (parent: string | null) => void;
 	}>(),
 	{
@@ -194,9 +190,6 @@ async function downloadFolder() {
 				:delete-disabled="deleteDisabled"
 				:type="type"
 				:show-download="showDownload"
-				:delete-config="deleteConfig"
-				:move-content-label="moveContentLabel"
-				:delete-content-label="deleteContentLabel"
 				:deleted-handler="deletedHandler"
 			/>
 		</VListGroup>
@@ -270,9 +263,7 @@ async function downloadFolder() {
 			v-model="deleteActive"
 			:folders="[folder]"
 			:all-folders="folders ?? []"
-			:config="deleteConfig"
-			:move-content-label="moveContentLabel"
-			:delete-content-label="deleteContentLabel"
+			:type="type"
 			@done="onDeleted"
 		/>
 	</div>
