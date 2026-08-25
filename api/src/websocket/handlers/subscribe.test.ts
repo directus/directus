@@ -25,6 +25,16 @@ vi.mock('../../services', () => ({
 
 vi.mock('../../database/index');
 
+function adminClient() {
+	const client = mockClient();
+
+	// An admin is told the collection is inactive without a permission lookup, which keeps this test
+	// away from the database
+	(client as { accountability: unknown }).accountability = { admin: true, roles: [], user: null };
+
+	return client;
+}
+
 function mockClient() {
 	return {
 		on: vi.fn(),
@@ -278,5 +288,73 @@ describe('WebSocket heartbeat handler', () => {
 		expect(unsubscribe).toBeCalled();
 		expect(handler.subscriptions['test_collection']?.size).toBe(0);
 		expect(handler.subscriptions['other_collection']?.size).toBe(0);
+	});
+
+	test('should fail to subscribe to an inactive collection', async () => {
+		const client = adminClient();
+
+		vi.mocked(getSchema).mockImplementation(async () => ({
+			collections: {
+				test_collection: {
+					collection: 'test_collection',
+					primary: 'id',
+					singleton: false,
+					sortField: null,
+					note: null,
+					accountability: null,
+					fields: {},
+				},
+			} as CollectionsOverview,
+			relations: [] as Relation[],
+			inactiveCollections: ['test_collection'],
+		}));
+
+		const subscribe = vi.spyOn(handler, 'subscribe');
+
+		emitter.emitAction('websocket.message', {
+			client,
+			message: {
+				type: 'subscribe',
+				collection: 'test_collection',
+				uid: '123',
+			},
+		});
+
+		await delay(10);
+
+		expect(subscribe).not.toBeCalled();
+		expect(handler.subscriptions['test_collection']).toBeUndefined();
+		expect(client.send).toBeCalledWith(expect.stringContaining('COLLECTION_INACTIVE'));
+	});
+
+	test('should stop dispatching to a subscription once the collection goes inactive', async () => {
+		const client = adminClient();
+
+		const collections = {
+			test_collection: {
+				collection: 'test_collection',
+				primary: 'id',
+				singleton: false,
+				sortField: null,
+				note: null,
+				accountability: null,
+				fields: {},
+			},
+		} as CollectionsOverview;
+
+		handler.subscribe({ client, collection: 'test_collection', event: 'delete', uid: '123' });
+
+		// A delete event hands back the keys without reading through a service, so nothing else would
+		// catch the collection being inactive
+		vi.mocked(getSchema).mockImplementation(async () => ({
+			collections,
+			relations: [] as Relation[],
+			inactiveCollections: ['test_collection'],
+		}));
+
+		await handler.dispatch({ action: 'delete', collection: 'test_collection', keys: ['1'] });
+
+		expect(client.send).toBeCalledTimes(1);
+		expect(client.send).toBeCalledWith(expect.stringContaining('COLLECTION_INACTIVE'));
 	});
 });

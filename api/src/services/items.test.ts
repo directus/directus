@@ -368,10 +368,10 @@ describe('Integration Tests', () => {
 				expect(validateCollectionActive).toHaveBeenCalledWith(
 					expect.objectContaining({ accountability: null }),
 					expect.anything(),
-				);     
+				);
 			});
 		});
-    
+
 		describe('getKeysByQuery', () => {
 			it('should resolve the keys through an authenticated read', async () => {
 				const accountability = { user: 'test-user' } as Accountability;

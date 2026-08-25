@@ -711,3 +711,92 @@ describe('applying a schema snapshot across the status change', () => {
 		await expect(api.request(readItems(collection))).resolves.toEqual([{ id: expect.any(Number), title: 'keep me' }]);
 	});
 });
+
+describe('websocket handlers on an inactive collection', () => {
+	const collection = `inactive_ws_${uid()}`;
+
+	beforeAll(async () => {
+		await api.request(
+			createCollection({
+				collection,
+				fields: [idField, { field: 'title', type: 'string' }],
+				schema: {},
+				meta: {},
+			}),
+		);
+
+		await api.request(createItem(collection, { title: 'Seed' }));
+		await setStatus(collection, 'inactive');
+	});
+
+	afterAll(async () => {
+		await setStatus(collection, 'active').catch(() => {});
+		await api.request(deleteCollection(collection)).catch(() => {});
+	});
+
+	/** Minimal raw client, the realtime SDK hides the error responses this asserts on */
+	async function authenticatedSocket() {
+		const socket = new WebSocket(`ws://localhost:${port}/websocket`);
+		const messages: Record<string, any>[] = [];
+
+		socket.addEventListener('message', (event) => {
+			try {
+				messages.push(JSON.parse(String(event.data)));
+			} catch {
+				// ignore anything that isn't a json message
+			}
+		});
+
+		await new Promise<void>((resolve, reject) => {
+			socket.addEventListener('open', () => resolve());
+			socket.addEventListener('error', () => reject(new Error('WebSocket connection failed')));
+		});
+
+		const waitFor = async (predicate: (message: Record<string, any>) => boolean) => {
+			for (let attempt = 0; attempt < 100; attempt++) {
+				const index = messages.findIndex(predicate);
+				if (index !== -1) return messages.splice(index, 1)[0]!;
+				await new Promise((resolve) => setTimeout(resolve, 50));
+			}
+
+			throw new Error('Timed out waiting for a WebSocket message');
+		};
+
+		socket.send(JSON.stringify({ type: 'auth', access_token: 'admin' }));
+		await waitFor((message) => message['type'] === 'auth' && message['status'] === 'ok');
+
+		return { send: (message: unknown) => socket.send(JSON.stringify(message)), waitFor, close: () => socket.close() };
+	}
+
+	test('rejects subscribing to the collection', async () => {
+		const socket = await authenticatedSocket();
+
+		try {
+			socket.send({ type: 'subscribe', collection, uid: 'sub' });
+
+			const response = await socket.waitFor((message) => message['type'] === 'subscribe');
+
+			expect(response).toMatchObject({ status: 'error', error: { code: 'COLLECTION_INACTIVE' } });
+		} finally {
+			socket.close();
+		}
+	});
+
+	test('rejects item operations on the collection', async () => {
+		const socket = await authenticatedSocket();
+
+		try {
+			socket.send({ type: 'items', collection, action: 'read', uid: 'read' });
+
+			const read = await socket.waitFor((message) => message['type'] === 'items');
+			expect(read).toMatchObject({ status: 'error', error: { code: 'COLLECTION_INACTIVE' } });
+
+			socket.send({ type: 'items', collection, action: 'create', data: { title: 'Nope' }, uid: 'create' });
+
+			const create = await socket.waitFor((message) => message['type'] === 'items');
+			expect(create).toMatchObject({ status: 'error', error: { code: 'COLLECTION_INACTIVE' } });
+		} finally {
+			socket.close();
+		}
+	});
+});
