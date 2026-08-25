@@ -49,7 +49,7 @@ const TestComponent = defineComponent({
 	setup(props) {
 		const { rootFolder } = toRefs(props);
 
-		return useFolders(rootFolder);
+		return useFolders('assets', rootFolder);
 	},
 	render() {
 		return h('div');

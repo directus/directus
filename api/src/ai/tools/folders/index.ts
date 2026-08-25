@@ -1,5 +1,6 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { InvalidPayloadError } from '@directus/errors';
 import type { Folder, PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
@@ -74,6 +75,22 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>, z.infer
 			accountability,
 		});
 
+		const assetFilter = { type: { _eq: 'assets' } };
+
+		const assertAssetFolders = async (keys: PrimaryKey[]) => {
+			const uniqueKeys = [...new Set(keys)];
+
+			const existing = (await service.readByQuery({
+				filter: { _and: [{ id: { _in: uniqueKeys } }, assetFilter] },
+				limit: -1,
+				fields: ['id'],
+			})) as { id: PrimaryKey }[];
+
+			if (existing.length !== uniqueKeys.length) {
+				throw new InvalidPayloadError({ reason: 'This tool can only modify file-library folders' });
+			}
+		};
+
 		if (args.action === 'create') {
 			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 
@@ -94,8 +111,6 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>, z.infer
 			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 
 			// This tool manages file-library folders only; scope reads to the asset type.
-			const assetFilter = { type: { _eq: 'assets' } };
-
 			sanitizedQuery.filter = sanitizedQuery.filter ? { _and: [sanitizedQuery.filter, assetFilter] } : assetFilter;
 
 			let result = null;
@@ -115,14 +130,21 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>, z.infer
 		if (args.action === 'update') {
 			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 
+			const data = Array.isArray(args.data)
+				? args.data.map((item) => ({ ...item, type: 'assets' }))
+				: { ...args.data, type: 'assets' };
+
 			let updatedKeys: PrimaryKey[] = [];
 
-			if (Array.isArray(args.data)) {
-				updatedKeys = await service.updateBatch(args.data);
+			if (Array.isArray(data)) {
+				await assertAssetFolders(data.map((item) => item.id).filter((id): id is PrimaryKey => id != null));
+				updatedKeys = await service.updateBatch(data as Partial<Folder>[]);
 			} else if (args.keys) {
-				updatedKeys = await service.updateMany(args.keys, args.data as Partial<Folder>);
+				await assertAssetFolders(args.keys);
+				updatedKeys = await service.updateMany(args.keys, data as Partial<Folder>);
 			} else {
-				updatedKeys = await service.updateByQuery(sanitizedQuery, args.data as Partial<Folder>);
+				sanitizedQuery.filter = sanitizedQuery.filter ? { _and: [sanitizedQuery.filter, assetFilter] } : assetFilter;
+				updatedKeys = await service.updateByQuery(sanitizedQuery, data as Partial<Folder>);
 			}
 
 			const result = await service.readMany(updatedKeys, sanitizedQuery);
@@ -134,6 +156,8 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>, z.infer
 		}
 
 		if (args.action === 'delete') {
+			await assertAssetFolders(args.keys);
+
 			const deletedKeys = await service.deleteMany(args.keys);
 
 			return {

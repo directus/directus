@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { FlowRaw } from '@directus/types';
 import { sortBy } from 'lodash';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
+import FlowFolderSidebar from './flow-folder-sidebar.vue';
 import { useDuplicate } from './use-duplicate';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
@@ -24,6 +25,7 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import { Header, Sort } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
+import { useMoveToFolder } from '@/composables/use-move-to-folder';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vue';
 import { router } from '@/router';
@@ -34,14 +36,27 @@ import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
+import AddFolder from '@/views/private/components/add-folder.vue';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
 import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
 import EntitlementRemaining from '@/views/private/components/license/entitlement-remaining.vue';
 import MaxCapacityAlert from '@/views/private/components/license/max-capacity-alert.vue';
 
 const { t } = useI18n();
 
+const props = defineProps<{
+	folder?: string;
+}>();
+
 const { createAllowed } = useCollectionPermissions('directus_flows');
 const { createAllowed: operationsCreateAllowed } = useCollectionPermissions('directus_operations');
+
+const {
+	createAllowed: createFolderAllowed,
+	updateAllowed: updateFolderAllowed,
+	deleteAllowed: deleteFolderAllowed,
+} = useCollectionPermissions('directus_folders');
+
 const licenseStore = useLicenseStore();
 
 const duplicateAllowed = computed(() => createAllowed.value && operationsCreateAllowed.value);
@@ -117,10 +132,26 @@ const internalSort = ref<Sort>({ by: 'name', desc: false });
 const flowsStore = useFlowsStore();
 
 const flows = computed(() => {
-	const translatedFlows = flowsStore.flows.map((flow) => ({ ...flow, name: translate(flow.name) }));
+	const source = props.folder ? flowsStore.flows.filter((flow) => flow.folder === props.folder) : flowsStore.flows;
+
+	const translatedFlows = source.map((flow) => ({ ...flow, name: translate(flow.name) }));
 	const sortedFlows = sortBy(translatedFlows, [internalSort.value.by]);
 	return internalSort.value.desc ? sortedFlows.reverse() : sortedFlows;
 });
+
+function navigateToFolder(folderId: string | null) {
+	if (folderId) {
+		router.push({ name: 'settings-flows-folder', params: { folder: folderId } });
+	} else {
+		router.push({ name: 'settings-flows-collection' });
+	}
+}
+
+// Deleting a folder detaches its flows in the database, so re-hydrate before navigating
+async function onFolderDeleted(parent: string | null) {
+	await flowsStore.hydrate();
+	navigateToFolder(parent);
+}
 
 function updateSort(sort: Sort | null) {
 	internalSort.value = sort ?? { by: 'name', desc: false };
@@ -145,6 +176,37 @@ function openDuplicateFlow(item: FlowRaw) {
 	duplicateSource.value = item;
 	duplicateName.value = `${item.name} (copy)`;
 	duplicateDialogActive.value = true;
+}
+
+const selectedKeys = ref<string[]>([]);
+
+// The same component renders every folder, so drop the selection when the folder changes to avoid
+// acting on flows that are no longer in view
+watch(
+	() => props.folder,
+	() => (selectedKeys.value = []),
+);
+
+const moveDialogActive = ref(false);
+const moveTarget = ref<string | null>(null);
+
+const { moving, move } = useMoveToFolder({
+	collection: 'flows',
+	onSuccess: async () => {
+		moveDialogActive.value = false;
+		selectedKeys.value = [];
+		moveTarget.value = null;
+		await flowsStore.hydrate();
+	},
+});
+
+function openMoveToFolder() {
+	moveTarget.value = props.folder ?? null;
+	moveDialogActive.value = true;
+}
+
+function applyMoveToFolder() {
+	move(selectedKeys.value, moveTarget.value);
 }
 
 function navigateToFlow({ item: flow, event }: { item: FlowRaw; event: MouseEvent }) {
@@ -207,7 +269,15 @@ function onFlowDrawerCompletion(id: string) {
 			<SettingsNavigation />
 		</template>
 
-		<template #actions:prepend>
+		<template #actions>
+			<AddFolder type="flows" :parent="folder" :disabled="createFolderAllowed !== true" @created="navigateToFolder" />
+			<PrivateViewHeaderBarActionButton
+				v-if="selectedKeys.length > 0"
+				v-tooltip.bottom="$t('move_to_folder')"
+				icon="folder_move"
+				variant="ghost"
+				@click="openMoveToFolder"
+			/>
 			<EntitlementRemaining entitlement-key="flows" />
 		</template>
 
@@ -221,88 +291,113 @@ function onFlowDrawerCompletion(id: string) {
 			/>
 		</template>
 
-		<VInfo v-if="flows.length === 0" icon="bolt" :title="$t('no_flows')" center>
-			{{ $t('no_flows_copy') }}
+		<FlowFolderSidebar
+			:current-folder="folder"
+			:actions-disabled="!updateFolderAllowed && !deleteFolderAllowed"
+			:update-disabled="!updateFolderAllowed"
+			:delete-disabled="!deleteFolderAllowed"
+			@navigate="navigateToFolder"
+			@deleted="onFolderDeleted"
+		>
+			<VInfo v-if="flows.length === 0" icon="bolt" :title="$t('no_flows')" center>
+				{{ $t('no_flows_copy') }}
 
-			<template v-if="createAllowed" #append>
-				<VButton @click="openCreateFlow">{{ $t('create_flow') }}</VButton>
-			</template>
-		</VInfo>
-
-		<div v-else class="padding-box">
-			<MaxCapacityAlert v-if="!licenseStore.limits.flows.hasRemaining" entitlement-key="flows" />
-
-			<VTable
-				v-model:headers="tableHeaders"
-				:items="flows"
-				:sort="internalSort"
-				show-resize
-				fixed-header
-				@click:row="navigateToFlow"
-				@update:sort="updateSort($event)"
-			>
-				<template #[`item.icon`]="{ item }">
-					<VIcon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--theme--primary)'" />
+				<template v-if="createAllowed" #append>
+					<VButton @click="openCreateFlow">{{ $t('create_flow') }}</VButton>
 				</template>
+			</VInfo>
 
-				<template #[`item.status`]="{ item }">
-					<DisplayFormattedValue
-						type="string"
-						:item="item"
-						:value="item.status"
-						:conditional-formatting="conditionalFormatting"
-					/>
-				</template>
+			<div v-else class="padding-box">
+				<MaxCapacityAlert v-if="!licenseStore.limits.flows.hasRemaining" entitlement-key="flows" />
 
-				<template #item-append="{ item }">
-					<VMenu placement="left-start" show-arrow>
-						<template #activator="{ toggle }">
-							<VIcon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
-						</template>
+				<VTable
+					v-model:headers="tableHeaders"
+					v-model="selectedKeys"
+					:items="flows"
+					:sort="internalSort"
+					show-select="multiple"
+					selection-use-keys
+					show-resize
+					fixed-header
+					@click:row="navigateToFlow"
+					@update:sort="updateSort($event)"
+				>
+					<template #[`item.icon`]="{ item }">
+						<VIcon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--theme--primary)'" />
+					</template>
 
-						<VList>
-							<VListItem clickable @click="toggleFlowStatusById(item.id, item.status)">
-								<template v-if="item.status === 'active'">
-									<VListItemIcon><VIcon name="block" /></VListItemIcon>
-									<VListItemContent>{{ $t('set_flow_inactive') }}</VListItemContent>
-								</template>
-								<template v-else>
-									<VListItemIcon><VIcon name="check" /></VListItemIcon>
-									<VListItemContent>{{ $t('set_flow_active') }}</VListItemContent>
-								</template>
-							</VListItem>
+					<template #[`item.status`]="{ item }">
+						<DisplayFormattedValue
+							type="string"
+							:item="item"
+							:value="item.status"
+							:conditional-formatting="conditionalFormatting"
+						/>
+					</template>
 
-							<VListItem clickable @click="editFlow = item.id">
-								<VListItemIcon>
-									<VIcon name="edit" outline />
-								</VListItemIcon>
-								<VListItemContent>
-									{{ $t('edit_flow') }}
-								</VListItemContent>
-							</VListItem>
+					<template #item-append="{ item }">
+						<VMenu placement="left-start" show-arrow>
+							<template #activator="{ toggle }">
+								<VIcon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
+							</template>
 
-							<VListItem :disabled="!duplicateAllowed" clickable @click="openDuplicateFlow(item)">
-								<VListItemIcon>
-									<VIcon name="content_copy" />
-								</VListItemIcon>
-								<VListItemContent>
-									{{ $t('duplicate_flow') }}
-								</VListItemContent>
-							</VListItem>
+							<VList>
+								<VListItem clickable @click="toggleFlowStatusById(item.id, item.status)">
+									<template v-if="item.status === 'active'">
+										<VListItemIcon><VIcon name="block" /></VListItemIcon>
+										<VListItemContent>{{ $t('set_flow_inactive') }}</VListItemContent>
+									</template>
+									<template v-else>
+										<VListItemIcon><VIcon name="check" /></VListItemIcon>
+										<VListItemContent>{{ $t('set_flow_active') }}</VListItemContent>
+									</template>
+								</VListItem>
 
-							<VListItem class="danger" clickable @click="confirmDelete = item">
-								<VListItemIcon>
-									<VIcon name="delete" outline />
-								</VListItemIcon>
-								<VListItemContent>
-									{{ $t('delete_flow') }}
-								</VListItemContent>
-							</VListItem>
-						</VList>
-					</VMenu>
-				</template>
-			</VTable>
-		</div>
+								<VListItem clickable @click="editFlow = item.id">
+									<VListItemIcon>
+										<VIcon name="edit" outline />
+									</VListItemIcon>
+									<VListItemContent>
+										{{ $t('edit_flow') }}
+									</VListItemContent>
+								</VListItem>
+
+								<VListItem :disabled="!duplicateAllowed" clickable @click="openDuplicateFlow(item)">
+									<VListItemIcon>
+										<VIcon name="content_copy" />
+									</VListItemIcon>
+									<VListItemContent>
+										{{ $t('duplicate_flow') }}
+									</VListItemContent>
+								</VListItem>
+
+								<VListItem class="danger" clickable @click="confirmDelete = item">
+									<VListItemIcon>
+										<VIcon name="delete" outline />
+									</VListItemIcon>
+									<VListItemContent>
+										{{ $t('delete_flow') }}
+									</VListItemContent>
+								</VListItem>
+							</VList>
+						</VMenu>
+					</template>
+				</VTable>
+			</div>
+		</FlowFolderSidebar>
+
+		<VDialog v-model="moveDialogActive" @esc="moveDialogActive = false" @apply="applyMoveToFolder">
+			<VCard>
+				<VCardTitle>{{ $t('move_to_folder') }}</VCardTitle>
+				<VCardText>
+					<FolderPicker v-model="moveTarget" type="flows" :root-label="$t('all_flows')" />
+				</VCardText>
+				<VCardActions>
+					<VButton secondary @click="moveDialogActive = false">{{ $t('cancel') }}</VButton>
+					<VButton :loading="moving" @click="applyMoveToFolder">{{ $t('save') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
 		<VDialog :model-value="!!confirmDelete" @esc="confirmDelete = null" @apply="deleteFlow">
 			<VCard>
@@ -337,6 +432,7 @@ function onFlowDrawerCompletion(id: string) {
 		<FlowDrawer
 			:active="editFlow !== undefined"
 			:primary-key="editFlow"
+			:folder="folder"
 			@cancel="editFlow = undefined"
 			@done="onFlowDrawerCompletion"
 		/>

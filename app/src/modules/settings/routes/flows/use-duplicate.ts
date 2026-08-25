@@ -39,6 +39,8 @@ export function useDuplicate({ source, name, onSuccess }: UseDuplicateOptions) {
 					accountability: flow.accountability,
 					trigger: flow.trigger,
 					options: flow.options,
+					// Keep the copy alongside the original in the same folder
+					folder: flow.folder,
 				},
 				{ params: { fields: ['id'] } },
 			);

@@ -5,7 +5,6 @@ import { storeToRefs } from 'pinia';
 import { computed, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, RouterView, useRouter } from 'vue-router';
-import AddFolder from '../components/add-folder.vue';
 import FolderSection from '../components/folder-section.vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
@@ -17,10 +16,10 @@ import VDialog from '@/components/v-dialog.vue';
 import VInfo from '@/components/v-info.vue';
 import { useEventListener } from '@/composables/use-event-listener';
 import { Folder, useFolders } from '@/composables/use-folders';
+import { useMoveToFolder } from '@/composables/use-move-to-folder';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { emitter, Events } from '@/events';
-import DeleteFolderDialog from '@/modules/files/components/delete-folder-dialog.vue';
 import { useFilesStore } from '@/stores/files.js';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useServerStore } from '@/stores/server';
@@ -31,6 +30,8 @@ import { getFolderFilter } from '@/utils/get-folder-filter';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFiles } from '@/utils/upload-files';
 import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
+import AddFolder from '@/views/private/components/add-folder.vue';
+import DeleteFolderDialog from '@/views/private/components/delete-folder-dialog.vue';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
@@ -49,7 +50,7 @@ const router = useRouter();
 
 const notificationsStore = useNotificationsStore();
 const { info } = useServerStore();
-const { folders, fetchFolders } = useFolders();
+const { folders, fetchFolders } = useFolders('assets');
 
 const layoutRef = ref();
 const selection = ref<string[]>([]);
@@ -197,43 +198,36 @@ function useTitle() {
 
 function useMovetoFolder() {
 	const moveToDialogActive = ref(false);
-	const moving = ref(false);
 	const selectedFolder = ref<string | null>(null);
 
-	return { moveToDialogActive, moving, moveToFolder, selectedFolder };
-
-	async function moveToFolder() {
-		if (moving.value) return;
-
-		moving.value = true;
-
-		try {
-			await api.patch(`/files`, {
-				keys: selection.value,
-				data: {
-					folder: selectedFolder.value,
-				},
-			});
-
+	const { moving, move } = useMoveToFolder({
+		collection: 'files',
+		onSuccess: async (folder) => {
 			selection.value = [];
 
-			if (selectedFolder.value) {
-				router.push({ name: 'folders-collection', params: { folder: selectedFolder.value } });
+			if (folder) {
+				navigateToFolder(folder);
 			}
 
 			await nextTick();
 			await refresh();
-		} catch (error) {
-			unexpectedError(error);
-		} finally {
-			moveToDialogActive.value = false;
-			moving.value = false;
-		}
+		},
+	});
+
+	return { moveToDialogActive, moving, moveToFolder, selectedFolder };
+
+	async function moveToFolder() {
+		await move(selection.value, selectedFolder.value);
+		moveToDialogActive.value = false;
 	}
 }
 
 async function refresh() {
 	await layoutRef.value?.state?.refresh?.();
+}
+
+function navigateToFolder(folder: string) {
+	router.push({ name: 'folders-collection', params: { folder } });
 }
 
 function clearFilters() {
@@ -451,7 +445,12 @@ async function downloadFiles() {
 			<template #actions>
 				<SearchInput v-model="search" v-model:filter="filter" collection="directus_files" small />
 
-				<AddFolder :parent="folder" :disabled="createFolderAllowed !== true" />
+				<AddFolder
+					type="assets"
+					:parent="folder"
+					:disabled="createFolderAllowed !== true"
+					@created="navigateToFolder"
+				/>
 
 				<VDialog
 					v-if="selection.length > 0 && folderSelection.length === 0"
@@ -474,7 +473,7 @@ async function downloadFiles() {
 						<VCardTitle>{{ $t('move_to_folder') }}</VCardTitle>
 
 						<VCardText>
-							<FolderPicker v-model="selectedFolder" />
+							<FolderPicker v-model="selectedFolder" type="assets" />
 						</VCardText>
 
 						<VCardActions>
@@ -507,6 +506,7 @@ async function downloadFiles() {
 					v-model="confirmDelete"
 					:folders="selectedFolderObjects"
 					:all-folders="folders ?? []"
+					type="assets"
 					@done="onFolderDeleteDone"
 				/>
 

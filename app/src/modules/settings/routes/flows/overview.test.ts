@@ -33,9 +33,15 @@ vi.mock('@/stores/flows', () => ({
 	}),
 }));
 
+type CollectionActions = Partial<Record<'create' | 'update' | 'delete', boolean>>;
+
+const permissionsByCollection: Record<string, CollectionActions> = {};
+
 vi.mock('@/composables/use-permissions', () => ({
-	useCollectionPermissions: () => ({
-		createAllowed: true,
+	useCollectionPermissions: (collection: string) => ({
+		createAllowed: permissionsByCollection[collection]?.create ?? true,
+		updateAllowed: permissionsByCollection[collection]?.update ?? true,
+		deleteAllowed: permissionsByCollection[collection]?.delete ?? true,
 	}),
 }));
 
@@ -68,6 +74,8 @@ vi.mock('@/router', () => {
 });
 
 beforeEach(async () => {
+	for (const collection of Object.keys(permissionsByCollection)) delete permissionsByCollection[collection];
+
 	router = generateRouter([
 		{
 			path: '/settings/flows',
@@ -93,31 +101,36 @@ beforeEach(async () => {
 	windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 
 	global = {
-		stubs: [
-			'private-view',
-			'v-button',
-			'v-icon',
-			'settings-navigation',
-			'sidebar-detail',
-			'v-info',
-			'v-table',
-			'display-formatted-value',
-			'v-menu',
-			'v-list',
-			'v-list-item',
-			'v-list-item-icon',
-			'v-list-item-content',
-			'v-dialog',
-			'v-card',
-			'v-card-title',
-			'v-card-actions',
-			'flow-drawer',
-			'router-view',
-			'v-input',
-			'v-card-text',
-			'max-capacity-alert',
-			'entitlement-limit-modal',
-		],
+		stubs: {
+			'private-view': { template: '<div><slot name="actions" /><slot /></div>' },
+			'flow-folder-sidebar': {
+				props: ['actionsDisabled'],
+				template: '<div :data-actions-disabled="actionsDisabled"><slot /></div>',
+			},
+			'v-button': true,
+			'v-icon': true,
+			'settings-navigation': true,
+			'sidebar-detail': true,
+			'v-info': true,
+			'v-table': true,
+			'display-formatted-value': true,
+			'v-menu': true,
+			'v-list': true,
+			'v-list-item': true,
+			'v-list-item-icon': true,
+			'v-list-item-content': true,
+			'v-dialog': true,
+			'v-card': true,
+			'v-card-title': true,
+			'v-card-actions': true,
+			'flow-drawer': true,
+			'add-folder': true,
+			'router-view': true,
+			'v-input': true,
+			'v-card-text': true,
+			'max-capacity-alert': true,
+			'entitlement-limit-modal': true,
+		},
 		plugins: [router, i18n, createTestingPinia({ createSpy: vi.fn, stubActions: false })],
 		directives: {
 			tooltip: Tooltip,
@@ -280,6 +293,19 @@ describe('FlowsOverview - openDuplicateFlow', () => {
 	});
 });
 
+describe('FlowsOverview - selection', () => {
+	test('clears the selection when the folder changes', async () => {
+		const wrapper = mount(FlowsOverview, { global, props: { folder: 'folder-a' } });
+
+		const vm = wrapper.vm as any;
+		vm.selectedKeys = ['flow-1', 'flow-2'];
+
+		await wrapper.setProps({ folder: 'folder-b' });
+
+		expect(vm.selectedKeys).toEqual([]);
+	});
+});
+
 describe('FlowsOverview - toggleFlowStatusById', () => {
 	test('opens the limit modal when activating a Flow exceeds the license limit', async () => {
 		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
@@ -300,5 +326,56 @@ describe('FlowsOverview - toggleFlowStatusById', () => {
 		expect(api.patch).toHaveBeenCalledWith('/flows/flow-1', { status: 'active' });
 		expect(vm.flowsLimitModalOpen).toBe(true);
 		expect(unexpectedError).not.toHaveBeenCalled();
+	});
+});
+
+describe('FlowsOverview - folder permissions', () => {
+	test('folder creation follows directus_folders, not directus_flows', async () => {
+		permissionsByCollection['directus_folders'] = { create: false };
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		expect(wrapper.find('add-folder-stub').attributes('disabled')).toBe('true');
+		expect((wrapper.vm as any).createAllowed).toBe(true);
+	});
+
+	test('folder creation is enabled when directus_folders create is allowed', async () => {
+		permissionsByCollection['directus_flows'] = { create: false };
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		expect(wrapper.find('add-folder-stub').attributes('disabled')).toBe('false');
+	});
+
+	test('folder context actions stay enabled with only update or only delete on directus_folders', async () => {
+		permissionsByCollection['directus_folders'] = { create: false, delete: false };
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		expect(wrapper.find('[data-actions-disabled]').attributes('data-actions-disabled')).toBe('false');
+	});
+
+	test('folder context actions are disabled without update or delete on directus_folders', async () => {
+		permissionsByCollection['directus_folders'] = { update: false, delete: false };
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		expect(wrapper.find('[data-actions-disabled]').attributes('data-actions-disabled')).toBe('true');
+	});
+});
+
+describe('FlowsOverview - empty state', () => {
+	test('renders the empty state in a folder with no Flows, even when other folders have Flows', async () => {
+		const wrapper = mount(FlowsOverview, { global, props: { folder: 'folder-empty' } });
+
+		expect(wrapper.find('v-info-stub').exists()).toBe(true);
+		expect(wrapper.find('v-table-stub').exists()).toBe(false);
+	});
+
+	test('renders the table when the current folder has Flows', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+
+		expect(wrapper.find('v-table-stub').exists()).toBe(true);
+		expect(wrapper.find('v-info-stub').exists()).toBe(false);
 	});
 });
