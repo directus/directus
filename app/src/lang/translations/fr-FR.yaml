@@ -20,9 +20,17 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: À propos
+directus_mscl: Directus MSCL-1.0-GPL
+data_processing_agreement: Contrat sur le traitement des données personnelles
 setup_welcome: Bienvenue sur Directus
 setup_launch: Lancer Directus
+org_name: Nom de l’organisation
+license_key_option: J’ai une clé de licence
 setup_project: Configurer un projet
+expires_on: Expire le
+environment: Environnement
+production: Production
+skip: Ignorer
 continue: Continuer
 first_name: Prénom
 last_name: Nom
@@ -34,6 +42,7 @@ method: Méthode
 published: Publié
 draft: Brouillon
 archived: Archivé
+not_archived: Non archivé
 marketplace: Marketplace
 extensions: Extensions
 skip_link_nav: Passer à la navigation
@@ -60,7 +69,9 @@ switch_user: Changer d'utilisateur
 item_deleted: L'élément que vous étiez en train de modifier a été supprimé.
 item_creation: Création d'élément
 item_revision: Historique de l'article
+previous_revision: Dernière révision
 latest_revision: Dernière révision
+comparing_to: Comparé à
 compare_to_latest_to_restore: Comparer à la dernière fois pour envisager de restaurer cette révision
 enter_a_name: Saisir un nom...
 duplicate_field: Dupliquer le champ
@@ -71,6 +82,7 @@ popular: Popularité
 recent: Récent
 previous: Précédent
 latest: Dernière version
+updated: Mis à jour
 export_items: Exporter
 and: Et
 or: Ou
