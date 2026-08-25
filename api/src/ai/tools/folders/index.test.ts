@@ -147,6 +147,7 @@ describe('folders tool', () => {
 				const updateData = { name: 'updated-folder' };
 				const expectedResult = [{ id: 'folder-1', name: 'updated-folder' }];
 
+				mockFoldersService.readByQuery.mockResolvedValue([{ id: 'folder-1' }]);
 				mockFoldersService.updateMany.mockResolvedValue(keys);
 				mockFoldersService.readMany.mockResolvedValue(expectedResult);
 
@@ -160,7 +161,7 @@ describe('folders tool', () => {
 					accountability: mockAccountability,
 				});
 
-				expect(mockFoldersService.updateMany).toHaveBeenCalledWith(keys, updateData);
+				expect(mockFoldersService.updateMany).toHaveBeenCalledWith(keys, { ...updateData, type: 'assets' });
 				expect(mockFoldersService.updateByQuery).not.toHaveBeenCalled();
 				expect(mockFoldersService.updateBatch).not.toHaveBeenCalled();
 
@@ -168,6 +169,24 @@ describe('folders tool', () => {
 					type: 'text',
 					data: expectedResult,
 				});
+			});
+
+			test('should reject updates targeting non-asset folders', async () => {
+				mockFoldersService.readByQuery.mockResolvedValue([{ id: 'folder-1' }]);
+
+				await expect(
+					folders.handler({
+						args: {
+							action: 'update',
+							data: { name: 'updated-folder' },
+							keys: ['folder-1', 'flow-folder'],
+						},
+						schema: mockSchema,
+						accountability: mockAccountability,
+					}),
+				).rejects.toThrow('This tool can only modify file-library folders');
+
+				expect(mockFoldersService.updateMany).not.toHaveBeenCalled();
 			});
 
 			test('should update folders using batch when data is array', async () => {
@@ -179,6 +198,7 @@ describe('folders tool', () => {
 
 				const updatedKeys = ['folder-1'];
 
+				mockFoldersService.readByQuery.mockResolvedValue([{ id: 'folder-1' }]);
 				mockFoldersService.updateBatch.mockResolvedValue(updatedKeys);
 				mockFoldersService.readMany.mockResolvedValue([]);
 
@@ -191,7 +211,10 @@ describe('folders tool', () => {
 					accountability: mockAccountability,
 				});
 
-				expect(mockFoldersService.updateBatch).toHaveBeenCalledWith(batchData);
+				expect(mockFoldersService.updateBatch).toHaveBeenCalledWith([
+					{ id: 'folder-1', name: 'updated-1', type: 'assets' },
+				]);
+
 				expect(mockFoldersService.updateByQuery).not.toHaveBeenCalled();
 				expect(mockFoldersService.updateMany).not.toHaveBeenCalled();
 			});
@@ -212,8 +235,12 @@ describe('folders tool', () => {
 					accountability: mockAccountability,
 				});
 
-				expect(mockFoldersService.updateByQuery).toHaveBeenCalledWith({}, updateData);
-				expect(mockFoldersService.updateMany).not.toHaveBeenCalled();
+				expect(mockFoldersService.updateByQuery).toHaveBeenCalledWith(
+					{ filter: { type: { _eq: 'assets' } } },
+					{ ...updateData, type: 'assets' },
+				);
+
+				expect(mockFoldersService.readByQuery).not.toHaveBeenCalled();
 				expect(mockFoldersService.updateMany).not.toHaveBeenCalled();
 			});
 		});
@@ -222,6 +249,7 @@ describe('folders tool', () => {
 			test('should delete folders by keys', async () => {
 				const keys = ['folder-1', 'folder-2'];
 
+				mockFoldersService.readByQuery.mockResolvedValue([{ id: 'folder-1' }, { id: 'folder-2' }]);
 				mockFoldersService.deleteMany.mockResolvedValue(keys);
 
 				const result = await folders.handler({
@@ -239,6 +267,23 @@ describe('folders tool', () => {
 					type: 'text',
 					data: keys,
 				});
+			});
+
+			test('should reject deletes targeting non-asset folders', async () => {
+				mockFoldersService.readByQuery.mockResolvedValue([{ id: 'folder-1' }]);
+
+				await expect(
+					folders.handler({
+						args: {
+							action: 'delete',
+							keys: ['folder-1', 'flow-folder'],
+						},
+						schema: mockSchema,
+						accountability: mockAccountability,
+					}),
+				).rejects.toThrow('This tool can only modify file-library folders');
+
+				expect(mockFoldersService.deleteMany).not.toHaveBeenCalled();
 			});
 		});
 	});
