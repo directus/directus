@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import { FolderTarget } from '@/types/folders';
 import type { DeleteFolderConfig } from '@/utils/delete-folder';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -19,8 +18,6 @@ const emit = defineEmits<{
 	toggle: [];
 }>();
 
-const { t } = useI18n();
-
 // Flow folders never delete their contained flows — a deleted folder drops its flows back to root
 const deleteConfig: DeleteFolderConfig = { collection: 'flows', field: 'folder', onDeleteContents: 'detach' };
 
@@ -32,10 +29,10 @@ function onTarget(target: FolderTarget) {
 <template>
 	<div class="flow-folder-navigation" :class="{ collapsed }">
 		<div class="header" :class="{ collapsed }">
-			<span v-if="!collapsed" class="title">{{ t('folders') }}</span>
+			<span v-if="!collapsed" class="title">{{ $t('folders') }}</span>
 
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="collapsed ? t('folders') : undefined"
+				v-tooltip.bottom="collapsed ? $t('folders') : undefined"
 				:icon="collapsed ? 'left_panel_open' : 'left_panel_close'"
 				variant="ghost"
 				@click="emit('toggle')"
@@ -45,7 +42,7 @@ function onTarget(target: FolderTarget) {
 		<FilesNavigation
 			v-show="!collapsed"
 			type="flows"
-			:root-label="t('all_flows')"
+			:root-label="$t('all_flows')"
 			:show-special-folders="false"
 			:show-download="false"
 			:current-folder="currentFolder"
@@ -54,7 +51,7 @@ function onTarget(target: FolderTarget) {
 			:delete-disabled="deleteDisabled"
 			:custom-target-handler="onTarget"
 			:delete-config="deleteConfig"
-			:delete-content-label="t('delete_flow_folder_dialog.delete_content')"
+			:delete-content-label="$t('delete_flow_folder_dialog.delete_content')"
 			:deleted-handler="(parent) => emit('deleted', parent)"
 		/>
 	</div>
