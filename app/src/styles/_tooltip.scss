@@ -1,6 +1,4 @@
-// The global tooltip is `force-mount`ed and stays in the DOM (positioned via a fixed-position
-// Reka Popper wrapper) even while closed, so without this the leftover wrapper keeps intercepting
-// hover/click on whatever now sits underneath its last position (eg. a nearby delete button).
+// Wrapper is force-mounted and stays in the DOM; without this it intercepts pointer events after close.
 [data-reka-popper-content-wrapper]:has(> #app-tooltip-content) {
 	pointer-events: none;
 }
