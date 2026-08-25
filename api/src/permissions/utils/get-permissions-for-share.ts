@@ -28,8 +28,9 @@ export async function getPermissionsForShare(
 	};
 
 	const { collection, item, role, user_created } = await fetchShareInfo(accountability.share!, context);
+	const inactiveCollections = context.schema.inactiveCollections ?? [];
 
-	if (collection in context.schema.collections === false) {
+	if (inactiveCollections.includes(collection)) {
 		throw new ForbiddenError();
 	}
 

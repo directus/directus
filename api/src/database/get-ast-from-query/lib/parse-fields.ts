@@ -212,10 +212,11 @@ export async function parseFields(
 		if (!relationType) continue;
 
 		let child: NestedCollectionNode | null = null;
+		const inactiveCollections = context.schema.inactiveCollections ?? [];
 
 		if (relationType === 'a2o') {
 			let allowedCollections = relation.meta!.one_allowed_collections!.filter(
-				(collection) => collection in context.schema.collections,
+				(collection) => !inactiveCollections.includes(collection),
 			);
 
 			if (options.accountability && options.accountability.admin === false && policies) {
@@ -293,7 +294,7 @@ export async function parseFields(
 				}
 			}
 
-			if (relatedCollection in context.schema.collections === false) {
+			if (inactiveCollections.includes(relatedCollection)) {
 				throw createCollectionForbiddenError(fieldKey, relatedCollection);
 			}
 
