@@ -3,6 +3,7 @@ import type { AST } from '../../../types/ast.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
+import { validateCollectionActive } from '../validate-collection-active/validate-collection-active.js';
 import { fieldMapFromAst } from './lib/field-map-from-ast.js';
 import { injectCases } from './lib/inject-cases.js';
 import type { FieldMap } from './types.js';
@@ -21,6 +22,14 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 	// that collection that the AST path tries to access
 	const fieldMap: FieldMap = fieldMapFromAst(options.ast, context.schema);
 	const collections = collectionsInFieldMap(fieldMap);
+
+	// Every collection the query traverses into has to be active, not just the one it is addressed at.
+	for (const collection of collections) {
+		await validateCollectionActive(
+			{ accountability: options.accountability, action: options.action, collection },
+			context,
+		);
+	}
 
 	if (!options.accountability || options.accountability.admin) {
 		// Validate the field existence, even if no permissions apply to the current accountability

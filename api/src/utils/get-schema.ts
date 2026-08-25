@@ -148,7 +148,12 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 
 		const collectionMeta = collections.find((collectionMeta) => collectionMeta.collection === collection);
 
-		if (!isSystemCollection(collection) && collectionMeta && 'status' in collectionMeta && collectionMeta.status !== 'active') {
+		if (
+			!isSystemCollection(collection) &&
+			collectionMeta &&
+			'status' in collectionMeta &&
+			collectionMeta.status !== 'active'
+		) {
 			result.inactiveCollections?.push(collection);
 		}
 

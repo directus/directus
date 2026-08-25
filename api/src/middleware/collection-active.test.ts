@@ -88,11 +88,13 @@ describe('check', () => {
 		);
 	});
 
-	test('Checks without accountability for an unauthenticated request', async () => {
+	test('Checks an unauthenticated request as the public role', async () => {
 		await collectionActive(mockRequest as Request, mockResponse as Response, nextFunction);
 
 		expect(validateCollectionActive).toHaveBeenCalledWith(
-			expect.objectContaining({ accountability: null }),
+			expect.objectContaining({
+				accountability: expect.objectContaining({ user: null, role: null, admin: false, app: false }),
+			}),
 			expect.anything(),
 		);
 	});

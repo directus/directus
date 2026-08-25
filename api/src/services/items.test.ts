@@ -362,10 +362,13 @@ describe('Integration Tests', () => {
 				);
 			});
 
-			it('should not check the collection without accountability', async () => {
-				await expect(service.readByQuery({})).resolves.toBeDefined();
+			it('should check the collection without accountability too', async () => {
+				await expect(service.readByQuery({})).rejects.toMatchObject({ code: 'COLLECTION_INACTIVE' });
 
-				expect(validateCollectionActive).not.toHaveBeenCalled();
+				expect(validateCollectionActive).toHaveBeenCalledWith(
+					expect.objectContaining({ accountability: null }),
+					expect.anything(),
+				);
 			});
 		});
 	});
