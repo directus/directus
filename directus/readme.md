@@ -69,7 +69,7 @@ One click. Fully provisioned with PostgreSQL, Redis, and S3-compatible storage, 
 
 ### Deploy on RepoCloud
 
-One click. Competitive pricing for open-source applications.
+One click. Managed hosting for open-source applications with a dedicated VPS.
 
 [![Deploy on RepoCloud](https://d16t0pc4846x52.cloudfront.net/deploylobe.svg)](https://repocloud.io/details/Directus/)
 
