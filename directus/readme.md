@@ -67,6 +67,12 @@ One click. Fully provisioned with PostgreSQL, Redis, and S3-compatible storage, 
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.com/deploy/directus-official?referralCode=b2RDZT)
 
+### Deploy on RepoCloud
+
+One click. Competitive pricing for open-source applications.
+
+[![Deploy on RepoCloud](https://d16t0pc4846x52.cloudfront.net/deploylobe.svg)](https://repocloud.io/details/Directus/)
+
 ---
 
 ## 🙋 Community Help
