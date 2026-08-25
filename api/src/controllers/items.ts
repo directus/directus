@@ -2,6 +2,7 @@ import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '
 import { isSystemCollection } from '@directus/system-data';
 import type { PrimaryKey } from '@directus/types';
 import express from 'express';
+import collectionActive from '../middleware/collection-active.js';
 import collectionExists from '../middleware/collection-exists.js';
 import checkIsLocked from '../middleware/is-locked.js';
 import { respond } from '../middleware/respond.js';
@@ -18,6 +19,7 @@ router.use(checkIsLocked('items'));
 router.post(
 	'/:collection',
 	collectionExists,
+	collectionActive,
 	asyncHandler(async (req, res, next) => {
 		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
 
@@ -94,12 +96,14 @@ const readHandler = asyncHandler(async (req, res, next) => {
 	return next();
 });
 
-router.search('/:collection', collectionExists, validateBatch('read'), readHandler, respond);
-router.get('/:collection', collectionExists, readHandler, respond);
+router.search('/:collection', collectionExists, collectionActive, validateBatch('read'), readHandler, respond);
+
+router.get('/:collection', collectionExists, collectionActive, readHandler, respond);
 
 router.get(
 	'/:collection/:pk',
 	collectionExists,
+	collectionActive,
 	asyncHandler(async (req, res, next) => {
 		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
 
@@ -122,6 +126,7 @@ router.get(
 router.patch(
 	'/:collection',
 	collectionExists,
+	collectionActive,
 	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
 		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
@@ -169,6 +174,7 @@ router.patch(
 router.patch(
 	'/:collection/:pk',
 	collectionExists,
+	collectionActive,
 	asyncHandler(async (req, res, next) => {
 		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
 
@@ -202,6 +208,7 @@ router.patch(
 router.delete(
 	'/:collection',
 	collectionExists,
+	collectionActive,
 	validateBatch('delete'),
 	asyncHandler(async (req, _res, next) => {
 		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
@@ -228,6 +235,7 @@ router.delete(
 router.delete(
 	'/:collection/:pk',
 	collectionExists,
+	collectionActive,
 	asyncHandler(async (req, _res, next) => {
 		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
 
