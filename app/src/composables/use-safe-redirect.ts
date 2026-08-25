@@ -19,21 +19,26 @@ export function useSafeRedirect() {
 	function toRelativePath(resolved: string | null): string | null {
 		if (!resolved) return null;
 
+		let path = resolved;
+
 		// Only attempt conversion for absolute URLs
-		if (/^https?:\/\//.test(resolved) === false) return resolved;
+		if (/^https?:\/\//.test(path)) {
+			try {
+				const resolvedUrl = new URL(path);
+				const publicBase = new URL(getPublicURL());
 
-		try {
-			const resolvedUrl = new URL(resolved);
-			const publicBase = new URL(getPublicURL());
-
-			if (resolvedUrl.protocol === publicBase.protocol && resolvedUrl.host === publicBase.host) {
-				return extractPath(resolvedUrl.toString());
+				if (resolvedUrl.protocol === publicBase.protocol && resolvedUrl.host === publicBase.host) {
+					path = extractPath(resolvedUrl.toString());
+				}
+			} catch {
+				// Not a valid URL, return as-is
 			}
-		} catch {
-			// Not a valid URL, return as-is
 		}
 
-		return resolved;
+		// Ensure extracted path does not start with `//`, which the browser treats as a protocol-relative URL.
+		if (path.startsWith('//')) return null;
+
+		return path;
 	}
 
 	return { redirect, resolveRedirect };

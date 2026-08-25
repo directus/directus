@@ -98,6 +98,37 @@ describe('useSafeRedirect', () => {
 		});
 	});
 
+	test('resolveRedirect rejects same-origin URL that collapses to a protocol-relative path', async () => {
+		// extractPath turns this into `//evil.com`, which navigates off-site
+		vi.mocked(api.post).mockResolvedValue({ data: { data: 'http://localhost:8055/admin//evil.com' } });
+
+		const { redirect, resolveRedirect } = useSafeRedirect();
+
+		await resolveRedirect('http://localhost:8055/admin//evil.com');
+
+		expect(redirect.value).toBeNull();
+	});
+
+	test('resolveRedirect rejects a protocol-relative path', async () => {
+		vi.mocked(api.post).mockResolvedValue({ data: { data: '//evil.com' } });
+
+		const { redirect, resolveRedirect } = useSafeRedirect();
+
+		await resolveRedirect('//evil.com');
+
+		expect(redirect.value).toBeNull();
+	});
+
+	test('resolveRedirect keeps a path containing an inner double slash', async () => {
+		vi.mocked(api.post).mockResolvedValue({ data: { data: 'http://localhost:8055/admin/content//nested' } });
+
+		const { redirect, resolveRedirect } = useSafeRedirect();
+
+		await resolveRedirect('http://localhost:8055/admin/content//nested');
+
+		expect(redirect.value).toBe('/content//nested');
+	});
+
 	test('resolveRedirect sets null on API error', async () => {
 		vi.mocked(api.post).mockRejectedValue(new Error('Network error'));
 
