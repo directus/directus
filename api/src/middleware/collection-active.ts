@@ -1,8 +1,7 @@
-import { CollectionInactiveError } from '@directus/errors';
 import type { PermissionsAction } from '@directus/types';
 import getDatabase from '../database/index.js';
-import { createCollectionForbiddenError } from '../permissions/modules/process-ast/utils/validate-path/create-error.js';
-import { validateCollectionAccess } from '../permissions/modules/validate-access/lib/validate-collection-access.js';
+import { validateCollectionActive } from '../permissions/modules/validate-collection-active/validate-collection-active.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import asyncHandler from '../utils/async-handler.js';
 
 /**
@@ -11,26 +10,14 @@ import asyncHandler from '../utils/async-handler.js';
 const collectionActive = asyncHandler(async (req, _res, next) => {
 	if (!req.params['collection']) return next();
 
-	const accountability = req.accountability;
-	const collection = req.params['collection'];
-	const inactiveCollections = req.schema.inactiveCollections ?? [];
-
-	if (inactiveCollections.includes(collection)) {
-		let hasAccess = accountability?.admin === true;
-
-		if (!hasAccess && !!accountability) {
-			hasAccess = await validateCollectionAccess(
-				{ accountability, collection, action: mapMethod(req.method) },
-				{ schema: req.schema, knex: getDatabase() },
-			);
-		}
-
-		if (hasAccess) {
-			throw new CollectionInactiveError({ collection });
-		} else {
-			throw createCollectionForbiddenError('', collection);
-		}
-	}
+	await validateCollectionActive(
+		{
+			accountability: req.accountability ?? createDefaultAccountability(),
+			collection: req.params['collection'],
+			action: mapMethod(req.method),
+		},
+		{ schema: req.schema, knex: getDatabase() },
+	);
 
 	return next();
 });

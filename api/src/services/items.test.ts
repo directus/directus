@@ -1,4 +1,5 @@
 import { VERSION_KEY_PUBLISHED, VERSION_KEY_PUBLISHED_LEGACY } from '@directus/constants';
+import { CollectionInactiveError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { type Accountability, UserIntegrityCheckFlag } from '@directus/types';
 import knex, { type Knex } from 'knex';
@@ -6,7 +7,7 @@ import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, test, vi } from 'vitest';
 import { SchemaHelperMSSQL } from '../database/helpers/schema/dialects/mssql.js';
 import { getDatabaseClient } from '../database/index.js';
-import { validateCollectionAccess } from '../permissions/modules/validate-access/lib/validate-collection-access.js';
+import { validateCollectionActive } from '../permissions/modules/validate-collection-active/validate-collection-active.js';
 import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { handleVersion } from '../utils/versioning/handle-version.js';
 import { ActivityService } from './activity.js';
@@ -18,7 +19,7 @@ vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 }));
 
-vi.mock('../permissions/modules/validate-access/lib/validate-collection-access.js');
+vi.mock('../permissions/modules/validate-collection-active/validate-collection-active.js');
 vi.mock('../utils/validate-user-count-integrity.js');
 vi.mock('../utils/versioning/handle-version.js', { spy: true });
 
@@ -310,43 +311,38 @@ describe('Integration Tests', () => {
 		});
 
 		describe('inactive collections', () => {
-			const inactiveSchema = { ...schema, inactiveCollections: ['test'] };
+			const accountability = {
+				user: 'user-id',
+				role: 'role-id',
+				admin: false,
+				app: true,
+				roles: [],
+				ip: null,
+			} as Accountability;
 
-			const accountability = (overrides: Partial<Accountability> = {}) =>
-				({
-					user: 'user-id',
-					role: 'role-id',
-					admin: false,
-					app: true,
-					roles: [],
-					ip: null,
-					...overrides,
-				}) as Accountability;
-
-			const serviceFor = (auth: Accountability | null) =>
-				new ItemsService('test', { accountability: auth, knex: db, schema: inactiveSchema });
-
-			const operations: [name: string, run: (service: ItemsService) => Promise<unknown>][] = [
-				['createOne', (service) => service.createOne({ name: 'first' })],
-				['createMany', (service) => service.createMany([{ name: 'first' }])],
-				['readByQuery', (service) => service.readByQuery({})],
-				['readOne', (service) => service.readOne(1)],
-				['readMany', (service) => service.readMany([1])],
-				['readSingleton', (service) => service.readSingleton({})],
-				['updateOne', (service) => service.updateOne(1, { name: 'first' })],
-				['updateMany', (service) => service.updateMany([1], { name: 'first' })],
-				['updateBatch', (service) => service.updateBatch([{ id: 1, name: 'first' }])],
-				['updateByQuery', (service) => service.updateByQuery({}, { name: 'first' })],
-				['upsertOne', (service) => service.upsertOne({ name: 'first' })],
-				['upsertMany', (service) => service.upsertMany([{ name: 'first' }])],
-				['upsertSingleton', (service) => service.upsertSingleton({ name: 'first' })],
-				['deleteOne', (service) => service.deleteOne(1)],
-				['deleteMany', (service) => service.deleteMany([1])],
-				['deleteByQuery', (service) => service.deleteByQuery({})],
+			// The check itself is covered in the shared utility's own tests, here we only ensure every
+			// operation runs it for the action it performs
+			const operations: [name: string, action: string, run: (service: ItemsService) => Promise<unknown>][] = [
+				['createOne', 'create', (service) => service.createOne({ name: 'first' })],
+				['createMany', 'create', (service) => service.createMany([{ name: 'first' }])],
+				['readByQuery', 'read', (service) => service.readByQuery({})],
+				['readOne', 'read', (service) => service.readOne(1)],
+				['readMany', 'read', (service) => service.readMany([1])],
+				['readSingleton', 'read', (service) => service.readSingleton({})],
+				['updateOne', 'update', (service) => service.updateOne(1, { name: 'first' })],
+				['updateMany', 'update', (service) => service.updateMany([1], { name: 'first' })],
+				['updateBatch', 'update', (service) => service.updateBatch([{ id: 1, name: 'first' }])],
+				['updateByQuery', 'update', (service) => service.updateByQuery({}, { name: 'first' })],
+				['upsertOne', 'create', (service) => service.upsertOne({ name: 'first' })],
+				['upsertMany', 'create', (service) => service.upsertMany([{ name: 'first' }])],
+				['upsertSingleton', 'update', (service) => service.upsertSingleton({ name: 'first' })],
+				['deleteOne', 'delete', (service) => service.deleteOne(1)],
+				['deleteMany', 'delete', (service) => service.deleteMany([1])],
+				['deleteByQuery', 'delete', (service) => service.deleteByQuery({})],
 			];
 
 			beforeEach(() => {
-				vi.mocked(validateCollectionAccess).mockResolvedValue(false);
+				vi.mocked(validateCollectionActive).mockRejectedValue(new CollectionInactiveError({ collection: 'test' }));
 				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 			});
 
@@ -354,72 +350,22 @@ describe('Integration Tests', () => {
 				vi.mocked(ItemsService.prototype.getKeysByQuery).mockRestore();
 			});
 
-			describe('for an admin', () => {
-				it.each(operations)('should report the collection as inactive on %s', async (_name, run) => {
-					await expect(run(serviceFor(accountability({ admin: true })))).rejects.toMatchObject({
-						code: 'COLLECTION_INACTIVE',
-					});
+			it.each(operations)('should check the collection on %s as the %s action', async (_name, action, run) => {
+				const service = new ItemsService('test', { accountability, knex: db, schema });
 
-					expect(validateCollectionAccess).not.toHaveBeenCalled();
-				});
-			});
+				await expect(run(service)).rejects.toMatchObject({ code: 'COLLECTION_INACTIVE' });
 
-			describe('for a user holding permissions on the collection', () => {
-				beforeEach(() => {
-					vi.mocked(validateCollectionAccess).mockResolvedValue(true);
-				});
-
-				it.each(operations)('should report the collection as inactive on %s', async (_name, run) => {
-					await expect(run(serviceFor(accountability()))).rejects.toMatchObject({ code: 'COLLECTION_INACTIVE' });
-				});
-			});
-
-			describe('for a user without permissions on the collection', () => {
-				beforeEach(() => {
-					vi.mocked(validateCollectionAccess).mockResolvedValue(false);
-				});
-
-				it.each(operations)('should hide the collection behind a forbidden error on %s', async (_name, run) => {
-					await expect(run(serviceFor(accountability()))).rejects.toMatchObject({ code: 'FORBIDDEN' });
-				});
-			});
-
-			describe('without accountability', () => {
-				const outcome = async (run: () => Promise<unknown>) => {
-					try {
-						return { resolved: await run() };
-					} catch (error) {
-						return { rejected: (error as { code?: string }).code };
-					}
-				};
-
-				it.each(operations)('should treat %s like the collection is still active', async (_name, run) => {
-					const active = await outcome(() => run(new ItemsService('test', { knex: db, schema })));
-					const inactive = await outcome(() => run(serviceFor(null)));
-
-					expect(inactive).toEqual(active);
-					expect(validateCollectionAccess).not.toHaveBeenCalled();
-				});
-			});
-
-			it.each([
-				['create', (service: ItemsService) => service.createOne({ name: 'first' })],
-				['read', (service: ItemsService) => service.readByQuery({})],
-				['update', (service: ItemsService) => service.updateMany([1], { name: 'first' })],
-				['delete', (service: ItemsService) => service.deleteMany([1])],
-			])('should check permissions for the %s action', async (action, run) => {
-				await expect(run(serviceFor(accountability()))).rejects.toThrow();
-
-				expect(validateCollectionAccess).toHaveBeenCalledWith(
-					expect.objectContaining({ collection: 'test', action }),
-					expect.anything(),
+				// Operations that run in a transaction pass the transaction as the knex instance
+				expect(validateCollectionActive).toHaveBeenCalledWith(
+					{ accountability, collection: 'test', action },
+					expect.objectContaining({ schema }),
 				);
 			});
 
-			it('should not affect collections that are still active', async () => {
+			it('should not check the collection without accountability', async () => {
 				await expect(service.readByQuery({})).resolves.toBeDefined();
 
-				expect(validateCollectionAccess).not.toHaveBeenCalled();
+				expect(validateCollectionActive).not.toHaveBeenCalled();
 			});
 		});
 	});
