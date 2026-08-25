@@ -1,4 +1,4 @@
-import { CORE_LICENSE } from '@directus/license';
+import { DIRECTUS_CORE_LICENSE } from '@directus/license';
 import { merge } from 'lodash-es';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { computeLicenseStatus } from './compute-license-status.js';
@@ -62,7 +62,7 @@ describe('no license (core install)', () => {
 describe('with license', () => {
 	test('over limits returns locked irrespective of expiry', async () => {
 		checkAll.mockResolvedValue(false);
-		const license = merge({}, CORE_LICENSE, { meta: { expires_at: FIXED_NOW_SEC + 1000 } });
+		const license = merge({}, DIRECTUS_CORE_LICENSE, { meta: { expires_at: FIXED_NOW_SEC + 1000 } });
 
 		await expect(computeLicenseStatus(license)).resolves.toBe('locked');
 		expect(isInCoreGracePeriod).not.toHaveBeenCalled();
@@ -70,14 +70,14 @@ describe('with license', () => {
 
 	test('perpetual (expires_at = -1): returns active', async () => {
 		checkAll.mockResolvedValue(true);
-		const license = merge({}, CORE_LICENSE, { meta: { expires_at: -1 } });
+		const license = merge({}, DIRECTUS_CORE_LICENSE, { meta: { expires_at: -1 } });
 
 		await expect(computeLicenseStatus(license)).resolves.toBe('active');
 	});
 
 	test('not yet expired returns active', async () => {
 		checkAll.mockResolvedValue(true);
-		const license = merge({}, CORE_LICENSE, { meta: { expires_at: FIXED_NOW_SEC + 100 } });
+		const license = merge({}, DIRECTUS_CORE_LICENSE, { meta: { expires_at: FIXED_NOW_SEC + 100 } });
 
 		await expect(computeLicenseStatus(license)).resolves.toBe('active');
 	});
@@ -85,7 +85,7 @@ describe('with license', () => {
 	test('past expiry but within grace_period returns grace', async () => {
 		checkAll.mockResolvedValue(true);
 
-		const license = merge({}, CORE_LICENSE, {
+		const license = merge({}, DIRECTUS_CORE_LICENSE, {
 			meta: { expires_at: FIXED_NOW_SEC - 100, grace_period: 200 },
 		});
 
@@ -95,7 +95,7 @@ describe('with license', () => {
 	test('past expiry and grace_period throws', async () => {
 		checkAll.mockResolvedValue(true);
 
-		const license = merge({}, CORE_LICENSE, {
+		const license = merge({}, DIRECTUS_CORE_LICENSE, {
 			meta: { expires_at: FIXED_NOW_SEC - 1000, grace_period: 100 },
 		});
 
@@ -105,7 +105,7 @@ describe('with license', () => {
 	test('expires_at:null but renews_at defined returns active', async () => {
 		checkAll.mockResolvedValue(true);
 
-		const license = merge({}, CORE_LICENSE, {
+		const license = merge({}, DIRECTUS_CORE_LICENSE, {
 			meta: { expires_at: null, renews_at: FIXED_NOW_SEC + 100 },
 		});
 
@@ -114,7 +114,7 @@ describe('with license', () => {
 
 	test('expires_at and renews_at both null returns active', async () => {
 		checkAll.mockResolvedValue(true);
-		const license = merge({}, CORE_LICENSE, { meta: { expires_at: null, renews_at: null } });
+		const license = merge({}, DIRECTUS_CORE_LICENSE, { meta: { expires_at: null, renews_at: null } });
 
 		await expect(computeLicenseStatus(license)).resolves.toBe('active');
 	});
