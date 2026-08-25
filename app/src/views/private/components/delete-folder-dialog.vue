@@ -14,14 +14,11 @@ import { unexpectedError } from '@/utils/unexpected-error';
 
 const modelValue = defineModel<boolean>({ required: true });
 
-const props = withDefaults(
-	defineProps<{
-		folders: Folder[];
-		allFolders: Folder[];
-		type?: FolderType;
-	}>(),
-	{ type: 'assets' },
-);
+const props = defineProps<{
+	folders: Folder[];
+	allFolders: Folder[];
+	type: FolderType;
+}>();
 
 const emit = defineEmits<{
 	done: [];

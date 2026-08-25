@@ -506,6 +506,7 @@ async function downloadFiles() {
 					v-model="confirmDelete"
 					:folders="selectedFolderObjects"
 					:all-folders="folders ?? []"
+					type="assets"
 					@done="onFolderDeleteDone"
 				/>
 
