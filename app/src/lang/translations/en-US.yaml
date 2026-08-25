@@ -313,7 +313,7 @@ delete_folder_dialog:
   delete_content: Delete all content
   content_behavior: What should happen to the folder contents?
 delete_flow_folder_dialog:
-  content_behavior: What should happen to this folder's subfolders?
+  content_behavior: What should happen to this folder's subfolders? Your flows will not be deleted.
   move_content: Delete this folder only
   delete_content: Delete this folder and its subfolders
 validation_errors_notice: 'The following fields have invalid values:'
