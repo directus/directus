@@ -368,7 +368,25 @@ describe('Integration Tests', () => {
 				expect(validateCollectionActive).toHaveBeenCalledWith(
 					expect.objectContaining({ accountability: null }),
 					expect.anything(),
-				);
+				);     
+			});
+		});
+    
+		describe('getKeysByQuery', () => {
+			it('should resolve the keys through an authenticated read', async () => {
+				const accountability = { user: 'test-user' } as Accountability;
+				const authenticatedService = new ItemsService('test', { knex: db, schema, accountability });
+
+				const readByQuery = vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([{ id: 1 }, { id: 2 }]);
+
+				const keys = await authenticatedService.getKeysByQuery({ filter: { id: { _gt: 0 } } });
+
+				expect(keys).toEqual([1, 2]);
+				expect(readByQuery).toHaveBeenCalledExactlyOnceWith({ filter: { id: { _gt: 0 } }, fields: ['id'] });
+
+				expect((readByQuery.mock.contexts[0] as ItemsService).accountability).toBe(accountability);
+
+				readByQuery.mockRestore();
 			});
 		});
 	});
