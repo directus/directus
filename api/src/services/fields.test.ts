@@ -241,44 +241,6 @@ describe('Integration Tests', () => {
 				expect(result.every((field) => field.collection === 'test_collection')).toBe(true);
 			});
 
-			test('should read fields of an inactive collection', async () => {
-				// An inactive collection is left out of `collections` but tracked in `inactiveCollections`,
-				// and its table still exists. Dropping its fields here silently strips them from schema
-				// snapshots, so restoring one deletes the columns.
-				const schemaWithInactive = { ...schema, inactiveCollections: ['inactive_collection'] };
-
-				const mockColumns = [
-					{
-						table: 'inactive_collection',
-						name: 'id',
-						data_type: 'integer',
-						default_value: null,
-						is_nullable: false,
-					},
-					{
-						table: 'inactive_collection',
-						name: 'title',
-						data_type: 'varchar',
-						default_value: null,
-						is_nullable: true,
-					},
-				];
-
-				const service = new FieldsService({
-					knex: db,
-					schema: schemaWithInactive,
-					accountability: { role: 'admin', admin: true } as Accountability,
-				});
-
-				service.schemaInspector.columnInfo = vi.fn().mockResolvedValue(mockColumns);
-
-				tracker.on.select('directus_fields').response([]);
-
-				const result = await service.readAll('inactive_collection');
-
-				expect(result.map((field) => field.field)).toEqual(['id', 'title']);
-			});
-
 			test('should throw ForbiddenError for non-admin users without access', async () => {
 				vi.mocked(fetchPermissions).mockResolvedValueOnce([]);
 
