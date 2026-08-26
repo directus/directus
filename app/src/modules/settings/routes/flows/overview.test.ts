@@ -23,10 +23,18 @@ vi.mock('@/stores/flows', () => ({
 		flows: [
 			{
 				id: 'flow-1',
-				name: 'Test Flow 1',
+				name: 'Send email',
 				status: 'active',
 				icon: 'bolt',
 				color: 'var(--theme--primary)',
+				description: 'Notify the team',
+			} as FlowRaw,
+			{
+				id: 'flow-2',
+				name: 'Sync data',
+				status: 'inactive',
+				icon: 'bolt',
+				description: 'Nightly job',
 			} as FlowRaw,
 		],
 		hydrate: vi.fn(),
@@ -74,6 +82,9 @@ vi.mock('@/router', () => {
 });
 
 beforeEach(async () => {
+	// Search and filter persist to localStorage, so isolate each test
+	localStorage.clear();
+
 	for (const collection of Object.keys(permissionsByCollection)) delete permissionsByCollection[collection];
 
 	router = generateRouter([
@@ -125,6 +136,7 @@ beforeEach(async () => {
 			'v-card-actions': true,
 			'flow-drawer': true,
 			'add-folder': true,
+			'search-input': { props: ['modelValue', 'filter'], template: '<div />' },
 			'router-view': true,
 			'v-input': true,
 			'v-card-text': true,
@@ -377,5 +389,66 @@ describe('FlowsOverview - empty state', () => {
 
 		expect(wrapper.find('v-table-stub').exists()).toBe(true);
 		expect(wrapper.find('v-info-stub').exists()).toBe(false);
+	});
+});
+
+describe('FlowsOverview - search and filter', () => {
+	test('search narrows the list to name or description matches', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.search = 'sync';
+		await wrapper.vm.$nextTick();
+
+		expect(vm.flows.map((flow: FlowRaw) => flow.id)).toEqual(['flow-2']);
+	});
+
+	test('filter narrows the list using Directus filter rules', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.filter = { status: { _eq: 'active' } };
+		await wrapper.vm.$nextTick();
+
+		expect(vm.flows.map((flow: FlowRaw) => flow.id)).toEqual(['flow-1']);
+	});
+
+	test('shows the no-results empty state when a query matches nothing', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.search = 'no-such-flow';
+		await wrapper.vm.$nextTick();
+
+		expect(vm.flows).toEqual([]);
+		expect(wrapper.find('v-info-stub').exists()).toBe(true);
+		expect(wrapper.find('v-table-stub').exists()).toBe(false);
+	});
+
+	test('persists the filter to localStorage as JSON so it survives a reload', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.filter = { status: { _eq: 'active' } };
+		await wrapper.vm.$nextTick();
+
+		expect(JSON.parse(localStorage.getItem('directus-flows-filter')!)).toEqual({ status: { _eq: 'active' } });
+	});
+
+	test('clearFilters restores the full list', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.search = 'sync';
+		vm.filter = { status: { _eq: 'inactive' } };
+		await wrapper.vm.$nextTick();
+		expect(vm.flows.length).toBe(1);
+
+		vm.clearFilters();
+		await wrapper.vm.$nextTick();
+
+		expect(vm.search).toBeNull();
+		expect(vm.filter).toBeNull();
+		expect(vm.flows.length).toBe(2);
 	});
 });

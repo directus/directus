@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { FlowRaw } from '@directus/types';
+import { Filter, FlowRaw } from '@directus/types';
+import { StorageSerializers, useLocalStorage } from '@vueuse/core';
 import { sortBy } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -32,6 +33,8 @@ import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { useLicenseStore } from '@/stores/license';
 import { extractErrorCode } from '@/utils/extract-error-code';
+import { filterItems } from '@/utils/filter-items';
+import { parseFilter } from '@/utils/parse-filter';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -41,6 +44,7 @@ import FolderPicker from '@/views/private/components/folder-picker.vue';
 import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
 import EntitlementRemaining from '@/views/private/components/license/entitlement-remaining.vue';
 import MaxCapacityAlert from '@/views/private/components/license/max-capacity-alert.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
 
 const { t } = useI18n();
 
@@ -131,11 +135,38 @@ const internalSort = ref<Sort>({ by: 'name', desc: false });
 
 const flowsStore = useFlowsStore();
 
+const search = useLocalStorage<string | null>('directus-flows-search', null);
+
+const filter = useLocalStorage<Filter | null>('directus-flows-filter', null, {
+	serializer: StorageSerializers.object,
+});
+
+const hasQuery = computed(() => Boolean(search.value) || Boolean(filter.value));
+
+function clearFilters() {
+	search.value = null;
+	filter.value = null;
+}
+
 const flows = computed(() => {
 	const source = props.folder ? flowsStore.flows.filter((flow) => flow.folder === props.folder) : flowsStore.flows;
 
-	const translatedFlows = source.map((flow) => ({ ...flow, name: translate(flow.name) }));
-	const sortedFlows = sortBy(translatedFlows, [internalSort.value.by]);
+	// Translate before searching/filtering so both run against the name the user actually sees
+	let result = source.map((flow) => ({ ...flow, name: translate(flow.name) }));
+
+	if (filter.value) {
+		result = filterItems(result, parseFilter(filter.value));
+	}
+
+	if (search.value) {
+		const query = search.value.toLowerCase();
+
+		result = result.filter((flow) => {
+			return flow.name?.toLowerCase().includes(query) || flow.description?.toLowerCase().includes(query);
+		});
+	}
+
+	const sortedFlows = sortBy(result, [internalSort.value.by]);
 	return internalSort.value.desc ? sortedFlows.reverse() : sortedFlows;
 });
 
@@ -186,6 +217,9 @@ watch(
 	() => props.folder,
 	() => (selectedKeys.value = []),
 );
+
+// Narrowing the list can hide selected flows, so drop the selection to avoid acting on out-of-view rows
+watch([search, filter], () => (selectedKeys.value = []));
 
 const moveDialogActive = ref(false);
 const moveTarget = ref<string | null>(null);
@@ -270,6 +304,15 @@ function onFlowDrawerCompletion(id: string) {
 		</template>
 
 		<template #actions>
+			<SearchInput
+				v-model="search"
+				v-model:filter="filter"
+				collection="directus_flows"
+				:include-json-function="false"
+				:relational-field-selectable="false"
+				:placeholder="$t('search_flow')"
+			/>
+
 			<AddFolder type="flows" :parent="folder" :disabled="createFolderAllowed !== true" @created="navigateToFolder" />
 			<PrivateViewHeaderBarActionButton
 				v-if="selectedKeys.length > 0"
@@ -299,11 +342,19 @@ function onFlowDrawerCompletion(id: string) {
 			@navigate="navigateToFolder"
 			@deleted="onFolderDeleted"
 		>
-			<VInfo v-if="flows.length === 0" icon="bolt" :title="$t('no_flows')" center>
+			<VInfo v-if="flows.length === 0 && !hasQuery" icon="bolt" :title="$t('no_flows')" center>
 				{{ $t('no_flows_copy') }}
 
 				<template v-if="createAllowed" #append>
 					<VButton @click="openCreateFlow">{{ $t('create_flow') }}</VButton>
+				</template>
+			</VInfo>
+
+			<VInfo v-else-if="flows.length === 0" icon="search" :title="$t('no_results')" center>
+				{{ $t('no_results_copy') }}
+
+				<template #append>
+					<VButton @click="clearFilters">{{ $t('clear_filters') }}</VButton>
 				</template>
 			</VInfo>
 
