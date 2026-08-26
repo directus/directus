@@ -25,7 +25,7 @@ import {
 } from '../src/index.js';
 import type { TestSchema } from './schema.js';
 
-describe('NestedPartial / NestedUnion on synthetic types', () => {
+describe('NestedPartial on synthetic types', () => {
 	test('mixed union: object member keeps its own NestedPartial, non-object members pass through', () => {
 		type Case = NestedPartial<{ rel: { id: string; name: string } | string | null }>;
 

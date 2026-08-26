@@ -57,12 +57,8 @@ export type NestedPartial<Item> = Item extends any[]
 		Item extends string | number | boolean | bigint | symbol
 		? Item
 		: Item extends object
-			? { [Key in keyof Item]?: NestedUnion<Item[Key]> }
+			? { [Key in keyof Item]?: NestedPartial<Item[Key]> }
 			: Item;
-
-// Distributes NestedPartial over each member of a union individually, so mixed unions
-// (e.g. a relation object | string | null) keep their non-object members untouched.
-export type NestedUnion<Item> = Item extends any ? NestedPartial<Item> : never;
 
 /**
  * Reduces a complex object type to make it readable in IDEs.
