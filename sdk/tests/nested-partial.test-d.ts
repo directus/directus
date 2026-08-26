@@ -1,5 +1,6 @@
 import { assertType, describe, expectTypeOf, test } from 'vitest';
 import type {
+	CollectionName,
 	DirectusAccess,
 	DirectusFlow,
 	DirectusPreset,
@@ -36,7 +37,7 @@ describe('NestedPartial / NestedUnion on synthetic types', () => {
 	test('StringLiteralUnion member is not widened to plain string', () => {
 		type Case = NestedPartial<{ status: StringLiteralUnion<'draft' | 'published'> }>;
 
-		expectTypeOf<Case['status']>().not.toEqualTypeOf<string | undefined>();
+		expectTypeOf<Case['status']>().toEqualTypeOf<StringLiteralUnion<'draft' | 'published'> | undefined>();
 
 		assertType<Case>({ status: 'draft' });
 		assertType<Case>({ status: 'some-custom-status' });
@@ -74,8 +75,7 @@ describe('NestedPartial', () => {
 	test('StringLiteralUnion fields keep their literal members (status)', () => {
 		type FlowParam = NestedPartial<DirectusFlow<TestSchema>>;
 
-		// If this were widened to plain `string`, it would equal `string | undefined`.
-		expectTypeOf<FlowParam['status']>().not.toEqualTypeOf<string | undefined>();
+		expectTypeOf<FlowParam['status']>().toEqualTypeOf<StringLiteralUnion<'active' | 'inactive'> | undefined>();
 
 		assertType<FlowParam>({ status: 'active' });
 		assertType<FlowParam>({ status: 'some-custom-status' });
@@ -84,8 +84,13 @@ describe('NestedPartial', () => {
 	test('StringLiteralUnion fields keep their literal members when nullable (trigger, accountability)', () => {
 		type FlowParam = NestedPartial<DirectusFlow<TestSchema>>;
 
-		expectTypeOf<FlowParam['trigger']>().not.toEqualTypeOf<string | null | undefined>();
-		expectTypeOf<FlowParam['accountability']>().not.toEqualTypeOf<string | null | undefined>();
+		expectTypeOf<FlowParam['trigger']>().toEqualTypeOf<
+			StringLiteralUnion<'event' | 'schedule' | 'operation' | 'webhook' | 'manual'> | null | undefined
+		>();
+
+		expectTypeOf<FlowParam['accountability']>().toEqualTypeOf<
+			StringLiteralUnion<'all' | 'activity'> | null | undefined
+		>();
 
 		assertType<FlowParam>({ trigger: 'schedule', accountability: 'all' });
 		assertType<FlowParam>({ trigger: null, accountability: null });
@@ -94,7 +99,7 @@ describe('NestedPartial', () => {
 	test('StringLiteralUnion fields keep their literal members when nullable (preset collection)', () => {
 		type PresetParam = NestedPartial<DirectusPreset<TestSchema>>;
 
-		expectTypeOf<PresetParam['collection']>().not.toEqualTypeOf<string | null | undefined>();
+		expectTypeOf<PresetParam['collection']>().toEqualTypeOf<CollectionName<TestSchema> | null | undefined>();
 
 		assertType<PresetParam>({ collection: 'collection_c' });
 		assertType<PresetParam>({ collection: null });
@@ -103,7 +108,7 @@ describe('NestedPartial', () => {
 	test('StringLiteralUnion fields keep their literal members (version collection)', () => {
 		type VersionParam = NestedPartial<DirectusVersion<TestSchema>>;
 
-		expectTypeOf<VersionParam['collection']>().not.toEqualTypeOf<string | undefined>();
+		expectTypeOf<VersionParam['collection']>().toEqualTypeOf<CollectionName<TestSchema> | undefined>();
 
 		assertType<VersionParam>({ collection: 'collection_c' });
 	});

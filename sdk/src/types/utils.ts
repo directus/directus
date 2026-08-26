@@ -52,9 +52,13 @@ export type NestedPartial<Item> = Item extends any[]
 	? UnpackList<Item> extends infer RawItem
 		? NestedPartial<RawItem>[]
 		: never
-	: Item extends object
-		? { [Key in keyof Item]?: NestedUnion<Item[Key]> }
-		: Item;
+	: // `string & {}` (as used by StringLiteralUnion) satisfies `extends object` despite being a
+		// primitive, so it must be excluded here or it gets mapped over String.prototype's own keys.
+		Item extends string | number | boolean | bigint | symbol
+		? Item
+		: Item extends object
+			? { [Key in keyof Item]?: NestedUnion<Item[Key]> }
+			: Item;
 
 // Distributes NestedPartial over each member of a union individually, so mixed unions
 // (e.g. a relation object | string | null) keep their non-object members untouched.
