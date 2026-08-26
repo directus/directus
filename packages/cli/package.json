@@ -1,6 +1,6 @@
 {
 	"name": "@directus/cli",
-	"version": "12.1.0",
+	"version": "12.2.1",
 	"description": "Client-side CLI for Directus",
 	"homepage": "https://directus.com",
 	"repository": {
