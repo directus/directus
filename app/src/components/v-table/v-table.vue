@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import type { ShowSelect } from '@directus/types';
 import { clone, forEach, pick } from 'lodash';
-import { computed, onBeforeUpdate, ref, useSlots } from 'vue';
+import { computed, ref, useSlots } from 'vue';
 import Draggable from 'vuedraggable';
 import TableHeader from './table-header.vue';
 import TableRow from './table-row.vue';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
+import { useSlotPresence } from './use-slot-presence';
 import VProgressLinear from '@/components/v-progress-linear.vue';
 import { hideDragImage } from '@/utils/hide-drag-image';
 
@@ -122,15 +123,9 @@ const internalSort = computed<Sort>(
 
 const reordering = ref<boolean>(false);
 
-const hasHeaderAppendSlot = ref(slots['header-append'] !== undefined);
-const hasHeaderContextMenuSlot = ref(slots['header-context-menu'] !== undefined);
-const hasItemAppendSlot = ref(slots['item-append'] !== undefined);
-
-onBeforeUpdate(() => {
-	hasHeaderAppendSlot.value = slots['header-append'] !== undefined;
-	hasHeaderContextMenuSlot.value = slots['header-context-menu'] !== undefined;
-	hasItemAppendSlot.value = slots['item-append'] !== undefined;
-});
+const hasHeaderAppendSlot = useSlotPresence(slots, 'header-append');
+const hasHeaderContextMenuSlot = useSlotPresence(slots, 'header-context-menu');
+const hasItemAppendSlot = useSlotPresence(slots, 'item-append');
 
 const fullColSpan = computed<string>(() => {
 	let length = internalHeaders.value.length + 1; // +1 account for spacer
