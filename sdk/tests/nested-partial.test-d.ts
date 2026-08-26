@@ -2,9 +2,11 @@ import { assertType, describe, expectTypeOf, test } from 'vitest';
 import type {
 	CollectionName,
 	DirectusAccess,
+	DirectusComment,
 	DirectusFlow,
 	DirectusPreset,
 	DirectusRole,
+	DirectusUser,
 	DirectusVersion,
 	NestedPartial,
 	StringLiteralUnion,
@@ -52,24 +54,27 @@ describe('NestedPartial / NestedUnion on synthetic types', () => {
 
 describe('NestedPartial', () => {
 	test('collection-name fields still accept an arbitrary string (comment)', () => {
-		const client = createDirectus<TestSchema>('http://localhost:8055').with(rest());
 		const collection: string = 'collection_c';
+		const payload = { collection, item: '1', comment: 'hi' };
 
-		client.request(createComment({ collection, item: '1', comment: 'hi' }));
+		assertType<NestedPartial<DirectusComment<TestSchema>>>(payload);
+		createComment(payload);
 	});
 
 	test('collection-name fields still accept an arbitrary string (preset, nullable)', () => {
-		const client = createDirectus<TestSchema>('http://localhost:8055').with(rest());
 		const collection: string = 'collection_c';
+		const payload = { collection };
 
-		client.request(createPreset({ collection }));
+		assertType<NestedPartial<DirectusPreset<TestSchema>>>(payload);
+		createPreset(payload);
 	});
 
 	test('collection-name fields still accept an arbitrary string (version)', () => {
-		const client = createDirectus<TestSchema>('http://localhost:8055').with(rest());
 		const collection: string = 'collection_c';
+		const payload = { collection, key: 'draft' };
 
-		client.request(createContentVersion({ collection, key: 'draft' }));
+		assertType<NestedPartial<DirectusVersion<TestSchema>>>(payload);
+		createContentVersion(payload);
 	});
 
 	test('StringLiteralUnion fields keep their literal members (status)', () => {
@@ -116,15 +121,17 @@ describe('NestedPartial', () => {
 
 describe('NestedPartial on mixed array unions (id string | relation object)', () => {
 	test('partial object element is accepted (role.policies: string[] | DirectusAccess[])', () => {
-		const client = createDirectus<TestSchema>('http://localhost:8055').with(rest());
+		const payload = { policies: [{ policy: 'policy-id' }] };
 
-		client.request(updateRole('role-id', { policies: [{ policy: 'policy-id' }] }));
+		assertType<NestedPartial<DirectusRole<TestSchema>>>(payload);
+		updateRole('role-id', payload);
 	});
 
 	test('still accepted through a schema that customizes a core collection', () => {
-		const client = createDirectus<TestSchema>('http://localhost:8055').with(rest());
+		const payload = { policies: [{ policy: 'policy-id' }], custom_field: true };
 
-		client.request(updateUser('user-id', { policies: [{ policy: 'policy-id' }], custom_field: true }));
+		assertType<NestedPartial<DirectusUser<TestSchema>>>(payload);
+		updateUser('user-id', payload);
 	});
 
 	test('response type keeps both the string and object union members', async () => {
@@ -141,55 +148,56 @@ describe('NestedPartial on mixed array unions (id string | relation object)', ()
 });
 
 describe('NestedPartial keeps other relational fields as nested-partial objects', () => {
-	const client = createDirectus<TestSchema>('http://localhost:8055').with(rest());
-
 	test('comment.user_created / user_updated', () => {
-		client.request(
-			createComment({
-				collection: 'collection_a',
-				item: '1',
-				comment: 'hi',
-				user_created: { email: 'a@b.com' },
-				user_updated: { email: 'a@b.com' },
-			}),
-		);
+		const payload = {
+			collection: 'collection_a',
+			item: '1',
+			comment: 'hi',
+			user_created: { email: 'a@b.com' },
+			user_updated: { email: 'a@b.com' },
+		};
+
+		assertType<NestedPartial<DirectusComment<TestSchema>>>(payload);
+		createComment(payload);
 	});
 
 	test('version.user_created / user_updated', () => {
-		client.request(
-			updateContentVersion('version-id', {
-				user_created: { email: 'a@b.com' },
-				user_updated: { email: 'a@b.com' },
-			}),
-		);
+		const payload = {
+			user_created: { email: 'a@b.com' },
+			user_updated: { email: 'a@b.com' },
+		};
+
+		assertType<NestedPartial<DirectusVersion<TestSchema>>>(payload);
+		updateContentVersion('version-id', payload);
 	});
 
 	test('flow.operation', () => {
-		client.request(
-			updateFlow('flow-id', {
-				operation: { name: 'op-name' },
-			}),
-		);
+		const payload = { operation: { name: 'op-name' } };
+
+		assertType<NestedPartial<DirectusFlow<TestSchema>>>(payload);
+		updateFlow('flow-id', payload);
 	});
 
 	test('preset.user / preset.role', () => {
-		client.request(
-			updatePreset(1, {
-				user: { email: 'a@b.com' },
-				role: { name: 'role-name' },
-			}),
-		);
+		const payload = {
+			user: { email: 'a@b.com' },
+			role: { name: 'role-name' },
+		};
+
+		assertType<NestedPartial<DirectusPreset<TestSchema>>>(payload);
+		updatePreset(1, payload);
 	});
 
 	test('role.parent / children / policies / users', () => {
-		client.request(
-			updateRole('role-id', {
-				parent: { name: 'parent-role' },
-				children: [{ name: 'child-role' }],
-				policies: [{ policy: 'policy-id' }],
-				users: [{ email: 'a@b.com' }],
-			}),
-		);
+		const payload = {
+			parent: { name: 'parent-role' },
+			children: [{ name: 'child-role' }],
+			policies: [{ policy: 'policy-id' }],
+			users: [{ email: 'a@b.com' }],
+		};
+
+		assertType<NestedPartial<DirectusRole<TestSchema>>>(payload);
+		updateRole('role-id', payload);
 	});
 
 	test('relational fields resolve to a real object, not a StringLiteralUnion', () => {
