@@ -9,6 +9,7 @@ import type {
 	DirectusUser,
 	DirectusVersion,
 	NestedPartial,
+	ReadFlowOutput,
 	StringLiteralUnion,
 } from '../src/index.js';
 import {
@@ -212,5 +213,19 @@ describe('NestedPartial keeps other relational fields as nested-partial objects'
 		assertType<FlowParam['status']>('active');
 		// @ts-expect-error status is a StringLiteralUnion, not relational — object payloads are rejected
 		assertType<FlowParam['status']>({ name: 'active' });
+	});
+});
+
+describe('StringLiteralUnion fields on the read/output path (ApplyQueryFields, not NestedPartial)', () => {
+	test('ReadFlowOutput keeps the literal union, not widened to plain string', () => {
+		type Output = ReadFlowOutput<TestSchema, { fields: ['*'] }>;
+
+		expectTypeOf<Output['status']>().toEqualTypeOf<StringLiteralUnion<'active' | 'inactive'>>();
+
+		expectTypeOf<Output['trigger']>().toEqualTypeOf<
+			StringLiteralUnion<'event' | 'schedule' | 'operation' | 'webhook' | 'manual'> | null
+		>();
+
+		expectTypeOf<Output['accountability']>().toEqualTypeOf<StringLiteralUnion<'all' | 'activity'> | null>();
 	});
 });
