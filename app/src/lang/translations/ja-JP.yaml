@@ -20,7 +20,6 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Directus の概要
-privacy_policy: プライバシーポリシー 
 setup_welcome: ようこそ Directus へ
 setup_info: 管理者アカウントを作成して、プロジェクトを開始しましょう。
 setup_marketing_emails: 製品の更新やリリースノートをメールで受け取る
@@ -552,6 +551,7 @@ functions:
   minute: 分
   second: 秒
   count: 回数
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'a h:mm:ss'
 date-fns_time_no_seconds: 'a hh:mm'
@@ -900,6 +900,7 @@ operators:
   nintersects: 交差しない
   intersects_bbox: 境界ボックスと交差する
   nintersects_bbox: 境界ボックスと交差しない
+  json: JSON
   regex: 正規表現にマッチ
 custom_validation_message: カスタムバリデーションメッセージ
 loading: 読み込み中...
@@ -1127,12 +1128,15 @@ wysiwyg_options:
   bullist: 箇条書きリスト
   numlist: 番号付きリスト
   hr: 水平線
+  insertdatetime_date: 日付
+  insertdatetime_time: 時刻
   link: リンクの挿入 / 編集
   unlink: リンクを削除
   media: メディアの追加 / 編集
   image: 画像の挿入 / 編集
   copy: コピー
   cut: 切り取り
+  default: デフォルト
   paste: ペースト
   heading: 見出し
   h1: 見出し 1
@@ -1156,6 +1160,8 @@ wysiwyg_options:
   source_code: ソースコードを編集
   fullscreen: 全画面表示
   directionality: 方向
+  ltr: 左から右
+  rtl: 右から左
   lazy_loading: 画像の遅延読み込み
   lazy_loading_label: 遅延読み込みを有効化
 dropdown: ドロップダウン
@@ -1298,6 +1304,7 @@ fields:
     collection: コレクション
     icon: アイコン
     note: 備考
+    status: ステータス
     color: 色
     display_template: テンプレートを表示
     hidden: 非表示
@@ -1428,18 +1435,13 @@ fields:
     public_registration_verify_email: メールアドレスの確認
     public_registration_verify_email_note: 登録ユーザーに確認メールを送信します。サインインするには、メール内の確認リンクをクリックする必要があります。
     visual_editor_urls: ビジュアルエディター URL
-    ai_notice: 'AIアシスタントを有効にすると、アプリ内のサイドバーから LLM（大規模言語モデル）と対話できるようになります。ツールバーから AI サイドバーを開いて、質問、コンテンツ作成、プロジェクト作業のサポートに役立てましょう。AIアシスタントの設定と使用方法の詳細については、<a href="https://directus.io/docs/guides/ai/assistant" target="_blank">こちらのドキュメント</a>をご覧ください。'
     mcp_enabled: MCP サーバー
-    mcp_enabled_note: '<a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a> を介して、AI や LLM ツールを Directus プロジェクトに接続します。これにより、AI アシスタントが Directus 内のデータを安全に読み取り、操作できるようになります。'
-    mcp_notice: 'Model Context Protocol (MCP) は、LLM を Directus などのアプリケーションに接続するための標準規格です。有効化すると、Directus MCP サーバーが /mcp で利用可能になります。MCP の詳細と接続方法については、<a href="https://directus.io/docs/guides/ai/mcp" target="_blank">こちらのドキュメント</a>をご覧ください。'
     mcp_allow_deletes: 削除を許可
     mcp_allow_deletes_note:
       - <strong>データが失われる可能性があります。</strong>安全のため、デフォルトでは無効になっています。
     mcp_prompts_collection: AI プロンプトコレクション
-    mcp_prompts_collection_note: 'AI との対話で使用する<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">再利用可能なプロンプトテンプレート</a>を保存するコレクションを選択してください。'
     mcp_system_prompt_divider: システムプロンプト設定
     mcp_system_prompt_enabled: システムプロンプトを使用
-    mcp_system_prompt_enabled_note: "<a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>デフォルトのシステムプロンプト</a>を使用して LLM の動作を規定します。プロンプトを削除する場合や、以下の入力欄で独自のプロンプトに上書きする場合は、無効にしてください。"
     mcp_system_prompt: カスタムシステムプロンプト
     mcp_system_prompt_note: 'デフォルトを置き換えるカスタムシステムプロンプトです。デフォルトを使用する場合は（上記で有効にしている場合）、空のままにしてください。'
     ai_system_prompt: AI システムプロンプト
@@ -1709,7 +1711,6 @@ mcp_prompts_collection_schema:
   messages_role_user: ユーザー
   messages_role_assistant: アシスタント
   messages_role_note: このメッセージの送信者
-  meta_prompts_notice: 'プロンプトは、Directus MCP サーバー、フロー、またはその他の AI アプリケーションを介して LLM で使用できる再利用可能なテンプレートです。<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">効果的なプロンプトの作成方法について詳しくはこちらをご覧ください。</a>'
 expired: 期限切れ
 shared_uses_left: セキュリティ保護のため、この共有ページは閲覧回数が制限されています。現在の残り閲覧回数は {n} 回です。制限に達すると、このページにはアクセスできなくなります。
 referential_action_set_null: '{field} フィールドを空にする'
@@ -1925,6 +1926,7 @@ interfaces:
     sort: 並べ替え
     sort_placeholder: マニュアル
     display_group: オプションを表示
+    edit_mode_inline: インライン
   tags:
     tags: タグ
   input:
@@ -1950,9 +1952,6 @@ interfaces:
     description: HTML コンテンツを作成するリッチテキストエディター
     toolbar: ツールバー
     custom_formats: カスタムフォーマット
-    custom_formats_note: TinyMCE コンテンツフォーマットの一覧。詳細については、TinyMCE ドキュメントの コンテンツフォーマット (https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) を参照してください。
-    options_override: オプションの上書き
-    options_override_note: TinyMCE のユーザーフォーマットキーとその値。詳細については、TinyMCE ドキュメントの ユーザーフォーマット (https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) を参照してください。
   input-block-editor:
     tools: ツールバー
     tools_options:

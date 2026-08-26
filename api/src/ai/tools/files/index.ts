@@ -10,8 +10,10 @@ import {
 	FileImportItemInputSchema,
 	FileImportItemValidateSchema,
 	FileItemInputSchema,
+	FileItemOutputSchema,
 	FileItemValidateSchema,
 	PrimaryKeyInputSchema,
+	PrimaryKeyOutputSchema,
 	PrimaryKeyValidateSchema,
 	QueryInputSchema,
 	QueryValidateSchema,
@@ -28,7 +30,7 @@ export const FilesValidateSchema = z.discriminatedUnion('action', [
 	}),
 	z.strictObject({
 		action: z.literal('update'),
-		data: FileItemValidateSchema,
+		data: z.union([z.array(FileItemValidateSchema), FileItemValidateSchema]),
 		keys: z.array(PrimaryKeyValidateSchema).optional(),
 		query: QueryValidateSchema.optional(),
 	}),
@@ -46,17 +48,33 @@ const FilesInputSchema = z.object({
 	action: z.enum(['read', 'update', 'delete', 'import']).describe('The operation to perform'),
 	query: QueryInputSchema.optional(),
 	keys: z.array(PrimaryKeyInputSchema).optional(),
-	data: z.array(FileItemInputSchema.extend({ ...FileImportItemInputSchema.shape }).partial()).optional(),
+	data: z
+		.union([
+			z.array(FileItemInputSchema.extend({ ...FileImportItemInputSchema.shape }).partial()),
+			FileItemInputSchema.extend({ ...FileImportItemInputSchema.shape }).partial(),
+		])
+		.optional()
+		.describe('Object when using keys, array with PKs for batch updates or import'),
 });
 
-export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
+const FilesOutputSchema = z.object({
+	data: z.union([z.array(FileItemOutputSchema), z.array(PrimaryKeyOutputSchema), z.null()]),
+});
+
+export const files = defineTool<z.infer<typeof FilesValidateSchema>, z.infer<typeof FilesOutputSchema>>({
 	name: 'files',
-	description: requireText(resolve(__dirname, './prompt.md')),
+	description:
+		'Reads and changes Directus file metadata or imports remote files. Use for uploads, media metadata, folders, titles, and file records.',
+	instructions: requireText(resolve(__dirname, './prompt.md')),
+	keywords: ['media', 'upload', 'import', 'asset metadata', 'attachments', 'documents'],
 	annotations: {
 		title: 'Directus - Files',
+		destructiveHint: true,
 	},
 	inputSchema: FilesInputSchema,
 	validateSchema: FilesValidateSchema,
+	output: FilesOutputSchema,
+	readOnly: (input) => input.action === 'read',
 	endpoint({ data }) {
 		if (!isObject(data) || !('id' in data)) {
 			return;

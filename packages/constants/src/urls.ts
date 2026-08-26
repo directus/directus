@@ -8,5 +8,6 @@ export const DIRECTUS_SUPPORT_URL: string = `https://${DIRECTUS_DOMAIN}/support`
 export const DIRECTUS_LICENSING_DOCS_URL: string = `https://${DIRECTUS_DOMAIN}/docs/licensing/overview`;
 export const DIRECTUS_MSCL_URL: string = `https://${DIRECTUS_DOMAIN}/mscl`;
 export const DIRECTUS_PRIVACY_URL: string = `https://${DIRECTUS_DOMAIN}/privacy`;
+export const DIRECTUS_DPA_URL: string = `https://${DIRECTUS_DOMAIN}/dpa`;
 
 export const LICENSING_EMAIL: string = 'licensing@directus.io';

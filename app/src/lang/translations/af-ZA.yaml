@@ -137,6 +137,7 @@ fields:
     ip: IP Adres
   directus_collections:
     collection: Versameling
+    status: Status
   directus_files:
     title: Titel
     description: Beskrywing

@@ -3,8 +3,8 @@ post:
   description: Disables two-factor authentication for the currently authenticated user.
   operationId: meTfaDisable
   responses:
-    '200':
-      description: Successful request
+    '204':
+      $ref: '../../openapi.yaml#/components/responses/NoContentResponse'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':

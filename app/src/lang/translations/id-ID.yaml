@@ -390,6 +390,7 @@ functions:
   minute: Menit
   second: Detik
   count: Hitung
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -685,6 +686,7 @@ operators:
   nintersects: Tidak beririsan
   intersects_bbox: Memotong kotak pembatas
   nintersects_bbox: Tidak memotong kotak pembatas
+  json: JSON
   regex: Mencocokkan RegExp
 custom_validation_message: Pesan Validasi Kustom
 loading: Memuat...
@@ -870,6 +872,8 @@ wysiwyg_options:
   bullist: Daftar Bullet
   numlist: Daftar Nomor
   hr: Garis Horizontal
+  insertdatetime_date: Tanggal
+  insertdatetime_time: Time
   link: Tambah/Sunting Tautan
   unlink: Hapus Tautan
   media: Tambah /Sunting Media
@@ -898,6 +902,8 @@ wysiwyg_options:
   source_code: Edit Kode Sumber
   fullscreen: Layar Penuh
   directionality: Keterarahan
+  ltr: Kiri ke Kanan
+  rtl: Kanan ke Kiri
 dropdown: Dropwdown
 choices: Pilihan
 choices_option_configured_incorrectly: Pilihan dikonfigurasi dengan tidak benar
@@ -1000,6 +1006,7 @@ fields:
     collection: Koleksi
     icon: Ikon
     note: Catatan
+    status: Status
     color: Warna
     display_template: Tampilan Template
     hidden: Tersembunyi
@@ -1395,6 +1402,7 @@ interfaces:
     description: Pilih folder
   list:
     sort: Sortir
+    edit_mode_inline: Inline
   tags:
     tags: Tagar
   boolean:

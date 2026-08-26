@@ -110,6 +110,7 @@ export const DEFAULTS: Env = {
 	EXTENSIONS_SANDBOX_MEMORY: 100,
 	EXTENSIONS_SANDBOX_TIMEOUT: 1000,
 	EXTENSIONS_ROLLDOWN: false,
+	EXTENSIONS_STORAGE_MAX_CONCURRENCY: 20,
 
 	MIGRATIONS_PATH: './migrations',
 
@@ -130,6 +131,7 @@ export const DEFAULTS: Env = {
 	ASSETS_CACHE_REVALIDATE: false,
 	ASSETS_TRANSFORM_MAX_CONCURRENT: 25,
 	ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 6000,
+	ASSETS_TRANSFORM_IMAGE_MAX_OUTPUT_DIMENSION: 6000,
 	ASSETS_TRANSFORM_MAX_OPERATIONS: 5,
 	ASSETS_TRANSFORM_TIMEOUT: '7500ms',
 	ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL: 'warning',
@@ -141,6 +143,7 @@ export const DEFAULTS: Env = {
 	IMPORT_IP_DENY_LIST: ['0.0.0.0', '169.254.169.254'],
 	IMPORT_TIMEOUT: '1h',
 	IMPORT_MAX_CONCURRENCY: 20,
+	IMPORT_MAX_FILE_SIZE: '50mb',
 
 	SERVE_APP: true,
 
@@ -172,6 +175,19 @@ export const DEFAULTS: Env = {
 	GRAPHQL_INTROSPECTION: true,
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 5,
 	GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
+	GRAPHQL_SINGLE_USE_MUTATIONS: [
+		'auth_login',
+		'auth_refresh',
+		'auth_password_request',
+		'auth_password_reset',
+		'users_register',
+		'users_register_verify',
+		'users_invite_accept',
+		'users_me_tfa_generate',
+		'users_me_tfa_enable',
+		'users_me_tfa_disable',
+		'utils_cache_clear',
+	],
 
 	WEBSOCKETS_ENABLED: false,
 	WEBSOCKETS_REST_ENABLED: true,
@@ -228,6 +244,8 @@ export const DEFAULTS: Env = {
 	/** Auto-save revision-snapshot cadence in seconds. */
 	AUTOSAVE_REVISION_INTERVAL: 300,
 
+	PROJECT_OWNER_ENABLED: true,
+
 	MCP_ENABLED: true,
 	MCP_OAUTH_ENABLED: false,
 	MCP_OAUTH_AUTH_CODE_TTL: '60s',
@@ -257,4 +275,5 @@ export const DEFAULTS: Env = {
 	BRAINTRUST_API_URL: '',
 
 	LICENSE_NAMESPACE: 'license',
+	LICENSE_KEY_MANAGEMENT_ENABLED: true,
 } as const;

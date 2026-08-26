@@ -249,14 +249,14 @@ pnpm dev
 
 ## Documentation
 
-- Main documentation: https://docs.directus.io
-- Contributing guide: https://docs.directus.io/contributing/introduction
+- Main documentation: https://directus.com/docs
+- Contributing guide: https://directus.com/docs/community/overview/welcome
 - Update documentation for new features at https://github.com/directus/docs
 
 ## Support Channels
 
 - GitHub Issues: Bug reports and feature requests
-- Community: https://community.directus.io (Discussions)
+- Community: https://community.directus.com (Discussions)
 - Twitter: @directus (Updates)
 
 ## License
