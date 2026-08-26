@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ShowSelect } from '@directus/types';
 import { clone, forEach, pick } from 'lodash';
-import { computed, ref, useSlots } from 'vue';
+import { computed, onBeforeUpdate, ref, useSlots } from 'vue';
 import Draggable from 'vuedraggable';
 import TableHeader from './table-header.vue';
 import TableRow from './table-row.vue';
@@ -122,9 +122,15 @@ const internalSort = computed<Sort>(
 
 const reordering = ref<boolean>(false);
 
-const hasHeaderAppendSlot = computed(() => slots['header-append'] !== undefined);
-const hasHeaderContextMenuSlot = computed(() => slots['header-context-menu'] !== undefined);
-const hasItemAppendSlot = computed(() => slots['item-append'] !== undefined);
+const hasHeaderAppendSlot = ref(slots['header-append'] !== undefined);
+const hasHeaderContextMenuSlot = ref(slots['header-context-menu'] !== undefined);
+const hasItemAppendSlot = ref(slots['item-append'] !== undefined);
+
+onBeforeUpdate(() => {
+	hasHeaderAppendSlot.value = slots['header-append'] !== undefined;
+	hasHeaderContextMenuSlot.value = slots['header-context-menu'] !== undefined;
+	hasItemAppendSlot.value = slots['item-append'] !== undefined;
+});
 
 const fullColSpan = computed<string>(() => {
 	let length = internalHeaders.value.length + 1; // +1 account for spacer
