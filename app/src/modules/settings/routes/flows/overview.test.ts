@@ -2,6 +2,7 @@ import { FlowRaw } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { ref } from 'vue';
 import { Router } from 'vue-router';
 import FlowsOverview from './overview.vue';
 import { generateRouter } from '@/__utils__/router';
@@ -28,6 +29,7 @@ vi.mock('@/stores/flows', () => ({
 				icon: 'bolt',
 				color: 'var(--theme--primary)',
 				description: 'Notify the team',
+				folder: 'folder-a',
 			} as FlowRaw,
 			{
 				id: 'flow-2',
@@ -38,6 +40,16 @@ vi.mock('@/stores/flows', () => ({
 			} as FlowRaw,
 		],
 		hydrate: vi.fn(),
+	}),
+}));
+
+vi.mock('@/composables/use-folders', () => ({
+	useFolders: () => ({
+		loading: ref(false),
+		folders: ref([{ id: 'folder-a', name: 'Notifications', parent: null }]),
+		nestedFolders: ref([]),
+		fetchFolders: vi.fn(),
+		openFolders: ref([]),
 	}),
 }));
 
@@ -423,6 +435,18 @@ describe('FlowsOverview - search and filter', () => {
 		expect(vm.flows).toEqual([]);
 		expect(wrapper.find('v-info-stub').exists()).toBe(true);
 		expect(wrapper.find('v-table-stub').exists()).toBe(false);
+	});
+
+	test('filter matches against the related folder rather than its ID', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.filter = { folder: { name: { _eq: 'Notifications' } } };
+		await wrapper.vm.$nextTick();
+
+		expect(vm.flows.map((flow: FlowRaw) => flow.id)).toEqual(['flow-1']);
+		// The list keeps the flow's own shape, so the folder stays a foreign key
+		expect(vm.flows[0].folder).toBe('folder-a');
 	});
 
 	test('persists the filter to localStorage as JSON so it survives a reload', async () => {

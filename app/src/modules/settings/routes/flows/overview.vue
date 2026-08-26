@@ -26,6 +26,7 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import { Header, Sort } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
+import { useFolders } from '@/composables/use-folders';
 import { useMoveToFolder } from '@/composables/use-move-to-folder';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vue';
@@ -141,6 +142,10 @@ const filter = useLocalStorage<Filter | null>('directus-flows-filter', null, {
 	serializer: StorageSerializers.object,
 });
 
+const { folders } = useFolders('flows');
+
+const foldersById = computed(() => new Map((folders.value ?? []).map((folder) => [folder.id, folder])));
+
 const hasQuery = computed(() => Boolean(search.value) || Boolean(filter.value));
 
 function clearFilters() {
@@ -155,7 +160,15 @@ const flows = computed(() => {
 	let result = source.map((flow) => ({ ...flow, name: translate(flow.name) }));
 
 	if (filter.value) {
-		result = filterItems(result, parseFilter(filter.value));
+		// Filter rules can target the related folder
+		const hydrated = result.map((flow) => ({
+			...flow,
+			folder: (flow.folder ? foldersById.value.get(flow.folder) : null) ?? null,
+		}));
+
+		const matchedIds = new Set(filterItems(hydrated, parseFilter(filter.value)).map((flow) => flow.id));
+
+		result = result.filter((flow) => matchedIds.has(flow.id));
 	}
 
 	if (search.value) {

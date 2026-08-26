@@ -34,7 +34,17 @@ describe('filterItems', () => {
 		expect(filterItems(items, filter).map((i) => i.id)).toEqual([2, 3]);
 	});
 
-	test('excludes items for a relational path that cannot be evaluated in memory', () => {
+	test('matches a relational path when the item carries the related object', () => {
+		const hydrated = items.map((item) => ({
+			...item,
+			folder: item.folder === 'folder-a' ? { id: 'folder-a', name: 'Notifications', parent: null } : null,
+		}));
+
+		const filter: Filter = { folder: { name: { _eq: 'Notifications' } } };
+		expect(filterItems(hydrated, filter).map((i) => i.id)).toEqual([1, 2]);
+	});
+
+	test('excludes items for a relational path that only holds a foreign key', () => {
 		const filter: Filter = { folder: { name: { _eq: 'anything' } } };
 		expect(filterItems(items, filter)).toEqual([]);
 	});
