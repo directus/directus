@@ -222,9 +222,9 @@ describe('StringLiteralUnion fields on the read/output path (ApplyQueryFields, n
 
 		expectTypeOf<Output['status']>().toEqualTypeOf<StringLiteralUnion<'active' | 'inactive'>>();
 
-		expectTypeOf<Output['trigger']>().toEqualTypeOf<
-			StringLiteralUnion<'event' | 'schedule' | 'operation' | 'webhook' | 'manual'> | null
-		>();
+		expectTypeOf<Output['trigger']>().toEqualTypeOf<StringLiteralUnion<
+			'event' | 'schedule' | 'operation' | 'webhook' | 'manual'
+		> | null>();
 
 		expectTypeOf<Output['accountability']>().toEqualTypeOf<StringLiteralUnion<'all' | 'activity'> | null>();
 	});
