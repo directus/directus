@@ -53,6 +53,15 @@ vi.mock('@/composables/use-folders', () => ({
 	}),
 }));
 
+const relationalFields = ['directus_flows.folder', 'directus_flows.user_created', 'directus_folders.parent'];
+
+vi.mock('@/stores/relations', () => ({
+	useRelationsStore: () => ({
+		getRelationsForField: (collection: string, field: string) =>
+			relationalFields.includes(`${collection}.${field}`) ? [{}] : [],
+	}),
+}));
+
 type CollectionActions = Partial<Record<'create' | 'update' | 'delete', boolean>>;
 
 const permissionsByCollection: Record<string, CollectionActions> = {};
@@ -447,6 +456,17 @@ describe('FlowsOverview - search and filter', () => {
 		expect(vm.flows.map((flow: FlowRaw) => flow.id)).toEqual(['flow-1']);
 		// The list keeps the flow's own shape, so the folder stays a foreign key
 		expect(vm.flows[0].folder).toBe('folder-a');
+	});
+
+	test('only offers relational filter fields that can be resolved in memory', () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		expect(vm.isFilterableField({ collection: 'directus_flows', field: 'status' })).toBe(true);
+		expect(vm.isFilterableField({ collection: 'directus_flows', field: 'folder' })).toBe(true);
+		expect(vm.isFilterableField({ collection: 'directus_folders', field: 'name' })).toBe(true);
+		expect(vm.isFilterableField({ collection: 'directus_folders', field: 'parent' })).toBe(false);
+		expect(vm.isFilterableField({ collection: 'directus_flows', field: 'user_created' })).toBe(false);
 	});
 
 	test('persists the filter to localStorage as JSON so it survives a reload', async () => {

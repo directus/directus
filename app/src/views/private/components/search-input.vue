@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Filter } from '@directus/types';
+import { Field, Filter } from '@directus/types';
 import { isObject } from 'lodash';
 import { computed, onMounted, ref } from 'vue';
 import TransitionExpand from '@/components/transition/expand.vue';
@@ -19,6 +19,8 @@ const props = withDefaults(
 		placeholder?: string;
 		includeJsonFunction?: boolean;
 		relationalFieldSelectable?: boolean;
+		/** Hide fields that can't be filtered on. Applies at every level of the field tree. */
+		fieldFilter?: (field: Field) => boolean;
 	}>(),
 	{
 		showFilter: true,
@@ -201,6 +203,7 @@ function emitValue() {
 							:collection-name="collection"
 							:include-json-function="includeJsonFunction"
 							:relational-field-selectable="relationalFieldSelectable"
+							:field-filter="fieldFilter"
 							@input="$emit('update:filter', $event)"
 						/>
 					</div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Filter, FlowRaw } from '@directus/types';
+import { Field, Filter, FlowRaw, Item } from '@directus/types';
 import { StorageSerializers, useLocalStorage } from '@vueuse/core';
 import { sortBy } from 'lodash';
 import { computed, ref, watch } from 'vue';
@@ -33,6 +33,7 @@ import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vu
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { useLicenseStore } from '@/stores/license';
+import { useRelationsStore } from '@/stores/relations';
 import { extractErrorCode } from '@/utils/extract-error-code';
 import { filterItems } from '@/utils/filter-items';
 import { parseFilter } from '@/utils/parse-filter';
@@ -144,7 +145,22 @@ const filter = useLocalStorage<Filter | null>('directus-flows-filter', null, {
 
 const { folders } = useFolders('flows');
 
+const relationsStore = useRelationsStore();
+
 const foldersById = computed(() => new Map((folders.value ?? []).map((folder) => [folder.id, folder])));
+
+// Relations we can resolve client-side, so can filter on: whitelists the field and hydrates its foreign key.
+const FILTERABLE_RELATIONS: Record<string, (flow: FlowRaw) => Item | null> = {
+	folder: (flow) => (flow.folder ? (foldersById.value.get(flow.folder) ?? null) : null),
+};
+
+function isFilterableField(field: Field) {
+	if (relationsStore.getRelationsForField(field.collection, field.field).length === 0) {
+		return true;
+	}
+
+	return field.collection === 'directus_flows' && field.field in FILTERABLE_RELATIONS;
+}
 
 const hasQuery = computed(() => Boolean(search.value) || Boolean(filter.value));
 
@@ -160,10 +176,10 @@ const flows = computed(() => {
 	let result = source.map((flow) => ({ ...flow, name: translate(flow.name) }));
 
 	if (filter.value) {
-		// Filter rules can target the related folder
+		// Resolve the relations we support so filter rules can target the related object, not just its key
 		const hydrated = result.map((flow) => ({
 			...flow,
-			folder: (flow.folder ? foldersById.value.get(flow.folder) : null) ?? null,
+			...Object.fromEntries(Object.entries(FILTERABLE_RELATIONS).map(([key, resolve]) => [key, resolve(flow)])),
 		}));
 
 		const matchedIds = new Set(filterItems(hydrated, parseFilter(filter.value)).map((flow) => flow.id));
@@ -323,6 +339,7 @@ function onFlowDrawerCompletion(id: string) {
 				collection="directus_flows"
 				:include-json-function="false"
 				:relational-field-selectable="false"
+				:field-filter="isFilterableField"
 				:placeholder="$t('search_flow')"
 			/>
 

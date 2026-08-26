@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ClientFilterOperator, FieldFunction, Filter, Type } from '@directus/types';
+import { ClientFilterOperator, Field, FieldFunction, Filter, Type } from '@directus/types';
 import {
 	getFilterOperatorsForType,
 	getOutputTypeForFunction,
@@ -45,6 +45,8 @@ interface Props {
 	includeJsonFunction?: boolean;
 	injectVersionField?: boolean;
 	relationalFieldSelectable?: boolean;
+	/** Hide fields the consumer can't filter on. Applies at every level of the field tree. */
+	fieldFilter?: (field: Field) => boolean;
 	rawFieldNames?: boolean;
 	rawEditorEnabled?: boolean;
 }
@@ -62,6 +64,7 @@ const props = withDefaults(defineProps<Props>(), {
 	includeJsonFunction: true,
 	injectVersionField: false,
 	relationalFieldSelectable: true,
+	fieldFilter: undefined,
 	rawFieldNames: false,
 });
 
@@ -214,6 +217,7 @@ function addKeyAsNode() {
 				:include-json-function="jsonFunctionEnabled"
 				:include-relations="includeRelations"
 				:relational-field-selectable="relationalFieldSelectable"
+				:field-filter="fieldFilter"
 				:raw-field-names="rawFieldNames"
 				:variable-input-enabled="rawEditorEnabled"
 				@remove-node="removeNode($event)"
@@ -242,6 +246,7 @@ function addKeyAsNode() {
 					:excluded-functions="jsonFunctionEnabled ? [] : ['json']"
 					:include-relations="includeRelations"
 					:relational-field-selectable="relationalFieldSelectable"
+					:field-filter="fieldFilter"
 					:inject-version-field="injectVersionField"
 					:allow-select-all="false"
 					:raw-field-names="rawFieldNames"
