@@ -905,7 +905,7 @@ no_presets: Žádné předvolby
 no_presets_copy: Zatím nebyly uloženy žádné předvolby ani záložky.
 no_presets_cta: Přidat předvolbu
 presets_only: Pouze předvolby
-create: Vytořit
+create: Vytvořit
 on_create: Při vytvoření
 on_update: Při úpravě
 read: Číst
@@ -1424,7 +1424,7 @@ field_options:
     overrides_divider_title: Přepisy aplikace
   directus_activity:
     login: Přihlášení
-    create: Vytořit
+    create: Vytvořit
     update: Úpravy
     delete: Smazat
   directus_collections:
