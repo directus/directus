@@ -132,7 +132,7 @@ catalog:
   '@types/mapbox__mapbox-gl-geocoder': 5.1.0
   '@types/mime-types': 3.0.1
   '@types/ms': 2.1.0
-  '@types/node': 22.13.14
+  '@types/node': 26.2.0
   '@types/nodemailer': 8.0.1
   '@types/object-hash': 3.0.6
   '@types/papaparse': 5.5.0
@@ -223,8 +223,8 @@ catalog:
   inquirer: 12.11.0
   ioredis: 5.8.2
   ip-matching: 2.1.2
+  isolated-vm: 7.0.1
   ipaddr.js: 2.4.0
-  isolated-vm: 5.0.3
   joi: 18.2.3
   jose: 6.2.3
   js-yaml: 4.3.1
