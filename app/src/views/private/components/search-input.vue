@@ -17,10 +17,14 @@ const props = withDefaults(
 		filter?: Filter | null;
 		autofocus?: boolean;
 		placeholder?: string;
+		includeJsonFunction?: boolean;
+		relationalFieldSelectable?: boolean;
 	}>(),
 	{
 		showFilter: true,
 		expanded: false,
+		includeJsonFunction: true,
+		relationalFieldSelectable: true,
 	},
 );
 
@@ -195,6 +199,8 @@ function emitValue() {
 							inline
 							:value="filter"
 							:collection-name="collection"
+							:include-json-function="includeJsonFunction"
+							:relational-field-selectable="relationalFieldSelectable"
 							@input="$emit('update:filter', $event)"
 						/>
 					</div>
