@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
-
 vi.mock('@directus/env');
 const mockUseEnv = vi.fn();
 vi.mocked(await import('@directus/env')).useEnv = mockUseEnv;
