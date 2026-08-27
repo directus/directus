@@ -709,8 +709,8 @@ catalogs:
       specifier: 11.2.2
       version: 11.2.2
     mailtrap:
-      specifier: 4.6.1
-      version: 4.6.1
+      specifier: 4.9.0
+      version: 4.9.0
     maplibre-gl:
       specifier: 1.15.3
       version: 1.15.3
@@ -1595,7 +1595,7 @@ importers:
         version: 3.27.0(@aws-sdk/credential-provider-web-identity@3.972.75)(zod@4.1.12)
       mailtrap:
         specifier: 'catalog:'
-        version: 4.6.1(@types/nodemailer@8.0.1)(nodemailer@9.0.3)
+        version: 4.9.0(@types/nodemailer@8.0.1)(nodemailer@9.0.3)
       mysql2:
         specifier: 'catalog:'
         version: 3.15.3
@@ -10409,8 +10409,8 @@ packages:
   mailparser@3.9.14:
     resolution: {integrity: sha512-3QD6TRXcyXtq2NCuyA2AEjqmallQkyxYmZI9GMCIvQDCaB9Uc034WUI1x8RUBYFnk5+p7h14JEz4O/lrxQmttw==}
 
-  mailtrap@4.6.1:
-    resolution: {integrity: sha512-mObbFhDhpxZvSkDzIPch3lYQ/3m1y2oDr3Vg/YbFHlG6SDb4khCqhb8DkMwdm9heE+mLCzbCjnX6cJIYMAJM+g==}
+  mailtrap@4.9.0:
+    resolution: {integrity: sha512-I21Q8DNt98xy5vExQVPWIoudp3DuhzsyPEvLKhp26lkLKoRlEUAwgswJcqSJtCD9MP1RC/E+gL9ER7UdJ4sE6g==}
     engines: {node: '>=16.20.1', yarn: '>=1.22.17'}
     peerDependencies:
       '@types/nodemailer': ^6.4.9
@@ -21108,7 +21108,7 @@ snapshots:
       punycode.js: 2.3.1
       tlds: 1.261.0
 
-  mailtrap@4.6.1(@types/nodemailer@8.0.1)(nodemailer@9.0.3):
+  mailtrap@4.9.0(@types/nodemailer@8.0.1)(nodemailer@9.0.3):
     dependencies:
       axios: 1.18.1
       qs: 6.15.3
