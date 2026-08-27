@@ -54,7 +54,11 @@ const userFullName = userStore.fullName ?? undefined;
 <template>
 	<div class="module-bar-avatar">
 		<VBadge :value="unread" :disabled="unread == 0" class="notifications-badge">
-			<ModuleBarButton v-tooltip.right="$t('notifications')" @click="notificationsDrawerOpen = true">
+			<ModuleBarButton
+				v-tooltip.right="$t('notifications')"
+				:aria-label="$t('notifications')"
+				@click="notificationsDrawerOpen = true"
+			>
 				<VIcon name="notifications" />
 			</ModuleBarButton>
 		</VBadge>
@@ -63,7 +67,7 @@ const userFullName = userStore.fullName ?? undefined;
 			<VDialog v-model="signOutActive" @esc="signOutActive = false">
 				<template #activator="{ on }">
 					<div class="sign-out-wrapper">
-						<ModuleBarButton v-tooltip.right="$t('sign_out')" @click="on">
+						<ModuleBarButton v-tooltip.right="$t('sign_out')" :aria-label="$t('sign_out')" @click="on">
 							<VIcon name="logout" />
 						</ModuleBarButton>
 					</div>
@@ -80,7 +84,13 @@ const userFullName = userStore.fullName ?? undefined;
 				</VCard>
 			</VDialog>
 
-			<ModuleBarButton v-tooltip.right="userFullName" :to="userProfileLink" :active="false" class="avatar-btn">
+			<ModuleBarButton
+				v-tooltip.right="userFullName"
+				:aria-label="userFullName"
+				:to="userProfileLink"
+				:active="false"
+				class="avatar-btn"
+			>
 				<VAvatar small>
 					<img
 						v-if="avatarURL && !avatarError"

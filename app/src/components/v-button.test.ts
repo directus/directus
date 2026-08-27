@@ -76,3 +76,20 @@ test('split-menu button is enabled by default when split-menu slot is provided',
 	const splitMenuButton = wrapper.find('.split-menu-button');
 	expect(splitMenuButton.attributes('disabled')).toBeUndefined();
 });
+
+test('applies aria-label to the interactive element', () => {
+	const wrapper = mount(VButton, {
+		global,
+		props: {
+			ariaLabel: 'User Directory',
+			icon: true,
+		},
+		slots: {
+			default: 'Icon',
+		},
+	});
+
+	const button = wrapper.find('.button');
+	expect(button.attributes('aria-label')).toBe('User Directory');
+	expect(wrapper.attributes('aria-label')).toBeUndefined();
+});

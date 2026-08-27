@@ -56,6 +56,7 @@ const modules = computed(() => {
 				v-for="modulePart in modules"
 				:key="modulePart.id"
 				v-tooltip.right="modulePart.name"
+				:aria-label="modulePart.name"
 				:to="modulePart.to"
 				:href="modulePart.href"
 			>

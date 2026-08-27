@@ -12,6 +12,8 @@ import vTooltip from '@/directives/tooltip';
 export interface VButtonProps {
 	/** Automatically focuses on the button */
 	autofocus?: boolean;
+	/** Accessible name for icon-only buttons */
+	ariaLabel?: string;
 	/** Styling of the button */
 	kind?: 'normal' | 'info' | 'success' | 'warning' | 'danger';
 	/** Stretches the button to it's maximal width */
@@ -152,6 +154,7 @@ async function onClick(event: MouseEvent) {
 			:is="component"
 			v-focus="autofocus"
 			v-tooltip.bottom="tooltip"
+			:aria-label="ariaLabel"
 			:download="download"
 			class="button"
 			:class="[
