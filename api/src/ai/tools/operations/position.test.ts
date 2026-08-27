@@ -37,6 +37,7 @@ describe('layoutFlow', () => {
 		expect(service.readByQuery).toHaveBeenCalledWith({
 			filter: { flow: { _eq: 'flow-1' } },
 			fields: ['id', 'resolve', 'reject', 'position_x', 'position_y'],
+			sort: ['date_created', 'id'],
 			limit: -1,
 		});
 

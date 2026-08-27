@@ -57,8 +57,9 @@ processing and transforming data through the data chain.
 - `flow` - UUID of parent flow
 - `key` - Unique operation identifier
 - `type` - Operation type
-- `position_x`, `position_y` - Grid coordinates
-- `resolve`, `reject` - Next operation UUIDs (null initially) </required_fields>
+- `resolve`, `reject` - Next operation UUIDs (null initially)
+
+Omit `position_x`/`position_y` - positions are handled automatically (see Positioning). </required_fields>
 
 <available_operations> Core operations available in Directus:
 

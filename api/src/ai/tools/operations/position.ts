@@ -23,9 +23,12 @@ export async function layoutFlow(
 	flow: string,
 	entry: string | null,
 ): Promise<boolean> {
+	// Deterministic order keeps fragment stacking and cycle parking stable
+	// across relayouts; DB return order isn't guaranteed without a sort
 	const operations = (await service.readByQuery({
 		filter: { flow: { _eq: flow } },
 		fields: ['id', 'resolve', 'reject', 'position_x', 'position_y'],
+		sort: ['date_created', 'id'],
 		limit: -1,
 	})) as PositionedOperation[];
 
