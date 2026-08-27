@@ -79,6 +79,32 @@ describe('useStore', () => {
 		});
 	});
 
+	test('should pass lock options to redis cache config', () => {
+		const mockRedis = {};
+		mockUseRedis.mockReturnValue(mockRedis as any);
+
+		useStore('test-namespace', { lockTimeout: 10000, lockRetryCount: 480, lockRetryDelay: 250 });
+
+		expect(mockCreateCache).toHaveBeenCalledWith({
+			type: 'redis',
+			namespace: 'test-namespace',
+			redis: mockRedis,
+			lockTimeout: 10000,
+			lockRetryCount: 480,
+			lockRetryDelay: 250,
+		});
+	});
+
+	test('should not pass lock options to local cache config', () => {
+		mockRedisConfigAvailable.mockReturnValue(false);
+
+		useStore('test-namespace', { lockTimeout: 10000, lockRetryCount: 480, lockRetryDelay: 250 });
+
+		expect(mockCreateCache).toHaveBeenCalledWith({
+			type: 'local',
+		});
+	});
+
 	test('should return a function that executes callback with store interface', async () => {
 		const storeFunction = useStore('test-namespace');
 		const callback = vi.fn().mockResolvedValue('result');
@@ -182,6 +208,26 @@ describe('useStore', () => {
 
 		expect(mockStore.usingLock).toHaveBeenCalledWith('lock', expect.any(Function));
 		expect(typeof lockCallback).toBe('function');
+	});
+
+	describe('unlocked', () => {
+		test('should execute callback with store interface without acquiring the lock', async () => {
+			const storeFunction = useStore('test-namespace');
+			const callback = vi.fn().mockResolvedValue('result');
+
+			const result = await storeFunction.unlocked(callback);
+
+			expect(mockStore.usingLock).not.toHaveBeenCalled();
+
+			expect(callback).toHaveBeenCalledWith({
+				has: expect.any(Function),
+				get: expect.any(Function),
+				set: expect.any(Function),
+				delete: expect.any(Function),
+			});
+
+			expect(result).toBe('result');
+		});
 	});
 
 	test('should pass namespace to Redis config', () => {

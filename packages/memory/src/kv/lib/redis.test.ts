@@ -77,6 +77,23 @@ describe('constructor', () => {
 		expect(kv['compressionMinSize']).toBe(1000);
 	});
 
+	test('Defaults lock retry settings', () => {
+		expect(kv['redlock'].settings.retryCount).toBe(100);
+		expect(kv['redlock'].settings.retryDelay).toBe(50);
+	});
+
+	test('Uses the configured lock retry settings', () => {
+		const kv = new KvRedis({
+			namespace: mockNamespace,
+			redis: mockRedis,
+			lockRetryCount: 480,
+			lockRetryDelay: 250,
+		});
+
+		expect(kv['redlock'].settings.retryCount).toBe(480);
+		expect(kv['redlock'].settings.retryDelay).toBe(250);
+	});
+
 	test('Defines redis setMax command if it does not exist yet', () => {
 		expect(kv['redis'].defineCommand).toHaveBeenCalledWith('setMax', {
 			numberOfKeys: 1,

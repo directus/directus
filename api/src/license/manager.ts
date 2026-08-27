@@ -35,7 +35,7 @@ import licenseCheckSchedule, { stopLicenseCheck } from '../schedules/license.js'
 import { UsersService } from '../services/index.js';
 import { SettingsService } from '../services/settings.js';
 import { getSchema } from '../utils/get-schema.js';
-import { useStore } from '../utils/store.js';
+import { type StoreAccessor, useStore } from '../utils/store.js';
 import { getActiveCollections } from './entitlements/lib/collections.js';
 import { getActiveFlows } from './entitlements/lib/flows.js';
 import { getActiveSeats } from './entitlements/lib/seats.js';
@@ -49,6 +49,10 @@ import { useRPC } from './utils/use-rpc.js';
 const env = useEnv();
 const logger = useLogger();
 const LICENSE_CHANNEL = `license`;
+/** Time in milliseconds to wait between attempts to acquire the license lock */
+const LOCK_RETRY_DELAY = 250;
+/** Number of times initialization retries the whole lock acquisition window before giving up on the lock */
+const INITIALIZE_LOCK_ATTEMPTS = 2;
 let licenseCache: License | null;
 
 type LicenseStore = {
@@ -75,7 +79,86 @@ export class LicenseManager {
 	private source: LicenseSource = null;
 	private initialized = false;
 	private rpc = useRPC<Pick<LicenseManager, 'syncState'>>(this, LICENSE_CHANNEL);
-	private store = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']));
+	/**
+	 * Initialization holds the lock across a license server round trip, which on first activation
+	 * can take well over a minute. Instances that boot at the same time have to wait that out
+	 * instead of exhausting Redlock's default (~6 second) retry window and crashing.
+	 */
+	private lockedStore = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']), {
+		lockRetryDelay: LOCK_RETRY_DELAY,
+		lockRetryCount: Math.ceil(Number(env['LICENSE_LOCK_ACQUIRE_TIMEOUT']) / LOCK_RETRY_DELAY),
+	});
+
+	private store: StoreAccessor<LicenseStore> = this.lockedStore;
+
+	/**
+	 * Initialize the license, serialized across instances through the license lock.
+	 *
+	 * Acquiring the lock is retried before falling back to initializing without it, so that
+	 * instances booting while another one holds the lock wait instead of crashing.
+	 */
+	public async initialize(): Promise<void> {
+		// initialize the manager if not done yet
+		getEntitlementManager();
+
+		for (let attempt = 1; attempt <= INITIALIZE_LOCK_ATTEMPTS; attempt++) {
+			if (await this.initializeWithStore(this.lockedStore)) return;
+
+			logger.warn(
+				`Unable to acquire the license lock (attempt ${attempt}/${INITIALIZE_LOCK_ATTEMPTS}), another instance is likely still initializing its license.`,
+			);
+		}
+
+		logger.warn('Continuing the license initialization without the license lock.');
+
+		await this.initializeWithStore(this.lockedStore.unlocked);
+	}
+
+	/**
+	 * Run the initialization through the given store accessor.
+	 *
+	 * Returns false when the distributed lock could not be acquired, which the caller can recover
+	 * from. Any other failure propagates.
+	 */
+	private async initializeWithStore(store: StoreAccessor<LicenseStore>): Promise<boolean> {
+		const existingStore = this.store;
+		let stage: 'locking' | 'initializing' | 'initialized' = 'locking';
+
+		try {
+			// Lock the whole store for the entirety of initialization
+			await store(async (store) => {
+				stage = 'initializing';
+
+				// Replace existing store temporarily to avoid deadlocks
+				this.store = (cb) => {
+					return cb(store);
+				};
+
+				await this.initializeState();
+
+				stage = 'initialized';
+			});
+		} catch (error) {
+			// The lock was never acquired, the caller decides how to proceed
+			if (stage === 'locking') {
+				logger.trace(error);
+				return false;
+			}
+
+			// Initialization itself went through, only extending or releasing the lock failed
+			if (stage === 'initialized') {
+				logger.warn('The license lock could not be released cleanly.');
+				logger.trace(error);
+				return true;
+			}
+
+			throw error;
+		} finally {
+			this.store = existingStore;
+		}
+
+		return true;
+	}
 
 	/**
 	 * Initialize license state based on the following state permutations.
@@ -92,100 +175,83 @@ export class LicenseManager {
 	 * |   -    |    -     |   -   |    ✓    |  -   | cleanup and CORE_LICENSE                     |  H   |
 	 * |   -    |    -     |   -   |    -    |  -   |  CORE_LICENSE                                |  I   |
 	 */
-	public async initialize(): Promise<void> {
-		const existingStore = this.store;
+	private async initializeState(): Promise<void> {
+		const envKey = env['LICENSE_KEY'] as string | undefined;
+		const envToken = env['LICENSE_TOKEN'] as string | undefined;
 
-		// initialize the manager if not done yet
-		getEntitlementManager();
-
-		try {
-			// Lock the whole store for the entirety of initialization
-			await this.store(async (store) => {
-				// Replace existing store temporarily to avoid deadlocks
-				this.store = (cb) => {
-					return cb(store);
-				};
-
-				const envKey = env['LICENSE_KEY'] as string | undefined;
-				const envToken = env['LICENSE_TOKEN'] as string | undefined;
-
-				// CASE A
-				if (envKey && envToken) {
-					logger.fatal('LICENSE_KEY and LICENSE_TOKEN cannot both be set. Provide one or the other.');
-					process.exit(1);
-				}
-
-				const settingsService = new SettingsService({ schema: await getSchema() });
-
-				const { license_key: dbKey, license_token: dbToken } = await settingsService.readSingleton({
-					fields: ['license_key', 'license_token'],
-				});
-
-				if (envKey) {
-					try {
-						this.source = 'env';
-
-						if (!dbKey) {
-							// CASE D
-							await this.activate(envKey);
-						} else if (envKey !== dbKey) {
-							// CASE B — update operates on manager state, so seed it with the existing DB key
-							this.licenseKey = dbKey;
-							await this.update(envKey);
-						} else {
-							// CASE C
-							await this.refresh({ key: envKey, token: dbToken ?? null });
-						}
-					} catch (error) {
-						logger.fatal('Unable to validate the LICENSE_KEY, please check the key and try again.');
-						logger.fatal(error);
-						process.exit(1);
-					}
-				} else if (envToken) {
-					try {
-						this.source = 'env';
-						// CASE E — verify offline token, cleanup DB
-						await this.refresh({ token: envToken });
-
-						if (dbKey || dbToken) {
-							await settingsService.upsertSingleton({ license_key: null, license_token: null });
-						}
-					} catch (error) {
-						logger.fatal('Unable to validate the LICENSE_TOKEN, please check the token and try again.');
-						logger.fatal(error);
-						process.exit(1);
-					}
-				} else if (dbKey) {
-					try {
-						this.source = 'settings';
-
-						if (dbToken) {
-							// CASE F
-							await this.refresh({ key: dbKey, token: dbToken });
-						} else {
-							// CASE G
-							await this.activate(dbKey);
-						}
-					} catch (error) {
-						logger.error('Unable to validate the license key from the database, downgrading to core tier.');
-						logger.error(error);
-						await this.syncLicense({ kind: 'downgrade' });
-					}
-				} else {
-					if (dbToken) {
-						// CASE H — stale token, clear and drop to core
-						await this.syncLicense({ kind: 'downgrade' });
-					} else {
-						// CASE I — already core, just propagate
-						await this.syncLicense();
-					}
-				}
-
-				this.initialized = true;
-			});
-		} finally {
-			this.store = existingStore;
+		// CASE A
+		if (envKey && envToken) {
+			logger.fatal('LICENSE_KEY and LICENSE_TOKEN cannot both be set. Provide one or the other.');
+			process.exit(1);
 		}
+
+		const settingsService = new SettingsService({ schema: await getSchema() });
+
+		const { license_key: dbKey, license_token: dbToken } = await settingsService.readSingleton({
+			fields: ['license_key', 'license_token'],
+		});
+
+		if (envKey) {
+			try {
+				this.source = 'env';
+
+				if (!dbKey) {
+					// CASE D
+					await this.activate(envKey);
+				} else if (envKey !== dbKey) {
+					// CASE B — update operates on manager state, so seed it with the existing DB key
+					this.licenseKey = dbKey;
+					await this.update(envKey);
+				} else {
+					// CASE C
+					await this.refresh({ key: envKey, token: dbToken ?? null });
+				}
+			} catch (error) {
+				logger.fatal('Unable to validate the LICENSE_KEY, please check the key and try again.');
+				logger.fatal(error);
+				process.exit(1);
+			}
+		} else if (envToken) {
+			try {
+				this.source = 'env';
+				// CASE E — verify offline token, cleanup DB
+				await this.refresh({ token: envToken });
+
+				if (dbKey || dbToken) {
+					await settingsService.upsertSingleton({ license_key: null, license_token: null });
+				}
+			} catch (error) {
+				logger.fatal('Unable to validate the LICENSE_TOKEN, please check the token and try again.');
+				logger.fatal(error);
+				process.exit(1);
+			}
+		} else if (dbKey) {
+			try {
+				this.source = 'settings';
+
+				if (dbToken) {
+					// CASE F
+					await this.refresh({ key: dbKey, token: dbToken });
+				} else {
+					// CASE G
+					await this.activate(dbKey);
+				}
+			} catch (error) {
+				logger.error('Unable to validate the license key from the database, downgrading to core tier.');
+				logger.error(error);
+				await this.syncLicense({ kind: 'downgrade' });
+			}
+		} else {
+			if (dbToken) {
+				// CASE H — stale token, clear and drop to core
+				await this.syncLicense({ kind: 'downgrade' });
+			} else {
+				// CASE I — already core, just propagate
+				await this.syncLicense();
+			}
+		}
+
+		this.initialized = true;
 	}
 
 	// Env-sourced licenses can never be managed via the API, independent of the flag.
