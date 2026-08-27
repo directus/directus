@@ -86,9 +86,10 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 			}
 
 			const metadata = await extractMetadata(targetFile.storage, { ...targetFile, ...uploadFields });
-			const uploadedOn = new Date().toISOString();
 
-			await service.updateOne(targetId, { ...uploadFields, ...metadata, uploaded_on: uploadedOn });
+			const fileUpdates = { ...uploadFields, ...metadata, uploaded_on: new Date().toISOString() };
+
+			await service.updateOne(targetId, fileUpdates);
 
 			// Remove the tmp db record created for replacement
 			if (isReplacement) {
@@ -96,7 +97,7 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 			}
 
 			// Reconstruct full data for event payload
-			const fileData = { ...targetFile, ...uploadFields, ...metadata, uploaded_on: uploadedOn, id: targetId };
+			const fileData = { ...targetFile, ...fileUpdates, id: targetId };
 
 			emitter.emitAction(
 				'files.upload',
