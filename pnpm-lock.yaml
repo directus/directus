@@ -1336,9 +1336,6 @@ importers:
       lodash-es:
         specifier: 'catalog:'
         version: 4.18.1
-      mailtrap:
-        specifier: 'catalog:'
-        version: 4.6.1(@types/nodemailer@8.0.1)(nodemailer@9.0.3)
       marked:
         specifier: 'catalog:'
         version: 16.4.1
@@ -1596,6 +1593,9 @@ importers:
       braintrust:
         specifier: 'catalog:'
         version: 3.27.0(@aws-sdk/credential-provider-web-identity@3.972.75)(zod@4.1.12)
+      mailtrap:
+        specifier: 'catalog:'
+        version: 4.6.1(@types/nodemailer@8.0.1)(nodemailer@9.0.3)
       mysql2:
         specifier: 'catalog:'
         version: 3.15.3
@@ -21118,6 +21118,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
       - supports-color
+    optional: true
 
   make-dir@4.0.0:
     dependencies:

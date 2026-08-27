@@ -154,7 +154,6 @@
 		"ldapts": "catalog:",
 		"liquidjs": "catalog:",
 		"lodash-es": "catalog:",
-		"mailtrap": "catalog:",
 		"marked": "catalog:",
 		"micromustache": "catalog:",
 		"mime-types": "catalog:",
@@ -244,6 +243,7 @@
 	"optionalDependencies": {
 		"@keyv/redis": "catalog:",
 		"braintrust": "catalog:",
+		"mailtrap": "catalog:",
 		"mysql2": "catalog:",
 		"nodemailer-mailgun-transport": "catalog:",
 		"oracledb": "catalog:",
