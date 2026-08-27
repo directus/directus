@@ -3,6 +3,7 @@ import { IllegalAssetTransformationError } from '@directus/errors';
 import type { Transformation } from '@directus/types';
 import { isObject } from '@directus/utils';
 import { isNumber, isString } from 'lodash-es';
+import { useLogger } from '../../logger/index.js';
 
 export type Size = { width: number; height: number };
 
@@ -40,10 +41,17 @@ export function calculateStep(size: Size, method: string, args: unknown[]): Size
  * For example, an image scaled up to 10,000 pixels and then reduced to 5,000 pixels would end within the limit, but would still exceed
  * the allowed dimension during processing.
  *
+ * Only steps that actually move the dimensions are measured. A step that leaves them untouched, such as
+ * `toFormat` selecting the output encoder, inherits the size of whatever came before it, and that size has
+ * already been validated: either it is the source, bounded by `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION`, or it
+ * is the result of an earlier step that was measured against this cap. Measuring them again compares the
+ * incoming size against the output cap, which rejects requests whose actual output was never in question,
+ * such as a small `?width=400&format=webp` off a source larger than the cap.
+ *
  * @param sourceWidth - Original image width
  * @param sourceHeight - Original image height
  * @param transforms - Ordered sharp transform steps to project
- * @throws IllegalAssetTransformationError when any steps projected size exceeds the cap
+ * @throws IllegalAssetTransformationError when a dimension-changing steps projected size exceeds the cap
  */
 export function assertTransformsAllowed(sourceWidth: number, sourceHeight: number, transforms: Transformation[]): void {
 	const env = useEnv();
@@ -53,9 +61,18 @@ export function assertTransformsAllowed(sourceWidth: number, sourceHeight: numbe
 	let size: Size = { width: sourceWidth, height: sourceHeight };
 
 	for (const [method, ...args] of transforms) {
-		size = calculateStep(size, method, args);
+		const projected = calculateStep(size, method, args);
+		const changesDimensions = projected.width !== size.width || projected.height !== size.height;
 
-		if (size.width > maxOutputDimension || size.height > maxOutputDimension) {
+		size = projected;
+
+		if (changesDimensions && (size.width > maxOutputDimension || size.height > maxOutputDimension)) {
+			const logger = useLogger();
+
+			logger.warn(
+				`Transformation step "${method}" projects to ${size.width}x${size.height}, which exceeds the ${maxOutputDimension}px ASSETS_TRANSFORM_IMAGE_MAX_OUTPUT_DIMENSION limit.`,
+			);
+
 			throw new IllegalAssetTransformationError({ invalidTransformations: ['width', 'height'] });
 		}
 	}

@@ -19,6 +19,10 @@ vi.mock('@directus/env', async () => {
 	return mockEnv();
 });
 
+vi.mock('../../logger/index.js', () => ({
+	useLogger: vi.fn().mockReturnValue({ warn: vi.fn() }),
+}));
+
 describe('assertTransformsAllowed', () => {
 	const MAX_DIM = 6000;
 
@@ -63,6 +67,42 @@ describe('assertTransformsAllowed', () => {
 	test('When a source dimension is zero, then it does not divide by zero or throw', () => {
 		const transforms: Transformation[] = [['resize', { width: 100 }]];
 		expect(() => assertTransformsAllowed(0, 0, transforms)).not.toThrow();
+	});
+
+	test('When a dimension-neutral step precedes a downscale of an oversized source, then it does not throw', () => {
+		const transforms: Transformation[] = [
+			['toFormat', 'webp', { quality: 80 }],
+			['resize', { width: 400 }],
+		];
+
+		expect(() => assertTransformsAllowed(MAX_DIM * 2, MAX_DIM * 2, transforms)).not.toThrow();
+	});
+
+	test('When an oversized source is only re-encoded, then it does not throw', () => {
+		const transforms: Transformation[] = [['toFormat', 'webp', { quality: 80 }]];
+		expect(() => assertTransformsAllowed(MAX_DIM * 2, MAX_DIM * 2, transforms)).not.toThrow();
+	});
+
+	test('When a dimension-neutral step follows an oversized upscale, then the upscale still throws', () => {
+		const transforms: Transformation[] = [
+			['resize', { width: MAX_DIM + 1, height: MAX_DIM + 1 }],
+			['toFormat', 'webp', { quality: 80 }],
+		];
+
+		expect(() => assertTransformsAllowed(1, 1, transforms)).toThrow(IllegalAssetTransformationError);
+	});
+
+	test('When a downscale of an oversized source still exceeds the cap, then it throws', () => {
+		const transforms: Transformation[] = [['resize', { width: MAX_DIM + 1 }]];
+
+		expect(() => assertTransformsAllowed(MAX_DIM * 2, MAX_DIM * 2, transforms)).toThrow(
+			IllegalAssetTransformationError,
+		);
+	});
+
+	test('When a resize projects no change, then the oversized source it inherits is not measured', () => {
+		const transforms: Transformation[] = [['resize', { fit: 'inside' }]];
+		expect(() => assertTransformsAllowed(MAX_DIM * 2, MAX_DIM * 2, transforms)).not.toThrow();
 	});
 
 	test.each([
