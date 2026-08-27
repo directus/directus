@@ -1,9 +1,12 @@
 import type { Accountability, FlowRaw, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 import { FlowsService } from '../../../services/flows.js';
+import { ItemsService } from '../../../services/items.js';
 import { flows } from './index.js';
 
 vi.mock('../../../services/flows');
+vi.mock('../../../services/items');
+vi.mock('../../../flows.js', () => ({ getFlowManager: () => ({ reload: vi.fn() }) }));
 
 describe('flows tool', () => {
 	const mockSchema = { collections: {}, fields: {}, relations: {} } as unknown as SchemaOverview;
@@ -22,6 +25,8 @@ describe('flows tool', () => {
 			deleteOne: MockedFunction<any>;
 		};
 
+		let mockLayoutService: { readByQuery: MockedFunction<any>; updateBatch: MockedFunction<any> };
+
 		beforeEach(() => {
 			mockFlowsService = {
 				createOne: vi.fn(),
@@ -32,6 +37,18 @@ describe('flows tool', () => {
 			};
 
 			vi.mocked(FlowsService).mockImplementation(() => mockFlowsService as unknown as FlowsService);
+
+			mockLayoutService = {
+				readByQuery: vi.fn().mockResolvedValue([]),
+				updateBatch: vi.fn().mockResolvedValue([]),
+			};
+
+			// FlowsService extends ItemsService, so its automocked constructor runs
+			// through this implementation too; dispatch on the collection
+			vi.mocked(ItemsService).mockImplementation(
+				(collection) =>
+					(collection === 'directus_operations' ? mockLayoutService : mockFlowsService) as unknown as ItemsService,
+			);
 		});
 
 		describe('CREATE action', () => {
@@ -61,6 +78,32 @@ describe('flows tool', () => {
 					type: 'text',
 					data: mockCreatedFlow,
 				});
+			});
+
+			test('should give nested operations placeholder positions and lay out the flow', async () => {
+				const mockFlowData = {
+					name: 'Test Flow',
+					trigger: 'manual',
+					operations: [{ key: 'log_message', type: 'log' }],
+				};
+
+				mockFlowsService.createOne.mockResolvedValue('flow-123');
+				mockFlowsService.readOne.mockResolvedValue({ id: 'flow-123', operation: null });
+
+				await flows.handler({
+					args: { action: 'create', data: mockFlowData as any },
+					schema: mockSchema,
+					accountability: mockAccountability,
+				});
+
+				expect(mockFlowsService.createOne).toHaveBeenCalledWith({
+					...mockFlowData,
+					operations: [{ position_x: 19, position_y: 1, key: 'log_message', type: 'log' }],
+				});
+
+				expect(mockLayoutService.readByQuery).toHaveBeenCalledWith(
+					expect.objectContaining({ filter: { flow: { _eq: 'flow-123' } } }),
+				);
 			});
 
 			test('should handle null result from readOne after create', async () => {
@@ -169,19 +212,10 @@ describe('flows tool', () => {
 	});
 
 	describe('tool configuration', () => {
-		test('should have correct tool name', () => {
+		test('should expose the expected tool configuration', () => {
 			expect(flows.name).toBe('flows');
-		});
-
-		test('should be admin tool', () => {
 			expect(flows.admin).toBe(true);
-		});
-
-		test('should have description', () => {
 			expect(flows.description).toBeDefined();
-		});
-
-		test('should have input and validation schemas', () => {
 			expect(flows.inputSchema).toBeDefined();
 			expect(flows.validateSchema).toBeDefined();
 		});

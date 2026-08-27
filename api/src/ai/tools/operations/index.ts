@@ -1,7 +1,9 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { InvalidPayloadError } from '@directus/errors';
 import type { OperationRaw } from '@directus/types';
 import { z } from 'zod';
+import { ItemsService } from '../../../services/items.js';
 import { OperationsService } from '../../../services/operations.js';
 import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
@@ -12,6 +14,7 @@ import {
 	QueryValidateSchema,
 } from '../schema.js';
 import { buildSanitizedQueryFromArgs } from '../utils.js';
+import { relayoutFlow } from './position.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -63,8 +66,25 @@ export const operations = defineTool<z.infer<typeof OperationsValidationSchema>>
 			accountability,
 		});
 
+		// Position writes don't affect flow execution, so run them through a plain
+		// ItemsService to skip OperationsService's per-row flow engine reload
+		const layoutService = new ItemsService<OperationRaw>('directus_operations', { schema, accountability });
+		const flowsService = new ItemsService('directus_flows', { schema, accountability });
+
 		if (args.action === 'create') {
+			const explicitPosition = args.data.position_x != null && args.data.position_y != null;
+
+			if (!explicitPosition) {
+				// Placeholder for the NOT NULL columns; relayoutFlow assigns the real spot
+				args.data = { ...args.data, position_x: 19, position_y: 1 };
+			}
+
 			const savedKey = await operationService.createOne(args.data);
+
+			if (!explicitPosition && args.data.flow) {
+				await relayoutFlow(layoutService, flowsService, args.data.flow);
+			}
+
 			const result = await operationService.readOne(savedKey);
 
 			return {
@@ -85,7 +105,56 @@ export const operations = defineTool<z.infer<typeof OperationsValidationSchema>>
 
 		if (args.action === 'update') {
 			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
+
+			let sourceFlow: string | undefined;
+
+			if (args.data.flow != null) {
+				const existing = await operationService.readOne(args.key, { fields: ['id', 'flow', 'resolve', 'reject'] });
+				sourceFlow = existing['flow'] as string;
+
+				if (args.data.flow !== existing['flow']) {
+					// A dangling resolve/reject reference aborts flow loading for the
+					// whole engine (constructFlowTree), so cross-flow moves must be
+					// fully unlinked in both directions
+					const resolve = args.data.resolve !== undefined ? args.data.resolve : existing['resolve'];
+					const reject = args.data.reject !== undefined ? args.data.reject : existing['reject'];
+
+					const [referencedBy, entryPointOf] = await Promise.all([
+						operationService.readByQuery({
+							filter: { _or: [{ resolve: { _eq: args.key } }, { reject: { _eq: args.key } }] },
+							fields: ['id'],
+							limit: 1,
+						}),
+						flowsService.readByQuery({
+							filter: { operation: { _eq: args.key } },
+							fields: ['id'],
+							limit: 1,
+						}),
+					]);
+
+					if (resolve || reject || referencedBy.length > 0 || entryPointOf.length > 0) {
+						throw new InvalidPayloadError({
+							reason:
+								'Cannot move a linked operation to another flow. Clear its resolve/reject and any references to it first',
+						});
+					}
+				}
+			}
+
 			const updatedKey = await operationService.updateOne(args.key, args.data as OperationRaw);
+
+			const linksChanged = args.data.resolve !== undefined || args.data.reject !== undefined;
+			const flowChanged = args.data.flow != null && args.data.flow !== sourceFlow;
+			const explicitPosition = args.data.position_x != null || args.data.position_y != null;
+
+			if (!explicitPosition && (linksChanged || flowChanged)) {
+				const flow =
+					args.data.flow ?? ((await operationService.readOne(args.key, { fields: ['flow'] }))['flow'] as string);
+
+				if (flow) await relayoutFlow(layoutService, flowsService, flow);
+				if (flowChanged && sourceFlow) await relayoutFlow(layoutService, flowsService, sourceFlow);
+			}
+
 			const result = await operationService.readOne(updatedKey, sanitizedQuery);
 
 			return {
@@ -95,7 +164,12 @@ export const operations = defineTool<z.infer<typeof OperationsValidationSchema>>
 		}
 
 		if (args.action === 'delete') {
+			const existing = await operationService.readOne(args.key, { fields: ['flow'] });
 			const deletedKey = await operationService.deleteOne(args.key);
+
+			if (existing['flow']) {
+				await relayoutFlow(layoutService, flowsService, existing['flow'] as string);
+			}
 
 			return {
 				type: 'text',
