@@ -21,10 +21,6 @@ vi.mock('../utils/derive-created-at-from-uuid.js', () => ({
 	deriveCreatedAtFromUuid: vi.fn().mockReturnValue('2024-01-01T00:00:00.000Z'),
 }));
 
-vi.mock('./meta.js', () => ({
-	collectMeta: vi.fn().mockReturnValue({ host: 'unknown' }),
-}));
-
 vi.mock('../utils/get-templates-applied.js', () => ({
 	getTemplatesApplied: vi.fn().mockReturnValue([]),
 }));
@@ -37,7 +33,7 @@ describe('collectProject', () => {
 	const mockDb = {} as Knex;
 	const mockSchema = {} as SchemaOverview;
 
-	test('returns project info with id, version, and host', async () => {
+	test('returns project info with id, version, and created_at', async () => {
 		const result = await collectProject(mockDb, mockSchema);
 		expect(result.id).toBe('018cc701-e800-7000-8000-000000000000');
 		expect(result.version).toBe('11.0.0');
