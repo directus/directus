@@ -68,14 +68,16 @@ export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 			accountability,
 		});
 
-		// Nested operations get placeholder coordinates for the NOT NULL columns;
-		// relayoutFlow assigns the real spots after the mutation
+		// New nested operations get placeholder coordinates for the NOT NULL
+		// columns; relayoutFlow assigns the real spots after the mutation.
+		// Entries with an id are updates to rows that already have coordinates
 		const prepareNestedOperations = (data: Partial<FlowRaw>) => {
 			if (!Array.isArray(data.operations)) return false;
 
-			data.operations = data.operations.map(
-				(operation) => ({ position_x: 19, position_y: 1, ...(operation as Partial<OperationRaw>) }) as OperationRaw,
-			);
+			data.operations = data.operations.map((operation) => {
+				const partial = operation as Partial<OperationRaw>;
+				return (partial.id ? partial : { position_x: 19, position_y: 1, ...partial }) as OperationRaw;
+			});
 
 			return true;
 		};

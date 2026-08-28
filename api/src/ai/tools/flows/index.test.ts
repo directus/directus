@@ -173,6 +173,33 @@ describe('flows tool', () => {
 					data: mockUpdatedFlow,
 				});
 			});
+
+			test('should stamp placeholder positions only on nested operations without an id', async () => {
+				const mockKey = 'flow-123';
+
+				const mockUpdateData = {
+					operations: [
+						{ id: 'existing-op', resolve: 'other-op' },
+						{ key: 'new_op', type: 'log' },
+					],
+				};
+
+				mockFlowsService.updateOne.mockResolvedValue(mockKey);
+				mockFlowsService.readOne.mockResolvedValue({ id: mockKey, operation: null });
+
+				await flows.handler({
+					args: { action: 'update', key: mockKey, data: mockUpdateData as any },
+					schema: mockSchema,
+					accountability: mockAccountability,
+				});
+
+				expect(mockFlowsService.updateOne).toHaveBeenCalledWith(mockKey, {
+					operations: [
+						{ id: 'existing-op', resolve: 'other-op' },
+						{ position_x: 19, position_y: 1, key: 'new_op', type: 'log' },
+					],
+				});
+			});
 		});
 
 		describe('DELETE action', () => {
