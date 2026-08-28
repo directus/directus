@@ -10,6 +10,7 @@ import { collectApiRequestMetrics } from '../collectors/metrics/api-requests.js'
 import { collectMetrics } from '../collectors/metrics/index.js';
 import { collectProject } from '../collectors/project.js';
 import type {
+	ApiRequestMetrics,
 	ExtensionBreakdown,
 	TelemetryConfig,
 	TelemetryFeatures,
@@ -177,7 +178,7 @@ const mockMetrics: Omit<TelemetryMetrics, 'api_requests'> = {
 	extensions: { active: extensionBreakdown(), inactive: extensionBreakdown() },
 };
 
-const mockApiRequests: TelemetryMetrics['api_requests'] = {
+const mockApiRequests: ApiRequestMetrics = {
 	count: 3,
 	cached: { count: 1 },
 	method: {

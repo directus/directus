@@ -4,12 +4,10 @@ import type { SchemaOverview } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { SettingsService } from '../../services/settings.js';
-import type { TelemetryReport } from '../types/report.js';
+import type { TelemetryFeatures } from '../types/report.js';
 import { collectInstalledRegistryExtensions } from '../utils/collect-installed-registry-extensions.js';
 import { countCustomModels } from '../utils/count-custom-models.js';
 import { filterKnownArrayItems } from '../utils/filter-known-array-items.js';
-
-type FeaturesInfo = TelemetryReport['features'];
 
 interface FeatureSettingsResponse {
 	mcp_enabled: boolean | null;
@@ -52,7 +50,7 @@ interface FeatureSettingsResponse {
 	module_bar: Array<{ type?: string; id?: string; enabled?: boolean }> | null;
 }
 
-export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise<FeaturesInfo> {
+export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise<TelemetryFeatures> {
 	const env = useEnv();
 	const settingsService = new SettingsService({ knex: db, schema });
 

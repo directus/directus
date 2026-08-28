@@ -1,8 +1,6 @@
 import type { Knex } from 'knex';
 import { fetchUserCount } from '../../../utils/fetch-user-count/fetch-user-count.js';
-import type { TelemetryReport } from '../../types/report.js';
-
-type UserMetrics = TelemetryReport['metrics']['users'];
+import type { UserMetrics } from '../../types/report.js';
 
 export async function collectUserMetrics(db: Knex): Promise<UserMetrics> {
 	const counts = await fetchUserCount({ knex: db });

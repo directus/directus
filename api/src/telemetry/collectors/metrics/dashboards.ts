@@ -1,10 +1,8 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { DashboardsService } from '../../../services/dashboards.js';
-import type { TelemetryReport } from '../../types/report.js';
+import type { DashboardMetrics } from '../../types/report.js';
 import { distributionFromCounts, emptyDistribution } from '../../utils/stats.js';
-
-type DashboardMetrics = TelemetryReport['metrics']['dashboards'];
 
 export async function collectDashboardMetrics(db: Knex, schema: SchemaOverview): Promise<DashboardMetrics> {
 	const dashboardsService = new DashboardsService({ knex: db, schema });

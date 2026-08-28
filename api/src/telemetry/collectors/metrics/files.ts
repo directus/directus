@@ -1,10 +1,8 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { FilesService } from '../../../services/files.js';
-import type { FileSizeByType, TelemetryReport } from '../../types/report.js';
+import type { FileMetrics, FileSizeByType } from '../../types/report.js';
 import { emptyDistribution } from '../../utils/stats.js';
-
-type FileMetrics = TelemetryReport['metrics']['files'];
 
 interface GroupedFileRow {
 	type: string | null;

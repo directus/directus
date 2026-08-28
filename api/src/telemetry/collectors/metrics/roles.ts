@@ -1,11 +1,9 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { RolesService } from '../../../services/roles.js';
-import type { TelemetryReport } from '../../types/report.js';
+import type { RoleMetrics } from '../../types/report.js';
 import { distributionFromCounts, emptyDistribution } from '../../utils/stats.js';
 import { computeDepthDistribution } from '../../utils/tree-depth.js';
-
-type RoleMetrics = TelemetryReport['metrics']['roles'];
 
 export async function collectRoleMetrics(db: Knex, schema: SchemaOverview): Promise<RoleMetrics> {
 	const rolesService = new RolesService({ knex: db, schema });

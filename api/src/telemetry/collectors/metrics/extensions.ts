@@ -1,9 +1,7 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { ExtensionsService } from '../../../services/extensions.js';
-import type { ExtensionBreakdown, ExtensionCountBySource, TelemetryReport } from '../../types/report.js';
-
-type ExtensionMetrics = TelemetryReport['metrics']['extensions'];
+import type { ExtensionBreakdown, ExtensionCountBySource, ExtensionMetrics } from '../../types/report.js';
 
 const EXTENSION_TYPES = new Set<string>([
 	'display',

@@ -1,7 +1,18 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import type { ExtensionBreakdown, TelemetryMetrics } from '../../types/report.js';
+import type {
+	CollectionMetrics,
+	DashboardMetrics,
+	DatabaseMetrics,
+	ExtensionBreakdown,
+	ExtensionMetrics,
+	FileMetrics,
+	FlowMetrics,
+	RoleMetrics,
+	TranslationMetrics,
+	UserMetrics,
+} from '../../types/report.js';
 import { collectMetrics } from './index.js';
 
 const distribution = { min: 0, max: 0, median: 0, mean: 0 };
@@ -27,7 +38,7 @@ const extensionBreakdown = (): ExtensionBreakdown => ({
 
 vi.mock('./collections.js', () => ({
 	collectCollectionMetrics: vi.fn(
-		async (): Promise<TelemetryMetrics['collections'] & { _totalItems: number; _totalFields: number }> => ({
+		async (): Promise<CollectionMetrics & { _totalItems: number; _totalFields: number }> => ({
 			count: 0,
 			shares: { ...distribution },
 			fields: { ...distribution },
@@ -47,7 +58,7 @@ vi.mock('./collections.js', () => ({
 
 vi.mock('./files.js', () => ({
 	collectFileMetrics: vi.fn(
-		async (): Promise<TelemetryMetrics['files']> => ({
+		async (): Promise<FileMetrics> => ({
 			count: 0,
 			size: { sum: 0, ...distribution },
 			types: {},
@@ -57,7 +68,7 @@ vi.mock('./files.js', () => ({
 
 vi.mock('./flows.js', () => ({
 	collectFlowMetrics: vi.fn(
-		async (): Promise<TelemetryMetrics['flows']> => ({
+		async (): Promise<FlowMetrics> => ({
 			active: { count: 0 },
 			inactive: { count: 0 },
 		}),
@@ -66,7 +77,7 @@ vi.mock('./flows.js', () => ({
 
 vi.mock('./roles.js', () => ({
 	collectRoleMetrics: vi.fn(
-		async (): Promise<TelemetryMetrics['roles']> => ({
+		async (): Promise<RoleMetrics> => ({
 			count: 0,
 			users: { ...distribution },
 			policies: { ...distribution },
@@ -78,7 +89,7 @@ vi.mock('./roles.js', () => ({
 
 vi.mock('./translations.js', () => ({
 	collectTranslationMetrics: vi.fn(
-		async (): Promise<TelemetryMetrics['translations']> => ({
+		async (): Promise<TranslationMetrics> => ({
 			count: 0,
 			language: { count: 0, translations: { ...distribution } },
 		}),
@@ -87,7 +98,7 @@ vi.mock('./translations.js', () => ({
 
 vi.mock('./users.js', () => ({
 	collectUserMetrics: vi.fn(
-		async (): Promise<TelemetryMetrics['users']> => ({
+		async (): Promise<UserMetrics> => ({
 			admin: { count: 0 },
 			app: { count: 0 },
 			api: { count: 0 },
@@ -97,7 +108,7 @@ vi.mock('./users.js', () => ({
 
 vi.mock('./dashboards.js', () => ({
 	collectDashboardMetrics: vi.fn(
-		async (): Promise<TelemetryMetrics['dashboards']> => ({
+		async (): Promise<DashboardMetrics> => ({
 			count: 0,
 			panels: { ...distribution },
 		}),
@@ -106,7 +117,7 @@ vi.mock('./dashboards.js', () => ({
 
 vi.mock('./extensions.js', () => ({
 	collectExtensionMetrics: vi.fn(
-		async (): Promise<TelemetryMetrics['extensions']> => ({
+		async (): Promise<ExtensionMetrics> => ({
 			active: extensionBreakdown(),
 			inactive: extensionBreakdown(),
 		}),
@@ -115,7 +126,7 @@ vi.mock('./extensions.js', () => ({
 
 vi.mock('./database.js', () => ({
 	collectDatabaseMetrics: vi.fn(
-		async (): Promise<TelemetryMetrics['database']> => ({
+		async (): Promise<DatabaseMetrics> => ({
 			size: null,
 		}),
 	),
@@ -125,13 +136,13 @@ vi.mock('../../utils/service-count.js', () => ({
 	serviceCount: vi.fn(async (): Promise<number> => 0),
 }));
 
-afterEach(() => {
-	vi.clearAllMocks();
-});
-
 describe('collectMetrics', () => {
 	const mockDb = {} as Knex;
 	const mockSchema = {} as SchemaOverview;
+
+	afterEach(() => {
+		vi.clearAllMocks();
+	});
 
 	test('returns all metric sections', async () => {
 		const result = await collectMetrics(mockDb, mockSchema);

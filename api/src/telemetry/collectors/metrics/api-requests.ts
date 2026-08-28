@@ -1,8 +1,6 @@
 import { useBufferedCounter } from '../../counter/use-buffered-counter.js';
-import type { TelemetryReport } from '../../types/report.js';
+import type { ApiRequestMetrics } from '../../types/report.js';
 import { TRACKED_KEYS } from '../../utils/api-request-keys.js';
-
-type ApiRequestMetrics = TelemetryReport['metrics']['api_requests'];
 
 export async function collectApiRequestMetrics(): Promise<ApiRequestMetrics> {
 	const counter = useBufferedCounter('api-requests');

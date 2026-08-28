@@ -1,10 +1,8 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { TranslationsService } from '../../../services/translations.js';
-import type { TelemetryReport } from '../../types/report.js';
+import type { TranslationMetrics } from '../../types/report.js';
 import { distributionFromCounts, emptyDistribution } from '../../utils/stats.js';
-
-type TranslationMetrics = TelemetryReport['metrics']['translations'];
 
 export async function collectTranslationMetrics(db: Knex, schema: SchemaOverview): Promise<TranslationMetrics> {
 	try {

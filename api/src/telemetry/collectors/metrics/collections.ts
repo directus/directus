@@ -1,10 +1,10 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import type { TelemetryReport } from '../../types/report.js';
+import type { CollectionMetrics } from '../../types/report.js';
 import { getItemCount } from '../../utils/get-item-count.js';
 import { distributionFromCounts, emptyDistribution } from '../../utils/stats.js';
 
-type CollectionMetricsOutput = TelemetryReport['metrics']['collections'] & {
+type CollectionMetricsOutput = CollectionMetrics & {
 	_totalItems: number;
 	_totalFields: number;
 };

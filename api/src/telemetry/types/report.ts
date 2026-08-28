@@ -212,100 +212,106 @@ export interface TelemetryFeatures {
 	};
 }
 
-export interface TelemetryMetrics {
-	api_requests: {
-		count: number;
-		cached: CountMetric;
-		method: {
-			get: CountMetric;
-			search: CountMetric;
-			post: CountMetric;
-			put: CountMetric;
-			patch: CountMetric;
-			delete: CountMetric;
-		};
+export interface ApiRequestMetrics {
+	count: number;
+	cached: CountMetric;
+	method: {
+		get: CountMetric;
+		search: CountMetric;
+		post: CountMetric;
+		put: CountMetric;
+		patch: CountMetric;
+		delete: CountMetric;
 	};
+}
 
-	fields: CountMetric;
-
-	collections: {
+export interface CollectionMetrics {
+	count: number;
+	shares: DistributionSummary;
+	fields: DistributionSummary;
+	items: DistributionSummary;
+	versioned: {
 		count: number;
-		shares: DistributionSummary;
-		fields: DistributionSummary;
 		items: DistributionSummary;
-		versioned: {
-			count: number;
-			items: DistributionSummary;
-		};
-		archive_app_filter: {
-			count: number;
-			items: DistributionSummary;
-		};
-		activity: {
-			all: { count: number; items: DistributionSummary };
-			activity: { count: number; items: DistributionSummary };
-			none: { count: number; items: DistributionSummary };
-		};
 	};
+	archive_app_filter: {
+		count: number;
+		items: DistributionSummary;
+	};
+	activity: {
+		all: { count: number; items: DistributionSummary };
+		activity: { count: number; items: DistributionSummary };
+		none: { count: number; items: DistributionSummary };
+	};
+}
 
+export interface FileMetrics {
+	count: number;
+	size: {
+		sum: number;
+		min: number;
+		max: number;
+		median: number;
+		mean: number;
+	};
+	types: Record<string, FileSizeByType>;
+}
+
+export interface UserMetrics {
+	admin: CountMetric;
+	app: CountMetric;
+	api: CountMetric;
+}
+
+export interface DatabaseMetrics {
+	size: number | null;
+}
+
+export interface RoleMetrics {
+	count: number;
+	users: DistributionSummary;
+	policies: DistributionSummary;
+	children: DistributionSummary;
+	depth: DistributionSummary;
+}
+
+export interface FlowMetrics {
+	active: CountMetric;
+	inactive: CountMetric;
+}
+
+export interface TranslationMetrics {
+	count: number;
+	language: {
+		count: number;
+		translations: DistributionSummary;
+	};
+}
+
+export interface DashboardMetrics {
+	count: number;
+	panels: DistributionSummary;
+}
+
+export interface ExtensionMetrics {
+	active: ExtensionBreakdown;
+	inactive: ExtensionBreakdown;
+}
+
+export interface TelemetryMetrics {
+	api_requests: ApiRequestMetrics;
+	collections: CollectionMetrics;
+	fields: CountMetric;
 	shares: CountMetric;
-
 	items: CountMetric;
-
-	files: {
-		count: number;
-		size: {
-			sum: number;
-			min: number;
-			max: number;
-			median: number;
-			mean: number;
-		};
-		types: Record<string, FileSizeByType>;
-	};
-
-	users: {
-		admin: CountMetric;
-		app: CountMetric;
-		api: CountMetric;
-	};
-
-	database: {
-		size: number | null;
-	};
-
-	roles: {
-		count: number;
-		users: DistributionSummary;
-		policies: DistributionSummary;
-		children: DistributionSummary;
-		depth: DistributionSummary;
-	};
-
+	files: FileMetrics;
+	users: UserMetrics;
+	database: DatabaseMetrics;
+	roles: RoleMetrics;
 	policies: CountMetric;
-
-	flows: {
-		active: CountMetric;
-		inactive: CountMetric;
-	};
-
-	translations: {
-		count: number;
-		language: {
-			count: number;
-			translations: DistributionSummary;
-		};
-	};
-
-	dashboards: {
-		count: number;
-		panels: DistributionSummary;
-	};
-
+	flows: FlowMetrics;
+	translations: TranslationMetrics;
+	dashboards: DashboardMetrics;
 	panels: CountMetric;
-
-	extensions: {
-		active: ExtensionBreakdown;
-		inactive: ExtensionBreakdown;
-	};
+	extensions: ExtensionMetrics;
 }

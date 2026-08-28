@@ -1,9 +1,7 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { FlowsService } from '../../../services/flows.js';
-import type { TelemetryReport } from '../../types/report.js';
-
-type FlowMetrics = TelemetryReport['metrics']['flows'];
+import type { FlowMetrics } from '../../types/report.js';
 
 export async function collectFlowMetrics(db: Knex, schema: SchemaOverview): Promise<FlowMetrics> {
 	const flowsService = new FlowsService({ knex: db, schema });
