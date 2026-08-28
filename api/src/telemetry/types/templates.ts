@@ -47,7 +47,6 @@ export const templates: Record<string, string[]> = {
 		'blocks',
 		'form_fields',
 		'form_fields_translations',
-		'form_fields_translations',
 		'forms',
 		'forms_translations',
 		'form_submissions',
