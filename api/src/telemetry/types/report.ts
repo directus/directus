@@ -45,7 +45,7 @@ export interface TelemetryReport {
 	trigger: 'startup' | 'scheduled';
 	project: TelemetryProject;
 	config: TelemetryConfig;
-	features: TelemetryFeatures;
+	features: TelemetryFeatures | null;
 	metrics: TelemetryMetrics;
 }
 
@@ -299,19 +299,19 @@ export interface ExtensionMetrics {
 }
 
 export interface TelemetryMetrics {
-	api_requests: ApiRequestMetrics;
-	collections: CollectionMetrics;
-	fields: CountMetric;
-	shares: CountMetric;
-	items: CountMetric;
-	files: FileMetrics;
-	users: UserMetrics;
-	database: DatabaseMetrics;
-	roles: RoleMetrics;
-	policies: CountMetric;
-	flows: FlowMetrics;
-	translations: TranslationMetrics;
-	dashboards: DashboardMetrics;
-	panels: CountMetric;
-	extensions: ExtensionMetrics;
+	api_requests: ApiRequestMetrics | null;
+	collections: CollectionMetrics | null;
+	fields: CountMetric | null;
+	shares: CountMetric | null;
+	items: CountMetric | null;
+	files: FileMetrics | null;
+	users: UserMetrics | null;
+	database: DatabaseMetrics | null;
+	roles: RoleMetrics | null;
+	policies: CountMetric | null;
+	flows: FlowMetrics | null;
+	translations: TranslationMetrics | null;
+	dashboards: DashboardMetrics | null;
+	panels: CountMetric | null;
+	extensions: ExtensionMetrics | null;
 }

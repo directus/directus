@@ -1,6 +1,7 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { useLogger } from '../../../logger/index.js';
 import type {
 	CollectionMetrics,
 	DashboardMetrics,
@@ -13,6 +14,9 @@ import type {
 	TranslationMetrics,
 	UserMetrics,
 } from '../../types/report.js';
+import { serviceCount } from '../../utils/service-count.js';
+import { collectCollectionMetrics } from './collections.js';
+import { collectRoleMetrics } from './roles.js';
 import { collectMetrics } from './index.js';
 
 const distribution = { min: 0, max: 0, median: 0, mean: 0 };
@@ -35,6 +39,8 @@ const extensionBreakdown = (): ExtensionBreakdown => ({
 		bundle: { ...extensionsBySource },
 	},
 });
+
+vi.mock('../../../logger/index.js');
 
 vi.mock('./collections.js', () => ({
 	collectCollectionMetrics: vi.fn(
@@ -140,6 +146,10 @@ describe('collectMetrics', () => {
 	const mockDb = {} as Knex;
 	const mockSchema = {} as SchemaOverview;
 
+	beforeEach(() => {
+		vi.mocked(useLogger).mockReturnValue({ warn: vi.fn() } as any);
+	});
+
 	afterEach(() => {
 		vi.clearAllMocks();
 	});
@@ -177,5 +187,36 @@ describe('collectMetrics', () => {
 	test('maps _totalItems to items.count', async () => {
 		const result = await collectMetrics(mockDb, mockSchema);
 		expect(result.items).toStrictEqual({ count: 42 });
+	});
+
+	test('nulls only the failing section when a collector throws', async () => {
+		vi.mocked(collectRoleMetrics).mockRejectedValueOnce(new Error('no connection'));
+
+		const result = await collectMetrics(mockDb, mockSchema);
+
+		expect(result.roles).toBeNull();
+		expect(result.users).not.toBeNull();
+		expect(result.files).not.toBeNull();
+	});
+
+	test('nulls collections and items together when the collections collector throws', async () => {
+		vi.mocked(collectCollectionMetrics).mockRejectedValueOnce(new Error('no connection'));
+
+		const result = await collectMetrics(mockDb, mockSchema);
+
+		expect(result.collections).toBeNull();
+		expect(result.items).toBeNull();
+	});
+
+	test('nulls a service count when it throws', async () => {
+		// Shares is the first of the four service counts to be queued.
+		vi.mocked(serviceCount).mockRejectedValueOnce(new Error('no connection'));
+
+		const result = await collectMetrics(mockDb, mockSchema);
+
+		expect(result.shares).toBeNull();
+		expect(result.fields).toStrictEqual({ count: 0 });
+		expect(result.panels).toStrictEqual({ count: 0 });
+		expect(result.policies).toStrictEqual({ count: 0 });
 	});
 });

@@ -3,6 +3,7 @@ import { type Knex } from 'knex';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getSystemCache, setSystemCache } from '../../cache.js';
 import { getDatabase } from '../../database/index.js';
+import { useLogger } from '../../logger/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { collectConfig } from '../collectors/config.js';
 import { collectFeatures } from '../collectors/features.js';
@@ -25,6 +26,7 @@ vi.mock('../../cache.js', () => ({
 }));
 
 vi.mock('../../database/index.js');
+vi.mock('../../logger/index.js');
 vi.mock('../../utils/get-schema.js');
 vi.mock('../collectors/project.js');
 vi.mock('../collectors/config.js');
@@ -202,6 +204,7 @@ describe('getReport', () => {
 	beforeEach(() => {
 		mockDb = {} as unknown as Knex;
 		mockSchema = {} as unknown as SchemaOverview;
+		vi.mocked(useLogger).mockReturnValue({ warn: vi.fn() } as any);
 		vi.mocked(getSystemCache).mockResolvedValue(undefined as any);
 		vi.mocked(getDatabase).mockReturnValue(mockDb);
 		vi.mocked(getSchema).mockResolvedValue(mockSchema);
@@ -274,6 +277,23 @@ describe('getReport', () => {
 	test('Returns metrics section from collectMetrics plus the API request counts', async () => {
 		const report = await getReport();
 		expect(report.metrics).toEqual({ ...mockMetrics, api_requests: mockApiRequests });
+	});
+
+	test('Nulls the features section instead of failing the report when collectFeatures throws', async () => {
+		vi.mocked(collectFeatures).mockRejectedValue(new Error('no connection'));
+
+		const report = await getReport();
+
+		expect(report.features).toBeNull();
+		expect(report.project).toEqual(mockProject);
+	});
+
+	test('Nulls api_requests instead of failing the report when the counter is unreachable', async () => {
+		vi.mocked(collectApiRequestMetrics).mockRejectedValue(new Error('no connection'));
+
+		const report = await getReport();
+
+		expect(report.metrics.api_requests).toBeNull();
 	});
 
 	test('Returns cached sections when the system cache has a report', async () => {

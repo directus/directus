@@ -7,6 +7,7 @@ import { collectApiRequestMetrics } from '../collectors/metrics/api-requests.js'
 import { collectMetrics } from '../collectors/metrics/index.js';
 import { collectProject } from '../collectors/project.js';
 import type { TelemetryReport } from '../types/report.js';
+import { safeCollect } from '../utils/safe-collect.js';
 
 const CACHE_KEY = 'telemetry-report';
 const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
@@ -23,7 +24,10 @@ type CachedSections = Pick<TelemetryReport, 'project' | 'config' | 'features'> &
  */
 export const getReport = async (trigger: TelemetryReport['trigger'] = 'scheduled'): Promise<TelemetryReport> => {
 	// Reading the API request counters resets them, so they're collected per report rather than cached.
-	const [sections, apiRequests] = await Promise.all([getCachedSections(), collectApiRequestMetrics()]);
+	const [sections, apiRequests] = await Promise.all([
+		getCachedSections(),
+		safeCollect('metrics.api_requests', () => collectApiRequestMetrics()),
+	]);
 
 	return {
 		event: 'directus.telemetry.ping.v2',
@@ -45,10 +49,11 @@ const getCachedSections = async (): Promise<CachedSections> => {
 	const db = getDatabase();
 	const schema = await getSchema({ database: db });
 
+	// Project holds the identity the report is keyed on, so it alone is allowed to fail the report.
 	const [project, config, features, metrics] = await Promise.all([
 		collectProject(db, schema),
 		collectConfig(db),
-		collectFeatures(db, schema),
+		safeCollect('features', () => collectFeatures(db, schema)),
 		collectMetrics(db, schema),
 	]);
 

@@ -1,6 +1,7 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import type { TelemetryReport } from '../../types/report.js';
+import { safeCollect } from '../../utils/safe-collect.js';
 import { serviceCount } from '../../utils/service-count.js';
 import { collectCollectionMetrics } from './collections.js';
 import { collectDashboardMetrics } from './dashboards.js';
@@ -24,42 +25,49 @@ export async function collectMetrics(db: Knex, schema: SchemaOverview): Promise<
 		userMetrics,
 		dashboardMetrics,
 		extensionMetrics,
-		sharesCount,
-		fieldsCount,
-		panelsCount,
-		policiesCount,
+		shares,
+		fields,
+		panels,
+		policies,
 		databaseMetrics,
 	] = await Promise.all([
-		collectCollectionMetrics(db, schema),
-		collectFileMetrics(db, schema),
-		collectFlowMetrics(db, schema),
-		collectRoleMetrics(db, schema),
-		collectTranslationMetrics(db, schema),
-		collectUserMetrics(db),
-		collectDashboardMetrics(db, schema),
-		collectExtensionMetrics(db, schema),
-		serviceCount(db, schema, 'directus_shares'),
-		serviceCount(db, schema, 'directus_fields'),
-		serviceCount(db, schema, 'directus_panels'),
-		serviceCount(db, schema, 'directus_policies'),
-		collectDatabaseMetrics(db),
+		safeCollect('metrics.collections', () => collectCollectionMetrics(db, schema)),
+		safeCollect('metrics.files', () => collectFileMetrics(db, schema)),
+		safeCollect('metrics.flows', () => collectFlowMetrics(db, schema)),
+		safeCollect('metrics.roles', () => collectRoleMetrics(db, schema)),
+		safeCollect('metrics.translations', () => collectTranslationMetrics(db, schema)),
+		safeCollect('metrics.users', () => collectUserMetrics(db)),
+		safeCollect('metrics.dashboards', () => collectDashboardMetrics(db, schema)),
+		safeCollect('metrics.extensions', () => collectExtensionMetrics(db, schema)),
+		safeCollect('metrics.shares', async () => ({ count: await serviceCount(db, schema, 'directus_shares') })),
+		safeCollect('metrics.fields', async () => ({ count: await serviceCount(db, schema, 'directus_fields') })),
+		safeCollect('metrics.panels', async () => ({ count: await serviceCount(db, schema, 'directus_panels') })),
+		safeCollect('metrics.policies', async () => ({ count: await serviceCount(db, schema, 'directus_policies') })),
+		safeCollect('metrics.database', () => collectDatabaseMetrics(db)),
 	]);
 
-	const { _totalItems, _totalFields, ...collections } = collectionMetrics;
+	let collections: Metrics['collections'] = null;
+	let items: Metrics['items'] = null;
+
+	if (collectionMetrics) {
+		const { _totalItems, _totalFields, ...rest } = collectionMetrics;
+		collections = rest;
+		items = { count: _totalItems };
+	}
 
 	return {
 		collections,
-		shares: { count: sharesCount },
-		items: { count: _totalItems },
+		shares,
+		items,
 		files: fileMetrics,
 		users: userMetrics,
 		roles: roleMetrics,
-		policies: { count: policiesCount },
-		fields: { count: fieldsCount },
+		policies,
+		fields,
 		flows: flowMetrics,
 		translations: translationMetrics,
 		dashboards: dashboardMetrics,
-		panels: { count: panelsCount },
+		panels,
 		extensions: extensionMetrics,
 		database: databaseMetrics,
 	};
