@@ -130,6 +130,7 @@ function onNavigate(folderId: string | null) {
 }
 
 .flow-folder-split :deep(.sp-end) {
+	position: relative;
 	overflow: auto;
 }
 </style>
