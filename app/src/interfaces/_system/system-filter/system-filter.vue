@@ -64,7 +64,6 @@ const props = withDefaults(defineProps<Props>(), {
 	includeJsonFunction: true,
 	injectVersionField: false,
 	relationalFieldSelectable: true,
-	fieldFilter: undefined,
 	rawFieldNames: false,
 });
 

@@ -76,7 +76,6 @@ const props = withDefaults(defineProps<Props>(), {
 	includeRelations: true,
 	includeJsonFunction: true,
 	relationalFieldSelectable: true,
-	fieldFilter: undefined,
 	rawFieldNames: false,
 });
 
