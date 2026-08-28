@@ -31,7 +31,7 @@ const duplicable = computed(() => localType.value === 'standard' && isPrimaryKey
 <template>
 	<VMenu show-arrow placement="bottom-end" full-height>
 		<template #activator="{ toggle }">
-			<VIcon clickable name="more_vert" @click="toggle" />
+			<VIcon clickable name="more_vert" :aria-label="$t('actions')" @click="toggle" />
 		</template>
 
 		<VList>

@@ -61,7 +61,15 @@ function toPage(page: number) {
 
 <template>
 	<div class="v-pagination">
-		<VButton class="previous" :disabled="disabled || modelValue === 1" secondary icon small @click="toPrev">
+		<VButton
+			class="previous"
+			:disabled="disabled || modelValue === 1"
+			:aria-label="$t('previous')"
+			secondary
+			icon
+			small
+			@click="toPrev"
+		>
 			<VIcon name="chevron_left" />
 		</VButton>
 
@@ -119,7 +127,15 @@ function toPage(page: number) {
 			{{ length }}
 		</VButton>
 
-		<VButton class="next" :disabled="disabled || modelValue === length" secondary icon small @click="toNext">
+		<VButton
+			class="next"
+			:disabled="disabled || modelValue === length"
+			:aria-label="$t('next')"
+			secondary
+			icon
+			small
+			@click="toNext"
+		>
 			<VIcon name="chevron_right" />
 		</VButton>
 	</div>

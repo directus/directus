@@ -27,7 +27,7 @@ const internalModelValue = useSync(props, 'modelValue', emit);
 
 		<FilePreview :file="file" :src="src" :preset="null" in-modal @click="internalModelValue = false" />
 
-		<VButton class="close" icon small @click="internalModelValue = false">
+		<VButton class="close" :aria-label="$t('dismiss')" icon small @click="internalModelValue = false">
 			<VIcon name="close" />
 		</VButton>
 	</VDialog>

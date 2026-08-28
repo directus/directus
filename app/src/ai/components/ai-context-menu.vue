@@ -248,11 +248,11 @@ function closeList() {
 							<VIcon name="search" small />
 						</template>
 						<template v-if="searchQuery" #append>
-							<VIcon name="close" small clickable @click="searchQuery = ''" />
+							<VIcon name="close" :aria-label="t('clear_value')" small clickable @click="searchQuery = ''" />
 						</template>
 					</VInput>
 					<div v-if="openListType" class="list-header">
-						<VButton x-small icon secondary @click="closeList">
+						<VButton :aria-label="t('back')" x-small icon secondary @click="closeList">
 							<VIcon name="arrow_back" small />
 						</VButton>
 						<span class="list-title">{{ openListType === 'prompts' ? t('ai.prompts') : t('ai.content') }}</span>

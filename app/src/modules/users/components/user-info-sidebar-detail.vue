@@ -41,6 +41,7 @@ watch(
 				<VIcon
 					v-if="isCopySupported"
 					name="content_copy"
+					:aria-label="$t('copy')"
 					small
 					clickable
 					class="clipboard-icon"
