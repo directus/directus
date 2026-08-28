@@ -138,7 +138,7 @@ function emitValue() {
 			@click="activate"
 			@focusout="onFocusOut"
 		>
-			<VIcon name="search" class="icon-search" :disabled :clickable="!active" @click="input?.focus()" />
+			<VIcon name="search" :aria-label="$t('search')" class="icon-search" :disabled :clickable="!active" @click="input?.focus()" />
 
 			<input
 				ref="input"

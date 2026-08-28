@@ -57,7 +57,7 @@ const formattedTime = computed(() => {
 			<div class="header-right">
 				<VMenu show-arrow placement="bottom-end">
 					<template #activator="{ toggle, active }">
-						<VIcon class="more" :class="{ active }" name="more_horiz" clickable @click="toggle" />
+						<VIcon class="more" :class="{ active }" name="more_horiz" :aria-label="$t('actions')" clickable @click="toggle" />
 						<div class="date">
 							{{ formattedTime }}
 						</div>
