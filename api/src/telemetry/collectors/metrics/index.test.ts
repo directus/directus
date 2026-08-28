@@ -25,16 +25,6 @@ const extensionBreakdown = (): ExtensionBreakdown => ({
 	},
 });
 
-vi.mock('./api-requests.js', () => ({
-	collectApiRequestMetrics: vi.fn(
-		async (): Promise<TelemetryMetrics['api_requests']> => ({
-			count: 0,
-			cached: { count: 0 },
-			method: { get: { count: 0 }, search: { count: 0 }, post: { count: 0 }, put: { count: 0 }, patch: { count: 0 }, delete: { count: 0 } },
-		}),
-	),
-}));
-
 vi.mock('./collections.js', () => ({
 	collectCollectionMetrics: vi.fn(
 		async (): Promise<TelemetryMetrics['collections'] & { _totalItems: number; _totalFields: number }> => ({
@@ -49,8 +39,8 @@ vi.mock('./collections.js', () => ({
 				activity: { count: 0, items: { ...distribution } },
 				none: { count: 0, items: { ...distribution } },
 			},
-			_totalItems: 0,
-			_totalFields: 0,
+			_totalItems: 42,
+			_totalFields: 7,
 		}),
 	),
 }));
@@ -146,7 +136,6 @@ describe('collectMetrics', () => {
 	test('returns all metric sections', async () => {
 		const result = await collectMetrics(mockDb, mockSchema);
 
-		expect(result).toHaveProperty('api_requests');
 		expect(result).toHaveProperty('collections');
 		expect(result).toHaveProperty('shares');
 		expect(result).toHaveProperty('items');
@@ -163,6 +152,11 @@ describe('collectMetrics', () => {
 		expect(result).toHaveProperty('database');
 	});
 
+	test('leaves api_requests to the report, since reading it resets the counters', async () => {
+		const result = await collectMetrics(mockDb, mockSchema);
+		expect(result).not.toHaveProperty('api_requests');
+	});
+
 	test('strips internal properties from collections', async () => {
 		const result = await collectMetrics(mockDb, mockSchema);
 		expect(result.collections).not.toHaveProperty('_totalItems');
@@ -171,6 +165,6 @@ describe('collectMetrics', () => {
 
 	test('maps _totalItems to items.count', async () => {
 		const result = await collectMetrics(mockDb, mockSchema);
-		expect(result.items.count).toBe(0);
+		expect(result.items).toStrictEqual({ count: 42 });
 	});
 });

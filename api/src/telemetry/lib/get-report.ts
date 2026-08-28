@@ -3,12 +3,17 @@ import { getDatabase } from '../../database/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { collectConfig } from '../collectors/config.js';
 import { collectFeatures } from '../collectors/features.js';
+import { collectApiRequestMetrics } from '../collectors/metrics/api-requests.js';
 import { collectMetrics } from '../collectors/metrics/index.js';
 import { collectProject } from '../collectors/project.js';
 import type { TelemetryReport } from '../types/report.js';
 
 const CACHE_KEY = 'telemetry-report';
 const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
+
+type CachedSections = Pick<TelemetryReport, 'project' | 'config' | 'features'> & {
+	metrics: Omit<TelemetryReport['metrics'], 'api_requests'>;
+};
 
 /**
  * Create a telemetry report about the anonymous usage of the current installation.
@@ -17,11 +22,25 @@ const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
  * @param trigger What triggered this report ("startup" or "scheduled").
  */
 export const getReport = async (trigger: TelemetryReport['trigger'] = 'scheduled'): Promise<TelemetryReport> => {
-	const cached = await getSystemCache(CACHE_KEY);
+	// Reading the API request counters resets them, so they're collected per report rather than cached.
+	const [sections, apiRequests] = await Promise.all([getCachedSections(), collectApiRequestMetrics()]);
 
-	if (cached) {
-		return { ...cached, trigger } as TelemetryReport;
-	}
+	return {
+		event: 'directus.telemetry.ping.v2',
+		revision: 1,
+		timestamp: new Date().toISOString(),
+		trigger,
+		project: sections.project,
+		config: sections.config,
+		features: sections.features,
+		metrics: { ...sections.metrics, api_requests: apiRequests },
+	};
+};
+
+const getCachedSections = async (): Promise<CachedSections> => {
+	const cached = (await getSystemCache(CACHE_KEY)) as CachedSections | undefined;
+
+	if (cached) return cached;
 
 	const db = getDatabase();
 	const schema = await getSchema({ database: db });
@@ -33,18 +52,9 @@ export const getReport = async (trigger: TelemetryReport['trigger'] = 'scheduled
 		collectMetrics(db, schema),
 	]);
 
-	const report: TelemetryReport = {
-		event: 'directus.telemetry.ping.v2',
-		revision: 1,
-		timestamp: new Date().toISOString(),
-		trigger,
-		project,
-		config,
-		features,
-		metrics,
-	};
+	const sections: CachedSections = { project, config, features, metrics };
 
-	await setSystemCache(CACHE_KEY, report, CACHE_TTL_MS);
+	await setSystemCache(CACHE_KEY, sections, CACHE_TTL_MS);
 
-	return report;
+	return sections;
 };

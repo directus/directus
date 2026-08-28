@@ -2,7 +2,6 @@ import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import type { TelemetryReport } from '../../types/report.js';
 import { serviceCount } from '../../utils/service-count.js';
-import { collectApiRequestMetrics } from './api-requests.js';
 import { collectCollectionMetrics } from './collections.js';
 import { collectDashboardMetrics } from './dashboards.js';
 import { collectDatabaseMetrics } from './database.js';
@@ -13,11 +12,10 @@ import { collectRoleMetrics } from './roles.js';
 import { collectTranslationMetrics } from './translations.js';
 import { collectUserMetrics } from './users.js';
 
-type Metrics = TelemetryReport['metrics'];
+type Metrics = Omit<TelemetryReport['metrics'], 'api_requests'>;
 
 export async function collectMetrics(db: Knex, schema: SchemaOverview): Promise<Metrics> {
 	const [
-		apiRequests,
 		collectionMetrics,
 		fileMetrics,
 		flowMetrics,
@@ -32,7 +30,6 @@ export async function collectMetrics(db: Knex, schema: SchemaOverview): Promise<
 		policiesCount,
 		databaseMetrics,
 	] = await Promise.all([
-		collectApiRequestMetrics(),
 		collectCollectionMetrics(db, schema),
 		collectFileMetrics(db, schema),
 		collectFlowMetrics(db, schema),
@@ -51,7 +48,6 @@ export async function collectMetrics(db: Knex, schema: SchemaOverview): Promise<
 	const { _totalItems, _totalFields, ...collections } = collectionMetrics;
 
 	return {
-		api_requests: apiRequests,
 		collections,
 		shares: { count: sharesCount },
 		items: { count: _totalItems },

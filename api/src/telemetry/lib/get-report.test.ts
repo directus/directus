@@ -6,9 +6,16 @@ import { getDatabase } from '../../database/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { collectConfig } from '../collectors/config.js';
 import { collectFeatures } from '../collectors/features.js';
+import { collectApiRequestMetrics } from '../collectors/metrics/api-requests.js';
 import { collectMetrics } from '../collectors/metrics/index.js';
 import { collectProject } from '../collectors/project.js';
-import type { TelemetryConfig, TelemetryFeatures, TelemetryMetrics, TelemetryProject } from '../types/report.js';
+import type {
+	ExtensionBreakdown,
+	TelemetryConfig,
+	TelemetryFeatures,
+	TelemetryMetrics,
+	TelemetryProject,
+} from '../types/report.js';
 import { getReport } from './get-report.js';
 
 vi.mock('../../cache.js', () => ({
@@ -21,6 +28,7 @@ vi.mock('../../utils/get-schema.js');
 vi.mock('../collectors/project.js');
 vi.mock('../collectors/config.js');
 vi.mock('../collectors/features.js');
+vi.mock('../collectors/metrics/api-requests.js');
 vi.mock('../collectors/metrics/index.js');
 
 // This is required because logger uses global env which is imported before the tests run. Can be
@@ -33,6 +41,8 @@ vi.mock('@directus/env', () => ({
 
 let mockDb: Knex;
 let mockSchema: SchemaOverview;
+
+const distribution = { min: 0, max: 0, median: 0, mean: 0 };
 
 const mockProject: TelemetryProject = {
 	id: 'test-project-id',
@@ -111,64 +121,80 @@ const mockFeatures: TelemetryFeatures = {
 	},
 };
 
-const mockMetrics: TelemetryMetrics = {
-	api_requests: {
-		count: 0,
-		cached: { count: 0 },
-		method: { get: { count: 0 }, search: { count: 0 }, post: { count: 0 }, put: { count: 0 }, patch: { count: 0 }, delete: { count: 0 } },
-	},
+const extensionBreakdown = (): ExtensionBreakdown => {
+	const bySource = { count: 0, source: { registry: { count: 0 }, local: { count: 0 }, module: { count: 0 } } };
+
+	return {
+		bundles: { ...bySource },
+		individual: { ...bySource },
+		type: {
+			display: { ...bySource },
+			interface: { ...bySource },
+			module: { ...bySource },
+			layout: { ...bySource },
+			panel: { ...bySource },
+			theme: { ...bySource },
+			endpoint: { ...bySource },
+			hook: { ...bySource },
+			operation: { ...bySource },
+			bundle: { ...bySource },
+		},
+	};
+};
+
+const mockMetrics: Omit<TelemetryMetrics, 'api_requests'> = {
 	fields: { count: 0 },
 	collections: {
 		count: 0,
-		shares: { min: 0, max: 0, median: 0, mean: 0 },
-		fields: { min: 0, max: 0, median: 0, mean: 0 },
-		items: { min: 0, max: 0, median: 0, mean: 0 },
-		versioned: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
-		archive_app_filter: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
+		shares: { ...distribution },
+		fields: { ...distribution },
+		items: { ...distribution },
+		versioned: { count: 0, items: { ...distribution } },
+		archive_app_filter: { count: 0, items: { ...distribution } },
 		activity: {
-			all: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
-			activity: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
-			none: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
+			all: { count: 0, items: { ...distribution } },
+			activity: { count: 0, items: { ...distribution } },
+			none: { count: 0, items: { ...distribution } },
 		},
 	},
 	shares: { count: 0 },
 	items: { count: 0 },
-	files: { count: 0, size: { sum: 0, min: 0, max: 0, median: 0, mean: 0 }, types: {} },
+	files: { count: 0, size: { sum: 0, ...distribution }, types: {} },
 	users: { admin: { count: 0 }, app: { count: 0 }, api: { count: 0 } },
+	database: { size: null },
 	roles: {
 		count: 0,
-		users: { min: 0, max: 0, median: 0, mean: 0 },
-		policies: { min: 0, max: 0, median: 0, mean: 0 },
-		children: { min: 0, max: 0, median: 0, mean: 0 },
-		depth: { min: 0, max: 0, median: 0, mean: 0 },
+		users: { ...distribution },
+		policies: { ...distribution },
+		children: { ...distribution },
+		depth: { ...distribution },
 	},
 	policies: { count: 0 },
 	flows: { active: { count: 0 }, inactive: { count: 0 } },
-	translations: { count: 0, language: { count: 0, translations: { min: 0, max: 0, median: 0, mean: 0 } } },
-	dashboards: { count: 0, panels: { min: 0, max: 0, median: 0, mean: 0 } },
+	translations: { count: 0, language: { count: 0, translations: { ...distribution } } },
+	dashboards: { count: 0, panels: { ...distribution } },
 	panels: { count: 0 },
-	extensions: (() => {
-		const s = { count: 0, source: { registry: { count: 0 }, local: { count: 0 }, module: { count: 0 } } };
+	extensions: { active: extensionBreakdown(), inactive: extensionBreakdown() },
+};
 
-		const breakdown = {
-			bundles: { ...s },
-			individual: { ...s },
-			type: {
-				display: { ...s },
-				interface: { ...s },
-				module: { ...s },
-				layout: { ...s },
-				panel: { ...s },
-				theme: { ...s },
-				endpoint: { ...s },
-				hook: { ...s },
-				operation: { ...s },
-				bundle: { ...s },
-			},
-		};
+const mockApiRequests: TelemetryMetrics['api_requests'] = {
+	count: 3,
+	cached: { count: 1 },
+	method: {
+		get: { count: 3 },
+		search: { count: 0 },
+		post: { count: 0 },
+		put: { count: 0 },
+		patch: { count: 0 },
+		delete: { count: 0 },
+	},
+};
 
-		return { active: { ...breakdown }, inactive: { ...breakdown } };
-	})(),
+const cachedSections = {
+	project: mockProject,
+	config: mockConfig,
+	features: mockFeatures,
+	metrics: mockMetrics,
 };
 
 describe('getReport', () => {
@@ -182,6 +208,7 @@ describe('getReport', () => {
 		vi.mocked(collectConfig).mockResolvedValue(mockConfig);
 		vi.mocked(collectFeatures).mockResolvedValue(mockFeatures);
 		vi.mocked(collectMetrics).mockResolvedValue(mockMetrics);
+		vi.mocked(collectApiRequestMetrics).mockResolvedValue(mockApiRequests);
 	});
 
 	afterEach(() => {
@@ -243,24 +270,13 @@ describe('getReport', () => {
 		expect(report.features).toEqual(mockFeatures);
 	});
 
-	test('Returns metrics section from collectMetrics', async () => {
+	test('Returns metrics section from collectMetrics plus the API request counts', async () => {
 		const report = await getReport();
-		expect(report.metrics).toEqual(mockMetrics);
+		expect(report.metrics).toEqual({ ...mockMetrics, api_requests: mockApiRequests });
 	});
 
-	test('Returns cached data when system cache has a report', async () => {
-		const cachedReport = {
-			event: 'directus.telemetry.ping.v2',
-			revision: 1,
-			timestamp: '2024-01-01T00:00:00.000Z',
-			trigger: 'startup',
-			project: mockProject,
-			config: mockConfig,
-			features: mockFeatures,
-			metrics: mockMetrics,
-		};
-
-		vi.mocked(getSystemCache).mockResolvedValue(cachedReport as any);
+	test('Returns cached sections when the system cache has a report', async () => {
+		vi.mocked(getSystemCache).mockResolvedValue(cachedSections as any);
 
 		const report = await getReport('scheduled');
 
@@ -269,16 +285,36 @@ describe('getReport', () => {
 		expect(collectFeatures).not.toHaveBeenCalled();
 		expect(collectMetrics).not.toHaveBeenCalled();
 		expect(report.trigger).toBe('scheduled');
-		expect(report.timestamp).toBe('2024-01-01T00:00:00.000Z');
+		expect(report.project).toEqual(mockProject);
 	});
 
-	test('Stores report in system cache after generating', async () => {
+	test('Stamps a fresh timestamp on cached reports', async () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2025-06-01T12:00:00.000Z'));
+
+		try {
+			vi.mocked(getSystemCache).mockResolvedValue(cachedSections as any);
+
+			const report = await getReport();
+
+			expect(report.timestamp).toBe('2025-06-01T12:00:00.000Z');
+		} finally {
+			vi.useRealTimers();
+		}
+	});
+
+	test('Collects API request counts on cached reports so the counters still drain', async () => {
+		vi.mocked(getSystemCache).mockResolvedValue(cachedSections as any);
+
+		const report = await getReport();
+
+		expect(collectApiRequestMetrics).toHaveBeenCalledOnce();
+		expect(report.metrics.api_requests).toEqual(mockApiRequests);
+	});
+
+	test('Stores the collected sections in the system cache, without the drained counters', async () => {
 		await getReport();
 
-		expect(setSystemCache).toHaveBeenCalledWith(
-			'telemetry-report',
-			expect.objectContaining({ event: 'directus.telemetry.ping.v2' }),
-			15 * 60 * 1000,
-		);
+		expect(setSystemCache).toHaveBeenCalledWith('telemetry-report', cachedSections, 15 * 60 * 1000);
 	});
 });
