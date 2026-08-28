@@ -1,3 +1,4 @@
+import { createHmac } from 'node:crypto';
 import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
 import { spec } from '@directus/specs';
@@ -13,7 +14,6 @@ import type {
 import { getRelation, getRelationType } from '@directus/utils';
 import type { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash-es';
-import hash from 'object-hash';
 import type {
 	OpenAPIObject,
 	ParameterObject,
@@ -27,6 +27,7 @@ import getDatabase from '../database/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
+import { getSecret } from '../utils/get-secret.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
 
@@ -96,7 +97,9 @@ class OASSpecsService implements SpecificationSubService {
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
 		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
 
-		const hashedVersion = hash({ tags, paths, components });
+		const hashedVersion = createHmac('sha256', getSecret())
+			.update(JSON.stringify({ tags, paths, components }))
+			.digest('hex');
 
 		const spec: OpenAPIObject = {
 			openapi: '3.0.1',
