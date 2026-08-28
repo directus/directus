@@ -165,15 +165,15 @@ ${comment}
 		return result;
 	}
 
-	override updateOne(key: PrimaryKey, data: Partial<Comment>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async updateMany(keys: PrimaryKey[], data: Partial<Comment>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if (!this.accountability?.user) throw new ForbiddenError();
 
-		return super.updateOne(key, data, opts);
+		return super.updateMany(keys, data, opts);
 	}
 
-	override deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if (!this.accountability?.user) throw new ForbiddenError();
 
-		return super.deleteOne(key, opts);
+		return super.deleteMany(keys, opts);
 	}
 }
