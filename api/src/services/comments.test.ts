@@ -18,6 +18,17 @@ describe('CommentsService', () => {
 		vi.clearAllMocks();
 	});
 
+	describe('createOne', () => {
+		test('rejects when accountability has no user, before validating payload', async () => {
+			const accountability = { role: null, user: null, admin: false } as unknown as Accountability;
+			const service = new CommentsService({ schema, accountability });
+
+			await expect(service.createOne({})).rejects.toThrow(ForbiddenError);
+
+			expect(ItemsService.prototype.createOne).not.toHaveBeenCalled();
+		});
+	});
+
 	describe('updateMany', () => {
 		test('rejects when accountability has no user, before mutating', async () => {
 			const accountability = { role: null, user: null, admin: false } as unknown as Accountability;
