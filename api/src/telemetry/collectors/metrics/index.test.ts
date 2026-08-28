@@ -1,90 +1,138 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import type { ExtensionBreakdown, TelemetryMetrics } from '../../types/report.js';
 import { collectMetrics } from './index.js';
 
+const distribution = { min: 0, max: 0, median: 0, mean: 0 };
+
+const extensionsBySource = { count: 0, source: { registry: { count: 0 }, local: { count: 0 }, module: { count: 0 } } };
+
+const extensionBreakdown = (): ExtensionBreakdown => ({
+	bundles: { ...extensionsBySource },
+	individual: { ...extensionsBySource },
+	type: {
+		display: { ...extensionsBySource },
+		interface: { ...extensionsBySource },
+		module: { ...extensionsBySource },
+		layout: { ...extensionsBySource },
+		panel: { ...extensionsBySource },
+		theme: { ...extensionsBySource },
+		endpoint: { ...extensionsBySource },
+		hook: { ...extensionsBySource },
+		operation: { ...extensionsBySource },
+		bundle: { ...extensionsBySource },
+	},
+});
+
 vi.mock('./api-requests.js', () => ({
-	collectApiRequestMetrics: vi.fn().mockResolvedValue({
-		count: 0,
-		cached: { count: 0 },
-		method: { get: { count: 0 }, post: { count: 0 }, put: { count: 0 }, patch: { count: 0 }, delete: { count: 0 } },
-	}),
+	collectApiRequestMetrics: vi.fn(
+		async (): Promise<TelemetryMetrics['api_requests']> => ({
+			count: 0,
+			cached: { count: 0 },
+			method: { get: { count: 0 }, post: { count: 0 }, put: { count: 0 }, patch: { count: 0 }, delete: { count: 0 } },
+		}),
+	),
 }));
 
 vi.mock('./collections.js', () => ({
-	collectCollectionMetrics: vi.fn().mockResolvedValue({
-		count: 0,
-		shares: { min: 0, max: 0, median: 0, mean: 0 },
-		fields: { min: 0, max: 0, median: 0, mean: 0 },
-		items: { min: 0, max: 0, median: 0, mean: 0 },
-		versioned: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
-		archive_app_filter: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
-		activity: {
-			all: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
-			activity: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
-			none: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
-		},
-		_totalItems: 0,
-		_totalFields: 0,
-	}),
+	collectCollectionMetrics: vi.fn(
+		async (): Promise<TelemetryMetrics['collections'] & { _totalItems: number; _totalFields: number }> => ({
+			count: 0,
+			shares: { ...distribution },
+			fields: { ...distribution },
+			items: { ...distribution },
+			versioned: { count: 0, items: { ...distribution } },
+			archive_app_filter: { count: 0, items: { ...distribution } },
+			activity: {
+				all: { count: 0, items: { ...distribution } },
+				activity: { count: 0, items: { ...distribution } },
+				none: { count: 0, items: { ...distribution } },
+			},
+			_totalItems: 0,
+			_totalFields: 0,
+		}),
+	),
 }));
 
 vi.mock('./files.js', () => ({
-	collectFileMetrics: vi
-		.fn()
-		.mockResolvedValue({ count: 0, size: { sum: 0, min: 0, max: 0, median: 0, mean: 0 }, types: {} }),
+	collectFileMetrics: vi.fn(
+		async (): Promise<TelemetryMetrics['files']> => ({
+			count: 0,
+			size: { sum: 0, ...distribution },
+			types: {},
+		}),
+	),
 }));
 
 vi.mock('./flows.js', () => ({
-	collectFlowMetrics: vi.fn().mockResolvedValue({ active: { count: 0 }, inactive: { count: 0 } }),
+	collectFlowMetrics: vi.fn(
+		async (): Promise<TelemetryMetrics['flows']> => ({
+			active: { count: 0 },
+			inactive: { count: 0 },
+		}),
+	),
 }));
 
 vi.mock('./roles.js', () => ({
-	collectRoleMetrics: vi.fn().mockResolvedValue({
-		count: 0,
-		users: { min: 0, max: 0, median: 0, mean: 0 },
-		policies: { min: 0, max: 0, median: 0, mean: 0 },
-		roles: { min: 0, max: 0, median: 0, mean: 0 },
-	}),
+	collectRoleMetrics: vi.fn(
+		async (): Promise<TelemetryMetrics['roles']> => ({
+			count: 0,
+			users: { ...distribution },
+			policies: { ...distribution },
+			children: { ...distribution },
+			depth: { ...distribution },
+		}),
+	),
 }));
 
 vi.mock('./translations.js', () => ({
-	collectTranslationMetrics: vi.fn().mockResolvedValue({
-		count: 0,
-		language: { count: 0, translations: { min: 0, max: 0, median: 0, mean: 0 } },
-	}),
+	collectTranslationMetrics: vi.fn(
+		async (): Promise<TelemetryMetrics['translations']> => ({
+			count: 0,
+			language: { count: 0, translations: { ...distribution } },
+		}),
+	),
 }));
 
 vi.mock('./users.js', () => ({
-	collectUserMetrics: vi.fn().mockResolvedValue({
-		admin: { count: 0 },
-		app: { count: 0 },
-		api: { count: 0 },
-	}),
+	collectUserMetrics: vi.fn(
+		async (): Promise<TelemetryMetrics['users']> => ({
+			admin: { count: 0 },
+			app: { count: 0 },
+			api: { count: 0 },
+		}),
+	),
 }));
 
 vi.mock('./dashboards.js', () => ({
-	collectDashboardMetrics: vi.fn().mockResolvedValue({
-		count: 0,
-		panels: { min: 0, max: 0, median: 0, mean: 0 },
-	}),
+	collectDashboardMetrics: vi.fn(
+		async (): Promise<TelemetryMetrics['dashboards']> => ({
+			count: 0,
+			panels: { ...distribution },
+		}),
+	),
 }));
 
 vi.mock('./extensions.js', () => ({
-	collectExtensionMetrics: vi.fn().mockResolvedValue({
-		active: { count: 0 },
-		inactive: { count: 0 },
-	}),
+	collectExtensionMetrics: vi.fn(
+		async (): Promise<TelemetryMetrics['extensions']> => ({
+			active: extensionBreakdown(),
+			inactive: extensionBreakdown(),
+		}),
+	),
 }));
 
 vi.mock('./database.js', () => ({
-	collectDatabaseMetrics: vi.fn().mockResolvedValue({
-		size: null,
-	}),
+	collectDatabaseMetrics: vi.fn(
+		async (): Promise<TelemetryMetrics['database']> => ({
+			size: null,
+		}),
+	),
 }));
 
 vi.mock('../../utils/service-count.js', () => ({
-	serviceCount: vi.fn().mockResolvedValue(0),
+	serviceCount: vi.fn(async (): Promise<number> => 0),
 }));
 
 afterEach(() => {
