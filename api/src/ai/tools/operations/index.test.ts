@@ -276,6 +276,16 @@ describe('operations tool', () => {
 	});
 
 	describe('error handling', () => {
+		test('should reject creates with only one coordinate', () => {
+			const result = operations.validateSchema!.safeParse({
+				action: 'create',
+				data: { flow: 'flow-123', key: 'validate', type: 'condition', position_x: 37 },
+			});
+
+			expect(result.success).toBe(false);
+			expect(JSON.stringify(!result.success && result.error.issues)).toContain('omit both');
+		});
+
 		test('should throw error for invalid action', async () => {
 			await expect(
 				operations.handler({

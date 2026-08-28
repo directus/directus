@@ -21,7 +21,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export const OperationsValidationSchema = z.discriminatedUnion('action', [
 	z.strictObject({
 		action: z.literal('create'),
-		data: OperationItemValidateSchema,
+		// A lone coordinate has nothing to merge with on create, unlike update
+		data: OperationItemValidateSchema.refine(
+			(data) => (data.position_x == null) === (data.position_y == null),
+			'Provide both `position_x` and `position_y`, or omit both for automatic layout',
+		),
 	}),
 	z.strictObject({
 		action: z.literal('read'),
