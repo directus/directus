@@ -196,6 +196,45 @@ describe('PrivateViewHeaderBarActionButton', () => {
 		expect(button.props('exact')).toBe(true);
 	});
 
+	test('passes label as aria-label when rendering icon-only', () => {
+		const wrapper = mount(PrivateViewHeaderBarActionButton, {
+			...mountOptions,
+			props: {
+				icon: 'edit',
+				label: 'Edit',
+			},
+		});
+
+		const button = wrapper.findComponent({ name: 'v-button' });
+		expect(button.props('ariaLabel')).toBe('Edit');
+	});
+
+	test('passes tooltip as aria-label when no label is available', () => {
+		const wrapper = mount(PrivateViewHeaderBarActionButton, {
+			...mountOptions,
+			props: {
+				icon: 'delete',
+				tooltip: 'Delete',
+			},
+		});
+
+		const button = wrapper.findComponent({ name: 'v-button' });
+		expect(button.props('ariaLabel')).toBe('Delete');
+	});
+
+	test('passes explicit ariaLabel through to VButton', () => {
+		const wrapper = mount(PrivateViewHeaderBarActionButton, {
+			...mountOptions,
+			props: {
+				icon: 'menu',
+				ariaLabel: 'Toggle Sidebar',
+			},
+		});
+
+		const button = wrapper.findComponent({ name: 'v-button' });
+		expect(button.props('ariaLabel')).toBe('Toggle Sidebar');
+	});
+
 	test('emits click event when VButton is clicked', async () => {
 		const wrapper = mount(PrivateViewHeaderBarActionButton, {
 			...mountOptions,
