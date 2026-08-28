@@ -9,6 +9,22 @@ import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 
+const userStoreMock = vi.hoisted(() => {
+	let admin = false;
+
+	return {
+		isAdmin: {
+			__v_isRef: true,
+			get value() {
+				return admin;
+			},
+		},
+		setAdmin(value: boolean) {
+			admin = value;
+		},
+	};
+});
+
 vi.mock('@/api', () => ({
 	default: {
 		get: vi.fn(),
@@ -31,6 +47,10 @@ vi.mock('@/stores/flows', () => ({
 		],
 		hydrate: vi.fn(),
 	}),
+}));
+
+vi.mock('@/stores/user', () => ({
+	useUserStore: () => ({ isAdmin: userStoreMock.isAdmin }),
 }));
 
 type CollectionActions = Partial<Record<'create' | 'update' | 'delete', boolean>>;
@@ -56,6 +76,10 @@ vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),
 }));
 
+vi.mock('@/utils/notify', () => ({
+	notify: vi.fn(),
+}));
+
 let router: Router;
 let global: GlobalMountOptions;
 let windowOpenSpy: any;
@@ -75,6 +99,7 @@ vi.mock('@/router', () => {
 
 beforeEach(async () => {
 	for (const collection of Object.keys(permissionsByCollection)) delete permissionsByCollection[collection];
+	userStoreMock.setAdmin(false);
 
 	router = generateRouter([
 		{
@@ -103,6 +128,7 @@ beforeEach(async () => {
 	global = {
 		stubs: {
 			'private-view': { template: '<div><slot name="actions" /><slot /></div>' },
+			'private-view-header-bar-action-button': { props: ['label'], template: '<button>{{ label }}</button>' },
 			'flow-folder-sidebar': {
 				props: ['actionsDisabled'],
 				template: '<div :data-actions-disabled="actionsDisabled"><slot /></div>',
@@ -377,5 +403,34 @@ describe('FlowsOverview - empty state', () => {
 
 		expect(wrapper.find('v-table-stub').exists()).toBe(true);
 		expect(wrapper.find('v-info-stub').exists()).toBe(false);
+	});
+});
+
+describe('FlowsOverview - import export', () => {
+	test('shows Flow import only to administrators', () => {
+		userStoreMock.setAdmin(true);
+
+		const wrapper = mount(FlowsOverview, { global });
+		expect(wrapper.text()).toContain('import_flow');
+	});
+
+	test('notifies after importing a Flow', async () => {
+		const api = (await vi.importMock<{ default: { post: ReturnType<typeof vi.fn> } }>('@/api')).default;
+		const { notify } = (await vi.importMock('@/utils/notify')) as { notify: ReturnType<typeof vi.fn> };
+		api.post.mockResolvedValue({});
+
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.importFile = {
+			text: () =>
+				Promise.resolve(
+					JSON.stringify({ version: 1, flow: { id: 'flow-1', name: 'Imported', operation: null }, operations: [] }),
+				),
+		};
+
+		await vm.importFlow();
+
+		expect(notify).toHaveBeenCalledWith({ title: 'flow_import_success', type: 'success' });
 	});
 });

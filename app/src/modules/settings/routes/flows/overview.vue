@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { FlowRaw } from '@directus/types';
+import { saveAs } from 'file-saver';
 import { sortBy } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -7,6 +8,7 @@ import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
 import FlowFolderSidebar from './flow-folder-sidebar.vue';
+import { createFlowExport, createFlowImport } from './flow-import-export';
 import { useDuplicate } from './use-duplicate';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
@@ -31,7 +33,9 @@ import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vu
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { useLicenseStore } from '@/stores/license';
+import { useUserStore } from '@/stores/user';
 import { extractErrorCode } from '@/utils/extract-error-code';
+import { notify } from '@/utils/notify';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -58,6 +62,7 @@ const {
 } = useCollectionPermissions('directus_folders');
 
 const licenseStore = useLicenseStore();
+const { isAdmin } = useUserStore();
 
 const duplicateAllowed = computed(() => createAllowed.value && operationsCreateAllowed.value);
 
@@ -178,6 +183,63 @@ function openDuplicateFlow(item: FlowRaw) {
 	duplicateDialogActive.value = true;
 }
 
+const exportDialogActive = ref(false);
+const exportSource = ref<FlowRaw | null>(null);
+
+function openExportFlow(flow: FlowRaw) {
+	exportSource.value = flow;
+	exportDialogActive.value = true;
+}
+
+function exportFlow() {
+	if (!exportSource.value) return;
+
+	const flowExport = createFlowExport(exportSource.value);
+
+	saveAs(
+		new Blob([JSON.stringify(flowExport, null, 2)], { type: 'application/json;charset=utf-8' }),
+		`flow-${flowExport.flow.id}.json`,
+	);
+
+	exportDialogActive.value = false;
+	exportSource.value = null;
+}
+
+const importDialogActive = ref(false);
+const importFile = ref<File | null>(null);
+const importing = ref(false);
+
+function openImportFlow() {
+	importFile.value = null;
+	importDialogActive.value = true;
+}
+
+function selectImportFile(event: Event) {
+	const files = (event.target as HTMLInputElement).files;
+	importFile.value = files?.item(0) ?? null;
+}
+
+async function importFlow() {
+	if (!importFile.value || importing.value) return;
+
+	importing.value = true;
+
+	try {
+		const flowImport = createFlowImport(JSON.parse(await importFile.value.text()));
+		const form = new FormData();
+		form.append('file', new Blob([JSON.stringify(flowImport)], { type: 'application/json' }), 'flow.json');
+
+		await api.post('/utils/import', form, { params: { mode: 'add' } });
+		await flowsStore.hydrate();
+		importDialogActive.value = false;
+		notify({ title: t('flow_import_success'), type: 'success' });
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		importing.value = false;
+	}
+}
+
 const selectedKeys = ref<string[]>([]);
 
 // The same component renders every folder, so drop the selection when the folder changes to avoid
@@ -271,6 +333,12 @@ function onFlowDrawerCompletion(id: string) {
 
 		<template #actions>
 			<AddFolder type="flows" :parent="folder" :disabled="createFolderAllowed !== true" @created="navigateToFolder" />
+			<PrivateViewHeaderBarActionButton
+				v-if="isAdmin"
+				:label="$t('import_flow')"
+				icon="file_upload"
+				@click="openImportFlow"
+			/>
 			<PrivateViewHeaderBarActionButton
 				v-if="selectedKeys.length > 0"
 				v-tooltip.bottom="$t('move_to_folder')"
@@ -371,6 +439,15 @@ function onFlowDrawerCompletion(id: string) {
 									</VListItemContent>
 								</VListItem>
 
+								<VListItem v-if="isAdmin" clickable @click="openExportFlow(item)">
+									<VListItemIcon>
+										<VIcon name="file_download" />
+									</VListItemIcon>
+									<VListItemContent>
+										{{ $t('export_flow') }}
+									</VListItemContent>
+								</VListItem>
+
 								<VListItem class="danger" clickable @click="confirmDelete = item">
 									<VListItemIcon>
 										<VIcon name="delete" outline />
@@ -424,6 +501,37 @@ function onFlowDrawerCompletion(id: string) {
 					<VButton secondary @click="duplicateDialogActive = false">{{ $t('cancel') }}</VButton>
 					<VButton :disabled="!duplicateName.trim()" :loading="duplicating" @click="duplicate">
 						{{ $t('duplicate') }}
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+
+		<VDialog v-model="exportDialogActive" @esc="exportDialogActive = false" @apply="exportFlow">
+			<VCard>
+				<VCardTitle>{{ $t('export_flow') }}</VCardTitle>
+				<VCardText>{{ $t('flow_export_warning') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="exportDialogActive = false">{{ $t('cancel') }}</VButton>
+					<VButton @click="exportFlow">{{ $t('export_flow') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+
+		<VDialog v-model="importDialogActive" @esc="importDialogActive = false" @apply="importFlow">
+			<VCard>
+				<VCardTitle>{{ $t('import_flow') }}</VCardTitle>
+				<VCardText>
+					<p>{{ $t('flow_import_warning') }}</p>
+					<VInput>
+						<template #input>
+							<input type="file" accept="application/json,.json" @change="selectImportFile" />
+						</template>
+					</VInput>
+				</VCardText>
+				<VCardActions>
+					<VButton secondary @click="importDialogActive = false">{{ $t('cancel') }}</VButton>
+					<VButton :disabled="!importFile" :loading="importing" @click="importFlow">
+						{{ $t('import_flow') }}
 					</VButton>
 				</VCardActions>
 			</VCard>
