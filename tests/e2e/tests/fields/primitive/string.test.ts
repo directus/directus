@@ -40,3 +40,22 @@ if (database !== 'sqlite') {
 		).rejects.toThrowError();
 	});
 }
+
+// Postgres value too long (22001) doesn't name the offending column.
+// The field is only attributed when a single field was provided; for multi-field
+// inserts it is omitted to avoid mis-attribution
+if (database === 'postgres') {
+	test('value too long attributes the field for a single-field insert', async () => {
+		await expect(api.request(createItem(collections.fields, { string: '0'.repeat(256) }))).rejects.toMatchObject({
+			errors: [{ extensions: { code: 'VALUE_TOO_LONG', collection: collections.fields, field: 'string' } }],
+		});
+	});
+
+	test('value too long omits the field for a multi-field insert', async () => {
+		await expect(
+			api.request(createItem(collections.fields, { string: '0'.repeat(256), integer: 5 })),
+		).rejects.toMatchObject({
+			errors: [{ extensions: { code: 'VALUE_TOO_LONG', collection: collections.fields, field: null } }],
+		});
+	});
+}

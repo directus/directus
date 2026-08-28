@@ -816,7 +816,58 @@ describe('Service / Files', () => {
 			expect(uploadOneSpy).not.toHaveBeenCalled();
 		});
 
-		test('succeeds when MIME type matches an filterMimeType glob pattern', async () => {
+		/**
+		 * The response body holds an open connection to the remote host. Nothing reads it once the
+		 * import is rejected, so it has to be destroyed or the connection is held for good.
+		 */
+		test('destroys the response body when the MIME type is blocked by the global allow list', async () => {
+			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = 'image/*';
+
+			const body = new PassThrough();
+
+			mockAxiosGet.mockResolvedValue({
+				headers: { 'content-type': 'application/pdf' },
+				data: body,
+				request: { res: { responseUrl: 'https://example.com/file.pdf' } },
+			});
+
+			await expect(service.importOne('https://example.com/file.pdf', {})).rejects.toBeInstanceOf(InvalidPayloadError);
+
+			expect(body.destroyed).toBe(true);
+		});
+
+		test('destroys the response body when the MIME type is not in filterMimeType', async () => {
+			const body = new PassThrough();
+
+			mockAxiosGet.mockResolvedValue({
+				headers: { 'content-type': 'image/png' },
+				data: body,
+				request: { res: { responseUrl: 'https://example.com/image.png' } },
+			});
+
+			await expect(
+				service.importOne('https://example.com/image.png', {}, { filterMimeType: ['image/jpeg'] }),
+			).rejects.toBeInstanceOf(InvalidPayloadError);
+
+			expect(body.destroyed).toBe(true);
+		});
+
+		test('destroys the response body when the downloaded filename cannot be parsed', async () => {
+			const body = new PassThrough();
+
+			mockAxiosGet.mockResolvedValue({
+				headers: { 'content-type': 'image/png' },
+				data: body,
+				// Malformed percent-encoding, so decoding the filename throws
+				request: { res: { responseUrl: 'https://example.com/%E0%A4%A' } },
+			});
+
+			await expect(service.importOne('https://example.com/image.png', {})).rejects.toThrow();
+
+			expect(body.destroyed).toBe(true);
+		});
+
+		test('succeeds when MIME type is permitted by filterMimeType', async () => {
 			mockAxiosGet.mockResolvedValue({
 				headers: { 'content-type': 'image/png' },
 				data: new PassThrough(),
@@ -824,7 +875,7 @@ describe('Service / Files', () => {
 			});
 
 			await expect(
-				service.importOne('https://example.com/image.png', {}, { filterMimeType: ['image/*'] }),
+				service.importOne('https://example.com/image.png', {}, { filterMimeType: ['image/png'] }),
 			).resolves.toBe('imported-file-id');
 
 			expect(uploadOneSpy).toHaveBeenCalled();

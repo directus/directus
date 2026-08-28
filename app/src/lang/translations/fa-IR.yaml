@@ -20,13 +20,49 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: درباره
-privacy_policy: سیاست حریم خصوصی
+directus_mscl: Directus   MSCL-1.0-GPL
+data_processing_agreement: توافق‌نامه پردازش داده
+contact_support: تماس با پشتیبانی  
 setup_welcome: به دایرکتوس خوش آمدید
 setup_info: بیایید حساب مدیر شما را ایجاد کنیم و پروژه‌تان را راه‌اندازی کنیم.
+setup_license_key_notice: >
+  اگر کلید لایسنس دارید، آن را در زیر وارد کنید تا پلن کامل خود را فعال کنید. کسب‌وکارهای واجد شرایط با درآمد سالانه زیر ۵ میلیون دلار ممکن است مشمول {oig} ما شوند.
+setup_save_accept_license: >
+  با کلیک بر روی ذخیره، شما شرایط {directusMscl} و {privacyPolicy} را می‌پذیرید.
+setup_license_invalid: >
+  لایسنس نامعتبر است. لطفاً برای رفع این مشکل با {contactSupport} تماس بگیرید.
+setup_license_invalid_format: فرمت لایسنس نامعتبر است.
+setup_accept_license: شرایط {directusMscl} و {privacyPolicy} را می‌پذیرم
 setup_marketing_emails: به‌روزرسانی‌های محصول و یادداشت‌های انتشار را برای من بفرست
 setup_launch: راه‌اندازی دایرکتوس
+setup_license_title: لایسنس خود را فعال کنید
+license_onboarding_title: آیا کلید لایسنس دارید؟
+license_onboarding_desc: >
+  آن را در زیر وارد کنید تا پلن کامل خود را قفل‌گشایی کنید. کسب‌وکارهای واجد شرایط با درآمد سالانه زیر ۵ میلیون دلار ممکن است مشمول {oig} ما شوند.
+project_usage: برای چه منظور از Directus استفاده می کنید؟
+project_usage_personal: شخصی / پروژه جانبی
+project_usage_commercial: تجاری / شرکتی
+project_usage_community: متن باز / انجمن
+org_name: نام سازمان
+org_name_placeholder: Acme Inc.
+license_key_option: من یک کلید لایسنس دارم
+license_key_option_desc: 'پلن OIG، تیمی یا سازمانی'
+core_option: من از پلن Core استفاده می‌کنم
+core_option_desc: رایگان، کلید نیاز نیست
+remind_later: بعدا یادآوری کن
+remind_next_login: ما به شما در ورود بعدی یادآوری می کنیم
+open_innovation_grant: کمک‌هزینه نوآوری باز
 setup_project: راه‌اندازی پروژه
+enter_license_key: کلید لایسنس خود را وارد کنید
+license_valid: لایسنس معتبر است
+plan_prefix: 'اشتراک شما: {plan}'
+license_key: کلید لایسنس
+no_license_key: آیا شما کلید لایسنس ندارید؟
+get_license_key: دریافت کلید لایسنس
+expires_on: منقضی می شود در
+environment: محیط
 production: تولید
+non_production: غیرعملیاتی
 skip: رد کردن
 continue: ادامه
 first_name: نام
@@ -42,6 +78,7 @@ method: شیوه
 published: منتشر شد
 draft: پیش‌نویس
 archived: بایگانی‌شده
+not_archived: بایگانی نشده
 marketplace: بازارچه
 extensions: افزونه‌ها
 skip_link_nav: پرش به منوی ناوبری
@@ -210,13 +247,19 @@ rename_version: ویرایش نسخه
 reserved_version_key: 'کلید نسخه «{key}» رزرو شده است و امکان استفاده ندارد.'
 compare_version: مقایسه نسخه
 save_version: ذخیره‌سازی نسخه
+publish: انتشار
+version_create_item_less: نسخه‌ها تنها پس از انتشار نسخه پیش‌نویس قابل ایجاد هستند
 apply: اعمال
 discard: لغو
 select_all_differences: انتخاب همه تفاوت‌ها
 show_differences_only: تنها تفاوت‌ها را نشان بده
+published_updated_notice: آیتم منتشرشده از زمان ایجاد این نسخه تاکنون به‌روزرسانی شده است.
 delete_version: حذف نسخه
 delete_version_copy: >-
   آیا از حذف نسخه «{version}» مطمئنید؟ این اقدام غیر قابل بازگشت است.
+auto_save_failed: ذخیره‌سازی خودکار با خطا مواجه شد
+auto_save_failed_copy: در زمانی که ما تلاش می کنیم این صفحه را باز بگذارید!
+auto_save_enabled: ذخیره‌سازی خودکار روشن شد
 content_edited: محتوا ویرایش شده
 reset_bookmark: بازنشانی نشانک
 update_bookmark: به روزرسانی نشانک
@@ -285,6 +328,7 @@ validationError:
   niends_with: مقدار نمی‌تواند با {substring} پایان یابد
   confirm_password: رمزهای عبور مطابقت ندارند
   org_name: لطفا یک نام سازمان ذکر کنید
+  unsafe: مقدار واردشده یک عدد امن نیست
 all_access: دسترسی کامل
 no_access: بدون دسترسی
 use_custom: استفاده از حالت سفارشی
@@ -599,6 +643,7 @@ functions:
   minute: دقیقه
   second: ثانیه
   count: تعداد
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -694,6 +739,11 @@ manual_string: رشته حرفیِ وارد شده به صورت دستی
 save_and_create_new: ذخیره و ساخت آیتم جدید
 save_and_stay: ذخیره و ماندن
 save_and_quit: ذخیره و خروج
+default_save_action_note: عملیاتی که دکمه ذخیره به‌طور پیش‌فرض هنگام ویرایش یک آیتم انجام می‌دهد.
+publish_and_quit: انتشار و خروج
+publish_without_review: انتشار بدون بازبینی
+publish_anyway: در هر صورت انتشار
+save_and_return_to_published: ذخیره و بازگشت به نسخه منتشر شده
 save_as_copy: ذخیره به عنوان کپی
 save_as_new_file: ذخیره به عنوان فایل جدید
 add_existing: اضافه کردن مورد موجود
@@ -727,6 +777,8 @@ list-m2a: سازنده (M2A)
 item_count: 'بدون مقدار | يک آیتم | {count} آیتم'
 filtered_item_count: 'بدون مورد فیلتر شده | یک مورد فیلتر شده | {count} مورد فیلتر شده'
 no_items_copy: هنوز هیچ آیتمی در این مجموعه وجود ندارد.
+no_versions: 'نسخه "{version}" موجود نیست'
+no_versions_copy: 'در این مجموعه هنوز نسخه "{version}" ثبت نشده است.'
 file_count: 'بدون فایل | یک فایل | {count} فایل'
 no_files_copy: فایلی برای نمایش موجود نمیباشد.
 user_count: 'بدون کاربر | یک کاربر | {count} کاربر'
@@ -787,6 +839,7 @@ modified_on: ویرایش شده در
 card_size: سایز کارت
 sort_field: فیلد مرتب سازی
 add_sort_field: افزودن فیلد مرتب سازی
+add_to_ai_context: افزودن به زمینه هوش مصنوعی
 sort: مرتب سازی
 status: وضعیت
 remove: حذف
@@ -839,6 +892,7 @@ errors:
   LIMIT_EXCEEDED: 'از حد مجاز تجاوز شد'
   METHOD_NOT_ALLOWED: روش مجاز نمی باشد
   NOT_NULL_VIOLATION: مقدار نمی تواند خالی (نال) باشد
+  PROJECT_LOCKED: پروژه قفل شده است. برای حل مشکل با مدیر سیستم خود تماس بگیرید.
   RANGE_NOT_SATISFIABLE: محدوده نامعتبر است
   RECORD_NOT_UNIQUE: موارد تکراری یافت شد
   REQUESTS_EXCEEDED: به محدودیت درخواست رسیده است
@@ -959,6 +1013,7 @@ operators:
   nintersects: تقاطع ندارد با
   intersects_bbox: با جعبه محدود کننده تقاطع دارد
   nintersects_bbox: با جعبه محدود کننده تقاطع ندارد
+  json: JSON
   regex: با RegExp مطابقت دارد
 custom_validation_message: پیام اعتبارسنجی سفارشی
 loading: در حال بارگذاری...
@@ -1282,12 +1337,15 @@ wysiwyg_options:
   bullist: فهرست نقطه دار
   numlist: فهرست شماره‌دار
   hr: خط افقی
+  insertdatetime_date: تاریخ
+  insertdatetime_time: زمان
   link: اضافه/ویرایش لینک
   unlink: حذف لینک
   media: اضافه/ویرایش رسانه
   image: اضافه/ویرایش تصویر
   copy: کپی
   cut: کات
+  default: پیش‌فرض
   paste: چسباندن
   heading: سرتیتر
   h1: سرتیتر ۱
@@ -1311,6 +1369,8 @@ wysiwyg_options:
   source_code: ویرایش کد سورس
   fullscreen: تمام صفحه
   directionality: جهت گیری
+  ltr: چپ به راست
+  rtl: راست به چپ
   lazy_loading: بارگزاری تنبل تصاویر
   lazy_loading_label: فعال‌سازی بارگزاری تنبل
 dropdown: لیست کشویی
@@ -1350,10 +1410,14 @@ licensing:
   resolve_section_flows: جریان‌ها
   resolve_sso_admin_email: نشانی ایمیل
   resolve_sso_admin_password: رمز عبور
+  key: کلید لایسنس
   entitlements:
     collections: مجموعه‌ها
     flows: جریان‌ها
     production_enabled: تولید
+  badge:
+    oig: کمک‌هزینه نوآوری باز
+    non_prod: غیرعملیاتی
 settings_appearance: ظاهر
 settings_ai: هوش مصنوعی
 model_context_protocol: دستورالعمل زمینه مدل (MCP)
@@ -1462,6 +1526,7 @@ fields:
     collection: کالکشن یا مجموعه
     icon: آیکن
     note: شرح
+    status: وضعیت
     color: رنگ
     display_template: نمایش الگو
     hidden: مخفی
@@ -1599,18 +1664,13 @@ fields:
     collaborative_editing: ویرایش مشارکتی
     collaborative_editing_enabled: فعال‌سازی ویرایش مشارکتی
     collaborative_editing_note: وب‌سوکت‌ها برای کار کردن ویرایش مشارکتی ضروری هستند.
-    ai_notice: 'دستیار هوش مصنوعی، نوار کناری داخل برنامه‌ای برای مکالمه با یک مدل زبانی بزرگ ارائه می‌دهد. به محض فعال‌سازی، نوار کناری هوش مصنوعی را برای پرسیدن سوالات، تولید محتوا و کمک گرفتن برای کار با پروژه‌تان از جعبه ابزار باز کنید. <a href="https://directus.io/docs/guides/ai/assistant" target="_blank">درباره پیکربندی و استفاده از دستیار هوش مصنوعی بیشتر یاد بگیرید.</a>'
     mcp_enabled: سرور MCP
-    mcp_enabled_note: 'ابزارهای AI/LLM را از طریق <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">چارچوب زمینه مدل (MCP)</a> به پروژه دایرکتوس خود متصل کنید. این کار، دستیارهای هوش مصنوعی را قادر به خواندن و تعامل امن با داده دایرکتوس شما می‌کند.'
-    mcp_notice: 'چارچوب زمینه مدل (MCP)، استانداردی برای اتصال مدل‌های زبانی بزرگ (LLMها) به برنامه‌هایی شبیه دایرکتوس است. به محض فعالسازی، سرور MCP دایرکتوس در نشانی `/mcp` در دسترس خواهد بود. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">درباره MCP و روش اتصال بیشتر بدانید.</a>'
     mcp_allow_deletes: اجازه حذف
     mcp_allow_deletes_note:
       - ممکن است منجر به از دست رفتن داده شود.</strong> به طور پیش‌فرض به دلایل ایمنی غیرفعال شده است.'
     mcp_prompts_collection: مجموعه پرامپت‌های هوش مصنوعی
-    mcp_prompts_collection_note: 'مجموعه‌ای را برای نگهداری <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">قالب‌های پرامپت قابل استفاده مجدد</a> برای تعاملات هوش مصنوعی انتخاب کنید.'
     mcp_system_prompt_divider: پیکربندی پرامپت سیستمی
     mcp_system_prompt_enabled: استفاده از پرامپت سیستمی
-    mcp_system_prompt_enabled_note: "از <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>پرامپت سیستمی پیش‌فرض</a> برای هدایت رفتار LLM استفاده کنید. برای حذف یا جایگزین کردن با پرامپت خودتان در پایین غیرفعال کنید."
     mcp_system_prompt: پرامپت سیستمی سفارشی
     mcp_system_prompt_note: 'پرامپت سیستمی سفارشی برای جایگزینی با پیش‌فرض. برای استفاده از مقدار پیش‌فرض خالی بگذارید (اگر بالا فعال شده).'
     ai_system_prompt: دستورالعمل سیستمی هوش مصنوعی
@@ -1910,7 +1970,6 @@ mcp_prompts_collection_schema:
   messages_role_user: کاربر
   messages_role_assistant: دستیار
   messages_role_note: چه کسی در این پیام صحبت می‌کند.
-  meta_prompts_notice: 'پرامپت‌ها، قالب‌های قابل استفاده مجدد هستند که می‌توانید در LLMها از طریق سرور MCP دایرکتوس، جریان‌ها یا سایر برنامه‌های هوش مصنوعی استفاده کنید. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">درباره ساخت پرامپت‌های مفید بیشتر بدانید.</a>'
 expired: منقضی شده
 upcoming: به زودی
 share: اشتراک‌گذاری
@@ -2284,6 +2343,7 @@ interfaces:
     incompatible_data: داده فعلی با رابط کاربری تکرارشونده سازگار نیست و هنگام افزودن موارد به تکرارشونده، نادیده گرفته خواهد شد
     interface_group: تنظیمات رابط
     display_group: تنظیمات نحوه نمایش
+    edit_mode_inline: درون خطی
   slider:
     slider: اسلایدر
     description: یک عدد را با استفاده از نوار متحرک انتخاب کنید
@@ -2357,9 +2417,6 @@ interfaces:
     description: A rich-text editor writing HTML content
     toolbar: نوار ابزار
     custom_formats: نوع سفارشی
-    custom_formats_note: فهرست قالب‌های محتوای TinyMCE. برای اطلاعات بیشتر، مستندات TinyMCE درباره [قالب‌بندی محتوا](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) را ببینید.
-    options_override: Options Override
-    options_override_note: کلیدهای قالب‌بندی کاربر و مقادیرشان در TinyMCE. برای اطلاعات بیشتر، مستندات TinyMCE درباره [قالب‌بندی کاربر](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) را ببینید.
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
@@ -2903,6 +2960,8 @@ show_password: نمایش رمز عبور
 hide_password: مخفی کردن رمز عبور
 license_grace_key_modal:
   optional: اختیاری
+license_banner:
+  remind_later: بعدا یادآوری کن
 accepted: پذیرفته شده
 text_direction_auto: خودکار (مطابق زبان)
 text_direction_ltr: چپ به راست (LTR)

@@ -1,8 +1,10 @@
+import { ErrorCode } from '@directus/errors';
 import { getEndpoint } from '@directus/utils';
 import { merge } from 'lodash';
 import { computed, MaybeRefOrGetter, ref, Ref, toValue, watch } from 'vue';
 import { RelationM2O } from '@/composables/use-relation-m2o';
 import sdk, { requestEndpoint } from '@/sdk';
+import { extractErrorCode } from '@/utils/extract-error-code';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export type RelationQuerySingle = {
@@ -77,6 +79,13 @@ export function useRelationSingle<T extends Record<string, any>>(
 			return;
 		}
 
+		// Selecting into a One-to-Many field of an unsaved item stages that item's temporary primary
+		// key here. Don't try to fetch it, but do display any edits staged against it.
+		if (id === '+') {
+			displayItem.value = typeof val === 'object' ? (val as T) : null;
+			return;
+		}
+
 		const fields = new Set(previewQuery.value.fields);
 		fields.add(pkField);
 
@@ -94,10 +103,11 @@ export function useRelationSingle<T extends Record<string, any>>(
 			} else {
 				displayItem.value = item;
 			}
-		} catch (error: any) {
-			// if the item has a manually entered primary key, we can ignore the error
-			if (typeof val === 'object' && error.response && error.response.status === 403) {
-				displayItem.value = val as T;
+		} catch (error) {
+			// Fall back to displaying the saved primary key when the related item can't
+			// be resolved (e.g. no permission, manually entered key doesn't exist yet etc).
+			if (extractErrorCode(error) === ErrorCode.Forbidden) {
+				displayItem.value = (typeof val === 'object' ? val : { [pkField]: val }) as T;
 			} else {
 				unexpectedError(error);
 			}

@@ -58,6 +58,15 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 			return null;
 		}
 
+		// sys.columns.max_length is a byte size for every data type, so it's only a meaningful length
+		// for character/binary types (e.g. varchar(100) => 100). For other types it's just the storage
+		// size (int => 4, decimal(12,2) => 9), which isn't a length, so report null.
+		const characterTypes = ['char', 'varchar', 'text', 'nchar', 'nvarchar', 'ntext', 'binary', 'varbinary', 'image'];
+
+		if (characterTypes.includes(rawColumn.data_type) === false) {
+			return null;
+		}
+
 		// n-* columns save every character as 2 bytes, which causes the max_length column to return the
 		// max length in bytes instead of characters. For example:
 		// varchar(100) => max_length == 100
@@ -114,50 +123,55 @@ export default class MSSQL implements SchemaInspector {
 	// Overview
 	// ===============================================================================================
 	async overview(): Promise<SchemaOverview> {
+		// Sourced from the `sys.*` catalog views rather than INFORMATION_SCHEMA + per-row
+		// COLUMNPROPERTY(OBJECT_ID(...)) scalar calls and the slow KEY_COLUMN_USAGE view.
 		const columns = await this.knex.raw(
 			`
 			SELECT
-				c.TABLE_NAME as table_name,
-				c.COLUMN_NAME as column_name,
-				c.COLUMN_DEFAULT as default_value,
-				c.IS_NULLABLE as is_nullable,
-				c.DATA_TYPE as data_type,
-				c.CHARACTER_MAXIMUM_LENGTH as max_length,
-				pk.PK_SET as column_key,
-				COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME), c.COLUMN_NAME, 'IsIdentity') as is_identity,
-				COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME), c.COLUMN_NAME, 'IsComputed') as is_generated
-			FROM
-				[${this.knex.client.database()}].INFORMATION_SCHEMA.COLUMNS as c
+				t.name AS table_name,
+				c.name AS column_name,
+				ty.name AS data_type,
+				CASE WHEN c.is_nullable = 1 THEN 'YES' ELSE 'NO' END AS is_nullable,
+				c.is_identity,
+				c.is_computed AS is_generated,
+				dc.definition AS default_value,
+				CASE
+					WHEN c.max_length = -1 THEN -1
+					WHEN ty.name IN ('nvarchar', 'nchar', 'ntext') THEN c.max_length / 2
+					WHEN ty.name IN ('varchar', 'char', 'text', 'binary', 'varbinary', 'image', 'sysname') THEN c.max_length
+					ELSE NULL
+				END AS max_length,
+				CASE WHEN pk.column_id IS NOT NULL THEN 'PRIMARY' ELSE NULL END AS column_key
+			FROM sys.columns AS c
+			INNER JOIN sys.tables AS t ON t.object_id = c.object_id
+			INNER JOIN sys.types AS ty ON ty.user_type_id = c.user_type_id
+			LEFT JOIN sys.default_constraints AS dc ON dc.object_id = c.default_object_id
 			LEFT JOIN (
-				SELECT
-					PK_SET = CASE WHEN CONSTRAINT_NAME LIKE '%pk%' THEN 'PRIMARY' ELSE NULL END,
-					TABLE_NAME,
-					CONSTRAINT_CATALOG,
-					COLUMN_NAME,
-					COUNT(*) OVER (PARTITION BY CONSTRAINT_NAME) as PK_COUNT
-				FROM [${this.knex.client.database()}].INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-			) as pk
-			ON [c].[TABLE_NAME] = [pk].[TABLE_NAME]
-			AND [c].[TABLE_CATALOG] = [pk].[CONSTRAINT_CATALOG]
-			AND [c].[COLUMN_NAME] = [pk].[COLUMN_NAME]
-			AND [pk].[PK_SET] = 'PRIMARY'
-			AND [pk].[PK_COUNT] = 1
-			INNER JOIN
-				[${this.knex.client.database()}].INFORMATION_SCHEMA.TABLES as t
-			ON [c].[TABLE_NAME] = [t].[TABLE_NAME]
-			AND [c].[TABLE_CATALOG] = [t].[TABLE_CATALOG]
-			AND [t].TABLE_TYPE = 'BASE TABLE'
+				SELECT ic.object_id, MIN(ic.column_id) AS column_id
+				FROM sys.indexes AS i
+				INNER JOIN sys.index_columns AS ic ON ic.object_id = i.object_id AND ic.index_id = i.index_id
+				WHERE i.is_primary_key = 1
+				GROUP BY ic.object_id
+				HAVING COUNT(*) = 1
+			) AS pk ON pk.object_id = c.object_id AND pk.column_id = c.column_id
+			ORDER BY t.name, c.column_id
 			`,
 		);
 
 		const overview: SchemaOverview = {};
 
+		const primaryByTable: Record<string, string> = {};
+
+		for (const column of columns) {
+			if (column.column_key === 'PRIMARY') {
+				primaryByTable[column.table_name] = column.column_name;
+			}
+		}
+
 		for (const column of columns) {
 			if (column.table_name in overview === false) {
 				overview[column.table_name] = {
-					primary: columns.find((nested: { column_key: string; table_name: string }) => {
-						return nested.table_name === column.table_name && nested.column_key === 'PRIMARY';
-					})?.column_name,
+					primary: primaryByTable[column.table_name]!,
 					columns: {},
 				};
 			}
@@ -345,7 +359,7 @@ export default class MSSQL implements SchemaInspector {
 				object_definition ([c].[default_object_id]) AS [default_value],
 				[i].[is_primary_key],
 				[i].[is_unique],
-				CASE WHEN [i].[object_id] IS NOT NULL AND [i].[is_unique] = 0 AND [i].[index_name] IS NOT NULL THEN 
+				CASE WHEN [i].[object_id] IS NOT NULL AND [i].[is_unique] = 0 AND [i].[index_name] IS NOT NULL THEN
 					[i].[index_name]
 				ELSE
 					NULL

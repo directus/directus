@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import getMailer from '../mailer.js';
 import { ServerService } from './server.js';
 
 const mockEnv = vi.hoisted(() => ({
@@ -77,6 +78,25 @@ describe('ServerService', () => {
 		vi.mocked(useEnv).mockReturnValue(mockEnv as any);
 	});
 
+	test('health reports an email error when the transport cannot be built', async () => {
+		Object.assign(mockEnv, { HEALTHCHECK_SERVICES: 'email', EMAIL_VERIFY_SETUP: true });
+
+		vi.mocked(getMailer).mockImplementation(() => {
+			throw new Error('The EMAIL_MAILTRAP_TOKEN env var is required for the mailtrap transport');
+		});
+
+		const service = new ServerService({
+			knex: db,
+			schema: {} as any,
+			accountability: { user: 'user-id', admin: true } as any,
+		});
+
+		const health = (await service.health()) as any;
+
+		expect(health.status).toBe('error');
+		expect(health.checks['email:connection'][0].status).toBe('error');
+	});
+
 	test('serverInfo includes MCP OAuth env capability flags for authenticated users', async () => {
 		tracker.on.select('directus_users').response([{ id: 'user-id' }]);
 
@@ -91,5 +111,35 @@ describe('ServerService', () => {
 		expect(info['mcp_oauth_enabled']).toBe(true);
 		expect(info['mcp_oauth_dcr_enabled']).toBe(false);
 		expect(info['mcp_oauth_cimd_enabled']).toBe(true);
+	});
+
+	test('serverInfo defaults project_owner_enabled to true for authenticated users', async () => {
+		tracker.on.select('directus_users').response([{ id: 'user-id' }]);
+
+		const service = new ServerService({
+			knex: db,
+			schema: {} as any,
+			accountability: { user: 'user-id', admin: false } as any,
+		});
+
+		const info = await service.serverInfo();
+
+		expect(info['project_owner_enabled']).toBe(true);
+	});
+
+	test('serverInfo respects PROJECT_OWNER_ENABLED=false for authenticated users', async () => {
+		Object.assign(mockEnv, { PROJECT_OWNER_ENABLED: false });
+
+		tracker.on.select('directus_users').response([{ id: 'user-id' }]);
+
+		const service = new ServerService({
+			knex: db,
+			schema: {} as any,
+			accountability: { user: 'user-id', admin: false } as any,
+		});
+
+		const info = await service.serverInfo();
+
+		expect(info['project_owner_enabled']).toBe(false);
 	});
 });

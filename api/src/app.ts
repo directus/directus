@@ -79,7 +79,6 @@ import rateLimiter from './middleware/rate-limiter-ip.js';
 import requestCounter from './middleware/request-counter.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
-import cloudflareQueueConsumerSchedule from './schedules/cloudflare-queue-consumer.js';
 import licenseSchedule from './schedules/license.js';
 import metricsSchedule from './schedules/metrics.js';
 import scheduleOAuthCleanup from './schedules/oauth-cleanup.js';
@@ -422,7 +421,6 @@ export default async function createApp(): Promise<express.Application> {
 	await tusSchedule();
 	await metricsSchedule();
 	await projectSchedule();
-	await cloudflareQueueConsumerSchedule();
 	await licenseSchedule();
 
 	if (env['MCP_OAUTH_ENABLED'] === true) {

@@ -1,6 +1,7 @@
 import { useCollection } from '@directus/composables';
 import { AppCollection, Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
+import { flushPromises } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { computed, ref } from 'vue';
@@ -392,6 +393,52 @@ describe('Query merging', () => {
 				}),
 			}),
 		);
+	});
+});
+
+describe('refreshSignal', () => {
+	const mockCollection = {
+		collection: 'test',
+	} as AppCollection;
+
+	const mockPrimaryKeyField = {
+		field: 'id',
+	} as Field;
+
+	beforeEach(() => {
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => [mockPrimaryKeyField]),
+		} as any);
+	});
+
+	test('should not be bumped by the initial load', async () => {
+		const { refreshSignal } = useItem(ref('test'), ref(1));
+
+		await flushPromises();
+
+		expect(refreshSignal.value).toBe(0);
+	});
+
+	test('should be bumped on refresh', async () => {
+		const { refresh, refreshSignal } = useItem(ref('test'), ref(1));
+
+		await flushPromises();
+
+		refresh();
+
+		expect(refreshSignal.value).toBe(1);
+	});
+
+	test('should not be bumped by a silent refetch', async () => {
+		const { getItem, refreshSignal } = useItem(ref('test'), ref(1));
+
+		await flushPromises();
+
+		await getItem({ silent: true });
+
+		expect(refreshSignal.value).toBe(0);
 	});
 });
 
@@ -896,5 +943,123 @@ describe('findExistingRelatedItems SEARCH fallback', () => {
 				},
 			}),
 		);
+	});
+});
+
+describe('Save As Copy with M2M relation', () => {
+	const mockCollection = {
+		collection: 'test',
+		meta: {
+			item_duplication_fields: ['children'],
+		},
+	} as unknown as AppCollection;
+
+	const mockPrimaryKeyField = {
+		field: 'id',
+		schema: { has_auto_increment: true },
+	} as Field;
+
+	/**
+	 * Sets up an M2M relation: parent (`test`) -> junction (`test_junction`) -> child (`test_child`),
+	 * all with auto-increment primary keys.
+	 */
+	function setupM2MMocks() {
+		const sdkSpy = vi.spyOn(sdk, 'request');
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => [mockPrimaryKeyField] as Field[]),
+		} as any);
+
+		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
+
+		const autoIncrementPk = { field: 'id', schema: { has_auto_increment: true } } as Field;
+		vi.mocked(fieldsStore.getPrimaryKeyFieldForCollection).mockReturnValue(autoIncrementPk);
+
+		vi.mocked(relationsStore.getRelationsForCollection).mockReturnValue([
+			{
+				collection: 'test_junction',
+				field: 'test_id',
+				related_collection: 'test',
+				meta: { one_field: 'children', junction_field: 'child_id' },
+			} as unknown as Relation,
+		]);
+
+		vi.mocked(relationsStore).relations = [
+			{
+				collection: 'test_junction',
+				field: 'child_id',
+				related_collection: 'test_child',
+				meta: { many_field: 'child_id', junction_field: null },
+			} as unknown as Relation,
+		];
+
+		return sdkSpy;
+	}
+
+	test('should keep the existing child link when reordering (link-only update)', async () => {
+		const sdkSpy = setupM2MMocks();
+
+		sdkSpy
+			.mockResolvedValueOnce({}) // initial getItem
+			.mockResolvedValueOnce({ item: { id: 1 } }) // graphql duplication fetch
+			.mockResolvedValueOnce({ id: 2 }); // save
+
+		const { saveAsCopy, edits } = useItem(ref('test'), ref(1));
+
+		// Reordering stages an `update` per row whose junction field carries only the related PK
+		edits.value = {
+			children: {
+				create: [],
+				update: [
+					{ id: 100, sort: 1, child_id: { id: 10 } },
+					{ id: 101, sort: 2, child_id: { id: 11 } },
+				],
+				delete: [],
+			},
+		};
+
+		await saveAsCopy();
+
+		const saveBody = (sdkSpy.mock.lastCall?.[0]() as any).body;
+
+		// The junction PK is dropped (new junction rows) but the child PK is preserved so the copy
+		// re-links to the existing children instead of creating new, empty ones.
+		expect(saveBody.children.create).toEqual([
+			{ sort: 1, child_id: { id: 10 } },
+			{ sort: 2, child_id: { id: 11 } },
+		]);
+
+		expect(saveBody.children.update).toEqual([]);
+	});
+
+	test('should deep-duplicate the child when its content was edited', async () => {
+		const sdkSpy = setupM2MMocks();
+
+		sdkSpy
+			.mockResolvedValueOnce({}) // initial getItem
+			.mockResolvedValueOnce({ item: { id: 1 } }) // graphql duplication fetch
+			.mockResolvedValueOnce({ id: 2 }); // save
+
+		const { saveAsCopy, edits } = useItem(ref('test'), ref(1));
+
+		// The junction field carries more than the related PK, i.e. the child was edited inline
+		edits.value = {
+			children: {
+				create: [],
+				update: [{ id: 100, sort: 1, child_id: { id: 10, name: 'edited' } }],
+				delete: [],
+			},
+		};
+
+		await saveAsCopy();
+
+		const saveBody = (sdkSpy.mock.lastCall?.[0]() as any).body;
+
+		// Both the junction PK and the child PK are dropped so a brand-new child is created
+		expect(saveBody.children.create).toEqual([{ sort: 1, child_id: { name: 'edited' } }]);
+		expect(saveBody.children.update).toEqual([]);
 	});
 });

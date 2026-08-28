@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 import { HitRateLimitError, InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
 import type {
 	Credentials,
+	Deployment,
 	DeploymentWebhookEvent,
 	DeploymentWebhookEventType,
 	Details,
@@ -47,7 +48,7 @@ interface VercelProject {
 	updatedAt?: number;
 }
 
-interface VercelRun {
+interface VercelDeployment {
 	uid: string;
 	id: string;
 	projectId?: string;
@@ -243,8 +244,32 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 		return result;
 	}
 
-	async getRun(runId: string): Promise<Details> {
-		const deployment = await this.request<VercelRun>(`/v13/deployments/${encodeURIComponent(runId)}`);
+	async listDeployments(projectId: string, limit = 20): Promise<Deployment[]> {
+		const url = `/v6/deployments?projectId=${encodeURIComponent(projectId)}&limit=${limit}`;
+		const response = await this.request<{ deployments: VercelDeployment[] }>(url);
+
+		return response.deployments.map((deployment) => {
+			const result: Deployment = {
+				id: deployment.uid,
+				project_id: deployment.projectId ?? projectId,
+				status: this.mapStatus(deployment.state),
+				created_at: new Date(deployment.createdAt),
+			};
+
+			if (deployment.url) {
+				result.url = `https://${deployment.url}`;
+			}
+
+			if (deployment.ready) {
+				result.finished_at = new Date(deployment.ready);
+			}
+
+			return result;
+		});
+	}
+
+	async getDeployment(deploymentId: string): Promise<Details> {
+		const deployment = await this.request<VercelDeployment>(`/v13/deployments/${encodeURIComponent(deploymentId)}`);
 
 		const result: Details = {
 			id: deployment.id,
@@ -264,7 +289,10 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 		return result;
 	}
 
-	async triggerRun(projectId: string, options?: { preview?: boolean; clearCache?: boolean }): Promise<TriggerResult> {
+	async triggerDeployment(
+		projectId: string,
+		options?: { preview?: boolean; clearCache?: boolean },
+	): Promise<TriggerResult> {
 		// Fetch project to get realtime required name needed for the vercel request
 		const project = await this.request<VercelProject>(`/v9/projects/${projectId}`);
 
@@ -287,7 +315,7 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 		}
 
 		// forceNew=1 skips build cache when clearCache is true
-		const response = await this.request<VercelRun>('/v13/deployments', {
+		const response = await this.request<VercelDeployment>('/v13/deployments', {
 			method: 'POST',
 			body: JSON.stringify(body),
 			...(options?.clearCache && { params: { forceNew: '1' } }),
@@ -306,15 +334,15 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 		return triggerResult;
 	}
 
-	async cancelRun(runId: string): Promise<Status> {
+	async cancelDeployment(deploymentId: string): Promise<Status> {
 		try {
-			await this.request(`/v12/deployments/${encodeURIComponent(runId)}/cancel`, {
+			await this.request(`/v12/deployments/${encodeURIComponent(deploymentId)}/cancel`, {
 				method: 'PATCH',
 			});
 
 			return 'canceled';
 		} catch {
-			const details = await this.getRun(runId);
+			const details = await this.getDeployment(deploymentId);
 
 			if (details.status !== 'building') {
 				return details.status;
@@ -322,13 +350,13 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 
 			throw new ServiceUnavailableError({
 				service: 'vercel',
-				reason: `Could not cancel the run: ${runId}`,
+				reason: `Could not cancel the deployment: ${deploymentId}`,
 			});
 		}
 	}
 
-	async getRunLogs(runId: string, options?: { since?: Date }): Promise<Log[]> {
-		let url = `/v3/deployments/${encodeURIComponent(runId)}/events`;
+	async getDeploymentLogs(deploymentId: string, options?: { since?: Date }): Promise<Log[]> {
+		let url = `/v3/deployments/${encodeURIComponent(deploymentId)}/events`;
 
 		// Vercel's since parameter uses milliseconds timestamp
 		if (options?.since) {

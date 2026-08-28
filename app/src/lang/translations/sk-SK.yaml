@@ -500,6 +500,7 @@ functions:
   minute: Minúta
   second: Sekunda
   count: Počet
+  json: JSON
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'h:mm a'
@@ -840,6 +841,7 @@ operators:
   nintersects: Nepretína
   intersects_bbox: Pretína hraničný obdĺžnik
   nintersects_bbox: Nepretína hraničný obdĺžnik
+  json: JSON
   regex: Vyhovuje RegExp
 custom_validation_message: Vlastná validačná správa
 loading: Načítavanie...
@@ -1053,12 +1055,15 @@ wysiwyg_options:
   bullist: Odrážkový zoznam
   numlist: Číslovaný zoznam
   hr: Vodorovná Čiara
+  insertdatetime_date: Dátum
+  insertdatetime_time: Čas
   link: Pridať/Upraviť odkaz
   unlink: Odstrániť odkaz
   media: Pridať/Upraviť médium
   image: Pridať/Upraviť obrázok
   copy: Kopírovat
   cut: Vystrihnúť
+  default: Predvolené
   paste: Prilepiť
   heading: Nadpis
   h1: Nadpis 1
@@ -1081,6 +1086,8 @@ wysiwyg_options:
   source_code: Upraviť zdrojový kód
   fullscreen: Celá obrazovka
   directionality: Smer
+  ltr: Zľava doprava
+  rtl: Zprava doľava
   lazy_loading: Lenivé načítanie obrázku
   lazy_loading_label: Zapnúť lenivé načítanie
 dropdown: Rozbaľovacia ponuka
@@ -1216,6 +1223,7 @@ fields:
     collection: Zbierka
     icon: Ikona
     note: Poznámka
+    status: Stav
     color: Farba
     display_template: Šablóna zobrazenia
     hidden: Skryté
@@ -1878,6 +1886,7 @@ interfaces:
     incompatible_data: Aktuálne údaje nie sú kompatibilné s rozhraním opakovača a prepíšu sa pri pridaní položiek do opakovača
     interface_group: Možnosti rozhrania
     display_group: Možnosti zobrazenia
+    edit_mode_inline: V riadku
   slider:
     slider: Posuvník
     description: Vyberie číslo pomocou posuvníka
@@ -1951,9 +1960,6 @@ interfaces:
     description: Textový editor s HTML obsahom
     toolbar: Panel nástrojov
     custom_formats: Vlastné formáty
-    custom_formats_note: Zoznam TinyMCE formátov obsahu. Pre viac info pozrite TinyMCE dokumentáciu [Formátovanie obsahu](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/).
-    options_override: Prepísanie nastavení
-    options_override_note: Klávesy na používateľské formátovanie TinyMCE. Pre viac info pozrite TinyMCE dokumentáciu [User Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/).
     folder_note: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
     imageToken: Statický prístupový token
     imageToken_label: Statický prístupový token sa pridá do URL súborov

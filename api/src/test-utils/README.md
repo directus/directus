@@ -20,6 +20,7 @@ This directory contains mock implementations for commonly used modules in servic
 - **[folders-service.ts](#folders-servicets)** - FoldersService mocks
 - **[test-helpers.ts](#test-helpersts)** - Test data factory functions
 - **[controllers.ts](#controllersts)** - Controller/router testing helpers
+- **[graphql.ts](#graphqlts)** - GraphQL AST selection builders and resolve info stubs
 
 ## Quick Start
 
@@ -253,45 +254,15 @@ Provides cache system mocking utilities.
 
 #### `mockCache()`
 
-Creates a standard cache module mock with getCache, getCacheValue, setCacheValue, and clearSystemCache. Returns both the
-mocks for vi.mock() declarations and spies for testing cache behavior.
+Creates a standard cache module mock with getCache, getCacheValue, setCacheValue, and clearSystemCache for vi.mock()
+declarations.
 
-**Returns:** Object with mock functions and spies
+**Returns:** Object with mock functions
 
 - `getCache`: Mock function returning cache object
 - `getCacheValue`: Mock function returning null
 - `setCacheValue`: Mock function returning undefined
 - `clearSystemCache`: Mock function
-- `spies`: Spy functions for testing cache behavior
-  - `clearSpy`: Spy for cache.clear()
-  - `systemClearSpy`: Spy for systemCache.clear()
-  - `getCacheSpy`: Spy for localSchemaCache.get()
-  - `setCacheSpy`: Spy for localSchemaCache.set()
-  - `mockCacheReturn`: The mock cache object to pass to vi.mocked()
-
-**Example:**
-
-```typescript
-// Standard usage for vi.mock()
-vi.mock('../cache.js', async () => {
-	const { mockCache } = await import('../test-utils/cache.js');
-	return mockCache();
-});
-
-// Testing cache clearing with spies
-import { getCache } from '../cache.js';
-import { mockCache } from '../test-utils/cache.js';
-
-test('should clear cache after update', async () => {
-	const { spies } = mockCache();
-	vi.mocked(getCache).mockReturnValue(spies.mockCacheReturn as any);
-
-	const service = new YourService({ knex: db, schema });
-	await service.updateOne('1', { name: 'Updated' });
-
-	expect(spies.clearSpy).toHaveBeenCalled();
-});
-```
 
 ---
 
@@ -965,23 +936,6 @@ test('should alter table to add column', async () => {
 });
 ```
 
-### Testing Cache Clearing
-
-```typescript
-import { getCache } from '../cache.js';
-import { mockCache } from '../test-utils/cache.js';
-
-test('should clear cache after update', async () => {
-	const { spies } = mockCache();
-	vi.mocked(getCache).mockReturnValue(spies.mockCacheReturn as any);
-
-	const service = new YourService({ knex: db, schema });
-	await service.updateOne('1', { name: 'Updated' });
-
-	expect(spies.clearSpy).toHaveBeenCalled();
-});
-```
-
 ### Testing with Storage Operations
 
 ```typescript
@@ -1237,6 +1191,46 @@ const createOneSpy = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedV
 
 // Test your code
 expect(createOneSpy).toHaveBeenCalledWith(expect.objectContaining({ field: 'value' }));
+```
+
+---
+
+### graphql.ts
+
+Builders for the GraphQL AST that resolvers receive, so tests can express a selection set without hand-writing nodes or
+parsing a query string.
+
+#### `buildField(name, options?)`
+
+A field selection: `options.alias` for `alias: name`, `options.args` for arguments, and `options.children` for a nested
+selection set.
+
+#### `buildInlineFragment(type, children)` / `buildFragmentSpread(name)` / `buildFragmentDefinition(name, type, children)`
+
+The three fragment nodes. A spread resolves against the `fragments` passed to `resolveInfo`, which is what a fragment
+definition is registered in.
+
+#### `buildArgument(name, value)` / `buildFilterArgument(filter)`
+
+Argument nodes: `arg` takes a scalar (an int for numbers, a string otherwise), `filterArg` takes the plain object form
+of a filter.
+
+#### `buildResolveInfo({ selections, fragments?, schema, returnType })`
+
+Stands in for the `GraphQLResolveInfo` a resolver receives. `schema` and `returnType` come from the executable schema
+under test, since the type of a selection set decides how fragments resolve.
+
+```typescript
+import { buildField, buildFragmentDefinition, buildFragmentSpread, buildResolveInfo } from '../test-utils/graphql.js';
+
+const info = buildResolveInfo({
+	selections: [buildFragmentSpread('Fields')],
+	fragments: { Fields: buildFragmentDefinition('Fields', 'article', [buildField('id'), buildField('title')]) },
+	schema,
+	returnType: schema.getQueryType()!.getFields()['article']!.type,
+});
+
+expect(buildSelections(info)).toEqual([buildField('id'), buildField('title')]);
 ```
 
 ---

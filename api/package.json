@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "36.0.2",
+	"version": "39.1.0",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -58,7 +58,7 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsdown && copyfiles \"src/**/*.{yaml,liquid,md}\" -u 1 dist",
+		"build": "tsdown && copyfiles \"src/**/*.{yaml,liquid,md}\" dist -u 1",
 		"cli": "NODE_ENV=development SERVE_APP=false tsx src/cli/run.ts",
 		"dev": "NODE_ENV=development SERVE_APP=true tsx watch --ignore extensions --clear-screen=false src/start.ts",
 		"test": "vitest run",
@@ -80,7 +80,6 @@
 		"@directus/errors": "workspace:*",
 		"@directus/extensions": "workspace:*",
 		"@directus/extensions-registry": "workspace:*",
-		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "workspace:*",
 		"@directus/license": "catalog:",
 		"@directus/memory": "workspace:*",
@@ -128,7 +127,6 @@
 		"date-fns": "catalog:",
 		"deep-diff": "catalog:",
 		"directus": "workspace:*",
-		"dotenv": "catalog:",
 		"encodeurl": "catalog:",
 		"eventemitter2": "catalog:",
 		"execa": "catalog:",
@@ -235,15 +233,17 @@
 		"@types/wellknown": "catalog:",
 		"@types/ws": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"copyfiles": "catalog:",
 		"form-data": "catalog:",
 		"get-port": "catalog:",
 		"knex-mock-client": "catalog:",
+		"native-copyfiles": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},
 	"optionalDependencies": {
 		"@keyv/redis": "catalog:",
+		"braintrust": "catalog:",
+		"mailtrap": "catalog:",
 		"mysql2": "catalog:",
 		"nodemailer-mailgun-transport": "catalog:",
 		"oracledb": "catalog:",

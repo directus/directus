@@ -14,6 +14,7 @@ import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
+import { buildProviderConfigs } from '../ai/providers/registry.js';
 import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../constants.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
 import { getEntitlementManager, getLicenseManager } from '../license/index.js';
@@ -92,6 +93,8 @@ export class ServerService {
 		}
 
 		if (this.accountability?.user) {
+			info['project_owner_enabled'] = toBoolean(env['PROJECT_OWNER_ENABLED'] ?? true);
+
 			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
 			info['mcp_oauth_enabled'] = toBoolean(env['MCP_OAUTH_ENABLED'] ?? false);
@@ -101,6 +104,30 @@ export class ServerService {
 			info['autoSave'] = {
 				revisionInterval: Number(env['AUTOSAVE_REVISION_INTERVAL']),
 			};
+
+			if (info['ai_enabled']) {
+				// Expose which AI providers are configured so the app can render the model picker,
+				// without granting non-admin users read access to the underlying credentials.
+				const aiSettings = await this.settingsService.readSingleton({
+					fields: [
+						'ai_openai_api_key',
+						'ai_anthropic_api_key',
+						'ai_google_api_key',
+						'ai_openai_compatible_api_key',
+						'ai_openai_compatible_base_url',
+					],
+				});
+
+				const providerConfigs = buildProviderConfigs({
+					openaiApiKey: aiSettings['ai_openai_api_key'] ?? null,
+					anthropicApiKey: aiSettings['ai_anthropic_api_key'] ?? null,
+					googleApiKey: aiSettings['ai_google_api_key'] ?? null,
+					openaiCompatibleApiKey: aiSettings['ai_openai_compatible_api_key'] ?? null,
+					openaiCompatibleBaseUrl: aiSettings['ai_openai_compatible_base_url'] ?? null,
+				});
+
+				info['ai_providers'] = providerConfigs.map((config) => config.type);
+			}
 
 			info['files'] = {
 				mimeTypeAllowList: toArray(env['FILES_MIME_TYPE_ALLOW_LIST']),
@@ -429,10 +456,9 @@ export class ServerService {
 				],
 			};
 
-			const mailer = getMailer();
-
 			try {
-				await mailer.verify();
+				// Building the mailer can throw on a misconfigured transport.
+				await getMailer().verify();
 			} catch (err: any) {
 				checks['email:connection']![0]!.status = 'error';
 				checks['email:connection']![0]!.output = err;

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/stores",
-	"version": "3.0.0",
+	"version": "3.0.1",
 	"description": "Shared Pinia stores used in @directus/app",
 	"homepage": "https://directus.com",
 	"repository": {
@@ -23,9 +23,6 @@
 	"scripts": {
 		"build": "tsdown src/index.ts --dts",
 		"dev": "tsdown src/index.ts --dts --watch"
-	},
-	"dependencies": {
-		"@vueuse/core": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",

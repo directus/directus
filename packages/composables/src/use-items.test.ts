@@ -3,7 +3,7 @@ import { flushPromises } from '@vue/test-utils';
 import type { AxiosInstance } from 'axios';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { type Ref, ref, unref } from 'vue';
-import { useItems } from './use-items.js';
+import { serializeFilter, useItems } from './use-items.js';
 import { useApi } from './use-system.js';
 
 vi.mock('./use-system.js');
@@ -610,6 +610,111 @@ describe('useItems', () => {
 
 			expect(mockApiGet).toHaveBeenCalledTimes(3);
 			expect(totalCount.value).toBe(0);
+		});
+	});
+
+	describe('serializeFilter', () => {
+		test('passes filters without _json through untouched', () => {
+			const filter = { _and: [{ status: { _eq: 'published' } }] };
+
+			expect(serializeFilter(filter)).toBe(filter);
+			expect(serializeFilter(null)).toBe(null);
+			expect(serializeFilter(undefined)).toBe(undefined);
+		});
+
+		test('stringifies filters containing _json at the top level', () => {
+			const filter = { metadata: { _json: { 'data.tags[0]': { _eq: 'featured' } } } };
+
+			expect(serializeFilter(filter)).toBe(JSON.stringify(filter));
+		});
+
+		test('detects _json nested under logical groups and relational paths', () => {
+			const nestedInGroup = {
+				_or: [{ status: { _eq: 'published' } }, { _and: [{ metadata: { _json: { rating: { _gte: '4' } } } }] }],
+			};
+
+			const nestedInRelation = { author: { profile: { metadata: { _json: { city: { _eq: 'Berlin' } } } } } };
+
+			expect(serializeFilter(nestedInGroup)).toBe(JSON.stringify(nestedInGroup));
+			expect(serializeFilter(nestedInRelation)).toBe(JSON.stringify(nestedInRelation));
+		});
+
+		test('stringifies an empty _json filter (initial UI state)', () => {
+			const filter = { _and: [{ metadata: { _json: {} } }] };
+
+			expect(serializeFilter(filter)).toBe(JSON.stringify(filter));
+		});
+
+		test('does not treat operator values as _json containers', () => {
+			const filter = { _and: [{ tags: { _in: ['_json', 'other'] } }] };
+
+			expect(serializeFilter(filter)).toBe(filter);
+		});
+	});
+
+	describe('filter serialization on requests', () => {
+		function mockCountResponse() {
+			vi.mocked(mockApiGet).mockResolvedValue({
+				data: { data: [{ count: 1, countDistinct: { id: 1 } }] },
+			});
+		}
+
+		function getRequestFilters() {
+			const calls = vi.mocked(mockApiGet).mock.calls as [string, { params: Record<string, any> }][];
+
+			const itemCall = calls.find(([, config]) => config?.params?.['fields']);
+			const aggregateCalls = calls.filter(([, config]) => config?.params?.['aggregate'] && config?.params?.['filter']);
+
+			return {
+				itemFilter: itemCall?.[1].params['filter'],
+				aggregateFilters: aggregateCalls.map(([, c]) => c.params['filter']),
+			};
+		}
+
+		test('sends non-JSON filters as objects on both item and aggregate requests', async () => {
+			mockCountResponse();
+
+			const filter = { _and: [{ status: { _eq: 'published' } }] };
+
+			useItems(ref('test_collection'), {
+				fields: ref(['id']),
+				limit: ref(25),
+				sort: ref(['id']),
+				search: ref<string | null>(null),
+				filter: ref<Filter | null>(filter),
+				page: ref(1),
+			});
+
+			await flushPromises();
+
+			const { itemFilter, aggregateFilters } = getRequestFilters();
+
+			expect(itemFilter).toEqual(filter);
+			expect(aggregateFilters.length).toBeGreaterThan(0);
+			for (const aggregateFilter of aggregateFilters) expect(aggregateFilter).toEqual(filter);
+		});
+
+		test('sends filters containing _json as JSON strings on both item and aggregate requests', async () => {
+			mockCountResponse();
+
+			const filter = { _and: [{ metadata: { _json: { rating: { _gte: '4' } } } }] };
+
+			useItems(ref('test_collection'), {
+				fields: ref(['id']),
+				limit: ref(25),
+				sort: ref(['id']),
+				search: ref<string | null>(null),
+				filter: ref<Filter | null>(filter),
+				page: ref(1),
+			});
+
+			await flushPromises();
+
+			const { itemFilter, aggregateFilters } = getRequestFilters();
+
+			expect(itemFilter).toBe(JSON.stringify(filter));
+			expect(aggregateFilters.length).toBeGreaterThan(0);
+			for (const aggregateFilter of aggregateFilters) expect(aggregateFilter).toBe(JSON.stringify(filter));
 		});
 	});
 });
