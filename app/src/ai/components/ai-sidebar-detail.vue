@@ -22,7 +22,11 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 		v-tooltip.left="sidebarStore.collapsed && $t('ai_assistant')"
 		class="collapsible-root"
 	>
-		<CollapsibleTrigger class="collapsible-trigger" :class="{ active: aiStore.chatOpen }">
+		<CollapsibleTrigger
+			class="collapsible-trigger"
+			:class="{ active: aiStore.chatOpen }"
+			:aria-label="$t('ai_assistant')"
+		>
 			<div ref="collapsible-trigger-content" class="collapsible-trigger-content">
 				<AiMagicButton class="collapsible-trigger-icon" :animate="hovering" />
 				<span v-show="!sidebarStore.collapsed" class="collapsible-trigger-title">{{ $t('ai_assistant') }}</span>
