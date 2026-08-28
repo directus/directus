@@ -35,7 +35,6 @@ defineEmits<VButtonEmits>();
 const headerBarInline = useInjectHeaderBarInline();
 const { showIcon, activeTooltip } = useIcon();
 
-
 const resolvedAriaLabel = computed(() => {
 	if (explicitAriaLabel) return explicitAriaLabel;
 	if (!showIcon.value) return undefined;
