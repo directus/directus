@@ -128,7 +128,10 @@ beforeEach(async () => {
 	global = {
 		stubs: {
 			'private-view': { template: '<div><slot name="actions" /><slot /></div>' },
-			'private-view-header-bar-action-button': { props: ['label'], template: '<button>{{ label }}</button>' },
+			'private-view-header-bar-action-button': {
+				props: ['icon', 'label', 'variant'],
+				template: '<button :data-icon="icon" :data-variant="variant">{{ label }}</button>',
+			},
 			'flow-folder-sidebar': {
 				props: ['actionsDisabled'],
 				template: '<div :data-actions-disabled="actionsDisabled"><slot /></div>',
@@ -411,7 +414,10 @@ describe('FlowsOverview - import export', () => {
 		userStoreMock.setAdmin(true);
 
 		const wrapper = mount(FlowsOverview, { global });
-		expect(wrapper.text()).toContain('import_flow');
+		const importAction = wrapper.find('[data-icon="file_upload"]');
+
+		expect(importAction.text()).toBe('');
+		expect(importAction.attributes('data-variant')).toBe('ghost');
 	});
 
 	test('notifies after importing a Flow', async () => {

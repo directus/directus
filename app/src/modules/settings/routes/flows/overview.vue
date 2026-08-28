@@ -334,17 +334,18 @@ function onFlowDrawerCompletion(id: string) {
 		<template #actions>
 			<AddFolder type="flows" :parent="folder" :disabled="createFolderAllowed !== true" @created="navigateToFolder" />
 			<PrivateViewHeaderBarActionButton
-				v-if="isAdmin"
-				:label="$t('import_flow')"
-				icon="file_upload"
-				@click="openImportFlow"
-			/>
-			<PrivateViewHeaderBarActionButton
 				v-if="selectedKeys.length > 0"
 				v-tooltip.bottom="$t('move_to_folder')"
 				icon="folder_move"
 				variant="ghost"
 				@click="openMoveToFolder"
+			/>
+			<PrivateViewHeaderBarActionButton
+				v-if="isAdmin"
+				v-tooltip.bottom="$t('import_flow')"
+				icon="file_upload"
+				variant="ghost"
+				@click="openImportFlow"
 			/>
 			<EntitlementRemaining entitlement-key="flows" />
 		</template>
