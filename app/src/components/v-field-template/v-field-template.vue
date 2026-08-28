@@ -297,7 +297,7 @@ function setContent() {
 				</template>
 
 				<template #append>
-					<VIcon name="add_box" outline clickable :disabled="disabled" @click="toggle" />
+					<VIcon name="add_box" :aria-label="$t('add_field')" outline clickable :disabled="disabled" @click="toggle" />
 				</template>
 			</VInput>
 		</template>

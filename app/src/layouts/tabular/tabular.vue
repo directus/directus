@@ -274,6 +274,7 @@ function removeField(fieldKey: string) {
 							<VSelect
 								:model-value="`${limit}`"
 								:items="pageSizes"
+								:aria-label="$t('per_page')"
 								inline
 								@update:model-value="limitWritable = +$event"
 							/>

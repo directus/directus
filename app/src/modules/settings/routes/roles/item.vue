@@ -136,6 +136,7 @@ function discardAndStay() {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('delete_label')"
+						:aria-label="$t('delete_label')"
 						kind="danger"
 						variant="ghost"
 						:disabled="item === null"
@@ -161,6 +162,7 @@ function discardAndStay() {
 			<PrivateViewHeaderBarActionButton
 				v-if="canInviteUsers"
 				v-tooltip.bottom="$t('invite_users')"
+				:aria-label="$t('invite_users')"
 				variant="ghost"
 				icon="person_add"
 				@click="userInviteModalActive = true"

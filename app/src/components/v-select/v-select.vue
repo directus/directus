@@ -70,6 +70,8 @@ const props = withDefaults(
 		attached?: boolean;
 		/** Show an arrow pointer */
 		showArrow?: boolean;
+		/** Accessible name for the inline trigger button */
+		ariaLabel?: string | null;
 		label?: boolean;
 		/** Translation strings to replace items naming */
 		allItemsTranslation?: string;
@@ -294,6 +296,7 @@ function useDisplayValue() {
 				v-if="inline"
 				type="button"
 				:disabled="disabled"
+				:aria-label="ariaLabel ?? undefined"
 				:aria-pressed="active"
 				class="inline-display"
 				:class="{ placeholder: !displayValue.text, label, active, disabled }"

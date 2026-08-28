@@ -180,6 +180,7 @@ function emitValue() {
 				>
 					<VIcon
 						v-tooltip.bottom="!disabled && $t('filter')"
+						:aria-label="$t('filter')"
 						clickable
 						class="icon-filter"
 						name="filter_list"

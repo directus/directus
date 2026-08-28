@@ -293,7 +293,7 @@ function useDragDrop() {
 		</div>
 
 		<div v-if="editMode" class="edit-actions" @pointerdown.stop>
-			<VIcon v-tooltip="$t('edit')" class="edit-icon" name="edit" clickable @click="$emit('edit')" />
+			<VIcon v-tooltip="$t('edit')" :aria-label="$t('edit')" class="edit-icon" name="edit" clickable @click="$emit('edit')" />
 
 			<VMenu v-if="showOptions" placement="bottom-end" show-arrow>
 				<template #activator="{ toggle }">

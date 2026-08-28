@@ -61,6 +61,7 @@ defineEmits<{
 			<PrivateViewHeaderBarActionButton
 				v-if="cancelable"
 				v-tooltip.bottom="`${$t('cancel')} (${translateShortcut(['esc'])})`"
+				:aria-label="$t('cancel')"
 				class="close-button"
 				icon="close"
 				variant="ghost"
