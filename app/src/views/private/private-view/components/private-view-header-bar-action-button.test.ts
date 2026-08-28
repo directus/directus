@@ -1,8 +1,33 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { ref } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import PrivateViewHeaderBarActionButton from './private-view-header-bar-action-button.vue';
+
+const breakpointRefs = {
+	xs: ref(false),
+	sm: ref(false),
+	lg: ref(false),
+};
+
+const headerBarInline = ref(false);
+
+vi.mock('@vueuse/core', () => ({
+	useBreakpoints: () => ({
+		smallerOrEqual: (key: 'xs' | 'sm' | 'lg') => breakpointRefs[key],
+	}),
+}));
+
+vi.mock('../composables/use-header-bar', () => ({
+	useInjectHeaderBarInline: () => headerBarInline,
+}));
+
+function setBreakpoint(width: 'xs' | 'sm' | 'lg' | 'xl') {
+	breakpointRefs.xs.value = width === 'xs';
+	breakpointRefs.sm.value = width === 'xs' || width === 'sm';
+	breakpointRefs.lg.value = width === 'xs' || width === 'sm' || width === 'lg';
+}
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -41,6 +66,11 @@ const mountOptions = {
 };
 
 describe('PrivateViewHeaderBarActionButton', () => {
+	beforeEach(() => {
+		setBreakpoint('xl');
+		headerBarInline.value = false;
+	});
+
 	test('renders the component', () => {
 		const wrapper = mount(PrivateViewHeaderBarActionButton, {
 			...mountOptions,
@@ -197,6 +227,8 @@ describe('PrivateViewHeaderBarActionButton', () => {
 	});
 
 	test('passes label as aria-label when rendering icon-only', () => {
+		setBreakpoint('xs');
+
 		const wrapper = mount(PrivateViewHeaderBarActionButton, {
 			...mountOptions,
 			props: {
