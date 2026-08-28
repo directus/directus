@@ -98,7 +98,7 @@ class OASSpecsService implements SpecificationSubService {
 		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
 
 		const hashedVersion = createHmac('sha256', getSecret())
-			.update(JSON.stringify({ tags, paths, components }))
+			.update(JSON.stringify(canonicalize({ tags, paths, components })))
 			.digest('hex');
 
 		const spec: OpenAPIObject = {
@@ -657,4 +657,30 @@ class GraphQLSpecsService implements SpecificationSubService {
 		if (scope === 'system') return this.system.getSchema('sdl');
 		return null;
 	}
+}
+
+/** Recursively sorts object keys and arrays so structurally equivalent values always serialize the same way, regardless of fetch order. */
+function canonicalize(value: unknown): unknown {
+	if (Array.isArray(value)) {
+		return value.map(canonicalize).sort((a, b) => {
+			const aKey = JSON.stringify(a);
+			const bKey = JSON.stringify(b);
+
+			if (aKey < bKey) return -1;
+			if (aKey > bKey) return 1;
+			return 0;
+		});
+	}
+
+	if (value && typeof value === 'object') {
+		const sorted: Record<string, unknown> = {};
+
+		for (const key of Object.keys(value as Record<string, unknown>).sort()) {
+			sorted[key] = canonicalize((value as Record<string, unknown>)[key]);
+		}
+
+		return sorted;
+	}
+
+	return value;
 }

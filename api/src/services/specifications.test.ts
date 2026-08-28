@@ -183,6 +183,43 @@ describe('Integration Tests', () => {
 
 						expect(specWithBlob.info.version).not.toEqual(specWithoutBlob.info.version);
 					});
+
+					it('is stable regardless of collection enumeration order', async () => {
+						const schemaAB = new SchemaBuilder()
+							.collection('table_a', (c) => {
+								c.field('id').integer().primary();
+							})
+							.collection('table_b', (c) => {
+								c.field('id').integer().primary();
+							})
+							.build();
+
+						const schemaBA = new SchemaBuilder()
+							.collection('table_b', (c) => {
+								c.field('id').integer().primary();
+							})
+							.collection('table_a', (c) => {
+								c.field('id').integer().primary();
+							})
+							.build();
+
+						const serviceAB = new SpecificationService({
+							knex: db,
+							schema: schemaAB,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const serviceBA = new SpecificationService({
+							knex: db,
+							schema: schemaBA,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const specAB = await serviceAB.oas.generate();
+						const specBA = await serviceBA.oas.generate();
+
+						expect(specAB.info.version).toEqual(specBA.info.version);
+					});
 				});
 			});
 		});
