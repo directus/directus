@@ -244,3 +244,23 @@ test('RTL icon mirroring with different RTL icons', () => {
 		expect(wrapper.classes()).not.toContain('mirrored');
 	}
 });
+
+test('passes aria-label through when clickable', () => {
+	const wrapper = mount(VIcon, {
+		props: {
+			name: 'close',
+			clickable: true,
+			ariaLabel: 'Dismiss',
+		},
+		global: {
+			plugins: [
+				createTestingPinia({
+					createSpy: vi.fn,
+				}),
+			],
+		},
+	});
+
+	expect(wrapper.attributes('aria-label')).toBe('Dismiss');
+	expect(wrapper.element.tagName).toBe('BUTTON');
+});
