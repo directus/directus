@@ -1,3 +1,5 @@
+import type { InvalidLicenseStatus, LicenseSource, LicenseStatus, PoweredByEntitlement } from '@directus/license';
+
 export interface DistributionSummary {
 	min: number;
 	max: number;
@@ -44,6 +46,7 @@ export interface TelemetryReport {
 	timestamp: string;
 	trigger: 'startup' | 'scheduled';
 	project: TelemetryProject;
+	license: TelemetryLicense | null;
 	config: TelemetryConfig;
 	features: TelemetryFeatures | null;
 	metrics: TelemetryMetrics;
@@ -52,8 +55,61 @@ export interface TelemetryReport {
 export interface TelemetryProject {
 	id: string;
 	created_at: string;
+	url: string | null;
 	version: string;
 	templates_applied: string[];
+}
+
+/**
+ * A countable entitlement reported as both what the license grants and what the instance actually
+ * uses. `limit` is the contracted allowance; `hard_limit` is what is enforced (limit + overage +
+ * addon). Usage between the two is in billable overage; above `hard_limit` the instance is blocked.
+ * `null` limits mean unlimited.
+ */
+export interface CountableEntitlement {
+	limit: number | null;
+	overage: number;
+	addon: number;
+	hard_limit: number | null;
+	usage: number;
+	within_contract: boolean;
+	within_hard_limit: boolean;
+}
+
+export interface TelemetryLicense {
+	licensed: boolean;
+	source: LicenseSource;
+	status: LicenseStatus;
+	downgrade_reason: InvalidLicenseStatus | null;
+	editable: boolean;
+	name: string;
+	version: string;
+	offline: boolean;
+	issued_at: number | null;
+	expires_at: number | null;
+	renews_at: number | null;
+	grace_period: number;
+	validation_interval: number;
+	overage_billed: {
+		seats: number;
+		collections: number;
+		flows: number;
+	};
+	entitlements: {
+		seats: CountableEntitlement;
+		collections: CountableEntitlement;
+		flows: CountableEntitlement;
+		sso_enabled: boolean;
+		offline_enabled: boolean;
+		telemetry_required: boolean;
+		custom_llms_enabled: boolean;
+		custom_permission_rules_enabled: boolean;
+		production_enabled: boolean;
+		ai_translations_enabled: boolean;
+		display_powered_by: PoweredByEntitlement;
+		activity_historical_timeframe: number | null;
+		revision_historical_timeframe: number | null;
+	};
 }
 export interface TelemetryConfig {
 	auth: {

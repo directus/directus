@@ -3,6 +3,7 @@ import { getDatabase } from '../../database/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { collectConfig } from '../collectors/config.js';
 import { collectFeatures } from '../collectors/features.js';
+import { collectLicense } from '../collectors/license.js';
 import { collectApiRequestMetrics } from '../collectors/metrics/api-requests.js';
 import { collectMetrics } from '../collectors/metrics/index.js';
 import { collectProject } from '../collectors/project.js';
@@ -12,7 +13,7 @@ import { safeCollect } from '../utils/safe-collect.js';
 const CACHE_KEY = 'telemetry-report';
 const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
 
-type CachedSections = Pick<TelemetryReport, 'project' | 'config' | 'features'> & {
+type CachedSections = Pick<TelemetryReport, 'project' | 'license' | 'config' | 'features'> & {
 	metrics: Omit<TelemetryReport['metrics'], 'api_requests'>;
 };
 
@@ -35,6 +36,7 @@ export const getReport = async (trigger: TelemetryReport['trigger'] = 'scheduled
 		timestamp: new Date().toISOString(),
 		trigger,
 		project: sections.project,
+		license: sections.license,
 		config: sections.config,
 		features: sections.features,
 		metrics: { ...sections.metrics, api_requests: apiRequests },
@@ -50,14 +52,15 @@ const getCachedSections = async (): Promise<CachedSections> => {
 	const schema = await getSchema({ database: db });
 
 	// Project holds the identity the report is keyed on, so it alone is allowed to fail the report.
-	const [project, config, features, metrics] = await Promise.all([
+	const [project, license, config, features, metrics] = await Promise.all([
 		collectProject(db, schema),
+		safeCollect('license', () => collectLicense(db)),
 		collectConfig(db),
 		safeCollect('features', () => collectFeatures(db, schema)),
 		collectMetrics(db, schema),
 	]);
 
-	const sections: CachedSections = { project, config, features, metrics };
+	const sections: CachedSections = { project, license, config, features, metrics };
 
 	await setSystemCache(CACHE_KEY, sections, CACHE_TTL_MS);
 

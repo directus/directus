@@ -4,7 +4,7 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 import { collectProject } from './project.js';
 
 vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({}),
+	useEnv: vi.fn().mockReturnValue({ PUBLIC_URL: 'https://example.com' }),
 }));
 
 vi.mock('directus/version', () => ({
@@ -38,6 +38,7 @@ describe('collectProject', () => {
 		expect(result.id).toBe('018cc701-e800-7000-8000-000000000000');
 		expect(result.version).toBe('11.0.0');
 		expect(result.created_at).toBe('2024-01-01T00:00:00.000Z');
+		expect(result.url).toBe('https://example.com');
 	});
 
 	test('returns empty templates_applied', async () => {

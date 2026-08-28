@@ -7,6 +7,7 @@ import { useLogger } from '../../logger/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { collectConfig } from '../collectors/config.js';
 import { collectFeatures } from '../collectors/features.js';
+import { collectLicense } from '../collectors/license.js';
 import { collectApiRequestMetrics } from '../collectors/metrics/api-requests.js';
 import { collectMetrics } from '../collectors/metrics/index.js';
 import { collectProject } from '../collectors/project.js';
@@ -15,6 +16,7 @@ import type {
 	ExtensionBreakdown,
 	TelemetryConfig,
 	TelemetryFeatures,
+	TelemetryLicense,
 	TelemetryMetrics,
 	TelemetryProject,
 } from '../types/report.js';
@@ -31,6 +33,7 @@ vi.mock('../../utils/get-schema.js');
 vi.mock('../collectors/project.js');
 vi.mock('../collectors/config.js');
 vi.mock('../collectors/features.js');
+vi.mock('../collectors/license.js');
 vi.mock('../collectors/metrics/api-requests.js');
 vi.mock('../collectors/metrics/index.js');
 
@@ -50,6 +53,7 @@ const distribution = { min: 0, max: 0, median: 0, mean: 0 };
 const mockProject: TelemetryProject = {
 	id: 'test-project-id',
 	created_at: '2024-01-01T00:00:00.000Z',
+	url: 'https://example.com',
 	version: '11.0.0',
 	templates_applied: [],
 };
@@ -124,6 +128,62 @@ const mockFeatures: TelemetryFeatures = {
 	},
 };
 
+const mockLicense: TelemetryLicense = {
+	licensed: true,
+	source: 'settings',
+	status: 'active',
+	downgrade_reason: null,
+	editable: true,
+	name: 'Enterprise',
+	version: '1',
+	offline: false,
+	issued_at: 1,
+	expires_at: 2,
+	renews_at: null,
+	grace_period: 0,
+	validation_interval: 0,
+	overage_billed: { seats: 0, collections: 0, flows: 0 },
+	entitlements: {
+		seats: {
+			limit: 10,
+			overage: 0,
+			addon: 0,
+			hard_limit: 10,
+			usage: 1,
+			within_contract: true,
+			within_hard_limit: true,
+		},
+		collections: {
+			limit: 10,
+			overage: 0,
+			addon: 0,
+			hard_limit: 10,
+			usage: 1,
+			within_contract: true,
+			within_hard_limit: true,
+		},
+		flows: {
+			limit: 10,
+			overage: 0,
+			addon: 0,
+			hard_limit: 10,
+			usage: 1,
+			within_contract: true,
+			within_hard_limit: true,
+		},
+		sso_enabled: true,
+		offline_enabled: false,
+		telemetry_required: true,
+		custom_llms_enabled: false,
+		custom_permission_rules_enabled: false,
+		production_enabled: true,
+		ai_translations_enabled: false,
+		display_powered_by: 'HIDDEN',
+		activity_historical_timeframe: null,
+		revision_historical_timeframe: null,
+	},
+};
+
 const extensionBreakdown = (): ExtensionBreakdown => {
 	const bySource = { count: 0, source: { registry: { count: 0 }, local: { count: 0 }, module: { count: 0 } } };
 
@@ -195,6 +255,7 @@ const mockApiRequests: ApiRequestMetrics = {
 
 const cachedSections = {
 	project: mockProject,
+	license: mockLicense,
 	config: mockConfig,
 	features: mockFeatures,
 	metrics: mockMetrics,
@@ -211,6 +272,7 @@ describe('getReport', () => {
 		vi.mocked(collectProject).mockResolvedValue(mockProject);
 		vi.mocked(collectConfig).mockResolvedValue(mockConfig);
 		vi.mocked(collectFeatures).mockResolvedValue(mockFeatures);
+		vi.mocked(collectLicense).mockResolvedValue(mockLicense);
 		vi.mocked(collectMetrics).mockResolvedValue(mockMetrics);
 		vi.mocked(collectApiRequestMetrics).mockResolvedValue(mockApiRequests);
 	});
@@ -226,6 +288,7 @@ describe('getReport', () => {
 		expect(report).toHaveProperty('timestamp');
 		expect(report).toHaveProperty('trigger');
 		expect(report).toHaveProperty('project');
+		expect(report).toHaveProperty('license');
 		expect(report).toHaveProperty('config');
 		expect(report).toHaveProperty('features');
 		expect(report).toHaveProperty('metrics');
@@ -262,6 +325,20 @@ describe('getReport', () => {
 		expect(report.event).toBe('directus.telemetry.ping.v2');
 		expect(report.timestamp).toEqual(expect.any(String));
 		expect(report.trigger).toBe('scheduled');
+	});
+
+	test('Returns license section from collectLicense', async () => {
+		const report = await getReport();
+		expect(report.license).toEqual(mockLicense);
+	});
+
+	test('Nulls the license section instead of failing the report when collectLicense throws', async () => {
+		vi.mocked(collectLicense).mockRejectedValue(new Error('license server unreachable'));
+
+		const report = await getReport();
+
+		expect(report.license).toBeNull();
+		expect(report.project).toEqual(mockProject);
 	});
 
 	test('Returns config section from collectConfig', async () => {
@@ -304,6 +381,7 @@ describe('getReport', () => {
 		expect(collectProject).not.toHaveBeenCalled();
 		expect(collectConfig).not.toHaveBeenCalled();
 		expect(collectFeatures).not.toHaveBeenCalled();
+		expect(collectLicense).not.toHaveBeenCalled();
 		expect(collectMetrics).not.toHaveBeenCalled();
 		expect(report.trigger).toBe('scheduled');
 		expect(report.project).toEqual(mockProject);

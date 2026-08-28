@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import type { SchemaOverview } from '@directus/types';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
@@ -9,6 +10,8 @@ import { getTemplatesApplied } from '../utils/get-templates-applied.js';
 type ProjectInfo = TelemetryReport['project'];
 
 export async function collectProject(db: Knex, schema: SchemaOverview): Promise<ProjectInfo> {
+	const env = useEnv();
+
 	const settingsService = new SettingsService({
 		knex: db,
 		schema,
@@ -19,6 +22,7 @@ export async function collectProject(db: Knex, schema: SchemaOverview): Promise<
 	return {
 		id: settings.project_id,
 		created_at: deriveCreatedAtFromUuid(settings.project_id)!,
+		url: (env['PUBLIC_URL'] as string) ?? null,
 		version,
 		templates_applied: getTemplatesApplied(schema),
 	};
