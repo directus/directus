@@ -115,7 +115,7 @@ const mockMetrics: TelemetryMetrics = {
 	api_requests: {
 		count: 0,
 		cached: { count: 0 },
-		method: { get: { count: 0 }, post: { count: 0 }, put: { count: 0 }, patch: { count: 0 }, delete: { count: 0 } },
+		method: { get: { count: 0 }, search: { count: 0 }, post: { count: 0 }, put: { count: 0 }, patch: { count: 0 }, delete: { count: 0 } },
 	},
 	fields: { count: 0 },
 	collections: {

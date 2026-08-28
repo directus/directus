@@ -1,28 +1,28 @@
 import { useBufferedCounter } from '../../counter/use-buffered-counter.js';
 import type { TelemetryReport } from '../../types/report.js';
+import { TRACKED_KEYS } from '../../utils/api-request-keys.js';
 
 type ApiRequestMetrics = TelemetryReport['metrics']['api_requests'];
 
 export async function collectApiRequestMetrics(): Promise<ApiRequestMetrics> {
 	const counter = useBufferedCounter('api-requests');
-	const raw = await counter.getAndResetAll();
 
-	const get = raw['get'] ?? 0;
-	const post = raw['post'] ?? 0;
-	const put = raw['put'] ?? 0;
-	const patch = raw['patch'] ?? 0;
-	const del = raw['delete'] ?? 0;
-	const cached = raw['cached'] ?? 0;
+	// Keys only ever incremented by another process aren't in the local buckets, so they have to be
+	// named explicitly to be read and reset.
+	const raw = await counter.getAndResetAll([...TRACKED_KEYS]);
+
+	const method = {
+		get: { count: raw['get'] ?? 0 },
+		search: { count: raw['search'] ?? 0 },
+		post: { count: raw['post'] ?? 0 },
+		put: { count: raw['put'] ?? 0 },
+		patch: { count: raw['patch'] ?? 0 },
+		delete: { count: raw['delete'] ?? 0 },
+	};
 
 	return {
-		count: get + post + put + patch + del,
-		cached: { count: cached },
-		method: {
-			get: { count: get },
-			post: { count: post },
-			put: { count: put },
-			patch: { count: patch },
-			delete: { count: del },
-		},
+		count: Object.values(method).reduce((total, { count }) => total + count, 0),
+		cached: { count: raw['cached'] ?? 0 },
+		method,
 	};
 }

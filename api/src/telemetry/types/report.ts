@@ -218,6 +218,7 @@ export interface TelemetryMetrics {
 		cached: CountMetric;
 		method: {
 			get: CountMetric;
+			search: CountMetric;
 			post: CountMetric;
 			put: CountMetric;
 			patch: CountMetric;
