@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Field, Filter, FlowRaw, Item } from '@directus/types';
 import { StorageSerializers, useLocalStorage } from '@vueuse/core';
-import { sortBy } from 'lodash';
+import { isObject, sortBy } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterView } from 'vue-router';
@@ -162,7 +162,21 @@ function isFilterableField(field: Field) {
 	return field.collection === 'directus_flows' && field.field in FILTERABLE_RELATIONS;
 }
 
-const hasQuery = computed(() => Boolean(search.value) || Boolean(filter.value));
+// Test for at least one real rule, since an empty group like `{ _and: [{ _and: [] }] }` is truthy but matches everything
+function filterHasRules(node: Filter | null): boolean {
+	if (!node) return false;
+
+	return Object.entries(node).some(([key, value]) => {
+		if (key === '_and' || key === '_or') {
+			return Array.isArray(value) && value.some((child) => filterHasRules(child));
+		}
+
+		// A leaf operator (e.g. `_contains`, `_eq`) is a real rule; otherwise descend into the field object
+		return key.startsWith('_') || (isObject(value) && filterHasRules(value as Filter));
+	});
+}
+
+const hasQuery = computed(() => Boolean(search.value) || filterHasRules(filter.value));
 
 function clearFilters() {
 	search.value = null;
