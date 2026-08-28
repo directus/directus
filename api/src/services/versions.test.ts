@@ -1,6 +1,7 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
+import { getService } from '../utils/get-service.js';
 import { ActivityService } from './activity.js';
 import { ItemsService } from './items.js';
 import { RevisionsService } from './revisions.js';
@@ -35,6 +36,11 @@ vi.mock('./payload.js', () => {
 vi.mock('./items.js', async () => {
 	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
+});
+
+vi.mock('../utils/get-service.js', async () => {
+	const { ItemsService } = await import('./items.js');
+	return { getService: vi.fn((collection, options) => new ItemsService(collection, options)) };
 });
 
 vi.mock('./revisions.js', async () => {
@@ -401,6 +407,11 @@ describe('Integration Tests', () => {
 				expect(ItemsService.prototype.createOne).toHaveBeenCalledWith(
 					expect.objectContaining({ title: 'Promoted' }),
 					expect.any(Object),
+				);
+
+				expect(vi.mocked(getService)).toHaveBeenCalledWith(
+					'singleton_collection',
+					expect.objectContaining({ schema, knex: db }),
 				);
 
 				expect(VersionsService.prototype.updateOne).toHaveBeenCalledWith('version-id', { item: 'new-item-id' });

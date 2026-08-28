@@ -1,6 +1,7 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey, Query, QueryOptions } from '@directus/types';
 import { getHistoryFilterQuery } from '../utils/get-history-filter-query.js';
+import { getService } from '../utils/get-service.js';
 import { ItemsService } from './items.js';
 
 export class RevisionsService extends ItemsService {
@@ -17,7 +18,7 @@ export class RevisionsService extends ItemsService {
 
 		if (!revision['data']) throw new InvalidPayloadError({ reason: `Revision doesn't contain data to revert to` });
 
-		const service = new ItemsService(revision['collection'], {
+		const service = getService(revision['collection'], {
 			accountability: this.accountability,
 			knex: this.knex,
 			schema: this.schema,

@@ -1,11 +1,17 @@
 import { InvalidPayloadError } from '@directus/errors';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { ItemsService } from '../../services/items.js';
+import { getService } from '../../utils/get-service.js';
 import config from './index.js';
 
 vi.mock('../../services/items.js', async () => {
 	const { mockItemsService } = await import('../../test-utils/services/items-service.js');
 	return mockItemsService();
+});
+
+vi.mock('../../utils/get-service.js', async () => {
+	const { ItemsService } = await import('../../services/items.js');
+	return { getService: vi.fn((collection, options) => new ItemsService(collection, options)) };
 });
 
 vi.mock('../../utils/get-accountability-for-role.js', () => ({
@@ -41,6 +47,11 @@ describe('Operations / Item Update', () => {
 		await run({ payload: testPayload, key: 1, permissions });
 
 		expect(vi.mocked(ItemsService)).toHaveBeenCalledWith(
+			testCollection,
+			expect.objectContaining({ schema: {}, accountability: expected, knex: undefined }),
+		);
+
+		expect(vi.mocked(getService)).toHaveBeenCalledWith(
 			testCollection,
 			expect.objectContaining({ schema: {}, accountability: expected, knex: undefined }),
 		);
