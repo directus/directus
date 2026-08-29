@@ -13,7 +13,7 @@ import type {
 } from '@directus/types';
 import { getRelation, getRelationType } from '@directus/utils';
 import type { Knex } from 'knex';
-import { cloneDeep, mergeWith } from 'lodash-es';
+import { cloneDeep, isPlainObject, mergeWith } from 'lodash-es';
 import type {
 	OpenAPIObject,
 	ParameterObject,
@@ -27,6 +27,7 @@ import getDatabase from '../database/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
+import { byCodepoint } from '../utils/by-codepoint.js';
 import { getSecret } from '../utils/get-secret.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
@@ -662,24 +663,17 @@ class GraphQLSpecsService implements SpecificationSubService {
 /** Recursively sorts object keys and arrays so structurally equivalent values always serialize the same way, regardless of fetch order. */
 function canonicalize(value: unknown): unknown {
 	if (Array.isArray(value)) {
-		return value.map(canonicalize).sort((a, b) => {
-			const aKey = JSON.stringify(a);
-			const bKey = JSON.stringify(b);
-
-			if (aKey < bKey) return -1;
-			if (aKey > bKey) return 1;
-			return 0;
-		});
+		return value.map(canonicalize).sort((a, b) => byCodepoint(JSON.stringify(a), JSON.stringify(b)));
 	}
 
-	if (value && typeof value === 'object') {
-		const sorted: Record<string, unknown> = {};
+	if (isPlainObject(value)) {
+		const record = value as Record<string, unknown>;
 
-		for (const key of Object.keys(value as Record<string, unknown>).sort()) {
-			sorted[key] = canonicalize((value as Record<string, unknown>)[key]);
-		}
-
-		return sorted;
+		return Object.fromEntries(
+			Object.keys(record)
+				.sort(byCodepoint)
+				.map((key): [string, unknown] => [key, canonicalize(record[key])]),
+		);
 	}
 
 	return value;
