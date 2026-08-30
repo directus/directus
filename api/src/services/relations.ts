@@ -344,7 +344,12 @@ export class RelationsService {
 		}
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
-		this.helpers.schema.preRelationChange(relation);
+
+		this.helpers.schema.preRelationChange({
+			...relation,
+			collection,
+			related_collection: existingRelation.related_collection,
+		});
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -401,8 +406,8 @@ export class RelationsService {
 						await relationsItemService.createOne(
 							{
 								...(relation.meta || {}),
-								many_collection: relation.collection,
-								many_field: relation.field,
+								many_collection: collection,
+								many_field: field,
 								one_collection: existingRelation.related_collection || null,
 							},
 							{

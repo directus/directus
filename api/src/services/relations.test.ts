@@ -2,6 +2,7 @@ import { SchemaBuilder } from '@directus/schema-builder';
 import type { RelationMeta } from '@directus/types';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { createMockKnex, createMockTableBuilder, resetKnexMocks } from '../test-utils/knex.js';
+import { ItemsService } from './items.js';
 import { RelationsService } from './relations.js';
 
 vi.mock('@directus/env', () => ({
@@ -97,6 +98,80 @@ describe('Integration Tests', () => {
 
 				expect(table.dropForeign).toHaveBeenCalledWith('authors_id', 'articles_authors_authors_id_foreign');
 				expect(table.foreign).toHaveBeenCalledWith('authors_id', 'articles_authors_authors_id_foreign');
+			});
+
+			test('should give preRelationChange the resolved collection and related_collection, not the raw payload', async () => {
+				const foreignKeyBuilder = {
+					onDelete: vi.fn().mockReturnThis(),
+					onUpdate: vi.fn().mockReturnThis(),
+				};
+
+				const table = {
+					...createMockTableBuilder(),
+					dropForeign: vi.fn().mockReturnThis(),
+					foreign: vi.fn().mockReturnValue({ references: vi.fn().mockReturnValue(foreignKeyBuilder) }),
+				};
+
+				mockSchemaBuilder.alterTable.mockImplementation((_tableName, callback) => {
+					callback(table);
+					return Promise.resolve();
+				});
+
+				const service = new RelationsService({ knex: db, schema });
+
+				await service.updateOne('articles_authors', 'authors_id', {
+					meta: { junction_field: 'articles_id' } as RelationMeta,
+				});
+
+				expect(service.helpers.schema.preRelationChange).toHaveBeenCalledWith(
+					expect.objectContaining({ collection: 'articles_authors', related_collection: 'authors' }),
+				);
+			});
+
+			test('should create the meta row using the route params when no meta row exists yet', async () => {
+				const foreignKeyBuilder = {
+					onDelete: vi.fn().mockReturnThis(),
+					onUpdate: vi.fn().mockReturnThis(),
+				};
+
+				const table = {
+					...createMockTableBuilder(),
+					dropForeign: vi.fn().mockReturnThis(),
+					foreign: vi.fn().mockReturnValue({ references: vi.fn().mockReturnValue(foreignKeyBuilder) }),
+				};
+
+				mockSchemaBuilder.alterTable.mockImplementation((_tableName, callback) => {
+					callback(table);
+					return Promise.resolve();
+				});
+
+				const schemaWithoutMeta = new SchemaBuilder()
+					.collection('authors', (c) => {
+						c.field('id').id();
+					})
+					.collection('articles_authors', (c) => {
+						c.field('id').id();
+						c.field('articles_id').integer();
+						c.field('authors_id').m2o('authors');
+					})
+					.build();
+
+				const existingRelation = schemaWithoutMeta.relations.find(
+					(relation) => relation.collection === 'articles_authors' && relation.field === 'authors_id',
+				)!;
+
+				existingRelation.meta = null;
+
+				const service = new RelationsService({ knex: db, schema: schemaWithoutMeta });
+
+				await service.updateOne('articles_authors', 'authors_id', {
+					meta: { junction_field: 'articles_id' } as RelationMeta,
+				});
+
+				expect(ItemsService.prototype.createOne).toHaveBeenCalledWith(
+					expect.objectContaining({ many_collection: 'articles_authors', many_field: 'authors_id' }),
+					expect.anything(),
+				);
 			});
 		});
 	});
