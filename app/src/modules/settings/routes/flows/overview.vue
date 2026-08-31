@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { FlowRaw } from '@directus/types';
+import { Field, Filter, FlowRaw, Item } from '@directus/types';
+import { StorageSerializers, useLocalStorage } from '@vueuse/core';
 import { saveAs } from 'file-saver';
-import { sortBy } from 'lodash';
+import { isObject, sortBy } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterView } from 'vue-router';
@@ -27,15 +28,19 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import { Header, Sort } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
+import { useFolders } from '@/composables/use-folders';
 import { useMoveToFolder } from '@/composables/use-move-to-folder';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vue';
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { useLicenseStore } from '@/stores/license';
+import { useRelationsStore } from '@/stores/relations';
 import { useUserStore } from '@/stores/user';
 import { extractErrorCode } from '@/utils/extract-error-code';
+import { filterItems } from '@/utils/filter-items';
 import { notify } from '@/utils/notify';
+import { parseFilter } from '@/utils/parse-filter';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -45,6 +50,7 @@ import FolderPicker from '@/views/private/components/folder-picker.vue';
 import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
 import EntitlementRemaining from '@/views/private/components/license/entitlement-remaining.vue';
 import MaxCapacityAlert from '@/views/private/components/license/max-capacity-alert.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
 
 const { t } = useI18n();
 
@@ -136,11 +142,79 @@ const internalSort = ref<Sort>({ by: 'name', desc: false });
 
 const flowsStore = useFlowsStore();
 
+const search = useLocalStorage<string | null>('directus-flows-search', null);
+
+const filter = useLocalStorage<Filter | null>('directus-flows-filter', null, {
+	serializer: StorageSerializers.object,
+});
+
+const { folders } = useFolders('flows');
+
+const relationsStore = useRelationsStore();
+
+const foldersById = computed(() => new Map((folders.value ?? []).map((folder) => [folder.id, folder])));
+
+// Relations we can resolve client-side, so can filter on: whitelists the field and hydrates its foreign key.
+const FILTERABLE_RELATIONS: Record<string, (flow: FlowRaw) => Item | null> = {
+	folder: (flow) => (flow.folder ? (foldersById.value.get(flow.folder) ?? null) : null),
+};
+
+function isFilterableField(field: Field) {
+	if (relationsStore.getRelationsForField(field.collection, field.field).length === 0) {
+		return true;
+	}
+
+	return field.collection === 'directus_flows' && field.field in FILTERABLE_RELATIONS;
+}
+
+// Test for at least one real rule, since an empty group like `{ _and: [{ _and: [] }] }` is truthy but matches everything
+function filterHasRules(node: Filter | null): boolean {
+	if (!node) return false;
+
+	return Object.entries(node).some(([key, value]) => {
+		if (key === '_and' || key === '_or') {
+			return Array.isArray(value) && value.some((child) => filterHasRules(child));
+		}
+
+		// A leaf operator (e.g. `_contains`, `_eq`) is a real rule; otherwise descend into the field object
+		return key.startsWith('_') || (isObject(value) && filterHasRules(value as Filter));
+	});
+}
+
+const hasQuery = computed(() => Boolean(search.value) || filterHasRules(filter.value));
+
+function clearFilters() {
+	search.value = null;
+	filter.value = null;
+}
+
 const flows = computed(() => {
 	const source = props.folder ? flowsStore.flows.filter((flow) => flow.folder === props.folder) : flowsStore.flows;
 
-	const translatedFlows = source.map((flow) => ({ ...flow, name: translate(flow.name) }));
-	const sortedFlows = sortBy(translatedFlows, [internalSort.value.by]);
+	// Translate before searching/filtering so both run against the name the user actually sees
+	let result = source.map((flow) => ({ ...flow, name: translate(flow.name) }));
+
+	if (filter.value) {
+		// Resolve the relations we support so filter rules can target the related object, not just its key
+		const hydrated = result.map((flow) => ({
+			...flow,
+			...Object.fromEntries(Object.entries(FILTERABLE_RELATIONS).map(([key, resolve]) => [key, resolve(flow)])),
+		}));
+
+		const matchedIds = new Set(filterItems(hydrated, parseFilter(filter.value)).map((flow) => flow.id));
+
+		result = result.filter((flow) => matchedIds.has(flow.id));
+	}
+
+	if (search.value) {
+		const query = search.value.toLowerCase();
+
+		result = result.filter((flow) => {
+			return flow.name?.toLowerCase().includes(query) || flow.description?.toLowerCase().includes(query);
+		});
+	}
+
+	const sortedFlows = sortBy(result, [internalSort.value.by]);
 	return internalSort.value.desc ? sortedFlows.reverse() : sortedFlows;
 });
 
@@ -236,6 +310,9 @@ watch(
 	() => (selectedKeys.value = []),
 );
 
+// Narrowing the list can hide selected flows, so drop the selection to avoid acting on out-of-view rows
+watch([search, filter], () => (selectedKeys.value = []));
+
 const moveDialogActive = ref(false);
 const moveTarget = ref<string | null>(null);
 
@@ -319,6 +396,16 @@ function onFlowDrawerCompletion(id: string) {
 		</template>
 
 		<template #actions>
+			<SearchInput
+				v-model="search"
+				v-model:filter="filter"
+				collection="directus_flows"
+				:include-json-function="false"
+				:relational-field-selectable="false"
+				:field-filter="isFilterableField"
+				:placeholder="$t('search_flow')"
+			/>
+
 			<AddFolder type="flows" :parent="folder" :disabled="createFolderAllowed !== true" @created="navigateToFolder" />
 			<PrivateViewHeaderBarActionButton
 				v-if="selectedKeys.length > 0"
@@ -355,11 +442,19 @@ function onFlowDrawerCompletion(id: string) {
 			@navigate="navigateToFolder"
 			@deleted="onFolderDeleted"
 		>
-			<VInfo v-if="flows.length === 0" icon="bolt" :title="$t('no_flows')" center>
+			<VInfo v-if="flows.length === 0 && !hasQuery" icon="bolt" :title="$t('no_flows')" center>
 				{{ $t('no_flows_copy') }}
 
 				<template v-if="createAllowed" #append>
 					<VButton @click="openCreateFlow">{{ $t('create_flow') }}</VButton>
+				</template>
+			</VInfo>
+
+			<VInfo v-else-if="flows.length === 0" icon="search" :title="$t('no_results')" center>
+				{{ $t('no_results_copy') }}
+
+				<template #append>
+					<VButton @click="clearFilters">{{ $t('clear_filters') }}</VButton>
 				</template>
 			</VInfo>
 
