@@ -22,6 +22,7 @@ import { getCache } from '../cache.js';
 import { getHelpers } from '../database/helpers/index.js';
 import emitter from '../emitter.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { getService } from '../utils/get-service.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { splitRecursive } from '../utils/versioning/split-recursive.js';
 import { ActivityService } from './activity.js';
@@ -482,7 +483,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 
 		const payloadToUpdate = opts?.fields ? pick(rawDelta, opts.fields) : rawDelta;
 
-		const itemsService = new ItemsService(collection, {
+		const itemsService = getService(collection, {
 			accountability: this.accountability,
 			knex: this.knex,
 			schema: this.schema,

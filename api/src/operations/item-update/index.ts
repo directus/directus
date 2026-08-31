@@ -4,8 +4,8 @@ import type { Accountability, Item, PrimaryKey } from '@directus/types';
 import { optionToObject, toArray } from '@directus/utils';
 import { isEmpty, isNil } from 'lodash-es';
 import { z } from 'zod';
-import { ItemsService } from '../../services/items.js';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role.js';
+import { getService } from '../../utils/get-service.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 
 type Options = {
@@ -70,7 +70,7 @@ export default defineOperationApi<Options>({
 			customAccountability = await getAccountabilityForRole(permissions, { database, schema, accountability });
 		}
 
-		const itemsService: ItemsService = new ItemsService(collection, {
+		const itemsService = getService(collection, {
 			schema,
 			accountability: customAccountability,
 			knex: database,
