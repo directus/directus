@@ -20,6 +20,7 @@ import type {
 	Query,
 	QueryOptions,
 } from '@directus/types';
+import { isIP } from 'node:net';
 import { normalizePath, toArray, toBoolean } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
@@ -249,6 +250,25 @@ export class FilesService extends ItemsService<File> {
 			);
 		}
 
+		// SSRF hardening: validate URL before fetch (CWE-918)
+		let parsedImportURL: URL;
+		try {
+			parsedImportURL = new URL(importURL);
+			if (parsedImportURL.protocol !== 'http:' && parsedImportURL.protocol !== 'https:') {
+				throw new InvalidPayloadError({ reason: `Unsupported URL protocol "${parsedImportURL.protocol}"` });
+			}
+			// Block private/metadata IPs even if IMPORT_IP_DENY_LIST is empty (secure-by-default)
+			const hostname = parsedImportURL.hostname.replace(/^\[|\]$/g, '');
+			if (isIP(hostname) !== 0) {
+				// Direct IP - deny private, loopback, link-local, cloud metadata
+				const denied = hostname.startsWith('127.') || hostname === '::1' || hostname.startsWith('10.') || hostname.startsWith('192.168.') || hostname.startsWith('169.254.') || hostname.match(/^172\.(1[6-9]|2[0-9]|3[0-1])\./);
+				if (denied) throw new InvalidPayloadError({ reason: `Import URL resolves to denied IP` });
+			}
+		} catch (err: any) {
+			if (err instanceof InvalidPayloadError) throw err;
+			throw new InvalidPayloadError({ reason: `Invalid import URL "${importURL}"` });
+		}
+
 		let fileResponse;
 
 		try {
@@ -257,6 +277,9 @@ export class FilesService extends ItemsService<File> {
 			fileResponse = await axios.get<Readable>(encodeURL(importURL), {
 				responseType: 'stream',
 				decompress: false,
+				timeout: 10000,
+				maxRedirects: 3,
+				maxContentLength: 100 * 1024 * 1024, // 100MB
 			});
 		} catch (error: any) {
 			logger.warn(`Couldn't fetch file from URL "${importURL}"${error.message ? `: ${error.message}` : ''}`);
