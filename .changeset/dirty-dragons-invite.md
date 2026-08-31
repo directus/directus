@@ -1,0 +1,5 @@
+---
+'@directus/app': minor
+---
+
+Added Flow import and export
