@@ -45,13 +45,13 @@ export function createFlowExport(flow: FlowRaw): FlowExport {
 	};
 }
 
-export function createFlowImport(value: unknown): ImportCollectionData[] {
+export function createFlowImport(value: unknown, folder: string | null = null): ImportCollectionData[] {
 	const flowExport = validateFlowExport(value);
 
 	return [
 		{
 			collection: 'directus_flows',
-			items: [createImportFlow(flowExport.flow)],
+			items: [createImportFlow(flowExport.flow, folder)],
 		},
 		{
 			collection: 'directus_operations',
@@ -60,9 +60,10 @@ export function createFlowImport(value: unknown): ImportCollectionData[] {
 	];
 }
 
-function createImportFlow(flow: PortableFlow) {
+function createImportFlow(flow: PortableFlow, folder: string | null) {
 	return {
 		id: flow.id,
+		folder,
 		name: flow.name,
 		icon: flow.icon,
 		color: flow.color,

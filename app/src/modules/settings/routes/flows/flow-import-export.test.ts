@@ -68,6 +68,12 @@ describe('flow import export', () => {
 		});
 	});
 
+	test('places the imported Flow in the given folder', () => {
+		const [flows] = createFlowImport(createFlowExport(flow), 'folder-1');
+
+		expect(flows!.items[0]).toMatchObject({ folder: 'folder-1' });
+	});
+
 	test('rejects a bundle with Operations from another Flow', () => {
 		const bundle = createFlowExport(flow);
 		bundle.operations[0]!.flow = 'other-flow';
@@ -84,6 +90,7 @@ describe('flow import export', () => {
 				items: [
 					{
 						id: 'flow-1',
+						folder: null,
 						name: 'Send notification',
 						icon: 'bolt',
 						color: '#6644FF',
@@ -124,7 +131,7 @@ describe('flow import export', () => {
 
 		const result = createFlowImport(bundle);
 
-		expect(result[0]!.items[0]).not.toHaveProperty('folder');
+		expect(result[0]!.items[0]).toMatchObject({ folder: null });
 		expect(result[0]!.items[0]).not.toHaveProperty('user_created');
 		expect(result[1]!.items[0]).not.toHaveProperty('date_created');
 	});

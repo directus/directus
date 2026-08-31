@@ -286,7 +286,7 @@ async function importFlow() {
 	importing.value = true;
 
 	try {
-		const flowImport = createFlowImport(JSON.parse(await importFile.value.text()));
+		const flowImport = createFlowImport(JSON.parse(await importFile.value.text()), props.folder ?? null);
 		const form = new FormData();
 		form.append('file', new Blob([JSON.stringify(flowImport)], { type: 'application/json' }), 'flow.json');
 
