@@ -52,9 +52,11 @@ if (env['GRAPHQL_INTROSPECTION'] !== false) {
 
 			const info = await serverService.serverInfo();
 			const result = await service.graphql.generate(scope as 'items' | 'system');
-			const filename = info['project'].project_name + '_' + format(new Date(), 'yyyy-MM-dd') + '.graphql';
+			const safeProjectName = info['project'].project_name.replace(/[^a-zA-Z0-9_-]/g, '_');
+			const filename = safeProjectName + '_' + format(new Date(), 'yyyy-MM-dd') + '.graphql';
 
 			res.attachment(filename);
+			res.type('application/graphql');
 			res.send(result);
 		}),
 	);

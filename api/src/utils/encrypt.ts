@@ -69,7 +69,10 @@ export const decrypt = async (encryptedText: string, password: string): Promise<
 	const iv = Buffer.from(ivB64, 'base64');
 	const tag = Buffer.from(tagB64, 'base64');
 
-	const decipher = crypto.createDecipheriv('aes-256-gcm', keyBuf, iv);
+	if (iv.length !== 12) throw new Error('Invalid IV length');
+	if (tag.length !== 16) throw new Error('Invalid auth tag length');
+
+	const decipher = crypto.createDecipheriv('aes-256-gcm', keyBuf, iv, { authTagLength: 16 });
 	decipher.setAuthTag(tag);
 
 	let plaintext = decipher.update(cipherText, 'base64', 'utf8');
