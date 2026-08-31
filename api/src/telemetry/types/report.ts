@@ -118,13 +118,32 @@ export interface TelemetryConfig {
 	};
 	ai: {
 		enabled: boolean;
+		devtools: boolean;
+		telemetry: {
+			enabled: boolean;
+			provider: string | null;
+		};
 	};
 	mcp: {
 		enabled: boolean;
+		oauth: {
+			enabled: boolean;
+			dcr: boolean;
+			cimd: boolean;
+		};
+	};
+	assets: {
+		transform_max_concurrent: number | null;
+		image_max_dimension: number | null;
+		image_max_output_dimension: number | null;
 	};
 	cache: {
 		enabled: boolean;
 		store: string;
+		schema_freeze: boolean;
+	};
+	cors: {
+		enabled: boolean;
 	};
 	database: {
 		driver: string;
@@ -143,6 +162,35 @@ export interface TelemetryConfig {
 		cache_ttl: string | null;
 		limit: number | null;
 		rolldown: boolean;
+		storage_max_concurrency: number | null;
+	};
+	files: {
+		max_upload_size: string | null;
+		import_max_file_size: string | null;
+	};
+	flows: {
+		run_script_timeout: number | null;
+		run_script_max_memory: string | null;
+	};
+	graphql: {
+		introspection: boolean;
+		single_use_mutations: number;
+	};
+	healthcheck: {
+		enabled: boolean;
+	};
+	license: {
+		key_management: boolean;
+	};
+	openapi: {
+		enabled: boolean;
+	};
+	redis: {
+		enabled: boolean;
+	};
+	telemetry: {
+		enabled: boolean;
+		project_owner: boolean;
 	};
 	storage: {
 		drivers: string[];

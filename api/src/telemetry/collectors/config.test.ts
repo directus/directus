@@ -7,12 +7,32 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
 }));
 
+vi.mock('./config/ai.js', () => ({
+	collectAi: vi.fn((): TelemetryConfig['ai'] => ({
+		enabled: false,
+		devtools: false,
+		telemetry: { enabled: false, provider: null },
+	})),
+}));
+
+vi.mock('./config/assets.js', () => ({
+	collectAssets: vi.fn((): TelemetryConfig['assets'] => ({
+		transform_max_concurrent: 25,
+		image_max_dimension: 6000,
+		image_max_output_dimension: 6000,
+	})),
+}));
+
 vi.mock('./config/auth.js', () => ({
 	collectAuthProviders: vi.fn((): TelemetryConfig['auth'] => ({ providers: ['local'], issuers: [] })),
 }));
 
 vi.mock('./config/cache.js', () => ({
-	collectCache: vi.fn((): TelemetryConfig['cache'] => ({ enabled: false, store: 'memory' })),
+	collectCache: vi.fn((): TelemetryConfig['cache'] => ({ enabled: false, store: 'memory', schema_freeze: false })),
+}));
+
+vi.mock('./config/cors.js', () => ({
+	collectCors: vi.fn((): TelemetryConfig['cors'] => ({ enabled: false })),
 }));
 
 vi.mock('./config/database.js', () => ({
@@ -30,11 +50,49 @@ vi.mock('./config/extensions.js', () => ({
 		cache_ttl: null,
 		limit: null,
 		rolldown: false,
+		storage_max_concurrency: 20,
 	})),
+}));
+
+vi.mock('./config/files.js', () => ({
+	collectFilesConfig: vi.fn((): TelemetryConfig['files'] => ({
+		max_upload_size: null,
+		import_max_file_size: '50mb',
+	})),
+}));
+
+vi.mock('./config/flows.js', () => ({
+	collectFlowsConfig: vi.fn((): TelemetryConfig['flows'] => ({
+		run_script_timeout: 10000,
+		run_script_max_memory: null,
+	})),
+}));
+
+vi.mock('./config/graphql.js', () => ({
+	collectGraphql: vi.fn((): TelemetryConfig['graphql'] => ({ introspection: true, single_use_mutations: 12 })),
+}));
+
+vi.mock('./config/healthcheck.js', () => ({
+	collectHealthcheck: vi.fn((): TelemetryConfig['healthcheck'] => ({ enabled: true })),
+}));
+
+vi.mock('./config/license.js', () => ({
+	collectLicenseConfig: vi.fn((): TelemetryConfig['license'] => ({ key_management: true })),
 }));
 
 vi.mock('./config/marketplace.js', () => ({
 	collectMarketplace: vi.fn((): TelemetryConfig['marketplace'] => ({ trust: 'sandbox', registry: 'default' })),
+}));
+
+vi.mock('./config/mcp.js', () => ({
+	collectMcp: vi.fn((): TelemetryConfig['mcp'] => ({
+		enabled: false,
+		oauth: { enabled: false, dcr: false, cimd: false },
+	})),
+}));
+
+vi.mock('./config/openapi.js', () => ({
+	collectOpenapi: vi.fn((): TelemetryConfig['openapi'] => ({ enabled: true })),
 }));
 
 vi.mock('./config/pm2.js', () => ({
@@ -54,6 +112,10 @@ vi.mock('./config/rate-limit.js', () => ({
 	})),
 }));
 
+vi.mock('./config/redis.js', () => ({
+	collectRedis: vi.fn((): TelemetryConfig['redis'] => ({ enabled: false })),
+}));
+
 vi.mock('./config/retention.js', () => ({
 	collectRetention: vi.fn((): TelemetryConfig['retention'] => ({
 		enabled: false,
@@ -69,6 +131,10 @@ vi.mock('./config/storage.js', () => ({
 
 vi.mock('./config/sync.js', () => ({
 	collectSyncStore: vi.fn((): TelemetryConfig['synchronization'] => ({ store: 'memory' })),
+}));
+
+vi.mock('./config/telemetry.js', () => ({
+	collectTelemetryConfig: vi.fn((): TelemetryConfig['telemetry'] => ({ enabled: true, project_owner: true })),
 }));
 
 vi.mock('./config/websocket.js', () => ({
@@ -87,37 +153,46 @@ afterEach(() => {
 describe('collectConfig', () => {
 	const mockDb = {} as Knex;
 
-	test('returns all config sections', async () => {
+	test('returns every config section', async () => {
 		const result = await collectConfig(mockDb);
 
-		expect(result).toStrictEqual({
-			auth: { providers: ['local'], issuers: [] },
-			ai: { enabled: false },
-			mcp: { enabled: false },
-			cache: { enabled: false, store: 'memory' },
-			database: { driver: 'postgres', version: '16.0' },
-			email: { transport: 'sendmail' },
-			extensions: { must_load: false, auto_reload: false, cache_ttl: null, limit: null, rolldown: false },
-			marketplace: { trust: 'sandbox', registry: 'default' },
-			storage: { drivers: ['local'] },
-			retention: { enabled: false, activity: '90d', revisions: '90d', flow_logs: '90d' },
-			websockets: { enabled: false, rest: false, graphql: false, logs: false },
-			prometheus: { enabled: false },
-			rate_limiting: { enabled: false, pressure: false, email: false, email_flows: false },
-			synchronization: { store: 'memory' },
-			pm2: { instances: 0 },
-		});
+		expect(Object.keys(result).sort()).toStrictEqual([
+			'ai',
+			'assets',
+			'auth',
+			'cache',
+			'cors',
+			'database',
+			'email',
+			'extensions',
+			'files',
+			'flows',
+			'graphql',
+			'healthcheck',
+			'license',
+			'marketplace',
+			'mcp',
+			'openapi',
+			'pm2',
+			'prometheus',
+			'rate_limiting',
+			'redis',
+			'retention',
+			'storage',
+			'synchronization',
+			'telemetry',
+			'websockets',
+		]);
 	});
 
-	test('defaults ai and mcp to false', async () => {
+	test('passes each collector through unchanged', async () => {
 		const result = await collectConfig(mockDb);
 
-		expect(result.ai).toStrictEqual({
-			enabled: false,
-		});
-
-		expect(result.mcp).toStrictEqual({
-			enabled: false,
-		});
+		expect(result.ai).toStrictEqual({ enabled: false, devtools: false, telemetry: { enabled: false, provider: null } });
+		expect(result.mcp).toStrictEqual({ enabled: false, oauth: { enabled: false, dcr: false, cimd: false } });
+		expect(result.cache).toStrictEqual({ enabled: false, store: 'memory', schema_freeze: false });
+		expect(result.telemetry).toStrictEqual({ enabled: true, project_owner: true });
+		expect(result.license).toStrictEqual({ key_management: true });
+		expect(result.graphql).toStrictEqual({ introspection: true, single_use_mutations: 12 });
 	});
 });

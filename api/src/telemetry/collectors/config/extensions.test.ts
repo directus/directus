@@ -15,7 +15,12 @@ describe('collectExtensionsConfig', () => {
 			cache_ttl: null,
 			limit: null,
 			rolldown: false,
+			storage_max_concurrency: null,
 		});
+	});
+
+	test('reads the storage sync concurrency', () => {
+		expect(collectExtensionsConfig({ EXTENSIONS_STORAGE_MAX_CONCURRENCY: 20 }).storage_max_concurrency).toBe(20);
 	});
 
 	test('returns configured boolean values', () => {

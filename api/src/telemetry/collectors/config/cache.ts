@@ -5,5 +5,6 @@ export function collectCache(env: Record<string, unknown>): TelemetryReport['con
 	return {
 		enabled: toBoolean(env['CACHE_ENABLED']),
 		store: env['CACHE_STORE'] as string,
+		schema_freeze: toBoolean(env['CACHE_SCHEMA_FREEZE_ENABLED']),
 	};
 }
