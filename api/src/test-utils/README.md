@@ -1215,11 +1215,10 @@ definition is registered in.
 Argument nodes: `arg` takes a scalar (an int for numbers, a string otherwise), `filterArg` takes the plain object form
 of a filter.
 
-#### `buildResolveInfo({ selections, mergedSelections?, fragments?, schema, returnType })`
+#### `buildResolveInfo({ selections, fragments?, schema, returnType })`
 
 Stands in for the `GraphQLResolveInfo` a resolver receives. `schema` and `returnType` come from the executable schema
-under test, since the type of a selection set decides how fragments resolve. `mergedSelections` adds a further field
-node per entry, standing in for a field requested more than once, which GraphQL resolves in a single call.
+under test, since the type of a selection set decides how fragments resolve.
 
 ```typescript
 import { buildField, buildFragmentDefinition, buildFragmentSpread, buildResolveInfo } from '../test-utils/graphql.js';

@@ -1,5 +1,6 @@
-import type { GraphQLNamedType, GraphQLResolveInfo, SelectionNode } from 'graphql';
-import { getNamedType, isAbstractType, isObjectType, Kind } from 'graphql';
+import type { FieldNode, GraphQLNamedType, GraphQLResolveInfo, SelectionNode } from 'graphql';
+import { getNamedType, isAbstractType, isObjectType, Kind, print } from 'graphql';
+import { uniqBy } from 'lodash-es';
 
 /** The bits of the resolve info that every level of the recursion needs */
 type FragmentContext = Pick<GraphQLResolveInfo, 'fragments' | 'schema'>;
@@ -71,22 +72,37 @@ function replaceInSelections(
 	});
 }
 
+// The executor collects the nodes of a field once per request and hands that same list to every
+// resolver call for the field, so keying on the list scopes the result to the request that asked.
+const selectionsCache = new WeakMap<readonly FieldNode[], readonly SelectionNode[] | null>();
+
 /**
  * Build a flat selection set of the field being resolved, with every fragment in it swapped for the
  * selections it holds. Fragments can hold fragments, so this is done recursively.
  *
- * A field requested more than once resolves in a single call with one node per occurrence, so this
- * gathers the selections of every node.
+ * A field requested more than once resolves in a single call with one node per occurrence. The
+ * selections of every node are gathered, and a selection asked for more than once is kept once.
  *
  * @param info The resolve info of the field being resolved
  * @returns The selections asked for on that field, or null when none of its nodes carry selections
  */
 export function buildSelections(info: GraphQLResolveInfo): readonly SelectionNode[] | null {
+	const cached = selectionsCache.get(info.fieldNodes);
+
+	if (cached !== undefined) return cached;
+
 	const parentType = getNamedType(info.returnType);
 
-	const selections = info.fieldNodes.flatMap(
-		(fieldNode) => replaceInSelections(fieldNode.selectionSet?.selections, parentType, info) ?? [],
+	const selections = uniqBy(
+		info.fieldNodes.flatMap(
+			(fieldNode) => replaceInSelections(fieldNode.selectionSet?.selections, parentType, info) ?? [],
+		),
+		print,
 	);
 
-	return selections.length > 0 ? selections : null;
+	const result = selections.length > 0 ? selections : null;
+
+	selectionsCache.set(info.fieldNodes, result);
+
+	return result;
 }
