@@ -63,6 +63,18 @@ describe('resolverCacheKey', () => {
 		expect(key1).toBe(key2);
 	});
 
+	test('produces the same key whatever order the merged selections come in', () => {
+		const key1 = resolverCacheKey({}, makeMergedInfo('page', ['{ id }', '{ title }']));
+		const key2 = resolverCacheKey({}, makeMergedInfo('page', ['{ title }', '{ id }']));
+		expect(key1).toBe(key2);
+	});
+
+	test('produces the same key however often a merged selection repeats', () => {
+		const key1 = resolverCacheKey({}, makeMergedInfo('page', ['{ id }', '{ title }']));
+		const key2 = resolverCacheKey({}, makeMergedInfo('page', ['{ id }', '{ title }', '{ id }']));
+		expect(key1).toBe(key2);
+	});
+
 	test('produces different keys for different field names', () => {
 		const keyA = resolverCacheKey({}, makeInfo('fieldA'));
 		const keyB = resolverCacheKey({}, makeInfo('fieldB'));

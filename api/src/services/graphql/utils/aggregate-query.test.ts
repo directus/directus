@@ -177,6 +177,16 @@ describe('getAggregateQuery', () => {
 				count: ['id', 'name'],
 			});
 		});
+
+		test('should not read an aggregation group off the object prototype', async () => {
+			const selections = [buildField('toString', { children: [buildField('id')] })];
+
+			const result = await getAggregateQuery({}, selections, schema);
+
+			expect(result.aggregate).toEqual({
+				toString: ['id'],
+			});
+		});
 	});
 
 	describe('filter processing', () => {

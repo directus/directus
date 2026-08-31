@@ -291,7 +291,10 @@ test('two fragments on the query aggregating the same collection', async () => {
 		}
 	`);
 
-	expect(result[`${collections.articles}_aggregated`]![0]!.count.title).toBeGreaterThan(0);
+	const count = result[`${collections.articles}_aggregated`]![0]!.count;
+
+	expect(count.id).toBeGreaterThan(0);
+	expect(count.title).toBeGreaterThan(0);
 });
 
 // The system scope has its own resolvers, and they resolve fragments through the same path

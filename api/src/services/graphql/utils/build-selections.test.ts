@@ -34,18 +34,20 @@ const gqlSchema = buildSchema(`
 	type Query { Page: [Page], Page_aggregated: [Page_aggregated] }
 `);
 
-const buildInfo = (
-	selections: SelectionNode[],
-	fragments?: Record<string, FragmentDefinitionNode>,
-	mergedSelections?: SelectionNode[][],
-) =>
+const buildInfo = (selections: SelectionNode[], fragments?: Record<string, FragmentDefinitionNode>) =>
 	buildResolveInfo({
 		selections,
 		...(fragments && { fragments }),
-		...(mergedSelections && { mergedSelections }),
 		schema: gqlSchema,
 		returnType: gqlSchema.getQueryType()!.getFields()['Page']!.type,
 	});
+
+/** The resolve info of a field requested more than once, which GraphQL resolves in a single call */
+const buildMergedInfo = (occurrences: SelectionNode[][], fragments?: Record<string, FragmentDefinitionNode>) => {
+	const infos = occurrences.map((selections) => buildInfo(selections, fragments));
+
+	return { ...infos[0]!, fieldNodes: infos.flatMap((info) => info.fieldNodes) };
+};
 
 /** `... { children }`, the one fragment shape that carries no type condition */
 const inlineFragmentWithoutCondition = (children: SelectionNode[]) =>
@@ -136,10 +138,10 @@ const inliningCases: SelectionCase[] = [
 		expected: [buildField('id'), buildField('title')],
 	},
 	{
-		name: 'repeats the selections when the same fragment is spread twice',
+		name: 'keeps the selections once when the same fragment is spread twice',
 		selections: [buildFragmentSpread('Fields'), buildFragmentSpread('Fields')],
 		fragments: { Fields: buildFragmentDefinition('Fields', 'Page', [buildField('title')]) },
-		expected: [buildField('title'), buildField('title')],
+		expected: [buildField('title')],
 	},
 	{
 		name: 'inlines a fragment inside a function selection set',
@@ -210,6 +212,7 @@ const unionCases: SelectionCase[] = [
 		selections: [
 			...buildContentItem([buildFragmentSpread('Text')]),
 			buildField('contents', {
+				alias: 'narrowed',
 				children: [
 					buildField('item', {
 						children: [buildInlineFragment('ComponentText', [buildFragmentSpread('Text')])],
@@ -221,6 +224,7 @@ const unionCases: SelectionCase[] = [
 		expected: [
 			...buildContentItem([buildInlineFragment('ComponentText', [buildField('text')])]),
 			buildField('contents', {
+				alias: 'narrowed',
 				children: [
 					buildField('item', {
 						children: [buildInlineFragment('ComponentText', [buildField('text')])],
@@ -258,14 +262,82 @@ describe('buildSelections', () => {
 		expect(buildSelections({ fieldNodes: [{}], fragments: {}, schema: gqlSchema } as any)).toBeNull();
 	});
 
-	test('gathers the selections of every occurrence of the field', () => {
+	describe('a field requested more than once', () => {
 		const fragments = {
 			First: buildFragmentDefinition('First', 'Page', [buildField('id')]),
 			Second: buildFragmentDefinition('Second', 'Page', [buildField('title')]),
+			AlsoFirst: buildFragmentDefinition('AlsoFirst', 'Page', [buildField('id')]),
+			Text: buildFragmentDefinition('Text', 'ComponentText', [buildField('text')]),
+			Image: buildFragmentDefinition('Image', 'ComponentImage', [buildField('src')]),
 		};
 
-		const info = buildInfo([buildFragmentSpread('First')], fragments, [[buildFragmentSpread('Second')]]);
+		test('gathers the selections of every occurrence', () => {
+			const info = buildMergedInfo([[buildFragmentSpread('First')], [buildFragmentSpread('Second')]], fragments);
 
-		expect(buildSelections(info)).toEqual([buildField('id'), buildField('title')]);
+			expect(buildSelections(info)).toEqual([buildField('id'), buildField('title')]);
+		});
+
+		test('gathers the selections in the order the occurrences are written', () => {
+			const info = buildMergedInfo([[buildFragmentSpread('Second')], [buildFragmentSpread('First')]], fragments);
+
+			expect(buildSelections(info)).toEqual([buildField('title'), buildField('id')]);
+		});
+
+		test('keeps a selection two occurrences share only once', () => {
+			const info = buildMergedInfo([[buildFragmentSpread('First')], [buildFragmentSpread('AlsoFirst')]], fragments);
+
+			expect(buildSelections(info)).toEqual([buildField('id')]);
+		});
+
+		test('keeps the selections one occurrence repeats only once', () => {
+			const info = buildMergedInfo([[buildField('id'), buildField('id')]], fragments);
+
+			expect(buildSelections(info)).toEqual([buildField('id')]);
+		});
+
+		test('gathers a shared and an unshared selection of the same field', () => {
+			const info = buildMergedInfo(
+				[
+					[buildField('id'), buildField('author', { children: [buildField('name')] })],
+					[buildField('id'), buildField('author', { children: [buildField('id')] })],
+				],
+				fragments,
+			);
+
+			expect(buildSelections(info)).toEqual([
+				buildField('id'),
+				buildField('author', { children: [buildField('name')] }),
+				buildField('author', { children: [buildField('id')] }),
+			]);
+		});
+
+		test('gathers the union members every occurrence asks for', () => {
+			const info = buildMergedInfo(
+				[buildContentItem([buildFragmentSpread('Text')]), buildContentItem([buildFragmentSpread('Image')])],
+				fragments,
+			);
+
+			expect(buildSelections(info)).toEqual([
+				...buildContentItem([buildInlineFragment('ComponentText', [buildField('text')])]),
+				...buildContentItem([buildInlineFragment('ComponentImage', [buildField('src')])]),
+			]);
+		});
+
+		test('keeps a union member two occurrences share only once', () => {
+			const info = buildMergedInfo(
+				[buildContentItem([buildFragmentSpread('Text')]), buildContentItem([buildFragmentSpread('Text')])],
+				fragments,
+			);
+
+			expect(buildSelections(info)).toEqual(
+				buildContentItem([buildInlineFragment('ComponentText', [buildField('text')])]),
+			);
+		});
+
+		test('reuses the result built for the same field nodes', () => {
+			const info = buildMergedInfo([[buildFragmentSpread('First')], [buildFragmentSpread('Second')]], fragments);
+
+			expect(buildSelections(info)).toBe(buildSelections(info));
+		});
 	});
 });
