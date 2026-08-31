@@ -183,26 +183,13 @@ function openDuplicateFlow(item: FlowRaw) {
 	duplicateDialogActive.value = true;
 }
 
-const exportDialogActive = ref(false);
-const exportSource = ref<FlowRaw | null>(null);
-
-function openExportFlow(flow: FlowRaw) {
-	exportSource.value = flow;
-	exportDialogActive.value = true;
-}
-
-function exportFlow() {
-	if (!exportSource.value) return;
-
-	const flowExport = createFlowExport(exportSource.value);
+function exportFlow(flow: FlowRaw) {
+	const flowExport = createFlowExport(flow);
 
 	saveAs(
 		new Blob([JSON.stringify(flowExport, null, 2)], { type: 'application/json;charset=utf-8' }),
 		`flow-${flowExport.flow.id}.json`,
 	);
-
-	exportDialogActive.value = false;
-	exportSource.value = null;
 }
 
 const importDialogActive = ref(false);
@@ -440,7 +427,7 @@ function onFlowDrawerCompletion(id: string) {
 									</VListItemContent>
 								</VListItem>
 
-								<VListItem v-if="isAdmin" clickable @click="openExportFlow(item)">
+								<VListItem v-if="isAdmin" clickable @click="exportFlow(item)">
 									<VListItemIcon>
 										<VIcon name="file_download" />
 									</VListItemIcon>
@@ -507,22 +494,10 @@ function onFlowDrawerCompletion(id: string) {
 			</VCard>
 		</VDialog>
 
-		<VDialog v-model="exportDialogActive" @esc="exportDialogActive = false" @apply="exportFlow">
-			<VCard>
-				<VCardTitle>{{ $t('export_flow') }}</VCardTitle>
-				<VCardText>{{ $t('flow_export_warning') }}</VCardText>
-				<VCardActions>
-					<VButton secondary @click="exportDialogActive = false">{{ $t('cancel') }}</VButton>
-					<VButton @click="exportFlow">{{ $t('export_flow') }}</VButton>
-				</VCardActions>
-			</VCard>
-		</VDialog>
-
 		<VDialog v-model="importDialogActive" @esc="importDialogActive = false" @apply="importFlow">
 			<VCard>
 				<VCardTitle>{{ $t('import_flow') }}</VCardTitle>
 				<VCardText>
-					<p>{{ $t('flow_import_warning') }}</p>
 					<VInput>
 						<template #input>
 							<input type="file" accept="application/json,.json" @change="selectImportFile" />

@@ -632,10 +632,6 @@ import_data_validation_errors_notice: 'The following rows have invalid values:'
 import_data_error_row: 'Row {rows}{field}:'
 import_flow: Import Flow
 export_flow: Export Flow
-flow_import_warning:
-  Only import Flow files from trusted sources. They can contain credentials and references to resources in another
-  project.
-flow_export_warning: This Flow export can contain credentials. Store and share it securely.
 flow_import_success: Flow imported successfully.
 snapshot:
   export: Export Schema
