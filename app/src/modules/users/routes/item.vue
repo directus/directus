@@ -361,6 +361,7 @@ function revert(values: Record<string, any>) {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
+						:aria-label="$t('delete_label')"
 						kind="danger"
 						variant="ghost"
 						:disabled="item === null || deleteAllowed !== true"
@@ -394,6 +395,7 @@ function revert(values: Record<string, any>) {
 					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 						v-tooltip.bottom="archiveTooltip"
+						:aria-label="isArchived ? $t('unarchive') : $t('archive')"
 						variant="ghost"
 						:disabled="item === null || archiveAllowed !== true"
 						:icon="isArchived ? 'unarchive' : 'archive'"

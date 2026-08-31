@@ -1,10 +1,14 @@
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
+import { createI18n } from 'vue-i18n';
 import VPagination from './v-pagination.vue';
 import { GlobalMountOptions } from '@/__utils__/types';
 
+const i18n = createI18n({ legacy: false });
+
 const global: GlobalMountOptions = {
 	stubs: ['v-icon', 'v-button'],
+	plugins: [i18n],
 };
 
 test('Mount component', () => {

@@ -15,6 +15,8 @@ const props = withDefaults(
 	defineProps<{
 		/** Which type of icon to display */
 		name: string;
+		/** Accessible name when the icon renders as an interactive control */
+		ariaLabel?: string;
 		/** Removes the outline style if enabled */
 		filled?: boolean;
 		/** Makes the icon very small */
@@ -85,6 +87,7 @@ function emitClick(event: MouseEvent) {
 		:type="clickable ? 'button' : undefined"
 		class="v-icon"
 		:class="[sizeClass, { 'has-click': !disabled && clickable, left, right, mirrored }]"
+		:aria-label="ariaLabel"
 		:disabled="clickable ? disabled : undefined"
 		:style="{ '--v-icon-color': color }"
 		@click="emitClick"

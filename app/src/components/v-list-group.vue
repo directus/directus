@@ -95,7 +95,13 @@ function onClick(event: MouseEvent) {
 				class="activator-icon"
 				:class="{ active: groupActive }"
 			>
-				<VIcon name="chevron_right" :disabled="disabled" clickable @click.stop.prevent="toggle" />
+				<VIcon
+					name="chevron_right"
+					:aria-label="groupActive ? $t('collapse') : $t('expand')"
+					:disabled="disabled"
+					clickable
+					@click.stop.prevent="toggle"
+				/>
 			</VListItemIcon>
 
 			<slot name="activator" :active="groupActive" />
@@ -105,7 +111,13 @@ function onClick(event: MouseEvent) {
 				class="activator-icon"
 				:class="{ active: groupActive }"
 			>
-				<VIcon name="chevron_right" :disabled="disabled" clickable @click.stop.prevent="toggle" />
+				<VIcon
+					name="chevron_right"
+					:aria-label="groupActive ? $t('collapse') : $t('expand')"
+					:disabled="disabled"
+					clickable
+					@click.stop.prevent="toggle"
+				/>
 			</VListItemIcon>
 		</VListItem>
 

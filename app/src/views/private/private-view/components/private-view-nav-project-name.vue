@@ -21,6 +21,7 @@ const navBarStore = useNavBarStore();
 
 		<PrivateViewHeaderBarActionButton
 			v-tooltip.bottom="$t('toggle_navigation')"
+			:aria-label="$t('toggle_navigation')"
 			icon="left_panel_close"
 			variant="ghost"
 			class="nav-toggle"

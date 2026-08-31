@@ -56,6 +56,7 @@ async function addFolder() {
 		<template #activator="{ on }">
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="disabled ? $t('not_allowed') : $t('create_folder')"
+				:aria-label="$t('create_folder')"
 				icon="create_new_folder"
 				variant="ghost"
 				:disabled

@@ -138,6 +138,7 @@ function useConfirmation() {
 		v-prevent-focusout="confirmDelete"
 		v-tooltip="tooltip"
 		v-bind="$attrs"
+		:aria-label="tooltip || undefined"
 		icon
 		:disabled
 		@click.stop="onClick"
@@ -150,6 +151,7 @@ function useConfirmation() {
 		v-prevent-focusout="confirmDelete"
 		v-tooltip="tooltip"
 		v-bind="$attrs"
+		:aria-label="tooltip || undefined"
 		:name="icon"
 		:disabled
 		clickable

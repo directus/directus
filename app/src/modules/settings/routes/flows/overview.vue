@@ -224,7 +224,7 @@ function onFlowDrawerCompletion(id: string) {
 				<template #item-append="{ item }">
 					<VMenu placement="left-start" show-arrow>
 						<template #activator="{ toggle }">
-							<VIcon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
+							<VIcon name="more_vert" :aria-label="$t('actions')" class="ctx-toggle" clickable @click="toggle" />
 						</template>
 
 						<VList>

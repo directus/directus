@@ -227,7 +227,7 @@ function openDuplicateDialog(item: PolicyItem) {
 				<template #item-append="{ item }">
 					<VMenu placement="left-start" show-arrow>
 						<template #activator="{ toggle }">
-							<VIcon name="more_vert" class="ctx-toggle" clickable @click.stop="toggle" />
+							<VIcon name="more_vert" :aria-label="$t('actions')" class="ctx-toggle" clickable @click.stop="toggle" />
 						</template>
 
 						<VList>

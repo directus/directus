@@ -95,6 +95,7 @@ function onClickSelect() {
 		<template #end>
 			<VIcon
 				v-tooltip.top="$t('card_size')"
+				:aria-label="$t('card_size')"
 				class="size-selector"
 				:name="`grid_${7 - size}`"
 				clickable
@@ -123,6 +124,7 @@ function onClickSelect() {
 			</VMenu>
 			<VIcon
 				v-tooltip.top="$t('sort_direction')"
+				:aria-label="$t('sort_direction')"
 				class="sort-direction"
 				:class="{ descending }"
 				name="sort"

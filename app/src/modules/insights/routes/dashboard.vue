@@ -211,6 +211,7 @@ const refreshInterval = computed({
 			<template v-if="editMode">
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('clear_changes')"
+					:aria-label="$t('clear_changes')"
 					kind="danger"
 					variant="ghost"
 					icon="undo"

@@ -41,7 +41,7 @@ const stateActions = computed(() => {
 <template>
 	<VMenu placement="bottom-start" show-arrow>
 		<template #activator="{ toggle }">
-			<VIcon name="more_vert" clickable class="menu-toggle" @click.prevent="toggle" />
+			<VIcon name="more_vert" :aria-label="$t('actions')" clickable class="menu-toggle" @click.prevent="toggle" />
 		</template>
 		<VList>
 			<template v-if="type !== 'missing'">

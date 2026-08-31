@@ -35,6 +35,7 @@ const showNavToggle = computed(() => {
 				v-if="showNavToggle"
 				v-tooltip.bottom="$t('toggle_navigation')"
 				class="nav-toggle"
+				:aria-label="$t('toggle_navigation')"
 				icon="left_panel_open"
 				variant="ghost"
 				@click="navBarStore.expand"
@@ -79,6 +80,7 @@ const showNavToggle = computed(() => {
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('toggle_sidebar')"
 				class="sidebar-toggle"
+				:aria-label="$t('toggle_sidebar')"
 				:icon="sidebarStore.collapsed ? 'right_panel_open' : 'right_panel_close'"
 				variant="ghost"
 				@click="sidebarStore.toggle"

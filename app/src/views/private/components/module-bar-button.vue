@@ -3,6 +3,7 @@ import VButton, { type VButtonEmits, type VButtonProps } from '@/components/v-bu
 
 withDefaults(
 	defineProps<{
+		ariaLabel?: string;
 		to?: VButtonProps['to'];
 		href?: VButtonProps['href'];
 		target?: VButtonProps['target'];

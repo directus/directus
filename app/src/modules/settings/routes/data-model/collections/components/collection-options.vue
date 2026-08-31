@@ -90,7 +90,7 @@ async function update(updates: DeepPartial<Collection>) {
 	<div v-if="isSystemCollection(collection.collection) === false">
 		<VMenu placement="left-start" show-arrow>
 			<template #activator="{ toggle }">
-				<VIcon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
+				<VIcon name="more_vert" :aria-label="$t('actions')" clickable class="ctx-toggle" @click.prevent="toggle" />
 			</template>
 			<VList>
 				<VListItem v-if="isDeactivated" clickable @click="emit('activateCollection', collection.collection)">

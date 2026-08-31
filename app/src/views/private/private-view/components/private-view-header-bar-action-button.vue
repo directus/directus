@@ -7,11 +7,13 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import { BREAKPOINTS } from '@/constants';
 
 const {
+	ariaLabel: explicitAriaLabel,
 	label,
 	tooltip,
 	kind = 'normal',
 	variant = 'solid',
 } = defineProps<{
+	ariaLabel?: VButtonProps['ariaLabel'];
 	icon: string;
 	iconFilled?: boolean;
 	label?: string;
@@ -32,6 +34,12 @@ defineEmits<VButtonEmits>();
 
 const headerBarInline = useInjectHeaderBarInline();
 const { showIcon, activeTooltip } = useIcon();
+
+const resolvedAriaLabel = computed(() => {
+	if (explicitAriaLabel) return explicitAriaLabel;
+	if (!showIcon.value) return undefined;
+	return label ?? activeTooltip.value;
+});
 
 function useIcon() {
 	const breakpoints = useBreakpoints(BREAKPOINTS);
@@ -70,6 +78,7 @@ function useIcon() {
 		:href
 		:download
 		:tooltip="activeTooltip"
+		:aria-label="resolvedAriaLabel"
 		:icon="showIcon"
 		small
 		exact

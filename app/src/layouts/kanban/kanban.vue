@@ -181,7 +181,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 								<div v-if="isRelational && group.id !== null && !selectMode" class="actions">
 									<VMenu show-arrow placement="bottom-end">
 										<template #activator="{ toggle }">
-											<VIcon name="more_horiz" clickable @click="toggle" />
+											<VIcon name="more_horiz" :aria-label="$t('actions')" clickable @click="toggle" />
 										</template>
 
 										<VList>

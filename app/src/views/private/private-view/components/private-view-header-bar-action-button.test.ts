@@ -1,8 +1,33 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { ref } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import PrivateViewHeaderBarActionButton from './private-view-header-bar-action-button.vue';
+
+const breakpointRefs = {
+	xs: ref(false),
+	sm: ref(false),
+	lg: ref(false),
+};
+
+const headerBarInline = ref(false);
+
+vi.mock('@vueuse/core', () => ({
+	useBreakpoints: () => ({
+		smallerOrEqual: (key: 'xs' | 'sm' | 'lg') => breakpointRefs[key],
+	}),
+}));
+
+vi.mock('../composables/use-header-bar', () => ({
+	useInjectHeaderBarInline: () => headerBarInline,
+}));
+
+function setBreakpoint(width: 'xs' | 'sm' | 'lg' | 'xl') {
+	breakpointRefs.xs.value = width === 'xs';
+	breakpointRefs.sm.value = width === 'xs' || width === 'sm';
+	breakpointRefs.lg.value = width === 'xs' || width === 'sm' || width === 'lg';
+}
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -41,6 +66,11 @@ const mountOptions = {
 };
 
 describe('PrivateViewHeaderBarActionButton', () => {
+	beforeEach(() => {
+		setBreakpoint('xl');
+		headerBarInline.value = false;
+	});
+
 	test('renders the component', () => {
 		const wrapper = mount(PrivateViewHeaderBarActionButton, {
 			...mountOptions,
@@ -194,6 +224,47 @@ describe('PrivateViewHeaderBarActionButton', () => {
 		const button = wrapper.findComponent({ name: 'v-button' });
 		expect(button.props('small')).toBe(true);
 		expect(button.props('exact')).toBe(true);
+	});
+
+	test('passes label as aria-label when rendering icon-only', () => {
+		setBreakpoint('xs');
+
+		const wrapper = mount(PrivateViewHeaderBarActionButton, {
+			...mountOptions,
+			props: {
+				icon: 'edit',
+				label: 'Edit',
+			},
+		});
+
+		const button = wrapper.findComponent({ name: 'v-button' });
+		expect(button.props('ariaLabel')).toBe('Edit');
+	});
+
+	test('passes tooltip as aria-label when no label is available', () => {
+		const wrapper = mount(PrivateViewHeaderBarActionButton, {
+			...mountOptions,
+			props: {
+				icon: 'delete',
+				tooltip: 'Delete',
+			},
+		});
+
+		const button = wrapper.findComponent({ name: 'v-button' });
+		expect(button.props('ariaLabel')).toBe('Delete');
+	});
+
+	test('passes explicit ariaLabel through to VButton', () => {
+		const wrapper = mount(PrivateViewHeaderBarActionButton, {
+			...mountOptions,
+			props: {
+				icon: 'menu',
+				ariaLabel: 'Toggle Sidebar',
+			},
+		});
+
+		const button = wrapper.findComponent({ name: 'v-button' });
+		expect(button.props('ariaLabel')).toBe('Toggle Sidebar');
 	});
 
 	test('emits click event when VButton is clicked', async () => {

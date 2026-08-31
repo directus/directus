@@ -386,7 +386,15 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 
 							<VMenu show-arrow placement="bottom-end" :disabled>
 								<template #activator="{ toggle, active }">
-									<VIcon name="more_vert" clickable class="menu" :class="{ active }" :disabled @click.stop="toggle" />
+									<VIcon
+										name="more_vert"
+										:aria-label="$t('actions')"
+										clickable
+										class="menu"
+										:class="{ active }"
+										:disabled
+										@click.stop="toggle"
+									/>
 								</template>
 
 								<VList>

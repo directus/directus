@@ -233,6 +233,7 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 					<VIcon
 						v-if="!nonEditable"
 						v-tooltip="$t('edit_item')"
+						:aria-label="$t('edit_item')"
 						name="edit"
 						clickable
 						:disabled
@@ -253,6 +254,7 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 					<VIcon
 						v-if="!nonEditable && createAllowed && enableCreate"
 						v-tooltip="!disabled && $t('create_item')"
+						:aria-label="$t('create_item')"
 						name="add"
 						clickable
 						class="add"
@@ -261,7 +263,14 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 						@click="editModalActive = true"
 					/>
 
-					<VIcon v-if="enableSelect" class="expand" name="expand_more" clickable @click="selectModalActive = true" />
+					<VIcon
+						v-if="enableSelect"
+						:aria-label="$t('select_item')"
+						class="expand"
+						name="expand_more"
+						clickable
+						@click="selectModalActive = true"
+					/>
 				</template>
 			</div>
 		</VListItem>
