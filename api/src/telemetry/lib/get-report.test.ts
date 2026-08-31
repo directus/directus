@@ -94,10 +94,17 @@ const mockConfig: TelemetryConfig = {
 };
 
 const mockFeatures: TelemetryFeatures = {
-	mcp: { enabled: false, allow_deletes: false, system_prompt: false },
+	mcp: {
+		enabled: false,
+		allow_deletes: false,
+		system_prompt: false,
+		prompts_collection: false,
+		oauth: { enabled: false, dcr: false, cimd: false },
+	},
 	ai: {
 		enabled: false,
 		system_prompt: false,
+		translation: { glossary: false, style_guide: false, default_model: null },
 		providers: {
 			openai: { api_key: false, models: { allowed: [], custom: { count: 0 } } },
 			anthropic: { api_key: false, models: { allowed: [], custom: { count: 0 } } },
@@ -143,6 +150,11 @@ const mockFeatures: TelemetryFeatures = {
 			registry: [],
 		},
 	},
+	editing: { default_save_action: 'save-and-quit' },
+	localization: { default_language: 'en-US' },
+	public_registration: { enabled: false, verify_email: false, role: false, email_filter: false },
+	storage: { default_folder: false },
+	product_updates: { enabled: false },
 };
 
 const mockLicense: TelemetryLicense = {

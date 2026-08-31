@@ -59,7 +59,32 @@ describe('collectFeatures', () => {
 
 	test('defaults mcp fields to false', async () => {
 		const result = await collectFeatures(mockDb, mockSchema);
-		expect(result.mcp).toEqual({ enabled: false, allow_deletes: false, system_prompt: false });
+
+		expect(result.mcp).toEqual({
+			enabled: false,
+			allow_deletes: false,
+			system_prompt: false,
+			prompts_collection: false,
+			oauth: { enabled: false, dcr: false, cimd: false },
+		});
+	});
+
+	test('defaults the new settings sections when nothing is configured', async () => {
+		const result = await collectFeatures(mockDb, mockSchema);
+
+		expect(result.editing).toStrictEqual({ default_save_action: null });
+		expect(result.localization).toStrictEqual({ default_language: null });
+
+		expect(result.public_registration).toStrictEqual({
+			enabled: false,
+			verify_email: false,
+			role: false,
+			email_filter: false,
+		});
+
+		expect(result.storage).toStrictEqual({ default_folder: false });
+		expect(result.product_updates).toStrictEqual({ enabled: false });
+		expect(result.ai.translation).toStrictEqual({ glossary: false, style_guide: false, default_model: null });
 	});
 
 	test('reads settings via SettingsService', async () => {

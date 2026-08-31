@@ -48,6 +48,21 @@ interface FeatureSettingsResponse {
 	ai_anthropic_allowed_models: string[] | null;
 	ai_google_allowed_models: string[] | null;
 	module_bar: Array<{ type?: string; id?: string; enabled?: boolean }> | null;
+	default_save_action: string | null;
+	default_language: string | null;
+	product_updates: boolean | null;
+	public_registration: boolean | null;
+	public_registration_verify_email: boolean | null;
+	public_registration_role: string | null;
+	public_registration_email_filter: unknown;
+	mcp_oauth_enabled: boolean | null;
+	mcp_oauth_dcr_enabled: boolean | null;
+	mcp_oauth_cimd_enabled: boolean | null;
+	mcp_prompts_collection: string | null;
+	ai_translation_default_model: string | null;
+	ai_translation_glossary: string | null;
+	ai_translation_style_guide: string | null;
+	storage_default_folder: string | null;
 }
 
 export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise<TelemetryFeatures> {
@@ -94,6 +109,21 @@ export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise
 			'ai_anthropic_allowed_models',
 			'ai_google_allowed_models',
 			'module_bar',
+			'default_save_action',
+			'default_language',
+			'product_updates',
+			'public_registration',
+			'public_registration_verify_email',
+			'public_registration_role',
+			'public_registration_email_filter',
+			'mcp_oauth_enabled',
+			'mcp_oauth_dcr_enabled',
+			'mcp_oauth_cimd_enabled',
+			'mcp_prompts_collection',
+			'ai_translation_default_model',
+			'ai_translation_glossary',
+			'ai_translation_style_guide',
+			'storage_default_folder',
 		],
 	})) as FeatureSettingsResponse;
 
@@ -126,11 +156,29 @@ export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise
 		moduleBar.filter((m) => m.type === 'module' && m.enabled !== false).map((m) => m.id),
 	);
 
+	const saveActions = ['save-and-quit', 'save-and-stay', 'save-and-create-new'] as const;
+	const saveAction = settings?.['default_save_action'];
+
+	const knownTranslationModels = new Set(DEFAULT_AI_MODELS.map((m) => m.model));
+	const translationModel = settings?.['ai_translation_default_model'];
+
+	let translationDefaultModel: string | null = null;
+
+	if (typeof translationModel === 'string' && translationModel !== '') {
+		translationDefaultModel = knownTranslationModels.has(translationModel) ? translationModel : 'custom';
+	}
+
 	return {
 		mcp: {
 			enabled: toBoolean(settings?.['mcp_enabled'] ?? false),
 			allow_deletes: toBoolean(settings?.['mcp_allow_deletes'] ?? false),
 			system_prompt: toBoolean(settings?.['mcp_system_prompt_enabled'] ?? false),
+			prompts_collection: Boolean(settings?.['mcp_prompts_collection']),
+			oauth: {
+				enabled: toBoolean(settings?.['mcp_oauth_enabled'] ?? false),
+				dcr: toBoolean(settings?.['mcp_oauth_dcr_enabled'] ?? false),
+				cimd: toBoolean(settings?.['mcp_oauth_cimd_enabled'] ?? false),
+			},
 		},
 		ai: {
 			enabled:
@@ -140,6 +188,12 @@ export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise
 					Boolean(settings?.['ai_google_api_key']) ||
 					Boolean(settings?.['ai_openai_compatible_api_key'])),
 			system_prompt: Boolean(settings?.['ai_system_prompt']),
+			translation: {
+				// Free text the operator wrote, so only presence is reported.
+				glossary: Boolean(settings?.['ai_translation_glossary']),
+				style_guide: Boolean(settings?.['ai_translation_style_guide']),
+				default_model: translationDefaultModel,
+			},
 			providers: {
 				openai: {
 					api_key: Boolean(settings?.['ai_openai_api_key']),
@@ -210,6 +264,26 @@ export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise
 			installed: {
 				registry: await collectInstalledRegistryExtensions(db, schema, env),
 			},
+		},
+		editing: {
+			default_save_action: saveActions.includes(saveAction as (typeof saveActions)[number])
+				? (saveAction as (typeof saveActions)[number])
+				: null,
+		},
+		localization: {
+			default_language: settings?.['default_language'] ?? null,
+		},
+		public_registration: {
+			enabled: toBoolean(settings?.['public_registration'] ?? false),
+			verify_email: toBoolean(settings?.['public_registration_verify_email'] ?? false),
+			role: Boolean(settings?.['public_registration_role']),
+			email_filter: Boolean(settings?.['public_registration_email_filter']),
+		},
+		storage: {
+			default_folder: Boolean(settings?.['storage_default_folder']),
+		},
+		product_updates: {
+			enabled: toBoolean(settings?.['product_updates'] ?? false),
 		},
 		appearance: {
 			project_color: Boolean(settings?.['project_color']),

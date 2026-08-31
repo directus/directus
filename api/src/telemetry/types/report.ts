@@ -229,10 +229,21 @@ export interface TelemetryFeatures {
 		enabled: boolean;
 		allow_deletes: boolean;
 		system_prompt: boolean;
+		prompts_collection: boolean;
+		oauth: {
+			enabled: boolean;
+			dcr: boolean;
+			cimd: boolean;
+		};
 	};
 	ai: {
 		enabled: boolean;
 		system_prompt: boolean;
+		translation: {
+			glossary: boolean;
+			style_guide: boolean;
+			default_model: string | null;
+		};
 		providers: {
 			openai: {
 				api_key: boolean;
@@ -294,6 +305,24 @@ export interface TelemetryFeatures {
 		installed: {
 			registry: Array<{ id: string; version: string }>;
 		};
+	};
+	editing: {
+		default_save_action: 'save-and-quit' | 'save-and-stay' | 'save-and-create-new' | null;
+	};
+	localization: {
+		default_language: string | null;
+	};
+	public_registration: {
+		enabled: boolean;
+		verify_email: boolean;
+		role: boolean;
+		email_filter: boolean;
+	};
+	storage: {
+		default_folder: boolean;
+	};
+	product_updates: {
+		enabled: boolean;
 	};
 	appearance: {
 		project_color: boolean;
