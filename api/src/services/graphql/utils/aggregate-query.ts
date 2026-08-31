@@ -42,7 +42,10 @@ export async function getAggregateQuery(
 					return selectionNode.name.value;
 				}) ?? [];
 
-		query.aggregate[aggregateProperty] = uniq([...(query.aggregate[aggregateProperty] ?? []), ...aggregateFields]);
+		// Read the group back as an own property only, so a name like `toString` cannot reach the prototype
+		const groupedFields = Object.hasOwn(query.aggregate, aggregateProperty) ? query.aggregate[aggregateProperty]! : [];
+
+		query.aggregate[aggregateProperty] = uniq([...groupedFields, ...aggregateFields]);
 	}
 
 	if (query.filter) {
