@@ -68,9 +68,9 @@ export class KvRedis implements Kv {
 		this.lockTimeout = config.lockTimeout ?? 5000;
 
 		this.redlock = new Redlock([this.redis], {
-			retryDelay: 50,
+			retryDelay: config.lockRetryDelay ?? 50,
 			driftFactor: 0.01,
-			retryCount: 100,
+			retryCount: config.lockRetryCount ?? 100,
 			retryJitter: 20,
 		});
 

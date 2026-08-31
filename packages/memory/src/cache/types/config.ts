@@ -56,6 +56,28 @@ export interface CacheConfigRedis extends CacheConfigAbstract {
 	ttl?: number;
 
 	/**
+	 * Requested lock duration in miliseconds
+	 */
+	lockTimeout?: number;
+
+	/**
+	 * Number of times acquiring a lock is retried before giving up.
+	 *
+	 * Together with `lockRetryDelay` this determines how long a caller waits for a lock that's
+	 * currently held by another instance.
+	 *
+	 * @default 100
+	 */
+	lockRetryCount?: number;
+
+	/**
+	 * Time in milliseconds to wait between attempts to acquire a lock
+	 *
+	 * @default 50
+	 */
+	lockRetryDelay?: number;
+
+	/**
 	 * Existing or new Redis connection to use with this memory class
 	 */
 	redis: Redis;
