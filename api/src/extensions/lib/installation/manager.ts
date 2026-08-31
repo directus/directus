@@ -61,6 +61,14 @@ export class InstallationManager {
 			await extract({
 				file: tarPath,
 				cwd: tempDir,
+				filter: (extractPath) => {
+					// Prevent Zip Slip (CWE-22): block traversal outside tempDir
+					const resolved = resolve(tempDir, extractPath);
+					if (!resolved.startsWith(resolve(tempDir) + sep) && resolved !== resolve(tempDir)) {
+						throw new Error(`Blocked path traversal in tar: ${extractPath}`);
+					}
+					return true;
+				},
 			});
 
 			const packageFile = JSON.parse(
