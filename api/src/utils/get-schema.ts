@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
-import { systemCollectionRows } from '@directus/system-data';
+import { isSystemCollection, systemCollectionRows } from '@directus/system-data';
 import type { BaseCollectionMeta, CollectionMeta, Filter, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray, toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
@@ -148,11 +148,13 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 
 		const collectionMeta = collections.find((collectionMeta) => collectionMeta.collection === collection);
 
-		// db-only tables will not have a collectionMeta
-		// system collections will not have the `status` field set
-		if (collectionMeta && 'status' in collectionMeta && collectionMeta?.status !== 'active') {
+		if (
+			!isSystemCollection(collection) &&
+			collectionMeta &&
+			'status' in collectionMeta &&
+			collectionMeta.status !== 'active'
+		) {
 			result.inactiveCollections?.push(collection);
-			continue;
 		}
 
 		result.collections[collection] = {

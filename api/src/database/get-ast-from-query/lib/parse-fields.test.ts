@@ -790,3 +790,39 @@ test('parse fields with a non-aliased m2o nested inside an m2a block', async () 
 		},
 	]);
 });
+
+test('parse fields rejects an inactive collection named through the a2o scope syntax', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const schema = { ...schemaM2A, inactiveCollections: ['text'] };
+
+	await expect(
+		parseFields(
+			{
+				accountability,
+				parentCollection: 'blog_builder',
+				fields: ['item:text.id'],
+				query: { alias: {} },
+			},
+			{ knex: db, schema },
+		),
+	).rejects.toMatchObject({ code: 'COLLECTION_INACTIVE', extensions: { collection: 'text' } });
+});
+
+test('parse fields skips an inactive collection that was only reached through an a2o wildcard', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const schema = { ...schemaM2A, inactiveCollections: ['text'] };
+
+	const result = await parseFields(
+		{
+			accountability,
+			parentCollection: 'blog_builder',
+			fields: ['item.*'],
+			query: { alias: {} },
+		},
+		{ knex: db, schema },
+	);
+
+	expect(result).toEqual([expect.objectContaining({ type: 'a2o', names: [] })]);
+});

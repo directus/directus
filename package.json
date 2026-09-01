@@ -35,13 +35,15 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"fast-xml-parser": "5.10.1",
 			"@yarnpkg/shell>cross-spawn": "7.0.6",
 			"tar": "7.5.22",
-			"minimatch@9": "9.0.9",
+			"js-beautify>editorconfig": "3.0.2",
+			"js-beautify>glob": "11.1.0",
 			"express@4>path-to-regexp": "0.1.13",
 			"adm-zip": "0.6.0",
-			"js-yaml@4": "4.3.0"
+			"js-yaml@4": "4.3.1",
+			"js-yaml@3": "3.15.1",
+			"unplugin-yaml>yaml": "2.9.0"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",

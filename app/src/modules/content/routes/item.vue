@@ -44,6 +44,7 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
 import { useCollectionPermissions, useItemPermissions } from '@/composables/use-permissions';
+import { provideRefreshSignal } from '@/composables/use-refresh-signal';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
@@ -194,9 +195,12 @@ const {
 	isArchived,
 	saveAsCopy,
 	refresh,
+	refreshSignal,
 	getItem,
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKeyParam, currentVersion, isItemlessVersion);
+
+provideRefreshSignal(refreshSignal);
 
 watch(
 	[item, isSingleton, primaryKeyParam],
@@ -1076,6 +1080,7 @@ function useAutoSwitchToDraft() {
 					:collection="collectionInfo.collection"
 					:item="templateData"
 					:template="collectionInfo.meta!.display_template"
+					show-collection-name
 				/>
 			</h1>
 		</template>

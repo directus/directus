@@ -10,12 +10,20 @@ export function isRelationTraversable(schema: SchemaOverview, collection: string
 
 	if (!relation) return false;
 
+	const inactiveCollections = schema.inactiveCollections ?? [];
+
 	// An a2o remains traversable for as long as any of its targets is still around
 	if (relation.meta?.one_allowed_collections) {
-		return relation.meta.one_allowed_collections.some((allowed) => allowed in schema.collections);
+		return relation.meta.one_allowed_collections.some(
+			(allowed) => allowed in schema.collections && !inactiveCollections.includes(allowed),
+		);
 	}
 
 	const relatedCollection = getRelatedCollection(schema, collection, field);
 
-	return relatedCollection !== null && relatedCollection in schema.collections;
+	return (
+		relatedCollection !== null &&
+		relatedCollection in schema.collections &&
+		!inactiveCollections.includes(relatedCollection)
+	);
 }

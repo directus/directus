@@ -162,3 +162,97 @@ test('Injects permission cases for the provided AST', async () => {
 		],
 	});
 });
+
+test('Rejects a nested collection that is inactive', async () => {
+	const schema = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('author').m2o('authors');
+		})
+		.collection('authors', (c) => {
+			c.field('id').id();
+		})
+		.build();
+
+	schema.inactiveCollections = ['authors'];
+
+	const ast = {
+		type: 'root',
+		name: 'articles',
+		children: [
+			{
+				type: 'm2o',
+				name: 'authors',
+				fieldKey: 'author',
+				relation: { collection: 'articles', field: 'author', related_collection: 'authors' },
+				children: [{ type: 'field', fieldKey: 'id', name: 'id' }],
+			},
+		],
+	} as unknown as AST;
+
+	const accountability = { user: null, roles: [], admin: true } as unknown as Accountability;
+
+	await expect(processAst({ ast, action: 'read', accountability }, { schema } as Context)).rejects.toMatchObject({
+		code: 'COLLECTION_INACTIVE',
+		extensions: { collection: 'authors' },
+	});
+});
+
+test('Rejects an inactive collection reached through a filter rather than a field', async () => {
+	const schema = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('author').m2o('authors');
+		})
+		.collection('authors', (c) => {
+			c.field('id').id();
+		})
+		.build();
+
+	schema.inactiveCollections = ['authors'];
+
+	const ast = {
+		type: 'root',
+		name: 'articles',
+		children: [{ type: 'field', fieldKey: 'id', name: 'id' }],
+		query: { filter: { author: { id: { _eq: 1 } } } },
+	} as unknown as AST;
+
+	const accountability = { user: null, roles: [], admin: true } as unknown as Accountability;
+
+	await expect(processAst({ ast, action: 'read', accountability }, { schema } as Context)).rejects.toMatchObject({
+		code: 'COLLECTION_INACTIVE',
+	});
+});
+
+test('Leaves an AST alone when every collection it touches is active', async () => {
+	const schema = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('author').m2o('authors');
+		})
+		.collection('authors', (c) => {
+			c.field('id').id();
+		})
+		.build();
+
+	schema.inactiveCollections = ['unrelated'];
+
+	const ast = {
+		type: 'root',
+		name: 'articles',
+		children: [
+			{
+				type: 'm2o',
+				name: 'authors',
+				fieldKey: 'author',
+				relation: { collection: 'articles', field: 'author', related_collection: 'authors' },
+				children: [{ type: 'field', fieldKey: 'id', name: 'id' }],
+			},
+		],
+	} as unknown as AST;
+
+	const accountability = { user: null, roles: [], admin: true } as unknown as Accountability;
+
+	await expect(processAst({ ast, action: 'read', accountability }, { schema } as Context)).resolves.toBeDefined();
+});

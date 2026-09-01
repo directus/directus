@@ -9,6 +9,7 @@ import type {
 	Item as AnyItem,
 	MutationOptions,
 	MutationTracker,
+	PermissionsAction,
 	PrimaryKey,
 	Query,
 	QueryOptions,
@@ -29,6 +30,7 @@ import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
 import { processPayload } from '../permissions/modules/process-payload/process-payload.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { validateCollectionActive } from '../permissions/modules/validate-collection-active/validate-collection-active.js';
 import { createMutationTracker } from '../utils/create-mutation-tracker.js';
 import { getCollectionFromSchema } from '../utils/schema/get-collection-from-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
@@ -93,20 +95,24 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		return createMutationTracker(initialCount);
 	}
 
+	private async validateCollectionActive(action: PermissionsAction): Promise<void> {
+		await validateCollectionActive(
+			{ accountability: this.accountability, collection: this.collection, action },
+			{ schema: this.schema, knex: this.knex },
+		);
+	}
+
 	async getKeysByQuery(query: Query): Promise<PrimaryKey[]> {
 		const primaryKeyField = getCollectionFromSchema(this.schema, this.collection).primary;
 		const readQuery = cloneDeep(query);
+
 		readQuery.fields = [primaryKeyField];
 
-		// Allow unauthenticated access
-		const itemsService = new ItemsService(this.collection, {
-			knex: this.knex,
-			schema: this.schema,
-		});
-
-		// We read the IDs of the items based on the query, and then run `updateMany`. `updateMany` does it's own
-		// permissions check for the keys, so we don't have to make this an authenticated read
-		const items = await itemsService.readByQuery(readQuery);
+		/*
+		 * We read the IDs of the items based on the query, and then run `updateMany`.
+		 * Validate 'read' permissions for the query to ensure no data leak (GHSA-2xcm-7h22-3m66)
+		 */
+		const items = await this.readByQuery(readQuery);
 		return items.map((item: AnyItem) => item[primaryKeyField]).filter((pk) => pk);
 	}
 
@@ -114,6 +120,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Create a single new item.
 	 */
 	async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
+		await this.validateCollectionActive('create');
+
 		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		if (!opts.bypassLimits) {
@@ -505,6 +513,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Get items by query.
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
+		await this.validateCollectionActive('read');
+
 		if (query.version && !isPublishedVersionKey(query.version)) {
 			return (await handleVersion(this, opts?.key ?? null, query, opts)) as Item[];
 		}
@@ -718,6 +728,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Update many items by primary key, setting all items to the same change.
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		await this.validateCollectionActive('update');
+
 		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		if (!opts.bypassLimits) {
@@ -1091,6 +1103,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Delete multiple items by primary key.
 	 */
 	async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		await this.validateCollectionActive('delete');
+
 		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		if (!opts.bypassLimits) {
@@ -1214,6 +1228,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Read/treat collection as singleton.
 	 */
 	async readSingleton(query: Query, opts?: QueryOptions): Promise<Partial<Item>> {
+		await this.validateCollectionActive('read');
+
 		query = clone(query);
 
 		query.limit = 1;
@@ -1259,6 +1275,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.createOne` / `this.updateOne` under the hood.
 	 */
 	async upsertSingleton(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		await this.validateCollectionActive('update');
+
 		const primaryKeyField = getCollectionFromSchema(this.schema, this.collection).primary;
 
 		const record = await this.knex.select(primaryKeyField).from(this.collection).limit(1).first();

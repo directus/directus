@@ -387,6 +387,17 @@ describe('#exists', () => {
 		expect(mockExists).toHaveBeenCalled();
 		expect(result).toBe(true);
 	});
+
+	/**
+	 * The SDK only answers false for a missing blob, so a failed lookup has to keep travelling. Reporting
+	 * it as a missing file makes callers act on a wrong answer.
+	 */
+	test('Throws if the lookup failed', async () => {
+		const error = new Error('Service unavailable');
+		mockExists.mockRejectedValue(error);
+
+		await expect(driver.exists(sample.path.input)).rejects.toThrowError(error);
+	});
 });
 
 describe('#move', () => {
