@@ -7,6 +7,7 @@ import { RelationM2A } from '@/composables/use-relation-m2a';
 import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import sdk, { requestEndpoint } from '@/sdk';
+import { isCollectionInactive } from '@/utils/collection-status';
 import { fetchAll } from '@/utils/fetch-all';
 import { containsRelationalChanges, resolveRelationalChanges } from '@/utils/resolve-relational-changes';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -429,6 +430,9 @@ export function useRelationMultiple(
 				fields.add(relation.value.collectionField.field);
 
 				for (const collection of relation.value.allowedCollections) {
+					// Naming an inactive collection in a query makes the API reject the whole request
+					if (isCollectionInactive(collection.collection)) continue;
+
 					const pkField = relation.value.relationPrimaryKeyFields[collection.collection];
 					if (!pkField) throw new Error(`No primary key field found for collection ${collection.collection}`);
 					fields.add(`${relation.value.junctionField.field}:${collection.collection}.${pkField.field}`);

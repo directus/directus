@@ -17,11 +17,22 @@ vi.mock('@/sdk', async () => {
 			return Promise.resolve(workerData);
 		} else if (path === '/items/article_m2a' && params?.aggregate?.count === 'id') {
 			return Promise.resolve([{ count: { id: m2aData.length } }]);
+		} else if (path === '/items/article_m2a') {
+			m2aRequestParams.push(params ?? {});
+			return Promise.resolve(m2aData);
 		} else {
 			return Promise.resolve(m2aData);
 		}
 	});
 });
+
+vi.mock('@/utils/collection-status', () => ({
+	isCollectionInactive: (collection: unknown) =>
+		(typeof collection === 'string' ? collection : (collection as { collection: string }).collection) === 'code',
+}));
+
+// Params of every m2a item request, so tests can assert on the fields that were queried
+const m2aRequestParams: Record<string, any>[] = [];
 
 // Rows that exist but are not related to the item yet, as reached through "Add Existing"
 const selectableData: Record<string, Record<string, any>[]> = {
@@ -875,6 +886,25 @@ describe('nested relational changes', () => {
 });
 
 describe('test m2a relation', () => {
+	test('leaves an inactive collection out of the requested fields', async () => {
+		m2aRequestParams.length = 0;
+
+		mount(TestComponentM2A, {
+			props: {
+				relation: relationM2A,
+				value: [],
+				id: 1,
+			},
+		});
+
+		await flushPromises();
+
+		const fields = m2aRequestParams.flatMap((params) => params['fields'] ?? []);
+
+		expect(fields).toContain('item:text.id');
+		expect(fields).not.toContain('item:code.id');
+	});
+
 	test('sorting an item', async () => {
 		const wrapper = mount(TestComponentM2A, {
 			props: {

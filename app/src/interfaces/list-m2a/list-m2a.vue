@@ -90,6 +90,8 @@ const fields = computed(() => {
 	const fields: string[] = [];
 
 	for (const collection of allowedCollections.value) {
+		if (isCollectionInactive(collection)) continue;
+
 		const displayFields: string[] = adjustFieldsForDisplays(
 			getFieldsFromTemplate(templates.value[collection.collection]),
 			collection.collection,
