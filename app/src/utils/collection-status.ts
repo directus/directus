@@ -28,7 +28,8 @@ export function isCollectionInactive(collection: CollectionRef): boolean {
  * Whether a field can't be interacted with because of a collection status: either the field
  * belongs to an inactive collection, or it relates to one.
  */
-export function isFieldCollectionInactive(field: { collection: string; field: string }): boolean {
+export function isFieldCollectionInactive(field: { collection?: string; field: string }): boolean {
+	if (!field.collection) return false;
 	if (isCollectionInactive(field.collection)) return true;
 
 	const related = getRelatedCollection(field.collection, field.field);
