@@ -2,11 +2,16 @@ import { Field } from '@directus/types';
 import { computed } from 'vue';
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
+import { isFieldCollectionInactive } from '@/utils/collection-status';
 
 export function adjustFieldsForDisplays(fields: readonly string[], parentCollection: string): string[] {
 	const fieldsStore = useFieldsStore();
 
 	const adjustedFields: string[] = fields
+		.filter((fieldKey) => {
+			const [rootFieldKey] = fieldKey.split('.') as [string];
+			return isFieldCollectionInactive({ collection: parentCollection, field: rootFieldKey }) === false;
+		})
 		.map((fieldKey) => {
 			const field: Field | null = fieldsStore.getField(parentCollection, fieldKey);
 
