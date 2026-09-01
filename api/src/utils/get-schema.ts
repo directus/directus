@@ -68,16 +68,15 @@ export async function getSchema(
 	if (currentProcessShouldHandleOperation === false) {
 		logger.trace('Schema cache is prepared in another process, waiting for result.');
 
-		const timeout: Promise<any> = new Promise((_, reject) =>
-			setTimeout(reject, env['CACHE_SCHEMA_SYNC_TIMEOUT'] as number),
-		);
+		let timeoutId: NodeJS.Timeout;
+		let busListener: (options: { schema: SchemaOverview | null }) => void;
+
+		const timeout: Promise<any> = new Promise((_, reject) => {
+			timeoutId = setTimeout(reject, env['CACHE_SCHEMA_SYNC_TIMEOUT'] as number);
+		});
 
 		const subscription = new Promise<SchemaOverview>((resolve, reject) => {
-			bus.subscribe(messageKey, busListener).catch(reject);
-
-			function busListener(options: { schema: SchemaOverview | null }) {
-				cleanup();
-
+			busListener = (options: { schema: SchemaOverview | null }) => {
 				if (options.schema === null) {
 					return reject();
 				}
@@ -88,14 +87,21 @@ export async function getSchema(
 				} catch (e) {
 					reject(e);
 				}
-			}
+			};
 
-			function cleanup() {
-				bus.unsubscribe(messageKey, busListener).catch(reject);
-			}
+			bus.subscribe(messageKey, busListener).catch(reject);
 		});
 
-		return Promise.race([timeout, subscription]).catch(() => getSchema(options, attempt + 1));
+		try {
+			return await Promise.race([timeout, subscription]);
+		} catch {
+			// Fall through to the retry below
+		} finally {
+			clearTimeout(timeoutId!);
+			await bus.unsubscribe(messageKey, busListener!);
+		}
+
+		return getSchema(options, attempt + 1);
 	}
 
 	let schema: SchemaOverview | null = null;
