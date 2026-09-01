@@ -1,5 +1,5 @@
 import type { SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 const bus = vi.hoisted(() => ({
 	publish: vi.fn(),
@@ -51,23 +51,25 @@ afterEach(() => {
 	vi.useRealTimers();
 });
 
-test('unsubscribes from the schema cache bus when waiting times out', async () => {
-	const assertion = expect(getSchema()).rejects.toThrow('hit infinite loop');
+describe('getSchema', () => {
+	test('unsubscribes from the schema cache bus when waiting times out', async () => {
+		const assertion = expect(getSchema()).rejects.toThrow('hit infinite loop');
 
-	await vi.advanceTimersByTimeAsync(30000);
-	await assertion;
+		await vi.advanceTimersByTimeAsync(30000);
+		await assertion;
 
-	expect(bus.subscribe).toHaveBeenCalledTimes(3);
-	expect(bus.unsubscribe).toHaveBeenCalledTimes(3);
-});
+		expect(bus.subscribe).toHaveBeenCalledTimes(3);
+		expect(bus.unsubscribe.mock.calls).toEqual(bus.subscribe.mock.calls);
+	});
 
-test('clears the timeout when the schema cache bus responds', async () => {
-	bus.subscribe.mockImplementation(async (_channel: string, handler: (options: { schema: SchemaOverview }) => void) =>
-		handler({ schema: SCHEMA }),
-	);
+	test('clears the timeout when the schema cache bus responds', async () => {
+		bus.subscribe.mockImplementation(async (_channel: string, handler: (options: { schema: SchemaOverview }) => void) =>
+			handler({ schema: SCHEMA }),
+		);
 
-	await expect(getSchema()).resolves.toBe(SCHEMA);
+		await expect(getSchema()).resolves.toBe(SCHEMA);
 
-	expect(bus.unsubscribe).toHaveBeenCalledTimes(1);
-	expect(vi.getTimerCount()).toBe(0);
+		expect(bus.unsubscribe.mock.calls).toEqual(bus.subscribe.mock.calls);
+		expect(vi.getTimerCount()).toBe(0);
+	});
 });

@@ -68,15 +68,15 @@ export async function getSchema(
 	if (currentProcessShouldHandleOperation === false) {
 		logger.trace('Schema cache is prepared in another process, waiting for result.');
 
-		let timeoutId: NodeJS.Timeout;
-		let busListener: (options: { schema: SchemaOverview | null }) => void;
+		let timeoutId: NodeJS.Timeout | undefined;
+		let busListener: ((options: { schema: SchemaOverview | null }) => void) | undefined;
 
 		const timeout: Promise<any> = new Promise((_, reject) => {
 			timeoutId = setTimeout(reject, env['CACHE_SCHEMA_SYNC_TIMEOUT'] as number);
 		});
 
 		const subscription = new Promise<SchemaOverview>((resolve, reject) => {
-			busListener = (options: { schema: SchemaOverview | null }) => {
+			busListener = (options) => {
 				if (options.schema === null) {
 					return reject();
 				}
@@ -97,8 +97,11 @@ export async function getSchema(
 		} catch {
 			// Fall through to the retry below
 		} finally {
-			clearTimeout(timeoutId!);
-			await bus.unsubscribe(messageKey, busListener!);
+			if (timeoutId) clearTimeout(timeoutId);
+
+			if (busListener) {
+				await bus.unsubscribe(messageKey, busListener).catch((err) => logger.warn(err, `[schema-cache] ${err}`));
+			}
 		}
 
 		return getSchema(options, attempt + 1);
