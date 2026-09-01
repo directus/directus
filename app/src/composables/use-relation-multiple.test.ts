@@ -1,6 +1,6 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
-import { describe, expect, MockInstance, test, vi } from 'vitest';
+import { afterEach, describe, expect, MockInstance, test, vi } from 'vitest';
 import { computed, defineComponent, h, ref, toRefs } from 'vue';
 import { RelationM2A } from './use-relation-m2a';
 import { RelationO2M } from './use-relation-o2m';
@@ -26,10 +26,19 @@ vi.mock('@/sdk', async () => {
 	});
 });
 
+const { inactiveCollections } = vi.hoisted(() => ({ inactiveCollections: new Set<string>(['code']) }));
+
 vi.mock('@/utils/collection-status', () => ({
 	isCollectionInactive: (collection: unknown) =>
-		(typeof collection === 'string' ? collection : (collection as { collection: string }).collection) === 'code',
+		inactiveCollections.has(
+			typeof collection === 'string' ? collection : (collection as { collection: string }).collection,
+		),
 }));
+
+afterEach(() => {
+	inactiveCollections.clear();
+	inactiveCollections.add('code');
+});
 
 // Params of every m2a item request, so tests can assert on the fields that were queried
 const m2aRequestParams: Record<string, any>[] = [];
@@ -314,6 +323,21 @@ describe('test o2m relation', () => {
 			$type: 'updated',
 			$index: 0,
 		});
+	});
+
+	test('does not request items when the related collection is inactive', async () => {
+		inactiveCollections.add('worker');
+		const sdkSpy = vi.spyOn(sdk, 'request');
+		sdkSpy.mockClear();
+
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		await flushPromises();
+
+		expect(sdkSpy).not.toHaveBeenCalled();
+		expect(wrapper.vm.displayItems).toEqual([]);
 	});
 
 	test('should use "_null" operator in filter when item id is "null"', async () => {

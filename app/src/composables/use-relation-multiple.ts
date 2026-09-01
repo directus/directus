@@ -54,6 +54,19 @@ export function useRelationMultiple(
 
 	const { cleanItem, getPage, isLocalItem, getItemEdits, isEmpty } = useUtil();
 
+	/**
+	 * Whether the collection this relation would query is inactive, and so can't be requested.
+	 * m2a only needs its junction checked, since inactive targets are left out of the fields.
+	 */
+	const targetCollectionInactive = computed(() => {
+		const info = relation.value;
+		if (!info) return false;
+		if (info.type === 'o2m') return isCollectionInactive(info.relatedCollection.collection);
+		if (isCollectionInactive(info.junctionCollection.collection)) return true;
+
+		return info.type === 'm2m' && isCollectionInactive(info.relatedCollection.collection);
+	});
+
 	const targetPKField = computed(() => {
 		if (!relation.value) return 'id';
 
@@ -414,7 +427,7 @@ export function useRelationMultiple(
 	async function updateFetchedItems() {
 		if (!relation.value) return;
 
-		if (itemId.value === undefined || itemId.value === '+') {
+		if (targetCollectionInactive.value || itemId.value === undefined || itemId.value === '+') {
 			fetchedItems.value = [];
 			return;
 		}
@@ -520,7 +533,7 @@ export function useRelationMultiple(
 	async function updateItemCount() {
 		if (!relation.value) return;
 
-		if (!itemId.value || itemId.value === '+') {
+		if (targetCollectionInactive.value || !itemId.value || itemId.value === '+') {
 			existingItemCount.value = 0;
 			return;
 		}
@@ -619,6 +632,11 @@ export function useRelationMultiple(
 		}
 
 		async function loadSelectedDisplay() {
+			if (targetCollectionInactive.value) {
+				fetchedSelectItems.value = [];
+				return;
+			}
+
 			switch (relation.value?.type) {
 				case 'o2m':
 					return loadSelectedDisplayO2M(relation.value);
