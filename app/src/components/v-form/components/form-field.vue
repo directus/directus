@@ -292,7 +292,7 @@ function useComputedValues() {
 			@set-raw-value="onRawValueSubmit"
 		/>
 
-		<small v-if="collectionInactive" class="type-note">{{ t('collection_inactive') }}</small>
+		<small v-if="collectionInactive" class="type-note">{{ $t('collection_inactive') }}</small>
 
 		<small v-if="field.meta && field.meta.note" v-md="{ value: field.meta.note, target: '_blank' }" class="type-note" />
 
