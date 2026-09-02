@@ -52,6 +52,7 @@ function isBlock(node: Node): node is HTMLElement {
 // are significant and survive normalization.
 const LEADING_WS = /^[ \t\n\r\f]+/;
 const TRAILING_WS = /[ \t\n\r\f]+$/;
+const WS_RUN = /[ \t\n\r\f]+/g;
 
 function firstTextNode(el: Node): Text | null {
 	for (const child of Array.from(el.childNodes)) {
@@ -80,6 +81,26 @@ function trimBoundaryWhitespace(el: HTMLElement): void {
 	if (first) first.textContent = (first.textContent ?? '').replace(LEADING_WS, '');
 	const last = lastTextNode(el);
 	if (last) last.textContent = (last.textContent ?? '').replace(TRAILING_WS, '');
+}
+
+// Collapse whitespace the way Tiptap does inside a textblock: a run of ASCII whitespace becomes a
+// single space, and a leading space is dropped when it follows a <br> or text already ending in one.
+// `afterSpace` carries that trailing space across inline marks, which the parser looks through.
+function collapseWhitespace(el: Node, afterSpace = false): boolean {
+	for (const child of Array.from(el.childNodes)) {
+		if (child.nodeType === Node.TEXT_NODE) {
+			const text = (child.textContent ?? '').replace(WS_RUN, ' ');
+			const dropLeading = afterSpace || child.previousSibling?.nodeName === 'BR';
+			child.textContent = dropLeading ? text.replace(LEADING_WS, '') : text;
+			if (child.textContent !== '') afterSpace = TRAILING_WS.test(child.textContent);
+		} else if (child.hasChildNodes()) {
+			afterSpace = collapseWhitespace(child, afterSpace);
+		} else if (child.nodeType === Node.ELEMENT_NODE) {
+			afterSpace = false;
+		}
+	}
+
+	return afterSpace;
 }
 
 function hasBlockChild(el: HTMLElement): boolean {
@@ -111,6 +132,7 @@ function serialize(nodes: NodeListOf<ChildNode> | ChildNode[], depth: number): s
 				lines.push(pad + el.outerHTML);
 			} else if (!hasBlockChild(el)) {
 				// inline-only block: keep its contents on one line, minus boundary whitespace
+				collapseWhitespace(el);
 				trimBoundaryWhitespace(el);
 				lines.push(pad + el.outerHTML);
 			} else {

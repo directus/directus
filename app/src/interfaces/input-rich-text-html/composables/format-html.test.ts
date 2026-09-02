@@ -55,6 +55,31 @@ describe('formatHtml', () => {
 		expect(formatHtml('<p>hi <em>there </em></p>')).toBe('<p>hi <em>there</em></p>');
 	});
 
+	test('collapses repeated whitespace inside an inline-only block', () => {
+		expect(formatHtml('<p>hello   world</p>')).toBe('<p>hello world</p>');
+	});
+
+	test('collapses repeated whitespace nested inside inline marks', () => {
+		expect(formatHtml('<p>hi <em>there  again</em></p>')).toBe('<p>hi <em>there again</em></p>');
+	});
+
+	test('drops whitespace after a line break', () => {
+		expect(formatHtml('<p>first<br>\n  second</p>')).toBe('<p>first<br>second</p>');
+	});
+
+	test('keeps whitespace after a line break that opens an inline mark', () => {
+		// The parser only drops it when the <br> is the text's own previous sibling.
+		expect(formatHtml('<p>first<br><em>  second</em></p>')).toBe('<p>first<br><em> second</em></p>');
+	});
+
+	test('drops a leading space after text already ending in one', () => {
+		expect(formatHtml('<p><strong>bold </strong> text</p>')).toBe('<p><strong>bold </strong>text</p>');
+	});
+
+	test('keeps consecutive non-breaking spaces', () => {
+		expect(formatHtml('<p>a&nbsp;&nbsp;b</p>')).toBe('<p>a&nbsp;&nbsp;b</p>');
+	});
+
 	test('keeps trailing whitespace inside <pre>', () => {
 		expect(formatHtml('<pre><code>a </code></pre>')).toBe('<pre><code>a </code></pre>');
 	});

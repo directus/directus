@@ -38,6 +38,19 @@ describe('computeNormalizationDiff', () => {
 		expect(computeNormalizationDiff('<p>The content is pretty awesome </p>')).toBeNull();
 	});
 
+	test('returns null for repeated spaces inside an inline-only block', () => {
+		// Pasted content routinely carries double spaces; Tiptap collapses them, so the delta is cosmetic.
+		expect(computeNormalizationDiff('<p>The content is  pretty  awesome</p>')).toBeNull();
+	});
+
+	test('returns null for whitespace following a line break', () => {
+		expect(computeNormalizationDiff('<p>first line<br>\n  second line</p>')).toBeNull();
+	});
+
+	test('returns null for a space repeated across an inline mark boundary', () => {
+		expect(computeNormalizationDiff('<p><strong>bold </strong> and the rest</p>')).toBeNull();
+	});
+
 	test('flags dropped table markup', () => {
 		expect(removedText('<table><tbody><tr><td>a</td></tr></tbody></table>')).toContain('<table');
 	});
@@ -90,6 +103,10 @@ describe('computeValueNormalizationDiff', () => {
 	test('returns null for custom-format markup when its extensions are supplied', () => {
 		const { extensions } = buildCustomFormats([{ title: 'Cite', inline: 'cite', classes: 'src' }]);
 		expect(computeValueNormalizationDiff('<p><cite class="src">b</cite></p>', extensions)).toBeNull();
+	});
+
+	test('returns null for a stored value carrying repeated spaces', () => {
+		expect(computeValueNormalizationDiff('<p>pasted  from  elsewhere</p>')).toBeNull();
 	});
 
 	test('returns null for a stored value carrying block-level custom-format classes', () => {
