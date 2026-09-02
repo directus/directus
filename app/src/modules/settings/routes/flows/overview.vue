@@ -37,7 +37,6 @@ import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { useLicenseStore } from '@/stores/license';
 import { useRelationsStore } from '@/stores/relations';
-import { useUserStore } from '@/stores/user';
 import { extractErrorCode } from '@/utils/extract-error-code';
 import { filterItems } from '@/utils/filter-items';
 import { notify } from '@/utils/notify';
@@ -70,7 +69,6 @@ const {
 } = useCollectionPermissions('directus_folders');
 
 const licenseStore = useLicenseStore();
-const { isAdmin } = useUserStore();
 
 const duplicateAllowed = computed(() => createAllowed.value && operationsCreateAllowed.value);
 
@@ -431,7 +429,6 @@ function onFlowDrawerCompletion(id: string) {
 				@click="openMoveToFolder"
 			/>
 			<PrivateViewHeaderBarActionButton
-				v-if="isAdmin"
 				v-tooltip.bottom="$t('import_flow')"
 				icon="file_upload"
 				variant="ghost"
@@ -538,7 +535,7 @@ function onFlowDrawerCompletion(id: string) {
 									</VListItemContent>
 								</VListItem>
 
-								<VListItem v-if="isAdmin" clickable @click="exportFlow(item)">
+								<VListItem clickable @click="exportFlow(item)">
 									<VListItemIcon>
 										<VIcon name="file_download" />
 									</VListItemIcon>

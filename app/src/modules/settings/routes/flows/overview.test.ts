@@ -10,22 +10,6 @@ import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 
-const userStoreMock = vi.hoisted(() => {
-	let admin = false;
-
-	return {
-		isAdmin: {
-			__v_isRef: true,
-			get value() {
-				return admin;
-			},
-		},
-		setAdmin(value: boolean) {
-			admin = value;
-		},
-	};
-});
-
 vi.mock('file-saver', () => ({
 	saveAs: vi.fn(),
 }));
@@ -61,10 +45,6 @@ vi.mock('@/stores/flows', () => ({
 		],
 		hydrate: vi.fn(),
 	}),
-}));
-
-vi.mock('@/stores/user', () => ({
-	useUserStore: () => ({ isAdmin: userStoreMock.isAdmin }),
 }));
 
 vi.mock('@/composables/use-folders', () => ({
@@ -135,7 +115,6 @@ beforeEach(async () => {
 	localStorage.clear();
 
 	for (const collection of Object.keys(permissionsByCollection)) delete permissionsByCollection[collection];
-	userStoreMock.setAdmin(false);
 
 	router = generateRouter([
 		{
@@ -447,9 +426,7 @@ describe('FlowsOverview - empty state', () => {
 });
 
 describe('FlowsOverview - import export', () => {
-	test('shows Flow import only to administrators', () => {
-		userStoreMock.setAdmin(true);
-
+	test('offers Flow import from the header bar', () => {
 		const wrapper = mount(FlowsOverview, { global });
 		const importAction = wrapper.find('[data-icon="file_upload"]');
 
