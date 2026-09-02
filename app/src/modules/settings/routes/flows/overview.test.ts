@@ -26,6 +26,10 @@ const userStoreMock = vi.hoisted(() => {
 	};
 });
 
+vi.mock('file-saver', () => ({
+	saveAs: vi.fn(),
+}));
+
 vi.mock('@/api', () => ({
 	default: {
 		get: vi.fn(),
@@ -451,6 +455,21 @@ describe('FlowsOverview - import export', () => {
 
 		expect(importAction.text()).toBe('');
 		expect(importAction.attributes('data-variant')).toBe('ghost');
+	});
+
+	test('exports the stored Flow rather than the translated table row', async () => {
+		const { saveAs } = (await vi.importMock('file-saver')) as { saveAs: ReturnType<typeof vi.fn> };
+		saveAs.mockClear();
+
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		// The row the context menu hands over has already been through `translate()`
+		vm.exportFlow({ id: 'flow-1', name: 'Resolved label' });
+
+		const [blob, filename] = saveAs.mock.calls[0]!;
+		expect(filename).toBe('flow-flow-1.json');
+		expect(JSON.parse(await blob.text()).flow.name).toBe('Send email');
 	});
 
 	test('notifies after importing a Flow', async () => {

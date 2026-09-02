@@ -260,7 +260,9 @@ function openDuplicateFlow(item: FlowRaw) {
 }
 
 function exportFlow(flow: FlowRaw) {
-	const flowExport = createFlowExport(flow);
+	// Table rows carry a translated name, so export the stored Flow to keep `$t:` literals intact
+	const source = flowsStore.flows.find(({ id }) => id === flow.id) ?? flow;
+	const flowExport = createFlowExport(source);
 
 	saveAs(
 		new Blob([JSON.stringify(flowExport, null, 2)], { type: 'application/json;charset=utf-8' }),
