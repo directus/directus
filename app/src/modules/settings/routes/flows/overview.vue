@@ -26,6 +26,7 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
+import VRemove from '@/components/v-remove.vue';
 import { Header, Sort } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
 import { useFolders } from '@/composables/use-folders';
@@ -41,6 +42,7 @@ import { extractErrorCode } from '@/utils/extract-error-code';
 import { filterItems } from '@/utils/filter-items';
 import { notify } from '@/utils/notify';
 import { parseFilter } from '@/utils/parse-filter';
+import { readableMimeType } from '@/utils/readable-mime-type';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -267,17 +269,29 @@ function exportFlow(flow: FlowRaw) {
 }
 
 const importDialogActive = ref(false);
+const importFileInput = ref<HTMLInputElement | null>(null);
 const importFile = ref<File | null>(null);
 const importing = ref(false);
 
+const importFileExtension = computed(() => {
+	if (!importFile.value) return null;
+	return readableMimeType(importFile.value.type, true);
+});
+
 function openImportFlow() {
-	importFile.value = null;
+	clearImportFile();
 	importDialogActive.value = true;
 }
 
 function selectImportFile(event: Event) {
 	const files = (event.target as HTMLInputElement).files;
 	importFile.value = files?.item(0) ?? null;
+}
+
+function clearImportFile() {
+	// Reset the native input too, otherwise re-picking the same file won't fire `change`
+	if (importFileInput.value) importFileInput.value.value = '';
+	importFile.value = null;
 }
 
 async function importFlow() {
@@ -593,9 +607,32 @@ function onFlowDrawerCompletion(id: string) {
 			<VCard>
 				<VCardTitle>{{ $t('import_flow') }}</VCardTitle>
 				<VCardText>
-					<VInput>
+					<VInput clickable>
+						<template #prepend>
+							<div class="import-file-preview" :class="{ 'has-file': importFile }">
+								<span v-if="importFileExtension" class="import-file-extension">{{ importFileExtension }}</span>
+								<VIcon v-else name="folder_open" />
+							</div>
+						</template>
 						<template #input>
-							<input type="file" accept="application/json,.json" @change="selectImportFile" />
+							<label v-tooltip="importFile?.name" for="import-flow-file" class="import-file-label">
+								<input
+									id="import-flow-file"
+									ref="importFileInput"
+									type="file"
+									accept="application/json,.json"
+									@change="selectImportFile"
+								/>
+							</label>
+							<span class="import-file-text" :class="{ 'no-file': !importFile }">
+								{{ importFile ? importFile.name : $t('import_data_input_placeholder') }}
+							</span>
+						</template>
+						<template #append>
+							<div class="import-file-actions">
+								<VRemove v-if="importFile" deselect @action="clearImportFile" />
+								<VIcon v-else name="attach_file" />
+							</div>
 						</template>
 					</VInput>
 				</VCardText>
@@ -622,7 +659,9 @@ function onFlowDrawerCompletion(id: string) {
 	</PrivateView>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .padding-box {
 	padding: var(--content-padding);
 	padding-block-start: var(--content-padding-top-table);
@@ -642,5 +681,59 @@ function onFlowDrawerCompletion(id: string) {
 .header-icon {
 	--v-button-color-disabled: var(--theme--primary);
 	--v-button-background-color-disabled: var(--theme--primary-background);
+}
+
+.import-file-preview {
+	--v-icon-color: var(--theme--foreground-subdued);
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: 2.25rem;
+	block-size: 2.25rem;
+	margin-inline-start: -0.4375rem;
+	overflow: hidden;
+	background-color: var(--theme--background-normal);
+	border-radius: var(--theme--border-radius);
+
+	&.has-file {
+		background-color: var(--theme--primary-background);
+	}
+}
+
+.import-file-extension {
+	color: var(--theme--primary);
+	font-weight: 600;
+	font-size: 0.625rem;
+	text-transform: uppercase;
+}
+
+.import-file-label {
+	position: absolute;
+	inset-block-start: 0;
+	inset-inline-start: 0;
+	display: block;
+	inline-size: 100%;
+	block-size: 100%;
+	overflow: hidden;
+	opacity: 0;
+	cursor: pointer;
+	appearance: none;
+}
+
+.import-file-text {
+	flex-grow: 1;
+	overflow: hidden;
+	line-height: normal;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+
+	&.no-file {
+		color: var(--theme--foreground-subdued);
+	}
+}
+
+.import-file-actions {
+	@include mixins.list-interface-item-actions;
 }
 </style>
