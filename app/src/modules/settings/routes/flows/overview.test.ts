@@ -468,6 +468,32 @@ describe('FlowsOverview - import export', () => {
 
 		expect(notify).toHaveBeenCalledWith({ title: 'flow_import_success', type: 'success' });
 	});
+
+	test('reports an unusable import file instead of an unexpected error', async () => {
+		const { notify } = (await vi.importMock('@/utils/notify')) as { notify: ReturnType<typeof vi.fn> };
+
+		const { unexpectedError } = (await vi.importMock('@/utils/unexpected-error')) as {
+			unexpectedError: ReturnType<typeof vi.fn>;
+		};
+
+		notify.mockClear();
+		unexpectedError.mockClear();
+
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.importFile = { text: () => Promise.resolve('not json') };
+
+		await vm.importFlow();
+
+		expect(unexpectedError).not.toHaveBeenCalled();
+
+		expect(notify).toHaveBeenCalledWith({
+			title: 'flow_import_failed',
+			text: 'flow_import_not_json',
+			type: 'error',
+		});
+	});
 });
 
 describe('FlowsOverview - search and filter', () => {

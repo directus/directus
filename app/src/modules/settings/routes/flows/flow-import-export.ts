@@ -16,6 +16,25 @@ export type FlowExport = {
 	operations: PortableOperation[];
 };
 
+/**
+ * A file the user picked that isn't a usable Flow export. Carries a translation key so the caller can
+ * tell the user what's wrong instead of falling back to the generic unexpected-error notice.
+ */
+export class FlowImportError extends Error {
+	constructor(readonly translationKey: string) {
+		super(translationKey);
+		this.name = 'FlowImportError';
+	}
+}
+
+export function parseFlowExport(contents: string): unknown {
+	try {
+		return JSON.parse(contents);
+	} catch {
+		throw new FlowImportError('flow_import_not_json');
+	}
+}
+
 export function createFlowExport(flow: FlowRaw): FlowExport {
 	return {
 		version: 1,
@@ -93,31 +112,31 @@ function createImportOperation(operation: PortableOperation) {
 
 function validateFlowExport(value: unknown): FlowExport {
 	if (!isRecord(value) || value['version'] !== 1 || !isRecord(value['flow']) || !Array.isArray(value['operations'])) {
-		throw new Error('Invalid Flow export file');
+		throw new FlowImportError('flow_import_invalid_file');
 	}
 
 	const flow = value['flow'];
 
 	if (typeof flow['id'] !== 'string' || typeof flow['name'] !== 'string') {
-		throw new Error('Invalid Flow export file');
+		throw new FlowImportError('flow_import_invalid_file');
 	}
 
 	const operationIds = new Set<string>();
 
 	for (const operation of value['operations']) {
 		if (!isRecord(operation) || typeof operation['id'] !== 'string' || typeof operation['key'] !== 'string') {
-			throw new Error('Invalid Flow export file');
+			throw new FlowImportError('flow_import_invalid_file');
 		}
 
 		if (operation['flow'] !== flow['id']) {
-			throw new Error('An operation belongs to a different Flow');
+			throw new FlowImportError('flow_import_foreign_operation');
 		}
 
 		operationIds.add(operation['id']);
 	}
 
 	if (flow['operation'] !== null && (!isString(flow['operation']) || !operationIds.has(flow['operation']))) {
-		throw new Error('Invalid Flow export file');
+		throw new FlowImportError('flow_import_invalid_file');
 	}
 
 	for (const operation of value['operations']) {
@@ -128,7 +147,7 @@ function validateFlowExport(value: unknown): FlowExport {
 			(resolve !== null && (!isString(resolve) || !operationIds.has(resolve))) ||
 			(reject !== null && (!isString(reject) || !operationIds.has(reject)))
 		) {
-			throw new Error('Invalid Flow export file');
+			throw new FlowImportError('flow_import_invalid_file');
 		}
 	}
 

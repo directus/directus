@@ -9,7 +9,7 @@ import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
 import FlowFolderSidebar from './flow-folder-sidebar.vue';
-import { createFlowExport, createFlowImport } from './flow-import-export';
+import { createFlowExport, createFlowImport, FlowImportError, parseFlowExport } from './flow-import-export';
 import { useDuplicate } from './use-duplicate';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
@@ -300,7 +300,8 @@ async function importFlow() {
 	importing.value = true;
 
 	try {
-		const flowImport = createFlowImport(JSON.parse(await importFile.value.text()), props.folder ?? null);
+		const flowExport = parseFlowExport(await importFile.value.text());
+		const flowImport = createFlowImport(flowExport, props.folder ?? null);
 		const form = new FormData();
 		form.append('file', new Blob([JSON.stringify(flowImport)], { type: 'application/json' }), 'flow.json');
 
@@ -309,7 +310,11 @@ async function importFlow() {
 		importDialogActive.value = false;
 		notify({ title: t('flow_import_success'), type: 'success' });
 	} catch (error) {
-		unexpectedError(error);
+		if (error instanceof FlowImportError) {
+			notify({ title: t('flow_import_failed'), text: t(error.translationKey), type: 'error' });
+		} else {
+			unexpectedError(error);
+		}
 	} finally {
 		importing.value = false;
 	}

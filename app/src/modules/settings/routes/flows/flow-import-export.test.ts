@@ -1,6 +1,6 @@
 import type { FlowRaw } from '@directus/types';
 import { describe, expect, test } from 'vitest';
-import { createFlowExport, createFlowImport } from './flow-import-export';
+import { createFlowExport, createFlowImport, FlowImportError, parseFlowExport } from './flow-import-export';
 
 const flow = {
 	id: 'flow-1',
@@ -78,7 +78,16 @@ describe('flow import export', () => {
 		const bundle = createFlowExport(flow);
 		bundle.operations[0]!.flow = 'other-flow';
 
-		expect(() => createFlowImport(bundle)).toThrow('operation belongs to a different Flow');
+		expect(() => createFlowImport(bundle)).toThrow(new FlowImportError('flow_import_foreign_operation'));
+	});
+
+	test('rejects a file that is not a Flow export', () => {
+		expect(() => createFlowImport({ version: 2 })).toThrow(new FlowImportError('flow_import_invalid_file'));
+	});
+
+	test('rejects a file that is not JSON', () => {
+		expect(() => parseFlowExport('not json')).toThrow(new FlowImportError('flow_import_not_json'));
+		expect(parseFlowExport('{"version":1}')).toEqual({ version: 1 });
 	});
 
 	test('creates an inactive transactional import payload', () => {
