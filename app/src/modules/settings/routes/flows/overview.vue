@@ -311,7 +311,7 @@ async function importFlow() {
 		notify({ title: t('flow_import_success'), type: 'success' });
 	} catch (error) {
 		if (error instanceof FlowImportError) {
-			notify({ title: t('flow_import_failed'), text: t(error.translationKey), type: 'error' });
+			notify({ title: t('flow_import_failed'), text: t(error.translationKey), type: 'error', dialog: true });
 		} else {
 			unexpectedError(error);
 		}
@@ -629,7 +629,7 @@ function onFlowDrawerCompletion(id: string) {
 								/>
 							</label>
 							<span class="import-file-text" :class="{ 'no-file': !importFile }">
-								{{ importFile ? importFile.name : $t('import_data_input_placeholder') }}
+								{{ importFile ? importFile.name : $t('flow_import_input_placeholder') }}
 							</span>
 						</template>
 						<template #append>

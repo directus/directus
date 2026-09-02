@@ -632,6 +632,7 @@ import_data_validation_errors_notice: 'The following rows have invalid values:'
 import_data_error_row: 'Row {rows}{field}:'
 import_flow: Import Flow
 export_flow: Export Flow
+flow_import_input_placeholder: JSON...
 flow_import_success: Flow imported successfully.
 flow_import_failed: Couldn't import Flow
 flow_import_not_json: This file isn't valid JSON.

@@ -492,6 +492,7 @@ describe('FlowsOverview - import export', () => {
 			title: 'flow_import_failed',
 			text: 'flow_import_not_json',
 			type: 'error',
+			dialog: true,
 		});
 	});
 });
