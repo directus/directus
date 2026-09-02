@@ -2,6 +2,7 @@ import type { AbstractServiceOptions, FlowRaw, Item, MutationOptions, PrimaryKey
 import { getFlowManager } from '../flows.js';
 import { getEntitlementManager } from '../license/entitlements/manager.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { validateKeys } from '../utils/validate-keys.js';
 import { ItemsService } from './items.js';
 
 export class FlowsService extends ItemsService<FlowRaw> {
@@ -23,15 +24,21 @@ export class FlowsService extends ItemsService<FlowRaw> {
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if ('status' in data && data['status'] === 'active') {
-			const activating = await this.knex
+		if (
+			'status' in data &&
+			data['status'] === 'active' &&
+			getEntitlementManager().getEntitlementLimit('flows') !== -1
+		) {
+			validateKeys(this.schema, 'directus_flows', 'id', keys);
+
+			const inactiveFlows = await this.knex
 				.select('id')
 				.from('directus_flows')
 				.whereIn('id', keys)
 				.whereNot('status', 'active');
 
-			if (activating.length > 0) {
-				await getEntitlementManager().assert('flows', { adding: activating.length, knex: this.knex });
+			if (inactiveFlows.length > 0) {
+				await getEntitlementManager().assert('flows', { adding: inactiveFlows.length, knex: this.knex });
 			}
 		}
 

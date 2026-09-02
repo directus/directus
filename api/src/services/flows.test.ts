@@ -3,11 +3,15 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 import { createMockKnex } from '../test-utils/knex.js';
 import { FlowsService } from './flows.js';
 
-const { assertMock } = vi.hoisted(() => ({ assertMock: vi.fn() }));
+const { assertMock, getEntitlementLimitMock } = vi.hoisted(() => ({
+	assertMock: vi.fn(),
+	getEntitlementLimitMock: vi.fn(),
+}));
 
 vi.mock('../license/entitlements/manager.js', () => ({
 	getEntitlementManager: () => ({
 		assert: assertMock,
+		getEntitlementLimit: getEntitlementLimitMock,
 		clearCache: vi.fn(),
 	}),
 }));
@@ -43,8 +47,8 @@ describe('FlowsService', () => {
 
 	describe('updateMany', () => {
 		test('does not count flows that are already active', async () => {
+			getEntitlementLimitMock.mockReturnValue(5);
 			tracker.on.select('directus_flows').response([]);
-			tracker.on.update('directus_flows').response([]);
 
 			await service.updateMany(['flow-id-1'], { status: 'active' });
 
@@ -52,8 +56,8 @@ describe('FlowsService', () => {
 		});
 
 		test('counts only the flows that are being activated', async () => {
+			getEntitlementLimitMock.mockReturnValue(5);
 			tracker.on.select('directus_flows').response([{ id: 'flow-id-2' }]);
-			tracker.on.update('directus_flows').response([]);
 
 			await service.updateMany(['flow-id-1', 'flow-id-2'], { status: 'active' });
 
@@ -61,10 +65,19 @@ describe('FlowsService', () => {
 		});
 
 		test('does not check the limit when the status is not being set to active', async () => {
-			tracker.on.update('directus_flows').response([]);
+			getEntitlementLimitMock.mockReturnValue(5);
 
 			await service.updateMany(['flow-id-1'], { name: 'Updated' });
 
+			expect(assertMock).not.toHaveBeenCalled();
+		});
+
+		test('does not query the flows when the limit is unlimited', async () => {
+			getEntitlementLimitMock.mockReturnValue(-1);
+
+			await service.updateMany(['flow-id-1'], { status: 'active' });
+
+			expect(tracker.history.select).toHaveLength(0);
 			expect(assertMock).not.toHaveBeenCalled();
 		});
 	});
