@@ -24,7 +24,15 @@ export class FlowsService extends ItemsService<FlowRaw> {
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if ('status' in data && data['status'] === 'active') {
-			await getEntitlementManager().assert('flows', { adding: keys.length, knex: this.knex });
+			const activating = await this.knex
+				.select('id')
+				.from('directus_flows')
+				.whereIn('id', keys)
+				.whereNot('status', 'active');
+
+			if (activating.length > 0) {
+				await getEntitlementManager().assert('flows', { adding: activating.length, knex: this.knex });
+			}
 		}
 
 		const result = await super.updateMany(keys, data, opts);
