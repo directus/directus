@@ -567,6 +567,9 @@ catalogs:
     eslint-plugin-import-x:
       specifier: 4.17.1
       version: 4.17.1
+    eslint-plugin-regexp:
+      specifier: ^2.10.0
+      version: 2.10.0
     eslint-plugin-vue:
       specifier: 10.10.0
       version: 10.10.0
@@ -1030,6 +1033,9 @@ importers:
       eslint-plugin-import-x:
         specifier: 'catalog:'
         version: 4.17.1(@typescript-eslint/utils@8.66.0(eslint@10.8.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint@10.8.0(jiti@2.6.1))
+      eslint-plugin-regexp:
+        specifier: 'catalog:'
+        version: 2.10.0(eslint@10.8.0(jiti@2.6.1))
       eslint-plugin-vue:
         specifier: 'catalog:'
         version: 10.10.0(@typescript-eslint/parser@8.66.0(eslint@10.8.0(jiti@2.6.1))(typescript@5.9.3))(eslint@10.8.0(jiti@2.6.1))(vue-eslint-parser@10.4.1(eslint@10.8.0(jiti@2.6.1)))
@@ -1865,7 +1871,7 @@ importers:
         version: 6.0.1(vite@8.1.2(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))(vue@3.5.24(typescript@5.9.3))
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       '@vitest/ui':
         specifier: 'catalog:'
         version: 3.2.6(vitest@3.2.7)
@@ -2149,7 +2155,7 @@ importers:
         version: 4.17.12
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       '@vue/test-utils':
         specifier: 'catalog:'
         version: 2.4.6
@@ -2176,7 +2182,7 @@ importers:
         version: 4.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2204,7 +2210,7 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       vitest:
         specifier: 'catalog:'
         version: 3.2.7(@types/node@26.2.0)(@vitest/ui@3.2.6)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
@@ -2235,7 +2241,7 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       vitest:
         specifier: 'catalog:'
         version: 3.2.7(@types/node@26.2.0)(@vitest/ui@3.2.6)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0)
@@ -2294,7 +2300,7 @@ importers:
         version: 2.1.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2386,7 +2392,7 @@ importers:
         version: link:../types
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2492,7 +2498,7 @@ importers:
         version: 7.7.1
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2507,7 +2513,7 @@ importers:
         version: 4.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2572,7 +2578,7 @@ importers:
         version: 4.17.21
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2665,7 +2671,7 @@ importers:
         version: 4.17.12
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2736,7 +2742,7 @@ importers:
         version: 8.0.2
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2773,7 +2779,7 @@ importers:
         version: 8.0.2
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2810,7 +2816,7 @@ importers:
         version: 8.0.2
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2893,7 +2899,7 @@ importers:
         version: 2.1.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2936,7 +2942,7 @@ importers:
         version: 8.0.2
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2972,7 +2978,7 @@ importers:
         version: 4.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -3265,7 +3271,7 @@ importers:
         version: link:../types
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -3314,7 +3320,7 @@ importers:
         version: 4.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -8775,6 +8781,12 @@ packages:
       eslint-import-resolver-node:
         optional: true
 
+  eslint-plugin-regexp@2.10.0:
+    resolution: {integrity: sha512-ovzQT8ESVn5oOe5a7gIDPD5v9bCSjIFJu57sVPDqgPRXicQzOnYfFN21WoQBQF18vrhT5o7UMKFwJQVVjyJ0ng==}
+    engines: {node: ^18 || >=20}
+    peerDependencies:
+      eslint: '>=8.44.0'
+
   eslint-plugin-vue@10.10.0:
     resolution: {integrity: sha512-dL9x9rBHqqNcByWiLOHK6L0SB97V82/NC0cZRn9cXPjM7pCuWlpQQP9bFH4vjBv80ej1ZpzAkuD8zWH1o9bZbA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -9968,6 +9980,10 @@ packages:
 
   js2xmlparser@5.0.0:
     resolution: {integrity: sha512-ckXs0Fzd6icWurbeAXuqo+3Mhq2m8pOPygsQjTPh8K5UWgKaUgDSHrdDxAfexmT11xvBKOQ6sgYwPkYc5RW/bg==}
+
+  jsdoc-type-pratt-parser@4.8.0:
+    resolution: {integrity: sha512-iZ8Bdb84lWRuGHamRXFyML07r21pcwBrLkHEuHgEY5UbCouBwv7ECknDRKzsQIXMiqpPymqtIf8TC/shYKB5rw==}
+    engines: {node: '>=12.0.0'}
 
   jsdom@29.1.1:
     resolution: {integrity: sha512-ECi4Fi2f7BdJtUKTflYRTiaMxIB0O6zfR1fX0GXpUrf6flp8QIYn1UT20YQqdSOfk2dfkCwS8LAFoJDEppNK5Q==}
@@ -11801,9 +11817,17 @@ packages:
     resolution: {integrity: sha512-DJnGAeenTdpMEH6uAJRK/uiyEIH9WVsUmoLwzudwGJUwZPp80PDBWPHXSAGNPwNvIXAbe7MSUB1zQFugFml66A==}
     engines: {node: '>=4'}
 
+  refa@0.12.1:
+    resolution: {integrity: sha512-J8rn6v4DBb2nnFqkqwy6/NnTYMcgLA+sLr0iIO41qpv0n+ngb7ksag2tMRl0inb1bbO/esUwzW1vbJi7K0sI0g==}
+    engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
+
   reflect.getprototypeof@1.0.10:
     resolution: {integrity: sha512-00o4I+DVrefhv+nX0ulyi3biSHCPDe+yLv5o/p6d/UVlirijB8E16FtfwSAi4g3tcqrQ4lRAqQSoFEZJehYEcw==}
     engines: {node: '>= 0.4'}
+
+  regexp-ast-analysis@0.7.1:
+    resolution: {integrity: sha512-sZuz1dYW/ZsfG17WSAG7eS85r5a0dDsvg+7BiiYR5o6lKCAtUrEwdmRmaGF6rwVj3LcmAeYkOWKEPlbPzN3Y3A==}
+    engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
 
   regexp.prototype.flags@1.5.4:
     resolution: {integrity: sha512-dYqgNSZbDwkaJ2ceRd9ojCGjBq+mOm9LmtXnAnEGyHhN/5R7iDW2TRw3h+o/jCFxus3P2LfWIIiwowAjANm7IA==}
@@ -12153,6 +12177,10 @@ packages:
   saxes@6.0.0:
     resolution: {integrity: sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==}
     engines: {node: '>=v12.22.7'}
+
+  scslre@0.3.0:
+    resolution: {integrity: sha512-3A6sD0WYP7+QrjbfNA2FN3FsOaGGFoekCVgTyypy53gPxhbkCIjtO6YWgdrfM+n/8sI8JeXZOIxsHjMTNxQ4nQ==}
+    engines: {node: ^14.0.0 || >=16.0.0}
 
   secure-json-parse@2.7.0:
     resolution: {integrity: sha512-6aU+Rwsezw7VR8/nyvKTx8QpWH9FrcYiXXlqC4z5d5XQBDRqtbfsRjnwGyqbi3gddNtWHuEk9OANUotL26qKUw==}
@@ -17500,7 +17528,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))':
+  '@vitest/coverage-v8@3.2.6(vitest@3.2.7)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
@@ -19295,6 +19323,17 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  eslint-plugin-regexp@2.10.0(eslint@10.8.0(jiti@2.6.1)):
+    dependencies:
+      '@eslint-community/eslint-utils': 4.10.1(eslint@10.8.0(jiti@2.6.1))
+      '@eslint-community/regexpp': 4.12.2
+      comment-parser: 1.4.7
+      eslint: 10.8.0(jiti@2.6.1)
+      jsdoc-type-pratt-parser: 4.8.0
+      refa: 0.12.1
+      regexp-ast-analysis: 0.7.1
+      scslre: 0.3.0
+
   eslint-plugin-vue@10.10.0(@typescript-eslint/parser@8.66.0(eslint@10.8.0(jiti@2.6.1))(typescript@5.9.3))(eslint@10.8.0(jiti@2.6.1))(vue-eslint-parser@10.4.1(eslint@10.8.0(jiti@2.6.1))):
     dependencies:
       '@eslint-community/eslint-utils': 4.10.1(eslint@10.8.0(jiti@2.6.1))
@@ -20670,6 +20709,8 @@ snapshots:
   js2xmlparser@5.0.0:
     dependencies:
       xmlcreate: 2.0.4
+
+  jsdoc-type-pratt-parser@4.8.0: {}
 
   jsdom@29.1.1(@noble/hashes@1.8.0):
     dependencies:
@@ -22700,6 +22741,10 @@ snapshots:
     dependencies:
       redis-errors: 1.2.0
 
+  refa@0.12.1:
+    dependencies:
+      '@eslint-community/regexpp': 4.12.2
+
   reflect.getprototypeof@1.0.10:
     dependencies:
       call-bind: 1.0.9
@@ -22711,6 +22756,11 @@ snapshots:
       get-proto: 1.0.1
       which-builtin-type: 1.2.1
     optional: true
+
+  regexp-ast-analysis@0.7.1:
+    dependencies:
+      '@eslint-community/regexpp': 4.12.2
+      refa: 0.12.1
 
   regexp.prototype.flags@1.5.4:
     dependencies:
@@ -23177,6 +23227,12 @@ snapshots:
   saxes@6.0.0:
     dependencies:
       xmlchars: 2.2.0
+
+  scslre@0.3.0:
+    dependencies:
+      '@eslint-community/regexpp': 4.12.2
+      refa: 0.12.1
+      regexp-ast-analysis: 0.7.1
 
   secure-json-parse@2.7.0: {}
 

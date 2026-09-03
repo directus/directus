@@ -4,6 +4,7 @@ import process from 'node:process';
 import eslintJs from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintImportPlugin from 'eslint-plugin-import-x';
+import eslintPluginRegexp from 'eslint-plugin-regexp';
 import eslintPluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
 import typescriptEslint from 'typescript-eslint';
@@ -191,6 +192,17 @@ export default typescriptEslint.config(
 		files: ['**/*.test.ts'],
 		rules: {
 			'vue/one-component-per-file': 'off',
+		},
+	},
+
+	// Shared packages hold regexes that run against caller-supplied input, so a pattern whose
+	// worst case is worse than linear in the input length is a denial-of-service vector. Scoped
+	// rather than global for now; widen it as the rest of the codebase is audited.
+	{
+		files: ['packages/constants/**/*.ts', 'packages/utils/**/*.ts'],
+		plugins: { regexp: eslintPluginRegexp },
+		rules: {
+			'regexp/no-super-linear-backtracking': 'error',
 		},
 	},
 

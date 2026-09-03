@@ -19,6 +19,7 @@
 		"eslint": "catalog:",
 		"eslint-config-prettier": "catalog:",
 		"eslint-plugin-import-x": "catalog:",
+		"eslint-plugin-regexp": "catalog:",
 		"eslint-plugin-vue": "catalog:",
 		"globals": "catalog:",
 		"postcss-html": "catalog:",
