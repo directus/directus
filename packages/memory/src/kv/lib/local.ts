@@ -71,7 +71,7 @@ export class KvLocal implements Kv {
 			throw new Error(`The value for key "${key}" is not a number.`);
 		}
 
-		if (currentVal > value) {
+		if (currentVal >= value) {
 			return false;
 		}
 
