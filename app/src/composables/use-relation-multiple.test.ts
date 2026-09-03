@@ -47,10 +47,15 @@ const m2aRequestParams: Record<string, any>[] = [];
 const selectableData: Record<string, Record<string, any>[]> = {
 	'/items/worker': [{ id: 99, name: 'unlinked' }],
 	'/items/text': [{ id: 5, text: 'lorem' }],
+	'/items/code': [{ id: 7, code: 'print()' }],
 };
+
+// Endpoints fetchAll was called with, so tests can assert which collections were queried
+const fetchAllUrls: string[] = [];
 
 vi.mock('@/utils/fetch-all', () => ({
 	fetchAll: (url: string, config: Record<string, any>) => {
+		fetchAllUrls.push(url);
 		const ids: (string | number)[] = config?.params?.filter?.id?._in ?? [];
 		return Promise.resolve((selectableData[url] ?? []).filter((item) => ids.includes(item.id)));
 	},
@@ -927,6 +932,30 @@ describe('test m2a relation', () => {
 
 		expect(fields).toContain('item:text.id');
 		expect(fields).not.toContain('item:code.id');
+	});
+
+	test('does not request an inactive collection when resolving selected items', async () => {
+		fetchAllUrls.length = 0;
+
+		const wrapper = mount(TestComponentM2A, {
+			props: { relation: relationM2A, value: [], id: 1 },
+		});
+
+		await flushPromises();
+
+		wrapper.vm.select([5], 'text');
+		wrapper.vm.select([7], 'code');
+
+		await flushPromises();
+
+		expect(fetchAllUrls).toContain('/items/text');
+		expect(fetchAllUrls).not.toContain('/items/code');
+
+		// Skipping a collection must not shift the remaining responses onto the wrong collection
+		expect(wrapper.vm.displayItems.find((item) => item.collection === 'text' && item.item?.id === 5)?.item).toEqual({
+			id: 5,
+			text: 'lorem',
+		});
 	});
 
 	test('sorting an item', async () => {

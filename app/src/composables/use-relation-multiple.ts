@@ -726,8 +726,11 @@ export function useRelationMultiple(
 				{} as Record<string, DisplayItem[]>,
 			);
 
+			// Naming an inactive collection in a query makes the API reject the whole request
+			const groups = Object.entries(selectGrouped).filter(([collection]) => isCollectionInactive(collection) === false);
+
 			const responses = await Promise.all(
-				Object.entries(selectGrouped).map(([collection, items]) => {
+				groups.map(([collection, items]) => {
 					const pkField = relation.relationPrimaryKeyFields[collection]?.field;
 					if (!pkField) throw new Error(`No primary key field found for collection ${collection}`);
 
@@ -759,7 +762,7 @@ export function useRelationMultiple(
 				(acc, item, index) => {
 					acc.push(
 						...item.map((item: Record<string, any>) => ({
-							[relation.collectionField.field]: Object.keys(selectGrouped)[index],
+							[relation.collectionField.field]: groups[index]![0],
 							[relation.junctionField.field]: item,
 						})),
 					);
