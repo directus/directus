@@ -1,3 +1,4 @@
+import { REGEX_DATE_ADJUSTMENT } from '@directus/constants';
 import {
 	addDays,
 	addHours,
@@ -19,12 +20,23 @@ import {
 import { clone } from 'lodash-es';
 
 /**
+ * Well beyond the longest valid adjustment (`-0.000000000001milliseconds` is 26 characters), so
+ * anything longer cannot match. Rejecting it up front keeps caller-supplied input from reaching
+ * the regex at all.
+ */
+const MAX_ADJUSTMENT_LENGTH = 64;
+
+/**
  * Adjust a given date by a given change in duration. The adjustment value uses the exact same syntax
  * and logic as Vercel's `ms`.
  *
  * The conversion is lifted straight from `ms`.
  */
 export function adjustDate(date: Date, adjustment: string): Date | undefined {
+	if (adjustment.length > MAX_ADJUSTMENT_LENGTH) {
+		return;
+	}
+
 	date = clone(date);
 
 	const subtract = adjustment.startsWith('-');
@@ -33,10 +45,7 @@ export function adjustDate(date: Date, adjustment: string): Date | undefined {
 		adjustment = adjustment.substring(1);
 	}
 
-	const match =
-		/^(-?(?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|months?|mth|mo|years?|yrs?|y)?$/i.exec(
-			adjustment,
-		);
+	const match = REGEX_DATE_ADJUSTMENT.exec(adjustment);
 
 	if (!match || !match[1]) {
 		return;
