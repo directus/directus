@@ -43,7 +43,7 @@ describe('getQueryLimits', () => {
 		expect(getQueryLimits()).toEqual({
 			size: 32_768,
 			nodes: 10_000,
-			maxFilterDepth: 25,
+			maxFilterDepth: 50,
 			maxDeepDepth: 20,
 			deepDepth: 0,
 		});
@@ -228,12 +228,35 @@ describe('checkFilterNodes', () => {
 		);
 	});
 
-	test('should count each `_and` group as two levels', () => {
-		// `{ _and: [...] }` is the root container plus the array, then the entry object
+	test('should not count the array wrapping an `_and` group as a level', () => {
+		// `{ _and: [...] }`, then the entry object, then `{ _eq }` — the array is not a level
 		const filter = { _and: [{ field: { _eq: 'x' } }] };
 
-		expect(() => checkFilterNodes(filter, limits({ maxFilterDepth: 4 }))).not.toThrow();
-		expect(() => checkFilterNodes(filter, limits({ maxFilterDepth: 3 }))).toThrowError(InvalidQueryError);
+		expect(() => checkFilterNodes(filter, limits({ maxFilterDepth: 3 }))).not.toThrow();
+		expect(() => checkFilterNodes(filter, limits({ maxFilterDepth: 2 }))).toThrowError(InvalidQueryError);
+	});
+
+	test('should charge the same depth however a filter is grouped', () => {
+		const ungrouped = { a: { b: { _eq: 'x' } } };
+		const grouped = { _and: [{ a: { _and: [{ b: { _and: [{ _eq: 'x' }] } }] } }] };
+
+		// Both reach two relations deep, so grouping must not change the depth charged
+		expect(() => checkFilterNodes(ungrouped, limits({ maxFilterDepth: 3 }))).not.toThrow();
+		expect(() => checkFilterNodes(grouped, limits({ maxFilterDepth: 6 }))).not.toThrow();
+	});
+
+	// Regression test: ten relational levels each wrapped in an `_and` group, which is what the
+	// app's filter builder emits. Counting the group's array as a level took this to 33 rather
+	// than 22, so it was rejected despite being within `MAX_RELATIONAL_DEPTH`'s default of 10.
+	test('should charge a fully grouped filter 2 levels per relation', () => {
+		let filter: Record<string, any> = { _and: [{ _eq: 'x' }] };
+
+		for (let level = 0; level < 10; level++) {
+			filter = { _and: [{ [`rel_${level}`]: filter }] };
+		}
+
+		expect(() => checkFilterNodes(filter, limits({ maxFilterDepth: 22 }))).not.toThrow();
+		expect(() => checkFilterNodes(filter, limits({ maxFilterDepth: 21 }))).toThrowError(InvalidQueryError);
 	});
 
 	test('should reject input deeper than the call stack without overflowing', () => {

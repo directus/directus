@@ -31,7 +31,7 @@ export type QueryLimits = {
 const LIMIT_FALLBACKS = {
 	QUERY_FILTER_MAX_SIZE: 32_768,
 	QUERY_FILTER_MAX_NODES: 10_000,
-	QUERY_FILTER_MAX_DEPTH: 25,
+	QUERY_FILTER_MAX_DEPTH: 50,
 	QUERY_DEEP_MAX_DEPTH: 20,
 } as const;
 
@@ -101,6 +101,11 @@ export function checkFilterNodes(filter: unknown, limits: QueryLimits): void {
 
 		checkDepth(depth, limits.maxFilterDepth, 'filter');
 
-		for (const child of children) stack.push([child, depth + 1]);
+		// The array that `_and`/`_or` wrap their operands in is a container, not a nesting level of
+		// its own. Counting it would make every logical group cost two levels, so the depth of a
+		// filter would depend on how it is grouped rather than how deeply it is nested.
+		const childDepth = Array.isArray(value) ? depth : depth + 1;
+
+		for (const child of children) stack.push([child, childDepth]);
 	}
 }

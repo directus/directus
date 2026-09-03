@@ -433,6 +433,21 @@ describe('query limits', () => {
 		expect(sanitizedQuery.filter).toEqual(filter);
 		expect(sanitizedQuery.deep).toEqual({ translations: { _filter: filter, _limit: 10 } });
 	});
+
+	// The app's filter builder wraps every relational level in an `_and` group. With the group's
+	// array counted as a nesting level this reached depth 33 and was rejected under the shipped
+	// limits, despite being within `MAX_RELATIONAL_DEPTH`'s default of 10.
+	test('should accept a fully grouped relational filter at the shipped limits', async () => {
+		vi.mocked(useEnv).mockReturnValue({});
+
+		let filter: Record<string, any> = { _and: [{ name: { _eq: 'admin' } }] };
+
+		for (let level = 0; level < 10; level++) {
+			filter = { _and: [{ [`rel_${level}`]: filter }] };
+		}
+
+		await expect(sanitizeQuery({ filter }, null as any)).resolves.toBeDefined();
+	});
 });
 
 describe('offset', () => {
