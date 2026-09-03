@@ -18,10 +18,11 @@ out of it.
 
 - `QUERY_FILTER_MAX_SIZE` (default `32768`) — characters of serialized `filter`/`deep` input
 - `QUERY_FILTER_MAX_NODES` (default `10000`) — total `filter`/`deep` nodes
-- `QUERY_FILTER_MAX_DEPTH` (default `25`) — nesting depth of a single filter
+- `QUERY_FILTER_MAX_DEPTH` (default `50`) — nesting depth of a single filter
 - `QUERY_DEEP_MAX_DEPTH` (default `20`) — nesting depth of `deep`
 
-A `$NOW(...)` adjustment longer than 64 characters is now treated as unparseable, and a dynamic
-variable path deeper than 25 segments resolves to its default value.
+A `$NOW(...)` adjustment longer than 64 characters is now treated as unparseable, which also
+rejects a zero-padded amount that long, such as `$NOW(0000…0005s)`. A dynamic variable path deeper
+than 25 segments now resolves to its default value.
 
 :::
