@@ -10,6 +10,10 @@ import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 
+vi.mock('file-saver', () => ({
+	saveAs: vi.fn(),
+}));
+
 vi.mock('@/api', () => ({
 	default: {
 		get: vi.fn(),
@@ -85,6 +89,10 @@ vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),
 }));
 
+vi.mock('@/utils/notify', () => ({
+	notify: vi.fn(),
+}));
+
 let router: Router;
 let global: GlobalMountOptions;
 let windowOpenSpy: any;
@@ -135,6 +143,10 @@ beforeEach(async () => {
 	global = {
 		stubs: {
 			'private-view': { template: '<div><slot name="actions" /><slot /></div>' },
+			'private-view-header-bar-action-button': {
+				props: ['icon', 'label', 'variant'],
+				template: '<button :data-icon="icon" :data-variant="variant">{{ label }}</button>',
+			},
 			'flow-folder-sidebar': {
 				props: ['actionsDisabled'],
 				template: '<div :data-actions-disabled="actionsDisabled"><slot /></div>',
@@ -410,6 +422,78 @@ describe('FlowsOverview - empty state', () => {
 
 		expect(wrapper.find('v-table-stub').exists()).toBe(true);
 		expect(wrapper.find('v-info-stub').exists()).toBe(false);
+	});
+});
+
+describe('FlowsOverview - import export', () => {
+	test('offers Flow import from the header bar', () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const importAction = wrapper.find('[data-icon="file_upload"]');
+
+		expect(importAction.text()).toBe('');
+		expect(importAction.attributes('data-variant')).toBe('ghost');
+	});
+
+	test('exports the stored Flow rather than the translated table row', async () => {
+		const { saveAs } = (await vi.importMock('file-saver')) as { saveAs: ReturnType<typeof vi.fn> };
+		saveAs.mockClear();
+
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		// The row the context menu hands over has already been through `translate()`
+		vm.exportFlow({ id: 'flow-1', name: 'Resolved label' });
+
+		const [blob, filename] = saveAs.mock.calls[0]!;
+		expect(filename).toBe('flow-flow-1.json');
+		expect(JSON.parse(await blob.text()).flow.name).toBe('Send email');
+	});
+
+	test('notifies after importing a Flow', async () => {
+		const api = (await vi.importMock<{ default: { post: ReturnType<typeof vi.fn> } }>('@/api')).default;
+		const { notify } = (await vi.importMock('@/utils/notify')) as { notify: ReturnType<typeof vi.fn> };
+		api.post.mockResolvedValue({});
+
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.importFile = {
+			text: () =>
+				Promise.resolve(
+					JSON.stringify({ version: 1, flow: { id: 'flow-1', name: 'Imported', operation: null }, operations: [] }),
+				),
+		};
+
+		await vm.importFlow();
+
+		expect(notify).toHaveBeenCalledWith({ title: 'flow_import_success', type: 'success' });
+	});
+
+	test('reports an unusable import file instead of an unexpected error', async () => {
+		const { notify } = (await vi.importMock('@/utils/notify')) as { notify: ReturnType<typeof vi.fn> };
+
+		const { unexpectedError } = (await vi.importMock('@/utils/unexpected-error')) as {
+			unexpectedError: ReturnType<typeof vi.fn>;
+		};
+
+		notify.mockClear();
+		unexpectedError.mockClear();
+
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.importFile = { text: () => Promise.resolve('not json') };
+
+		await vm.importFlow();
+
+		expect(unexpectedError).not.toHaveBeenCalled();
+
+		expect(notify).toHaveBeenCalledWith({
+			title: 'flow_import_failed',
+			text: 'flow_import_not_json',
+			type: 'error',
+			dialog: true,
+		});
 	});
 });
 
