@@ -408,6 +408,28 @@ export interface RoleMetrics {
 	depth: DistributionSummary;
 }
 
+export interface OperationMetrics {
+	count: number;
+	type: Record<string, CountMetric>;
+}
+
+export interface DeploymentMetrics {
+	count: number;
+	provider: Record<string, CountMetric>;
+	projects: CountMetric;
+	runs: CountMetric;
+}
+
+export interface OAuthClientMetrics {
+	count: number;
+	registration: Record<string, CountMetric>;
+}
+
+export interface PresetMetrics {
+	count: number;
+	bookmarks: CountMetric;
+}
+
 export interface FlowMetrics {
 	active: CountMetric;
 	inactive: CountMetric;
@@ -443,6 +465,15 @@ export interface TelemetryMetrics {
 	roles: RoleMetrics | null;
 	policies: CountMetric | null;
 	flows: FlowMetrics | null;
+	operations: OperationMetrics | null;
+	relations: CountMetric | null;
+	permissions: CountMetric | null;
+	folders: CountMetric | null;
+	comments: CountMetric | null;
+	versions: CountMetric | null;
+	presets: PresetMetrics | null;
+	deployments: DeploymentMetrics | null;
+	oauth_clients: OAuthClientMetrics | null;
 	translations: TranslationMetrics | null;
 	dashboards: DashboardMetrics | null;
 	panels: CountMetric | null;

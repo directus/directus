@@ -6,10 +6,14 @@ import type {
 	CollectionMetrics,
 	DashboardMetrics,
 	DatabaseMetrics,
+	DeploymentMetrics,
 	ExtensionBreakdown,
 	ExtensionMetrics,
 	FileMetrics,
 	FlowMetrics,
+	OAuthClientMetrics,
+	OperationMetrics,
+	PresetMetrics,
 	RoleMetrics,
 	TranslationMetrics,
 	UserMetrics,
@@ -138,6 +142,29 @@ vi.mock('./database.js', () => ({
 	),
 }));
 
+vi.mock('./operations.js', () => ({
+	collectOperationMetrics: vi.fn(async (): Promise<OperationMetrics> => ({ count: 0, type: {} })),
+}));
+
+vi.mock('./presets.js', () => ({
+	collectPresetMetrics: vi.fn(async (): Promise<PresetMetrics> => ({ count: 0, bookmarks: { count: 0 } })),
+}));
+
+vi.mock('./deployments.js', () => ({
+	collectDeploymentMetrics: vi.fn(
+		async (): Promise<DeploymentMetrics> => ({
+			count: 0,
+			provider: {},
+			projects: { count: 0 },
+			runs: { count: 0 },
+		}),
+	),
+}));
+
+vi.mock('./oauth-clients.js', () => ({
+	collectOAuthClientMetrics: vi.fn(async (): Promise<OAuthClientMetrics> => ({ count: 0, registration: {} })),
+}));
+
 vi.mock('../../utils/service-count.js', () => ({
 	serviceCount: vi.fn(async (): Promise<number> => 0),
 }));
@@ -171,6 +198,15 @@ describe('collectMetrics', () => {
 		expect(result).toHaveProperty('panels');
 		expect(result).toHaveProperty('extensions');
 		expect(result).toHaveProperty('database');
+		expect(result).toHaveProperty('operations');
+		expect(result).toHaveProperty('relations');
+		expect(result).toHaveProperty('permissions');
+		expect(result).toHaveProperty('folders');
+		expect(result).toHaveProperty('comments');
+		expect(result).toHaveProperty('versions');
+		expect(result).toHaveProperty('presets');
+		expect(result).toHaveProperty('deployments');
+		expect(result).toHaveProperty('oauth_clients');
 	});
 
 	test('leaves api_requests to the report, since reading it resets the counters', async () => {
@@ -209,12 +245,13 @@ describe('collectMetrics', () => {
 	});
 
 	test('nulls a service count when it throws', async () => {
-		// Shares is the first of the four service counts to be queued.
+		// Relations is the first of the plain service counts to be queued.
 		vi.mocked(serviceCount).mockRejectedValueOnce(new Error('no connection'));
 
 		const result = await collectMetrics(mockDb, mockSchema);
 
-		expect(result.shares).toBeNull();
+		expect(result.relations).toBeNull();
+		expect(result.shares).toStrictEqual({ count: 0 });
 		expect(result.fields).toStrictEqual({ count: 0 });
 		expect(result.panels).toStrictEqual({ count: 0 });
 		expect(result.policies).toStrictEqual({ count: 0 });
