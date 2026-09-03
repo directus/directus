@@ -82,3 +82,20 @@ test('drops fields relating to an inactive collection', () => {
 test('drops every field when the parent collection is inactive', () => {
 	expect(adjustFieldsForDisplays(['body'], 'comments')).toEqual([]);
 });
+
+test('drops a nested field that traverses an inactive collection', () => {
+	const collectionsStore = useCollectionsStore();
+	const fieldsStore = useFieldsStore();
+	const relationsStore = useRelationsStore();
+
+	// articles -> author -> authors (active) -> company -> companies (inactive)
+	collectionsStore.collections = [
+		...collectionsStore.collections,
+		collectionsStore.prepareCollectionForApp(makeCollection('companies', 'inactive')),
+	];
+
+	fieldsStore.fields = [...fieldsStore.fields, makeField('authors', 'company'), makeField('companies', 'name')];
+	relationsStore.relations = [...relationsStore.relations, makeRelation('authors', 'company', 'companies')];
+
+	expect(adjustFieldsForDisplays(['title', 'author.company.name'], 'articles')).toEqual(['title']);
+});

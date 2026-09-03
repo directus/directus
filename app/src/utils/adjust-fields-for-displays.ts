@@ -3,15 +3,13 @@ import { computed } from 'vue';
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
 import { isFieldCollectionInactive } from '@/utils/collection-status';
+import { getRelatedCollection } from '@/utils/get-related-collection';
 
 export function adjustFieldsForDisplays(fields: readonly string[], parentCollection: string): string[] {
 	const fieldsStore = useFieldsStore();
 
 	const adjustedFields: string[] = fields
-		.filter((fieldKey) => {
-			const [rootFieldKey] = fieldKey.split('.') as [string];
-			return isFieldCollectionInactive({ collection: parentCollection, field: rootFieldKey }) === false;
-		})
+		.filter((fieldKey) => traversesInactiveCollection(parentCollection, fieldKey) === false)
 		.map((fieldKey) => {
 			const field: Field | null = fieldsStore.getField(parentCollection, fieldKey);
 
@@ -65,4 +63,22 @@ export function adjustFieldsForDisplays(fields: readonly string[], parentCollect
 		.flat();
 
 	return adjustedFields;
+}
+
+/**
+ * Whether any hop of a dotted field path lands on an inactive collection, walking the path one
+ * field at a time so a deeply nested field can't slip through on an active root.
+ */
+function traversesInactiveCollection(parentCollection: string, fieldKey: string): boolean {
+	let collection: string | undefined = parentCollection;
+
+	for (const fieldName of fieldKey.split('.')) {
+		if (!collection) return false;
+		if (isFieldCollectionInactive({ collection, field: fieldName })) return true;
+
+		const related = getRelatedCollection(collection, fieldName);
+		collection = related ? (related.junctionCollection ?? related.relatedCollection) : undefined;
+	}
+
+	return false;
 }
