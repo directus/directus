@@ -64,9 +64,10 @@ test('Returns default value for a path one segment past the depth limit', () => 
 	expect(get(nest(26, 'example'), path, 'default value')).toBe('default value');
 });
 
-// The path used to be re-split and rejoined at every level, so walking it was quadratic in the
-// number of segments, and the recursion overflowed the stack. Asserting completion rather than
-// elapsed time keeps this stable in CI.
+// A path with far more segments than any object is deep is the shape that costs quadratic string
+// work when the remainder is re-split per level. The depth cap rejects it before the walk starts,
+// so this covers the cap only — the loop is never entered at this length. Asserting completion
+// rather than elapsed time keeps this stable in CI.
 test('Returns default value for a pathological path without stalling or overflowing', () => {
 	const depth = 20_000;
 	const path = Array.from({ length: depth }, () => 'a').join('.');

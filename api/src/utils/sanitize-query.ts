@@ -12,7 +12,7 @@ import { extractRequiredDynamicVariableContext } from '../permissions/utils/extr
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { Meta } from '../types/index.js';
 import type { QueryLimits } from './query-limits.js';
-import { checkDepth, checkFilterNodes, checkNode, checkSize, getQueryLimits } from './query-limits.js';
+import { consumeFilterNodes, consumeNode, consumeSize, getQueryLimits, validateDepth } from './query-limits.js';
 import { splitFields } from './split-fields.js';
 
 /**
@@ -174,7 +174,7 @@ async function sanitizeFilter(
 	let filters = rawFilter;
 
 	if (typeof filters === 'string') {
-		checkSize(filters, limits, 'filter');
+		consumeSize(filters, limits, 'filter');
 
 		try {
 			filters = parseJSON(filters);
@@ -185,7 +185,7 @@ async function sanitizeFilter(
 
 	// Ahead of the try/catch below, so the specific reason survives instead of being collapsed
 	// into the generic "Invalid filter object"
-	checkFilterNodes(filters, limits);
+	consumeFilterNodes(filters, limits);
 
 	try {
 		let filterContext;
@@ -262,7 +262,7 @@ async function sanitizeDeep(
 	const logger = useLogger();
 
 	if (typeof deep === 'string') {
-		checkSize(deep, limits, 'deep');
+		consumeSize(deep, limits, 'deep');
 
 		try {
 			deep = parseJSON(deep);
@@ -274,7 +274,7 @@ async function sanitizeDeep(
 	return parse(deep);
 
 	async function parse(level: Record<string, any>, isRoot = true): Promise<Record<string, any>> {
-		checkDepth(limits.deepDepth, limits.maxDeepDepth, 'deep');
+		validateDepth(limits.deepDepth, limits.maxDeepDepth, 'deep');
 
 		const node: Record<string, any> = Object.create(null);
 		const subQuery: Record<string, any> = {};
@@ -282,24 +282,24 @@ async function sanitizeDeep(
 		for (const [key, value] of Object.entries(level)) {
 			if (!key) break;
 
-			checkNode(limits, 'deep');
+			consumeNode(limits, 'deep');
 
 			if (key.startsWith('_')) {
 				// Collect all sub query parameters without the leading underscore
 				subQuery[key.substring(1)] = value;
 			} else if (isPlainObject(value)) {
+				// No restore on throw: nothing between here and the request handler catches a
+				// rejection and keeps parsing, so the whole limits object is discarded either way
 				limits.deepDepth++;
 
-				try {
-					const child = await parse(value, false);
+				const child = await parse(value, false);
 
-					// Only attach relations that actually contributed something, matching the previous
-					// behavior where empty branches never appeared in the result.
-					if (Object.keys(child).length > 0) {
-						node[key] = child;
-					}
-				} finally {
-					limits.deepDepth--;
+				limits.deepDepth--;
+
+				// Only attach relations that actually contributed something, matching the previous
+				// behavior where empty branches never appeared in the result.
+				if (Object.keys(child).length > 0) {
+					node[key] = child;
 				}
 			}
 		}

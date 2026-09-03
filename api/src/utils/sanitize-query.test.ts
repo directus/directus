@@ -256,10 +256,12 @@ describe('filter', () => {
 });
 
 describe('query limits', () => {
+	const FILTER_PREFIX = '{"a":{"_eq":"';
+	const FILTER_SUFFIX = '"}}';
+
 	/** A filter that serializes to exactly `length` characters */
 	function filterOfSize(length: number) {
-		const wrapper = '{"a":{"_eq":"' + '"}}';
-		return '{"a":{"_eq":"' + 'x'.repeat(length - wrapper.length) + '"}}';
+		return FILTER_PREFIX + 'x'.repeat(length - FILTER_PREFIX.length - FILTER_SUFFIX.length) + FILTER_SUFFIX;
 	}
 
 	/** A filter with `count` leaves, so `count + 1` nodes including the root object */
@@ -317,7 +319,15 @@ describe('query limits', () => {
 
 			const sanitizedQuery = await sanitizeQuery({ filter: filterWithLeaves(5) }, null as any);
 
-			expect(sanitizedQuery.filter).toBeDefined();
+			expect(sanitizedQuery.filter).toEqual({
+				_and: [
+					{ field_0: { _eq: 'x' } },
+					{ field_1: { _eq: 'x' } },
+					{ field_2: { _eq: 'x' } },
+					{ field_3: { _eq: 'x' } },
+					{ field_4: { _eq: 'x' } },
+				],
+			});
 		});
 
 		test('should reject a filter one node over the limit', async () => {
@@ -333,7 +343,7 @@ describe('query limits', () => {
 
 			const sanitizedQuery = await sanitizeQuery({ filter: filterOfDepth(5) }, null as any);
 
-			expect(sanitizedQuery.filter).toBeDefined();
+			expect(sanitizedQuery.filter).toEqual({ a: { a: { a: { a: { _eq: 'x' } } } } });
 		});
 
 		test('should reject a filter one level over the depth limit', async () => {

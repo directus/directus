@@ -78,10 +78,10 @@ describe('Adjust a given date by a given change in duration.', () => {
 		},
 	);
 
-	// A long run of digits followed by a character that defeats the anchor used to take time
-	// quadratic in the input length. The length guard now rejects it before the regex runs, and the
-	// regex no longer offers a split point per digit either. Asserting completion rather than
-	// elapsed time keeps this stable in CI.
+	// A long run of digits followed by a character that defeats the anchor is the shape that takes
+	// time quadratic in the input length. The length guard rejects it before the regex runs, so
+	// this covers the guard only — `REGEX_DATE_ADJUSTMENT` is never reached at this length.
+	// Asserting completion rather than elapsed time keeps this stable in CI.
 	it.each([1_000, 100_000])('rejects %i digits followed by an invalid suffix without stalling', (digits) => {
 		expect(adjustDate(date, '1'.repeat(digits) + '!')).toBe(undefined);
 	});

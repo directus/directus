@@ -22,7 +22,9 @@ import { clone } from 'lodash-es';
 /**
  * Well beyond the longest valid adjustment (`-0.000000000001milliseconds` is 26 characters), so
  * anything longer cannot match. Rejecting it up front keeps caller-supplied input from reaching
- * the regex at all.
+ * the regex at all, which is what bounds the cost here.
+ *
+ * Hardcoded rather than configurable: this package also ships to the browser and cannot read env.
  */
 const MAX_ADJUSTMENT_LENGTH = 64;
 

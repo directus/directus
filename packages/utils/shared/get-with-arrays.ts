@@ -1,7 +1,8 @@
 /**
  * Deepest path this will follow. Paths come from caller-supplied dynamic variables such as
- * `$CURRENT_USER.role.name`, so an unbounded one would let the caller pick how much work to do —
- * and, before this was iterative, how deep to recurse.
+ * `$CURRENT_USER.role.name`, so an unbounded one lets the caller choose how much work to do.
+ *
+ * Hardcoded rather than configurable: this package also ships to the browser and cannot read env.
  */
 const MAX_PATH_DEPTH = 25;
 
@@ -16,8 +17,8 @@ const MAX_PATH_DEPTH = 25;
  * ```
  */
 export function get(object: Record<string, any> | any[], path: string, defaultValue?: unknown): any {
-	// Split once up front. Re-splitting the remainder at every level, as the previous recursive
-	// version did, made the string work quadratic in the number of segments.
+	// Split once: re-splitting and rejoining the remainder per level would make the string work
+	// quadratic in the number of segments
 	const segments = path.split('.');
 
 	if (segments.length > MAX_PATH_DEPTH) {
