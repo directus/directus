@@ -9,7 +9,10 @@ import { useSettingsStore } from '@/stores/settings';
  * Converts {{ variable: description }} to {{ variable }}
  */
 function sanitizeTemplate(text: string): string {
-	return text.replace(/\{\{\s*([^:}]+):[^}]*\}\}/g, '{{ $1 }}');
+	// The leading whitespace is trimmed here rather than by a `\s*` before the capture: whitespace
+	// is also matched by `[^:}]+`, so the two could exchange characters, making a failed match
+	// quadratic in the input length.
+	return text.replace(/\{\{([^:}]+):[^}]*\}\}/g, (_, variable: string) => `{{ ${variable.trimStart()} }}`);
 }
 
 export function usePrompts() {

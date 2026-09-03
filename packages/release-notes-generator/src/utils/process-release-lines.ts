@@ -20,7 +20,9 @@ export function processReleaseLines(): { defaultChangelogFunctions: ChangelogFun
 		//
 		//   <normal-changeset-summary>
 		const finalSummary = summary.replace(/^::: notice\n[\s\S]*^:::$/m, '').trim();
-		const notice = summary.match(/::: notice\n+([\s\S]*)(?<!\n)\n+:::$/m)?.[1];
+		// The body has to start with a non-newline so it cannot exchange characters with the `\n+`
+		// separating it from the header, which would make a failed match quadratic
+		const notice = summary.match(/::: notice\n+((?:[^\n][\s\S]*)?)(?<!\n)\n+:::$/m)?.[1];
 
 		changesets.set(id, { summary: finalSummary, notice, ...rest });
 

@@ -195,11 +195,10 @@ export default typescriptEslint.config(
 		},
 	},
 
-	// Shared packages hold regexes that run against caller-supplied input, so a pattern whose
-	// worst case is worse than linear in the input length is a denial-of-service vector. Scoped
-	// rather than global for now; widen it as the rest of the codebase is audited.
+	// A regex whose worst case is worse than linear in the input length is a denial-of-service
+	// vector wherever the input can come from a caller.
 	{
-		files: ['packages/constants/**/*.ts', 'packages/utils/**/*.ts'],
+		files: ['**/*.{js,ts,vue}'],
 		plugins: { regexp: eslintPluginRegexp },
 		rules: {
 			'regexp/no-super-linear-backtracking': 'error',
