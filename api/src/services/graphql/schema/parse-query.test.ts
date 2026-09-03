@@ -563,3 +563,33 @@ describe('parseFields with resolved fragments', () => {
 		if (expected.deep) expect(query.deep).toEqual(expected.deep);
 	});
 });
+
+describe('query limits', () => {
+	// Every argument-bearing selection is sanitized separately. A fresh allowance per selection
+	// would let nesting multiply the work one query can cause, so they all have to draw from one.
+	test('should pass the same limits object to every selection', async () => {
+		const selections = [
+			buildField('relation_a', {
+				args: [buildArgument('limit', 10)],
+				children: [
+					buildField('relation_b', {
+						args: [buildArgument('limit', 10)],
+						children: [buildField('relation_c', { args: [buildArgument('limit', 10)] })],
+					}),
+				],
+			}),
+			buildField('relation_d', { args: [buildArgument('limit', 10)] }),
+		];
+
+		// The `afterEach` above is scoped to another block, so the recorded calls have to be reset
+		vi.mocked(sanitizeQuery).mockClear();
+
+		await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
+
+		const limitsPerCall = vi.mocked(sanitizeQuery).mock.calls.map(([, , , limits]) => limits);
+
+		expect(limitsPerCall.length).toBeGreaterThan(1);
+		expect(limitsPerCall.every((limits) => limits !== undefined)).toBe(true);
+		expect(new Set(limitsPerCall).size).toBe(1);
+	});
+});

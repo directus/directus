@@ -3,6 +3,7 @@ import { getRelationInfo } from '@directus/utils';
 import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode } from 'graphql';
 import { get, mapKeys, merge, uniq } from 'lodash-es';
 import { getRelatedCollection } from '../../../database/get-ast-from-query/utils/get-related-collection.js';
+import { getQueryLimits } from '../../../utils/query-limits.js';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { setDeep } from '../../../utils/set-deep.js';
 import { validateQuery } from '../../../utils/validate-query.js';
@@ -22,7 +23,12 @@ export async function getQuery(
 	accountability?: Accountability | null,
 	collection?: string,
 ): Promise<Query> {
-	const query: Query = await sanitizeQuery(rawQuery, schema, accountability);
+	// One allowance for the whole selection set. `parseFields` recurses into nested selections and
+	// sanitizes each one's arguments, so a fresh allowance per selection would let nesting multiply
+	// the work a single query is allowed to cause.
+	const limits = getQueryLimits();
+
+	const query: Query = await sanitizeQuery(rawQuery, schema, accountability, limits);
 
 	const parseAliases = (selections: readonly SelectionNode[]) => {
 		const aliases: Record<string, string> = {};
@@ -168,7 +174,7 @@ export async function getQuery(
 					merge(
 						{},
 						get(query.deep, path),
-						mapKeys(await sanitizeQuery(args, schema, accountability), (_value, key) => `_${key}`),
+						mapKeys(await sanitizeQuery(args, schema, accountability, limits), (_value, key) => `_${key}`),
 					),
 				);
 			}
