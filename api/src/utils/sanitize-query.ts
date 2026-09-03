@@ -11,6 +11,8 @@ import type { Context } from '../permissions/types.js';
 import { extractRequiredDynamicVariableContext } from '../permissions/utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { Meta } from '../types/index.js';
+import type { QueryLimits } from './query-limits.js';
+import { checkDepth, checkFilterNodes, checkNode, checkSize, getQueryLimits } from './query-limits.js';
 import { splitFields } from './split-fields.js';
 
 /**
@@ -20,6 +22,7 @@ export async function sanitizeQuery(
 	rawQuery: Record<string, any>,
 	schema: SchemaOverview,
 	accountability?: Accountability | null,
+	limits: QueryLimits = getQueryLimits(),
 ): Promise<Query> {
 	const env = useEnv();
 
@@ -58,7 +61,7 @@ export async function sanitizeQuery(
 	}
 
 	if (rawQuery['filter']) {
-		query.filter = await sanitizeFilter(rawQuery['filter'], schema, accountability || null);
+		query.filter = await sanitizeFilter(rawQuery['filter'], schema, accountability || null, limits);
 	}
 
 	if (rawQuery['offset'] !== undefined) {
@@ -95,7 +98,7 @@ export async function sanitizeQuery(
 	if (rawQuery['deep'] as Record<string, any>) {
 		if (!query.deep) query.deep = {};
 
-		query.deep = await sanitizeDeep(rawQuery['deep'], schema, accountability);
+		query.deep = await sanitizeDeep(rawQuery['deep'], schema, accountability, limits);
 	}
 
 	if (rawQuery['alias']) {
@@ -162,16 +165,27 @@ function sanitizeAggregate(rawAggregate: any): Aggregate {
 	return aggregate as Aggregate;
 }
 
-async function sanitizeFilter(rawFilter: any, schema: SchemaOverview, accountability: Accountability | null) {
+async function sanitizeFilter(
+	rawFilter: any,
+	schema: SchemaOverview,
+	accountability: Accountability | null,
+	limits: QueryLimits,
+) {
 	let filters = rawFilter;
 
 	if (typeof filters === 'string') {
+		checkSize(filters, limits, 'filter');
+
 		try {
 			filters = parseJSON(filters);
 		} catch {
 			throw new InvalidQueryError({ reason: 'Invalid JSON for filter object' });
 		}
 	}
+
+	// Ahead of the try/catch below, so the specific reason survives instead of being collapsed
+	// into the generic "Invalid filter object"
+	checkFilterNodes(filters, limits);
 
 	try {
 		let filterContext;
@@ -239,10 +253,17 @@ function sanitizeBacklink(rawBacklink: unknown) {
 	return rawBacklink !== false && rawBacklink !== 'false';
 }
 
-async function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, accountability?: Accountability | null) {
+async function sanitizeDeep(
+	deep: Record<string, any>,
+	schema: SchemaOverview,
+	accountability: Accountability | null | undefined,
+	limits: QueryLimits,
+) {
 	const logger = useLogger();
 
 	if (typeof deep === 'string') {
+		checkSize(deep, limits, 'deep');
+
 		try {
 			deep = parseJSON(deep);
 		} catch {
@@ -253,29 +274,41 @@ async function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, a
 	return parse(deep);
 
 	async function parse(level: Record<string, any>, isRoot = true): Promise<Record<string, any>> {
+		checkDepth(limits.deepDepth, limits.maxDeepDepth, 'deep');
+
 		const node: Record<string, any> = Object.create(null);
 		const subQuery: Record<string, any> = {};
 
 		for (const [key, value] of Object.entries(level)) {
 			if (!key) break;
 
+			checkNode(limits, 'deep');
+
 			if (key.startsWith('_')) {
 				// Collect all sub query parameters without the leading underscore
 				subQuery[key.substring(1)] = value;
 			} else if (isPlainObject(value)) {
-				const child = await parse(value, false);
+				limits.deepDepth++;
 
-				// Only attach relations that actually contributed something, matching the previous
-				// behavior where empty branches never appeared in the result.
-				if (Object.keys(child).length > 0) {
-					node[key] = child;
+				try {
+					const child = await parse(value, false);
+
+					// Only attach relations that actually contributed something, matching the previous
+					// behavior where empty branches never appeared in the result.
+					if (Object.keys(child).length > 0) {
+						node[key] = child;
+					}
+				} finally {
+					limits.deepDepth--;
 				}
 			}
 		}
 
 		// Sub query parameters only apply to a nested relation, not to the top-level deep object.
 		if (!isRoot && Object.keys(subQuery).length > 0) {
-			const parsedSubQuery = await sanitizeQuery(subQuery, schema, accountability);
+			// Same limits object, so a nested `_filter` draws from the remaining allowance rather
+			// than getting a fresh one
+			const parsedSubQuery = await sanitizeQuery(subQuery, schema, accountability, limits);
 
 			for (const [parsedKey, parsedValue] of Object.entries(parsedSubQuery)) {
 				node[`_${parsedKey}`] = parsedValue;
