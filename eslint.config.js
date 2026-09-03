@@ -195,8 +195,8 @@ export default typescriptEslint.config(
 		},
 	},
 
-	// A regex whose worst case is worse than linear in the input length is a denial-of-service
-	// vector wherever the input can come from a caller.
+	// A regex that is worse than linear in its input length is a denial-of-service vector wherever
+	// that input comes from a caller
 	{
 		files: ['**/*.{js,ts,vue}'],
 		plugins: { regexp: eslintPluginRegexp },

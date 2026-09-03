@@ -269,10 +269,7 @@ describe('query limits', () => {
 		return Object.fromEntries(Array.from({ length: count }, (_, index) => [`field_${index}`, 'x']));
 	}
 
-	/**
-	 * A filter nested `depth` containers deep, the innermost being the operator object. Built
-	 * iteratively so the helper itself survives depths beyond the call stack.
-	 */
+	/** A filter nested `depth` containers deep, built iteratively so the helper survives any depth */
 	function filterOfDepth(depth: number): Record<string, any> {
 		let filter: Record<string, any> = { _eq: 'x' };
 
@@ -314,7 +311,6 @@ describe('query limits', () => {
 
 	describe('filter nodes', () => {
 		test('should accept a filter at the node limit', async () => {
-			// 5 leaves + the root object
 			vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_NODES: 6 });
 
 			const sanitizedQuery = await sanitizeQuery({ filter: filterWithLeaves(5) }, null as any);
@@ -377,16 +373,14 @@ describe('query limits', () => {
 		});
 	});
 
-	// `sanitizeDeep` recurses back into `sanitizeQuery` for every nested `_filter`. If each call got
-	// its own allowance, nesting would multiply the work a single request can cause, so these assert
-	// the allowance is one shared pool rather than a per-call check.
+	// `sanitizeDeep` recurses back into `sanitizeQuery` for every nested `_filter`, so a per-call
+	// allowance would let nesting multiply the work one request can cause.
 	describe('shared allowance across `deep`', () => {
 		test('should share the node allowance across `deep` levels', async () => {
-			// 11 nodes, so the per-filter cost dominates the cost of walking `deep` itself and the
-			// assertions below cannot be satisfied by a per-call allowance
+			// 11 nodes, so the per-filter cost dominates walking `deep` itself
 			const filter = filterWithLeaves(10);
 
-			// One relation level costs 13 nodes (2 for `deep`, 11 for the filter); five cost 65
+			// One level costs 13 nodes, five cost 65
 			const oneLevel = { relation_1: { _filter: filter } };
 
 			const fiveLevels = {
@@ -405,12 +399,11 @@ describe('query limits', () => {
 			vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_NODES: 20 });
 			await expect(sanitizeQuery({ deep: oneLevel }, null as any)).resolves.toBeDefined();
 
-			// Same allowance, five copies of a filter that each fit comfortably on their own. A
-			// per-call allowance would admit this; a shared one must not.
+			// Five copies that each fit on their own: a per-call allowance would admit this
 			vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_NODES: 20 });
 			await expect(sanitizeQuery({ deep: fiveLevels }, null as any)).rejects.toThrowError(InvalidQueryError);
 
-			// Raising the allowance to cover all five lets it through, so nothing else rejected it
+			// Enough for all five, confirming nothing else rejected it
 			vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_NODES: 100 });
 			await expect(sanitizeQuery({ deep: fiveLevels }, null as any)).resolves.toBeDefined();
 		});
@@ -436,7 +429,6 @@ describe('query limits', () => {
 	});
 
 	test('should leave a relational query within the shipped limits untouched', async () => {
-		// The merged `DEFAULTS`, so the limits are read the way production reads them
 		vi.mocked(useEnv).mockReturnValue(DEFAULTS);
 
 		const filter = { author: { role: { name: { _eq: 'admin' } } } };
@@ -448,9 +440,8 @@ describe('query limits', () => {
 		expect(sanitizedQuery.deep).toEqual({ translations: { _filter: filter, _limit: 10 } });
 	});
 
-	// The app's filter builder wraps every relational level in an `_and` group. With the group's
-	// array counted as a nesting level this reached depth 33 and was rejected under the shipped
-	// limits, despite being within `MAX_RELATIONAL_DEPTH`'s default of 10.
+	// The app's filter builder wraps every relational level in an `_and` group. Counting the
+	// group's array as a level takes this to depth 33, rejecting it under the shipped limits.
 	test('should accept a fully grouped relational filter at the shipped limits', async () => {
 		vi.mocked(useEnv).mockReturnValue(DEFAULTS);
 

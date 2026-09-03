@@ -1,8 +1,7 @@
 /**
- * Deepest path this will follow. Paths come from caller-supplied dynamic variables such as
- * `$CURRENT_USER.role.name`, so an unbounded one lets the caller choose how much work to do.
- *
- * Hardcoded rather than configurable: this package also ships to the browser and cannot read env.
+ * Paths come from caller-supplied dynamic variables like `$CURRENT_USER.role.name`, so an
+ * unbounded one lets the caller choose how much work to do. Not configurable: this package also
+ * ships to the browser and cannot read env.
  */
 const MAX_PATH_DEPTH = 25;
 
@@ -17,8 +16,7 @@ const MAX_PATH_DEPTH = 25;
  * ```
  */
 export function get(object: Record<string, any> | any[], path: string, defaultValue?: unknown): any {
-	// Split once: re-splitting and rejoining the remainder per level would make the string work
-	// quadratic in the number of segments
+	// Split once: re-splitting the remainder per level would be quadratic in the segment count
 	const segments = path.split('.');
 
 	if (segments.length > MAX_PATH_DEPTH) {

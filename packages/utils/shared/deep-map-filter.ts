@@ -71,9 +71,8 @@ export function deepMapFilter(
 				const [_key, targetCollection] = key.split(':') as [string, string | undefined];
 				key = _key;
 
-				// The name excludes `(` so exactly one position can open the argument list. Allowing
-				// it in both lets the name and the argument exchange characters, which makes a
-				// failed match quadratic in the key length.
+				// The name excludes `(` so exactly one position can open the argument list; sharing it
+				// with the argument makes a failed match quadratic in the key length
 				const functionMatch = /^([^$\s(]*?)\((.*?)\)$/.exec(key);
 				let functionName: string | undefined;
 

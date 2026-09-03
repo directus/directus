@@ -1,8 +1,7 @@
 /**
- * Limits bounding how much work parsing a single query is allowed to cause.
- *
- * `filter` is parsed and walked by `sanitizeQuery` before any router runs, so without these the
- * only bound on that work is the size of the request itself.
+ * `filter` is parsed and walked by `sanitizeQuery` before any router runs, so without these limits
+ * the only bound on that work is the size of the request. `size` and `nodes` are allowances spent
+ * across the whole parse, including filters nested under `deep`, so nesting cannot multiply them.
  */
 
 import { DEFAULTS, useEnv } from '@directus/env';
@@ -10,36 +9,21 @@ import { InvalidQueryError } from '@directus/errors';
 import { isPlainObject } from 'lodash-es';
 import { useLogger } from '../logger/index.js';
 
-/**
- * Limits for a single query parse. `size` and `nodes` are allowances spent across the whole parse,
- * including filters nested under `deep`, so nesting cannot be used to multiply the amount of work
- * one request is allowed to cause.
- */
 export type QueryLimits = {
-	/**
-	 * Remaining characters of serialized `filter`/`deep` input. Only string input is charged against
-	 * this: `filter[a][_eq]=1` and a JSON request body arrive already parsed, and are bounded by
-	 * `nodes` and `MAX_PAYLOAD_SIZE` instead.
-	 */
+	/** Only string input is charged; already-parsed input is bounded by `nodes` and `MAX_PAYLOAD_SIZE` */
 	size: number;
-	/** Remaining `filter`/`deep` nodes */
 	nodes: number;
-	/** Configured maxima, retained so a rejection can name the limit it hit */
+	/** Retained so a rejection can name the limit it hit */
 	maxSize: number;
 	maxNodes: number;
 	maxFilterDepth: number;
 	maxDeepDepth: number;
-	/**
-	 * Current `deep` nesting level. This is cursor state rather than a limit, and it lives here
-	 * because it has to survive the `sanitizeDeep` → `sanitizeQuery` → `sanitizeDeep` round trip a
-	 * nested `_deep` makes, and `sanitizeQuery`'s signature only carries the limits.
-	 */
+	/** Cursor state, here because it has to survive the `sanitizeQuery` round trip a nested `_deep` makes */
 	deepDepth: number;
 };
 
 type LimitKey = 'QUERY_FILTER_MAX_SIZE' | 'QUERY_FILTER_MAX_NODES' | 'QUERY_FILTER_MAX_DEPTH' | 'QUERY_DEEP_MAX_DEPTH';
 
-/** Keys already reported as unusable, so a bad value is not logged on every request */
 const warned = new Set<LimitKey>();
 
 export function getQueryLimits(): QueryLimits {
@@ -66,10 +50,8 @@ function limitFromEnv(key: LimitKey): number {
 		return value;
 	}
 
-	// Only a value that was actually set can be wrong. `useEnv` merges `DEFAULTS`, so an absent key
-	// means the env was not built, which happens in tests — warning there would be noise. A
-	// configured value that is unusable does need saying, or the operator is left with a limit they
-	// did not choose.
+	// `useEnv` merges `DEFAULTS`, so an absent key means the env was never built, as in tests. Only
+	// a value someone actually set is worth warning about, and only once.
 	if (configured !== undefined && warned.has(key) === false) {
 		warned.add(key);
 		useLogger().warn(`Invalid value for ${key}, falling back to ${DEFAULTS[key]}.`);
@@ -105,9 +87,8 @@ export function validateDepth(depth: number, maxDepth: number, parameter: string
 }
 
 /**
- * Spends the node allowance on every node of a parsed filter and rejects anything nested deeper
- * than `maxFilterDepth`. Iterative rather than recursive: this runs ahead of the recursive filter
- * parsers, so it has to survive input deeper than the call stack allows.
+ * Iterative rather than recursive: this runs ahead of the recursive filter parsers, so it has to
+ * survive input deeper than the call stack allows.
  */
 export function consumeFilterNodes(filter: unknown, limits: QueryLimits): void {
 	const stack: [unknown, number][] = [[filter, 1]];
@@ -129,9 +110,8 @@ export function consumeFilterNodes(filter: unknown, limits: QueryLimits): void {
 
 		validateDepth(depth, limits.maxFilterDepth, 'filter');
 
-		// The array that `_and`/`_or` wrap their operands in is a container, not a nesting level of
-		// its own. Counting it makes the depth of a filter depend on how it is grouped rather than
-		// how deeply it is nested.
+		// The array `_and`/`_or` wrap their operands in is a container, not a level of its own —
+		// counting it would make depth depend on how a filter is grouped
 		const childDepth = Array.isArray(value) ? depth : depth + 1;
 
 		for (const child of children) stack.push([child, childDepth]);

@@ -10,8 +10,7 @@ import {
 	validateDepth,
 } from './query-limits.js';
 
-// `DEFAULTS` is passed through unmocked, so the assertions below double as a check that the
-// shipped defaults have not drifted
+// `DEFAULTS` is unmocked, so the assertions below double as a drift check against defaults.ts
 vi.mock('@directus/env', async (importOriginal) => ({
 	...(await importOriginal<typeof import('@directus/env')>()),
 	useEnv: vi.fn(),
@@ -22,8 +21,7 @@ const { warn } = vi.hoisted(() => ({ warn: vi.fn() }));
 vi.mock('../logger/index.js', () => ({ useLogger: () => ({ warn }) }));
 
 beforeEach(() => {
-	// `useEnv` merges `DEFAULTS` in production, so this is the state the limits are normally read
-	// from. Tests that care about a specific value override it.
+	// The state production reads limits from; tests that care about a value override it
 	vi.mocked(useEnv).mockReturnValue(DEFAULTS);
 	warn.mockClear();
 });
@@ -36,7 +34,6 @@ function limits(overrides: Partial<QueryLimits> = {}): QueryLimits {
 	return {
 		size,
 		nodes,
-		// Nothing has been spent yet, so the maxima match the allowances, as in production
 		maxSize: size,
 		maxNodes: nodes,
 		maxFilterDepth: 100,
@@ -66,7 +63,6 @@ describe('getQueryLimits', () => {
 		});
 	});
 
-	// `useEnv` is left at the merged `DEFAULTS`, so this reads the limits the way production does
 	test('should use the shipped defaults', () => {
 		expect(getQueryLimits()).toEqual({
 			size: 32_768,
@@ -82,7 +78,7 @@ describe('getQueryLimits', () => {
 	});
 
 	test('should fall back silently when the key is absent', () => {
-		// Only reachable when the env was never built, as in a test — it is not a misconfiguration
+		// Only reachable when the env was never built, so it is not a misconfiguration
 		vi.mocked(useEnv).mockReturnValue({});
 
 		expect(getQueryLimits().nodes).toBe(10_000);
@@ -101,9 +97,8 @@ describe('getQueryLimits', () => {
 		expect(getQueryLimits().nodes).toBe(10_000);
 	});
 
-	// `QUERY_FILTER_MAX_SIZE` is used here because the memo of already-reported keys is module
-	// level and never cleared: no other test in this file configures this key to an unusable
-	// value, so the assertion does not depend on test ordering.
+	// The memo of reported keys is module level and never cleared. No other test configures this
+	// key to an unusable value, so the assertion does not depend on ordering.
 	test('should warn once for a configured value that is unusable', () => {
 		vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_SIZE: 'not-a-number' });
 
@@ -155,7 +150,6 @@ describe('consumeSize', () => {
 
 		consumeSize('abc', current, 'filter');
 
-		// Individually within the allowance, but not on top of the first call
 		expect(() => consumeSize('abc', current, 'deep')).toThrowError(
 			'Invalid query. "deep" exceeds the maximum allowed size of',
 		);
@@ -167,7 +161,6 @@ describe('consumeSize', () => {
 		);
 	});
 
-	// The operator has to be able to tell which limit was hit and what it is currently set to
 	test('should name the configured maximum in the error', () => {
 		expect(() => consumeSize('abcdef', limits({ size: 5, maxSize: 5 }), 'filter')).toThrowError(
 			'Invalid query. "filter" exceeds the maximum allowed size of 5 characters.',
@@ -198,7 +191,7 @@ describe('consumeNode', () => {
 
 		consumeNode(current, 'filter');
 
-		// The maximum is reported, not what is left of the allowance
+		// Reports the maximum, not what is left
 		expect(() => consumeNode(current, 'deep')).toThrowError(
 			'Invalid query. "deep" exceeds the maximum allowed node count of 1.',
 		);
@@ -227,7 +220,6 @@ describe('consumeFilterNodes', () => {
 	test('should count the root, every container and every leaf', () => {
 		const current = limits({ nodes: 100 });
 
-		// root object, the `{ _eq }` object, and the `'x'` leaf
 		consumeFilterNodes({ field: { _eq: 'x' } }, current);
 
 		expect(current.nodes).toBe(97);
@@ -236,7 +228,6 @@ describe('consumeFilterNodes', () => {
 	test('should count array entries', () => {
 		const current = limits({ nodes: 100 });
 
-		// root object, the `{ _in }` object, the array, and three leaves
 		consumeFilterNodes({ field: { _in: ['a', 'b', 'c'] } }, current);
 
 		expect(current.nodes).toBe(94);
@@ -268,14 +259,12 @@ describe('consumeFilterNodes', () => {
 		const current = limits({ nodes: 4 });
 		const filter = { field: { _eq: 'x' } };
 
-		// Fits on its own, but not twice over
 		consumeFilterNodes(filter, current);
 
 		expect(() => consumeFilterNodes(filter, current)).toThrowError(InvalidQueryError);
 	});
 
 	test('should accept nesting exactly at the depth limit', () => {
-		// Three containers: `{ a }`, `{ b }`, `{ _eq }`
 		const filter = { a: { b: { _eq: 'x' } } };
 
 		expect(() => consumeFilterNodes(filter, limits({ maxFilterDepth: 3 }))).not.toThrow();
@@ -290,7 +279,6 @@ describe('consumeFilterNodes', () => {
 	});
 
 	test('should not count the array wrapping an `_and` group as a level', () => {
-		// `{ _and: [...] }`, then the entry object, then `{ _eq }` — the array is not a level
 		const filter = { _and: [{ field: { _eq: 'x' } }] };
 
 		expect(() => consumeFilterNodes(filter, limits({ maxFilterDepth: 3 }))).not.toThrow();
@@ -301,14 +289,12 @@ describe('consumeFilterNodes', () => {
 		const ungrouped = { a: { b: { _eq: 'x' } } };
 		const grouped = { _and: [{ a: { _and: [{ b: { _and: [{ _eq: 'x' }] } }] } }] };
 
-		// Both reach two relations deep, so grouping must not change the depth charged
 		expect(() => consumeFilterNodes(ungrouped, limits({ maxFilterDepth: 3 }))).not.toThrow();
 		expect(() => consumeFilterNodes(grouped, limits({ maxFilterDepth: 6 }))).not.toThrow();
 	});
 
-	// Regression test: ten relational levels each wrapped in an `_and` group, which is what the
-	// app's filter builder emits. Counting the group's array as a level took this to 33 rather
-	// than 22, so it was rejected despite being within `MAX_RELATIONAL_DEPTH`'s default of 10.
+	// The shape the app's filter builder emits. Counting the group's array as a level takes this
+	// to 33 rather than 22, rejecting a filter within `MAX_RELATIONAL_DEPTH`'s default of 10.
 	test('should charge a fully grouped filter 2 levels per relation', () => {
 		let filter: Record<string, any> = { _and: [{ _eq: 'x' }] };
 
@@ -327,7 +313,7 @@ describe('consumeFilterNodes', () => {
 			filter = { a: filter };
 		}
 
-		// The walker is iterative, so this is a rejection rather than a RangeError
+		// Iterative, so this rejects rather than overflowing
 		expect(() => consumeFilterNodes(filter, limits({ nodes: Infinity, maxFilterDepth: 25 }))).toThrowError(
 			InvalidQueryError,
 		);

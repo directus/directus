@@ -64,10 +64,8 @@ test('Returns default value for a path one segment past the depth limit', () => 
 	expect(get(nest(26, 'example'), path, 'default value')).toBe('default value');
 });
 
-// A path with far more segments than any object is deep is the shape that costs quadratic string
-// work when the remainder is re-split per level. The depth cap rejects it before the walk starts,
-// so this covers the cap only — the loop is never entered at this length. Asserting completion
-// rather than elapsed time keeps this stable in CI.
+// The quadratic shape. The depth cap rejects it first, so this covers the cap only — the walk is
+// never entered at this length.
 test('Returns default value for a pathological path without stalling or overflowing', () => {
 	const depth = 20_000;
 	const path = Array.from({ length: depth }, () => 'a').join('.');

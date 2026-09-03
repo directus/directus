@@ -9,10 +9,8 @@ import { useSettingsStore } from '@/stores/settings';
  * Converts {{ variable: description }} to {{ variable }}
  */
 function sanitizeTemplate(text: string): string {
-	// Both classes exclude `{` and `}` so a placeholder cannot start inside another one, and the
-	// leading whitespace is trimmed here rather than matched by a `\s*` before the capture.
-	// Without either, a run of `{` costs time quadratic in the input length: whitespace is also
-	// matched by the name, and with `/g` every `{` is another start position to scan forward from.
+	// Excluding `{` from both classes, and trimming here rather than matching a leading `\s*`,
+	// keeps a run of `{` linear — either one alone leaves it quadratic in the input length
 	return text.replace(/\{\{([^:}{]+):[^}{]*\}\}/g, (_, variable: string) => `{{ ${variable.trimStart()} }}`);
 }
 

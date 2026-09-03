@@ -61,12 +61,10 @@ describe('Adjust a given date by a given change in duration.', () => {
 	});
 
 	it('accepts a long but valid adjustment', () => {
-		// Exercises the separator branch at a length far past anything realistic
 		expect(adjustDate(date, '1' + ' '.repeat(40) + 'days')).toStrictEqual(new Date('2021-09-21T21:06:51.517Z'));
 	});
 
-	// The numeric group is now written so there is exactly one way to match any input. These pin
-	// which forms it accepts, so the restructuring cannot quietly widen or narrow it.
+	// Pin which numeric forms are accepted, so the pattern cannot quietly widen or narrow
 	it.each(['1', '10', '1.5', '.5', '0.5', '-1', '-1.5', '-.5'])('accepts the numeric form %s', (adjustment) => {
 		expect(adjustDate(date, adjustment)).toBeInstanceOf(Date);
 	});
@@ -78,10 +76,8 @@ describe('Adjust a given date by a given change in duration.', () => {
 		},
 	);
 
-	// A long run of digits followed by a character that defeats the anchor is the shape that takes
-	// time quadratic in the input length. The length guard rejects it before the regex runs, so
-	// this covers the guard only — `REGEX_DATE_ADJUSTMENT` is never reached at this length.
-	// Asserting completion rather than elapsed time keeps this stable in CI.
+	// The quadratic shape. The length guard rejects it first, so this covers the guard only — the
+	// regex is never reached at this length.
 	it.each([1_000, 100_000])('rejects %i digits followed by an invalid suffix without stalling', (digits) => {
 		expect(adjustDate(date, '1'.repeat(digits) + '!')).toBe(undefined);
 	});

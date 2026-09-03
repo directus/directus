@@ -565,8 +565,8 @@ describe('parseFields with resolved fragments', () => {
 });
 
 describe('query limits', () => {
-	// Every argument-bearing selection is sanitized separately. A fresh allowance per selection
-	// would let nesting multiply the work one query can cause, so they all have to draw from one.
+	// Each argument-bearing selection is sanitized separately, so a fresh allowance per selection
+	// would let nesting multiply the work one query can cause
 	test('should pass the same limits object to every selection', async () => {
 		const selections = [
 			buildField('relation_a', {
@@ -581,7 +581,7 @@ describe('query limits', () => {
 			buildField('relation_d', { args: [buildArgument('limit', 10)] }),
 		];
 
-		// The `afterEach` above is scoped to another block, so the recorded calls have to be reset
+		// The `afterEach` above is scoped to another block
 		vi.mocked(sanitizeQuery).mockClear();
 
 		await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);

@@ -288,9 +288,8 @@ async function sanitizeDeep(
 				// Collect all sub query parameters without the leading underscore
 				subQuery[key.substring(1)] = value;
 			} else if (isPlainObject(value)) {
-				// Restored on the way out rather than left to the object being discarded: one
-				// limits object now spans a whole GraphQL selection set, so it outlives the call
-				// that mutates it and cannot rely on a throw ending every parse that shares it.
+				// Restored on the way out: one limits object spans a whole GraphQL selection set, so
+				// it outlives the call that mutates it
 				limits.deepDepth++;
 
 				try {
@@ -309,8 +308,7 @@ async function sanitizeDeep(
 
 		// Sub query parameters only apply to a nested relation, not to the top-level deep object.
 		if (!isRoot && Object.keys(subQuery).length > 0) {
-			// Same limits object, so a nested `_filter` draws from the remaining allowance rather
-			// than getting a fresh one
+			// Same limits object, so a nested `_filter` draws from what is left
 			const parsedSubQuery = await sanitizeQuery(subQuery, schema, accountability, limits);
 
 			for (const [parsedKey, parsedValue] of Object.entries(parsedSubQuery)) {
