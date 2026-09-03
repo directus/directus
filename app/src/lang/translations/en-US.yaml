@@ -1730,6 +1730,7 @@ source_module: Node Module
 collection: Collection
 collections: Collections
 collection_inactive: This collection is inactive
+collection_inactive_copy: This view references {collection}, which is inactive.
 content: Content
 singleton: Singleton
 singleton_label: Treat as single object
