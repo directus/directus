@@ -14,6 +14,7 @@ import VMenu from '@/components/v-menu.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 import { CollabFieldContext } from '@/composables/use-collab';
 import type { ContentVersionMaybeNew } from '@/types/versions';
+import { isFieldCollectionInactive } from '@/utils/collection-status';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import CollabIndicatorField from '@/views/private/components/collab/CollabIndicatorField.vue';
 
@@ -62,6 +63,8 @@ const props = withDefaults(
 const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue']);
 
 const { t } = useI18n();
+
+const collectionInactive = computed(() => isFieldCollectionInactive(props.field));
 
 const { focusedBy, onFieldUnset, onFieldUpdate, onBlur, onFocus } = props.collabFieldContext;
 
@@ -288,6 +291,8 @@ function useComputedValues() {
 			@cancel="showRaw = false"
 			@set-raw-value="onRawValueSubmit"
 		/>
+
+		<small v-if="collectionInactive" class="type-note">{{ $t('collection_inactive') }}</small>
 
 		<small v-if="field.meta && field.meta.note" v-md="{ value: field.meta.note, target: '_blank' }" class="type-note" />
 
