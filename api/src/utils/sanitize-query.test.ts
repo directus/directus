@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { DEFAULTS, useEnv } from '@directus/env';
 import { InvalidQueryError } from '@directus/errors';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
@@ -436,7 +436,8 @@ describe('query limits', () => {
 	});
 
 	test('should leave a relational query within the shipped limits untouched', async () => {
-		vi.mocked(useEnv).mockReturnValue({});
+		// The merged `DEFAULTS`, so the limits are read the way production reads them
+		vi.mocked(useEnv).mockReturnValue(DEFAULTS);
 
 		const filter = { author: { role: { name: { _eq: 'admin' } } } };
 		const deep = { translations: { _filter: filter, _limit: 10 } };
@@ -451,7 +452,7 @@ describe('query limits', () => {
 	// array counted as a nesting level this reached depth 33 and was rejected under the shipped
 	// limits, despite being within `MAX_RELATIONAL_DEPTH`'s default of 10.
 	test('should accept a fully grouped relational filter at the shipped limits', async () => {
-		vi.mocked(useEnv).mockReturnValue({});
+		vi.mocked(useEnv).mockReturnValue(DEFAULTS);
 
 		let filter: Record<string, any> = { _and: [{ name: { _eq: 'admin' } }] };
 

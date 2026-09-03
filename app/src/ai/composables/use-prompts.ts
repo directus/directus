@@ -9,10 +9,11 @@ import { useSettingsStore } from '@/stores/settings';
  * Converts {{ variable: description }} to {{ variable }}
  */
 function sanitizeTemplate(text: string): string {
-	// The leading whitespace is trimmed here rather than by a `\s*` before the capture: whitespace
-	// is also matched by `[^:}]+`, so the two could exchange characters, making a failed match
-	// quadratic in the input length.
-	return text.replace(/\{\{([^:}]+):[^}]*\}\}/g, (_, variable: string) => `{{ ${variable.trimStart()} }}`);
+	// Both classes exclude `{` and `}` so a placeholder cannot start inside another one, and the
+	// leading whitespace is trimmed here rather than matched by a `\s*` before the capture.
+	// Without either, a run of `{` costs time quadratic in the input length: whitespace is also
+	// matched by the name, and with `/g` every `{` is another start position to scan forward from.
+	return text.replace(/\{\{([^:}{]+):[^}{]*\}\}/g, (_, variable: string) => `{{ ${variable.trimStart()} }}`);
 }
 
 export function usePrompts() {

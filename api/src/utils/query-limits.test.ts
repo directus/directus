@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { DEFAULTS, useEnv } from '@directus/env';
 import { InvalidQueryError } from '@directus/errors';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import {
@@ -10,15 +10,22 @@ import {
 	validateDepth,
 } from './query-limits.js';
 
-// `DEFAULTS` is passed through unmocked, so the fallback assertions below double as a check that
-// the shipped defaults have not drifted
+// `DEFAULTS` is passed through unmocked, so the assertions below double as a check that the
+// shipped defaults have not drifted
 vi.mock('@directus/env', async (importOriginal) => ({
 	...(await importOriginal<typeof import('@directus/env')>()),
-	useEnv: vi.fn().mockReturnValue({}),
+	useEnv: vi.fn(),
 }));
 
+const { warn } = vi.hoisted(() => ({ warn: vi.fn() }));
+
+vi.mock('../logger/index.js', () => ({ useLogger: () => ({ warn }) }));
+
 beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({});
+	// `useEnv` merges `DEFAULTS` in production, so this is the state the limits are normally read
+	// from. Tests that care about a specific value override it.
+	vi.mocked(useEnv).mockReturnValue(DEFAULTS);
+	warn.mockClear();
 });
 
 /** Limits with everything set generously, so a test only has to state the one it cares about */
@@ -59,7 +66,8 @@ describe('getQueryLimits', () => {
 		});
 	});
 
-	test('should fall back to the shipped defaults when unset', () => {
+	// `useEnv` is left at the merged `DEFAULTS`, so this reads the limits the way production does
+	test('should use the shipped defaults', () => {
 		expect(getQueryLimits()).toEqual({
 			size: 32_768,
 			nodes: 10_000,
@@ -69,6 +77,16 @@ describe('getQueryLimits', () => {
 			maxDeepDepth: 20,
 			deepDepth: 0,
 		});
+
+		expect(warn).not.toHaveBeenCalled();
+	});
+
+	test('should fall back silently when the key is absent', () => {
+		// Only reachable when the env was never built, as in a test — it is not a misconfiguration
+		vi.mocked(useEnv).mockReturnValue({});
+
+		expect(getQueryLimits().nodes).toBe(10_000);
+		expect(warn).not.toHaveBeenCalled();
 	});
 
 	test.each([
@@ -81,6 +99,19 @@ describe('getQueryLimits', () => {
 		vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_NODES: value });
 
 		expect(getQueryLimits().nodes).toBe(10_000);
+	});
+
+	// `QUERY_FILTER_MAX_SIZE` is used here because the memo of already-reported keys is module
+	// level and never cleared: no other test in this file configures this key to an unusable
+	// value, so the assertion does not depend on test ordering.
+	test('should warn once for a configured value that is unusable', () => {
+		vi.mocked(useEnv).mockReturnValue({ QUERY_FILTER_MAX_SIZE: 'not-a-number' });
+
+		getQueryLimits();
+		getQueryLimits();
+
+		expect(warn).toHaveBeenCalledTimes(1);
+		expect(warn).toHaveBeenCalledWith('Invalid value for QUERY_FILTER_MAX_SIZE, falling back to 32768.');
 	});
 
 	test('should accept a numeric string', () => {

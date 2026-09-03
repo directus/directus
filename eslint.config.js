@@ -202,9 +202,6 @@ export default typescriptEslint.config(
 		plugins: { regexp: eslintPluginRegexp },
 		rules: {
 			'regexp/no-super-linear-backtracking': 'error',
-			// A warning rather than an error: an unanchored start is quadratic only when the regex
-			// is run against caller-supplied input, which the rule cannot tell on its own
-			'regexp/no-super-linear-move': 'warn',
 		},
 	},
 

@@ -58,16 +58,19 @@ export function getQueryLimits(): QueryLimits {
 }
 
 function limitFromEnv(key: LimitKey): number {
-	const value = Number(useEnv()[key]);
+	const configured = useEnv()[key];
+	const value = Number(configured);
 
 	// `Infinity` is honored as an explicit opt-out
 	if (Number.isNaN(value) === false && value > 0) {
 		return value;
 	}
 
-	// `useEnv` already merges `DEFAULTS`, so this only happens when the configured value is
-	// unusable. Falling back silently would leave the operator with a limit they did not choose.
-	if (warned.has(key) === false) {
+	// Only a value that was actually set can be wrong. `useEnv` merges `DEFAULTS`, so an absent key
+	// means the env was not built, which happens in tests — warning there would be noise. A
+	// configured value that is unusable does need saying, or the operator is left with a limit they
+	// did not choose.
+	if (configured !== undefined && warned.has(key) === false) {
 		warned.add(key);
 		useLogger().warn(`Invalid value for ${key}, falling back to ${DEFAULTS[key]}.`);
 	}

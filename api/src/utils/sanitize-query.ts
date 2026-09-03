@@ -288,18 +288,21 @@ async function sanitizeDeep(
 				// Collect all sub query parameters without the leading underscore
 				subQuery[key.substring(1)] = value;
 			} else if (isPlainObject(value)) {
-				// No restore on throw: nothing between here and the request handler catches a
-				// rejection and keeps parsing, so the whole limits object is discarded either way
+				// Restored on the way out rather than left to the object being discarded: one
+				// limits object now spans a whole GraphQL selection set, so it outlives the call
+				// that mutates it and cannot rely on a throw ending every parse that shares it.
 				limits.deepDepth++;
 
-				const child = await parse(value, false);
+				try {
+					const child = await parse(value, false);
 
-				limits.deepDepth--;
-
-				// Only attach relations that actually contributed something, matching the previous
-				// behavior where empty branches never appeared in the result.
-				if (Object.keys(child).length > 0) {
-					node[key] = child;
+					// Only attach relations that actually contributed something, matching the previous
+					// behavior where empty branches never appeared in the result.
+					if (Object.keys(child).length > 0) {
+						node[key] = child;
+					}
+				} finally {
+					limits.deepDepth--;
 				}
 			}
 		}
