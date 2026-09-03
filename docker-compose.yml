@@ -73,7 +73,7 @@
 #     User:          admin
 #     Password:      --
 
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
@@ -101,7 +101,7 @@ services:
       MYSQL_DATABASE: directus
     ports:
       - 5101:3306
-      
+
   maria:
     image: mariadb:11.4
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
@@ -126,7 +126,7 @@ services:
     environment:
       - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
       - ORACLE_ALLOW_REMOTE=true
-    shm_size: '1gb' # more like smh-size amirite 🥁
+    shm_size: "1gb" # more like smh-size amirite 🥁
 
   cockroachdb:
     image: cockroachdb/cockroach:latest-v26.2
