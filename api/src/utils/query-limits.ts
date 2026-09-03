@@ -5,9 +5,10 @@
  * only bound on that work is the size of the request itself.
  */
 
-import { useEnv } from '@directus/env';
+import { DEFAULTS, useEnv } from '@directus/env';
 import { InvalidQueryError } from '@directus/errors';
 import { isPlainObject } from 'lodash-es';
+import { useLogger } from '../logger/index.js';
 
 /**
  * Limits for a single query parse. `size` and `nodes` are remaining allowances consumed across the
@@ -15,7 +16,11 @@ import { isPlainObject } from 'lodash-es';
  * amount of work one request is allowed to cause.
  */
 export type QueryLimits = {
-	/** Remaining characters of serialized `filter`/`deep` input */
+	/**
+	 * Remaining characters of serialized `filter`/`deep` input. Only string input is charged
+	 * against this: `filter[a][_eq]=1` and a JSON request body arrive already parsed, and are
+	 * bounded by `nodes` and `MAX_PAYLOAD_SIZE` instead.
+	 */
 	size: number;
 	/** Remaining `filter`/`deep` nodes */
 	nodes: number;
@@ -27,13 +32,10 @@ export type QueryLimits = {
 	deepDepth: number;
 };
 
-/** Used when the corresponding env var is unset or unusable. Mirrors `DEFAULTS` in `@directus/env`. */
-const LIMIT_FALLBACKS = {
-	QUERY_FILTER_MAX_SIZE: 32_768,
-	QUERY_FILTER_MAX_NODES: 10_000,
-	QUERY_FILTER_MAX_DEPTH: 50,
-	QUERY_DEEP_MAX_DEPTH: 20,
-} as const;
+type LimitKey = 'QUERY_FILTER_MAX_SIZE' | 'QUERY_FILTER_MAX_NODES' | 'QUERY_FILTER_MAX_DEPTH' | 'QUERY_DEEP_MAX_DEPTH';
+
+/** Keys already reported as unusable, so a bad value is not logged on every request */
+const warned = new Set<LimitKey>();
 
 export function getQueryLimits(): QueryLimits {
 	const env = useEnv();
@@ -47,11 +49,22 @@ export function getQueryLimits(): QueryLimits {
 	};
 }
 
-function limitFromEnv(env: Record<string, unknown>, key: keyof typeof LIMIT_FALLBACKS): number {
+function limitFromEnv(env: Record<string, unknown>, key: LimitKey): number {
 	const value = Number(env[key]);
 
-	// `Infinity` is honored as an explicit opt-out; unset or nonsensical values use the fallback
-	return Number.isNaN(value) || value <= 0 ? LIMIT_FALLBACKS[key] : value;
+	// `Infinity` is honored as an explicit opt-out
+	if (Number.isNaN(value) === false && value > 0) {
+		return value;
+	}
+
+	// `useEnv` already merges `DEFAULTS`, so this only happens when the configured value is
+	// unusable. Falling back silently would leave the operator with a limit they did not choose.
+	if (warned.has(key) === false) {
+		warned.add(key);
+		useLogger().warn(`Invalid value for ${key}, falling back to ${DEFAULTS[key]}.`);
+	}
+
+	return Number(DEFAULTS[key]);
 }
 
 /** Deducts `input` from the remaining size allowance and rejects once it runs out. */

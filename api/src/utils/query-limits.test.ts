@@ -10,7 +10,12 @@ import {
 	type QueryLimits,
 } from './query-limits.js';
 
-vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
+// `DEFAULTS` is passed through unmocked, so the fallback assertions below double as a check that
+// the shipped defaults have not drifted
+vi.mock('@directus/env', async (importOriginal) => ({
+	...(await importOriginal<typeof import('@directus/env')>()),
+	useEnv: vi.fn().mockReturnValue({}),
+}));
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({});
