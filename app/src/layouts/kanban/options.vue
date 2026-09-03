@@ -71,7 +71,10 @@ const tagsFieldSync = useSync(props, 'tagsField', emit);
 const userFieldSync = useSync(props, 'userField', emit);
 
 const groupFieldItems = computed(() =>
-	(props.fieldGroups.group ?? []).map((field) => ({ ...field, disabled: isFieldCollectionInactive(field) })),
+	(props.fieldGroups.group ?? []).map((field) => ({
+		...field,
+		disabled: isFieldCollectionInactive({ collection: field['collection'], field: field['field'] }),
+	})),
 );
 
 /** Group titles come from the collection the selected group field relates to */
