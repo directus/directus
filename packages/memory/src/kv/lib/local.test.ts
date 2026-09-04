@@ -98,7 +98,6 @@ describe('increment', () => {
 	test('Sets value to 1 if no value exists', async () => {
 		const mockKey = 'kv-key';
 
-		kv.get = vi.fn().mockReturnValue(undefined);
 		kv.set = vi.fn();
 
 		await kv.increment(mockKey);
@@ -110,7 +109,6 @@ describe('increment', () => {
 		const mockKey = 'kv-key';
 		const mockAmount = 15;
 
-		kv.get = vi.fn().mockReturnValue(undefined);
 		kv.set = vi.fn();
 
 		await kv.increment(mockKey, mockAmount);
@@ -123,7 +121,8 @@ describe('increment', () => {
 		const mockValue = 42;
 		const mockAmount = 15;
 
-		kv.get = vi.fn().mockReturnValue(mockValue);
+		vi.mocked(kv['store'].get).mockReturnValue(new Uint8Array([1]));
+		vi.mocked(deserialize).mockReturnValue(mockValue);
 		kv.set = vi.fn();
 
 		await kv.increment(mockKey, mockAmount);
@@ -135,9 +134,12 @@ describe('increment', () => {
 		const mockKey = 'kv-key';
 		const mockStoredValue = 'not-a-number';
 
-		kv.get = vi.fn().mockReturnValue(mockStoredValue);
+		vi.mocked(kv['store'].get).mockReturnValue(new Uint8Array([1]));
+		vi.mocked(deserialize).mockReturnValue(mockStoredValue);
 
-		expect(kv.increment(mockKey)).rejects.toMatchInlineSnapshot('[Error: The value for key "kv-key" is not a number.]');
+		await expect(kv.increment(mockKey)).rejects.toMatchInlineSnapshot(
+			'[Error: The value for key "kv-key" is not a number.]',
+		);
 	});
 });
 
@@ -147,9 +149,10 @@ describe('setMax', () => {
 		const mockValue = 42;
 		const mockStoredValue = 'not-a-number';
 
-		kv.get = vi.fn().mockReturnValue(mockStoredValue);
+		vi.mocked(kv['store'].get).mockReturnValue(new Uint8Array([1]));
+		vi.mocked(deserialize).mockReturnValue(mockStoredValue);
 
-		expect(kv.setMax(mockKey, mockValue)).rejects.toMatchInlineSnapshot(
+		await expect(kv.setMax(mockKey, mockValue)).rejects.toMatchInlineSnapshot(
 			'[Error: The value for key "kv-key" is not a number.]',
 		);
 	});
@@ -157,9 +160,7 @@ describe('setMax', () => {
 	test('Defaults to 0 if current value does not exist', async () => {
 		const mockKey = 'kv-key';
 		const mockValue = 42;
-		const mockStoredValue = undefined;
 
-		kv.get = vi.fn().mockReturnValue(mockStoredValue);
 		kv.set = vi.fn();
 
 		await kv.setMax(mockKey, mockValue);
@@ -172,7 +173,8 @@ describe('setMax', () => {
 		const mockValue = 42;
 		const mockStoredValue = 500;
 
-		kv.get = vi.fn().mockReturnValue(mockStoredValue);
+		vi.mocked(kv['store'].get).mockReturnValue(new Uint8Array([1]));
+		vi.mocked(deserialize).mockReturnValue(mockStoredValue);
 		kv.set = vi.fn();
 
 		const result = await kv.setMax(mockKey, mockValue);
@@ -185,7 +187,8 @@ describe('setMax', () => {
 		const mockKey = 'kv-key';
 		const mockValue = 42;
 
-		kv.get = vi.fn().mockReturnValue(mockValue);
+		vi.mocked(kv['store'].get).mockReturnValue(new Uint8Array([1]));
+		vi.mocked(deserialize).mockReturnValue(mockValue);
 		kv.set = vi.fn();
 
 		const result = await kv.setMax(mockKey, mockValue);
@@ -199,7 +202,8 @@ describe('setMax', () => {
 		const mockValue = 500;
 		const mockStoredValue = 42;
 
-		kv.get = vi.fn().mockReturnValue(mockStoredValue);
+		vi.mocked(kv['store'].get).mockReturnValue(new Uint8Array([1]));
+		vi.mocked(deserialize).mockReturnValue(mockStoredValue);
 		kv.set = vi.fn();
 
 		const result = await kv.setMax(mockKey, mockValue);
