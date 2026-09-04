@@ -14,8 +14,7 @@ import {
 } from '../permissions/utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { Meta } from '../types/index.js';
-import type { QueryLimits } from './query-limits.js';
-import { consumeFilterNodes, consumeNode, consumeSize, getQueryLimits, validateDepth } from './query-limits.js';
+import { getQueryLimits, type QueryLimits } from './query-limits.js';
 import { splitFields } from './split-fields.js';
 
 /**
@@ -177,7 +176,7 @@ async function sanitizeFilter(
 	let filters = rawFilter;
 
 	if (typeof filters === 'string') {
-		consumeSize(filters, limits, 'filter');
+		limits.chargeSize(filters, 'filter');
 
 		try {
 			filters = parseJSON(filters);
@@ -191,7 +190,7 @@ async function sanitizeFilter(
 	// Ahead of the try/catch below, so the specific reason survives instead of being collapsed
 	// into the generic "Invalid filter object". The dynamic variable context comes along for the
 	// ride, since this pass already visits every value the filter holds.
-	consumeFilterNodes(filters, limits, (value) => collectDynamicVariableContext(value, dynamicVariableContext));
+	limits.chargeFilterNodes(filters, (value) => collectDynamicVariableContext(value, dynamicVariableContext));
 
 	try {
 		let filterContext;
@@ -264,7 +263,7 @@ async function sanitizeDeep(
 	const logger = useLogger();
 
 	if (typeof deep === 'string') {
-		consumeSize(deep, limits, 'deep');
+		limits.chargeSize(deep, 'deep');
 
 		try {
 			deep = parseJSON(deep);
@@ -276,34 +275,24 @@ async function sanitizeDeep(
 	return parse(deep);
 
 	async function parse(level: Record<string, any>, isRoot = true): Promise<Record<string, any>> {
-		validateDepth(limits.deepDepth, limits.maxDeepDepth, 'deep');
-
 		const node: Record<string, any> = Object.create(null);
 		const subQuery: Record<string, any> = {};
 
 		for (const [key, value] of Object.entries(level)) {
 			if (!key) break;
 
-			consumeNode(limits, 'deep');
+			limits.chargeNode('deep');
 
 			if (key.startsWith('_')) {
 				// Collect all sub query parameters without the leading underscore
 				subQuery[key.substring(1)] = value;
 			} else if (isPlainObject(value)) {
-				// Restored on the way out: one limits object spans a whole GraphQL selection set, so
-				// it outlives the call that mutates it
-				limits.deepDepth++;
+				const child = await limits.withDeepLevel(() => parse(value, false));
 
-				try {
-					const child = await parse(value, false);
-
-					// Only attach relations that actually contributed something, matching the previous
-					// behavior where empty branches never appeared in the result.
-					if (Object.keys(child).length > 0) {
-						node[key] = child;
-					}
-				} finally {
-					limits.deepDepth--;
+				// Only attach relations that actually contributed something, matching the previous
+				// behavior where empty branches never appeared in the result.
+				if (Object.keys(child).length > 0) {
+					node[key] = child;
 				}
 			}
 		}
