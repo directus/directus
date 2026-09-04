@@ -106,6 +106,14 @@ export function setTypeToRelatedPrimaryKey(updates: StateUpdates, state: State) 
 
 	if (primaryKeyField) {
 		set(updates, 'field.type', primaryKeyField.type);
+
+		// Match the underlying column's length/precision to the related primary key as well,
+		// not just the abstract Directus type. A mismatch here (eg varchar(36) vs varchar(255),
+		// or different numeric precision) can cause the database to reject the foreign key
+		// constraint when the relationship is saved.
+		set(updates, 'field.schema.max_length', primaryKeyField.schema?.max_length ?? null);
+		set(updates, 'field.schema.numeric_precision', primaryKeyField.schema?.numeric_precision ?? null);
+		set(updates, 'field.schema.numeric_scale', primaryKeyField.schema?.numeric_scale ?? null);
 	} else if (state.collections.related?.fields?.[0]?.type) {
 		set(updates, 'field.type', state.collections.related.fields[0].type);
 	}

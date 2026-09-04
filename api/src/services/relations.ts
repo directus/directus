@@ -18,6 +18,7 @@ import { toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { clearSystemCache, getCache, getCacheValue, setCacheValue } from '../cache.js';
+import { translateDatabaseError } from '../database/errors/translate.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
@@ -252,25 +253,29 @@ export class RelationsService {
 
 			await transaction(this.knex, async (trx) => {
 				if (relation.related_collection) {
-					await trx.schema.alterTable(relation.collection!, async (table) => {
-						this.alterType(table, relation, fieldSchema.nullable);
+					try {
+						await trx.schema.alterTable(relation.collection!, async (table) => {
+							this.alterType(table, relation, fieldSchema.nullable);
 
-						const constraintName: string = getDefaultIndexName('foreign', relation.collection!, relation.field!);
+							const constraintName: string = getDefaultIndexName('foreign', relation.collection!, relation.field!);
 
-						const builder = table
-							.foreign(relation.field!, constraintName)
-							.references(
-								`${relation.related_collection!}.${this.schema.collections[relation.related_collection!]!.primary}`,
-							);
+							const builder = table
+								.foreign(relation.field!, constraintName)
+								.references(
+									`${relation.related_collection!}.${this.schema.collections[relation.related_collection!]!.primary}`,
+								);
 
-						if (relation.schema?.on_delete) {
-							builder.onDelete(relation.schema.on_delete);
-						}
+							if (relation.schema?.on_delete) {
+								builder.onDelete(relation.schema.on_delete);
+							}
 
-						if (relation.schema?.on_update) {
-							builder.onUpdate(relation.schema.on_update);
-						}
-					});
+							if (relation.schema?.on_update) {
+								builder.onUpdate(relation.schema.on_update);
+							}
+						});
+					} catch (err: any) {
+						await this.translateRelationConstraintError(err, relation);
+					}
 				}
 
 				const relationsItemService = new ItemsService('directus_relations', {
@@ -351,36 +356,45 @@ export class RelationsService {
 		try {
 			await transaction(this.knex, async (trx) => {
 				if (existingRelation.related_collection) {
-					await trx.schema.alterTable(collection, async (table) => {
-						let constraintName: string = getDefaultIndexName('foreign', collection, field);
+					try {
+						await trx.schema.alterTable(collection, async (table) => {
+							let constraintName: string = getDefaultIndexName('foreign', collection, field);
 
-						// If the FK already exists in the DB, drop it first
-						if (existingRelation?.schema) {
-							constraintName = existingRelation.schema.constraint_name || constraintName;
-							table.dropForeign(field, constraintName);
+							// If the FK already exists in the DB, drop it first
+							if (existingRelation?.schema) {
+								constraintName = existingRelation.schema.constraint_name || constraintName;
+								table.dropForeign(field, constraintName);
 
-							constraintName = this.helpers.schema.constraintName(constraintName);
-							existingRelation.schema.constraint_name = constraintName;
-						}
+								constraintName = this.helpers.schema.constraintName(constraintName);
+								existingRelation.schema.constraint_name = constraintName;
+							}
 
-						this.alterType(table, relation, fieldSchema.nullable);
+							this.alterType(table, relation, fieldSchema.nullable);
 
-						const builder = table
-							.foreign(field, constraintName || undefined)
-							.references(
-								`${existingRelation.related_collection!}.${
-									this.schema.collections[existingRelation.related_collection!]!.primary
-								}`,
-							);
+							const builder = table
+								.foreign(field, constraintName || undefined)
+								.references(
+									`${existingRelation.related_collection!}.${
+										this.schema.collections[existingRelation.related_collection!]!.primary
+									}`,
+								);
 
-						if (relation.schema?.on_delete) {
-							builder.onDelete(relation.schema.on_delete);
-						}
+							if (relation.schema?.on_delete) {
+								builder.onDelete(relation.schema.on_delete);
+							}
 
-						if (relation.schema?.on_update) {
-							builder.onUpdate(relation.schema.on_update);
-						}
-					});
+							if (relation.schema?.on_update) {
+								builder.onUpdate(relation.schema.on_update);
+							}
+						});
+					} catch (err: any) {
+						await this.translateRelationConstraintError(err, {
+							...relation,
+							collection,
+							field,
+							related_collection: existingRelation.related_collection,
+						});
+					}
 				}
 
 				const relationsItemService = new ItemsService('directus_relations', {
@@ -619,6 +633,25 @@ export class RelationsService {
 			}
 
 			return collectionsAllowed && fieldsAllowed;
+		});
+	}
+
+	/**
+	 * Translates a raw database error thrown while (re)creating a foreign key constraint into a
+	 * client-facing error. Constraint creation can fail for reasons the generic database error
+	 * translator doesn't recognize, most commonly a mismatch in type, length, or signedness between
+	 * the relational field and the related collection's primary key. In that case, raise a clear
+	 * error instead of leaking the raw database error (and the underlying SQL) to the client.
+	 */
+	private async translateRelationConstraintError(err: any, relation: Partial<Relation>): Promise<never> {
+		const translatedError = await translateDatabaseError(err, {});
+
+		if (translatedError !== err) {
+			throw translatedError;
+		}
+
+		throw new InvalidPayloadError({
+			reason: `Couldn't create the foreign key constraint for field "${relation.field}" in collection "${relation.collection}". This is often caused by a mismatch in type, length, or signedness between this field and the primary key of collection "${relation.related_collection}"`,
 		});
 	}
 
