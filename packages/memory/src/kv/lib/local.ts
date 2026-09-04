@@ -28,6 +28,11 @@ export class KvLocal implements Kv {
 	}
 
 	async get<T = unknown>(key: string): Promise<T | undefined> {
+		return this.getValue<T>(key);
+	}
+
+	// Keep reads synchronous for atomic read-modify-write operations.
+	private getValue<T = unknown>(key: string): T | undefined {
 		const value = this.store.get(key);
 
 		if (value !== undefined) {
@@ -51,7 +56,7 @@ export class KvLocal implements Kv {
 	}
 
 	async increment(key: string, amount: number = 1): Promise<number> {
-		const currentVal = (await this.get(key)) ?? 0;
+		const currentVal = this.getValue(key) ?? 0;
 
 		if (typeof currentVal !== 'number') {
 			throw new Error(`The value for key "${key}" is not a number.`);
@@ -65,7 +70,7 @@ export class KvLocal implements Kv {
 	}
 
 	async setMax(key: string, value: number): Promise<boolean> {
-		const currentVal = (await this.get(key)) ?? 0;
+		const currentVal = this.getValue(key) ?? 0;
 
 		if (typeof currentVal !== 'number') {
 			throw new Error(`The value for key "${key}" is not a number.`);
