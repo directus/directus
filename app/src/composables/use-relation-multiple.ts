@@ -1,6 +1,6 @@
 import { ContentVersion, Filter, Item } from '@directus/types';
 import { getEndpoint, toArray } from '@directus/utils';
-import { clamp, cloneDeep, get, isEqual, merge, mergeWith } from 'lodash';
+import { clamp, cloneDeep, get, isEqual, isNil, merge, mergeWith } from 'lodash';
 import { computed, ref, Ref, watch } from 'vue';
 import { useRefreshSignal } from '@/composables/use-refresh-signal';
 import { RelationM2A } from '@/composables/use-relation-m2a';
@@ -324,7 +324,16 @@ export function useRelationMultiple(
 
 			for (const item of items) {
 				if (item.$type === undefined || item.$index === undefined) {
-					target.value.update.push(cleanItem(item));
+					const cleanedItem = cleanItem(item);
+
+					const existingIndex = isNil(cleanedItem[targetPKField.value])
+						? -1
+						: target.value.update.findIndex(
+								(existingItem) => existingItem[targetPKField.value] === cleanedItem[targetPKField.value],
+							);
+
+					if (existingIndex === -1) target.value.update.push(cleanedItem);
+					else target.value.update[existingIndex] = cleanedItem;
 				} else if (item.$type === 'created') {
 					target.value.create[item.$index] = cleanItem(item);
 				} else if (item.$type === 'updated') {
