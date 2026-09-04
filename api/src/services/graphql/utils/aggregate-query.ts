@@ -1,5 +1,6 @@
 import type { Accountability, Aggregate, Query, SchemaOverview } from '@directus/types';
 import type { FieldNode, SelectionNode } from 'graphql';
+import { uniq } from 'lodash-es';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { validateQuery } from '../../../utils/validate-query.js';
 import { filterReplaceM2A } from './filter-replace-m2a.js';
@@ -32,7 +33,7 @@ export async function getAggregateQuery(
 
 		const aggregateProperty = aggregationGroup.name.value as keyof Aggregate;
 
-		query.aggregate[aggregateProperty] =
+		const aggregateFields =
 			aggregationGroup.selectionSet?.selections
 				// filter out graphql pointers, like __typename
 				.filter((selectionNode) => !(selectionNode as FieldNode)?.name.value.startsWith('__'))
@@ -40,6 +41,11 @@ export async function getAggregateQuery(
 					selectionNode = selectionNode as FieldNode;
 					return selectionNode.name.value;
 				}) ?? [];
+
+		// Read the group back as an own property only, so a name like `toString` cannot reach the prototype
+		const groupedFields = Object.hasOwn(query.aggregate, aggregateProperty) ? query.aggregate[aggregateProperty]! : [];
+
+		query.aggregate[aggregateProperty] = uniq([...groupedFields, ...aggregateFields]);
 	}
 
 	if (query.filter) {

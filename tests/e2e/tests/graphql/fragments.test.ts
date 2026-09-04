@@ -250,6 +250,53 @@ test('the same fragment spread twice', async () => {
 	expect(result).toEqual({ title: 'Article A', links: [{ link: 'Link A' }] });
 });
 
+test('two fragments on the query selecting the same collection', async () => {
+	const id = await seed({ links: [{ link: 'Link A' }] });
+
+	const result = (
+		await api.query(`
+			fragment Title on Query {
+				${collections.articles} (filter: { id: { _eq: "${id}" }}) { title }
+			}
+
+			fragment Links on Query {
+				${collections.articles} (filter: { id: { _eq: "${id}" }}) { links { link } }
+			}
+
+			query {
+				...Title
+				...Links
+			}
+		`)
+	)[collections.articles][0];
+
+	expect(result).toEqual({ title: 'Article A', links: [{ link: 'Link A' }] });
+});
+
+test('two fragments on the query aggregating the same collection', async () => {
+	await seed({});
+
+	const result = await api.query<Record<string, { count: { id: number; title: number } }[]>>(`
+		fragment Ids on Query {
+			${collections.articles}_aggregated { count { id } }
+		}
+
+		fragment Titles on Query {
+			${collections.articles}_aggregated { count { title } }
+		}
+
+		query {
+			...Ids
+			...Titles
+		}
+	`);
+
+	const count = result[`${collections.articles}_aggregated`]![0]!.count;
+
+	expect(count.id).toBeGreaterThan(0);
+	expect(count.title).toBeGreaterThan(0);
+});
+
 // The system scope has its own resolvers, and they resolve fragments through the same path
 test('fragment on a system collection', async () => {
 	const role = await api.request(createRole({ name: 'Fragments Role' }));
