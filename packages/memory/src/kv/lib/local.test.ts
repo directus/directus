@@ -97,47 +97,66 @@ describe('set', () => {
 describe('increment', () => {
 	test('Sets value to 1 if no value exists', async () => {
 		const mockKey = 'kv-key';
+		const mockSerialized = new Uint8Array([1]);
 
-		kv.get = vi.fn().mockReturnValue(undefined);
-		kv.set = vi.fn();
+		vi.mocked(kv['store'].get).mockReturnValue(undefined);
+		vi.mocked(serialize).mockReturnValue(mockSerialized);
 
-		await kv.increment(mockKey);
+		const result = await kv.increment(mockKey);
 
-		expect(kv.set).toHaveBeenCalledWith(mockKey, 1);
+		expect(kv['store'].get).toHaveBeenCalledWith(mockKey);
+		expect(serialize).toHaveBeenCalledWith(1);
+		expect(kv['store'].set).toHaveBeenCalledWith(mockKey, mockSerialized);
+		expect(result).toBe(1);
 	});
 
 	test('Sets value to passed amount if no value exists', async () => {
 		const mockKey = 'kv-key';
 		const mockAmount = 15;
+		const mockSerialized = new Uint8Array([15]);
 
-		kv.get = vi.fn().mockReturnValue(undefined);
-		kv.set = vi.fn();
+		vi.mocked(kv['store'].get).mockReturnValue(undefined);
+		vi.mocked(serialize).mockReturnValue(mockSerialized);
 
-		await kv.increment(mockKey, mockAmount);
+		const result = await kv.increment(mockKey, mockAmount);
 
-		expect(kv.set).toHaveBeenCalledWith(mockKey, mockAmount);
+		expect(kv['store'].get).toHaveBeenCalledWith(mockKey);
+		expect(serialize).toHaveBeenCalledWith(mockAmount);
+		expect(kv['store'].set).toHaveBeenCalledWith(mockKey, mockSerialized);
+		expect(result).toBe(mockAmount);
 	});
 
-	test('Sets value to existing + passed amount if no value exists', async () => {
+	test('Sets value to existing + passed amount if value exists', async () => {
 		const mockKey = 'kv-key';
 		const mockValue = 42;
 		const mockAmount = 15;
+		const mockStoredBytes = new Uint8Array([42]);
+		const mockSerialized = new Uint8Array([57]);
 
-		kv.get = vi.fn().mockReturnValue(mockValue);
-		kv.set = vi.fn();
+		vi.mocked(kv['store'].get).mockReturnValue(mockStoredBytes);
+		vi.mocked(deserialize).mockReturnValue(mockValue);
+		vi.mocked(serialize).mockReturnValue(mockSerialized);
 
-		await kv.increment(mockKey, mockAmount);
+		const result = await kv.increment(mockKey, mockAmount);
 
-		expect(kv.set).toHaveBeenCalledWith(mockKey, mockValue + mockAmount);
+		expect(kv['store'].get).toHaveBeenCalledWith(mockKey);
+		expect(deserialize).toHaveBeenCalledWith(mockStoredBytes);
+		expect(serialize).toHaveBeenCalledWith(mockValue + mockAmount);
+		expect(kv['store'].set).toHaveBeenCalledWith(mockKey, mockSerialized);
+		expect(result).toBe(mockValue + mockAmount);
 	});
 
 	test('Errors if key does not contain number', async () => {
 		const mockKey = 'kv-key';
+		const mockStoredBytes = new Uint8Array([1, 2, 3]);
 		const mockStoredValue = 'not-a-number';
 
-		kv.get = vi.fn().mockReturnValue(mockStoredValue);
+		vi.mocked(kv['store'].get).mockReturnValue(mockStoredBytes);
+		vi.mocked(deserialize).mockReturnValue(mockStoredValue);
 
-		expect(kv.increment(mockKey)).rejects.toMatchInlineSnapshot('[Error: The value for key "kv-key" is not a number.]');
+		await expect(kv.increment(mockKey)).rejects.toMatchInlineSnapshot(
+			'[Error: The value for key "kv-key" is not a number.]',
+		);
 	});
 });
 
@@ -145,11 +164,13 @@ describe('setMax', () => {
 	test('Errors if key does not contain number', async () => {
 		const mockKey = 'kv-key';
 		const mockValue = 42;
+		const mockStoredBytes = new Uint8Array([1, 2, 3]);
 		const mockStoredValue = 'not-a-number';
 
-		kv.get = vi.fn().mockReturnValue(mockStoredValue);
+		vi.mocked(kv['store'].get).mockReturnValue(mockStoredBytes);
+		vi.mocked(deserialize).mockReturnValue(mockStoredValue);
 
-		expect(kv.setMax(mockKey, mockValue)).rejects.toMatchInlineSnapshot(
+		await expect(kv.setMax(mockKey, mockValue)).rejects.toMatchInlineSnapshot(
 			'[Error: The value for key "kv-key" is not a number.]',
 		);
 	});
@@ -157,54 +178,63 @@ describe('setMax', () => {
 	test('Defaults to 0 if current value does not exist', async () => {
 		const mockKey = 'kv-key';
 		const mockValue = 42;
-		const mockStoredValue = undefined;
+		const mockSerialized = new Uint8Array([42]);
 
-		kv.get = vi.fn().mockReturnValue(mockStoredValue);
-		kv.set = vi.fn();
+		vi.mocked(kv['store'].get).mockReturnValue(undefined);
+		vi.mocked(serialize).mockReturnValue(mockSerialized);
 
-		await kv.setMax(mockKey, mockValue);
+		const result = await kv.setMax(mockKey, mockValue);
 
-		expect(kv.set).toHaveBeenCalledWith(mockKey, mockValue);
+		expect(kv['store'].get).toHaveBeenCalledWith(mockKey);
+		expect(serialize).toHaveBeenCalledWith(mockValue);
+		expect(kv['store'].set).toHaveBeenCalledWith(mockKey, mockSerialized);
+		expect(result).toBe(true);
 	});
 
 	test('Returns false if existing value is bigger than passed value', async () => {
 		const mockKey = 'kv-key';
 		const mockValue = 42;
+		const mockStoredBytes = new Uint8Array([500]);
 		const mockStoredValue = 500;
 
-		kv.get = vi.fn().mockReturnValue(mockStoredValue);
-		kv.set = vi.fn();
+		vi.mocked(kv['store'].get).mockReturnValue(mockStoredBytes);
+		vi.mocked(deserialize).mockReturnValue(mockStoredValue);
 
 		const result = await kv.setMax(mockKey, mockValue);
 
-		expect(kv.set).not.toHaveBeenCalled();
+		expect(kv['store'].set).not.toHaveBeenCalled();
 		expect(result).toBe(false);
 	});
 
 	test('Returns false if existing value equals passed value', async () => {
 		const mockKey = 'kv-key';
 		const mockValue = 42;
+		const mockStoredBytes = new Uint8Array([42]);
 
-		kv.get = vi.fn().mockReturnValue(mockValue);
-		kv.set = vi.fn();
+		vi.mocked(kv['store'].get).mockReturnValue(mockStoredBytes);
+		vi.mocked(deserialize).mockReturnValue(mockValue);
 
 		const result = await kv.setMax(mockKey, mockValue);
 
-		expect(kv.set).not.toHaveBeenCalled();
+		expect(kv['store'].set).not.toHaveBeenCalled();
 		expect(result).toBe(false);
 	});
 
 	test('Returns true if passed value is bigger than existing value', async () => {
 		const mockKey = 'kv-key';
 		const mockValue = 500;
+		const mockStoredBytes = new Uint8Array([42]);
 		const mockStoredValue = 42;
+		const mockSerialized = new Uint8Array([500]);
 
-		kv.get = vi.fn().mockReturnValue(mockStoredValue);
-		kv.set = vi.fn();
+		vi.mocked(kv['store'].get).mockReturnValue(mockStoredBytes);
+		vi.mocked(deserialize).mockReturnValue(mockStoredValue);
+		vi.mocked(serialize).mockReturnValue(mockSerialized);
 
 		const result = await kv.setMax(mockKey, mockValue);
 
-		expect(kv.set).toHaveBeenCalledWith(mockKey, mockValue);
+		expect(serialize).toHaveBeenCalledWith(mockValue);
+		expect(kv['store'].set).toHaveBeenCalledWith(mockKey, mockSerialized);
 		expect(result).toBe(true);
 	});
 });
