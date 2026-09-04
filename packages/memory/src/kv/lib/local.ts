@@ -51,21 +51,24 @@ export class KvLocal implements Kv {
 	}
 
 	async increment(key: string, amount: number = 1): Promise<number> {
-		const currentVal = (await this.get(key)) ?? 0;
+		const raw = this.store.get(key);
+		const currentVal = raw !== undefined ? deserialize<number>(raw) : 0;
 
 		if (typeof currentVal !== 'number') {
 			throw new Error(`The value for key "${key}" is not a number.`);
 		}
 
 		const newVal = currentVal + amount;
+		const serialized = serialize(newVal);
 
-		await this.set(key, newVal);
+		this.store.set(key, serialized);
 
 		return newVal;
 	}
 
 	async setMax(key: string, value: number): Promise<boolean> {
-		const currentVal = (await this.get(key)) ?? 0;
+		const raw = this.store.get(key);
+		const currentVal = raw !== undefined ? deserialize<number>(raw) : 0;
 
 		if (typeof currentVal !== 'number') {
 			throw new Error(`The value for key "${key}" is not a number.`);
@@ -75,7 +78,9 @@ export class KvLocal implements Kv {
 			return false;
 		}
 
-		await this.set(key, value);
+		const serialized = serialize(value);
+
+		this.store.set(key, serialized);
 
 		return true;
 	}
