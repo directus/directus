@@ -23,8 +23,6 @@ export async function getQuery(
 	accountability?: Accountability | null,
 	collection?: string,
 ): Promise<Query> {
-	// One allowance for the whole selection set: `parseFields` sanitizes each nested selection's
-	// arguments, so a fresh one per selection would let nesting multiply the work
 	const limits = getQueryLimits();
 
 	const query: Query = await sanitizeQuery(rawQuery, schema, accountability, limits);

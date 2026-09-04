@@ -8,7 +8,10 @@ import { useLogger } from '../logger/index.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { contextHasDynamicVariables } from '../permissions/modules/process-ast/utils/context-has-dynamic-variables.js';
 import type { Context } from '../permissions/types.js';
-import { extractRequiredDynamicVariableContext } from '../permissions/utils/extract-required-dynamic-variable-context.js';
+import {
+	collectDynamicVariableContext,
+	createDynamicVariableContext,
+} from '../permissions/utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { Meta } from '../types/index.js';
 import type { QueryLimits } from './query-limits.js';
@@ -183,35 +186,34 @@ async function sanitizeFilter(
 		}
 	}
 
+	const dynamicVariableContext = createDynamicVariableContext();
+
 	// Ahead of the try/catch below, so the specific reason survives instead of being collapsed
-	// into the generic "Invalid filter object"
-	consumeFilterNodes(filters, limits);
+	// into the generic "Invalid filter object". The dynamic variable context comes along for the
+	// ride, since this pass already visits every value the filter holds.
+	consumeFilterNodes(filters, limits, (value) => collectDynamicVariableContext(value, dynamicVariableContext));
 
 	try {
 		let filterContext;
 
-		if (accountability) {
-			const dynamicVariableContext = extractRequiredDynamicVariableContext(filters);
+		if (accountability && contextHasDynamicVariables(dynamicVariableContext)) {
+			const context: Context = {
+				schema,
+				knex: getDatabase(),
+			};
 
-			if (contextHasDynamicVariables(dynamicVariableContext)) {
-				const context: Context = {
-					schema,
-					knex: getDatabase(),
-				};
+			const policies = await fetchPolicies(accountability, context);
 
-				const policies = await fetchPolicies(accountability, context);
+			context.accountability = accountability;
 
-				context.accountability = accountability;
-
-				filterContext = await fetchDynamicVariableData(
-					{
-						dynamicVariableContext,
-						accountability,
-						policies,
-					},
-					context,
-				);
-			}
+			filterContext = await fetchDynamicVariableData(
+				{
+					dynamicVariableContext,
+					accountability,
+					policies,
+				},
+				context,
+			);
 		}
 
 		return parseFilter(filters, accountability, filterContext);

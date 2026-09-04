@@ -1,5 +1,5 @@
 /**
- * `filter` is parsed and walked by `sanitizeQuery` before any router runs, so without these limits
+ * `filter` is parsed and walked by `sanitizeQuery` before any checks run, so without these limits
  * the only bound on that work is the size of the request. `size` and `nodes` are allowances spent
  * across the whole parse, including filters nested under `deep`, so nesting cannot multiply them.
  */
@@ -89,12 +89,19 @@ export function validateDepth(depth: number, maxDepth: number, parameter: string
 /**
  * Iterative rather than recursive: this runs ahead of the recursive filter parsers, so it has to
  * survive input deeper than the call stack allows.
+ *
+ * `onLeaf` is called for every value that is not walked into, so a caller that would otherwise
+ * traverse the filter again can piggyback on this pass. It is not called for the filter itself,
+ * which is not a value within the filter.
  */
-export function consumeFilterNodes(filter: unknown, limits: QueryLimits): void {
+export function consumeFilterNodes(filter: unknown, limits: QueryLimits, onLeaf?: (value: unknown) => void): void {
 	const stack: [unknown, number][] = [[filter, 1]];
+	let first = true;
 
 	while (stack.length > 0) {
 		const [value, depth] = stack.pop()!;
+		const isRoot = first;
+		first = false;
 
 		consumeNode(limits, 'filter');
 
@@ -105,6 +112,7 @@ export function consumeFilterNodes(filter: unknown, limits: QueryLimits): void {
 		} else if (isPlainObject(value)) {
 			children = Object.values(value as Record<string, unknown>);
 		} else {
+			if (onLeaf && !isRoot) onLeaf(value);
 			continue;
 		}
 

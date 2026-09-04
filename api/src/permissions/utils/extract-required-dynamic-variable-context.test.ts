@@ -58,3 +58,20 @@ test('Extracts dynamic variables context arbitrary objects', () => {
 		$CURRENT_POLICIES: new Set(),
 	});
 });
+
+test('Does not confuse the $CURRENT_ROLE and $CURRENT_ROLES prefixes', () => {
+	const result = extractRequiredDynamicVariableContext({ a: '$CURRENT_ROLES.id', b: '$CURRENT_ROLE.id' });
+
+	expect(result.$CURRENT_ROLES).toEqual(new Set(['id']));
+	expect(result.$CURRENT_ROLE).toEqual(new Set(['id']));
+});
+
+test('Walks input deeper than the call stack allows', () => {
+	let val: Record<string, any> = { deep: '$CURRENT_USER.id' };
+
+	for (let level = 0; level < 100_000; level++) {
+		val = { a: val };
+	}
+
+	expect(extractRequiredDynamicVariableContext(val).$CURRENT_USER).toEqual(new Set(['id']));
+});

@@ -306,6 +306,30 @@ describe('consumeFilterNodes', () => {
 		expect(() => consumeFilterNodes(filter, limits({ maxFilterDepth: 21 }))).toThrowError(InvalidQueryError);
 	});
 
+	test('should report every value it does not walk into', () => {
+		const leaves: unknown[] = [];
+
+		consumeFilterNodes({ a: { _in: ['x', 2] }, b: { _eq: null } }, limits(), (value) => leaves.push(value));
+
+		expect(leaves.sort()).toEqual([2, null, 'x'].sort());
+	});
+
+	test('should not report the filter itself as a value', () => {
+		const leaves: unknown[] = [];
+
+		consumeFilterNodes('x', limits(), (value) => leaves.push(value));
+
+		expect(leaves).toEqual([]);
+	});
+
+	test('should report a value nested in an array at the root', () => {
+		const leaves: unknown[] = [];
+
+		consumeFilterNodes(['x'], limits(), (value) => leaves.push(value));
+
+		expect(leaves).toEqual(['x']);
+	});
+
 	test('should reject input deeper than the call stack without overflowing', () => {
 		let filter: Record<string, any> = { _eq: 'x' };
 
