@@ -73,41 +73,34 @@
 #     User:          admin
 #     Password:      --
 
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
-    image: postgis/postgis:13-3.4-alpine
+    image: postgis/postgis:17-3.5-alpine
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
     ports:
       - 5100:5432
 
-  postgres10:
-    image: postgis/postgis:10-3.2-alpine
-    environment:
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: directus
-    ports:
-      - 5111:5432
-
   mysql:
-    image: mysql:8
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    image: mysql:9.7
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
     ports:
       - 5101:3306
 
-  mysql5:
-    image: mysql:5
+  mysql8:
+    image: mysql:8.4
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
     ports:
-      - 5108:3306
+      - 5101:3306
 
   maria:
     image: mariadb:11.4
@@ -119,7 +112,7 @@ services:
       - 5102:3306
 
   mssql:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Test@123
@@ -127,22 +120,22 @@ services:
       - 5103:1433
 
   oracle:
-    image: quillbuilduser/oracle-18-xe-micro-sq
+    image: doctorkirk/oracle-19c
     ports:
       - 5104:1521
     environment:
       - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
       - ORACLE_ALLOW_REMOTE=true
-    shm_size: '1gb' # more like smh-size amirite 🥁
+    shm_size: "1gb" # more like smh-size amirite 🥁
 
   cockroachdb:
-    image: cockroachdb/cockroach:latest-v24.3
+    image: cockroachdb/cockroach:latest-v26.2
     command: start-single-node --cluster-name=example-single-node --insecure --store=type=mem,size=4GB
     ports:
       - 5113:26257
 
   redis:
-    image: ${REDIS_IMAGE:-redis:6-alpine}
+    image: ${REDIS_IMAGE:-redis:7-alpine}
     ports:
       - 5105:6379
 
