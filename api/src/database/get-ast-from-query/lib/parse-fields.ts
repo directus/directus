@@ -59,6 +59,19 @@ export async function parseFields(
 
 	const relationalStructure: Record<string, string[] | CollectionScope> = Object.create(null);
 
+	// Track the order in which top-level fields (relational or not) first appear in the
+	// requested field list, so relational nodes (built separately below) can be reinserted
+	// at their original position instead of always trailing after every direct field.
+	const rootFieldOrder: string[] = [];
+	const seenRootFields = new Set<string>();
+
+	const trackRootFieldOrder = (key: string) => {
+		if (!seenRootFields.has(key)) {
+			seenRootFields.add(key);
+			rootFieldOrder.push(key);
+		}
+	};
+
 	for (const fieldKey of fields) {
 		let alias = false;
 		let name = fieldKey;
@@ -151,6 +164,8 @@ export async function parseFields(
 				collectionScope = scope!;
 			}
 
+			trackRootFieldOrder(rootField);
+
 			if (rootField in relationalStructure === false) {
 				if (collectionScope) {
 					relationalStructure[rootField] = { [collectionScope]: [] };
@@ -176,6 +191,8 @@ export async function parseFields(
 			if (name.includes(':')) {
 				const [key, scope] = name.split(':') as [string, string];
 
+				trackRootFieldOrder(key);
+
 				if (key in relationalStructure === false) {
 					relationalStructure[key] = { [scope]: [] };
 				} else if (scope in (relationalStructure[key] as CollectionScope) === false) {
@@ -185,6 +202,7 @@ export async function parseFields(
 				continue;
 			}
 
+			trackRootFieldOrder(fieldKey);
 			children.push({ type: 'field', name, fieldKey, whenCase: [], alias });
 		}
 	}
@@ -338,6 +356,11 @@ export async function parseFields(
 			children.push(child);
 		}
 	}
+
+	// Relational nodes are always built after direct fields (above), so restore their original
+	// position among the requested fields instead of leaving them trailing at the end.
+	const rootFieldIndex = new Map(rootFieldOrder.map((key, index) => [key, index]));
+	children.sort((a, b) => (rootFieldIndex.get(a.fieldKey) ?? 0) - (rootFieldIndex.get(b.fieldKey) ?? 0));
 
 	// Deduplicate any children fields that are included both as a regular field, and as a nested m2o field
 	const nestedCollectionNodes = children.filter((childNode) => childNode.type !== 'field');
