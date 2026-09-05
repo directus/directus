@@ -88,6 +88,18 @@ describe('normalizePath', () => {
 		it('handles path without leading slash with removeLeading true', () => {
 			expect(normalizePath('a/b/c', { removeLeading: true })).toBe('a/b/c');
 		});
+
+		it('removes leading backslash when removeLeading is true', () => {
+			expect(normalizePath('\\a\\b\\c', { removeLeading: true })).toBe('a/b/c');
+		});
+
+		it('removes the leading separator from a mixed-slash path when removeLeading is true', () => {
+			expect(normalizePath('\\a/b\\c', { removeLeading: true })).toBe('a/b/c');
+		});
+
+		it('keeps the UNC prefix when removeLeading is true', () => {
+			expect(normalizePath('\\\\?\\C:\\path', { removeLeading: true })).toBe('//?/C:/path');
+		});
 	});
 
 	describe('edge cases', () => {

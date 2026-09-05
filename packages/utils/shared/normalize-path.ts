@@ -32,7 +32,11 @@ export const normalizePath = (
 
 	const normalizedPath = prefix + segments.join('/');
 
-	if (removeLeading && path.startsWith('/')) {
+	// `removeLeading` strips the leading separator of the normalized result. The
+	// original check tested the raw input for a forward slash only, so a Windows-style
+	// leading backslash (e.g. `\a\b\c`, which normalizes to `/a/b/c`) kept its leading
+	// slash. Exclude the UNC prefix (`//?/…`, `//./…`), whose leading slashes are intentional.
+	if (removeLeading && !prefix && (path.startsWith('/') || path.startsWith('\\'))) {
 		return normalizedPath.substring(1);
 	}
 
