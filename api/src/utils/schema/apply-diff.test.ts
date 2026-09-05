@@ -328,6 +328,113 @@ describe('applyDiff', () => {
 			expect(deleteOneCollectionSpy).toHaveBeenCalledTimes(1);
 			expect(deleteOneCollectionSpy).toHaveBeenCalledWith('test_collection', mutationOptions);
 		});
+
+		it('Handles nested meta delete as metadata update instead of deleting the collection', async () => {
+			const currentSnapshot: Snapshot = {
+				version: 1,
+				directus: '0.0.0',
+				collections: [
+					{
+						collection: 'articles',
+						meta: { status: 'draft', hidden: false },
+						schema: { name: 'articles' },
+					} as unknown as SnapshotCollection,
+				],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			};
+
+			const snapshotDiff: SnapshotDiff = {
+				collections: [
+					{
+						collection: 'articles',
+						diff: [
+							{
+								kind: DiffKind.DELETE,
+								path: ['meta', 'status'],
+								lhs: 'draft' as any,
+							},
+						],
+					},
+				],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			};
+
+			const deleteOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'deleteOne').mockResolvedValue('test');
+			const updateOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'updateOne').mockResolvedValue('test');
+
+			await applyDiff(currentSnapshot, snapshotDiff, { database: db, schema: snapshotApplyTestSchema });
+
+			expect(deleteOneCollectionSpy).not.toHaveBeenCalled();
+
+			expect(updateOneCollectionSpy).toHaveBeenCalledTimes(1);
+
+			expect(updateOneCollectionSpy).toHaveBeenCalledWith(
+				'articles',
+				expect.objectContaining({
+					meta: expect.objectContaining({ hidden: false }),
+				}),
+				mutationOptions,
+			);
+
+			const updatedMeta = updateOneCollectionSpy.mock.calls[0]?.[1]?.meta as Record<string, unknown>;
+			expect(updatedMeta).not.toHaveProperty('status');
+		});
+
+		it('Handles nested meta add as metadata update instead of creating the collection', async () => {
+			const currentSnapshot: Snapshot = {
+				version: 1,
+				directus: '0.0.0',
+				collections: [
+					{
+						collection: 'articles',
+						meta: { hidden: false },
+						schema: { name: 'articles' },
+					} as unknown as SnapshotCollection,
+				],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			};
+
+			const snapshotDiff: SnapshotDiff = {
+				collections: [
+					{
+						collection: 'articles',
+						diff: [
+							{
+								kind: DiffKind.NEW,
+								path: ['meta', 'status'],
+								rhs: 'draft' as any,
+							},
+						],
+					},
+				],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			};
+
+			const createOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test');
+			const updateOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'updateOne').mockResolvedValue('test');
+
+			await applyDiff(currentSnapshot, snapshotDiff, { database: db, schema: snapshotApplyTestSchema });
+
+			expect(createOneCollectionSpy).not.toHaveBeenCalled();
+
+			expect(updateOneCollectionSpy).toHaveBeenCalledTimes(1);
+
+			expect(updateOneCollectionSpy).toHaveBeenCalledWith(
+				'articles',
+				expect.objectContaining({
+					meta: expect.objectContaining({ status: 'draft', hidden: false }),
+				}),
+				mutationOptions,
+			);
+		});
 	});
 
 	describe('Fields', () => {
@@ -764,6 +871,115 @@ describe('applyDiff', () => {
 
 			expect(deleteOneRelationSpy).toHaveBeenCalledTimes(1);
 			expect(deleteOneRelationSpy).toHaveBeenCalledWith('articles', 'author_id', mutationOptions);
+		});
+
+		it('Handles nested meta add as metadata update instead of creating the relation', async () => {
+			const currentSnapshot: Snapshot = {
+				version: 1,
+				directus: '0.0.0',
+				collections: [],
+				fields: [],
+				systemFields: [],
+				relations: [
+					{
+						collection: 'articles',
+						field: 'author_id',
+						related_collection: 'authors',
+						meta: {},
+						schema: {},
+					} as unknown as SnapshotRelation,
+				],
+			};
+
+			const snapshotDiff: SnapshotDiff = {
+				collections: [],
+				fields: [],
+				systemFields: [],
+				relations: [
+					{
+						collection: 'articles',
+						field: 'author_id',
+						related_collection: 'authors',
+						diff: [
+							{
+								kind: DiffKind.NEW,
+								path: ['meta', 'one_field'],
+								rhs: 'articles' as any,
+							},
+						],
+					},
+				],
+			};
+
+			const createOneRelationSpy = vi.spyOn(RelationsService.prototype, 'createOne').mockResolvedValue(undefined);
+			const updateOneRelationSpy = vi.spyOn(RelationsService.prototype, 'updateOne').mockResolvedValue(undefined);
+
+			await applyDiff(currentSnapshot, snapshotDiff, { database: db, schema: snapshotApplyTestSchema });
+
+			expect(createOneRelationSpy).not.toHaveBeenCalled();
+
+			expect(updateOneRelationSpy).toHaveBeenCalledTimes(1);
+
+			expect(updateOneRelationSpy).toHaveBeenCalledWith(
+				'articles',
+				'author_id',
+				expect.objectContaining({
+					meta: expect.objectContaining({ one_field: 'articles' }),
+				}),
+				mutationOptions,
+			);
+		});
+
+		it('Handles nested meta delete as metadata update instead of deleting the relation', async () => {
+			const currentSnapshot: Snapshot = {
+				version: 1,
+				directus: '0.0.0',
+				collections: [],
+				fields: [],
+				systemFields: [],
+				relations: [
+					{
+						collection: 'articles',
+						field: 'author_id',
+						related_collection: 'authors',
+						meta: { one_field: 'articles', sort_field: null },
+						schema: {},
+					} as unknown as SnapshotRelation,
+				],
+			};
+
+			const snapshotDiff: SnapshotDiff = {
+				collections: [],
+				fields: [],
+				systemFields: [],
+				relations: [
+					{
+						collection: 'articles',
+						field: 'author_id',
+						related_collection: 'authors',
+						diff: [
+							{
+								kind: DiffKind.DELETE,
+								path: ['meta', 'one_field'],
+								lhs: 'articles' as any,
+							},
+						],
+					},
+				],
+			};
+
+			const deleteOneRelationSpy = vi.spyOn(RelationsService.prototype, 'deleteOne').mockResolvedValue(undefined);
+			const updateOneRelationSpy = vi.spyOn(RelationsService.prototype, 'updateOne').mockResolvedValue(undefined);
+
+			await applyDiff(currentSnapshot, snapshotDiff, { database: db, schema: snapshotApplyTestSchema });
+
+			expect(deleteOneRelationSpy).not.toHaveBeenCalled();
+
+			expect(updateOneRelationSpy).toHaveBeenCalledTimes(1);
+
+			const updatedMeta = updateOneRelationSpy.mock.calls[0]?.[2]?.meta as Record<string, unknown>;
+			expect(updatedMeta).not.toHaveProperty('one_field');
+			expect(updatedMeta).toHaveProperty('sort_field', null);
 		});
 	});
 
