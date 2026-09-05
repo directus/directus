@@ -1,6 +1,4 @@
-import url from 'url';
 import { useEnv } from '@directus/env';
-import { getEndpoint } from '@directus/utils';
 import type { Request } from 'express';
 import { Url } from './url.js';
 
@@ -13,7 +11,8 @@ import { Url } from './url.js';
 export function shouldSkipCache(req: Request): boolean {
 	const env = useEnv();
 
-	// Always skip cache for requests coming from the data studio based on Referer header
+	// Always skip cache for requests coming from the data studio (based on the Referer header) so the
+	// studio returns the latest data regardless of cache settings.
 	const referer = req.get('Referer');
 
 	if (referer) {
@@ -21,8 +20,8 @@ export function shouldSkipCache(req: Request): boolean {
 
 		if (adminUrl.isRootRelative()) {
 			const refererUrl = new Url(referer);
-			if (refererUrl.path.join('/').startsWith(adminUrl.path.join('/')) && checkAutoPurge()) return true;
-		} else if (referer.startsWith(adminUrl.toString()) && checkAutoPurge()) {
+			if (refererUrl.path.join('/').startsWith(adminUrl.path.join('/'))) return true;
+		} else if (referer.startsWith(adminUrl.toString())) {
 			return true;
 		}
 	}
@@ -30,22 +29,4 @@ export function shouldSkipCache(req: Request): boolean {
 	if (env['CACHE_SKIP_ALLOWED'] && req.get('cache-control')?.includes('no-store')) return true;
 
 	return false;
-
-	function checkAutoPurge() {
-		if (env['CACHE_AUTO_PURGE'] === false) return true;
-
-		const path = url.parse(req.originalUrl).pathname;
-
-		if (!path) return false;
-
-		for (const collection of env['CACHE_AUTO_PURGE_IGNORE_LIST'] as string[]) {
-			const ignoredPath = getEndpoint(collection);
-
-			if (path.startsWith(ignoredPath)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
 }
