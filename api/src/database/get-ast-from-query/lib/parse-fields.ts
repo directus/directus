@@ -5,6 +5,7 @@ import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
+import { validateCollectionActive } from '../../../permissions/modules/validate-collection-active/validate-collection-active.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../../types/index.js';
 import { splitFieldPath } from '../../../utils/split-field-path.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
@@ -211,9 +212,21 @@ export async function parseFields(
 		if (!relationType) continue;
 
 		let child: NestedCollectionNode | null = null;
+		const inactiveCollections = context.schema.inactiveCollections ?? [];
 
 		if (relationType === 'a2o') {
-			let allowedCollections = relation.meta!.one_allowed_collections!;
+			if (!Array.isArray(nestedFields)) {
+				for (const scopedCollection of Object.keys(nestedFields)) {
+					await validateCollectionActive(
+						{ accountability: options.accountability, action: 'read', collection: scopedCollection },
+						context,
+					);
+				}
+			}
+
+			let allowedCollections = relation.meta!.one_allowed_collections!.filter(
+				(collection) => !inactiveCollections.includes(collection),
+			);
 
 			if (options.accountability && options.accountability.admin === false && policies) {
 				const permissions = await fetchPermissions(

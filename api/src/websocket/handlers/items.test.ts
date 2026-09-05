@@ -18,6 +18,8 @@ vi.mock('../../utils/get-schema', () => ({
 	getSchema: vi.fn(),
 }));
 
+vi.mock('../../database/index');
+
 vi.mock('../../services', () => ({
 	ItemsService: vi.fn(),
 	MetaService: vi.fn(),
@@ -321,5 +323,37 @@ describe('WebSocket heartbeat handler', () => {
 		// expect service functions
 		expect(deleteByQuery).toBeCalled();
 		expect(fakeClient.send).toBeCalled();
+	});
+
+	test('inactive collection should error', async () => {
+		(getSchema as Mock).mockImplementation(() => ({
+			collections: { test: [] },
+			inactiveCollections: ['test'],
+		}));
+
+		const createOne = vi.fn();
+		(ItemsService as Mock).mockImplementation(() => ({ createOne }));
+
+		const fakeClient = mockClient();
+
+		// An admin is told the collection is inactive without a permission lookup
+		(fakeClient as { accountability: unknown }).accountability = { admin: true, roles: [], user: null };
+
+		emitter.emitAction(
+			'websocket.message',
+			{
+				client: fakeClient,
+				message: { type: 'items', collection: 'test', action: 'create', data: {} },
+			},
+			{} as EventContext,
+		);
+
+		await vi.runAllTimersAsync();
+
+		expect(createOne).not.toBeCalled();
+
+		expect(fakeClient.send).toBeCalledWith(
+			'{"type":"items","status":"error","error":{"code":"COLLECTION_INACTIVE","message":"Collection \\"test\\" is inactive."}}',
+		);
 	});
 });

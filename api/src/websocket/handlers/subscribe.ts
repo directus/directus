@@ -1,7 +1,10 @@
 import { InvalidPayloadError } from '@directus/errors';
 import { type Bus } from '@directus/memory';
 import { useBus } from '../../bus/index.js';
+import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
+import { validateCollectionActive } from '../../permissions/modules/validate-collection-active/validate-collection-active.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { validateQuery } from '../../utils/validate-query.js';
@@ -110,6 +113,7 @@ export class SubscribeHandler {
 		const subscriptions = this.subscriptions[event.collection];
 		if (!subscriptions || subscriptions.size === 0) return;
 		const schema = await getSchema();
+		const knex = getDatabase();
 
 		for (const subscription of subscriptions) {
 			const { client } = subscription;
@@ -124,6 +128,15 @@ export class SubscribeHandler {
 			}
 
 			try {
+				await validateCollectionActive(
+					{
+						accountability: client.accountability ?? createDefaultAccountability(),
+						collection: event.collection,
+						action: 'read',
+					},
+					{ schema, knex },
+				);
+
 				const result = await getPayload(subscription, client.accountability, schema, event);
 
 				if (Array.isArray(result?.['data']) && result?.['data']?.length === 0) continue;
@@ -153,6 +166,15 @@ export class SubscribeHandler {
 						message.uid,
 					);
 				}
+
+				await validateCollectionActive(
+					{
+						accountability: accountability ?? createDefaultAccountability(),
+						collection,
+						action: 'read',
+					},
+					{ schema, knex: getDatabase() },
+				);
 
 				const subscription: Subscription = {
 					client,

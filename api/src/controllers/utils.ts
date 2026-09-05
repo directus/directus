@@ -8,6 +8,7 @@ import { resolveLoginRedirect } from '../auth/utils/resolve-login-redirect.js';
 import { clearSystemCache } from '../cache.js';
 import { getDatabase } from '../database/index.js';
 import { useLogger } from '../logger/index.js';
+import collectionActive from '../middleware/collection-active.js';
 import collectionExists from '../middleware/collection-exists.js';
 import readFileUploadBody from '../middleware/read-file-upload-body.js';
 import { respond } from '../middleware/respond.js';
@@ -54,6 +55,7 @@ const SortSchema = z
 router.post(
 	'/sort/:collection',
 	collectionExists,
+	collectionActive,
 	asyncHandler(async (req, res) => {
 		const { error } = SortSchema.safeParse(req.body);
 		if (error) throw new InvalidPayloadError({ reason: fromZodError(error).message });
@@ -86,6 +88,7 @@ router.post(
 router.post(
 	'/import/:collection',
 	collectionExists,
+	collectionActive,
 	asyncHandler(async (req, res) => {
 		const service = new ImportService({
 			accountability: req.accountability,
@@ -145,6 +148,7 @@ router.post(
 router.post(
 	'/export/:collection',
 	collectionExists,
+	collectionActive,
 	asyncHandler(async (req, _res, next) => {
 		if (!req.body.query) {
 			throw new InvalidPayloadError({ reason: `"query" is required` });

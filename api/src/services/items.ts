@@ -9,6 +9,7 @@ import type {
 	Item as AnyItem,
 	MutationOptions,
 	MutationTracker,
+	PermissionsAction,
 	PrimaryKey,
 	Query,
 	QueryOptions,
@@ -29,7 +30,9 @@ import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
 import { processPayload } from '../permissions/modules/process-payload/process-payload.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { validateCollectionActive } from '../permissions/modules/validate-collection-active/validate-collection-active.js';
 import { createMutationTracker } from '../utils/create-mutation-tracker.js';
+import { getCollectionFromSchema } from '../utils/schema/get-collection-from-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
@@ -92,8 +95,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		return createMutationTracker(initialCount);
 	}
 
+	private async validateCollectionActive(action: PermissionsAction): Promise<void> {
+		await validateCollectionActive(
+			{ accountability: this.accountability, collection: this.collection, action },
+			{ schema: this.schema, knex: this.knex },
+		);
+	}
+
 	async getKeysByQuery(query: Query): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+		const primaryKeyField = getCollectionFromSchema(this.schema, this.collection).primary;
 		const readQuery = cloneDeep(query);
 
 		readQuery.fields = [primaryKeyField];
@@ -110,6 +120,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Create a single new item.
 	 */
 	async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
+		await this.validateCollectionActive('create');
+
 		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		if (!opts.bypassLimits) {
@@ -121,10 +133,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 		}
 
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		const fields = Object.keys(this.schema.collections[this.collection]!.fields);
+		const collectionInfo = getCollectionFromSchema(this.schema, this.collection);
+		const primaryKeyField = collectionInfo.primary;
+		const fields = Object.keys(collectionInfo.fields);
 
-		const aliases = Object.values(this.schema.collections[this.collection]!.fields)
+		const aliases = Object.values(collectionInfo.fields)
 			.filter((field) => field.alias === true)
 			.map((field) => field.field);
 
@@ -223,7 +236,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			// depending on the database, the sequence might need to be reset to protect future PK collisions.
 			let autoIncrementSequenceNeedsToBeReset = false;
 
-			const pkField = this.schema.collections[this.collection]!.fields[primaryKeyField];
+			const pkField = collectionInfo.fields[primaryKeyField];
 
 			if (
 				primaryKey &&
@@ -315,11 +328,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
-			if (
-				opts.skipTracking !== true &&
-				this.accountability &&
-				this.schema.collections[this.collection]!.accountability !== null
-			) {
+			if (opts.skipTracking !== true && this.accountability && collectionInfo.accountability !== null) {
 				const { ActivityService } = await import('./activity.js');
 				const { RevisionsService } = await import('./revisions.js');
 
@@ -339,7 +348,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				});
 
 				// If revisions are tracked, create revisions record
-				if (this.schema.collections[this.collection]!.accountability === 'all') {
+				if (collectionInfo.accountability === 'all') {
 					const revisionsService = new RevisionsService({
 						knex: trx,
 						schema: this.schema,
@@ -444,7 +453,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			const primaryKeys: PrimaryKey[] = [];
 			const nestedActionEvents: ActionEventParams[] = [];
 
-			const pkField = this.schema.collections[this.collection]!.primary;
+			const pkField = getCollectionFromSchema(this.schema, this.collection).primary;
 
 			for (const [index, payload] of data.entries()) {
 				let bypassAutoIncrementSequenceReset = true;
@@ -504,6 +513,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Get items by query.
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
+		await this.validateCollectionActive('read');
+
 		if (query.version && !isPublishedVersionKey(query.version)) {
 			return (await handleVersion(this, opts?.key ?? null, query, opts)) as Item[];
 		}
@@ -596,7 +607,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.readByQuery` under the hood.
 	 */
 	async readOne(key: PrimaryKey, query: Query = {}, opts?: QueryOptions): Promise<Item> {
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+		const primaryKeyField = getCollectionFromSchema(this.schema, this.collection).primary;
 
 		validateKeys(this.schema, this.collection, primaryKeyField, key);
 
@@ -618,7 +629,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.readByQuery` under the hood.
 	 */
 	async readMany(keys: PrimaryKey[], query: Query = {}, opts?: QueryOptions): Promise<Item[]> {
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+		const primaryKeyField = getCollectionFromSchema(this.schema, this.collection).primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
 		const filterWithKey = { _and: [{ [primaryKeyField]: { _in: keys } }, query.filter ?? {}] };
@@ -665,7 +676,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+		const primaryKeyField = getCollectionFromSchema(this.schema, this.collection).primary;
 
 		const keys: PrimaryKey[] = [];
 
@@ -717,6 +728,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Update many items by primary key, setting all items to the same change.
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		await this.validateCollectionActive('update');
+
 		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		if (!opts.bypassLimits) {
@@ -728,12 +741,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 		}
 
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+		const collectionInfo = getCollectionFromSchema(this.schema, this.collection);
+		const primaryKeyField = collectionInfo.primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
-		const fields = Object.keys(this.schema.collections[this.collection]!.fields);
+		const fields = Object.keys(collectionInfo.fields);
 
-		const aliases = Object.values(this.schema.collections[this.collection]!.fields)
+		const aliases = Object.values(collectionInfo.fields)
 			.filter((field) => field.alias === true)
 			.map((field) => field.field);
 
@@ -872,11 +886,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
-			if (
-				opts.skipTracking !== true &&
-				this.accountability &&
-				this.schema.collections[this.collection]!.accountability !== null
-			) {
+			if (opts.skipTracking !== true && this.accountability && collectionInfo.accountability !== null) {
 				const { ActivityService } = await import('./activity.js');
 				const { RevisionsService } = await import('./revisions.js');
 
@@ -898,7 +908,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					{ bypassLimits: true },
 				);
 
-				if (this.schema.collections[this.collection]!.accountability === 'all') {
+				if (collectionInfo.accountability === 'all') {
 					const itemsService = new ItemsService(this.collection, {
 						knex: trx,
 						schema: this.schema,
@@ -1004,7 +1014,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.createOne` / `this.updateOne` under the hood.
 	 */
 	async upsertOne(payload: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+		const primaryKeyField = getCollectionFromSchema(this.schema, this.collection).primary;
 		const primaryKey: PrimaryKey | undefined = payload[primaryKeyField];
 
 		if (primaryKey) {
@@ -1070,7 +1080,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const keys = await this.getKeysByQuery(query);
 
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+		const primaryKeyField = getCollectionFromSchema(this.schema, this.collection).primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
 		return keys.length ? await this.deleteMany(keys, opts) : [];
@@ -1082,7 +1092,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.deleteMany` under the hood.
 	 */
 	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+		const primaryKeyField = getCollectionFromSchema(this.schema, this.collection).primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, key);
 
 		await this.deleteMany([key], opts);
@@ -1093,13 +1103,16 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Delete multiple items by primary key.
 	 */
 	async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		await this.validateCollectionActive('delete');
+
 		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
 		if (!opts.bypassLimits) {
 			opts.mutationTracker.trackMutations(keys.length);
 		}
 
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+		const collectionInfo = getCollectionFromSchema(this.schema, this.collection);
+		const primaryKeyField = collectionInfo.primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
 		const keysAfterHooks =
@@ -1156,11 +1169,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				}
 			}
 
-			if (
-				opts.skipTracking !== true &&
-				this.accountability &&
-				this.schema.collections[this.collection]!.accountability !== null
-			) {
+			if (opts.skipTracking !== true && this.accountability && collectionInfo.accountability !== null) {
 				const { ActivityService } = await import('./activity.js');
 
 				const activityService = new ActivityService({
@@ -1219,12 +1228,16 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Read/treat collection as singleton.
 	 */
 	async readSingleton(query: Query, opts?: QueryOptions): Promise<Partial<Item>> {
+		await this.validateCollectionActive('read');
+
 		query = clone(query);
 
 		query.limit = 1;
 
+		const collectionInfo = getCollectionFromSchema(this.schema, this.collection);
+
 		if (query.version && !isPublishedVersionKey(query.version)) {
-			const primaryKeyField = this.schema.collections[this.collection]!.primary;
+			const primaryKeyField = collectionInfo.primary;
 			const key = (await this.knex.select(primaryKeyField).from(this.collection).first())?.[primaryKeyField];
 			opts = { ...opts, key };
 		}
@@ -1232,7 +1245,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const record = (await this.readByQuery(query, opts))[0];
 
 		if (!record) {
-			let fields = Object.entries(this.schema.collections[this.collection]!.fields);
+			let fields = Object.entries(collectionInfo.fields);
 			const defaults: Record<string, any> = {};
 
 			if (query.fields && query.fields.includes('*') === false) {
@@ -1242,7 +1255,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			for (const [name, field] of fields) {
-				if (this.schema.collections[this.collection]!.primary === name) {
+				if (collectionInfo.primary === name) {
 					defaults[name] = null;
 					continue;
 				}
@@ -1262,7 +1275,9 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.createOne` / `this.updateOne` under the hood.
 	 */
 	async upsertSingleton(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+		await this.validateCollectionActive('update');
+
+		const primaryKeyField = getCollectionFromSchema(this.schema, this.collection).primary;
 
 		const record = await this.knex.select(primaryKeyField).from(this.collection).limit(1).first();
 
