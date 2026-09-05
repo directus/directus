@@ -1,6 +1,46 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Um
+data_processing_agreement: Vinnslusamningur
+contact_support: hafðu samband við þjónustuaðila
+setup_welcome: Velkomin í Directus
+project_usage: Í hvaða tilgangi notar þú Directus?
+org_name: Nafn fyrirtækis
+org_name_placeholder: Fyrirtæki ehf.
+setup_project: Setja upp verkefni
+enter_license_key: Gefðu upp leyfislykil
+license_valid: Leyfi í gildi
+license_key: Leyfislykill
+expires_on: Rennur út þann
+environment: Umhverfi
+production: Raun
+non_production: Ekki-raun
+skip: Sleppa
+continue: Halda áfram
 first_name: Fornafn
 last_name: Eftirnafn
+admin_email: Netfang stjórnanda
+owner_email: Netfang eiganda
+email_address: Netfang
 identifier: Auðkenni
 avatar: Auðkennismynd
 application: Forrit
@@ -9,7 +49,10 @@ method: Aðferð
 published: Útgefið
 draft: Drög
 archived: Í geymslu
+marketplace: Markaðstorg
+extensions: Viðbætur
 modules: Einingar
+logs: Annálar
 reset_width: Endursetja Breidd
 edit_field: Breyta Reit
 location: Staðsetning
@@ -21,12 +64,19 @@ duplicate_field: Tvöfalda Reit
 half_width: Hálf Breidd
 full_width: Full Breidd
 group: Hópur
+popular: Vinsælt
+recent: Nýlegt
+previous: Fyrra
+latest: Síðasta
+updated: Uppfært
 export_items: Flytja út Hluti
 and: Og
 or: Eða
 extension_layout: Framsetning
 extension_hook: Krókur
 extension_modules: Einingar
+enable: Virkja
+disable: Afvirkja
 custom: Sérsniðið
 hook: Krókur
 fill_width: Fylla Breidd
@@ -37,6 +87,7 @@ leaf: Lauf
 edit_collection: Breyta Safni
 children: Börn
 show_all_items: Sýna Alla Hluti
+edited: Gildi breytt
 required: Nauðsynlegt
 create_role: Búa til Hlutverk
 create_user: Búa til Notanda
@@ -299,9 +350,13 @@ settings_project: Stillingar
 licensing:
   addon_update: Uppfæra
   resolve_section_flows: Flæðir
+  resolve_sso_admin_email: Netfang
   resolve_sso_admin_password: Lykilorð
+  key: Leyfislykill
   entitlements:
     flows: Flæðir
+  badge:
+    non_prod: Ekki-raun
 settings_flows: Flæðir
 settings_translations: Þýðingar
 select: Velja...
@@ -316,6 +371,7 @@ create_new: Búa til Nýtt
 all: Allt
 none: Ekkert
 cancel: Hætta við
+source_registry: Markaðstorg
 content: Efni
 fields:
   directus_activity:
