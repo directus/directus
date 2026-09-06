@@ -308,12 +308,23 @@ describe('#getClient proxy support', () => {
 		const s3ClientConfig = vi.mocked(S3Client).mock.calls.at(-1)![0] as { requestHandler: NodeHttpHandler };
 		const requestHandler = s3ClientConfig.requestHandler;
 
-		// `NodeHttpHandler` resolves its config (incl. the agents passed to it) synchronously
-		// under the hood, but only exposes it via this promise.
+		// `NodeHttpHandler` resolves its config (incl. the agents passed to it) synchronously under
+		// the hood, but only exposes it via this promise. As of @smithy/node-http-handler 4.11+, the
+		// http (not https) agent is additionally resolved lazily behind `httpAgentProvider()` rather
+		// than being present on the resolved config directly - support both shapes so this doesn't
+		// silently start testing the wrong thing again on the next dependency bump.
 		const resolvedConfig = (await (requestHandler as unknown as { configProvider: Promise<unknown> })
-			.configProvider) as { httpAgent: InspectableAgent; httpsAgent: InspectableAgent };
+			.configProvider) as {
+			httpAgent?: InspectableAgent;
+			httpAgentProvider?: () => Promise<InspectableAgent>;
+			httpsAgent: InspectableAgent;
+		};
 
-		return resolvedConfig;
+		const httpAgent = resolvedConfig.httpAgentProvider
+			? await resolvedConfig.httpAgentProvider()
+			: resolvedConfig.httpAgent!;
+
+		return { httpAgent, httpsAgent: resolvedConfig.httpsAgent };
 	}
 
 	test('Passes proxyEnv through to the http agent so Node can apply HTTP_PROXY/NO_PROXY', async () => {
