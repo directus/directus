@@ -10,9 +10,7 @@ describe('KvLocal concurrent operations', () => {
 		const kv = new KvLocal(config);
 
 		const concurrency = 100;
-		const results = await Promise.all(
-			Array.from({ length: concurrency }, () => kv.increment('counter', 1)),
-		);
+		const results = await Promise.all(Array.from({ length: concurrency }, () => kv.increment('counter', 1)));
 
 		const uniqueResults = new Set(results);
 		expect(uniqueResults.size).toBe(concurrency);
@@ -27,10 +25,7 @@ describe('KvLocal concurrent operations', () => {
 		const kv = new KvLocal(config);
 		await kv.set('maximum', 1);
 
-		const results = await Promise.all([
-			kv.setMax('maximum', 100),
-			kv.setMax('maximum', 50),
-		]);
+		const results = await Promise.all([kv.setMax('maximum', 100), kv.setMax('maximum', 50)]);
 
 		expect(results).toEqual([true, false]);
 		expect(await kv.get('maximum')).toBe(100);
