@@ -1,8 +1,8 @@
 import { InvalidPayloadError } from '@directus/errors';
-import { jsonSchema as aiJsonSchema, tool as aiTool } from 'ai';
+import { jsonSchema as aiJsonSchema } from 'ai';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ALL_TOOLS } from '../../tools/index.js';
-import { chatRequestToolToAiSdkTool } from './chat-request-tool-to-ai-sdk-tool.js';
+import { chatRequestToolsToAiSdkTools } from './chat-request-tool-to-ai-sdk-tool.js';
 
 // Mock the AI SDK to capture tool/jsonSchema/zodSchema calls
 vi.mock('ai', () => {
@@ -13,169 +13,224 @@ vi.mock('ai', () => {
 	};
 });
 
-// Mock zod-validation-error to provide deterministic messages
-vi.mock('zod-validation-error', () => ({
-	fromZodError: (err: any) => ({ message: `ZodError: ${err?.message ?? 'invalid'}` }),
-}));
-
 // Prepare hoisted mocks so they are available inside vi.mock factories
-const { mockValidate, mockHandler } = vi.hoisted(() => ({
-	mockValidate: { safeParse: vi.fn((args: any) => ({ data: args })) } as any,
-	mockHandler: vi.fn(async (_args: any) => 'handled') as any,
+const { mockMount, mockMountedRegistry, mockToolRegistryConstructor } = vi.hoisted(() => ({
+	mockMount: vi.fn(),
+	mockMountedRegistry: {
+		executeRoot: vi.fn(),
+		getRootTools: vi.fn(),
+		isCallReadOnly: vi.fn(),
+	},
+	mockToolRegistryConstructor: vi.fn(),
 }));
 
 vi.mock('../../tools/index.js', () => {
-	const TOOL = {
-		name: 'directus.test',
-		description: 'A test tool',
-		inputSchema: { any: 'flexible' },
-		validateSchema: mockValidate,
-		handler: mockHandler,
-	};
+	return {
+		ALL_TOOLS: [{ name: 'directus.test', description: 'A test tool', inputSchema: { any: 'flexible' } }],
+		ToolRegistry: class {
+			constructor(tools: unknown[]) {
+				mockToolRegistryConstructor(tools);
+			}
 
-	return { ALL_TOOLS: [TOOL] };
+			mount(context: unknown) {
+				mockMount(context);
+
+				return mockMountedRegistry;
+			}
+		},
+	};
 });
 
 const accountability = { user: '123' } as any;
 const schema = { collections: {} } as any;
 
-describe('chatRequestToolToAiSdkTool', () => {
+describe('chat request tool mapping', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
-		// reset defaults
-		mockValidate.safeParse = vi.fn((args: any) => ({ data: args }));
-		(mockHandler as any).mockResolvedValue('handled');
+
+		mockMountedRegistry.getRootTools.mockReturnValue([
+			{ name: 'search', description: 'Search tools', inputSchema: { root: 'search' } },
+			{ name: 'execute', description: 'Execute tools', inputSchema: { root: 'execute' } },
+			{ name: 'schema', description: 'Read schema', inputSchema: { root: 'schema' } },
+		]);
+
+		mockMountedRegistry.executeRoot.mockResolvedValue({
+			ok: true,
+			result: { type: 'text', data: { ok: true }, url: 'https://directus.example/admin/content/posts/1' },
+		});
+
+		mockMountedRegistry.isCallReadOnly.mockReturnValue(false);
 	});
 
-	it('returns an AI tool for a known string tool name', () => {
-		const result: any = chatRequestToolToAiSdkTool({
-			chatRequestTool: 'directus.test',
+	it('returns registry root tools by default and uses string tools as the mounted allowlist', async () => {
+		const result: any = chatRequestToolsToAiSdkTools({
+			chatRequestTools: ['directus.test'],
+			accountability,
+			schema,
+			systemPrompt: 'System',
+		});
+
+		expect(mockToolRegistryConstructor).toHaveBeenCalledWith(ALL_TOOLS);
+
+		expect(mockMount).toHaveBeenCalledWith({
+			accountability,
+			schema,
+			systemPrompt: 'System',
+			toolNames: ['directus.test'],
+			isToolCallApproved: expect.any(Function),
+		});
+
+		expect(Object.keys(result)).toEqual(['search', 'execute', 'schema']);
+
+		await expect(result.search.config.execute({ query: 'items' })).resolves.toEqual({
+			data: { ok: true },
+			url: 'https://directus.example/admin/content/posts/1',
+		});
+
+		expect(mockMountedRegistry.executeRoot).toHaveBeenCalledWith('search', { query: 'items' });
+	});
+
+	it('adds client-side tools alongside registry root tools', () => {
+		const result: any = chatRequestToolsToAiSdkTools({
+			chatRequestTools: [
+				'directus.test',
+				{
+					name: 'client-tool',
+					description: 'Client tool',
+					inputSchema: { type: 'object' },
+				},
+			],
 			accountability,
 			schema,
 		});
 
-		expect(aiTool).toHaveBeenCalledTimes(1);
-		const config = (result as any).config;
-		expect(config.description).toBe('A test tool');
-		expect(config.inputSchema).toEqual({ __mock: 'zodSchema', schema: (ALL_TOOLS as any)[0].inputSchema });
-		expect(typeof config.execute).toBe('function');
+		expect(Object.keys(result)).toEqual(['search', 'execute', 'schema', 'client-tool']);
+		expect(aiJsonSchema).toHaveBeenCalledWith({ type: 'object' });
 	});
 
-	it('calls validateSchema and handler with parsed args, accountability, and schema', async () => {
-		(mockValidate.safeParse as any).mockReturnValue({ data: { a: 1 }, error: undefined });
-		(mockHandler as any).mockResolvedValue('ok');
-
-		const result: any = chatRequestToolToAiSdkTool({
-			chatRequestTool: 'directus.test',
+	it('adds an object type to client-side schemas for provider tool compatibility', () => {
+		chatRequestToolsToAiSdkTools({
+			chatRequestTools: [
+				{
+					name: 'client-tool',
+					description: 'Client tool',
+					inputSchema: {
+						properties: {
+							query: { type: 'string' },
+						},
+						required: ['query'],
+					},
+				},
+			],
 			accountability,
 			schema,
 		});
 
-		const { execute } = result.config;
-		const out = await execute({ a: 1 });
-
-		expect(mockValidate.safeParse).toHaveBeenCalledWith({ a: 1 });
-		expect(mockHandler).toHaveBeenCalledWith({ args: { a: 1 }, accountability, schema });
-		expect(out).toBe('ok');
+		expect(aiJsonSchema).toHaveBeenCalledWith({
+			type: 'object',
+			properties: {
+				query: { type: 'string' },
+			},
+			required: ['query'],
+		});
 	});
 
-	it('throws InvalidPayloadError when validation fails in directus tool execute', async () => {
-		(mockValidate.safeParse as any).mockReturnValue({ error: { message: 'bad' } });
+	it('rejects client-side schemas that are not object-shaped', () => {
+		expect(() =>
+			chatRequestToolsToAiSdkTools({
+				chatRequestTools: [
+					{
+						name: 'client-tool',
+						description: 'Client tool',
+						inputSchema: {
+							anyOf: [{ type: 'string' }, { type: 'number' }],
+						},
+					},
+				],
+				accountability,
+				schema,
+			}),
+		).toThrow(InvalidPayloadError);
+	});
 
-		const result: any = chatRequestToolToAiSdkTool({
-			chatRequestTool: 'directus.test',
+	it('omits disabled direct and client-side tools while keeping pinned root tools', () => {
+		const result: any = chatRequestToolsToAiSdkTools({
+			chatRequestTools: [
+				'directus.test',
+				{
+					name: 'client-tool',
+					description: 'Client tool',
+					inputSchema: { type: 'object' },
+				},
+			],
+			accountability,
+			schema,
+			toolApprovals: { 'directus.test': 'disabled', 'client-tool': 'disabled', schema: 'disabled' },
+		});
+
+		expect(mockMount).toHaveBeenCalledWith(expect.objectContaining({ toolNames: [] }));
+		expect(Object.keys(result)).toEqual(['search', 'execute', 'schema']);
+	});
+
+	it('keeps pinned root tools even when approval settings include them', () => {
+		const result = chatRequestToolsToAiSdkTools({
+			chatRequestTools: ['directus.test'],
+			accountability,
+			schema,
+			toolApprovals: { execute: 'disabled', schema: 'disabled', search: 'disabled' },
+		});
+
+		expect(Object.keys(result)).toEqual(['search', 'execute', 'schema']);
+	});
+
+	it('rejects client-side tools that shadow registry root tools', () => {
+		expect(() =>
+			chatRequestToolsToAiSdkTools({
+				chatRequestTools: [
+					{
+						name: 'execute',
+						description: 'Client execute',
+						inputSchema: { type: 'object' },
+					},
+				],
+				accountability,
+				schema,
+			}),
+		).toThrow(InvalidPayloadError);
+	});
+
+	it('uses dynamic approval for root execute based on the inner tool read-only state', () => {
+		const result: any = chatRequestToolsToAiSdkTools({
+			chatRequestTools: ['directus.test'],
+			accountability,
+			schema,
+			toolApprovals: { 'directus.test': 'ask', other: 'always' },
+		});
+
+		mockMountedRegistry.isCallReadOnly.mockReturnValueOnce(true);
+		expect(result.execute.config.needsApproval({ name: 'directus.test', input: { action: 'read' } })).toBe(false);
+
+		mockMountedRegistry.isCallReadOnly.mockReturnValueOnce(false);
+		expect(result.execute.config.needsApproval({ name: 'directus.test', input: { action: 'create' } })).toBe(true);
+
+		mockMountedRegistry.isCallReadOnly.mockReturnValueOnce(false);
+		expect(result.execute.config.needsApproval({ name: 'other', input: { action: 'create' } })).toBe(false);
+	});
+
+	it('returns registry errors as model-visible output', async () => {
+		mockMountedRegistry.executeRoot.mockResolvedValueOnce({
+			ok: false,
+			error: { code: 'UNKNOWN_TOOL', message: 'Missing', recoverable: true },
+		});
+
+		const result: any = chatRequestToolsToAiSdkTools({
+			chatRequestTools: ['directus.test'],
 			accountability,
 			schema,
 		});
 
-		const { execute } = result.config;
-
-		await expect(execute({})).rejects.toBeInstanceOf(InvalidPayloadError);
-	});
-
-	it('throws when tool name is unknown', () => {
-		// Temporarily empty the tools list for this call
-		const original = ALL_TOOLS.splice(0, ALL_TOOLS.length);
-
-		try {
-			expect(() =>
-				chatRequestToolToAiSdkTool({
-					chatRequestTool: 'does.not.exist',
-					accountability,
-					schema,
-				}),
-			).toThrowError(/Tool by name "does\.not\.exist" does not exist/);
-		} finally {
-			ALL_TOOLS.push(...original);
-		}
-	});
-
-	it('wraps custom tool object using jsonSchema for its inputSchema', () => {
-		const custom = {
-			name: 'custom',
-			description: 'Custom desc',
-			inputSchema: { type: 'object', properties: {} } as any,
-		};
-
-		const result: any = chatRequestToolToAiSdkTool({
-			chatRequestTool: custom as any,
-			accountability,
-			schema,
+		await expect(result.search.config.execute({ query: 'missing' })).resolves.toEqual({
+			error: { code: 'UNKNOWN_TOOL', message: 'Missing', recoverable: true },
 		});
-
-		expect(aiJsonSchema).toHaveBeenCalledWith(custom.inputSchema);
-		const config = result.config;
-		expect(config.description).toBe('Custom desc');
-		expect(config.inputSchema).toEqual({ __mock: 'jsonSchema', schema: custom.inputSchema });
-	});
-
-	it('sets needsApproval to true by default (ask mode)', () => {
-		const result: any = chatRequestToolToAiSdkTool({
-			chatRequestTool: 'directus.test',
-			accountability,
-			schema,
-		});
-
-		const config = result.config;
-		expect(config.needsApproval).toBe(true);
-	});
-
-	it('sets needsApproval to false when toolApprovals is always', () => {
-		const result: any = chatRequestToolToAiSdkTool({
-			chatRequestTool: 'directus.test',
-			accountability,
-			schema,
-			toolApprovals: { 'directus.test': 'always' },
-		});
-
-		const config = result.config;
-		expect(config.needsApproval).toBe(false);
-	});
-
-	it('sets needsApproval to true when toolApprovals is ask', () => {
-		const result: any = chatRequestToolToAiSdkTool({
-			chatRequestTool: 'directus.test',
-			accountability,
-			schema,
-			toolApprovals: { 'directus.test': 'ask' },
-		});
-
-		const config = result.config;
-		expect(config.needsApproval).toBe(true);
-	});
-
-	it('coerces stringified JSON fields before validation', async () => {
-		(mockValidate.safeParse as any).mockReturnValue({ data: { data: [{ name: 'Test' }] }, error: undefined });
-
-		const result: any = chatRequestToolToAiSdkTool({
-			chatRequestTool: 'directus.test',
-			accountability,
-			schema,
-		});
-
-		const { execute } = result.config;
-		await execute({ data: '[{"name":"Test"}]' });
-
-		expect(mockValidate.safeParse).toHaveBeenCalledWith(expect.objectContaining({ data: [{ name: 'Test' }] }));
 	});
 });

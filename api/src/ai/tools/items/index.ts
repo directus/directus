@@ -61,12 +61,17 @@ const ItemsInputSchema = z.object({
 
 export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 	name: 'items',
-	description: requireText(resolve(__dirname, './prompt.md')),
+	description:
+		'Reads and changes items in user collections. Use for content records like articles, products, pages, and other non-system collection data.',
+	instructions: requireText(resolve(__dirname, './prompt.md')),
+	keywords: ['content', 'records', 'entries', 'rows', 'publish', 'archive', 'status'],
 	annotations: {
 		title: 'Directus - Items',
+		destructiveHint: true,
 	},
 	inputSchema: ItemsInputSchema,
 	validateSchema: ItemsValidateSchema,
+	readOnly: (input) => input.action === 'read',
 	endpoint({ input, data }) {
 		if (!isObject(data) || !('id' in data)) {
 			return;

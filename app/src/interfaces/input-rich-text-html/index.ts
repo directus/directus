@@ -298,6 +298,15 @@ export default defineInterface({
 									styles: { color: '#00ff00', 'font-size': '20px' },
 									attributes: { title: 'My Custom Wrapper' },
 								},
+								{
+									title: 'My Custom Block',
+									block: 'p',
+									classes: 'lead-paragraph',
+								},
+								{
+									title: 'My Custom Group',
+									items: [{ title: 'Subheading', selector: 'h2', classes: 'subheading' }],
+								},
 							],
 							null,
 							4,

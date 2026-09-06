@@ -26,6 +26,7 @@ import { useNotificationsStore } from '@/stores/notifications';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getAssetUrl, getFilesUrl } from '@/utils/get-asset-url';
+import { getDroppedFiles } from '@/utils/get-dropped-files';
 import { getFolderFilter } from '@/utils/get-folder-filter';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFiles } from '@/utils/upload-files';
@@ -332,7 +333,16 @@ function useFileUpload() {
 			notificationsStore.remove(dragNotificationID);
 		}
 
-		const files = Array.from(event.dataTransfer.files).filter((file) => file.type);
+		const files = getDroppedFiles(event.dataTransfer);
+
+		if (files.length === 0) {
+			notificationsStore.add({
+				title: t('upload_files_empty'),
+				type: 'warning',
+			});
+
+			return;
+		}
 
 		fileUploadNotificationID = notificationsStore.add({
 			title: t(

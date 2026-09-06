@@ -25,6 +25,8 @@ patch:
   summary: Update a Permission
   description: Update an existing permission
   operationId: updatePermission
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
   requestBody:
     content:
       application/json:

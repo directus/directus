@@ -141,6 +141,7 @@ export interface StoredProject {
 	framework: string | null;
 	deployable: boolean;
 	date_created: string;
+	user_created: string | null;
 }
 
 /**
@@ -150,9 +151,10 @@ export interface StoredRun {
 	id: string;
 	project: string;
 	external_id: string;
-	status: Status;
+	status: Status | null;
 	target: string;
 	date_created: string;
+	user_created: string | null;
 	url: string | null;
 	started_at: string | null;
 	completed_at: string | null;

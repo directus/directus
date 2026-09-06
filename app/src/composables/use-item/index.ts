@@ -37,6 +37,7 @@ type UsableItem<T extends Item> = {
 	loading: ComputedRef<boolean>;
 	saving: Ref<boolean>;
 	refresh: () => void;
+	refreshSignal: Ref<number>;
 	save: () => Promise<T | undefined>;
 	isNew: ComputedRef<boolean>;
 	remove: () => Promise<void>;
@@ -73,6 +74,7 @@ export function useItem<T extends Item>(
 	const archiving = ref(false);
 	const edits = ref<Item>({});
 	const hasEdits = computed(() => Object.keys(edits.value).length > 0);
+	const refreshSignal = ref(0);
 	const isNew = computed(() => primaryKey.value === '+');
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
 
@@ -133,6 +135,7 @@ export function useItem<T extends Item>(
 		loading,
 		saving,
 		refresh,
+		refreshSignal,
 		save,
 		isNew,
 		remove,
@@ -546,6 +549,8 @@ export function useItem<T extends Item>(
 		archiving.value = false;
 
 		item.value = null;
+
+		refreshSignal.value++;
 
 		refreshItem();
 		permissions.itemPermissions.refresh();

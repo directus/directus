@@ -336,6 +336,17 @@ describe('#exists', () => {
 		const result = await driver.exists(sample.path.input);
 		expect(result).toBe(true);
 	});
+
+	/**
+	 * The SDK only answers false for a missing object, so a failed lookup has to keep travelling. Reporting
+	 * it as a missing file makes callers act on a wrong answer.
+	 */
+	test('Throws if the lookup failed', async () => {
+		const error = new Error('Service unavailable');
+		mockFile.exists.mockRejectedValue(error);
+
+		await expect(driver.exists(sample.path.input)).rejects.toThrowError(error);
+	});
 });
 
 describe('#move', () => {
