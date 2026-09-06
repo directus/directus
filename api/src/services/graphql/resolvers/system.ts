@@ -25,8 +25,8 @@ import { UsersService } from '../../users.js';
 import { GraphQLService } from '../index.js';
 import { type CollectionTypes, generateSchema, type Schema } from '../schema/index.js';
 import { getQuery } from '../schema/parse-query.js';
+import { buildSelections } from '../utils/build-selections.js';
 import { dedupeResolver } from '../utils/dedupe-resolvers.js';
-import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
 import { getCollectionType } from './get-collection-type.js';
 import { getFieldType } from './get-field-type.js';
 import { getRelationType } from './get-relation-type.js';
@@ -379,7 +379,7 @@ export function injectSystemResolvers(
 					if (!gql.accountability?.user) return null;
 					const service = new UsersService({ schema: gql.schema, accountability: gql.accountability });
 
-					const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
+					const selections = buildSelections(info);
 
 					const query = await getQuery(
 						args,
@@ -430,7 +430,7 @@ export function injectSystemResolvers(
 						schema: gql.schema,
 					});
 
-					const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
+					const selections = buildSelections(info);
 
 					const query = await getQuery(
 						args,
@@ -494,10 +494,7 @@ export function injectSystemResolvers(
 					await service.updateOne(gql.accountability.user, args['data']);
 
 					if ('directus_users' in ReadCollectionTypes) {
-						const selections = replaceFragmentsInSelections(
-							info.fieldNodes[0]?.selectionSet?.selections,
-							info.fragments,
-						);
+						const selections = buildSelections(info);
 
 						const query = await getQuery(
 							args,
@@ -534,10 +531,7 @@ export function injectSystemResolvers(
 					const primaryKey = await service.importOne(args['url'], args['data']);
 
 					if ('directus_files' in ReadCollectionTypes) {
-						const selections = replaceFragmentsInSelections(
-							info.fieldNodes[0]?.selectionSet?.selections,
-							info.fragments,
-						);
+						const selections = buildSelections(info);
 
 						const query = await getQuery(
 							args,

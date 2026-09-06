@@ -255,7 +255,7 @@ function usePublish() {
 								<VForm
 									:collection="collection"
 									:primary-key="primaryKey"
-									:initial-values="comparisonData?.base || {}"
+									:initial-values="comparisonData?.displayBase ?? comparisonData?.base ?? {}"
 									:collab-context="collabContext"
 									:comparison="{
 										side: 'base',
@@ -299,7 +299,7 @@ function usePublish() {
 								<VForm
 									:collection="collection"
 									:primary-key="primaryKey"
-									:initial-values="comparisonData?.incoming || {}"
+									:initial-values="comparisonData?.displayIncoming ?? comparisonData?.incoming ?? {}"
 									:comparison="{
 										side: 'incoming',
 										fields: comparisonFields,

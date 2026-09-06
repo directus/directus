@@ -1,0 +1,7 @@
+description: When used with `version`, returns the raw revision data instead of the merged item data.
+in: query
+name: versionRaw
+required: false
+schema:
+  type: boolean
+  default: false

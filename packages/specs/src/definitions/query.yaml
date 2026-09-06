@@ -4,30 +4,153 @@ properties:
     type: array
     items:
       type: string
-    description: Control what fields are being returned in the object.
-    example: ['*', '*.*']
+    description: >
+      Control what fields are returned in the response. Supports dot notation for related fields, wildcards (`*`,
+      `*.*`), Many-to-Any (M2A) collection-scoping (`field:collection.field`), and field functions
+      (`year(date_published)`).
+    example: ['title', 'author.name', '*.*']
   filter:
     type: object
-    example: { <field>: { <operator>: <value> } }
+    description: Select items in the collection that match the given filter conditions.
+    example: { 'title': { '_eq': 'Hello' } }
   search:
-    description: Filter by items that contain the given search query in one of their fields.
     type: string
+    description: >
+      Filter by items that contain the given search query. Matches case-insensitively against `string`/`text` fields;
+      relational fields are not searched. If the value parses as a number or UUID, numeric and UUID fields are also
+      matched exactly.
   sort:
     type: array
     items:
       type: string
-    description: How to sort the returned items.
+    description: >
+      How to sort the returned items. Prefix a field with `-` for descending order. Supports dot notation for related
+      fields and field functions (`year(date_created)`).
     example: ['-date_created']
   limit:
-    type: number
-    description: Set the maximum number of items that will be returned
+    type: integer
+    minimum: -1
+    description: >
+      Set the maximum number of items that will be returned. Defaults to 100. `-1` returns all items.
+    example: 50
   offset:
-    type: number
-    description: How many items to skip when fetching data.
+    type: integer
+    minimum: 0
+    description: >
+      How many items to skip when fetching data. Can be used for pagination. Overridden by `page` if both are provided.
+    example: 100
   page:
-    type: number
-    description: Cursor for use in pagination. Often used in combination with limit.
+    type: integer
+    minimum: 0
+    description: >
+      An alternative to `offset`. Pages through results in `limit`-sized increments starting at page `1`. Overrides
+      `offset` if both are provided.
+    example: 2
+  meta:
+    oneOf:
+      - type: string
+      - type: array
+        items:
+          type: string
+          enum:
+            - total_count
+            - filter_count
+    description: >
+      What metadata to return. `*` is shorthand for both `total_count` and `filter_count`.
+    example: '*'
+  aggregate:
+    type: object
+    description: >
+      Perform calculations on a set of values. Each key is an aggregate function name, and each value is the field(s) to
+      apply it to. `count` also accepts `*` to count all items regardless of field.
+    properties:
+      count:
+        oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+      countDistinct:
+        oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+      sum:
+        oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+      sumDistinct:
+        oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+      avg:
+        oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+      avgDistinct:
+        oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+      min:
+        oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+      max:
+        oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+    example: { 'count': ['*'] }
+  groupBy:
+    type: array
+    items:
+      type: string
+    description: Group the returned items by the given field(s).
+    example: ['status']
   deep:
     type: object
-    description: Deep allows you to set any of the other query parameters on a nested relational dataset.
+    description: Set any other query parameter, except `fields` and `deep` itself, on a nested relational dataset.
     example: { 'related_articles': { '_limit': 3 } }
+  alias:
+    type: object
+    description: >
+      Rename fields on the fly, so the same field can be requested multiple times under different paths, filters, or
+      aggregations. The alias must reference a same-collection field or field function; it cannot contain a period.
+    example: { 'author_name': 'author.name' }
+  export:
+    type: string
+    description: Saves the API response to a file.
+    enum:
+      - csv
+      - csv_utf8
+      - json
+      - xml
+      - yaml
+  version:
+    type: string
+    description: >
+      Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content
+      Version.
+    example: site-redesign-2027
+  versionRaw:
+    type: boolean
+    default: false
+    description: When used with `version`, returns the raw revision data instead of the merged item data.
+  backlink:
+    type: boolean
+    default: true
+    description: >
+      Toggle whether reverse-relational fields are included when expanding a `*.*` wildcard. Explicitly specified field
+      names are not affected.
