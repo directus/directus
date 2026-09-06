@@ -30,8 +30,6 @@ import {
 	randWord,
 } from '@ngneat/falso';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
-import { HttpProxyAgent } from 'http-proxy-agent';
-import { HttpsProxyAgent } from 'https-proxy-agent';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverS3Config } from './index.js';
 import { DriverS3 } from './index.js';
@@ -41,8 +39,6 @@ vi.mock('@directus/utils');
 vi.mock('@aws-sdk/client-s3');
 vi.mock('@aws-sdk/lib-storage');
 vi.mock('node:path');
-vi.mock('http-proxy-agent');
-vi.mock('https-proxy-agent');
 
 let sample: {
 	config: DriverS3Config & Required<Pick<DriverS3Config, 'key' | 'secret' | 'root' | 'region' | 'forcePathStyle'>>;
@@ -298,52 +294,51 @@ describe('#getClient', () => {
 });
 
 describe('#getClient proxy support', () => {
-	const ORIGINAL_ENV = process.env;
+	// Node's http(s).Agent reads `proxyEnv` itself (HTTP_PROXY / HTTPS_PROXY / NO_PROXY, including
+	// lowercase variants) to decide whether/how to proxy, so the driver just needs to hand its
+	// agents the object to read from - actually routing through a proxy is Node's responsibility,
+	// not something to re-verify here.
+	// `keepAlive` is set on the agent instance at runtime but, like `proxyEnv`, isn't part of the
+	// public `Agent` type - only of `AgentOptions`.
+	type InspectableAgent = { maxSockets: number; keepAlive: boolean; options: { proxyEnv?: NodeJS.ProcessEnv } };
 
-	beforeEach(() => {
-		process.env = { ...ORIGINAL_ENV };
-		delete process.env['HTTP_PROXY'];
-		delete process.env['HTTPS_PROXY'];
-		delete process.env['NO_PROXY'];
-		delete process.env['http_proxy'];
-		delete process.env['https_proxy'];
-		delete process.env['no_proxy'];
+	async function getConstructedAgents(config: DriverS3Config) {
+		new DriverS3(config);
+
+		const s3ClientConfig = vi.mocked(S3Client).mock.calls.at(-1)![0] as { requestHandler: NodeHttpHandler };
+		const requestHandler = s3ClientConfig.requestHandler;
+
+		// `NodeHttpHandler` resolves its config (incl. the agents passed to it) synchronously
+		// under the hood, but only exposes it via this promise.
+		const resolvedConfig = (await (requestHandler as unknown as { configProvider: Promise<unknown> })
+			.configProvider) as { httpAgent: InspectableAgent; httpsAgent: InspectableAgent };
+
+		return resolvedConfig;
+	}
+
+	test('Passes proxyEnv through to the http agent so Node can apply HTTP_PROXY/NO_PROXY', async () => {
+		const { httpAgent } = await getConstructedAgents({ bucket: 'bucket' });
+
+		expect(httpAgent.options.proxyEnv).toBe(process.env);
 	});
 
-	afterEach(() => {
-		process.env = ORIGINAL_ENV;
+	test('Passes proxyEnv through to the https agent so Node can apply HTTPS_PROXY/NO_PROXY', async () => {
+		const { httpsAgent } = await getConstructedAgents({ bucket: 'bucket' });
+
+		expect(httpsAgent.options.proxyEnv).toBe(process.env);
 	});
 
-	test('Uses plain http(s) agents when no proxy env vars are set', () => {
-		new DriverS3({ bucket: 'bucket' });
+	test('Still applies maxSockets / keepAlive config alongside proxyEnv', async () => {
+		const { httpAgent, httpsAgent } = await getConstructedAgents({
+			bucket: 'bucket',
+			maxSockets: 10,
+			keepAlive: false,
+		});
 
-		expect(HttpsProxyAgent).not.toHaveBeenCalled();
-		expect(HttpProxyAgent).not.toHaveBeenCalled();
-	});
-
-	test('Uses HttpsProxyAgent for an https endpoint when HTTPS_PROXY is set', () => {
-		process.env['HTTPS_PROXY'] = 'http://proxy.example.com:8080';
-
-		new DriverS3({ bucket: 'bucket', region: 'us-east-1' });
-
-		expect(HttpsProxyAgent).toHaveBeenCalledWith('http://proxy.example.com:8080');
-	});
-
-	test('Uses HttpProxyAgent for a plain http endpoint when HTTP_PROXY is set', () => {
-		process.env['HTTP_PROXY'] = 'http://proxy.example.com:8080';
-
-		new DriverS3({ bucket: 'bucket', endpoint: 'http://minio.local:9000' });
-
-		expect(HttpProxyAgent).toHaveBeenCalledWith('http://proxy.example.com:8080');
-	});
-
-	test('Does not proxy an endpoint covered by NO_PROXY', () => {
-		process.env['HTTPS_PROXY'] = 'http://proxy.example.com:8080';
-		process.env['NO_PROXY'] = 'minio.local';
-
-		new DriverS3({ bucket: 'bucket', endpoint: 'https://minio.local:9000' });
-
-		expect(HttpsProxyAgent).not.toHaveBeenCalled();
+		expect(httpAgent.maxSockets).toBe(10);
+		expect(httpAgent.keepAlive).toBe(false);
+		expect(httpsAgent.maxSockets).toBe(10);
+		expect(httpsAgent.keepAlive).toBe(false);
 	});
 });
 
