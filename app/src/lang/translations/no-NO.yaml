@@ -20,6 +20,11 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Om
+project_usage: Hva bruker du Directus til?
+plan_prefix: 'Plan: {plan}'
+expires_on: Utløper
+skip: Hopp over
+continue: Fortsett
 first_name: Fornavn
 last_name: Etternavn
 identifier: Identifikator
