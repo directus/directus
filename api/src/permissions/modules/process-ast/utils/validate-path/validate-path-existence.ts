@@ -10,7 +10,8 @@ export function validatePathExistence(path: string, collection: string, fields: 
 
 	const requestedFields = Array.from(fields);
 
-	const nonExistentFields = requestedFields.filter((field) => collectionInfo.fields[field] === undefined);
+	// Own-property check: an inherited key (`toString`, `__proto__`, …) is not a field of the collection
+	const nonExistentFields = requestedFields.filter((field) => Object.hasOwn(collectionInfo.fields, field) === false);
 
 	if (nonExistentFields.length > 0) {
 		throw createFieldsForbiddenError(path, collection, nonExistentFields);

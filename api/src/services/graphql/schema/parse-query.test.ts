@@ -231,6 +231,28 @@ describe('parseFields', () => {
 		expect(Object.prototype.toString.call([])).toBe('[object Array]');
 	});
 
+	test('a __proto__ field alias with a deeper argument does not pollute Object.prototype', async () => {
+		const selections = [
+			buildField('relationField', {
+				children: [
+					buildField('nestedRelationField', {
+						alias: '__proto__',
+						children: [
+							buildField('grandchild', { args: [buildArgument('limit', 999999)], children: [buildField('id')] }),
+						],
+					}),
+				],
+			}),
+		];
+
+		const before = ({} as any).grandchild;
+
+		await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
+
+		expect(({} as any).grandchild).toBe(before);
+		expect(Object.prototype.hasOwnProperty.call(Object.prototype, 'grandchild')).toBe(false);
+	});
+
 	test('should parse _func field with selectionSet', async () => {
 		const selections = [buildField('count_func', { children: [buildField('sum'), buildField('avg')] })];
 

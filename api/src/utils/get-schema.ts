@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import { systemCollectionRows } from '@directus/system-data';
-import type { Filter, SchemaOverview } from '@directus/types';
+import type { FieldOverview, Filter, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray, toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { mapValues, pick } from 'lodash-es';
@@ -159,23 +159,27 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
 			accountability: collectionMeta ? collectionMeta.accountability : 'all',
-			fields: mapValues(schemaOverview[collection]?.columns, (column) => {
-				return {
-					field: column.column_name,
-					defaultValue: getDefaultValue(column) ?? null,
-					nullable: column.is_nullable ?? true,
-					generated: column.is_generated ?? false,
-					type: getLocalType(column),
-					dbType: column.data_type,
-					precision: column.numeric_precision || null,
-					scale: column.numeric_scale || null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-					searchable: true,
-				};
-			}),
+			// Null-prototype map, so a field lookup can never resolve to an inherited `Object.prototype` key
+			fields: Object.assign(
+				Object.create(null),
+				mapValues(schemaOverview[collection]?.columns, (column): FieldOverview => {
+					return {
+						field: column.column_name,
+						defaultValue: getDefaultValue(column) ?? null,
+						nullable: column.is_nullable ?? true,
+						generated: column.is_generated ?? false,
+						type: getLocalType(column),
+						dbType: column.data_type,
+						precision: column.numeric_precision || null,
+						scale: column.numeric_scale || null,
+						special: [],
+						note: null,
+						validation: null,
+						alias: false,
+						searchable: true,
+					};
+				}),
+			),
 		};
 	}
 

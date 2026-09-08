@@ -102,7 +102,9 @@ export async function getQuery(
 							setDeep(
 								query.deep as Record<string, any>,
 								path,
-								merge({}, get(query.deep, parent), { _alias: { [selection.alias!.value]: selection.name.value } }),
+								merge(Object.create(null), get(query.deep, parent), {
+									_alias: { [selection.alias!.value]: selection.name.value },
+								}),
 							);
 						}
 					}
@@ -166,7 +168,7 @@ export async function getQuery(
 					query.deep as Record<string, any>,
 					path,
 					merge(
-						{},
+						Object.create(null),
 						get(query.deep, path),
 						mapKeys(await sanitizeQuery(args, schema, accountability), (_value, key) => `_${key}`),
 					),

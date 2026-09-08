@@ -58,6 +58,22 @@ describe('setDeep', () => {
 			expect(Object.prototype.hasOwnProperty.call(r, '__proto__')).toBe(true);
 		});
 
+		test('does not pollute via __proto__ when an intermediate node has a real prototype', () => {
+			const r = root();
+			r['relation'] = { _alias: { x: 'y' } }; // plain, Object.prototype-chained intermediate
+
+			const before = ({} as any).polluted;
+
+			setDeep(r, ['relation', '__proto__', 'polluted'], 'yes');
+
+			expect(({} as any).polluted).toBe(before);
+			expect(Object.prototype.hasOwnProperty.call(Object.prototype, 'polluted')).toBe(false);
+			// kept as harmless own data on the intermediate
+			expect(Object.prototype.hasOwnProperty.call(r['relation'], '__proto__')).toBe(true);
+			expect(Object.getPrototypeOf(r['relation'])).toBe(Object.prototype);
+			expect(r['relation']['_alias']).toEqual({ x: 'y' });
+		});
+
 		test.each([['constructor'], ['prototype'], ['valueOf'], ['hasOwnProperty']])(
 			'keeps builtin-named key %s as own data without corrupting the prototype',
 			(key) => {
