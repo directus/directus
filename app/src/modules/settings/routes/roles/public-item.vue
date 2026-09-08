@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useApi } from '@directus/composables';
 import { useShortcut } from '@directus/composables';
+import { HARDCODED_AUTH_REQUIREMENTS } from '@directus/constants';
 import { Alterations, Item, Policy } from '@directus/types';
 import { cloneDeep, isEmpty, isEqual, isObjectLike } from 'lodash';
 import { computed, onMounted, ref } from 'vue';
@@ -16,6 +17,7 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -33,7 +35,24 @@ const { t } = useI18n();
 const api = useApi();
 const router = useRouter();
 
+const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
+
+// Permissions the API only honors for an authenticated request are dead weight on a policy assigned
+// to the public role, so the role-info notice lists them as Markdown bullets.
+const ineffectivePublicPermissionsList = [
+	...HARDCODED_AUTH_REQUIREMENTS.filter((requirement) => requirement.requiredAuth === 'user').reduce(
+		(byCollection, { collection, action }) =>
+			byCollection.set(collection, [...(byCollection.get(collection) ?? []), action]),
+		new Map<string, string[]>(),
+	),
+]
+	.map(
+		([collection, actions]) =>
+			`- ${collectionsStore.getCollection(collection)?.name ?? collection} (${actions.join(', ')})`,
+	)
+	.join('\n');
+
 const policiesField = cloneDeep(fieldsStore.getField('directus_roles', 'policies'));
 
 // Add filter in order to correctly display the policies of the public role
@@ -72,7 +91,9 @@ const fields = [
 			system: true,
 			interface: 'presentation-notice',
 			options: {
-				text: t('public_role_info'),
+				text: ineffectivePublicPermissionsList
+					? `${t('public_role_info')}\n\n${t('public_role_info_ineffective_permissions')}\n\n${ineffectivePublicPermissionsList}`
+					: t('public_role_info'),
 			},
 			width: 'full',
 			sort: 0,
