@@ -75,15 +75,24 @@ export async function runExclusive<T>(
 	const { cancel: cancelHeartbeat } = heartbeat(store, uid, lease);
 
 	let outcome: Outcome<T> = { ok: false, error: 'unknown' };
+	const startedAt = Date.now();
 
 	try {
 		for (let attempt = 0; attempt < maxAttempts; attempt++) {
 			try {
 				outcome = { ok: true, result: await fn() };
-				break;
 			} catch (error) {
 				outcome = { ok: false, error: error instanceof Error ? error.message : String(error) };
 			}
+
+			// Followers stopped waiting, so there is no one left to hand a result to and no point
+			// attempting again
+			if (Date.now() - startedAt > timeout) {
+				outcome = { ok: false, error: `timeout` };
+				break;
+			}
+
+			if (outcome.ok) break;
 		}
 	} finally {
 		// Release heartbeat & leader before publishing, so no window of indication that still a leader

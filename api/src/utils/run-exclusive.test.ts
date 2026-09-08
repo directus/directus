@@ -346,6 +346,68 @@ describe('runExclusive', () => {
 		await expect(leader).resolves.toEqual({ result: 'result', leader: true });
 	});
 
+	test('should reject the leader when fn finishes after the timeout', async () => {
+		const running = deferred();
+		const fn = deferred<string>();
+
+		const leader = runExclusive(
+			'key',
+			() => {
+				running.resolve();
+				return fn.promise;
+			},
+			{ timeout: 1000 },
+		);
+
+		await running.promise;
+
+		await vi.advanceTimersByTimeAsync(1001);
+		fn.resolve('result');
+
+		await expect(leader).rejects.toThrow('timeout');
+	});
+
+	test('should hand a leader that outran the timeout to its followers as a failure', async () => {
+		const running = deferred();
+		const fn = deferred<string>();
+
+		const leader = runExclusive(
+			'key',
+			() => {
+				running.resolve();
+				return fn.promise;
+			},
+			{ timeout: 1000 },
+		);
+
+		await running.promise;
+
+		// Long enough for the leader to outrun its timeout, short enough for the follower to still wait
+		const follower = runExclusive('key', vi.fn(), { timeout: 5000 });
+		await testStore.whenSettled(2);
+
+		await vi.advanceTimersByTimeAsync(1001);
+		fn.resolve('result');
+
+		await expect(leader).rejects.toThrow('timeout');
+		await expect(follower).rejects.toThrow('timeout');
+	});
+
+	test('should not retry fn once the timeout has passed', async () => {
+		const fn = vi.fn(async () => {
+			await new Promise((resolve) => setTimeout(resolve, 1001));
+			throw new Error('failed');
+		});
+
+		const leader = runExclusive('key', fn, { timeout: 1000, maxAttempts: 3 });
+
+		const timedOut = expect(leader).rejects.toThrow('timeout');
+		await vi.advanceTimersByTimeAsync(1001);
+		await timedOut;
+
+		expect(fn).toHaveBeenCalledTimes(1);
+	});
+
 	test('should publish the result even when releasing the lease fails', async () => {
 		const { leader, finish } = await startLeader();
 
