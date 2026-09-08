@@ -103,6 +103,8 @@ report_an_issue: Rapporter en feil
 website: Nettside
 github: GitHub
 beta: Beta
+collab_collision: Elementet ble endret mens du redigerte. Velg hvilke endringer som skal beholdes.
+collab_disconnected: Samarbeidsredigering frakoblet
 n_downloads: '{n} nedlastinger'
 downloads: Nedlastinger
 compatibility_not_guaranteed: Kompatibilitet ikke garantert
@@ -113,6 +115,8 @@ hook: Hook
 fill_width: Fyll vidde
 field_name_translations: Feltnavn oversettelser
 enter_password_to_enable_tfa: Fyll inn passord for å skru på To-Faktor Autentisering
+cancel_tfa_setup: Avbryt 2FA-oppsett
+cancel_setup: Avbryt oppsettet
 add_field: Legg til felt
 role_name: Rollenavn
 policy_name: Navn på rettighet
@@ -152,6 +156,7 @@ connection_good: God tilkobling
 connection_fair: Ok tilkobling
 connection_poor: Dårlig tilkobling
 primary: Primær
+download_folder: Nedlastingsmappe
 rename_folder: Endre mappenavn
 delete_folder: Slett mappe
 prefix: Prefiks
@@ -160,10 +165,14 @@ keep: Behold
 version: Versjon
 version_key: Versjon nøkkel
 version_name: Versjon Navn
+your_version: Din versjon
 switch_version: Bytt versjon
 switch_version_copy: Er du sikker på at du vil bytte til versjon "{version}"? Ulagrede endringer vil gå tapt.
 create_version: Opprett versjon
 rename_version: Gi versjon nytt navn
+save_version: Lagre versjon
+apply: Bruk
+discard: Forkast
 reset_bookmark: Tilbakestill bokmerke
 update_bookmark: Oppdater bokmerke
 delete_bookmark: Slett bokmerke
@@ -188,7 +197,11 @@ recommended_defaults: Anbefalte standardinnstillinger
 unarchive: Uarkivér
 unarchive_confirm: Er du sikker på at du vil uarkivere dette elementet?
 nested_files_folders_will_be_moved: Nøstede filer og mapper vil bli flyttet ett nivå opp.
+delete_folder_dialog:
+  delete_content: Slett alt innhold
+  content_behavior: Hva skal skje med mappeinnholdet?
 validation_errors_notice: 'Følgende felt har ugyldige verdier:'
+validation_value_is_invalid: Verdien er ugyldig
 validationError:
   eq: Verdien må være {valid}
   neq: Verdien kan ikke være {invalid}
@@ -206,7 +219,13 @@ validationError:
   nnull: Verdien kan ikke være null
   required: Verdi er påkrevd
   unique: Verdien må være unik
+  email: Verdien må være en gyldig e-postadresse
   regex: Verdien har ikke riktig format
+  starts_with: Verdien må begynne med {substring}
+  istarts_with: Verdien må begynne med {substring}
+  nistarts_with: Verdien kan ikke starte med {substring}
+  ends_with: Verdien må slutte med {substring}
+  iends_with: Verdien må slutte med {substring}
 all_access: All tilgang
 no_access: Ingen tilgang
 use_custom: Bruk egendefinert
@@ -274,6 +293,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Tilbakestill sideinnstillinger
 hidden_field: Skjult felt
 hidden_on_detail: Skjult ved detaljer
+clear_hidden_field: Tøm verdi(er)
 key: Nøkkel
 alias: Alias
 bigInteger: Stort heltall
@@ -282,6 +302,7 @@ date: Dato
 date_range: Periode
 datetime: Dato og tid
 dateTime: Dato og tid
+precision: Presisjon
 decimal: Desimaltall
 float: Flyttall
 integer: Heltall
@@ -294,6 +315,10 @@ time: Tid
 timestamp: Tidsstempel
 uuid: UUID
 hash: Hash
+geometry:
+  Point: Punkt
+theme_light: Lyst tema
+theme_dark: Mørkt tema
 not_available_for_type: Ikke tilgjengelig for denne typen
 create_translations: Lag oversettelser
 auto_refresh: Automatisk oppdatering
@@ -311,6 +336,7 @@ fields_group: Feltgruppe
 no_collections_found: Ingen kolleksjoner funnet.
 new_data_alert: 'Følgende vil bli opprettet i din Data Model:'
 search_collection: Søk i kolleksjonen...
+search_role: Søk rolle...
 new_field: 'Nytt felt'
 new_collection: 'Ny Kolleksjon'
 choose_a_type: Velg en Type...
@@ -327,6 +353,8 @@ o2m_relationship: Én til mange relasjon
 m2m_relationship: Mange til mange relasjon
 m2a_relationship: Mange til alle relasjon
 invalid_item: Ugyldig element
+dialog: Dialogvindu
+confirmation_dialog: Bekreftelsesdialog
 next: Neste
 field_name: Feltnavn
 translations: Oversettelser
@@ -340,6 +368,8 @@ length: Lengde
 precision_scale: Presisjon og skala
 readonly: Skrivebeskyttet
 unique: Unik
+index: Indeks
+searchable: Søkbar
 updated_on: Opprettet den
 updated_by: Oppdatert av
 primary_key: Primærnøkkel
@@ -384,6 +414,7 @@ revision_preview: Revisjon forhåndsvisning
 updates_made: Oppdateringer Laget
 leave_comment: Legg igjen en kommentar...
 post_comment_success: Kommentaren ble lagt til
+post_comment_updated: Kommentar oppdatert
 item_create_success: Elementet ble opprettet | Elementene ble opprettet
 item_update_success: Elementet ble oppdatert | Elementene ble oppdaterte
 item_delete_success: Elementet ble slettet | Elementene ble slettet
@@ -391,11 +422,24 @@ this_collection: Denne kolleksjonen
 related_collection: Relatert kolleksjon
 related_collections: Relaterte kolleksjoner
 languages_collection: Språkkolleksjon
+enable_translations: Aktiver oversettelser
+fields_to_translate: Felt som skal oversettes
+add_fields: Legg til felt
+show_advanced_options: Vis relasjonsdetaljer
+hide_advanced_options: Skjul relasjonsdetaljer
+translations_duplicate_field_names: Feltnavn for oversettelse må være unike.
 translations_preview_collections: Kolleksjoner
+translations_preview_relations: Relasjoner
+translations_enable_helper_description: Oversett innhold til flere språk.
+import_data_input_placeholder: CSV eller JSON...
 import_data_button: Start import
+import_background: Importer i bakgrunnen
 import_data_indeterminate: Importerer data...
 import_data_success: Importeringen fra {filename} var vellykket
 import_data_error: Denne filens datastruktur samsvarer ikke med samlingen.
+import_data_error_row: 'Rad {rows}{field}:'
+snapshot:
+  download: Last ned øyeblikksbilde (JSON)
 label_import: Importer
 label_export: Eksporter
 import_export: Importer / Eksporter
@@ -432,8 +476,10 @@ date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 date-fns_time_24hour: 'H:mm:ss'
+date-fns_time_no_seconds_24hour: 'TT:mm'
 date-fns_date_short: 'd MMM, u'
 date-fns_time_short: 'h:mma'
+date-fns_time_short_seconds: 'tt:mm:ssa'
 date-fns_date_short_no_year: d MMM
 minutes: Minutter
 hours: Timer
@@ -454,14 +500,18 @@ months:
   november: november
   december: desember
 drag_mode: Dra modus
+crop_tool: Beskjæringsverktøy
 cancel_crop: Avbryt beskjæring
 original: Opprinnelig
 url: URL
 import_label: Importer
 file_details: Fil detaljer
+copy_id_success: ID kopiert
+copy_id_fail: ID ikke kopiert
 dimensions: Dimensjoner
 size: Størrelse
 created: Opprettet
+uploaded: Opplastet
 modified: Endret
 owner: Eier
 edited_by: Redigert av
@@ -471,6 +521,7 @@ zoom: Zoom
 download: Last ned
 open: Åpen
 open_in_new_window: Åpne i nytt vindu
+foreground_color: Forgrunnsfarge
 background_color: Bakgrunnsfarge
 upload_from_device: Last opp fil fra enhet
 choose_from_library: Velg fil fra bibliotek
@@ -478,9 +529,12 @@ import_from_url: Importer fil fra URL
 replace_from_device: Erstatt fil fra enhet
 replace_from_library: Erstatt fil fra bibliotek
 replace_from_url: Erstatt fil fra URL
+no_image_selected: Ingen bilder valgt
 no_file_selected: Ingen fil valgt
 download_file: Last ned fil
+open_file_in_tab: Åpne fil i ny fane
 start_export: Start eksport
+not_available_for_local_downloads: Ikke tilgjengelig for lokale nedlastinger
 collection_key: Nøkkel Samling
 name: Navn
 primary_key_field: Hovednøkkelfelt (Automatic Translation)
@@ -500,6 +554,8 @@ comments: Kommentarer
 no_comments: Ingen kommentarer ennå
 select_item: Velg element
 no_items: Ingen elementer
+search_items: Søk etter elementer...
+search_extensions: Søk utvidelser...
 disabled: Deaktivert
 information: Informasjon
 report_bug: Rapporter feil
@@ -686,6 +742,7 @@ select_fields: Velg felter
 flow_name: Navn
 insights: Nøkkeltall
 wysiwyg_options:
+  forecolor: Forgrunnsfarge
   backcolor: Bakgrunnsfarge
   insertdatetime_date: Dato
   insertdatetime_time: Tid
@@ -793,6 +850,8 @@ field_options:
     collections_name: Kolleksjoner
   directus_users:
     preferences_divider: Brukerinnstillinger
+    dropdown_light: Lyst tema
+    dropdown_dark: Mørkt tema
     status_dropdown_active: Aktiv
 comment: Kommenter
 live_preview:
@@ -813,6 +872,7 @@ ai_tools:
   operations: Operasjoner
   schema: Skjema
   collections: Kolleksjoner
+discard_label: Forkast
 delete_field_are_you_sure: >-
   Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..
 description: Beskrivelse
