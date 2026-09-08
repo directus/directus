@@ -345,6 +345,7 @@ global: Globalt
 admins_have_all_permissions: Administratorer har alle rettigheter
 camera: Kamera
 show_zero: Vis null
+create_in_advanced_field_creation_mode: Opprett felt i avansert modus
 continue_in_advanced_field_creation_mode: Opprett i avansert feltopprettingsmodus
 validation: Godkjenning
 sum: Sum
@@ -1240,11 +1241,20 @@ interfaces:
     collection_field_not_setup: Kolleksjonsfeltalternativet er feilkonfigurert
     select_a_collection: Velg en Kolleksjon
   select-dropdown:
+    allow_other: Tillat andre
+    allow_other_label: Tillat andre verdier
+    allow_none: Tillat ingen
+    choices_name_placeholder: Angi et navn...
     choices_value_placeholder: Legg inn verdi...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Rullgardinmeny (flervalg)
   file:
     file: Fil
+    description: Velg eller last opp en fil
+    allowed_mime_types: Tillatte MIME-typer
   files:
     files: Filer
+    description: Velg eller last opp flere filer
   input-hash:
     hash: Hash
   select-icon:
@@ -1255,10 +1265,19 @@ interfaces:
     interface: Grensesnitt
   system-display:
     display: Visning
+  list-m2m:
+    many-to-many: Mange-til-mange
+  select-dropdown-m2o:
+    many-to-one: Mange-til-en
   input-rich-text-md:
+    markdown: Markdown
     edit: Rediger
+    preview: Forhåndsvisning
+    default_view: Standardvisning
+    default_view_preview: Forhåndsvisning
   map:
     zoom: Zoom
+    default_view: Standardvisning
   list:
     sort: Sorter
   tags:
