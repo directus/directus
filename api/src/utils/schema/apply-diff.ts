@@ -166,7 +166,8 @@ export async function applyDiff(
 			//			TheCurrentCollectionInIteration - I exist in snapshotDiff as a new collection but will be created as part of NestedCollection
 			const parentWillBeCreatedInThisApply =
 				snapshotDiff.collections.filter(
-					({ collection, diff }) => diff[0]?.kind === DiffKind.NEW && collection === groupName,
+					({ collection, diff }) =>
+						diff[0]?.kind === DiffKind.NEW && !isNestedMetaUpdate(diff[0]) && collection === groupName,
 				).length > 0;
 
 			// Has group, but parent is not new, parent is also not being created in this snapshot apply

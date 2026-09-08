@@ -435,6 +435,65 @@ describe('applyDiff', () => {
 				mutationOptions,
 			);
 		});
+
+		it('Creates a grouped collection when its parent has a nested meta update', async () => {
+			const currentSnapshot: Snapshot = {
+				version: 1,
+				directus: '0.0.0',
+				collections: [
+					{
+						collection: 'parent',
+						meta: { hidden: false },
+						schema: { name: 'parent' },
+					} as unknown as SnapshotCollection,
+				],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			};
+
+			const snapshotDiff: SnapshotDiff = {
+				collections: [
+					{
+						collection: 'parent',
+						diff: [
+							{
+								kind: DiffKind.NEW,
+								path: ['meta', 'status'],
+								rhs: 'draft' as any,
+							},
+						],
+					},
+					{
+						collection: 'child',
+						diff: [
+							{
+								kind: DiffKind.NEW,
+								rhs: {
+									collection: 'child',
+									meta: { group: 'parent' },
+									schema: { name: 'child' },
+								} as SnapshotCollection,
+							},
+						],
+					},
+				],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			};
+
+			const createOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test');
+
+			await applyDiff(currentSnapshot, snapshotDiff, { database: db, schema: snapshotApplyTestSchema });
+
+			expect(createOneCollectionSpy).toHaveBeenCalledTimes(1);
+
+			expect(createOneCollectionSpy).toHaveBeenCalledWith(
+				expect.objectContaining({ collection: 'child' }),
+				mutationOptions,
+			);
+		});
 	});
 
 	describe('Fields', () => {
