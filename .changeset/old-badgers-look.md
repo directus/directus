@@ -1,5 +1,6 @@
 ---
 '@directus/app': patch
+'@directus/api': patch
 ---
 
-Disabled editing admin-only permission actions on Policy Editor
+Made admin-only permission actions read-only in the policy editor and removed their ineffective permission rows
