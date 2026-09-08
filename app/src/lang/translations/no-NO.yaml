@@ -34,6 +34,7 @@ setup_launch: Start Directus
 license_onboarding_title: Har du en lisensnøkkel?
 project_usage: Hva bruker du Directus til?
 org_name: Organisasjonsnavn
+org_name_placeholder: Acme Inc.
 license_key_option: Jeg har en lisensnøkkel
 core_option_desc: Gratis, ingen nøkkel trengs
 remind_later: Påminn meg senere
@@ -95,6 +96,7 @@ item_creation: Objekt opprettelse
 item_revision: Element revisjoner
 previous_revision: Forrige revisjon
 latest_revision: Siste revisjon
+comparing_to: Sammenligner med
 enter_a_name: Angi et navn...
 duplicate_field: Dupliser felt
 half_width: Halv vidde
@@ -231,6 +233,7 @@ delete_version: Slett versjon
 delete_version_copy: >-
   Er du sikker på at du vil slette versjonen "{version}"? Dette kan ikke angres.
 auto_save_failed: Autolagring feilet
+auto_save_failed_copy: Hold denne siden åpen mens vi forsøker på nytt!
 auto_save_enabled: Autolagring påslått
 content_edited: Innhold redigert
 reset_bookmark: Tilbakestill bokmerke
@@ -367,6 +370,7 @@ bigInteger: Stort heltall
 boolean: Sann/usann
 date: Dato
 date_range: Periode
+translation_key_placeholder: Angi en nøkkel...
 datetime: Dato og tid
 dateTime: Dato og tid
 precision: Presisjon
@@ -386,6 +390,8 @@ geometry:
   Point: Punkt
 theme_light: Lyst tema
 theme_dark: Mørkt tema
+theme_directus_default: Directus Standard
+theme_directus_minimal: Directus Minimal
 not_available_for_type: Ikke tilgjengelig for denne typen
 create_translations: Lag oversettelser
 auto_refresh: Automatisk oppdatering
@@ -397,6 +403,7 @@ auto_generate: Autogenerer
 this_will_auto_setup_fields_relations: Dette vil automatisk sette opp alle obligatoriske felt og relasjoner.
 click_here: Klikk her
 to_manually_setup_translations: for manuelt å sette opp oversettelser.
+manage: Behandle
 click_to_manage_translated_fields: >-
   Der er ingen oversatte felter enda. Klikk her for å lage dem. | Der er ett oversatt felt. Klikk her for å redigere det | Der er {count} oversatte felter. Klikk her for å redigere dem.
 fields_group: Feltgruppe
@@ -404,6 +411,7 @@ no_collections_found: Ingen kolleksjoner funnet.
 new_data_alert: 'Følgende vil bli opprettet i din Data Model:'
 search_collection: Søk i kolleksjonen...
 search_role: Søk rolle...
+search_field: Søk felt...
 new_field: 'Nytt felt'
 new_collection: 'Ny Kolleksjon'
 choose_a_type: Velg en Type...
@@ -420,6 +428,7 @@ o2m_relationship: Én til mange relasjon
 m2m_relationship: Mange til mange relasjon
 m2a_relationship: Mange til alle relasjon
 invalid_item: Ugyldig element
+require_confirmation: Krev bekreftelse
 dialog: Dialogvindu
 confirmation_dialog: Bekreftelsesdialog
 next: Neste
@@ -574,6 +583,7 @@ months:
 drag_mode: Dra modus
 crop_tool: Beskjæringsverktøy
 cancel_crop: Avbryt beskjæring
+cancel_selection: Fjern markering
 original: Opprinnelig
 url: URL
 import_label: Importer
@@ -617,7 +627,9 @@ created_on: Opprettet den
 generated_uuid: Generert UUID
 save_and_create_new: Lagre og opprett ny
 save_and_stay: Lagre og fortsett
+save_and_quit: Lagre og avslutt
 publish_and_quit: Publiser og avslutt
+publish_without_review: Publiser uten gjennomgang
 publish_anyway: Publiser likevel
 save_as_copy: Lagre som kopi
 save_as_new_file: Lagre som ny fil
@@ -630,6 +642,8 @@ no_comments: Ingen kommentarer ennå
 expand: Utvid
 expand_all: Utvid alle
 expand_none: Utvid ingen
+collapse: Trekk sammen
+collapse_all: Trekk sammen alle
 select_item: Velg element
 no_items: Ingen elementer
 search_items: Søk etter elementer...
@@ -960,6 +974,7 @@ settings_license: Lisens
 licensing:
   unlicensed: Ulisensiert
   unlimited: Ubegrenset
+  addon_manage: Behandle
   addon_update: Oppdater
   addon_confirm_purchase: Bekreft kjøp
   deactivate: Deaktiver lisens
@@ -1234,6 +1249,8 @@ interfaces:
     hash: Hash
   select-icon:
     icon: Ikon
+  file-image:
+    image: Bilde
   system-interface:
     interface: Grensesnitt
   system-display:
@@ -1253,8 +1270,17 @@ interfaces:
   input-block-editor:
     tools_options:
       embed: Embed
+      paragraph: Avsnitt
+      code: Kode
+      image: Bilde
       table: Tabell
+      quote: Sitat
       underline: Understrek
+      raw: Rå HTML
+  header:
+    links: Koblinger
+    help:
+      title: Hjelp
 displays:
   translations:
     translations: Oversettelser
@@ -1267,25 +1293,54 @@ displays:
   datetime:
     format: Format
     suffix: Suffiks
+    down: Ned
+    nearest: Nærmeste
+    up: Opp
+    timezone: Tidssone
   file:
     file: Fil
+    description: Vis filer
+  filesize:
+    filesize: Filstørrelse
+    description: Vis størrelsen til en fil
   formatted-value:
     format: Format
+    font: Skrifttype
     font_monospace: Fastbredde
+    bold: Fet
+    bold_label: Bruk fet skrift
     italic: Kursiv
+    italic_label: Bruk kursiv skrift
     prefix: Prefiks
     suffix: Suffiks
     color: Farge
+    background: Bakgrunn
     icon: Ikon
+    border: Kantlinje
+    border_label: Vis kantlinje
+    mask_label: Skjul virkelig verdi
     text: Tekst
+  formatted-json-value:
+    formatted-json-value: Formatert JSON-verdi
   hash:
     hash: Hash
   icon:
     icon: Ikon
+    description: Vis et ikon
   image:
+    image: Bilde
     circle: Sirkel
   labels:
+    default_foreground: Standard forgrunn
+    default_background: Standard bakgrunn
     choices_value_placeholder: Legg inn verdi...
+  rating:
+    simple: Enkel
+  raw:
+    raw: Råverdi
+  related-values:
+    related-values: Relaterte verdier
+    description: Vis relaterte verdier
   user:
     user: Bruker
     name: Navn
@@ -1302,9 +1357,36 @@ layouts:
     comfortable: Komfortabel
     compact: Kompakt
     cozy: Cozy
+  map:
+    no_compatible_fields: Ingen kompatible felt
   kanban:
+    name: Kanban
+    group_field: Grupper etter
+    crop: Beskjær
     advanced: Avansert
+    edit_group: Rediger gruppe
+    delete_group: Slett gruppe
+    add_group: Legg til gruppe
+    add_group_placeholder: Angi nytt gruppenavn...
+    show_ungrouped: Vis ugrupperte
+    show: Vis
+    no_group: Ingen gruppe
+horizontal: Horisontal
+vertical: Vertikal
+axis: Akse
+x_axis: X-akse
+y_axis: Y-akse
 both: Begge
+half_circle: Halvsirkel
+full_circle: Hel sirkel
+thin: Tynn
+medium: Middels
+broad: Bred
+right: Høyre
+left: Venstre
+panels:
+  barchart:
+    horizontal: Horisontal
 triggers:
   webhook:
     method: Metode
@@ -1323,6 +1405,8 @@ operations:
 standard: Standard
 compact: Kompakt
 fonts:
+  thin: Tynn
+  medium: Middels
   italic: Kursiv
 license_banner:
   remind_later: Påminn meg senere
