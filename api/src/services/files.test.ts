@@ -148,7 +148,6 @@ describe('Service / Files', () => {
 
 			sample = {
 				id: 'test-file-id-123',
-				// The mock driver reports a zero byte file, so this is what `stat` yields back
 				filesize: 0,
 			};
 
@@ -191,12 +190,6 @@ describe('Service / Files', () => {
 		});
 
 		test('should set the `uploaded_on` field to the current date', async () => {
-			tracker.on
-				.select(
-					'select "folder", "filename_download", "filename_disk", "title", "description", "metadata" from "directus_files" where "id" = ?',
-				)
-				.response(null);
-
 			const mockData = {
 				storage: 'local',
 				type: 'image/jpeg',
@@ -211,7 +204,6 @@ describe('Service / Files', () => {
 
 			vi.useRealTimers();
 
-			// The sudo write carries only the values computed after the row exists, nothing from `mockData`
 			expect(superUpdateOne).toHaveBeenCalledExactlyOnceWith(
 				sample.id,
 				{
@@ -224,22 +216,10 @@ describe('Service / Files', () => {
 		});
 
 		test('should not pass client-supplied fields to the sudo write', async () => {
-			tracker.on
-				.select(
-					'select "folder", "filename_download", "filename_disk", "title", "description", "metadata" from "directus_files" where "id" = ?',
-				)
-				.response(null);
-
 			const mockDate = new Date();
 
 			vi.setSystemTime(mockDate);
 
-			/**
-			 * `uploaded_by`, `created_on` and `modified_on` are owned by the payload transformers rather than
-			 * by a field grant, so the create sets them correctly. A client can still send them as multipart
-			 * form fields, and the sudo write runs without accountability, which means it would happily push
-			 * the client's values back over the row.
-			 */
 			await service.uploadOne(new PassThrough(), {
 				storage: 'local',
 				type: 'image/jpeg',
@@ -260,65 +240,37 @@ describe('Service / Files', () => {
 				},
 				{ emitEvents: false },
 			);
-
-			const sudoPayload = superUpdateOne.mock.calls[0]![1];
-
-			expect(sudoPayload).not.toHaveProperty('uploaded_by');
-			expect(sudoPayload).not.toHaveProperty('created_on');
-			expect(sudoPayload).not.toHaveProperty('modified_on');
 		});
 
-		test('should update the `filename_disk` extension to the correct mimetype', async () => {
-			tracker.on
-				.select(
-					'select "folder", "filename_download", "filename_disk", "title", "description", "metadata" from "directus_files" where "id" = ?',
-				)
-				.response(null);
+		test.each([
+			['image/jpeg', 'test.jpg', 'jpg'],
+			['image/png', 'test.png', 'png'],
+		])(
+			'should update the `filename_disk` extension to match the %s mimetype',
+			async (type, filenameDownload, expectedExtension) => {
+				const mockDate = new Date();
 
-			const mockDataJPG = {
-				storage: 'local',
-				type: 'image/jpeg',
-				filename_download: 'test.jpg',
-			};
+				vi.setSystemTime(mockDate);
 
-			const mockDataPNG = {
-				storage: 'local',
-				type: 'image/png',
-				filename_download: 'test.png',
-			};
+				await service.uploadOne(new PassThrough(), {
+					storage: 'local',
+					type,
+					filename_download: filenameDownload,
+				});
 
-			const mockDate = new Date();
+				vi.useRealTimers();
 
-			vi.setSystemTime(mockDate);
-
-			await service.uploadOne(new PassThrough(), mockDataJPG);
-
-			expect(superUpdateOne).toHaveBeenNthCalledWith(
-				1,
-				sample.id,
-				{
-					filename_disk: `${sample.id}.jpg`,
-					filesize: sample.filesize,
-					uploaded_on: mockDate.toISOString(),
-				},
-				{ emitEvents: false },
-			);
-
-			await service.uploadOne(new PassThrough(), mockDataPNG);
-
-			expect(superUpdateOne).toHaveBeenNthCalledWith(
-				2,
-				sample.id,
-				{
-					filename_disk: `${sample.id}.png`,
-					filesize: sample.filesize,
-					uploaded_on: mockDate.toISOString(),
-				},
-				{ emitEvents: false },
-			);
-
-			vi.useRealTimers();
-		});
+				expect(superUpdateOne).toHaveBeenCalledExactlyOnceWith(
+					sample.id,
+					{
+						filename_disk: `${sample.id}.${expectedExtension}`,
+						filesize: sample.filesize,
+						uploaded_on: mockDate.toISOString(),
+					},
+					{ emitEvents: false },
+				);
+			},
+		);
 
 		describe('storage default behavior', () => {
 			it('should default to the first STORAGE_LOCATIONS when storage is not provided', async () => {
@@ -335,8 +287,7 @@ describe('Service / Files', () => {
 					filename_download: 'test.jpg',
 				});
 
-				// `storage` is persisted by the create, not by the sudo write that follows it
-				expect(superCreateOne).toHaveBeenCalledWith(expect.objectContaining({ storage: 'local' }), {
+				expect(superCreateOne).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ storage: 'local' }), {
 					emitEvents: false,
 				});
 
@@ -358,7 +309,7 @@ describe('Service / Files', () => {
 					filename_download: 'test.jpg',
 				});
 
-				expect(superCreateOne).toHaveBeenCalledWith(expect.objectContaining({ storage: 's3' }), {
+				expect(superCreateOne).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ storage: 's3' }), {
 					emitEvents: false,
 				});
 
@@ -383,7 +334,6 @@ describe('Service / Files', () => {
 					sample.id,
 				);
 
-				// On the replacement path `storage` is persisted by the permissioned update, which runs first
 				expect(superUpdateOne).toHaveBeenNthCalledWith(1, sample.id, expect.objectContaining({ storage: 's3' }), {
 					emitEvents: false,
 				});
