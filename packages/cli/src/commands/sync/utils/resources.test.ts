@@ -91,6 +91,7 @@ describe('resolveResources', () => {
 					'public_background',
 					'public_favicon',
 					'storage_default_folder',
+					'project_id',
 					'license_key',
 					'license_token',
 					'ai_openai_api_key',
