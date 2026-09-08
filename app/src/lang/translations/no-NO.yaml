@@ -20,14 +20,22 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Om
+directus_mscl: Directus MSCL-1.0-GPL
 contact_support: kontakt kundestøtte
 setup_welcome: Velkommen til Directus
+setup_info: La oss opprette en administratorkonto og sette igang prosjektet ditt.
+setup_save_accept_license: >
+  Ved å trykke på lagre godtar du vilkårene angitt i {directusMscl} og {privacyPolicy}.
+setup_license_invalid: >
+  Lisensen er ugyldig. Vennligst {contactSupport} for å løse problemet.
 setup_license_invalid_format: Ugyldig lisensnøkkelformat.
+setup_accept_license: Jeg godtar vilkårene angitt i {directusMscl} og {privacyPolicy}
 setup_launch: Start Directus
 license_onboarding_title: Har du en lisensnøkkel?
 project_usage: Hva bruker du Directus til?
 org_name: Organisasjonsnavn
 license_key_option: Jeg har en lisensnøkkel
+core_option_desc: Gratis, ingen nøkkel trengs
 remind_later: Påminn meg senere
 remind_next_login: Vi påminner deg neste gang du logger inn
 enter_license_key: Angi din lisensnøkkel
@@ -986,10 +994,31 @@ all: Alle
 batch_delete_confirm: >-
   Ingen elementer har blitt valgt | Er du sikker på at du vil slette dette elementet? Handlingen kan ikke angres. | Er du sikker på at du vil slette disse {count} elementene? Handlingen kan ikke angres.
 cancel: Avbryt
+license:
+  contact_sales: Kontakt salgsavdelingen
+  unlicensed_status_notice:
+    grace_days_left: '{days} dag igjen | {days} dager igjen'
+    upgrade: Oppgrader
+no_upscale: Ikke oppskaler bilder
+no_extensions: Ingen utvidelser
+no_extensions_copy: Ingen utvidelser har blitt installert enda.
+install_extension: Installer utvidelse
+uninstall_locked: Kan ikke avinstallere utvidelser som ikke ble installert gjennom Marketplace
+uninstall: Avinstaller
+installed: Installert
+reinstall: Reinstaller
+open_in_marketplace: Åpne i Marketplace
 source_registry: Markedsplass
+source_local: Lokal
 collection: Kolleksjon
 collections: Kolleksjoner
 content: Innhold
+singleton_label: Behandle som singulært objekt
+directus_collection:
+  directus_comments: Kommentarer for elementer
+  directus_flows: Automatiseringsflyter
+  directus_migrations: Hvilken versjon av databasen du bruker
+  directus_notifications: Varsler sendt til brukere
 fields:
   directus_activity:
     item: Element Hovednøkkel
@@ -998,6 +1027,7 @@ fields:
     user_agent: Brukeragent
     origin: Opprinnelse
     ip: IP-addresse
+    revisions: Revisjoner
   directus_collections:
     collection: Kolleksjon
     icon: Ikon
@@ -1005,17 +1035,29 @@ fields:
     status: Status
     color: Farge
     hidden: Skjult
+    archive_value: Arkiver verdi
+    unarchive_value: Uarkivert verdi
     sort_field: Sorter felt
+    versioning: Versjonering
   directus_files:
+    $thumbnail: Miniatyrbilde
     title: Tittel
     description: Beskrivelse
     tags: Etiketter
     location: Lokasjon
+    storage: Lagring
+    filename_disk: Filnavn (disk)
+    filename_download: Filnavn (nedlasting)
+    metadata: Metadata
+    filesize: Filstørrelse
+    modified_by: Modifisert av
     modified_on: Modifisert den
     created_on: Opprettet den
     created_by: Opprettet av
     embed: Embed
+    uploaded_by: Lastet opp av
     folder: Mappe
+    width: Bredde
     charset: Charset
     duration: Varighet
   directus_users:
@@ -1066,6 +1108,7 @@ field_options:
     update: Oppdater
     delete: Slett
   directus_collections:
+    singleton: Behandle som singulært objekt
     language: Språk
     translation: Oversettelse
     archive_divider: Arkiv
