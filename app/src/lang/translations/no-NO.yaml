@@ -20,13 +20,31 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Om
+contact_support: kontakt kundestøtte
+setup_welcome: Velkommen til Directus
+setup_license_invalid_format: Ugyldig lisensnøkkelformat.
+setup_launch: Start Directus
+license_onboarding_title: Har du en lisensnøkkel?
 project_usage: Hva bruker du Directus til?
+org_name: Organisasjonsnavn
+license_key_option: Jeg har en lisensnøkkel
+remind_later: Påminn meg senere
+remind_next_login: Vi påminner deg neste gang du logger inn
+enter_license_key: Angi din lisensnøkkel
+license_valid: Gyldig lisens
 plan_prefix: 'Plan: {plan}'
+license_key: Lisensnøkkel
+no_license_key: Har du ikke en lisensnøkkel?
+get_license_key: Skaff lisensnøkkel
 expires_on: Utløper
+environment: Miljø
+production: Produksjon
+non_production: Ikke-produksjon
 skip: Hopp over
 continue: Fortsett
 first_name: Fornavn
 last_name: Etternavn
+email_address: E-postadresse
 identifier: Identifikator
 avatar: Profilbilde
 application: Applikasjon
@@ -35,8 +53,13 @@ method: Metode
 published: Publisert
 draft: Utkast
 archived: Arkivert
+not_archived: Ikke arkivert
 marketplace: Markedsplass
 extensions: Utvidelser
+skip_link_nav: Hopp til navigering
+skip_link_module_nav: Hopp til modulnavigering
+skip_link_main: Hopp til hovedinnhold
+skip_link_sidebar: Hopp til sidepanel
 modules: Moduler
 module_bar: Modul Bar
 logs: Logger
@@ -49,10 +72,21 @@ location: Lokasjon
 collection_names_are_case_sensitive: Samlingens navn er case følsomme
 condition_rules: Betingelser Regler
 input: Input
+invalid_input: Ugyldig inndata
+invalid_file_type: Ugyldig filtype
+invalid_files_selected: 'Ingen ugyldige filer | Ugyldig fil valgt | {count} Ugyldige filter valgt'
+files_wrong_type: 'Filene {files} har ugyldige filtyper, forventet {expected} filtype.'
+files_are_empty: 'Følgende filer er tomme og kan ikke lastes opp: {files}'
+not_a_number: Ikke et tall
+invalid_range_min: Verdien er under minimumsverdien til {value}
+invalid_range_max: Verdien er over maksimumsverdien til {value}
 maps: Kart
 switch_user: Bytt bruker
+item_deleted: Elementeet du redigerte har blitt slettet.
 item_creation: Objekt opprettelse
 item_revision: Element revisjoner
+previous_revision: Forrige revisjon
+latest_revision: Siste revisjon
 enter_a_name: Angi et navn...
 duplicate_field: Dupliser felt
 half_width: Halv vidde
@@ -60,6 +94,9 @@ full_width: Fullbredde
 group: Gruppe
 popular: Populær
 recent: Siste
+previous: Forrige
+latest: Siste
+updated: Oppdatert
 export_items: Eksporter produkter
 and: Og
 or: Eller
@@ -105,6 +142,8 @@ github: GitHub
 beta: Beta
 collab_collision: Elementet ble endret mens du redigerte. Velg hvilke endringer som skal beholdes.
 collab_disconnected: Samarbeidsredigering frakoblet
+collab_editing_field: Redigerer feltet {field}
+you: du
 n_downloads: '{n} nedlastinger'
 downloads: Nedlastinger
 compatibility_not_guaranteed: Kompatibilitet ikke garantert
@@ -115,7 +154,10 @@ hook: Hook
 fill_width: Fyll vidde
 field_name_translations: Feltnavn oversettelser
 enter_password_to_enable_tfa: Fyll inn passord for å skru på To-Faktor Autentisering
+enable_tfa: Aktiver 2FA
 cancel_tfa_setup: Avbryt 2FA-oppsett
+cancel_tfa_setup_notice: Er du sikker på at vil avbryte 2FA-oppsettet?
+keep_setup: Behold oppsettet
 cancel_setup: Avbryt oppsettet
 add_field: Legg til felt
 role_name: Rollenavn
@@ -170,9 +212,19 @@ switch_version: Bytt versjon
 switch_version_copy: Er du sikker på at du vil bytte til versjon "{version}"? Ulagrede endringer vil gå tapt.
 create_version: Opprett versjon
 rename_version: Gi versjon nytt navn
+compare_version: Sammenlign versjon
 save_version: Lagre versjon
+publish: Publiser
 apply: Bruk
 discard: Forkast
+select_all_differences: Velg alle forskjeller
+show_differences_only: Vis kun forskjeller
+delete_version: Slett versjon
+delete_version_copy: >-
+  Er du sikker på at du vil slette versjonen "{version}"? Dette kan ikke angres.
+auto_save_failed: Autolagring feilet
+auto_save_enabled: Autolagring påslått
+content_edited: Innhold redigert
 reset_bookmark: Tilbakestill bokmerke
 update_bookmark: Oppdater bokmerke
 delete_bookmark: Slett bokmerke
@@ -185,6 +237,7 @@ logoutReason:
   SESSION_EXPIRED: Økt utløpt
 public_label: Offentlig
 public_description: Kontrollerer hvilke API-data som er tilgjengelige uten å autentisere.
+no_description: Ingen beskrivelse...
 not_allowed: Ikke tillatt
 archive: Arkiv
 archive_confirm: Er du sikker på at du vil arkivere dette elementet?
@@ -198,6 +251,7 @@ unarchive: Uarkivér
 unarchive_confirm: Er du sikker på at du vil uarkivere dette elementet?
 nested_files_folders_will_be_moved: Nøstede filer og mapper vil bli flyttet ett nivå opp.
 delete_folder_dialog:
+  move_content: Flytt innholdet ett nivå opp
   delete_content: Slett alt innhold
   content_behavior: Hva skal skje med mappeinnholdet?
 validation_errors_notice: 'Følgende felt har ugyldige verdier:'
@@ -223,9 +277,14 @@ validationError:
   regex: Verdien har ikke riktig format
   starts_with: Verdien må begynne med {substring}
   istarts_with: Verdien må begynne med {substring}
+  nstarts_with: Verdien kan ikke starte med {substring}
   nistarts_with: Verdien kan ikke starte med {substring}
   ends_with: Verdien må slutte med {substring}
   iends_with: Verdien må slutte med {substring}
+  nends_with: Verdien kan ikke ende med {substring}
+  niends_with: Verdien kan ikke ende med {substring}
+  confirm_password: Passordene samsvarer ikke
+  org_name: Oppgi et organisasjonsnavn
 all_access: All tilgang
 no_access: Ingen tilgang
 use_custom: Bruk egendefinert
@@ -392,6 +451,7 @@ clear_items: Tøm varer
 reset_to_default: Tilbakestill til standard
 undo_changes: Angre endringer
 notifications: Varsler
+archive_all: Arkiver alle
 show_all_activity: Vis all aktivitet
 page_not_found: Side ikke funnet
 page_not_found_body: Siden du leter etter finnes ikke.
@@ -424,18 +484,22 @@ related_collections: Relaterte kolleksjoner
 languages_collection: Språkkolleksjon
 enable_translations: Aktiver oversettelser
 fields_to_translate: Felt som skal oversettes
+translations_already_enabled: Oversettelser aktivert
 add_fields: Legg til felt
 show_advanced_options: Vis relasjonsdetaljer
 hide_advanced_options: Skjul relasjonsdetaljer
 translations_duplicate_field_names: Feltnavn for oversettelse må være unike.
 translations_preview_collections: Kolleksjoner
+translations_preview_fields: Felter
 translations_preview_relations: Relasjoner
+ungrouped: Ugruppert
 translations_enable_helper_description: Oversett innhold til flere språk.
 import_data_input_placeholder: CSV eller JSON...
 import_data_button: Start import
 import_background: Importer i bakgrunnen
 import_data_indeterminate: Importerer data...
 import_data_success: Importeringen fra {filename} var vellykket
+import_data_errors: Importeringsfeil
 import_data_error: Denne filens datastruktur samsvarer ikke med samlingen.
 import_data_error_row: 'Rad {rows}{field}:'
 snapshot:
@@ -545,13 +609,19 @@ created_on: Opprettet den
 generated_uuid: Generert UUID
 save_and_create_new: Lagre og opprett ny
 save_and_stay: Lagre og fortsett
+publish_and_quit: Publiser og avslutt
+publish_anyway: Publiser likevel
 save_as_copy: Lagre som kopi
+save_as_new_file: Lagre som ny fil
 add_existing: Legge til eksisterende
 creating_items: Oppretter elementer
 selecting_items: Velg elementer
 allow_duplicates: Tillat duplikater
 comments: Kommentarer
 no_comments: Ingen kommentarer ennå
+expand: Utvid
+expand_all: Utvid alle
+expand_none: Utvid ingen
 select_item: Velg element
 no_items: Ingen elementer
 search_items: Søk etter elementer...
@@ -571,6 +641,9 @@ file_count: 'Ingen filer ″One File ε {count} Filer'
 no_files_copy: Det er ingen filer her.
 user_count: 'Ingen brukere | En bruker | {count} brukere'
 no_users_copy: Det er ingen brukere i denne rollen enda.
+no_active_users: Ingen aktivere brukere
+no_suspended_users: Ingen utestengte brukere
+no_invited_users: Ingen inviterte brukere
 no_notifications: Ingen varslinger
 no_notifications_copy: Ingen varslinger!
 activity_log: Aktivitetslogg
@@ -592,6 +665,7 @@ copy_to: Kopier til...
 no_other_dashboards_copy: Du har ingen andre dashbord ennå.
 inactive: Inaktiv
 users: Brukere
+roles: Roller
 activity: Aktivitet
 activity_item: Aktivitetselement
 action: Handling
@@ -628,7 +702,11 @@ bookmark_doesnt_exist_copy: Kunne ikke finne bokmerket du prøver å åpne.
 bookmark_doesnt_exist_cta: Returner til kolleksjon
 select_an_item: Velg et element...
 edit: Rediger
+edit_item: Rediger element
 enabled: Aktivert
+partially_enabled: Delvis aktivert
+enable_all: Aktiver alle
+disable_all: Deaktiver alle
 disable_tfa: Deaktiver 2FA
 admin_disable_tfa_text: Er du sikkert på at du har lyst til å deaktivere to-faktor autentisering for denne brukeren?
 tfa_setup: Sett opp to-faktor autentisering
@@ -641,6 +719,7 @@ corresponding_field: Tilsvarende felt
 errors:
   COLLECTION_NOT_FOUND: "Kolleksjonen eksisterer ikke"
   CONTAINS_NULL_VALUES: Feltet inneholder nullverdier
+  FAILED_VALIDATION: Validering feilet
   FIELD_NOT_FOUND: Feltet ble ikke funnet
   FORBIDDEN: Forbudt
   ILLEGAL_ASSET_TRANSFORMATION: Bildekilden er for stor til å forhåndsvise
@@ -648,6 +727,7 @@ errors:
   INVALID_CONFIG: Ugyldig konfigurasjon
   INVALID_CREDENTIALS: Feil brukernavn eller passord
   INVALID_FOREIGN_KEY: Ugyldig fremmednøkkel
+  INVALID_INVITE: Denne invitasjonen har utløpt
   INVALID_IP: IP-addressen er ikke tillatt
   INVALID_OTP: Feil engangspassord
   INVALID_PAYLOAD: Invalid payload
@@ -656,8 +736,10 @@ errors:
   INVALID_USER: Brukerautentisering mislyktes
   ITEM_LIMIT_REACHED: Elementgrense er nådd
   ITEM_NOT_FOUND: Element ikke funnet
+  LIMIT_EXCEEDED: 'Grensen er overskredet'
   METHOD_NOT_ALLOWED: Metode ikke tillatt
   NOT_NULL_VIOLATION: Verdien kan ikke være null
+  RANGE_NOT_SATISFIABLE: Ugyldig område
   RECORD_NOT_UNIQUE: Duplikat verdi oppdaget
   REQUESTS_EXCEEDED: Maks antall forespørsler nådd
   ROUTE_NOT_FOUND: Ikke funnet
@@ -695,6 +777,7 @@ flip_vertical: Vend vertikalt
 aspect_ratio: Størrelsesforhold
 rotate: Rotér
 all_users: Alle brukere
+active_users: Aktive brukere
 delete_collection: Slett samlingen
 update_collection_success: Oppdatert samling
 delete_collection_success: Slettet samling
@@ -712,54 +795,188 @@ monospace: Fastbredde
 color: Farge
 circle: Sirkel
 empty_item: Tomt element
+advanced_filter: Avansert filter
+delete_advanced_filter: Slett filter
+advanced: Avansert
 operators:
+  eq: Er lik
+  neq: Er ikke lik
   lt: Mindre enn
   gt: Større enn
   lte: Mindre enn eller lik
   gte: Større enn eller lik
   contains: Inneholder
   ncontains: Inneholder ikke
+  starts_with: Begynner med
+  ends_with: Slutter med
+  between: Er mellom
+  nbetween: Er ikke mellom
   empty: Er tom
+  nempty: Er ikke tom
   json: JSON
 loading: Laster...
+drop_to_upload: Slipp for å laste opp
 item: Element
 items: Elementer
+upload_file: Last opp fil
 upload_file_indeterminate: Laster opp fil...
 upload_file_success: Fil lastet opp
+upload_files_empty: Ingen filer å laste opp
 upload_files_indeterminate: 'Laster opp filer {done}/{total}'
 upload_files_success: '{count} filer lastet opp'
+upload_pending: Opplasting venter
 rows: Rader
 columns: Kolonner
 value_unique: Verdien må være unik
 all_activity: All aktivitet
 create_item: Opprette element
 no_results: Ingen treff
+saves_automatically: Lagres automatisk
+role: Rolle
+edit_role: Rediger rolle
+rule: Regel
+user: Bruker
 create: Opprett
+on_create: Ved opprettelse
 on_update: Ved oppdatering
 read: Les
 update: Oppdater
+delete: Slett
 select_fields: Velg felter
+format_text: Formater tekst
+format_value: Formater verdi
 flow_name: Navn
+create_operation: Opprett operasjon
+edit_operation: Rediger operasjon
+code: Kode
+operation_options: Operasjonsvalg
+no_url: Ingen URL angitt
+invalid_url: Ugyldig URL
 insights: Nøkkeltall
+overview: Oversikt
+deployment:
+  overview:
+    overview: Oversikt
+  provider:
+    vercel:
+      username:
+        label: Brukernavn
+    runs:
+      author: Forfatter
+      refresh: Oppdater
+    run:
+      download_logs: Last ned logger
+      open_deployment: Besøk
+  no_projects: Ingen prosjekter
+  target_value:
+    preview: Forhåndsvisning
+  runs_status:
+    ready: Klar
+  range:
+    1d: Siste 24 timer
+    7d: Siste 7 dager
+    30d: Siste 30 dager
+no_data: Ingen data
+details: Detaljer
+clear_logs: Tøm logger
+search_logs: Søk i logger...
+all_instances: Alle instanser
+full_screen: Fullskjerm
+caption: Bildetekst
+quality: Kvalitet
+width: Bredde
+height: Høyde
+source: Kilde
+url_placeholder: Angi en nettadresse...
+interface_group_text_and_numbers: Tekst og tall
+unlimited: Ubegrenset
+open_link_in: Åpne koblingen i
+new_tab: Ny fane
+save_image: Lagre bilde
+save_link: Lagre kobling
+save_media: Lagre multimedia
 wysiwyg_options:
   forecolor: Forgrunnsfarge
   backcolor: Bakgrunnsfarge
+  bold: Fet
+  italic: Kursiv
+  underline: Understrek
   insertdatetime_date: Dato
   insertdatetime_time: Tid
+  unlink: Fjern kobling
+  copy: Kopier
+  cut: Klipp ut
+  paste: Lim inn
+  heading: Overskrift
+  h1: Overskrift 1
+  h2: Overskrift 2
+  h3: Overskrift 3
+  h4: Overskrift 4
+  h5: Overskrift 5
+  h6: Overskrift 6
+  fontselect: Velg skrifttype
+  fontsizeselect: Velg skriftstørrelse
+  undo: Angre
+  redo: Gjør om
   remove: Fjern
   selectall: Merk alt
   table: Tabell
+  table_cell: Celle
+  table_row: Rad
+  table_column: Kolonne
+  table_merge_cells: Sammenslå celler
+  table_split_cell: Del celle
+  table_delete: Slett ttabell
+  source_code: Rediger kildekode
+  save_anyway: Lagre likevel
+  normalization_warning_view_changes: Vis endringer
+  normalization_warning_edit_anyway: Rediger likevel
+  fullscreen: Fullskjerm
   ltr: Venstre mot høyre
   rtl: Høyre til Venstre
+choices: Valg
 deselect: Velg bort
+theme: Tema
+select_a_theme: Velg tema
+appearance_light: Lyst
+appearance_dark: Mørkt
+other: Annet...
+unknown_user: Ukjent bruker
+unknown_version: Ukjent versjon
+unknown_revision: Ukjent revisjon
 creating_in: 'Oppretter element i {collection}'
 editing_in_batch: 'Batch Editing {count} elementer'
+settings_roles: Brukerroller
 settings_project: Innstillinger
+settings_license: Lisens
 licensing:
+  unlicensed: Ulisensiert
+  unlimited: Ubegrenset
   addon_update: Oppdater
+  addon_confirm_purchase: Bekreft kjøp
+  deactivate: Deaktiver lisens
+  deactivate_confirm_title: Deaktiver lisensen?
+  resolve_title_manual: Deaktiver lisens
+  resolve_title_canceled: Lisens kansellert
+  resolve_title_env_removed: Lisens fjernet
+  resolve_title_no_resolution: Lisens inaktiv
+  resolve_continue: Fortsett
+  resolve_available: Tilgjengelig
+  resolve_sso_admin_email: E-postadresse
   resolve_sso_admin_password: Passord
+  resolve_sso_admin_password_placeholder: Angi et passord...
+  resolve_sso_admin_confirm: Bekreft
+  resolve_section_ai_translations: KI-oversettelser
+  key: Lisensnøkkel
   entitlements:
     collections: Kolleksjoner
+    ai_translations_enabled: KI-oversettelser
+    production_enabled: Produksjon
+  badge:
+    non_prod: Ikke-produksjon
+settings_appearance: Utseende
+settings_ai: KI
+ai_assistant: KI-assistent
 settings_presets: Bokmerke
 settings_translations: Oversettelser
 discard_changes: Forkast endringer
@@ -813,15 +1030,19 @@ fields:
     user_preferences: Brukerinnstillinger
     language: Språk
     status: Status
+    status_invited: Invitert
     status_active: Aktiv
+    role: Rolle
     last_page: Siste side
     last_access: Siste tilgang
     email_notifications: E-postvarsler
+    appearance: Utseende
   directus_settings:
     project_name: Prosjektnavn
     module_bar: Modul Bar
   directus_shares:
     name: Navn
+    role: Rolle
     password: Passord
   directus_fields:
     note: Notat
@@ -836,30 +1057,56 @@ fields:
 field_options:
   directus_settings:
     security_divider_title: Sikkerhet
+    storage_asset_presets:
+      upscaling: Oppskalering
   directus_activity:
+    login: Inlogging
+    logout: Utlogging
     create: Opprett
     update: Oppdater
+    delete: Slett
   directus_collections:
     language: Språk
+    translation: Oversettelse
     archive_divider: Arkiv
+    archive_field_placeholder: Velg et felt...
     sort_divider: Sorter
+    sort_field: Velg et felt...
+    duplication_divider: Duplisering
+    preview_divider: Forhåndsvisning
   directus_roles:
     fields:
       icon_name: Ikon
       name_name: Navn
+      link_name: Kobling
     collections_name: Kolleksjoner
   directus_users:
     preferences_divider: Brukerinnstillinger
     dropdown_light: Lyst tema
     dropdown_dark: Mørkt tema
+    status_dropdown_draft: Utkast
+    status_dropdown_invited: Invitert
     status_dropdown_active: Aktiv
+    status_dropdown_suspended: Utestengt
+    status_dropdown_archived: Arkivert
+no_value: Ingen verdi
+do_nothing: Ikke gjør noe
+generate_and_save_uuid: Generer og lagre UUID
+save_current_user_id: Lagre nåværende bruker-ID
+save_current_user_role: Lagre nåværende brukerrolle
+save_current_datetime: Lagre nåværende dato/tid
 comment: Kommenter
 live_preview:
   new_window: Åpne i nytt vindu
+  display_options: Visningsvalg
+shares: Delinger
 ai:
   unknown: Ukjent
+  responses_may_be_inaccurate: KI-svar kan være unøyaktige
+  add_content: Legg til innhold
   items: Elementer
   content: Innhold
+  coming_soon: Kommer snart
   settings: Innstillinger
   tool_approval:
     disabled: Deaktivert
@@ -872,6 +1119,8 @@ ai_tools:
   operations: Operasjoner
   schema: Skjema
   collections: Kolleksjoner
+mcp_prompts_collection_schema:
+  messages_role_user: Bruker
 discard_label: Forkast
 delete_field_are_you_sure: >-
   Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..
@@ -956,10 +1205,13 @@ interfaces:
     tags: Etiketter
   boolean:
     label_default: Aktivert
+  user:
+    user: Bruker
   input-block-editor:
     tools_options:
       embed: Embed
       table: Tabell
+      underline: Understrek
 displays:
   translations:
     translations: Oversettelser
@@ -977,6 +1229,7 @@ displays:
   formatted-value:
     format: Format
     font_monospace: Fastbredde
+    italic: Kursiv
     prefix: Prefiks
     suffix: Suffiks
     color: Farge
@@ -991,6 +1244,7 @@ displays:
   labels:
     choices_value_placeholder: Legg inn verdi...
   user:
+    user: Bruker
     name: Navn
     both: Begge
 layouts:
@@ -1005,6 +1259,8 @@ layouts:
     comfortable: Komfortabel
     compact: Kompakt
     cozy: Cozy
+  kanban:
+    advanced: Avansert
 both: Begge
 triggers:
   webhook:
@@ -1015,6 +1271,7 @@ operations:
   log:
     message: Melding
   notification:
+    recipient: Bruker
     message: Melding
     subject: Emne
   request:
@@ -1022,3 +1279,7 @@ operations:
     method: Metode
 standard: Standard
 compact: Kompakt
+fonts:
+  italic: Kursiv
+license_banner:
+  remind_later: Påminn meg senere
