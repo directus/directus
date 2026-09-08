@@ -4,7 +4,6 @@ import PermissionsToggle from './permissions-toggle.vue';
 import { editablePermissionActions, EditablePermissionsAction } from '@/app-permissions.js';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { Collection } from '@/types/collections';
-import ValueNull from '@/views/private/components/value-null.vue';
 
 defineProps<{
 	collection: Collection;
@@ -38,16 +37,15 @@ const emit = defineEmits<{
 
 		<td v-for="action in editablePermissionActions" :key="action" class="action">
 			<PermissionsToggle
-				v-if="!disabledActions?.includes(action)"
 				:action="action"
 				:collection="collection"
+				:restricted="disabledActions?.includes(action)"
 				:permission="permissions.find((permission) => permission.action === action)"
 				:app-minimal="appMinimal && appMinimal.find((permission) => permission.action === action)"
 				@edit="emit('editItem', action)"
 				@set-full-access="emit('setFullAccess', action)"
 				@set-no-access="emit('setNoAccess', action)"
 			/>
-			<ValueNull v-else />
 		</td>
 		<td class="remove">
 			<VIcon v-tooltip="$t('remove')" name="close" clickable @click="emit('removeRow')" />
@@ -122,14 +120,6 @@ const emit = defineEmits<{
 
 	.action + .action {
 		padding-inline-start: 0.25rem;
-	}
-
-	.null {
-		cursor: not-allowed;
-	}
-
-	:is(.permissions-overview-toggle, .null) + :is(.permissions-overview-toggle, .null) {
-		margin-inline-start: 1.125rem;
 	}
 
 	& + .permissions-row td {
