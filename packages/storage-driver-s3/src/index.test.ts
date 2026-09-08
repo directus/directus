@@ -445,12 +445,34 @@ describe('#exists', () => {
 		expect(exists).toBe(true);
 	});
 
-	test('Returns false if stat throws an error', async () => {
-		vi.mocked(driver.stat).mockRejectedValue(new Error());
+	test('Returns false if the object is not found', async () => {
+		vi.mocked(driver.stat).mockRejectedValue(Object.assign(new Error(), { $metadata: { httpStatusCode: 404 } }));
 
 		const exists = await driver.exists(sample.path.input);
 
 		expect(exists).toBe(false);
+	});
+
+	/**
+	 * Reporting a timed out or rejected request as "the file isn't there" makes callers act on a wrong
+	 * answer, for example by serving a permission error for a file that does exist. A 403 is not an
+	 * answer either: HEAD has no body, so it covers rejected credentials as much as a missing object.
+	 *
+	 * Error shapes as produced by @aws-sdk/client-s3 3.928.0. A timeout carries `$metadata` without a
+	 * `httpStatusCode`.
+	 */
+	test.each([
+		['a rejected request', { $metadata: { httpStatusCode: 403 } }],
+		['the wrong region', { $metadata: { httpStatusCode: 301 } }],
+		['a server error', { $metadata: { httpStatusCode: 500 } }],
+		['a socket timeout', { name: 'TimeoutError', $metadata: { attempts: 3 } }],
+		['a refused connection', { code: 'ECONNREFUSED' }],
+	])('Throws if the lookup failed with %s', async (_, shape) => {
+		const error = Object.assign(new Error(), shape);
+
+		vi.mocked(driver.stat).mockRejectedValue(error);
+
+		await expect(driver.exists(sample.path.input)).rejects.toThrow(error);
 	});
 });
 

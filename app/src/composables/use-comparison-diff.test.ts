@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { useComparisonDiff } from './use-comparison-diff';
+import { sanitizeDropsContent, useComparisonDiff } from './use-comparison-diff';
 
 describe('useComparisonDiff - HTML Diff', () => {
 	const { computeDiff } = useComparisonDiff();
@@ -88,5 +88,24 @@ describe('useComparisonDiff - HTML Diff', () => {
 		expect(changes).toHaveLength(2);
 		expect(changes[0]?.removed).toBe(true);
 		expect(changes[0]?.value).toContain('<span class="comparison-diff--removed">Hello World</span>');
+	});
+});
+
+describe('sanitizeDropsContent', () => {
+	it.each([
+		['embeds', '<p>text</p><iframe src="https://example.com"></iframe>'],
+		['comments, e.g. page breaks', '<p>a</p><!-- pagebreak --><p>b</p>'],
+		['scripts', '<script>alert(1)</script><p>text</p>'],
+	])('detects dropped %s', (_name, html) => {
+		expect(sanitizeDropsContent(html)).toBe(true);
+	});
+
+	it.each([
+		['plain markup', '<p>text</p>'],
+		['media', '<video controls><source src="/assets/v.mp4" type="video/mp4"></video>'],
+		['attribute-only normalization', '<p onclick="x()" class="a">text</p>'],
+		['non-strings', null],
+	])('passes %s through', (_name, html) => {
+		expect(sanitizeDropsContent(html)).toBe(false);
 	});
 });

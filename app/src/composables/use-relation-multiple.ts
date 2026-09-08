@@ -2,6 +2,7 @@ import { ContentVersion, Filter, Item } from '@directus/types';
 import { getEndpoint, toArray } from '@directus/utils';
 import { clamp, cloneDeep, get, isEqual, merge, mergeWith } from 'lodash';
 import { computed, ref, Ref, watch } from 'vue';
+import { useRefreshSignal } from '@/composables/use-refresh-signal';
 import { RelationM2A } from '@/composables/use-relation-m2a';
 import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
@@ -46,6 +47,9 @@ export function useRelationMultiple(
 	const loading = ref(false);
 	const fetchedItems = ref<Record<string, any>[]>([]);
 	const existingItemCount = ref(0);
+
+	// Signal to the interface to that the parent item was refreshed and should refresh it's value
+	const refreshSignal = useRefreshSignal();
 
 	const { cleanItem, getPage, isLocalItem, getItemEdits, isEmpty } = useUtil();
 
@@ -105,7 +109,7 @@ export function useRelationMultiple(
 	});
 
 	watch(
-		[previewQuery, itemId, relation],
+		[previewQuery, itemId, relation, refreshSignal],
 		(newData, oldData) => {
 			if (!isEqual(newData, oldData)) {
 				updateFetchedItems();
@@ -489,16 +493,17 @@ export function useRelationMultiple(
 	}
 
 	watch(
-		[previewQuery, itemId, relation],
+		[previewQuery, itemId, relation, refreshSignal],
 		(newData, oldData) => {
-			const [newPreviewQuery, newItemId, newRelation] = newData;
-			const [oldPreviewQuery, oldItemId, oldRelation] = oldData;
+			const [newPreviewQuery, newItemId, newRelation, newRefreshSignal] = newData;
+			const [oldPreviewQuery, oldItemId, oldRelation, oldRefreshSignal] = oldData;
 
 			if (
 				isEqual(newRelation, oldRelation) &&
 				newPreviewQuery.filter === oldPreviewQuery?.filter &&
 				newPreviewQuery.search === oldPreviewQuery?.search &&
-				newItemId === oldItemId
+				newItemId === oldItemId &&
+				newRefreshSignal === oldRefreshSignal
 			) {
 				return;
 			}

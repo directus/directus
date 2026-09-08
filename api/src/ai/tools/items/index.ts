@@ -67,6 +67,7 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 	keywords: ['content', 'records', 'entries', 'rows', 'publish', 'archive', 'status'],
 	annotations: {
 		title: 'Directus - Items',
+		destructiveHint: true,
 	},
 	inputSchema: ItemsInputSchema,
 	validateSchema: ItemsValidateSchema,

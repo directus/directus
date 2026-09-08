@@ -1,4 +1,4 @@
-import type { Project } from '@pnpm/workspace.find-packages';
+import type { Project } from '@pnpm/types';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { Config } from '../types.js';
 
@@ -31,8 +31,8 @@ vi.doMock('node:fs', () => {
 
 let packages: Partial<Project>[] = [];
 
-vi.doMock('@pnpm/workspace.find-packages', () => ({
-	findWorkspacePackagesNoCheck: () => packages,
+vi.doMock('./find-workspace-packages.js', () => ({
+	findWorkspacePackages: () => packages,
 }));
 
 beforeEach(() => {

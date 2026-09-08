@@ -203,6 +203,26 @@ describe('syncExtensions', () => {
 			expect(rm).toHaveBeenCalledWith('/local/extensions/.registry/my-extension', { recursive: true, force: true });
 		});
 
+		/**
+		 * A lookup that failed is not the same answer as an extension that is gone. Removing the local
+		 * copy on a failed lookup deletes a working extension, and letting the error out of sync makes
+		 * every instance exit on a routine install or uninstall.
+		 */
+		test('should keep the local directory if the remote check fails during partial sync', async () => {
+			mockLock.increment.mockResolvedValue(1);
+
+			vi.mocked(getSyncPaths).mockReturnValue({
+				localExtensionsPath: '/local/extensions/.registry/my-extension',
+				remoteExtensionsPath: 'remote/extensions/.registry/my-extension',
+			});
+
+			vi.mocked(mockDisk.exists).mockRejectedValue(new Error('socket timed out'));
+
+			await expect(syncExtensions({ partialSync: '.registry/my-extension' })).resolves.toBeUndefined();
+
+			expect(rm).not.toHaveBeenCalled();
+		});
+
 		test('should not check remote existence during full sync', async () => {
 			mockLock.increment.mockResolvedValue(1);
 			vi.mocked(mockDisk.list).mockImplementation(async function* () {});

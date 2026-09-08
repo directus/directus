@@ -1,9 +1,10 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, MockInstance, test, vi } from 'vitest';
 import { computed, defineComponent, h, ref, toRefs } from 'vue';
 import { RelationM2A } from './use-relation-m2a';
 import { RelationO2M } from './use-relation-o2m';
+import { provideRefreshSignal } from '@/composables/use-refresh-signal';
 import { RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import sdk from '@/sdk';
 
@@ -923,5 +924,58 @@ describe('test m2a relation', () => {
 				$edits: 1,
 			},
 		]);
+	});
+});
+
+const RefreshSignalProvider = defineComponent({
+	props: ['relation', 'id'], // eslint-disable-line vue/require-prop-types
+	setup() {
+		const refreshSignal = ref(0);
+		provideRefreshSignal(refreshSignal);
+		return { refreshSignal };
+	},
+	render() {
+		return h(TestComponent, { relation: this.relation, id: this.id, value: [] });
+	},
+});
+
+describe('refresh signal', () => {
+	function countFetches(spy: MockInstance<typeof sdk.request>) {
+		return spy.mock.calls.filter((call) => {
+			const request = (call[0] as () => { path: string; params?: Record<string, any> })();
+			return request.path === '/items/worker' && !request.params?.aggregate;
+		}).length;
+	}
+
+	test('refetches the rows when the provided signal is bumped', async () => {
+		const sdkSpy = vi.spyOn(sdk, 'request');
+
+		const wrapper = mount(RefreshSignalProvider, {
+			props: { relation: relationO2M, id: 1 },
+		});
+
+		await flushPromises();
+
+		expect(countFetches(sdkSpy)).toBe(1);
+
+		wrapper.vm.refreshSignal++;
+
+		await flushPromises();
+
+		expect(countFetches(sdkSpy)).toBe(2);
+		expect(wrapper.findComponent(TestComponent).vm.displayItems).toEqual(workerData);
+	});
+
+	test('does not refetch while the signal is unchanged', async () => {
+		const sdkSpy = vi.spyOn(sdk, 'request');
+
+		mount(RefreshSignalProvider, {
+			props: { relation: relationO2M, id: 1 },
+		});
+
+		await flushPromises();
+		await flushPromises();
+
+		expect(countFetches(sdkSpy)).toBe(1);
 	});
 });
