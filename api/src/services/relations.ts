@@ -25,6 +25,7 @@ import emitter from '../emitter.js';
 import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
 import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { assertHardcodedAdmin } from '../permissions/utils/assert-hardcoded-auth.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
 import { transaction } from '../utils/transaction.js';
@@ -189,9 +190,7 @@ export class RelationsService {
 	 * Create a new relationship / foreign key constraint
 	 */
 	async createOne(relation: Partial<Relation>, opts?: MutationOptions): Promise<void> {
-		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
-		}
+		assertHardcodedAdmin(this.accountability, 'directus_relations', 'create');
 
 		if (!relation.collection) {
 			throw new InvalidPayloadError({ reason: '"collection" is required' });
@@ -317,9 +316,7 @@ export class RelationsService {
 		relation: Partial<Relation>,
 		opts?: MutationOptions,
 	): Promise<void> {
-		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
-		}
+		assertHardcodedAdmin(this.accountability, 'directus_relations', 'update');
 
 		const collectionSchema = this.schema.collections[collection];
 
@@ -437,9 +434,7 @@ export class RelationsService {
 	 * Delete an existing relationship
 	 */
 	async deleteOne(collection: string, field: string, opts?: MutationOptions): Promise<void> {
-		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
-		}
+		assertHardcodedAdmin(this.accountability, 'directus_relations', 'delete');
 
 		if (collection in this.schema.collections === false) {
 			throw new InvalidPayloadError({ reason: `Collection "${collection}" doesn't exist` });

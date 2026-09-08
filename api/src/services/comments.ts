@@ -1,11 +1,12 @@
 import { useEnv } from '@directus/env';
-import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { AbstractServiceOptions, Accountability, Comment, MutationOptions, PrimaryKey } from '@directus/types';
 import { uniq } from 'lodash-es';
 import { useLogger } from '../logger/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { assertHardcodedUser } from '../permissions/utils/assert-hardcoded-auth.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
@@ -27,7 +28,7 @@ export class CommentsService extends ItemsService {
 	}
 
 	override async createOne(data: Partial<Comment>, opts?: MutationOptions): Promise<PrimaryKey> {
-		if (!this.accountability?.user) throw new ForbiddenError();
+		assertHardcodedUser(this.accountability, 'directus_comments', 'create');
 
 		if (!data['comment']) {
 			throw new InvalidPayloadError({ reason: `"comment" is required` });
@@ -166,13 +167,13 @@ ${comment}
 	}
 
 	override updateOne(key: PrimaryKey, data: Partial<Comment>, opts?: MutationOptions): Promise<PrimaryKey> {
-		if (!this.accountability?.user) throw new ForbiddenError();
+		assertHardcodedUser(this.accountability, 'directus_comments', 'update');
 
 		return super.updateOne(key, data, opts);
 	}
 
 	override deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
-		if (!this.accountability?.user) throw new ForbiddenError();
+		assertHardcodedUser(this.accountability, 'directus_comments', 'delete');
 
 		return super.deleteOne(key, opts);
 	}

@@ -28,6 +28,7 @@ import emitter from '../emitter.js';
 import { getEntitlementManager } from '../license/index.js';
 import { fetchAllowedCollections } from '../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { assertHardcodedAdmin } from '../permissions/utils/assert-hardcoded-auth.js';
 import type { Collection } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
@@ -63,9 +64,7 @@ export class CollectionsService {
 	 * Create a single new collection
 	 */
 	async createOne(payload: RawCollection, opts?: FieldMutationOptions): Promise<string> {
-		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
-		}
+		assertHardcodedAdmin(this.accountability, 'directus_collections', 'create');
 
 		if (!('collection' in payload)) throw new InvalidPayloadError({ reason: `"collection" is required` });
 
@@ -455,9 +454,7 @@ export class CollectionsService {
 	 * Update a single collection by name
 	 */
 	async updateOne(collectionKey: string, payload: DeepPartial<Collection>, opts?: MutationOptions): Promise<string> {
-		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
-		}
+		assertHardcodedAdmin(this.accountability, 'directus_collections', 'update');
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -525,9 +522,7 @@ export class CollectionsService {
 	 * Update multiple collections in a single transaction
 	 */
 	async updateBatch(data: DeepPartial<Collection>[], opts?: MutationOptions): Promise<string[]> {
-		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
-		}
+		assertHardcodedAdmin(this.accountability, 'directus_collections', 'update');
 
 		if (!Array.isArray(data)) {
 			throw new InvalidPayloadError({ reason: 'Input should be an array of collection changes' });
@@ -587,9 +582,7 @@ export class CollectionsService {
 	 * Update multiple collections by name
 	 */
 	async updateMany(collectionKeys: string[], data: DeepPartial<Collection>, opts?: MutationOptions): Promise<string[]> {
-		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
-		}
+		assertHardcodedAdmin(this.accountability, 'directus_collections', 'update');
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -637,9 +630,7 @@ export class CollectionsService {
 	 * delete any fields, presets, activity, revisions, and permissions relating to this collection
 	 */
 	async deleteOne(collectionKey: string, opts?: MutationOptions): Promise<string> {
-		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
-		}
+		assertHardcodedAdmin(this.accountability, 'directus_collections', 'delete');
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -821,9 +812,7 @@ export class CollectionsService {
 	 * Delete multiple collections by key
 	 */
 	async deleteMany(collectionKeys: string[], opts?: MutationOptions): Promise<string[]> {
-		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
-		}
+		assertHardcodedAdmin(this.accountability, 'directus_collections', 'delete');
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
