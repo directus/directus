@@ -246,6 +246,17 @@ describe('Integration Tests', () => {
 				expect(block.tags.create[0]).toHaveProperty('_date');
 			});
 
+			test('should track changes on related items when only one action list is sent', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_with_json',
+					item: 1,
+				});
+
+				const result = await service.save(1, { blocks: { update: [{ id: 5, label: 'Updated' }] } });
+
+				expect(result['blocks'].update[0]).toHaveProperty('_date');
+			});
+
 			test('should track changes on related items passed as a plain array', async () => {
 				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
 					collection: 'articles_with_json',

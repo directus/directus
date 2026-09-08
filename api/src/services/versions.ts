@@ -14,7 +14,7 @@ import {
 	type Query,
 	type QueryOptions,
 } from '@directus/types';
-import { deepMapWithSchema, getRelationInfo, isDetailedUpdateSyntax } from '@directus/utils';
+import { deepMapWithSchema, getRelationInfo } from '@directus/utils';
 import Joi from 'joi';
 import { assign, get, isEqual, isNil, isPlainObject, pick } from 'lodash-es';
 import objectHash from 'object-hash';
@@ -28,6 +28,8 @@ import { ActivityService } from './activity.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
+
+const ALTERATION_ACTIONS = ['create', 'update', 'delete'] as const;
 
 export class VersionsService extends ItemsService<ContentVersion> {
 	constructor(options: AbstractServiceOptions) {
@@ -553,8 +555,9 @@ export class VersionsService extends ItemsService<ContentVersion> {
 				object['_date'] = date;
 			}
 
-			if (isDetailedUpdateSyntax(object)) {
-				for (const action of ['create', 'update', 'delete'] as const) {
+			// Each list is optional, so a payload may carry only the ones it needs
+			if (ALTERATION_ACTIONS.some((action) => Array.isArray(object[action]))) {
+				for (const action of ALTERATION_ACTIONS) {
 					walk(object[action], collection, [...path, action]);
 				}
 
