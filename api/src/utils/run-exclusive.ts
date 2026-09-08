@@ -22,7 +22,7 @@ type Outcome<T> = { ok: true; result: T } | { ok: false; error: string };
  */
 export async function runExclusive<T>(
 	key: string,
-	fn: () => Promise<T>,
+	fn: () => Promise<T> | T,
 	options?: { timeout?: number; maxAttempts?: number },
 ) {
 	const channel = `directus:exclusive:${key}:bus`;
