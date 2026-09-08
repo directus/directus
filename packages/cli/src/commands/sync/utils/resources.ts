@@ -153,7 +153,8 @@ const RESOURCE_LIST = [
 		mustPull: ['operations'],
 		strip: ['user_created', 'date_created'],
 		aliases: ['operations'],
-		naturalKey: ['name'],
+		// Folders make same-named flows realistic, so the folder they live in is part of their identity.
+		naturalKey: ['name', 'folder'],
 		fkFields: [
 			{ field: 'operation', references: 'directus_operations' },
 			{ field: 'folder', references: 'directus_folders' },
@@ -258,8 +259,9 @@ const RESOURCE_LIST = [
 		mustPull: [],
 		strip: [],
 		aliases: [],
+		// A folder's type partitions the tree: a flows folder must never reconcile onto a file-library one.
 		// Ancestry included: one source and target folder sharing a name under different parents must not match.
-		naturalKey: ['name', 'parent'],
+		naturalKey: ['name', 'parent', 'type'],
 		fkFields: [{ field: 'parent', references: 'directus_folders' }],
 	},
 	{
