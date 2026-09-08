@@ -197,12 +197,22 @@ export class FilesService extends ItemsService<File> {
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
 		// we still want to be able to set the extracted values from the file on create
-		const sudoFilesItemsService = new ItemsService('directus_files', {
+		const sudoFilesService = new FilesService({
 			knex: this.knex,
 			schema: this.schema,
 		});
 
-		await sudoFilesItemsService.updateOne(primaryKey, { ...payload, ...metadata }, { emitEvents: false });
+		// Do not spread user payload or include non-calculated fields here
+		await sudoFilesService.updateOne(
+			primaryKey,
+			{
+				...metadata,
+				filename_disk: payload.filename_disk,
+				filesize: payload.filesize,
+				uploaded_on: payload.uploaded_on,
+			},
+			{ emitEvents: false },
+		);
 
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(
