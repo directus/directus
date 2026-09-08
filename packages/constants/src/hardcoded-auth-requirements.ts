@@ -9,11 +9,7 @@ import type { PERMISSION_ACTIONS } from './permissions.js';
  * Checked in the service layer, except `directus_extensions`, which is gated in its route handlers
  * (`create` maps to `POST /extensions/registry/install`).
  */
-export const HARDCODED_AUTH_REQUIREMENTS: ReadonlyArray<{
-	collection: string;
-	action: (typeof PERMISSION_ACTIONS)[number];
-	requiredAuth: 'admin' | 'user';
-}> = [
+export const HARDCODED_AUTH_REQUIREMENTS = [
 	{ collection: 'directus_collections', action: 'create', requiredAuth: 'admin' },
 	{ collection: 'directus_collections', action: 'delete', requiredAuth: 'admin' },
 	{ collection: 'directus_collections', action: 'update', requiredAuth: 'admin' },
@@ -29,4 +25,8 @@ export const HARDCODED_AUTH_REQUIREMENTS: ReadonlyArray<{
 	{ collection: 'directus_relations', action: 'create', requiredAuth: 'admin' },
 	{ collection: 'directus_relations', action: 'delete', requiredAuth: 'admin' },
 	{ collection: 'directus_relations', action: 'update', requiredAuth: 'admin' },
-];
+] as const satisfies ReadonlyArray<{
+	collection: string;
+	action: (typeof PERMISSION_ACTIONS)[number];
+	requiredAuth: 'admin' | 'user';
+}>;
