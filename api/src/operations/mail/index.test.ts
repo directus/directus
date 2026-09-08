@@ -190,6 +190,25 @@ describe('Operations / Mail', () => {
 		);
 	});
 
+	test('coerce a non-string fromName from a whole-field mustache into the sender name', async () => {
+		const options = {
+			to: 'test@example.com',
+			subject: 'Test',
+			type: 'wysiwyg',
+			body: 'test body',
+			// A whole-field mustache like {{$trigger.body.senderId}} resolves to the raw value, e.g. a number
+			fromName: 42 as unknown as string,
+		} satisfies Options;
+
+		await expect(config.handler(options, mockOperationContext)).resolves.not.toThrow();
+
+		expect(mailServiceSendSpy).toHaveBeenCalledWith(
+			expect.objectContaining({
+				from: { name: '42', address: 'no-reply@example.com' },
+			}),
+		);
+	});
+
 	test.each([
 		{ scenario: 'unset', fromName: {} },
 		{ scenario: 'whitespace only', fromName: { fromName: '   ' } },
