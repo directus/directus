@@ -258,7 +258,7 @@ catalog:
   nanoid: 5.1.16
   native-copyfiles: 2.0.3
   node-machine-id: 1.1.12
-  nodemailer: 9.0.3
+  nodemailer: 10.0.1
   nodemailer-mailgun-transport: 2.1.5
   npm-watch: 0.13.0
   object-hash: 3.0.0
