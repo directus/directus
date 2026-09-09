@@ -25,7 +25,6 @@ post:
   summary: Create Field in Collection
   description: Create a new field in a given collection.
   operationId: createField
-  x-authentication: admin
   requestBody:
     content:
       application/json:

@@ -23,7 +23,6 @@ patch:
   tags:
     - Comments
   operationId: updateComment
-  x-authentication: user
   summary: Update a Comment
   description: Update an existing comment.
   parameters:
@@ -64,7 +63,6 @@ delete:
   tags:
     - Comments
   operationId: deleteComment
-  x-authentication: user
   summary: Delete a Comment
   description: Delete an existing comment.
   responses:

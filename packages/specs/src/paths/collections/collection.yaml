@@ -22,7 +22,6 @@ patch:
   summary: Update a Collection
   description: Update an existing collection.
   operationId: updateCollection
-  x-authentication: admin
   requestBody:
     content:
       application/json:
@@ -119,7 +118,6 @@ delete:
     'Delete an existing collection. Warning: This will delete the whole collection, including the items within. Proceed
     with caution.'
   operationId: deleteCollection
-  x-authentication: admin
   responses:
     '200':
       description: Successful request

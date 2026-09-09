@@ -2,7 +2,6 @@ patch:
   summary: Update an Extension
   description: Update an existing extension.
   operationId: updateExtensionBundle
-  x-authentication: admin
   parameters:
     - in: path
       name: bundle

@@ -25,7 +25,6 @@ post:
   summary: Create a Collection
   description: Create a new collection in Directus.
   operationId: createCollection
-  x-authentication: admin
   requestBody:
     content:
       application/json:

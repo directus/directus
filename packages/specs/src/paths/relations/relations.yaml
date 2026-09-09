@@ -25,7 +25,6 @@ post:
   summary: Create a Relation
   description: Create a new relation.
   operationId: createRelation
-  x-authentication: admin
   requestBody:
     content:
       application/json:
