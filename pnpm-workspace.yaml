@@ -87,17 +87,17 @@ catalog:
   '@sindresorhus/slugify': 2.2.1
   '@smithy/node-http-handler': 4.11.2
   '@supabase/storage-js': 2.112.3
-  '@tiptap/core': 3.26.1
-  '@tiptap/extension-image': 3.26.1
-  '@tiptap/extension-subscript': 3.26.1
-  '@tiptap/extension-superscript': 3.26.1
-  '@tiptap/extension-table': 3.26.1
-  '@tiptap/extension-text-align': 3.26.1
-  '@tiptap/extension-text-style': 3.26.1
-  '@tiptap/extensions': 3.26.1
-  '@tiptap/pm': 3.26.1
-  '@tiptap/starter-kit': 3.26.1
-  '@tiptap/vue-3': 3.26.1
+  '@tiptap/core': 3.31.3
+  '@tiptap/extension-image': 3.31.3
+  '@tiptap/extension-subscript': 3.31.3
+  '@tiptap/extension-superscript': 3.31.3
+  '@tiptap/extension-table': 3.31.3
+  '@tiptap/extension-text-align': 3.31.3
+  '@tiptap/extension-text-style': 3.31.3
+  '@tiptap/extensions': 3.31.3
+  '@tiptap/pm': 3.31.3
+  '@tiptap/starter-kit': 3.31.3
+  '@tiptap/vue-3': 3.31.3
   '@tresjs/core': 5.8.0
   '@turf/meta': 7.2.0
   '@tus/server': 2.4.4
