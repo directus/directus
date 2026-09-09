@@ -219,6 +219,9 @@ export async function parseFields(
 			// Explicitly requested inactive collections get rejected.
 			if (!Array.isArray(nestedFields)) {
 				for (const scopedCollection of Object.keys(nestedFields)) {
+					// Skip non-existent collections
+					if (scopedCollection in context.schema.collections === false) continue;
+
 					await assertCollectionActive(
 						{ accountability: options.accountability, action: 'read', collection: scopedCollection },
 						context,

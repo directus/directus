@@ -819,6 +819,22 @@ test('parse fields rejects an inactive collection named through the a2o scope sy
 	).rejects.toMatchObject({ code: 'COLLECTION_INACTIVE', extensions: { collection: 'text' } });
 });
 
+test('parse fields silently ignores an a2o scope naming a collection that does not exist', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const result = await parseFields(
+		{
+			accountability,
+			parentCollection: 'blog_builder',
+			fields: ['item:nonexistent_collection.id'],
+			query: { alias: {} },
+		},
+		{ knex: db, schema: schemaM2A },
+	);
+
+	expect(result).toEqual([expect.objectContaining({ type: 'a2o', names: ['text'] })]);
+});
+
 test('parse fields skips an inactive collection that was only reached through an a2o wildcard', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
 
