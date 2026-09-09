@@ -214,6 +214,8 @@ export async function parseFields(
 		let child: NestedCollectionNode | null = null;
 
 		if (relationType === 'a2o') {
+			// Scoped fields `item:collection` are object with the collection as key.
+			// Explicitly requested inactive collections get rejected.
 			if (!Array.isArray(nestedFields)) {
 				for (const scopedCollection of Object.keys(nestedFields)) {
 					await validateCollectionActive(
