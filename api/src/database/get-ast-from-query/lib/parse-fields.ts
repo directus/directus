@@ -5,7 +5,7 @@ import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
-import { validateCollectionActive } from '../../../permissions/modules/validate-collection-active/validate-collection-active.js';
+import { assertCollectionActive } from '../../../permissions/modules/assert-collection-active/assert-collection-active.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../../types/index.js';
 import { splitFieldPath } from '../../../utils/split-field-path.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
@@ -219,7 +219,7 @@ export async function parseFields(
 			// Explicitly requested inactive collections get rejected.
 			if (!Array.isArray(nestedFields)) {
 				for (const scopedCollection of Object.keys(nestedFields)) {
-					await validateCollectionActive(
+					await assertCollectionActive(
 						{ accountability: options.accountability, action: 'read', collection: scopedCollection },
 						context,
 					);

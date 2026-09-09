@@ -3,7 +3,7 @@ import type { Accountability, SchemaOverview } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
 import type { Context } from '../../types.js';
 import { validateCollectionAccess } from '../validate-access/lib/validate-collection-access.js';
-import { validateCollectionActive } from './validate-collection-active.js';
+import { assertCollectionActive } from './assert-collection-active.js';
 
 vi.mock('../validate-access/lib/validate-collection-access.js');
 
@@ -33,7 +33,7 @@ beforeEach(() => {
 
 test('Resolves when the collection is active', async () => {
 	await expect(
-		validateCollectionActive(
+		assertCollectionActive(
 			{ accountability: accountability(), action: 'read', collection: 'articles' },
 			context(['archive']),
 		),
@@ -44,7 +44,7 @@ test('Resolves when the collection is active', async () => {
 
 test('Resolves when every collection on the schema is active', async () => {
 	await expect(
-		validateCollectionActive({ accountability: accountability(), action: 'read', collection: 'archive' }, context()),
+		assertCollectionActive({ accountability: accountability(), action: 'read', collection: 'archive' }, context()),
 	).resolves.toBeUndefined();
 
 	expect(validateCollectionAccess).not.toHaveBeenCalled();
@@ -57,7 +57,7 @@ test('Resolves when the collection carries no status at all', async () => {
 	} as Context;
 
 	await expect(
-		validateCollectionActive({ accountability: accountability(), action: 'read', collection: 'archive' }, ctx),
+		assertCollectionActive({ accountability: accountability(), action: 'read', collection: 'archive' }, ctx),
 	).resolves.toBeUndefined();
 
 	expect(validateCollectionAccess).not.toHaveBeenCalled();
@@ -65,7 +65,7 @@ test('Resolves when the collection carries no status at all', async () => {
 
 test('Reports inactivity to an admin without checking permissions', async () => {
 	await expect(
-		validateCollectionActive(
+		assertCollectionActive(
 			{ accountability: accountability({ admin: true }), action: 'read', collection: 'archive' },
 			context(['archive']),
 		),
@@ -78,7 +78,7 @@ test('Reports inactivity to a non-admin holding permissions on the collection', 
 	vi.mocked(validateCollectionAccess).mockResolvedValue(true);
 
 	await expect(
-		validateCollectionActive(
+		assertCollectionActive(
 			{ accountability: accountability(), action: 'update', collection: 'archive' },
 			context(['archive']),
 		),
@@ -87,7 +87,7 @@ test('Reports inactivity to a non-admin holding permissions on the collection', 
 
 test('Hides inactivity from a non-admin without permissions on the collection', async () => {
 	await expect(
-		validateCollectionActive(
+		assertCollectionActive(
 			{ accountability: accountability(), action: 'update', collection: 'archive' },
 			context(['archive']),
 		),
@@ -96,7 +96,7 @@ test('Hides inactivity from a non-admin without permissions on the collection', 
 
 test('Reports inactivity without accountability, without checking permissions', async () => {
 	await expect(
-		validateCollectionActive({ accountability: null, action: 'read', collection: 'archive' }, context(['archive'])),
+		assertCollectionActive({ accountability: null, action: 'read', collection: 'archive' }, context(['archive'])),
 	).rejects.toBeInstanceOf(CollectionInactiveError);
 
 	expect(validateCollectionAccess).not.toHaveBeenCalled();
@@ -107,7 +107,7 @@ test('Checks permissions for the requested collection and action', async () => {
 	const ctx = context(['archive']);
 
 	await expect(
-		validateCollectionActive({ accountability: auth, action: 'delete', collection: 'archive' }, ctx),
+		assertCollectionActive({ accountability: auth, action: 'delete', collection: 'archive' }, ctx),
 	).rejects.toThrow();
 
 	expect(validateCollectionAccess).toHaveBeenCalledWith(

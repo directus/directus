@@ -1,6 +1,6 @@
 import type { PermissionsAction } from '@directus/types';
 import getDatabase from '../database/index.js';
-import { validateCollectionActive } from '../permissions/modules/validate-collection-active/validate-collection-active.js';
+import { assertCollectionActive } from '../permissions/modules/assert-collection-active/assert-collection-active.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import asyncHandler from '../utils/async-handler.js';
 
@@ -11,7 +11,7 @@ const collectionActive = (action?: PermissionsAction) =>
 	asyncHandler(async (req, _res, next) => {
 		if (!req.params['collection']) return next();
 
-		await validateCollectionActive(
+		await assertCollectionActive(
 			{
 				accountability: req.accountability ?? createDefaultAccountability(),
 				collection: req.params['collection'],

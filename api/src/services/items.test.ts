@@ -7,7 +7,7 @@ import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, test, vi } from 'vitest';
 import { SchemaHelperMSSQL } from '../database/helpers/schema/dialects/mssql.js';
 import { getDatabaseClient } from '../database/index.js';
-import { validateCollectionActive } from '../permissions/modules/validate-collection-active/validate-collection-active.js';
+import { assertCollectionActive } from '../permissions/modules/assert-collection-active/assert-collection-active.js';
 import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { handleVersion } from '../utils/versioning/handle-version.js';
 import { ActivityService } from './activity.js';
@@ -19,7 +19,7 @@ vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 }));
 
-vi.mock('../permissions/modules/validate-collection-active/validate-collection-active.js');
+vi.mock('../permissions/modules/assert-collection-active/assert-collection-active.js');
 vi.mock('../utils/validate-user-count-integrity.js');
 vi.mock('../utils/versioning/handle-version.js', { spy: true });
 
@@ -342,7 +342,7 @@ describe('Integration Tests', () => {
 			];
 
 			beforeEach(() => {
-				vi.mocked(validateCollectionActive).mockRejectedValue(new CollectionInactiveError({ collection: 'test' }));
+				vi.mocked(assertCollectionActive).mockRejectedValue(new CollectionInactiveError({ collection: 'test' }));
 				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 			});
 
@@ -356,7 +356,7 @@ describe('Integration Tests', () => {
 				await expect(run(service)).rejects.toMatchObject({ code: 'COLLECTION_INACTIVE' });
 
 				// Operations that run in a transaction pass the transaction as the knex instance
-				expect(validateCollectionActive).toHaveBeenCalledWith(
+				expect(assertCollectionActive).toHaveBeenCalledWith(
 					{ accountability, collection: 'test', action },
 					expect.objectContaining({ schema }),
 				);
@@ -365,7 +365,7 @@ describe('Integration Tests', () => {
 			it('should check the collection without accountability too', async () => {
 				await expect(service.readByQuery({})).rejects.toMatchObject({ code: 'COLLECTION_INACTIVE' });
 
-				expect(validateCollectionActive).toHaveBeenCalledWith(
+				expect(assertCollectionActive).toHaveBeenCalledWith(
 					expect.objectContaining({ accountability: null }),
 					expect.anything(),
 				);

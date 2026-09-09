@@ -3,7 +3,7 @@ import type { AST } from '../../../types/ast.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
-import { validateCollectionActive } from '../validate-collection-active/validate-collection-active.js';
+import { assertCollectionActive } from '../assert-collection-active/assert-collection-active.js';
 import { fieldMapFromAst } from './lib/field-map-from-ast.js';
 import { injectCases } from './lib/inject-cases.js';
 import type { FieldMap } from './types.js';
@@ -25,7 +25,7 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 
 	// Every collection the query traverses into has to be active, not just the one it is addressed at.
 	for (const collection of collections) {
-		await validateCollectionActive(
+		await assertCollectionActive(
 			{ accountability: options.accountability, action: options.action, collection },
 			context,
 		);

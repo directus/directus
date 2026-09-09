@@ -1,7 +1,7 @@
 import { isSystemCollection } from '@directus/system-data';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import { validateCollectionActive } from '../../permissions/modules/validate-collection-active/validate-collection-active.js';
+import { assertCollectionActive } from '../../permissions/modules/assert-collection-active/assert-collection-active.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { ItemsService, MetaService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
@@ -44,7 +44,7 @@ export class ItemsHandler {
 			);
 		}
 
-		await validateCollectionActive(
+		await assertCollectionActive(
 			{
 				accountability: accountability ?? createDefaultAccountability(),
 				collection: message.collection,

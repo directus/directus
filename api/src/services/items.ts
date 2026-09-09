@@ -30,7 +30,7 @@ import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
 import { processPayload } from '../permissions/modules/process-payload/process-payload.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import { validateCollectionActive } from '../permissions/modules/validate-collection-active/validate-collection-active.js';
+import { assertCollectionActive } from '../permissions/modules/assert-collection-active/assert-collection-active.js';
 import { createMutationTracker } from '../utils/create-mutation-tracker.js';
 import { getCollectionFromSchema } from '../utils/schema/get-collection-from-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
@@ -95,8 +95,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		return createMutationTracker(initialCount);
 	}
 
-	private async validateCollectionActive(action: PermissionsAction): Promise<void> {
-		await validateCollectionActive(
+	private async assertCollectionActive(action: PermissionsAction): Promise<void> {
+		await assertCollectionActive(
 			{ accountability: this.accountability, collection: this.collection, action },
 			{ schema: this.schema, knex: this.knex },
 		);
@@ -120,7 +120,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Create a single new item.
 	 */
 	async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
-		await this.validateCollectionActive('create');
+		await this.assertCollectionActive('create');
 
 		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
@@ -513,7 +513,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Get items by query.
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
-		await this.validateCollectionActive('read');
+		await this.assertCollectionActive('read');
 
 		if (query.version && !isPublishedVersionKey(query.version)) {
 			return (await handleVersion(this, opts?.key ?? null, query, opts)) as Item[];
@@ -728,7 +728,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Update many items by primary key, setting all items to the same change.
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		await this.validateCollectionActive('update');
+		await this.assertCollectionActive('update');
 
 		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
@@ -1103,7 +1103,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Delete multiple items by primary key.
 	 */
 	async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		await this.validateCollectionActive('delete');
+		await this.assertCollectionActive('delete');
 
 		if (!opts.mutationTracker) opts.mutationTracker = createMutationTracker();
 
@@ -1228,7 +1228,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Read/treat collection as singleton.
 	 */
 	async readSingleton(query: Query, opts?: QueryOptions): Promise<Partial<Item>> {
-		await this.validateCollectionActive('read');
+		await this.assertCollectionActive('read');
 
 		query = clone(query);
 
@@ -1275,7 +1275,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.createOne` / `this.updateOne` under the hood.
 	 */
 	async upsertSingleton(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		await this.validateCollectionActive('update');
+		await this.assertCollectionActive('update');
 
 		const primaryKeyField = getCollectionFromSchema(this.schema, this.collection).primary;
 

@@ -2,7 +2,7 @@ import { CollectionInactiveError } from '@directus/errors';
 import type { Accountability, PermissionsAction } from '@directus/types';
 import type { Request, Response } from 'express';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { validateCollectionActive } from '../permissions/modules/validate-collection-active/validate-collection-active.js';
+import { assertCollectionActive } from '../permissions/modules/assert-collection-active/assert-collection-active.js';
 import collectionActive from './collection-active.js';
 import '../types/express.d.ts';
 
@@ -11,7 +11,7 @@ vi.mock('../database/index.js', () => ({
 	default: vi.fn().mockReturnValue('knex'),
 }));
 
-vi.mock('../permissions/modules/validate-collection-active/validate-collection-active.js');
+vi.mock('../permissions/modules/assert-collection-active/assert-collection-active.js');
 
 let mockRequest: Partial<Request>;
 let mockResponse: Partial<Response>;
@@ -40,7 +40,7 @@ describe('pass-through', () => {
 	test('Calls next without checking when no collection param is present', async () => {
 		await collectionActive()(mockRequest as Request, mockResponse as Response, nextFunction);
 
-		expect(validateCollectionActive).not.toHaveBeenCalled();
+		expect(assertCollectionActive).not.toHaveBeenCalled();
 		expect(nextFunction).toHaveBeenCalledTimes(1);
 		expect(forwardedError()).toBeUndefined();
 	});
@@ -50,7 +50,7 @@ describe('pass-through', () => {
 
 		await collectionActive()(mockRequest as Request, mockResponse as Response, nextFunction);
 
-		expect(validateCollectionActive).not.toHaveBeenCalled();
+		expect(assertCollectionActive).not.toHaveBeenCalled();
 		expect(nextFunction).toHaveBeenCalledTimes(1);
 		expect(forwardedError()).toBeUndefined();
 	});
@@ -82,7 +82,7 @@ describe('check', () => {
 
 		await collectionActive()(mockRequest as Request, mockResponse as Response, nextFunction);
 
-		expect(validateCollectionActive).toHaveBeenCalledWith(
+		expect(assertCollectionActive).toHaveBeenCalledWith(
 			{ accountability, collection: 'archive', action },
 			{ schema: mockRequest.schema, knex: 'knex' },
 		);
@@ -97,7 +97,7 @@ describe('check', () => {
 
 		await collectionActive(action as PermissionsAction)(mockRequest as Request, mockResponse as Response, nextFunction);
 
-		expect(validateCollectionActive).toHaveBeenCalledWith(
+		expect(assertCollectionActive).toHaveBeenCalledWith(
 			{ accountability, collection: 'archive', action },
 			{ schema: mockRequest.schema, knex: 'knex' },
 		);
@@ -106,7 +106,7 @@ describe('check', () => {
 	test('Checks an unauthenticated request as the public role', async () => {
 		await collectionActive()(mockRequest as Request, mockResponse as Response, nextFunction);
 
-		expect(validateCollectionActive).toHaveBeenCalledWith(
+		expect(assertCollectionActive).toHaveBeenCalledWith(
 			expect.objectContaining({
 				accountability: expect.objectContaining({ user: null, role: null, admin: false, app: false }),
 			}),
@@ -116,7 +116,7 @@ describe('check', () => {
 
 	test('Forwards the error when the check fails', async () => {
 		const error = new CollectionInactiveError({ collection: 'archive' });
-		vi.mocked(validateCollectionActive).mockRejectedValue(error);
+		vi.mocked(assertCollectionActive).mockRejectedValue(error);
 
 		await collectionActive()(mockRequest as Request, mockResponse as Response, nextFunction);
 

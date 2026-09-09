@@ -5,7 +5,7 @@ import type { Context } from '../../types.js';
 import { createCollectionForbiddenError } from '../process-ast/utils/validate-path/create-error.js';
 import { validateCollectionAccess } from '../validate-access/lib/validate-collection-access.js';
 
-export interface ValidateCollectionActiveOptions {
+export interface AssertCollectionActiveOptions {
 	accountability: Accountability | null;
 	action: PermissionsAction;
 	collection: string;
@@ -14,10 +14,7 @@ export interface ValidateCollectionActiveOptions {
 /**
  * Check whether the given collection is active, and throw if it isn't.
  */
-export async function validateCollectionActive(
-	options: ValidateCollectionActiveOptions,
-	context: Context,
-): Promise<void> {
+export async function assertCollectionActive(options: AssertCollectionActiveOptions, context: Context): Promise<void> {
 	const { accountability, collection, action } = options;
 
 	const collectionOverview = context.schema.collections[collection];

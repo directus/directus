@@ -3,7 +3,7 @@ import { type Bus } from '@directus/memory';
 import { useBus } from '../../bus/index.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import { validateCollectionActive } from '../../permissions/modules/validate-collection-active/validate-collection-active.js';
+import { assertCollectionActive } from '../../permissions/modules/assert-collection-active/assert-collection-active.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
@@ -128,7 +128,7 @@ export class SubscribeHandler {
 			}
 
 			try {
-				await validateCollectionActive(
+				await assertCollectionActive(
 					{
 						accountability: client.accountability ?? createDefaultAccountability(),
 						collection: event.collection,
@@ -167,7 +167,7 @@ export class SubscribeHandler {
 					);
 				}
 
-				await validateCollectionActive(
+				await assertCollectionActive(
 					{
 						accountability: accountability ?? createDefaultAccountability(),
 						collection,
