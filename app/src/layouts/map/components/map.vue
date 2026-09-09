@@ -76,13 +76,13 @@ const navigationControl = new NavigationControl({
 
 const geolocateControl = new GeolocateControl({});
 
-const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', () => {
+const fitDataControl = new ButtonControl('maplibregl-ctrl-fitdata', () => {
 	emit('fitdata');
 });
 
 const boxSelectControl = new BoxSelectControl({
 	boxElementClass: 'map-selection-box',
-	selectButtonClass: 'mapboxgl-ctrl-select',
+	selectButtonClass: 'maplibregl-ctrl-select',
 	layers: ['__directus_polygons', '__directus_points', '__directus_lines'],
 });
 
@@ -90,7 +90,7 @@ let geocoderControl: MapboxGeocoder | undefined;
 
 if (mapboxKey) {
 	const marker = document.createElement('div');
-	marker.className = 'mapboxgl-user-location-dot mapboxgl-search-location-dot';
+	marker.className = 'maplibregl-user-location-dot maplibregl-search-location-dot';
 
 	geocoderControl = new MapboxGeocoder({
 		accessToken: mapboxKey,
@@ -358,11 +358,11 @@ function hoverCluster(event: MapLayerMouseEvent) {
 </template>
 
 <style lang="scss" scoped>
-#map-container.hover :deep(.mapboxgl-canvas-container) {
+#map-container.hover :deep(.maplibregl-canvas-container) {
 	cursor: pointer !important;
 }
 
-#map-container.select :deep(.mapboxgl-canvas-container) {
+#map-container.select :deep(.maplibregl-canvas-container) {
 	cursor: crosshair !important;
 }
 

@@ -38,6 +38,23 @@ import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
+/*
+ * MapboxDraw builds its container elements with Mapbox GL's class names, which maplibre dropped in
+ * v3, so without this the draw controls render unstyled and detached from the native control stack.
+ * Only the container/canvas classes move; the per-button `mapbox-gl-draw_*` classes are draw's own
+ * and are styled directly in `styles/lib/_mapbox.scss`.
+ *
+ * The cast is needed because @types/mapbox__mapbox-gl-draw pins these as readonly string literals.
+ * Assigning before the first `new MapboxDraw()` below is what makes it take effect.
+ */
+Object.assign(MapboxDraw.constants.classes as Record<string, string>, {
+	CANVAS: 'maplibregl-canvas',
+	CONTROL_BASE: 'maplibregl-ctrl',
+	CONTROL_PREFIX: 'maplibregl-ctrl-',
+	CONTROL_GROUP: 'maplibregl-ctrl-group',
+	ATTRIBUTION: 'maplibregl-ctrl-attrib',
+});
+
 const activeLayers = [
 	'directus-point',
 	'directus-line',
@@ -117,7 +134,7 @@ watch(location, updateProjection);
 const controls = {
 	attribution: new AttributionControl(),
 	draw: new MapboxDraw(getDrawOptions(geometryType)),
-	fitData: new ButtonControl('mapboxgl-ctrl-fitdata', fitDataBounds),
+	fitData: new ButtonControl('maplibregl-ctrl-fitdata', fitDataBounds),
 	navigation: new NavigationControl({
 		showCompass: false,
 	}),
@@ -463,7 +480,7 @@ function handleKeyDown(event: any) {
 		</div>
 		<div
 			v-if="location"
-			class="mapboxgl-user-location-dot mapboxgl-search-location-dot"
+			class="maplibregl-user-location-dot maplibregl-search-location-dot"
 			:style="`transform: translate(${projection!.x}px, ${
 				projection!.y
 			}px) translate(-50%, -50%) rotateX(0deg) rotateZ(0deg)`"
@@ -477,7 +494,7 @@ function handleKeyDown(event: any) {
 				{{ tooltipMessage }}
 			</div>
 		</Transition>
-		<div v-if="!nonEditable" class="mapboxgl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-dropdown basemap-select">
+		<div v-if="!nonEditable" class="maplibregl-ctrl-group maplibregl-ctrl maplibregl-ctrl-dropdown basemap-select">
 			<VIcon name="map" />
 			<VSelect v-model="basemap" inline :disabled :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
 		</div>
@@ -598,7 +615,7 @@ function handleKeyDown(event: any) {
 		background-color: var(--theme--background-normal);
 	}
 
-	.mapboxgl-search-location-dot {
+	.maplibregl-search-location-dot {
 		position: absolute;
 		inset-block-start: 0;
 		inset-inline-start: 0;

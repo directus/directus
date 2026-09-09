@@ -29,7 +29,7 @@ export class ButtonControl {
 
 	onAdd(): HTMLElement {
 		this.groupElement = document.createElement('div');
-		this.groupElement.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
+		this.groupElement.className = 'maplibregl-ctrl maplibregl-ctrl-group';
 		this.groupElement.appendChild(this.element);
 		return this.groupElement;
 	}
@@ -72,7 +72,7 @@ export class BoxSelectControl {
 		this.boxElement = document.createElement('div');
 		this.boxElement.className = options?.boxElementClass ?? 'selection-box';
 		this.groupElement = document.createElement('div');
-		this.groupElement.className = options?.groupElementClass ?? 'mapboxgl-ctrl mapboxgl-ctrl-group';
+		this.groupElement.className = options?.groupElementClass ?? 'maplibregl-ctrl maplibregl-ctrl-group';
 
 		this.selectButton = new ButtonControl(options?.selectButtonClass ?? 'ctrl-select', () => {
 			this.activate(!this.shiftPressed);
