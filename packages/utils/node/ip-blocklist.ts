@@ -49,6 +49,15 @@ export class IpBlocklist extends BlockList {
 		const isZero = (start: number, end: number) => bytes.slice(start, end).every((byte) => byte === 0);
 		const candidates: string[] = [];
 
+		// IPv4-mapped ::ffff:0:0/96. Node's BlockList only recognises the canonical
+		// `::ffff:a.b.c.d` spelling; `::a.b.c.d` is a different string that it does not
+		// map, yet ipaddr.js parses both to these same bytes. Without this branch the
+		// dotted spelling reaches neither check: `isZero(0, 12)` is false because of the
+		// `ffff`, so the IPv4-compatible branch below skips it too.
+		if (isZero(0, 10) && bytes[10] === 0xff && bytes[11] === 0xff && bytes[12] !== 0) {
+			candidates.push(toV4(bytes.slice(12, 16)));
+		}
+
 		// IPv4-compatible ::/96 (deprecated, RFC 4291): ::a.b.c.d. Excludes ::, ::1 and
 		// other ::0.0.0.0/8 forms, which are not routable embedded IPv4 targets.
 		if (isZero(0, 12) && bytes[12] !== 0) candidates.push(toV4(bytes.slice(12, 16)));

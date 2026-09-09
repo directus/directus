@@ -50,6 +50,16 @@ describe('IpBlocklist', () => {
 			expect(blocklist.checkAddress('2002:a9fe:a9fe:abcd:1:2:3:4')).toBe(true);
 		});
 
+		test('blocks a denied IPv4 written as ::a.b.c.d, not just ::a9fe:a9fe', () => {
+			blocklist.parseAddress('169.254.169.254');
+
+			// Same address, two spellings. ipaddr.js parses the dotted form to the
+			// IPv4-mapped bytes (::ffff:a9fe:a9fe) while Node's BlockList only maps the
+			// literal "::ffff:" spelling, so the dotted one used to reach neither check.
+			expect(blocklist.checkAddress('::a9fe:a9fe')).toBe(true);
+			expect(blocklist.checkAddress('::169.254.169.254')).toBe(true);
+		});
+
 		test('blocks transition forms of a denied IPv4 subnet', () => {
 			blocklist.parseSubnet('10.0.0.0/8');
 
