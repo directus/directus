@@ -118,17 +118,17 @@ beforeEach(async () => {
 
 	router = generateRouter([
 		{
-			path: '/settings/flows',
+			path: '/flows',
 			component: { template: '<div>Flows Overview</div>' },
 		},
 		{
-			name: 'settings-flows-item',
-			path: '/settings/flows/:primaryKey',
+			name: 'flows-item',
+			path: '/flows/:primaryKey',
 			component: { template: '<div>Flow Detail</div>' },
 		},
 	]);
 
-	router.push('/settings/flows');
+	router.push('/flows');
 	await router.isReady();
 
 	// Get the mocked router and update it to use our test router
@@ -147,13 +147,9 @@ beforeEach(async () => {
 				props: ['icon', 'label', 'variant'],
 				template: '<button :data-icon="icon" :data-variant="variant">{{ label }}</button>',
 			},
-			'flow-folder-sidebar': {
-				props: ['actionsDisabled'],
-				template: '<div :data-actions-disabled="actionsDisabled"><slot /></div>',
-			},
+			'flows-navigation': true,
 			'v-button': true,
 			'v-icon': true,
-			'settings-navigation': true,
 			'sidebar-detail': true,
 			'v-info': true,
 			'v-table': true,
@@ -210,7 +206,7 @@ describe('FlowsOverview - navigateToFlow', () => {
 		const vm = wrapper.vm as any;
 		vm.navigateToFlow({ item: mockFlow, event: mockEvent });
 
-		expect(routerPushSpy).toHaveBeenCalledWith({ name: 'settings-flows-item', params: { primaryKey: 'flow-1' } });
+		expect(routerPushSpy).toHaveBeenCalledWith({ name: 'flows-item', params: { primaryKey: 'flow-1' } });
 		expect(windowOpenSpy).not.toHaveBeenCalled();
 	});
 
@@ -237,7 +233,7 @@ describe('FlowsOverview - navigateToFlow', () => {
 		const vm = wrapper.vm as any;
 		vm.navigateToFlow({ item: mockFlow, event: mockEvent });
 
-		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/settings/flows/flow-1'), '_blank');
+		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/flows/flow-1'), '_blank');
 
 		expect(routerPushSpy).not.toHaveBeenCalled();
 	});
@@ -265,7 +261,7 @@ describe('FlowsOverview - navigateToFlow', () => {
 		const vm = wrapper.vm as any;
 		vm.navigateToFlow({ item: mockFlow, event: mockEvent });
 
-		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/settings/flows/flow-1'), '_blank');
+		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/flows/flow-1'), '_blank');
 
 		expect(routerPushSpy).not.toHaveBeenCalled();
 	});
@@ -293,7 +289,7 @@ describe('FlowsOverview - navigateToFlow', () => {
 		const vm = wrapper.vm as any;
 		vm.navigateToFlow({ item: mockFlow, event: mockEvent });
 
-		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/settings/flows/flow-1'), '_blank');
+		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/flows/flow-1'), '_blank');
 
 		expect(routerPushSpy).not.toHaveBeenCalled();
 	});
@@ -390,22 +386,6 @@ describe('FlowsOverview - folder permissions', () => {
 		const wrapper = mount(FlowsOverview, { global });
 
 		expect(wrapper.find('add-folder-stub').attributes('disabled')).toBe('false');
-	});
-
-	test('folder context actions stay enabled with only update or only delete on directus_folders', async () => {
-		permissionsByCollection['directus_folders'] = { create: false, delete: false };
-
-		const wrapper = mount(FlowsOverview, { global });
-
-		expect(wrapper.find('[data-actions-disabled]').attributes('data-actions-disabled')).toBe('false');
-	});
-
-	test('folder context actions are disabled without update or delete on directus_folders', async () => {
-		permissionsByCollection['directus_folders'] = { update: false, delete: false };
-
-		const wrapper = mount(FlowsOverview, { global });
-
-		expect(wrapper.find('[data-actions-disabled]').attributes('data-actions-disabled')).toBe('true');
 	});
 });
 

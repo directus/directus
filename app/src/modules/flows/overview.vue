@@ -6,9 +6,8 @@ import { isObject, sortBy } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterView } from 'vue-router';
-import SettingsNavigation from '../../components/navigation.vue';
+import FlowsNavigation from './components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
-import FlowFolderSidebar from './flow-folder-sidebar.vue';
 import { createFlowExport, createFlowImport, FlowImportError, parseFlowExport } from './flow-import-export';
 import { useDuplicate } from './use-duplicate';
 import api from '@/api';
@@ -62,11 +61,7 @@ const props = defineProps<{
 const { createAllowed } = useCollectionPermissions('directus_flows');
 const { createAllowed: operationsCreateAllowed } = useCollectionPermissions('directus_operations');
 
-const {
-	createAllowed: createFolderAllowed,
-	updateAllowed: updateFolderAllowed,
-	deleteAllowed: deleteFolderAllowed,
-} = useCollectionPermissions('directus_folders');
+const { createAllowed: createFolderAllowed } = useCollectionPermissions('directus_folders');
 
 const licenseStore = useLicenseStore();
 
@@ -154,6 +149,8 @@ const relationsStore = useRelationsStore();
 
 const foldersById = computed(() => new Map((folders.value ?? []).map((folder) => [folder.id, folder])));
 
+const title = computed(() => (props.folder ? foldersById.value.get(props.folder)?.name : undefined) ?? t('flows'));
+
 // Relations we can resolve client-side, so can filter on: whitelists the field and hydrates its foreign key.
 const FILTERABLE_RELATIONS: Record<string, (flow: FlowRaw) => Item | null> = {
 	folder: (flow) => (flow.folder ? (foldersById.value.get(flow.folder) ?? null) : null),
@@ -220,9 +217,9 @@ const flows = computed(() => {
 
 function navigateToFolder(folderId: string | null) {
 	if (folderId) {
-		router.push({ name: 'settings-flows-folder', params: { folder: folderId } });
+		router.push({ name: 'flows-folder', params: { folder: folderId } });
 	} else {
-		router.push({ name: 'settings-flows-collection' });
+		router.push({ name: 'flows-collection' });
 	}
 }
 
@@ -355,7 +352,7 @@ function applyMoveToFolder() {
 }
 
 function navigateToFlow({ item: flow, event }: { item: FlowRaw; event: MouseEvent }) {
-	const route = { name: 'settings-flows-item', params: { primaryKey: flow.id } };
+	const route = { name: 'flows-item', params: { primaryKey: flow.id } };
 
 	if (event.ctrlKey || event.metaKey || event.button === 1) {
 		window.open(router.resolve(route).href, '_blank');
@@ -401,7 +398,7 @@ async function toggleFlowStatusById(id: string, value: string) {
 
 function onFlowDrawerCompletion(id: string) {
 	if (editFlow.value === '+') {
-		router.push({ name: 'settings-flows-item', params: { primaryKey: id } });
+		router.push({ name: 'flows-item', params: { primaryKey: id } });
 	}
 
 	editFlow.value = undefined;
@@ -409,9 +406,9 @@ function onFlowDrawerCompletion(id: string) {
 </script>
 
 <template>
-	<PrivateView :title="$t('flows')" icon="bolt">
+	<PrivateView :title="title" icon="bolt">
 		<template #navigation>
-			<SettingsNavigation />
+			<FlowsNavigation :current-folder="folder" @deleted="onFolderDeleted" />
 		</template>
 
 		<template #actions>
@@ -452,117 +449,108 @@ function onFlowDrawerCompletion(id: string) {
 			/>
 		</template>
 
-		<FlowFolderSidebar
-			:current-folder="folder"
-			:actions-disabled="!updateFolderAllowed && !deleteFolderAllowed"
-			:update-disabled="!updateFolderAllowed"
-			:delete-disabled="!deleteFolderAllowed"
-			@navigate="navigateToFolder"
-			@deleted="onFolderDeleted"
-		>
-			<VInfo v-if="flows.length === 0 && !hasQuery" icon="bolt" :title="$t('no_flows')" center>
-				{{ $t('no_flows_copy') }}
+		<VInfo v-if="flows.length === 0 && !hasQuery" icon="bolt" :title="$t('no_flows')" center>
+			{{ $t('no_flows_copy') }}
 
-				<template v-if="createAllowed" #append>
-					<VButton @click="openCreateFlow">{{ $t('create_flow') }}</VButton>
+			<template v-if="createAllowed" #append>
+				<VButton @click="openCreateFlow">{{ $t('create_flow') }}</VButton>
+			</template>
+		</VInfo>
+
+		<VInfo v-else-if="flows.length === 0" icon="search" :title="$t('no_results')" center>
+			{{ $t('no_results_copy') }}
+
+			<template #append>
+				<VButton @click="clearFilters">{{ $t('clear_filters') }}</VButton>
+			</template>
+		</VInfo>
+
+		<div v-else class="padding-box">
+			<MaxCapacityAlert v-if="!licenseStore.limits.flows.hasRemaining" entitlement-key="flows" />
+
+			<VTable
+				v-model:headers="tableHeaders"
+				v-model="selectedKeys"
+				:items="flows"
+				:sort="internalSort"
+				show-select="multiple"
+				selection-use-keys
+				show-resize
+				fixed-header
+				@click:row="navigateToFlow"
+				@update:sort="updateSort($event)"
+			>
+				<template #[`item.icon`]="{ item }">
+					<VIcon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--theme--primary)'" />
 				</template>
-			</VInfo>
 
-			<VInfo v-else-if="flows.length === 0" icon="search" :title="$t('no_results')" center>
-				{{ $t('no_results_copy') }}
-
-				<template #append>
-					<VButton @click="clearFilters">{{ $t('clear_filters') }}</VButton>
+				<template #[`item.status`]="{ item }">
+					<DisplayFormattedValue
+						type="string"
+						:item="item"
+						:value="item.status"
+						:conditional-formatting="conditionalFormatting"
+					/>
 				</template>
-			</VInfo>
 
-			<div v-else class="padding-box">
-				<MaxCapacityAlert v-if="!licenseStore.limits.flows.hasRemaining" entitlement-key="flows" />
+				<template #item-append="{ item }">
+					<VMenu placement="left-start" show-arrow>
+						<template #activator="{ toggle }">
+							<VIcon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
+						</template>
 
-				<VTable
-					v-model:headers="tableHeaders"
-					v-model="selectedKeys"
-					:items="flows"
-					:sort="internalSort"
-					show-select="multiple"
-					selection-use-keys
-					show-resize
-					fixed-header
-					@click:row="navigateToFlow"
-					@update:sort="updateSort($event)"
-				>
-					<template #[`item.icon`]="{ item }">
-						<VIcon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--theme--primary)'" />
-					</template>
+						<VList>
+							<VListItem clickable @click="toggleFlowStatusById(item.id, item.status)">
+								<template v-if="item.status === 'active'">
+									<VListItemIcon><VIcon name="block" /></VListItemIcon>
+									<VListItemContent>{{ $t('set_flow_inactive') }}</VListItemContent>
+								</template>
+								<template v-else>
+									<VListItemIcon><VIcon name="check" /></VListItemIcon>
+									<VListItemContent>{{ $t('set_flow_active') }}</VListItemContent>
+								</template>
+							</VListItem>
 
-					<template #[`item.status`]="{ item }">
-						<DisplayFormattedValue
-							type="string"
-							:item="item"
-							:value="item.status"
-							:conditional-formatting="conditionalFormatting"
-						/>
-					</template>
+							<VListItem clickable @click="editFlow = item.id">
+								<VListItemIcon>
+									<VIcon name="edit" outline />
+								</VListItemIcon>
+								<VListItemContent>
+									{{ $t('edit_flow') }}
+								</VListItemContent>
+							</VListItem>
 
-					<template #item-append="{ item }">
-						<VMenu placement="left-start" show-arrow>
-							<template #activator="{ toggle }">
-								<VIcon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
-							</template>
+							<VListItem :disabled="!duplicateAllowed" clickable @click="openDuplicateFlow(item)">
+								<VListItemIcon>
+									<VIcon name="content_copy" />
+								</VListItemIcon>
+								<VListItemContent>
+									{{ $t('duplicate_flow') }}
+								</VListItemContent>
+							</VListItem>
 
-							<VList>
-								<VListItem clickable @click="toggleFlowStatusById(item.id, item.status)">
-									<template v-if="item.status === 'active'">
-										<VListItemIcon><VIcon name="block" /></VListItemIcon>
-										<VListItemContent>{{ $t('set_flow_inactive') }}</VListItemContent>
-									</template>
-									<template v-else>
-										<VListItemIcon><VIcon name="check" /></VListItemIcon>
-										<VListItemContent>{{ $t('set_flow_active') }}</VListItemContent>
-									</template>
-								</VListItem>
+							<VListItem clickable @click="exportFlow(item)">
+								<VListItemIcon>
+									<VIcon name="file_download" />
+								</VListItemIcon>
+								<VListItemContent>
+									{{ $t('export_flow') }}
+								</VListItemContent>
+							</VListItem>
 
-								<VListItem clickable @click="editFlow = item.id">
-									<VListItemIcon>
-										<VIcon name="edit" outline />
-									</VListItemIcon>
-									<VListItemContent>
-										{{ $t('edit_flow') }}
-									</VListItemContent>
-								</VListItem>
-
-								<VListItem :disabled="!duplicateAllowed" clickable @click="openDuplicateFlow(item)">
-									<VListItemIcon>
-										<VIcon name="content_copy" />
-									</VListItemIcon>
-									<VListItemContent>
-										{{ $t('duplicate_flow') }}
-									</VListItemContent>
-								</VListItem>
-
-								<VListItem clickable @click="exportFlow(item)">
-									<VListItemIcon>
-										<VIcon name="file_download" />
-									</VListItemIcon>
-									<VListItemContent>
-										{{ $t('export_flow') }}
-									</VListItemContent>
-								</VListItem>
-
-								<VListItem class="danger" clickable @click="confirmDelete = item">
-									<VListItemIcon>
-										<VIcon name="delete" outline />
-									</VListItemIcon>
-									<VListItemContent>
-										{{ $t('delete_flow') }}
-									</VListItemContent>
-								</VListItem>
-							</VList>
-						</VMenu>
-					</template>
-				</VTable>
-			</div>
-		</FlowFolderSidebar>
+							<VListItem class="danger" clickable @click="confirmDelete = item">
+								<VListItemIcon>
+									<VIcon name="delete" outline />
+								</VListItemIcon>
+								<VListItemContent>
+									{{ $t('delete_flow') }}
+								</VListItemContent>
+							</VListItem>
+						</VList>
+					</VMenu>
+				</template>
+			</VTable>
+		</div>
 
 		<VDialog v-model="moveDialogActive" @esc="moveDialogActive = false" @apply="applyMoveToFolder">
 			<VCard>
