@@ -69,6 +69,17 @@ test('converting * with * permissions', async () => {
 	expect(result).toEqual(['id', 'title', 'date']);
 });
 
+test('converting *.* with * permissions merged in behind another policy', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce(['id', '*']);
+
+	const result = await convertWildcards(
+		{ collection: 'articles', fields: ['*.*'], alias: {}, accountability, backlink: true },
+		{ knex: db, schema },
+	);
+
+	expect(result).toEqual(['id', 'title', 'date']);
+});
+
 test('converting * with just id permissions', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce(['id']);
 

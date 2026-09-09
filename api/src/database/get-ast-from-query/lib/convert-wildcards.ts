@@ -45,7 +45,7 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 	if (!allowedFields || allowedFields.length === 0) return [];
 
 	// In case of full read permissions
-	if (allowedFields[0] === '*') allowedFields = fieldsInCollection;
+	if (allowedFields.includes('*')) allowedFields = fieldsInCollection;
 
 	allowedFields = allowedFields.filter((fieldKey) => {
 		const relation = getRelation(context.schema.relations, options.collection, fieldKey);
