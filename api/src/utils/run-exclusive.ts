@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { useEnv } from '@directus/env';
 import { useBus } from '../bus/index.js';
 import { useLogger } from '../logger/index.js';
 import { useStore } from './store.js';
@@ -25,9 +26,12 @@ export async function runExclusive<T>(
 	fn: () => Promise<T> | T,
 	options?: { timeout?: number; maxAttempts?: number },
 ) {
-	const channel = `directus:exclusive:${key}:bus`;
-	const timeout = options?.timeout ?? 500_000;
-	const maxAttempts = options?.maxAttempts ?? 3;
+	const env = useEnv();
+
+	const namespace = (env['REDIS_EXCLUSIVE_NAMESPACE'] as string) ?? 'directus:exclusive';
+	const busChannel = `${namespace}:${key}:bus`;
+	const timeout = options?.timeout ?? 300_000;
+	const maxAttempts = options?.maxAttempts ?? 1;
 
 	// Renew often enough to tolerate a missed heartbeat without letting
 	// a healthy lease expire during normal operation.
@@ -37,10 +41,10 @@ export async function runExclusive<T>(
 	const uid = randomUUID();
 	const bus = useBus();
 
-	const store = useStore<{ leader: string }>('directus:exclusive' + key, { ttl: 10000 });
+	const store = useStore<{ leader: string }>(`${namespace}:${key}`, { ttl });
 
 	// Subscribe before acquiring the lease so followers can't miss the result.
-	const { done, cancel } = await waitForBusMessage<Outcome<T>>(channel, { timeout });
+	const { done, cancel } = await waitForBusMessage<Outcome<T>>(busChannel, { timeout });
 
 	let isLeader: boolean;
 
@@ -88,7 +92,7 @@ export async function runExclusive<T>(
 			// Followers stopped waiting, so there is no one left to hand a result to and no point
 			// attempting again
 			if (Date.now() - startedAt > timeout) {
-				outcome = { ok: false, error: `timeout` };
+				outcome = { ok: false, error: 'timeout' };
 				break;
 			}
 
@@ -112,7 +116,7 @@ export async function runExclusive<T>(
 		}
 	}
 
-	await bus.publish(channel, outcome);
+	await bus.publish(busChannel, outcome);
 
 	if (!outcome.ok) {
 		throw new Error(outcome.error);

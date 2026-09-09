@@ -89,27 +89,20 @@ export class LicenseManager {
 		getEntitlementManager();
 
 		try {
-			await runExclusive(
-				'license-boot',
-				async () => {
-					const envKey = env['LICENSE_KEY'] as string | undefined;
-					const envToken = env['LICENSE_TOKEN'] as string | undefined;
+			await runExclusive('license-boot', async () => {
+				const envKey = env['LICENSE_KEY'] as string | undefined;
+				const envToken = env['LICENSE_TOKEN'] as string | undefined;
 
-					const settingsService = new SettingsService({ schema: await getSchema() });
+				const settingsService = new SettingsService({ schema: await getSchema() });
 
-					const { license_key: dbKey, license_token: dbToken } = await settingsService.readSingleton({
-						fields: ['license_key', 'license_token'],
-					});
+				const { license_key: dbKey, license_token: dbToken } = await settingsService.readSingleton({
+					fields: ['license_key', 'license_token'],
+				});
 
-					const action = computeBootAction({ envKey, envToken, dbKey, dbToken });
+				const action = computeBootAction({ envKey, envToken, dbKey, dbToken });
 
-					await this.executeBootAction(action);
-				},
-				{
-					// Activate and update are not idempotent, so a failed attempt is never retried
-					maxAttempts: 1,
-				},
-			);
+				await this.executeBootAction(action);
+			});
 		} finally {
 			this.initializing = false;
 		}
