@@ -8,7 +8,7 @@ import { createDefaultAccountability } from '../../permissions/utils/create-defa
 import { getSchema } from '../../utils/get-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { validateQuery } from '../../utils/validate-query.js';
-import { handleWebSocketError, WebSocketError } from '../errors.js';
+import { handleWebSocketError } from '../errors.js';
 import type { WebSocketEvent } from '../messages.js';
 import { WebSocketSubscribeMessage } from '../messages.js';
 import type { Subscription, SubscriptionEvent, WebSocketClient } from '../types.js';
@@ -148,15 +148,6 @@ export class SubscribeHandler {
 				const accountability = client.accountability;
 				const schema = await getSchema();
 
-				if (!accountability?.admin && !schema.collections[collection]) {
-					throw new WebSocketError(
-						'subscribe',
-						'INVALID_COLLECTION',
-						'The provided collection does not exists or is not accessible.',
-						message.uid,
-					);
-				}
-
 				await assertCollectionActive(
 					{
 						accountability: accountability ?? createDefaultAccountability(),
@@ -197,7 +188,7 @@ export class SubscribeHandler {
 				// send an initial response
 				client.send(fmtMessage('subscription', data, subscription.uid));
 			} catch (err) {
-				handleWebSocketError(client, err, 'subscribe');
+				handleWebSocketError(client, err, 'subscribe', message.uid);
 			}
 		}
 
@@ -207,7 +198,7 @@ export class SubscribeHandler {
 
 				client.send(fmtMessage('subscription', { event: 'unsubscribe' }, message.uid));
 			} catch (err) {
-				handleWebSocketError(client, err, 'unsubscribe');
+				handleWebSocketError(client, err, 'unsubscribe', message.uid);
 			}
 		}
 	}
