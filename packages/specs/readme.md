@@ -30,15 +30,22 @@ src/
   does - e.g. a `POST` that only reads and archives existing items shouldn't be gated on `create` access. Defaults to
   the action implied by the HTTP method (`post` → `create`, `get` → `read`, `patch` → `update`, `delete` → `delete`);
   only set this when that default is wrong for the specific operation.
-- `x-authentication`: `admin` | `user` on a tag; `admin` | `user` | `self` on an operation. On a tag, restricts the
-  system collection (and its paths) to being included in the generated spec only when the requesting accountability
-  meets that level. On an operation, gates that specific operation the same way, for the (uncommon) case where its
-  authorization check is enforced in the service layer independent of collection RBAC. `admin` and `self` are a full
-  bypass; only `accountability.admin`/`accountability.user` matters (e.g. `POST /collections`, `GET /users/me`). `user`
-  requires `accountability.user` in addition to the caller's own RBAC permission, since the hardcoded check some
-  services add on top of RBAC (e.g. `CommentsService`) doesn't replace it. An operation-level `x-authentication` also
-  keeps the dynamic generator's public-access stamp (see Security below) from ever applying to that operation,
-  regardless of what the public role's own permissions say.
+- `x-authentication`: an auth level the requester must meet. On a **tag** (`admin` | `user`), the system collection and
+  all its paths appear in the generated spec only for requesters at that level. On an **operation** (`none` | `self` |
+  `admin` | `user`), only that one operation is gated, for when the service layer enforces an auth check independent of
+  collection RBAC:
+  - `none`: the operation runs with no accountability at all (e.g. `POST /users/register`); the generator stamps
+    `security: []`.
+  - `self`: full RBAC bypass, gated only on `accountability.user`. Used for the current-user endpoints (`/users/me`,
+    `/permissions/me`), which have no collection + action pair to key off, so it is set per-operation.
+  - `admin` | `user`: `admin` bypasses RBAC, gated on `accountability.admin`; `user` requires `accountability.user`
+    **and** the caller's own RBAC permission, since the service check is additive to RBAC. The generator derives these
+    from `HARDCODED_AUTH_REQUIREMENTS` (`@directus/system-data`), keyed by collection + action; set it on an operation
+    only when no table row matches.
+
+  An `admin`/`user`/`self` requirement, derived or explicit, also stops the generator's public-access stamp (see
+  [Security](#security)) from applying to that operation.
+
 - `x-collection`: links a tag (and its associated schema component) to the system collection it documents (e.g.
   `directus_presets`). Used to resolve permissions/field-filtering per collection at generation time.
 - `x-schemas`: extra `components.schemas` names a tag's operations `$ref` but that aren't picked up automatically (only
@@ -57,13 +64,10 @@ operation's actual requirement differs from that default. The cases where it dif
 - **Always public, no auth accepted or required (`x-authentication: none`)**: required for endpoints that run with no
   accountability at all (e.g. `/auth/login`, `/server/ping`, `/users/register/verify-email`) - the dynamic generator
   never overwrites this override with the public-access stamp, unlike the others below.
-- **Restricted to admin/user/self (`x-authentication`)**: `admin` | `user` | `self`. Set on a tag for system collections
-  that should only appear in the generated spec at all when the requester meets that authentication level, e.g.
-  `x-authentication: admin` on the `Schema` tag. Also settable on an individual operation whose authorization check is
-  hardcoded in the service layer independent of RBAC, e.g. `x-authentication: admin` on `POST /collections`,
-  `x-authentication: user` on `POST /comments`, `x-authentication: self` on `GET /users/me`. This gates whether the path
-  is included, not which security schemes it lists, and an operation-level override also stops the public-access stamp
-  below from ever applying to it.
+- **Restricted to admin/user/self (`x-authentication`)**: see the `x-authentication` reference above. `admin`/`user`
+  requirements come from `HARDCODED_AUTH_REQUIREMENTS`, tag-level `x-authentication` restricts a whole system collection
+  (e.g. the `Schema` tag), and `x-authentication: self` is set on the current-user endpoints. It controls whether an
+  operation is generated, not which `security` schemes it lists.
 - **Optionally authenticated, response may differ (`security: [{}, {Auth: []}, {KeyAuth: []}, {CookieAuth: []}]`)**: for
   endpoints the public role can reach but that return more/different data to an authenticated caller (e.g. a
   publicly-readable collection). Usually the dynamic generator stamps this onto generated operations via
