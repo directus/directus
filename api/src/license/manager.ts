@@ -111,6 +111,7 @@ export class LicenseManager {
 	/** Run a boot action */
 	private async executeBootAction(action: LicenseBootAction): Promise<void> {
 		if (action.kind === 'fatal') {
+			logger.fatal(action.message);
 			throw new Error(action.message);
 		}
 
