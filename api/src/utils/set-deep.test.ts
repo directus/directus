@@ -60,10 +60,6 @@ describe('setDeep', () => {
 		});
 
 		test('does not descend through the prototype of a plain intermediate node', () => {
-			// The GraphQL query parser writes intermediate nodes with lodash `merge`,
-			// which yields an ordinary Object.prototype-chained object rather than the
-			// null-prototype one setDeep creates for itself. Walking `__proto__` from
-			// there reaches the real Object.prototype.
 			const r = root();
 			setDeep(r, ['relation'], merge({}, { _alias: { child: 'nested' } }));
 

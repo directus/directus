@@ -24,13 +24,6 @@ export function setDeep(
 	for (let i = 0; i < segments.length - 1; i += 1) {
 		const key = segments[i]!;
 
-		// `Object.hasOwn` is what keeps the guarantee above true. A plain read of
-		// `node[key]` for a segment named `__proto__` returns the *inherited*
-		// prototype, which is an object, so the type check alone would reuse it and
-		// the rest of the walk would run on a shared prototype. That is unreachable
-		// only while every node on the path is null-prototype; a caller that hands us
-		// a node built with a plain `merge` — the GraphQL query parser does — breaks
-		// that assumption.
 		if (!Object.hasOwn(node, key) || typeof node[key] !== 'object' || node[key] === null) {
 			assignOwn(node, key, Object.create(null));
 		}
@@ -43,16 +36,7 @@ export function setDeep(
 	return root;
 }
 
-/**
- * Define `key` as an own data property of `obj`, bypassing any inherited setter.
- *
- * Plain assignment is not enough: on an object that still inherits from
- * `Object.prototype`, `obj['__proto__'] = x` invokes the inherited accessor and
- * *reparents* the object instead of creating an own key — so the write silently
- * lands somewhere other than where the path says, and the next read returns
- * `undefined`. `defineProperty` always creates the own key, matching what every
- * other segment name does.
- */
+/** Ensures that key's like `__proto__` will be properly set, `obj['__proto__'] = x` fails */
 function assignOwn(obj: Record<string, any>, key: string, value: unknown): void {
 	Object.defineProperty(obj, key, { value, writable: true, enumerable: true, configurable: true });
 }

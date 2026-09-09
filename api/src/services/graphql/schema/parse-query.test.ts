@@ -571,13 +571,6 @@ describe('prototype pollution containment', () => {
 	});
 
 	test('a __proto__ field alias does not write onto Object.prototype', async () => {
-		// relation { __proto__: nested { grandchild(limit: 999999) { id } } }
-		//
-		// The nested-alias handler writes `query.deep.relation` with a plain lodash
-		// `merge`, so that node is Object.prototype-chained rather than the
-		// null-prototype one setDeep builds for itself. The argument handler then
-		// writes the deeper path through it, and a `__proto__` segment in between
-		// used to hand setDeep the real Object.prototype to assign onto.
 		const selections = [
 			buildField('relation', {
 				children: [
