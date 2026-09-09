@@ -9,6 +9,8 @@ import VSelect from '@/components/v-select/v-select.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 
+import '@/utils/geometry/maplibre-worker';
+
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 const props = defineProps<{

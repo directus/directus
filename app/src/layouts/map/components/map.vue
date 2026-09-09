@@ -25,6 +25,8 @@ import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import { BoxSelectControl, ButtonControl, onCustomEvent } from '@/utils/geometry/controls';
 
+import '@/utils/geometry/maplibre-worker';
+
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
