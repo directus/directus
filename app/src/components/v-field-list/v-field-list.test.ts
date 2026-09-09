@@ -42,6 +42,15 @@ vi.mock('@/composables/use-field-tree', () => ({
 				collection: collectionName,
 				group: false,
 			},
+			{
+				field: 'inactive_rel',
+				key: 'inactive_rel',
+				type: 'alias',
+				name: 'Inactive Rel',
+				collection: collectionName,
+				group: false,
+				inactive: true,
+			},
 		];
 
 		return {
@@ -96,7 +105,7 @@ describe('v-field-list fieldFilter', () => {
 			.findAllComponents(VFieldListItemStub)
 			.map((componentWrapper) => componentWrapper.props('field') as { field: string });
 
-		expect(renderedFields.map((field) => field.field)).toEqual(['id']);
+		expect(renderedFields.map((field) => field.field)).toEqual(['id', 'inactive_rel']);
 	});
 
 	test('keeps existing behavior when fieldFilter is omitted', () => {
@@ -106,6 +115,19 @@ describe('v-field-list fieldFilter', () => {
 			.findAllComponents(VFieldListItemStub)
 			.map((componentWrapper) => componentWrapper.props('field') as { field: string });
 
-		expect(renderedFields.map((field) => field.field)).toEqual(['id', '$thumbnail']);
+		expect(renderedFields.map((field) => field.field)).toEqual(['id', '$thumbnail', 'inactive_rel']);
+	});
+});
+
+describe('v-field-list inactive fields', () => {
+	test('disables fields belonging to or relating to an inactive collection', () => {
+		const wrapper = mountComponent();
+
+		const renderedFields = wrapper
+			.findAllComponents(VFieldListItemStub)
+			.map((componentWrapper) => componentWrapper.props('field') as { field: string; disabled: boolean });
+
+		expect(renderedFields.find((field) => field.field === 'inactive_rel')?.disabled).toBe(true);
+		expect(renderedFields.find((field) => field.field === 'id')?.disabled).toBe(false);
 	});
 });

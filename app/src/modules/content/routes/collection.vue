@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { translateShortcut, useCollection, useLayout, useShortcut } from '@directus/composables';
 import { isPublishedVersionKey, VERSION_KEY_DRAFT } from '@directus/constants';
+import { ErrorCode } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import { Filter, Preset } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
@@ -35,6 +36,8 @@ import { useVersionQuery } from '@/composables/use-version-query';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
+import { isCollectionInactive } from '@/utils/collection-status';
+import { extractErrorCode } from '@/utils/extract-error-code';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -396,6 +399,12 @@ function clearFilters() {
 	filter.value = null;
 	search.value = null;
 }
+
+function getInactiveCollection(error: any): string | null {
+	if (extractErrorCode(error) !== ErrorCode.CollectionInactive) return null;
+
+	return error?.response?.data?.errors?.[0]?.extensions?.collection ?? null;
+}
 </script>
 
 <template>
@@ -414,7 +423,7 @@ function clearFilters() {
 		:reset-preset="resetPreset"
 		:clear-filters="clearFilters"
 	>
-		<ContentNotFound v-if="!currentCollection || isSystemCollection(collection)" />
+		<ContentNotFound v-if="!currentCollection || isSystemCollection(collection) || isCollectionInactive(collection)" />
 
 		<PrivateView v-else :title="headerTitle" :icon="headerIcon" :icon-color="headerIconColor">
 			<template #title-outer:append>
@@ -629,7 +638,23 @@ function clearFilters() {
 				</template>
 
 				<template #error="{ error, reset }">
-					<VInfo type="danger" :title="$t('unexpected_error')" icon="error" center>
+					<VInfo
+						v-if="getInactiveCollection(error)"
+						type="warning"
+						:title="$t('errors.COLLECTION_INACTIVE')"
+						icon="block"
+						center
+					>
+						{{ $t('collection_inactive_copy', { collection: getInactiveCollection(error) }) }}
+
+						<template #append>
+							<VButton small class="reset-preset" @click="reset">
+								{{ $t('reset_page_preferences') }}
+							</VButton>
+						</template>
+					</VInfo>
+
+					<VInfo v-else type="danger" :title="$t('unexpected_error')" icon="error" center>
 						{{ $t('unexpected_error_copy') }}
 
 						<template #append>

@@ -17,6 +17,7 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { isCollectionInactive } from '@/utils/collection-status';
 import { formatItemsCountRelative } from '@/utils/format-items-count';
 import { getRootPath } from '@/utils/get-root-path';
 import { translate } from '@/utils/translate-literal';
@@ -135,6 +136,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			groupsPrimaryKeyField,
 			groupTitleFields,
 			groupsCollection,
+			groupCollectionInactive,
 			changeGroupSort,
 			getGroups,
 			addGroup,
@@ -298,6 +300,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			fieldGroups,
 			userField,
 			groupsCollection,
+			groupCollectionInactive,
 			addGroup,
 			editGroup,
 			deleteGroup,
@@ -483,7 +486,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function useGrouping() {
 			const isRelational = computed(() => !selectedGroup.value?.meta?.options?.choices);
 
-			const groupsCollection = computed(() => {
+			const relatedGroupCollection = computed(() => {
 				if (isRelational.value) {
 					const field = groupField.value;
 
@@ -500,6 +503,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 				return null;
 			});
+
+			const groupCollectionInactive = computed(() => isCollectionInactive(relatedGroupCollection.value));
+
+			/** Null is how useItems is told not to fetch, and an inactive collection can't be queried */
+			const groupsCollection = computed(() => (groupCollectionInactive.value ? null : relatedGroupCollection.value));
 
 			const {
 				fields: groupsCollectionFields,
@@ -591,6 +599,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				groupsPrimaryKeyField,
 				groupsSortField,
 				groupsCollection,
+				groupCollectionInactive,
 				getGroups,
 				addGroup,
 				editGroup,

@@ -708,6 +708,9 @@ catalogs:
     lru-cache:
       specifier: 11.2.2
       version: 11.2.2
+    mailtrap:
+      specifier: 4.9.0
+      version: 4.9.0
     maplibre-gl:
       specifier: 1.15.3
       version: 1.15.3
@@ -1119,7 +1122,7 @@ importers:
         version: link:../packages/format-title
       '@directus/license':
         specifier: 'catalog:'
-        version: 0.4.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 0.4.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1))
       '@directus/memory':
         specifier: workspace:*
         version: link:../packages/memory
@@ -1323,7 +1326,7 @@ importers:
         version: 5.5.3
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1))
       ldapts:
         specifier: 'catalog:'
         version: 8.1.3
@@ -1573,7 +1576,7 @@ importers:
         version: 7.1.0
       knex-mock-client:
         specifier: 'catalog:'
-        version: 3.0.2(knex@3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1))
+        version: 3.0.2(knex@3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1)))
       native-copyfiles:
         specifier: 'catalog:'
         version: 2.0.3
@@ -1590,6 +1593,9 @@ importers:
       braintrust:
         specifier: 'catalog:'
         version: 3.27.0(@aws-sdk/credential-provider-web-identity@3.972.75)(zod@4.1.12)
+      mailtrap:
+        specifier: 'catalog:'
+        version: 4.9.0(@types/nodemailer@8.0.1)(nodemailer@9.0.3)
       mysql2:
         specifier: 'catalog:'
         version: 3.15.3
@@ -1607,7 +1613,7 @@ importers:
         version: 6.0.1
       tedious:
         specifier: 'catalog:'
-        version: 18.6.1
+        version: 18.6.1(@azure/core-client@1.10.1)
 
   app:
     devDependencies:
@@ -1640,7 +1646,7 @@ importers:
         version: link:../packages/format-title
       '@directus/license':
         specifier: 'catalog:'
-        version: 0.4.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 0.4.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1))
       '@directus/sdk':
         specifier: workspace:*
         version: link:../sdk
@@ -2337,7 +2343,7 @@ importers:
         version: 3.2.6(vitest@3.2.7(@types/node@22.13.14)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1))
       pino:
         specifier: 'catalog:'
         version: 9.7.0
@@ -2630,7 +2636,7 @@ importers:
     dependencies:
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1))
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -3097,7 +3103,7 @@ importers:
         version: 1.0.5
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1))
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -3222,7 +3228,7 @@ importers:
         version: 3.2.6(vitest@3.2.7(@types/node@22.13.14)(happy-dom@20.10.6)(jiti@2.6.1)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.22.4)(yaml@2.9.0))
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1))
       tmp:
         specifier: 'catalog:'
         version: 0.2.7
@@ -3380,7 +3386,7 @@ importers:
         version: 2.3.0
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1))
       ldapts:
         specifier: 'catalog:'
         version: 8.1.3
@@ -3422,7 +3428,7 @@ importers:
     dependencies:
       '@directus/license':
         specifier: 'catalog:'
-        version: 0.4.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 0.4.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1))
       '@directus/mock-license-server':
         specifier: workspace:*
         version: link:../mock-license-server
@@ -3437,7 +3443,7 @@ importers:
         version: 4.1.0
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1))
       lodash-es:
         specifier: 'catalog:'
         version: 4.18.1
@@ -3474,7 +3480,7 @@ importers:
     dependencies:
       '@directus/license':
         specifier: 'catalog:'
-        version: 0.4.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 0.4.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1))
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 4.0.0
@@ -3540,7 +3546,7 @@ importers:
         version: 7.1.0
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1))
       lodash-es:
         specifier: 'catalog:'
         version: 4.18.1
@@ -3577,7 +3583,7 @@ importers:
         version: 6.0.1
       tedious:
         specifier: 'catalog:'
-        version: 18.6.1
+        version: 18.6.1(@azure/core-client@1.10.1)
 
 packages:
 
@@ -3788,10 +3794,6 @@ packages:
     resolution: {integrity: sha512-Nh5PhEOeY6PrnxNPsEHRr9eimxLwgLlpmguQaHKBinFYA/RU9+kOYVOQqOrTsCL+KSxrLLl1gD8Dk5BFW/7l/w==}
     engines: {node: '>=20.0.0'}
 
-  '@azure/core-http-compat@2.3.1':
-    resolution: {integrity: sha512-az9BkXND3/d5VgdRRQVkiJb2gOmDU8Qcq4GvjtBmDICNiQ9udFmDk4ZpSB5Qq1OmtDJGlQAfBaS4palFsazQ5g==}
-    engines: {node: '>=20.0.0'}
-
   '@azure/core-http-compat@2.5.0':
     resolution: {integrity: sha512-BoSmXPx2er1Ai+wKlDvj29jIQespCNBwEmKyZVHO2kEFsWbGjAjwMCGzug3DJM5/QYIV3vej0S1zcU5bq9fa8w==}
     engines: {node: '>=22.0.0'}
@@ -3806,10 +3808,6 @@ packages:
   '@azure/core-paging@1.6.2':
     resolution: {integrity: sha512-YKWi9YuCU04B55h25cnOYZHxXYtEvQEbKST5vqRga7hWY9ydd3FZHdeQF8pyh+acWZvppw13M/LMGx0LABUVMA==}
     engines: {node: '>=18.0.0'}
-
-  '@azure/core-rest-pipeline@1.22.1':
-    resolution: {integrity: sha512-UVZlVLfLyz6g3Hy7GNDpooMQonUygH7ghdiSASOOHy97fKj/mPLqgDX7aidOijn+sCMU+WU8NjlPlNTgnvbcGA==}
-    engines: {node: '>=20.0.0'}
 
   '@azure/core-rest-pipeline@1.25.0':
     resolution: {integrity: sha512-bMs8ekJLjX8wPV+9IPBges1SLPyuDtE9g5gLDWOpxzKcoOFQnpLGkbcT1tdw3FaAmDS1gnPmMmJ6y/T5B96kIA==}
@@ -6853,10 +6851,6 @@ packages:
     resolution: {integrity: sha512-dkKR8q+lKciskj1Y3vthHktl+3cMLWGyVUP23bRiPZ5O9BRT++4EqDDV+TVeIKBL1VXVEqrJlz8MYbcnvJcAlg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@typespec/ts-http-runtime@0.3.1':
-    resolution: {integrity: sha512-SnbaqayTVFEA6/tYumdF0UmybY0KHyKwGPBXnyckFlrrKdhWFrL3a2HIPXHjht5ZOElKGcXfD2D63P36btb+ww==}
-    engines: {node: '>=20.0.0'}
-
   '@typespec/ts-http-runtime@0.3.8':
     resolution: {integrity: sha512-bLMpVcWZNzq6lYOybwFwOAR1IXKcHnhUNqYeHjl1bET/qE3jFPFH+p8Wrh3rU4xwdnifPxmKNESBYnvnmc75aA==}
     engines: {node: '>=22.0.0'}
@@ -8428,6 +8422,7 @@ packages:
 
   deep-diff@1.0.2:
     resolution: {integrity: sha512-aWS3UIVH+NPGCD1kki+DCU9Dua032iSsO43LqQpcs4R3+dVv7tX0qBGjiVHJHjplsoUM2XRO/KB92glqc68awg==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   deep-eql@5.0.2:
     resolution: {integrity: sha512-h5k/5U50IJJFpzfL6nO9jaaumfjO/f2NjK/oYB2Djzm4p9L+3T9qWpZqZ2hAbLPuuYq9wrU08WQyBTL5GbPk5Q==}
@@ -10414,6 +10409,18 @@ packages:
   mailparser@3.9.14:
     resolution: {integrity: sha512-3QD6TRXcyXtq2NCuyA2AEjqmallQkyxYmZI9GMCIvQDCaB9Uc034WUI1x8RUBYFnk5+p7h14JEz4O/lrxQmttw==}
 
+  mailtrap@4.9.0:
+    resolution: {integrity: sha512-I21Q8DNt98xy5vExQVPWIoudp3DuhzsyPEvLKhp26lkLKoRlEUAwgswJcqSJtCD9MP1RC/E+gL9ER7UdJ4sE6g==}
+    engines: {node: '>=16.20.1', yarn: '>=1.22.17'}
+    peerDependencies:
+      '@types/nodemailer': ^6.4.9
+      nodemailer: ^9.0.1
+    peerDependenciesMeta:
+      '@types/nodemailer':
+        optional: true
+      nodemailer:
+        optional: true
+
   make-dir@4.0.0:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
@@ -11673,10 +11680,6 @@ packages:
     resolution: {integrity: sha512-1ca71Zgiu6ORjHqFBDpnSMTR2ReToX4l1Au1VFLyVeBTFavzQnv5JxMFr3ukHVKpSrSA2MCk0lNJSykjUfz7Zg==}
     engines: {node: '>=10.13.0'}
     hasBin: true
-
-  qs@6.15.2:
-    resolution: {integrity: sha512-Rzq0KEyX/w/tEybncDgdkZrJgVUsUMk3xjh3t5bv3S1HTAtg+uOYt72+ZfwiQwKdysThkTBdL/rTi6HDmX9Ddw==}
-    engines: {node: '>=0.6'}
 
   qs@6.15.3:
     resolution: {integrity: sha512-O9gl3zCl5h5blw1KGUzQKhA5oUXSl8rwUIM5o0S3nCXMliSvy5Dzx7/DJcI+SwgICv+IneSZwhBh1oSyEHA71A==}
@@ -13434,6 +13437,7 @@ packages:
   vue-i18n@11.1.12:
     resolution: {integrity: sha512-BnstPj3KLHLrsqbVU2UOrPmr0+Mv11bsUZG0PyCOzsawCivk8W00GMXHeVUWIDOgNaScCuZah47CZFE+Wnl8mw==}
     engines: {node: '>= 16'}
+    deprecated: This version is NOT deprecated. Previous deprecation was a mistake.
     peerDependencies:
       vue: ^3.0.0
 
@@ -14056,9 +14060,9 @@ snapshots:
     dependencies:
       '@azure/abort-controller': 2.1.2
       '@azure/core-auth': 1.10.1
-      '@azure/core-rest-pipeline': 1.22.1
+      '@azure/core-rest-pipeline': 1.25.0
       '@azure/core-tracing': 1.3.1
-      '@typespec/ts-http-runtime': 0.3.1
+      '@typespec/ts-http-runtime': 0.3.8
       tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
@@ -14080,19 +14084,11 @@ snapshots:
     dependencies:
       '@azure/abort-controller': 2.1.2
       '@azure/core-auth': 1.10.1
-      '@azure/core-rest-pipeline': 1.22.1
+      '@azure/core-rest-pipeline': 1.25.0
       '@azure/core-tracing': 1.3.1
       '@azure/core-util': 1.13.1
       '@azure/logger': 1.3.0
       tslib: 2.8.1
-    transitivePeerDependencies:
-      - supports-color
-
-  '@azure/core-http-compat@2.3.1':
-    dependencies:
-      '@azure/abort-controller': 2.1.2
-      '@azure/core-client': 1.10.1
-      '@azure/core-rest-pipeline': 1.22.1
     transitivePeerDependencies:
       - supports-color
 
@@ -14115,18 +14111,6 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@azure/core-rest-pipeline@1.22.1':
-    dependencies:
-      '@azure/abort-controller': 2.1.2
-      '@azure/core-auth': 1.10.1
-      '@azure/core-tracing': 1.3.1
-      '@azure/core-util': 1.13.1
-      '@azure/logger': 1.3.0
-      '@typespec/ts-http-runtime': 0.3.1
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - supports-color
-
   '@azure/core-rest-pipeline@1.25.0':
     dependencies:
       '@azure/abort-controller': 2.1.2
@@ -14146,7 +14130,7 @@ snapshots:
   '@azure/core-util@1.13.1':
     dependencies:
       '@azure/abort-controller': 2.1.2
-      '@typespec/ts-http-runtime': 0.3.1
+      '@typespec/ts-http-runtime': 0.3.8
       tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
@@ -14161,7 +14145,7 @@ snapshots:
       '@azure/abort-controller': 2.1.2
       '@azure/core-auth': 1.10.1
       '@azure/core-client': 1.10.1
-      '@azure/core-rest-pipeline': 1.22.1
+      '@azure/core-rest-pipeline': 1.25.0
       '@azure/core-tracing': 1.3.1
       '@azure/core-util': 1.13.1
       '@azure/logger': 1.3.0
@@ -14178,7 +14162,7 @@ snapshots:
       '@azure/abort-controller': 2.1.2
       '@azure/core-auth': 1.10.1
       '@azure/core-client': 1.10.1
-      '@azure/core-rest-pipeline': 1.22.1
+      '@azure/core-rest-pipeline': 1.25.0
       '@azure/core-tracing': 1.3.1
       '@azure/core-util': 1.13.1
       '@azure/logger': 1.3.0
@@ -14187,27 +14171,28 @@ snapshots:
       - supports-color
     optional: true
 
-  '@azure/keyvault-keys@4.10.0':
+  '@azure/keyvault-keys@4.10.0(@azure/core-client@1.10.1)':
     dependencies:
       '@azure-rest/core-client': 2.5.1
       '@azure/abort-controller': 2.1.2
       '@azure/core-auth': 1.10.1
-      '@azure/core-http-compat': 2.3.1
+      '@azure/core-http-compat': 2.5.0(@azure/core-client@1.10.1)(@azure/core-rest-pipeline@1.25.0)
       '@azure/core-lro': 2.7.2
       '@azure/core-paging': 1.6.2
-      '@azure/core-rest-pipeline': 1.22.1
+      '@azure/core-rest-pipeline': 1.25.0
       '@azure/core-tracing': 1.3.1
       '@azure/core-util': 1.13.1
       '@azure/keyvault-common': 2.0.0
       '@azure/logger': 1.3.0
       tslib: 2.8.1
     transitivePeerDependencies:
+      - '@azure/core-client'
       - supports-color
     optional: true
 
   '@azure/logger@1.3.0':
     dependencies:
-      '@typespec/ts-http-runtime': 0.3.1
+      '@typespec/ts-http-runtime': 0.3.8
       tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
@@ -14232,10 +14217,10 @@ snapshots:
       '@azure/abort-controller': 2.1.2
       '@azure/core-auth': 1.10.1
       '@azure/core-client': 1.10.1
-      '@azure/core-http-compat': 2.3.1
+      '@azure/core-http-compat': 2.5.0(@azure/core-client@1.10.1)(@azure/core-rest-pipeline@1.25.0)
       '@azure/core-lro': 2.7.2
       '@azure/core-paging': 1.6.2
-      '@azure/core-rest-pipeline': 1.22.1
+      '@azure/core-rest-pipeline': 1.25.0
       '@azure/core-tracing': 1.3.1
       '@azure/core-util': 1.13.1
       '@azure/core-xml': 1.5.0
@@ -14726,12 +14711,12 @@ snapshots:
       '@directus/storage': 12.0.4
       ms: 2.1.3
 
-  '@directus/license@0.4.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)':
+  '@directus/license@0.4.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1))':
     dependencies:
       '@directus/errors': 2.3.1
       '@directus/sdk': 21.3.0
       jose: 6.2.3
-      knex: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+      knex: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1))
       lodash-es: 4.18.1
       zod: 4.1.1
     transitivePeerDependencies:
@@ -17369,14 +17354,6 @@ snapshots:
       '@typescript-eslint/types': 8.66.0
       eslint-visitor-keys: 5.0.1
 
-  '@typespec/ts-http-runtime@0.3.1':
-    dependencies:
-      http-proxy-agent: 7.0.2
-      https-proxy-agent: 7.0.6
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - supports-color
-
   '@typespec/ts-http-runtime@0.3.8':
     dependencies:
       http-proxy-agent: 7.0.2
@@ -19308,7 +19285,7 @@ snapshots:
       eslint: 10.8.0(jiti@2.6.1)
       eslint-import-context: 0.1.9(unrs-resolver@1.12.2)
       is-glob: 4.0.3
-      minimatch: 9.0.9
+      minimatch: 10.2.6
       semver: 7.8.5
       stable-hash-x: 0.2.0
       unrs-resolver: 1.12.2
@@ -20820,12 +20797,12 @@ snapshots:
 
   kind-of@6.0.3: {}
 
-  knex-mock-client@3.0.2(knex@3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)):
+  knex-mock-client@3.0.2(knex@3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1))):
     dependencies:
-      knex: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+      knex: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1))
       lodash.clonedeep: 4.5.0
 
-  knex@3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1):
+  knex@3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1(@azure/core-client@1.10.1)):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -20845,7 +20822,7 @@ snapshots:
       mysql2: 3.15.3
       pg: 8.16.3
       sqlite3: 6.0.1
-      tedious: 18.6.1
+      tedious: 18.6.1(@azure/core-client@1.10.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -21130,6 +21107,18 @@ snapshots:
       nodemailer: 9.0.3
       punycode.js: 2.3.1
       tlds: 1.261.0
+
+  mailtrap@4.9.0(@types/nodemailer@8.0.1)(nodemailer@9.0.3):
+    dependencies:
+      axios: 1.18.1
+      qs: 6.15.3
+    optionalDependencies:
+      '@types/nodemailer': 8.0.1
+      nodemailer: 9.0.3
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+    optional: true
 
   make-dir@4.0.0:
     dependencies:
@@ -22573,10 +22562,6 @@ snapshots:
       pngjs: 5.0.0
       yargs: 15.4.1
 
-  qs@6.15.2:
-    dependencies:
-      side-channel: 1.1.1
-
   qs@6.15.3:
     dependencies:
       es-define-property: 1.0.1
@@ -23865,7 +23850,7 @@ snapshots:
       formidable: 3.5.4
       methods: 1.1.2
       mime: 2.6.0
-      qs: 6.15.2
+      qs: 6.15.3
     transitivePeerDependencies:
       - supports-color
 
@@ -23992,11 +23977,11 @@ snapshots:
     dependencies:
       bintrees: 1.0.2
 
-  tedious@18.6.1:
+  tedious@18.6.1(@azure/core-client@1.10.1):
     dependencies:
       '@azure/core-auth': 1.10.1
       '@azure/identity': 4.13.0
-      '@azure/keyvault-keys': 4.10.0
+      '@azure/keyvault-keys': 4.10.0(@azure/core-client@1.10.1)
       '@js-joda/core': 5.6.5
       '@types/node': 26.2.0
       bl: 6.1.4
@@ -24005,6 +23990,7 @@ snapshots:
       native-duplexpair: 1.0.0
       sprintf-js: 1.1.3
     transitivePeerDependencies:
+      - '@azure/core-client'
       - supports-color
     optional: true
 
