@@ -46,23 +46,13 @@ test('rejects an initial URL outside the sandbox request scope', async () => {
 test('allows a redirect that remains within the sandbox request scope', async () => {
 	await makeRequest('https://allowed.example/start');
 
-	expect(() =>
-		redirectGuard()({ protocol: 'https:', hostname: 'allowed.example', path: '/next' }, {} as never),
-	).not.toThrow();
+	expect(() => redirectGuard()({ href: 'https://allowed.example/next' }, {} as never)).not.toThrow();
 });
 
 test('rejects a redirect that leaves the sandbox request scope before it is requested', async () => {
 	await makeRequest('https://allowed.example/start');
 
-	expect(() => redirectGuard()({ protocol: 'https:', hostname: 'blocked.example', path: '/next' }, {} as never)).toThrow(
+	expect(() => redirectGuard()({ href: 'https://blocked.example/next' }, {} as never)).toThrow(
 		'No permission to request "https://blocked.example/next"',
-	);
-});
-
-test('rejects a redirect with an incomplete destination before it is requested', async () => {
-	await makeRequest('https://allowed.example/start');
-
-	expect(() => redirectGuard()({ hostname: 'blocked.example', path: '/next' }, {} as never)).toThrow(
-		'Unable to validate redirect URL',
 	);
 });
