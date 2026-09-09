@@ -5,8 +5,6 @@ type OptionalString = string | null | undefined;
 
 /**
  * Returns a collection from the schema and errors if it does not exist
- *
- * Do not use this util in the CollectionService
  */
 export function getCollectionFromSchema(
 	schema: SchemaOverview,
