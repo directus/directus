@@ -44,7 +44,8 @@ export function redactObject(
 		for (const key of Object.keys(object)) {
 			const localCheckPaths = [];
 
-			for (const path of [...checkKeyPaths]) {
+			for (let index = checkKeyPaths.length - 1; index >= 0; index--) {
+				const path = checkKeyPaths[index]!;
 				const [current, ...remaining] = path;
 
 				const escapedKey = wildcardChars.includes(key) ? `\\${key}` : key;
@@ -55,14 +56,14 @@ export function redactObject(
 							localCheckPaths.push(remaining);
 						} else {
 							object[key] = REDACTED_TEXT;
-							consume(checkKeyPaths, path);
+							checkKeyPaths.splice(index, 1);
 						}
 
 						break;
 					case '*':
 						if (remaining.length > 0) {
 							globalCheckPaths.push(remaining);
-							consume(checkKeyPaths, path);
+							checkKeyPaths.splice(index, 1);
 						} else {
 							object[key] = REDACTED_TEXT;
 						}
@@ -98,20 +99,6 @@ export function redactObject(
 			}
 		}
 	}
-}
-
-/**
- * Drop `path` from `checkKeyPaths`, by identity rather than by position.
- *
- * The caller iterates a copy of `checkKeyPaths` while removing entries from the
- * original, so an index taken from the copy stops matching the original as soon
- * as one entry has been removed. Removing by index there deletes whichever path
- * happens to sit at that position now — a still-unmatched one — and that path is
- * then never applied to any later key, silently leaving its value unredacted.
- */
-function consume(checkKeyPaths: Keys, path: string[]): void {
-	const at = checkKeyPaths.indexOf(path);
-	if (at !== -1) checkKeyPaths.splice(at, 1);
 }
 
 /**
