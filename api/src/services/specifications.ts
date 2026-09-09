@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
 import { spec as staticSpec } from '@directus/specs';
-import { isSystemCollection } from '@directus/system-data';
+import { HARDCODED_AUTH_REQUIREMENTS, isSystemCollection } from '@directus/system-data';
 import type {
 	AbstractServiceOptions,
 	Accountability,
@@ -248,9 +248,11 @@ class OASSpecsService implements SpecificationSubService {
 								paths[path] = {};
 							}
 
+							const declaredAuth = operation['x-authentication'] as 'admin' | 'user' | 'self' | 'none' | undefined;
+
 							// x-authentication: none runs with no accountability at all (e.g. POST /users/register),
 							// so it can't be gated by the caller's RBAC access to the tied collection.
-							const isHardcodedOpen = operation['x-authentication'] === 'none';
+							const isHardcodedOpen = declaredAuth === 'none';
 
 							// An operation-level override lets an operation whose tag has no (or a different)
 							// x-collection still be gated by RBAC on a specific collection.
@@ -261,10 +263,16 @@ class OASSpecsService implements SpecificationSubService {
 							// items shouldn't be gated on create access.
 							const operationAction: PermissionsAction = operation['x-action'] ?? this.getActionForMethod(method);
 
-							// x-authentication marks an operation with a hardcoded auth requirement enforced in
-							// the service layer, independent of RBAC (e.g. CollectionsService requires
-							// accountability.admin regardless of directus_collections permissions).
-							const requiredAuth = operation['x-authentication'] as 'admin' | 'user' | 'self' | undefined;
+							// `self`/`none` are read from the operation; `admin`/`user` are looked up in
+							// HARDCODED_AUTH_REQUIREMENTS by (collection, action). An explicit operation-level
+							// `admin`/`user` wins, for operations with no table row (POST /users/{id}/tfa/disable).
+							const requiredAuth: 'admin' | 'user' | 'self' | undefined = isHardcodedOpen
+								? undefined
+								: (declaredAuth ??
+									HARDCODED_AUTH_REQUIREMENTS.find(
+										(requirement) =>
+											requirement.collection === operationCollection && requirement.action === operationAction,
+									)?.requiredAuth);
 
 							const hasPermission = this.hasOperationAccess(
 								requiredAuth,
