@@ -172,9 +172,8 @@ test('Rejects a nested collection that is inactive', async () => {
 		.collection('authors', (c) => {
 			c.field('id').id();
 		})
+		.options({ status: 'inactive' })
 		.build();
-
-	schema.inactiveCollections = ['authors'];
 
 	const ast = {
 		type: 'root',
@@ -207,9 +206,8 @@ test('Rejects an inactive collection reached through a filter rather than a fiel
 		.collection('authors', (c) => {
 			c.field('id').id();
 		})
+		.options({ status: 'inactive' })
 		.build();
-
-	schema.inactiveCollections = ['authors'];
 
 	const ast = {
 		type: 'root',
@@ -234,9 +232,11 @@ test('Leaves an AST alone when every collection it touches is active', async () 
 		.collection('authors', (c) => {
 			c.field('id').id();
 		})
+		.collection('unrelated', (c) => {
+			c.field('id').id();
+		})
+		.options({ status: 'inactive' })
 		.build();
-
-	schema.inactiveCollections = ['unrelated'];
 
 	const ast = {
 		type: 'root',

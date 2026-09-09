@@ -1,6 +1,6 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Query, Relation, SchemaOverview } from '@directus/types';
-import { getRelation, getRelationType, parseFilterFunctionPath } from '@directus/utils';
+import { getRelation, getRelationType, isCollectionActive, parseFilterFunctionPath } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
@@ -212,7 +212,6 @@ export async function parseFields(
 		if (!relationType) continue;
 
 		let child: NestedCollectionNode | null = null;
-		const inactiveCollections = context.schema.inactiveCollections ?? [];
 
 		if (relationType === 'a2o') {
 			if (!Array.isArray(nestedFields)) {
@@ -224,8 +223,8 @@ export async function parseFields(
 				}
 			}
 
-			let allowedCollections = relation.meta!.one_allowed_collections!.filter(
-				(collection) => !inactiveCollections.includes(collection),
+			let allowedCollections = relation.meta!.one_allowed_collections!.filter((collection) =>
+				isCollectionActive(context.schema.collections[collection]),
 			);
 
 			if (options.accountability && options.accountability.admin === false && policies) {

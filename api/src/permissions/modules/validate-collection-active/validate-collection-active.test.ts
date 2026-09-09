@@ -7,8 +7,20 @@ import { validateCollectionActive } from './validate-collection-active.js';
 
 vi.mock('../validate-access/lib/validate-collection-access.js');
 
-const context = (inactiveCollections?: string[]) =>
-	({ schema: { inactiveCollections } as unknown as SchemaOverview, knex: {} }) as Context;
+const COLLECTIONS = ['articles', 'archive'];
+
+const context = (inactiveCollections: string[] = []) =>
+	({
+		schema: {
+			collections: Object.fromEntries(
+				COLLECTIONS.map((collection) => [
+					collection,
+					{ collection, status: inactiveCollections.includes(collection) ? 'inactive' : 'active' },
+				]),
+			),
+		} as unknown as SchemaOverview,
+		knex: {},
+	}) as Context;
 
 const accountability = (overrides: Partial<Accountability> = {}) =>
 	({ user: 'user-id', role: 'role-id', admin: false, app: true, roles: [], ip: null, ...overrides }) as Accountability;
@@ -30,9 +42,22 @@ test('Resolves when the collection is active', async () => {
 	expect(validateCollectionAccess).not.toHaveBeenCalled();
 });
 
-test('Resolves when the schema carries no inactive collections', async () => {
+test('Resolves when every collection on the schema is active', async () => {
 	await expect(
 		validateCollectionActive({ accountability: accountability(), action: 'read', collection: 'archive' }, context()),
+	).resolves.toBeUndefined();
+
+	expect(validateCollectionAccess).not.toHaveBeenCalled();
+});
+
+test('Resolves when the collection carries no status at all', async () => {
+	const ctx = {
+		schema: { collections: { archive: { collection: 'archive' } } } as unknown as SchemaOverview,
+		knex: {},
+	} as Context;
+
+	await expect(
+		validateCollectionActive({ accountability: accountability(), action: 'read', collection: 'archive' }, ctx),
 	).resolves.toBeUndefined();
 
 	expect(validateCollectionAccess).not.toHaveBeenCalled();

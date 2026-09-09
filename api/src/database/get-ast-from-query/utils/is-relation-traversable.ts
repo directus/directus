@@ -1,5 +1,5 @@
 import type { SchemaOverview } from '@directus/types';
-import { getRelation } from '@directus/utils';
+import { getRelation, isCollectionActive } from '@directus/utils';
 import { getRelatedCollection } from './get-related-collection.js';
 
 /**
@@ -10,20 +10,12 @@ export function isRelationTraversable(schema: SchemaOverview, collection: string
 
 	if (!relation) return false;
 
-	const inactiveCollections = schema.inactiveCollections ?? [];
-
 	// An a2o remains traversable for as long as any of its targets is still around
 	if (relation.meta?.one_allowed_collections) {
-		return relation.meta.one_allowed_collections.some(
-			(allowed) => allowed in schema.collections && !inactiveCollections.includes(allowed),
-		);
+		return relation.meta.one_allowed_collections.some((allowed) => isCollectionActive(schema.collections[allowed]));
 	}
 
 	const relatedCollection = getRelatedCollection(schema, collection, field);
 
-	return (
-		relatedCollection !== null &&
-		relatedCollection in schema.collections &&
-		!inactiveCollections.includes(relatedCollection)
-	);
+	return relatedCollection !== null && isCollectionActive(schema.collections[relatedCollection]);
 }

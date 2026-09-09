@@ -9,7 +9,6 @@ export function reduceSchema(schema: SchemaOverview, fieldMap: FieldMap): Schema
 	const reduced: SchemaOverview = {
 		collections: {},
 		relations: [],
-		inactiveCollections: schema.inactiveCollections ?? [],
 	};
 
 	for (const [collectionName, collection] of Object.entries(schema.collections)) {

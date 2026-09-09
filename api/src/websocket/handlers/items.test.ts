@@ -327,8 +327,7 @@ describe('WebSocket heartbeat handler', () => {
 
 	test('inactive collection should error', async () => {
 		(getSchema as Mock).mockImplementation(() => ({
-			collections: { test: [] },
-			inactiveCollections: ['test'],
+			collections: { test: { collection: 'test', status: 'inactive', fields: {} } },
 		}));
 
 		const createOne = vi.fn();

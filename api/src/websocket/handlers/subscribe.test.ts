@@ -302,11 +302,11 @@ describe('WebSocket heartbeat handler', () => {
 					sortField: null,
 					note: null,
 					accountability: null,
+					status: 'inactive',
 					fields: {},
 				},
 			} as CollectionsOverview,
 			relations: [] as Relation[],
-			inactiveCollections: ['test_collection'],
 		}));
 
 		const subscribe = vi.spyOn(handler, 'subscribe');
@@ -338,6 +338,7 @@ describe('WebSocket heartbeat handler', () => {
 				sortField: null,
 				note: null,
 				accountability: null,
+				status: 'inactive',
 				fields: {},
 			},
 		} as CollectionsOverview;
@@ -349,7 +350,6 @@ describe('WebSocket heartbeat handler', () => {
 		vi.mocked(getSchema).mockImplementation(async () => ({
 			collections,
 			relations: [] as Relation[],
-			inactiveCollections: ['test_collection'],
 		}));
 
 		await handler.dispatch({ action: 'delete', collection: 'test_collection', keys: ['1'] });

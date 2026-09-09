@@ -1,5 +1,5 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { Accountability } from '@directus/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import { getRelation } from '@directus/utils';
 import knex from 'knex';
 import { expect, test, vi } from 'vitest';
@@ -685,6 +685,16 @@ const schemaM2A = new SchemaBuilder()
 	})
 	.build();
 
+function withInactiveCollection(collection: string): SchemaOverview {
+	return {
+		...schemaM2A,
+		collections: {
+			...schemaM2A.collections,
+			[collection]: { ...schemaM2A.collections[collection]!, status: 'inactive' },
+		},
+	};
+}
+
 test('parse fields with an aliased m2o nested inside an m2a block (#27772)', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
 
@@ -794,7 +804,7 @@ test('parse fields with a non-aliased m2o nested inside an m2a block', async () 
 test('parse fields rejects an inactive collection named through the a2o scope syntax', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
 
-	const schema = { ...schemaM2A, inactiveCollections: ['text'] };
+	const schema = withInactiveCollection('text');
 
 	await expect(
 		parseFields(
@@ -812,7 +822,7 @@ test('parse fields rejects an inactive collection named through the a2o scope sy
 test('parse fields skips an inactive collection that was only reached through an a2o wildcard', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
 
-	const schema = { ...schemaM2A, inactiveCollections: ['text'] };
+	const schema = withInactiveCollection('text');
 
 	const result = await parseFields(
 		{

@@ -1,5 +1,6 @@
 import { CollectionInactiveError } from '@directus/errors';
 import type { Accountability, PermissionsAction } from '@directus/types';
+import { isCollectionActive } from '@directus/utils';
 import type { Context } from '../../types.js';
 import { createCollectionForbiddenError } from '../process-ast/utils/validate-path/create-error.js';
 import { validateCollectionAccess } from '../validate-access/lib/validate-collection-access.js';
@@ -17,11 +18,11 @@ export async function validateCollectionActive(
 	options: ValidateCollectionActiveOptions,
 	context: Context,
 ): Promise<void> {
-	const inactiveCollections = context.schema.inactiveCollections ?? [];
-
-	if (!inactiveCollections.includes(options.collection)) return;
-
 	const { accountability, collection, action } = options;
+
+	const collectionOverview = context.schema.collections[collection];
+
+	if (collectionOverview === undefined || isCollectionActive(collectionOverview)) return;
 
 	if (accountability !== null && accountability.admin !== true) {
 		const hasAccess = await validateCollectionAccess({ accountability, collection, action }, context);

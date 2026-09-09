@@ -25,6 +25,7 @@ export type CollectionOverview = {
 	sortField: string | null;
 	note: string | null;
 	accountability: 'all' | 'activity' | null;
+	status?: string;
 	fields: {
 		[name: string]: FieldOverview;
 	};
@@ -37,5 +38,4 @@ export type CollectionsOverview = {
 export type SchemaOverview = {
 	collections: CollectionsOverview;
 	relations: Relation[];
-	inactiveCollections?: string[];
 };

@@ -2,15 +2,21 @@ import type { Relation, SchemaOverview } from '@directus/types';
 import { expect, test } from 'vitest';
 import { isRelationTraversable } from './is-relation-traversable.js';
 
+const COLLECTIONS = ['parent', 'articles', 'child', 'pages'];
+
 /**
  * `child` and `pages` are inactive, so they stay in `collections` but cannot be traversed into.
  * `ghost` is referenced by relations without being on the schema at all.
  */
 function createSchema(relations: Relation[], inactiveCollections: string[] = ['child', 'pages']): SchemaOverview {
 	return {
-		collections: { parent: {}, articles: {}, child: {}, pages: {} },
+		collections: Object.fromEntries(
+			COLLECTIONS.map((collection) => [
+				collection,
+				{ collection, status: inactiveCollections.includes(collection) ? 'inactive' : 'active' },
+			]),
+		),
 		relations,
-		inactiveCollections,
 	} as unknown as SchemaOverview;
 }
 
@@ -50,10 +56,13 @@ test('Returns true when no collections are inactive', () => {
 	expect(isRelationTraversable(createSchema([m2o('child')], []), 'parent', 'child_id')).toBe(true);
 });
 
-test('Returns true when the schema does not track inactive collections at all', () => {
-	const { inactiveCollections: _, ...schema } = createSchema([m2o('child')]);
+test('Returns true when the collections carry no status at all', () => {
+	const schema = {
+		collections: Object.fromEntries(COLLECTIONS.map((collection) => [collection, { collection }])),
+		relations: [m2o('child')],
+	} as unknown as SchemaOverview;
 
-	expect(isRelationTraversable(schema as SchemaOverview, 'parent', 'child_id')).toBe(true);
+	expect(isRelationTraversable(schema, 'parent', 'child_id')).toBe(true);
 });
 
 test('Returns true for the o2m side when the collection holding the relation is active', () => {

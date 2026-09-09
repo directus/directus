@@ -119,7 +119,6 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 	const result: SchemaOverview = {
 		collections: {},
 		relations: [],
-		inactiveCollections: [],
 	};
 
 	const systemFieldRows = getSystemFieldRowsWithAuthProviders();
@@ -148,14 +147,10 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 
 		const collectionMeta = collections.find((collectionMeta) => collectionMeta.collection === collection);
 
-		if (
-			!isSystemCollection(collection) &&
-			collectionMeta &&
-			'status' in collectionMeta &&
-			collectionMeta.status !== 'active'
-		) {
-			result.inactiveCollections?.push(collection);
-		}
+		const status =
+			!isSystemCollection(collection) && collectionMeta && 'status' in collectionMeta
+				? collectionMeta.status
+				: 'active';
 
 		result.collections[collection] = {
 			collection,
@@ -164,6 +159,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
 			accountability: collectionMeta ? collectionMeta.accountability : 'all',
+			status,
 			fields: mapValues(schemaOverview[collection]?.columns, (column) => {
 				return {
 					field: column.column_name,
