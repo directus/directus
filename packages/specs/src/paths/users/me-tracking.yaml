@@ -4,6 +4,7 @@ patch:
     Updates the last used page field of the currently authenticated user. This is used internally to be able to open the
     Directus admin app from the last page you used.
   operationId: updateLastUsedPageMe
+  x-authentication: self
   requestBody:
     content:
       application/json:

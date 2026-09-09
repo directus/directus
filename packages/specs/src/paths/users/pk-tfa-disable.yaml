@@ -2,6 +2,9 @@ post:
   summary: Disable 2FA for User
   description: Disables two-factor authentication for a specific user. Requires admin access.
   operationId: disableUserTfa
+  # Hardcoded admin check in the route handler; hand-set rather than a table row because
+  # (directus_users, create) would also match POST /users.
+  x-authentication: admin
   responses:
     '204':
       $ref: '../../openapi.yaml#/components/responses/NoContentResponse'

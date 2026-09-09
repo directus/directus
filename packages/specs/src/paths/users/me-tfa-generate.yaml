@@ -2,6 +2,7 @@ post:
   summary: Generate 2FA Secret
   description: Generates a TOTP secret and OTPauth URI for the currently authenticated user.
   operationId: meTfaGenerate
+  x-authentication: self
   requestBody:
     content:
       application/json:

@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
 import { spec as staticSpec } from '@directus/specs';
-import { isSystemCollection } from '@directus/system-data';
+import { HARDCODED_AUTH_REQUIREMENTS, isSystemCollection } from '@directus/system-data';
 import type {
 	AbstractServiceOptions,
 	Accountability,
@@ -195,6 +195,35 @@ class OASSpecsService implements SpecificationSubService {
 		return (collectionAccess?.[collection]?.[action]?.access ?? 'none') !== 'none';
 	}
 
+	/** Gates an operation flagged with x-authentication on that requirement instead of, or in addition to, RBAC. */
+	private hasOperationAccess(
+		requiredAuth: 'admin' | 'user' | 'self' | undefined,
+		userCollectionAccess: CollectionAccess | undefined,
+		operationCollection: string | undefined,
+		operationAction: PermissionsAction,
+		isHardcodedOpen: boolean,
+	): boolean {
+		if (requiredAuth === 'admin') return this.accountability?.admin === true;
+		if (requiredAuth === 'self') return !!this.accountability?.user;
+
+		// requiredAuth: 'user' is enforced alongside RBAC, not instead of it, so both are still required.
+		if (requiredAuth === 'user') {
+			return (
+				!!this.accountability?.user &&
+				(this.accountability?.admin === true ||
+					operationCollection === undefined ||
+					this.hasCollectionAccess(userCollectionAccess, operationCollection, operationAction))
+			);
+		}
+
+		return (
+			this.accountability?.admin === true ||
+			operationCollection === undefined ||
+			isHardcodedOpen ||
+			this.hasCollectionAccess(userCollectionAccess, operationCollection, operationAction)
+		);
+	}
+
 	/** Builds paths gated by the caller's own collection access, marking publicly-readable operations with optional-auth security. */
 	private async generatePaths(
 		schema: SchemaOverview,
@@ -219,22 +248,50 @@ class OASSpecsService implements SpecificationSubService {
 								paths[path] = {};
 							}
 
+							const declaredAuth = operation['x-authentication'] as 'admin' | 'user' | 'self' | 'none' | undefined;
+
 							// x-authentication: none runs with no accountability at all (e.g. POST /users/register),
 							// so it can't be gated by the caller's RBAC access to the tied collection.
-							const isHardcodedOpen = operation['x-authentication'] === 'none';
+							const isHardcodedOpen = declaredAuth === 'none';
 
-							const hasPermission =
-								this.accountability?.admin === true ||
-								collection === undefined ||
-								isHardcodedOpen ||
-								this.hasCollectionAccess(userCollectionAccess, collection, this.getActionForMethod(method));
+							// An operation-level override lets an operation whose tag has no (or a different)
+							// x-collection still be gated by RBAC on a specific collection.
+							const operationCollection = operation['x-collection'] ?? collection;
+
+							// x-action overrides the HTTP-method-derived action for an operation whose real RBAC
+							// check doesn't match its verb, e.g. a POST that only reads and archives existing
+							// items shouldn't be gated on create access.
+							const operationAction: PermissionsAction = operation['x-action'] ?? this.getActionForMethod(method);
+
+							// `self`/`none` are read from the operation; `admin`/`user` are looked up in
+							// HARDCODED_AUTH_REQUIREMENTS by (collection, action). An explicit operation-level
+							// `admin`/`user` wins, for operations with no table row (POST /users/{id}/tfa/disable).
+							const requiredAuth: 'admin' | 'user' | 'self' | undefined = isHardcodedOpen
+								? undefined
+								: (declaredAuth ??
+									HARDCODED_AUTH_REQUIREMENTS.find(
+										(requirement) =>
+											requirement.collection === operationCollection && requirement.action === operationAction,
+									)?.requiredAuth);
+
+							const hasPermission = this.hasOperationAccess(
+								requiredAuth,
+								userCollectionAccess,
+								operationCollection,
+								operationAction,
+								isHardcodedOpen,
+							);
 
 							if (hasPermission) {
-								// A hardcoded-open operation is unconditionally open, not "optionally" public.
+								// A hardcoded-open operation's own `security: []` already says "no auth, ever";
+								// stamping OPTIONAL_AUTH_SECURITY on top would overwrite that. An x-authentication
+								// operation is never publicly accessible either, since the hardcoded check
+								// supersedes whatever publicCollectionAccess says about the tied collection.
 								const isPubliclyAccessible =
 									!isHardcodedOpen &&
-									collection !== undefined &&
-									this.hasCollectionAccess(publicCollectionAccess, collection, this.getActionForMethod(method));
+									requiredAuth === undefined &&
+									operationCollection !== undefined &&
+									this.hasCollectionAccess(publicCollectionAccess, operationCollection, operationAction);
 
 								let operationWithSecurity = operation;
 
