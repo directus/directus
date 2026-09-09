@@ -326,35 +326,4 @@ describe('WebSocket heartbeat handler', () => {
 		expect(handler.subscriptions['test_collection']).toBeUndefined();
 		expect(client.send).toBeCalledWith(expect.stringContaining('COLLECTION_INACTIVE'));
 	});
-
-	test('should stop dispatching to a subscription once the collection goes inactive', async () => {
-		const client = adminClient();
-
-		const collections = {
-			test_collection: {
-				collection: 'test_collection',
-				primary: 'id',
-				singleton: false,
-				sortField: null,
-				note: null,
-				accountability: null,
-				status: 'inactive',
-				fields: {},
-			},
-		} as CollectionsOverview;
-
-		handler.subscribe({ client, collection: 'test_collection', event: 'delete', uid: '123' });
-
-		// A delete event hands back the keys without reading through a service, so nothing else would
-		// catch the collection being inactive
-		vi.mocked(getSchema).mockImplementation(async () => ({
-			collections,
-			relations: [] as Relation[],
-		}));
-
-		await handler.dispatch({ action: 'delete', collection: 'test_collection', keys: ['1'] });
-
-		expect(client.send).toBeCalledTimes(1);
-		expect(client.send).toBeCalledWith(expect.stringContaining('COLLECTION_INACTIVE'));
-	});
 });

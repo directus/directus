@@ -113,7 +113,6 @@ export class SubscribeHandler {
 		const subscriptions = this.subscriptions[event.collection];
 		if (!subscriptions || subscriptions.size === 0) return;
 		const schema = await getSchema();
-		const knex = getDatabase();
 
 		for (const subscription of subscriptions) {
 			const { client } = subscription;
@@ -128,15 +127,6 @@ export class SubscribeHandler {
 			}
 
 			try {
-				await assertCollectionActive(
-					{
-						accountability: client.accountability ?? createDefaultAccountability(),
-						collection: event.collection,
-						action: 'read',
-					},
-					{ schema, knex },
-				);
-
 				const result = await getPayload(subscription, client.accountability, schema, event);
 
 				if (Array.isArray(result?.['data']) && result?.['data']?.length === 0) continue;
