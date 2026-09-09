@@ -99,3 +99,33 @@ test('drops a nested field that traverses an inactive collection', () => {
 
 	expect(adjustFieldsForDisplays(['title', 'author.company.name'], 'articles')).toEqual(['title']);
 });
+
+test('follows an m2a colon path to the collection it names', () => {
+	const collectionsStore = useCollectionsStore();
+	const fieldsStore = useFieldsStore();
+	const relationsStore = useRelationsStore();
+
+	// articles -> blocks (m2a) -> headings (inactive) and heros (active)
+	collectionsStore.collections = [
+		...collectionsStore.collections,
+		collectionsStore.prepareCollectionForApp(makeCollection('headings', 'inactive')),
+		collectionsStore.prepareCollectionForApp(makeCollection('heros', 'active')),
+	];
+
+	fieldsStore.fields = [
+		...fieldsStore.fields,
+		makeField('articles', 'blocks'),
+		makeField('headings', 'text'),
+		makeField('heros', 'title'),
+	];
+
+	relationsStore.relations = [
+		...relationsStore.relations,
+		makeRelation('articles_blocks', 'articles_id', 'articles', 'blocks'),
+	];
+
+	expect(adjustFieldsForDisplays(['title', 'blocks:headings.text', 'blocks:heros.title'], 'articles')).toEqual([
+		'title',
+		'blocks:heros.title',
+	]);
+});

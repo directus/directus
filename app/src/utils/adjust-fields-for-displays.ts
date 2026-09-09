@@ -2,7 +2,7 @@ import { Field } from '@directus/types';
 import { computed } from 'vue';
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
-import { isFieldCollectionInactive } from '@/utils/collection-status';
+import { isCollectionInactive, isFieldCollectionInactive } from '@/utils/collection-status';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 
 export function adjustFieldsForDisplays(fields: readonly string[], parentCollection: string): string[] {
@@ -74,9 +74,18 @@ function traversesInactiveCollection(parentCollection: string, fieldKey: string)
 
 	for (const fieldName of fieldKey.split('.')) {
 		if (!collection) return false;
-		if (isFieldCollectionInactive({ collection, field: fieldName })) return true;
 
-		const related = getRelatedCollection(collection, fieldName);
+		const [name, scopedCollection] = fieldName.split(':') as [string, string | undefined];
+
+		if (isFieldCollectionInactive({ collection, field: name })) return true;
+
+		if (scopedCollection) {
+			if (isCollectionInactive(scopedCollection)) return true;
+			collection = scopedCollection;
+			continue;
+		}
+
+		const related = getRelatedCollection(collection, name);
 		collection = related ? (related.junctionCollection ?? related.relatedCollection) : undefined;
 	}
 
