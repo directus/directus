@@ -71,7 +71,7 @@ test('long timeouts when editing access policy', async () => {
 	expect(
 		Math.abs(policy2End - policy1End),
 		`Expected 2nd (${Math.floor(policy2End)}ms) to be close to first (${Math.floor(policy1End)}ms)`,
-	).toBeLessThan(1000);
+	).toBeLessThan(100 /* 100ms difference */);
 
 	await directus.stop();
 });
