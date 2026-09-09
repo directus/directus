@@ -199,3 +199,16 @@ export class BoxSelectControl {
 		this.boxElement.style.blockSize = style.height;
 	}
 }
+
+/**
+ * Subscribe to an event that isn't part of maplibre's `MapEventType`.
+ *
+ * maplibre narrowed `Map#on` to `keyof MapEventType`, which covers only the events the library
+ * itself fires. Events raised through `Map#fire` by a plugin or a custom control are not in that
+ * map: the `select.*` events from `BoxSelectControl` above, and the `draw.*` events from
+ * MapboxDraw. Those still dispatch normally at runtime, so this narrows the cast to one place
+ * instead of scattering it across every call site.
+ */
+export function onCustomEvent<T = unknown>(map: Map, type: string, listener: (event: T) => void): void {
+	(map.on as unknown as (type: string, listener: (event: T) => void) => void)(type, listener);
+}

@@ -16,13 +16,14 @@ import {
 	Map,
 	MapGeoJSONFeature,
 	MapLayerMouseEvent,
+	MapMovementEvent,
 	NavigationControl,
 } from 'maplibre-gl';
 import { computed, onMounted, onUnmounted, ref, toRefs, useTemplateRef, watch, WatchStopHandle } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
-import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
+import { BoxSelectControl, ButtonControl, onCustomEvent } from '@/utils/geometry/controls';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -73,7 +74,7 @@ const navigationControl = new NavigationControl({
 	showCompass: false,
 });
 
-const geolocateControl = new GeolocateControl();
+const geolocateControl = new GeolocateControl({});
 
 const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', () => {
 	emit('fitdata');
@@ -151,10 +152,10 @@ function setupMap() {
 		map.on('click', '__directus_clusters', expandCluster);
 		map.on('mousemove', '__directus_clusters', hoverCluster);
 		map.on('mouseleave', '__directus_clusters', hoverCluster);
-		map.on('select.enable', () => (selectMode.value = true));
-		map.on('select.disable', () => (selectMode.value = false));
+		onCustomEvent(map, 'select.enable', () => (selectMode.value = true));
+		onCustomEvent(map, 'select.disable', () => (selectMode.value = false));
 
-		map.on('select.end', (event: MapLayerMouseEvent & { alt: unknown }) => {
+		onCustomEvent<MapLayerMouseEvent & { alt: unknown }>(map, 'select.end', (event) => {
 			const ids = event.features?.map((f) => f.id);
 			emit('featureselect', { ids, replace: !event.alt });
 		});
@@ -308,14 +309,15 @@ function updatePopup(event: MapLayerMouseEvent) {
 	}
 }
 
-function updatePopupLocation(event: MapLayerMouseEvent) {
-	if (hoveredFeature.value && event.originalEvent) {
+function updatePopupLocation(event: MapMovementEvent) {
+	// `move` can also originate from a touch or wheel gesture; only a mouse event carries x/y.
+	if (hoveredFeature.value && event.originalEvent instanceof MouseEvent) {
 		const { x, y } = event.originalEvent;
 		emit('updateitempopup', { position: { x, y } });
 	}
 }
 
-function expandCluster(event: MapLayerMouseEvent) {
+async function expandCluster(event: MapLayerMouseEvent) {
 	const features = map.queryRenderedFeatures(event.point, {
 		layers: ['__directus_clusters'],
 	});
@@ -323,14 +325,18 @@ function expandCluster(event: MapLayerMouseEvent) {
 	const clusterId = features[0]?.properties?.cluster_id;
 	const source = map.getSource('__directus') as GeoJSONSource;
 
-	source.getClusterExpansionZoom(clusterId, (err: any, zoom: number) => {
-		if (err) return;
+	let zoom: number;
 
-		map.flyTo({
-			center: (features[0]?.geometry as GeoJSON.Point).coordinates as LngLatLike,
-			zoom: zoom,
-			speed: 1.3,
-		});
+	try {
+		zoom = await source.getClusterExpansionZoom(clusterId);
+	} catch {
+		return;
+	}
+
+	map.flyTo({
+		center: (features[0]?.geometry as GeoJSON.Point).coordinates as LngLatLike,
+		zoom: zoom,
+		speed: 1.3,
 	});
 }
 

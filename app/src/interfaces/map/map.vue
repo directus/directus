@@ -30,7 +30,7 @@ import VSelect from '@/components/v-select/v-select.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { flatten, getBBox, getGeometryFormatForType, getParser, getSerializer } from '@/utils/geometry';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
-import { ButtonControl } from '@/utils/geometry/controls';
+import { ButtonControl, onCustomEvent } from '@/utils/geometry/controls';
 
 // @ts-ignore
 
@@ -199,11 +199,11 @@ function setupMap(): () => void {
 	map.on('load', async () => {
 		map.resize();
 		mapLoading.value = false;
-		map.on('draw.create', handleDrawUpdate);
-		map.on('draw.delete', handleDrawUpdate);
-		map.on('draw.update', handleDrawUpdate);
-		map.on('draw.modechange', handleDrawModeChange);
-		map.on('draw.selectionchange', handleSelectionChange);
+		onCustomEvent(map, 'draw.create', handleDrawUpdate);
+		onCustomEvent(map, 'draw.delete', handleDrawUpdate);
+		onCustomEvent(map, 'draw.update', handleDrawUpdate);
+		onCustomEvent(map, 'draw.modechange', handleDrawModeChange);
+		onCustomEvent(map, 'draw.selectionchange', handleSelectionChange);
 		map.on('move', updateProjection);
 
 		for (const layer of activeLayers) {
