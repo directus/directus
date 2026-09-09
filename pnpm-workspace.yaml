@@ -87,18 +87,18 @@ catalog:
   '@sindresorhus/slugify': 2.2.1
   '@smithy/node-http-handler': 4.11.2
   '@supabase/storage-js': 2.112.3
-  '@tiptap/core': ^3.26.1
-  '@tiptap/extension-image': ^3.26.1
-  '@tiptap/extension-subscript': ^3.26.1
-  '@tiptap/extension-superscript': ^3.26.1
-  '@tiptap/extension-table': ^3.26.1
-  '@tiptap/extension-text-align': ^3.26.1
-  '@tiptap/extension-text-style': ^3.26.1
-  '@tiptap/extensions': ^3.26.1
-  '@tiptap/pm': ^3.26.1
-  '@tiptap/starter-kit': ^3.26.1
-  '@tiptap/vue-3': ^3.26.1
-  '@tresjs/core': ^5.8.0
+  '@tiptap/core': 3.26.1
+  '@tiptap/extension-image': 3.26.1
+  '@tiptap/extension-subscript': 3.26.1
+  '@tiptap/extension-superscript': 3.26.1
+  '@tiptap/extension-table': 3.26.1
+  '@tiptap/extension-text-align': 3.26.1
+  '@tiptap/extension-text-style': 3.26.1
+  '@tiptap/extensions': 3.26.1
+  '@tiptap/pm': 3.26.1
+  '@tiptap/starter-kit': 3.26.1
+  '@tiptap/vue-3': 3.26.1
+  '@tresjs/core': 5.8.0
   '@turf/meta': 7.2.0
   '@tus/server': 2.4.4
   '@tus/utils': 0.7.1
@@ -310,7 +310,7 @@ catalog:
   swagger-cli: 4.0.4
   tar: 7.5.8
   tedious: 18.6.1
-  three: ^0.184.0
+  three: 0.184.0
   tmp: 0.2.7
   tsdown: 0.15.11
   tsx: 4.22.4
