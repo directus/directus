@@ -8,9 +8,10 @@
 '@directus/types': patch
 ---
 
-Added a suite of Flows enhancements covering folder organization, search and filtering, import and export, duplication, and new trigger and operation options
+Moved Flows into their own module and added a suite of enhancements covering folder organization, search and filtering, import and export, duplication, and new trigger and operation options
 
-- Organize Flows into folders, browsed from a resizable, collapsible sidebar on the Flows page (the selected folder is kept in the URL), with creating, renaming, moving, and deleting folders, and moving one or more Flows into a folder or back to the root
+- Flows now have their own entry in the module bar and live at `/flows` instead of under Settings; existing `/settings/flows` links redirect, and the module is enabled automatically for existing projects
+- Organize Flows into folders, browsed from the main sidebar like the File Library (the selected folder is kept in the URL), with creating, renaming, moving, and deleting folders, and moving one or more Flows into a folder or back to the root
 - Search and filter the Flows page
 - Import and export Flows as JSON from the Data Studio
 - Duplicate an existing Flow
