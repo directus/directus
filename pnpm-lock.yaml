@@ -739,8 +739,8 @@ catalogs:
       specifier: 2.1.3
       version: 2.1.3
     mysql2:
-      specifier: 3.15.3
-      version: 3.15.3
+      specifier: 3.24.4
+      version: 3.24.4
     nanoid:
       specifier: 5.1.16
       version: 5.1.16
@@ -1122,7 +1122,7 @@ importers:
         version: link:../packages/format-title
       '@directus/license':
         specifier: 'catalog:'
-        version: 0.4.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 0.4.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
       '@directus/memory':
         specifier: workspace:*
         version: link:../packages/memory
@@ -1326,7 +1326,7 @@ importers:
         version: 5.5.3
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 3.1.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
       ldapts:
         specifier: 'catalog:'
         version: 8.1.3
@@ -1576,7 +1576,7 @@ importers:
         version: 7.1.0
       knex-mock-client:
         specifier: 'catalog:'
-        version: 3.0.2(knex@3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1))
+        version: 3.0.2(knex@3.1.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1))
       native-copyfiles:
         specifier: 'catalog:'
         version: 2.0.3
@@ -1598,7 +1598,7 @@ importers:
         version: 4.9.0(@types/nodemailer@8.0.1)(nodemailer@10.0.1)
       mysql2:
         specifier: 'catalog:'
-        version: 3.15.3
+        version: 3.24.4(@types/node@22.13.14)
       nodemailer-mailgun-transport:
         specifier: 'catalog:'
         version: 2.1.5(lodash@4.18.1)(underscore@1.13.8)
@@ -1646,7 +1646,7 @@ importers:
         version: link:../packages/format-title
       '@directus/license':
         specifier: 'catalog:'
-        version: 0.4.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 0.4.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
       '@directus/sdk':
         specifier: workspace:*
         version: link:../sdk
@@ -1865,7 +1865,7 @@ importers:
         version: 6.0.1(vite@8.1.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))(vue@3.5.24(typescript@5.9.3))
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       '@vitest/ui':
         specifier: 'catalog:'
         version: 3.2.6(vitest@3.2.7)
@@ -2149,7 +2149,7 @@ importers:
         version: 4.17.12
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       '@vue/test-utils':
         specifier: 'catalog:'
         version: 2.4.6
@@ -2176,7 +2176,7 @@ importers:
         version: 4.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2204,7 +2204,7 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       vitest:
         specifier: 'catalog:'
         version: 3.2.7(@types/node@26.2.0)(@vitest/ui@3.2.6)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0)
@@ -2235,7 +2235,7 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       vitest:
         specifier: 'catalog:'
         version: 3.2.7(@types/node@26.2.0)(@vitest/ui@3.2.6)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0)
@@ -2294,7 +2294,7 @@ importers:
         version: 2.1.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2343,7 +2343,7 @@ importers:
         version: 3.2.6(vitest@3.2.7(@types/node@22.13.14)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 3.1.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
       pino:
         specifier: 'catalog:'
         version: 9.7.0
@@ -2386,7 +2386,7 @@ importers:
         version: link:../types
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2492,7 +2492,7 @@ importers:
         version: 7.7.1
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2507,7 +2507,7 @@ importers:
         version: 4.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2572,7 +2572,7 @@ importers:
         version: 4.17.21
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2636,7 +2636,7 @@ importers:
     dependencies:
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 3.1.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -2665,7 +2665,7 @@ importers:
         version: 4.17.12
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2736,7 +2736,7 @@ importers:
         version: 8.0.2
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2773,7 +2773,7 @@ importers:
         version: 8.0.2
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2810,7 +2810,7 @@ importers:
         version: 8.0.2
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2893,7 +2893,7 @@ importers:
         version: 2.1.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2936,7 +2936,7 @@ importers:
         version: 8.0.2
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -2972,7 +2972,7 @@ importers:
         version: 4.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -3103,7 +3103,7 @@ importers:
         version: 1.0.5
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 3.1.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -3228,7 +3228,7 @@ importers:
         version: 3.2.6(vitest@3.2.7(@types/node@22.13.14)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 3.1.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
       tmp:
         specifier: 'catalog:'
         version: 0.2.7
@@ -3265,7 +3265,7 @@ importers:
         version: link:../types
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -3314,7 +3314,7 @@ importers:
         version: 4.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))
+        version: 3.2.6(vitest@3.2.7)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
@@ -3386,7 +3386,7 @@ importers:
         version: 2.3.0
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 3.1.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
       ldapts:
         specifier: 'catalog:'
         version: 8.1.3
@@ -3428,7 +3428,7 @@ importers:
     dependencies:
       '@directus/license':
         specifier: 'catalog:'
-        version: 0.4.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 0.4.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
       '@directus/mock-license-server':
         specifier: workspace:*
         version: link:../mock-license-server
@@ -3443,7 +3443,7 @@ importers:
         version: 4.1.0
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 3.1.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
       lodash-es:
         specifier: 'catalog:'
         version: 4.18.1
@@ -3480,7 +3480,7 @@ importers:
     dependencies:
       '@directus/license':
         specifier: 'catalog:'
-        version: 0.4.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 0.4.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 4.0.0
@@ -3546,7 +3546,7 @@ importers:
         version: 7.1.0
       knex:
         specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+        version: 3.1.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
       lodash-es:
         specifier: 'catalog:'
         version: 4.18.1
@@ -3571,7 +3571,7 @@ importers:
     optionalDependencies:
       mysql2:
         specifier: 'catalog:'
-        version: 3.15.3
+        version: 3.24.4(@types/node@22.13.14)
       oracledb:
         specifier: 'catalog:'
         version: 6.10.0
@@ -11099,9 +11099,11 @@ packages:
     resolution: {integrity: sha512-dkEJPVvun4FryqBmZ5KhDo0K9iDXAwn08tMLDinNdRBNPcYEDiWYysLcc6k3mjTMlbP9KyylvRpd4wFtwrT9rw==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  mysql2@3.15.3:
-    resolution: {integrity: sha512-FBrGau0IXmuqg4haEZRBfHNWB5mUARw6hNwPDXXGg0XzVJ50mr/9hb267lvpVMnhZ1FON3qNd4Xfcez1rbFwSg==}
+  mysql2@3.24.4:
+    resolution: {integrity: sha512-A2olluVlj0mvgyIRRISMEzXc51m+21mRtcMVjJyIpt2GG98+XrC9m9HzsqcMsX2LcnfccJvY5NB22g8fENBnOA==}
     engines: {node: '>= 8.0'}
+    peerDependencies:
+      '@types/node': '>= 8'
 
   named-placeholders@1.1.6:
     resolution: {integrity: sha512-Tz09sEL2EEuv5fFowm419c1+a/jSMiBjI9gHxVLrVdbUkkNUUfjsVYs9pVZu5oCon/kmRh9TfLEObFtkVxmY0w==}
@@ -12659,9 +12661,6 @@ packages:
     resolution: {integrity: sha512-1gnZf7DFcoIcajTjTwjwuDjzuz4PPcY2StKPlsGAQ1+YH20IRVrBaXSWmdjowTJ6u8Rc01PoYOGHXfP1mYcZNQ==}
     engines: {node: '>= 18'}
 
-  seq-queue@0.0.5:
-    resolution: {integrity: sha512-hr3Wtp/GZIc/6DAGPDcV4/9WoZhjrkXsi5B/07QgX8tsdc6ilr7BFM6PM6rbdAX1kFSDYeZGLipIZZKyQP0O5Q==}
-
   serialize-javascript@7.1.1:
     resolution: {integrity: sha512-k3CMsaIvvdSwm8oLB4MXSl0wH2/cwlH7xGcnRd2DaeRmBkbzYmyT8j0tsX60DwD1eRwHTpNpH8ljKu9oUT1MeQ==}
     engines: {node: '>=20.0.0'}
@@ -12868,13 +12867,13 @@ packages:
   sprintf-js@1.1.3:
     resolution: {integrity: sha512-Oo+0REFV59/rz3gfJNKQiBlwfHaSESl1pcGyABQsnnIfWOFt6JNj5gCog2U6MLZ//IGYD+nA8nI+mTShREReaA==}
 
+  sql-escaper@1.5.1:
+    resolution: {integrity: sha512-4toX5E1fQbBrpfXidaHnF0669nkAdETeIPTs2SUjxxD7RRIs9ICG4gtpmfc68JCEKehsdwLFqBu9VlQqZ1P1gg==}
+    engines: {bun: '>=1.0.0', deno: '>=2.0.0', node: '>=12.0.0'}
+
   sqlite3@6.0.1:
     resolution: {integrity: sha512-X0czUUMG2tmSqJpEQa3tCuZSHKIx8PwM53vLZzKp/o6Rpy25fiVfjdbnZ988M8+O3ZWR1ih0K255VumCb3MAnQ==}
     engines: {node: '>=20.17.0'}
-
-  sqlstring@2.3.3:
-    resolution: {integrity: sha512-qC9iz2FlN7DQl3+wjwn3802RTyjCx7sDvfQEXchwa6CWOx07/WVfh91gBmQ9fahw8snwGEWU3xGzOt4tFyHLxg==}
-    engines: {node: '>= 0.6'}
 
   srvx@0.11.22:
     resolution: {integrity: sha512-LqZxxBDMKuMAZzFzJnDCkFOrs9MZQZr0LvHiO/SuSZVdQaXD7xQ5UWTUxheJrQPve1qk9MG2B/yttUvJxw8egQ==}
@@ -15273,12 +15272,12 @@ snapshots:
     dependencies:
       ms: 2.1.3
 
-  '@directus/license@0.4.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)':
+  '@directus/license@0.4.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)':
     dependencies:
       '@directus/errors': 2.5.1
       '@directus/sdk': 21.3.0
       jose: 6.2.12
-      knex: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+      knex: 3.1.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
       lodash-es: 4.18.1
       zod: 4.1.1
     transitivePeerDependencies:
@@ -18276,7 +18275,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@3.2.6(vitest@3.2.7(@types/node@26.2.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.33.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0))':
+  '@vitest/coverage-v8@3.2.6(vitest@3.2.7)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
@@ -21664,12 +21663,12 @@ snapshots:
 
   kind-of@6.0.3: {}
 
-  knex-mock-client@3.0.2(knex@3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)):
+  knex-mock-client@3.0.2(knex@3.1.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)):
     dependencies:
-      knex: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
+      knex: 3.1.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1)
       lodash.clonedeep: 4.5.0
 
-  knex@3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1):
+  knex@3.1.0(mysql2@3.24.4(@types/node@22.13.14))(pg@8.16.3)(sqlite3@6.0.1)(tedious@18.6.1):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -21686,7 +21685,7 @@ snapshots:
       tarn: 3.1.2
       tildify: 2.0.0
     optionalDependencies:
-      mysql2: 3.15.3
+      mysql2: 3.24.4(@types/node@22.13.14)
       pg: 8.16.3
       sqlite3: 6.0.1
       tedious: 18.6.1
@@ -22203,17 +22202,16 @@ snapshots:
 
   mute-stream@3.0.0: {}
 
-  mysql2@3.15.3:
+  mysql2@3.24.4(@types/node@22.13.14):
     dependencies:
+      '@types/node': 22.13.14
       aws-ssl-profiles: 1.1.2
-      denque: 2.1.0
       generate-function: 2.3.1
       iconv-lite: 0.7.3
       long: 5.3.2
       lru.min: 1.1.5
       named-placeholders: 1.1.6
-      seq-queue: 0.0.5
-      sqlstring: 2.3.3
+      sql-escaper: 1.5.1
     optional: true
 
   named-placeholders@1.1.6:
@@ -24141,9 +24139,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  seq-queue@0.0.5:
-    optional: true
-
   serialize-javascript@7.1.1: {}
 
   serve-static@1.16.3:
@@ -24457,6 +24452,9 @@ snapshots:
   sprintf-js@1.1.3:
     optional: true
 
+  sql-escaper@1.5.1:
+    optional: true
+
   sqlite3@6.0.1:
     dependencies:
       bindings: 1.5.0
@@ -24465,9 +24463,6 @@ snapshots:
       tar: 7.5.22
     optionalDependencies:
       node-gyp: 12.4.0
-    optional: true
-
-  sqlstring@2.3.3:
     optional: true
 
   srvx@0.11.22: {}
