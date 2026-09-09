@@ -3,13 +3,17 @@ import { createCollectionForbiddenError } from '../../permissions/modules/proces
 
 type OptionalString = string | null | undefined;
 
+export interface GetCollectionFromSchemaErrorOptions {
+	field?: OptionalString;
+}
+
 /**
  * Returns a collection from the schema and errors if it does not exist
  */
 export function getCollectionFromSchema(
 	schema: SchemaOverview,
 	collection: OptionalString,
-	field?: OptionalString,
+	options?: GetCollectionFromSchemaErrorOptions,
 ): CollectionOverview {
 	const collectionName = collection ?? '';
 
@@ -17,5 +21,5 @@ export function getCollectionFromSchema(
 		return schema.collections[collectionName];
 	}
 
-	throw createCollectionForbiddenError(field ?? '', collectionName);
+	throw createCollectionForbiddenError(options?.field ?? '', collectionName);
 }

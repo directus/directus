@@ -602,7 +602,10 @@ export class PayloadService {
 				nested: [...this.nested, relation.field],
 			});
 
-			const relatedPrimaryKeyField = getCollectionFromSchema(this.schema, relatedCollection, relation.field).primary;
+			const relatedPrimaryKeyField = getCollectionFromSchema(this.schema, relatedCollection, {
+				field: relation.field,
+			}).primary;
+
 			const relatedRecord: Partial<Item> = payload[relation.field];
 
 			if (['string', 'number'].includes(typeof relatedRecord)) continue;
@@ -693,11 +696,9 @@ export class PayloadService {
 			// If no "one collection" exists, this is a A2O, not a M2O
 			if (!relation.related_collection) continue;
 
-			const relatedPrimaryKeyField = getCollectionFromSchema(
-				this.schema,
-				relation.related_collection,
-				relation.field,
-			).primary;
+			const relatedPrimaryKeyField = getCollectionFromSchema(this.schema, relation.related_collection, {
+				field: relation.field,
+			}).primary;
 
 			const { getService } = await import('../utils/get-service.js');
 
@@ -799,11 +800,9 @@ export class PayloadService {
 		for (const relation of relationsToProcess) {
 			if (!relation.meta) continue;
 
-			const currentPrimaryKeyField = getCollectionFromSchema(
-				this.schema,
-				relation.related_collection,
-				relation.meta.one_field,
-			).primary;
+			const currentPrimaryKeyField = getCollectionFromSchema(this.schema, relation.related_collection, {
+				field: relation.meta.one_field,
+			}).primary;
 
 			const relatedPrimaryKeyField = getCollectionFromSchema(this.schema, relation.collection).primary;
 
