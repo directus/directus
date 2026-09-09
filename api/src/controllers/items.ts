@@ -19,7 +19,7 @@ router.use(checkIsLocked('items'));
 router.post(
 	'/:collection',
 	collectionExists,
-	collectionActive,
+	collectionActive(),
 	asyncHandler(async (req, res, next) => {
 		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
 
@@ -96,14 +96,14 @@ const readHandler = asyncHandler(async (req, res, next) => {
 	return next();
 });
 
-router.search('/:collection', collectionExists, collectionActive, validateBatch('read'), readHandler, respond);
+router.search('/:collection', collectionExists, collectionActive(), validateBatch('read'), readHandler, respond);
 
-router.get('/:collection', collectionExists, collectionActive, readHandler, respond);
+router.get('/:collection', collectionExists, collectionActive(), readHandler, respond);
 
 router.get(
 	'/:collection/:pk',
 	collectionExists,
-	collectionActive,
+	collectionActive(),
 	asyncHandler(async (req, res, next) => {
 		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
 
@@ -126,7 +126,7 @@ router.get(
 router.patch(
 	'/:collection',
 	collectionExists,
-	collectionActive,
+	collectionActive(),
 	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
 		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
@@ -174,7 +174,7 @@ router.patch(
 router.patch(
 	'/:collection/:pk',
 	collectionExists,
-	collectionActive,
+	collectionActive(),
 	asyncHandler(async (req, res, next) => {
 		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
 
@@ -208,7 +208,7 @@ router.patch(
 router.delete(
 	'/:collection',
 	collectionExists,
-	collectionActive,
+	collectionActive(),
 	validateBatch('delete'),
 	asyncHandler(async (req, _res, next) => {
 		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
@@ -235,7 +235,7 @@ router.delete(
 router.delete(
 	'/:collection/:pk',
 	collectionExists,
-	collectionActive,
+	collectionActive(),
 	asyncHandler(async (req, _res, next) => {
 		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
 

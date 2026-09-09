@@ -1,5 +1,5 @@
 import { CollectionInactiveError } from '@directus/errors';
-import type { Accountability } from '@directus/types';
+import type { Accountability, PermissionsAction } from '@directus/types';
 import type { Request, Response } from 'express';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { validateCollectionActive } from '../permissions/modules/validate-collection-active/validate-collection-active.js';
@@ -38,7 +38,7 @@ beforeEach(() => {
 
 describe('pass-through', () => {
 	test('Calls next without checking when no collection param is present', async () => {
-		await collectionActive(mockRequest as Request, mockResponse as Response, nextFunction);
+		await collectionActive()(mockRequest as Request, mockResponse as Response, nextFunction);
 
 		expect(validateCollectionActive).not.toHaveBeenCalled();
 		expect(nextFunction).toHaveBeenCalledTimes(1);
@@ -48,7 +48,7 @@ describe('pass-through', () => {
 	test('Calls next without checking when the collection param is an empty string', async () => {
 		mockRequest.params = { collection: '' };
 
-		await collectionActive(mockRequest as Request, mockResponse as Response, nextFunction);
+		await collectionActive()(mockRequest as Request, mockResponse as Response, nextFunction);
 
 		expect(validateCollectionActive).not.toHaveBeenCalled();
 		expect(nextFunction).toHaveBeenCalledTimes(1);
@@ -58,7 +58,7 @@ describe('pass-through', () => {
 	test('Calls next when the check passes', async () => {
 		mockRequest.params = { collection: 'articles' };
 
-		await collectionActive(mockRequest as Request, mockResponse as Response, nextFunction);
+		await collectionActive()(mockRequest as Request, mockResponse as Response, nextFunction);
 
 		expect(nextFunction).toHaveBeenCalledTimes(1);
 		expect(forwardedError()).toBeUndefined();
@@ -80,7 +80,22 @@ describe('check', () => {
 		mockRequest.method = method;
 		mockRequest.accountability = accountability;
 
-		await collectionActive(mockRequest as Request, mockResponse as Response, nextFunction);
+		await collectionActive()(mockRequest as Request, mockResponse as Response, nextFunction);
+
+		expect(validateCollectionActive).toHaveBeenCalledWith(
+			{ accountability, collection: 'archive', action },
+			{ schema: mockRequest.schema, knex: 'knex' },
+		);
+	});
+
+	test.each([
+		['POST', 'read'],
+		['GET', 'delete'],
+	])('Checks the %s method as the explicitly given %s action', async (method, action) => {
+		mockRequest.method = method;
+		mockRequest.accountability = accountability;
+
+		await collectionActive(action as PermissionsAction)(mockRequest as Request, mockResponse as Response, nextFunction);
 
 		expect(validateCollectionActive).toHaveBeenCalledWith(
 			{ accountability, collection: 'archive', action },
@@ -89,7 +104,7 @@ describe('check', () => {
 	});
 
 	test('Checks an unauthenticated request as the public role', async () => {
-		await collectionActive(mockRequest as Request, mockResponse as Response, nextFunction);
+		await collectionActive()(mockRequest as Request, mockResponse as Response, nextFunction);
 
 		expect(validateCollectionActive).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -103,7 +118,7 @@ describe('check', () => {
 		const error = new CollectionInactiveError({ collection: 'archive' });
 		vi.mocked(validateCollectionActive).mockRejectedValue(error);
 
-		await collectionActive(mockRequest as Request, mockResponse as Response, nextFunction);
+		await collectionActive()(mockRequest as Request, mockResponse as Response, nextFunction);
 
 		expect(forwardedError()).toBe(error);
 	});

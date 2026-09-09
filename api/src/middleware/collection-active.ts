@@ -7,20 +7,21 @@ import asyncHandler from '../utils/async-handler.js';
 /**
  * Check if requested collection is active
  */
-const collectionActive = asyncHandler(async (req, _res, next) => {
-	if (!req.params['collection']) return next();
+const collectionActive = (action?: PermissionsAction) =>
+	asyncHandler(async (req, _res, next) => {
+		if (!req.params['collection']) return next();
 
-	await validateCollectionActive(
-		{
-			accountability: req.accountability ?? createDefaultAccountability(),
-			collection: req.params['collection'],
-			action: mapMethod(req.method),
-		},
-		{ schema: req.schema, knex: getDatabase() },
-	);
+		await validateCollectionActive(
+			{
+				accountability: req.accountability ?? createDefaultAccountability(),
+				collection: req.params['collection'],
+				action: action ?? mapMethod(req.method),
+			},
+			{ schema: req.schema, knex: getDatabase() },
+		);
 
-	return next();
-});
+		return next();
+	});
 
 function mapMethod(method: string): PermissionsAction {
 	switch (method.toUpperCase()) {

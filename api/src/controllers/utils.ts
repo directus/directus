@@ -55,7 +55,7 @@ const SortSchema = z
 router.post(
 	'/sort/:collection',
 	collectionExists,
-	collectionActive,
+	collectionActive('update'),
 	asyncHandler(async (req, res) => {
 		const { error } = SortSchema.safeParse(req.body);
 		if (error) throw new InvalidPayloadError({ reason: fromZodError(error).message });
@@ -88,7 +88,7 @@ router.post(
 router.post(
 	'/import/:collection',
 	collectionExists,
-	collectionActive,
+	collectionActive(),
 	asyncHandler(async (req, res) => {
 		const service = new ImportService({
 			accountability: req.accountability,
@@ -148,7 +148,7 @@ router.post(
 router.post(
 	'/export/:collection',
 	collectionExists,
-	collectionActive,
+	collectionActive('read'),
 	asyncHandler(async (req, _res, next) => {
 		if (!req.body.query) {
 			throw new InvalidPayloadError({ reason: `"query" is required` });
