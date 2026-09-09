@@ -31,6 +31,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { flatten, getBBox, getGeometryFormatForType, getParser, getSerializer } from '@/utils/geometry';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import { ButtonControl, onCustomEvent } from '@/utils/geometry/controls';
+import { getMapboxRequestTransformer } from '@/utils/geometry/mapbox';
 
 // @ts-ignore
 
@@ -193,7 +194,7 @@ function setupMap(): () => void {
 		logoPosition: 'bottom-left',
 		attributionControl: false,
 		...props.defaultView,
-		...(mapboxKey ? { accessToken: mapboxKey } : {}),
+		...(mapboxKey ? { transformRequest: getMapboxRequestTransformer(mapboxKey) } : {}),
 	});
 
 	if (controls.geocoder) {

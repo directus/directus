@@ -24,6 +24,7 @@ import { useI18n } from 'vue-i18n';
 import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import { BoxSelectControl, ButtonControl, onCustomEvent } from '@/utils/geometry/controls';
+import { getMapboxRequestTransformer } from '@/utils/geometry/mapbox';
 
 import '@/utils/geometry/maplibre-worker';
 
@@ -126,7 +127,7 @@ function setupMap() {
 		dragRotate: false,
 		attributionControl: false,
 		...props.camera,
-		...(mapboxKey ? { accessToken: mapboxKey } : {}),
+		...(mapboxKey ? { transformRequest: getMapboxRequestTransformer(mapboxKey) } : {}),
 	});
 
 	if (geocoderControl) {

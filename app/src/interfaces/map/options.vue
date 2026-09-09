@@ -8,6 +8,7 @@ import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
+import { getMapboxRequestTransformer } from '@/utils/geometry/mapbox';
 
 import '@/utils/geometry/maplibre-worker';
 
@@ -65,7 +66,7 @@ onMounted(() => {
 		container: mapContainer.value!,
 		style: style.value,
 		...(defaultView.value || {}),
-		...(mapboxKey ? { accessToken: mapboxKey } : {}),
+		...(mapboxKey ? { transformRequest: getMapboxRequestTransformer(mapboxKey) } : {}),
 	});
 
 	map.on('moveend', () => {
