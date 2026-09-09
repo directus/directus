@@ -224,10 +224,6 @@ function useForm() {
 		return fieldNames.value.map((name) => getFieldsForGroup(fieldsMap.value[name]?.meta?.field || null));
 	});
 
-	/**
-	 * Fields belonging or relating to an inactive collection. Resolved once per field set rather
-	 * than inside isDisabled, which is called on every render and for every field.
-	 */
 	const fieldsWithInactiveRelation = computed(() => {
 		return new Set(fields.value.filter(isFieldCollectionInactive).map((field) => field.field));
 	});

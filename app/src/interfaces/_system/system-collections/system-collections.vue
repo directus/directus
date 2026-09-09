@@ -40,7 +40,6 @@ const items = computed(() => {
 	return collections.value.map((collection) => ({
 		text: collection.name,
 		value: collection.collection,
-		// Keep an already selected collection togglable, so a stale selection can still be removed
 		disabled: isCollectionInactive(collection) && !props.value?.includes(collection.collection),
 	}));
 });

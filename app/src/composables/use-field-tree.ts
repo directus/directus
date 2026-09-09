@@ -17,7 +17,6 @@ export type FieldNode = {
 	type: Type;
 	children?: FieldNode[];
 	group?: boolean;
-	/** Set when the field's own collection, or the collection it relates to, can't be interacted with */
 	inactive?: boolean;
 	_loading?: boolean;
 };
