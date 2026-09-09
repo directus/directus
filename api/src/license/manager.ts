@@ -144,20 +144,18 @@ export class LicenseManager {
 				throw error;
 			}
 
-			/**
-			 * Dont fatal on bad settings, downgrade to core tier but persist any current data
-			 * If this was due to any hickup, it can self-heal with another boot.
-			 */
+			// TODO: dont clear key so a transient license server wont clear a key
 			if (action.source === 'settings') {
 				logger.error('Unable to validate the license from the database, switching to core tier.');
 				logger.error(error);
-				await this.syncLicense();
+				await this.syncLicense({ kind: 'downgrade' });
 				return;
 			}
 
 			logger.fatal(error);
 
 			// Only one env var can be set here, so whichever it is is the culprit
+			// TODO: We should be consistent between env and settings on failures
 			throw new Error(
 				`Unable to validate the ${env['LICENSE_KEY'] ? 'LICENSE_KEY' : 'LICENSE_TOKEN'}, please check its value and try again.`,
 				{ cause: error },
@@ -394,6 +392,7 @@ export class LicenseManager {
 			license = await this.verify(token);
 
 			if (!license) {
+				// TODO a token that will not verify does not invalidate the key, only token should be cleared
 				await this.syncLicense({ kind: 'downgrade', reason: 'expired' });
 				return;
 			}
@@ -435,6 +434,7 @@ export class LicenseManager {
 
 				if (err instanceof LicenseServerError) {
 					if (err.code === 'LICENSE_EXPIRED') {
+						// TODO expired is potentially recoverable, so the key should survive
 						await this.syncLicense({ kind: 'downgrade', reason: 'expired' });
 					} else if (err.code === 'LICENSE_CANCELED') {
 						await this.syncLicense({ kind: 'downgrade', reason: 'canceled' });
