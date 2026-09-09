@@ -10,7 +10,6 @@ vi.mock('./store.js');
 
 const CHANNEL = 'directus:exclusive:key:bus';
 
-/** Heartbeat interval used by `runExclusive`, ie. floor(ttl / 3) */
 const HEARTBEAT_INTERVAL = 3333;
 
 /**
@@ -60,9 +59,6 @@ function createTestBus() {
 
 /**
  * In-memory store shared across invocations, with a serialized critical section.
- *
- * This models the Redis path, where `usingLock` is a real distributed lock. Exclusivity is
- * only guaranteed there — the local path's lock is a no-op, as the `runExclusive` doc notes.
  */
 function createTestStore() {
 	const state = new Map<string, unknown>();
@@ -120,10 +116,6 @@ function createTestStore() {
 		ops,
 		/**
 		 * Resolves once `count` store operations have settled.
-		 *
-		 * Each invocation of `runExclusive` takes the lock exactly once to elect, so this
-		 * lines callers up deterministically: waiting for N settled operations proves all N
-		 * callers have decided whether they lead.
 		 */
 		whenSettled: (count: number) => {
 			if (settled >= count) return Promise.resolve();
@@ -133,7 +125,6 @@ function createTestStore() {
 
 			return waiter.promise;
 		},
-		/** Makes every subsequent store access throw, as if Redis went away mid-run */
 		fail: () => (shouldFail = true),
 	};
 }
@@ -144,8 +135,6 @@ describe('runExclusive', () => {
 	let logger: { warn: ReturnType<typeof vi.fn> };
 
 	beforeEach(() => {
-		// Fake timers throughout, so no test depends on wall-clock time. It also keeps the
-		// heartbeat from firing in tests that aren't about it.
 		vi.useFakeTimers();
 
 		testBus = createTestBus();
@@ -162,7 +151,6 @@ describe('runExclusive', () => {
 		vi.clearAllMocks();
 	});
 
-	/** Starts a leader and resolves once it is holding the lease and running `fn` */
 	async function startLeader() {
 		const running = deferred();
 		const fn = deferred<string>();
