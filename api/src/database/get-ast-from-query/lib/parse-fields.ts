@@ -10,7 +10,7 @@ import type { FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from
 import { splitFieldPath } from '../../../utils/split-field-path.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
-import { getRelatedCollection } from '../utils/get-related-collection.js';
+import { getRelatedCollectionFromRelation } from '../utils/get-related-collection.js';
 import { convertWildcards } from './convert-wildcards.js';
 
 interface CollectionScope {
@@ -197,10 +197,11 @@ export async function parseFields(
 			fieldName = options.query.alias[fieldKey]!;
 		}
 
-		const relatedCollection = getRelatedCollection(context.schema, options.parentCollection, fieldName);
 		const relation = getRelation(context.schema.relations, options.parentCollection, fieldName);
 
 		if (!relation) continue;
+
+		const relatedCollection = getRelatedCollectionFromRelation(relation, options.parentCollection, fieldName);
 
 		const relationType = getRelationType({
 			relation,

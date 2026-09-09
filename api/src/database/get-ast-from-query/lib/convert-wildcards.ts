@@ -54,7 +54,7 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 			return true;
 		}
 
-		return isRelationTraversable(context.schema, options.collection, fieldKey);
+		return isRelationTraversable(context.schema, options.collection, fieldKey, relation);
 	});
 
 	for (let index = 0; index < fields.length; index++) {

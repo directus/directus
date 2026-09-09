@@ -94,3 +94,30 @@ test('Returns false for an a2o once every allowed collection is inactive', () =>
 test('Returns false for an a2o whose remaining allowed collections are not on the schema', () => {
 	expect(isRelationTraversable(createSchema([a2o(['child', 'ghost'])]), 'parent', 'item')).toBe(false);
 });
+
+test('A passed in relation gives the same answer as looking it up', () => {
+	const cases: [Relation, string, string][] = [
+		[m2o('articles'), 'parent', 'child_id'],
+		[m2o('child'), 'parent', 'child_id'],
+		[m2o('ghost'), 'parent', 'child_id'],
+		[{ ...m2o('parent'), collection: 'articles' } as Relation, 'parent', 'parents'],
+		[{ ...m2o('parent'), collection: 'child' } as Relation, 'parent', 'parents'],
+		[a2o(['articles', 'pages']), 'parent', 'item'],
+		[a2o(['child', 'pages']), 'parent', 'item'],
+	];
+
+	for (const [relation, collection, field] of cases) {
+		const schema = createSchema([relation]);
+
+		expect(isRelationTraversable(schema, collection, field, relation)).toBe(
+			isRelationTraversable(schema, collection, field),
+		);
+	}
+});
+
+test('A passed in relation is used instead of the schema relations', () => {
+	const schema = createSchema([]);
+
+	expect(isRelationTraversable(schema, 'parent', 'child_id')).toBe(false);
+	expect(isRelationTraversable(schema, 'parent', 'child_id', m2o('articles'))).toBe(true);
+});
