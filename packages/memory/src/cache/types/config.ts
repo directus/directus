@@ -56,6 +56,14 @@ export interface CacheConfigRedis extends CacheConfigAbstract {
 	ttl?: number;
 
 	/**
+	 * Keys are prefixed by an epoch (timestamp) improving clear operations by incrementing the epoch instead of manually removing all keys.
+	 * To prevent redis exploding in memory, make sure that a TTL is set so that old keys can expire.
+	 *
+	 * @default false
+	 */
+	epoch?: boolean;
+
+	/**
 	 * Existing or new Redis connection to use with this memory class
 	 */
 	redis: Redis;
