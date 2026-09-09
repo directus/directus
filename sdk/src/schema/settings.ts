@@ -1,4 +1,4 @@
-import type { MergeCoreCollection, ReadWriteField } from '../index.js';
+import type { MergeCoreCollection, RedactedField } from '../index.js';
 import type { DirectusFile } from './file.js';
 import type { DirectusFolder } from './folder.js';
 import type { DirectusRole } from './role.js';
@@ -60,10 +60,10 @@ export type DirectusSettings<Schema = any> = MergeCoreCollection<
 		theme_light_overrides: Record<string, unknown> | null;
 		theme_dark_overrides: Record<string, unknown> | null;
 		project_id: string | null;
-		ai_openai_api_key: ReadWriteField<'**********' | null, string | null>;
-		ai_anthropic_api_key: ReadWriteField<'**********' | null, string | null>;
-		ai_google_api_key: ReadWriteField<'**********' | null, string | null>;
-		ai_openai_compatible_api_key: ReadWriteField<'**********' | null, string | null>;
+		ai_openai_api_key: RedactedField;
+		ai_anthropic_api_key: RedactedField;
+		ai_google_api_key: RedactedField;
+		ai_openai_compatible_api_key: RedactedField;
 		ai_openai_compatible_base_url: string | null;
 		ai_openai_compatible_name: string | null;
 		ai_openai_compatible_models: Record<string, any>[] | null;
@@ -84,8 +84,8 @@ export type DirectusSettings<Schema = any> = MergeCoreCollection<
 		mcp_system_prompt_enabled: boolean;
 		mcp_system_prompt: string | null;
 		collaborative_editing_enabled: boolean;
-		license_key: ReadWriteField<'**********' | null, string | null>;
-		license_token: ReadWriteField<'**********' | null, string | null>;
+		license_key: RedactedField;
+		license_token: RedactedField;
 		project_owner: string | null;
 		product_updates: boolean | null;
 		project_usage: 'personal' | 'commercial' | 'community' | string | null;

@@ -50,11 +50,14 @@ export type ReadWriteField<Read, Write = Read> = {
 	};
 };
 
+/**
+ * Define a field the API responds with a redacted value for, while accepting the unredacted value
+ * on write. Covers the `conceal` and `encrypt` field specials.
+ */
+export type RedactedField<Write = string | null> = ReadWriteField<'**********' | null, Write>;
+
 /** Resolve the response type of a field. */
 export type ReadField<Field> = Field extends ReadWriteField<infer Read, any> ? Read : Field;
-
-/** Resolve the request type of a field. */
-export type WriteField<Field> = Field extends ReadWriteField<any, infer Write> ? Write : Field;
 
 /**
  * Helpers for working with unions

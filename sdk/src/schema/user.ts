@@ -1,4 +1,4 @@
-import type { MergeCoreCollection, ReadWriteField } from '../index.js';
+import type { MergeCoreCollection, RedactedField } from '../index.js';
 import type { DirectusAccess } from './access.js';
 import type { DirectusFile } from './file.js';
 import type { DirectusRole } from './role.js';
@@ -15,12 +15,12 @@ export type DirectusUser<Schema = any> = MergeCoreCollection<
 		first_name: string | null;
 		last_name: string | null;
 		email: string | null;
-		password: ReadWriteField<'**********' | null, string | null>;
-		token: ReadWriteField<'**********' | null, string | null>;
+		password: RedactedField;
+		token: RedactedField;
 		last_access: 'datetime' | null;
 		last_page: string | null;
 		external_identifier: string | null;
-		tfa_secret: ReadWriteField<'**********' | null, string | null>;
+		tfa_secret: RedactedField;
 		auth_data: Record<string, any> | null;
 		provider: string;
 		appearance: 'auto' | 'dark' | 'light' | string | null;
