@@ -147,6 +147,19 @@ test('should support multiple paths', () => {
 	);
 });
 
+test('should not drop an unmatched path when two paths match the same key', () => {
+	// Both `['a']` and `['*', 'x']` match key "a" and both consume their path, so
+	// the second removal used to run against an array that had already shifted and
+	// took out `['secret_key']` instead — leaving that value unredacted.
+	const result = redactObject(
+		{ a: 'value-a', secret_key: 'sensitive' },
+		{ keys: [['a'], ['*', 'x'], ['secret_key']] },
+		getRedactedString,
+	);
+
+	expect(result).toEqual({ a: REDACTED_TEXT, secret_key: REDACTED_TEXT });
+});
+
 describe('getReplacer tests', () => {
 	test('Returns parsed error object', () => {
 		const errorMessage = 'Error Message';
