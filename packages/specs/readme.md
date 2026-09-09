@@ -36,8 +36,8 @@ src/
   collection RBAC:
   - `none`: the operation runs with no accountability at all (e.g. `POST /users/register`); the generator stamps
     `security: []`.
-  - `self`: full RBAC bypass, gated only on `accountability.user`. Used for the current-user endpoints (`/users/me`,
-    `/permissions/me`), which have no collection + action pair to key off, so it is set per-operation.
+  - `self`: full RBAC bypass, gated only on `accountability.user`. For an operation that acts on the caller's own record
+    and never consults collection RBAC at runtime (`GET /users/me`, `/users/me/tfa/*`, `GET /permissions/me`).
   - `admin` | `user`: `admin` bypasses RBAC, gated on `accountability.admin`; `user` requires `accountability.user`
     **and** the caller's own RBAC permission, since the service check is additive to RBAC. The generator derives these
     from `HARDCODED_AUTH_REQUIREMENTS` (`@directus/system-data`), keyed by collection + action; set it on an operation

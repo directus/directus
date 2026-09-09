@@ -26,7 +26,8 @@ patch:
   summary: Update Current User
   description: Update the currently authenticated user.
   operationId: updateMe
-  x-authentication: self
+  # No x-authentication: unlike the other /users/me operations, this one runs the update through
+  # UsersService with the caller's accountability, so RBAC on directus_users still applies.
   responses:
     '200':
       description: Successful request
