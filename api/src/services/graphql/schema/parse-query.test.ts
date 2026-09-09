@@ -563,3 +563,40 @@ describe('parseFields with resolved fragments', () => {
 		if (expected.deep) expect(query.deep).toEqual(expected.deep);
 	});
 });
+
+describe('prototype pollution containment', () => {
+	afterEach(() => {
+		vi.clearAllMocks();
+		delete (Object.prototype as any).grandchild;
+	});
+
+	test('a __proto__ field alias does not write onto Object.prototype', async () => {
+		// relation { __proto__: nested { grandchild(limit: 999999) { id } } }
+		//
+		// The nested-alias handler writes `query.deep.relation` with a plain lodash
+		// `merge`, so that node is Object.prototype-chained rather than the
+		// null-prototype one setDeep builds for itself. The argument handler then
+		// writes the deeper path through it, and a `__proto__` segment in between
+		// used to hand setDeep the real Object.prototype to assign onto.
+		const selections = [
+			buildField('relation', {
+				children: [
+					buildField('nested', {
+						alias: '__proto__',
+						children: [
+							buildField('grandchild', {
+								args: [buildArgument('limit', 999999)],
+								children: [buildField('id')],
+							}),
+						],
+					}),
+				],
+			}),
+		];
+
+		await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
+
+		expect(({} as any).grandchild).toBeUndefined();
+		expect(Object.hasOwn(Object.prototype, 'grandchild')).toBe(false);
+	});
+});
