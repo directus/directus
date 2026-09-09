@@ -3,6 +3,8 @@ import type {
 	ApplyQueryFields,
 	DirectusDeployment,
 	DirectusSettings,
+	DirectusShare,
+	DirectusUser,
 	NestedPartial,
 	ReadWriteField,
 } from '../src/index.js';
@@ -70,5 +72,24 @@ describe('ReadWriteField', () => {
 		}>();
 
 		assertType<SettingsInput>({ ai_openai_api_key: 'secret', license_key: null });
+	});
+
+	test('supports concealed user and share fields', () => {
+		type UserOutput = ApplyQueryFields<Schema, DirectusUser<Schema>, ['password', 'token', 'tfa_secret']>;
+		type UserInput = NestedPartial<DirectusUser<Schema>>;
+		type ShareOutput = ApplyQueryFields<Schema, DirectusShare<Schema>, ['password']>;
+		type ShareInput = NestedPartial<DirectusShare<Schema>>;
+
+		expectTypeOf<UserOutput>().toEqualTypeOf<{
+			password: '**********' | null;
+			token: '**********' | null;
+			tfa_secret: '**********' | null;
+		}>();
+
+		assertType<UserInput>({ password: 'secret', token: 'static-token', tfa_secret: null });
+
+		expectTypeOf<ShareOutput>().toEqualTypeOf<{ password: '**********' | null }>();
+
+		assertType<ShareInput>({ password: 'secret' });
 	});
 });

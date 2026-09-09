@@ -1,4 +1,4 @@
-import type { MergeCoreCollection } from '../index.js';
+import type { MergeCoreCollection, ReadWriteField } from '../index.js';
 import type { DirectusRole } from './role.js';
 import type { DirectusUser } from './user.js';
 
@@ -11,7 +11,7 @@ export type DirectusShare<Schema = any> = MergeCoreCollection<
 		collection: string | null;
 		item: string | null;
 		role: DirectusRole<Schema> | string | null;
-		password: string | null;
+		password: ReadWriteField<'**********' | null, string | null>;
 		user_created: DirectusUser<Schema> | string | null;
 		date_created: 'datetime' | null;
 		date_start: 'datetime' | null;
