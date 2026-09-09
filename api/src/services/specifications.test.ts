@@ -357,6 +357,10 @@ describe('Integration Tests', () => {
 				});
 
 				describe('x-authentication operation-level override', () => {
+					// The `self` cases below also cover the inline-`x-authentication` read path
+					// (`declaredAuth ?? table lookup`): `self` is never table-derived, so they fail
+					// if the resolver stops reading the operation's own value.
+
 					it('excludes an x-authentication: admin operation for a non-admin caller with matching RBAC permission', async () => {
 						vi.mocked(fetchPermissions).mockResolvedValueOnce([
 							{ collection: 'directus_fields', action: 'update' } as any,
@@ -552,6 +556,50 @@ describe('Integration Tests', () => {
 						const spec = await service.oas.generate();
 
 						expect(spec.paths['/collections']?.post?.security).toBeUndefined();
+					});
+
+					it('excludes every operation carrying an inline x-authentication: admin from a non-admin with full RBAC', async () => {
+						// Discovers the inline-marked operations from generated output rather than naming
+						// them, so a future inline `admin` marking is covered without editing this test.
+						const usersSchema = new SchemaBuilder()
+							.collection('directus_users', (c) => {
+								c.field('id').uuid().primary();
+							})
+							.build();
+
+						const adminSpec = await new SpecificationService({
+							knex: db,
+							schema: usersSchema,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						}).oas.generate();
+
+						const adminOnly = Object.entries(adminSpec.paths).flatMap(([path, item]) =>
+							Object.entries(item ?? {})
+								.filter(([, op]) => op && typeof op === 'object' && (op as any)['x-authentication'] === 'admin')
+								.map(([method]) => ({ method, path })),
+						);
+
+						expect(adminOnly.length).toBeGreaterThan(0);
+
+						vi.mocked(fetchPermissions).mockResolvedValueOnce(
+							['create', 'read', 'update', 'delete'].map((action) => ({
+								collection: 'directus_users',
+								action,
+								fields: ['*'],
+							})) as any,
+						);
+
+						const nonAdminSpec = await new SpecificationService({
+							knex: db,
+							schema: usersSchema,
+							accountability: { role: 'editor', admin: false, user: 'u1' } as Accountability,
+						}).oas.generate();
+
+						const leaked = adminOnly.filter(
+							({ method, path }) => (nonAdminSpec.paths as any)[path]?.[method] !== undefined,
+						);
+
+						expect(leaked).toEqual([]);
 					});
 				});
 
