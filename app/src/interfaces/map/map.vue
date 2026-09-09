@@ -6,7 +6,8 @@ import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { Geometry } from 'geojson';
 import { debounce, isEqual, snakeCase } from 'lodash';
-import maplibre, {
+import * as maplibre from 'maplibre-gl';
+import {
 	AnimationOptions,
 	AttributionControl,
 	CameraOptions,

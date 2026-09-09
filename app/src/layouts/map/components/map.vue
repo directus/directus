@@ -2,10 +2,11 @@
 import { useAppStore } from '@directus/stores';
 import type { ShowSelect } from '@directus/types';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import type { LayerSpecification } from '@maplibre/maplibre-gl-style-spec';
 import { useResizeObserver } from '@vueuse/core';
 import { debounce } from 'lodash';
-import maplibre, {
-	AnyLayer,
+import * as maplibre from 'maplibre-gl';
+import {
 	AttributionControl,
 	CameraOptions,
 	GeoJSONSource,
@@ -13,7 +14,7 @@ import maplibre, {
 	LngLatBoundsLike,
 	LngLatLike,
 	Map,
-	MapboxGeoJSONFeature,
+	MapGeoJSONFeature,
 	MapLayerMouseEvent,
 	NavigationControl,
 } from 'maplibre-gl';
@@ -30,7 +31,7 @@ const props = withDefaults(
 	defineProps<{
 		data: GeoJSON.FeatureCollection;
 		source: GeoJSONSource;
-		layers?: AnyLayer[];
+		layers?: LayerSpecification[];
 		camera?: CameraOptions & { bbox: any };
 		bounds?: GeoJSON.BBox;
 		featureId?: string;
@@ -51,7 +52,7 @@ const { t } = useI18n();
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
 let map: Map;
-const hoveredFeature = ref<MapboxGeoJSONFeature>();
+const hoveredFeature = ref<MapGeoJSONFeature>();
 const hoveredCluster = ref<boolean>();
 const selectMode = ref<boolean>();
 const container = useTemplateRef('container');
@@ -236,7 +237,7 @@ function updateSource(newSource: GeoJSONSource) {
 	});
 }
 
-function updateLayers(newLayers?: AnyLayer[], previousLayers?: AnyLayer[]) {
+function updateLayers(newLayers?: LayerSpecification[], previousLayers?: LayerSpecification[]) {
 	const currentMapLayersId = new Set(map.getStyle().layers?.map(({ id }) => id));
 
 	previousLayers?.forEach((layer) => {
