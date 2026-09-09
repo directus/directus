@@ -19,7 +19,11 @@ export async function assertCollectionActive(options: AssertCollectionActiveOpti
 
 	const collectionOverview = context.schema.collections[collection];
 
-	if (collectionOverview === undefined || isCollectionActive(collectionOverview)) return;
+	if (collectionOverview === undefined) {
+		throw createCollectionForbiddenError('', collection);
+	}
+
+	if (isCollectionActive(collectionOverview)) return;
 
 	if (accountability !== null && accountability.admin !== true) {
 		const hasAccess = await validateCollectionAccess({ accountability, collection, action }, context);

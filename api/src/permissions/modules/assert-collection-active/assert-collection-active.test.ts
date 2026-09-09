@@ -50,6 +50,25 @@ test('Resolves when every collection on the schema is active', async () => {
 	expect(validateCollectionAccess).not.toHaveBeenCalled();
 });
 
+test('Rejects a collection that is not on the schema without checking permissions', async () => {
+	await expect(
+		assertCollectionActive({ accountability: accountability(), action: 'read', collection: 'nope' }, context()),
+	).rejects.toBeInstanceOf(ForbiddenError);
+
+	expect(validateCollectionAccess).not.toHaveBeenCalled();
+});
+
+test('Rejects a collection that is not on the schema for an admin too', async () => {
+	await expect(
+		assertCollectionActive(
+			{ accountability: accountability({ admin: true }), action: 'read', collection: 'nope' },
+			context(),
+		),
+	).rejects.toBeInstanceOf(ForbiddenError);
+
+	expect(validateCollectionAccess).not.toHaveBeenCalled();
+});
+
 test('Resolves when the collection carries no status at all', async () => {
 	const ctx = {
 		schema: { collections: { archive: { collection: 'archive' } } } as unknown as SchemaOverview,
