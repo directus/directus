@@ -1,4 +1,4 @@
-import type { RasterSourceSpecification, StyleSpecification } from '@maplibre/maplibre-gl-style-spec';
+import type { RasterSourceSpecification, StyleSpecification } from 'maplibre-gl';
 import { useSettingsStore } from '@/stores/settings';
 import { getAppearance } from '@/utils/get-appearance';
 

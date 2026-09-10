@@ -78,7 +78,6 @@
 		"@mapbox/mapbox-gl-draw": "catalog:",
 		"@mapbox/mapbox-gl-draw-static-mode": "catalog:",
 		"@mapbox/mapbox-gl-geocoder": "catalog:",
-		"@maplibre/maplibre-gl-style-spec": "catalog:",
 		"@pinia/testing": "catalog:",
 		"@popperjs/core": "catalog:",
 		"@rollup/plugin-yaml": "catalog:",

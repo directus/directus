@@ -2,7 +2,6 @@
 import { useAppStore } from '@directus/stores';
 import type { ShowSelect } from '@directus/types';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-import type { LayerSpecification } from '@maplibre/maplibre-gl-style-spec';
 import { useResizeObserver } from '@vueuse/core';
 import { debounce } from 'lodash';
 import * as maplibre from 'maplibre-gl';
@@ -11,6 +10,7 @@ import {
 	CameraOptions,
 	GeoJSONSource,
 	GeolocateControl,
+	LayerSpecification,
 	LngLatBoundsLike,
 	LngLatLike,
 	Map,
