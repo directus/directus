@@ -33,8 +33,6 @@ import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/b
 import { ButtonControl, onCustomEvent } from '@/utils/geometry/controls';
 import { getMapboxRequestTransformer } from '@/utils/geometry/mapbox';
 
-// @ts-ignore
-
 import '@/utils/geometry/maplibre-worker';
 
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
