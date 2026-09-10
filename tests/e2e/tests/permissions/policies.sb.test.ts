@@ -1,5 +1,5 @@
 import { exec } from 'node:child_process';
-import { sandbox } from '@directus/sandbox';
+import { sandbox, type Sandbox } from '@directus/sandbox';
 import { authentication, createDirectus, readUsers, rest, updateUser } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
@@ -26,7 +26,7 @@ test('long timeouts when editing access policy', async () => {
 		password: directus.env.ADMIN_PASSWORD!,
 	});
 
-	const result = await execRedis('flushall');
+	const result = await execRedis(directus, 'flushall');
 
 	expect(result[0]).toBe('OK');
 
@@ -49,7 +49,7 @@ test('long timeouts when editing access policy', async () => {
 
 	const policy1End = performance.now() - policyStart;
 
-	await execRedis(`eval "for i=1,1000000 do redis.call('set','junk:'..i,'x') end" 0`);
+	await execRedis(directus, `eval "for i=1,1000000 do redis.call('set','junk:'..i,'x') end" 0`);
 
 	const policy2Start = performance.now();
 
@@ -76,9 +76,9 @@ test('long timeouts when editing access policy', async () => {
 	await directus.stop();
 });
 
-function execRedis(command: string): Promise<string[]> {
+function execRedis(sandbox: Sandbox, command: string): Promise<string[]> {
 	return new Promise((resolve, reject) => {
-		exec(`docker exec sandbox_sqlite_redis-redis-1 redis-cli ${command}`, (error, stdout, stderr) => {
+		exec(`docker exec ${sandbox.project}-redis-1 redis-cli ${command}`, (error, stdout, stderr) => {
 			if (error) {
 				reject(error);
 				return;
