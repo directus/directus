@@ -1635,7 +1635,6 @@ no_oauth_clients: 'No OAuth clients have been registered yet.'
 revoke_client: 'Revoke Client'
 revoke_client_confirm:
   'Are you sure you want to revoke this client? All associated tokens and sessions will be deleted.'
-settings_flows: Flows
 settings_system_logs: System Logs
 settings_presets: Bookmarks
 settings_translations: Translations

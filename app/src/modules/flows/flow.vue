@@ -85,7 +85,10 @@ const flow = computed<FlowRaw | undefined>({
 
 const loading = ref(false);
 
-const backTo = computed(() => (flow.value?.folder ? `/flows/folders/${flow.value.folder}` : '/flows'));
+const backTo = computed(() => {
+	const folder = flow.value?.folder;
+	return router.resolve(folder ? { name: 'flows-folder', params: { folder } } : { name: 'flows-collection' }).path;
+});
 
 const editMode = ref(flow.value?.operations.length === 0 || props.operationId !== undefined);
 

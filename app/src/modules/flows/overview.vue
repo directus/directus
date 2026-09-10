@@ -10,6 +10,7 @@ import { RouterView } from 'vue-router';
 import FlowsNavigation from './components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
 import { createFlowExport, createFlowImport, FlowImportError, parseFlowExport } from './flow-import-export';
+import { navigateToFolder } from './navigate-to-folder';
 import { getTriggers } from './triggers';
 import { useDuplicate } from './use-duplicate';
 import api from '@/api';
@@ -146,6 +147,8 @@ const internalSort = ref<Sort>({ by: 'name', desc: false });
 
 const { triggers } = getTriggers();
 
+const triggerNames = new Map(triggers.map((trigger) => [trigger.id, trigger.name]));
+
 const triggerChoices = triggers.map((trigger) => ({
 	value: trigger.id,
 	text: trigger.name,
@@ -231,17 +234,12 @@ const flows = computed(() => {
 		});
 	}
 
-	const sortedFlows = sortBy(result, [internalSort.value.by]);
+	const { by } = internalSort.value;
+
+	// Sort the trigger column by the label shown, not the raw id
+	const sortedFlows = sortBy(result, [by === 'trigger' ? (flow: FlowRaw) => triggerNames.get(flow.trigger!) : by]);
 	return internalSort.value.desc ? sortedFlows.reverse() : sortedFlows;
 });
-
-function navigateToFolder(folderId: string | null) {
-	if (folderId) {
-		router.push({ name: 'flows-folder', params: { folder: folderId } });
-	} else {
-		router.push({ name: 'flows-collection' });
-	}
-}
 
 function updateSort(sort: Sort | null) {
 	internalSort.value = sort ?? { by: 'name', desc: false };
@@ -607,8 +605,6 @@ function onFlowDrawerCompletion(id: string) {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins';
-
 .padding-box {
 	padding: var(--content-padding);
 	padding-block-start: var(--content-padding-top-table);
