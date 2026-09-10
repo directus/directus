@@ -311,25 +311,28 @@ watch(
 watch([search, filter], () => (selectedKeys.value = []));
 
 const moveDialogActive = ref(false);
+const moveKeys = ref<string[]>([]);
 const moveTarget = ref<string | null>(null);
 
 const { moving, move } = useMoveToFolder({
 	collection: 'flows',
 	onSuccess: async () => {
 		moveDialogActive.value = false;
-		selectedKeys.value = [];
+		selectedKeys.value = selectedKeys.value.filter((key) => !moveKeys.value.includes(key));
+		moveKeys.value = [];
 		moveTarget.value = null;
 		await flowsStore.hydrate();
 	},
 });
 
-function openMoveToFolder() {
-	moveTarget.value = props.folder ?? null;
+function openMoveToFolder(keys: string[], target: string | null = props.folder ?? null) {
+	moveKeys.value = keys;
+	moveTarget.value = target;
 	moveDialogActive.value = true;
 }
 
 function applyMoveToFolder() {
-	move(selectedKeys.value, moveTarget.value);
+	return move(moveKeys.value, moveTarget.value);
 }
 
 function navigateToFlow({ item: flow, event }: { item: FlowRaw; event: MouseEvent }) {
@@ -430,7 +433,7 @@ function onFlowDrawerCompletion(id: string) {
 				v-tooltip.bottom="$t('move_to_folder')"
 				icon="folder_move"
 				variant="ghost"
-				@click="openMoveToFolder"
+				@click="openMoveToFolder(selectedKeys)"
 			/>
 			<PrivateViewHeaderBarActionButton
 				v-if="selectedKeys.length > 0"
@@ -550,6 +553,15 @@ function onFlowDrawerCompletion(id: string) {
 								</VListItemIcon>
 								<VListItemContent>
 									{{ $t('edit_flow') }}
+								</VListItemContent>
+							</VListItem>
+
+							<VListItem clickable @click="openMoveToFolder([item.id], item.folder)">
+								<VListItemIcon>
+									<VIcon name="folder_move" />
+								</VListItemIcon>
+								<VListItemContent>
+									{{ $t('move_to_folder') }}
 								</VListItemContent>
 							</VListItem>
 

@@ -431,6 +431,22 @@ describe('FlowsOverview - import export', () => {
 		expect((wrapper.vm as any).selectedKeys).toEqual([]);
 	});
 
+	test('moves a single Flow from its row without touching the rest of the selection', async () => {
+		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
+		api.patch.mockReset();
+
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.selectedKeys = ['flow-1', 'flow-2'];
+		vm.openMoveToFolder(['flow-2'], null);
+		vm.moveTarget = 'folder-a';
+		await vm.applyMoveToFolder();
+
+		expect(api.patch).toHaveBeenCalledWith('/flows', { keys: ['flow-2'], data: { folder: 'folder-a' } });
+		expect(vm.selectedKeys).toEqual(['flow-1']);
+	});
+
 	test('exports the stored Flows rather than the translated table rows', async () => {
 		const { saveAs } = (await vi.importMock('file-saver')) as { saveAs: ReturnType<typeof vi.fn> };
 		saveAs.mockClear();
