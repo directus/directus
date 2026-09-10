@@ -11,6 +11,13 @@ function makeInfo(fieldName: string, selectionSetSource?: string): GraphQLResolv
 	return { fieldName, fieldNodes: [fieldNode] } as unknown as GraphQLResolveInfo;
 }
 
+/** Builds a minimal GraphQLResolveInfo carrying one field node per selection set, as merged fields do. */
+function makeMergedInfo(fieldName: string, selectionSetSources: string[]): GraphQLResolveInfo {
+	const fieldNodes = selectionSetSources.map((source) => makeInfo(fieldName, source).fieldNodes[0]!);
+
+	return { fieldName, fieldNodes } as unknown as GraphQLResolveInfo;
+}
+
 /** Creates a fresh request-scoped context with an empty cache. */
 function makeContext(): GraphQLParams['contextValue'] {
 	return { cache: new Map() } as unknown as GraphQLParams['contextValue'];
@@ -42,6 +49,30 @@ describe('resolverCacheKey', () => {
 		const key1 = resolverCacheKey({ limit: 10 }, info);
 		const key2 = resolverCacheKey({ limit: 20 }, info);
 		expect(key1).not.toBe(key2);
+	});
+
+	test('produces different keys when a merged field carries extra selections', () => {
+		const merged = resolverCacheKey({}, makeMergedInfo('page', ['{ id }', '{ title }']));
+		const single = resolverCacheKey({}, makeInfo('page', '{ id }'));
+		expect(merged).not.toBe(single);
+	});
+
+	test('produces the same key for the same merged selections', () => {
+		const key1 = resolverCacheKey({}, makeMergedInfo('page', ['{ id }', '{ title }']));
+		const key2 = resolverCacheKey({}, makeMergedInfo('page', ['{ id }', '{ title }']));
+		expect(key1).toBe(key2);
+	});
+
+	test('produces the same key whatever order the merged selections come in', () => {
+		const key1 = resolverCacheKey({}, makeMergedInfo('page', ['{ id }', '{ title }']));
+		const key2 = resolverCacheKey({}, makeMergedInfo('page', ['{ title }', '{ id }']));
+		expect(key1).toBe(key2);
+	});
+
+	test('produces the same key however often a merged selection repeats', () => {
+		const key1 = resolverCacheKey({}, makeMergedInfo('page', ['{ id }', '{ title }']));
+		const key2 = resolverCacheKey({}, makeMergedInfo('page', ['{ id }', '{ title }', '{ id }']));
+		expect(key1).toBe(key2);
 	});
 
 	test('produces different keys for different field names', () => {
