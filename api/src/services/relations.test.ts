@@ -1,6 +1,7 @@
+import type { ForeignKey } from '@directus/schema';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { RelationMeta } from '@directus/types';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { createMockKnex, createMockTableBuilder, resetKnexMocks } from '../test-utils/knex.js';
 import { ItemsService } from './items.js';
 import { RelationsService } from './relations.js';
@@ -53,16 +54,18 @@ vi.mock('../database/helpers/index.js', () => ({
 	})),
 }));
 
-const schema = new SchemaBuilder()
-	.collection('authors', (c) => {
-		c.field('id').id();
-	})
-	.collection('articles_authors', (c) => {
-		c.field('id').id();
-		c.field('articles_id').integer();
-		c.field('authors_id').m2o('authors');
-	})
-	.build();
+function buildSchema() {
+	return new SchemaBuilder()
+		.collection('authors', (c) => {
+			c.field('id').id();
+		})
+		.collection('articles_authors', (c) => {
+			c.field('id').id();
+			c.field('articles_id').integer();
+			c.field('authors_id').m2o('authors');
+		})
+		.build();
+}
 
 describe('Integration Tests', () => {
 	const { db, tracker, mockSchemaBuilder } = createMockKnex();
@@ -73,50 +76,46 @@ describe('Integration Tests', () => {
 
 	describe('Services / Relations', () => {
 		describe('updateOne', () => {
-			test('should re-add the foreign key when the payload only contains meta', async () => {
-				const foreignKeyBuilder = {
+			let schema: ReturnType<typeof buildSchema>;
+			let foreignKey: { onDelete: ReturnType<typeof vi.fn>; onUpdate: ReturnType<typeof vi.fn> };
+
+			let table: ReturnType<typeof createMockTableBuilder> & {
+				dropForeign: ReturnType<typeof vi.fn>;
+				foreign: ReturnType<typeof vi.fn>;
+			};
+
+			beforeEach(() => {
+				schema = buildSchema();
+
+				foreignKey = {
 					onDelete: vi.fn().mockReturnThis(),
 					onUpdate: vi.fn().mockReturnThis(),
 				};
 
-				const table = {
+				table = {
 					...createMockTableBuilder(),
 					dropForeign: vi.fn().mockReturnThis(),
-					foreign: vi.fn().mockReturnValue({ references: vi.fn().mockReturnValue(foreignKeyBuilder) }),
+					foreign: vi.fn().mockReturnValue({ references: vi.fn().mockReturnValue(foreignKey) }),
 				};
 
 				mockSchemaBuilder.alterTable.mockImplementation((_tableName, callback) => {
 					callback(table);
 					return Promise.resolve();
 				});
+			});
 
+			test('should leave the foreign key alone when the payload only contains meta', async () => {
 				const service = new RelationsService({ knex: db, schema });
 
 				await service.updateOne('articles_authors', 'authors_id', {
 					meta: { junction_field: 'articles_id' } as RelationMeta,
 				});
 
-				expect(table.dropForeign).toHaveBeenCalledWith('authors_id', 'articles_authors_authors_id_foreign');
-				expect(table.foreign).toHaveBeenCalledWith('authors_id', 'articles_authors_authors_id_foreign');
+				expect(mockSchemaBuilder.alterTable).not.toHaveBeenCalled();
+				expect(table.dropForeign).not.toHaveBeenCalled();
 			});
 
 			test('should give preRelationChange the resolved collection and related_collection, not the raw payload', async () => {
-				const foreignKeyBuilder = {
-					onDelete: vi.fn().mockReturnThis(),
-					onUpdate: vi.fn().mockReturnThis(),
-				};
-
-				const table = {
-					...createMockTableBuilder(),
-					dropForeign: vi.fn().mockReturnThis(),
-					foreign: vi.fn().mockReturnValue({ references: vi.fn().mockReturnValue(foreignKeyBuilder) }),
-				};
-
-				mockSchemaBuilder.alterTable.mockImplementation((_tableName, callback) => {
-					callback(table);
-					return Promise.resolve();
-				});
-
 				const service = new RelationsService({ knex: db, schema });
 
 				await service.updateOne('articles_authors', 'authors_id', {
@@ -128,41 +127,25 @@ describe('Integration Tests', () => {
 				);
 			});
 
-			test('should create the meta row using the route params when no meta row exists yet', async () => {
-				const foreignKeyBuilder = {
-					onDelete: vi.fn().mockReturnThis(),
-					onUpdate: vi.fn().mockReturnThis(),
-				};
+			test('should keep the existing triggers that the payload does not override', async () => {
+				const service = new RelationsService({ knex: db, schema });
 
-				const table = {
-					...createMockTableBuilder(),
-					dropForeign: vi.fn().mockReturnThis(),
-					foreign: vi.fn().mockReturnValue({ references: vi.fn().mockReturnValue(foreignKeyBuilder) }),
-				};
-
-				mockSchemaBuilder.alterTable.mockImplementation((_tableName, callback) => {
-					callback(table);
-					return Promise.resolve();
+				await service.updateOne('articles_authors', 'authors_id', {
+					schema: { on_delete: 'CASCADE' } as ForeignKey,
 				});
 
-				const schemaWithoutMeta = new SchemaBuilder()
-					.collection('authors', (c) => {
-						c.field('id').id();
-					})
-					.collection('articles_authors', (c) => {
-						c.field('id').id();
-						c.field('articles_id').integer();
-						c.field('authors_id').m2o('authors');
-					})
-					.build();
+				expect(foreignKey.onDelete).toHaveBeenCalledWith('CASCADE');
+				expect(foreignKey.onUpdate).toHaveBeenCalledWith('NO ACTION');
+			});
 
-				const existingRelation = schemaWithoutMeta.relations.find(
+			test('should create the meta row using the route params when no meta row exists yet', async () => {
+				const existingRelation = schema.relations.find(
 					(relation) => relation.collection === 'articles_authors' && relation.field === 'authors_id',
 				)!;
 
 				existingRelation.meta = null;
 
-				const service = new RelationsService({ knex: db, schema: schemaWithoutMeta });
+				const service = new RelationsService({ knex: db, schema });
 
 				await service.updateOne('articles_authors', 'authors_id', {
 					meta: { junction_field: 'articles_id' } as RelationMeta,

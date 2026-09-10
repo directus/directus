@@ -345,17 +345,21 @@ export class RelationsService {
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 
-		this.helpers.schema.preRelationChange({
+		const updatedRelation: Partial<Relation> = {
 			...relation,
 			collection,
+			field,
 			related_collection: existingRelation.related_collection,
-		});
+			schema: relation.schema ? ({ ...existingRelation.schema, ...relation.schema } as ForeignKey) : undefined,
+		};
+
+		this.helpers.schema.preRelationChange(updatedRelation);
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
 			await transaction(this.knex, async (trx) => {
-				if (existingRelation.related_collection) {
+				if (existingRelation.related_collection && updatedRelation.schema) {
 					await trx.schema.alterTable(collection, async (table) => {
 						let constraintName: string = getDefaultIndexName('foreign', collection, field);
 
@@ -378,12 +382,12 @@ export class RelationsService {
 								}`,
 							);
 
-						if (relation.schema?.on_delete) {
-							builder.onDelete(relation.schema.on_delete);
+						if (updatedRelation.schema!.on_delete) {
+							builder.onDelete(updatedRelation.schema!.on_delete);
 						}
 
-						if (relation.schema?.on_update) {
-							builder.onUpdate(relation.schema.on_update);
+						if (updatedRelation.schema!.on_update) {
+							builder.onUpdate(updatedRelation.schema!.on_update);
 						}
 					});
 				}
