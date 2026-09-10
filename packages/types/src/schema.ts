@@ -25,7 +25,7 @@ export type CollectionOverview = {
 	sortField: string | null;
 	note: string | null;
 	accountability: 'all' | 'activity' | null;
-	status?: string;
+	status?: 'active' | 'inactive' | string;
 	fields: {
 		[name: string]: FieldOverview;
 	};
