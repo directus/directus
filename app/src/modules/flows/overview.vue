@@ -30,7 +30,6 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import { Header, Sort } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
-import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useFolders } from '@/composables/use-folders';
 import { useMoveToFolder } from '@/composables/use-move-to-folder';
 import { useCollectionPermissions } from '@/composables/use-permissions';
@@ -208,6 +207,10 @@ function getFolderPath(folderId: string | null): string[] {
 	}
 
 	return names;
+}
+
+function getFolderLabel(path: string[]): string {
+	return `${path.length > 1 ? '…' : ''}/${path.at(-1) ?? ''}`;
 }
 
 // Relations we can resolve client-side, so can filter on: whitelists the field and hydrates its foreign key.
@@ -579,11 +582,12 @@ function onFlowDrawerCompletion(id: string) {
 				<template #[`item.folder`]="{ item }">
 					<RouterLink
 						v-if="item.folder && foldersById.has(item.folder)"
+						v-tooltip="`/${getFolderPath(item.folder).join('/')}`"
 						class="folder-link"
 						:to="{ name: 'flows-folder', params: { folder: item.folder } }"
 						@click.stop
 					>
-						<VTextOverflow :text="`/${getFolderPath(item.folder).join('/')}`" />
+						{{ getFolderLabel(getFolderPath(item.folder)) }}
 					</RouterLink>
 				</template>
 
@@ -733,8 +737,6 @@ function onFlowDrawerCompletion(id: string) {
 }
 
 .folder-link {
-	display: block;
-	max-inline-size: 100%;
 	color: var(--theme--primary);
 
 	&:hover {

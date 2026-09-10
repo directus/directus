@@ -411,12 +411,13 @@ describe('FlowsOverview - empty state', () => {
 });
 
 describe('FlowsOverview - folder column', () => {
-	test('resolves the full folder path and hides the column inside a folder', async () => {
+	test('collapses the folder path and hides the column inside a folder', async () => {
 		const wrapper = mount(FlowsOverview, { global });
 		const vm = wrapper.vm as any;
 
-		expect(vm.getFolderPath('folder-a')).toEqual(['Notifications']);
 		expect(vm.getFolderPath('folder-b')).toEqual(['Notifications', 'Email']);
+		expect(vm.getFolderLabel(vm.getFolderPath('folder-a'))).toBe('/Notifications');
+		expect(vm.getFolderLabel(vm.getFolderPath('folder-b'))).toBe('…/Email');
 		expect(vm.visibleHeaders.some((header: Header) => header.value === 'folder')).toBe(true);
 
 		await wrapper.setProps({ folder: 'folder-a' });
