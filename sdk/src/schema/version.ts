@@ -1,4 +1,5 @@
 import type { CollectionName, MergeCoreCollection } from '../index.js';
+import type { DirectusCollection } from './collection.js';
 import type { DirectusUser } from './user.js';
 
 export type DirectusVersion<Schema = any> = MergeCoreCollection<
@@ -8,7 +9,7 @@ export type DirectusVersion<Schema = any> = MergeCoreCollection<
 		id: string;
 		key: string;
 		name: string | null;
-		collection: CollectionName<Schema>;
+		collection: DirectusCollection<Schema> | CollectionName<Schema>;
 		item: string | null;
 		hash: string | null;
 		date_created: 'datetime' | null;
