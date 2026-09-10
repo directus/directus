@@ -4,15 +4,8 @@ const MAPBOX_API = 'https://api.mapbox.com';
 const MAPBOX_SCHEME = 'mapbox://';
 
 /**
- * Resolve a `mapbox://` URL to the api.mapbox.com endpoint it stands for.
- *
- * maplibre understood this scheme natively until v2 removed every Mapbox-specific code path, so a
- * style served from Mapbox is now just an opaque string it cannot fetch. Mapbox styles reference
- * their sprites, fonts and sources with the same scheme, which means resolving the style URL alone
- * is not enough: each of those forms has to be handled too, or the style loads and then renders
- * without icons, labels or tiles.
- *
- * Returns `null` for anything that is not a `mapbox://` URL.
+ * Resolve a `mapbox://` URL to the api.mapbox.com endpoint it stands for, or `null` if it is not
+ * one. Mirrors mapbox-gl-js's `normalizeStyleURL` family, which maplibre dropped in v2.
  */
 export function resolveMapboxUrl(url: string): string | null {
 	if (!url.startsWith(MAPBOX_SCHEME)) return null;
@@ -24,15 +17,8 @@ export function resolveMapboxUrl(url: string): string | null {
 		return `${MAPBOX_API}/styles/v1/${path.slice('styles/'.length)}`;
 	}
 
-	/*
-	 * mapbox://sprites/{user}/{styleId}, optionally with a Studio version hash appended as a
-	 * further segment, and with maplibre's @2x/.png/.json suffix already concatenated on the end.
-	 *
-	 * The path depth is deliberately not constrained: mapbox-gl-js splices the whole path in
-	 * wholesale, so anything between `sprites/` and the suffix belongs in the output untouched.
-	 * The suffix has to be guessed back off because maplibre appends it before calling
-	 * `transformRequest`, unlike mapbox-gl-js which received it as a separate argument.
-	 */
+	// mapbox://sprites/{user}/{styleId}[/{versionHash}], with maplibre's @2x/.png/.json suffix
+	// already concatenated on. Depth is deliberately unconstrained; the suffix is split back off.
 	if (path.startsWith('sprites/')) {
 		const rest = path.slice('sprites/'.length);
 		const suffix = /((?:@\d+x)?\.\w+)$/.exec(rest)?.[1] ?? '';
@@ -50,34 +36,22 @@ export function resolveMapboxUrl(url: string): string | null {
 		return `${MAPBOX_API}/v4/${path.slice('tiles/'.length)}`;
 	}
 
-	/*
-	 * A bare tileset id references its TileJSON, e.g. mapbox://mapbox.satellite. It is always a
-	 * single segment, comma-separated when several are composited, so anything containing a slash
-	 * is a form this resolver does not know about.
-	 *
-	 * Those return null rather than falling through to the /v4 shape. An unhandled `mapbox://` URL
-	 * then reaches the network as-is and fails on the unknown scheme, which is traceable; guessing
-	 * would instead produce a well-formed URL that 404s and reads like a genuinely missing asset.
-	 */
+	// A bare tileset id references its TileJSON, e.g. mapbox://mapbox.satellite, and is always a
+	// single segment. Anything else is unrecognised: fail visibly rather than guess a URL that 404s.
 	if (path.includes('/')) return null;
 
 	return `${MAPBOX_API}/v4/${path}.json?secure`;
 }
 
-/**
- * Append the access token, unless the URL already carries one. TileJSON responses hand back tile
- * URLs that may already be tokenised, and appending a second one makes Mapbox reject the request.
- */
+/** Append the access token, unless the URL already carries one from a TileJSON response. */
 function withAccessToken(url: string, accessToken: string): string {
 	if (/[?&]access_token=/.test(url)) return url;
 	return `${url}${url.includes('?') ? '&' : '?'}access_token=${accessToken}`;
 }
 
 /**
- * Build the `transformRequest` hook that stands in for the `accessToken` option maplibre dropped
- * in v2. It rewrites `mapbox://` URLs and tokenises every request bound for the Mapbox API,
- * including the plain https tile URLs that come back inside a TileJSON response. Requests to any
- * other host are passed through untouched, so a non-Mapbox basemap never sees the token.
+ * Stands in for the `accessToken` map option maplibre dropped in v2. Other hosts pass through
+ * untouched, so a non-Mapbox basemap never sees the token.
  */
 export function getMapboxRequestTransformer(accessToken: string): RequestTransformFunction {
 	return (url) => {

@@ -2,18 +2,12 @@ import { setWorkerUrl } from 'maplibre-gl';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 
 /*
- * maplibre is ESM-only from v6 and locates its worker at runtime with
- * `new URL('./' + filename, import.meta.url)`, choosing the filename through a dev/prod ternary.
- * Rollup cannot follow a computed specifier, so Vite emits no worker asset and the production
- * bundle ends up requesting one that was never built, leaving the map stuck with no tiles.
+ * maplibre locates its worker through a computed `import.meta.url`, which Rollup cannot follow, so
+ * without this Vite emits no worker asset and production builds request one that was never built.
+ * Dev is unaffected, which is why this only shows up in a real build.
  *
- * This only reproduces in a real build. Under `vite dev` the request resolves, because the dev
- * server serves the file straight out of node_modules.
+ * `?worker&url` and not `?url`: the worker imports a sibling chunk that `?url` would not emit.
  *
- * `?worker&url` rather than plain `?url`: the dist worker imports its sibling
- * `maplibre-gl-shared.mjs`, and `?url` would emit the worker on its own, so it would fail on that
- * first import instead.
- *
- * Import this module for its side effect anywhere a `Map` is constructed.
+ * Import for the side effect anywhere a `Map` is constructed.
  */
 setWorkerUrl(workerUrl);

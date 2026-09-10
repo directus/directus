@@ -83,7 +83,7 @@
 	border-radius: var(--theme--popover--menu--border-radius);
 	box-shadow: var(--theme--popover--menu--box-shadow);
 
-	// maplibre rebuilt this control as <details>/<summary>, so the toggle is no longer a <button>.
+	// The toggle is a <summary>, not a <button>, since maplibre rebuilt this control as <details>.
 	.maplibregl-ctrl-attrib-button {
 		opacity: 0.25;
 		transition: opacity var(--fast) var(--transition);
@@ -198,16 +198,10 @@
 }
 
 /*
- * mapbox-gl-draw ships its cursor feedback as compound rules keyed on Mapbox GL's `map`,
- * `canvas-container` and `interactive` class names, all three of which maplibre renamed in v2.
- * Overriding `MapboxDraw.constants.classes` repoints the elements draw builds itself, but it
- * cannot reach selectors baked into draw's stylesheet, so every one of those rules is dead and
- * the cursor never changes while drawing or editing a vertex.
- *
- * The state classes (`mouse-*`, `mode-*`, `feature-*`) are written to the map container as plain
- * strings, so restating the rules under the maplibre names restores the feedback. Mirrors the
- * cursor block in mapbox-gl-draw.css; the -moz-/-webkit-grab fallbacks are dropped as unprefixed
- * `grab` is universally supported.
+ * Draw's cursor rules are keyed on Mapbox GL class names that maplibre renamed, and overriding
+ * `constants.classes` cannot reach selectors baked into draw's own stylesheet. Restated here under
+ * the maplibre names; draw still writes the `mouse-*`/`mode-*`/`feature-*` state classes itself.
+ * Mirrors the cursor block in mapbox-gl-draw.css, minus its -moz-/-webkit-grab fallbacks.
  */
 .maplibregl-map {
 	$canvas: '.maplibregl-canvas-container.maplibregl-interactive';

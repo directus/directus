@@ -39,15 +39,9 @@ import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-/*
- * MapboxDraw builds its container elements with Mapbox GL's class names, which maplibre dropped in
- * v3, so without this the draw controls render unstyled and detached from the native control stack.
- * Only the container/canvas classes move; the per-button `mapbox-gl-draw_*` classes are draw's own
- * and are styled directly in `styles/lib/_mapbox.scss`.
- *
- * The cast is needed because @types/mapbox__mapbox-gl-draw pins these as readonly string literals.
- * Assigning before the first `new MapboxDraw()` below is what makes it take effect.
- */
+// Repoint the Mapbox GL class names MapboxDraw builds its containers with at maplibre's, which
+// must happen before the first `new MapboxDraw()` below. The cast is because the types pin these
+// as readonly literals. Draw's own `mapbox-gl-draw_*` classes are unaffected.
 Object.assign(MapboxDraw.constants.classes as Record<string, string>, {
 	CANVAS: 'maplibregl-canvas',
 	CONTROL_BASE: 'maplibregl-ctrl',
