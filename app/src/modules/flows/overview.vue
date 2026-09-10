@@ -243,12 +243,6 @@ function navigateToFolder(folderId: string | null) {
 	}
 }
 
-// Deleting a folder detaches its flows in the database, so re-hydrate before navigating
-async function onFolderDeleted(parent: string | null) {
-	await flowsStore.hydrate();
-	navigateToFolder(parent);
-}
-
 function updateSort(sort: Sort | null) {
 	internalSort.value = sort ?? { by: 'name', desc: false };
 }
@@ -397,7 +391,7 @@ function onFlowDrawerCompletion(id: string) {
 <template>
 	<PrivateView :title="title" icon="bolt">
 		<template #navigation>
-			<FlowsNavigation :current-folder="folder" @deleted="onFolderDeleted" />
+			<FlowsNavigation :current-folder="folder" />
 		</template>
 
 		<template #actions>
