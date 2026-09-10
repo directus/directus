@@ -1,6 +1,7 @@
 import { CollectionInactiveError } from '@directus/errors';
 import type { Accountability, PermissionsAction } from '@directus/types';
 import { isCollectionActive } from '@directus/utils';
+import { isAdmin } from '../../../utils/is-admin.js';
 import { getCollectionFromSchema } from '../../../utils/schema/get-collection-from-schema.js';
 import type { Context } from '../../types.js';
 import { createCollectionForbiddenError } from '../process-ast/utils/validate-path/create-error.js';
@@ -22,7 +23,7 @@ export async function assertCollectionActive(options: AssertCollectionActiveOpti
 
 	if (isCollectionActive(collectionOverview)) return;
 
-	if (accountability !== null && accountability.admin !== true) {
+	if (accountability && isAdmin(accountability) === false) {
 		const hasAccess = await validateCollectionAccess({ accountability, collection, action }, context);
 
 		if (!hasAccess) {
