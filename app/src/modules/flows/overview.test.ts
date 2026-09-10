@@ -2,7 +2,7 @@ import { FlowRaw } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import { Router } from 'vue-router';
 import FlowsOverview from './overview.vue';
 import { generateRouter } from '@/__utils__/router';
@@ -151,6 +151,7 @@ beforeEach(async () => {
 			'v-button': true,
 			'v-icon': true,
 			'sidebar-detail': true,
+			'basic-import-sidebar-detail': true,
 			'v-info': true,
 			'v-table': true,
 			'display-formatted-value': true,
@@ -406,46 +407,45 @@ describe('FlowsOverview - empty state', () => {
 });
 
 describe('FlowsOverview - import export', () => {
-	test('offers Flow import from the header bar', () => {
+	test('offers export from the header bar once Flows are selected', async () => {
 		const wrapper = mount(FlowsOverview, { global });
-		const importAction = wrapper.find('[data-icon="file_upload"]');
 
-		expect(importAction.text()).toBe('');
-		expect(importAction.attributes('data-variant')).toBe('ghost');
+		expect(wrapper.find('[data-icon="download"]').exists()).toBe(false);
+
+		(wrapper.vm as any).selectedKeys = ['flow-1'];
+		await nextTick();
+
+		expect(wrapper.find('[data-icon="download"]').attributes('data-variant')).toBe('ghost');
 	});
 
-	test('exports the stored Flow rather than the translated table row', async () => {
+	test('exports the stored Flows rather than the translated table rows', async () => {
 		const { saveAs } = (await vi.importMock('file-saver')) as { saveAs: ReturnType<typeof vi.fn> };
 		saveAs.mockClear();
 
 		const wrapper = mount(FlowsOverview, { global });
-		const vm = wrapper.vm as any;
 
-		// The row the context menu hands over has already been through `translate()`
-		vm.exportFlow({ id: 'flow-1', name: 'Resolved label' });
+		(wrapper.vm as any).exportFlows(['flow-1']);
 
 		const [blob, filename] = saveAs.mock.calls[0]!;
 		expect(filename).toBe('flow-flow-1.json');
-		expect(JSON.parse(await blob.text()).flow.name).toBe('Send email');
+		expect(JSON.parse(await blob.text()).flows[0].flow.name).toBe('Send email');
 	});
 
-	test('notifies after importing a Flow', async () => {
+	test('notifies after importing Flows', async () => {
 		const api = (await vi.importMock<{ default: { post: ReturnType<typeof vi.fn> } }>('@/api')).default;
 		const { notify } = (await vi.importMock('@/utils/notify')) as { notify: ReturnType<typeof vi.fn> };
 		api.post.mockResolvedValue({});
 
 		const wrapper = mount(FlowsOverview, { global });
-		const vm = wrapper.vm as any;
 
-		vm.importFile = {
+		const file = {
 			text: () =>
 				Promise.resolve(
 					JSON.stringify({ version: 1, flow: { id: 'flow-1', name: 'Imported', operation: null }, operations: [] }),
 				),
 		};
 
-		await vm.importFlow();
-
+		await expect((wrapper.vm as any).importFlows(file)).resolves.toBe(true);
 		expect(notify).toHaveBeenCalledWith({ title: 'flow_import_success', type: 'success' });
 	});
 
@@ -460,11 +460,8 @@ describe('FlowsOverview - import export', () => {
 		unexpectedError.mockClear();
 
 		const wrapper = mount(FlowsOverview, { global });
-		const vm = wrapper.vm as any;
 
-		vm.importFile = { text: () => Promise.resolve('not json') };
-
-		await vm.importFlow();
+		await expect((wrapper.vm as any).importFlows({ text: () => Promise.resolve('not json') })).resolves.toBe(false);
 
 		expect(unexpectedError).not.toHaveBeenCalled();
 

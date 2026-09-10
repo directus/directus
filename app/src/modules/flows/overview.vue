@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Field, Filter, FlowRaw, Item } from '@directus/types';
+import { getDateTimeFormatted } from '@directus/utils';
 import { StorageSerializers, useLocalStorage } from '@vueuse/core';
 import { saveAs } from 'file-saver';
 import { isObject, sortBy } from 'lodash';
@@ -25,7 +26,6 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
-import VRemove from '@/components/v-remove.vue';
 import { Header, Sort } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
 import { useFolders } from '@/composables/use-folders';
@@ -40,12 +40,11 @@ import { extractErrorCode } from '@/utils/extract-error-code';
 import { filterItems } from '@/utils/filter-items';
 import { notify } from '@/utils/notify';
 import { parseFilter } from '@/utils/parse-filter';
-import { readableMimeType } from '@/utils/readable-mime-type';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import { PrivateView } from '@/views/private';
+import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
 import AddFolder from '@/views/private/components/add-folder.vue';
+import BasicImportSidebarDetail from '@/views/private/components/basic-import-sidebar-detail.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
 import EntitlementRemaining from '@/views/private/components/license/entitlement-remaining.vue';
@@ -254,66 +253,35 @@ function openDuplicateFlow(item: FlowRaw) {
 	duplicateDialogActive.value = true;
 }
 
-function exportFlow(flow: FlowRaw) {
-	// Table rows carry a translated name, so export the stored Flow to keep `$t:` literals intact
-	const source = flowsStore.flows.find(({ id }) => id === flow.id) ?? flow;
-	const flowExport = createFlowExport(source);
+function exportFlows(ids: string[]) {
+	// Table rows carry a translated name, so export the stored Flows to keep `$t:` literals intact
+	const flows = flowsStore.flows.filter(({ id }) => ids.includes(id));
+	const filename = flows.length === 1 ? `flow-${flows[0]!.id}.json` : `flows-${getDateTimeFormatted()}.json`;
 
 	saveAs(
-		new Blob([JSON.stringify(flowExport, null, 2)], { type: 'application/json;charset=utf-8' }),
-		`flow-${flowExport.flow.id}.json`,
+		new Blob([JSON.stringify(createFlowExport(flows), null, 2)], { type: 'application/json;charset=utf-8' }),
+		filename,
 	);
 }
 
-const importDialogActive = ref(false);
-const importFileInput = ref<HTMLInputElement | null>(null);
-const importFile = ref<File | null>(null);
-const importing = ref(false);
-
-const importFileExtension = computed(() => {
-	if (!importFile.value) return null;
-	return readableMimeType(importFile.value.type, true);
-});
-
-function openImportFlow() {
-	clearImportFile();
-	importDialogActive.value = true;
-}
-
-function selectImportFile(event: Event) {
-	const files = (event.target as HTMLInputElement).files;
-	importFile.value = files?.item(0) ?? null;
-}
-
-function clearImportFile() {
-	// Reset the native input too, otherwise re-picking the same file won't fire `change`
-	if (importFileInput.value) importFileInput.value.value = '';
-	importFile.value = null;
-}
-
-async function importFlow() {
-	if (!importFile.value || importing.value) return;
-
-	importing.value = true;
-
+async function importFlows(file: File) {
 	try {
-		const flowExport = parseFlowExport(await importFile.value.text());
-		const flowImport = createFlowImport(flowExport, props.folder ?? null);
+		const flowImport = createFlowImport(parseFlowExport(await file.text()), props.folder ?? null);
 		const form = new FormData();
-		form.append('file', new Blob([JSON.stringify(flowImport)], { type: 'application/json' }), 'flow.json');
+		form.append('file', new Blob([JSON.stringify(flowImport)], { type: 'application/json' }), 'flows.json');
 
 		await api.post('/utils/import', form, { params: { mode: 'add' } });
 		await flowsStore.hydrate();
-		importDialogActive.value = false;
 		notify({ title: t('flow_import_success'), type: 'success' });
+		return true;
 	} catch (error) {
 		if (error instanceof FlowImportError) {
 			notify({ title: t('flow_import_failed'), text: t(error.translationKey), type: 'error', dialog: true });
 		} else {
 			unexpectedError(error);
 		}
-	} finally {
-		importing.value = false;
+
+		return false;
 	}
 }
 
@@ -431,10 +399,11 @@ function onFlowDrawerCompletion(id: string) {
 				@click="openMoveToFolder"
 			/>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('import_flow')"
-				icon="file_upload"
+				v-if="selectedKeys.length > 0"
+				v-tooltip.bottom="$t('export_flows')"
+				icon="download"
 				variant="ghost"
-				@click="openImportFlow"
+				@click="exportFlows(selectedKeys)"
 			/>
 			<EntitlementRemaining entitlement-key="flows" />
 		</template>
@@ -529,7 +498,7 @@ function onFlowDrawerCompletion(id: string) {
 								</VListItemContent>
 							</VListItem>
 
-							<VListItem clickable @click="exportFlow(item)">
+							<VListItem clickable @click="exportFlows([item.id])">
 								<VListItemIcon>
 									<VIcon name="file_download" />
 								</VListItemIcon>
@@ -595,47 +564,14 @@ function onFlowDrawerCompletion(id: string) {
 			</VCard>
 		</VDialog>
 
-		<VDialog v-model="importDialogActive" @esc="importDialogActive = false" @apply="importFlow">
-			<VCard>
-				<VCardTitle>{{ $t('import_flow') }}</VCardTitle>
-				<VCardText>
-					<VInput clickable>
-						<template #prepend>
-							<div class="import-file-preview" :class="{ 'has-file': importFile }">
-								<span v-if="importFileExtension" class="import-file-extension">{{ importFileExtension }}</span>
-								<VIcon v-else name="folder_open" />
-							</div>
-						</template>
-						<template #input>
-							<label v-tooltip="importFile?.name" for="import-flow-file" class="import-file-label">
-								<input
-									id="import-flow-file"
-									ref="importFileInput"
-									type="file"
-									accept="application/json,.json"
-									@change="selectImportFile"
-								/>
-							</label>
-							<span class="import-file-text" :class="{ 'no-file': !importFile }">
-								{{ importFile ? importFile.name : $t('flow_import_input_placeholder') }}
-							</span>
-						</template>
-						<template #append>
-							<div class="import-file-actions">
-								<VRemove v-if="importFile" deselect @action="clearImportFile" />
-								<VIcon v-else name="attach_file" />
-							</div>
-						</template>
-					</VInput>
-				</VCardText>
-				<VCardActions>
-					<VButton secondary @click="importDialogActive = false">{{ $t('cancel') }}</VButton>
-					<VButton :disabled="!importFile" :loading="importing" @click="importFlow">
-						{{ $t('import_flow') }}
-					</VButton>
-				</VCardActions>
-			</VCard>
-		</VDialog>
+		<template #sidebar>
+			<BasicImportSidebarDetail
+				collection="directus_flows"
+				accept="application/json,.json"
+				:placeholder="$t('flow_import_input_placeholder')"
+				:import-handler="importFlows"
+			/>
+		</template>
 
 		<FlowDrawer
 			:active="editFlow !== undefined"
@@ -673,59 +609,5 @@ function onFlowDrawerCompletion(id: string) {
 .header-icon {
 	--v-button-color-disabled: var(--theme--primary);
 	--v-button-background-color-disabled: var(--theme--primary-background);
-}
-
-.import-file-preview {
-	--v-icon-color: var(--theme--foreground-subdued);
-
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	inline-size: 2.25rem;
-	block-size: 2.25rem;
-	margin-inline-start: -0.4375rem;
-	overflow: hidden;
-	background-color: var(--theme--background-normal);
-	border-radius: var(--theme--border-radius);
-
-	&.has-file {
-		background-color: var(--theme--primary-background);
-	}
-}
-
-.import-file-extension {
-	color: var(--theme--primary);
-	font-weight: 600;
-	font-size: 0.625rem;
-	text-transform: uppercase;
-}
-
-.import-file-label {
-	position: absolute;
-	inset-block-start: 0;
-	inset-inline-start: 0;
-	display: block;
-	inline-size: 100%;
-	block-size: 100%;
-	overflow: hidden;
-	opacity: 0;
-	cursor: pointer;
-	appearance: none;
-}
-
-.import-file-text {
-	flex-grow: 1;
-	overflow: hidden;
-	line-height: normal;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-
-	&.no-file {
-		color: var(--theme--foreground-subdued);
-	}
-}
-
-.import-file-actions {
-	@include mixins.list-interface-item-actions;
 }
 </style>

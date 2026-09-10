@@ -10,11 +10,18 @@ type PortableOperation = Pick<
 	'id' | 'name' | 'key' | 'type' | 'position_x' | 'position_y' | 'options' | 'resolve' | 'reject' | 'flow'
 >;
 
-export type FlowExport = {
-	version: 1;
+type FlowBundle = {
 	flow: PortableFlow;
 	operations: PortableOperation[];
 };
+
+export type FlowExport = {
+	version: 2;
+	flows: FlowBundle[];
+};
+
+// The first release exported one Flow per file
+type LegacyFlowExport = FlowBundle & { version: 1 };
 
 /**
  * A file the user picked that isn't a usable Flow export. Carries a translation key so the caller can
@@ -35,46 +42,48 @@ export function parseFlowExport(contents: string): unknown {
 	}
 }
 
-export function createFlowExport(flow: FlowRaw): FlowExport {
+export function createFlowExport(flows: FlowRaw[]): FlowExport {
 	return {
-		version: 1,
-		flow: {
-			id: flow.id,
-			name: flow.name,
-			icon: flow.icon,
-			color: flow.color,
-			description: flow.description,
-			trigger: flow.trigger,
-			accountability: flow.accountability,
-			options: flow.options,
-			operation: flow.operation,
-		},
-		operations: (flow.operations ?? []).map((operation) => ({
-			id: operation.id,
-			name: operation.name,
-			key: operation.key,
-			type: operation.type,
-			position_x: operation.position_x,
-			position_y: operation.position_y,
-			options: operation.options,
-			resolve: operation.resolve,
-			reject: operation.reject,
-			flow: operation.flow,
+		version: 2,
+		flows: flows.map((flow) => ({
+			flow: {
+				id: flow.id,
+				name: flow.name,
+				icon: flow.icon,
+				color: flow.color,
+				description: flow.description,
+				trigger: flow.trigger,
+				accountability: flow.accountability,
+				options: flow.options,
+				operation: flow.operation,
+			},
+			operations: (flow.operations ?? []).map((operation) => ({
+				id: operation.id,
+				name: operation.name,
+				key: operation.key,
+				type: operation.type,
+				position_x: operation.position_x,
+				position_y: operation.position_y,
+				options: operation.options,
+				resolve: operation.resolve,
+				reject: operation.reject,
+				flow: operation.flow,
+			})),
 		})),
 	};
 }
 
 export function createFlowImport(value: unknown, folder: string | null = null): ImportCollectionData[] {
-	const flowExport = validateFlowExport(value);
+	const bundles = validateFlowExport(value);
 
 	return [
 		{
 			collection: 'directus_flows',
-			items: [createImportFlow(flowExport.flow, folder)],
+			items: bundles.map((bundle) => createImportFlow(bundle.flow, folder)),
 		},
 		{
 			collection: 'directus_operations',
-			items: flowExport.operations.map(createImportOperation),
+			items: bundles.flatMap((bundle) => bundle.operations.map(createImportOperation)),
 		},
 	];
 }
@@ -110,8 +119,20 @@ function createImportOperation(operation: PortableOperation) {
 	};
 }
 
-function validateFlowExport(value: unknown): FlowExport {
-	if (!isRecord(value) || value['version'] !== 1 || !isRecord(value['flow']) || !Array.isArray(value['operations'])) {
+function validateFlowExport(value: unknown): FlowBundle[] {
+	if (!isRecord(value)) throw new FlowImportError('flow_import_invalid_file');
+
+	if (value['version'] === 1) return [validateFlowBundle(value as Partial<LegacyFlowExport>)];
+
+	if (value['version'] === 2 && Array.isArray(value['flows'])) {
+		return value['flows'].map(validateFlowBundle);
+	}
+
+	throw new FlowImportError('flow_import_invalid_file');
+}
+
+function validateFlowBundle(value: unknown): FlowBundle {
+	if (!isRecord(value) || !isRecord(value['flow']) || !Array.isArray(value['operations'])) {
 		throw new FlowImportError('flow_import_invalid_file');
 	}
 
@@ -139,19 +160,7 @@ function validateFlowExport(value: unknown): FlowExport {
 		throw new FlowImportError('flow_import_invalid_file');
 	}
 
-	for (const operation of value['operations']) {
-		const resolve = operation['resolve'];
-		const reject = operation['reject'];
-
-		if (
-			(resolve !== null && (!isString(resolve) || !operationIds.has(resolve))) ||
-			(reject !== null && (!isString(reject) || !operationIds.has(reject)))
-		) {
-			throw new FlowImportError('flow_import_invalid_file');
-		}
-	}
-
-	return value as FlowExport;
+	return value as FlowBundle;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
