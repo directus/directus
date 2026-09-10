@@ -137,7 +137,7 @@ describe('increment', () => {
 		vi.mocked(kv['store'].get).mockReturnValue(new Uint8Array([1]));
 		vi.mocked(deserialize).mockReturnValue(mockStoredValue);
 
-		await expect(kv.increment(mockKey)).rejects.toMatchInlineSnapshot(
+		expect(() => kv.increment(mockKey)).toThrowErrorMatchingInlineSnapshot(
 			'[Error: The value for key "kv-key" is not a number.]',
 		);
 	});
@@ -152,7 +152,7 @@ describe('setMax', () => {
 		vi.mocked(kv['store'].get).mockReturnValue(new Uint8Array([1]));
 		vi.mocked(deserialize).mockReturnValue(mockStoredValue);
 
-		await expect(kv.setMax(mockKey, mockValue)).rejects.toMatchInlineSnapshot(
+		expect(() => kv.setMax(mockKey, mockValue)).toThrowErrorMatchingInlineSnapshot(
 			'[Error: The value for key "kv-key" is not a number.]',
 		);
 	});

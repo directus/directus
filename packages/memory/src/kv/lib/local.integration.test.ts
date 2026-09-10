@@ -67,8 +67,8 @@ describe.each([{}, { maxKeys: 100 }, { ttl: 5000 }])('Local KV updates with %j',
 		const kv = new KvLocal(config);
 		await kv.set('count', 'not-a-number');
 
-		await expect(kv.increment('count')).rejects.toThrow('The value for key "count" is not a number.');
-		await expect(kv.setMax('count', 100)).rejects.toThrow('The value for key "count" is not a number.');
+		expect(() => kv.increment('count')).toThrow('The value for key "count" is not a number.');
+		expect(() => kv.setMax('count', 100)).toThrow('The value for key "count" is not a number.');
 		expect(await kv.get('count')).toBe('not-a-number');
 	});
 });
