@@ -30,6 +30,20 @@ test('Resolves sprite URLs, preserving the suffix maplibre appends', () => {
 	);
 });
 
+test('Resolves sprite URLs carrying a Studio version hash', () => {
+	expect(resolveMapboxUrl('mapbox://sprites/directus/abc123/8mkq4ehzz5uwrnfmvpp1yjl2s@2x.png')).toBe(
+		'https://api.mapbox.com/styles/v1/directus/abc123/8mkq4ehzz5uwrnfmvpp1yjl2s/sprite@2x.png',
+	);
+
+	expect(resolveMapboxUrl('mapbox://sprites/directus/abc123/8mkq4ehzz5uwrnfmvpp1yjl2s.json')).toBe(
+		'https://api.mapbox.com/styles/v1/directus/abc123/8mkq4ehzz5uwrnfmvpp1yjl2s/sprite.json',
+	);
+
+	expect(resolveMapboxUrl('mapbox://sprites/directus/abc123/8mkq4ehzz5uwrnfmvpp1yjl2s')).toBe(
+		'https://api.mapbox.com/styles/v1/directus/abc123/8mkq4ehzz5uwrnfmvpp1yjl2s/sprite',
+	);
+});
+
 test('Resolves font URLs without re-encoding the fontstack', () => {
 	expect(resolveMapboxUrl('mapbox://fonts/directus/Arial%20Unicode%20MS%20Regular/0-255.pbf')).toBe(
 		'https://api.mapbox.com/fonts/v1/directus/Arial%20Unicode%20MS%20Regular/0-255.pbf',
@@ -46,6 +60,16 @@ test('Treats a bare tileset id as a TileJSON reference', () => {
 	expect(resolveMapboxUrl('mapbox://mapbox.mapbox-streets-v8')).toBe(
 		'https://api.mapbox.com/v4/mapbox.mapbox-streets-v8.json?secure',
 	);
+
+	expect(resolveMapboxUrl('mapbox://mapbox.mapbox-streets-v8,mapbox.mapbox-terrain-v2')).toBe(
+		'https://api.mapbox.com/v4/mapbox.mapbox-streets-v8,mapbox.mapbox-terrain-v2.json?secure',
+	);
+});
+
+test('Refuses to guess at an unrecognised multi-segment mapbox:// form', () => {
+	// Falling through to the tileset shape here would yield a well-formed URL that merely 404s,
+	// which is far harder to trace than a URL that visibly never got rewritten.
+	expect(resolveMapboxUrl('mapbox://something/we/do/not/handle')).toBeNull();
 });
 
 test('Ignores URLs that are not mapbox://', () => {

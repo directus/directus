@@ -24,12 +24,20 @@ export function resolveMapboxUrl(url: string): string | null {
 		return `${MAPBOX_API}/styles/v1/${path.slice('styles/'.length)}`;
 	}
 
-	// mapbox://sprites/{user}/{styleId}, with maplibre's @2x/.png/.json suffixes already appended
-	const sprite = /^sprites\/([^/]+)\/([^/]+?)((?:@\d+x)?\.\w+)?$/.exec(path);
-
-	if (sprite) {
-		const [, user, styleId, suffix = ''] = sprite;
-		return `${MAPBOX_API}/styles/v1/${user}/${styleId}/sprite${suffix}`;
+	/*
+	 * mapbox://sprites/{user}/{styleId}, optionally with a Studio version hash appended as a
+	 * further segment, and with maplibre's @2x/.png/.json suffix already concatenated on the end.
+	 *
+	 * The path depth is deliberately not constrained: mapbox-gl-js splices the whole path in
+	 * wholesale, so anything between `sprites/` and the suffix belongs in the output untouched.
+	 * The suffix has to be guessed back off because maplibre appends it before calling
+	 * `transformRequest`, unlike mapbox-gl-js which received it as a separate argument.
+	 */
+	if (path.startsWith('sprites/')) {
+		const rest = path.slice('sprites/'.length);
+		const suffix = /((?:@\d+x)?\.\w+)$/.exec(rest)?.[1] ?? '';
+		const base = suffix ? rest.slice(0, -suffix.length) : rest;
+		return `${MAPBOX_API}/styles/v1/${base}/sprite${suffix}`;
 	}
 
 	// mapbox://fonts/{user}/{fontstack}/{range}.pbf
@@ -42,7 +50,17 @@ export function resolveMapboxUrl(url: string): string | null {
 		return `${MAPBOX_API}/v4/${path.slice('tiles/'.length)}`;
 	}
 
-	// Anything else is a bare tileset id referencing its TileJSON, e.g. mapbox://mapbox.satellite
+	/*
+	 * A bare tileset id references its TileJSON, e.g. mapbox://mapbox.satellite. It is always a
+	 * single segment, comma-separated when several are composited, so anything containing a slash
+	 * is a form this resolver does not know about.
+	 *
+	 * Those return null rather than falling through to the /v4 shape. An unhandled `mapbox://` URL
+	 * then reaches the network as-is and fails on the unknown scheme, which is traceable; guessing
+	 * would instead produce a well-formed URL that 404s and reads like a genuinely missing asset.
+	 */
+	if (path.includes('/')) return null;
+
 	return `${MAPBOX_API}/v4/${path}.json?secure`;
 }
 
