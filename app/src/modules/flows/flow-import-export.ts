@@ -20,9 +20,6 @@ export type FlowExport = {
 	flows: FlowBundle[];
 };
 
-// The first release exported one Flow per file
-type LegacyFlowExport = FlowBundle & { version: 1 };
-
 /**
  * A file the user picked that isn't a usable Flow export. Carries a translation key so the caller can
  * tell the user what's wrong instead of falling back to the generic unexpected-error notice.
@@ -122,13 +119,29 @@ function createImportOperation(operation: PortableOperation) {
 function validateFlowExport(value: unknown): FlowBundle[] {
 	if (!isRecord(value)) throw new FlowImportError('flow_import_invalid_file');
 
-	if (value['version'] === 1) return [validateFlowBundle(value as Partial<LegacyFlowExport>)];
-
-	if (value['version'] === 2 && Array.isArray(value['flows'])) {
-		return value['flows'].map(validateFlowBundle);
+	// The first release exported one Flow per file
+	if (value['version'] === 1) {
+		return [validateFlowBundle(value)];
 	}
 
-	throw new FlowImportError('flow_import_invalid_file');
+	if (value['version'] !== 2 || !Array.isArray(value['flows']) || value['flows'].length === 0) {
+		throw new FlowImportError('flow_import_invalid_file');
+	}
+
+	const bundles = value['flows'].map(validateFlowBundle);
+	const ids = new Set<string>();
+
+	for (const bundle of bundles) {
+		for (const id of [bundle.flow.id, ...bundle.operations.map((operation) => operation.id)]) {
+			if (ids.has(id)) {
+				throw new FlowImportError('flow_import_invalid_file');
+			}
+
+			ids.add(id);
+		}
+	}
+
+	return bundles;
 }
 
 function validateFlowBundle(value: unknown): FlowBundle {
@@ -156,8 +169,12 @@ function validateFlowBundle(value: unknown): FlowBundle {
 		operationIds.add(operation['id']);
 	}
 
-	if (flow['operation'] !== null && (!isString(flow['operation']) || !operationIds.has(flow['operation']))) {
-		throw new FlowImportError('flow_import_invalid_file');
+	const references = [flow['operation'], ...value['operations'].flatMap((op) => [op['resolve'], op['reject']])];
+
+	for (const reference of references) {
+		if (reference !== null && (!isString(reference) || !operationIds.has(reference))) {
+			throw new FlowImportError('flow_import_invalid_file');
+		}
 	}
 
 	return value as FlowBundle;

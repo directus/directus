@@ -87,7 +87,23 @@ describe('flow import export', () => {
 
 	test('rejects a file that is not a Flow export', () => {
 		expect(() => createFlowImport({ version: 3 })).toThrow(new FlowImportError('flow_import_invalid_file'));
+
 		expect(() => createFlowImport({ version: 2, flows: [{}] })).toThrow(
+			new FlowImportError('flow_import_invalid_file'),
+		);
+
+		expect(() => createFlowImport({ version: 2, flows: [] })).toThrow(new FlowImportError('flow_import_invalid_file'));
+	});
+
+	test('rejects an Operation that points at an unknown Operation', () => {
+		const bundle = createFlowExport([flow]);
+		bundle.flows[0]!.operations[0]!.resolve = 'does-not-exist';
+
+		expect(() => createFlowImport(bundle)).toThrow(new FlowImportError('flow_import_invalid_file'));
+	});
+
+	test('rejects a file where two Flows share an id', () => {
+		expect(() => createFlowImport(createFlowExport([flow, flow]))).toThrow(
 			new FlowImportError('flow_import_invalid_file'),
 		);
 	});
