@@ -1141,6 +1141,7 @@ trigger_flow_success: Flow "{flow}" triggered successfully
 field_name_placeholder: Enter field name...
 field_key_placeholder: Enter field key...
 trigger: Trigger
+trigger_type: Trigger Type
 trigger_options: Trigger Options
 view_trigger: View Trigger
 create_trigger: Create Trigger

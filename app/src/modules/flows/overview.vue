@@ -10,6 +10,7 @@ import { RouterView } from 'vue-router';
 import FlowsNavigation from './components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
 import { createFlowExport, createFlowImport, FlowImportError, parseFlowExport } from './flow-import-export';
+import { getTriggers } from './triggers';
 import { useDuplicate } from './use-duplicate';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
@@ -32,6 +33,7 @@ import { useFolders } from '@/composables/use-folders';
 import { useMoveToFolder } from '@/composables/use-move-to-folder';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vue';
+import DisplayLabels from '@/displays/labels/labels.vue';
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { useLicenseStore } from '@/stores/license';
@@ -115,6 +117,14 @@ const tableHeaders = ref<Header[]>([
 		description: null,
 	},
 	{
+		text: t('trigger_type'),
+		value: 'trigger',
+		width: 180,
+		sortable: true,
+		align: 'left',
+		description: null,
+	},
+	{
 		text: t('name'),
 		value: 'name',
 		width: 240,
@@ -133,6 +143,17 @@ const tableHeaders = ref<Header[]>([
 ]);
 
 const internalSort = ref<Sort>({ by: 'name', desc: false });
+
+const { triggers } = getTriggers();
+
+const triggerChoices = triggers.map((trigger) => ({
+	value: trigger.id,
+	text: trigger.name,
+	icon: trigger.icon,
+	color: trigger.color,
+	foreground: null,
+	background: null,
+}));
 
 const flowsStore = useFlowsStore();
 
@@ -460,6 +481,10 @@ function onFlowDrawerCompletion(id: string) {
 						:value="item.status"
 						:conditional-formatting="conditionalFormatting"
 					/>
+				</template>
+
+				<template #[`item.trigger`]="{ item }">
+					<DisplayLabels v-if="item.trigger" type="string" :value="item.trigger" :choices="triggerChoices" />
 				</template>
 
 				<template #item-append="{ item }">
