@@ -8,6 +8,7 @@ import FlowsOverview from './overview.vue';
 import { generateRouter } from '@/__utils__/router';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
+import type { Header } from '@/components/v-table/types';
 import { i18n } from '@/lang';
 
 vi.mock('file-saver', () => ({
@@ -50,7 +51,10 @@ vi.mock('@/stores/flows', () => ({
 vi.mock('@/composables/use-folders', () => ({
 	useFolders: () => ({
 		loading: ref(false),
-		folders: ref([{ id: 'folder-a', name: 'Notifications', parent: null }]),
+		folders: ref([
+			{ id: 'folder-a', name: 'Notifications', parent: null },
+			{ id: 'folder-b', name: 'Email', parent: 'folder-a' },
+		]),
 		nestedFolders: ref([]),
 		fetchFolders: vi.fn(),
 		openFolders: ref([]),
@@ -403,6 +407,21 @@ describe('FlowsOverview - empty state', () => {
 
 		expect(wrapper.find('v-table-stub').exists()).toBe(true);
 		expect(wrapper.find('v-info-stub').exists()).toBe(false);
+	});
+});
+
+describe('FlowsOverview - folder column', () => {
+	test('resolves the full folder path and hides the column inside a folder', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		expect(vm.getFolderPath('folder-a')).toEqual(['Notifications']);
+		expect(vm.getFolderPath('folder-b')).toEqual(['Notifications', 'Email']);
+		expect(vm.visibleHeaders.some((header: Header) => header.value === 'folder')).toBe(true);
+
+		await wrapper.setProps({ folder: 'folder-a' });
+
+		expect(vm.visibleHeaders.some((header: Header) => header.value === 'folder')).toBe(false);
 	});
 });
 

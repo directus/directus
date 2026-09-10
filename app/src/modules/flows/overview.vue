@@ -6,7 +6,7 @@ import { saveAs } from 'file-saver';
 import { isObject, sortBy } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { RouterView } from 'vue-router';
+import { RouterLink, RouterView } from 'vue-router';
 import FlowsNavigation from './components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
 import { createFlowExport, createFlowImport, FlowImportError, parseFlowExport } from './flow-import-export';
@@ -30,6 +30,7 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import { Header, Sort } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useFolders } from '@/composables/use-folders';
 import { useMoveToFolder } from '@/composables/use-move-to-folder';
 import { useCollectionPermissions } from '@/composables/use-permissions';
@@ -134,6 +135,14 @@ const tableHeaders = ref<Header[]>([
 		description: null,
 	},
 	{
+		text: t('folder'),
+		value: 'folder',
+		width: 180,
+		sortable: true,
+		align: 'left',
+		description: null,
+	},
+	{
 		text: t('description'),
 		value: 'description',
 		width: 360,
@@ -173,6 +182,33 @@ const relationsStore = useRelationsStore();
 const foldersById = computed(() => new Map((folders.value ?? []).map((folder) => [folder.id, folder])));
 
 const title = computed(() => (props.folder ? foldersById.value.get(props.folder)?.name : undefined) ?? t('flows'));
+
+const visibleHeaders = computed<Header[]>({
+	get: () => (props.folder ? tableHeaders.value.filter((header) => header.value !== 'folder') : tableHeaders.value),
+	set: (headers) => {
+		const folderHeader = tableHeaders.value.find((header) => header.value === 'folder');
+
+		if (!folderHeader || headers.some((header) => header.value === 'folder')) {
+			tableHeaders.value = headers;
+			return;
+		}
+
+		const nameIndex = headers.findIndex((header) => header.value === 'name');
+		tableHeaders.value = [...headers.slice(0, nameIndex + 1), folderHeader, ...headers.slice(nameIndex + 1)];
+	},
+});
+
+function getFolderPath(folderId: string | null): string[] {
+	const names: string[] = [];
+	let current = folderId ? foldersById.value.get(folderId) : undefined;
+
+	while (current && names.length <= foldersById.value.size) {
+		names.unshift(current.name);
+		current = current.parent ? foldersById.value.get(current.parent) : undefined;
+	}
+
+	return names;
+}
 
 // Relations we can resolve client-side, so can filter on: whitelists the field and hydrates its foreign key.
 const FILTERABLE_RELATIONS: Record<string, (flow: FlowRaw) => Item | null> = {
@@ -236,10 +272,21 @@ const flows = computed(() => {
 
 	const { by } = internalSort.value;
 
-	// Sort the trigger column by the label shown, not the raw id
-	const sortedFlows = sortBy(result, [by === 'trigger' ? (flow: FlowRaw) => triggerNames.get(flow.trigger!) : by]);
+	const sortedFlows = sortBy(result, [sortIteratee(by)]);
 	return internalSort.value.desc ? sortedFlows.reverse() : sortedFlows;
 });
+
+function sortIteratee(by: string | null) {
+	if (by === 'trigger') {
+		return (flow: FlowRaw) => triggerNames.get(flow.trigger!);
+	}
+
+	if (by === 'folder') {
+		return (flow: FlowRaw) => getFolderPath(flow.folder).join('/');
+	}
+
+	return by;
+}
 
 function updateSort(sort: Sort | null) {
 	internalSort.value = sort ?? { by: 'name', desc: false };
@@ -501,7 +548,7 @@ function onFlowDrawerCompletion(id: string) {
 			<MaxCapacityAlert v-if="!licenseStore.limits.flows.hasRemaining" entitlement-key="flows" />
 
 			<VTable
-				v-model:headers="tableHeaders"
+				v-model:headers="visibleHeaders"
 				v-model="selectedKeys"
 				:items="flows"
 				:sort="internalSort"
@@ -527,6 +574,17 @@ function onFlowDrawerCompletion(id: string) {
 
 				<template #[`item.trigger`]="{ item }">
 					<DisplayLabels v-if="item.trigger" type="string" :value="item.trigger" :choices="triggerChoices" />
+				</template>
+
+				<template #[`item.folder`]="{ item }">
+					<RouterLink
+						v-if="item.folder && foldersById.has(item.folder)"
+						class="folder-link"
+						:to="{ name: 'flows-folder', params: { folder: item.folder } }"
+						@click.stop
+					>
+						<VTextOverflow :text="`/${getFolderPath(item.folder).join('/')}`" />
+					</RouterLink>
 				</template>
 
 				<template #item-append="{ item }">
@@ -672,6 +730,16 @@ function onFlowDrawerCompletion(id: string) {
 .ctx-toggle {
 	--v-icon-color: var(--theme--foreground-subdued);
 	--v-icon-color-hover: var(--theme--foreground);
+}
+
+.folder-link {
+	display: block;
+	max-inline-size: 100%;
+	color: var(--theme--primary);
+
+	&:hover {
+		text-decoration: underline;
+	}
 }
 
 .v-list-item.danger {
