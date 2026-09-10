@@ -11,7 +11,7 @@ import {
 	withNamespace,
 } from '../../utils/index.js';
 import type { ExtendedRedis } from '../index.js';
-import { EPOCH_SCRIPTS, KvRedis, SCRIPTS } from './redis.js';
+import { KvRedis, SET_MAX_SCRIPT } from './redis.js';
 
 vi.mock('ioredis');
 vi.mock('../../utils/index.js');
@@ -19,8 +19,6 @@ vi.mock('../../utils/index.js');
 let mockNamespace: string;
 let mockKey: string;
 let mockNamespacedKey: string;
-let mockEpochKey: string;
-let mockKeyPrefix: string;
 let mockRedis: Redis;
 let mockUint8Array: Uint8Array;
 let mockBuffer: Buffer;
@@ -28,27 +26,11 @@ let mockCompressedUint8Array: Uint8Array;
 let mockDecompressedUint8Array: Uint8Array;
 let mockValue: string;
 let kv: KvRedis;
-let epochKv: KvRedis;
-
-/** ioredis exposes custom commands as methods, which aren't part of the mocked class */
-const stubCustomCommands = (redis: Redis) =>
-	Object.assign(redis, {
-		setMax: vi.fn(),
-		kvGetBuffer: vi.fn(),
-		kvExists: vi.fn(),
-		kvDelete: vi.fn(),
-		kvSet: vi.fn(),
-		kvIncrement: vi.fn(),
-		kvSetMax: vi.fn(),
-		kvBumpEpoch: vi.fn(),
-	});
 
 beforeEach(() => {
 	mockKey = 'test-key';
 	mockNamespace = 'test';
-	mockNamespacedKey = 'test:test-key';
-	mockEpochKey = 'test:__epoch';
-	mockKeyPrefix = 'test:v';
+	mockNamespacedKey = 'namespaced:test-key';
 
 	mockUint8Array = new Uint8Array();
 	mockBuffer = Buffer.from(mockUint8Array);
@@ -56,14 +38,6 @@ beforeEach(() => {
 	mockDecompressedUint8Array = new Uint8Array([1, 2, 3]);
 
 	mockValue = 'test';
-
-	vi.mocked(withNamespace).mockImplementation((key, namespace) => `${namespace}:${key}`);
-	vi.mocked(bufferToUint8Array).mockReturnValue(mockUint8Array);
-	vi.mocked(uint8ArrayToBuffer).mockReturnValue(mockBuffer as any);
-	vi.mocked(compress).mockResolvedValue(mockCompressedUint8Array);
-	vi.mocked(decompress).mockResolvedValue(mockDecompressedUint8Array);
-	vi.mocked(serialize).mockReturnValue(mockUint8Array);
-	vi.mocked(deserialize).mockReturnValue(mockValue);
 
 	mockRedis = new Redis();
 
@@ -73,14 +47,13 @@ beforeEach(() => {
 		compression: false,
 	});
 
-	epochKv = new KvRedis({
-		namespace: mockNamespace,
-		redis: mockRedis,
-		compression: false,
-		epoch: true,
-	});
-
-	stubCustomCommands(mockRedis);
+	vi.mocked(withNamespace).mockReturnValue(mockNamespacedKey);
+	vi.mocked(bufferToUint8Array).mockReturnValue(mockUint8Array);
+	vi.mocked(uint8ArrayToBuffer).mockReturnValue(mockBuffer as any);
+	vi.mocked(compress).mockResolvedValue(mockCompressedUint8Array);
+	vi.mocked(decompress).mockResolvedValue(mockDecompressedUint8Array);
+	vi.mocked(serialize).mockReturnValue(mockUint8Array);
+	vi.mocked(deserialize).mockReturnValue(mockValue);
 });
 
 afterEach(() => {
@@ -94,16 +67,6 @@ describe('constructor', () => {
 		expect(kv['compression']).toBe(false);
 	});
 
-	test('Disables generations by default', () => {
-		expect(kv['epoch']).toBe(false);
-		expect(epochKv['epoch']).toBe(true);
-	});
-
-	test('Derives the generation counter key and key prefix from the namespace', () => {
-		expect(epochKv['epochKey']).toBe(mockEpochKey);
-		expect(epochKv['keyPrefix']).toBe(mockKeyPrefix);
-	});
-
 	test('Defaults compression settings', () => {
 		const kv = new KvRedis({
 			namespace: mockNamespace,
@@ -114,40 +77,22 @@ describe('constructor', () => {
 		expect(kv['compressionMinSize']).toBe(1000);
 	});
 
-	test('Defines the base commands, and skips the generation commands when disabled', () => {
-		const mockRedis = { defineCommand: vi.fn() } as unknown as ExtendedRedis;
+	test('Defines redis setMax command if it does not exist yet', () => {
+		expect(kv['redis'].defineCommand).toHaveBeenCalledWith('setMax', {
+			numberOfKeys: 1,
+			lua: SET_MAX_SCRIPT,
+		});
 
-		new KvRedis({ redis: mockRedis, namespace: mockNamespace, compression: false });
-
-		for (const [name, lua] of Object.entries(SCRIPTS)) {
-			expect(mockRedis.defineCommand).toHaveBeenCalledWith(name, { numberOfKeys: 1, lua });
-		}
-
-		expect(mockRedis.defineCommand).toHaveBeenCalledTimes(Object.keys(SCRIPTS).length);
-	});
-
-	test('Defines the generation commands when enabled', () => {
-		const mockRedis = { defineCommand: vi.fn() } as unknown as ExtendedRedis;
-
-		new KvRedis({ redis: mockRedis, namespace: mockNamespace, compression: false, epoch: true });
-
-		for (const [name, lua] of Object.entries(EPOCH_SCRIPTS)) {
-			expect(mockRedis.defineCommand).toHaveBeenCalledWith(name, { numberOfKeys: 1, lua });
-		}
-
-		expect(mockRedis.defineCommand).toHaveBeenCalledTimes(
-			Object.keys(SCRIPTS).length + Object.keys(EPOCH_SCRIPTS).length,
-		);
+		expect(kv['redis'].defineCommand).toHaveBeenCalledWith('release', {
+			numberOfKeys: 1,
+			lua: expect.any(String),
+		});
 	});
 
 	test('Skips defining commands if they already exist on redis', () => {
-		const mockRedis = { defineCommand: vi.fn() } as unknown as ExtendedRedis;
+		const mockRedis = { defineCommand: vi.fn(), setMax: vi.fn(), release: vi.fn() } as unknown as ExtendedRedis;
 
-		for (const name of [...Object.keys(SCRIPTS), ...Object.keys(EPOCH_SCRIPTS)]) {
-			(mockRedis as any)[name] = vi.fn();
-		}
-
-		new KvRedis({ redis: mockRedis, namespace: mockNamespace, compression: false, epoch: true });
+		new KvRedis({ redis: mockRedis, namespace: mockNamespace, compression: false });
 
 		expect(mockRedis.defineCommand).not.toHaveBeenCalled();
 	});
@@ -159,13 +104,6 @@ describe('get', () => {
 
 		expect(withNamespace).toHaveBeenCalledWith(mockKey, mockNamespace);
 		expect(kv['redis'].getBuffer).toHaveBeenCalledWith(mockNamespacedKey);
-	});
-
-	test('Reads the key from the current generation when enabled', async () => {
-		await epochKv.get(mockKey);
-
-		expect(epochKv['redis'].kvGetBuffer).toHaveBeenCalledWith(mockEpochKey, mockKeyPrefix, mockKey);
-		expect(epochKv['redis'].getBuffer).not.toHaveBeenCalled();
 	});
 
 	test('Returns undefined for null values from Redis', async () => {
@@ -244,6 +182,7 @@ describe('set', () => {
 
 		expect(serialize).toHaveBeenCalledWith(mockValue);
 		expect(compress).toHaveBeenCalledWith(mockUint8Array);
+		expect(withNamespace).toHaveBeenCalledWith(mockKey, mockNamespace);
 		expect(uint8ArrayToBuffer).toHaveBeenCalledWith(mockCompressedUint8Array);
 		expect(kv['redis'].set).toHaveBeenCalledWith(mockNamespacedKey, mockBuffer);
 	});
@@ -256,6 +195,7 @@ describe('set', () => {
 
 		expect(serialize).toHaveBeenCalledWith(mockValue);
 		expect(compress).not.toHaveBeenCalledWith(mockUint8Array);
+		expect(withNamespace).toHaveBeenCalledWith(mockKey, mockNamespace);
 		expect(uint8ArrayToBuffer).toHaveBeenCalledWith(mockUint8Array);
 		expect(kv['redis'].set).toHaveBeenCalledWith(mockNamespacedKey, mockBuffer);
 	});
@@ -277,37 +217,6 @@ describe('set', () => {
 
 		expect(kv['redis'].set).toHaveBeenCalledWith(mockNamespacedKey, mockBuffer, 'PX', 3600000);
 	});
-
-	test('Writes to the current generation when enabled, passing 0 for an unset TTL', async () => {
-		await epochKv.set(mockKey, 15);
-
-		expect(epochKv['redis'].kvSet).toHaveBeenCalledWith(
-			mockEpochKey,
-			expect.any(Number),
-			mockKeyPrefix,
-			mockKey,
-			15,
-			0,
-		);
-
-		expect(epochKv['redis'].set).not.toHaveBeenCalled();
-	});
-
-	test('Passes the configured TTL to the script when enabled', async () => {
-		const mockTTL = 3600000;
-		epochKv['ttl'] = mockTTL;
-
-		await epochKv.set(mockKey, 15);
-
-		expect(epochKv['redis'].kvSet).toHaveBeenCalledWith(
-			mockEpochKey,
-			expect.any(Number),
-			mockKeyPrefix,
-			mockKey,
-			15,
-			mockTTL,
-		);
-	});
 });
 
 describe('delete', () => {
@@ -315,13 +224,6 @@ describe('delete', () => {
 		await kv.delete(mockKey);
 		expect(withNamespace).toHaveBeenCalledWith(mockKey, mockNamespace);
 		expect(kv['redis'].unlink).toHaveBeenCalledWith(mockNamespacedKey);
-	});
-
-	test('Unlinks the key in the current generation when enabled', async () => {
-		await epochKv.delete(mockKey);
-
-		expect(epochKv['redis'].kvDelete).toHaveBeenCalledWith(mockEpochKey, mockKeyPrefix, mockKey);
-		expect(epochKv['redis'].unlink).not.toHaveBeenCalled();
 	});
 });
 
@@ -336,7 +238,7 @@ describe('has', () => {
 		expect(res).toBe(true);
 	});
 
-	test('Returns false for exists status 0', async () => {
+	test('Returns true for exists status 1', async () => {
 		vi.mocked(kv['redis'].exists).mockResolvedValueOnce(0);
 
 		const res = await kv.has(mockKey);
@@ -344,16 +246,6 @@ describe('has', () => {
 		expect(withNamespace).toHaveBeenCalledWith(mockKey, mockNamespace);
 		expect(kv['redis'].exists).toHaveBeenCalledWith(mockNamespacedKey);
 		expect(res).toBe(false);
-	});
-
-	test('Checks the key in the current generation when enabled', async () => {
-		vi.mocked(epochKv['redis'].kvExists).mockResolvedValueOnce(1);
-
-		const res = await epochKv.has(mockKey);
-
-		expect(epochKv['redis'].kvExists).toHaveBeenCalledWith(mockEpochKey, mockKeyPrefix, mockKey);
-		expect(epochKv['redis'].exists).not.toHaveBeenCalled();
-		expect(res).toBe(true);
 	});
 });
 
@@ -368,72 +260,50 @@ describe('increment', () => {
 	});
 
 	test('Returns incremented value from Redis', async () => {
+		const mockAmount = 15;
 		const mockResult = 42;
 
 		vi.mocked(kv['redis'].incrby).mockResolvedValue(mockResult);
 
-		const res = await kv.increment(mockKey, 15);
+		const res = await kv.increment(mockKey, mockAmount);
 
 		expect(res).toBe(mockResult);
-	});
-
-	test('Increments the key in the current generation when enabled', async () => {
-		const mockAmount = 15;
-
-		await epochKv.increment(mockKey, mockAmount);
-
-		expect(epochKv['redis'].kvIncrement).toHaveBeenCalledWith(
-			mockEpochKey,
-			expect.any(Number),
-			mockKeyPrefix,
-			mockKey,
-			mockAmount,
-		);
-
-		expect(epochKv['redis'].incrby).not.toHaveBeenCalled();
 	});
 });
 
 describe('setMax', () => {
 	test('Calls custom setMax on Redis instance', async () => {
+		// ioredis makes custom functions available as methods, but those aren't typeable
+		(kv['redis'] as any).setMax = vi.fn();
+
 		const mockAmount = 15;
 
 		await kv.setMax(mockKey, mockAmount);
 
 		expect(withNamespace).toHaveBeenCalledWith(mockKey, mockNamespace);
-		expect(kv['redis'].setMax).toHaveBeenCalledWith(mockNamespacedKey, mockAmount);
+		expect((kv['redis'] as any).setMax).toHaveBeenCalledWith(mockNamespacedKey, mockAmount);
 	});
 
 	test('Returns true if setMax returns 1', async () => {
-		vi.mocked(kv['redis'].setMax).mockResolvedValue(1);
+		// ioredis makes custom functions available as methods, but those aren't typeable
+		(kv['redis'] as any).setMax = vi.fn().mockResolvedValue(1);
 
-		const res = await kv.setMax(mockKey, 15);
+		const mockAmount = 15;
+
+		const res = await kv.setMax(mockKey, mockAmount);
 
 		expect(res).toBe(true);
 	});
 
-	test('Returns false if setMax returns 0', async () => {
-		vi.mocked(kv['redis'].setMax).mockResolvedValue(0);
+	test('Returns false if setMax returns 1', async () => {
+		// ioredis makes custom functions available as methods, but those aren't typeable
+		(kv['redis'] as any).setMax = vi.fn().mockResolvedValue(0);
 
-		const res = await kv.setMax(mockKey, 15);
-
-		expect(res).toBe(false);
-	});
-
-	test('Calls the generation-aware script when enabled', async () => {
 		const mockAmount = 15;
 
-		await epochKv.setMax(mockKey, mockAmount);
+		const res = await kv.setMax(mockKey, mockAmount);
 
-		expect(epochKv['redis'].kvSetMax).toHaveBeenCalledWith(
-			mockEpochKey,
-			expect.any(Number),
-			mockKeyPrefix,
-			mockKey,
-			mockAmount,
-		);
-
-		expect(epochKv['redis'].setMax).not.toHaveBeenCalled();
+		expect(res).toBe(false);
 	});
 });
 
@@ -460,15 +330,6 @@ describe('clear', () => {
 		expect(withNamespace).toHaveBeenCalledWith('*', mockNamespace);
 		expect(unlinkFn).toHaveBeenCalledTimes(2); // See the mocked key chunks from `scanStream`
 		expect(execFn).toHaveBeenCalledOnce();
-	});
-
-	test('Retires the current generation instead of deleting keys when enabled', async () => {
-		epochKv['redis'].scanStream = vi.fn();
-
-		await epochKv.clear();
-
-		expect(epochKv['redis'].kvBumpEpoch).toHaveBeenCalledWith(mockEpochKey, expect.any(Number));
-		expect(epochKv['redis'].scanStream).not.toHaveBeenCalled();
 	});
 });
 
