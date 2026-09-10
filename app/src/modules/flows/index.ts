@@ -37,7 +37,7 @@ export default defineModule({
 				if (!existingFlow) {
 					return {
 						name: 'flows-not-found',
-						params: { _: to.path.split('/').slice(1) },
+						params: { _: to.path.split('/').slice(2) },
 					};
 				}
 			},

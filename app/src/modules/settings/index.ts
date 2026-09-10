@@ -216,20 +216,16 @@ export default defineModule({
 		},
 		// Flows moved to their own module; keep old links working
 		{
-			path: 'flows',
-			redirect: '/flows',
-		},
-		{
 			path: 'flows/folder/:folder',
-			redirect: (to) => `/flows/folders/${to.params.folder}`,
+			redirect: (to) => ({ path: `/flows/folders/${to.params.folder}`, query: to.query, hash: to.hash }),
 		},
 		{
-			path: 'flows/:primaryKey',
-			redirect: (to) => `/flows/${to.params.primaryKey}`,
-		},
-		{
-			path: 'flows/:primaryKey/:operationId',
-			redirect: (to) => `/flows/${to.params.primaryKey}/${to.params.operationId}`,
+			path: 'flows/:pathMatch(.*)*',
+			redirect: (to) => ({
+				path: ['/flows', ...[to.params.pathMatch].flat().filter(Boolean)].join('/'),
+				query: to.query,
+				hash: to.hash,
+			}),
 		},
 		{
 			name: 'settings-extensions',
