@@ -172,6 +172,47 @@ describe('Integration Tests', () => {
 					expect(opts.preMutationError).toBeUndefined();
 				});
 			});
+
+			describe('restricted auth fields', () => {
+				describe('should disallow creation for non-admin users', () => {
+					const service = new UsersService({
+						knex: db,
+						schema,
+						accountability: { role: 'test', admin: false } as Accountability,
+					});
+
+					it.each(['tfa_secret', 'provider', 'external_identifier'])('%s', async (field) => {
+						const opts: MutationOptions = {};
+
+						await service.createOne({ [field]: 'test' }, opts);
+
+						expect(superCreateOneSpy).toHaveBeenCalled();
+
+						expect(opts.preMutationError).toStrictEqual(
+							new InvalidPayloadError({ reason: `You can't change the "${field}" value manually` }),
+						);
+					});
+				});
+
+				describe.each([
+					['admin users', { role: 'admin', admin: true } as Accountability],
+					['null accountability', null],
+				])('should allow creation for %s', (_, accountability) => {
+					const service = new UsersService({
+						knex: db,
+						schema,
+						accountability,
+					});
+
+					it.each(['provider', 'external_identifier'])('%s', async (field) => {
+						const promise = service.createOne({ [field]: 'test' });
+
+						await expect(promise).resolves.not.toThrow();
+
+						expect(superCreateOneSpy.mock.lastCall![0]).toEqual(expect.objectContaining({ [field]: 'test' }));
+					});
+				});
+			});
 		});
 
 		describe('createMany', () => {
@@ -237,6 +278,45 @@ describe('Integration Tests', () => {
 					await service.createMany([{ provider: DEFAULT_AUTH_PROVIDER }, {}], opts);
 
 					expect(opts.preMutationError).toBeUndefined();
+				});
+			});
+
+			describe('restricted auth fields', () => {
+				describe('should disallow creation for non-admin users', () => {
+					const service = new UsersService({
+						knex: db,
+						schema,
+						accountability: { role: 'test', admin: false } as Accountability,
+					});
+
+					it.each(['tfa_secret', 'provider', 'external_identifier'])('%s', async (field) => {
+						const opts: MutationOptions = {};
+
+						await service.createMany([{}, { [field]: 'test' }], opts);
+
+						expect(opts.preMutationError).toStrictEqual(
+							new InvalidPayloadError({ reason: `You can't change the "${field}" value manually` }),
+						);
+					});
+				});
+
+				describe.each([
+					['admin users', { role: 'admin', admin: true } as Accountability],
+					['null accountability', null],
+				])('should allow creation for %s', (_, accountability) => {
+					const service = new UsersService({
+						knex: db,
+						schema,
+						accountability,
+					});
+
+					it.each(['provider', 'external_identifier'])('%s', async (field) => {
+						const opts: MutationOptions = {};
+
+						await service.createMany([{ [field]: 'test' }], opts);
+
+						expect(opts.preMutationError).toBeUndefined();
+					});
 				});
 			});
 		});

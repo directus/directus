@@ -203,10 +203,29 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
+	 * Block setting auth fields that are managed by the system or reserved for admins
+	 */
+	private checkRestrictedAuthFields(data: Partial<Item>): void {
+		if ('tfa_secret' in data) {
+			throw new InvalidPayloadError({ reason: `You can't change the "tfa_secret" value manually` });
+		}
+
+		if (this.accountability && this.accountability.admin !== true) {
+			for (const field of ['provider', 'external_identifier']) {
+				if (field in data) {
+					throw new InvalidPayloadError({ reason: `You can't change the "${field}" value manually` });
+				}
+			}
+		}
+	}
+
+	/**
 	 * Create a new user
 	 */
 	override async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
 		try {
+			this.checkRestrictedAuthFields(data);
+
 			if ('email' in data && data['email'] !== undefined) {
 				this.validateEmail(data['email']);
 				await this.checkUniqueEmails([data['email']]);
@@ -244,6 +263,10 @@ export class UsersService extends ItemsService {
 		const someActive = data.some((payload) => !('status' in payload) || payload['status'] === 'active');
 
 		try {
+			for (const payload of data) {
+				this.checkRestrictedAuthFields(payload);
+			}
+
 			if (emails.length) {
 				this.validateEmail(emails);
 				await this.checkUniqueEmails(emails);
