@@ -16,7 +16,7 @@ import { UsersService } from './users.js';
 const env = useEnv();
 const logger = useLogger();
 
-export class CommentsService extends ItemsService {
+export class CommentsService extends ItemsService<Comment> {
 	notificationsService: NotificationsService;
 	usersService: UsersService;
 
