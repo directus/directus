@@ -46,15 +46,20 @@ export type IsNumber<T, Y, N> = T extends number ? Y : N;
 export type IsString<T, Y, N> = T extends string ? Y : N;
 
 /**
+ * Values to pass through instead of recursing into. Some types (e.g string literal unions, Date etc)
+ * satisfy object but should not be mapped.
+ */
+type Primitive = null | undefined | string | number | boolean | bigint | symbol;
+type Builtin = Primitive | Date | RegExp;
+
+/**
  * Recursively make properties optional
  */
 export type NestedPartial<Item> = Item extends any[]
 	? UnpackList<Item> extends infer RawItem
 		? NestedPartial<RawItem>[]
 		: never
-	: // `string & {}` (as used by StringLiteralUnion) satisfies `extends object` despite being a
-		// primitive, so it must be excluded here or it gets mapped over String.prototype's own keys.
-		Item extends string | number | boolean | bigint | symbol
+	: Item extends Builtin
 		? Item
 		: Item extends object
 			? { [Key in keyof Item]?: NestedPartial<Item[Key]> }
