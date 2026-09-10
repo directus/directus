@@ -1,6 +1,7 @@
 import { CollectionInactiveError } from '@directus/errors';
 import type { Accountability, PermissionsAction } from '@directus/types';
 import { isCollectionActive } from '@directus/utils';
+import { getCollectionFromSchema } from '../../../utils/schema/get-collection-from-schema.js';
 import type { Context } from '../../types.js';
 import { createCollectionForbiddenError } from '../process-ast/utils/validate-path/create-error.js';
 import { validateCollectionAccess } from '../validate-access/lib/validate-collection-access.js';
@@ -17,11 +18,7 @@ export interface AssertCollectionActiveOptions {
 export async function assertCollectionActive(options: AssertCollectionActiveOptions, context: Context): Promise<void> {
 	const { accountability, collection, action } = options;
 
-	const collectionOverview = context.schema.collections[collection];
-
-	if (collectionOverview === undefined) {
-		throw createCollectionForbiddenError('', collection);
-	}
+	const collectionOverview = getCollectionFromSchema(context.schema, collection);
 
 	if (isCollectionActive(collectionOverview)) return;
 
