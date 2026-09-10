@@ -60,7 +60,7 @@ const props = defineProps<{
 	folder?: string;
 }>();
 
-const { createAllowed } = useCollectionPermissions('directus_flows');
+const { createAllowed, deleteAllowed } = useCollectionPermissions('directus_flows');
 const { createAllowed: operationsCreateAllowed } = useCollectionPermissions('directus_operations');
 
 const { createAllowed: createFolderAllowed } = useCollectionPermissions('directus_folders');
@@ -359,6 +359,27 @@ async function deleteFlow() {
 	}
 }
 
+const confirmBatchDelete = ref(false);
+const batchDeleting = ref(false);
+
+async function batchDelete() {
+	if (batchDeleting.value) return;
+
+	batchDeleting.value = true;
+
+	try {
+		await api.delete('/flows', { data: selectedKeys.value });
+		await flowsStore.hydrate();
+		licenseStore.hydrate();
+		selectedKeys.value = [];
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		confirmBatchDelete.value = false;
+		batchDeleting.value = false;
+	}
+}
+
 async function toggleFlowStatusById(id: string, value: string) {
 	try {
 		await api.patch(`/flows/${id}`, {
@@ -418,6 +439,32 @@ function onFlowDrawerCompletion(id: string) {
 				variant="ghost"
 				@click="exportFlows(selectedKeys)"
 			/>
+			<VDialog
+				v-if="selectedKeys.length > 0"
+				v-model="confirmBatchDelete"
+				@esc="confirmBatchDelete = false"
+				@apply="batchDelete"
+			>
+				<template #activator="{ on }">
+					<PrivateViewHeaderBarActionButton
+						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
+						:disabled="deleteAllowed !== true"
+						kind="danger"
+						variant="ghost"
+						icon="delete"
+						@click="on"
+					/>
+				</template>
+
+				<VCard>
+					<VCardTitle>{{ $t('batch_delete_confirm', selectedKeys.length) }}</VCardTitle>
+
+					<VCardActions>
+						<VButton secondary @click="confirmBatchDelete = false">{{ $t('cancel') }}</VButton>
+						<VButton kind="danger" :loading="batchDeleting" @click="batchDelete">{{ $t('delete_label') }}</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 			<EntitlementRemaining entitlement-key="flows" />
 		</template>
 

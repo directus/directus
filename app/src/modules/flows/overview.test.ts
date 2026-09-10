@@ -418,6 +418,19 @@ describe('FlowsOverview - import export', () => {
 		expect(wrapper.find('[data-icon="download"]').attributes('data-variant')).toBe('ghost');
 	});
 
+	test('deletes the selected Flows from the header bar', async () => {
+		const api = (await vi.importMock<{ default: { delete: ReturnType<typeof vi.fn> } }>('@/api')).default;
+		api.delete.mockClear();
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		(wrapper.vm as any).selectedKeys = ['flow-1', 'flow-2'];
+		await (wrapper.vm as any).batchDelete();
+
+		expect(api.delete).toHaveBeenCalledWith('/flows', { data: ['flow-1', 'flow-2'] });
+		expect((wrapper.vm as any).selectedKeys).toEqual([]);
+	});
+
 	test('exports the stored Flows rather than the translated table rows', async () => {
 		const { saveAs } = (await vi.importMock('file-saver')) as { saveAs: ReturnType<typeof vi.fn> };
 		saveAs.mockClear();
