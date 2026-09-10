@@ -38,6 +38,27 @@ export type IsDateTime<T, Y, N> = T extends 'datetime' | 'date' | 'time' ? Y : N
 export type IsNumber<T, Y, N> = T extends number ? Y : N;
 export type IsString<T, Y, N> = T extends string ? Y : N;
 
+declare const readWriteField: unique symbol;
+
+/**
+ * Define a field whose API response and request types differ.
+ */
+export type ReadWriteField<Read, Write = Read> = {
+	readonly [readWriteField]: {
+		read: Read;
+		write: Write;
+	};
+};
+
+/**
+ * Define a field the API responds with a redacted value for, while accepting the unredacted value
+ * on write. Covers the `conceal` and `encrypt` field specials.
+ */
+export type RedactedField<Write = string | null> = ReadWriteField<'**********' | null, Write>;
+
+/** Resolve the response type of a field. */
+export type ReadField<Field> = Field extends ReadWriteField<infer Read, any> ? Read : Field;
+
 /**
  * Helpers for working with unions
  */
@@ -64,9 +85,11 @@ export type NestedPartial<Item> = Item extends any[]
 	? UnpackList<Item> extends infer RawItem
 		? NestedPartial<RawItem>[]
 		: never
-	: Item extends object
-		? { [Key in keyof Item]?: NestedUnion<Item[Key]> }
-		: Item;
+	: Item extends ReadWriteField<any, infer Write>
+		? NestedPartial<Write>
+		: Item extends object
+			? { [Key in keyof Item]?: NestedUnion<Item[Key]> }
+			: Item;
 
 type NestedUnion<Item> = TupleToUnion<ToTuplePartial<Item>>;
 
