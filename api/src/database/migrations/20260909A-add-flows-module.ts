@@ -14,7 +14,8 @@ export async function up(knex: Knex): Promise<void> {
 		};
 
 		const insightsModuleIndex = moduleBar.findIndex(({ id }) => id === 'insights');
-		moduleBar.splice(insightsModuleIndex + 1, 0, flowsModule);
+		const insertAt = insightsModuleIndex === -1 ? moduleBar.length : insightsModuleIndex + 1;
+		moduleBar.splice(insertAt, 0, flowsModule);
 
 		return moduleBar;
 	});
