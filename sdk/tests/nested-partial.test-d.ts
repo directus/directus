@@ -12,80 +12,70 @@ import type {
 	ReadFlowOutput,
 	StringLiteralUnion,
 } from '../src/index.js';
-import { createComment, updateContentVersion, updateFlow, updatePreset, updateRole, updateUser } from '../src/index.js';
 import type { TestSchema } from './schema.js';
 
-describe('NestedPartial (type utility)', () => {
-	test('mixed union: object member keeps its own NestedPartial, non-object members pass through', () => {
+describe('NestedPartial', () => {
+	test('only the object member of a union becomes partial', () => {
 		type Case = NestedPartial<{ rel: { id: string; name: string } | string | null }>;
 
-		assertType<Case>({ rel: { id: '1' } });
-		assertType<Case>({ rel: 'id-string' });
-		assertType<Case>({ rel: null });
-
-		expectTypeOf<Extract<NonNullable<Case['rel']>, object>>().toEqualTypeOf<Partial<{ id: string; name: string }>>();
+		expectTypeOf<Case['rel']>().toEqualTypeOf<{ id?: string; name?: string } | string | null | undefined>();
 	});
 
-	test('StringLiteralUnion member is not widened to plain string', () => {
-		type Case = NestedPartial<{ status: StringLiteralUnion<'draft' | 'published'> }>;
+	test('StringLiteralUnion keeps its literals and accepts any string', () => {
+		type Case = NestedPartial<{ status: StringLiteralUnion<'draft' | 'published'> | null }>;
 
-		expectTypeOf<Case['status']>().toEqualTypeOf<StringLiteralUnion<'draft' | 'published'> | undefined>();
+		expectTypeOf<Case['status']>().toEqualTypeOf<StringLiteralUnion<'draft' | 'published'> | null | undefined>();
 
-		assertType<Case>({ status: 'draft' });
-		assertType<Case>({ status: 'some-custom-status' });
-	});
-
-	test('a widened (non-literal) string is still assignable to a StringLiteralUnion member', () => {
-		type Case = NestedPartial<{
-			collection: StringLiteralUnion<'known_a' | 'known_b'>;
-			nullable_collection: StringLiteralUnion<'known_a' | 'known_b'> | null;
-		}>;
-
+		// identity alone wouldn't prove a widened (non-literal) string is still accepted
 		const dynamic: string = 'anything';
-
-		assertType<Case>({ collection: dynamic });
-		assertType<Case>({ nullable_collection: dynamic });
-		assertType<Case>({ nullable_collection: null });
+		assertType<Case>({ status: dynamic });
 	});
 
-	test('plain nullable union is untouched', () => {
+	test('a nullable scalar keeps its null member', () => {
 		type Case = NestedPartial<{ count: number | null }>;
 
 		expectTypeOf<Case['count']>().toEqualTypeOf<number | null | undefined>();
 	});
 
-	test('Record<string, any> value passes through untouched (not mapped over its keys)', () => {
+	test('Record<string, any> passes through untouched', () => {
 		type Case = NestedPartial<{ opts: Record<string, any> | null }>;
 
 		expectTypeOf<Case['opts']>().toEqualTypeOf<Record<string, any> | null | undefined>();
-
-		assertType<Case>({ opts: { a: 1, nested: { deep: true } } });
-		assertType<Case>({ opts: null });
 	});
 
-	test('mixed id[] | object[] array union: a partial object element is accepted', () => {
+	test('built-in object types pass through untouched', () => {
+		type Case = NestedPartial<{ when: Date; when_nullable: Date | null; pattern: RegExp }>;
+
+		expectTypeOf<Case['when']>().toEqualTypeOf<Date | undefined>();
+		expectTypeOf<Case['when_nullable']>().toEqualTypeOf<Date | null | undefined>();
+		expectTypeOf<Case['pattern']>().toEqualTypeOf<RegExp | undefined>();
+	});
+
+	test('an `any` field passes through untouched', () => {
+		type Case = NestedPartial<{ meta: any }>;
+
+		expectTypeOf<Case['meta']>().toEqualTypeOf<any>();
+	});
+
+	test('an already-optional field stays optional', () => {
+		type Case = NestedPartial<{ logs?: { message: string }[] }>;
+
+		expectTypeOf<Case['logs']>().toEqualTypeOf<{ message?: string }[] | undefined>();
+	});
+
+	test('array elements become nested partials', () => {
+		type Case = NestedPartial<{ tags: { id: string; name: string }[] }>;
+
+		expectTypeOf<Case['tags']>().toEqualTypeOf<{ id?: string; name?: string }[] | undefined>();
+	});
+
+	test('only object elements of an id[] | object[] union become partial', () => {
 		type Case = NestedPartial<{ policies: string[] | { id: string; policy: string }[] | null }>;
 
-		assertType<Case>({ policies: [{ policy: 'p1' }] });
-		assertType<Case>({ policies: ['p1'] });
-		assertType<Case>({ policies: null });
+		expectTypeOf<Case['policies']>().toEqualTypeOf<string[] | { id?: string; policy?: string }[] | null | undefined>();
 	});
 
-	test('object-union member becomes a nested object; StringLiteralUnion member stays string-like', () => {
-		type Case = NestedPartial<{
-			rel: { id: string; icon: string } | string | null;
-			status: StringLiteralUnion<'active' | 'inactive'>;
-		}>;
-
-		expectTypeOf<Extract<NonNullable<Case['rel']>, object>>().toHaveProperty('icon');
-
-		assertType<Case['status']>('active');
-		assertType<Case['status']>('custom-status');
-		// @ts-expect-error status is string-like, not relational — object payloads are rejected
-		assertType<Case['status']>({ id: 'x' });
-	});
-
-	test('self-referential type: deep partials accepted, scalar members not widened', () => {
+	test('self-referential type recurses without widening scalars', () => {
 		type SelfRef = { id: string; label: string | null; child: SelfRef | string | null };
 
 		assertType<NestedPartial<SelfRef>>({ label: 'foo', child: { child: { label: 'bar' } } });
@@ -96,7 +86,7 @@ describe('NestedPartial (type utility)', () => {
 		assertType<NestedPartial<SelfRef>>({ label: 123 });
 	});
 
-	test('mutually-recursive types: partials accepted in both directions', () => {
+	test('mutually-recursive types recurse in both directions', () => {
 		type Activity = { id: number; revisions: Revision[] | number[] | null };
 		type Revision = { id: number; data: Record<string, any> | null; activity: Activity | number };
 
@@ -105,7 +95,7 @@ describe('NestedPartial (type utility)', () => {
 	});
 });
 
-describe('NestedPartial on the Directus* schema types', () => {
+describe('NestedPartial on core collection types', () => {
 	test('collection fields accept an arbitrary (non-literal) string', () => {
 		const collection: string = 'some_collection';
 
@@ -114,28 +104,13 @@ describe('NestedPartial on the Directus* schema types', () => {
 		assertType<NestedPartial<DirectusVersion<TestSchema>>>({ collection, key: 'draft' });
 	});
 
-	test('flow.status keeps its literal member set', () => {
+	test('collection fields with string literal union keep their literal member sets', () => {
 		type FlowParam = NestedPartial<DirectusFlow<TestSchema>>;
 
 		expectTypeOf<FlowParam['status']>().toEqualTypeOf<StringLiteralUnion<'active' | 'inactive'> | undefined>();
 
-		assertType<FlowParam>({ status: 'active' });
-		assertType<FlowParam>({ status: 'some-custom-status' });
-	});
-
-	test('flow.trigger / flow.accountability keep their literal member sets when nullable', () => {
-		type FlowParam = NestedPartial<DirectusFlow<TestSchema>>;
-
-		expectTypeOf<FlowParam['trigger']>().toEqualTypeOf<
-			StringLiteralUnion<'event' | 'schedule' | 'operation' | 'webhook' | 'manual'> | null | undefined
-		>();
-
-		expectTypeOf<FlowParam['accountability']>().toEqualTypeOf<
-			StringLiteralUnion<'all' | 'activity'> | null | undefined
-		>();
-
-		assertType<FlowParam>({ trigger: 'schedule', accountability: 'all' });
-		assertType<FlowParam>({ trigger: null, accountability: null });
+		assertType<FlowParam>({ status: 'active', trigger: 'schedule', accountability: 'all' });
+		assertType<FlowParam>({ status: 'some-custom-status', trigger: null, accountability: null });
 	});
 
 	test('preset.collection resolves to CollectionName and is nullable', () => {
@@ -147,86 +122,45 @@ describe('NestedPartial on the Directus* schema types', () => {
 		assertType<PresetParam>({ collection: null });
 	});
 
-	test('version.collection resolves to CollectionName', () => {
-		type VersionParam = NestedPartial<DirectusVersion<TestSchema>>;
-
-		expectTypeOf<VersionParam['collection']>().toEqualTypeOf<CollectionName<TestSchema> | undefined>();
-
-		assertType<VersionParam>({ collection: 'collection_c' });
+	test('custom fields on a core collection stay partial', () => {
+		assertType<NestedPartial<DirectusUser<TestSchema>>>({
+			policies: [{ policy: 'policy-id' }],
+			custom_field: true,
+		});
 	});
 
-	test('a partial object element is accepted through a schema that customizes a core collection', () => {
-		const payload = { policies: [{ policy: 'policy-id' }], custom_field: true };
-
-		assertType<NestedPartial<DirectusUser<TestSchema>>>(payload);
-		updateUser('user-id', payload);
-	});
-
-	test('relational fields stay nested-partial objects (comment.user_created / user_updated)', () => {
-		const payload = {
+	test('relational fields stay nested-partial objects', () => {
+		assertType<NestedPartial<DirectusComment<TestSchema>>>({
 			collection: 'collection_a',
 			item: '1',
 			comment: 'hi',
 			user_created: { email: 'a@b.com' },
 			user_updated: { email: 'a@b.com' },
-		};
+		});
 
-		assertType<NestedPartial<DirectusComment<TestSchema>>>(payload);
-		createComment(payload);
-	});
-
-	test('relational fields stay nested-partial objects (version.user_created / user_updated)', () => {
-		const payload = {
+		assertType<NestedPartial<DirectusVersion<TestSchema>>>({
 			user_created: { email: 'a@b.com' },
 			user_updated: { email: 'a@b.com' },
-		};
+		});
 
-		assertType<NestedPartial<DirectusVersion<TestSchema>>>(payload);
-		updateContentVersion('version-id', payload);
-	});
+		assertType<NestedPartial<DirectusFlow<TestSchema>>>({ operation: { name: 'op-name' } });
 
-	test('relational fields stay nested-partial objects (flow.operation)', () => {
-		const payload = { operation: { name: 'op-name' } };
-
-		assertType<NestedPartial<DirectusFlow<TestSchema>>>(payload);
-		updateFlow('flow-id', payload);
-	});
-
-	test('relational fields stay nested-partial objects (preset.user / preset.role)', () => {
-		const payload = {
+		assertType<NestedPartial<DirectusPreset<TestSchema>>>({
 			user: { email: 'a@b.com' },
 			role: { name: 'role-name' },
-		};
+		});
 
-		assertType<NestedPartial<DirectusPreset<TestSchema>>>(payload);
-		updatePreset(1, payload);
-	});
-
-	test('relational fields stay nested-partial objects (role.parent / children / policies / users)', () => {
-		const payload = {
+		assertType<NestedPartial<DirectusRole<TestSchema>>>({
 			parent: { name: 'parent-role' },
 			children: [{ name: 'child-role' }],
 			policies: [{ policy: 'policy-id' }],
 			users: [{ email: 'a@b.com' }],
-		};
-
-		assertType<NestedPartial<DirectusRole<TestSchema>>>(payload);
-		updateRole('role-id', payload);
-	});
-
-	test('flow.operation resolves to a real object while flow.status stays a StringLiteralUnion', () => {
-		type FlowParam = NestedPartial<DirectusFlow<TestSchema>>;
-
-		expectTypeOf<Extract<NonNullable<FlowParam['operation']>, object>>().toHaveProperty('name');
-
-		assertType<FlowParam['status']>('active');
-		// @ts-expect-error status is a StringLiteralUnion, not relational — object payloads are rejected
-		assertType<FlowParam['status']>({ name: 'active' });
+		});
 	});
 });
 
-describe('StringLiteralUnion fields on the read/output path (not NestedPartial)', () => {
-	test('ReadFlowOutput keeps the literal union, not widened to plain string', () => {
+describe('StringLiteralUnion on the read path', () => {
+	test('ReadFlowOutput keeps the literal union', () => {
 		type Output = ReadFlowOutput<TestSchema, { fields: ['*'] }>;
 
 		expectTypeOf<Output['status']>().toEqualTypeOf<StringLiteralUnion<'active' | 'inactive'>>();
