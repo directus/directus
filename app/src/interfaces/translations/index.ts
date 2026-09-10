@@ -95,6 +95,21 @@ export default defineInterface({
 					width: 'half',
 				},
 			},
+			{
+				field: 'searchable',
+				name: '$t:searchable',
+				type: 'boolean',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: '$t:field_searchable',
+					},
+					width: 'half',
+				},
+			},
 		];
 	},
 	preview: PreviewSVG,

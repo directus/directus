@@ -16,6 +16,7 @@ export type FieldOverview = {
 	validation: Filter | null;
 	alias: boolean;
 	searchable: boolean;
+	searchTranslations?: boolean;
 };
 
 export type CollectionOverview = {
