@@ -12,6 +12,12 @@ import {
 import type { ExtendedRedis, KvConfigRedis } from '../index.js';
 import type { Kv } from '../types/class.js';
 
+/**
+ * How many keys each `SCAN` pass asks Redis to cover while clearing the namespaced key layout.
+ * Redis treats this as a hint, so a pass can return a few more or fewer than this
+ */
+export const CLEAR_SCAN_COUNT = 1000;
+
 export const SET_MAX_SCRIPT = `
   local key = KEYS[1]
   local value = tonumber(ARGV[1])
@@ -211,7 +217,7 @@ export class KvRedis implements Kv {
 
 		const keysStream = this.redis.scanStream({
 			match: withNamespace('*', this.namespace),
-			count: 1,
+			count: CLEAR_SCAN_COUNT,
 		});
 
 		const pipeline = this.redis.pipeline();

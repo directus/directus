@@ -1,6 +1,6 @@
 import { Redis } from 'ioredis';
 import { afterAll, beforeAll, describe, expect, inject, test } from 'vitest';
-import { KvRedis } from '../src/kv/lib/redis.js';
+import { CLEAR_SCAN_COUNT, KvRedis } from '../src/kv/lib/redis.js';
 
 /**
  * Exercises `KvRedis` against the Redis instance spun up by `test/global-setup.ts`, as the unit
@@ -434,6 +434,12 @@ describe('clear performance', () => {
 	const DECOY_KEYS = 10_000;
 	const decoyPrefix = 'kv-decoy';
 
+	/**
+	 * Fewest passes it can take to walk the decoys at `CLEAR_SCAN_COUNT` keys a page, halved
+	 * because Redis only treats that count as a hint
+	 */
+	const MIN_SCANS = DECOY_KEYS / CLEAR_SCAN_COUNT / 2;
+
 	const eachDecoyBatch = async (queue: (pipeline: ReturnType<Redis['pipeline']>, key: string) => void) => {
 		for (let batch = 0; batch * 1000 < DECOY_KEYS; batch++) {
 			const pipeline = redis.pipeline();
@@ -489,15 +495,15 @@ describe('clear performance', () => {
 	test('The namespaced key layout walks the whole keyspace to clear', async () => {
 		const { scans } = await measureClear(false);
 
-		// Scanned in pages, so the cost is set by the size of the keyspace rather than by the
+		// Scanned page by page, so the cost is set by the size of the keyspace rather than by the
 		// handful of keys that are actually in the namespace
-		expect(scans).toBeGreaterThan(100);
+		expect(scans).toBeGreaterThanOrEqual(MIN_SCANS);
 	});
 
 	test('The namespaced key layout pays that cost even for an empty namespace', async () => {
 		const { scans } = await measureClear(false, 0);
 
-		expect(scans).toBeGreaterThan(100);
+		expect(scans).toBeGreaterThanOrEqual(MIN_SCANS);
 	});
 
 	test('The hash layout clears at least an order of magnitude faster', async ({ annotate }) => {
