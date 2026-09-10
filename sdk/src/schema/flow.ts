@@ -1,4 +1,5 @@
 import type { MergeCoreCollection } from '../index.js';
+import type { DirectusFolder } from './folder.js';
 import type { DirectusOperation } from './operation.js';
 import type { DirectusUser } from './user.js';
 
@@ -18,5 +19,6 @@ export type DirectusFlow<Schema = any> = MergeCoreCollection<
 		operation: DirectusOperation<Schema> | string | null;
 		date_created: 'datetime' | null;
 		user_created: DirectusUser<Schema> | string | null;
+		folder: DirectusFolder<Schema> | string | null;
 	}
 >;

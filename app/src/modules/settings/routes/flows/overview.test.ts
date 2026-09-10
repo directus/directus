@@ -2,6 +2,7 @@ import { FlowRaw } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { ref } from 'vue';
 import { Router } from 'vue-router';
 import FlowsOverview from './overview.vue';
 import { generateRouter } from '@/__utils__/router';
@@ -9,9 +10,14 @@ import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 
+vi.mock('file-saver', () => ({
+	saveAs: vi.fn(),
+}));
+
 vi.mock('@/api', () => ({
 	default: {
 		get: vi.fn(),
+		post: vi.fn(),
 		delete: vi.fn(),
 		patch: vi.fn(),
 	},
@@ -22,24 +28,69 @@ vi.mock('@/stores/flows', () => ({
 		flows: [
 			{
 				id: 'flow-1',
-				name: 'Test Flow 1',
+				name: 'Send email',
 				status: 'active',
 				icon: 'bolt',
 				color: 'var(--theme--primary)',
+				description: 'Notify the team',
+				folder: 'folder-a',
+			} as FlowRaw,
+			{
+				id: 'flow-2',
+				name: 'Sync data',
+				status: 'inactive',
+				icon: 'bolt',
+				description: 'Nightly job',
 			} as FlowRaw,
 		],
 		hydrate: vi.fn(),
 	}),
 }));
 
+vi.mock('@/composables/use-folders', () => ({
+	useFolders: () => ({
+		loading: ref(false),
+		folders: ref([{ id: 'folder-a', name: 'Notifications', parent: null }]),
+		nestedFolders: ref([]),
+		fetchFolders: vi.fn(),
+		openFolders: ref([]),
+	}),
+}));
+
+const relationalFields = ['directus_flows.folder', 'directus_flows.user_created', 'directus_folders.parent'];
+
+vi.mock('@/stores/relations', () => ({
+	useRelationsStore: () => ({
+		getRelationsForField: (collection: string, field: string) =>
+			relationalFields.includes(`${collection}.${field}`) ? [{}] : [],
+	}),
+}));
+
+type CollectionActions = Partial<Record<'create' | 'update' | 'delete', boolean>>;
+
+const permissionsByCollection: Record<string, CollectionActions> = {};
+
 vi.mock('@/composables/use-permissions', () => ({
-	useCollectionPermissions: () => ({
-		createAllowed: true,
+	useCollectionPermissions: (collection: string) => ({
+		createAllowed: permissionsByCollection[collection]?.create ?? true,
+		updateAllowed: permissionsByCollection[collection]?.update ?? true,
+		deleteAllowed: permissionsByCollection[collection]?.delete ?? true,
+	}),
+}));
+
+vi.mock('@/stores/license', () => ({
+	useLicenseStore: () => ({
+		limits: { flows: { remaining: 1, hasRemaining: true } },
+		hydrate: vi.fn(),
 	}),
 }));
 
 vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),
+}));
+
+vi.mock('@/utils/notify', () => ({
+	notify: vi.fn(),
 }));
 
 let router: Router;
@@ -60,6 +111,11 @@ vi.mock('@/router', () => {
 });
 
 beforeEach(async () => {
+	// Search and filter persist to localStorage, so isolate each test
+	localStorage.clear();
+
+	for (const collection of Object.keys(permissionsByCollection)) delete permissionsByCollection[collection];
+
 	router = generateRouter([
 		{
 			path: '/settings/flows',
@@ -85,27 +141,41 @@ beforeEach(async () => {
 	windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 
 	global = {
-		stubs: [
-			'private-view',
-			'v-button',
-			'v-icon',
-			'settings-navigation',
-			'sidebar-detail',
-			'v-info',
-			'v-table',
-			'display-formatted-value',
-			'v-menu',
-			'v-list',
-			'v-list-item',
-			'v-list-item-icon',
-			'v-list-item-content',
-			'v-dialog',
-			'v-card',
-			'v-card-title',
-			'v-card-actions',
-			'flow-drawer',
-			'router-view',
-		],
+		stubs: {
+			'private-view': { template: '<div><slot name="actions" /><slot /></div>' },
+			'private-view-header-bar-action-button': {
+				props: ['icon', 'label', 'variant'],
+				template: '<button :data-icon="icon" :data-variant="variant">{{ label }}</button>',
+			},
+			'flow-folder-sidebar': {
+				props: ['actionsDisabled'],
+				template: '<div :data-actions-disabled="actionsDisabled"><slot /></div>',
+			},
+			'v-button': true,
+			'v-icon': true,
+			'settings-navigation': true,
+			'sidebar-detail': true,
+			'v-info': true,
+			'v-table': true,
+			'display-formatted-value': true,
+			'v-menu': true,
+			'v-list': true,
+			'v-list-item': true,
+			'v-list-item-icon': true,
+			'v-list-item-content': true,
+			'v-dialog': true,
+			'v-card': true,
+			'v-card-title': true,
+			'v-card-actions': true,
+			'flow-drawer': true,
+			'add-folder': true,
+			'search-input': { props: ['modelValue', 'filter'], template: '<div />' },
+			'router-view': true,
+			'v-input': true,
+			'v-card-text': true,
+			'max-capacity-alert': true,
+			'entitlement-limit-modal': true,
+		},
 		plugins: [router, i18n, createTestingPinia({ createSpy: vi.fn, stubActions: false })],
 		directives: {
 			tooltip: Tooltip,
@@ -226,5 +296,287 @@ describe('FlowsOverview - navigateToFlow', () => {
 		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/settings/flows/flow-1'), '_blank');
 
 		expect(routerPushSpy).not.toHaveBeenCalled();
+	});
+});
+
+describe('FlowsOverview - openDuplicateFlow', () => {
+	const mockFlow = {
+		id: 'flow-1',
+		name: 'Test Flow',
+		status: 'active',
+	} as FlowRaw;
+
+	test('opens the duplicate dialog with the name prefilled', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+
+		const vm = wrapper.vm as any;
+		vm.openDuplicateFlow(mockFlow);
+
+		expect(vm.duplicateDialogActive).toBe(true);
+		expect(vm.duplicateName).toBe('Test Flow (copy)');
+		expect(vm.duplicateSource).toEqual(mockFlow);
+	});
+
+	test('duplicating closes the dialog once the new Flow is created', async () => {
+		const api = (await vi.importMock<{ default: { post: ReturnType<typeof vi.fn> } }>('@/api')).default;
+		api.post.mockResolvedValue({ data: { data: { id: 'new-flow-id' } } });
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		const vm = wrapper.vm as any;
+		vm.openDuplicateFlow(mockFlow);
+
+		await vm.duplicate();
+
+		expect(api.post).toHaveBeenCalledWith(
+			'/flows',
+			expect.objectContaining({ name: 'Test Flow (copy)', status: 'inactive' }),
+			expect.any(Object),
+		);
+
+		expect(vm.duplicateDialogActive).toBe(false);
+	});
+});
+
+describe('FlowsOverview - selection', () => {
+	test('clears the selection when the folder changes', async () => {
+		const wrapper = mount(FlowsOverview, { global, props: { folder: 'folder-a' } });
+
+		const vm = wrapper.vm as any;
+		vm.selectedKeys = ['flow-1', 'flow-2'];
+
+		await wrapper.setProps({ folder: 'folder-b' });
+
+		expect(vm.selectedKeys).toEqual([]);
+	});
+});
+
+describe('FlowsOverview - toggleFlowStatusById', () => {
+	test('opens the limit modal when activating a Flow exceeds the license limit', async () => {
+		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
+
+		api.patch.mockRejectedValue({
+			response: { data: { errors: [{ extensions: { code: 'LIMIT_EXCEEDED' } }] } },
+		});
+
+		const { unexpectedError } = (await vi.importMock('@/utils/unexpected-error')) as {
+			unexpectedError: ReturnType<typeof vi.fn>;
+		};
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		const vm = wrapper.vm as any;
+		await vm.toggleFlowStatusById('flow-1', 'inactive');
+
+		expect(api.patch).toHaveBeenCalledWith('/flows/flow-1', { status: 'active' });
+		expect(vm.flowsLimitModalOpen).toBe(true);
+		expect(unexpectedError).not.toHaveBeenCalled();
+	});
+});
+
+describe('FlowsOverview - folder permissions', () => {
+	test('folder creation follows directus_folders, not directus_flows', async () => {
+		permissionsByCollection['directus_folders'] = { create: false };
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		expect(wrapper.find('add-folder-stub').attributes('disabled')).toBe('true');
+		expect((wrapper.vm as any).createAllowed).toBe(true);
+	});
+
+	test('folder creation is enabled when directus_folders create is allowed', async () => {
+		permissionsByCollection['directus_flows'] = { create: false };
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		expect(wrapper.find('add-folder-stub').attributes('disabled')).toBe('false');
+	});
+
+	test('folder context actions stay enabled with only update or only delete on directus_folders', async () => {
+		permissionsByCollection['directus_folders'] = { create: false, delete: false };
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		expect(wrapper.find('[data-actions-disabled]').attributes('data-actions-disabled')).toBe('false');
+	});
+
+	test('folder context actions are disabled without update or delete on directus_folders', async () => {
+		permissionsByCollection['directus_folders'] = { update: false, delete: false };
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		expect(wrapper.find('[data-actions-disabled]').attributes('data-actions-disabled')).toBe('true');
+	});
+});
+
+describe('FlowsOverview - empty state', () => {
+	test('renders the empty state in a folder with no Flows, even when other folders have Flows', async () => {
+		const wrapper = mount(FlowsOverview, { global, props: { folder: 'folder-empty' } });
+
+		expect(wrapper.find('v-info-stub').exists()).toBe(true);
+		expect(wrapper.find('v-table-stub').exists()).toBe(false);
+	});
+
+	test('renders the table when the current folder has Flows', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+
+		expect(wrapper.find('v-table-stub').exists()).toBe(true);
+		expect(wrapper.find('v-info-stub').exists()).toBe(false);
+	});
+});
+
+describe('FlowsOverview - import export', () => {
+	test('offers Flow import from the header bar', () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const importAction = wrapper.find('[data-icon="file_upload"]');
+
+		expect(importAction.text()).toBe('');
+		expect(importAction.attributes('data-variant')).toBe('ghost');
+	});
+
+	test('exports the stored Flow rather than the translated table row', async () => {
+		const { saveAs } = (await vi.importMock('file-saver')) as { saveAs: ReturnType<typeof vi.fn> };
+		saveAs.mockClear();
+
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		// The row the context menu hands over has already been through `translate()`
+		vm.exportFlow({ id: 'flow-1', name: 'Resolved label' });
+
+		const [blob, filename] = saveAs.mock.calls[0]!;
+		expect(filename).toBe('flow-flow-1.json');
+		expect(JSON.parse(await blob.text()).flow.name).toBe('Send email');
+	});
+
+	test('notifies after importing a Flow', async () => {
+		const api = (await vi.importMock<{ default: { post: ReturnType<typeof vi.fn> } }>('@/api')).default;
+		const { notify } = (await vi.importMock('@/utils/notify')) as { notify: ReturnType<typeof vi.fn> };
+		api.post.mockResolvedValue({});
+
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.importFile = {
+			text: () =>
+				Promise.resolve(
+					JSON.stringify({ version: 1, flow: { id: 'flow-1', name: 'Imported', operation: null }, operations: [] }),
+				),
+		};
+
+		await vm.importFlow();
+
+		expect(notify).toHaveBeenCalledWith({ title: 'flow_import_success', type: 'success' });
+	});
+
+	test('reports an unusable import file instead of an unexpected error', async () => {
+		const { notify } = (await vi.importMock('@/utils/notify')) as { notify: ReturnType<typeof vi.fn> };
+
+		const { unexpectedError } = (await vi.importMock('@/utils/unexpected-error')) as {
+			unexpectedError: ReturnType<typeof vi.fn>;
+		};
+
+		notify.mockClear();
+		unexpectedError.mockClear();
+
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.importFile = { text: () => Promise.resolve('not json') };
+
+		await vm.importFlow();
+
+		expect(unexpectedError).not.toHaveBeenCalled();
+
+		expect(notify).toHaveBeenCalledWith({
+			title: 'flow_import_failed',
+			text: 'flow_import_not_json',
+			type: 'error',
+			dialog: true,
+		});
+	});
+});
+
+describe('FlowsOverview - search and filter', () => {
+	test('search narrows the list to name or description matches', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.search = 'sync';
+		await wrapper.vm.$nextTick();
+
+		expect(vm.flows.map((flow: FlowRaw) => flow.id)).toEqual(['flow-2']);
+	});
+
+	test('filter narrows the list using Directus filter rules', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.filter = { status: { _eq: 'active' } };
+		await wrapper.vm.$nextTick();
+
+		expect(vm.flows.map((flow: FlowRaw) => flow.id)).toEqual(['flow-1']);
+	});
+
+	test('shows the no-results empty state when a query matches nothing', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.search = 'no-such-flow';
+		await wrapper.vm.$nextTick();
+
+		expect(vm.flows).toEqual([]);
+		expect(wrapper.find('v-info-stub').exists()).toBe(true);
+		expect(wrapper.find('v-table-stub').exists()).toBe(false);
+	});
+
+	test('filter matches against the related folder rather than its ID', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.filter = { folder: { name: { _eq: 'Notifications' } } };
+		await wrapper.vm.$nextTick();
+
+		expect(vm.flows.map((flow: FlowRaw) => flow.id)).toEqual(['flow-1']);
+		// The list keeps the flow's own shape, so the folder stays a foreign key
+		expect(vm.flows[0].folder).toBe('folder-a');
+	});
+
+	test('only offers relational filter fields that can be resolved in memory', () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		expect(vm.isFilterableField({ collection: 'directus_flows', field: 'status' })).toBe(true);
+		expect(vm.isFilterableField({ collection: 'directus_flows', field: 'folder' })).toBe(true);
+		expect(vm.isFilterableField({ collection: 'directus_folders', field: 'name' })).toBe(true);
+		expect(vm.isFilterableField({ collection: 'directus_folders', field: 'parent' })).toBe(false);
+		expect(vm.isFilterableField({ collection: 'directus_flows', field: 'user_created' })).toBe(false);
+	});
+
+	test('persists the filter to localStorage as JSON so it survives a reload', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.filter = { status: { _eq: 'active' } };
+		await wrapper.vm.$nextTick();
+
+		expect(JSON.parse(localStorage.getItem('directus-flows-filter')!)).toEqual({ status: { _eq: 'active' } });
+	});
+
+	test('clearFilters restores the full list', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+		const vm = wrapper.vm as any;
+
+		vm.search = 'sync';
+		vm.filter = { status: { _eq: 'inactive' } };
+		await wrapper.vm.$nextTick();
+		expect(vm.flows.length).toBe(1);
+
+		vm.clearFilters();
+		await wrapper.vm.$nextTick();
+
+		expect(vm.search).toBeNull();
+		expect(vm.filter).toBeNull();
+		expect(vm.flows.length).toBe(2);
 	});
 });

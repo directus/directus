@@ -7,5 +7,6 @@ export type DirectusFolder<Schema = any> = MergeCoreCollection<
 		id: string;
 		name: string;
 		parent: DirectusFolder<Schema> | string | null;
+		type: 'assets' | 'flows';
 	}
 >;

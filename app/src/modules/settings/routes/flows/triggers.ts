@@ -448,6 +448,10 @@ export function getTriggers() {
 									text: t('triggers.manual.item_only'),
 									value: 'item',
 								},
+								{
+									text: t('triggers.manual.hidden'),
+									value: 'hidden',
+								},
 							],
 						},
 					},
@@ -470,7 +474,7 @@ export function getTriggers() {
 							{
 								rule: {
 									location: {
-										_eq: 'item',
+										_in: ['item', 'hidden'],
 									},
 								},
 								hidden: true,

@@ -12,3 +12,14 @@ fields:
 
   - field: name
     width: full
+
+  - field: type
+    interface: select-dropdown
+    options:
+      choices:
+        - value: assets
+          text: $t:file_library
+        - value: flows
+          text: $t:flows
+    hidden: true
+    width: half

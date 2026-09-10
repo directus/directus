@@ -15,6 +15,8 @@ export type Folder = {
 	children?: Folder[];
 };
 
+export type FolderType = 'assets' | 'flows';
+
 type UsableFolders = {
 	loading: Ref<boolean>;
 	folders: Ref<Folder[] | null>;
@@ -25,12 +27,39 @@ type UsableFolders = {
 
 const OPEN_FOLDERS_INITIAL = ['root'];
 
-const loading = ref(false);
-const folders = ref<Folder[] | null>(null);
-const globalNestedFolders = ref<Folder[] | null>(null);
-const globalOpenFolders = ref(OPEN_FOLDERS_INITIAL);
+type FolderState = {
+	loading: Ref<boolean>;
+	folders: Ref<Folder[] | null>;
+	globalNestedFolders: Ref<Folder[] | null>;
+	globalOpenFolders: Ref<string[]>;
+};
 
-export function useFolders(rootFolder?: Ref<string | undefined>, local?: Ref<boolean>): UsableFolders {
+const states = new Map<FolderType, FolderState>();
+
+function getState(type: FolderType): FolderState {
+	let state = states.get(type);
+
+	if (!state) {
+		state = {
+			loading: ref(false),
+			folders: ref<Folder[] | null>(null),
+			globalNestedFolders: ref<Folder[] | null>(null),
+			globalOpenFolders: ref([...OPEN_FOLDERS_INITIAL]),
+		};
+
+		states.set(type, state);
+	}
+
+	return state;
+}
+
+export function useFolders(
+	type: FolderType,
+	rootFolder?: Ref<string | undefined>,
+	local?: Ref<boolean>,
+): UsableFolders {
+	const { loading, folders, globalNestedFolders, globalOpenFolders } = getState(type);
+
 	const nestedFolders = computed(() => {
 		return findFolder(globalNestedFolders.value, rootFolder?.value);
 	});
@@ -73,6 +102,7 @@ export function useFolders(rootFolder?: Ref<string | undefined>, local?: Ref<boo
 			const response = await fetchAll<Folder>(`/folders`, {
 				params: {
 					sort: 'name',
+					filter: { type: { _eq: type } },
 				},
 			});
 

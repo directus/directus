@@ -2007,6 +2007,9 @@ importers:
       universal-cookie:
         specifier: 'catalog:'
         version: 8.0.1
+      uuid:
+        specifier: 'catalog:'
+        version: 11.1.1
       vite:
         specifier: 'catalog:'
         version: 8.1.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0)

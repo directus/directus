@@ -2,7 +2,7 @@
 import { isSystemCollection } from '@directus/system-data';
 import { computed } from 'vue';
 import VNotice from '@/components/v-notice.vue';
-import InterfaceSelectMultipleCheckbox from '@/interfaces/select-multiple-checkbox/select-multiple-checkbox.vue';
+import InterfaceSelectMultipleDropdown from '@/interfaces/select-multiple-dropdown/select-multiple-dropdown.vue';
 import { useCollectionsStore } from '@/stores/collections';
 
 const props = withDefaults(
@@ -47,11 +47,12 @@ const items = computed(() => {
 	<VNotice v-if="items.length === 0">
 		{{ $t('no_collections') }}
 	</VNotice>
-	<InterfaceSelectMultipleCheckbox
+	<InterfaceSelectMultipleDropdown
 		v-else
 		:choices="items"
-		:value="value"
+		:value="value ?? undefined"
 		:disabled="disabled"
+		:placeholder="$t('collections')"
 		@input="$emit('input', $event)"
 	/>
 </template>

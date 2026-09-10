@@ -312,6 +312,10 @@ delete_folder_dialog:
   move_content: Move content one level up
   delete_content: Delete all content
   content_behavior: What should happen to the folder contents?
+delete_flow_folder_dialog:
+  content_behavior: What should happen to this folder's subfolders? Your Flows will not be deleted.
+  move_content: Delete this folder only
+  delete_content: Delete this folder and its subfolders
 validation_errors_notice: 'The following fields have invalid values:'
 validation_value_is_invalid: Value is invalid
 validationError:
@@ -626,6 +630,14 @@ import_data_errors: Import Error
 import_data_error: This file's data structure doesn't match the collection.
 import_data_validation_errors_notice: 'The following rows have invalid values:'
 import_data_error_row: 'Row {rows}{field}:'
+import_flow: Import Flow
+export_flow: Export Flow
+flow_import_input_placeholder: JSON...
+flow_import_success: Flow imported successfully.
+flow_import_failed: Couldn't import Flow
+flow_import_not_json: This file isn't valid JSON.
+flow_import_invalid_file: This file isn't a Flow export.
+flow_import_foreign_operation: This file contains an operation that belongs to a different Flow.
 snapshot:
   export: Export Schema
   download: Download Snapshot (JSON)
@@ -1076,6 +1088,7 @@ translations_display_template: Translations Display Template
 n_items_selected: 'No Items Selected | One Item Selected | {n} Items Selected'
 per_page: Per Page
 all_files: All Files
+all_flows: All Flows
 my_files: My Files
 recent_files: Recent Files
 create_folder: Create Folder
@@ -3190,6 +3203,7 @@ triggers:
     collection_and_item: Collection & Item Pages
     collection_only: Collection Page Only
     item_only: Item Page Only
+    hidden: None (Hidden)
     collection_page: Collection Page
     require_selection: Requires Selection
 a_flow_uuid: Select a Flow to trigger...
@@ -3253,6 +3267,8 @@ operations:
   mail:
     name: Send Email
     description: Send an email to one or more people
+    from_name: From Name
+    from_name_placeholder: Defaults to the project name
     to: To
     to_placeholder: Add email addresses and press enter...
     body: Body
@@ -3352,6 +3368,7 @@ date_precision: Date Precision
 export_dashboard: Export Dashboard
 duplicate_dashboard: Duplicate Dashboard
 duplicate_policy: Duplicate Policy
+duplicate_flow: Duplicate Flow
 search_dashboard: Search Dashboard...
 search_flow: Search Flow...
 percent: Percent

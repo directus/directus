@@ -127,7 +127,7 @@ describe('reconcileCollections', () => {
 		);
 
 		expect(forCollection(results, 'directus_flows').matched).toEqual([
-			{ sourceId: 'fS', targetId: 'fT', key: JSON.stringify(['MyFlow']) },
+			{ sourceId: 'fS', targetId: 'fT', key: JSON.stringify(['MyFlow', null]) },
 		]);
 
 		const operations = forCollection(results, 'directus_operations');
@@ -225,13 +225,72 @@ describe('reconcileCollections', () => {
 		const folders = forCollection(results, 'directus_folders');
 
 		expect(folders.matched).toEqual([
-			{ sourceId: 'sa', targetId: 'ta', key: JSON.stringify(['Assets', null]) },
-			{ sourceId: 'sd', targetId: 'td', key: JSON.stringify(['Deep', 'ti']) },
-			{ sourceId: 'si', targetId: 'ti', key: JSON.stringify(['Images', 'ta']) },
+			{ sourceId: 'sa', targetId: 'ta', key: JSON.stringify(['Assets', null, null]) },
+			{ sourceId: 'sd', targetId: 'td', key: JSON.stringify(['Deep', 'ti', null]) },
+			{ sourceId: 'si', targetId: 'ti', key: JSON.stringify(['Images', 'ta', null]) },
 		]);
 
 		expect(folders.ambiguous).toEqual([]);
 		expect(folders.unmatched).toEqual([]);
+	});
+
+	it('never reconciles a flows folder onto a file-library folder with the same name and parent', () => {
+		const results = reconcileCollections(
+			[
+				input(
+					'directus_folders',
+					[{ id: 'sf', name: 'Shared', parent: null, type: 'flows' }],
+					[{ id: 'ta', name: 'Shared', parent: null, type: 'assets' }],
+				),
+			],
+			{},
+		);
+
+		const folders = forCollection(results, 'directus_folders');
+
+		expect(folders.matched).toEqual([]);
+		expect(folders.ambiguous).toEqual([]);
+		expect(folders.unmatched).toEqual(['sf']);
+	});
+
+	it('reconciles same-named flows by their folder instead of colliding as ambiguous', () => {
+		const results = reconcileCollections(
+			[
+				input(
+					'directus_folders',
+					[
+						{ id: 'faS', name: 'A', parent: null, type: 'flows' },
+						{ id: 'fbS', name: 'B', parent: null, type: 'flows' },
+					],
+					[
+						{ id: 'faT', name: 'A', parent: null, type: 'flows' },
+						{ id: 'fbT', name: 'B', parent: null, type: 'flows' },
+					],
+				),
+				input(
+					'directus_flows',
+					[
+						{ id: 'n1S', name: 'Notify', folder: 'faS' },
+						{ id: 'n2S', name: 'Notify', folder: 'fbS' },
+					],
+					[
+						{ id: 'n1T', name: 'Notify', folder: 'faT' },
+						{ id: 'n2T', name: 'Notify', folder: 'fbT' },
+					],
+				),
+			],
+			{},
+		);
+
+		const flows = forCollection(results, 'directus_flows');
+
+		expect(flows.matched).toEqual([
+			{ sourceId: 'n1S', targetId: 'n1T', key: JSON.stringify(['Notify', 'faT']) },
+			{ sourceId: 'n2S', targetId: 'n2T', key: JSON.stringify(['Notify', 'fbT']) },
+		]);
+
+		expect(flows.ambiguous).toEqual([]);
+		expect(flows.unmatched).toEqual([]);
 	});
 
 	it('produces identical output when record order is shuffled', () => {

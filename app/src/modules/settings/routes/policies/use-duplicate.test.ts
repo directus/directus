@@ -148,4 +148,34 @@ describe('useDuplicate', () => {
 		expect(api.post).toHaveBeenCalledTimes(1);
 		expect(api.post).toHaveBeenCalledWith('/policies', expect.any(Object));
 	});
+
+	it('trims the given name', async () => {
+		api.get.mockResolvedValue({ data: { data: [] } });
+		api.post.mockResolvedValue({ data: { data: { id: 'new-policy-id' } } });
+
+		const { duplicate } = useDuplicate({
+			source: ref(source),
+			name: ref('  Editor (copy)  '),
+			onSuccess: vi.fn(),
+		});
+
+		await duplicate();
+
+		expect(api.post).toHaveBeenCalledWith('/policies', expect.objectContaining({ name: 'Editor (copy)' }));
+	});
+
+	it('does nothing when the given name is only whitespace', async () => {
+		const onSuccess = vi.fn();
+
+		const { duplicate } = useDuplicate({
+			source: ref(source),
+			name: ref('   '),
+			onSuccess,
+		});
+
+		await duplicate();
+
+		expect(api.post).not.toHaveBeenCalled();
+		expect(onSuccess).not.toHaveBeenCalled();
+	});
 });

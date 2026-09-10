@@ -12,6 +12,7 @@ export interface Flow {
 	options: Record<string, any>;
 	operation: Operation | null;
 	accountability: 'all' | 'activity' | null;
+	folder: string | null;
 }
 
 export interface Operation {
@@ -40,6 +41,7 @@ export interface FlowRaw {
 	date_created: string;
 	user_created: string;
 	accountability: 'all' | 'activity' | null;
+	folder: string | null;
 }
 
 export interface OperationRaw {

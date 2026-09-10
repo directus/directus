@@ -15,3 +15,9 @@ properties:
       - type: string
       - $ref: '../openapi.yaml#/components/schemas/Folders'
     nullable: true
+  type:
+    description: The type of folder. One of `assets` (file library) or `flows`.
+    type: string
+    example: assets
+    default: assets
+    enum: [assets, flows]

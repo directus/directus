@@ -160,6 +160,7 @@
 		"tus-js-client": "catalog:",
 		"typescript": "catalog:",
 		"universal-cookie": "catalog:",
+		"uuid": "catalog:",
 		"vite": "catalog:",
 		"vite-plugin-vue-devtools": "catalog:",
 		"vitest": "catalog:",

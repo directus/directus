@@ -200,7 +200,7 @@ const archiveFilter = computed<Filter | null>(() => {
 	}
 });
 
-const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
+const { flowDialogsContext, provideRunManualFlow, sidebarManualFlows } = useFlows({
 	collection,
 	selection,
 	location: 'collection',
@@ -666,7 +666,7 @@ function clearFilters() {
 					:on-download="downloadHandler"
 					@refresh="refresh"
 				/>
-				<FlowSidebarDetail v-if="!isVersion" :manual-flows />
+				<FlowSidebarDetail v-if="!isVersion" :manual-flows="sidebarManualFlows" />
 			</template>
 
 			<VDialog :model-value="deleteError !== null" @esc="deleteError = null">
