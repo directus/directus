@@ -4,4 +4,4 @@
 '@directus/api': patch
 ---
 
-Fixed cache clearing performing slow by use of epoch prefix
+Added opt-in `hash` option to redis memory, improving cache clear performance

@@ -1,0 +1,12 @@
+services:
+  redis:
+    image: ${REDIS_IMAGE:-redis:6-alpine}
+    # Host port 0 lets Docker pick a free one, so the suite can't collide with a Redis the
+    # developer already has running. The mapping is read back with `docker compose port`
+    ports:
+      - '0:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 1s
+      timeout: 3s
+      retries: 30
