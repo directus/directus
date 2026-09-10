@@ -99,6 +99,7 @@ const treeList = computed(() => {
 		let disabled = field.group || false;
 
 		if (props.disabledFields?.includes(field.key)) disabled = true;
+		if (field.inactive) disabled = true;
 
 		return {
 			...field,

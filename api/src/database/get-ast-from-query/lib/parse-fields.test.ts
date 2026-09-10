@@ -1,5 +1,5 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { Accountability } from '@directus/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import { getRelation } from '@directus/utils';
 import knex from 'knex';
 import { expect, test, vi } from 'vitest';
@@ -685,6 +685,16 @@ const schemaM2A = new SchemaBuilder()
 	})
 	.build();
 
+function withInactiveCollection(collection: string): SchemaOverview {
+	return {
+		...schemaM2A,
+		collections: {
+			...schemaM2A.collections,
+			[collection]: { ...schemaM2A.collections[collection]!, status: 'inactive' },
+		},
+	};
+}
+
 test('parse fields with an aliased m2o nested inside an m2a block (#27772)', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
 
@@ -789,4 +799,56 @@ test('parse fields with a non-aliased m2o nested inside an m2a block', async () 
 			whenCase: [],
 		},
 	]);
+});
+
+test('parse fields rejects an inactive collection named through the a2o scope syntax', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const schema = withInactiveCollection('text');
+
+	await expect(
+		parseFields(
+			{
+				accountability,
+				parentCollection: 'blog_builder',
+				fields: ['item:text.id'],
+				query: { alias: {} },
+			},
+			{ knex: db, schema },
+		),
+	).rejects.toMatchObject({ code: 'COLLECTION_INACTIVE', extensions: { collection: 'text' } });
+});
+
+test('parse fields silently ignores an a2o scope naming a collection that does not exist', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const result = await parseFields(
+		{
+			accountability,
+			parentCollection: 'blog_builder',
+			fields: ['item:nonexistent_collection.id'],
+			query: { alias: {} },
+		},
+		{ knex: db, schema: schemaM2A },
+	);
+
+	expect(result).toEqual([expect.objectContaining({ type: 'a2o', names: ['text'] })]);
+});
+
+test('parse fields skips an inactive collection that was only reached through an a2o wildcard', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const schema = withInactiveCollection('text');
+
+	const result = await parseFields(
+		{
+			accountability,
+			parentCollection: 'blog_builder',
+			fields: ['item.*'],
+			query: { alias: {} },
+		},
+		{ knex: db, schema },
+	);
+
+	expect(result).toEqual([expect.objectContaining({ type: 'a2o', names: [] })]);
 });

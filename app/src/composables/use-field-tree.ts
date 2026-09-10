@@ -5,6 +5,7 @@ import { Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { isCollectionInactive } from '@/utils/collection-status';
 
 export type FieldNode = {
 	name: string;
@@ -16,6 +17,7 @@ export type FieldNode = {
 	type: Type;
 	children?: FieldNode[];
 	group?: boolean;
+	inactive?: boolean;
 	_loading?: boolean;
 };
 
@@ -83,6 +85,7 @@ export function useFieldTree(
 
 	function makeNode(field: Field, parent?: FieldNode): FieldNode | FieldNode[] {
 		const pathContext = parent?.path ? parent.path + '.' : '';
+		const ownCollectionInactive = isCollectionInactive(field.collection);
 
 		if (field?.meta?.special?.includes('group')) {
 			const node: FieldNode = {
@@ -94,6 +97,7 @@ export function useFieldTree(
 				path: pathContext + field.field,
 				group: true,
 				type: field.type,
+				...inactiveFlag(ownCollectionInactive),
 			};
 
 			const children = getTree(field.collection, node);
@@ -123,6 +127,7 @@ export function useFieldTree(
 				key: field.field,
 				path: field.field,
 				type: field.type,
+				...inactiveFlag(ownCollectionInactive),
 			};
 		}
 
@@ -138,6 +143,7 @@ export function useFieldTree(
 				key: keyContext + field.field,
 				path: pathContext + field.field,
 				type: field.type,
+				...inactiveFlag(ownCollectionInactive || isCollectionInactive(relatedCollections[0])),
 			};
 		}
 
@@ -150,8 +156,14 @@ export function useFieldTree(
 				key: keyContext + `${field.field}:${collection}`,
 				path: pathContext + `${field.field}:${collection}`,
 				type: field.type,
+				...inactiveFlag(ownCollectionInactive || isCollectionInactive(collection)),
 			};
 		});
+	}
+
+	/** Only present the flag when set, to keep unaffected nodes unchanged */
+	function inactiveFlag(inactive: boolean) {
+		return inactive ? { inactive: true } : null;
 	}
 
 	function getRelationTypeAndRelatedCollections(field: Field): {

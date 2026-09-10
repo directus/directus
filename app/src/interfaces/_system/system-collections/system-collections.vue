@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import VNotice from '@/components/v-notice.vue';
 import InterfaceSelectMultipleCheckbox from '@/interfaces/select-multiple-checkbox/select-multiple-checkbox.vue';
 import { useCollectionsStore } from '@/stores/collections';
+import { isCollectionInactive } from '@/utils/collection-status';
 
 const props = withDefaults(
 	defineProps<{
@@ -39,6 +40,7 @@ const items = computed(() => {
 	return collections.value.map((collection) => ({
 		text: collection.name,
 		value: collection.collection,
+		disabled: isCollectionInactive(collection) && !props.value?.includes(collection.collection),
 	}));
 });
 </script>

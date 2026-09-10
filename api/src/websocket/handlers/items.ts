@@ -1,5 +1,8 @@
 import { isSystemCollection } from '@directus/system-data';
+import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
+import { assertCollectionActive } from '../../permissions/modules/assert-collection-active/assert-collection-active.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { ItemsService, MetaService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
@@ -40,6 +43,15 @@ export class ItemsHandler {
 				uid,
 			);
 		}
+
+		await assertCollectionActive(
+			{
+				accountability: accountability ?? createDefaultAccountability(),
+				collection: message.collection,
+				action: message.action,
+			},
+			{ schema, knex: getDatabase() },
+		);
 
 		const isSingleton = !!schema.collections[message.collection]?.singleton;
 		const service = new ItemsService(message.collection, { schema, accountability });
