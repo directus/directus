@@ -4,7 +4,7 @@ import { getService } from '../../../utils/get-service.js';
 import { formatError } from '../errors/format.js';
 import type { GraphQLService } from '../index.js';
 import { getQuery } from '../schema/parse-query.js';
-import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
+import { buildSelections } from '../utils/build-selections.js';
 
 export async function resolveMutation(
 	gql: GraphQLService,
@@ -15,7 +15,7 @@ export async function resolveMutation(
 	let collection = info.fieldName.substring(action.length + 1);
 	if (gql.scope === 'system') collection = `directus_${collection}`;
 
-	const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
+	const selections = buildSelections(info);
 	const query = await getQuery(args, gql.schema, selections || [], info.variableValues, gql.accountability, collection);
 
 	const singleton =
