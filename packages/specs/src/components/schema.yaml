@@ -1,21 +1,47 @@
 type: object
+# Required vs optional fields come from the validate-snapshot Joi schema (api/src/utils/schema/validate-snapshot.ts).
+required: [version, directus]
 properties:
   version:
+    description: Schema version. Always 1 in current releases.
     type: integer
     example: 1
   directus:
+    description: Directus version that produced this snapshot.
+    example: 12.0.2
     type: string
   vendor:
+    description: Database vendor.
     type: string
+    enum: [cockroachdb, mssql, mysql, oracle, postgres, redshift, sqlite]
+    example: postgres
   collections:
+    description: Snapshot of every collection in the project.
     type: array
     items:
       $ref: '../openapi.yaml#/components/schemas/Collections'
   fields:
+    description: Snapshot of every field in the project.
     type: array
     items:
       $ref: '../openapi.yaml#/components/schemas/Fields'
+  systemFields:
+    description: Indexed system fields per collection (date_created/date_updated/user_created/user_updated).
+    type: array
+    items:
+      type: object
+      properties:
+        collection:
+          type: string
+        field:
+          type: string
+        schema:
+          type: object
+          properties:
+            is_indexed:
+              type: boolean
   relations:
+    description: Snapshot of every relation in the project.
     type: array
     items:
       $ref: '../openapi.yaml#/components/schemas/Relations'
