@@ -1,4 +1,5 @@
 import type { CollectionName, MergeCoreCollection } from '../index.js';
+import type { DirectusCollection } from './collection.js';
 import type { DirectusRole } from './role.js';
 import type { DirectusUser } from './user.js';
 
@@ -8,7 +9,7 @@ export type DirectusShare<Schema = any> = MergeCoreCollection<
 	{
 		id: string;
 		name: string | null;
-		collection: CollectionName<Schema>;
+		collection: DirectusCollection<Schema> | CollectionName<Schema>;
 		item: string;
 		role: DirectusRole<Schema> | string | null;
 		password: string | null; // will just be *s
