@@ -1,3 +1,4 @@
+import { merge } from 'lodash-es';
 import { describe, expect, test } from 'vitest';
 import { setDeep } from './set-deep.js';
 
@@ -56,6 +57,23 @@ describe('setDeep', () => {
 			expect(({} as any).polluted).toBeUndefined();
 			expect(Object.getPrototypeOf(r)).toBeNull();
 			expect(Object.prototype.hasOwnProperty.call(r, '__proto__')).toBe(true);
+		});
+
+		test('does not descend through the prototype of a plain intermediate node', () => {
+			const r = root();
+			setDeep(r, ['relation'], merge({}, { _alias: { child: 'nested' } }));
+
+			setDeep(r, ['relation', '__proto__', 'grandchild'], { _limit: 999999 });
+
+			try {
+				expect(({} as any).grandchild).toBeUndefined();
+				expect(Object.hasOwn(Object.prototype, 'grandchild')).toBe(false);
+				// The segment stays own data on the intermediate node instead.
+				expect(r['relation']['grandchild']).toBeUndefined();
+				expect(Object.hasOwn(r['relation'], '__proto__')).toBe(true);
+			} finally {
+				delete (Object.prototype as any).grandchild;
+			}
 		});
 
 		test.each([['constructor'], ['prototype'], ['valueOf'], ['hasOwnProperty']])(
