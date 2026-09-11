@@ -47,7 +47,11 @@ const { loading, errors, data, saving, hasEdits, refreshIntervals, variables } =
 
 const zoomToFit = ref(false);
 
-const { updateAllowed } = useItemPermissions('directus_panels', props.primaryKey, false);
+const { updateAllowed } = useItemPermissions(
+	'directus_dashboards',
+	computed(() => props.primaryKey),
+	false,
+);
 
 const now = new Date();
 
