@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed bulk update/delete of comments not requiring an authenticated user
+Fixed comment updates and deletes enforcement
