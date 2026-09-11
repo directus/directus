@@ -10,7 +10,7 @@ on:
       - packages/**
       - package.json
       - pnpm-lock.yaml
-      - .github/workflows/blackbox.yml
+      - .github/workflows/e2e.yml
   workflow_call:
 
 permissions:

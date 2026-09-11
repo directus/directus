@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { sandbox, type Sandbox } from '@directus/sandbox';
 import { database } from '@utils/constants.js';
+import { sandboxPort } from '@utils/sandbox-port.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 const NETLIFY_SECRET = 'netlify-secret';
@@ -16,6 +17,7 @@ beforeAll(async () => {
 	const devMode = process.env['NODE_ENV'] === 'development';
 
 	directus = await sandbox(database, {
+		port: sandboxPort(0),
 		dev: devMode,
 		watch: devMode,
 		prefix: database,
