@@ -1,4 +1,11 @@
-import type { AuthenticationClient, DirectusClient, RequestOptions, RestClient, RestCommand } from '@directus/sdk';
+import type {
+	AuthenticationClient,
+	CoreSchema,
+	DirectusClient,
+	RequestOptions,
+	RestClient,
+	RestCommand,
+} from '@directus/sdk';
 import { authentication, createDirectus, rest } from '@directus/sdk';
 import { type FetchContext, ofetch } from 'ofetch';
 import { requestQueue } from './api';
@@ -6,7 +13,7 @@ import { SDK_AUTH_REFRESH_BEFORE_EXPIRES } from './constants';
 import { useRequestsStore } from './stores/requests';
 import { getPublicURL } from '@/utils/get-root-path';
 
-export type SdkClient = DirectusClient<unknown> & AuthenticationClient<unknown> & RestClient<unknown>;
+export type SdkClient = DirectusClient<CoreSchema> & AuthenticationClient<CoreSchema> & RestClient<CoreSchema>;
 
 type OptionsWithId = FetchContext['options'] & { id: string };
 
@@ -49,7 +56,7 @@ const baseClient = ofetch.create({
 	},
 });
 
-export const sdk: SdkClient = createDirectus(getPublicURL(), { globals: { fetch: baseClient.native } })
+export const sdk: SdkClient = createDirectus<CoreSchema>(getPublicURL(), { globals: { fetch: baseClient.native } })
 	.with(authentication('session', { credentials: 'include', msRefreshBeforeExpires: SDK_AUTH_REFRESH_BEFORE_EXPIRES }))
 	.with(rest({ credentials: 'include' }));
 
