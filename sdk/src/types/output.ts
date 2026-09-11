@@ -144,5 +144,24 @@ export type FieldOutputMap = {
 	time: string;
 };
 
+/**
+ * True when a field carries one of the FieldOutputMap literal markers (e.g. 'datetime', 'json').
+ * `any` never counts as a marker, so an `any` field keeps passing through NestedPartial untouched.
+ */
+export type HasFieldMarker<T> = IfAny<T, false, [Extract<T, keyof FieldOutputMap>] extends [never] ? false : true>;
+
+/**
+ * Map a field's literal markers to the value accepted on write: a string for 'datetime'/'date'/'time',
+ * a JsonValue for 'json', a string[] for 'csv'. This mirrors how the read path maps them through
+ * FieldOutputMap, so createItem/updateItem accept the same values readItem returns. Non-marker members
+ * (like null) are kept as is.
+ */
+export type MapInputFieldMarkers<T> =
+	Extract<T, keyof FieldOutputMap> extends infer Marker
+		? Marker extends keyof FieldOutputMap
+			? FieldOutputMap[Marker] | Exclude<T, keyof FieldOutputMap>
+			: T
+		: never;
+
 // all functions return a numeric type
 type FunctionOutputType = number;
