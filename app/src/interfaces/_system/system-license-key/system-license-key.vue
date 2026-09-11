@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { DIRECTUS_SUPPORT_URL } from '@directus/constants';
-import { LICENSE_KEY, normalizeLicenseKey } from '@directus/license';
+import { DIRECTUS_LICENSE_KEY, normalizeLicenseKey } from '@directus/license';
 import { throttle } from 'lodash';
 import { computed, onMounted, ref, watch } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
@@ -73,7 +73,7 @@ const validate = throttle(async (value: string | null) => {
 		return;
 	}
 
-	const parsed = LICENSE_KEY.safeParse(value);
+	const parsed = DIRECTUS_LICENSE_KEY.safeParse(value);
 
 	if (parsed.error) {
 		error.value = 'format';
