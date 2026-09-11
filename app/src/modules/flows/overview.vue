@@ -144,7 +144,8 @@ const tableHeaders = ref<Header[]>([
 	{
 		text: t('description'),
 		value: 'description',
-		fill: true,
+		width: null,
+		flex: 1,
 		sortable: false,
 		align: 'left',
 		description: null,
@@ -590,6 +591,7 @@ function onFlowDrawerCompletion(id: string) {
 					>
 						{{ getFolderLabel(getFolderPath(item.folder)) }}
 					</RouterLink>
+					<span v-else class="folder-root">/</span>
 				</template>
 
 				<template #item-append="{ item }">
@@ -743,6 +745,10 @@ function onFlowDrawerCompletion(id: string) {
 	&:hover {
 		text-decoration: underline;
 	}
+}
+
+.folder-root {
+	color: var(--theme--foreground-subdued);
 }
 
 .v-list-item.danger {

@@ -7,10 +7,22 @@ export type HeaderRaw = {
 	align?: Alignment;
 	sortable?: boolean;
 	width?: number | null;
+	// Columns with a flex value share the remaining space proportionally and shrink before the table overflows
+	flex?: number | null;
 	[key: string]: any;
 };
 
-export type Header = Required<HeaderRaw>;
+// Same as HeaderRaw with all common fields required; `flex` stays optional since most columns are fixed-width
+export type Header = {
+	text: string;
+	value: string;
+	description: string | null;
+	align: Alignment;
+	sortable: boolean;
+	width: number | null;
+	flex?: number | null;
+	[key: string]: any;
+};
 
 export type Item = {
 	[key: string]: any;
