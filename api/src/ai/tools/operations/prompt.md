@@ -57,8 +57,9 @@ processing and transforming data through the data chain.
 - `flow` - UUID of parent flow
 - `key` - Unique operation identifier
 - `type` - Operation type
-- `position_x`, `position_y` - Grid coordinates
-- `resolve`, `reject` - Next operation UUIDs (null initially) </required_fields>
+- `resolve`, `reject` - Next operation UUIDs (null initially)
+
+Omit `position_x`/`position_y` - positions are handled automatically (see Positioning). </required_fields>
 
 <available_operations> Core operations available in Directus:
 
@@ -106,8 +107,6 @@ can read existing operations to see if they are using extensions operations. </a
 		"key": "notify_user", // Required: Unique key for this operation
 		"type": "notification", // Required: Operation type
 		"name": "Send Notification", // Optional: Display name
-		"position_x": 19, // Required: Grid X position (use 19, 37, 55, 73...)
-		"position_y": 1, // Required: Grid Y position (use 1, 19, 37...)
 		"options": {
 			// Optional: Type-specific configuration (default: {})
 			// Configuration based on operation type
@@ -155,11 +154,14 @@ flow entry point.
 
 <positioning_system>
 
-## Grid Positioning
+## Positioning
 
-**Rules:** 14x14 units, spacing every 18 units (example 19/37/55/73). Never (0,0). Start `position_y: 1`.
+Positions are handled automatically — omit `position_x`/`position_y`. The layout is derived from the `resolve`/`reject`
+graph whenever operations are created or linked: each operation sits one column right of its parent, `resolve` on the
+same row, `reject` one row down. Wiring up the chain is all it takes to keep the layout matching execution order.
 
-**Patterns:** Linear (19,1)→(37,1)→(55,1). Branching: success (37,1), error (37,19). </positioning_system>
+Explicit positions are applied as-is (no layout pass) and re-derived on the next link change. Grid: 14x14 panels,
+columns every 18 units, rows every 16, first operation at (19,1). </positioning_system>
 
 <operation_examples> **condition** - Evaluates filter rules
 
@@ -285,7 +287,7 @@ data. Avoid `{{ $last }}` (breaks when reordered). See `flows` tool for complete
 3. Create operations before referencing them
 4. No duplicate keys within same flow
 5. Avoid circular resolve/reject references
-6. Set positions (not 0,0)
+6. Omit positions - the server places operations automatically
 7. Use nested objects in filters, NOT dot notation
 8. Request headers as array of objects, body as stringified JSON
 9. Pass native objects in data (except request body)
@@ -295,5 +297,6 @@ data. Avoid `{{ $last }}` (breaks when reordered). See `flows` tool for complete
 <troubleshooting>
 **Invalid foreign key:** Operation UUID doesn't exist. Use UUIDs (36 chars), not keys. Create operations before referencing.
 **Not executing:** Check resolve/reject chain, verify flow.operation set, confirm required options provided.
-**Overlapping (0,0):** Update positions: `{"action": "update", "key": "uuid", "data": {"position_x": 19, "position_y": 1}}`
+**Misplaced operations:** Re-send any existing link to re-derive the whole layout:
+`{"action": "update", "key": "parent-uuid", "data": {"resolve": "child-uuid"}}`
 </troubleshooting>
