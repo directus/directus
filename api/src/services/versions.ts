@@ -14,7 +14,7 @@ import {
 	type Query,
 	type QueryOptions,
 } from '@directus/types';
-import { deepMapWithSchema } from '@directus/utils';
+import { deepMapWithSchema, getRelationInfo } from '@directus/utils';
 import Joi from 'joi';
 import { assign, get, isEqual, isNil, isPlainObject, pick } from 'lodash-es';
 import objectHash from 'object-hash';
@@ -28,6 +28,8 @@ import { ActivityService } from './activity.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
+
+const ALTERATION_ACTIONS = ['create', 'update', 'delete'] as const;
 
 export class VersionsService extends ItemsService<ContentVersion> {
 	constructor(options: AbstractServiceOptions) {
@@ -404,14 +406,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		const helpers = getHelpers(this.knex);
 		const date = new Date(helpers.date.writeTimestamp(new Date().toISOString()));
 
-		deepMapObjects(revisionDelta, (object, path) => {
-			const existing = get(existingDelta, path);
-
-			if (existing && isEqual(existing, object)) return;
-
-			object['_user'] = this.accountability?.user;
-			object['_date'] = date;
-		});
+		this.trackChanges(revisionDelta, collection, existingDelta, date);
 
 		const finalVersionDelta = assign({}, existingDelta, revisionDelta);
 
@@ -537,6 +532,66 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		return updatedItemKey;
 	}
 
+	/** Only items are stamped, never the contents of a field's own value (e.g. the blocks of a json field) */
+	private trackChanges(
+		delta: Partial<Item> | null,
+		collection: string,
+		existingDelta: Partial<Item> | null,
+		date: Date,
+	) {
+		const walk = (value: unknown, collection: string, path: string[]) => {
+			if (Array.isArray(value)) {
+				value.forEach((entry, index) => walk(entry, collection, [...path, String(index)]));
+				return;
+			}
+
+			if (!isPlainObject(value)) return;
+
+			const object = value as Record<string, any>;
+			const existing = get(existingDelta, path);
+
+			if (!existing || !isEqual(existing, object)) {
+				object['_user'] = this.accountability?.user;
+				object['_date'] = date;
+			}
+
+			// Each list is optional, so a payload may carry only the ones it needs
+			if (ALTERATION_ACTIONS.some((action) => Array.isArray(object[action]))) {
+				for (const action of ALTERATION_ACTIONS) {
+					walk(object[action], collection, [...path, action]);
+				}
+
+				return;
+			}
+
+			for (const [field, child] of Object.entries(object)) {
+				if (!isPlainObject(child) && !Array.isArray(child)) continue;
+
+				const relatedCollection = this.getRelatedCollection(collection, field, object);
+
+				if (relatedCollection) walk(child, relatedCollection, [...path, field]);
+			}
+		};
+
+		walk(delta, collection, []);
+	}
+
+	private getRelatedCollection(collection: string, field: string, object: Record<string, any>): string | null {
+		const { relation, relationType } = getRelationInfo(this.schema.relations, collection, field);
+
+		if (!relation) return null;
+
+		let related: unknown = relation.collection;
+
+		if (relationType === 'm2o') related = relation.related_collection;
+		// The related collection of an m2a is stored on the item itself, which may not be part of the delta
+		if (relationType === 'a2o') related = object[relation.meta!.one_collection_field!];
+
+		if (typeof related !== 'string' || !(related in this.schema.collections)) return null;
+
+		return related;
+	}
+
 	private async assertSingletonEmpty(collection: string): Promise<void> {
 		const collectionMeta = this.schema.collections[collection];
 
@@ -585,19 +640,5 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			{ collection: version.collection, schema: this.schema },
 			{ mapNonExistentFields: true, detailedUpdateSyntax: true },
 		);
-	}
-}
-
-/** Deeply maps all objects of a structure. Only calls the callback for objects, not for arrays. Objects in arrays will continued to be mapped. */
-function deepMapObjects(
-	object: unknown,
-	fn: (object: Record<string, any>, path: string[]) => void,
-	path: string[] = [],
-) {
-	if (isPlainObject(object) && typeof object === 'object' && object !== null) {
-		fn(object, path);
-		Object.entries(object).map(([key, value]) => deepMapObjects(value, fn, [...path, key]));
-	} else if (Array.isArray(object)) {
-		object.map((value, index) => deepMapObjects(value, fn, [...path, String(index)]));
 	}
 }
