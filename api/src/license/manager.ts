@@ -114,8 +114,8 @@ export class LicenseManager {
 			throw new Error(action.message);
 		}
 
-		if (action.kind === 'downgrade') {
-			await this.syncLicense({ kind: 'downgrade' });
+		if (action.kind === 'clear-token') {
+			await this.syncLicense({ kind: 'clear-token' });
 			return;
 		}
 
