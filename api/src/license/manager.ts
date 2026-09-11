@@ -34,11 +34,13 @@ import licenseCheckSchedule, { stopLicenseCheck } from '../schedules/license.js'
 import { UsersService } from '../services/index.js';
 import { SettingsService } from '../services/settings.js';
 import { getSchema } from '../utils/get-schema.js';
+import { runExclusive } from '../utils/run-exclusive.js';
 import { useStore } from '../utils/store.js';
 import { getActiveCollections } from './entitlements/lib/collections.js';
 import { getActiveFlows } from './entitlements/lib/flows.js';
 import { getActiveSeats } from './entitlements/lib/seats.js';
 import { EntitlementManager, getEntitlementManager } from './entitlements/manager.js';
+import { computeBootAction, type LicenseBootAction } from './utils/compute-boot-action.js';
 import { computeLicenseStatus } from './utils/compute-license-status.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
@@ -51,7 +53,6 @@ const LICENSE_CHANNEL = `license`;
 let licenseCache: Directus.License | null;
 
 type LicenseStore = {
-	initialized: true | undefined;
 	invalidStatus: InvalidLicenseStatus | undefined;
 };
 
@@ -72,47 +73,24 @@ export class LicenseManager {
 	private licenseToken: string | null = null;
 	/** Where the key or token comes from */
 	private source: LicenseSource = null;
-	private initialized = false;
+	/** True for the duration of {@link initialize}, while the management guards do not apply */
+	private initializing = false;
 	private rpc = useRPC<Pick<LicenseManager, 'syncState'>>(this, LICENSE_CHANNEL);
 	private store = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']));
 
 	/**
-	 * Initialize license state based on the following state permutations.
-	 *
-	 * | envKey | envToken | dbKey | dbToken | diff | Outcome                                      |  id  |
-	 * | :----: | :------: | :---: | :-----: | :--: | -------------------------------------------- | ---- |
-	 * |   ✓    |    ✓     |   *   |    *    |   *  | **Error** — both env vars set, process exits |  A  |
-	 * |   ✓    |    -     |   ✓   |    *    |  ✓   | update                                      |  B   |
-	 * |   ✓    |    -     |   ✓   |    *    |  -   | verify, refresh                             |  C   |
-	 * |   ✓    |    -     |   -   |    *    |  -   | activate                                     |  D  |
-	 * |   -    |    ✓     |   *   |    *    |  -   | verify offline token, cleanup DB             |  E   |
-	 * |   -    |    -     |   ✓   |    ✓    |  -   | verify token + refresh                       |  F  |
-	 * |   -    |    -     |   ✓   |    -    |  -   | activate                                     |  G   |
-	 * |   -    |    -     |   -   |    ✓    |  -   | cleanup and CORE_LICENSE                     |  H   |
-	 * |   -    |    -     |   -   |    -    |  -   |  CORE_LICENSE                                |  I   |
+	 * Establish license state from the environment and the database.
 	 */
 	public async initialize(): Promise<void> {
-		const existingStore = this.store;
+		this.initializing = true;
 
 		// initialize the manager if not done yet
 		getEntitlementManager();
 
 		try {
-			// Lock the whole store for the entirety of initialization
-			await this.store(async (store) => {
-				// Replace existing store temporarily to avoid deadlocks
-				this.store = (cb) => {
-					return cb(store);
-				};
-
+			await runExclusive('license-boot', async () => {
 				const envKey = env['LICENSE_KEY'] as string | undefined;
 				const envToken = env['LICENSE_TOKEN'] as string | undefined;
-
-				// CASE A
-				if (envKey && envToken) {
-					logger.fatal('LICENSE_KEY and LICENSE_TOKEN cannot both be set. Provide one or the other.');
-					process.exit(1);
-				}
 
 				const settingsService = new SettingsService({ schema: await getSchema() });
 
@@ -120,70 +98,68 @@ export class LicenseManager {
 					fields: ['license_key', 'license_token'],
 				});
 
-				if (envKey) {
-					try {
-						this.source = 'env';
+				const action = computeBootAction({ envKey, envToken, dbKey, dbToken });
 
-						if (!dbKey) {
-							// CASE D
-							await this.activate(envKey);
-						} else if (envKey !== dbKey) {
-							// CASE B — update operates on manager state, so seed it with the existing DB key
-							this.licenseKey = dbKey;
-							await this.update(envKey);
-						} else {
-							// CASE C
-							await this.refresh({ key: envKey, token: dbToken ?? null });
-						}
-					} catch (error) {
-						logger.fatal('Unable to validate the LICENSE_KEY, please check the key and try again.');
-						logger.fatal(error);
-						process.exit(1);
-					}
-				} else if (envToken) {
-					try {
-						this.source = 'env';
-						// CASE E — verify offline token, cleanup DB
-						await this.refresh({ token: envToken });
-
-						if (dbKey || dbToken) {
-							await settingsService.upsertSingleton({ license_key: null, license_token: null });
-						}
-					} catch (error) {
-						logger.fatal('Unable to validate the LICENSE_TOKEN, please check the token and try again.');
-						logger.fatal(error);
-						process.exit(1);
-					}
-				} else if (dbKey) {
-					try {
-						this.source = 'settings';
-
-						if (dbToken) {
-							// CASE F
-							await this.refresh({ key: dbKey, token: dbToken });
-						} else {
-							// CASE G
-							await this.activate(dbKey);
-						}
-					} catch (error) {
-						logger.error('Unable to validate the license key from the database, downgrading to core tier.');
-						logger.error(error);
-						await this.syncLicense({ kind: 'downgrade' });
-					}
-				} else {
-					if (dbToken) {
-						// CASE H — stale token, clear and drop to core
-						await this.syncLicense({ kind: 'downgrade' });
-					} else {
-						// CASE I — already core, just propagate
-						await this.syncLicense();
-					}
-				}
-
-				this.initialized = true;
+				await this.executeBootAction(action);
 			});
 		} finally {
-			this.store = existingStore;
+			this.initializing = false;
+		}
+	}
+
+	/** Run a boot action */
+	private async executeBootAction(action: LicenseBootAction): Promise<void> {
+		if (action.kind === 'fatal') {
+			logger.fatal(action.message);
+			throw new Error(action.message);
+		}
+
+		if (action.kind === 'downgrade') {
+			await this.syncLicense({ kind: 'downgrade' });
+			return;
+		}
+
+		try {
+			switch (action.kind) {
+				case 'activate':
+					await this.activate(action.key);
+					break;
+
+				case 'update':
+					// Operates on manager state, so seed it with the key being replaced
+					this.licenseKey = action.currentKey;
+					await this.update(action.key);
+					break;
+
+				case 'refresh':
+					await this.refresh({ key: action.key, token: action.token });
+					break;
+
+				case 'sync':
+					await this.syncLicense();
+					break;
+			}
+		} catch (error) {
+			if (action.kind === 'sync') {
+				throw error;
+			}
+
+			// TODO: dont clear key so a transient license server wont clear a key
+			if (action.source === 'settings') {
+				logger.error('Unable to validate the license from the database, switching to core tier.');
+				logger.error(error);
+				await this.syncLicense({ kind: 'downgrade' });
+				return;
+			}
+
+			logger.fatal(error);
+
+			// Only one env var can be set here, so whichever it is is the culprit
+			// TODO: We should be consistent between env and settings on failures
+			throw new Error(
+				`Unable to validate the ${env['LICENSE_KEY'] ? 'LICENSE_KEY' : 'LICENSE_TOKEN'}, please check its value and try again.`,
+				{ cause: error },
+			);
 		}
 	}
 
@@ -232,7 +208,9 @@ export class LicenseManager {
 	 * and env's LICENSE_KEY_MANAGEMENT_ENABLED !== false.
 	 */
 	private assertCanManageLicense() {
-		if (this.initialized && this.getEditable() === false) {
+		if (this.initializing) return;
+
+		if (this.getEditable() === false) {
 			throw new ForbiddenError({
 				reason: `You cannot manage license for the current license.`,
 			});
@@ -247,7 +225,9 @@ export class LicenseManager {
 	 * explicit key argument cannot bypass the guard.
 	 */
 	private assertLicenseExists() {
-		if (this.initialized && this.licenseKey === null) {
+		if (this.initializing) return;
+
+		if (this.licenseKey === null) {
 			throw new ForbiddenError({
 				reason: `There is no active license to manage.`,
 			});
@@ -314,15 +294,10 @@ export class LicenseManager {
 				project_id: new_project_id ?? project_id!,
 			});
 
-			// During init, source is already set, only flip if via API
-			if (this.initialized) {
-				this.source = 'settings';
-			}
-
 			await this.syncLicense();
 
-			// Register the license check on activate once persisted
-			if (this.initialized) {
+			// Register the license check on activate once persisted, initialization leaves it to the scheduler
+			if (!this.initializing) {
 				await licenseCheckSchedule();
 			}
 		} catch (err) {
@@ -411,7 +386,7 @@ export class LicenseManager {
 	/**
 	 * Verify a license token. On failure, downgrade and mark status 'expired'.
 	 */
-	public async refresh(options?: { key?: string; token?: string | null }): Promise<void> {
+	public async refresh(options?: { key?: string | null; token?: string | null }): Promise<void> {
 		const key = options?.key ?? this.licenseKey;
 		const token = options?.token ?? this.licenseToken;
 
@@ -421,6 +396,7 @@ export class LicenseManager {
 			license = await this.verify(token);
 
 			if (!license) {
+				// TODO a token that will not verify does not invalidate the key, only token should be cleared
 				await this.syncLicense({ kind: 'downgrade', reason: 'expired' });
 				return;
 			}
@@ -462,6 +438,7 @@ export class LicenseManager {
 
 				if (err instanceof LicenseServerError) {
 					if (err.code === 'LICENSE_EXPIRED') {
+						// TODO expired is potentially recoverable, so the key should survive
 						await this.syncLicense({ kind: 'downgrade', reason: 'expired' });
 					} else if (err.code === 'LICENSE_CANCELED') {
 						await this.syncLicense({ kind: 'downgrade', reason: 'canceled' });
@@ -770,28 +747,28 @@ export class LicenseManager {
 
 		// clear permission cache when the license entitlements change
 		await clearPermissionCache();
-		await this.syncState({ source: this.source });
-		await this.rpc.syncState({ source: this.source });
+		await this.syncState();
+		await this.rpc.syncState();
 	}
 
-	public async syncState(options?: { source?: LicenseSource }) {
-		const { key } = await getLicenseKey();
-		const { token } = await getLicenseToken();
+	/**
+	 * Re-resolve state from the environment and the database.
+	 *
+	 * Every instance derives its own, so the RPC only has to signal that something changed rather
+	 * than carry one instance's view of it.
+	 */
+	public async syncState() {
+		const { source: keySource, key } = await getLicenseKey();
+		const { source: tokenSource, token } = await getLicenseToken();
 
-		// set local vars
 		this.licenseKey = key;
 		this.licenseToken = token;
 
-		this.initialized = true;
+		// An env key outranks a persisted token
+		this.source = keySource ?? tokenSource;
 
-		if (options && 'source' in options) {
-			this.source = options.source;
-		}
-
-		// reset cache
 		licenseCache = null;
 
-		// "reset" entitlements
 		const license = await this.getLicense();
 		getEntitlementManager().setEntitlements(license.entitlements);
 	}
