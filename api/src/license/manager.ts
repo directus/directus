@@ -7,7 +7,7 @@ import {
 	type CountableEntitlementKey,
 	deactivateKey,
 	deleteAddon,
-	Directus,
+	type Directus,
 	DIRECTUS_CORE_LICENSE,
 	type FeatureFlagEntitlementKey,
 	type InvalidLicenseStatus,
