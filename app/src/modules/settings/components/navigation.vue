@@ -33,11 +33,6 @@ const links = computed<Link[][]>(() => [
 			name: t('settings_data_model'),
 			to: `/settings/data-model`,
 		},
-		{
-			icon: 'bolt',
-			name: t('settings_flows'),
-			to: `/settings/flows`,
-		},
 	],
 	[
 		{

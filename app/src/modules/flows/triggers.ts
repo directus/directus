@@ -1,12 +1,13 @@
 import { DeepPartial, Field, FlowRaw, TriggerType, Width } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { useI18n } from 'vue-i18n';
-import { getPublicURL } from '../../../../utils/get-root-path';
+import { getPublicURL } from '@/utils/get-root-path';
 
 export type Trigger = {
 	name: string;
 	id: TriggerType;
 	icon: string;
+	color: string;
 	description: string;
 	overview: (
 		options: Record<string, any>,
@@ -23,6 +24,7 @@ export function getTriggers() {
 			id: 'event',
 			name: t('triggers.event.name'),
 			icon: 'anchor',
+			color: 'var(--blue)',
 			description: t('triggers.event.description'),
 			overview: ({ type, scope, collections }) => {
 				const labels = [
@@ -202,6 +204,7 @@ export function getTriggers() {
 			id: 'webhook',
 			name: t('triggers.webhook.name'),
 			icon: 'link',
+			color: 'var(--green)',
 			description: t('triggers.webhook.description'),
 			overview: ({ method }, { flow }) => [
 				{
@@ -321,6 +324,7 @@ export function getTriggers() {
 			id: 'schedule',
 			name: t('triggers.schedule.name'),
 			icon: 'schedule',
+			color: 'var(--orange)',
 			description: t('triggers.schedule.description'),
 			overview: ({ cron }) => [
 				{
@@ -347,6 +351,7 @@ export function getTriggers() {
 			id: 'operation',
 			name: t('triggers.operation.name'),
 			icon: 'bolt',
+			color: 'var(--purple)',
 			description: t('triggers.operation.description'),
 			overview: () => [],
 			options: [
@@ -378,6 +383,7 @@ export function getTriggers() {
 			id: 'manual',
 			name: t('triggers.manual.name'),
 			icon: 'touch_app',
+			color: 'var(--theme--foreground-subdued)',
 			description: t('triggers.manual.description'),
 			overview: ({ collections }) => {
 				const labels = [

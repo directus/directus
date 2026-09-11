@@ -6,13 +6,13 @@ import { customAlphabet, nanoid } from 'nanoid/non-secure';
 import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterView } from 'vue-router';
-import SettingsNavigation from '../../components/navigation.vue';
-import SettingsNotFound from '../not-found.vue';
 import Arrows from './components/arrows/arrows.vue';
 import LogsSidebarDetail from './components/logs-sidebar-detail.vue';
+import FlowsNavigation from './components/navigation.vue';
 import Operation, { ArrowInfo, Target } from './components/operation.vue';
 import { ATTACHMENT_OFFSET, GRID_SIZE, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
 import FlowDrawer from './flow-drawer.vue';
+import FlowsNotFound from './not-found.vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -85,6 +85,11 @@ const flow = computed<FlowRaw | undefined>({
 
 const loading = ref(false);
 
+const backTo = computed(() => {
+	const folder = flow.value?.folder;
+	return router.resolve(folder ? { name: 'flows-folder', params: { folder } } : { name: 'flows-collection' }).path;
+});
+
 const editMode = ref(flow.value?.operations.length === 0 || props.operationId !== undefined);
 
 const confirmDelete = ref(false);
@@ -103,7 +108,7 @@ async function deleteFlow() {
 		unexpectedError(error);
 	} finally {
 		deleting.value = false;
-		router.push({ name: 'settings-flows-collection' });
+		router.push({ name: 'flows-collection' });
 	}
 }
 
@@ -301,13 +306,13 @@ function stageOperation(edits: Partial<OperationRaw>) {
 	stageOperationEdits({ edits });
 	parentId = undefined;
 	attachType = undefined;
-	router.replace({ name: 'settings-flows-item', params: { primaryKey: props.primaryKey } });
+	router.replace({ name: 'flows-item', params: { primaryKey: props.primaryKey } });
 }
 
 function cancelOperation() {
 	parentId = undefined;
 	attachType = undefined;
-	router.replace({ name: 'settings-flows-item', params: { primaryKey: props.primaryKey } });
+	router.replace({ name: 'flows-item', params: { primaryKey: props.primaryKey } });
 }
 
 async function saveChanges() {
@@ -452,7 +457,7 @@ async function deletePanel(id: string) {
 function createPanel(parent: string, type: 'resolve' | 'reject') {
 	parentId = parent;
 	attachType = type;
-	router.push({ name: 'settings-flows-operation', params: { primaryKey: props.primaryKey, operationId: '+' } });
+	router.push({ name: 'flows-operation', params: { primaryKey: props.primaryKey, operationId: '+' } });
 }
 
 function duplicatePanel(panel: OperationRaw) {
@@ -466,8 +471,7 @@ function duplicatePanel(panel: OperationRaw) {
 
 function editPanel(panel: AppTile) {
 	if (panel.id === '$trigger') triggerDetailOpen.value = true;
-	else
-		router.push({ name: 'settings-flows-operation', params: { primaryKey: props.primaryKey, operationId: panel.id } });
+	else router.push({ name: 'flows-operation', params: { primaryKey: props.primaryKey, operationId: panel.id } });
 }
 
 // ------------- Copy Panel To ------------- //
@@ -581,7 +585,7 @@ function getNearAttachment(pos: Vector2) {
 const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, {
-	ignorePrefix: computed(() => `/settings/flows/${props.primaryKey}`),
+	ignorePrefix: computed(() => `/flows/${props.primaryKey}`),
 });
 
 const confirmCancel = ref(false);
@@ -611,8 +615,8 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<SettingsNotFound v-if="!flow && !loading" />
-	<PrivateView v-else :title="flow?.name ? translate(flow.name) : $t('loading')" show-back back-to="/settings/flows">
+	<FlowsNotFound v-if="!flow && !loading" />
+	<PrivateView v-else :title="flow?.name ? translate(flow.name) : $t('loading')" show-back :back-to="backTo">
 		<template #title:append>
 			<DisplayColor
 				v-tooltip="flow?.status === 'active' ? $t('active') : $t('inactive')"
@@ -660,7 +664,7 @@ function discardAndLeave() {
 		</template>
 
 		<template #navigation>
-			<SettingsNavigation />
+			<FlowsNavigation :current-folder="flow?.folder ?? undefined" />
 		</template>
 
 		<div v-if="loading || !flow" class="container center">
