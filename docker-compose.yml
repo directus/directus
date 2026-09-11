@@ -16,16 +16,14 @@
 #   Maildev SMTP:    1025
 #   Maildev Web-UI:  1080
 #   Postgres:        5100
-#   MySQL (8):       5101
+#   MySQL:           5101
 #   MariaDB:         5102
 #   MS SQL:          5103
 #   Oracle:          5104
 #   Redis:           5105
 #   Minio (S3):      5106
 #   Azure            5107
-#   MySQL (5.7):     5108
 #   Keycloak:        5110
-#   Postgres (10):   5111
 #   Minio Admin:     5112
 #   CockroachDB:     5113
 #
@@ -49,8 +47,7 @@
 #   Oracle DB:
 #     User:          secretsysuser
 #     Password:      secretpassword
-#     Role:          SYSDEFAULT
-#     SID:           XE
+#     Service Name:  FREEPDB1
 #
 #   Redis:
 #     n/a
@@ -73,11 +70,10 @@
 #     User:          admin
 #     Password:      --
 
-version: "3.8"
-
 services:
   postgres:
-    image: postgis/postgis:17-3.5-alpine
+    image: postgis/postgis:18-3.6-alpine
+    platform: linux/amd64 # postgis publishes no arm64 build
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
@@ -86,16 +82,7 @@ services:
 
   mysql:
     image: mysql:9.7
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
-    environment:
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: directus
-    ports:
-      - 5101:3306
-
-  mysql8:
-    image: mysql:8.4
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
@@ -103,7 +90,7 @@ services:
       - 5101:3306
 
   maria:
-    image: mariadb:11.4
+    image: mariadb:12.3
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_ROOT_PASSWORD: secret
@@ -112,30 +99,31 @@ services:
       - 5102:3306
 
   mssql:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: mcr.microsoft.com/mssql/server:2025-latest
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=Test@123
+      - MSSQL_SA_PASSWORD=Test@123
     ports:
       - 5103:1433
 
   oracle:
-    image: doctorkirk/oracle-19c
+    image: gvenzl/oracle-free:23-slim
     ports:
       - 5104:1521
     environment:
-      - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
-      - ORACLE_ALLOW_REMOTE=true
-    shm_size: "1gb" # more like smh-size amirite 🥁
+      - ORACLE_PASSWORD=secretpassword
+      - APP_USER=secretsysuser
+      - APP_USER_PASSWORD=secretpassword
+    shm_size: '1gb' # more like smh-size amirite 🥁
 
   cockroachdb:
-    image: cockroachdb/cockroach:latest-v26.2
+    image: cockroachdb/cockroach:latest-v25.4
     command: start-single-node --cluster-name=example-single-node --insecure --store=type=mem,size=4GB
     ports:
       - 5113:26257
 
   redis:
-    image: ${REDIS_IMAGE:-redis:7-alpine}
+    image: ${REDIS_IMAGE:-redis:8-alpine}
     ports:
       - 5105:6379
 
