@@ -168,6 +168,9 @@ ${comment}
 	override async updateMany(keys: PrimaryKey[], data: Partial<Comment>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if (!this.accountability?.user) throw new ForbiddenError();
 
+		if ('user_created' in data) {
+			throw new InvalidPayloadError({ reason: `You can't change the "user_created" value manually` });
+		}
 
 		if ('item' in data || 'collection' in data) {
 			let comments: Partial<Comment>[] = [data];
