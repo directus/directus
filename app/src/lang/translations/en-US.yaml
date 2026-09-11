@@ -1915,6 +1915,10 @@ fields:
     public_registration_verify_email: Verify Email
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
+    live_preview: Live Preview
+    preview_base_url: Preview Base URL
+    preview_base_url_note:
+      Selectable as the Preview Base URL variable in a collection's Preview URL, so the host can differ per environment.
     visual_editor_urls: Visual Editor URLs
     report_feature_url: Report Feature URL
     report_bug_url: Report Bug URL

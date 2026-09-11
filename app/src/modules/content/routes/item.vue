@@ -44,6 +44,7 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
 import { useCollectionPermissions, useItemPermissions } from '@/composables/use-permissions';
+import { usePreviewUrl } from '@/composables/use-preview-url';
 import { provideRefreshSignal } from '@/composables/use-refresh-signal';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
@@ -55,7 +56,6 @@ import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { getPreviewVersionKey } from '@/utils/get-preview-version-key';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
@@ -436,20 +436,11 @@ watch(currentVersionId, async () => {
 	await refreshLivePreview();
 });
 
-const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
-
-const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKeyParam, {
-	template: previewTemplate,
-	injectData: computed(() => ({ $version: getPreviewVersionKey(currentVersion.value) })),
-});
-
-const previewUrl = computed(() => {
-	const { displayValue } = renderStringTemplate(previewTemplate.value, previewData.value);
-
-	if (!displayValue.value) return null;
-
-	return displayValue.value.trim() || null;
-});
+const { previewUrl, previewConfigured, fetchTemplateValues } = usePreviewUrl(
+	collectionInfo,
+	primaryKeyParam,
+	currentVersion,
+);
 
 const livePreviewFullWidth = useLocalStorage<boolean>('live-preview-full-width', false);
 const livePreviewMode = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
@@ -461,9 +452,7 @@ const breakpoints = useBreakpoints(BREAKPOINTS);
 const isMobile = breakpoints.smallerOrEqual('sm');
 const livePreviewSizeMinSize = computed(() => (isMobile.value ? 0 : 20));
 
-const livePreviewActive = computed(
-	() => !!collectionInfo.value?.meta?.preview_url && !unref(isNew) && livePreviewMode.value === 'split',
-);
+const livePreviewActive = computed(() => previewConfigured.value && !unref(isNew) && livePreviewMode.value === 'split');
 
 const livePreviewCollapsed = computed({
 	get() {
