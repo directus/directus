@@ -110,6 +110,14 @@ const tableHeaders = ref<Header[]>([
 		description: null,
 	},
 	{
+		text: t('folder'),
+		value: 'folder',
+		width: 140,
+		sortable: true,
+		align: 'left',
+		description: null,
+	},
+	{
 		text: t('status'),
 		value: 'status',
 		width: 100,
@@ -120,7 +128,7 @@ const tableHeaders = ref<Header[]>([
 	{
 		text: t('trigger_type'),
 		value: 'trigger',
-		width: 180,
+		width: 150,
 		sortable: true,
 		align: 'left',
 		description: null,
@@ -128,15 +136,7 @@ const tableHeaders = ref<Header[]>([
 	{
 		text: t('name'),
 		value: 'name',
-		width: 240,
-		sortable: true,
-		align: 'left',
-		description: null,
-	},
-	{
-		text: t('folder'),
-		value: 'folder',
-		width: 180,
+		width: 200,
 		sortable: true,
 		align: 'left',
 		description: null,
@@ -144,7 +144,7 @@ const tableHeaders = ref<Header[]>([
 	{
 		text: t('description'),
 		value: 'description',
-		width: 360,
+		fill: true,
 		sortable: false,
 		align: 'left',
 		description: null,
@@ -192,8 +192,9 @@ const visibleHeaders = computed<Header[]>({
 			return;
 		}
 
-		const nameIndex = headers.findIndex((header) => header.value === 'name');
-		tableHeaders.value = [...headers.slice(0, nameIndex + 1), folderHeader, ...headers.slice(nameIndex + 1)];
+		const statusIndex = headers.findIndex((header) => header.value === 'status');
+		const insertIndex = statusIndex === -1 ? headers.length : statusIndex;
+		tableHeaders.value = [...headers.slice(0, insertIndex), folderHeader, ...headers.slice(insertIndex)];
 	},
 });
 

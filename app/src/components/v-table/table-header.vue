@@ -61,6 +61,10 @@ useEventListener(window, 'pointerup', onMouseUp);
 
 const headersWritable = useSync(props, 'headers', emit);
 
+// When a fill column is in play, the header and row grids must resolve to the same track
+// sizes, so the append placeholder mirrors the standard item-append cell (24px icon + padding)
+const hasFillColumn = computed(() => props.headers.some((header) => header.fill));
+
 function getClassesForHeader(header: Header) {
 	const classes: string[] = [];
 
@@ -217,7 +221,12 @@ function toggleManualSort() {
 			</template>
 
 			<template #item="{ element: header }">
-				<th :class="getClassesForHeader(header)" class="cell" scope="col" :style="{ inlineSize: header.width + 'px' }">
+				<th
+					:class="getClassesForHeader(header)"
+					class="cell"
+					scope="col"
+					:style="{ inlineSize: header.fill ? '100%' : header.width + 'px' }"
+				>
 					<VMenu v-if="hasHeaderContextMenuSlot" show-arrow placement="bottom-start">
 						<template #activator="{ toggle }">
 							<div class="content reorder-handle">
@@ -265,7 +274,7 @@ function toggleManualSort() {
 					</div>
 
 					<span
-						v-if="showResize"
+						v-if="showResize && !header.fill"
 						class="resize-handle"
 						@click.stop
 						@pointerdown="onResizeHandleMouseDown(header, $event)"
@@ -278,7 +287,12 @@ function toggleManualSort() {
 				<td v-if="$slots['header-append']" class="manual append cell" @click.stop>
 					<slot name="header-append" />
 				</td>
-				<th v-if="hasItemAppendSlot && !$slots['header-append']" class="spacer cell" scope="col" />
+				<th
+					v-if="hasItemAppendSlot && !$slots['header-append']"
+					class="spacer cell"
+					scope="col"
+					:style="hasFillColumn ? { inlineSize: '2.875rem' } : undefined"
+				/>
 			</template>
 		</Draggable>
 		<!-- </tr> -->
