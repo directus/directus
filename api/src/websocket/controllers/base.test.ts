@@ -2,6 +2,7 @@ import type { Server as httpServer } from 'http';
 import { useEnv } from '@directus/env';
 import type { Accountability } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { createRateLimiter } from '../../rate-limiter.js';
 import { authenticateConnection } from '../authenticate.js';
 import type { WebSocketAuthMessage } from '../messages.js';
 import type { WebSocketClient } from '../types.js';
@@ -68,12 +69,13 @@ const PUBLIC_ACCOUNTABILITY: Accountability = {
 	ip: '127.0.0.1',
 };
 
-function setupController(mode: 'public' | 'strict' | 'handshake') {
+function setupController(mode: 'public' | 'strict' | 'handshake', env: Record<string, unknown> = {}) {
 	(useEnv as ReturnType<typeof vi.fn>).mockReturnValue({
 		WEBSOCKETS_REST_PATH: '/websocket',
 		WEBSOCKETS_REST_AUTH: mode,
 		WEBSOCKETS_REST_AUTH_TIMEOUT: 10,
 		RATE_LIMITER_ENABLED: false,
+		...env,
 	});
 
 	return new TestController(mockHttpServer(), 'WEBSOCKETS_REST');
@@ -163,5 +165,22 @@ describe('WebSocket SocketController auth failure handling', () => {
 		expect(client.accountability).not.toBeNull();
 		expect(client.accountability).toMatchObject({ role: null, user: null, admin: false });
 		expect(client.expires_at).toBeNull();
+	});
+});
+
+describe('WebSocket SocketController rate limiter configuration', () => {
+	test('RATE_LIMITER_WEBSOCKETS_KEY_PREFIX overrides the default key prefix', () => {
+		setupController('public', {
+			RATE_LIMITER_ENABLED: true,
+			RATE_LIMITER_WEBSOCKETS_KEY_PREFIX: 'project-1:websocket',
+		});
+
+		expect(createRateLimiter).toHaveBeenCalledWith('RATE_LIMITER', { keyPrefix: 'project-1:websocket' });
+	});
+
+	test('keeps the default key prefix while passing other RATE_LIMITER_WEBSOCKETS_ options through', () => {
+		setupController('public', { RATE_LIMITER_ENABLED: true, RATE_LIMITER_WEBSOCKETS_POINTS: 10 });
+
+		expect(createRateLimiter).toHaveBeenCalledWith('RATE_LIMITER', { keyPrefix: 'websocket', points: 10 });
 	});
 });

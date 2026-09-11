@@ -19,7 +19,7 @@ import type {
 	Transformation,
 	TransformationSet,
 } from '@directus/types';
-import archiver from 'archiver';
+import { ZipArchive } from 'archiver';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
 import { contentType, extension } from 'mime-types';
@@ -79,7 +79,7 @@ export class AssetsService {
 			throw new InvalidPayloadError({ reason: 'No files found in the selected folders tree' });
 		}
 
-		const archive = archiver('zip');
+		const archive = new ZipArchive();
 
 		// Streams the archive was handed but hasn't finished reading, so they can be released if it dies early
 		const pendingStreams = new Set<Readable>();
@@ -149,7 +149,10 @@ export class AssetsService {
 
 					const folderName = folder ? options.folders?.get(folder) : undefined;
 
-					archive.append(assetStream, { name: dedupedFileName, prefix: folderName });
+					archive.append(assetStream, {
+						name: dedupedFileName,
+						...(folderName !== undefined && { prefix: folderName }),
+					});
 				}
 
 				// add any empty folders, does not override already filled folder

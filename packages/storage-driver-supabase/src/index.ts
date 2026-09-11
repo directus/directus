@@ -135,9 +135,10 @@ export class DriverSupabase implements TusDriver {
 			throw new Error('File not found');
 		}
 
+		// metadata is null for folders
 		return {
-			size: file.metadata['contentLength'] ?? 0,
-			modified: new Date(file.metadata['lastModified'] || null),
+			size: file.metadata?.['contentLength'] ?? 0,
+			modified: new Date(file.metadata?.['lastModified'] || 0),
 		};
 	}
 
@@ -178,7 +179,7 @@ export class DriverSupabase implements TusDriver {
 	async *listGenerator(prefix: string): AsyncIterable<string> {
 		const limit = 1000;
 		let offset = 0;
-		let itemCount = 0;
+		let itemCount;
 
 		/*
 		 *	The Supabase API only returns the directories and files directly within the queried location
