@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { sandbox } from '@directus/sandbox';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
+import { sandboxPort } from '@utils/sandbox-port.js';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
 import {
 	CimdMetadataServer,
@@ -24,6 +25,7 @@ const metadataServers: CimdMetadataServer[] = [];
 
 beforeAll(async () => {
 	directus = await sandbox(database, {
+		port: sandboxPort(0),
 		inspect: false,
 		prefix: `mcp-oauth-settings-${getUID()}`,
 		env: {
@@ -332,6 +334,7 @@ describe('/mcp-oauth env gate', () => {
 		const isolationId = randomUUID();
 
 		const oauthDisabledDirectus = await sandbox(database, {
+			port: sandboxPort(1),
 			inspect: false,
 			prefix: `mcp-oauth-env-disabled-${isolationId}`,
 			env: {

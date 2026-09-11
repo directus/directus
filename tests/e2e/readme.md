@@ -136,3 +136,10 @@ For more details on how to use the sandbox, please refer to the [sandbox readme]
 
 - `getUID()` returns a unique string scoped to the current test file. Can help in reducing conflicts.
 - `@utils/constants.js` exposes the `database`, `port`, `env`, and `options` of the current global api instance.
+- `openSocket()` / `openAuthenticatedSocket()` from `@utils/websocket.js` wrap a WebSocket so a test can ask for
+  `next()` matching message or assert a socket stayed `silent()`, without racing the connection.
+- `openCollab()` from `@utils/collab.js` builds on that with the helpers the collaborative editing protocol needs
+  (`join()`, `collab()`, `waitFor()`).
+- `sandboxPort()` from `@utils/sandbox-port.js` hands a `*.sb.test.ts` file a port of its own, so a sandbox started
+  right after another one was stopped does not fail to bind. Pass a different slot per sandbox within one file, and add
+  the file to the list in that util — it throws for a file it does not know.

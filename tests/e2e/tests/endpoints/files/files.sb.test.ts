@@ -17,6 +17,7 @@ import {
 import type { Permission } from '@directus/types';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
+import { sandboxPort } from '@utils/sandbox-port.js';
 import { Upload } from 'tus-js-client';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
 import { LICENSE_KEYS } from '../../license/__fixtures__/licenses.js';
@@ -104,6 +105,7 @@ async function uploadToLocal(filenameDisk: string) {
 
 beforeAll(async () => {
 	directus = await sandbox(database, {
+		port: sandboxPort(0),
 		inspect: false,
 		prefix: `files-sb-${getUID()}`,
 		env: {
