@@ -168,6 +168,39 @@ ${comment}
 	override async updateMany(keys: PrimaryKey[], data: Partial<Comment>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if (!this.accountability?.user) throw new ForbiddenError();
 
+
+		if ('item' in data || 'collection' in data) {
+			let comments: Partial<Comment>[] = [data];
+
+			if (!('item' in data) || !('collection' in data)) {
+				comments = await this.knex.select('collection', 'item').from('directus_comments').whereIn('id', keys);
+			}
+
+			const itemsByCollection = new Map<string, Set<PrimaryKey>>();
+
+			for (const comment of comments) {
+				const collection = 'collection' in data ? data['collection']! : comment['collection']!;
+				const item = 'item' in data ? data['item']! : comment['item']!;
+
+				itemsByCollection.set(collection, (itemsByCollection.get(collection) ?? new Set()).add(item));
+			}
+
+			for (const [collection, items] of itemsByCollection) {
+				await validateAccess(
+					{
+						accountability: this.accountability,
+						action: 'read',
+						collection,
+						primaryKeys: [...items],
+					},
+					{
+						schema: this.schema,
+						knex: this.knex,
+					},
+				);
+			}
+		}
+
 		return super.updateMany(keys, data, opts);
 	}
 
