@@ -43,6 +43,11 @@ function onKeydown(e: KeyboardEvent) {
 	if (e.metaKey) return;
 	if ((e.target as HTMLElement)?.tagName === 'TR' && ['Enter', ' '].includes(e.key)) emit('click', e);
 }
+
+function onClick(e: MouseEvent) {
+	if ((e.target as HTMLElement)?.closest('.append')) return;
+	emit('click', e);
+}
 </script>
 
 <template>
@@ -50,7 +55,7 @@ function onKeydown(e: KeyboardEvent) {
 		class="table-row"
 		:class="{ subdued: subdued, clickable: hasClickListener }"
 		:tabindex="hasClickListener ? 0 : undefined"
-		@click="$emit('click', $event)"
+		@click="onClick"
 		@keydown="onKeydown"
 	>
 		<td v-if="showManualSort" class="manual cell" @click.stop>
@@ -85,7 +90,7 @@ function onKeydown(e: KeyboardEvent) {
 		</td>
 
 		<td class="spacer cell" />
-		<td v-if="$slots['item-append']" class="append cell" @click.stop>
+		<td v-if="$slots['item-append']" class="append cell">
 			<slot name="item-append" />
 		</td>
 	</tr>
