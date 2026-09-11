@@ -1,4 +1,4 @@
-import { CORE_LICENSE, readLicense } from '@directus/license';
+import { DIRECTUS_CORE_LICENSE, readLicense } from '@directus/license';
 import { sandbox, type Sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
@@ -27,9 +27,9 @@ test('no key or token at boot returns CORE with source=null', async () => {
 	const info = await api.request(readLicense());
 
 	expect(info).toMatchObject({
-		name: CORE_LICENSE.meta.name,
+		name: DIRECTUS_CORE_LICENSE.meta.name,
 		source: null,
 		status: 'active',
-		entitlements: CORE_LICENSE.entitlements,
+		entitlements: DIRECTUS_CORE_LICENSE.entitlements,
 	});
 });

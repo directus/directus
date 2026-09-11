@@ -45,8 +45,8 @@ jobs:
         env:
           REDIS_IMAGE: ${{ matrix.redis-image }}
         run:
-          docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc openldap -d --quiet-pull
-          --wait
+          docker compose -f tests/blackbox/docker-compose.yml up license-mock-server auth-saml redis minio minio-mc
+          openldap -d --quiet-pull --wait
 
       - name: Run tests
         run: TEST_DB=sqlite3 pnpm run test:blackbox --project common
@@ -99,7 +99,9 @@ jobs:
       - name: Start services
         env:
           REDIS_IMAGE: ${{ matrix.redis-image }}
-        run: docker compose -f tests/blackbox/docker-compose.yml up redis minio minio-mc -d --quiet-pull --wait
+        run:
+          docker compose -f tests/blackbox/docker-compose.yml up redis minio minio-mc license-mock-server -d
+          --quiet-pull --wait
 
       - name: Run tests
         run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox --project db

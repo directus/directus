@@ -3,15 +3,14 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import {
 	activateKey,
 	billingPortal,
-	CORE_LICENSE,
 	COUNTABLE_ENTITLEMENT_KEYS,
 	type CountableEntitlementKey,
 	deactivateKey,
 	deleteAddon,
-	Entitlements,
+	type Directus,
+	DIRECTUS_CORE_LICENSE,
 	type FeatureFlagEntitlementKey,
 	type InvalidLicenseStatus,
-	License,
 	type LicenseAddonsOutput,
 	type LicensePendingResolution,
 	type LicensePendingResolutionOutput,
@@ -51,7 +50,7 @@ import { useRPC } from './utils/use-rpc.js';
 const env = useEnv();
 const logger = useLogger();
 const LICENSE_CHANNEL = `license`;
-let licenseCache: License | null;
+let licenseCache: Directus.License | null;
 
 type LicenseStore = {
 	invalidStatus: InvalidLicenseStatus | undefined;
@@ -169,20 +168,20 @@ export class LicenseManager {
 		return toBoolean(env['LICENSE_KEY_MANAGEMENT_ENABLED']) && this.source !== 'env';
 	}
 
-	public async getLicense(options?: { database?: Knex }): Promise<License> {
+	public async getLicense(options?: { database?: Knex }): Promise<Directus.License> {
 		if (licenseCache) return licenseCache;
 
 		const { token } = await getLicenseToken(options);
 
 		if (!token) {
 			this.source = null;
-			licenseCache = CORE_LICENSE;
+			licenseCache = DIRECTUS_CORE_LICENSE;
 		} else {
 			licenseCache = await this.verify(token);
 
 			if (!licenseCache) {
 				this.source = null;
-				licenseCache = CORE_LICENSE;
+				licenseCache = DIRECTUS_CORE_LICENSE;
 			}
 		}
 
@@ -372,9 +371,13 @@ export class LicenseManager {
 		}
 	}
 
-	private async verify(token: string): Promise<License | null> {
+	private async verify(token: string): Promise<Directus.License | null> {
 		try {
-			return await verifyLicense(token);
+			const license = await verifyLicense(token);
+
+			if (license.audience !== 'directus') return null;
+
+			return license;
 		} catch {
 			return null;
 		}
@@ -387,7 +390,7 @@ export class LicenseManager {
 		const key = options?.key ?? this.licenseKey;
 		const token = options?.token ?? this.licenseToken;
 
-		let license: License | null = null;
+		let license: Directus.License | null = null;
 
 		if (token) {
 			license = await this.verify(token);
@@ -581,7 +584,7 @@ export class LicenseManager {
 		const schema = await getSchema();
 		const pendingResolution: LicensePendingResolution[] = [];
 
-		let entitlements: Entitlements | null;
+		let entitlements: Directus.Entitlements | null;
 
 		if (options.licenseKey) {
 			// required resolution when changing tier
