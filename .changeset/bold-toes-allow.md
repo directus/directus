@@ -3,4 +3,4 @@
 '@directus/app': patch
 ---
 
-Moved mock-license-server to @directus/license and updated both dependencies.
+Update license validation to only accept Directus keys and tokens
