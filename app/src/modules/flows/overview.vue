@@ -281,7 +281,7 @@ const flows = computed(() => {
 
 function sortIteratee(by: string | null) {
 	if (by === 'trigger') {
-		return (flow: FlowRaw) => triggerNames.get(flow.trigger!);
+		return (flow: FlowRaw) => (flow.trigger ? triggerNames.get(flow.trigger) : undefined);
 	}
 
 	if (by === 'folder') {
