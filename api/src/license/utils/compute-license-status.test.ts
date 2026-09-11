@@ -1,15 +1,15 @@
-import { CORE_LICENSE } from '@directus/license';
+import { Directus, DIRECTUS_CORE_LICENSE, type LicenseStatus } from '@directus/license';
+import type { DeepPartial } from '@directus/types';
 import { merge } from 'lodash-es';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { computeLicenseStatus } from './compute-license-status.js';
 
 const checkAll = vi.fn<() => Promise<boolean>>();
+const fork = vi.fn((_entitlements: Directus.Entitlements | null) => ({ checkAll }));
 const isInCoreGracePeriod = vi.fn<() => Promise<boolean>>();
 
 vi.mock('../index.js', () => ({
-	getEntitlementManager: () => ({
-		fork: () => ({ checkAll }),
-	}),
+	getEntitlementManager: () => ({ fork }),
 }));
 
 vi.mock('./is-in-core-grace-period.js', () => ({
@@ -17,11 +17,12 @@ vi.mock('./is-in-core-grace-period.js', () => ({
 }));
 
 const FIXED_NOW_MS = 1_735_689_600_000; // 2025-01-01T00:00:00Z
-const FIXED_NOW_SEC = FIXED_NOW_MS / 1000;
+const NOW = FIXED_NOW_MS / 1000;
 
 beforeEach(() => {
 	vi.useFakeTimers({ now: FIXED_NOW_MS });
 	checkAll.mockReset();
+	fork.mockClear();
 	isInCoreGracePeriod.mockReset();
 });
 
@@ -29,93 +30,76 @@ afterEach(() => {
 	vi.useRealTimers();
 });
 
-describe('no license (core install)', () => {
-	test('within core grace and over limits returns grace', async () => {
-		isInCoreGracePeriod.mockResolvedValue(true);
-		checkAll.mockResolvedValue(false);
+function createLicense(overrides: DeepPartial<Directus.License>) {
+	return merge({}, DIRECTUS_CORE_LICENSE, overrides);
+}
 
-		await expect(computeLicenseStatus(null)).resolves.toBe('grace');
+describe('core', () => {
+	test('limits are checked against core entitlements', async () => {
+		await computeLicenseStatus(null);
+
+		expect(fork).toHaveBeenCalledWith(null);
 	});
 
-	test('within core grace and within limits returns active', async () => {
-		isInCoreGracePeriod.mockResolvedValue(true);
-		checkAll.mockResolvedValue(true);
+	test.each<[string, [boolean, boolean], string]>([
+		['over limits within the core grace period returns grace', [false, true], 'grace'],
+		['over limits outside the core grace period returns locked', [false, false], 'locked'],
+		['within limits returns active within grace period returns active', [true, true], 'active'],
+		['within limits returns active outside grace period returns active', [true, false], 'active'],
+	])('%s', async (_, [withinLimit, inCoreGrace], result) => {
+		checkAll.mockResolvedValue(withinLimit);
+		isInCoreGracePeriod.mockResolvedValue(inCoreGrace);
 
-		await expect(computeLicenseStatus(null)).resolves.toBe('active');
-	});
-
-	test('outside core grace and within limits returns active', async () => {
-		isInCoreGracePeriod.mockResolvedValue(false);
-		checkAll.mockResolvedValue(true);
-
-		await expect(computeLicenseStatus(null)).resolves.toBe('active');
-	});
-
-	test('outside core grace and over limits returns locked', async () => {
-		isInCoreGracePeriod.mockResolvedValue(false);
-		checkAll.mockResolvedValue(false);
-
-		await expect(computeLicenseStatus(null)).resolves.toBe('locked');
+		await expect(computeLicenseStatus(null)).resolves.toBe(result);
 	});
 });
 
 describe('with license', () => {
+	test('limits are checked against the license entitlements', async () => {
+		const license = createLicense({
+			entitlements: {
+				seats: {
+					limit: 10,
+				},
+			},
+		});
+
+		await computeLicenseStatus(license);
+
+		expect(fork).toHaveBeenCalledWith(license.entitlements);
+	});
+
 	test('over limits returns locked irrespective of expiry', async () => {
 		checkAll.mockResolvedValue(false);
-		const license = merge({}, CORE_LICENSE, { meta: { expires_at: FIXED_NOW_SEC + 1000 } });
 
-		await expect(computeLicenseStatus(license)).resolves.toBe('locked');
+		await expect(computeLicenseStatus(createLicense({ meta: { expires_at: NOW + 1000 } }))).resolves.toBe('locked');
+
+		// The core grace period is for unlicensed installs only
 		expect(isInCoreGracePeriod).not.toHaveBeenCalled();
 	});
 
-	test('perpetual (expires_at = -1): returns active', async () => {
+	test.each<[string, DeepPartial<Directus.License['meta']>, LicenseStatus | null]>([
+		['perpetual expiry returns active', { expires_at: -1, grace_period: 200 }, 'active'],
+		['no expiry and no renewal returns active', { expires_at: null, renews_at: null, grace_period: 200 }, 'active'],
+		['second before expiry returns active', { expires_at: NOW + 1, grace_period: 200 }, 'active'],
+		[
+			'falls back to renews_at when expires_at:null',
+			{ expires_at: null, renews_at: NOW + 1, grace_period: 200 },
+			'active',
+		],
+		[
+			'expires_at wins over a later renews_at',
+			{ expires_at: NOW - 1, renews_at: NOW + 10_000, grace_period: 200 },
+			'grace',
+		],
+		['at expiry but before grace returns grace', { expires_at: NOW, grace_period: 200 }, 'grace'],
+		['second before end of grace returns grace', { expires_at: NOW - 199, grace_period: 200 }, 'grace'],
+		['perpetual grace returns grace after expiry', { expires_at: NOW - 1, grace_period: -1 }, 'grace'],
+		['renews_at past grace returns null', { expires_at: null, renews_at: NOW - 1000, grace_period: 100 }, null],
+		['second after grace returns null', { expires_at: NOW - 200, grace_period: 200 }, null],
+		['no grace at all returns null', { expires_at: NOW - 1, grace_period: 0 }, null],
+	])('%s', async (_, meta, expected) => {
 		checkAll.mockResolvedValue(true);
-		const license = merge({}, CORE_LICENSE, { meta: { expires_at: -1 } });
-
-		await expect(computeLicenseStatus(license)).resolves.toBe('active');
-	});
-
-	test('not yet expired returns active', async () => {
-		checkAll.mockResolvedValue(true);
-		const license = merge({}, CORE_LICENSE, { meta: { expires_at: FIXED_NOW_SEC + 100 } });
-
-		await expect(computeLicenseStatus(license)).resolves.toBe('active');
-	});
-
-	test('past expiry but within grace_period returns grace', async () => {
-		checkAll.mockResolvedValue(true);
-
-		const license = merge({}, CORE_LICENSE, {
-			meta: { expires_at: FIXED_NOW_SEC - 100, grace_period: 200 },
-		});
-
-		await expect(computeLicenseStatus(license)).resolves.toBe('grace');
-	});
-
-	test('past expiry and grace_period throws', async () => {
-		checkAll.mockResolvedValue(true);
-
-		const license = merge({}, CORE_LICENSE, {
-			meta: { expires_at: FIXED_NOW_SEC - 1000, grace_period: 100 },
-		});
-
-		await expect(computeLicenseStatus(license)).rejects.toThrow(/expired beyond grace period/i);
-	});
-
-	test('expires_at:null but renews_at defined returns active', async () => {
-		checkAll.mockResolvedValue(true);
-
-		const license = merge({}, CORE_LICENSE, {
-			meta: { expires_at: null, renews_at: FIXED_NOW_SEC + 100 },
-		});
-
-		await expect(computeLicenseStatus(license)).resolves.toBe('active');
-	});
-
-	test('expires_at and renews_at both null returns active', async () => {
-		checkAll.mockResolvedValue(true);
-		const license = merge({}, CORE_LICENSE, { meta: { expires_at: null, renews_at: null } });
-
-		await expect(computeLicenseStatus(license)).resolves.toBe('active');
+		await expect(computeLicenseStatus(createLicense({ meta }))).resolves.toBe(expected);
 	});
 });
