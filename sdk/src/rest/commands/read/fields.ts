@@ -26,10 +26,10 @@ export const readFields =
 export const readFieldsByCollection =
 	<Schema>(collection: DirectusField<Schema>['collection']): RestCommand<ReadFieldOutput<Schema>[], Schema> =>
 	() => {
-		throwIfEmpty(collection, 'Collection cannot be empty');
+		throwIfEmpty(String(collection), 'Collection cannot be empty');
 
 		return {
-			path: `/fields/${collection}`,
+			path: `/fields/${collection as string}`,
 			method: 'GET',
 		};
 	};
@@ -48,11 +48,11 @@ export const readField =
 		field: DirectusField<Schema>['field'],
 	): RestCommand<ReadFieldOutput<Schema>, Schema> =>
 	() => {
-		throwIfEmpty(collection, 'Collection cannot be empty');
+		throwIfEmpty(String(collection), 'Collection cannot be empty');
 		throwIfEmpty(field, 'Field cannot be empty');
 
 		return {
-			path: `/fields/${collection}/${field}`,
+			path: `/fields/${collection as string}/${field}`,
 			method: 'GET',
 		};
 	};

@@ -9,6 +9,6 @@ import type { RestCommand } from '../../types.js';
 export const deleteCollection =
 	<Schema>(collection: DirectusCollection<Schema>['collection']): RestCommand<void, Schema> =>
 	() => ({
-		path: `/collections/${collection}`,
+		path: `/collections/${collection as string}`,
 		method: 'DELETE',
 	});
