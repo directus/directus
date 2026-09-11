@@ -1,5 +1,5 @@
 ---
-'@directus/app': patch
+'@directus/app': major
 ---
 
 Updated MapLibre GL JS from 1.15.3 to 6.9.0
