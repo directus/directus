@@ -16,11 +16,11 @@ export const deleteRelation =
 		field: DirectusRelation<Schema>['field'],
 	): RestCommand<void, Schema> =>
 	() => {
-		throwIfEmpty(collection, 'Collection cannot be empty');
+		throwIfEmpty(String(collection), 'Collection cannot be empty');
 		throwIfEmpty(field, 'Field cannot be empty');
 
 		return {
-			path: `/relations/${collection}/${field}`,
+			path: `/relations/${collection as string}/${field}`,
 			method: 'DELETE',
 		};
 	};

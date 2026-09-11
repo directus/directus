@@ -8,9 +8,9 @@ export type DirectusAccess<Schema = any> = MergeCoreCollection<
 	'directus_access',
 	{
 		id: string; // uuid
-		role: string | DirectusRole<Schema>;
-		user: string | DirectusUser<Schema>;
+		role: string | DirectusRole<Schema> | null;
+		user: string | DirectusUser<Schema> | null;
 		policy: string | DirectusPolicy<Schema>;
-		sort: number;
+		sort: number | null;
 	}
 >;
