@@ -4,24 +4,29 @@ import type { ShowSelect } from '@directus/types';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { useResizeObserver } from '@vueuse/core';
 import { debounce } from 'lodash';
-import maplibre, {
-	AnyLayer,
+import * as maplibre from 'maplibre-gl';
+import {
 	AttributionControl,
 	CameraOptions,
 	GeoJSONSource,
 	GeolocateControl,
+	LayerSpecification,
 	LngLatBoundsLike,
 	LngLatLike,
 	Map,
-	MapboxGeoJSONFeature,
+	MapGeoJSONFeature,
 	MapLayerMouseEvent,
+	MapMovementEvent,
 	NavigationControl,
 } from 'maplibre-gl';
 import { computed, onMounted, onUnmounted, ref, toRefs, useTemplateRef, watch, WatchStopHandle } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
-import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
+import { BoxSelectControl, ButtonControl, onCustomEvent } from '@/utils/geometry/controls';
+import { getMapboxRequestTransformer } from '@/utils/geometry/mapbox';
+
+import '@/utils/geometry/maplibre-worker';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -30,7 +35,7 @@ const props = withDefaults(
 	defineProps<{
 		data: GeoJSON.FeatureCollection;
 		source: GeoJSONSource;
-		layers?: AnyLayer[];
+		layers?: LayerSpecification[];
 		camera?: CameraOptions & { bbox: any };
 		bounds?: GeoJSON.BBox;
 		featureId?: string;
@@ -51,7 +56,7 @@ const { t } = useI18n();
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
 let map: Map;
-const hoveredFeature = ref<MapboxGeoJSONFeature>();
+const hoveredFeature = ref<MapGeoJSONFeature>();
 const hoveredCluster = ref<boolean>();
 const selectMode = ref<boolean>();
 const container = useTemplateRef('container');
@@ -72,15 +77,15 @@ const navigationControl = new NavigationControl({
 	showCompass: false,
 });
 
-const geolocateControl = new GeolocateControl();
+const geolocateControl = new GeolocateControl({});
 
-const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', () => {
+const fitDataControl = new ButtonControl('maplibregl-ctrl-fitdata', () => {
 	emit('fitdata');
 });
 
 const boxSelectControl = new BoxSelectControl({
 	boxElementClass: 'map-selection-box',
-	selectButtonClass: 'mapboxgl-ctrl-select',
+	selectButtonClass: 'maplibregl-ctrl-select',
 	layers: ['__directus_polygons', '__directus_points', '__directus_lines'],
 });
 
@@ -88,7 +93,7 @@ let geocoderControl: MapboxGeocoder | undefined;
 
 if (mapboxKey) {
 	const marker = document.createElement('div');
-	marker.className = 'mapboxgl-user-location-dot mapboxgl-search-location-dot';
+	marker.className = 'maplibregl-user-location-dot maplibregl-search-location-dot';
 
 	geocoderControl = new MapboxGeocoder({
 		accessToken: mapboxKey,
@@ -122,7 +127,7 @@ function setupMap() {
 		dragRotate: false,
 		attributionControl: false,
 		...props.camera,
-		...(mapboxKey ? { accessToken: mapboxKey } : {}),
+		...(mapboxKey ? { transformRequest: getMapboxRequestTransformer(mapboxKey) } : {}),
 	});
 
 	if (geocoderControl) {
@@ -150,10 +155,10 @@ function setupMap() {
 		map.on('click', '__directus_clusters', expandCluster);
 		map.on('mousemove', '__directus_clusters', hoverCluster);
 		map.on('mouseleave', '__directus_clusters', hoverCluster);
-		map.on('select.enable', () => (selectMode.value = true));
-		map.on('select.disable', () => (selectMode.value = false));
+		onCustomEvent(map, 'select.enable', () => (selectMode.value = true));
+		onCustomEvent(map, 'select.disable', () => (selectMode.value = false));
 
-		map.on('select.end', (event: MapLayerMouseEvent & { alt: unknown }) => {
+		onCustomEvent<MapLayerMouseEvent & { alt: unknown }>(map, 'select.end', (event) => {
 			const ids = event.features?.map((f) => f.id);
 			emit('featureselect', { ids, replace: !event.alt });
 		});
@@ -236,7 +241,7 @@ function updateSource(newSource: GeoJSONSource) {
 	});
 }
 
-function updateLayers(newLayers?: AnyLayer[], previousLayers?: AnyLayer[]) {
+function updateLayers(newLayers?: LayerSpecification[], previousLayers?: LayerSpecification[]) {
 	const currentMapLayersId = new Set(map.getStyle().layers?.map(({ id }) => id));
 
 	previousLayers?.forEach((layer) => {
@@ -307,14 +312,15 @@ function updatePopup(event: MapLayerMouseEvent) {
 	}
 }
 
-function updatePopupLocation(event: MapLayerMouseEvent) {
-	if (hoveredFeature.value && event.originalEvent) {
+function updatePopupLocation(event: MapMovementEvent) {
+	// `move` can also originate from a touch or wheel gesture; only a mouse event carries x/y.
+	if (hoveredFeature.value && event.originalEvent instanceof MouseEvent) {
 		const { x, y } = event.originalEvent;
 		emit('updateitempopup', { position: { x, y } });
 	}
 }
 
-function expandCluster(event: MapLayerMouseEvent) {
+async function expandCluster(event: MapLayerMouseEvent) {
 	const features = map.queryRenderedFeatures(event.point, {
 		layers: ['__directus_clusters'],
 	});
@@ -322,14 +328,18 @@ function expandCluster(event: MapLayerMouseEvent) {
 	const clusterId = features[0]?.properties?.cluster_id;
 	const source = map.getSource('__directus') as GeoJSONSource;
 
-	source.getClusterExpansionZoom(clusterId, (err: any, zoom: number) => {
-		if (err) return;
+	let zoom: number;
 
-		map.flyTo({
-			center: (features[0]?.geometry as GeoJSON.Point).coordinates as LngLatLike,
-			zoom: zoom,
-			speed: 1.3,
-		});
+	try {
+		zoom = await source.getClusterExpansionZoom(clusterId);
+	} catch {
+		return;
+	}
+
+	map.flyTo({
+		center: (features[0]?.geometry as GeoJSON.Point).coordinates as LngLatLike,
+		zoom: zoom,
+		speed: 1.3,
 	});
 }
 
@@ -351,11 +361,11 @@ function hoverCluster(event: MapLayerMouseEvent) {
 </template>
 
 <style lang="scss" scoped>
-#map-container.hover :deep(.mapboxgl-canvas-container) {
+#map-container.hover :deep(.maplibregl-canvas-container) {
 	cursor: pointer !important;
 }
 
-#map-container.select :deep(.mapboxgl-canvas-container) {
+#map-container.select :deep(.maplibregl-canvas-container) {
 	cursor: crosshair !important;
 }
 

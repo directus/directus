@@ -6,7 +6,8 @@ import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { Geometry } from 'geojson';
 import { debounce, isEqual, snakeCase } from 'lodash';
-import maplibre, {
+import * as maplibre from 'maplibre-gl';
+import {
 	AnimationOptions,
 	AttributionControl,
 	CameraOptions,
@@ -29,13 +30,25 @@ import VSelect from '@/components/v-select/v-select.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { flatten, getBBox, getGeometryFormatForType, getParser, getSerializer } from '@/utils/geometry';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
-import { ButtonControl } from '@/utils/geometry/controls';
+import { ButtonControl, onCustomEvent } from '@/utils/geometry/controls';
+import { getMapboxRequestTransformer } from '@/utils/geometry/mapbox';
 
-// @ts-ignore
+import '@/utils/geometry/maplibre-worker';
 
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
+
+// Repoint the Mapbox GL class names MapboxDraw builds its containers with at maplibre's, which
+// must happen before the first `new MapboxDraw()` below. The cast is because the types pin these
+// as readonly literals. Draw's own `mapbox-gl-draw_*` classes are unaffected.
+Object.assign(MapboxDraw.constants.classes as Record<string, string>, {
+	CANVAS: 'maplibregl-canvas',
+	CONTROL_BASE: 'maplibregl-ctrl',
+	CONTROL_PREFIX: 'maplibregl-ctrl-',
+	CONTROL_GROUP: 'maplibregl-ctrl-group',
+	ATTRIBUTION: 'maplibregl-ctrl-attrib',
+});
 
 const activeLayers = [
 	'directus-point',
@@ -116,7 +129,7 @@ watch(location, updateProjection);
 const controls = {
 	attribution: new AttributionControl(),
 	draw: new MapboxDraw(getDrawOptions(geometryType)),
-	fitData: new ButtonControl('mapboxgl-ctrl-fitdata', fitDataBounds),
+	fitData: new ButtonControl('maplibregl-ctrl-fitdata', fitDataBounds),
 	navigation: new NavigationControl({
 		showCompass: false,
 	}),
@@ -173,7 +186,7 @@ function setupMap(): () => void {
 		logoPosition: 'bottom-left',
 		attributionControl: false,
 		...props.defaultView,
-		...(mapboxKey ? { accessToken: mapboxKey } : {}),
+		...(mapboxKey ? { transformRequest: getMapboxRequestTransformer(mapboxKey) } : {}),
 	});
 
 	if (controls.geocoder) {
@@ -198,11 +211,11 @@ function setupMap(): () => void {
 	map.on('load', async () => {
 		map.resize();
 		mapLoading.value = false;
-		map.on('draw.create', handleDrawUpdate);
-		map.on('draw.delete', handleDrawUpdate);
-		map.on('draw.update', handleDrawUpdate);
-		map.on('draw.modechange', handleDrawModeChange);
-		map.on('draw.selectionchange', handleSelectionChange);
+		onCustomEvent(map, 'draw.create', handleDrawUpdate);
+		onCustomEvent(map, 'draw.delete', handleDrawUpdate);
+		onCustomEvent(map, 'draw.update', handleDrawUpdate);
+		onCustomEvent(map, 'draw.modechange', handleDrawModeChange);
+		onCustomEvent(map, 'draw.selectionchange', handleSelectionChange);
 		map.on('move', updateProjection);
 
 		for (const layer of activeLayers) {
@@ -462,7 +475,7 @@ function handleKeyDown(event: any) {
 		</div>
 		<div
 			v-if="location"
-			class="mapboxgl-user-location-dot mapboxgl-search-location-dot"
+			class="maplibregl-user-location-dot maplibregl-search-location-dot"
 			:style="`transform: translate(${projection!.x}px, ${
 				projection!.y
 			}px) translate(-50%, -50%) rotateX(0deg) rotateZ(0deg)`"
@@ -476,7 +489,7 @@ function handleKeyDown(event: any) {
 				{{ tooltipMessage }}
 			</div>
 		</Transition>
-		<div v-if="!nonEditable" class="mapboxgl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-dropdown basemap-select">
+		<div v-if="!nonEditable" class="maplibregl-ctrl-group maplibregl-ctrl maplibregl-ctrl-dropdown basemap-select">
 			<VIcon name="map" />
 			<VSelect v-model="basemap" inline :disabled :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
 		</div>
@@ -597,7 +610,7 @@ function handleKeyDown(event: any) {
 		background-color: var(--theme--background-normal);
 	}
 
-	.mapboxgl-search-location-dot {
+	.maplibregl-search-location-dot {
 		position: absolute;
 		inset-block-start: 0;
 		inset-inline-start: 0;
