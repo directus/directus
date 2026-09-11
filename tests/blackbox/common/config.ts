@@ -22,7 +22,6 @@ export type Config = {
 export const paths = {
 	cli: join(__dirname, '..', '..', '..', 'dist', 'cli'),
 	cwd: join(__dirname, '..'),
-	license: join(__dirname, '..', '..', 'mock-license-server'),
 };
 
 const migrationsDir = './setup/migrations';

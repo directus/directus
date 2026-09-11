@@ -152,3 +152,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+
+  license-mock-server:
+    image: directus/license-mock-server:latest
+    platform: linux/amd64
+    ports:
+      - 7000:1133
