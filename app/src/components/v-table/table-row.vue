@@ -43,6 +43,21 @@ function onKeydown(e: KeyboardEvent) {
 	if (e.metaKey) return;
 	if ((e.target as HTMLElement)?.tagName === 'TR' && ['Enter', ' '].includes(e.key)) emit('click', e);
 }
+
+/**
+ * Emit a row click unless the click targeted one of the row's own controls (sort handle, selection
+ * checkbox, append slot). Filtering here rather than stopping propagation in those cells keeps the
+ * click bubbling to the document, which is what lets open menus elsewhere close themselves.
+ */
+function onClick(event: MouseEvent) {
+	const isRowAction = event
+		.composedPath()
+		.some((target) => target instanceof HTMLElement && target.hasAttribute('data-row-action'));
+
+	if (isRowAction) return;
+
+	emit('click', event);
+}
 </script>
 
 <template>
@@ -50,14 +65,14 @@ function onKeydown(e: KeyboardEvent) {
 		class="table-row"
 		:class="{ subdued: subdued, clickable: hasClickListener }"
 		:tabindex="hasClickListener ? 0 : undefined"
-		@click="$emit('click', $event)"
+		@click="onClick"
 		@keydown="onKeydown"
 	>
-		<td v-if="showManualSort" class="manual cell" @click.stop>
+		<td v-if="showManualSort" class="manual cell" data-row-action>
 			<VIcon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
 
-		<td v-if="showSelect !== 'none'" class="select cell" @click.stop>
+		<td v-if="showSelect !== 'none'" class="select cell" data-row-action>
 			<VCheckbox
 				:icon-on="showSelect === 'one' ? 'radio_button_checked' : undefined"
 				:icon-off="showSelect === 'one' ? 'radio_button_unchecked' : undefined"
@@ -85,7 +100,7 @@ function onKeydown(e: KeyboardEvent) {
 		</td>
 
 		<td class="spacer cell" />
-		<td v-if="$slots['item-append']" class="append cell" @click.stop>
+		<td v-if="$slots['item-append']" class="append cell" data-row-action>
 			<slot name="item-append" />
 		</td>
 	</tr>
