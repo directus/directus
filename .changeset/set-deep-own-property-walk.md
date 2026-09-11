@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed `setDeep` descending through an inherited `__proto__` when a caller supplied an intermediate node that was not null-prototype
+Fixed a GraphQL query with a `__proto__` field alias being able to write a property onto Object.prototype.

@@ -36,7 +36,7 @@ export function setDeep(
 	return root;
 }
 
-/** Ensures that key's like `__proto__` will be properly set, `obj['__proto__'] = x` fails */
+/** Creates `key` as an own data property: plain `obj['__proto__'] = x` reparents `obj` instead of creating a key. */
 function assignOwn(obj: Record<string, any>, key: string, value: unknown): void {
 	Object.defineProperty(obj, key, { value, writable: true, enumerable: true, configurable: true });
 }
