@@ -913,6 +913,10 @@ clear_logs: Tøm logger
 search_logs: Søk i logger...
 all_instances: Alle instanser
 full_screen: Fullskjerm
+center_align: Midtjuster
+left_align: Venstrejuster
+right_align: Høyrejuster
+fit_to_screen: Tilpass til skjerm
 caption: Bildetekst
 quality: Kvalitet
 width: Bredde
@@ -920,6 +924,7 @@ height: Høyde
 source: Kilde
 url_placeholder: Angi en nettadresse...
 interface_group_text_and_numbers: Tekst og tall
+interface_group_relational: Relasjon
 unlimited: Ubegrenset
 open_link_in: Åpne koblingen i
 new_tab: Ny fane
@@ -932,11 +937,14 @@ wysiwyg_options:
   bold: Fet
   italic: Kursiv
   underline: Understrek
+  codeblock: Kode
+  numlist: Nummerert liste
   insertdatetime_date: Dato
   insertdatetime_time: Tid
   unlink: Fjern kobling
   copy: Kopier
   cut: Klipp ut
+  default: Standard
   paste: Lim inn
   heading: Overskrift
   h1: Overskrift 1
@@ -947,6 +955,7 @@ wysiwyg_options:
   h6: Overskrift 6
   fontselect: Velg skrifttype
   fontsizeselect: Velg skriftstørrelse
+  styles: Formater
   undo: Angre
   redo: Gjør om
   remove: Fjern
@@ -955,16 +964,26 @@ wysiwyg_options:
   table_cell: Celle
   table_row: Rad
   table_column: Kolonne
+  table_insert: Sett inn tabell
+  table_add_row_before: Legg til rad over
+  table_add_row_after: Legg til rad under
+  table_add_column_before: Legg til kolonne til venstre
+  table_add_column_after: Legg til kolonne til høyre
+  table_delete_row: Slett rad
+  table_delete_column: Slett kolonne
   table_merge_cells: Sammenslå celler
   table_split_cell: Del celle
   table_delete: Slett ttabell
+  visualaid: Vis usynlige elementer
   source_code: Rediger kildekode
   save_anyway: Lagre likevel
   normalization_warning_view_changes: Vis endringer
   normalization_warning_edit_anyway: Rediger likevel
+  normalization_locked_learn_more: Se hva som har endret seg
   fullscreen: Fullskjerm
   ltr: Venstre mot høyre
   rtl: Høyre til Venstre
+dropdown: Rullegardinmeny
 choices: Valg
 deselect: Velg bort
 theme: Tema
@@ -972,16 +991,25 @@ select_a_theme: Velg tema
 appearance_light: Lyst
 appearance_dark: Mørkt
 other: Annet...
+adding_user: Legger til bruker
+more_users: Klikk for å vise mer
 unknown_user: Ukjent bruker
 unknown_version: Ukjent versjon
 unknown_revision: Ukjent revisjon
 creating_in: 'Oppretter element i {collection}'
+creating_unit: 'Oppretter {unit}'
+editing_unit: 'Redigerer {unit}'
 editing_in_batch: 'Batch Editing {count} elementer'
+no_options_available: Ingen valg tilgjengelig
 settings_roles: Brukerroller
 settings_project: Innstillinger
 settings_license: Lisens
 licensing:
   unlicensed: Ulisensiert
+  expires_on: 'Utløper den {date}'
+  renews_on: 'Fornyes den {date}'
+  add: Legg til lisens
+  manage: Admnistrer lisenser
   unlimited: Ubegrenset
   addon_manage: Behandle
   addon_update: Oppdater
@@ -1003,23 +1031,40 @@ licensing:
   key: Lisensnøkkel
   entitlements:
     collections: Kolleksjoner
+    sso_enabled: SSO
     ai_translations_enabled: KI-oversettelser
     production_enabled: Produksjon
   badge:
+    directus: Drevet av Directus
     non_prod: Ikke-produksjon
+danger_zone: Faresone
 settings_appearance: Utseende
 settings_ai: KI
 ai_assistant: KI-assistent
 settings_presets: Bokmerke
 settings_translations: Oversettelser
+select: Velg...
+data: Data
+unsaved_changes: Ulagrede endringer
+unsaved_changes_copy: Er du sikker på at du vil forlate denne siden?
+leave_page: Forlat side
+cancel_anyway: Avbryt likevel
 discard_changes: Forkast endringer
+discard_all_changes: Forkast alle endringer
+show_x_axis: Vis X-akse
+show_y_axis: Vis Y-akse
 keep_editing: Fortsett å rediger
 add_new: Legg til ny
+create_new: Opprett ny
 all: Alle
+none: Ingen
 batch_delete_confirm: >-
   Ingen elementer har blitt valgt | Er du sikker på at du vil slette dette elementet? Handlingen kan ikke angres. | Er du sikker på at du vil slette disse {count} elementene? Handlingen kan ikke angres.
 cancel: Avbryt
 license:
+  max_capacity:
+    label: maks kapasitet
+    alert_danger_suffix: for å låse opp flere.
   contact_sales: Kontakt salgsavdelingen
   unlicensed_status_notice:
     grace_days_left: '{days} dag igjen | {days} dager igjen'
@@ -1085,6 +1130,8 @@ fields:
     width: Bredde
     charset: Charset
     duration: Varighet
+    focal_point_x: X-koordinat
+    focal_point_y: Y-koordinat
   directus_users:
     first_name: Fornavn
     last_name: Etternavn
@@ -1096,6 +1143,8 @@ fields:
     tags: Etiketter
     user_preferences: Brukerinnstillinger
     language: Språk
+    text_direction: Tekstretning
+    admin_options: Administratorvalg
     status: Status
     status_invited: Invitert
     status_active: Aktiv
@@ -1123,7 +1172,9 @@ fields:
     transformations_none: Deaktiver transformasjoner
     transformations_presets: Begrens transformasjoner til forhåndsinnstillingene nedenfor
     image_editor: Bilderedigerer
+    public_registration_verify_email: Verifiser e-postadresse
     mcp_enabled: MCP Server
+    mcp_allow_deletes: Tillat sletting
     ai_glossary_note_placeholder: Aldri oversett, behold som det er
     ai_translation_glossary: Ordliste for oversettelse
     ai_google_api_key: Google API-nøkkel
@@ -1192,6 +1243,7 @@ field_options:
     preferences_divider: Brukerinnstillinger
     dropdown_light: Lyst tema
     dropdown_dark: Mørkt tema
+    admin_divider: Administratorvalg
     status_dropdown_draft: Utkast
     status_dropdown_invited: Invitert
     status_dropdown_active: Aktiv
@@ -1245,6 +1297,7 @@ ai_tools:
   operations: Operasjoner
   schema: Skjema
   collections: Kolleksjoner
+  fields: Felt
 mcp_prompts_collection_schema:
   messages_role_user: Bruker
 expired: Utløpt
@@ -1335,17 +1388,31 @@ enable_search_filter: Aktiver søk og filtrering
 navigate_to_item: Naviger til element
 remove_item: Fjern element
 delete_item: Slett element
+pause: Pause
+resume: Gjennopta
 interfaces:
   filter:
     name: Filter
     add_filter: Legg til filter
+    add_value: Legg til verdi
+    logic_type_and: AND
+    logic_type_or: OR
     all: Alle
     any: Noen
+    of_the_following: av følgende
+  fields:
+    name: Felt
   group-tabs:
+    name: Faner
     fill_width: Fyll vidde
   presentation-links:
+    presentation-links: Knapper
+    style: Stil
     primary: Primær
+    link: Koblinger
+    button: Knapper
   select-multiple-checkbox:
+    allow_other: Tillat andre
     show_more: 'Vis {count} flere'
   select-multiple-checkbox-tree:
     show_all: Vis alle
@@ -1424,10 +1491,22 @@ interfaces:
     sort: Sorter
   tags:
     tags: Etiketter
+  input:
+    minimum_value: Minimumsverdi
+    maximum_value: Maksimumsverdi
+  input-translated-string:
+    search_placeholder: Søk...
   boolean:
+    description: Bytt mellom av og på
     label_default: Aktivert
+  translations:
+    no_collection: Ingen samling
+    default_language: Standardspråk
+    ai_translate_short: Oversett
   user:
     user: Bruker
+    modes:
+      dropdown: Rullegardinmeny
   input-block-editor:
     tools_options:
       embed: Embed
@@ -1558,6 +1637,7 @@ operations:
     message: Melding
   mail:
     template: Mal
+    data: Data
   notification:
     recipient: Bruker
     message: Melding
@@ -1565,8 +1645,12 @@ operations:
   request:
     url: URL
     method: Metode
+    data: Data
+  trigger:
+    data: Data
 standard: Standard
 compact: Kompakt
+style: Stil
 fonts:
   thin: Tynn
   medium: Middels
