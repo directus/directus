@@ -344,13 +344,22 @@ export class RelationsService {
 		}
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
-		this.helpers.schema.preRelationChange(relation);
+
+		const updatedRelation: Partial<Relation> = {
+			...relation,
+			collection,
+			field,
+			related_collection: existingRelation.related_collection,
+			schema: relation.schema ? ({ ...existingRelation.schema, ...relation.schema } as ForeignKey) : undefined,
+		};
+
+		this.helpers.schema.preRelationChange(updatedRelation);
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
 			await transaction(this.knex, async (trx) => {
-				if (existingRelation.related_collection) {
+				if (existingRelation.related_collection && updatedRelation.schema) {
 					await trx.schema.alterTable(collection, async (table) => {
 						let constraintName: string = getDefaultIndexName('foreign', collection, field);
 
@@ -363,7 +372,7 @@ export class RelationsService {
 							existingRelation.schema.constraint_name = constraintName;
 						}
 
-						this.alterType(table, relation, fieldSchema.nullable);
+						this.alterType(table, existingRelation, fieldSchema.nullable);
 
 						const builder = table
 							.foreign(field, constraintName || undefined)
@@ -373,12 +382,12 @@ export class RelationsService {
 								}`,
 							);
 
-						if (relation.schema?.on_delete) {
-							builder.onDelete(relation.schema.on_delete);
+						if (updatedRelation.schema!.on_delete) {
+							builder.onDelete(updatedRelation.schema!.on_delete);
 						}
 
-						if (relation.schema?.on_update) {
-							builder.onUpdate(relation.schema.on_update);
+						if (updatedRelation.schema!.on_update) {
+							builder.onUpdate(updatedRelation.schema!.on_update);
 						}
 					});
 				}
@@ -401,8 +410,8 @@ export class RelationsService {
 						await relationsItemService.createOne(
 							{
 								...(relation.meta || {}),
-								many_collection: relation.collection,
-								many_field: relation.field,
+								many_collection: collection,
+								many_field: field,
 								one_collection: existingRelation.related_collection || null,
 							},
 							{
