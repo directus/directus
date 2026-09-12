@@ -673,6 +673,41 @@ describe('nested relational changes', () => {
 		});
 	});
 
+	test('repeated translation updates replace the same translation instead of duplicating it', async () => {
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		wrapper.vm.update({ id: 10, languages_code: 'en', about: 'First' });
+		wrapper.vm.update({ id: 10, languages_code: 'en', about: 'Second' });
+		wrapper.vm.update({ id: 11, languages_code: 'fr', about: 'Bonjour' });
+
+		await flushPromises();
+
+		expect(wrapper.vm.value).toEqual({
+			create: [],
+			update: [
+				{ id: 10, languages_code: 'en', about: 'Second' },
+				{ id: 11, languages_code: 'fr', about: 'Bonjour' },
+			],
+			delete: [],
+		});
+	});
+
+	test('keeps separate keyless updates', () => {
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		wrapper.vm.update({ languages_code: 'en', about: 'English' });
+		wrapper.vm.update({ languages_code: 'fr', about: 'French' });
+
+		expect(wrapper.vm.value.update).toEqual([
+			{ languages_code: 'en', about: 'English' },
+			{ languages_code: 'fr', about: 'French' },
+		]);
+	});
+
 	test('replacing the field on a display item keeps the new delta', async () => {
 		const oldChanges = {
 			create: [{ language: 'en-US', title: 'Old' }],
