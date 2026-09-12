@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 about: Om
 directus_mscl: Directus MSCL-1.0-GPL
+data_processing_agreement: Vilkår for databehandling
 contact_support: kontakt kundestøtte
 setup_welcome: Velkommen til Directus
 setup_info: La oss opprette en administratorkonto og sette igang prosjektet ditt.
@@ -30,8 +31,12 @@ setup_license_invalid: >
   Lisensen er ugyldig. Vennligst {contactSupport} for å løse problemet.
 setup_license_invalid_format: Ugyldig lisensnøkkelformat.
 setup_accept_license: Jeg godtar vilkårene angitt i {directusMscl} og {privacyPolicy}
+setup_marketing_emails: Send meg produktoppdateringer og versjonsnotater
 setup_launch: Start Directus
+setup_license_title: Konfigurer lisensen din
 license_onboarding_title: Har du en lisensnøkkel?
+license_onboarding_desc: >
+  Skriv den inn nedenfor for å låse opp full pakke. Kvalifiserende organisasjoner med under $5M årlig omsetning kan være berettiget for vår {oig}.
 project_usage: Hva bruker du Directus til?
 org_name: Organisasjonsnavn
 org_name_placeholder: Acme Inc.
@@ -53,6 +58,8 @@ skip: Hopp over
 continue: Fortsett
 first_name: Fornavn
 last_name: Etternavn
+admin_email: Administratorens e-post
+owner_email: Eierens e-post
 email_address: E-postadresse
 identifier: Identifikator
 avatar: Profilbilde
@@ -153,6 +160,7 @@ beta: Beta
 collab_collision: Elementet ble endret mens du redigerte. Velg hvilke endringer som skal beholdes.
 collab_disconnected: Samarbeidsredigering frakoblet
 collab_editing_field: Redigerer feltet {field}
+collab_currently_viewing: Ser på nå
 you: du
 n_downloads: '{n} nedlastinger'
 downloads: Nedlastinger
@@ -985,6 +993,7 @@ licensing:
   resolve_title_env_removed: Lisens fjernet
   resolve_title_no_resolution: Lisens inaktiv
   resolve_continue: Fortsett
+  resolve_show_n_more: 'Vis {count} flere'
   resolve_available: Tilgjengelig
   resolve_sso_admin_email: E-postadresse
   resolve_sso_admin_password: Passord
@@ -1095,26 +1104,59 @@ fields:
     last_access: Siste tilgang
     email_notifications: E-postvarsler
     appearance: Utseende
+    theme_light: Lyst tema
+    theme_dark: Mørkt tema
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    avif: AVIF
+    attribution: Attributt
     project_name: Prosjektnavn
+    public_background: Offentlig bakgrunn
+    files_and_thumbnails: Filer og lagring
+    storage_default_folder: Standardmappe
+    custom_css: Egendefinert CSS
     module_bar: Modul Bar
+    transformations_all: Tillat alle transformasjoner
+    transformations_none: Deaktiver transformasjoner
+    transformations_presets: Begrens transformasjoner til forhåndsinnstillingene nedenfor
+    image_editor: Bilderedigerer
+    mcp_enabled: MCP Server
+    ai_glossary_note_placeholder: Aldri oversett, behold som det er
+    ai_translation_glossary: Ordliste for oversettelse
+    ai_google_api_key: Google API-nøkkel
   directus_shares:
     name: Navn
     role: Rolle
     password: Passord
+    date_start: Startdato
+    date_end: Sluttdato
+    times_used: Antall ganger brukt
   directus_fields:
+    collection: Samlingsnavn
+    icon: Samlingsikon
     note: Notat
     hidden: Skjult
     translation: Feltnavn oversettelser
+    display_template: Mal
   directus_roles:
     name: Rollenavn
+    icon: Rolleikon
     description: Beskrivelse
   directus_policies:
     name: Navn på rettighet
     description: Beskrivelse
+    enforce_tfa: Krev 2FA
 field_options:
   directus_settings:
+    project_favicon_note: 32×32 ICO
     security_divider_title: Sikkerhet
+    auth_password_policy:
+      none_text: Ingen - Ikke anbefalt
+      weak_text: Svakt - Minimum 8 tegn
+      strong_text: Sterkt - Store og små bokstaver / Tall / Spesialtegn
     storage_asset_presets:
       upscaling: Oppskalering
   directus_activity:
@@ -1127,18 +1169,25 @@ field_options:
     singleton: Behandle som singulært objekt
     language: Språk
     translation: Oversettelse
+    collection_name: Samlingsnavn
     archive_divider: Arkiv
     archive_field_placeholder: Velg et felt...
     sort_divider: Sorter
     sort_field: Velg et felt...
     duplication_divider: Duplisering
     preview_divider: Forhåndsvisning
+  directus_files:
+    title: En unik tittel...
+    description: En valgfri beskrivelse...
+    filename_download: Navn ved nedlasting...
   directus_roles:
     fields:
       icon_name: Ikon
       name_name: Navn
+      name_placeholder: Angi en tittel...
       link_name: Kobling
     collections_name: Kolleksjoner
+    collections_addLabel: Legg til samling...
   directus_users:
     preferences_divider: Brukerinnstillinger
     dropdown_light: Lyst tema
@@ -1156,22 +1205,40 @@ save_current_user_role: Lagre nåværende brukerrolle
 save_current_datetime: Lagre nåværende dato/tid
 comment: Kommenter
 live_preview:
+  enable: Aktiver forhåndsvisning
+  disable: Deaktiver forhåndsvisning
   new_window: Åpne i nytt vindu
   display_options: Visningsvalg
 shares: Delinger
+show_more: Vis mer
+show_less: Vis mindre
+retry: Prøv på nytt
 ai:
+  thinking: Tenker...
+  ready: Klar
+  complete: Ferdig
   unknown: Ukjent
   responses_may_be_inaccurate: KI-svar kan være unøyaktige
   add_content: Legg til innhold
   items: Elementer
   content: Innhold
   coming_soon: Kommer snart
+  go_to_settings: Gå til Innstillinger
   settings: Innstillinger
   tool_approval:
     disabled: Deaktivert
   ask_user_submit: Send inn
   ask_user_next: Neste
+  ask_user_skip: Hopp over
+  ask_user_chat_about_this: Chat om dette
+  ask_user_type_answer: Angi svaret ditt...
+  ask_user_skipped: Hoppet over
+  tool_descriptions:
+    items: Opprett, les, oppdater og slett innhold
+    files: Søk og behandle filer
+    folders: Opprett og organiser mapper
 ai_tools:
+  ask_user: Spør bruker
   items: Elementer
   files: Filer
   folders: Mapper
@@ -1180,6 +1247,16 @@ ai_tools:
   collections: Kolleksjoner
 mcp_prompts_collection_schema:
   messages_role_user: Bruker
+expired: Utløpt
+upcoming: Kommende
+share: Del
+share_item: Del element
+generate: Generer
+share_copy_link: Kopier kobling
+share_copy_link_success: Kobling kopiert
+share_copy_link_error: Kan ikke kopiere kobling
+share_send_link: Send kobling
+continue_label: Fortsett
 discard_label: Forkast
 delete_field_are_you_sure: >-
   Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..
@@ -1194,29 +1271,70 @@ forgot_password: Glemt passord
 hidden: Skjult
 icon: Ikon
 info: Info
+danger: Fare
+colors:
+  purple: Lilla
+  blue: Blå
+  green: Grønn
+  yellow: Gul
+  orange: Oransje
+  red: Rød
+  black: Svart
+  gray: Grå
+  white: Hvit
 junction_collection: Junction Collection
 latency: Ventetid
 login: Logg inn
+logout: Logg ut
 my_activity: Min aktivitet
+not_authenticated: Ikke autentisert
+authenticated: Autentisert
 options: Alternativer
 otp: Engangspassord
 password: Passord
+confirm_password: Bekreft passord
 permissions: Tilganger
 relationship: Relasjon
+reset: Tilbakestill
 reset_password: Tilbakestill passord
+revisions: Revisjoner
+no_revisions: Ingen revisjoner enda
+no_logs: Ingen logger enda
+show_failed_only: Vis kun feilede
+no_logs_on_page: Ingen logger på denne siden
 revert: Reverter
 save: Lagre
 schema: Skjema
 search: Søk
 select_existing: Velg eksisterende
+select_field_type: Velg en felttype
 select_interface: Velg ett grensesnitt
 settings: Innstillinger
+register: Registrer
+registration_successful_headline: Vellykket!
+dont_have_an_account: Har du ikke en konto?
+already_have_an_account: Har du allerede en konto?
+sign_up_now: Registrer nå
 sign_in: Logg inn
 sign_out: Logg ut
 sign_out_confirm: Er du sikker på at du vil logge ut?
 something_went_wrong: Noe gikk galt.
+sort_asc: Sorter stigende
+sort_desc: Sorter synkende
+disable_sort: Deaktiver sortering
+template: Mal
+require_value_to_be_set: Krev verdi å bli angitt ved opprettelse
+translation: Oversettelse
+translation_placeholder: Angi en oversettelse...
 value: Verdi
+report_error: Meld feil
 table: Tabell
+list: Liste
+search_filter: Søk og filtrer
+enable_search_filter: Aktiver søk og filtrering
+navigate_to_item: Naviger til element
+remove_item: Fjern element
+delete_item: Slett element
 interfaces:
   filter:
     name: Filter
@@ -1227,20 +1345,42 @@ interfaces:
     fill_width: Fyll vidde
   presentation-links:
     primary: Primær
+  select-multiple-checkbox:
+    show_more: 'Vis {count} flere'
   select-multiple-checkbox-tree:
     show_all: Vis alle
+    show_selected: Vis valgte
+  input-code:
+    code: Kode
+    line_number: Linjenummer
   system-collection:
     collection: Kolleksjon
+  system-owner:
+    update: Oppdater prosjekteier
+    edit: Rediger prosjekteier
+    system-owner: Systemeier
   system-collections:
     collections: Kolleksjoner
   select-color:
     color: Farge
+    placeholder: Velg en farge...
+    preset_colors: Forhåndsvalgte farger
+    opacity: Opasitet
+    preset_colors_add_label: Legg til ny farge...
+    name_placeholder: Angi fargenavn...
+  datetime:
+    include_seconds: Inkluder sekunder
+    use_24: Bruk 24-timersklokke
   system-fields:
     select_a_collection: Velg en Kolleksjon
+    no_fields: Ingen felt
   system-display-template:
     collection_field_not_setup: Kolleksjonsfeltalternativet er feilkonfigurert
     select_a_collection: Velg en Kolleksjon
+  presentation-divider:
+    divider: Skillelinje
   select-dropdown:
+    choices_placeholder: Legg til et nyttt valg
     allow_other: Tillat andre
     allow_other_label: Tillat andre verdier
     allow_none: Tillat ingen
@@ -1278,7 +1418,9 @@ interfaces:
   map:
     zoom: Zoom
     default_view: Standardvisning
+    lnglat: Lengdegrad, breddegrad
   list:
+    edit_fields: Rediger felt
     sort: Sorter
   tags:
     tags: Etiketter
@@ -1414,6 +1556,8 @@ operations:
     options: Alternativer
   log:
     message: Melding
+  mail:
+    template: Mal
   notification:
     recipient: Bruker
     message: Melding
@@ -1426,6 +1570,7 @@ compact: Kompakt
 fonts:
   thin: Tynn
   medium: Middels
+  black: Svart
   italic: Kursiv
 license_banner:
   remind_later: Påminn meg senere
