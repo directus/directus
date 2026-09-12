@@ -291,60 +291,63 @@ export function useItem<T extends Item>(
 
 				if (existingItems.length > 0) {
 					newItem[oneField] = newItem[oneField].map((relatedItem: Item | PrimaryKey) => {
-						const existingItem = existingItems.find(
-							(existingItem) =>
+						const match = existingItems.find(
+							(item) =>
 								// Loose equality because GraphQL always returns primary key as string
-								existingItem[relatedPrimaryKeyField.field] ==
+								item[relatedPrimaryKeyField.field] ==
 								(isObject(relatedItem) ? relatedItem[relatedPrimaryKeyField.field] : relatedItem),
 						);
 
-						if (existingItem) {
-							clearPrimaryKey(primaryKeyField.value, existingItem);
-							clearJunctionRelatedKey(relation, existsJunctionRelated, existingItem);
-							relatedItem = existingItem;
+						if (match) {
+							clearPrimaryKey(relatedPrimaryKeyField, match);
+							clearJunctionRelatedKey(relation, existsJunctionRelated, match);
+							sanitizeChildRelations(relation.collection, match);
+							relatedItem = match;
 						}
 
 						return relatedItem;
 					});
 				}
 			} else if (isObject(newItem[oneField])) {
-				const newRelatedItem = newItem[oneField] as Alterations;
+				const alterations = newItem[oneField] as Alterations;
 
 				const existingItems = (await findExistingRelatedItems(relation, relatedPrimaryKeyField)).filter(
-					(item) => !newRelatedItem.delete.includes(item[relatedPrimaryKeyField.field]),
+					(item) => !alterations.delete.includes(item[relatedPrimaryKeyField.field]),
 				);
 
-				for (const item of newRelatedItem.update) {
-					let data;
+				for (const item of alterations.update) {
+					let payload;
 
-					const existingItemIndex = existingItems.findIndex(
-						(existingItem) => existingItem[relatedPrimaryKeyField.field] === item[relatedPrimaryKeyField.field],
+					const existingIndex = existingItems.findIndex(
+						(existing) => existing[relatedPrimaryKeyField.field] === item[relatedPrimaryKeyField.field],
 					);
 
-					if (existingItemIndex > -1) {
-						data = mergeWith(existingItems[existingItemIndex], item, (objValue) => {
+					if (existingIndex > -1) {
+						payload = mergeWith(existingItems[existingIndex], item, (objValue) => {
 							if (Array.isArray(objValue)) return objValue;
 							return;
 						});
 
-						existingItems.splice(existingItemIndex, 1);
+						existingItems.splice(existingIndex, 1);
 					} else {
-						data = item;
+						payload = item;
 					}
 
-					clearPrimaryKey(relatedPrimaryKeyField, data);
-					clearJunctionRelatedKey(relation, existsJunctionRelated, data);
+					clearPrimaryKey(relatedPrimaryKeyField, payload);
+					clearJunctionRelatedKey(relation, existsJunctionRelated, payload);
+					sanitizeChildRelations(relation.collection, payload);
 
-					newRelatedItem.create.push(data);
+					alterations.create.push(payload);
 				}
 
 				for (const item of existingItems) {
 					clearPrimaryKey(relatedPrimaryKeyField, item);
+					sanitizeChildRelations(relation.collection, item);
 
-					newRelatedItem.create.push(item);
+					alterations.create.push(item);
 				}
 
-				newRelatedItem.update.length = 0;
+				alterations.update.length = 0;
 			}
 		}
 
@@ -390,18 +393,30 @@ export function useItem<T extends Item>(
 
 			if (existingIds.length === 0) return [];
 
-			const fieldsToFetch = new Set(
-				fields.reduce((accumulator, currentValue) => {
-					const [onePart, ...remainingParts] = currentValue.split('.');
+			const fieldsToFetch = new Set<string>();
 
-					if (onePart === relation.meta!.one_field! && remainingParts.length > 0)
-						accumulator.push(remainingParts.join('.'));
+			for (const path of fields) {
+				const [relField, ...subPath] = path.split('.');
 
-					return accumulator;
-				}, [] as string[]),
-			);
+				if (relField === relation.meta!.one_field! && subPath.length > 0) {
+					fieldsToFetch.add(subPath.join('.'));
+				}
+			}
 
-			if (fieldsToFetch.size > 0) fieldsToFetch.add(relatedPrimaryKeyField.field);
+			const childRelationalFields = getChildRelations(relation.collection).map((rel) => rel.meta!.one_field!);
+
+			if (fieldsToFetch.size > 0) {
+				fieldsToFetch.add(relatedPrimaryKeyField.field);
+			} else if (childRelationalFields.length > 0) {
+				fieldsToFetch.add('*');
+			}
+
+			for (const childField of childRelationalFields) {
+				if (fieldsToFetch.has('*') || fieldsToFetch.has(childField)) {
+					fieldsToFetch.delete(childField);
+					fieldsToFetch.add(`${childField}.*`);
+				}
+			}
 
 			const endpoint = getEndpoint(relation.collection);
 			const requestFields = Array.from(fieldsToFetch);
@@ -418,6 +433,38 @@ export function useItem<T extends Item>(
 			const options = useSearch ? { method: 'SEARCH' as const, body: { query } } : { params: query };
 
 			return await sdk.request<Item[]>(requestEndpoint(endpoint, options));
+		}
+
+		function getChildRelations(targetCollection: string): Relation[] {
+			return relationsStore.relations.filter(
+				(rel) => rel.related_collection === targetCollection && Boolean(rel.meta?.one_field),
+			);
+		}
+
+		function sanitizeChildRelations(parentCollection: string, itemRecord: Item) {
+			const childRelations = getChildRelations(parentCollection);
+
+			for (const childRelation of childRelations) {
+				const oneFieldKey = childRelation.meta!.one_field!;
+				const records = itemRecord[oneFieldKey];
+
+				if (!Array.isArray(records)) continue;
+
+				const childPkField = fieldsStore.getPrimaryKeyFieldForCollection(childRelation.collection);
+				if (!childPkField) continue;
+
+				const matchingJunctionRelation = relationsStore.relations.find(
+					(r) => r.collection === childRelation.collection && r.meta?.many_field === childRelation.meta?.junction_field,
+				);
+
+				itemRecord[oneFieldKey] = records
+					.filter((record): record is Item => isObject(record))
+					.map((record) => {
+						clearPrimaryKey(childPkField, record);
+						clearJunctionRelatedKey(childRelation, matchingJunctionRelation, record);
+						return record;
+					});
+			}
 		}
 
 		function clearPrimaryKey(primaryKeyField: Field | null, item: Item) {
