@@ -44,7 +44,8 @@ export function redactObject(
 		for (const key of Object.keys(object)) {
 			const localCheckPaths = [];
 
-			for (const [index, path] of [...checkKeyPaths].entries()) {
+			for (let index = checkKeyPaths.length - 1; index >= 0; index--) {
+				const path = checkKeyPaths[index]!;
 				const [current, ...remaining] = path;
 
 				const escapedKey = wildcardChars.includes(key) ? `\\${key}` : key;
