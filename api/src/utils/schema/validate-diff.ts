@@ -2,6 +2,7 @@ import { InvalidPayloadError } from '@directus/errors';
 import type { SnapshotDiffWithHash, SnapshotWithHash } from '@directus/types';
 import { DiffKind } from '@directus/types';
 import Joi from 'joi';
+import { isDeletedEntity, isNewEntity } from './diff-helpers.js';
 
 const deepDiffSchema = Joi.object({
 	kind: Joi.string()
@@ -93,7 +94,7 @@ export function validateApplyDiff(
 	for (const diffCollection of applyDiff.diff.collections) {
 		const collection = diffCollection.collection;
 
-		if (diffCollection.diff[0]?.kind === DiffKind.NEW) {
+		if (isNewEntity(diffCollection.diff)) {
 			const existingCollection = currentSnapshotWithHash.collections.find(
 				(c) => c.collection === diffCollection.collection,
 			);
@@ -103,7 +104,7 @@ export function validateApplyDiff(
 					reason: `Provided diff is trying to create collection "${collection}" but it already exists. Please generate a new diff and try again`,
 				});
 			}
-		} else if (diffCollection.diff[0]?.kind === DiffKind.DELETE) {
+		} else if (isDeletedEntity(diffCollection.diff)) {
 			const existingCollection = currentSnapshotWithHash.collections.find(
 				(c) => c.collection === diffCollection.collection,
 			);
@@ -119,7 +120,7 @@ export function validateApplyDiff(
 	for (const diffField of applyDiff.diff.fields) {
 		const field = `${diffField.collection}.${diffField.field}`;
 
-		if (diffField.diff[0]?.kind === DiffKind.NEW) {
+		if (isNewEntity(diffField.diff)) {
 			const existingField = currentSnapshotWithHash.fields.find(
 				(f) => f.collection === diffField.collection && f.field === diffField.field,
 			);
@@ -129,7 +130,7 @@ export function validateApplyDiff(
 					reason: `Provided diff is trying to create field "${field}" but it already exists. Please generate a new diff and try again`,
 				});
 			}
-		} else if (diffField.diff[0]?.kind === DiffKind.DELETE) {
+		} else if (isDeletedEntity(diffField.diff)) {
 			const existingField = currentSnapshotWithHash.fields.find(
 				(f) => f.collection === diffField.collection && f.field === diffField.field,
 			);
@@ -174,7 +175,7 @@ export function validateApplyDiff(
 		let relation = `${diffRelation.collection}.${diffRelation.field}`;
 		if (diffRelation.related_collection) relation += `-> ${diffRelation.related_collection}`;
 
-		if (diffRelation.diff[0]?.kind === DiffKind.NEW) {
+		if (isNewEntity(diffRelation.diff)) {
 			const existingRelation = currentSnapshotWithHash.relations.find(
 				(r) => r.collection === diffRelation.collection && r.field === diffRelation.field,
 			);
@@ -184,7 +185,7 @@ export function validateApplyDiff(
 					reason: `Provided diff is trying to create relation "${relation}" but it already exists. Please generate a new diff and try again`,
 				});
 			}
-		} else if (diffRelation.diff[0]?.kind === DiffKind.DELETE) {
+		} else if (isDeletedEntity(diffRelation.diff)) {
 			const existingRelation = currentSnapshotWithHash.relations.find(
 				(r) => r.collection === diffRelation.collection && r.field === diffRelation.field,
 			);

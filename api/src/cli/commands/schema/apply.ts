@@ -9,8 +9,8 @@ import { load as loadYaml } from 'js-yaml';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
 import { getLicenseManager } from '../../../license/index.js';
 import { useLogger } from '../../../logger/index.js';
-import { isNestedMetaUpdate } from '../../../utils/schema/apply-diff.js';
 import { applySnapshot } from '../../../utils/schema/apply-snapshot.js';
+import { isDeletedEntity, isNewEntity } from '../../../utils/schema/diff-helpers.js';
 import { getSnapshotDiff } from '../../../utils/schema/get-snapshot-diff.js';
 import { getSnapshot } from '../../../utils/schema/get-snapshot.js';
 
@@ -90,21 +90,23 @@ export async function apply(
 				const lines = [chalk.underline.bold('Collections:')];
 
 				for (const { collection, diff } of snapshotDiff.collections) {
-					if (diff[0]?.kind === DiffKind.EDIT) {
+					if (isNewEntity(diff)) {
+						lines.push(`  - ${chalk.green('Create')} ${collection}`);
+					} else if (isDeletedEntity(diff)) {
+						lines.push(`  - ${chalk.red('Delete')} ${collection}`);
+					} else {
 						lines.push(`  - ${chalk.magenta('Update')} ${collection}`);
 
 						for (const change of diff) {
 							if (change.kind === DiffKind.EDIT) {
 								const path = formatPath(change.path!);
 								lines.push(`    - Set ${path} to ${change.rhs}`);
+							} else if (change.kind === DiffKind.DELETE) {
+								lines.push(`    - Remove ${formatPath(change.path!)}`);
+							} else if (change.kind === DiffKind.NEW) {
+								lines.push(`    - Add ${formatPath(change.path!)} and set it to ${change.rhs}`);
 							}
 						}
-					} else if (diff[0]?.kind === DiffKind.DELETE) {
-						lines.push(`  - ${chalk.red('Delete')} ${collection}`);
-					} else if (diff[0]?.kind === DiffKind.NEW) {
-						lines.push(`  - ${chalk.green('Create')} ${collection}`);
-					} else if (diff[0]?.kind === DiffKind.ARRAY) {
-						lines.push(`  - ${chalk.magenta('Update')} ${collection}`);
 					}
 				}
 
@@ -115,7 +117,11 @@ export async function apply(
 				const lines = [chalk.underline.bold('Fields:')];
 
 				for (const { collection, field, diff } of snapshotDiff.fields) {
-					if (diff[0]?.kind === DiffKind.EDIT || isNestedMetaUpdate(diff[0]!)) {
+					if (isNewEntity(diff)) {
+						lines.push(`  - ${chalk.green('Create')} ${collection}.${field}`);
+					} else if (isDeletedEntity(diff)) {
+						lines.push(`  - ${chalk.red('Delete')} ${collection}.${field}`);
+					} else {
 						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}`);
 
 						for (const change of diff) {
@@ -129,12 +135,6 @@ export async function apply(
 								lines.push(`    - Add ${path} and set it to ${change.rhs}`);
 							}
 						}
-					} else if (diff[0]?.kind === DiffKind.DELETE) {
-						lines.push(`  - ${chalk.red('Delete')} ${collection}.${field}`);
-					} else if (diff[0]?.kind === DiffKind.NEW) {
-						lines.push(`  - ${chalk.green('Create')} ${collection}.${field}`);
-					} else if (diff[0]?.kind === DiffKind.ARRAY) {
-						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}`);
 					}
 				}
 
@@ -171,21 +171,23 @@ export async function apply(
 				for (const { collection, field, related_collection, diff } of snapshotDiff.relations) {
 					const relatedCollection = formatRelatedCollection(related_collection);
 
-					if (diff[0]?.kind === DiffKind.EDIT) {
+					if (isNewEntity(diff)) {
+						lines.push(`  - ${chalk.green('Create')} ${collection}.${field}${relatedCollection}`);
+					} else if (isDeletedEntity(diff)) {
+						lines.push(`  - ${chalk.red('Delete')} ${collection}.${field}${relatedCollection}`);
+					} else {
 						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}${relatedCollection}`);
 
 						for (const change of diff) {
 							if (change.kind === DiffKind.EDIT) {
 								const path = formatPath(change.path!);
 								lines.push(`    - Set ${path} to ${change.rhs}`);
+							} else if (change.kind === DiffKind.DELETE) {
+								lines.push(`    - Remove ${formatPath(change.path!)}`);
+							} else if (change.kind === DiffKind.NEW) {
+								lines.push(`    - Add ${formatPath(change.path!)} and set it to ${change.rhs}`);
 							}
 						}
-					} else if (diff[0]?.kind === DiffKind.DELETE) {
-						lines.push(`  - ${chalk.red('Delete')} ${collection}.${field}${relatedCollection}`);
-					} else if (diff[0]?.kind === DiffKind.NEW) {
-						lines.push(`  - ${chalk.green('Create')} ${collection}.${field}${relatedCollection}`);
-					} else if (diff[0]?.kind === DiffKind.ARRAY) {
-						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}${relatedCollection}`);
 					}
 				}
 
