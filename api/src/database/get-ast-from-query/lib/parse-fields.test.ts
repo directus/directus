@@ -116,6 +116,17 @@ test('parse fields with m2o relation', async () => {
 	]);
 });
 
+test('parse fields preserves the requested field order when a relational field is placed between direct fields (#25521)', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const result = await parseFields(
+		{ accountability, fields: ['id', 'author.name', 'title'], parentCollection: 'articles', query: {} },
+		{ knex: db, schema: schemaRelational },
+	);
+
+	expect(result.map((node) => node.fieldKey)).toEqual(['id', 'author', 'title']);
+});
+
 test('parse fields with o2m relation', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
 
@@ -221,27 +232,6 @@ test('parse fields with *.*.*', async () => {
 
 	expect(result).toEqual([
 		{
-			alias: false,
-			fieldKey: 'id',
-			name: 'id',
-			type: 'field',
-			whenCase: [],
-		},
-		{
-			alias: false,
-			fieldKey: 'title',
-			name: 'title',
-			type: 'field',
-			whenCase: [],
-		},
-		{
-			alias: false,
-			fieldKey: 'date',
-			name: 'date',
-			type: 'field',
-			whenCase: [],
-		},
-		{
 			cases: [],
 			children: [
 				{
@@ -271,13 +261,6 @@ test('parse fields with *.*.*', async () => {
 		{
 			cases: [],
 			children: [
-				{
-					alias: false,
-					fieldKey: 'id',
-					name: 'id',
-					type: 'field',
-					whenCase: [],
-				},
 				{
 					cases: [],
 					children: [
@@ -347,6 +330,13 @@ test('parse fields with *.*.*', async () => {
 					type: 'm2o',
 					whenCase: [],
 				},
+				{
+					alias: false,
+					fieldKey: 'id',
+					name: 'id',
+					type: 'field',
+					whenCase: [],
+				},
 			],
 			fieldKey: 'links',
 			name: 'links',
@@ -362,13 +352,6 @@ test('parse fields with *.*.*', async () => {
 		{
 			cases: [],
 			children: [
-				{
-					alias: false,
-					fieldKey: 'id',
-					name: 'id',
-					type: 'field',
-					whenCase: [],
-				},
 				{
 					cases: [],
 					children: [
@@ -458,6 +441,13 @@ test('parse fields with *.*.*', async () => {
 					type: 'm2o',
 					whenCase: [],
 				},
+				{
+					alias: false,
+					fieldKey: 'id',
+					name: 'id',
+					type: 'field',
+					whenCase: [],
+				},
 			],
 			fieldKey: 'tags',
 			name: 'articles_tags_junction',
@@ -468,6 +458,27 @@ test('parse fields with *.*.*', async () => {
 			relatedKey: 'id',
 			relation: getRelation(schemaRelational.relations, 'articles_tags_junction', 'articles_id'),
 			type: 'o2m',
+			whenCase: [],
+		},
+		{
+			alias: false,
+			fieldKey: 'id',
+			name: 'id',
+			type: 'field',
+			whenCase: [],
+		},
+		{
+			alias: false,
+			fieldKey: 'title',
+			name: 'title',
+			type: 'field',
+			whenCase: [],
+		},
+		{
+			alias: false,
+			fieldKey: 'date',
+			name: 'date',
+			type: 'field',
 			whenCase: [],
 		},
 	]);
