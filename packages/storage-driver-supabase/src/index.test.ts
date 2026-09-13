@@ -1,3 +1,5 @@
+import { Agent as HttpAgent } from 'node:http';
+import { Agent as HttpsAgent } from 'node:https';
 import { basename, dirname, join } from 'node:path';
 import { Readable } from 'node:stream';
 import { ReadableStream } from 'node:stream/web';
@@ -15,13 +17,15 @@ import {
 	randGitShortSha as randUnique,
 } from '@ngneat/falso';
 import { StorageClient } from '@supabase/storage-js';
-import { fetch, Response } from 'undici';
+import { DefaultHttpStack, Upload } from 'tus-js-client';
+import { EnvHttpProxyAgent, fetch, Response } from 'undici';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverSupabaseConfig } from './index.js';
 import { DriverSupabase } from './index.js';
 
 vi.mock('@supabase/storage-js');
 vi.mock('undici');
+vi.mock('tus-js-client');
 
 let sample: {
 	config: Required<DriverSupabaseConfig>;
@@ -165,12 +169,69 @@ describe('#getClient', () => {
 	});
 
 	test('Creates storage client', () => {
-		expect(StorageClient).toHaveBeenCalledWith(`https://${sample.config.projectId}.supabase.co/storage/v1`, {
-			apikey: sample.config.serviceRole,
-			Authorization: `Bearer ${sample.config.serviceRole}`,
-		});
+		expect(StorageClient).toHaveBeenCalledWith(
+			`https://${sample.config.projectId}.supabase.co/storage/v1`,
+			{
+				apikey: sample.config.serviceRole,
+				Authorization: `Bearer ${sample.config.serviceRole}`,
+			},
+			expect.any(Function),
+		);
 
 		expect(driver['client']).toBeInstanceOf(StorageClient);
+	});
+});
+
+describe('#getClient proxy support', () => {
+	// `EnvHttpProxyAgent` reads HTTP_PROXY/HTTPS_PROXY/NO_PROXY (incl. lowercase variants) itself
+	// to decide whether/how to proxy - actually routing through a proxy is undici's responsibility,
+	// not something to re-verify here. What the driver must get right is always handing StorageClient
+	// a defined, proxy-aware fetch, and reusing one dispatcher instead of one per instance.
+
+	test('Always passes a proxy-aware fetch function to StorageClient', () => {
+		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project' });
+
+		expect(StorageClient).toHaveBeenLastCalledWith(expect.any(String), expect.any(Object), expect.any(Function));
+	});
+
+	test('Reuses the same EnvHttpProxyAgent dispatcher across multiple driver instances', () => {
+		// The dispatcher is constructed once at module load (before this test runs) - constructing
+		// more DriverSupabase instances must not construct additional ones.
+		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project-a' });
+		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project-b' });
+
+		expect(EnvHttpProxyAgent).not.toHaveBeenCalled();
+	});
+
+	test('The fetch passed to StorageClient dispatches through the shared proxy dispatcher', async () => {
+		vi.mocked(fetch).mockResolvedValue({} as unknown as Response);
+
+		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project' });
+
+		const sdkFetch = vi.mocked(StorageClient).mock.calls.at(-1)![2] as typeof fetch;
+
+		await sdkFetch('https://example.supabase.co/storage/v1/object/list/bucket', { method: 'GET' });
+
+		expect(fetch).toHaveBeenCalledWith(
+			'https://example.supabase.co/storage/v1/object/list/bucket',
+			expect.objectContaining({ method: 'GET', dispatcher: expect.anything() }),
+		);
+	});
+
+	test('StorageClient and read() dispatch through the exact same dispatcher instance', async () => {
+		vi.mocked(fetch).mockResolvedValue({ status: 200, body: new ReadableStream() } as unknown as Response);
+
+		const localDriver = new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project' });
+		const sdkFetch = vi.mocked(StorageClient).mock.calls.at(-1)![2] as typeof fetch;
+
+		await sdkFetch('https://example.supabase.co/a', {});
+		await localDriver.read(sample.path.input);
+
+		const dispatcherFromSdkFetch = vi.mocked(fetch).mock.calls[0]?.[1]?.dispatcher;
+		const dispatcherFromRead = vi.mocked(fetch).mock.calls[1]?.[1]?.dispatcher;
+
+		expect(dispatcherFromSdkFetch).toBeDefined();
+		expect(dispatcherFromSdkFetch).toBe(dispatcherFromRead);
 	});
 });
 
@@ -247,6 +308,8 @@ describe('#read', () => {
 				Authorization: `Bearer ${sample.config.serviceRole}`,
 			},
 			method: 'GET',
+			// `read()` always goes through the shared proxy-aware fetch wrapper now, which adds this.
+			dispatcher: expect.anything(),
 		});
 	});
 
@@ -262,6 +325,8 @@ describe('#read', () => {
 				Authorization: `Bearer ${sample.config.serviceRole}`,
 			},
 			method: 'GET',
+			// `read()` always goes through the shared proxy-aware fetch wrapper now, which adds this.
+			dispatcher: expect.anything(),
 		});
 	});
 
@@ -274,6 +339,8 @@ describe('#read', () => {
 				Range: `bytes=${sample.range.start}-`,
 			},
 			method: 'GET',
+			// `read()` always goes through the shared proxy-aware fetch wrapper now, which adds this.
+			dispatcher: expect.anything(),
 		});
 	});
 
@@ -286,6 +353,8 @@ describe('#read', () => {
 				Range: `bytes=-${sample.range.end}`,
 			},
 			method: 'GET',
+			// `read()` always goes through the shared proxy-aware fetch wrapper now, which adds this.
+			dispatcher: expect.anything(),
 		});
 	});
 
@@ -298,6 +367,8 @@ describe('#read', () => {
 				Range: `bytes=${sample.range.start}-${sample.range.end}`,
 			},
 			method: 'GET',
+			// `read()` always goes through the shared proxy-aware fetch wrapper now, which adds this.
+			dispatcher: expect.anything(),
 		});
 	});
 
@@ -342,6 +413,8 @@ describe('#read', () => {
 				Range: `bytes=${sample.range.start}-${sample.range.end}`,
 			},
 			method: 'GET',
+			// `read()` always goes through the shared proxy-aware fetch wrapper now, which adds this.
+			dispatcher: expect.anything(),
 		});
 
 		expect(stream).toBeInstanceOf(Readable);
@@ -769,5 +842,67 @@ describe('#list', () => {
 		}
 
 		expect(output.length).toBe(1256);
+	});
+});
+
+describe('#writeChunk proxy support', () => {
+	// tus-js-client's NodeHttpStack (exported here as `DefaultHttpStack`) talks to node:http/https
+	// directly, not through undici, so it needs its own proxy-aware Node `Agent` - a different
+	// mechanism from the `EnvHttpProxyAgent` dispatcher used for fetch/SDK calls (see the comments
+	// in index.ts for why both exist). Actually routing through a proxy is Node's responsibility,
+	// not something to re-verify here - what matters is that the agent is configured and reused.
+
+	test('Constructs the TUS http stack with a proxyEnv-configured agent', () => {
+		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project' });
+
+		expect(DefaultHttpStack).toHaveBeenCalledWith({ agent: expect.anything() });
+
+		const { agent } = vi.mocked(DefaultHttpStack).mock.calls.at(-1)![0] as {
+			agent: { options: { proxyEnv?: NodeJS.ProcessEnv } };
+		};
+
+		expect(agent.options.proxyEnv).toBe(process.env);
+	});
+
+	test('Uses a plain http.Agent for a plain http endpoint', () => {
+		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', endpoint: 'http://minio.local:9000' });
+
+		const { agent } = vi.mocked(DefaultHttpStack).mock.calls.at(-1)![0] as { agent: unknown };
+
+		expect(agent).toBeInstanceOf(HttpAgent);
+		expect(agent).not.toBeInstanceOf(HttpsAgent);
+	});
+
+	test('Uses an https.Agent for an https endpoint', () => {
+		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', endpoint: 'https://example.supabase.co' });
+
+		const { agent } = vi.mocked(DefaultHttpStack).mock.calls.at(-1)![0] as { agent: unknown };
+
+		expect(agent).toBeInstanceOf(HttpsAgent);
+	});
+
+	test('Reuses the same TUS agent across multiple driver instances', () => {
+		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project-a' });
+		new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project-b' });
+
+		const agentA = vi.mocked(DefaultHttpStack).mock.calls[0]![0].agent;
+		const agentB = vi.mocked(DefaultHttpStack).mock.calls[1]![0].agent;
+
+		expect(agentA).toBe(agentB);
+	});
+
+	test('writeChunk passes the proxy-aware httpStack to the TUS upload', async () => {
+		vi.mocked(Upload).mockImplementation((_content: any, options: any) => {
+			return { url: null, start: () => options.onSuccess() } as any;
+		});
+
+		const localDriver = new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId: 'project' });
+
+		await localDriver.writeChunk(sample.path.input, sample.stream, 0, { metadata: {} } as any);
+
+		expect(Upload).toHaveBeenCalledWith(
+			sample.stream,
+			expect.objectContaining({ httpStack: localDriver['tusHttpStack'] }),
+		);
 	});
 });
