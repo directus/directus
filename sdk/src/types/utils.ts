@@ -64,7 +64,9 @@ export type RelationPrimaryKey<Item> = Item extends { id: infer PK } ? NonNullab
 export type NestedItemsInput<RawItem> = RawItem extends object
 	? {
 			create?: NestedPartial<RawItem>[];
-			update?: (NestedPartial<RawItem> & { id: RelationPrimaryKey<RawItem> })[];
+			update?: (RawItem extends { id: any }
+				? NestedPartial<RawItem> & { id: RelationPrimaryKey<RawItem> }
+				: NestedPartial<RawItem>)[];
 			delete?: RelationPrimaryKey<RawItem>[];
 		}
 	: never;

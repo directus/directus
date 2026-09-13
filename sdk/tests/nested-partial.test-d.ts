@@ -70,7 +70,8 @@ describe('NestedPartial', () => {
 			| { message?: string }[]
 			| {
 					create?: { message?: string }[];
-					update?: { message?: string; id: string | number }[];
+					// no `id` field on the item, so update entries aren't forced to carry one either
+					update?: { message?: string }[];
 					delete?: (string | number)[];
 			  }
 			| undefined
@@ -268,6 +269,14 @@ describe('NestedPartial accepts the detailed create/update/delete object for rel
 		assertType<NestedItemsInput<CollectionC>>({
 			// @ts-expect-error delete only takes primary keys
 			delete: [{ id: 2 }],
+		});
+	});
+
+	test('an item with no `id` field is not forced to carry one on update', () => {
+		type CustomPkItem = { slug: string; title: string };
+
+		assertType<NestedItemsInput<CustomPkItem>>({
+			update: [{ slug: 'a', title: 'b' }],
 		});
 	});
 
