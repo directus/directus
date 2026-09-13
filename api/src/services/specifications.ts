@@ -99,7 +99,7 @@ class OASSpecsService implements SpecificationSubService {
 		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
 
 		const hashedVersion = createHmac('sha256', getSecret())
-			.update(JSON.stringify(canonicalize({ tags, paths, components })))
+			.update(canonicalStringify({ tags, paths, components }))
 			.digest('hex');
 
 		const spec: OpenAPIObject = {
@@ -660,21 +660,26 @@ class GraphQLSpecsService implements SpecificationSubService {
 	}
 }
 
-/** Recursively sorts object keys and arrays so structurally equivalent values always serialize the same way, regardless of fetch order. */
-function canonicalize(value: unknown): unknown {
+/**
+ * Recursively serializes to a canonical JSON string in one pass, so structurally equivalent
+ * values always serialize the same way regardless of fetch order. Arrays are sorted by their
+ * own (already canonical) JSON fragment, which avoids both a separate sort-key pass and a
+ * second full-tree JSON.stringify over a rebuilt clone.
+ */
+function canonicalStringify(value: unknown): string {
 	if (Array.isArray(value)) {
-		return value.map(canonicalize).sort((a, b) => byCodepoint(JSON.stringify(a), JSON.stringify(b)));
+		return `[${value.map(canonicalStringify).sort(byCodepoint).join(',')}]`;
 	}
 
 	if (isPlainObject(value)) {
 		const record = value as Record<string, unknown>;
 
-		return Object.fromEntries(
-			Object.keys(record)
-				.sort(byCodepoint)
-				.map((key): [string, unknown] => [key, canonicalize(record[key])]),
-		);
+		const entries = Object.keys(record)
+			.sort(byCodepoint)
+			.map((key) => `${JSON.stringify(key)}:${canonicalStringify(record[key])}`);
+
+		return `{${entries.join(',')}}`;
 	}
 
-	return value;
+	return JSON.stringify(value);
 }
