@@ -59,6 +59,26 @@ export async function parseFields(
 
 	const relationalStructure: Record<string, string[] | CollectionScope> = Object.create(null);
 
+	// Track the order in which top-level fields (relational or not) first appear in the
+	// requested field list, and reserve each one's final slot in `children` up front.
+	// Relational nodes are built in a second pass below, so writing straight to the
+	// reserved index puts them back in request order without an O(n log n) sort;
+	// a permission check can skip building a node entirely, which leaves that slot
+	// as a hole that later gets dropped automatically since `.filter()` never visits
+	// unassigned array indices.
+	const rootFieldIndex = new Map<string, number>();
+
+	const trackRootFieldOrder = (key: string): number => {
+		let index = rootFieldIndex.get(key);
+
+		if (index === undefined) {
+			index = rootFieldIndex.size;
+			rootFieldIndex.set(key, index);
+		}
+
+		return index;
+	};
+
 	for (const fieldKey of fields) {
 		let alias = false;
 		let name = fieldKey;
@@ -93,7 +113,7 @@ export async function parseFields(
 				);
 
 				if (foundRelation) {
-					children.push({
+					children[trackRootFieldOrder(fieldKey)] = {
 						type: 'functionField',
 						name,
 						fieldKey,
@@ -101,7 +121,7 @@ export async function parseFields(
 						relatedCollection: foundRelation.collection,
 						whenCase: [],
 						cases: [],
-					});
+					};
 
 					continue;
 				}
@@ -109,7 +129,7 @@ export async function parseFields(
 
 			// Create a FunctionFieldNode for direct (non-relational) json function calls
 			if (functionName === 'json') {
-				children.push({
+				children[trackRootFieldOrder(fieldKey)] = {
 					type: 'functionField',
 					name,
 					fieldKey,
@@ -117,7 +137,7 @@ export async function parseFields(
 					relatedCollection: options.parentCollection,
 					whenCase: [],
 					cases: [],
-				});
+				};
 
 				continue;
 			}
@@ -151,6 +171,8 @@ export async function parseFields(
 				collectionScope = scope!;
 			}
 
+			trackRootFieldOrder(rootField);
+
 			if (rootField in relationalStructure === false) {
 				if (collectionScope) {
 					relationalStructure[rootField] = { [collectionScope]: [] };
@@ -176,6 +198,8 @@ export async function parseFields(
 			if (name.includes(':')) {
 				const [key, scope] = name.split(':') as [string, string];
 
+				trackRootFieldOrder(key);
+
 				if (key in relationalStructure === false) {
 					relationalStructure[key] = { [scope]: [] };
 				} else if (scope in (relationalStructure[key] as CollectionScope) === false) {
@@ -185,7 +209,7 @@ export async function parseFields(
 				continue;
 			}
 
-			children.push({ type: 'field', name, fieldKey, whenCase: [], alias });
+			children[trackRootFieldOrder(fieldKey)] = { type: 'field', name, fieldKey, whenCase: [], alias };
 		}
 	}
 
@@ -335,7 +359,7 @@ export async function parseFields(
 		}
 
 		if (child) {
-			children.push(child);
+			children[trackRootFieldOrder(fieldKey)] = child;
 		}
 	}
 
