@@ -55,7 +55,7 @@ type Builtin = Primitive | Date | RegExp;
 /**
  * A relation item's primary key type, falling back to `string | number` when it has none.
  */
-export type RelationPrimaryKey<Item> = Item extends { id: infer PK } ? PK : string | number;
+export type RelationPrimaryKey<Item> = Item extends { id: infer PK } ? NonNullable<PK> : string | number;
 
 /**
  * The API's "Detailed" object syntax for relation array fields: create/update/delete by key,
