@@ -293,6 +293,66 @@ describe('#getClient', () => {
 	});
 });
 
+describe('#getClient proxy support', () => {
+	// Node's http(s).Agent reads `proxyEnv` itself (HTTP_PROXY / HTTPS_PROXY / NO_PROXY, including
+	// lowercase variants) to decide whether/how to proxy, so the driver just needs to hand its
+	// agents the object to read from - actually routing through a proxy is Node's responsibility,
+	// not something to re-verify here.
+	// `keepAlive` is set on the agent instance at runtime but, like `proxyEnv`, isn't part of the
+	// public `Agent` type - only of `AgentOptions`.
+	type InspectableAgent = { maxSockets: number; keepAlive: boolean; options: { proxyEnv?: NodeJS.ProcessEnv } };
+
+	async function getConstructedAgents(config: DriverS3Config) {
+		new DriverS3(config);
+
+		const s3ClientConfig = vi.mocked(S3Client).mock.calls.at(-1)![0] as { requestHandler: NodeHttpHandler };
+		const requestHandler = s3ClientConfig.requestHandler;
+
+		// `NodeHttpHandler` resolves its config (incl. the agents passed to it) synchronously under
+		// the hood, but only exposes it via this promise. As of @smithy/node-http-handler 4.11+, the
+		// http (not https) agent is additionally resolved lazily behind `httpAgentProvider()` rather
+		// than being present on the resolved config directly - support both shapes so this doesn't
+		// silently start testing the wrong thing again on the next dependency bump.
+		const resolvedConfig = (await (requestHandler as unknown as { configProvider: Promise<unknown> })
+			.configProvider) as {
+			httpAgent?: InspectableAgent;
+			httpAgentProvider?: () => Promise<InspectableAgent>;
+			httpsAgent: InspectableAgent;
+		};
+
+		const httpAgent = resolvedConfig.httpAgentProvider
+			? await resolvedConfig.httpAgentProvider()
+			: resolvedConfig.httpAgent!;
+
+		return { httpAgent, httpsAgent: resolvedConfig.httpsAgent };
+	}
+
+	test('Passes proxyEnv through to the http agent so Node can apply HTTP_PROXY/NO_PROXY', async () => {
+		const { httpAgent } = await getConstructedAgents({ bucket: 'bucket' });
+
+		expect(httpAgent.options.proxyEnv).toBe(process.env);
+	});
+
+	test('Passes proxyEnv through to the https agent so Node can apply HTTPS_PROXY/NO_PROXY', async () => {
+		const { httpsAgent } = await getConstructedAgents({ bucket: 'bucket' });
+
+		expect(httpsAgent.options.proxyEnv).toBe(process.env);
+	});
+
+	test('Still applies maxSockets / keepAlive config alongside proxyEnv', async () => {
+		const { httpAgent, httpsAgent } = await getConstructedAgents({
+			bucket: 'bucket',
+			maxSockets: 10,
+			keepAlive: false,
+		});
+
+		expect(httpAgent.maxSockets).toBe(10);
+		expect(httpAgent.keepAlive).toBe(false);
+		expect(httpsAgent.maxSockets).toBe(10);
+		expect(httpsAgent.keepAlive).toBe(false);
+	});
+});
+
 describe('#fullPath', () => {
 	test('Returns normalized joined path', () => {
 		const driver = new DriverS3({

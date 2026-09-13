@@ -1,5 +1,5 @@
 import fs, { promises as fsProm } from 'node:fs';
-import { Agent as HttpAgent } from 'node:http';
+import { Agent as HttpAgent, type AgentOptions as HttpAgentOptions } from 'node:http';
 import { Agent as HttpsAgent } from 'node:https';
 import os from 'node:os';
 import { join } from 'node:path';
@@ -39,6 +39,16 @@ import { Permit, Semaphore } from '@shopify/semaphore';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
 import { ERRORS, StreamSplitter, TUS_RESUMABLE } from '@tus/utils';
 import ms, { type StringValue } from 'ms';
+
+/**
+ * Node's `http(s).Agent` gained built-in proxy support (`proxyEnv`) that reads
+ * HTTP_PROXY/HTTPS_PROXY/NO_PROXY (including lowercase variants) and routes requests through the
+ * matching proxy accordingly, without needing any additional dependencies. It was backported to
+ * the Node 22.x line, but @types/node's 22.x definitions don't declare it yet (only 24.x+ does),
+ * so it's added here manually. On Node versions that predate the backport, the option is silently
+ * ignored - requests are made directly, with no proxying and no error.
+ */
+type AgentOptionsWithProxy = HttpAgentOptions & { proxyEnv?: NodeJS.ProcessEnv };
 
 export type DriverS3Config = {
 	root?: string;
@@ -97,12 +107,19 @@ export class DriverS3 implements TusDriver {
 		const maxSockets = this.config.maxSockets ?? 500;
 		const keepAlive = this.config.keepAlive ?? true;
 
+		/*
+		 * Respect HTTP_PROXY / HTTPS_PROXY / NO_PROXY env vars, so uploads aren't silently blocked
+		 * on networks that require a proxy. `proxyEnv` is Node's built-in agent option for this -
+		 * see the `AgentOptionsWithProxy` comment above for caveats.
+		 */
+		const agentOptions: AgentOptionsWithProxy = { maxSockets, keepAlive, proxyEnv: process.env };
+
 		const s3ClientConfig: S3ClientConfig = {
 			requestHandler: new NodeHttpHandler({
 				connectionTimeout,
 				socketTimeout,
-				httpAgent: new HttpAgent({ maxSockets, keepAlive }),
-				httpsAgent: new HttpsAgent({ maxSockets, keepAlive }),
+				httpAgent: new HttpAgent(agentOptions),
+				httpsAgent: new HttpsAgent(agentOptions),
 			}),
 		};
 
