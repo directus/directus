@@ -60,16 +60,23 @@ export async function parseFields(
 	const relationalStructure: Record<string, string[] | CollectionScope> = Object.create(null);
 
 	// Track the order in which top-level fields (relational or not) first appear in the
-	// requested field list, so relational nodes (built separately below) can be reinserted
-	// at their original position instead of always trailing after every direct field.
-	const rootFieldOrder: string[] = [];
-	const seenRootFields = new Set<string>();
+	// requested field list, and reserve each one's final slot in `children` up front.
+	// Relational nodes are built in a second pass below, so writing straight to the
+	// reserved index puts them back in request order without an O(n log n) sort;
+	// a permission check can skip building a node entirely, which leaves that slot
+	// as a hole that later gets dropped automatically since `.filter()` never visits
+	// unassigned array indices.
+	const rootFieldIndex = new Map<string, number>();
 
-	const trackRootFieldOrder = (key: string) => {
-		if (!seenRootFields.has(key)) {
-			seenRootFields.add(key);
-			rootFieldOrder.push(key);
+	const trackRootFieldOrder = (key: string): number => {
+		let index = rootFieldIndex.get(key);
+
+		if (index === undefined) {
+			index = rootFieldIndex.size;
+			rootFieldIndex.set(key, index);
 		}
+
+		return index;
 	};
 
 	for (const fieldKey of fields) {
@@ -106,7 +113,7 @@ export async function parseFields(
 				);
 
 				if (foundRelation) {
-					children.push({
+					children[trackRootFieldOrder(fieldKey)] = {
 						type: 'functionField',
 						name,
 						fieldKey,
@@ -114,7 +121,7 @@ export async function parseFields(
 						relatedCollection: foundRelation.collection,
 						whenCase: [],
 						cases: [],
-					});
+					};
 
 					continue;
 				}
@@ -122,7 +129,7 @@ export async function parseFields(
 
 			// Create a FunctionFieldNode for direct (non-relational) json function calls
 			if (functionName === 'json') {
-				children.push({
+				children[trackRootFieldOrder(fieldKey)] = {
 					type: 'functionField',
 					name,
 					fieldKey,
@@ -130,7 +137,7 @@ export async function parseFields(
 					relatedCollection: options.parentCollection,
 					whenCase: [],
 					cases: [],
-				});
+				};
 
 				continue;
 			}
@@ -202,8 +209,7 @@ export async function parseFields(
 				continue;
 			}
 
-			trackRootFieldOrder(fieldKey);
-			children.push({ type: 'field', name, fieldKey, whenCase: [], alias });
+			children[trackRootFieldOrder(fieldKey)] = { type: 'field', name, fieldKey, whenCase: [], alias };
 		}
 	}
 
@@ -353,14 +359,9 @@ export async function parseFields(
 		}
 
 		if (child) {
-			children.push(child);
+			children[trackRootFieldOrder(fieldKey)] = child;
 		}
 	}
-
-	// Relational nodes are always built after direct fields (above), so restore their original
-	// position among the requested fields instead of leaving them trailing at the end.
-	const rootFieldIndex = new Map(rootFieldOrder.map((key, index) => [key, index]));
-	children.sort((a, b) => (rootFieldIndex.get(a.fieldKey) ?? 0) - (rootFieldIndex.get(b.fieldKey) ?? 0));
 
 	// Deduplicate any children fields that are included both as a regular field, and as a nested m2o field
 	const nestedCollectionNodes = children.filter((childNode) => childNode.type !== 'field');

@@ -667,8 +667,11 @@ test('parse fields distinguishes json function from relational fields', async ()
 		whenCase: [],
 	});
 
-	// json function is processed first since it's detected before relational fields
-	expect(result[1]).toEqual({
+	// author.name was requested before json(metadata, color), so the relational node keeps
+	// that position rather than the function field jumping ahead of it.
+	expect(result[1]?.type).toBe('m2o');
+
+	expect(result[2]).toEqual({
 		type: 'functionField',
 		fieldKey: 'json(metadata, color)',
 		name: 'json(metadata, color)',
@@ -677,8 +680,6 @@ test('parse fields distinguishes json function from relational fields', async ()
 		whenCase: [],
 		cases: [],
 	});
-
-	expect(result[2]?.type).toBe('m2o');
 });
 
 const schemaM2A = new SchemaBuilder()
