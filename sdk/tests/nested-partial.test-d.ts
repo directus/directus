@@ -62,15 +62,14 @@ describe('NestedPartial', () => {
 	test('an already-optional field stays optional', () => {
 		type Case = NestedPartial<{ logs?: { message: string }[] }>;
 
-		// if branded tests unexpectedly fail, switch to using unbranded
-		// https://vitest.dev/api/expect-typeof.html#branded
-
+		// .branded is needed here because NestedItemsInput's `update` entries are an
+		// intersection type (NestedPartial<RawItem> & { id: ... }), which plain toEqualTypeOf
+		// treats as distinct from its flattened equivalent even though they accept identical
+		// values: https://vitest.dev/api/expect-typeof.html#branded
 		expectTypeOf<Case['logs']>().branded.toEqualTypeOf<
 			| { message?: string }[]
 			| {
 					create?: { message?: string }[];
-					// unbranded test
-					//  update?: ({ message?: string } & { id: string | number })[];
 					update?: { message?: string; id: string | number }[];
 					delete?: (string | number)[];
 			  }
@@ -85,8 +84,6 @@ describe('NestedPartial', () => {
 			| { id?: string; name?: string }[]
 			| {
 					create?: { id?: string; name?: string }[];
-					// unbranded test
-					//  update?: ({ id?: string; name?: string } & { id: string })[];
 					update?: { id: string; name?: string }[];
 					delete?: string[];
 			  }
@@ -102,8 +99,6 @@ describe('NestedPartial', () => {
 			| { id?: string; policy?: string }[]
 			| {
 					create?: { id?: string; policy?: string }[];
-					// unbranded test
-					//  update?: ({ id?: string; policy?: string } & { id: string })[];
 					update?: { id: string; policy?: string }[];
 					delete?: string[];
 			  }
