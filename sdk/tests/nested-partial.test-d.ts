@@ -13,7 +13,7 @@ import type {
 	ReadFlowOutput,
 	StringLiteralUnion,
 } from '../src/index.js';
-import { createItem, updateItem } from '../src/index.js';
+import { createItem, createItems, updateItem, updateItems, updateItemsBatch } from '../src/index.js';
 import type { CollectionA, CollectionC, TestSchema } from './schema.js';
 
 describe('NestedPartial', () => {
@@ -229,6 +229,37 @@ describe('NestedPartial accepts the detailed create/update/delete object for rel
 				delete: [4],
 			},
 		});
+	});
+
+	test('an m2a field accepts the plain array shorthand and the detailed object', () => {
+		type Case = NestedPartial<CollectionA>;
+
+		assertType<Case>({ m2a: [{ collection_a_id: 1, collection: 'collection_b', item: '1' }] });
+
+		assertType<Case>({
+			m2a: {
+				create: [{ collection: 'collection_b', item: '1' }],
+				update: [{ id: 1, collection: 'collection_c' }],
+				delete: [6],
+			},
+		});
+	});
+
+	test('a scalar (m2o) relation field does not gain the detailed object', () => {
+		assertType<NestedPartial<CollectionA>>({
+			// @ts-expect-error m2o is a scalar relation (RelatedItem | PK), not an array — no Detailed object
+			m2o: { create: [{ string_field: 'a' }] },
+		});
+	});
+
+	test('createItems, updateItems, and updateItemsBatch accept the detailed object too', () => {
+		createItems<TestSchema, 'collection_a', any>('collection_a', [{ o2m: { create: [{ non_nullable: 'a' }] } }]);
+
+		updateItems<TestSchema, 'collection_a', any>('collection_a', [1], {
+			m2m: { delete: [4] },
+		});
+
+		updateItemsBatch<TestSchema, 'collection_a', any>('collection_a', [{ id: 1, o2m: { delete: [2] } }]);
 	});
 
 	test('an update entry requires the related item id', () => {
