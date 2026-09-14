@@ -712,8 +712,8 @@ catalogs:
       specifier: 4.9.0
       version: 4.9.0
     maplibre-gl:
-      specifier: 1.15.3
-      version: 1.15.3
+      specifier: 6.9.0
+      version: 6.9.0
     marked:
       specifier: 16.4.1
       version: 16.4.1
@@ -1416,7 +1416,7 @@ importers:
         version: 7.2.0
       rolldown:
         specifier: 'catalog:'
-        version: 1.0.0-beta.31(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)
+        version: 1.0.0-beta.31(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
       rollup:
         specifier: 'catalog:'
         version: 4.59.0
@@ -1434,7 +1434,7 @@ importers:
         version: 0.35.4(@types/node@22.13.14)
       snappy:
         specifier: 'catalog:'
-        version: 7.3.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)
+        version: 7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
       stream-json:
         specifier: 'catalog:'
         version: 1.9.1
@@ -1443,7 +1443,7 @@ importers:
         version: 7.5.22
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
+        version: 0.15.11(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
       tsx:
         specifier: 'catalog:'
         version: 4.22.4
@@ -1955,7 +1955,7 @@ importers:
         version: 4.18.1
       maplibre-gl:
         specifier: 'catalog:'
-        version: 1.15.3(mapbox-gl@3.30.0)
+        version: 6.9.0
       marked:
         specifier: 'catalog:'
         version: 16.4.1
@@ -5149,13 +5149,6 @@ packages:
     resolution: {integrity: sha512-82V7YHcle8lhgIGqEWwtXYN5cy0QM/OHq3ypGhQTbvHR57DF0vMHMjjVSQKFfVXBe/yWCBZTyOuzvK7DFFnx5Q==}
     hasBin: true
 
-  '@mapbox/geojson-rewind@0.5.2':
-    resolution: {integrity: sha512-tJaT+RbYGJYStt7wI3cq4Nl4SXxG8W7JDG5DMJu97V25RnbNg3QtQtf+KD+VLjNpWKYsRvXDNmNrBgEETr1ifA==}
-    hasBin: true
-
-  '@mapbox/geojson-types@1.0.2':
-    resolution: {integrity: sha512-e9EBqHHv3EORHrSfbR9DqecPNn+AmuAoQxV6aL8Xu30bJMJR1o8PZLZzpk1Wq7/NfCbuhmakHTPYRhoqLsXRnw==}
-
   '@mapbox/jsonlint-lines-primitives@2.0.3':
     resolution: {integrity: sha512-0SElaV0uMxEnxzBhhX9WTuPyUeMsAN/SS0i16tjuba4/mio63MG9khjC1a0JAiPGXAwvwm4UfHJURCN7nyudQg==}
     engines: {node: '>= 22'}
@@ -5171,20 +5164,12 @@ packages:
     resolution: {integrity: sha512-UjtGKL/bfaUTf4NfDaKCeYIvtMIJi9nr94QQB13p8uPXhSfjo931zhWNAib3YY7xkNqzVEBWzFGuB1IT5w7lGA==}
     engines: {node: '>=6'}
 
-  '@mapbox/mapbox-gl-supported@1.5.0':
-    resolution: {integrity: sha512-/PT1P6DNf7vjEEiPkVIRJkvibbqWtqnyGaBz3nfRdcxclNSnSdaLU5tfAgcD7I8Yt5i+L19s406YLl1koLnLbg==}
-    peerDependencies:
-      mapbox-gl: '>=0.32.1 <2.0.0'
-
   '@mapbox/mapbox-sdk@0.16.2':
     resolution: {integrity: sha512-II8KrqOD+neL94bCakBQfYmNSD8A3MQHyxxtZ9Hy5nZQWFacocpj2PjPvQqgctmddWZQ9GS+WBgHPVamhuM9xA==}
     engines: {node: '>=6'}
 
   '@mapbox/parse-mapbox-token@0.2.0':
     resolution: {integrity: sha512-BjeuG4sodYaoTygwXIuAWlZV6zUv4ZriYAQhXikzx+7DChycMUQ9g85E79Htat+AsBg+nStFALehlOhClYm5cQ==}
-
-  '@mapbox/point-geometry@0.1.0':
-    resolution: {integrity: sha512-6j56HdLTwWGO0fJPlrZtdU/B13q8Uwmo18Ck2GnGgN9PCFyKTZ3UbXeEdRFh18i9XQ92eH2VdtpJHpBD3aripQ==}
 
   '@mapbox/point-geometry@1.1.0':
     resolution: {integrity: sha512-YGcBz1cg4ATXDCM/71L9xveh4dynfGmcLDqufR+nQQy3fKwsAZsWd/x4621/6uJaeB9mwOHE6hPeDgXz9uViUQ==}
@@ -5193,18 +5178,27 @@ packages:
     resolution: {integrity: sha512-sn0V18O3OzW4RCcPoUIVDWvEGQaBNH9a0y5lgqrf5hUycyw1CzrhEoxV5irzrMNXKCkw1xRsZXcaVbsVZggHXA==}
     hasBin: true
 
-  '@mapbox/tiny-sdf@1.2.5':
-    resolution: {integrity: sha512-cD8A/zJlm6fdJOk6DqPUV8mcpyJkRz2x2R+/fYcWDYG3oWbG7/L7Yl/WqQ1VZCjnL9OTIMAn6c+BC5Eru4sQEw==}
+  '@mapbox/tiny-sdf@2.2.0':
+    resolution: {integrity: sha512-LVL4wgI9YAum5V+LNVQO6QgFBPw7/MIIY4XJPNsPDMrjEwcE+JfKk1LuIl8GnF197ejVdC9QdPaxrx5gfgdGXg==}
 
-  '@mapbox/unitbezier@0.0.0':
-    resolution: {integrity: sha512-HPnRdYO0WjFjRTSwO3frz1wKaU649OBFPX3Zo/2WZvuRi6zMiRGui8SnPQiQABgqCf8YikDe5t3HViTVw1WUzA==}
+  '@mapbox/unitbezier@1.0.0':
+    resolution: {integrity: sha512-fqd515fjBmANKGGsQ286E2Wvj/XvDFpGzwJxq4CI6jMQue6Oy04uCKp+JWKF00xRTmk6cEu1jPJ9p3xqH8YWqQ==}
 
-  '@mapbox/vector-tile@1.3.1':
-    resolution: {integrity: sha512-MCEddb8u44/xfQ3oD+Srl/tNcQoqTw3goGk2oLsrFxOTc3dUp+kAnby3PvAeeBYSMSjSPD1nd1AJA6W49WnoUw==}
+  '@mapbox/vector-tile@3.0.0':
+    resolution: {integrity: sha512-Qf10S1uIHMk20ri/IVBnpS+esUEkVaR5Hftmz88jTInrpmWgPGJfPe3LVjjlE77trLx8tH6qjTG7uWH9hIq/0Q==}
 
-  '@mapbox/whoots-js@3.1.0':
-    resolution: {integrity: sha512-Es6WcD0nO5l+2BOQS4uLfNPYQaNDfbot3X1XUoloz+x0mPDS3eeORZJl06HXjwBG1fOGwCRnzK88LMdxKRrd6Q==}
-    engines: {node: '>=6.0.0'}
+  '@maplibre/geojson-vt@6.1.1':
+    resolution: {integrity: sha512-FVMOcmSP/yqol45t7StApEyTL5/vmqBCuFhH9n+fFuINenhaX+YgHHIt1yJ86S8kln3uJLcMvmEU2cfn6E2eCQ==}
+
+  '@maplibre/maplibre-gl-style-spec@26.4.2':
+    resolution: {integrity: sha512-6J0vZqMZvRAJKtdWJdDGHEh1YJ2ZHG08/GOur8gCArYhO8ZkM//OXqtI2AAEz4jc2G+Wq4MfcePg8qNK5TZ4Kg==}
+    hasBin: true
+
+  '@maplibre/mlt@1.2.1':
+    resolution: {integrity: sha512-5n5dgolE2EYxwCKgx8vlwURCB8A+kyfJJyThlYimjlGgOcOe2Bhw9VxxnnHC91OC9PgHg+nVdgVPTYPkIo62vg==}
+
+  '@maplibre/vt-pbf@4.3.2':
+    resolution: {integrity: sha512-j6p0AdjvAR19Z3XaCysle7A4ZSo08tYOzxD0Y9NQylwPAkwJJeYub5b2eVucdeDh7erhv69DahoLOevDRERRUw==}
 
   '@modelcontextprotocol/sdk@1.30.0':
     resolution: {integrity: sha512-xKd8OIzlqNzcqcNumGAa6g+PW2kjD5vrpcKOnfldAUPP3j7lnqMPwlTXQm8gF+UwH72z0lqaRbjr9hqGz0eITA==}
@@ -6922,9 +6916,6 @@ packages:
   '@types/node@22.13.14':
     resolution: {integrity: sha512-Zs/Ollc1SJ8nKUAgc7ivOEdIBM8JAKgrqqUYi2J997JuKO7/tpQC+WCetQ1sypiKCQWHdvdg9wBNpUPEWZae7w==}
 
-  '@types/node@22.20.2':
-    resolution: {integrity: sha512-xlvWf4Vs9n1PEVYwP1n4vvG07M6y8WgvJ2t0vbrWTmijsIHp1cS+uJ2kMIRdY3nHZK0nCYKrPeD171+SzF4/zw==}
-
   '@types/node@26.2.0':
     resolution: {integrity: sha512-5IviulTZeRNp2vAJ514cc/HUlY5nZ9fCbq9DMyC52BrhFZACo3nI0R7qBxhQmo/d27NFe96ur/b7Wwxklda+kg==}
 
@@ -8516,9 +8507,6 @@ packages:
     resolution: {integrity: sha512-wD5oz5xibMOPHzy13CyGmogB3phdvcDaB5t0W/Nr5Z2O/agcB8YwOz6e2Lsp10pNDzBoDO9nVa3RGs/2BttpHQ==}
     engines: {node: '>= 6'}
 
-  csscolorparser@1.0.3:
-    resolution: {integrity: sha512-umPSgYwZkdFoUrH5hIq5kf0wPSXiro51nPw0j2K/c83KflkPSTBGMz6NJvMB+07VlL0y7VPo6QJcDjcgKTTm3w==}
-
   cssesc@3.0.0:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
@@ -8674,7 +8662,6 @@ packages:
 
   deep-diff@1.0.2:
     resolution: {integrity: sha512-aWS3UIVH+NPGCD1kki+DCU9Dua032iSsO43LqQpcs4R3+dVv7tX0qBGjiVHJHjplsoUM2XRO/KB92glqc68awg==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   deep-eql@5.0.2:
     resolution: {integrity: sha512-h5k/5U50IJJFpzfL6nO9jaaumfjO/f2NjK/oYB2Djzm4p9L+3T9qWpZqZ2hAbLPuuYq9wrU08WQyBTL5GbPk5Q==}
@@ -8828,8 +8815,8 @@ packages:
   duplexify@4.1.3:
     resolution: {integrity: sha512-M3BmBhwJRZsSx38lZyhE53Csddgzl5R7xGJNk7CVddZD6CcmwMCH8J+7AprIrQKH7TonKxaCjcv27Qmf+sQ+oA==}
 
-  earcut@2.2.4:
-    resolution: {integrity: sha512-/pjZsA1b4RPHbeWZQn66SWS8nZZWLQQ23oE3Eam7aroEFGEvwKAsJfZ9ytiEMycfzXWpca4FA9QIOehf7PocBQ==}
+  earcut@3.2.3:
+    resolution: {integrity: sha512-vnS4AVwp1KHAF13i1vp1/2D5evWy3k5u/iW/B81QVsUZtV8cv2tU0b2VNFlqvh4kYwrFMDdjPCfAmfyJW9y14Q==}
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
@@ -9450,9 +9437,6 @@ packages:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
     engines: {node: '>=6.9.0'}
 
-  geojson-vt@3.2.1:
-    resolution: {integrity: sha512-EvGQQi/zPrDA6zr6BnJD/YhwAkBP8nnJ9emh3EnHQKVMfg/MRVtPbMYdgVy/IaEmn4UfagD2a6fafPDL5hbtwg==}
-
   geojson@0.5.0:
     resolution: {integrity: sha512-/Bx5lEn+qRF4TfQ5aLu6NH+UKtvIv7Lhc487y/c8BdludrCTpiWf9wyI0RTyqg49MFefIAvFDuEi5Dfd/zgNxQ==}
     engines: {node: '>= 0.10'}
@@ -9484,10 +9468,6 @@ packages:
   get-stream@5.2.0:
     resolution: {integrity: sha512-nBF+F1rAZVCu/p7rjzgA+Yb4lfYXrpl7a6VmJrU8wF9I1CKvP/QwPNZHnOlwbTkY6dvtFIzFMSyQXbLoTQPRpA==}
     engines: {node: '>=8'}
-
-  get-stream@6.0.1:
-    resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
-    engines: {node: '>=10'}
 
   get-stream@9.0.1:
     resolution: {integrity: sha512-kVCxPF3vQM/N0B1PmoqVUqgHP+EeVjmZSQn+1oCRPxd2P21P2F19lIgbR3HBosbB1PUhOAoctJnfEn2GbN2eZA==}
@@ -9627,9 +9607,6 @@ packages:
   graphql@16.12.0:
     resolution: {integrity: sha512-DKKrynuQRne0PNpEbzuEdHlYOMksHSUI8Zc9Unei5gTsMNA2/vMpoMz/yKba50pejK56qj98qM0SjYxAKi13gQ==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
-
-  grid-index@1.1.0:
-    resolution: {integrity: sha512-HZRwumpOGUrHyxO5bqKZL0B0GlUpwtCAzZ42sgxUPniu33R1LSFH5yrIcBCHjkctCAh3mtWKcKd9J4vDDdeVHA==}
 
   gtoken@7.1.0:
     resolution: {integrity: sha512-pCcEwRi+TKpMlxAQObHDQ56KawURgyAf6jtIY046fJ5tIv3zDe/LEIubckAO8fj6JnAxLdmWkUfNyulQ2iKdEw==}
@@ -10208,6 +10185,9 @@ packages:
   json-stable-stringify-without-jsonify@1.0.1:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
 
+  json-stringify-pretty-compact@4.0.0:
+    resolution: {integrity: sha512-3CNZ2DnrpByG9Nqj6Xo8vqbjT4F6N+tb4Gb28ESAZjYZ5yqvmc56J+/kuIwkaAMOyblTQhUW7PxMkUb8Q36N3Q==}
+
   json-stringify-safe@5.0.1:
     resolution: {integrity: sha512-ZClg6AaYvamvYEE82d3Iyd3vSSIjQ+odgjaTzRuO3s7toCdFKczob2i0zCh7JE8kWn17yvAWhUVxvqGwUalsRA==}
 
@@ -10253,8 +10233,8 @@ packages:
   jws@4.0.1:
     resolution: {integrity: sha512-EKI/M/yqPncGUUh44xz0PxSidXFr/+r0pA70+gIYhjv+et7yxM+s29Y+VGDkovRofQem0fs7Uvf4+YmAdyRduA==}
 
-  kdbush@3.0.0:
-    resolution: {integrity: sha512-hRkd6/XW4HTsA9vjVpY9tuXJYLSlelnkTmVFu4M9/7MIYQtFcHpbugAU7UbOfjOiVSVYl2fqgBuJ32JUmRo5Ew==}
+  kdbush@4.1.0:
+    resolution: {integrity: sha512-e9vurzrXJQrFX6ckpHP3bvj5l+9CnYzkxDNnNQ1h2QTqdWsUAJgXiKdGNcOa1EY85dU8KbQ+z/FdQdB7P+9yfQ==}
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -10609,9 +10589,9 @@ packages:
   mapbox-gl@3.30.0:
     resolution: {integrity: sha512-26m0CSBszLkvbdVWf2oIZ3SjqCuResxJKEbupwwSyNwbwJAcgnMhDy2Yl5cSgtUxeamUJ1UeXRqpBmGEUVaAeQ==}
 
-  maplibre-gl@1.15.3:
-    resolution: {integrity: sha512-ZuOhLCNgp7Yl1L9uyKgZeuo7kKdewP0iWtmEXsZ/snp0JiVkR1Kl+m1rsfKT/wpm/O4zZ7mUGxF16cYbMIFDRA==}
-    engines: {node: '>=6.4.0'}
+  maplibre-gl@6.9.0:
+    resolution: {integrity: sha512-vFMwMK0Zs+NM/rOMSdtu8bO30DIexhBEVi5KC6f70/XtI+L/K2wC3LsDCAXFZ4s8ik5gAuDugfCNbpllpdJ9bA==}
+    engines: {node: '>=16.14.0', npm: '>=8.1.0'}
 
   markdown-it@14.3.1:
     resolution: {integrity: sha512-4Ej49aYTDFIQ+uBkfX8GBvJGccoARxxPep+7aWTs55ozbjQJpW9M26Fe53vnGgvLeVzva/amzjQQaQu9w0vMhA==}
@@ -11270,8 +11250,8 @@ packages:
     resolution: {integrity: sha512-//nshmD55c46FuFw26xV/xFAaB5HF9Xdap7HJBBnrKdAd6/GxDBaNA1870O79+9ueg61cZLSVc+OaFlfmObYVQ==}
     engines: {node: '>= 14.16'}
 
-  pbf@3.3.0:
-    resolution: {integrity: sha512-XDF38WCH3z5OV/OVa8GKUNtLAyneuzbCisx7QUCF8Q6Nutx0WnJrQe5O+kOtBlLfRNUws98Y58Lblp+NJG5T4Q==}
+  pbf@5.1.2:
+    resolution: {integrity: sha512-mnvGdvOrIvJOBGUEdGkrVXjN8E/VkIJCkf2eS1DH2yv82ORUlLttmDt0rWY38yYZmVwciZwBUvHM20qxBZf40w==}
     hasBin: true
 
   perfect-debounce@1.0.0:
@@ -11670,8 +11650,8 @@ packages:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
     engines: {node: '>=0.10.0'}
 
-  potpack@1.0.2:
-    resolution: {integrity: sha512-choctRBIV9EMT9WGAZHn3V7t0Z2pMQyl0EZE6pFc/6ml3ssw7Dlf/oAOvFwjm1HVsqfQN8GfeFyJ+d8tRzqueQ==}
+  potpack@2.1.0:
+    resolution: {integrity: sha512-pcaShQc1Shq0y+E7GqJqvZj8DTthWV1KeHGdi0Z6IAin2Oi3JnLCOfwnCo84qc+HAp52wT9nK9H7FAJp5a44GQ==}
 
   preact@10.12.1:
     resolution: {integrity: sha512-l8386ixSsBdbreOAkqtrwqHwdvR35ID8c3rKPa8lCWuO86dBi32QWHV4vfsZK1utLLFMvw+Z5Ad4XLkZzchscg==}
@@ -11856,8 +11836,8 @@ packages:
     resolution: {integrity: sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==}
     engines: {node: '>=10'}
 
-  quickselect@2.0.0:
-    resolution: {integrity: sha512-RKJ22hX8mHe3Y6wH/N3wCM6BWtjaxIyyUIkpHOvfFnxdI4yD4tBXEBKSbriGujF6jnSVkJrffuo6vxACiSSxIw==}
+  quickselect@3.0.0:
+    resolution: {integrity: sha512-XdjUArbK4Bm5fLLvlm5KpTFOiOThgfWWI4axAZDWg4E/0mKdZyI9tNEfds27qCi1ze/vwTR16kvmmGhRra3c2g==}
 
   radashi@12.9.2:
     resolution: {integrity: sha512-gT8CgHCDFlodBfjlrZI0/oPBxRds6HN59i4d5dnID5k8YW57W+avn2Pq8iHPE7PsmVBH7DjDIyFz4minqnVNUQ==}
@@ -12144,9 +12124,6 @@ packages:
 
   run-series@1.1.9:
     resolution: {integrity: sha512-Arc4hUN896vjkqCYrUXquBFtRZdv1PfLbTYP71efP6butxyQ0kWpiNJyAgsxscmQg1cqvHY32/UCBzXedTpU2g==}
-
-  rw@1.3.3:
-    resolution: {integrity: sha512-PdhdWy89SiZogBLaw42zdeqtRJ//zFd2PgQavcICDUgJT5oW10QCRKbJ6bg4r0/UY2M6BWd5tkxuGFRvCkgfHQ==}
 
   rxjs@7.8.2:
     resolution: {integrity: sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==}
@@ -12802,9 +12779,6 @@ packages:
   suggestions@1.7.1:
     resolution: {integrity: sha512-gl5YPAhPYl07JZ5obiD9nTZsg4SyZswAQU/NNtnYiSnFkI3+ZHuXAiEsYm7AaZ71E0LXSFaGVaulGSWN3Gd71A==}
 
-  supercluster@7.1.5:
-    resolution: {integrity: sha512-EulshI3pGUM66o6ZdH3ReiFcvHpM3vAigyK+vcxdjpJyEbIIrtbmBdY23mGgnI24uXiGFvrGq9Gkum/8U7vJWg==}
-
   superjson@2.2.6:
     resolution: {integrity: sha512-H+ue8Zo4vJmV2nRjpx86P35lzwDT3nItnIsocgumgr0hHMQ+ZGq5vrERg9kJBo5AWGmxZDhzDo+WVIJqkB0cGA==}
     engines: {node: '>=16'}
@@ -12976,8 +12950,8 @@ packages:
     resolution: {integrity: sha512-Zba82s87IFq9A9XmjiX5uZA/ARWDrB03OHlq+Vw1fSdt0I+4/Kutwy8BP4Y/y/aORMo61FQ0vIb5j44vSo5Pkg==}
     engines: {node: ^18.0.0 || >=20.0.0}
 
-  tinyqueue@2.0.3:
-    resolution: {integrity: sha512-ppJZNDuKGgxzkHihX8v9v9G5f+18gzaTfrukGrq6ueg0lmH4nqVnA2IPG0AEH3jKEk2GRJCUhDoqpoiw3PHLBA==}
+  tinyqueue@3.0.0:
+    resolution: {integrity: sha512-gRa9gwYU3ECmQYv3lslts5hxuIa90veaEcxDYuu3QGOIAEM2mOZkVHp48ANJuu1CURtRdHKUBY5Lm1tHV+sD4g==}
 
   tinyrainbow@2.0.0:
     resolution: {integrity: sha512-op4nsTR47R6p0vMUUoYl/a+ljLFVtlfaXkLQmqfLR1qHma1h/ysYk4hEXZ880bf2CYgTskvTa/e196Vd5dDQXw==}
@@ -13216,9 +13190,6 @@ packages:
 
   undici-types@6.20.0:
     resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
-
-  undici-types@6.21.0:
-    resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
   undici-types@8.3.0:
     resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
@@ -13630,9 +13601,6 @@ packages:
   vscode-uri@3.2.0:
     resolution: {integrity: sha512-m2gXo3bn0G1kT9InzMf07fTbqMbGtyckj3bH5ktLO+1Ssv+yiATZ4dhwaQv9UZWxJh6E9IFGnQyjgWVDWVBDrg==}
 
-  vt-pbf@3.1.3:
-    resolution: {integrity: sha512-2LzDFzt0mZKZ9IpVF2r69G9bXaP2Q2sArJCmcCgvfTdCCZzSyz4aCLoQyUilu37Ll56tCblIZrXFIjNUpGIlmA==}
-
   vue-component-type-helpers@2.2.12:
     resolution: {integrity: sha512-YbGqHZ5/eW4SnkPNR44mKVc6ZKQoRs/Rux1sxC6rdwXb4qpbOSYfDr9DsTHolOTGmIKgM9j141mZbBeg05R1pw==}
 
@@ -13656,7 +13624,6 @@ packages:
   vue-i18n@11.1.12:
     resolution: {integrity: sha512-BnstPj3KLHLrsqbVU2UOrPmr0+Mv11bsUZG0PyCOzsawCivk8W00GMXHeVUWIDOgNaScCuZah47CZFE+Wnl8mw==}
     engines: {node: '>= 16'}
-    deprecated: This version is NOT deprecated. Previous deprecation was a mistake.
     peerDependencies:
       vue: ^3.0.0
 
@@ -14112,7 +14079,7 @@ snapshots:
       '@aws-sdk/types': 3.974.5
       '@smithy/core': 3.33.3
       '@smithy/fetch-http-handler': 5.8.0
-      '@smithy/node-http-handler': 4.11.2
+      '@smithy/node-http-handler': 4.12.1
       '@smithy/types': 4.18.0
       tslib: 2.8.1
 
@@ -15959,13 +15926,6 @@ snapshots:
 
   '@mapbox/geojson-normalize@0.0.1': {}
 
-  '@mapbox/geojson-rewind@0.5.2':
-    dependencies:
-      get-stream: 6.0.1
-      minimist: 1.2.8
-
-  '@mapbox/geojson-types@1.0.2': {}
-
   '@mapbox/jsonlint-lines-primitives@2.0.3': {}
 
   '@mapbox/mapbox-gl-draw-static-mode@1.0.1': {}
@@ -15989,10 +15949,6 @@ snapshots:
       suggestions: 1.7.1
       xtend: 4.0.2
 
-  '@mapbox/mapbox-gl-supported@1.5.0(mapbox-gl@3.30.0)':
-    dependencies:
-      mapbox-gl: 3.30.0
-
   '@mapbox/mapbox-sdk@0.16.2':
     dependencies:
       '@mapbox/fusspot': 0.4.0
@@ -16008,23 +15964,44 @@ snapshots:
     dependencies:
       base-64: 0.1.0
 
-  '@mapbox/point-geometry@0.1.0': {}
-
   '@mapbox/point-geometry@1.1.0': {}
 
   '@mapbox/polyline@1.2.1':
     dependencies:
       meow: 9.0.0
 
-  '@mapbox/tiny-sdf@1.2.5': {}
+  '@mapbox/tiny-sdf@2.2.0': {}
 
-  '@mapbox/unitbezier@0.0.0': {}
+  '@mapbox/unitbezier@1.0.0': {}
 
-  '@mapbox/vector-tile@1.3.1':
+  '@mapbox/vector-tile@3.0.0':
     dependencies:
-      '@mapbox/point-geometry': 0.1.0
+      '@mapbox/point-geometry': 1.1.0
+      '@types/geojson': 7946.0.16
+      pbf: 5.1.2
 
-  '@mapbox/whoots-js@3.1.0': {}
+  '@maplibre/geojson-vt@6.1.1':
+    dependencies:
+      kdbush: 4.1.0
+
+  '@maplibre/maplibre-gl-style-spec@26.4.2':
+    dependencies:
+      '@mapbox/jsonlint-lines-primitives': 2.0.3
+      '@mapbox/unitbezier': 1.0.0
+      json-stringify-pretty-compact: 4.0.0
+      minimist: 1.2.8
+      quickselect: 3.0.0
+      tinyqueue: 3.0.0
+
+  '@maplibre/mlt@1.2.1':
+    dependencies:
+      '@mapbox/point-geometry': 1.1.0
+
+  '@maplibre/vt-pbf@4.3.2':
+    dependencies:
+      '@mapbox/point-geometry': 1.1.0
+      '@types/geojson': 7946.0.16
+      pbf: 5.1.2
 
   '@modelcontextprotocol/sdk@1.30.0(zod@4.1.12)':
     dependencies:
@@ -16090,9 +16067,9 @@ snapshots:
   '@napi-rs/snappy-openharmony-arm64@7.3.3':
     optional: true
 
-  '@napi-rs/snappy-wasm32-wasi@7.3.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)':
+  '@napi-rs/snappy-wasm32-wasi@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
     dependencies:
-      '@napi-rs/wasm-runtime': 1.2.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)
+      '@napi-rs/wasm-runtime': 1.2.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
     transitivePeerDependencies:
       - '@emnapi/core'
       - '@emnapi/runtime'
@@ -16407,7 +16384,7 @@ snapshots:
       debug: 4.3.7
       eventemitter2: 6.4.9
       extrareqp2: 1.0.0(debug@4.3.7)
-      ws: 8.21.0
+      ws: 8.21.3
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -16466,7 +16443,7 @@ snapshots:
   '@pnpm/npm-package-arg@2.0.0':
     dependencies:
       hosted-git-info: 4.1.0
-      semver: 7.7.3
+      semver: 7.8.5
       validate-npm-package-name: 4.0.0
 
   '@pnpm/npm-resolver@1004.4.1(@pnpm/logger@1001.0.1)':
@@ -16497,7 +16474,7 @@ snapshots:
       path-temp: 2.1.1
       ramda: '@pnpm/ramda@0.28.1'
       rename-overwrite: 6.0.6
-      semver: 7.7.3
+      semver: 7.8.5
       semver-utils: 1.1.4
       ssri: 10.0.5
       version-selector-type: 3.0.0
@@ -16514,7 +16491,7 @@ snapshots:
     dependencies:
       '@pnpm/logger': 1001.0.1
       '@pnpm/registry.types': 1000.0.1
-      semver: 7.7.3
+      semver: 7.8.5
 
   '@pnpm/registry.types@1000.0.1':
     dependencies:
@@ -16522,7 +16499,7 @@ snapshots:
 
   '@pnpm/resolve-workspace-range@1000.0.0':
     dependencies:
-      semver: 7.7.3
+      semver: 7.8.5
 
   '@pnpm/resolver-base@1005.1.0':
     dependencies:
@@ -16757,9 +16734,17 @@ snapshots:
   '@rolldown/binding-openharmony-arm64@1.2.8':
     optional: true
 
-  '@rolldown/binding-wasm32-wasi@1.0.0-beta.31(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)':
+  '@rolldown/binding-wasm32-wasi@1.0.0-beta.31(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
     dependencies:
-      '@napi-rs/wasm-runtime': 1.2.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)
+      '@napi-rs/wasm-runtime': 1.2.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
+    optional: true
+
+  '@rolldown/binding-wasm32-wasi@1.0.0-beta.45(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
+    dependencies:
+      '@napi-rs/wasm-runtime': 1.2.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
     transitivePeerDependencies:
       - '@emnapi/core'
       - '@emnapi/runtime'
@@ -17374,7 +17359,7 @@ snapshots:
 
   '@types/archiver@8.0.0':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
       '@types/readdir-glob': 1.1.5
 
   '@types/async@3.2.25': {}
@@ -17384,11 +17369,11 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@types/busboy@1.5.4':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@types/bytes@3.1.5': {}
 
@@ -17396,7 +17381,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.2.0
       '@types/keyv': 3.1.4
-      '@types/node': 22.20.2
+      '@types/node': 26.2.0
       '@types/responselike': 1.0.3
 
   '@types/caseless@0.12.5': {}
@@ -17414,7 +17399,7 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@types/content-disposition@0.5.9': {}
 
@@ -17424,7 +17409,7 @@ snapshots:
 
   '@types/cors@2.8.19':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@types/deep-diff@1.0.5': {}
 
@@ -17444,7 +17429,7 @@ snapshots:
 
   '@types/express-serve-static-core@4.19.6':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
       '@types/qs': 6.14.0
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
@@ -17461,7 +17446,7 @@ snapshots:
   '@types/fs-extra@11.0.4':
     dependencies:
       '@types/jsonfile': 6.1.4
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@types/geojson@7946.0.16': {}
 
@@ -17486,20 +17471,20 @@ snapshots:
 
   '@types/json2csv@5.0.7':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@types/jsonfile@6.1.4':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@types/jsonwebtoken@9.0.10':
     dependencies:
       '@types/ms': 2.1.0
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 22.20.2
+      '@types/node': 26.2.0
 
   '@types/lodash-es@4.17.12':
     dependencies:
@@ -17537,18 +17522,13 @@ snapshots:
     dependencies:
       undici-types: 6.20.0
 
-  '@types/node@22.20.2':
-    dependencies:
-      undici-types: 6.21.0
-
   '@types/node@26.2.0':
     dependencies:
       undici-types: 8.3.0
-    optional: true
 
   '@types/nodemailer@8.0.1':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@types/normalize-package-data@2.4.4': {}
 
@@ -17556,15 +17536,15 @@ snapshots:
 
   '@types/papaparse@5.5.0':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@types/proxy-addr@2.0.3':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@types/qrcode@1.5.6':
     dependencies:
-      '@types/node': 22.20.2
+      '@types/node': 26.2.0
 
   '@types/qs@6.14.0': {}
 
@@ -17572,17 +17552,17 @@ snapshots:
 
   '@types/readable-stream@4.0.24':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
     optional: true
 
   '@types/readdir-glob@1.1.5':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@types/request@2.48.13':
     dependencies:
       '@types/caseless': 0.12.5
-      '@types/node': 22.20.2
+      '@types/node': 26.2.0
       '@types/tough-cookie': 4.0.5
       form-data: 2.5.6
 
@@ -17590,7 +17570,7 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 22.20.2
+      '@types/node': 26.2.0
 
   '@types/sanitize-html@2.16.0':
     dependencies:
@@ -17600,22 +17580,22 @@ snapshots:
 
   '@types/send@1.2.1':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@types/serve-static@2.2.0':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@types/stats.js@0.17.4': {}
 
   '@types/stream-chain@2.1.0':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@types/stream-json@1.7.8':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
       '@types/stream-chain': 2.1.0
 
   '@types/tern@0.23.9':
@@ -17633,7 +17613,7 @@ snapshots:
 
   '@types/through@0.0.33':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@types/tmp@0.2.6': {}
 
@@ -17654,7 +17634,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
 
   '@typescript-eslint/eslint-plugin@8.66.0(@typescript-eslint/parser@8.66.0(eslint@10.8.0(jiti@2.7.0))(typescript@5.9.3))(eslint@10.8.0(jiti@2.7.0))(typescript@5.9.3)':
     dependencies:
@@ -17687,7 +17667,7 @@ snapshots:
   '@typescript-eslint/project-service@8.66.0(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.66.0(typescript@5.9.3)
-      '@typescript-eslint/types': 8.66.0
+      '@typescript-eslint/types': 8.70.0
       debug: 4.4.3(supports-color@5.5.0)
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -18271,7 +18251,7 @@ snapshots:
 
   accepts@2.0.0:
     dependencies:
-      mime-types: 3.0.1
+      mime-types: 3.0.2
       negotiator: 1.1.0
 
   acorn-import-attributes@1.9.5(acorn@8.18.0):
@@ -18636,7 +18616,7 @@ snapshots:
       http-errors: 2.0.1
       iconv-lite: 0.7.3
       on-finished: 2.4.1
-      qs: 6.15.3
+      qs: 6.16.0
       raw-body: 3.0.2
       type-is: 2.1.0
     transitivePeerDependencies:
@@ -18736,7 +18716,7 @@ snapshots:
 
   buffer-image-size@0.6.4:
     dependencies:
-      '@types/node': 22.20.2
+      '@types/node': 26.2.0
 
   buffer@5.6.0:
     dependencies:
@@ -18755,7 +18735,7 @@ snapshots:
 
   builtins@5.1.0:
     dependencies:
-      semver: 7.7.3
+      semver: 7.8.5
 
   bundle-name@4.1.0:
     dependencies:
@@ -19146,8 +19126,6 @@ snapshots:
 
   css-what@7.0.0: {}
 
-  csscolorparser@1.0.3: {}
-
   cssesc@3.0.0: {}
 
   cssnano-preset-default@7.0.17(postcss@8.5.28):
@@ -19423,7 +19401,7 @@ snapshots:
       readable-stream: 3.6.2
       stream-shift: 1.0.3
 
-  earcut@2.2.4: {}
+  earcut@3.2.3: {}
 
   eastasianwidth@0.2.0: {}
 
@@ -19921,12 +19899,12 @@ snapshots:
       fresh: 2.0.0
       http-errors: 2.0.1
       merge-descriptors: 2.0.0
-      mime-types: 3.0.1
+      mime-types: 3.0.2
       on-finished: 2.4.1
       once: 1.4.0
       parseurl: 1.3.3
       proxy-addr: 2.0.7
-      qs: 6.15.3
+      qs: 6.16.0
       range-parser: 1.3.0
       router: 2.2.0
       send: 1.2.1
@@ -20293,8 +20271,6 @@ snapshots:
 
   gensync@1.0.0-beta.2: {}
 
-  geojson-vt@3.2.1: {}
-
   geojson@0.5.0: {}
 
   get-caller-file@2.0.5: {}
@@ -20326,8 +20302,6 @@ snapshots:
   get-stream@5.2.0:
     dependencies:
       pump: 3.0.4
-
-  get-stream@6.0.1: {}
 
   get-stream@9.0.1:
     dependencies:
@@ -20483,8 +20457,6 @@ snapshots:
 
   graphql@16.12.0: {}
 
-  grid-index@1.1.0: {}
-
   gtoken@7.1.0(encoding@0.1.13):
     dependencies:
       gaxios: 6.7.1(encoding@0.1.13)
@@ -20495,7 +20467,7 @@ snapshots:
 
   happy-dom@20.10.6:
     dependencies:
-      '@types/node': 22.20.2
+      '@types/node': 26.2.0
       '@types/whatwg-mimetype': 3.0.2
       '@types/ws': 8.18.1
       buffer-image-size: 0.6.4
@@ -21094,6 +21066,8 @@ snapshots:
 
   json-stable-stringify-without-jsonify@1.0.1: {}
 
+  json-stringify-pretty-compact@4.0.0: {}
+
   json-stringify-safe@5.0.1: {}
 
   json-to-graphql-query@2.3.0: {}
@@ -21154,7 +21128,7 @@ snapshots:
       jwa: 2.0.1
       safe-buffer: 5.2.1
 
-  kdbush@3.0.0: {}
+  kdbush@4.1.0: {}
 
   keyv@4.5.4:
     dependencies:
@@ -21437,7 +21411,7 @@ snapshots:
   mailtrap@4.9.0(@types/nodemailer@8.0.1)(nodemailer@10.0.1):
     dependencies:
       axios: 1.18.1
-      qs: 6.15.3
+      qs: 6.16.0
     optionalDependencies:
       '@types/nodemailer': 8.0.1
       nodemailer: 10.0.1
@@ -21460,33 +21434,26 @@ snapshots:
 
   mapbox-gl@3.30.0: {}
 
-  maplibre-gl@1.15.3(mapbox-gl@3.30.0):
+  maplibre-gl@6.9.0:
     dependencies:
-      '@mapbox/geojson-rewind': 0.5.2
-      '@mapbox/geojson-types': 1.0.2
-      '@mapbox/jsonlint-lines-primitives': 2.0.3
-      '@mapbox/mapbox-gl-supported': 1.5.0(mapbox-gl@3.30.0)
-      '@mapbox/point-geometry': 0.1.0
-      '@mapbox/tiny-sdf': 1.2.5
-      '@mapbox/unitbezier': 0.0.0
-      '@mapbox/vector-tile': 1.3.1
-      '@mapbox/whoots-js': 3.1.0
-      csscolorparser: 1.0.3
-      earcut: 2.2.4
-      geojson-vt: 3.2.1
+      '@mapbox/point-geometry': 1.1.0
+      '@mapbox/tiny-sdf': 2.2.0
+      '@mapbox/unitbezier': 1.0.0
+      '@mapbox/vector-tile': 3.0.0
+      '@maplibre/geojson-vt': 6.1.1
+      '@maplibre/maplibre-gl-style-spec': 26.4.2
+      '@maplibre/mlt': 1.2.1
+      '@maplibre/vt-pbf': 4.3.2
+      '@types/geojson': 7946.0.16
+      bidi-js: 1.1.0
+      earcut: 3.2.3
       gl-matrix: 3.4.4
-      grid-index: 1.1.0
-      minimist: 1.2.8
+      kdbush: 4.1.0
       murmurhash-js: 1.0.0
-      pbf: 3.3.0
-      potpack: 1.0.2
-      quickselect: 2.0.0
-      rw: 1.3.3
-      supercluster: 7.1.5
-      tinyqueue: 2.0.3
-      vt-pbf: 3.1.3
-    transitivePeerDependencies:
-      - mapbox-gl
+      pbf: 5.1.2
+      potpack: 2.1.0
+      quickselect: 3.0.0
+      tinyqueue: 3.0.0
 
   markdown-it@14.3.1:
     dependencies:
@@ -21874,7 +21841,7 @@ snapshots:
     dependencies:
       hosted-git-info: 4.1.0
       is-core-module: 2.16.2
-      semver: 7.7.3
+      semver: 7.8.5
       validate-npm-package-license: 3.0.4
 
   normalize-path@3.0.0: {}
@@ -22164,9 +22131,8 @@ snapshots:
 
   pathval@2.0.1: {}
 
-  pbf@3.3.0:
+  pbf@5.1.2:
     dependencies:
-      ieee754: 1.2.1
       resolve-protobuf-schema: 2.1.0
 
   perfect-debounce@1.0.0: {}
@@ -22651,7 +22617,7 @@ snapshots:
       xtend: 4.0.2
     optional: true
 
-  potpack@1.0.2: {}
+  potpack@2.1.0: {}
 
   preact@10.12.1: {}
 
@@ -22799,7 +22765,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.2
-      '@types/node': 22.20.2
+      '@types/node': 26.2.0
       long: 5.3.2
 
   protocol-buffers-schema@3.6.1: {}
@@ -22877,7 +22843,7 @@ snapshots:
 
   quick-lru@5.1.1: {}
 
-  quickselect@2.0.0: {}
+  quickselect@3.0.0: {}
 
   radashi@12.9.2: {}
 
@@ -23128,6 +23094,24 @@ snapshots:
       glob: 11.1.0
       package-json-from-dist: 1.0.1
 
+  rolldown-plugin-dts@0.17.8(rolldown@1.0.0-beta.45(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3)):
+    dependencies:
+      '@babel/generator': 7.29.8
+      '@babel/parser': 7.29.8
+      '@babel/types': 7.29.8
+      ast-kit: 2.2.0
+      birpc: 2.9.0
+      dts-resolver: 2.1.3
+      get-tsconfig: 4.14.3
+      magic-string: 0.30.21
+      obug: 2.2.1
+      rolldown: 1.0.0-beta.45(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
+    optionalDependencies:
+      typescript: 5.9.3
+      vue-tsc: 3.1.8(typescript@5.9.3)
+    transitivePeerDependencies:
+      - oxc-resolver
+
   rolldown-plugin-dts@0.17.8(rolldown@1.0.0-beta.45(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3))(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3)):
     dependencies:
       '@babel/generator': 7.29.8
@@ -23146,7 +23130,7 @@ snapshots:
     transitivePeerDependencies:
       - oxc-resolver
 
-  rolldown@1.0.0-beta.31(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3):
+  rolldown@1.0.0-beta.31(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0):
     dependencies:
       '@oxc-project/runtime': 0.80.0
       '@oxc-project/types': 0.80.0
@@ -23163,10 +23147,33 @@ snapshots:
       '@rolldown/binding-linux-arm64-ohos': 1.0.0-beta.31
       '@rolldown/binding-linux-x64-gnu': 1.0.0-beta.31
       '@rolldown/binding-linux-x64-musl': 1.0.0-beta.31
-      '@rolldown/binding-wasm32-wasi': 1.0.0-beta.31(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)
+      '@rolldown/binding-wasm32-wasi': 1.0.0-beta.31(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
       '@rolldown/binding-win32-arm64-msvc': 1.0.0-beta.31
       '@rolldown/binding-win32-ia32-msvc': 1.0.0-beta.31
       '@rolldown/binding-win32-x64-msvc': 1.0.0-beta.31
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
+
+  rolldown@1.0.0-beta.45(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0):
+    dependencies:
+      '@oxc-project/types': 0.95.0
+      '@rolldown/pluginutils': 1.0.0-beta.45
+    optionalDependencies:
+      '@rolldown/binding-android-arm64': 1.0.0-beta.45
+      '@rolldown/binding-darwin-arm64': 1.0.0-beta.45
+      '@rolldown/binding-darwin-x64': 1.0.0-beta.45
+      '@rolldown/binding-freebsd-x64': 1.0.0-beta.45
+      '@rolldown/binding-linux-arm-gnueabihf': 1.0.0-beta.45
+      '@rolldown/binding-linux-arm64-gnu': 1.0.0-beta.45
+      '@rolldown/binding-linux-arm64-musl': 1.0.0-beta.45
+      '@rolldown/binding-linux-x64-gnu': 1.0.0-beta.45
+      '@rolldown/binding-linux-x64-musl': 1.0.0-beta.45
+      '@rolldown/binding-openharmony-arm64': 1.0.0-beta.45
+      '@rolldown/binding-wasm32-wasi': 1.0.0-beta.45(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
+      '@rolldown/binding-win32-arm64-msvc': 1.0.0-beta.45
+      '@rolldown/binding-win32-ia32-msvc': 1.0.0-beta.45
+      '@rolldown/binding-win32-x64-msvc': 1.0.0-beta.45
     transitivePeerDependencies:
       - '@emnapi/core'
       - '@emnapi/runtime'
@@ -23273,7 +23280,7 @@ snapshots:
       '@rollup/pluginutils': 5.4.0(rollup@4.59.0)
       cosmiconfig: 8.3.6(typescript@5.9.3)
       cssnano: 7.1.9(postcss@8.5.28)
-      fs-extra: 11.3.2
+      fs-extra: 11.4.0
       icss-utils: 5.1.0(postcss@8.5.28)
       mime-types: 2.1.35
       p-queue: 8.1.1
@@ -23344,8 +23351,6 @@ snapshots:
       queue-microtask: 1.2.3
 
   run-series@1.1.9: {}
-
-  rw@1.3.3: {}
 
   rxjs@7.8.2:
     dependencies:
@@ -23773,7 +23778,7 @@ snapshots:
 
   smob@1.6.2: {}
 
-  snappy@7.3.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3):
+  snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0):
     optionalDependencies:
       '@napi-rs/snappy-android-arm-eabi': 7.3.3
       '@napi-rs/snappy-android-arm64': 7.3.3
@@ -23789,7 +23794,7 @@ snapshots:
       '@napi-rs/snappy-linux-x64-gnu': 7.3.3
       '@napi-rs/snappy-linux-x64-musl': 7.3.3
       '@napi-rs/snappy-openharmony-arm64': 7.3.3
-      '@napi-rs/snappy-wasm32-wasi': 7.3.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)
+      '@napi-rs/snappy-wasm32-wasi': 7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
       '@napi-rs/snappy-win32-arm64-msvc': 7.3.3
       '@napi-rs/snappy-win32-ia32-msvc': 7.3.3
       '@napi-rs/snappy-win32-x64-msvc': 7.3.3
@@ -24159,10 +24164,6 @@ snapshots:
       fuzzy: 0.1.3
       xtend: 4.0.2
 
-  supercluster@7.1.5:
-    dependencies:
-      kdbush: 3.0.0
-
   superjson@2.2.6:
     dependencies:
       copy-anything: 4.1.0
@@ -24284,7 +24285,7 @@ snapshots:
       '@azure/identity': 4.13.2
       '@azure/keyvault-keys': 4.10.2
       '@js-joda/core': 5.7.0
-      '@types/node': 22.13.14
+      '@types/node': 26.2.0
       bl: 6.1.6
       iconv-lite: 0.6.3
       js-md4: 0.3.2
@@ -24368,7 +24369,7 @@ snapshots:
 
   tinypool@1.1.1: {}
 
-  tinyqueue@2.0.3: {}
+  tinyqueue@3.0.0: {}
 
   tinyrainbow@2.0.0: {}
 
@@ -24423,6 +24424,35 @@ snapshots:
   tsconfck@3.1.6(typescript@5.9.3):
     optionalDependencies:
       typescript: 5.9.3
+
+  tsdown@0.15.11(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3)):
+    dependencies:
+      ansis: 4.3.1
+      cac: 6.7.14
+      chokidar: 4.0.3
+      debug: 4.4.3(supports-color@5.5.0)
+      diff: 8.0.4
+      empathic: 2.0.1
+      hookable: 5.5.3
+      rolldown: 1.0.0-beta.45(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
+      rolldown-plugin-dts: 0.17.8(rolldown@1.0.0-beta.45(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
+      semver: 7.8.5
+      tinyexec: 1.3.1
+      tinyglobby: 0.2.17
+      tree-kill: 1.2.2
+      unconfig: 7.5.0
+      unrun: 0.2.39(synckit@0.11.11)
+    optionalDependencies:
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
+      - '@ts-macro/tsc'
+      - '@typescript/native-preview'
+      - oxc-resolver
+      - supports-color
+      - synckit
+      - vue-tsc
 
   tsdown@0.15.11(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(synckit@0.11.11)(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3)):
     dependencies:
@@ -24514,7 +24544,7 @@ snapshots:
     dependencies:
       content-type: 2.1.0
       media-typer: 1.1.1
-      mime-types: 3.0.1
+      mime-types: 3.0.2
 
   typebox@1.1.37: {}
 
@@ -24614,10 +24644,7 @@ snapshots:
 
   undici-types@6.20.0: {}
 
-  undici-types@6.21.0: {}
-
-  undici-types@8.3.0:
-    optional: true
+  undici-types@8.3.0: {}
 
   undici@6.28.1:
     optional: true
@@ -24816,7 +24843,7 @@ snapshots:
 
   version-selector-type@3.0.0:
     dependencies:
-      semver: 7.7.3
+      semver: 7.8.5
 
   vite-hot-client@2.2.0(vite@8.1.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.51.2)(tsx@4.22.4)(yaml@2.9.0)):
     dependencies:
@@ -25129,12 +25156,6 @@ snapshots:
 
   vscode-uri@3.2.0: {}
 
-  vt-pbf@3.1.3:
-    dependencies:
-      '@mapbox/point-geometry': 0.1.0
-      '@mapbox/vector-tile': 1.3.1
-      pbf: 3.3.0
-
   vue-component-type-helpers@2.2.12: {}
 
   vue-demi@0.14.10(vue@3.5.24(typescript@5.9.3)):
@@ -25337,7 +25358,7 @@ snapshots:
     dependencies:
       ansi-styles: 6.2.3
       string-width: 7.2.0
-      strip-ansi: 7.1.2
+      strip-ansi: 7.2.0
 
   wrappy@1.0.2: {}
 
