@@ -273,9 +273,9 @@ export class LicenseManager {
 	public async activate(key: string) {
 		this.assertCanManageLicense();
 
-		// Keys cannot be directly activated if one is already active, must go via update route
+		// If a key is already present, treat as an update
 		if (this.licenseKey) {
-			throw new ForbiddenError({ reason: 'A license was already activated' });
+			return this.update(key);
 		}
 
 		const settingsService = new SettingsService({ schema: await getSchema() });
