@@ -911,7 +911,7 @@ function usePublishActions() {
 				return;
 			}
 
-			const newItemKey = await publishVersion(version.id, { mainHash: version.hash });
+			const newItemKey = await publishVersion(version.id, { mainHash: version.hash! });
 			if (!newItemKey) return;
 
 			if (deleteVersionsAllowed.value) await deleteVersion(version.id);

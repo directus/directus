@@ -47,7 +47,7 @@ export async function setup(project: TestProject) {
 			maildev: true,
 			redis: true,
 			saml: true,
-			minio: true,
+			rustfs: true,
 			license: true,
 		},
 		cache: false,
