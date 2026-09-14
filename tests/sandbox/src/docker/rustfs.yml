@@ -4,6 +4,7 @@ services:
     image: rustfs/rustfs:1.0.0-rc.6
     ports:
       - ${RUSTFS_PORT}:9000
+      # Console, served at /rustfs/console/
       - 8882:9001
     environment:
       RUSTFS_ACCESS_KEY: directus
@@ -33,19 +34,10 @@ services:
     healthcheck:
       # Only reports healthy once the bucket exists, so `--wait` gates on it
       test:
-        [
-          'CMD',
-          'curl',
-          '-fsS',
-          '-o',
-          '/dev/null',
-          '-I',
-          '--aws-sigv4',
-          'aws:amz:us-east-1:s3',
-          '--user',
-          'directus:rustfssecret',
-          'http://rustfs:9000/directus-blackbox-test',
-        ]
+        - CMD-SHELL
+        - >-
+          curl -fsS -o /dev/null -I --aws-sigv4 'aws:amz:us-east-1:s3' --user 'directus:rustfssecret'
+          http://rustfs:9000/directus-blackbox-test
       interval: 1s
       timeout: 5s
       retries: 60
