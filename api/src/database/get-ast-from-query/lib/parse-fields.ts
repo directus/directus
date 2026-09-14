@@ -1,15 +1,16 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Query, Relation, SchemaOverview } from '@directus/types';
-import { getRelation, getRelationType, parseFilterFunctionPath } from '@directus/utils';
+import { getRelation, getRelationType, isCollectionActive, parseFilterFunctionPath } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
+import { assertCollectionActive } from '../../../permissions/modules/assert-collection-active/assert-collection-active.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../../types/index.js';
 import { splitFieldPath } from '../../../utils/split-field-path.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
-import { getRelatedCollection } from '../utils/get-related-collection.js';
+import { getRelatedCollectionFromRelation } from '../utils/get-related-collection.js';
 import { convertWildcards } from './convert-wildcards.js';
 
 interface CollectionScope {
@@ -196,10 +197,11 @@ export async function parseFields(
 			fieldName = options.query.alias[fieldKey]!;
 		}
 
-		const relatedCollection = getRelatedCollection(context.schema, options.parentCollection, fieldName);
 		const relation = getRelation(context.schema.relations, options.parentCollection, fieldName);
 
 		if (!relation) continue;
+
+		const relatedCollection = getRelatedCollectionFromRelation(relation, options.parentCollection, fieldName);
 
 		const relationType = getRelationType({
 			relation,
@@ -213,7 +215,23 @@ export async function parseFields(
 		let child: NestedCollectionNode | null = null;
 
 		if (relationType === 'a2o') {
-			let allowedCollections = relation.meta!.one_allowed_collections!;
+			// Scoped fields `item:collection` are object with the collection as key.
+			// Explicitly requested inactive collections get rejected.
+			if (!Array.isArray(nestedFields)) {
+				for (const scopedCollection of Object.keys(nestedFields)) {
+					// Skip non-existent collections
+					if (scopedCollection in context.schema.collections === false) continue;
+
+					await assertCollectionActive(
+						{ accountability: options.accountability, action: 'read', collection: scopedCollection },
+						context,
+					);
+				}
+			}
+
+			let allowedCollections = relation.meta!.one_allowed_collections!.filter((collection) =>
+				isCollectionActive(context.schema.collections[collection]),
+			);
 
 			if (options.accountability && options.accountability.admin === false && policies) {
 				const permissions = await fetchPermissions(
