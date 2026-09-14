@@ -133,7 +133,7 @@ export class SubscribeHandler {
 
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
-				handleWebSocketError(client, err, { type: 'subscribe' });
+				handleWebSocketError(client, err, { type: 'subscribe', uid: subscription.uid });
 			}
 		}
 	}
