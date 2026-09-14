@@ -45,7 +45,7 @@ const { t } = useI18n();
 const router = useRouter();
 
 const licenseStore = useLicenseStore();
-const { info, pendingResolution } = storeToRefs(licenseStore);
+const { info, pendingResolution, downgradeReason } = storeToRefs(licenseStore);
 
 const userStore = useUserStore();
 
@@ -58,7 +58,7 @@ const scope = computed<ResolveScope>(() => {
 	if (info.value.status === 'locked') return 'locked';
 
 	// Downgraded to core (within limits): informational acknowledgement.
-	if (info.value.downgrade_reason != null) return 'no_resolution';
+	if (downgradeReason.value !== null) return 'no_resolution';
 
 	return 'manual';
 });
@@ -75,7 +75,7 @@ const graceCountdown = computed<{ days: number; date: string } | null>(() => {
 type TitleKey = ResolveScope | InvalidLicenseStatus;
 
 const title = computed<string>(() => {
-	const reason = info.value?.downgrade_reason;
+	const reason = downgradeReason.value;
 	const key: TitleKey = reason && (scope.value === 'locked' || scope.value === 'no_resolution') ? reason : scope.value;
 	return t(`licensing.resolve_title_${key}`);
 });

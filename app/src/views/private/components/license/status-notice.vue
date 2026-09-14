@@ -10,7 +10,9 @@ import { useUserStore } from '@/stores/user';
 import { getDirectusUrlWithUtm } from '@/utils/directus-url';
 
 const serverStore = useServerStore();
-const { gracePeriodDaysRemaining, isLocked, isCoreGrace, isCore, graceDeadline } = storeToRefs(useLicenseStore());
+
+const { gracePeriodDaysRemaining, isLocked, isCoreGrace, isCore, graceDeadline, warningReason } =
+	storeToRefs(useLicenseStore());
 
 const formattedCoreGraceDate = computed(() =>
 	graceDeadline.value
@@ -25,6 +27,8 @@ const show = computed(
 );
 
 const showOig = computed(() => isAdmin.value && isCore.value && !isLocked.value);
+
+const showWarning = computed(() => isAdmin.value && warningReason.value !== null);
 
 const severity = computed(() =>
 	gracePeriodDaysRemaining.value !== null && gracePeriodDaysRemaining.value <= GRACE_DANGER_THRESHOLD_DAYS
@@ -44,6 +48,9 @@ const oigUrl = computed(() =>
 </script>
 
 <template>
+	<VNotice v-if="showWarning" type="danger" class="status-notice">
+		{{ $t(`license.warning_status_notice.${warningReason}`) }}
+	</VNotice>
 	<VNotice v-if="show && isLocked" type="danger" class="status-notice">
 		<I18nT keypath="license.locked_status_notice" tag="span">
 			<template #contactSupport>
