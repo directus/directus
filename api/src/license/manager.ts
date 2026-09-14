@@ -42,9 +42,9 @@ import { getActiveSeats } from './entitlements/lib/seats.js';
 import { EntitlementManager, getEntitlementManager } from './entitlements/manager.js';
 import { computeBootAction, type LicenseBootAction } from './utils/compute-boot-action.js';
 import { computeLicenseStatus } from './utils/compute-license-status.js';
+import { handleLicenseError, isLicenseInactive, isLicenseInvalid, toReason } from './utils/errors.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
-import { handleLicenseError } from './utils/handle-license-error.js';
 import { useRPC } from './utils/use-rpc.js';
 
 const env = useEnv();
@@ -53,8 +53,15 @@ const LICENSE_CHANNEL = `license`;
 let licenseCache: Directus.License | null;
 
 type LicenseStore = {
-	invalidStatus: InvalidLicenseStatus | undefined;
+	invalidReason: InvalidLicenseStatus | undefined;
 };
+
+type SyncLicenseOptions =
+	| {
+			kind?: 'downgrade' | 'clear-token';
+			invalidReason?: InvalidLicenseStatus;
+	  }
+	| { kind?: 'clear-status'; invalidReason?: undefined };
 
 let licenseManager: LicenseManager | undefined;
 
@@ -152,7 +159,11 @@ export class LicenseManager {
 
 				// The key is kept so a renewed or reinstated license is picked back up on the next
 				// boot. Ensures a transient outage wont clear a valid key.
-				await this.syncLicense({ kind: 'clear-token' });
+				await this.syncLicense({
+					kind: 'clear-token',
+					invalidReason: toReason(error),
+				});
+
 				return;
 			}
 
@@ -193,8 +204,8 @@ export class LicenseManager {
 		return computeLicenseStatus(this.source === null ? null : await this.getLicense());
 	}
 
-	public async getDowngradeReason(): Promise<InvalidLicenseStatus | null> {
-		const invalidStatus = await this.store(async (store) => store.get('invalidStatus'));
+	public async getInvalidReason(): Promise<InvalidLicenseStatus | null> {
+		const invalidStatus = await this.store(async (store) => store.get('invalidReason'));
 		return invalidStatus ?? null;
 	}
 
@@ -397,11 +408,12 @@ export class LicenseManager {
 			license = await this.verify(token);
 
 			if (!license) {
-				// TODO a token that will not verify does not invalidate the key, only token should be cleared
-				await this.syncLicense({ kind: 'downgrade', reason: 'expired' });
+				await this.syncLicense({ kind: 'clear-token', invalidReason: 'verification' });
 				return;
 			}
 		}
+
+		const syncLicenseState: SyncLicenseOptions = {};
 
 		if (license?.meta.offline === false) {
 			if (!key) {
@@ -437,20 +449,18 @@ export class LicenseManager {
 			} catch (err) {
 				logger.error(err);
 
-				if (err instanceof LicenseServerError) {
-					if (err.code === 'LICENSE_EXPIRED') {
-						// TODO expired is potentially recoverable, so the key should survive
-						await this.syncLicense({ kind: 'downgrade', reason: 'expired' });
-					} else if (err.code === 'LICENSE_CANCELED') {
-						await this.syncLicense({ kind: 'downgrade', reason: 'canceled' });
-					} else if (err.code === 'LICENSE_SUSPENDED') {
-						await this.syncLicense({ kind: 'downgrade', reason: 'suspended' });
-					}
+				const reason = toReason(err);
+
+				// Expose out non transient license statuses
+				if (isLicenseInvalid(reason)) {
+					if (isLicenseInactive(reason)) syncLicenseState.kind = 'clear-token';
+
+					syncLicenseState.invalidReason = reason;
 				}
 			}
 		}
 
-		await this.syncLicense();
+		await this.syncLicense(syncLicenseState);
 	}
 
 	public async billingPortalUrl() {
@@ -708,39 +718,29 @@ export class LicenseManager {
 		}
 
 		if (await entitlementManager.checkAll()) {
+			// Deliberately does not propagate, every node already has license state synced
 			await this.syncLicense({ kind: 'clear-status' });
 		}
 	}
 
 	/**
 	 * Apply a state transition and propagate to all instances.
-	 *
-	 *  - { kind: 'downgrade', reason? }: clear key + token, drop to core, propagate.
-	 *  - { kind: 'clear-token' }: clear only the token; key survives for re-activation. Marker preserved (server's verdict still applies). Propagates.
-	 *  - { kind: 'clear-status' }: clear the invalidStatus marker only. Redis-only, does NOT propagate.
 	 */
-	private async syncLicense(
-		options?: { kind: 'downgrade'; reason?: InvalidLicenseStatus } | { kind: 'clear-token' } | { kind: 'clear-status' },
-	) {
-		if (options?.kind !== 'downgrade' || (options?.kind === 'downgrade' && options.reason === undefined)) {
-			await this.store(async (store) => store.delete('invalidStatus'));
-
-			if (options?.kind === 'clear-status') {
-				return;
-			}
+	private async syncLicense(options?: SyncLicenseOptions) {
+		if (options?.invalidReason) {
+			await this.store(async (store) => store.set('invalidReason', options.invalidReason));
+		} else {
+			await this.store(async (store) => store.delete('invalidReason'));
 		}
+
+		if (options?.kind === 'clear-status') return;
 
 		if (options?.kind === 'downgrade') {
 			const settingsService = new SettingsService({ schema: await getSchema() });
 			await settingsService.upsertSingleton({ license_key: null, license_token: null });
-			this.source = null;
 
 			// Stop the periodic check
 			await stopLicenseCheck();
-
-			if (options.reason) {
-				await this.store(async (store) => store.set('invalidStatus', options.reason));
-			}
 		} else if (options?.kind === 'clear-token') {
 			const settingsService = new SettingsService({ schema: await getSchema() });
 			await settingsService.upsertSingleton({ license_token: null });
