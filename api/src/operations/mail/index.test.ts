@@ -190,7 +190,7 @@ describe('Operations / Mail', () => {
 		);
 	});
 
-	test('coerce a non-string fromName from a whole-field mustache into the sender name', async () => {
+	test('omit sender when a whole-field mustache resolves fromName to a non-string', async () => {
 		const options = {
 			to: 'test@example.com',
 			subject: 'Test',
@@ -202,11 +202,7 @@ describe('Operations / Mail', () => {
 
 		await expect(config.handler(options, mockOperationContext)).resolves.not.toThrow();
 
-		expect(mailServiceSendSpy).toHaveBeenCalledWith(
-			expect.objectContaining({
-				from: { name: '42', address: 'no-reply@example.com' },
-			}),
-		);
+		expect(mailServiceSendSpy).toHaveBeenCalledWith(expect.not.objectContaining({ from: expect.anything() }));
 	});
 
 	test.each([

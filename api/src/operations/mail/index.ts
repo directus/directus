@@ -35,13 +35,7 @@ export default defineOperationApi<Options>({
 		const mailService = new MailService({ schema: await getSchema({ database }), accountability, knex: database });
 		const mailObject: EmailOptions = { to, subject, cc, bcc, replyTo };
 
-		let trimmedFromName: string | undefined;
-
-		if (typeof fromName === 'string') {
-			trimmedFromName = fromName.trim();
-		} else if (fromName != null) {
-			trimmedFromName = String(fromName);
-		}
+		const trimmedFromName = typeof fromName === 'string' ? fromName.trim() : undefined;
 
 		// An incomplete `from` object is rejected by the mail service, so only set it when there's a name to use
 		if (trimmedFromName) {
