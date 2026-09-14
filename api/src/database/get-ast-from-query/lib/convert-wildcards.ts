@@ -114,16 +114,13 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 				);
 			}
 
-			if (options.backlink === false) {
-				relationalFields = relationalFields.filter(
-					(relationField) =>
-						getRelation(context.schema.relations, options.collection, relationField) !== context.parentRelation,
-				);
-			}
+			relationalFields = relationalFields.filter((relationField) => {
+				const relation = getRelation(context.schema.relations, options.collection, relationField);
 
-			relationalFields = relationalFields.filter((relationField) =>
-				isRelationTraversable(context.schema, options.collection, relationField),
-			);
+				if (options.backlink === false && relation === context.parentRelation) return false;
+
+				return isRelationTraversable(context.schema, options.collection, relationField, relation);
+			});
 
 			const nonRelationalFields = allowedFields.filter((fieldKey) => relationalFields.includes(fieldKey) === false);
 
