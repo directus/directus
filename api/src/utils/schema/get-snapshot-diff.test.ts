@@ -81,7 +81,6 @@ describe('getSnapshotDiff', () => {
 			expect(result.collections[0]!.collection).toBe('posts');
 		});
 
-
 		test.each([
 			{
 				name: 'addition',
@@ -252,7 +251,6 @@ describe('getSnapshotDiff', () => {
 			expect(result.fields[0]!.field).toBe('title');
 			expect(result.fields[0]!.diff).toBeDefined();
 		});
-
 
 		test.each([
 			{

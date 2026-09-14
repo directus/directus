@@ -218,7 +218,6 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot, options?: Ge
 	return diffedSnapshot;
 }
 
-
 function getSnapshotItemDiff<T extends { meta?: unknown }>(
 	current: T | undefined,
 	after: T | undefined,
