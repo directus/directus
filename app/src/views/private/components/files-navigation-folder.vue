@@ -231,7 +231,7 @@ async function downloadFolder() {
 			</VList>
 		</VMenu>
 
-		<VDialog v-model="renameActive" persistent @esc="renameActive = false" @apply="renameSave">
+		<VDialog v-model="renameActive" persistent apply-shortcut="meta+s" @esc="renameActive = false" @apply="renameSave">
 			<VCard>
 				<VCardTitle>{{ $t('rename_folder') }}</VCardTitle>
 				<VCardText>
@@ -246,7 +246,7 @@ async function downloadFolder() {
 			</VCard>
 		</VDialog>
 
-		<VDialog v-model="moveActive" persistent @esc="moveActive = false" @apply="moveSave">
+		<VDialog v-model="moveActive" persistent apply-shortcut="meta+s" @esc="moveActive = false" @apply="moveSave">
 			<VCard>
 				<VCardTitle>{{ $t('move_to_folder') }}</VCardTitle>
 				<VCardText>

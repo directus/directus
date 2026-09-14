@@ -630,8 +630,8 @@ import_data_errors: Import Error
 import_data_error: This file's data structure doesn't match the collection.
 import_data_validation_errors_notice: 'The following rows have invalid values:'
 import_data_error_row: 'Row {rows}{field}:'
-import_flow: Import Flow
 export_flow: Export Flow
+export_flows: Export Flows
 flow_import_input_placeholder: JSON...
 flow_import_success: Flow imported successfully.
 flow_import_failed: Couldn't import Flow
@@ -1141,6 +1141,7 @@ trigger_flow_success: Flow "{flow}" triggered successfully
 field_name_placeholder: Enter field name...
 field_key_placeholder: Enter field key...
 trigger: Trigger
+trigger_type: Trigger Type
 trigger_options: Trigger Options
 view_trigger: View Trigger
 create_trigger: Create Trigger
@@ -1634,7 +1635,6 @@ no_oauth_clients: 'No OAuth clients have been registered yet.'
 revoke_client: 'Revoke Client'
 revoke_client_confirm:
   'Are you sure you want to revoke this client? All associated tokens and sessions will be deleted.'
-settings_flows: Flows
 settings_system_logs: System Logs
 settings_presets: Bookmarks
 settings_translations: Translations

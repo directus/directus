@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { Field, Filter, FlowRaw, Item } from '@directus/types';
+import { getDateTimeFormatted } from '@directus/utils';
 import { StorageSerializers, useLocalStorage } from '@vueuse/core';
 import { saveAs } from 'file-saver';
 import { isObject, sortBy } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { RouterView } from 'vue-router';
-import SettingsNavigation from '../../components/navigation.vue';
+import { RouterLink, RouterView } from 'vue-router';
+import FlowsNavigation from './components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
-import FlowFolderSidebar from './flow-folder-sidebar.vue';
 import { createFlowExport, createFlowImport, FlowImportError, parseFlowExport } from './flow-import-export';
+import { navigateToFolder } from './navigate-to-folder';
+import { getTriggers } from './triggers';
 import { useDuplicate } from './use-duplicate';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
@@ -26,13 +28,13 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
-import VRemove from '@/components/v-remove.vue';
 import { Header, Sort } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
 import { useFolders } from '@/composables/use-folders';
 import { useMoveToFolder } from '@/composables/use-move-to-folder';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vue';
+import DisplayLabels from '@/displays/labels/labels.vue';
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { useLicenseStore } from '@/stores/license';
@@ -41,12 +43,11 @@ import { extractErrorCode } from '@/utils/extract-error-code';
 import { filterItems } from '@/utils/filter-items';
 import { notify } from '@/utils/notify';
 import { parseFilter } from '@/utils/parse-filter';
-import { readableMimeType } from '@/utils/readable-mime-type';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import { PrivateView } from '@/views/private';
+import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
 import AddFolder from '@/views/private/components/add-folder.vue';
+import BasicImportSidebarDetail from '@/views/private/components/basic-import-sidebar-detail.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
 import EntitlementRemaining from '@/views/private/components/license/entitlement-remaining.vue';
@@ -59,14 +60,10 @@ const props = defineProps<{
 	folder?: string;
 }>();
 
-const { createAllowed } = useCollectionPermissions('directus_flows');
+const { createAllowed, deleteAllowed } = useCollectionPermissions('directus_flows');
 const { createAllowed: operationsCreateAllowed } = useCollectionPermissions('directus_operations');
 
-const {
-	createAllowed: createFolderAllowed,
-	updateAllowed: updateFolderAllowed,
-	deleteAllowed: deleteFolderAllowed,
-} = useCollectionPermissions('directus_folders');
+const { createAllowed: createFolderAllowed } = useCollectionPermissions('directus_folders');
 
 const licenseStore = useLicenseStore();
 
@@ -121,9 +118,25 @@ const tableHeaders = ref<Header[]>([
 		description: null,
 	},
 	{
+		text: t('trigger_type'),
+		value: 'trigger',
+		width: 180,
+		sortable: true,
+		align: 'left',
+		description: null,
+	},
+	{
 		text: t('name'),
 		value: 'name',
 		width: 240,
+		sortable: true,
+		align: 'left',
+		description: null,
+	},
+	{
+		text: t('folder'),
+		value: 'folder',
+		width: 180,
 		sortable: true,
 		align: 'left',
 		description: null,
@@ -140,6 +153,19 @@ const tableHeaders = ref<Header[]>([
 
 const internalSort = ref<Sort>({ by: 'name', desc: false });
 
+const { triggers } = getTriggers();
+
+const triggerNames = new Map(triggers.map((trigger) => [trigger.id, trigger.name]));
+
+const triggerChoices = triggers.map((trigger) => ({
+	value: trigger.id,
+	text: trigger.name,
+	icon: trigger.icon,
+	color: trigger.color,
+	foreground: null,
+	background: null,
+}));
+
 const flowsStore = useFlowsStore();
 
 const search = useLocalStorage<string | null>('directus-flows-search', null);
@@ -153,6 +179,39 @@ const { folders } = useFolders('flows');
 const relationsStore = useRelationsStore();
 
 const foldersById = computed(() => new Map((folders.value ?? []).map((folder) => [folder.id, folder])));
+
+const title = computed(() => (props.folder ? foldersById.value.get(props.folder)?.name : undefined) ?? t('flows'));
+
+const visibleHeaders = computed<Header[]>({
+	get: () => (props.folder ? tableHeaders.value.filter((header) => header.value !== 'folder') : tableHeaders.value),
+	set: (headers) => {
+		const folderHeader = tableHeaders.value.find((header) => header.value === 'folder');
+
+		if (!folderHeader || headers.some((header) => header.value === 'folder')) {
+			tableHeaders.value = headers;
+			return;
+		}
+
+		const nameIndex = headers.findIndex((header) => header.value === 'name');
+		tableHeaders.value = [...headers.slice(0, nameIndex + 1), folderHeader, ...headers.slice(nameIndex + 1)];
+	},
+});
+
+function getFolderPath(folderId: string | null): string[] {
+	const names: string[] = [];
+	let current = folderId ? foldersById.value.get(folderId) : undefined;
+
+	while (current && names.length <= foldersById.value.size) {
+		names.unshift(current.name);
+		current = current.parent ? foldersById.value.get(current.parent) : undefined;
+	}
+
+	return names;
+}
+
+function getFolderLabel(path: string[]): string {
+	return `${path.length > 1 ? '…' : ''}/${path.at(-1) ?? ''}`;
+}
 
 // Relations we can resolve client-side, so can filter on: whitelists the field and hydrates its foreign key.
 const FILTERABLE_RELATIONS: Record<string, (flow: FlowRaw) => Item | null> = {
@@ -214,22 +273,22 @@ const flows = computed(() => {
 		});
 	}
 
-	const sortedFlows = sortBy(result, [internalSort.value.by]);
+	const { by } = internalSort.value;
+
+	const sortedFlows = sortBy(result, [sortIteratee(by)]);
 	return internalSort.value.desc ? sortedFlows.reverse() : sortedFlows;
 });
 
-function navigateToFolder(folderId: string | null) {
-	if (folderId) {
-		router.push({ name: 'settings-flows-folder', params: { folder: folderId } });
-	} else {
-		router.push({ name: 'settings-flows-collection' });
+function sortIteratee(by: string | null) {
+	if (by === 'trigger') {
+		return (flow: FlowRaw) => (flow.trigger ? triggerNames.get(flow.trigger) : undefined);
 	}
-}
 
-// Deleting a folder detaches its flows in the database, so re-hydrate before navigating
-async function onFolderDeleted(parent: string | null) {
-	await flowsStore.hydrate();
-	navigateToFolder(parent);
+	if (by === 'folder') {
+		return (flow: FlowRaw) => getFolderPath(flow.folder).join('/');
+	}
+
+	return by;
 }
 
 function updateSort(sort: Sort | null) {
@@ -257,66 +316,35 @@ function openDuplicateFlow(item: FlowRaw) {
 	duplicateDialogActive.value = true;
 }
 
-function exportFlow(flow: FlowRaw) {
-	// Table rows carry a translated name, so export the stored Flow to keep `$t:` literals intact
-	const source = flowsStore.flows.find(({ id }) => id === flow.id) ?? flow;
-	const flowExport = createFlowExport(source);
+function exportFlows(ids: string[]) {
+	// Table rows carry a translated name, so export the stored Flows to keep `$t:` literals intact
+	const flows = flowsStore.flows.filter(({ id }) => ids.includes(id));
+	const filename = flows.length === 1 ? `flow-${flows[0]!.id}.json` : `flows-${getDateTimeFormatted()}.json`;
 
 	saveAs(
-		new Blob([JSON.stringify(flowExport, null, 2)], { type: 'application/json;charset=utf-8' }),
-		`flow-${flowExport.flow.id}.json`,
+		new Blob([JSON.stringify(createFlowExport(flows), null, 2)], { type: 'application/json;charset=utf-8' }),
+		filename,
 	);
 }
 
-const importDialogActive = ref(false);
-const importFileInput = ref<HTMLInputElement | null>(null);
-const importFile = ref<File | null>(null);
-const importing = ref(false);
-
-const importFileExtension = computed(() => {
-	if (!importFile.value) return null;
-	return readableMimeType(importFile.value.type, true);
-});
-
-function openImportFlow() {
-	clearImportFile();
-	importDialogActive.value = true;
-}
-
-function selectImportFile(event: Event) {
-	const files = (event.target as HTMLInputElement).files;
-	importFile.value = files?.item(0) ?? null;
-}
-
-function clearImportFile() {
-	// Reset the native input too, otherwise re-picking the same file won't fire `change`
-	if (importFileInput.value) importFileInput.value.value = '';
-	importFile.value = null;
-}
-
-async function importFlow() {
-	if (!importFile.value || importing.value) return;
-
-	importing.value = true;
-
+async function importFlows(file: File) {
 	try {
-		const flowExport = parseFlowExport(await importFile.value.text());
-		const flowImport = createFlowImport(flowExport, props.folder ?? null);
+		const flowImport = createFlowImport(parseFlowExport(await file.text()), props.folder ?? null);
 		const form = new FormData();
-		form.append('file', new Blob([JSON.stringify(flowImport)], { type: 'application/json' }), 'flow.json');
+		form.append('file', new Blob([JSON.stringify(flowImport)], { type: 'application/json' }), 'flows.json');
 
 		await api.post('/utils/import', form, { params: { mode: 'add' } });
 		await flowsStore.hydrate();
-		importDialogActive.value = false;
 		notify({ title: t('flow_import_success'), type: 'success' });
+		return true;
 	} catch (error) {
 		if (error instanceof FlowImportError) {
 			notify({ title: t('flow_import_failed'), text: t(error.translationKey), type: 'error', dialog: true });
 		} else {
 			unexpectedError(error);
 		}
-	} finally {
-		importing.value = false;
+
+		return false;
 	}
 }
 
@@ -333,29 +361,32 @@ watch(
 watch([search, filter], () => (selectedKeys.value = []));
 
 const moveDialogActive = ref(false);
+const moveKeys = ref<string[]>([]);
 const moveTarget = ref<string | null>(null);
 
 const { moving, move } = useMoveToFolder({
 	collection: 'flows',
 	onSuccess: async () => {
 		moveDialogActive.value = false;
-		selectedKeys.value = [];
+		selectedKeys.value = selectedKeys.value.filter((key) => !moveKeys.value.includes(key));
+		moveKeys.value = [];
 		moveTarget.value = null;
 		await flowsStore.hydrate();
 	},
 });
 
-function openMoveToFolder() {
-	moveTarget.value = props.folder ?? null;
+function openMoveToFolder(keys: string[], target: string | null = props.folder ?? null) {
+	moveKeys.value = keys;
+	moveTarget.value = target;
 	moveDialogActive.value = true;
 }
 
 function applyMoveToFolder() {
-	move(selectedKeys.value, moveTarget.value);
+	return move(moveKeys.value, moveTarget.value);
 }
 
 function navigateToFlow({ item: flow, event }: { item: FlowRaw; event: MouseEvent }) {
-	const route = { name: 'settings-flows-item', params: { primaryKey: flow.id } };
+	const route = { name: 'flows-item', params: { primaryKey: flow.id } };
 
 	if (event.ctrlKey || event.metaKey || event.button === 1) {
 		window.open(router.resolve(route).href, '_blank');
@@ -381,6 +412,27 @@ async function deleteFlow() {
 	}
 }
 
+const confirmBatchDelete = ref(false);
+const batchDeleting = ref(false);
+
+async function batchDelete() {
+	if (batchDeleting.value) return;
+
+	batchDeleting.value = true;
+
+	try {
+		await api.delete('/flows', { data: selectedKeys.value });
+		await flowsStore.hydrate();
+		licenseStore.hydrate();
+		selectedKeys.value = [];
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		confirmBatchDelete.value = false;
+		batchDeleting.value = false;
+	}
+}
+
 async function toggleFlowStatusById(id: string, value: string) {
 	try {
 		await api.patch(`/flows/${id}`, {
@@ -401,7 +453,7 @@ async function toggleFlowStatusById(id: string, value: string) {
 
 function onFlowDrawerCompletion(id: string) {
 	if (editFlow.value === '+') {
-		router.push({ name: 'settings-flows-item', params: { primaryKey: id } });
+		router.push({ name: 'flows-item', params: { primaryKey: id } });
 	}
 
 	editFlow.value = undefined;
@@ -409,9 +461,9 @@ function onFlowDrawerCompletion(id: string) {
 </script>
 
 <template>
-	<PrivateView :title="$t('flows')" icon="bolt">
+	<PrivateView :title="title" icon="bolt">
 		<template #navigation>
-			<SettingsNavigation />
+			<FlowsNavigation :current-folder="folder" />
 		</template>
 
 		<template #actions>
@@ -431,14 +483,41 @@ function onFlowDrawerCompletion(id: string) {
 				v-tooltip.bottom="$t('move_to_folder')"
 				icon="folder_move"
 				variant="ghost"
-				@click="openMoveToFolder"
+				@click="openMoveToFolder(selectedKeys)"
 			/>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('import_flow')"
-				icon="file_upload"
+				v-if="selectedKeys.length > 0"
+				v-tooltip.bottom="$t('export_flows')"
+				icon="download"
 				variant="ghost"
-				@click="openImportFlow"
+				@click="exportFlows(selectedKeys)"
 			/>
+			<VDialog
+				v-if="selectedKeys.length > 0"
+				v-model="confirmBatchDelete"
+				@esc="confirmBatchDelete = false"
+				@apply="batchDelete"
+			>
+				<template #activator="{ on }">
+					<PrivateViewHeaderBarActionButton
+						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
+						:disabled="deleteAllowed !== true"
+						kind="danger"
+						variant="ghost"
+						icon="delete"
+						@click="on"
+					/>
+				</template>
+
+				<VCard>
+					<VCardTitle>{{ $t('batch_delete_confirm', selectedKeys.length) }}</VCardTitle>
+
+					<VCardActions>
+						<VButton secondary @click="confirmBatchDelete = false">{{ $t('cancel') }}</VButton>
+						<VButton kind="danger" :loading="batchDeleting" @click="batchDelete">{{ $t('delete_label') }}</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 			<EntitlementRemaining entitlement-key="flows" />
 		</template>
 
@@ -452,117 +531,133 @@ function onFlowDrawerCompletion(id: string) {
 			/>
 		</template>
 
-		<FlowFolderSidebar
-			:current-folder="folder"
-			:actions-disabled="!updateFolderAllowed && !deleteFolderAllowed"
-			:update-disabled="!updateFolderAllowed"
-			:delete-disabled="!deleteFolderAllowed"
-			@navigate="navigateToFolder"
-			@deleted="onFolderDeleted"
-		>
-			<VInfo v-if="flows.length === 0 && !hasQuery" icon="bolt" :title="$t('no_flows')" center>
-				{{ $t('no_flows_copy') }}
+		<VInfo v-if="flows.length === 0 && !hasQuery" icon="bolt" :title="$t('no_flows')" center>
+			{{ $t('no_flows_copy') }}
 
-				<template v-if="createAllowed" #append>
-					<VButton @click="openCreateFlow">{{ $t('create_flow') }}</VButton>
+			<template v-if="createAllowed" #append>
+				<VButton @click="openCreateFlow">{{ $t('create_flow') }}</VButton>
+			</template>
+		</VInfo>
+
+		<VInfo v-else-if="flows.length === 0" icon="search" :title="$t('no_results')" center>
+			{{ $t('no_results_copy') }}
+
+			<template #append>
+				<VButton @click="clearFilters">{{ $t('clear_filters') }}</VButton>
+			</template>
+		</VInfo>
+
+		<div v-else class="padding-box">
+			<MaxCapacityAlert v-if="!licenseStore.limits.flows.hasRemaining" entitlement-key="flows" />
+
+			<VTable
+				v-model:headers="visibleHeaders"
+				v-model="selectedKeys"
+				:items="flows"
+				:sort="internalSort"
+				show-select="multiple"
+				selection-use-keys
+				show-resize
+				fixed-header
+				@click:row="navigateToFlow"
+				@update:sort="updateSort($event)"
+			>
+				<template #[`item.icon`]="{ item }">
+					<VIcon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--theme--primary)'" />
 				</template>
-			</VInfo>
 
-			<VInfo v-else-if="flows.length === 0" icon="search" :title="$t('no_results')" center>
-				{{ $t('no_results_copy') }}
-
-				<template #append>
-					<VButton @click="clearFilters">{{ $t('clear_filters') }}</VButton>
+				<template #[`item.status`]="{ item }">
+					<DisplayFormattedValue
+						type="string"
+						:item="item"
+						:value="item.status"
+						:conditional-formatting="conditionalFormatting"
+					/>
 				</template>
-			</VInfo>
 
-			<div v-else class="padding-box">
-				<MaxCapacityAlert v-if="!licenseStore.limits.flows.hasRemaining" entitlement-key="flows" />
+				<template #[`item.trigger`]="{ item }">
+					<DisplayLabels v-if="item.trigger" type="string" :value="item.trigger" :choices="triggerChoices" />
+				</template>
 
-				<VTable
-					v-model:headers="tableHeaders"
-					v-model="selectedKeys"
-					:items="flows"
-					:sort="internalSort"
-					show-select="multiple"
-					selection-use-keys
-					show-resize
-					fixed-header
-					@click:row="navigateToFlow"
-					@update:sort="updateSort($event)"
-				>
-					<template #[`item.icon`]="{ item }">
-						<VIcon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--theme--primary)'" />
-					</template>
+				<template #[`item.folder`]="{ item }">
+					<RouterLink
+						v-if="item.folder && foldersById.has(item.folder)"
+						v-tooltip="`/${getFolderPath(item.folder).join('/')}`"
+						class="folder-link"
+						:to="{ name: 'flows-folder', params: { folder: item.folder } }"
+						@click.stop
+					>
+						{{ getFolderLabel(getFolderPath(item.folder)) }}
+					</RouterLink>
+				</template>
 
-					<template #[`item.status`]="{ item }">
-						<DisplayFormattedValue
-							type="string"
-							:item="item"
-							:value="item.status"
-							:conditional-formatting="conditionalFormatting"
-						/>
-					</template>
+				<template #item-append="{ item }">
+					<VMenu placement="left-start" show-arrow>
+						<template #activator="{ toggle }">
+							<VIcon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
+						</template>
 
-					<template #item-append="{ item }">
-						<VMenu placement="left-start" show-arrow>
-							<template #activator="{ toggle }">
-								<VIcon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
-							</template>
+						<VList>
+							<VListItem clickable @click="toggleFlowStatusById(item.id, item.status)">
+								<template v-if="item.status === 'active'">
+									<VListItemIcon><VIcon name="block" /></VListItemIcon>
+									<VListItemContent>{{ $t('set_flow_inactive') }}</VListItemContent>
+								</template>
+								<template v-else>
+									<VListItemIcon><VIcon name="check" /></VListItemIcon>
+									<VListItemContent>{{ $t('set_flow_active') }}</VListItemContent>
+								</template>
+							</VListItem>
 
-							<VList>
-								<VListItem clickable @click="toggleFlowStatusById(item.id, item.status)">
-									<template v-if="item.status === 'active'">
-										<VListItemIcon><VIcon name="block" /></VListItemIcon>
-										<VListItemContent>{{ $t('set_flow_inactive') }}</VListItemContent>
-									</template>
-									<template v-else>
-										<VListItemIcon><VIcon name="check" /></VListItemIcon>
-										<VListItemContent>{{ $t('set_flow_active') }}</VListItemContent>
-									</template>
-								</VListItem>
+							<VListItem clickable @click="editFlow = item.id">
+								<VListItemIcon>
+									<VIcon name="edit" outline />
+								</VListItemIcon>
+								<VListItemContent>
+									{{ $t('edit_flow') }}
+								</VListItemContent>
+							</VListItem>
 
-								<VListItem clickable @click="editFlow = item.id">
-									<VListItemIcon>
-										<VIcon name="edit" outline />
-									</VListItemIcon>
-									<VListItemContent>
-										{{ $t('edit_flow') }}
-									</VListItemContent>
-								</VListItem>
+							<VListItem clickable @click="openMoveToFolder([item.id], item.folder)">
+								<VListItemIcon>
+									<VIcon name="folder_move" />
+								</VListItemIcon>
+								<VListItemContent>
+									{{ $t('move_to_folder') }}
+								</VListItemContent>
+							</VListItem>
 
-								<VListItem :disabled="!duplicateAllowed" clickable @click="openDuplicateFlow(item)">
-									<VListItemIcon>
-										<VIcon name="content_copy" />
-									</VListItemIcon>
-									<VListItemContent>
-										{{ $t('duplicate_flow') }}
-									</VListItemContent>
-								</VListItem>
+							<VListItem :disabled="!duplicateAllowed" clickable @click="openDuplicateFlow(item)">
+								<VListItemIcon>
+									<VIcon name="content_copy" />
+								</VListItemIcon>
+								<VListItemContent>
+									{{ $t('duplicate_flow') }}
+								</VListItemContent>
+							</VListItem>
 
-								<VListItem clickable @click="exportFlow(item)">
-									<VListItemIcon>
-										<VIcon name="file_download" />
-									</VListItemIcon>
-									<VListItemContent>
-										{{ $t('export_flow') }}
-									</VListItemContent>
-								</VListItem>
+							<VListItem clickable @click="exportFlows([item.id])">
+								<VListItemIcon>
+									<VIcon name="file_download" />
+								</VListItemIcon>
+								<VListItemContent>
+									{{ $t('export_flow') }}
+								</VListItemContent>
+							</VListItem>
 
-								<VListItem class="danger" clickable @click="confirmDelete = item">
-									<VListItemIcon>
-										<VIcon name="delete" outline />
-									</VListItemIcon>
-									<VListItemContent>
-										{{ $t('delete_flow') }}
-									</VListItemContent>
-								</VListItem>
-							</VList>
-						</VMenu>
-					</template>
-				</VTable>
-			</div>
-		</FlowFolderSidebar>
+							<VListItem class="danger" clickable @click="confirmDelete = item">
+								<VListItemIcon>
+									<VIcon name="delete" outline />
+								</VListItemIcon>
+								<VListItemContent>
+									{{ $t('delete_flow') }}
+								</VListItemContent>
+							</VListItem>
+						</VList>
+					</VMenu>
+				</template>
+			</VTable>
+		</div>
 
 		<VDialog v-model="moveDialogActive" @esc="moveDialogActive = false" @apply="applyMoveToFolder">
 			<VCard>
@@ -607,47 +702,14 @@ function onFlowDrawerCompletion(id: string) {
 			</VCard>
 		</VDialog>
 
-		<VDialog v-model="importDialogActive" @esc="importDialogActive = false" @apply="importFlow">
-			<VCard>
-				<VCardTitle>{{ $t('import_flow') }}</VCardTitle>
-				<VCardText>
-					<VInput clickable>
-						<template #prepend>
-							<div class="import-file-preview" :class="{ 'has-file': importFile }">
-								<span v-if="importFileExtension" class="import-file-extension">{{ importFileExtension }}</span>
-								<VIcon v-else name="folder_open" />
-							</div>
-						</template>
-						<template #input>
-							<label v-tooltip="importFile?.name" for="import-flow-file" class="import-file-label">
-								<input
-									id="import-flow-file"
-									ref="importFileInput"
-									type="file"
-									accept="application/json,.json"
-									@change="selectImportFile"
-								/>
-							</label>
-							<span class="import-file-text" :class="{ 'no-file': !importFile }">
-								{{ importFile ? importFile.name : $t('flow_import_input_placeholder') }}
-							</span>
-						</template>
-						<template #append>
-							<div class="import-file-actions">
-								<VRemove v-if="importFile" deselect @action="clearImportFile" />
-								<VIcon v-else name="attach_file" />
-							</div>
-						</template>
-					</VInput>
-				</VCardText>
-				<VCardActions>
-					<VButton secondary @click="importDialogActive = false">{{ $t('cancel') }}</VButton>
-					<VButton :disabled="!importFile" :loading="importing" @click="importFlow">
-						{{ $t('import_flow') }}
-					</VButton>
-				</VCardActions>
-			</VCard>
-		</VDialog>
+		<template #sidebar>
+			<BasicImportSidebarDetail
+				collection="directus_flows"
+				accept="application/json,.json"
+				:placeholder="$t('flow_import_input_placeholder')"
+				:import-handler="importFlows"
+			/>
+		</template>
 
 		<FlowDrawer
 			:active="editFlow !== undefined"
@@ -664,8 +726,6 @@ function onFlowDrawerCompletion(id: string) {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins';
-
 .padding-box {
 	padding: var(--content-padding);
 	padding-block-start: var(--content-padding-top-table);
@@ -674,6 +734,14 @@ function onFlowDrawerCompletion(id: string) {
 .ctx-toggle {
 	--v-icon-color: var(--theme--foreground-subdued);
 	--v-icon-color-hover: var(--theme--foreground);
+}
+
+.folder-link {
+	color: var(--theme--primary);
+
+	&:hover {
+		text-decoration: underline;
+	}
 }
 
 .v-list-item.danger {
@@ -685,59 +753,5 @@ function onFlowDrawerCompletion(id: string) {
 .header-icon {
 	--v-button-color-disabled: var(--theme--primary);
 	--v-button-background-color-disabled: var(--theme--primary-background);
-}
-
-.import-file-preview {
-	--v-icon-color: var(--theme--foreground-subdued);
-
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	inline-size: 2.25rem;
-	block-size: 2.25rem;
-	margin-inline-start: -0.4375rem;
-	overflow: hidden;
-	background-color: var(--theme--background-normal);
-	border-radius: var(--theme--border-radius);
-
-	&.has-file {
-		background-color: var(--theme--primary-background);
-	}
-}
-
-.import-file-extension {
-	color: var(--theme--primary);
-	font-weight: 600;
-	font-size: 0.625rem;
-	text-transform: uppercase;
-}
-
-.import-file-label {
-	position: absolute;
-	inset-block-start: 0;
-	inset-inline-start: 0;
-	display: block;
-	inline-size: 100%;
-	block-size: 100%;
-	overflow: hidden;
-	opacity: 0;
-	cursor: pointer;
-	appearance: none;
-}
-
-.import-file-text {
-	flex-grow: 1;
-	overflow: hidden;
-	line-height: normal;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-
-	&.no-file {
-		color: var(--theme--foreground-subdued);
-	}
-}
-
-.import-file-actions {
-	@include mixins.list-interface-item-actions;
 }
 </style>

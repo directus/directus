@@ -6,9 +6,6 @@ import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
 import Fields from './routes/data-model/fields/fields.vue';
 import NewCollection from './routes/data-model/new-collection.vue';
 import Extensions from './routes/extensions/extensions.vue';
-import FlowOperationDetail from './routes/flows/components/operation-detail.vue';
-import FlowsDetail from './routes/flows/flow.vue';
-import FlowsOverview from './routes/flows/overview.vue';
 import License from './routes/license/license.vue';
 import MarketplaceAccount from './routes/marketplace/routes/account/account.vue';
 import MarketplaceExtension from './routes/marketplace/routes/extension/extension.vue';
@@ -30,7 +27,6 @@ import TranslationsItem from './routes/translations/item.vue';
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import { useFlowsStore } from '@/stores/flows';
 import RouterPass from '@/utils/router-passthrough';
 
 const McpOAuthClientsCollection = () => import('./routes/mcp-oauth-clients/collection.vue');
@@ -218,50 +214,18 @@ export default defineModule({
 			path: 'ai',
 			component: AiOverview,
 		},
+		// Flows moved to their own module; keep old links working
 		{
-			path: 'flows',
-			component: RouterPass,
-			children: [
-				{
-					name: 'settings-flows-collection',
-					path: '',
-					component: FlowsOverview,
-				},
-				{
-					name: 'settings-flows-folder',
-					path: 'folder/:folder',
-					component: FlowsOverview,
-					props: true,
-				},
-				{
-					name: 'settings-flows-item',
-					path: ':primaryKey',
-					component: FlowsDetail,
-					props: true,
-					async beforeEnter(to) {
-						const { flows } = useFlowsStore();
-						const existingFlow = flows.find((flow) => flow.id === to.params.primaryKey);
-
-						if (!existingFlow) {
-							return {
-								name: 'settings-not-found',
-								params: { _: to.path.split('/').slice(1) },
-							};
-						}
-					},
-					children: [
-						{
-							name: 'settings-flows-operation',
-							path: ':operationId',
-							meta: {
-								isFloatingView: true,
-							},
-							component: FlowOperationDetail,
-							props: true,
-						},
-					],
-				},
-			],
+			path: 'flows/folder/:folder',
+			redirect: (to) => ({ path: `/flows/folders/${to.params.folder}`, query: to.query, hash: to.hash }),
+		},
+		{
+			path: 'flows/:pathMatch(.*)*',
+			redirect: (to) => ({
+				path: ['/flows', ...[to.params.pathMatch].flat().filter(Boolean)].join('/'),
+				query: to.query,
+				hash: to.hash,
+			}),
 		},
 		{
 			name: 'settings-extensions',

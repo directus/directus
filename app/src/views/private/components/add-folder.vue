@@ -56,7 +56,7 @@ async function addFolder() {
 </script>
 
 <template>
-	<VDialog v-model="dialogActive" @esc="dialogActive = false" @apply="addFolder">
+	<VDialog v-model="dialogActive" apply-shortcut="meta+s" @esc="dialogActive = false" @apply="addFolder">
 		<template #activator="{ on }">
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="disabled ? $t('not_allowed') : $t('create_folder')"

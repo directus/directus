@@ -2,12 +2,13 @@ import { FlowRaw } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import { Router } from 'vue-router';
 import FlowsOverview from './overview.vue';
 import { generateRouter } from '@/__utils__/router';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
+import type { Header } from '@/components/v-table/types';
 import { i18n } from '@/lang';
 
 vi.mock('file-saver', () => ({
@@ -50,7 +51,10 @@ vi.mock('@/stores/flows', () => ({
 vi.mock('@/composables/use-folders', () => ({
 	useFolders: () => ({
 		loading: ref(false),
-		folders: ref([{ id: 'folder-a', name: 'Notifications', parent: null }]),
+		folders: ref([
+			{ id: 'folder-a', name: 'Notifications', parent: null },
+			{ id: 'folder-b', name: 'Email', parent: 'folder-a' },
+		]),
 		nestedFolders: ref([]),
 		fetchFolders: vi.fn(),
 		openFolders: ref([]),
@@ -118,17 +122,17 @@ beforeEach(async () => {
 
 	router = generateRouter([
 		{
-			path: '/settings/flows',
+			path: '/flows',
 			component: { template: '<div>Flows Overview</div>' },
 		},
 		{
-			name: 'settings-flows-item',
-			path: '/settings/flows/:primaryKey',
+			name: 'flows-item',
+			path: '/flows/:primaryKey',
 			component: { template: '<div>Flow Detail</div>' },
 		},
 	]);
 
-	router.push('/settings/flows');
+	router.push('/flows');
 	await router.isReady();
 
 	// Get the mocked router and update it to use our test router
@@ -147,14 +151,11 @@ beforeEach(async () => {
 				props: ['icon', 'label', 'variant'],
 				template: '<button :data-icon="icon" :data-variant="variant">{{ label }}</button>',
 			},
-			'flow-folder-sidebar': {
-				props: ['actionsDisabled'],
-				template: '<div :data-actions-disabled="actionsDisabled"><slot /></div>',
-			},
+			'flows-navigation': true,
 			'v-button': true,
 			'v-icon': true,
-			'settings-navigation': true,
 			'sidebar-detail': true,
+			'basic-import-sidebar-detail': true,
 			'v-info': true,
 			'v-table': true,
 			'display-formatted-value': true,
@@ -210,7 +211,7 @@ describe('FlowsOverview - navigateToFlow', () => {
 		const vm = wrapper.vm as any;
 		vm.navigateToFlow({ item: mockFlow, event: mockEvent });
 
-		expect(routerPushSpy).toHaveBeenCalledWith({ name: 'settings-flows-item', params: { primaryKey: 'flow-1' } });
+		expect(routerPushSpy).toHaveBeenCalledWith({ name: 'flows-item', params: { primaryKey: 'flow-1' } });
 		expect(windowOpenSpy).not.toHaveBeenCalled();
 	});
 
@@ -237,7 +238,7 @@ describe('FlowsOverview - navigateToFlow', () => {
 		const vm = wrapper.vm as any;
 		vm.navigateToFlow({ item: mockFlow, event: mockEvent });
 
-		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/settings/flows/flow-1'), '_blank');
+		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/flows/flow-1'), '_blank');
 
 		expect(routerPushSpy).not.toHaveBeenCalled();
 	});
@@ -265,7 +266,7 @@ describe('FlowsOverview - navigateToFlow', () => {
 		const vm = wrapper.vm as any;
 		vm.navigateToFlow({ item: mockFlow, event: mockEvent });
 
-		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/settings/flows/flow-1'), '_blank');
+		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/flows/flow-1'), '_blank');
 
 		expect(routerPushSpy).not.toHaveBeenCalled();
 	});
@@ -293,7 +294,7 @@ describe('FlowsOverview - navigateToFlow', () => {
 		const vm = wrapper.vm as any;
 		vm.navigateToFlow({ item: mockFlow, event: mockEvent });
 
-		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/settings/flows/flow-1'), '_blank');
+		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/flows/flow-1'), '_blank');
 
 		expect(routerPushSpy).not.toHaveBeenCalled();
 	});
@@ -391,22 +392,6 @@ describe('FlowsOverview - folder permissions', () => {
 
 		expect(wrapper.find('add-folder-stub').attributes('disabled')).toBe('false');
 	});
-
-	test('folder context actions stay enabled with only update or only delete on directus_folders', async () => {
-		permissionsByCollection['directus_folders'] = { create: false, delete: false };
-
-		const wrapper = mount(FlowsOverview, { global });
-
-		expect(wrapper.find('[data-actions-disabled]').attributes('data-actions-disabled')).toBe('false');
-	});
-
-	test('folder context actions are disabled without update or delete on directus_folders', async () => {
-		permissionsByCollection['directus_folders'] = { update: false, delete: false };
-
-		const wrapper = mount(FlowsOverview, { global });
-
-		expect(wrapper.find('[data-actions-disabled]').attributes('data-actions-disabled')).toBe('true');
-	});
 });
 
 describe('FlowsOverview - empty state', () => {
@@ -425,47 +410,91 @@ describe('FlowsOverview - empty state', () => {
 	});
 });
 
-describe('FlowsOverview - import export', () => {
-	test('offers Flow import from the header bar', () => {
+describe('FlowsOverview - folder column', () => {
+	test('collapses the folder path and hides the column inside a folder', async () => {
 		const wrapper = mount(FlowsOverview, { global });
-		const importAction = wrapper.find('[data-icon="file_upload"]');
+		const vm = wrapper.vm as any;
 
-		expect(importAction.text()).toBe('');
-		expect(importAction.attributes('data-variant')).toBe('ghost');
+		expect(vm.getFolderPath('folder-b')).toEqual(['Notifications', 'Email']);
+		expect(vm.getFolderLabel(vm.getFolderPath('folder-a'))).toBe('/Notifications');
+		expect(vm.getFolderLabel(vm.getFolderPath('folder-b'))).toBe('…/Email');
+		expect(vm.visibleHeaders.some((header: Header) => header.value === 'folder')).toBe(true);
+
+		await wrapper.setProps({ folder: 'folder-a' });
+
+		expect(vm.visibleHeaders.some((header: Header) => header.value === 'folder')).toBe(false);
+	});
+});
+
+describe('FlowsOverview - import export', () => {
+	test('offers export from the header bar once Flows are selected', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+
+		expect(wrapper.find('[data-icon="download"]').exists()).toBe(false);
+
+		(wrapper.vm as any).selectedKeys = ['flow-1'];
+		await nextTick();
+
+		expect(wrapper.find('[data-icon="download"]').attributes('data-variant')).toBe('ghost');
 	});
 
-	test('exports the stored Flow rather than the translated table row', async () => {
-		const { saveAs } = (await vi.importMock('file-saver')) as { saveAs: ReturnType<typeof vi.fn> };
-		saveAs.mockClear();
+	test('deletes the selected Flows from the header bar', async () => {
+		const api = (await vi.importMock<{ default: { delete: ReturnType<typeof vi.fn> } }>('@/api')).default;
+		api.delete.mockClear();
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		(wrapper.vm as any).selectedKeys = ['flow-1', 'flow-2'];
+		await (wrapper.vm as any).batchDelete();
+
+		expect(api.delete).toHaveBeenCalledWith('/flows', { data: ['flow-1', 'flow-2'] });
+		expect((wrapper.vm as any).selectedKeys).toEqual([]);
+	});
+
+	test('moves a single Flow from its row without touching the rest of the selection', async () => {
+		const api = (await vi.importMock<{ default: { patch: ReturnType<typeof vi.fn> } }>('@/api')).default;
+		api.patch.mockReset();
 
 		const wrapper = mount(FlowsOverview, { global });
 		const vm = wrapper.vm as any;
 
-		// The row the context menu hands over has already been through `translate()`
-		vm.exportFlow({ id: 'flow-1', name: 'Resolved label' });
+		vm.selectedKeys = ['flow-1', 'flow-2'];
+		vm.openMoveToFolder(['flow-2'], null);
+		vm.moveTarget = 'folder-a';
+		await vm.applyMoveToFolder();
+
+		expect(api.patch).toHaveBeenCalledWith('/flows', { keys: ['flow-2'], data: { folder: 'folder-a' } });
+		expect(vm.selectedKeys).toEqual(['flow-1']);
+	});
+
+	test('exports the stored Flows rather than the translated table rows', async () => {
+		const { saveAs } = (await vi.importMock('file-saver')) as { saveAs: ReturnType<typeof vi.fn> };
+		saveAs.mockClear();
+
+		const wrapper = mount(FlowsOverview, { global });
+
+		(wrapper.vm as any).exportFlows(['flow-1']);
 
 		const [blob, filename] = saveAs.mock.calls[0]!;
 		expect(filename).toBe('flow-flow-1.json');
-		expect(JSON.parse(await blob.text()).flow.name).toBe('Send email');
+		expect(JSON.parse(await blob.text()).flows[0].flow.name).toBe('Send email');
 	});
 
-	test('notifies after importing a Flow', async () => {
+	test('notifies after importing Flows', async () => {
 		const api = (await vi.importMock<{ default: { post: ReturnType<typeof vi.fn> } }>('@/api')).default;
 		const { notify } = (await vi.importMock('@/utils/notify')) as { notify: ReturnType<typeof vi.fn> };
 		api.post.mockResolvedValue({});
 
 		const wrapper = mount(FlowsOverview, { global });
-		const vm = wrapper.vm as any;
 
-		vm.importFile = {
+		const file = {
 			text: () =>
 				Promise.resolve(
 					JSON.stringify({ version: 1, flow: { id: 'flow-1', name: 'Imported', operation: null }, operations: [] }),
 				),
 		};
 
-		await vm.importFlow();
-
+		await expect((wrapper.vm as any).importFlows(file)).resolves.toBe(true);
 		expect(notify).toHaveBeenCalledWith({ title: 'flow_import_success', type: 'success' });
 	});
 
@@ -480,11 +509,8 @@ describe('FlowsOverview - import export', () => {
 		unexpectedError.mockClear();
 
 		const wrapper = mount(FlowsOverview, { global });
-		const vm = wrapper.vm as any;
 
-		vm.importFile = { text: () => Promise.resolve('not json') };
-
-		await vm.importFlow();
+		await expect((wrapper.vm as any).importFlows({ text: () => Promise.resolve('not json') })).resolves.toBe(false);
 
 		expect(unexpectedError).not.toHaveBeenCalled();
 

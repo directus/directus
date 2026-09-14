@@ -145,7 +145,7 @@ const RESOURCE_LIST = [
 		plural: 'flows',
 		collection: 'directus_flows',
 		endpoint: '/flows',
-		appRoute: '/admin/settings/flows',
+		appRoute: '/admin/flows',
 		primaryKey: 'id',
 		primaryKeyType: 'uuid',
 		singleton: false,
