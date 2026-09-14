@@ -52,7 +52,7 @@ export class SubscribeHandler {
 			try {
 				this.onMessage(client, WebSocketSubscribeMessage.parse(message));
 			} catch (error) {
-				handleWebSocketError(client, error, 'subscribe');
+				handleWebSocketError(client, error, { type: 'subscribe' });
 			}
 		});
 
@@ -133,7 +133,7 @@ export class SubscribeHandler {
 
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
-				handleWebSocketError(client, err, 'subscribe');
+				handleWebSocketError(client, err, { type: 'subscribe' });
 			}
 		}
 	}
@@ -188,7 +188,7 @@ export class SubscribeHandler {
 				// send an initial response
 				client.send(fmtMessage('subscription', data, subscription.uid));
 			} catch (err) {
-				handleWebSocketError(client, err, 'subscribe', message.uid);
+				handleWebSocketError(client, err, { type: 'subscribe', uid: message.uid });
 			}
 		}
 
@@ -198,7 +198,7 @@ export class SubscribeHandler {
 
 				client.send(fmtMessage('subscription', { event: 'unsubscribe' }, message.uid));
 			} catch (err) {
-				handleWebSocketError(client, err, 'unsubscribe', message.uid);
+				handleWebSocketError(client, err, { type: 'unsubscribe', uid: message.uid });
 			}
 		}
 	}

@@ -48,6 +48,11 @@ export class WebSocketError extends Error {
 	}
 }
 
+export interface HandleWebSocketErrorOptions {
+	type?: string | undefined;
+	uid?: string | number | undefined;
+}
+
 /**
  * Send an error to the client
  *
@@ -57,9 +62,9 @@ export class WebSocketError extends Error {
 export function handleWebSocketError(
 	client: WebSocketClient | WebSocket,
 	error: unknown,
-	type?: string,
-	uid?: string | number,
+	options: HandleWebSocketErrorOptions = {},
 ): void {
+	const { type, uid } = options;
 	const logger = useLogger();
 
 	if (isDirectusError(error)) {

@@ -22,10 +22,10 @@ export class ItemsHandler {
 
 				this.onMessage(client, parsedMessage).catch((err) => {
 					// this catch is required because the async onMessage function is not awaited
-					handleWebSocketError(client, err, 'items');
+					handleWebSocketError(client, err, { type: 'items' });
 				});
 			} catch (err) {
-				handleWebSocketError(client, err, 'items');
+				handleWebSocketError(client, err, { type: 'items' });
 			}
 		});
 	}
