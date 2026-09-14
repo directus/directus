@@ -1278,6 +1278,8 @@ ai:
   go_to_settings: Gå til Innstillinger
   settings: Innstillinger
   tool_approval:
+    always: Alltid tillatt
+    ask: Trenger godkjenning
     disabled: Deaktivert
   ask_user_submit: Send inn
   ask_user_next: Neste
@@ -1310,6 +1312,7 @@ share_copy_link_success: Kobling kopiert
 share_copy_link_error: Kan ikke kopiere kobling
 share_send_link: Send kobling
 continue_label: Fortsett
+delete_label: Slett
 discard_label: Forkast
 delete_field_are_you_sure: >-
   Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..
@@ -1402,6 +1405,8 @@ interfaces:
     of_the_following: av følgende
   fields:
     name: Felt
+  group-accordion:
+    start: Start
   group-tabs:
     name: Faner
     fill_width: Fyll vidde
@@ -1658,3 +1663,4 @@ fonts:
   italic: Kursiv
 license_banner:
   remind_later: Påminn meg senere
+accepted: Akseptert
