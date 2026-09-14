@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import { join } from 'path';
 import { createDirectus, readAssetArrayBuffer, readAssetRaw, rest, staticToken, uploadFiles } from '@directus/sdk';
-import { port } from '@utils/constants.js';
+import { options, port } from '@utils/constants.js';
 import { expect, test } from 'vitest';
 
 const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
@@ -96,3 +96,60 @@ for (const header of formatHeaders) {
 		expect(response.headers.get('Content-Type')).toBe(header.contentType);
 	});
 }
+
+const png = await fs.readFile(join(import.meta.dirname, 'directus.png'));
+const avif = await fs.readFile(join(import.meta.dirname, 'directus.avif'));
+
+/** Uploads a fixture and returns its id. */
+async function uploadFixture(contents: Buffer, name: string, type: string, storage = 'local') {
+	const form = new FormData();
+	form.set('storage', storage);
+	form.set('file', new Blob([contents], { type }), name);
+
+	const { id } = await api.request(uploadFiles(form));
+
+	return id as string;
+}
+
+for (const storage of ['local', ...(options.extras?.minio ? ['minio'] : [])]) {
+	test(`an untransformed asset on ${storage} is served back byte for byte`, async () => {
+		const id = await uploadFixture(png, 'directus.png', 'image/png', storage);
+
+		const response = await fetch(`http://localhost:${port}/assets/${id}?access_token=admin`);
+
+		expect(response.status).toBe(200);
+		expect(response.headers.get('content-type')).toBe('image/png');
+		expect(response.headers.get('content-length')).toBe(String(png.length));
+
+		expect(Buffer.compare(Buffer.from(await response.arrayBuffer()), png)).toBe(0);
+	});
+}
+
+test('format=auto keeps the original format when nothing better is accepted', async () => {
+	const id = await uploadFixture(png, 'directus.png', 'image/png');
+
+	const response = await fetch(`http://localhost:${port}/assets/${id}?format=auto&access_token=admin`, {
+		headers: { Accept: '*/*' },
+	});
+
+	expect(response.headers.get('content-type')).toBe('image/png');
+});
+
+test('format=auto falls back to png for a source with transparency', async () => {
+	const id = await uploadFixture(avif, 'directus.avif', 'image/avif');
+
+	// No Accept header means no modern format is known to be supported, and png keeps the alpha channel
+	const response = await fetch(`http://localhost:${port}/assets/${id}?format=auto&access_token=admin`);
+
+	expect(response.headers.get('content-type')).toBe('image/png');
+});
+
+test('many concurrent requests for the same asset all succeed', async () => {
+	const id = await uploadFixture(png, 'directus.png', 'image/png');
+
+	const responses = await Promise.all(
+		Array.from({ length: 50 }, () => fetch(`http://localhost:${port}/assets/${id}?access_token=admin`)),
+	);
+
+	expect(responses.map((response) => response.status)).toEqual(Array.from({ length: 50 }, () => 200));
+});

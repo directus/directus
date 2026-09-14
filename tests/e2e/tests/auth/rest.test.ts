@@ -168,3 +168,54 @@ test('session refresh and logout keep regular Directus session cookies working',
 	const afterLogoutMe = await fetch(`${baseUrl}/users/me`, { headers: { Cookie: refreshCookie } });
 	await expectJsonResponse(afterLogoutMe, 401);
 });
+
+const LOGIN_FAILURES = [
+	{
+		description: 'the password is wrong',
+		body: { password: 'not-the-password' },
+		status: 401,
+		message: 'Invalid user credentials.',
+		code: 'INVALID_CREDENTIALS',
+	},
+	{
+		description: 'the email belongs to nobody',
+		body: { email: 'nobody@example.com' },
+		status: 401,
+		message: 'Invalid user credentials.',
+		code: 'INVALID_CREDENTIALS',
+	},
+	{
+		description: 'the email is not an email',
+		body: { email: 'invalidEmail' },
+		status: 400,
+		message: 'Invalid payload. "email" must be a valid email.',
+		code: 'INVALID_PAYLOAD',
+	},
+	{
+		description: 'no password is given',
+		body: { password: undefined },
+		status: 400,
+		message: 'Invalid payload. "password" is required.',
+		code: 'INVALID_PAYLOAD',
+	},
+];
+
+for (const { description, body, status, message, code } of LOGIN_FAILURES) {
+	test(`login is refused when ${description}`, async () => {
+		const payload: Record<string, unknown> = { email: 'admin@example.com', password: 'pw', ...body };
+
+		// `send` drops the key entirely rather than sending an explicit undefined
+		for (const [key, value] of Object.entries(payload)) {
+			if (value === undefined) delete payload[key];
+		}
+
+		const response = await postAuth('/auth/login', payload);
+
+		expect(response.status).toBe(status);
+		expect(response.headers.get('content-type')).toMatch(/application\/json/);
+
+		expect(await response.json()).toMatchObject({
+			errors: [{ message, extensions: { code } }],
+		});
+	});
+}

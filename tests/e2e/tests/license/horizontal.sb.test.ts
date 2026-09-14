@@ -3,6 +3,7 @@ import { mockClient } from '@directus/mock-license-server';
 import { sandbox, type Sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { sandboxPort } from '@utils/sandbox-port.js';
 import { afterAll, beforeAll, expect, test } from 'vitest';
 import { createLicense } from './__fixtures__/licenses.js';
 import { withDefaultSandboxOptions } from './__fixtures__/sandbox.js';
@@ -17,6 +18,7 @@ beforeAll(async () => {
 	directus = await sandbox(
 		database,
 		withDefaultSandboxOptions({
+			port: sandboxPort(0),
 			instances: '2',
 			hooks: {
 				async beforeApi({ env }) {

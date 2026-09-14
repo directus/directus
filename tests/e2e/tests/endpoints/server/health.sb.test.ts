@@ -2,15 +2,18 @@ import { sandbox } from '@directus/sandbox';
 import { createDirectus, graphql, rest, serverHealth, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
+import { sandboxPort } from '@utils/sandbox-port.js';
 import { describe, expect, test } from 'vitest';
 
 describe('health check configuration', () => {
 	test('not found when HEALTHCHECK_ENABLED=false', { timeout: 120_000 }, async () => {
 		const directus = await sandbox(database, {
+			port: sandboxPort(0),
 			env: {
 				HEALTHCHECK_ENABLED: 'false',
 				DB_FILENAME: `directus_test_${getUID()}.db`,
 			},
+			docker: { suffix: getUID() },
 		});
 
 		const api = createDirectus(`http://localhost:${directus.apis[0].port}`)
@@ -29,10 +32,14 @@ describe('health check configuration', () => {
 
 	test('only includes database checks when HEALTHCHECK_SERVICES=database', { timeout: 120_000 }, async () => {
 		const directus = await sandbox(database, {
+			port: sandboxPort(1),
 			env: {
 				HEALTHCHECK_SERVICES: 'database',
 				HEALTHCHECK_CACHE_TTL: '0',
 				DB_FILENAME: `directus_test_${getUID()}.db`,
+			},
+			docker: {
+				suffix: getUID(),
 			},
 		});
 
@@ -65,10 +72,14 @@ describe('health check configuration', () => {
 
 	test('exclude email checks when EMAIL_VERIFY_SETUP=false', { timeout: 120_000 }, async () => {
 		const directus = await sandbox(database, {
+			port: sandboxPort(2),
 			env: {
 				EMAIL_VERIFY_SETUP: 'false',
 				HEALTHCHECK_CACHE_TTL: '0',
 				DB_FILENAME: `directus_test_${getUID()}.db`,
+			},
+			docker: {
+				suffix: getUID(),
 			},
 		});
 

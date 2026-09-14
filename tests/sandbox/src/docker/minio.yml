@@ -1,7 +1,7 @@
 services:
   minio:
     # should stay compatible via S3 driver
-    image: minio/minio
+    image: quay.io/minio/minio
     platform: linux/amd64
     command: server /data/minio/ --console-address :9001
     ports:
@@ -12,7 +12,7 @@ services:
       MINIO_ROOT_PASSWORD: miniosecret
 
   minio-mc:
-    image: minio/mc
+    image: quay.io/minio/mc
     depends_on:
       - minio
     entrypoint: >

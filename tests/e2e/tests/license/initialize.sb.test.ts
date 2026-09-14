@@ -3,6 +3,7 @@ import { mockClient } from '@directus/mock-license-server';
 import { sandbox, type Sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { sandboxPort } from '@utils/sandbox-port.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { createLicense } from './__fixtures__/licenses.js';
 import { withDefaultSandboxOptions } from './__fixtures__/sandbox.js';
@@ -17,6 +18,7 @@ describe('boot from env LICENSE_KEY', () => {
 		directus = await sandbox(
 			database,
 			withDefaultSandboxOptions({
+				port: sandboxPort(0),
 				env: { LICENSE_KEY: license.key },
 				hooks: {
 					beforeApi: async ({ env }) => {
@@ -56,6 +58,7 @@ describe('boot persisted DB key', () => {
 		directus = await sandbox(
 			database,
 			withDefaultSandboxOptions({
+				port: sandboxPort(1),
 				hooks: {
 					beforeApi: async ({ env }) => {
 						await mockClient.registerLicense(env.LICENSE_API_URL!, license);
@@ -97,6 +100,7 @@ describe('boot core', () => {
 		directus = await sandbox(
 			database,
 			withDefaultSandboxOptions({
+				port: sandboxPort(2),
 				extras: { license: true },
 			}),
 		);

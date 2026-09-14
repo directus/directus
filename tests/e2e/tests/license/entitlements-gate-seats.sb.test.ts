@@ -15,6 +15,7 @@ import {
 	staticToken,
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { sandboxPort } from '@utils/sandbox-port.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { LICENSE_KEYS } from './__fixtures__/licenses.js';
 import { withDefaultSandboxOptions } from './__fixtures__/sandbox.js';
@@ -26,6 +27,7 @@ beforeAll(async () => {
 	directus = await sandbox(
 		database,
 		withDefaultSandboxOptions({
+			port: sandboxPort(0),
 			// LIMITED's 10 seats give headroom so the count is observed directly, never via LIMIT_EXCEEDED.
 			env: { LICENSE_KEY: LICENSE_KEYS.LIMITED },
 			extras: { license: true },

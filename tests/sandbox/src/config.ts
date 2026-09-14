@@ -126,6 +126,22 @@ const minio = {
 	STORAGE_MINIO_FORCE_PATH_STYLE: 'true',
 } as const;
 
+const ldap = {
+	LDAP_PORT: '$PORT_LDAP',
+	AUTH_PROVIDERS: 'ldap',
+	AUTH_LDAP_DRIVER: 'ldap',
+	AUTH_LDAP_CLIENT_URL: 'ldap://127.0.0.1:$PORT_LDAP',
+	AUTH_LDAP_BIND_DN: 'cn=Manager,dc=my-domain,dc=com',
+	AUTH_LDAP_BIND_PASSWORD: 'secret',
+	AUTH_LDAP_USER_DN: 'ou=users,dc=my-domain,dc=com',
+	AUTH_LDAP_USER_ATTRIBUTE: 'uid',
+	AUTH_LDAP_USER_SCOPE: 'one',
+	AUTH_LDAP_MAIL_ATTRIBUTE: 'mail',
+	AUTH_LDAP_FIRST_NAME_ATTRIBUTE: 'givenName',
+	AUTH_LDAP_LAST_NAME_ATTRIBUTE: 'sn',
+	AUTH_LDAP_ALLOW_PUBLIC_REGISTRATION: 'true',
+} as const;
+
 const maildev = {
 	EMAIL_TRANSPORT: 'smtp',
 	EMAIL_SMTP_HOST: '127.0.0.1',
@@ -165,15 +181,18 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 		...(process.arch === 'arm64' ? { DOCKER_DEFAULT_PLATFORM: 'linux/amd64' } : {}),
 		...(opts.extras.minio ? minio : {}),
 		...(opts.extras.saml ? saml : {}),
+		...(opts.extras.ldap ? ldap : {}),
 		...(opts.extras.maildev ? maildev : {}),
 		...opts.env,
 		...(process.env as Record<string, any>),
 		...(opts.extras.license ? { NODE_ENV: 'development', LICENSE_API_URL: `http://${base.HOST}:$PORT_LICENSE` } : {}),
 		// PORT/PUBLIC_URL must be authoritative — process.env carries the vitest
 		// per-project PORT baseline, but opts.port is the resolved port the API
-		// actually binds (and what tests reach via apis[0].port).
+		// actually binds (and what tests reach via apis[0].port). A PUBLIC_URL the
+		// caller asked for explicitly still wins, for tests that need a subpath or
+		// a different host than the one the API binds to.
 		PORT: String(opts.port),
-		PUBLIC_URL: `http://${base.HOST}:${opts.port}`,
+		PUBLIC_URL: opts.env['PUBLIC_URL'] ?? `http://${base.HOST}:${opts.port}`,
 	} satisfies Env;
 
 	if (opts.dbVersion && 'DB_VERSION' in env) {
@@ -213,5 +232,6 @@ export type Env = (typeof baseConfig)[Database] & {
 	DOCKER_DEFAULT_PLATFORM?: string;
 } & Partial<typeof minio> &
 	Partial<typeof saml> &
+	Partial<typeof ldap> &
 	Partial<typeof maildev> &
 	Partial<{ LICENSE_API_URL: string }>;

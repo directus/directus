@@ -2,6 +2,7 @@ import { sandbox } from '@directus/sandbox';
 import { createCollection, createDirectus, createItem, rest, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
+import { sandboxPort } from '@utils/sandbox-port.js';
 import { expect, test } from 'vitest';
 
 /**
@@ -68,6 +69,7 @@ test(
 	{ timeout: 120_000 },
 	async () => {
 		const directus = await sandbox(database, {
+			port: sandboxPort(0),
 			env: {
 				WEBSOCKETS_ENABLED: 'true',
 				WEBSOCKETS_REST_ENABLED: 'true',
@@ -75,6 +77,7 @@ test(
 				WEBSOCKETS_REST_PATH: '/websocket',
 				DB_FILENAME: `directus_test_${getUID()}.db`,
 			},
+			docker: { suffix: getUID() },
 		});
 
 		try {

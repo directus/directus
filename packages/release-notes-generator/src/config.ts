@@ -11,7 +11,7 @@ const config: Config = {
 	},
 	untypedPackageTitles: {
 		docs: '📝 Documentation',
-		'tests-blackbox': '🧪 Blackbox Tests',
+		e2e: '🧪 End to End Tests',
 	},
 	versionTitle: '📦 Published Versions',
 	noticeType: 'major',

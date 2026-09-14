@@ -32,6 +32,7 @@ import {
 	withToken,
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { sandboxPort } from '@utils/sandbox-port.js';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
 import { createLicense, LICENSE_KEYS } from './__fixtures__/licenses.js';
 import { withDefaultSandboxOptions } from './__fixtures__/sandbox.js';
@@ -87,6 +88,7 @@ beforeAll(async () => {
 	directus = await sandbox(
 		database,
 		withDefaultSandboxOptions({
+			port: sandboxPort(0),
 			extras: { license: true },
 		}),
 	);
@@ -407,6 +409,7 @@ describe('LICENSE_KEY_MANAGEMENT_ENABLED=false with source=settings', () => {
 		managedDirectus = await sandbox(
 			database,
 			withDefaultSandboxOptions({
+				port: sandboxPort(1),
 				hooks: {
 					beforeApi: async ({ env }) => {
 						await mockClient.registerLicense(env.LICENSE_API_URL!, managedLicense);

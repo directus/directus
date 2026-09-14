@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import {
 	createCollection,
 	createDirectus,
@@ -239,5 +240,93 @@ describe('/fields', () => {
 
 			expect(response).toEqual(payload);
 		});
+	});
+});
+
+describe('/fields on a system collection', () => {
+	const userField = `user_field_${randomUUID().split('-')[0]!}`;
+
+	test('a user created field can be added to, updated on and removed from a system collection', async () => {
+		const created = await api.request(
+			createField('directus_users', {
+				field: userField,
+				type: 'string',
+				meta: { interface: 'input', special: null },
+			} as any),
+		);
+
+		expect(created).toMatchObject({ collection: 'directus_users', field: userField, type: 'string' });
+
+		const updated = await api.request(updateField('directus_users', userField, { meta: { note: 'noted' } } as any));
+
+		expect(updated).toMatchObject({ field: userField, meta: expect.objectContaining({ note: 'noted' }) });
+
+		await api.request(deleteField('directus_users', userField));
+
+		await expect(api.request(readField('directus_users', userField))).rejects.toThrowError();
+	});
+
+	test('an index can be added to a system field', async () => {
+		await api.request(
+			updateField('directus_users', 'first_name', {
+				collection: 'directus_users',
+				field: 'first_name',
+				schema: { is_indexed: true },
+			} as any),
+		);
+
+		const field = await api.request(readField('directus_users', 'first_name'));
+
+		expect(field.schema?.is_indexed).toBe(true);
+	});
+
+	// Postgres builds the index outside of a transaction when asked to do it concurrently
+	test('an index can be added to a system field concurrently', async () => {
+		const response = await fetch(`http://localhost:${port}/fields/directus_users/last_name?concurrentIndexCreation`, {
+			method: 'PATCH',
+			headers: { 'Content-Type': 'application/json', Authorization: 'Bearer admin' },
+			body: JSON.stringify({
+				collection: 'directus_users',
+				field: 'last_name',
+				schema: { is_indexed: true },
+			}),
+		});
+
+		expect(response.status).toBe(200);
+
+		const field = await api.request(readField('directus_users', 'last_name'));
+
+		expect(field.schema?.is_indexed).toBe(true);
+	});
+
+	test('anything other than the index cannot be changed on a system field', async () => {
+		await expect(
+			api.request(
+				updateField('directus_users', 'first_name', {
+					collection: 'directus_users',
+					field: 'first_name',
+					type: 'string',
+					schema: { is_nullable: false },
+				} as any),
+			),
+		).rejects.toMatchObject({ errors: [{ message: expect.stringContaining('Invalid payload.') }] });
+
+		await expect(
+			api.request(
+				updateField('directus_users', 'first_name', {
+					collection: 'directus_users',
+					field: 'first_name',
+					type: 'string',
+					meta: { options: { placeholder: 'Updated' } },
+				} as any),
+			),
+		).rejects.toMatchObject({ errors: [{ message: expect.stringContaining('Invalid payload.') }] });
+	});
+
+	test('a system field cannot be deleted', async () => {
+		await expect(api.request(deleteField('directus_users', 'description'))).rejects.toThrowError();
+
+		// Still there afterwards
+		expect(await api.request(readField('directus_users', 'description'))).toBeDefined();
 	});
 });
