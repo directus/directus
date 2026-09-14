@@ -541,25 +541,14 @@ describe('getSnapshotDiff', () => {
 			expect(result.relations).toBeDefined();
 		});
 
-		test.each([
-			{
-				name: 'added',
-				currentMeta: { junction_field: null },
-				afterMeta: { junction_field: null, one_field: 'author_id' },
-			},
-			{
-				name: 'removed',
-				currentMeta: { junction_field: null, one_field: 'author_id' },
-				afterMeta: { junction_field: null },
-			},
-		])('should represent $name relation metadata as an update', ({ currentMeta, afterMeta }) => {
+		test('should represent added relation metadata as an update', () => {
 			const current = createMockSnapshot({
 				relations: [
 					{
 						collection: 'posts',
 						field: 'author_id',
 						related_collection: 'users',
-						meta: currentMeta,
+						meta: { junction_field: null },
 						schema: null,
 					},
 				],
@@ -571,7 +560,7 @@ describe('getSnapshotDiff', () => {
 						collection: 'posts',
 						field: 'author_id',
 						related_collection: 'users',
-						meta: afterMeta,
+						meta: { junction_field: null, one_field: 'author_id' },
 						schema: null,
 					},
 				],
@@ -583,12 +572,48 @@ describe('getSnapshotDiff', () => {
 				{
 					kind: 'E',
 					path: ['meta'],
-					lhs: currentMeta,
-					rhs: afterMeta,
+					lhs: { junction_field: null },
+					rhs: { junction_field: null, one_field: 'author_id' },
 				},
 			]);
 		});
 
+		test('should represent removed relation metadata as an update', () => {
+			const current = createMockSnapshot({
+				relations: [
+					{
+						collection: 'posts',
+						field: 'author_id',
+						related_collection: 'users',
+						meta: { junction_field: null, one_field: 'author_id' },
+						schema: null,
+					},
+				],
+			});
+
+			const after = createMockSnapshot({
+				relations: [
+					{
+						collection: 'posts',
+						field: 'author_id',
+						related_collection: 'users',
+						meta: { junction_field: null },
+						schema: null,
+					},
+				],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.relations[0]!.diff).toEqual([
+				{
+					kind: 'E',
+					path: ['meta'],
+					lhs: { junction_field: null, one_field: 'author_id' },
+					rhs: { junction_field: null },
+				},
+			]);
+		});
 	});
 
 	describe('filtering empty diffs', () => {
