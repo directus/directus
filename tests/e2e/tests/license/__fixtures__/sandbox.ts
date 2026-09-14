@@ -16,8 +16,7 @@ export function withDefaultSandboxOptions(overrides?: DeepPartial<Options>): Dee
 		{
 			dev: devMode,
 			watch: devMode,
-			prefix: database,
-			docker: { keep: devMode, docker: { suffix: uid } },
+			docker: { keep: devMode, suffix: uid },
 			cache: false,
 			env: {
 				CACHE_SCHEMA: 'false',
