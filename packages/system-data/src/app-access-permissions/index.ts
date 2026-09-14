@@ -21,7 +21,7 @@ export const appAccessMinimalPermissions: Permission[] = [
 ].map((row) => ({ ...defaults, ...row }) as Permission);
 
 // Any folder type added later has to be granted deliberately rather than inherited here
-const fileLibraryFolder = { type: { _eq: 'assets' } };
+const fileLibraryFolder = { type: { _eq: 'files' } };
 
 export const appRecommendedPermissions: Partial<Permission>[] = [
 	{

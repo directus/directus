@@ -490,7 +490,10 @@ describe('FlowsOverview - import export', () => {
 		const file = {
 			text: () =>
 				Promise.resolve(
-					JSON.stringify({ version: 1, flow: { id: 'flow-1', name: 'Imported', operation: null }, operations: [] }),
+					JSON.stringify({
+						version: 2,
+						flows: [{ flow: { id: 'flow-1', name: 'Imported', operation: null }, operations: [] }],
+					}),
 				),
 		};
 

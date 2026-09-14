@@ -37,7 +37,7 @@ watch(modelValue, (val) => {
 
 // Each folder type words the delete options differently — see the matching blocks in the translations
 const TRANSLATION_KEYS: Record<FolderType, string> = {
-	assets: 'delete_folder_dialog',
+	files: 'delete_folder_dialog',
 	flows: 'delete_flow_folder_dialog',
 };
 

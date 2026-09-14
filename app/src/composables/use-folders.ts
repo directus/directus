@@ -15,7 +15,7 @@ export type Folder = {
 	children?: Folder[];
 };
 
-export type FolderType = 'assets' | 'flows';
+export type FolderType = 'files' | 'flows';
 
 type UsableFolders = {
 	loading: Ref<boolean>;

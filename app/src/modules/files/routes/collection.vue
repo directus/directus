@@ -50,7 +50,7 @@ const router = useRouter();
 
 const notificationsStore = useNotificationsStore();
 const { info } = useServerStore();
-const { folders, fetchFolders } = useFolders('assets');
+const { folders, fetchFolders } = useFolders('files');
 
 const layoutRef = ref();
 const selection = ref<string[]>([]);
@@ -446,7 +446,7 @@ async function downloadFiles() {
 				<SearchInput v-model="search" v-model:filter="filter" collection="directus_files" small />
 
 				<AddFolder
-					type="assets"
+					type="files"
 					:parent="folder"
 					:disabled="createFolderAllowed !== true"
 					@created="navigateToFolder"
@@ -473,7 +473,7 @@ async function downloadFiles() {
 						<VCardTitle>{{ $t('move_to_folder') }}</VCardTitle>
 
 						<VCardText>
-							<FolderPicker v-model="selectedFolder" type="assets" />
+							<FolderPicker v-model="selectedFolder" type="files" />
 						</VCardText>
 
 						<VCardActions>
@@ -506,7 +506,7 @@ async function downloadFiles() {
 					v-model="confirmDelete"
 					:folders="selectedFolderObjects"
 					:all-folders="folders ?? []"
-					type="assets"
+					type="files"
 					@done="onFolderDeleteDone"
 				/>
 

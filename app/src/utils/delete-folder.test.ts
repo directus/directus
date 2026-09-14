@@ -21,7 +21,7 @@ describe('moveSingleFolder', () => {
 			.mockResolvedValueOnce({ data: { data: [{ id: 'child-folder' }] } })
 			.mockResolvedValueOnce({ data: { data: [{ id: 'child-file' }] } });
 
-		await moveSingleFolder(folder('f1', 'parent-1'), 'assets');
+		await moveSingleFolder(folder('f1', 'parent-1'), 'files');
 
 		expect(apiPatch).toHaveBeenCalledWith('/folders', { keys: ['child-folder'], data: { parent: 'parent-1' } });
 		expect(apiPatch).toHaveBeenCalledWith('/files', { keys: ['child-file'], data: { folder: 'parent-1' } });
@@ -30,7 +30,7 @@ describe('moveSingleFolder', () => {
 	it('skips patch when no children', async () => {
 		apiGet.mockResolvedValueOnce({ data: { data: [] } }).mockResolvedValueOnce({ data: { data: [] } });
 
-		await moveSingleFolder(folder('f1', null), 'assets');
+		await moveSingleFolder(folder('f1', null), 'files');
 
 		expect(apiPatch).not.toHaveBeenCalled();
 	});
@@ -40,7 +40,7 @@ describe('moveSingleFolder', () => {
 			.mockResolvedValueOnce({ data: { data: [{ id: 'child-folder' }] } })
 			.mockResolvedValueOnce({ data: { data: [] } });
 
-		await moveSingleFolder(folder('f1', null), 'assets');
+		await moveSingleFolder(folder('f1', null), 'files');
 
 		expect(apiPatch).toHaveBeenCalledWith('/folders', { keys: ['child-folder'], data: { parent: null } });
 	});
@@ -50,7 +50,7 @@ describe('moveAndDelete', () => {
 	it('moves contents of all folders then deletes them', async () => {
 		apiGet.mockResolvedValue({ data: { data: [] } });
 
-		await moveAndDelete([folder('f1'), folder('f2')], 'assets');
+		await moveAndDelete([folder('f1'), folder('f2')], 'files');
 
 		expect(apiDelete).toHaveBeenCalledWith('/folders', { data: ['f1', 'f2'] });
 	});
@@ -62,7 +62,7 @@ describe('recursiveDelete', () => {
 
 		apiGet.mockResolvedValueOnce({ data: { data: [{ id: 'file-1' }, { id: 'file-2' }] } });
 
-		await recursiveDelete([folder('root')], all, 'assets');
+		await recursiveDelete([folder('root')], all, 'files');
 
 		expect(apiDelete).toHaveBeenCalledWith('/files', { data: ['file-1', 'file-2'] });
 
@@ -76,7 +76,7 @@ describe('recursiveDelete', () => {
 
 		apiGet.mockResolvedValueOnce({ data: { data: [] } });
 
-		await recursiveDelete([folder('root')], all, 'assets');
+		await recursiveDelete([folder('root')], all, 'files');
 
 		expect(apiPatch).toHaveBeenCalledWith('/folders', { keys: ['child'], data: { parent: null } });
 	});
@@ -90,7 +90,7 @@ describe('recursiveDelete', () => {
 			return Promise.resolve();
 		});
 
-		await recursiveDelete([folder('root')], [folder('root')], 'assets');
+		await recursiveDelete([folder('root')], [folder('root')], 'files');
 
 		expect(calls.indexOf('/files')).toBeLessThan(calls.indexOf('/folders'));
 	});
@@ -98,7 +98,7 @@ describe('recursiveDelete', () => {
 	it('skips file delete when no files', async () => {
 		apiGet.mockResolvedValueOnce({ data: { data: [] } });
 
-		await recursiveDelete([folder('root')], [folder('root')], 'assets');
+		await recursiveDelete([folder('root')], [folder('root')], 'files');
 
 		expect(apiDelete).not.toHaveBeenCalledWith('/files', expect.anything());
 		expect(apiDelete).toHaveBeenCalledWith('/folders', { data: ['root'] });

@@ -17,7 +17,7 @@ fields:
     interface: select-dropdown
     options:
       choices:
-        - value: assets
+        - value: files
           text: $t:file_library
         - value: flows
           text: $t:flows

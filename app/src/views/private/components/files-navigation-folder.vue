@@ -41,7 +41,7 @@ const props = withDefaults(
 	}>(),
 	{
 		clickHandler: () => () => undefined,
-		type: 'assets',
+		type: 'files',
 		showDownload: true,
 	},
 );

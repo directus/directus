@@ -1,7 +1,7 @@
 Perform CRUD operations on Directus Folders. Folders are used to organize files and Flows in Directus.
 
-A folder's `type` decides what it organizes: `assets` for the file library, `flows` for Flows. It defaults to `assets`,
-so set it explicitly when creating a folder for Flows, and filter on it when reading folders of one kind.
+A folder's `type` decides what it organizes: `files` for the file library, `flows` for Flows. It defaults to `files`, so
+set it explicitly when creating a folder for Flows, and filter on it when reading folders of one kind.
 
 ## Available Actions
 

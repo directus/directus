@@ -50,11 +50,11 @@ describe('FoldersService', () => {
 					{ id: 'root-id', name: 'parent', parent: null },
 				]);
 
-				await foldersService.buildTree('root-id', { filter: { type: { _eq: 'assets' } } });
+				await foldersService.buildTree('root-id', { filter: { type: { _eq: 'files' } } });
 
 				expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith({
 					limit: -1,
-					filter: { type: { _eq: 'assets' } },
+					filter: { type: { _eq: 'files' } },
 				});
 			});
 

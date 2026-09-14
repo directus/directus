@@ -17,7 +17,7 @@ type DeleteFolderConfig = {
 };
 
 const CONFIGS: Record<FolderType, DeleteFolderConfig> = {
-	assets: { collection: 'files', field: 'folder', onDeleteContents: 'delete' },
+	files: { collection: 'files', field: 'folder', onDeleteContents: 'delete' },
 	// Flow folders never delete their contained flows — a deleted folder drops its flows back to root
 	flows: { collection: 'flows', field: 'folder', onDeleteContents: 'detach' },
 };

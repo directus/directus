@@ -325,7 +325,7 @@ function revert(values: Record<string, any>) {
 					<VCardTitle>{{ $t('move_to_folder') }}</VCardTitle>
 
 					<VCardText>
-						<FolderPicker v-model="selectedFolder" type="assets" />
+						<FolderPicker v-model="selectedFolder" type="files" />
 					</VCardText>
 
 					<VCardActions>

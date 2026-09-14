@@ -26,7 +26,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const { nestedFolders, folders, loading } = useFolders('assets');
+const { nestedFolders, folders, loading } = useFolders('files');
 
 const folderPath = computed(() => {
 	if (!props.value || !folders.value) {

@@ -36,7 +36,7 @@ const props = withDefaults(
 		deletedHandler?: (parent: string | null) => void;
 	}>(),
 	{
-		type: 'assets',
+		type: 'files',
 		showSpecialFolders: true,
 		showDownload: true,
 	},

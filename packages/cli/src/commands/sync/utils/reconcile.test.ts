@@ -240,7 +240,7 @@ describe('reconcileCollections', () => {
 				input(
 					'directus_folders',
 					[{ id: 'sf', name: 'Shared', parent: null, type: 'flows' }],
-					[{ id: 'ta', name: 'Shared', parent: null, type: 'assets' }],
+					[{ id: 'ta', name: 'Shared', parent: null, type: 'files' }],
 				),
 			],
 			{},
