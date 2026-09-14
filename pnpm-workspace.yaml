@@ -245,7 +245,7 @@ catalog:
   log-symbols: 7.0.1
   lru-cache: 11.2.2
   mailtrap: 4.9.0
-  maplibre-gl: 1.15.3
+  maplibre-gl: 6.9.0
   marked: 16.4.1
   micromustache: 8.0.3
   mime: 4.1.0
