@@ -6,6 +6,36 @@ packages:
   - packages/*
   - tests/*
 
+# api -> directus -> api cyclic dependency temp fix
+ignoreWorkspaceCycles: true
+
+overrides:
+  '@yarnpkg/shell>cross-spawn': 7.0.6
+  tar: 7.5.22
+  js-beautify>editorconfig: 3.0.2
+  js-beautify>glob: 11.1.0
+  express@4>path-to-regexp: 0.1.13
+  adm-zip: 0.6.0
+  js-yaml@4: 4.3.1
+  js-yaml@3: 3.15.1
+  unplugin-yaml>yaml: 2.9.0
+
+allowBuilds:
+  '@fortawesome/fontawesome-common-types': true
+  '@fortawesome/fontawesome-svg-core': true
+  '@fortawesome/free-regular-svg-icons': true
+  '@fortawesome/free-solid-svg-icons': true
+  '@parcel/watcher': true
+  argon2: true
+  braintrust: true
+  esbuild: true
+  isolated-vm: true
+  oracledb: true
+  protobufjs: true
+  sqlite3: true
+  unrs-resolver: true
+  vue-demi: true
+
 catalog:
   '@ai-sdk/anthropic': 3.0.58
   '@ai-sdk/devtools': 0.0.15
@@ -342,17 +372,3 @@ catalog:
   zod-validation-error: 4.0.2
 
 catalogMode: strict
-
-onlyBuiltDependencies:
-  - '@fortawesome/fontawesome-common-types'
-  - '@fortawesome/fontawesome-svg-core'
-  - '@fortawesome/free-regular-svg-icons'
-  - '@fortawesome/free-solid-svg-icons'
-  - '@parcel/watcher'
-  - argon2
-  - esbuild
-  - isolated-vm
-  - oracledb
-  - sharp
-  - sqlite3
-  - vue-demi
