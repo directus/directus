@@ -4,7 +4,6 @@
  */
 import type { Options } from '@directus/sandbox';
 import type { DeepPartial } from '@directus/types';
-import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { merge } from 'lodash-es';
 
