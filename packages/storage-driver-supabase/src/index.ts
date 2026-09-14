@@ -1,3 +1,5 @@
+import { Agent as HttpAgent, type AgentOptions as HttpAgentOptions } from 'node:http';
+import { Agent as HttpsAgent } from 'node:https';
 import { basename, join } from 'node:path';
 import { Readable } from 'node:stream';
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
@@ -7,7 +9,58 @@ import { normalizePath } from '@directus/utils';
 import { StorageClient } from '@supabase/storage-js';
 import * as tus from 'tus-js-client';
 import type { RequestInit } from 'undici';
-import { fetch } from 'undici';
+import { EnvHttpProxyAgent, fetch as undiciFetch } from 'undici';
+
+/**
+ * Two independent HTTP transports are in play here, so two independent proxy mechanisms are
+ * needed - this is intentional, not something to unify:
+ *
+ *  - The Supabase SDK and our own `read()` calls go through undici's `fetch`, which
+ *    `EnvHttpProxyAgent` (below) makes proxy-aware.
+ *  - `writeChunk`'s TUS upload goes through tus-js-client's `NodeHttpStack`, which talks to
+ *    node:http/node:https directly and knows nothing about undici or its dispatchers. That one is
+ *    made proxy-aware further down, via a plain Node `Agent` configured with `proxyEnv`.
+ *
+ * Both read HTTP_PROXY/HTTPS_PROXY/NO_PROXY from the environment; they just do it through two
+ * different APIs because the two transports don't share one.
+ */
+
+/**
+ * Constructed once and reused for every `DriverSupabase` instance in this process: proxy config is
+ * process-wide state (env vars), so there's nothing instance-specific to justify a new dispatcher
+ * (and its own connection pool) per driver instance.
+ */
+const proxyDispatcher = new EnvHttpProxyAgent();
+
+/**
+ * Wraps undici's `fetch` with the shared dispatcher above. Used directly for our own `read()`
+ * calls below; adapted for `StorageClient`'s `fetch` option further down.
+ */
+const proxyAwareFetch = (input: Parameters<typeof undiciFetch>[0], init?: Parameters<typeof undiciFetch>[1]) =>
+	undiciFetch(input, { ...init, dispatcher: proxyDispatcher });
+
+/**
+ * `StorageClient` types its `fetch` option against the ambient global `fetch`. In this workspace
+ * that resolves to `undici-types` (bundled with `@types/node`), a *different* version of undici's
+ * own type declarations than the ones `proxyAwareFetch` above is built from (the standalone
+ * `undici` package). The two are structurally close but not identical - confirmed via `tsc`, not
+ * assumed - so this cast reflects a real, versioned type mismatch rather than laziness. It's
+ * intentionally isolated to this one SDK boundary instead of spread across every call site.
+ */
+const proxyAwareFetchForSdk = proxyAwareFetch as unknown as typeof globalThis.fetch;
+
+/**
+ * `NodeHttpStack` (exported here as `DefaultHttpStack`) spreads its `requestOptions` straight into
+ * node:http/node:https's own `request()`, which only understands a Node `Agent`, not an undici
+ * `Dispatcher` - hence a second, separate proxy mechanism from `proxyDispatcher` above. `proxyEnv`
+ * is Node's built-in agent option for HTTP_PROXY/HTTPS_PROXY/NO_PROXY support; `@types/node`
+ * doesn't declare it in this workspace's pinned version, hence the local type extension.
+ */
+type AgentOptionsWithProxy = HttpAgentOptions & { proxyEnv?: NodeJS.ProcessEnv };
+
+const tusAgentOptions: AgentOptionsWithProxy = { proxyEnv: process.env };
+const tusHttpAgent = new HttpAgent(tusAgentOptions);
+const tusHttpsAgent = new HttpsAgent(tusAgentOptions);
 
 export type DriverSupabaseConfig = {
 	bucket: string;
@@ -25,6 +78,7 @@ export class DriverSupabase implements TusDriver {
 	private config: DriverSupabaseConfig & { root: string };
 	private client: StorageClient;
 	private bucket: ReturnType<StorageClient['from']>;
+	private readonly tusHttpStack: InstanceType<typeof tus.DefaultHttpStack>;
 
 	// TUS specific members
 	private readonly preferredChunkSize: number;
@@ -39,6 +93,11 @@ export class DriverSupabase implements TusDriver {
 
 		this.client = this.getClient();
 		this.bucket = this.getBucket();
+
+		// The resumable endpoint is fixed per instance, so the matching agent (see the
+		// AgentOptionsWithProxy comment above) is picked once here rather than per request.
+		const protocol = this.endpoint.startsWith('http://') ? 'http:' : 'https:';
+		this.tusHttpStack = new tus.DefaultHttpStack({ agent: protocol === 'http:' ? tusHttpAgent : tusHttpsAgent });
 	}
 
 	private get endpoint() {
@@ -54,10 +113,14 @@ export class DriverSupabase implements TusDriver {
 			throw new Error('`service_role` is required');
 		}
 
-		return new StorageClient(this.endpoint, {
-			apikey: this.config.serviceRole,
-			Authorization: `Bearer ${this.config.serviceRole}`,
-		});
+		return new StorageClient(
+			this.endpoint,
+			{
+				apikey: this.config.serviceRole,
+				Authorization: `Bearer ${this.config.serviceRole}`,
+			},
+			proxyAwareFetchForSdk,
+		);
 	}
 
 	private getBucket() {
@@ -96,7 +159,7 @@ export class DriverSupabase implements TusDriver {
 			requestInit.headers['Range'] = `bytes=${range.start ?? ''}-${range.end ?? ''}`;
 		}
 
-		const response = await fetch(this.getAuthenticatedUrl(filepath), requestInit);
+		const response = await proxyAwareFetch(this.getAuthenticatedUrl(filepath), requestInit);
 
 		if (response.status >= 400 || !response.body) {
 			// An unread body holds its connection open
@@ -263,6 +326,7 @@ export class DriverSupabase implements TusDriver {
 		await new Promise((resolve, reject) => {
 			const upload = new tus.Upload(content, {
 				endpoint: this.getResumableUrl(),
+				httpStack: this.tusHttpStack,
 				// @ts-expect-error
 				fileReader: new FileReader(),
 				headers: {
