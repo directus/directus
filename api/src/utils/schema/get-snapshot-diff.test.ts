@@ -81,41 +81,16 @@ describe('getSnapshotDiff', () => {
 			expect(result.collections[0]!.collection).toBe('posts');
 		});
 
-		test.each([
-			{
-				name: 'addition',
-				currentMeta: { hidden: false },
-				afterMeta: { hidden: false, status: 'draft' },
-			},
-			{
-				name: 'deletion',
-				currentMeta: { hidden: false, status: 'draft' },
-				afterMeta: { hidden: false },
-			},
-		])('should represent a nested meta property $name as a meta update', ({ currentMeta, afterMeta }) => {
+
+		test('should keep child changes when collection metadata is removed', () => {
 			const current = createMockSnapshot({
-				collections: [{ collection: 'posts', meta: currentMeta, schema: { name: 'posts' } }],
-			});
-
-			const after = createMockSnapshot({
-				collections: [{ collection: 'posts', meta: afterMeta, schema: { name: 'posts' } }],
-			});
-
-			const result = getSnapshotDiff(current, after);
-
-			expect(result.collections[0]!.diff).toEqual([
-				{
-					kind: 'E',
-					path: ['meta'],
-					lhs: currentMeta,
-					rhs: afterMeta,
-				},
-			]);
-		});
-
-		test('should keep child changes when the parent collection has a nested meta deletion', () => {
-			const current = createMockSnapshot({
-				collections: [{ collection: 'posts', meta: { hidden: false, status: 'draft' }, schema: { name: 'posts' } }],
+				collections: [
+					{
+						collection: 'posts',
+						meta: { hidden: false, status: 'draft' },
+						schema: { name: 'posts' },
+					},
+				],
 				fields: [{ collection: 'posts', field: 'title', type: 'string', meta: null, schema: null }],
 				relations: [
 					{
@@ -129,7 +104,13 @@ describe('getSnapshotDiff', () => {
 			});
 
 			const after = createMockSnapshot({
-				collections: [{ collection: 'posts', meta: { hidden: false }, schema: { name: 'posts' } }],
+				collections: [
+					{
+						collection: 'posts',
+						meta: { hidden: false },
+						schema: { name: 'posts' },
+					},
+				],
 				fields: [{ collection: 'posts', field: 'title', type: 'text', meta: null, schema: null }],
 				relations: [
 					{
@@ -144,20 +125,42 @@ describe('getSnapshotDiff', () => {
 
 			const result = getSnapshotDiff(current, after);
 
-			expect(result.collections[0]!.diff[0]).toMatchObject({ kind: 'E', path: ['meta'] });
+			expect(result.collections[0]!.diff).toEqual([
+				{
+					kind: 'E',
+					path: ['meta'],
+					lhs: { hidden: false, status: 'draft' },
+					rhs: { hidden: false },
+				},
+			]);
+
 			expect(result.fields).toHaveLength(1);
 			expect(result.relations).toHaveLength(1);
 		});
 
-		test('should keep a grouped collection creation when its parent has a nested meta addition', () => {
+		test('should keep a grouped collection creation when its parent metadata is added', () => {
 			const current = createMockSnapshot({
-				collections: [{ collection: 'parent', meta: { hidden: false }, schema: { name: 'parent' } }],
+				collections: [
+					{
+						collection: 'parent',
+						meta: { hidden: false },
+						schema: { name: 'parent' },
+					},
+				],
 			});
 
 			const after = createMockSnapshot({
 				collections: [
-					{ collection: 'parent', meta: { hidden: false, status: 'draft' }, schema: { name: 'parent' } },
-					{ collection: 'child', meta: { group: 'parent' }, schema: { name: 'child' } },
+					{
+						collection: 'parent',
+						meta: { hidden: false, status: 'draft' },
+						schema: { name: 'parent' },
+					},
+					{
+						collection: 'child',
+						meta: { group: 'parent' },
+						schema: { name: 'child' },
+					},
 				],
 			});
 
@@ -252,24 +255,30 @@ describe('getSnapshotDiff', () => {
 			expect(result.fields[0]!.diff).toBeDefined();
 		});
 
-		test.each([
-			{
-				name: 'addition',
-				currentMeta: { hidden: false },
-				afterMeta: { hidden: false, required: true },
-			},
-			{
-				name: 'deletion',
-				currentMeta: { hidden: false, required: true },
-				afterMeta: { hidden: false },
-			},
-		])('should represent a nested field meta property $name as a meta update', ({ currentMeta, afterMeta }) => {
+
+		test('should represent added field metadata as an update', () => {
 			const current = createMockSnapshot({
-				fields: [{ collection: 'posts', field: 'title', type: 'string', meta: currentMeta, schema: null }],
+				fields: [
+					{
+						collection: 'posts',
+						field: 'title',
+						type: 'string',
+						meta: { hidden: false },
+						schema: null,
+					},
+				],
 			});
 
 			const after = createMockSnapshot({
-				fields: [{ collection: 'posts', field: 'title', type: 'string', meta: afterMeta, schema: null }],
+				fields: [
+					{
+						collection: 'posts',
+						field: 'title',
+						type: 'string',
+						meta: { hidden: false, required: true },
+						schema: null,
+					},
+				],
 			});
 
 			const result = getSnapshotDiff(current, after);
@@ -278,8 +287,8 @@ describe('getSnapshotDiff', () => {
 				{
 					kind: 'E',
 					path: ['meta'],
-					lhs: currentMeta,
-					rhs: afterMeta,
+					lhs: { hidden: false },
+					rhs: { hidden: false, required: true },
 				},
 			]);
 		});
@@ -536,16 +545,16 @@ describe('getSnapshotDiff', () => {
 
 		test.each([
 			{
-				name: 'addition',
+				name: 'added',
 				currentMeta: { junction_field: null },
 				afterMeta: { junction_field: null, one_field: 'author_id' },
 			},
 			{
-				name: 'deletion',
+				name: 'removed',
 				currentMeta: { junction_field: null, one_field: 'author_id' },
 				afterMeta: { junction_field: null },
 			},
-		])('should represent a nested relation meta property $name as a meta update', ({ currentMeta, afterMeta }) => {
+		])('should represent $name relation metadata as an update', ({ currentMeta, afterMeta }) => {
 			const current = createMockSnapshot({
 				relations: [
 					{

@@ -224,16 +224,12 @@ function getSnapshotItemDiff<T extends { meta?: unknown }>(
 ): Diff<T | undefined>[] | undefined {
 	const diff = deepDiff.diff(current, after);
 
-	if (
-		current === undefined ||
-		after === undefined ||
-		!diff?.some(
-			(change) =>
-				(change.kind === DiffKind.NEW || change.kind === DiffKind.DELETE) && change.path?.[0] === 'meta',
-		)
-	) {
-		return diff;
-	}
+	const hasNestedMetaChange = diff?.some((change) => {
+		const isAdditionOrDeletion = change.kind === DiffKind.NEW || change.kind === DiffKind.DELETE;
+		return isAdditionOrDeletion && change.path?.[0] === 'meta';
+	});
+
+	if (current === undefined || after === undefined || !hasNestedMetaChange) return diff;
 
 	return [
 		{
