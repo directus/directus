@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
 
-ARG NODE_VERSION=22
+ARG NODE_VERSION=26
 
 # Pin alpine version so libs are in sync between builder and runtime
 ARG ALPINE_VERSION=3.23
@@ -19,7 +19,8 @@ RUN apk --no-cache add python3 py3-setuptools build-base
 WORKDIR /directus
 
 COPY package.json .
-RUN corepack enable && corepack prepare
+
+RUN npm install --global "$(node -p "require('./package.json').packageManager")"
 
 # Deploy as 'node' user to match pnpm setups in production image
 # (see https://github.com/directus/directus/issues/23822)
@@ -28,7 +29,7 @@ USER node
 
 ENV NODE_OPTIONS=--max-old-space-size=8192
 
-COPY pnpm-lock.yaml .
+COPY --chown=node:node pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm fetch
 
 COPY --chown=node:node . .

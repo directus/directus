@@ -25,6 +25,9 @@ describe('isolated-vm extension sandbox', () => {
 			env: {
 				DB_FILENAME: `directus_test_${getUID()}.db`,
 				EXTENSIONS_PATH: extensionsPath,
+				// Without this a fixture that fails to register is only logged as a warning and its
+				// routes 404 — which would silently satisfy the assertions below.
+				EXTENSIONS_MUST_LOAD: 'true',
 				// Generous headroom over the 1000ms default so the bridging round-trip isn't
 				// timed out under load in CI.
 				EXTENSIONS_SANDBOX_TIMEOUT: '10000',
@@ -53,8 +56,9 @@ describe('isolated-vm extension sandbox', () => {
 	test('denies a host function for a scope the extension did not request', async () => {
 		const res = await fetch(`${baseUrl}/sandboxed-endpoint/forbidden`);
 
-		// The `request` scope was not granted, so the call throws inside the isolate and the
-		// error propagates back across the boundary as a failed response.
-		expect(res.status).toBeGreaterThanOrEqual(400);
+		// The `request` scope was not granted, so the call throws inside the isolate and the error
+		// propagates back across the boundary as an InternalServerError. Asserting the exact status
+		// matters here: a 404 would mean the route never registered, not that the scope was denied.
+		expect(res.status).toBe(500);
 	});
 });

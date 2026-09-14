@@ -29,7 +29,7 @@ describe('checkRequirements', () => {
 		mockProcessVersions.mockRestore();
 	});
 
-	describe('when Node.js version is correct', () => {
+	describe('when Node.js version is supported', () => {
 		it('should pass without errors for Node.js 26.x.x', () => {
 			// Arrange
 			mockProcessVersions.mockReturnValue({ ...process.versions, node: '26.0.0' });
@@ -65,9 +65,21 @@ describe('checkRequirements', () => {
 			expect(mockExit).not.toHaveBeenCalled();
 			expect(mockConsoleError).not.toHaveBeenCalled();
 		});
+
+		it('should pass without errors for a newer major such as Node.js 28.x.x', () => {
+			// Arrange
+			mockProcessVersions.mockReturnValue({ ...process.versions, node: '28.0.0' });
+
+			// Act
+			checkRequirements();
+
+			// Assert
+			expect(mockExit).not.toHaveBeenCalled();
+			expect(mockConsoleError).not.toHaveBeenCalled();
+		});
 	});
 
-	describe('when Node.js version is incorrect', () => {
+	describe('when Node.js version is below the minimum', () => {
 		it('should exit with code 1 for Node.js 18.x.x', () => {
 			// Arrange
 			mockProcessVersions.mockReturnValue({ ...process.versions, node: '18.17.0' });
@@ -107,16 +119,6 @@ describe('checkRequirements', () => {
 			expect(mockExit).toHaveBeenCalledWith(1);
 			expect(mockConsoleError).toHaveBeenCalledTimes(3);
 		});
-
-		it('should exit with code 1 for Node.js 28.x.x (future version)', () => {
-			// Arrange
-			mockProcessVersions.mockReturnValue({ ...process.versions, node: '28.0.0' });
-
-			// Act & Assert
-			expect(() => checkRequirements()).toThrow('process.exit called');
-			expect(mockExit).toHaveBeenCalledWith(1);
-			expect(mockConsoleError).toHaveBeenCalledTimes(3);
-		});
 	});
 
 	describe('error messages', () => {
@@ -130,6 +132,7 @@ describe('checkRequirements', () => {
 			expect(mockConsoleError).toHaveBeenNthCalledWith(1, expect.stringContaining('Node.js 18.17.0'));
 			expect(mockConsoleError).toHaveBeenNthCalledWith(2, expect.stringContaining('Directus requires'));
 			expect(mockConsoleError).toHaveBeenNthCalledWith(2, expect.stringContaining('Node.js 26'));
+			expect(mockConsoleError).toHaveBeenNthCalledWith(2, expect.stringContaining('or newer'));
 			expect(mockConsoleError).toHaveBeenNthCalledWith(3, 'Please adjust your Node.js version and try again.');
 		});
 
