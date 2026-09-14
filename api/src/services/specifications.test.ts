@@ -224,4 +224,9 @@ describe('Integration Tests', () => {
 			});
 		});
 	});
+
+	// TEMP: intentionally failing test to exercise the pre-push hook's failure output. Remove before committing.
+	it('temp failing test for pre-push hook testing', () => {
+		expect(1).toBe(2);
+	});
 });
