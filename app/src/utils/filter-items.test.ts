@@ -1,6 +1,12 @@
 import { Filter } from '@directus/types';
-import { describe, expect, test } from 'vitest';
+import { generateJoi } from '@directus/utils';
+import { describe, expect, test, vi } from 'vitest';
 import { filterItems } from './filter-items';
+
+vi.mock('@directus/utils', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('@directus/utils')>();
+	return { ...actual, generateJoi: vi.fn(actual.generateJoi) };
+});
 
 const items = [
 	{ id: 1, name: 'Send email', status: 'active', description: 'Notify the team', folder: 'folder-a' },
@@ -47,5 +53,15 @@ describe('filterItems', () => {
 	test('excludes items for a relational path that only holds a foreign key', () => {
 		const filter: Filter = { folder: { name: { _eq: 'anything' } } };
 		expect(filterItems(items, filter)).toEqual([]);
+	});
+
+	test('builds each leaf schema once regardless of how many items are filtered', () => {
+		const many = Array.from({ length: 50 }, (_, id) => ({ id, status: 'active', name: 'Send email' }));
+		const filter: Filter = { _and: [{ status: { _eq: 'active' } }, { name: { _contains: 'Send' } }] };
+
+		vi.mocked(generateJoi).mockClear();
+
+		expect(filterItems(many, filter)).toHaveLength(50);
+		expect(generateJoi).toHaveBeenCalledTimes(2);
 	});
 });
