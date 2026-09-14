@@ -81,7 +81,6 @@ describe('getSnapshotDiff', () => {
 			expect(result.collections[0]!.collection).toBe('posts');
 		});
 
-
 		test('should keep child changes when collection metadata is removed', () => {
 			const current = createMockSnapshot({
 				collections: [
@@ -254,7 +253,6 @@ describe('getSnapshotDiff', () => {
 			expect(result.fields[0]!.field).toBe('title');
 			expect(result.fields[0]!.diff).toBeDefined();
 		});
-
 
 		test('should represent added field metadata as an update', () => {
 			const current = createMockSnapshot({
