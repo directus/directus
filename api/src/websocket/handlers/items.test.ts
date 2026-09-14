@@ -67,7 +67,7 @@ describe('WebSocket heartbeat handler', () => {
 		expect(spy).not.toBeCalled();
 	});
 
-	test('invalid collection should error', async () => {
+	test('unknown collection should error', async () => {
 		(getSchema as Mock).mockImplementation(() => ({ collections: {} }));
 		// receive message
 		const fakeClient = mockClient();
@@ -85,7 +85,35 @@ describe('WebSocket heartbeat handler', () => {
 
 		// expect error
 		expect(fakeClient.send).toBeCalledWith(
-			'{"type":"items","status":"error","error":{"code":"INVALID_COLLECTION","message":"The provided collection does not exists or is not accessible."}}',
+			'{"type":"items","status":"error","error":{"code":"FORBIDDEN","message":"You don\'t have permission to access collection \\"test\\" or it does not exist. Queried in root."}}',
+		);
+	});
+
+	test('system collection should error', async () => {
+		(getSchema as Mock).mockImplementation(() => ({
+			collections: { directus_users: { collection: 'directus_users', fields: {} } },
+		}));
+
+		const createOne = vi.fn();
+		(ItemsService as Mock).mockImplementation(() => ({ createOne }));
+
+		const fakeClient = mockClient();
+
+		emitter.emitAction(
+			'websocket.message',
+			{
+				client: fakeClient,
+				message: { type: 'items', collection: 'directus_users', action: 'create', data: {} },
+			},
+			{} as EventContext,
+		);
+
+		await vi.runAllTimersAsync();
+
+		expect(createOne).not.toBeCalled();
+
+		expect(fakeClient.send).toBeCalledWith(
+			'{"type":"items","status":"error","error":{"code":"INVALID_COLLECTION","message":"Cannot trigger an action on a system collection."}}',
 		);
 	});
 

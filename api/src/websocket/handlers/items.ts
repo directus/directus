@@ -35,13 +35,8 @@ export class ItemsHandler {
 		const accountability = client.accountability;
 		const schema = await getSchema();
 
-		if (!schema.collections[message.collection] || isSystemCollection(message.collection)) {
-			throw new WebSocketError(
-				'items',
-				'INVALID_COLLECTION',
-				'The provided collection does not exists or is not accessible.',
-				uid,
-			);
+		if (isSystemCollection(message.collection)) {
+			throw new WebSocketError('items', 'INVALID_COLLECTION', 'Cannot trigger an action on a system collection.', uid);
 		}
 
 		await assertCollectionActive(
