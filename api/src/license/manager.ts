@@ -144,18 +144,19 @@ export class LicenseManager {
 				throw error;
 			}
 
-			// TODO: dont clear key so a transient license server wont clear a key
+			logger.error(error);
+
+			// On error, boot into core for setting based keys as it can only be fixed via UI
 			if (action.source === 'settings') {
 				logger.error('Unable to validate the license from the database, switching to core tier.');
-				logger.error(error);
-				await this.syncLicense({ kind: 'downgrade' });
+
+				// The key is kept so a renewed or reinstated license is picked back up on the next
+				// boot. Ensures a transient outage wont clear a valid key.
+				await this.syncLicense({ kind: 'clear-token' });
 				return;
 			}
 
-			logger.fatal(error);
-
-			// Only one env var can be set here, so whichever it is is the culprit
-			// TODO: We should be consistent between env and settings on failures
+			// env has no option to update key via the UI, hard exit to allow resolution
 			throw new Error(
 				`Unable to validate the ${env['LICENSE_KEY'] ? 'LICENSE_KEY' : 'LICENSE_TOKEN'}, please check its value and try again.`,
 				{ cause: error },
