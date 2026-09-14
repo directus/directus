@@ -45,17 +45,27 @@ describe('FoldersService', () => {
 				});
 			});
 
-			test('should forward a filter to the read query when provided', async () => {
+			test('should forward a query to the read query when provided', async () => {
 				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
 					{ id: 'root-id', name: 'parent', parent: null },
 				]);
 
-				await foldersService.buildTree('root-id', { type: { _eq: 'assets' } });
+				await foldersService.buildTree('root-id', { filter: { type: { _eq: 'assets' } } });
 
 				expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith({
 					limit: -1,
 					filter: { type: { _eq: 'assets' } },
 				});
+			});
+
+			test('should ignore a limit in the given query', async () => {
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
+					{ id: 'root-id', name: 'parent', parent: null },
+				]);
+
+				await foldersService.buildTree('root-id', { limit: 10 });
+
+				expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith({ limit: -1 });
 			});
 
 			test('should build tree for simple hierarchy', async () => {

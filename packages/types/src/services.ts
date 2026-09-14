@@ -212,9 +212,9 @@ interface FieldsService {
  */
 interface FoldersService {
 	/**
-	 * Builds a full folder tree starting from a given root folder.
+	 * Builds a full folder tree starting from a given root folder, optionally scoped by a query.
 	 */
-	buildTree(root: string): Promise<Map<string, string>>;
+	buildTree(root: string, query?: Query): Promise<Map<string, string>>;
 }
 
 /**
