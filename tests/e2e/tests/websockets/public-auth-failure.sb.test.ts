@@ -77,6 +77,7 @@ test(
 				WEBSOCKETS_REST_PATH: '/websocket',
 				DB_FILENAME: `directus_test_${getUID()}.db`,
 			},
+			docker: { suffix: getUID() },
 		});
 
 		try {

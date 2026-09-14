@@ -118,6 +118,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 	const port = await getPort(options?.port ?? process.env['PORT'] ?? 8055);
 
 	if (options?.docker?.name) options.docker.name = options.docker.name.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+	if (options?.docker?.suffix) options.docker.suffix = options.docker.suffix.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
 
 	return merge(
 		{

@@ -13,6 +13,7 @@ describe('health check configuration', () => {
 				HEALTHCHECK_ENABLED: 'false',
 				DB_FILENAME: `directus_test_${getUID()}.db`,
 			},
+			docker: { suffix: getUID() },
 		});
 
 		const api = createDirectus(`http://localhost:${directus.apis[0].port}`)
@@ -36,6 +37,9 @@ describe('health check configuration', () => {
 				HEALTHCHECK_SERVICES: 'database',
 				HEALTHCHECK_CACHE_TTL: '0',
 				DB_FILENAME: `directus_test_${getUID()}.db`,
+			},
+			docker: {
+				suffix: getUID(),
 			},
 		});
 
@@ -73,6 +77,9 @@ describe('health check configuration', () => {
 				EMAIL_VERIFY_SETUP: 'false',
 				HEALTHCHECK_CACHE_TTL: '0',
 				DB_FILENAME: `directus_test_${getUID()}.db`,
+			},
+			docker: {
+				suffix: getUID(),
 			},
 		});
 

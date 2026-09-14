@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { sandbox, type Sandbox } from '@directus/sandbox';
 import { database } from '@utils/constants.js';
+import { getUID } from '@utils/getUID.js';
 import { sandboxPort } from '@utils/sandbox-port.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
@@ -21,7 +22,7 @@ beforeAll(async () => {
 		dev: devMode,
 		watch: devMode,
 		prefix: database,
-		docker: { keep: devMode },
+		docker: { keep: devMode, suffix: getUID() },
 		cache: false,
 		knex: true,
 		env: {
