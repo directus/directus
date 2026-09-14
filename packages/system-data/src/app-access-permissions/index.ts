@@ -20,6 +20,9 @@ export const appAccessMinimalPermissions: Permission[] = [
 	...(permissions as unknown as DataPermission[]),
 ].map((row) => ({ ...defaults, ...row }) as Permission);
 
+// Any folder type added later has to be granted deliberately rather than inherited here
+const fileLibraryFolder = { type: { _eq: 'assets' } };
+
 export const appRecommendedPermissions: Partial<Permission>[] = [
 	{
 		collection: 'directus_comments',
@@ -108,6 +111,7 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 		permissions: {},
 		fields: ['*'],
 	},
+	// These cover the file library only
 	{
 		collection: 'directus_folders',
 		action: 'create',
@@ -117,19 +121,19 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 	{
 		collection: 'directus_folders',
 		action: 'read',
-		permissions: {},
+		permissions: fileLibraryFolder,
 		fields: ['*'],
 	},
 	{
 		collection: 'directus_folders',
 		action: 'update',
-		permissions: {},
+		permissions: fileLibraryFolder,
 		fields: ['*'],
 	},
 	{
 		collection: 'directus_folders',
 		action: 'delete',
-		permissions: {},
+		permissions: fileLibraryFolder,
 	},
 	{
 		collection: 'directus_users',
