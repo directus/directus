@@ -72,6 +72,10 @@ function getClassesForHeader(header: Header) {
 		classes.push('actionable');
 	}
 
+	if (header.inactive) {
+		classes.push('inactive');
+	}
+
 	if (header.width && header.width < 90) {
 		classes.push('small');
 	}
@@ -337,6 +341,10 @@ function toggleManualSort() {
 					opacity: 1;
 				}
 			}
+		}
+
+		&.inactive .header-btn .name {
+			color: var(--theme--foreground-subdued);
 		}
 
 		&.small {
