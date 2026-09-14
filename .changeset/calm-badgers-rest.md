@@ -2,4 +2,4 @@
 '@directus/utils': patch
 ---
 
-Fixed nested array lookups dropping false, zero, empty string, and null values
+Fixed nested array lookups dropping zero, false, and empty string values

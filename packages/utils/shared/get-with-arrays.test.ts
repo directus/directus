@@ -26,9 +26,9 @@ test('Returns values in array path as flattened array', () => {
 	expect(get(input, 'test.path')).toEqual(['example', 'another']);
 });
 
-test('Returns falsy values in array path while excluding missing values', () => {
-	const input = { test: [{ path: 0 }, { path: false }, { path: '' }, { path: null }, {}] };
-	expect(get(input, 'test.path', 'default value')).toEqual([0, false, '', null]);
+test('Returns falsy values in array path while excluding nullish and missing values', () => {
+	const input = { test: [{ path: 0 }, { path: false }, { path: '' }, { path: null }, { path: undefined }, {}] };
+	expect(get(input, 'test.path', 'default value')).toEqual([0, false, '']);
 });
 
 test('Returns values in array path as flattened array', () => {
@@ -46,10 +46,13 @@ test('Returns values spread across multiple places in multi-array path as flatte
 	expect(get(input, 'test.path.test')).toEqual(['example', 'example2', 'another']);
 });
 
-test('Returns falsy values in multi-array path while excluding missing values', () => {
+test('Returns falsy values in multi-array path while excluding nullish and missing values', () => {
 	const input = {
-		test: [{ path: [{ value: 0 }, { value: false }] }, { path: [{ value: '' }, { value: null }, {}] }],
+		test: [
+			{ path: [{ value: 0 }, { value: false }] },
+			{ path: [{ value: '' }, { value: null }, { value: undefined }, {}] },
+		],
 	};
 
-	expect(get(input, 'test.path.value', 'default value')).toEqual([0, false, '', null]);
+	expect(get(input, 'test.path.value', 'default value')).toEqual([0, false, '']);
 });
