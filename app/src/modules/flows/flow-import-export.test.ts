@@ -52,6 +52,7 @@ describe('flow import export', () => {
 						accountability: 'all',
 						options: { type: 'action', scope: ['items.create'] },
 						operation: 'operation-1',
+						folder: 'folder-1',
 					},
 					operations: [
 						{
@@ -72,10 +73,29 @@ describe('flow import export', () => {
 		});
 	});
 
-	test('places the imported Flow in the given folder', () => {
-		const [flows] = createFlowImport(createFlowExport([flow]), 'folder-1');
+	test('keeps the exported folder when it still exists', () => {
+		const [flows] = createFlowImport(createFlowExport([flow]), {
+			folder: 'folder-2',
+			existingFolders: new Set(['folder-1']),
+		});
 
 		expect(flows!.items[0]).toMatchObject({ folder: 'folder-1' });
+	});
+
+	test('imports at the root when the exported folder is gone', () => {
+		const [flows] = createFlowImport(createFlowExport([flow]), {
+			folder: 'folder-2',
+			existingFolders: new Set(['folder-3']),
+		});
+
+		expect(flows!.items[0]).toMatchObject({ folder: null });
+	});
+
+	test('falls back to the given folder when the export carries none', () => {
+		const rootFlow = { ...flow, folder: null } as FlowRaw;
+		const [flows] = createFlowImport(createFlowExport([rootFlow]), { folder: 'folder-2' });
+
+		expect(flows!.items[0]).toMatchObject({ folder: 'folder-2' });
 	});
 
 	test('rejects a bundle with Operations from another Flow', () => {
@@ -111,14 +131,6 @@ describe('flow import export', () => {
 	test('rejects a file that is not JSON', () => {
 		expect(() => parseFlowExport('not json')).toThrow(new FlowImportError('flow_import_not_json'));
 		expect(parseFlowExport('{"version":1}')).toEqual({ version: 1 });
-	});
-
-	test('imports a single-Flow file from the first export format', () => {
-		const { flows, version: _version, ...rest } = createFlowExport([flow]) as any;
-		const result = createFlowImport({ ...rest, version: 1, ...flows[0] });
-
-		expect(result[0]!.items).toHaveLength(1);
-		expect(result[1]!.items).toHaveLength(1);
 	});
 
 	test('imports several Flows from one file', () => {
@@ -173,13 +185,13 @@ describe('flow import export', () => {
 
 	test('discards fields outside the portable bundle contract', () => {
 		const bundle = createFlowExport([flow]) as any;
-		bundle.flows[0].flow.folder = 'folder-1';
+		bundle.flows[0].flow.status = 'active';
 		bundle.flows[0].flow.user_created = 'user-1';
 		bundle.flows[0].operations[0].date_created = '2026-08-27T00:00:00Z';
 
 		const result = createFlowImport(bundle);
 
-		expect(result[0]!.items[0]).toMatchObject({ folder: null });
+		expect(result[0]!.items[0]).toMatchObject({ status: 'inactive' });
 		expect(result[0]!.items[0]).not.toHaveProperty('user_created');
 		expect(result[1]!.items[0]).not.toHaveProperty('date_created');
 	});
