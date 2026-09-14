@@ -3,7 +3,7 @@ import type {
 	DirectusDeploymentProject,
 	DirectusDeploymentRun,
 } from '../../../schema/deployment.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, Query, StringLiteralUnion } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
@@ -42,7 +42,7 @@ export interface DeploymentDashboardOutput {
 		framework?: string;
 		deployable: boolean;
 		latest_deployment?: {
-			status: 'building' | 'ready' | 'error' | 'canceled';
+			status: StringLiteralUnion<'building' | 'ready' | 'error' | 'canceled'>;
 			created_at: string;
 			finished_at?: string;
 		};
@@ -67,7 +67,7 @@ export interface DeploymentRunsOutput {
 	external_id: string;
 	name?: string;
 	target: string;
-	status: 'building' | 'ready' | 'error' | 'canceled';
+	status: StringLiteralUnion<'building' | 'ready' | 'error' | 'canceled'>;
 	url?: string;
 	started_at: string | null;
 	completed_at: string | null;

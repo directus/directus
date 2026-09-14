@@ -4,7 +4,7 @@ export type ContentVersion = {
 	name: string | null;
 	collection: string;
 	item: string | null;
-	hash: string;
+	hash: string | null;
 	date_created: string;
 	date_updated: string | null;
 	user_created: string | null;
