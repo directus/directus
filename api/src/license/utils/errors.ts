@@ -5,13 +5,12 @@ import {
 	InvalidPayloadError,
 	isDirectusError,
 	LicenseInvalidError,
-	type LicenseInvalidFailure,
 	LicenseServiceUnavailableError,
 } from '@directus/errors';
 import type { InvalidLicenseStatus, LicenseRequestFailure } from '@directus/license';
 import { LicenseServerError } from '@directus/license';
 
-type Failure = LicenseInvalidFailure | LicenseRequestFailure;
+type Failure = InvalidLicenseStatus | LicenseRequestFailure;
 
 /**
  * The license server's error codes, grouped by the fail type
@@ -50,7 +49,7 @@ function toFailure(error: unknown): Failure {
 /**
  * Whether the license itself is invalid (e.g. ended via expired, no longer binding etc)
  */
-export function isLicenseInvalid(failure: Failure): failure is LicenseInvalidFailure {
+export function isLicenseInvalid(failure: Failure): failure is Exclude<InvalidLicenseStatus, LicenseRequestFailure> {
 	const invalid: readonly Failure[] = [
 		'verification',
 		'expired',
