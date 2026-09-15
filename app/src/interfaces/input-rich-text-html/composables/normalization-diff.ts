@@ -9,7 +9,7 @@ import { formatHtml } from './format-html';
 // Re-parse through the schema exactly as saveSourceCode will, so the diff compares against what
 // actually gets stored. `extraExtensions` carries the instance-only marks (custom formats) the live
 // editor was built with — without them their markup reads as dropped and falsely trips the warning.
-function roundTrip(html: string, extraExtensions: AnyExtension[]): string {
+export function roundTrip(html: string, extraExtensions: AnyExtension[] = []): string {
 	const editor = new Editor({ extensions: [...editorExtensions, ...extraExtensions], content: html });
 	const out = editor.getHTML();
 	editor.destroy();
