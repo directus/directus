@@ -114,16 +114,16 @@ const saml = {
 	AUTH_SAML_EMAIL_KEY: 'email',
 } as const;
 
-const minio = {
-	MINIO_PORT: '$PORT_MINIO',
-	STORAGE_LOCATIONS: 'minio,local',
-	STORAGE_MINIO_DRIVER: 's3',
-	STORAGE_MINIO_KEY: 'directus',
-	STORAGE_MINIO_SECRET: 'miniosecret',
-	STORAGE_MINIO_BUCKET: 'directus-blackbox-test',
-	STORAGE_MINIO_REGION: 'us-east-1',
-	STORAGE_MINIO_ENDPOINT: 'http://127.0.0.1:$PORT_MINIO',
-	STORAGE_MINIO_FORCE_PATH_STYLE: 'true',
+const rustfs = {
+	RUSTFS_PORT: '$PORT_RUSTFS',
+	STORAGE_LOCATIONS: 'rustfs,local',
+	STORAGE_RUSTFS_DRIVER: 's3',
+	STORAGE_RUSTFS_KEY: 'directus',
+	STORAGE_RUSTFS_SECRET: 'rustfssecret',
+	STORAGE_RUSTFS_BUCKET: 'directus-blackbox-test',
+	STORAGE_RUSTFS_REGION: 'us-east-1',
+	STORAGE_RUSTFS_ENDPOINT: 'http://127.0.0.1:$PORT_RUSTFS',
+	STORAGE_RUSTFS_FORCE_PATH_STYLE: 'true',
 } as const;
 
 const maildev = {
@@ -163,7 +163,7 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 				}
 			: {}),
 		...(process.arch === 'arm64' ? { DOCKER_DEFAULT_PLATFORM: 'linux/amd64' } : {}),
-		...(opts.extras.minio ? minio : {}),
+		...(opts.extras.rustfs ? rustfs : {}),
 		...(opts.extras.saml ? saml : {}),
 		...(opts.extras.maildev ? maildev : {}),
 		...opts.env,
@@ -211,7 +211,7 @@ export type Env = (typeof baseConfig)[Database] & {
 	ADMIN_PASSWORD?: 'pw';
 	ADMIN_TOKEN?: 'admin';
 	DOCKER_DEFAULT_PLATFORM?: string;
-} & Partial<typeof minio> &
+} & Partial<typeof rustfs> &
 	Partial<typeof saml> &
 	Partial<typeof maildev> &
 	Partial<{ LICENSE_API_URL: string }>;
