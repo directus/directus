@@ -54,6 +54,7 @@ import { useNotificationsStore } from '@/stores/notifications';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
+import { isCollectionInactive } from '@/utils/collection-status';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { getPreviewVersionKey } from '@/utils/get-preview-version-key';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
@@ -1050,7 +1051,12 @@ function useAutoSwitchToDraft() {
 
 <template>
 	<ContentNotFound
-		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKeyParam !== null)"
+		v-if="
+			error ||
+			!collectionInfo ||
+			isCollectionInactive(collectionInfo) ||
+			(collectionInfo?.meta?.singleton === true && primaryKeyParam !== null)
+		"
 	/>
 
 	<PrivateView

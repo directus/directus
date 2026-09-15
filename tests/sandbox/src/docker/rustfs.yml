@@ -1,0 +1,43 @@
+services:
+  rustfs:
+    # should stay compatible via S3 driver
+    image: rustfs/rustfs:1.0.0-rc.6
+    ports:
+      - ${RUSTFS_PORT}:9000
+      # Console, served at /rustfs/console/
+      - 8882:9001
+    environment:
+      RUSTFS_ACCESS_KEY: directus
+      RUSTFS_SECRET_KEY: rustfssecret
+      RUSTFS_CONSOLE_ENABLE: 'true'
+    healthcheck:
+      test: ['CMD', 'curl', '-fsS', 'http://127.0.0.1:9000/health']
+      interval: 1s
+      timeout: 5s
+      retries: 60
+
+  rustfs-init:
+    # Creates the test bucket. Reuses the rustfs image because it ships a
+    # sigv4-capable curl, so there's no second image to pull.
+    image: rustfs/rustfs:1.0.0-rc.6
+    depends_on:
+      rustfs:
+        condition: service_healthy
+    entrypoint: ['/bin/sh', '-c']
+    command:
+      - |
+        curl -fsS -o /dev/null --retry 5 --retry-connrefused \
+          -X PUT --aws-sigv4 'aws:amz:us-east-1:s3' --user 'directus:rustfssecret' \
+          http://rustfs:9000/directus-blackbox-test
+        # `docker compose up --wait` treats an exited container as a failure, so idle instead
+        while true; do sleep 3600; done
+    healthcheck:
+      # Only reports healthy once the bucket exists, so `--wait` gates on it
+      test:
+        - CMD-SHELL
+        - >-
+          curl -fsS -o /dev/null -I --aws-sigv4 'aws:amz:us-east-1:s3' --user 'directus:rustfssecret'
+          http://rustfs:9000/directus-blackbox-test
+      interval: 1s
+      timeout: 5s
+      retries: 60
