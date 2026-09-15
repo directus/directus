@@ -276,7 +276,7 @@ catalog:
   pino-http: 10.5.0
   pino-http-print: 3.1.0
   pino-pretty: 13.1.2
-  pm2: 6.0.14
+  pm2: 7.0.4
   postcss-html: 2.0.0
   prettier: 3.6.2
   prom-client: 15.1.3
