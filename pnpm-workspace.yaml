@@ -67,7 +67,7 @@ catalog:
   '@netlify/api': 14.0.14
   '@ngneat/falso': 8.0.2
   '@npm/types': 2.1.0
-  '@opentelemetry/sdk-trace-node': 2.1.0
+  '@opentelemetry/sdk-trace-node': 2.11.0
   '@pinia/testing': 1.0.3
   '@pnpm/logger': 1001.0.1
   '@pnpm/types': 1000.7.0
