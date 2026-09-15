@@ -283,7 +283,7 @@ catalog:
   prom-client: 15.1.3
   proxy-addr: 2.0.7
   qrcode: 1.5.4
-  qs: 6.15.3
+  qs: 6.16.0
   rate-limiter-flexible: 7.2.0
   reka-ui: 2.8.2
   rimraf: 6.1.0
