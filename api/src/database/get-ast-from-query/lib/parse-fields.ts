@@ -59,13 +59,6 @@ export async function parseFields(
 
 	const relationalStructure: Record<string, string[] | CollectionScope> = Object.create(null);
 
-	// Track the order in which top-level fields (relational or not) first appear in the
-	// requested field list, and reserve each one's final slot in `children` up front.
-	// Relational nodes are built in a second pass below, so writing straight to the
-	// reserved index puts them back in request order without an O(n log n) sort;
-	// a permission check can skip building a node entirely, which leaves that slot
-	// as a hole that later gets dropped automatically since `.filter()` never visits
-	// unassigned array indices.
 	const rootFieldIndex = new Map<string, number>();
 
 	const trackRootFieldOrder = (key: string): number => {
