@@ -46,6 +46,12 @@ test('auth with token', async () => {
 	expect(user.id).toBe(me.id);
 });
 
+test('auth with invalid token', async () => {
+	const auth = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('invalid-token'));
+
+	await expect(async () => await auth.request(readMe())).rejects.toThrowErrorMatchingInlineSnapshot(`[RequestError: Invalid user credentials.]`);
+});
+
 test('auth with email & password', async () => {
 	const email = `${randomUUID()}@test.com`;
 
