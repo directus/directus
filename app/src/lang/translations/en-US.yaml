@@ -1746,6 +1746,9 @@ license:
     oig_eligible: 'You might be eligible for our {oig}. Apply and get full access to Directus for free.'
   locked_status_notice: 'Your Directus instance is locked. Manage license or {contactSupport} to resolve.'
   warning_status_notice:
+    generic:
+      Your license could not be renewed. Your current license keeps working until it expires, after which Core tier
+      limits will apply. Check your license key in Settings > License.
     invalid_key:
       Your license key is no longer being accepted. Your current license keeps working until it expires, after which
       Core tier limits will apply. Check the key in Settings > License, or add a new one.

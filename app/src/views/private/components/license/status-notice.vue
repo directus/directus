@@ -2,12 +2,14 @@
 import { DIRECTUS_LICENSING_DOCS_URL, DIRECTUS_OIG_URL, DIRECTUS_SUPPORT_URL } from '@directus/constants';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
-import { I18nT } from 'vue-i18n';
+import { I18nT, useI18n } from 'vue-i18n';
 import VNotice from '@/components/v-notice.vue';
 import { GRACE_DANGER_THRESHOLD_DAYS, useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getDirectusUrlWithUtm } from '@/utils/directus-url';
+
+const { t } = useI18n();
 
 const serverStore = useServerStore();
 
@@ -28,7 +30,19 @@ const show = computed(
 
 const showOig = computed(() => isAdmin.value && isCore.value && !isLocked.value);
 
-const showWarning = computed(() => isAdmin.value && warningReason.value !== null);
+const warningMessage = computed(() => {
+	if (warningReason.value === null) return null;
+
+	let reason = 'generic';
+
+	if (['invalid_key', 'activation_limit', 'binding_mismatch'].includes(warningReason.value)) {
+		reason = warningReason.value;
+	}
+
+	return t(`license.warning_status_notice.${reason}`);
+});
+
+const showWarning = computed(() => isAdmin.value && warningMessage.value !== null);
 
 const severity = computed(() =>
 	gracePeriodDaysRemaining.value !== null && gracePeriodDaysRemaining.value <= GRACE_DANGER_THRESHOLD_DAYS
@@ -49,7 +63,7 @@ const oigUrl = computed(() =>
 
 <template>
 	<VNotice v-if="showWarning" type="danger" class="status-notice">
-		{{ $t(`license.warning_status_notice.${warningReason}`) }}
+		{{ warningMessage }}
 	</VNotice>
 	<VNotice v-if="show && isLocked" type="danger" class="status-notice">
 		<I18nT keypath="license.locked_status_notice" tag="span">
