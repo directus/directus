@@ -9,11 +9,13 @@ import { useImage } from './composables/use-image';
 import { useLink } from './composables/use-link';
 import { useMedia } from './composables/use-media';
 import { useNormalizationWarning } from './composables/use-normalization-warning';
+import { usePasteWarning } from './composables/use-paste-warning';
 import { useSourceCode } from './composables/use-source-code';
 import ImageDrawer from './drawers/image-drawer.vue';
 import LinkDrawer from './drawers/link-drawer.vue';
 import MediaDrawer from './drawers/media-drawer.vue';
 import NormalizationWarningDialog from './drawers/normalization-warning-dialog.vue';
+import PasteWarningDialog from './drawers/paste-warning-dialog.vue';
 import SourceCodeDrawer from './drawers/source-code-drawer.vue';
 import { editorExtensions } from './extensions';
 import { ComparisonDiff } from './extensions/comparison-diff';
@@ -167,6 +169,7 @@ const editor = useEditor({
 
 			return false;
 		},
+		handlePaste: (view, event) => handlePaste(view, event),
 		// Cmd/Ctrl+click opens links in a new tab (parity with TinyMCE)
 		handleClick: (_view, _pos, event) => {
 			if (event.button !== 0 || !(event.metaKey || event.ctrlKey)) return false;
@@ -187,6 +190,11 @@ const editor = useEditor({
 	},
 });
 
+const { pasteWarningOpen, pasteWarningDiff, handlePaste, confirmPaste, takeRawPaste, cancelPaste } = usePasteWarning(
+	editor,
+	customFormatExtensions,
+);
+
 function onEditorClick() {
 	if (props.disabled || props.nonEditable || props.comparisonMode) return;
 	onLockedClick();
@@ -206,6 +214,15 @@ function enterRawMode() {
 	}
 
 	rawMode.value = true;
+}
+
+// The clipboard HTML goes in verbatim, so raw mode has to be on before the emit: the value watcher
+// skips syncing while it's on, and would otherwise push the new value back through the schema.
+function onPasteRaw() {
+	const html = takeRawPaste();
+	if (html === null) return;
+	rawMode.value = true;
+	emit('input', html);
 }
 
 // the unlock flips `isEditable` on the next flush, so focus has to wait for it
@@ -438,6 +455,14 @@ onKeyStroke('Escape', () => {
 			@confirm="onWarningConfirm"
 			@cancel="cancelNormalizationWarning"
 			@raw="enterRawMode"
+		/>
+
+		<PasteWarningDialog
+			v-model="pasteWarningOpen"
+			:diff="pasteWarningDiff"
+			@confirm="confirmPaste"
+			@cancel="cancelPaste"
+			@raw="onPasteRaw"
 		/>
 	</div>
 </template>
