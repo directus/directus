@@ -25,17 +25,7 @@ const metadataServers: CimdMetadataServer[] = [];
 beforeAll(async () => {
 	directus = await sandbox(database, {
 		inspect: false,
-		prefix: `mcp-oauth-settings-${getUID()}`,
 		env: {
-			MCP_ENABLED: 'true',
-			MCP_OAUTH_ENABLED: 'true',
-			MCP_OAUTH_DCR_ENABLED: 'true',
-			MCP_OAUTH_CIMD_ENABLED: 'true',
-			MCP_OAUTH_CIMD_ALLOW_HTTP: 'true',
-			MCP_OAUTH_CIMD_BLOCKED_TLDS: 'onion',
-			IMPORT_IP_DENY_LIST: '169.254.169.254',
-			RATE_LIMITER_MCP_OAUTH_POINTS: '1000',
-			RATE_LIMITER_MCP_OAUTH_DURATION: '60',
 			DB_FILENAME: `directus_test_${getUID()}.db`,
 		},
 		docker: {
