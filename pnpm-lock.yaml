@@ -948,9 +948,6 @@ catalogs:
     update-check:
       specifier: 1.5.4
       version: 1.5.4
-    uuid:
-      specifier: 11.1.1
-      version: 11.1.1
     vite:
       specifier: 8.1.2
       version: 8.1.2
@@ -1007,6 +1004,7 @@ overrides:
   js-yaml@4: 4.3.2
   js-yaml@3: 3.15.2
   unplugin-yaml>yaml: 2.9.0
+  uuid: 11.1.1
 
 importers:
 
@@ -1448,7 +1446,7 @@ importers:
         specifier: 'catalog:'
         version: 4.22.4
       uuid:
-        specifier: 'catalog:'
+        specifier: 11.1.1
         version: 11.1.1
       wellknown:
         specifier: 'catalog:'
@@ -3412,7 +3410,7 @@ importers:
         specifier: 'catalog:'
         version: 5.9.3
       uuid:
-        specifier: 'catalog:'
+        specifier: 11.1.1
         version: 11.1.1
       vite-tsconfig-paths:
         specifier: 5.1.4
@@ -13705,16 +13703,6 @@ packages:
     resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
     hasBin: true
 
-  uuid@8.3.2:
-    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
-    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
-    hasBin: true
-
-  uuid@9.0.1:
-    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
-    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
-    hasBin: true
-
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
 
@@ -16458,7 +16446,7 @@ snapshots:
   '@ngneat/falso@8.0.2':
     dependencies:
       seedrandom: 3.0.5
-      uuid: 8.3.2
+      uuid: 11.1.1
 
   '@noble/hashes@1.8.0': {}
 
@@ -19852,7 +19840,7 @@ snapshots:
 
   editorjs-toggle-block@0.3.16:
     dependencies:
-      uuid: 9.0.1
+      uuid: 11.1.1
 
   ee-first@1.1.1: {}
 
@@ -20682,7 +20670,7 @@ snapshots:
       https-proxy-agent: 7.0.6
       is-stream: 2.0.1
       node-fetch: 2.7.0(encoding@0.1.13)
-      uuid: 9.0.1
+      uuid: 11.1.1
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -21090,7 +21078,7 @@ snapshots:
   hyperid@3.3.0:
     dependencies:
       buffer: 5.7.1
-      uuid: 8.3.2
+      uuid: 11.1.1
       uuid-parse: 1.1.0
 
   icc@3.0.0: {}
@@ -24857,7 +24845,7 @@ snapshots:
       https-proxy-agent: 5.0.1
       node-fetch: 2.7.0(encoding@0.1.13)
       stream-events: 1.0.5
-      uuid: 9.0.1
+      uuid: 11.1.1
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -25358,10 +25346,6 @@ snapshots:
   uuid-parse@1.1.0: {}
 
   uuid@11.1.1: {}
-
-  uuid@8.3.2: {}
-
-  uuid@9.0.1: {}
 
   validate-npm-package-license@3.0.4:
     dependencies:
