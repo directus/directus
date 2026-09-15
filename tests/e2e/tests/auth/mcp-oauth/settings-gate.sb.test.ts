@@ -16,7 +16,7 @@ import {
 	postJson,
 	postMcpToolsList,
 	postMcpToolsListWithQueryToken,
-} from './mcp-oauth-utils.js';
+} from './utils.js';
 
 let directus: Awaited<ReturnType<typeof sandbox>>;
 let apiUrl: string;

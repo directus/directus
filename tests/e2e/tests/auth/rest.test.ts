@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { authentication, createDirectus, createUser, readMe, rest, staticToken } from '@directus/sdk';
 import { port } from '@utils/constants.js';
 import { expect, test } from 'vitest';
-import { expectJsonResponse, getSetCookies, toCookieHeader } from './mcp-oauth-utils.js';
+import { expectJsonResponse, getSetCookies, toCookieHeader } from './mcp-oauth/utils.js';
 
 const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const baseUrl = `http://localhost:${port}`;
@@ -49,7 +49,9 @@ test('auth with token', async () => {
 test('auth with invalid token', async () => {
 	const auth = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('invalid-token'));
 
-	await expect(async () => await auth.request(readMe())).rejects.toThrowErrorMatchingInlineSnapshot(`[RequestError: Invalid user credentials.]`);
+	await expect(async () => await auth.request(readMe())).rejects.toThrowErrorMatchingInlineSnapshot(
+		`[RequestError: Invalid user credentials.]`,
+	);
 });
 
 test('auth with email & password', async () => {
