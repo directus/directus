@@ -27,7 +27,6 @@ import {
 } from '@directus/license';
 import type { Accountability } from '@directus/types';
 import { toBoolean } from '@directus/utils';
-import type { Knex } from 'knex';
 import { useLogger } from '../logger/index.js';
 import { clearCache as clearPermissionCache } from '../permissions/cache.js';
 import licenseCheckSchedule, { stopLicenseCheck } from '../schedules/license.js';
@@ -50,7 +49,7 @@ import { useRPC } from './utils/use-rpc.js';
 const env = useEnv();
 const logger = useLogger();
 const LICENSE_CHANNEL = `license`;
-let licenseCache: Directus.License | null;
+let licenseCache: Directus.License = DIRECTUS_CORE_LICENSE;
 
 type LicenseStore = {
 	invalidReason: InvalidLicenseStatus | undefined;
@@ -155,7 +154,7 @@ export class LicenseManager {
 
 			// On error, boot into core for setting based keys as it can only be fixed via UI
 			if (action.source === 'settings') {
-				logger.error('Unable to validate the license from the database, switching to core tier.');
+				logger.error('License could not be verified or is invalid, switching to core tier.');
 
 				// The key is kept so a renewed or reinstated license is picked back up on the next
 				// boot. Ensures a transient outage wont clear a valid key.
@@ -180,23 +179,7 @@ export class LicenseManager {
 		return toBoolean(env['LICENSE_KEY_MANAGEMENT_ENABLED']) && this.source !== 'env';
 	}
 
-	public async getLicense(options?: { database?: Knex }): Promise<Directus.License> {
-		if (licenseCache) return licenseCache;
-
-		const { token } = await getLicenseToken(options);
-
-		if (!token) {
-			this.source = null;
-			licenseCache = DIRECTUS_CORE_LICENSE;
-		} else {
-			licenseCache = await this.verify(token);
-
-			if (!licenseCache) {
-				this.source = null;
-				licenseCache = DIRECTUS_CORE_LICENSE;
-			}
-		}
-
+	public async getLicense() {
 		return licenseCache;
 	}
 
@@ -748,7 +731,7 @@ export class LicenseManager {
 
 		// clear permission cache when the license entitlements change
 		await clearPermissionCache();
-		await this.syncState();
+		await this.syncState({ leader: true });
 		await this.rpc.syncState();
 	}
 
@@ -758,19 +741,37 @@ export class LicenseManager {
 	 * Every instance derives its own, so the RPC only has to signal that something changed rather
 	 * than carry one instance's view of it.
 	 */
-	public async syncState() {
+	public async syncState(options?: { leader?: boolean }) {
 		const { source: keySource, key } = await getLicenseKey();
 		const { source: tokenSource, token } = await getLicenseToken();
 
 		this.licenseKey = key;
 		this.licenseToken = token;
 
-		// An env key outranks a persisted token
-		this.source = keySource ?? tokenSource;
+		let license: Directus.License | null = null;
 
-		licenseCache = null;
+		if (token) {
+			const verified = await this.verify(token);
 
-		const license = await this.getLicense();
-		getEntitlementManager().setEntitlements(license.entitlements);
+			if (!verified) {
+				logger.warn('The stored license token could not be verified, switching to core tier.');
+
+				if (options?.leader === true) {
+					await this.store(async (store) => {
+						return store.set('invalidReason', 'verification');
+					}).catch((error) => {
+						logger.warn(error, 'Could not record the license invalid reason');
+					});
+				}
+			} else {
+				license = verified;
+			}
+		}
+
+		// An env key outranks a persisted token, always null if no license irrespective of source
+		this.source = license ? (keySource ?? tokenSource) : null;
+
+		licenseCache = license ?? DIRECTUS_CORE_LICENSE;
+		getEntitlementManager().setEntitlements(licenseCache.entitlements);
 	}
 }
