@@ -116,16 +116,22 @@ describe('Integration Tests', () => {
 				expect(table.dropForeign).not.toHaveBeenCalled();
 			});
 
-			test('should give preRelationChange the resolved collection and related_collection, not the raw payload', async () => {
+			test('should give preRelationChange the resolved relation and build the foreign key from its return', async () => {
 				const service = new RelationsService({ knex: db, schema });
 
-				await service.updateOne('articles_authors', 'authors_id', {
-					meta: { junction_field: 'articles_id' } as RelationMeta,
+				vi.spyOn(service.helpers.schema, 'preRelationChange').mockImplementation((relation) => {
+					if (relation.schema) {
+						relation.schema.on_delete = null;
+					}
 				});
+
+				await service.updateOne('articles_authors', 'authors_id', { schema: { on_delete: 'CASCADE' } as ForeignKey });
 
 				expect(service.helpers.schema.preRelationChange).toHaveBeenCalledWith(
 					expect.objectContaining({ collection: 'articles_authors', related_collection: 'authors' }),
 				);
+
+				expect(foreignKey.onDelete).not.toHaveBeenCalled();
 			});
 
 			test('should rebuild the foreign key, keeping the triggers the payload does not override', async () => {
