@@ -2,7 +2,14 @@ import path from 'node:path';
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
 import { toArray } from '@directus/utils';
+import { getExtensionsPath } from '../../../extensions/lib/get-extensions-path.js';
 import { sanitizeFilepath } from './sanitize-filepath.js';
+
+function isWithinPath(filepath: string, dirpath: string): boolean {
+	if (dirpath === '') return true;
+
+	return filepath === dirpath || filepath.startsWith(dirpath + '/');
+}
 
 /**
  * Reject storage filepaths that write to "forbidden" locations
@@ -12,7 +19,8 @@ import { sanitizeFilepath } from './sanitize-filepath.js';
  */
 export function assertValidStoragePath(filepath: string, storage?: string): void {
 	const env = useEnv();
-	const location = storage || toArray(env['STORAGE_LOCATIONS'] as string[])[0]!;
+
+	const location = storage?.trim() || toArray(env['STORAGE_LOCATIONS'] as string)[0]!.trim();
 	const storageDriver = env[`STORAGE_${location.toUpperCase()}_DRIVER`] as string | undefined;
 	const storageRoot = (env[`STORAGE_${location.toUpperCase()}_ROOT`] as string | undefined) ?? '';
 
@@ -25,11 +33,13 @@ export function assertValidStoragePath(filepath: string, storage?: string): void
 	const filePath =
 		storageDriver === 'local' ? sanitizeFilepath(path.join(storagePath, normalizedFilePath)) : normalizedFilePath;
 
-	const extensionPath = sanitizeFilepath((env['EXTENSIONS_PATH'] as string | undefined) ?? '');
+	const extensionsLocation = (env['EXTENSIONS_LOCATION'] as string | undefined)?.trim();
 
 	// Block setting path to the extension path on the extensions storage location.
-	if (env['EXTENSIONS_LOCATION'] && env['EXTENSIONS_LOCATION'] === location) {
-		if (extensionPath && normalizedFilePath.startsWith(extensionPath + '/')) {
+	if (extensionsLocation && extensionsLocation.toUpperCase() === location.toUpperCase()) {
+		const remoteExtensionPath = sanitizeFilepath((env['EXTENSIONS_PATH'] as string | undefined) ?? '');
+
+		if (isWithinPath(normalizedFilePath, remoteExtensionPath)) {
 			throw new ForbiddenError();
 		}
 	}
@@ -37,12 +47,13 @@ export function assertValidStoragePath(filepath: string, storage?: string): void
 	// Block local writes to any forbidden locations placed inside storage root
 	if (storageDriver === 'local') {
 		const tmpPath = sanitizeFilepath((env['TEMP_PATH'] as string | undefined) ?? '');
+		const extensionPath = sanitizeFilepath(getExtensionsPath() ?? '');
 
-		if (extensionPath && filePath.startsWith(extensionPath + '/')) {
+		if (isWithinPath(filePath, extensionPath)) {
 			throw new ForbiddenError();
 		}
 
-		if (tmpPath && filePath.startsWith(tmpPath + '/')) {
+		if (isWithinPath(filePath, tmpPath)) {
 			throw new ForbiddenError();
 		}
 	}
