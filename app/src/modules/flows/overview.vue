@@ -175,7 +175,7 @@ const filter = useLocalStorage<Filter | null>('directus-flows-filter', null, {
 	serializer: StorageSerializers.object,
 });
 
-const { folders, fetchFolders } = useFolders('flows');
+const { folders } = useFolders('flows');
 
 const relationsStore = useRelationsStore();
 
@@ -331,17 +331,7 @@ function exportFlows(ids: string[]) {
 
 async function importFlows(file: File) {
 	try {
-		const value = parseFlowExport(await file.text());
-
-		// Imported Flows keep the folder they were exported from, so make sure we know which folders exist here
-		if (folders.value === null) {
-			await fetchFolders();
-		}
-
-		const flowImport = createFlowImport(value, {
-			folder: props.folder ?? null,
-			existingFolders: new Set(foldersById.value.keys()),
-		});
+		const flowImport = createFlowImport(parseFlowExport(await file.text()), props.folder ?? null);
 
 		const form = new FormData();
 		form.append('file', new Blob([JSON.stringify(flowImport)], { type: 'application/json' }), 'flows.json');

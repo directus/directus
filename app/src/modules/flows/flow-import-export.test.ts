@@ -52,7 +52,6 @@ describe('flow import export', () => {
 						accountability: 'all',
 						options: { type: 'action', scope: ['items.create'] },
 						operation: 'operation-1',
-						folder: 'folder-1',
 					},
 					operations: [
 						{
@@ -73,27 +72,8 @@ describe('flow import export', () => {
 		});
 	});
 
-	test('keeps the exported folder when it still exists', () => {
-		const [flows] = createFlowImport(createFlowExport([flow]), {
-			folder: 'folder-2',
-			existingFolders: new Set(['folder-1']),
-		});
-
-		expect(flows!.items[0]).toMatchObject({ folder: 'folder-1' });
-	});
-
-	test('imports at the root when the exported folder is gone', () => {
-		const [flows] = createFlowImport(createFlowExport([flow]), {
-			folder: 'folder-2',
-			existingFolders: new Set(['folder-3']),
-		});
-
-		expect(flows!.items[0]).toMatchObject({ folder: null });
-	});
-
-	test('falls back to the given folder when the export carries none', () => {
-		const rootFlow = { ...flow, folder: null } as FlowRaw;
-		const [flows] = createFlowImport(createFlowExport([rootFlow]), { folder: 'folder-2' });
+	test('imports into the given folder regardless of where the Flow was exported from', () => {
+		const [flows] = createFlowImport(createFlowExport([flow]), 'folder-2');
 
 		expect(flows!.items[0]).toMatchObject({ folder: 'folder-2' });
 	});
@@ -186,12 +166,13 @@ describe('flow import export', () => {
 	test('discards fields outside the portable bundle contract', () => {
 		const bundle = createFlowExport([flow]) as any;
 		bundle.flows[0].flow.status = 'active';
+		bundle.flows[0].flow.folder = 'folder-1';
 		bundle.flows[0].flow.user_created = 'user-1';
 		bundle.flows[0].operations[0].date_created = '2026-08-27T00:00:00Z';
 
 		const result = createFlowImport(bundle);
 
-		expect(result[0]!.items[0]).toMatchObject({ status: 'inactive' });
+		expect(result[0]!.items[0]).toMatchObject({ status: 'inactive', folder: null });
 		expect(result[0]!.items[0]).not.toHaveProperty('user_created');
 		expect(result[1]!.items[0]).not.toHaveProperty('date_created');
 	});

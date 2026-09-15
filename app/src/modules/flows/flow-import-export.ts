@@ -2,7 +2,7 @@ import type { FlowRaw, ImportCollectionData, OperationRaw } from '@directus/type
 
 type PortableFlow = Pick<
 	FlowRaw,
-	'id' | 'name' | 'icon' | 'color' | 'description' | 'trigger' | 'accountability' | 'options' | 'operation' | 'folder'
+	'id' | 'name' | 'icon' | 'color' | 'description' | 'trigger' | 'accountability' | 'options' | 'operation'
 >;
 
 type PortableOperation = Pick<
@@ -53,7 +53,6 @@ export function createFlowExport(flows: FlowRaw[]): FlowExport {
 				accountability: flow.accountability,
 				options: flow.options,
 				operation: flow.operation,
-				folder: flow.folder ?? null,
 			},
 			operations: (flow.operations ?? []).map((operation) => ({
 				id: operation.id,
@@ -71,20 +70,13 @@ export function createFlowExport(flows: FlowRaw[]): FlowExport {
 	};
 }
 
-export type FlowImportOptions = {
-	/** Folder to drop Flows into when the export doesn't say where they came from */
-	folder?: string | null;
-	/** Ids of the Flow folders that exist on this instance; a Flow exported from any other folder lands at the root */
-	existingFolders?: ReadonlySet<string>;
-};
-
-export function createFlowImport(value: unknown, options: FlowImportOptions = {}): ImportCollectionData[] {
+export function createFlowImport(value: unknown, folder: string | null = null): ImportCollectionData[] {
 	const bundles = validateFlowExport(value);
 
 	return [
 		{
 			collection: 'directus_flows',
-			items: bundles.map((bundle) => createImportFlow(bundle.flow, options)),
+			items: bundles.map((bundle) => createImportFlow(bundle.flow, folder)),
 		},
 		{
 			collection: 'directus_operations',
@@ -93,22 +85,10 @@ export function createFlowImport(value: unknown, options: FlowImportOptions = {}
 	];
 }
 
-function resolveImportFolder(flow: PortableFlow, { folder = null, existingFolders }: FlowImportOptions) {
-	if (!flow.folder) {
-		return folder;
-	}
-
-	if (!existingFolders?.has(flow.folder)) {
-		return null;
-	}
-
-	return flow.folder;
-}
-
-function createImportFlow(flow: PortableFlow, options: FlowImportOptions) {
+function createImportFlow(flow: PortableFlow, folder: string | null) {
 	return {
 		id: flow.id,
-		folder: resolveImportFolder(flow, options),
+		folder,
 		name: flow.name,
 		icon: flow.icon,
 		color: flow.color,
@@ -167,10 +147,6 @@ function validateFlowBundle(value: unknown): FlowBundle {
 	const flow = value['flow'];
 
 	if (typeof flow['id'] !== 'string' || typeof flow['name'] !== 'string') {
-		throw new FlowImportError('flow_import_invalid_file');
-	}
-
-	if (flow['folder'] != null && !isString(flow['folder'])) {
 		throw new FlowImportError('flow_import_invalid_file');
 	}
 
