@@ -173,7 +173,7 @@ services:
       retries: 10
 
   license-mock-server:
-    image: directus/license-mock-server:latest
+    image: directus/license-mock-server:0.5.11
     platform: linux/amd64
     ports:
       - 7000:1133
