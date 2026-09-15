@@ -15,7 +15,7 @@ import {
 	refreshToken,
 	registerConfidentialClient,
 	revokeToken,
-} from './mcp-oauth-utils.js';
+} from './utils.js';
 
 beforeAll(async () => {
 	await enableMcpOAuthSettings();

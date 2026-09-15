@@ -79,14 +79,14 @@ const directusAuthConfig = {
 };
 
 const directusStorageConfig = {
-	STORAGE_LOCATIONS: 'local,minio',
-	STORAGE_MINIO_DRIVER: 's3',
-	STORAGE_MINIO_KEY: 'directus',
-	STORAGE_MINIO_SECRET: 'miniosecret',
-	STORAGE_MINIO_BUCKET: 'directus-blackbox-test',
-	STORAGE_MINIO_REGION: 'us-east-1',
-	STORAGE_MINIO_ENDPOINT: 'http://127.0.0.1:8881',
-	STORAGE_MINIO_FORCE_PATH_STYLE: 'true',
+	STORAGE_LOCATIONS: 'local,rustfs',
+	STORAGE_RUSTFS_DRIVER: 's3',
+	STORAGE_RUSTFS_KEY: 'directus',
+	STORAGE_RUSTFS_SECRET: 'rustfssecret',
+	STORAGE_RUSTFS_BUCKET: 'directus-blackbox-test',
+	STORAGE_RUSTFS_REGION: 'us-east-1',
+	STORAGE_RUSTFS_ENDPOINT: 'http://127.0.0.1:8881',
+	STORAGE_RUSTFS_FORCE_PATH_STYLE: 'true',
 };
 
 const directusConfig = {
