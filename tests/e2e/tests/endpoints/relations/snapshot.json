@@ -14,6 +14,16 @@
 			}
 		},
 		{
+			"collection": "editors_1234",
+			"meta": {
+				"collection": "editors_1234",
+				"singleton": false
+			},
+			"schema": {
+				"name": "editors_1234"
+			}
+		},
+		{
 			"collection": "articles_1234",
 			"meta": {
 				"collection": "articles_1234",
@@ -54,6 +64,39 @@
 			"schema": {
 				"name": "name",
 				"table": "authors_1234",
+				"data_type": "varchar",
+				"is_nullable": true
+			}
+		},
+		{
+			"collection": "editors_1234",
+			"field": "id",
+			"type": "integer",
+			"meta": {
+				"collection": "editors_1234",
+				"field": "id",
+				"hidden": true,
+				"readonly": true
+			},
+			"schema": {
+				"name": "id",
+				"table": "editors_1234",
+				"data_type": "integer",
+				"is_primary_key": true,
+				"has_auto_increment": true
+			}
+		},
+		{
+			"collection": "editors_1234",
+			"field": "name",
+			"type": "string",
+			"meta": {
+				"collection": "editors_1234",
+				"field": "name"
+			},
+			"schema": {
+				"name": "name",
+				"table": "editors_1234",
 				"data_type": "varchar",
 				"is_nullable": true
 			}
@@ -153,13 +196,13 @@
 		{
 			"collection": "articles_1234",
 			"field": "editor",
-			"related_collection": "authors_1234",
+			"related_collection": "editors_1234",
 			"meta": {
 				"junction_field": null,
 				"many_collection": "articles_1234",
 				"many_field": "editor",
 				"one_allowed_collections": null,
-				"one_collection": "authors_1234",
+				"one_collection": "editors_1234",
 				"one_collection_field": null,
 				"one_deselect_action": "nullify",
 				"one_field": null,
@@ -168,7 +211,7 @@
 			"schema": {
 				"table": "articles_1234",
 				"column": "editor",
-				"foreign_key_table": "authors_1234",
+				"foreign_key_table": "editors_1234",
 				"foreign_key_column": "id",
 				"constraint_name": "articles_1234_editor_foreign",
 				"on_update": "NO ACTION",
