@@ -309,7 +309,8 @@ export class RelationsService {
 	/**
 	 * Update an existing foreign key constraint
 	 *
-	 * Note: You can update anything under meta, but only the `on_delete` trigger under schema
+	 * Note: You can update anything under meta, but only the `on_delete` and `on_update` triggers
+	 * under schema.
 	 */
 	async updateOne(
 		collection: string,
