@@ -194,6 +194,7 @@ export const FolderItemInputSchema = z.object({
 	id: PrimaryKeyInputSchema.optional(),
 	name: z.string(),
 	parent: z.string().optional(),
+	type: z.string().optional(),
 });
 
 export const FolderItemValidateSchema = FolderItemInputSchema;

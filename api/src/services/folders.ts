@@ -1,4 +1,4 @@
-import type { AbstractServiceOptions, Folder } from '@directus/types';
+import type { AbstractServiceOptions, Folder, Query } from '@directus/types';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { NameDeduper } from './assets/name-deduper.js';
 import { ItemsService } from './items.js';
@@ -19,6 +19,8 @@ export class FoldersService extends ItemsService<Folder> {
 	 * access to are included.
 	 *
 	 * @param {string} root - The ID of the root folder to start building the tree from.
+	 * @param {Query} [query] - Optional query to scope which folders are read (e.g. filtered by `type`). The
+	 *   whole tree is always needed, so `limit` is ignored.
 	 * @returns {Promise<Map<string, string>>} A `Map` where:
 	 *   - Key: folder ID
 	 *   - Value: folder path relative to the root (e.g., "Documents/Photos")
@@ -32,7 +34,7 @@ export class FoldersService extends ItemsService<Folder> {
 	 * - The returned `Map` includes the root folder itself.
 	 * - If a folder has no name, its ID will be used as a fallback.
 	 */
-	async buildTree(root: string) {
+	async buildTree(root: string, query?: Query) {
 		if (this.accountability && this.accountability.admin !== true) {
 			await validateAccess(
 				{
@@ -48,7 +50,7 @@ export class FoldersService extends ItemsService<Folder> {
 			);
 		}
 
-		const folders = await this.readByQuery({ limit: -1 });
+		const folders = await this.readByQuery({ ...query, limit: -1 });
 
 		// build folder and child lookup
 		const folderLookup = new Map<string, Folder>();

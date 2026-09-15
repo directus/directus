@@ -164,7 +164,7 @@ UI button that users click to start flows
 	"trigger": "manual",
 	"options": {
 		"collections": ["posts", "products"],
-		"location": "item", // item|collection|both
+		"location": "item", // item|collection|both|hidden
 		"requireSelection": false, // Default true - requires item selection
 		"requireConfirmation": true,
 		"confirmationDescription": "AI Ghostwriter",
