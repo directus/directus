@@ -99,7 +99,6 @@
 		"@types/chroma-js": "catalog:",
 		"@types/codemirror": "catalog:",
 		"@types/diacritics": "catalog:",
-		"@types/diff": "catalog:",
 		"@types/file-saver": "catalog:",
 		"@types/geojson": "catalog:",
 		"@types/lodash": "catalog:",
