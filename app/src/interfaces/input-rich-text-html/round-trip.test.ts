@@ -231,6 +231,16 @@ describe('round-trip: preserved attributes (class/id/title/role/lang/dir/data-*/
 		expect(roundTrip('<p><span>text</span></p>')).toBe('<p>text</p>');
 	});
 
+	test('a span styled only with properties the schema does not model is unwrapped in one pass', () => {
+		expect(roundTrip('<p><span style="white-space: pre-wrap;">text</span></p>')).toBe('<p>text</p>');
+	});
+
+	test('such a span still keeps its preserved attributes', () => {
+		expect(roundTrip('<p><span style="white-space: pre-wrap;" data-metadata="figma">text</span></p>')).toBe(
+			'<p><span data-metadata="figma">text</span></p>',
+		);
+	});
+
 	test('empty class/id are not preserved (no churn)', () => {
 		expect(roundTrip('<p class="" id="">text</p>')).toBe('<p>text</p>');
 	});

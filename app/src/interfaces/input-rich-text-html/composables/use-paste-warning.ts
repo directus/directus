@@ -4,9 +4,9 @@ import type { AnyExtension, Editor } from '@tiptap/vue-3';
 import type { Change } from 'diff';
 import { Ref, ref } from 'vue';
 import { encodePageBreaks } from '../extensions/page-break';
-import { computeNormalizationDiff } from './normalization-diff';
+import { computeNormalizationDiff, roundTrip } from './normalization-diff';
 
-type PendingPaste = { html: string; from: number; to: number };
+type PendingPaste = { html: string; from: number; to: number; event: ClipboardEvent };
 
 type UsablePasteWarning = {
 	pasteWarningOpen: Ref<boolean>;
@@ -30,6 +30,7 @@ export function usePasteWarning(
 	const pasteWarningOpen = ref(false);
 	const pasteWarningDiff = ref<Change[]>([]);
 	let pending: PendingPaste | null = null;
+	let replaying = false;
 
 	return {
 		pasteWarningOpen,
@@ -43,6 +44,8 @@ export function usePasteWarning(
 	// `true` stops ProseMirror from inserting anything, so the document only changes once the dialog
 	// is answered. Plain text carries no markup to lose and never reaches the check.
 	function handlePaste(view: EditorView, event: ClipboardEvent) {
+		if (replaying) return false;
+
 		const html = event.clipboardData?.getData('text/html');
 		if (!html) return false;
 
@@ -50,18 +53,26 @@ export function usePasteWarning(
 		if (diff === null) return false;
 
 		const { from, to } = view.state.selection;
-		pending = { html, from, to };
+		pending = { html, from, to, event };
 		pasteWarningDiff.value = diff;
 		pasteWarningOpen.value = true;
 		return true;
 	}
 
-	/** Replays the paste the ordinary way: the schema strips what it can't keep. */
+	// normalized first so the stored value matches its own reload (a `pre-wrap` span keeps whitespace
+	// that collapses once the span is gone); pasteHTML keeps the ordinary paste semantics
 	function confirmPaste() {
 		const paste = take();
 		if (!paste || !editor.value) return;
 
-		editor.value.chain().focus().insertContentAt({ from: paste.from, to: paste.to }, paste.html).run();
+		editor.value.chain().focus().setTextSelection({ from: paste.from, to: paste.to }).run();
+		replaying = true;
+
+		try {
+			editor.value.view.pasteHTML(roundTrip(paste.html, extraExtensions), paste.event);
+		} finally {
+			replaying = false;
+		}
 	}
 
 	/**

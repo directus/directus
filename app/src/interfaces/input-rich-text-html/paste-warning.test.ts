@@ -5,6 +5,7 @@ import { createPinia } from 'pinia';
 import { describe, expect, test } from 'vitest';
 import { nextTick } from 'vue';
 import { createI18n } from 'vue-i18n';
+import { computeValueNormalizationDiff } from './composables/normalization-diff';
 import PasteWarningDialog from './drawers/paste-warning-dialog.vue';
 import Interface from './input-rich-text-html.vue';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
@@ -16,6 +17,11 @@ import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 /** The shape Figma puts on the clipboard: `data-*` round-trips, `style` never does. */
 const LOSSY = '<span style="white-space: pre-wrap;" data-metadata="figma">Grass</span>';
 const SUPPORTED = '<p>fine</p>';
+
+// Figma's clipboard shape; on load the line break becomes a hard break and the double space collapses
+const FIGMA_CLIPBOARD =
+	`<meta charset='utf-8'><span data-metadata="<!--(figmeta)e30=(/figmeta)-->"></span>` +
+	`<span data-buffer="<!--(figma)e30=(/figma)-->"></span><span style="white-space:pre-wrap;">Grass\nis  green</span>`;
 
 async function mountWithValue(value: string | null, extraProps: Record<string, unknown> = {}) {
 	const i18n = createI18n({ legacy: false, locale: 'en-US', messages: { 'en-US': {} } });
@@ -105,6 +111,20 @@ describe('paste warning', () => {
 		expect(editor.getHTML()).not.toContain('white-space');
 		expect(editor.getText()).toContain('Grass');
 		expect(dialog(wrapper).props('modelValue')).toBe(false);
+	});
+
+	test('pasting cleaned stores a value the next load leaves unchanged', async () => {
+		const { wrapper, editor } = await mountWithValue('<p>Hello</p>');
+		editor.commands.setTextSelection(6);
+
+		paste(editor, FIGMA_CLIPBOARD);
+		await nextTick();
+		dialog(wrapper).vm.$emit('confirm');
+		await nextTick();
+
+		const stored = wrapper.emitted('input')?.at(-1)?.[0] as string;
+		expect(stored).toBe('<p>HelloGrass<br>is green</p>');
+		expect(computeValueNormalizationDiff(stored)).toBeNull();
 	});
 
 	test('editing raw swaps in the code interface with the clipboard HTML at the cursor', async () => {
