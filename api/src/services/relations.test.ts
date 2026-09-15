@@ -1,6 +1,7 @@
 import type { ForeignKey } from '@directus/schema';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { RelationMeta } from '@directus/types';
+import { getRelation } from '@directus/utils';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { createMockKnex, createMockTableBuilder, resetKnexMocks } from '../test-utils/knex.js';
 import { ItemsService } from './items.js';
@@ -98,9 +99,9 @@ describe('Integration Tests', () => {
 					foreign: vi.fn().mockReturnValue({ references: vi.fn().mockReturnValue(foreignKey) }),
 				};
 
-				mockSchemaBuilder.alterTable.mockImplementation((_tableName, callback) => {
-					callback(table);
-					return Promise.resolve();
+				mockSchemaBuilder.alterTable.mockImplementation(async (_tableName, callback) => {
+					// Awaited so errors thrown in the callback surface instead of being swallowed
+					await callback(table);
 				});
 			});
 
@@ -127,23 +128,42 @@ describe('Integration Tests', () => {
 				);
 			});
 
-			test('should keep the existing triggers that the payload does not override', async () => {
+			test('should rebuild the foreign key, keeping the triggers the payload does not override', async () => {
+				getRelation(schema.relations, 'articles_authors', 'authors_id')!.schema!.on_update = 'CASCADE';
+
 				const service = new RelationsService({ knex: db, schema });
 
-				await service.updateOne('articles_authors', 'authors_id', {
-					schema: { on_delete: 'CASCADE' } as ForeignKey,
-				});
+				await service.updateOne('articles_authors', 'authors_id', { schema: { on_delete: 'SET NULL' } as ForeignKey });
 
-				expect(foreignKey.onDelete).toHaveBeenCalledWith('CASCADE');
-				expect(foreignKey.onUpdate).toHaveBeenCalledWith('NO ACTION');
+				expect(table.dropForeign).toHaveBeenCalledWith('authors_id', 'articles_authors_authors_id_foreign');
+				expect(table.foreign).toHaveBeenCalledWith('authors_id', 'articles_authors_authors_id_foreign');
+				expect(foreignKey.onDelete).toHaveBeenCalledWith('SET NULL');
+				expect(foreignKey.onUpdate).toHaveBeenCalledWith('CASCADE');
+			});
+
+			test('should create the replacement under the name the helper hands back', async () => {
+				const service = new RelationsService({ knex: db, schema });
+
+				vi.spyOn(service.helpers.schema, 'constraintName').mockImplementation((name) => `${name}_replaced`);
+
+				await service.updateOne('articles_authors', 'authors_id', { schema: { on_delete: 'CASCADE' } as ForeignKey });
+
+				expect(table.dropForeign).toHaveBeenCalledWith('authors_id', 'articles_authors_authors_id_foreign');
+				expect(table.foreign).toHaveBeenCalledWith('authors_id', 'articles_authors_authors_id_foreign_replaced');
+			});
+
+			test('should not write the resolved constraint name back into the schema overview', async () => {
+				getRelation(schema.relations, 'articles_authors', 'authors_id')!.schema!.constraint_name = null;
+
+				const service = new RelationsService({ knex: db, schema });
+
+				await service.updateOne('articles_authors', 'authors_id', { schema: { on_delete: 'CASCADE' } as ForeignKey });
+
+				expect(getRelation(schema.relations, 'articles_authors', 'authors_id')!.schema!.constraint_name).toBeNull();
 			});
 
 			test('should create the meta row using the route params when no meta row exists yet', async () => {
-				const existingRelation = schema.relations.find(
-					(relation) => relation.collection === 'articles_authors' && relation.field === 'authors_id',
-				)!;
-
-				existingRelation.meta = null;
+				getRelation(schema.relations, 'articles_authors', 'authors_id')!.meta = null;
 
 				const service = new RelationsService({ knex: db, schema });
 
