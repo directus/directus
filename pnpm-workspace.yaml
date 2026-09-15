@@ -6,6 +6,36 @@ packages:
   - packages/*
   - tests/*
 
+# api -> directus -> api cyclic dependency temp fix
+ignoreWorkspaceCycles: true
+
+overrides:
+  '@yarnpkg/shell>cross-spawn': 7.0.6
+  tar: 7.5.22
+  js-beautify>editorconfig: 3.0.2
+  js-beautify>glob: 11.1.0
+  express@4>path-to-regexp: 0.1.13
+  adm-zip: 0.6.0
+  js-yaml@4: 4.3.2
+  js-yaml@3: 3.15.2
+  unplugin-yaml>yaml: 2.9.0
+
+allowBuilds:
+  '@fortawesome/fontawesome-common-types': true
+  '@fortawesome/fontawesome-svg-core': true
+  '@fortawesome/free-regular-svg-icons': true
+  '@fortawesome/free-solid-svg-icons': true
+  '@parcel/watcher': true
+  argon2: true
+  braintrust: true
+  esbuild: true
+  isolated-vm: true
+  oracledb: true
+  protobufjs: true
+  sqlite3: true
+  unrs-resolver: true
+  vue-demi: true
+
 catalog:
   '@ai-sdk/anthropic': 3.0.58
   '@ai-sdk/devtools': 0.0.15
@@ -132,7 +162,7 @@ catalog:
   '@types/mapbox__mapbox-gl-geocoder': 5.1.0
   '@types/mime-types': 3.0.1
   '@types/ms': 2.1.0
-  '@types/node': 22.13.14
+  '@types/node': 26.2.0
   '@types/nodemailer': 8.0.1
   '@types/object-hash': 3.0.6
   '@types/papaparse': 5.5.0
@@ -223,8 +253,8 @@ catalog:
   inquirer: 12.11.0
   ioredis: 5.8.2
   ip-matching: 2.1.2
+  isolated-vm: 7.0.1
   ipaddr.js: 2.4.0
-  isolated-vm: 5.0.3
   joi: 18.2.3
   jose: 6.2.3
   js-yaml: 4.3.2
@@ -343,17 +373,3 @@ catalog:
   zod-validation-error: 4.0.2
 
 catalogMode: strict
-
-onlyBuiltDependencies:
-  - '@fortawesome/fontawesome-common-types'
-  - '@fortawesome/fontawesome-svg-core'
-  - '@fortawesome/free-regular-svg-icons'
-  - '@fortawesome/free-solid-svg-icons'
-  - '@parcel/watcher'
-  - argon2
-  - esbuild
-  - isolated-vm
-  - oracledb
-  - sharp
-  - sqlite3
-  - vue-demi

@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
 
-ARG NODE_VERSION=22
+ARG NODE_VERSION=26
 
 ####################################################################################################
 ## Build Packages
@@ -12,7 +12,8 @@ RUN apk --no-cache add python3 py3-setuptools build-base
 WORKDIR /directus
 
 COPY package.json .
-RUN corepack enable && corepack prepare
+
+RUN npm install --global "$(node -p "require('./package.json').packageManager")"
 
 # Deploy as 'node' user to match pnpm setups in production image
 # (see https://github.com/directus/directus/issues/23822)
@@ -21,7 +22,7 @@ USER node
 
 ENV NODE_OPTIONS=--max-old-space-size=8192
 
-COPY pnpm-lock.yaml .
+COPY --chown=node:node pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm fetch
 
 COPY --chown=node:node . .
@@ -49,12 +50,12 @@ FROM node:${NODE_VERSION}-alpine AS runtime
 # then purge npm, npx, corepack, and the npm cache from the final image.
 RUN apk --no-cache upgrade \
 	&& rm -rf \
-		/usr/local/lib/node_modules/npm \
-		/usr/local/lib/node_modules/corepack \
-		/usr/local/bin/npm \
-		/usr/local/bin/npx \
-		/usr/local/bin/corepack \
-		/root/.npm
+	/usr/local/lib/node_modules/npm \
+	/usr/local/lib/node_modules/corepack \
+	/usr/local/bin/npm \
+	/usr/local/bin/npx \
+	/usr/local/bin/corepack \
+	/root/.npm
 
 USER node
 
