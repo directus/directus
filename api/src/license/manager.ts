@@ -394,18 +394,24 @@ export class LicenseManager {
 
 		let license: Directus.License | null = null;
 
+		let syncLicenseState: SyncLicenseOptions = {};
+
 		if (token) {
 			license = await this.verify(token);
 
 			if (!license) {
-				await this.syncLicense({ kind: 'clear-token', invalidReason: 'verification' });
-				return;
+				syncLicenseState.kind = 'clear-token';
+				syncLicenseState.invalidReason = 'verification';
 			}
 		}
 
-		const syncLicenseState: SyncLicenseOptions = {};
-
-		if (license?.meta.offline === false) {
+		/**
+		 *  A failed verification leaves the license unknown. Only an offline token comes without a
+		 *  key, so a key being present means the server is still worth asking for potential self heal
+		 *
+		 * Safe to allow key fall-through as it is not possible to set both env key and token.
+		 */
+		if (license?.meta.offline === false || key) {
 			if (!key) {
 				throw new InvalidPayloadError({ reason: 'A "key" is required' });
 			}
@@ -436,6 +442,9 @@ export class LicenseManager {
 				await settingsService.upsertSingleton({
 					license_token: token,
 				});
+
+				// reset any possible failed state
+				syncLicenseState = {};
 			} catch (err) {
 				logger.error(err);
 
