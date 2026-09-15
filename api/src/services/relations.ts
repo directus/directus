@@ -345,12 +345,14 @@ export class RelationsService {
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 
+		const updatedSchema = relation.schema ? { ...existingRelation.schema, ...relation.schema } : null;
+
 		const updatedRelation: Partial<Relation> = {
 			...relation,
 			collection,
 			field,
 			related_collection: existingRelation.related_collection,
-			schema: relation.schema ? ({ ...existingRelation.schema, ...relation.schema } as ForeignKey) : undefined,
+			...(updatedSchema ? { schema: updatedSchema } : {}),
 		};
 
 		this.helpers.schema.preRelationChange(updatedRelation);
@@ -359,7 +361,7 @@ export class RelationsService {
 
 		try {
 			await transaction(this.knex, async (trx) => {
-				if (existingRelation.related_collection && updatedRelation.schema) {
+				if (updatedSchema && existingRelation.related_collection) {
 					await trx.schema.alterTable(collection, (table) => {
 						let constraintName: string = getDefaultIndexName('foreign', collection, field);
 
@@ -382,12 +384,16 @@ export class RelationsService {
 								}`,
 							);
 
-						if (updatedRelation.schema!.on_delete) {
-							builder.onDelete(updatedRelation.schema!.on_delete);
+						/**
+						 * Delete/update handlers must be set on every request when applicable, excluding them
+						 * from a partial update will cause them to revert to no action.
+						 */
+						if (updatedSchema.on_delete) {
+							builder.onDelete(updatedSchema.on_delete);
 						}
 
-						if (updatedRelation.schema!.on_update) {
-							builder.onUpdate(updatedRelation.schema!.on_update);
+						if (updatedSchema.on_update) {
+							builder.onUpdate(updatedSchema.on_update);
 						}
 					});
 				}
