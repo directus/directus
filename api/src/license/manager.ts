@@ -176,7 +176,10 @@ export class LicenseManager {
 
 	// Env-sourced licenses can never be managed via the API, independent of the flag.
 	public getEditable(): boolean {
-		return toBoolean(env['LICENSE_KEY_MANAGEMENT_ENABLED']) && this.source !== 'env';
+		// Check env directly to ensure downgrade does not allow editable
+		if (env['LICENSE_KEY'] || env['LICENSE_TOKEN']) return false;
+
+		return toBoolean(env['LICENSE_KEY_MANAGEMENT_ENABLED']);
 	}
 
 	public async getLicense() {
