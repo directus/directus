@@ -37,7 +37,8 @@ these `-sb` projects as they require more resources and have a longer runtime.
 ## Writing tests
 
 For general best practices on writing tests, please have a quick look at
-[this guide](https://github.com/goldbergyoni/javascript-testing-best-practices?tab=readme-ov-file#section-0%EF%B8%8F%E2%83%A3-the-golden-rule) and the [best practices](#best-practices) section at the bottom.
+[this guide](https://github.com/goldbergyoni/javascript-testing-best-practices?tab=readme-ov-file#section-0%EF%B8%8F%E2%83%A3-the-golden-rule)
+and the [best practices](#best-practices) section at the bottom.
 
 Adding a test is as simple as creating a new file ending on `.test.ts` and writing your test using vitest. A minial test
 looks like this:
@@ -143,4 +144,5 @@ For more details on how to use the sandbox, please refer to the [sandbox readme]
 - Do schema seeding/changes via the provided utils over doing them manually
 - Write tests as flat as possible, avoid nesting them in multiple layers of complexity
 - Check the existing folder structure to place new files before creating new folders
-- Don't test specific code paths/parts, test the feature broadly and generally. Use unit tests instead to test all permutations or specific code paths
+- Don't test specific code paths/parts, test the feature broadly and generally. Use unit tests instead to test all
+  permutations or specific code paths
