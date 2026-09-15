@@ -1,0 +1,179 @@
+{
+	"version": 1,
+	"directus": "11.10.2",
+	"vendor": "postgres",
+	"collections": [
+		{
+			"collection": "authors_1234",
+			"meta": {
+				"collection": "authors_1234",
+				"singleton": false
+			},
+			"schema": {
+				"name": "authors_1234"
+			}
+		},
+		{
+			"collection": "articles_1234",
+			"meta": {
+				"collection": "articles_1234",
+				"singleton": false
+			},
+			"schema": {
+				"name": "articles_1234"
+			}
+		}
+	],
+	"fields": [
+		{
+			"collection": "authors_1234",
+			"field": "id",
+			"type": "integer",
+			"meta": {
+				"collection": "authors_1234",
+				"field": "id",
+				"hidden": true,
+				"readonly": true
+			},
+			"schema": {
+				"name": "id",
+				"table": "authors_1234",
+				"data_type": "integer",
+				"is_primary_key": true,
+				"has_auto_increment": true
+			}
+		},
+		{
+			"collection": "authors_1234",
+			"field": "name",
+			"type": "string",
+			"meta": {
+				"collection": "authors_1234",
+				"field": "name"
+			},
+			"schema": {
+				"name": "name",
+				"table": "authors_1234",
+				"data_type": "varchar",
+				"is_nullable": true
+			}
+		},
+		{
+			"collection": "articles_1234",
+			"field": "id",
+			"type": "integer",
+			"meta": {
+				"collection": "articles_1234",
+				"field": "id",
+				"hidden": true,
+				"readonly": true
+			},
+			"schema": {
+				"name": "id",
+				"table": "articles_1234",
+				"data_type": "integer",
+				"is_primary_key": true,
+				"has_auto_increment": true
+			}
+		},
+		{
+			"collection": "articles_1234",
+			"field": "title",
+			"type": "string",
+			"meta": {
+				"collection": "articles_1234",
+				"field": "title"
+			},
+			"schema": {
+				"name": "title",
+				"table": "articles_1234",
+				"data_type": "varchar",
+				"is_nullable": true
+			}
+		},
+		{
+			"collection": "articles_1234",
+			"field": "author",
+			"type": "integer",
+			"meta": {
+				"collection": "articles_1234",
+				"field": "author",
+				"interface": "select-dropdown-m2o"
+			},
+			"schema": {
+				"name": "author",
+				"table": "articles_1234",
+				"data_type": "integer",
+				"is_nullable": true
+			}
+		},
+		{
+			"collection": "articles_1234",
+			"field": "editor",
+			"type": "integer",
+			"meta": {
+				"collection": "articles_1234",
+				"field": "editor",
+				"interface": "select-dropdown-m2o"
+			},
+			"schema": {
+				"name": "editor",
+				"table": "articles_1234",
+				"data_type": "integer",
+				"is_nullable": true
+			}
+		}
+	],
+	"relations": [
+		{
+			"collection": "articles_1234",
+			"field": "author",
+			"related_collection": "authors_1234",
+			"meta": {
+				"junction_field": null,
+				"many_collection": "articles_1234",
+				"many_field": "author",
+				"one_allowed_collections": null,
+				"one_collection": "authors_1234",
+				"one_collection_field": null,
+				"one_deselect_action": "nullify",
+				"one_field": null,
+				"sort_field": null
+			},
+			"schema": {
+				"table": "articles_1234",
+				"column": "author",
+				"foreign_key_table": "authors_1234",
+				"foreign_key_column": "id",
+				"constraint_name": "articles_1234_author_foreign",
+				"on_update": "NO ACTION",
+				"on_delete": "CASCADE"
+			}
+		},
+		{
+			"collection": "articles_1234",
+			"field": "editor",
+			"related_collection": "authors_1234",
+			"meta": {
+				"junction_field": null,
+				"many_collection": "articles_1234",
+				"many_field": "editor",
+				"one_allowed_collections": null,
+				"one_collection": "authors_1234",
+				"one_collection_field": null,
+				"one_deselect_action": "nullify",
+				"one_field": null,
+				"sort_field": null
+			},
+			"schema": {
+				"table": "articles_1234",
+				"column": "editor",
+				"foreign_key_table": "authors_1234",
+				"foreign_key_column": "id",
+				"constraint_name": "articles_1234_editor_foreign",
+				"on_update": "NO ACTION",
+				"on_delete": "CASCADE"
+			}
+		}
+	]
+}
