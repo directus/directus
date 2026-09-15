@@ -274,9 +274,13 @@ export class LicenseManager {
 	public async activate(key: string) {
 		this.assertCanManageLicense();
 
-		// If a key is already present, treat as an update
+		// If a key is already present, treat as an update. Attempt direct activation on failure
 		if (this.licenseKey) {
-			return this.update(key);
+			try {
+				return await this.update(key);
+			} catch (err) {
+				logger.warn(err, 'Updating from the stored license key failed, attempting to activate the new key instead');
+			}
 		}
 
 		const settingsService = new SettingsService({ schema: await getSchema() });
