@@ -200,7 +200,7 @@ catalog:
   eventemitter2: 6.4.9
   execa: 9.6.0
   exif-reader: 2.0.2
-  express: 4.22.2
+  express: 4.22.3
   fastify: 5.12.4
   file-saver: 2.0.5
   find-cache-directory: 6.0.0
