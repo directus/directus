@@ -62,7 +62,7 @@ watch(
 	(operation) => {
 		if (!operation) return;
 
-		options.value = operation.options;
+		options.value = operation.options ?? {};
 		operationType.value = operation.type;
 		operationKey.value = operation.key;
 		operationName.value = operation.name;

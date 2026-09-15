@@ -181,6 +181,19 @@ describe('setMax', () => {
 		expect(result).toBe(false);
 	});
 
+	test('Returns false if existing value equals passed value', async () => {
+		const mockKey = 'kv-key';
+		const mockValue = 42;
+
+		kv.get = vi.fn().mockReturnValue(mockValue);
+		kv.set = vi.fn();
+
+		const result = await kv.setMax(mockKey, mockValue);
+
+		expect(kv.set).not.toHaveBeenCalled();
+		expect(result).toBe(false);
+	});
+
 	test('Returns true if passed value is bigger than existing value', async () => {
 		const mockKey = 'kv-key';
 		const mockValue = 500;
