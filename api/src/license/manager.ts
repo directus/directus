@@ -188,7 +188,11 @@ export class LicenseManager {
 	}
 
 	public async getInvalidReason(): Promise<InvalidLicenseStatus | null> {
-		const invalidStatus = await this.store(async (store) => store.get('invalidReason'));
+		const invalidStatus = await this.store(async (store) => store.get('invalidReason')).catch((error) => {
+			logger.warn(error, 'Could not read the license invalid reason');
+			return null;
+		});
+
 		return invalidStatus ?? null;
 	}
 
@@ -710,11 +714,20 @@ export class LicenseManager {
 	 * Apply a state transition and propagate to all instances.
 	 */
 	private async syncLicense(options?: SyncLicenseOptions) {
-		if (options?.invalidReason) {
-			await this.store(async (store) => store.set('invalidReason', options.invalidReason));
-		} else {
-			await this.store(async (store) => store.delete('invalidReason'));
-		}
+		await this.store(async (store) => {
+			if (options?.invalidReason) {
+				await store.set('invalidReason', options.invalidReason);
+			} else {
+				await store.delete('invalidReason');
+			}
+		}).catch((error) => {
+			logger.warn(
+				error,
+				options?.invalidReason
+					? `Could not record the license invalid reason "${options.invalidReason}"`
+					: 'Could not clear the license invalid reason',
+			);
+		});
 
 		if (options?.kind === 'clear-status') return;
 
