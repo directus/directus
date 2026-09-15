@@ -4,6 +4,7 @@ import { merge } from 'lodash';
 import { computed, MaybeRefOrGetter, ref, Ref, toValue, watch } from 'vue';
 import { RelationM2O } from '@/composables/use-relation-m2o';
 import sdk, { requestEndpoint } from '@/sdk';
+import { isCollectionInactive } from '@/utils/collection-status';
 import { extractErrorCode } from '@/utils/extract-error-code';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -70,6 +71,12 @@ export function useRelationSingle<T extends Record<string, any>>(
 		if (!relation.value) return;
 
 		const relatedCollection = relation.value.relatedCollection.collection;
+
+		if (isCollectionInactive(relatedCollection)) {
+			displayItem.value = null;
+			return;
+		}
+
 		const pkField = relation.value.relatedPrimaryKeyField.field;
 
 		const id = typeof val === 'object' ? val[relation.value.relatedPrimaryKeyField.field] : val;
