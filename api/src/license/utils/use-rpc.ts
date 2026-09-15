@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { useBus } from '../../bus/index.js';
+import { useLogger } from '../../logger/index.js';
 
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 
@@ -24,8 +25,9 @@ export function useRPC<C>(self: C, channel: string): ExtractMethods<C> {
 		if (typeof fn === 'function') {
 			try {
 				await fn.apply(self, args);
-			} catch {
+			} catch (error) {
 				// Prevent unhandled rejections
+				useLogger().error(error, `Failed to apply RPC "${method}" on channel "${channel}"`);
 			}
 		}
 	});

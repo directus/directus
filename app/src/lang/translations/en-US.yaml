@@ -910,6 +910,8 @@ errors:
   INVALID_USER: Failed to authenticate user
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
+  LICENSE_INVALID: License key cannot be applied
+  LICENSE_SERVICE_UNAVAILABLE: Licensing service unavailable
   LIMIT_EXCEEDED: 'Limit exceeded'
   METHOD_NOT_ALLOWED: Method not allowed
   NOT_NULL_VIOLATION: Value can't be null
@@ -1523,6 +1525,11 @@ licensing:
   resolve_title_expired: License Expiration
   resolve_title_suspended: License Suspension
   resolve_title_canceled: License Canceled
+  resolve_title_invalid_key: Invalid License Key
+  resolve_title_activation_limit: Activation Limit Reached
+  resolve_title_binding_mismatch: License Registered Elsewhere
+  resolve_title_verification: License Could Not Be Verified
+  resolve_title_unavailable: License Could Not Be Checked
   resolve_title_env_removed: License Removed
   resolve_title_grace: Resolve License Limits
   resolve_title_no_resolution: License Inactive
@@ -1545,6 +1552,35 @@ licensing:
     Your license is no longer active and your project has been downgraded to the Core plan. Some features may no longer
     be available, and items beyond the Core plan limits remain stored but locked in Directus. To restore full access,
     add a new license key.
+  resolve_notice_expired:
+    Your license has expired and your project has been downgraded to the Core plan. Some features may no longer be
+    available, and items beyond the Core plan limits remain stored but locked in Directus. To restore full access, renew
+    your license or add a new license key.
+  resolve_notice_canceled:
+    Your subscription was canceled and your project has been downgraded to the Core plan. Some features may no longer be
+    available, and items beyond the Core plan limits remain stored but locked in Directus. To restore full access, add a
+    new license key.
+  resolve_notice_suspended:
+    Your license has been suspended and your project has been downgraded to the Core plan. Some features may no longer
+    be available, and items beyond the Core plan limits remain stored but locked in Directus. Contact support to restore
+    your license.
+  resolve_notice_invalid_key:
+    Your license key was not accepted and your project has been downgraded to the Core plan. Some features may no longer
+    be available, and items beyond the Core plan limits remain stored but locked in Directus. Check the key for typos,
+    or add a new license key.
+  resolve_notice_activation_limit:
+    Your license key has no activations left, so your project has been downgraded to the Core plan. Deactivate the
+    license on a project you no longer use, then add the key here again.
+  resolve_notice_binding_mismatch:
+    Your license key is registered to a different project or URL, so your project has been downgraded to the Core plan.
+    Check that your project URL matches the one the key was activated with, or add a new license key.
+  resolve_notice_verification:
+    Your stored license could not be verified, so your project has been downgraded to the Core plan. Your license key is
+    unchanged and will be checked again when the project restarts.
+  resolve_notice_unavailable:
+    Your license could not be checked because the licensing service could not be reached, so your project has been
+    downgraded to the Core plan. Your license itself may still be valid, and will be checked again when the project
+    restarts.
   resolve_continue: Continue
   resolve_acknowledge: Acknowledge
   resolve_submit: Deactivate Selected Items
@@ -1710,6 +1746,21 @@ license:
     upgrade: Upgrade
     oig_eligible: 'You might be eligible for our {oig}. Apply and get full access to Directus for free.'
   locked_status_notice: 'Your Directus instance is locked. Manage license or {contactSupport} to resolve.'
+  warning_status_notice:
+    generic:
+      Your license could not be renewed. Your current license keeps working until it expires, after which Core tier
+      limits will apply. Check your license key in Settings > License.
+    invalid_key:
+      Your license key is no longer being accepted. Your current license keeps working until it expires, after which
+      Core tier limits will apply. Check the key in Settings > License, or add a new one.
+    activation_limit:
+      Your license key has no activations left, so it can no longer be renewed for this project. Your current license
+      keeps working until it expires, after which Core tier limits will apply. Deactivate the license on a project you
+      no longer use.
+    binding_mismatch:
+      Your license key is registered to a different project or URL, so it can no longer be renewed for this project.
+      Your current license keeps working until it expires, after which Core tier limits will apply. Check that your
+      project URL matches the one the key was activated with.
   pinned_status_notice:
     grace_period_title: 'Grace Period ({days}d left)'
     grace_period_body: Manage your license key in Settings > License.

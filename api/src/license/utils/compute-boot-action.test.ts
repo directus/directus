@@ -78,7 +78,7 @@ test.each<[string, Partial<LicenseBootState>, LicenseBootAction]>([
 		{ dbKey: 'db-key', dbToken: '' },
 		{ kind: 'activate', source: 'settings', key: 'db-key' },
 	],
-	['H — orphaned persisted token', { dbToken: 'db-token' }, { kind: 'downgrade' }],
+	['H — orphaned persisted token', { dbToken: 'db-token' }, { kind: 'clear-token' }],
 	['I — nothing configured', {}, { kind: 'sync', source: null }],
 	[
 		'I — every credential an empty string',
