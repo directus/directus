@@ -371,7 +371,6 @@ export class RelationsService {
 							table.dropForeign(field, constraintName);
 
 							constraintName = this.helpers.schema.constraintName(constraintName);
-							existingRelation.schema.constraint_name = constraintName;
 						}
 
 						this.alterType(table, existingRelation, fieldSchema.nullable);
