@@ -25,6 +25,16 @@ vi.mock('../../services', () => ({
 
 vi.mock('../../database/index');
 
+function adminClient() {
+	const client = mockClient();
+
+	// An admin is told the collection is inactive without a permission lookup, which keeps this test
+	// away from the database
+	(client as { accountability: unknown }).accountability = { admin: true, roles: [], user: null };
+
+	return client;
+}
+
 function mockClient() {
 	return {
 		on: vi.fn(),
@@ -278,5 +288,70 @@ describe('WebSocket heartbeat handler', () => {
 		expect(unsubscribe).toBeCalled();
 		expect(handler.subscriptions['test_collection']?.size).toBe(0);
 		expect(handler.subscriptions['other_collection']?.size).toBe(0);
+	});
+
+	test('should fail to subscribe to an inactive collection', async () => {
+		const client = adminClient();
+
+		vi.mocked(getSchema).mockImplementation(async () => ({
+			collections: {
+				test_collection: {
+					collection: 'test_collection',
+					primary: 'id',
+					singleton: false,
+					sortField: null,
+					note: null,
+					accountability: null,
+					status: 'inactive',
+					fields: {},
+				},
+			} as CollectionsOverview,
+			relations: [] as Relation[],
+		}));
+
+		const subscribe = vi.spyOn(handler, 'subscribe');
+
+		emitter.emitAction('websocket.message', {
+			client,
+			message: {
+				type: 'subscribe',
+				collection: 'test_collection',
+				uid: '123',
+			},
+		});
+
+		await delay(10);
+
+		expect(subscribe).not.toBeCalled();
+		expect(handler.subscriptions['test_collection']).toBeUndefined();
+		expect(client.send).toBeCalledWith(expect.stringContaining('COLLECTION_INACTIVE'));
+		expect(client.send).toBeCalledWith(expect.stringContaining('"uid":"123"'));
+	});
+
+	test('should fail to subscribe to a collection that is not on the schema', async () => {
+		const client = adminClient();
+
+		vi.mocked(getSchema).mockImplementation(async () => ({
+			collections: {} as CollectionsOverview,
+			relations: [] as Relation[],
+		}));
+
+		const subscribe = vi.spyOn(handler, 'subscribe');
+
+		emitter.emitAction('websocket.message', {
+			client,
+			message: {
+				type: 'subscribe',
+				collection: 'test_collection',
+				uid: '123',
+			},
+		});
+
+		await delay(10);
+
+		expect(subscribe).not.toBeCalled();
+		expect(handler.subscriptions['test_collection']).toBeUndefined();
+		expect(client.send).toBeCalledWith(expect.stringContaining('FORBIDDEN'));
+		expect(client.send).toBeCalledWith(expect.stringContaining('"uid":"123"'));
 	});
 });
