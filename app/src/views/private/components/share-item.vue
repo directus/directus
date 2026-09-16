@@ -45,6 +45,7 @@ const status = computed(() => {
 });
 
 const formattedTime = computed(() => {
+	if (!props.share.date_created) return null;
 	return format(new Date(props.share.date_created), String(t('date-fns_date_short')));
 });
 </script>
