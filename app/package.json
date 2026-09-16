@@ -138,6 +138,7 @@
 		"geojson": "catalog:",
 		"happy-dom": "catalog:",
 		"html-entities": "catalog:",
+		"jsdom": "catalog:",
 		"json-to-graphql-query": "catalog:",
 		"jsonlint-mod": "catalog:",
 		"lodash": "catalog:",
