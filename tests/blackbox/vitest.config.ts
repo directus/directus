@@ -10,7 +10,9 @@ export default defineConfig({
 		// Vitest 4 removed `poolOptions`; the per-pool fork cap is now the top-level worker cap.
 		// `minForks: 1` has no v4 equivalent (`minWorkers` was removed outright) and is dropped.
 		maxWorkers: isMssql ? 2 : 6,
-		environment: './setup/environment.ts',
+		// Was a custom `environment`, which Vitest 4 now runs before the worker state exists.
+		// See the comment in `setup/gate.ts`.
+		setupFiles: './setup/gate.ts',
 		sequence: {
 			sequencer: Sequencer,
 		},
