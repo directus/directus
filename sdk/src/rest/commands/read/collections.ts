@@ -29,10 +29,10 @@ export const readCollections =
 export const readCollection =
 	<Schema>(collection: DirectusCollection<Schema>['collection']): RestCommand<ReadCollectionOutput<Schema>, Schema> =>
 	() => {
-		throwIfEmpty(String(collection), 'Collection cannot be empty');
+		throwIfEmpty(collection, 'Collection cannot be empty');
 
 		return {
-			path: `/collections/${collection as string}`,
+			path: `/collections/${collection}`,
 			method: 'GET',
 		};
 	};

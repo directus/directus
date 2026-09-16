@@ -24,10 +24,10 @@ export const updateCollection =
 		query?: TQuery,
 	): RestCommand<UpdateCollectionOutput<Schema, TQuery>, Schema> =>
 	() => {
-		throwIfEmpty(String(collection), 'Collection cannot be empty');
+		throwIfEmpty(collection, 'Collection cannot be empty');
 
 		return {
-			path: `/collections/${collection as string}`,
+			path: `/collections/${collection}`,
 			params: query ?? {},
 			body: JSON.stringify(item),
 			method: 'PATCH',

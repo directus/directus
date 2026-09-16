@@ -27,11 +27,11 @@ export const updateField =
 		query?: TQuery,
 	): RestCommand<UpdateFieldOutput<Schema, TQuery>, Schema> =>
 	() => {
-		throwIfEmpty(String(collection), 'Keys cannot be empty');
+		throwIfEmpty(collection, 'Collection cannot be empty');
 		throwIfEmpty(field, 'Field cannot be empty');
 
 		return {
-			path: `/fields/${collection as string}/${field}`,
+			path: `/fields/${collection}/${field}`,
 			params: query ?? {},
 			body: JSON.stringify(item),
 			method: 'PATCH',
@@ -54,10 +54,10 @@ export const updateFields =
 		query?: TQuery,
 	): RestCommand<UpdateFieldOutput<Schema, TQuery>[], Schema> =>
 	() => {
-		throwIfEmpty(String(collection), 'Collection cannot be empty');
+		throwIfEmpty(collection, 'Collection cannot be empty');
 
 		return {
-			path: `/fields/${collection as string}`,
+			path: `/fields/${collection}`,
 			params: query ?? {},
 			body: JSON.stringify(items),
 			method: 'PATCH',
