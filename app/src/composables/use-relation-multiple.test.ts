@@ -268,6 +268,38 @@ describe('test o2m relation', () => {
 		});
 	});
 
+	test('updating an item twice before the display items refresh keeps a single update entry', async () => {
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		// Consumers derive $type/$index from displayItems, which lag behind the emitted value by a render
+		// flush, so a second edit in the same tick arrives without them (CMS-3081)
+		wrapper.vm.update({ id: 2, name: 'test2-edited' });
+		wrapper.vm.update({ id: 2, name: 'test2-edited again' });
+
+		await flushPromises();
+
+		expect(wrapper.vm.value).toEqual({
+			create: [],
+			update: [{ id: 2, name: 'test2-edited again' }],
+			delete: [],
+		});
+
+		const changes = cloneDeep(workerData);
+
+		changes.splice(1, 1, {
+			id: 2,
+			name: 'test2-edited again',
+			facility: 1,
+			$edits: 0,
+			$type: 'updated',
+			$index: 0,
+		});
+
+		expect(wrapper.vm.displayItems).toEqual(changes);
+	});
+
 	test('removing an item', async () => {
 		const wrapper = mount(TestComponent, {
 			props: { relation: relationO2M, value: [], id: 1 },

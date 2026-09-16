@@ -338,7 +338,10 @@ export function useRelationMultiple(
 
 			for (const item of items) {
 				if (item.$type === undefined || item.$index === undefined) {
-					target.value.update.push(cleanItem(item));
+					const existingIndex = findUpdateIndex(item);
+
+					if (existingIndex === -1) target.value.update.push(cleanItem(item));
+					else target.value.update[existingIndex] = cleanItem(item);
 				} else if (item.$type === 'created') {
 					target.value.create[item.$index] = cleanItem(item);
 				} else if (item.$type === 'updated') {
@@ -417,6 +420,13 @@ export function useRelationMultiple(
 
 			if (relation.value?.type === 'o2m') update(...selected);
 			else create(...selected);
+		}
+
+		function findUpdateIndex(item: DisplayItem) {
+			const pk = item[targetPKField.value];
+			if (pk === undefined || pk === null) return -1;
+
+			return target.value.update.findIndex((entry: Record<string, any>) => entry[targetPKField.value] === pk);
 		}
 
 		function updateValue() {
