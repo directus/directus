@@ -1,8 +1,8 @@
 import type { Query, SchemaOverview } from '@directus/types';
+import { getRelatedCollection } from '../../../../database/get-ast-from-query/utils/get-related-collection.js';
 import { parseFilterKey } from '../../../../utils/parse-filter-key.js';
 import type { CollectionKey, FieldKey, FieldMap } from '../types.js';
 import { extractPathsFromQuery } from '../utils/extract-paths-from-query.js';
-import { findRelatedCollection } from '../utils/find-related-collection.js';
 import { getInfoForPath } from '../utils/get-info-for-path.js';
 
 export function extractFieldsFromQuery(
@@ -60,7 +60,7 @@ export function extractFieldsFromQuery(
 				 * Related collection for the current part. Is null when the current field isn't a
 				 * relational field.
 				 */
-				const relatedCollection = findRelatedCollection(collectionContext, part, schema);
+				const relatedCollection = getRelatedCollection(schema, collectionContext, part);
 
 				if (relatedCollection) {
 					collectionContext = relatedCollection;
