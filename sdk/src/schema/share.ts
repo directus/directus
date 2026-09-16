@@ -9,7 +9,7 @@ export type DirectusShare<Schema = any> = MergeCoreCollection<
 	{
 		id: string;
 		name: string | null;
-		collection: DirectusCollection<Schema> | CollectionName<Schema>;
+		collection: DirectusCollection<Schema>['meta'] | CollectionName<Schema>;
 		item: string;
 		role: DirectusRole<Schema> | string | null;
 		password: string | null; // will just be *s
