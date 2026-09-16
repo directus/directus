@@ -4,7 +4,7 @@ import { DefineComponent, defineComponent, h, onMounted, onUnmounted } from 'vue
 import { Events } from './events';
 import { time as timeoutDuration } from './idle';
 
-vi.mock('lodash', () => ({
+vi.mock('lodash-es', () => ({
 	throttle: vi.fn((fn, _wait) => fn),
 }));
 

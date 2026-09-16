@@ -9,8 +9,8 @@ import { Focus } from '@/__utils__/focus';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 
-vi.mock('lodash', async () => {
-	const mod = await vi.importActual<{ default: typeof import('lodash') }>('lodash');
+vi.mock('lodash-es', async () => {
+	const mod = await vi.importActual<{ default: typeof import('lodash-es') }>('lodash-es');
 	return {
 		...mod.default,
 		debounce: (fn: any) => fn,

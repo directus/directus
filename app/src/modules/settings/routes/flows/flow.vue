@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useShortcut } from '@directus/composables';
 import { FlowRaw, OperationRaw } from '@directus/types';
-import { cloneDeep, isEmpty, merge, omit } from 'lodash';
+import { cloneDeep, isEmpty, merge, omit } from 'lodash-es';
 import { customAlphabet, nanoid } from 'nanoid/non-secure';
 import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';

@@ -1,4 +1,4 @@
-import { set } from 'lodash';
+import { set } from 'lodash-es'es';
 import { collectionExists } from '../../../utils/collection-exists';
 import { fieldExists } from '../../../utils/field-exists';
 import { getAutomaticJunctionCollectionName } from '../../../utils/get-junction-collection-name';

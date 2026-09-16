@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { File } from '@directus/types';
 import Cropper from 'cropperjs';
-import { isEqual } from 'lodash';
-import throttle from 'lodash/throttle';
+import { isEqual } from 'lodash-es';
+import throttle from 'lodash-es/throttle';
 import { nanoid } from 'nanoid/non-secure';
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';

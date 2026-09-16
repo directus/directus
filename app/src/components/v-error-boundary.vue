@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { kebabCase } from 'lodash';
+import { kebabCase } from 'lodash-es';
 import { computed, onErrorCaptured, ref } from 'vue';
 import { getVueComponentName } from '@/utils/get-vue-component-name';
 

@@ -5,8 +5,8 @@ import TransitionBounce from './transition/bounce.vue';
 import VMenu from './v-menu.vue';
 import { directive } from '@/directives/click-outside';
 
-vi.mock('lodash', async () => {
-	const mod = await vi.importActual<{ default: typeof import('lodash') }>('lodash');
+vi.mock('lodash-es', async () => {
+	const mod = await vi.importActual<{ default: typeof import('lodash-es') }>('lodash-es');
 	return {
 		...mod.default,
 		debounce: (fn: any) => fn,
