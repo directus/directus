@@ -139,7 +139,6 @@ catalog:
   '@types/qs': 6.14.0
   '@types/sanitize-html': 2.16.0
   '@types/semver': 7.7.1
-  '@types/stream-json': 1.7.8
   '@types/three': 0.184.0
   '@types/tmp': 0.2.6
   '@types/wellknown': 0.5.8
@@ -295,7 +294,7 @@ catalog:
   sharp: 0.35.4
   snappy: 7.3.3
   sqlite3: 6.0.1
-  stream-json: 1.9.1
+  stream-json: 3.6.0
   string-width: 7.2.0
   strip-ansi: 7.1.2
   stylelint: 17.13.0
