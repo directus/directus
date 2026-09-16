@@ -1,3 +1,4 @@
+import { InvalidPayloadError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Item, PayloadAction } from '@directus/types';
 import type { Knex } from 'knex';
@@ -138,6 +139,51 @@ describe('Integration Tests', () => {
 					});
 
 					expect(result).toBe('test,directus');
+				});
+
+				test('Throws on illegal values on create', async () => {
+					await expect(
+						service.transformers['cast-csv']!({
+							value: { wrong: 'input' },
+							action: 'create',
+							payload: {},
+							accountability: { role: null } as Accountability,
+							specials: [],
+							helpers,
+							overwriteDefaults: undefined,
+							field: 'tags',
+						}),
+					).rejects.toThrow(InvalidPayloadError);
+				});
+
+				test('Throws on illegal values on update', async () => {
+					await expect(
+						service.transformers['cast-csv']!({
+							value: 123,
+							action: 'update',
+							payload: {},
+							accountability: { role: null } as Accountability,
+							specials: [],
+							helpers,
+							overwriteDefaults: undefined,
+							field: 'tags',
+						}),
+					).rejects.toThrow(InvalidPayloadError);
+				});
+
+				test('Allows null/undefined values on write', async () => {
+					const result = await service.transformers['cast-csv']!({
+						value: null,
+						action: 'create',
+						payload: {},
+						accountability: { role: null } as Accountability,
+						specials: [],
+						helpers,
+						overwriteDefaults: undefined,
+						field: 'tags',
+					});
+
+					expect(result).toBe(null);
 				});
 			});
 
